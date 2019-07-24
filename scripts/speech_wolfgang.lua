@@ -141,6 +141,18 @@ return {
         {
             REPAIR = "Tiny boat is strong, no need.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Need to paddle at right time!",
+            BAD_TIMING1 = "Wolfgang need to concentrate.",
+            BAD_TIMING2 = "Is easy! That was just practice run.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Tiny wind cloth not listening to Wolfgang!",
+            "Wolfgang will show tiny boat who's mightier!",
+            "Argh! Taking down big circus tent was easier than this!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "Is covered in see-through sharp stuff!",

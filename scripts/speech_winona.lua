@@ -149,6 +149,18 @@ return {
         {
         	REPAIR = "In my professional opinion, she don't need repairin'.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Gotta keep a steady pace, like on the ol' assembly line!",
+            BAD_TIMING1 = "I'll get the hang of this!",
+            BAD_TIMING2 = "Shoot, I'm sure there's a knack to this.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Pretty sure that ain't how that's supposed to go.",
+            "One more time, nice an' easy...",
+            "C'mon now, work with me here!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "Can't do that with all this glass in the way.",

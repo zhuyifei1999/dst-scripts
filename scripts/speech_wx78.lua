@@ -141,6 +141,18 @@ return {
         {
         	REPAIR = "THE WRETCHED THING DOES NOT NEED FIXING",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "ERROR: RECALIBRATE ROWING SEQUENCE",
+            BAD_TIMING1 = "MY CALCULATIONS WERE OFF",
+            BAD_TIMING2 = "FRUSTRATION LEVELS RISING",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "CURSE THIS OBSOLETE TECHNOLOGY",
+            "FAILURE DETECTED",
+            "OPERATION 'LOWER SAIL' FAILED TO EXECUTE; REBOOTING",
+        }, 
         BATHBOMB =
         {
             GLASSED = "ERROR: MOON BARRIER ACTIVE",

@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/water_antchovies.zip"),
+    Asset("ANIM", "anim/antchovy.zip"),
 }
 
 local function fn()
@@ -17,8 +17,11 @@ local function fn()
     
     inst.DynamicShadow:SetSize(0.65, 0.25)
 
-    inst.AnimState:SetBank("antchovies")
-    inst.AnimState:SetBuild("water_antchovies")     
+    inst.AnimState:SetBank("antchovy")
+    inst.AnimState:SetBuild("antchovy")
+    inst.AnimState:PlayAnimation("idle")
+
+	inst.Transform:SetTwoFaced()
 
     inst.entity:SetPristine()    
 
@@ -27,9 +30,13 @@ local function fn()
     end
 
     inst:AddComponent("inventoryitem")
-    inst:SetStateGraph("SGantchovies")
+    
+	--inst:SetStateGraph("SGantchovies")
 
     inst:AddComponent("edible")
+    inst.components.edible.healthvalue = 0
+    inst.components.edible.hungervalue = TUNING.CALORIES_TINY
+    inst.components.edible.sanityvalue = 0
     inst.components.edible.foodtype = FOODTYPE.MEAT
 
     inst:AddComponent("stackable")

@@ -12,6 +12,39 @@ local assets =
     Asset("FILE", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
     Asset("FILE", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
 
+
+    -- Legacy for modders to view. These files are now dynamically loaded.
+    Asset("PKGREF", "anim/ghost_wathgrithr_build.zip"),
+    Asset("PKGREF", "anim/ghost_waxwell_build.zip"),
+    Asset("PKGREF", "anim/ghost_webber_build.zip"),
+    Asset("PKGREF", "anim/ghost_wendy_build.zip"),
+    Asset("PKGREF", "anim/ghost_werebeaver_build.zip"),
+    Asset("PKGREF", "anim/ghost_wes_build.zip"),
+    Asset("PKGREF", "anim/ghost_wickerbottom_build.zip"),
+    Asset("PKGREF", "anim/ghost_willow_build.zip"),
+    Asset("PKGREF", "anim/ghost_wilson_build.zip"),
+    Asset("PKGREF", "anim/ghost_winona_build.zip"),
+    Asset("PKGREF", "anim/ghost_wolfgang_build.zip"),
+    Asset("PKGREF", "anim/ghost_woodie_build.zip"),
+    Asset("PKGREF", "anim/ghost_wx78_build.zip"),
+    Asset("PKGREF", "anim/wathgrithr.zip"),
+    Asset("PKGREF", "anim/waxwell.zip"),
+    Asset("PKGREF", "anim/webber.zip"),
+    Asset("PKGREF", "anim/wendy.zip"),
+    Asset("PKGREF", "anim/werebeaver_build.zip"),
+    Asset("PKGREF", "anim/wes.zip"),
+    Asset("PKGREF", "anim/wickerbottom.zip"),
+    Asset("PKGREF", "anim/willow.zip"),
+    Asset("PKGREF", "anim/wilson.zip"),
+    Asset("PKGREF", "anim/winona.zip"),
+    Asset("PKGREF", "anim/wolfgang.zip"),
+    Asset("PKGREF", "anim/wolfgang_mighty.zip"),
+    Asset("PKGREF", "anim/wolfgang_skinny.zip"),
+    Asset("PKGREF", "anim/woodie.zip"),
+    Asset("PKGREF", "anim/wx78.zip"),
+
+
+
     Asset("ATLAS", "images/global.xml"),
     Asset("IMAGE", "images/global.tex"),
     Asset("IMAGE", "images/visited.tex"),
@@ -157,6 +190,7 @@ local assets =
     Asset("SHADER", "shaders/triplanar_alpha_ceiling.ksh"),
     Asset("SHADER", "shaders/lighting.ksh"),
     Asset("SHADER", "shaders/minimap.ksh"),
+    Asset("SHADER", "shaders/minimap_ocean.ksh"),
     Asset("SHADER", "shaders/minimapfs.ksh"),
     Asset("SHADER", "shaders/particle.ksh"),
     Asset("SHADER", "shaders/vfx_particle.ksh"),
@@ -182,6 +216,7 @@ local assets =
     Asset("SHADER", "shaders/postprocessbloomlunacy.ksh"),
     Asset("SHADER", "shaders/postprocessdistortlunacy.ksh"),
     Asset("SHADER", "shaders/postprocessbloomdistortlunacy.ksh"),    
+	Asset("SHADER", "shaders/blendoceantexture.ksh"),  
     Asset("SHADER", "shaders/waterfall.ksh"),
 
     Asset("SHADER", "shaders/waves.ksh"),

@@ -21,6 +21,7 @@ local function common_fn(is_front)
     inst:AddTag("FX")
     inst:AddTag("ignorewalkableplatforms")
     inst.AnimState:SetBuild("float_fx")
+    inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
 
     if is_front then
         inst.AnimState:SetBank("float_front")

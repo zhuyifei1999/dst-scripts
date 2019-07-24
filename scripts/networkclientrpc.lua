@@ -358,27 +358,21 @@ local RPC_HANDLERS =
         end
     end,
 
-    PredictHopping = function(player, x, z, platform, platform_relative)
+    StartHop = function(player, x, z, platform, has_platform)
         if not (checknumber(x) and
                 checknumber(z) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
-            printinvalid("PredictHopping", player)
+                optentity(platform) and
+                checkbool(has_platform)) then
+            printinvalid("StartHop", player)
             return
         end
         local playercontroller = player.components.playercontroller
-        if playercontroller ~= nil then
-			printinvalidplatform("PredictHopping", player, nil, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemotePredictHopping(x, z)
-				else
-					print("Remote predict hopping out of range")
-				end
-			end
-        end
-    end,
+        if playercontroller == nil then return end
+        if has_platform and (platform == nil or not platform:IsValid()) then return end
+
+        playercontroller:OnRemoteStartHop(x, z, platform)
+
+    end,    
 
     SteerBoat = function(player, dir_x, dir_z)
         if not (checknumber(dir_x) and

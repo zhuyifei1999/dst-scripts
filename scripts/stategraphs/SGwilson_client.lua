@@ -309,8 +309,17 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.RAISE_SAIL, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_SAIL, "dolongaction"),    
+    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction"),
+    ActionHandler(ACTIONS.LOWER_SAIL_BOOST,
+        function(inst, action)
+            inst.sg.statemem.not_interrupted = true
+            return "furl_boost"
+        end),
+    ActionHandler(ACTIONS.LOWER_SAIL_FAIL, 
+        function(inst, action)
+            inst.sg.statemem.not_interrupted = true
+            return "furl_fail"
+        end),  
     ActionHandler(ACTIONS.RAISE_ANCHOR, "dolongaction"),
     ActionHandler(ACTIONS.LOWER_ANCHOR, "dolongaction"),
     ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle_pre"),
@@ -3027,6 +3036,169 @@ local states =
     },
 
     --------------------------------------------------------------------------
+
+    State{
+
+        name = "furl_boost",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("pull_big_pre")
+            inst.AnimState:PushAnimation("pull_big_lag", false)            
+
+            if inst:HasTag("is_heaving") then
+                inst:RemoveTag("is_heaving")
+            else
+                inst:AddTag("is_heaving")
+            end
+
+            inst:AddTag("is_furling") 
+
+            inst:PerformPreviewBufferedAction()
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end, 
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            end
+        end,
+
+        onexit = function(inst) 
+            if not inst.sg.statemem.not_interrupted then
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(17 * FRAMES, function(inst)      
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_down", nil, nil, true)
+            end),
+        },
+
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.sg.statemem.stopfurling then
+                    inst.sg:GoToState("idle")
+                else 
+                    inst.sg.statemem.not_interrupted = true
+                    inst.sg:GoToState("furl", inst.sg.mem.furl_target)               --_repeat_delay  
+                end
+            end),    
+
+            EventHandler("stopfurling", function(inst)
+                inst.sg.statement.stopfurling = true
+            end),                     
+        },      
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,        
+    },  
+
+    State{
+
+        name = "furl",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("pull_small_pre")
+            inst.AnimState:PushAnimation("pull_small_loop", true)
+            inst:PerformPreviewBufferedAction()
+        end, 
+
+        onupdate = function(inst) 
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            end
+        end,
+
+        onexit = function(inst) 
+            if not inst.sg.statemem.not_interrupted then
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(15 * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),
+            TimeEvent((15+17) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),            
+            TimeEvent((15+(2*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),              
+            TimeEvent((15+(3*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),          
+            TimeEvent((15+(4*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),          
+            TimeEvent((15+(5*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),                
+        },
+
+        events = 
+        {
+            EventHandler("stopfurling", function(inst)
+                inst.AnimState:PlayAnimation("pull_small_pst")                
+                inst.sg:GoToState("idle",true)
+            end),                     
+        },      
+    },
+
+    State{
+
+        name = "furl_fail",
+        tags = { "busy", "furl_fail" },
+
+        onenter = function(inst)
+
+            inst:PerformPreviewBufferedAction()  
+           
+            inst:RemoveTag("is_heaving") 
+
+            inst.AnimState:PlayAnimation("pull_fail") 
+        end,    
+
+        onupdate = function(inst) 
+            if not inst:HasTag("is_furling") then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        onexit = function(inst) 
+            if not inst.sg.statemem.not_interrupted then
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg.statemem.not_interrupted = true
+                inst.sg:GoToState("furl", inst.sg.mem.furl_target)                
+            end),     
+
+            EventHandler("stopfurling", function(inst)
+                inst.sg:GoToState("idle")
+            end),                    
+        },            
+    },
+
 }
 
 CommonStates.AddRowStates(states, true)

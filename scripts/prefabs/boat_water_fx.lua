@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/boat_water_fx.zip"),
+    Asset("ANIM", "anim/boat_water_fx2.zip"),
 }
 
 local function fn()
@@ -8,19 +8,23 @@ local function fn()
 
     inst:AddTag("FX")
     inst:AddTag("NOBLOCK")
+    inst:AddTag("ignorewalkableplatforms")
     --[[Non-networked entity]]
     inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()
-    inst.entity:AddAnimState()
 
-    inst.AnimState:SetBank("boat_water_fx")
-    inst.AnimState:SetBuild("boat_water_fx")
-    inst.AnimState:PlayAnimation("idle_loop")
-    inst.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_WAVES)
-    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)    
-    inst.AnimState:SetLayer(LAYER_BACKGROUND)     
+    local anim = inst.entity:AddAnimState()
+    anim:SetBank("boat_water_fx")
+    anim:SetBuild("boat_water_fx2")
+    anim:PlayAnimation("idle_loop_1")
+    anim:SetSortOrder(ANIM_SORT_ORDER.OCEAN_WAVES)
+    anim:SetOrientation(ANIM_ORIENTATION.OnGround)    
+    anim:SetLayer(LAYER_BACKGROUND) 
+    anim:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
+
+    inst:AddComponent("boattrailmover")
 
     inst:ListenForEvent("animover", inst.Remove)
 

@@ -24,7 +24,8 @@ local function fn()
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)    
     inst.AnimState:SetLayer(LAYER_BACKGROUND)  
     inst.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
-    inst.AnimState:SetFinalOffset(0)      
+    inst.AnimState:SetFinalOffset(0)    
+    inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)  
 
     inst.Transform:SetRotation(90)
 

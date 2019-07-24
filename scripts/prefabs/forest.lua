@@ -331,6 +331,8 @@ local prefabs =
     "driftwood_small2",
     "driftwood_tall",
     "driftwood_log",
+	"waterchest",
+    "malbatross",
 
     -- moon island
 	"gestalt",

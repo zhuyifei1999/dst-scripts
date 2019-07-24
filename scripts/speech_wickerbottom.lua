@@ -147,6 +147,18 @@ return
         {
             REPAIR = "It's already in ideal condition.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "I must time this perfectly.",
+            BAD_TIMING1 = "This might take some tenacity.",
+            BAD_TIMING2 = "Oh dear, I'll have to start over.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "There must be a trick to this.",
+            "Oh, you finicky thing!",
+            "Come along now, no need to be stubborn.",
+        },
         BATHBOMB =
         {
             GLASSED = "The surface of the spring has crystallized, unfortunately.",

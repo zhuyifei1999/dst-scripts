@@ -36,7 +36,18 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
     									    lifetime_in_frames = lifetime_in_frames,
     									    hit_dot_velocity = hit_dot_velocity})
 
-		local push_back = -1.75 * velocity    	
+        other:PushEvent("on_collide", { other = inst,
+                                            world_position_on_a_x = world_position_on_b_x, 
+                                            world_position_on_a_y = world_position_on_b_y, 
+                                            world_position_on_a_z = world_position_on_b_z,
+                                            world_position_on_b_x = world_position_on_a_x, 
+                                            world_position_on_b_y = world_position_on_a_y, 
+                                            world_position_on_b_z = world_position_on_a_z, 
+                                            world_normal_on_b_x = -world_normal_on_b_x, 
+                                            world_normal_on_b_y = -world_normal_on_b_y, 
+                                            world_normal_on_b_z = -world_normal_on_b_z, 
+                                            lifetime_in_frames = lifetime_in_frames,
+                                            hit_dot_velocity = hit_dot_velocity})
 
 		--[[
     	print("HIT DOT:", hit_dot_velocity)
@@ -45,28 +56,39 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
     	print("PUSH BACK:", push_back)
     	]]--
 
+        local restitution = 1
+        local other_water_physics = other.components.waterphysics
+        if other_water_physics ~= nil then
+            restitution = other_water_physics.restitution
+        end
 
+    	other:PushEvent("hit_boat", inst)
+
+        local destroyed_other = not other:IsValid()
+
+    	local push_back = restitution * velocity * math.abs(hit_dot_velocity)
+        
         local shake_percent = math.min(math.abs(hit_dot_velocity) * velocity / boat_physics.max_velocity, 1)
+        local max_shake = 0.15
+        local duration = 0.7
 
-        local platform = inst.components.walkableplatform
-        if platform ~= nil then
-	        for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform({"player"})) do
-				v:ShakeCamera(CAMERASHAKE.FULL, .7, .02, 0.15 * shake_percent)
-	        end		
-    	end
+        if destroyed_other then
+            max_shake = 0.45
+            duration = 1.5            
+            push_back = push_back * 0.35
+        end 
 
         local hit_intensity = shake_percent
         inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = hit_intensity })
 
-        if velocity >= boat_physics.damageable_velocity then
-        	local boat_x, boat_y, boat_z = inst.Transform:GetWorldPosition()        	
-
+        local platform = inst.components.walkableplatform
+        if platform ~= nil then
+            for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform({"player"})) do
+                v:ShakeCamera(CAMERASHAKE.FULL, duration, .02, max_shake * shake_percent)
+            end     
         end
-        	other:PushEvent("hit_boat", inst)
 
-        	local push_back = TUNING.BOAT.PUSH_BACK_VELOCITY * velocity * math.abs(hit_dot_velocity)
-        	
-        	boat_physics.velocity_x, boat_physics.velocity_z = relative_velocity_x + push_back * hit_normal_x, relative_velocity_z + push_back * hit_normal_z
+    	boat_physics.velocity_x, boat_physics.velocity_z = relative_velocity_x + push_back * hit_normal_x, relative_velocity_z + push_back * hit_normal_z
     end
 end
 
@@ -76,10 +98,8 @@ local BoatPhysics = Class(function(self, inst)
     self.velocity_z = 0
     self.has_speed = false
     self.damageable_velocity = 1.25
-    self.max_velocity = TUNING.BOAT.MAX_VELOCITY
+    self.max_velocity = TUNING.BOAT.MAX_VELOCITY_MOD
     self.rudder_turn_speed = TUNING.BOAT.RUDDER_TURN_SPEED
-    self.fx_spawn_rate = 1.5
-    self.fx_spawn_timer = 0
     self.masts = {}
     self.anchor_cmps = {}
 
@@ -90,6 +110,9 @@ local BoatPhysics = Class(function(self, inst)
     self.target_rudder_direction_z = 0
     self.rudder_direction_x = 1
     self.rudder_direction_z = 0
+
+    self.turn_vel = 0
+    self.turn_acc = PI
 
     self.inst:StartUpdatingComponent(self)
 
@@ -133,6 +156,14 @@ function BoatPhysics:SetTargetRudderDirection(dir_x, dir_z)
 	self.target_rudder_direction_z = dir_z
 end
 
+function BoatPhysics:GetTargetRudderDirection()
+    return self.target_rudder_direction_x, self.target_rudder_direction_z
+end
+
+function BoatPhysics:GetRudderDirection()
+    return self.rudder_direction_x, self.rudder_direction_z
+end
+
 function BoatPhysics:AddMast(mast)
     self.masts[mast] = mast
 end
@@ -147,8 +178,40 @@ function BoatPhysics:OnDeath()
     self.inst.SoundEmitter:KillSound("boat_movement")
 end
 
+function BoatPhysics:GetVelocity()
+    return math.sqrt(self.velocity_x * self.velocity_x + self.velocity_z * self.velocity_z)
+end
+
 function BoatPhysics:ApplyForce(dir_x, dir_z, force)
     self.velocity_x, self.velocity_z = self.velocity_x + dir_x * force, self.velocity_z + dir_z * force
+end
+
+function BoatPhysics:GetMaxVelocity()    
+    local max_vel = 0 
+
+    local mast_maxes = {}
+    for k,v in pairs(self.masts) do
+        if k.is_sail_raised then
+           -- max_vel = max_vel * k.max_velocity_mod
+            table.insert(mast_maxes,k.max_velocity * (1 - k:GetFurled0to1()))
+        end
+    end
+
+    table.sort(mast_maxes)
+    local mult = 1
+    for i,mast_vel in ipairs(mast_maxes)do
+        max_vel = max_vel + (mast_vel * mult)
+        mult = mult * 0.7
+    end
+
+    max_vel = max_vel * self.max_velocity 
+    max_vel = math.max(self.max_velocity, max_vel)
+    
+    for k,v in pairs(self.anchor_cmps) do
+        max_vel = max_vel * k.max_velocity_mod
+    end
+
+    return max_vel
 end
 
 function BoatPhysics:GetTotalAnchorDrag()
@@ -159,24 +222,99 @@ function BoatPhysics:GetTotalAnchorDrag()
     return total_anchor_drag
 end
 
+function BoatPhysics:GetRudderTurnSpeed()
+
+    local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)
+    
+    local speed = 0.6
+
+    if velocity_length >= 1.3 and velocity_length < 2 then
+        speed = 0.37
+    elseif velocity_length >= 2 and velocity_length < 3 then
+        speed = 0.255
+    elseif velocity_length >= 3 then
+        speed = 0.1975
+    end
+    
+    return speed
+end
+
 function BoatPhysics:OnUpdate(dt)
     local boat_pos_x, boat_pos_y, boat_pos_z = self.inst.Transform:GetWorldPosition()
 
-    self.rudder_direction_x, self.rudder_direction_z = VecUtil_Slerp(self.rudder_direction_x, self.rudder_direction_z, self.target_rudder_direction_x, self.target_rudder_direction_z, dt * self.rudder_turn_speed)
+
+
+-- TURNING    
+    local stop = false
+
+    local p1_angle = VecUtil_GetAngleInRads(self.rudder_direction_x, self.rudder_direction_z)
+    local p2_angle = VecUtil_GetAngleInRads(self.target_rudder_direction_x, self.target_rudder_direction_z)
+
+--    print("ANGLES",p1_angle,p2_angle)
+
+    if math.abs(p2_angle - p1_angle) > PI then
+        if p2_angle > p1_angle then
+            p2_angle = p2_angle - PI - PI 
+        else
+            p1_angle = p1_angle - PI - PI
+        end
+    end
+--    print("-- STOP TEST")
+    if math.abs(p2_angle - p1_angle) < PI/32 then        
+--        print("   - STOP!")
+        stop = true
+    end
+
+    local target_vel = self:GetRudderTurnSpeed()
+    if stop then
+        target_vel = 0
+    end
+    --print("-- target_vel",target_vel)
+
+    if target_vel > self.turn_vel then
+        self.turn_vel = math.min(self.turn_vel + (dt * self.turn_acc),self:GetRudderTurnSpeed())         
+    else
+        self.turn_vel = math.max(self.turn_vel - (dt * self.turn_acc),0)               
+    end
+
+    --print("-- self.turn_vel",self.turn_vel)
+    if self.turn_vel > 0 then
+        local newangle = nil
+        if p1_angle < p2_angle then
+            newangle = p1_angle + (dt *self.turn_vel)
+        else
+            newangle = p1_angle - (dt * self.turn_vel)
+        end
+--        print("-- NEW ANGLE ",newangle)
+        self.rudder_direction_x = math.cos(newangle)
+        self.rudder_direction_z = math.sin(newangle)
+    end
+-- END TURNING
+
+-- old turning
+--    self.rudder_direction_x, self.rudder_direction_z = VecUtil_Lerp(self.rudder_direction_x, self.rudder_direction_z, self.target_rudder_direction_x, self.target_rudder_direction_z, dt * self:GetRudderTurnSpeed())
+    
+    -- This is used to tell the steering characters to stop turning the wheel.
+    local TOLLERANCE = 0.1   
+    if math.abs(self.rudder_direction_x - self.target_rudder_direction_x) < TOLLERANCE and math.abs(self.rudder_direction_z - self.target_rudder_direction_z) < TOLLERANCE then
+        self.inst:PushEvent("stopturning")
+    end
 
     local raised_sail_count = 0
     local sail_force = 0
     for k,v in pairs(self.masts) do
         if k.is_sail_raised then
-            sail_force = sail_force + k.sail_force
+            sail_force = sail_force + k.sail_force * (1 - k:GetFurled0to1())
             raised_sail_count = raised_sail_count + 1
         end
     end
 
     local total_anchor_drag = self:GetTotalAnchorDrag()
 
-    if raised_sail_count > 0 and total_anchor_drag <= 0 then
-        self.velocity_x, self.velocity_z = VecUtil_Add(self.velocity_x, self.velocity_z, VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z, sail_force * dt))
+    if raised_sail_count > 0 then -- and total_anchor_drag <= 0      
+        --print("SAIL FORCE",sail_force,"ANCHOR",total_anchor_drag)  
+        local accel = math.max(sail_force - total_anchor_drag,0)
+        self.velocity_x, self.velocity_z = VecUtil_Add(self.velocity_x, self.velocity_z, VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z, accel * dt))
 	elseif raised_sail_count == 0 or total_anchor_drag > 0 then
 		local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)	
 		local min_velocity = 0.55
@@ -193,22 +331,19 @@ function BoatPhysics:OnUpdate(dt)
 		end
 	end
 	
+    --This clamps the velocity to a maximum to prevent the boat from going crazy
 	local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)
-	if velocity_length > self.max_velocity then	
-		self.velocity_x, self.velocity_z = self.velocity_x * 0.95, self.velocity_z * 0.95
+    local MAX_ALLOWED_VELOCITY = 5
+    if velocity_length > MAX_ALLOWED_VELOCITY then
+        local maxx,maxz = VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z,  MAX_ALLOWED_VELOCITY)
+        self.velocity_x, self.velocity_z = maxx,maxz
+        velocity_length = MAX_ALLOWED_VELOCITY
+    end
+
+    if velocity_length > self:GetMaxVelocity() then 
+        self.velocity_x, self.velocity_z = self.velocity_x * 0.95, self.velocity_z * 0.95
 	end
-
-    if raised_sail_count > 0 then
-        self.fx_spawn_timer = self.fx_spawn_timer + dt * self.fx_spawn_rate
-        if self.fx_spawn_timer >= 1 then
-            self.fx_spawn_timer = 0
-            local fx = SpawnPrefab("boat_water_fx")
-            fx.Transform:SetPosition(boat_pos_x, boat_pos_y, boat_pos_z)
-            local rudder_angle = VecUtil_GetAngleInDegrees(self.rudder_direction_x, self.rudder_direction_z)
-            fx.Transform:SetRotation(-rudder_angle + 90)
-        end
-    end    
-
+    
     local new_speed_is_scary = ((self.velocity_x*self.velocity_x) + (self.velocity_z*self.velocity_z)) > TUNING.BOAT.SCARY_MINSPEED_SQR
     if not self.has_speed and new_speed_is_scary then
         self.has_speed = true

@@ -155,6 +155,9 @@ end
 function c_spawn(prefab, count, dontselect)
     count = count or 1
     local inst = nil
+
+    prefab = string.lower(prefab)
+
     for i = 1, count do
         inst = DebugSpawn(prefab)
         if inst.components.skinner ~= nil and IsRestrictedCharacter(prefab) then
@@ -381,6 +384,9 @@ end
 -- Put an item(s) in the player's inventory
 function c_give(prefab, count, dontselect)
     local MainCharacter = ConsoleCommandPlayer()
+
+    prefab = string.lower(prefab)
+
     if MainCharacter ~= nil then
         for i = 1, count or 1 do
             local inst = DebugSpawn(prefab)
@@ -669,10 +675,12 @@ function c_findtag(tag, radius, inst)
 end
 
 function c_gonext(name)
-	local next = c_findnext(name)
-	if next ~= nil and next.Transform ~= nil then
-		return c_goto(next)
-	end
+    if name ~= nil then
+        local next = c_findnext(string.lower(name))
+        if next ~= nil and next.Transform ~= nil then
+            return c_goto(next)
+        end
+    end
     return nil
 end
 
@@ -1199,6 +1207,69 @@ function c_makeboat()
 	inst = SpawnPrefab("lantern")
 	inst.Transform:SetPosition(x - 3.25, y, z)
 	
+end
+
+function c_makeboatspiral()
+    local items = {
+        boat_item = 1,
+        steeringwheel_item = 1,
+        anchor_item = 1,
+        mast_item = 2,
+        oar = 3,
+        oar_driftwood = 1,
+        propelomatic_item = 1,
+		miniflare = 3,
+		backpack = 3,
+		redmooneye = 1,
+        axe = 1,
+        hammer = 1,
+        pickaxe = 1,
+        meat_dried = {5, 5, 5},
+        boatpatch = 3,
+        torch = 4,
+        log = {20, 20}, 
+        boards = {10, 10}, 
+		lantern = 1,
+        goldnugget = {5,5},
+        rocks = {20,20},
+        researchlab = 1,
+    }
+
+    local chord = 1.5
+    local away_step = 0.25
+    local theta = 0
+
+    for prefab, stacks in pairs(items) do
+		stacks = type(stacks) == "table" and stacks or {stacks}
+		for _, count in pairs(stacks) do
+			for i = 1, count, 1 do            
+				local inst = DebugSpawn(prefab)
+				if inst ~= nil then
+
+					local away = away_step * theta
+
+					local x,y,z = inst.Transform:GetWorldPosition()
+					local spiral_x = math.cos(theta) * away
+					local spiral_z = math.sin(theta) * away
+
+					x = x + spiral_x
+					z = z + spiral_z
+					inst.Transform:SetPosition(x, y, z)
+
+					if away == 0 then
+						away = away_step
+					end
+
+					theta = theta + chord / away
+
+					if i == 1 and inst.components.stackable ~= nil then
+						inst.components.stackable:SetStackSize(count)
+						break
+					end
+				end
+			end
+		end
+    end
 end
 
 function c_autoteleportplayers()

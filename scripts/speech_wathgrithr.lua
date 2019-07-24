@@ -141,6 +141,18 @@ return {
         {
             REPAIR = "No need, the ship's spirit is strong.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "I must take heed of the ocean's rhythm.",
+            BAD_TIMING1 = "A Viking never gives up!",
+            BAD_TIMING2 = "Patience is a warrior's friend!",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "By Aegir, you will bend to my will!",
+            "Oh-ho! Fiesty, are we?",
+            "I will not be defeated by my own vessel!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "'Tis shielded!",

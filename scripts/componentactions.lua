@@ -5,9 +5,10 @@ local function CanCastFishingNetAtPoint(thrower, target_x, target_z)
     local map = TheWorld.Map
     local min_throw_distance = 2
     local thrower_x, thrower_y, thrower_z = thrower.Transform:GetWorldPosition()
-    if not map:IsVisualGroundAtPoint(target_x, 0, target_z) and not map:IsPassableAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
+    if not map:IsPassableAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
         return true
     end
+	return false
 end
 
 local function Row(inst, doer, pos, actions)
@@ -68,7 +69,7 @@ local COMPONENT_ACTIONS =
 
         anchor = function(inst, doer, actions, right)
             if not inst:HasTag("burnt") then
-                if inst:HasTag("anchor_lowered") then
+                if not inst:HasTag("anchor_raised") or inst:HasTag("anchor_transitioning") then
                     table.insert(actions, ACTIONS.RAISE_ANCHOR)
                 elseif inst:HasTag("anchor_raised") then
                     table.insert(actions, ACTIONS.LOWER_ANCHOR)
@@ -221,8 +222,23 @@ local COMPONENT_ACTIONS =
 
         mast = function(inst, doer, actions, right)
             if inst:HasTag("sailraised") then
-                table.insert(actions, ACTIONS.LOWER_SAIL)
-            elseif inst:HasTag("saillowered") then
+                if not doer:HasTag("is_furling") then
+                    return table.insert(actions, ACTIONS.LOWER_SAIL_BOOST)
+                else
+                    if doer.AnimState:IsCurrentAnimation("pull_big_pre") or doer.AnimState:IsCurrentAnimation("pull_big_lag") then
+                        return table.insert(actions, ACTIONS.LOWER_SAIL_FAIL)
+                    elseif doer.AnimState:IsCurrentAnimation("pull_big_loop") then                       
+                        local active_time = TUNING.BOAT.MAST.HEAVABLE_START_FRAME/30
+                        if doer.AnimState:GetCurrentAnimationTime() > active_time then   
+                            return table.insert(actions, ACTIONS.LOWER_SAIL_BOOST)
+                        else
+                            return table.insert(actions, ACTIONS.LOWER_SAIL_FAIL)
+                        end
+                    elseif doer.AnimState:IsCurrentAnimation("pull_small_loop") then
+                        return table.insert(actions, ACTIONS.LOWER_SAIL_BOOST)
+                    end
+                end
+            elseif inst:HasTag("saillowered") and not inst:HasTag("sail_transitioning") then
                 table.insert(actions, ACTIONS.RAISE_SAIL)
             end        
         end,        
@@ -976,7 +992,7 @@ local COMPONENT_ACTIONS =
 
         fishingnet = function(inst, doer, pos, actions, right)
             if right and CanCastFishingNetAtPoint(doer, pos.x, pos.z) then
-                table.insert(actions, ACTIONS.CAST_NET)            
+                table.insert(actions, ACTIONS.CAST_NET)
             end
         end,
 

@@ -56,12 +56,18 @@ function AmphibiousCreature:OnEnterOcean()
 	self.inst.AnimState:SetBank(self.ocean_bank)
 	self.in_water = true
 	self.inst:AddTag("swimming")
+	if self.enterwaterfn then
+		self.enterwaterfn(self.inst)
+	end
 end
 
 function AmphibiousCreature:OnExitOcean()
 	self.inst.AnimState:SetBank(self.land_bank)
 	self.in_water = false
 	self.inst:RemoveTag("swimming")
+	if self.exitwaterfn then
+		self.exitwaterfn(self.inst)
+	end	
 end
 
 function AmphibiousCreature:SetOnTileChangeFn(fn)
@@ -70,6 +76,14 @@ end
 
 function AmphibiousCreature:SetOnWaterChangeFn(fn)
 --	self.onwaterchangefn = fn
+end
+
+function AmphibiousCreature:SetEnterWaterFn(fn)
+	self.enterwaterfn = fn
+end
+
+function AmphibiousCreature:SetExitWaterFn(fn)
+	self.exitwaterfn = fn
 end
 
 return AmphibiousCreature

@@ -433,7 +433,7 @@ function MakeObstaclePhysics(inst, rad, height)
     return phys
 end
 
-function MakeWaterObstaclePhysics(inst, rad, height)
+function MakeWaterObstaclePhysics(inst, rad, height, restitution)
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
     phys:SetMass(0) --Bullet wants 0 mass for static objects
@@ -443,7 +443,11 @@ function MakeWaterObstaclePhysics(inst, rad, height)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
     phys:CollidesWith(COLLISION.OBSTACLES)
-    phys:SetCapsule(rad, height or 2)
+    phys:SetCapsule(rad, height)
+
+    inst:AddComponent("waterphysics")
+    inst.components.waterphysics.restitution = restitution
+
     return phys
 end
 

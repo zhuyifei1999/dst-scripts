@@ -393,6 +393,8 @@ end
 function PlayerHud:CloseWardrobeScreen()
 	local activescreen = TheFrontEnd:GetActiveScreen()
 
+	if activescreen == nil then return end
+
 	if activescreen.name ~= "ItemServerContactPopup" then
 		--Hack for holding offset when transitioning from giftitempopup to wardrobepopup
 		TheCamera:PopScreenHOffset(self)

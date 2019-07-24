@@ -27,6 +27,7 @@ local Floater = Class(function(self, inst)
     self.float_index = 1
     self.swap_data = nil
     self.showing_effect = false
+    self.bob_percent = 1    
 
     self._is_landed = net_bool(inst.GUID, "floater._is_landed", "landeddirty")
 end)
@@ -147,7 +148,7 @@ function Floater:OnLandedClient()
         self.back_fx.AnimState:PlayAnimation("idle_back_" .. self.size, true)
     end
 
-    self.inst.AnimState:SetFloatParams(-0.05, 1.0)
+    self.inst.AnimState:SetFloatParams(-0.05, 1.0, self.bob_percent)
 end
 
 function Floater:OnNoLongerLandedServer()
@@ -170,7 +171,7 @@ end
 
 function Floater:OnNoLongerLandedClient()
     self.showing_effect = false
-    self.inst.AnimState:SetFloatParams(0.0, 0.0)
+    self.inst.AnimState:SetFloatParams(0.0, 0.0, self.bob_percent)
 
     if self.front_fx ~= nil and self.front_fx:IsValid() then
         self.front_fx:Remove()

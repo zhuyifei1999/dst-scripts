@@ -337,6 +337,19 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
                 resolvefilepath(GroundImage(layer_name)),
                 resolvefilepath(props.noise_texture)
             )
+
+            local colors = data[2].colors
+            if colors ~= nil then
+				local primary_color = colors.primary_color
+                MapLayerManager:SetPrimaryColor(handle, primary_color[1] / 255, primary_color[2] / 255, primary_color[3] / 255, primary_color[4] / 255)
+				local secondary_color = colors.secondary_color
+				MapLayerManager:SetSecondaryColor(handle, secondary_color[1] / 255, secondary_color[2] / 255, secondary_color[3] / 255, secondary_color[4] / 255)
+				local secondary_color_dusk = colors.secondary_color_dusk
+				MapLayerManager:SetSecondaryColorDusk(handle, secondary_color_dusk[1] / 255, secondary_color_dusk[2] / 255, secondary_color_dusk[3] / 255, secondary_color_dusk[4] / 255)
+                local minimap_color = colors.minimap_color
+                MapLayerManager:SetMinimapColor(handle, minimap_color[1] / 255, minimap_color[2] / 255, minimap_color[3] / 255, minimap_color[4] / 255)
+            end
+
             inst.Map:AddRenderLayer(handle)
             --TODO: When this object is destroyed, these handles really should be freed. At this time,
             --this is not an issue because the map lifetime matches the game lifetime but if this were
@@ -392,11 +405,14 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         if not TheNet:IsDedicated() then
             inst:AddComponent("ocean")
-	        inst:AddComponent("watercolor")
+	        inst:AddComponent("oceancolor")
         end
 
         --
         inst:AddComponent("walkableplatformmanager")
+
+        inst:AddComponent("waterphysics")
+        inst.components.waterphysics.restitution = 1.75
 
         if not inst.ismastersim then
             return inst

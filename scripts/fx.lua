@@ -949,7 +949,7 @@ local fx =
     {
         name = "boat_mast_sink_fx",
         bank = "mast_01",
-        build = "boat_mast",
+        build = "boat_mast2",
         anim = "sink",
     },
     {

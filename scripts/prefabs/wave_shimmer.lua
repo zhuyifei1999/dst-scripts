@@ -19,6 +19,7 @@ local function commonfn(Sim)
 	local inst = CreateEntity()
 	local trans = inst.entity:AddTransform()
     local anim = inst.entity:AddAnimState()
+    anim:SetOceanBlendParams(TUNING.OCEAN_SHADER.WAVE_TINT_AMOUNT)
 
 	inst.persists = false
 

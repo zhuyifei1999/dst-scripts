@@ -35,6 +35,9 @@ function Tune(overrides)
 
     local perish_warp = 1--/200
 
+    local OCEAN_NOISE_BASE_SCALE = 10
+    local OCEAN_SPEED_BASE_SCALE = 0.01
+
     TUNING =
     {
         MAX_SERVER_SIZE = 6,
@@ -136,6 +139,17 @@ function Tune(overrides)
 
         FISHING_MINWAIT = 2,
         FISHING_MAXWAIT = 20,
+
+		OCEAN_FISHING =
+		{
+			MAX_CAST_DIST = 16,
+			CAST_DIST_MIN_OFFSET = 0.8,
+			CAST_DIST_MAX_OFFSET = 1.1,
+			CAST_ANGLE_OFFSET = 20 / RADIANS,
+
+			MAX_HOOK_DIST = 20,
+
+		},
 
         STAGEHAND_HITS_TO_GIVEUP = 86,
         ENDTABLE_FLOWER_WILTTIME = total_day_time * 2.25,
@@ -599,6 +613,8 @@ function Tune(overrides)
         MARBLEPILLAR_MINE = 10,
         MARBLETREE_MINE = 8,
         CAVEIN_BOULDER_MINE = 3,
+        SEASTACK_MINE = 9,
+        SEACOCOON_MINE = 1,
 
         PETRIFIED_TREE_SMALL = 2,
         PETRIFIED_TREE_NORMAL = 3,
@@ -1057,6 +1073,7 @@ function Tune(overrides)
         HOUND_ATTACK_PERIOD = 2,
         HOUND_TARGET_DIST = 20,
         HOUND_SPEED = 10,
+        HOUND_SWIM_SPEED = 3.5,
         CLAYHOUND_SPEED = 8.5,
 
         HOUND_FOLLOWER_TARGET_DIST = 10,
@@ -3066,12 +3083,13 @@ function Tune(overrides)
         {
             HEALTH = 200,
             MASS = 500,
-            ANCHOR_DRAG = 1.5,
+            
             BASE_DRAG = 0.4,
-            MAX_VELOCITY = 1.5,
+            MAX_VELOCITY = 1.2,            
+            MAX_VELOCITY_MOD = 1,            
             PUSH_BACK_VELOCITY = 1.75,
-            RUDDER_TURN_SPEED = 0.2,
-            SCARY_MINSPEED_SQR = 1,    
+            SCARY_MINSPEED_SQR = 1,
+            RUDDER_TURN_SPEED = 0.6,    
             NO_BUILD_BORDER_RADIUS = -0.2,
 			FIRE_DAMAGE = 5,
 
@@ -3079,7 +3097,7 @@ function Tune(overrides)
             {
                 BASIC =
                 {
-                    FORCE = 0.25,
+                    FORCE = 0.3,
                     DAMAGE = wilson_attack*.5,
                     ATTACKWEAR = 25,
                     USES = 500,
@@ -3087,12 +3105,35 @@ function Tune(overrides)
 
                 DRIFTWOOD = 
                 {
-                    FORCE = 0.35,
+                    FORCE = 0.5,
                     DAMAGE = wilson_attack*.4,
                     ATTACKWEAR = 25,
                     USES = 400
                 },                
-            }
+            },
+
+            ANCHOR =
+            {
+                BASIC =
+                {                    
+                    MAX_VELOCITY_MOD = 0.1,
+                    ANCHOR_DRAG = 0.45,
+                },
+            },
+
+            MAST =
+            {   
+                BASIC = 
+                {
+                    MAX_VELOCITY = 1.5,
+                    MAX_VELOCITY_MOD = 1.2,
+                    SAIL_FORCE = 0.6,
+                    RUDDER_TURN_DRAG = 0.23,
+                },
+
+                HEAVABLE_ACTIVE_FRAME = 8,
+                HEAVABLE_START_FRAME = 12,
+            },            
         },        
 
 		DROWNING_DAMAGE =
@@ -3154,6 +3195,40 @@ function Tune(overrides)
             FAILSAFE_TIMELIMIT = total_day_time,
         },
 
+        OCEAN_SHADER =
+        {
+            TEXTURE_BLUR_PASS_COUNT = 2,                --How many blur passes to apply to the ocean texture
+            WAVE_TINT_AMOUNT = 0.8,                     --How much the waves get tinted by the ocean color
+            EFFECT_TINT_AMOUNT = 0.6,                   --How much the effects under floating items/boat get tinted by the ocean color
+
+            OCEAN_FLOOR_COLOR =      {   0,  19,   20, 255 },
+            OCEAN_FLOOR_COLOR_DUSK = {   0,  0,   0, 255 },
+
+            NOISE =
+            {
+                {
+                    ANGLE = 15,
+                    SPEED = 0.35 * OCEAN_SPEED_BASE_SCALE,
+                    SCALE = 2.6 * OCEAN_NOISE_BASE_SCALE,
+                    FREQUENCY = 1,
+                },
+
+                {
+                    ANGLE = 100,
+                    SPEED = 0.45 * OCEAN_SPEED_BASE_SCALE,
+                    SCALE = 3.0 * OCEAN_NOISE_BASE_SCALE,
+                    FREQUENCY = 1,
+                },            
+
+                {
+                    ANGLE = 230,
+                    SPEED = 0.55 * OCEAN_SPEED_BASE_SCALE,
+                    SCALE = 3.4 * OCEAN_NOISE_BASE_SCALE,
+                    FREQUENCY = 1,
+                },                        
+            }
+        },
+
         BURNED_LOOT_OVERRIDES =
         {
             carrot_seeds = "seeds_cooked",
@@ -3189,7 +3264,20 @@ function Tune(overrides)
         COMPOSTWRAP_SOILCYCLES = 20,
         COMPOSTWRAP_WITHEREDCYCLES = 2,
         COMPOSTWRAP_FERTILIZE = day_time * 6,
-        POOP_FERTILIZE_HEALTH = 2,
+        POOP_FERTILIZE_HEALTH = 2,        
+
+        WATER_TURTLE_WALKSPEED = 0.5,
+        WATER_TURTLE_RUNSPEED = 3,
+        WATER_TURTLE_HEALTH = 300,
+        WATER_TURTLE_MATING_SEASON_BABYDELAY = total_day_time*1.5,
+        WATER_TURTLE_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
+
+        ANCHOR_DEPTH_TIMES = {
+            SHALLOW = 2,
+            BASIC = 6,
+            DEEP = 8,
+            VERY_DEEP = 10,
+        },
     }
 end
 

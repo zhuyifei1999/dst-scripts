@@ -149,6 +149,18 @@ return {
             NOWHEEL = "Needs steerer",
             REPAIR = "Already good",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Why slow down?",
+            BAD_TIMING1 = "Row, row-- oh",
+            BAD_TIMING2 = "That not right...",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Oopsy!",
+            "Come down here!",
+            "Oh no!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "Water too hard",

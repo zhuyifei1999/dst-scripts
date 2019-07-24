@@ -80,7 +80,7 @@ local function fn()
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)    
     phys:CollidesWith(COLLISION.OBSTACLES)   
-    phys:SetCylinder(radius, 0.1) 
+    phys:SetCylinder(radius, 3) 
     --Boats currently need to not go to sleep because
     --constraints will cause a crash if either the target object or the source object is removed from the physics world    
     phys:SetDontRemoveOnSleep(true)           
@@ -95,10 +95,14 @@ local function fn()
     inst:AddComponent("walkableplatform")
     inst.components.walkableplatform.radius = radius
 
-    inst:AddComponent("healthsyncer")
+    inst:AddComponent("healthsyncer")    
+    inst:AddComponent("boattrail")
     inst.components.healthsyncer.max_health = max_health
 
 	AddConstrainedPhysicsObj(inst, SpawnPrefab("boat_item_collision")) -- hack until physics constraints are networked
+
+    inst:AddComponent("waterphysics")
+    inst.components.waterphysics.restitution = 1.75
 	
 	inst.entity:SetPristine()
 

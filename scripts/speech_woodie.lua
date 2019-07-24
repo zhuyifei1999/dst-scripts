@@ -142,6 +142,18 @@ return {
         {
         	REPAIR = "The boat's not damaged yet.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Dangit! Messed up the timing.",
+            BAD_TIMING1 = "Gotta keep it steady.",
+            BAD_TIMING2 = "Let's give that another go, eh?",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "How aboot we try that again?",
+            "No makin' fun of me, Lucy.",
+            "A lot harder than it looks, eh?",
+        }, 
         BATHBOMB =
         {
             GLASSED = "There's glass in the way, eh?",

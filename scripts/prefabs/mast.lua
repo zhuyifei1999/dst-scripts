@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/boat_mast.zip"),
+    Asset("ANIM", "anim/boat_mast2.zip"),
     Asset("INV_IMAGE", "mast_item"),
     Asset("ANIM", "anim/seafarer_mast.zip"),
 }
@@ -17,9 +17,24 @@ local function on_hammered(inst, hammerer)
     local collapse_fx = SpawnPrefab("collapse_small")
     collapse_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     collapse_fx:SetMaterial("wood")
-
+    if inst.components.mast and hammerer ~= inst.components.mast.boat then
+        inst.components.mast.boat = nil
+    end
     inst:Remove()
 end
+
+local function on_hit(inst, hitter)
+    if not inst.components.mast.is_sail_transitioning then
+        if inst.components.mast.is_sail_raised then
+            inst.AnimState:PlayAnimation("open2_hit")
+            inst.AnimState:PushAnimation("open_loop",true)
+        else
+            inst.AnimState:PlayAnimation("closed_hit")
+            inst.AnimState:PushAnimation("closed",true)
+        end
+    end
+end
+
 
 local function onburnt(inst)
 	inst:AddTag("burnt")
@@ -62,7 +77,7 @@ local function fn()
     inst:AddTag("mast")
 
     inst.AnimState:SetBank("mast_01")
-    inst.AnimState:SetBuild("boat_mast")
+    inst.AnimState:SetBuild("boat_mast2")
     inst.AnimState:PlayAnimation("closed")
 
     inst.entity:SetPristine()
@@ -87,6 +102,8 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(on_hammered)
+    inst.components.workable:SetOnWorkCallback(on_hit)
+    
 
 	inst.OnSave = onsave
     inst.OnLoad = onload

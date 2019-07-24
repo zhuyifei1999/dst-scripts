@@ -1,4 +1,3 @@
-
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
         if v.foleysound ~= nil then
@@ -30,6 +29,7 @@ local DoRunSounds = function(inst)
         PlayFootstep(inst, 1, true)
     end
 end
+
 
 if TheNet:GetServerGameMode() == "lavaarena" or TheNet:GetServerGameMode() == "quagmire" then
     DoRunSounds = event_server_data("common", "stategraphs/SGwilson").OverrideRunSounds(DoRunSounds)
@@ -406,7 +406,6 @@ local actionhandlers =
                 or nil
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
-
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -635,10 +634,19 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.RAISE_SAIL, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_SAIL, "dolongaction"),
-    ActionHandler(ACTIONS.RAISE_ANCHOR, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_ANCHOR, "dolongaction"),  
+    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction"),
+    ActionHandler(ACTIONS.LOWER_SAIL_BOOST,
+        function(inst, action)
+            inst.sg.statemem.not_interrupted = true
+            return "furl_boost"
+        end),
+    ActionHandler(ACTIONS.LOWER_SAIL_FAIL, 
+        function(inst, action)
+            inst.sg.statemem.not_interrupted = true
+            return "furl_fail"
+        end),        
+    ActionHandler(ACTIONS.RAISE_ANCHOR, "raiseanchor"),
+    ActionHandler(ACTIONS.LOWER_ANCHOR, "doshortaction"),  
     ActionHandler(ACTIONS.REPAIR_LEAK, "dolongaction"),
     ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle_pre"),
     ActionHandler(ACTIONS.STOP_STEERING_BOAT, "stop_steering"),
@@ -712,7 +720,7 @@ local events =
             inst.sg:GoToState("run_stop")
         elseif not is_moving and should_move then
             inst.sg:GoToState("run_start")
-        elseif data.force_idle_state and not (is_moving or should_move or inst.sg:HasStateTag("idle")) then
+        elseif data.force_idle_state and not (is_moving or should_move or inst.sg:HasStateTag("idle") or inst:HasTag("is_furling"))  then
             inst.sg:GoToState("idle")
         end
     end),
@@ -6313,6 +6321,51 @@ local states =
         end,
     },
 
+    State
+    {
+        name = "raiseanchor",
+        tags = { "doing", "nodangle" },
+
+        onenter = function(inst)
+            inst.anchor = inst.bufferedaction.target
+            inst.components.locomotor:Stop()
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            inst.AnimState:PlayAnimation("build_pre")
+            inst.AnimState:PushAnimation("build_loop", true)
+            if inst.bufferedaction ~= nil then
+                inst.sg.statemem.action = inst.bufferedaction
+                if inst.bufferedaction.action.actionmeter then
+                    inst.sg.statemem.actionmeter = true
+                    StartActionMeter(inst, timeout)
+                end
+                if inst.bufferedaction.target ~= nil and inst.bufferedaction.target:IsValid() then
+                    inst.bufferedaction.target:PushEvent("startlongaction")
+                end
+            end
+            if not inst:PerformBufferedAction() then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        events =
+        {            
+            EventHandler("stopraisinganchor", function(inst)
+                inst.sg:GoToState("idle")
+            end),                        
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make")
+            if inst.sg.statemem.actionmeter then
+                StopActionMeter(inst, false)
+            end
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+            inst.anchor.components.anchor:RemoveAnchorRaiser(inst)
+        end,
+    },
+
     State{
         name = "steer_boat_idle_pre",
         tags = { "is_using_steering_wheel", "doing" },
@@ -6377,12 +6430,12 @@ local states =
 			inst.Transform:SetNoFaced()
             if inst.components.steeringwheeluser.should_play_left_turn_anim then
                 inst.AnimState:PlayAnimation("steer_left_pre", false)
-                inst.AnimState:PushAnimation("steer_left_loop", false)
-                inst.AnimState:PushAnimation("steer_left_pst", false)
+                inst.AnimState:PushAnimation("steer_left_loop", true)
+      --          inst.AnimState:PushAnimation("steer_left_pst", false)
             else
                 inst.AnimState:PlayAnimation("steer_right_pre", false)
-                inst.AnimState:PushAnimation("steer_right_loop", false)
-                inst.AnimState:PushAnimation("steer_right_pst", false)
+                inst.AnimState:PushAnimation("steer_right_loop", true)
+        --        inst.AnimState:PushAnimation("steer_right_pst", false)
             end
         end,
 
@@ -6399,14 +6452,46 @@ local states =
 
         events =
         {
+            --[[
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("steer_boat_idle_loop")
             end),
+            ]]
+            EventHandler("stopturning", function(inst)
+                inst.sg:GoToState("steer_boat_turning_pst")
+            end),            
             EventHandler("stop_steering_boat", function(inst)
                 inst.sg:GoToState("idle")
             end),
         },
     },
+    State{
+        name = "steer_boat_turning_pst",
+        tags = { "is_using_steering_wheel", "doing", "is_turning_wheel" },
+
+        onenter = function(inst, skip_action)
+            inst.Transform:SetNoFaced()
+            if inst.components.steeringwheeluser.should_play_left_turn_anim then
+                inst.AnimState:PlayAnimation("steer_left_pst", false)
+            else
+               inst.AnimState:PlayAnimation("steer_right_pst", false)
+            end
+        end,
+
+        onexit = function(inst)
+            inst.Transform:SetFourFaced()
+        end,                        
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("steer_boat_idle_loop")
+            end),            
+            EventHandler("stop_steering_boat", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },    
 
    State{
         name = "stop_steering",
@@ -10805,6 +10890,169 @@ local states =
     },
 
     --------------------------------------------------------------------------
+
+    -- sail anims
+
+    State{
+
+        name = "furl_boost",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("pull_big_pre")
+            inst.AnimState:PushAnimation("pull_big_loop", false)
+
+            
+
+            if inst:HasTag("is_heaving") then
+                inst:RemoveTag("is_heaving")
+            else
+                inst:AddTag("is_heaving")
+            end
+
+            inst:AddTag("is_furling") 
+
+            inst.sg.mem.furl_target = inst.bufferedaction.target or inst.sg.mem.furl_target
+            
+            local target_x, target_y, target_z = inst.sg.mem.furl_target.Transform:GetWorldPosition()
+            inst:ForceFacePoint(target_x, 0, target_z)              
+        end, 
+
+        onupdate = function(inst) 
+            if not inst:HasTag("is_furling") then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(17 * FRAMES, function(inst)      
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_down", nil, nil, true)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.not_interrupted then
+                inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
+                inst:RemoveTag("is_furling")
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.sg.statemem.stopfurling then
+                    inst.sg:GoToState("idle")
+                else
+                    print("not_interrupted")
+                    inst.sg.statemem.not_interrupted = true
+                    inst.sg:GoToState("furl", inst.sg.mem.furl_target)          -- _repeat_delay      
+                end
+            end),    
+
+            EventHandler("stopfurling", function(inst)
+                inst.sg.statemem.stopfurling = true
+            end),                     
+        }, 
+    }, 
+
+    State{
+
+        name = "furl",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("pull_small_pre")
+            inst.AnimState:PushAnimation("pull_small_loop", true)
+            inst:PerformBufferedAction() -- this will clear the buffer if it's full, but you don't get here from an action anyway.
+            inst.sg.mem.furl_target.components.mast:AddSailFurler(inst, 1)
+        end, 
+
+        onexit = function(inst)
+            if not inst.sg.statemem.not_interrupted then
+                inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
+                inst:RemoveTag("is_furling")
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(15 * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),
+            TimeEvent((15+17) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),            
+            TimeEvent((15+(2*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),              
+            TimeEvent((15+(3*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),          
+            TimeEvent((15+(4*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),          
+            TimeEvent((15+(5*17)) * FRAMES, function(inst)      
+                 inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_up", nil, nil, true)
+            end),                
+        },
+
+        events = 
+        {
+            EventHandler("stopfurling", function(inst)
+                inst.AnimState:PlayAnimation("pull_small_pst")                
+                inst.sg:GoToState("idle",true)
+            end),                     
+        },      
+    },
+
+    State{
+
+        name = "furl_fail",
+        tags = { "busy", "furl_fail" },
+
+        onenter = function(inst)
+
+            inst:PerformBufferedAction()
+
+            inst.sg.mem.furl_target.components.mast:AddSailFurler(inst, 0)
+
+            local fail_str = GetActionFailString(inst, "LOWER_SAIL_FAIL")
+            inst.components.talker:Say(fail_str)
+
+            inst:RemoveTag("is_heaving") 
+
+            inst.AnimState:PlayAnimation("pull_fail") 
+        end,    
+
+        onexit = function(inst)
+            if not inst.sg.statemem.not_interrupted then
+                inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
+                inst:RemoveTag("is_furling")
+                inst:RemoveTag("is_heaving")
+            end
+        end,
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg.statemem.not_interrupted = true
+                inst.sg:GoToState("furl", inst.sg.mem.furl_target)                
+            end),     
+
+            EventHandler("stopfurling", function(inst)
+                inst.sg:GoToState("idle")
+            end),                    
+        },            
+    },
+
+    --------------------------------------------------------------------------
+
 }
 
 local hop_timelines = 

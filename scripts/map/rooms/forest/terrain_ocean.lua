@@ -23,12 +23,10 @@ AddRoom("OceanSwell", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_SWELL,
 					contents =  {
-						distributepercent = 0.01,
+						distributepercent = 0.04,
 						distributeprefabs =
 						{
-							driftwood_log = 1,
-							antchovies_group = 1,
-							seastack = 1,
+							seastack = 1.0
 						},
 					}})
 
@@ -36,7 +34,7 @@ AddRoom("OceanRough", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_ROUGH,
 					contents =  {
-						distributepercent = 0.03,
+						distributepercent = 0.1,
 						distributeprefabs =
 						{
 							seastack = 1,
@@ -51,7 +49,6 @@ AddRoom("OceanReef", {
 						distributeprefabs =
 						{
 							seastack = 1,
-							antchovies_group = 1,
 						},
 					}})
 

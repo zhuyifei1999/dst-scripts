@@ -9,6 +9,20 @@ local prefabs =
     
 }
 
+
+SetSharedLootTable('boatfragment',
+{
+    {'boards',   1.00},
+})
+
+local function onhammered(inst)
+    inst.components.lootdropper:DropLoot()
+    local fx = SpawnPrefab("collapse_small")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx:SetMaterial("wood")
+    inst:Remove()
+end
+
 local function fn(suffix, radius)
 
     local inst = CreateEntity()
@@ -40,11 +54,19 @@ local function fn(suffix, radius)
     inst:AddComponent("inspectable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable('boatfragment')
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(2)
+    inst.components.workable:SetOnFinishCallback(onhammered)
+
     return inst
 end
 
-return Prefab("boatfragment01", function() return fn("01", 0.5) end, assets, prefabs),
-       Prefab("boatfragment02", function() return fn("02", 0.5) end, assets, prefabs),
+return --Prefab("boatfragment01", function() return fn("01", 0.5) end, assets, prefabs),
+       --Prefab("boatfragment02", function() return fn("02", 0.5) end, assets, prefabs),
        Prefab("boatfragment03", function() return fn("03", 0.5) end, assets, prefabs),
        Prefab("boatfragment04", function() return fn("04", 0.5) end, assets, prefabs),
        Prefab("boatfragment05", function() return fn("05", 0.5) end, assets, prefabs)

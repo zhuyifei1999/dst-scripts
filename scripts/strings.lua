@@ -489,8 +489,13 @@ STRINGS =
             FMT = "Change {dish}",
         },
         SALT = "Salt",
-        RAISE_SAIL = "Hoist Sail",
-        LOWER_SAIL = "Lower Sail",
+        RAISE_SAIL = "Release Sail",
+        LOWER_SAIL = "Hoist Sail",
+        LOWER_SAIL_BOOST = 
+        {
+            "Heave!",
+            "Ho!"
+        },
         RAISE_ANCHOR = "Raise Anchor",
         LOWER_ANCHOR = "Lower Anchor",
         EXTEND_PLANK = "Extend Plank",
@@ -506,6 +511,9 @@ STRINGS =
         ROW = "Row",
         CAST_NET = "Cast Net",
         BATHBOMB = "Toss In",
+		OCEAN_FISHING_CAST = "Cast",
+		OCEAN_FISHING_REEL = "Reel",
+		OCEAN_FISHING_CATCH = "Reel",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -1987,6 +1995,8 @@ STRINGS =
         WORLD = "The World",
         DROWNING = "Drowning",
         SEASTACK = "Sea Stack",
+        SEACOCOON = "Sea Cocoon",
+        SEACOCOON_TOP = "Sea Cocoon",
         FISHINGNET = "Fishing Net",
         OAR = "Oar",
         OAR_DRIFTWOOD = "Driftwood Oar",
@@ -2061,6 +2071,8 @@ STRINGS =
         CARRAT_PLANTED = "Carrot",
 
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
+		WATERCHEST = "Chest",
+        WATER_TURTLE = "Sea Tutrle",
     },
 
     NAME_DETAIL_EXTENTION =
@@ -4027,6 +4039,7 @@ STRINGS.UI =
         HOST = "Host Game",
         HOSTCHAR = "Host (CharSelect)",
         JOIN = "Join IP",
+        JOIN_PLAY_TEST = "Join Playtest",
         JOINCHAR = "Join (CharSelect)",
         FESTIVALEVENT =
         {

@@ -2,6 +2,9 @@ local START_DRAG_TIME = 8 * FRAMES
 local BUTTON_REPEAT_COOLDOWN = .5
 local BUFFERED_CASTAOE_TIME = .5
 local CONTROLLER_TARGETING_LOCK_TIME = 1.0
+local RUBBER_BAND_PING_TOLERANCE_IN_SECONDS = 0.7
+local RUBBER_BAND_DISTANCE = 4
+local RUBBER_BAND_DISTANCE_SQ = RUBBER_BAND_DISTANCE * RUBBER_BAND_DISTANCE
 
 local function OnPlayerActivated(inst)
     inst.components.playercontroller:Activate()
@@ -2056,8 +2059,8 @@ function PlayerController:OnUpdate(dt)
         self.controller_attack_override = nil
     end
     --NOTE: isbusy is used further below as well
-    local isbusy = self:IsBusy()
-    
+    local isbusy = self:IsBusy()    
+
     self:DoPredictHopping(dt)
 
     if isbusy or
@@ -2608,12 +2611,49 @@ function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking)
     end
 end
 
-function PlayerController:OnRemotePredictHopping(x, z)
-    if self.ismastersim and self:IsEnabled() and self.handler == nil then
-        self.remote_vector.x = x
-        self.remote_vector.y = 6
-        self.remote_vector.z = z
+function PlayerController:OnRemoteStartHop(x, z, platform)
+    if not self.ismastersim then return end
+    if not self:IsEnabled() then return end
+    if not self.handler == nil then return end
+
+    local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
+    local target_x, target_y, target_z = x, 0, z
+    local platform_for_velocity_calculation = platform    
+
+    if platform ~= nil then
+        target_x, target_y, target_z = platform.Transform:GetWorldPosition()
+    else
+        platform_for_velocity_calculation = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)
     end
+
+    local hop_dir_x, hop_dir_z = target_x - my_x, target_z - my_z
+    local hop_distance_sq = hop_dir_x * hop_dir_x + hop_dir_z * hop_dir_z
+
+    local target_velocity_rubber_band_distance = 0    
+    if platform_for_velocity_calculation ~= nil then
+        local platform_physics = platform_for_velocity_calculation.Physics
+        if platform_physics ~= nil then            
+            local platform_velocity_x, platform_velocity_z = platform_physics:GetVelocity()
+            if platform_velocity_x ~= 0 or platform_velocity_z ~= 0 then
+                local hop_distance = math.sqrt(hop_distance_sq)
+                local normalized_hop_dir_x, normalized_hop_dir_z = hop_dir_x / hop_distance, hop_dir_z / hop_distance
+                local velocity = math.sqrt(platform_velocity_x * platform_velocity_x + platform_velocity_z * platform_velocity_z)
+                local normalized_platform_velocity_x, normalized_platform_velocity_z = platform_velocity_x / velocity, platform_velocity_z / velocity
+                local hop_dir_dot_platform_velocity = normalized_platform_velocity_x * hop_dir_x + normalized_platform_velocity_z * hop_dir_z
+                if hop_dir_dot_platform_velocity > 0 then
+                    target_velocity_rubber_band_distance = RUBBER_BAND_PING_TOLERANCE_IN_SECONDS * velocity * hop_dir_dot_platform_velocity
+                end
+            end
+        end
+    end    
+
+    local locomotor = self.inst.components.locomotor
+    local hop_rubber_band_distance = RUBBER_BAND_DISTANCE + target_velocity_rubber_band_distance + locomotor.hop_distance
+    local hop_rubber_band_distance_sq = hop_rubber_band_distance * hop_rubber_band_distance    
+
+    if hop_distance_sq > hop_rubber_band_distance_sq then return end
+
+    self.inst.components.locomotor:StartHopping(x,z,platform)
 end
 
 function PlayerController:OnRemoteStopWalking()
@@ -2659,24 +2699,6 @@ function PlayerController:RemotePredictWalking(x, z)
     end
 end
 
-function PlayerController:RemotePredictHopping(x, z)
-    local y = 6
-    if x ~= nil and z ~= nil then
-        if self.remote_vector.x ~= x or self.remote_vector.z ~= z or self.remote_vector.y ~= y then        
-			local platform, pos_x, pos_z = self:GetPlatformRelativePosition(x, z)
-            SendRPCToServer(RPC.PredictHopping, pos_x, pos_z, platform, platform ~= nil)
-            self.remote_vector.x = x
-            self.remote_vector.y = y
-            self.remote_vector.z = z
-            self.predictionsent = true
-        end
-    end
-end
-
-function PlayerController:RemoteStopHopping()
-    SendRPCToServer(RPC.StopHopping, self.inst)
-end
-
 function PlayerController:RemoteStopWalking()
     if self.remote_vector.y ~= 0 then
         SendRPCToServer(RPC.StopWalking)
@@ -2685,57 +2707,18 @@ function PlayerController:RemoteStopWalking()
 end
 
 function PlayerController:DoPredictHopping(dt)
-    if self.ismastersim then        
-        local pt = self:GetRemotePredictPosition()
-        if pt ~= nil then            
-            local new_is_hopping = pt.y == 6
-            local should_teleport = new_is_hopping or self.is_hopping
-            if new_is_hopping ~= self.is_hopping then
-                if new_is_hopping then
-                    self.inst.Physics:ClearCollidesWith(COLLISION.OBSTACLES)
-                    self.inst.Physics:ClearCollidesWith(COLLISION.SMALLOBSTACLES)
-                    self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
-                    self.inst.AnimState:PlayAnimation("boat_jump_pre", false) 
-                    self.inst.AnimState:PushAnimation("boat_jump_loop", true)                     
-                    --self.inst:PushEvent("on_master_hop_start")  
-                else
-                    self.inst.Physics:CollidesWith(COLLISION.OBSTACLES)  
-                    self.inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)  
-                    self.inst.Physics:CollidesWith(COLLISION.LIMITS)                     
-                    --self.inst:PushEvent("on_master_hop_stop")               
-                    self.inst.AnimState:PlayAnimation("boat_jump_pst", false)      
-                end
-                self.is_hopping = new_is_hopping
-            end       
-
-            if should_teleport then
-                --self.inst:ForceFacePoint(pt.x, 0, pt.z)
-                self.inst.Physics:TeleportRespectingInterpolation(pt.x, 0, pt.z)
-                --self.inst.Physics:ClearTransformationHistory()
-                return true
-            else
-                return false
-            end
-        end
-    else
+    if ThePlayer == self.inst and not self.ismastersim then        
         local locomotor = self.inst.components.locomotor
         if locomotor ~= nil then
-            local is_hopping = self.inst.components.locomotor.hopping
-            if is_hopping then
-                self.is_hopping = true
-                local x, y, z = self.inst.Transform:GetPredictionPosition()
-                self:RemotePredictHopping(x, z)
-                return true
-            end          
-
-            if is_hopping ~= self.is_hopping then
-                if not is_hopping then
-                    self:RemoteStopHopping()
-                end
+            if locomotor.hopping and not self.is_hopping then
+                local embarker = locomotor.inst.components.embarker
+                local disembark_x, disembark_z, target_platform = embarker.last_embark_x, embarker.last_embark_z, embarker.embarkable
+                SendRPCToServer(RPC.StartHop, disembark_x, disembark_z, target_platform, target_platform ~= nil)                    
             end
-
-            self.is_hopping = is_hopping
-        end
+            self.is_hopping = locomotor.hopping
+        else
+            self.is_hopping = false
+        end    
     end
 end
 
@@ -2766,9 +2749,7 @@ function PlayerController:DoPredictWalking(dt)
                 self.inst:ClearBufferedAction()
             end
 
-            local is_hopping = pt.y == 6
-
-            if not is_hopping then
+            if not self.is_hopping then
                 if distancetotargetsq > stopdistancesq then
                     self.locomotor:RunInDirection(self.inst:GetAngleToPoint(pt))
                 else
@@ -2808,7 +2789,7 @@ function PlayerController:DoPredictWalking(dt)
             --Cancel the cached prediction vector and force resync if necessary
             if distancetotargetsq <= stopdistancesq then
                 self.remote_vector.y = 0
-            elseif distancetotargetsq > 16 then
+            elseif distancetotargetsq > RUBBER_BAND_DISTANCE_SQ then
                 self.remote_vector.y = 0
                 self.inst.Physics:Teleport(self.inst.Transform:GetWorldPosition())                
             end
@@ -2858,7 +2839,13 @@ function PlayerController:DoDragWalking(dt)
 end
 
 function PlayerController:DoBoatSteering(dt)
-    local dir = GetWorldControllerVector()
+    local dir = nil
+
+    if self.handler == nil then
+        dir = self:GetRemoteDirectVector()
+    else
+        dir = GetWorldControllerVector()
+    end
 
     if dir ~= nil then
         if self.ismastersim then
@@ -3021,6 +3008,7 @@ function PlayerController:DoAction(buffaction)
     --Check if the action is actually valid.
     --Cached LMB/RMB actions can become invalid.
     --Also check if we're busy.
+
     if buffaction == nil or
         (buffaction.invobject ~= nil and not buffaction.invobject:IsValid()) or
         (buffaction.target ~= nil and not buffaction.target:IsValid()) or

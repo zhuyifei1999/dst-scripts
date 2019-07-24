@@ -149,6 +149,18 @@ return {
         {
 			REPAIR = "The ship is tippy tip top!",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Time to sync or swim, hyuyu!",
+            BAD_TIMING1 = "If I time it just right, the end is in sight!",
+            BAD_TIMING2 = "I mustn't rock the boat!",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "What a fiendishly frustrating contraption! I'm impressed.",
+            "Perhaps I should try a new tack! Hyuyu!",
+            "My guise as a sailor was a spectacular failure!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "I can't throw it through the looking glass!",

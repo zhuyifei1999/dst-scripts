@@ -10,7 +10,7 @@ local HullHealth = Class(function(self, inst)
 
 	self.leak_damage = {}
 	self.leak_indicators = {}
-	self.small_leak_dmg = 0.25
+	self.small_leak_dmg = 0.1
 	self.med_leak_dmg = 0.75
 	self.hull_dmg = 0
 
@@ -66,13 +66,11 @@ function HullHealth:RefreshLeakIndicator(leak_idx)
 	if leak_damage >= self.small_leak_dmg then
 		local leak_indicator = self.leak_indicators[leak_idx]
 		if leak_indicator == nil then
-
 			leak_indicator = SpawnPrefab("boat_leak")
 			local leak_x, leak_z = self:GetLeakPosition(leak_idx)
 			leak_indicator.Transform:SetPosition(leak_x, 0, leak_z)		
 			self.leak_indicators[leak_idx] = leak_indicator
-			leak_indicator.components.boatleak:SetBoat(self.inst)
-			return true
+			leak_indicator.components.boatleak:SetBoat(self.inst)			
 		end
 
 		if leak_damage >= self.med_leak_dmg then
@@ -80,6 +78,7 @@ function HullHealth:RefreshLeakIndicator(leak_idx)
 		else
 			leak_indicator.components.boatleak:SetState("small_leak")
 		end
+		return true
 	end
 	return false
 end
@@ -90,7 +89,7 @@ function HullHealth:OnCollide(data)
 	local boat_to_hit_x, boat_to_hit_z = VecUtil_Normalize(hit_pos_x - boat_x, hit_pos_z - boat_z)
 	local hit_angle = VecUtil_GetAngleInRads(boat_to_hit_x, boat_to_hit_z)
 	local speed_damage_factor = data.speed_damage_factor or 1.5
-	local damage_bias = 0.35
+	local damage_bias = 0.55
 	local damage = math.abs(data.hit_dot_velocity) / speed_damage_factor - damage_bias
 
 	local delta_angle = math.pi * 2
@@ -107,22 +106,28 @@ function HullHealth:OnCollide(data)
 			delta_angle = leak_delta_angle
 		end
 	end
-
+	
 	if damage > 0.01 then
-		local leak_dmg = self.leak_damage[leak_idx]			
-		if leak_dmg < 1 then
-			local damage_applied = math.min(damage, 1 - leak_dmg)
-			damage = damage - leak_dmg
-			leak_dmg = leak_dmg + damage_applied
-			self.leak_damage[leak_idx] = leak_dmg
-		end
+		local boat_physics = self.inst.components.boatphysics
+		local leakdamagetest = boat_physics:GetVelocity() * math.abs(data.hit_dot_velocity) - 1.1 --0.9
+		if leakdamagetest > 0 then
+			local leak_dmg = self.leak_damage[leak_idx]	
 
-		if self:RefreshLeakIndicator(leak_idx) and self.inst.components.walkableplatform ~= nil then
-            for k,v in pairs(self.inst.components.walkableplatform:GetEntitiesOnPlatform()) do
-            	if v:IsValid() then
-                	v:PushEvent("on_standing_on_new_leak")
-                end
-            end			
+			if leak_dmg < 1 then
+				local damage_applied = math.min(leakdamagetest, 1 - leak_dmg)
+			--	damage = damage - leak_dmg
+				leak_dmg = leak_dmg + damage_applied
+			--  print("LEAK DAMAGE",leak_dmg)
+				self.leak_damage[leak_idx] = leak_dmg
+			end
+
+			if self:RefreshLeakIndicator(leak_idx) and self.inst.components.walkableplatform ~= nil then
+	            for k,v in pairs(self.inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+	            	if v:IsValid() then
+	                	v:PushEvent("on_standing_on_new_leak")
+	                end
+	            end			
+			end
 		end
 
 		local max_health_damage = 20

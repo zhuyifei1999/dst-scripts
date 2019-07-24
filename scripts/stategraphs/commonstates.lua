@@ -431,7 +431,11 @@ CommonHandlers.OnHop = function()
     return EventHandler("onhop", 
         function(inst)
 			if (inst.components.health == nil or not inst.components.health:IsDead()) and not inst.sg:HasStateTag("jumping") and (inst.sg:HasStateTag("moving") or inst.sg:HasStateTag("idle")) then
-		        inst.sg:GoToState("hop_pre")
+                if inst.components.embarker and inst.components.embarker.antic and inst:HasTag("swimming") then
+                    inst.sg:GoToState("hop_antic")
+                else
+                    inst.sg:GoToState("hop_pre")
+                end
 			end
         end)
 end
@@ -443,7 +447,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
     table.insert(states, State
     {
         name = "hop_pre",
-        tags = { "doing", "busy", "nointerrupt", "jumping" },
+        tags = { "doing", "busy", "nointerrupt", "jumping", "autopredict" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation(anims.pre or "jump_pre", false)
@@ -478,7 +482,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
     table.insert(states, State
     {
         name = "hop_loop",
-        tags = { "doing", "busy", "nointerrupt", "jumping" },
+        tags = { "doing", "busy", "nointerrupt", "jumping", "autopredict" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation(anims.loop or "jump_loop", true)
@@ -511,7 +515,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
     table.insert(states, State
     {
         name = "hop_pst",
-        tags = { "doing", "busy", "nointerrupt", "jumping" },
+        tags = { "doing", "busy", "nointerrupt", "jumping", "autopredict" },
 
         onenter = function(inst, landed_in_water)
             inst.AnimState:PlayAnimation(anims.pst or "jump_pst", false)
@@ -544,7 +548,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
     table.insert(states, State
     {
         name = "hop_pst_complete",
-        tags = {},
+        tags = {"autopredict"},
 
         onenter = function(inst)
             if inst.components.locomotor.isrunning then
@@ -598,25 +602,29 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 			end
 			if inst.components.embarker:HasDestination() then
-	            inst.sg:SetTimeout(30 * FRAMES)
-	            inst.components.embarker:StartMoving()
+	            inst.sg:SetTimeout(18 * FRAMES)
+                inst.components.embarker:StartMoving()
 			else
 	            inst.sg:SetTimeout(18 * FRAMES)
+                if inst.landspeed then
+                    inst.components.locomotor.runspeed = inst.landspeed 
+                end                
+                inst.components.locomotor:RunForward()
 			end
         end,
 
-	    onupdate = function(inst)
+	    onupdate = function(inst,dt)     
 			if inst.components.embarker:HasDestination() then
 				if inst.sg.statemem.embarked then
 					inst.components.embarker:Embark()
 					inst.components.locomotor:FinishHopping()
-					inst.sg:GoToState("hop_pst", false)
+					inst.sg:GoToState("hop_pst", false)                    
 				elseif inst.sg.statemem.timeout then
 					inst.components.embarker:Cancel()
 					inst.components.locomotor:FinishHopping()
-	                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+	                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))                    
 				end
-			elseif inst.sg.statemem.timeout then
+			elseif inst.sg.statemem.timeout and not inst.sg.statemem.tryexit then
 				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
 			elseif inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) then
                 inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
@@ -626,7 +634,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
         timeline = timelines.hop_pre,
 
 		ontimeout = function(inst)
-			inst.sg.statemem.timeout = true
+			inst.sg.statemem.timeout = true          
 		end,
 
         events =
@@ -635,16 +643,13 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				inst.AnimState:PlayAnimation("jump_loop", true)
                 inst.sg.statemem.embarked = true
             end),     
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-					if inst.components.embarker:HasDestination() then
-						inst.sg:SetTimeout(30 * FRAMES)
-						inst.components.embarker:StartMoving()
-					else
+            EventHandler("animqueueover", function(inst)    
+                if inst.AnimState:AnimDone() then                    
+					if not inst.components.embarker:HasDestination() then                                                               
 						inst.sg.statemem.tryexit = true
-					end
-					inst.AnimState:PlayAnimation("jump_loop", true)
-                end
+					end                    
+                end 
+                inst.AnimState:PlayAnimation("jump_loop", true)             
             end),
         },
 
@@ -682,6 +687,30 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
                 end
             end),
         },
+    })
+
+    table.insert(states, State
+    {
+        name = "hop_antic",
+        tags = { "doing", "busy", "jumping", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.sg.statemem.swimming = inst:HasTag("swimming")
+
+            inst.AnimState:PlayAnimation("jumpout_antic")    
+
+            inst.sg:SetTimeout(30 * FRAMES)
+        end,
+
+        timeline = timelines.hop_antic,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("hop_pre")
+        end,
+        onexit = function(inst)
+
+        end,        
     })
 end
 
@@ -746,7 +775,7 @@ CommonStates.AddSleepStates = function(states, timelines, fns)
         name = "wake",
         tags = { "busy", "waking" },
 
-        onenter = function(inst)
+        onenter = function(inst)        
             if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
             end
@@ -1283,6 +1312,8 @@ CommonStates.AddFossilizedStates = function(states, timelines, fns)
         onexit = fns ~= nil and fns.unfossilized_onexit or nil,
     })
 end
+
+--------------------------------------------------------------------------
 
 CommonStates.AddRowStates = function(states, is_client)
     table.insert(states, State

@@ -41,6 +41,8 @@ function Embarker:StartMoving()
 	self.inst.Physics:Stop()
 	self.inst.components.locomotor.hopping = true
     self.inst:StartWallUpdatingComponent(self)
+
+    self.inst:PushEvent("start_embark_movement")
 end
 
 function Embarker:OnWallUpdate(dt)

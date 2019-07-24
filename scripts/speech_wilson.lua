@@ -156,6 +156,12 @@ return {
             BAD_TIMING1 = "My timing is off!",
             BAD_TIMING2 = "Not again!",
         },
+        LOWER_SAIL_FAIL =
+        {
+            "Whoops!",
+            "We're not slowing down!",
+            "Failure is success in progress!",
+        },        
         BATHBOMB =
         {
             GLASSED = "I can't, the surface is glassed over.",

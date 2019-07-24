@@ -10,8 +10,15 @@ local SteeringWheelUser = Class(function(self, inst)
             self.steering_wheel.components.steeringwheel:StopSteering(self.inst)
             self.inst:PushEvent("stop_steering_boat")
             self.steering_wheel = nil
+
         end
     end
+    self.onstopturning = function()
+       self.inst:PushEvent("stopturning")
+    end  
+    self.onboatremoved = function()
+       self.inst:RemoveEventCallback("stopturning",self.onstopturning, self.boat)
+    end  
 end)
 
 function SteeringWheelUser:SetSteeringWheel(steering_wheel)
@@ -34,8 +41,15 @@ function SteeringWheelUser:SetSteeringWheel(steering_wheel)
 		if prev_steering_wheel.components.steeringwheel ~= nil then
 			prev_steering_wheel.components.steeringwheel:StopSteering(self.inst)
 		end
+
+		if self.boat then
+			self.inst:RemoveEventCallback("stopturning", self.onstopturning, self.boat)		
+			self.inst:RemoveEventCallback("onremove", self.onboatremoved, self.boat)	
+		end	
 	end
 
+	self.boat = self.inst:GetCurrentPlatform()
+		
 	if steering_wheel ~= nil then
 	    self.inst:StartUpdatingComponent(self)
 		self.inst:AddTag("steeringboat")
@@ -46,19 +60,29 @@ function SteeringWheelUser:SetSteeringWheel(steering_wheel)
         self.inst:ListenForEvent("onremove", self.wheel_remove_callback, steering_wheel)
 
 		steering_wheel.components.steeringwheel:StartSteering(self.inst)
+				
+		self.inst:ListenForEvent("stopturning", self.onstopturning, self.boat)
+		self.inst:ListenForEvent("onremove", self.onboatremoved, self.boat)			
+	else	
+		if self.boat ~= nil then
+			local dir_x, dir_z = self.boat.components.boatphysics:GetRudderDirection()
+			self.boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
+		end
 	end
 end
 
 function SteeringWheelUser:Steer(pos_x, pos_z)
 	local x, y, z = self.inst.Transform:GetWorldPosition()
+	if self.boat then
+		x, y, z = self.boat.Transform:GetWorldPosition()
+	end
 	local dir_x, dir_z = VecUtil_Normalize(pos_x - x, pos_z - z)
 	self:SteerInDir(dir_x, dir_z)
 end
 
 function SteeringWheelUser:SteerInDir(dir_x, dir_z)
-	local boat = self:GetBoat()
-	if boat ~= nil then
-		boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
+	if self.boat ~= nil then
+		self.boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
 	end
 
 	local right_vec = TheCamera:GetRightVec()

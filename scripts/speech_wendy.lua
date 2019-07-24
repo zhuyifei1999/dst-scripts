@@ -141,6 +141,18 @@ return {
         {
         	REPAIR = "It looks okay to me.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "As usual, I seem to be out of step with the world.",
+            BAD_TIMING1 = "Abigail, perhaps you could take a turn rowing?",
+            BAD_TIMING2 = "That was pathetic...",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Well... that was a futile effort.",
+            "As expected... utter failure.",
+            "It seems I'm not cut out for a life of sailing.",
+        },
         BATHBOMB =
         {
             GLASSED = "It's covered in glass...",

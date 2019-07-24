@@ -251,6 +251,23 @@ function FindWalkableOffset(position, start_angle, radius, attempts, check_los, 
             end)
 end
 
+-- like FindWalkableOffset but only in the ocean
+function FindSwimmableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
+    return FindValidPositionByFan(start_angle, radius, attempts,
+            function(offset)
+                local x = position.x + offset.x
+                local y = position.y + offset.y
+                local z = position.z + offset.z
+                return (not TheWorld.Map:IsPassableAtPoint(x, y, z))
+                    and (not check_los or
+                        TheWorld.Pathfinder:IsClear(
+                            position.x, position.y, position.z,
+                            x, y, z,
+                            { ignorewalls = ignore_walls ~= false, ignorecreep = true }))
+                    and (customcheckfn == nil or customcheckfn(Vector3(x, y, z)))
+            end)
+end
+
 local function _CanEntitySeeInDark(inst)
     if inst.components.playervision ~= nil then
         --component available on clients as well,

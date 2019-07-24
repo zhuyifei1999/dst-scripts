@@ -141,6 +141,18 @@ return {
         {
         	REPAIR = "Why? It looks fine to me.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "Don't think that was right.",
+            BAD_TIMING1 = "Ugh, lost the rhythm.",
+            BAD_TIMING2 = "Water's definitely not my thing.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Get down, you stupid sail!",
+            "Oh man, I just love doing this over and over.",
+            "Uuuuuuuuuugh.",
+        },
         BATHBOMB =
         {
             GLASSED = "Pfft, that wouldn't work with glass in the way.",

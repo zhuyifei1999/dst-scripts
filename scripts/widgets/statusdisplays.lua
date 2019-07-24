@@ -37,11 +37,11 @@ local function OnSetPlayerMode(inst, self)
 
     if self.ongotonplatform == nil then
         local my_platform = self.owner:GetCurrentPlatform()
-        if my_platform ~= nil then
+        if my_platform ~= nil and my_platform.components.healthsyncer ~= nil then
             self.boatmeter:Enable(my_platform)
         end
 
-        self.ongotonplatform = function(owner, platform) self.boatmeter:Enable(platform) end
+        self.ongotonplatform = function(owner, platform) if platform.components.healthsyncer ~= nil then self.boatmeter:Enable(platform) end end
         self.inst:ListenForEvent("got_on_platform", self.ongotonplatform, self.owner)
 
         self.ongotoffplatform = function(owner, platform) self.boatmeter:Disable(platform) end

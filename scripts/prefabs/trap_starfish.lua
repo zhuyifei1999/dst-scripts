@@ -166,6 +166,7 @@ local function trap_starfish()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("trap")
+    inst:AddTag("trapdamage")
     inst:AddTag("birdblocker")
     inst:AddTag("wet")
 

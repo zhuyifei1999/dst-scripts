@@ -2096,7 +2096,7 @@ MISC_ITEMS =
 	playerportrait_bg_eyebrellahatcrystal =
 	{
 		type = "playerportrait",
-		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
 		rarity = "Loyal",
 		release_group = 69,
 	},
@@ -2814,7 +2814,7 @@ MISC_ITEMS =
 	profileflair_eyebrellahat_crystal =
 	{
 		type = "profileflair",
-		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 69,
 	},

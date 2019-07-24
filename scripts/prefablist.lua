@@ -388,6 +388,7 @@ PREFABFILES = {
   "lureplant_bulb",
   "madscience_lab",
   "magicprototyper",
+  "malbatross",
   "mandrake_active",
   "mandrake_inactive",
   "mandrake_planted",

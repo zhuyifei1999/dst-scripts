@@ -1,17 +1,17 @@
 local assets =
 {
     Asset("ANIM", "anim/candybag.zip"),
-    Asset("ANIM", "anim/swap_candybag.zip"),
     Asset("ANIM", "anim/ui_krampusbag_2x8.zip"),
 }
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", "swap_candybag", "swap_body")
+    owner.AnimState:OverrideSymbol("backpack", "candybag", "backpack")
+    owner.AnimState:OverrideSymbol("swap_body", "candybag", "swap_body")
     inst.components.container:Open(owner)
 end
 
 local function onunequip(inst, owner)
-    --owner.AnimState:ClearOverrideSymbol("backpack")
+    owner.AnimState:ClearOverrideSymbol("backpack")
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst.components.container:Close(owner)
 end

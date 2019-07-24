@@ -641,6 +641,7 @@ local function OnSetOwner(inst)
             RegisterActivePlayerEventListeners(inst)
             inst.activatetask = inst:DoTaskInTime(0, ActivatePlayer)
         end
+        inst:AddComponent("embarkercameracontroller")
     elseif inst.HUD ~= nil then
         UnregisterActivePlayerEventListeners(inst)
         RemoveActivePlayerComponents(inst)
@@ -1148,14 +1149,14 @@ local function LoadForReroll(inst, data)
     end
 end
 
-local function OnGotOnPlatform(inst)
-    inst.Transform:SetIsOnPlatform(true)
-	inst.Transform:SetPlatform(inst.entity)
+local function OnGotOnPlatform(player, platform)
+    player.Transform:SetIsOnPlatform(true)
+	player.Transform:SetPlatform(player.entity)    
 end
 
-local function OnGotOffPlatform(inst)
-	inst.Transform:SetPlatform(nil)
-    inst.Transform:SetIsOnPlatform(false)
+local function OnGotOffPlatform(player, platform)    
+	player.Transform:SetPlatform(nil)
+    player.Transform:SetIsOnPlatform(false)
 end
 
 --------------------------------------------------------------------------
@@ -1190,6 +1191,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_boat_net.zip"),
         Asset("ANIM", "anim/player_boat_sink.zip"),
         Asset("ANIM", "anim/player_boat_jump.zip"),
+        Asset("ANIM", "anim/player_boat_channel.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
         --Asset("ANIM", "anim/player_idles.zip"),--Moved to global.lua for use in Item Collection
@@ -1402,6 +1404,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_boat_sink")
         inst.AnimState:AddOverrideBuild("player_oar")
 
+        inst.AnimState:AddOverrideBuild("player_boat_channel")        
+
         inst.DynamicShadow:SetSize(1.3, .6)
 
         inst.MiniMapEntity:SetIcon(name..".png")
@@ -1506,8 +1510,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED * 1.25
 
         --TODO(YOG): Replace these with relative error prediction in transform component
-        inst:ListenForEvent("got_on_platform", function() OnGotOnPlatform(inst) end)
-        inst:ListenForEvent("got_off_platform", function() OnGotOffPlatform(inst) end)
+        inst:ListenForEvent("got_on_platform", function(player, platform) OnGotOnPlatform(inst, platform) end)
+        inst:ListenForEvent("got_off_platform", function(player, platform) OnGotOffPlatform(inst, platform) end)
 
         inst.entity:SetPristine()
 

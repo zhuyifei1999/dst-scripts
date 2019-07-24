@@ -371,12 +371,18 @@ local function PopulateWorld(savedata, profile)
 
         world.has_ocean = savedata.map.has_ocean
 
-		if world.components.watercolor ~= nil then
-			world.components.watercolor:Initialize(world.has_ocean)
+		if world.components.oceancolor ~= nil then
+			world.components.oceancolor:Initialize(world.has_ocean)
 		end
 
         if world.has_ocean then
-            world.Map:SetOceanEnabled(true)
+            local map = world.Map
+            local tuning = TUNING.OCEAN_SHADER
+            map:SetOceanEnabled(true)
+			map:SetOceanTextureBlurPassCount(tuning.TEXTURE_BLUR_PASS_COUNT)
+            map:SetOceanNoiseParameters0(tuning.NOISE[1].ANGLE, tuning.NOISE[1].SPEED, tuning.NOISE[1].SCALE, tuning.NOISE[1].FREQUENCY)
+            map:SetOceanNoiseParameters1(tuning.NOISE[2].ANGLE, tuning.NOISE[2].SPEED, tuning.NOISE[2].SCALE, tuning.NOISE[2].FREQUENCY)
+            map:SetOceanNoiseParameters2(tuning.NOISE[3].ANGLE, tuning.NOISE[3].SPEED, tuning.NOISE[3].SCALE, tuning.NOISE[3].FREQUENCY)
         end
 
         --this was spawned by the level file. kinda lame - we should just do everything from in here.

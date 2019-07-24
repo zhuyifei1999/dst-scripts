@@ -73,7 +73,7 @@ local states =
             inst.AnimState:PlayAnimation("untethering_pre")
             inst.AnimState:PushAnimation("untethering_loop", true)
             anchor_raised(inst)
-            inst.sg:SetTimeout(4)
+            --inst.sg:SetTimeout(4)
         end,
 
         timeline =
@@ -84,9 +84,11 @@ local states =
 
         },
 
-        ontimeout = function(inst)
-            inst.sg:GoToState("raising_pst")
-        end,
+        events =
+        {
+            EventHandler("anchor_raised", function(inst) inst.sg:GoToState("raising_pst") end),
+            EventHandler("lowering_anchor", function(inst) inst.sg:GoToState("lowering") end),        
+        },
     },
 
     State
@@ -159,7 +161,6 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("tethering_pre")
             inst.AnimState:PlayAnimation("tethering_loop", true)
-            inst.sg:SetTimeout(2)
         end,
 
         timeline =
@@ -172,9 +173,11 @@ local states =
             end),
         },
 
-        ontimeout = function(inst)
-            inst.sg:GoToState("lowering_pst")
-        end,
+        events =
+        {
+            EventHandler("anchor_lowered", function(inst) inst.sg:GoToState("lowering_pst") end),            
+            EventHandler("raising_anchor", function(inst) inst.sg:GoToState("raising") end),
+        },
     },
 
     State

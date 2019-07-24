@@ -439,12 +439,34 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     if data.amphibious then
 		inst:AddComponent("embarker")
 		inst.components.embarker.embark_speed = inst.components.locomotor.runspeed
+        inst.components.embarker.antic = true
+
 	    inst.components.locomotor:SetAllowPlatformHopping(true)
 
 		inst:AddComponent("amphibiouscreature")
 		inst.components.amphibiouscreature:SetBanks(bank, bank.."_water")
-        inst.components.locomotor.pathcaps = { allowocean = true }
+        inst.components.amphibiouscreature:SetEnterWaterFn(
+            function(inst)
+                inst.landspeed = inst.components.locomotor.runspeed
+                inst.components.locomotor.runspeed = TUNING.HOUND_SWIM_SPEED
+                inst.hop_distance = inst.components.locomotor.hop_distance
+                inst.components.locomotor.hop_distance = 4
+            end)            
+        inst.components.amphibiouscreature:SetExitWaterFn(
+            function(inst)
+                print("EXTING WATER")
+                if inst.landspeed then
+                    inst.components.locomotor.runspeed = inst.landspeed 
+                end
+                if inst.hop_distance then
+                    inst.components.locomotor.hop_distance = inst.hop_distance
+                end
+            end)
+
+		inst.components.locomotor.pathcaps = { allowocean = true }
 	end
+
+    
 
     inst:SetBrain(custombrain or brain)
 

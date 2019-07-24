@@ -53,6 +53,18 @@ local function ExtraDeployDist(doer, dest, bufferedaction)
     return 0
 end
 
+local function ExtraDropDist(doer, dest, bufferedaction)
+    if dest ~= nil then
+        local target_x, target_y, target_z = dest:GetPoint()
+
+        local is_on_water = TheWorld.Map:IsOceanTileAtPoint(target_x, 0, target_z) and not TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)
+        if is_on_water then
+            return 1.75
+        end
+    end
+    return 0
+end
+
 --Positional parameters have been deprecated, pass in a table instead.
 Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_exclusive, canforce, rangecheckfn)
     if data == nil then
@@ -95,7 +107,7 @@ ACTIONS =
 {
     REPAIR = Action({ mount_valid=true, encumbered_valid=true }),
     READ = Action({ mount_valid=true }),
-    DROP = Action({ priority=-1, mount_valid=true, encumbered_valid=true }),
+    DROP = Action({ priority=-1, mount_valid=true, encumbered_valid=true, is_relative_to_platform=true, extra_arrive_dist=ExtraDropDist }),
     TRAVEL = Action(),
     CHOP = Action(),
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
@@ -222,8 +234,10 @@ ACTIONS =
     BATHBOMB = Action(),
 
     -- boats
-    RAISE_SAIL = Action({ distance=2 }),
-    LOWER_SAIL = Action({ distance=2 }),    
+    RAISE_SAIL = Action({ distance=1.25 }),
+    LOWER_SAIL = Action({ distance=1.25 }),    
+    LOWER_SAIL_BOOST = Action({ distance=1.25 }),
+    LOWER_SAIL_FAIL = Action({ distance=1.25, do_not_locomote=true }),    
     RAISE_ANCHOR = Action({ distance=2.5 }),
     LOWER_ANCHOR = Action({ distance=2.5 }),
     EXTEND_PLANK = Action({ distance=2.5 }),
@@ -2244,18 +2258,16 @@ ACTIONS.BATHBOMB.fn = function(act)
     return true
 end
 
-ACTIONS.RAISE_SAIL.fn = function(act)    
-    local boat = act.target.components.mast.boat
-    act.target.components.mast:RaiseSail()
+ACTIONS.RAISE_SAIL.fn = function(act)     -- this name is backwards. "raising" in this case means making a full sail
+    act.target.components.mast:UnfurlSail()
     return true
 end
 
-ACTIONS.RAISE_SAIL.stroverridefn = function(act)
+ACTIONS.RAISE_SAIL.stroverridefn = function(act) 
     return STRINGS.ACTIONS.RAISE_SAIL
 end
 
-ACTIONS.LOWER_SAIL.fn = function(act)
-    act.target.components.mast:LowerSail()
+ACTIONS.LOWER_SAIL.fn = function(act) -- this name is backwards. "lowering" in this case means wrapping the sail up
     return true
 end
 
@@ -2263,8 +2275,45 @@ ACTIONS.LOWER_SAIL.stroverridefn = function(act)
     return STRINGS.ACTIONS.LOWER_SAIL
 end
 
+ACTIONS.LOWER_SAIL_BOOST.fn = function(act)
+    act.target.components.mast:AddSailFurler(act.doer, 10)
+    return true
+end
+
+local function GetLowerSailStr(act)
+    local doer = act.doer
+
+    local str_idx = 1 
+      if doer.AnimState:IsCurrentAnimation("pull_small_pre") or doer.AnimState:IsCurrentAnimation("pull_small_loop") then
+        str_idx = 2
+    end
+--[[
+    if act.doer:HasTag("is_heaving") then
+        if str_idx == 1 then
+            str_idx = 2
+        else
+            str_idx = 1
+        end
+    end
+]]
+    return STRINGS.ACTIONS.LOWER_SAIL_BOOST[str_idx]
+end
+
+ACTIONS.LOWER_SAIL_BOOST.stroverridefn = function(act) 
+    return GetLowerSailStr(act)
+end
+
+ACTIONS.LOWER_SAIL_FAIL.fn = function(act)
+    return true
+end
+
+ACTIONS.LOWER_SAIL_FAIL.stroverridefn = function(act) 
+    return GetLowerSailStr(act)
+end
+
+
 ACTIONS.RAISE_ANCHOR.fn = function(act)
-    return act.target.components.anchor:StartRaisingAnchor()
+    return act.target.components.anchor:AddAnchorRaiser(act.doer)
 end
 
 ACTIONS.RAISE_ANCHOR.stroverridefn = function(act)

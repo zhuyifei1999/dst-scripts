@@ -76,6 +76,7 @@ local function fn()
     MakeMediumPropagator(inst)
 
     inst:AddComponent("anchor")
+
     inst:AddComponent("hauntable")
     inst:AddComponent("inspectable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)

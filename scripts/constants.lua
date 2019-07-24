@@ -421,6 +421,14 @@ ITEMTAG =
     FX = "FX",
 }
 
+OCEAN_DEPTH =
+{
+    SHALLOW = 1,
+    NORMAL = 2,
+    DEEP = 3,
+    VERY_DEEP = 4,
+}
+
 -- See map_painter.h
 -- PUBLIC USE SPACE FOR MODS is 70 to 89 -- Mods using values outside of this range may find themselfs conflicting with future official content
 GROUND =

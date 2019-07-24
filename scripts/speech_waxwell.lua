@@ -141,6 +141,18 @@ return {
         {
         	REPAIR = "It looks fine to me as is.",
         },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "I must time this perfectly if I'm to succeed.",
+            BAD_TIMING1 = "This isn't exactly my forte.",
+            BAD_TIMING2 = "Hmph. Physical labor is more suited to underlings.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "Well, that didn't quite work as I planned.",
+            "How inconvenient.",
+            "Blast it!",
+        }, 
         BATHBOMB =
         {
             GLASSED = "I can't do that while it's covered in moon glass.",

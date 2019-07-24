@@ -821,6 +821,20 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
     return self:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir_z, step_count, max_hop_distance / step_count)
 end
 
+function LocoMotor:StartHopping(x,z,target_platform)
+    local embarker = self.inst.components.embarker
+    if embarker ~= nil then
+        if target_platform ~= nil then 
+            embarker:SetEmbarkable(target_platform)
+        else
+            embarker:SetDisembarkPos(x, z)
+        end
+        if not self.inst.sg:HasStateTag("jumping") then
+            self.inst:PushEvent("onhop")
+        end
+    end    
+end
+
 function LocoMotor:OnUpdate(dt)
     if self.hopping then 
         self:UpdateHopping(dt) 
@@ -1055,17 +1069,7 @@ function LocoMotor:OnUpdate(dt)
             if can_hop then
                 self.last_platform_visited = my_platform
 
-				local embarker = self.inst.components.embarker
-				if embarker ~= nil then
-					if target_platform ~= nil then 
-						embarker:SetEmbarkable(target_platform)
-					else
-						embarker:SetDisembarkPos(hop_x, hop_z)
-					end
-					if not self.inst.sg:HasStateTag("jumping") then
-						self.inst:PushEvent("onhop")
-					end
-				end
+                self:StartHopping(hop_x, hop_z, target_platform)
 			elseif self.inst.components.amphibiouscreature ~= nil and other_platform == nil and not self.inst.sg:HasStateTag("jumping") then
 				local dist = self.inst:GetPhysicsRadius(0) + 2.5
 				local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z

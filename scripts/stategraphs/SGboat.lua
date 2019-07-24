@@ -137,13 +137,10 @@ local states =
             local locus_point = Vector3(inst.Transform:GetWorldPosition())
 
             inst:Remove()
-            SpawnFragment(locus_point, "boatfragment04",  2.75,  0, 0.5, ignitefragments)
-            SpawnFragment(locus_point, "boatfragment04",  0.25,  0, -2.8, ignitefragments)
-            SpawnFragment(locus_point, "boatfragment05", -2.5,   0, -0.25, ignitefragments)
-            SpawnFragment(locus_point, "boatfragment05", -0.95,  0, 0.75, ignitefragments)
-            SpawnFragment(locus_point, "boards",             2,  2, -2.25, ignitefragments)
-            SpawnFragment(locus_point, "boards",         -1.75,  2, -1.5, ignitefragments)
-            SpawnFragment(locus_point, "boards",          1.25,  2, 1.25, ignitefragments)
+            SpawnFragment(locus_point, "boards",  2.75,  0, 0.5, ignitefragments)
+            SpawnFragment(locus_point, "boards",  0.25,  0, -2.8, ignitefragments)
+            SpawnFragment(locus_point, "boards", -2.5,   0, -0.25, ignitefragments)
+            SpawnFragment(locus_point, "boards", -0.95,  0, 0.75, ignitefragments)
         end,
     },
 }

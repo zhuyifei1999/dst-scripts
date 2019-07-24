@@ -94,9 +94,14 @@ function FollowCamera:SetMaxDistance(distance)
 end
 
 function FollowCamera:SetGains(pan, heading, distance)
-    self.distancegain = distance
     self.pangain = pan
     self.headinggain = heading
+    self.distancegain = distance    
+    
+end
+
+function FollowCamera:GetGains(pan, heading, distance)
+    return self.pangain, self.headinggain, self.distancegain
 end
 
 function FollowCamera:IsControllable()
