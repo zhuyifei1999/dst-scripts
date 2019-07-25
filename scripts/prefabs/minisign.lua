@@ -62,16 +62,9 @@ local function onextinguish(inst)
     end
 end
 
-local function OnDrawnFn(inst, image, src)
+local function OnDrawnFn(inst, image, src, atlas)
     if image ~= nil then
-        local atlas = nil
-        if src ~= nil and src.replica.inventoryitem ~= nil then
-            atlas = src.replica.inventoryitem:GetAtlas()
-        else
-            atlas = GetInventoryItemAtlas(image..".tex")
-        end
-        
-        inst.AnimState:OverrideSymbol("SWAP_SIGN", atlas, image..".tex")
+        inst.AnimState:OverrideSymbol("SWAP_SIGN", atlas or GetInventoryItemAtlas(image..".tex"), image..".tex")
         if inst:HasTag("sign") then
             inst.components.drawable:SetCanDraw(false)
             inst._imagename:set(src ~= nil and (src.drawnameoverride or src:GetBasicDisplayName()) or "")
