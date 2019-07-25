@@ -20,7 +20,6 @@ local function ConfigurePlayerLocomotor(inst)
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6
     inst.components.locomotor.fasteronroad = true
     inst.components.locomotor:SetTriggersCreep(not inst:HasTag("spiderwhisperer"))
-    inst.components.locomotor:SetAllowPlatformHopping(true)
 end
 
 local function ConfigureGhostLocomotor(inst)
@@ -30,7 +29,6 @@ local function ConfigureGhostLocomotor(inst)
     inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6 is base
     inst.components.locomotor.fasteronroad = false
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor:SetAllowPlatformHopping(false)
 end
 
 --------------------------------------------------------------------------
@@ -170,7 +168,7 @@ local function CommonActualRez(inst)
     inst.components.grogginess:SetResistance(3)
     inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
 
-    inst.components.moisture:ForceDry(false)
+    inst.components.moisture:ForceDry(false, inst)
 
     inst.components.sheltered:Start()
 
@@ -432,7 +430,7 @@ local function CommonPlayerDeath(inst)
 
     inst:RemoveComponent("grogginess")
 
-    inst.components.moisture:ForceDry(true)
+    inst.components.moisture:ForceDry(true, inst)
 
     inst.components.sheltered:Stop()
 

@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/staffs.zip"),
     Asset("ANIM", "anim/swap_staffs.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local prefabs =
@@ -186,7 +185,7 @@ local function getrandomposition(caster)
     local ground = TheWorld
     local centers = {}
     for i, node in ipairs(ground.topology.nodes) do
-        if ground.Map:IsPassableAtPoint(node.x, 0, node.y) and node.type ~= NODE_TYPE.SeparatedRoom then
+        if ground.Map:IsPassableAtPoint(node.x, 0, node.y) then
             table.insert(centers, {x = node.x, z = node.y})
         end
     end
@@ -426,12 +425,15 @@ end
 DESTSOUNDS = nil
 
 local function CheckSpawnedLoot(loot)
-    if loot.components.inventoryitem ~= nil then
-        loot.components.inventoryitem:TryToSink()
-    else
-        local lootx, looty, lootz = loot.Transform:GetWorldPosition()
-        if ShouldEntitySink(loot, true) or TheWorld.Map:IsPointNearHole(Vector3(lootx, 0, lootz)) then
-            SinkEntity(loot)
+    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
+        local x, y, z = loot.Transform:GetWorldPosition()
+        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
+            if loot:HasTag("irreplaceable") then
+                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
+            else
+                loot:Remove()
+            end
         end
     end
 end
@@ -641,15 +643,6 @@ local function commonfn(colour, tags, hasskin)
         end
     end
 
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_"..colour.."staff",
-        bank = "staffs",
-        anim = colour.."staff"
-    }
-    MakeInventoryFloatable(inst, "med", 0.1, {0.9, 0.4, 0.9}, true, -13, floater_swap_data)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -714,16 +707,6 @@ local function red()
     inst.components.finiteuses:SetMaxUses(TUNING.FIRESTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.FIRESTAFF_USES)
 
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_redstaff",
-        bank = "staffs",
-        anim = "redstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -9.5, floater_swap_data)
-    inst.components.floater:SetScale({0.85, 0.4, 0.85})
-
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntred, true, false, true)
 
@@ -749,8 +732,6 @@ local function blue()
     inst.components.finiteuses:SetMaxUses(TUNING.ICESTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.ICESTAFF_USES)
 
-    inst.components.floater:SetScale({0.8, 0.4, 0.8})
-
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntblue, true, false, true)
 
@@ -773,8 +754,6 @@ local function purple()
     inst.components.spellcaster.canusefrominventory = true
     inst.components.spellcaster.canonlyuseonlocomotorspvp = true
 
-    inst.components.floater:SetScale({0.9, 0.4, 0.9})
-
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntpurple, true, false, true)
 
@@ -782,7 +761,7 @@ local function purple()
 end
 
 local function yellow()
-    local inst = commonfn("yellow", { "nopunch", "allow_action_on_impassable" }, true)
+    local inst = commonfn("yellow", { "nopunch" }, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -798,19 +777,9 @@ local function yellow()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
-    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.YELLOWSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.YELLOWSTAFF_USES)
-
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_yellowstaff",
-        bank = "staffs",
-        anim = "yellowstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -14, floater_swap_data)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntlight, true, false, true)
@@ -870,7 +839,7 @@ local function orange()
 end
 
 local function opal()
-    local inst = commonfn("opal", { "nopunch", "allow_action_on_impassable" }, true)
+    local inst = commonfn("opal", { "nopunch" }, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -886,19 +855,9 @@ local function opal()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
-    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.OPALSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.OPALSTAFF_USES)
-
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_opalstaff",
-        bank = "staffs",
-        anim = "opalstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -14, floater_swap_data)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntlight, true, false, true)

@@ -20,6 +20,13 @@ local lesserprefabs =
 
 -----------------------------------------------------------------------
 
+--multiplies TUNING.WORMLIGHT_DURATION = seg_time * 8
+local DURATION_MULT = 1
+local LESSER_DURATION_MULT = .25
+local GREATER_DURATION_MULT = 4
+
+-----------------------------------------------------------------------
+
 local function create_light(eater, lightprefab)
     if eater.wormlight ~= nil then
         if eater.wormlight.prefab == lightprefab then
@@ -73,8 +80,6 @@ local function item_commonfn(bank, build, masterfn)
 
     inst:AddTag("lightbattery")
     inst:AddTag("vasedecoration")
-
-    MakeInventoryFloatable(inst, "small", 0.1, 0.9)
 
     inst.entity:SetPristine()
 
@@ -148,6 +153,11 @@ local lightprefabs =
 local lesserlightprefabs =
 {
     "wormlight_light_fx_lesser",
+}
+
+local greaterlightprefabs =
+{
+    "wormlight_light_fx_greater",
 }
 
 local function light_resume(inst, time)
@@ -275,11 +285,15 @@ local function light_commonfn(duration, fxprefab)
 end
 
 local function lightfn()
-    return light_commonfn(TUNING.WORMLIGHT_DURATION, "wormlight_light_fx")
+    return light_commonfn(TUNING.WORMLIGHT_DURATION * DURATION_MULT, "wormlight_light_fx")
 end
 
 local function lesserlightfn()
-    return light_commonfn(TUNING.WORMLIGHT_DURATION * .25, "wormlight_light_fx_lesser")
+    return light_commonfn(TUNING.WORMLIGHT_DURATION * LESSER_DURATION_MULT, "wormlight_light_fx_lesser")
+end
+
+local function greaterlightfn()
+    return light_commonfn(TUNING.WORMLIGHT_DURATION * GREATER_DURATION_MULT, "wormlight_light_fx_greater")
 end
 
 -----------------------------------------------------------------------
@@ -357,16 +371,22 @@ local function lightfx_commonfn(duration)
 end
 
 local function lightfxfn()
-    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION)
+    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * DURATION_MULT)
 end
 
 local function lesserlightfxfn()
-    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * .25)
+    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * LESSER_DURATION_MULT)
+end
+
+local function greaterlightfxfn()
+    return lightfx_commonfn(TUNING.WORMLIGHT_DURATION * GREATER_DURATION_MULT)
 end
 
 return  Prefab("wormlight", itemfn, assets, prefabs),
         Prefab("wormlight_lesser", lesseritemfn, lesserassets, lesserprefabs),
         Prefab("wormlight_light", lightfn, nil, lightprefabs),
         Prefab("wormlight_light_lesser", lesserlightfn, nil, lesserlightprefabs),
+        Prefab("wormlight_light_greater", greaterlightfn, nil, greaterlightprefabs),
         Prefab("wormlight_light_fx", lightfxfn),
-        Prefab("wormlight_light_fx_lesser", lesserlightfxfn)
+        Prefab("wormlight_light_fx_lesser", lesserlightfxfn),
+        Prefab("wormlight_light_fx_greater", greaterlightfxfn)

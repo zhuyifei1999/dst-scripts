@@ -14,9 +14,8 @@ local prefabs =
 
 local sculptable_materials =
 {
-    marble      = {swapfile="marble",       symbol="marble01",      material = "marble"},
-    cutstone    = {swapfile="cutstone",     symbol="cutstone01",    material = "stone"},
-    moonglass   = {swapfile="moonglass",    symbol="moonglass01",   material = "moonglass"},
+    marble          = {swapfile="marble",           symbol="marble01",     material = "marble"},
+    cutstone        = {swapfile="cutstone",         symbol="cutstone01",   material = "stone"},
 }
 
 local function AddSketch(inst, sketch)

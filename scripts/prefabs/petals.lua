@@ -53,8 +53,6 @@ local function fn()
     inst:AddTag("cattoy")
     inst:AddTag("vasedecoration")
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -62,7 +60,6 @@ local function fn()
     end
 
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 

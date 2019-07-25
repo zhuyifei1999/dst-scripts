@@ -400,6 +400,13 @@ PREFAB_SKINS = {
 	{
 		"wardrobe_heart",
 	},
+	warly = 
+	{
+		"warly_fisherman",
+		"warly_none",
+		"warly_rose",
+		"warly_victorian",
+	},
 	watermelonhat = 
 	{
 		"watermelonhat_pumpkin",

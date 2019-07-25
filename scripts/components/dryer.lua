@@ -19,8 +19,6 @@ local Dryer = Class(function(self, inst)
 
     self.ingredient = nil
     self.product = nil
-	self.buildfile = nil
-	self.foodtype = nil -- assuming that the product will be of the same food type as the ingredient
     self.remainingtime = nil
     self.tasktotime = nil
     self.task = nil
@@ -118,9 +116,7 @@ end
 
 local function DoSpoil(inst, self)
     self.ingredient = nil
-	self.buildfile = nil
     self.product = nil
-	self.foodtype = nil
     self.remainingtime = nil
     self.tasktotime = nil
     self.task = nil
@@ -149,7 +145,7 @@ local function DoDry(inst, self)
     self:Resume()
 
     if self.ondonedrying ~= nil then
-        self.ondonedrying(inst, self.product, self.buildfile)
+        self.ondonedrying(inst, self.product)
     end
 end
 
@@ -159,9 +155,7 @@ function Dryer:StartDrying(dryable)
     end
 
     self.ingredient = dryable.prefab
-	self.buildfile = dryable.components.dryable:GetBuildFile()
     self.ingredientperish = dryable.components.perishable:GetPercent()
-	self.foodtype = dryable.components.edible ~= nil and dryable.components.edible.foodtype or nil
     self.product = dryable.components.dryable:GetProduct()
     self.remainingtime = dryable.components.dryable:GetDryTime()
     self.tasktotime = nil
@@ -173,9 +167,7 @@ function Dryer:StartDrying(dryable)
 
     if self.ingredient == nil or self.product == nil or self.remainingtime == nil then
         self.ingredient = nil
-		self.buildfile = nil
         self.product = nil
-		self.foodtype = nil
         self.remainingtime = nil
         return false
     end
@@ -189,7 +181,7 @@ function Dryer:StartDrying(dryable)
         StartWatchingRain(self)
     end
     if self.onstartdrying ~= nil then
-        self.onstartdrying(self.inst, self.ingredient, self.buildfile)
+        self.onstartdrying(self.inst, self.ingredient)
     end
     return true
 end
@@ -212,9 +204,7 @@ function Dryer:StopDrying(reason)
         end
 
         self.ingredient = nil
-		self.buildfile = nil
         self.product = nil
-		self.foodtype = nil
         self.remainingtime = nil
         self.tasktotime = nil
     elseif self.ingredient ~= nil then
@@ -269,9 +259,7 @@ function Dryer:DropItem()
     end
 
     self.ingredient = nil
-	self.buildfile = nil
     self.product = nil
-	self.foodtype = nil
     self.remainingtime = nil
     self.tasktotime = nil
     if self.task ~= nil then
@@ -304,9 +292,7 @@ function Dryer:Harvest(harvester)
     end
 
     self.ingredient = nil
-	self.buildfile = nil
     self.product = nil
-	self.foodtype = nil
     self.remainingtime = nil
     self.tasktotime = nil
     if self.task ~= nil then
@@ -367,10 +353,8 @@ function Dryer:OnSave()
         return
         {
             ingredient = self.ingredient,
-			buildfile = self.buildfile,
             ingredientperish = self.ingredientperish,
             product = self.product,
-			foodtype = self.foodtype,
             remainingtime = remainingtime > 0 and remainingtime or nil,
         }
     end
@@ -380,9 +364,7 @@ function Dryer:OnLoad(data)
     if data.product ~= nil then
         self.ingredient = data.ingredient
         self.ingredientperish = data.ingredientperish or 100 -- for old save files, assume 100%
-		self.buildfile = data.buildfile
         self.product = data.product
-		self.foodtype = data.foodtype or FOODTYPE.GENERIC
         self.remainingtime = data.remainingtime or 0
         self.tasktotime = nil
         if self.task ~= nil then
@@ -399,12 +381,12 @@ function Dryer:OnLoad(data)
                 StartWatchingRain(self)
             end
             if self.onstartdrying ~= nil then
-                self.onstartdrying(self.inst, self.ingredient, self.buildfile)
+                self.onstartdrying(self.inst, self.ingredient)
             end
         else
             self:Resume()
             if self.ondonedrying ~= nil then
-                self.ondonedrying(self.inst, self.product, self.buildfile)
+                self.ondonedrying(self.inst, self.product)
             end
         end
     end
@@ -418,7 +400,6 @@ function Dryer:GetDebugString()
             (self:IsDone() and "DRIED ") or
             "EMPTY ")
         ..(self.product or "<none>")
-		.." "..(self.foodtype or "none")
         ..(self:IsPaused() and " PAUSED" or "")
         ..string.format(" drytime: %2.2f spoiltime: %2.2f", self:GetTimeToDry(), self:GetTimeToSpoil())
 end

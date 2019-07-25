@@ -86,7 +86,7 @@ AddTask("CavesTEST", {
         ["BGSinkholeSwampRoom"] = 1,
 
     },
-    room_bg=GROUND.CAVE,
+    room_bg=GROUND.WALL_ROCKY,
     background_room="Blank",--"BGCaveRoom",
     colour={r=1,g=0.8,b=1,a=1},
 })

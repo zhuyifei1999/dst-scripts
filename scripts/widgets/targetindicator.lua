@@ -32,13 +32,13 @@ end
 local function StartIndicator(target, self)
     self.inst.startindicatortask = nil
     self.inst.OnRemoveEntity = nil
-    self.colour = target.playercolour or PORTAL_TEXT_COLOUR
+    self.colour = target.playercolour
     self:StartUpdating()
     self:OnUpdate()
     self:Show()
 end
 
-local TargetIndicator = Class(Widget, function(self, owner, target, data)
+local TargetIndicator = Class(Widget, function(self, owner, target)
     Widget._ctor(self, "TargetIndicator")
     self.owner = owner
     self.isFE = false
@@ -56,7 +56,6 @@ local TargetIndicator = Class(Widget, function(self, owner, target, data)
     self.isCharacterState3 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_3)
 
     self.is_mod_character = target ~= nil and target.prefab ~= nil and table.contains(MODCHARACTERLIST, target.prefab)
-	self.config_data = data or {}
     self.target = target
     self.colour = nil
 
@@ -252,14 +251,10 @@ function TargetIndicator:GetAvatarAtlas()
 
         return location..starting..self.target.prefab..ending..".xml"
     end
-    return self.config_data.atlas or DEFAULT_ATLAS
+    return DEFAULT_ATLAS
 end
 
 function TargetIndicator:GetAvatar()
-	if self.config_data.image ~= nil then
-		return self.config_data.image
-	end
-
     local starting = self.isGhost and "avatar_ghost_" or "avatar_"
     local ending =
         (self.isCharacterState1 and "_1" or "")..

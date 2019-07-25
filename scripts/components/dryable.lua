@@ -3,7 +3,6 @@ local Dryable = Class(function(self, inst)
 
     self.product = nil
     self.drytime = nil
-	self.buildfile = nil
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("dryable")
@@ -27,14 +26,6 @@ end
 
 function Dryable:GetDryTime()
     return self.drytime
-end
-
-function Dryable:SetBuildFile(buildfile)
-    self.buildfile = buildfile
-end
-
-function Dryable:GetBuildFile()
-    return self.buildfile
 end
 
 return Dryable

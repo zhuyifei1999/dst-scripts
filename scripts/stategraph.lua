@@ -121,14 +121,9 @@ function StateGraphWrangler:Update(current_tick)
     TheSim:ProfilerPush("updaters")
     for k,v in pairs(updaters) do
         if k.inst:IsValid() then
-            local prefab = k.inst.prefab
-            if prefab ~= nil then
-			     TheSim:ProfilerPush(k.inst.prefab)
-            end
+			TheSim:ProfilerPush(k.inst.prefab)
             local sleep_amount = k:Update()
-            if prefab ~= nil then
-                TheSim:ProfilerPop()
-            end
+            TheSim:ProfilerPop()
             if sleep_amount then
                 if sleep_amount > 0 then
                   self:Sleep(k, sleep_amount)

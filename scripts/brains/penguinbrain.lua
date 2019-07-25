@@ -18,7 +18,6 @@ local SEE_PLAYER_DIST = 2.5
 local SEE_FOOD_DIST = 20
 local MAX_WANDER_DIST = 5
 local MAX_CHASE_TIME = 10
-local MAX_CHASE_DIST = 15
 
 local WANDER_DIST_NIGHT = 3
 local WANDER_DIST_DAY = 5
@@ -62,8 +61,7 @@ local function CheckMyEgg(inst)
         return egg
     end
 
-    if not egg:IsValid() or egg.components.inventoryitem:IsHeld() or
-            not egg:IsOnValidGround() then  -- NOTE: if pengulls start swimming, this can go away.
+    if not egg:IsValid() or egg.components.inventoryitem:IsHeld() then
         inst.myEgg = nil
         inst.laidEgg = false
         return nil
@@ -115,7 +113,7 @@ local function StealAction(inst)
                                                         item.components.inventoryitem.canbepickedup and 
                                                         not item.components.inventoryitem:IsHeld() and
                                                         item:IsOnValidGround() and 
-                                                        (item:HasTag("penguin_egg") or item.prefab == inst.eggprefab) then
+                                                        (item.HasTag == "penguin_egg" or item.prefab == "bird_egg") then
                                                             return char and char:IsNear(item, TOOCLOSE)
                                                         end
                                                     end)
@@ -197,7 +195,7 @@ local function LayEggAction(inst)
 
     if (inst.components.inventory and inst.components.inventory:IsFull()) then
         local egg = inst.components.inventory:GetItemInSlot(1)
-        if egg and egg.prefab == inst.eggprefab then  -- may have egg from previous session, tags not saved with simple objects
+        if egg and egg.prefab ~= "rottenegg" then  -- may have egg from previous session, tags not saved with simple objects
             egg:AddTag("penguin_egg")
             egg.components.inventoryitem.nobounce = true
             inst.myEgg = egg
@@ -209,9 +207,9 @@ local function LayEggAction(inst)
                             function()
                                 if not inst:IsValid() then return end
                                 inst.layingEgg = false
-                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE)
+                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE) 
 
-                                if PrepareForNight(inst) or not AtRookery(inst) or
+                                if PrepareForNight(inst) or not AtRookery(inst) or                                   
                                 (nearest and nearest:IsNear(inst, TOOCLOSE)) then
                                    return
                                 end
@@ -240,7 +238,7 @@ local function LayEggAction(inst)
                                    return
                                 end
 
-                                local egg = SpawnPrefab(inst.eggprefab)
+                                local egg = SpawnPrefab("bird_egg")
 
                                 if egg then
                                     --print("lay egg")
@@ -271,7 +269,7 @@ local function PickUpEggAction(inst)
                                                         item.components.inventoryitem.canbepickedup and 
                                                         not item.components.inventoryitem:IsHeld() and
                                                         item:IsOnValidGround() and 
-                                                        (item:HasTag("penguin_egg") or item.prefab == inst.eggprefab) then
+                                                        (item.HasTag == "penguin_egg" or item.prefab == "bird_egg") then
                                                             return inst:IsNear(item, 2)
                                                         end
                                                     end)
@@ -316,11 +314,6 @@ local function ShouldRunAway(inst,hunter)
     end
 end
 
-local function ShouldAttack(inst)
-    local target = inst.components.combat.target
-	return target ~= nil and inst:IsNear(target, MAX_CHASE_DIST)
-end
-
 local function HerdAtRookery(inst)
     local homePos = inst.components.knownlocations.GetLocation and inst.components.knownlocations:GetLocation("rookery")
     local herdPos = inst.components.knownlocations.GetLocation and inst.components.knownlocations:GetLocation("herd")
@@ -362,8 +355,7 @@ function PenguinBrain:OnStart()
                     false),
 
      -- ChaseAndAttack( inst, max_chase_time, give_up_dist, max_attacks, findnewtargetfn)
-        IfNode(function() return ShouldAttack(self.inst) end, "ShouldAttack",
-			ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST, 15)),
+        ChaseAndAttack(self.inst, MAX_CHASE_TIME, 15, 15),
 
         EventNode(self.inst, "gohome", 
             ActionNode(function() return FlyAway(self.inst) end)),

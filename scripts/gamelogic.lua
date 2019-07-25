@@ -13,8 +13,6 @@ require "usercommands"
 require "builtinusercommands"
 require "emotes"
 
-require "map/ocean_gen" -- for retrofitting the ocean tiles
-
 local EquipSlot = require("equipslotutil")
 local GroundTiles = require("worldtiledefs")
 local Stats = require("stats")
@@ -369,42 +367,19 @@ local function PopulateWorld(savedata, profile)
             print("Total "..tostring(#Settings.loaded_characters).." character(s) loaded")
         end
 
-        world.has_ocean = savedata.map.has_ocean
-
-		if world.components.oceancolor ~= nil then
-			world.components.oceancolor:Initialize(world.has_ocean)
-		end
-
-        if world.has_ocean then
-            local map = world.Map
-            local tuning = TUNING.OCEAN_SHADER
-            map:SetOceanEnabled(true)
-			map:SetOceanTextureBlurPassCount(tuning.TEXTURE_BLUR_PASS_COUNT)
-            map:SetOceanNoiseParameters0(tuning.NOISE[1].ANGLE, tuning.NOISE[1].SPEED, tuning.NOISE[1].SCALE, tuning.NOISE[1].FREQUENCY)
-            map:SetOceanNoiseParameters1(tuning.NOISE[2].ANGLE, tuning.NOISE[2].SPEED, tuning.NOISE[2].SCALE, tuning.NOISE[2].FREQUENCY)
-            map:SetOceanNoiseParameters2(tuning.NOISE[3].ANGLE, tuning.NOISE[3].SPEED, tuning.NOISE[3].SCALE, tuning.NOISE[3].FREQUENCY)
-        end
-
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         world.Map:SetSize(savedata.map.width, savedata.map.height)
         world.Map:SetFromString(savedata.map.tiles)
         world.Map:ResetVisited()
-
-		if savedata.retrofit_oceantiles then
-			savedata.retrofit_oceantiles = nil
-			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean...")
-			Ocean_SetWorldForOceanGen(TheWorld.Map)
-			Ocean_ConvertImpassibleToWater(savedata.map.width, savedata.map.height, require("map/ocean_gen_config"))
-			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean done")
-		end
-
         if savedata.map.prefab == "cave" then
+            world.Map:SetPhysicsWallDistance(0.75)--0) -- TEMP for STREAM
             TheFrontEnd:GetGraphicsOptions():DisableStencil()
             TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
             -- TheFrontEnd:GetGraphicsOptions():EnableStencil()
             -- TheFrontEnd:GetGraphicsOptions():EnableLightMapComponent()
             world.Map:Finalize(1)
         else
+            world.Map:SetPhysicsWallDistance(0)--0.75)
             TheFrontEnd:GetGraphicsOptions():DisableStencil()
             TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
             world.Map:Finalize(0)
@@ -423,10 +398,6 @@ local function PopulateWorld(savedata, profile)
         world.generated = savedata.map.generated
         world.meta = savedata.meta
         assert(savedata.map.topology.ids, "[MALFORMED SAVE DATA] Map missing topology information. This save file is too old, and is missing neccessary information.")
-
-		if savedata.meta ~= nil then
-			print("World generated on version " .. tostring(savedata.meta.build_version) .. ", using seed: " .. tostring(savedata.meta.seed))
-		end
 
         for i=#savedata.map.topology.ids,1, -1 do
             local name = savedata.map.topology.ids[i]

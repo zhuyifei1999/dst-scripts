@@ -215,7 +215,6 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
     inst.components.inventoryitem:ChangeImageName(inst.closedEye)
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus

@@ -82,10 +82,7 @@ local function SetSmall(inst)
         inst.components.freezable:SetResistance(2)
     end
 
-    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
-    if TheWorld.Map:GetPlatformAtPoint(my_x, my_z) == nil then
-        inst.GroundCreepEntity:SetRadius(5)
-    end
+    inst.GroundCreepEntity:SetRadius(5)
 end
 
 local function SetMedium(inst)
@@ -102,11 +99,8 @@ local function SetMedium(inst)
         inst.components.freezable:SetShatterFXLevel(4)
         inst.components.freezable:SetResistance(3)
     end
-    
-    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
-    if TheWorld.Map:GetPlatformAtPoint(my_x, my_z) == nil then
-        inst.GroundCreepEntity:SetRadius(9)
-    end
+
+    inst.GroundCreepEntity:SetRadius(9)
 end
 
 local function SetLarge(inst)
@@ -124,10 +118,7 @@ local function SetLarge(inst)
         inst.components.freezable:SetResistance(4)
     end
 
-    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
-    if TheWorld.Map:GetPlatformAtPoint(my_x, my_z) == nil then
-        inst.GroundCreepEntity:SetRadius(9)
-    end
+    inst.GroundCreepEntity:SetRadius(9)
 end
 
 local function PlayLegBurstSound(inst)
@@ -456,7 +447,6 @@ local function MakeSpiderDenFn(den_level)
         inst.components.childspawner.childname = "spider"
         inst.components.childspawner:SetRegenPeriod(TUNING.SPIDERDEN_REGEN_TIME)
         inst.components.childspawner:SetSpawnPeriod(TUNING.SPIDERDEN_RELEASE_TIME)
-        inst.components.childspawner.allowboats = true
 
         inst.components.childspawner.emergencychildname = "spider_warrior"
         inst.components.childspawner.emergencychildrenperplayer = 1
@@ -503,31 +493,9 @@ local function MakeSpiderDenFn(den_level)
         ---------------------
         inst:AddComponent("growable")
         inst.components.growable.springgrowth = true
-        inst.components.growable.stages = growth_stages                      
-
-        inst:DoTaskInTime(0,
-            function() 
-                local x,y,z = inst.Transform:GetWorldPosition()
-                if TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil then
-                    local growable = inst.components.growable
-                    if growable ~= nil then
-                        local default_stage = 1
-                        if growable:GetStage() == default_stage then                                 
-                            growable:SetStage(den_level)
-                        end
-                        growable:StopGrowing()
-                    end
-                else
-                    local growable = inst.components.growable
-                    if growable ~= nil then   
-                        local default_stage = 1
-                        if growable:GetStage() == default_stage then         
-                            growable:SetStage(den_level)          
-                        end
-                        growable:StartGrowing()
-                    end
-                end
-            end)
+        inst.components.growable.stages = growth_stages
+        inst.components.growable:SetStage(den_level)
+        inst.components.growable:StartGrowing()
 
         ---------------------
 

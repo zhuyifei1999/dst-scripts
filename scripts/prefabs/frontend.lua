@@ -79,8 +79,6 @@ local assets =
     Asset("IMAGE", "images/bg_redux_dark_bottom.tex"),
     Asset("ATLAS", "images/bg_redux_dark_bottom_solid.xml"),
     Asset("IMAGE", "images/bg_redux_dark_bottom_solid.tex"),
-	Asset("ATLAS", "images/bg_redux_dark_bottom_vignette1.xml"),
-	Asset("IMAGE", "images/bg_redux_dark_bottom_vignette1.tex"),
 
     --character portraits
     Asset("ATLAS", "images/saveslot_portraits.xml"),

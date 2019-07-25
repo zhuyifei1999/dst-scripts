@@ -94,8 +94,6 @@ local function fn()
     inst:AddTag("flying")
     inst:AddTag("cattoyairborne")
 
-    MakeInventoryFloatable(inst, "med")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -125,7 +123,6 @@ local function fn()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = 6
-    inst.components.locomotor.pathcaps = {allowocean = true}
 
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetOnSpawnFn(OnSpawnFuel)

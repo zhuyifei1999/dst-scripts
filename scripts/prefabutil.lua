@@ -1,4 +1,4 @@
-function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn, offset)
+function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn)
     local function fn()
         local inst = CreateEntity()
 
@@ -33,10 +33,6 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
         inst.components.placer.snap_to_meters = metersnap
         inst.components.placer.fixedcameraoffset = fixedcameraoffset
         inst.components.placer.onground = onground
-
-        if offset ~= nil then
-            inst.components.placer.offset = offset
-        end
 
         if scale ~= nil and scale ~= 1 then
             inst.Transform:SetScale(scale, scale, scale)

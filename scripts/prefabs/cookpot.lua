@@ -69,7 +69,7 @@ end
 
 local function onopen(inst)
     if not inst:HasTag("burnt") then
-        inst.AnimState:PlayAnimation("cooking_pre_loop", true)
+        inst.AnimState:PlayAnimation("cooking_pre_loop")
         inst.SoundEmitter:KillSound("snd")
         inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_open")
         inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot", "snd")
@@ -232,6 +232,9 @@ local function fn()
     --inst.Light:SetColour(1,0,0)
 
     inst:AddTag("structure")
+
+    --stewer (from stewer component) added to pristine state for optimization
+    inst:AddTag("stewer")
 
     inst.AnimState:SetBank("cook_pot")
     inst.AnimState:SetBuild("cook_pot")

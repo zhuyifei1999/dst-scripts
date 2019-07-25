@@ -77,7 +77,7 @@ local states=
                 inst.Physics:Stop()
                 inst.components.locomotor:Stop()
                 inst.SoundEmitter:KillSound("slide")
-                inst.SoundEmitter:PlaySound(inst._soundpath.."idle")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/idle")
                 if playanim then
                     inst.AnimState:PlayAnimation(playanim)
                     inst.AnimState:SetTime(math.random()*2)
@@ -106,9 +106,9 @@ local states=
                 inst.AnimState:SetTime(math.random()*2)
                 inst.SoundEmitter:KillSound("slide")
                 if TheWorld.state.snowlevel < 0.1 then
-                    inst.SoundEmitter:PlaySound(inst._soundpath.."land")
+                    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/land")
                 else
-                    inst.SoundEmitter:PlaySound(inst._soundpath.."land_dirt")
+                    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/land_dirt")
                 end
                 inst.AnimState:PlayAnimation("slide_bounce")
             end,
@@ -120,9 +120,9 @@ local states=
             
             onexit = function(inst)
                 if TheWorld.state.iswinter then
-                    inst.SoundEmitter:PlaySound(inst._soundpath.."slide","slide")
+                    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/slide","slide")
                 else
-                    inst.SoundEmitter:PlaySound(inst._soundpath.."slide_dirt","slide")
+                    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/slide_dirt","slide")
                 end
             end,
 
@@ -190,7 +190,7 @@ local states=
                 inst.components.locomotor:WalkForward()
                 inst.AnimState:PlayAnimation("walk", true)
                 inst.SoundEmitter:KillSound("slide")
-                inst.SoundEmitter:PlaySound(inst._soundpath.."idle")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/idle")
             end,
     
             events=
@@ -341,7 +341,7 @@ local states=
                 inst:PerformBufferedAction()
                 inst.components.locomotor:WalkForward()
                 inst.AnimState:PlayAnimation("walk", true)
-                inst.SoundEmitter:PlaySound(inst._soundpath.."idle")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/idle")
             end,
             timeline = {
                 TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/footstep") end),
@@ -360,7 +360,7 @@ local states=
             
             onenter = function(inst)
                 inst.SoundEmitter:KillSound("slide")
-                inst.SoundEmitter:PlaySound(inst._soundpath.."death")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/death")
                 inst.Physics:Stop()	
                 inst.AnimState:PlayAnimation("death")
                 inst.components.locomotor:StopMoving()
@@ -390,7 +390,7 @@ local states=
             
             onenter = function(inst)
                 inst.components.locomotor:RunForward()
-                inst.SoundEmitter:PlaySound(inst._soundpath.."jumpin")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/jumpin")
                 inst.AnimState:PushAnimation("slide_loop", "loop")
             end,
             
@@ -398,7 +398,7 @@ local states=
             {
                 TimeEvent(GetRandomWithVariance(30,15)*FRAMES, function(inst)
                                         inst.sg:GoToState("walk_start") 
-                                        --inst.SoundEmitter:PlaySound(inst._soundpath.."slide")
+                                        --inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/slide")
                                      end),
             },
         },
@@ -409,14 +409,8 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt")
-            inst.SoundEmitter:PlaySound(inst._soundpath.."taunt")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/taunt")
         end,
-
-         timeline=
-        {
-            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."taunt") end),
-            TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."taunt") end),
-        },
         
         events=
         {
@@ -433,7 +427,7 @@ local states=
                     inst.sg.statemem.target = target
                 end
                 inst.SoundEmitter:KillSound("slide")
-                inst.SoundEmitter:PlaySound(inst._soundpath.."attack")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/attack")
                 inst.components.combat:StartAttack()
                 inst.components.locomotor:StopMoving()
                 inst.AnimState:PlayAnimation("atk_pre")
@@ -511,7 +505,7 @@ local states=
             
             onenter = function(inst)
                 inst.SoundEmitter:KillSound("slide")
-                inst.SoundEmitter:PlaySound(inst._soundpath.."attack")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/attack")
                 inst.components.combat:StartAttack()
                 --inst.components.locomotor:StopMoving()
                 inst.AnimState:PlayAnimation("slide_bounce")
@@ -535,10 +529,10 @@ CommonStates.AddSleepStates(states,
     {
         starttimeline = 
         {
-            -- TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."sleep") end ),
+            -- TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/sleep") end ),
         },
         sleeptimeline = {
-            TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."sleep") end),
+            TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/sleep") end),
         },
     })
 

@@ -2,7 +2,7 @@ require "class"
 require "util"
 local TechTree = require("techtree")
 
-Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct)
+Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct, imageoverride)
     --Character ingredient multiples of 5 check only applies to
     --health and sanity cost, not max health or max sanity
     if ingredienttype == CHARACTER_INGREDIENT.HEALTH or
@@ -18,12 +18,22 @@ Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct)
     self.type = ingredienttype
     self.amount = amount
     self.atlas = atlas and resolvefilepath(atlas) or nil
+    self.image = imageoverride
     self.deconstruct = deconstruct
 end)
 
 function Ingredient:GetAtlas()
-	self.atlas = self.atlas or resolvefilepath(GetInventoryItemAtlas(self.type..".tex"))
-	return self.atlas
+    if self.atlas == nil then
+       self.atlas = resolvefilepath(GetInventoryItemAtlas(self:GetImage()))
+    end
+    return self.atlas
+end
+
+function Ingredient:GetImage()
+    if self.image == nil then
+        self.image = self.type..".tex"
+    end
+    return self.image
 end
 
 local num = 0
@@ -53,7 +63,7 @@ end
 
 mod_protect_Recipe = false
 
-Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn, product, build_mode, build_distance)
+Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn, product)
     if mod_protect_Recipe then
         print("Warning: Calling Recipe from a mod is now deprecated. Please call AddRecipe from your modmain.lua file.")
     end
@@ -75,9 +85,9 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
 
     self.product       = product or name
     self.tab           = tab
-    
+
     self.imagefn       = type(image) == "function" and image or nil
-self.image         = self.imagefn == nil and image or (self.product .. ".tex")
+    self.image         = self.imagefn == nil and image or (self.product .. ".tex")
     self.atlas         = (atlas and resolvefilepath(atlas))-- or resolvefilepath(GetInventoryItemAtlas(self.image))
 
     --self.lockedatlas   = (lockedatlas and resolvefilepath(lockedatlas)) or (atlas == nil and resolvefilepath("images/inventoryimages_inverse.xml")) or nil
@@ -97,9 +107,6 @@ self.image         = self.imagefn == nil and image or (self.product .. ".tex")
     self.numtogive     = numtogive or 1
 
     self.builder_tag   = builder_tag or nil
-
-    self.build_mode    = build_mode or BUILDMODE.LAND
-    self.build_distance= build_distance or 1
 
     num                = num + 1
     AllRecipes[name]   = self

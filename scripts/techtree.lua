@@ -6,16 +6,15 @@ local AVAILABLE_TECH =
     "MAGIC",
     "ANCIENT",
     "CELESTIAL",
-	"MOON_ALTAR",
     "SHADOW",
     "CARTOGRAPHY",
-	"SEAFARING",
     "SCULPTING",
     "ORPHANAGE", --teehee
     "PERDOFFERING",
     "WARGOFFERING",
     "PIGOFFERING",
 	"MADSCIENCE",
+    "FOODPROCESSING",
 }
 
 local function Create(t)
