@@ -33,7 +33,7 @@ local SPICES =
     SPICE_CHILI  = { oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
 }
 
-local function GenerateSpicedFoods(foods)
+function GenerateSpicedFoods(foods)
     for foodname, fooddata in pairs(foods) do
         for spicenameupper, spicedata in pairs(SPICES) do
             local newdata = shallowcopy(fooddata)
