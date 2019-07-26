@@ -30,8 +30,6 @@ local Stewer = Class(function(self, inst)
     self.product_spoilage = nil
     self.spoiledproduct = "spoiled_food"
     self.spoiltime = nil
-    --self.keepspoilage = false --default refreshes spoilage by half, set to true will not
-    self.cooktimemult = 1
 
     --"readytocook" means it's CLOSED and FULL
     --This tag is used for gathering scene actions only
@@ -44,8 +42,7 @@ local Stewer = Class(function(self, inst)
     inst:ListenForEvent("itemlose", onnotready)
     inst:ListenForEvent("onopen", onnotready)
 
-    --V2C: Recommended to explicitly add tag to prefab pristine state
-    inst:AddTag("stewer")
+    self.inst:AddTag("stewer")
 end,
 nil,
 {
@@ -53,7 +50,6 @@ nil,
 })
 
 function Stewer:OnRemoveFromEntity()
-    self.inst:RemoveTag("stewer")
     self.inst:RemoveTag("donecooking")
     self.inst:RemoveTag("readytocook")
 end
@@ -118,6 +114,10 @@ function Stewer:CanCook()
     return self.inst.components.container ~= nil and self.inst.components.container:IsFull()
 end
 
+function Stewer:GetRecipeForProduct()
+	return self.product ~= nil and cooking.GetRecipe(self.inst.prefab, self.product) or nil
+end
+
 function Stewer:StartCooking()
     if self.targettime == nil and self.inst.components.container ~= nil then
         self.done = nil
@@ -127,7 +127,7 @@ function Stewer:StartCooking()
             self.onstartcooking(self.inst)
         end
 
-		local ings = {}
+		local ings = {}         
 		for k, v in pairs (self.inst.components.container.slots) do
 			table.insert(ings, v.prefab)
 		end
@@ -145,15 +145,16 @@ function Stewer:StartCooking()
 					spoilage_total = spoilage_total + v.components.perishable:GetPercent()
 				end
 			end
-            self.product_spoilage =
-                (spoilage_n <= 0 and 1) or
-                (self.keepspoilage and spoilage_total / spoilage_n) or
-                1 - (1 - spoilage_total / spoilage_n) * .5
+			self.product_spoilage = 1
+			if spoilage_total > 0 then
+				self.product_spoilage = spoilage_total / spoilage_n
+				self.product_spoilage = 1 - (1 - self.product_spoilage) * .5
+			end
 		else
 			self.product_spoilage = nil
 		end
-
-        cooktime = TUNING.BASE_COOK_TIME * cooktime * self.cooktimemult
+		        
+        cooktime = TUNING.BASE_COOK_TIME * cooktime
         self.targettime = GetTime() + cooktime
         if self.task ~= nil then
             self.task:Cancel()

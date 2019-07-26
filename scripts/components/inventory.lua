@@ -192,10 +192,12 @@ function Inventory:OnLoad(data, newents)
 end
 
 function Inventory:DropActiveItem()
+	local active_item = nil
     if self.activeitem ~= nil then
-        self:DropItem(self.activeitem)
+        active_item = self:DropItem(self.activeitem)
         self:SetActiveItem(nil)
     end
+	return active_item
 end
 
 function Inventory:ReturnActiveActionItem(item)
@@ -666,7 +668,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
         inst.components.inventoryitem:RemoveFromOwner(true)
     end
 
-    local objectDestroyed = inst.components.inventoryitem:OnPickup(self.inst)
+    local objectDestroyed = inst.components.inventoryitem:OnPickup(self.inst, src_pos)
     if objectDestroyed then
         return
     end
@@ -1572,6 +1574,10 @@ function Inventory:EquipActionItem(item)
         item.components.equippable ~= nil and
         item.components.equippable.equipslot == EQUIPSLOTS.HANDS then
         if not item.components.equippable:IsEquipped() then
+            if item.components.stackable ~= nil and item.components.stackable.stacksize > 1 and not item.components.equippable.equipstack then
+                local stack = item.components.stackable:Get(item.components.stackable.stacksize - 1)
+                self:GiveItem(stack)
+            end
             self:Equip(item)
         end
         if self:GetActiveItem() == item then
@@ -1684,12 +1690,7 @@ function Inventory:GetEquippedMoistureRate(slot)
 end
  
 function Inventory:GetWaterproofness(slot)
-    if self.inst.components.moisture ~= nil and self.inst.components.moisture:GetWaterproofInventory() then
-        return 1
-    end
-
     local waterproofness = 0
-
     if slot then
         local item = self:GetItemInSlot(slot)
         if item and item.components.waterproofer then

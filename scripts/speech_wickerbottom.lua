@@ -37,7 +37,6 @@ return
             GENERIC = "It's full to the brim, I'm afraid.",
             NOTALLOWED = "Nonsense.",
             INUSE = "I do hope you're keeping organized, my dear.",
-            NOTMASTERCHEF = "It would be rude of me to tamper with it.",
         },
         CONSTRUCT =
         {
@@ -55,7 +54,6 @@ return
         {   
             GENERIC = "I've other things on my mind currently.",
             INUSE = "Be sure to sort by color and weight, dear.",   
-            NOTMASTERCHEF = "It would be rude of me to tamper with it.",
         },
         DRAW =
         {
@@ -145,9 +143,32 @@ return
             MISMATCH = "That's not the proper dinnerware for this food.", 
             SAMEDISH = "It's already on the proper dinnerware.", 
         },
+        SAIL =
+        {
+            REPAIR = "It's already in ideal condition.",
+        },
+        ROW_FAIL =
+        {
+            BAD_TIMING0 = "I must time this perfectly.",
+            BAD_TIMING1 = "This might take some tenacity.",
+            BAD_TIMING2 = "Oh dear, I'll have to start over.",
+        },
+        LOWER_SAIL_FAIL =
+        {
+            "There must be a trick to this.",
+            "Oh, you finicky thing!",
+            "Come along now, no need to be stubborn.",
+        },
+        BATHBOMB =
+        {
+            GLASSED = "The surface of the spring has crystallized, unfortunately.",
+            ALREADY_BOMBED = "No need to be excessive.",
+        },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
-    
+    ANNOUNCE_BOAT_LEAK = "The boat has fallen into dangerous disrepair.",
+    ANNOUNCE_BOAT_SINK = "Goodness, we're sinking!",
+    ANNOUNCE_WASHED_ASHORE = "I hope my books weren't ruined.",
     ANNOUNCE_EAT =
     {
         GENERIC = "Yum!",
@@ -283,6 +304,22 @@ return
     ANNOUNCE_KLAUS_UNCHAINED = "Whatever enchantment restrained it has been undone.",
     ANNOUNCE_KLAUS_CALLFORHELP = "Careful! It has summoned lesser Krampii.",
 
+    ANNOUNCE_MOONALTAR_MINE =
+    {
+        GLASS_MED = "I'm coming, dear.",
+        GLASS_LOW = "Nearly there.",
+        GLASS_REVEAL = "Tada!",
+        IDOL_MED = "I'm coming, dear.",
+        IDOL_LOW = "Nearly there.",
+        IDOL_REVEAL = "Tada!",
+        SEED_MED = "I'm coming, dear.",
+        SEED_LOW = "Nearly there.",
+        SEED_REVEAL = "Tada!",
+    },
+
+    ANNOUNCE_FLARE_SEEN = "Someone's fired a flare.",
+    ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "The megafauna have set their eyes on us.",
+
     --hallowed nights
     ANNOUNCE_SPOOKED = "Curious. I seem to be hallucinating.",
     ANNOUNCE_BRAVERY_POTION = "My intestinal fortitude has returned!",
@@ -297,18 +334,6 @@ return
     QUAGMIRE_ANNOUNCE_LOSE = "We've failed.",
     QUAGMIRE_ANNOUNCE_WIN = "We best be on our way. Ta!",
 
-    ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I seem to have been rendered conductive!",
-    ANNOUNCE_ATTACH_BUFF_ATTACK            = "My, I feel full of vim and vigor!",
-    ANNOUNCE_ATTACH_BUFF_PLAYERABSORPTION  = "I daresay I'm tougher than I may appear!",
-    ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "I'll have everything done in a snap!",
-    ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "I feel so pleasantly dry!",
-    
-    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Back to the the natural state of things",
-    ANNOUNCE_DETACH_BUFF_ATTACK            = "Oh my, what came over me?",
-    ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "It appears my defense has weakened.",
-    ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I can only work tirelessly for so long.",
-    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Did I just feel a raindrop?",
-    
     BATTLECRY =
     {
         GENERIC = "Combat!",
@@ -328,7 +353,7 @@ return
         SPIDER_WARRIOR = "Back to the drawing board!",
     },
 
-    DESCRIBE =
+    DESCRIBE=
     {
         PLAYER =
         {
@@ -339,7 +364,7 @@ return
             GHOST = "Poor dear. %s needs a heart to anchor them to this plane.",
             FIRESTARTER = "%s, what have I told you about lighting fires?",
         },
-        WILSON =
+        WILSON = 
         {
             GENERIC = "Greetings, dear %s! How are your theorems coming?",
             ATTACKER = "I'll pull you back to base by the ear if I have to, %s.",
@@ -348,7 +373,7 @@ return
             GHOST = "Didn't I tell you to wear a jacket? I'll get the hearts...",
             FIRESTARTER = "%s needs a stern talking to.",
         },
-        WOLFGANG =
+        WOLFGANG = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "I will not tolerate such behavior, %s.",
@@ -357,7 +382,7 @@ return
             GHOST = "%s acts tough, but he needs my help. A heart should do it.",
             FIRESTARTER = "Was that fire intentional, %s?",
         },
-        WAXWELL =
+        WAXWELL = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Up to your old tricks, are you %s?",
@@ -366,7 +391,7 @@ return
             GHOST = "Stings, doesn't it dear? Let me fetch you a heart.",
             FIRESTARTER = "Lighting fires are we now, %s? Tread carefully.",
         },
-        WX78 =
+        WX78 = 
         {
             GENERIC = "Ah, the automaton. Greetings, dear %s!",
             ATTACKER = "What devilishness is that robot up to?",
@@ -375,7 +400,7 @@ return
             GHOST = "Fascinating. %s indeed has a specter, and it lingers still.",
             FIRESTARTER = "Do be careful when trying to destroy all life, dear.",
         },
-        WILLOW =
+        WILLOW = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "You like to test boundaries, don't you dear?",
@@ -384,7 +409,7 @@ return
             GHOST = "If you cross your ghosteyes they'll get stuck like that, dear.",
             FIRESTARTER = "What have I said about lighting fires, dear?",
         },
-        WENDY =
+        WENDY = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "%s! That's enough out of you, young lady!",
@@ -393,7 +418,7 @@ return
             GHOST = "Goodness, this just won't do. Let me find you a heart, %s.",
             FIRESTARTER = "Who gave you flammable materials, %s?",
         },
-        WOODIE =
+        WOODIE = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Careful, %s. You know what paper pulp is made of, don't you?",
@@ -404,7 +429,7 @@ return
             BEAVERGHOST = "I'll add \"Castorthrope\" to my endangered species list.",
             FIRESTARTER = "Keep lighting fires if you want to get burnt, dear.",
         },
-        WICKERBOTTOM =
+        WICKERBOTTOM = 
         {
             GENERIC = "Ah, greetings %s! Fancy seeing you here.",
             ATTACKER = "%s's immorality is putting holes in my multiverse speculations.",
@@ -413,7 +438,7 @@ return
             GHOST = "All our self-help books will finally be put to use, hmm %s?",
             FIRESTARTER = "Book burnings are quite gauche, %s.",
         },
-        WES =
+        WES = 
         {
             GENERIC = "Ah, the mime lad. Greetings, dear %s!",
             ATTACKER = "His body language says everything.",
@@ -422,7 +447,7 @@ return
             GHOST = "Poor dear. %s needs a heart to anchor him to this plane.",
             FIRESTARTER = "Don't cry to me when you burn yourself, dear.",
         },
-        WEBBER =
+        WEBBER = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "That's enough funny business, young arachnid.",
@@ -431,7 +456,7 @@ return
             GHOST = "I'll fetch you a nice colored bandage once you're revived.",
             FIRESTARTER = "Who gave you matches, %s?",
         },
-        WATHGRITHR =
+        WATHGRITHR = 
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "You're not making trouble, are you %s?",
@@ -466,15 +491,6 @@ return
             REVIVER = "You're a very good friend, %s.",
             GHOST = "Tsk, well that's no good. No good at all.",
             FIRESTARTER = "Do you want to singe your leaves off, %s?",
-        },
-        WARLY =
-        {
-            GENERIC = "Ah, greetings, dear %s!",
-            ATTACKER = "No need to cause a ruckus now, %s.",
-            MURDERER = "I smell fresh baked murder on the air. Attack!",
-            REVIVER = "Excellent work today, %s.",
-            GHOST = "We'd best get you back on your feet, dear.",
-            FIRESTARTER = "I know that fire wasn't for cooking, dear.",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -674,11 +690,14 @@ return
         GOATMILK = "Tantalizing!",
         MEATRACK =
         {
-            GENERIC = "Meats can be dehydrated.",
+            DONE = "The process has completed.",
             DRYING = "Dehydration is a slow process.",
             DRYINGINRAIN = "The rain has temporarily halted the dehydration process.",
-            DONE = "The process has completed.",
+            GENERIC = "Meats can be dehydrated.",
             BURNT = "It doesn't seem stable.",
+            DONE_NOTMEAT = "The process has completed.",
+            DRYING_NOTMEAT = "Dehydration is a slow process.",
+            DRYINGINRAIN_NOTMEAT = "The rain has temporarily halted the dehydration process.",
         },
         MERMHEAD = 
         {
@@ -1061,6 +1080,10 @@ return
         TURF_SINKHOLE="The ground. You step on it.",
         TURF_UNDERROCK="The ground. You step on it.",
         TURF_MUD="The ground. You step on it.",
+
+        TURF_METEOR = "I'm not sure you grasp the gravity of the situation. Ho ho!",
+        TURF_PEBBLEBEACH = "The ground. You step on it.",
+
         TURF_DRAGONFLY = "This substance is imbued with a sort of natural fire deterrent.",
 
         BATBAT = "Interesting. This weapon appears to be alive.",
@@ -1479,6 +1502,7 @@ return
         CRITTER_PUPPY = "Who's the sweetest little Canis lupus?",
         CRITTER_KITTEN = "Now it feels like home.",
         CRITTER_PERDLING = "What a handsome poult you are!",
+        CRITTER_LUNARMOTHLING = "Who wuvs their widdle specimen?",
 
         CROW = 
         {
@@ -1512,6 +1536,7 @@ return
         GOLDENSHOVEL = "The most malleable of metals, but let's see how this digs.",
         GOLDNUGGET = "A small lump of gold. Atomic number 79.",
         POOP = "A quantity of animal feces. How fragrant.",
+        --PORTABLECOOKPOT_ITEM = "It will be nice to eat some properly prepared food.",
         SCORCHED_SKELETON = "You don't inspire a great deal of confidence, dear.",
         PUMPKIN = "Cucurbita pepo.",
         PUMPKINCOOKIE = "Pumpkin biscuits, goody!",
@@ -1840,7 +1865,7 @@ return
 
         FEATHERHAT = "Not quite the genuine article, but it might fool some birds.",
         FEATHER_CANARY = "Feather of Canaria.",
-        FEATHER_CROW = "Feather of Corvus.",
+        FEATHER_CROW = "Feather of Corvus. Or Alcidae?",
         FEATHER_ROBIN = "Feather of Cardinalis.",
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
         FEATHERPENCIL = "Oh, how I missed proper writing implements!",
@@ -2037,6 +2062,9 @@ return
         CHESSPIECE_BEARGER = "Quite expressive!",
         CHESSPIECE_MOOSEGOOSE = "Bust of Alces canadensis.",
         CHESSPIECE_DRAGONFLY = "Artist's interpretation of mythical Diptera.",
+        CHESSPIECE_BUTTERFLY = "Carved in the lunar moth's likeness.",
+        CHESSPIECE_ANCHOR = "Artists tend to reference what they're familiar with.",
+        CHESSPIECE_MOON = "The missing chunk is a recent development.",
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
@@ -2103,6 +2131,12 @@ return
         BLUEGEM = "It is cold.",
         PURPLEGEM = "It gives off a strange aura.",
         HOUND = "That hound is not domesticated.",
+        HOUNDCORPSE =
+        {
+             GENERIC = "It would be in our best interest to dispose of it quickly.",
+             BURNING = "That ought to prevent any more mishaps.",
+             REVIVING = "Fascinating, it's reanimating before my eyes.",
+        },
         FIREHOUND = "That hound is more dangerous than the others.",
         ICEHOUND = "What a strange, cold beast.",
         HOUNDBONE = "The endoskeleton of Canis lupus, definitely not familiaris.",
@@ -2498,21 +2532,21 @@ return
         QUAGMIRE_LAMP_SHORT = "It's a nice enough light.",
 
         --v2 Winona
-        WINONA_CATAPULT =
+        WINONA_CATAPULT = 
         {
             GENERIC = "That Winona is quite resourceful.",
             OFF = "It requires a power source.",
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_SPOTLIGHT =
+        WINONA_SPOTLIGHT = 
         {
             GENERIC = "A sensible safety precaution.",
             OFF = "It requires a power source.",
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_BATTERY_LOW =
+        WINONA_BATTERY_LOW = 
         {
             GENERIC = "An electrical power supply for her lovely inventions.",
             LOWPOWER = "Hm, her invention is starting to run down.",
@@ -2520,7 +2554,7 @@ return
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_BATTERY_HIGH =
+        WINONA_BATTERY_HIGH = 
         {
             GENERIC = "It's good to see her keeping an open mind.",
             LOWPOWER = "The magical focus will wear out soon.",
@@ -2534,69 +2568,169 @@ return
         ARMOR_BRAMBLE = "I believe our friend knit it himself.",
         TRAP_BRAMBLE = "Microscopic barbs on the thorns make them quite unpleasant.",
 
-        --v2 Warly
-        PORTABLECOOKPOT_ITEM =
+        DRIFTWOOD_TREE = 
         {
-            GENERIC = "It will be nice to eat some properly prepared food.",
-            DONE = "Smells nourishing.",
+            BURNING = "The tree is burning.",
+            BURNT = "Carbonized, through and through.",
+            CHOPPED = "Little of use remains.",
+            GENERIC = "A new material may be of some use to us.",
         },
-        PORTABLEBLENDER_ITEM = "Quite a lively cooking instrument.",
-        PORTABLESPICER_ITEM =
+        BOATFRAGMENT01 = "What a pity.",
+        BOATFRAGMENT02 = "What a pity.",
+        BOATFRAGMENT03 = "What a pity.",
+        BOATFRAGMENT04 = "What a pity.",
+        BOATFRAGMENT05 = "What a pity.",
+        BOAT_LEAK = "Our ship is taking on water.",
+        MAST = "Simply raise a sail, and off we go!",
+        SEASTACK = "It would be no good to run aground of that.",
+        FISHINGNET = "The sea is a treasure trove of survival resources.",
+        ANTCHOVIES = "Ah, I see! A brand new oceanic species!",
+        STEERINGWHEEL = "Ship steering is no easy task.",
+        ANCHOR = "An anchor for our vessel.",
+        BOATPATCH = "For repairing hull damages.",
+        DRIFTWOOD_LOG = "A naturally buoyant material.",
+
+        MOON_TREE = 
         {
-            GENERIC = "It'll need some elbow grease.",
-            DONE = "The flavoring is ready for use.",
+            BURNING = "Tsk. Such a waste of resources.",
+            BURNT = "Carbonized, through and through.",
+            CHOPPED = "Little of use remains.",
+            GENERIC = "It seems to have been altered by ambient lunar energies.",
         },
-        SPICEPACK = "This should keep my provisions from spoiling!",
-        SPICE_GARLIC = "My goodness that smell is pungent!",
-        SPICE_SUGAR = "A treacle of fruits.",
-        SPICE_CHILI = "I'm not a fan of spicy food.",
-        MONSTERTARTARE = "Monster meat, dressed up fancy.",
-        FRESHFRUITCREPES = "Sticky fingers will ensue.",
-        FROGFISHBOWL = "I'll happily volunteer to taste-test.",
-        POTATOTORNADO = "How creative!",
-        DRAGONCHILISALAD = "I do like fresh greens.",
-        GLOWBERRYMOUSSE = "A brand new recipe I see. Marvelous!",
-        VOLTGOATJELLY = "His ingenuity with limited materials is very impressive.",
-        NIGHTMAREPIE = "It tastes a bit like magic.",
-        BONESOUP = "Extremely savory. I wouldn't mind seconds.",
-        MASHEDPOTATOES = "I wouldn't mind a bite or two, myself.",
-        POTATOSOUFFLE = "It looks lovely, dear.",
-        MOQUECA = "He's so very talented.",
-        GAZPACHO = "Ah! A classic Spanish cuisine.",
-        ASPARAGUSSOUP = "Smelly, but quite nutritious.",
-        VEGSTINGER = "It's quite piquant.",
-        BANANAPOP = "Well, isn't that refreshing?",
-        CEVICHE = "Could use a little more sauce.",
-        SALSA = "My goodness, that has some zest to it!",
-        PEPPERPOPPER = "Just a tad spicy for me!",
 
-        TURNIP = "Edible root of Brassica rapa.",
-        TURNIP_COOKED = "Roast Brassica rapa.",
-        TURNIP_SEEDS = "Mutated seed of Brassica rapa.",
-        --
-        GARLIC = "Edible bulb of Allium cepa.",
-        GARLIC_COOKED = "Roast Allium cepa.",
-        GARLIC_SEEDS = "Mutated seed of Allium cepa.",
-        --
-        ONION = "Allium sativum, a close relative of Allium cepa.",
-        ONION_COOKED = "Roast Allium sativum.",
-        ONION_SEEDS = "Mutated seed of Allium sativum.",
-        --
-        POTATO = "Solanum tuberosum, a staple in some cultures.",
-        POTATO_COOKED = "Roasted Solanum tuberosum.",
-        POTATO_SEEDS = "Mutated seed of Solanum tuberosum.",
-        --
-        TOMATO = "Fruit of Solanum lycopersicum.",
-        TOMATO_COOKED = "Roasted Solanum lycopersicum.",
-        TOMATO_SEEDS = "Mutated seed of Solanum lycopersicum.",
+        MOONBUTTERFLY = 
+        {
+            GENERIC = "It gets its green hue from the lunar residue in its system.",
+            HELD = "I may have a use for this.",
+        },
+        MOONBUTTERFLYWINGS = "As I suspected. There are high concentrations of lunar residue.",
+        MOONBUTTERFLY_SAPLING = "The moths and the trees have somehow mutated together here.",
+        ROCK_AVOCADO_FRUIT = "The outside is mineral, yet the inside is organic.",
+        ROCK_AVOCADO_FRUIT_RIPE = "I miss a nice fresh avocado.",
+        ROCK_AVOCADO_FRUIT_RIPE_COOKED = "It's perfectly safe for consumption.",
+        ROCK_AVOCADO_FRUIT_SPROUT = "It would be better to allow it to grow at this point.",
+        ROCK_AVOCADO_BUSH = 
+        {
+            BARREN = "It is past the reproduction phase of its life cycle.",
+            WITHERED = "These are not ideal conditions for this species.",
+            GENERIC = "Surely that can't be fruit.",
+            PICKED = "A bush that grew from the lunar soil.",
+            DISEASED = "I fear it has contracted a disease.",
+            DISEASING = "Hm, I see browning at the leaves' edges.",
+            BURNING = "Tsk. Such a waste of resources.",
+        },
+        DEAD_SEA_BONES = "What curious skeletal structures.",
+        HOTSPRING = 
+        {
+            GENERIC = "My old feet could use a good soak.",
+            BOMBED = "Yes, I'll definitely soak my feet later.",
+            GLASS = "I strongly suspect moon glass is organic in composition now.",
+        },
+        MOONGLASS = "Perhaps I could keep a sample and study the composition.",
+        MOONGLASS_ROCK = "It appears to be mineral, but may actually be organic in nature.",
+        BATHBOMB = "Ah, I do love a warm bath with a book.",
+        TRAP_STARFISH = 
+        {
+            GENERIC = "I'd be careful of that if I were you.",
+            CLOSED = "It hunts similarly to Dionaea muscipula.",
+        },
+        DUG_TRAP_STARFISH = "It is no longer a danger.",
+        SPIDER_MOON = 
+        {
+            GENERIC = "Those mineral deposits may have irritated it into hostility.",
+            SLEEPING = "How convenient, it's sleeping.",
+            DEAD = "Good riddance.",
+        },
+        MOONSPIDERDEN = "Those poor hideous creatures are making their den here.",
+        FRUITDRAGON =
+        {
+            GENERIC = "Plant and animal have merged into one in this specimen.",
+            RIPE = "It does smell quite delicious.",
+            SLEEPING = "It's in a deep sleep.",
+        },
+        PUFFIN =
+        {
+            GENERIC = "What a dear Fratercula corniculata!",
+            HELD = "There there, now.",
+            SLEEPING = "It's in a deep sleep.",
+        },
 
-        ASPARAGUS = "A great source of dietary fiber.", 
-        ASPARAGUS_COOKED = "It releases sulfur compounds when it's digested.",
-        ASPARAGUS_SEEDS = "Ah. This will grow some fresh vegetables.",
+        MOONGLASSAXE = "Always strive for greater efficacy.",
+        GLASSCUTTER = "I like to get straight to the point.",
 
-        PEPPER = "Of the genus Capsicum, if I'm not mistaken.",
-        PEPPER_COOKED = "I must be careful not to rub my eyes.",
-        PEPPER_SEEDS = "A Capsicum seed.",
+        ICEBERG =
+        {
+            GENERIC = "We ought to steer the ships clear of that.",
+            MELTED = "From dangerous solid to harmless liquid. Thank-you, heat.",
+        },
+        ICEBERG_MELTED = "From dangerous solid to harmless liquid. Thank-you, heat.",
+
+        MINIFLARE = "It's safer for everyone to stick together.",
+
+        MOON_FISSURE = 
+        {
+            GENERIC = "This is not the same type of magic I've seen from Maxwell's fuel.",
+            NOLIGHT = "The moon cycles here are beginning to make a lot more sense.",
+        },
+        MOON_ALTAR =
+        {
+            MOON_ALTAR_WIP = "It says it'll share a secret with me if I complete it.",
+            GENERIC = "The voice says it has knowledge to share.",
+        },
+
+        MOON_ALTAR_IDOL = "Its energy is prodding at the edges of my mind.",
+        MOON_ALTAR_GLASS = "I believe it is trying to communicate with me telepathically.",
+        MOON_ALTAR_SEED = "It is projecting images of an altar into my mind.",
+
+        MOON_ALTAR_ROCK_IDOL = "I think I had best mine it out.",
+        MOON_ALTAR_ROCK_GLASS = "I think I had best mine it out.",
+        MOON_ALTAR_ROCK_SEED = "I think I had best mine it out.",
+
+        SEAFARING_PROTOTYPER =
+        {
+            GENERIC = "It's good to keep the mind occupied at sea.",
+            BURNT = "How irresponsible.",
+        },
+        SEAFARER_KIT = "It is a ship construction kit.",
+        BOAT_ITEM = "It will allow us to go on the water.",
+        MAST_ITEM = "A tool for harnessing the wind's power.",
+        STEERINGWHEEL_ITEM = "A necessity should we want to steer our boat.",
+        ANCHOR_ITEM = "It will allow us to create an anchor for our ships.",
+        MUTATEDHOUND = 
+        {
+            DEAD = "What a pity.",
+            GENERIC = "Another moon-induced mutation... Hm.",
+            SLEEPING = "I should like to study it up close.",
+        },
+        MUTATED_PENGUIN = 
+        {
+            DEAD = "That takes care of that.",
+            GENERIC = "Something about this place has made the creature go quite wrong.",
+            SLEEPING = "I see no reason to wake it.",
+        },
+        CARRAT = 
+        {
+            DEAD = "Perhaps that was unnecessary.",
+            GENERIC = "My, another plant and animal hybrid. How odd.",
+            HELD = "The plant and animal matter has fused in total harmony.",
+            SLEEPING = "It's in a deep sleep.",
+        },
+
+        GESTALT = "They are the projections of something stronger.",
+
+        BULLKELP_PLANT = 
+        {
+            GENERIC = "Nereocystis luetkeana.",
+            PICKED = "Nereocystis luetkeana needs time to regrow.",
+        },
+        BULLKELP_ROOT = "I suppose this is why it's referred to as \"bullwhip\" kelp.",
+        KELPHAT = "It understandably has an effect on one's emotional wellbeing.",
+        KELP = "It is an edible kelp species.",
+        KELP_COOKED = "That certainly didn't improve the texture.",
+        KELP_DRIED = "It's slightly more palatable with this texture.",
+
+        WALKINGPLANK = "A dangerous escape route for one stranded at sea.",
+        OAR = "One and two, and one and two!",
     },
 
     EAT_FOOD =

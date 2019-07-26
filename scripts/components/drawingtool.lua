@@ -21,24 +21,19 @@ end
 
 function DrawingTool:GetImageToDraw(target)
     local ent = FindEntityToDraw(target, self.inst)
-    if ent == nil then
-        return
-    end
-    return ent.drawimageoverride or
-        (#(ent.components.inventoryitem.imagename or "") > 0 and ent.components.inventoryitem.imagename) or
-        ent.prefab or
-        nil,
-        ent,
-        ent.drawatlasoverride or
-        (#(ent.components.inventoryitem.atlasname or "") > 0 and ent.components.inventoryitem.atlasname) or
-        nil
+    return ent ~= nil and (
+            #(ent.components.inventoryitem.imagename or "") > 0 and
+            ent.components.inventoryitem.imagename or
+            ent.prefab
+        ) or nil,
+        ent
 end
 
-function DrawingTool:Draw(target, image, src, atlas)
+function DrawingTool:Draw(target, image, src)
     if target ~= nil and target.components.drawable ~= nil then
-        target.components.drawable:OnDrawn(image, src, atlas)
+        target.components.drawable:OnDrawn(image, src)
         if self.ondrawfn ~= nil then
-            self.ondrawfn(self.inst, target, image, src, atlas)
+            self.ondrawfn(self.inst, target, image, src)
         end
     end
 end

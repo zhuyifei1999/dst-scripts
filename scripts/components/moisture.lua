@@ -1,5 +1,4 @@
 local easing = require("easing")
-local SourceModifierList = require("util/sourcemodifierlist")
 
 local function onmaxmoisture(self, maxmoisture)
     if self.inst.player_classified ~= nil then
@@ -40,18 +39,14 @@ local Moisture = Class(function(self, inst)
     self.maxMoistureRate = .75
     self.minMoistureRate = 0
 
-    self.inherentWaterproofness = 0 -- DEPRECATED, USE THE SourceModifierList BELOW
-    self.waterproofnessmodifiers = SourceModifierList(inst, 0, SourceModifierList.additive)
-
-    self.waterproofinventory = false
+    self.inherentWaterproofness = 0
 
     self.optimalDryingTemp = 50
 
     self.rate = 0 --rate at which moisture is trying to change
     self.ratescale = RATE_SCALE.NEUTRAL --based on actual delta, limited by min/max bounds
     self.wet = false
-
-    self.forceddrymodifiers = SourceModifierList(inst, false, SourceModifierList.boolean)
+    self.forceddry = false
 
     self.inst:StartUpdatingComponent(self)
 end,
@@ -63,18 +58,18 @@ nil,
     wet = onwet,
 })
 
-function Moisture:ForceDry(force, source)
-    if force then
-        if not self.forceddrymodifiers:Get() then
-            self.rate = 0
-            self.ratescale = RATE_SCALE.NEUTRAL
-            self:SetMoistureLevel(0)
-            self.inst:StopUpdatingComponent(self)
+function Moisture:ForceDry(force)
+    if not force then
+        if self.forceddry then
+            self.forceddry = false
+            self.inst:StartUpdatingComponent(self)
         end
-        self.forceddrymodifiers:SetModifier(source or self.inst, true)
-    elseif self.forceddrymodifiers:Get() then
-        self.forceddrymodifiers:RemoveModifier(source or self.inst)
-        self.inst:StartUpdatingComponent(self)
+    elseif not self.forceddry then
+        self:SetMoistureLevel(0)
+        self.rate = 0
+        self.ratescale = RATE_SCALE.NEUTRAL
+        self.forceddry = true
+        self.inst:StopUpdatingComponent(self)
     end
 end
 
@@ -94,25 +89,25 @@ function Moisture:GetDebugString()
             equippedmoisturerate > 0 and "+" or "", equippedmoisturerate,
             dryingrate < 0 and "+" or (dryingrate > 0 and "-") or "", math.abs(dryingrate))
     end
-    return self.forceddrymodifiers:Get() and (str.." FORCED DRY") or str
+    return self.forceddry and (str.." FORCED DRY") or str
 end
 
 function Moisture:AnnounceMoisture(oldSegs, newSegs)
     if self.inst.components.talker then
-    if oldSegs < 1 and newSegs >= 1 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_DAMP"))
-    elseif oldSegs < 2 and newSegs >= 2 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WET"))
-    elseif oldSegs < 3 and newSegs >= 3 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WETTER"))
-    elseif oldSegs < 4 and newSegs >= 4 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_SOAKED"))
-    end
+        if oldSegs < 1 and newSegs >= 1 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_DAMP"))
+        elseif oldSegs < 2 and newSegs >= 2 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WET"))
+        elseif oldSegs < 3 and newSegs >= 3 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WETTER"))
+        elseif oldSegs < 4 and newSegs >= 4 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_SOAKED"))
+        end
     end
 end
 
-function Moisture:DoDelta(num)
-    if self.forceddrymodifiers:Get() then
+function Moisture:DoDelta(num, no_announce)
+    if self.forceddry then
         return
     end
 
@@ -122,12 +117,14 @@ function Moisture:DoDelta(num)
     local newSegs = self:GetSegs()
     local delta = self.moisture - oldLevel
     self.wet = newSegs >= 2
-    self:AnnounceMoisture(oldSegs, newSegs)
+	if not no_announce then
+	    self:AnnounceMoisture(oldSegs, newSegs)
+	end
     self.inst:PushEvent("moisturedelta", { old = oldLevel, new = self.moisture })
 end
 
 function Moisture:SetMoistureLevel(num)
-    if self.forceddrymodifiers:Get() then
+    if self.forceddry then
         return
     end
 
@@ -150,14 +147,6 @@ end
 
 function Moisture:GetMoisturePercent()
     return self.moisture / self.maxmoisture
-end
-
-function Moisture:GetWaterproofInventory()
-    return self.waterproofinventory
-end
-
-function Moisture:SetWaterproofInventory(waterproof)
-    self.waterproofinventory = waterproof
 end
 
 function Moisture:SetPercent(per)
@@ -197,9 +186,6 @@ function Moisture:GetMoistureRate()
             self.inst.components.inventory:GetWaterproofness() or 0
         ) +
         (   self.inherentWaterproofness or 0
-        ) +
-        (
-            self.waterproofnessmodifiers:Get() or 0
         )
     if waterproofmult >= 1 then
         return 0
@@ -256,7 +242,7 @@ function Moisture:GetRateScale()
 end
 
 function Moisture:OnUpdate(dt)
-    if self.forceddrymodifiers:Get() then
+    if self.forceddry then
         --can still get here even if we're not in the update list
         --i.e. LongUpdate or OnUpdate called explicitly
         return

@@ -204,7 +204,7 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
                 self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.subscreener:GetActiveSubscreenFn())
             end
         end
-    end
+	end
 end)
 
 function LoadoutSelect:_SetSkintype(skintypedata)
@@ -475,7 +475,7 @@ function LoadoutSelect:OnControl(control, down)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             return true
         end
-    end
+	end
 
     return false
 end

@@ -5,11 +5,6 @@ local assets =
     Asset("ANIM", "anim/ui_backpack_2x4.zip"),
 }
 
-local prefabs =
-{
-    "ash",
-}
-
 local function onequip(inst, owner)
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
@@ -82,6 +77,8 @@ local function fn()
 
     inst.foleysound = "dontstarve/movement/foley/backpack"
 
+    MakeInventoryFloatable(inst, "small", 0.2)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -95,6 +92,7 @@ local function fn()
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
@@ -112,4 +110,4 @@ local function fn()
     return inst
 end
 
-return Prefab("backpack", fn, assets, prefabs)
+return Prefab("backpack", fn, assets)

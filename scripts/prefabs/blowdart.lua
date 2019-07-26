@@ -3,17 +3,12 @@ local assets =
     Asset("ANIM", "anim/blow_dart.zip"),
     Asset("ANIM", "anim/swap_blowdart.zip"),
     Asset("ANIM", "anim/swap_blowdart_pipe.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local prefabs =
 {
     "impact",
-}
-
-local prefabs_yellow =
-{
-    "impact",
-    "electrichitsparks",
 }
 
 local function onequip(inst, owner)
@@ -42,6 +37,7 @@ end
 
 local function onthrown(inst, data)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.components.inventoryitem.pushlandedevents = false
 end
 
 local function common(anim, tags, removephysicscolliders)
@@ -76,6 +72,8 @@ local function common(anim, tags, removephysicscolliders)
         RemovePhysicsColliders(inst)
     end
 
+    MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.5, 0.75})
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -95,6 +93,7 @@ local function common(anim, tags, removephysicscolliders)
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+
     inst:AddComponent("stackable")
 
     inst:AddComponent("equippable")
@@ -146,6 +145,9 @@ local function sleep()
     inst.components.weapon:SetOnAttack(sleepattack)
     inst.components.projectile:SetOnThrownFn(sleepthrown)
 
+    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_purple"}
+    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
+
     return inst
 end
 
@@ -190,6 +192,9 @@ local function fire()
     inst.components.weapon:SetOnAttack(fireattack)
     inst.components.projectile:SetOnThrownFn(firethrown)
 
+    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_red"}
+    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
+
     return inst
 end
 
@@ -219,6 +224,9 @@ local function pipe()
     inst.components.weapon:SetDamage(TUNING.PIPE_DART_DAMAGE)
     inst.components.projectile:SetOnThrownFn(pipethrown)
 
+    local swap_data = {sym_build = "swap_blowdart_pipe", bank = "blow_dart", anim = "idle_pipe"}
+    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
+
     return inst
 end
 
@@ -233,10 +241,13 @@ local function yellowthrown(inst)
 end
 
 local function yellowattack(inst, attacker, target)
-    --target could be killed or removed in combat damage phase
-    if target:IsValid() then
-        SpawnPrefab("electrichitsparks"):AlignToTarget(target, inst)
+    if not target:IsValid() then
+        --target killed or removed in combat damage phase
+        return
     end
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("sparks").Transform:SetPosition(x, y - .5, z)
 end
 
 local function yellow()
@@ -250,6 +261,9 @@ local function yellow()
     inst.components.weapon:SetDamage(TUNING.YELLOW_DART_DAMAGE)
     inst.components.weapon:SetElectric()
     inst.components.projectile:SetOnThrownFn(yellowthrown)
+
+    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_yellow"}
+    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
 
     return inst
 end
@@ -276,6 +290,9 @@ local function walrus()
     --math.sqrt(1 * 1 + 2 * 2)
     inst.components.projectile:SetHitDist(math.sqrt(5))
 
+    local swap_data = {sym_build = "swap_blowdart_pipe", bank = "blow_dart", anim = "idle_pipe"}
+    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
+
     return inst
 end
 
@@ -283,5 +300,5 @@ end
 return Prefab("blowdart_sleep", sleep, assets, prefabs),
        Prefab("blowdart_fire", fire, assets, prefabs),
        Prefab("blowdart_pipe", pipe, assets, prefabs),
-       Prefab("blowdart_yellow", yellow, assets, prefabs_yellow),
+       Prefab("blowdart_yellow", yellow, assets, prefabs),
        Prefab("blowdart_walrus", walrus, assets, prefabs)

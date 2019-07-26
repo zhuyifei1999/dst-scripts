@@ -1,8 +1,8 @@
-local foods =
+local foods=
 {
 	butterflymuffin =
 	{
-		test = function(cooker, names, tags) return names.butterflywings and not tags.meat and tags.veggie end,
+		test = function(cooker, names, tags) return (names.butterflywings or names.moonbutterflywings) and not tags.meat and tags.veggie end,
 		priority = 1,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
@@ -11,6 +11,7 @@ local foods =
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+        floater = {"small", 0.05, 0.7},
 	},
 	
 	frogglebunwich =
@@ -24,19 +25,21 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
         potlevel = "high",
+        floater = {"med", nil, 0.55},
 	},
 	
 	taffy =
 	{
 		test = function(cooker, names, tags) return tags.sweetener and tags.sweetener >= 3 and not tags.meat end,
 		priority = 10,
-		foodtype = FOODTYPE.GOODIES,
+		foodtype = FOODTYPE.VEGGIE,
 		health = -TUNING.HEALING_SMALL,
 		hunger = TUNING.CALORIES_SMALL*2,
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
-		tags = {"honeyed"}
+		tags = {"honeyed"},
+        floater = {"med", nil, 0.6},
 	},
 	
 	pumpkincookie =
@@ -49,7 +52,8 @@ local foods =
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
-		tags = {"honeyed"}
+		tags = {"honeyed"},
+        floater = {"med", nil, 0.65},
 	},	
 	
 	stuffedeggplant =
@@ -64,6 +68,7 @@ local foods =
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = 2,
+        floater = {"small", nil, 0.8},
 	},
 	
 	fishsticks =
@@ -77,7 +82,8 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
         potlevel =  "high",
-		tags = {"catfood"}
+		tags = {"catfood"},
+        floater = {"small", nil, nil},
 	},
 	
 	honeynuggets =
@@ -91,7 +97,8 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
         potlevel = "high",
-		tags = {"honeyed"}
+		tags = {"honeyed"},
+        floater = {"med", nil, 0.7},
 	},
 	
 	honeyham =
@@ -106,7 +113,8 @@ local foods =
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
-		tags = {"honeyed"}
+		tags = {"honeyed"},
+        floater = {"small", nil, nil},
 	},
 	
 	dragonpie =
@@ -121,6 +129,7 @@ local foods =
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
+        floater = {"med", nil, 0.8},
 	},
 	kabobs =
 	{
@@ -135,6 +144,7 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
         potlevel = "high",
+        floater = {"med", nil, 0.55},
 	},
 	mandrakesoup =
 	{
@@ -147,6 +157,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 3,
         potlevel = "low",
+        floater = {"small", nil, nil},
 	},
 	baconeggs =
 	{
@@ -159,6 +170,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
         potlevel = "high",
+        floater = {"med", nil, 0.6},
 	},
 	meatballs =
 	{
@@ -171,6 +183,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
         potlevel = "high",
+        floater = {"small", nil, nil},
 	},	
 	bonestew =
 	{
@@ -183,6 +196,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
         potlevel = "low",
+        floater = {"small", 0.1, 0.8},
 	},
 	perogies =
 	{
@@ -195,6 +209,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 1,
         potlevel = "high",
+        floater = {"med", nil, 0.65},
 	},
 	turkeydinner =
 	{
@@ -209,6 +224,7 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 3,
         potlevel = "high",
+        floater = {"med", nil, 0.75},
 	},
 	ratatouille =
 	{
@@ -220,6 +236,7 @@ local foods =
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 1,
+        floater = {"med", nil, 0.68},
 	},
 	jammypreserves =
 	{
@@ -231,6 +248,7 @@ local foods =
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
+        floater = {"small", nil, nil},
 	},
 	
 	fruitmedley =
@@ -246,6 +264,7 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", nil, 0.6},
 	},
 	fishtacos =
 	{
@@ -258,6 +277,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
         potlevel = "high",
+        floater = {"small", nil, nil},
 	},
 	waffles =
 	{
@@ -270,6 +290,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
         potlevel = "high",
+        floater = {"med", nil, 0.75},
 	},	
 	
 	monsterlasagna =
@@ -283,6 +304,7 @@ local foods =
 		sanity = -TUNING.SANITY_MEDLARGE,
 		cooktime = .5,
 		tags = {"monstermeat"},
+        floater = {"med", nil, 0.58},
 	},
 
 	powcake =
@@ -296,7 +318,8 @@ local foods =
 		sanity = 0,
 		cooktime = 0.5,
         potlevel = "low",
-		tags = {"honeyed"}
+		tags = {"honeyed"},
+        floater = {"med", nil, 0.65},
 	},
 
 	unagi =
@@ -309,6 +332,7 @@ local foods =
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 0.5,
+        floater = {"med", nil, 0.67},
 	},
 	
 	wetgoop =
@@ -321,6 +345,7 @@ local foods =
 		sanity = 0,
 		cooktime = .25,
 		wet_prefix = STRINGS.WET_PREFIX.WETGOOP,
+        floater = {"small", nil, nil},
 	},
 	
 	flowersalad =
@@ -334,6 +359,7 @@ local foods =
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", nil, nil},
 	},	
 
 	icecream =
@@ -349,6 +375,7 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", nil, nil},
 	},	
 
 	watermelonicle =
@@ -364,6 +391,7 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", 0.1, 0.82},
 	},	
 
 	trailmix =
@@ -376,6 +404,7 @@ local foods =
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
+        floater = {"small", 0.05, nil},
 	},
 
 	hotchili =
@@ -391,11 +420,12 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", nil, nil},
 	},	
 
 	guacamole = 
 	{
-		test = function(cooker, names, tags) return names.mole and names.cactus_meat and not tags.fruit end,
+		test = function(cooker, names, tags) return names.mole and (names.rock_avocado_fruit_ripe or names.cactus_meat) and not tags.fruit end,
 		priority = 10,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -404,6 +434,7 @@ local foods =
 		sanity = 0,
 		cooktime = .5,
         potlevel = "low",
+        floater = {"small", nil, 0.85},
 	},
 
 	jellybean =
@@ -427,121 +458,15 @@ local foods =
                 eater.components.debuffable:AddDebuff("healthregenbuff", "healthregenbuff")
             end
         end,
+        floater = {"small", nil, 0.85},
 	},
 
-    --new!
-    potatotornado =
-    {
-        test = function(cooker, names, tags) return names.potato and names.twigs and (not tags.monster or tags.monster <= 1) and not tags.meat and (tags.inedible and tags.inedible <= 2) end,
-        priority = 10,
-        foodtype = FOODTYPE.VEGGIE,
-        health = TUNING.HEALING_SMALL,
-        hunger = TUNING.CALORIES_LARGE,
-        perishtime = TUNING.PERISH_MED,
-        sanity = TUNING.SANITY_MED,
-        cooktime = .75,
-    },
-
-    mashedpotatoes =
-    {
-        test = function(cooker, names, tags) return names.potato and names.potato > 1 and names.garlic and not tags.meat and not tags.inedible end,
-        priority = 20,
-        foodtype = FOODTYPE.VEGGIE,
-        health = TUNING.HEALING_MED,
-        hunger = TUNING.CALORIES_LARGE,
-        perishtime = TUNING.PERISH_SLOW,
-        sanity = TUNING.SANITY_LARGE,
-        cooktime = 1,
-        potlevel = "low",
-    },
-
-    asparagussoup = 
-	{
-		test = function(cooker, names, tags) return (names.asparagus or names.asparagus_cooked) and tags.veggie and tags.veggie > 2 and not tags.meat and not tags.inedible end,
-		priority = 10,
-		foodtype = FOODTYPE.VEGGIE,
-		health = TUNING.HEALING_MED,
-		hunger = TUNING.CALORIES_MEDSMALL,
-		perishtime = TUNING.PERISH_SLOW,
-		sanity = TUNING.SANITY_TINY,	
-		cooktime = 0.5,
-        potlevel = "low",
-	},	
-
-	vegstinger = 
-	{
-		test = function(cooker, names, tags) return (names.asparagus or names.asparagus_cooked or names.tomato or names.tomato_cooked) and tags.veggie and tags.veggie > 2 and tags.frozen and not tags.meat and not tags.inedible and not tags.egg end,
-		priority = 15,
-		foodtype = FOODTYPE.VEGGIE,
-		health = TUNING.HEALING_SMALL,
-		hunger = TUNING.CALORIES_MED,
-		perishtime = TUNING.PERISH_SLOW,
-		sanity = TUNING.SANITY_LARGE,	
-		cooktime = 0.5,
-        potlevel = "low",
-	},
-
-	bananapop = 
-	{
-		test = function(cooker, names, tags) return names.cave_banana and tags.frozen and names.twigs and not tags.meat and not tags.fish and (tags.inedible and tags.inedible <= 2) end,
-		priority = 20,
-		foodtype = FOODTYPE.VEGGIE,
-		health = TUNING.HEALING_MED,
-		hunger = TUNING.CALORIES_SMALL,
-		perishtime = TUNING.PERISH_SUPERFAST,
-		sanity = TUNING.SANITY_LARGE,
-		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
-		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
-		cooktime = 0.5,
-        potlevel = "low",
-	},
-
-	ceviche = 
-	{
-		test = function(cooker, names, tags) return tags.fish and tags.fish >= 2 and tags.frozen and not tags.inedible and not tags.egg end,
-		priority = 20,
-		foodtype = FOODTYPE.MEAT,
-		health = TUNING.HEALING_MED,
-		hunger = TUNING.CALORIES_MED,
-		perishtime = TUNING.PERISH_MED,
-		sanity = TUNING.SANITY_TINY,
-		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
-		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
-		cooktime = 0.5,
-	},
-
-	salsa = 
-	{
-		test = function(cooker, names, tags) return names.tomato and names.onion and not tags.meat and not tags.inedible and not tags.egg end,
-		priority = 20,
-		foodtype = FOODTYPE.VEGGIE,
-		health = TUNING.HEALING_SMALL,
-		hunger = TUNING.CALORIES_MED,
-		perishtime = TUNING.PERISH_SLOW,
-		sanity = TUNING.SANITY_LARGE,
-		cooktime = 0.5,
-        potlevel = "low",
-	},
-
-	pepperpopper =
-	{
-		test = function(cooker, names, tags) return names.pepper and tags.meat and tags.meat <= 1.5 and not tags.inedible end,
-		priority = 20,
-		foodtype = FOODTYPE.MEAT,
-		health = TUNING.HEALING_MEDLARGE,
-		hunger = TUNING.CALORIES_MED,
-		perishtime = TUNING.PERISH_SLOW,
-		sanity = -TUNING.SANITY_TINY,
-		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
-		temperatureduration = TUNING.FOOD_TEMP_LONG,
-		cooktime = 2,
-	}
 }
-
-for k, v in pairs(foods) do
-    v.name = k
-    v.weight = v.weight or 1
-    v.priority = v.priority or 0
+for k,v in pairs(foods) do
+	v.name = k
+	v.weight = v.weight or 1
+	v.priority = v.priority or 0
 end
+
 
 return foods

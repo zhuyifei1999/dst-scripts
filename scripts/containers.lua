@@ -35,13 +35,11 @@ for y = 0, 3 do
     table.insert(params.backpack.widget.slotpos, Vector3(-162 + 75, -75 * y + 114, 0))
 end
 
-params.icepack = params.backpack
-
 --------------------------------------------------------------------------
---[[ spicepack ]]
+--[[ icepack ]]
 --------------------------------------------------------------------------
 
-params.spicepack =
+params.icepack =
 {
     widget =
     {
@@ -55,8 +53,8 @@ params.spicepack =
 }
 
 for y = 0, 2 do
-    table.insert(params.spicepack.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
-    table.insert(params.spicepack.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
+    table.insert(params.icepack.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
+    table.insert(params.icepack.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
 end
 
 --------------------------------------------------------------------------
@@ -121,9 +119,9 @@ params.cookpot =
     {
         slotpos =
         {
-            Vector3(0, 64 + 32 + 8 + 4, 0),
+            Vector3(0, 64 + 32 + 8 + 4, 0), 
             Vector3(0, 32 + 4, 0),
-            Vector3(0, -(32 + 4), 0),
+            Vector3(0, -(32 + 4), 0), 
             Vector3(0, -(64 + 32 + 8 + 4), 0),
         },
         animbank = "ui_cookpot_1x4",
@@ -153,62 +151,6 @@ function params.cookpot.widget.buttoninfo.fn(inst)
 end
 
 function params.cookpot.widget.buttoninfo.validfn(inst)
-    return inst.replica.container ~= nil and inst.replica.container:IsFull()
-end
-
-params.portablecookpot = params.cookpot
-
---------------------------------------------------------------------------
---[[ portablespicer]]
---------------------------------------------------------------------------
-
-params.portablespicer =
-{
-    widget =
-    {
-        slotpos =
-        {
-            Vector3(0, 32 + 4, 0),
-            Vector3(0, -(32 + 4), 0),
-        },
-        slotbg =
-        {
-            { image = "cook_slot_food.tex" },
-            { image = "cook_slot_spice.tex" },
-        },
-        animbank = "ui_cookpot_1x2",
-        animbuild = "ui_cookpot_1x2",
-        pos = Vector3(200, 0, 0),
-        side_align_tip = 100,
-        buttoninfo =
-        {
-            text = STRINGS.ACTIONS.SPICE,
-            position = Vector3(0, -93, 0),
-        },
-    },
-    acceptsstacks = false,
-    usespecificslotsforitems = true,
-    type = "cooker",
-}
-
-function params.portablespicer.itemtestfn(container, item, slot)
-    return item.prefab ~= "wetgoop"
-        and (   (slot == 1 and item:HasTag("preparedfood") and not item:HasTag("spicedfood")) or
-                (slot == 2 and item:HasTag("spice")) or
-                (slot == nil and (item:HasTag("spice") or (item:HasTag("preparedfood") and not item:HasTag("spicedfood"))))
-            )
-        and not container.inst:HasTag("burnt")
-end
-
-function params.portablespicer.widget.buttoninfo.fn(inst)
-    if inst.components.container ~= nil then
-        BufferedAction(inst.components.container.opener, inst, ACTIONS.COOK):Do()
-    elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-        SendRPCToServer(RPC.DoWidgetButtonAction, ACTIONS.COOK.code, inst, ACTIONS.COOK.mod_name)
-    end
-end
-
-function params.portablespicer.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and inst.replica.container:IsFull()
 end
 
@@ -546,6 +488,7 @@ end
 params.pandoraschest = params.treasurechest
 params.skullchest = params.treasurechest
 params.minotaurchest = params.treasurechest
+params.waterchest = params.treasurechest
 
 params.quagmire_safe = deepcopy(params.treasurechest)
 params.quagmire_safe.widget.animbank = "quagmire_ui_chest_3x3"

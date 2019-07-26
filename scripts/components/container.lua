@@ -14,7 +14,6 @@ local Container = Class(function(self, inst)
     self.numslots = 0
     self.canbeopened = true
     self.acceptsstacks = true
-    self.usespecificslotsforitems = false
     self.issidewidget = false
     self.type = nil
     self.widget = nil
@@ -34,7 +33,6 @@ local widgetprops =
 {
     "numslots",
     "acceptsstacks",
-    "usespecificslotsforitems",
     "issidewidget",
     "type",
     "widget",
@@ -147,16 +145,6 @@ function Container:CanTakeItemInSlot(item, slot)
         and (self.itemtestfn == nil or self:itemtestfn(item, slot))
 end
 
-function Container:GetSpecificSlotForItem(item)
-    if self.usespecificslotsforitems and self.itemtestfn ~= nil then
-        for i = 1, self:GetNumSlots() do
-            if self:itemtestfn(item, i) then
-                return i
-            end
-        end
-    end
-end
-
 function Container:AcceptsStacks()
     return self.acceptsstacks
 end
@@ -178,10 +166,6 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
     if item == nil then
         return false
     elseif item.components.inventoryitem ~= nil and self:CanTakeItemInSlot(item, slot) then
-        if slot == nil then
-            slot = self:GetSpecificSlotForItem(item)
-        end
-
         --try to burn off stacks if we're just dumping it in there
         if item.components.stackable ~= nil and self.acceptsstacks then
             --Added this for when we want to dump a stack back into a
@@ -199,7 +183,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
                         return true
                     end
 
-                    slot = self:GetSpecificSlotForItem(item)
+                    slot = nil
                 end
             end
 
@@ -220,13 +204,14 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             end
         end
 
+        local use_slot = slot and slot <= self.numslots and not self.slots[slot]
         local in_slot = nil
-        if slot ~= nil and slot <= self.numslots and not self.slots[slot] then
+        if use_slot then
             in_slot = slot
-        elseif not self.usespecificslotsforitems and self.numslots > 0 then
-            for i = 1, self.numslots do
-                if not self.slots[i] then
-                    in_slot = i
+        elseif self.numslots > 0 then
+            for k = 1,self.numslots do
+                if not self.slots[k] then
+                    in_slot = k
                     break
                 end
             end

@@ -11,7 +11,6 @@ local Drawable = Class(function(self, inst)
 
     self.candraw = true
     self.imagename = nil
-    self.atlasname = nil
     self.ondrawnfn = nil
 
     --V2C: Recommended to explicitly add tags to prefab pristine state
@@ -38,18 +37,14 @@ function Drawable:SetOnDrawnFn(fn)
     self.ondrawnfn = fn
 end
 
-function Drawable:OnDrawn(imagename, imagesource, atlasname)
+function Drawable:OnDrawn(imagename, imagesource)
     if imagename == "" then
         imagename = nil
     end
-    if atlasname == "" then
-        atlasname = nil
-    end
-    if self.imagename ~= imagename or self.atlasname ~= atlasname then
+    if self.imagename ~= imagename then
         self.imagename = imagename
-        self.atlasname = atlasname
         if self.ondrawnfn ~= nil then
-            self.ondrawnfn(self.inst, imagename, imagesource, atlasname)
+            self.ondrawnfn(self.inst, imagename, imagesource)
         end
     end
 end
@@ -58,19 +53,15 @@ function Drawable:GetImage()
     return self.imagename
 end
 
-function Drawable:GetAtlas()
-    return self.atlasname
-end
-
 function Drawable:OnSave()
     return self.imagename ~= nil
-        and { image = self.imagename, atlas = self.atlasname }
+        and { image = self.imagename }
         or nil
 end
 
 function Drawable:OnLoad(data)
     if data.image ~= nil then
-        self:OnDrawn(data.image, nil, data.atlas)
+        self:OnDrawn(data.image)
     end
 end
 

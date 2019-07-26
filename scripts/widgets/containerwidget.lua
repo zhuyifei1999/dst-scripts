@@ -119,13 +119,7 @@ function ContainerWidget:Open(container, doer)
     local constructionmats = constructionsite ~= nil and constructionsite:GetIngredients() or nil
 
     for i, v in ipairs(widget.slotpos or {}) do
-        local bgoverride = widget.slotbg ~= nil and widget.slotbg[i] or nil
-        local slot = InvSlot(i,
-            bgoverride ~= nil and bgoverride.atlas or "images/hud.xml",
-            bgoverride ~= nil and bgoverride.image or (constructionmats ~= nil and "inv_slot_construction.tex" or "inv_slot.tex"),
-            self.owner,
-            container.replica.container
-        )
+        local slot = InvSlot(i, "images/hud.xml", constructionmats ~= nil and "inv_slot_construction.tex" or "inv_slot.tex", self.owner, container.replica.container)
         self.inv[i] = self:AddChild(slot)
 
         slot:SetPosition(v)

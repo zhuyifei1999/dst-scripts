@@ -7,7 +7,6 @@ local Container = Class(function(self, inst)
     self._isopen = false
     self._numslots = 0
     self.acceptsstacks = true
-    self.usespecificslotsforitems = false
     self.issidewidget = false
     self.type = nil
     self.widget = nil
@@ -194,16 +193,6 @@ function Container:CanTakeItemInSlot(item, slot)
         and not item.replica.inventoryitem:CanOnlyGoInPocket()
         and not (GetGameModeProperty("non_item_equips") and item.replica.equippable ~= nil)
         and (self.itemtestfn == nil or self:itemtestfn(item, slot))
-end
-
-function Container:GetSpecificSlotForItem(item)
-    if self.usespecificslotsforitems and self.itemtestfn ~= nil then
-        for i = 1, self:GetNumSlots() do
-            if self:itemtestfn(item, i) then
-                return i
-            end
-        end
-    end
 end
 
 function Container:AcceptsStacks()

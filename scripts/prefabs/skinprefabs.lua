@@ -2111,53 +2111,6 @@ table.insert(prefs, CreatePrefabSkin("wardrobe_heart",
 	release_group = 56,
 }))
 
-table.insert(prefs, CreatePrefabSkin("warly_fisherman",
-{
-	base_prefab = "warly",
-	type = "base",
-	rarity = "Elegant",
-	rarity_modifier = "Woven",
-	skin_tags = { "FISHERMAN", "BASE", "WARLY", },
-	bigportrait = { build = "bigportraits/warly_fisherman.xml", symbol = "warly_fisherman_oval.tex"},
-	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_fisherman", },
-	release_group = 70,
-}))
-
-table.insert(prefs, CreatePrefabSkin("warly_none",
-{
-	base_prefab = "warly",
-	type = "base",
-	build_name_override = "warly",
-	rarity = "Character",
-	skin_tags = { "BASE", "WARLY", },
-	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly", },
-	release_group = 70,
-}))
-
-table.insert(prefs, CreatePrefabSkin("warly_rose",
-{
-	base_prefab = "warly",
-	type = "base",
-	rarity = "Elegant",
-	rarity_modifier = "Woven",
-	skin_tags = { "ROSE", "BASE", "WARLY", },
-	bigportrait = { build = "bigportraits/warly_rose.xml", symbol = "warly_rose_oval.tex"},
-	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_rose", },
-	release_group = 70,
-}))
-
-table.insert(prefs, CreatePrefabSkin("warly_victorian",
-{
-	base_prefab = "warly",
-	type = "base",
-	rarity = "Elegant",
-	rarity_modifier = "Woven",
-	skin_tags = { "VICTORIAN", "BASE", "WARLY", },
-	bigportrait = { build = "bigportraits/warly_victorian.xml", symbol = "warly_victorian_oval.tex"},
-	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_victorian", },
-	release_group = 70,
-}))
-
 table.insert(prefs, CreatePrefabSkin("watermelonhat_pumpkin",
 {
 	base_prefab = "watermelonhat",
