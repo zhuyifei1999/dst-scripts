@@ -13,9 +13,6 @@ local assets =
     Asset("ATLAS", "images/fx3.xml"),
     Asset("IMAGE", "images/fx3.tex"),
 
-    Asset("ATLAS", "images/fx4.xml"),
-    Asset("IMAGE", "images/fx4.tex"),
-
     Asset("ANIM", "anim/sand_over.zip"),
     Asset("ANIM", "anim/mind_control_overlay.zip"),
 
@@ -26,7 +23,7 @@ local assets =
 
     Asset("ANIM", "anim/health.zip"),
     Asset("ANIM", "anim/health_effigy.zip"),
-    Asset("ANIM", "anim/sanity2.zip"),
+    Asset("ANIM", "anim/sanity.zip"),
     Asset("ANIM", "anim/sanity_ghost.zip"),
     Asset("ANIM", "anim/sanity_arrow.zip"),
     Asset("ANIM", "anim/effigy_topper.zip"),
@@ -56,11 +53,8 @@ local assets =
     Asset("IMAGE", "images/serverbrowser.tex"),
     --
 
-    Asset("ANIM", "anim/wet_meter_player.zip"),     
+    Asset("ANIM", "anim/wet_meter_player.zip"), 
     Asset("ANIM", "anim/wet_meter.zip"),
-
-    Asset("ANIM", "anim/boat_meter.zip"),
-    Asset("ANIM", "anim/boat_meter_leak.zip"),
 
     Asset("ANIM", "anim/tab_gift.zip"),
 

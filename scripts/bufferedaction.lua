@@ -1,4 +1,3 @@
-
 BufferedAction = Class(function(self, doer, target, action, invobject, pos, recipe, distance, forced, rotation)
     self.doer = doer
     self.target = target
@@ -6,7 +5,7 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.action = action
     self.invobject = invobject
     self.doerownsobject = doer ~= nil and invobject ~= nil and invobject.replica.inventoryitem ~= nil and invobject.replica.inventoryitem:IsHeldBy(doer)
-    self.pos = pos ~= nil and DynamicPosition(pos) or nil
+    self.pos = pos
     self.rotation = rotation
     self.onsuccess = {}
     self.onfail = {}
@@ -38,7 +37,6 @@ function BufferedAction:IsValid()
     return (self.invobject == nil or self.invobject:IsValid()) and
            (self.doer == nil or (self.doer:IsValid() and (not self.autoequipped or self.doer.replica.inventory:GetActiveItem() == nil))) and
            (self.target == nil or (self.target:IsValid() and self.initialtargetowner == (self.target.components.inventoryitem ~= nil and self.target.components.inventoryitem.owner or nil))) and
-           (self.pos == nil or self.pos.walkable_platform == nil or self.pos.walkable_platform:IsValid()) and
            (not self.doerownsobject or (self.doer ~= nil and self.invobject ~= nil and self.invobject.replica.inventoryitem ~= nil and self.invobject.replica.inventoryitem:IsHeldBy(self.doer))) and
            (self.validfn == nil or self.validfn())
 end
@@ -79,15 +77,6 @@ function BufferedAction:Succeed()
     end
     self.onsuccess = {}
     self.onfail = {}
-end
-
-function BufferedAction:GetActionPoint()
-	-- returns a Vector3 or nil
-	return self.pos ~= nil and self.pos:GetPosition() or nil
-end
-
-function BufferedAction:SetActionPoint(pt)
-	self.pos = DynamicPosition(pt)
 end
 
 function BufferedAction:Fail()

@@ -37,8 +37,10 @@ local events=
     end),
 }
 
+
 local states=
 {
+
     State{
         name = "splat",
         tags = {"busy"},
@@ -89,11 +91,6 @@ local states=
 		events=
         {
             EventHandler("animover", function(inst) if inst.toofat then inst.sg:GoToState("splat") end end),
-        },
-
-        timeline =
-        {
-            TimeEvent(10 * FRAMES, LandFlyingCreature),
         },
     },
 
@@ -177,27 +174,20 @@ local states=
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
     },
-}
 
+}
 CommonStates.AddSleepStates(states,
 {
     starttimeline =
     {
-        TimeEvent(23*FRAMES, function(inst)
-            inst.SoundEmitter:KillSound("buzz")
-            LandFlyingCreature(inst)
-        end),
+        TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:KillSound("buzz") end)
     },
     waketimeline =
     {
-        TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz") end),
+        TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz") end)
     },
-},
-{
-    onsleep = LandFlyingCreature,
-    onwake = RaiseFlyingCreature,
 })
-CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
+CommonStates.AddFrozenStates(states)
 
 return StateGraph("mosquito", states, events, "idle", actionhandlers)
 

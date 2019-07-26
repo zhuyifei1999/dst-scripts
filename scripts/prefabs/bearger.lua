@@ -428,7 +428,6 @@ local function fn()
     inst.components.groundpounder.destroyer = true
     inst.components.groundpounder.damageRings = 2
     inst.components.groundpounder.destructionRings = 2
-    inst.components.groundpounder.platformPushingRings = 2
     inst.components.groundpounder.numRings = 3
     inst.components.groundpounder.groundpoundFn = OnGroundPound
     inst:AddComponent("timer")

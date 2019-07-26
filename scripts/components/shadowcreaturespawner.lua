@@ -14,8 +14,6 @@ local POP_CHANGE_INTERVAL = 10
 local POP_CHANGE_VARIANCE = 10
 local SPAWN_INTERVAL = 5
 local SPAWN_VARIANCE = 10
-local NON_INSANITY_MODE_DESPAWN_INTERVAL = 0.1
-local NON_INSANITY_MODE_DESPAWN_VARIANCE = 0.1
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -122,9 +120,7 @@ local function StopSpawn(player, params)
 end
 
 local function UpdatePopulation(player, params)
-	local is_inasnity_mode = player.components.sanity:IsInsanityMode()
-
-    if is_inasnity_mode and player.components.sanity.inducedinsanity then
+    if player.components.sanity.inducedinsanity then
         local maxpop = 5
         local inc_chance = .7
         local dec_chance = .4
@@ -154,7 +150,7 @@ local function UpdatePopulation(player, params)
         local inc_chance = 0
         local dec_chance = 0
         local targetpop = params.targetpop
-        local sanity = is_inasnity_mode and player.components.sanity:GetPercent() or 1
+        local sanity = player.components.sanity:GetPercent()
 
         if sanity > .5 then
             --We're pretty sane. Clean up the monsters
@@ -198,9 +194,7 @@ local function UpdatePopulation(player, params)
         end
 
         --Reschedule population update
-        params.poptask = player:DoTaskInTime(is_inasnity_mode and (POP_CHANGE_INTERVAL + POP_CHANGE_VARIANCE * math.random()) 
-												or (NON_INSANITY_MODE_DESPAWN_INTERVAL + NON_INSANITY_MODE_DESPAWN_VARIANCE * math.random())
-											, UpdatePopulation, params)
+        params.poptask = player:DoTaskInTime(POP_CHANGE_INTERVAL + POP_CHANGE_VARIANCE * math.random(), UpdatePopulation, params)
     end
 end
 
@@ -238,7 +232,6 @@ local function OnPlayerJoined(inst, player)
     _players[player] = { ents = {}, targetpop = 0 }
     Start(player, _players[player])
     inst:ListenForEvent("inducedinsanity", OnInducedInsanity, player)
-    inst:ListenForEvent("sanitymodechanged", OnInducedInsanity, player)
 end
 
 local function OnPlayerLeft(inst, player)
@@ -246,7 +239,6 @@ local function OnPlayerLeft(inst, player)
         return
     end
     inst:RemoveEventCallback("inducedinsanity", OnInducedInsanity, player)
-    inst:RemoveEventCallback("sanitymodechanged", OnInducedInsanity, player)
     Stop(player, _players[player])
     _players[player] = nil
 end

@@ -4,6 +4,11 @@ local assets =
     Asset("ANIM", "anim/ui_krampusbag_2x8.zip"),
 }
 
+local prefabs =
+{
+    "ash",
+}
+
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("backpack", "candybag", "backpack")
     owner.AnimState:OverrideSymbol("swap_body", "candybag", "swap_body")
@@ -67,7 +72,6 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.cangoincontainer = false
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
@@ -85,7 +89,8 @@ local function fn()
     inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
     MakeHauntableLaunchAndDropFirstItem(inst)
+
     return inst
 end
 
-return Prefab("candybag", fn, assets)
+return Prefab("candybag", fn, assets, prefabs)

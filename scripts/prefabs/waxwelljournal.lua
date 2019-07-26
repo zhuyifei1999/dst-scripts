@@ -175,8 +175,6 @@ local function fn()
     --prototyper (from prototyper component) added to pristine state for optimization
     inst:AddTag("prototyper")
 
-    MakeInventoryFloatable(inst, "med", nil, 0.75)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

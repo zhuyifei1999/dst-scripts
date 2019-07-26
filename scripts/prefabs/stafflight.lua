@@ -110,8 +110,8 @@ local function makestafflight(name, is_hot, anim, colour, idles, is_fx)
             inst.AnimState:Hide("shadow")
             inst.AnimState:SetFinalOffset(1)
         else
-            inst:AddTag("ignorewalkableplatforms")
-            inst:SetPhysicsRadiusOverride(.5)
+            MakeInventoryPhysics(inst)
+
             inst.no_wet_prefix = true
         end
 

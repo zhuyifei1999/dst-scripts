@@ -31,6 +31,7 @@ return {
 			GENERIC = "All full!",
 			NOTALLOWED = "That's against the rules.",
 			INUSE = "Are you finding everything okay in there?",
+            NOTMASTERCHEF = "Warly gets upset when we play with his things.",
 		},
 		CONSTRUCT =
         {
@@ -48,6 +49,7 @@ return {
         {   
             GENERIC = "That's off-limits.",
             INUSE = "It's okay, we can wait for you to finish!",   
+            NOTMASTERCHEF = "Warly gets upset when we play with his things.",
         },
 		COOK =
         {
@@ -137,37 +139,14 @@ return {
             MISMATCH = "Hmmm... I think we need a different dish for this.", 
             SAMEDISH = "We already put this on a dish.", 
         },
-        SAIL =
-        {
-        	REPAIR = "But the boat's not damaged.",
-		},
-        ROW_FAIL =
-        {
-            BAD_TIMING0 = "We need to paddle at the right time!",
-            BAD_TIMING1 = "Whoops! One more time!",
-            BAD_TIMING2 = "Row row row your boat... maybe a bit better next time.",
-        },
-        LOWER_SAIL_FAIL =
-        {
-            "We never did much sailing back home.",
-            "Ouchie! The rope burned our hands!",
-            "We almost had it!",
-        },
-        BATHBOMB =
-        {
-            GLASSED = "There's too much glass in the way.",
-            ALREADY_BOMBED = "Aw, we wanted to do it!",
-        },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
-    ANNOUNCE_WASHED_ASHORE = "Our fur is soaking wet!",
 
 --boarlord event
 	ANNOUNCE_REVIVING_CORPSE = "Hold on, we'll help!",
 	ANNOUNCE_REVIVED_OTHER_CORPSE = "There you go!",
 	ANNOUNCE_REVIVED_FROM_CORPSE = "All better!",
-	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
-	ANNOUNCE_BOAT_SINK = "We're too young to drown!",
+
 	ANNOUNCE_DIG_DISEASE_WARNING = "Doesn't that feel better!",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Yuck!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
@@ -238,22 +217,6 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "Its belly looks hungry!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
-	ANNOUNCE_MOONALTAR_MINE =
-	{
-		GLASS_MED = "We'll get you out.",
-		GLASS_LOW = "Almost!",
-		GLASS_REVEAL = "You're free!",
-		IDOL_MED = "We'll get you out.",
-		IDOL_LOW = "Almost!",
-		IDOL_REVEAL = "You're free!",
-		SEED_MED = "We'll get you out.",
-		SEED_LOW = "Almost!",
-		SEED_REVEAL = "You're free!",
-	},
-
-	ANNOUNCE_FLARE_SEEN = "Oh, someone's calling us to come over.",
-	ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Don't eat us!",
-
 	ANNOUNCE_SNARED = "Hey! Meanie!",
 	ANNOUNCE_REPELLED = "We can't hit it.",
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
@@ -320,6 +283,18 @@ return {
     --YOTP--
     ANNOUNCE_LEAVE_MINIGAME = "We'll leave this sign for someone else.",
 
+    ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "With great lightning powers comes great responsibility!",
+    ANNOUNCE_ATTACH_BUFF_ATTACK            = "We feel so strong!",
+    ANNOUNCE_ATTACH_BUFF_PLAYERABSORPTION  = "We feel so much safer now!",
+    ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "We can help out with the chores!",
+    ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "Away, nasty water!",
+    
+    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Aww, done already?",
+    ANNOUNCE_DETACH_BUFF_ATTACK            = "We're tired of fighting!",
+    ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Aah! We need armor!",
+    ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "We're bored now.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Nooo! Spiders don't like the damp!",
+    
     BATTLECRY =
     {
         GENERIC = "En garde!",
@@ -337,6 +312,7 @@ return {
         SPIDER = "We didn't actually want to hurt you.",
         SPIDER_WARRIOR = "Simmer down, friend.",
     },
+
     DESCRIBE =
     {
         PLAYER =
@@ -475,6 +451,15 @@ return {
             REVIVER = "%s is really rooting for us!",
             GHOST = "Poor %s! He died of loneliness!",
             FIRESTARTER = "I don't think it's safe for you to be around fire.",
+        },
+        WARLY =
+        {
+            GENERIC = "Hey %s! Do you have any snacks?",
+            ATTACKER = "%s, don't you think you should say sorry?",
+            MURDERER = "We thought you were nice!",
+            REVIVER = "Thanks a bunch, %s!",
+            GHOST = "Oh no, %s is hurt!",
+            FIRESTARTER = "We don't think you were supposed to start that fire.",
         },
 
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
@@ -1082,9 +1067,6 @@ return {
         CHESSPIECE_BEARGER = "The fur looks so real!",
         CHESSPIECE_MOOSEGOOSE = "She doesn't look so mean.",
         CHESSPIECE_DRAGONFLY = "We can practically feel the fire!",
-        CHESSPIECE_BUTTERFLY = "It looks kinda yummy, doesn't it?",
-        CHESSPIECE_ANCHOR = "Anchors away!",
-        CHESSPIECE_MOON = "Almost as pretty as the real thing.",
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
         CHESSJUNK3 = "A mess of chess.",
@@ -1123,7 +1105,6 @@ return {
         CRITTER_PUPPY = "We're best friends.",
         CRITTER_KITTEN = "You look like grandpa's cat!",
         CRITTER_PERDLING = "Gobble gobble!",
-        CRITTER_LUNARMOTHLING = "A spider and an insect, what a pair!",
 
 		CROW =
 		{
@@ -1414,12 +1395,6 @@ return {
 		HORN = "If this makes a mating call we're all in trouble.",
 		HOUND = "That's an angry puppy!",
 		HOUNDBONE = "There isn't much left.",
-		HOUNDCORPSE =
-		{
-			 GENERIC = "Poor puppy.",
-			 BURNING = "I miss the puppy, but I don't want it to come back.",
-			 REVIVING = "Make it stop, make it stop!",
-		},
 		HOUNDMOUND = "This place scares us.",
 		ICEBOX = "Spoil not, food supplies!",
 		ICEHAT = "This should keep us cool.",
@@ -1507,9 +1482,6 @@ return {
 			DRYINGINRAIN = "It's hard to dry when it's raining.",
 			GENERIC = "It's not doing us much good empty!",
 			BURNT = "Fire takes all.",
-			DONE_NOTMEAT = "Food time!",
-			DRYING_NOTMEAT = "Is it done yet? I'm hungry.",
-			DRYINGINRAIN_NOTMEAT = "It's hard to dry when it's raining.",
 		},
 
 		MEAT_DRIED = "That worked better than expected.",
@@ -1621,7 +1593,6 @@ return {
 		POMEGRANATE_SEEDS = "We could grow something with these.",
 		POND = "Water doesn't go well with our fur.",
 		POOP = "Doodoo.",
-		--PORTABLECOOKPOT_ITEM = "Makes yummies!",
 		FERTILIZER = "I saw mum use this in her gardens.",
 		PUMPKIN = "That's a huge pumpkin!",
 		PUMPKINCOOKIE = "Yum!",
@@ -2084,8 +2055,6 @@ return {
 		TURF_FUNGUS_GREEN = "Some ground that we dug up.",
 		TURF_FUNGUS_RED = "Some ground that we dug up.",
 		TURF_SANDY = "Some ground that we dug up.",
-		TURF_METEOR = "Some ground that we dug up.",
-        TURF_PEBBLEBEACH = "Some ground that we dug up.",
 		
 		SHADOWDIGGER = "Sometimes scary things are nice.",
 
@@ -2537,171 +2506,69 @@ return {
         ARMOR_BRAMBLE = "We're ready to let spikes fly!",
         TRAP_BRAMBLE = "It's a very pointy planty trap!",
 
-        BOATFRAGMENT01 = "Oh no, someone had an accident!",
-        BOATFRAGMENT02 = "Oh no, someone had an accident!",
-        BOATFRAGMENT03 = "Oh no, someone had an accident!",
-        BOATFRAGMENT04 = "Oh no, someone had an accident!",
-        BOATFRAGMENT05 = "Oh no, someone had an accident!",
-        BOAT_LEAK = "Quick, plug it up!",
-        MAST = "Wow, it's MASTive!",
-        SEASTACK = "We hope no one crashes their boat on that!",
-        FISHINGNET = "Maybe we'll catch some antchovies!",
-        ANTCHOVIES = "It's like peoplefood and spiderfood in one!",
-        STEERINGWHEEL = "Oh, oh, we want to steer!",
-        ANCHOR = "It's really, really heavy.",
-        BOATPATCH = "It makes the boat feel better.",
-        DRIFTWOOD_TREE = 
+        --v2 Warly
+        PORTABLECOOKPOT_ITEM =
         {
-            BURNING = "It's getting all burned up!",
-            BURNT = "All burned up.",
-            CHOPPED = "Chopped all up.",
-            GENERIC = "They're fun to climb on.",
-    },
-
-        DRIFTWOOD_LOG = "Easy piece-y.",
-
-        MOON_TREE = 
-        {
-            BURNING = "I hope trees don't feel pain.",
-            BURNT = "It's dead now.",
-            CHOPPED = "Sorry, tree.",
-            GENERIC = "What a pretty tree!",
-    },
-
-        MOONBUTTERFLY = 
-        {
-        	GENERIC = "What a pretty moth!",
-        	HELD = "Don't worry, we won't eat you.",
+            GENERIC = "Makes yummies!",
+            DONE = "Mmmm! Let's eat!",
         },
-		MOONBUTTERFLYWINGS = "Poor moth.",
-        MOONBUTTERFLY_SAPLING = "It'll be a big tree one day.",
-        ROCK_AVOCADO_FRUIT = "We have to wait for it to ripen.",
-        ROCK_AVOCADO_FRUIT_RIPE = "We cracked it open.",
-        ROCK_AVOCADO_FRUIT_RIPE_COOKED = "No more pit!",
-        ROCK_AVOCADO_FRUIT_SPROUT = "Oh wow, it's growing!",
-        ROCK_AVOCADO_BUSH = 
+        PORTABLEBLENDER_ITEM = "Shake-a, shake-a, shake-a!",
+        PORTABLESPICER_ITEM =
         {
-            BARREN = "We don't think it can make fruit anymore.",
-            WITHERED = "Too hot.",
-            GENERIC = "There's rocks growing out of that bush!",
-            PICKED = "It doesn't have anything good.",
-            DISEASED = "It's really sick.",
-            DISEASING = "It looks a little pale.",
-            BURNING = "It's burning!",
+            GENERIC = "Oh! Can we grind it, please?",
+            DONE = "All done.",
         },
-        DEAD_SEA_BONES = "Yuck! Dead stuff.",
-        HOTSPRING = 
-        {
-        	GENERIC = "Splish splash.",
-        	BOMBED = "It smells nice and looks pretty.",
-        	GLASS = "We could crack it open.",
-        },
-        MOONGLASS = "It came from the moon. Wow!",
-        MOONGLASS_ROCK = "Is the moon green, too?",
-        BATHBOMB = "I miss bubble baths.",
-        TRAP_STARFISH = 
-        {
-        	GENERIC = "What a cute starfish!",
-            CLOSED = "Yikes, that thing was hungry!",
-        },
-        DUG_TRAP_STARFISH = "Now nobody will hurt themselves on it.",
-        SPIDER_MOON = 
-        {
-            GENERIC = "These friends look... weird.",
-            SLEEPING = "Night-night, scary friend.",
-            DEAD = "Sorry!",
-        },
-        MOONSPIDERDEN = "I don't want to be friends with those ones.",
-        FRUITDRAGON =
-        {
-            GENERIC = "It smells like yummy fruit.",
-            RIPE = "It looks kinda yummy.",
-            SLEEPING = "Night night!",
-        },
-        PUFFIN =
-        {
-            GENERIC = "It looks like a nice bird.",
-            HELD = "I got you now.",
-            SLEEPING = "Nighty night.",
-        },
+        SPICEPACK = "I'm sure Mr. Warly won't mind if we use this!",
+        SPICE_GARLIC = "Our breath will smell stinky. Yay!",
+        SPICE_SUGAR = "It turns everything into dessert!",
+        SPICE_CHILI = "Ho! Ha! That's spicy!",
+        MONSTERTARTARE = "Looks amazing!",
+        FRESHFRUITCREPES = "Cripes! We can't wait for these crepes!",
+        FROGFISHBOWL = "Thanks Warly!",
+        POTATOTORNADO = "Woah! It's cool, AND edible!",
+        DRAGONCHILISALAD = "Okay, we'll eat a salad.",
+        GLOWBERRYMOUSSE = "Mmm, mousse!",
+        VOLTGOATJELLY = "WOW! Gelatin!",
+        NIGHTMAREPIE = "It's scary, but tasty.",
+        BONESOUP = "Warly makes really good stuff.",
+        MASHEDPOTATOES = "Just like grandma used to make!",
+        POTATOSOUFFLE = "It looks so fancy.",
+        MOQUECA = "We love when Warly cooks for us.",
+        GAZPACHO = "I don't wanna eat it, but Warly was nice to make it for us.",
+        ASPARAGUSSOUP = "Mmmm...warms our tummy.",
+        VEGSTINGER = "It's a drink with vegetables in it.",
+        BANANAPOP = "Yaaay! Popsicle, popsicle!",
+        CEVICHE = "Yucky!",
+        SALSA = "Yummy but... spicy!!",
+        PEPPERPOPPER = "We're so stuffed we'll pop!",
 
-        MOONGLASSAXE = "We think it cuts better than a regular axe.",
-        GLASSCUTTER = "It's sharp enough to split a spider hair.",
+        TURNIP = "Wow! It's a turnip!",
+        TURNIP_COOKED = "We cooked the turnip.",
+        TURNIP_SEEDS = "We can find out what they are by planting them.",
+        --
+        GARLIC = "Maxwell says you ward monsters away with it.",
+        GARLIC_COOKED = "It didn't ward us off!",
+        GARLIC_SEEDS = "We can find out what they are by planting them.",
+        --
+        ONION = "It makes all our eyes water!",
+        ONION_COOKED = "Our eyes don't water any more.",
+        ONION_SEEDS = "We can find out what they are by planting them.",
+        --
+        POTATO = "Woah! A potato!",
+        POTATO_COOKED = "It's a cooked potato now.",
+        POTATO_SEEDS = "We can find out what they are by planting them.",
+        --
+        TOMATO = "Is it a fruit or a vegetable?",
+        TOMATO_COOKED = "It's a cooked fregetable. Vruit?",
+        TOMATO_SEEDS = "We can find out what they are by planting them.",
 
-        ICEBERG =
-        {
-            GENERIC = "I hope our boat doesn't run into it.",
-            MELTED = "We guess it's too hot out.",
-        },
-        ICEBERG_MELTED = "We guess it's too hot out.",
+        ASPARAGUS = "Mom said we should eat our vegetables.", 
+        ASPARAGUS_COOKED = "Asparagus makes our pee smell funny.",
+        ASPARAGUS_SEEDS = "Do we have a garden to plant this?", 
 
-        MINIFLARE = "Just in case someone's lost and lonely.",
-
-        MOON_FISSURE = 
-        {
-        	GENERIC = "It's trying to talk, we think!",
-        	NOLIGHT = "Don't step on a crack!",
-		},
-        MOON_ALTAR =
-        {
-            MOON_ALTAR_WIP = "Don't worry, you'll be together again soon.",
-            GENERIC = "Hm? Do you need something from me?",
-        },
-
-        MOON_ALTAR_IDOL = "It doesn't want to be here. We don't either.",
-        MOON_ALTAR_GLASS = "It can't talk like we do, but it's a friend.",
-        MOON_ALTAR_SEED = "It wants to go to one of those cracks in the ground.",
-
-        MOON_ALTAR_ROCK_IDOL = "Oh no, someone's trapped inside that rock!",
-        MOON_ALTAR_ROCK_GLASS = "Oh no, someone's trapped inside that rock!",
-        MOON_ALTAR_ROCK_SEED = "Oh no, someone's trapped inside that rock!",
-
-        SEAFARING_PROTOTYPER = 
-        {
-        	GENERIC = "There's all kinds of fun things you can do at sea.",
-        	BURNT = "Fire is very dangerous.",
-        },
-        SEAFARER_KIT = "Everything we need to build a seaworthy boat.",
-        BOAT_ITEM = "That's for building a boat.",
-        MAST_ITEM = "That's for building a mast.",
-        STEERINGWHEEL_ITEM = "That's for making a steering wheel.",
-        ANCHOR_ITEM = "That's for making an anchor.",
-        MUTATEDHOUND = 
-        {
-        	DEAD = "It's dead!",
-        	GENERIC = "Woah! How'd you get rid of your outside skin?",
-        	SLEEPING = "Night night, gross puppy.",
-        },
-
-        MUTATED_PENGUIN = 
-        {
-			DEAD = "It's dead!",
-			GENERIC = "It's even more monstrous than us!",
-			SLEEPING = "We don't want to get closer.",
-		},
-
-		CARRAT = 
-        {
-        	DEAD = "Oh no!",
-        	GENERIC = "Hey, little friend!",
-        	HELD = "We'll keep you safe.",
-        	SLEEPING = "Night night.",
-        },
-        GESTALT = "They want to talk, but they don't know how!",
-
-        BULLKELP_PLANT = 
-        {
-            GENERIC = "There's some kelp floating in the water!",
-            PICKED = "We gave it a haircut.",
-        },
-		BULLKELP_ROOT = "It would be happier if we planted it.",
-        KELPHAT = "Why did we make this?",
-		KELP = "Slimy, yet satisfying.",
-		KELP_COOKED = "He doesn't like it very much, but I think it's okay.",
-		KELP_DRIED = "Mmm, salty and flaky!",
-
-        WALKINGPLANK = "It's the least fun diving board.",
-        OAR = "More legs means faster rowing!",
+        PEPPER = "It's so small and cute!",
+        PEPPER_COOKED = "I bet it's spicy.",
+        PEPPER_SEEDS = "Let's plant these and see what grows.",
     },
     DESCRIBE_GENERIC = "Can we play with it?",
     DESCRIBE_TOODARK = "All our eyes stopped working!",

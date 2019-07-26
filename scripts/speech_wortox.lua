@@ -22,6 +22,7 @@ return {
 			GENERIC = "It's full, full, full.",
 			NOTALLOWED = "Oh I simply couldn't.",
 			INUSE = "Another soul has use of it right now.",
+            NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
 		},
 		CONSTRUCT =
         {
@@ -34,6 +35,7 @@ return {
 		{	
 			GENERIC = "Oh I simply couldn't.",
 			INUSE = "It is making a pact with another.",
+            NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
 		},
 		UNLOCK =
         {
@@ -145,32 +147,8 @@ return {
             MISMATCH = "Hyuyu! They all look the same to me!", 
             SAMEDISH = "I cannot redo what's already been done!", 
         },
-        SAIL =
-        {
-			REPAIR = "The ship is tippy tip top!",
-        },
-        ROW_FAIL =
-        {
-            BAD_TIMING0 = "Time to sync or swim, hyuyu!",
-            BAD_TIMING1 = "If I time it just right, the end is in sight!",
-            BAD_TIMING2 = "I mustn't rock the boat!",
-        },
-        LOWER_SAIL_FAIL =
-        {
-            "What a fiendishly frustrating contraption! I'm impressed.",
-            "Perhaps I should try a new tack! Hyuyu!",
-            "My guise as a sailor was a spectacular failure!",
-        }, 
-        BATHBOMB =
-        {
-            GLASSED = "I can't throw it through the looking glass!",
-            ALREADY_BOMBED = "Someone else took the fun!",
-        },
 	},
 	ACTIONFAIL_GENERIC = "No, no, no.",
-    ANNOUNCE_WASHED_ASHORE = "I escaped the threat, but now I'm wet!",
-	ANNOUNCE_BOAT_LEAK = "Now this ride's getting fun!",
-	ANNOUNCE_BOAT_SINK = "Into the drink I go, hyuyu!",
 	ANNOUNCE_DIG_DISEASE_WARNING = "I've helped it!",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Its soul has not left its body, yet still it stinks.",
 	ANNOUNCE_ADVENTUREFAIL = "I've had enough plane hopping.",
@@ -281,22 +259,6 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "Shall we dance?",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Well that's no fun, friend!",
 
-	ANNOUNCE_MOONALTAR_MINE =
-	{
-		GLASS_MED = "Time to come out and play, okay?",
-		GLASS_LOW = "Yoo-hyuyu!",
-		GLASS_REVEAL = "Hello there!",
-		IDOL_MED = "Time to come out and play, okay?",
-		IDOL_LOW = "Yoo-hyuyu!",
-		IDOL_REVEAL = "Hello there!",
-		SEED_MED = "Time to come out and play, okay?",
-		SEED_LOW = "Yoo-hyuyu!",
-		SEED_REVEAL = "Hello there!",
-	},
-
-	ANNOUNCE_FLARE_SEEN = "One of my friends is inviting me to play!",
-    ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Hyuyu, something's come to play!",
-
     --Wortox
     ANNOUNCE_SOUL_EMPTY =
     {
@@ -344,6 +306,18 @@ return {
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Well it's not raw! Hyuyu!",
     QUAGMIRE_ANNOUNCE_LOSE = "Oh dear.",
     QUAGMIRE_ANNOUNCE_WIN = "Must be off now!",
+
+    ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I'm an electric imp!",
+    ANNOUNCE_ATTACH_BUFF_ATTACK            = "Hyuyu, I'm ready to play!",
+    ANNOUNCE_ATTACH_BUFF_PLAYERABSORPTION  = "I feel just great! Must've been something I ate!",
+    ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "That was just the thing to give my step a spring!",
+    ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "There will be no wet fur smell for this imp! Hyuyu!",
+    
+    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "I think I gave them quite a shock! Hyuyu!",
+    ANNOUNCE_DETACH_BUFF_ATTACK            = "It was all just a prank!",
+    ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "That was fun, let's do it again!",
+    ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "All work and no play doesn't suit an imp. Hyuyu!",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Alas and alack, the dampness is back.",
 
 	BATTLECRY =
 	{
@@ -541,10 +515,20 @@ return {
             GENERIC = "Heard any good jokes lately, %s?",
             ATTACKER = "What a cruel trick you've played! Hyuyu!",
             MURDERER = "You've really gone and dung it this time, hyuyu!",
-            REVIVER = "I guess %s doesn't have a taste for souls.",
+            REVIVER = "%s is just too kind a soul, I suppose.",
             GHOST = "Finally, a break from his poop jokes.",
             FIRESTARTER = "Ooo, there's an ember of fun in you yet.",
         },
+        WARLY =
+        {
+            GENERIC = "%s sure likes food. I don't get humans.",
+            ATTACKER = "I think %s's been causing some trouble. How fun!",
+            MURDERER = "Don't hurt me-hee-hee!",
+            REVIVER = "I guess %s doesn't have a taste for souls.",
+            GHOST = "The culinarian's become the culination, hyuyu!",
+            FIRESTARTER = "Oh, are we playing pranks today, %s?",
+        },
+        
         NEXTCHARACTER =
         {
             GENERIC = "Hyuyu, what are you up to %s?",
@@ -841,8 +825,6 @@ return {
 		TURF_FUNGUS_GREEN = "Floor or ceiling, depending on your perspective.",
 		TURF_FUNGUS_RED = "Floor or ceiling, depending on your perspective.",
 		TURF_DRAGONFLY = "Floor or ceiling, depending on your perspective.",
-		TURF_METEOR = "Floor or ceiling, depending on your perspective.",
-        TURF_PEBBLEBEACH = "Floor or ceiling, depending on your perspective.",
 
 		POWCAKE = "Hyuyu! This cake packs a wallop!",
         CAVE_ENTRANCE = "Clear the way I say!",
@@ -1095,10 +1077,6 @@ return {
         },
         CHESSPIECE_DRAGONFLY = "Bye bye, dear dragonfly.",
 		CHESSPIECE_PAWN ="Would you like to play?",
-        CHESSPIECE_BUTTERFLY = "It does not float, nor does it sting.",
-        CHESSPIECE_ANCHOR = "So heavy, heavy, dreary, dreary.",
-        CHESSPIECE_MOON = "The mortals thought it was made of cheese! Hyuyu!",
-		CHESSPIECE_PAWN ="Would you like to play?",
         CHESSPIECE_ROOK = 
         {
 			GENERIC = "We carved this from the rock ourselves.",
@@ -1156,7 +1134,6 @@ return {
         CRITTER_PUPPY = "Sorry I can't pet you, little friend.",
         CRITTER_KITTEN = "What should our next prank be, little kitty?",
         CRITTER_PERDLING = "You're so sweet, I could just gobble you up.",
-        CRITTER_LUNARMOTHLING = "On wings alight comes a fuzzy delight!",
 
 		CROW =
 		{
@@ -1465,12 +1442,6 @@ return {
 		HONEYNUGGETS = "I guess they do look kind of good.",
 		HORN = "Phew! Not one of mine.",
 		HOUND = "Hyuyu, you're so badly behaved!",
-		HOUNDCORPSE =
-		{
-			 GENERIC = "A corpse is a corpse, of course, of course.",
-			 BURNING = "Sizzle sizzle, pop and crack.",
-			 REVIVING = "I do believe I'll take my leave!",
-		},
 		HOUNDBONE = "Short work made by gnashing teeth.",
 		HOUNDMOUND = "It's the dog house!",
 		ICEBOX = "Freeze mortal foods for midday feasts.",
@@ -1562,9 +1533,6 @@ return {
 			DRYINGINRAIN = "It's undrying day.",
 			GENERIC = "I don't have much use for this.",
 			BURNT = "A silly prank to be sure.",
-			DONE_NOTMEAT = "The food's ready.",
-			DRYING_NOTMEAT = "It's drying.",
-			DRYINGINRAIN_NOTMEAT = "It's undrying day.",
 		},
 		MEAT_DRIED = "Mortals like this more than when it's wet.",
 		MERM = "Aren't you intimidated by my massive horns?",
@@ -2528,170 +2496,7 @@ return {
             BURNING = "Hoohoohoo!",
             BURNT = "How hilarious!",
         },
-        BOATFRAGMENT01 = "Flotsam and jetsam, bits and bobs.",
-        BOATFRAGMENT02 = "Flotsam and jetsam, bits and bobs.",
-        BOATFRAGMENT03 = "Flotsam and jetsam, bits and bobs.",
-        BOATFRAGMENT04 = "Flotsam and jetsam, bits and bobs.",
-        BOATFRAGMENT05 = "Flotsam and jetsam, bits and bobs.",
-        BOAT_LEAK = "Things look bleak - we have a leak!",
-        MAST = "A sail on the mast will move our boat fast.",
-        SEASTACK = "It would be quite a shock to hit that rock.",
-        FISHINGNET = "A riddle! What might one cast that's not a spell?",
-        ANTCHOVIES = "Squirmy, wormy, fishy food.",
-        STEERINGWHEEL = "A big wheel to guide a keel.",
-        ANCHOR = "Drop it to stop it.",
-        BOATPATCH = "Plugging a hole sounds quite droll.",
-        DRIFTWOOD_TREE = 
-        {
-            BURNING = "Burning, burning, burning down.",
-            BURNT = "So much tinder, burnt to cinder.",
-            CHOPPED = "It is no more.",
-            GENERIC = "An old, dead tree, beached and bleached.",
-        },
 
-        DRIFTWOOD_LOG = "Naught but a log.",
-
-        MOON_TREE = 
-        {
-            BURNING = "Burning, burning, burning down.",
-            BURNT = "So much tinder, burnt to cinder.",
-            CHOPPED = "It is no more.",
-            GENERIC = "Glimmering tree of lunar light.",
-        },
-
-        MOONBUTTERFLY = 
-        {
-        	GENERIC = "A glimmering moth on wings alight.",
-        	HELD = "Watch my claws now, dearest friend.",
-        },
-		MOONBUTTERFLYWINGS = "Gossamer wings of pale, pale green.",
-        MOONBUTTERFLY_SAPLING = "Grow now, safe and sound.",
-        ROCK_AVOCADO_FRUIT = "I don't mean to balk, but that looks like a rock.",
-        ROCK_AVOCADO_FRUIT_RIPE = "My mortal friends would find it tasty now.",
-        ROCK_AVOCADO_FRUIT_RIPE_COOKED = "A meal fit for a mortal.",
-        ROCK_AVOCADO_FRUIT_SPROUT = "How it grows, nobody knows.",
-        ROCK_AVOCADO_BUSH = 
-        {
-        	BARREN = "It won't be returning to this plane.",
-            WITHERED = "Feeling down, are you?",
-            GENERIC = "It's chock a block with little rocks!",
-            PICKED = "Gone, all gone.",
-            DISEASED = "Now it stinks really good!",
-            DISEASING = "It's started to stink.",
-			BURNING = "Burning, burning, burning down.",
-		},
-        DEAD_SEA_BONES = "Bones from the sea, these look to be!",
-        HOTSPRING = 
-        {
-        	GENERIC = "I don't want to get my fur wet.",
-        	BOMBED = "Mortals love good smells.",
-        	GLASS = "All that glass sure froze fast!",
-        },
-        MOONGLASS = "In its green sheen I see selene.",
-        MOONGLASS_ROCK = "A handsome devil is reflected back at me! Hyuyu!",
-        BATHBOMB = "Sweetly stinking, bombs for bathing.",
-        TRAP_STARFISH = 
-        {
-            GENERIC = "Careful where you tread, lest you end up dead!",
-            CLOSED = "Jaws that snap! It was a trap.",
-        },
-        DUG_TRAP_STARFISH = "Planting this would be a devilish trick.",
-        SPIDER_MOON = 
-        {
-        	GENERIC = "Sharpest spider, soon to strike.",
-        	SLEEPING = "Get some rest, little pest.",
-        	DEAD = "Dead as dead as dead could be!",
-        },
-        MOONSPIDERDEN = "I should not like to see inside!",
-		FRUITDRAGON =
-		{
-			GENERIC = "Little lizard, sharp and pointy!",
-			RIPE = "That color looks great on you, hyuyu!",
-			SLEEPING = "Hyuyu, catching some shuteye are we?",
-		},
-        PUFFIN =
-        {
-            GENERIC = "I'll tell you nothin', puffin.",
-            HELD = "Stay calm, little soul.",
-            SLEEPING = "Hyuyu, catching some shuteye are we?",
-        },
-
-		MOONGLASSAXE = "Swing and a chop, all the trees drop!",
-		GLASSCUTTER = "Oh, I'm sure I'll have fun with this. Hyuyu!",
-
-        ICEBERG =
-        {
-            GENERIC = "Glistening ice, it looks quite nice.",
-            MELTED = "Teeny tiny, drippy droppy iceberg.",
-        },
-        ICEBERG_MELTED = "Teeny tiny, drippy droppy iceberg.",
-
-        MINIFLARE = "Mortals get lost sometimes, hyuyu.",
-
-        MOON_FISSURE = 
-        {
-        	GENERIC = "This magic makes my brain so soft and floaty!",
-        	NOLIGHT = "A deep, dark hole that knows no end!",
-		},
-        MOON_ALTAR =
-        {
-            MOON_ALTAR_WIP = "Hyuyu, you'll owe me one after this!",
-            GENERIC = "Hyuyu, moon secrets are so fun!",
-        },
-        SEAFARING_PROTOTYPER =
-        {
-        	GENERIC = "For a mind as vast as the sea is deep!",
-        	BURNT = "The fire caused it to expire!",
-        },
-        SEAFARER_KIT = "Boat building basics, hyuyu!",
-        BOAT_ITEM = "Let's craft a raft!",
-        MAST_ITEM = "A mast to sail the ocean vast.",
-        STEERINGWHEEL_ITEM = "I can see the appeal of a steering wheel.",
-        ANCHOR_ITEM = "Such funny ship things I could build.",
-        MUTATEDHOUND = 
-        {
-        	DEAD = "I'm surprised it had a soul!",
-        	GENERIC = "What if I'm actually inside out, and it's rightside in?",
-        	SLEEPING = "Its mind has fled far from here, hyuyu.",
-        },
-
-        MOON_ALTAR_IDOL = "You've really fallen apart, huh?",
-        MOON_ALTAR_GLASS = "Let's see if we can put you back together again.",
-        MOON_ALTAR_SEED = "What a funny voice you have. How it rattles around in my head!",
-
-        MOON_ALTAR_ROCK_IDOL = "There's a surprise inside!",
-        MOON_ALTAR_ROCK_GLASS = "There's a surprise inside!",
-        MOON_ALTAR_ROCK_SEED = "There's a surprise inside!",
-
-        MUTATED_PENGUIN = 
-        {
-			DEAD = "Dead as dead as dead could be!",
-			GENERIC = "Hyuyu! What a horrible face you have!",
-			SLEEPING = "Its mind has fled far from here, hyuyu.",
-		},
-
-		CARRAT = 
-        {
-        	DEAD = "Ding-dong, the carrot's dead.",
-        	GENERIC = "Does it have a soul, one wonders?",
-        	HELD = "Hello hello, strange orange soul.",
-        	SLEEPING = "Good night, sleep tight, don't let the humans bite.",
-        },
-        GESTALT = "Good evening, children!",
-
-        BULLKELP_PLANT = 
-        {
-            GENERIC = "And so it grows from out the sea.",
-            PICKED = "The mortals picked it with such glee.",
-        },
-        BULLKELP_ROOT = "We plucked this whip from the side of the ship.",
-        KELPHAT = "To rest uncomfortably upon my horns.",
-		KELP = "Kelp would be of no help.",
-		KELP_COOKED = "Mortals have such funny tastes.",
-		KELP_DRIED = "I do not want it, no siree.",
-
-        WALKINGPLANK = "It's just a last resort, worrywart!",
-        OAR = "I'll splash all my friends with this!",
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
 
@@ -2699,6 +2504,71 @@ return {
         COMPOSTWRAP = "It's poop. So the plants won't droop.",
         ARMOR_BRAMBLE = "Who'd like to give an imp a hug? Hyuyu!",
         TRAP_BRAMBLE = "Spiky, pointy, green and thorny!",
+
+        --v2 Warly
+        PORTABLECOOKPOT_ITEM =
+        {
+            GENERIC = "Does it make soul food?",
+            DONE = "A mortal meal is not really my deal.",
+        },
+        PORTABLEBLENDER_ITEM = "All that chopping and no souls.",
+        PORTABLESPICER_ITEM =
+        {
+            GENERIC = "Grind, grind, grind away.",
+            DONE = "Mortals are so strange.",
+        },
+        SPICEPACK = "What a cute little pack. Hyuyu!",
+        SPICE_GARLIC = "Hissss!",
+        SPICE_SUGAR = "A saccharine collection of liquified confection.",
+        SPICE_CHILI = "I'll spike some mortal's food. Hyuyu!",
+        MONSTERTARTARE = "Monster flesh that's very fresh. ",
+        FRESHFRUITCREPES = "Fruits and berries put to bed.",
+        FROGFISHBOWL = "I'd rather have a nice fresh soul.",
+        POTATOTORNADO = "I think I remember when I used to eat food. Maybe.",
+        DRAGONCHILISALAD = "Warly spends a lot of time on this stuff.",
+        GLOWBERRYMOUSSE = "Seems like a lot of effort for something you eat.",
+        VOLTGOATJELLY = "Hyuyu, it looks interesting at least.",
+        NIGHTMAREPIE = "Hyuyu, humans sure are strange.",
+        BONESOUP = "They spend all day cooking and then devour it in minutes.",
+        MASHEDPOTATOES = "Humans mush stuff up sometimes. That's just how it is.",
+        POTATOSOUFFLE = "I'm sure it's good, but it's not for me.",
+        MOQUECA = "I don't really like human food.",
+        GAZPACHO = "This human food stuff seems more watery than usual.",
+        ASPARAGUSSOUP = "Even for human food, this is odd.",
+        VEGSTINGER = "I can't decide if it's for sipping or souping.",
+        BANANAPOP = "Hyuyu, what will the mortals think of next.",
+        CEVICHE = "I'd rather leave this for the humans.",
+        SALSA = "A spicy treat for mortals to eat.",
+        PEPPERPOPPER = "I'll stuff them with toothpaste when Warly's not looking. Hyuyu!",
+
+        TURNIP = "That's a tiny turnip.",
+        TURNIP_COOKED = "Cooked, but not into a dish.",
+        TURNIP_SEEDS = "Strange little seeds, indeed, indeed.",
+        --
+        GARLIC = "Hissss!",
+        GARLIC_COOKED = "Hissssss!",
+        GARLIC_SEEDS = "Strange little seeds, indeed, indeed.",
+        --
+        ONION = "You'll see no tears from my eye. I cannot cry!",
+        ONION_COOKED = "Like tiny circles decending.",
+        ONION_SEEDS = "Strange little seeds, indeed, indeed.",
+        --
+        POTATO = "Mortals like this in all its forms.",
+        POTATO_COOKED = "A roasted mortal food.",
+        POTATO_SEEDS = "Strange little seeds, indeed, indeed.",
+        --
+        TOMATO = "Who shall I throw this at?",
+        TOMATO_COOKED = "Squishy, squishy.",
+        TOMATO_SEEDS = "Strange little seeds, indeed, indeed.",
+
+        ASPARAGUS = "A spear I guess. Hyuyu!",
+        ASPARAGUS_COOKED = "I'd rather not.",
+        ASPARAGUS_SEEDS = "Strange little seeds, indeed, indeed.",
+
+        PEPPER = "An impy little vegetable.",
+        PEPPER_COOKED = "Tiny toasted twisty things.",
+        PEPPER_SEEDS = "Strange little seeds, indeed, indeed.",
+
     },
     DESCRIBE_GENERIC = "Ooo, a mystery!",
     DESCRIBE_TOODARK = "I can't see the physical plane!",

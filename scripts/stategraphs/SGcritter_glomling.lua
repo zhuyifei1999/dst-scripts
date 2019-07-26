@@ -45,24 +45,15 @@ local emotes =
 	{ anim="emote2",
       timeline=
 		{
-            TimeEvent(7*FRAMES, function(inst)
-                StopFlapping(inst)
-                LandFlyingCreature(inst)
-            end),
+            TimeEvent(7*FRAMES, StopFlapping),
 			TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_2") end),
-            TimeEvent(68*FRAMES, function(inst)
-                StartFlapping(inst)
-                RaiseFlyingCreature(inst)
-            end),
+            TimeEvent(68*FRAMES, StartFlapping),
 		},
       fns=
         {
-            onexit = function(inst)
-                RestoreFlapping(inst)
-                RaiseFlyingCreature(inst)
-            end,
+            onexit = RestoreFlapping,
         },
 	},
 }
@@ -71,18 +62,12 @@ SGCritterStates.AddIdle(states, #emotes)
 SGCritterStates.AddRandomEmotes(states, emotes)
 SGCritterStates.AddEmote(states, "cute", 
 		{
-            TimeEvent(5*FRAMES, LandFlyingCreature),
 			TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
-            TimeEvent(11*FRAMES, RaiseFlyingCreature),
-            TimeEvent(20*FRAMES, LandFlyingCreature),
 			TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
-            TimeEvent(27*FRAMES, RaiseFlyingCreature),
-            TimeEvent(45*FRAMES, LandFlyingCreature),
 			TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(47*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
-            TimeEvent(51*FRAMES, RaiseFlyingCreature),
 		})
 SGCritterStates.AddPetEmote(states, 
 	{
@@ -122,20 +107,15 @@ SGCritterStates.AddEat(states,
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
             TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
 
-            TimeEvent(20*FRAMES, LandFlyingCreature),
             TimeEvent(22*FRAMES, StopFlapping),
 
             TimeEvent((26+8)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/eat_loop") end),
             TimeEvent((26+22)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/eat_loop") end),
 
             TimeEvent(74*FRAMES, StartFlapping),
-            TimeEvent(82*FRAMES, RaiseFlyingCreature),
         },
         {
-            onexit = function(inst)
-                RestoreFlapping(inst)
-                RaiseFlyingCreature(inst)
-            end,
+            onexit = RestoreFlapping,
         })
 SGCritterStates.AddHungry(states,
         {
@@ -147,17 +127,12 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
 		{
             TimeEvent(6*FRAMES, function(inst)
                 StopFlapping(inst)
-                LandFlyingCreature(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground")
             end),
-            TimeEvent(45*FRAMES, RaiseFlyingCreature),
             TimeEvent(53*FRAMES, StartFlapping),
         },
         {
-            onexit = function(inst)
-                RestoreFlapping(inst)
-                RaiseFlyingCreature(inst)
-            end,
+            onexit = RestoreFlapping,
         })
 
 SGCritterStates.AddWalkStates(states, nil, true)
@@ -167,7 +142,6 @@ local function CleanupIfSleepInterrupted(inst)
     if not inst.sg.statemem.continuesleeping then
         RestoreFlapping(inst)
     end
-    RaiseFlyingCreature(inst)
 end
 
 CommonStates.AddSleepExStates(states,
@@ -176,7 +150,6 @@ CommonStates.AddSleepExStates(states,
 			{
 				TimeEvent(35*FRAMES, function(inst)
                     StopFlapping(inst)
-                    LandFlyingCreature(inst)
                     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground")
                 end),
 			},
@@ -184,24 +157,16 @@ CommonStates.AddSleepExStates(states,
 			{
 				TimeEvent(41*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/sleep_voice") end),
 			},
-            waketimeline =
+            endtimeline =
             {
                 TimeEvent(12 * FRAMES, StartFlapping),
-                TimeEvent(16*FRAMES, RaiseFlyingCreature),
             },
         },
         {
             onexitsleep = CleanupIfSleepInterrupted,
             onexitsleeping = CleanupIfSleepInterrupted,
-            onsleeping = LandFlyingCreature,
-            onexitwake = function(inst)
-                RestoreFlapping(inst)
-                RaiseFlyingCreature(inst)
-            end,
-            onwake = function(inst)
-                StopFlapping(inst)
-                LandFlyingCreature(inst)
-            end,
+            onexitwake = RestoreFlapping,
+            onwake = StopFlapping,
         })
 
 return StateGraph("SGcritter_glomling", states, events, "idle", actionhandlers)

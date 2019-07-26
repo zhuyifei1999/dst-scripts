@@ -14,7 +14,6 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
-    CommonHandlers.OnHop(),
 }
 
 local states =
@@ -96,7 +95,5 @@ CommonStates.AddSleepExStates(states,
 				TimeEvent(31*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/sleep") end),
 			},
 		})
-
-CommonStates.AddHopStates(states, true)
 
 return StateGraph("SGcritter_kitten", states, events, "idle", actionhandlers)

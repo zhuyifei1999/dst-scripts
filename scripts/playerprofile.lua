@@ -659,11 +659,6 @@ local function UpgradeProfilePresets(presets_string)
                     presets[i] = savefileupgrades.utilities.UpgradeUserPresetFromV2toV3(preset, presets)
                     didupgrade = true
 				end
-
-                if preset.version == 3 then
-                    presets[i] = savefileupgrades.utilities.UpgradeUserPresetFromV3toV4(preset, presets)
-                    didupgrade = true
-				end
             end
 
             if didupgrade then

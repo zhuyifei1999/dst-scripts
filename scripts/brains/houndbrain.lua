@@ -28,7 +28,7 @@ local HOUSE_RETURN_DIST = 50
 local SIT_BOY_DIST = 10
 
 local function EatFoodAction(inst)
-    local target = FindEntity(inst, SEE_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnPassablePoint(true) end)
+    local target = FindEntity(inst, SEE_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnValidGround() end)
     return target ~= nil and BufferedAction(inst, target, ACTIONS.EAT) or nil
 end
 

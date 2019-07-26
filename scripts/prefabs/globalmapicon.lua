@@ -19,7 +19,9 @@ local function TrackEntity(inst, target, restriction, icon)
         inst.MiniMapEntity:SetIcon(target.prefab..".png")
     end
     inst:ListenForEvent("onremove", function() inst:Remove() end, target)
-    inst:DoPeriodicTask(0, UpdatePosition, nil, target)
+    if not target:HasTag("structure") then
+        inst:DoPeriodicTask(0, UpdatePosition, nil, target)
+    end
     UpdatePosition(inst, target)
 end
 

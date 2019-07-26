@@ -14,7 +14,6 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
-    CommonHandlers.OnHop(),
 }
 
 local states =
@@ -95,7 +94,5 @@ CommonStates.AddSleepExStates(states,
 				TimeEvent(57*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/sleep") end),
 			},
 		})
-
-CommonStates.AddHopStates(states, true)
 
 return StateGraph("SGcritter_lamb", states, events, "idle", actionhandlers)

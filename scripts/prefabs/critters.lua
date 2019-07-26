@@ -90,16 +90,9 @@ local function OnLoad(inst, data)
     end
 end
 
-local function OnLoadPostPass(inst, data)
-	if inst._special_powers ~= nil then
-		inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()}) -- to init special powers
-	end
-end
-
-
 -------------------------------------------------------------------------------
 
-local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
+local function MakeCritter(name, animname, face, diet, flying, data)
     local assets =
     {
 	    Asset("ANIM", "anim/"..animname.."_build.zip"),
@@ -107,10 +100,6 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
 	    Asset("ANIM", "anim/"..animname.."_emotes.zip"),
 	    Asset("ANIM", "anim/"..animname.."_traits.zip"),
     }
-
-    if data.allow_platform_hopping then
-        table.insert(assets, Asset("ANIM", "anim/"..animname.."_jump.zip"))
-    end
 
     local function fn()
         local inst = CreateEntity()
@@ -121,7 +110,7 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         inst.entity:AddDynamicShadow()
         inst.entity:AddNetwork()
 
-        inst.DynamicShadow:SetSize(1, .33)
+        inst.DynamicShadow:SetSize(2, .75)
 
         if face == 2 then
             inst.Transform:SetTwoFaced()
@@ -146,14 +135,12 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
             inst.Physics:SetDamping(5)
             inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
             inst.Physics:ClearCollisionMask()
-            inst.Physics:CollidesWith((TheWorld.has_ocean and COLLISION.GROUND) or COLLISION.WORLD)
+            inst.Physics:CollidesWith(COLLISION.WORLD)
             inst.Physics:CollidesWith(COLLISION.FLYERS)
             inst.Physics:CollidesWith(COLLISION.CHARACTERS)
             inst.Physics:SetCapsule(.5, 1)
 
             inst:AddTag("flying")
-
-            MakeInventoryFloatable(inst)
         else
             MakeCharacterPhysics(inst, 1, .5)
         end
@@ -172,10 +159,6 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         end
 
         inst:AddComponent("spawnfader")
-
-		if data ~= nil and data.common_postinit ~= nil then
-			data.common_postinit(inst)
-		end
 
         inst.entity:SetPristine()
 
@@ -223,17 +206,6 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         inst.components.locomotor:SetTriggersCreep(false)
         inst.components.locomotor.softstop = true
         inst.components.locomotor.walkspeed = TUNING.CRITTER_WALK_SPEED
-        if flying then
-            -- Flying creatures can pathfind over the ocean/rivers
-            inst.components.locomotor.pathcaps = { allowocean = true }
-        end
-
-        if data ~= nil and data.allow_platform_hopping then
-            inst.components.locomotor:SetAllowPlatformHopping(true)
-
-            inst:AddComponent("embarker")
-            inst.components.embarker.embark_speed = inst.components.locomotor.walkspeed
-        end
 
         inst:AddComponent("crittertraits")
         inst:AddComponent("timer")
@@ -241,26 +213,16 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         inst:SetBrain(brain)
         inst:SetStateGraph("SG"..name)
 
-		if data ~= nil and data.special_powers_fn ~= nil then
-			inst._special_powers = {}
-			inst:ListenForEvent("perishchange", data.special_powers_fn)
-			if not POPULATING then
-				inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()}) -- to init special powers
-			end
-		end
-
-		if data ~= nil and data.master_postinit ~= nil then
-			data.master_postinit(inst)
-		end
+        --MakeMediumFreezableCharacter(inst, "critters_body")
+        --MakeHauntablePanic(inst)
 
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
-		inst.OnLoadPostPass = OnLoadPostPass
 
         return inst
     end
 
-    return Prefab(name, fn, assets, prefabs)
+    return Prefab(name, fn, assets)
 end
 
 -------------------------------------------------------------------------------
@@ -305,48 +267,17 @@ local function MakeBuilder(prefab)
 end
 -------------------------------------------------------------------------------
 
-local function lunarmoth_special_powers_fn(inst, data)
-	if inst._special_powers.buff ~= nil then
-		if data.percent < HUNGRY_PERISH_PERCENT then
-			inst._special_powers.buff:EnableLight(false)
-		end
-	else
-		if data.percent > HUNGRY_PERISH_PERCENT then
-			local light = SpawnPrefab("critterbuff_lunarmoth")
-			light.entity:SetParent(inst.entity)
-			--light.entity:AddFollower()
-			--light.Follower:FollowSymbol(inst.GUID, "lm_body", 0, 0, 0)
-			inst._special_powers.buff = light
-			inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-			inst:ListenForEvent("onremove", function(buff) 
-				if inst._special_powers.buff == buff then 
-					inst._special_powers.buff = nil 
-					inst.AnimState:SetLightOverride(0)
-					inst.DynamicShadow:Enable(true)
-					inst.AnimState:ClearBloomEffectHandle()
-				end 
-			end, inst._special_powers.buff)
-
-			inst.AnimState:SetLightOverride(0.3)
-			inst.DynamicShadow:Enable(false)
-		end
-	end
-end
-
--------------------------------------------------------------------------------
 local standard_diet = { FOODGROUP.OMNI }
 
-return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole", allow_platform_hopping=true}),
+return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole"}),
        MakeBuilder("critter_lamb"),
-       MakeCritter("critter_puppy", "pupington", 4, standard_diet, false, {favoritefood="monsterlasagna", allow_platform_hopping=true}),
+       MakeCritter("critter_puppy", "pupington", 4, standard_diet, false, {favoritefood="monsterlasagna"}),
        MakeBuilder("critter_puppy"),
-       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks", allow_platform_hopping=true}),
+       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks"}),
        MakeBuilder("critter_kitten"),
-       MakeCritter("critter_perdling", "perdling", 4, standard_diet, false, {favoritefood="trailmix", allow_platform_hopping=true}),
+       MakeCritter("critter_perdling", "perdling", 4, standard_diet, false, {favoritefood="trailmix"}),
        MakeBuilder("critter_perdling"),
        MakeCritter("critter_dragonling", "dragonling", 6, standard_diet, true, {favoritefood="hotchili", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/fly_LP"}),
        MakeBuilder("critter_dragonling"),
        MakeCritter("critter_glomling", "glomling", 6, standard_diet, true, {favoritefood="taffy", playmatetags={"glommer"}, flyingsoundloop="dontstarve_DLC001/creatures/together/glomling/flap_LP"}),
-       MakeBuilder("critter_glomling"),
-       MakeCritter("critter_lunarmothling", "lunarmoth", 4, standard_diet, true, {favoritefood="flowersalad", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/flap_LP", special_powers_fn = lunarmoth_special_powers_fn}, {"critterbuff_lunarmoth"}),
-       MakeBuilder("critter_lunarmothling")
+       MakeBuilder("critter_glomling")

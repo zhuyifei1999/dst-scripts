@@ -132,8 +132,6 @@ local function common(bank, build, anim, tags, dryable, cookable)
         inst:AddTag("cookable")
     end
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -199,8 +197,6 @@ local function humanmeat()
 
     inst.components.tradable.goldvalue = 0
 
-    inst.components.floater:SetVerticalOffset(0.1)
-
     inst:AddComponent("selfstacker")
 
     return inst
@@ -220,8 +216,6 @@ local function humanmeat_cooked()
     inst.components.edible.sanityvalue = -TUNING.SANITY_LARGE
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
-
-    inst.components.floater:SetVerticalOffset(0.1)
 
     return inst
 end
@@ -258,8 +252,6 @@ local function monster()
 
     inst.components.tradable.goldvalue = 0
 
-    inst.components.floater:SetVerticalOffset(0.05)
-
     inst:AddComponent("selfstacker")
 
     return inst
@@ -280,8 +272,6 @@ local function cookedmonster()
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
-
-    inst.components.floater:SetVerticalOffset(0.05)
 
     return inst
 end
@@ -312,8 +302,6 @@ local function cooked()
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
     inst.components.edible.sanityvalue = 0
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-
-    inst.components.floater:SetVerticalOffset(0.05)
 
     AddMonsterMeatChange(inst, "cookedmonstermeat")
 
@@ -354,8 +342,6 @@ local function raw()
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 
-    inst.components.floater:SetVerticalOffset(0.05)
-
     AddMonsterMeatChange(inst, "monstermeat")
 
     if TheNet:GetServerGameMode() == "quagmire" then
@@ -380,8 +366,6 @@ local function smallmeat()
 
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-    inst.components.floater:SetScale(0.9)
-
     return inst
 end
 
@@ -399,8 +383,6 @@ local function cookedsmallmeat()
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
 
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-
-    inst.components.floater:SetScale(0.9)
 
     return inst
 end
@@ -436,8 +418,6 @@ local function drumstick()
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 
-    inst.components.floater:SetVerticalOffset(0.2)
-
     return inst
 end
 
@@ -452,18 +432,11 @@ local function drumstick_cooked()
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
 
-    inst.components.floater:SetVerticalOffset(0.15)
-    inst.components.floater:SetScale(0.85)
-
     return inst
 end
 
 local function batwing()
     local inst = common("batwing", "batwing", "raw", { "batwing", "catfood" }, { product = "smallmeat_dried", time = TUNING.DRY_MED }, { product = "batwing_cooked" })
-
-    inst.components.floater:SetSize("med")
-    inst.components.floater:SetVerticalOffset(0.02)
-    inst.components.floater:SetScale(0.8)
 
     if not TheWorld.ismastersim then
         return inst

@@ -95,7 +95,7 @@ end
 --------------------------------------------------------------------------
 
 local function AddAtriumWorldTopolopy(left, top)
-	local index = #TheWorld.topology.ids + 1
+	local index = #TheWorld.topology.ids
 	TheWorld.topology.ids[index] = "AtriumMaze:0:AtriumMazeRooms"
 	TheWorld.topology.story_depths[index] = 0
 
@@ -112,7 +112,7 @@ local function AddAtriumWorldTopolopy(left, top)
 				  {left, top + size}
 				}
 	node.tags  = {"Atrium", "Nightmare"}
-	node.type = NODE_TYPE.Default
+	node.type = 0
 	node.x = node.cent[1]
 	node.y = node.cent[2]
 	

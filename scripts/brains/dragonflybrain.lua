@@ -13,10 +13,7 @@ end
 
 local function ShouldResetFight(self)
     if not self.inst.reset then
-        local dx, dy, dz = self.inst.Transform:GetWorldPosition()
-        local spx, spy, spz = self.inst.components.knownlocations:GetLocation("spawnpoint"):Get()
-        if distsq(spx, spz, dx, dz) >= (TUNING.DRAGONFLY_RESET_DIST * TUNING.DRAGONFLY_RESET_DIST) or
-                TheWorld.Map:IsSurroundedByWater(dx, dy, dz, 4) then
+        if self.inst:GetDistanceSqToPoint(self.inst.components.knownlocations:GetLocation("spawnpoint")) >= TUNING.DRAGONFLY_RESET_DIST * TUNING.DRAGONFLY_RESET_DIST then
             self.inst.reset = true
             self.inst:Reset()
         else

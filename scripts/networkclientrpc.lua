@@ -27,13 +27,6 @@ local function printinvalid(rpcname, player)
     end
 end
 
-local function printinvalidplatform(rpcname, player, action, relative_x, relative_z, platform, platform_relative)
-	if platform_relative and platform == nil then
-		local player_pt = player ~= nil and player:GetPosition() or Vector3(math.huge, math.huge, math.huge)
-		print(string.format("FAILED TO FIND PLATFORM IN RPC: %s, Action: %s, Player: %s (%0.2f, %0.2f), Playform Offset: %0.2f, %0.2f (len: %0.2f)", rpcname, tostring(action), tostring(player), player_pt.x, player_pt.z, relative_x, relative_z, VecUtil_Length(relative_x, relative_z)))
-	end
-end
-
 --------------------------------------------------------------------------
 
 local function IsPointInRange(player, x, z)
@@ -41,21 +34,9 @@ local function IsPointInRange(player, x, z)
     return distsq(x, z, px, pz) <= 4096
 end
 
-local function ConvertPlatformRelativePositionToAbsolutePosition(relative_x, relative_z, platform, platform_relative)    
-    if platform_relative then
-		if platform ~= nil then
-			local platform_x, platform_y, platform_z = platform.Transform:GetWorldPosition()
-			return relative_x + platform_x, relative_z + platform_z
-		else
-			return nil
-		end
-	end
-    return relative_x, relative_z
-end
-
 local RPC_HANDLERS =
 {
-    LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name, platform, platform_relative)
+    LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
@@ -63,27 +44,21 @@ local RPC_HANDLERS =
                 optbool(isreleased) and
                 optnumber(controlmods) and
                 optbool(noforce) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optstring(mod_name)) then
             printinvalid("LeftClick", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			printinvalidplatform("LeftClick", player, action, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteLeftClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
-				else
-					print("Remote left click out of range")
-				end
-			end
-		end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteLeftClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
+            else
+                print("Remote left click out of range")
+            end
+        end
     end,
 
-    RightClick = function(player, action, x, z, target, rotation, isreleased, controlmods, noforce, mod_name, platform, platform_relative)
+    RightClick = function(player, action, x, z, target, rotation, isreleased, controlmods, noforce, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
@@ -92,24 +67,18 @@ local RPC_HANDLERS =
                 optbool(isreleased) and
                 optnumber(controlmods) and
                 optbool(noforce) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optstring(mod_name)) then
             printinvalid("RightClick", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			printinvalidplatform("RightClick", player, action, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
-					playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
-				else
-					print("Remote right click out of range")
-				end
-			end
-		end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
+            else
+                print("Remote right click out of range")
+            end
+        end
     end,
 
     ActionButton = function(player, action, target, isreleased, noforce, mod_name)
@@ -173,55 +142,43 @@ local RPC_HANDLERS =
         end
     end,
 
-    ControllerActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name, platform, platform_relative)
+    ControllerActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
                 optbool(isreleased) and
                 optbool(noforce) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optstring(mod_name)) then
             printinvalid("ControllerActionButtonPoint", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			printinvalidplatform("ControllerActionButtonPoint", player, action, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteControllerActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name)
-				else
-					print("Remote controller action button point out of range")
-				end
-			end
-		end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteControllerActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name)
+            else
+                print("Remote controller action button point out of range")
+            end
+        end
     end,
 
-    ControllerActionButtonDeploy = function(player, invobject, x, z, rotation, isreleased, platform, platform_relative)
+    ControllerActionButtonDeploy = function(player, invobject, x, z, rotation, isreleased)
         if not (checkentity(invobject) and
                 checknumber(x) and
                 checknumber(z) and
                 optnumber(rotation) and
-                optbool(isreleased) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optbool(isreleased)) then
             printinvalid("ControllerActionButtonDeploy", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			printinvalidplatform("ControllerActionButtonDeploy", player, nil, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
-					playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), rotation, isreleased)
-				else
-					print("Remote controller action button deploy out of range")
-				end
-			end
-		end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+                playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), rotation, isreleased)
+            else
+                print("Remote controller action button deploy out of range")
+            end
+        end
     end,
 
     ControllerAltActionButton = function(player, action, target, isreleased, noforce, mod_name)
@@ -239,31 +196,25 @@ local RPC_HANDLERS =
         end
     end,
 
-    ControllerAltActionButtonPoint = function(player, action, x, z, isreleased, noforce, isspecial, mod_name, platform, platform_relative)
+    ControllerAltActionButtonPoint = function(player, action, x, z, isreleased, noforce, isspecial, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
                 optbool(isreleased) and
                 optbool(noforce) and
                 optbool(isspecial) and
-                optstring(mod_name) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optstring(mod_name)) then
             printinvalid("ControllerAltActionButtonPoint", player)
             return
         end
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			printinvalidplatform("ControllerAltActionButtonPoint", player, action, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteControllerAltActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, isspecial, mod_name)
-				else
-					print("Remote controller alt action button point out of range")
-				end
-			end
-		end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteControllerAltActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, isspecial, mod_name)
+            else
+                print("Remote controller alt action button point out of range")
+            end
+        end
     end,
 
     ControllerAttackButton = function(player, target, isreleased, noforce)
@@ -306,86 +257,45 @@ local RPC_HANDLERS =
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
             if x * x + z * z < 1.01 then
-                playercontroller:OnRemoteDirectWalking(x, z) -- x and z are directions, not positions, so we don't need it to be platform relative
+                playercontroller:OnRemoteDirectWalking(x, z)
             else
                 print("Remote direct walking out of range")
             end
         end
     end,
 
-    DragWalking = function(player, x, z, platform, platform_relative)
+    DragWalking = function(player, x, z)
         if not (checknumber(x) and
-                checknumber(z) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                checknumber(z)) then
             printinvalid("DragWalking", player)
             return
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			printinvalidplatform("DragWalking", player, nil, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteDragWalking(x, z)
-				else
-					print("Remote drag walking out of range")
-				end
-			end
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteDragWalking(x, z)
+            else
+                print("Remote drag walking out of range")
+            end
         end
     end,
 
-    PredictWalking = function(player, x, z, isdirectwalking, platform, platform_relative)
+    PredictWalking = function(player, x, z, isdirectwalking)
         if not (checknumber(x) and
                 checknumber(z) and
-                checkbool(isdirectwalking) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                checkbool(isdirectwalking)) then
             printinvalid("PredictWalking", player)
             return
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			printinvalidplatform("PredictWalking", player, nil, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemotePredictWalking(x, z, isdirectwalking)
-				else
-					print("Remote predict walking out of range")
-				end
-			end
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemotePredictWalking(x, z, isdirectwalking)
+            else
+                print("Remote predict walking out of range")
+            end
         end
     end,
-
-    StartHop = function(player, x, z, platform, has_platform)
-        if not (checknumber(x) and
-                checknumber(z) and
-                optentity(platform) and
-                checkbool(has_platform)) then
-            printinvalid("StartHop", player)
-            return
-        end
-        local playercontroller = player.components.playercontroller
-        if playercontroller == nil then return end
-        if has_platform and (platform == nil or not platform:IsValid()) then return end
-
-        playercontroller:OnRemoteStartHop(x, z, platform)
-
-    end,    
-
-    SteerBoat = function(player, dir_x, dir_z)
-        if not (checknumber(dir_x) and
-                checknumber(dir_z)) then
-            printinvalid("SteerBoat", player)
-            return
-        end
-        local steering_wheel_user = player.components.steeringwheeluser
-        if steering_wheel_user ~= nil then
-            steering_wheel_user:SteerInDir(dir_x, dir_z)
-        end
-    end,    
-
 
     StopWalking = function(player)
         local playercontroller = player.components.playercontroller
@@ -747,58 +657,29 @@ local RPC_HANDLERS =
         end
     end,
 
-    MovementPredictionEnabled = function(player, target)
-        if ThePlayer ~= target then
-            print("Platform hopping disabled on: " .. target.name)
-            target.components.locomotor:SetAllowPlatformHopping(false)
-        end
-    end,    
-
-    MovementPredictionDisabled = function(player, target)
-        if ThePlayer ~= target then
-            print("Platform hopping enabled on: " .. target.name)
-            target.components.locomotor:SetAllowPlatformHopping(true)
-        end    
-    end,    
-
-    Hop = function(player, hopper, hop_x, hop_z, other_platform)
-        --print("HOP: ", hop_x, hop_z, other_platform ~= nil and other_platform.name)
-    end,       
-
-    StopHopping = function(player, hopper)
-        local playercontroller = hopper.components.playercontroller
-        playercontroller:OnRemoteStopHopping()
-    end, 
-
-    MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index, platform, platform_relative)
+    MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index)
         if not (checknumber(recipe) and
                 checknumber(x) and
                 checknumber(z) and
                 checknumber(rot) and
-                optnumber(skin_index) and
-				optentity(platform) and
-				checkbool(platform_relative)) then
+                optnumber(skin_index)) then
             printinvalid("MakeRecipeAtPoint", player)
             return
         end
-		local builder = player.components.builder
-		if builder ~= nil then
-			printinvalidplatform("MakeRecipeAtPoint", player, nil, x, z, platform, platform_relative)
-			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
-			if x ~= nil then
-				--rot supported range really only needs to be [-180, 180]
-				if IsPointInRange(player, x, z) and rot >= -360 and rot <= 360 then
-					for k, v in pairs(AllRecipes) do
-						if v.rpc_id == recipe then
-							builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
-							return
-						end
-					end
-				else
-					print("Remote make recipe at point out of range")
-				end
-			end
-		end
+        local builder = player.components.builder
+        if builder ~= nil then
+            --rot supported range really only needs to be [-180, 180]
+            if IsPointInRange(player, x, z) and rot >= -360 and rot <= 360 then
+                for k, v in pairs(AllRecipes) do
+                    if v.rpc_id == recipe then
+                        builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)
+                        return
+                    end
+                end
+            else
+                print("Remote make recipe at point out of range")
+            end
+        end
     end,
 
     BufferBuild = function(player, recipe)

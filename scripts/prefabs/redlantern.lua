@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/redlantern.zip"),
-    Asset("ANIM", "anim/redlantern_water.zip"),
     Asset("ANIM", "anim/swap_redlantern.zip"),
     Asset("INV_IMAGE", "redlantern_lit"),
 }
@@ -274,8 +273,6 @@ local function fn()
 
     inst:AddTag("light")
 
-    MakeInventoryFloatable(inst, "med", nil, {0.775, 0.5, 0.775})
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -302,9 +299,6 @@ local function fn()
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL -- so people can toss depleted lanterns into a firepit
-
-    inst:ListenForEvent("floater_startfloating", function(inst) inst.AnimState:PlayAnimation("float") end)
-    inst:ListenForEvent("floater_stopfloating", function(inst) inst.AnimState:PlayAnimation("idle_loop", true) end)
 
     inst:WatchWorldState("israining", onisraining)
     onisraining(inst, TheWorld.state.israining)

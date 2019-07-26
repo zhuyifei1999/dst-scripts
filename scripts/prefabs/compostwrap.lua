@@ -74,8 +74,6 @@ local function fn()
 
     inst:AddTag("slowfertilize") -- for player self fertilize healing action
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

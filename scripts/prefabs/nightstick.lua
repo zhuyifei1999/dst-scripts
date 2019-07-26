@@ -2,18 +2,21 @@ local assets =
 {
     Asset("ANIM", "anim/nightstick.zip"),
     Asset("ANIM", "anim/swap_nightstick.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
     Asset("SOUND", "sound/common.fsb"),
 }
 
 local prefabs =
 {
     "nightstickfire",
-    "sparks",
+    "electrichitsparks",
 }
 
 local function onpocket(inst)
     inst.components.burnable:Extinguish()
+end
+
+local function onremovefire(fire)
+    fire.nightstick.fire = nil
 end
 
 local function onequip(inst, owner)
@@ -27,21 +30,27 @@ local function onequip(inst, owner)
 
     if inst.fire == nil then
         inst.fire = SpawnPrefab("nightstickfire")
-        inst.fire.entity:AddFollower()
-        inst.fire.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -110, 0)
+        inst.fire.nightstick = inst
+        inst:ListenForEvent("onremove", onremovefire, inst.fire)
     end
+    inst.fire.entity:SetParent(owner.entity)
 end
 
-local function onunequip(inst,owner)
+local function onunequip(inst, owner)
     if inst.fire ~= nil then
         inst.fire:Remove()
-        inst.fire = nil
     end
 
     inst.components.burnable:Extinguish()
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
     inst.SoundEmitter:KillSound("torch")
+end
+
+local function OnRemoveEntity(inst)
+    if inst.fire ~= nil then
+        inst.fire:Remove()
+    end
 end
 
 local function onfuelchange(newsection, oldsection, inst)
@@ -69,10 +78,9 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
-local function onattack(inst)
-    if inst ~= nil and inst.fire ~= nil and inst:IsValid() and inst.fire:IsValid() then
-        local x, y, z = inst.fire.Transform:GetWorldPosition()
-        SpawnPrefab("sparks").Transform:SetPosition(x, y - .5, z)
+local function onattack(inst, attacker, target)
+    if target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid() then
+        SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker, true)
     end
 end
 
@@ -94,8 +102,6 @@ local function fn()
 
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
-
-    MakeInventoryFloatable(inst, "med", 0.05, {1.1, 0.4, 1.1}, true, -19, {sym_build = "swap_nightstick"})
 
     inst.entity:SetPristine()
 
@@ -135,6 +141,8 @@ local function fn()
     inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     MakeHauntableLaunch(inst)
+
+    inst.OnRemoveEntity = OnRemoveEntity
 
     return inst
 end

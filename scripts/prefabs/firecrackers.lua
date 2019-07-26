@@ -92,8 +92,6 @@ local function fn()
 
     inst:AddTag("explosive")
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -104,7 +102,6 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("burnable")
