@@ -35,46 +35,50 @@ local SPICES =
 
 local function GenerateSpicedFoods(foods)
     for foodname, fooddata in pairs(foods) do
-        if foodname ~= "wetgoop" then
-            for spicenameupper, spicedata in pairs(SPICES) do
-                local newdata = shallowcopy(fooddata)
-                local spicename = string.lower(spicenameupper)
+        for spicenameupper, spicedata in pairs(SPICES) do
+            local newdata = shallowcopy(fooddata)
+            local spicename = string.lower(spicenameupper)
+            if foodname == "wetgoop" then
+                newdata.test = function(cooker, names, tags) return names[spicename] end
+                newdata.priority = -10
+            else
                 newdata.test = function(cooker, names, tags) return names[foodname] and names[spicename] end
-                newdata.cooktime = .12
-                newdata.stacksize = nil
-                newdata.spice = spicenameupper
-                newdata.basename = foodname
-                newdata.name = foodname.."_"..spicename
-                spicedfoods[newdata.name] = newdata
+                newdata.priority = 100
+            end
+            newdata.cooktime = .12
+            newdata.stacksize = nil
+            newdata.spice = spicenameupper
+            newdata.basename = foodname
+            newdata.name = foodname.."_"..spicename
+            spicedfoods[newdata.name] = newdata
 
-                if spicename == "spice_chili" then
-                    if newdata.temperature == nil then
-                        --Add permanent "heat" to regular food
-                        newdata.temperature = TUNING.HOT_FOOD_BONUS_TEMP
-                        newdata.temperatureduration = TUNING.FOOD_TEMP_LONG
-                        newdata.nochill = true
-                    elseif newdata.temperature > 0 then
-                        --Upgarde "hot" food to permanent heat
-                        newdata.temperatureduration = math.max(newdata.temperatureduration, TUNING.FOOD_TEMP_LONG)
-                        newdata.nochill = true
-                    end
+            if spicename == "spice_chili" then
+                if newdata.temperature == nil then
+                    --Add permanent "heat" to regular food
+                    newdata.temperature = TUNING.HOT_FOOD_BONUS_TEMP
+                    newdata.temperatureduration = TUNING.FOOD_TEMP_LONG
+                    newdata.nochill = true
+                elseif newdata.temperature > 0 then
+                    --Upgarde "hot" food to permanent heat
+                    newdata.temperatureduration = math.max(newdata.temperatureduration, TUNING.FOOD_TEMP_LONG)
+                    newdata.nochill = true
                 end
+            end
 
-                if spicedata.prefabs ~= nil then
-                    --make a copy (via ArrayUnion) if there are dependencies from the original food
-                    newdata.prefabs = newdata.prefabs ~= nil and ArrayUnion(newdata.prefabs, spicedata.prefabs) or spicedata.prefabs
-                end
+            if spicedata.prefabs ~= nil then
+                --make a copy (via ArrayUnion) if there are dependencies from the original food
+                newdata.prefabs = newdata.prefabs ~= nil and ArrayUnion(newdata.prefabs, spicedata.prefabs) or spicedata.prefabs
+            end
 
-                if spicedata.oneatenfn ~= nil then
-                    if newdata.oneatenfn ~= nil then
-                        local oneatenfn_old = newdata.oneatenfn
-                        newdata.oneatenfn = function(inst, eater)
-                            spicedata.oneatenfn(inst, eater)
-                            oneatenfn_old(inst, eater)
-                        end
-                    else
-                        newdata.oneatenfn = spicedata.oneatenfn
+            if spicedata.oneatenfn ~= nil then
+                if newdata.oneatenfn ~= nil then
+                    local oneatenfn_old = newdata.oneatenfn
+                    newdata.oneatenfn = function(inst, eater)
+                        spicedata.oneatenfn(inst, eater)
+                        oneatenfn_old(inst, eater)
                     end
+                else
+                    newdata.oneatenfn = spicedata.oneatenfn
                 end
             end
         end

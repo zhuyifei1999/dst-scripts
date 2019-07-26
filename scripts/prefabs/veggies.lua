@@ -18,12 +18,12 @@ local COMMON = 3
 local UNCOMMON = 1
 local RARE = .5
 
-local QUAGMIRE_PORTS = 
+local QUAGMIRE_PORTS =
 {
     "tomato",
     "potato",
     "onion",
-    "garlic"
+    "garlic",
 }
 
 VEGGIES =
@@ -103,13 +103,6 @@ local function OnDeploy(inst, pt)--, deployer, rot)
 end
 
 local function MakeVeggie(name, has_seeds)
-
-    local original_name = name
-
-    if table.contains(QUAGMIRE_PORTS, name) then
-        name = "quagmire_crop_" .. name
-    end
-
     local assets =
     {
         Asset("ANIM", "anim/"..name..".zip"),
@@ -120,18 +113,19 @@ local function MakeVeggie(name, has_seeds)
         Asset("ANIM", "anim/"..name..".zip"),
     }
 
-    if name ~= original_name then
-        table.insert(assets, Asset("INV_IMAGE", "quagmire_"..original_name))
-        table.insert(assets_cooked, Asset("INV_IMAGE", "quagmire_"..original_name.."_cooked"))
+    local usequagmireicon = table.contains(QUAGMIRE_PORTS, name)
+    if usequagmireicon then
+        table.insert(assets, Asset("INV_IMAGE", "quagmire_"..name))
+        table.insert(assets_cooked, Asset("INV_IMAGE", "quagmire_"..name.."_cooked"))
     end
 
     local prefabs =
     {
-        original_name .."_cooked",
+        name .."_cooked",
         "spoiled_food",
     }
     if has_seeds then
-        table.insert(prefabs, original_name.."_seeds")
+        table.insert(prefabs, name.."_seeds")
     end
 
     local function fn_seeds()
@@ -171,7 +165,7 @@ local function MakeVeggie(name, has_seeds)
         inst:AddComponent("inventoryitem")
 
         inst.AnimState:PlayAnimation("idle")
-        inst.components.edible.healthvalue = TUNING.HEALING_TINY/2
+        inst.components.edible.healthvalue = TUNING.HEALING_TINY / 2
         inst.components.edible.hungervalue = TUNING.CALORIES_TINY
 
         inst:AddComponent("perishable")
@@ -185,7 +179,7 @@ local function MakeVeggie(name, has_seeds)
         inst:AddComponent("bait")
         inst:AddComponent("plantable")
         inst.components.plantable.growtime = TUNING.SEEDS_GROW_TIME
-        inst.components.plantable.product = original_name
+        inst.components.plantable.product = name
 
         inst:AddComponent("deployable")
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
@@ -220,34 +214,33 @@ local function MakeVeggie(name, has_seeds)
         end
 
         inst:AddComponent("edible")
-        inst.components.edible.healthvalue = VEGGIES[original_name].health
-        inst.components.edible.hungervalue = VEGGIES[original_name].hunger
-        inst.components.edible.sanityvalue = VEGGIES[original_name].sanity or 0      
+        inst.components.edible.healthvalue = VEGGIES[name].health
+        inst.components.edible.hungervalue = VEGGIES[name].hunger
+        inst.components.edible.sanityvalue = VEGGIES[name].sanity or 0      
         inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
         inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(VEGGIES[original_name].perishtime)
+        inst.components.perishable:SetPerishTime(VEGGIES[name].perishtime)
         inst.components.perishable:StartPerishing()
         inst.components.perishable.onperishreplacement = "spoiled_food"
 
         inst:AddComponent("stackable")
-        if original_name ~= "pumpkin" and
-            original_name ~= "eggplant" and
-            original_name ~= "durian" and 
-            original_name ~= "watermelon" then
+        if name ~= "pumpkin" and
+            name ~= "eggplant" and
+            name ~= "durian" and 
+            name ~= "watermelon" then
             inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
         end
 
-        if original_name == "watermelon" then
+        if name == "watermelon" then
             inst.components.edible.temperaturedelta = TUNING.COLD_FOOD_BONUS_TEMP
             inst.components.edible.temperatureduration = TUNING.FOOD_TEMP_BRIEF
         end
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
-        if name ~= original_name then
-            -- The fla file name is quagmire_crop_veggiename, but the icon is just quagmire_veggiename, so we set it manually
-            inst.components.inventoryitem:ChangeImageName("quagmire_" .. original_name)
+        if usequagmireicon then
+            inst.components.inventoryitem:ChangeImageName("quagmire_"..name)
         end
 
         MakeSmallBurnable(inst)
@@ -262,7 +255,7 @@ local function MakeVeggie(name, has_seeds)
         ------------------------------------------------  
 
         inst:AddComponent("cookable")
-        inst.components.cookable.product = original_name.."_cooked"
+        inst.components.cookable.product = name.."_cooked"
 
         if TheNet:GetServerGameMode() == "quagmire" then
             event_server_data("quagmire", "prefabs/veggies").master_postinit(inst)
@@ -293,14 +286,14 @@ local function MakeVeggie(name, has_seeds)
         end
 
         inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(VEGGIES[original_name].cooked_perishtime)
+        inst.components.perishable:SetPerishTime(VEGGIES[name].cooked_perishtime)
         inst.components.perishable:StartPerishing()
         inst.components.perishable.onperishreplacement = "spoiled_food"
 
         inst:AddComponent("edible")
-        inst.components.edible.healthvalue = VEGGIES[original_name].cooked_health
-        inst.components.edible.hungervalue = VEGGIES[original_name].cooked_hunger
-        inst.components.edible.sanityvalue = VEGGIES[original_name].cooked_sanity or 0
+        inst.components.edible.healthvalue = VEGGIES[name].cooked_health
+        inst.components.edible.hungervalue = VEGGIES[name].cooked_hunger
+        inst.components.edible.sanityvalue = VEGGIES[name].cooked_sanity or 0
         inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
         inst:AddComponent("stackable")
@@ -308,9 +301,8 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
-        if name ~= original_name then
-            -- The fla file name is quagmire_crop_veggiename, but the icon is just quagmire_veggiename, so we set it manually
-            inst.components.inventoryitem:ChangeImageName("quagmire_" .. original_name .. "_cooked")
+        if usequagmireicon then
+            inst.components.inventoryitem:ChangeImageName("quagmire_"..name.."_cooked")
         end
 
         MakeSmallBurnable(inst)
@@ -331,9 +323,9 @@ local function MakeVeggie(name, has_seeds)
         return inst
     end
 
-    local base = Prefab(original_name, fn, assets, prefabs)
-    local cooked = Prefab(original_name.."_cooked", fn_cooked, assets_cooked)
-    local seeds = has_seeds and Prefab(original_name.."_seeds", fn_seeds, assets_seeds, prefabs_seeds) or nil
+    local base = Prefab(name, fn, assets, prefabs)
+    local cooked = Prefab(name.."_cooked", fn_cooked, assets_cooked)
+    local seeds = has_seeds and Prefab(name.."_seeds", fn_seeds, assets_seeds, prefabs_seeds) or nil
 
     return base, cooked, seeds
 end

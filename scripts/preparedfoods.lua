@@ -432,7 +432,7 @@ local foods =
     --new!
     potatotornado =
     {
-        test = function(cooker, names, tags) return names.potato and names.twigs and (not tags.monster or tags.monster <= 1) and not tags.meat and (tags.inedible and tags.inedible <= 2) end,
+        test = function(cooker, names, tags) return (names.potato or names.potato_cooked) and names.twigs and (not tags.monster or tags.monster <= 1) and not tags.meat and (tags.inedible and tags.inedible <= 2) end,
         priority = 10,
         foodtype = FOODTYPE.VEGGIE,
         health = TUNING.HEALING_SMALL,
@@ -444,7 +444,7 @@ local foods =
 
     mashedpotatoes =
     {
-        test = function(cooker, names, tags) return names.potato and names.potato > 1 and names.garlic and not tags.meat and not tags.inedible end,
+        test = function(cooker, names, tags) return ((names.potato and names.potato > 1) or (names.potato_cooked and names.potato_cooked > 1) or (names.potato and names.potato_cooked)) and (names.garlic or names.garlic_cooked) and not tags.meat and not tags.inedible end,
         priority = 20,
         foodtype = FOODTYPE.VEGGIE,
         health = TUNING.HEALING_MED,
@@ -483,7 +483,7 @@ local foods =
 
 	bananapop = 
 	{
-		test = function(cooker, names, tags) return names.cave_banana and tags.frozen and names.twigs and not tags.meat and not tags.fish and (tags.inedible and tags.inedible <= 2) end,
+		test = function(cooker, names, tags) return (names.cave_banana or names.cave_banana_cooked) and tags.frozen and names.twigs and not tags.meat and not tags.fish and (tags.inedible and tags.inedible <= 2) end,
 		priority = 20,
 		foodtype = FOODTYPE.VEGGIE,
 		health = TUNING.HEALING_MED,
@@ -512,7 +512,7 @@ local foods =
 
 	salsa = 
 	{
-		test = function(cooker, names, tags) return names.tomato and names.onion and not tags.meat and not tags.inedible and not tags.egg end,
+		test = function(cooker, names, tags) return (names.tomato or names.tomato_cooked) and (names.onion or names.onion_cooked) and not tags.meat and not tags.inedible and not tags.egg end,
 		priority = 20,
 		foodtype = FOODTYPE.VEGGIE,
 		health = TUNING.HEALING_SMALL,
@@ -525,7 +525,7 @@ local foods =
 
 	pepperpopper =
 	{
-		test = function(cooker, names, tags) return names.pepper and tags.meat and tags.meat <= 1.5 and not tags.inedible end,
+		test = function(cooker, names, tags) return (names.pepper or names.pepper_cooked) and tags.meat and tags.meat <= 1.5 and not tags.inedible end,
 		priority = 20,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MEDLARGE,

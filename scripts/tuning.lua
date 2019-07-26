@@ -1710,7 +1710,7 @@ function Tune(overrides)
         TREE_SHADE_COOLING_THRESHOLD = 63,
 
         HOT_FOOD_BONUS_TEMP = 40,
-        HOT_FOOD_WARMING_THRESHOLD = 65,
+        HOT_FOOD_WARMING_THRESHOLD = 62, --don't actually overheat, but still triggers heat idles
         COLD_FOOD_BONUS_TEMP = -40,
         COLD_FOOD_CHILLING_THRESHOLD = 5,
         FOOD_TEMP_BRIEF = 5,

@@ -104,11 +104,13 @@ function GridWardrobePopupScreen:OnDestroy()
 
 	self.profile:SetSkinsForCharacter(self.loadout.currentcharacter, self.previous_default_skins)
 
-	local i = 0
-	while TheFrontEnd:GetActiveScreen() ~= self.previous_active_screen and i < 50 do
-		i = i + 1
-		TheFrontEnd:PopScreen()
-	end
+	print( "Note(Peter): Disable subscree cleanup for now" )
+	--Removing the cleanup for now
+	--local i = 0
+	--while TheFrontEnd:GetActiveScreen() ~= self.previous_active_screen and i < 50 do
+	--	i = i + 1
+	--	TheFrontEnd:PopScreen()
+	--end
 end
 
 function GridWardrobePopupScreen:OnBecomeActive()

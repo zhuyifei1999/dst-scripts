@@ -2,7 +2,6 @@ local assets =
 {
     Asset("PKGREF", "sound/dontstarve.fev"),
     Asset("SOUNDPACKAGE", "sound/dontstarve_DLC001.fev"),
-    Asset("SOUNDPACKAGE", "sound/warly.fev"), --TODO: REMOVE ME WHEN REINTEGRATING TO TRUNK!
     Asset("FILE", "sound/DLC_music.fsb"),
 
     Asset("FILE", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods

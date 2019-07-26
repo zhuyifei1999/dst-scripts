@@ -380,20 +380,26 @@ function PlayerHud:CloseWardrobeScreen()
 
 	if activescreen == nil then return end
 
-	if activescreen.name ~= "ItemServerContactPopup" then
+	--Hack for holding offset when transitioning from giftitempopup to wardrobepopup
+    TheCamera:PopScreenHOffset(self)
+    self:ClearRecentGifts()
+    print( "Note(Peter): Disable wardrobe popping for now" )
+
+	--[[if activescreen.name ~= "ItemServerContactPopup" then
 		--Hack for holding offset when transitioning from giftitempopup to wardrobepopup
 		TheCamera:PopScreenHOffset(self)
 		self:ClearRecentGifts()
 
 		if self.wardrobepopup ~= nil then
-			if self.wardrobepopup.inst:IsValid() then
+            if self.wardrobepopup.inst:IsValid() then
+                print("popping", self.wardrobepopup)
 				TheFrontEnd:PopScreen(self.wardrobepopup)
 			end
 			self.wardrobepopup = nil
 		end
 	else
 		self.inst:DoTaskInTime(.5, function() self:CloseWardrobeScreen() end)
-	end
+    end]]
 end
 
 --Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup

@@ -34,8 +34,6 @@ end
 local function master_postinit(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
-    inst.talker_path_override = "warly/characters/"
-
     inst.customidleanim = "idle_warly"
 
     inst.components.hunger:SetMax(TUNING.WARLY_HUNGER)

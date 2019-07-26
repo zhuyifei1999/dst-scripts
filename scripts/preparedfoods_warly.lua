@@ -3,7 +3,7 @@ local foods =
     -- Swaps sanity and health
     nightmarepie =
     {
-        test = function(cooker, names, tags) return names.nightmarefuel and names.nightmarefuel == 2 and names.potato and names.onion end,
+        test = function(cooker, names, tags) return names.nightmarefuel and names.nightmarefuel == 2 and (names.potato or names.potato_cooked) and (names.onion or names.onion_cooked) end,
         priority = 30,
         foodtype = FOODTYPE.VEGGIE,
         health = TUNING.HEALING_TINY,
@@ -110,7 +110,7 @@ local foods =
 
     dragonchilisalad =
     {
-        test = function(cooker, names, tags) return names.dragonfruit and names.pepper and not tags.meat and not tags.inedible and not tags.egg end,
+        test = function(cooker, names, tags) return (names.dragonfruit or names.dragonfruit_cooked) and (names.pepper or names.pepper_cooked) and not tags.meat and not tags.inedible and not tags.egg end,
         priority = 30,
         foodtype = FOODTYPE.VEGGIE,
         health = -TUNING.HEALING_SMALL,
@@ -127,7 +127,7 @@ local foods =
 
     gazpacho =
     {
-        test = function(cooker, names, tags) return names.asparagus and names.asparagus >= 2 and (tags.frozen and tags.frozen >= 2) end,
+        test = function(cooker, names, tags) return ((names.asparagus and names.asparagus >= 2) or (names.asparagus_cooked and names.asparagus_cooked >= 2) or (names.asparagus and names.asparagus_cooked)) and (tags.frozen and tags.frozen >= 2) end,
         priority = 30,
         foodtype = FOODTYPE.VEGGIE,
         health = TUNING.HEALING_SMALL,
@@ -145,7 +145,7 @@ local foods =
     -- Neutral foods
     potatosouffle =
     {
-        test = function(cooker, names, tags) return names.potato and names.potato >= 2 and tags.egg and not tags.meat and not tags.inedible end,
+        test = function(cooker, names, tags) return ((names.potato and names.potato >= 2) or (names.potato_cooked and names.potato_cooked >= 2) or (names.potato and names.potato_cooked)) and tags.egg and not tags.meat and not tags.inedible end,
         priority = 30,
         foodtype = FOODTYPE.VEGGIE,
         health = TUNING.HEALING_MED,
@@ -188,7 +188,7 @@ local foods =
 
     bonesoup =
     {
-        test = function(cooker, names, tags) return names.boneshard and names.boneshard == 2 and names.onion and (tags.inedible and tags.inedible < 3) end,
+        test = function(cooker, names, tags) return names.boneshard and names.boneshard == 2 and (names.onion or names.onion_cooked) and (tags.inedible and tags.inedible < 3) end,
         priority = 30,
         foodtype = FOODTYPE.MEAT,
         health = TUNING.HEALING_MEDSMALL * 4,
@@ -202,7 +202,7 @@ local foods =
 
     moqueca =
     {
-        test = function(cooker, names, tags) return tags.fish and names.onion and names.tomato and not tags.inedible end,
+        test = function(cooker, names, tags) return tags.fish and (names.onion or names.onion_cooked) and (names.tomato or names.tomato_cooked) and not tags.inedible end,
         priority = 30,
         foodtype = FOODTYPE.MEAT,
         health = TUNING.HEALING_MED * 3,
