@@ -163,6 +163,8 @@ local function common_postinit(inst)
         inst:AddComponent("colourcube")
         inst:AddComponent("hallucinations")
     end
+
+    TheWorld.Map:SetUndergroundFadeHeight(5)
 end
 
 local function master_postinit(inst)

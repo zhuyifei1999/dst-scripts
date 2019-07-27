@@ -65,6 +65,238 @@ local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_struc
 	print ("Retrofitting world for " .. prefab .. ": " .. (attempt < MAX_PLACEMENT_ATTEMPTS and ("Success after "..attempt.." attempts.") or "Failed."))
 end
 
+local function AddSquareTopolopy(left, top, size, room_id, tags)
+	local index = #TheWorld.topology.ids + 1
+	TheWorld.topology.ids[index] = room_id
+	TheWorld.topology.story_depths[index] = 0
+
+	local node = {}
+	node.area = size * size
+	node.c = 1 -- colour index
+	node.cent = {left + (size / 2), top + (size / 2)}
+	node.neighbours = {}
+	node.poly = { {left, top},
+				  {left + size, top},
+				  {left + size, top + size},
+				  {left, top + size}
+				}
+	node.tags  = tags
+	node.type = NODE_TYPE.Default
+	node.x = node.cent[1]
+	node.y = node.cent[2]
+	
+	node.validedges = {}
+	
+	TheWorld.topology.nodes[index] = node
+
+	ReconstructTopology()
+end
+
+local function TurnOfTidesRetrofitting_MoonIsland(inst)
+	local obj_layout = require("map/object_layout")
+	local entities = {}
+	local map_width, map_height = TheWorld.Map:GetSize()
+	local add_fn = {
+		fn=function(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
+			local x = (points_x[current_pos_idx] - width/2.0)*TILE_SCALE
+			local y = (points_y[current_pos_idx] - height/2.0)*TILE_SCALE
+			x = math.floor(x*100)/100.0
+			y = math.floor(y*100)/100.0
+			SpawnPrefab(prefab).Transform:SetPosition(x, 0, y)
+		end,
+		args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}
+	}
+
+	local function TryToAddLayout(name, area_size)
+		local function isvalidarea(_left, _top)
+			for x = 0, area_size do
+				for y = 0, area_size do
+					if not IsOceanTile(TheWorld.Map:GetTile(_left + x, _top + y)) then
+						return false
+					end
+				end
+			end
+			return true
+		end
+
+		local candidtates = {}
+		local foundarea = false
+		local num_steps = 10
+		for x = 0, num_steps do
+			for y = 0, num_steps do
+				local left = 8 + (x > 0 and ((x * math.floor(map_width / num_steps)) - area_size - 16) or 0)
+				local top  = 8 + (y > 0 and ((y * math.floor(map_height / num_steps)) - area_size - 16) or 0)
+				if isvalidarea(left, top) then
+					table.insert(candidtates, {top = top, left = left, distsq = VecUtil_LengthSq(left - map_width / 2, top - map_height / 2)})
+				end
+			end
+		end
+
+		if #candidtates > 0 then
+			table.sort(candidtates, function(a, b) return a.distsq < b.distsq end)
+			local top, left = candidtates[1].top, candidtates[1].left	
+
+			obj_layout.Place({left, top}, name, add_fn, nil, TheWorld.Map)
+			local tags = {"moonhunt", "nohasslers", "lunacyarea", "not_mainland"}
+			AddSquareTopolopy((left-1)*4 - (map_width * 0.5 * 4), (top-1)*4 - (map_height * 0.5 * 4), (area_size+2)*4, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
+		end
+		return #candidtates > 0
+	end
+
+	local success = TryToAddLayout("retrofit_moonisland_large", 48)
+					or TryToAddLayout("retrofit_moonisland_small", 18)
+
+	if success then
+		print("Retrofitting for Return Of Them: Turn of Tides - Added moon island to the world.")
+	else
+		print("Retrofitting for Return Of Them: Turn of Tides - Failed to add moon island to the world!")
+	end
+end
+
+local function TurnOfTidesRetrofitting_PopulateOcean(inst)
+	local width, height = TheWorld.Map:GetSize()
+
+	local function populate(tile_type, contents)
+		for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+			for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+				if TheWorld.Map:GetTile(x, y) == tile_type then
+					if math.random() < contents.distributepercent then
+						local prefab = weighted_random_choice(contents.distributeprefabs)
+						if prefab ~= nil then
+							local obj = SpawnPrefab(prefab)
+							obj.Transform:SetPosition((x - width/2.0)*TILE_SCALE + math.random()*2-1, 0, (y - height/2.0)*TILE_SCALE + math.random()*2-1)
+						end
+					end
+				end
+			end
+		end
+	end
+	local pop = {
+		OCEAN_COASTAL =  {
+			distributepercent = 0.01,
+			distributeprefabs = {
+				driftwood_log = 1,
+				bullkelp_plant = 2,
+			},
+		},
+		OCEAN_SWELL = {
+			distributepercent = 0.01,
+			distributeprefabs =
+			{
+				driftwood_log = 1,
+				antchovies_group = 1,
+				seastack = 1,
+			},
+		},
+		OCEAN_ROUGH = {
+			distributepercent = 0.03,
+			distributeprefabs =
+			{
+				seastack = 1,
+			},
+		},
+		OCEAN_REEF = {
+			distributepercent = 0.3,
+			distributeprefabs =
+			{
+				seastack = 1,
+				antchovies_group = 1,
+			},
+		},
+		OCEAN_HAZARDOUS = {
+			distributepercent = 0.15,
+			distributeprefabs =
+			{
+				boatfragment03 = 1,
+				boatfragment04 = 1,
+				boatfragment05 = 1,
+				seastack = 1,
+			},
+		},
+	}
+
+	for k, v in pairs(pop) do
+		populate(GROUND[k], v)
+	end
+
+	print("Retrofitting for Return Of Them: Turn of Tides - Populated Ocean.")
+end
+
+local function TurnOfTidesRetrofitting_BetaRepopulateOcean1(inst)
+ -- NOT FINAL TUNINGS - WIP
+
+	local count = 0
+	local items_to_remove = { "seastack", "boatfragment03", "boatfragment03", "boatfragment03", "antchovies_group", "driftwood_log" }
+	local biomes_to_cleanup = { GROUND.OCEAN_SWELL, GROUND.OCEAN_ROUGH, GROUND.OCEAN_REEF, GROUND.OCEAN_HAZARDOUS }
+	for _,ent in pairs(Ents) do
+		if ent:IsValid() and table.contains(items_to_remove, ent.prefab) and table.contains(biomes_to_cleanup, TheWorld.Map:GetTileAtPoint(ent.Transform:GetWorldPosition())) then
+			count = count + 1
+			ent:Remove()
+		end
+	end
+	print ("Retrofitting for Turn of Tides Beta: Removing "..tostring(count).." ocean things.")
+
+	local width, height = TheWorld.Map:GetSize()
+
+	local function populate(tile_type, contents)
+		for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+			for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+				if TheWorld.Map:GetTile(x, y) == tile_type then
+					if math.random() < contents.distributepercent then
+						local spawn_x, spawn_z = (x - width/2.0)*TILE_SCALE + math.random()*2-1, (y - height/2.0)*TILE_SCALE + math.random()*2-1
+						if #TheSim:FindEntities(spawn_x, 0, spawn_z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+							local prefab = weighted_random_choice(contents.distributeprefabs)
+							if prefab ~= nil then
+								local obj = SpawnPrefab(prefab)
+								obj.Transform:SetPosition(spawn_x, 0, spawn_z)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	local pop = {
+		OCEAN_SWELL = {
+			distributepercent = 0.04,
+			distributeprefabs =
+			{
+				seastack = 1,
+			},
+		},
+		OCEAN_ROUGH = {
+			distributepercent = 0.1,
+			distributeprefabs =
+			{
+				seastack = 1,
+			},
+		},
+		OCEAN_REEF = {
+			distributepercent = 0.3,
+			distributeprefabs =
+			{
+				seastack = 1,
+			},
+		},
+		OCEAN_HAZARDOUS = {
+			distributepercent = 0.15,
+			distributeprefabs =
+			{
+				boatfragment03 = 1,
+				boatfragment04 = 1,
+				boatfragment05 = 1,
+				seastack = 1,
+			},
+		},
+	}
+
+	for k, v in pairs(pop) do
+		populate(GROUND[k], v)
+	end
+
+	print("Retrofitting for Return Of Them : Turn of Tides Beta - Repopulated Ocean.")
+end
+
 --------------------------------------------------------------------------
 --[[ Lightning Bluff Retrofit ]]
 --------------------------------------------------------------------------
@@ -394,8 +626,46 @@ function self:OnPostInit()
 		if count ~= 0 then
 			print ("Retrofitting for Pengull spawned Mini Glaciers: Converted " .. count .. " Mini Glaciers near pengull colonies to be remove on dry up.")
 		end
-		
 	end
+
+	if self.retrofit_turnoftides then
+		self.retrofit_turnoftides = nil
+
+		print ("Retrofitting for Return Of Them: Turn of Tides")
+
+		-- add moon island
+		TurnOfTidesRetrofitting_MoonIsland(self.inst)
+
+		TurnOfTidesRetrofitting_PopulateOcean(self.inst)
+
+		self.requiresreset = true
+	end
+	
+	if self.retrofit_turnoftides_betaupdate1 then
+		TheWorld.Map:RetrofitNavGrid()
+		print ("Retrofitting for Return Of Them: Turn of Tides - Updated Nav Grid")
+		self.requiresreset = true
+
+		--TurnOfTidesRetrofitting_BetaRepopulateOcean1(self.inst)
+	end
+	
+	---------------------------------------------------------------------------
+	if self.requiresreset then
+		-- not quite working in all cases...
+
+		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
+		print ("Restarting server in 30 seconds...")
+
+        inst:DoTaskInTime(5,  function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 25})) end)
+        inst:DoTaskInTime(10, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 20})) end)
+        inst:DoTaskInTime(15, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 15})) end)
+		inst:DoTaskInTime(20, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 10})) end)
+		inst:DoTaskInTime(22, function() TheWorld:PushEvent("ms_save") end)
+		inst:DoTaskInTime(25, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 5})) end)
+		inst:DoTaskInTime(29, function() TheNet:Announce(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT_NOW) end)
+		inst:DoTaskInTime(30, function() TheNet:SendWorldRollbackRequestToServer(0) end)
+	end
+
 end
 
 --------------------------------------------------------------------------
@@ -408,6 +678,7 @@ end
 
 function self:OnLoad(data)
     if data ~= nil then
+		-- flags for OnPostLoad
 		retrofit_part1 = data.retrofit_part1 or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts or false
         self.retrofit_artsandcrafts2 = data.retrofit_artsandcrafts2 or false
@@ -415,6 +686,9 @@ function self:OnLoad(data)
         self.retrofit_herdmentality = data.retrofit_herdmentality or false
         self.retrofit_againstthegrain = data.retrofit_againstthegrain or false
         self.retrofit_penguinice = data.retrofit_penguinice or false
+        self.retrofit_turnoftides = data.retrofit_turnoftides or false
+        self.retrofit_turnoftides_betaupdate1 = data.retrofit_turnoftides_betaupdate1 or false
+		
     end
 end
 
