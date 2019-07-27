@@ -141,8 +141,6 @@ local function common_fn(anim)
     end
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
-
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = describe
     inst:AddComponent("hatchable")

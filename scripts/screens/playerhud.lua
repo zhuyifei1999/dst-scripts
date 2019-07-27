@@ -15,7 +15,6 @@ local SandDustOver = require "widgets/sanddustover"
 local MindControlOver = require "widgets/mindcontrolover"
 local GogglesOver = require "widgets/gogglesover"
 local BatOver = require "widgets/batover"
-local FlareOver = require "widgets/flareover"
 local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
 local PopupNumber = require "widgets/popupnumber"
 local RingMeter = require "widgets/ringmeter"
@@ -90,19 +89,6 @@ function PlayerHud:CreateOverlays(owner)
 
     self.vig:SetClickable(false)
 
-    self.sailing_vig = self.overlayroot:AddChild(UIAnim())
-    self.sailing_vig:GetAnimState():SetBuild("paddle_over")
-    self.sailing_vig:GetAnimState():SetBank("sail_over")
-    self.sailing_vig:GetAnimState():PlayAnimation("over", true)
-
-    self.sailing_vig:SetHAnchor(ANCHOR_MIDDLE)
-    self.sailing_vig:SetVAnchor(ANCHOR_MIDDLE)
-    self.sailing_vig:SetScaleMode(SCALEMODE_FIXEDSCREEN_NONDYNAMIC)
-
-    self.sailing_vig:SetClickable(false)
-    self.sailing_vig:Hide()
-    self.sailing_alpha = 0
-
     self.storm_root = self.over_root:AddChild(Widget("storm_root"))
     self.storm_overlays = self.storm_root:AddChild(Widget("storm_overlays"))
     self.sanddustover = self.storm_overlays:AddChild(SandDustOver(owner))
@@ -120,7 +106,6 @@ function PlayerHud:CreateOverlays(owner)
     self.fireover = self.overlayroot:AddChild(FireOver(owner))
     self.heatover = self.overlayroot:AddChild(HeatOver(owner))
     self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
-    self.flareover = self.overlayroot:AddChild(FlareOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
 	self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}
@@ -484,10 +469,6 @@ function PlayerHud:GoInsane()
     self.vig:GetAnimState():PlayAnimation("insane", true)
 end
 
-function PlayerHud:GoEnlightened()
-    self.vig:GetAnimState():PlayAnimation("basic", true)
-end
-
 function PlayerHud:SetMainCharacter(maincharacter)
     if maincharacter then
         maincharacter.HUD = self
@@ -498,14 +479,9 @@ function PlayerHud:SetMainCharacter(maincharacter)
 
         self.inst:ListenForEvent("gosane", function() self:GoSane() end, self.owner)
         self.inst:ListenForEvent("goinsane", function() self:GoInsane() end, self.owner)
-        self.inst:ListenForEvent("goenlightened", function() self:GoEnlightened() end, self.owner)
 
-        if self.owner.replica.sanity ~= nil then
-			if self.owner.replica.sanity:IsCrazy() then
-				self:GoInsane()
-			elseif self.owner.replica.sanity:IsEnlightened() then
-				self:GoEnlightened()
-			end
+        if self.owner.replica.sanity ~= nil and self.owner.replica.sanity:IsCrazy() then
+            self:GoInsane()
         end
         self.controls.crafttabs:UpdateRecipes()
 
@@ -860,45 +836,12 @@ function PlayerHud:UpdateClouds(camera)
     end
 end
 
-local SAILING_ALPHA_INCREASE_RATE = 0.01
-local SAILING_ALPHA_DECREASE_RATE = 0.05
-function PlayerHud:UpdateSailing(camera)
-    local px, _, pz = TheFocalPoint.Transform:GetWorldPosition()
-
-    -- If the focal point location is not over visual ground, but is passable when including walkableplatforms,
-    -- the focal point is over a boat! So, play the seafaring effect.
-    if not TheWorld.Map:IsVisualGroundAtPoint(px, 0, pz) and TheWorld.Map:IsPassableAtPoint(px, 0, pz) then
-        if self.sailing_alpha >= 1 then
-            return
-        end
-
-        if self.sailing_alpha <= 0 then
-            self.sailing_vig:Show()
-            self.sailing_alpha = SAILING_ALPHA_INCREASE_RATE
-        elseif self.sailing_alpha < 1 then
-            self.sailing_alpha = self.sailing_alpha + SAILING_ALPHA_INCREASE_RATE
-        end
-
-        self.sailing_vig.inst.AnimState:SetMultColour(1, 1, 1, self.sailing_alpha)
-    elseif self.sailing_alpha > 0 then
-        if self.sailing_alpha > 0 then
-            self.sailing_alpha = self.sailing_alpha - SAILING_ALPHA_DECREASE_RATE
-            self.sailing_vig.inst.AnimState:SetMultColour(1, 1, 1, self.sailing_alpha)
-        end
-
-        if self.sailing_alpha <= 0 then
-            self.sailing_alpha = 0
-            self.sailing_vig:Hide()
-        end
-    end
-end
-
-function PlayerHud:AddTargetIndicator(target, data)
+function PlayerHud:AddTargetIndicator(target)
     if not self.targetindicators then
         self.targetindicators = {}
     end
 
-    local ti = self.under_root:AddChild(TargetIndicator(self.owner, target, data))
+    local ti = self.under_root:AddChild(TargetIndicator(self.owner, target))
     table.insert(self.targetindicators, ti)
 end
 

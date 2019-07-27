@@ -98,8 +98,6 @@ local function fn()
 
     inst.DynamicShadow:SetSize(.8, .5)
 
-    MakeInventoryFloatable(inst)
-
     MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
@@ -120,7 +118,6 @@ local function fn()
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.nobounce = true
-    inst.components.inventoryitem.pushlandedevents = false
 
     ------------------
     inst:AddComponent("pollinator")

@@ -9,21 +9,21 @@ local WARNING_LEVEL_DISTANCE =
 }
 
 local function PlayWarningSound(proxy, radius)
-    
     local inst = CreateEntity()
 
     --[[Non-networked entity]]
 
     inst.entity:AddTransform()
     inst.entity:AddSoundEmitter()
-    inst.entity:SetParent(proxy.entity)
+    inst.entity:SetParent(TheFocalPoint.entity)
 
     --Everyone gets their own hounds and therefore their own warnings
     local theta = math.random() * 2 * PI
 
     inst.Transform:SetPosition(radius * math.cos(theta), 0, radius * math.sin(theta))
     inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/distant")
-    inst:Remove()    
+
+    inst:Remove()
 end
 
 local function makewarning(distance)
@@ -36,12 +36,8 @@ local function makewarning(distance)
 
         --Dedicated server does not need to spawn the local fx
         if not TheNet:IsDedicated() then
-            --Delay one frame in case we are about to be removed            
-            inst:DoTaskInTime(0, function() 
-                if ThePlayer == inst.parent then
-                    PlayWarningSound(ThePlayer,distance)
-                end
-            end)
+            --Delay one frame in case we are about to be removed
+            inst:DoTaskInTime(0, PlayWarningSound, distance)
         end
 
         inst.entity:SetPristine()

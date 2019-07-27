@@ -58,11 +58,6 @@ local states =
                 inst.components.lootdropper:DropLoot(inst:GetPosition())
             end
         end,
-
-        timeline =
-        {
-            TimeEvent(12*FRAMES, LandFlyingCreature),
-        },
     },
 
     State{
@@ -153,7 +148,6 @@ local states =
         timeline =
         {
             TimeEvent(20 * FRAMES, function(inst)
-                LandFlyingCreature(inst)
                 StopBuzz(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/bee/bee_tired_LP", "tired")
             end),
@@ -172,7 +166,6 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("tired")
-            RaiseFlyingCreature(inst)
             if not inst.sg.statemem.takingoff then
                 --interrupted, restore sound
                 StartBuzz(inst)
@@ -186,7 +179,6 @@ local states =
 
         onenter = function(inst)
             inst.Physics:Stop()
-            LandFlyingCreature(inst)
             inst.AnimState:PlayAnimation("land")
         end,
 
@@ -197,8 +189,6 @@ local states =
                 inst.sg:GoToState(inst.bufferedaction ~= nil and inst.bufferedaction.action == ACTIONS.POLLINATE and "pollinate" or "land_idle")
             end),
         },
-
-        onexit = RaiseFlyingCreature,
     },
 
     State{
@@ -218,7 +208,6 @@ local states =
 
         onenter = function(inst)
             inst.AnimState:PushAnimation("land_idle", true)
-            LandFlyingCreature(inst)
             inst.sg:SetTimeout(GetRandomWithVariance(3, 1))
         end,
 
@@ -229,7 +218,6 @@ local states =
         end,
 
         onexit = function(inst)
-            RaiseFlyingCreature(inst)
             if not inst.sg.statemem.takingoff then
                 StartBuzz(inst)
             end
@@ -309,7 +297,7 @@ local states =
         onenter = function(inst)
             inst.SoundEmitter:PlaySound(inst.sounds.hit)
             inst.AnimState:PlayAnimation("hit")
-            inst.Physics:Stop()
+            inst.Physics:Stop()            
         end,
 
         events =
@@ -325,19 +313,16 @@ local function CleanupIfSleepInterrupted(inst)
     if not inst.sg.statemem.continuesleeping then
         StartBuzz(inst)
     end
-    RaiseFlyingCreature(inst)
 end
 CommonStates.AddSleepExStates(states,
 {
     starttimeline =
     {
-        TimeEvent(10 * FRAMES, LandFlyingCreature),
         TimeEvent(23 * FRAMES, StopBuzz),
     },
     waketimeline =
     {
         TimeEvent(1 * FRAMES, StartBuzz),
-        TimeEvent(20 * FRAMES, RaiseFlyingCreature),
         CommonHandlers.OnNoSleepTimeEvent(24 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("busy")
             inst.sg:RemoveStateTag("nosleep")
@@ -346,20 +331,10 @@ CommonStates.AddSleepExStates(states,
 },
 {
     onexitsleep = CleanupIfSleepInterrupted,
-    onsleeping = LandFlyingCreature,
     onexitsleeping = CleanupIfSleepInterrupted,
-    onwake = LandFlyingCreature,
     onexitwake = StartBuzz,
 })
 
-CommonStates.AddFrozenStates(states, 
-    function(inst)
-        LandFlyingCreature(inst)
-        StopBuzz(inst)
-    end,
-    function(inst)
-        RaiseFlyingCreature(inst)
-        StartBuzz(inst)
-    end)
+CommonStates.AddFrozenStates(states, StopBuzz, StartBuzz)
 
 return StateGraph("bee", states, events, "idle", actionhandlers)

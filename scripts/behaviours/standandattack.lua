@@ -1,9 +1,8 @@
-StandAndAttack = Class(BehaviourNode, function(self, inst, findnewtargetfn, timeout)
+StandAndAttack = Class(BehaviourNode, function(self, inst, findnewtargetfn)
     BehaviourNode._ctor(self, "StandAndAttack")
     self.inst = inst
     self.findnewtargetfn = findnewtargetfn
     self.numattacks = 0
-	self.timeout = timeout
 
     -- we need to store this function as a key to use to remove itself later
     self.onattackfn = function(inst, data)
@@ -26,7 +25,7 @@ end
 function StandAndAttack:OnAttackOther(target)
     --print ("on attack other", target)
     self.numattacks = self.numattacks + 1
-    self.starttime = nil -- reset max chase time timer
+    self.startruntime = nil -- reset max chase time timer
 end
 
 function StandAndAttack:Visit()
@@ -35,12 +34,11 @@ function StandAndAttack:Visit()
         combat:ValidateTarget()
 
         if combat.target == nil and self.findnewtargetfn ~= nil then
-            combat:SetTarget(self.findnewtargetfn(self.inst))
+            combat.target = self.findnewtargetfn(self.inst)
         end
 
         if combat.target ~= nil then
             self.inst.components.combat:BattleCry()
-            self.starttime = GetTime()
             self.status = RUNNING
         else
             self.status = FAILED
@@ -50,14 +48,7 @@ function StandAndAttack:Visit()
     if self.status == RUNNING then
         local is_attacking = self.inst.sg:HasStateTag("attack")
 
-        if self.starttime == nil then
-            self.starttime = GetTime()
-		end
-
         if combat.target == nil or not combat.target.entity:IsValid() then
-            self.status = FAILED
-            combat:SetTarget(nil)
-		elseif (self.timeout ~= nil and self.starttime ~= nil and GetTime() - self.starttime > self.timeout) then
             self.status = FAILED
             combat:SetTarget(nil)
         elseif combat.target.components.health ~= nil and combat.target.components.health:IsDead() then

@@ -113,8 +113,6 @@ local function fn()
 
     inst:AddTag("trap")
 
-    MakeInventoryFloatable(inst, "small", nil, {1.2, 0.8, 1.2})
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -29,7 +29,7 @@ local function ondeploy(inst, pt)--, deployer)
     if inst.components.stackable ~= nil then
         inst.components.stackable:Get():Remove()
     else
-        ent.components.drawable:OnDrawn(inst.components.drawable:GetImage())
+        ent.components.drawable:OnDrawn(inst.components.drawable:GetImage(), nil, inst.components.drawable:GetAtlas(), inst.components.drawable:GetBGImage(), inst.components.drawable:GetBGAtlas())
         ent._imagename:set(inst._imagename:value())
         inst:Remove()
     end
@@ -42,7 +42,7 @@ local function dig_up(inst)--, worker)
     local image = inst.components.drawable:GetImage()
     if image ~= nil then
         local item = inst.components.lootdropper:SpawnLootPrefab("minisign_drawn")
-        item.components.drawable:OnDrawn(image)
+        item.components.drawable:OnDrawn(image, nil, inst.components.drawable:GetAtlas(), inst.components.drawable:GetBGImage(), inst.components.drawable:GetBGAtlas())
         item._imagename:set(inst._imagename:value())
     else
         inst.components.lootdropper:SpawnLootPrefab("minisign_item")
@@ -62,9 +62,14 @@ local function onextinguish(inst)
     end
 end
 
-local function OnDrawnFn(inst, image, src, atlas)
+local function OnDrawnFn(inst, image, src, atlas, bgimage, bgatlas)
     if image ~= nil then
         inst.AnimState:OverrideSymbol("SWAP_SIGN", atlas or GetInventoryItemAtlas(image..".tex"), image..".tex")
+        if bgimage ~= nil then
+            inst.AnimState:OverrideSymbol("SWAP_SIGN_BG", bgatlas or GetInventoryItemAtlas(bgimage..".tex"), bgimage..".tex")
+        else
+            inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG")
+        end
         if inst:HasTag("sign") then
             inst.components.drawable:SetCanDraw(false)
             inst._imagename:set(src ~= nil and (src.drawnameoverride or src:GetBasicDisplayName()) or "")
@@ -74,6 +79,7 @@ local function OnDrawnFn(inst, image, src, atlas)
         end
     else
         inst.AnimState:ClearOverrideSymbol("SWAP_SIGN")
+        inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG")
         if inst:HasTag("sign") then
             if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
                 inst.components.drawable:SetCanDraw(true)
@@ -207,8 +213,6 @@ local function MakeItem(name, drawn)
             --Use planted inspect strings for drawn version
             inst:SetPrefabNameOverride("minisign")
         end
-
-        MakeInventoryFloatable(inst, "med", 0.05, 0.65)
 
         inst.entity:SetPristine()
 

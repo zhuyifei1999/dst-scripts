@@ -8,7 +8,6 @@ local GroundPounder = Class(function(self, inst)
     self.pointDensity = .25
     self.damageRings = 2
     self.destructionRings = 3
-    self.platformPushingRings = 2
     self.noTags = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
     self.destroyer = false
     self.burner = false
@@ -46,7 +45,7 @@ function GroundPounder:GetPoints(pt)
     return points
 end
 
-function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatforms)
+function GroundPounder:DestroyPoints(points, breakobjects, dodamage)
     local getEnts = breakobjects or dodamage
     local map = TheWorld.Map
     if dodamage then
@@ -92,20 +91,6 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatfor
             end
         end
 
-        if pushplatforms then
-            local platform_ents = TheSim:FindEntities(v.x, v.y, v.z, 3 + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, {"walkableplatform"}, self.noTags)
-            for i, p_ent in ipairs(platform_ents) do
-                if p_ent ~= self.inst and p_ent:IsValid() and p_ent.Transform ~= nil and p_ent.components.boatphysics ~= nil then
-                    local v2x, v2y, v2z = p_ent.Transform:GetWorldPosition()
-                    local mx, mz = v2x - v.x, v2z - v.z
-                    if mx ~= 0 or mz ~= 0 then
-                        local normalx, normalz = VecUtil_Normalize(mx, mz)
-                        p_ent.components.boatphysics:ApplyForce(normalx, normalz, 5)
-                    end
-                end
-            end
-        end
-
         if map:IsPassableAtPoint(v:Get()) then
             SpawnPrefab(self.groundpoundfx).Transform:SetPosition(v.x, 0, v.z)
         end
@@ -115,8 +100,8 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatfor
     end
 end
 
-local function OnDestroyPoints(inst, self, points, breakobjects, dodamage, pushplatforms)
-    self:DestroyPoints(points, breakobjects, dodamage, pushplatforms)
+local function OnDestroyPoints(inst, self, points, breakobjects, dodamage)
+    self:DestroyPoints(points, breakobjects, dodamage)
 end
 
 function GroundPounder:GroundPound(pt)
@@ -125,7 +110,7 @@ function GroundPounder:GroundPound(pt)
     local points = self:GetPoints(pt)
     local delay = 0
     for i = 1, self.numRings do
-        self.inst:DoTaskInTime(delay, OnDestroyPoints, self, points[i], i <= self.destructionRings, i <= self.damageRings, i <= self.platformPushingRings)
+        self.inst:DoTaskInTime(delay, OnDestroyPoints, self, points[i], i <= self.destructionRings, i <= self.damageRings)
         delay = delay + self.ringDelay
     end
 
@@ -168,26 +153,11 @@ function GroundPounder:GroundPound_Offscreen(position)
         end
     end
 
-    if self.platformPushingRings > 0 then
-        local platformPushRadius = self.initialRadius + (self.platformPushingRings - 1) * self.radiusStepDistance
-        local platformEnts = TheSim:FindEntities(position.x, position.y, position.z, platformPushRadius + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, {"walkableplatform"}, self.noTags)
-        for i, p_ent in ipairs(platform_ents) do
-            if p_ent ~= self.inst and p_ent:IsValid() and p_ent.Transform ~= nil and p_ent.components.boatphysics ~= nil then
-                local v2x, v2y, v2z = p_ent.Transform:GetWorldPosition()
-                local mx, mz = v2x - v.x, v2z - v.z
-                if mx ~= 0 or mz ~= 0 then
-                    local normalx, normalz = VecUtil_Normalize(mx, mz)
-                    p_ent.components.boatphysics:ApplyForce(normalx, normalz, 5)
-                end
-            end
-        end
-    end
-
     self.inst.components.combat:EnableAreaDamage(true)
 end
 
 function GroundPounder:GetDebugString()
-    return string.format("num rings: %d, damage rings: %d, destruction rings: %d, pushing rings: %d", self.numRings, self.damageRings, self.destructionRings, self.platformPushingRings)
+    return string.format("num rings: %d, damage rings: %d, destruction rings: %d", self.numRings, self.damageRings, self.destructionRings)
 end
 
 return GroundPounder

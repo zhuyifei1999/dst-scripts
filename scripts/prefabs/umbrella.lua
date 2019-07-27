@@ -4,7 +4,6 @@ local assets =
     Asset("ANIM", "anim/swap_umbrella.zip"),
     Asset("ANIM", "anim/parasol.zip"),
     Asset("ANIM", "anim/swap_parasol.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -88,8 +87,6 @@ local function common_fn(name)
     --waterproofer (from waterproofer component) added to pristine state for optimization
     inst:AddTag("waterproofer")
 
-    MakeInventoryFloatable(inst, "large")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -99,7 +96,6 @@ local function common_fn(name)
     inst:AddComponent("waterproofer")
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("equippable")
 
     inst:AddComponent("insulator")
@@ -131,11 +127,6 @@ local function grass()
     inst.components.equippable:SetOnUnequip( onunequip_grass )
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
 
-    local swap_data = {sym_build = "swap_parasol", bank = "parasol"}
-    inst.components.floater:SetBankSwapOnFloat(true, -40, swap_data)
-    inst.components.floater:SetVerticalOffset(0.05)
-    inst.components.floater:SetScale({0.9, 0.4, 0.9})
-
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
@@ -155,7 +146,7 @@ local function pigskin()
     inst:AddComponent("fueled")
     inst.components.fueled.fueltype = FUELTYPE.USAGE
     inst.components.fueled:SetDepletedFn(onperish)
-    inst.components.fueled:InitializeFuelLevel(TUNING.UMBRELLA_PERISHTIME)
+    inst.components.fueled:InitializeFuelLevel(TUNING.UMBRELLA_PERISHTIME)        
 
     inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_HUGE)
 
@@ -163,9 +154,6 @@ local function pigskin()
 
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-
-    inst.components.floater:SetScale({1.0, 0.4, 1.0})
-    inst.components.floater:SetBankSwapOnFloat(true, -40, {sym_build = "swap_umbrella"})
 
     return inst
 end

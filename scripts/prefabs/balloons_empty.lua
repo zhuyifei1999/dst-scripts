@@ -88,8 +88,6 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("balloons_empty.png")
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

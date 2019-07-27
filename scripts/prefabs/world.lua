@@ -37,9 +37,6 @@ local assets =
     Asset("PKGREF", "images/bg_spiral_anim.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim_overlay.xml"),
     Asset("PKGREF", "images/bg_spiral_anim_overlay.tex"),
-
-    
-    Asset("IMAGE", "levels/textures/water_fall_mangrove_opaque.tex"),
 }
 
 
@@ -69,7 +66,6 @@ local prefabs =
     "twiggy_normal",
 
     "sapling",
-    "sapling_moon",
     "berrybush",
     "berrybush2",
     "berrybush_juicy",
@@ -113,21 +109,15 @@ local prefabs =
 
     "turf_road",
     "turf_rocky",
-    "turf_forest",
     "turf_marsh",
-    "turf_grass",
     "turf_savanna",
-    "turf_meteor",
-    "turf_pebblebeach",
+    "turf_forest",
+    "turf_grass",
     "turf_cave",
     "turf_fungus",
-    "turf_fungus_red",
-    "turf_fungus_green",
     "turf_sinkhole",
     "turf_underrock",
     "turf_mud",
-    "turf_deciduous",
-    "turf_desertdirt",
 
     "skeleton",
     "insanityrock",
@@ -199,30 +189,9 @@ local prefabs =
     "constructionsite_classified",
 
     "dummytarget",
-    "float_fx_front",
-    "float_fx_back",
-    "groundshadow",
-
-    "puffin"
 }
 
 --------------------------------------------------------------------------
-
-local function OnPlayerSpawn(world, inst)
-    inst:DoTaskInTime(0, function()
-        if TheWorld.auto_teleport_players then
-            local teleported = false
-            
-            for k,v in pairs(Ents) do                            
-                if v:IsValid() and v:HasTag("player") and v ~= inst and not teleported then                    
-                    inst.Transform:SetPosition(v.Transform:GetWorldPosition())
-                    inst:SnapCamera()
-                    teleported = true
-                end         
-            end
-        end    
-    end)
-end
 
 local function DoGameDataChanged(inst)
     inst.game_data_task = nil
@@ -337,19 +306,6 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
                 resolvefilepath(GroundImage(layer_name)),
                 resolvefilepath(props.noise_texture)
             )
-
-            local colors = data[2].colors
-            if colors ~= nil then
-				local primary_color = colors.primary_color
-                MapLayerManager:SetPrimaryColor(handle, primary_color[1] / 255, primary_color[2] / 255, primary_color[3] / 255, primary_color[4] / 255)
-				local secondary_color = colors.secondary_color
-				MapLayerManager:SetSecondaryColor(handle, secondary_color[1] / 255, secondary_color[2] / 255, secondary_color[3] / 255, secondary_color[4] / 255)
-				local secondary_color_dusk = colors.secondary_color_dusk
-				MapLayerManager:SetSecondaryColorDusk(handle, secondary_color_dusk[1] / 255, secondary_color_dusk[2] / 255, secondary_color_dusk[3] / 255, secondary_color_dusk[4] / 255)
-                local minimap_color = colors.minimap_color
-                MapLayerManager:SetMinimapColor(handle, minimap_color[1] / 255, minimap_color[2] / 255, minimap_color[3] / 255, minimap_color[4] / 255)
-            end
-
             inst.Map:AddRenderLayer(handle)
             --TODO: When this object is destroyed, these handles really should be freed. At this time,
             --this is not an issue because the map lifetime matches the game lifetime but if this were
@@ -384,7 +340,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         --Initialize lua components
         inst:AddComponent("groundcreep")
-        
+
         --Public member functions
         inst.PostInit = PostInit
         inst.OnRemoveEntity = OnRemoveEntity
@@ -403,21 +359,9 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         inst:SetPrefabName("world") -- the actual prefab to load comes from gamelogic.lua, this is for postinitfns.
 
-        if not TheNet:IsDedicated() then
-            inst:AddComponent("ocean")
-	        inst:AddComponent("oceancolor")
-        end
-
-        --
-        inst:AddComponent("walkableplatformmanager")
-
-        inst:AddComponent("waterphysics")
-        inst.components.waterphysics.restitution = 1.75
-
         if not inst.ismastersim then
             return inst
         end
-
 
         inst:AddComponent("playerspawner")
 
@@ -436,8 +380,6 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         UpdateServerWorldGenDataString()
 
         inst.game_data_task = nil
-
-        inst:ListenForEvent("ms_playerspawn", OnPlayerSpawn)
 
         return inst
     end

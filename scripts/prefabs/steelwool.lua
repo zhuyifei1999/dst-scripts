@@ -16,8 +16,6 @@ local function fn()
     inst.AnimState:SetBuild("steel_wool")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med", nil, 0.72)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -26,7 +24,6 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 

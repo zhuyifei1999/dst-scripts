@@ -10,7 +10,6 @@ local potion_tunings =
 		TICK_VALUE = 1,
 		DURATION = TUNING.SEG_TIME * 2,
         FUEL = TUNING.SMALL_FUEL,
-        FLOATER = {"small", 0.15, 0.55},
 	},
 	halloweenpotion_health_large = 
 	{
@@ -19,7 +18,6 @@ local potion_tunings =
 		TICK_VALUE = 1,
 		DURATION = TUNING.SEG_TIME * 2,
         FUEL = TUNING.MED_FUEL,
-        FLOATER = {"small", 0.15, 0.8},
 	},
 	halloweenpotion_sanity_small = 
 	{
@@ -28,7 +26,6 @@ local potion_tunings =
 		TICK_VALUE = 1,
 		DURATION = TUNING.SEG_TIME * 2,
         FUEL = TUNING.SMALL_FUEL,
-        FLOATER = {"small", 0.1, 0.5},
 	},
 	halloweenpotion_sanity_large = 
 	{
@@ -37,21 +34,18 @@ local potion_tunings =
 		TICK_VALUE = 1,
 		DURATION = TUNING.SEG_TIME * 2,
         FUEL = TUNING.MED_FUEL,
-        FLOATER = {"small", 0.2, 0.4},
 	},
 	halloweenpotion_bravery_small = 
 	{
 		DURATION = TUNING.TOTAL_DAY_TIME * .5,
         FUEL = TUNING.SMALL_FUEL,
 		WISECRACKER = "ANNOUNCE_BRAVERY_POTION",
-        FLOATER = {"small", 0.15, 0.75},
 	},
 	halloweenpotion_bravery_large = 
 	{
 		DURATION = TUNING.TOTAL_DAY_TIME * .75,
         FUEL = TUNING.MED_FUEL,
 		WISECRACKER = "ANNOUNCE_BRAVERY_POTION",
-        FLOATER = {"small", 0.15, nil},
 	},
 }
 
@@ -89,12 +83,6 @@ local function potion_fn(anim, potion_tunings, buff_id, buff_prefab, nameoverrid
     inst.AnimState:SetBank("halloween_potions")
     inst.AnimState:SetBuild("halloween_potions")
     inst.AnimState:PlayAnimation(anim)
-
-    if potion_tunings.FLOATER ~= nil then
-        MakeInventoryFloatable(inst, potion_tunings.FLOATER[1], potion_tunings.FLOATER[2], potion_tunings.FLOATER[3])
-    else
-        MakeInventoryFloatable(inst)
-    end
 
     inst.entity:SetPristine()
 

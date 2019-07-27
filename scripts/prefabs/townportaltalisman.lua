@@ -164,7 +164,6 @@ local function fn()
 
     -------------------------
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("teleporter")
     inst.components.teleporter.onActivate = OnStartTeleporting

@@ -5,7 +5,6 @@ local CircuitNode = Class(function(self, inst)
     --self.ondisconnectfn = nil
     --self.nodes = nil
     self.numnodes = 0
-    self.connectsacrossplatforms = true
 end)
 
 function CircuitNode:OnRemoveEntity()
@@ -33,22 +32,9 @@ function CircuitNode:ConnectTo(tag)
     end
     if tag ~= nil then
         local x, y, z = self.inst.Transform:GetWorldPosition()
-
-        local my_platform = nil
-        if not self.connectsacrossplatforms then
-            my_platform = TheWorld.Map:GetPlatformAtPoint(x, z)
-        end
-
         for i, v in ipairs(TheSim:FindEntities(x, y, z, self.range, { tag })) do
             if v ~= self.inst and v.entity:IsVisible() and v.components.circuitnode and v.components.circuitnode:IsEnabled() then
-                if self.connectsacrossplatforms then
-                    self:AddNode(v)
-                else
-                    local v_position = v:GetPosition()
-                    if TheWorld.Map:GetPlatformAtPoint(v_position.x, v_position.z) == my_platform then
-                        self:AddNode(v)
-                    end
-                end
+                self:AddNode(v)
             end
         end
     end

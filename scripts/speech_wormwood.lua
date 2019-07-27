@@ -151,18 +151,6 @@ return {
             NOWHEEL = "Needs steerer",
             REPAIR = "Already good",
         },
-        ROW_FAIL =
-        {
-            BAD_TIMING0 = "Why slow down?",
-            BAD_TIMING1 = "Row, row-- oh",
-            BAD_TIMING2 = "That not right...",
-        },
-        LOWER_SAIL_FAIL =
-        {
-            "Oopsy!",
-            "Come down here!",
-            "Oh no!",
-        }, 
         BATHBOMB =
         {
             GLASSED = "Water too hard",
@@ -172,7 +160,6 @@ return {
 	ACTIONFAIL_GENERIC = "Nope",
 	ANNOUNCE_BOAT_LEAK = "Water! Water coming!",
     ANNOUNCE_BOAT_SINK = "Why sinking, Floater?",
-    ANNOUNCE_WASHED_ASHORE = "Very wet!",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Poor sick friend",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Ooh. Smells sick",
 	ANNOUNCE_ADVENTUREFAIL = "Try again",
@@ -1153,7 +1140,6 @@ return {
         CRITTER_PUPPY = "Little Woofer! Woof!",
         CRITTER_KITTEN = "Me-Raow, Teeny Kitkit",
         CRITTER_PERDLING = "Wee Tweeter is friend now",
-        CRITTER_LUNARMOTHLING = "Flap flap Flappy friend",
 
 		CROW =
 		{
@@ -2529,6 +2515,8 @@ return {
             BURNT = "Fire hurt it",
         },
 
+        BOATFRAGMENT01 = "Floaty got broken",
+        BOATFRAGMENT02 = "Floaty got broken",
         BOATFRAGMENT03 = "Floaty got broken",
         BOATFRAGMENT04 = "Floaty got broken",
         BOATFRAGMENT05 = "Floaty got broken",

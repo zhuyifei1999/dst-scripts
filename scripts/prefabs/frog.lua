@@ -76,10 +76,6 @@ local function fn()
     inst.components.locomotor.walkspeed = 4
     inst.components.locomotor.runspeed = 8
 
-    -- boat hopping enable.
-    inst.components.locomotor:SetAllowPlatformHopping(true)
-    inst:AddComponent("embarker")
-
     inst:SetStateGraph("SGfrog")
 
     inst:SetBrain(brain)

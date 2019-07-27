@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/lucy_axe.zip"),
     Asset("ANIM", "anim/swap_lucy_axe.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 	Asset("MINIMAP_IMAGE", "lucy_axe"),
 }
 
@@ -166,9 +165,6 @@ local function fn()
         inst:ListenForEvent("donetalking", ondonetalking)
     end
 
-    local swap_data = {sym_build = "swap_lucy_axe", bank = "Lucy_axe"}
-    MakeInventoryFloatable(inst, "small", 0.05, {1.2, 0.75, 1.2}, true, -11, swap_data)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -207,7 +203,6 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)

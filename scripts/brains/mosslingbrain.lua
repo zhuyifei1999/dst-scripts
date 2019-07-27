@@ -102,12 +102,9 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
 	--Look for crop/ cookpots/ drying rack, harvest them.
 	if not target then
 		for k,item in pairs(ents) do
-            -- Since we can't swim or jump to boats, don't investigate containers that are in the water or on boats
-			if item:IsOnValidGround() and (
-                    (item.components.stewer and item.components.stewer:IsDone()) or
-			        (item.components.dryer and item.components.dryer:IsDone()) or
-			        (item.components.crop and item.components.crop:IsReadyForHarvest())
-                    ) then
+			if (item.components.stewer and item.components.stewer:IsDone()) or
+			(item.components.dryer and item.components.dryer:IsDone()) or
+			(item.components.crop and item.components.crop:IsReadyForHarvest()) then
 				if TargetNotClaimed(inst, item) then
 					target = item
 					break
@@ -123,12 +120,11 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
 	--Berrybushes, carrots etc.
 	if not target then
 		for k,item in pairs(ents) do
-			if item:IsOnValidGround() and
-                    item.components.pickable and
-			        item.components.pickable.caninteractwith and
-			        item.components.pickable:CanBePicked() and
-			        table.contains(PICKABLE_FOODS, item.components.pickable.product)
-			        and TargetNotClaimed(inst, item) then
+			if item.components.pickable and
+			item.components.pickable.caninteractwith and
+			item.components.pickable:CanBePicked() and
+			table.contains(PICKABLE_FOODS, item.components.pickable.product)
+			and TargetNotClaimed(inst, item) then
 				target = item
 				break
 			end

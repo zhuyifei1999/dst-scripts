@@ -8,9 +8,6 @@ local assets =
 
     Asset("ANIM", "anim/werebeaver_groggy.zip"),
     Asset("ANIM", "anim/werebeaver_dance.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_jump.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_plank.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_sink.zip"),
     Asset("ANIM", "anim/player_revive_to_werebeaver.zip"),
     Asset("ANIM", "anim/player_amulet_resurrect_werebeaver.zip"),
     Asset("ANIM", "anim/player_rebirth_werebeaver.zip"),
@@ -85,17 +82,11 @@ local function BeaverActionString(inst, action)
         or STRINGS.ACTIONS.GNAW
 end
 
-local function GetBeaverAction(inst, target)
+local function GetBeaverAction(target)
     for i, v in ipairs(BEAVER_LMB_ACTIONS) do
         if target:HasTag(v.."_workable") then
             return not target:HasTag("sign") and ACTIONS[v] or nil
         end
-    end
-
-    if target:HasTag("walkingplank") and target:HasTag("interactable") then
-        return (inst:HasTag("on_walkable_plank") and ACTIONS.ABANDON_SHIP) or
-                (target:HasTag("plank_extended") and ACTIONS.MOUNT_PLANK) or
-                ACTIONS.EXTEND_PLANK
     end
 end
 
@@ -106,14 +97,14 @@ local function BeaverActionButton(inst, force_target)
             local ents = TheSim:FindEntities(x, y, z, inst.components.playercontroller.directwalking and 3 or 6, nil, BEAVER_TARGET_EXCLUDE_TAGS, BEAVER_ACTION_TAGS)
             for i, v in ipairs(ents) do
                 if v ~= inst and v.entity:IsVisible() and CanEntitySeeTarget(inst, v) then
-                    local action = GetBeaverAction(inst, v)
+                    local action = GetBeaverAction(v)
                     if action ~= nil then
                         return BufferedAction(inst, v, action)
                     end
                 end
             end
         elseif inst:GetDistanceSqToInst(force_target) <= (inst.components.playercontroller.directwalking and 9 or 36) then
-            local action = GetBeaverAction(inst, force_target)
+            local action = GetBeaverAction(force_target)
             if action ~= nil then
                 return BufferedAction(inst, force_target, action)
             end
@@ -133,15 +124,6 @@ local function LeftClickPicker(inst, target)
                 return not target:HasTag("sign")
                     and inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
                     or nil
-            end
-        end
-
-        if target:HasTag("walkingplank") then
-            if inst:HasTag("on_walkable_plank") then
-                return inst.components.playeractionpicker:SortActionList({ACTIONS.ABANDON_SHIP}, target, nil)
-            elseif target:HasTag("interactable") then
-                local action_to_do = target:HasTag("plank_extended") and ACTIONS.MOUNT_PLANK or ACTIONS.EXTEND_PLANK
-                return inst.components.playeractionpicker:SortActionList({ action_to_do }, target, nil)
             end
         end
     end
@@ -328,7 +310,7 @@ local function onworked(inst, data)
             inst.components.beaverness:DoDelta(TUNING.WOODIE_CHOP_DRAIN, true)
 
             local equipitem = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if equipitem ~= nil and (equipitem:HasTag("possessable_axe")) then
+            if equipitem ~= nil and (equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe") then
                 local itemuses = equipitem.components.finiteuses ~= nil and equipitem.components.finiteuses:GetUses() or nil
                 if itemuses == nil or itemuses > 0 then
                     --Don't make Lucy if we already have one
@@ -593,16 +575,6 @@ local function TransformBeaver(inst, isbeaver)
     end
 end
 
-local function OnTakeDrowningDamage(inst, tuning)
-	if tuning.BEAVERNESS ~= nil and inst.components.beaverness ~= nil then
-		inst.components.beaverness:DoDelta(-tuning.BEAVERNESS)
-	end
-end
-
-local function GetDowningDamgeTunings(inst)
-	return TUNING.DROWNING_DAMAGE[inst:HasTag("beaver") and "WEREBEAVER" or "WOODIE"]
-end
-
 --------------------------------------------------------------------------
 
 --Re-enter idle state right after loading because
@@ -701,11 +673,6 @@ local function master_postinit(inst)
         inst._getstatus = nil
         inst._wasnomorph = nil
         inst.TransformBeaver = TransformBeaver
-
-		if inst.components.drownable ~= nil then
-			inst.components.drownable:SetOnTakeDrowningDamageFn(OnTakeDrowningDamage)
-			inst.components.drownable:SetCustomTuningsFn(GetDowningDamgeTunings)
-		end
 
         inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
         inst:ListenForEvent("ms_becameghost", onbecameghost)

@@ -6,7 +6,7 @@ AddLevel(LEVELTYPE.LAVAARENA, {
         name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.LAVAARENA,
         desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.LAVAARENA,
         location = "lavaarena", -- this is actually the prefab name
-        version = 4,
+        version = 3,
         overrides={
 			boons = "never",
 			touchstone = "never",
