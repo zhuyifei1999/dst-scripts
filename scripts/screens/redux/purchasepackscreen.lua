@@ -83,6 +83,7 @@ local purchasefn =
                     local box_popup = ItemBoxOpenerPopup(options, function(success_cb)
                         success_cb(display_items)
                     end)
+					box_popup.owned_by_wardrobe = true
                     TheFrontEnd:PushScreen(box_popup)
 
                 elseif message == "CANCELLED" then
@@ -131,6 +132,7 @@ local onPurchaseClickFn =
                                     TheFrontEnd:PopScreen()
                                 end },
                             })
+				warning.owned_by_wardrobe = true
                 TheFrontEnd:PushScreen( warning )    
             else
                 purchasefn( self, item_type_purchased, sale_percent_purchased )
@@ -318,6 +320,7 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def, screen_self)
 					},
 				}
 			)
+			instructions.owned_by_wardrobe = true
 			TheFrontEnd:PushScreen( instructions )
 		end
     self.button_dlc = self.text_root:AddChild(TEMPLATES.StandardButton(
@@ -541,7 +544,11 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 
         set_data( self, iap_def )
 
-        self.info_button:SetOnClick( function() TheFrontEnd:PushScreen( PurchasePackPopup( iap_def, self.screen_self ) ) end )
+        self.info_button:SetOnClick( function()
+			local scr = PurchasePackPopup( iap_def, self.screen_self )
+			scr.owned_by_wardrobe = true
+			TheFrontEnd:PushScreen(scr)
+			end )
         self.button:SetOnClick( function() onPurchaseClickFn( self ) end )
         self.button:SetText(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_BTN)
 

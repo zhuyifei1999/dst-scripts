@@ -313,7 +313,9 @@ function LoadoutSelect:_SaveLoadout()
 end
 
 function LoadoutSelect:_LoadSkinPresetsScreen()
-    TheFrontEnd:PushScreen( SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end ) )
+	local scr = SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end )
+	scr.owned_by_wardrobe = true
+    TheFrontEnd:PushScreen( scr )
 end
 
 function LoadoutSelect:ApplySkinPresets(skins) 
