@@ -24,24 +24,21 @@ function DrawingTool:GetImageToDraw(target)
     if ent == nil then
         return
     end
-
-    local atlas, bgimage, bgatlas
-    local image = ent.drawimageoverride or (#(ent.components.inventoryitem.imagename or "") > 0 and ent.components.inventoryitem.imagename) or ent.prefab or nil
-    if image ~= nil then
-        atlas = ent.drawatlasoverride or (#(ent.components.inventoryitem.atlasname or "") > 0 and ent.components.inventoryitem.atlasname) or nil
-        if ent.inv_image_bg ~= nil and ent.inv_image_bg.image ~= nil and ent.inv_image_bg.image:len() > 4 and ent.inv_image_bg.image:sub(-4):lower() == ".tex" then
-            bgimage = ent.inv_image_bg.image:sub(1, -5)
-            bgatlas = ent.inv_image_bg.atlas ~= GetInventoryItemAtlas(ent.inv_image_bg.image) and ent.inv_image_bg.atlas or nil
-        end
-    end
-    return image, ent, atlas, bgimage, bgatlas
+    return ent.drawimageoverride or
+        (#(ent.components.inventoryitem.imagename or "") > 0 and ent.components.inventoryitem.imagename) or
+        ent.prefab or
+        nil,
+        ent,
+        ent.drawatlasoverride or
+        (#(ent.components.inventoryitem.atlasname or "") > 0 and ent.components.inventoryitem.atlasname) or
+        nil
 end
 
-function DrawingTool:Draw(target, image, src, atlas, bgimage, bgatlas)
+function DrawingTool:Draw(target, image, src, atlas)
     if target ~= nil and target.components.drawable ~= nil then
-        target.components.drawable:OnDrawn(image, src, atlas, bgimage, bgatlas)
+        target.components.drawable:OnDrawn(image, src, atlas)
         if self.ondrawfn ~= nil then
-            self.ondrawfn(self.inst, target, image, src, atlas, bgimage, bgatlas)
+            self.ondrawfn(self.inst, target, image, src, atlas)
         end
     end
 end

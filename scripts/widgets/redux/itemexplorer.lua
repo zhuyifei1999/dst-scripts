@@ -186,11 +186,7 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
     self.collection_title:SetHAlign(ANCHOR_LEFT)
     
     self.store_btn = self.footer:AddChild(ImageButton("images/frontend_redux.xml", "button_shop_vshort_normal.tex", "button_shop_vshort_hover.tex", "button_shop_vshort_disabled.tex", "button_shop_vshort_down.tex"))
-    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function()
-		local scr = PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key } )
-		scr.owned_by_wardrobe = true
-		return scr
-		end, nil ) end )
+    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key } ) end, nil ) end )
     self.store_btn:SetScale(0.5)
     self.store_btn:SetPosition(205,-23)
     self.store_btn:Hide()
@@ -451,25 +447,21 @@ function ItemExplorer:_LaunchCommerce()
         local character = data.base_prefab
         local body = subfmt(STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_RESTRICTED_BODY, {character=STRINGS.CHARACTER_NAMES[character]})
 
-		local scr = PopupDialogScreen(
+		TheFrontEnd:PushScreen(PopupDialogScreen(
 			STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_TITLE,
 			body,
 			{{ text = STRINGS.UI.BARTERSCREEN.OK, cb = function() TheFrontEnd:PopScreen() self:_DoCommerce(item_key) end },
-			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }})
-		scr.owned_by_wardrobe = true
-		TheFrontEnd:PushScreen(scr)
+			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }}))
 		return
     elseif WillUnravelBreakEnsemble( item_key ) then
         local _, reward_item = IsItemInCollection(item_key)
         local body = subfmt(STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_BODY, {ensemble_name=STRINGS.SET_NAMES[reward_item], reward_name=GetSkinName(reward_item)})
         
-		local scr = PopupDialogScreen(
+		TheFrontEnd:PushScreen(PopupDialogScreen(
 			STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_TITLE,
 			body,
 			{{ text = STRINGS.UI.BARTERSCREEN.OK, cb = function() TheFrontEnd:PopScreen() self:_DoCommerce(item_key) end },
-			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }})
-		scr.owned_by_wardrobe = true
-		TheFrontEnd:PushScreen(scr)
+			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }}))
 		return
 	else
 		self:_DoCommerce(item_key)
@@ -513,13 +505,11 @@ function ItemExplorer:_DoCommerce(item_key)
             purchased_widget:PlayUnlock()
         end
     end)
-	barter_screen.owned_by_wardrobe = true
     TheFrontEnd:PushScreen(barter_screen)
 end
 
 function ItemExplorer:_ShowItemSetInfo()
     self.set_info_screen = SetPopupDialog(self.set_item_type)
-	self.set_info_screen.owned_by_wardrobe = true
     TheFrontEnd:PushScreen(self.set_info_screen)
 end
 
@@ -904,11 +894,7 @@ function ItemExplorer:OnControl(control, down)
                 self:_ShowMarketplaceForInteractTarget()
                 return true
             elseif self.can_show_pack then
-                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function()
-					local scr = PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key })
-					scr.owned_by_wardrobe = true
-					return scr
-					end, nil )
+                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key }) end, nil )
                 return true
 			end
         elseif not down and control == CONTROL_MAP then

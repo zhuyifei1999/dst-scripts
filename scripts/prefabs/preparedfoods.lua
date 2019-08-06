@@ -48,11 +48,12 @@ local function MakePreparedFood(data)
 
             inst:AddTag("spicedfood")
 
+            inst.drawnameoverride = STRINGS.NAMES[string.upper(data.basename)]
             inst.inv_image_bg = { image = (data.basename or data.name)..".tex" }
             inst.inv_image_bg.atlas = GetInventoryItemAtlas(inst.inv_image_bg.image)
         else
-            inst.AnimState:SetBuild("cook_pot_food")
-            inst.AnimState:SetBank("cook_pot_food")
+        inst.AnimState:SetBuild("cook_pot_food")
+        inst.AnimState:SetBank("cook_pot_food")
         end
         inst.AnimState:PlayAnimation("idle")
         inst.AnimState:OverrideSymbol("swap_food", "cook_pot_food", data.basename or data.name)
@@ -71,10 +72,21 @@ local function MakePreparedFood(data)
             end
         end
 
+        if data.floater ~= nil then
+            MakeInventoryFloatable(inst, data.floater[1], data.floater[2], data.floater[3])
+        else
+            MakeInventoryFloatable(inst)
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
+        end
+
+        if spicename ~= nil then
+            inst.drawimageoverride = data.basename
+            --don't need inst.drawatlasoverride since it's in default inventoryimages atlas
         end
 
         inst:AddComponent("edible")

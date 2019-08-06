@@ -337,6 +337,8 @@ local function itemfn()
 
     inst:AddTag("portableitem")
 
+    MakeInventoryFloatable(inst, "med", 0.1, 0.8)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

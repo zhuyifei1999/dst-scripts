@@ -204,7 +204,7 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
                 self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.subscreener:GetActiveSubscreenFn())
             end
         end
-    end
+	end
 end)
 
 function LoadoutSelect:_SetSkintype(skintypedata)
@@ -313,9 +313,7 @@ function LoadoutSelect:_SaveLoadout()
 end
 
 function LoadoutSelect:_LoadSkinPresetsScreen()
-	local scr = SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end )
-	scr.owned_by_wardrobe = true
-    TheFrontEnd:PushScreen( scr )
+    TheFrontEnd:PushScreen( SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end ) )
 end
 
 function LoadoutSelect:ApplySkinPresets(skins) 
@@ -477,7 +475,7 @@ function LoadoutSelect:OnControl(control, down)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             return true
         end
-    end
+	end
 
     return false
 end
