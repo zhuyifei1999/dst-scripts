@@ -2327,7 +2327,7 @@ local function GetLowerSailStr(act)
 
     local str_idx = 1 
 
-    if doer.switchtoho then
+    if doer:HasTag("switchtoho") then
         str_idx = 2
     end
 

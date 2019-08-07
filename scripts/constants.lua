@@ -1677,10 +1677,14 @@ WORMHOLETYPE =
 -- Houndwarning level
 HOUNDWARNINGTYPE =
 {
-    LVL1 = 1,
-    LVL2 = 2,
-    LVL3 = 3,
-    LVL4 = 4,
+    LVL1 = 0,
+    LVL2 = 1,
+    LVL3 = 2,
+    LVL4 = 3,
+    LVL1_WORM = 4,
+    LVL2_WORM = 5,
+    LVL3_WORM = 6,
+    LVL4_WORM = 7,    
 }
 
 -- Domestication tendencies

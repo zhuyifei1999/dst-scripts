@@ -3075,6 +3075,7 @@ local states =
 
         onexit = function(inst) 
             if not inst.sg.statemem.not_interrupted then
+                inst:RemoveTag("switchtoho")
                 inst:RemoveTag("is_heaving")
             end
         end,
@@ -3114,6 +3115,7 @@ local states =
         tags = { "doing" },
 
         onenter = function(inst)
+            inst:AddTag("switchtoho")
             inst.AnimState:PlayAnimation("pull_small_pre")
             inst.AnimState:PushAnimation("pull_small_loop", true)
             inst:PerformPreviewBufferedAction()
@@ -3128,7 +3130,8 @@ local states =
         end,
 
         onexit = function(inst) 
-            if not inst.sg.statemem.not_interrupted then
+            if not inst.sg.statemem.not_interrupted then                
+                inst:RemoveTag("switchtoho")
                 inst:RemoveTag("is_heaving")
             end
         end,

@@ -10948,8 +10948,8 @@ local states =
         },
 
         onexit = function(inst)
-            if not inst.sg.statemem.not_interrupted then
-                inst.switchtoho = nil
+            if not inst.sg.statemem.not_interrupted then                
+                inst:RemoveTag("switchtoho")
                 inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
                 inst:RemoveTag("is_furling")
                 inst:RemoveTag("is_heaving")
@@ -10978,8 +10978,8 @@ local states =
         name = "furl",
         tags = { "doing" },
 
-        onenter = function(inst)   
-            inst.switchtoho = true
+        onenter = function(inst)               
+            inst:AddTag("switchtoho")
             inst.AnimState:PlayAnimation("pull_small_pre")
             inst.AnimState:PushAnimation("pull_small_loop", true)
             inst:PerformBufferedAction() -- this will clear the buffer if it's full, but you don't get here from an action anyway.
@@ -10987,8 +10987,8 @@ local states =
         end, 
 
         onexit = function(inst)
-            if not inst.sg.statemem.not_interrupted then
-                inst.switchtoho = nil
+            if not inst.sg.statemem.not_interrupted then                
+                inst:RemoveTag("switchtoho")
                 inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
                 inst:RemoveTag("is_furling")
                 inst:RemoveTag("is_heaving")
