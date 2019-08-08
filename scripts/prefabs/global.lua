@@ -220,6 +220,7 @@ local assets =
     Asset("SHADER", "shaders/postprocessbloomdistortlunacy.ksh"),    
 	Asset("SHADER", "shaders/blendoceantexture.ksh"),  
     Asset("SHADER", "shaders/waterfall.ksh"),
+    Asset("SHADER", "shaders/waterfall2.ksh"),
 
     Asset("SHADER", "shaders/waves.ksh"),
     Asset("SHADER", "shaders/overheat.ksh"),

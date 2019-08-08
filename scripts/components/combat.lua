@@ -815,8 +815,13 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult)
     if weapon == nil then
         weapon = self:GetWeapon()
     end
-    if stimuli == nil and weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.overridestimulifn ~= nil then
-        stimuli = weapon.components.weapon.overridestimulifn(weapon, self.inst, targ)
+    if stimuli == nil then
+        if weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.overridestimulifn ~= nil then
+            stimuli = weapon.components.weapon.overridestimulifn(weapon, self.inst, targ)
+        end
+        if stimuli == nil and self.inst.components.electricattacks ~= nil then
+            stimuli = "electric"
+        end
     end
 
     if not self:CanHitTarget(targ, weapon) then
@@ -855,8 +860,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult)
     if targ.components.combat ~= nil then
         local mult =
             (   stimuli == "electric" or
-                (weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.stimuli == "electric") or
-                self.inst.components.electricattacks ~= nil
+                (weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.stimuli == "electric")
             )
             and not (targ:HasTag("electricdamageimmune") or
                     (targ.components.inventory ~= nil and targ.components.inventory:IsInsulated()))

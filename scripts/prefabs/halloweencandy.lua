@@ -40,6 +40,7 @@ local function MakeCandy(num)
 
         inst:AddTag("cattoy")
         inst:AddTag("halloweencandy")
+        inst:AddTag("pre-preparedfood")
 
         local fp = candyinfo[num].floater
         MakeInventoryFloatable(inst, fp[1], fp[2], fp[3])

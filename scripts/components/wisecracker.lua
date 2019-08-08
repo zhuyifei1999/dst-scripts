@@ -44,6 +44,11 @@ local Wisecracker = Class(function(self, inst)
                             inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "SPOILED"))
                         end
                     end
+                else
+                    local count = inst.components.foodmemory ~= nil and inst.components.foodmemory:GetMemoryCount(data.food.prefab) or 0
+                    if count > 0 then
+                        inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "SAME_OLD_"..tostring(math.min(5, count))))
+                    end
                 end
             end
         end)

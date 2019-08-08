@@ -184,7 +184,16 @@ local function checkimpassable(inst, map, x, y, z, ground)
 end
 
 local function checkground(inst, map, x, y, z, ground)
-	return map:GetTileAtPoint( x, y, z ) == ground 
+	local is_ground = map:GetTileAtPoint( x, y, z ) == ground
+	if not is_ground then return false end
+
+	local radius = 2
+	if map:GetTileAtPoint( x - radius, y, z ) == GROUND.IMPASSABLE then return false end
+	if map:GetTileAtPoint( x + radius, y, z ) == GROUND.IMPASSABLE then return false end
+	if map:GetTileAtPoint( x, y, z - radius ) == GROUND.IMPASSABLE then return false end
+	if map:GetTileAtPoint( x, y, z + radius ) == GROUND.IMPASSABLE then return false end
+
+	return true
 end
 
 local function checkflood(inst, map, x, y, z, ground)

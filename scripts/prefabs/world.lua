@@ -39,7 +39,8 @@ local assets =
     Asset("PKGREF", "images/bg_spiral_anim_overlay.tex"),
 
     
-    Asset("IMAGE", "levels/textures/water_fall_mangrove_opaque.tex"),
+	Asset("IMAGE", "levels/textures/waterfall_noise1.tex"),
+	Asset("IMAGE", "levels/textures/waterfall_noise2.tex"),
 }
 
 

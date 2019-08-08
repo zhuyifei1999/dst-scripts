@@ -804,18 +804,55 @@ function LocoMotor:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir
     return false, 0, 0, nil
 end
 
+local PLATFORM_SCAN_STEP_SIZE = 0.5
+local PLATFORM_SCAN_LANDING_RANGE = 1
+local BLOCKER_TAGS = {"blocker"}
+function LocoMotor:TestForBlocked(my_x, my_z, dir_x, dir_z, radius, test_length)
+    local step_count = (test_length + PLATFORM_SCAN_LANDING_RANGE) / PLATFORM_SCAN_STEP_SIZE
+    for i = 1, step_count do
+        local step_amount = i * PLATFORM_SCAN_STEP_SIZE
+        local pt_x, pt_z = my_x + dir_x * step_amount, my_z + dir_z * step_amount
+        if #TheSim:FindEntities(pt_x, 0, pt_z, radius + PLATFORM_SCAN_STEP_SIZE, BLOCKER_TAGS) > 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
 function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
     local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
     local dir_x, dir_z = target_x - my_x, target_z - my_z
     local dir_length = VecUtil_Length(dir_x, dir_z)
     dir_x, dir_z = dir_x / dir_length, dir_z / dir_length
 
-    local map = TheWorld.Map
-    local landing_range = 1
-    local max_hop_distance = math.min(dir_length + landing_range, self.hop_distance)
-    local step_size = 0.5
-    local step_count = max_hop_distance / step_size    
-    return self:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir_z, step_count, max_hop_distance / step_count)
+    local step_count = math.min(dir_length + PLATFORM_SCAN_LANDING_RANGE, self.hop_distance) / PLATFORM_SCAN_STEP_SIZE
+
+    local can_hop, px, pz, found_platform = self:ScanForPlatformInDir(my_platform, TheWorld.Map, my_x, my_z, dir_x, dir_z, step_count, PLATFORM_SCAN_STEP_SIZE)
+    local blocked = false
+    if can_hop then
+        -- If we found a place to hop to, we need to check that our path is clear of obstacles.
+        local path_x, path_z = px - my_x, pz - my_z
+
+        local p_length = VecUtil_Length(path_x, path_z)
+
+        -- Awkwardly, when we hop to platforms, we hop towards the center, despite getting a px/pz that does not reflect that.
+        -- So, we need to quickly calculate the actual center-boat direction to test with.
+        local platform_dir_x, platform_dir_z = nil, nil
+        if found_platform and found_platform.Transform then
+            local platform_x, _, platform_z = found_platform.Transform:GetWorldPosition()
+            platform_dir_x, platform_dir_z = VecUtil_Normalize(platform_x - my_x, platform_z - my_z)
+        else
+            platform_dir_x, platform_dir_z = path_x / p_length, path_z / p_length
+        end
+
+        if self:TestForBlocked(my_x, my_z, platform_dir_x, platform_dir_z, self.inst:GetPhysicsRadius(0), p_length) then
+            can_hop = false
+            blocked = true
+        end
+    end
+
+    return can_hop, px, pz, found_platform, blocked
 end
 
 function LocoMotor:StartHopping(x,z,target_platform)
@@ -1060,31 +1097,38 @@ function LocoMotor:OnUpdate(dt)
             local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
 
             local can_hop = false
-			local hop_x, hop_z, target_platform 
+			local hop_x, hop_z, target_platform, blocked
             local too_early_top_hop = self.time_before_next_hop_is_allowed > 0
 			if my_platform ~= other_platform and not too_early_top_hop
 				    and (self.inst.replica.inventory == nil or not self.inst.replica.inventory:IsHeavyLifting())
 				    and (self.inst.replica.rider == nil or not self.inst.replica.rider:IsRiding())
 				then
 
-				can_hop, hop_x, hop_z, target_platform = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
+				can_hop, hop_x, hop_z, target_platform, blocked = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
 			end
 
-            if can_hop then
-                self.last_platform_visited = my_platform
+            if not blocked then
+                if can_hop then
+                    self.last_platform_visited = my_platform
 
-                self:StartHopping(hop_x, hop_z, target_platform)
-			elseif self.inst.components.amphibiouscreature ~= nil and other_platform == nil and not self.inst.sg:HasStateTag("jumping") then
-				local dist = self.inst:GetPhysicsRadius(0) + 2.5
-				local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z
-				if my_platform ~= nil then
-					can_hop = self:ScanForPlatform(nil, _x, _z)
-				end
-				if not can_hop then
-					if self.inst.components.amphibiouscreature:ShouldTransition(_x, _z) then
-						self.inst:PushEvent("onhop", {x = _x, z = _z})
-					end
-				end
+                    self:StartHopping(hop_x, hop_z, target_platform)
+                elseif self.inst.components.amphibiouscreature ~= nil and other_platform == nil and not self.inst.sg:HasStateTag("jumping") then
+                    local dist = self.inst:GetPhysicsRadius(0) + 2.5
+                    local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z
+                    if my_platform ~= nil then
+                        local temp_x, temp_z, temp_platform = nil, nil, nil
+                        can_hop, temp_x, temp_z, temp_platform, blocked = self:ScanForPlatform(nil, _x, _z)
+                    end
+
+                    if not can_hop and self.inst.components.amphibiouscreature:ShouldTransition(_x, _z) then
+                        -- If my_platform ~= nil, we already ran the "is blocked" test as part of ScanForPlatform.
+                        -- Otherwise, run one now.
+                        if (my_platform ~= nil and not blocked) or 
+                                not self:TestForBlocked(mypos_x, mypos_z, forward_x, forward_z, self.inst:GetPhysicsRadius(0), dist * 1.41421) then -- ~sqrt(2); _x,_z are a dist right triangle so sqrt(dist^2 + dist^2)
+                            self.inst:PushEvent("onhop", {x = _x, z = _z})
+                        end
+                    end
+                end
             end
 
 			if (not can_hop and my_platform == nil and target_platform == nil and not self.inst.sg:HasStateTag("jumping")) and self.inst.components.drownable ~= nil and self.inst.components.drownable:ShouldDrown() then

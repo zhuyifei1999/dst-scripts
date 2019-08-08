@@ -48,7 +48,6 @@ local function MakePreparedFood(data)
 
             inst:AddTag("spicedfood")
 
-            inst.drawnameoverride = STRINGS.NAMES[string.upper(data.basename)]
             inst.inv_image_bg = { image = (data.basename or data.name)..".tex" }
             inst.inv_image_bg.atlas = GetInventoryItemAtlas(inst.inv_image_bg.image)
         else
@@ -82,11 +81,6 @@ local function MakePreparedFood(data)
 
         if not TheWorld.ismastersim then
             return inst
-        end
-
-        if spicename ~= nil then
-            inst.drawimageoverride = data.basename
-            --don't need inst.drawatlasoverride since it's in default inventoryimages atlas
         end
 
         inst:AddComponent("edible")

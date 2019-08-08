@@ -152,7 +152,7 @@ return {
         LOWER_SAIL_FAIL =
         {
             "By Aegir, you will bend to my will!",
-            "Oh-ho! Fiesty, are we?",
+            "Oh-ho! Feisty, are we?",
             "I will not be defeated by my own vessel!",
         }, 
         BATHBOMB =

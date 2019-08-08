@@ -90,6 +90,9 @@ local function potion_fn(anim, potion_tunings, buff_id, buff_prefab, nameoverrid
     inst.AnimState:SetBuild("halloween_potions")
     inst.AnimState:PlayAnimation(anim)
 
+    inst:AddTag("potion")
+    inst:AddTag("pre-preparedfood")
+
     if potion_tunings.FLOATER ~= nil then
         MakeInventoryFloatable(inst, potion_tunings.FLOATER[1], potion_tunings.FLOATER[2], potion_tunings.FLOATER[3])
     else

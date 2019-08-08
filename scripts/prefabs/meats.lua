@@ -159,13 +159,10 @@ local function common(bank, build, anim, tags, dryable, cookable)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
-    if dryable ~= nil then
-        inst:AddTag("lureplant_bait")
-        if dryable.product ~= nil then
-            inst:AddComponent("dryable")
-            inst.components.dryable:SetProduct(dryable.product)
-            inst.components.dryable:SetDryTime(dryable.time)
-        end
+    if dryable ~= nil and dryable.product ~= nil then
+        inst:AddComponent("dryable")
+        inst.components.dryable:SetProduct(dryable.product)
+        inst.components.dryable:SetDryTime(dryable.time)
     end
 
     if cookable ~= nil then
@@ -493,7 +490,7 @@ local function batwing_cooked()
 end
 
 local function plantmeat()
-    local inst = common("plant_meat", "plant_meat", "raw", nil, nil, { product = "plantmeat_cooked" })
+    local inst = common("plant_meat", "plant_meat", "raw", {"lureplant_bait"}, nil, { product = "plantmeat_cooked" })
 
     if not TheWorld.ismastersim then
         return inst

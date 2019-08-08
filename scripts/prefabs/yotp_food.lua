@@ -35,6 +35,7 @@ local function MakeFood(num)
                 inst:AddTag(v)
             end
         end
+        inst:AddTag("pre-preparedfood")
 
         MakeInventoryFloatable(inst)
 

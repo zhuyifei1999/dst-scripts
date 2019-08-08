@@ -3212,7 +3212,7 @@ function Tune(overrides)
 
         OCEAN_SHADER =
         {
-            TEXTURE_BLUR_PASS_COUNT = 2,                --How many blur passes to apply to the ocean texture
+            TEXTURE_BLUR_PASS_COUNT = 3,                --How many blur passes to apply to the ocean texture
             WAVE_TINT_AMOUNT = 0.8,                     --How much the waves get tinted by the ocean color
             EFFECT_TINT_AMOUNT = 0.6,                   --How much the effects under floating items/boat get tinted by the ocean color
 

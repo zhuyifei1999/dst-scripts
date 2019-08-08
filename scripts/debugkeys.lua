@@ -1136,7 +1136,7 @@ local function DebugRMB(x,y)
         if spawn then
             spawn.Transform:SetPosition(pos:Get())
         end
-    elseif TheInput:IsKeyDown(KEY_CTRL) and TheWorld.ismastersim then
+    elseif TheInput:IsKeyDown(KEY_CTRL) and TheWorld and TheWorld.ismastersim then
         if MouseCharacter then
             if MouseCharacter.components.health and MouseCharacter ~= DebugKeyPlayer() then
                 MouseCharacter.components.health:Kill()
@@ -1159,7 +1159,7 @@ local function DebugRMB(x,y)
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         if MouseCharacter then
             SetDebugEntity(MouseCharacter)
-        else
+        elseif TheWorld then
             SetDebugEntity(TheWorld)
         end
     end

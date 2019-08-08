@@ -454,7 +454,6 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
             end)            
         inst.components.amphibiouscreature:SetExitWaterFn(
             function(inst)
-                print("EXTING WATER")
                 if inst.landspeed then
                     inst.components.locomotor.runspeed = inst.landspeed 
                 end

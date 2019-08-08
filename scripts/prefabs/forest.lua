@@ -32,6 +32,7 @@ local assets =
     Asset("IMAGE", "levels/textures/snow.tex"),
     Asset("IMAGE", "levels/textures/mud.tex"),
     Asset("IMAGE", "images/wave.tex"),
+    Asset("IMAGE", "images/wave_shadow.tex"),
 
     Asset("PKGREF", "levels/models/waterfalls.bin"),
 
@@ -403,16 +404,14 @@ local houndspawn =
 }
 
 local function common_postinit(inst)
---[[
     --Add waves
     inst.entity:AddWaveComponent()
-    inst.WaveComponent:SetWaveParams(13.5, 2.5)						-- wave texture u repeat, forward distance between waves
+    inst.WaveComponent:SetWaveParams(13.5, 2.5, -7.5)    			-- wave texture u repeat, forward distance between waves
     inst.WaveComponent:SetWaveSize(80, 3.5)							-- wave mesh width and height
-    inst.WaveComponent:SetWaveTexture("images/wave.tex")
+    inst.WaveComponent:SetWaveTexture("images/wave_shadow.tex")
     --See source\game\components\WaveRegion.h
     inst.WaveComponent:SetWaveEffect("shaders/waves.ksh")
     --inst.WaveComponent:SetWaveEffect("shaders/texture.ksh")
-]]
 
     --Initialize lua components
     inst:AddComponent("ambientlighting")

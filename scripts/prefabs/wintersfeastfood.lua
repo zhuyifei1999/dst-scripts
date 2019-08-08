@@ -35,6 +35,7 @@ local function MakeFood(num)
 
         inst:AddTag("cattoy")
         inst:AddTag("wintersfeastfood")
+        inst:AddTag("pre-preparedfood")
 
         if foodinfo[num].treeornament then
             inst:AddTag("winter_ornament")
