@@ -71,7 +71,7 @@ local states =
         name = "raising",
         onenter = function(inst)
             inst.AnimState:PlayAnimation("untethering_pre")
-            inst.AnimState:PushAnimation("untethering_loop", true)
+            inst.AnimState:PushAnimation("untethering_loop_low", true)
             anchor_raised(inst)
             --inst.sg:SetTimeout(4)
         end,
@@ -161,7 +161,7 @@ local states =
         name = "lowering",
         onenter = function(inst)
             inst.AnimState:PlayAnimation("tethering_pre")
-            inst.AnimState:PlayAnimation("tethering_loop", true)
+            inst.AnimState:PlayAnimation("tethering_loop_full", true)
         end,
 
         timeline =

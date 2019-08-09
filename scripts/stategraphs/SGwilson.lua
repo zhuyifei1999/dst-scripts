@@ -6544,7 +6544,11 @@ local states =
                 inst.sg:AddStateTag("dismounting")
 			end
 
-			inst.components.drownable:OnFallInOcean(shore_pt:Get())
+			if shore_pt ~= nil then
+				inst.components.drownable:OnFallInOcean(shore_pt:Get())
+			else
+				inst.components.drownable:OnFallInOcean()
+			end
 		    inst.DynamicShadow:Enable(false)
 
             inst:ShowHUD(false)

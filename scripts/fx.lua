@@ -963,6 +963,7 @@ local fx =
         bank = "splash_water_drop",
         build = "splash_water_drop",
         anim = "idle_sink",
+        fn = function(inst) inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT) end,
     },
     {
         name = "washashore_puddle_fx",

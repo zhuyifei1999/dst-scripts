@@ -846,10 +846,12 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
             platform_dir_x, platform_dir_z = path_x / p_length, path_z / p_length
         end
 
+        --[[
         if self:TestForBlocked(my_x, my_z, platform_dir_x, platform_dir_z, self.inst:GetPhysicsRadius(0), p_length) then
             can_hop = false
             blocked = true
         end
+        ]]--
     end
 
     return can_hop, px, pz, found_platform, blocked

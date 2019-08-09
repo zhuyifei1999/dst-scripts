@@ -487,7 +487,12 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         onenter = function(inst, queued_post_land_state)
 			inst.sg.statemem.queued_post_land_state = queued_post_land_state
             inst.AnimState:PlayAnimation(anims.loop or "jump_loop", true)
-            inst.Physics:SetCollisionEnabledUnsynchronized(false)
+			if TheWorld.ismastersim then
+				inst.sg.statemem.collisionmask = inst.Physics:GetCollisionMask()
+	            inst.Physics:SetCollisionMask(COLLISION.GROUND)
+			else
+	            inst.Physics:SetLocalCollisionMask(COLLISION.GROUND)
+			end
             inst.components.embarker:StartMoving()
             inst:AddTag("ignorewalkableplatforms")
         end,
@@ -504,7 +509,10 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         },
 
 		onexit = function(inst)
-            inst.Physics:SetCollisionEnabledUnsynchronized(true)
+            inst.Physics:ClearLocalCollisionMask()
+			if inst.sg.statemem.collisionmask ~= nil then
+	            inst.Physics:SetCollisionMask(inst.sg.statemem.collisionmask)
+			end
             inst:RemoveTag("ignorewalkableplatforms")
 			if not inst.sg.statemem.not_interrupted then
 	            inst.components.embarker:Cancel()

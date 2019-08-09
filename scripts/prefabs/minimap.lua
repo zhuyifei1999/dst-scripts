@@ -46,11 +46,11 @@ local MINIMAP_GROUND_PROPERTIES =
     { GROUND.QUAGMIRE_GATEWAY,     { name = "map_edge",      noise_texture = "levels/textures/quagmire_gateway_mini.tex" } },
     { GROUND.QUAGMIRE_SOIL,        { name = "map_edge",      noise_texture = "levels/textures/quagmire_soil_mini.tex" } },
 
-    { GROUND.OCEAN_COASTAL,    { name = "map_edge",      noise_texture = "levels/textures/mini_water_shallow.tex" } },
-    { GROUND.OCEAN_REEF,       { name = "map_edge",      noise_texture = "levels/textures/mini_water_coral.tex" } },
-    { GROUND.OCEAN_SWELL,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_medium.tex" } },
-    { GROUND.OCEAN_ROUGH,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_deep.tex" } },
-    { GROUND.OCEAN_HAZARDOUS,  { name = "map_edge",      noise_texture = "levels/textures/mini_water_graveyard.tex" } },
+    { GROUND.OCEAN_COASTAL,    { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
+    { GROUND.OCEAN_REEF,       { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
+    { GROUND.OCEAN_SWELL,      { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
+    { GROUND.OCEAN_ROUGH,      { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
+    { GROUND.OCEAN_HAZARDOUS,  { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
 }
 
 local assets =

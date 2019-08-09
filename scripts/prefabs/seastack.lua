@@ -23,7 +23,7 @@ local function updateart(inst)
     local workleft = inst.components.workable.workleft
     inst.AnimState:PlayAnimation(
         (workleft > 6 and inst.stackid.."_full") or
-        (workleft > 3 and inst.stackid.."_med") or inst.stackid.."_low"
+        (workleft > 3 and inst.has_medium_state and inst.stackid.."_med") or inst.stackid.."_low"
     )
 end
 
@@ -71,13 +71,17 @@ local function SetupStack(inst, stackid)
         inst.components.floater:SetVerticalOffset(0.2)
         inst.components.floater:SetScale(0.85)
         inst.components.floater:SetSize("large")
+        inst.has_medium_state = true
     elseif inst.stackid == 3 then
         inst.components.floater:SetVerticalOffset(0.2)
         inst.components.floater:SetScale(0.72)
         inst.components.floater:SetSize("large")   
+    elseif inst.stackid == 2 then
+        inst.has_medium_state = true
     elseif inst.stackid == 1 then        
         inst.components.floater:SetScale(1.1)    
         inst.components.floater:SetVerticalOffset(0.15)
+        inst.has_medium_state = true
     end
 
     updateart(inst)

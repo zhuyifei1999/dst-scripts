@@ -375,8 +375,9 @@ local function PopulateWorld(savedata, profile)
 			world.components.oceancolor:Initialize(world.has_ocean)
 		end
 
-        if world.has_ocean then
-            local map = world.Map
+        local map = world.Map
+
+        if world.has_ocean then            
             local tuning = TUNING.OCEAN_SHADER
             map:SetOceanEnabled(true)
 			map:SetOceanTextureBlurPassCount(tuning.TEXTURE_BLUR_PASS_COUNT)
@@ -385,10 +386,16 @@ local function PopulateWorld(savedata, profile)
             map:SetOceanNoiseParameters2(tuning.NOISE[3].ANGLE, tuning.NOISE[3].SPEED, tuning.NOISE[3].SCALE, tuning.NOISE[3].FREQUENCY)
         end
 
+        local waterfall_tuning = TUNING.WATERFALL_SHADER.NOISE
+
+        map:SetWaterfallFadeParameters(TUNING.WATERFALL_SHADER.FADE_COLOR[1] / 255, TUNING.WATERFALL_SHADER.FADE_COLOR[2] / 255, TUNING.WATERFALL_SHADER.FADE_COLOR[3] / 255, TUNING.WATERFALL_SHADER.FADE_START)
+        map:SetWaterfallNoiseParameters0(waterfall_tuning[1].SCALE, waterfall_tuning[1].SPEED, waterfall_tuning[1].OPACITY, waterfall_tuning[1].FADE_START)
+        map:SetWaterfallNoiseParameters1(waterfall_tuning[2].SCALE, waterfall_tuning[2].SPEED, waterfall_tuning[2].OPACITY, waterfall_tuning[2].FADE_START)
+
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
-        world.Map:SetSize(savedata.map.width, savedata.map.height)
-        world.Map:SetFromString(savedata.map.tiles)
-        world.Map:ResetVisited()
+        map:SetSize(savedata.map.width, savedata.map.height)
+        map:SetFromString(savedata.map.tiles)
+        map:ResetVisited()
 
 		if savedata.retrofit_oceantiles then
 			savedata.retrofit_oceantiles = nil

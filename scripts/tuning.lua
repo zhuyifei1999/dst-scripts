@@ -3244,6 +3244,28 @@ function Tune(overrides)
             }
         },
 
+        WATERFALL_SHADER =
+        { 
+            FADE_COLOR = {161, 161, 161},
+            FADE_START = 0.05,
+
+            NOISE =
+            {
+                {
+                    SCALE = 1.0,
+                    SPEED = 1.0,
+                    OPACITY = 0.1,
+                    FADE_START = 0.0,
+                },
+                {
+                    SCALE = 1.9,
+                    SPEED = 0.8,
+                    OPACITY = 1.0,
+                    FADE_START = 0.25,
+                },                
+            }       
+        },
+
         BURNED_LOOT_OVERRIDES =
         {
             carrot_seeds = "seeds_cooked",
