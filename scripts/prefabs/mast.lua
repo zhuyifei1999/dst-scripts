@@ -112,7 +112,7 @@ local function fn()
 end
 
 local function ondeploy(inst, pt, deployer, rot)
-    local mast = SpawnPrefab("mast")
+    local mast = SpawnPrefab( "mast", inst.linked_skinname, inst.skin_id )
     if mast ~= nil then
         mast.Physics:SetCollides(false)
         mast.Physics:Teleport(pt.x, 0, pt.z)

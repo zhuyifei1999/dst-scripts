@@ -26,7 +26,7 @@ local assets =
 
     Asset("ANIM", "anim/health.zip"),
     Asset("ANIM", "anim/health_effigy.zip"),
-    Asset("ANIM", "anim/sanity2.zip"),
+    Asset("ANIM", "anim/sanity.zip"),
     Asset("ANIM", "anim/sanity_ghost.zip"),
     Asset("ANIM", "anim/sanity_arrow.zip"),
     Asset("ANIM", "anim/effigy_topper.zip"),

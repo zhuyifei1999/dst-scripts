@@ -641,7 +641,6 @@ local function OnSetOwner(inst)
             RegisterActivePlayerEventListeners(inst)
             inst.activatetask = inst:DoTaskInTime(0, ActivatePlayer)
         end
-        inst:AddComponent("embarkercameracontroller")
     elseif inst.HUD ~= nil then
         UnregisterActivePlayerEventListeners(inst)
         RemoveActivePlayerComponents(inst)

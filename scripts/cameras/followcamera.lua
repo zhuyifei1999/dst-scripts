@@ -302,6 +302,9 @@ function FollowCamera:Update(dt)
         end
 
         if self.target ~= nil then
+			if self.target.components.focalpoint then
+				self.target.components.focalpoint:CameraUpdate(dt)
+			end
             local x, y, z = self.target.Transform:GetWorldPosition()
             self.targetpos.x = x + self.targetoffset.x
             self.targetpos.y = y + self.targetoffset.y

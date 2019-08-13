@@ -740,7 +740,7 @@ local events =
     end),    
 
     EventHandler("attacked", function(inst, data)
-        if not inst.components.health:IsDead() then
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("drowning") then
             if data.weapon ~= nil and data.weapon:HasTag("tranquilizer") and (inst.sg:HasStateTag("bedroll") or inst.sg:HasStateTag("knockout")) then
                 return --Do nothing
             elseif inst.sg:HasStateTag("transform") or inst.sg:HasStateTag("dismounting") then
@@ -5561,7 +5561,8 @@ local states =
                 inst.AnimState:PlayAnimation(anim, true)
             end
 
-            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            --V2C: adding half a frame time so it rounds up
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + .5 * FRAMES)
         end,
 
         onupdate = function(inst)
@@ -5632,9 +5633,12 @@ local states =
             --heavy lifting
             TimeEvent(11 * FRAMES, function(inst)
                 if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
-                    inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                    if inst.sg.mem.footsteps > 3 then
+                        --normally stops at > 3, but heavy needs to keep count
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                    end
                 elseif inst.sg.statemem.sandstorm
                     or inst.sg.statemem.careful then
                     DoRunSounds(inst)
@@ -5643,12 +5647,13 @@ local states =
             end),
             TimeEvent(36 * FRAMES, function(inst)
                 if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                     if inst.sg.mem.footsteps > 12 then
                         inst.sg.mem.footsteps = math.random(4, 6)
                         inst:PushEvent("encumberedwalking")
-                    else
+                    elseif inst.sg.mem.footsteps > 3 then
+                        --normally stops at > 3, but heavy needs to keep count
                         inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
                     end
                 end
@@ -6529,7 +6534,7 @@ local states =
 
     State{
         name = "sink",
-        tags = { "busy", "nopredict", "nomorph", "drowning" },
+        tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt" },
 
         onenter = function(inst, shore_pt)
             ForceStopHeavyLifting(inst)

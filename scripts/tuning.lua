@@ -3244,6 +3244,43 @@ function Tune(overrides)
             }
         },
 
+        OCEAN_MINIMAP_SHADER =
+        {        
+            EDGE_COLOR0 = { 117, 26, 14 },
+            EDGE_PARAMS0 = 
+            {
+                THRESHOLD = 0.5,
+                HALF_THRESHOLD_RANGE = 0.02,
+            },
+
+            EDGE_COLOR1 = { 137, 86, 24 },
+            EDGE_PARAMS1 = 
+            {
+                THRESHOLD = 0.55,
+                HALF_THRESHOLD_RANGE = 0.02,                    
+            },
+
+            EDGE_SHADOW_COLOR = { 255, 255, 255 },
+            EDGE_SHADOW_PARAMS = 
+            {
+                THRESHOLD = 0.41,
+                HALF_THRESHOLD_RANGE = 0.02,
+                UV_OFFSET_X = -0.001,
+                UV_OFFSET_Y = 0.001,
+            },
+
+            EDGE_FADE_PARAMS = 
+            {
+                THRESHOLD = 0.41,
+                HALF_THRESHOLD_RANGE = 0.02,
+            },
+
+            EDGE_NOISE_PARAMS = 
+            {
+                UV_SCALE = 4,
+            },
+        },
+
         WATERFALL_SHADER =
         { 
             FADE_COLOR = {161, 161, 161},

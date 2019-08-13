@@ -539,7 +539,8 @@ local states =
                 inst.AnimState:PlayAnimation(anim, true)
             end
 
-            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            --V2C: adding half a frame time so it rounds up
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + .5 * FRAMES)
         end,
 
         onupdate = function(inst)
@@ -2417,7 +2418,7 @@ local states =
                 inst.AnimState:PushAnimation("atk", false)
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
                 if cooldown > 0 then
-                    cooldown = math.max(cooldown, 8 * FRAMES)
+                    cooldown = math.max(cooldown, 13 * FRAMES)
                 end
             else
                 inst.AnimState:PlayAnimation("punch")

@@ -237,8 +237,10 @@ local function OnDeactivateWorld()
 end
 
 local function OnReachDestination(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    inst.components.playercontroller:RemotePredictWalking(x, z)
+    if inst.sg:HasStateTag("moving") then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        inst.components.playercontroller:RemotePredictWalking(x, z)
+    end
 end
 
 function PlayerController:Activate()

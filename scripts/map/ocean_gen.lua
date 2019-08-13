@@ -335,20 +335,75 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 	end
 
 	local function do_void_outline()
-		print("[Ocean]  Void Outline...")
+		print("[Ocean] Void Outline...")
 
-		for y = 0, height - 1, 1 do
-			world:SetTile(0, y, GROUND.IMPASSABLE)
-			world:SetTile(1, y, GROUND.IMPASSABLE)
-			world:SetTile(width - 1, y, GROUND.IMPASSABLE)
-			world:SetTile(width - 2, y, GROUND.IMPASSABLE)
+		local function calc_next(s, tunings)
+			local r = math.random()
+			s[1] = math.max((s[1] < tunings.max and r <= tunings.deeper_chance) and (s[1]+1)
+						or r > 1.0 - tunings.shallower_chance and (s[1]-1)
+						or s[1],
+						1)
+
+			if s[1] == s[3] and s[1] ~= s[2] then -- simple noise filter so we dont get zig-zags
+				s[1] = s[2]
+			end
+			s[3] = s[2]
+			s[2] = s[1]
+
+			return s[1]
 		end
 
-		for x = 0, width - 1, 1 do
-			world:SetTile(x, 0, GROUND.IMPASSABLE)
-			world:SetTile(x, 1, GROUND.IMPASSABLE)
-			world:SetTile(x, height - 2, GROUND.IMPASSABLE)
-			world:SetTile(x, height - 1, GROUND.IMPASSABLE)
+		local function add_boarder(x, y)
+			if world:GetTile(x, y) ~= GROUND.IMPASSABLE then 
+				world:SetTile(x, y, GROUND.OCEAN_ROUGH) 
+			end
+
+		end
+
+		local offset = 14
+		local init_d = 14
+		local state = {init_d, init_d, init_d}
+
+		local tunings = {
+			middle = {max = 9, deeper_chance = 0.25, shallower_chance = 0.25},
+			corner = {max = init_d, deeper_chance = 0.75, shallower_chance = 0.1},
+		}
+	
+		for i = 0, height, 1 do
+			local d = calc_next(state, (i <= offset or i >= height - offset - offset) and tunings.corner or tunings.middle)
+			for ii = 0, d do
+				world:SetTile(ii, i, GROUND.IMPASSABLE)
+			end
+			add_boarder(d + 1, i)
+			add_boarder(d + 2, i)
+		end
+		state = {init_d, init_d, init_d}
+		for i = 0, height, 1 do
+			local d = calc_next(state, (i <= offset or i >= height - offset - offset) and tunings.corner or tunings.middle)
+			for ii = 0, d do
+				world:SetTile(width - ii, i, GROUND.IMPASSABLE)
+			end
+			add_boarder(width - d - 1, i)
+			add_boarder(width - d - 2, i)
+		end
+		
+		state = {init_d, init_d, init_d}
+		for i = 0, width, 1 do
+			local d = calc_next(state, (i <= offset or i >= width - offset - offset) and tunings.corner or tunings.middle)
+			for ii = 0, d do
+				world:SetTile(i, ii, GROUND.IMPASSABLE)
+			end
+			add_boarder(i, d + 1)
+			add_boarder(i, d + 2)
+		end
+		state = {init_d, init_d, init_d}
+		for i = 0, width, 1 do
+			local d = calc_next(state, (i <= offset or i >= width - offset - offset) and tunings.corner or tunings.middle)
+			for ii = 0, d do
+				world:SetTile(i, height - ii, GROUND.IMPASSABLE)
+			end
+			add_boarder(i, height - d - 1)
+			add_boarder(i, height - d - 2)
 		end
 	end
 

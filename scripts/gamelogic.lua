@@ -392,6 +392,23 @@ local function PopulateWorld(savedata, profile)
         map:SetWaterfallNoiseParameters0(waterfall_tuning[1].SCALE, waterfall_tuning[1].SPEED, waterfall_tuning[1].OPACITY, waterfall_tuning[1].FADE_START)
         map:SetWaterfallNoiseParameters1(waterfall_tuning[2].SCALE, waterfall_tuning[2].SPEED, waterfall_tuning[2].OPACITY, waterfall_tuning[2].FADE_START)
 
+        local minimap_ocean_tuning = TUNING.OCEAN_MINIMAP_SHADER
+
+        map:SetMinimapOceanEdgeColor0(minimap_ocean_tuning.EDGE_COLOR0[1] / 255, minimap_ocean_tuning.EDGE_COLOR0[2] / 255, minimap_ocean_tuning.EDGE_COLOR0[3] / 255)
+        map:SetMinimapOceanEdgeParams0(minimap_ocean_tuning.EDGE_PARAMS0.THRESHOLD, minimap_ocean_tuning.EDGE_PARAMS0.HALF_THRESHOLD_RANGE)
+
+        map:SetMinimapOceanEdgeColor1(minimap_ocean_tuning.EDGE_COLOR1[1] / 255, minimap_ocean_tuning.EDGE_COLOR1[2] / 255, minimap_ocean_tuning.EDGE_COLOR1[3] / 255)
+        map:SetMinimapOceanEdgeParams1(minimap_ocean_tuning.EDGE_PARAMS1.THRESHOLD, minimap_ocean_tuning.EDGE_PARAMS1.HALF_THRESHOLD_RANGE)
+
+        map:SetMinimapOceanEdgeShadowColor(minimap_ocean_tuning.EDGE_SHADOW_COLOR[1] / 255, minimap_ocean_tuning.EDGE_SHADOW_COLOR[2] / 255, minimap_ocean_tuning.EDGE_SHADOW_COLOR[3] / 255)
+        map:SetMinimapOceanEdgeShadowParams(minimap_ocean_tuning.EDGE_SHADOW_PARAMS.THRESHOLD, minimap_ocean_tuning.EDGE_SHADOW_PARAMS.HALF_THRESHOLD_RANGE, minimap_ocean_tuning.EDGE_SHADOW_PARAMS.UV_OFFSET_X, minimap_ocean_tuning.EDGE_SHADOW_PARAMS.UV_OFFSET_Y)
+
+        map:SetMinimapOceanEdgeFadeParams(minimap_ocean_tuning.EDGE_FADE_PARAMS.THRESHOLD, minimap_ocean_tuning.EDGE_FADE_PARAMS.HALF_THRESHOLD_RANGE)
+
+        map:SetMinimapOceanEdgeNoiseParams(minimap_ocean_tuning.EDGE_NOISE_PARAMS.UV_SCALE)
+
+
+
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         map:SetSize(savedata.map.width, savedata.map.height)
         map:SetFromString(savedata.map.tiles)

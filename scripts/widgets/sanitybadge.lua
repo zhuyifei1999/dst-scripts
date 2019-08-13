@@ -10,7 +10,7 @@ end
 local SanityBadge = Class(Badge, function(self, owner)
 	self.sanitymode = SANITY_MODE_INSANITY
     self.anim_override = "sanity"
-	Badge._ctor(self, "sanity2", owner)
+	Badge._ctor(self, "sanity", owner)
 
     self.topperanim = self.underNumber:AddChild(UIAnim())
     self.topperanim:GetAnimState():SetBank("effigy_topper")
@@ -20,8 +20,8 @@ local SanityBadge = Class(Badge, function(self, owner)
     self.topperanim:GetAnimState():Hide("frame")
 
     self.frame = self.underNumber:AddChild(UIAnim())
-    self.frame:GetAnimState():SetBank("sanity2")
-    self.frame:GetAnimState():SetBuild("sanity2")
+    self.frame:GetAnimState():SetBank("sanity")
+    self.frame:GetAnimState():SetBuild("sanity")
     self.frame:GetAnimState():PlayAnimation("frame")
     self.frame:SetClickable(false)
 

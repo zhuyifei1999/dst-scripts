@@ -192,12 +192,14 @@ local function player_zoom(boat_inst, self, player_inst)
 end
 
 function WalkablePlatform:TriggerEvents()
-    for k,v in pairs(self.previous_objects_on_platform) do
+    for k, v in pairs(self.previous_objects_on_platform) do
         if self.new_objects_on_platform[k] == nil then
             k:PushEvent("got_off_platform", self.inst)
+            self.inst:PushEvent("obj_got_off_platform", k)
 
             -- If our player was zoomed out and just jumped off of the platform,
             -- we should undo our zoom effect.
+			-- TODO: Fix this next
             if self.player_zoomed_out and k == ThePlayer then
                 self.player_zoomed_out = false
                 self.player_zooms = NUM_ZOOMS - self.player_zooms
@@ -209,9 +211,10 @@ function WalkablePlatform:TriggerEvents()
         end
     end
 
-    for k,v in pairs(self.new_objects_on_platform) do
+    for k, v in pairs(self.new_objects_on_platform) do
         if self.previous_objects_on_platform[k] == nil then
             k:PushEvent("got_on_platform", self.inst)
+            self.inst:PushEvent("obj_got_on_platform", k)
         end
 
         -- If this object is the player, we need to check for whether we should zoom in/out.

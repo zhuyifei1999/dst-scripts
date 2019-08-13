@@ -28,7 +28,7 @@ local function fn()
     inst.AnimState:SetBank("nightmaresword")
     inst.AnimState:SetBuild("nightmaresword")
     inst.AnimState:PlayAnimation("idle")
-    inst.AnimState:SetMultColour(1, 1, 1, .6)
+    --inst.AnimState:SetMultColour(1, 1, 1, .6)
 
     inst:AddTag("shadow")
     inst:AddTag("sharp")

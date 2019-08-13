@@ -143,7 +143,7 @@ local wormspawn =
     {
         { time = 30, sound = "LVL4_WORM" },
         { time = 60, sound = "LVL3_WORM" },
-        { time = 90, sound = "LVL4_WORM" },
+        { time = 90, sound = "LVL2_WORM" },
         { time = 500, sound = "LVL1_WORM" },
     },
 }

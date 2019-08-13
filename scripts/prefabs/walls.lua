@@ -230,7 +230,6 @@ function MakeWallType(data)
 
         inst:AddTag("wall")
         inst:AddTag("noauradamage")
-        inst:AddTag("nointerpolate")
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)

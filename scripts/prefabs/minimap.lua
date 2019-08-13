@@ -63,6 +63,8 @@ local assets =
 
     Asset( "SHADER", shader_filename ),
     Asset( "SHADER", fs_shader ),
+
+    Asset( "IMAGE", "images/minimap_paper.tex" ),
 }
 
 function GroundImage( name )
