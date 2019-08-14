@@ -421,6 +421,7 @@ local function PopulateWorld(savedata, profile)
 			Ocean_SetWorldForOceanGen(TheWorld.Map)
 			Ocean_ConvertImpassibleToWater(savedata.map.width, savedata.map.height, require("map/ocean_gen_config"))
 			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean done")
+			require("map/ocean_retrofit_island").TurnOfTidesRetrofitting_MoonIsland(TheWorld.Map, savedata)
 		end
 
         if savedata.map.prefab == "cave" then

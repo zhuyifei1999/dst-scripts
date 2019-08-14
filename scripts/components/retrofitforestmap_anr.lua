@@ -77,96 +77,6 @@ local function RemovePrefabs(prefabs_to_remove, biomes_to_cleanup)
 	return count
 end
 
-local function AddSquareTopolopy(left, top, size, room_id, tags)
-	local index = #TheWorld.topology.ids + 1
-	TheWorld.topology.ids[index] = room_id
-	TheWorld.topology.story_depths[index] = 0
-
-	local node = {}
-	node.area = size * size
-	node.c = 1 -- colour index
-	node.cent = {left + (size / 2), top + (size / 2)}
-	node.neighbours = {}
-	node.poly = { {left, top},
-				  {left + size, top},
-				  {left + size, top + size},
-				  {left, top + size}
-				}
-	node.tags  = tags
-	node.type = NODE_TYPE.Default
-	node.x = node.cent[1]
-	node.y = node.cent[2]
-	
-	node.validedges = {}
-	
-	TheWorld.topology.nodes[index] = node
-
-	ReconstructTopology()
-end
-
-local function TurnOfTidesRetrofitting_MoonIsland(inst)
-	local obj_layout = require("map/object_layout")
-	local entities = {}
-	local map_width, map_height = TheWorld.Map:GetSize()
-	local add_fn = {
-		fn=function(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
-			local x = (points_x[current_pos_idx] - width/2.0)*TILE_SCALE
-			local y = (points_y[current_pos_idx] - height/2.0)*TILE_SCALE
-			x = math.floor(x*100)/100.0
-			y = math.floor(y*100)/100.0
-			SpawnPrefab(prefab).Transform:SetPosition(x, 0, y)
-		end,
-		args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}
-	}
-
-	local function TryToAddLayout(name, area_size, topology_delta)
-		topology_delta = topology_delta or 1
-		local function isvalidarea(_left, _top)
-			for x = 0, area_size do
-				for y = 0, area_size do
-					if not IsOceanTile(TheWorld.Map:GetTile(_left + x, _top + y)) then
-						return false
-					end
-				end
-			end
-			return true
-		end
-
-		local candidtates = {}
-		local foundarea = false
-		local num_steps = 10
-		for x = 0, num_steps do
-			for y = 0, num_steps do
-				local left = 8 + (x > 0 and ((x * math.floor(map_width / num_steps)) - area_size - 16) or 0)
-				local top  = 8 + (y > 0 and ((y * math.floor(map_height / num_steps)) - area_size - 16) or 0)
-				if isvalidarea(left, top) then
-					table.insert(candidtates, {top = top, left = left, distsq = VecUtil_LengthSq(left - map_width / 2, top - map_height / 2)})
-				end
-			end
-		end
-
-		if #candidtates > 0 then
-			table.sort(candidtates, function(a, b) return a.distsq < b.distsq end)
-			local top, left = candidtates[1].top, candidtates[1].left	
-
-			obj_layout.Place({left, top}, name, add_fn, nil, TheWorld.Map)
-			local tags = {"moonhunt", "nohasslers", "lunacyarea", "not_mainland"}
-			AddSquareTopolopy((left-topology_delta)*4 - (map_width * 0.5 * 4), (top-topology_delta)*4 - (map_height * 0.5 * 4), (area_size + (topology_delta*2))*4, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
-		end
-		return #candidtates > 0
-	end
-
-	local success = TryToAddLayout("retrofit_moonisland_large", 92, -3)
-					or TryToAddLayout("retrofit_moonisland_medium", 50, 0)
-					or TryToAddLayout("retrofit_moonisland_small", 20, 0)
-
-	if success then
-		print("Retrofitting for Return Of Them: Turn of Tides - Added moon island to the world.")
-	else
-		print("Retrofitting for Return Of Them: Turn of Tides - Failed to add moon island to the world!")
-	end
-end
-
 local function TurnOfTidesRetrofitting_PopulateOcean(inst)
 	local width, height = TheWorld.Map:GetSize()
 
@@ -638,9 +548,6 @@ function self:OnPostInit()
 		self.retrofit_turnoftides = nil
 
 		print ("Retrofitting for Return Of Them: Turn of Tides")
-
-		-- add moon island
-		TurnOfTidesRetrofitting_MoonIsland(self.inst)
 
 		TurnOfTidesRetrofitting_PopulateOcean(self.inst)
 
