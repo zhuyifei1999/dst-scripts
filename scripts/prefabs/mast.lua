@@ -17,8 +17,9 @@ local function on_hammered(inst, hammerer)
     local collapse_fx = SpawnPrefab("collapse_small")
     collapse_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     collapse_fx:SetMaterial("wood")
+
     if inst.components.mast and hammerer ~= inst.components.mast.boat then
-        inst.components.mast.boat = nil
+        inst.components.mast:SetBoat(nil)
     end
     inst:Remove()
 end

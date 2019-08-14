@@ -14,7 +14,7 @@ local SteeringWheelUser = Class(function(self, inst)
         end
     end
     self.onstopturning = function()
-       self.inst:PushEvent("stopturning")
+       self.inst:PushEvent("playerstopturning")
     end  
     self.onboatremoved = function()
        self.inst:RemoveEventCallback("stopturning",self.onstopturning, self.boat)

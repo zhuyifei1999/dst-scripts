@@ -119,7 +119,8 @@ local function TurnOfTidesRetrofitting_MoonIsland(inst)
 		args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}
 	}
 
-	local function TryToAddLayout(name, area_size)
+	local function TryToAddLayout(name, area_size, topology_delta)
+		topology_delta = topology_delta or 1
 		local function isvalidarea(_left, _top)
 			for x = 0, area_size do
 				for y = 0, area_size do
@@ -150,13 +151,14 @@ local function TurnOfTidesRetrofitting_MoonIsland(inst)
 
 			obj_layout.Place({left, top}, name, add_fn, nil, TheWorld.Map)
 			local tags = {"moonhunt", "nohasslers", "lunacyarea", "not_mainland"}
-			AddSquareTopolopy((left-1)*4 - (map_width * 0.5 * 4), (top-1)*4 - (map_height * 0.5 * 4), (area_size+2)*4, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
+			AddSquareTopolopy((left-topology_delta)*4 - (map_width * 0.5 * 4), (top-topology_delta)*4 - (map_height * 0.5 * 4), (area_size + (topology_delta*2))*4, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
 		end
 		return #candidtates > 0
 	end
 
-	local success = TryToAddLayout("retrofit_moonisland_large", 48)
-					or TryToAddLayout("retrofit_moonisland_small", 18)
+	local success = TryToAddLayout("retrofit_moonisland_large", 92, -3)
+					or TryToAddLayout("retrofit_moonisland_medium", 50, 0)
+					or TryToAddLayout("retrofit_moonisland_small", 20, 0)
 
 	if success then
 		print("Retrofitting for Return Of Them: Turn of Tides - Added moon island to the world.")
@@ -658,8 +660,6 @@ function self:OnPostInit()
 	
 	---------------------------------------------------------------------------
 	if self.requiresreset then
-		-- not quite working in all cases...
-
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
 		print ("Restarting server in 30 seconds...")
 

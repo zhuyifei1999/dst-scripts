@@ -52,7 +52,6 @@ local function push_special_idle(inst)
 		inst._glass_sparkle_tick = (inst._glass_sparkle_tick or 0) - 1
 
 		if inst._glass_sparkle_tick < 0 then
-			if inst == c_sel() then print("HERE", inst._glass_sparkle_tick) end
 			local work_remaining = (inst.components.workable ~= nil and inst.components.workable.workleft) or TUNING.HOTSPRING_WORK
 			local sparkle_anim = choose_anim_by_level(work_remaining, "glass_low_sparkle1", "glass_med_sparkle"..math.random(2), "glass_full_sparkle"..math.random(3))
 			inst.AnimState:PushAnimation(sparkle_anim, false)

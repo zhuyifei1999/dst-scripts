@@ -1152,9 +1152,9 @@ local function DebugRMB(x,y)
             end
         end
     elseif TheInput:IsKeyDown(KEY_ALT) then
-        local player = DebugKeyPlayer()
+        local player = c_sel() or DebugKeyPlayer()
         if player then
-            print(player:GetAngleToPoint(pos))
+            print(tostring(player) .. " to " .. tostring(pos) .. ": Dist = " .. tostring(math.sqrt(player:GetDistanceSqToPoint(pos))) .. ", Angle = " .. tostring(player:GetAngleToPoint(pos)))
         end
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         if MouseCharacter then

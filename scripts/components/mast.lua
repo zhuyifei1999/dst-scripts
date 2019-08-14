@@ -24,8 +24,8 @@ local function on_remove(inst)
 		mast_sinking.Transform:SetPosition(x_pos, y_pos, z_pos)
 	end
     
-    if mast ~= nil and mast.boat ~= nil then
-        mast.boat.components.boatphysics:RemoveMast(mast)
+    if mast ~= nil then
+        mast:SetBoat(nil)
     end
 end
 
@@ -73,13 +73,20 @@ function Mast:SetVelocityMod(set)
 end
 
 function Mast:SetBoat(boat)
-    if boat ~= nil then
-        self.boat = boat
-        self.boat.components.boatphysics:AddMast(self)
-        self.boat:ListenForEvent("onbuilt", function(inst, data)  self:OnBuilt(data.builder, data.pos) end)
-        self.boat:ListenForEvent("deployed", function(inst, data)  self:OnBuilt(data.deployer, data.pos) end)
-        self.boat:ListenForEvent("death", function() self:OnDeath() end)
+    if boat == self.boat then return end
+
+    if self.boat ~= nil then
+        self.boat.components.boatphysics:RemoveMast(self)
     end
+
+    self.boat = boat
+
+    if boat ~= nil then        
+        boat.components.boatphysics:AddMast(self)
+        boat:ListenForEvent("death", function() self:OnDeath() end)
+    end
+
+    
 end
 
 function Mast:SetRudder(obj)

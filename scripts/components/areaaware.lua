@@ -28,21 +28,20 @@ function AreaAware:UpdatePosition(x, y, z)
         return
     end
 
-	if self.current_area_data ~= nil and TheSim:WorldPointInPoly(x, z, self.current_area_data.poly) then
-	    return
-	end
-
-    for i, node in ipairs(TheWorld.topology.nodes) do
-        if self.current_area ~= i and node.type ~= NODE_TYPE.Blank and node.type ~= NODE_TYPE.Blocker and TheSim:WorldPointInPoly(x, z, node.poly) then
-            self.current_area = i
-            self.current_area_data = {
-                id = TheWorld.topology.ids[i],
-                type = node.type,
-                center = node.cent,
-                poly = node.poly,
-                tags = node.tags,
-            }
-            self.inst:PushEvent("changearea", self:GetCurrentArea())
+	for i = #TheWorld.topology.nodes, 1, -1 do -- iterating backwards only because retrofitted worlds don't properly fix up the topology mesh
+		local node = TheWorld.topology.nodes[i]
+        if node.type ~= NODE_TYPE.Blank and node.type ~= NODE_TYPE.Blocker and TheSim:WorldPointInPoly(x, z, node.poly) then
+			if self.current_area ~= i then
+				self.current_area = i
+				self.current_area_data = {
+					id = TheWorld.topology.ids[i],
+					type = node.type,
+					center = node.cent,
+					poly = node.poly,
+					tags = node.tags,
+				}
+				self.inst:PushEvent("changearea", self:GetCurrentArea())
+			end
 			return
         end
     end

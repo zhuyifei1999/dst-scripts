@@ -3212,7 +3212,8 @@ function Tune(overrides)
 
         OCEAN_SHADER =
         {
-            TEXTURE_BLUR_PASS_COUNT = 3,                --How many blur passes to apply to the ocean texture
+            TEXTURE_BLUR_PASS_SIZE = 1,
+            TEXTURE_BLUR_PASS_COUNT = 3,
             WAVE_TINT_AMOUNT = 0.8,                     --How much the waves get tinted by the ocean color
             EFFECT_TINT_AMOUNT = 0.6,                   --How much the effects under floating items/boat get tinted by the ocean color
 
@@ -3246,25 +3247,34 @@ function Tune(overrides)
 
         OCEAN_MINIMAP_SHADER =
         {        
-            EDGE_COLOR0 = { 117, 26, 14 },
+            TEXTURE_BLUR_SIZE = 2,
+            TEXTURE_BLUR_PASS_COUNT = 6,
+
+            TEXTURE_ALPHA_BLUR_SIZE = 1,
+            TEXTURE_ALPHA_BLUR_PASS_COUNT = 2,
+
+            MASK_BLUR_SIZE = 2,
+            MASK_BLUR_PASS_COUNT = 8,
+
+            EDGE_COLOR0 = { 47, 52, 79 },
             EDGE_PARAMS0 = 
             {
                 THRESHOLD = 0.5,
-                HALF_THRESHOLD_RANGE = 0.02,
+                HALF_THRESHOLD_RANGE = 0.6,
             },
 
-            EDGE_COLOR1 = { 137, 86, 24 },
+            EDGE_COLOR1 = { 80, 69, 54 },
             EDGE_PARAMS1 = 
             {
-                THRESHOLD = 0.55,
-                HALF_THRESHOLD_RANGE = 0.02,                    
+                THRESHOLD = 0.46,
+                HALF_THRESHOLD_RANGE = 0.4,                    
             },
 
-            EDGE_SHADOW_COLOR = { 255, 255, 255 },
+            EDGE_SHADOW_COLOR = { 43, 43, 43 },
             EDGE_SHADOW_PARAMS = 
             {
-                THRESHOLD = 0.41,
-                HALF_THRESHOLD_RANGE = 0.02,
+                THRESHOLD = 0.37,
+                HALF_THRESHOLD_RANGE = 0.4,
                 UV_OFFSET_X = -0.001,
                 UV_OFFSET_Y = 0.001,
             },
@@ -3273,6 +3283,7 @@ function Tune(overrides)
             {
                 THRESHOLD = 0.41,
                 HALF_THRESHOLD_RANGE = 0.02,
+                MASK_INSET = 0.01,
             },
 
             EDGE_NOISE_PARAMS = 

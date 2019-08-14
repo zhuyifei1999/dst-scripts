@@ -70,6 +70,20 @@ function Anchor:OnSave()
     return data
 end
 
+function Anchor:GetCurrentDepth()
+    local depth = self.bottomunits            
+    local ground = TheWorld
+    if self.boat then
+        local tile = ground.Map:GetTileAtPoint(self.boat.Transform:GetWorldPosition())
+        if tile then
+            local depthcategory = GetTileInfo(tile).ocean_depth
+            depth = TUNING.ANCHOR_DEPTH_TIMES[depthcategory]
+        end
+    end
+
+    return depth
+end
+
 function Anchor:OnLoad(data)
     if data ~= nil then
 
@@ -85,13 +99,7 @@ function Anchor:OnLoad(data)
                         if self.raiseunits <= 0 then                        
                             self.inst.sg:GoToState("raised")
                         else
-                            local depth = self.bottomunits            
-                            local ground = TheWorld
-                            local tile = ground.Map:GetTileAtPoint(self.boat.Transform:GetWorldPosition())
-                            if tile then            
-                                local depthcategory = GetTileInfo(tile).ocean_depth
-                                depth = TUNING.ANCHOR_DEPTH_TIMES[depthcategory]
-                            end
+                            local depth = self:GetCurrentDepth()
 
                             if self.raiseunits >= depth then                                
                                 if not self.boat then
@@ -204,18 +212,10 @@ function Anchor:AnchorLowered()
 end
 
 function Anchor:OnUpdate(dt)
-
-    local depth = self.bottomunits            
-    
     if self.is_anchor_transitioning then
-        if self.boat then
-           local ground = TheWorld
-            local tile = ground.Map:GetTileAtPoint(self.boat.Transform:GetWorldPosition())
-            if tile then            
-                local depthcategory = GetTileInfo(tile).ocean_depth
-                depth = TUNING.ANCHOR_DEPTH_TIMES[depthcategory]
-            end
-        end        
+
+        local depth = self:GetCurrentDepth()
+
         if next(self.raisers) then    
             self.raiseunits =  math.max(0,self.raiseunits - (dt*self.currentraiseunits))
         else        

@@ -6475,7 +6475,7 @@ local states =
                 inst.sg:GoToState("steer_boat_idle_loop")
             end),
             ]]
-            EventHandler("stopturning", function(inst)
+            EventHandler("playerstopturning", function(inst)
                 inst.sg:GoToState("steer_boat_turning_pst")
             end),            
             EventHandler("stop_steering_boat", function(inst)

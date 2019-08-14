@@ -42,7 +42,7 @@ local ROUGH_OCEAN_COLOR =
 { 
     primary_color =         {  10, 200, 220,  30 }, 
     secondary_color =       {  1,  20,  45, 230 }, 
-    secondary_color_dusk =  {  5,  20,  25, 170 }, 
+    secondary_color_dusk =  {  5,  20,  25, 230 }, 
     minimap_color =         {  19,  20,  40, 230 },
 }
 

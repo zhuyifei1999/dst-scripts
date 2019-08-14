@@ -431,7 +431,7 @@ local function ActivateHUD(inst)
     end
     TheCamera:SetOnUpdateFn(not TheWorld:HasTag("cave") and function(camera)
         hud:UpdateClouds(camera)
-        hud:UpdateSailing(camera)
+        hud:UpdateDrops(camera)        
     end or nil)
     hud:SetMainCharacter(inst)
 end
