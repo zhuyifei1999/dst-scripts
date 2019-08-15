@@ -149,7 +149,7 @@ function MakeBanner(self)
 		self.logo:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 	end
 	
-
+--[[
 	local title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	if title_str ~= nil then
 		local x = 165
@@ -168,6 +168,7 @@ function MakeBanner(self)
 		shadow:SetPosition(x + 1.5, y - 1.5)
 		shadow:MoveToBack()
 	end
+]]
 
 	return baner_root
 end

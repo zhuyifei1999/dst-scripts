@@ -179,6 +179,10 @@ local assets =
     Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"),
     Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
+
+    
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_bolt.zip"),
+    Asset("PKGREF", "anim/dynamic/box_bolt.dyn"),
 }
 
 --Including these here as well as global to ensure the exporter's resizing dependency works

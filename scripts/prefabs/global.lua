@@ -64,7 +64,8 @@ local assets =
     Asset("PKGREF", "images/fepanels.tex"),
     
     --item explorer stuff in and out of game
-    Asset("ANIM", "anim/spool.zip"), -- doodads
+    Asset("ANIM", "anim/bolt_of_cloth.zip"),
+    Asset("ANIM", "anim/spool.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
     Asset("ANIM", "anim/accountitem_frame.zip"),
     Asset("ANIM", "anim/frames_comp.zip"), -- If we replace frames_comp with accountitem_frame, we can remove.
@@ -77,6 +78,8 @@ local assets =
     Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"), --needed for the mystery and purchase box opening animation (happens to contain the forge box build too)
     Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_bolt.zip"),
+    Asset("PKGREF", "anim/dynamic/box_bolt.dyn"),
 
     -- Used in event join flow and in-game victory.
     Asset("ATLAS", "images/dialogcurly_9slice.xml"),

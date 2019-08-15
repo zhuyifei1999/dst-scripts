@@ -5189,7 +5189,6 @@ STRINGS.UI =
             STATE_DETAILS = "Verifying mod details...",
             STATE_DOWNLOAD_0 = "Verifying mod cache...",
             STATE_DOWNLOAD = "Downloading mods:",
-            STATE_DOWNLOAD_PERCENT = "%s percent",
         },
         SHOWCASEMODS = "Get Mods",
         NO_MODS_PLAIN_OK = "Ok",
@@ -7161,6 +7160,24 @@ STRINGS.UI =
 
         UNOWNED_CHARACTER_BODY = "You do not currently own {character}.\nThis chest contains skins for {character}, which will be unusable without owning them.",
         VIEW_REQUIRED = "View {character} Chests",
+
+        VIRTUAL_CURRENCY = "Bolts of Cloth",
+        VIRTUAL_CURRENCY_SHORT = "Bolts",
+        
+        CURRENCY_SHORT_DESC =  "Includes {currency} Bolts of Cloth!",
+
+        NOT_ENOUGH_TITLE = "Lacking Bolts of Cloth",
+        NOT_ENOUGH_BODY = "Unfortunately you don't have the required Bolts of Cloth to purchase the {chest_name}. You still require {currency_needed} Bolts. Would you like to look at Bolt chests?",
+
+        VIRTUAL_IAP_CONFIRM_TITLE = "Confirm Purchase",
+        VIRTUAL_IAP_CONFIRM_BODY = "Are you sure you would like to spend {cost} Bolts on the {chest_name}?",
+
+        
+        CURRENCY_NEEDED = "You require {currency_needed} Bolts for the {chest_name}",
+        CURRENCY_OK = "You have the required Bolts for the {chest_name}",
+
+        VIEW_CURRENCY = "View Bolt Chests",
+        VIEW_REGULAR = "View Chests",
 
         OK = "OK",
     },

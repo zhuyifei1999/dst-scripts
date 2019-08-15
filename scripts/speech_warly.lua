@@ -1232,7 +1232,7 @@ return {
 		LAVAARENA_KEYHOLE_FULL = "Time to leave, oui?",
 		LAVAARENA_LIGHTDAMAGERHAT = "PLACEHOLDER",
 		LAVAARENA_LUCY = "Lucy looks a little different, non?",
-		LAVAARENA_PORTAL =
+		LAVAARENA_PORTAL = 
 		{
 			GENERIC = "One day I'll find the portal that takes me home...",
 			ON = "Let's go, tout suite!",
@@ -1243,16 +1243,16 @@ return {
 		LAVAARENA_TIARAFLOWERPETALSHAT = "With this I can heal mes amis!",
 		LAVAE = "You're a pretty cute little sausage link.",
 		LAVAE_COCOON = "Yuck. I should wash my hands before I prepare food.",
-		LAVAE_EGG =
+		LAVAE_EGG = 
 		{
 			GENERIC = "Is its flavor profile comparable to a regular egg?",
 		},
-		LAVAE_EGG_CRACKED =
+		LAVAE_EGG_CRACKED = 
 		{
 			COLD = "Are you chilly, ma petite choux-fleur?",
 			COMFY = "Nice and cozy.",
 		},
-		LAVAE_PET =
+		LAVAE_PET = 
 		{
 			CONTENT = "Happy as a deliciously seasoned clam.",
 			GENERIC = "She's a fiery little one.",
@@ -1260,7 +1260,7 @@ return {
 			STARVING = "I should cook something for her, fast!",
 		},
 		LAVAE_TOOTH = "It came off my petite fiery friend.",
-		LAVASPIT =
+		LAVASPIT = 
 		{
 			COOL = "The top has cooled like a barfy crème brûlée!",
 			HOT = "A chef-cuisinier never burns his fingers.",
@@ -1273,13 +1273,13 @@ return {
 		LIFEINJECTOR = "It's not so bad, if you close your eyes.",
 		LIGHTBULB = "Looks like candy.",
 		LIGHTER = "This is Willow's.",
-		LIGHTNINGGOAT =
+		LIGHTNINGGOAT = 
 		{
 			CHARGED = "Goat milkshake!",
 			GENERIC = "I had a goat once.",
 		},
 		LIGHTNINGGOATHORN = "For kabobs, perhaps?",
-		LIGHTNING_ROD =
+		LIGHTNING_ROD = 
 		{
 			CHARGED = "Electricity!",
 			GENERIC = "I do feel a bit safer now.",
@@ -1289,7 +1289,7 @@ return {
 		LIVINGTREE = "Tres suspicious...",
 		LIVINGTREE_ROOT = "Edible roots, perhaps?",
 		LIVINGTREE_SAPLING = "Just a petite bébé.",
-		LOG =
+		LOG = 
 		{
 			BURNING = "Soon it won't be good for much.",
 			GENERIC = "An important aspect of my art.",
@@ -1301,7 +1301,7 @@ return {
 		LUREPLANTBULB = "Growing meat from the ground? Now I've seen it all...",
 		MADSCIENCE_LAB = "Chemistry is just fancy cooking, non?",
 		MALE_PUPPET = "Free him!",
-		MANDRAKE =
+		MANDRAKE = 
 		{
 			DEAD = "I should like to get to the root of this mystery...",
 			GENERIC = "Have I discovered a new root vegetable?!",
@@ -1319,14 +1319,14 @@ return {
 		MARBLEPILLAR = "I wonder how many counter tops I could get out of this...",
 		MARBLESHRUB = "If marble beans can grow, maybe they can be eaten.",
 		MARBLETREE = "How supremely unnatural!",
-		MARSH_BUSH =
+		MARSH_BUSH = 
 		{
 			BURNING = "It burns like any other bush.",
 			GENERIC = "A prickly customer.",
 			PICKED = "Not sure I want to do that again.",
 		},
 		MARSH_PLANT = "I wonder if it is edible.",
-		MARSH_TREE =
+		MARSH_TREE = 
 		{
 			BURNING = "You will not be missed.",
 			BURNT = "The wood gives off a unique aroma when burned.",
