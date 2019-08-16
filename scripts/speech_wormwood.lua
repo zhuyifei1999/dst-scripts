@@ -2692,6 +2692,7 @@ return {
 
         WALKINGPLANK = "Splashy jump spot",
         OAR = "Friend helps push water",
+        OAR_DRIFTWOOD = "Friend helps push water fast!",
 
         -------------Wormwood Specific-------
 

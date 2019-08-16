@@ -51,6 +51,7 @@ local function ondeploy(inst, pt, deployer)
         plant.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
         --plant.components.pickable:OnTransplant() -- bullkelp does not suffer from transplant sickness
+		plant.components.pickable:MakeEmpty()
         if deployer ~= nil and deployer.SoundEmitter ~= nil then
             deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
         end

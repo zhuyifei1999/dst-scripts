@@ -623,7 +623,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 			end
         end,
 
-	    onupdate = function(inst,dt)     
+	    onupdate = function(inst,dt)                
 			if inst.components.embarker:HasDestination() then
 				if inst.sg.statemem.embarked then
 					inst.components.embarker:Embark()
@@ -637,6 +637,8 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 			elseif inst.sg.statemem.timeout and not inst.sg.statemem.tryexit then
 				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
 			elseif inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) then
+                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+            elseif not inst.components.locomotor.dest then
                 inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
 			end
 		end,
@@ -653,7 +655,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				inst.AnimState:PlayAnimation("jump_loop", true)
                 inst.sg.statemem.embarked = true
             end),     
-            EventHandler("animqueueover", function(inst)    
+            EventHandler("animqueueover", function(inst)                    
                 if inst.AnimState:AnimDone() then                    
 					if not inst.components.embarker:HasDestination() then                                                               
 						inst.sg.statemem.tryexit = true

@@ -1276,3 +1276,41 @@ function c_autoteleportplayers()
     TheWorld.auto_teleport_players = not TheWorld.auto_teleport_players
     print("auto_teleport_players:", TheWorld.auto_teleport_players)
 end
+
+function c_dumpentities()
+
+    local ent_counts = {}
+
+	local first = true
+
+	local total = 0
+    for k,v in pairs(Ents) do        
+        local name = v.prefab or v.name
+		if name == nil then
+			name = "NONAME"
+		end
+        local count = ent_counts[name]
+        if count == nil then 
+            count = 1
+        else
+            count = count + 1
+        end
+        ent_counts[name] = count
+		total = total + 1
+    end
+
+    local sorted_ent_counts = {}
+
+    for ent, count in pairs(ent_counts) do
+        table.insert(sorted_ent_counts, {ent, count})
+    end
+
+    table.sort(sorted_ent_counts, function(a,b) return a[2] > b[2] end )
+
+	
+    print("Entity, Count")
+    for k,v in ipairs(sorted_ent_counts) do
+        print(v[1] .. ",", v[2])
+    end
+	print("Total: ", total)
+end

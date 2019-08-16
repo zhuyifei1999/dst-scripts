@@ -2715,6 +2715,8 @@ return {
 
         WALKINGPLANK = "It's just a last resort, worrywart!",
         OAR = "I'll splash all my friends with this!",
+        OAR_DRIFTWOOD = "It's an oar, for shore!",
+
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
 

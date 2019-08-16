@@ -200,7 +200,7 @@ function WalkablePlatform:TriggerEvents()
             -- If our player was zoomed out and just jumped off of the platform,
             -- we should undo our zoom effect.
 			-- TODO: Fix this next
-            if self.player_zoomed_out and k == ThePlayer then
+            if self.player_zoomed_out and k == ThePlayer and Profile:IsBoatCameraEnabled() then
                 self.player_zoomed_out = false
                 self.player_zooms = NUM_ZOOMS - self.player_zooms
 

@@ -82,7 +82,10 @@ end
 
 local function BeaverActionString(inst, action)
     return (action.action == ACTIONS.EAT and STRINGS.ACTIONS.EAT)
+		or (action.action == ACTIONS.MOUNT_PLANK and STRINGS.ACTIONS.MOUNT_PLANK)
+		or (action.action == ACTIONS.ABANDON_SHIP and STRINGS.ACTIONS.ABANDON_SHIP)
         or STRINGS.ACTIONS.GNAW
+		, (action.action == ACTIONS.ABANDON_SHIP) or nil
 end
 
 local function GetBeaverAction(inst, target)

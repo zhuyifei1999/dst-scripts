@@ -2731,6 +2731,7 @@ return {
 
         WALKINGPLANK = "So, who're we gonna make walk it?",
         OAR = "Rowing's dumb. Why don't we just use a sail?",
+        OAR_DRIFTWOOD = "Ugh. Can it be someone else's turn to row?",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =
