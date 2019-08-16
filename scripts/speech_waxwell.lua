@@ -2708,6 +2708,7 @@ return {
 
         WALKINGPLANK = "Jumping off would ruin what's left of my suit.",
         OAR = "I have no desire to toil like a common sailor.",
+        OAR_DRIFTWOOD = "Hmph. I've never been one for manual lab-oar.",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

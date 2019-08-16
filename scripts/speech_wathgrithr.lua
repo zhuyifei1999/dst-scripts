@@ -2728,6 +2728,7 @@ return {
 
         WALKINGPLANK = "I shall never abandon my vessel!",
         OAR = "The Norseman's way to sail!",
+        OAR_DRIFTWOOD = "Back to the sea!",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

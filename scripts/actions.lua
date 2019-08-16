@@ -2351,7 +2351,7 @@ ACTIONS.RAISE_ANCHOR.fn = function(act)
     return act.target.components.anchor:AddAnchorRaiser(act.doer)
 end
 
-ACTIONS.RAISE_ANCHOR.stroverridefn = function(act)
+ACTIONS.RAISE_ANCHOR.strfn = function(act)
     return STRINGS.ACTIONS.RAISE_ANCHOR
 end
 
@@ -2359,7 +2359,7 @@ ACTIONS.LOWER_ANCHOR.fn = function(act)
     return act.target.components.anchor:StartLoweringAnchor()
 end
 
-ACTIONS.LOWER_ANCHOR.stroverridefn = function(act)
+ACTIONS.LOWER_ANCHOR.strfn = function(act)
     return STRINGS.ACTIONS.LOWER_ANCHOR
 end
 
@@ -2367,7 +2367,7 @@ ACTIONS.MOUNT_PLANK.fn = function(act)
     return act.target.components.walkingplank:MountPlank(act.doer)
 end
 
-ACTIONS.MOUNT_PLANK.stroverridefn = function(act)
+ACTIONS.MOUNT_PLANK.strfn = function(act)
     return STRINGS.ACTIONS.MOUNT_PLANK
 end
 
@@ -2376,7 +2376,7 @@ ACTIONS.DISMOUNT_PLANK.fn = function(act)
     return true
 end
 
-ACTIONS.DISMOUNT_PLANK.stroverridefn = function(act)
+ACTIONS.DISMOUNT_PLANK.strfn = function(act)
     return STRINGS.ACTIONS.DISMOUNT_PLANK
 end
 
@@ -2393,7 +2393,7 @@ ACTIONS.EXTEND_PLANK.fn = function(act)
     return true
 end
 
-ACTIONS.EXTEND_PLANK.stroverridefn = function(act)
+ACTIONS.EXTEND_PLANK.strfn = function(act)
     return STRINGS.ACTIONS.EXTEND_PLANK
 end
 
@@ -2402,7 +2402,7 @@ ACTIONS.RETRACT_PLANK.fn = function(act)
     return true
 end
 
-ACTIONS.RETRACT_PLANK.stroverridefn = function(act)
+ACTIONS.RETRACT_PLANK.strfn = function(act)
     return STRINGS.ACTIONS.RETRACT_PLANK
 end
 

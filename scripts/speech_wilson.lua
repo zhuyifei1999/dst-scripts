@@ -2726,6 +2726,7 @@ return {
 
         WALKINGPLANK = "Couldn't we have just made a lifeboat?",
         OAR = "Manual ship acceleration.",
+		OAR_DRIFTWOOD = "Manual ship acceleration.",
 
         --PARSNIP = "It's a parsnip.",
         --PARSNIP_SEEDS = "It's a parsnip seed.",

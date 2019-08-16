@@ -2730,6 +2730,7 @@ return {
 
         WALKINGPLANK = "That thing don't look stable.",
         OAR = "Remember, back straight, move those arms!",
+        OAR_DRIFTWOOD = "Catch my drift? Ha!",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

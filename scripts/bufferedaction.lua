@@ -47,9 +47,12 @@ end
 BufferedAction.TestForStart = BufferedAction.IsValid
 
 function BufferedAction:GetActionString()
-    local str = self.doer ~= nil and self.doer.ActionStringOverride ~= nil and self.doer:ActionStringOverride(self) or nil
+    local str, overriden = nil, nil
+	if self.doer ~= nil and self.doer.ActionStringOverride ~= nil then
+		 str, overriden = self.doer:ActionStringOverride(self)
+	end
     if str ~= nil then
-        return str
+        return str, overriden
     elseif self.action.stroverridefn ~= nil then
         str = self.action.stroverridefn(self)
         if str ~= nil then

@@ -144,7 +144,6 @@ local function OnWormholeTravel(parent, wormholetype)
 end
 
 local function OnHoundWarning(parent, houndwarningtype)
-    print("houndwarningtype",houndwarningtype)
     SetDirty(parent.player_classified.houndwarningevent, houndwarningtype)
 end
 

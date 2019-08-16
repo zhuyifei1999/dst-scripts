@@ -124,6 +124,8 @@ end
 local function cooked()
     local inst = common("cooked")
 
+    inst.components.floater:SetScale(0.8)
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -131,8 +133,6 @@ local function cooked()
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY / 2
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-
-    inst.components.floater:SetScale(0.8)
 
     return inst
 end

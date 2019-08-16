@@ -20,7 +20,7 @@ end
 -- TheFocalPoint.components.focalpoint:StopFocusSource(c_sel(), "large")
 
 function FocalPoint:StartFocusSource(source, id, target, minrange, maxrange, priority, updater)
-    id = id or ""
+    id = id or "_default_"
     local sourcetbl = self.targets[source]
     if sourcetbl == nil then
         self.targets[source] = { [id] = { target = target or source, source = source, id = id, minrange = minrange, maxrange = maxrange, priority = priority, updater = updater } }
@@ -56,7 +56,8 @@ function FocalPoint:StopFocusSource(source, id)
             self.inst:RemoveEventCallback("onremove", self._onsourceremoved, source)
         end
     end
-	if self.current_focus ~= nil and self.current_focus.source == source and self.current_focus.id == id then
+
+	if self.current_focus ~= nil and self.current_focus.source == source and (id == nil or self.current_focus.id == id) then
 		self:Reset(true)
 	end
 end
@@ -91,7 +92,7 @@ function FocalPoint:CameraUpdate(dt)
 			for id, params in pairs(sourcetbl) do
 				if params.target ~= nil and params.target:IsValid() then
 					local dist_sq = distsq(params.target:GetPosition(), parent:GetPosition())
-				    if dist_sq <= (params.maxrange * params.maxrange) and (params.priority > best_priority or (params.priority == best_priority and dist_sq < best_dist_sq)) then
+				    if dist_sq <= (params.maxrange * params.maxrange) and (params.updater == nil or params.updater.IsEnabled == nil or params.updater.IsEnabled(parent, params, source)) and (params.priority > best_priority or (params.priority == best_priority and dist_sq < best_dist_sq)) then
 						best_focus = params
 						best_dist_sq = dist_sq
 						best_priority = params.priority
@@ -107,6 +108,9 @@ function FocalPoint:CameraUpdate(dt)
 
 		if best_focus ~= nil then
 			if self.current_focus ~= best_focus then
+				if self.current_focus ~= nil then
+					self:StopFocusSource(self.current_focus.source, self.current_focus.id)
+				end
 				self.current_focus = best_focus
 				if best_focus.updater ~= nil and best_focus.updater.ActiveFn ~= nil then
 					best_focus.updater.ActiveFn(best_focus, parent, best_dist_sq)

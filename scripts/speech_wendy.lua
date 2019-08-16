@@ -2699,6 +2699,7 @@ return {
 
         WALKINGPLANK = "That would be too easy.",
         OAR = "I'd prefer to be stranded at sea.",
+        OAR_DRIFTWOOD = "Just when it thought it had escaped the ocean...",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

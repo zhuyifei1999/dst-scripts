@@ -2721,6 +2721,7 @@ return {
 
         WALKINGPLANK = "Hopefully we don't have to abandon ship.",
         OAR = "I wouldn't mind taking the boat out on the lake today.",
+        OAR_DRIFTWOOD = "Nice day for rowin', eh?.",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

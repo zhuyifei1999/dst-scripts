@@ -150,7 +150,7 @@ local function OnEntityWake(inst)
         inst.waketask = inst:DoTaskInTime(.5, OnWakeTask)
     end
     if inst.foodtask == nil then
-        inst.foodTask = inst:DoPeriodicTask(math.random(20, 40) * .1, LookForFood)
+        inst.foodtask = inst:DoPeriodicTask(math.random(20, 40) * .1, LookForFood)
     end
 end
 

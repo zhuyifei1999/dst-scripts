@@ -37,6 +37,10 @@ local function OnRepaired(inst)
     --inst.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
 end
 
+local function BoatCam_IsEnabledFn()
+	return Profile:IsBoatCameraEnabled()
+end
+
 local function BoatCam_ActiveFn(params, parent, best_dist_sq)
 	local state = params.updater.state
     local tpos = params.target:GetPosition()
@@ -89,21 +93,26 @@ local function BoatCam_UpdateFn(dt, params, parent, best_dist_sq)
     TheCamera:SetGains(pan_gain, heading_gain, distance_gain)    
 end
 
-local function OnObjGotOnPlatform(inst, obj)    
-    if obj == ThePlayer then
-		local camera_settings =
-		{
-			state = {
-				target_camera_offset = Vector3(0,1.5,0),
-				camera_offset = Vector3(0,1.5,0),
-				last_platform_x = 0, last_platform_z = 0,
-				target_pan_gain = 4,
-			},
-			UpdateFn = BoatCam_UpdateFn,
-			ActiveFn = BoatCam_ActiveFn,
-		}
+local function StartBoatCamera(inst)
+	local camera_settings =
+	{
+		state = {
+			target_camera_offset = Vector3(0,1.5,0),
+			camera_offset = Vector3(0,1.5,0),
+			last_platform_x = 0, last_platform_z = 0,
+			target_pan_gain = 4,
+		},
+		UpdateFn = BoatCam_UpdateFn,
+		ActiveFn = BoatCam_ActiveFn,
+		IsEnabled = BoatCam_IsEnabledFn,
+	}
 
-		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, math.huge, math.huge, -1, camera_settings)
+	TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, math.huge, math.huge, -1, camera_settings)
+end
+
+local function OnObjGotOnPlatform(inst, obj)    
+    if obj == ThePlayer and inst.StartBoatCamera ~= nil then
+		inst:StartBoatCamera()
 	end
 end
 
@@ -178,8 +187,11 @@ local function fn()
     inst:AddComponent("waterphysics")
     inst.components.waterphysics.restitution = 1.75
 	
+
+
 	if not TheNet:IsDedicated() then
 		-- dedicated server doesnt need to handle camera settings
+		inst.StartBoatCamera = StartBoatCamera
 		inst:ListenForEvent("obj_got_on_platform", OnObjGotOnPlatform)
 		inst:ListenForEvent("obj_got_off_platform", OnObjGotOffPlatform)
 	end

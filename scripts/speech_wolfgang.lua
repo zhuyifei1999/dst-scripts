@@ -2703,6 +2703,7 @@ return {
 
         WALKINGPLANK = "Maybe Wolfgang go for dip.",
         OAR = "Wolfgang will be mighty rower!",
+        OAR_DRIFTWOOD = "Oar feels so light in Wolfgang's mighty hands!",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

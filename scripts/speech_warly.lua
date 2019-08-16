@@ -1550,6 +1550,7 @@ return {
 		NIGHTSWORD = "This thing slices like a dream!",
 		NITRE = "How curious.",
 		OAR = "Oar really?",
+		OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
 		OASISLAKE = "I could use a little break.",
 		ONEMANBAND = "What a racket!",
 		ONION = "Boasts as many uses as it has layers.",

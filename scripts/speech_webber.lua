@@ -2722,6 +2722,7 @@ return {
 
         WALKINGPLANK = "It's the least fun diving board.",
         OAR = "More legs means faster rowing!",
+        OAR_DRIFTWOOD = "Rowing is kinda fun!",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =

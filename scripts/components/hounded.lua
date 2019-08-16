@@ -513,7 +513,6 @@ function self:DoWarningSound()
     		for GUID,data in pairs(_targetableplayers)do
     			local player = Ents[GUID]
     			if player and data == "land" then    	
-    				print("pushing event",v.sound,player.prefab,HOUNDWARNINGTYPE[v.sound])
     				player:PushEvent("houndwarning",HOUNDWARNINGTYPE[v.sound])
     			end
     		end

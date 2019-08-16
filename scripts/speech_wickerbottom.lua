@@ -2752,6 +2752,7 @@ return
 
         WALKINGPLANK = "A dangerous escape route for one stranded at sea.",
         OAR = "One and two, and one and two!",
+        OAR_DRIFTWOOD = "A much more efficient, lighter design.",
 
         --v2 Warly
         PORTABLECOOKPOT_ITEM =
