@@ -1285,7 +1285,7 @@ function c_dumpentities()
 
 	local total = 0
     for k,v in pairs(Ents) do        
-        local name = v.prefab or v.name
+        local name = v.prefab or (v.widget and v.widget.name) or v.name
 		if name == nil then
 			name = "NONAME"
 		end
