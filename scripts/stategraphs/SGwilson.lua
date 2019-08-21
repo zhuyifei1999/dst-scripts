@@ -1,3 +1,5 @@
+require("stategraphs/commonstates")
+
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
         if v.foleysound ~= nil then
@@ -6747,6 +6749,7 @@ local states =
 					inst.components.drownable:DropInventory()
 				end
             end),
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/medium") end),
         },
 
         events =

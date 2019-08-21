@@ -1286,6 +1286,12 @@ function c_dumpentities()
 	local total = 0
     for k,v in pairs(Ents) do        
         local name = v.prefab or (v.widget and v.widget.name) or v.name
+
+        if(type(name) == "table") then
+            name = tostring(name)
+        end
+
+
 		if name == nil then
 			name = "NONAME"
 		end

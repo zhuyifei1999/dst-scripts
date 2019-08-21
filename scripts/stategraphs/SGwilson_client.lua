@@ -1,3 +1,5 @@
+require("stategraphs/commonstates")
+
 local TIMEOUT = 2
 
 local function DoEquipmentFoleySounds(inst)

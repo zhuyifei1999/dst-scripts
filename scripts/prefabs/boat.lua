@@ -179,21 +179,21 @@ local function fn()
     inst.components.walkableplatform.radius = radius
 
     inst:AddComponent("healthsyncer")    
-    inst:AddComponent("boattrail")
+
     inst.components.healthsyncer.max_health = max_health
 
 	AddConstrainedPhysicsObj(inst, SpawnPrefab("boat_item_collision")) -- hack until physics constraints are networked
 
     inst:AddComponent("waterphysics")
-    inst.components.waterphysics.restitution = 1.75
-	
-
+    inst.components.waterphysics.restitution = 1.75    
 
 	if not TheNet:IsDedicated() then
 		-- dedicated server doesnt need to handle camera settings
 		inst.StartBoatCamera = StartBoatCamera
 		inst:ListenForEvent("obj_got_on_platform", OnObjGotOnPlatform)
 		inst:ListenForEvent("obj_got_off_platform", OnObjGotOffPlatform)
+
+        inst:AddComponent("boattrail")
 	end
 
 	inst.entity:SetPristine()
