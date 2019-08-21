@@ -34,7 +34,6 @@ local Mast = Class(function(self, inst)
     self.is_sail_raised = false
     self.sail_force = TUNING.BOAT.MAST.BASIC.SAIL_FORCE
     self.has_speed = false
-    self.lowered_anchor_count = 0
     self.boat = nil
     self.rudder = nil
     self.max_velocity_mod = TUNING.BOAT.MAST.BASIC.MAX_VELOCITY_MOD

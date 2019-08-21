@@ -292,7 +292,7 @@ local function oninit(inst)
 end
 
 local function MakeWindow()
-    local inst = CreateEntity()
+    local inst = CreateEntity("Pighouse.MakeWindow")
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
@@ -315,7 +315,7 @@ local function MakeWindow()
 end
 
 local function MakeWindowSnow()
-    local inst = CreateEntity()
+    local inst = CreateEntity("Pighouse.MakeWindowSnow")
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
