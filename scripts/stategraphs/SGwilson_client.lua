@@ -333,6 +333,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.CAST_NET, "doshortaction"),    
     ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
     ActionHandler(ACTIONS.ROW, "row"),
+    ActionHandler(ACTIONS.ROW_CONTROLLER, "row"),    
     ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
     ActionHandler(ACTIONS.RETRACT_PLANK, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_SHIP, "abandon_ship"),
@@ -385,7 +386,7 @@ local actionhandlers =
 local events =
 {
     EventHandler("locomote", function(inst)
-        if inst.sg:HasStateTag("busy") or inst:HasTag("busy") then
+        if (inst.sg:HasStateTag("busy") or inst:HasTag("busy")) and (inst:HasTag("jumping") and inst.sg:HasStateTag("jumping")) then
             return
         end
         local is_moving = inst.sg:HasStateTag("moving")

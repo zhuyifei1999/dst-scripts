@@ -26,6 +26,8 @@ SKIN_RARITY_COLORS.HeirloomDistinguished  = SKIN_RARITY_COLORS.HeirloomElegant
 
 DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
 
+SKIN_DEBUGGING = false
+
 local SKIN_AFFINITY_INFO = require("skin_affinity_info")
 
 EVENT_ICONS =
@@ -746,14 +748,17 @@ local function _ItemStringRedirect(item)
     return item
 end
 function GetSkinName(item)
-    item = _ItemStringRedirect(item)
-	local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.SKIN_NAMES["missing"]
-	local alt = STRINGS.SKIN_NAMES[item.."_alt"]
-	if alt then
-		nameStr = GetRandomItem({nameStr, alt})
+	if SKIN_DEBUGGING then
+		return item
+	else
+	    item = _ItemStringRedirect(item)
+		local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.SKIN_NAMES["missing"]
+		local alt = STRINGS.SKIN_NAMES[item.."_alt"]
+		if alt then
+			nameStr = GetRandomItem({nameStr, alt})
+		end
+		return nameStr
 	end
-
-	return nameStr
 end
 
 function GetSkinDescription(item)

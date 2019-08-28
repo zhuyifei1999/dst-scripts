@@ -2062,10 +2062,14 @@ function PlayerController:OnUpdate(dt)
             self:IsControlPressed(CONTROL_CONTROLLER_ATTACK)) then
         self.controller_attack_override = nil
     end
-    --NOTE: isbusy is used further below as well
-    local isbusy = self:IsBusy()    
 
     self:DoPredictHopping(dt)
+
+    --NOTE: isbusy is used further below as well
+    local isbusy = self:IsBusy()
+	if isbusy and self.inst.sg ~= nil and self.inst:HasTag("jumping") then
+		isbusy = isbusy and self.inst.sg:HasStateTag("jumping")
+	end
 
     if isbusy or
         self:DoPredictWalking(dt) or

@@ -2688,7 +2688,6 @@ return {
         	GENERIC = "Always be inventing.",
         	BURNT = "Time to make another!",
         },
-        SEAFARER_KIT = "S'got everything we need to make a pretty decent vessel.",
         BOAT_ITEM = "Time to roll up my sleeves!",
         MAST_ITEM = "I can't wait to build that. I love hoisting things.",
         STEERINGWHEEL_ITEM = "That steering wheel ain't gonna assemble itself.",

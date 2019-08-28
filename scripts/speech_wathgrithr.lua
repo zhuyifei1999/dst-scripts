@@ -2687,7 +2687,6 @@ return {
             GENERIC = "A seafaring Viking is keen of mind and sharp of wit.",
             BURNT = "Tis no more.",
         },
-        SEAFARER_KIT = "I shall build a most valorous vessel!",
         BOAT_ITEM = "Ship building is in my bones!",
         MAST_ITEM = "To harness the winds upon mine vessel!",
         STEERINGWHEEL_ITEM = "A vital piece of a glorious vessel.",

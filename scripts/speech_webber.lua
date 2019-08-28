@@ -2681,7 +2681,6 @@ return {
         	GENERIC = "There's all kinds of fun things you can do at sea.",
         	BURNT = "Fire is very dangerous.",
         },
-        SEAFARER_KIT = "Everything we need to build a seaworthy boat.",
         BOAT_ITEM = "That's for building a boat.",
         MAST_ITEM = "That's for building a mast.",
         STEERINGWHEEL_ITEM = "That's for making a steering wheel.",

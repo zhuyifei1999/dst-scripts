@@ -77,6 +77,7 @@ local function flare_minimap()
 
     inst.entity:AddTransform()
     inst.entity:AddMiniMapEntity()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.MiniMapEntity:SetCanUseCache(false)
@@ -130,6 +131,7 @@ local function on_ignite_over(inst)
     -- Create an entity to cover the close-up minimap icon; the 'globalmapicon' doesn't cover this.
     local minimap = SpawnPrefab("miniflare_minimap")
     minimap.Transform:SetPosition(fx, fy, fz)
+    minimap.SoundEmitter:PlaySound("turnoftides/common/together/miniflare/explode")
     minimap:DoTaskInTime(TUNING.MINIFLARE.TIME, function()
         minimap:Remove()
     end)
@@ -144,6 +146,8 @@ local function on_ignite(inst)
 
     inst.AnimState:PlayAnimation("fire")
     inst:ListenForEvent("animover", on_ignite_over)
+
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/miniflare/launch")
 end
 
 local function on_dropped(inst)

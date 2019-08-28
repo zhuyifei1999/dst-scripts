@@ -2049,7 +2049,6 @@ return {
 			UNCOVERED = "Where is your nose?",
 		},
 		SCULPTURE_ROOKNOSE = "That doesn't look like a natural rock.",
-		SEAFARER_KIT = "All the ingredients to make a boat!",
 		SEAFARING_PROTOTYPER =
 		{
 			BURNT = "It's all gone up in smoke.",

@@ -2943,6 +2943,7 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		feet_cuff_size = 3,
 		release_group = 56,
 	},
 	feet_waxwell_gladiator =
@@ -3039,7 +3040,7 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
-		feet_cuff_size = 3,
+		feet_cuff_size = 5,
 		release_group = 36,
 	},
 	feet_wendy_magma =
@@ -3137,6 +3138,7 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		feet_cuff_size = 4,
 		release_group = 51,
 	},
 	feet_wickerbottom_victorian =
@@ -3355,7 +3357,7 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
-		feet_cuff_size = 3,
+		feet_cuff_size = 5,
 		release_group = 51,
 	},
 	feet_wx78_nature =

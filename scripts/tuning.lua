@@ -3358,6 +3358,7 @@ function Tune(overrides)
         WATER_TURTLE_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
 
         ANCHOR_DEPTH_TIMES = {
+            LAND = 0,
             SHALLOW = 2,
             BASIC = 6,
             DEEP = 8,

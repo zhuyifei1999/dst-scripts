@@ -51,7 +51,7 @@ local function Row(inst, doer, pos, actions)
             local test_x, test_z = doer_x + dir_x * test_length, doer_z + dir_z * test_length
             local found_water = not map:IsVisualGroundAtPoint(test_x, 0, test_z) and map:GetPlatformAtPoint(test_x, test_z) == nil
             if found_water then
-                table.insert(actions, ACTIONS.ROW)
+                table.insert(actions, ACTIONS.ROW_CONTROLLER)
             end
         end
     end
