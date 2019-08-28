@@ -2666,7 +2666,6 @@ return {
         	GENERIC = "For a mind as vast as the sea is deep!",
         	BURNT = "The fire caused it to expire!",
         },
-        SEAFARER_KIT = "Boat building basics, hyuyu!",
         BOAT_ITEM = "Let's craft a raft!",
         MAST_ITEM = "A mast to sail the ocean vast.",
         STEERINGWHEEL_ITEM = "I can see the appeal of a steering wheel.",

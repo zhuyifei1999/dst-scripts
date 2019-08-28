@@ -2691,7 +2691,6 @@ return {
         	GENERIC = "Watery nerd stuff.",
         	BURNT = "Heh heh. Whoops.",
         },
-        SEAFARER_KIT = "Let's make a boat!",
         BOAT_ITEM = "That's the boat part of the boat.",
         MAST_ITEM = "You can't call it \"sailing\" if you don't have a sail.",
         STEERINGWHEEL_ITEM = "Can't sail without that.",

@@ -522,6 +522,7 @@ STRINGS =
         STOP_STEERING_BOAT = "Stop Steering",
         ROW_FAIL = "Row",
         ROW = "Row",
+        ROW_CONTROLLER = "Row",
         CAST_NET = "Cast Net",
         BATHBOMB = "Toss In",
 		OCEAN_FISHING_CAST = "Cast",
@@ -2054,7 +2055,6 @@ STRINGS =
 		-- new content
         BOAT = "Boat",
         BOAT_ITEM = "Boat Kit",
-        SEAFARER_KIT = "Seafarer's Kit",
         BOATFRAGMENT03 = "Boat Fragment",
         BOATFRAGMENT04 = "Boat Fragment",
         BOATFRAGMENT05 = "Boat Fragment",
@@ -2559,7 +2559,6 @@ STRINGS =
 
         FISHINGNET = "Nothin' but net.",
         ANCHOR_ITEM = "Boat brakes.",
-        SEAFARER_KIT = "Build a boat to stay afloat.",
         STEERINGWHEEL_ITEM = "It's wheely important to have one.",
         BOAT_ITEM = "Let the seas be your domain.",
         MAST_ITEM = "Sail away, sail away.",

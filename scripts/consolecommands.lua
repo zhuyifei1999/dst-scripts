@@ -427,6 +427,9 @@ end
 function c_teleport(x, y, z, inst)
     inst = ListingOrConsolePlayer(inst)
     if inst ~= nil then
+		if x == nil then
+			x, y, z = ConsoleWorldPosition():Get()
+		end
         inst.Transform:SetPosition(x, y, z)
         SuUsed("c_teleport", true)
     end

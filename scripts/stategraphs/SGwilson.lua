@@ -658,6 +658,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.SET_HEADING, "steer_boat_turning"),
     ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
     ActionHandler(ACTIONS.ROW, "row"),
+    ActionHandler(ACTIONS.ROW_CONTROLLER, "row"),    
     ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
     ActionHandler(ACTIONS.RETRACT_PLANK, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_SHIP, "abandon_ship"),
@@ -848,8 +849,13 @@ local events =
 
     EventHandler("souloverload",
         function(inst)
-            if not (inst.components.health:IsDead() or inst.sg:HasStateTag("sleeping")) then
-                inst.sg:GoToState("hit_souloverload")
+            if not (inst.components.health:IsDead() or inst.sg:HasStateTag("sleeping") or inst.sg:HasStateTag("drowning")) then
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD"))
+                if inst.sg:HasStateTag("jumping") then
+                    inst.sg.statemem.queued_post_land_state = "hit_souloverload"
+                else
+                    inst.sg:GoToState("hit_souloverload")
+                end
             end
         end),
 
@@ -6134,10 +6140,8 @@ local states =
             ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
-
+            
             inst.AnimState:PlayAnimation("hit")
-
-            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD"))
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()

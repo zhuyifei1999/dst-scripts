@@ -2662,7 +2662,6 @@ return {
             GENERIC = "Wolfgang need help thinking on scary water.",
             BURNT = "Is burny stuff now.",
         },
-        SEAFARER_KIT = "Wolfgang wishes to ride a boat!",
         BOAT_ITEM = "Is for making very nice boat.",
         MAST_ITEM = "Is for making big sail-stick.",
         STEERINGWHEEL_ITEM = "Is for making little whirly steer-wheel.",

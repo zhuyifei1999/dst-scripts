@@ -2685,7 +2685,6 @@ return {
             GENERIC = "I think tanks are in order.",
             BURNT = "The science has been lost to sea.",
         },
-        SEAFARER_KIT = "Everything I need for a boat is inside.",
         BOAT_ITEM = "It would be nice to do some experiments on the water.",
         STEERINGWHEEL_ITEM = "That's going to be the steering wheel.",
         ANCHOR_ITEM = "Now I can build an anchor.",

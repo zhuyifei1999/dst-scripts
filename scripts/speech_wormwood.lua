@@ -2652,7 +2652,6 @@ return {
             GENERIC = "Can build Floaty stuff",
             BURNT = "Fire... (sigh)",
         },
-        SEAFARER_KIT = "Makes the Floaty",
         BOAT_ITEM = "Needs water",
         STEERINGWHEEL_ITEM = "For pointing Floaty",
         ANCHOR_ITEM = "Heavy...",

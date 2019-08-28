@@ -253,6 +253,7 @@ ACTIONS =
     CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
     ROW_FAIL = Action({customarrivecheck=function() return true end, disable_platform_hopping=true, skip_locomotor_facing=true}),
     ROW = Action({priority=3, customarrivecheck=CheckRowRange, is_relative_to_platform=true, disable_platform_hopping=true}),
+    ROW_CONTROLLER = Action({priority=3, is_relative_to_platform=true, disable_platform_hopping=true, do_not_locomote=true}),    
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -546,7 +547,7 @@ ACTIONS.ROW_FAIL.fn = function(act)
     return true
 end
 
-ACTIONS.ROW.fn = function(act)
+local function row(act)
     local oar = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
     if oar == nil then return false end
@@ -557,6 +558,13 @@ ACTIONS.ROW.fn = function(act)
     end
     oar.components.oar:Row(act.doer, pos)   
     return true
+end
+
+ACTIONS.ROW.fn = function(act)
+    return row(act)
+end
+ACTIONS.ROW_CONTROLLER.fn = function(act)
+    return row(act)
 end
 
 ACTIONS.TALKTO.fn = function(act)

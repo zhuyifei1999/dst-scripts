@@ -2680,7 +2680,6 @@ return {
             GENERIC = "It's good to be ready for anything at sea.",
         	BURNT = "It looks a bit crispier than usual.",
         },
-        SEAFARER_KIT = "Everyone could use a boat.",
         BOAT_ITEM = "It contains the base of the boat.",
         MAST_ITEM = "Better build it if we don't wanna row all day.",
         STEERINGWHEEL_ITEM = "We should set up the base of the boat first.",

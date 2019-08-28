@@ -2712,7 +2712,6 @@ return
             GENERIC = "It's good to keep the mind occupied at sea.",
             BURNT = "How irresponsible.",
         },
-        SEAFARER_KIT = "It is a ship construction kit.",
         BOAT_ITEM = "It will allow us to go on the water.",
         MAST_ITEM = "A tool for harnessing the wind's power.",
         STEERINGWHEEL_ITEM = "A necessity should we want to steer our boat.",
