@@ -15,6 +15,19 @@ local function DefaultRangeCheck(doer, target)
     return dst <= 16
 end
 
+local function CheckFishingOceanRange(doer, dest)
+	local doer_pos = doer:GetPosition()
+	local target_pos = Vector3(dest:GetPoint())
+	local dir = target_pos - doer_pos
+
+	local test_pt = doer_pos + dir:GetNormalized() * (doer:GetPhysicsRadius(0) + 0.25)
+
+    if TheWorld.Map:IsVisualGroundAtPoint(test_pt.x, 0, test_pt.z) or TheWorld.Map:GetPlatformAtPoint(test_pt.x, test_pt.z) ~= nil then
+		return false
+	else
+        return true
+	end
+end
 local function CheckRowRange(doer, dest)
 	local doer_pos = doer:GetPosition()
 	local target_pos = Vector3(dest:GetPoint())
@@ -27,6 +40,12 @@ local function CheckRowRange(doer, dest)
 	else
         return true
 	end
+end
+
+local function CheckIsOnPlatform(doer, dest)
+	local doer_pos = doer:GetPosition()
+	local p = TheWorld.Map:GetPlatformAtPoint(doer_pos.x, doer_pos.z)
+	return p ~= nil
 end
 
 local function ExtraPickupRange(doer, dest)
@@ -151,6 +170,7 @@ ACTIONS =
     JOIN = Action(),
     NET = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     CATCH = Action({ priority=3, distance=math.huge, mount_valid=true }),
+    FISH_OCEAN = Action({rmb=true, customarrivecheck=CheckFishingOceanRange, is_relative_to_platform = true, disable_platform_hopping=true}),
     FISH = Action(),
     REEL = Action({ instant=true }),
     POLLINATE = Action(),
@@ -204,6 +224,7 @@ ACTIONS =
     APPLYCONSTRUCTION = Action({ instant=true, distance=2 }),
     STARTCHANNELING = Action({ distance=2.1 }),
     STOPCHANNELING = Action({ instant=true, distance=2.1 }),
+	APPLYPRESERVATIVE = Action(),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -254,7 +275,8 @@ ACTIONS =
     CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
     ROW_FAIL = Action({customarrivecheck=function() return true end, disable_platform_hopping=true, skip_locomotor_facing=true}),
     ROW = Action({priority=3, customarrivecheck=CheckRowRange, is_relative_to_platform=true, disable_platform_hopping=true}),
-    ROW_CONTROLLER = Action({priority=3, is_relative_to_platform=true, disable_platform_hopping=true, do_not_locomote=true}),    
+	ROW_CONTROLLER = Action({priority=3, is_relative_to_platform=true, disable_platform_hopping=true, do_not_locomote=true}),
+	BOARDPLATFORM = Action({ customarrivecheck=CheckIsOnPlatform }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -548,6 +570,7 @@ ACTIONS.ROW_FAIL.fn = function(act)
     return true
 end
 
+
 local function row(act)
     local oar = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
@@ -564,8 +587,13 @@ end
 ACTIONS.ROW.fn = function(act)
     return row(act)
 end
+
 ACTIONS.ROW_CONTROLLER.fn = function(act)
     return row(act)
+end
+
+ACTIONS.BOARDPLATFORM.fn = function(act)
+	return true
 end
 
 ACTIONS.TALKTO.fn = function(act)
@@ -614,7 +642,7 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("portableitem") and "PORTABLE") or
                 (act.invobject:HasTag("boatbuilder") and "WATER") or
                 (act.invobject:HasTag("boat_accessory") and "TURRET") or
-                (act.invobject:HasTag("eyeturret") and "TURRET")   )
+                (act.invobject:HasTag("eyeturret") and "TURRET")    )
         or nil
 end
 
@@ -734,6 +762,10 @@ end
 
 ACTIONS.CATCH.fn = function(act)
     return true
+end
+
+ACTIONS.FISH_OCEAN.fn = function(act)
+	return false, "TOODEEP"
 end
 
 ACTIONS.FISH.fn = function(act)
@@ -1090,7 +1122,7 @@ ACTIONS.FEEDPLAYER.fn = function(act)
                 food.persists = false
                 act.target.sg:GoToState(
                     food.components.edible.foodtype == FOODTYPE.MEAT and "eat" or "quickeat",
-                    { feed = food, feeder = act.doer }
+                    {feed=food,feeder=act.doer}
                 )
                 return true
             end
@@ -2197,6 +2229,28 @@ ACTIONS.TACKLE.fn = function(act)
     return act.doer ~= nil
         and act.doer.components.tackler ~= nil
         and act.doer.components.tackler:StartTackle()
+end
+
+ACTIONS.APPLYPRESERVATIVE.strfn = function(act)
+	return act.invobject ~= nil and act.invobject.prefab == "saltrock" and "SALT" or nil
+end
+
+ACTIONS.APPLYPRESERVATIVE.fn = function(act)
+	if act.target ~= nil and act.invobject ~= nil and act.invobject.components.preservative ~= nil
+		and act.target.components.health == nil
+		and (act.target:HasTag("fresh") or act.target:HasTag("stale") or act.target:HasTag("spoiled"))
+		and act.target:HasTag("cookable")
+		and not act.target:HasTag("deployable") then
+			act.target.components.perishable:SetPercent(act.target.components.perishable:GetPercent() + (
+				act.invobject.components.preservative.divide_effect_by_stack_size and act.target.components.stackable
+					and act.invobject.components.preservative.percent_increase / act.target.components.stackable.stacksize
+					or act.invobject.components.preservative.percent_increase
+				))
+			act.doer.components.inventory:RemoveItem(act.invobject)
+			return true
+	else
+		return false
+	end
 end
 
 --Quagmire

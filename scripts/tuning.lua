@@ -147,6 +147,12 @@ function Tune(overrides)
 			CAST_DIST_MAX_OFFSET = 1.1,
 			CAST_ANGLE_OFFSET = 20 / RADIANS,
 
+			REEL_STRENGTH_MIN = 2,
+			REEL_STRENGTH_MAX = 4,
+			REEL_SPEED_MAX = 7,
+			REEL_ANGLE_VAR = 50,
+			STOP_FISHING_HOOK_DIST = 4,
+
 			MAX_HOOK_DIST = 20,
 
 		},
@@ -1369,6 +1375,8 @@ function Tune(overrides)
         ARMORSLURPER = wilson_health * 4*multiplayer_armor_durability_modifier,
         ARMOR_FOOTBALLHAT = wilson_health*3*multiplayer_armor_durability_modifier,
         ARMOR_FOOTBALLHAT_ABSORPTION = .8*multiplayer_armor_absorption_modifier,
+        ARMOR_COOKIECUTTERHAT = wilson_health*5*multiplayer_armor_durability_modifier,
+        ARMOR_COOKIECUTTERHAT_ABSORPTION = .7*multiplayer_armor_absorption_modifier,
 
         ARMORDRAGONFLY = wilson_health * 9*multiplayer_armor_durability_modifier,
         ARMORDRAGONFLY_ABSORPTION = 0.7*multiplayer_armor_absorption_modifier,
@@ -1541,6 +1549,7 @@ function Tune(overrides)
         PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
         PERISH_FRIDGE_MULT = .5,
         PERISH_FOOD_PRESERVER_MULT = .75,
+		PERISH_SALTBOX_MULT = .25,
         PERISH_GROUND_MULT = 1.5,
         PERISH_WET_MULT = 1.3,
         PERISH_CAGE_MULT = 0.25,
@@ -3054,9 +3063,6 @@ function Tune(overrides)
 
         MAX_FISH_SCHOOL_SIZE = 2,
 
-        WAVE_HIT_MOISTURE = 15,
-        WAVE_HIT_DAMAGE = 5,
-
         ROGUEWAVE_HIT_MOISTURE = 25,
         ROGUEWAVE_HIT_DAMAGE = 10,
         ROGUEWAVE_SPEED_MULTIPLIER = 3,
@@ -3084,10 +3090,45 @@ function Tune(overrides)
 
         WATERBIRD_SEE_THREAT_DISTANCE = 6,
 
+		COOKIECUTTER =
+		{
+			HEALTH = 100,
+			WANDER_SPEED = 0.25,
+			APPROACH_SPEED = 0.7,
+			RUN_SPEED = 2,
+			FLEE_DURATION = 6,
+
+			BOARDING_DISTANCE = 0.5,
+			BOARDING_DISTANCE_VARIANCE = 1.2,
+
+			EAT_DELAY = seg_time,
+
+			WANDER_DIST = 12,
+		
+			DAMAGE = 20,
+			ATTACK_RADIUS = 1.8,
+			ATTACK_PERIOD = 2.5,
+
+			RESURFACE_DELAY = 5,
+			MAX_RESURFACE_RADIUS = 8,
+
+			RETURN_HOME_DISTSQ = 20*20,
+		},
+
+		COOKIECUTTER_SPAWNER =
+		{
+			REGEN_TIME = 3*seg_time,
+			RELEASE_TIME = 5,
+		},
+
+		SALTROCK_PRESERVE_PERCENT_ADD = 0.5,
+
         BOAT =
         {
             HEALTH = 200,
             MASS = 500,
+
+            MAX_ALLOWED_VELOCITY = 5,
             
             BASE_DRAG = 0.4,
             MAX_VELOCITY = 1.2,            
@@ -3104,6 +3145,7 @@ function Tune(overrides)
                 {
                     FORCE = 0.3,
                     DAMAGE = wilson_attack*.5,
+					ROW_FAIL_WEAR = 25,
                     ATTACKWEAR = 25,
                     USES = 500,
                 },
@@ -3111,10 +3153,20 @@ function Tune(overrides)
                 DRIFTWOOD = 
                 {
                     FORCE = 0.5,
-                    DAMAGE = wilson_attack*.4,
+                    DAMAGE = wilson_attack*.5,
+					ROW_FAIL_WEAR = 25,
                     ATTACKWEAR = 25,
                     USES = 400
-                },                
+                },   
+
+                MALBATROSS = 
+                {
+                    FORCE = 0.8,
+                    DAMAGE = wilson_attack*.8,
+					ROW_FAIL_WEAR = 6,
+                    ATTACKWEAR = 6,
+                    USES = 600,
+                },
             },
 
             ANCHOR =
@@ -3131,10 +3183,18 @@ function Tune(overrides)
                 BASIC = 
                 {
                     MAX_VELOCITY = 1.5,
-                    MAX_VELOCITY_MOD = 1.2,
+        --            MAX_VELOCITY_MOD = 1.2,
                     SAIL_FORCE = 0.6,
                     RUDDER_TURN_DRAG = 0.23,
                 },
+
+                MALBATROSS = 
+                {
+                    MAX_VELOCITY = 3,
+      --              MAX_VELOCITY_MOD = 1.2,
+                    SAIL_FORCE = 1,
+                    RUDDER_TURN_DRAG = 0.23,
+                },                
 
                 HEAVABLE_ACTIVE_FRAME = 8,
                 HEAVABLE_START_FRAME = 12,
@@ -3365,6 +3425,7 @@ function Tune(overrides)
         -- Multipliers can be temperaturedelta, temperatureduration, health, sanity or hunger
         SPICE_MULTIPLIERS =
         {
+            SPICE_SALT = { HEALTH = 0.25 }
             --currently not used, but still supported (for future use)
         },
 
@@ -3417,6 +3478,59 @@ function Tune(overrides)
         WOODIE_PLANT_TREE_GAIN = 5,
         LOG_WOODINESS = 10,
         --
+
+        FLOTSAM_SPAWN_MAX = 4,
+        FLOTSAM_SPAWN_DELAY = {min=30, max=180},
+
+        GNARWAIL =
+        {
+            HEALTH = 300,
+            DAMAGE = 50,
+            WANDER_DIST = 10,
+            WALK_SPEED = 3,
+            RUN_SPEED = 5,
+
+            BODY_SLAM_ATTACK_DISTANCESQ = 100,
+
+            DAMAGE_RADIUS = 3,
+            DAMAGE_RADIUSSQ = 9,
+            BOAT_ATTACK_DELAY = 6,
+            HORN_RETREAT_TIME = 5,
+            HORN_HEALTH = 100,
+        },
+
+        MALBATROSS_HEALTH = 2500 * 2,
+        MALBATROSS_DAMAGE = 150,
+
+        MALBATROSS_DAMAGE_PLAYER_PERCENT = .5,
+        MALBATROSS_ATTACK_PERIOD = 4,
+        MALBATROSS_ATTACK_RANGE = 5,
+        MALBATROSS_AOE_RANGE = 3,
+        MALBATROSS_AOE_SCALE = 0.8,
+        MALBATROSS_LOSE_TARGET_PERIOD = 60,
+        MALBATROSS_BOAT_DAMAGE = 5,
+        MALBATROSS_BOAT_PUSH = 2,
+        MALBATROSS_NOTHUNGRY_TIME =
+        {
+            MIN = 10,
+            MAX = 20,
+        },
+        MALBATROSS_MISSFISH_TIME =
+        {
+            MIN = 10,
+            MAX = 10,
+        },
+        MALBATROSS_ENTITYSLEEP_RELOCATE_TIME = 100,
+        MALBATROSS_EATSUCCESS_CHANCE = 0.50,
+        MALBATROSS_MAX_CHASEAWAY_DIST = 50,
+
+        OCEANFISH_SHOAL =
+        {
+            CHILD_REGENPERIOD = 3*seg_time,
+            CHILD_SPAWNPERIOD = 5,
+            MAX_CHILDREN = 8,
+            SPAWNRADIUS = 6,
+        },
     }
 end
 

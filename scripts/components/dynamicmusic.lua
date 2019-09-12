@@ -34,6 +34,12 @@ local SEASON_DANGER_MUSIC =
 
 local TRIGGERED_DANGER_MUSIC =
 {
+
+    moonbase =
+    {
+        "saltydog/music/malbatross",
+    },
+        
     moonbase =
     {
         "dontstarve/music/music_epicfight_moonbase",
@@ -163,6 +169,25 @@ local function StartBusy(player)
     end
 end
 
+local function StartOcean(player)
+    if not (_iscave or _isday) then
+        return
+    elseif _busytask ~= nil then
+        _extendtime = GetTime() + 15
+    elseif _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
+        if _isbusydirty then
+            _isbusydirty = false
+            _soundemitter:KillSound("busy")
+            if not _iscave then
+                _soundemitter:PlaySound("turnoftides/music/sailing", "busy")
+            end
+        end
+        _soundemitter:SetParameter("busy", "intensity", 1)
+        _busytask = inst:DoTaskInTime(30, StopBusy, true)
+        _extendtime = 0
+    end
+end
+
 local function ExtendBusy()
     if _busytask ~= nil then
         _extendtime = math.max(_extendtime, GetTime() + 10)
@@ -224,6 +249,12 @@ local function StartTriggeredDanger(player, data)
         _dangertask = inst:DoTaskInTime(data.duration or 10, StopDanger, true)
         _triggeredlevel = level
         _extendtime = 0
+    end
+end
+
+local function StartTriggeredWater(player, data)
+    if player:GetCurrentPlatform() then
+        StartOcean(player)
     end
 end
 
@@ -305,6 +336,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("goinsane", OnInsane, player)
     inst:ListenForEvent("goenlightened", OnEnlightened, player)
     inst:ListenForEvent("triggeredevent", StartTriggeredDanger, player)
+    inst:ListenForEvent("boatspedup", StartTriggeredWater, player)
 end
 
 local function StopPlayerListeners(player)
@@ -315,6 +347,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("goinsane", OnInsane, player)
     inst:RemoveEventCallback("goenlightened", OnEnlightened, player)
     inst:RemoveEventCallback("triggeredevent", StartTriggeredDanger, player)
+    inst:RemoveEventCallback("boatspedup", StartTriggeredWater, player)
 end
 
 local function OnPhase(inst, phase)

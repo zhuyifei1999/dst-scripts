@@ -60,13 +60,7 @@ local function OnCollide(inst, data)
     end
 end
 
-
-
-local function SetupStack(inst, stackid)
-    if inst.stackid == nil then
-        inst.stackid = stackid or math.random(5)
-    end
-
+local function setupfloater(inst)
     if inst.stackid == 4 then
         inst.components.floater:SetVerticalOffset(0.2)
         inst.components.floater:SetScale(0.85)
@@ -83,8 +77,10 @@ local function SetupStack(inst, stackid)
         inst.components.floater:SetVerticalOffset(0.15)
         inst.has_medium_state = true
     end
+end
 
-    updateart(inst)
+local function SetupStack(inst, stackid)    
+    inst.stackid = stackid or inst.stackid or math.random(5)    
 end
 
 local function onsave(inst, data)
@@ -119,16 +115,18 @@ local function fn()
     MakeInventoryFloatable(inst, "med", nil, 0.85)
     inst.components.floater.bob_percent = 0
 
+    SetupStack(inst)
+
+    inst:DoTaskInTime(0, function(inst)                
+        setupfloater(inst)
+        inst.components.floater:OnLandedServer()   
+    end)
+
     inst.entity:SetPristine()    
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst:DoTaskInTime(0, function(inst)
-        SetupStack(inst)
-        inst.components.floater:OnLandedServer()
-    end)
 
     inst:AddComponent("lootdropper")     
     inst.components.lootdropper:SetChanceLootTable('seastack')
@@ -147,6 +145,8 @@ local function fn()
 
     inst:ListenForEvent("on_collide", OnCollide)
 
+    updateart(inst)     
+
     --------SaveLoad
     inst.OnSave = onsave
     inst.OnLoad = onload
@@ -154,38 +154,14 @@ local function fn()
     return inst
 end
 
---[[
-local function checkforseastackspawning(inst)
-
-end
-]]
-
 local function spawnerfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
+    --[[Non-networked entity]]
 
-    inst.entity:SetPristine()    
+    inst:AddTag("CLASSIFIED")
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-    --[[
-    inst:DoTaskInTime(math.random()*20,function()
-            inst:DoPeriodicTask(20,function()
-                checkforseastackspawning(inst)
-            end)
-        end)
-        ]]
---[[
-    inst:DoTaskInTime(0,function() 
-            local mark = SpawnPrefab("log")
-            local x,y,z = inst.Transform:GetWorldPosition()
-            mark.Transform:SetPosition(x,y,z)
-        end)
-        ]]
     return inst
 end
 

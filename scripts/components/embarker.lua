@@ -66,7 +66,7 @@ end
 function Embarker:GetEmbarkPosition()
     if self.embarkable ~= nil and self.embarkable:IsValid() then
         local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
-        return self.embarkable.components.walkableplatform:GetEmbarkPosition(my_x, my_z)
+        return self.embarkable.components.walkableplatform:GetEmbarkPosition(my_x, my_z, self.embarker_min_dist)
     else
         local x, z = (self.disembark_x or self.last_embark_x), (self.disembark_z or self.last_embark_z)
         if x == nil or z == nil then
