@@ -183,15 +183,7 @@ function BoatPhysics:GetVelocity()
 end
 
 function BoatPhysics:ApplyForce(dir_x, dir_z, force)
-
     self.velocity_x, self.velocity_z = self.velocity_x + dir_x * force, self.velocity_z + dir_z * force
-
-    local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)
-
-    if velocity_length > TUNING.BOAT.MAX_ALLOWED_VELOCITY then
-        local maxx,maxz = VecUtil_Scale(dir_x, dir_z,  TUNING.BOAT.MAX_ALLOWED_VELOCITY)
-        self.velocity_x, self.velocity_z = maxx,maxz
-    end
 end
 
 function BoatPhysics:GetMaxVelocity()    
@@ -248,7 +240,9 @@ function BoatPhysics:GetRudderTurnSpeed()
 end
 
 function BoatPhysics:OnUpdate(dt)
-    local boat_pos_x, boat_pos_y, boat_pos_z = self.inst.Transform:GetWorldPosition()    
+    local boat_pos_x, boat_pos_y, boat_pos_z = self.inst.Transform:GetWorldPosition()
+
+
 
 -- TURNING    
     local stop = false
@@ -309,9 +303,8 @@ function BoatPhysics:OnUpdate(dt)
     local raised_sail_count = 0
     local sail_force = 0
     for k,v in pairs(self.masts) do
-		local f = k:CalcSailForce()
-        if f ~= 0 then
-            sail_force = sail_force + f
+        if k.is_sail_raised then
+            sail_force = sail_force + k.sail_force * (1 - k:GetFurled0to1())
             raised_sail_count = raised_sail_count + 1
         end
     end
@@ -340,11 +333,11 @@ function BoatPhysics:OnUpdate(dt)
 	
     --This clamps the velocity to a maximum to prevent the boat from going crazy
 	local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)
---    local MAX_ALLOWED_VELOCITY = 5
-    if velocity_length > TUNING.BOAT.MAX_ALLOWED_VELOCITY then
-        local maxx,maxz = VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z,  TUNING.BOAT.MAX_ALLOWED_VELOCITY)
+    local MAX_ALLOWED_VELOCITY = 5
+    if velocity_length > MAX_ALLOWED_VELOCITY then
+        local maxx,maxz = VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z,  MAX_ALLOWED_VELOCITY)
         self.velocity_x, self.velocity_z = maxx,maxz
-        velocity_length = TUNING.BOAT.MAX_ALLOWED_VELOCITY
+        velocity_length = MAX_ALLOWED_VELOCITY
     end
 
     if velocity_length > self:GetMaxVelocity() then 
@@ -374,17 +367,6 @@ function BoatPhysics:OnUpdate(dt)
         self.lastzoomtime = time
     end
 
-    local new_velocity = VecUtil_Length(self.velocity_x, self.velocity_z)
-
-    if self.old_velocity and new_velocity >= 0.5 and self.old_velocity < 0.5 then
-        local platform = self.inst.components.walkableplatform
-        if platform ~= nil then
-            for k,v in pairs(platform:GetEntitiesOnPlatform({"player"})) do
-                v:PushEvent("boatspedup")
-            end     
-        end                
-    end
-    self.old_velocity = new_velocity
 	self.inst.Physics:SetMotorVel(self.velocity_x, 0, self.velocity_z)	
 
     self.inst.SoundEmitter:SetParameter("boat_movement", "speed", velocity_length / self.max_velocity)

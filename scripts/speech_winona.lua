@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "I'll need a tougher rod to reel in one of those whoppers!",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2830,23 +2827,6 @@ return{
 
 		GESTALT = "I feel like... they've seen my sister.",
 
-		COOKIECUTTER = "What's the matter lil guy?",
-		COOKIECUTTERSHELL = "That thing was well protected.",
-		COOKIECUTTERHAT = "Hardhats must be worn beyond this point!",
-		SALTSTACK = "Now that's just unsettlin'",
-		SALTROCK = "Hey, that looks like salt!",
-		SALTBOX = "This'll keep things fresher longer!",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "Yeesh, you're a big fella!",
-        MALBATROSS_FEATHER = "I'll find a practical use for this.",
-        MALBATROSS_BEAK = "How come I got left to pick up the bill? Ha!",
-        MAST_MALBATROSS_ITEM = "Heave-ho!",
-        MAST_MALBATROSS = "A bit showy, but useful.",
-		MALBATROSS_FEATHERED_WEAVE = "Now that's some fancy fabric.",
-
         WALKINGPLANK = "That thing don't look stable.",
         OAR = "Remember, back straight, move those arms!",
 		OAR_DRIFTWOOD = "Catch my drift? Ha!",
@@ -2878,7 +2858,6 @@ return{
         SPICE_GARLIC = "Hooboy. That's some smelly dust.",
         SPICE_SUGAR = "Now all I need is some pancakes to pour this over.",
         SPICE_CHILI = "Just smelling it is making my eyes water.",
-        SPICE_SALT = "I could really go for some potato chips.",
         MONSTERTARTARE = "I'm all for getting my daily iron but this goes too far.",
         FRESHFRUITCREPES = "Fruit wrapped in a blanket of pancake.",
         FROGFISHBOWL = "Mmm! Love Warly's dishes.",

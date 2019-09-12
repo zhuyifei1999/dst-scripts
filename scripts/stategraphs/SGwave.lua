@@ -13,15 +13,12 @@ local states=
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("appear")
 		end,
-		
+
         timeline=
         {
-            --[[TimeEvent(5*FRAMES, function(inst)
+            TimeEvent(5*FRAMES, function(inst)
             	--if inst.soundrise then inst.SoundEmitter:PlaySound("dontstarve_DLC002/common/rogue_waves/"..inst.soundrise) end
             	--if inst.soundloop then inst.SoundEmitter:PlaySound("dontstarve_DLC002/common/rogue_waves/"..inst.soundloop, inst.soundloop) end
-            end),]]
-            TimeEvent(10*FRAMES, function(inst)
-                inst.waveactive = true
             end),
         },
 
@@ -39,7 +36,7 @@ local states=
 		tags = {"idle"},
 
 		onenter = function(inst)
-			inst.waveactive = true
+			inst:activate_collision()
 			inst.AnimState:PlayAnimation("idle", false)
 			inst.sg:SetTimeout(inst.idle_time or 5)
 		end,
@@ -47,16 +44,18 @@ local states=
 		events =
 		{
 			EventHandler("animover", function(inst)
-                if inst.waitingtolower then
-                    inst.sg:GoToState("lower")
-                else
-                    inst.AnimState:PlayAnimation("idle", false)
-                end
+				
+				if inst.waitingtolower then 
+					inst.sg:GoToState("lower")
+				else
+					inst.AnimState:PlayAnimation("idle", false)
+				end 
 			end)
 		},
 
 		ontimeout = function(inst)
-			inst.waitingtolower = true
+			--inst.sg:GoToState("lower")
+			inst.waitingtolower = true 
 		end,
 	},
 
@@ -74,17 +73,10 @@ local states=
 			end
 		end,
 
-        timeline =
-        {
-            TimeEvent(20*FRAMES, function(inst)
-                inst.waveactive = false
-            end),
-        },
-
-		events =
+		events = 
 		{
-			EventHandler("animover", function(inst)
-				inst:Remove()
+			EventHandler("animover", function(inst) 
+				inst:Remove() 
 			end)
 		},
 	},

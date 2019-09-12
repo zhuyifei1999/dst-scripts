@@ -164,7 +164,7 @@ AddRoom("MoonIsland_Meadows",  {
 -------------------------------------------------------------------------------
 AddRoom("Empty_Cove",  { 
     colour={r=1.0,g=1.0,b=1.0,a=0.3},
-    value = GROUND.IMPASSABLE,
+    value = GROUND.IMPASSABLE, --OCEAN_COASTAL, -- GROUND.OCEAN_REEF,
 	type = NODE_TYPE.Blank,
 	tags = {"ForceDisconnected", "RoadPoison"},
 	random_node_entrance_weight = 0,

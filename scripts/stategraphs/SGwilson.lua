@@ -432,7 +432,6 @@ local actionhandlers =
                 or nil
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
-    ActionHandler(ACTIONS.FISH_OCEAN, "fishing_ocean_pre"),
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -663,7 +662,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction" ),
+    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction"),
     ActionHandler(ACTIONS.LOWER_SAIL_BOOST,
         function(inst, action)
             inst.sg.statemem.not_interrupted = true
@@ -732,7 +731,6 @@ local actionhandlers =
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
-	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
 }
 
 local events =
@@ -3552,14 +3550,6 @@ local states =
             end),
         },
     },
-
-    State{
-        name = "fishing_ocean_pre",
-        onenter = function(inst)
-			inst:PerformBufferedAction()
-			inst.sg:GoToState("idle")
-		end,
-	},
 
     State{
         name = "fishing_pre",
@@ -7002,7 +6992,7 @@ local states =
         timeline =
         {
             TimeEvent(0 * FRAMES, function(inst)          
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/LP","turn")
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/turn")
             end),
         },
 
@@ -7036,7 +7026,6 @@ local states =
 
         onexit = function(inst)
             inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,                        
 
         events =
@@ -7061,7 +7050,6 @@ local states =
 
         onexit = function(inst)
 			inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,
 
         events = 

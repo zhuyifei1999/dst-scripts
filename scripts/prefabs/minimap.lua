@@ -7,7 +7,7 @@ local MINIMAP_GROUND_PROPERTIES =
 {
     { GROUND.PEBBLEBEACH,{ name = "map_edge",      noise_texture = "levels/textures/mini_pebblebeach.tex" } },
     { GROUND.OCEAN_COASTAL_SHORE,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_shallow.tex" } },
-    { GROUND.OCEAN_BRINEPOOL_SHORE,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_coral.tex" } },
+    { GROUND.OCEAN_REEF_SHORE,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_coral.tex" } },
 
     { GROUND.METEOR,	 { name = "map_edge",      noise_texture = "levels/textures/mini_meteor.tex" } },
 
@@ -47,7 +47,7 @@ local MINIMAP_GROUND_PROPERTIES =
     { GROUND.QUAGMIRE_SOIL,        { name = "map_edge",      noise_texture = "levels/textures/quagmire_soil_mini.tex" } },
 
     { GROUND.OCEAN_COASTAL,    { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
-    { GROUND.OCEAN_BRINEPOOL,  { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
+    { GROUND.OCEAN_REEF,       { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
     { GROUND.OCEAN_SWELL,      { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
     { GROUND.OCEAN_ROUGH,      { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },
     { GROUND.OCEAN_HAZARDOUS,  { name = "map_edge",      noise_texture = "levels/textures/ocean_noise.tex" } },

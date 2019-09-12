@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Those fish are far too deep.",
-		},
+        
         --wickerbottom specific action
         READ =
         {
@@ -2824,23 +2821,6 @@ return{
 
 		GESTALT = "They are the projections of something stronger.",
 
-		COOKIECUTTER = "Its eyes seem fixed to my raft.",
-		COOKIECUTTERSHELL = "A thick casing of calcium carbonate.",
-		COOKIECUTTERHAT = "Hm, it has a very disagreeable odor.",
-		SALTSTACK = "Intriguing... just how were those figures constructed?",
-		SALTROCK = "It's growing in a curiously geometric formation.",
-		SALTBOX = "This should help prevent food spoilage.",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "It appears to be of the family Diomedeidae.",
-        MALBATROSS_FEATHER = "Its plumage has an almost scale-like texture.",
-        MALBATROSS_BEAK = "These beaks are designed to catch slippery prey.",
-        MAST_MALBATROSS_ITEM = "Raise the sail, and let's be off!",
-        MAST_MALBATROSS = "What an impressive wingspan.",
-		MALBATROSS_FEATHERED_WEAVE = "A sturdy, lightweight material.",
-
         WALKINGPLANK = "A dangerous escape route for one stranded at sea.",
         OAR = "One and two, and one and two!",
 		OAR_DRIFTWOOD = "A much more efficient, lighter design.",
@@ -2872,7 +2852,6 @@ return{
         SPICE_GARLIC = "My goodness that smell is pungent!",
         SPICE_SUGAR = "A treacle of fruits.",
         SPICE_CHILI = "I'm not a fan of spicy food.",
-        SPICE_SALT = "Just a pinch will do.",
         MONSTERTARTARE = "Monster meat, dressed up fancy.",
         FRESHFRUITCREPES = "Sticky fingers will ensue.",
         FROGFISHBOWL = "I'll happily volunteer to taste-test.",

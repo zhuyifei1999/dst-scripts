@@ -320,7 +320,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
 	storygen:AddRegionsToMainland(function() 	
 		WorldSim:WorldGen_AddNewPositions()
-		WorldSim:WorldGen_VoronoiPass(50)
+		WorldSim:WorldGen_VoronoiPass(25)
 	end)
 
     print("... story created")
@@ -591,9 +591,8 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities)
 	if story_gen_params.has_ocean then
-		local ocean_gen_config = require("map/ocean_gen_config")
 		Ocean_SetWorldForOceanGen(WorldSim)
-		Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout, GROUND.IMPASSABLE, ocean_gen_config.ocean_prefill_setpieces_min_land_dist)
+		Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout)
 --		local required_treasure_placed = WorldGenPlaceTreasures(topology_save.root:GetChildren(), entities, map_width, map_height, 4600000, level)
 --		if not required_treasure_placed then
 --			print("PANIC: Missing required treasure!")
@@ -601,7 +600,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 --				return nil
 --			end
 --		end
-		Ocean_ConvertImpassibleToWater(map_width, map_height, ocean_gen_config)
+		Ocean_ConvertImpassibleToWater(map_width, map_height, require("map/ocean_gen_config"))
 		PopulateOcean(SpawnFunctions, entities, map_width, map_height, storygen.ocean_population, current_gen_params)
 	end
     topology_save.root:GlobalPostPopulate(entities, map_width, map_height)

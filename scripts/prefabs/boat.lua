@@ -199,7 +199,6 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("ignorewalkableplatforms")
-	inst:AddTag("boat")
 
     local radius = 4
     local max_health = TUNING.BOAT.HEALTH
@@ -263,9 +262,7 @@ local function fn()
     inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
     inst.components.hull:SetBoatLip(SpawnPrefab('boatlip'))
-    local playercollision = SpawnPrefab("boat_player_collision")
-	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
-    playercollision.collisionboat = inst
+	inst.components.hull:AttachEntityToBoat(SpawnPrefab("boat_player_collision"), 0, 0)
 
     local walking_plank = SpawnPrefab("walkingplank")
     local edge_offset = -0.05
@@ -371,7 +368,7 @@ local function boat_player_collision_fn()
     phys:SetMass(0)
     phys:SetFriction(0)
     phys:SetDamping(5)
-    phys:SetCollisionGroup(COLLISION.BOAT_LIMITS)
+    phys:SetCollisionGroup(COLLISION.LIMITS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.WORLD)
@@ -402,7 +399,7 @@ local function boat_item_collision_fn()
     phys:SetMass(1000)
     phys:SetFriction(0)
     phys:SetDamping(5)
-    phys:SetCollisionGroup(COLLISION.BOAT_LIMITS)
+    phys:SetCollisionGroup(COLLISION.LIMITS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.FLYERS)
