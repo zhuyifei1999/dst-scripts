@@ -346,11 +346,16 @@ function c_sethunger(n)
     end
 end
 
-function c_setbeaverness(n)
+function c_setwereness(n)
     local player = ConsoleCommandPlayer()
-    if player ~= nil and player.components.beaverness ~= nil and not player:HasTag("playerghost") then
-        SuUsed("c_setbeaverness", true)
-        player.components.beaverness:SetPercent(math.min(n, 1))
+    if player ~= nil and player.components.wereness ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_setwereness", true)
+        if type(n) == "number" then
+            player.components.wereness:SetPercent(math.min(n, 1))
+        else
+            player.components.wereness:SetWereMode(n)
+            player.components.wereness:SetPercent(1, true)
+        end
     end
 end
 

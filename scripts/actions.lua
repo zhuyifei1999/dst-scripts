@@ -220,6 +220,7 @@ ACTIONS =
     ABANDON = Action({ rmb=true }),
     PET = Action(),
     DISMANTLE = Action({ rmb=true }),
+    TACKLE = Action({ rmb=true, distance=math.huge }),
 
     CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
 
@@ -1070,7 +1071,8 @@ ACTIONS.FEEDPLAYER.fn = function(act)
         not (act.target.sg:HasStateTag("busy") or
             act.target.sg:HasStateTag("attacking") or
             act.target.sg:HasStateTag("sleeping") or
-            act.target:HasTag("playerghost")) and
+            act.target:HasTag("playerghost") or
+            act.target:HasTag("wereplayer")) and
         act.target.components.eater ~= nil and
         act.invobject.components.edible ~= nil and
         act.target.components.eater:CanEat(act.invobject) and
@@ -1087,10 +1089,8 @@ ACTIONS.FEEDPLAYER.fn = function(act)
                 food.components.inventoryitem:HibernateLivingItem()
                 food.persists = false
                 act.target.sg:GoToState(
-                    (act.target:HasTag("beaver") and "beavereat") or
-                    (food.components.edible.foodtype == FOODTYPE.MEAT and "eat") or
-                    "quickeat",
-                    {feed=food,feeder=act.doer}
+                    food.components.edible.foodtype == FOODTYPE.MEAT and "eat" or "quickeat",
+                    { feed = food, feeder = act.doer }
                 )
                 return true
             end
@@ -2191,6 +2191,12 @@ ACTIONS.DISMANTLE.fn = function(act)
         act.target.components.portablecookware:Dismantle(act.doer)
         return true
     end
+end
+
+ACTIONS.TACKLE.fn = function(act)
+    return act.doer ~= nil
+        and act.doer.components.tackler ~= nil
+        and act.doer.components.tackler:StartTackle()
 end
 
 --Quagmire
