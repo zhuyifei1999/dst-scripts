@@ -22,6 +22,12 @@ local function OnUpdateWindow(window, inst, snow)
     elseif inst.Light:IsEnabled() and inst.AnimState:IsCurrentAnimation("lit") then
         if not window._shown then
             window._shown = true
+            
+            local build_name = inst.AnimState:GetSkinBuild()
+            if build_name ~= "" then
+                window.AnimState:SetSkin(build_name)
+                snow.AnimState:SetSkin(build_name)
+            end
             window:Show()
             snow:Show()
         end
@@ -38,11 +44,19 @@ local function LightsOn(inst)
         inst.AnimState:PlayAnimation("lit", true)
         inst.SoundEmitter:PlaySound("dontstarve/pig/pighut_lighton")
         inst.lightson = true
+
+        local build_name = inst.AnimState:GetSkinBuild()
         if inst._window ~= nil then
+            if build_name ~= "" then
+                inst._window.AnimState:SetSkin(build_name)
+            end
             inst._window.AnimState:PlayAnimation("windowlight_idle", true)
             inst._window:Show()
         end
         if inst._windowsnow ~= nil then
+            if build_name ~= "" then
+                inst._windowsnow.AnimState:SetSkin(build_name)
+            end
             inst._windowsnow.AnimState:PlayAnimation("windowsnow_idle", true)
             inst._windowsnow:Show()
         end

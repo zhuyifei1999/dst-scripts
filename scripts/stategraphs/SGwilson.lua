@@ -1308,7 +1308,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     inst.components.rider:ActualDismount()
                     inst.sg.statemem.transforming = true
-                    inst.sg:GoToState("transform_were"..data.mode, data.cb)
+                    inst.sg:GoToState("transform_were"..inst.sg.statemem.data.mode, inst.sg.statemem.data.cb)
                 end
             end),
         },
