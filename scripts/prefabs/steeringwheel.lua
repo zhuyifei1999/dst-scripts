@@ -168,6 +168,7 @@ local function item_fn()
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.MAST)
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL

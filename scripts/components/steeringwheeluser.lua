@@ -72,6 +72,7 @@ function SteeringWheelUser:SetSteeringWheel(steering_wheel)
 end
 
 function SteeringWheelUser:Steer(pos_x, pos_z)
+
 	local x, y, z = self.inst.Transform:GetWorldPosition()
 	if self.boat then
 		x, y, z = self.boat.Transform:GetWorldPosition()
@@ -81,13 +82,25 @@ function SteeringWheelUser:Steer(pos_x, pos_z)
 end
 
 function SteeringWheelUser:SteerInDir(dir_x, dir_z)
+	-- if you are on a boat and the target heading is close enough to the current heading, don't do a steer. 
+	local dontsteer = false
 	if self.boat ~= nil then
 		self.boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
-	end
 
-	local right_vec = TheCamera:GetRightVec()
-	self.should_play_left_turn_anim = VecUtil_Dot(right_vec.x, right_vec.z, dir_x, dir_z) > 0
-	self.inst:PushEvent("set_heading")
+		local tx,tz = self.boat.components.boatphysics:GetTargetRudderDirection()
+
+		local rx,rz = self.boat.components.boatphysics:GetRudderDirection()
+		local TOLLERANCE = 0.1
+
+		if math.abs(tx - rx)<TOLLERANCE and math.abs(tz - rz)<TOLLERANCE then
+			dontsteer = true
+		end
+	end
+	if not dontsteer then
+		local right_vec = TheCamera:GetRightVec()
+		self.should_play_left_turn_anim = VecUtil_Dot(right_vec.x, right_vec.z, dir_x, dir_z) > 0
+		self.inst:PushEvent("set_heading")
+	end
 end
 
 function SteeringWheelUser:GetBoat()

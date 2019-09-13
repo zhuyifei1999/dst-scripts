@@ -66,7 +66,10 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "This little rod won't do me much good.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2822,6 +2825,23 @@ return{
 
 		GESTALT = "We're all connected, eh?",
 
+		COOKIECUTTER = "That thing's hankering for a bite of my boat!",
+		COOKIECUTTERSHELL = "He was a tough nut to crack.",
+		COOKIECUTTERHAT = "Hope this shell protects me better than it protected the last guy.",
+		SALTSTACK = "Nature's full of amazing things, eh?",
+		SALTROCK = "Hey, that looks like a salt lick!",
+		SALTBOX = "It's like an icebox, but salt!",
+
+        GNARWAIL = "PLACEHOLDER",
+        GNARWAIL_HORN = "PLACEHOLDER",
+
+        MALBATROSS = "It just had to be a giant bird.",
+        MALBATROSS_FEATHER = "I don't trust anything that comes from a bird.",
+        MALBATROSS_BEAK = "Yeesh, there's still some feathers stuck to it.",
+        MAST_MALBATROSS_ITEM = "Guess even a bird can be useful once in a while.",
+        MAST_MALBATROSS = "I don't like the look of it.",
+		MALBATROSS_FEATHERED_WEAVE = "Why'd we go and ruin this perfectly good canvas?",
+
         WALKINGPLANK = "Hopefully we don't have to abandon ship.",
         OAR = "I wouldn't mind taking the boat out on the lake today.",
 		OAR_DRIFTWOOD = "Nice day for rowin', eh?.",
@@ -2853,6 +2873,7 @@ return{
         SPICE_GARLIC = "I suppose some spice couldn't hurt.",
         SPICE_SUGAR = "I prefer my syrup to be maple.",
         SPICE_CHILI = "Yep. That's a spicy sauce.",
+        SPICE_SALT = "Good fer melting ice, too!",
         MONSTERTARTARE = "Isn't there anything else to eat?",
         FRESHFRUITCREPES = "I can get maple syrup on that?",
         FROGFISHBOWL = "I'm not one to turn my nose up at a meal.",
