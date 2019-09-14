@@ -778,6 +778,10 @@ local function SetWereSounds(inst, mode)
     else
         inst.SoundEmitter:KillSound("flap")
         inst.SoundEmitter:KillSound("honk")
+        if inst.gooserippletask ~= nil then
+            inst.gooserippletask:Cancel()
+            inst.gooserippletask = nil
+        end
         inst.hurtsoundoverride =
             (mode == WEREMODES.BEAVER and "dontstarve/characters/woodie/hurt_beaver") or
             (mode == WEREMODES.MOOSE and "dontstarve/characters/woodie/moose/hurt") or
