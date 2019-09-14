@@ -48,6 +48,26 @@ local function DoMooseRunSounds(inst)
     DoRunSounds(inst)
 end
 
+local function DoGooseStepFX(inst)
+    if inst.components.drownable ~= nil and inst.components.drownable:IsOverWater() then
+        SpawnPrefab("weregoose_splash_med"..tostring(math.random(2))).entity:SetParent(inst.entity)
+    end
+end
+
+local function DoGooseWalkFX(inst)
+    if inst.components.drownable ~= nil and inst.components.drownable:IsOverWater() then
+        SpawnPrefab("weregoose_splash_less"..tostring(math.random(2))).entity:SetParent(inst.entity)
+    end
+end
+
+local function DoGooseRunFX(inst)
+    if inst.components.drownable ~= nil and inst.components.drownable:IsOverWater() then
+        SpawnPrefab("weregoose_splash").entity:SetParent(inst.entity)
+    else
+        SpawnPrefab("weregoose_feathers"..tostring(math.random(3))).entity:SetParent(inst.entity)
+    end
+end
+
 local function DoHurtSound(inst)
     if inst.hurtsoundoverride ~= nil then
         inst.SoundEmitter:PlaySound(inst.hurtsoundoverride, nil, inst.hurtsoundvolume)
@@ -432,7 +452,6 @@ local actionhandlers =
                 or nil
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
-    ActionHandler(ACTIONS.FISH_OCEAN, "fishing_ocean_pre"),
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -663,7 +682,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction" ),
+    ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction"),
     ActionHandler(ACTIONS.LOWER_SAIL_BOOST,
         function(inst, action)
             inst.sg.statemem.not_interrupted = true
@@ -732,7 +751,6 @@ local actionhandlers =
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
-	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
 }
 
 local events =
@@ -1693,6 +1711,9 @@ local states =
                         inst.sg.statemem.cb(inst)
                         inst.AnimState:PlayAnimation("revert_weregoose_pst")
                         PlayFootstep(inst)
+                        if inst.components.drownable ~= nil and inst.components.drownable:IsOverWater() then
+                            SpawnPrefab("weregoose_splash").entity:SetParent(inst.entity)
+                        end
                         SpawnPrefab("weregoose_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
                         inst.components.inventory:Open()
                         inst:SetCameraDistance()
@@ -2091,6 +2112,7 @@ local states =
                 t = math.floor((t - math.floor(t / len) * len) / FRAMES + .5)
                 if (t == 5 or t == 14) and t ~= inst.sg.statemem.gooseframe then
                     PlayFootstep(inst, .5, false)
+                    DoGooseStepFX(inst)
                 end
                 inst.sg.statemem.gooseframe = t
             end
@@ -3552,14 +3574,6 @@ local states =
             end),
         },
     },
-
-    State{
-        name = "fishing_ocean_pre",
-        onenter = function(inst)
-			inst:PerformBufferedAction()
-			inst.sg:GoToState("idle")
-		end,
-	},
 
     State{
         name = "fishing_pre",
@@ -6070,7 +6084,7 @@ local states =
                 elseif inst.sg.statemem.goose then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
-                    SpawnPrefab("weregoose_feathers"..tostring(math.random(3))).Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    DoGooseRunFX(inst)
                 end
             end),
             TimeEvent(12 * FRAMES, function(inst)
@@ -6160,14 +6174,14 @@ local states =
                 if inst.sg.statemem.goose then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
-                    SpawnPrefab("weregoose_feathers"..tostring(math.random(3))).Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    DoGooseRunFX(inst)
                 end
             end),]]
             TimeEvent(9 * FRAMES, function(inst)
                 if inst.sg.statemem.goose then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
-                    SpawnPrefab("weregoose_feathers"..tostring(math.random(3))).Transform:SetPosition(inst.Transform:GetWorldPosition())
+                    DoGooseRunFX(inst)
                 end
             end),
 
@@ -6176,12 +6190,14 @@ local states =
                 if inst.sg.statemem.goosegroggy then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
+                    DoGooseWalkFX(inst)
                 end
             end),
             TimeEvent(17 * FRAMES, function(inst)
                 if inst.sg.statemem.goosegroggy then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
+                    DoGooseWalkFX(inst)
                 end
             end),
         },
@@ -6256,6 +6272,11 @@ local states =
                 if inst.sg.statemem.goose or inst.sg.statemem.goosegroggy then
                     PlayFootstep(inst, .5, true)
                     DoFoleySounds(inst)
+                    if inst.sg.statemem.goosegroggy then
+                        DoGooseWalkFX(inst)
+                    else
+                        DoGooseStepFX(inst)
+                    end
                 end
             end),
         },
@@ -7002,7 +7023,7 @@ local states =
         timeline =
         {
             TimeEvent(0 * FRAMES, function(inst)          
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/LP","turn")
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/turn")
             end),
         },
 
@@ -7036,7 +7057,6 @@ local states =
 
         onexit = function(inst)
             inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,                        
 
         events =
@@ -7061,7 +7081,6 @@ local states =
 
         onexit = function(inst)
 			inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,
 
         events = 

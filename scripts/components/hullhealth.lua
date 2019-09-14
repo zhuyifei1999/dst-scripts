@@ -10,7 +10,6 @@ local HullHealth = Class(function(self, inst)
 
 	self.leak_damage = {}
 	self.leak_indicators = {}
-	self.leak_indicators_dynamic = {}
 	self.small_leak_dmg = 0.1
 	self.med_leak_dmg = 0.75
 	self.hull_dmg = 0
@@ -32,16 +31,6 @@ function HullHealth:UpdateHealth()
 
 	local hull_damage = 0
 	for k,v in pairs(self.leak_indicators) do
-		if v ~= nil and v:IsValid() then
-			local state = v.components.boatleak.current_state
-			if state == "small_leak" then
-				hull_damage = hull_damage + 0.5
-			elseif state == "med_leak" then
-				hull_damage = hull_damage + 1
-			end
-		end
-	end
-	for _,v in pairs(self.leak_indicators_dynamic) do
 		if v ~= nil and v:IsValid() then
 			local state = v.components.boatleak.current_state
 			if state == "small_leak" then

@@ -246,26 +246,24 @@ function FindWalkableOffset(position, start_angle, radius, attempts, check_los, 
                         TheWorld.Pathfinder:IsClear(
                             position.x, position.y, position.z,
                             x, y, z,
-                            { ignorewalls = ignore_walls ~= false, ignorecreep = true, allowocean = allow_water }))
+                            { ignorewalls = ignore_walls ~= false, ignorecreep = true }))
                     and (customcheckfn == nil or customcheckfn(Vector3(x, y, z)))
             end)
 end
 
 -- like FindWalkableOffset but only in the ocean
-function FindSwimmableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn, allow_boats)
+function FindSwimmableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
     return FindValidPositionByFan(start_angle, radius, attempts,
             function(offset)
                 local x = position.x + offset.x
                 local y = position.y + offset.y
                 local z = position.z + offset.z
-                return TheWorld.Map:IsOceanTileAtPoint(x, y, z)                             -- Location is in the ocean tile range
-                    and not TheWorld.Map:IsVisualGroundAtPoint(x, y, z)                     -- Location is NOT in the world overhang space
-                    and (allow_boats or TheWorld.Map:GetPlatformAtPoint(x, z) == nil)  -- The location either accepts boats, or is not the location of a boat
+                return (not TheWorld.Map:IsPassableAtPoint(x, y, z))
                     and (not check_los or
                         TheWorld.Pathfinder:IsClear(
                             position.x, position.y, position.z,
                             x, y, z,
-                            { ignorewalls = ignore_walls ~= false, ignorecreep = true, allowocean = true, ignoreLand = true }))
+                            { ignorewalls = ignore_walls ~= false, ignorecreep = true }))
                     and (customcheckfn == nil or customcheckfn(Vector3(x, y, z)))
             end)
 end

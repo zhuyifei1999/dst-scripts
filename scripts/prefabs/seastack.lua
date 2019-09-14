@@ -19,6 +19,7 @@ SetSharedLootTable( 'seastack',
 
 
 local function updateart(inst)
+
     local workleft = inst.components.workable.workleft
     inst.AnimState:PlayAnimation(
         (workleft > 6 and inst.stackid.."_full") or
@@ -59,7 +60,13 @@ local function OnCollide(inst, data)
     end
 end
 
-local function setupfloater(inst)
+
+
+local function SetupStack(inst, stackid)
+    if inst.stackid == nil then
+        inst.stackid = stackid or math.random(5)
+    end
+
     if inst.stackid == 4 then
         inst.components.floater:SetVerticalOffset(0.2)
         inst.components.floater:SetScale(0.85)
@@ -76,10 +83,8 @@ local function setupfloater(inst)
         inst.components.floater:SetVerticalOffset(0.15)
         inst.has_medium_state = true
     end
-end
 
-local function SetupStack(inst, stackid)
-    inst.stackid = stackid or inst.stackid or math.random(5)
+    updateart(inst)
 end
 
 local function onsave(inst, data)
@@ -88,7 +93,6 @@ end
 
 local function onload(inst, data)
     SetupStack(inst, data ~= nil and data.stackid or nil)
-    updateart(inst)
 end
 
 local function fn()
@@ -115,20 +119,18 @@ local function fn()
     MakeInventoryFloatable(inst, "med", nil, 0.85)
     inst.components.floater.bob_percent = 0
 
-    SetupStack(inst)
-
-    inst:DoTaskInTime(0, function(inst)
-        setupfloater(inst)
-        inst.components.floater:OnLandedServer()
-    end)
-
-    inst.entity:SetPristine()
+    inst.entity:SetPristine()    
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:AddComponent("lootdropper")
+    inst:DoTaskInTime(0, function(inst)
+        SetupStack(inst)
+        inst.components.floater:OnLandedServer()
+    end)
+
+    inst:AddComponent("lootdropper")     
     inst.components.lootdropper:SetChanceLootTable('seastack')
     inst.components.lootdropper.max_speed = 2
     inst.components.lootdropper.min_speed = 0.3
@@ -139,16 +141,11 @@ local function fn()
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.SEASTACK_MINE)
-    inst.components.workable:SetOnWorkCallback(OnWork)
-    inst.components.workable.savestate = true
+    inst.components.workable:SetOnWorkCallback(OnWork)    
 
     inst:AddComponent("inspectable")
 
     inst:ListenForEvent("on_collide", OnCollide)
-
-    if not POPULATING then
-        updateart(inst)
-    end
 
     --------SaveLoad
     inst.OnSave = onsave
@@ -157,14 +154,38 @@ local function fn()
     return inst
 end
 
+--[[
+local function checkforseastackspawning(inst)
+
+end
+]]
+
 local function spawnerfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    --[[Non-networked entity]]
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
 
-    inst:AddTag("CLASSIFIED")
+    inst.entity:SetPristine()    
 
+    if not TheWorld.ismastersim then
+        return inst
+    end
+    --[[
+    inst:DoTaskInTime(math.random()*20,function()
+            inst:DoPeriodicTask(20,function()
+                checkforseastackspawning(inst)
+            end)
+        end)
+        ]]
+--[[
+    inst:DoTaskInTime(0,function() 
+            local mark = SpawnPrefab("log")
+            local x,y,z = inst.Transform:GetWorldPosition()
+            mark.Transform:SetPosition(x,y,z)
+        end)
+        ]]
     return inst
 end
 

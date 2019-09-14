@@ -66,10 +66,7 @@ return{
 			INUSE = "Oh, excusez-moi.",
 			NOTEMPTY = "Oops, I've left some ingredients inside.",
         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Ah non, the fish are too deep for my rod to reach.",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2824,23 +2821,6 @@ return{
 
 		GESTALT = "Can you... get me home to dear Maman?",
 
-		COOKIECUTTER = "Could I interest you in something other than my boat?",
-		COOKIECUTTERSHELL = "Reminds me a bit of a durian... mostly the smell.",
-		COOKIECUTTERHAT = "Not the best looking hat, but c'est la vie.",
-		SALTSTACK = "What beautiful formations!",
-		SALTROCK = "Quelle chance! I've found salt!",
-		SALTBOX = "Just the thing for preserving ingredients.",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "Très mal, indeed.",
-        MALBATROSS_FEATHER = "\"Alouette, je te plumerai.\"",
-        MALBATROSS_BEAK = "I'm sure I could find a use for this.",
-        MAST_MALBATROSS_ITEM = "Light as many feathers!",
-        MAST_MALBATROSS = "It looks nice, non?",
-		MALBATROSS_FEATHERED_WEAVE = "This fabric is light as a feather!",
-
         WALKINGPLANK = "That doesn't look safe.",
         OAR = "Oar really?",
 		OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
@@ -2872,7 +2852,6 @@ return{
         SPICE_GARLIC = "Without garlic powder, life is not worth living.",
         SPICE_SUGAR = "The original all natural sweetener.",
         SPICE_CHILI = "My own special recipe.",
-        SPICE_SALT = "Salt, at last! I could weep!",
         MONSTERTARTARE = "This is a culinary abomination. I'm appalled.",
         FRESHFRUITCREPES = "Is this not a thing of beauty?",
         FROGFISHBOWL = "I think I've outdone myself, given the available ingredients.",

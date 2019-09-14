@@ -205,10 +205,9 @@ function Anchor:AnchorLowered()
     self.is_anchor_transitioning = nil
     self.inst.AnimState:SetDeltaTimeMultiplier(1)
     self.inst:RemoveTag("anchor_transitioning")
-    self.inst:PushEvent("anchor_lowered")
+    self.inst:PushEvent("anchor_lowered") 
     if self.boat then
         ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.3, 0.03, 0.5, self.boat, self.boat:GetPhysicsRadius(4))
-    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/ocean_hit")
     end
 end
 

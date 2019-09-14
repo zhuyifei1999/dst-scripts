@@ -284,7 +284,7 @@ local function runontimeout(inst)
     inst.sg:GoToState("run")
 end
 
-CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart)
     table.insert(states, State
     {
         name = "run_start",
@@ -298,8 +298,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         end,
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
-
-		onexit = onexits ~= nil and onexits.startonexit or nil,
 
         events =
         {
@@ -321,8 +319,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
 
         timeline = timelines ~= nil and timelines.runtimeline or nil,
 
-		onexit = onexits ~= nil and onexits.runonexit or nil,
-
         ontimeout = runontimeout,
     })
 
@@ -341,8 +337,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         end,
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
-
-		onexit = onexits ~= nil and onexits.endonexit or nil,
 
         events =
         {
@@ -367,7 +361,7 @@ local function walkontimeout(inst)
     inst.sg:GoToState("walk")
 end
 
-CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart)
     table.insert(states, State
     {
         name = "walk_start",
@@ -381,8 +375,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         end,
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
-
-		onexit = onexits ~= nil and onexits.startonexit or nil,
 
         events =
         {
@@ -403,8 +395,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
 
         timeline = timelines ~= nil and timelines.walktimeline or nil,
 
-		onexit = onexits ~= nil and onexits.walkonexit or nil,
-
         ontimeout = walkontimeout,
     })
 
@@ -423,8 +413,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         end,
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
-
-		onexit = onexits ~= nil and onexits.endonexit or nil,
 
         events =
         {
@@ -652,17 +640,14 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				elseif inst.sg.statemem.timeout then
 					inst.components.embarker:Cancel()
 					inst.components.locomotor:FinishHopping()
-
-					local x, y, z = inst.Transform:GetWorldPosition()
-					inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(x, y, z) and TheWorld.Map:GetPlatformAtPoint(x, z) == nil)
+	                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))                    
 				end
-            elseif inst.sg.statemem.timeout or  
-                   (inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition())) or 
-                   (not inst.components.locomotor.dest and not inst.components.locomotor.wantstomoveforward) then 
-				inst.components.embarker:Cancel()
-				inst.components.locomotor:FinishHopping()
-				local x, y, z = inst.Transform:GetWorldPosition()
-				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(x, y, z) and TheWorld.Map:GetPlatformAtPoint(x, z) == nil)
+			elseif inst.sg.statemem.timeout and not inst.sg.statemem.tryexit then
+				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+			elseif inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) then
+                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+            elseif not inst.components.locomotor.dest then
+                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
 			end
 		end,
 
@@ -675,20 +660,16 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
         events =
         {
             EventHandler("done_embark_movement", function(inst)
-				if not inst.AnimState:IsCurrentAnimation("jump_loop") then
-					inst.AnimState:PlayAnimation("jump_loop", false)
-				end
-				inst.sg.statemem.embarked = true
+				inst.AnimState:PlayAnimation("jump_loop", true)
+                inst.sg.statemem.embarked = true
             end),     
-            EventHandler("animover", function(inst)       
-				if not inst.AnimState:IsCurrentAnimation("jump_loop") then
-					if inst.AnimState:AnimDone() then                    
-						if not inst.components.embarker:HasDestination() then                                                               
-							inst.sg.statemem.tryexit = true
-						end                    
-					end 
-					inst.AnimState:PlayAnimation("jump_loop", false)
-				end
+            EventHandler("animqueueover", function(inst)                    
+                if inst.AnimState:AnimDone() then                    
+					if not inst.components.embarker:HasDestination() then                                                               
+						inst.sg.statemem.tryexit = true
+					end                    
+                end 
+                inst.AnimState:PlayAnimation("jump_loop", true)             
             end),
         },
 

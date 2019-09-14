@@ -12,7 +12,7 @@ end
 
 local function is_waterlined(tile)
 	-- should this tile have a water outline around it?
-	return IsLandTile(tile) --or tile == GROUND.OCEAN_BRINEPOOL
+	return IsLandTile(tile) or tile == GROUND.OCEAN_REEF
 end
 
 local function IsSurroundedByWater(x, y, radius)
@@ -258,9 +258,9 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 				local ground = world:GetTile(x, y)
 				if ground == GROUND.IMPASSABLE then
 					local nx, ny = x/width - 0.5, y/height - 0.5
-					--if simplexnoise2d(noise_scale_coral * (nx + offx_coral), noise_scale_coral * (ny + offy_coral), noise_octave_coral, noise_persistence_coral) > init_level_coral then
-					--	world:SetTile(x, y, GROUND.OCEAN_BRINEPOOL)
-					--else
+					if simplexnoise2d(noise_scale_coral * (nx + offx_coral), noise_scale_coral * (ny + offy_coral), noise_octave_coral, noise_persistence_coral) > init_level_coral then
+						world:SetTile(x, y, GROUND.OCEAN_REEF)
+					else
 						if simplexnoise2d(noise_scale_water * (nx + offx_water), noise_scale_water * (ny + offy_water), noise_octave_water, noise_persistence_water) > init_level_medium then
 							world:SetTile(x, y, GROUND.OCEAN_SWELL)
 						else
@@ -270,7 +270,7 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 								world:SetTile(x, y, GROUND.OCEAN_ROUGH)
 							end
 						end
-					--end
+					end
 				end
 			end
 		end
@@ -283,7 +283,7 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 
 		local cmlevels =
 		{
-			{GROUND.OCEAN_BRINEPOOL, 1.0}
+			{GROUND.OCEAN_REEF, 1.0}
 		}
 		local cm, cmw, cmh = world:GenerateBlendedMap(kernelSize, sigma, cmlevels, 0.0)
 		--print(width, height, cmw, cmh)
@@ -315,8 +315,8 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 					local cmlevel = cm[y * width + x] * falloff
 					local glevel = g[y * width + x] * falloff
 					if ellevel > final_level_shallow then
-						if cmlevel > final_level_coral and tile == GROUND.OCEAN_BRINEPOOL then
-							world:SetTile(x, y, GROUND.OCEAN_BRINEPOOL)
+						if cmlevel > final_level_coral and tile == GROUND.OCEAN_REEF then
+							world:SetTile(x, y, GROUND.OCEAN_REEF)
 						else
 							world:SetTile(x, y, GROUND.OCEAN_COASTAL)
 						end
@@ -360,12 +360,12 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 
 		end
 
-		local offset = OCEAN_WATERFALL_MAX_DIST
-		local init_d = OCEAN_WATERFALL_MAX_DIST
+		local offset = 14
+		local init_d = 14
 		local state = {init_d, init_d, init_d}
 
 		local tunings = {
-			middle = {max = math.floor(OCEAN_WATERFALL_MAX_DIST * .7), deeper_chance = 0.25, shallower_chance = 0.25},
+			middle = {max = 9, deeper_chance = 0.25, shallower_chance = 0.25},
 			corner = {max = init_d, deeper_chance = 0.75, shallower_chance = 0.1},
 		}
 	
@@ -429,8 +429,8 @@ function AddShoreline(width, height)
 		for x = 0, width - 1, 1 do
 			local ground = world:GetTile(x, y)
 			if IsOceanTile(ground) and not IsSurroundedByWaterOrInvalid(x, y, 1) then
-				if ground == GROUND.OCEAN_BRINEPOOL then
-					world:SetTile(x, y, GROUND.OCEAN_BRINEPOOL_SHORE)
+				if ground == GROUND.OCEAN_REEF then
+					world:SetTile(x, y, GROUND.OCEAN_REEF_SHORE)
 				else
 					world:SetTile(x, y, GROUND.OCEAN_COASTAL_SHORE)
 				end
@@ -496,11 +496,10 @@ local function checkAllTiles(populating_tile, x1, y1, x2, y2)
 	return true, 0, 0
 end
 
-local function findLayoutPositions(radius, edge_dist, populating_tile, count, min_dist_from_land)
+local function findLayoutPositions(radius, edge_dist, populating_tile, count)
 	local positions = {}
 	local size = 2 * radius
 	edge_dist = edge_dist or 0
-	min_dist_from_land = min_dist_from_land or 0
 
 	local width, height = world:GetWorldSize()
 	local adj_width, adj_height = width - 2 * edge_dist - size, height - 2 * edge_dist - size
@@ -513,11 +512,11 @@ local function findLayoutPositions(radius, edge_dist, populating_tile, count, mi
 			-- check the corners first
 			local x = ((start_x + i) % adj_width) + edge_dist
 			local x2, y2 = x + size - 1, y + size - 1
-			if checkTile(x2 + min_dist_from_land, y - min_dist_from_land, populating_tile) and checkTile(x2 + min_dist_from_land, y2 + min_dist_from_land, populating_tile) then
-				if checkTile(x - min_dist_from_land, y - min_dist_from_land, populating_tile) and checkTile(x - min_dist_from_land, y2 + min_dist_from_land, populating_tile) then
+			if checkTile(x2, y, populating_tile) and checkTile(x2, y2, populating_tile) then
+				if checkTile(x, y, populating_tile) and checkTile(x, y2, populating_tile) then
 					--print("Found 4 corners", x, y, x2, y2)
 					--check all tiles
-					local ok, last_x, last_y = checkAllTiles(populating_tile, x - min_dist_from_land, y - min_dist_from_land, x2 + min_dist_from_land, y2 + min_dist_from_land)
+					local ok, last_x, last_y = checkAllTiles(populating_tile, x, y, x2, y2)
 					if ok == true then
 						--bottom-left
 						--print(string.format("Location found (%4.2f, %4.2f)", x, y))
@@ -528,7 +527,6 @@ local function findLayoutPositions(radius, edge_dist, populating_tile, count, mi
 						i = i + size + 1
 					else
 						--print(string.format("Failed at (%4.2f, %4.2f) skip, (%4.2f, %4.2f)", last_x, last_y, x, y))
-						last_x = math.clamp(last_x, x, x2)
 						i = i + last_x - x + 1
 					end
 				else
@@ -546,7 +544,7 @@ local function findLayoutPositions(radius, edge_dist, populating_tile, count, mi
 	return positions
 end
 
-local function GetLayoutSize(layout, prefabs) -- box diameter
+local function GetLayoutRadius(layout, prefabs)
 	assert(layout ~= nil)
 	assert(prefabs ~= nil)
 
@@ -571,9 +569,9 @@ local function GetLayoutSize(layout, prefabs) -- box diameter
 	return size
 end
 
-local function PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlaceLayoutFn, min_dist_from_land)
-	local layoutsize = GetLayoutSize(layout, prefabs)
-	local positions = findLayoutPositions(layoutsize, OCEAN_WATERFALL_MAX_DIST + 2, populating_tile, 1, min_dist_from_land)
+local function PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlaceLayoutFn)
+	local layoutsize = GetLayoutRadius(layout, prefabs)
+	local positions = findLayoutPositions(layoutsize, OCEAN_MAPWRAPPER_WARN_RANGE + 8, populating_tile, 1)
 	if #positions > 0 then
 		local pos = math.random(#positions)
 		local adj = 0.5 * (positions[pos].size - layoutsize)
@@ -592,7 +590,7 @@ local function PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlac
 	return false
 end
 
-function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_tile, min_dist_from_land)
+function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_tile)
 	print("[Ocean] Placing ocean set pieces.")
     
 	local total = 0
@@ -605,8 +603,6 @@ function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_til
 		    obj_layout.ReserveAndPlaceLayout("POSITIONED", layout, prefabs, add_entity, position, world)
 	    end
 
-		local set_pieces_to_place = {}
-
 	    for name, data in pairs(set_pieces) do
 		    local layout = obj_layout.LayoutForDefinition(name)
 		    local prefabs = obj_layout.ConvertLayoutToEntitylist(layout)
@@ -615,17 +611,12 @@ function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_til
 						    or data
 		    count = type(count) == "function" and count() or count
 		    for i = 1, count or 1 do
-				table.insert(set_pieces_to_place, {layout = layout, prefabs = prefabs})
-			end
+			    if PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlaceLayoutFn) then
+				    num_placed = num_placed + 1
+			    end
+			    total = total + 1
+		    end
 	    end
-
-		shuffleArray(set_pieces_to_place)
-		for _, v in ipairs(set_pieces_to_place) do
-			if PlaceOceanLayout(v.layout, v.prefabs, populating_tile, ReserveAndPlaceLayoutFn, min_dist_from_land) then
-				num_placed = num_placed + 1
-			end
-			total = total + 1
-		end
     end
 
 	print("[Ocean] Placed "..tostring(num_placed).." of "..tostring(total).." ocean set pieces.")

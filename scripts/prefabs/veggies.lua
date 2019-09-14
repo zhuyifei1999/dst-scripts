@@ -1,6 +1,6 @@
 require "tuning"
 
-local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable, secondary_foodtype)
+local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable)
     return {
         health = health,
         hunger = hunger,
@@ -14,7 +14,6 @@ local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, coo
         float_settings = float_settings,
         cooked_float_settings = cooked_float_settings,
 		dryable = dryable,
-		secondary_foodtype = secondary_foodtype,
     }
 end
 
@@ -63,15 +62,11 @@ VEGGIES =
 
     berries = MakeVegStats(0,   TUNING.CALORIES_TINY,   0,  TUNING.PERISH_FAST, 0,
                                 TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,    TUNING.PERISH_SUPERFAST, 0,
-                                {"med", nil, 0.7},      {"med", nil, 0.65},
-								nil,
-								FOODTYPE.BERRY),
+                                {"med", nil, 0.7},      {"med", nil, 0.65}),
 
-    berries_juicy = MakeVegStats(0,  TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
+    berries_juicy = MakeVegStats(0,   TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
                                      TUNING.CALORIES_MEDSMALL,  TUNING.HEALING_SMALL,    TUNING.PERISH_ONE_DAY, 0,
-                                     {"med", nil, 0.7}, nil,
-									 nil,
-									 FOODTYPE.BERRY),
+                                     {"med", nil, 0.7}),
 
     cactus_meat = MakeVegStats(0, TUNING.CALORIES_SMALL, -TUNING.HEALING_SMALL, TUNING.PERISH_MED, -TUNING.SANITY_TINY,
                                   TUNING.CALORIES_SMALL, TUNING.HEALING_TINY, TUNING.PERISH_MED, TUNING.SANITY_MED),
@@ -279,7 +274,6 @@ local function MakeVeggie(name, has_seeds)
         inst.components.edible.hungervalue = VEGGIES[name].hunger
         inst.components.edible.sanityvalue = VEGGIES[name].sanity or 0      
         inst.components.edible.foodtype = FOODTYPE.VEGGIE
-        inst.components.edible.secondaryfoodtype = VEGGIES[name].secondary_foodtype
 
         inst:AddComponent("perishable")
         inst.components.perishable:SetPerishTime(VEGGIES[name].perishtime)
@@ -371,7 +365,6 @@ local function MakeVeggie(name, has_seeds)
         inst.components.edible.hungervalue = VEGGIES[name].cooked_hunger
         inst.components.edible.sanityvalue = VEGGIES[name].cooked_sanity or 0
         inst.components.edible.foodtype = FOODTYPE.VEGGIE
-        inst.components.edible.secondaryfoodtype = VEGGIES[name].secondary_foodtype
 
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

@@ -105,9 +105,9 @@ function WalkablePlatform:GetEntitiesOnPlatform(must_have_tags, ignore_tags)
     return filtered_entities
 end
 
-function WalkablePlatform:GetEmbarkPosition(embarker_x, embarker_z, embarker_min_dist)
+function WalkablePlatform:GetEmbarkPosition(embarker_x, embarker_z)
     local embark_distance_from_edge = 0.5
-    local embarkable_radius = self.radius - embark_distance_from_edge - (embarker_min_dist ~= nil and embarker_min_dist or 0)
+    local embarkable_radius = self.radius - embark_distance_from_edge
     local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
     local embarkable_x, embarkable_y, embarkable_z = self.inst.Transform:GetWorldPosition()
     local embark_x, embark_z = VecUtil_Normalize(embarker_x - embarkable_x, embarker_z - embarkable_z)

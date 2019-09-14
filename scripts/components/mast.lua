@@ -1,5 +1,5 @@
-local function onissailraised(self)
-	if self.is_sail_raised then
+local function onissailraised(self, issailraised)
+	if issailraised then
 		self.inst:RemoveTag("saillowered")
 		self.inst:AddTag("sailraised")
 	else
@@ -13,8 +13,8 @@ local function on_remove(inst)
 
 	local mast_sinking
 
-	if mast ~= nil and mast.boat ~= nil and mast.sink_fx ~= nil then        
-		mast_sinking = SpawnPrefab(mast.sink_fx)
+	if mast.boat ~= nil then        
+		mast_sinking = SpawnPrefab("boat_mast_sink_fx")
     else
         mast_sinking = SpawnPrefab("collapse_small")
 	end
@@ -32,14 +32,14 @@ end
 local Mast = Class(function(self, inst)
     self.inst = inst
     self.is_sail_raised = false
-	self.inverted = false
     self.sail_force = TUNING.BOAT.MAST.BASIC.SAIL_FORCE
     self.has_speed = false
     self.boat = nil
     self.rudder = nil
-  --  self.max_velocity_mod = TUNING.BOAT.MAST.BASIC.MAX_VELOCITY_MOD
+    self.max_velocity_mod = TUNING.BOAT.MAST.BASIC.MAX_VELOCITY_MOD
     self.max_velocity = TUNING.BOAT.MAST.BASIC.MAX_VELOCITY
     self.rudder_turn_drag = TUNING.BOAT.MAST.BASIC.RUDDER_TURN_DRAG
+
 
     self.furlunits_max = 4.5 -- takes 1 person 5 seconds
     self.furlunits = self.furlunits_max
@@ -63,32 +63,8 @@ nil,
     is_sail_raised = onissailraised,
 })
 
-function Mast:SetReveseDeploy(set)
-	self.furlunits = set and 0 or self.furlunits
-	self.is_sail_raised = set
-    self.inverted = set    
-end
-
 function Mast:SetSailForce(set)
     self.sail_force = set
-end
-
-function Mast:CalcSailForce()
-	if self.inverted and (not self.is_sail_raised or self.is_sail_transitioning) then
-		return self.sail_force * (self.furlunits / self.furlunits_max)
-	elseif not self.inverted and self.is_sail_raised then
-		return self.sail_force * (1 - (self.furlunits / self.furlunits_max))
-	end
-	return 0
-end
-
-function Mast:CalcMaxVelocity()
-	if self.inverted and (not self.is_sail_raised or self.is_sail_transitioning) then
-		return self.max_velocity * (self.furlunits / self.furlunits_max)
-	elseif not self.inverted and self.is_sail_raised then
-		return self.max_velocity * (1 - (self.furlunits / self.furlunits_max))
-	end
-	return 0
 end
 
 function Mast:SetVelocityMod(set)
@@ -148,7 +124,7 @@ function Mast:GetCurrentFurlUnits()
     return total_strength
 end
 
-function Mast:UnfurlSail() -- lowering sail
+function Mast:UnfurlSail()
     self.is_sail_transitioning = true
     self.inst:AddTag("sail_transitioning")
     self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_open")     
@@ -156,7 +132,7 @@ function Mast:UnfurlSail() -- lowering sail
     self.inst.AnimState:PushAnimation("open_pre")        
 end
 
-function Mast:SailFurled() -- sail is raised
+function Mast:SailFurled()
 	self.furlunits = self.furlunits_max
     self.is_sail_transitioning = nil
     self.inst:RemoveTag("sail_transitioning")
@@ -164,31 +140,22 @@ function Mast:SailFurled() -- sail is raised
 		return
 	end
 
-	self.is_sail_raised = false
-	if self.inverted then
-		self.inst.AnimState:PlayAnimation("knot_tie", false)
-		self.inst.AnimState:PushAnimation("open_loop", true)
-	else
-		self.inst.AnimState:PlayAnimation("knot_tie", false)
-		self.inst.AnimState:PushAnimation("closed", false)
-	end
-	self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/top") 
+    self.is_sail_raised = false
+    self.inst.AnimState:PlayAnimation("knot_tie", false)
+    self.inst.AnimState:PushAnimation("closed", false)
+    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/top") 
 
     for furler,data in pairs(self.furlers)do
         self:RemoveSailFurler(furler)
     end
 end
 
-function Mast:SailUnfurled() -- sail is lowered
+function Mast:SailUnfurled()
 	self.furlunits = 0
     self.is_sail_transitioning = nil
     self.inst:RemoveTag("sail_transitioning")
     self.is_sail_raised = true
-	if self.inverted then
-		self.inst.AnimState:PlayAnimation("closed", false)
-	else
-	    self.inst.AnimState:PlayAnimation("open_loop", true)
-	end
+    self.inst.AnimState:PlayAnimation("open_loop", true)
 end
 
 function Mast:GetFurled0to1()

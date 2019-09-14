@@ -806,17 +806,20 @@ local function OnLoad(inst, data)
     end
 
     inst:DoTaskInTime(0, function()
-        local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
+        --V2C: HACK! enabled false instead of nil means it was overriden by weregoose on load.
+        --     Please refactor drownable and this block to use POST LOAD timing instead.
+        if not (inst.components.drownable ~= nil and inst.components.drownable.enabled == false) then
+            local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
 
-        if not TheWorld.Map:IsPassableAtPoint(my_x, my_y, my_z) then
-        for k,v in pairs(Ents) do            
-                if v:IsValid() and v:HasTag("multiplayer_portal") then
-                    inst.Transform:SetPosition(v.Transform:GetWorldPosition())
-                    inst:SnapCamera()
+            if not TheWorld.Map:IsPassableAtPoint(my_x, my_y, my_z) then
+            for k,v in pairs(Ents) do
+                    if v:IsValid() and v:HasTag("multiplayer_portal") then
+                        inst.Transform:SetPosition(v.Transform:GetWorldPosition())
+                        inst:SnapCamera()
+                    end
                 end
-            end            
+            end
         end
-
     end)
 end
 
@@ -1178,7 +1181,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_bugnet.zip"),
         Asset("ANIM", "anim/player_actions_unsaddle.zip"),
         Asset("ANIM", "anim/player_actions_fishing.zip"),
-        Asset("ANIM", "anim/player_actions_fishing_ocean.zip"),
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),

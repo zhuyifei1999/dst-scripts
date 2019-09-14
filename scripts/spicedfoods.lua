@@ -31,7 +31,6 @@ local SPICES =
     SPICE_GARLIC = { oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
     SPICE_SUGAR  = { oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
     SPICE_CHILI  = { oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
-    SPICE_SALT   = {},
 }
 
 function GenerateSpicedFoods(foods)
