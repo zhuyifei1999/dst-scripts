@@ -586,13 +586,15 @@ local function SetWereDrowning(inst, mode)
             end
         elseif inst.components.drownable.enabled == false then
             inst.components.drownable.enabled = true
-            inst.Physics:ClearCollisionMask()
-            inst.Physics:CollidesWith(COLLISION.WORLD)
-            inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-            inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-            inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-            inst.Physics:CollidesWith(COLLISION.GIANTS)
-            inst.Physics:Teleport(inst.Transform:GetWorldPosition())
+            if not inst:HasTag("playerghost") then
+                inst.Physics:ClearCollisionMask()
+                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+                inst.Physics:CollidesWith(COLLISION.GIANTS)
+                inst.Physics:Teleport(inst.Transform:GetWorldPosition())
+            end
         end
     end
 end
