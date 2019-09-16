@@ -247,6 +247,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         inst:AddTag("bird")
         inst:AddTag(name)
         inst:AddTag("smallcreature")
+        inst:AddTag("likewateroffducksback")
 
         --cookable (from cookable component) added to pristine state for optimization
         inst:AddTag("cookable")
@@ -263,7 +264,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         MakeFeedableSmallLivestockPristine(inst)
 
         if water_bank ~= nil then
-            MakeInventoryFloatable(inst)
+            MakeInventoryFloatable(inst)                        
         end
 
         inst.entity:SetPristine()

@@ -552,13 +552,19 @@ end
 local function OnIsFullmoon(inst, isfullmoon)
     if not isfullmoon then
         inst.fullmoontriggered = nil
+        if inst.components.wereness:GetWereMode() == "fullmoon" then
+            inst.components.wereness:SetWereMode(nil)
+            if not IsWereMode(inst.weremode:value()) then
+                inst.components.wereness:SetPercent(0, true)
+            end
+        end
     elseif not inst.fullmoontriggered then
         inst.fullmoontriggered = true
         local pct = inst.components.wereness:GetPercent()
         if pct > 0 then
             inst.components.wereness:SetPercent(1)
         else
-            inst.components.wereness:SetWereMode(WEREMODE_NAMES[math.random(#WEREMODE_NAMES)])
+            inst.components.wereness:SetWereMode("fullmoon")
             inst.components.wereness:SetPercent(1, true)
         end
     end
@@ -1117,15 +1123,17 @@ local function onwerenesschange(inst)
         end
     elseif inst.components.wereness:GetPercent() > 0 then
         local weremode = inst.components.wereness:GetWereMode()
-        weremode = weremode ~= nil and WEREMODES[string.upper(weremode)] or nil
-        if IsWereMode(weremode) then
-            inst:PushEvent("transform_wereplayer", {
-                mode = WEREMODE_NAMES[weremode],
-                cb = (weremode == WEREMODES.BEAVER and onbecamebeaver) or
-                    (weremode == WEREMODES.MOOSE and onbecamemoose) or
-                    (--[[weremode == WEREMODES.GOOSE and]] onbecamegoose) or
-                    nil
-            })
+        if weremode ~= nil then
+            weremode = weremode == "fullmoon" and math.random(#WEREMODE_NAMES) or WEREMODES[string.upper(weremode)]
+            if IsWereMode(weremode) then
+                inst:PushEvent("transform_wereplayer", {
+                    mode = WEREMODE_NAMES[weremode],
+                    cb = (weremode == WEREMODES.BEAVER and onbecamebeaver) or
+                        (weremode == WEREMODES.MOOSE and onbecamemoose) or
+                        (--[[weremode == WEREMODES.GOOSE and]] onbecamegoose) or
+                        nil
+                })
+            end
         end
     end
 end

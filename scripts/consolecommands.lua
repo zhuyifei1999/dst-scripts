@@ -843,6 +843,14 @@ function c_summonbearger()
     end
 end
 
+function c_summonmalbatross()
+    local player = ConsoleCommandPlayer()
+    if player then
+        print("Summoning malbatross at the fish shoal nearest to", player)
+        TheWorld.components.malbatrossspawner:Summon(player)
+    end
+end
+
 function c_gatherplayers()
     local x,y,z = ConsoleWorldPosition():Get()
     for k,v in pairs(AllPlayers) do
@@ -1202,9 +1210,10 @@ function c_makeboat()
 	inst.Transform:SetPosition(x + 2.25, y, z + 2.25)
 
 	inst = SpawnPrefab("oar")
-	inst.Transform:SetPosition(x, y, z - 3.25)
+	inst.Transform:SetPosition(x + 1, y, z - 2)
 	inst = SpawnPrefab("oar_driftwood")
 	inst.Transform:SetPosition(x + 1, y, z - 1.25)
+
 
 	inst = SpawnPrefab("mast_item")
 	inst.Transform:SetPosition(x - 1, y, z + 1.25)

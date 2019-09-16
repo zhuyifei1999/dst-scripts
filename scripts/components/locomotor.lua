@@ -1176,6 +1176,10 @@ function LocoMotor:OnUpdate(dt)
     self.time_before_next_hop_is_allowed = math.max(self.time_before_next_hop_is_allowed - dt, 0)
 end
 
+function LocoMotor:IsAquatic()
+	return self.pathcaps ~= nil and self.pathcaps.allowocean == true and self.pathcaps.ignoreLand == true
+end
+
 function LocoMotor:FindPath()
     --Print(VERBOSITY.DEBUG, "LocoMotor:FindPath", self.inst.prefab)
 

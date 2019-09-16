@@ -12,6 +12,8 @@ local watergen =
 	shallowRadius = 5,
 	mediumRadius = 0,
 
+	ocean_prefill_setpieces_min_land_dist = 5, -- min distance between land and this set piece, should be no less than shallowRadius or the squarefill will stomp the set piece
+
 	--noise Google 'Perlin noise' to see what is making, they are like cloud textures
 	--one noise map is made for coral and another for all other water
 	noise_octave_water = 6,
@@ -40,7 +42,7 @@ local watergen =
 	ellevels =
 	{
 		--'elevation' levels
-		{GROUND.OCEAN_REEF, 1.0},
+		{GROUND.OCEAN_BRINEPOOL, 1.0},
 --		{GROUND.PEBBLEBEACH, 1.0},
 --		{GROUND.METEOR, 1.0},
 --		{GROUND.MANGROVE, 1.0},

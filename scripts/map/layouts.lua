@@ -904,6 +904,27 @@ local ExampleLayout =
 		}
     }),
 
+	["BrinePool1"] = StaticLayout.Get("map/static_layouts/brinepool1", {
+		areas =
+		{
+			saltstack_area = function() return math.random() < 0.9 and {"saltstack"} or nil end,
+		}
+    }),
+
+	["BrinePool2"] = StaticLayout.Get("map/static_layouts/brinepool2", {
+		areas =
+		{
+			saltstack_area = function() return math.random() < 0.9 and {"saltstack"} or nil end,
+		}
+    }),
+
+	["BrinePool3"] = StaticLayout.Get("map/static_layouts/brinepool3", {
+		areas =
+		{
+			saltstack_area = function() return math.random() < 0.9 and {"saltstack"} or nil end,
+		}
+    }),
+
 
 --------------------------------------------------------------------------------
 -- Return of Them Retrofitting
