@@ -83,24 +83,22 @@ function ChaseAndAttack:Visit()
                 --angle = self.inst:GetAngleToPoint(target_position)
             end
 
-            if not self.inst.sg:HasStateTag("longattack") then
-                local r = self.inst:GetPhysicsRadius(0) + combat.target:GetPhysicsRadius(-.1) + .1
-                if (running and dsq > r * r) or (not running and dsq > combat:CalcAttackRangeSq()) then
-                    --self.inst.components.locomotor:RunInDirection(angle)
-                    self.inst.components.locomotor:GoToPoint(target_position, nil, not self.walk)
-                elseif not (self.inst.sg ~= nil and self.inst.sg:HasStateTag("jumping")) then
-                    self.inst.components.locomotor:Stop()
-                    if self.inst.sg:HasStateTag("canrotate") then
-                        self.inst:FacePoint(facing_point)
-                    end
+            local r = self.inst:GetPhysicsRadius(0) + combat.target:GetPhysicsRadius(-.1) + .1
+            if (running and dsq > r * r) or (not running and dsq > combat:CalcAttackRangeSq()) then
+                --self.inst.components.locomotor:RunInDirection(angle)
+                self.inst.components.locomotor:GoToPoint(target_position, nil, not self.walk)
+            elseif not (self.inst.sg ~= nil and self.inst.sg:HasStateTag("jumping")) then
+                self.inst.components.locomotor:Stop()
+                if self.inst.sg:HasStateTag("canrotate") then
+                    self.inst:FacePoint(facing_point)
                 end
+            end
 
-                if combat:TryAttack() then
-                    -- reset chase timer when attack hits, not on attempts
-                elseif self.startruntime == nil then
-                    self.startruntime = GetTime()
-                    self.inst.components.combat:BattleCry()
-                end
+            if combat:TryAttack() then
+                -- reset chase timer when attack hits, not on attempts
+            elseif self.startruntime == nil then
+                self.startruntime = GetTime()
+                self.inst.components.combat:BattleCry()
             end
 
             if self.max_attacks ~= nil and self.numattacks >= self.max_attacks then

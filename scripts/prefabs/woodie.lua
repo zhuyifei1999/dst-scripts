@@ -755,7 +755,7 @@ local function OnNewGooseState(inst, data)
     if not GOOSE_FLAP_STATES[data.statename] or (inst.components.grogginess ~= nil and inst.components.grogginess.isgroggy) then
         inst.SoundEmitter:KillSound("flap")
         if inst.gooserippletask == nil then
-            inst.gooserippletask = inst:DoPeriodicTask(.7, DoRipple)
+            inst.gooserippletask = inst:DoPeriodicTask(.7, DoRipple, FRAMES)
         end
     else
         if not inst.SoundEmitter:PlayingSound("flap") then
@@ -1114,8 +1114,7 @@ local function onwerenesschange(inst)
     if inst.sg:HasStateTag("nomorph") or
         inst.sg:HasStateTag("silentmorph") or
         inst:HasTag("playerghost") or
-        inst.components.health:IsDead() or
-        not inst.entity:IsVisible() then
+        inst.components.health:IsDead() then
         return
     elseif IsWereMode(inst.weremode:value()) then
         if inst.components.wereness:GetPercent() <= 0 then
@@ -1124,7 +1123,17 @@ local function onwerenesschange(inst)
     elseif inst.components.wereness:GetPercent() > 0 then
         local weremode = inst.components.wereness:GetWereMode()
         if weremode ~= nil then
-            weremode = weremode == "fullmoon" and math.random(#WEREMODE_NAMES) or WEREMODES[string.upper(weremode)]
+            if weremode ~= "fullmoon" then
+                weremode = WEREMODES[string.upper(weremode)]
+            elseif TheWorld.state.isfullmoon then
+                weremode = math.random(#WEREMODE_NAMES)
+            else
+                weremode = WEREMODES.NONE
+                inst.components.wereness:SetWereMode(nil)
+                if not IsWereMode(inst.weremode:value()) then
+                    inst.components.wereness:SetPercent(0, true)
+                end
+            end
             if IsWereMode(weremode) then
                 inst:PushEvent("transform_wereplayer", {
                     mode = WEREMODE_NAMES[weremode],
@@ -1285,6 +1294,11 @@ end
 local function onload(inst)
     if IsWereMode(inst.weremode:value()) and not inst:HasTag("playerghost") then
         inst.components.inventory:Close()
+        if inst.components.wereness:GetPercent() <= 0 then
+            --under these conditions, we won't get a "werenessdelta" event on load
+            --but we do want to trigger a transformation back to human right away.
+            onwerenesschange(inst)
+        end
     end
 end
 

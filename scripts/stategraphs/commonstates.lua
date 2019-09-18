@@ -284,7 +284,7 @@ local function runontimeout(inst)
     inst.sg:GoToState("run")
 end
 
-CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart)
     table.insert(states, State
     {
         name = "run_start",
@@ -298,8 +298,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         end,
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
-
-		onexit = onexits ~= nil and onexits.startonexit or nil,
 
         events =
         {
@@ -321,8 +319,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
 
         timeline = timelines ~= nil and timelines.runtimeline or nil,
 
-		onexit = onexits ~= nil and onexits.runonexit or nil,
-
         ontimeout = runontimeout,
     })
 
@@ -341,8 +337,6 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         end,
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
-
-		onexit = onexits ~= nil and onexits.endonexit or nil,
 
         events =
         {
@@ -367,7 +361,7 @@ local function walkontimeout(inst)
     inst.sg:GoToState("walk")
 end
 
-CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart)
     table.insert(states, State
     {
         name = "walk_start",
@@ -381,8 +375,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         end,
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
-
-		onexit = onexits ~= nil and onexits.startonexit or nil,
 
         events =
         {
@@ -403,8 +395,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
 
         timeline = timelines ~= nil and timelines.walktimeline or nil,
 
-		onexit = onexits ~= nil and onexits.walkonexit or nil,
-
         ontimeout = walkontimeout,
     })
 
@@ -423,8 +413,6 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         end,
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
-
-		onexit = onexits ~= nil and onexits.endonexit or nil,
 
         events =
         {
@@ -553,7 +541,13 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
 
             local nextstate = "hop_pst_complete"
 			if data ~= nil then
-				nextstate = data.landed_in_water and landed_in_water_state
+				nextstate = (
+                                data.landed_in_water and landed_in_water_state ~= nil and
+                                (
+                                    type(landed_in_water_state) ~= "function" and landed_in_water_state or
+                                    landed_in_water_state(inst)
+                                )
+                            )
 							 or data.queued_post_land_state
 							 or nextstate
 			end
@@ -604,14 +598,11 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
     })
 end
 
-CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, timelines, updates)
+CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, timelines)
 	config = config or {}
 	anims = anims or {}
 	timelines = timelines or {}
-
-	local onenters = (config ~= nil and config.onenters ~= nil) and config.onenters or nil
-	local onexits = (config ~= nil and config.onexits ~= nil) and config.onexits or nil
-
+	
 	local base_hop_pre_timeline = {
         TimeEvent(config.swimming_clear_collision_frame or 0, function(inst) 
 			if inst.sg.statemem.swimming then
@@ -644,10 +635,6 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
                 end                
                 inst.components.locomotor:RunForward()
 			end
-
-			if onenters ~= nil and onenters.hop_pre ~= nil then
-				onenters.hop_pre(inst)
-			end
         end,
 
 	    onupdate = function(inst,dt)                
@@ -659,17 +646,14 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				elseif inst.sg.statemem.timeout then
 					inst.components.embarker:Cancel()
 					inst.components.locomotor:FinishHopping()
-
-					local x, y, z = inst.Transform:GetWorldPosition()
-					inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(x, y, z) and TheWorld.Map:GetPlatformAtPoint(x, z) == nil)
+	                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))                    
 				end
-            elseif inst.sg.statemem.timeout or  
-                   (inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition())) or 
-                   (not inst.components.locomotor.dest and not inst.components.locomotor.wantstomoveforward) then 
-				inst.components.embarker:Cancel()
-				inst.components.locomotor:FinishHopping()
-				local x, y, z = inst.Transform:GetWorldPosition()
-				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(x, y, z) and TheWorld.Map:GetPlatformAtPoint(x, z) == nil)
+			elseif inst.sg.statemem.timeout and not inst.sg.statemem.tryexit then
+				inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+			elseif inst.sg.statemem.tryexit and inst.sg.statemem.swimming == TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) then
+                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
+            elseif not inst.components.locomotor.dest then
+                inst.sg:GoToState("hop_pst", not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()))
 			end
 		end,
 
@@ -682,20 +666,16 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
         events =
         {
             EventHandler("done_embark_movement", function(inst)
-				if not inst.AnimState:IsCurrentAnimation("jump_loop") then
-					inst.AnimState:PlayAnimation("jump_loop", false)
-				end
-				inst.sg.statemem.embarked = true
+				inst.AnimState:PlayAnimation("jump_loop", true)
+                inst.sg.statemem.embarked = true
             end),     
-            EventHandler("animover", function(inst)       
-				if not inst.AnimState:IsCurrentAnimation("jump_loop") then
-					if inst.AnimState:AnimDone() then                    
-						if not inst.components.embarker:HasDestination() then                                                               
-							inst.sg.statemem.tryexit = true
-						end                    
-					end 
-					inst.AnimState:PlayAnimation("jump_loop", false)
-				end
+            EventHandler("animqueueover", function(inst)                    
+                if inst.AnimState:AnimDone() then                    
+					if not inst.components.embarker:HasDestination() then                                                               
+						inst.sg.statemem.tryexit = true
+					end                    
+                end 
+                inst.AnimState:PlayAnimation("jump_loop", true)             
             end),
         },
 
@@ -704,10 +684,6 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 			if inst.components.embarker:HasDestination() then
 				inst.components.embarker:Cancel()
 				inst.components.locomotor:FinishHopping()
-			end
-
-			if onexits ~= nil and onexits.hop_pre ~= nil then
-				onexits.hop_pre(inst)
 			end
 		end,
     })
@@ -725,10 +701,6 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 				inst.components.amphibiouscreature:OnExitOcean()
 	            inst.AnimState:PlayAnimation("jump_pst")
 			end
-
-			if onenters ~= nil and onenters.hop_pst ~= nil then
-				onenters.hop_pst(inst)
-			end
         end,
 
         timeline = timelines.hop_pst,
@@ -741,12 +713,6 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
                 end
             end),
         },
-
-        onexit = function(inst)
-			if onexits ~= nil and onexits.hop_pst ~= nil then
-				onexits.hop_pst(inst)
-			end
-		end,
     })
 
     table.insert(states, State
@@ -761,10 +727,6 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
             inst.AnimState:PlayAnimation("jumpout_antic")    
 
             inst.sg:SetTimeout(30 * FRAMES)
-
-			if onenters ~= nil and onenters.hop_antic ~= nil then
-				onenters.hop_antic(inst)
-			end
         end,
 
         timeline = timelines.hop_antic,
@@ -773,9 +735,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
             inst.sg:GoToState("hop_pre")
         end,
         onexit = function(inst)
-			if onexits ~= nil and onexits.hop_antic ~= nil then
-				onexits.hop_antic(inst)
-			end
+
         end,        
     })
 end

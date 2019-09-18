@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Blast! This is hopeless.",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2824,23 +2821,6 @@ return{
 
 		GESTALT = "It communes with us through them.",
 
-		COOKIECUTTER = "Stay back, you!",
-		COOKIECUTTERSHELL = "Hmph. I suppose this could be useful.",
-		COOKIECUTTERHAT = "This doesn't look dapper at all.",
-		SALTSTACK = "Odd...",
-		SALTROCK = "Am I to be a salt miner now?",
-		SALTBOX = "This will extend the life of our supplies somewhat.",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "I've no desire to do battle with that thing.",
-        MALBATROSS_FEATHER = "This would be a nice feather in my cap.",
-        MALBATROSS_BEAK = "Ugh, I don't want to touch that.",
-        MAST_MALBATROSS_ITEM = "Must I do everything?",
-        MAST_MALBATROSS = "A warning to any waterfowl that cross us.",
-		MALBATROSS_FEATHERED_WEAVE = "Hopefully it catches the wind as well as the eye.",
-
         WALKINGPLANK = "Jumping off would ruin what's left of my suit.",
         OAR = "I have no desire to toil like a common sailor.",
 		OAR_DRIFTWOOD = "Hmph. I've never been one for manual lab-oar.",
@@ -2872,7 +2852,6 @@ return{
         SPICE_GARLIC = "Keeps everyone from getting too close.",
         SPICE_SUGAR = "I never was one for syrupy mush.",
         SPICE_CHILI = "Bit of a kick in the pants.",
-        SPICE_SALT = "My doctor said I shouldn't have too much.",
         MONSTERTARTARE = "It's less than appetizing.",
         FRESHFRUITCREPES = "Deserves to be eaten with fine silverware. Sadly, I've just my hands.",
         FROGFISHBOWL = "At the end of the day, it's still frog.",

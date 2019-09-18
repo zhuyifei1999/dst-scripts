@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Come closer, ye wee fishy cowards!",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2824,23 +2821,6 @@ return{
 
 		GESTALT = "Goddess of the moon, shine thy smile upon me!",
 
-		COOKIECUTTER = "It seeks to make a meal of my vessel!",
-		COOKIECUTTERSHELL = "Twas a spiky foe.",
-		COOKIECUTTERHAT = "Tis a helm fit for a warrior of the deep.",
-		SALTSTACK = "Tis the form of a sea nymph!",
-		SALTROCK = "It hath an strange shape to it.",
-		SALTBOX = "A fine place to store meats!",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "I will slay the four-winged beast!",
-        MALBATROSS_FEATHER = "The plume of a fallen foe.",
-        MALBATROSS_BEAK = "A trophy from my victory!",
-        MAST_MALBATROSS_ITEM = "A winged sail for my vessel.",
-        MAST_MALBATROSS = "Let us be off, with the speed of the Valkyrie!",
-		MALBATROSS_FEATHERED_WEAVE = "A bolt of thine finest bird-cloth!",
-
         WALKINGPLANK = "I shall never abandon my vessel!",
         OAR = "The Norseman's way to sail!",
 		OAR_DRIFTWOOD = "Back to the sea!",
@@ -2872,7 +2852,6 @@ return{
         SPICE_GARLIC = "Its pungent smell offends mine nostrils.",
         SPICE_SUGAR = "The sweet juice of an enemy.",
         SPICE_CHILI = "Full of a fiery extract.",
-        SPICE_SALT = "It has the briny taste of the sea.",
         MONSTERTARTARE = "Still quivering.",
         FRESHFRUITCREPES = "So light and airy!",
         FROGFISHBOWL = "My ally is a god among men.",

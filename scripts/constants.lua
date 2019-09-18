@@ -24,13 +24,11 @@ FACING_DOWNLEFT = 7
 FACING_NONE = 8
 
 -- Careful inserting into here. You will have to update game\render\RenderLayer.h
-LAYER_BELOW_GROUND = 1
-LAYER_BACKGROUND = 2
-LAYER_WORLD_BACKGROUND = 3
-LAYER_WORLD = 4
-LAYER_WORLD_DEBUG = 5
+LAYER_BACKGROUND = 1
+LAYER_WORLD_BACKGROUND = 2
+LAYER_WORLD = 3
+LAYER_WORLD_CEILING = 4
 LAYER_FRONTEND = 6
-LAYER_FRONTEND_DEBUG = 7
 
 ANCHOR_MIDDLE = 0
 ANCHOR_LEFT = 1
@@ -539,10 +537,10 @@ GROUND =
 	OCEAN_COASTAL_SHORE = 202,
 	OCEAN_SWELL = 203,
 	OCEAN_ROUGH = 204,
-	OCEAN_BRINEPOOL = 205,
-	OCEAN_BRINEPOOL_SHORE = 206,
+	OCEAN_REEF = 205,
+	OCEAN_REEF_SHORE = 206,
 	OCEAN_HAZARDOUS = 207,
-	
+
 	-- MODS OCEAN TILES [231, 247]  <--PUBLIC USE SPACE FOR MODS --
 
 	OCEAN_END = 247, -- enum for checking if tile is ocean water
@@ -556,9 +554,6 @@ GROUND =
 --	SALT_WATER_DEEP = 135,
 }
 
--- deprecated ground types
-GROUND.OCEAN_REEF = GROUND.OCEAN_BRINEPOOL
-GROUND.OCEAN_REEF_SHORE = GROUND.OCEAN_BRINEPOOL_SHORE
 
 ---------------------------------------------------------
 SPECIAL_EVENTS =
@@ -975,21 +970,20 @@ MAP_SAMPLE_STYLE =
 }
 
 
--- keep up to date with COLLISION_GROUP in simconstants.h
 COLLISION =
 {
-    GROUND            = 32, 
-	BOAT_LIMITS       = 64,
-	LAND_OCEAN_LIMITS = 128,             -- physics wall between water and land
-    LIMITS            = 128 + 64,        -- BOAT_LIMITS + LAND_OCEAN_LIMITS
-    WORLD             = 128 + 64 + 32,   -- BOAT_LIMITS + LAND_OCEAN_LIMITS + GROUND
-    ITEMS             = 256,
-    OBSTACLES         = 512,
-    CHARACTERS        = 1024,
-    FLYERS            = 2048,
-    SANITY            = 4096,
-    SMALLOBSTACLES    = 8192,	-- collide with characters but not giants
-    GIANTS            = 16384,	-- collide with obstacles but not small obstacles
+
+    WAVES = 32,
+    GROUND = 64, -- See BpWorld.cpp (ocean walls)
+    LIMITS = 128,
+    WORLD = 192, --limits and ground
+    ITEMS = 256,
+    OBSTACLES = 512,
+    CHARACTERS = 1024,
+    FLYERS = 2048,
+    SANITY = 4096,
+    SMALLOBSTACLES = 8192,	-- collide with characters but not giants
+    GIANTS = 16384,	-- collide with obstacles but not small obstacles
 }
 
 BLENDMODE =
@@ -1096,14 +1090,6 @@ ANIM_SORT_ORDER =
 	OCEAN_WAVES = 1,
 	OCEAN_BOAT = 2,
 	OCEAN_SKYSHADOWS = 3,
-}
-
-ANIM_SORT_ORDER_BELOW_GROUND =
-{
-    UNDERWATER = 0,
-    BOAT_TRAIL = 1,
-    BOAT_LIP = 2,    
-    UNUSED = 3,
 }
 
 ROAD_PARAMETERS =
@@ -1409,7 +1395,6 @@ FOODTYPE =
     RAW = "RAW", -- things which some animals can eat off the ground, but players need to cook
     BURNT = "BURNT", --For lavae.
     ROUGHAGE = "ROUGHAGE",
-	WOOD = "WOOD",
     GOODIES = "GOODIES",
 }
 
@@ -1842,7 +1827,6 @@ QUAGMIRE_USE_KLUMP = false
 
 OCEAN_MAPWRAPPER_WARN_RANGE = 14
 OCEAN_POPULATION_EDGE_DIST = 4
-OCEAN_WATERFALL_MAX_DIST = 14
 
 -- needs to be kept synchronized with InventoryProgress enum in InventoryManager.h
 INVENTORY_PROGRESS = 

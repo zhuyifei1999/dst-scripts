@@ -1,22 +1,13 @@
 package.path = package.path .. ";scripts/?.lua"
 
-function SetWorldGenSeed(seed)
-	if seed == nil then
-		seed = tonumber(tostring(os.time()):reverse():sub(1,6))
-	end
-
-	SetEngineWorldGenSeed(seed) -- sets the seed in the engine
-
-	math.randomseed(seed)
-	math.random()
-
-	return seed
+--local BAD_CONNECT = 219000 -- 
+--SEED = 1434760235 -- Force roads test level 3
+if SEED == nil then
+	SEED = tonumber(tostring(os.time()):reverse():sub(1,6))
 end
 
-
---local BAD_CONNECT = 219000 -- 
---SEED = 1568654163 -- Force roads test level 3
-SEED = SetWorldGenSeed(SEED)
+math.randomseed(SEED)
+math.random()
 
 --print ("worldgen_main.lua MAIN = 1")
 
@@ -125,7 +116,7 @@ end
 
 
 print ("running worldgen_main.lua\n")
-SEED = SetWorldGenSeed(SEED)
+
 print ("SEED = ", SEED)
 
 local basedir = "./"

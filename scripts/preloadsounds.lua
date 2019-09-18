@@ -69,8 +69,6 @@ local MainSounds =
 	"wallace.fsb",
 	"turnoftides.fev",
 	"turnoftides.fsb",
-	"saltydog.fev",
-	"saltydog.fsb",
 
     "warly.fsb",
 	"wendy.fsb",

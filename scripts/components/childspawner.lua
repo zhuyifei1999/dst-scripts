@@ -38,14 +38,12 @@ end
 local function AddChildListeners(self, child)
     self.inst:ListenForEvent("ontrapped", self._onchildkilled, child)
     self.inst:ListenForEvent("death", self._onchildkilled, child)
-    self.inst:ListenForEvent("onremove", self._onchildkilled, child)
     self.inst:ListenForEvent("detachchild", self._onchildkilled, child)
 end
 
 local function RemoveChildListeners(self, child)
     self.inst:RemoveEventCallback("ontrapped", self._onchildkilled, child)
     self.inst:RemoveEventCallback("death", self._onchildkilled, child)
-    self.inst:RemoveEventCallback("onremove", self._onchildkilled, child)
     self.inst:RemoveEventCallback("detachchild", self._onchildkilled, child)
 end
 
@@ -63,7 +61,6 @@ local ChildSpawner = Class(function(self, inst)
     self.onvacate = nil
     self.onoccupied = nil
     self.onspawned = nil
-	self.ontakeownership = nil
     self.ongohome = nil
 
     self.spawning = false
@@ -226,10 +223,6 @@ function ChildSpawner:SetSpawnedFn(fn)
     self.onspawned = fn
 end
 
-function ChildSpawner:SetOnTakeOwnershipFn(fn)
-    self.ontakeownership = fn
-end
-
 function ChildSpawner:SetGoHomeFn(fn)
     self.ongohome = fn
 end
@@ -376,9 +369,6 @@ function ChildSpawner:DoTakeOwnership(child)
 	end
     child.components.homeseeker:SetHome(self.inst)
     AddChildListeners(self, child)
-	if self.ontakeownership ~= nil then
-		self.ontakeownership(self.inst, child)
-	end
 end
 
 function ChildSpawner:TakeOwnership(child)
@@ -415,28 +405,10 @@ local function NoHoles(pt)
     return not TheWorld.Map:IsPointNearHole(pt)
 end
 
--- This should only be called internally
+-- This should only be called interally
 function ChildSpawner:DoSpawnChild(target, prefab, radius)
     local x, y, z = self.inst.Transform:GetWorldPosition()
-	local offset
-	local spawn_radius = radius
-	if spawn_radius == nil then
-		if self.spawnradius ~= nil then
-			if type(self.spawnradius) == "table" then
-				spawn_radius = Lerp(self.spawnradius.min, self.spawnradius.max, math.sqrt(math.random()))
-			else
-				spawn_radius = self.spawnradius
-			end
-		else
-			spawn_radius = 0.5
-		end
-	end
-	
-	if self.wateronly then
-		offset = FindSwimmableOffset(Vector3(x, 0, z), math.random() * PI * 2, spawn_radius + self.inst:GetPhysicsRadius(0), 8, false, true, NoHoles)
-	else
-		offset = FindWalkableOffset(Vector3(x, 0, z), math.random() * PI * 2, spawn_radius + self.inst:GetPhysicsRadius(0), 8, false, true, NoHoles, self.allowwater, self.allowboats)
-	end
+    local offset = FindWalkableOffset(Vector3(x, 0, z), math.random() * PI * 2, (radius or self.spawnradius or .5) + self.inst:GetPhysicsRadius(0), 8, false, true, NoHoles, self.allowwater, self.allowboats)
     if offset == nil then
         return
     end

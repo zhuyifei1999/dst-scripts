@@ -66,10 +66,7 @@ return{
 			INUSE = "Oh, excusez-moi.",
 			NOTEMPTY = "Oops, I've left some ingredients inside.",
         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Ah non, the fish are too deep for my rod to reach.",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2099,17 +2096,17 @@ return{
 		TRINKET_10 = "Manmade masticators.", --Dentures
 		TRINKET_11 = "He doesn't seem trustworthy to me.", --Lying Robot
 		TRINKET_12 = "I know of no recipe that calls for this.", --Dessicated Tentacle
-		TRINKET_13 = "I'd prefer switcha... With a piece of duff.", --Gnomette
-		TRINKET_14 = "Do they work with paring knives?", --Leaky Teacup
-		TRINKET_15 = "I prefer the lute, myself.", --Pawn
-		TRINKET_16 = "This has no business calling itself a plate.", --Pawn
-		TRINKET_17 = "I wouldn't wear this, even if it were my size.", --Bent Spork
-		TRINKET_18 = "I should be careful with this.", --Trojan Horse
-		TRINKET_19 = "An odd prescription.", --Unbalanced Top
-		TRINKET_20 = "It looks expectant.", --Backscratcher
-		TRINKET_21 = "I'm afraid I won't fit.", --Egg Beater
-		TRINKET_22 = "Perfect for a candlelit dinner!", --Frayed Yarn
-		TRINKET_23 = "What an interesting contraption.", --Shoehorn
+		TRINKET_13 = "You'd look so sweet in your own little garden.", --Gnomette
+		TRINKET_14 = "I could still use this for measuring.", --Leaky Teacup
+		TRINKET_15 = "Aren't we all, mon ami.", --Pawn
+		TRINKET_16 = "Aren't we all, mon ami.", --Pawn
+		TRINKET_17 = "A pity.", --Bent Spork
+		TRINKET_18 = "What could be inside?", --Trojan Horse
+		TRINKET_19 = "It's having a hard time staying upright.", --Unbalanced Top
+		TRINKET_20 = "You scratch my back, I scratch yours, non?", --Backscratcher
+		TRINKET_21 = "No kitchen is complete without one.", --Egg Beater
+		TRINKET_22 = "This would be handy if I had a roast to make.", --Frayed Yarn
+		TRINKET_23 = "This seems shoehorned in.", --Shoehorn
 		TRINKET_24 = "I think Mme. Wickerbottom had a cat.", --Lucky Cat Jar
 		TRINKET_25 = "It's not a very pleasant smell.", --Air Unfreshener
 		TRINKET_26 = "Who hurt you, sweet tuber.", --Potato Cup
@@ -2824,23 +2821,6 @@ return{
 
 		GESTALT = "Can you... get me home to dear Maman?",
 
-		COOKIECUTTER = "Could I interest you in something other than my boat?",
-		COOKIECUTTERSHELL = "Reminds me a bit of a durian... mostly the smell.",
-		COOKIECUTTERHAT = "Not the best looking hat, but c'est la vie.",
-		SALTSTACK = "What beautiful formations!",
-		SALTROCK = "Quelle chance! I've found salt!",
-		SALTBOX = "Just the thing for preserving ingredients.",
-
-        GNARWAIL = "PLACEHOLDER",
-        GNARWAIL_HORN = "PLACEHOLDER",
-
-        MALBATROSS = "Très mal, indeed.",
-        MALBATROSS_FEATHER = "\"Alouette, je te plumerai.\"",
-        MALBATROSS_BEAK = "I'm sure I could find a use for this.",
-        MAST_MALBATROSS_ITEM = "Light as many feathers!",
-        MAST_MALBATROSS = "It looks nice, non?",
-		MALBATROSS_FEATHERED_WEAVE = "This fabric is light as a feather!",
-
         WALKINGPLANK = "That doesn't look safe.",
         OAR = "Oar really?",
 		OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
@@ -2872,7 +2852,6 @@ return{
         SPICE_GARLIC = "Without garlic powder, life is not worth living.",
         SPICE_SUGAR = "The original all natural sweetener.",
         SPICE_CHILI = "My own special recipe.",
-        SPICE_SALT = "Salt, at last! I could weep!",
         MONSTERTARTARE = "This is a culinary abomination. I'm appalled.",
         FRESHFRUITCREPES = "Is this not a thing of beauty?",
         FROGFISHBOWL = "I think I've outdone myself, given the available ingredients.",

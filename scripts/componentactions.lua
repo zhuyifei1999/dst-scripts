@@ -742,15 +742,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        preservative = function(inst, doer, target, actions, right)
-			if right and target.replica.health == nil
-				and (target:HasTag("fresh") or target:HasTag("stale") or target:HasTag("spoiled"))
-				and target:HasTag("cookable")
-				and not target:HasTag("deployable") then
-					table.insert(actions, ACTIONS.APPLYPRESERVATIVE)
-			end
-        end,
-
         repairer = function(inst, doer, target, actions, right)
             if right then
                 if doer.replica.rider ~= nil and doer.replica.rider:IsRiding() then
@@ -1015,12 +1006,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        fishingrod = function(inst, doer, pos, actions, right)
-			if right and CanCastFishingNetAtPoint(doer, pos.x, pos.z) then
-				table.insert(actions, ACTIONS.FISH_OCEAN)
-			end
-        end,
-
         inventoryitem = function(inst, doer, pos, actions, right)
             if not right and inst.replica.inventoryitem:IsHeldBy(doer) then
                 table.insert(actions, ACTIONS.DROP)
@@ -1083,7 +1068,7 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        fishingrod = function(inst, doer, target, actions, right)
+        fishingrod = function(inst, doer, target, actions)
             if target:HasTag("fishable") and not inst.replica.fishingrod:HasCaughtFish() then
                 if target ~= inst.replica.fishingrod:GetTarget() then
                     table.insert(actions, ACTIONS.FISH)
