@@ -808,7 +808,7 @@ local function OnLoad(inst, data)
     inst:DoTaskInTime(0, function()
         --V2C: HACK! enabled false instead of nil means it was overriden by weregoose on load.
         --     Please refactor drownable and this block to use POST LOAD timing instead.
-        if not (inst.components.drownable ~= nil and inst.components.drownable.enabled == false) then
+        if inst.components.drownable ~= nil and inst.components.drownable.enabled ~= false then
             local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
 
             if not TheWorld.Map:IsPassableAtPoint(my_x, my_y, my_z) then

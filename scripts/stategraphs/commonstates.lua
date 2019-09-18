@@ -541,7 +541,13 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
 
             local nextstate = "hop_pst_complete"
 			if data ~= nil then
-				nextstate = data.landed_in_water and landed_in_water_state
+				nextstate = (
+                                data.landed_in_water and landed_in_water_state ~= nil and
+                                (
+                                    type(landed_in_water_state) ~= "function" and landed_in_water_state or
+                                    landed_in_water_state(inst)
+                                )
+                            )
 							 or data.queued_post_land_state
 							 or nextstate
 			end

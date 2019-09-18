@@ -552,13 +552,19 @@ end
 local function OnIsFullmoon(inst, isfullmoon)
     if not isfullmoon then
         inst.fullmoontriggered = nil
+        if inst.components.wereness:GetWereMode() == "fullmoon" then
+            inst.components.wereness:SetWereMode(nil)
+            if not IsWereMode(inst.weremode:value()) then
+                inst.components.wereness:SetPercent(0, true)
+            end
+        end
     elseif not inst.fullmoontriggered then
         inst.fullmoontriggered = true
         local pct = inst.components.wereness:GetPercent()
         if pct > 0 then
             inst.components.wereness:SetPercent(1)
         else
-            inst.components.wereness:SetWereMode(WEREMODE_NAMES[math.random(#WEREMODE_NAMES)])
+            inst.components.wereness:SetWereMode("fullmoon")
             inst.components.wereness:SetPercent(1, true)
         end
     end
@@ -749,7 +755,7 @@ local function OnNewGooseState(inst, data)
     if not GOOSE_FLAP_STATES[data.statename] or (inst.components.grogginess ~= nil and inst.components.grogginess.isgroggy) then
         inst.SoundEmitter:KillSound("flap")
         if inst.gooserippletask == nil then
-            inst.gooserippletask = inst:DoPeriodicTask(.7, DoRipple)
+            inst.gooserippletask = inst:DoPeriodicTask(.7, DoRipple, FRAMES)
         end
     else
         if not inst.SoundEmitter:PlayingSound("flap") then
@@ -1108,8 +1114,7 @@ local function onwerenesschange(inst)
     if inst.sg:HasStateTag("nomorph") or
         inst.sg:HasStateTag("silentmorph") or
         inst:HasTag("playerghost") or
-        inst.components.health:IsDead() or
-        not inst.entity:IsVisible() then
+        inst.components.health:IsDead() then
         return
     elseif IsWereMode(inst.weremode:value()) then
         if inst.components.wereness:GetPercent() <= 0 then
@@ -1117,15 +1122,27 @@ local function onwerenesschange(inst)
         end
     elseif inst.components.wereness:GetPercent() > 0 then
         local weremode = inst.components.wereness:GetWereMode()
-        weremode = weremode ~= nil and WEREMODES[string.upper(weremode)] or nil
-        if IsWereMode(weremode) then
-            inst:PushEvent("transform_wereplayer", {
-                mode = WEREMODE_NAMES[weremode],
-                cb = (weremode == WEREMODES.BEAVER and onbecamebeaver) or
-                    (weremode == WEREMODES.MOOSE and onbecamemoose) or
-                    (--[[weremode == WEREMODES.GOOSE and]] onbecamegoose) or
-                    nil
-            })
+        if weremode ~= nil then
+            if weremode ~= "fullmoon" then
+                weremode = WEREMODES[string.upper(weremode)]
+            elseif TheWorld.state.isfullmoon then
+                weremode = math.random(#WEREMODE_NAMES)
+            else
+                weremode = WEREMODES.NONE
+                inst.components.wereness:SetWereMode(nil)
+                if not IsWereMode(inst.weremode:value()) then
+                    inst.components.wereness:SetPercent(0, true)
+                end
+            end
+            if IsWereMode(weremode) then
+                inst:PushEvent("transform_wereplayer", {
+                    mode = WEREMODE_NAMES[weremode],
+                    cb = (weremode == WEREMODES.BEAVER and onbecamebeaver) or
+                        (weremode == WEREMODES.MOOSE and onbecamemoose) or
+                        (--[[weremode == WEREMODES.GOOSE and]] onbecamegoose) or
+                        nil
+                })
+            end
         end
     end
 end
@@ -1277,6 +1294,11 @@ end
 local function onload(inst)
     if IsWereMode(inst.weremode:value()) and not inst:HasTag("playerghost") then
         inst.components.inventory:Close()
+        if inst.components.wereness:GetPercent() <= 0 then
+            --under these conditions, we won't get a "werenessdelta" event on load
+            --but we do want to trigger a transformation back to human right away.
+            onwerenesschange(inst)
+        end
     end
 end
 

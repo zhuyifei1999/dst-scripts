@@ -992,7 +992,8 @@ local events =
         end),
 
     EventHandler("onsink", function(inst, data)
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("drowning") then
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("drowning") and
+                (inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown()) then
 			if data ~= nil and data.boat ~= nil then
 	            inst.sg:GoToState("sink", data.shore_pt)
 			else
@@ -1943,8 +1944,11 @@ local states =
         timeline =
         {
             TimeEvent(15 * FRAMES, function(inst)
-                if inst.sg.statemem.beaver or inst.sg.statemem.goose then
+                if inst.sg.statemem.beaver then
                     inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+                elseif inst.sg.statemem.goose then
+                    inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+                    DoGooseRunFX(inst)
                 end
             end),
             TimeEvent(20 * FRAMES, function(inst)
@@ -8250,6 +8254,11 @@ local states =
                 inst.sg:RemoveStateTag("ghostbuild")
                 inst:PushEvent("stopghostbuildinstate")
             end),
+            TimeEvent(89 * FRAMES, function(inst)
+                if inst:HasTag("weregoose") then
+                    DoGooseRunFX(inst)
+                end
+            end),
             TimeEvent(96 * FRAMES, function(inst) 
                 inst.components.bloomer:PopBloom("playerghostbloom")
                 inst.AnimState:SetLightOverride(0)
@@ -11947,8 +11956,12 @@ local hop_timelines =
     },   
 }
 
+local function landed_in_water_state(inst)
+    return (inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown() and "sink") or nil
+end
+
 CommonStates.AddRowStates(states, false)
-CommonStates.AddHopStates(states, false, {pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"}, hop_timelines, "turnoftides/common/together/boat/jump_on", "sink")
+CommonStates.AddHopStates(states, false, {pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"}, hop_timelines, "turnoftides/common/together/boat/jump_on", landed_in_water_state)
 
 if TheNet:GetServerGameMode() == "quagmire" then
     event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, StopTalkSound, ToggleOnPhysics, ToggleOffPhysics)

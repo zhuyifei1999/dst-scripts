@@ -231,23 +231,12 @@ local states =
     State
     {
         name = "lowering",
-        onenter = function(inst)
-
-            if inst.components.anchor.depth == 0 then
-                inst.AnimState:PlayAnimation("tethering_pre")
-                inst.AnimState:PushAnimation("tethering_loop_full", true)
-            else
-                inst.AnimState:PlayAnimation("tethering_loop_full", true)
-            end
-        end,
-
 
         onenter = function(inst)   
             inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.LAND
             inst.AnimState:PlayAnimation("tethering_pre_full")
             inst.AnimState:PushAnimation("tethering_loop_full", true)
             anchor_raised(inst)
-            --inst.sg:SetTimeout(4)
         end,
 
         onupdate = function(inst)
