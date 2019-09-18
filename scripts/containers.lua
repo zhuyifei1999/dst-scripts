@@ -440,6 +440,20 @@ function params.icebox.itemtestfn(container, item, slot)
 end
 
 --------------------------------------------------------------------------
+--[[ saltbox ]]
+--------------------------------------------------------------------------
+
+params.saltbox = deepcopy(params.icebox)
+
+function params.saltbox.itemtestfn(container, item, slot)
+	return ((item:HasTag("fresh") or item:HasTag("stale") or item:HasTag("spoiled"))
+		and item:HasTag("cookable")
+		and not item:HasTag("deployable")
+		and item.replica.health == nil)
+		or item:HasTag("saltbox_valid")
+end
+
+--------------------------------------------------------------------------
 --[[ krampus_sack ]]
 --------------------------------------------------------------------------
 

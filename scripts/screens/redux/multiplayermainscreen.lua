@@ -40,6 +40,7 @@ end
 
 function MakeBanner(self)
 	local banner_height = 350
+	local title_str = nil
 
 	local baner_root = Widget("banner_root")
 	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
@@ -98,13 +99,6 @@ function MakeBanner(self)
         end
         anim.inst:ListenForEvent("animover", onanimover)
         onanimover(anim.inst)
-	elseif BRANCH == "staging" and CURRENT_BETA > 0 and BETA_INFO[CURRENT_BETA].NAME == "ROTBETA" then
-		-- beta banner
-		anim:GetAnimState():SetBuild("dst_menu_lunacy")
-        anim:GetAnimState():SetBank("dst_menu_lunacy")
-        anim:GetAnimState():PlayAnimation("loop", true)
-        anim:SetScale(.667)
-        anim:SetPosition(0, 0)
 	else
 		--[[anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
@@ -136,11 +130,12 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)]]
-        anim:GetAnimState():SetBuild("dst_menu_woodie")
-        anim:GetAnimState():SetBank("dst_menu_woodie")
+        anim:GetAnimState():SetBuild("dst_menu_rot2")
+        anim:GetAnimState():SetBank("dst_menu_rot2")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
+		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
@@ -154,26 +149,25 @@ function MakeBanner(self)
 		self.logo:SetTint(unpack(FRONTEND_TITLE_COLOUR))
 	end
 	
---[[
-	local title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
-	if title_str ~= nil then
-		local x = 165
-		local y = -140
-		local text_width = 880
+	if title_str then
+		if title_str ~= nil then
+			local x = 165
+			local y = -140
+			local text_width = 880
 
-		local font_size = 22
-		local title = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.HIGHLIGHT_GOLD))
-		title:SetRegionSize(text_width, font_size + 2)
-		title:SetHAlign(ANCHOR_RIGHT)
-		title:SetPosition(x, y + 4)
+			local font_size = 22
+			local title = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.HIGHLIGHT_GOLD))
+			title:SetRegionSize(text_width, font_size + 2)
+			title:SetHAlign(ANCHOR_RIGHT)
+			title:SetPosition(x, y + 4)
 
-		local shadow = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.BLACK))
-		shadow:SetRegionSize(text_width, font_size + 2)
-		shadow:SetHAlign(ANCHOR_RIGHT)
-		shadow:SetPosition(x + 1.5, y - 1.5)
-		shadow:MoveToBack()
+			local shadow = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.BLACK))
+			shadow:SetRegionSize(text_width, font_size + 2)
+			shadow:SetHAlign(ANCHOR_RIGHT)
+			shadow:SetPosition(x + 1.5, y - 1.5)
+			shadow:MoveToBack()
+		end
 	end
-]]
 
 	return baner_root
 end

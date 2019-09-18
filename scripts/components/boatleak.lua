@@ -3,6 +3,8 @@ local BoatLeak = Class(function(self, inst)
 
     self.has_leaks = false
 	self.leak_build = "boat_leak_build"
+
+	self.isdynamic = false
 end)
 
 function BoatLeak:Repair(doer, patch_item)
@@ -49,7 +51,7 @@ function BoatLeak:ChangeToRepaired(repair_build_name)
     end
 end
 
-function BoatLeak:SetState(state)
+function BoatLeak:SetState(state, skip_open)
 	if state == self.current_state then return end
 
     local anim_state = self.inst.AnimState
@@ -59,12 +61,15 @@ function BoatLeak:SetState(state)
 
         anim_state:SetBuild(self.leak_build)
 		anim_state:SetBankAndPlayAnimation("boat_leak", "leak_small_pre")
-    	anim_state:PushAnimation("leak_small_loop", true)  
+    	anim_state:PushAnimation("leak_small_loop", true)
         anim_state:SetSortOrder(0)
-        anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard) 
-        anim_state:SetLayer(LAYER_WORLD)           
+        anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard)
+        anim_state:SetLayer(LAYER_WORLD)
+        if skip_open then
+            anim_state:SetTime(11 * FRAMES)
+        end
 
-        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_small_LP", "small_leak")                  
+        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_small_LP", "small_leak")
 
         self.has_leaks = true
 
@@ -76,12 +81,15 @@ function BoatLeak:SetState(state)
 
         anim_state:SetBuild(self.leak_build)
 		anim_state:SetBankAndPlayAnimation("boat_leak", "leak_med_pre")
-    	anim_state:PushAnimation("leak_med_loop", true)  
+    	anim_state:PushAnimation("leak_med_loop", true)
         anim_state:SetSortOrder(0)
-        anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard) 
-        anim_state:SetLayer(LAYER_WORLD)                   
+        anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard)
+        anim_state:SetLayer(LAYER_WORLD)
+        if skip_open then
+            anim_state:SetTime(11 * FRAMES)
+        end
 
-        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_medium_LP", "med_leak")                  
+        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_medium_LP", "med_leak")
 
         if not self.has_leaks then
             self.has_leaks = true
@@ -102,6 +110,31 @@ end
 function BoatLeak:SetBoat(boat)
     self.boat = boat
 
+end
+
+-- Note: Currently save and load is only used for dynamic leaks (e.g. caused by cookie cutter). Saving/loading
+-- for leaks caused by collision is handled from HullHealth.
+function BoatLeak:OnSave(data)
+	return (self.current_state ~= nil and self.isdynamic) and { leak_state = self.current_state } or nil
+end
+
+function BoatLeak:OnLoad(data)
+	if data ~= nil and data.leak_state ~= nil then
+		self.isdynamic = true
+
+		self.inst:DoTaskInTime(0, function()
+			local x, y, z = self.inst.Transform:GetWorldPosition()
+			local boat = TheWorld.Map:GetPlatformAtPoint(x, z)
+
+			if boat ~= nil then
+				self:SetBoat(boat)
+				self:SetState(data.leak_state)
+				table.insert(boat.components.hullhealth.leak_indicators_dynamic, self.inst)
+			else
+				self.inst:Remove()
+			end
+		end)
+	end
 end
 
 return BoatLeak
