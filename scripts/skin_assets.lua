@@ -966,6 +966,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/firepit_firebird.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/firepit_hole.zip"),
 	Asset("PKGREF", "anim/dynamic/firepit_hole.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/firepit_lava.zip"),
+	Asset("PKGREF", "anim/dynamic/firepit_lava.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/firepit_stonehenge.zip"),
 	Asset("PKGREF", "anim/dynamic/firepit_stonehenge.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/firepit_victorian.zip"),

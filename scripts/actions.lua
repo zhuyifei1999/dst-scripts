@@ -545,6 +545,7 @@ ACTIONS.ROW_FAIL.fn = function(act)
     local fail_string_id = oar.components.oar:RowFail(act.doer)
     local fail_str = GetActionFailString(act.doer, "ROW_FAIL", fail_string_id)
     act.doer.components.talker:Say(fail_str)
+    act.doer:PushEvent("working",{})
     return true
 end
 
@@ -558,6 +559,7 @@ local function row(act)
         pos = act.target:GetPosition()
     end
     oar.components.oar:Row(act.doer, pos)   
+    act.doer:PushEvent("working",{})
     return true
 end
 

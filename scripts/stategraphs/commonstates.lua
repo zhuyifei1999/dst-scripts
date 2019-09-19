@@ -1471,6 +1471,7 @@ CommonStates.AddRowStates = function(states, is_client)
 
         events = 
         {
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("row_idle")
             end),          
@@ -1524,6 +1525,7 @@ CommonStates.AddRowStates = function(states, is_client)
 
         events = 
         {
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("row_idle")
             end),          

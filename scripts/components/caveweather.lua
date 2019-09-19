@@ -182,7 +182,7 @@ local _wet = net_bool(inst.GUID, "weather._wet", "wetdirty")
 local function StartAmbientRainSound(intensity)
     if not _rainsound then
         _rainsound = true
-        _world.SoundEmitter:PlaySound("dontstarve/cave/cave_rainAMB", "rain")
+        _world.SoundEmitter:PlaySound("dontstarve/AMB/caves/rain", "rain")
     end
     _world.SoundEmitter:SetParameter("rain", "intensity", intensity)
 end

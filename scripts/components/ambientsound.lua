@@ -18,44 +18,44 @@ local HALF_TILES = 5
 local MAX_MIX_SOUNDS = 3
 local WAVE_VOLUME_SCALE = 3 / (HALF_TILES * HALF_TILES * 8)
 local WAVE_SOUNDS = { 
-    ["autumn"] = "dontstarve/ocean/waves",
-    ["winter"] = "dontstarve/winter/winterwaves",
-    ["spring"] = "dontstarve/ocean/waves",--"dontstarve_DLC001/spring/springwaves",
-    ["summer"] = "dontstarve_DLC001/summer/summerwaves",
+    ["autumn"] = "dontstarve/AMB/waves",
+    ["winter"] = "dontstarve/AMB/waves_winter",
+    ["spring"] = "dontstarve/AMB/waves",--"dontstarve_DLC001/spring/springwaves",
+    ["summer"] = "dontstarve_DLC001/AMB/waves_summer",
 }
 local SANITY_SOUND = "dontstarve/sanity/sanity"
 
 local AMBIENT_SOUNDS =
 {
-    [GROUND.ROAD] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
-    [GROUND.ROCKY] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
-    [GROUND.DIRT] = {sound = "dontstarve/badland/badlandAMB", wintersound = "dontstarve/winter/winterbadlandAMB", springsound = "dontstarve/badland/badlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},--springsound = "dontstarve_DLC001/spring/springbadlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},
-    [GROUND.WOODFLOOR] = {sound = "dontstarve/rocky/rockyAMB", wintersound = "dontstarve/winter/winterrockyAMB", springsound = "dontstarve/rocky/rockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/summer/summerrockyAMB", rainsound = "dontstarve/rain/rainrockyAMB"},
-    [GROUND.SAVANNA] = {sound = "dontstarve/grassland/grasslandAMB", wintersound = "dontstarve/winter/wintergrasslandAMB", springsound = "dontstarve/grassland/grasslandAMB", summersound = "dontstarve_DLC001/summer/summergrasslandAMB", rainsound = "dontstarve/rain/raingrasslandAMB"},--springsound = "dontstarve_DLC001/spring/springgrasslandAMB", summersound = "dontstarve_DLC001/summer/summergrasslandAMB", rainsound = "dontstarve/rain/raingrasslandAMB"},
-    [GROUND.GRASS] = {sound = "dontstarve/meadow/meadowAMB", wintersound = "dontstarve/winter/wintermeadowAMB", springsound = "dontstarve/meadow/meadowAMB", summersound = "dontstarve_DLC001/summer/summermeadowAMB", rainsound = "dontstarve/rain/rainmeadowAMB"},--springsound = "dontstarve_DLC001/spring/springmeadowAMB", summersound = "dontstarve_DLC001/summer/summermeadowAMB", rainsound = "dontstarve/rain/rainmeadowAMB"},
-    [GROUND.FOREST] = {sound = "dontstarve/forest/forestAMB", wintersound = "dontstarve/winter/winterforestAMB", springsound = "dontstarve/forest/forestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},--springsound = "dontstarve_DLC001/spring/springforestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},
-    [GROUND.MARSH] = {sound = "dontstarve/marsh/marshAMB", wintersound = "dontstarve/winter/wintermarshAMB", springsound = "dontstarve/marsh/marshAMB", summersound = "dontstarve_DLC001/summer/summermarshAMB", rainsound = "dontstarve/rain/rainmarshAMB"},--springsound = "dontstarve_DLC001/spring/springmarshAMB", summersound = "dontstarve_DLC001/summer/summermarshAMB", rainsound = "dontstarve/rain/rainmarshAMB"},
-    [GROUND.DECIDUOUS] = {sound = "dontstarve/forest/forestAMB", wintersound = "dontstarve/winter/winterforestAMB", springsound = "dontstarve/forest/forestAMB", summersound = "dontstarve_DLC001/summer/summerforestAMB", rainsound = "dontstarve/rain/rainforestAMB"},
-    [GROUND.DESERT_DIRT] = {sound = "dontstarve/badland/badlandAMB", wintersound = "dontstarve/winter/winterbadlandAMB", springsound = "dontstarve/badland/badlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},
-    [GROUND.CHECKER] = {sound = "dontstarve/chess/chessAMB", wintersound = "dontstarve/winter/winterchessAMB", springsound = "dontstarve/chess/chessAMB", summersound = "dontstarve_DLC001/summer/summerchessAMB", rainsound = "dontstarve/rain/rainchessAMB"},--springsound = "dontstarve_DLC001/spring/springchessAMB", summersound = "dontstarve_DLC001/summer/summerchessAMB", rainsound = "dontstarve/rain/rainchessAMB"},
-    [GROUND.METEOR] = {sound = "turnoftides/together_amb/moon_island/fall", wintersound = "turnoftides/together_amb/moon_island/winter", springsound = "turnoftides/together_amb/moon_island/spring", summersound = "turnoftides/together_amb/moon_island/summer", rainsound = "dontstarve/rain/rainchessAMB"},
-    [GROUND.PEBBLEBEACH] = {sound = "turnoftides/together_amb/moon_island/fall", wintersound = "turnoftides/together_amb/moon_island/winter", springsound = "turnoftides/together_amb/moon_island/spring", summersound = "turnoftides/together_amb/moon_island/summer", rainsound = "dontstarve/rain/rainbadlandAMB"},--springsound = "dontstarve_DLC001/spring/springbadlandAMB", summersound = "dontstarve_DLC001/summer/summerbadlandAMB", rainsound = "dontstarve/rain/rainbadlandAMB"},
-    [GROUND.CAVE] = {sound = "dontstarve/cave/caveAMB"},
+    [GROUND.ROAD] = {sound = "dontstarve/AMB/rocky", wintersound = "dontstarve/AMB/rocky_winter", springsound = "dontstarve/AMB/rocky", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},
+    [GROUND.ROCKY] = {sound = "dontstarve/AMB/rocky", wintersound = "dontstarve/AMB/rocky_winter", springsound = "dontstarve/AMB/rocky", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},
+    [GROUND.DIRT] = {sound = "dontstarve/AMB/badland", wintersound = "dontstarve/AMB/badland_winter", springsound = "dontstarve/AMB/badland", summersound = "dontstarve_DLC001/AMB/badland_summer", rainsound = "dontstarve/AMB/badland_rain"},--springsound = "dontstarve_DLC001/spring/springbadlandAMB", summersound = "dontstarve_DLC001/AMB/badland_summer", rainsound = "dontstarve/AMB/badland_rain"},
+    [GROUND.WOODFLOOR] = {sound = "dontstarve/AMB/rocky", wintersound = "dontstarve/AMB/rocky_winter", springsound = "dontstarve/AMB/rocky", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},--springsound = "dontstarve_DLC001/spring/springrockyAMB", summersound = "dontstarve_DLC001/AMB/rocky_summer", rainsound = "dontstarve/AMB/rocky_rain"},
+    [GROUND.SAVANNA] = {sound = "dontstarve/AMB/grassland", wintersound = "dontstarve/AMB/grassland_winter", springsound = "dontstarve/AMB/grassland", summersound = "dontstarve_DLC001/AMB/grassland_summer", rainsound = "dontstarve/AMB/grassland_rain"},--springsound = "dontstarve_DLC001/spring/springgrasslandAMB", summersound = "dontstarve_DLC001/AMB/grassland_summer", rainsound = "dontstarve/AMB/grassland_rain"},
+    [GROUND.GRASS] = {sound = "dontstarve/AMB/meadow", wintersound = "dontstarve/AMB/meadow_winter", springsound = "dontstarve/AMB/meadow", summersound = "dontstarve_DLC001/AMB/meadow_summer", rainsound = "dontstarve/AMB/meadow_rain"},--springsound = "dontstarve_DLC001/spring/springmeadowAMB", summersound = "dontstarve_DLC001/AMB/meadow_summer", rainsound = "dontstarve/AMB/meadow_rain"},
+    [GROUND.FOREST] = {sound = "dontstarve/AMB/forest", wintersound = "dontstarve/AMB/forest_winter", springsound = "dontstarve/AMB/forest", summersound = "dontstarve_DLC001/AMB/forest_summer", rainsound = "dontstarve/AMB/forest_rain"},--springsound = "dontstarve_DLC001/spring/springforestAMB", summersound = "dontstarve_DLC001/AMB/forest_summer", rainsound = "dontstarve/AMB/forest_rain"},
+    [GROUND.MARSH] = {sound = "dontstarve/AMB/marsh", wintersound = "dontstarve/AMB/marsh_winter", springsound = "dontstarve/AMB/marsh", summersound = "dontstarve_DLC001/AMB/marsh_summer", rainsound = "dontstarve/AMB/marsh_rain"},--springsound = "dontstarve_DLC001/spring/springmarshAMB", summersound = "dontstarve_DLC001/AMB/marsh_summer", rainsound = "dontstarve/AMB/marsh_rain"},
+    [GROUND.DECIDUOUS] = {sound = "dontstarve/AMB/forest", wintersound = "dontstarve/AMB/forest_winter", springsound = "dontstarve/AMB/forest", summersound = "dontstarve_DLC001/AMB/forest_summer", rainsound = "dontstarve/AMB/forest_rain"},
+    [GROUND.DESERT_DIRT] = {sound = "dontstarve/AMB/badland", wintersound = "dontstarve/AMB/badland_winter", springsound = "dontstarve/AMB/badland", summersound = "dontstarve_DLC001/AMB/badland_summer", rainsound = "dontstarve/AMB/badland_rain"},
+    [GROUND.CHECKER] = {sound = "dontstarve/AMB/chess", wintersound = "dontstarve/AMB/chess_winter", springsound = "dontstarve/AMB/chess", summersound = "dontstarve_DLC001/AMB/chess_summer", rainsound = "dontstarve_DLC001/AMB/chess_summer"},--springsound = "dontstarve_DLC001/spring/springchessAMB", summersound = "dontstarve_DLC001/AMB/chess_summer", rainsound = "dontstarve_DLC001/AMB/chess_summer"},
+    [GROUND.METEOR] = {sound = "turnoftides/together_amb/moon_island/fall", wintersound = "turnoftides/together_amb/moon_island/winter", springsound = "turnoftides/together_amb/moon_island/spring", summersound = "turnoftides/together_amb/moon_island/summer", rainsound = "dontstarve_DLC001/AMB/chess_summer"},
+    [GROUND.PEBBLEBEACH] = {sound = "turnoftides/together_amb/moon_island/fall", wintersound = "turnoftides/together_amb/moon_island/winter", springsound = "turnoftides/together_amb/moon_island/spring", summersound = "turnoftides/together_amb/moon_island/summer", rainsound = "dontstarve/AMB/badland_rain"},--springsound = "dontstarve_DLC001/spring/springbadlandAMB", summersound = "dontstarve_DLC001/AMB/badland_summer", rainsound = "dontstarve/AMB/badland_rain"},
+    [GROUND.CAVE] = {sound = "dontstarve/AMB/caves/main"},
 
-    [GROUND.FUNGUS] = { sound = "dontstarve/cave/fungusforestAMB" },
-    [GROUND.FUNGUSRED] = { sound = "dontstarve/cave/fungusforestAMB" },
-    [GROUND.FUNGUSGREEN] = { sound = "dontstarve/cave/fungusforestAMB" },
+    [GROUND.FUNGUS] = { sound = "dontstarve/AMB/caves/fungus_forest" },
+    [GROUND.FUNGUSRED] = { sound = "dontstarve/AMB/caves/fungus_forest" },
+    [GROUND.FUNGUSGREEN] = { sound = "dontstarve/AMB/caves/fungus_forest" },
 
-    [GROUND.SINKHOLE] = { sound = "dontstarve/cave/litcaveAMB" },
-    [GROUND.UNDERROCK] = { sound = "dontstarve/cave/caveAMB" },
-    [GROUND.MUD] = { sound = "dontstarve/cave/fungusforestAMB" },
-    [GROUND.UNDERGROUND] = { sound = "dontstarve/cave/caveAMB" },
-    [GROUND.BRICK] = { sound = "dontstarve/cave/ruinsAMB" },
-    [GROUND.BRICK_GLOW] = { sound = "dontstarve/cave/ruinsAMB" },
-    [GROUND.TILES] = { sound = "dontstarve/cave/civruinsAMB" },
-    [GROUND.TILES_GLOW] = { sound = "dontstarve/cave/civruinsAMB" },
-    [GROUND.TRIM] = { sound = "dontstarve/cave/ruinsAMB" },
-    [GROUND.TRIM_GLOW] = { sound = "dontstarve/cave/ruinsAMB" },
+    [GROUND.SINKHOLE] = { sound = "dontstarve/AMB/caves/litcave" },
+    [GROUND.UNDERROCK] = { sound = "dontstarve/AMB/caves/main" }, --- rocky
+    [GROUND.MUD] = { sound = "dontstarve/AMB/caves/fungus_forest" },
+    [GROUND.UNDERGROUND] = { sound = "dontstarve/AMB/caves/main" },
+    [GROUND.BRICK] = { sound = "dontstarve/AMB/caves/ruins" },
+    [GROUND.BRICK_GLOW] = { sound = "dontstarve/AMB/caves/ruins" },
+    [GROUND.TILES] = { sound = "dontstarve/AMB/caves/civ_ruins" },
+    [GROUND.TILES_GLOW] = { sound = "dontstarve/AMB/caves/civ_ruins" },
+    [GROUND.TRIM] = { sound = "dontstarve/AMB/caves/ruins" },
+    [GROUND.TRIM_GLOW] = { sound = "dontstarve/AMB/caves/ruins" },
 
 	[GROUND.OCEAN_COASTAL] =       { sound = "turnoftides/together_amb/ocean/shallow", rainsound = "turnoftides/together_amb/ocean/shallow_rain" },
 	[GROUND.OCEAN_SWELL] =         { sound = "turnoftides/together_amb/ocean/shallow", rainsound = "turnoftides/together_amb/ocean/shallow_rain" },
@@ -63,23 +63,23 @@ local AMBIENT_SOUNDS =
 	[GROUND.OCEAN_REEF] =          { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
 	[GROUND.OCEAN_HAZARDOUS] =     { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
 
-    [GROUND.LAVAARENA_FLOOR] = { sound = "dontstarve/lava_arena_amb/arena_day" },
-    [GROUND.LAVAARENA_TRIM] = { sound = "dontstarve/lava_arena_amb/arena_day" },
+    [GROUND.LAVAARENA_FLOOR] = { sound = "dontstarve/AMB/lava_arena/arena_day" },
+    [GROUND.LAVAARENA_TRIM] = { sound = "dontstarve/AMB/lava_arena/arena_day" },
 	
-    [GROUND.QUAGMIRE_PEATFOREST] = {sound = "dontstarve/quagmire/amb/peat_forest"},
-    [GROUND.QUAGMIRE_PARKFIELD] = {sound = "dontstarve/quagmire/amb/park_field"},
-    [GROUND.QUAGMIRE_PARKSTONE] = {sound = "dontstarve/quagmire/amb/park_field"},
-    [GROUND.QUAGMIRE_GATEWAY] = {sound = "dontstarve/quagmire/amb/gateway"},
-    [GROUND.QUAGMIRE_SOIL] = {sound = "dontstarve/quagmire/amb/city_stone"},
-    [GROUND.QUAGMIRE_CITYSTONE] = {sound = "dontstarve/quagmire/amb/city_stone"},
+    [GROUND.QUAGMIRE_PEATFOREST] = {sound = "dontstarve/AMB/quagmire/peat_forest"},
+    [GROUND.QUAGMIRE_PARKFIELD] = {sound = "dontstarve/AMB/quagmire/park_field"},
+    [GROUND.QUAGMIRE_PARKSTONE] = {sound = "dontstarve/AMB/quagmire/park_field"},
+    [GROUND.QUAGMIRE_GATEWAY] = {sound = "dontstarve/AMB/quagmire/gateway"},
+    [GROUND.QUAGMIRE_SOIL] = {sound = "dontstarve/AMB/quagmire/city_stone"},
+    [GROUND.QUAGMIRE_CITYSTONE] = {sound = "dontstarve/AMB/quagmire/city_stone"},
 
-    ABYSS = { sound = "dontstarve/cave/pitAMB" },
-    VOID = { sound = "dontstarve/chess/void", wintersound = "dontstarve/chess/void", springsound="dontstarve/chess/void", summersound="dontstarve/chess/void", rainsound = "dontstarve/chess/void" },
-    CIVRUINS = { sound = "dontstarve/cave/civruinsAMB" },
+    ABYSS = { sound = "dontstarve/AMB/caves/pit" }, --- IMPASSABLE 
+    VOID = { sound = "dontstarve/AMB/caves/void", wintersound = "dontstarve/AMB/caves/void", springsound="dontstarve/AMB/caves/void", summersound="dontstarve/AMB/caves/void", rainsound = "dontstarve/AMB/caves/void" },
+    CIVRUINS = { sound = "dontstarve/AMB/caves/civ_ruins" },
 }
 
 if TheNet:GetServerGameMode() == "quagmire" then
-    AMBIENT_SOUNDS[GROUND.ROAD] = {sound = "dontstarve/quagmire/amb/city_stone"}
+    AMBIENT_SOUNDS[GROUND.ROAD] = {sound = "dontstarve/AMB/quagmire/city_stone"}
 end
 
 local SEASON_SOUND_KEY =
