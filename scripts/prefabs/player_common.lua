@@ -186,7 +186,7 @@ local function OnGetItem(inst, giver, item)
     end
 end
 
-local function DropWetTool(inst, data)
+local function DropWetTool(inst, data)    
     --Tool slip.
     if inst.components.moisture:GetSegs() < 4 then
         return
@@ -1181,6 +1181,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_bugnet.zip"),
         Asset("ANIM", "anim/player_actions_unsaddle.zip"),
         Asset("ANIM", "anim/player_actions_fishing.zip"),
+        Asset("ANIM", "anim/player_actions_fishing_ocean.zip"),
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),

@@ -28,6 +28,7 @@ AddRoom("OceanSwell", {
 						{
 							seastack = 1.0,
 							seastack_spawner_swell = 0.1,
+							oceanfish_shoalspawner = 0.07,
 						},						
 					}})
 
@@ -41,17 +42,6 @@ AddRoom("OceanRough", {
 							seastack = 1,
 							seastack_spawner_rough = 0.13,
 						},							
-					}})
-
-AddRoom("OceanReef", {
-					colour={r=.5,g=0.6,b=.080,a=.10}, 
-					value = GROUND.OCEAN_REEF,
-					contents =  {
-						distributepercent = 0.3, 
-						distributeprefabs =
-						{
-
-						},						
 					}})
 
 AddRoom("OceanHazardous", {
@@ -68,4 +58,15 @@ AddRoom("OceanHazardous", {
 							boatfragment05 = 1,
 							seastack = 1,
 						},							
+					}})
+
+
+AddRoom("OceanReef", { -- OceanReef is deprecated
+					colour={r=.5,g=0.6,b=.080,a=.10}, 
+					value = GROUND.OCEAN_REEF,
+					contents =  {
+						distributepercent = 0, 
+						distributeprefabs =
+						{
+						},
 					}})

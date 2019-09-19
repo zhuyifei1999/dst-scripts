@@ -81,24 +81,27 @@ local function RemovePrefabs(prefabs_to_remove, biomes_to_cleanup)
 	return count
 end
 
-local function TurnOfTidesRetrofitting_PopulateOcean(inst)
-	local width, height = TheWorld.Map:GetSize()
+local function populate_ocean(tile_type, contents, width, height, on_spawnfn)
+	for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+		for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+			if TheWorld.Map:GetTile(x, y) == tile_type then
+				if math.random() < contents.distributepercent then
+					local prefab = weighted_random_choice(contents.distributeprefabs)
+					if prefab ~= nil then
+						local obj = SpawnPrefab(prefab)
+						obj.Transform:SetPosition((x - width/2.0)*TILE_SCALE + math.random()*2-1, 0, (y - height/2.0)*TILE_SCALE + math.random()*2-1)
 
-	local function populate(tile_type, contents)
-		for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
-			for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
-				if TheWorld.Map:GetTile(x, y) == tile_type then
-					if math.random() < contents.distributepercent then
-						local prefab = weighted_random_choice(contents.distributeprefabs)
-						if prefab ~= nil then
-							local obj = SpawnPrefab(prefab)
-							obj.Transform:SetPosition((x - width/2.0)*TILE_SCALE + math.random()*2-1, 0, (y - height/2.0)*TILE_SCALE + math.random()*2-1)
+						if on_spawnfn ~= nil then
+							on_spawnfn(prefab, obj:GetPosition())
 						end
 					end
 				end
 			end
 		end
 	end
+end
+
+local function TurnOfTidesRetrofitting_PopulateOcean()
 	local pop = {
 		OCEAN_COASTAL =  {
 			distributepercent = 0.01,
@@ -123,7 +126,7 @@ local function TurnOfTidesRetrofitting_PopulateOcean(inst)
 				seastack = 1,
 			},
 		},
-		OCEAN_REEF = {
+		OCEAN_BRINEPOOL = {
 			distributepercent = 0.3,
 			distributeprefabs =
 			{
@@ -143,8 +146,9 @@ local function TurnOfTidesRetrofitting_PopulateOcean(inst)
 		},
 	}
 
+	local width, height = TheWorld.Map:GetSize()
 	for k, v in pairs(pop) do
-		populate(GROUND[k], v)
+		populate_ocean(GROUND[k], v, width, height)
 	end
 
 	print("Retrofitting for Return Of Them: Turn of Tides - Populated Ocean.")
@@ -154,7 +158,7 @@ local function TurnOfTidesRetrofitting_CleanupOceanPoution(inst)
 	require "map/bunch_spawner"
 
 	local items_to_remove = { "seastack", "antchovies_group", "driftwood_log" }
-	local biomes_to_cleanup = { GROUND.OCEAN_SWELL, GROUND.OCEAN_ROUGH, GROUND.OCEAN_REEF }
+	local biomes_to_cleanup = { GROUND.OCEAN_SWELL, GROUND.OCEAN_ROUGH, GROUND.OCEAN_BRINEPOOL }
 
 	local count = RemovePrefabs(items_to_remove, biomes_to_cleanup)
 	count = count + RemovePrefabs(items_to_remove, biomes_to_cleanup)
@@ -215,6 +219,80 @@ local function TurnOfTidesRetrofitting_CleanupOceanPoution(inst)
 	end
 
 	print("Retrofitting for Return Of Them : Turn of Tides Beta - Repopulated Ocean.")
+end
+
+local function SaltyRetrofitting_PopulateShoalSpawner()
+	local width, height = TheWorld.Map:GetSize()
+
+	local pop = {
+		OCEAN_SWELL = {
+			distributepercent = 0.0003,
+			distributeprefabs =
+			{
+				oceanfish_shoalspawner = 1,
+			},
+		},
+	}
+
+	local width, height = TheWorld.Map:GetSize()
+	for k, v in pairs(pop) do
+		populate_ocean(GROUND[k], v, width, height)
+	end
+end
+
+
+local function SaltyRetrofitting_PopulateBrinePools()
+	require "map/bunch_spawner"
+
+	local bunches = require "map/bunches"
+	bunches.Bunches["SaltyRetrofitting_PopulateBrinePools"] = 
+	{
+		prefab = "saltstack",
+		range = 14,
+		min = 4,
+		max = 6,
+		min_spacing = 3, 
+		valid_tile_types = {
+			GROUND.OCEAN_BRINEPOOL,
+		},
+	}
+
+	local num_spawners = 0
+	local num_stacks = 0
+
+	local width, height = TheWorld.Map:GetSize()
+	BunchSpawnerInit(nil, width, height)
+
+	local function SpawnBoatingSafePrefab(prefab, x, z)
+		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+			local obj = SpawnPrefab(prefab)
+			obj.Transform:SetPosition(x, 0, z)
+
+			num_stacks = num_stacks + 1
+		end
+	end
+
+	local function onspawn(prefab, pt)
+		BunchSpawnerRunSingleBatchSpawner(TheWorld.Map, "SaltyRetrofitting_PopulateBrinePools", pt.x, pt.z, SpawnBoatingSafePrefab)
+		num_spawners = num_spawners + 1
+	end
+
+	local pop = {
+		OCEAN_BRINEPOOL = {
+			distributepercent = 0.012,
+			distributeprefabs =
+			{
+				cookiecutter_spawner = 1,
+			},
+		},
+	}
+
+	local width, height = TheWorld.Map:GetSize()
+	for k, v in pairs(pop) do
+		populate_ocean(GROUND[k], v, width, height, onspawn)
+	end
+
+	print("Retrofitting for Return Of Them: Salty Dog - Added " .. tostring(num_spawners) .. " 'cookiecutter_spawner' and " .. tostring(num_stacks) .. " 'saltstack' prefabs.")
 end
 
 --------------------------------------------------------------------------
@@ -553,7 +631,7 @@ function self:OnPostInit()
 
 		print ("Retrofitting for Return Of Them: Turn of Tides")
 
-		TurnOfTidesRetrofitting_PopulateOcean(self.inst)
+		TurnOfTidesRetrofitting_PopulateOcean()
 
 		self.requiresreset = true
 	end
@@ -600,6 +678,15 @@ function self:OnPostInit()
 		end
 	end
 
+	if self.retrofit_salty then
+		-- add shoals for malbatross spawning, salt statcks and cookie citter spawners
+		print ("Retrofitting for Return Of Them: Salty Dog - Adding Malbatross food sources.")
+		SaltyRetrofitting_PopulateShoalSpawner()
+
+		print ("Retrofitting for Return Of Them: Salty Dog - Raising salt levels.")
+		SaltyRetrofitting_PopulateBrinePools()
+	end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -639,6 +726,7 @@ function self:OnLoad(data)
         self.retrofit_turnoftides_betaupdate1 = data.retrofit_turnoftides_betaupdate1 or false
         self.retrofit_turnoftides_seastacks = data.retrofit_turnoftides_seastacks or false
 		self.retrofit_fix_sculpture_pieces = data.retrofit_fix_sculpture_pieces or false
+		self.retrofit_salty = data.retrofit_salty or false
     end
 end
 

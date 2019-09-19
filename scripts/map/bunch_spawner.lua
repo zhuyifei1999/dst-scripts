@@ -2,37 +2,12 @@
 require "prefabutil"
 require "maputil"
 
+local bunches = require "map/bunches"
+
 local bunch = {}
 local entities = {} 
 local WIDTH = 0
 local HEIGHT = 0
-
-local BUNCH_BLOCKERS = {
-
-}
-
-local bunches = {
-        seastack_spawner_swell = {
-            prefab = "seastack",
-            range = 50,
-            min = 30,
-            max = 50,
-            min_spacing = 8, 
-            valid_tile_types = {
-                GROUND.OCEAN_SWELL,
-            },
-        },
-        seastack_spawner_rough = {
-            prefab = "seastack",
-            range = 30,
-            min = 15,
-            max = 25,
-            min_spacing = 4,
-            valid_tile_types = {
-                GROUND.OCEAN_ROUGH,
-            },
-        },        
-    }
 
 local function setEntity(prop, x, z)
     if entities[prop] == nil then
@@ -114,7 +89,7 @@ end
 local function checkforblockingitems(x,z,range)
     local spawnOK = true
 
-    for i, prefab in ipairs(BUNCH_BLOCKERS) do        
+    for i, prefab in ipairs(bunches.BunchBlockers) do        
         local dist = 4*4
         if entities[prefab] then
             for t, ent in ipairs( entities[prefab] ) do
@@ -182,7 +157,7 @@ end
 function BunchSpawnerRunSingleBatchSpawner(world, spawner_prefab, x, z, add_entity_fn)
     bunch = {}
     
-	local data = bunches[spawner_prefab]
+	local data = bunches.Bunches[spawner_prefab]
 	if data ~= nil then
 		local number = math.random(data.min, data.max)
 
@@ -191,12 +166,14 @@ function BunchSpawnerRunSingleBatchSpawner(world, spawner_prefab, x, z, add_enti
 		end
 
 		exportSpawnersToEntites(add_entity_fn)
+	else
+		print("Warning: Could not find bunch spawner data for: " .. tostring(spawner_prefab))
 	end
 end
 
 function BunchSpawnerRun(world, add_entity_fn)
     
-    for spawner_prefab, _ in pairs(bunches)do
+    for spawner_prefab, _ in pairs(bunches.Bunches)do
         if entities[spawner_prefab] then
             for i, ent in ipairs(entities[spawner_prefab]) do
                 BunchSpawnerRunSingleBatchSpawner(world, spawner_prefab, ent.x, ent.z, add_entity_fn)
@@ -208,5 +185,5 @@ function BunchSpawnerRun(world, add_entity_fn)
 end
 
 function IsBunchSpawner(prefab)
-	return bunches[prefab] ~= nil
+	return bunches.Bunches[prefab] ~= nil
 end

@@ -90,7 +90,7 @@ local function OnLoad(inst, data)
     end
 end
 
-local function OnLoadPostPass(inst, data)
+local function OnLoadPostPass(inst)
 	if inst._special_powers ~= nil then
 		inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()}) -- to init special powers
 	end
