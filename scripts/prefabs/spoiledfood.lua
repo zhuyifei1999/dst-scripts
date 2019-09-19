@@ -17,7 +17,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("icebox_valid")
-	inst:AddTag("saltbox_valid")
     inst:AddTag("show_spoiled")
 
     MakeInventoryFloatable(inst, "med", nil, 0.73)

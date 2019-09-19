@@ -24,10 +24,6 @@ Wander = Class(BehaviourNode, function(self, inst, homelocation, max_dist, times
         minwaittime = times and times.minwaittime or 1,
         randwaittime = times and times.randwaittime or 3,
     }
-
-	if self.times.minwaittime <= 0 and self.times.randwaittime <= 0 then
-		self.times.no_wait_time = true
-	end
 end)
 
 
@@ -43,7 +39,7 @@ function Wander:Visit()
         end
 
         if GetTime() > self.waittime then
-            if not self.walking or self.times.no_wait_time then
+            if not self.walking then
                 self:PickNewDirection()
             else
                 self:HoldPosition()
@@ -130,14 +126,10 @@ function Wander:PickNewDirection()
 
         local radius = 12
         local attempts = 8
-        local offset, check_angle, deflected = self.inst.components.locomotor:IsAquatic() 
-												and FindSwimmableOffset(pt, angle, radius, attempts, true, false, self.checkpointFn)
-												or FindWalkableOffset(pt, angle, radius, attempts, true, false, self.checkpointFn) -- try to avoid walls
+        local offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, false, self.checkpointFn) -- try to avoid walls
         if not check_angle then
             --print(self.inst, "no los wander, fallback to ignoring walls")
-            offset, check_angle, deflected = self.inst.components.locomotor:IsAquatic() 
-											and FindSwimmableOffset(pt, angle, radius, attempts, true, true, self.checkpointFn)
-											or FindWalkableOffset(pt, angle, radius, attempts, true, true, self.checkpointFn) -- if we can't avoid walls, at least avoid water
+            offset, check_angle, deflected = FindWalkableOffset(pt, angle, radius, attempts, true, true, self.checkpointFn) -- if we can't avoid walls, at least avoid water
         end
         if check_angle then
             angle = check_angle

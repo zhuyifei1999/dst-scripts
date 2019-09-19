@@ -56,7 +56,7 @@ end
 
 -- for use in sort functions
 -- return true if rarity1 should go first in the list
-local rarity_order =
+RARITY_ORDER =
 {
 	ProofOfPurchase = 1,
 	Timeless = 2,
@@ -85,7 +85,7 @@ function CompareRarities(item_key_a, item_key_b)
 	local rarity1 = GetRarityForItem(item_key_a)
 	local rarity2 = GetRarityForItem(item_key_b)
 
-	return rarity_order[rarity1] < rarity_order[rarity2]
+	return RARITY_ORDER[rarity1] < RARITY_ORDER[rarity2]
 end
 
 function GetNextRarity(rarity)

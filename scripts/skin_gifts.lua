@@ -15,6 +15,7 @@ local SKIN_GIFT_TYPES =
 	lantern_winter = "WINTER",
 	mast_rose = "TOT",
 	pack_hamlet_wormwood = "HAMLET",
+	pack_hl_gift = "HOTLAVA",
 	pack_rog_gift = "ROG",
 	pack_sw_gift = "SW",
 	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",
@@ -116,6 +117,12 @@ local SKIN_GIFT_POPUPDATA =
 		atlas = "images/thankyou_hamlet.xml",
 		image = "hamlet.tex",
 		titleoffset = {-120, 0, 0},
+	},
+	HOTLAVA =
+	{
+		atlas = "images/thankyou_hotlava.xml",
+		image = "hotlava.tex",
+		titleoffset = {0, -20, 0},
 	},
 	LUNAR =
 	{

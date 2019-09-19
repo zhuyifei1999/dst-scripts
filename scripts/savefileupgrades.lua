@@ -713,18 +713,6 @@ t = {
              end,
         },
 
-        {
-            version = 5.03, -- RoT: Salty Dog - add new content
-            fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
-					if savedata.map.persistdata.retrofitforestmap_anr == nil then
-						savedata.map.persistdata.retrofitforestmap_anr = {}
-					end
-					savedata.map.persistdata.retrofitforestmap_anr.retrofit_salty = true
-                end
-             end,
-        },
-
 		
 
     },

@@ -47,11 +47,6 @@ local function fn(suffix, radius)
         return inst
     end
 
-	inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.WOOD
-    inst.components.edible.healthvalue = 0
-    inst.components.edible.hungervalue = 0
-
     MakeLargeBurnable(inst)
     MakeLargePropagator(inst)
 

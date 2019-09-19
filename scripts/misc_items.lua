@@ -1078,6 +1078,17 @@ MISC_ITEMS =
 		output_items = {  "amulet_red_heart", "firepit_firebird", "birdcage_romantic", "playerportrait_bg_heart1", "playerportrait_bg_heart2", },
 		release_group = 57,
 	},
+	pack_hl_gift =
+	{
+		type = "purchase",
+		skin_tags = { },
+		steam_dlc_id = 382560,
+		build_name_override = "mysterybox_classic_4",
+		display_items = {  "firepit_lava", },
+		output_items = {  "firepit_lava", },
+		legacy_popup_category = "HOTLAVA",
+		release_group = 75,
+	},
 	pack_hockey_items =
 	{
 		type = "purchase",

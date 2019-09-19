@@ -884,6 +884,16 @@ table.insert(prefs, CreatePrefabSkin("firepit_hole",
 	release_group = 5,
 }))
 
+table.insert(prefs, CreatePrefabSkin("firepit_lava",
+{
+	base_prefab = "firepit",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) firepit_init_fn(inst, "firepit_lava", Vector3(0, 0, 0)) end,
+	skin_tags = { "FIREPIT", "CRAFTABLE", },
+	release_group = 75,
+}))
+
 table.insert(prefs, CreatePrefabSkin("firepit_stonehenge",
 {
 	base_prefab = "firepit",

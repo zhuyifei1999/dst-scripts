@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Stop, abort! My line's too short!",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2830,28 +2827,6 @@ return{
 
 		GESTALT = "Good evening, children!",
 
-		COOKIECUTTER = "Well, aren't you a funny fellow!",
-		COOKIECUTTERSHELL = "The creature fell, now I take its shell!",
-		COOKIECUTTERHAT = "With this spiny gear, I've nothing to fear!",
-		SALTSTACK =
-		{
-			GENERIC = "Interesting.",
-			MINED_OUT = "Heehee, hoho, it had to go.",
-			GROWING = "Oh joyous day. More salt.",
-		},
-		SALTROCK = "Hissss!",
-		SALTBOX = "You needn't worry about protecting your food from me.",
-
-        GNARWAIL = "Now now, no need to put a dent in my dinghy.",
-        GNARWAIL_HORN = "It makes a compelling point, hyuyu!",
-
-        MALBATROSS = "It's bad luck to shoot it down, but what do I know? Hyuyu!",
-        MALBATROSS_FEATHER = "A feather for me, from the bird of the sea.",
-        MALBATROSS_BEAK = "It squawks no more.",
-        MAST_MALBATROSS_ITEM = "Ah at last, a fancy new mast!",
-        MAST_MALBATROSS = "It fought to no avail, and became our sail!",
-		MALBATROSS_FEATHERED_WEAVE = "This fabric tickles, hyuyu.",
-
         WALKINGPLANK = "It's just a last resort, worrywart!",
         OAR = "I'll splash all my friends with this!",
 		OAR_DRIFTWOOD = "It's an oar, for shore!",
@@ -2883,7 +2858,6 @@ return{
         SPICE_GARLIC = "Hissss!",
         SPICE_SUGAR = "A saccharine collection of liquified confection.",
         SPICE_CHILI = "I'll spike some mortal's food. Hyuyu!",
-        SPICE_SALT = "Careful with that stuff!",
         MONSTERTARTARE = "Monster flesh that's very fresh. ",
         FRESHFRUITCREPES = "Fruits and berries put to bed.",
         FROGFISHBOWL = "I'd rather have a nice fresh soul.",

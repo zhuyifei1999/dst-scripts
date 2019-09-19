@@ -6,13 +6,12 @@ local function oncheckbadfood(self)
     end
 end
 
-local function onfoodtype(self, new_foodtype, old_foodtype)
+local function onfoodtype(self, foodtype, old_foodtype)
     if old_foodtype ~= nil then
         self.inst:RemoveTag("edible_"..old_foodtype)
     end
-    if new_foodtype ~= nil then
-		assert(self.foodtype ~= self.secondaryfoodtype, "Edible component: The main and secondary food types cannot be set to the same value.")
-        self.inst:AddTag("edible_"..new_foodtype)
+    if foodtype ~= nil then
+        self.inst:AddTag("edible_"..foodtype)
     end
 end
 
@@ -22,7 +21,6 @@ local Edible = Class(function(self, inst)
     self.hungervalue = 10
     self.sanityvalue = 0
     self.foodtype = FOODTYPE.GENERIC
-    self.secondaryfoodtype = nil
     self.oneaten = nil
     self.degrades_with_spoilage = true
     self.gethealthfn = nil
@@ -42,13 +40,17 @@ local Edible = Class(function(self, inst)
     self.spoiled_health = TUNING.SPOILED_FOOD_HEALTH
 
     self.spice = nil
+
+    if inst.prefab == "berries" then
+        --hack for smallbird; berries are actually part of veggie
+        inst:AddTag("edible_"..FOODTYPE.BERRY)
+    end
 end,
 nil,
 {
     healthvalue = oncheckbadfood,
     sanityvalue = oncheckbadfood,
     foodtype = onfoodtype,
-    secondaryfoodtype = onfoodtype,
 })
 
 function Edible:OnRemoveFromEntity()
@@ -56,10 +58,6 @@ function Edible:OnRemoveFromEntity()
     if self.foodtype ~= nil then
         self.inst:RemoveTag("edible_"..self.foodtype)
     end
-    if self.secondaryfoodtype ~= nil then
-        self.inst:RemoveTag("edible_"..self.secondaryfoodtype)
-    end
-	
     self.inst:RemoveTag("edible_"..FOODTYPE.BERRY)
 end
 

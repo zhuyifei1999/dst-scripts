@@ -221,6 +221,7 @@ PREFAB_SKINS = {
 		"firepit_fanged",
 		"firepit_firebird",
 		"firepit_hole",
+		"firepit_lava",
 		"firepit_stonehenge",
 		"firepit_victorian",
 	},

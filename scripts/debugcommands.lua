@@ -155,6 +155,9 @@ end
 ------------ skins functions --------------------
 ---------------------------------------------------
 
+--For testing legacy skin DLC popup
+--AddNewSkinDLCEntitlement("pack_hl_gift") MakeSkinDLCPopup()
+
 local TEST_ITEM_NAME = "birdcage_pirate"
 function d_test_thank_you(param)
 	local ThankYouPopup = require "screens/thankyoupopup"
