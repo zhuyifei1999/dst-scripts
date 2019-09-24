@@ -20,13 +20,13 @@ local LOWDSP =
 {
     winter =
     {
-        ["set_music"] = 2000,
+        --["set_music"] = 2000,
         --["set_ambience"] = WINTER_FREQUENCY,
         --["set_sfx/HUD"] = WINTER_FREQUENCY,
         ["set_sfx/movement"] = WINTER_FREQUENCY,
-        ["set_sfx/creature"] = WINTER_FREQUENCY,
+        -- ["set_sfx/creature"] = WINTER_FREQUENCY,
         ["set_sfx/player"] = WINTER_FREQUENCY,
-        ["set_sfx/sfx"] = WINTER_FREQUENCY,
+        -- ["set_sfx/sfx"] = WINTER_FREQUENCY,
         ["set_sfx/voice"] = WINTER_FREQUENCY,
     },
 }
@@ -44,13 +44,13 @@ local HIGHDSP =
 {
     summer =
     {
-        ["set_music"] = 500,
+        --["set_music"] = 500,
         --["set_ambience"] = SUMMER_DSP,
         --["set_sfx/HUD"] = SUMMER_DSP,
         ["set_sfx/movement"] = SUMMER_DSP,
-        ["set_sfx/creature"] = SUMMER_DSP,
+        -- ["set_sfx/creature"] = SUMMER_DSP,
         ["set_sfx/player"] = SUMMER_DSP,
-        ["set_sfx/sfx"] = SUMMER_DSP,
+        -- ["set_sfx/sfx"] = SUMMER_DSP,
         ["set_sfx/voice"] = SUMMER_DSP,
     },
 }

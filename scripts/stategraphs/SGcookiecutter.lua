@@ -5,53 +5,79 @@ local actionhandlers =
     ActionHandler(ACTIONS.EAT, "eat"),
 }
 
+local function SetInvincible(inst, invincible)
+	if inst.components.health ~= nil and not inst.components.health:IsDead() then
+		inst.components.health.invincible = invincible
+	end
+end
+
 local events =
 {
-	EventHandler("attacked", function(inst) if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
-		if inst:HasTag("swimming") then
-			if inst.brain then
-				inst.components.locomotor:StopMoving()
+	EventHandler("attacked", function(inst)
+		if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then
+			if inst.sg.mem.in_water then
+				-- getting attacked while swimming should result in fleeing
+				inst.components.locomotor:Stop()
 				inst.components.locomotor:Clear()
 
 				inst.sg:GoToState("idle")
-				inst.brain:ForceUpdate()
+				if inst.brain ~= nil then
+					inst.brain:ForceUpdate()
+				end
+			else
+				inst.sg:GoToState("drill_hit")
 			end
-		else
-			inst.sg:GoToState("hit_land")
-		end end end),
+		end
+	end),
+	EventHandler("onsink", function(inst) 
+		if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("jumping") and not inst.sg:HasStateTag("drilling_pst") then
+			if inst.sg:HasStateTag("drilling") then
+				inst.sg:GoToState("drill_pst")
+			else
+				inst.sg:GoToState("gohome")
+			end
+		end 
+	end),
 	EventHandler("gohome", function(inst) if inst.components.health ~= nil and not inst.components.health:IsDead() then inst.sg:GoToState("gohome") end end),
-	EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+	EventHandler("death", function(inst) 
+		if inst.sg.mem.in_water then
+			inst.sg:GoToState("death") 
+		else
+			inst.sg:GoToState("death_boat") 
+		end
+	end),
 	EventHandler("gotosleep", function(inst) if inst.components.health ~= nil and not inst.components.health:IsDead() and inst:HasTag("swimming") and not inst.sg:HasStateTag("jumping") then inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep") end end),
-    CommonHandlers.OnHop(),
+    EventHandler("teleported", function(inst)
+		if inst.components.health ~= nil and not inst.components.health:IsDead() then
+			inst.sg:GoToState("jump_pst_water")
+        end
+    end),
 	CommonHandlers.OnLocomote(true, true),
 }
 
-local function StartAura(inst)
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+local function RestoreCollidesWith(inst)
+	inst.Physics:CollidesWith(COLLISION.WORLD 
+						+ COLLISION.OBSTACLES
+						+ COLLISION.SMALLOBSTACLES
+						+ COLLISION.CHARACTERS
+						+ COLLISION.GIANTS)
 end
 
-local function StopAura(inst)
-    inst.components.sanityaura.aura = 0
-end
-
-local function UpdateWalkSpeedAndHopping(inst, forcechasingboattruefalse)
-	if forcechasingboattruefalse ~= nil then
-		if forcechasingboattruefalse then
-			inst.components.locomotor.walkspeed = TUNING.COOKIECUTTER.APPROACH_SPEED
-			inst.components.locomotor:SetAllowPlatformHopping(true)
-		else
-			inst.components.locomotor.walkspeed = TUNING.COOKIECUTTER.WANDER_SPEED
-			inst.components.locomotor:SetAllowPlatformHopping(false)
-		end
-	else
-		if inst.target_boat ~= nil and inst:GetBufferedAction() == nil then
-			inst.components.locomotor.walkspeed = TUNING.COOKIECUTTER.APPROACH_SPEED
-			inst.components.locomotor:SetAllowPlatformHopping(true)
-		else
-			inst.components.locomotor.walkspeed = TUNING.COOKIECUTTER.WANDER_SPEED
-			inst.components.locomotor:SetAllowPlatformHopping(false)
-		end
+local function SetSortOrderIsInWater(inst, in_water)
+	if in_water then
+		inst.sg.mem.in_water = true
+		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.BOAT_LIP)
+		inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+	elseif not in_water then
+		inst.sg.mem.in_water = false
+		inst.AnimState:SetSortOrder(0)
+		inst.AnimState:SetLayer(LAYER_WORLD)
+		RestoreCollidesWith(inst)
 	end
+end
+
+local function UpdateWalkSpeedAndHopping(inst)
+	inst.components.locomotor.walkspeed = (inst.target_wood ~= nil and inst.target_wood:IsValid()) and TUNING.COOKIECUTTER.APPROACH_SPEED or TUNING.COOKIECUTTER.WANDER_SPEED
 end
 
 local states =
@@ -59,248 +85,129 @@ local states =
     State{
         name = "idle",
         tags = { "idle", "canrotate" },
-        onenter = function(inst, playanim)
-			local x, y, z = inst.Transform:GetWorldPosition()
-			if inst.should_drill or TheWorld.Map:GetPlatformAtPoint(x, z) then
-				if inst.should_start_drilling then
-					inst.components.cookiecutterdrill:ResetDrillProgress()
-					inst.attackdata.wants_to_attack = false
-				end
-				inst:setsortorderisinwaterfn(false)
-				inst.sg:GoToState("drill")
+        onenter = function(inst, push_idle_anim)
+			SetSortOrderIsInWater(inst, true)
+			inst.Physics:Stop()
+			if push_idle_anim then
+				inst.AnimState:PushAnimation("idle", true)
 			else
-				inst.Physics:Stop()
-				if playanim then
-					inst.AnimState:PlayAnimation(playanim)
-					inst.AnimState:PushAnimation("idle", true)
-				else
-					inst.AnimState:PlayAnimation("idle", true)
-				end
-				inst:setsortorderisinwaterfn(true)
-
-				inst.sg:SetTimeout(2*math.random()+.5)
+				inst.AnimState:PlayAnimation("idle", true)
 			end
-
-			inst.should_start_drilling = false
         end,
     },
 
     State{
-        name = "eat",
-        tags = { "busy", "jumping" },
+        name = "resurface",
+        tags = { "busy", "noattack", "nosleep", "nointerrupt" },
 
-        onenter = function(inst, cb)
-            inst.Physics:Stop()
-			inst.AnimState:PlayAnimation("jumpout_antic")
-			inst.AnimState:PushAnimation("jumpout", false)
-			inst.AnimState:PushAnimation("jump_loop", false)
-            inst.AnimState:PushAnimation("jumpin_pst", false)
-        end,
-
-        timeline =
-        {
-			TimeEvent(10*FRAMES, function(inst)
-				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-				inst.SoundEmitter:PlaySound(inst.sounds.jump)
-			end),
-			TimeEvent(12*FRAMES, function(inst)
-				inst.SoundEmitter:PlaySound(inst.sounds.attack)
-			end),
-			TimeEvent(17*FRAMES, function(inst)
-				inst:setsortorderisinwaterfn(false)
-			end),
-            TimeEvent(28*FRAMES, function(inst)
-				if inst:PerformBufferedAction() then
-					inst.SoundEmitter:PlaySound(inst.sounds.eat_item)
-				end
-			end),
-			TimeEvent(30*FRAMES, function(inst)
-				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-				inst.SoundEmitter:PlaySound(inst.sounds.splash)
-				inst:setsortorderisinwaterfn(true)
-			end),
-        },
-
-        events =
-        {
-			EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
-        },
-    },
-
-    State{
-        name = "drill",
-		tags = { "drilling" },
-
-        onenter = function(inst, cb)
-			if not inst.SoundEmitter:PlayingSound("eat_LP") then inst.SoundEmitter:PlaySound(inst.sounds.eat, "eat_LP") end
-
-			if inst.components.cookiecutterdrill:GetIsDoneDrilling() then
-				inst.sg:GoToState("leaveboat")
-			else
-				if inst.attackdata.wants_to_attack and not inst.attackdata.on_cooldown then
-					inst.sg:GoToState("areaattack")
-				else
-					inst.components.cookiecutterdrill:StartDrilling()
-
-					inst.AnimState:PlayAnimation("eat_loop", true)
-					SpawnPrefab("wood_splinter_drill").Transform:SetPosition(inst.Transform:GetWorldPosition())
-				end
-			end
-		end,
-
-		onexit = function(inst)
-			inst.components.cookiecutterdrill:StopDrilling()
-		end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-				inst.sg:GoToState("drill")
-			end),
-        },
-    },
-
-    State{
-        name = "leaveboat",
-        tags = { "busy", "drilling", "leavingboat" },
-
-        onenter = function(inst, cb)
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("eat_pst")
-			inst.should_drill = false
-		end,
-
-        timeline =
-        {
-			TimeEvent(3*FRAMES, function(inst)
-				inst.components.cookiecutterdrill:FinishDrilling()
-			end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-				inst:ClearBufferedAction()
-				inst:PushEvent("onsubmerge")
-                inst.SoundEmitter:KillSound("eat_LP")
-				inst.SoundEmitter:PlaySound(inst.sounds.eat_finish)
-			end),
-        },
-    },
-
-    State{
-        name = "areaattack",
-        tags = { "attack", "busy" },
-
-        onenter = function(inst, target)
-			inst.attackdata.wants_to_attack = false
-			inst.attackdata.on_cooldown = true
-			inst:DoTaskInTime(inst.attackdata.cooldown_duration, function() inst.attackdata.on_cooldown = false end)
-
-            inst.sg.statemem.target = target
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("attack_loop")
-        end,
-
-		onexit = function(inst)
-			inst.components.cookiecutterdrill:StopDrilling()
-		end,
-
-        timeline =
-        {
-			TimeEvent(0, function(inst)
-				inst.SoundEmitter:PlaySound(inst.sounds.attack)
-			end),
-
-			TimeEvent(5*FRAMES, function(inst)
-				inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.ATTACK_RADIUS, nil, nil, nil, { "ghost", "playerghost", "cookiecutter" })
-			end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst) inst.sg:GoToState("drill") end),
-        },
-    },
-
-    State{
-        name = "surface",
-        tags = { "busy" },
-
-        onenter = function(inst, cb)
+        onenter = function(inst, should_relocate)
+			SetSortOrderIsInWater(inst, true)
+			inst:AddTag("NOCLICK")
             inst.AnimState:PlayAnimation("resurface")
+
+			if should_relocate then
+
+				local pt = inst:GetPosition()
+				local a = math.random() * 2 - 1
+				local r = math.random() * 2
+				local boat = inst:GetCurrentPlatform()
+				local boat_dir = (boat ~= nil and boat.components.boatphysics ~= nil) and Vector3(boat.components.boatphysics.velocity_x, 0, boat.components.boatphysics.velocity_z) or nil
+				if boat_dir ~= nil then
+					pt = pt + boat_dir * -TUNING.MAX_WALKABLE_PLATFORM_RADIUS
+				end
+				local start_angle = (inst.Transform:GetRotation() + 180 + a*a*a*30) * DEGREES
+				local min_dist_to_boat = TUNING.MAX_WALKABLE_PLATFORM_RADIUS + inst:GetPhysicsRadius(0) + 1
+				local function testfn(new_pt) return #TheSim:FindEntities(new_pt.x, 0, new_pt.z, min_dist_to_boat, {"walkableplatform"}) == 0 end
+
+				local offset = FindSwimmableOffset(pt, start_angle, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + r, 16, true, nil, testfn, true) -- allowing boats because testfn will handle it
+										or FindSwimmableOffset(pt, start_angle, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + r + 3, 16, true, nil, testfn, true)
+										or FindSwimmableOffset(pt, start_angle, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + r + 6, 16, true, nil, testfn, true)
+
+				if offset ~= nil then
+					inst.Transform:SetPosition(pt.x + offset.x, 0, pt.z + offset.z)
+				else
+					inst:DoReturnHome()
+				end
+			end
 		end,
+
+		timeline = 
+		{
+			TimeEvent(9*FRAMES, function(inst)
+				inst:RemoveTag("NOCLICK")
+				inst.sg:RemoveStateTag("noattack")
+				inst.sg:RemoveStateTag("nosleep")
+				inst.sg:RemoveStateTag("nointerrupt")
+			end),
+		},
 
         events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
+
+		onexit = function(inst)
+			inst:RemoveTag("NOCLICK")
+		end,
     },
 
 	State{
         name = "gohome",
-        tags = { "busy" },
+        tags = { "busy", "noattack", "nosleep", "nointerrupt" },
 
         onenter = function(inst, cb)
-            inst.AnimState:PlayAnimation("submerge")
+			SetSortOrderIsInWater(inst, true)
+            inst.AnimState:PlayAnimation("leave")
 		end,
 
         events =
         {
             EventHandler("animover", function(inst)
-				inst:doreturnfn()
+				inst:DoReturnHome()
 			end),
         },
 	},
-
-    State{
-        name = "hit_land", -- Skips straight to running away if hit in water
-        tags = { "busy", "hit" },
-
-        onenter = function(inst)
-            inst.Physics:Stop()
-			inst.components.cookiecutterdrill:StartDrilling()
-			inst.AnimState:PlayAnimation("hit")
-			if inst.SoundEmitter:PlayingSound("eat_LP") then inst.SoundEmitter:KillSound("eat_LP") end
-        end,
-
-		onexit = function(inst)
-			inst.components.cookiecutterdrill:StopDrilling()
-		end,
-
-        events =
-        {
-			EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
-        },
-    },
 
     State{
         name = "death",
         tags = { "busy" },
 
         onenter = function(inst)
-            inst.AnimState:PlayAnimation("death")
-			if inst.components.amphibiouscreature ~= nil and inst.components.amphibiouscreature.in_water then
-				inst:setsortorderisinwaterfn(true)
-				inst.AnimState:PushAnimation("death_idle", true)
-			else
-				inst:setsortorderisinwaterfn(false)
-				inst.AnimState:PushAnimation("death_idle", false)
-			end
-
+			SetSortOrderIsInWater(inst, true)
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)
 
-			if inst.SoundEmitter:PlayingSound("eat_LP") then inst.SoundEmitter:KillSound("eat_LP") end
-            inst.SoundEmitter:PlaySound(inst.sounds.death)
+		    inst.AnimState:PlayAnimation("death")
+			inst.AnimState:PushAnimation("death_idle", true)
+
+            inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/death")
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
+        end,
+    },
+
+    State{
+        name = "death_boat",
+        tags = { "busy" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, false)
+            inst.Physics:Stop()
+
+	        inst.AnimState:PlayAnimation("boat_death")
+	        inst.AnimState:PushAnimation("boat_death_idle", true)
+	        RemovePhysicsColliders(inst)
+
             inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
 
-        onexit = function(inst)
-            if not inst:IsInLimbo() then
-                inst.AnimState:Resume()
-            end
-        end,
+		timeline = 
+		{
+			TimeEvent(5*FRAMES, function(inst)
+	            inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/death")
+			end),
+			TimeEvent(16*FRAMES, function(inst)
+				inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/thunk")
+			end),
+		},
     },
 
     State{
@@ -308,6 +215,7 @@ local states =
         tags = { "moving", "canrotate" },
 
         onenter = function(inst)
+			SetSortOrderIsInWater(inst, true)
 			inst.components.locomotor:WalkForward()
 			inst.AnimState:PlayAnimation("walk_pre")
         end,
@@ -322,10 +230,6 @@ local states =
 				end
 			end),
         },
-
-		onexit = function(inst)
-			UpdateWalkSpeedAndHopping(inst)
-		end,
     },
 
     State{
@@ -343,10 +247,6 @@ local states =
         ontimeout = function(inst)
 			inst.sg:GoToState("walk")
 		end,
-
-		onexit = function(inst)
-			UpdateWalkSpeedAndHopping(inst)
-		end,
     },
 
 	State{
@@ -354,9 +254,10 @@ local states =
         tags = { "canrotate" },
 
         onenter = function(inst)
-            inst.components.locomotor:StopMoving()
+            inst.components.locomotor:Stop()
 			inst.AnimState:PushAnimation("walk_pst", false)
         end,
+
 		onupdate = UpdateWalkSpeedAndHopping,
 
         events =
@@ -367,111 +268,361 @@ local states =
 				end
 			end),
         },
+    },
+
+    State{
+        name = "run_start",
+        tags = { "moving", "running", "canrotate", "noattack", "nosleep", "nointerrupt" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, true)
+            inst.components.locomotor:RunForward()
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("run_pre")
+			inst:AddTag("NOCLICK")
+			SetInvincible(inst, true)
+        end,
+
+		timeline = 
+		{
+			TimeEvent(9*FRAMES, function(inst)
+	            inst.components.locomotor:RunForward()
+			end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("run")
+				end
+			end),
+        },
 
 		onexit = function(inst)
-			UpdateWalkSpeedAndHopping(inst)
+			inst:RemoveTag("NOCLICK")
+			SetInvincible(inst, false)
 		end,
-    }
-}
+    },
 
-CommonStates.AddAmphibiousCreatureHopStates(states,
-{ -- config
-	swimming_clear_collision_frame = 1*FRAMES,
-	onenters =
-	{
-		hop_antic = UpdateWalkSpeedAndHopping,
-		hop_pre = UpdateWalkSpeedAndHopping,
-		hop_pst = UpdateWalkSpeedAndHopping,
-	},
-	onexits =
-	{
-		hop_antic = UpdateWalkSpeedAndHopping,
-		hop_pre = UpdateWalkSpeedAndHopping,
-		hop_pst = UpdateWalkSpeedAndHopping,
-	},
-},
-{ -- anims
-},
-{ -- timeline
-	hop_antic = {
-		TimeEvent(0, function(inst)
-			inst.components.knownlocations:RememberLocation("resurfacepoint", Point(inst.Transform:GetWorldPosition()))
-		end),
-		TimeEvent(9*FRAMES, function(inst)
-			SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-			inst.SoundEmitter:PlaySound(inst.sounds.jump)
-		end),
-		TimeEvent(12*FRAMES, function(inst)
-			inst.sg:GoToState("hop_pre")
-		end),
-	},
-	hop_pre =
-	{
-		TimeEvent(0, function(inst)
-			inst:setsortorderisinwaterfn(false)
-			inst.sg:SetTimeout(30*FRAMES) -- Overrides timeout set from commonstates hop_pre onenter
+    State{
+        name = "run",
+        tags = { "moving", "running", "canrotate", "noattack", "nosleep", "nointerrupt" },
 
-			inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
-		end),
-		TimeEvent(1*FRAMES, function(inst)
-			inst.SoundEmitter:PlaySound(inst.sounds.attack)
-		end),
-	},
-	hop_pst = {
-		TimeEvent(3*FRAMES, function(inst)
-			if inst.should_drill then
-				SpawnPrefab("wood_splinter_jump").Transform:SetPosition(inst.Transform:GetWorldPosition())
-				inst.SoundEmitter:PlaySound(inst.sounds.land)
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            inst.AnimState:PlayAnimation("run_loop", true)
+			inst:AddTag("NOCLICK")
+			SetInvincible(inst, true)
+        end,
 
+		onexit = function(inst)
+			inst:RemoveTag("NOCLICK")
+			SetInvincible(inst, false)
+		end,
+
+    },
+
+	State{
+        name = "run_stop",
+        tags = { "busy", "noattack", "nosleep", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("run_pst")
+			inst:AddTag("NOCLICK")
+			SetInvincible(inst, true)
+        end,
+
+		timeline = 
+		{
+			TimeEvent(9*FRAMES, function(inst)
+				inst.sg:GoToState("idle", true)
+			end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle") -- fail safe exit, normal exit should happen in the timeline
+				end
+			end),
+        },
+
+		onexit = function(inst)
+			inst:RemoveTag("NOCLICK")
+			SetInvincible(inst, false)
+		end,
+    },
+
+    State{
+        name = "eat",
+
+        onenter = function(inst, cb)
+			inst.sg:GoToState("jump_pre", (inst:GetBufferedAction() ~= nil and inst:GetBufferedAction().target) and inst:GetBufferedAction().target:GetPosition() or nil)
+        end,
+    },
+
+	State{
+        name = "jump_pre",
+        tags = { "busy", "canrotate", "nosleep", "noattack", "nointerrupt" },
+
+        onenter = function(inst, target_pt)
+			SetSortOrderIsInWater(inst, true)
+
+
+			if target_pt ~= nil then
+				inst.sg.statemem.target_pt = target_pt
+				inst:ForceFacePoint(inst.sg.statemem.target_pt:Get())
+			end
+            inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("jump_pre")
+        end,
+
+		timeline = 
+		{
+			TimeEvent(10*FRAMES, function(inst)
+				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
+				inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small")
+			end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				inst.sg:GoToState("jumping", inst.sg.statemem.target_pt ~= nil and (inst:GetPosition() - inst.sg.statemem.target_pt):Length() + math.random() or nil)
+			end),
+        },
+    },
+
+	State{
+        name = "jumping",
+        tags = { "busy", "jumping", "nosleep", "noattack", "nointerrupt" },
+
+        onenter = function(inst, motor_speed)
+			SetSortOrderIsInWater(inst, false)
+
+			inst.AnimState:PlayAnimation("jumping")
+
+            inst.components.locomotor:Stop()
+
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+
+			if motor_speed ~= nil then
+	            inst.Physics:SetMotorVelOverride(motor_speed, 0, 0)
+			end
+        end,
+
+        timeline =
+        {
+			TimeEvent(12, function(inst)
+	            inst.Physics:ClearMotorVelOverride()
+			end),
+
+			TimeEvent(14, function(inst)
+		        inst.Physics:SetCollisionMask(COLLISION.WORLD) -- collide with the ground and limits, this will let physics push the cookie cutter on or off boats
+			end),
+
+			TimeEvent(15*FRAMES, function(inst)
+                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.JUMP_ATTACK_RADIUS, nil, nil, nil, { "cookiecutter", "INLIMBO", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
+			end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				if inst:GetCurrentPlatform() ~= nil then
+					inst.sg.statemem.collisionmask = nil
+
+					inst.sg:GoToState("jump_pst_boat")
+				else
+					if inst:GetBufferedAction() ~= nil then
+						inst:PerformBufferedAction()
+					end
+					inst.sg:GoToState("jump_pst_water")
+				end
+			end),
+        },
+
+		onexit = function(inst)
+            inst.Physics:ClearMotorVelOverride()
+			RestoreCollidesWith(inst)
+			if inst:GetBufferedAction() ~= nil then
 				inst:ClearBufferedAction()
 			end
-		end),
-		TimeEvent(4*FRAMES, function(inst) 
-			if inst:HasTag("swimming") then
-				inst.components.locomotor:StopMoving()
-				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-				inst.SoundEmitter:PlaySound(inst.sounds.splash)
-				inst:setsortorderisinwaterfn(false)
+		end,
+    },
+
+	State{
+        name = "jump_pst_water",
+        tags = { "busy", "nosleep", "noattack", "nointerrupt" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, true)
+            inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("jump_pst_water")
+
+			SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
+			inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				inst.sg:GoToState("idle")
+			end),
+        },
+    },
+
+	State{
+        name = "jump_pst_boat",
+        tags = { "busy", "nosleep", "drilling" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, false)
+            inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("jump_pst_boat")
+			inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/damage_small")
+			inst.components.cookiecutterdrill:ResetDrilling()
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				inst.sg.statemem.notinterupted = true
+				inst.sg:GoToState("drill")
+			end),
+        },
+
+		onexit = function(inst)
+			SetSortOrderIsInWater(inst, not inst.sg.statemem.notinterupted)
+			RestoreCollidesWith(inst)
+		end,
+    },
+
+    State{
+        name = "drill",
+		tags = { "drilling", "nosleep" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, false)
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+			if inst.target_wood ~= nil and inst.target_wood:IsValid() and inst.target_wood:HasTag("boat") then
+				inst.AnimState:PlayAnimation("drill_loop", true)
+				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/eat_LP", "eat_LP")
+
+				inst.components.cookiecutterdrill:ResumeDrilling()
+
+				inst.sg.statemem.fx_task = inst:DoPeriodicTask(inst.AnimState:GetCurrentAnimationLength(), function(i) SpawnPrefab("wood_splinter_drill").Transform:SetPosition(i.Transform:GetWorldPosition()) end, 0)
 			else
-				inst.Physics:Stop()
-				inst.Physics:SetActive(false)
+				inst.sg:GoToState("drill_pst")
 			end
-		end),
-	},
-})
+		end,
+
+        onupdate = function(inst)
+			if inst.components.cookiecutterdrill:GetIsDoneDrilling() then
+				inst.sg:GoToState("drill_pst")
+			end
+		end,
+
+		onexit = function(inst)
+			if inst.sg.statemem.fx_task ~= nil then
+				inst.sg.statemem.fx_task:Cancel()
+			end
+			RestoreCollidesWith(inst)
+			inst.SoundEmitter:KillSound("eat_LP")
+			inst.components.cookiecutterdrill:PauseDrilling()
+		end,
+    },
+
+    State{
+        name = "drill_pst",
+        tags = { "busy", "drilling", "drilling_pst", "nosleep", "noattack", "nointerrupt" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, false)
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+			inst:AddTag("NOCLICK")
+
+            inst.Physics:Stop()
+    		inst.AnimState:PlayAnimation("drill_pst")
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 1.0 + math.random() * 0.5)
+
+			if inst.target_wood ~= nil and inst.target_wood:IsValid() and inst.target_wood:HasTag("boat") then
+				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/attack")
+			end
+		end,
+
+        timeline =
+        {
+			TimeEvent(3*FRAMES, function(inst)
+				if inst.components.eater ~= nil then
+					inst.components.eater.lasteattime = GetTime()
+				end
+				inst.components.cookiecutterdrill:FinishDrilling()
+			end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				inst:Hide()
+			end),
+        },
+
+        ontimeout = function(inst)
+			inst.sg:GoToState("resurface", true)
+		end,
+
+		onexit = function(inst)
+			RestoreCollidesWith(inst)
+			inst:RemoveTag("NOCLICK")
+			inst:Show()
+		end,
+    },
+
+    State{
+        name = "drill_hit",
+        tags = { "busy", "hit", "drilling" },
+
+        onenter = function(inst)
+			SetSortOrderIsInWater(inst, false)
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+
+            inst.Physics:Stop()
+			inst.AnimState:PlayAnimation("hit")
+            inst.AnimState:PushAnimation("attack_loop", false)
+			inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/hit")
+
+        end,
+
+        timeline =
+        {
+			TimeEvent(19*FRAMES, function(inst)
+				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/attack")
+			end),
+			TimeEvent(25*FRAMES, function(inst)
+                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.ATTACK_RADIUS, nil, nil, nil, { "cookiecutter", "INLIMBO", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
+			end),
+			TimeEvent(27*FRAMES, function(inst)
+				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/attack")
+			end),
+        },
+
+        events =
+        {
+			EventHandler("animqueueover", function(inst) inst.sg:GoToState("drill") end),
+        },
+
+		onexit = function(inst)
+			RestoreCollidesWith(inst)
+		end,
+    },
+
+}
 
 CommonStates.AddSleepStates(states, {})
 
-CommonStates.AddRunStates(states,
-{
-	starttimeline = {
-		TimeEvent(0, function(inst)
-			inst.components.health.invincible = true
-			inst:AddTag("NOCLICK")
-			inst:AddTag("notarget")
-
-			UpdateWalkSpeedAndHopping(inst, false)
-		end),
-	},
-	runtimeline = {
-		TimeEvent(0, function(inst)
-			inst.components.health.invincible = true
-			inst:AddTag("NOCLICK")
-			inst:AddTag("notarget")
-		end),
-	},
-}, nil, nil, nil,
-{
-	startonexit = function(inst)
-		inst.components.health.invincible = false
-		inst:RemoveTag("NOCLICK")
-		inst:RemoveTag("notarget")
-	end,
-	runonexit = function(inst)
-		inst.components.health.invincible = false
-		inst:RemoveTag("NOCLICK")
-		inst:RemoveTag("notarget")
-	end
-})
-
-return StateGraph("cookiecutter", states, events, "surface", actionhandlers)
+return StateGraph("cookiecutter", states, events, "resurface", actionhandlers)

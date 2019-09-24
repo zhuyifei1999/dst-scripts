@@ -42,7 +42,7 @@ local function fn()
     inst:AddComponent("childspawner")
     inst.components.childspawner:SetRegenPeriod(TUNING.COOKIECUTTER_SPAWNER.REGEN_TIME)
     inst.components.childspawner:SetSpawnPeriod(TUNING.COOKIECUTTER_SPAWNER.RELEASE_TIME)
-    inst.components.childspawner:SetMaxChildren(5)
+    inst.components.childspawner:SetMaxChildren(TUNING.COOKIECUTTER_SPAWNER.MAX_CHILDREN)
     inst.components.childspawner:StartRegen()
 	inst.components.childspawner.spawnradius = {min = 2, max = TUNING.COOKIECUTTER.WANDER_DIST}
 	inst.components.childspawner.childname = "cookiecutter"

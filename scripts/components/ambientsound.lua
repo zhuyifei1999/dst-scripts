@@ -170,6 +170,10 @@ local function OnPhaseChanged(src, phase)
     OnSetAmbientSoundDaytime(src, DAYTIME_PARAMS[phase])
 end
 
+local function OnPhaseChange(src, phase)
+    OnPhaseChanged(src, phase)
+end
+
 local function OnSeasonTick(src, data)
     if _seasonmix ~= data.season then
         _seasonmix = data.season
@@ -203,6 +207,8 @@ inst:ListenForEvent("setambientsounddaytime", OnSetAmbientSoundDaytime)
 inst:ListenForEvent("seasontick", OnSeasonTick)
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("precipitationchanged", OnPrecipitationChanged)
+
+inst:WatchWorldState("phase", OnPhaseChange)
 
 self:SetReverbPreset("default")
 
@@ -328,7 +334,7 @@ function self:OnUpdate(dt)
         local lowvolume = .5
         ambientvolume = (lightval > highlight and lowvolume) or
                         (lightval < lowlight and 1) or
-                        easing.outCubic(lightval - lowlight, 1, lowvol - 1, highlight - lowlight)
+                        easing.outCubic(lightval - lowlight, 1, lowvolume - 1, highlight - lowlight)
     elseif ambientvolume < 1 then
         ambientvolume = math.min(ambientvolume + dt * .05, 1)
     end

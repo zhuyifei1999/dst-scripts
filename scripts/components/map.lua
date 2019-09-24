@@ -61,6 +61,13 @@ function Map:IsOceanTileAtPoint(x, y, z)
         tile ~= GROUND.IMPASSABLE and
         tile ~= GROUND.INVALID
 end
+
+function Map:IsOceanAtPoint(x, y, z, allow_boats)
+    return TheWorld.Map:IsOceanTileAtPoint(x, y, z)                             -- Location is in the ocean tile range
+        and not TheWorld.Map:IsVisualGroundAtPoint(x, y, z)                     -- Location is NOT in the world overhang space
+        and (allow_boats or TheWorld.Map:GetPlatformAtPoint(x, z) == nil)		-- The location either accepts boats, or is not the location of a boat
+end
+
 function Map:IsValidTileAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
@@ -318,6 +325,19 @@ function Map:GetPlatformAtPoint(pos_x, pos_y, pos_z)
         return v 
     end
     return nil
+end
+
+function Map:FindRandomPointInOcean(max_tries)
+	local w, h = TheWorld.Map:GetSize()
+	w = (w - w/2) * TILE_SCALE
+	h = (h - h/2) * TILE_SCALE
+	while (max_tries > 0) do
+		max_tries = max_tries - 1
+		local x, z = math.random() * w, math.random() * h
+        if self:IsOceanAtPoint(x, 0, z)	then
+			return Vector3(x, 0, z)
+		end
+	end
 end
 
 function Map:FindNodeAtPoint(x, y, z)

@@ -555,24 +555,24 @@ function Graph:GetRandomNodeForExit()
 	local picks = {}
 	for k, v in pairs(self.nodes) do
 		if v.data.entrance ~= true and (v.data.random_node_exit_weight == nil or v.data.random_node_exit_weight > 0) then
-			picks[v] = v.data.random_node_exit_weight or 1
+			picks[k] = v.data.random_node_exit_weight or 1
 		end
 	end
 	
  	assert(next(picks) ~= nil)
-	return weighted_random_choice(picks)
+	return self.nodes[weighted_random_choice(picks)]
 end
 
 function Graph:GetRandomNodeForEntrance()
 	local picks = {}
 	for k, v in pairs(self.nodes) do
 		if v.data.entrance ~= true and (v.data.random_node_entrance_weight == nil or v.data.random_node_entrance_weight > 0) then
-			picks[v] = v.data.random_node_entrance_weight or 1
+			picks[k] = v.data.random_node_entrance_weight or 1
 		end
 	end
 	
  	assert(next(picks) ~= nil)
-	return weighted_random_choice(picks)
+	return self.nodes[weighted_random_choice(picks)]
 end
 
 -- Each increment is one more link ie: a triangle would be factor 1, a line factor 0, a tree factor 0, a square -> 1

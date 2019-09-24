@@ -20,7 +20,7 @@ local OceanFishBrain = Class(Brain, function(self, inst)
 end)
 
 local function getdirectionFn(inst)
-	local r = math.random()
+	local r = math.random() * 2 - 1
 	return (inst.Transform:GetRotation() + r*r*r * 60) * DEGREES
 end
 

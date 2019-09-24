@@ -8,65 +8,85 @@ local CookieCutterBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-local SCATTER_DIST = 5
-local SCATTER_STOP = 7
+local BOARD_BOAT_TIMEOUT = 5
+
+local SCATTER_DIST = 3
+local SCATTER_STOP = 5
 
 local FLEE_DIST = 15.5
-local FLEE_STOP = 14.5 -- Should for now be larger than the longest range weapon
+local FLEE_STOP = 14.5 -- Should for now be larger than the longeinst range weapon
 
 local WANDER_DIST = TUNING.COOKIECUTTER.WANDER_DIST
 local WANDER_TIMES = {minwalktime=2.0, randwalktime=4.0, minwaittime=3.0, randwaittime=6.0}
 
 local function EatFoodAction(inst)
-	local target = FindEntity(inst, TUNING.COOKIECUTTER.FOOD_DETECTION_DIST, function(item) return inst.components.eater:CanEat(item) end)
-	return (target ~= nil and not target:IsOnPassablePoint()
-		and (target.components.burnable == nil or not target.components.burnable:IsBurning()))
-		and BufferedAction(inst, target, ACTIONS.EAT)
-		or nil
+	local target = inst.target_wood
+	return (target ~= nil and target:IsValid() 
+				and inst:IsNear(target, 2)
+				and target:HasTag("edible_WOOD") and not target:HasTag("INLIMBO") 
+				and (target.components.burnable == nil or (not target.components.burnable:IsBurning() and not target.components.burnable:IsSmoldering()))
+				and TheWorld.Map:IsOceanAtPoint(target.Transform:GetWorldPosition()))
+			and BufferedAction(inst, target, ACTIONS.EAT)
+			or nil
 end
 
-local function GetTargetBoatPosition(inst)
-	return inst.target_boat ~= nil and inst.target_boat:IsValid() and inst.target_boat:GetPosition() or nil
+local function GetTargetPosition(inst)
+	return (inst.target_wood ~= nil and inst.target_wood:IsValid()) and inst.target_wood:GetPosition() or nil
 end
 
 local function GetWanderPoint(inst)
 	return inst.components.knownlocations:GetLocation("home")
 end
 
-local function getdirectionFn(inst)
-	local r = math.random()
-	return (inst.Transform:GetRotation() + r*r*r * 60 * (math.random() > 0.5 and 1 or -1)) * DEGREES
+local function IsTooFarFromHome(inst)
+	local home_pt = inst.components.knownlocations:GetLocation("home")
+	return home_pt ~= nil and inst:GetDistanceSqToPoint(home_pt:Get()) > WANDER_DIST * WANDER_DIST * 4
 end
 
-local function getshouldgohomeFn(inst)
-	if not inst.sg:HasStateTag("busy")
-		and inst:HasTag("swimming") then
-			local x, y, z = inst.Transform:GetWorldPosition()
-			local homepos = inst.components.knownlocations:GetLocation("home")
-			return VecUtil_LengthSq(homepos.x - x, homepos.z - z) >= TUNING.COOKIECUTTER.RETURN_HOME_DISTSQ
-	else
-		return false
-	end
+local function CalcWanderDir(inst)
+	local r = math.random() * 2 - 1
+	return inst.Transform:GetRotation() + r*r*r * 60 * DEGREES
+end
+
+local function BoatInRange(inst)
+	return not inst.sg:HasStateTag("busy") and inst.target_wood ~= nil and inst.target_wood:HasTag("boat") and inst.target_wood:IsValid() and inst:IsNear(inst.target_wood, 6)
+end
+
+local function TryToBoardBoat(inst)
+	local boat_pos = (inst.target_wood ~= nil and inst.target_wood:IsValid() and inst.target_wood:HasTag("boat")) and inst.target_wood:GetPosition() or nil
+	inst.sg:GoToState("jump_pre", boat_pos)
 end
 
 function CookieCutterBrain:OnStart()
     local root = PriorityNode(
         {
-			WhileNode(function() return self.inst.sg:HasStateTag("drilling") or (self.inst.sg:HasStateTag("hit") and not self.inst:HasTag("swimming")) end, "StandStill", StandStill(self.inst)),
+	        WhileNode(function() return not self.inst.sg:HasStateTag("jumping") end, "pause for jump",
+	            PriorityNode({
+					WhileNode(function() return self.inst.sg:HasStateTag("drilling") end, "Drilling",
+						StandStill(self.inst)),
 
-			RunAway(self.inst, "scarytocookiecutters", SCATTER_DIST, SCATTER_STOP),
-			WhileNode(function() return self.inst.is_fleeing end, "Fleeing", RunAway(self.inst, "scarytoprey", FLEE_DIST, FLEE_STOP)),
+					RunAway(self.inst, {tags = {"scarytocookiecutters"}}, SCATTER_DIST, SCATTER_STOP),
+					WhileNode(function() return self.inst.is_fleeing end, "Fleeing", 
+						RunAway(self.inst, "scarytoprey", FLEE_DIST, FLEE_STOP)),
 
-			WhileNode(function() return self.inst.sg.currentstate.name == "run" or self.inst.sg.currentstate.name == "run_end" end, "StandStill", StandStill(self.inst)),
+					WhileNode(function() return IsTooFarFromHome(self.inst) end, "AwayFromHome",
+						SequenceNode{
+							ActionNode(function() self.inst:PushEvent("gohome") end, "TryToBoard"),
+							ConditionWaitNode(function() return false end),
+						}),
 
-			WhileNode(function() return getshouldgohomeFn(self.inst) end, "GoHome",
-				ActionNode(function() self.inst:PushEvent("gohome") end)),
+					WhileNode(function() return BoatInRange(self.inst) end, "BoatInRange",
+						SequenceNode{
+							ActionNode(function() TryToBoardBoat(self.inst) end, "TryToBoard"),
+							WaitNode(BOARD_BOAT_TIMEOUT),
+						}),
 
-			WhileNode(function() return self.inst.components.eater:HasBeen(TUNING.COOKIECUTTER.EAT_DELAY) end, "Wants To Eat Floating", DoAction(self.inst, EatFoodAction, "Eat Floating", false)),
+					DoAction(self.inst, EatFoodAction, "Eat Floating", false),
+
+					Leash(self.inst, GetTargetPosition, 0.1, 0.1, false),
 			
-			Leash(self.inst, GetTargetBoatPosition, 0.1, 0.1, false),
-
-			Wander(self.inst, function() return GetWanderPoint(self.inst) end, WANDER_DIST, WANDER_TIMES, getdirectionFn),
+					Wander(self.inst, function() return GetWanderPoint(self.inst) end, WANDER_DIST, WANDER_TIMES, CalcWanderDir),
+            }, .25)),
         }, .25)
 
     self.bt = BT(self.inst, root)

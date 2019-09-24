@@ -29,6 +29,7 @@ local _fishshoals = {}
 local _firstspawn = true
 local _shuffled_shoals_for_spawning = nil
 local _time_until_spawn = nil
+local _activemalbatross = nil
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -61,7 +62,7 @@ local function SummonMalbatross(target_shoal, the_malbatross)
 end
 
 local function TryBeginningMalbatrossSpawns()
-    if TheWorld.state.cycles > TUNING.NO_BOSS_TIME and next(_fishshoals) ~= nil then
+    if next(_fishshoals) ~= nil then
         _time_until_spawn = _time_until_spawn or
                 (_firstspawn and 0) or
                 (TUNING.TOTAL_DAY_TIME * GetRandomWithVariance(MALBATROSS_SPAWNDELAY.BASE, MALBATROSS_SPAWNDELAY.RANDOM))
@@ -70,11 +71,6 @@ local function TryBeginningMalbatrossSpawns()
                 shuffledKeys(_fishshoals)
 
         self.inst:StartUpdatingComponent(self)
-        self:StopWatchingWorldState("cycles", TryBeginningMalbatrossSpawns)
-        self.inst.watching = nil
-    elseif not self.inst.watching then
-        self:WatchWorldState("cycles", TryBeginningMalbatrossSpawns)  -- keep checking every day until NO_BOSS_TIME is up
-        self.inst.watching = true
     end
 end
 
@@ -95,15 +91,16 @@ local function OnFishShoalAdded(source, fish_shoal)
     if not _fishshoals[fish_shoal] then
         _fishshoals[fish_shoal] = true
         self.inst:ListenForEvent("onremove", OnFishShoalRemoved, fish_shoal)
-        TryBeginningMalbatrossSpawns()
+        if not _activemalbatross then
+            TryBeginningMalbatrossSpawns()
+        end
     end
 end
 
---[[local function OnMalbatrossRemoved(source, the_malbatross)
-end]]
-
---[[local function OnMalbatrossKilled(source, the_malbatross)
-end]]
+local function OnMalbatrossKilledOrRemoved(source, the_malbatross)
+    _activemalbatross = nil
+    TryBeginningMalbatrossSpawns()
+end
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
@@ -120,7 +117,7 @@ function self:OnUpdate(dt)
         for i, shoal in ipairs(_shuffled_shoals_for_spawning) do
             local sx, sy, sz = shoal.Transform:GetWorldPosition()
             if FindClosestPlayerInRangeSq(sx, sy, sz, MALBATROSS_PLAYER_SPAWN_DISTSQ, true) then
-                SummonMalbatross(shoal)
+                _activemalbatross = SummonMalbatross(shoal)
 
                 _shuffled_shoals_for_spawning = nil
                 _time_until_spawn = nil
@@ -136,16 +133,26 @@ end
 
 function self:Relocate(target_malbatross)
     if next(_fishshoals) ~= nil then
-        local relocate_shoal_keys = shuffledKeys(_fishshoals)
-        local new_shoal = relocate_shoal_keys[1]
-        if target_malbatross then
-            local feedingshoal = target_malbatross.components.entitytracker:GetEntity("feedingshoal")
-            if feedingshoal and new_shoal == feedingshoal and #relocate_shoal_keys > 1 then
-                new_shoal = relocate_shoal_keys[2]
-            end
-        end
+        _shuffled_shoals_for_spawning = shuffledKeys(_fishshoals)
+        _time_until_spawn = 0
 
-        SummonMalbatross(new_shoal, target_malbatross)
+        if target_malbatross then
+            -- If a target was passed in, swap our current shoal to the end of the shuffled list,
+            -- so it won't be picked (unless somebody modifies the spawn percentage!).
+            local feedingshoal = target_malbatross.components.entitytracker:GetEntity("feedingshoal")
+            local n_shoal_keys = #_shuffled_shoals_for_spawning
+            for i, shoal in ipairs(_shuffled_shoals_for_spawning) do
+                if i ~= n_shoal_keys and shoal == feedingshoal then
+                    _shuffled_shoals_for_spawning[i], _shuffled_shoals_for_spawning[n_shoal_keys] = _shuffled_shoals_for_spawning[n_shoal_keys], shoal
+                    break
+                end
+            end
+
+            -- Remove the one that was passed in, and let its OnRemove listener call TryBeginningMalbatrossSpawns
+            target_malbatross:Remove()
+        else
+            TryBeginningMalbatrossSpawns()
+        end
     end
 end
 
@@ -154,15 +161,31 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
-    return { 
+    local data = { 
         _time_until_spawn = _time_until_spawn,
         _firstspawn = _firstspawn,
     }
+
+    if _activemalbatross ~= nil then
+        data.activeguid = _activemalbatross.GUID
+
+        local ents = {}
+        table.insert(ents, _activemalbatross.GUID)
+        return data, ents
+    else
+        return data
+    end
 end
 
 function self:OnLoad(data)
     _time_until_spawn = data._time_until_spawn
     _firstspawn = data._firstspawn
+end
+
+function self:LoadPostPass(newents, data)
+    if data.activeguid ~= nil and newents[data.activeguid] ~= nil then
+        _activemalbatross = newents[data.activeguid].entity
+    end
 end
 
 --------------------------------------------------------------------------
@@ -192,7 +215,7 @@ function self:GetDebugString()
 end
 
 function self:Summon(_slow_debug_target_entity)
-    if not _shuffled_shoals_for_spawning and _fishshoals then
+    if _fishshoals and next(_fishshoals) ~= nil then
         if _slow_debug_target_entity == nil then
             _shuffled_shoals_for_spawning = shuffledKeys(_fishshoals)
         else
@@ -218,7 +241,7 @@ end
 --------------------------------------------------------------------------
 
 self.inst:ListenForEvent("ms_registerfishshoal", OnFishShoalAdded, TheWorld)
-self.inst:ListenForEvent("malbatrossremoved", TryBeginningMalbatrossSpawns, TheWorld)
-self.inst:ListenForEvent("malbatrosskilled", TryBeginningMalbatrossSpawns, TheWorld)
+self.inst:ListenForEvent("malbatrossremoved", OnMalbatrossKilledOrRemoved, TheWorld)
+self.inst:ListenForEvent("malbatrosskilled", OnMalbatrossKilledOrRemoved, TheWorld)
 
 end)

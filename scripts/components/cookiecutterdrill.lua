@@ -5,6 +5,7 @@ local CookieCutterDrill = Class(function(self, inst)
 	self.drill_duration = 10
 
 	self.leak_type = "med_leak"
+	self.drill_damage = nil
 
 	self.sound = "turnoftides/common/together/boat/damage"
 	self.sound_intensity = 0.8
@@ -15,52 +16,38 @@ function CookieCutterDrill:OnEntitySleep()
 	self.inst:StopUpdatingComponent(self)
 end
 
-function CookieCutterDrill:ResetDrillProgress()
-	self.drill_progress = 0
-end
-
 function CookieCutterDrill:GetIsDoneDrilling()
 	return self.drill_progress >= self.drill_duration
 end
 
-function CookieCutterDrill:StartDrilling()
+function CookieCutterDrill:ResetDrilling()
+	self.drill_progress = 0
+end
+
+function CookieCutterDrill:ResumeDrilling()
 	self.inst:StartUpdatingComponent(self)
 end
 
-function CookieCutterDrill:StopDrilling()
+function CookieCutterDrill:PauseDrilling()
 	self.inst:StopUpdatingComponent(self)
 end
 
 function CookieCutterDrill:FinishDrilling()
 	self.inst:StopUpdatingComponent(self)
+	self.drill_progress = 0
 
-	self:ResetDrillProgress()
-
-	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local boat = TheWorld.Map:GetPlatformAtPoint(x, z)
-
+	local pt = self.inst:GetPosition()
+	local boat = TheWorld.Map:GetPlatformAtPoint(pt.x, pt.z)
 	if boat ~= nil then
-		if self.inst.components.eater ~= nil then self.inst.components.eater.lasteattime = GetTime() end
-
-		local leak = SpawnPrefab("boat_leak")
-		leak.Transform:SetPosition(x, y, z)
-		leak.components.boatleak.isdynamic = true
-		leak.components.boatleak:SetBoat(boat)
-		leak.components.boatleak:SetState(self.leak_type)
-
-		table.insert(boat.components.hullhealth.leak_indicators_dynamic, leak)
-
-		if boat.components.walkableplatform ~= nil then
-	        for k,v in pairs(boat.components.walkableplatform:GetEntitiesOnPlatform()) do
-	            if v:IsValid() then
-	                v:PushEvent("on_standing_on_new_leak")
-	            end
-	        end
+		if self.inst.components.eater ~= nil then
+			self.inst.components.eater.lasteattime = GetTime() 
 		end
 
-		if self.sound ~= nil and boat.SoundEmitter ~= nil then
-			boat.SoundEmitter:PlaySoundWithParams(self.sound, { intensity = self.sound_intensity or 1 })
-		end
+        if self.leak_damage and boat.components.hullhealth then
+            boat.components.health:DoDelta(self.leak_damage, false, self.inst)
+        end
+
+		boat:PushEvent("spawnnewboatleak", {pt = pt, leak_size = "med_leak", playsoundfx = true})
 	end
 end
 

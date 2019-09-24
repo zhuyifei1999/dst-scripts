@@ -2,10 +2,10 @@ require 'util'
 require 'vecutil'
 
 local function CanCastFishingNetAtPoint(thrower, target_x, target_z)
-    local map = TheWorld.Map
     local min_throw_distance = 2
     local thrower_x, thrower_y, thrower_z = thrower.Transform:GetWorldPosition()
-    if not map:IsPassableAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
+	
+    if TheWorld.Map:IsOceanAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
         return true
     end
 	return false

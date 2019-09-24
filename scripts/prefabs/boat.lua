@@ -110,6 +110,30 @@ local function StartBoatCamera(inst)
 	TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, math.huge, math.huge, -1, camera_settings)
 end
 
+local function OnSpawnNewBoatLeak(inst, data)
+	if data ~= nil and data.pt ~= nil then
+		local leak = SpawnPrefab("boat_leak")
+		leak.Transform:SetPosition(data.pt:Get())
+		leak.components.boatleak.isdynamic = true
+		leak.components.boatleak:SetBoat(inst)
+		leak.components.boatleak:SetState(data.leak_size)
+
+		table.insert(inst.components.hullhealth.leak_indicators_dynamic, leak)
+
+		if inst.components.walkableplatform ~= nil then
+	        for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+	            if v:IsValid() then
+	                v:PushEvent("on_standing_on_new_leak")
+	            end
+	        end
+		end
+
+		if data.playsoundfx then
+			inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = 0.8 })
+		end
+	end
+end
+
 local function OnObjGotOnPlatform(inst, obj)    
     if obj == ThePlayer and inst.StartBoatCamera ~= nil then
 		inst:StartBoatCamera()
@@ -306,6 +330,8 @@ local function fn()
 	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, -2.5, true)
 	
     inst:SetStateGraph("SGboat")
+
+	inst:ListenForEvent("spawnnewboatleak", OnSpawnNewBoatLeak)
 
     return inst
 end
