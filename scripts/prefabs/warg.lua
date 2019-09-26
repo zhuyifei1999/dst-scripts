@@ -83,8 +83,8 @@ local function KeepTargetFn(inst, target)
     return target ~= nil
         and not (inst.sg:HasStateTag("hidden") or inst.sg:HasStateTag("statue"))
         and inst:IsNear(target, 40)
-        and not target.components.health:IsDead()
         and inst.components.combat:CanTarget(target)
+        and not target.components.health:IsDead()
 end
 
 local function OnAttacked(inst, data)

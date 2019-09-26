@@ -640,10 +640,15 @@ function IsPackRestrictedDueToOwnership(item_type)
 	for _,v in pairs(GetPurchasePackOutputItems(item_type)) do
 		local data = GetSkinData(v)
 		if data.type == "base" and pack_includes_character[data.base_prefab] == nil and not IsCharacterOwned(data.base_prefab) then
-			return true, data.base_prefab
+			local pack_data = GetSkinData(item_type)
+			if pack_data.warning_only_on_restricted then
+				return "warning", data.base_prefab
+			else
+				return "error", data.base_prefab			
+			end
 		end
 	end
-	return false
+	return ""
 end
 
 function IsUserCommerceBuyAllowedOnItem(item_type)

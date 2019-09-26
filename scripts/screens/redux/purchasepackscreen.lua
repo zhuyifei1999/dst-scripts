@@ -183,6 +183,25 @@ purchasefn = function( screen, iap_def, sale_percent_purchased, accept_virtual_i
         end
     end
 
+local onPurchaseClickFn2 = function( self, sale_percent_purchased, iap_def )
+    if not IsPurchasePackCurrency(iap_def.item_type) and OwnsSkinPack(iap_def.item_type) then
+        local warning = PopupDialogScreen(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_DESC, 
+                    {
+                        {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_OK, cb = function() 
+                            TheFrontEnd:PopScreen()
+                            purchasefn( self.screen_self, iap_def, sale_percent_purchased, false ) 
+                        end },
+                        {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
+                            TheFrontEnd:PopScreen()
+                        end },
+                    })
+        warning.owned_by_wardrobe = true
+        TheFrontEnd:PushScreen( warning )
+    else
+        purchasefn( self.screen_self, iap_def, sale_percent_purchased, false )
+    end
+end
+
 local onPurchaseClickFn =
     function( self )
          --need to save a copy of these for the callback function because the UI could update on us, and sale_percent could change.
@@ -191,25 +210,31 @@ local onPurchaseClickFn =
 
         local restricted_pack, missing_character = IsPackRestrictedDueToOwnership(self.iap_def.item_type)
         
-        if restricted_pack then
+        if restricted_pack == "error" then
             DisplayCharacterUnownedPopupPurchase(missing_character, self.screen_self)
+        elseif restricted_pack == "warning" then
+            local body_str = subfmt(STRINGS.UI.PURCHASEPACKSCREEN.UNOWNED_CHARACTER_BODY, {character = STRINGS.CHARACTER_NAMES[missing_character] })
+            local button_txt = subfmt(STRINGS.UI.PURCHASEPACKSCREEN.VIEW_REQUIRED, {character = STRINGS.CHARACTER_NAMES[missing_character] })
+    
+            local warning = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.UNOWNED_CHARACTER_TITLE, body_str, 
+            {
+                {text=button_txt, cb = function()
+                    self.screen_self:UpdateFilterToItem(missing_character.."_none")
+                    TheFrontEnd:PopScreen()
+                end},
+                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_OK, cb = function() 
+                    TheFrontEnd:PopScreen()
+                    onPurchaseClickFn2( self, sale_percent_purchased, iap_def )
+                end },
+                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
+                    TheFrontEnd:PopScreen()
+                end },
+            }, nil, nil, "dark_wide")
+            warning.owned_by_wardrobe = true
+            TheFrontEnd:PushScreen( warning )
+
         else
-            if not IsPurchasePackCurrency(iap_def.item_type) and OwnsSkinPack(iap_def.item_type) then
-                local warning = PopupDialogScreen(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_DESC, 
-                            {
-                                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_OK, cb = function() 
-                                    TheFrontEnd:PopScreen()
-                                    purchasefn( self.screen_self, iap_def, sale_percent_purchased, false ) 
-                                end },
-                                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
-                                    TheFrontEnd:PopScreen()
-                                end },
-                            })
-				warning.owned_by_wardrobe = true
-                TheFrontEnd:PushScreen( warning )    
-            else
-                purchasefn( self.screen_self, iap_def, sale_percent_purchased, false )
-            end
+            onPurchaseClickFn2( self, sale_percent_purchased, iap_def )
         end
     end
 

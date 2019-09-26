@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "Wolfgang can't reach fish with tiny rod!",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2825,28 +2822,6 @@ return{
 
 		GESTALT = "Wolfgang's brainmeats have never been so mighty!",
 
-		COOKIECUTTER = "Fish has strangely punchable face...",
-		COOKIECUTTERSHELL = "Tough, but not as tough as Wolfgang!",
-		COOKIECUTTERHAT = "Keep head safe and dry!",
-		SALTSTACK =
-		{
-			GENERIC = "Weird statues.",
-			MINED_OUT = "Nothing left for Wolfgang to break.",
-			GROWING = "Weird statues growing back.",
-		},
-		SALTROCK = "Wolfgang confused, thought salt came from tiny shakers?",
-		SALTBOX = "Put food inside!",
-
-        GNARWAIL = "Fish think it can poke holes in Wolfgang's boat?!",
-        GNARWAIL_HORN = "Will make good pokey spear!",
-
-        MALBATROSS = "Big fishy bird!",
-        MALBATROSS_FEATHER = "Feather from big water bird.",
-        MALBATROSS_BEAK = "Hmm, too big for stew.",
-        MAST_MALBATROSS_ITEM = "Make good sail out of bird feathers!",
-        MAST_MALBATROSS = "Bird make good sail.",
-		MALBATROSS_FEATHERED_WEAVE = "Is cloth of bird!",
-
         WALKINGPLANK = "Maybe Wolfgang go for dip.",
         OAR = "Wolfgang will be mighty rower!",
 		OAR_DRIFTWOOD = "Oar feels so light in Wolfgang's mighty hands!",
@@ -2878,7 +2853,6 @@ return{
         SPICE_GARLIC = "Smells like mama used to make.",
         SPICE_SUGAR = "Fruit smashing made sweet sauce.",
         SPICE_CHILI = "Is mighty spicy, but Wolfgang can take it.",
-        SPICE_SALT = "Smashed big salt rock into many tiny tasty rocks!",
         MONSTERTARTARE = "Blech!",
         FRESHFRUITCREPES = "Manly midmorning brunch.",
         FROGFISHBOWL = "Food will make Wolfgang very strong!",

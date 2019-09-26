@@ -12,6 +12,7 @@ local prefabs =
 }
 
 local WATER_RADIUS = 3.8
+local NO_DEPLOY_RADIUS = WATER_RADIUS + 0.1
 
 local NUM_BUGS = 3
 local BUG_OFFSET = 1.4
@@ -199,6 +200,7 @@ local function fn()
     inst.Transform:SetRotation(45)
 
     MakeObstaclePhysics(inst, 6)
+	--inst:SetPhysicsRadiusOverride(3)
 
     inst.AnimState:SetBuild("oasis_tile")
     inst.AnimState:SetBank("oasis_tile")
@@ -214,7 +216,7 @@ local function fn()
     inst:AddTag("antlion_sinkhole_blocker")
 
     inst.no_wet_prefix = true
-    inst:SetDeployExtraSpacing(6)
+    inst:SetDeployExtraSpacing(NO_DEPLOY_RADIUS)
 
     inst.entity:SetPristine()
 

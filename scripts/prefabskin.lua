@@ -554,6 +554,15 @@ function perdling_init_fn(inst, build_name, default_build, hungry_sound)
     inst.skin_hungry_sound = hungry_sound
 end
 
+function glomling_init_fn(inst, build_name, default_build, skin_sound)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, default_build)
+    inst.skin_sound = skin_sound
+end
+
 --------------------------------------------------------------------------
 --[[ Birdcage skin functions ]]
 --------------------------------------------------------------------------

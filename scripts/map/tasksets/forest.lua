@@ -47,15 +47,16 @@ AddTaskSet("default", {
             ["BathbombedHotspring"] = {count = 1, tasks={"MoonIsland_Baths"}},
 		},
 		ocean_prefill_setpieces = {
-			["BrinePool1"] = {count = 4}, -- todo: make this scale based on world gen size
-			["BrinePool2"] = {count = 2}, -- todo: make this scale based on world gen size
-			["BrinePool3"] = {count = 2}, -- todo: make this scale based on world gen size
+			--["AbandonedWarf1"] = {count = 2},
+			--["AbandonedWarf2"] = {count = 1},
+			--["AbandonedWarf3"] = {count = 1},
 		},
 
 		ocean_population = {
 			"OceanCoastal", 
 			"OceanSwell",
 			"OceanRough",
+			"OceanReef",
 			"OceanHazardous",
 		},
 		-- ocean_population_setpieces =

@@ -92,6 +92,13 @@ local fx =
         anim = "melted",
     },
     {
+        name = "splash_water",
+        bank = "splash_water",
+        build = "splash_water",
+        sound = "turnoftides/common/together/water/splash/small",
+        anim = "idle",
+    },    
+    {
         name = "small_puff",
         bank = "small_puff",
         build = "smoke_puff_small",
@@ -1140,12 +1147,6 @@ local fx =
         anim = "sink",
     },
     {
-        name = "boat_malbatross_mast_sink_fx",
-        bank = "mast_malbatross",
-        build = "boat_mast_malbatross_build",
-        anim = "sink",
-    },
-    {
         name = "mining_moonglass_fx",
         bank = "glass_mining_fx",
         build = "glass_mining_fx",
@@ -1187,36 +1188,6 @@ local fx =
         build = "round_puff_fx",
         anim = "puff_hi",
     },
-	{
-		name = "wood_splinter_jump",
-		bank = "cookiecutter_fx",
-		build = "cookiecutter_fx",
-		anim = "wood_splinter_jump",
-	},
-	{
-		name = "wood_splinter_drill",
-		bank = "cookiecutter_fx",
-		build = "cookiecutter_fx",
-		anim = "wood_splinter_drill",
-	}, 
-    {
-        name = "splash_teal",
-        bank = "pond_splash_fx",
-        build = "pond_splash_fx",
-        anim = "cave_splash",
-    },  
-    {
-        name = "splash_green",
-        bank = "pond_splash_fx",
-        build = "pond_splash_fx",
-        anim = "pond_splash",
-    }, 
-    {
-        name = "splash_black",
-        bank = "pond_splash_fx",
-        build = "pond_splash_fx",
-        anim = "swamp_splash",
-    }, 
 }
 
 for cratersteamindex = 1, 4 do

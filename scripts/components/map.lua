@@ -61,13 +61,6 @@ function Map:IsOceanTileAtPoint(x, y, z)
         tile ~= GROUND.IMPASSABLE and
         tile ~= GROUND.INVALID
 end
-
-function Map:IsOceanAtPoint(x, y, z, allow_boats)
-    return TheWorld.Map:IsOceanTileAtPoint(x, y, z)                             -- Location is in the ocean tile range
-        and not TheWorld.Map:IsVisualGroundAtPoint(x, y, z)                     -- Location is NOT in the world overhang space
-        and (allow_boats or TheWorld.Map:GetPlatformAtPoint(x, z) == nil)		-- The location either accepts boats, or is not the location of a boat
-end
-
 function Map:IsValidTileAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
@@ -171,6 +164,9 @@ local function IsNearOtherWall(other, pt, min_spacing_sq)
 end
 
 function Map:CanDeployWallAtPoint(pt, inst)
+    -- We assume that walls use placer.snap_to_meters, so let's emulate the snap here.
+    pt = Vector3(math.floor(pt.x) + 0.5, pt.y, math.floor(pt.z) + 0.5)
+
     local x,y,z = pt:Get()
     return self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
         and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)
@@ -325,19 +321,6 @@ function Map:GetPlatformAtPoint(pos_x, pos_y, pos_z)
         return v 
     end
     return nil
-end
-
-function Map:FindRandomPointInOcean(max_tries)
-	local w, h = TheWorld.Map:GetSize()
-	w = (w - w/2) * TILE_SCALE
-	h = (h - h/2) * TILE_SCALE
-	while (max_tries > 0) do
-		max_tries = max_tries - 1
-		local x, z = math.random() * w, math.random() * h
-        if self:IsOceanAtPoint(x, 0, z)	then
-			return Vector3(x, 0, z)
-		end
-	end
 end
 
 function Map:FindNodeAtPoint(x, y, z)

@@ -204,13 +204,8 @@ local function BeaverLeftClickPicker(inst, target)
             end
         end
 
-        if target:HasTag("walkingplank") then
-            if inst:HasTag("on_walkable_plank") then
-                return inst.components.playeractionpicker:SortActionList({ACTIONS.ABANDON_SHIP}, target, nil)
-            elseif target:HasTag("interactable") then
-                local action_to_do = target:HasTag("plank_extended") and ACTIONS.MOUNT_PLANK or ACTIONS.EXTEND_PLANK
-                return inst.components.playeractionpicker:SortActionList({ action_to_do }, target, nil)
-            end
+        if target:HasTag("walkingplank") and target:HasTag("interactable") and target:HasTag("plank_extended") then
+            return inst.components.playeractionpicker:SortActionList({ ACTIONS.MOUNT_PLANK }, target, nil)
         end
     end
 end
@@ -218,7 +213,11 @@ end
 local function BeaverRightClickPicker(inst, target)
     return target ~= nil
         and target ~= inst
-        and (   (   target:HasTag("HAMMER_workable") and
+        and (   (   inst:HasTag("on_walkable_plank") and
+					target:HasTag("walkingplank") and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.ABANDON_SHIP }, target, nil)
+                ) or
+				(   target:HasTag("HAMMER_workable") and
                     inst.components.playeractionpicker:SortActionList({ ACTIONS.HAMMER }, target, nil)
                 ) or
                 (   target:HasTag("DIG_workable") and
@@ -232,17 +231,33 @@ end
 local function MooseLeftClickPicker(inst, target)
     return target ~= nil
         and target ~= inst
-        and inst.replica.combat:CanTarget(target)
-        and (not target:HasTag("player") or inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_ATTACK))
-        and inst.components.playeractionpicker:SortActionList({ ACTIONS.ATTACK }, target, nil)
+        and (   (   inst.replica.combat:CanTarget(target) and 
+					(not target:HasTag("player") or inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_ATTACK)) and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.ATTACK }, target, nil)
+                )
+				or
+				(   target:HasTag("walkingplank") and 
+					target:HasTag("interactable") and 
+					target:HasTag("plank_extended") and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.MOUNT_PLANK }, target, nil)
+                )
+            )
         or nil
 end
 
 local function MooseRightClickPicker(inst, target, pos)
-    return target ~= inst
-        and not inst.components.playercontroller.isclientcontrollerattached
-        and inst.components.playeractionpicker:SortActionList({ ACTIONS.TACKLE }, target or pos, nil)
-        or nil
+	return target ~= inst
+		and (	(	target ~= nil and
+					target:HasTag("walkingplank") and
+					inst:HasTag("on_walkable_plank") and
+					inst.components.playeractionpicker:SortActionList({ ACTIONS.ABANDON_SHIP }, target, nil)
+				)
+				or
+				(	not inst.components.playercontroller.isclientcontrollerattached and
+					inst.components.playeractionpicker:SortActionList({ ACTIONS.TACKLE }, target or pos, nil)
+				)
+			)
+		or nil
 end
 
 local function MoosePointSpecialActions(inst, pos, useitem, right)

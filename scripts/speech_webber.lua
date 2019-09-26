@@ -66,10 +66,7 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        FISH_OCEAN =
-		{
-			TOODEEP = "We can't reach the fish with this rod!",
-		},
+        
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2824,28 +2821,6 @@ return{
 
 		GESTALT = "They want to talk, but they don't know how!",
 
-		COOKIECUTTER = "Our boat's not a cookie!",
-		COOKIECUTTERSHELL = "Ouch! It's spiky!",
-		COOKIECUTTERHAT = "We look like a hermit crab!",
-		SALTSTACK =
-		{
-			GENERIC = "They're kind of spooky.",
-			MINED_OUT = "Someone already took all the salt.",
-			GROWING = "Hey, it's growing back!",
-		},
-		SALTROCK = "What a weird rock.",
-		SALTBOX = "Makes our food last longer.",
-
-        GNARWAIL = "Woah, is that a sea unicorn?",
-        GNARWAIL_HORN = "Maybe it's magic?",
-
-        MALBATROSS = "Woah! That's a big bird!",
-        MALBATROSS_FEATHER = "Tickly!",
-        MALBATROSS_BEAK = "It could've eaten us in one bite!",
-        MAST_MALBATROSS_ITEM = "This will look great on our boat!",
-        MAST_MALBATROSS = "Our boat looks ready to fly away!",
-		MALBATROSS_FEATHERED_WEAVE = "We used our nicest spider silk!",
-
         WALKINGPLANK = "It's the least fun diving board.",
         OAR = "More legs means faster rowing!",
 		OAR_DRIFTWOOD = "Rowing is kinda fun!",
@@ -2877,7 +2852,6 @@ return{
         SPICE_GARLIC = "Our breath will smell stinky. Yay!",
         SPICE_SUGAR = "It turns everything into dessert!",
         SPICE_CHILI = "Ho! Ha! That's spicy!",
-        SPICE_SALT = "Mmm, salty!",
         MONSTERTARTARE = "Looks amazing!",
         FRESHFRUITCREPES = "Cripes! We can't wait for these crepes!",
         FROGFISHBOWL = "Thanks Warly!",

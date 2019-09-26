@@ -1470,6 +1470,17 @@ MISC_ITEMS =
 		output_items = {  "wx78_nature", "body_wx78_nature", "feet_wx78_nature", "hand_wx78_nature", },
 		release_group = 57,
 	},
+	pack_oni_gift =
+	{
+		type = "purchase",
+		skin_tags = { },
+		steam_dlc_id = 457140,
+		build_name_override = "mysterybox_classic_4",
+		display_items = {  "glomling_puft", },
+		output_items = {  "glomling_puft", },
+		legacy_popup_category = "ONI",
+		release_group = 76,
+	},
 	pack_rog_gift =
 	{
 		type = "purchase",

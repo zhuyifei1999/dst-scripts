@@ -26,8 +26,8 @@ local BIRD_TYPES =
     [GROUND.OCEAN_COASTAL_SHORE] = {"puffin"},
     [GROUND.OCEAN_SWELL] = {"puffin"},
     [GROUND.OCEAN_ROUGH] = {"puffin"},
-    [GROUND.OCEAN_BRINEPOOL] = {"puffin"},
-    [GROUND.OCEAN_BRINEPOOL_SHORE] = {"puffin"},
+    [GROUND.OCEAN_REEF] = {"puffin"},
+    [GROUND.OCEAN_REEF_SHORE] = {"puffin"},
     [GROUND.OCEAN_HAZARDOUS] = {"puffin"},
 }
 
