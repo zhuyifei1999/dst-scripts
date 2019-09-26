@@ -1052,6 +1052,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/ghost_wx78_build.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/glomling_beardeddragon.zip"),
 	Asset("PKGREF", "anim/dynamic/glomling_beardeddragon.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/glomling_puft.zip"),
+	Asset("PKGREF", "anim/dynamic/glomling_puft.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/glomling_winter.zip"),
 	Asset("PKGREF", "anim/dynamic/glomling_winter.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hambat_potroast.zip"),

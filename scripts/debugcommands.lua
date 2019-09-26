@@ -156,7 +156,7 @@ end
 ---------------------------------------------------
 
 --For testing legacy skin DLC popup
---AddNewSkinDLCEntitlement("pack_hl_gift") MakeSkinDLCPopup()
+--AddNewSkinDLCEntitlement("pack_oni_gift") MakeSkinDLCPopup()
 
 local TEST_ITEM_NAME = "birdcage_pirate"
 function d_test_thank_you(param)

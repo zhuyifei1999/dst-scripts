@@ -164,6 +164,9 @@ local function IsNearOtherWall(other, pt, min_spacing_sq)
 end
 
 function Map:CanDeployWallAtPoint(pt, inst)
+    -- We assume that walls use placer.snap_to_meters, so let's emulate the snap here.
+    pt = Vector3(math.floor(pt.x) + 0.5, pt.y, math.floor(pt.z) + 0.5)
+
     local x,y,z = pt:Get()
     return self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
         and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)

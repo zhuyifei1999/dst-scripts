@@ -147,11 +147,13 @@ PREFAB_SKINS = {
 	critter_glomling = 
 	{
 		"glomling_beardeddragon",
+		"glomling_puft",
 		"glomling_winter",
 	},
 	critter_glomling_builder = 
 	{
 		"glomling_beardeddragon_builder",
+		"glomling_puft_builder",
 		"glomling_winter_builder",
 	},
 	critter_kitten = 

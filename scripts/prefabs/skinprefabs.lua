@@ -1099,6 +1099,27 @@ table.insert(prefs, CreatePrefabSkin("glomling_beardeddragon_builder",
 	release_group = 17,
 }))
 
+table.insert(prefs, CreatePrefabSkin("glomling_puft",
+{
+	base_prefab = "critter_glomling",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) glomling_init_fn(inst, "glomling_puft", "glomling_build", "dontstarve_DLC001/creatures/together/puft/" ) end,
+	skin_tags = { "PET", "CRAFTABLE", },
+	release_group = 76,
+}))
+
+table.insert(prefs, CreatePrefabSkin("glomling_puft_builder",
+{
+	base_prefab = "critter_glomling_builder",
+	type = "item",
+	build_name_override = "glomling_puft",
+	rarity = "Loyal",
+	init_fn = function(inst) critter_builder_init_fn(inst, "glomling_puft" ) end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 76,
+}))
+
 table.insert(prefs, CreatePrefabSkin("glomling_winter",
 {
 	base_prefab = "critter_glomling",

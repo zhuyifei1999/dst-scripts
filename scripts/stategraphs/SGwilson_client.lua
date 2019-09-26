@@ -1585,9 +1585,13 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("pickup")
-            inst.AnimState:PushAnimation("pickup_lag", false)
-
+            if inst:HasTag("beaver") then
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+			else
+				inst.AnimState:PlayAnimation("pickup")
+				inst.AnimState:PushAnimation("pickup_lag", false)
+			end
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,

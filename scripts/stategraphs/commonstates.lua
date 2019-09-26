@@ -619,10 +619,8 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 
         onenter = function(inst)
 			inst.sg.statemem.swimming = inst:HasTag("swimming")
-			if inst.sg.statemem.swimming then
-		        inst.AnimState:PlayAnimation("jumpout")
-			else
-	            inst.AnimState:PlayAnimation("jump")
+            inst.AnimState:PlayAnimation("jump")
+			if not inst.sg.statemem.swimming then		      
 				inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 			end
 			if inst.components.embarker:HasDestination() then
@@ -695,12 +693,11 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 
         onenter = function(inst, land_in_water)
 			if land_in_water then
-				inst.components.amphibiouscreature:OnEnterOcean()
-	            inst.AnimState:PlayAnimation("jumpin_pst")
+				inst.components.amphibiouscreature:OnEnterOcean()	            
 			else
-				inst.components.amphibiouscreature:OnExitOcean()
-	            inst.AnimState:PlayAnimation("jump_pst")
+				inst.components.amphibiouscreature:OnExitOcean()	            
 			end
+            inst.AnimState:PlayAnimation("jump_pst")
         end,
 
         timeline = timelines.hop_pst,
@@ -724,7 +721,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
             inst.components.locomotor:StopMoving()
             inst.sg.statemem.swimming = inst:HasTag("swimming")
 
-            inst.AnimState:PlayAnimation("jumpout_antic")    
+            inst.AnimState:PlayAnimation("jump_antic")    
 
             inst.sg:SetTimeout(30 * FRAMES)
         end,

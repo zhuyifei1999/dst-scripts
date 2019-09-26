@@ -20,7 +20,8 @@ local NUM_BUILDS = 3
 local NUM_GROWTH_STAGES = 3
 local statedata =
 {
-	{ -- short
+	{
+        name		= "short",
 		idleanim    = "idle_short",
 		hitanim     = "hit_short", 
 		breakanim   = "mined_short",
@@ -29,7 +30,8 @@ local statedata =
 		workleft    = TUNING.MARBLESHRUB_MINE_SMALL,
 		loot        = function() return {"marble"} end,
 	},
-	{ -- normal
+	{
+        name		= "normal",
 		idleanim    = "idle_normal",
 		hitanim     = "hit_normal", 
 		breakanim   = "mined_normal",
@@ -38,7 +40,8 @@ local statedata =
 		workleft    = TUNING.MARBLESHRUB_MINE_NORMAL,
 		loot        = function() return math.random() < 0.75 and {"marble"} or {"marble", "marblebean"} end,
 	},
-	{ -- tall
+	{
+        name		= "tall",
 		idleanim    = "idle_tall",
 		hitanim     = "hit_tall", 
 		breakanim   = "mined_tall",
