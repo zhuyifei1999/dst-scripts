@@ -1,4 +1,4 @@
-RunAway = Class(BehaviourNode, function(self, inst, hunterparams, see_dist, safe_dist, fn, runhome, fix_overhang)
+RunAway = Class(BehaviourNode, function(self, inst, hunterparams, see_dist, safe_dist, fn, runhome, fix_overhang, walk_instead)
     BehaviourNode._ctor(self, "RunAway")
     self.safe_dist = safe_dist
     self.see_dist = see_dist
@@ -17,6 +17,7 @@ RunAway = Class(BehaviourNode, function(self, inst, hunterparams, see_dist, safe
     self.runshomewhenchased = runhome
     self.shouldrunfn = fn
 	self.fix_overhang = fix_overhang -- this will put the point check back on land if self.inst is stepping on the ocean overhang part of the land
+    self.walk_instead = walk_instead
 end)
 
 function RunAway:__tostring()
@@ -92,7 +93,11 @@ function RunAway:Visit()
 
                 local angle = self:GetRunAngle(pt, hp)
                 if angle ~= nil then
-                    self.inst.components.locomotor:RunInDirection(angle)
+                    if self.walk_instead then
+                        self.inst.components.locomotor:WalkInDirection(angle)
+                    else
+                        self.inst.components.locomotor:RunInDirection(angle)
+                    end
                 else
                     self.status = FAILED
                     self.inst.components.locomotor:Stop()

@@ -75,7 +75,10 @@ return {
 			INUSE = "only_used_by_warly",
 			NOTEMPTY = "only_used_by_warly",
         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "This rod wasn't made for deep sea fishing.",
+		},
         --wickerbottom specific action
         READ =
         {
@@ -2830,6 +2833,28 @@ return {
 
 		GESTALT = "They're promising me... knowledge.",
 
+		COOKIECUTTER = "I don't like the way it's looking at my boat...",
+		COOKIECUTTERSHELL = "A shell of its former self.",
+		COOKIECUTTERHAT = "At least my hair will stay dry.",
+		SALTSTACK =
+		{
+			GENERIC = "Are those natural formations?",
+			MINED_OUT = "It's mined... it's all mined!",
+			GROWING = "I guess it just grows like that.",
+		},
+		SALTROCK = "Science compels me to lick it.",
+		SALTBOX = "Just the cure for spoiling food!",
+
+        GNARWAIL = "My, what a big horn you have.",
+        GNARWAIL_HORN = "Gnarly!",
+
+        MALBATROSS = "A fowl beast indeed!",
+        MALBATROSS_FEATHER = "Plucked from a fine feathered fiend.",
+        MALBATROSS_BEAK = "Smells fishy.",
+        MAST_MALBATROSS_ITEM = "It's lighter than it looks.",
+        MAST_MALBATROSS = "Spread my wings and sail away!",
+		MALBATROSS_FEATHERED_WEAVE = "I'm making a quill-t!",
+
         WALKINGPLANK = "Couldn't we have just made a lifeboat?",
         OAR = "Manual ship acceleration.",
 		OAR_DRIFTWOOD = "Manual ship acceleration.",
@@ -2861,6 +2886,7 @@ return {
         SPICE_GARLIC = "A powerfully potent powder.",
         SPICE_SUGAR = "Sweet! It's sweet!",
         SPICE_CHILI = "A flagon of fiery fluid.",
+        SPICE_SALT = "A little sodium's good for the heart.",
         MONSTERTARTARE = "There's got to be something else to eat around here.",
         FRESHFRUITCREPES = "Sugary fruit! Part of a balanced breakfast.",
         FROGFISHBOWL = "Is that just... frogs stuffed inside a fish?",

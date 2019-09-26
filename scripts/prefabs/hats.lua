@@ -865,6 +865,27 @@ local function MakeHat(name)
         return inst
     end
 
+    local function cookiecutter_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function cookiecutter()
+        local inst = simple(cookiecutter_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_COOKIECUTTERHAT, TUNING.ARMOR_COOKIECUTTERHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALLMED)
+
+        return inst
+    end
+
     local function slurtle_custom_init(inst)
         --waterproofer (from waterproofer component) added to pristine state for optimization
         inst:AddTag("waterproofer")
@@ -1630,6 +1651,8 @@ local function MakeHat(name)
         fn = skeleton
     elseif name == "kelp" then
         fn = kelp
+    elseif name == "cookiecutter" then
+        fn = cookiecutter
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1693,4 +1716,5 @@ return  MakeHat("straw"),
         MakeHat("goggles"),
         MakeHat("skeleton"),
         MakeHat("kelp"),
+		MakeHat("cookiecutter"),
         Prefab("minerhatlight", minerhatlightfn)

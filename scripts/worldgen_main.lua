@@ -12,6 +12,7 @@ function SetWorldGenSeed(seed)
 end
 
 
+--local BAD_CONNECT = 219000 -- 
 --SEED = 1568654163 -- Force roads test level 3
 SEED = SetWorldGenSeed(SEED)
 

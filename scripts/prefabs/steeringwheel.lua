@@ -162,12 +162,12 @@ local function item_fn()
     MakeSmallPropagator(inst)
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.nameoverride = "steeringwheel"
 
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.MAST)
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL

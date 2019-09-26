@@ -320,8 +320,6 @@ local prefabs =
     "boat",
     "wave_shimmer",
     "wave_shore",
-    "wave_ripple",
-    "rogue_wave",
     "seastack",
     "seastack_spawner_swell",
     "seastack_spawner_rough",
@@ -335,6 +333,9 @@ local prefabs =
     "driftwood_tall",
     "driftwood_log",
 	"waterchest",
+	"saltstack",
+	"cookiecutter",
+	"cookiecutter_spawner",
 
     -- moon island
 	"gestalt",
@@ -353,6 +354,11 @@ local prefabs =
 	"moon_altar_rock_glass",
 	"moon_altar_rock_seed",
     "carrat_planted",
+    "malbatross",
+
+	-- fish
+	"oceanfish_shoalspawner",
+	"oceanfish_medium_4",
 }
 
 local monsters =
@@ -423,7 +429,7 @@ local function common_postinit(inst)
         inst:AddComponent("ambientsound")
         inst:AddComponent("dsp")
         inst:AddComponent("colourcube")
-        inst:AddComponent("hallucinations")        
+        inst:AddComponent("hallucinations")
         inst:AddComponent("wavemanager")
 
         inst.Map:SetTransparentOcean(true)
@@ -465,6 +471,9 @@ local function master_postinit(inst)
     inst:AddComponent("townportalregistry")
     inst:AddComponent("sandstorms")
     inst:AddComponent("worldmeteorshower")
+    inst:AddComponent("malbatrossspawner")
+
+    inst:AddComponent("flotsamgenerator")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

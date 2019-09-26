@@ -43,6 +43,8 @@ local function fn()
     --fishingrod (from fishingrod component) added to pristine state for optimization
     inst:AddTag("fishingrod")
 
+	inst:AddTag("allow_action_on_impassable")
+
     if TheNet:GetServerGameMode() ~= "quagmire" then
         --weapon (from weapon component) added to pristine state for optimization
         inst:AddTag("weapon")

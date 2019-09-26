@@ -2071,6 +2071,7 @@ function PlayerController:OnUpdate(dt)
 
     self:DoPredictHopping(dt)
 
+
     --NOTE: isbusy is used further below as well
     local isbusy = self:IsBusy()
 	if isbusy and self.inst.sg ~= nil and self.inst:HasTag("jumping") then

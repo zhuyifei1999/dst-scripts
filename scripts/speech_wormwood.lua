@@ -66,7 +66,10 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "Can't reach Glub Glub",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2825,6 +2828,28 @@ return{
 
 		GESTALT = "Saying something?",
 
+		COOKIECUTTER = "Oh. Hello!",
+		COOKIECUTTERSHELL = "Spiky home",
+		COOKIECUTTERHAT = "Spiny hat",
+		SALTSTACK =
+		{
+			GENERIC = "Lumpy",
+			MINED_OUT = "All gone",
+			GROWING = "Growing back",
+		},
+		SALTROCK = "Hmm...",
+		SALTBOX = "Salty Food Holder",
+
+        GNARWAIL = "Pointy head",
+        GNARWAIL_HORN = "Sharp!",
+
+        MALBATROSS = "Big Tweeter",
+        MALBATROSS_FEATHER = "Big Tweeter clothes",
+        MALBATROSS_BEAK = "Tweeter nose",
+        MAST_MALBATROSS_ITEM = "New friend for Floater",
+        MAST_MALBATROSS = "Came from Tweeter",
+		MALBATROSS_FEATHERED_WEAVE = "Feather cloth",
+
         WALKINGPLANK = "Splashy jump spot",
         OAR = "Friend helps push water",
 		OAR_DRIFTWOOD = "Friend helps push water fast!",
@@ -2856,6 +2881,7 @@ return{
         SPICE_GARLIC = "(sniff) ahh-CHOO!",
         SPICE_SUGAR = "Sweet tasty juice!",
         SPICE_CHILI = "Makes mouth on fire!",
+        SPICE_SALT = "PLACEHOLDER",
         MONSTERTARTARE = "Nope",
         FRESHFRUITCREPES = "Sweet belly stuff",
         FROGFISHBOWL = "Yum yums!",
