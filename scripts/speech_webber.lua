@@ -2720,6 +2720,7 @@ return{
         	GENERIC = "Splish splash.",
         	BOMBED = "It smells nice and looks pretty.",
         	GLASS = "We could crack it open.",
+			EMPTY = "Aw, it's all dried up.",
         },
         MOONGLASS = "It came from the moon. Wow!",
         MOONGLASS_ROCK = "Is the moon green, too?",
@@ -2835,9 +2836,6 @@ return{
 		},
 		SALTROCK = "What a weird rock.",
 		SALTBOX = "Makes our food last longer.",
-
-        GNARWAIL = "Woah, is that a sea unicorn?",
-        GNARWAIL_HORN = "Maybe it's magic?",
 
         MALBATROSS = "Woah! That's a big bird!",
         MALBATROSS_FEATHER = "Tickly!",

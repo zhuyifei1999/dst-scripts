@@ -2720,6 +2720,7 @@ return{
         	GENERIC = "I miss a good long bath.",
         	BOMBED = "How posh.",
         	GLASS = "I could make use of that glass.",
+			EMPTY = "It's of no use to me like this.",
         },
         MOONGLASS = "But does it look as sharp as me?",
         MOONGLASS_ROCK = "\"Moon\" detritus.",
@@ -2835,9 +2836,6 @@ return{
 		},
 		SALTROCK = "Am I to be a salt miner now?",
 		SALTBOX = "This will extend the life of our supplies somewhat.",
-
-        GNARWAIL = "Perhaps it could be reasoned with.",
-        GNARWAIL_HORN = "Impressive.",
 
         MALBATROSS = "I've no desire to do battle with that thing.",
         MALBATROSS_FEATHER = "This would be a nice feather in my cap.",

@@ -2724,6 +2724,7 @@ return{
         	GENERIC = "Pool party!",
         	BOMBED = "Warm now. Glowy",
         	GLASS = "Ice? Nope",
+			EMPTY = "Muddy.",
         },
         MOONGLASS = "Ouch! Sharp!",
         MOONGLASS_ROCK = "Clear Rock",
@@ -2839,9 +2840,6 @@ return{
 		},
 		SALTROCK = "Hmm...",
 		SALTBOX = "Salty Food Holder",
-
-        GNARWAIL = "Pointy head",
-        GNARWAIL_HORN = "Sharp!",
 
         MALBATROSS = "Big Tweeter",
         MALBATROSS_FEATHER = "Big Tweeter clothes",

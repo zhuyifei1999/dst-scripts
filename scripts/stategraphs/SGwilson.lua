@@ -7022,32 +7022,16 @@ local states =
             if inst.components.steeringwheeluser.should_play_left_turn_anim then
                 inst.AnimState:PlayAnimation("steer_left_pre", false)
                 inst.AnimState:PushAnimation("steer_left_loop", true)
-      --          inst.AnimState:PushAnimation("steer_left_pst", false)
             else
                 inst.AnimState:PlayAnimation("steer_right_pre", false)
                 inst.AnimState:PushAnimation("steer_right_loop", true)
-        --        inst.AnimState:PushAnimation("steer_right_pst", false)
             end
+
+            inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/LP", "turn")
         end,
-
-        onexit = function(inst)
-			inst.Transform:SetFourFaced()
-        end,                        
-
-        timeline =
-        {
-            TimeEvent(0 * FRAMES, function(inst)          
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/LP","turn")
-            end),
-        },
 
         events =
         {
-            --[[
-            EventHandler("animqueueover", function(inst)
-                inst.sg:GoToState("steer_boat_idle_loop")
-            end),
-            ]]
             EventHandler("playerstopturning", function(inst)
                 inst.sg:GoToState("steer_boat_turning_pst")
             end),            
@@ -7055,7 +7039,13 @@ local states =
                 inst.sg:GoToState("idle")
             end),
         },
+
+        onexit = function(inst)
+            inst.Transform:SetFourFaced()
+            inst.SoundEmitter:KillSound("turn")
+        end,                        
     },
+
     State{
         name = "steer_boat_turning_pst",
         tags = { "is_using_steering_wheel", "doing", "is_turning_wheel" },
@@ -7071,7 +7061,6 @@ local states =
 
         onexit = function(inst)
             inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,                        
 
         events =
@@ -7096,7 +7085,6 @@ local states =
 
         onexit = function(inst)
 			inst.Transform:SetFourFaced()
-            inst.SoundEmitter:KillSound("turn")
         end,
 
         events = 
@@ -7119,7 +7107,8 @@ local states =
             inst.components.locomotor:Clear()
 
             inst.AnimState:PlayAnimation("sink")
-			
+			inst.SoundEmitter:PlaySound("dontstarve/characters/"..(inst.soundsname or inst.prefab).."/sinking")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/characters/"..(inst.soundsname or inst.prefab).."/sinking")
             if inst.components.rider:IsRiding() then
                 inst.sg:AddStateTag("dismounting")
 			end
@@ -7138,6 +7127,7 @@ local states =
         {
             TimeEvent(71 * FRAMES, function(inst)
 				inst.components.drownable:DropInventory()
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/water/player_sinking")
             end),
         },
 

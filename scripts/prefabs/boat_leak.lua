@@ -8,12 +8,16 @@ local function onsprungleak(inst)
 	if inst.components.inspectable == nil then
 		inst:AddComponent("inspectable")
 	end
+
+	inst:RemoveTag("NOBLOCK")
 end
 
 local function onrepairedleak(inst)
 	if inst.components.inspectable ~= nil then
 		inst:RemoveComponent("inspectable")
 	end
+
+	inst:AddTag("NOBLOCK")
 end
 
 local function fn()

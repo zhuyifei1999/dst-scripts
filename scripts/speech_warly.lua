@@ -1954,12 +1954,6 @@ return{
 		},
         GARGOYLE_HOUND = "I feel strangely uneasy.",
         GARGOYLE_WEREPIG = "It won't begin to move, will it?",
-		SCULPTURE_ROOKNOSE = "That doesn't look like a natural rock.",
-		SEAFARING_PROTOTYPER =
-		{
-			BURNT = "It's all gone up in smoke.",
-			GENERIC = "All the knowledge of a seasoned seafarer!",
-		},
 		SEASTACK = "A big lumpy rock.",
 		SEEDS = "You may grow up to be delicious one day.",
 		SEEDS_COOKED = "Could use smoked paprika...",
@@ -2727,6 +2721,7 @@ return{
         	GENERIC = "Ah, if only I had time for a nice soak.",
         	BOMBED = "What a nice aroma.",
         	GLASS = "It looks quite pretty in the moonlight, non?",
+			EMPTY = "An empty basin.",
         },
         MOONGLASS = "My, that's sharp!",
         MOONGLASS_ROCK = "That's quite a bit of glass.",
@@ -2842,9 +2837,6 @@ return{
 		},
 		SALTROCK = "Quelle chance! I've found salt!",
 		SALTBOX = "Just the thing for preserving ingredients.",
-
-        GNARWAIL = "Mon dieu, don't skewer me!",
-        GNARWAIL_HORN = "I was nearly run through with that thing!",
 
         MALBATROSS = "Très mal, indeed.",
         MALBATROSS_FEATHER = "\"Alouette, je te plumerai.\"",

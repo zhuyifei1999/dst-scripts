@@ -2726,6 +2726,7 @@ return{
         	GENERIC = "I don't want to get my fur wet.",
         	BOMBED = "Mortals love good smells.",
         	GLASS = "All that glass sure froze fast!",
+			EMPTY = "Oh me, oh my, the spring's run dry.",
         },
         MOONGLASS = "In its green sheen I see selene.",
         MOONGLASS_ROCK = "A handsome devil is reflected back at me! Hyuyu!",
@@ -2841,9 +2842,6 @@ return{
 		},
 		SALTROCK = "Hissss!",
 		SALTBOX = "You needn't worry about protecting your food from me.",
-
-        GNARWAIL = "Now now, no need to put a dent in my dinghy.",
-        GNARWAIL_HORN = "It makes a compelling point, hyuyu!",
 
         MALBATROSS = "It's bad luck to shoot it down, but what do I know? Hyuyu!",
         MALBATROSS_FEATHER = "A feather for me, from the bird of the sea.",

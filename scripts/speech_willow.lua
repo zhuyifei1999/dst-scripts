@@ -2727,6 +2727,7 @@ return{
         	GENERIC = "So toasty and warm!",
         	BOMBED = "The bombs are fun to throw in.",
         	GLASS = "Should we smash it up?",
+			EMPTY = "What's better than a hotspring? A fire pit!",
         },
         MOONGLASS = "What do we need glass for anyway?",
         MOONGLASS_ROCK = "That's a big chunk of glass!",
@@ -2842,9 +2843,6 @@ return{
 		},
 		SALTROCK = "I wonder if it's flammable.",
 		SALTBOX = "It'll keep my stuff from rotting, for a little while.",
-
-        GNARWAIL = "Geez, look at the nose on that thing!",
-        GNARWAIL_HORN = "Ha ha, cool.",
 
         MALBATROSS = "Uh... nice bird?",
         MALBATROSS_FEATHER = "Ha! That thing was just a featherweight after all.",

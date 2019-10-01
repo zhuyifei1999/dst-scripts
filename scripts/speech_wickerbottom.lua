@@ -2720,6 +2720,7 @@ return{
         	GENERIC = "My old feet could use a good soak.",
         	BOMBED = "Yes, I'll definitely soak my feet later.",
         	GLASS = "I strongly suspect moon glass is organic in composition now.",
+			EMPTY = "The spring will replenish itself in good time.",
         },
         MOONGLASS = "Perhaps I could keep a sample and study the composition.",
         MOONGLASS_ROCK = "It appears to be mineral, but may actually be organic in nature.",
@@ -2835,9 +2836,6 @@ return{
 		},
 		SALTROCK = "It's growing in a curiously geometric formation.",
 		SALTBOX = "This should help prevent food spoilage.",
-
-        GNARWAIL = "It appears to be a variation of the Monodon monoceros.",
-        GNARWAIL_HORN = "A gnarwail's \"horn\" is actually a tooth, you know.",
 
         MALBATROSS = "It appears to be of the family Diomedeidae.",
         MALBATROSS_FEATHER = "Its plumage has an almost scale-like texture.",

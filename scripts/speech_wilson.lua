@@ -2729,6 +2729,7 @@ return {
         	GENERIC = "If only I could soak my weary bones.",
         	BOMBED = "Just a simple chemical reaction.",
         	GLASS = "Water turns to glass under the moon. That's just science.",
+			EMPTY = "I'll just have to wait for it to fill up again.",
         },
         MOONGLASS = "It's very sharp.",
         MOONGLASS_ROCK = "I can practically see my reflection in it.",
@@ -2845,9 +2846,6 @@ return {
 		SALTROCK = "Science compels me to lick it.",
 		SALTBOX = "Just the cure for spoiling food!",
 
-        GNARWAIL = "My, what a big horn you have.",
-        GNARWAIL_HORN = "Gnarly!",
-
         MALBATROSS = "A fowl beast indeed!",
         MALBATROSS_FEATHER = "Plucked from a fine feathered fiend.",
         MALBATROSS_BEAK = "Smells fishy.",
@@ -2864,16 +2862,14 @@ return {
         --Wortox
         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "Now we're cookin'!",
             DONE = "Now we're done cookin'!",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
-			COOKING_LONG = "only_used_by_warly",
-			COOKING_SHORT = "only_used_by_warly",
-			EMPTY = "only_used_by_warly",
+			COOKING_LONG = "That meal is going to take a while.",
+			COOKING_SHORT = "It'll be ready in no-time!",
+			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "It mixes all the food.",

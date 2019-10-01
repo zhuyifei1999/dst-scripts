@@ -309,6 +309,7 @@ local states =
             TimeEvent(1 * FRAMES, function(inst)
                 spawnsplash(inst, 4)
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_boss")
+                inst.DynamicShadow:Enable(true)
             end),
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/whoosh") end),
             TimeEvent(4*FRAMES, function(inst) inst.sg:RemoveStateTag("noattack") end),
@@ -359,6 +360,7 @@ local states =
             TimeEvent(1*FRAMES, function(inst)
                 spawnsplash(inst, 4)
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_boss")
+                inst.DynamicShadow:Enable(true)
             end),
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/whoosh") end),
             TimeEvent(4*FRAMES, function(inst) inst.sg:RemoveStateTag("noattack") end),

@@ -2720,6 +2720,7 @@ return{
         	GENERIC = "When I gaze upon my reflection, a ghost stares back at me.",
         	BOMBED = "I don't see how this helped.",
         	GLASS = "The top is solid glass.",
+			EMPTY = "Nothing left for me here...",
         },
         MOONGLASS = "Its sharp edge would end this quickly.",
         MOONGLASS_ROCK = "What a sickly color.",
@@ -2835,9 +2836,6 @@ return{
 		},
 		SALTROCK = "Almost as salty as my bitter tears.",
 		SALTBOX = "It'll only prolong the inevitable.",
-
-        GNARWAIL = "Perhaps it will pierce my heart as well as the boat.",
-        GNARWAIL_HORN = "It gleams.",
 
         MALBATROSS = "What a horrid bird!",
         MALBATROSS_FEATHER = "It won't be needing these anymore.",

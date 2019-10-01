@@ -2721,6 +2721,7 @@ return{
         	GENERIC = "Is hot puddle.",
         	BOMBED = "Puddle stinks with good smells now.",
         	GLASS = "Mighty Wolfgang will punch through silly glass!",
+			EMPTY = "Is just dirt hole now.",
         },
         MOONGLASS = "Is clear green sharp-stuff.",
         MOONGLASS_ROCK = "Sharp stuff that fell from sky cheese.",
@@ -2836,9 +2837,6 @@ return{
 		},
 		SALTROCK = "Wolfgang confused, thought salt came from tiny shakers?",
 		SALTBOX = "Put food inside!",
-
-        GNARWAIL = "Fish think it can poke holes in Wolfgang's boat?!",
-        GNARWAIL_HORN = "Will make good pokey spear!",
 
         MALBATROSS = "Big fishy bird!",
         MALBATROSS_FEATHER = "Feather from big water bird.",

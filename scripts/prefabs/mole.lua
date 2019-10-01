@@ -89,6 +89,7 @@ end
 local function SetUnderPhysics(inst)
     if inst.isunder ~= true then
         inst.isunder = true
+		inst:AddTag("notdrawable")
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
@@ -99,6 +100,7 @@ end
 local function SetAbovePhysics(inst)
     if inst.isunder ~= false then
         inst.isunder = false
+		inst:RemoveTag("notdrawable")
         ChangeToCharacterPhysics(inst)
     end
 end

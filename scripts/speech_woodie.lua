@@ -2721,6 +2721,7 @@ return{
         	GENERIC = "Careful Lucy, wouldn't want you to rust.",
         	BOMBED = "Lookin' purdy.",
         	GLASS = "Wonder if I could bust through that.",
+			EMPTY = "Let's wait an' see if it fills up again.",
         },
         MOONGLASS = "It's green, like a nice leaf.",
         MOONGLASS_ROCK = "That's a big hunk of moon stuff.",
@@ -2836,9 +2837,6 @@ return{
 		},
 		SALTROCK = "It's gleamin' white like the mountains up North!",
 		SALTBOX = "It's like an icebox, but salt!",
-
-        GNARWAIL = "That thing looks like it could do some damage.",
-        GNARWAIL_HORN = "Never saw a horn on a fish before.",
 
         MALBATROSS = "It just had to be a giant bird.",
         MALBATROSS_FEATHER = "I don't trust anything that comes from a bird.",

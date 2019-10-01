@@ -2726,6 +2726,7 @@ return{
         	GENERIC = "It's a nice, warm spring.",
         	BOMBED = "I'm not really a bubble bath kinda gal.",
         	GLASS = "Woah, the top glassed over solid.",
+			EMPTY = "Dry as a bone.",
         },
         MOONGLASS = "Can't wait to try this out.",
         MOONGLASS_ROCK = "Wonder if it's got any special properties.",
@@ -2841,9 +2842,6 @@ return{
 		},
 		SALTROCK = "Hey, that looks like salt!",
 		SALTBOX = "This'll keep things fresher longer!",
-
-        GNARWAIL = "Yeesh, I hope it's friendly!",
-        GNARWAIL_HORN = "I'm sure I can use this for somethin.",
 
         MALBATROSS = "Yeesh, you're a big fella!",
         MALBATROSS_FEATHER = "I'll find a practical use for this.",

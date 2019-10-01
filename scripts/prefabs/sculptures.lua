@@ -113,14 +113,14 @@ local function onworkfinished(inst, worker)
 
     MakeBroken(inst)
 
-
     if inst.components.lootdropper.chanceloottable ~= nil then
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
+	    inst.components.lootdropper:DropLoot(inst:GetPosition())
         -- say the uncovered state description string
         if worker ~= nil and worker.components.talker ~= nil then
             worker.components.talker:Say(inst.components.inspectable:GetDescription(worker, inst, "UNCOVERED"))
         end
-    else		local pos = inst:GetPosition()
+	else
+		local pos = inst:GetPosition()
         local offset = FindWalkableOffset(pos, math.random() * 2 * PI, inst:GetPhysicsRadius(1) + 0.1, 60, false, false, NoHoles) or Vector3(2, 0, 0)
 		local piece = SpawnPrefab(PIECE_NAME[inst.prefab])
 		piece.Transform:SetPosition((pos + offset):Get())

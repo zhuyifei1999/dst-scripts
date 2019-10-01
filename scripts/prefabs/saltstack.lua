@@ -99,21 +99,22 @@ local function UpdateState(inst, workleft, loading_in)
 	end
 end
 
-local function Grow(inst)
-	local nextworkstage = math.min(inst.workstage + 1, 4)
-	inst.components.workable:SetWorkLeft(workstagetoworkleft[nextworkstage] or 10)
-	UpdateState(inst, inst.components.workable.workleft)
-end
-
 local function StartGrowthTimer(inst)
 	inst.components.timer:StartTimer("growth", TUNING.SALTSTACK.GROWTH_FREQUENCY + math.random() * TUNING.SALTSTACK.GROWTH_FREQUENCY_VARIANCE)
 end
 
-local function ontimerdonefn(inst, data)
-	Grow(inst)
+local function Grow(inst)
+	local nextworkstage = math.min(inst.workstage + 1, 4)
+	inst.components.workable:SetWorkLeft(workstagetoworkleft[nextworkstage] or 10)
+	UpdateState(inst, inst.components.workable.workleft)
 	if inst.components.workable.workleft < 10 then
 		StartGrowthTimer(inst)
 	end
+end
+
+local function ontimerdonefn(inst, data)
+	inst.components.timer:StopTimer("growth")
+	Grow(inst)
 end
 
 local function OnWork(inst, worker, workleft, numworks)

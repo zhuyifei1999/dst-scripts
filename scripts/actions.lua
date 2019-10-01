@@ -642,7 +642,7 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("portableitem") and "PORTABLE") or
                 (act.invobject:HasTag("boatbuilder") and "WATER") or
                 (act.invobject:HasTag("boat_accessory") and "TURRET") or
-                (act.invobject:HasTag("eyeturret") and "TURRET")    )
+                (act.invobject:HasTag("eyeturret") and "TURRET")   )
         or nil
 end
 
@@ -2348,24 +2348,12 @@ end
 ACTIONS.BATHBOMB.fn = function(act)
     local bathbombable = (act.target ~= nil and act.target.components.bathbombable) or nil
     local bathbomb = (act.invobject ~= nil and act.invobject.components.bathbomb) or nil
-    if bathbombable == nil or bathbomb == nil then
-        return false
-    end
 
-    local can_bathbomb, failure_reason = bathbombable:CanBeBathBombed(act.invobject)
-    if not can_bathbomb then
-        if failure_reason ~= nil then
-            return false, failure_reason
-        else
-            return false
-        end
-    end
-
-    bathbomb:ApplyBathBomb(bathbombable)
-
-    local removed_item = act.doer.components.inventory:RemoveItem(act.invobject)
-    removed_item:Remove()
-    return true
+	if bathbomb ~= nil and bathbombable ~= nil and bathbombable.can_be_bathbombed then
+	    bathbombable:OnBathBombed(act.invobject, act.doer)
+		act.doer.components.inventory:RemoveItem(act.invobject):Remove()
+		return true
+	end
 end
 
 ACTIONS.RAISE_SAIL.fn = function(act)     -- this name is backwards. "raising" in this case means making a full sail
