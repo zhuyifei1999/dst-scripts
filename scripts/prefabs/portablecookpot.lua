@@ -36,7 +36,8 @@ local function ChangeToItem(inst)
     if inst.components.container ~= nil then
         inst.components.container:DropEverything()
     end
-    local item = SpawnPrefab("portablecookpot_item")
+    
+    local item = SpawnPrefab("portablecookpot_item", inst.linked_skinname, inst.skin_id)
     item.Transform:SetPosition(inst.Transform:GetWorldPosition())
     item.AnimState:PlayAnimation("collapse")
     item.SoundEmitter:PlaySound("dontstarve/common/together/portable/cookpot/collapse")
@@ -308,7 +309,7 @@ end
 ---------------------------------------------------------------
 
 local function ondeploy(inst, pt, deployer)
-    local pot = SpawnPrefab("portablecookpot")
+    local pot = SpawnPrefab("portablecookpot", inst.linked_skinname, inst.skin_id )
     if pot ~= nil then
         pot.Physics:SetCollides(false)
         pot.Physics:Teleport(pt.x, 0, pt.z)

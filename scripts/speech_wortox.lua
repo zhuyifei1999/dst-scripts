@@ -2859,16 +2859,14 @@ return{
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "Does it make soul food?",
             DONE = "A mortal meal is not really my deal.",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
---fallback to speech_wilson.lua 			COOKING_LONG = "only_used_by_warly",
---fallback to speech_wilson.lua 			COOKING_SHORT = "only_used_by_warly",
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_warly",
+--fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
+--fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
+--fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "All that chopping and no souls.",

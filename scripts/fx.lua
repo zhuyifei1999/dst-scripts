@@ -44,6 +44,7 @@ local fx =
         bank = "splash",
         build = "splash",
         anim = "splash",
+        sound = "turnoftides/common/together/water/splash/bird",
         fn = FinalOffset1,
     },
     {
@@ -1199,24 +1200,44 @@ local fx =
 		build = "cookiecutter_fx",
 		anim = "wood_splinter_drill",
 	}, 
+
     {
-        name = "splash_teal",
+        name = "splash_green_small",
         bank = "pond_splash_fx",
         build = "pond_splash_fx",
-        anim = "cave_splash",
-    },  
+        anim = "pond_splash",        
+        sound = "turnoftides/common/together/water/splash/small",
+    }, 
     {
         name = "splash_green",
         bank = "pond_splash_fx",
         build = "pond_splash_fx",
         anim = "pond_splash",
-    }, 
+        sound = "turnoftides/common/together/water/splash/medium",
+        fn = function(inst) inst.Transform:SetScale(2,2,2) end,
+    },   
+    {
+        name = "splash_green_large",
+        bank = "pond_splash_fx",
+        build = "pond_splash_fx",
+        anim = "pond_splash",
+        sound = "turnoftides/common/together/water/splash/large",
+        fn = function(inst) inst.Transform:SetScale(4,4,4) end,
+    },   
+--[[  There is art for these. They are just not used anywhere
+    {
+        name = "splash_teal",
+        bank = "pond_splash_fx",
+        build = "pond_splash_fx",
+        anim = "cave_splash",
+    },      
     {
         name = "splash_black",
         bank = "pond_splash_fx",
         build = "pond_splash_fx",
         anim = "swamp_splash",
     }, 
+    ]]
 }
 
 for cratersteamindex = 1, 4 do

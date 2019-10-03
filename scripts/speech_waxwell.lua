@@ -2853,16 +2853,14 @@ return{
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "An instrument of the dark culinary arts.",
             DONE = "Let's hope something palatable has come of it.",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
---fallback to speech_wilson.lua 			COOKING_LONG = "only_used_by_warly",
---fallback to speech_wilson.lua 			COOKING_SHORT = "only_used_by_warly",
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_warly",
+--fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
+--fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
+--fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "Does it have to make such a horrible racket?",

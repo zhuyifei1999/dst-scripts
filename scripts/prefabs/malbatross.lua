@@ -15,8 +15,8 @@ local rippleassets =
 local prefabs =
 {
     "malbatross_ripple",
-    "wave_med",
-    "splash_teal",    
+    "wave_med",  
+    "splash_green_large",
     "splash_green",
     "malbatross_beak",
     "mast_malbatross",

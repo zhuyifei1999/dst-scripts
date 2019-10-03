@@ -23,6 +23,7 @@ local prefabs =
     "monstermeat",
     "redgem",
     "bluegem",
+    "splash_green",
 	"houndcorpse",
 }
 

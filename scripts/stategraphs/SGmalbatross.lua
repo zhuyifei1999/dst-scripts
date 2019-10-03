@@ -26,17 +26,21 @@ local function spawnripple(inst)
     end
 end
 
-local function spawnsplash(inst, scale, pos)
+local function spawnsplash(inst, size, pos)
     local splashpos = Vector3(inst.Transform:GetWorldPosition())
     if pos then
         splashpos = pos
     end
     if not TheWorld.Map:IsVisualGroundAtPoint(splashpos.x,splashpos.y,splashpos.z) and not TheWorld.Map:GetPlatformAtPoint(splashpos.x,splashpos.z) then
-        local fx = SpawnPrefab("splash_green")
-        fx.Transform:SetPosition(splashpos.x,splashpos.y,splashpos.z)
-        if scale then
-            fx.Transform:SetScale(scale,scale,scale)
+        local prefab = "splash_green_large"
+        if size == "med" then
+            prefab = "splash_green"
         end
+        local fx = SpawnPrefab("splash_green_large")
+        fx.Transform:SetPosition(splashpos.x,splashpos.y,splashpos.z)
+     --   if scale then
+          --  fx.Transform:SetScale(scale,scale,scale)
+       -- end
     end
 end
 
@@ -77,7 +81,7 @@ local function SpawnMalbatrossAttackWaves(inst)
                 platform.components.health:DoDelta(-TUNING.MALBATROSS_BOAT_DAMAGE)
             end
     elseif not TheWorld.Map:IsVisualGroundAtPoint(point.x,point.y,point.z) then
-        spawnsplash(inst, 3, position+offset_direction4)
+        spawnsplash(inst, "med", position+offset_direction4)
 
         wavesetup(inst,position+offset_direction1,angle)
         wavesetup(inst,position+offset_direction2,angle,-1)
@@ -258,7 +262,7 @@ local states =
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/flap") end),
             TimeEvent(19*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/boss")
-                spawnsplash(inst, 4)
+                spawnsplash(inst)
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(false)
                 inst.sg:AddStateTag("noattack")
@@ -307,7 +311,7 @@ local states =
         timeline =
         {
             TimeEvent(1 * FRAMES, function(inst)
-                spawnsplash(inst, 4)
+                spawnsplash(inst)
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_boss")
                 inst.DynamicShadow:Enable(true)
             end),
@@ -358,7 +362,7 @@ local states =
         timeline =
         {
             TimeEvent(1*FRAMES, function(inst)
-                spawnsplash(inst, 4)
+                spawnsplash(inst)
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_boss")
                 inst.DynamicShadow:Enable(true)
             end),
@@ -460,7 +464,7 @@ local states =
                 end
             end),
             TimeEvent(42 * FRAMES, function(inst)
-                spawnsplash(inst,5)
+                spawnsplash(inst)
                 spawnwave(inst)
                 inst.components.lootdropper:DropLoot(inst:GetPosition())
                 inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/boss")
@@ -627,7 +631,7 @@ local states =
             TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/flap") end),
             TimeEvent(19 * FRAMES, function(inst)
 				inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/large")                
-                spawnsplash(inst, 4)
+                spawnsplash(inst)
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(false)
                 inst.sg:AddStateTag("noattack")
@@ -673,7 +677,7 @@ local states =
         {
             TimeEvent(1 * FRAMES, function(inst)
              inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_large") 
-                spawnsplash(inst, 4)
+                spawnsplash(inst)
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(true)
             end),

@@ -1954,7 +1954,6 @@ return{
 		},
         GARGOYLE_HOUND = "I feel strangely uneasy.",
         GARGOYLE_WEREPIG = "It won't begin to move, will it?",
-		SEASTACK = "A big lumpy rock.",
 		SEEDS = "You may grow up to be delicious one day.",
 		SEEDS_COOKED = "Could use smoked paprika...",
 		SEWING_KIT = "Not exactly my specialty.",
@@ -2854,13 +2853,11 @@ return{
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "What new culinary adventures shall we undertake, old friend?",
             DONE = "Pickup! Oh, old habits...",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
 			COOKING_LONG = "The flavors need time to meld.",
 			COOKING_SHORT = "I threw that meal together!",
 			EMPTY = "I would never leave home without it!",

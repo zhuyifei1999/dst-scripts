@@ -596,7 +596,7 @@ CommonStates.AddAmphibiousCreatureHopStates(states,
 	{
 		TimeEvent(0, function(inst) 
 			if inst:HasTag("swimming") then 
-				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition()) 
+				SpawnPrefab("splash_green").Transform:SetPosition(inst.Transform:GetWorldPosition()) 
 			end
 		end),
 	},
@@ -604,7 +604,7 @@ CommonStates.AddAmphibiousCreatureHopStates(states,
 		TimeEvent(4 * FRAMES, function(inst) 
 			if inst:HasTag("swimming") then 
 				inst.components.locomotor:Stop()
-				SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition()) 
+				SpawnPrefab("splash_green").Transform:SetPosition(inst.Transform:GetWorldPosition()) 
 			end
 		end),
 		TimeEvent(6 * FRAMES, function(inst) 
