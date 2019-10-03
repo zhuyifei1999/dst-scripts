@@ -135,7 +135,7 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
-		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
+		--title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then

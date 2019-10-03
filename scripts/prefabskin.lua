@@ -363,9 +363,23 @@ function cookpot_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
-
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
+
+function portablecookpot_item_init_fn(inst, build_name)
+    inst.linked_skinname = string.gsub(build_name, "cookpot", "portablecookpot")
+    inst.AnimState:SetSkin(build_name, "portable_cook_pot") --same hack is used here by the deployable code in player controller
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+function portablecookpot_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+    inst.linked_skinname = string.gsub(build_name, "cookpot", "portablecookpot") .. "_item"
+    inst.AnimState:SetSkin(build_name, "portable_cook_pot")
+end
+
+
 
 --------------------------------------------------------------------------
 --[[ Tent skin functions ]]

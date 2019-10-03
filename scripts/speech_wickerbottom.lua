@@ -444,7 +444,7 @@ return{
     ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "I'll have everything done in a snap!",
     ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "I feel so pleasantly dry!",
     
-    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Back to the the natural state of things",
+    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Back to the the natural state of things.",
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Oh my, what came over me?",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "It appears my defense has weakened.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I can only work tirelessly for so long.",
@@ -2853,16 +2853,14 @@ return{
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "It will be nice to eat some properly prepared food.",
             DONE = "Smells nourishing.",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
---fallback to speech_wilson.lua 			COOKING_LONG = "only_used_by_warly",
---fallback to speech_wilson.lua 			COOKING_SHORT = "only_used_by_warly",
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_warly",
+--fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
+--fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
+--fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "Quite a lively cooking instrument.",

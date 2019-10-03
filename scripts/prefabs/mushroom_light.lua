@@ -208,7 +208,6 @@ local function MakeMushroomLight(name, onlywhite, physics_rad)
         inst.Light:Enable(false)
 
         inst:AddTag("structure")
-        inst:AddTag("fridge")
         inst:AddTag("lamp")
 
         MakeSnowCoveredPristine(inst)
@@ -239,6 +238,9 @@ local function MakeMushroomLight(name, onlywhite, physics_rad)
 
         inst:AddComponent("container")
         inst.components.container:WidgetSetup(name)
+
+		inst:AddComponent("preserver")
+		inst.components.preserver:SetPerishRateMultiplier(TUNING.PERISH_MUSHROOM_LIGHT_MULT)
 
         inst:ListenForEvent("onbuilt", onbuilt)
         inst:ListenForEvent("itemget", UpdateLightState)

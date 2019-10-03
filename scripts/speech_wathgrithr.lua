@@ -585,7 +585,7 @@ return{
             GHOST = "The worldtree watches over you, %s.",
             BEAVER = "I did not know %s possessed such power!",
             BEAVERGHOST = "You went out in a blaze of glory, %s.",
-            MOOSE = "By the gods, I mistook you for a jötunn!",
+            MOOSE = "By the gods, I mistook you for a jÃ¶tunn!",
             MOOSEGHOST = "Never fear, I'll return you to this realm!",
             GOOSE = "%s, you've become a fowl beast!",
             GOOSEGHOST = "Worry not, I won't let you leave for Valhalla looking like that!",
@@ -2853,16 +2853,14 @@ return{
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "Cooking, a noble profession.",
             DONE = "Is there meat to be consumed?",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
---fallback to speech_wilson.lua 			COOKING_LONG = "only_used_by_warly",
---fallback to speech_wilson.lua 			COOKING_SHORT = "only_used_by_warly",
---fallback to speech_wilson.lua 			EMPTY = "only_used_by_warly",
+--fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
+--fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
+--fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "It does battle with food.",
@@ -2877,8 +2875,6 @@ return{
         SPICE_CHILI = "Full of a fiery extract.",
         SPICE_SALT = "It has the briny taste of the sea.",
         MONSTERTARTARE = "Still quivering.",
-        SPICE_SALT = "PLACEHOLDER",
-        SPICEPACK = "I'll use this to carry delicious meats!",
         FRESHFRUITCREPES = "So light and airy!",
         FROGFISHBOWL = "My ally is a god among men.",
         POTATOTORNADO = "Blech.",
