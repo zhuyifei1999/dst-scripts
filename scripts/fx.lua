@@ -1165,6 +1165,28 @@ local fx =
         anim = "puddle",
         fn = function(inst) inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND) inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround) end,
     },
+    {
+        name = "round_puff_fx_sm",
+        bank = "round_puff_fx",
+        build = "round_puff_fx",
+        anim = "puff_sm",
+        sound = "dontstarve/characters/woodie/moose/hit",
+        fn = FinalOffset1,
+    },
+    {
+        name = "round_puff_fx_lg",
+        bank = "round_puff_fx",
+        build = "round_puff_fx",
+        anim = "puff_lg",
+        sound = "dontstarve/characters/woodie/moose/hit",
+        fn = FinalOffset1,
+    },
+    {
+        name = "round_puff_fx_hi",
+        bank = "round_puff_fx",
+        build = "round_puff_fx",
+        anim = "puff_hi",
+    },
 	{
 		name = "wood_splinter_jump",
 		bank = "cookiecutter_fx",
