@@ -117,8 +117,8 @@ local function onworkfinished(inst, worker)
 	    inst.components.lootdropper:DropLoot(inst:GetPosition())
         -- say the uncovered state description string
         if worker ~= nil and worker.components.talker ~= nil then
-	        worker.components.talker:Say(inst.components.inspectable:GetDescription(worker, inst, "UNCOVERED"))
-		end
+            worker.components.talker:Say(inst.components.inspectable:GetDescription(worker, inst, "UNCOVERED"))
+        end
 	else
 		local pos = inst:GetPosition()
         local offset = FindWalkableOffset(pos, math.random() * 2 * PI, inst:GetPhysicsRadius(1) + 0.1, 60, false, false, NoHoles) or Vector3(2, 0, 0)

@@ -10,6 +10,7 @@ local SKIN_GIFT_TYPES =
 	eyebrellahat_crystal = "TWITCH_DROP",
 	featherhat_circus = "TWITCH_DROP",
 	firesuppressor_circus = "TWITCH_DROP",
+	glomling_puft = "ONI",
 	heatrock_fire = "TWITCH_DROP",
 	icebox_crystal = "TWITCH_DROP",
 	lantern_winter = "WINTER",

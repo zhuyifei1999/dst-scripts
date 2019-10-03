@@ -110,6 +110,30 @@ local function StartBoatCamera(inst)
 	TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, math.huge, math.huge, -1, camera_settings)
 end
 
+local function OnSpawnNewBoatLeak(inst, data)
+	if data ~= nil and data.pt ~= nil then
+		local leak = SpawnPrefab("boat_leak")
+		leak.Transform:SetPosition(data.pt:Get())
+		leak.components.boatleak.isdynamic = true
+		leak.components.boatleak:SetBoat(inst)
+		leak.components.boatleak:SetState(data.leak_size)
+
+		table.insert(inst.components.hullhealth.leak_indicators_dynamic, leak)
+
+		if inst.components.walkableplatform ~= nil then
+	        for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+	            if v:IsValid() then
+	                v:PushEvent("on_standing_on_new_leak")
+	            end
+	        end
+		end
+
+		if data.playsoundfx then
+			inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = 0.8 })
+		end
+	end
+end
+
 local function OnObjGotOnPlatform(inst, obj)    
     if obj == ThePlayer and inst.StartBoatCamera ~= nil then
 		inst:StartBoatCamera()
@@ -199,6 +223,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("ignorewalkableplatforms")
+	inst:AddTag("boat")
 
     local radius = 4
     local max_health = TUNING.BOAT.HEALTH
@@ -262,7 +287,9 @@ local function fn()
     inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
     inst.components.hull:SetBoatLip(SpawnPrefab('boatlip'))
-	inst.components.hull:AttachEntityToBoat(SpawnPrefab("boat_player_collision"), 0, 0)
+    local playercollision = SpawnPrefab("boat_player_collision")
+	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
+    playercollision.collisionboat = inst
 
     local walking_plank = SpawnPrefab("walkingplank")
     local edge_offset = -0.05
@@ -303,6 +330,8 @@ local function fn()
 	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, -2.5, true)
 	
     inst:SetStateGraph("SGboat")
+
+	inst:ListenForEvent("spawnnewboatleak", OnSpawnNewBoatLeak)
 
     return inst
 end
@@ -368,7 +397,7 @@ local function boat_player_collision_fn()
     phys:SetMass(0)
     phys:SetFriction(0)
     phys:SetDamping(5)
-    phys:SetCollisionGroup(COLLISION.LIMITS)
+    phys:SetCollisionGroup(COLLISION.BOAT_LIMITS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.WORLD)
@@ -399,7 +428,7 @@ local function boat_item_collision_fn()
     phys:SetMass(1000)
     phys:SetFriction(0)
     phys:SetDamping(5)
-    phys:SetCollisionGroup(COLLISION.LIMITS)
+    phys:SetCollisionGroup(COLLISION.BOAT_LIMITS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.FLYERS)

@@ -66,7 +66,10 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "Stupid fish. Get on my hook!!",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2724,6 +2727,7 @@ return{
         	GENERIC = "So toasty and warm!",
         	BOMBED = "The bombs are fun to throw in.",
         	GLASS = "Should we smash it up?",
+			EMPTY = "What's better than a hotspring? A fire pit!",
         },
         MOONGLASS = "What do we need glass for anyway?",
         MOONGLASS_ROCK = "That's a big chunk of glass!",
@@ -2828,6 +2832,25 @@ return{
 
 		GESTALT = "It feels like they're speaking inside my head!",
 
+		COOKIECUTTER = "Hey! What are you lookin' at?!",
+		COOKIECUTTERSHELL = "Ha, I stole its house.",
+		COOKIECUTTERHAT = "Matches my prickly personality.",
+		SALTSTACK =
+		{
+			GENERIC = "Huh. That's... weird.",
+			MINED_OUT = "Someone got all the salt already.",
+			GROWING = "Okay, hear me out... what if I tried burning it.",
+		},
+		SALTROCK = "I wonder if it's flammable.",
+		SALTBOX = "It'll keep my stuff from rotting, for a little while.",
+
+        MALBATROSS = "Uh... nice bird?",
+        MALBATROSS_FEATHER = "Ha! That thing was just a featherweight after all.",
+        MALBATROSS_BEAK = "Nasty.",
+        MAST_MALBATROSS_ITEM = "You can really make a sail out of anything.",
+        MAST_MALBATROSS = "Just think how much cooler it'd look if I set it on fire.",
+		MALBATROSS_FEATHERED_WEAVE = "That took way too much effort.",
+
         WALKINGPLANK = "So, who're we gonna make walk it?",
         OAR = "Rowing's dumb. Why don't we just use a sail?",
 		OAR_DRIFTWOOD = "Ugh. Can it be someone else's turn to row?",
@@ -2859,6 +2882,7 @@ return{
         SPICE_GARLIC = "Powdered stink.",
         SPICE_SUGAR = "It's like drinking candy.",
         SPICE_CHILI = "I like the way it sets my mouth on fire.",
+        SPICE_SALT = "People say I'M salty.",
         MONSTERTARTARE = "Gross!",
         FRESHFRUITCREPES = "Ooo la la.",
         FROGFISHBOWL = "Woah, that's a ton of frogs.",

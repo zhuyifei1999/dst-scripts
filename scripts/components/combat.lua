@@ -927,6 +927,7 @@ function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetag
             hitcount = hitcount + 1
         end
     end
+
     return hitcount
 end
 

@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/kiki_basic.zip"),
-    Asset("ANIM", "anim/kiki_build.zip"),
     Asset("ANIM", "anim/kiki_nightmare_skin.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
 }

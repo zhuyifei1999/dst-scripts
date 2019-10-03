@@ -24,6 +24,7 @@ local WAVE_SOUNDS = {
     ["summer"] = "dontstarve_DLC001/AMB/waves_summer",
 }
 local SANITY_SOUND = "dontstarve/sanity/sanity"
+local ENLIGHTENMENT_SOUND = "turnoftides/sanity/lunacy_LP"
 
 local AMBIENT_SOUNDS =
 {
@@ -60,7 +61,7 @@ local AMBIENT_SOUNDS =
 	[GROUND.OCEAN_COASTAL] =       { sound = "turnoftides/together_amb/ocean/shallow", rainsound = "turnoftides/together_amb/ocean/shallow_rain" },
 	[GROUND.OCEAN_SWELL] =         { sound = "turnoftides/together_amb/ocean/shallow", rainsound = "turnoftides/together_amb/ocean/shallow_rain" },
 	[GROUND.OCEAN_ROUGH] =         { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
-	[GROUND.OCEAN_REEF] =          { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
+	[GROUND.OCEAN_BRINEPOOL] =     { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
 	[GROUND.OCEAN_HAZARDOUS] =     { sound = "turnoftides/together_amb/ocean/deep",    rainsound = "turnoftides/together_amb/ocean/deep_rain" },
 
     [GROUND.LAVAARENA_FLOOR] = { sound = "dontstarve/AMB/lava_arena/arena_day" },
@@ -113,6 +114,7 @@ local _heavyrainmix = false
 local _lastplayerpos = nil
 local _daytimeparam = 1
 local _sanityparam = 0
+local _enlightparam = 0
 local _soundvolumes = {}
 local _wavesenabled = not inst:HasTag("cave")
 local _wavessound = WAVE_SOUNDS[_seasonmix]
@@ -214,6 +216,14 @@ self:SetReverbPreset("default")
 --[[ Wrapper function for calls into actual sound system ]]
 --------------------------------------------------------------------------
 
+local function StartEnlightenmentSound()
+    inst.SoundEmitter:PlaySound(ENLIGHTENMENT_SOUND, "ENLIGHT")
+end
+
+local function SetEnlightenment(sanity)
+    inst.SoundEmitter:SetParameter("ENLIGHT", "sanity", sanity)
+end
+
 local function StartSanitySound()
 	inst.SoundEmitter:PlaySound(SANITY_SOUND, "SANITY")
 end
@@ -236,6 +246,8 @@ end
 
 StartSanitySound()
 SetSanity(_sanityparam)
+StartEnlightenmentSound()
+SetEnlightenment(_enlightparam)
 
 inst:StartUpdatingComponent(self)
 
@@ -377,6 +389,7 @@ function self:OnUpdate(dt)
     end
 
     local sanity = player ~= nil and player.replica.sanity or nil
+
     local sanityparam = (sanity ~= nil and sanity:IsInsanityMode()) and (1 - sanity:GetPercent()) or 0
     if player ~= nil and player:HasTag("dappereffects") then
         sanityparam = sanityparam * sanityparam
@@ -385,6 +398,15 @@ function self:OnUpdate(dt)
 		SetSanity(sanityparam)
         _sanityparam = sanityparam
     end
+
+    local enlightparam = (sanity ~= nil and sanity:IsLunacyMode()) and (sanity:GetPercent()) or 0
+    if player ~= nil and player:HasTag("dappereffects") then
+        enlightparam = enlightparam * enlightparam
+    end
+    if _enlightparam ~= enlightparam then
+        SetEnlightenment(enlightparam)
+        _enlightparam = enlightparam
+    end    
 end
 
 --------------------------------------------------------------------------

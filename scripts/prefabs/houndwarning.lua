@@ -11,7 +11,7 @@ local WARNING_LEVEL_DISTANCE =
 local function PlayWarningSound(inst, radius)
     
     inst.entity:SetParent(TheFocalPoint.entity)
-
+    
     --Everyone gets their own hounds and therefore their own warnings
     local theta = math.random() * 2 * PI
 
@@ -29,7 +29,7 @@ local function makewarning(distance)
 
         inst:AddTag("FX")
 
-        inst:DoTaskInTime(0, function() 
+		inst:DoTaskInTime(0, function() 
             PlayWarningSound(inst, distance)
         end)
 

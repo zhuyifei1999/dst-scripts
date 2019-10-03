@@ -75,7 +75,10 @@ return {
 			INUSE = "only_used_by_warly",
 			NOTEMPTY = "only_used_by_warly",
         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "This rod wasn't made for deep sea fishing.",
+		},
         --wickerbottom specific action
         READ =
         {
@@ -2726,6 +2729,7 @@ return {
         	GENERIC = "If only I could soak my weary bones.",
         	BOMBED = "Just a simple chemical reaction.",
         	GLASS = "Water turns to glass under the moon. That's just science.",
+			EMPTY = "I'll just have to wait for it to fill up again.",
         },
         MOONGLASS = "It's very sharp.",
         MOONGLASS_ROCK = "I can practically see my reflection in it.",
@@ -2830,6 +2834,25 @@ return {
 
 		GESTALT = "They're promising me... knowledge.",
 
+		COOKIECUTTER = "I don't like the way it's looking at my boat...",
+		COOKIECUTTERSHELL = "A shell of its former self.",
+		COOKIECUTTERHAT = "At least my hair will stay dry.",
+		SALTSTACK =
+		{
+			GENERIC = "Are those natural formations?",
+			MINED_OUT = "It's mined... it's all mined!",
+			GROWING = "I guess it just grows like that.",
+		},
+		SALTROCK = "Science compels me to lick it.",
+		SALTBOX = "Just the cure for spoiling food!",
+
+        MALBATROSS = "A fowl beast indeed!",
+        MALBATROSS_FEATHER = "Plucked from a fine feathered fiend.",
+        MALBATROSS_BEAK = "Smells fishy.",
+        MAST_MALBATROSS_ITEM = "It's lighter than it looks.",
+        MAST_MALBATROSS = "Spread my wings and sail away!",
+		MALBATROSS_FEATHERED_WEAVE = "I'm making a quill-t!",
+
         WALKINGPLANK = "Couldn't we have just made a lifeboat?",
         OAR = "Manual ship acceleration.",
 		OAR_DRIFTWOOD = "Manual ship acceleration.",
@@ -2839,16 +2862,14 @@ return {
         --Wortox
         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
-        --v2 Warly
         PORTABLECOOKPOT_ITEM =
         {
             GENERIC = "Now we're cookin'!",
             DONE = "Now we're done cookin'!",
 
-            --Warly specific PORTABLECOOKPOT_ITEM strings
-			COOKING_LONG = "only_used_by_warly",
-			COOKING_SHORT = "only_used_by_warly",
-			EMPTY = "only_used_by_warly",
+			COOKING_LONG = "That meal is going to take a while.",
+			COOKING_SHORT = "It'll be ready in no-time!",
+			EMPTY = "I bet there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "It mixes all the food.",
@@ -2861,6 +2882,7 @@ return {
         SPICE_GARLIC = "A powerfully potent powder.",
         SPICE_SUGAR = "Sweet! It's sweet!",
         SPICE_CHILI = "A flagon of fiery fluid.",
+        SPICE_SALT = "A little sodium's good for the heart.",
         MONSTERTARTARE = "There's got to be something else to eat around here.",
         FRESHFRUITCREPES = "Sugary fruit! Part of a balanced breakfast.",
         FROGFISHBOWL = "Is that just... frogs stuffed inside a fish?",

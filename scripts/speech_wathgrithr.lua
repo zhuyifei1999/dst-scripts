@@ -66,7 +66,10 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "Come closer, ye wee fishy cowards!",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -582,7 +585,7 @@ return{
             GHOST = "The worldtree watches over you, %s.",
             BEAVER = "I did not know %s possessed such power!",
             BEAVERGHOST = "You went out in a blaze of glory, %s.",
-            MOOSE = "By the gods, I mistook you for a jÃ¶tunn!",
+            MOOSE = "By the gods, I mistook you for a jötunn!",
             MOOSEGHOST = "Never fear, I'll return you to this realm!",
             GOOSE = "%s, you've become a fowl beast!",
             GOOSEGHOST = "Worry not, I won't let you leave for Valhalla looking like that!",
@@ -2717,6 +2720,7 @@ return{
         	GENERIC = "Perhaps a fire giant slumbers beneath!",
         	BOMBED = "'Tis imbued with the power of the moon!",
         	GLASS = "Oh no! The giant is trapped!",
+			EMPTY = "Odd, I do not see the fire giant...",
         },
         MOONGLASS = "Tis a most divine substance.",
         MOONGLASS_ROCK = "Mani sent it down himself.",
@@ -2821,6 +2825,25 @@ return{
 
 		GESTALT = "Goddess of the moon, shine thy smile upon me!",
 
+		COOKIECUTTER = "It seeks to make a meal of my vessel!",
+		COOKIECUTTERSHELL = "Twas a spiky foe.",
+		COOKIECUTTERHAT = "Tis a helm fit for a warrior of the deep.",
+		SALTSTACK =
+		{
+			GENERIC = "Tis the form of a sea nymph!",
+			MINED_OUT = "Naught but a stump!",
+			GROWING = "Formed as if by Odin's hand!",
+		},
+		SALTROCK = "It hath a strange shape to it.",
+		SALTBOX = "A fine place to store meats!",
+
+        MALBATROSS = "I will slay the four-winged beast!",
+        MALBATROSS_FEATHER = "The plume of a fallen foe.",
+        MALBATROSS_BEAK = "A trophy from my victory!",
+        MAST_MALBATROSS_ITEM = "A winged sail for my vessel.",
+        MAST_MALBATROSS = "Let us be off, with the speed of the Valkyrie!",
+		MALBATROSS_FEATHERED_WEAVE = "A bolt of thine finest bird-cloth!",
+
         WALKINGPLANK = "I shall never abandon my vessel!",
         OAR = "The Norseman's way to sail!",
 		OAR_DRIFTWOOD = "Back to the sea!",
@@ -2852,7 +2875,10 @@ return{
         SPICE_GARLIC = "Its pungent smell offends mine nostrils.",
         SPICE_SUGAR = "The sweet juice of an enemy.",
         SPICE_CHILI = "Full of a fiery extract.",
+        SPICE_SALT = "It has the briny taste of the sea.",
         MONSTERTARTARE = "Still quivering.",
+        SPICE_SALT = "PLACEHOLDER",
+        SPICEPACK = "I'll use this to carry delicious meats!",
         FRESHFRUITCREPES = "So light and airy!",
         FROGFISHBOWL = "My ally is a god among men.",
         POTATOTORNADO = "Blech.",

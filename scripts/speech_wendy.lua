@@ -66,7 +66,10 @@ return{
 --fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
 --fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
 --fallback to speech_wilson.lua         },
-        
+        FISH_OCEAN =
+		{
+			TOODEEP = "I can't catch anything out here with this flimsy rod.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -2717,6 +2720,7 @@ return{
         	GENERIC = "When I gaze upon my reflection, a ghost stares back at me.",
         	BOMBED = "I don't see how this helped.",
         	GLASS = "The top is solid glass.",
+			EMPTY = "Nothing left for me here...",
         },
         MOONGLASS = "Its sharp edge would end this quickly.",
         MOONGLASS_ROCK = "What a sickly color.",
@@ -2821,6 +2825,25 @@ return{
 
 		GESTALT = "I can feel their fear and loneliness.",
 
+		COOKIECUTTER = "Their faces are twisted with hunger.",
+		COOKIECUTTERSHELL = "All that remains of its former occupant.",
+		COOKIECUTTERHAT = "I'm protected, but at what cost to my dignity.",
+		SALTSTACK =
+		{
+			GENERIC = "Those figures can't be natural.",
+			MINED_OUT = "It's been utterly destroyed.",
+			GROWING = "The cycle begins anew.",
+		},
+		SALTROCK = "Almost as salty as my bitter tears.",
+		SALTBOX = "It'll only prolong the inevitable.",
+
+        MALBATROSS = "What a horrid bird!",
+        MALBATROSS_FEATHER = "It won't be needing these anymore.",
+        MALBATROSS_BEAK = "How gruesome.",
+        MAST_MALBATROSS_ITEM = "That's alright, I can manage it.",
+        MAST_MALBATROSS = "Fly me away from this place.",
+		MALBATROSS_FEATHERED_WEAVE = "My fingers ache from sewing in all those feathers.",
+
         WALKINGPLANK = "That would be too easy.",
         OAR = "I'd prefer to be stranded at sea.",
 		OAR_DRIFTWOOD = "Just when it thought it had escaped the ocean...",
@@ -2852,6 +2875,7 @@ return{
         SPICE_GARLIC = "It's smell is good for keeping people at a distance.",
         SPICE_SUGAR = "Not as sweet as Abigail.",
         SPICE_CHILI = "Full of more vitality than I'm used to.",
+        SPICE_SALT = "For rubbing into wounds.",
         MONSTERTARTARE = "Looks good, tastes horrible.",
         FRESHFRUITCREPES = "Could I get this a la mode?",
         FROGFISHBOWL = "It's actually... really good...",

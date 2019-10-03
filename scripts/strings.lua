@@ -343,6 +343,7 @@ STRINGS =
         NET = "Catch",
         CATCH = "Catch",
         FISH = "Fish",
+		FISH_OCEAN = "Fish",
         REEL =
         {
             GENERIC = "Hook",
@@ -477,6 +478,11 @@ STRINGS =
         },
         DISMANTLE = "Dismantle",
         TACKLE = "Charge",
+		APPLYPRESERVATIVE =
+		{
+			GENERIC = "Preserve",
+			SALT = "Preserve",
+		},
 
         --Quagmire
         TILL = "Till",
@@ -502,7 +508,6 @@ STRINGS =
             GENERIC = "Change Plating",
             FMT = "Change {dish}",
         },
-        SALT = "Salt",
         RAISE_SAIL = "Release Sail",
         LOWER_SAIL = "Hoist Sail",
         LOWER_SAIL_BOOST = 
@@ -526,9 +531,6 @@ STRINGS =
         ROW_CONTROLLER = "Row",
         CAST_NET = "Cast Net",
         BATHBOMB = "Toss In",
-		OCEAN_FISHING_CAST = "Cast",
-		OCEAN_FISHING_REEL = "Reel",
-		OCEAN_FISHING_CATCH = "Reel",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -2030,9 +2032,11 @@ STRINGS =
         SPICE_GARLIC = "Garlic Powder",
         SPICE_SUGAR = "Honey Crystals",
         SPICE_CHILI = "Chili Flakes",
+        SPICE_SALT = "Salt Crystals",
         SPICE_GARLIC_FOOD = "Garlic {food}",
         SPICE_SUGAR_FOOD = "Sweet {food}",
         SPICE_CHILI_FOOD = "Spicy {food}",
+        SPICE_SALT_FOOD = "Salty {food}",
         MONSTERTARTARE = "Monster Tartare",
         FRESHFRUITCREPES = "Fresh Fruit Crepes",
         FROGFISHBOWL = "Fish Cordon Bleu",
@@ -2145,10 +2149,25 @@ STRINGS =
         CARRAT = "Carrat",
         CARRAT_PLANTED = "Carrot",
 
+		OCEANFISH_MEDIUM_4 = "Deep Ocean Fish",
+
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
 		WATERCHEST = "Chest",
         WATER_TURTLE = "Sea Tutrle",
-    },
+		COOKIECUTTER = "Cookie Cutter",
+		COOKIECUTTERSHELL = "Cookie Cutter Shell",
+		COOKIECUTTERHAT = "Cookie Cutter Cap",
+		SALTSTACK = "Salt Formation",
+		SALTROCK = "Salt Crystals",
+		SALTBOX = "Salt Box",
+
+        MALBATROSS = "Malbatross",
+        MALBATROSS_BEAK = "Malbatross Bill",
+        MALBATROSS_FEATHER = "Malbatross Feather",
+        MAST_MALBATROSS = "Winged Sail",
+        MAST_MALBATROSS_ITEM = "Winged Sail", 
+		MALBATROSS_FEATHERED_WEAVE = "Feathery Canvas",
+	},
 
     NAME_DETAIL_EXTENTION =
     {
@@ -2562,6 +2581,7 @@ STRINGS =
         SPICE_GARLIC = "The best offense is defensive halitosis.",
         SPICE_SUGAR = "A dash of sweetness for peace of mind.",
         SPICE_CHILI = "Spicy flakes that pack a punch.",
+        SPICE_SALT = "A salty addition for a hearty meal.",
 
         --v2 Woodie
         WEREITEM_BEAVER = "Invokes the curse of the Werebeaver.",
@@ -2576,6 +2596,11 @@ STRINGS =
         OAR = "Row, row, row your boat.",
         OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
         BOATPATCH = "It's never too late to patch things up.",
+		COOKIECUTTERHAT = "One must always be sharply dressed.",
+		SALTBOX = "Salty storage for your foodstuffs.",
+
+        MAST_MALBATROSS_ITEM = "Sail like a seabird into the blue.",
+		MALBATROSS_FEATHERED_WEAVE = "A fine feathered fabric.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

@@ -64,7 +64,9 @@ local function Update(inst, dt)
         end
 
 		if owner then
-			if owner:HasTag("fridge") then
+			if owner.components.preserver ~= nil then
+				modifier = owner.components.preserver:GetPerishRateMultiplier()
+			elseif owner:HasTag("fridge") then
 				if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
 					modifier = TUNING.PERISH_COLD_FROZEN_MULT
 				else

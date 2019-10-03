@@ -182,20 +182,35 @@ end
 
 require "prefabs/telebase"
 
-local function getrandomposition(caster)
-    local ground = TheWorld
-    local centers = {}
-    for i, node in ipairs(ground.topology.nodes) do
-        if ground.Map:IsPassableAtPoint(node.x, 0, node.y) and node.type ~= NODE_TYPE.SeparatedRoom then
-            table.insert(centers, {x = node.x, z = node.y})
-        end
-    end
-    if #centers > 0 then
-        local pos = centers[math.random(#centers)]
-        return Point(pos.x, 0, pos.z)
-    else
-        return caster:GetPosition()
-    end
+local function getrandomposition(caster, teleportee, target_in_ocean)
+	if target_in_ocean then
+		local pt = TheWorld.Map:FindRandomPointInOcean(20)
+		if pt ~= nil then
+			return pt
+		end
+		local from_pt = teleportee:GetPosition()
+		local offset = FindSwimmableOffset(from_pt, math.random() * 2 * PI, 90, 16)
+						or FindSwimmableOffset(from_pt, math.random() * 2 * PI, 60, 16)
+						or FindSwimmableOffset(from_pt, math.random() * 2 * PI, 30, 16)
+						or FindSwimmableOffset(from_pt, math.random() * 2 * PI, 15, 16)
+		if offset ~= nil then
+			return from_pt + offset
+		end
+		return teleportee:GetPosition()
+	else
+		local centers = {}
+		for i, node in ipairs(TheWorld.topology.nodes) do
+			if TheWorld.Map:IsPassableAtPoint(node.x, 0, node.y) and node.type ~= NODE_TYPE.SeparatedRoom then
+				table.insert(centers, {x = node.x, z = node.y})
+			end
+		end
+		if #centers > 0 then
+			local pos = centers[math.random(#centers)]
+			return Point(pos.x, 0, pos.z)
+		else
+			return caster:GetPosition()
+		end
+	end
 end
 
 local function teleport_end(teleportee, locpos, loctarget)
@@ -253,11 +268,11 @@ local function teleport_continue(teleportee, locpos, loctarget)
     end
 end
 
-local function teleport_start(teleportee, staff, caster, loctarget)
+local function teleport_start(teleportee, staff, caster, loctarget, target_in_ocean)
     local ground = TheWorld
 
     --V2C: Gotta do this RIGHT AWAY in case anything happens to loctarget or caster
-    local locpos = loctarget == nil and getrandomposition(caster)
+    local locpos = loctarget == nil and getrandomposition(caster, teleportee, target_in_ocean)
 				or loctarget.teletopos ~= nil and loctarget:teletopos()
 				or loctarget:GetPosition() 
 
@@ -318,9 +333,15 @@ local function teleport_func(inst, target)
     if target == nil then
         target = caster
     end
+
     local x, y, z = target.Transform:GetWorldPosition()
-    local loctarget = target.components.minigame_participator ~= nil and target.components.minigame_participator:GetMinigame() or FindNearestActiveTelebase(x, y, z, nil, 1)
-    teleport_start(target, inst, caster, loctarget)
+	local target_in_ocean = target.components.locomotor ~= nil and target.components.locomotor:IsAquatic()
+
+	local loctarget = nil
+	if not target_in_ocean then
+		loctarget = target.components.minigame_participator ~= nil and target.components.minigame_participator:GetMinigame() or FindNearestActiveTelebase(x, y, z, nil, 1)
+	end
+    teleport_start(target, inst, caster, loctarget, target_in_ocean)
 end
 
 local function onhauntpurple(inst)

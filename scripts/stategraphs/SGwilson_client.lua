@@ -405,11 +405,13 @@ local actionhandlers =
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
+	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
 }
 
 local events =
 {
     EventHandler("locomote", function(inst)
+
         if (inst.sg:HasStateTag("busy") or inst:HasTag("busy")) and (inst:HasTag("jumping") and inst.sg:HasStateTag("jumping")) then
             return
         end

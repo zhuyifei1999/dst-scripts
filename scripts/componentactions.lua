@@ -2,10 +2,10 @@ require 'util'
 require 'vecutil'
 
 local function CanCastFishingNetAtPoint(thrower, target_x, target_z)
-    local map = TheWorld.Map
     local min_throw_distance = 2
     local thrower_x, thrower_y, thrower_z = thrower.Transform:GetWorldPosition()
-    if not map:IsPassableAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
+	
+    if TheWorld.Map:IsOceanAtPoint(target_x, 0, target_z) and VecUtil_LengthSq(target_x - thrower_x, target_z - thrower_z) > min_throw_distance * min_throw_distance then
         return true
     end
 	return false
@@ -742,6 +742,15 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        preservative = function(inst, doer, target, actions, right)
+			if right and target.replica.health == nil
+				and (target:HasTag("fresh") or target:HasTag("stale") or target:HasTag("spoiled"))
+				and target:HasTag("cookable")
+				and not target:HasTag("deployable") then
+					table.insert(actions, ACTIONS.APPLYPRESERVATIVE)
+			end
+        end,
+
         repairer = function(inst, doer, target, actions, right)
             if right then
                 if doer.replica.rider ~= nil and doer.replica.rider:IsRiding() then
@@ -1006,6 +1015,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        fishingrod = function(inst, doer, pos, actions, right)
+			if right and CanCastFishingNetAtPoint(doer, pos.x, pos.z) then
+				table.insert(actions, ACTIONS.FISH_OCEAN)
+			end
+        end,
+
         inventoryitem = function(inst, doer, pos, actions, right)
             if not right and inst.replica.inventoryitem:IsHeldBy(doer) then
                 table.insert(actions, ACTIONS.DROP)
@@ -1068,7 +1083,7 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        fishingrod = function(inst, doer, target, actions)
+        fishingrod = function(inst, doer, target, actions, right)
             if target:HasTag("fishable") and not inst.replica.fishingrod:HasCaughtFish() then
                 if target ~= inst.replica.fishingrod:GetTarget() then
                     table.insert(actions, ACTIONS.FISH)
