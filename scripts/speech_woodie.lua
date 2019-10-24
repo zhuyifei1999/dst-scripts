@@ -369,6 +369,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "You see that, Lucy?",
 	ANNOUNCE_BRAVERY_POTION = "Glad that's over. Never thought I'd be scared of trees.",
+	ANNOUNCE_MOONPOTION_FAILED = "Consider yourself lucky, eh?",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You fell like a tree, eh?",
@@ -451,6 +452,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "That's enough hustlin' around for now.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I can feel the dampness creepin' back in.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -2161,6 +2167,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Not bad.",
 		HALLOWEENPOTION_DRINKS_POTENT = "That's a lot, eh.",
         HALLOWEENPOTION_BRAVERY = "A good hardy drink.",
+		HALLOWEENPOTION_MOON = "Not sure I need any more tranformin' in my life.",
 		HALLOWEENPOTION_FIRE_FX = "It'll never replace a good hunk of wood.", 
 		MADSCIENCE_LAB = "I prefer simpler things.",
 		LIVINGTREE_ROOT = "Hey there's a piece of wood in there.", 
@@ -2859,9 +2866,9 @@ return{
             GENERIC = "Sure makes the camp smell nice.",
             DONE = "Well, should we eat?",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "Better settle in, this could take a while.",
+			COOKING_SHORT = "One meal comin' right up!",
+			EMPTY = "Nothing sadder than an empty crockpot.",
         },
         
         PORTABLEBLENDER_ITEM = "Chops up food pretty good.",
@@ -2924,8 +2931,24 @@ return{
         PEPPER_SEEDS = "I should plant this.",
 
         WEREITEM_BEAVER = "Think I'm finally getting the hang of this, eh Lucy?",
-        WEREITEM_GOOSE = "What's good for the goose is good for the woodsman!",
+        WEREITEM_GOOSE = "If you can't beat 'em, join 'em.",
         WEREITEM_MOOSE = "Not bad, if I do say so mooself.",
+
+        MERMHAT = "Not sure it'll fit over my luxurious beard.",
+        MERMTHRONE = "I'm from a Commonwealth, myself.",
+        MERMTHRONE_CONSTRUCTION = "You look like you've got this under control.",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Reminds me of the first house we built, eh Lucy?",
+            BURNT = "What a shame.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "They seem chipper, eh?",
+        MERMWATCHTOWER_NOKING = "Feels like they're waiting for something.",
+        MERMKING = "He's got a pretty impressive beard.",
+        MERMGUARD = "They stand on guard for the king.",
+        MERM_PRINCE = "This guy's really the best you got, eh?",
+
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

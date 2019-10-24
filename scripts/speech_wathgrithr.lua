@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Doth mine eyes deceive me?",
 	ANNOUNCE_BRAVERY_POTION = "Fear! I hath bested you!",
+	ANNOUNCE_MOONPOTION_FAILED = "Twas all in vain!",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Rise, my ally!",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I think I've done my share.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "The tides have turned for the wetter.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Valhalla awaits!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "A meager reward for my troubles.",
 		HALLOWEENPOTION_DRINKS_POTENT = "Fortune hath smiled upon me today!",
         HALLOWEENPOTION_BRAVERY = "Tis Berserker magic.",
+		HALLOWEENPOTION_MOON = "Changeling elixir.",
 		HALLOWEENPOTION_FIRE_FX = "Hel's fuel.", 
 		MADSCIENCE_LAB = "Be there method to this madness?",
 		LIVINGTREE_ROOT = "I hath birthed the root of terror!", 
@@ -2858,9 +2865,9 @@ return{
             GENERIC = "Cooking, a noble profession.",
             DONE = "Is there meat to be consumed?",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "My belly rumbles... make haste, cookpot!",
+			COOKING_SHORT = "This will be done swiftly!",
+			EMPTY = "Not even a morsel left inside...",
         },
         
         PORTABLEBLENDER_ITEM = "It does battle with food.",
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "Is this meant to summon your fylgja?",
         WEREITEM_GOOSE = "It's... er... very fearsome!",
         WEREITEM_MOOSE = "It represents a warrior's spirit!",
+
+        MERMHAT = "Tis a deceitful mask.",
+        MERMTHRONE = "Have you chosen a chieftain?",
+        MERMTHRONE_CONSTRUCTION = "The little beast toils away.",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "A home fit for a fish beast.",
+            BURNT = "Tis the way of things.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Tis a fine fortress for a fish beast.",
+        MERMWATCHTOWER_NOKING = "They are lost without their chieftain.",
+        MERMKING = "Lord of the fish beasts!",
+        MERMGUARD = "A formidable warrior, to be sure.",
+        MERM_PRINCE = "Thou art certain he is fit to be leader?",
+
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

@@ -1,6 +1,6 @@
 require "tuning"
 
-local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable, secondary_foodtype)
+local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable, secondary_foodtype, halloweenmoonmutable_settings)
     return {
         health = health,
         hunger = hunger,
@@ -14,6 +14,7 @@ local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, coo
         float_settings = float_settings,
         cooked_float_settings = cooked_float_settings,
 		dryable = dryable,
+		halloweenmoonmutable_settings = halloweenmoonmutable_settings,
 		secondary_foodtype = secondary_foodtype,
     }
 end
@@ -38,7 +39,10 @@ VEGGIES =
 
     carrot = MakeVegStats(COMMON,   TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,    TUNING.PERISH_MED, 0,
                                     TUNING.CALORIES_SMALL,  TUNING.HEALING_SMALL,   TUNING.PERISH_FAST, 0,
-                                    {"med", 0.05, 0.8},    {"small", 0.1, nil}),
+                                    {"med", 0.05, 0.8},    {"small", 0.1, nil},
+									nil,
+									nil,
+									{prefab = "carrat"}),
 
     corn = MakeVegStats(COMMON, TUNING.CALORIES_MED,    TUNING.HEALING_SMALL,   TUNING.PERISH_MED, 0,
                                 TUNING.CALORIES_SMALL,  TUNING.HEALING_SMALL,   TUNING.PERISH_SLOW, 0),
@@ -59,7 +63,12 @@ VEGGIES =
     
     dragonfruit = MakeVegStats(RARE,    TUNING.CALORIES_TINY,   TUNING.HEALING_SMALL,       TUNING.PERISH_FAST, 0,
                                         TUNING.CALORIES_SMALL,  TUNING.HEALING_MED, TUNING.PERISH_SUPERFAST, 0,
-                                        {"small", 0.1, 0.8},    {"small", 0.05, nil}),
+                                        {"small", 0.1, 0.8},    {"small", 0.05, nil},
+										nil,
+										nil,
+										{prefab = "fruitdragon", onmutatefn = function(inst, new_inst)
+											new_inst:MakeRipe(true)
+										end}),
 
     berries = MakeVegStats(0,   TUNING.CALORIES_TINY,   0,  TUNING.PERISH_FAST, 0,
                                 TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,    TUNING.PERISH_SUPERFAST, 0,
@@ -67,7 +76,7 @@ VEGGIES =
 								nil,
 								FOODTYPE.BERRY),
 
-    berries_juicy = MakeVegStats(0,  TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
+    berries_juicy = MakeVegStats(0,   TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
                                      TUNING.CALORIES_MEDSMALL,  TUNING.HEALING_SMALL,    TUNING.PERISH_ONE_DAY, 0,
                                      {"med", nil, 0.7}, nil,
 									 nil,
@@ -325,6 +334,20 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("cookable")
         inst.components.cookable.product = name.."_cooked"
+
+		local halloweenmoonmutable_settings = VEGGIES[name].halloweenmoonmutable_settings
+		if halloweenmoonmutable_settings ~= nil then
+			inst:AddComponent("halloweenmoonmutable")
+			inst.components.halloweenmoonmutable:SetPrefabMutated(halloweenmoonmutable_settings.prefab)
+			inst.components.halloweenmoonmutable:SetOnMutateFn(halloweenmoonmutable_settings.onmutatefn)
+
+			if halloweenmoonmutable_settings.postmutatestate ~= nil then
+				inst.components.halloweenmoonmutable:SetPostMutateStateOverride(
+					halloweenmoonmutable_settings.postmutatestate.should_override,
+					halloweenmoonmutable_settings.postmutatestate.state
+				)
+			end
+		end
 
         if TheNet:GetServerGameMode() == "quagmire" then
             event_server_data("quagmire", "prefabs/veggies").master_postinit(inst)

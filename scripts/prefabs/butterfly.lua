@@ -176,6 +176,10 @@ local function fn()
 
     MakeFeedableSmallLivestock(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
 
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly")
+	inst.components.halloweenmoonmutable:SetPostMutateStateOverride(true, "idle")
+
     return inst
 end
 

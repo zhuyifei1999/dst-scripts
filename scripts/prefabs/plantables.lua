@@ -80,6 +80,11 @@ local function make_plantable(data)
             inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
         end
 
+		if data.halloweenmoonmutable_settings ~= nil then
+			inst:AddComponent("halloweenmoonmutable")
+			inst.components.halloweenmoonmutable:SetPrefabMutated(data.halloweenmoonmutable_settings.prefab)
+		end
+
         ---------------------
         return inst
     end
@@ -110,6 +115,7 @@ local plantables =
         name = "sapling",
         mediumspacing = true,
         floater = {"large", 0.1, 0.55},
+		halloweenmoonmutable_settings = {prefab = "dug_sapling_moon"},
     },
     {
         name = "sapling_moon",

@@ -153,6 +153,10 @@ function Drownable:GiveupAndDrown()
 end
 
 function Drownable:DropInventory()
+	if self.inst:HasTag("stronggrip") then
+		return
+	end
+
 	local inv = self.inst.components.inventory
 	if inv ~= nil then
 		local to_drop = shuffledKeys(inv.itemslots)

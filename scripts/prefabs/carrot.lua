@@ -45,6 +45,9 @@ local function fn()
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("carrat_planted")
+
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 

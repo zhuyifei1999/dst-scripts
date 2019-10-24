@@ -322,6 +322,7 @@ DST_CHARACTERLIST =
     --DLC chars:
     "wortox",
     "wormwood",
+    "wurt"
 }
 
 require("prefabskins")
@@ -396,6 +397,7 @@ CHARACTER_GENDERS =
         "wickerbottom",
         "wathgrithr",
         "winona",
+        "wurt",
     },
     MALE =
     {
@@ -570,7 +572,7 @@ SPECIAL_EVENTS =
     YOTV = "year_of_the_varg",
     YOTP = "year_of_the_pig",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
 
 FESTIVAL_EVENTS =
 {
@@ -1262,6 +1264,7 @@ CHARACTER_COLOURS =
     --DLC chars:
     wortox       = WEBCOLOURS.RED, --VITO do something here
     wormwood     = WEBCOLOURS.RED, --VITO do something here
+    wurt         = WEBCOLOURS.RED, --VITO do something here
     --
     default      = WEBCOLOURS.THISTLE,
 }
@@ -1428,6 +1431,7 @@ FOODGROUP =
             FOODTYPE.GOODIES,
         },
     },
+
     BERRIES_AND_SEEDS =
     {
         name = "BERRIES_AND_SEEDS",
@@ -1437,6 +1441,7 @@ FOODGROUP =
             FOODTYPE.BERRY,
         },
     },
+
     BEARGER =
     {
         name = "BEARGER",
@@ -1448,6 +1453,7 @@ FOODGROUP =
             FOODTYPE.GENERIC,
         },
     },
+
     MOOSE =
     {
         name = "MOOSE",
@@ -1456,6 +1462,18 @@ FOODGROUP =
             FOODTYPE.MEAT,
             FOODTYPE.VEGGIE,
             FOODTYPE.SEEDS,
+        },
+    },
+
+    VEGETARIAN = 
+    {
+        name = "VEGETARIAN",
+        types = 
+        {
+            FOODTYPE.VEGGIE,
+            FOODTYPE.SEEDS,
+            FOODTYPE.GENERIC,
+            FOODTYPE.GOODIES,
         },
     },
 }
@@ -1744,8 +1762,8 @@ SERVER_LEVEL_LOCATIONS =
 
 EVENTSERVER_LEVEL_LOCATIONS =
 {
-	[LEVELTYPE.LAVAARENA] = "lavaarena",
-	[LEVELTYPE.QUAGMIRE] = "quagmire",
+	[LEVELTYPE.LAVAARENA] = { "lavaarena" },
+	[LEVELTYPE.QUAGMIRE] = { "quagmire" },
 }
 
 SERVER_LEVEL_CONFIGS =

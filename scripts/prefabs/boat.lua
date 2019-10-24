@@ -276,6 +276,26 @@ local function fn()
         inst:ListenForEvent("starsteeringreticule", function(inst,data) if ThePlayer and ThePlayer == data.player then inst:on_start_steering() end end)
 
         inst:AddComponent("boattrail")
+
+        local THRESHOLD = 0.2
+        inst:DoPeriodicTask(0.5,function()
+            local pos = Vector3(inst.Transform:GetWorldPosition())
+            if inst.oldpos then
+                local diff  = pos - inst.oldpos
+                local lengthsq = diff:LengthSq()
+                if lengthsq >= THRESHOLD and (not inst.oldspeed or inst.oldspeed < THRESHOLD) then
+                    local ents = inst.components.walkableplatform:GetEntitiesOnPlatform()
+                    for i,ent in ipairs(ents) do
+                        if ent == ThePlayer then
+                            ThePlayer:PushEvent("boatspedup")
+                        end
+                    end
+                end
+                inst.oldspeed = lengthsq
+            end
+            inst.oldpos = pos
+        end)      
+
 	end
 
 	inst.entity:SetPristine()

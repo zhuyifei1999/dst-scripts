@@ -321,6 +321,16 @@ function Inventory:Has(prefab, amount)
     end
 end
 
+function Inventory:HasItemWithTag(tag, amount)
+    if self.inst.components.inventory ~= nil then
+        return self.inst.components.inventory:HasItemWithTag(tag, amount)
+    elseif self.classified ~= nil then
+        return self.classified:HasItemWithTag(tag, amount)
+    else
+        return amount <= 0, 0
+    end
+end
+
 --------------------------------------------------------------------------
 --InvSlot click action handlers
 --------------------------------------------------------------------------

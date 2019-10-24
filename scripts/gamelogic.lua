@@ -415,14 +415,10 @@ local function PopulateWorld(savedata, profile)
         map:SetFromString(savedata.map.tiles)
         map:ResetVisited()
 
-		if savedata.retrofit_oceantiles then
-			savedata.retrofit_oceantiles = nil
-			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean...")
-			Ocean_SetWorldForOceanGen(TheWorld.Map)
-			Ocean_ConvertImpassibleToWater(savedata.map.width, savedata.map.height, require("map/ocean_gen_config"))
-			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean done")
-			require("map/ocean_retrofit_island").TurnOfTidesRetrofitting_MoonIsland(TheWorld.Map, savedata)
-		end
+		-- This happens after calling 'map:SetFromString' so that we can use the map API to read tile data instead of trying to read/write the save data tile stream
+		-- no objects have been spawned, so modifying savedata.ents is the correct thing to do
+		local retrofiting = require("map/retrofit_savedata")
+		retrofiting.DoRetrofitting(savedata, world.Map)
 
         if savedata.map.prefab == "cave" then
             TheFrontEnd:GetGraphicsOptions():DisableStencil()

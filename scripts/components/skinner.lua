@@ -29,6 +29,7 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 	if skintype == "normal_skin"
 	or skintype == "wimpy_skin" or skintype == "mighty_skin"
 	or skintype == "stage_2" or skintype == "stage_3" or skintype == "stage_4"
+	or skintype == "powerup"
 	or skintype == "NO_BASE" then
 
 		local needs_legacy_fixup = not anim_state:BuildHasSymbol( "torso_pelvis" ) --support clothing on legacy mod characters
@@ -94,6 +95,8 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 			local name = clothing_names[type]
 			if CLOTHING[name] ~= nil then
 				local src_symbols = nil
+				
+				--wolfgang
 				if skintype == "wimpy_skin" and CLOTHING[name].symbol_overrides_skinny then
 					src_symbols = CLOTHING[name].symbol_overrides_skinny
 					allow_arms = true
@@ -104,17 +107,21 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 					allow_arms = true
 					allow_torso = true
 				
+				--wormwood
 				elseif skintype == "stage_2" and CLOTHING[name].symbol_overrides_stage2 then
 					src_symbols = CLOTHING[name].symbol_overrides_stage2
 				elseif skintype == "stage_3" and CLOTHING[name].symbol_overrides_stage3 then
 					src_symbols = CLOTHING[name].symbol_overrides_stage3
 				elseif skintype == "stage_4" and CLOTHING[name].symbol_overrides_stage4 then
 					src_symbols = CLOTHING[name].symbol_overrides_stage4
+
+				--wurt
+				elseif skintype == "powerup" and CLOTHING[name].symbol_overrides_powerup then
+					src_symbols = CLOTHING[name].symbol_overrides_powerup
 				end
 
-
                 if type == "body" then
-                    --the last iterationw was the legs type, so check if the leg symbol was using the a boot, then we can assume it also set the foot
+                    --the last iteration was the legs type, so check if the leg symbol was using the a boot, then we can assume it also set the foot
                     local use_leg_boot = leg_build and CLOTHING[leg_build] and CLOTHING[leg_build].has_leg_boot
 	                if leg_build == foot_build and use_leg_boot then
 		                if table.contains(CLOTHING[name].symbol_overrides, "leg") then

@@ -181,14 +181,11 @@ local states=
             RemovePhysicsColliders(inst)            
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
         end,
-        
-        
-        events =
+          
+        timeline=
         {
-            EventHandler("animover", function(inst) 
-				inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentacle_splat")
-			end ),
-        },        
+            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentacle_splat") end),
+        },       
     },
     
         

@@ -284,6 +284,16 @@ function Container:Has(prefab, amount)
     end
 end
 
+function Container:HasItemWithTag(tag, amount)
+    if self.inst.components.container ~= nil then
+        return self.inst.components.container:HasTag(tag, amount)
+    elseif self.classified ~= nil then
+        return self.classified:HasItemWithTag(tag, amount)
+    else
+        return amount <= 0, 0
+    end
+end
+
 function Container:Open(doer)
     if self.inst.components.container ~= nil then
         if self.opentask ~= nil then

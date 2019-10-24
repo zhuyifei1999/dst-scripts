@@ -42,15 +42,24 @@ local EXPERIMENT_RESULTS =
         halloweenpotion_embers = 1,
         halloweenpotion_sparks = 1,
     },
+    halloween_experiment_moon =
+    {
+        halloweenpotion_moon = 1,
+    },
     halloween_experiment_root =
     {
         livingtree_root = 1,
     },
 }
 
+local NUM_TO_SPAWN =
+{
+	halloweenpotion_moon = { [1] = 0.5, [2] = 0.3, [3] = 0.2 },
+}
+
 for _, v in pairs(EXPERIMENT_RESULTS) do
     for k, _ in pairs(v) do
-        table.insert(prefabs, k)
+		table.insert(prefabs, k)
     end
 end
 
@@ -158,11 +167,16 @@ local function OnStageStarted(inst, stage)
 end
 
 local function OnScienceWasMade(inst, experiement_id)
-    local result = EXPERIMENT_RESULTS[experiement_id] ~= nil and weighted_random_choice(EXPERIMENT_RESULTS[experiement_id]) or nil
-    if result ~= nil then
-        local x, y, z = inst.Transform:GetWorldPosition()
-        LaunchAt(SpawnPrefab(result), inst, FindClosestPlayer(x, y, z, true), 1, 2.5, 1)
-    end
+	local result = EXPERIMENT_RESULTS[experiement_id] ~= nil and weighted_random_choice(EXPERIMENT_RESULTS[experiement_id]) or nil
+	if result ~= nil then
+		local weights = NUM_TO_SPAWN[result]
+		local num_to_spawn = weights ~= nil and weighted_random_choice(weights) or 1
+
+		local x, y, z = inst.Transform:GetWorldPosition()
+		for i=1,num_to_spawn do
+			LaunchAt(SpawnPrefab(result), inst, FindClosestPlayer(x, y, z, true), 1, 2.5, 1)
+		end
+	end
 
     PlayAnimation(inst, "cooking_finish")
     inst.SoundEmitter:KillSound("loop")

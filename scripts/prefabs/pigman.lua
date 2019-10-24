@@ -84,7 +84,9 @@ local function OnGetItemFromPlayer(inst, giver, item)
             ) then
             if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
-            elseif giver.components.leader ~= nil and not (inst:HasTag("guard") or giver:HasTag("monster")) then
+            elseif giver.components.leader ~= nil and not (inst:HasTag("guard") or giver:HasTag("monster") or 
+                   giver:HasTag("merm") or (giver.components.inventory and giver.components.inventory:EquipHasTag("merm")) ) then
+
 				if giver.components.minigame_participator == nil then
 	                giver:PushEvent("makefriend")
 	                giver.components.leader:AddFollower(inst)
@@ -201,6 +203,11 @@ local function NormalRetargetFn(inst)
 		table.insert(exclude_tags, "player") -- prevent spectators from auto-targeting webber
 	end
 
+    local must_tags = {"monster"}
+    if not inst.components.inventory:EquipHasTag("merm") then
+        table.insert(must_tags, "merm")
+    end
+
     return not inst:IsInLimbo()
         and FindEntity(
                 inst,
@@ -209,8 +216,9 @@ local function NormalRetargetFn(inst)
                     return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight())
                         and inst.components.combat:CanTarget(guy)
                 end,
-                { "monster", "_combat" }, -- see entityreplica.lua
-                exclude_tags
+                { "_combat" }, -- see entityreplica.lua
+                exclude_tags,
+                must_tags
             )
         or nil
 end
@@ -346,7 +354,13 @@ local function GuardRetargetFn(inst)
             end
         end
     end
-    return FindEntity(defenseTarget, defendDist, nil, { "monster" }, { "INLIMBO" })
+
+    local must_tags = {"monster"}
+    if not inst.components.inventory:EquipHasTag("merm") then
+        table.insert(must_tags, "merm")
+    end
+
+    return FindEntity(defenseTarget, defendDist, nil, {}, { "INLIMBO" }, must_tags)
 end
 
 local function GuardKeepTargetFn(inst, target)

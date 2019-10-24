@@ -15,27 +15,41 @@ local Talker = Class(function(self, inst)
     self.offset = nil
     self.offset_fn = nil
     self.disablefollowtext = nil
+    self.resolvechatterfn = nil
 end)
 
 function Talker:SetOffsetFn(fn)
     self.offset_fn = fn
 end
 
---"Chatter" functionality works together with ChattyNode and combat shouts, for NPC characters
+local function ResolveChatterString(self, strid, strtbl)
+    if self.resolvechatterfn then
+        return self.resolvechatterfn(self.inst, strid, strtbl)
+    end
 
+    local stringtable = STRINGS[strtbl:value()]
+    if stringtable ~= nil then
+        return stringtable[strid:value()]
+    end
+
+    return nil
+end
+
+--"Chatter" functionality works together with ChattyNode and combat shouts, for NPC characters
 local function OnChatterDirty(inst)
     local self = inst.components.talker
+
     if #self.chatter.strtbl:value() > 0 then
-        local stringtable = STRINGS[self.chatter.strtbl:value()]
-        if stringtable ~= nil then
-            local str = stringtable[self.chatter.strid:value()]
-            if str ~= nil then
-                local t = self.chatter.strtime:value()
-                self:Say(str, t > 0 and t or nil, self.chatter.forcetext:value(), self.chatter.forcetext:value(), true)
-                return
-            end
+
+        local str = ResolveChatterString(self, self.chatter.strid, self.chatter.strtbl)
+        
+        if str ~= nil then
+            local t = self.chatter.strtime:value()
+            self:Say(str, t > 0 and t or nil, self.chatter.forcetext:value(), self.chatter.forcetext:value(), true)
+            return
         end
     end
+    
     self:ShutUp()
 end
 

@@ -183,6 +183,7 @@ local function master_postinit(inst)
     inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
+    inst:AddComponent("mermkingmanager")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

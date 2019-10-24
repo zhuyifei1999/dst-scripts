@@ -175,7 +175,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
-    ActionHandler(ACTIONS.READ, "book"),
+    ActionHandler(ACTIONS.READ, 
+        function(inst) 
+            return inst:HasTag("aspiring_bookworm") and "book_peruse" or "book"
+        end),
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
@@ -375,6 +378,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
     ActionHandler(ACTIONS.DISMANTLE, "dolongaction"),
     ActionHandler(ACTIONS.TACKLE, "tackle_pre"),
+	ActionHandler(ACTIONS.HALLOWEENMOONMUTATE, "give"),
 
     --Quagmire
     ActionHandler(ACTIONS.TILL, "till_start"),
@@ -2079,6 +2083,41 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
+
+    State
+    {
+        name = "book_peruse",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
+
+            local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            if item ~= nil and item.components.aoetargeting ~= nil then
+                inst.sg:AddStateTag("busy")
+            end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },    
 
     State
     {

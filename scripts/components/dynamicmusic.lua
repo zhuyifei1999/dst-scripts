@@ -96,6 +96,14 @@ local TRIGGERED_DANGER_MUSIC =
     },
 }
 
+local BUSYTHEMES = {
+    FOREST = 1,
+    CAVE = 2,
+    RUINS = 3,
+    OCEAN = 4,
+    LUNARISLAND = 5,
+}
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -112,6 +120,7 @@ local _triggeredlevel = nil
 local _isday = nil
 local _isbusydirty = nil
 local _isbusyruins = nil
+local _busytheme = nil
 local _extendtime = nil
 local _soundemitter = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
@@ -123,6 +132,11 @@ local _activatedplayer = nil --cached for activation/deactivation only, NOT for 
 local function IsInRuins(player)
     return player.components.areaaware ~= nil
         and player.components.areaaware:CurrentlyInTag("Nightmare")
+end
+
+local function IsOnLunarIsland(player)
+    return player.components.areaaware ~= nil
+        and player.components.areaaware:CurrentlyInTag("lunacyarea")
 end
 
 local function StopBusy(inst, istimeout)
@@ -144,25 +158,42 @@ local function StopBusy(inst, istimeout)
 end
 
 local function StartBusy(player)
-    if not (_iscave or _isday) then
+    if not (_iscave or _isday) then        
         return
     elseif _busytask ~= nil then
         _extendtime = GetTime() + 15
     elseif _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
-        if _isbusydirty then
-            _isbusydirty = false
-            _soundemitter:KillSound("busy")
-            if _iscave then
-                _isbusyruins = IsInRuins(player)
-                _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
+
+        if _iscave then
+            if IsInRuins(player) then
+                if _busytheme ~= BUSYTHEMES.RUINS then
+                    _soundemitter:KillSound("busy")
+                    _soundemitter:PlaySound("dontstarve/music/music_work_ruins", "busy")
+                end
+                _busytheme = BUSYTHEMES.RUINS
             else
-                _soundemitter:PlaySound(SEASON_BUSY_MUSIC[inst.state.season], "busy")
+                if _busytheme ~= BUSYTHEMES.CAVE then
+                    _soundemitter:KillSound("busy")
+                    _soundemitter:PlaySound("dontstarve/music/music_work_cave", "busy")
+                end
+                _busytheme = BUSYTHEMES.CAVE
             end
-        elseif _iscave and _isbusyruins ~= IsInRuins(player) then
-            _isbusyruins = not _isbusyruins
-            _soundemitter:KillSound("busy")
-            _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
+        else
+            if IsOnLunarIsland(player) then                    
+                if _busytheme ~= BUSYTHEMES.LUNARISLAND then
+                    _soundemitter:KillSound("busy")
+                    _soundemitter:PlaySound("turnoftides/music/working", "busy")
+                end
+                _busytheme = BUSYTHEMES.LUNARISLAND
+            else
+                if _busytheme ~= BUSYTHEMES.FOREST then
+                    _soundemitter:KillSound("busy")
+                    _soundemitter:PlaySound(SEASON_BUSY_MUSIC[inst.state.season], "busy")
+                end
+                _busytheme = BUSYTHEMES.FOREST
+            end
         end
+        
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(15, StopBusy, true)
         _extendtime = 0
@@ -175,13 +206,13 @@ local function StartOcean(player)
     elseif _busytask ~= nil then
         _extendtime = GetTime() + 15
     elseif _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
-        if _isbusydirty then
-            _isbusydirty = false
+
+        if _busytheme ~= BUSYTHEMES.OCEAN then
             _soundemitter:KillSound("busy")
-            if not _iscave then
-                _soundemitter:PlaySound("turnoftides/music/sailing", "busy")
-            end
+            _soundemitter:PlaySound("turnoftides/music/sailing", "busy")
         end
+        _busytheme = BUSYTHEMES.OCEAN
+
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(30, StopBusy, true)
         _extendtime = 0
@@ -376,7 +407,7 @@ local function OnPhase(inst, phase)
 end
 
 local function OnSeason()
-    _isbusydirty = true
+    _busytheme = nil
 end
 
 local function StartSoundEmitter()

@@ -77,6 +77,21 @@ local function doreset()
     })
 end
 
+function c_mermking()
+    c_spawn("mermthrone")
+    c_spawn("mermking")
+end
+
+function c_mermthrone()
+    c_spawn("mermthrone_construction")
+    c_give("kelp", 20)
+    c_give("beefalowool", 15)
+    c_give("fish", 30)
+    c_give("pigskin", 10)
+    c_give("carrot", 4)
+    c_spawn("merm")
+end
+
 -- * Roll back *count* number of saves (default 1)
 -- * c_rollback() or c_rollback(1) will roll back to the
 --   last save file, if it's been longer than 30 seconds

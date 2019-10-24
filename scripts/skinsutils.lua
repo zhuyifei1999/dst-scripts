@@ -244,7 +244,11 @@ function IsItemInAnyPack(item_key)
 end
 
 
-function GetPackTotalSets(item_key)
+function GetPackTotalSets(item_key)	
+	if item_key == "pack_starter_2019" then --don't show invalid skin sets because Wurt conufuses it
+		return 0
+	end
+
     local sub_packs = _GetSubPacks(item_key)
     
     local count = 0
@@ -392,6 +396,9 @@ function GetBoxBuildForItem(item_key)
 end
 
 function OwnsSkinPack(item_key)
+	if IsPurchasePackCurrency(item_key) then
+		return false
+	end
 	for _,v in pairs(GetPurchasePackOutputItems(item_key)) do
 		if not TheInventory:CheckOwnership(v) then
 			return false
@@ -1625,24 +1632,30 @@ function GetSkinModes(character)
 	if skintypesbycharacter == nil then
 		skintypesbycharacter = {
 			woodie = {
-				{ type = "normal_skin", play_emotes = true  },								{ type = "ghost_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } },
+				{ type = "normal_skin", play_emotes = true },								{ type = "ghost_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } },
 				{ type = "werebeaver_skin", anim_bank = "werebeaver", scale = 0.82 },		{ type = "ghost_werebeaver_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } },
-				{ type = "weregoose_skin",  anim_bank = "weregoose", scale = 0.82 },	{ type = "ghost_weregoose_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } },
-				{ type = "weremoose_skin", anim_bank = "weremoose", scale = 0.82 },	{ type = "ghost_weremoose_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }
+				{ type = "weregoose_skin",  anim_bank = "weregoose", scale = 0.82 },		{ type = "ghost_weregoose_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } },
+				{ type = "weremoose_skin", anim_bank = "weremoose", scale = 0.82 },			{ type = "ghost_weremoose_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }
 			},
 
 			wolfgang = {
-				{ type = "normal_skin", play_emotes = true  },
+				{ type = "normal_skin", play_emotes = true },
 				{ type = "wimpy_skin", play_emotes = true , scale = 0.9 },
 				{ type = "mighty_skin", play_emotes = true , scale = 1.25 },
 				{ type = "ghost_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }
 			},
 
 			wormwood = {
-				{ type = "normal_skin", play_emotes = true  },
-				{ type = "stage_2", play_emotes = true  },
-				{ type = "stage_3", play_emotes = true  },
-				{ type = "stage_4", play_emotes = true  },
+				{ type = "normal_skin", play_emotes = true },
+				{ type = "stage_2", play_emotes = true },
+				{ type = "stage_3", play_emotes = true },
+				{ type = "stage_4", play_emotes = true },
+				{ type = "ghost_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }
+			},
+
+			wurt = {
+				{ type = "normal_skin", play_emotes = true },
+				{ type = "powerup", play_emotes = true },
 				{ type = "ghost_skin", anim_bank = "ghost", idle_anim = "idle", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }
 			},
 

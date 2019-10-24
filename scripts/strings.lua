@@ -61,6 +61,7 @@ STRINGS =
         wortox = "Wortox",
         wormwood = "Wormwood",
         warly = "Warly",
+        wurt = "Wurt",
         unknown = "The Unknown",
         random = "Random",
     },
@@ -83,6 +84,7 @@ STRINGS =
         wortox = "\"Pardon me if I don't shake your hand.\"",
         wormwood = "\"Hello friend?\"",
         warly = "\"Nothing worthwhile is ever done on an empty stomach!\"",
+        wurt = "\"Mermfolk known for hos-per-tality, florp.\"",
         random = "Anybody could be under that hat.",
     },
 
@@ -103,6 +105,7 @@ STRINGS =
         wortox = "The Soul Starved",
         wormwood = "The Lonesome",
         warly = "The Culinarian",
+        wurt = "The Half-Pint",
         random = "?",
     },
 
@@ -126,6 +129,7 @@ STRINGS =
         wortox = "*Is an imp \n*Can hop through time and space \n*Less nourished by physical food",
         wormwood = "*Plants relate to him\n*Has a Green Thumb\n*Food fills his stomach, but not his heart",
         warly = "*Has a refined palate\n*Cooks in custom kitchenware\n*Brings a stylish chef pouch",
+        wurt = "*At home in the swamp \n*Has big plans for Merm-kind \n*Is a vegetarian",
         random = "\nSelect a random character",
     },
 
@@ -148,6 +152,7 @@ STRINGS =
         wortox = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         warly = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -170,6 +175,7 @@ STRINGS =
         wortox = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         warly = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -190,6 +196,7 @@ STRINGS =
         wortox = "Wortox is a mischievous imp whose levity masks a deep well of guilt. He has taken many souls in his time.",
         wormwood = "An amalgam of vines given sentience by lunar magic, Wormwood searches for friends so he can finally belong.",
         warly = "To Warly, cooking is a language through which to express love and gratitude to those he holds dear.",
+        wurt = "Wurt is a curious young Merm trying to expand her horizons... as long as those horizons don't extend into Pig territory.",
     },
 
     --ACTION MOUSEOVER TEXT
@@ -478,6 +485,7 @@ STRINGS =
         },
         DISMANTLE = "Dismantle",
         TACKLE = "Charge",
+		HALLOWEENMOONMUTATE = "Mutate",
 		APPLYPRESERVATIVE =
 		{
 			GENERIC = "Preserve",
@@ -887,6 +895,7 @@ STRINGS =
         WORTOX = "Wortox",
         WORMWOOD = "Wormwood",
         WARLY = "Warly",
+        WURT = "Wurt",
 
         PIGKING = "Pig King",
         STRAWHAT = "Straw Hat",
@@ -1223,7 +1232,7 @@ STRINGS =
         HOUNDMOUND = "Hound Mound",
         HOUNDBONE = "Bones",
         MERM = "Merm",
-        MERMHOUSE = "Rundown House",
+        MERMHOUSE = "Leaky Shack",
 
         MARBLEPILLAR = "Marble Pillar",
         MARBLETREE = "Marble Tree",
@@ -1631,7 +1640,7 @@ STRINGS =
         CHESSPIECE_ANCHOR_BUILDER = "Anchor Figure",
         CHESSPIECE_MOON_BUILDER = "\"Moon\" Figure",
 
-        CHESSPIECE_BUTTERFLY_SKETCH = "Butterfly Figure Sketch",
+        CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
         CHESSPIECE_MOON_SKETCH = "\"Moon\" Figure Sketch",
 
@@ -1673,6 +1682,7 @@ STRINGS =
 		HALLOWEEN_EXPERIMENT_HEALTH = "Sanguine Experiment",  
 		HALLOWEEN_EXPERIMENT_SANITY = "Psychosis Experiment",  
 		HALLOWEEN_EXPERIMENT_VOLATILE = "Sulfuric Experiment",  
+		HALLOWEEN_EXPERIMENT_MOON = "Lunar Experiment",
 		HALLOWEEN_EXPERIMENT_ROOT = "Arboretum Experiment",
 
         WINTER_TREESTAND = "Festive Tree Planter",
@@ -1708,6 +1718,7 @@ STRINGS =
 		HALLOWEENPOTION_HEALTH_LARGE = "Canteen of Sanguine Mixture",
 		HALLOWEENPOTION_EMBERS = "Sulfuric Crystals of Lime",
 		HALLOWEENPOTION_SPARKS = "Sulfuric Crystals of Saltpeter",
+		HALLOWEENPOTION_MOON = "Steeped Lunar Essence",
 
         --Arena Event
         LAVAARENA_BOARLORD = "Battlemaster Pugna",
@@ -2153,7 +2164,18 @@ STRINGS =
 
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
 		WATERCHEST = "Chest",
-        WATER_TURTLE = "Sea Tutrle",
+        WATER_TURTLE = "Sea Turtle",
+
+        -- Wurt
+        MERMHAT = "Clever Disguise",
+        MERMTHRONE = "Royal Tapestry",
+        MERMTHRONE_CONSTRUCTION = "DIY Royalty Kit",
+        MERMHOUSE_CRAFTED = "Craftsmerm House",
+        MERMWATCHTOWER = "Merm Flort-ifications",
+        MERMGUARD = "Loyal Merm Guard",
+        MERMKING = "King of the Merms",
+        MERM_PRINCE = "Royal-In-Progress",
+
 		COOKIECUTTER = "Cookie Cutter",
 		COOKIECUTTERSHELL = "Cookie Cutter Shell",
 		COOKIECUTTERHAT = "Cookie Cutter Cap",
@@ -2520,6 +2542,7 @@ STRINGS =
 		HALLOWEEN_EXPERIMENT_HEALTH = "Good for your heart.",
 		HALLOWEEN_EXPERIMENT_SANITY = "Put your mind at ease.", 
 		HALLOWEEN_EXPERIMENT_VOLATILE = "Crystallized incandescence.",
+		HALLOWEEN_EXPERIMENT_MOON = "There's a change brewing.",
 		HALLOWEEN_EXPERIMENT_ROOT = "Spine-chilling saplings.",  
 
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
@@ -2596,6 +2619,14 @@ STRINGS =
         OAR = "Row, row, row your boat.",
         OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
         BOATPATCH = "It's never too late to patch things up.",
+
+        -- Wurt
+        MERMHOUSE_CRAFTED = "A home fit for a Merm.",
+        MERMWATCHTOWER = "True warriors live within.",
+        MERMHAT = "Merm-ify your friends.",
+        MERMTHRONE_CONSTRUCTION = "Usher in a new Merm Monarchy.",
+
+        TURF_MARSH = "Home is where the marsh is.",
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
 		SALTBOX = "Salty storage for your foodstuffs.",
 
@@ -2764,6 +2795,22 @@ STRINGS =
 
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
+
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
+    MERM_TALK_FOLLOWWILSON   = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"You help Mermfolk!", "Glut Glurtsu flopt!"}, {"You okay.", "Florpy flort."}},
+    MERM_TALK_HELP_CHOP_WOOD = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Chop, choppy, chop!", "Grop, groppy, grop!"}, {"Work hard, florp!", "Glort blut, florp!"}},
+    MERM_TALK_HELP_MINE_ROCK = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Break rock, easy!", "Wult wop, florty flort!"}, {"Work hard, florp!", "Glort blut, florp!"}},
+    MERM_TALK_HELP_HAMMER    = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Smash! Smash!", "Florph! Florph!"}, {"Work hard, florp!", "Glort blut, florp!"}},
+    MERM_TALK_FIND_FOOD      = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"}},
+    MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"},},
+    MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For glory of Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"},{"Defend King!", "Glurph Glurtsen!"}},
+
+    MERM_KING_TALK_HUNGER_STARVING = "Hungry... HUNGRY! HUNGRYYYY!!!",
+    MERM_KING_TALK_HUNGER_CLOSE_STARVING = "Treachery... villainy! To let King waste away like this...",
+    MERM_KING_TALK_HUNGER_VERY_HUNGRY = "What take so long? Make offerings to your King!",
+    MERM_KING_TALK_HUNGER_HUNGRY = "King desires food!",
+    MERM_KING_TALK_HUNGER_HUNGRISH = "King feeling a bit peckish...",
+    MERM_KING_TALK_HUNGER_FULL =  "Have done well. Now go.",
 
     --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
@@ -3852,6 +3899,7 @@ STRINGS.UI =
 			"Steven Miclette",
 			"Felix Hard",
             "Jen Davreux",
+            "Steph Mahoney",
         },
 
         ALTGAMES =
@@ -7276,7 +7324,9 @@ STRINGS.UI =
 
         TEMPORARILY_CLOSED_BODY = "The Trade Inn is closed for a bit.\n\nBe back soon, okay?",
 
+        CROW = "Chase Crow",
         RESET = "Reset",
+        START = "Start",
         TRADE = "Trade",
         SELECT = "Select",
         ACCEPT = "Accept",
@@ -7351,6 +7401,97 @@ STRINGS.UI =
             {
                 "Test",
             },
+        },
+        
+        CROW_GAME =
+        {
+            HIGH_SCORE = "High Score: ",
+            GAME_SCORE = "Game Score: ",
+            MOVE_SCORE = "Last Move Score: ",
+            REPORTING = "Reporting wrapper tidyin'...",
+            THANKS = "Thanks for tidyin' up!",
+            GAME_OVER_POPUP_TITLE = "All done tidyin'",
+            GAME_OVER_POPUP_BODY = "Great job tidyin' up.\nYou completed {moves} moves, for a score of {score}!",
+            OPEN_GIFT = "Open Gift",
+
+            POWERUP_NAME =
+            {
+                cane = "Cane",
+                shovel = "Shovel",
+                gunpowder = "Gunpowder",
+                spear = "Spear",
+                seeds = "Seeds",
+            },
+
+            HELP = "Help",
+            HELP_TITLE = "Ravin' Wrapper Raiders",
+            HELP_BODY = "Oh crow!\nA murder of feathered fiends has gotten their claws into the Curio Collector's prized collection of candy wrappers!\n\nHelp him scare away the crows by matching adjacent pairs of wrappers. Use tools to help clear big groups of wrappers and crows to improve your score. Clearing 10 or more tiles will grant you a bonus tool.",
+        },
+
+        SKIN_COLLECTOR_SPEECH_CROW =
+        {
+
+            START =
+            {
+                "Help me scare off these crows. Don't get any funny ideas though, I won't give you a better deal for helping.",
+                "Ack! These crows won't leave my wrappers alone.",
+                "Knew I shouldn't'a left the my wrappers just lyin' around... now these crows are all over my collection!",
+                "I've done witnessed a murder! And they're stealin' all my hard-earned candy wrappers!",
+                "Gimme a hand gettin' rid of these crows, will ya?",
+                "Wanna play a game? Help me pickup my wrappers and get rid of those dang crows. Doesn't that sound fun?",
+                "What, you got something better to do? Help me get these crows outta here!",
+            },
+            
+            POWERUP_SELECTED =
+            {
+                cane =
+                {
+                    "That'll help ya get around and collect all look-alike wrappers.",
+                },	
+
+                shovel =
+                {
+                    "Cleaning up a whole row. That's smart!",
+                },
+
+                gunpowder =
+                {
+                    "Careful! That stuff will blow away everythin' near it!",
+                },
+
+                spear =
+                {
+                    "Sharp and precise!",
+                },
+
+                seeds =
+                {
+                    "What are ya doing with those seeds!? You're supposed to be chasing the crows away, not attractin' 'em!",
+                },
+            },
+            
+            CLEARED_LOTS = "Great work clearin' {tiles_cleared} tiles! Here, I've got something for ya. Take this {powerup}.",
+
+            CLEARED_CROW_LOTS =
+            {
+                "Yeehaw! Get on out of here!",
+                "Hah! Those are my wrappers!",
+                "Seein' those crows scatter is sweeter than my favourite candy!",
+            },
+
+            GAME_OVER =
+            {
+                "Looks like you're all out of options!",
+                "Try again! There's many more wrappers in my collection to tidy up.",
+                "Thanks for helpin', but I can't give you a better trade. I've got mouths to feed, ya'know.",
+                "All done for now, but ya made some progress tidyin' up my wrapper collection. ",
+            },
+
+            USE_POWERUP =
+            {
+                "Looks like you're stuck kid. Maybe ya ought to use one of those tools.",
+                "You're out of moves, try using a tool to help ya out.",
+            }
         },
 
         SKIN_COLLECTOR_SPEECH =
@@ -8337,6 +8478,7 @@ STRINGS.CHARACTERS =
     WORTOX = require "speech_wortox",
     WORMWOOD = require "speech_wormwood",
     WARLY = require "speech_warly",
+    WURT = require "speech_wurt",
 }
 
 STRINGS.LUCY =

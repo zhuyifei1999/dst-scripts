@@ -174,6 +174,29 @@ local assets =
     
     Asset("DYNAMIC_ANIM", "anim/dynamic/box_bolt.zip"),
     Asset("PKGREF", "anim/dynamic/box_bolt.dyn"),
+
+    
+    --Crow Game Assets
+    Asset("ANIM", "anim/crow.zip"),
+    Asset("ANIM", "anim/crow_build.zip"),
+    Asset("ANIM", "anim/explode.zip"),
+    Asset("ANIM", "anim/crowgametile.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_crow.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_chevron_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_dotted_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_flower_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_foil_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_paper_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_striped_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_bluestriped_wrapper.zip"),
+    Asset("PKGREF", "anim/dynamic/oddment_crow.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_chevron_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_dotted_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_flower_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_foil_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_paper_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_striped_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_bluestriped_wrapper.dyn"),
 }
 
 --Including these here as well as global to ensure the exporter's resizing dependency works

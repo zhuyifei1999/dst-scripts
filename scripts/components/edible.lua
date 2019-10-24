@@ -100,6 +100,13 @@ function Edible:GetHunger(eater)
         end
     end
 
+    if eater ~= nil and eater.components.foodaffinity ~= nil then
+        local affinity_bonus = eater.components.foodaffinity:GetAffinity(self.inst)
+        if affinity_bonus ~= nil then
+            multiplier = multiplier * affinity_bonus
+        end
+    end
+
     return multiplier * self.hungervalue
 end
 

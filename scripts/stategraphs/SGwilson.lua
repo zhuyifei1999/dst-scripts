@@ -479,9 +479,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
-
-    ActionHandler(ACTIONS.READ, "book"),
-
+    ActionHandler(ACTIONS.READ, 
+        function(inst) 
+            return inst:HasTag("aspiring_bookworm") and "book_peruse" or "book"
+        end),
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
@@ -722,6 +723,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.REVIVE_CORPSE, "revivecorpse"),
     ActionHandler(ACTIONS.DISMANTLE, "dolongaction"),
     ActionHandler(ACTIONS.TACKLE, "tackle_pre"),
+	ActionHandler(ACTIONS.HALLOWEENMOONMUTATE, "give"),
 
     --Quagmire
     ActionHandler(ACTIONS.TILL, "till_start"),
@@ -983,6 +985,16 @@ local events =
         end
     end),
 
+    EventHandler("powerup_wurt",
+        function(inst)
+            inst.sg:GoToState("powerup_wurt")
+        end),
+
+    EventHandler("powerdown_wurt",
+        function(inst)
+            inst.sg:GoToState("powerdown_wurt")
+        end),
+
     EventHandler("powerup",
         function(inst)
             inst.sg:GoToState("powerup")
@@ -1231,6 +1243,69 @@ local states =
                 SerializeUserSession(inst)
             end
         end,
+    },
+
+
+    State{
+        name = "powerup_wurt",
+        tags = { "busy", "pausepredict", "nomorph" },
+
+        onenter = function(inst)
+            ForceStopHeavyLifting(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("powerup")
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(29 * FRAMES, function(inst)
+                inst.components.skinner:SetSkinMode("powerup", "wurt_stage2")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "powerdown_wurt",
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
+
+        onenter = function(inst)
+            ForceStopHeavyLifting(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("powerdown")
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(29 * FRAMES, function(inst)
+                inst.components.skinner:SetSkinMode("normal_skin", "wurt")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
     },
 
     State{
@@ -5422,6 +5497,82 @@ local states =
     },
 
     State{
+        name = "book_peruse",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("peruse", false)
+            --V2C: NOTE that these are now used in onexit to clear skinned symbols
+            --Moved to player_common because these symbols are never cleared
+            --inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
+            --inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
+            --inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
+            --inst.AnimState:Hide("ARM_carry")
+            inst.AnimState:Show("ARM_normal")
+
+            local book = inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil
+            if book ~= nil then
+                inst.components.inventory:ReturnActiveActionItem(book)
+                local skin_build = book:GetSkinBuild()
+                if skin_build ~= nil then
+                    inst.sg.statemem.skinned = true
+                    inst.AnimState:OverrideItemSkinSymbol("book_open", skin_build, "book_open", book.GUID, "player_actions_uniqueitem")
+                    inst.AnimState:OverrideItemSkinSymbol("book_closed", skin_build, "book_closed", book.GUID, "player_actions_uniqueitem")
+                    inst.AnimState:OverrideItemSkinSymbol("book_open_pages", skin_build, "book_open_pages", book.GUID, "player_actions_uniqueitem")
+                end               
+            end
+
+            --inst.sg.statemem.castsound = book ~= nil and book.castsound or "dontstarve/common/book_spell"
+        end,
+
+        timeline =
+        {
+
+            TimeEvent(25 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/use_book")
+            end),
+            TimeEvent(73 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/actions/page_turn")
+            end),
+            TimeEvent(105 * FRAMES, function(inst)
+                --inst.SoundEmitter:PlaySound(inst.sg.statemem.castsound)
+                inst:PerformBufferedAction()
+
+            end),
+        },
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            if item ~= nil and not item:HasTag("book") then
+                inst.AnimState:Show("ARM_carry")
+                inst.AnimState:Hide("ARM_normal")
+            end
+            if inst.sg.statemem.skinned then
+                inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
+                inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
+                inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
+            end
+            if inst.sg.statemem.book_fx ~= nil and inst.sg.statemem.book_fx:IsValid() then
+                inst.sg.statemem.book_fx:Remove()
+            end
+            if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
+                OnRemoveCleanupTargetFX(inst)
+            end
+        end,
+    },
+
+
+    State{
         name = "blowdart",
         tags = { "attack", "notalking", "abouttoattack", "autopredict" },
 
@@ -7125,9 +7276,9 @@ local states =
 
         timeline =
         {
-            TimeEvent(71 * FRAMES, function(inst)
+            TimeEvent(75 * FRAMES, function(inst)
 				inst.components.drownable:DropInventory()
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/water/player_sinking")
+                inst.SoundEmitter:PlaySound("turturnoftides/common/together/water/splash/medium")
             end),
         },
 

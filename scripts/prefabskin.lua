@@ -207,6 +207,18 @@ function axe_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Pickaxe skin functions ]]
+--------------------------------------------------------------------------
+function pickaxe_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "pickaxe")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Boomerang skin functions ]]
 --------------------------------------------------------------------------
 function boomerang_init_fn(inst, build_name)
@@ -542,6 +554,22 @@ function firepit_init_fn(inst, build_name, fxoffset)
             end
         end)
     end
+end
+
+--------------------------------------------------------------------------
+--[[ Endothermic Firepit skin functions ]]
+--------------------------------------------------------------------------
+function coldfirepit_init_fn(inst, build_name, fxoffset)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:SetSkin(build_name, "coldfirepit")
+        return
+    elseif not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "coldfirepit")
+    inst.components.burnable:SetFXOffset(fxoffset)
 end
 
 --------------------------------------------------------------------------

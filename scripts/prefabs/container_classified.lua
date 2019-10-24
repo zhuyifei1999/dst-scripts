@@ -165,6 +165,26 @@ local function Has(inst, prefab, amount)
     return count >= amount, count
 end
 
+local function HasItemWithTag(inst, tag, amount)
+    local count = 0
+    if inst._itemspreview ~= nil then
+        for i, v in ipairs(inst._items) do
+            local item = inst._itemspreview[i]
+            if item ~= nil and item:HasTag(tag) then
+                count = count + Count(item)
+            end
+        end
+    else
+        for i, v in ipairs(inst._items) do
+            local item = v:value()
+            if item ~= nil and item:HasTag(tag) then
+                count = count + Count(item)
+            end
+        end
+    end
+    return count >= amount, count
+end
+
 --------------------------------------------------------------------------
 --Client sync event handlers that translate and dispatch local UI messages
 --------------------------------------------------------------------------

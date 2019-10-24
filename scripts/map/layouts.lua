@@ -961,6 +961,15 @@ local ExampleLayout =
 			fissure_area = {"moon_fissure"},
 		},
 	}),
+
+	["retrofit_brinepool_tiny"] = StaticLayout.Get("map/static_layouts/retrofit_brinepool_tiny", {
+		areas =
+		{
+			saltstack_area = function() return {"saltstack"} end, 
+		}
+    }),
+
+	
 	
 	
 	

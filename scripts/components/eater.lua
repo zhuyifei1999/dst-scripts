@@ -113,7 +113,8 @@ function Eater:SetOnEatFn(fn)
 end
 
 function Eater:DoFoodEffects(food)
-    return not (self.strongstomach and food:HasTag("monstermeat"))
+    return not ((self.strongstomach and food:HasTag("monstermeat")) or 
+                (self.inst.components.foodaffinity and self.inst.components.foodaffinity:HasPrefabAffinity(food)))
 end
 
 function Eater:GetEdibleTags()

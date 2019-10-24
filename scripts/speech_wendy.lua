@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Did you see that, Abigail?",
 	ANNOUNCE_BRAVERY_POTION = "Bats can't scare me anymore. I can return to my melancholy.",
+	ANNOUNCE_MOONPOTION_FAILED = "Sigh... I didn't really expect that to work.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You'll not glimpse death today...",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "It seems my zeal was short-lived.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Once more I'm left defenseless against the elements.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Death will find you!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Like life, it's a bit disappointing.",
 		HALLOWEENPOTION_DRINKS_POTENT = "If only life was so potent.",
         HALLOWEENPOTION_BRAVERY = "Things seem less horrifying with this.",
+		HALLOWEENPOTION_MOON = "If only it could change the past.",
 		HALLOWEENPOTION_FIRE_FX = "I wish I possessed such burning within my heart.", 
 		MADSCIENCE_LAB = "Madness lies within.",
 		LIVINGTREE_ROOT = "Potential horror.", 
@@ -2858,9 +2865,9 @@ return{
             GENERIC = "For when the hunger gnaws at my tiny stomach...",
             DONE = "Another menial task has been completed.",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "I may starve to death before it's done.",
+			COOKING_SHORT = "It will all be over soon.",
+			EMPTY = "A foodless void.",
         },
         
         PORTABLEBLENDER_ITEM = "Inflicts chaos and turmoil on food.",
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "A small wooden reminder of Woodie's cursed existence.",
         WEREITEM_GOOSE = "That is deeply disturbing.",
         WEREITEM_MOOSE = "I don't want to play with that.",
+
+        MERMHAT = "We all hide behind a our own masks...",
+        MERMTHRONE = "\"The Frogs Who Desired a King\"...",
+        MERMTHRONE_CONSTRUCTION = "I don't know why you bother.",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "It has not yet been touched by the ravages of time.",
+            BURNT = "Nothing but ash.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "They seem to not wish us harm, for now.",
+        MERMWATCHTOWER_NOKING = "They fight without purpose...",
+        MERMKING = "He does look very regal, despite the warts.",
+        MERMGUARD = "Friend or foe?",
+        MERM_PRINCE = "Are you ready to shoulder the burdens of leadership?",
+
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

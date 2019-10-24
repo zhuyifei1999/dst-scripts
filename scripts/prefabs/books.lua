@@ -82,6 +82,13 @@ local book_defs =
             end)
             return true
         end,
+        perusefn = function(inst,reader)
+            if reader.peruse_tentacles then
+                reader.peruse_tentacles(reader)
+            end    
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_TENTACLES"))           
+            return true
+        end,
     },
 
     {
@@ -124,6 +131,13 @@ local book_defs =
 
             return true
         end,
+        perusefn = function(inst,reader)
+            if reader.peruse_birds then
+                reader.peruse_birds(reader)
+            end    
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_BIRDS"))           
+            return true
+        end,        
     },
 
     {
@@ -146,6 +160,13 @@ local book_defs =
             end)
             return true
         end,
+        perusefn = function(inst,reader)
+            if reader.peruse_brimstone then
+                reader.peruse_brimstone(reader)
+            end   
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_BRIMSTONE"))           
+            return true
+        end,        
     },
 
     {
@@ -179,6 +200,13 @@ local book_defs =
             end
             return true
         end,
+        perusefn = function(inst,reader)
+            if reader.peruse_sleep then
+                reader.peruse_sleep(reader)
+            end 
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_SLEEP"))           
+            return true
+        end,        
     },
 
     {
@@ -201,6 +229,13 @@ local book_defs =
             end
             return true
         end,
+        perusefn = function(inst,reader)
+            if reader.peruse_gardening then
+                reader.peruse_gardening(reader)
+            end
+            reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_GARDENING"))           
+            return true
+        end,         
     },
 }
 
@@ -239,6 +274,7 @@ local function MakeBook(def)
         inst:AddComponent("inspectable")
         inst:AddComponent("book")
         inst.components.book.onread = def.fn
+        inst.components.book.onperuse = def.perusefn
 
         inst:AddComponent("inventoryitem")
 

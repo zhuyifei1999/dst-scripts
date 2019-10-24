@@ -89,8 +89,8 @@ end
 
 local function rawfn(build)
     local inst = commonfn(build, "idle", true, true, true)
-
     MakeInventoryFloatable(inst, "med", 0.05, {1.25, 0.6, 1.25})
+    inst:AddTag("fish")
 
     if not TheWorld.ismastersim then
         return inst

@@ -331,14 +331,6 @@ function Tune(overrides)
         PERD_RUN_SPEED = 8,
         PERD_WALK_SPEED = 3,
 
-        MERM_DAMAGE = 30,
-        MERM_HEALTH = 250 * 2, -- harder for multiplayer
-        MERM_ATTACK_PERIOD = 3,
-        MERM_RUN_SPEED = 8,
-        MERM_WALK_SPEED = 3,
-        MERM_TARGET_DIST = 10,
-        MERM_DEFEND_DIST = 30,
-
         WALRUS_DAMAGE = 33,
         WALRUS_HEALTH = 150 * 2, -- harder for multiplayer
         WALRUS_ATTACK_PERIOD = 3,
@@ -861,10 +853,6 @@ function Tune(overrides)
         HOUNDMOUND_HOUNDS_MAX = 3,
         HOUNDMOUND_REGEN_TIME = seg_time * 6,
         HOUNDMOUND_RELEASE_TIME = seg_time,
-
-        MERMHOUSE_MERMS = 3,
-        MERMHOUSE_EMERGENCY_MERMS = 3,
-        MERMHOUSE_EMERGENCY_RADIUS = 15,
 
         POND_FROGS = 4,
         POND_REGEN_TIME = day_time/2,
@@ -2196,7 +2184,7 @@ function Tune(overrides)
         HALLOWEEN_ORNAMENT_TUMBLEWEED_CHANCE = 0.1,
         HALLOWEENPOTION_FIREFX_FUEL_MOD = .8,
         HALLOWEENPOTION_FIREFX_DURATION = seg_time * 8,
-
+		
         -- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
         DECID_MONSTER_MIN_DAY = 3, -- No monsters during the first few days
         DECID_MONSTER_SPAWN_CHANCE_AUTUMN = .15,    -- high chance of monsters in autumn to cancel out double birchnut and general easyness of autumn
@@ -2700,6 +2688,7 @@ function Tune(overrides)
             WORTOX = 200, --VITO do something here
             WORMWOOD = 200, --TODO
             WARLY = 200, --TODO
+            WURT = 200, --TODO
         },
 
 		GAMEMODE_STARTING_ITEMS =
@@ -2721,6 +2710,7 @@ function Tune(overrides)
                 WORTOX = {}, --VITO do something here
                 WORMWOOD = {}, --TODO
                 WARLY = {}, --TODO
+                WURT = {}, -- TODO
 			},
 			QUAGMIRE =
 			{
@@ -2739,6 +2729,7 @@ function Tune(overrides)
                 WORTOX = {}, --VITO do something here
                 WORMWOOD = {}, --TODO
                 WARLY = {}, --TODO
+                WURT = {}, -- TODO
 			},
 		},
 
@@ -2759,6 +2750,7 @@ function Tune(overrides)
             WORTOX = 1, --VITO do something here
             WORMWOOD = 1, --TODO
             WARLY = 1, --TODO
+            WURT = 1, -- TODO
         },
 
 	    LAVAARENA_BERNIE_SCALE = 1.2,
@@ -3137,6 +3129,7 @@ function Tune(overrides)
         BOAT =
         {
             HEALTH = 200,
+            MAX_HULL_HEALTH_DAMAGE = 70,
             MASS = 500,
 
             MAX_ALLOWED_VELOCITY = 5,
@@ -3149,6 +3142,7 @@ function Tune(overrides)
             RUDDER_TURN_SPEED = 0.6,    
             NO_BUILD_BORDER_RADIUS = -0.2,
 			FIRE_DAMAGE = 5,
+            BOATPHYSICS_COLLISION_TIME_BUFFER = 8 * FRAMES,
 
             OARS =
             {
@@ -3243,6 +3237,14 @@ function Tune(overrides)
 				WERENESS = 100,
 				WETNESS = 100,
 			},
+
+            WURT =
+            {
+                HEALTH_PENALTY = 0,
+                HUNGER = 0,
+                SANITY = 0,
+                WETNESS = 50,  
+            }
 		},
 
         CARRAT =
@@ -3490,8 +3492,65 @@ function Tune(overrides)
         WOODIE_CHOP_DRAIN = -1.5,
         WOODIE_PLANT_TREE_GAIN = 5,
         LOG_WOODINESS = 10,
-        --
+        
+        -- Wurt
+        WURT_HEALTH = 150,
+        WURT_HUNGER = 200,
+        WURT_SANITY = 150,
 
+        WURT_HEALTH_KINGBONUS = 250,
+        WURT_HUNGER_KINGBONUS = 250,
+        WURT_SANITY_KINGBONUS = 200,
+
+        MERM_DAMAGE = 30,
+        MERM_HEALTH = 250 * 2, -- harder for multiplayer
+        MERM_ATTACK_PERIOD = 3,
+        MERM_RUN_SPEED = 8,
+        MERM_WALK_SPEED = 3,
+        MERM_TARGET_DIST = 10,
+        MERM_DEFEND_DIST = 30,
+
+        MERM_LOYALTY_MAXTIME = 3 * total_day_time,
+        MERM_LOYALTY_PER_HUNGER = total_day_time/25,
+        MERM_SHARE_TARGET_DIST = 40,
+        MERM_MAX_TARGET_SHARES = 5,
+
+        MERM_DAMAGE_KINGBONUS = 40,
+        MERM_HEALTH_KINGBONUS = 560,
+        MERM_LOYALTY_MAXTIME_KINGBONUS = 2 * total_day_time,
+        MERM_LOYALTY_PER_HUNGER_KINGBONUS = total_day_time/33,
+
+        MERM_GUARD_DAMAGE = 50,
+        MERM_GUARD_HEALTH = 660,
+        MERM_GUARD_ATTACK_PERIOD = 3,
+        MERM_GUARD_RUN_SPEED = 8,
+        MERM_GUARD_WALK_SPEED = 3,
+        MERM_GUARD_TARGET_DIST = 15,
+        MERM_GUARD_DEFEND_DIST = 40,
+        
+        MERM_GUARD_SHARE_TARGET_DIST = 60,
+        MERM_GUARD_MAX_TARGET_SHARES = 8,
+
+        MERM_GUARD_LOYALTY_MAXTIME = 3 * total_day_time,
+        MERM_GUARD_LOYALTY_PER_HUNGER = total_day_time/25,
+
+        MERM_KING_HEALTH = 1000,
+        MERM_KING_HEALTH_REGEN_PERIOD = 1,
+        MERM_KING_HEALTH_REGEN = 2,
+        MERM_KING_HUNGER = 200,
+        MERM_KING_HUNGER_KILL_TIME = total_day_time * 2,
+        MERM_KING_HUNGER_RATE = 200 / (total_day_time * 4),
+
+        PUNY_MERM_HEALTH = 200,
+        PUNY_MERM_DAMAGE = 20,
+
+        MERMHOUSE_MERMS = 3,
+        MERMHOUSE_EMERGENCY_MERMS = 3,
+        MERMHOUSE_EMERGENCY_RADIUS = 15,
+
+        MERMWATCHTOWER_MERMS = 1,
+
+        -- Salty dog
         FLOTSAM_SPAWN_MAX = 4,
         FLOTSAM_SPAWN_DELAY = {min=30, max=180},
 

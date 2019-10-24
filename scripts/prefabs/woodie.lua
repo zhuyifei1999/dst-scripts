@@ -87,6 +87,7 @@ local start_inv =
         "lucy",
     },
 }
+
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WOODIE
 end

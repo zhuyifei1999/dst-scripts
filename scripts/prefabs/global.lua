@@ -14,6 +14,8 @@ local assets =
     Asset("FILE", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
     Asset("FILE", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
 
+    Asset("FILE", "klump/unused.txt"),         -- Make the klump zip not empty.
+
 
     -- Legacy for modders to view. These files are now dynamically loaded.
     Asset("PKGREF", "anim/ghost_wathgrithr_build.zip"),

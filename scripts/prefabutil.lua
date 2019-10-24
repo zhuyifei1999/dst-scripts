@@ -1,4 +1,4 @@
-function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn, offset)
+function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn, offset, onfailedplacement)
     local function fn()
         local inst = CreateEntity()
 
@@ -33,6 +33,8 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
         inst.components.placer.snap_to_meters = metersnap
         inst.components.placer.fixedcameraoffset = fixedcameraoffset
         inst.components.placer.onground = onground
+        -- If the user clicks when the placement is invalid this gets called
+        inst.components.placer.onfailedplacement = onfailedplacement
 
         if offset ~= nil then
             inst.components.placer.offset = offset

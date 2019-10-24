@@ -575,14 +575,16 @@ function PlayerController:GetCursorInventorySlotAndContainer()
 end
 
 function PlayerController:DoControllerActionButton()
-    if self.placer ~= nil then
+    if self.placer ~= nil and self.placer_recipe ~= nil then
         --do the placement
-        if self.placer_recipe ~= nil and
-            self.placer.components.placer.can_build and
-            self.inst.replica.builder ~= nil and
-            not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
-            self:CancelPlacement()
+        if  self.placer.components.placer.can_build then
+            if self.inst.replica.builder ~= nil and
+                not self.inst.replica.builder:IsBusy() then
+                self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
+                self:CancelPlacement()
+            end
+        elseif self.placer.components.placer.onfailedplacement ~= nil then
+            self.placer.components.placer.onfailedplacement(self.inst, self.placer)
         end
         return
     end
@@ -1614,6 +1616,8 @@ function PlayerController:DoActionButton()
         not self.inst.replica.builder:IsBusy() then
         --do the placement
         self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, self.placer:GetPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
+    elseif self.placer.components.placer.onfailedplacement ~= nil then
+        self.placer.components.placer.onfailedplacement(self.inst, self.placer)
     end
 
     --Still need to let the server know our action button is down
@@ -3138,13 +3142,19 @@ function PlayerController:OnLeftClick(down)
         self:CancelPlacement()
         return
     elseif self.placer_recipe ~= nil and self.placer ~= nil then
+
         --do the placement
-        if self.placer.components.placer.can_build and
-            self.inst.replica.builder ~= nil and
-            not self.inst.replica.builder:IsBusy() then
-            self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
-            self:CancelPlacement()
+        if self.placer.components.placer.can_build then
+            
+            if self.inst.replica.builder ~= nil and not self.inst.replica.builder:IsBusy() then
+                self.inst.replica.builder:MakeRecipeAtPoint(self.placer_recipe, TheInput:GetWorldPosition(), self.placer:GetRotation(), self.placer_recipe_skin)
+                self:CancelPlacement()
+            end
+
+        elseif self.placer.components.placer.onfailedplacement ~= nil then
+            self.placer.components.placer.onfailedplacement(self.inst, self.placer)
         end
+
         return
     end
 
@@ -3414,7 +3424,8 @@ function PlayerController:GetGroundUseAction(position)
         --Check validitiy because FE controls may call this in WallUpdate
         local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if equipitem ~= nil and equipitem:IsValid() and
-            (   self.map:IsPassableAtPoint(position:Get()) or
+            (   equipitem:HasTag("allow_action_on_impassable") or
+                self.map:IsPassableAtPoint(position:Get()) or
                 (   equipitem.components.aoetargeting ~= nil and
                     equipitem.components.aoetargeting.alwaysvalid and
                     equipitem.components.aoetargeting:IsEnabled()

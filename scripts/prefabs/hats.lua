@@ -1579,6 +1579,36 @@ local function MakeHat(name)
         return inst
     end
 
+    local function merm_custom_init(inst)
+        inst:AddTag("open_top_hat")
+        inst:AddTag("show_spoilage")
+        inst:AddTag("merm")
+    end
+
+    local function merm()
+        local inst = simple(merm_custom_init)
+
+        inst.components.floater:SetSize("med")
+        inst.components.floater:SetScale(0.68)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        -- Should we add this as a mask downside?
+        --inst.components.equippable.dapperness = -TUNING.DAPPERNESS_TINY
+        inst.components.equippable:SetOnEquip(opentop_onequip)
+
+        inst:AddComponent("perishable")
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+        inst.components.perishable:StartPerishing()
+        inst.components.perishable:SetOnPerishFn(inst.Remove)
+
+        MakeHauntableLaunchAndPerish(inst)
+
+        return inst
+    end
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1651,6 +1681,8 @@ local function MakeHat(name)
         fn = skeleton
     elseif name == "kelp" then
         fn = kelp
+    elseif name == "merm" then
+        fn = merm
     elseif name == "cookiecutter" then
         fn = cookiecutter
     end
@@ -1716,5 +1748,6 @@ return  MakeHat("straw"),
         MakeHat("goggles"),
         MakeHat("skeleton"),
         MakeHat("kelp"),
-		MakeHat("cookiecutter"),
+        MakeHat("merm"),
+ 		MakeHat("cookiecutter"),
         Prefab("minerhatlight", minerhatlightfn)

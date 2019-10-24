@@ -281,6 +281,7 @@ PREFABFILES = {
   "halloweencandy",
   "halloweenpotion_buffs",
   "halloweenpotion_embers",
+  "halloweenpotion_moon",
   "hambat",
   "hammer",
   "hammer_mjolnir",
@@ -413,6 +414,9 @@ PREFABFILES = {
   "meats",
   "merm",
   "mermhouse",
+  "mermking",
+  "mermthrone",
+  "mermwatchtower",
   "meteorspawner",
   "meteorwarning",
   "migration_portal",
@@ -831,6 +835,8 @@ PREFABFILES = {
   "wortox_soul_in_fx",
   "wortox_soul_spawn",
   "writeable_classified",
+  "wurt",
+  "wurt_tentacle_warning",
   "wx78",
   "yotp_food" 
 }

@@ -54,11 +54,15 @@ function MakeBanner(self)
 		anim:SetScale(0.48)
 		anim:SetPosition(0, -160)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		anim:GetAnimState():SetBuild("dst_menu_halloween")
+		--[[anim:GetAnimState():SetBuild("dst_menu_halloween")
 		anim:GetAnimState():SetBank("dst_menu_halloween")
 		anim:GetAnimState():PlayAnimation("anim", true)
 		anim:SetScale(0.67)
-		anim:SetPosition(183, 40)
+		anim:SetPosition(183, 40)]]
+		anim:GetAnimState():SetBuild("dst_menu_wurt")
+		anim:GetAnimState():SetBank("dst_menu_wurt")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
 		local anim_bg = baner_root:AddChild(UIAnim())
 		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")

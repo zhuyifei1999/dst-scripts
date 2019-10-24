@@ -141,6 +141,11 @@ return
 			"legs_pj_purple_mauve",
 			"bedroll_furry_quilt_white_ivory",
 		},
+		{
+			"body_pj_green_hunters",
+			"legs_pj_green_hunters",
+			"bedroll_furry_quilt_green_hunters",
+		},
 	},
 }
 

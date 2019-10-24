@@ -16,8 +16,10 @@ local Wisecracker = Class(function(self, inst)
                             inst.components.eater.strongstomach and
                             data.food:HasTag("monstermeat") or
                             inst.components.eater.healthabsorption == 0
-                        )) then
+                        )) and not (inst.components.foodaffinity and inst.components.foodaffinity:HasPrefabAffinity(data.food)) then
+
                     inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "PAINFUL"))
+
                 elseif data.food.components.perishable ~= nil then
                     if data.food.components.perishable:IsFresh() then
                         local ismasterchef = inst:HasTag("masterchef")
@@ -222,6 +224,10 @@ local Wisecracker = Class(function(self, inst)
             end
         end)
     end
+
+	inst:ListenForEvent("on_halloweenmoonpotion_failed", function(inst)
+		inst.components.talker:Say(GetString(inst, "ANNOUNCE_MOONPOTION_FAILED"))
+	end)
 
     local function OnFoodBuff(inst, data)
         if data ~= nil and
