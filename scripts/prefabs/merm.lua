@@ -67,7 +67,7 @@ local function FindInvaderFn(guy, inst)
     local leader = inst.components.follower and inst.components.follower.leader
 
     return guy:HasTag("character") and not (guy:HasTag("merm") or has_merm_disguise) and 
-           not (guy:HasTag("player") and TheWorld.components.mermkingmanager:HasKing() ~= nil) and 
+           not (guy:HasTag("player") and (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() ~= nil)) and 
            not (leader and leader:HasTag("player")) and 
            not (guy.components.follower and guy.components.follower.leader and -- Prevents merms from attacking chester
                (guy.components.follower.leader:HasTag("merm") or test_disguise(guy.components.follower.leader)) and not guy:HasTag("pig"))
@@ -185,7 +185,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
     if item.components.edible ~= nil then
         if inst.components.combat:TargetIs(giver) then
             inst.components.combat:SetTarget(nil)
-        elseif giver.components.leader ~= nil and not TheWorld.components.mermkingmanager:IsCandidate(inst) then
+        elseif giver.components.leader ~= nil and not (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst)) then
             giver:PushEvent("makefriend")
             giver.components.leader:AddFollower(inst)
 
@@ -292,11 +292,11 @@ end
 local function ShouldSleep(inst)
     return NocturnalSleepTest(inst)
         and ((inst.components.follower == nil or inst.components.follower.leader) == nil and 
-        not TheWorld.components.mermkingmanager:IsCandidate(inst))
+        not TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst))
 end
 
 local function ShouldWakeUp(inst)
-    return NocturnalWakeTest(inst) or TheWorld.components.mermkingmanager:IsCandidate(inst)
+    return NocturnalWakeTest(inst) or (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst))
 end
 
 local function OnTimerDone(inst, data)
@@ -446,7 +446,7 @@ local function guard_master(inst)
     end, TheWorld)
 
     inst:DoTaskInTime(0,function()
-        if not TheWorld.components.mermkingmanager:HasKing() then
+        if not (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing()) then
             RoyalGuardDowngrade(inst)
         end
     end)
@@ -458,7 +458,7 @@ local function common_common(inst)
 end
 
 local function OnEat(inst, data)
-    if TheWorld.components.mermkingmanager:IsCandidate(inst) then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst) then
         if data.food and data.food.components.edible then
             inst.components.mermcandidate:AddCalories(data.food)
         end
@@ -508,7 +508,7 @@ local function common_master(inst)
 
     inst:ListenForEvent("oneat", OnEat)
 
-    if TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
         RoyalUpgrade(inst)
     end
 end

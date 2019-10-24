@@ -155,7 +155,7 @@ function MermKingManager:FindMermCandidate(throne)
 	if throne then
 		local merm_candidate = FindEntity(throne, 50, 
 			function(ent)
-				return not ent.components.health:IsDead() and ent:IsValid() and not self:IsCandidate(ent)
+				return ent:IsValid() and ent.components.health and not ent.components.health:IsDead() and not self:IsCandidate(ent)
 			end, 
 		{"merm"}, {"player", "mermking", "mermguard"})
 

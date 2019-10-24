@@ -3,7 +3,7 @@ local MakePlayerCharacter = require("prefabs/player_common")
 local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
-    Asset("SOUND", "sound/webber.fsb"),
+    Asset("SOUND", "sound/wurt.fsb"),
     Asset("ANIM", "anim/player_idles_wurt.zip"),
 }
 
@@ -206,7 +206,7 @@ local function master_postinit(inst)
     inst.peruse_gardening = peruse_gardening  
 
     inst:DoTaskInTime(0, function() 
-        if TheWorld.components.mermkingmanager:HasKing() then
+        if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
             RoyalUpgrade(inst)
         end
     end)

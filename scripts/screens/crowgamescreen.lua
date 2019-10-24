@@ -449,24 +449,26 @@ function CrowGameScreen:AddPowerupUI( order, data )
 end
 
 function CrowGameScreen:InitGameBoard()
-	self.score = 0
-	self.move_score = 0
-	self.moves = 0
-	self.crows_cleared = 0
-	self.tiles_cleared = 0
-	for _,data in pairs(POWERUPS) do		
-		self.num_powerup[data.powerup] = self.num_powerup_default[data.powerup]
-	end
-	
-	for _,tile in pairs(self.game_grid) do
-		tile:ClearTile()
-	end
-	self:FillEmptyTiles()
-	scheduler:ExecuteInTime(DROP_WAIT, function() 
-		self.game_state = GS_TILE_SELECT_REG
+	if self.game_state ~= GS_TILES_DROPPING then
+		self.score = 0
+		self.move_score = 0
+		self.moves = 0
+		self.crows_cleared = 0
+		self.tiles_cleared = 0
+		for _,data in pairs(POWERUPS) do		
+			self.num_powerup[data.powerup] = self.num_powerup_default[data.powerup]
+		end
+		
+		for _,tile in pairs(self.game_grid) do
+			tile:ClearTile()
+		end
+		self:FillEmptyTiles()
+		scheduler:ExecuteInTime(DROP_WAIT, function() 
+			self.game_state = GS_TILE_SELECT_REG
+			self:UpdateInterface()
+		end)
 		self:UpdateInterface()
-	end)
-    self:UpdateInterface()
+	end
 end
 
 function CrowGameScreen:CalcMoveScore()

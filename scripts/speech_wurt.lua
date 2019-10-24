@@ -200,7 +200,7 @@ return{
 	ANNOUNCE_DIG_DISEASE_WARNING = "Look better?",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Gluurgh... smell bad.",
 	ANNOUNCE_ADVENTUREFAIL = "Grrr, messed up!",
-    ANNOUNCE_MOUNT_LOWHEALTH = "Big fuzzy looks hurt...",
+    ANNOUNCE_MOUNT_LOWHEALTH = "Big fuzzy look hurt...",
 
     --waxwell and wickerbottom specific strings
 --fallback to speech_wilson.lua     ANNOUNCE_TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
@@ -511,7 +511,7 @@ return{
             HAUNTED_GROUND = "Shouldn't be here, flurp...",
         },
 
-        BALLOONS_EMPTY = "Looks chewy, florp.",
+        BALLOONS_EMPTY = "Look chewy, florp.",
         BALLOON = "Want one!!",
 
         BERNIE_INACTIVE =
@@ -701,7 +701,7 @@ return{
         BELL = "Make nice sound.",
         STATUEGLOMMER =
         {
-            GENERIC = "Rock looks like weird bug.",
+            GENERIC = "Rock look like weird bug.",
             EMPTY = "Oops... didn't do it!",
         },
 
@@ -774,9 +774,9 @@ return{
 			CAVE = "This not good spot.",
 --fallback to speech_wilson.lua 			WEREBEAVER = "only_used_by_woodie", --woodie specific
         },
-		THULECITE = "Looks weird, florp...",
+		THULECITE = "Look weird, florp...",
 		ARMORRUINS = "Strong!",
-		ARMORSKELETON = "Glorp! Looks scary!",
+		ARMORSKELETON = "Glorp! Look scary!",
 		SKELETONHAT = "Glurph... head feel funny...",
 		RUINS_BAT = "Clobbery!",
 		RUINSHAT = "Queen Wurt!!",
@@ -901,7 +901,7 @@ return{
         },
         MUSHTREE_TALL =
         {
-            GENERIC = "Looks kinda tasty, florp",
+            GENERIC = "Look kinda tasty, florp",
             BLOOM = "Something falling off it.",
         },
         MUSHTREE_MEDIUM =
@@ -1108,7 +1108,7 @@ return{
 			WITHERED = "It don't like heat either.",
 			GENERIC = "Gotta eat them fast!",
 			PICKED = "Make snacks! Make snacks!",
-			DISEASED = "Looks bad, florp.",
+			DISEASED = "Look bad, florp.",
 			DISEASING = "Don't look right.",
 			BURNING = "Hot! Hot!!",
 		},
@@ -1330,7 +1330,7 @@ return{
 		DRAGONFLY = "Scaled-folk shouldn't fight, florp!",
 		ARMORDRAGONFLY = "More scales!!",
 		DRAGON_SCALES = "Pretty...",
-		DRAGONFLYCHEST = "Like looks of this box, florpt.",
+		DRAGONFLYCHEST = "Like look of this box, florpt.",
 		DRAGONFLYFURNACE = 
 		{
 			HAMMERED = "Broke it...",
@@ -1357,7 +1357,7 @@ return{
 		{
 			STARVING = "Need to find food for you quick!",
 			HUNGRY = "Needs snack!",
-			CONTENT = "Looks happy!",
+			CONTENT = "Look happy!",
 			GENERIC = "She give warm cuddles.",
 		},
 		LAVAE_EGG = 
@@ -1906,7 +1906,7 @@ return{
         ROCK_ICE_MELTED = "Slushy puddle.",
         ICE = "Brrrr...",
         ROCKS = "Buncha rocks, florp.",
-        ROOK = "Looks mean...",
+        ROOK = "Look mean...",
         ROPE = "For tying, florpt.",
         ROTTENEGG = "Has good stink to it.",
         ROYAL_JELLY = "Mmmmmmmm!",
@@ -1952,7 +1952,7 @@ return{
 			FINISHED = "All together!",
 			READY = "Something happening...",
 		},
-        SCULPTURE_BISHOPHEAD = "Looks lost, flort.",
+        SCULPTURE_BISHOPHEAD = "Look lost, flort.",
 		SCULPTURE_BISHOPBODY = 
 		{
 			COVERED = "Something weird about it.",
@@ -1965,7 +1965,7 @@ return{
 		{
 			COVERED = "That a strange lump of rock...",
 			UNCOVERED = "Missing something...",
-			FINISHED = "Looks a bit better, flurt.",
+			FINISHED = "Look a bit better, flurt.",
 			READY = "Something happening...",
 		},
         GARGOYLE_HOUND = "It look surprised.",
@@ -1983,7 +1983,7 @@ return{
 		{
 			GENERIC = "It so teeny!",
 			HUNGRY = "Wants snack, florp.",
-			STARVING = "Looks really hungry.",
+			STARVING = "Look really hungry.",
 			SLEEPING = "Sleep tight!",
 		},
 		SMALLMEAT = "Glurgh...",
@@ -2126,7 +2126,7 @@ return{
 		TRINKET_21 = "Scale-less have weird inventions, florp.", --Egg Beater
 		TRINKET_22 = "Tiny rope?", --Frayed Yarn
 		TRINKET_23 = "Not look like a horn, florp.", --Shoehorn
-		TRINKET_24 = "Looks happy.", --Lucky Cat Jar
+		TRINKET_24 = "Look happy.", --Lucky Cat Jar
 		TRINKET_25 = "How get tree so small and flat?", --Air Unfreshener
 		TRINKET_26 = "Where all the insides?!", --Potato Cup
 		TRINKET_27 = "Has little claw at the end!", --Coat Hanger
@@ -2176,7 +2176,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Didn't turn out so good...",
 		HALLOWEENPOTION_DRINKS_POTENT = "Has strong smell.",
         HALLOWEENPOTION_BRAVERY = "Not scared of anything, flurt!",
-		HALLOWEENPOTION_MOON = "Looks breakable...",
+		HALLOWEENPOTION_MOON = "Look breakable...",
 		HALLOWEENPOTION_FIRE_FX = "Sparkle bottle.", 
 		MADSCIENCE_LAB = "Bubble, bubble!",
 		LIVINGTREE_ROOT = "Still roots left!", 
@@ -2432,8 +2432,8 @@ return{
 		LAVAARENA_FEATHERCROWNHAT = "Those fluffy feathers make me want to run!",
         LAVAARENA_HEALINGFLOWERHAT = "The blossom interacts well with healing magic.",
         LAVAARENA_LIGHTDAMAGERHAT = "My strikes would hurt a little more wearing that.",
-        LAVAARENA_STRONGDAMAGERHAT = "It looks like it packs a wallop.",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "Looks like it amplifies healing expertise.",
+        LAVAARENA_STRONGDAMAGERHAT = "It look like it packs a wallop.",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "Look like it amplifies healing expertise.",
         LAVAARENA_EYECIRCLETHAT = "It has a gaze full of science.",
         LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
         LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
@@ -2727,7 +2727,7 @@ return{
 			WITHERED = "It look thirsty.",
 			GENERIC = "Huh? Those fruits look like rocks, flort.",
 			PICKED = "Grow back now!",
-			DISEASED = "Looks sick, flurt.",
+			DISEASED = "It look sick, flurt.",
             DISEASING = "Something wrong with it...",
 			BURNING = "Fire! Fire!",
 		},
@@ -2842,7 +2842,7 @@ return{
 
 		GESTALT = "They want to tell story.",
 
-		COOKIECUTTER = "Looks friendly.",
+		COOKIECUTTER = "It look friendly.",
 		COOKIECUTTERSHELL = "Ha ha! Mine now!",
 		COOKIECUTTERHAT = "Make good spiky hat!",
 		SALTSTACK =
