@@ -135,8 +135,8 @@ function OvalPortrait:SetPortrait(herocharacter)
     if self.la_items then
 		local hero_items = TUNING.GAMEMODE_STARTING_ITEMS.LAVAARENA[string.upper(herocharacter)]
 		if hero_items ~= nil then
-			local item1 = STRINGS.NAMES[string.upper(hero_items[1])]
-			local item2 = STRINGS.NAMES[string.upper(hero_items[2])]
+			local item1 = hero_items[1] ~= nil and STRINGS.NAMES[string.upper(hero_items[1])] or "??"
+			local item2 = hero_items[2] ~= nil and STRINGS.NAMES[string.upper(hero_items[2])] or "??"
 			self.la_items:SetString(STRINGS.UI.PORTRAIT.ITEMS .. " : " ..  item1 .. ", " .. item2)
 		else
 			self.la_items:SetString("")

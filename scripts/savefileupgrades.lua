@@ -726,7 +726,21 @@ t = {
         },
 
 		
+        {
+            version = 5.031, -- RoT: Brine Pool fixup - fixup for people who took a particular retrofitting path the resulted in no brine pools (salt stacks and cookie cutters).
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
 
+                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+					if savedata.map.has_ocean then
+						savedata.retrofit_savedata_fixupbrinepools = true
+					end
+                end
+             end,
+        },
+		
     },
 }
 

@@ -630,6 +630,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+		halloweenpotionmoon = function(inst, doer, target, actions)
+			if not target:HasTag("DECOR") then
+				table.insert(actions, ACTIONS.HALLOWEENMOONMUTATE)
+			end
+		end,
+
         healer = function(inst, doer, target, actions)
             if target.replica.health ~= nil and target.replica.health:CanHeal() then
                 table.insert(actions, ACTIONS.HEAL)

@@ -21,8 +21,8 @@ local FILTER_DISCOUNT_INDEX = 3
 local SUPPORT_VIRTUAL_IAP = false --IsConsole()
 
 --view modes
-MODE_REGULAR = 0 -- IAP_TYPE_REAL
-MODE_CURRENCY_PACKS = 1 -- IAP_TYPE_VIRTUAL
+MODE_REGULAR = 0
+MODE_CURRENCY_PACKS = 1
 
 
 
@@ -399,7 +399,10 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def, screen_self)
     self.divider:SetScale(1.315)
 
     self.buy_button = self.text_root:AddChild(TEMPLATES.StandardButton(
-            nil,
+            function()
+                TheFrontEnd:PopScreen()
+                onPurchaseClickFn( self )
+            end,
             STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_BTN,
             {250, 80}
         )
@@ -423,7 +426,8 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def, screen_self)
 					},
 				}
 			)
-			instructions.owned_by_wardrobe = true
+            instructions.owned_by_wardrobe = true
+            TheFrontEnd:PopScreen()
 			TheFrontEnd:PushScreen( instructions )
 		end
     self.button_dlc = self.text_root:AddChild(TEMPLATES.StandardButton(
@@ -450,8 +454,6 @@ function PurchasePackPopup:SetData( iap_def )
     self.desc:SetString( GetSkinDescription( self.iap_def.item_type ) )
 
     self.buy_button:SetText(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_BTN)
-    self.buy_button:SetOnClick( function() onPurchaseClickFn( self ) end )
-
     self.savings_frame:SetScale(0.85)
     self.oldprice_line:SetScale(1.3)
     self.text_root:SetPosition(250, 10)
@@ -781,7 +783,6 @@ function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
         -- Don't show items unless we have data/strings to describe them.
         if MISC_ITEMS[iap.item_type] then
             if SUPPORT_VIRTUAL_IAP then
-                --print(self.view_mode)
                 if self.view_mode == MODE_REGULAR and iap.iap_type == IAP_TYPE_VIRTUAL then
                     table.insert(all_iap_defs, iap)
                 end
@@ -959,6 +960,7 @@ function PurchasePackScreen:_BuildPurchasePanel()
 				oldRefreshView(self)
             end
             
+            self.panel_built = true
 
             self.side_panel = self.root:AddChild(Widget("side_panel"))
             self.side_panel:SetPosition(-480,0)
@@ -996,8 +998,6 @@ function PurchasePackScreen:_BuildPurchasePanel()
 
             self.side_panel.focus_forward = self.filters[1]
 
-            
-            purchase_ss:SetFocusChangeDir(MOVE_LEFT, self.side_panel)
             self.side_panel:SetFocusChangeDir(MOVE_RIGHT, purchase_ss)
 
             self.empty_txt = purchase_ss.scroll_window:AddChild(Text(CHATFONT, 26, STRINGS.UI.PURCHASEPACKSCREEN.EMPTY_AFTER_FILTER))
@@ -1018,10 +1018,12 @@ function PurchasePackScreen:_BuildPurchasePanel()
                 self.view_modes:SetScale(0.75)
                 self.view_modes:SetPosition( 0, 60 )
 
+                self.hide_currency_button = nil
                 self.view_currency_button = self.view_modes:AddChild( TEMPLATES.StandardButton(
                     function() 
                         self.view_mode = MODE_CURRENCY_PACKS
                         self:RefreshScreen()
+                        self.hide_currency_button:SetFocus()
                     end,
                     STRINGS.UI.PURCHASEPACKSCREEN.VIEW_CURRENCY,
                     {250, 60}
@@ -1030,10 +1032,12 @@ function PurchasePackScreen:_BuildPurchasePanel()
                     function() 
                         self.view_mode = MODE_REGULAR
                         self:RefreshScreen()
+                        self.view_currency_button:SetFocus()
                     end,
                     STRINGS.UI.PURCHASEPACKSCREEN.VIEW_REGULAR,
                     {250, 60}
                 ))
+                self.view_currency_button:SetFocusChangeDir(MOVE_DOWN, self.side_panel)
 
                 self.currency_needed_txt = self.side_panel:AddChild(Text(CHATFONT, 26))
                 self.currency_needed_txt:EnableWordWrap(true)
@@ -1062,9 +1066,9 @@ end
 
 
 function PurchasePackScreen:RefreshScreen()
+    local iap_defs = self:GetIAPDefs()
     if self.purchase_root.scroll_window ~= nil then
-        local iap_defs = self:GetIAPDefs()
-        if table.getn(iap_defs) == 0 then
+        if #iap_defs == 0 then
             self.empty_txt:Show()
         else
             self.empty_txt:Hide()
@@ -1072,18 +1076,22 @@ function PurchasePackScreen:RefreshScreen()
         self.purchase_root.scroll_window.grid:SetItemsData(iap_defs)
     end
 
-
-
-    if SUPPORT_VIRTUAL_IAP then
+    if SUPPORT_VIRTUAL_IAP and self.panel_built then
         if self.view_mode == MODE_REGULAR then
             self.view_currency_button:Show()
             self.hide_currency_button:Hide()
             self.filter_container:Show()
             self.currency_needed_txt:Hide()
+            
+            self.side_panel:SetFocusChangeDir(MOVE_UP, self.view_currency_button)
+            self.purchase_root:SetFocusChangeDir(MOVE_LEFT, self.side_panel)
+
         else
             self.view_currency_button:Hide()
             self.hide_currency_button:Show()
             self.filter_container:Hide()
+
+            self.purchase_root:SetFocusChangeDir(MOVE_LEFT, self.hide_currency_button)
         end
 
 

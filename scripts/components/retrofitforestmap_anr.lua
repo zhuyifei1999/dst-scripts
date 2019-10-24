@@ -126,14 +126,6 @@ local function TurnOfTidesRetrofitting_PopulateOcean()
 				seastack = 1,
 			},
 		},
-		OCEAN_BRINEPOOL = {
-			distributepercent = 0.3,
-			distributeprefabs =
-			{
-				seastack = 1,
-				antchovies_group = 1,
-			},
-		},
 		OCEAN_HAZARDOUS = {
 			distributepercent = 0.15,
 			distributeprefabs =
@@ -677,14 +669,14 @@ function self:OnPostInit()
 			print("Retrofitting - No sculpture pieces required repositioning.")
 		end
 	end
-
+	
 	if self.retrofit_salty then
 		-- add shoals for malbatross spawning, salt statcks and cookie citter spawners
 		print ("Retrofitting for Return Of Them: Salty Dog - Adding Malbatross food sources.")
 		SaltyRetrofitting_PopulateShoalSpawner()
 
-		print ("Retrofitting for Return Of Them: Salty Dog - Raising salt levels.")
-		SaltyRetrofitting_PopulateBrinePools()
+--		print ("Retrofitting for Return Of Them: Salty Dog - Raising salt levels.")
+--		SaltyRetrofitting_PopulateBrinePools()
 	end
 
 	---------------------------------------------------------------------------

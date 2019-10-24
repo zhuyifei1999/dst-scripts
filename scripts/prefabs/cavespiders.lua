@@ -211,6 +211,21 @@ local function MakeWeapon(inst)
     end
 end
 
+local function HalloweenMoonMutate(inst, new_inst)
+	local leader = inst ~= nil and inst.components.follower ~= nil
+		and new_inst ~= nil and new_inst.components.follower ~= nil
+		and inst.components.follower:GetLeader()
+		or nil
+
+	if leader ~= nil then
+		new_inst.components.follower:SetLeader(leader)
+		new_inst.components.follower:AddLoyaltyTime(
+			inst.components.follower:GetLoyaltyPercent()
+			* (new_inst.components.follower.maxfollowtime or inst.components.follower.maxfollowtime)
+		)
+	end
+end
+
 local function create_common(bank, build, tag, common_init)
     local inst = CreateEntity()
 
@@ -357,6 +372,11 @@ local function create_hider()
     inst.components.locomotor.runspeed = TUNING.SPIDER_HIDER_RUN_SPEED
 
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("spider_moon")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(HalloweenMoonMutate)
+
     return inst
 end
 
@@ -383,6 +403,10 @@ local function create_spitter()
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
     MakeWeapon(inst)
 
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("spider_moon")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(HalloweenMoonMutate)
+
     return inst
 end
 
@@ -404,6 +428,10 @@ local function create_dropper()
     inst.components.locomotor.runspeed = TUNING.SPIDER_WARRIOR_RUN_SPEED
 
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("spider_moon")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(HalloweenMoonMutate)
 
     return inst
 end

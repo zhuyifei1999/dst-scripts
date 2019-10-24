@@ -422,6 +422,21 @@ function Container:Has(item, amount)
     return num_found >= amount, num_found
 end
 
+function Container:HasItemWithTag(tag, amount)
+    local num_found = 0
+    for k,v in pairs(self.slots) do
+        if v and v:HasTag(tag) then
+            if v.components.stackable ~= nil then
+                num_found = num_found + v.components.stackable:StackSize()
+            else
+                num_found = num_found + 1
+            end
+        end
+    end
+
+    return num_found >= amount, num_found
+end
+
 function Container:GetItemByName(item, amount)
     local total_num_found = 0
     local items = {}

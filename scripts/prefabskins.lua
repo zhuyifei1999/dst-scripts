@@ -62,6 +62,7 @@ PREFAB_SKINS = {
 		"backpack_deerclops",
 		"backpack_dragonfly_fire",
 		"backpack_glommer",
+		"backpack_hound",
 		"backpack_mandrake",
 		"backpack_mushy",
 		"backpack_poop",
@@ -76,6 +77,7 @@ PREFAB_SKINS = {
 	bedroll_furry = 
 	{
 		"bedroll_furry_quilt_blue_frost",
+		"bedroll_furry_quilt_green_hunters",
 		"bedroll_furry_quilt_white_ivory",
 	},
 	beefalohat = 
@@ -125,6 +127,10 @@ PREFAB_SKINS = {
 		"catcoonhat_trapper_rooster",
 		"catcoonhat_trapperup_rooster",
 		"hat_puppy_cap",
+	},
+	coldfirepit = 
+	{
+		"coldfirepit_teeth",
 	},
 	cookpot = 
 	{
@@ -314,6 +320,10 @@ PREFAB_SKINS = {
 		"orangestaff_ancient",
 		"orangestaff_victorian",
 	},
+	pickaxe = 
+	{
+		"pickaxe_scythe",
+	},
 	pighouse = 
 	{
 		"pighouse_logcabin",
@@ -363,6 +373,7 @@ PREFAB_SKINS = {
 		"spear_forge_lance",
 		"spear_hockey",
 		"spear_rose",
+		"spear_simple",
 	},
 	spear_wathgrithr = 
 	{
@@ -420,6 +431,7 @@ PREFAB_SKINS = {
 	},
 	warly = 
 	{
+		"warly_candyman",
 		"warly_fisherman",
 		"warly_none",
 		"warly_rose",
@@ -441,6 +453,7 @@ PREFAB_SKINS = {
 		"wathgrithr_nature",
 		"wathgrithr_none",
 		"wathgrithr_rose",
+		"wathgrithr_scarecrow",
 		"wathgrithr_shadow",
 		"wathgrithr_survivor",
 		"wathgrithr_victorian",
@@ -464,6 +477,7 @@ PREFAB_SKINS = {
 		"waxwell_rose",
 		"waxwell_survivor",
 		"waxwell_unshadow",
+		"waxwell_vampire",
 		"waxwell_victorian",
 	},
 	webber = 
@@ -531,6 +545,7 @@ PREFAB_SKINS = {
 		"wickerbottom_none",
 		"wickerbottom_rose",
 		"wickerbottom_shadow",
+		"wickerbottom_spiderwitch",
 		"wickerbottom_survivor",
 		"wickerbottom_victorian",
 	},
@@ -580,6 +595,7 @@ PREFAB_SKINS = {
 		"winona_factory",
 		"winona_formal",
 		"winona_formalp",
+		"winona_frankenstein",
 		"winona_gladiator",
 		"winona_grassgecko",
 		"winona_grassgecko_d",
@@ -654,10 +670,18 @@ PREFAB_SKINS = {
 	},
 	wortox = 
 	{
+		"wortox_dragon",
 		"wortox_minotaur",
 		"wortox_none",
 		"wortox_original",
 		"wortox_survivor",
+	},
+	wurt = 
+	{
+		"wurt_cave",
+		"wurt_formal",
+		"wurt_none",
+		"wurt_shadow",
 	},
 	wx78 = 
 	{

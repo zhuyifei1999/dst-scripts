@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Curious. I seem to be hallucinating.",
 	ANNOUNCE_BRAVERY_POTION = "My intestinal fortitude has returned!",
+	ANNOUNCE_MOONPOTION_FAILED = "Oh dear, that didn't go as planned.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on a moment, dear.",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I can only work tirelessly for so long.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Did I just feel a raindrop?",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Combat!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Not as potent as I would have liked.",
 		HALLOWEENPOTION_DRINKS_POTENT = "An impressive elixir.",
         HALLOWEENPOTION_BRAVERY = "Bottled valor.",
+		HALLOWEENPOTION_MOON = "It seems to catalyze a mutation.",
 		HALLOWEENPOTION_FIRE_FX = "It appears combustible.", 
 		MADSCIENCE_LAB = "Mad science indeed!",
 		LIVINGTREE_ROOT = "The root cutting of a beastly tree.", 
@@ -2858,9 +2865,9 @@ return{
             GENERIC = "It will be nice to eat some properly prepared food.",
             DONE = "Smells nourishing.",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "Patience is a virtue!",
+			COOKING_SHORT = "This will be finished in no time at all.",
+			EMPTY = "Hm, perhaps I'll whip something up.",
         },
         
         PORTABLEBLENDER_ITEM = "Quite a lively cooking instrument.",
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "It appears to induce a Castorthropic state.",
         WEREITEM_GOOSE = "An... artistic representation of the Branta canadensis.",
         WEREITEM_MOOSE = "Someone's going to trip on this, dear.",
+
+        MERMHAT = "I'm not eager to test out its effectiveness.",
+        MERMTHRONE = "The \"if it fits, it sits\" method of choosing a monarch. I'm familiar.",
+        MERMTHRONE_CONSTRUCTION = "Careful not to get a splinter, dear.",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "It's good to see her doing something constructive.",
+            BURNT = "Oh dear...",
+        },
+
+        MERMWATCHTOWER_REGULAR = "They seem to have found themselves a leader.",
+        MERMWATCHTOWER_NOKING = "A crude, but effective fortification.",
+        MERMKING = "He seems to be the one in charge here.",
+        MERMGUARD = "A royal bodyguard.",
+        MERM_PRINCE = "The heir, apparently.",
+
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

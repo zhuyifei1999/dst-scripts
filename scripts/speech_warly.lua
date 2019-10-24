@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Eee!",
 	ANNOUNCE_BRAVERY_POTION = "I feel bold as a sharp cheddar!",
+	ANNOUNCE_MOONPOTION_FAILED = "Perhaps that is for the best.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, mon amie.",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Ah non, I think I'm losing steam.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Is it getting a bit soggy in here?",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "I'm also an accomplished butcher!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "I don't think it'll do much.",
 		HALLOWEENPOTION_DRINKS_POTENT = "Oof, smells strong.",
         HALLOWEENPOTION_BRAVERY = "I'm not convinced I want to drink it.",
+		HALLOWEENPOTION_MOON = "I wouldn't drink that, mon ami.",
 		HALLOWEENPOTION_FIRE_FX = "The fire has caramelized.", 
 		MADSCIENCE_LAB = "Chemistry is just fancy cooking, non?",
 		LIVINGTREE_ROOT = "Edible roots, perhaps?", 
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "You're mastering this curse business, mon ami!",
         WEREITEM_GOOSE = "Well... that certainly is... something.",
         WEREITEM_MOOSE = "Excusez-moi, but why does this smell like meat?",
+
+        MERMHAT = "Mon dieu, must I dress as a frog?",
+        MERMTHRONE = "Très royal!",
+        MERMTHRONE_CONSTRUCTION = "You have all the ingredients you need?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Oh! It looks... very nice!",
+            BURNT = "Quel dommage, she worked so hard on it...",
+        },
+
+        MERMWATCHTOWER_REGULAR = "At least they seem friendly!",
+        MERMWATCHTOWER_NOKING = "They don't look so friendly now...",
+        MERMKING = "A real frog prince!",
+        MERMGUARD = "A most fearsome fishmonger!",
+        MERM_PRINCE = "Hm... he doesn't seem so different from the others.",
+
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

@@ -542,6 +542,9 @@ local function fndefault()
     MakeMediumFreezableCharacter(inst, "hound_body")
     MakeMediumBurnableCharacter(inst, "hound_body")
 
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("mutatedhound")
+
     return inst
 end
 
@@ -687,7 +690,7 @@ local function fnclay()
 end
 
 local function fnmutated()
-    local inst = fncommon("hound", "hound_mutated", nil, nil, nil, {amphibious = true})
+    local inst = fncommon("hound", "hound_mutated", nil, nil, "hound_mutated", {amphibious = true})
 
     if not TheWorld.ismastersim then
         return inst

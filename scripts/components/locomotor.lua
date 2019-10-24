@@ -15,10 +15,10 @@ local INVALID_PLATFORM_ID = "INVALID PLATFORM"
 
 Dest = Class(function(self, inst, pt, buffered_action)
     self.inst = inst
-	if pt ~= nil then
-		self.pt = pt
-	end
-	self.buffered_action = buffered_action
+    if pt ~= nil then
+        self.pt = pt
+    end
+    self.buffered_action = buffered_action
 end)
 
 function Dest:IsValid()
@@ -38,12 +38,12 @@ function Dest:GetPoint()
     elseif self.inst ~= nil then
         return self.inst.Transform:GetWorldPosition()
     elseif self.pt then
-		return self.pt:Get()
-	elseif self.buffered_action ~= nil then
-		local act_pos = self.buffered_action:GetActionPoint()
-		if act_pos ~= nil then
-			return act_pos:Get()
-		end
+        return self.pt:Get()
+    elseif self.buffered_action ~= nil then
+        local act_pos = self.buffered_action:GetActionPoint()
+        if act_pos ~= nil then
+            return act_pos:Get()
+        end
     end
     return 0, 0, 0
 end
@@ -148,6 +148,32 @@ local function ClientGetSpeedMultiplier(self)
     return mult * (self:TempGroundSpeedMultiplier() or self.groundspeedmultiplier) * self.throttle
 end
 
+function ServerIsFasterOnGroundTile(self, ground_tile)
+	if self.inst.player_classified == nil or not self.inst.player_classified.isghostmode:value() then
+		local rider = self.inst.components.rider
+		local mount = rider ~= nil and rider:IsRiding() and rider:GetMount() or nil
+		if mount ~= nil then
+			return mount.components.locomotor ~= nil and mount.components.locomotor.faster_on_tiles[ground_tile]
+		end
+		return self.faster_on_tiles[ground_tile] == true
+	end
+
+	return false
+end
+
+function ClientIsFasterOnGroundTile(self, ground_tile)
+	if self.inst.player_classified == nil or not self.inst.player_classified.isghostmode:value() then
+		local rider = self.inst.replica.rider
+		local mount = rider ~= nil and rider:IsRiding() and rider:GetMount() or nil
+		if mount ~= nil then
+			return mount:HasTag("turfrunner_"..tostring(ground_tile))
+		end
+		return self.inst:HasTag("turfrunner_"..tostring(ground_tile))
+	end
+
+	return false
+end
+
 local LocoMotor = Class(function(self, inst)
     self.inst = inst
     self.ismastersim = TheWorld.ismastersim
@@ -158,11 +184,13 @@ local LocoMotor = Class(function(self, inst)
         self.FasterOnRoad = ServerFasterOnRoad
         self.ExternalSpeedMultiplier = ServerExternalSpeedMutliplier
         self.GetSpeedMultiplier = ServerGetSpeedMultiplier
+		self.IsFasterOnGroundTile = ServerIsFasterOnGroundTile
     else
         self.RunSpeed = ClientRunSpeed
         self.FasterOnRoad = ClientFasterOnRoad
         self.ExternalSpeedMultiplier = ClientExternalSpeedMultiplier
         self.GetSpeedMultiplier = ClientGetSpeedMultiplier
+		self.IsFasterOnGroundTile = ClientIsFasterOnGroundTile
         removesetter(self, "runspeed")
         removesetter(self, "externalspeedmultiplier")
     end
@@ -195,6 +223,8 @@ local LocoMotor = Class(function(self, inst)
     self.hop_distance = 6
     self.hopping = false
     self.time_before_next_hop_is_allowed = 0
+
+    self.faster_on_tiles = {}
 
     --self.isupdating = nil
 end,
@@ -229,6 +259,10 @@ end
 function LocoMotor:OnRemoveFromEntity()
     if self.ismastersim then
         self.inst:RemoveTag("locomotor")
+
+		for ground_tile, _ in pairs(self.faster_on_tiles) do
+			inst:RemoveTag("turfrunner_"..tostring(ground_tile))
+		end
     end
 end
 
@@ -333,14 +367,24 @@ function LocoMotor:GetRunSpeed()
     return self:RunSpeed() * self:GetSpeedMultiplier()
 end
 
+function LocoMotor:SetFasterOnGroundTile(ground_tile, is_faster)
+	if self.ismastersim then
+		self.faster_on_tiles[ground_tile] = is_faster
+		if is_faster then
+			self.inst:AddTag("turfrunner_"..tostring(ground_tile))
+		else
+			self.inst:RemoveTag("turfrunner_"..tostring(ground_tile))
+		end
+	end
+end
+
 function LocoMotor:UpdateGroundSpeedMultiplier()
-    local ground = TheWorld
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(x, y, z)
+    local oncreep = self.triggerscreep and TheWorld.GroundCreep:OnCreep(x, y, z)
     if oncreep then
         -- if this ever needs to happen when self.enablegroundspeedmultiplier is set, need to move the check for self.enablegroundspeedmultiplier above
         if not self.wasoncreep then
-            for _, v in ipairs(ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)) do
+            for _, v in ipairs(TheWorld.GroundCreep:GetTriggeredCreepSpawners(x, y, z)) do
                 v:PushEvent("creepactivate", { target = self.inst })
             end
             self.wasoncreep = true
@@ -348,10 +392,11 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
         self.groundspeedmultiplier = self.slowmultiplier
     else
         self.wasoncreep = false
-        self.groundspeedmultiplier = self:FasterOnRoad() and (
-                (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
-                ground.Map:GetTileAtPoint(x, 0, z) == GROUND.ROAD
-            ) and self.fastmultiplier or 1
+
+        local current_ground_tile = TheWorld.Map:GetTileAtPoint(x, 0, z)
+        self.groundspeedmultiplier = (self:IsFasterOnGroundTile(current_ground_tile) or (self:FasterOnRoad() and ((RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or current_ground_tile == GROUND.ROAD)))
+									and self.fastmultiplier 
+									or 1
     end
 end
 
@@ -438,7 +483,7 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
 
     self.throttle = 1
     self:Clear()
-	local action_pos = bufferedaction:GetActionPoint()
+    local action_pos = bufferedaction:GetActionPoint()
 
     if bufferedaction.action == ACTIONS.WALKTO then
         if bufferedaction.target ~= nil then
@@ -510,7 +555,7 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
     end
 
     self:Clear()
-	local action_pos = bufferedaction:GetActionPoint()
+    local action_pos = bufferedaction:GetActionPoint()
     if bufferedaction.action == ACTIONS.WALKTO then
         if bufferedaction.target ~= nil then
             self:GoToEntity(bufferedaction.target, bufferedaction, run)
@@ -613,12 +658,12 @@ end
 
 local function GetPlatformForAction(inst, pt, bufferedaction)
     if bufferedaction ~= nil and bufferedaction.action.is_relative_to_platform then            
-	    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
+        local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
         return TheWorld.Map:GetPlatformAtPoint(my_x, my_z) --locator is relative to my platform
     else
         return TheWorld.Map:GetPlatformAtPoint(pt.x, pt.z) --locator is relative to clicked platform
     end
-	return nil
+    return nil
 end
 
 --V2C: Added overridedest for additional network controller support
@@ -941,8 +986,8 @@ function LocoMotor:OnUpdate(dt)
             not self.bufferedaction.forced and
             self.inst.replica.combat ~= nil then
             reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
-		elseif self.bufferedaction ~= nil 
-			and self.bufferedaction.action.customarrivecheck ~= nil then
+        elseif self.bufferedaction ~= nil 
+            and self.bufferedaction.action.customarrivecheck ~= nil then
             reached_dest, invalid = self.bufferedaction.action.customarrivecheck(self.inst, self.dest)
         else
             local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
@@ -964,10 +1009,10 @@ function LocoMotor:OnUpdate(dt)
                 if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
                     self.inst:FacePoint(self.bufferedaction.target.Transform:GetWorldPosition())
                 elseif self.bufferedaction.invobject ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
-					local act_pos = self.bufferedaction:GetActionPoint() 
-					if act_pos ~= nil then
-	                    self.inst:FacePoint(act_pos:Get())
-					end
+                    local act_pos = self.bufferedaction:GetActionPoint() 
+                    if act_pos ~= nil then
+                        self.inst:FacePoint(act_pos:Get())
+                    end
                 end
                 if self.ismastersim then
                     self.inst:PushBufferedAction(self.bufferedaction)
@@ -1119,15 +1164,15 @@ function LocoMotor:OnUpdate(dt)
             local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
 
             local can_hop = false
-			local hop_x, hop_z, target_platform, blocked
+            local hop_x, hop_z, target_platform, blocked
             local too_early_top_hop = self.time_before_next_hop_is_allowed > 0
-			if my_platform ~= other_platform and not too_early_top_hop
-				    and (self.inst.replica.inventory == nil or not self.inst.replica.inventory:IsHeavyLifting())
-				    and (self.inst.replica.rider == nil or not self.inst.replica.rider:IsRiding())
-				then
+            if my_platform ~= other_platform and not too_early_top_hop
+                    and (self.inst.replica.inventory == nil or not self.inst.replica.inventory:IsHeavyLifting())
+                    and (self.inst.replica.rider == nil or not self.inst.replica.rider:IsRiding())
+                then
 
-				can_hop, hop_x, hop_z, target_platform, blocked = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
-			end
+                can_hop, hop_x, hop_z, target_platform, blocked = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
+            end
 
             if not blocked then
                 if can_hop then
@@ -1153,9 +1198,9 @@ function LocoMotor:OnUpdate(dt)
                 end
             end
 
-			if (not can_hop and my_platform == nil and target_platform == nil and not self.inst.sg:HasStateTag("jumping")) and self.inst.components.drownable ~= nil and self.inst.components.drownable:ShouldDrown() then
-				self.inst:PushEvent("onsink")
-			end
+            if (not can_hop and my_platform == nil and target_platform == nil and not self.inst.sg:HasStateTag("jumping")) and self.inst.components.drownable ~= nil and self.inst.components.drownable:ShouldDrown() then
+                self.inst:PushEvent("onsink")
+            end
 
         else
             local speed_mult = self:GetSpeedMultiplier()

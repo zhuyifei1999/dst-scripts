@@ -59,7 +59,8 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("ANIM", "anim/dst_menu_halloween.zip"),
+                Asset("PKGREF", "anim/dst_menu_halloween.zip"),
+                Asset("ANIM", "anim/dst_menu_wurt.zip"),  
             },
         },
         backend =
@@ -146,8 +147,8 @@ local SPECIAL_EVENT_DEPS =
                 Asset("PKGREF", "anim/dst_menu_wormwood.zip"),
                 Asset("PKGREF", "anim/dst_menu_warly.zip"),
                 Asset("PKGREF", "anim/dst_menu_lunacy.zip"),
-                Asset("ANIM", "anim/dst_menu_woodie.zip"),                
-                Asset("ANIM", "anim/dst_menu_rot2.zip"),
+                Asset("PKGREF", "anim/dst_menu_woodie.zip"),                
+                Asset("PKGREF", "anim/dst_menu_rot2.zip"),
             },
         },
     },

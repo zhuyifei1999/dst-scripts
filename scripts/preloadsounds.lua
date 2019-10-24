@@ -69,6 +69,8 @@ local MainSounds =
 	"wallace.fsb",
 	"turnoftides.fev",
 	"turnoftides.fsb",
+	"turnoftides_music.fsb",
+	"turnoftides_amb.fsb",
 	"saltydog.fev",
 	"saltydog.fsb",
 
@@ -87,6 +89,7 @@ local MainSounds =
 	"worm.fsb",
     "wormwood.fsb",
 	"wx78.fsb",
+	"wurt.fsb",
 }
 
 function PreloadSoundList(list)

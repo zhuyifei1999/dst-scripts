@@ -239,6 +239,10 @@ local function OnIgnite(inst)
     end
 end
 
+local function OnMoonMutate(inst, new_inst)
+	new_inst.colonyNum = inst.colonyNum
+end
+
 local function RememberKnownLocation(inst)
     if inst:IsValid() then  -- yes it can die in one frame
         inst.components.knownlocations:RememberLocation("home", Vector3(inst.Transform:GetWorldPosition()))
@@ -254,7 +258,6 @@ end
 local function OnInit(inst)
     inst.OnEntityWake = CheckAutoRemove
     inst.OnEntitySleep = CheckAutoRemove
-    CheckAutoRemove(inst)
 end
 
 local function fn()
@@ -359,6 +362,10 @@ local function fn()
     inst:AddComponent("inventory")
     inst.components.inventory.maxslots = 1
     inst.components.inventory.acceptsstacks = false
+
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("mutated_penguin")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(OnMoonMutate)
 
     inst:ListenForEvent("attacked", OnAttacked)
 

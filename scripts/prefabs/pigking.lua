@@ -93,7 +93,7 @@ local function ontradeforgold(inst, item, giver)
         -- only people in costumes get a good amount of candy!
         if giver ~= nil and giver.components.skinner ~= nil then
             for _, item in pairs(giver.components.skinner:GetClothing()) do
-                if DoesItemHaveTag(item, "COSTUME") then
+                if DoesItemHaveTag(item, "COSTUME") or DoesItemHaveTag(item, "HALLOWED") then
                     numcandies = numcandies + math.random(4) + 2
                     break
                 end
@@ -555,6 +555,11 @@ local function AcceptTest(inst, item, giver)
 	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and item.prefab == "pig_token" then
 		return -- todo: remove this once post-yotp gameplay is done
 	end
+
+    -- TODO: do we want Wurt to trade?
+    if giver:HasTag("merm") then
+        return
+    end
 
     local is_event_item = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and item.components.tradable.halloweencandyvalue and item.components.tradable.halloweencandyvalue > 0
     return item.components.tradable.goldvalue > 0 or is_event_item or item.prefab == "pig_token"

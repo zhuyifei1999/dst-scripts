@@ -33,8 +33,13 @@ local function onmatured(inst)
     end
     inst.AnimState:OverrideSymbol("swap_grown", inst.components.crop.product_prefab, inst.components.crop.product_prefab.."01")
     inst.components.workable:SetWorkAction(nil)
+    local veg = VEGGIES[inst.components.crop.product_prefab]
+	if veg ~= nil and veg.halloweenmoonmutable_settings ~= nil then
+		inst:AddComponent("halloweenmoonmutable")
+		inst.components.halloweenmoonmutable:SetPrefabMutated(veg.halloweenmoonmutable_settings.prefab)
+		inst.components.halloweenmoonmutable:SetOnMutateFn(veg.halloweenmoonmutable_settings.onmutatefn)
+	end
     if inst.components.timer ~= nil then
-        local veg = VEGGIES[inst.components.crop.product_prefab]
         inst.components.timer:StartTimer("rotting", (veg ~= nil and veg.perishtime or TUNING.PERISH_MED) + math.random() * TUNING.SEG_TIME)
     end
 end

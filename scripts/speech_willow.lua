@@ -370,6 +370,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Were those bats, or am I just seeing things.",
 	ANNOUNCE_BRAVERY_POTION = "Haha! Those bats don't scare me anymore!",
+	ANNOUNCE_MOONPOTION_FAILED = "Huh. Alright then.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hey! Get back up!",
@@ -457,6 +458,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Welp. The motivation didn't last.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Ugh. Back to watching out for puddles.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "It's you or me!",
@@ -2167,6 +2173,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "I wish it was a little stronger.",
 		HALLOWEENPOTION_DRINKS_POTENT = "Ah. The strong stuff.",
         HALLOWEENPOTION_BRAVERY = "It's like there's a fire in my belly.",
+		HALLOWEENPOTION_MOON = "Piping hot mutation juice!",
 		HALLOWEENPOTION_FIRE_FX = "I didn't think it was possible to make fire better.", 
 		MADSCIENCE_LAB = "I like the fire!",
 		LIVINGTREE_ROOT = "It's a stick. But I can't even set it on fire.", 
@@ -2865,9 +2872,9 @@ return{
             GENERIC = "Just a dumb pot.",
             DONE = "Good. Let's eat!",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "Ughhh, this is taking forever!",
+			COOKING_SHORT = "Come on fire, do your thing!",
+			EMPTY = "Stupid empty pot.",
         },
         
         PORTABLEBLENDER_ITEM = "Shakes things up a bit.",
@@ -2932,6 +2939,22 @@ return{
         WEREITEM_BEAVER = "He wouldn't mind if I use this for kindling, right?",
         WEREITEM_GOOSE = "Burn it. BURN. IT.",
         WEREITEM_MOOSE = "Yup, looks cursed alright.",
+
+        MERMHAT = "Yuck, who'd want a face like that?",
+        MERMTHRONE = "I shouldn't burn it... but I want to...",
+        MERMTHRONE_CONSTRUCTION = "What's all this stuff for?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Looks just as flammable as the old ones.",
+            BURNT = "I feel a little bad... actually, no I don't.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Ugh, the SMELL coming from that thing!",
+        MERMWATCHTOWER_NOKING = "I bet that would catch fire reeeal easy.",
+        MERMKING = "Are you supposed to be important or something?",
+        MERMGUARD = "I can't tell which way it's looking.",
+        MERM_PRINCE = "What makes that guy so special?",
+
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

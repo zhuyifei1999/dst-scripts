@@ -262,6 +262,9 @@ function Crop:MakeWithered()
         MakeMediumBurnable(self.inst)
         MakeSmallPropagator(self.inst)
     end
+	if self.inst.components.halloweenmoonmutable ~= nil then
+		self.inst:RemoveComponent("halloweenmoonmutable")
+	end
     if self.onwithered ~= nil then
         self.onwithered(self.inst)
     end

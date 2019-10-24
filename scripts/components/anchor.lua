@@ -78,9 +78,9 @@ function Anchor:GetCurrentDepth()
         if tile then
             local depthcategory = GetTileInfo(tile).ocean_depth
             depth = TUNING.ANCHOR_DEPTH_TIMES[depthcategory]
+            -- self.bottomunits = depth
         end
     end
-
     return depth
 end
 
@@ -213,6 +213,9 @@ function Anchor:AnchorLowered()
 end
 
 function Anchor:OnUpdate(dt)
+
+    -- print("RAISE UNITS",self.raiseunits, "BOTTOM",self:GetCurrentDepth())
+
     if self.is_anchor_transitioning then
 
         local depth = self:GetCurrentDepth()

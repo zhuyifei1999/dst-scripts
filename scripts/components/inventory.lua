@@ -996,6 +996,35 @@ function Inventory:Has(item, amount) --Note(Peter): We don't care about v.skinna
     return num_found >= amount, num_found
 end
 
+function Inventory:HasItemWithTag(tag, amount)
+    local num_found = 0
+    for k, v in pairs(self.itemslots) do
+        if v and v:HasTag(tag) then
+            if v.components.stackable ~= nil then
+                num_found = num_found + v.components.stackable:StackSize()
+            else
+                num_found = num_found + 1
+            end
+        end
+    end
+
+    if self.activeitem and self.activeitem:HasTag(tag) then
+        if self.activeitem.components.stackable ~= nil then
+            num_found = num_found + self.activeitem.components.stackable:StackSize()
+        else
+            num_found = num_found + 1
+        end
+    end
+
+    local overflow = self:GetOverflowContainer()
+    if overflow ~= nil then
+        local overflow_enough, overflow_found = overflow:HasItemWithTag(tag, amount)
+        num_found = num_found + overflow_found
+    end
+
+    return num_found >= amount, num_found
+end
+
 function Inventory:GetItemByName(item, amount) --Note(Peter): We don't care about v.skinname for inventory GetItemByName requests.
     local total_num_found = 0
     local items = {}

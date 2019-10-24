@@ -1172,6 +1172,20 @@ function PlayerProfile:GetKlumpCipher(file)
 end
 
 
+function PlayerProfile:GetCrowGameHighScore(score_version)
+	if self:GetValue("crow_game_high_score"..score_version) ~= nil then
+		return self:GetValue("crow_game_high_score"..score_version)
+	end
+	return 0
+end
+
+function PlayerProfile:SetCrowGameHighScore(score, score_version)
+	self:SetValue("crow_game_high_score"..score_version, score)
+	self.dirty = true
+    self:Save()
+end
+
+
 function PlayerProfile:GetLanguageID()
 	if self:GetValue("language_id") ~= nil then
 		return self:GetValue("language_id")

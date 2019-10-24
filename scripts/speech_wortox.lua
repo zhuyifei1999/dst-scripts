@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "What a s-silly prank!",
 	ANNOUNCE_BRAVERY_POTION = "Okay, let's play!",
+	ANNOUNCE_MOONPOTION_FAILED = "Oh, you're no fun at all.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "C'mon back, silly goose.",
@@ -455,6 +456,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "All work and no play doesn't suit an imp. Hyuyu!",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Alas and alack, the dampness is back.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Let's have some fun.",
@@ -2166,6 +2172,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "How tame and timid!",
 		HALLOWEENPOTION_DRINKS_POTENT = "Hyuyu! This'll put tufts on your chest!",
         HALLOWEENPOTION_BRAVERY = "Tonic of anti-battiness!",
+		HALLOWEENPOTION_MOON = "A brew of switcheroo!",
 		HALLOWEENPOTION_FIRE_FX = "Firewater!", 
 		MADSCIENCE_LAB = "A place to stew my magic brew.",
 		LIVINGTREE_ROOT = "Rooty toot toot!", 
@@ -2864,9 +2871,9 @@ return{
             GENERIC = "Does it make soul food?",
             DONE = "A mortal meal is not really my deal.",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "I suppose I've wasted time in worse ways.",
+			COOKING_SHORT = "A meal made in haste, but not lacking in taste.",
+			EMPTY = "All the food has been spirited away.",
         },
         
         PORTABLEBLENDER_ITEM = "All that chopping and no souls.",
@@ -2931,6 +2938,22 @@ return{
         WEREITEM_BEAVER = "I do love a cursed trinket!",
         WEREITEM_GOOSE = "Let loose the goose!",
         WEREITEM_MOOSE = "Weremoose? There moose!",
+
+        MERMHAT = "Some would call me two-faced, hyuyu!",
+        MERMTHRONE = "A mat made for a monarch.",
+        MERMTHRONE_CONSTRUCTION = "My my, what mischief are you making?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "An abode fit for a toad, hyuyu!",
+            BURNT = "Someone's already had their fun.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "There's a terrible stench of fish...",
+        MERMWATCHTOWER_NOKING = "Guards with no king, like puppets with no string.",
+        MERMKING = "Slimy is the head that wears the crown.",
+        MERMGUARD = "The horns are an improvement.",
+        MERM_PRINCE = "Hyuyuyu, a prince! Charming!",
+
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

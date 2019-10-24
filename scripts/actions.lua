@@ -219,7 +219,7 @@ ACTIONS =
     WRAPBUNDLE = Action({ instant=true }),
     UNWRAP = Action({ rmb=true, priority=2 }),
 	BREAK = Action({ rmb=true, priority=2 }),
-    CONSTRUCT = Action({ distance=2 }),
+    CONSTRUCT = Action({ distance=2.5 }),
     STOPCONSTRUCTION = Action({ instant=true, distance=2 }),
     APPLYCONSTRUCTION = Action({ instant=true, distance=2 }),
     STARTCHANNELING = Action({ distance=2.1 }),
@@ -244,6 +244,8 @@ ACTIONS =
     TACKLE = Action({ rmb=true, distance=math.huge }),
 
     CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
+
+	HALLOWEENMOONMUTATE = Action({ priority=-1 }),
 
     --Quagmire
     TILL = Action({ distance=0.5 }),
@@ -580,7 +582,7 @@ local function row(act)
     if pos == nil then
         pos = act.target:GetPosition()
     end
-    oar.components.oar:Row(act.doer, pos)       
+    oar.components.oar:Row(act.doer, pos)   
     act.doer:PushEvent("working",{}) -- it's not actually doing work, but it can fall out of your hand when wet.
     return true
 end
@@ -2231,23 +2233,47 @@ ACTIONS.TACKLE.fn = function(act)
         and act.doer.components.tackler:StartTackle()
 end
 
+ACTIONS.HALLOWEENMOONMUTATE.fn = function(act)
+	if act.invobject ~= nil and act.invobject.components.halloweenpotionmoon ~= nil then
+		if act.target == nil
+			or (not act.target:HasTag("flying") and not TheWorld.Map:IsPassableAtPoint(act.target.Transform:GetWorldPosition()))
+			or (act.target.components.burnable ~= nil and (act.target.components.burnable:IsBurning() or act.target.components.burnable:IsSmoldering()))
+			or (act.target.components.freezable ~= nil and act.target.components.freezable:IsFrozen()) then
+
+			return false
+		else
+			act.invobject.components.halloweenpotionmoon:Use(act.doer, act.target)
+			return true
+		end
+	end
+end
+
 ACTIONS.APPLYPRESERVATIVE.strfn = function(act)
 	return act.invobject ~= nil and act.invobject.prefab == "saltrock" and "SALT" or nil
 end
 
 ACTIONS.APPLYPRESERVATIVE.fn = function(act)
 	if act.target ~= nil and act.invobject ~= nil and act.invobject.components.preservative ~= nil
-		and act.target.components.health == nil
-		and (act.target:HasTag("fresh") or act.target:HasTag("stale") or act.target:HasTag("spoiled"))
-		and act.target:HasTag("cookable")
-		and not act.target:HasTag("deployable") then
-			act.target.components.perishable:SetPercent(act.target.components.perishable:GetPercent() + (
-				act.invobject.components.preservative.divide_effect_by_stack_size and act.target.components.stackable
-					and act.invobject.components.preservative.percent_increase / act.target.components.stackable.stacksize
-					or act.invobject.components.preservative.percent_increase
-				))
-			act.doer.components.inventory:RemoveItem(act.invobject)
-			return true
+		    and act.target.components.health == nil
+		    and (act.target:HasTag("fresh") or act.target:HasTag("stale") or act.target:HasTag("spoiled"))
+		    and act.target:HasTag("cookable")
+		    and not act.target:HasTag("deployable") then
+
+		act.target.components.perishable:SetPercent(act.target.components.perishable:GetPercent() + (
+			    act.invobject.components.preservative.divide_effect_by_stack_size and
+                act.target.components.stackable and
+                act.invobject.components.preservative.percent_increase / act.target.components.stackable.stacksize or
+                act.invobject.components.preservative.percent_increase
+			)
+        )
+
+		local used_preservative = act.doer.components.inventory:RemoveItem(act.invobject)
+        if used_preservative ~= nil then
+            used_preservative:Remove()
+            return true
+        else
+			return false
+        end
 	else
 		return false
 	end
@@ -2353,8 +2379,8 @@ ACTIONS.BATHBOMB.fn = function(act)
 	    bathbombable:OnBathBombed(act.invobject, act.doer)
 		act.doer.components.inventory:RemoveItem(act.invobject):Remove()
 		return true
-	end
-end
+        end
+    end
 
 ACTIONS.RAISE_SAIL.fn = function(act)     -- this name is backwards. "raising" in this case means making a full sail
     act.target.components.mast:UnfurlSail()

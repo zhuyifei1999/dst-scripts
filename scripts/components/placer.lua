@@ -11,6 +11,7 @@ local Placer = Class(function(self, inst)
     self.onupdatetransform = nil
     self.oncanbuild = nil
     self.oncannotbuild = nil
+    self.onfailedplacement = nil
     self.linked = {}
     self.offset = 1
 end)

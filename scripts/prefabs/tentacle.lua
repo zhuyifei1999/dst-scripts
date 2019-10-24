@@ -95,6 +95,7 @@ local function fn()
     inst:AddTag("hostile")
     inst:AddTag("wet")
     inst:AddTag("WORM_DANGER")
+	inst:AddTag("tentacle")
 
     inst.entity:SetPristine()
 

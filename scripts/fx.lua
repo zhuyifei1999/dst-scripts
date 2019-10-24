@@ -1108,6 +1108,15 @@ local fx =
         fn = FinalOffset3,
     },
     {
+        name = "halloween_moonpuff",
+        bank = "fx_moon_tea",
+        build = "moon_tea_fx",
+        anim = "puff",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
         name = "mudpuddle_splash",
         bank = "mudsplash",
         build = "mudsplash",
@@ -1238,6 +1247,27 @@ local fx =
         anim = "swamp_splash",
     }, 
     ]]
+    {
+        name = "merm_king_splash",
+        bank = "merm_king_splash",
+        build = "merm_king_splash",
+        anim = "merm_king_splash",
+        fn = FinalOffset1,
+    },
+    {
+        name = "merm_splash",
+        bank = "merm_splash",
+        build = "merm_splash",
+        anim = "merm_splash",
+        fn = FinalOffset1,
+    },
+    {
+        name = "merm_spawn_fx",
+        bank = "merm_spawn_fx",
+        build = "merm_spawn_fx",
+        anim = "splash",
+        fn = FinalOffset1,
+    },
 }
 
 for cratersteamindex = 1, 4 do

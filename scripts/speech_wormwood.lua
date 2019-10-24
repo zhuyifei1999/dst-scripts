@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Scary!",
 	ANNOUNCE_BRAVERY_POTION = "Feeling strong!",
+	ANNOUNCE_MOONPOTION_FAILED = "No work",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Helping...",
@@ -454,6 +455,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired now.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Water back!",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "Attack!",
@@ -2164,6 +2170,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Little thing for belly",
 		HALLOWEENPOTION_DRINKS_POTENT = "Big thing for belly",
         HALLOWEENPOTION_BRAVERY = "Makes strong!",
+		HALLOWEENPOTION_MOON = "Change to moony-things",
 		HALLOWEENPOTION_FIRE_FX = "Ka-POW! inside", 
 		MADSCIENCE_LAB = "For making scaries",
 		LIVINGTREE_ROOT = "Needs dirt", 
@@ -2862,9 +2869,9 @@ return{
             GENERIC = "For belly stuff",
             DONE = "All done!",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "Do dee doo...",
+			COOKING_SHORT = "Done soon",
+			EMPTY = "Empty...",
         },
         
         PORTABLEBLENDER_ITEM = "Chops belly stuff",
@@ -2928,7 +2935,23 @@ return{
 
         WEREITEM_BEAVER = "Friend Eater!",
         WEREITEM_GOOSE = "Tweeter?",
-        WEREITEM_MOOSE = "Small Branch Head.",
+        WEREITEM_MOOSE = "Small Branch Head",
+
+        MERMHAT = "Glub Glub pretend face",
+        MERMTHRONE = "Place for big Glub Glub",
+        MERMTHRONE_CONSTRUCTION = "Making something",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Glub Glub house",
+            BURNT = "Oh...",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Glub Glubs happy",
+        MERMWATCHTOWER_NOKING = "Glub Glubs inside",
+        MERMKING = "King Glub Glub",
+        MERMGUARD = "Friends?",
+        MERM_PRINCE = "Special Glub Glub?",
+
     },
 
     DESCRIBE_GENERIC = "Friend?",

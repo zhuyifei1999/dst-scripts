@@ -182,6 +182,21 @@ local function CalcSanityAura(inst, observer)
     return observer:HasTag("spiderwhisperer") and 0 or inst.components.sanityaura.aura
 end
 
+local function HalloweenMoonMutate(inst, new_inst)
+	local leader = inst ~= nil and inst.components.follower ~= nil
+		and new_inst ~= nil and new_inst.components.follower ~= nil
+		and inst.components.follower:GetLeader()
+		or nil
+
+	if leader ~= nil then
+		new_inst.components.follower:SetLeader(leader)
+		new_inst.components.follower:AddLoyaltyTime(
+			inst.components.follower:GetLoyaltyPercent()
+			* (new_inst.components.follower.maxfollowtime or inst.components.follower.maxfollowtime)
+		)
+	end
+end
+
 local function create_common(build, tag)
     local inst = CreateEntity()
     
@@ -286,6 +301,12 @@ local function create_common(build, tag)
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aurafn = CalcSanityAura
+
+	------------------
+
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("spider_moon")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(HalloweenMoonMutate)
 
     MakeHauntablePanic(inst)
 

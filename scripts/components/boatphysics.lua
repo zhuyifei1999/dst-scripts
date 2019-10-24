@@ -1,53 +1,75 @@
 local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
-	local boat_physics = inst.components.boatphysics
     if other ~= nil and other:IsValid() and (other == TheWorld or other:HasTag("BLOCKER") or other.components.boatphysics) and lifetime_in_frames <= 1 then
+        local boat_physics = inst.components.boatphysics
+        
+        -- Prevent multiple collisions with the same object in very short time periods ---------
+        local current_time = GetTime()
+        local too_soon = false
+        for id, time in pairs(boat_physics._recent_collisions) do
+            if (current_time - time) <= TUNING.BOAT.BOATPHYSICS_COLLISION_TIME_BUFFER then
+                if other.GUID == id then
+                    too_soon = true
+                end
+            else
+                boat_physics._recent_collisions[id] = nil
+            end
+        end
+
+        if too_soon then
+            -- Instead of exiting early, we could potentially reduce damage & pushback instead.
+            return
+        end
+        boat_physics._recent_collisions[other.GUID] = current_time
+        ----------------------------------------------------------------------------------------
 
     	local relative_velocity_x = boat_physics.velocity_x
     	local relative_velocity_z = boat_physics.velocity_z
 
-    	local other_boat_physics = other.components.boat_physics
+    	local other_boat_physics = other.components.boatphysics
     	if other_boat_physics ~= nil then
-    		if other_boat_physics ~= nil then
-	    		relative_velocity_x = relative_velocity_x - other_boat_physics.velocity_x
-    			relative_velocity_z = relative_velocity_z - other_boat_physics.velocity_z
-    		end
-    	end  	
-
-    	local velocity = VecUtil_Length(relative_velocity_x, relative_velocity_z)  
-
-
-    	local hit_normal_x, hit_normal_z = VecUtil_Normalize(world_normal_on_b_x, world_normal_on_b_z)
-    	local velocity_normalized_x, velocity_normalized_z = relative_velocity_x, relative_velocity_z
-    	if velocity > 0 then
-    		velocity_normalized_x, velocity_normalized_z = velocity_normalized_x / velocity, velocity_normalized_z / velocity
+	    	relative_velocity_x = relative_velocity_x - other_boat_physics.velocity_x
+    		relative_velocity_z = relative_velocity_z - other_boat_physics.velocity_z
     	end
+
+    	local speed = VecUtil_Length(relative_velocity_x, relative_velocity_z)
+
+    	local velocity_normalized_x, velocity_normalized_z = relative_velocity_x, relative_velocity_z
+    	if speed > 0 then
+    		velocity_normalized_x, velocity_normalized_z = velocity_normalized_x / speed, velocity_normalized_z / speed
+    	end
+        
+    	local hit_normal_x, hit_normal_z = VecUtil_Normalize(world_normal_on_b_x, world_normal_on_b_z)
     	local hit_dot_velocity = VecUtil_Dot(hit_normal_x, hit_normal_z, velocity_normalized_x, velocity_normalized_z)
 
-    	inst:PushEvent("on_collide", { other = other,
-    										world_position_on_a_x = world_position_on_a_x, 
-    										world_position_on_a_y = world_position_on_a_y, 
-    										world_position_on_a_z = world_position_on_a_z,
-    									    world_position_on_b_x = world_position_on_b_x, 
-    									    world_position_on_b_y = world_position_on_b_y, 
-    									    world_position_on_b_z = world_position_on_b_z, 
-    									    world_normal_on_b_x = world_normal_on_b_x, 
-    									    world_normal_on_b_y = world_normal_on_b_y, 
-    									    world_normal_on_b_z = world_normal_on_b_z, 
-    									    lifetime_in_frames = lifetime_in_frames,
-    									    hit_dot_velocity = hit_dot_velocity})
+    	inst:PushEvent("on_collide", {
+            other = other,
+    		world_position_on_a_x = world_position_on_a_x,
+    		world_position_on_a_y = world_position_on_a_y,
+    		world_position_on_a_z = world_position_on_a_z,
+    		world_position_on_b_x = world_position_on_b_x,
+    		world_position_on_b_y = world_position_on_b_y,
+    		world_position_on_b_z = world_position_on_b_z,
+    		world_normal_on_b_x = world_normal_on_b_x,
+    		world_normal_on_b_y = world_normal_on_b_y,
+    		world_normal_on_b_z = world_normal_on_b_z,
+    		lifetime_in_frames = lifetime_in_frames,
+    		hit_dot_velocity = hit_dot_velocity,
+        })
 
-        other:PushEvent("on_collide", { other = inst,
-                                            world_position_on_a_x = world_position_on_b_x, 
-                                            world_position_on_a_y = world_position_on_b_y, 
-                                            world_position_on_a_z = world_position_on_b_z,
-                                            world_position_on_b_x = world_position_on_a_x, 
-                                            world_position_on_b_y = world_position_on_a_y, 
-                                            world_position_on_b_z = world_position_on_a_z, 
-                                            world_normal_on_b_x = -world_normal_on_b_x, 
-                                            world_normal_on_b_y = -world_normal_on_b_y, 
-                                            world_normal_on_b_z = -world_normal_on_b_z, 
-                                            lifetime_in_frames = lifetime_in_frames,
-                                            hit_dot_velocity = hit_dot_velocity})
+        other:PushEvent("on_collide", {
+            other = inst,
+            world_position_on_a_x = world_position_on_b_x,
+            world_position_on_a_y = world_position_on_b_y,
+            world_position_on_a_z = world_position_on_b_z,
+            world_position_on_b_x = world_position_on_a_x,
+            world_position_on_b_y = world_position_on_a_y,
+            world_position_on_b_z = world_position_on_a_z,
+            world_normal_on_b_x = -world_normal_on_b_x,
+            world_normal_on_b_y = -world_normal_on_b_y,
+            world_normal_on_b_z = -world_normal_on_b_z,
+            lifetime_in_frames = lifetime_in_frames,
+            hit_dot_velocity = hit_dot_velocity,
+        })
 
 		--[[
     	print("HIT DOT:", hit_dot_velocity)
@@ -56,36 +78,26 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
     	print("PUSH BACK:", push_back)
     	]]--
 
-        local restitution = 1
-        local other_water_physics = other.components.waterphysics
-        if other_water_physics ~= nil then
-            restitution = other_water_physics.restitution
-        end
-
     	other:PushEvent("hit_boat", inst)
 
         local destroyed_other = not other:IsValid()
 
-    	local push_back = restitution * velocity * math.abs(hit_dot_velocity)
-        
-        local shake_percent = math.min(math.abs(hit_dot_velocity) * velocity / boat_physics.max_velocity, 1)
-        local max_shake = 0.15
-        local duration = 0.7
-
+        local restitution = (other.components.waterphysics and other.components.waterphysics.restitution) or 1
+    	local push_back = restitution * math.max(speed, 0) * math.abs(hit_dot_velocity)
         if destroyed_other then
-            max_shake = 0.45
-            duration = 1.5            
             push_back = push_back * 0.35
-        end 
-
-        local hit_intensity = shake_percent
-        inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = hit_intensity })
+        end
+        
+        local shake_percent = math.min(math.abs(hit_dot_velocity) * speed / TUNING.BOAT.MAX_ALLOWED_VELOCITY, 1)
+        inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = shake_percent })
 
         local platform = inst.components.walkableplatform
         if platform ~= nil then
-            for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform({"player"})) do
+            local max_shake = (destroyed_other and 0.45) or 0.15
+            local duration = (destroyed_other and 1.5) or 0.7
+            for k,v in pairs(platform:GetEntitiesOnPlatform({"player"})) do
                 v:ShakeCamera(CAMERASHAKE.FULL, duration, .02, max_shake * shake_percent)
-            end     
+            end
         end
 
     	boat_physics.velocity_x, boat_physics.velocity_z = relative_velocity_x + push_back * hit_normal_x, relative_velocity_z + push_back * hit_normal_z
@@ -117,6 +129,7 @@ local BoatPhysics = Class(function(self, inst)
     self.inst:StartUpdatingComponent(self)
 
     self.inst.Physics:SetCollisionCallback(OnCollide)
+    self._recent_collisions = {}
 
     self.inst:ListenForEvent("onignite", function() self:OnIgnite() end)
     self.inst:ListenForEvent("onbuilt", function(inst, data)  self:OnBuilt(data.builder, data.pos) end)  
@@ -374,20 +387,9 @@ function BoatPhysics:OnUpdate(dt)
         self.lastzoomtime = time
     end
 
-    local new_velocity = VecUtil_Length(self.velocity_x, self.velocity_z)
+	self.inst.Physics:SetMotorVel(self.velocity_x, 0, self.velocity_z)
 
-    if self.old_velocity and new_velocity >= 0.5 and self.old_velocity < 0.5 then
-        local platform = self.inst.components.walkableplatform
-        if platform ~= nil then
-            for k,v in pairs(platform:GetEntitiesOnPlatform({"player"})) do
-                v:PushEvent("boatspedup")
-            end     
-        end                
-    end
-    self.old_velocity = new_velocity
-	self.inst.Physics:SetMotorVel(self.velocity_x, 0, self.velocity_z)	
-
-    self.inst.SoundEmitter:SetParameter("boat_movement", "speed", velocity_length / self.max_velocity)
+    self.inst.SoundEmitter:SetParameter("boat_movement", "speed", velocity_length / TUNING.BOAT.MAX_ALLOWED_VELOCITY)
 end
 
 function BoatPhysics:OnRemoveFromEntity()

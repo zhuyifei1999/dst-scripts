@@ -369,6 +369,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Wolfgang's eyes is playing tricky!",
 	ANNOUNCE_BRAVERY_POTION = "Wolfgang is brave! Not scared of spooky tree!",
+	ANNOUNCE_MOONPOTION_FAILED = "Wolfgang expected something to happen.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up now, friend!",
@@ -451,6 +452,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Time for little break.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Feels damp... Wolfgang hope not to catch cold.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -2161,6 +2167,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Is okay, but big Wolfgang need big drink!",
 		HALLOWEENPOTION_DRINKS_POTENT = "Is strong like Wolfgang!",
         HALLOWEENPOTION_BRAVERY = "Wolfgang is brave. Is making Wolfgang braver.",
+		HALLOWEENPOTION_MOON = "Hot leaf water make things change!",
 		HALLOWEENPOTION_FIRE_FX = "Is making fire go boom boom!", 
 		MADSCIENCE_LAB = "Is making Wolfgang brain hurt.",
 		LIVINGTREE_ROOT = "Hello little sticky!", 
@@ -2859,9 +2866,9 @@ return{
             GENERIC = "Wolfgang will cook good meal for friends, meal like home!",
             DONE = "A meal with friends!",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "Good meal needs time to stew.",
+			COOKING_SHORT = "Will be ready soon, my friends!",
+			EMPTY = "Wolfgang will find something to cook!",
         },
         
         PORTABLEBLENDER_ITEM = "Wolfgang could smash food like that if he wanted.",
@@ -2926,6 +2933,22 @@ return{
         WEREITEM_BEAVER = "Beard is making crafts?",
         WEREITEM_GOOSE = "Wolfgang getting a bit worried about beardy friend...",
         WEREITEM_MOOSE = "This make beardman mighty like Wolfgang?",
+
+        MERMHAT = "Wolfgang will be biggest and strongest fish man!",
+        MERMTHRONE = "Big chair looks very inviting.",
+        MERMTHRONE_CONSTRUCTION = "Tiny fish girl seems very busy.",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Is house for fish men!",
+            BURNT = "Little house was no match for fire.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Is tree full of fighting fish!",
+        MERMWATCHTOWER_NOKING = "Is tree full of fish!",
+        MERMKING = "Wolfgang would like to challenge him to arm wrestle!",
+        MERMGUARD = "Not as mighty as Wolfgang!",
+        MERM_PRINCE = "Looks too scrawny to be king!",
+
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

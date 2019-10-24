@@ -188,7 +188,7 @@ end
 
 local function DropWetTool(inst, data)    
     --Tool slip.
-    if inst.components.moisture:GetSegs() < 4 then
+    if inst.components.moisture:GetSegs() < 4 or inst:HasTag("stronggrip") then
         return
     end
 
@@ -1213,6 +1213,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_book_attack.zip"),
         Asset("ANIM", "anim/player_parryblock.zip"),
         Asset("ANIM", "anim/player_attack_prop.zip"),
+        Asset("ANIM", "anim/player_peruse.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1426,6 +1427,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_boat_net")        
         inst.AnimState:AddOverrideBuild("player_boat_sink")
         inst.AnimState:AddOverrideBuild("player_oar")
+        inst.AnimState:AddOverrideBuild("player_peruse")
 
         inst.AnimState:AddOverrideBuild("player_boat_channel")        
 

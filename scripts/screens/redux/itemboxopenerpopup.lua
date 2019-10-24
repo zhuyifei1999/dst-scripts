@@ -195,6 +195,7 @@ function ItemBoxOpenerPopup:OnUpdate(dt)
 
         if self.bolts_source ~= nil then
             self.current_item_summary:UpdateSummary(self.bolts_source)
+            self.current_item_summary.item_rarity:Hide()
             TheFrontEnd:GetSound():PlaySound( RARITY_SOUND["Elegant"] )
         else
             local item_widget = self:GetItem(self.active_item_idx)
@@ -314,7 +315,7 @@ function ItemBoxOpenerPopup:_OpenItemBox()
                 columns = 5
             elseif #item_types == 12 or #item_types == 11 then
                 columns = 6
-            elseif #item_types == 16 then
+            elseif #item_types == 16 or #item_types == 17 or #item_types == 18 then
                 columns = 6
                 self.resize_root = true
             elseif #item_types == 19 then

@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "I'm seein' things!",
 	ANNOUNCE_BRAVERY_POTION = "I got my moxie back. Now to tackle those trees.",
+	ANNOUNCE_MOONPOTION_FAILED = "Back to the drawing board.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up'n'attem now.",
@@ -456,6 +457,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I'm off the clock!",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I think I might be needin' an umbrella soon.",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "I'll demolish you!",
@@ -2166,6 +2172,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Aw, I was hoping for a little more.",
 		HALLOWEENPOTION_DRINKS_POTENT = "I got lucky and got the big bottle.",
         HALLOWEENPOTION_BRAVERY = "Makes ya plucky.",
+		HALLOWEENPOTION_MOON = "I'm more of a coffee drinker, myself.",
 		HALLOWEENPOTION_FIRE_FX = "Ohh. This'll make a spark.", 
 		MADSCIENCE_LAB = "I can do some experimentin' with that.",
 		LIVINGTREE_ROOT = "Oh hey! There's a little stick in there.", 
@@ -2264,7 +2271,7 @@ return{
 			EMPTY = "Just a mud pit.",
 			GENERIC = "I wonder how long that took to build?",
 		},
-		WALRUS_TUSK = "Get a load of this chomper!",
+		WALRUS_TUSK = "He was gettin' a bit long in the tooth. Ha!",
 		WARDROBE = 
 		{
 			GENERIC = "I could build a million of these.",
@@ -2864,9 +2871,9 @@ return{
             GENERIC = "A fancy pot for some fancy cookin'.",
             DONE = "Let's see if all that fuss was worth it.",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "All good things take time.",
+			COOKING_SHORT = "This'll be done lickety-split!",
+			EMPTY = "Could use some ingredients in there.",
         },
         
         PORTABLEBLENDER_ITEM = "I like the way that machine dances.",
@@ -2931,6 +2938,22 @@ return{
         WEREITEM_BEAVER = "Huh. The craftsmanship ain't half bad.",
         WEREITEM_GOOSE = "Does he hafta leave these creepy things lyin' around?",
         WEREITEM_MOOSE = "I ain't one for er... decorations.",
+
+        MERMHAT = "Do I look a little green around the gills? Ha!",
+        MERMTHRONE = "Not bad handiwork.",
+        MERMTHRONE_CONSTRUCTION = "Whatcha makin' there, kid?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "Hm, I should teach that kid how to use a level.",
+            BURNT = "All that work, up in smoke...",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Now that's a proper tree fort!",
+        MERMWATCHTOWER_NOKING = "It looks kinda gloomy.",
+        MERMKING = "Are you the boss around here?",
+        MERMGUARD = "Just doin' their job.",
+        MERM_PRINCE = "Looks like someone got a promotion!",
+
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

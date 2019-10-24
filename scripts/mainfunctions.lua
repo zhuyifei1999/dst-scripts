@@ -307,6 +307,17 @@ function SpawnPrefab(name, skin, skin_id, creator)
     return Ents[guid]
 end
 
+function ReplacePrefab(original_inst, name, skin, skin_id, creator)
+    local x,y,z = original_inst.Transform:GetWorldPosition()
+    
+    local replacement_inst = SpawnPrefab(name, skin, skin_id, creator)
+    replacement_inst.Transform:SetPosition(x,y,z)
+
+    original_inst:Remove()
+
+    return replacement_inst
+end
+
 function SpawnSaveRecord(saved, newents)
     --print(string.format("~~~~~~~~~~~~~~~~~~~~~SpawnSaveRecord [%s, %s, %s]", tostring(saved.id), tostring(saved.prefab), tostring(saved.data)))
     local inst = SpawnPrefab(saved.prefab, saved.skinname, saved.skin_id)

@@ -808,6 +808,7 @@ local function yellow()
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
     inst.components.reticule.ease = true
+    inst.components.reticule.ispassableatallpoints = true
 
     if not TheWorld.ismastersim then
         return inst
@@ -896,6 +897,7 @@ local function opal()
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
     inst.components.reticule.ease = true
+    inst.components.reticule.ispassableatallpoints = true
 
     if not TheWorld.ismastersim then
         return inst

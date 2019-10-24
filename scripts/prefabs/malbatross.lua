@@ -243,9 +243,12 @@ local function ClearRecentlyCharged(inst, other)
 end
 
 local function onothercollide(inst, other)
-    if not other:IsValid() or inst.recentlycharged[other] or (not other:HasTag("tree") and not other:HasTag("mast") and not other.components.health) or other == inst then
+    if not other:IsValid() or inst.recentlycharged[other] or
+            (not other:HasTag("tree") and not other:HasTag("mast") and not other.components.health) then
         return
-    elseif other:HasTag("smashable") and other.components.health ~= nil then
+    end
+
+    if other:HasTag("smashable") and other.components.health ~= nil then
         --other.Physics:SetCollides(false)
         other.components.health:Kill()
     elseif other.components.workable ~= nil
@@ -253,29 +256,32 @@ local function onothercollide(inst, other)
         and other.components.workable.action ~= ACTIONS.NET then
 
         if other:HasTag("mast") then
-            local vx, vy, vz = inst.Physics:GetVelocity()
-            local velocity = VecUtil_Length(vx, vz) * 3
-            local x,y,z = inst.Transform:GetWorldPosition()
             local boat = other:GetCurrentPlatform()
             if boat then
-                local boat_physics = boat.components.boatphysics 
+                local vx, vy, vz = inst.Physics:GetVelocity()
+                local speed_modified = VecUtil_Length(vx, vz) * 3
                 vx,vz = VecUtil_Normalize(vx,vz)
-                boat_physics:ApplyForce(vx, vz, velocity)
+
+                local boat_physics = boat.components.boatphysics
+                boat_physics:ApplyForce(vx, vz, speed_modified)
             end
 
             spawnfeather(inst,0.4)
             spawnfeather(inst,0.4)
             spawnfeather(inst,0.4)
-            if math.random() < 0.3 then spawnfeather(inst,0.4) end
-            if math.random() < 0.3 then spawnfeather(inst,0.4) end
+            if math.random() < 0.3 then
+                spawnfeather(inst,0.4)
+            end
+            if math.random() < 0.3 then
+                spawnfeather(inst,0.4)
+            end
         end
 
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
         other.components.workable:Destroy(inst)
-        if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
-            inst.recentlycharged[other] = true
-            inst:DoTaskInTime(3, ClearRecentlyCharged, other)
-        end
+
+        inst.recentlycharged[other] = true
+        inst:DoTaskInTime(3, ClearRecentlyCharged, other)
     elseif other.components.health ~= nil and not other.components.health:IsDead() then
         inst.recentlycharged[other] = true
         inst:DoTaskInTime(3, ClearRecentlyCharged, other)
@@ -284,12 +290,9 @@ local function onothercollide(inst, other)
 end
 
 local function oncollide(inst, other)
-    if not (other ~= nil and other:IsValid() and inst:IsValid())
-        or inst.recentlycharged[other]
-        then
-        return
+    if other ~= nil and other:IsValid() and inst:IsValid() and not inst.recentlycharged[other] then
+        inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
     end
-    inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
 
 

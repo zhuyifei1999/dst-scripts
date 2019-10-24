@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Quite an expert illusion.",
 	ANNOUNCE_BRAVERY_POTION = "I was never really scared of those trees anyhow.",
+	ANNOUNCE_MOONPOTION_FAILED = "How disappointing.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Allow me to assist.",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "My enthusiasm for this has run dry.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I'm exposed to the elements!",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "To arms!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "Could be a little stronger.",
 		HALLOWEENPOTION_DRINKS_POTENT = "Ah. This'll do the trick.",
         HALLOWEENPOTION_BRAVERY = "Takes away the horrors. But who would want that?",
+		HALLOWEENPOTION_MOON = "A fine pot of tea, with a side of mutation.",
 		HALLOWEENPOTION_FIRE_FX = "Might as well throw it in the fire.", 
 		MADSCIENCE_LAB = "How maddening.",
 		LIVINGTREE_ROOT = "Ah. A chance to grow something horrible.", 
@@ -2858,9 +2865,9 @@ return{
             GENERIC = "An instrument of the dark culinary arts.",
             DONE = "Let's hope something palatable has come of it.",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "I must exercise patience...",
+			COOKING_SHORT = "It will be finished shortly.",
+			EMPTY = "Dismally devoid of foodstuffs.",
         },
         
         PORTABLEBLENDER_ITEM = "Does it have to make such a horrible racket?",
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "It seems he's learning to bend the curse to his will.",
         WEREITEM_GOOSE = "Ugh, it offends my eyes.",
         WEREITEM_MOOSE = "Almost as powerful as it is tacky.",
+
+        MERMHAT = "This seems rather... fishy.",
+        MERMTHRONE = "Not especially impressive for a \"throne\".",
+        MERMTHRONE_CONSTRUCTION = "What is that little creature up to?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "It's slightly less offensive to my eyes than the others.",
+            BURNT = "It's been burned to the ground.",
+        },
+
+        MERMWATCHTOWER_REGULAR = "They're flying the royal banner.",
+        MERMWATCHTOWER_NOKING = "A kingdom without a king.",
+        MERMKING = "A crown can be a heavy burden...",
+        MERMGUARD = "I'd best try to stay on their good side.",
+        MERM_PRINCE = "Kings are easily made around here.",
+
     },
 
     DESCRIBE_GENERIC = "You tell me.",

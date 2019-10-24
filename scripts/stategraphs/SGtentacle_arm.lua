@@ -193,11 +193,9 @@ local states =
             inst.AnimState:SetDeltaTimeMultiplier(GetRandomWithVariance(.8, .2))
         end,
 
-        events =
+        timeline=
         {
-            EventHandler("animover", function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentacle_splat")
-            end),
+            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/tentacle/tentacle_splat_arm") end),
         },
     },
 

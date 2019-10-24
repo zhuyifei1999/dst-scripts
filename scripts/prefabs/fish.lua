@@ -27,6 +27,7 @@ local function commonfn(build, anim, loop, dryable, cookable)
     inst.AnimState:SetBuild("fish")
     inst.AnimState:PlayAnimation(anim, loop)
 
+    inst:AddTag("fish")
     inst:AddTag("meat")
     inst:AddTag("catfood")
 

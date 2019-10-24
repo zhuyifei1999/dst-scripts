@@ -54,6 +54,8 @@ local function fn()
     inst.AnimState:SetBuild("fossil_piece")
     SetFossilType(inst, 1)
 
+    MakeInventoryFloatable(inst, "small", 0.0, {1.3, 0.75, 1.3})
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -68,7 +70,6 @@ local function fn()
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
 
     MakeHauntableLaunch(inst)
 

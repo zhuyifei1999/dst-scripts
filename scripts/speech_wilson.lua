@@ -377,6 +377,7 @@ return {
     --hallowed nights
     ANNOUNCE_SPOOKED = "Did you see that?!",
 	ANNOUNCE_BRAVERY_POTION = "Those trees don't seem so spooky anymore.",
+	ANNOUNCE_MOONPOTION_FAILED = "Perhaps I didn't let it steep long enough...",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Let me help you.",
@@ -459,6 +460,21 @@ return {
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Desire to procrastinate... creeping back...",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Looks like my dry spell is over.",
     
+    --Wurt announce strings
+    ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+    ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+    ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+    ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+    ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+        BOOK_SLEEP = "only_used_by_wurt",
+        BOOK_BIRDS = "only_used_by_wurt",
+        BOOK_TENTACLES =  "only_used_by_wurt",
+        BOOK_BRIMSTONE = "only_used_by_wurt",
+        BOOK_GARDENING = "only_used_by_wurt",
+    },
+
 	BATTLECRY =
 	{
 		GENERIC = "Go for the eyes!",
@@ -2169,6 +2185,7 @@ return {
 		HALLOWEENPOTION_DRINKS_WEAK = "I was hoping for something bigger.",
 		HALLOWEENPOTION_DRINKS_POTENT = "A potent potion.",
         HALLOWEENPOTION_BRAVERY = "Full of grit.",
+		HALLOWEENPOTION_MOON = "Infused with transforming such-and-such.",
 		HALLOWEENPOTION_FIRE_FX = "Crystallized inferno.", 
 		MADSCIENCE_LAB = "Sanity is a small price to pay for science!",
 		LIVINGTREE_ROOT = "Something's in there! I'll have to root it out.", 
@@ -2934,6 +2951,22 @@ return {
         WEREITEM_BEAVER = "I guess science works differently up North.",
         WEREITEM_GOOSE = "That thing's giving ME goosebumps!",
         WEREITEM_MOOSE = "A perfectly normal cursed moose thing.",
+
+        MERMHAT = "Finally, I can show my face in public.",
+        MERMTHRONE = "Looks fit for a swamp king!",
+        MERMTHRONE_CONSTRUCTION = "Just what is she planning?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "It's actually kind of cute.",
+            BURNT = "Ugh, the smell!",
+        },
+
+        MERMWATCHTOWER_REGULAR = "They seem happy to have found a king.",
+        MERMWATCHTOWER_NOKING = "A royal guard with no Royal to guard.",
+        MERMKING = "Your Majesty!",
+        MERMGUARD = "I feel very guarded around these guys...",
+        MERM_PRINCE = "They operate on a first-come, first-sovereigned basis.",
+
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

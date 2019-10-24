@@ -143,6 +143,9 @@ local function fn()
 
     MakeSmallPropagator(inst)
 
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly_sapling")
+
     if TheWorld:HasTag("cave") then
         inst:WatchWorldState("iscaveday", OnIsCaveDay)
     end

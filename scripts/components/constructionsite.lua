@@ -1,5 +1,7 @@
 local function onbuilder(self, builder)
-    self.inst.replica.constructionsite:SetBuilder(builder)
+    if self.inst.replica.constructionsite then
+        self.inst.replica.constructionsite:SetBuilder(builder)
+    end
 end
 
 local EMPTY_TABLE = {}

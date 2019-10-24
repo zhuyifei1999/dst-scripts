@@ -96,6 +96,12 @@ local function OnHaunt(inst, haunter)
     return false
 end
 
+local function OnInit(inst)
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:FixFX()
+    end
+end
+
 local function OnSave(inst, data)
 	data._has_debuffable = inst.components.debuffable ~= nil 
 end
@@ -138,7 +144,7 @@ local function fn()
     -----------------------
     inst:AddComponent("burnable")
     --inst.components.burnable:SetFXLevel(2)
-    inst.components.burnable:AddBurnFX("coldfirefire", Vector3(0, 0, 0))
+    inst.components.burnable:AddBurnFX("coldfirefire", Vector3(0, 45, 0), "firefx", true)
     inst:ListenForEvent("onextinguish", onextinguish)
 
     -------------------------
@@ -171,6 +177,8 @@ local function fn()
     inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     inst:ListenForEvent("onbuilt", onbuilt)
+
+    inst:DoTaskInTime(0, OnInit)
 
 	inst.OnSave = OnSave
 	inst.OnPreLoad = OnPreLoad

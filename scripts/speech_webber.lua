@@ -368,6 +368,7 @@ return{
     --hallowed nights
     ANNOUNCE_SPOOKED = "Are we seeing things?!",
 	ANNOUNCE_BRAVERY_POTION = "Hey, those trees aren't so scary anymore!",
+	ANNOUNCE_MOONPOTION_FAILED = "Whoops!",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, we'll help!",
@@ -450,6 +451,11 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "We're bored now.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Nooo! Spiders don't like the damp!",
     
+    --Wurt announce strings
+--fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
+
+
 	BATTLECRY =
 	{
 		GENERIC = "En garde!",
@@ -2160,6 +2166,7 @@ return{
 		HALLOWEENPOTION_DRINKS_WEAK = "It's only a little powerful.",
 		HALLOWEENPOTION_DRINKS_POTENT = "It's pretty powerful.",
         HALLOWEENPOTION_BRAVERY = "Makes us feel big and strong!",
+		HALLOWEENPOTION_MOON = "Should we drink it? Nah, probably not.",
 		HALLOWEENPOTION_FIRE_FX = "Neat! It's like firecrackers.", 
 		MADSCIENCE_LAB = "Wow. Look at it bubble.",
 		LIVINGTREE_ROOT = "We should plant this somewhere.", 
@@ -2858,9 +2865,9 @@ return{
             GENERIC = "Makes yummies!",
             DONE = "Mmmm! Let's eat!",
 
---fallback to speech_wilson.lua 			COOKING_LONG = "That meal is going to take a while.",
---fallback to speech_wilson.lua 			COOKING_SHORT = "It'll be ready in no-time!",
---fallback to speech_wilson.lua 			EMPTY = "I bet there's nothing in there.",
+			COOKING_LONG = "This is taking so loooong!",
+			COOKING_SHORT = "Food'll be ready soon!",
+			EMPTY = "Aw, there's nothing in there.",
         },
         
         PORTABLEBLENDER_ITEM = "Shake-a, shake-a, shake-a!",
@@ -2925,6 +2932,22 @@ return{
         WEREITEM_BEAVER = "It looks just like you, Mr. Woodie!",
         WEREITEM_GOOSE = "Mr. Woodie, are you alright?",
         WEREITEM_MOOSE = "Can you make a toy without meat in it?",
+
+        MERMHAT = "Hopefully they don't notice the extra legs.",
+        MERMTHRONE = "Hey, can we be the king? We can take turns!",
+        MERMTHRONE_CONSTRUCTION = "Can we help?",
+        MERMHOUSE_CRAFTED = 
+        {
+            GENERIC = "What a funny little house.",
+            BURNT = "Oh no!",
+        },
+
+        MERMWATCHTOWER_REGULAR = "Cool fort!",
+        MERMWATCHTOWER_NOKING = "We better not get too close...",
+        MERMKING = "He looks pretty important.",
+        MERMGUARD = "They look pretty scary!",
+        MERM_PRINCE = "Wow, becoming a king looks easy!",
+
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

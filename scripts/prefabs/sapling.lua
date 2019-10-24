@@ -144,6 +144,20 @@ local function makebarrenfn(inst, wasempty)
     end
 end
 
+local function moonconversionoverridefn(inst)
+	inst._is_moon = true
+	if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
+		SetDiseaseBuild(inst)
+	else
+		inst.AnimState:SetBank("sapling_moon")
+		inst.AnimState:SetBuild("sapling_moon")
+	end
+
+	inst:RemoveComponent("halloweenmoonmutable")
+
+	return inst, nil
+end
+
 local function OnPreLoad(inst, data)
     if data ~= nil and (data.pickable ~= nil and data.pickable.transplanted or data.diseaseable ~= nil) then
         makediseaseable(inst)
@@ -220,6 +234,13 @@ local function fn()
     local inst = CreateEntity()
 
     sapling_common(inst, false)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+	inst:AddComponent("halloweenmoonmutable")
+	inst.components.halloweenmoonmutable:SetConversionOverrideFn(moonconversionoverridefn)
 
     return inst
 end

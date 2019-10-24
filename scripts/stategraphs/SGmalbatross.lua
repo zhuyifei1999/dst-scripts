@@ -114,7 +114,7 @@ local events =
     EventHandler("doswoop", function(inst, data)
         if not inst.components.health:IsDead() and not inst.components.freezable:IsFrozen() and not inst.components.sleeper:IsAsleep() then
             inst:DoTaskInTime((math.random()*6) + 10, function(inst) inst.readytoswoop = true end)
-            inst.sg:GoToState("swoop_pre", data or inst.components.combat.target)
+            inst.sg:GoToState("swoop_pre", data.target or inst.components.combat.target)
         end
     end),
     EventHandler("death", function(inst, data)
@@ -517,20 +517,21 @@ local states =
             inst.Physics:SetMotorVelOverride(15,0,0)
             inst.sg:SetTimeout(1)
             inst.sg.statemem.collisiontime = 0
+
+            inst.components.combat:EnableAreaDamage(false)
         end,
 
         onupdate = function(inst, dt)
-            local INTERVAL = 3/30
             if inst.sg.statemem.collisiontime <= 0 then
                 local x,y,z = inst.Transform:GetWorldPosition()
-                local ents = TheSim:FindEntities(x, y, z, 2)
+                local ents = TheSim:FindEntities(x, y, z, 2, nil, {"INLIMBO", "fx", "malbatross", "boat"}, {"tree", "mast", "_health"})
                 for i,ent in ipairs(ents) do
                     inst.oncollide(inst,ent)
                 end
 
                 spawnripple(inst)
 
-                inst.sg.statemem.collisiontime = INTERVAL
+                inst.sg.statemem.collisiontime = 3/30
             end
             inst.sg.statemem.collisiontime = inst.sg.statemem.collisiontime - dt
         end,
@@ -545,6 +546,8 @@ local states =
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
             inst.Physics:ClearMotorVelOverride()
             inst.components.locomotor:Stop()
+
+            inst.components.combat:EnableAreaDamage(true)
         end,
 
         ontimeout=function(inst)
