@@ -185,28 +185,38 @@ end
 -----------------------------------------------------------------------------------------------
 -- Merm king things
 local function IsThroneValid(inst)
-    local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
-    return throne ~= nil
-        and throne:IsValid()
-        and not (throne.components.burnable ~= nil and throne.components.burnable:IsBurning())
-        and not throne:HasTag("burnt")
-        and TheWorld.components.mermkingmanager:ShouldGoToThrone(inst, throne)
+    if TheWorld.components.mermkingmanager then
+        local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
+        return throne ~= nil
+            and throne:IsValid()
+            and not (throne.components.burnable ~= nil and throne.components.burnable:IsBurning())
+            and not throne:HasTag("burnt")
+            and TheWorld.components.mermkingmanager:ShouldGoToThrone(inst, throne)
+    end
+
+    return false
 end
 
 local function ShouldGoToThrone(inst)
-    -- 
-    local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
-    if throne == nil then
-        throne = FindEntity(inst, SEE_THRONE_DISTANCE, nil, { "mermthrone" })
+    
+    if TheWorld.components.mermkingmanager then
+        local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
+        if throne == nil then
+            throne = FindEntity(inst, SEE_THRONE_DISTANCE, nil, { "mermthrone" })
+        end
+
+        return throne and TheWorld.components.mermkingmanager:ShouldGoToThrone(inst, throne)
     end
 
-    return throne and TheWorld.components.mermkingmanager:ShouldGoToThrone(inst, throne)
+    return false
 end
 
 local function GetThronePosition(inst)
-    local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
-    if throne then
-        return throne:GetPosition()
+    if TheWorld.components.mermkingmanager then
+        local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
+        if throne then
+            return throne:GetPosition()
+        end
     end
 end
 

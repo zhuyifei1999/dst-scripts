@@ -179,6 +179,11 @@ end
 local function HealthDelta(inst, data)
     if data.newpercent and inst.components.combat.target ~= nil then
         if data.newpercent < 0.75 then
+
+            if inst.guards_available == nil then
+                inst.guards_available = 4
+            end
+
             if inst.guards_available > 0 and (inst.guards == nil or #inst.guards == 0) and not inst.sg:HasStateTag("calling_guards") then
                 inst.sg:PushEvent("call_guards")
                 
@@ -258,6 +263,10 @@ local function CallGuards(inst)
 
     local x,y,z = inst.Transform:GetWorldPosition()
     inst.guards = {}
+
+    if inst.guards_available == nil then
+        inst.guards_available = 4
+    end
 
     for i = 1, inst.guards_available do
         local new_merm = SpawnPrefab("mermguard")

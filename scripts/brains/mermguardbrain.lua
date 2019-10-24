@@ -183,9 +183,17 @@ function MermBrain:OnStart()
         WhileNode(function() return self.inst.components.combat.target ~= nil and self.inst.components.combat:InCooldown() end, "Dodge",
             RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
 
-        WhileNode(function() return self.inst.return_to_king end, "ShouldGoToThrone",
+        WhileNode(function() 
+                if self.inst.king and (not self.inst.king:IsValid() or (self.inst.king.components.health and self.inst.king.components.health:IsDead())) then
+                    self.return_to_king = false
+                    self.inst.king = nil
+                end
+
+                return self.inst.return_to_king 
+            end, "ShouldGoToThrone",
             PriorityNode({
-                Leash(self.inst, function() return self.inst.king:GetPosition() end, 2, 2, true),
+                Leash(self.inst, function() return self.inst.king:GetPosition() end, 
+                2, 2, true),
                 IfNode(function() return true end, "IsThroneValid",
                     ActionNode(function()
                         local fx = SpawnPrefab("merm_spawn_fx")

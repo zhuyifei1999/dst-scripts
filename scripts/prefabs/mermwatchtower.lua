@@ -22,7 +22,7 @@ local loot =
 }
 
 local function testforflag(inst)
-    if TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
         inst.AnimState:Show("flag")
     else
         inst.AnimState:Hide("flag")
@@ -59,7 +59,8 @@ local function StartSpawning(inst)
     inst.AnimState:PushAnimation("idle")
 
     if not inst:HasTag("burnt") and
-       TheWorld.components.mermkingmanager:HasKing() and
+        TheWorld.components.mermkingmanager and
+        TheWorld.components.mermkingmanager:HasKing() and
         inst.components.childspawner ~= nil then
         inst.components.childspawner:StartSpawning()
     end
@@ -120,6 +121,10 @@ local function onburntup(inst)
 end
 
 local function ToggleWinterTuning(inst, iswinter)
+    if not inst.components.childspawner then
+        return
+    end
+
     if iswinter then
         inst.components.childspawner:SetRegenPeriod(TUNING.TOTAL_DAY_TIME * 6)
     else
@@ -128,7 +133,7 @@ local function ToggleWinterTuning(inst, iswinter)
 end
 
 local function DescriptionFn(inst, viewer)
-    if TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
         return GetString(viewer.prefab, "DESCRIBE", "MERMWATCHTOWER_REGULAR" )
     else
         return GetString(viewer.prefab, "DESCRIBE", "MERMWATCHTOWER_NOKING" )
@@ -189,7 +194,7 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.descriptionfn = DescriptionFn
 
-    if TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
         StartSpawning(inst)
     end
 

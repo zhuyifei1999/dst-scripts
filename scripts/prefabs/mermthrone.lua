@@ -126,15 +126,20 @@ end
 
 local function OnMermKingDestroyed(inst, data)
     if data and data.throne == inst then
-        inst.components.workable:SetWorkable(true)
-        inst.components.burnable.canlight = true
+        
+        if inst.components.workable then
+            inst.components.workable:SetWorkable(true)
+        end
+        if inst.components.burnable then
+            inst.components.burnable.canlight = true
+        end
         inst.MiniMapEntity:SetIcon("merm_king_carpet.png")
     end
 end
 
 -- This exists in case the throne gets removed some way other than hammering
 local function OnThroneRemoved(inst)
-    if TheWorld.components.mermkingmanager:IsThrone(inst) then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsThrone(inst) then
         TheWorld:PushEvent("onthronedestroyed", {throne = inst})
     end
 end
@@ -185,7 +190,7 @@ local function fn()
     inst:ListenForEvent("onmermkingdestroyed", function (world, data) OnMermKingDestroyed(inst, data) end, TheWorld)
     inst:ListenForEvent("onremove", OnThroneRemoved)
 
-    if TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
         OnMermKingCreated(inst, {throne = TheWorld.components.mermkingmanager:GetThrone() })
     end
 
