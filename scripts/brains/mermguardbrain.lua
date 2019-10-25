@@ -185,7 +185,7 @@ function MermBrain:OnStart()
 
         WhileNode(function() 
                 if self.inst.king and (not self.inst.king:IsValid() or (self.inst.king.components.health and self.inst.king.components.health:IsDead())) then
-                    self.return_to_king = false
+                    self.inst.return_to_king = false
                     self.inst.king = nil
                 end
 

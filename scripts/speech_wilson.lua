@@ -689,6 +689,16 @@ return {
             FIRESTARTER = "He's gonna flambé the place right down!",
         },
 
+        WURT =
+        {
+            GENERIC = "Good day, %s!",
+            ATTACKER = "%s is looking especially monstrous today...",
+            MURDERER = "You're just another murderous merm!",
+            REVIVER = "Why thank you, %s!",
+            GHOST = "%s is looking greener around the gills than usual.",
+            FIRESTARTER = "Didn't anyone teach you not to play with fire?!",
+        },
+
         MIGRATION_PORTAL =
         {
             GENERIC = "If I had any friends, this could take me to them.",

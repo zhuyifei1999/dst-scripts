@@ -455,7 +455,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -669,6 +679,16 @@ return{
             REVIVER = "%s is a stand up kinda guy.",
             GHOST = "Welp, that's the way the cookie crumbles.",
             FIRESTARTER = "Watch that fire now, %s.",
+        },
+
+        WURT =
+        {
+            GENERIC = "%s! Hey little bud!",
+            ATTACKER = "Woah! Slow down there, bud!",
+            MURDERER = "That's it, I'm givin' you the axe!",
+            REVIVER = "A bit rough around the edges, but you're alright %s!",
+            GHOST = "We'll get ya feeling right as rain in no time.",
+            FIRESTARTER = "Hey! What do you think you're doin?",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

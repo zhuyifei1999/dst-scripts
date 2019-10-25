@@ -119,7 +119,10 @@ end
 local function OnMermKingCreated(inst, data)
     if data and data.throne == inst then
         inst.components.workable:SetWorkable(false)
-        inst.components.burnable.canlight = false
+        
+        inst:RemoveComponent("propagator")
+        inst:RemoveComponent("burnable")
+        
         inst.MiniMapEntity:SetIcon("merm_king_carpet_occupied.png")
     end
 end
@@ -130,6 +133,10 @@ local function OnMermKingDestroyed(inst, data)
         if inst.components.workable then
             inst.components.workable:SetWorkable(true)
         end
+
+        MakeLargeBurnable(inst, nil, nil, true)
+        MakeMediumPropagator(inst)
+
         if inst.components.burnable then
             inst.components.burnable.canlight = true
         end
@@ -190,9 +197,11 @@ local function fn()
     inst:ListenForEvent("onmermkingdestroyed", function (world, data) OnMermKingDestroyed(inst, data) end, TheWorld)
     inst:ListenForEvent("onremove", OnThroneRemoved)
 
-    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
-        OnMermKingCreated(inst, {throne = TheWorld.components.mermkingmanager:GetThrone() })
-    end
+    inst:DoTaskInTime(0, function()
+        if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
+            OnMermKingCreated(inst, {throne = TheWorld.components.mermkingmanager:GetMainThrone() })
+        end
+    end)
 
     return inst
 end

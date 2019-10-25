@@ -997,7 +997,10 @@ function PurchasePackScreen:_BuildPurchasePanel()
             end
 
             self.side_panel.focus_forward = self.filters[1]
-
+			if not SUPPORT_VIRTUAL_IAP then
+				-- if virtual IAP is supported then the MOVE_LEFT focus is set to the view_currency_button/hide_currency_button in the refresh
+				purchase_ss:SetFocusChangeDir(MOVE_LEFT, self.side_panel)
+			end
             self.side_panel:SetFocusChangeDir(MOVE_RIGHT, purchase_ss)
 
             self.empty_txt = purchase_ss.scroll_window:AddChild(Text(CHATFONT, 26, STRINGS.UI.PURCHASEPACKSCREEN.EMPTY_AFTER_FILTER))

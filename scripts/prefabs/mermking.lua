@@ -288,6 +288,10 @@ local function CallGuards(inst)
 end
 
 local function ReturnMerms(inst)
+    if inst.guards == nil then
+        inst.guards = {}
+    end
+
     for i,v in ipairs(inst.guards) do
         if v.components.combat.target ~= nil then
             v.components.combat:GiveUp()
@@ -375,6 +379,8 @@ local function fn()
     inst:AddTag("mermking")
     inst:AddTag("wet")
 
+    inst:AddComponent("talker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -382,6 +388,8 @@ local function fn()
     end
 
     inst:SetStateGraph("SGmermking")
+
+    MakeLargeBurnableCharacter(inst, "torso")
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
@@ -404,7 +412,6 @@ local function fn()
 
     inst:AddComponent("inventory")
     inst:AddComponent("inspectable")
-    inst:AddComponent("talker")
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)

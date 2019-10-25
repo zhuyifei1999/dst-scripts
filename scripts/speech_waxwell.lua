@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -575,7 +585,7 @@ return{
         },
         WENDY =
         {
-            GENERIC = "Greetings, Ms. %s. How are you?",
+            GENERIC = "Greetings, Miss %s. How are you?",
             ATTACKER = "%s has been corrupted...",
             MURDERER = "Don't think I'll hesitate, murderous fiend!",
             REVIVER = "%s is a true death defier.",
@@ -668,6 +678,16 @@ return{
             REVIVER = "Thank-you for the assistance, %s.",
             GHOST = "Oh, what a shame.",
             FIRESTARTER = "%s's started some suspicious fires recently.",
+        },
+
+        WURT =
+        {
+            GENERIC = "Greetings, Miss %s.",
+            ATTACKER = "This is no time for childishness!",
+            MURDERER = "%s has revealed her true nature!",
+            REVIVER = "Ah, thank you, %s.",
+            GHOST = "Oh dear, whatever will become of your kingdom now?",
+            FIRESTARTER = "Who left the tiny green demon unsupervised?!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

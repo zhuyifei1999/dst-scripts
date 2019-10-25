@@ -458,7 +458,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -672,6 +682,16 @@ return{
             REVIVER = "Thank you, friend %s!",
             GHOST = "%s needs help!",
             FIRESTARTER = "Ah! %s make scary burnies!",
+        },
+
+        WURT =
+        {
+            GENERIC = "Hello scaley friend!",
+            ATTACKER = "Not very nice, %s",
+            MURDERER = "%s kill! Very bad!",
+            REVIVER = "You good helper",
+            GHOST = "Oh. Need heart?",
+            FIRESTARTER = "Ah! Why start fires, %s?",
         },
 
         MIGRATION_PORTAL =
@@ -1173,7 +1193,7 @@ return{
 			EMBERS = "Almost gone",
 			GENERIC = "Chilly",
 			HIGH = "Really big!",
-			LOW = "Getting warmer",
+			LOW = "Cool",
 			NORMAL = "Cooling",
 			OUT = "Needs food",
 		},

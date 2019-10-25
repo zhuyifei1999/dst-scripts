@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -668,6 +678,16 @@ return{
             REVIVER = "It's quite nice to have myself around.",
             GHOST = "I cook so I don't have to think about my own mortality.",
             FIRESTARTER = "Mon dieu! Watch the fire!",
+        },
+
+        WURT =
+        {
+            GENERIC = "Salut, mademoiselle %s!",
+            ATTACKER = "That wasn't very nice, %s!",
+            MURDERER = "Mon dieu! What a horrible little creature!",
+            REVIVER = "You are very kind, little one.",
+            GHOST = "Don't you worry, we'll get this sorted out!",
+            FIRESTARTER = "Ah-! Little ones shouldn't play with matches!",
         },
 
         MIGRATION_PORTAL =

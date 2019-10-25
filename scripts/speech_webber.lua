@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -668,6 +678,16 @@ return{
             REVIVER = "Thanks a bunch, %s!",
             GHOST = "Oh no, %s is hurt!",
             FIRESTARTER = "We don't think you were supposed to start that fire.",
+        },
+
+        WURT =
+        {
+            GENERIC = "Hey %s! Whatcha up to?",
+            ATTACKER = "Hey, stop it! No hitting!",
+            MURDERER = "Why would you do that, %s?",
+            REVIVER = "Whew, thanks %s!",
+            GHOST = "Don't worry! I'm sure there's a heart around here somewhere!",
+            FIRESTARTER = "I... don't think that's allowed...",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

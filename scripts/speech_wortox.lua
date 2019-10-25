@@ -459,7 +459,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -673,6 +683,16 @@ return{
             REVIVER = "I guess %s doesn't have a taste for souls.",
             GHOST = "The culinarian's become the culination, hyuyu!",
             FIRESTARTER = "Oh, are we playing pranks today, %s?",
+        },
+
+        WURT =
+        {
+            GENERIC = "Gotten into any trouble yet today, %s?",
+            ATTACKER = "%s has a fiendish look in her eye.",
+            MURDERER = "Surely we can sort this out, imp to shrimp?",
+            REVIVER = "You have a good soul, %s. I promise not to eat it.",
+            GHOST = "Don't fret, I won't eat you!",
+            FIRESTARTER = "Hyuyuyu, brilliant!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
