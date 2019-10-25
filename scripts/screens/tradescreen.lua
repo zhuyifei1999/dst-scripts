@@ -158,6 +158,7 @@ function TradeScreen:DoInit()
 	self.crow_anim:SetOnClick( function()
 		TheFrontEnd:GetSound():PlaySound("dontstarve/birds/takeoff_crow")
 		TheFrontEnd:FadeToScreen( self, function() return CrowGameScreen(self.profile) end, nil )
+		self.innkeeper:Sleep()
 	end )
 end
 
@@ -562,7 +563,7 @@ function TradeScreen:OnBecomeActive()
         return
     end
 
---Note(Peter): check if the joystick will get into a weird state when the trade confirmation popup is pushed and then popped.
+	--Note(Peter): check if the joystick will get into a weird state when the trade confirmation popup is pushed and then popped.
 	if self.joystick.started_ever then 
 		self.joystick:Start()
 	end
@@ -570,6 +571,10 @@ function TradeScreen:OnBecomeActive()
 	self.item_name:Hide()
 
 	self:RefreshUIState()
+
+	if self.innkeeper then
+		self.innkeeper:Wake()
+	end
 end
 
 local function widget_already_processed(name, widget_list)

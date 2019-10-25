@@ -461,7 +461,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -675,6 +685,16 @@ return{
             REVIVER = "%s would never leave anyone behind.",
             GHOST = "Did you mean to do that?",
             FIRESTARTER = "Haha, nice one, %s!!",
+        },
+
+        WURT =
+        {
+            GENERIC = "Hi %s!",
+            ATTACKER = "You're a real little terror, aren't you?",
+            MURDERER = "Don't make me snuff you out!",
+            REVIVER = "Thanks for the hand, %s... or, uh, claw?",
+            GHOST = "Yeesh, what happened to you?",
+            FIRESTARTER = "Heh, attagirl!'",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

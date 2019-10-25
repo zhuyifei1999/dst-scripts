@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -668,6 +678,16 @@ return{
             REVIVER = "Sometimes he shows he cares without cooking.",
             GHOST = "I'll mourn you, %s.",
             FIRESTARTER = "Abby and I know what you've been doing.",
+        },
+
+        WURT =
+        {
+            GENERIC = "Hello, %s.",
+            ATTACKER = "If you won't play nice, you can't play with us!",
+            MURDERER = "You should've stayed hidden in your swamp!",
+            REVIVER = "That was very nice of you, %s.",
+            GHOST = "I'm so sorry, %s.",
+            FIRESTARTER = "Maybe we should play a different game...",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -2933,7 +2953,7 @@ return{
         WEREITEM_GOOSE = "That is deeply disturbing.",
         WEREITEM_MOOSE = "I don't want to play with that.",
 
-        MERMHAT = "We all hide behind a our own masks...",
+        MERMHAT = "We all hide behind our own masks...",
         MERMTHRONE = "\"The Frogs Who Desired a King\"...",
         MERMTHRONE_CONSTRUCTION = "I don't know why you bother.",
         MERMHOUSE_CRAFTED = 

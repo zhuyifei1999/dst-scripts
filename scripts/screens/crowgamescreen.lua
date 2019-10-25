@@ -1061,6 +1061,7 @@ end
 
 
 function CrowGameScreen:Quit()
+	self.innkeeper:ClearSpeech()
 	if self.joystick then
 		self.joystick:Stop()
 	end

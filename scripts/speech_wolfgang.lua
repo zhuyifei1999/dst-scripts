@@ -455,7 +455,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -669,6 +679,16 @@ return{
             REVIVER = "%s has nice big heart.",
             GHOST = "Does tiny man %s need Mighty Wolfgang's help?",
             FIRESTARTER = "Tasty-making man was probably cook with big fire.",
+        },
+
+        WURT =
+        {
+            GENERIC = "Is tiny fish girl, %s! Hello!",
+            ATTACKER = "Tiny fish girl has no manners!",
+            MURDERER = "Wolfgang shouln't have trusted tiny swamp monster!",
+            REVIVER = "%s is good. Even if she smell of old fish.",
+            GHOST = "Thought fish had nine lives? Oh, Wolfgang think of cats.",
+            FIRESTARTER = "That not look safe, fish girl!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

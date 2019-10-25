@@ -680,6 +680,16 @@ return{
             FIRESTARTER = "He wanna cook everything!",
         },
 
+        WURT =
+        {
+            GENERIC = "Hello me!",
+            ATTACKER = "Mermfolk should stick together!",
+            MURDERER = "Glurp... am own worst enemy!",
+            REVIVER = "Can always count on me!",
+            GHOST = "There gotta be heart around somewhere.",
+            FIRESTARTER = "Stop! You gonna get us in trouble!",
+        },
+
         MIGRATION_PORTAL =
         {
             GENERIC = "Where this go to?",
@@ -2956,7 +2966,7 @@ return{
         MERMWATCHTOWER_NOKING = "Royal guard need King to protect...",
         MERMKING = "Yay! You look just like Kings from fairy stories!",
         MERMGUARD = "Will grow up big and strong like that one day!",
-        MERM_PRINCE = "You can be new King of Mermfolk!",
+        MERM_PRINCE = "Need to fatten up if you gonna be proper King!",
 
     },
 

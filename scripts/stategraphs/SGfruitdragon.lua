@@ -171,7 +171,7 @@ local states=
 						if ent.components.health ~= nil and not ent.components.health:IsDead() then
 							ent.components.health:DoFireDamage(TUNING.FRUITDRAGON.FIREATTACK_DAMAGE, inst, true)
 						end
-						if ent.components.burnable then
+						if ent.components.burnable and ent.components.fueled == nil then
 							ent.components.burnable:Ignite(true, inst)
 						end
 					end

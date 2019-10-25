@@ -123,9 +123,24 @@ function SkinCollector:ClearSpeech()
 	end
 end
 
+function SkinCollector:Sleep()
+	self.sleeped = true
+	self:ClearSpeech()
+	
+end
+
+function SkinCollector:Wake()
+	self.sleeped = false
+end
+
+
 function SkinCollector:OnUpdate(dt)
+	if self.sleeped then
+		return
+	end
+
 	-- Do intro if appear animation has finished
-	if not self.intro_done and 
+	if not self.intro_done and
 		self.innkeeper:GetAnimState():IsCurrentAnimation("appear") and 
 		self.innkeeper:GetAnimState():AnimDone() then 
 		self.innkeeper:GetAnimState():PlayAnimation("idle", true)

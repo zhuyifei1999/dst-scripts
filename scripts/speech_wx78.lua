@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -668,6 +678,16 @@ return{
             REVIVER = "SENTIMENTALITY IS THE ORGANIC'S WEAKNESS",
             GHOST = "SIGH. MINIONS ARE SO FRAGILE",
             FIRESTARTER = "HA HA. YES MINION. DESTROY",
+        },
+
+        WURT =
+        {
+            GENERIC = "DETECTING... %s!",
+            ATTACKER = "THIS FISH-TYPE ORGANIC HAS BITE",
+            MURDERER = "DON'T DESTROY TOO MANY OF MY MINIONS, %s",
+            REVIVER = "%s HAS SOME REDEEMING QUALITIES AFTER ALL",
+            GHOST = "SIGH. NOW I'LL HAVE TO FIND A NEW MINION",
+            FIRESTARTER = "HA HA. SHE'S AWFUL. I APPROVE",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =

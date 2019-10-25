@@ -454,7 +454,17 @@ return{
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
-
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_THRONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_HOUSE = "only_used_by_wurt",
+--fallback to speech_wilson.lua     ANNOUNCE_CANTBUILDHERE_WATCHTOWER = "only_used_by_wurt",
+    ANNOUNCE_READ_BOOK = 
+    {
+--fallback to speech_wilson.lua         BOOK_SLEEP = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BIRDS = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
+--fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+    },
 
 	BATTLECRY =
 	{
@@ -668,6 +678,16 @@ return{
             REVIVER = "%s's heart is as full as his belly.",
             GHOST = "The feast hall of Valhalla will one day welcome you. But not today.",
             FIRESTARTER = "%s's summoned Hel's flames this day!",
+        },
+
+        WURT =
+        {
+            GENERIC = "Hail, %s, small beastie of the marshlands!",
+            ATTACKER = "Ah, you wish to test your mettle in combat? As you wish!",
+            MURDERER = "I will not be defeated so easily, beastie!",
+            REVIVER = "It seems you have a kind heart 'neath that scaly hide.",
+            GHOST = "You've a warrior's spirit, but you're not ready for Valhalla yet!",
+            FIRESTARTER = "%s toys with Hel's flames!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
