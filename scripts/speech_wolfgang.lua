@@ -685,7 +685,7 @@ return{
         {
             GENERIC = "Is tiny fish girl, %s! Hello!",
             ATTACKER = "Tiny fish girl has no manners!",
-            MURDERER = "Wolfgang shouln't have trusted tiny swamp monster!",
+            MURDERER = "Wolfgang shouldn't have trusted tiny swamp monster!",
             REVIVER = "%s is good. Even if she smell of old fish.",
             GHOST = "Thought fish had nine lives? Oh, Wolfgang think of cats.",
             FIRESTARTER = "That not look safe, fish girl!",

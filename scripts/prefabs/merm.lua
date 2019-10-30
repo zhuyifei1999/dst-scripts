@@ -174,7 +174,8 @@ local function ShouldAcceptItem(inst, item, giver)
 
     return (giver:HasTag("merm") or (not inst:HasTag("mermguard") and giver.components.inventory:EquipHasTag("merm"))) and 
            ((item.components.equippable ~= nil and item.components.equippable.equipslot == EQUIPSLOTS.HEAD) or
-           (item.components.edible and (inst.components.eater:CanEat(item) or item:HasTag("fish"))))
+           (item.components.edible and inst.components.eater:CanEat(item)) or 
+           (item:HasTag("fish") and not (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst))))
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)

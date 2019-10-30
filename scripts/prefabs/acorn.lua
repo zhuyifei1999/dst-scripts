@@ -150,6 +150,8 @@ local function cooked()
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.foodtype = "SEEDS"
 
+    inst:AddComponent("tradable")
+
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()

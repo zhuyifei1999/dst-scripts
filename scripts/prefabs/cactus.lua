@@ -163,6 +163,8 @@ local function cactusflowerfn()
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
+    inst:AddComponent("tradable")
+
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
 

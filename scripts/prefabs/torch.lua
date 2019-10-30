@@ -150,6 +150,8 @@ local function fn()
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
 
+	MakeInventoryFloatable(inst, "med", nil, 0.68)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -165,7 +167,6 @@ local function fn()
     -----------------------------------
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
     -----------------------------------
 
     inst:AddComponent("equippable")

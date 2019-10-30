@@ -1203,11 +1203,11 @@ return{
 			OUT = "Bye-bye.",
 		},
 		CANE = "This for old folk, florp.",
-		CATCOON = "Don't like you, florpt!",
+		CATCOON = "You funny, florp!",
 		CATCOONDEN = 
 		{
-			GENERIC = "Nasty creature live here.",
-			EMPTY = "Good, it gone.",
+			GENERIC = "Something skritching inside.",
+			EMPTY = "Nobody home.",
 		},
 		CATCOONHAT = "Ha ha, is hat now.",
 		COONTAIL = "Mine now, florp!",

@@ -5264,6 +5264,7 @@ CLOTHING =
 		type = "legs",
 		skin_tags = { "HALLOWED", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_in_base_hides = { "skirt", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,

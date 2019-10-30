@@ -152,6 +152,8 @@ local function rottenfn()
 
     MakeHauntableLaunchAndIgnite(inst)
 
+    inst:AddComponent("tradable")
+
     inst:AddComponent("edible")
     inst.components.edible.healthvalue = TUNING.SPOILED_HEALTH
     inst.components.edible.hungervalue = TUNING.SPOILED_HUNGER

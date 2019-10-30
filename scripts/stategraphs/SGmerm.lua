@@ -21,6 +21,11 @@ local events=
     CommonHandlers.OnHop(),
 
     EventHandler("onarrivedatthrone", function(inst)
+
+        if inst.components.health and inst.components.health:IsDead() then
+            return
+        end
+
         local player_close = FindClosestPlayerToInst(inst, 5, true)
         if player_close then
             local pos = Vector3(player_close.Transform:GetWorldPosition())
@@ -96,7 +101,7 @@ local states=
 
     State{
         name = "getup",
-        tags = { "busy", "gettingup" },
+        tags = { "busy", "gettingup", "nospellcasting" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -117,7 +122,7 @@ local states=
 
     State{
         name = "transform_to_king",
-        tags = { "busy", "transforming"},
+        tags = { "busy", "transforming", "nospellcasting"},
 
         onenter = function(inst)
             inst.Physics:Stop()

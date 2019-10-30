@@ -169,6 +169,7 @@ local function fn()
     inst.AnimState:SetRayTestOnBB(true)
 
     inst:AddTag("cattoyairborne")
+	inst:AddTag("flying")
 
     inst._fadeval = net_float(inst.GUID, "fireflies._fadeval")
     inst._faderate = net_smallbyte(inst.GUID, "fireflies._faderate", "onfaderatedirty")
@@ -201,7 +202,6 @@ local function fn()
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("tradable")
 

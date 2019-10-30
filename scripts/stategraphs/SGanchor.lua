@@ -94,8 +94,7 @@ local states =
         name = "lowered_land",
         onenter = function(inst)
         
-            inst.AnimState:PlayAnimation("tether_land_pre")
-            inst.AnimState:PushAnimation("tether_land_idle",true)
+            inst.AnimState:PlayAnimation("tether_land_idle")
             anchor_lowered(inst)
         end,
 
@@ -105,7 +104,7 @@ local states =
             EventHandler("workinghit", 
                 function(inst, data)
                     inst.AnimState:PlayAnimation("tether_land_hit")
-                    inst.AnimState:PushAnimation("tether_land_idle", true)                  
+                    inst.AnimState:PushAnimation("tether_land_idle", false)                  
                 end),            
         },
     },
@@ -204,7 +203,7 @@ local states =
         
         events =
         {
-            EventHandler("animqueueover", function(inst) inst.sg:GoToState("raised") end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("raised") end),
         },
     },
 
@@ -224,7 +223,7 @@ local states =
 
         events =
         {
-            EventHandler("animqueueover", function(inst) inst.sg:GoToState("lowered_land") end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("lowered_land") end),
         }
     },
 

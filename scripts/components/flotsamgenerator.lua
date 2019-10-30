@@ -18,10 +18,10 @@ local SourceModifierList = require("util/sourcemodifierlist")
 
 local flotsam_prefabs =
 {
-	driftwood_log = 1,
-	boatfragment03 = 0.3,
-	boatfragment04 = 0.3,
-	boatfragment05 = 0.3,
+    driftwood_log = 1,
+    boatfragment03 = 0.3,
+    boatfragment04 = 0.3,
+    boatfragment05 = 0.3,
     cutgrass = 1,
     twigs = 1,
 }
@@ -50,51 +50,51 @@ local _updating = false
 local _flotsam = {}
 local _maxflotsam = TUNING.FLOTSAM_SPAWN_MAX
 local _timescale = 1
-
+local _flotsam = {}
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
 local function GetSpawnPoint(pt)
-	if TheWorld.has_ocean then
-	    --We have to use custom test function because birds can't land on creep
-	    local function TestSpawnPoint(offset)
-	        local spawnpoint_x, spawnpoint_y, spawnpoint_z = (pt + offset):Get()
-	        local tile = _map:GetTileAtPoint(spawnpoint_x, spawnpoint_y, spawnpoint_z)
-	        local allow_water = true	        
-	        return IsOceanTile(tile) and
-	               tile ~= GROUND.OCEAN_COASTAL_SHORE and
-	               #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, RANGE-SHORTRANGE, nil, nil, {"player","flotsam"}) <= 0 and
-	               #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, SHORTRANGE, nil, {"INLIMBO","fx"}) <= 0 
-	    end
+    if TheWorld.has_ocean then
+        --We have to use custom test function because birds can't land on creep
+        local function TestSpawnPoint(offset)
+            local spawnpoint_x, spawnpoint_y, spawnpoint_z = (pt + offset):Get()
+            local tile = _map:GetTileAtPoint(spawnpoint_x, spawnpoint_y, spawnpoint_z)
+            local allow_water = true            
+            return IsOceanTile(tile) and
+                   tile ~= GROUND.OCEAN_COASTAL_SHORE and
+                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, RANGE-SHORTRANGE, nil, nil, {"player","flotsam"}) <= 0 and
+                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, SHORTRANGE, nil, {"INLIMBO","fx"}) <= 0 
+        end
 
-	    local theta = math.random() * 2 * PI
-	    local radius = RANGE
-	    local resultoffset = FindValidPositionByFan(theta, radius, 12, TestSpawnPoint)
+        local theta = math.random() * 2 * PI
+        local radius = RANGE
+        local resultoffset = FindValidPositionByFan(theta, radius, 12, TestSpawnPoint)
 
-	    if resultoffset ~= nil then
-	        return pt + resultoffset
-	    end
-	end
+        if resultoffset ~= nil then
+            return pt + resultoffset
+        end
+    end
 end
 
 local function SpawnFlotsamForPlayer(player, reschedule)
 
     local pt = player:GetPosition()
     if player:GetCurrentPlatform() then
-	    local spawnpoint = GetSpawnPoint(pt)
-	    if spawnpoint ~= nil then
-	        self:SpawnFlotsam(spawnpoint)
-	    end
-	end
+        local spawnpoint = GetSpawnPoint(pt)
+        if spawnpoint ~= nil then
+            self:SpawnFlotsam(spawnpoint)
+        end
+    end
     _scheduledtasks[player] = nil
     reschedule(player)
 end
 
-local function ScheduleSpawn(player, initialspawn)	
+local function ScheduleSpawn(player, initialspawn)  
     if _scheduledtasks[player] == nil  then
-		local mindelay = _minspawndelay
-		local maxdelay = _maxspawndelay
+        local mindelay = _minspawndelay
+        local maxdelay = _maxspawndelay
         local lowerbound = initialspawn and 0 or mindelay
         local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
         _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale, SpawnFlotsamForPlayer, ScheduleSpawn)
@@ -130,8 +130,8 @@ local function ToggleUpdate(force)
 end
 
 local function PickFlotsam(spawnpoint)
-	local item = weighted_random_choice(flotsam_prefabs)
-   	return item
+    local item = weighted_random_choice(flotsam_prefabs)
+    return item
 end
 
 local function AutoRemoveTarget(inst, target)
@@ -140,16 +140,26 @@ local function AutoRemoveTarget(inst, target)
     end
 end
 
+local function rememberflotsam(inst)
+    _flotsam[inst] = true
+end
+local function forgetflotsam(inst)
+    if _flotsam[inst] then
+        _flotsam[inst] = nil
+    end
+end
 
 local function OnTimerDone(inst, data)
-	if data.name == "sink" then
-		SpawnPrefab("splash_sink").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    	inst:Remove()
-	end
+    if data.name == "sink" then
+        forgetflotsam(inst)
+        SpawnPrefab("splash_sink").Transform:SetPosition(inst.Transform:GetWorldPosition())
+        inst:Remove()
+    end
 end
 local function clearflotsamtimer(inst)
-	inst:RemoveTag("flotsam")
-	inst.components.timer:StopTimer("sink")
+    inst:RemoveTag("flotsam")
+    inst.components.timer:StopTimer("sink")
+    forgetflotsam(inst)
 end
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
@@ -210,22 +220,42 @@ end
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 function self:SetSpawnTimes(delay)
-	print "DEPRECATED: SetSpawnTimes() in birdspawner.lua, use birdattractor.spawnmodifier instead"
+    print "DEPRECATED: SetSpawnTimes() in birdspawner.lua, use birdattractor.spawnmodifier instead"
     _minspawndelay = delay.min
     _maxspawndelay = delay.max
 end
 
 function self:ToggleUpdate()
-	ToggleUpdate(true)
+    ToggleUpdate(true)
 end
 
-function self:SpawnFlotsam(spawnpoint)
-    local prefab = PickFlotsam(spawnpoint)
+function self:setinsttoflotsam(inst, time, notag)    
+    if not time then
+        time = LIFESPAN.base + (math.random()*LIFESPAN.varriance)
+    end
+    inst:AddComponent("timer")
+    if not notag then
+        inst:AddTag("flotsam")
+    end
+    inst.components.timer:StartTimer("sink", time)
+    
+    inst:ListenForEvent("timerdone", OnTimerDone)    
+    inst:ListenForEvent("onpickup", clearflotsamtimer)
+    inst:ListenForEvent("onremove", clearflotsamtimer)    
+
+    rememberflotsam(inst)    
+end
+
+function self:SpawnFlotsam(spawnpoint,prefab,notrealflotsam)
+    -- notrealflotsam means the prefab won't get the flotsam tag, so it won't block other flotsam from spawning. 
+    if not prefab then
+        prefab = PickFlotsam(spawnpoint)
+    end
 
     if prefab == nil then
         return
     end
-    
+
     local flotsam = SpawnPrefab(prefab)
     if math.random() < .5 then
         flotsam.Transform:SetRotation(180)
@@ -233,17 +263,10 @@ function self:SpawnFlotsam(spawnpoint)
 
     flotsam.Physics:Teleport(spawnpoint:Get())
 
-    flotsam:AddComponent("timer")
-    flotsam:AddTag("flotsam")
-	flotsam.components.timer:StartTimer("sink", LIFESPAN.base + (math.random()*LIFESPAN.varriance))
-   	
-   	flotsam:ListenForEvent("timerdone", OnTimerDone)	
-	flotsam:ListenForEvent("onpickup", clearflotsamtimer)
-
+    self:setinsttoflotsam(flotsam, nil, notrealflotsam)
 
     return flotsam
 end
-
 
 function self.StartTrackingFn(target)
     if _flotsam[target] == nil then
@@ -275,12 +298,27 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
-	return
-	{
+    local data =
+    {
         maxflotsam = _maxflotsam,
         minspawndelay = _minspawndelay,
         maxspawndelay = _maxspawndelay,
-	}
+    }
+    local ents = {}
+    data.flotsam = {}
+    data.time = {}
+    data.flotsamtag = {}
+
+    for k,v in pairs(_flotsam) do 
+        if k ~= nil then
+            table.insert(data.flotsam, k.GUID)
+            table.insert(ents, k.GUID)
+            table.insert(data.time, k.components.timer:GetTimeLeft("sink") )
+            table.insert(data.flotsamtag, k:HasTag("flotsam"))
+        end
+    end
+
+    return data,ents
 end
 
 function self:OnLoad(data)
@@ -289,6 +327,20 @@ function self:OnLoad(data)
     _maxspawndelay = data.maxspawndelay or TUNING.FLOTSAM_SPAWN_DELAY.max
 
     ToggleUpdate(true)
+end
+
+function self:LoadPostPass(newents, savedata)
+    if savedata and savedata.flotsam then        
+        for k,v in pairs(savedata.flotsam) do 
+            if newents[v] ~= nil then 
+                local notag = true
+                if savedata.flotsamtag and savedata.flotsamtag[k] then
+                    notag = nil
+                end
+                self:setinsttoflotsam(newents[v].entity, savedata.time[k], notag)
+            end
+        end
+    end
 end
 
 --------------------------------------------------------------------------

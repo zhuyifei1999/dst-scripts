@@ -21,13 +21,7 @@ local function onusefn(inst, doer, target, success, transformed_inst, container)
 	if not success and doer ~= nil then
 		doer:PushEvent("on_halloweenmoonpotion_failed")
 
-		if target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
-			target.components.sleeper:WakeUp()
-		end
-
-		if target.sg ~= nil and target.sg:HasState("hit") then
-			target.sg:GoToState("hit")
-		end
+		target:PushEvent("attacked", {attacker = doer, damage = 0})
 	end
 end
 

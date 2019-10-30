@@ -95,6 +95,13 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(on_hammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
+    inst:DoTaskInTime(0,function()
+        local pt = Vector3(inst.Transform:GetWorldPosition())
+        if TheWorld.Map:IsVisualGroundAtPoint(pt.x,pt.y,pt.z) then
+            inst.AnimState:Hide("fx")
+        end
+    end)
+
 	inst.OnSave = onsave
     inst.OnLoad = onload
 

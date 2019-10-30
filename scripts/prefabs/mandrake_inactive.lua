@@ -97,6 +97,8 @@ local function commonfn(anim, cookable)
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
+    inst:AddComponent("tradable")
+    
     if cookable then
         inst:AddComponent("cookable")
         inst.components.cookable.product = "cookedmandrake"

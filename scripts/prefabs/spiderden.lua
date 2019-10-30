@@ -409,6 +409,12 @@ local function OnHaunt(inst)
     return false
 end
 
+local function OnLoadPostPass(inst)
+    if inst.components.growable ~= nil and inst:GetCurrentPlatform() ~= nil then
+		inst.components.growable:StopGrowing()
+    end
+end
+
 local function MakeSpiderDenFn(den_level)
     return function()
         local inst = CreateEntity()
@@ -503,31 +509,9 @@ local function MakeSpiderDenFn(den_level)
         ---------------------
         inst:AddComponent("growable")
         inst.components.growable.springgrowth = true
-        inst.components.growable.stages = growth_stages                      
-
-        inst:DoTaskInTime(0,
-            function() 
-                local x,y,z = inst.Transform:GetWorldPosition()
-                if TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil then
-                    local growable = inst.components.growable
-                    if growable ~= nil then
-                        local default_stage = 1
-                        if growable:GetStage() == default_stage then                                 
-                            growable:SetStage(den_level)
-                        end
-                        growable:StopGrowing()
-                    end
-                else
-                    local growable = inst.components.growable
-                    if growable ~= nil then   
-                        local default_stage = 1
-                        if growable:GetStage() == default_stage then         
-                            growable:SetStage(den_level)          
-                        end
-                        growable:StartGrowing()
-                    end
-                end
-            end)
+        inst.components.growable.stages = growth_stages
+        inst.components.growable:SetStage(den_level)
+        inst.components.growable:StartGrowing()
 
         ---------------------
 
@@ -545,6 +529,12 @@ local function MakeSpiderDenFn(den_level)
 
         inst.OnEntitySleep = OnEntitySleep
         inst.OnEntityWake = OnEntityWake
+		inst.OnLoadPostPass = OnLoadPostPass
+
+		if not POPULATING then
+			inst:DoTaskInTime(0, OnLoadPostPass)
+		end
+
         return inst
     end
 end
