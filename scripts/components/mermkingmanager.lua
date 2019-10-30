@@ -111,6 +111,15 @@ function MermKingManager:OnThroneDestroyed(throne)
 		self.inst:RemoveEventCallback("death", OnCandidateDeath, candidate)
 		self.candidates[throne] = nil
 	end
+
+	if throne == self:GetMainThrone() then
+		self.main_throne = nil
+	end
+
+	-- This wil only happen with the deconstruction staff
+	if self.king ~= nil and self.king:IsValid() and self.king.components.health and not self.king.components.health:IsDead() then
+		self.king.components.health:Kill()
+	end
 end
 
 function MermKingManager:CreateMermKing(candidate, throne)
@@ -259,7 +268,6 @@ function MermKingManager:HasKing()
 	return self.king ~= nil and self.king:IsValid() and self.king.components.health and not self.king.components.health:IsDead()
 end
 
-
 function MermKingManager:OnSave()
 	local data = {}
 	local ents = {}
@@ -307,12 +315,12 @@ function MermKingManager:OnSave()
 end
 
 function MermKingManager:LoadPostPass(newents, savedata)
-	if savedata.throne then
+	if savedata.throne and newents[savedata.throne] ~= nil then
 		self.main_throne = newents[savedata.throne].entity
 	end
 
 	if savedata.candidates then
-		for k,v in pairs(candidates) do
+		for k,v in pairs(savedata.candidates) do
 			local throne = newents[k].entity
 			local candidate = newents[v].entity
 
@@ -323,7 +331,7 @@ function MermKingManager:LoadPostPass(newents, savedata)
 		end
 	end
 
-	if savedata.king then
+	if savedata.king and newents[savedata.king] ~= nil then
 		self.king = newents[savedata.king].entity
 		self.inst:ListenForEvent("onremove", OnKingRemoval, self.king)
 		self.inst:ListenForEvent("ondeath", OnKingDeath, self.king)

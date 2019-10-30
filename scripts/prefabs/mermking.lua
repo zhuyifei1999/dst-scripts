@@ -392,7 +392,7 @@ local function fn()
     MakeLargeBurnableCharacter(inst, "torso")
 
     inst:AddComponent("eater")
-    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+    inst.components.eater:SetDiet({ FOODGROUP.VEGETARIAN }, { FOODGROUP.VEGETARIAN })
 
     inst:AddComponent("hunger")
     inst.components.hunger:SetMax(TUNING.MERM_KING_HUNGER)

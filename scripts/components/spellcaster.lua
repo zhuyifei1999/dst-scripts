@@ -173,7 +173,8 @@ function SpellCaster:CanCast(doer, target, pos)
         or (target.sg ~= nil and (
                 target.sg.currentstate.name == "death" or
                 target.sg:HasStateTag("flight") or
-                target.sg:HasStateTag("invisible")
+                target.sg:HasStateTag("invisible") or
+                target.sg:HasStateTag("nospellcasting")
             )) then
         return false
     end

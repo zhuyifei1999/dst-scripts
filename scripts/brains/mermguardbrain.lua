@@ -174,6 +174,14 @@ local function EatFoodAction(inst)
     end
 end
 
+local function GetNoLeaderHomePos(inst)
+    if inst.components.follower and inst.components.follower.leader ~= nil then
+        return nil
+    end
+
+    return inst.components.knownlocations:GetLocation("home")
+end
+
 function MermBrain:OnStart()
     local root = PriorityNode(
     {
@@ -184,7 +192,7 @@ function MermBrain:OnStart()
             RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
 
         WhileNode(function() 
-                if self.inst.king and (not self.inst.king:IsValid() or (self.inst.king.components.health and self.inst.king.components.health:IsDead())) then
+                if not self.inst.king or (not self.inst.king:IsValid() or (self.inst.king.components.health and self.inst.king.components.health:IsDead())) then
                     self.inst.return_to_king = false
                     self.inst.king = nil
                 end
@@ -227,7 +235,7 @@ function MermBrain:OnStart()
                 FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn ))),
 
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
-        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
+        Wander(self.inst, GetNoLeaderHomePos, MAX_WANDER_DIST),
     }, .25)
 
     self.bt = BT(self.inst, root)

@@ -38,11 +38,11 @@ local function fn()
         return inst
     end
 
+	inst.persists = false
+
     inst:AddComponent("boatleak")
 	inst.components.boatleak.onsprungleak = onsprungleak
 	inst.components.boatleak.onrepairedleak = onrepairedleak
-
-	inst:AddComponent("inspectable")
 
     return inst
 end

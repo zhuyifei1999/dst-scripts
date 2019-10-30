@@ -29,6 +29,10 @@ local function OnConstructed(inst, doer)
     end
 end
 
+local function ondeconstruct_common(inst)
+    TheWorld:PushEvent("onthronedestroyed", {throne = inst})
+end
+
 local function onburnt_common(inst)
     TheWorld:PushEvent("onthronedestroyed", {throne = inst})
 end
@@ -59,9 +63,6 @@ local function onhit_construction(inst, worker)
          inst.AnimState:PlayAnimation("hit")
          inst.AnimState:PushAnimation("idle", true)
      end
-end
-
-local function onhit_regular(inst, worker)
 end
 
 local function onconstruction_built(inst)
@@ -187,12 +188,12 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered_regular)
-    inst.components.workable:SetOnWorkCallback(onhit_regular)
 
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
 
     inst:ListenForEvent("onburnt", onburnt_common)
+    inst:ListenForEvent("ondeconstructstructure", ondeconstruct_common)
     inst:ListenForEvent("onmermkingcreated",   function (world, data) OnMermKingCreated(inst, data)   end, TheWorld)
     inst:ListenForEvent("onmermkingdestroyed", function (world, data) OnMermKingDestroyed(inst, data) end, TheWorld)
     inst:ListenForEvent("onremove", OnThroneRemoved)

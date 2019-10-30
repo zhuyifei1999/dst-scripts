@@ -940,6 +940,7 @@ function Start()
     require("gamelogic")
 
     known_assert(TheSim:CanWriteConfigurationDirectory(), "CONFIG_DIR_WRITE_PERMISSION")
+    known_assert(TheSim:CanReadConfigurationDirectory(), "CONFIG_DIR_READ_PERMISSION")
 
     --load the user's custom commands into the game
     TheSim:GetPersistentString("../customcommands.lua",

@@ -167,7 +167,7 @@ function HullHealth:OnSave()
     return (#leaks > 0 and { boat_leaks = leaks }) or nil
 end
 
-function HullHealth:OnLoad(data)
+function HullHealth:LoadPostPass(newents, data)
     if data ~= nil and data.boat_leaks ~= nil then
         for i, leak_data in ipairs(data.boat_leaks) do
             self.leak_damage[leak_data.leak_point] = leak_data.leak_damage

@@ -697,6 +697,8 @@ local function MakeInvItem(name, placement, animdata, isdoor)
         inst.AnimState:SetBuild(animdata)
         inst.AnimState:PlayAnimation("inventory")
 
+		MakeInventoryFloatable(inst, "small", nil, 1.1)
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -708,7 +710,6 @@ local function MakeInvItem(name, placement, animdata, isdoor)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem:SetSinks(true)
 
         inst:AddComponent("deployable")
         inst.components.deployable.ondeploy = ondeploywall

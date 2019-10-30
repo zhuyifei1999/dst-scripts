@@ -226,6 +226,7 @@ end
 
 
 local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/hut/place")
     inst.AnimState:PlayAnimation("place")
 end
 

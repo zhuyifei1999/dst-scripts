@@ -15,12 +15,21 @@ local function on_remove(inst)
     if anchor ~= nil then
         if anchor.is_anchor_lowered then
             local boat = anchor:GetBoat()
-            if boat ~= nil and boat:IsValid() then
+            if boat ~= nil then
                 boat.components.boatphysics:RemoveAnchorCmp(anchor)
             end
         end
-        anchor.inst:RemoveEventCallback("onremove", on_remove)
     end
+end
+
+local function SetBoat(self, boat)
+	if self.boat ~= nil then
+		self.inst:RemoveEventCallback("boat_onremove", self.OnLeaderRemoved, self.boat)
+	end
+	self.boat = boat
+	if self.boat ~= nil then
+	    self.inst:ListenForEvent("boat_onremove", self.OnLeaderRemoved, self.boat)
+	end
 end
 
 local Anchor = Class(function(self, inst)
@@ -39,10 +48,14 @@ local Anchor = Class(function(self, inst)
     self.autolowerunits = 3    
 
     self.inst:StartUpdatingComponent(self)
-    self.inst:DoTaskInTime(0,
-        function() 
-            self.boat = inst:GetCurrentPlatform()
-        end)    
+
+    self.OnBoatRemoved = function()
+        self.boat = nil
+    end
+
+    if not POPULATING then
+	    self.inst:DoTaskInTime(0, function() SetBoat(self, inst:GetCurrentPlatform()) end)    
+	end
 end,
 nil,
 {
@@ -86,36 +99,35 @@ end
 
 function Anchor:OnLoad(data)
     if data ~= nil then
-
         if data.raiseunits then
             self.raiseunits = data.raiseunits
         end
-
-        self.inst:DoTaskInTime(0,
-                function(i)
-                   
-                    if not i:HasTag("burnt") then
-                        self.boat = self.inst:GetCurrentPlatform()
-                        if self.raiseunits <= 0 then                        
-                            self.inst.sg:GoToState("raised")
-                        else
-                            local depth = self:GetCurrentDepth()
-
-                            if self.raiseunits >= depth then                                
-                                if not self.boat then
-                                    self.inst.sg:GoToState("lowered_land") 
-                                else
-                                    self.inst.sg:GoToState("lowered") 
-                                end                            
-                            else
-                                self.is_anchor_transitioning = true
-                                self.inst.sg:GoToState("lowering")
-                            end
-                        end
-                    end
-                end)
     end
 end
+
+function Anchor:LoadPostPass()--newents, data)
+    if not self.inst:HasTag("burnt") then
+        SetBoat(self, self.inst:GetCurrentPlatform())
+
+        if self.raiseunits <= 0 then                        
+            self.inst.sg:GoToState("raised")
+        else
+            local depth = self:GetCurrentDepth()
+
+            if self.raiseunits >= depth then                                
+                if not self.boat then
+                    self.inst.sg:GoToState("lowered_land") 
+                else
+                    self.inst.sg:GoToState("lowered") 
+                end                            
+            else
+                self.is_anchor_transitioning = true
+                self.inst.sg:GoToState("lowering")
+            end
+        end
+    end
+end
+
 
 function Anchor:GetBoat()
 	return self.boat
@@ -242,6 +254,10 @@ function Anchor:OnUpdate(dt)
             self:AnchorLowered()
         end        
     end    
+end
+
+function Anchor:GetDebugString()
+	return "Boat: " .. tostring(self.boat)
 end
 
 return Anchor

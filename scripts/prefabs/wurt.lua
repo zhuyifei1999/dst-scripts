@@ -24,11 +24,40 @@ for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 end
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
-local function RoyalUpgrade(inst, silent)
-    inst.components.health:SetMaxHealth(TUNING.WURT_HEALTH_KINGBONUS)
-    inst.components.hunger:SetMax(TUNING.WURT_HUNGER_KINGBONUS)
-    inst.components.sanity:SetMax(TUNING.WURT_SANITY_KINGBONUS)
+local function UpdateStats(inst, maxhealth, maxhunger, maxsanity)
+    local current_health = inst.components.health.currenthealth
+    local current_hunger = inst.components.hunger.current
+    local current_sanity = inst.components.sanity.current
 
+    inst.components.health:SetMaxHealth(maxhealth)
+    inst.components.hunger:SetMax(maxhunger)
+    inst.components.sanity:SetMax(maxsanity)
+
+    if current_health > inst.components.health.maxhealth then
+        currenthealth = inst.components.health.maxhealth
+    end
+
+    if current_hunger > inst.components.hunger.max then
+        current_hunger = inst.components.hunger.max
+    end
+
+    if current_sanity > inst.components.sanity.max then
+        current_sanity = inst.components.sanity.max
+    end
+
+    inst.components.health.currenthealth = current_health
+    inst.components.health:ForceUpdateHUD(true)
+
+    inst.components.hunger.current = current_hunger
+    inst.components.hunger:DoDelta(0)
+    
+    inst.components.sanity.current = current_sanity
+    inst.components.sanity:DoDelta(0)
+end
+
+local function RoyalUpgrade(inst, silent)
+
+    UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
 
     if not silent and not inst.royal then
     	inst.royal = true
@@ -39,9 +68,8 @@ local function RoyalUpgrade(inst, silent)
 end
 
 local function RoyalDowngrade(inst, silent)
-    inst.components.health:SetMaxHealth(TUNING.WURT_HEALTH)
-    inst.components.hunger:SetMax(TUNING.WURT_HUNGER)
-    inst.components.sanity:SetMax(TUNING.WURT_SANITY)
+
+    UpdateStats(inst, TUNING.WURT_HEALTH, TUNING.WURT_HUNGER, TUNING.WURT_SANITY)
 
     if not silent and inst.royal then
     	inst.royal = nil

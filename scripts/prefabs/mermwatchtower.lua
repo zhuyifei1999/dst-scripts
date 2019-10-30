@@ -54,25 +54,19 @@ end
 
 local function StartSpawning(inst)
 
-    inst.AnimState:Show("flag")
-    inst.AnimState:PlayAnimation("flagup")
-    inst.AnimState:PushAnimation("idle")
-
-    if not inst:HasTag("burnt") and
-        TheWorld.components.mermkingmanager and
-        TheWorld.components.mermkingmanager:HasKing() and
-        inst.components.childspawner ~= nil then
+    if not inst:HasTag("burnt") and TheWorld.components.mermkingmanager and
+        TheWorld.components.mermkingmanager:HasKing() and inst.components.childspawner ~= nil then
         inst.components.childspawner:StartSpawning()
+        inst.AnimState:Show("flag")
+        inst.AnimState:PlayAnimation("flagup")
+        inst.AnimState:PushAnimation("idle")
     end
 end
 
 local function StopSpawning(inst)
-    
-    inst.AnimState:PlayAnimation("flagdown")
-  --  inst.AnimState:PushAnimation("idle")
-
     if not inst:HasTag("burnt") and inst.components.childspawner ~= nil then
         inst.components.childspawner:StopSpawning()
+        inst.AnimState:PlayAnimation("flagdown")
     end
 end
 
@@ -142,6 +136,7 @@ end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
+    inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/hut/guard_place")
     testforflag(inst)
 end
 

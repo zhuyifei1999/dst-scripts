@@ -27,7 +27,6 @@ local function commonfn(build, anim, loop, dryable, cookable)
     inst.AnimState:SetBuild("fish")
     inst.AnimState:PlayAnimation(anim, loop)
 
-    inst:AddTag("fish")
     inst:AddTag("meat")
     inst:AddTag("catfood")
 
@@ -91,6 +90,7 @@ end
 
 local function rawfn(build)
     local inst = commonfn(build, "idle", true, true, true)
+    inst:AddTag("fish")
 
     if not TheWorld.ismastersim then
         return inst

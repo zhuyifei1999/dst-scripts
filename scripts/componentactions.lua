@@ -121,12 +121,14 @@ local COMPONENT_ACTIONS =
         end,
 
         constructionsite = function(inst, doer, actions)
-            table.insert(actions,
-                not (doer.components.playercontroller ~= nil and
-                    doer.components.playercontroller.isclientcontrollerattached) and
-                inst.replica.constructionsite:IsBuilder(doer) and
-                ACTIONS.STOPCONSTRUCTION or
-                ACTIONS.CONSTRUCT)
+            if not inst:HasTag("burnt") and not inst:HasTag("smolder") and not inst:HasTag("fire") then
+                table.insert(actions,
+                    not (doer.components.playercontroller ~= nil and
+                        doer.components.playercontroller.isclientcontrollerattached) and
+                    inst.replica.constructionsite:IsBuilder(doer) and
+                    ACTIONS.STOPCONSTRUCTION or
+                    ACTIONS.CONSTRUCT)
+            end
         end,
 
         container = function(inst, doer, actions, right)
