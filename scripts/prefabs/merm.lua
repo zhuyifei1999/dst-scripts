@@ -65,12 +65,17 @@ local function FindInvaderFn(guy, inst)
 
     local has_merm_disguise = test_disguise(guy)
     local leader = inst.components.follower and inst.components.follower.leader
+    
+    local leader_guy = guy.components.follower and guy.components.follower.leader
+    if leader_guy and leader_guy.components.inventoryitem then
+        leader_guy = leader_guy.components.inventoryitem:GetGrandOwner()
+    end
 
     return (guy:HasTag("character") and not (guy:HasTag("merm") or has_merm_disguise)) and 
            not ((TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing())) and 
            not (leader and leader:HasTag("player")) and 
-           not (guy.components.follower and guy.components.follower.leader and -- Prevents merms from attacking chester
-               (guy.components.follower.leader:HasTag("merm") or test_disguise(guy.components.follower.leader)) and not guy:HasTag("pig"))
+           not (leader_guy and (leader_guy:HasTag("merm") or test_disguise(leader_guy)) and 
+           not guy:HasTag("pig"))
 end
 
 local function RetargetFn(inst)

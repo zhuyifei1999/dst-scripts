@@ -911,7 +911,9 @@ end
 
 function PurchasePackScreen:_BuildPurchasePanel()
     local purchase_ss = self.root:AddChild(Widget("purchase_ss"))
-
+    
+    self.filters = {}
+    
     -- Overlay is how we display purchasing.
     if PLATFORM == "WIN32_RAIL" or TheNet:IsNetOverlayEnabled() then
         local iap_defs = self:GetIAPDefs(true)
@@ -972,9 +974,6 @@ function PurchasePackScreen:_BuildPurchasePanel()
             self.filters_label:SetRegionSize(100,30)
             self.filters_divider = self.filter_container:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
             self.filters_divider:SetScale(0.4)
-
-
-            self.filters = {}
             
             local owned_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_UNOWNED, data = "UNOWNED" } }
             self.filters[FILTER_OWNED_INDEX] = self:_CreateSpinnerFilter( "OWNED", STRINGS.UI.PURCHASEPACKSCREEN.OWNED_FILTER, owned_options )

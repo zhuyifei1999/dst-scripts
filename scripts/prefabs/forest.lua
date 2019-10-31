@@ -26,7 +26,8 @@ local assets =
     Asset("ANIM", "anim/lightning.zip"),
 
     Asset("SOUND", "sound/forest_stream.fsb"),
-    Asset("SOUND", "sound/amb_stream.fsb"),
+    Asset("SOUND", "sound/amb_stream.fsb"),    
+    Asset("SOUND", "sound/turnoftides_music.fsb"),
     Asset("SOUND", "sound/turnoftides_amb.fsb"),
 
     Asset("IMAGE", "levels/textures/snow.tex"),

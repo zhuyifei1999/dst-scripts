@@ -2803,7 +2803,9 @@ STRINGS =
     MERM_TALK_HELP_HAMMER    = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Smash! Smash!", "Florph! Florph!"}, {"Work hard, florp!", "Glort blut, florp!"}},
     MERM_TALK_FIND_FOOD      = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"}},
     MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"},},
-    MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For glory of Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"},{"Defend King!", "Glurph Glurtsen!"}},
+    MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For glory of Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"}, {"Defend King!", "Glurph Glurtsen!"}},
+    MERM_TALK_PANICBOSS      = {{"Something coming!", "Gloppy flort!"}, {"Aaah!! Bad thing! Bad thing!", "Gloooorph!! Glurph glot! Glurph glot!"}, {"It come to destroy us!", "Flort wult Glurtsu!"}},
+    MERM_TALK_PANICBOSS_KING = {{"Rally to King!", "Glurtsen blut flort!"}, {"Hurry! Protect kingdom!", "Flurph flrot! Gloppy Glurtsam!"}, {"S-stay brave!!", "G-glop blut flrot!!"}},
 
     MERM_KING_TALK_HUNGER_STARVING = "Hungry... HUNGRY! HUNGRYYYY!!!",
     MERM_KING_TALK_HUNGER_CLOSE_STARVING = "Treachery... villainy! To let King waste away like this...",

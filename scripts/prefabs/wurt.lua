@@ -34,7 +34,7 @@ local function UpdateStats(inst, maxhealth, maxhunger, maxsanity)
     inst.components.sanity:SetMax(maxsanity)
 
     if current_health > inst.components.health.maxhealth then
-        currenthealth = inst.components.health.maxhealth
+        current_health = inst.components.health.maxhealth
     end
 
     if current_hunger > inst.components.hunger.max then
@@ -56,9 +56,6 @@ local function UpdateStats(inst, maxhealth, maxhunger, maxsanity)
 end
 
 local function RoyalUpgrade(inst, silent)
-
-    UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
-
     if not silent and not inst.royal then
     	inst.royal = true
     	inst.components.talker:Say(GetString(inst, "ANNOUNCE_KINGCREATED"))        
@@ -224,7 +221,11 @@ local function master_postinit(inst)
 
 	inst.components.locomotor:SetFasterOnGroundTile(GROUND.MARSH, true)
 
-    inst:ListenForEvent("onmermkingcreated",   function() RoyalUpgrade(inst)   end, TheWorld)
+    inst:ListenForEvent("onmermkingcreated",   function() 
+        UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
+        RoyalUpgrade(inst)   
+    end, TheWorld)
+    
     inst:ListenForEvent("onmermkingdestroyed", function() RoyalDowngrade(inst) end, TheWorld)
 
     inst.peruse_brimstone = peruse_brimstone
@@ -233,11 +234,12 @@ local function master_postinit(inst)
     inst.peruse_sleep = peruse_sleep
     inst.peruse_gardening = peruse_gardening  
 
-    inst:DoTaskInTime(0, function() 
-        if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
+        UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
+        inst:DoTaskInTime(0, function() 
             RoyalUpgrade(inst)
-        end
-    end)
+        end)
+    end
 end
 
 return MakePlayerCharacter("wurt", prefabs, assets, common_postinit, master_postinit)

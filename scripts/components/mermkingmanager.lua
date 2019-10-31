@@ -114,12 +114,12 @@ function MermKingManager:OnThroneDestroyed(throne)
 
 	if throne == self:GetMainThrone() then
 		self.main_throne = nil
+		-- This wil only happen with the deconstruction staff
+		if self.king ~= nil and self.king:IsValid() and self.king.components.health and not self.king.components.health:IsDead() then
+			self.king.components.health:Kill()
+		end
 	end
 
-	-- This wil only happen with the deconstruction staff
-	if self.king ~= nil and self.king:IsValid() and self.king.components.health and not self.king.components.health:IsDead() then
-		self.king.components.health:Kill()
-	end
 end
 
 function MermKingManager:CreateMermKing(candidate, throne)
