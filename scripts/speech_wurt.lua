@@ -427,10 +427,10 @@ return{
 --fallback to speech_wilson.lua     },
 
     --quagmire event
-    QUAGMIRE_ANNOUNCE_NOTRECIPE = "Those ingredients didn't make anything.",
-    QUAGMIRE_ANNOUNCE_MEALBURNT = "I left it on too long.",
-    QUAGMIRE_ANNOUNCE_LOSE = "I have a bad feeling about this.",
-    QUAGMIRE_ANNOUNCE_WIN = "Time to go!",
+    QUAGMIRE_ANNOUNCE_NOTRECIPE = "Glurgh, that not gonna taste good together.",
+    QUAGMIRE_ANNOUNCE_MEALBURNT = "Oops...",
+    QUAGMIRE_ANNOUNCE_LOSE = "We win! No? Glurp...",
+    QUAGMIRE_ANNOUNCE_WIN = "Yay! Going back now, bye-bye sky mouth!",
 
     ANNOUNCE_ROYALTY =
     {
@@ -874,7 +874,7 @@ return{
         BUNNYMAN = "Don't like Bunnyman!",
         FLOWER_CAVE = "Useless flower, florph.",
         GUANO = "Bats poop too, florp.",
-        LANTERN = "Poor scale-less can't see in dark.",
+        LANTERN = "Glowy!",
         LIGHTBULB = "What you mean, \"don't put in your mouth\"?",
         MANRABBIT_TAIL = "He don't need it anymore, flurpt.",
         MUSHROOMHAT = "Keeps head nice and clammy!",
@@ -2397,7 +2397,7 @@ return{
         BLUEMOONEYE = "Where you looking, flurt?",
 
         --Arena Event
-        LAVAARENA_BOARLORD = "That's the guy in charge here.",
+        LAVAARENA_BOARLORD = "Grrr, will show you!",
         BOARRIOR = "G-glorp... b-big Pigfolk...",
         BOARON = "You kin of Pigfolk??",
         PEGHOOK = "Glurp, bad bug!",
@@ -2409,152 +2409,152 @@ return{
 
         LAVAARENA_PORTAL = 
         {
-            ON = "I'll just be going now.",
-            GENERIC = "That's how we got here. Hopefully how we get back, too.",
+            ON = "Bye-bye!",
+            GENERIC = "How that door work?",
         },
-        LAVAARENA_KEYHOLE = "It needs a key.",
-		LAVAARENA_KEYHOLE_FULL = "That should do it.",
-        LAVAARENA_BATTLESTANDARD = "Everyone, break the Battle Standard!",
-        LAVAARENA_SPAWNER = "This is where those enemies are coming from.",
+        LAVAARENA_KEYHOLE = "Something go in there...",
+		LAVAARENA_KEYHOLE_FULL = "All done!",
+        LAVAARENA_BATTLESTANDARD = "It ok to break it? YEAH!!",
+        LAVAARENA_SPAWNER = "Fighty folk keep coming from there.",
 
-        HEALINGSTAFF = "Guess me could... help... others?",
+        HEALINGSTAFF = "Blegh, ugly stick...",
         FIREBALLSTAFF = "Thwooooom!",
         HAMMER_MJOLNIR = "Extra hitty hammer!",
         SPEAR_GUNGNIR = "Stabby!",
         BLOWDART_LAVA = "Shouldn't play with it... gonna anyway.",
         BLOWDART_LAVA2 = "Look dangerous!",
-        LAVAARENA_LUCY = "That weapon's for throwing.",
+        LAVAARENA_LUCY = "Loo-cy look different.",
         WEBBER_SPIDER_MINION = "Spiderfolk and Mermfolk truced for now, florp.",
         BOOK_FOSSIL = "What this say, florp?",
-		LAVAARENA_BERNIE = "He might make a good distraction for us.",
+		LAVAARENA_BERNIE = "Yay!! Bear come to play!",
 		SPEAR_LANCE = "Swirly!",
 		BOOK_ELEMENTAL = "What this say, florp?",
-		LAVAARENA_ELEMENTAL = "It's a rock monster!",
+		LAVAARENA_ELEMENTAL = "Glurp!! Rock monster!",
 
-   		LAVAARENA_ARMORLIGHT = "Light, but not very durable.",
-		LAVAARENA_ARMORLIGHTSPEED = "Lightweight and designed for mobility.",
-		LAVAARENA_ARMORMEDIUM = "It offers a decent amount of protection.",
-		LAVAARENA_ARMORMEDIUMDAMAGER = "That could help me hit a little harder.",
-		LAVAARENA_ARMORMEDIUMRECHARGER = "I'd have energy for a few more stunts wearing that.",
-		LAVAARENA_ARMORHEAVY = "That's as good as it gets.",
-		LAVAARENA_ARMOREXTRAHEAVY = "This armor has been petrified for maximum protection.",
+   		LAVAARENA_ARMORLIGHT = "Reeds good for hide in... not so good for fight in.",
+		LAVAARENA_ARMORLIGHTSPEED = "Hee-hee, it's tickly!",
+		LAVAARENA_ARMORMEDIUM = "Made of strong tree skin.",
+		LAVAARENA_ARMORMEDIUMDAMAGER = "Grrr! Look very fearsome!",
+		LAVAARENA_ARMORMEDIUMRECHARGER = "Look light, for working quick!",
+		LAVAARENA_ARMORHEAVY = "Made of strong rocks!",
+		LAVAARENA_ARMOREXTRAHEAVY = "So safe!! But, glurgh... so heavy...",
 
-		LAVAARENA_FEATHERCROWNHAT = "Those fluffy feathers make me want to run!",
-        LAVAARENA_HEALINGFLOWERHAT = "The blossom interacts well with healing magic.",
-        LAVAARENA_LIGHTDAMAGERHAT = "My strikes would hurt a little more wearing that.",
-        LAVAARENA_STRONGDAMAGERHAT = "It look like it packs a wallop.",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "Look like it amplifies healing expertise.",
-        LAVAARENA_EYECIRCLETHAT = "It has a gaze full of science.",
-        LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
-        LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
-        LAVAARENA_CROWNDAMAGERHAT = "That could cause some major destruction.",
+		LAVAARENA_FEATHERCROWNHAT = "Hee-hee! Feather head!",
+        LAVAARENA_HEALINGFLOWERHAT = "Blegh... have to wear it...?",
+        LAVAARENA_LIGHTDAMAGERHAT = "Feel little stronger!",
+        LAVAARENA_STRONGDAMAGERHAT = "Hrrraaaaagh!!",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "It fill head with healing learning!",
+        LAVAARENA_EYECIRCLETHAT = "Has magic eye.",
+        LAVAARENA_RECHARGERHAT = "Feel speedy, florp!",
+        LAVAARENA_HEALINGGARLANDHAT = "Know it good for me, but gluuurrgghh...",
+        LAVAARENA_CROWNDAMAGERHAT = "Extra horns for extra fight!!",
 
-		LAVAARENA_ARMOR_HP = "That should keep me safe.",
+		LAVAARENA_ARMOR_HP = "Feel bit safer, florp.",
 
-		LAVAARENA_FIREBOMB = "It smells like brimstone.",
-		LAVAARENA_HEAVYBLADE = "A sharp looking instrument.",
+		LAVAARENA_FIREBOMB = "BOOOOM!!",
+		LAVAARENA_HEAVYBLADE = "This sword almost big as me, florp!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 
         {
-        	GENERIC = "We'd better start cooking some offerings.",
-        	FULL = "It's in the process of digestinating.",
+        	GENERIC = "That where food goes.",
+        	FULL = "It just ate!",
     	},
-		QUAGMIRE_ALTAR_STATUE1 = "It's an old statue.",
-		QUAGMIRE_PARK_FOUNTAIN = "Been a long time since it was hooked up to water.",
+		QUAGMIRE_ALTAR_STATUE1 = "Look creepy...",
+		QUAGMIRE_PARK_FOUNTAIN = "Aww... no water to splash in.",
 		
-        QUAGMIRE_HOE = "It's a farming instrument.",
+        QUAGMIRE_HOE = "Farming... thing!",
         
-        QUAGMIRE_TURNIP = "It's a raw turnip.",
-        QUAGMIRE_TURNIP_COOKED = "Cooking is science in practice.",
-        QUAGMIRE_TURNIP_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_TURNIP = "Mmm, turnip!",
+        QUAGMIRE_TURNIP_COOKED = "Hot turnip!",
+        QUAGMIRE_TURNIP_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_GARLIC = "The number one breath enhancer.",
-        QUAGMIRE_GARLIC_COOKED = "Perfectly browned.",
-        QUAGMIRE_GARLIC_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_GARLIC = "Make good snack.",
+        QUAGMIRE_GARLIC_COOKED = "It smell even better now!",
+        QUAGMIRE_GARLIC_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_ONION = "Looks crunchy.",
-        QUAGMIRE_ONION_COOKED = "A successful chemical reaction.",
-        QUAGMIRE_ONION_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_ONION = "Can have some? Pleeaaase?",
+        QUAGMIRE_ONION_COOKED = "(Sniff) Mmmm...",
+        QUAGMIRE_ONION_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_POTATO = "The apples of the earth.",
-        QUAGMIRE_POTATO_COOKED = "A successful temperature experiment.",
-        QUAGMIRE_POTATO_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_POTATO = "It a 'tato!",
+        QUAGMIRE_POTATO_COOKED = "Tasty 'tatoes.",
+        QUAGMIRE_POTATO_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_TOMATO = "It's red because it's full of science.",
-        QUAGMIRE_TOMATO_COOKED = "Cooking's easy if you understand chemistry.",
-        QUAGMIRE_TOMATO_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_TOMATO = "It nice and ripe.",
+        QUAGMIRE_TOMATO_COOKED = "Cooked it real good!",
+        QUAGMIRE_TOMATO_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_FLOUR = "Ready for baking.",
-        QUAGMIRE_WHEAT = "It looks a bit grainy.",
-        QUAGMIRE_WHEAT_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_FLOUR = "This dusty stuff go in food?",
+        QUAGMIRE_WHEAT = "It like grass, with hidden snacks!",
+        QUAGMIRE_WHEAT_SEEDS = "Wonder what gonna grow?",
         --NOTE: raw/cooked carrot uses regular carrot strings
-        QUAGMIRE_CARROT_SEEDS = "A handful of odd seeds.",
+        QUAGMIRE_CARROT_SEEDS = "Wonder what gonna grow?",
         
-        QUAGMIRE_ROTTEN_CROP = "I don't think the altar will want that.",
+        QUAGMIRE_ROTTEN_CROP = "Don't think big sky mouth would like that, florp.",
         
-		QUAGMIRE_SALMON = "Mm, fresh fish.",
-		QUAGMIRE_SALMON_COOKED = "Ready for the dinner table.",
-		QUAGMIRE_CRABMEAT = "No imitations here.",
-		QUAGMIRE_CRABMEAT_COOKED = "I can put a meal together in a pinch.",
+		QUAGMIRE_SALMON = "Hello fishy!",
+		QUAGMIRE_SALMON_COOKED = "Nooooooo!!",
+		QUAGMIRE_CRABMEAT = "(Sniff) poor crab...",
+		QUAGMIRE_CRABMEAT_COOKED = "Glurph... can't look.",
         QUAGMIRE_POT = "This pot holds more ingredients.",
         QUAGMIRE_POT_SMALL = "Let's get cooking!",
         QUAGMIRE_POT_HANGER_ITEM = "For suspension-based cookery.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
-			GENERIC = "It's full of delicious, delicious sap.",
-			STUMP = "Where'd the tree go? I'm stumped.",
-			TAPPED_EMPTY = "Here sappy, sappy, sap.",
-			TAPPED_READY = "Sweet golden sap.",
-			TAPPED_BUGS = "That's how you get ants.",
-			WOUNDED = "It looks ill.",
+			GENERIC = "There sweet stuff inside!",
+			STUMP = "Someone took tree! Not me!",
+			TAPPED_EMPTY = "Aww... nothing left.",
+			TAPPED_READY = "Mmm, it full of sweet stuff!",
+			TAPPED_BUGS = "Blegh, there bugs stuck in the sweet stuff.",
+			WOUNDED = "Tree okay?",
 		},
 		QUAGMIRE_SPOTSPICE_SHRUB = 
 		{
-			GENERIC = "It reminds me of those tentacle monsters.",
-			PICKED = "I can't get anymore out of that shrub.",
+			GENERIC = "Something about it feel like home.",
+			PICKED = "Nothing left for picking.",
 		},
-		QUAGMIRE_SPOTSPICE_SPRIG = "I could grind it up to make a spice.",
-		QUAGMIRE_SPOTSPICE_GROUND = "Flavorful.",
-		QUAGMIRE_SAPBUCKET = "We can use it to gather sap from the trees.",
-		QUAGMIRE_SAP = "It tastes sweet.",
+		QUAGMIRE_SPOTSPICE_SPRIG = "Smell kinda spicy.",
+		QUAGMIRE_SPOTSPICE_GROUND = "Oooh, it taste good!",
+		QUAGMIRE_SAPBUCKET = "Holds sweet tree stuff!",
+		QUAGMIRE_SAP = "Mmmm, so sweet!!",
 		QUAGMIRE_SALT_RACK =
 		{
-			READY = "Salt has gathered on the rope.",
-			GENERIC = "Science takes time.",
+			READY = "There stuff growing on it!",
+			GENERIC = "How this supposed to work, florp?",
 		},
 		
-		QUAGMIRE_POND_SALT = "A little salty spring.",
-		QUAGMIRE_SALT_RACK_ITEM = "For harvesting salt from the pond.",
+		QUAGMIRE_POND_SALT = "Blegh, it full of salty water!",
+		QUAGMIRE_SALT_RACK_ITEM = "This go over salty pond?",
 
 		QUAGMIRE_SAFE = 
 		{
-			GENERIC = "It's a safe. For keeping things safe.",
-			LOCKED = "It won't open without the key.",
+			GENERIC = "Wonder what inside this hidey box...",
+			LOCKED = "Aww, let me in!!",
 		},
 
-		QUAGMIRE_KEY = "Safe bet this'll come in handy.",
-		QUAGMIRE_KEY_PARK = "I'll park it in my pocket until I get to the park.",
-        QUAGMIRE_PORTAL_KEY = "This looks science-y.",
+		QUAGMIRE_KEY = "Maybe this open those hidey boxes!",
+		QUAGMIRE_KEY_PARK = "Not for hidey boxes... what it open?",
+        QUAGMIRE_PORTAL_KEY = "Ooooh, look important!",
 
 		
 		QUAGMIRE_MUSHROOMSTUMP =
 		{
-			GENERIC = "Are those mushrooms? I'm stumped.",
-			PICKED = "I don't think it's growing back.",
+			GENERIC = "Ooooh, this where mushrooms grow!",
+			PICKED = "No more mushroom...?",
 		},
-		QUAGMIRE_MUSHROOMS = "These are edible mushrooms.",
-        QUAGMIRE_MEALINGSTONE = "The daily grind.",
-		QUAGMIRE_PEBBLECRAB = "That rock's alive!",
+		QUAGMIRE_MUSHROOMS = "Mushrooms very chewy and good.",
+        QUAGMIRE_MEALINGSTONE = "Crush into tiny bits!",
+		QUAGMIRE_PEBBLECRAB = "Aww, it so cute!",
 
 		
-		QUAGMIRE_RUBBLE_CARRIAGE = "On the road to nowhere.",
-        QUAGMIRE_RUBBLE_CLOCK = "Someone beat the clock. Literally.",
-        QUAGMIRE_RUBBLE_CATHEDRAL = "Preyed upon.",
-        QUAGMIRE_RUBBLE_PUBDOOR = "No longer a-door-able.",
-        QUAGMIRE_RUBBLE_ROOF = "Someone hit the roof.",
-        QUAGMIRE_RUBBLE_CLOCKTOWER = "That clock's been punched.",
-        QUAGMIRE_RUBBLE_BIKE = "Must have mis-spoke.",
+		QUAGMIRE_RUBBLE_CARRIAGE = "What this thing?",
+        QUAGMIRE_RUBBLE_CLOCK = "What happen to it?",
+        QUAGMIRE_RUBBLE_CATHEDRAL = "Mermfolk have story passed down... about mouth in the sky...",
+        QUAGMIRE_RUBBLE_PUBDOOR = "It all broken.",
+        QUAGMIRE_RUBBLE_ROOF = "Was there fight? Look like Goatfolk lose.",
+        QUAGMIRE_RUBBLE_CLOCKTOWER = "PLACEHOLDER",
+        QUAGMIRE_RUBBLE_BIKE = "Weird looking thing...",
         QUAGMIRE_RUBBLE_HOUSE =
         {
             "No one's here.",
@@ -2663,7 +2663,7 @@ return{
         },
         WINONA_SPOTLIGHT = 
         {
-        	GENERIC = "This so scale-less can see in dark?",
+        	GENERIC = "What this thing?",
         	OFF = "Think it tired.",
         	BURNING = "That not right kind of light.",
         	BURNT = "Not gonna help now, florp.",
@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "Wicker-lady say should eat with mouth closed.",
 
         MERMHAT = "Make scale-less look like friendly Mermfolk!",
-        MERMTHRONE = "Good seat for Merm King!",
-        MERMTHRONE_CONSTRUCTION = "There lots of Kings in fairy stories... look easy to make!",
+        MERMTHRONE =
+        {
+            GENERIC = "Good seat for Merm King!",
+            BURNT = "WHO DO THIS?!",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "There lots of Kings in fairy stories... look easy to make!",
+            BURNT = "NOOOOOO!!",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Made it with own claws!",

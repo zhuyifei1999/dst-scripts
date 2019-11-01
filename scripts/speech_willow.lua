@@ -2961,8 +2961,16 @@ return{
         WEREITEM_MOOSE = "Yup, looks cursed alright.",
 
         MERMHAT = "Yuck, who'd want a face like that?",
-        MERMTHRONE = "I shouldn't burn it... but I want to...",
-        MERMTHRONE_CONSTRUCTION = "What's all this stuff for?",
+        MERMTHRONE =
+        {
+            GENERIC = "I shouldn't burn it... but I want to...",
+            BURNT = "Did I do that? It's hard to keep track.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "What's all this stuff for?",
+            BURNT = "Hahaha-! Uh, I mean, oh no...",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Looks just as flammable as the old ones.",

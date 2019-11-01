@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "Excusez-moi, but why does this smell like meat?",
 
         MERMHAT = "Mon dieu, must I dress as a frog?",
-        MERMTHRONE = "Très royal!",
-        MERMTHRONE_CONSTRUCTION = "You have all the ingredients you need?",
+        MERMTHRONE =
+        {
+            GENERIC = "Très royal!",
+            BURNT = "The throne has been charbroiled!",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "You have all the ingredients you need?",
+            BURNT = "It's been burnt to a crisp!",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Oh! It looks... very nice!",

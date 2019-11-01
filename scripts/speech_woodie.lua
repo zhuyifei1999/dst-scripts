@@ -2955,8 +2955,16 @@ return{
         WEREITEM_MOOSE = "Not bad, if I do say so mooself.",
 
         MERMHAT = "Not sure it'll fit over my luxurious beard.",
-        MERMTHRONE = "I'm from a Commonwealth, myself.",
-        MERMTHRONE_CONSTRUCTION = "You look like you've got this under control.",
+        MERMTHRONE =
+        {
+            GENERIC = "I'm from a Commonwealth, myself.",
+            BURNT = "Sorry aboot your throne, there.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "You look like you've got this under control.",
+            BURNT = "It's all gone up in flames, eh?",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Reminds me of the first house we built, eh Lucy?",

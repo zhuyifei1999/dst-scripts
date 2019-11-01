@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "Can you make a toy without meat in it?",
 
         MERMHAT = "Hopefully they don't notice the extra legs.",
-        MERMTHRONE = "Hey, can we be the king? We can take turns!",
-        MERMTHRONE_CONSTRUCTION = "Can we help?",
+        MERMTHRONE =
+        {
+            GENERIC = "Hey, can we be the king? We can take turns!",
+            BURNT = "Yikes! What happened?",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Can we help?",
+            BURNT = "It's burnt up!",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "What a funny little house.",

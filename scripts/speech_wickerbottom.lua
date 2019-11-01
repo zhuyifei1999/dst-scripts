@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "Someone's going to trip on this, dear.",
 
         MERMHAT = "I'm not eager to test out its effectiveness.",
-        MERMTHRONE = "The \"if it fits, it sits\" method of choosing a monarch. I'm familiar.",
-        MERMTHRONE_CONSTRUCTION = "Careful not to get a splinter, dear.",
+        MERMTHRONE =
+        {
+            GENERIC = "The \"if it fits, it sits\" method of choosing a monarch. I'm familiar.",
+            BURNT = "Oh my... I suppose they'll have to start all over.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Careful not to get a splinter, dear.",
+            BURNT = "Oh, oh dear...",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "It's good to see her doing something constructive.",

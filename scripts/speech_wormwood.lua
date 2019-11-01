@@ -2958,8 +2958,16 @@ return{
         WEREITEM_MOOSE = "Small Branch Head",
 
         MERMHAT = "Glub Glub pretend face",
-        MERMTHRONE = "Place for big Glub Glub",
-        MERMTHRONE_CONSTRUCTION = "Making something",
+        MERMTHRONE =
+        {
+            GENERIC = "Place for big Glub Glub",
+            BURNT = "Oh. Gone",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Making something",
+            BURNT = "All gone",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Glub Glub house",
