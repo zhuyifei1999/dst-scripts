@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "Almost as powerful as it is tacky.",
 
         MERMHAT = "This seems rather... fishy.",
-        MERMTHRONE = "Not especially impressive for a \"throne\".",
-        MERMTHRONE_CONSTRUCTION = "What is that little creature up to?",
+        MERMTHRONE =
+        {
+            GENERIC = "Not especially impressive for a \"throne\".",
+            BURNT = "Someone finally took care of that hideous throw rug.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "What is that little creature up to?",
+            BURNT = "Such a waste of time and energy.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "It's slightly less offensive to my eyes than the others.",

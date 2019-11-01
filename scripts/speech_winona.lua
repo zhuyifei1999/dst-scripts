@@ -2960,8 +2960,16 @@ return{
         WEREITEM_MOOSE = "I ain't one for er... decorations.",
 
         MERMHAT = "Do I look a little green around the gills? Ha!",
-        MERMTHRONE = "Not bad handiwork.",
-        MERMTHRONE_CONSTRUCTION = "Whatcha makin' there, kid?",
+        MERMTHRONE =
+        {
+            GENERIC = "Not bad handiwork.",
+            BURNT = "Yeesh, what a mess.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Whatcha makin' there, kid?",
+            BURNT = "Guess it's back to the drawing board.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Hm, I should teach that kid how to use a level.",

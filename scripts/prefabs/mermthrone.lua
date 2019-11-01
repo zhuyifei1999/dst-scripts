@@ -70,6 +70,18 @@ local function onconstruction_built(inst)
     inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/place")
 end
 
+local function onsave(inst, data)
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+        data.burnt = true
+    end
+end
+
+local function onload(inst, data)
+    if data ~= nil and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    end
+end
+
 local function construction_fn()
     local inst = CreateEntity()
 
@@ -113,6 +125,9 @@ local function construction_fn()
     inst.components.workable:SetOnWorkCallback(onhit_construction)
 
     inst:ListenForEvent("onbuilt", onconstruction_built)
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     return inst
 end
@@ -203,6 +218,9 @@ local function fn()
             OnMermKingCreated(inst, {throne = TheWorld.components.mermkingmanager:GetMainThrone() })
         end
     end)
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     return inst
 end

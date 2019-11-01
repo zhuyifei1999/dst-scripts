@@ -2960,8 +2960,16 @@ return{
         WEREITEM_MOOSE = "Weremoose? There moose!",
 
         MERMHAT = "Some would call me two-faced, hyuyu!",
-        MERMTHRONE = "A mat made for a monarch.",
-        MERMTHRONE_CONSTRUCTION = "My my, what mischief are you making?",
+        MERMTHRONE =
+        {
+            GENERIC = "A mat made for a monarch.",
+            BURNT = "A little rain could have saved their reign.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "My my, what mischief are you making?",
+            BURNT = "Looks like someone played a little prank!",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "An abode fit for a toad, hyuyu!",

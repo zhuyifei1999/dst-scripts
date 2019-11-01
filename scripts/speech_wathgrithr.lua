@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "It represents a warrior's spirit!",
 
         MERMHAT = "Tis a deceitful mask.",
-        MERMTHRONE = "Have you chosen a chieftain?",
-        MERMTHRONE_CONSTRUCTION = "The little beast toils away.",
+        MERMTHRONE =
+        {
+            GENERIC = "Have you chosen a chieftain?",
+            BURNT = "The throne hath been smited!",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "The little beast toils away.",
+            BURNT = "Tis a sad day for the fish beasts.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "A home fit for a fish beast.",

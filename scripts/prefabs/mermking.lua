@@ -141,28 +141,35 @@ end
 
 local function HungerDelta(inst, data)
     if data.newpercent then
-        if inst.lastpercent_hunger == nil or (inst.lastpercent_hunger - data.newpercent >= 0.03) then
-            inst.lastpercent_hunger = data.newpercent
-            
-            -- Hunger announcement stuff
-            if inst.sg:HasStateTag("idle") then
-                if data.newpercent <= 0 then
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_STARVING)
-                elseif data.newpercent < 0.1 then
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_CLOSE_STARVING)
-                elseif data.newpercent < 0.25 then
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_VERY_HUNGRY)
-                elseif data.newpercent < 0.5 then
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_HUNGRY)
-                elseif data.newpercent < 0.75 then
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_HUNGRISH)
-                else
-                    inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_FULL)
-                end
+        local increase = false
+        if inst.lastpercent_hunger and data.newpercent - inst.lastpercent_hunger > 0 then
+            increase = true
+        end
+        inst.lastpercent_hunger = data.newpercent
+
+        if not inst.components.timer:TimerExists("hungrytalk_cooldown") or data.newpercent == 1 or (increase and not inst.components.timer:TimerExists("hungrytalk_increase_cooldown") ) then
+
+            if data.newpercent <= 0 then
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_STARVING)
+            elseif data.newpercent < 0.1 then
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_CLOSE_STARVING)
+            elseif data.newpercent < 0.25 then
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_VERY_HUNGRY)
+            elseif data.newpercent < 0.5 then
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_HUNGRY)
+            elseif data.newpercent < 0.95 then
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_HUNGRISH)
+            else
+                inst.components.talker:Say(STRINGS.MERM_KING_TALK_HUNGER_FULL)
             end
 
-        elseif inst.lastpercent_hunger ~= nil and data.newpercent > inst.lastpercent_hunger then
-            inst.lastpercent_hunger = data.newpercent
+            local time = Remap(data.newpercent, 1,0, 30,8) 
+            if increase then
+                inst.components.timer:StopTimer("hungrytalk_increase_cooldown")
+                inst.components.timer:StartTimer("hungrytalk_increase_cooldown", 10)
+            end
+            inst.components.timer:StopTimer("hungrytalk_cooldown")
+            inst.components.timer:StartTimer("hungrytalk_cooldown", time)
         end
         
         if data.newpercent <= 0 then
@@ -178,13 +185,13 @@ end
 
 local function HealthDelta(inst, data)
     if data.newpercent and inst.components.combat.target ~= nil then
-        if data.newpercent < 0.75 then
+        if data.newpercent < 0.75 and data.oldpercent > data.newpercent then
 
             if inst.guards_available == nil then
                 inst.guards_available = 4
             end
 
-            if inst.guards_available > 0 and (inst.guards == nil or #inst.guards == 0) and not inst.sg:HasStateTag("calling_guards") then
+            if inst.guards_available > 0 and (inst.guards == nil or #inst.guards == 0) and not inst.sg:HasStateTag("calling_guards") and not inst.components.health:IsDead() then
                 inst.sg:PushEvent("call_guards")
                 
                 if not inst.call_guard_task then
@@ -412,6 +419,8 @@ local function fn()
 
     inst:AddComponent("inventory")
     inst:AddComponent("inspectable")
+
+    inst:AddComponent("timer")
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)

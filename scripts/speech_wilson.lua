@@ -2963,8 +2963,16 @@ return {
         WEREITEM_MOOSE = "A perfectly normal cursed moose thing.",
 
         MERMHAT = "Finally, I can show my face in public.",
-        MERMTHRONE = "Looks fit for a swamp king!",
-        MERMTHRONE_CONSTRUCTION = "Just what is she planning?",
+        MERMTHRONE =
+        {
+            GENERIC = "Looks fit for a swamp king!",
+            BURNT = "There was something fishy about that throne anyway.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Just what is she planning?",
+            BURNT = "I suppose we'll never know what it was for now.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "It's actually kind of cute.",

@@ -2954,8 +2954,16 @@ return{
         WEREITEM_MOOSE = "I don't want to play with that.",
 
         MERMHAT = "We all hide behind our own masks...",
-        MERMTHRONE = "\"The Frogs Who Desired a King\"...",
-        MERMTHRONE_CONSTRUCTION = "I don't know why you bother.",
+        MERMTHRONE =
+        {
+            GENERIC = "\"The Frogs Who Desired a King\"...",
+            BURNT = "Their kingdom vanishes as swiftly as it appeared.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "I don't know why you bother.",
+            BURNT = "All that work, for nothing.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "It has not yet been touched by the ravages of time.",

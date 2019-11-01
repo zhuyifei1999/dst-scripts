@@ -2955,8 +2955,16 @@ return{
         WEREITEM_MOOSE = "This make beardman mighty like Wolfgang?",
 
         MERMHAT = "Wolfgang will be biggest and strongest fish man!",
-        MERMTHRONE = "Big chair looks very inviting.",
-        MERMTHRONE_CONSTRUCTION = "Tiny fish girl seems very busy.",
+        MERMTHRONE =
+        {
+            GENERIC = "Big sitting mat looks very inviting.",
+            BURNT = "Is burnt up.",
+        },        
+        MERMTHRONE_CONSTRUCTION =
+        {
+            GENERIC = "Tiny fish girl seems very busy.",
+            BURNT = "All gone in puff of smoke.",
+        },        
         MERMHOUSE_CRAFTED = 
         {
             GENERIC = "Is house for fish men!",

@@ -4,8 +4,6 @@ require "behaviours/doaction"
 require "behaviours/panic"
 require "behaviours/follow"
 
-local BrainCommon = require "brains/braincommon"
-
 local SEE_PLAYER_DIST     = 5
 local SEE_FOOD_DIST       = 5
 local MAX_WANDER_DIST     = 15
@@ -187,10 +185,6 @@ end
 function MermBrain:OnStart()
     local root = PriorityNode(
     {
-        IfNode(function() return TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager.king end,"panic with king",
-            BrainCommon.PanicWhenScared(self.inst, .25, "MERM_TALK_PANICBOSS_KING")),
-        IfNode(function() return not TheWorld.components.mermkingmanager or not TheWorld.components.mermkingmanager.king  end,"panic with no king",
-            BrainCommon.PanicWhenScared(self.inst, .25, "MERM_TALK_PANICBOSS")),
         WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         WhileNode(function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end, "AttackMomentarily",
             ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST))),

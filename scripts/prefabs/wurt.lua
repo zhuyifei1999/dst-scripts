@@ -25,37 +25,29 @@ end
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local function UpdateStats(inst, maxhealth, maxhunger, maxsanity)
-    local current_health = inst.components.health.currenthealth
-    local current_hunger = inst.components.hunger.current
-    local current_sanity = inst.components.sanity.current
+
+    local current_health = inst.health_percent or inst.components.health:GetPercent()
+    inst.health_percent = nil
+
+    local current_hunger = inst.hunger_percent or inst.components.hunger:GetPercent()
+    inst.hunger_percent = nil
+
+    local current_sanity = inst.sanity_percent or inst.components.sanity:GetPercent()
+    inst.sanity_percent = nil
 
     inst.components.health:SetMaxHealth(maxhealth)
     inst.components.hunger:SetMax(maxhunger)
     inst.components.sanity:SetMax(maxsanity)
 
-    if current_health > inst.components.health.maxhealth then
-        current_health = inst.components.health.maxhealth
-    end
-
-    if current_hunger > inst.components.hunger.max then
-        current_hunger = inst.components.hunger.max
-    end
-
-    if current_sanity > inst.components.sanity.max then
-        current_sanity = inst.components.sanity.max
-    end
-
-    inst.components.health.currenthealth = current_health
-    inst.components.health:ForceUpdateHUD(true)
-
-    inst.components.hunger.current = current_hunger
-    inst.components.hunger:DoDelta(0)
-    
-    inst.components.sanity.current = current_sanity
-    inst.components.sanity:DoDelta(0)
+    inst.components.health:SetPercent(current_health)
+    inst.components.hunger:SetPercent(current_hunger)
+    inst.components.sanity:SetPercent(current_sanity)
 end
 
 local function RoyalUpgrade(inst, silent)
+    
+    UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
+
     if not silent and not inst.royal then
     	inst.royal = true
     	inst.components.talker:Say(GetString(inst, "ANNOUNCE_KINGCREATED"))        
@@ -172,6 +164,36 @@ local function peruse_gardening(inst)
     inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
 end
 
+local function OnSave(inst, data)
+    data.health_percent = inst.health_percent or inst.components.health:GetPercent()
+    data.sanity_percent = inst.sanity_percent or inst.components.sanity:GetPercent()
+    data.hunger_percent = inst.hunger_percent or inst.components.hunger:GetPercent()
+end
+
+local function OnPreLoad(inst, data)
+    if data then
+        if data.health_percent then
+            inst.health_percent = data.health_percent
+        end
+
+        if data.sanity_percent then
+            inst.sanity_percent = data.sanity_percent
+        end
+
+        if data.hunger_percent then
+            inst.hunger_percent = data.hunger_percent
+        end
+    end
+end
+
+local function OnRespawn(inst)
+    if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
+        inst.overrideskinmode = "powerup"
+    else
+        inst.overrideskinmode = nil
+    end
+end
+
 local function common_postinit(inst)
     inst:AddTag("merm")
     inst:AddTag("mermguard")
@@ -215,30 +237,26 @@ local function master_postinit(inst)
         inst.components.eater:SetDiet({ FOODGROUP.VEGETARIAN }, { FOODGROUP.VEGETARIAN })
     end
 
-    inst.components.health:SetMaxHealth(TUNING.WURT_HEALTH)
-    inst.components.hunger:SetMax(TUNING.WURT_HUNGER)
-    inst.components.sanity:SetMax(TUNING.WURT_SANITY)
-
 	inst.components.locomotor:SetFasterOnGroundTile(GROUND.MARSH, true)
 
-    inst:ListenForEvent("onmermkingcreated",   function() 
-        UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
-        RoyalUpgrade(inst)   
-    end, TheWorld)
-    
+    inst:ListenForEvent("onmermkingcreated", function() RoyalUpgrade(inst) end, TheWorld)
     inst:ListenForEvent("onmermkingdestroyed", function() RoyalDowngrade(inst) end, TheWorld)
+
+    inst:ListenForEvent("ms_respawnedfromghost", OnRespawn)
 
     inst.peruse_brimstone = peruse_brimstone
     inst.peruse_birds = peruse_birds
     inst.peruse_tentacles = peruse_tentacles
     inst.peruse_sleep = peruse_sleep
-    inst.peruse_gardening = peruse_gardening  
+    inst.peruse_gardening = peruse_gardening
+
+    inst.OnSave = OnSave
+    inst.OnPreLoad = OnPreLoad
 
     if TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing() then
-        UpdateStats(inst, TUNING.WURT_HEALTH_KINGBONUS, TUNING.WURT_HUNGER_KINGBONUS, TUNING.WURT_SANITY_KINGBONUS)
-        inst:DoTaskInTime(0, function() 
-            RoyalUpgrade(inst)
-        end)
+        inst:DoTaskInTime(0, function() RoyalUpgrade(inst) end)
+    else
+        inst:DoTaskInTime(0, function() RoyalDowngrade(inst) end)
     end
 end
 

@@ -94,7 +94,7 @@ purchasefn = function( screen, iap_def, sale_percent_purchased, accept_virtual_i
                 {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
                     TheFrontEnd:PopScreen()
                 end },
-            })
+            }, nil, "big", "dark_wide" )
             warning.owned_by_wardrobe = true
             TheFrontEnd:PushScreen( warning )
         else 
@@ -591,11 +591,11 @@ function PurchasePackScreen:DoInit()
     self.purchase_root = self:_BuildPurchasePanel()
     
     --use the initial item key to set the filters
-    if self.initial_item_key ~= nil and self.filters ~= nil then
+    if self.initial_item_key ~= nil and self.filters[FILTER_TYPE_INDEX] ~= nil then
         self.filters[FILTER_TYPE_INDEX].spinner:SetSelected(self.initial_item_key)
     end
     
-    if IsNotConsole() and self.initial_discount_key ~= nil and self.filters ~= nil then
+    if IsNotConsole() and self.initial_discount_key ~= nil and self.filters[FILTER_DISCOUNT_INDEX] ~= nil then
         self.filters[FILTER_DISCOUNT_INDEX].spinner:SetSelected(self.initial_discount_key)
     end
     
