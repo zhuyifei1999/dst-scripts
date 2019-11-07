@@ -2,9 +2,7 @@ local HalloweenMoonMutable = Class(function(self, inst)
     self.inst = inst
 	self.prefab_mutated = nil
 	self.onmutatefn = nil
-
-	self.post_mutate_state = "hit"
-	self.should_override_post_mutate_state = true
+	self.push_attacked_on_new_inst = true
 
 	self.conversionoverridefn = nil
 
@@ -17,11 +15,6 @@ end
 
 function HalloweenMoonMutable:SetPrefabMutated(prefab)
 	self.prefab_mutated = prefab
-end
-
-function HalloweenMoonMutable:SetPostMutateStateOverride(should_override, state)
-	self.should_override_post_mutate_state = should_override
-	self.post_mutate_state = state
 end
 
 function HalloweenMoonMutable:SetOnMutateFn(fn)
@@ -45,6 +38,7 @@ function HalloweenMoonMutable:Mutate(overrideprefab)
 		if self.onmutatefn ~= nil then
 			self:onmutatefn(self.inst, nil)
 		end
+		self.inst:PushEvent("onhalloweenmoonmutate")
 
 		return transformed_inst
 	else
@@ -62,6 +56,7 @@ function HalloweenMoonMutable:Mutate(overrideprefab)
 				if self.onmutatefn ~= nil then
 					self.onmutatefn(self.inst, transformed_inst)
 				end
+				self.inst:PushEvent("onhalloweenmoonmutate")
 
 				-- GetContainer() can return container or inventory component.
 				local container = self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem:GetContainer() or nil
@@ -75,8 +70,8 @@ function HalloweenMoonMutable:Mutate(overrideprefab)
 				if container ~= nil then
 					-- GiveItem() works for both container and inventory.
 					container:GiveItem(transformed_inst, nil, transformed_inst:GetPosition())
-				elseif self.should_override_post_mutate_state and transformed_inst.sg ~= nil and self.post_mutate_state ~= nil and transformed_inst.sg:HasState(self.post_mutate_state) then
-					transformed_inst.sg:GoToState(self.post_mutate_state)
+				elseif self.push_attacked_on_new_inst then
+					transformed_inst:PushEvent("attacked", { attacker = nil, damage = 0 })
 				end
 
 				return transformed_inst

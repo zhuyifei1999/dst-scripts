@@ -340,13 +340,6 @@ local function MakeVeggie(name, has_seeds)
 			inst:AddComponent("halloweenmoonmutable")
 			inst.components.halloweenmoonmutable:SetPrefabMutated(halloweenmoonmutable_settings.prefab)
 			inst.components.halloweenmoonmutable:SetOnMutateFn(halloweenmoonmutable_settings.onmutatefn)
-
-			if halloweenmoonmutable_settings.postmutatestate ~= nil then
-				inst.components.halloweenmoonmutable:SetPostMutateStateOverride(
-					halloweenmoonmutable_settings.postmutatestate.should_override,
-					halloweenmoonmutable_settings.postmutatestate.state
-				)
-			end
 		end
 
         if TheNet:GetServerGameMode() == "quagmire" then

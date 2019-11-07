@@ -65,6 +65,12 @@ local function OnDeploy(inst, pt, deployer)
     end
 end
 
+local function OnMutate(inst, transformed_inst)
+	if transformed_inst ~= nil then
+		transformed_inst.sg:GoToState("idle")
+	end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -178,7 +184,8 @@ local function fn()
 
 	inst:AddComponent("halloweenmoonmutable")
 	inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly")
-	inst.components.halloweenmoonmutable:SetPostMutateStateOverride(true, "idle")
+	inst.components.halloweenmoonmutable:SetOnMutateFn(OnMutate)
+	inst.components.halloweenmoonmutable.push_attacked_on_new_inst = false
 
     return inst
 end
