@@ -1046,10 +1046,7 @@ end
 function PlayerProfile:SawControllerPopup()
     local sawPopup
  	if USE_SETTINGS_FILE then
-		sawPopup = TheSim:GetSetting("misc", "controller_popup")
-		if nil == sawPopup then
-		    sawPopup = false
-		end
+		sawPopup = (TheSim:GetSetting("misc", "controller_popup") == "true")
 	else
 		sawPopup = self:GetValueOrDefault(self.persistdata.controller_popup, false)
 	end

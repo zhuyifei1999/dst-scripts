@@ -1352,3 +1352,20 @@ function c_dumpentities()
     end
 	print("Total: ", total)
 end
+
+-- Nuke any controller mappings, for when people get in a hairy situation with a controller mapping that is totally busted.
+function ResetControllersAndQuitGame()
+    print("ResetControllersAndQuitGame requested")
+    if not InGamePlay() then
+	-- Nuke any controller configurations from our profile
+	-- and clear the setting in the ini file
+	TheSim:SetSetting("misc", "controller_popup", tostring(nil))
+	Profile:SetValue("controller_popup",nil)
+	Profile:SetValue("controls",{})
+	Profile:Save()
+	-- And quit the game, we want a restart
+	RequestShutdown()	
+    else
+	print("ResetControllersAndQuitGame can only be called from the frontend")
+    end
+end

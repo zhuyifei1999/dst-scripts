@@ -272,6 +272,12 @@ local function MakePlant(name, build, isground)
             inst.OnLoad = OnLoad
         end
 
+		inst:ListenForEvent("onhalloweenmoonmutate", function(inst)
+			if inst.components.crop.grower ~= nil and inst.components.crop.grower.components.grower ~= nil then
+				inst.components.crop.grower.components.grower:RemoveCrop(inst)
+			end
+		end)
+
         return inst
     end
 
