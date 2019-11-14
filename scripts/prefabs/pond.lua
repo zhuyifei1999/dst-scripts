@@ -8,7 +8,6 @@ local prefabs =
 {
     "marsh_plant",
     "fish",
-	"pondfish",
     "frog",
     "mosquito",
 }
@@ -209,7 +208,7 @@ local function pondmos()
     end
 
     inst.components.childspawner.childname = "mosquito"
-    inst.components.fishable:AddFish("pondfish")
+    inst.components.fishable:AddFish("fish")
 
     inst.planttype = "marsh_plant"
     inst.dayspawn = false
@@ -226,7 +225,7 @@ local function pondfrog()
     end
 
     inst.components.childspawner.childname = "frog"
-    inst.components.fishable:AddFish("pondfish")
+    inst.components.fishable:AddFish("fish")
 
     inst.planttype = "marsh_plant"
     inst.dayspawn = true

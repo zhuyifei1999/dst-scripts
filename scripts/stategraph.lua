@@ -306,7 +306,7 @@ StateGraphInstance = Class( function (self, stategraph, inst)
     self.timeinstate = 0
     self.lastupdatetime = 0
     self.timelineindex = nil
-    self.laststate = nil
+    self.prevstate = nil
     self.bufferedevents={}
     self.inst = inst
     self.statemem = {}
@@ -462,6 +462,8 @@ function StateGraphInstance:GoToState(statename, params)
     end
     --assert(state ~= nil, "State not found: " ..tostring(self.sg.name).."."..tostring(statename) )
     
+
+    self.prevstate = self.currentstate
     if self.currentstate ~= nil and self.currentstate.onexit ~= nil then 
         self.currentstate.onexit(self.inst)
     end

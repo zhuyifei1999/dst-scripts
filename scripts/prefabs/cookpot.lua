@@ -115,7 +115,7 @@ end
 local function ShowProduct(inst)
     if not inst:HasTag("burnt") then
         local product = inst.components.stewer.product
-        SetProductSymbol(inst, product, IsModCookingProduct(inst.prefab, product) and product or cooking.GetRecipe(inst.prefab, product).overridebuild or nil)
+        SetProductSymbol(inst, product, IsModCookingProduct(inst.prefab, product) and product or nil)
     end
 end
 

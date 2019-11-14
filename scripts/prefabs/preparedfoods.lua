@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/cook_pot_food.zip"),
-	Asset("ANIM", "anim/cook_pot_food2.zip"),
 }
 
 local prefabs =
@@ -52,12 +51,11 @@ local function MakePreparedFood(data)
             inst.inv_image_bg = { image = (data.basename or data.name)..".tex" }
             inst.inv_image_bg.atlas = GetInventoryItemAtlas(inst.inv_image_bg.image)
         else
-			inst.AnimState:SetBuild(data.overridebuild or "cook_pot_food")
-			inst.AnimState:SetBank("cook_pot_food")
+        inst.AnimState:SetBuild("cook_pot_food")
+        inst.AnimState:SetBank("cook_pot_food")
         end
-
         inst.AnimState:PlayAnimation("idle")
-        inst.AnimState:OverrideSymbol("swap_food", data.overridebuild or "cook_pot_food", data.basename or data.name)
+        inst.AnimState:OverrideSymbol("swap_food", "cook_pot_food", data.basename or data.name)
 
         inst:AddTag("preparedfood")
         if data.tags ~= nil then

@@ -1280,14 +1280,14 @@ function EntityScript:PushBufferedAction(bufferedaction)
 
     --walkto is kind of a nil action - the locomotor will have put us at the destination by now if we get to here
     if bufferedaction.action == ACTIONS.WALKTO then
-        self:PushEvent("performaction", { action = bufferedaction })
+        self:PushEvent("performaction", { action = self.bufferedaction })
         bufferedaction:Succeed()
         self.bufferedaction = nil
     elseif bufferedaction.action.instant then
         if bufferedaction.target ~= nil and bufferedaction.target.Transform ~= nil and (self.sg == nil or self.sg:HasStateTag("canrotate")) then
             self:FacePoint(bufferedaction.target.Transform:GetWorldPosition())
         end
-        self:PushEvent("performaction", { action = bufferedaction })
+        self:PushEvent("performaction", { action = self.bufferedaction })
         bufferedaction:Do()
         self.bufferedaction = nil
     else
@@ -1295,7 +1295,7 @@ function EntityScript:PushBufferedAction(bufferedaction)
         if self.sg == nil then
             self:PushEvent("startaction", { action = bufferedaction })
         elseif not self.sg:StartAction(bufferedaction) then
-            self:PushEvent("performaction", { action = bufferedaction })
+            self:PushEvent("performaction", { action = self.bufferedaction })
             self.bufferedaction:Fail()
             self.bufferedaction = nil
         end
@@ -1442,11 +1442,6 @@ end
 function EntityScript:IsOnPassablePoint(include_water, floating_platforms_are_not_passable)
     local x, y, z = self.Transform:GetWorldPosition()
     return TheWorld.Map:IsPassableAtPoint(x, y, z, include_water or false, floating_platforms_are_not_passable or false)
-end
-
-function EntityScript:IsOnOcean(allow_boats)
-    local x, y, z = self.Transform:GetWorldPosition()
-    return TheWorld.Map:IsOceanAtPoint(x, y, z, allow_boats)
 end
 
 function EntityScript:GetCurrentPlatform()

@@ -4616,7 +4616,6 @@ table.insert(prefs, CreatePrefabSkin("wurt_cave",
 	bigportrait = { build = "bigportraits/wurt_cave.xml", symbol = "wurt_cave_oval.tex"},
 	skins = { ghost_skin = "ghost_wurt_cave", normal_skin = "wurt_cave", powerup = "wurt_cave_powerup", },
 	has_alternate_for_body = { "wurt_cave", },
-	feet_cuff_size = { wurt_cave_powerup = -1, wurt_cave = -1, },
 	release_group = 78,
 }))
 
@@ -4630,7 +4629,6 @@ table.insert(prefs, CreatePrefabSkin("wurt_formal",
 	bigportrait = { build = "bigportraits/wurt_formal.xml", symbol = "wurt_formal_oval.tex"},
 	skins = { ghost_skin = "ghost_wurt_formal", normal_skin = "wurt_formal", powerup = "wurt_formal_powerup", },
 	has_alternate_for_body = { "wurt_formal", },
-	feet_cuff_size = { wurt_formal_powerup = -1, wurt_formal = -1, },
 	release_group = 78,
 }))
 
@@ -4646,7 +4644,6 @@ table.insert(prefs, CreatePrefabSkin("wurt_none",
 	bigportrait = { build = "bigportraits/wurt_none.xml", symbol = "wurt_none_oval.tex"},
 	skins = { ghost_skin = "ghost_wurt", normal_skin = "wurt", powerup = "wurt_powerup", },
 	has_alternate_for_body = { "wurt", },
-	feet_cuff_size = { wurt_powerup = -1, wurt = -1, },
 	release_group = 78,
 }))
 
@@ -4660,7 +4657,6 @@ table.insert(prefs, CreatePrefabSkin("wurt_shadow",
 	bigportrait = { build = "bigportraits/wurt_shadow.xml", symbol = "wurt_shadow_oval.tex"},
 	skins = { ghost_skin = "ghost_wurt_shadow", normal_skin = "wurt_shadow", powerup = "wurt_shadow_powerup", },
 	has_alternate_for_body = { "wurt_shadow", },
-	feet_cuff_size = { wurt_shadow_powerup = -1, wurt_shadow = -1, },
 	release_group = 78,
 }))
 

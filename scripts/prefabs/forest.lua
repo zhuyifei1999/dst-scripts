@@ -316,7 +316,6 @@ local prefabs =
     "antlion_spawner",
     "oasislake",
     "succulent_plant",
-	"fish", -- the old fish, keeping this here for mod support
 
 	-- ocean
     "boat",
@@ -338,9 +337,6 @@ local prefabs =
 	"saltstack",
 	"cookiecutter",
 	"cookiecutter_spawner",
-    "gnarwail",
-    "malbatross",
-    "squid",    
 
     -- moon island
 	"gestalt",
@@ -359,17 +355,12 @@ local prefabs =
 	"moon_altar_rock_glass",
 	"moon_altar_rock_seed",
     "carrat_planted",
+    "malbatross",
 
 	-- fish
 	"oceanfish_shoalspawner",
-	"fishschoolspawnblocker",
-	"oceanfishableflotsam_water",
+	"oceanfish_medium_4",
 }
-
-local FISH_DATA = require("prefabs/oceanfishdef")
-for fish, _ in pairs(FISH_DATA.fish) do
-    table.insert(prefabs, fish)
-end
 
 local monsters =
 {
@@ -451,8 +442,6 @@ local function master_postinit(inst)
     inst:AddComponent("birdspawner")
     inst:AddComponent("butterflyspawner")
     inst:AddComponent("hounded")
-    inst:AddComponent("schoolspawner")
-    inst:AddComponent("squidspawner")
 
     inst.components.hounded:SetSpawnData(houndspawn)
 

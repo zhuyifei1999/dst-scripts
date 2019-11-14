@@ -132,7 +132,7 @@ end
 
 function FishingRod:StopFishing()
     if self.target and self.fisherman then
-        --self.inst:PushEvent("fishingcancel")
+        self.inst:PushEvent("fishingcancel")
         self.fisherman:PushEvent("fishingcancel")
         self.target = nil
         self.fisherman = nil

@@ -58,7 +58,6 @@ local function fn()
 	AddDefaultRippleSymbols(inst, true, false)
 
     inst:AddTag("blocker")
-    inst:AddTag("kelp")
 
     inst.entity:SetPristine()
 

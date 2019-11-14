@@ -9,12 +9,6 @@ end
 local function FinalOffset3(inst)
     inst.AnimState:SetFinalOffset(3)
 end
-
-local function GroundOrientation(inst)
-    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-    inst.AnimState:SetLayer(LAYER_BACKGROUND)
-end
-
 local fx =
 {
     {
@@ -53,14 +47,6 @@ local fx =
         sound = "turnoftides/common/together/water/splash/bird",
         fn = FinalOffset1,
     },
-    {
-        name = "ink_splash",
-        bank = "squid_watershoot",
-        build = "squid_watershoot",
-        anim = "splash",
-        sound = "turnoftides/common/together/water/splash/bird",
-        fn = FinalOffset1,
-    },    
     {
         name = "frogsplash",
         bank = "splash",
@@ -169,11 +155,10 @@ local fx =
         end,
     },
     {
-        name = "splash_ocean", -- this is for the old ocean
+        name = "splash_ocean",
         bank = "splash",
         build = "splash_ocean",
         anim = "idle",
-        sound = "turnoftides/common/together/water/splash/bird",
     },
     {
         name = "maxwell_smoke",
@@ -1182,71 +1167,6 @@ local fx =
         build = "splash_water_drop",
         anim = "idle_sink",
         fn = function(inst) inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT) end,
-        sound = "turnoftides/common/together/water/splash/small",
-    },
-    {
-        name = "ocean_splash_med1",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "stationary",
-        sound = "turnoftides/common/together/water/splash/bird",
-        fn = function(inst)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-			inst.AnimState:SetFinalOffset(3)
-        end,
-    },
-    {
-        name = "ocean_splash_med2",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "stationary2",
-        sound = "turnoftides/common/together/water/splash/bird",
-        fn = function(inst)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-			inst.AnimState:SetFinalOffset(3)
-        end,
-    },
-    {
-        name = "ocean_splash_small1",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "stationary_small",
-        sound = "turnoftides/common/together/water/splash/bird",
-        fn = function(inst)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-			inst.AnimState:SetFinalOffset(3)
-        end,
-    },
-    {
-        name = "ocean_splash_small2",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "stationary_small2",
-        sound = "turnoftides/common/together/water/splash/bird",
-        fn = function(inst)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-			inst.AnimState:SetFinalOffset(3)
-        end,
-    },
-    {
-        name = "ocean_splash_ripple1",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "no_splash",
-        fn = function(inst)
-            inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-        end,
-    },
-    {
-        name = "ocean_splash_ripple2",
-        bank = "splash_weregoose_fx",
-        build = "splash_water_drop",
-        anim = "no_splash2",
-        fn = function(inst)
-            inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-            inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
-        end,
     },
     {
         name = "washashore_puddle_fx",
@@ -1296,7 +1216,6 @@ local fx =
         build = "pond_splash_fx",
         anim = "pond_splash",        
         sound = "turnoftides/common/together/water/splash/small",
-        fn = FinalOffset1,
     }, 
     {
         name = "splash_green",
@@ -1304,7 +1223,7 @@ local fx =
         build = "pond_splash_fx",
         anim = "pond_splash",
         sound = "turnoftides/common/together/water/splash/medium",
-        fn = function(inst) inst.Transform:SetScale(2,2,2) inst.AnimState:SetFinalOffset(1) end,
+        fn = function(inst) inst.Transform:SetScale(2,2,2) end,
     },   
     {
         name = "splash_green_large",
@@ -1312,7 +1231,7 @@ local fx =
         build = "pond_splash_fx",
         anim = "pond_splash",
         sound = "turnoftides/common/together/water/splash/large",
-        fn = function(inst) inst.Transform:SetScale(4,4,4) inst.AnimState:SetFinalOffset(1) end,
+        fn = function(inst) inst.Transform:SetScale(4,4,4) end,
     },   
 --[[  There is art for these. They are just not used anywhere
     {
@@ -1348,37 +1267,6 @@ local fx =
         build = "merm_spawn_fx",
         anim = "splash",
         fn = FinalOffset1,
-    },
-    {
-        name = "ink_puddle_land",
-        bank = "squid_puddle",
-        build = "squid_puddle",
-        anim = "puddle_dry",
-        fn = GroundOrientation,
-    },
-    {
-        name = "ink_puddle_water",
-        bank = "squid_puddle",
-        build = "squid_puddle",
-        anim = "puddle_wet",
-        fn = GroundOrientation,
-    },        
-    {
-        name = "flotsam_puddle",
-        bank = "flotsam",
-        build = "flotsam",
-        anim = "puddle",
-        sound = "dontstarve/creatures/monkey/poopsplat",
-        fn = function(inst)
-            inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-        end,
-    },
-    {
-        name = "flotsam_break",
-        bank = "flotsam",
-        build = "flotsam",
-        anim = "break",
     },
 }
 

@@ -70,10 +70,6 @@ return{
 		{
 			TOODEEP = "We can't reach the fish with this rod!",
 		},
-        OCEAN_FISHING_POND =
-		{
-			WRONGGEAR = "We think we should use a different fishing rod.",
-		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -197,14 +193,6 @@ return{
             GLASSED = "There's too much glass in the way.",
             ALREADY_BOMBED = "Aw, we wanted to do it!",
         },
-		GIVE_TACKLESKETCH =
-		{
-			DUPLICATE = "We don't need two!",
-		},
-		COMPARE_WEIGHABLE =
-		{
-			TOO_SMALL = "This little guy's too small!",
-		},
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
@@ -463,21 +451,6 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "We're bored now.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Nooo! Spiders don't like the damp!",
     
-	-- TODO:JEN, but this is still WIP so don't write these yet
-	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah! Aww, our line snapped...",
-	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Should we reel it in a bit?",
-	ANNOUNCE_OCEANFISHING_GOTAWAY = "Aww, it got away...",
-	ANNOUNCE_OCEANFISHING_BADCAST = "Whoops! Let's try that again.",
-	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
-	{
-		"Was that a nibble? Nope.",
-		"Come on out, fishies!",
-		"This is getting kinda boring...",
-		"I thought fishing would be a bit more exciting.",
-	},
-
-	ANNOUNCE_WEIGHT = "Weight: {weight}",
-
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2891,9 +2864,6 @@ return{
 		SALTROCK = "What a weird rock.",
 		SALTBOX = "Makes our food last longer.",
 
-		TACKLESTATION = "Father used to take me fishing sometimes.",
-		TACKLESKETCH = "It has fishing secrets!",
-
         MALBATROSS = "Woah! That's a big bird!",
         MALBATROSS_FEATHER = "Tickly!",
         MALBATROSS_BEAK = "It could've eaten us in one bite!",
@@ -2901,72 +2871,9 @@ return{
         MAST_MALBATROSS = "Our boat looks ready to fly away!",
 		MALBATROSS_FEATHERED_WEAVE = "We used our nicest spider silk!",
 
-        GNARWAIL =
-        {
-            GENERIC = "Woah, it's got a spear on its head!",
-            BROKENHORN = "Still looks pretty dangerous.",
-            FOLLOWER = "We're glad you're our friend now!",
-            BROKENHORN_FOLLOWER = "We feel a bit bad about your horn...",
-        },
-        GNARWAIL_HORN = "Maybe it's magic?",
-
         WALKINGPLANK = "It's the least fun diving board.",
         OAR = "More legs means faster rowing!",
 		OAR_DRIFTWOOD = "Rowing is kinda fun!",
-
-		OCEANFISHINGROD = "Wonder what kind of fish we'll catch!",
-        OCEANFISHINGBOBBER_BALL = "It's a bobbin' bobber!",
-        OCEANFISHINGBOBBER_OVAL = "It's a bobbin' bobber!",
-		OCEANFISHINGBOBBER_CROW = "We turned a feather into a float!",
-		OCEANFISHINGBOBBER_ROBIN = "We turned a feather into a float!",
-		OCEANFISHINGBOBBER_ROBIN_WINTER = "We turned a feather into a float!",
-		OCEANFISHINGBOBBER_CANARY = "We turned a feather into a float!",
-		OCEANFISHINGBOBBER_GOOSE = "We made this float extra fancy.",
-		OCEANFISHINGBOBBER_MALBATROSS = "We made this float extra fancy.",
-
-		OCEANFISHINGLURE_SPINNER_RED = "Ouch! It's sharp!",
-		OCEANFISHINGLURE_SPINNER_GREEN = "Ouch! It's sharp!",
-		OCEANFISHINGLURE_SPINNER_BLUE = "Ouch! It's sharp!",
-		OCEANFISHINGLURE_SPOON_RED = "Ouch! It's sharp!",
-		OCEANFISHINGLURE_SPOON_GREEN = "Ouch! It's sharp!",
-		OCEANFISHINGLURE_SPOON_BLUE = "Ouch! It's sharp!",
-
-		OCEANFISH_SMALL_1 = "It's so little!",
-		OCEANFISH_SMALL_2 = "Aww, just a little guy.",
-		OCEANFISH_SMALL_3 = "It's kind of cute. Too bad we're gonna eat it.",
-		OCEANFISH_SMALL_4 = "We know we can catch a bigger fish!",
-		OCEANFISH_SMALL_5 = "Woah, this fish is weird!",
-		OCEANFISH_MEDIUM_1 = "Eww, it'd covered in mud!",
-		OCEANFISH_MEDIUM_2 = "You'd be pretty tasty with some chips.",
-		OCEANFISH_MEDIUM_3 = "Yikes, this one's all prickly!",
-		OCEANFISH_MEDIUM_4 = "This one was really tough to catch.",
-		OCEANFISH_MEDIUM_5 = "Does this count as eating our vegetables?",
-
-		PONDFISH = "It could stand to be fried.",
-
-        FISHMEAT = "It would probably be better cooked.",
-        FISHMEAT_COOKED = "Mmm, delicious!",
-        FISHMEAT_SMALL = "It's a little fishy.",
-        FISHMEAT_SMALL_COOKED = "Boney.",
-		SPOILED_FISH = "It's no good to anyone now.",
-
-		FISH_BOX = "It's like an aquarium! Except we eat the fish...",
-        POCKET_SCALE = "Wonder how heavy our fish is!",
-
-		TROPHYSCALE_FISH =
-		{
-			GENERIC = "Woah! We should find a big fish to put in there!",
-			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
-			BURNING = "Oh no oh no!",
-			BURNT = "Aww...",
-			OWNER = "Weight: {weight}\nCaught by: {owner}\nWe did it!",
-		},
-
-		OCEANFISHABLEFLOTSAM = "Yuck, it's just a big chunk of mud!",
-
-		CALIFORNIAROLL = "Hmm, something smells fishy about this!",
-		SEAFOODGUMBO = "We could eat it forever!",
-		SURFNTURF = "Eww, healthy!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 

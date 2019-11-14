@@ -79,10 +79,6 @@ return {
 		{
 			TOODEEP = "This rod wasn't made for deep sea fishing.",
 		},
-        OCEAN_FISHING_POND =
-		{
-			WRONGGEAR = "This rod wasn't made for pond fishing.",
-		},
         --wickerbottom specific action
         READ =
         {
@@ -206,14 +202,6 @@ return {
             GLASSED = "I can't, the surface is glassed over.",
             ALREADY_BOMBED = "That would be a waste of a bath bomb.",
         },
-		GIVE_TACKLESKETCH =
-		{
-			DUPLICATE = "I've already tackled this one.",
-		},
-		COMPARE_WEIGHABLE =
-		{
-			TOO_SMALL = "This one's just a small fry.",
-		},
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "We're taking on a lot of water.",
@@ -472,20 +460,6 @@ return {
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Desire to procrastinate... creeping back...",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Looks like my dry spell is over.",
     
-	ANNOUNCE_OCEANFISHING_LINESNAP = "All my hard work, gone in a snap!",
-	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Maybe reeling would help.",
-	ANNOUNCE_OCEANFISHING_GOTAWAY = "It got away.",
-	ANNOUNCE_OCEANFISHING_BADCAST = "My casting needs work...",
-	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
-	{
-		"Where are the fish?",
-		"Maybe I should find a better fishing spot.",
-		"I thought there were supposed to be plenty of fish in the sea!",
-		"I could be doing so many more scientific things right now...",
-	},
-
-	ANNOUNCE_WEIGHT = "Weight: {weight}",
-
     --Wurt announce strings
     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2899,9 +2873,6 @@ return {
 		SALTROCK = "Science compels me to lick it.",
 		SALTBOX = "Just the cure for spoiling food!",
 
-		TACKLESTATION = "Time to tackle my reel problems.",
-		TACKLESKETCH = "A picture of some fishing tackle. I bet I could make this...",
-
         MALBATROSS = "A fowl beast indeed!",
         MALBATROSS_FEATHER = "Plucked from a fine feathered fiend.",
         MALBATROSS_BEAK = "Smells fishy.",
@@ -2909,72 +2880,9 @@ return {
         MAST_MALBATROSS = "Spread my wings and sail away!",
 		MALBATROSS_FEATHERED_WEAVE = "I'm making a quill-t!",
 
-        GNARWAIL =
-        {
-            GENERIC = "My, what a big horn you have.",
-            BROKENHORN = "Got your nose!",
-            FOLLOWER = "This is all whale and good.",
-            BROKENHORN_FOLLOWER = "That's what happens when you nose around!",
-        },
-        GNARWAIL_HORN = "Gnarly!",
-
         WALKINGPLANK = "Couldn't we have just made a lifeboat?",
         OAR = "Manual ship acceleration.",
 		OAR_DRIFTWOOD = "Manual ship acceleration.",
-
-		OCEANFISHINGROD = "Now this is the reel deal!",
-        OCEANFISHINGBOBBER_BALL = "The fish will have a ball with this.",
-        OCEANFISHINGBOBBER_OVAL = "Those fish won't give me the slip this time!",
-		OCEANFISHINGBOBBER_CROW = "I'd rather eat fish than crow.",
-		OCEANFISHINGBOBBER_ROBIN = "Hopefully it won't attract any red herrings.",
-		OCEANFISHINGBOBBER_ROBIN_WINTER = "The snowbird quill helps me stay frosty.",
-		OCEANFISHINGBOBBER_CANARY = "Say y'ello to my little friend!",
-		OCEANFISHINGBOBBER_GOOSE = "You're going down, fish!",
-		OCEANFISHINGBOBBER_MALBATROSS = "Where there's a quill, there's a way.",
-
-		OCEANFISHINGLURE_SPINNER_RED = "Some fish might find this a-luring!",
-		OCEANFISHINGLURE_SPINNER_GREEN = "Some fish might find this a-luring!",
-		OCEANFISHINGLURE_SPINNER_BLUE = "Some fish might find this a-luring!",
-		OCEANFISHINGLURE_SPOON_RED = "Some smaller fish might find this a-luring!",
-		OCEANFISHINGLURE_SPOON_GREEN = "Some smaller fish might find this a-luring!",
-		OCEANFISHINGLURE_SPOON_BLUE = "Some smaller fish might find this a-luring!",
-
-		OCEANFISH_SMALL_1 = "Looks like the runt of its school.",
-		OCEANFISH_SMALL_2 = "I won't win any bragging rights with this one.",
-		OCEANFISH_SMALL_3 = "It's a bit on the small side.",
-		OCEANFISH_SMALL_4 = "A fish this size won't tide me over for long.",
-		OCEANFISH_SMALL_5 = "I can't wait to pop it in my mouth.",
-		OCEANFISH_MEDIUM_1 = "I certainly hope it tastes better than it looks.",
-		OCEANFISH_MEDIUM_2 = "I went to a lot of treble to catch it.",
-		OCEANFISH_MEDIUM_3 = "I wasn't lion about my aptitude for fishing!",
-		OCEANFISH_MEDIUM_4 = "I'm sure this won't bring me any bad luck.",
-		OCEANFISH_MEDIUM_5 = "This one seems kind of corny.",
-
-		PONDFISH = "Now I shall eat for a day.",
-
-        FISHMEAT = "A chunk of fish meat.",
-        FISHMEAT_COOKED = "Grilled to perfection.",
-        FISHMEAT_SMALL = "A small bit of fish.",
-        FISHMEAT_SMALL_COOKED = "A small bit of cooked fish.",
-		SPOILED_FISH = "I'm not terribly curious about the smell.",
-
-		FISH_BOX = "They're stuffed in there like sardines!",
-        POCKET_SCALE = "A scaled-down weighing device.",
-
-		TROPHYSCALE_FISH =
-		{
-			GENERIC = "I wonder how my catch of the day will measure up!",
-			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
-			BURNING = "On a scale of 1 to on fire... that's pretty on fire.",
-			BURNT = "All my bragging rights, gone up in flames!",
-			OWNER = "Not to throw my weight around, buuut...\nWeight: {weight}\nCaught by: {owner}",
-		},
-
-		OCEANFISHABLEFLOTSAM = "Just some muddy grass.",
-
-		CALIFORNIAROLL = "But I don't have chopsticks.",
-		SEAFOODGUMBO = "It's a jumbo seafood gumbo.",
-		SURFNTURF = "It's perf!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
