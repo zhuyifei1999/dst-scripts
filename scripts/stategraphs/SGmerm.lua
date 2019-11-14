@@ -344,7 +344,7 @@ CommonStates.AddCombatStates(states,
     {
         TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack) end),
         TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh") end),
-        TimeEvent(20*FRAMES, function(inst) inst.components.combat:DoAttack() end),
+        TimeEvent(13*FRAMES, function(inst) inst.components.combat:DoAttack() end),
     },
     hittimeline = 
     {
