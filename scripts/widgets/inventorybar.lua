@@ -45,6 +45,9 @@ local Inv = Class(Widget, function(self, owner)
     self.hudcompass:SetScale(1.5, 1.5)
     self.hudcompass:SetMaster()
 
+    self.hand_inv = self.root:AddChild(Widget("hand_inv"))
+    self.hand_inv:SetScale(1.5, 1.5)
+
 	if TheNet:GetServerGameMode() == "lavaarena" then
 	    self.base_scale = .55
 		self:SetScale(self.base_scale)
@@ -225,6 +228,7 @@ local function RebuildLayout(self, inventory, overflow, do_integrated_backpack, 
 
         if v.slot == EQUIPSLOTS.HANDS then
             self.hudcompass:SetPosition(x, do_integrated_backpack and 80 or 40, 0)
+            self.hand_inv:SetPosition(x, do_integrated_backpack and 80 or 40, 0)
         end
 
         x = x + W + SEP

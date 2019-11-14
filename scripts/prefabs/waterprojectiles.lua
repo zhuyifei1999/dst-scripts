@@ -20,6 +20,36 @@ local waterballoon_prefabs =
     "reticule",
 }
 
+local ink_assets =
+{
+    Asset("ANIM", "anim/squid_watershoot.zip"),
+}
+
+local ink_prefabs =
+{
+    "ink_splash",
+    "ink_puddle_land",
+    "ink_puddle_water",
+}
+
+local function OnHitInk(inst, attacker, target)
+    SpawnPrefab("ink_splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    if inst:IsOnOcean() then
+        SpawnPrefab("ink_puddle_water").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    else
+        SpawnPrefab("ink_puddle_land").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+    local pt = Vector3(inst.Transform:GetWorldPosition())
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 1)
+    for i,ent in ipairs(ents) do
+        if ent.components.inkable then
+            ent.components.inkable:Ink()
+        end
+    end
+
+    inst:Remove()
+end
+
 local function OnHitSnow(inst, attacker, target)
     SpawnPrefab("splash_snow_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.components.wateryprotection:SpreadProtection(inst)
@@ -191,5 +221,32 @@ local function waterballoon_fn()
     return inst
 end
 
+local function ink_fn()
+    local inst = common_fn("squid_watershoot", "squid_watershoot", "spin_loop", "NOCLICK")
+
+    inst.AnimState:PlayAnimation("spin_pre",false)
+    inst.AnimState:PlayAnimation("spin_loop",true)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst.components.complexprojectile:SetHorizontalSpeed(15)
+    inst.components.complexprojectile:SetGravity(-25)
+    inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
+    inst.components.complexprojectile:SetOnHit(OnHitInk)
+
+    inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
+    inst.components.wateryprotection.temperaturereduction = TUNING.FIRESUPPRESSOR_TEMP_REDUCTION
+    inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
+    inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
+    inst.components.wateryprotection:AddIgnoreTag("player")
+
+    return inst
+end
+
 return Prefab("snowball", snowball_fn, snowball_assets, snowball_prefabs),
-    Prefab("waterballoon", waterballoon_fn, waterballoon_assets, waterballoon_prefabs)
+    Prefab("waterballoon", waterballoon_fn, waterballoon_assets, waterballoon_prefabs),
+    Prefab("inksplat", ink_fn, ink_assets, ink_prefabs)

@@ -73,7 +73,11 @@ AddIngredientValues({"monstermeat"}, {meat=1, monster=1}, true, true)
 AddIngredientValues({"froglegs", "drumstick"}, {meat=.5}, true)
 AddIngredientValues({"smallmeat"}, {meat=.5}, true, true)
 
-AddIngredientValues({"fish", "eel"}, {meat=.5,fish=1}, true)
+AddIngredientValues({"eel"}, {meat=.5,fish=1}, true)
+AddIngredientValues({"fishmeat"}, {meat=1,fish=1}, true)
+AddIngredientValues({"fishmeat_small"}, {meat=.5,fish=0.5}, true)
+
+AddIngredientValues({"kelp"}, {veggie=.5}, true)
 
 
 AddIngredientValues({"mandrake"}, {veggie=1, magic=1}, true)

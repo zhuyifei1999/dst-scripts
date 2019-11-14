@@ -37,6 +37,7 @@ SetSharedLootTable( 'moose',
     {'goose_feather',    0.33},
     {'goose_feather',    0.33},
     {'chesspiece_moosegoose_sketch', 1.00},
+	{'oceanfishingbobber_goose_tacklesketch', 1.00},
 })
 
 local BASE_TAGS = {"structure"}

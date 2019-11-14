@@ -36,7 +36,7 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 		local torso_build = nil
 		local pelvis_build = nil
 		local skirt_build = nil
-		local leg_build = nil --for boot switching
+		local leg_build = nil --for boot switching and nubs
 		local foot_build = nil --for boot switching
 		
 		local tuck_torso = BASE_TORSO_TUCK[base_skin] or "skirt" --tucked into the skirt is the default
@@ -247,6 +247,17 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 			anim_state:OverrideSkinSymbol("leg", leg_build, "leg_boot" )
 		end
 		
+		--deal with foot nubs
+		local has_nub = BASE_FEET_SIZE[base_skin] == -1
+		local nub_build = base_skin
+		if clothing_names["legs"] ~= nil and CLOTHING[clothing_names["legs"]] ~= nil and CLOTHING[clothing_names["legs"]].has_nub then
+			has_nub = CLOTHING[clothing_names["legs"]].has_nub
+			nub_build = clothing_names["legs"]
+		end
+		if has_nub and symbol_overridden["leg"] and not symbol_overridden["foot"] and leg_build ~= nub_build then
+			anim_state:OverrideSkinSymbol("foot", nub_build, "nub" )
+			feet_cuff_size = 0
+		end
 		
 		--characters with skirts, and untucked torso clothing need to exchange the render order of the torso and skirt so that the torso is above the skirt
 		if tuck_torso == "untucked" or (tuck_torso == "untucked_wide" and wide) then

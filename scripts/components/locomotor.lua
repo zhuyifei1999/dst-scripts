@@ -788,8 +788,8 @@ function LocoMotor:GetDebugString()
         tile_x, tile_y = ground.Map:GetTileCoordsAtPoint(self.inst.Transform:GetWorldPosition())
     end
 
-    local speed = self.wantstorun and "RUN" or "WALK"
-    return string.format("%s [%s] [%s] (%u, %u):(%u, %u) +/-%2.2f", speed, tostring(self.dest), tostring(self.bufferedaction), tile_x, tile_y, pathtile_x, pathtile_y, self.arrive_step_dist or 0) 
+    local state = self.wantstorun and "RUN" or "WALK"
+    return string.format("%s, (%0.2f) [%s] [%s] (%u, %u):(%u, %u) +/-%2.2f", state, self.wantstorun and self.runspeed or self.walkspeed, tostring(self.dest), tostring(self.bufferedaction), tile_x, tile_y, pathtile_x, pathtile_y, self.arrive_step_dist or 0) 
 end
 
 function LocoMotor:HasDestination()

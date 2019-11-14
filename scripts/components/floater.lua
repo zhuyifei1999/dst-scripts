@@ -108,11 +108,17 @@ function Floater:OnLandedServer()
             self.inst.components.inventoryitem:AddMoisture(TUNING.OCEAN.WETNESS)
         end
 
+        if not self.inst.components.inventoryitem or not self.inst.components.inventoryitem:IsHeld() then
+            local splash = SpawnPrefab("splash")
+            splash.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+        end
+
         self.inst:PushEvent("floater_startfloating")
         self._is_landed:set(true)
         self.showing_effect = true
 
         if self.do_bank_swap then
+
             if self.float_index < 0 then
                 self.inst.AnimState:SetBankAndPlayAnimation("floating_item", "left")
             else
@@ -149,6 +155,7 @@ function Floater:OnLandedClient()
     end
 
     self.inst.AnimState:SetFloatParams(-0.05, 1.0, self.bob_percent)
+
 end
 
 function Floater:OnNoLongerLandedServer()

@@ -44,15 +44,26 @@ function RunAway:GetRunAngle(pt, hp)
 
     local radius = 6
 
-    local result_offset, result_angle, deflected = FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, false) -- try avoiding walls
+    local result_offset, result_angle, deflected = self.inst.components.locomotor:IsAquatic()
+                                                    and FindSwimmableOffset(pt, angle*DEGREES, radius, 8, true, false)
+                                                    or FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, false) -- try avoiding walls
     if result_angle == nil then
-        result_offset, result_angle, deflected = FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
+        result_offset, result_angle, deflected = self.inst.components.locomotor:IsAquatic()
+                                                    and FindSwimmableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid land
+                                                    or FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
         if result_angle == nil then
 			if self.fix_overhang and not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
-				local back_on_ground = FindNearbyLand(pt, 1) -- find a point back on proper ground
-				if back_on_ground ~= nil then
-			        result_offset, result_angle, deflected = FindWalkableOffset(back_on_ground, math.random()*2*math.pi, radius - 1, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
-				end
+                if self.inst.components.locomotor:IsAquatic() then
+                    local back_on_ocean = FindNearbyOcean(pt, 1)
+				    if back_on_ocean ~= nil then
+			            result_offset, result_angle, deflected = FindSwimmableOffset(back_on_ocean, math.random()*2*math.pi, radius - 1, 8, true, true)
+				    end
+                else
+				    local back_on_ground = FindNearbyLand(pt, 1) -- find a point back on proper ground
+				    if back_on_ground ~= nil then
+			            result_offset, result_angle, deflected = FindWalkableOffset(back_on_ground, math.random()*2*math.pi, radius - 1, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
+				    end
+                end
 			end
 			if result_angle == nil then
 	            return angle -- ok whatever, just run
@@ -94,6 +105,7 @@ function RunAway:Visit()
                 local angle = self:GetRunAngle(pt, hp)
                 if angle ~= nil then
                     if self.walk_instead then
+                        self.inst.components.locomotor.dest = nil
                         self.inst.components.locomotor:WalkInDirection(angle)
                     else
                         self.inst.components.locomotor:RunInDirection(angle)

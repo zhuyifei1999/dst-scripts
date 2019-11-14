@@ -180,7 +180,7 @@ local assets =
     Asset("ANIM", "anim/crow.zip"),
     Asset("ANIM", "anim/crow_build.zip"),
     Asset("ANIM", "anim/explode.zip"),
-    Asset("ANIM", "anim/crowgametile.zip"),
+    Asset("ANIM", "anim/minigametile.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_crow.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_chevron_wrapper.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_dotted_wrapper.zip"),

@@ -24,6 +24,7 @@ local flotsam_prefabs =
     boatfragment05 = 0.3,
     cutgrass = 1,
     twigs = 1,
+	oceanfishableflotsam_water = 1,
 }
 
 local RANGE = 40 -- distance from player to spawn the flotsam.  should be 5 more than wanted
@@ -152,8 +153,13 @@ end
 local function OnTimerDone(inst, data)
     if data.name == "sink" then
         forgetflotsam(inst)
-        SpawnPrefab("splash_sink").Transform:SetPosition(inst.Transform:GetWorldPosition())
-        inst:Remove()
+
+		if inst.overrideflotsamsinkfn ~= nil then
+			inst:overrideflotsamsinkfn()
+		else
+			SpawnPrefab("splash_sink").Transform:SetPosition(inst.Transform:GetWorldPosition())
+			inst:Remove()
+		end
     end
 end
 local function clearflotsamtimer(inst)

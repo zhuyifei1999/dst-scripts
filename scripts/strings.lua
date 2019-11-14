@@ -415,6 +415,7 @@ STRINGS =
         {
             GENERIC = "Cast Spell", --"Cast Spell on"
             SCIENCE = "Use Gadget",
+            MUSIC = "Play",
         },
         BLINK =
         {
@@ -539,7 +540,19 @@ STRINGS =
         ROW_CONTROLLER = "Row",
         CAST_NET = "Cast Net",
         BATHBOMB = "Toss In",
-    },
+		OCEAN_FISHING_POND = "Cast",
+		OCEAN_FISHING_CAST = "Cast",
+		OCEAN_FISHING_REEL =
+		{
+            GENERIC = "Reel",
+            SETHOOK = "Set Hook",
+	    },
+		OCEAN_FISHING_STOP = "Stop",
+		OCEAN_FISHING_CATCH = "Catch",
+		COMPARE_WEIGHABLE = "Give",
+		WEIGH_ITEM = "Weigh",
+		GIVE_TACKLESKETCH = "Give",
+	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
     LMB = "\238\132\128",
@@ -1283,6 +1296,7 @@ STRINGS =
         BLUEPRINT = "Blueprint",
         BLUEPRINT_RARE = "{item} Blueprint",
         SKETCH = "{item} Sketch",
+        TACKLESKETCH = "{item} Coupon",
         BAT = "Batilisk",
         TEAMLEADER = "Team Leader",
         BATWING = "Batilisk Wing",
@@ -2082,6 +2096,7 @@ STRINGS =
         MAST = "Mast",
         MAST_ITEM = "Mast",
 		BOAT_LEAK = "Leak",
+		FISH_BOX = "Tin Fishin' Bin",
         WORLD = "The World",
         DROWNING = "Drowning",
         SEASTACK = "Sea Stack",
@@ -2160,7 +2175,56 @@ STRINGS =
         CARRAT = "Carrat",
         CARRAT_PLANTED = "Carrot",
 
-		OCEANFISH_MEDIUM_4 = "Deep Ocean Fish",
+		OCEANFISH_ANTCHOVY = "Antchovy",
+		OCEANFISH_SMALL_1 = "Runty Guppy",
+		OCEANFISH_SMALL_2 = "Needlenosed Squirt",
+		OCEANFISH_SMALL_3 = "Bitty Baitfish",
+		OCEANFISH_SMALL_4 = "Smolt Fry",
+		OCEANFISH_SMALL_5 = "Popperfish",
+		OCEANFISH_MEDIUM_1 = "Mudfish",
+		OCEANFISH_MEDIUM_2 = "Deep Bass",
+		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
+		OCEANFISH_MEDIUM_4 = "Black Catfish",
+		OCEANFISH_MEDIUM_5 = "Corn Cod",
+
+		PONDFISH = "Freshwater Fish",
+		PONDEEL = "Eel",
+
+        FISHMEAT = "Fish Meat",
+        FISHMEAT_COOKED = "Cooked Fish Meat",
+        FISHMEAT_SMALL = "Fish Morsel",
+        FISHMEAT_SMALL_COOKED = "Cooked Fish Morsel",
+		SPOILED_FISH = "Spoiled Fish",
+
+		CALIFORNIAROLL = "California Roll",
+		SEAFOODGUMBO = "Seafood Gumbo",
+		SURFNTURF = "Surf 'n' Turf",
+
+        OCEANFISHINGROD = "Sea Fishing Rod",
+        OCEANFISHINGBOBBER_BALL = "Wooden Ball Bobber",
+        OCEANFISHINGBOBBER_OVAL = "Hardened Slip Bobber",
+		OCEANFISHINGBOBBER_CROW = "Jet Quill Float",
+		OCEANFISHINGBOBBER_ROBIN = "Crimson Quill Float",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Azure Quill Float",
+		OCEANFISHINGBOBBER_CANARY = "Saffron Quill Float",
+		OCEANFISHINGBOBBER_GOOSE = "Down Quill Float",
+		OCEANFISHINGBOBBER_MALBATROSS = "Malbatross Quill Float",
+
+		-- TODO:JEN
+		OCEANFISHINGLURE_SPINNER_RED = "Sunrise Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Dusky Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Nightflyer Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_ORANGE = "not used",
+		OCEANFISHINGLURE_SPINNER_YELLOW = "not used",
+		OCEANFISHINGLURE_SPINNER_WHITE = "not used",
+		OCEANFISHINGLURE_SPOON_RED = "Sunrise Spoon",
+		OCEANFISHINGLURE_SPOON_GREEN = "Dusky Spoon",
+		OCEANFISHINGLURE_SPOON_BLUE = "Nightflyer Spoon",
+		OCEANFISHINGLURE_SPOON_BROWN = "not used",
+		OCEANFISHINGLURE_SPOON_YELLOW = "not used",
+		OCEANFISHINGLURE_SPOON_SILVER = "not used",
+
+        POCKET_SCALE = "Pocket Scale",
 
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
 		WATERCHEST = "Chest",
@@ -2183,12 +2247,23 @@ STRINGS =
 		SALTROCK = "Salt Crystals",
 		SALTBOX = "Salt Box",
 
+		TACKLESTATION = "Tackle Receptacle",
+
         MALBATROSS = "Malbatross",
         MALBATROSS_BEAK = "Malbatross Bill",
         MALBATROSS_FEATHER = "Malbatross Feather",
         MAST_MALBATROSS = "Winged Sail",
         MAST_MALBATROSS_ITEM = "Winged Sail", 
 		MALBATROSS_FEATHERED_WEAVE = "Feathery Canvas",
+
+        GNARWAIL = "Gnarwail",
+        GNARWAIL_HORN = "Gnarwail Horn",
+
+        SQUID = "Skittersquid",
+	
+		TROPHYSCALE_FISH = "Fish Scale-O-Matic",
+
+		OCEANFISHABLEFLOTSAM = "Ocean Debris",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2315,7 +2390,23 @@ STRINGS =
         BEDROLL_STRAW = "Sleep through the night.",
         BEDROLL_FURRY = "Sleep through the night in comfort!",
         PUMPKIN_LANTERN = "Spooky illumination.",
+		POCKET_SCALE = "Weigh your fish on the go!",
         FISHINGROD = "Go fishing. For fish.",
+        OCEANFISHINGROD = "Fish like a pro.",
+        OCEANFISHINGBOBBER_BALL = "A classic design for pros and beginners.",
+        OCEANFISHINGBOBBER_OVAL = "A more stylish take on the classic bobber.",
+		OCEANFISHINGBOBBER_CROW = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_ROBIN = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_CANARY = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_GOOSE = "A fancy downy float.",
+		OCEANFISHINGBOBBER_MALBATROSS = "A fancy float from a furious fowl.",
+		OCEANFISHINGLURE_SPINNER_RED = "The early fish gets the worm.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "A lure that works best in low light.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "A lure that works best at night.",
+		OCEANFISHINGLURE_SPOON_RED = "The early fish gets the worm.",
+		OCEANFISHINGLURE_SPOON_GREEN = "A lure that works best in low light.",
+		OCEANFISHINGLURE_SPOON_BLUE = "A lure that works best at night.",
         FEATHERHAT = "A dress for your head.",
         MINERHAT = "Light up the night with your noggin.",
         FOOTBALLHAT = "Protect your braincase.",
@@ -2612,13 +2703,14 @@ STRINGS =
         WEREITEM_MOOSE =  "Invokes the curse of the Weremoose.",
 
         FISHINGNET = "Nothin' but net.",
-        ANCHOR_ITEM = "Boat brakes.",
-        STEERINGWHEEL_ITEM = "It's wheely important to have one.",
+        ANCHOR = "Boat brakes.",
+        STEERINGWHEEL = "It's wheely important to have one.",
         BOAT_ITEM = "Let the seas be your domain.",
-        MAST_ITEM = "Sail away, sail away.",
+        MAST = "Sail away, sail away.",
         OAR = "Row, row, row your boat.",
         OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
         BOATPATCH = "It's never too late to patch things up.",
+		FISH_BOX = "Keep fish as fresh as the day you net them.",
 
         -- Wurt
         MERMHOUSE_CRAFTED = "A home fit for a Merm.",
@@ -2630,8 +2722,13 @@ STRINGS =
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
 		SALTBOX = "Salty storage for your foodstuffs.",
 
+		TACKLESTATION = "The old bait-n-fish.",
+
+        MAST_MALBATROSS = "Sail like a seabird into the blue.",
         MAST_MALBATROSS_ITEM = "Sail like a seabird into the blue.",
 		MALBATROSS_FEATHERED_WEAVE = "A fine feathered fabric.",
+	
+		TROPHYSCALE_FISH = "Show off your prized catch.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -2801,8 +2898,8 @@ STRINGS =
     MERM_TALK_HELP_CHOP_WOOD = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Chop, choppy, chop!", "Grop, groppy, grop!"}, {"Work hard, florp!", "Glort blut, florp!"}},
     MERM_TALK_HELP_MINE_ROCK = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Break rock, easy!", "Wult wop, florty flort!"}, {"Work hard, florp!", "Glort blut, florp!"}},
     MERM_TALK_HELP_HAMMER    = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Smash! Smash!", "Florph! Florph!"}, {"Work hard, florp!", "Glort blut, florp!"}},
-    MERM_TALK_FIND_FOOD      = {{"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"},   {"(Sniff) Smell good!", "(Sniff) Groph flort!"}},
-    MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"}},
+    MERM_TALK_FIND_FOOD      = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"}},
+    MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"},},
     MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For glory of Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"}, {"Defend King!", "Glurph Glurtsen!"}},
     MERM_TALK_PANICBOSS      = {{"Something coming!", "Gloppy flort!"}, {"Aaah!! Bad thing! Bad thing!", "Gloooorph!! Glurph glot! Glurph glot!"}, {"It come to destroy us!", "Flort wult Glurtsu!"}},
     MERM_TALK_PANICBOSS_KING = {{"Rally to King!", "Glurtsen blut flort!"}, {"Hurry! Protect kingdom!", "Flurph flrot! Gloppy Glurtsam!"}, {"S-stay brave!!", "G-glop blut flrot!!"}},
@@ -3456,6 +3553,7 @@ STRINGS =
 		QUAGMIRE_TRADER_KID = "Billy",
 		MADSCIENCE = "Mad Science",
         FOODPROCESSING = "Seasonings",
+		FISHING = "Fishing"
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -4291,7 +4389,7 @@ STRINGS.UI =
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
-		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta",
+		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nHook, Line, and Inker",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
