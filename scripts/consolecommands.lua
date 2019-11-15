@@ -1239,6 +1239,9 @@ function c_makeboat()
 	inst = SpawnPrefab("lantern")
 	inst.Transform:SetPosition(x - 3.25, y, z)
 	
+	inst = SpawnPrefab("oceanfishingrod")
+	inst.Transform:SetPosition(x - 3.25, y, z + 1.25)
+	
 end
 
 function c_makeboatspiral()

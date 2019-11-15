@@ -1,6 +1,6 @@
 require "tuning"
 
-local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable, secondary_foodtype, halloweenmoonmutable_settings)
+local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, cooked_hunger, cooked_health, cooked_perish_time, cooked_sanity, float_settings, cooked_float_settings, dryable, secondary_foodtype, halloweenmoonmutable_settings, lure_data)
     return {
         health = health,
         hunger = hunger,
@@ -16,6 +16,7 @@ local function MakeVegStats(seedweight, hunger, health, perish_time, sanity, coo
 		dryable = dryable,
 		halloweenmoonmutable_settings = halloweenmoonmutable_settings,
 		secondary_foodtype = secondary_foodtype,
+		lure_data = lure_data,
     }
 end
 
@@ -74,13 +75,17 @@ VEGGIES =
                                 TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,    TUNING.PERISH_SUPERFAST, 0,
                                 {"med", nil, 0.7},      {"med", nil, 0.65},
 								nil,
-								FOODTYPE.BERRY),
+								FOODTYPE.BERRY,
+								nil,
+								{lure_data = TUNING.OCEANFISHING_LURE.BERRY, single_use = true, build = "oceanfishing_lure_mis", symbol = "hook_berries"}),
 
-    berries_juicy = MakeVegStats(0,   TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
-                                     TUNING.CALORIES_MEDSMALL,  TUNING.HEALING_SMALL,    TUNING.PERISH_ONE_DAY, 0,
-                                     {"med", nil, 0.7}, nil,
-									 nil,
-									 FOODTYPE.BERRY),
+    berries_juicy = MakeVegStats(0, TUNING.CALORIES_SMALL,  TUNING.HEALING_TINY,  TUNING.PERISH_TWO_DAY, 0,
+                                    TUNING.CALORIES_MEDSMALL,  TUNING.HEALING_SMALL,    TUNING.PERISH_ONE_DAY, 0,
+                                    {"med", nil, 0.7}, nil,
+									nil,
+									FOODTYPE.BERRY,
+									nil,
+									{lure_data = TUNING.OCEANFISHING_LURE.BERRY, single_use = true, build = "oceanfishing_lure_mis", symbol = "hook_juiceberries"}),
 
     cactus_meat = MakeVegStats(0, TUNING.CALORIES_SMALL, -TUNING.HEALING_SMALL, TUNING.PERISH_MED, -TUNING.SANITY_TINY,
                                   TUNING.CALORIES_SMALL, TUNING.HEALING_TINY, TUNING.PERISH_MED, TUNING.SANITY_MED),
@@ -154,6 +159,12 @@ local function MakeVeggie(name, has_seeds)
         Asset("ANIM", "anim/"..name..".zip"),
         Asset("INV_IMAGE", name),
     }
+	if VEGGIES[name].lure_data ~= nil then
+		table.insert(assets, Asset("ANIM", "anim/"..VEGGIES[name].lure_data.build..".zip"))
+	end
+	if has_seeds then
+		table.insert(assets, Asset("ANIM", "anim/oceanfishing_lure_mis.zip"))
+	end
 
     local assets_cooked =
     {
@@ -204,6 +215,8 @@ local function MakeVeggie(name, has_seeds)
 
         inst.overridedeployplacername = "seeds_placer"
 
+		inst:AddTag("oceanfishing_lure")
+
         MakeInventoryFloatable(inst)
 
         inst.entity:SetPristine()
@@ -244,6 +257,9 @@ local function MakeVeggie(name, has_seeds)
         inst.components.deployable.restrictedtag = "plantkin"
         inst.components.deployable.ondeploy = OnDeploy
 
+		inst:AddComponent("oceanfishingtackle")
+		inst.components.oceanfishingtackle:SetupLure({build = "oceanfishing_lure_mis", symbol = "hook_seeds", single_use = true, lure_data = TUNING.OCEANFISHING_LURE.SEED})
+
         MakeHauntableLaunchAndPerish(inst)
 
         return inst
@@ -276,6 +292,10 @@ local function MakeVeggie(name, has_seeds)
         else
             MakeInventoryFloatable(inst)
         end
+
+		if VEGGIES[name].lure_data ~= nil then
+			inst:AddTag("oceanfishing_lure")
+		end
 
         inst.entity:SetPristine()
 
@@ -334,6 +354,11 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("cookable")
         inst.components.cookable.product = name.."_cooked"
+
+		if VEGGIES[name].lure_data ~= nil then
+			inst:AddComponent("oceanfishingtackle")
+			inst.components.oceanfishingtackle:SetupLure(VEGGIES[name].lure_data)
+		end
 
 		local halloweenmoonmutable_settings = VEGGIES[name].halloweenmoonmutable_settings
 		if halloweenmoonmutable_settings ~= nil then

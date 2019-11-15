@@ -575,7 +575,51 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
         --floater = nil,
-	}
+	},
+
+	californiaroll = 
+	{
+		test = function(cooker, names, tags) return (names.kelp and names.kelp == 2) and (tags.fish and tags.fish >= 1) end,
+		priority = 20,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_SMALL,
+		cooktime = .5,
+		overridebuild = "cook_pot_food2",
+		potlevel = "high",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
+
+	seafoodgumbo = 
+	{
+		test = function(cooker, names, tags) return tags.fish and tags.fish > 2 end,
+		priority = 10,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_LARGE,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_MEDLARGE,
+		cooktime = 1,
+		overridebuild = "cook_pot_food2",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
+
+	surfnturf = 
+	{
+		test = function(cooker, names, tags) return tags.meat and tags.meat >= 2.5 and tags.fish and tags.fish >= 1.5 and not tags.frozen end,
+		priority = 30,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_HUGE,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_LARGE,
+		cooktime = 1,
+		overridebuild = "cook_pot_food2",
+		potlevel = "high",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
 }
 
 for k, v in pairs(foods) do

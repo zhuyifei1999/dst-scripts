@@ -5487,6 +5487,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 3,
+		has_nub = true,
 		release_group = 67,
 	},
 	legs_wormwood_mushroom =
@@ -5572,6 +5573,7 @@ CLOTHING =
 		symbol_hides = { "skirt", "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		has_nub = true,
 		release_group = 78,
 	},
 	legs_wurt_shadow =

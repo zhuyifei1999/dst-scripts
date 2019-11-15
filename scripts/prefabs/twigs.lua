@@ -4,6 +4,11 @@ local assets =
     Asset("SOUND", "sound/common.fsb"),
 }
 
+local prefabs = 
+{
+	"oceanfishingbobber_twig_projectile",
+}
+
 local function fn()
     local inst = CreateEntity()
 
@@ -19,6 +24,7 @@ local function fn()
 
     inst:AddTag("cattoy")
     inst:AddTag("renewable")
+	inst:AddTag("oceanfishing_bobber")
 
     MakeInventoryFloatable(inst, "med", nil, 0.68)
 
@@ -57,6 +63,9 @@ local function fn()
     inst.components.repairer.repairmaterial = MATERIALS.WOOD
     inst.components.repairer.healthrepairvalue = TUNING.REPAIR_STICK_HEALTH
 
+	inst:AddComponent("oceanfishingtackle")
+	inst.components.oceanfishingtackle:SetCastingData(TUNING.OCEANFISHING_TACKLE.BOBBER_TWIG, "oceanfishingbobber_twig_projectile")
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "prefabs/twigs").master_postinit(inst)
     end
@@ -64,4 +73,4 @@ local function fn()
     return inst
 end
 
-return Prefab("twigs", fn, assets)
+return Prefab("twigs", fn, assets, prefabs)

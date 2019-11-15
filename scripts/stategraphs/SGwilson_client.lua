@@ -149,6 +149,17 @@ local actionhandlers =
                 end
             end
         end),
+    ActionHandler(ACTIONS.OCEAN_FISHING_CAST, "oceanfishing_cast"),
+    ActionHandler(ACTIONS.OCEAN_FISHING_REEL, 
+		function(inst, action)
+			local fishable = action.invobject ~= nil and action.invobject.replica.oceanfishingrod:GetTarget() or nil
+			if fishable ~= nil and fishable:HasTag("partiallyhooked") then
+				return "oceanfishing_sethook"
+			elseif inst:HasTag("fishing_idle") then
+				return "oceanfishing_reel"
+			end
+			return nil
+		end),
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -289,7 +300,7 @@ local actionhandlers =
         function(inst, action)
             return action.invobject ~= nil
                 and action.invobject:HasTag("quickcast")
-                and "quickcastspell"
+                and (action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn" or "quickcastspell")
                 or "castspell"
         end),
     ActionHandler(ACTIONS.CASTAOE,
@@ -410,6 +421,9 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
 	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
+	ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
+	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
+	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
 }
 
 local events =
@@ -1254,6 +1268,110 @@ local states =
 
     State
     {
+        name = "oceanfishing_cast",
+        tags = { "prefish", "fishing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("fishing_ocean_pre")
+            inst.AnimState:PushAnimation("fishing_ocean_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("fishing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "oceanfishing_sethook",
+        tags = { "fishing", "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
+            inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "oceanfishing_reel",
+        tags = { "fishing", "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            local rod = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			rod = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod or nil
+			if rod.replica.oceanfishingrod:IsLineTensionHigh() then
+				if not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
+					inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
+				end
+			elseif rod.replica.oceanfishingrod:IsLineTensionGood() then
+				if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
+					inst.AnimState:PlayAnimation("hooked_good_reeling", true)
+				end
+			else
+				if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
+					inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
+				end
+			end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "give",
         tags = { "giving" },
 
@@ -2015,6 +2133,36 @@ local states =
 
     State
     {
+        name = "use_pocket_scale",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "use_fan",
         tags = { "doing" },
 
@@ -2197,6 +2345,44 @@ local states =
             end
 
             inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "play_gnarwail_horn",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("hornblow_pre")
+            inst.AnimState:PushAnimation("hornblow_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+                end
+            end
+
             inst.sg:SetTimeout(TIMEOUT)
         end,
 

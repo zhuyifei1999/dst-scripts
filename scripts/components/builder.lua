@@ -599,6 +599,8 @@ function Builder:MakeRecipeFromMenu(recipe, skin)
                             --V2C: for recipes known through tech bonus, still
                             --     want to unlock in case we reroll characters
                             self:AddRecipe(recipe.name)
+						else
+							self:ActivateCurrentResearchMachine(recipe)
                         end
                     end
                 )

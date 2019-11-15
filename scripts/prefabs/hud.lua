@@ -97,6 +97,8 @@ local assets =
 
 	Asset("DYNAMIC_ATLAS", "images/bg_redux_wardrobe_bg.xml"),
     Asset("PKGREF", "images/bg_redux_wardrobe_bg.tex"),
+
+    Asset("ANIM", "anim/ink_over.zip"),
 }
 
 local prefabs =

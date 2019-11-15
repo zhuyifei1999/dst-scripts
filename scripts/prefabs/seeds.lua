@@ -4,6 +4,7 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/seeds.zip"),
+	Asset("ANIM", "anim/oceanfishing_lure_mis.zip"),
 }
 
 local prefabs =
@@ -42,7 +43,7 @@ local function OnDeploy(inst, pt)--, deployer, rot)
     inst:Remove()
 end
 
-local function common(anim, cookable)
+local function common(anim, cookable, oceanfishing_lure)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -62,6 +63,10 @@ local function common(anim, cookable)
         --cookable (from cookable component) added to pristine state for optimization
         inst:AddTag("cookable")
     end
+
+	if oceanfishing_lure then
+		inst:AddTag("oceanfishing_lure")
+	end
 
     MakeInventoryFloatable(inst)
 
@@ -99,7 +104,7 @@ local function common(anim, cookable)
 end
 
 local function raw()
-    local inst = common("idle", true)
+    local inst = common("idle", true, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -117,6 +122,9 @@ local function raw()
     inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
     inst.components.deployable.restrictedtag = "plantkin"
     inst.components.deployable.ondeploy = OnDeploy
+
+	inst:AddComponent("oceanfishingtackle")
+	inst.components.oceanfishingtackle:SetupLure({build = "oceanfishing_lure_mis", symbol = "hook_seeds", single_use = true, lure_data = TUNING.OCEANFISHING_LURE.SEED})
 
     return inst
 end
