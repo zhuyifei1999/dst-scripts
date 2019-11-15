@@ -91,7 +91,7 @@ local foods =
 
     frogfishbowl =
     {
-        test = function(cooker, names, tags) return ((names.froglegs and names.froglegs >= 2) or (names.froglegs_cooked and names.froglegs_cooked >= 2 ) or (names.froglegs and names.froglegs_cooked)) and tags.fish and tags.fish >= 2 and not tags.inedible end,
+        test = function(cooker, names, tags) return ((names.froglegs and names.froglegs >= 2) or (names.froglegs_cooked and names.froglegs_cooked >= 2 ) or (names.froglegs and names.froglegs_cooked)) and tags.fish and tags.fish >= 1 and not tags.inedible end,
         priority = 30,
         foodtype = FOODTYPE.MEAT,
         health = TUNING.HEALING_MED,

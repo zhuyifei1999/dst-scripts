@@ -8,7 +8,7 @@ function Inkable:Ink()
 	self.inktime = 2
 
 	self.inked = true
-    self.inst:PushEvent("inked")
+	self.inst.player_classified.inked:push()
     self.inst.SoundEmitter:PlaySound("hookline/creatures/squid/ink")
     self.inst:StartUpdatingComponent(self)
     self.inst.components.debuffable:AddDebuff("squid_ink_player_fx", "squid_ink_player_fx")

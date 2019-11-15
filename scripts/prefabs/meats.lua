@@ -181,6 +181,7 @@ local function common(bank, build, anim, tags, dryable, cookable)
         inst.components.dryable:SetProduct(dryable.product)
         inst.components.dryable:SetDryTime(dryable.time)
 		inst.components.dryable:SetBuildFile(dryable.build)
+        inst.components.dryable:SetDriedBuildFile(dryable.dried_build)
     end
 
     if cookable ~= nil then
@@ -474,7 +475,7 @@ local function drumstick_cooked()
 end
 
 local function fishmeat_small()
-	local inst = common("fishmeat_small", "fishmeat_small", "raw", { "fishmeat", "catfood" }, { product = "smallmeat_dried", build = "meat_rack_food_tot", time = TUNING.DRY_FAST }, { product = "fishmeat_small_cooked" })
+	local inst = common("fishmeat_small", "fishmeat_small", "raw", { "fishmeat", "catfood" }, { product = "smallmeat_dried", build = "meat_rack_food_tot", dried_build = "meat_rack_food", time = TUNING.DRY_FAST }, { product = "fishmeat_small_cooked" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -506,7 +507,7 @@ local function fishmeat_small_cooked()
 end
 
 local function fishmeat()
-	local inst = common("fishmeat", "fishmeat", "raw", { "fishmeat", "catfood" }, { product = "meat_dried", build = "meat_rack_food_tot", time = TUNING.DRY_FAST }, { product = "fishmeat_cooked" })
+	local inst = common("fishmeat", "fishmeat", "raw", { "fishmeat", "catfood" }, { product = "meat_dried", build = "meat_rack_food_tot", dried_build = "meat_rack_food", time = TUNING.DRY_FAST }, { product = "fishmeat_cooked" })
 
     if not TheWorld.ismastersim then
         return inst

@@ -2094,7 +2094,7 @@ STRINGS =
         BOATFRAGMENT04 = "Boat Fragment",
         BOATFRAGMENT05 = "Boat Fragment",
         MAST = "Mast",
-        MAST_ITEM = "Mast",
+        MAST_ITEM = "Mast Kit",
 		BOAT_LEAK = "Leak",
 		FISH_BOX = "Tin Fishin' Bin",
         WORLD = "The World",
@@ -2253,7 +2253,7 @@ STRINGS =
         MALBATROSS_BEAK = "Malbatross Bill",
         MALBATROSS_FEATHER = "Malbatross Feather",
         MAST_MALBATROSS = "Winged Sail",
-        MAST_MALBATROSS_ITEM = "Winged Sail", 
+        MAST_MALBATROSS_ITEM = "Winged Sail Kit", 
 		MALBATROSS_FEATHERED_WEAVE = "Feathery Canvas",
 
         GNARWAIL = "Gnarwail",

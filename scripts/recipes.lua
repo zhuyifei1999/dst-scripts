@@ -366,10 +366,10 @@ Recipe("boat_item", 		   {Ingredient("boards", 4)}, RECIPETABS.SEAFARING, TECH.S
 Recipe("boatpatch", 		   {Ingredient("boards", 1), Ingredient("stinger", 2)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
 Recipe("oar", 				   {Ingredient("log", 1)}, 			 RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
 Recipe("oar_driftwood", 	   {Ingredient("driftwood_log", 1)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
-Recipe("anchor", 		       {Ingredient("boards", 2), 		Ingredient("rope", 3), Ingredient("cutstone", 3)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "anchor_item_placer", 2)
-Recipe("mast", 		           {Ingredient("boards", 3), 		Ingredient("rope", 3), Ingredient("silk", 8)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "mast_item_placer")
-Recipe("mast_malbatross",      {Ingredient("driftwood_log", 3), Ingredient("rope", 3), Ingredient("malbatross_feathered_weave", 4)}, RECIPETABS.SEAFARING, TECH.LOST, "mast_malbatross_item_placer")
-Recipe("steeringwheel",        {Ingredient("boards", 2), 		Ingredient("rope", 1)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "steeringwheel_item_placer", 1.5)
+Recipe("anchor_item", 		   {Ingredient("boards", 2), 		Ingredient("rope", 3), Ingredient("cutstone", 3)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
+Recipe("mast_item", 		   {Ingredient("boards", 3), 		Ingredient("rope", 3), Ingredient("silk", 8)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
+Recipe("mast_malbatross_item", {Ingredient("driftwood_log", 3), Ingredient("rope", 3), Ingredient("malbatross_feathered_weave", 4)}, RECIPETABS.SEAFARING, TECH.LOST)
+Recipe("steeringwheel_item",   {Ingredient("boards", 2), 		Ingredient("rope", 1)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
 Recipe("fish_box",			   {Ingredient("cutstone", 1), 		Ingredient("rope", 3)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "fish_box_placer", 1.5, nil, nil, nil, nil, nil,
     function(pt)
        return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, - 0.5) ~= nil
@@ -454,25 +454,23 @@ Recipe("oceanfishinglure_spinner_blue",		{Ingredient("flint", 1), Ingredient("be
 --NOTE: These recipes are not supposed to be craftable!
 Recipe("pighead",  {Ingredient("pigskin", 4), 	   Ingredient("twigs", 4)}, nil, TECH.LOST, nil, nil, true)
 Recipe("mermhead", {Ingredient("pondfish", 1), Ingredient("spoiled_food", 4), Ingredient("twigs", 4)}, nil, TECH.LOST, nil, nil, true)
---this is so you can use deconstruction staff on portable cookware when deployed
+
+--this is so you can use deconstruction staff on the deployed item
 Recipe("portablecookpot", {Ingredient("goldnugget", 2), Ingredient("charcoal",   6), Ingredient("twigs", 6)}, nil, TECH.LOST, nil, nil, true)
 Recipe("portableblender", {Ingredient("goldnugget", 2), Ingredient("transistor", 2), Ingredient("twigs", 4)}, nil, TECH.LOST, nil, nil, true)
 Recipe("portablespicer",  {Ingredient("goldnugget", 2), Ingredient("cutstone",   3), Ingredient("twigs", 6)}, nil, TECH.LOST, nil, nil, true)
-
-Recipe("steeringwheel_item",   {Ingredient("boards", 2), 	   Ingredient("rope", 1)}, nil, TECH.LOST, nil, nil, true)												-- deprecated but kept for existing worlds and mods
-Recipe("anchor_item",	       {Ingredient("boards", 2), 	   Ingredient("rope", 3), Ingredient("cutstone", 3)}, nil, TECH.LOST, nil, nil, true)					-- deprecated but kept for existing worlds and mods
-Recipe("mast_item",   		   {Ingredient("boards", 3), 	   Ingredient("rope", 3), Ingredient("silk",     8)}, nil, TECH.LOST, nil, nil, true)					-- deprecated but kept for existing worlds and mods
-Recipe("mast_malbatross_item", {Ingredient("driftwood_log", 3), Ingredient("rope", 3), Ingredient("malbatross_feathered_weave", 4)}, nil, TECH.LOST, nil, nil, true)-- deprecated but kept for existing worlds and mods
-
-Recipe("purplemooneye", {Ingredient("moonrockcrater", 1), Ingredient("purplegem", 1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("bluemooneye",   {Ingredient("moonrockcrater", 1), Ingredient("bluegem",   1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("redmooneye",    {Ingredient("moonrockcrater", 1), Ingredient("redgem",    1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("orangemooneye", {Ingredient("moonrockcrater", 1), Ingredient("orangegem", 1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("yellowmooneye", {Ingredient("moonrockcrater", 1), Ingredient("yellowgem", 1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("greenmooneye",  {Ingredient("moonrockcrater", 1), Ingredient("greengem",  1)}, nil, TECH.LOST, nil, nil, true)
-
-Recipe("opalstaff",  {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("opalpreciousgem", 1)}, nil, TECH.LOST, nil, nil, true)
-Recipe("mermthrone", {Ingredient("pondfish", 15), Ingredient("kelp", 20), Ingredient("pigskin", 10), Ingredient("beefalowool", 15)}, nil, TECH.LOST, nil, nil, true)
+Recipe("steeringwheel",   {Ingredient("boards", 2), Ingredient("rope", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("anchor", 		  {Ingredient("boards", 2), Ingredient("rope", 3), Ingredient("cutstone", 3)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mast",   		  {Ingredient("boards", 3), Ingredient("rope", 3), Ingredient("silk",     8)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mast_malbatross", {Ingredient("driftwood_log", 3), Ingredient("rope", 3), Ingredient("malbatross_feathered_weave", 4)}, nil, TECH.LOST, nil, nil, true)
+Recipe("purplemooneye",   {Ingredient("moonrockcrater", 1), Ingredient("purplegem", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("bluemooneye",     {Ingredient("moonrockcrater", 1), Ingredient("bluegem",   1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("redmooneye",      {Ingredient("moonrockcrater", 1), Ingredient("redgem",    1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("orangemooneye",   {Ingredient("moonrockcrater", 1), Ingredient("orangegem", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yellowmooneye",   {Ingredient("moonrockcrater", 1), Ingredient("yellowgem", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("greenmooneye",    {Ingredient("moonrockcrater", 1), Ingredient("greengem",  1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("opalstaff",       {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("opalpreciousgem", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mermthrone",      {Ingredient("pondfish", 15), Ingredient("kelp", 20), Ingredient("pigskin", 10), Ingredient("beefalowool", 15)}, nil, TECH.LOST, nil, nil, true)
 
 
 ----CONSTRUCTION PLANS----

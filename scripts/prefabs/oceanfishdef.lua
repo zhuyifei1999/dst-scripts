@@ -107,6 +107,10 @@ local DIET = {
 	MEAT = { caneat = { FOODTYPE.MEAT } },
 }
 
+-- crokpot values
+COOKER_INGREDIENT_SMALL = { meat = .5, fish = .5 }
+COOKER_INGREDIENT_MEDIUM = { meat = 1, fish = 1 }
+
 -- how long the player has to set the hook before it escapes
 local SET_HOOK_TIME_SHORT = { base = 1, var = 0.5 }
 local SET_HOOK_TIME_MEDIUM = { base = 2, var = 0.5 }
@@ -154,9 +158,9 @@ local FISH_DEFS =
 		cooking_product = COOKING_PRODUCT.SMALL,
         fishtype = "meat",
 
-		bite_chance = 0.2,
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
 		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 	},
 
 	oceanfish_small_2 = { 
@@ -197,6 +201,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
 		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 	},
 
 	oceanfish_small_3 = { 
@@ -237,6 +242,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_MEAT,
 		diet = DIET.MEAT,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 	},
 
 	oceanfish_small_4 = { 
@@ -277,6 +283,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
 		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 	},
 
 	oceanfish_small_5 = { 
@@ -317,6 +324,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
 		diet = DIET.VEGGIE,
+		cooker_ingredient_value = {veggie=1}, 
 	},
 
 	oceanfish_medium_1 = { 
@@ -357,6 +365,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.OMNI,
 		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 	},
 
 	oceanfish_medium_2 = { 
@@ -397,6 +406,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.MEAT,
 		diet = DIET.MEAT,
+		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 	},
 
 	oceanfish_medium_3 = { 
@@ -437,6 +447,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.MEAT,
 		diet = DIET.MEAT,
+		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 	},
 
 	-- mostly found in the ROUGH water
@@ -478,6 +489,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.OMNI,
 		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 	},
 
 	oceanfish_medium_5 = { 
@@ -518,6 +530,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.VEGGIE,
 		diet = DIET.VEGGIE,
+		cooker_ingredient_value = {veggie=1}, 
 	},
 --[[
 	-- large school

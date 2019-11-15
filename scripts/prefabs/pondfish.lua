@@ -138,7 +138,7 @@ local function commonfn(bank, build, char_anim_build, data)
 end
 
 local function pondfishfn()
-	local inst = commonfn("fish", "fish", "fish01", {weight_min = 40.89, weight_max = 55.28})
+	local inst = commonfn("fish", "fish", "fish01", {weight_min = 40.89, weight_max = 55.28, perish_product = "spoiled_fish" })
 
 	return inst
     --[[if not TheWorld.ismastersim then
