@@ -268,7 +268,7 @@ local foods =
 	},
 	fishtacos =
 	{
-		test = function(cooker, names, tags) return tags.fish and (names.corn or names.corn_cooked) end,
+		test = function(cooker, names, tags) return tags.fish and (names.corn or names.corn_cooked or names.oceanfish_small_5_inv or names.oceanfish_medium_5_inv) end,
 		priority = 10,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -309,7 +309,7 @@ local foods =
 
 	powcake =
 	{
-		test = function(cooker, names, tags) return names.twigs and names.honey and (names.corn or names.corn_cooked) end,
+		test = function(cooker, names, tags) return names.twigs and names.honey and (names.corn or names.corn_cooked or names.oceanfish_small_5_inv or names.oceanfish_medium_5_inv) end,
 		priority = 10,
 		foodtype = FOODTYPE.VEGGIE,
 		health = -TUNING.HEALING_SMALL,
@@ -324,7 +324,7 @@ local foods =
 
 	unagi =
 	{
-		test = function(cooker, names, tags) return names.cutlichen and (names.eel or names.eel_cooked) end,
+		test = function(cooker, names, tags) return (names.cutlichen or names.kelp or names.kelp_cooked or names.kelp_dried) and (names.eel or names.eel_cooked or names.pondeel) end,
 		priority = 20,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -579,7 +579,7 @@ local foods =
 
 	californiaroll = 
 	{
-		test = function(cooker, names, tags) return (names.kelp and names.kelp == 2) and (tags.fish and tags.fish >= 1) end,
+		test = function(cooker, names, tags) return ((names.kelp or 0) + (names.kelp_cooked or 0) + (names.kelp_dried or 0)) == 2 and (tags.fish and tags.fish >= 1) end,
 		priority = 20,
 		foodtype = "MEAT",
 		health = TUNING.HEALING_MED,

@@ -25,9 +25,6 @@ local default_loot =
 	"fishmeat_small",
 }
 
-local WEIGHT_MIN = 3
-local WEIGHT_MAX = 20
-
 local function CalcNewSize()
 	local p = 2 * math.random() - 1
 	return (p*p*p + 1) * 0.5
@@ -48,6 +45,12 @@ local function ondropped(inst)
     end
 	inst.AnimState:PlayAnimation("idle", false)
     inst.flop_task = inst:DoTaskInTime(math.random() * 3, flop)
+end
+
+local function ondroppedasloot(inst, data)
+	if data ~= nil and data.dropper ~= nil then
+		inst.components.weighable.prefab_override_owner = data.dropper.prefab
+	end
 end
 
 local function onpickup(inst)
@@ -114,9 +117,9 @@ local function commonfn(bank, build, char_anim_build, data)
 	inst.components.lootdropper:SetLoot(data.loot or default_loot)
 
     inst:AddComponent("edible")
-    inst.components.edible.ismeat = true--
-	inst.components.edible.healthvalue = TUNING.HEALING_TINY
-	inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+    inst.components.edible.ismeat = true
+	inst.components.edible.healthvalue = data.healthvalue or TUNING.HEALING_TINY
+	inst.components.edible.hungervalue = data.hungervalue or TUNING.CALORIES_SMALL
 	inst.components.edible.sanityvalue = 0
     inst.components.edible.foodtype = FOODTYPE.MEAT
 
@@ -132,31 +135,19 @@ local function commonfn(bank, build, char_anim_build, data)
 		inst.components.weighable:SetWeight(Lerp(data.weight_min, data.weight_max, CalcNewSize()))
 	end
 
+	inst:ListenForEvent("on_loot_dropped", ondroppedasloot)
+
 	inst.flop_task = inst:DoTaskInTime(math.random() * 2 + 1, flop)
 
     return inst
 end
 
 local function pondfishfn()
-	local inst = commonfn("fish", "fish", "fish01", {weight_min = 40.89, weight_max = 55.28, perish_product = "spoiled_fish" })
-
-	return inst
-    --[[if not TheWorld.ismastersim then
-        return inst
-    end
-
-    return inst]]
+	return commonfn("fish", "fish", "fish01", { weight_min = 40.89, weight_max = 55.28, perish_product = "spoiled_fish" })
 end
 
 local function pondeelfn()
-	local inst = commonfn("eel", "eel", "eel01", { perish_product = "spoiled_food" })
-
-	return inst
-	--[[if not TheWorld.ismastersim then
-		return inst
-	end
-
-	return inst]]
+	return commonfn("eel", "eel", "eel01", { weight_min = 165.16, weight_max = 212.12, perish_product = "spoiled_food", loot = {"eel"}, cookable_product = "eel_cooked", healthvalue = TUNING.HEALING_SMALL, hungervalue = TUNING.CALORIES_TINY })
 end
 
 return Prefab("pondfish", pondfishfn, assets, pondeel_prefabs),

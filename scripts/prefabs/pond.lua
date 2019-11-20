@@ -7,8 +7,8 @@ local assets =
 local prefabs =
 {
     "marsh_plant",
-    "fish",
 	"pondfish",
+	"pondeel",
     "frog",
     "mosquito",
 }
@@ -242,7 +242,7 @@ local function pondcave()
         return inst
     end
 
-    inst.components.fishable:AddFish("eel")
+    inst.components.fishable:AddFish("pondeel")
 
     inst.planttype = "pond_algae"
     inst.task = inst:DoTaskInTime(0, SpawnPlants)

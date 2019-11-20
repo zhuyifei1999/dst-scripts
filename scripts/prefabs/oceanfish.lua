@@ -64,6 +64,7 @@ local function OnProjectileLand(inst)
 		inst.sg:GoToState("idle")
 		inst:RestartBrain()
 	    SpawnPrefab("splash").Transform:SetPosition(x, y, z)
+		inst.components.oceanfishable.caught_by = nil
 	else
 		local fish = SpawnPrefab(inst.fish_def.prefab.."_inv")
 		fish.Transform:SetPosition(x, y, z)
@@ -73,6 +74,9 @@ local function OnProjectileLand(inst)
 			fish.flop_task:Cancel()
 		end
 		Flop(fish)
+		if inst.components.oceanfishable ~= nil and inst.components.oceanfishable.caught_by ~= nil and fish.components.weighable ~= nil then
+			fish.components.weighable:SetPlayerAsOwner(inst.components.oceanfishable.caught_by)
+		end
 
 	    inst:Remove()
 	end
@@ -121,6 +125,12 @@ local function OnSetRod(inst, rod)
 	else
 		inst:RemoveTag("partiallyhooked")
 		inst:RemoveTag("scarytooceanprey")
+	end
+end
+
+local function ondroppedasloot(inst, data)
+	if data ~= nil and data.dropper ~= nil then
+		inst.components.weighable.prefab_override_owner = data.dropper.prefab
 	end
 end
 
@@ -341,6 +351,7 @@ local function inv_common(data)
 			inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland")
 		end
 	end)
+	inst:ListenForEvent("on_loot_dropped", ondroppedasloot)
 
     return inst
 end

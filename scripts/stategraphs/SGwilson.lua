@@ -771,6 +771,7 @@ local actionhandlers =
 	ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
 	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
 	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
+	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
 }
 
 local events =
@@ -5463,6 +5464,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("pocket_scale_weigh", false)
+            inst.SoundEmitter:PlaySound("hookline/common/trophyscale_fish/pocket")
 
             inst.AnimState:OverrideSymbol("swap_pocket_scale_body", "pocket_scale", "pocket_scale_body")
 			
@@ -7570,7 +7572,9 @@ local states =
             inst.AnimState:PlayAnimation("plank_hop")
 
             inst:ShowHUD(false)
-			inst.components.drownable:OnFallInOcean()
+			if inst.components.drownable ~= nil then
+				inst.components.drownable:OnFallInOcean()
+			end
 
             inst.sg.statemem.speed = 6
             inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
@@ -7593,7 +7597,7 @@ local states =
 			    inst.DynamicShadow:Enable(false)
 				inst.Physics:Stop()
 
-				if TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition()) then
+				if TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition()) or inst.components.drownable == nil then
 					inst.sg:GoToState("idle")
 				else
 					inst.components.drownable:DropInventory()
@@ -7606,8 +7610,12 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
-					StartTeleporting(inst)
+					if inst.components.drownable ~= nil then
+						inst.components.drownable:WashAshore()
+						StartTeleporting(inst)
+					else
+						inst.sg:GoToState("idle")
+					end
                 end
             end),
 

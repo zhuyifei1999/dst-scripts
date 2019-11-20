@@ -12,6 +12,8 @@ local prefabs =
 	"boat_leak",
 }
 
+local FISH_BOX_SCALE = 1.3
+
 local function splash(inst)
 	if inst.AnimState:IsCurrentAnimation("opened") then
 		inst.AnimState:PlayAnimation("splash")
@@ -120,8 +122,7 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-	local scale = 1.3
-	inst.Transform:SetScale(scale, scale, scale)
+	inst.Transform:SetScale(FISH_BOX_SCALE, FISH_BOX_SCALE, FISH_BOX_SCALE)
 
 	inst.MiniMapEntity:SetPriority(4)
     inst.MiniMapEntity:SetIcon("fish_box.png")
@@ -166,4 +167,4 @@ local function fn()
 end
 
 return Prefab("fish_box", fn, assets, prefabs),
-    MakePlacer("fish_box_placer", "fish_box", "fish_box", "closed")
+    MakePlacer("fish_box_placer", "fish_box", "fish_box", "closed", nil, nil, nil, FISH_BOX_SCALE)

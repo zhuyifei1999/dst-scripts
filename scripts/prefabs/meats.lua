@@ -527,7 +527,7 @@ local function fishmeat_cooked()
         return inst
     end
 
-    inst.components.edible.healthvalue = TUNING.HEALING_TINY
+    inst.components.edible.healthvalue = TUNING.HEALING_MED
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
 

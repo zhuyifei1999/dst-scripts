@@ -10,9 +10,18 @@ local prefabs =
 }
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_fishingrod_ocean", "swap_fishingrod_ocean")
-    owner.AnimState:OverrideSymbol("fishingline", "swap_fishingrod_ocean", "fishingline")
-    owner.AnimState:OverrideSymbol("FX_fishing", "swap_fishingrod_ocean", "FX_fishing")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())        
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_fishingrod_ocean", inst.GUID, "swap_fishingrod_ocean")
+        owner.AnimState:OverrideItemSkinSymbol("fishingline", skin_build, "fishingline",           inst.GUID, "swap_fishingrod_ocean")
+        owner.AnimState:OverrideItemSkinSymbol("FX_fishing",  skin_build, "FX_fishing",            inst.GUID, "swap_fishingrod_ocean")
+    else
+        owner.AnimState:OverrideSymbol("swap_object", "swap_fishingrod_ocean", "swap_fishingrod_ocean")
+        owner.AnimState:OverrideSymbol("fishingline", "swap_fishingrod_ocean", "fishingline")
+        owner.AnimState:OverrideSymbol("FX_fishing", "swap_fishingrod_ocean", "FX_fishing")
+    end
+
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
@@ -22,6 +31,11 @@ local function onequip(inst, owner)
 end
 
 local function onunequip(inst, owner)
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+    end
+
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
     owner.AnimState:ClearOverrideSymbol("fishingline")
@@ -95,7 +109,11 @@ local function fn()
     inst:AddTag("weapon") --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("allow_action_on_impassable")
 
-    local floater_swap_data = {sym_build = "swap_fishingrod"}
+    local floater_swap_data =
+    {
+        sym_build = "swap_fishingrod_ocean",
+        bank = "fishingrod_ocean",
+    }
     MakeInventoryFloatable(inst, "med", 0.05, {0.8, 0.4, 0.8}, true, -12, floater_swap_data)
 
     inst.entity:SetPristine()

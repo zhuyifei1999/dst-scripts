@@ -406,6 +406,15 @@ local COMPONENT_ACTIONS =
             end 
         end,
 
+        trophyscale = function(inst, doer, actions, right)
+            if right and inst:HasTag("trophycanbetaken") and
+                not inst:HasTag("burnt") and
+				not inst:HasTag("fire") then
+
+                table.insert(actions, ACTIONS.REMOVE_FROM_TROPHYSCALE)
+            end
+        end,
+
         unwrappable = function(inst, doer, actions, right)
             if right and inst:HasTag("unwrappable") then
                 table.insert(actions, ACTIONS.UNWRAP)

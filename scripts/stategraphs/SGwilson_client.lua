@@ -424,6 +424,7 @@ local actionhandlers =
 	ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
 	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
 	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
+	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
 }
 
 local events =
@@ -2140,6 +2141,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
+            inst.SoundEmitter:PlaySound("hookline/common/trophyscale_fish/pocket")
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

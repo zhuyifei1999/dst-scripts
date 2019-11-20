@@ -52,19 +52,14 @@ local function GetItemData(inst)
 end
 
 local function IsHoldingItem(inst)
-	return inst.components.trophyscale.item_data ~= nil
+	return inst.components.trophyscale.item_data ~= nil and not inst:HasTag("burnt")
 end
 
 local function DropItem(inst, data)
 	if data ~= nil then
-		local item = SpawnPrefab(data.prefab)
+		local item = inst.components.trophyscale:SpawnItemFromData(data)
 
-		if item ~= nil and item.components.weighable ~= nil then
-			item.components.weighable.weight = data.weight
-			if data.perish_percent ~= nil and item.components.perishable ~= nil then
-				item.components.perishable:SetPercent(data.perish_percent)
-			end
-
+		if item ~= nil then
 			local x, y, z = inst.Transform:GetWorldPosition()
 			item.Transform:SetPosition(x, y, z)
 			Launch2(item, inst, TROPHY_LAUNCH_BASESPEED, 1, TROPHY_LAUNCH_STARTHEIGHT,
@@ -87,6 +82,14 @@ local function SetDigits(inst, weight)
 	local build = inst.AnimState:GetBuild()
 	for i=1,5 do
 		inst.AnimState:OverrideSymbol("column"..i, build, "number"..string.sub(weight, i, i)..(DIGIT_COLORS[i] or "_black"))
+	end
+end
+
+local function onspawnitemfromdata(item, data)
+	if item ~= nil and data ~= nil then
+		if item.components.perishable ~= nil and data.perish_percent then
+			item.components.perishable:SetPercent(data.perish_percent or 1)
+		end
 	end
 end
 
@@ -115,9 +118,9 @@ local function CancelNewTrophyTasks(inst)
 		inst.soundtask_playbell = nil
 	end
 
-	if inst.task_startacceptingitems ~= nil then
-		inst.task_startacceptingitems:Cancel()
-		inst.task_startacceptingitems = nil
+	if inst.task_newtrophyweighed ~= nil then
+		inst.task_newtrophyweighed:Cancel()
+		inst.task_newtrophyweighed = nil
 	end
 	inst.components.trophyscale.accepts_items = true
 end
@@ -160,7 +163,7 @@ local function onnewtrophy(inst, data_old_and_new)
 	inst.soundtask_playbell = inst:DoTaskInTime(sound_delay.bell*FRAMES, function() inst.SoundEmitter:PlaySound(sounds.bell, "bell", bell_sound_param) end)
 
 	inst.components.trophyscale.accepts_items = false
-	inst.task_startacceptingitems = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, function()
+	inst.task_newtrophyweighed = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, function()
 		if inst.components.trophyscale ~= nil then
 			inst.components.trophyscale.accepts_items = true
 		end
@@ -171,6 +174,10 @@ local function comparepostfn(item_data, new_inst)
 	if new_inst.components.perishable ~= nil then
 		item_data.perish_percent = new_inst.components.perishable:GetPercent()
 	end
+end
+
+local function ondeconstructstructure(inst)
+	DropItem(inst, inst.components.trophyscale:GetItemData())
 end
 
 local function onhammered(inst, worker)
@@ -237,10 +244,18 @@ local function getdesc(inst, viewer)
 		return GetDescription(viewer, inst, "BURNING")
 	elseif IsHoldingItem(inst) then
 		local data = inst.components.trophyscale.item_data
-		return data.owner_userid == viewer.userid and subfmt(GetDescription(viewer, inst, "OWNER"), {weight = data.weight or "", owner = data.owner_name or ""}) or
-			subfmt(GetDescription(viewer, inst, "HAS_ITEM"), {weight = data.weight or "", owner = data.owner_name or ""})
-	end
 
+		if data.prefab_override_owner ~= nil then
+			return subfmt(GetDescription(viewer, inst, "HAS_ITEM"), {weight = data.weight or "",
+				owner = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER[data.prefab_override_owner] ~= nil and STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER[data.prefab_override_owner]
+				or STRINGS.UI.HUD.TROPHYSCALE_UNKNOWN_OWNER})
+		else
+			local name = data.owner_userid == nil and STRINGS.UI.HUD.TROPHYSCALE_UNKNOWN_OWNER or data.owner_name
+			return data.owner_userid ~= nil and data.owner_userid == viewer.userid and subfmt(GetDescription(viewer, inst, "OWNER"), {weight = data.weight or "", owner = name or ""}) or
+				subfmt(GetDescription(viewer, inst, "HAS_ITEM"), {weight = data.weight or "", owner = name or ""})
+		end
+	end
+	
 	return GetDescription(viewer, inst) or nil
 end
 
@@ -257,12 +272,16 @@ local function onload(inst, data)
         elseif IsHoldingItem(inst) then
 			inst.AnimState:PlayAnimation("fish_idle", true)
 
-			if inst.components.trophyscale.item_data.build ~= nil then
-				inst.AnimState:AddOverrideBuild(inst.components.trophyscale.item_data.build)
-			end
+			local item_data = inst.components.trophyscale.item_data
 
-			if inst.components.trophyscale.item_data.weight ~= nil then
-				SetDigits(inst, inst.components.trophyscale.item_data.weight)
+			if item_data ~= nil then
+				if item_data.build ~= nil then
+					inst.AnimState:AddOverrideBuild(item_data.build)
+				end
+
+				if item_data.weight ~= nil then
+					SetDigits(inst, item_data.weight)
+				end
 			end
 		end
     end
@@ -305,7 +324,7 @@ local function fn()
 	--inst.soundtask_playspin = nil
 	--inst.soundtask_stopspin = nil
 	--inst.soundtask_playbell = nil
-	--inst.task_startacceptingitems = nil
+	--inst.task_newtrophyweighed = nil
 
 	inst:AddComponent("inspectable")
 	inst.components.inspectable.getspecialdescription = getdesc
@@ -313,6 +332,8 @@ local function fn()
 	inst:AddComponent("trophyscale")
 	inst.components.trophyscale.type = TROPHYSCALE_TYPES.FISH
 	inst.components.trophyscale:SetComparePostFn(comparepostfn)
+	inst.components.trophyscale:SetOnSpawnItemFromDataFn(onspawnitemfromdata)
+	inst.components.trophyscale:SetItemCanBeTaken(false)
 
 	inst:AddComponent("lootdropper")
 	inst:AddComponent("workable")
@@ -338,6 +359,7 @@ local function fn()
 
 	inst:ListenForEvent("onbuilt", onbuilt)
 	inst:ListenForEvent("onnewtrophy", onnewtrophy)
+    inst:ListenForEvent("ondeconstructstructure", ondeconstructstructure)
 
 	return inst
 end

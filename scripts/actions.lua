@@ -265,6 +265,7 @@ ACTIONS =
     DISMANTLE = Action({ rmb=true }),
     TACKLE = Action({ rmb=true, distance=math.huge }),
 	GIVE_TACKLESKETCH = Action(),
+	REMOVE_FROM_TROPHYSCALE = Action(),
 
     CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
 
@@ -2656,6 +2657,26 @@ ACTIONS.GIVE_TACKLESKETCH.fn = function(act)
 		end
 	end
 	return false
+end
+
+ACTIONS.REMOVE_FROM_TROPHYSCALE.fn = function(act)
+	if not act.target:HasTag("burnt") and
+		not act.target:HasTag("fire") and
+		act.target.components.trophyscale ~= nil and
+		act.target:HasTag("trophycanbetaken") then
+
+		if act.target.components.trophyscale.takeitemtestfn ~= nil then
+			local testresult, reason = act.target.components.trophyscale.takeitemtestfn(act.target, act.doer)
+
+			if not testresult then
+				return testresult, reason
+			else
+				return act.target.components.trophyscale:TakeItem(act.doer)
+			end
+		else
+			return act.target.components.trophyscale:TakeItem(act.doer)
+		end
+	end
 end
 
 ACTIONS.REPLATE.fn = function(act)

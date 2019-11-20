@@ -2188,10 +2188,10 @@ STRINGS =
 		OCEANFISH_MEDIUM_5 = "Corn Cod",
 
 		PONDFISH = "Freshwater Fish",
-		PONDEEL = "Eel",
+		PONDEEL = "Live Eel",
 
-        FISHMEAT = "Fish Meat",
-        FISHMEAT_COOKED = "Cooked Fish Meat",
+        FISHMEAT = "Raw Fish",
+        FISHMEAT_COOKED = "Fish Steak",
         FISHMEAT_SMALL = "Fish Morsel",
         FISHMEAT_SMALL_COOKED = "Cooked Fish Morsel",
 		SPOILED_FISH = "Spoiled Fish",
@@ -4690,7 +4690,19 @@ STRINGS.UI =
 
 		RETROFITTING_ANNOUNCEMENT = "World will reload in {time} seconds to complete retrofitting.",
 		RETROFITTING_ANNOUNCEMENT_NOW = "World is reloading to complete retrofitting.",
-    },
+    
+		TROPHYSCALE_PREFAB_OVERRIDE_OWNER =
+		{
+			catcoon = "A Catcoon",
+			merm = "A Merm",
+			mermguard = "A Loyal Merm Guard",
+			mermking = "The King of the Merms",
+			mermhouse = "A family of Merms",
+			mermhouse_crafted = "A well-to-do Merm",
+			mermthrone = "The King of the Merms",
+		},
+		TROPHYSCALE_UNKNOWN_OWNER = "An Unnamed Donor",
+	},
 
     ACCOUNT =
     {

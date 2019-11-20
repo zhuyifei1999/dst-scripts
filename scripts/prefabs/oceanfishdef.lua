@@ -10,7 +10,7 @@
 
 --pond fish weight 
 fish	40.89, 55.28
-eel		n/a for now?
+eel		165.16, 212.12
 
 -- medium fish 150 to 310ish
 #	name				weight			COSTAL	SWELL	ROUGH	BRINEPOOL	HAZARDOUS		lures			Catching Behaviours

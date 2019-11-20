@@ -29,7 +29,7 @@ local function commonfn(build, anim, loop, dryable, cookable)
 
     inst:AddTag("meat")
     inst:AddTag("catfood")
-	inst:AddTag("pondfish")
+    inst:AddTag("fishmeat")
 
     if dryable then
         --dryable (from dryable component) added to pristine state for optimization
@@ -91,7 +91,6 @@ end
 local function rawfn(build)
     local inst = commonfn(build, "idle", true, true, true)
     MakeInventoryFloatable(inst, "med", 0.05, {1.25, 0.6, 1.25})
-    inst:AddTag("fish")
 
     if not TheWorld.ismastersim then
         return inst

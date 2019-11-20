@@ -289,6 +289,7 @@ function OceanFishingRod:CatchFish()
 		local targetpos = self:CalcCatchDest(self.target:GetPosition(), self.fisher:GetPosition())
 		local startpos = self.target:GetPosition()
 		local fish = self.target.components.oceanfishable:MakeProjectile()
+		fish.components.oceanfishable.caught_by = self.fisher
 		self:_LaunchFishProjectile(fish, startpos, targetpos)
 
 		if self.ondonefishing ~= nil then

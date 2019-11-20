@@ -14,7 +14,6 @@ local assets =
 
 local prefabs =
 {
-	"fish",
     "pondfish",
     "froglegs",
     "mermking",
