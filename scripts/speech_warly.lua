@@ -2234,6 +2234,7 @@ return{
             BURNT = "It spent a second too long in the oven.",
 		},
 		PIG_TOKEN = "I'll try not to spend it all in one place.",
+		PIG_COIN = "The best tip I have ever received.",
 		YOTP_FOOD1 = "What a treat it is to be cooked for for a change!",
 		YOTP_FOOD2 = "Respectfully I think I may pass on this course.",
 		YOTP_FOOD3 = "I'd never turn my nose up at street food.",

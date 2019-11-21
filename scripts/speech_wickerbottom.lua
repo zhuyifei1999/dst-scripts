@@ -2234,6 +2234,7 @@ return{
             BURNT = "No use to me like this.",
 		},
 		PIG_TOKEN = "How did they could achieve such detail using pig hooves?",
+		PIG_COIN = "A boon from the Pig King.",
 		YOTP_FOOD1 = "A feast fit for a festival!",
 		YOTP_FOOD2 = "Not fit for human consumption.",
 		YOTP_FOOD3 = "I do enjoy a snack now and then.",

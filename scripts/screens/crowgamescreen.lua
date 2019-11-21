@@ -1,5 +1,5 @@
 local Screen = require "widgets/screen"
-local CrowGameTile = require "widgets/crowgametile"
+local MiniGameTile = require "widgets/minigametile"
 local UIAnim = require "widgets/uianim"
 local Text = require "widgets/text"
 local TextButton = require "widgets/textbutton"
@@ -98,7 +98,7 @@ local function GameGridConstructor(screen, parent)
 		for x = 1,NUM_COLUMNS do
 			local index = XYtoIndex( x-1, y-1 )
 			
-			local crowtile = parent:AddChild(CrowGameTile( screen, index ))
+			local crowtile = parent:AddChild(MiniGameTile( screen, index ))
 			crowtile.clickFn = function(index)
 				local x_click, y_click = IndexToXY(index)
 				screen:OnTileClick(x_click, y_click)
@@ -122,7 +122,7 @@ local function GameGridConstructor(screen, parent)
 end
 
 MoverGameTile = function(screen)
-	local widg = CrowGameTile(screen, 0, true)
+	local widg = MiniGameTile(screen, 0, true)
  	widg:Hide()
 	widg.Move = function(tile_type, src_pos, dest_pos, drop_time, callbackfn)
 		widg:SetTileTypeUnHidden(tile_type)
@@ -473,11 +473,6 @@ end
 
 function CrowGameScreen:CalcMoveScore()
 	self.move_score = self.tiles_cleared * self.tiles_cleared * 5 * (self.crows_cleared + 1) + self.crows_cleared * 25
-end
-
-
-function CrowGameScreen:GetHighScore()
-	return self.score
 end
 
 function CrowGameScreen:GetMoveScore()

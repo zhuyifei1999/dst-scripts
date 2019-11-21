@@ -655,6 +655,10 @@ STRINGS =
 		PIGELITE2 = "Ignatius", --RED
 		PIGELITE3 = "Dmitri", --WHITE
 		PIGELITE4 = "Sawyer", --GREEN
+        PIGELITEFIGHTER1 = "Wade", --BLUE
+		PIGELITEFIGHTER2 = "Ignatius", --RED
+		PIGELITEFIGHTER3 = "Dmitri", --WHITE
+		PIGELITEFIGHTER4 = "Sawyer", --GREEN
         NITRE = "Nitre",
         GUNPOWDER = "Gunpowder",
         BIRD_EGG = "Egg",
@@ -1063,6 +1067,7 @@ STRINGS =
         CHESSPIECE_CLAYWARG_SKETCH = "Clay Varg Figure Sketch",
 
 		PIG_TOKEN = "Golden Belt",
+		PIG_COIN = "Clout Snout",
 		YOTP_FOOD1 = "Tribute Roast", -- tribute roast
 		YOTP_FOOD2 = "Eight Treasure Mud Pie", -- mud pie
 		YOTP_FOOD3 = "Fish Heads on a Stick", -- fish head skewers
@@ -2858,6 +2863,20 @@ STRINGS =
         --[[CHEATER =]] "YOU CHEATER. WE NO LIKE CHEATERS", -- cheated during match
     },
 
+    PIG_ELITE_FIGHTER_INTRO =
+    {
+        "I HELP!",
+        "SMASHY! SMASHY!",
+        "PUNCH TIME!",
+        "WHERE I SMASH?",
+    },
+    PIG_ELITE_FIGHTER_OUTRO =
+    {
+        "PIGGY, AWAY!",
+        "I PUNCHED!",
+        "I GO NOW!",
+        "SEE YA!",
+    },
 
     --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },

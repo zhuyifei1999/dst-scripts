@@ -1894,6 +1894,71 @@ MISC_ITEMS =
 		output_items = {  "warly_victorian", "body_warly_victorian", "feet_warly_victorian", "legs_warly_victorian", },
 		release_group = 71,
 	},
+	pack_wb_0 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 0,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wb_0.xml",
+		display_tex = "pack_wb_0.tex",
+		output_klei_currency = "BOLTS",
+		output_klei_currency_cost = 3000,
+		release_group = 79,
+	},
+	pack_wb_1 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wb_1.xml",
+		display_tex = "pack_wb_1.tex",
+		output_klei_currency = "BOLTS",
+		output_klei_currency_cost = 5500,
+		release_group = 79,
+	},
+	pack_wb_2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wb_2.xml",
+		display_tex = "pack_wb_2.tex",
+		output_klei_currency = "BOLTS",
+		output_klei_currency_cost = 12000,
+		release_group = 79,
+	},
+	pack_wb_3 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wb_3.xml",
+		display_tex = "pack_wb_3.tex",
+		output_klei_currency = "BOLTS",
+		output_klei_currency_cost = 26000,
+		release_group = 79,
+	},
+	pack_wb_4 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 4,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_pack_wb_4.xml",
+		display_tex = "pack_wb_4.tex",
+		output_klei_currency = "BOLTS",
+		output_klei_currency_cost = 75000,
+		release_group = 79,
+	},
 	pack_willow_deluxe =
 	{
 		type = "purchase",
@@ -2252,6 +2317,20 @@ MISC_ITEMS =
 		output_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "wes_wrestler", "body_wes_wrestler", "hand_wes_wrestler", "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", "umbrella_heart", "wardrobe_heart", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		release_group = 58,
 	},
+	pack_wrestler_promo2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_wrestler_promo1",
+		display_atlas = "images/iap_images_wrestler_promo2.xml",
+		display_tex = "wrestler_promo2.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", "winona_wrestler", "trap_metal", "beemine_jamjar", "wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		output_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		release_group = 81,
+	},
 	pack_wrestler_wathgrithr =
 	{
 		type = "purchase",
@@ -2265,6 +2344,20 @@ MISC_ITEMS =
 		display_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		output_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		release_group = 58,
+	},
+	pack_wrestler_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 111,
+		build_name_override = "webber_wrestler",
+		display_atlas = "images/iap_images_wrestler_webber.xml",
+		display_tex = "wrestler_webber.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", },
+		output_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", },
+		release_group = 81,
 	},
 	pack_wrestler_wes =
 	{
@@ -2280,6 +2373,20 @@ MISC_ITEMS =
 		output_items = {  "wes_wrestler", "body_wes_wrestler", "hand_wes_wrestler", "umbrella_heart", "wardrobe_heart", },
 		release_group = 58,
 	},
+	pack_wrestler_winona =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 112,
+		build_name_override = "winona_wrestler",
+		display_atlas = "images/iap_images_wrestler_winona.xml",
+		display_tex = "wrestler_winona.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", },
+		output_items = {  "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", },
+		release_group = 81,
+	},
 	pack_wrestler_wolfgang =
 	{
 		type = "purchase",
@@ -2293,6 +2400,20 @@ MISC_ITEMS =
 		display_items = {  "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", },
 		output_items = {  "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", },
 		release_group = 58,
+	},
+	pack_wrestler_wx78 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 105,
+		build_name_override = "wx78_wrestler",
+		display_atlas = "images/iap_images_wrestler_wx78.xml",
+		display_tex = "wrestler_wx78.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		output_items = {  "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		release_group = 81,
 	},
 	pack_wurt_cave =
 	{

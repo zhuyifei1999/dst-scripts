@@ -427,6 +427,17 @@ function winterometer_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Lightning Rood functions ]]
+--------------------------------------------------------------------------
+function lightning_rod_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "lightning_rod")
+end
+
+--------------------------------------------------------------------------
 --[[ Arrowsign_post functions ]]
 --------------------------------------------------------------------------
 function arrowsign_post_init_fn(inst, build_name)
@@ -486,7 +497,9 @@ function trap_teeth_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "trap_teeth")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    end
 end
 
 --------------------------------------------------------------------------

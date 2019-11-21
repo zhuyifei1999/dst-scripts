@@ -2235,6 +2235,7 @@ return{
             BURNT = "Poor little piggy.",
 		},
 		PIG_TOKEN = "Is not fitting Wolfgang.",
+		PIG_COIN = "This brings a piggy friend.",
 		YOTP_FOOD1 = "Make Wolfgang mighty!",
 		YOTP_FOOD2 = "Is not for Wolfgang.",
 		YOTP_FOOD3 = "Is for making Wolfgang little bit mighty.",

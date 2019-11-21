@@ -277,6 +277,10 @@ function Tune(overrides)
         PIG_ELITE_HIT_RECOVERY = 1,
         PROP_WEAPON_RANGE = .5,
 
+        PIG_ELITE_FIGHTER_DESPAWN_TIME = 10,
+        PIG_ELITE_FIGHTER_DAMAGE = 45,
+        PIG_ELITE_FIGHTER_ATTACK_PERIOD = 0.5,
+
         --for pig king gold minigame
         --delay b4 pigs and players can pick up something recently knocked out of someone's inventory
         --players are faster

@@ -631,9 +631,9 @@ local actionhandlers =
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
             return action.invobject ~= nil
-                and action.invobject.components.spellcaster ~= nil
-                and action.invobject.components.spellcaster.quickcast
-                and "quickcastspell"
+				and ((action.invobject:HasTag("cointosscast") and "cointosscastspell")
+					or (action.invobject:HasTag("quickcast") and "quickcastspell")
+					)
                 or "castspell"
         end),
     ActionHandler(ACTIONS.CASTAOE,
@@ -9086,6 +9086,70 @@ local states =
                 end
             end),
         },
+    },
+
+    State{
+        name = "cointosscastspell",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+            end
+            inst.AnimState:PlayAnimation("cointoss_pre")
+            inst.AnimState:PushAnimation("cointoss", false)
+            inst.components.locomotor:Stop()
+
+			local coin = inst.bufferedaction ~= nil and inst.bufferedaction.invobject
+			inst.sg.statemem.fxcolour = coin ~= nil and coin.fxcolour or { 1, 1, 1 }
+			inst.sg.statemem.castsound = coin ~= nil and coin.castsound
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+				inst.sg.statemem.stafffx = SpawnPrefab((inst.components.rider ~= nil and inst.components.rider:IsRiding()) and "cointosscastfx_mount" or "cointosscastfx")
+				inst.sg.statemem.stafffx.entity:SetParent(inst.entity)
+				inst.sg.statemem.stafffx.Transform:SetRotation(inst.Transform:GetRotation())
+				inst.sg.statemem.stafffx:SetUp(inst.sg.statemem.fxcolour)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+				inst.sg.statemem.stafflight = SpawnPrefab("staff_castinglight")
+				inst.sg.statemem.stafflight.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	            inst.sg.statemem.stafflight:SetUp(inst.sg.statemem.fxcolour, 1.2, .33)
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+				if inst.sg.statemem.castsound then
+					inst.SoundEmitter:PlaySound(inst.sg.statemem.castsound)
+				end
+            end),
+            TimeEvent(53 * FRAMES, function(inst)
+                inst.sg.statemem.stafffx = nil --Can't be cancelled anymore
+                inst.sg.statemem.stafflight = nil --Can't be cancelled anymore
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+            if inst.sg.statemem.stafffx ~= nil and inst.sg.statemem.stafffx:IsValid() then
+                inst.sg.statemem.stafffx:Remove()
+            end
+            if inst.sg.statemem.stafflight ~= nil and inst.sg.statemem.stafflight:IsValid() then
+                inst.sg.statemem.stafflight:Remove()
+            end
+        end,
     },
 
     State{

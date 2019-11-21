@@ -2240,6 +2240,7 @@ return{
             BURNT = "No good now.",
 		},
 		PIG_TOKEN = "Too big for me to wear.",
+		PIG_COIN = "Not bad payment for a good wrassle.",
 		YOTP_FOOD1 = "Now that's a feast!",
 		YOTP_FOOD2 = "I'll give it to a pig or somethin'.",
 		YOTP_FOOD3 = "Somethin' to chew on.",

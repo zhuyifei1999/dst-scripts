@@ -2238,6 +2238,7 @@ return{
             BURNT = "Why, fire? Why?",
 		},
 		PIG_TOKEN = "Oh. Doesn't fit",
+		PIG_COIN = "Twirly Tail shiny thing",
 		YOTP_FOOD1 = "You okay, Twirly Tail?",
 		YOTP_FOOD2 = "Oh... can't eat it",
 		YOTP_FOOD3 = "Glub Glub on friends",

@@ -2234,6 +2234,7 @@ return{
             BURNT = "Good, it gone now.",
 		},
 		PIG_TOKEN = "Stole Pigman's belt!",
+		PIG_COIN = "Shiny pig nose, florp!",
 		YOTP_FOOD1 = "Blegh! Has nasty Pig face!",
 		YOTP_FOOD2 = "Usually like mud, but that just bad.",
 		YOTP_FOOD3 = "This insulting to fish.",

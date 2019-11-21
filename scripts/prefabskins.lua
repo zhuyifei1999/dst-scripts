@@ -88,6 +88,10 @@ PREFAB_SKINS = {
 	{
 		"beehat_mourning",
 	},
+	beemine = 
+	{
+		"beemine_jamjar",
+	},
 	bernie_active = 
 	{
 		"bernie_cat_active",
@@ -111,6 +115,10 @@ PREFAB_SKINS = {
 	book_brimstone = 
 	{
 		"book_brimstone_gilded",
+	},
+	boomerang = 
+	{
+		"boomerang_tiger",
 	},
 	bugnet = 
 	{
@@ -245,6 +253,7 @@ PREFAB_SKINS = {
 	firesuppressor = 
 	{
 		"firesuppressor_circus",
+		"firesuppressor_robot",
 	},
 	flowerhat = 
 	{
@@ -297,6 +306,10 @@ PREFAB_SKINS = {
 	lighter = 
 	{
 		"lighter_haunteddoll",
+	},
+	lightning_rod = 
+	{
+		"lightning_rod_robot",
 	},
 	mast = 
 	{
@@ -406,6 +419,14 @@ PREFAB_SKINS = {
 		"torch_shadow_alt",
 		"torch_spooky",
 	},
+	trap = 
+	{
+		"trap_metal",
+	},
+	trap_teeth = 
+	{
+		"trap_teeth_tiger",
+	},
 	treasurechest = 
 	{
 		"treasurechest_carpetbag",
@@ -496,6 +517,7 @@ PREFAB_SKINS = {
 		"webber_shadow",
 		"webber_survivor",
 		"webber_victorian",
+		"webber_wrestler",
 	},
 	wendy = 
 	{
@@ -609,6 +631,7 @@ PREFAB_SKINS = {
 		"winona_survivor",
 		"winona_survivorp",
 		"winona_victorian",
+		"winona_wrestler",
 	},
 	winterhat = 
 	{
@@ -699,6 +722,7 @@ PREFAB_SKINS = {
 		"wx78_survivor",
 		"wx78_victorian",
 		"wx78_wip",
+		"wx78_wrestler",
 	},
 	yellowstaff = 
 	{

@@ -2234,6 +2234,7 @@ return{
             BURNT = "Ashes to ashes.",
 		},
 		PIG_TOKEN = "Yet another unnecessary plaything.",
+		PIG_COIN = "It pays for a fleeting friendship.",
 		YOTP_FOOD1 = "Something died for that feast.",
 		YOTP_FOOD2 = "I don't want to eat that.",
 		YOTP_FOOD3 = "It'll keep me alive a little longer.",

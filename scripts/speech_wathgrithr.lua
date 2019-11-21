@@ -2234,6 +2234,7 @@ return{
             BURNT = "Laid to waste.",
 		},
 		PIG_TOKEN = "The belt of a mighty pig warrior.",
+		PIG_COIN = "The king of pigs hath granted me this favor.",
 		YOTP_FOOD1 = "A meaty feast!",
 		YOTP_FOOD2 = "'Tis fit only for the beasts.",
 		YOTP_FOOD3 = "I shall consume it!",

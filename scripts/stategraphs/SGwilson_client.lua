@@ -288,8 +288,9 @@ local actionhandlers =
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
             return action.invobject ~= nil
-                and action.invobject:HasTag("quickcast")
-                and "quickcastspell"
+				and ((action.invobject:HasTag("cointosscast") and "cointosscastspell")
+					or (action.invobject:HasTag("quickcast") and "quickcastspell")
+					)
                 or "castspell"
         end),
     ActionHandler(ACTIONS.CASTAOE,
@@ -2195,6 +2196,36 @@ local states =
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk_lag", false)
             end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "cointosscastspell",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("cointoss_pre")
+            inst.AnimState:PushAnimation("cointoss_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

@@ -21,6 +21,7 @@ local prefabs =
     "pig_token",
     "lucky_goldnugget",
     "redpouch_yotp",
+	"pig_coin",
 }
 
 for i = 1, NUM_HALLOWEENCANDY do
@@ -28,6 +29,8 @@ for i = 1, NUM_HALLOWEENCANDY do
 end
 
 --------------------------------------------------------------------------
+
+local MINIGAME_ITEM = "goldnugget"
 
 local function OnCameraFocusDirty(inst)
     if inst._camerafocus:value() then
@@ -330,7 +333,7 @@ local function OnTossGameItems(inst)
         numgold = 3
     end
     for i = 1, numgold do
-        table.insert(items, "lucky_goldnugget")
+        table.insert(items, MINIGAME_ITEM)
     end
 	inst._minigame_gold_tossed = inst._minigame_gold_tossed + numgold
     local angle = math.random() * 2 * PI
@@ -354,7 +357,7 @@ local function GetMinigameScore(inst)
 	if inst._minigame_score == nil then
 		local num_pig_gold = 0
 		for pig, _ in pairs(inst._minigame_elites) do
-			local has, count = pig.components.inventory:Has("lucky_goldnugget", 1)
+			local has, count = pig.components.inventory:Has(MINIGAME_ITEM, 1)
 			num_pig_gold = num_pig_gold + count
 		end
 
@@ -376,24 +379,37 @@ local function LaunchRewards(inst, level, minigame_players)
 
 	local num_players = math.max(1, #minigame_players)
 
-	local num_player_pouch_items = level >= 3 and 4 or 1
-	local num_player_pounches = num_players * ((level == 4 or level == 2) and 2 or 1)
-
 	local pouches = {}
-    for ip = 1, num_player_pounches do
-		local items = {}
-		for i = 1, num_player_pouch_items do
-	        table.insert(items, SpawnPrefab("lucky_goldnugget"))
+	if IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
+		local num_player_pouch_items = level >= 3 and 4 or 1
+		local num_player_pounches = num_players * ((level == 4 or level == 2) and 2 or 1)
+
+		for ip = 1, num_player_pounches do
+			local items = {}
+			for i = 1, num_player_pouch_items do
+				table.insert(items, SpawnPrefab(MINIGAME_ITEM))
+			end
+
+			local pouch = SpawnPrefab("redpouch_yotp")
+			pouch.Transform:SetPosition(x, 4.5, z)
+			pouch.components.unwrappable:WrapItems(items)
+			for i, v in ipairs(items) do
+				v:Remove()
+			end
+			table.insert(pouches, pouch)
+		end
+	else
+		local gold_per_player = 2 + (level * 2)
+		for i = 1, gold_per_player do
+			table.insert(pouches, SpawnPrefab(MINIGAME_ITEM))
 		end
 
-		local pouch = SpawnPrefab("redpouch_yotp")
-	    pouch.Transform:SetPosition(x, 4.5, z)
-		pouch.components.unwrappable:WrapItems(items)
-		for i, v in ipairs(items) do
-			v:Remove()
+		local pig_coins_per_player = math.max(0, (level - 1) * 2)
+		for i = 1, pig_coins_per_player do
+			table.insert(pouches, SpawnPrefab("pig_coin"))
 		end
-		table.insert(pouches, pouch)
 	end
+
 	-- Now Lunach it
 	for i, pouch in ipairs(pouches) do
 	    local angle
@@ -404,7 +420,7 @@ local function LaunchRewards(inst, level, minigame_players)
 			local down = TheCamera:GetDownVec()
 			angle = math.atan2(down.z, down.x) / DEGREES
 		end
-        LaunchGameItem(inst, pouch, GetRandomWithVariance(angle, 25 * DEGREES), true)
+        LaunchGameItem(inst, pouch, GetRandomWithVariance(angle, 25) * DEGREES, true)
 	end
 end
 
@@ -492,6 +508,8 @@ end
 
 local function StartMinigame(inst)
     if inst._minigametask == nil then
+		MINIGAME_ITEM = IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and "lucky_goldnugget" or "goldnugget"
+
         inst._minigame_score = nil
         inst._minigame_gold_tossed = 0
         inst.components.minigame:Activate()
@@ -537,10 +555,6 @@ local function OnRefuseItem(inst, giver, item)
 end
 
 local function AbleToAcceptTest(inst, item, giver)
-	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and item.prefab == "pig_token" then
-		return true -- todo: remove this once post-yotp gameplay is done
-	end
-
 	if item.prefab == "pig_token" then
 		local success, reason = CanStartMinigame(inst, giver)
 		if not success then
@@ -552,12 +566,8 @@ local function AbleToAcceptTest(inst, item, giver)
 end
 
 local function AcceptTest(inst, item, giver)
-	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and item.prefab == "pig_token" then
-		return -- todo: remove this once post-yotp gameplay is done
-	end
-
-    -- TODO: do we want Wurt to trade?
-    if giver:HasTag("merm") then
+    -- Wurt can still play the mini-game though
+    if giver:HasTag("merm") and not item.prefab == "pig_token" then
         return
     end
 

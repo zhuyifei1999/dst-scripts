@@ -2234,6 +2234,7 @@ return{
             BURNT = "Aww... that's too bad.",
 		},
 		PIG_TOKEN = "Neat! The Pig King would like that.",
+		PIG_COIN = "Wow! We have our very own pig friend!",
 		YOTP_FOOD1 = "Yummy!",
 		YOTP_FOOD2 = "Mmmmmm.",
 		YOTP_FOOD3 = "Smells good.",

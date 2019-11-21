@@ -2234,6 +2234,7 @@ return{
             BURNT = "Not useful like this.",
 		},
 		PIG_TOKEN = "Those pigs are getting more and more clever.",
+		PIG_COIN = "Perfect. I'll try not to spend it all in one place.",
 		YOTP_FOOD1 = "Ah. I do enjoy a nice meal.",
 		YOTP_FOOD2 = "Ugh. More fit for a creature than for me.",
 		YOTP_FOOD3 = "Nothing fancy, but it will do.",

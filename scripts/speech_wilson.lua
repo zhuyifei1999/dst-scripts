@@ -2243,6 +2243,7 @@ return {
             BURNT = "Burnt out.",
 		},
 		PIG_TOKEN = "This looks important.",
+		PIG_COIN = "This'll pay off in a fight.",
 		YOTP_FOOD1 = "A feast fit for me.",
 		YOTP_FOOD2 = "A meal only a beast would love.",
 		YOTP_FOOD3 = "Nothing fancy.",

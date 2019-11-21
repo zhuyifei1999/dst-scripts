@@ -2235,6 +2235,7 @@ return{
             BURNT = "Burnt.",
 		},
 		PIG_TOKEN = "Looks like something those pigs would make.",
+		PIG_COIN = "A favour I can cash in some time.",
 		YOTP_FOOD1 = "Want some, Lucy?",
 		YOTP_FOOD2 = "Doesn't look to appetizing. Sorry.",
 		YOTP_FOOD3 = "I don't need nothin' fancy.",

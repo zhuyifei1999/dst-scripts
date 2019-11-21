@@ -2240,6 +2240,7 @@ return{
             BURNT = "That's that.",
 		},
 		PIG_TOKEN = "Let's start the game, oh please, oh please!",
+		PIG_COIN = "A punchy pig for me? Yes please!",
 		YOTP_FOOD1 = "I'll take a little tiny nibble.",
 		YOTP_FOOD2 = "I'll try it, if you insist.",
 		YOTP_FOOD3 = "Maybe just a little bite.",

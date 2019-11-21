@@ -1204,6 +1204,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_one_man_band.zip"),
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
+        Asset("ANIM", "anim/player_cointoss.zip"),
         Asset("ANIM", "anim/player_hit_darkness.zip"),
         Asset("ANIM", "anim/player_hit_spike.zip"),
         Asset("ANIM", "anim/player_lunge.zip"),
@@ -1287,6 +1288,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_emotesxl.zip"),
         Asset("ANIM", "anim/player_mount_emotes_sit.zip"),
         Asset("ANIM", "anim/player_mount_bow.zip"),
+        Asset("ANIM", "anim/player_mount_cointoss.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
 
