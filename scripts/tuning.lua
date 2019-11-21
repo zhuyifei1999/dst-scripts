@@ -137,8 +137,6 @@ function Tune(overrides)
         GREENAMULET_INGREDIENTMOD = 0.5,
         GREENSTAFF_USES = 5,
 
-		POCKETSCALE_USES = 100,
-
         FISHING_MINWAIT = 2,
         FISHING_MAXWAIT = 20,
 
@@ -149,92 +147,15 @@ function Tune(overrides)
 			CAST_DIST_MAX_OFFSET = 1.1,
 			CAST_ANGLE_OFFSET = 20 / RADIANS,
 
-			REEL_ACTION_REPEAT_DELAY = 0.300,
-
 			REEL_STRENGTH_MIN = 2,
-			REEL_STRENGTH_MAX = 3,
-			REEL_SPEED_MAX = 4,
+			REEL_STRENGTH_MAX = 4,
+			REEL_SPEED_MAX = 7,
 			REEL_ANGLE_VAR = 50,
 			STOP_FISHING_HOOK_DIST = 4,
-			FISHING_CATCH_DIST = 2.5,
-			MUDBALL_CATCH_DIST = 2,
 
+			MAX_HOOK_DIST = 20,
 
-			MAX_HOOK_DIST = 26,
-
-			LINE_TENSION_HIGH = 0.80, -- line tension is high if greater than this
-			LINE_TENSION_GOOD = 0.10, -- line tension is good if greater than this
-			-- LINE_TENSION_LOW would be "<= LINE_TENSION_GOOD"
-
-			REELING_SNAP_TENSION = 0.92,
-			UNSET_HOOK_TENSION = 0.0, -- should be less than LINE_TENSION_GOOD
-
-			START_UNREELING_TENSION = 0.7,
-
-			IDLE_QUOTE_TIME = 10,
 		},
-
-		OCEANFISHING_TACKLE =
-		{
-			-- max_angle_offset is +/-
-
-			BASE				= {dist_max =  5, dist_min_accuracy = 0.70, dist_max_accuracy =  1.30, max_angle_offset =  40 },
-										
-			-- everything below here is in addition to BASE
-			BOBBER_TWIG			= {dist_max =  2, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -10 },
-			BOBBER_BALL			= {dist_max =  4, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -20 },
-			BOBBER_OVAL			= {dist_max =  6, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -20 },
-			BOBBER_PLUG			= {dist_max =  8, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -10 },
-
-			BOBBER_CROW			= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
-			BOBBER_ROBIN		= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
-			BOBBER_ROBIN_WINTER	= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
-			BOBBER_CANARY		= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
-			BOBBER_GOOSE		= {dist_max =  8, dist_min_accuracy = 0.25, dist_max_accuracy = -0.25, max_angle_offset = -35 },
-			BOBBER_MALBATROSS	= {dist_max =  8, dist_min_accuracy = 0.25, dist_max_accuracy = -0.25, max_angle_offset = -35 },
-		},
-
-		OCEANFISHING_LURE =
-		{
-			-- radius = how far away the fish will start to be attracted to it
-			-- charm = 0 to 1
-			-- reel_charm = -1 to 1
-			-- timeofday = {day = 1, dusk = 0.5, night = 0.5}
-			-- style = spoon, spinnerbait, berry, seed, hook
-			-- dist_max = added to the casting distance
-
-			-- a basic hook, kind of shinny, maybe it can hook something if you are lucky
-			HOOK				= { charm = 0.1, reel_charm =  0.0, radius = 1.0, style = "hook", timeofday = {day = 1, dusk = 1, night = 1} }, 
-
-			-- everything below here is in addition to BASE
-			SEED				= { charm = 0.2, reel_charm = -0.3, radius = 3.0, style = "seed", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1 }, 
-			BERRY				= { charm = 0.3, reel_charm = -0.3, radius = 3.0, style = "berry", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1 }, 
-
-			SPOON_DAY			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 1.0, dusk = 0.3, night = 0.3}, dist_max = 1 }, 
-			SPOON_DUSK			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 0.3, dusk = 1.0, night = 0.3}, dist_max = 1 }, 
-			SPOON_NIGHT			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 0.3, dusk = 0.3, night = 1.0}, dist_max = 1 }, 
-			SPOON_SPORK			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 1.0, dusk = 1.0, night = 1.0}, dist_max = 1 }, 
-
-			SPINNERBAIT_DAY		= { charm = 0.4, reel_charm =  0.4, radius = 5.0, style = "spinnerbait", timeofday = {day = 1.0, dusk = 0.3, night = 0.3}, dist_max = 2 }, 
-			SPINNERBAIT_DUSK	= { charm = 0.4, reel_charm =  0.4, radius = 5.0, style = "spinnerbait", timeofday = {day = 0.3, dusk = 1.0, night = 0.3}, dist_max = 2 }, 
-			SPINNERBAIT_NIGHT	= { charm = 0.4, reel_charm =  0.4, radius = 5.0, style = "spinnerbait", timeofday = {day = 0.3, dusk = 0.3, night = 1.0}, dist_max = 2 }, 
-
-
-			SPOON_WIP			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 0.0, dusk = 0.0, night = 0.0} }, 
-			SPINNERBAIT_WIP		= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spinnerbait", timeofday = {day = 0.0, dusk = 0.0, night = 0.0} }, 
-		},
-
-		OCEANFISH_LURE_PREFERENCE = 
-		{
-			SMALL_VEGGIE	= { hook = 0.25, seed = 1.50, berry = 1.50, spoon = 0.00, spinnerbait = 0.00, insect = 0.00 },
-			VEGGIE			= { hook = 0.25, seed = 1.50, berry = 1.50, spoon = 0.50, spinnerbait = 0.00, insect = 0.00 },
-			SMALL_OMNI		= { hook = 0.25, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			OMNI			= { hook = 0.25, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
-			SMALL_MEAT		= { hook = 0.25, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			MEAT			= { hook = 0.25, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
-		},
-		
-		OCEANFISH_MIN_INTEREST_TO_BITE = 0.2,
 
         STAGEHAND_HITS_TO_GIVEUP = 86,
         ENDTABLE_FLOWER_WILTTIME = total_day_time * 2.25,
@@ -1128,11 +1049,7 @@ function Tune(overrides)
             FOODPROCESSING = TechTree.Create({
                 FOODPROCESSING = 1,
             }),
-        
-            FISHING = TechTree.Create({
-                FISHING = 1,
-            }),
-		},
+        },
 
         RABBIT_HEALTH = 25 * multiplayer_attack_modifier,
         MOLE_HEALTH = 30,
@@ -2269,10 +2186,9 @@ function Tune(overrides)
         LIVINGTREE_EXTRA_SPACING = 4,
 
         HALLOWEEN_ORNAMENT_TUMBLEWEED_CHANCE = 0.1,
-		HALLOWEEN_ORNAMENT_FLOTSAM_CHANCE = 0.1,
         HALLOWEENPOTION_FIREFX_FUEL_MOD = .8,
         HALLOWEENPOTION_FIREFX_DURATION = seg_time * 8,
-
+		
         -- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
         DECID_MONSTER_MIN_DAY = 3, -- No monsters during the first few days
         DECID_MONSTER_SPAWN_CHANCE_AUTUMN = .15,    -- high chance of monsters in autumn to cancel out double birchnut and general easyness of autumn
@@ -3214,16 +3130,6 @@ function Tune(overrides)
 			GROWTH_FREQUENCY_VARIANCE = total_day_time*2,
 		},
 
-		SPOILED_FISH_WORK_REQUIRED = 1,
-		SPOILED_FISH_LOOT =
-		{
-			LAUNCH_SPEED = -1.8,
-			LAUNCH_HEIGHT = 0.5,
-			LAUNCH_ANGLE = 65,
-
-			WORK_MAX_SPAWNS = 10,
-		},
-
         BOAT =
         {
             HEALTH = 200,
@@ -3600,8 +3506,6 @@ function Tune(overrides)
         WURT_HUNGER_KINGBONUS = 250,
         WURT_SANITY_KINGBONUS = 200,
 
-        WURT_FISH_PRESERVER_RATE = 1/4,
-
         MERM_DAMAGE = 30,
         MERM_HEALTH = 250 * 2, -- harder for multiplayer
         MERM_ATTACK_PERIOD = 3,
@@ -3667,8 +3571,8 @@ function Tune(overrides)
         MALBATROSS_BOAT_PUSH = 2,
         MALBATROSS_NOTHUNGRY_TIME =
         {
-            MIN = 15,
-            MAX = 25,
+            MIN = 10,
+            MAX = 20,
         },
         MALBATROSS_MISSFISH_TIME =
         {
@@ -3678,8 +3582,6 @@ function Tune(overrides)
         MALBATROSS_ENTITYSLEEP_RELOCATE_TIME = 3 * total_day_time,
         MALBATROSS_EATSUCCESS_CHANCE = 0.50,
         MALBATROSS_MAX_CHASEAWAY_DIST = 50,
-        MALBATROSS_NOTICEPLAYER_DISTSQ = 400, -- 20 * 20
-        MALBATROSS_STOLENFISH_AGGROCOUNT = 2,
 
         OCEANFISH_SHOAL =
         {
@@ -3688,80 +3590,6 @@ function Tune(overrides)
             MAX_CHILDREN = 8,
             SPAWNRADIUS = 6,
         },
-
-		OCEANFISH =
-		{
-			WALKSPEED = 1.5,
-			RUNSPEED = 3,
-			FISHABLE_STAMINA =
-			{
-				drain_rate = 0.05, -- per second
-				recover_rate = 0.1, -- per second
-				struggle_times = {low = 3, high = 8, r_low = 1, r_high = 1}, -- uses self.stamina to lerp between low and high
-				tired_times = {low = 4, high = 2, r_low = 1, r_high = 1}, -- uses self.stamina to lerp between low and high
-			},
-		},
-
-        GNARWAIL =
-        {
-            HEALTH = 1000,
-            DAMAGE = 50,
-            TARGET_DISTANCE = 9, -- TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 5,
-            WALK_SPEED = 1.5,
-            RUN_SPEED = 4,
-            DIVE_SPEED = 10,
-            EAT_DELAY = seg_time * 0.5,
-            TOSS_DELAY = seg_time,
-            LOYALTY_PER_HUNGER = total_day_time/25,
-            MAX_LOYALTY_TIME = 2.5*total_day_time,
-            FULL_LOYALTY_PERCENT = 0.9,
-
-            BODY_SLAM_ATTACK_DISTANCESQ = 100,
-
-            DAMAGE_RADIUS = 3,
-            ATTACK_PERIOD = 14,
-            BOATATTACK_RADIUSSQ = 2.25, -- 1.5 * 1.5
-            BOAT_ATTACK_DELAY = 2.5,
-            HORN_RETREAT_TIME = 3,
-            HORN_HEALTH = 130,
-            HORN_BOAT_DAMAGE = 20,
-        },
-        GNARWAIL_HORN =
-        {
-            USES = 10,
-        },
-
-        SQUID_RUNSPEED = 6,        
-        SQUID_WALKSPEED = 3,        
-        SQUID_SWIM_SPEED = 4,
-        SQUID_HEALTH = 170,        
-        SQUID_DAMAGE = 20/3,
-        SQUID_TARGET_RANGE = 2,
-        SQUID_ATTACK_RANGE = 1.5,
-        SQUID_ATTACK_PERIOD = 4,
-        SQUID_TARGET_DIST = 8,
-        SQUID_TARGET_KEEP = 20,           
-        SQUID_LIGHT_UP_INTENSITY = 0.8,
-        SQUID_LIGHT_UP_FALLOFF = 0.5,
-        SQUID_LIGHT_UP_RADIUS = 1.2,
-        SQUID_LIGHT_DOWN_INTENSITY = 0.5,
-        SQUID_LIGHT_DOWN_FALLOFF = 1.25,
-        SQUID_LIGHT_DOWN_RADIUS = 0.75,        
-		SQUID_FISHABLE_STAMINA =
-		{
-			drain_rate = 0.05, -- per second
-			recover_rate = 0.1, -- per second
-			struggle_times = {low = 3, high = 8, r_low = 1, r_high = 1}, -- uses self.stamina to lerp between low and high
-			tired_times = {low = 4, high = 2, r_low = 1, r_high = 1}, -- uses self.stamina to lerp between low and high
-		},
-
-        SCHOOL_SPAWN_DELAY = {min=0.5*seg_time, max=2*seg_time},
-		SCHOOL_SPAWNER_FISH_CHECK_RADIUS = 30,
-		SCHOOL_SPAWNER_MAX_FISH = 5,
-		SCHOOL_SPAWNER_BLOCKER_MOD = 1/3, -- 3 or more blockers will prevent spawning
-		SCHOOL_SPAWNER_BLOCKER_LIFETIME = total_day_time,
-
-		FISH_BOX_PRESERVER_RATE = -1/3,
     }
 end
 

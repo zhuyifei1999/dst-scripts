@@ -13,14 +13,14 @@ local prefabs =
     --loot:
     "boards",
     "rocks",
-    "pondfish",
+    "fish",
 }
 
 local loot =
 {
     "boards",
     "rocks",
-    "pondfish",
+    "fish",
 }
 
 local function onhammered(inst, worker)
@@ -157,7 +157,7 @@ local function MakeMermHouse(name, common_postinit, master_postinit)
         end
 
         inst:AddComponent("lootdropper")
-
+        inst.components.lootdropper:SetLoot(loot)
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
         inst.components.workable:SetWorkLeft(2)
@@ -211,8 +211,6 @@ end
 
 
 local function mermhouse_master(inst)
-    inst.components.lootdropper:SetLoot(loot)
-
     inst.components.childspawner:SetRegenPeriod(TUNING.TOTAL_DAY_TIME * 4)
     inst.components.childspawner:SetSpawnPeriod(10)
     inst.components.childspawner:SetMaxChildren(TUNING.MERMHOUSE_MERMS)

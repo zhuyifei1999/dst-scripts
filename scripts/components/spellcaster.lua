@@ -57,13 +57,13 @@ local function oncancast(self)
 
         if self.canuseonpoint then
             self.inst:AddTag("castonpoint")
+            if self.canuseonpoint_water then
+                self.inst:AddTag("castonpointwater")
+            else
+                self.inst:RemoveTag("castonpointwater")
+            end
         else
             self.inst:RemoveTag("castonpoint")
-        end
-
-        if self.canuseonpoint_water then
-            self.inst:AddTag("castonpointwater")
-        else
             self.inst:RemoveTag("castonpointwater")
         end
     else
@@ -164,8 +164,6 @@ function SpellCaster:CanCast(doer, target, pos)
         if self.canuseonpoint then
             local px, py, pz = pos:Get()
             return TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, self.canuseonpoint_water) and not TheWorld.Map:IsGroundTargetBlocked(pos)
-        elseif self.canuseonpoint_water then
-            return TheWorld.Map:IsOceanAtPoint(pos:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pos)
         else
             return false
         end

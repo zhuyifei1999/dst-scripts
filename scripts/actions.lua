@@ -48,20 +48,6 @@ local function CheckIsOnPlatform(doer, dest)
 	return p ~= nil
 end
 
-local function CheckOceanFishingCastRange(doer, dest)
-	local doer_pos = doer:GetPosition()
-	local target_pos = Vector3(dest:GetPoint())
-	local dir = target_pos - doer_pos
-
-	local test_pt = doer_pos + dir:GetNormalized() * (doer:GetPhysicsRadius(0) + 0.25)
-
-    if TheWorld.Map:IsVisualGroundAtPoint(test_pt.x, 0, test_pt.z) or TheWorld.Map:GetPlatformAtPoint(test_pt.x, test_pt.z) ~= nil then
-		return false
-	else
-        return true
-	end
-end
-
 local function ExtraPickupRange(doer, dest)
 	if dest ~= nil then
 		local target_x, target_y, target_z = dest:GetPoint()
@@ -125,7 +111,6 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.canforce = data.canforce or nil
     self.rangecheckfn = self.canforce ~= nil and data.rangecheckfn or nil
     self.mod_name = nil
-	self.silent_fail = data.silent_fail or nil
 
     --new params, only supported by passing via data field
     self.actionmeter = data.actionmeter or nil
@@ -188,11 +173,6 @@ ACTIONS =
     FISH_OCEAN = Action({rmb=true, customarrivecheck=CheckFishingOceanRange, is_relative_to_platform = true, disable_platform_hopping=true}),
     FISH = Action(),
     REEL = Action({ instant=true }),
-    OCEAN_FISHING_POND = Action(),
-    OCEAN_FISHING_CAST = Action({priority=3, rmb=true, customarrivecheck=CheckOceanFishingCastRange, is_relative_to_platform = true, disable_platform_hopping=true}),
-    OCEAN_FISHING_REEL = Action({priority=5, rmb=true, do_not_locomote=true, silent_fail = true }),
-    OCEAN_FISHING_STOP = Action({instant=true}),
-    OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),
     POLLINATE = Action(),
     FERTILIZE = Action({ mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
@@ -204,7 +184,7 @@ ACTIONS =
     TELEPORT = Action({ rmb=true, distance=2 }),
     RESETMINE = Action({ priority=3 }),
     ACTIVATE = Action(),
-    MURDER = Action({ priority=1, mount_valid=true }),
+    MURDER = Action({ priority=0, mount_valid=true }),
     HEAL = Action({ mount_valid=true }),
     INVESTIGATE = Action(),
     UNLOCK = Action(),
@@ -245,8 +225,6 @@ ACTIONS =
     STARTCHANNELING = Action({ distance=2.1 }),
     STOPCHANNELING = Action({ instant=true, distance=2.1 }),
 	APPLYPRESERVATIVE = Action(),
-	COMPARE_WEIGHABLE = Action(),
-	WEIGH_ITEM = Action(),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -264,8 +242,6 @@ ACTIONS =
     PET = Action(),
     DISMANTLE = Action({ rmb=true }),
     TACKLE = Action({ rmb=true, distance=math.huge }),
-	GIVE_TACKLESKETCH = Action(),
-	REMOVE_FROM_TROPHYSCALE = Action(),
 
     CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
 
@@ -327,8 +303,6 @@ ACTIONS.EAT.fn = function(act)
             return act.doer.components.eater:Eat(obj, act.doer)
         elseif obj.components.soul ~= nil and act.doer.components.souleater ~= nil then
             return act.doer.components.souleater:EatSoul(obj)
-        elseif act.doer.components.oceanfishable ~= nil and obj.components.oceanfishable ~= nil then
-            return act.doer.components.oceanfishable:SetRod(obj.components.oceanfishable:GetRod())
         end
     end
 end
@@ -622,54 +596,6 @@ ACTIONS.ROW_CONTROLLER.fn = function(act)
 end
 
 ACTIONS.BOARDPLATFORM.fn = function(act)
-	return true
-end
-
-ACTIONS.OCEAN_FISHING_POND.fn = function(act)
-	return false, "WRONGGEAR"
-end
-
-ACTIONS.OCEAN_FISHING_CAST.fn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-    local pos = act:GetActionPoint()
-    if pos == nil then
-        pos = act.target:GetPosition()
-    end
-
-    return (rod ~= nil and rod.components.oceanfishingrod ~= nil) and rod.components.oceanfishingrod:Cast(act.doer, pos) or nil
-end
-
-ACTIONS.OCEAN_FISHING_REEL.strfn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	local target = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod.replica.oceanfishingrod:GetTarget() or nil
-	return (target ~= nil and target:HasTag("partiallyhooked")) and "SETHOOK"
-			or nil
-end
-
-ACTIONS.OCEAN_FISHING_REEL.fn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if rod ~= nil and rod.components.oceanfishingrod ~= nil then
-		return rod.components.oceanfishingrod:Reel()
-	end
-end
-
-ACTIONS.OCEAN_FISHING_STOP.fn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if rod ~= nil and rod.components.oceanfishingrod ~= nil then
-        act.doer.sg:GoToState("oceanfishing_stop")
-		rod.components.oceanfishingrod:StopFishing()
-	end
-	
-	return true
-end
-
-ACTIONS.OCEAN_FISHING_CATCH.fn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if rod ~= nil and rod.components.oceanfishingrod ~= nil then
-        act.doer.sg:GoToState("oceanfishing_catch")
-		rod.components.oceanfishingrod:CatchFish()
-	end
-	
 	return true
 end
 
@@ -1583,16 +1509,14 @@ end
 
 ACTIONS.MURDER.fn = function(act)
     local murdered = act.invobject or act.target
-    if murdered ~= nil and (murdered.components.health ~= nil or murdered.components.murderable ~= nil) then
+    if murdered ~= nil and murdered.components.health ~= nil then
         local x, y, z = act.doer.Transform:GetWorldPosition()
         murdered.components.inventoryitem:RemoveFromOwner(true)
         murdered.Transform:SetPosition(x, y, z)
 
-        if murdered.components.health ~= nil and murdered.components.health.murdersound ~= nil then
+        if murdered.components.health.murdersound ~= nil then
             act.doer.SoundEmitter:PlaySound(murdered.components.health.murdersound)
-        elseif murdered.components.murderable ~= nil and murdered.components.murderable.murdersound ~= nil then
-			act.doer.SoundEmitter:PlaySound(murdered.components.murderable.murdersound)
-		end
+        end
 
         local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
         if murdered.components.lootdropper ~= nil then
@@ -2355,35 +2279,6 @@ ACTIONS.APPLYPRESERVATIVE.fn = function(act)
 	end
 end
 
-ACTIONS.COMPARE_WEIGHABLE.fn = function(act)
-	if act.target ~= nil and act.invobject ~= nil and
-		act.target.components.trophyscale ~= nil and
-		act.target.components.trophyscale.accepts_items and
-		not act.target:HasTag("fire") and
-		not act.target:HasTag("burnt") then
-
-		return act.target.components.trophyscale:Compare(act.invobject, act.doer)
-	end
-	return false
-end
-
-ACTIONS.WEIGH_ITEM.fn = function(act)
-	if act.target ~= nil and act.invobject ~= nil then
-		local weigher = act.target.components.itemweigher and act.target 
-						or act.invobject.components.itemweigher and act.invobject
-						or nil
-		local weighable = weigher ~= act.target and act.target or act.invobject
-
-		if weigher and weighable and
-			not weigher:HasTag("fire") and
-			not weigher:HasTag("burnt") then
-
-			return weigher.components.itemweigher:DoWeighIn(weighable, act.doer)
-		end
-	end
-	return false
-end
-
 --Quagmire
 ACTIONS.TILL.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.quagmire_tiller ~= nil then
@@ -2641,42 +2536,6 @@ ACTIONS.CAST_NET.fn = function(act)
         return true
     end
     return false
-end
-
-ACTIONS.GIVE_TACKLESKETCH.fn = function(act)
-	if act.invobject and act.target and
-		act.target.components.craftingstation ~= nil and
-		not act.target:HasTag("burnt") and
-		not (act.target.components.burnable and act.target.components.burnable:IsBurning()) then
-
-		if act.target.components.craftingstation:KnowsItem(act.invobject:GetSpecificSketchPrefab()) then
-			return false, "DUPLICATE"
-		else
-			act.invobject.components.tacklesketch:Teach(act.target)
-			return true
-		end
-	end
-	return false
-end
-
-ACTIONS.REMOVE_FROM_TROPHYSCALE.fn = function(act)
-	if not act.target:HasTag("burnt") and
-		not act.target:HasTag("fire") and
-		act.target.components.trophyscale ~= nil and
-		act.target:HasTag("trophycanbetaken") then
-
-		if act.target.components.trophyscale.takeitemtestfn ~= nil then
-			local testresult, reason = act.target.components.trophyscale.takeitemtestfn(act.target, act.doer)
-
-			if not testresult then
-				return testresult, reason
-			else
-				return act.target.components.trophyscale:TakeItem(act.doer)
-			end
-		else
-			return act.target.components.trophyscale:TakeItem(act.doer)
-		end
-	end
 end
 
 ACTIONS.REPLATE.fn = function(act)

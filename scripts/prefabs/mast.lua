@@ -19,14 +19,12 @@ local prefabs =
 {
 	"boat_mast_sink_fx",
 	"collapse_small",
-	"mast_item", -- deprecated but kept for existing worlds and mods
 }
 
 local malbatross_prefabs =
 {
 	"boat_malbatross_mast_sink_fx",
 	"collapse_small",
-	"mast_malbatross_item", -- deprecated but kept for existing worlds and mods
 }
 
 local function on_hammered(inst, hammerer)
@@ -54,11 +52,6 @@ local function on_hit(inst, hitter)
     end
 end
 
-local function onbuilt(inst)
-    inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("closed", false)
-    inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/place")
-end
 
 local function onburnt(inst)
 	inst:AddTag("burnt")
@@ -130,7 +123,6 @@ local function fn_pst(inst)
     inst.components.workable:SetOnFinishCallback(on_hammered)
     inst.components.workable:SetOnWorkCallback(on_hit)
     
-    inst:ListenForEvent("onbuilt", onbuilt)
 
     inst.OnSave = onsave
     inst.OnLoad = onload
@@ -191,6 +183,7 @@ local function malbatrossfn()
 
     return inst
 end
+
 
 local function setondeploy(inst, prefab)
     local function ondeploy(inst, pt, deployer, rot)

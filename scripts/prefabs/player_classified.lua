@@ -525,12 +525,6 @@ local function OnBuilderDamagedEvent(inst)
     end
 end
 
-local function OnInkedEvent(inst)
-    if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
-        inst._parent:PushEvent("inked")
-    end
-end
-
 local function OnLearnRecipeEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/get_gold")
@@ -861,7 +855,6 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("sandstormleveldirty", OnSandstormLevelDirty)
     inst:ListenForEvent("builder.build", OnBuildEvent)
     inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
-    inst:ListenForEvent("inked", OnInkedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
     inst:ListenForEvent("MapExplorer.learnmap", OnLearnMapEvent)
     inst:ListenForEvent("repair.repair", OnRepairEvent)
@@ -954,9 +947,6 @@ local function fn()
 
     --StormWatcher variables
     inst.sandstormlevel = net_tinybyte(inst.GUID, "stormwatcher.sandstormlevel", "sandstormleveldirty")
-
-    --Inked variables
-    inst.inked = net_event(inst.GUID, "inked")
 
     --PlayerController variables
     inst._pausepredictiontask = nil

@@ -35,15 +35,8 @@ function VecUtil_Normalize(p1_x, p1_z)
     return p1_x / length, p1_z / length
 end
 
-function VecUtil_NormalAndLength(p1_x, p1_z)
-    local x_sq = p1_x * p1_x
-    local z_sq = p1_z * p1_z
-    local length = sqrt(x_sq + z_sq)
-    return p1_x / length, p1_z / length, length
-end
-
 function VecUtil_GetAngleInDegrees(p1_x, p1_z)
-	local angle = math.atan2(p1_z, p1_x) * RADIANS
+	local angle = math.atan2(p1_z, p1_x) / DEGREES
 	if angle < 0 then
 		angle = 360 + angle
 	end

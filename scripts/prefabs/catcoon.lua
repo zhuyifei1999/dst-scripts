@@ -54,7 +54,7 @@ local prefabs =
 	"robin_winter",
 	"canary",
 	"crow",
-	"pondfish",
+	"fish",
 	"transistor",
 	"froglegs",
 	"batwing",
@@ -161,7 +161,7 @@ local friendGiftPrefabs =
 		"red_cap",
 		"blue_cap",
 		"green_cap",
-		"pondfish",
+		"fish",
 		"froglegs",
 	},
 	{ --tier 6 (live animals + tumbleweed)

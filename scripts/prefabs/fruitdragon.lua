@@ -352,6 +352,7 @@ local fruit_dragon_sounds =
     do_unripen = "turnoftides/creatures/together/fruit_dragon/stretch",
     attack = "turnoftides/creatures/together/fruit_dragon/attack",
     attack_fire = "turnoftides/creatures/together/fruit_dragon/attack_fire",
+    attack_whoosh = "dontstarve/wilson/attack_whoosh",  -- TODO @stevenm remove this when the actual attack sounds are in
     challenge_pre = "turnoftides/creatures/together/fruit_dragon/challenge_pre",
     challenge = "turnoftides/creatures/together/fruit_dragon/challenge",
     challenge_pst = "turnoftides/creatures/together/fruit_dragon/eat",

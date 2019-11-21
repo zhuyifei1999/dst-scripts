@@ -74,43 +74,16 @@ local function OnEntitySleep(inst)
         end
 
         local angle = self.leader:GetAngleToPoint(init_pos)
-        local aquatic = inst.components.locomotor ~= nil and inst.components.locomotor:IsAquatic()
-
-        if aquatic then
-            local offset = FindSwimmableOffset(leader_pos, angle*DEGREES, 30, 10, false, true, NoHoles, false)
-            if offset ~= nil then
-                leader_pos.x = leader_pos.x + offset.x
-                leader_pos.z = leader_pos.z + offset.z
-            end
-            leader_pos.y = 0
-
-            if TheWorld.Map:IsOceanAtPoint(leader_pos:Get()) then
-                --There's a crash if you teleport without the delay
-                --V2C: ORLY
-                self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
-            else
-                -- No water position to teleport to. Retry later.
-                self.porttask = inst:DoTaskInTime(3, OnEntitySleep)
-            end
-        else
-            local offset = FindWalkableOffset(leader_pos, angle*DEGREES, 30, 10, false, true, NoHoles)
-            if offset ~= nil then
-                leader_pos.x = leader_pos.x + offset.x
-                leader_pos.z = leader_pos.z + offset.z
-            end
-            leader_pos.y = 0
-
-            -- We don't want to teleport onto boats because it'll probably be on top of the player,
-            -- so include boats in the ocean test we're negating.
-            if not TheWorld.Map:IsOceanAtPoint(leader_pos.x, leader_pos.y, leader_pos.z, true) then
-                --There's a crash if you teleport without the delay
-                --V2C: ORLY
-                self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
-            else
-                -- No land position to teleport to. Retry later.
-                self.porttask = inst:DoTaskInTime(3, OnEntitySleep)
-            end
+        local offset = FindWalkableOffset(leader_pos, angle * DEGREES, 30, 10, false, true, NoHoles)
+        if offset ~= nil then
+            leader_pos.x = leader_pos.x + offset.x
+            leader_pos.z = leader_pos.z + offset.z
         end
+        leader_pos.y = 0
+
+        --There's a crash if you teleport without the delay
+        --V2C: ORLY
+        self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
     else
         --Retry later
         self.porttask = inst:DoTaskInTime(3, OnEntitySleep)

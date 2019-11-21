@@ -291,18 +291,6 @@ function batbat_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
---[[ Fishingrod ocean skin functions ]]
---------------------------------------------------------------------------
-function oceanfishingrod_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "fishingrod_ocean")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
 --[[ Amulet skin functions ]]
 --------------------------------------------------------------------------
 function amulet_init_fn(inst, build_name)

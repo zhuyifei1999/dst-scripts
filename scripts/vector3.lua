@@ -70,11 +70,6 @@ function Vector3:GetNormalized()
     return self / self:Length()
 end
 
-function Vector3:GetNormalizedAndLength()
-    local len = self:Length()
-    return (len > 0 and self / len) or self, len
-end
-
 function Vector3:Get()
     return self.x, self.y, self.z
 end

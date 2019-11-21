@@ -25,8 +25,7 @@ function DefaultBurntFn(inst)
 
     local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
 
-    -- Spawn ash everywhere except on the ocean
-    if not TheWorld.Map:IsOceanAtPoint(my_x, my_y, my_z, false) then
+    if TheWorld.Map:IsVisualGroundAtPoint(my_x, my_y, my_z) then
         local ash = SpawnPrefab("ash")
         ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
 

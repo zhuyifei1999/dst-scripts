@@ -7,8 +7,7 @@ local assets =
 local prefabs =
 {
     "marsh_plant",
-	"pondfish",
-	"pondeel",
+    "fish",
     "frog",
     "mosquito",
 }
@@ -209,7 +208,7 @@ local function pondmos()
     end
 
     inst.components.childspawner.childname = "mosquito"
-    inst.components.fishable:AddFish("pondfish")
+    inst.components.fishable:AddFish("fish")
 
     inst.planttype = "marsh_plant"
     inst.dayspawn = false
@@ -226,7 +225,7 @@ local function pondfrog()
     end
 
     inst.components.childspawner.childname = "frog"
-    inst.components.fishable:AddFish("pondfish")
+    inst.components.fishable:AddFish("fish")
 
     inst.planttype = "marsh_plant"
     inst.dayspawn = true
@@ -242,7 +241,7 @@ local function pondcave()
         return inst
     end
 
-    inst.components.fishable:AddFish("pondeel")
+    inst.components.fishable:AddFish("eel")
 
     inst.planttype = "pond_algae"
     inst.task = inst:DoTaskInTime(0, SpawnPlants)

@@ -73,8 +73,6 @@ local MainSounds =
 	"turnoftides_amb.fsb",
 	"saltydog.fev",
 	"saltydog.fsb",
-    "hookline.fev",
-    "hookline.fsb",
 
     "warly.fsb",
 	"wendy.fsb",

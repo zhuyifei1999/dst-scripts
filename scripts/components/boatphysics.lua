@@ -392,10 +392,6 @@ function BoatPhysics:OnUpdate(dt)
     self.inst.SoundEmitter:SetParameter("boat_movement", "speed", velocity_length / TUNING.BOAT.MAX_ALLOWED_VELOCITY)
 end
 
-function BoatPhysics:GetDebugString()
-    return string.format("(%2.2f, %2.2f) : %2.2f", self.velocity_x, self.velocity_z, self:GetVelocity())
-end
-
 function BoatPhysics:OnRemoveFromEntity()
     self.inst:RemoveTag("doplatformcamerazoom")
 end

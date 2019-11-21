@@ -451,21 +451,8 @@ local actionhandlers =
                     "bugnet_start")
                 or nil
         end),
-
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
     ActionHandler(ACTIONS.FISH_OCEAN, "fishing_ocean_pre"),
-    ActionHandler(ACTIONS.OCEAN_FISHING_POND, "fishing_ocean_pre"),
-    ActionHandler(ACTIONS.OCEAN_FISHING_CAST, "oceanfishing_cast"),
-    ActionHandler(ACTIONS.OCEAN_FISHING_REEL, 
-		function(inst, action)
-			local fishable = action.invobject ~= nil and action.invobject.components.oceanfishingrod.target or nil
-			if fishable ~= nil and fishable.components.oceanfishable ~= nil and fishable:HasTag("partiallyhooked") then
-				return "oceanfishing_sethook"
-			elseif inst:HasTag("fishing_idle") and not (inst.sg:HasStateTag("reeling") and not inst.sg.statemem.allow_repeat) then
-				return "oceanfishing_reel"
-			end
-			return nil
-		end),
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -644,8 +631,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
             return action.invobject ~= nil
-				and ((action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn")
-					or (action.invobject:HasTag("cointosscast") and "cointosscastspell")
+				and ((action.invobject:HasTag("cointosscast") and "cointosscastspell")
 					or (action.invobject:HasTag("quickcast") and "quickcastspell")
 					)
                 or "castspell"
@@ -769,10 +755,6 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
 	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
-	ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
-	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
-	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
-	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
 }
 
 local events =
@@ -1088,7 +1070,7 @@ local events =
 
     EventHandler("fishingcancel",
         function(inst)
-            if inst.sg:HasStateTag("fishing") and not inst:HasTag("busy") then
+            if inst.sg:HasStateTag("fishing") then
                 inst.sg:GoToState("fishing_pst")
             end
         end),
@@ -1173,23 +1155,8 @@ local events =
                 inst.sg:GoToState(data.gentle and "falloff" or "bucked")
             end
         end),
-    EventHandler("oceanfishing_stoppedfishing",
-        function(inst, data)
-            if inst.sg:HasStateTag("fishing") and (inst.components.health == nil or not inst.components.health:IsDead()) then
-				if data ~= nil and data.reason ~= nil then
-					if data.reason == "linesnapped" then
-						inst.sg:GoToState("oceanfishing_linesnapped")
-					else
-		                inst.sg:GoToState("oceanfishing_stop", {escaped_str = data.reason == "linetooloose" and "ANNOUNCE_OCEANFISHING_LINETOOLOOSE"
-																			or data.reason == "badcast" and "ANNOUNCE_OCEANFISHING_BADCAST"
-																			or "ANNOUNCE_OCEANFISHING_GOTAWAY"})
-					end
-				else
-	                inst.sg:GoToState("oceanfishing_stop")
-				end
-            end
-        end),
-    EventHandler("spooked", --Hallowed nights
+    --Hallowed nights
+    EventHandler("spooked",
         function(inst)
             if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead() or inst.components.rider:IsRiding()) then
                 inst.sg:GoToState("spooked")
@@ -5414,112 +5381,6 @@ local states =
     },
 
     State{
-        name = "play_gnarwail_horn",
-        tags = { "doing", "playing" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("hornblow_pre")
-            inst.AnimState:PushAnimation("hornblow", false)
-            inst.AnimState:Show("ARM_normal")
-        end,
-
-        timeline =
-        {
-            TimeEvent(17 * FRAMES, function(inst)
-                local horn = (inst.bufferedaction and inst.bufferedaction.invobject) or nil
-                if inst:PerformBufferedAction() then
-                    if horn and horn.playsound then
-                        inst.SoundEmitter:PlaySound(horn.playsound)
-                    end
-                else
-                    inst.AnimState:SetTime(49 * FRAMES)
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry")
-                inst.AnimState:Hide("ARM_normal")
-            end
-        end,
-    },
-
-    State{
-        name = "use_pocket_scale",
-        tags = { "doing" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
-            inst.AnimState:PushAnimation("pocket_scale_weigh", false)
-            inst.SoundEmitter:PlaySound("hookline/common/trophyscale_fish/pocket")
-
-            inst.AnimState:OverrideSymbol("swap_pocket_scale_body", "pocket_scale", "pocket_scale_body")
-			
-            inst.AnimState:Hide("ARM_carry")
-            inst.AnimState:Show("ARM_normal")
-
-            local act = inst:GetBufferedAction()
-			if act ~= nil and act.target and act.invobject then
-				inst.sg.statemem.target = act.target.components.weighable and act.target 
-										or act.invobject.components.weighable and act.invobject
-										or nil
-
-				if inst.sg.statemem.target then
-					inst.sg.statemem.target_build = inst.sg.statemem.target.AnimState:GetBuild()
-					inst.AnimState:AddOverrideBuild(inst.sg.statemem.target_build)
-				end
-			end
-
-        end,
-
-        timeline =
-        {
-            TimeEvent(30 * FRAMES, function(inst)
-				local weight = inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.weighable:GetWeight() or nil
-				if weight ~= nil and inst:PerformBufferedAction() then
-					local str = subfmt(GetString(inst, "ANNOUNCE_WEIGHT"), {weight = string.format("%0.2f", weight)})
-			        inst.components.talker:Say(str)
-                else
-					inst.AnimState:ClearOverrideBuild(inst.sg.statemem.target_build)
-					inst:ClearBufferedAction()
-                    inst.AnimState:SetTime(51 * FRAMES)
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-			inst.AnimState:ClearOverrideBuild(inst.sg.statemem.target_build)
-            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry")
-                inst.AnimState:Hide("ARM_normal")
-            end
-        end,
-    },
-
-    State{
         name = "book",
         tags = { "doing" },
 
@@ -7573,9 +7434,7 @@ local states =
             inst.AnimState:PlayAnimation("plank_hop")
 
             inst:ShowHUD(false)
-			if inst.components.drownable ~= nil then
-				inst.components.drownable:OnFallInOcean()
-			end
+			inst.components.drownable:OnFallInOcean()
 
             inst.sg.statemem.speed = 6
             inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
@@ -7598,7 +7457,7 @@ local states =
 			    inst.DynamicShadow:Enable(false)
 				inst.Physics:Stop()
 
-				if TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition()) or inst.components.drownable == nil then
+				if TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition()) then
 					inst.sg:GoToState("idle")
 				else
 					inst.components.drownable:DropInventory()
@@ -7611,12 +7470,8 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					if inst.components.drownable ~= nil then
-						inst.components.drownable:WashAshore()
-						StartTeleporting(inst)
-					else
-						inst.sg:GoToState("idle")
-					end
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
+					StartTeleporting(inst)
                 end
             end),
 
@@ -7767,264 +7622,6 @@ local states =
             end),         
         }
     },              
-
-    State{
-        name = "oceanfishing_cast",
-        tags = { "prefish", "fishing" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("fishing_ocean_pre")
-            inst.AnimState:PushAnimation("fishing_ocean_cast", false)
-            inst.AnimState:PushAnimation("fishing_ocean_cast_loop", true)
-        end,
-
-        timeline =
-        {
-            TimeEvent(13*FRAMES, function(inst) 
-				inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_cast")
-				inst.sg:RemoveStateTag("prefish")
-				inst:PerformBufferedAction()
-			end),
-        },
-
-        events =
-        {
-            EventHandler("newfishingtarget", function(inst, data)
-				if data ~= nil and data.target ~= nil and not data.target:HasTag("projectile") then
-					inst.sg.statemem.hooklanded = true
-		            inst.AnimState:PushAnimation("fishing_ocean_cast_pst", false)
-				end
-			end),
-
-            EventHandler("animqueueover", function(inst)
-	            if inst.sg.statemem.hooklanded and inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("oceanfishing_idle")
-                end
-            end),
-        },
-    },
-
-    State{
-        name = "oceanfishing_idle",
-        tags = { "fishing" },
-
-        onenter = function(inst)
-			inst:AddTag("fishing_idle")
-
-            local rod = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			local target = (rod ~= nil and rod.components.oceanfishingrod ~= nil) and rod.components.oceanfishingrod.target or nil
-			if target ~= nil and target.components.oceanfishinghook ~= nil and TUNING.OCEAN_FISHING.IDLE_QUOTE_TIME > 0 then
-				inst.sg:SetTimeout(TUNING.OCEAN_FISHING.IDLE_QUOTE_TIME)
-			end
-        end,
-
-		onupdate = function(inst)
-            local rod = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			rod = (rod ~= nil and rod.components.oceanfishingrod ~= nil) and rod or nil
-			if rod == nil or rod.components.oceanfishingrod.target == nil then
-                inst.sg:GoToState("oceanfishing_stop", {escaped_str = "ANNOUNCE_OCEANFISHING_GOTAWAY"})
-			else
-				if rod.components.oceanfishingrod:IsLineTensionHigh() then
-					if not inst.AnimState:IsCurrentAnimation("hooked_tight_idle") then
-						inst.AnimState:PlayAnimation("hooked_tight_idle", true)
-					end
-				elseif rod.components.oceanfishingrod:IsLineTensionGood() then
-					if not inst.AnimState:IsCurrentAnimation("hooked_good_idle") then
-						inst.AnimState:PlayAnimation("hooked_good_idle", true)
-					end
-				elseif not inst.AnimState:IsCurrentAnimation("hooked_loose_idle") then
-					inst.AnimState:PlayAnimation("hooked_loose_idle", true)
-				end
-			end
-		end,
-
-        ontimeout = function(inst)
-			if inst.components.talker ~= nil then
-				inst.components.talker:Say(GetString(inst, "ANNOUNCE_OCEANFISHING_IDLE_QUOTE"), nil, nil, true)
-
-				inst.sg:SetTimeout(inst.sg.timeinstate + TUNING.OCEAN_FISHING.IDLE_QUOTE_TIME)
-			end
-        end,
-
-        events =
-        {
-            EventHandler("fishingnibble", function(inst) inst.sg:GoToState("fishing_nibble") end),
-        },
-
-		onexit = function(inst)
-			inst:RemoveTag("fishing_idle")
-		end,
-    },
-
-    State{
-        name = "oceanfishing_reel",
-        tags = { "fishing", "doing", "reeling" },
-
-        onenter = function(inst)
-			inst:AddTag("fishing_idle")
-            inst.components.locomotor:Stop()
-
-            local rod = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			rod = (rod ~= nil and rod.components.oceanfishingrod ~= nil) and rod or nil
-			if rod == nil or rod.components.oceanfishingrod.target == nil then
-	            inst:ClearBufferedAction()
-                inst.sg:GoToState("oceanfishing_stop", {escaped_str = "ANNOUNCE_OCEANFISHING_GOTAWAY"})
-			else
-				if inst:PerformBufferedAction() then
-					if rod.components.oceanfishingrod:IsLineTensionHigh() then
-						if not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
-							inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
-						end
-					elseif rod.components.oceanfishingrod:IsLineTensionGood() then
-						if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
-							inst.AnimState:PlayAnimation("hooked_good_reeling", true)
-						end
-					else
-						if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
-							inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
-						end
-					end
-
-					inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-				end
-
-			end
-        end,
-
-        timeline =
-        {
-            TimeEvent(TUNING.OCEAN_FISHING.REEL_ACTION_REPEAT_DELAY, function(inst) inst.sg.statemem.allow_repeat = true end),
-        },
-
-        ontimeout = function(inst)
-			inst.sg:GoToState("oceanfishing_idle")
-        end,
-
-		onexit = function(inst)
-			inst:RemoveTag("fishing_idle")
-		end,
-    },
-
-	
-    State{
-        name = "oceanfishing_sethook",
-        tags = { "fishing", "doing", "busy" },
-
-        onenter = function(inst)
-			inst:AddTag("fishing_idle")
-            inst.components.locomotor:Stop()
-
-			inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_loop")
-
-			inst:PerformBufferedAction()
-        end,
-
-        timeline =
-        {
---            TimeEvent(2*FRAMES, function(inst) inst:PerformBufferedAction() end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst) inst.sg:GoToState("oceanfishing_idle") end),
-        },
-
-		onexit = function(inst)
-			inst:RemoveTag("fishing_idle")
-		end,
-    },
-
-    State{
-        name = "oceanfishing_catch",
-        tags = { "fishing", "catchfish", "busy" },
-
-        onenter = function(inst, build)
-            inst.AnimState:PlayAnimation("fishing_ocean_catch")
-        end,
-
-        timeline =
-        {
-            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishcaught") end),
-            TimeEvent(10*FRAMES, function(inst) inst.sg:RemoveStateTag("fishing") end),
-            TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland") end),
-            TimeEvent(24*FRAMES, function(inst)
-                local equippedTool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                if equippedTool and equippedTool.components.fishingrod then
-                    equippedTool.components.fishingrod:Collect()
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            inst.AnimState:ClearOverrideSymbol("fish01")
-        end,
-    },
-
-    State{
-        name = "oceanfishing_stop",
-        tags = { "fishing" },
-
-        onenter = function(inst, data)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("fishing_ocean_pst")
-
-			if data ~= nil and data.escaped_str and inst.components.talker ~= nil then
-				inst.components.talker:Say(GetString(inst, data.escaped_str), nil, nil, true)
-			end
-        end,
-
-        timeline =
-        {
---            TimeEvent(18*FRAMES, function(inst) inst:PerformBufferedAction() end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
-    State{
-        name = "oceanfishing_linesnapped",
-        tags = { "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("line_snap")
-        end,
-
-        timeline =
-        {
-            TimeEvent(29*FRAMES, function(inst) 
-				if inst.components.talker ~= nil then 
-					inst.components.talker:Say(GetString(inst, "ANNOUNCE_OCEANFISHING_LINESNAP"), nil, nil, true)
-				end
-			end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
 
     State{
         name = "repelled",
@@ -12203,29 +11800,16 @@ local states =
             inst.AnimState:PlayAnimation("pull_small_pre")
             inst.AnimState:PushAnimation("pull_small_loop", true)
             inst:PerformBufferedAction() -- this will clear the buffer if it's full, but you don't get here from an action anyway.
-            if inst.sg.mem.furl_target.components.mast then
-                inst.sg.mem.furl_target.components.mast:AddSailFurler(inst, 1)
-                inst:ListenForEvent("onburnt", function() 
-                        inst.AnimState:PlayAnimation("pull_small_pst")
-                        inst.sg:GoToState("idle",true)
-                    end, inst.sg.mem.furl_target)
-            end
+            inst.sg.mem.furl_target.components.mast:AddSailFurler(inst, 1)
         end, 
 
         onexit = function(inst)
             if not inst.sg.statemem.not_interrupted then                
                 inst:RemoveTag("switchtoho")
-                if inst.sg.mem.furl_target.components.mast then
-                    inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
-                end
+                inst.sg.mem.furl_target.components.mast:RemoveSailFurler(inst)                
                 inst:RemoveTag("is_furling")
                 inst:RemoveTag("is_heaving")
             end
-
-            inst:RemoveEventCallback("onburnt", function() 
-                    inst.AnimState:PlayAnimation("pull_small_pst")
-                    inst.sg:GoToState("idle",true)
-                end, inst.sg.mem.furl_target)
         end,
 
         timeline =
@@ -12253,7 +11837,7 @@ local states =
         events = 
         {
             EventHandler("stopfurling", function(inst)
-                inst.AnimState:PlayAnimation("pull_small_pst")
+                inst.AnimState:PlayAnimation("pull_small_pst")                
                 inst.sg:GoToState("idle",true)
             end),                     
         },      

@@ -82,6 +82,7 @@ local sounds_mutated =
     attack = "turnoftides/creatures/together/mutated_hound/attack",
     bite = "turnoftides/creatures/together/mutated_hound/bite",
     bark = "turnoftides/creatures/together/mutated_hound/bark",
+    --barkbark = "turnoftides/creatures/together/mutated_hound/barkbark", TODO @stevenm is this a thing???
     death = "turnoftides/creatures/together/mutated_hound/death",
     sleep = "dontstarve/creatures/hound/sleep",
     growl = "turnoftides/creatures/together/mutated_hound/growl",
@@ -401,7 +402,6 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst.Transform:SetFourFaced()
 
     inst:AddTag("scarytoprey")
-    inst:AddTag("scarytooceanprey")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("hound")

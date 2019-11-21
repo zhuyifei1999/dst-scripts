@@ -1103,15 +1103,14 @@ function PurchasePackScreen:RefreshScreen()
             if self.view_currency_for_def ~= nil then
                 self.currency_needed_txt:Show()
             
-				local sale_active, sale_duration = IsSaleActive(self.view_currency_for_def)
-                local value = GetPriceFromIAPDef( self.view_currency_for_def, sale_active )
+                local value = GetPriceFromIAPDef( self.view_currency_for_def, self.view_currency_for_def.sale_percent > 0 )
                 local currency_needed = value - TheInventory:GetVirtualIAPCurrencyAmount()
 
                 if currency_needed > 0 then
                     self.currency_needed_txt:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.CURRENCY_NEEDED, { currency_needed = currency_needed, chest_name = GetSkinName(self.view_currency_for_def.item_type) }) )
                 else
                     self.currency_needed_txt:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.CURRENCY_OK, { chest_name = GetSkinName(self.view_currency_for_def.item_type) }) )
-                    purchasefn( self, self.view_currency_for_def, sale_active and self.view_currency_for_def.sale_percent or 0)
+                    purchasefn( self, self.view_currency_for_def, self.view_currency_for_def.sale_percent )
                 end
             end
 

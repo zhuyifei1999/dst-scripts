@@ -26,7 +26,6 @@ local Herd = Class(function(self, inst)
     self.onempty = nil
     self.onfull = nil
     self.addmember = nil
-    self.removemember = nil    
 
     self.updatepos = true
     self.updateposincombat = false
@@ -78,11 +77,6 @@ function Herd:SetAddMemberFn(fn)
     self.addmember = fn
 end
 
-function Herd:SetRemoveMemberFn(fn)
-    self.removemember = fn
-end
-
-
 function Herd:IsFull()
     return self.membercount >= self.maxsize
 end
@@ -115,11 +109,6 @@ end
 
 function Herd:RemoveMember(inst)
     if self.members[inst] then
-
-        if self.removemember ~= nil then
-            self.removemember(self.inst, inst)
-        end
-
         RemoveMemberListeners(self, inst)
 
         if inst.components.knownlocations ~= nil then
@@ -202,20 +191,9 @@ function Herd:OnUpdate()
             for i, v in ipairs(toremove) do
                 self:RemoveMember(v)
             end
-
-            local pos = Vector3(self.inst.Transform:GetWorldPosition())
-            if self.updateposfn then
-                if updatedPos then
-                    updatedPos = Vector3(updatedPos.x / validMembers, 0, updatedPos.z / validMembers)
-                end
-                pos = self.updateposfn(self.inst, updatedPos)                
-            else
-                if updatedPos ~= nil then
-                    pos = Vector3(updatedPos.x / validMembers, 0, updatedPos.z / validMembers)
-                    
-                end
+            if updatedPos ~= nil then
+                self.inst.Transform:SetPosition(updatedPos.x / validMembers, 0, updatedPos.z / validMembers)
             end
-            self.inst.Transform:SetPosition(pos.x,pos.y,pos.z)
         end
         if self.membercount > 0 then
             local herdPos = self.inst:GetPosition()

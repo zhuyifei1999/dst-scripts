@@ -55,7 +55,7 @@ local function RespawnFish(inst)
     end
 end
 
-function Fishable:HookFish(fisherman)
+function Fishable:HookFish()
     local fishprefab = self.getfishfn ~= nil and self.getfishfn(self.inst) or GetRandomKey(self.fish)
     local fish = SpawnPrefab(fishprefab)
     if fish ~= nil then
@@ -69,9 +69,6 @@ function Fishable:HookFish(fisherman)
         if fish.Physics ~= nil then
             fish.Physics:SetActive(false)
         end
-		if fisherman ~= nil and fish.components.weighable ~= nil then
-			fish.components.weighable:SetPlayerAsOwner(fisherman)
-		end
         if self.fishleft > 0 then
             self.fishleft = self.fishleft - 1
         end

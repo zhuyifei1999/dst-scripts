@@ -11,16 +11,12 @@ local prefabs =
 }
 
 local function stopkicking(inst)
-    if inst.floptask then
-        inst.floptask:Cancel()
-        inst.floptask = nil
-    end
     inst.AnimState:PlayAnimation("dead")
 end
 
 local function commonfn(build, anim, loop, dryable, cookable)
     local inst = CreateEntity()
-    inst.entity:AddSoundEmitter()
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
@@ -33,7 +29,6 @@ local function commonfn(build, anim, loop, dryable, cookable)
 
     inst:AddTag("meat")
     inst:AddTag("catfood")
-	inst:AddTag("pondfish")
 
     if dryable then
         --dryable (from dryable component) added to pristine state for optimization
@@ -93,21 +88,9 @@ local function commonfn(build, anim, loop, dryable, cookable)
     return inst
 end
 
-local function flopsound(inst)
-    inst.floptask = inst:DoTaskInTime(10/30, function() 
-        inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland")
-        if inst.floptask then
-            inst.floptask:Cancel()
-            inst.floptask = nil
-        end
-        inst.floptask = inst:DoTaskInTime(12/30, function() 
-            inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland")
-        end)
-    end)
-end
-
 local function rawfn(build)
-    local inst = commonfn(build, "idle", false, true, true)
+    local inst = commonfn(build, "idle", true, true, true)
+    inst:AddTag("fish")
 
     if not TheWorld.ismastersim then
         return inst
@@ -120,14 +103,6 @@ local function rawfn(build)
     inst:DoTaskInTime(5, stopkicking)
     inst.components.inventoryitem:SetOnPickupFn(stopkicking)
     inst.OnLoad = stopkicking
-    
-    inst:ListenForEvent("animover", function()     
-        if inst.AnimState:IsCurrentAnimation("idle") then
-            flopsound(inst)
-            inst.AnimState:PlayAnimation("idle")
-        end
-    end)
-    flopsound(inst)
 
     return inst
 end
