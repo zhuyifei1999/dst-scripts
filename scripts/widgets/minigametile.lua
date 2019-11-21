@@ -31,8 +31,6 @@ end)
 function MiniGameTile:ClearTile()
 	self.tile_type = ""
 	self.tile:GetAnimState():ClearAllOverrideSymbols()
-	self.tile:GetAnimState():PlayAnimation("on", true)
-	self.view_state = "on"
 end
 
 function MiniGameTile:SetTileTypeUnHidden(tile_type)
@@ -49,15 +47,8 @@ function MiniGameTile:UnhideTileType()
 	self.tile:GetAnimState():OverrideSkinSymbol("SWAP_ICON", self.tile_type, "SWAP_ICON")
 end
 
-function MiniGameTile:ForceHideTile()
-	self.tile:GetAnimState():PushAnimation("off", true)
-	self.view_state = "off"
-end
-
 function MiniGameTile:HideTile()
 	if self.view_state == "on" then
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/feed")
-
 		self.tile:GetAnimState():PlayAnimation("anim_off")
 		self.tile:GetAnimState():PushAnimation("off", true)
 		self.view_state = "off"
@@ -65,13 +56,9 @@ function MiniGameTile:HideTile()
 end
 
 function MiniGameTile:ShowTile()
-	if self.view_state == "off" then
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/feed")
-
-		self.tile:GetAnimState():PlayAnimation("anim_on")
-		self.tile:GetAnimState():PushAnimation("on", true)
-		self.view_state = "on"
-	end
+	self.tile:GetAnimState():PlayAnimation("anim_on")
+	self.tile:GetAnimState():PushAnimation("on", true)
+	self.view_state = "on"
 end
 
 function MiniGameTile:OnGainFocus()

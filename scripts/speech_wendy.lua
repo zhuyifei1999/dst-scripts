@@ -70,10 +70,6 @@ return{
 		{
 			TOODEEP = "I can't catch anything out here with this flimsy rod.",
 		},
-        OCEAN_FISHING_POND =
-		{
-			WRONGGEAR = "This might be overdoing it a bit.",
-		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -197,14 +193,6 @@ return{
             GLASSED = "It's covered in glass...",
             ALREADY_BOMBED = "It's already been done.",
         },
-		GIVE_TACKLESKETCH =
-		{
-			DUPLICATE = "Oh... my information's useless...",
-		},
-		COMPARE_WEIGHABLE =
-		{
-			TOO_SMALL = "It was taken too soon...",
-		},
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_BOAT_LEAK = "Our boat weeps salty tears.",
@@ -463,21 +451,6 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "It seems my zeal was short-lived.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Once more I'm left defenseless against the elements.",
     
-	-- TODO:JEN, but this is still WIP so don't write these yet
-	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah. Predictable.",
-	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "My line is too loose.",
-	ANNOUNCE_OCEANFISHING_GOTAWAY = "It can't evade death forever.",
-	ANNOUNCE_OCEANFISHING_BADCAST = "Sigh. Of course.",
-	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
-	{
-		"It's not like I have anything better to do.",
-		"I suppose I'll just starve.",
-		"Perhaps I will be standing here forever.",
-		"Fishing is rather dull, I don't know why people enjoy it.",
-	},
-
-	ANNOUNCE_WEIGHT = "Weight: {weight}",
-
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2261,6 +2234,7 @@ return{
             BURNT = "Ashes to ashes.",
 		},
 		PIG_TOKEN = "Yet another unnecessary plaything.",
+		PIG_COIN = "It pays for a fleeting friendship.",
 		YOTP_FOOD1 = "Something died for that feast.",
 		YOTP_FOOD2 = "I don't want to eat that.",
 		YOTP_FOOD3 = "It'll keep me alive a little longer.",
@@ -2891,9 +2865,6 @@ return{
 		SALTROCK = "Almost as salty as my bitter tears.",
 		SALTBOX = "It'll only prolong the inevitable.",
 
-		TACKLESTATION = "All fish beware.",
-		TACKLESKETCH = "New methods for ripping fish from their peaceful lives.",
-
         MALBATROSS = "What a horrid bird!",
         MALBATROSS_FEATHER = "It won't be needing these anymore.",
         MALBATROSS_BEAK = "How gruesome.",
@@ -2901,72 +2872,9 @@ return{
         MAST_MALBATROSS = "Fly me away from this place.",
 		MALBATROSS_FEATHERED_WEAVE = "My fingers ache from sewing in all those feathers.",
 
-        GNARWAIL =
-        {
-            GENERIC = "I cannot escape its piercing gaze... or horn.",
-            BROKENHORN = "Some things remain broken forever.",
-            FOLLOWER = "Do you really wish to come with me?",
-            BROKENHORN_FOLLOWER = "You've lost something dear to you too, haven't you?",
-        },
-        GNARWAIL_HORN = "It's so sharp...",
-
         WALKINGPLANK = "That would be too easy.",
         OAR = "I'd prefer to be stranded at sea.",
 		OAR_DRIFTWOOD = "Just when it thought it had escaped the ocean...",
-
-		OCEANFISHINGROD = "The depths will offer no safety from my hook.",
-        OCEANFISHINGBOBBER_BALL = "It floats happily until something drags it under.",
-        OCEANFISHINGBOBBER_OVAL = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_CROW = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_ROBIN = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_ROBIN_WINTER = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_CANARY = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_GOOSE = "It floats happily until something drags it under.",
-		OCEANFISHINGBOBBER_MALBATROSS = "It floats happily until something drags it under.",
-
-		OCEANFISHINGLURE_SPINNER_RED = "A paltry last meal for the fish.",
-		OCEANFISHINGLURE_SPINNER_GREEN = "A paltry last meal for the fish.",
-		OCEANFISHINGLURE_SPINNER_BLUE = "A paltry last meal for the fish.",
-		OCEANFISHINGLURE_SPOON_RED = "A paltry last meal for the fish.",
-		OCEANFISHINGLURE_SPOON_GREEN = "A paltry last meal for the fish.",
-		OCEANFISHINGLURE_SPOON_BLUE = "A paltry last meal for the fish.",
-
-		OCEANFISH_SMALL_1 = "It didn't have enough time to grow.",
-		OCEANFISH_SMALL_2 = "I'm afraid you've splished your last splash.",
-		OCEANFISH_SMALL_3 = "I suppose it will do for now.",
-		OCEANFISH_SMALL_4 = "All my efforts reap only the smallest rewards.",
-		OCEANFISH_SMALL_5 = "It looks oddly... crunchy?",
-		OCEANFISH_MEDIUM_1 = "What a horrendous looking creature.",
-		OCEANFISH_MEDIUM_2 = "I'm afraid your time is up.",
-		OCEANFISH_MEDIUM_3 = "It fought hard to live. A shame, really.",
-		OCEANFISH_MEDIUM_4 = "My luck couldn't possibly be worse than it already is.",
-		OCEANFISH_MEDIUM_5 = "Its existence must be so confusing.",
-
-		PONDFISH = "It was flopping around desperately for life. The poor fool.",
-
-        FISHMEAT = "It's been decapitated.",
-        FISHMEAT_COOKED = "A proper grilling puts a stop to the flopping.",
-        FISHMEAT_SMALL = "There are other fish in the sea. Bigger ones, hopefully.",
-        FISHMEAT_SMALL_COOKED = "It will... tide... me over for now.",
-		SPOILED_FISH = "Farewell, chum.",
-
-		FISH_BOX = "It feels a bit cruel to trap them within sight of freedom.",
-        POCKET_SCALE = "What is the weight of my actions?",
-
-		TROPHYSCALE_FISH =
-		{
-			GENERIC = "If my fish was as heavy as my heart, I'd surely win.",
-			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
-			BURNING = "Nothing is safe.",
-			BURNT = "How sad.",
-			OWNER = "Weight: {weight}\nCaught by: {owner}\nOh... I... I did it...",
-		},
-
-		OCEANFISHABLEFLOTSAM = "Nothing but grass and muck.",
-
-		CALIFORNIAROLL = "A cold fish, dressed up in a seaweed jacket.",
-		SEAFOODGUMBO = "A sea once teeming with life. No more.",
-		SURFNTURF = "It could be worse.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2997,7 +2905,7 @@ return{
         MONSTERTARTARE = "Looks good, tastes horrible.",
         FRESHFRUITCREPES = "Could I get this a la mode?",
         FROGFISHBOWL = "It's actually... really good...",
-        POTATOTORNADO = "Spiraling, just like my life.",
+        POTATOTORNADO = "Spiralling, just like my life.",
         DRAGONCHILISALAD = "I missed having someone make me dinner...",
         GLOWBERRYMOUSSE = "It swirls like the endless abyss.",
         VOLTGOATJELLY = "It zaps your tongue.",

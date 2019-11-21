@@ -1365,6 +1365,17 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	body_webber_wrestler =
+	{
+		type = "body",
+		skin_tags = { "YOTP", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "foot", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "arm_upper", "skirt", },
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 80,
+	},
 	body_wendy_creepy =
 	{
 		type = "body",
@@ -2132,6 +2143,17 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	body_winona_wrestler =
+	{
+		type = "body",
+		skin_tags = { "YOTP", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", },
+		symbol_hides = { "arm_upper", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 80,
+	},
 	body_wolfgang_formal =
 	{
 		type = "body",
@@ -2636,6 +2658,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 77,
+	},
+	body_wx78_wrestler =
+	{
+		type = "body",
+		skin_tags = { "YOTP", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 80,
 	},
 	body_yule_coat =
 	{
@@ -3593,6 +3626,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 77,
 	},
+	feet_wx78_wrestler =
+	{
+		type = "feet",
+		skin_tags = { "YOTP", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 5,
+		release_group = 80,
+	},
 	hand_beltedgloves_brown_beaver =
 	{
 		type = "hand",
@@ -3972,6 +4015,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	hand_webber_wrestler =
+	{
+		type = "hand",
+		skin_tags = { "YOTP", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		release_group = 80,
+	},
 	hand_wendy_gladiator =
 	{
 		type = "hand",
@@ -4261,6 +4314,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	hand_winona_wrestler =
+	{
+		type = "hand",
+		skin_tags = { "YOTP", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "hand", },
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		release_group = 80,
+	},
 	hand_wolfgang_gladiator =
 	{
 		type = "hand",
@@ -4533,6 +4596,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 77,
+	},
+	hand_wx78_wrestler =
+	{
+		type = "hand",
+		skin_tags = { "YOTP", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		release_group = 80,
 	},
 	legs_checkered_pleats_blue_cornflower =
 	{
@@ -5377,6 +5449,19 @@ CLOTHING =
 		feet_cuff_size = 3,
 		has_leg_boot = true,
 		release_group = 43,
+	},
+	legs_winona_wrestler =
+	{
+		type = "legs",
+		skin_tags = { "YOTP", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		legs_cuff_size = 2,
+		feet_cuff_size = 3,
+		has_leg_boot = true,
+		release_group = 80,
 	},
 	legs_wolfgang_gladiator =
 	{

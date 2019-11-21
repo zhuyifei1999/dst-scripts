@@ -128,6 +128,7 @@ local states=
         timeline =
 		{
 			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack) end),
+			-- TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack_whoosh) end),
 			TimeEvent(22*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
             TimeEvent(28*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
 		},
@@ -154,6 +155,7 @@ local states=
         timeline =
 		{
 			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack_fire) end),
+			-- TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack_whoosh) end),
 			TimeEvent(16*FRAMES, function(inst) 
 				inst.Light:Enable(true)
 				inst.DynamicShadow:Enable(false)

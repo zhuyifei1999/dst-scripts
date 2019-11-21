@@ -70,10 +70,6 @@ return{
 		{
 			TOODEEP = "I'll need a tougher rod to reel in one of those whoppers!",
 		},
-        OCEAN_FISHING_POND =
-		{
-			WRONGGEAR = "I think I could just use a regular old rod here.",
-		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -197,14 +193,6 @@ return{
             GLASSED = "Can't do that with all this glass in the way.",
             ALREADY_BOMBED = "That one's already been glitzed up.",
         },
-		GIVE_TACKLESKETCH =
-		{
-			DUPLICATE = "We already got these schematics.",
-		},
-		COMPARE_WEIGHABLE =
-		{
-			TOO_SMALL = "This one's too shrimpy!",
-		},
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_BOAT_LEAK = "We gotta repair this ol'girl!",
@@ -469,21 +457,6 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I'm off the clock!",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I think I might be needin' an umbrella soon.",
     
-	-- TODO:JEN, but this is still WIP so don't write these yet
-	ANNOUNCE_OCEANFISHING_LINESNAP = "You rascal!",
-	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "I ain't no slacker! Time to reel 'er in!",
-	ANNOUNCE_OCEANFISHING_GOTAWAY = "Guess I've got to brush up on my technique.",
-	ANNOUNCE_OCEANFISHING_BADCAST = "Practice makes perfect!",
-	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
-	{
-		"I'm not a fan of just sittin' around...",
-		"Maybe I could invent something quicker.",
-		"Come on fish, let's get a move on!",
-		"I'm starting to feel a bit antsy.",
-	},
-
-	ANNOUNCE_WEIGHT = "Weight: {weight}",
-
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2267,6 +2240,7 @@ return{
             BURNT = "No good now.",
 		},
 		PIG_TOKEN = "Too big for me to wear.",
+		PIG_COIN = "Not bad payment for a good wrassle.",
 		YOTP_FOOD1 = "Now that's a feast!",
 		YOTP_FOOD2 = "I'll give it to a pig or somethin'.",
 		YOTP_FOOD3 = "Somethin' to chew on.",
@@ -2897,9 +2871,6 @@ return{
 		SALTROCK = "Hey, that looks like salt!",
 		SALTBOX = "This'll keep things fresher longer!",
 
-		TACKLESTATION = "Need the right tool for the job!",
-		TACKLESKETCH = "Hey! This will come in real handy next time I go fishin'!",
-
         MALBATROSS = "Yeesh, you're a big fella!",
         MALBATROSS_FEATHER = "I'll find a practical use for this.",
         MALBATROSS_BEAK = "How come I got left to pick up the bill? Ha!",
@@ -2907,72 +2878,9 @@ return{
         MAST_MALBATROSS = "A bit showy, but useful.",
 		MALBATROSS_FEATHERED_WEAVE = "Now that's some fancy fabric.",
 
-        GNARWAIL =
-        {
-            GENERIC = "Yeesh, uh... nice whale?",
-            BROKENHORN = "Them's the breaks.",
-            FOLLOWER = "Glad to see ya pullin' your weight around here!",
-            BROKENHORN_FOLLOWER = "You should really get that horn looked at.",
-        },
-        GNARWAIL_HORN = "I'm sure I can use this for somethin.",
-
         WALKINGPLANK = "That thing don't look stable.",
         OAR = "Remember, back straight, move those arms!",
 		OAR_DRIFTWOOD = "Catch my drift? Ha!",
-
-		OCEANFISHINGROD = "The right tool for the job!",
-        OCEANFISHINGBOBBER_BALL = "Bobber's yer uncle! Ha!",
-        OCEANFISHINGBOBBER_OVAL = "Bobber's yer uncle! Ha!",
-		OCEANFISHINGBOBBER_CROW = "It's nothin' to crow about, but it ain't half bad!",
-		OCEANFISHINGBOBBER_ROBIN = "This'll do the trick.",
-		OCEANFISHINGBOBBER_ROBIN_WINTER = "This'll do the trick.",
-		OCEANFISHINGBOBBER_CANARY = "This'll do the trick.",
-		OCEANFISHINGBOBBER_GOOSE = "This thing's so fancy! Am I fishin' for food or compliments?",
-		OCEANFISHINGBOBBER_MALBATROSS = "This thing's so fancy! Am I fishin' for food or compliments?",
-
-		OCEANFISHINGLURE_SPINNER_RED = "Not that lifelike, but it fools the fish.",
-		OCEANFISHINGLURE_SPINNER_GREEN = "Not that lifelike, but it fools the fish.",
-		OCEANFISHINGLURE_SPINNER_BLUE = "Not that lifelike, but it fools the fish.",
-		OCEANFISHINGLURE_SPOON_RED = "Not that lifelike, but it fools the fish.",
-		OCEANFISHINGLURE_SPOON_GREEN = "Not that lifelike, but it fools the fish.",
-		OCEANFISHINGLURE_SPOON_BLUE = "Not that lifelike, but it fools the fish.",
-
-		OCEANFISH_SMALL_1 = "A little on the puny side, ain't it?",
-		OCEANFISH_SMALL_2 = "Not a lot of meat on that one.",
-		OCEANFISH_SMALL_3 = "It's just a teeny thing!",
-		OCEANFISH_SMALL_4 = "My fish dinner might be a bit lean...",
-		OCEANFISH_SMALL_5 = "Not sure that fish is healthy.",
-		OCEANFISH_MEDIUM_1 = "Here's hoping it tastes better than it looks.",
-		OCEANFISH_MEDIUM_2 = "Now that's a nice fat fish!",
-		OCEANFISH_MEDIUM_3 = "Yeesh, I'd better watch the spines on that thing!",
-		OCEANFISH_MEDIUM_4 = "Never been much for superstition.",
-		OCEANFISH_MEDIUM_5 = "Never had to shuck a fish before.",
-
-		PONDFISH = "I'd rather eat for a day than not at all.",
-
-        FISHMEAT = "Is it safe to eat like that?",
-        FISHMEAT_COOKED = "Nothing fancy, just how I like it.",
-        FISHMEAT_SMALL = "You sure that's fish? Looks pretty shrimpy to me.",
-        FISHMEAT_SMALL_COOKED = "I won't turn down a bite!",
-		SPOILED_FISH = "Such a shame to let good food go to waste.",
-
-		FISH_BOX = "Now there's a nice practical way to store fish!",
-        POCKET_SCALE = "What a handy doo-hickey!",
-
-		TROPHYSCALE_FISH =
-		{
-			GENERIC = "A challenge, huh?",
-			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
-			BURNING = "Yikes! That fish scale's in some hot water!",
-			BURNT = "Looks like someone was a sore loser.",
-			OWNER = "Weight: {weight}\nCaught by: {owner}\nHeh. No big deal.",
-		},
-
-		OCEANFISHABLEFLOTSAM = "Ugh, what sorta mess did I reel in?",
-
-		CALIFORNIAROLL = "Looks a bit fancy, but I'll give it a try!",
-		SEAFOODGUMBO = "Sticks to yer ribs!",
-		SURFNTURF = "Now THAT'S a meal!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2993,7 +2901,7 @@ return{
         PORTABLESPICER_ITEM =
         {
             GENERIC = "Probably a whole lot of interesting gears in there.",
-            DONE = "Well worth all that work.",
+            DONE = "Well worth all that the work.",
         },
         SPICEPACK = "Say, this is some fine bit of engineering!",
         SPICE_GARLIC = "Hooboy. That's some smelly dust.",

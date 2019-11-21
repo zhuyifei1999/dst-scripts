@@ -11,7 +11,7 @@ assert(TheWorld.ismastersim, "Malbatross spawner should not exist on the client"
 --------------------------------------------------------------------------
 
 local MALBATROSS_SPAWN_DIST = 10
-local MALBATROSS_PLAYER_SPAWN_DISTSQ = TUNING.MALBATROSS_NOTICEPLAYER_DISTSQ
+local MALBATROSS_PLAYER_SPAWN_DISTSQ = 400 -- 20 * 20
 local SHOAL_PERCENTAGE_TO_TEST = 0.25
 local MALBATROSS_SPAWNDELAY = { BASE = 10, RANDOM = 5 }
 

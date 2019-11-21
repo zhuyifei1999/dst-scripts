@@ -73,21 +73,8 @@ AddIngredientValues({"monstermeat"}, {meat=1, monster=1}, true, true)
 AddIngredientValues({"froglegs", "drumstick"}, {meat=.5}, true)
 AddIngredientValues({"smallmeat"}, {meat=.5}, true, true)
 
-AddIngredientValues({"eel"}, {meat=.5,fish=1}, true)
-AddIngredientValues({"fish"}, {meat=1,fish=1}, true)
+AddIngredientValues({"fish", "eel"}, {meat=.5,fish=1}, true)
 
-AddIngredientValues({"pondeel"}, {meat=.5,fish=1}, true)
-AddIngredientValues({"pondfish"}, {meat=.5,fish=.5}, false)
-AddIngredientValues({"fishmeat_small"}, {meat=.5,fish=.5}, true)
-AddIngredientValues({"fishmeat"}, {meat=1,fish=1}, true)
-local oceanfishdefs = require("prefabs/oceanfishdef")
-for _, fish_def in pairs(oceanfishdefs.fish) do
-	if fish_def.cooker_ingredient_value ~= nil then
-		AddIngredientValues({fish_def.prefab.."_inv"}, fish_def.cooker_ingredient_value, false)
-	end
-end
-
-AddIngredientValues({"kelp"}, {veggie=.5}, true, true)
 
 AddIngredientValues({"mandrake"}, {veggie=1, magic=1}, true)
 AddIngredientValues({"egg"}, {egg=1}, true)

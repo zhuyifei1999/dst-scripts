@@ -148,19 +148,6 @@ function FindNearbyLand(position, range)
     end
 end
 
-function FindNearbyOcean(position, range)
-    local finaloffset = FindValidPositionByFan(math.random() * 2 * PI, range or 8, 8, function(offset)
-        local x, z = position.x + offset.x, position.z + offset.z
-        return TheWorld.Map:IsOceanAtPoint(x, 0, z)
-            and not TheWorld.Map:IsPointNearHole(Vector3(x, 0, z))
-    end)
-    if finaloffset ~= nil then
-        finaloffset.x = finaloffset.x + position.x
-        finaloffset.z = finaloffset.z + position.z
-        return finaloffset
-    end
-end
-
 function GetRandomInstWithTag(tag, inst, radius)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, radius, type(tag) == "string" and { tag } or tag)
@@ -323,7 +310,6 @@ end
 function CanEntitySeePoint(inst, x, y, z)
     return inst ~= nil
         and inst:IsValid()
-        and (inst.components.inkable and not inst.components.inkable.inked) 
         and (TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF or
             _CanEntitySeeInDark(inst))
         and (_GetEntitySandstormLevel(inst) < TUNING.SANDSTORM_FULL_LEVEL or

@@ -7,7 +7,7 @@ local assets =
 
 local prefabs =
 {
-    "pondfish",
+    "fish",
     "wetpouch",
 }
 
@@ -185,7 +185,7 @@ local function OnLoad(inst, data)
 end
 
 local function GetFish(inst)
-    return math.random() < 0.6 and "wetpouch" or "pondfish"
+    return math.random() < 0.6 and "wetpouch" or "fish"
 end
 
 local function fn()

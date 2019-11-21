@@ -8,6 +8,17 @@ local prefabs =
 {
     "mermguard",
     "collapse_big",
+
+    "boards",
+    "rocks",
+    "fish",
+}
+
+local loot =
+{
+    "boards",
+    "rocks",
+    "fish",
 }
 
 local function testforflag(inst)
@@ -159,6 +170,7 @@ local function fn()
     end
 
     inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot(loot)
     
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

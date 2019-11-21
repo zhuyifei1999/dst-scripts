@@ -2317,6 +2317,20 @@ MISC_ITEMS =
 		output_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "wes_wrestler", "body_wes_wrestler", "hand_wes_wrestler", "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", "umbrella_heart", "wardrobe_heart", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		release_group = 58,
 	},
+	pack_wrestler_promo2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_wrestler_promo1",
+		display_atlas = "images/iap_images_wrestler_promo2.xml",
+		display_tex = "wrestler_promo2.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", "winona_wrestler", "trap_metal", "beemine_jamjar", "wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		output_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		release_group = 81,
+	},
 	pack_wrestler_wathgrithr =
 	{
 		type = "purchase",
@@ -2330,6 +2344,20 @@ MISC_ITEMS =
 		display_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		output_items = {  "wathgrithr_wrestler", "body_wathgrithr_wrestler", "hand_wathgrithr_wrestler", "feet_wathgrithr_wrestler", "spear_wathgrithr_wrestle", "wathgrithrhat_wrestle", },
 		release_group = 58,
+	},
+	pack_wrestler_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 111,
+		build_name_override = "webber_wrestler",
+		display_atlas = "images/iap_images_wrestler_webber.xml",
+		display_tex = "wrestler_webber.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", },
+		output_items = {  "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "boomerang_tiger", "trap_teeth_tiger", },
+		release_group = 81,
 	},
 	pack_wrestler_wes =
 	{
@@ -2345,6 +2373,20 @@ MISC_ITEMS =
 		output_items = {  "wes_wrestler", "body_wes_wrestler", "hand_wes_wrestler", "umbrella_heart", "wardrobe_heart", },
 		release_group = 58,
 	},
+	pack_wrestler_winona =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 112,
+		build_name_override = "winona_wrestler",
+		display_atlas = "images/iap_images_wrestler_winona.xml",
+		display_tex = "wrestler_winona.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", },
+		output_items = {  "winona_wrestler", "body_winona_wrestler", "hand_winona_wrestler", "legs_winona_wrestler", "trap_metal", "beemine_jamjar", },
+		release_group = 81,
+	},
 	pack_wrestler_wolfgang =
 	{
 		type = "purchase",
@@ -2358,6 +2400,20 @@ MISC_ITEMS =
 		display_items = {  "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", },
 		output_items = {  "wolfgang_wrestler", "body_wolfgang_wrestler", "hand_wolfgang_wrestler", "hammer_crowbar", "strawhat_cowboy", },
 		release_group = 58,
+	},
+	pack_wrestler_wx78 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 105,
+		build_name_override = "wx78_wrestler",
+		display_atlas = "images/iap_images_wrestler_wx78.xml",
+		display_tex = "wrestler_wx78.tex",
+		box_build = "box_shop_wrestler",
+		display_items = {  "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		output_items = {  "wx78_wrestler", "body_wx78_wrestler", "hand_wx78_wrestler", "feet_wx78_wrestler", "lightning_rod_robot", "firesuppressor_robot", },
+		release_group = 81,
 	},
 	pack_wurt_cave =
 	{

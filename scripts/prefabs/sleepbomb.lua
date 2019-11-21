@@ -71,8 +71,6 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-	inst.Transform:SetTwoFaced()
-
     MakeInventoryPhysics(inst)
 
     --projectile (from complexprojectile component) added to pristine state for optimization

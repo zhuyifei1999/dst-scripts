@@ -260,10 +260,6 @@ local function OnItemLose(inst, data)
 end
 
 local function SetupPigToken(inst)
-	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
-		return -- todo: remove this once post-yotp gameplay is done
-	end
-
 	if not inst._pigtokeninitialized then
 		inst._pigtokeninitialized = true
 		if math.random() <= (IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and TUNING.PIG_TOKEN_CHANCE_YOTP or TUNING.PIG_TOKEN_CHANCE) then
@@ -273,10 +269,6 @@ local function SetupPigToken(inst)
 end
 
 local function ReplacePigToken(inst)
-	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
-		return -- todo: remove this once post-yotp gameplay is done
-	end
-
 	if inst._pigtokeninitialized then
 		local item = GetPigToken(inst)
 		local should_get_item = math.random() <= (IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and TUNING.PIG_TOKEN_CHANCE_YOTP or TUNING.PIG_TOKEN_CHANCE)

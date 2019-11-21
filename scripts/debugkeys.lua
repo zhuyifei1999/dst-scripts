@@ -553,16 +553,12 @@ end)
 
 AddGameDebugKey(KEY_X, function()
     currentlySelected = TheInput:GetWorldEntityUnderMouse()
-
-	if TheInput:IsKeyDown(KEY_CTRL) then
-		local inventory = ConsoleCommandPlayer().components and ConsoleCommandPlayer().components.inventory 
-						or ConsoleCommandPlayer().replica and ConsoleCommandPlayer().replica.inventory
-						or nil
-		if inventory then
-			c_select(inventory:GetEquippedItem(EQUIPSLOTS.HANDS))
-		end
-    elseif currentlySelected then
+    if currentlySelected then
         c_ent = currentlySelected
+        dprint(c_ent)
+    end
+    if TheInput:IsKeyDown(KEY_CTRL) and c_ent then
+        dtable(c_ent,1)
     end
     return true
 end)
@@ -629,10 +625,30 @@ end)
 local wormholetarget = nil
 local tentaholetarget = nil
 AddGameDebugKey(KEY_T, function()
-    if TheInput:IsKeyDown(KEY_ALT) then
-		if c_sel() ~= nil and c_sel().components.locomotor ~= nil then
-			c_sel().Transform:SetPosition(TheInput:GetWorldPosition():Get())
-		end
+    -- Moving Teleport to just plain T as I am getting a sore hand from CTRL-T - Alia
+    if TheInput:IsKeyDown(KEY_CTRL) then
+        local x,y,z = TheInput:GetWorldPosition():Get()
+        local w1 = SpawnPrefab("wormhole")
+        w1.Transform:SetPosition(x, y, z-3)
+
+        if wormholetarget ~= nil then
+            w1.components.teleporter:Target(wormholetarget)
+            wormholetarget.components.teleporter:Target(w1)
+            wormholetarget = nil
+        else
+            wormholetarget = w1
+        end
+
+        local t1 = SpawnPrefab("tentacle_pillar_hole")
+        t1.Transform:SetPosition(x, y, z+3)
+
+        if tentaholetarget ~= nil then
+            t1.components.teleporter:Target(tentaholetarget)
+            tentaholetarget.components.teleporter:Target(t1)
+            tentaholetarget = nil
+        else
+            tentaholetarget = t1
+        end
     else
         local MainCharacter = DebugKeyPlayer()
         if MainCharacter then

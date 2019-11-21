@@ -52,7 +52,7 @@ end
 
 local function onturnoff(inst)
     if inst._activetask == nil and not inst:HasTag("burnt") then
-		inst:_PlayAnimation("idle", false)
+        inst:_PushAnimation("idle", false)
         inst.SoundEmitter:KillSound("idlesound")
         inst.SoundEmitter:KillSound("loop")
     end

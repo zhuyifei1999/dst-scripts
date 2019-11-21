@@ -86,6 +86,7 @@ function c_mermthrone()
     c_spawn("mermthrone_construction")
     c_give("kelp", 20)
     c_give("beefalowool", 15)
+    c_give("fish", 30)
     c_give("pigskin", 10)
     c_give("carrot", 4)
     c_spawn("merm")
@@ -1237,9 +1238,6 @@ function c_makeboat()
 
 	inst = SpawnPrefab("lantern")
 	inst.Transform:SetPosition(x - 3.25, y, z)
-	
-	inst = SpawnPrefab("oceanfishingrod")
-	inst.Transform:SetPosition(x - 3.25, y, z + 1.25)
 	
 end
 

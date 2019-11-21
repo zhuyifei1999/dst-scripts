@@ -50,35 +50,42 @@ end
 
 local ATTACK_WAVE_SPEED = 5
 local ATTACK_WAVE_IDLE_TIME = 1.5
-local ANGLE_OFFSET = 35*DEGREES
-local function SpawnMalbatrossAttackWaves(inst)
+
+local function wavesetup(inst,point,angle,drift)
+    drift = drift or 0
+    if not TheWorld.Map:IsVisualGroundAtPoint(point.x,point.y,point.z) and not TheWorld.Map:GetPlatformAtPoint(point.x,point.y,point.z) then
+        SpawnAttackWave(point, angle, {ATTACK_WAVE_SPEED,0,drift}, nil, ATTACK_WAVE_IDLE_TIME, true)
+    end
+end
+
+local function SpawnMalbatrossAttackWaves(inst)                
+
     local position = inst:GetPosition()
-    local angle = inst:GetRotation() + (math.random()*20 - 10)
+    local angle = inst:GetRotation() + (math.random()*20 -10)
 
-    local angle_rads = angle*DEGREES
-    local offset_direction1 = Vector3(math.cos(angle_rads), 0, -math.sin(angle_rads)):Normalize()
+    local offset_direction1 = Vector3(math.cos(angle*DEGREES), 0, -math.sin(angle*DEGREES)):Normalize() *1
+    local offset_direction2 = Vector3(math.cos((angle + 35)*DEGREES), 0, -math.sin((angle + 35)*DEGREES)):Normalize() *3
+    local offset_direction3 = Vector3(math.cos((angle - 35)*DEGREES), 0, -math.sin((angle - 35)*DEGREES)):Normalize() *3
 
-    local point = position + (offset_direction1 * 3.5)
+    local offset_direction4 = Vector3(math.cos(angle*DEGREES), 0, -math.sin(angle*DEGREES)):Normalize() *3.5
+
+    local point = position+offset_direction4
     local platform = TheWorld.Map:GetPlatformAtPoint(point.x,point.y,point.z)
     if platform then
-        local theta = inst.Transform:GetRotation() * DEGREES
-        local offset = Vector3(math.cos( theta ), 0, -math.sin( theta ))
+            local boat_physics = platform.components.boatphysics
+            local theta = inst.Transform:GetRotation() * DEGREES
+            local offset = Vector3(1 * math.cos( theta ), 0, -1 * math.sin( theta ))
+            boat_physics:ApplyForce(offset.x, offset.z, TUNING.MALBATROSS_BOAT_PUSH)
 
-        platform.components.boatphysics:ApplyForce(offset.x, offset.z, TUNING.MALBATROSS_BOAT_PUSH)
-
-        if platform.components.hullhealth then
-            platform.components.health:DoDelta(-TUNING.MALBATROSS_BOAT_DAMAGE)
-        end
+            if platform.components.hullhealth then
+                platform.components.health:DoDelta(-TUNING.MALBATROSS_BOAT_DAMAGE)
+            end
     elseif not TheWorld.Map:IsVisualGroundAtPoint(point.x,point.y,point.z) then
-        spawnsplash(inst, "med", point)
+        spawnsplash(inst, "med", position+offset_direction4)
 
-        SpawnAttackWave(position + offset_direction1, angle, {ATTACK_WAVE_SPEED, 0, 0}, nil, ATTACK_WAVE_IDLE_TIME, true)
-
-        local offset_direction2 = Vector3(math.cos(angle_rads + ANGLE_OFFSET), 0, -math.sin(angle_rads + ANGLE_OFFSET)):Normalize()*3
-        SpawnAttackWave(position + offset_direction2, angle, {ATTACK_WAVE_SPEED, 0, -1}, nil, ATTACK_WAVE_IDLE_TIME, true)
-
-        local offset_direction3 = Vector3(math.cos(angle_rads - ANGLE_OFFSET), 0, -math.sin(angle_rads - ANGLE_OFFSET)):Normalize()*3
-        SpawnAttackWave(position + offset_direction3, angle, {ATTACK_WAVE_SPEED, 0, 1}, nil, ATTACK_WAVE_IDLE_TIME, true)
+        wavesetup(inst,position+offset_direction1,angle)
+        wavesetup(inst,position+offset_direction2,angle,-1)
+        wavesetup(inst,position+offset_direction3,angle,1)        
     end
 end
 

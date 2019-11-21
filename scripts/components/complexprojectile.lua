@@ -84,8 +84,8 @@ function ComplexProjectile:CalculateTrajectory(startPos, endPos, speed)
     end
 
     local cosangleXspeed = math.cos(angle) * speed
-    self.velocity.x = cosangleXspeed
-    self.velocity.z = 0.0
+    self.velocity.x = dx / range * cosangleXspeed
+    self.velocity.z = dz / range * cosangleXspeed
     self.velocity.y = math.sin(angle) * speed
 end
 
@@ -94,11 +94,9 @@ function ComplexProjectile:Launch(targetPos, attacker, owningweapon)
     self.owningweapon = owningweapon or self
     self.attacker = attacker
 
-	self.inst:ForceFacePoint(targetPos:Get())
-
     local offset = self.launchoffset
     if attacker ~= nil and offset ~= nil then
-        local facing_angle = self.inst.Transform:GetRotation() * DEGREES
+        local facing_angle = attacker.Transform:GetRotation() * DEGREES
         pos.x = pos.x + offset.x * math.cos(facing_angle)
         pos.y = pos.y + offset.y
         pos.z = pos.z - offset.x * math.sin(facing_angle)

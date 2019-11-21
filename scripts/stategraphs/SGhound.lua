@@ -629,25 +629,17 @@ CommonStates.AddRunStates(states,
     {
         TimeEvent(0, function(inst)
             inst.SoundEmitter:PlaySound(inst.sounds.growl)
-            if inst:HasTag("swimming") then
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_small",nil,.25)
+            if inst:HasTag("clay") then
+                PlayClayFootstep(inst)
             else
-                if inst:HasTag("clay") then
-                    PlayClayFootstep(inst)
-                else
-                    PlayFootstep(inst)
-                end
+                PlayFootstep(inst)
             end
         end),
         TimeEvent(4 * FRAMES, function(inst)
-            if inst:HasTag("swimming") then
-                inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_small",nil,.25)
-            else            
-                if inst:HasTag("clay") then
-                    PlayClayFootstep(inst)
-                else
-                    PlayFootstep(inst)
-                end
+            if inst:HasTag("clay") then
+                PlayClayFootstep(inst)
+            else
+                PlayFootstep(inst)
             end
         end),
     },

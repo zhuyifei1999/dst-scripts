@@ -141,7 +141,7 @@ local function OnNewTarget(inst, data)
 end
 
 local function is_meat(item)
-    return item.components.edible ~= nil and item.components.edible.foodtype == FOODTYPE.MEAT and not item:HasTag("smallcreature")
+    return item.components.edible ~= nil  and item.components.edible.foodtype == FOODTYPE.MEAT
 end
 
 local function NormalRetargetFn(inst)

@@ -20,8 +20,7 @@ function Leash:Visit()
         end
     elseif self.status == RUNNING then
         if self:IsOutsideReturnDist() then
-            local run = (type(self.running) == "function" and self.running(self.inst)) or self.running
-            self.inst.components.locomotor:GoToPoint(self:GetHomePos(), nil, run)
+            self.inst.components.locomotor:GoToPoint(self:GetHomePos(), nil, self.running)
         else
             self.status = SUCCESS
         end

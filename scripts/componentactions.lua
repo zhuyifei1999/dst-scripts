@@ -57,22 +57,6 @@ local function Row(inst, doer, pos, actions)
     end
 end
 
-local function GetFishingAction(doer, fishing_target)
-	if doer:HasTag("fishing_idle") then
-		if fishing_target ~= nil and not fishing_target:HasTag("projectile") then
-			if fishing_target:HasTag("oceachfishing_catchable") then -- not fishing_target:HasTag("partiallyhooked") then
-				if fishing_target:HasTag("fishinghook") then
-					return ACTIONS.OCEAN_FISHING_STOP
-				else
-					return ACTIONS.OCEAN_FISHING_CATCH
-				end
-			end
-			return ACTIONS.OCEAN_FISHING_REEL
-		end
-	end
-	return nil
-end
-
 local COMPONENT_ACTIONS =
 {
     SCENE = --args: inst, doer, actions, right
@@ -404,15 +388,6 @@ local COMPONENT_ACTIONS =
             if inst:HasTag("trapsprung") then
                 table.insert(actions, ACTIONS.CHECKTRAP)
             end 
-        end,
-
-        trophyscale = function(inst, doer, actions, right)
-            if right and inst:HasTag("trophycanbetaken") and
-                not inst:HasTag("burnt") and
-				not inst:HasTag("fire") then
-
-                table.insert(actions, ACTIONS.REMOVE_FROM_TROPHYSCALE)
-            end
         end,
 
         unwrappable = function(inst, doer, actions, right)
@@ -769,12 +744,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        oceanfishingrod = function(inst, doer, target, actions)
-            if target:HasTag("fishable") then
-				table.insert(actions, ACTIONS.OCEAN_FISHING_POND)
-            end
-        end,
-
         plantable = function(inst, doer, target, actions)
             if target:HasTag("fertile") or target:HasTag("fullfertile") then
                 table.insert(actions, ACTIONS.PLANT)
@@ -785,8 +754,7 @@ local COMPONENT_ACTIONS =
 			if right and target.replica.health == nil
 				and (target:HasTag("fresh") or target:HasTag("stale") or target:HasTag("spoiled"))
 				and target:HasTag("cookable")
-				and not target:HasTag("deployable")
-				and not target:HasTag("smallcreature") then
+				and not target:HasTag("deployable") then
 					table.insert(actions, ACTIONS.APPLYPRESERVATIVE)
 			end
         end,
@@ -865,14 +833,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-		tacklesketch = function(inst, doer, target, actions)
-			if target:HasTag("tacklestation") and
-				not (target:HasTag("fire") or target:HasTag("smolder")) then
-
-				table.insert(actions, ACTIONS.GIVE_TACKLESKETCH)
-			end
-		end,
-
         teacher = function(inst, doer, target, actions)
             if doer == target and target.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
@@ -900,15 +860,6 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.GIVE)
             end
         end,
-
-		itemweigher = function(inst, doer, target, actions)
-			for _,v in pairs(TROPHYSCALE_TYPES) do
-				if inst:HasTag("trophyscale_"..v) and target:HasTag("weighable_"..v) and target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer) then
-					table.insert(actions, ACTIONS.WEIGH_ITEM)
-					return
-				end
-			end
-		end,
 
         unsaddler = function(inst, doer, target, actions, right)
             if not right and target:HasTag("saddled") then
@@ -971,26 +922,6 @@ local COMPONENT_ACTIONS =
                 end
             end
         end,
-
-		weighable = function(inst, doer, target, actions)
-			if target:HasTag("structure") then
-				if not target:HasTag("burnt") then
-					for _,v in pairs(TROPHYSCALE_TYPES) do
-						if target:HasTag("trophyscale_"..v) and inst:HasTag("weighable_"..v) then
-							table.insert(actions, ACTIONS.COMPARE_WEIGHABLE)
-							return
-						end
-					end
-				end
-			elseif target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer) then
-				for _,v in pairs(TROPHYSCALE_TYPES) do
-					if target:HasTag("trophyscale_"..v) and inst:HasTag("weighable_"..v) then
-						table.insert(actions, ACTIONS.WEIGH_ITEM)
-						return
-					end
-				end
-			end
-		end,
 
         winter_treeseed = function(inst, doer, target, actions)
             if target:HasTag("winter_treestand") and not (target:HasTag("fire") or target:HasTag("smolder") or target:HasTag("burnt")) then
@@ -1110,38 +1041,11 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-		oceanfishingrod = function(inst, doer, pos, actions, right)
-            if right then
-				local rod = inst.replica.oceanfishingrod
-				if rod ~= nil then
-					local target = rod:GetTarget()
-					if target == nil then
-						if CanCastFishingNetAtPoint(doer, pos.x, pos.z) then
-							table.insert(actions, ACTIONS.OCEAN_FISHING_CAST)
-						end
-					else
-						local action = GetFishingAction(doer, target)
-						if action ~= nil then
-							table.insert(actions, action)
-						end
-					end
-				end
-            end
-        end,
-		
-		spellcaster = function(inst, doer, pos, actions, right)
-            if right then
-                local cast_on_water = inst:HasTag("castonpointwater")
-                if inst:HasTag("castonpoint") then
-                    local px, py, pz = pos:Get()
-                    if TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, cast_on_water) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") then
-                        table.insert(actions, ACTIONS.CASTSPELL)
-                    end
-                elseif cast_on_water then
-                    local px, py, pz = pos:Get()
-                    if TheWorld.Map:IsOceanAtPoint(px, py, pz, false) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") then
-                        table.insert(actions, ACTIONS.CASTSPELL)
-                    end
+        spellcaster = function(inst, doer, pos, actions, right)
+            if right and inst:HasTag("castonpoint") then
+                local px, py, pz = pos:Get()
+                if TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, inst:HasTag("castonpointwater")) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") then
+                    table.insert(actions, ACTIONS.CASTSPELL)
                 end
             end
         end,
@@ -1245,25 +1149,6 @@ local COMPONENT_ACTIONS =
                     Row(inst, doer, target:GetPosition(), actions)
                 end
             end
-        end,
-
-		oceanfishingrod = function(inst, doer, target, actions, right)
-			local x, y, z = target.Transform:GetWorldPosition()
-            if right then
-				local rod = inst.replica.oceanfishingrod
-				local fishing_target = rod ~= nil and rod:GetTarget() or nil
-				if (target == fishing_target or target == doer) then
-					local action = GetFishingAction(doer, fishing_target)
-					if action ~= nil then
-						table.insert(actions, action)
-					end
-				end
-			else
-				if target:HasTag("fishable") then
-					table.insert(actions, ACTIONS.OCEAN_FISHING_POND)
-				end
-            end
-
         end,
 
         spellcaster = function(inst, doer, target, actions, right)
@@ -1543,10 +1428,6 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.USEITEM)
             end
         end,
-
-		murderable = function(inst, doer, actions)
-			table.insert(actions, ACTIONS.MURDER)
-		end,
     },
 
     ISVALID = --args: inst, action, right
