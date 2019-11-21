@@ -5,7 +5,7 @@ local assets =
 
 local prefabs =
 {
-    "fish",
+    "pondfish",
     "kelp",
     "froglegs",
     "merm_king_splash",
@@ -13,9 +13,9 @@ local prefabs =
 
 local loot =
 {
-    "fish",
-    "fish",
-    "fish",
+    "pondfish",
+    "pondfish",
+    "pondfish",
     "froglegs",
     "kelp",
     "kelp",

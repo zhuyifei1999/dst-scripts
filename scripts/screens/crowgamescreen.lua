@@ -819,7 +819,7 @@ function CrowGameScreen:WaitForClearingToFinish(t)
 		self.moves = self.moves + 1
 		self:GrantBonusPowerups()
 		self:DropTiles()
-		self:FillEmptyTiles()		
+		self:FillEmptyTiles()
 
 		self:UpdateInterface()
 		

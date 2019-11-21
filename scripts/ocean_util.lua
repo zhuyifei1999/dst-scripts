@@ -26,12 +26,15 @@ function SpawnAttackWaves(position, rotation, spawn_radius, numWaves, totalAngle
     local startAngle = rotation or math.random(-180, 180)
     local total_rad = (spawn_radius or 0.0) + WAVE_SPAWN_DISTANCE
 
+    local wave_spawned = false
     for i = 0, numWaves - 1 do
         local angle = (startAngle - (totalAngle/2)) + (i * anglePerWave)
         local offset_direction = Vector3(math.cos(angle*DEGREES), 0, -math.sin(angle*DEGREES)):Normalize()
         local wavepos = position + (offset_direction * total_rad)
 
         if not TheWorld.Map:IsPassableAtPoint(wavepos:Get()) then
+            wave_spawned = true
+
             local wave = SpawnPrefab(wavePrefab)
             wave.Transform:SetPosition(wavepos:Get())
             wave.Transform:SetRotation(angle)
@@ -43,14 +46,17 @@ function SpawnAttackWaves(position, rotation, spawn_radius, numWaves, totalAngle
             wave.idle_time = idleTime
 
             if instantActive then
-                wave.sg:GoToState((idleTime > 0 and "idle") or "lower")
+                wave.sg:GoToState((idleTime > 0 and "instant_rise") or "lower")
             end
         end
     end
+
+    -- Let our caller know if we actually spawned at least 1 wave.
+    return wave_spawned
 end
 
 function SpawnAttackWave(position, rotation, waveSpeed, wavePrefab, idleTime, instantActive)
-    SpawnAttackWaves(position, rotation, nil, 1, nil, waveSpeed, wavePrefab, idleTime, instantActive)
+    return SpawnAttackWaves(position, rotation, nil, 1, nil, waveSpeed, wavePrefab, idleTime, instantActive)
 end
 
 function FindLandBetweenPoints(p0x, p0y, p1x, p1y)

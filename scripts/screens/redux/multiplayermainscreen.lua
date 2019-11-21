@@ -32,6 +32,8 @@ local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
+local IS_BETA = BRANCH == "dev" or BRANCH == "staging"
+
 local function PlayBannerSound(inst, self, sound)
     if self.bannersoundsenabled then
         TheFrontEnd:GetSound():PlaySound(sound)
@@ -46,8 +48,14 @@ function MakeBanner(self)
 	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
 
 	local anim = baner_root:AddChild(UIAnim())
-	
-	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+
+	if IS_BETA then
+        anim:GetAnimState():SetBuild("dst_menu_inker")
+        anim:GetAnimState():SetBank("dst_menu_inker")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
+		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
+	elseif IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		anim:GetAnimState():SetBuild("dst_menu_lavaarena_s2")
 		anim:GetAnimState():SetBank("dst_menu_lavaarena_s2")
 		anim:GetAnimState():PlayAnimation("idle", true)
@@ -104,11 +112,11 @@ function MakeBanner(self)
         anim.inst:ListenForEvent("animover", onanimover)
         onanimover(anim.inst)
 	else
-		--[[anim:GetAnimState():SetBuild("dst_menu")
+		anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:GetAnimState():PlayAnimation("loop", true)
 		anim:SetScale(0.63)
-		anim:SetPosition(347, 85)]]
+		anim:SetPosition(347, 85)
         --[[anim:GetAnimState():SetBuild("dst_menu_winona")
         anim:GetAnimState():SetBank("dst_menu_winona")
         anim:GetAnimState():PlayAnimation("loop", true)
@@ -134,12 +142,6 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)]]
-        anim:GetAnimState():SetBuild("dst_menu_rot2")
-        anim:GetAnimState():SetBank("dst_menu_rot2")
-        anim:GetAnimState():PlayAnimation("loop", true)
-        anim:SetScale(.667)
-        anim:SetPosition(0, 0)
-		--title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
@@ -161,12 +163,12 @@ function MakeBanner(self)
 
 			local font_size = 22
 			local title = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.HIGHLIGHT_GOLD))
-			title:SetRegionSize(text_width, font_size + 2)
+			title:SetRegionSize(text_width, 2*(font_size + 2))
 			title:SetHAlign(ANCHOR_RIGHT)
 			title:SetPosition(x, y + 4)
 
 			local shadow = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.BLACK))
-			shadow:SetRegionSize(text_width, font_size + 2)
+			shadow:SetRegionSize(text_width, 2*(font_size + 2))
 			shadow:SetHAlign(ANCHOR_RIGHT)
 			shadow:SetPosition(x + 1.5, y - 1.5)
 			shadow:MoveToBack()

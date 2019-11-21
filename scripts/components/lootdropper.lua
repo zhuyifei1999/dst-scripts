@@ -263,7 +263,7 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
         -- here? so we can run a full drop loot?
             self:FlingItem(loot, pt)
 
-            loot.PushEvent("on_loot_dropped")
+            loot:PushEvent("on_loot_dropped", {dropper = self.inst})
 
             return loot
         end

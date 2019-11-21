@@ -20,6 +20,7 @@ local Dryer = Class(function(self, inst)
     self.ingredient = nil
     self.product = nil
 	self.buildfile = nil
+    self.dried_buildfile = nil
 	self.foodtype = nil -- assuming that the product will be of the same food type as the ingredient
     self.remainingtime = nil
     self.tasktotime = nil
@@ -119,6 +120,7 @@ end
 local function DoSpoil(inst, self)
     self.ingredient = nil
 	self.buildfile = nil
+    self.dried_buildfile = nil
     self.product = nil
 	self.foodtype = nil
     self.remainingtime = nil
@@ -149,7 +151,7 @@ local function DoDry(inst, self)
     self:Resume()
 
     if self.ondonedrying ~= nil then
-        self.ondonedrying(inst, self.product, self.buildfile)
+        self.ondonedrying(inst, self.product, self.dried_buildfile)
     end
 end
 
@@ -160,6 +162,7 @@ function Dryer:StartDrying(dryable)
 
     self.ingredient = dryable.prefab
 	self.buildfile = dryable.components.dryable:GetBuildFile()
+    self.dried_buildfile = dryable.components.dryable:GetDriedBuildFile()
     self.ingredientperish = dryable.components.perishable:GetPercent()
 	self.foodtype = dryable.components.edible ~= nil and dryable.components.edible.foodtype or nil
     self.product = dryable.components.dryable:GetProduct()
@@ -174,6 +177,7 @@ function Dryer:StartDrying(dryable)
     if self.ingredient == nil or self.product == nil or self.remainingtime == nil then
         self.ingredient = nil
 		self.buildfile = nil
+        self.dried_buildfile = nil
         self.product = nil
 		self.foodtype = nil
         self.remainingtime = nil
@@ -213,6 +217,7 @@ function Dryer:StopDrying(reason)
 
         self.ingredient = nil
 		self.buildfile = nil
+        self.dried_buildfile = nil
         self.product = nil
 		self.foodtype = nil
         self.remainingtime = nil
@@ -270,6 +275,7 @@ function Dryer:DropItem()
 
     self.ingredient = nil
 	self.buildfile = nil
+    self.dried_buildfile = nil
     self.product = nil
 	self.foodtype = nil
     self.remainingtime = nil
@@ -305,6 +311,7 @@ function Dryer:Harvest(harvester)
 
     self.ingredient = nil
 	self.buildfile = nil
+    self.dried_buildfile = nil
     self.product = nil
 	self.foodtype = nil
     self.remainingtime = nil
@@ -368,6 +375,7 @@ function Dryer:OnSave()
         {
             ingredient = self.ingredient,
 			buildfile = self.buildfile,
+            dried_buildfile = self.dried_buildfile,
             ingredientperish = self.ingredientperish,
             product = self.product,
 			foodtype = self.foodtype,
@@ -381,6 +389,7 @@ function Dryer:OnLoad(data)
         self.ingredient = data.ingredient
         self.ingredientperish = data.ingredientperish or 100 -- for old save files, assume 100%
 		self.buildfile = data.buildfile
+        self.dried_buildfile = data.dried_buildfile
         self.product = data.product
 		self.foodtype = data.foodtype or FOODTYPE.GENERIC
         self.remainingtime = data.remainingtime or 0
@@ -404,7 +413,7 @@ function Dryer:OnLoad(data)
         else
             self:Resume()
             if self.ondonedrying ~= nil then
-                self.ondonedrying(self.inst, self.product, self.buildfile)
+                self.ondonedrying(self.inst, self.product, self.dried_buildfile)
             end
         end
     end

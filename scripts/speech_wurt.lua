@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Come closer, fishes! Won't hurt you!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Don't need this one for pond, flort.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "Water too hard.",
             ALREADY_BOMBED = "Water hot enough, florp.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Oh! Knew that one already!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "Glurph... this fish too small!",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Grrr... can't do it, florpt.",
 	ANNOUNCE_BOAT_LEAK = "Yay! Boat getting wetter!",
@@ -451,6 +463,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired...",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Yay!! Feel wetter already, flurp!",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Glurph! Hey!",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Line too loose, fish gonna get away!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "No! Come back, fishy!",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Glurgh... this hard.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Fish! Come here fish!",
+		"Doo-dee-doo-dee-dum...",
+		"Where the fishies?",
+		"Glurph. This taking too long.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
     ANNOUNCE_KINGCREATED = "Mermfolk have new King!",
     ANNOUNCE_KINGDESTROYED = "Was bad King, will find better one!",
@@ -2865,6 +2891,9 @@ return{
 		SALTROCK = "Weird rock.",
 		SALTBOX = "Good place for hiding tasty things.",
 
+		TACKLESTATION = "That not how you treat fish, florp!",
+		TACKLESKETCH = "Ooooh, pictures!",
+
         MALBATROSS = "Bad bird!",
         MALBATROSS_FEATHER = "Stole it from the bad bird!",
         MALBATROSS_BEAK = "Squawk! Squawk! Hee-hee...",
@@ -2872,9 +2901,72 @@ return{
         MAST_MALBATROSS = "Make boat fly! No? Aww...",
 		MALBATROSS_FEATHERED_WEAVE = "Made from bird!",
 
+        GNARWAIL =
+        {
+            GENERIC = "You a weird looking fish, florp.",
+            BROKENHORN = "Broken horn not so bad!",
+            FOLLOWER = "We friends now!",
+            BROKENHORN_FOLLOWER = "Broken horn not so bad!",
+        },
+        GNARWAIL_HORN = "Ha ha! Mine now!",
+
         WALKINGPLANK = "Jumpy board!",
         OAR = "Make boat go!",
 		OAR_DRIFTWOOD = "Make boat go!",
+
+		OCEANFISHINGROD = "Gonna catch fish from the big water, florp!",
+        OCEANFISHINGBOBBER_BALL = "Bobby floaty!",
+        OCEANFISHINGBOBBER_OVAL = "Bobby floaty!",
+		OCEANFISHINGBOBBER_CROW = "Feather floaty!",
+		OCEANFISHINGBOBBER_ROBIN = "Feather floaty!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Feather floaty!",
+		OCEANFISHINGBOBBER_CANARY = "Feather floaty!",
+		OCEANFISHINGBOBBER_GOOSE = "Big feather floaty!",
+		OCEANFISHINGBOBBER_MALBATROSS = "Big feather floaty!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_SPOON_RED = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_SPOON_GREEN = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_SPOON_BLUE = "Won't hurt fish, will it?",
+
+		OCEANFISH_SMALL_1 = "Aww, so little!",
+		OCEANFISH_SMALL_2 = "Will be new pet! And will feed it and love it and-",
+		OCEANFISH_SMALL_3 = "Hi little fishy!",
+		OCEANFISH_SMALL_4 = "Little baby fishy!",
+		OCEANFISH_SMALL_5 = "Hee-hee, looks silly!",
+		OCEANFISH_MEDIUM_1 = "Goopy!",
+		OCEANFISH_MEDIUM_2 = "Has such big pretty eyes!",
+		OCEANFISH_MEDIUM_3 = "Look like it has little spiky crown on head!",
+		OCEANFISH_MEDIUM_4 = "Will you be new pet?",
+		OCEANFISH_MEDIUM_5 = "Feel... weird mixed feeling about this one, florp.",
+
+		PONDFISH = "Awwww, it so cute!",
+
+        FISHMEAT = "No!!",
+        FISHMEAT_COOKED = "Won't eat it!",
+        FISHMEAT_SMALL = "Was so little...",
+        FISHMEAT_SMALL_COOKED = "Glurgh... who do such thing!",
+		SPOILED_FISH = "Someone not take care of fish pet!",
+
+		FISH_BOX = "This where scale-less keep fish pets, florp?",
+        POCKET_SCALE = "Is funny measure thing.",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "This good home for fish!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "AAAAAH! NOOOO!",
+			BURNT = "(Sniff) Poor fish home...",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nHee-hee. My fish best.",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Oooh! Found mud!",
+
+		CALIFORNIAROLL = "Wait... there fish in here!",
+		SEAFOODGUMBO = "Fish looks so sad in there...",
+		SURFNTURF = "Blegh! Don't want it!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 

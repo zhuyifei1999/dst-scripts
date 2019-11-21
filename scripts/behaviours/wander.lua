@@ -2,10 +2,10 @@
 -- inst: the entity that is wandering
 -- homelocation: a position or a function that gets a position. If nil, the entity won't be leashed to their home
 -- max_dist: maximum distance to go away from home (if there is a home) or a function returning such
--- times: see constructor. Note that the wander distance is hard-coded - if the walk time is too long, the entity will merely stand still after reaching their target point
+-- times: see constructor. Note that the wander distance is data.wander_dist - if the walk time is too long, the entity will merely stand still after reaching their target point
 -- getdirectionFn: instead of picking a random direction, try to use the one returned by this function
 -- setdirectionFn: use this to store the direction that was randomly chosen
-Wander = Class(BehaviourNode, function(self, inst, homelocation, max_dist, times, getdirectionFn, setdirectionFn, checkpointFn)
+Wander = Class(BehaviourNode, function(self, inst, homelocation, max_dist, times, getdirectionFn, setdirectionFn, checkpointFn, data)
     BehaviourNode._ctor(self, "Wander")
     self.homepos = homelocation
     self.maxdist = max_dist
@@ -16,6 +16,11 @@ Wander = Class(BehaviourNode, function(self, inst, homelocation, max_dist, times
     self.setdirectionFn = setdirectionFn
 
 	self.checkpointFn = checkpointFn
+
+	self.wander_dist = data and data.wander_dist or 12
+	self.offest_attempts = data and data.offest_attempts or 8
+
+	self.should_run = data and data.should_run or nil
 
     self.times =
     {
@@ -28,6 +33,7 @@ Wander = Class(BehaviourNode, function(self, inst, homelocation, max_dist, times
 	if self.times.minwaittime <= 0 and self.times.randwaittime <= 0 then
 		self.times.no_wait_time = true
 	end
+
 end)
 
 
@@ -43,7 +49,7 @@ function Wander:Visit()
         end
 
         if GetTime() > self.waittime then
-            if not self.walking or self.times.no_wait_time then
+            if not self.walking or self.times.no_wait_time or (self.inst.components.locomotor.skipHoldWhenFarFromHome and self:IsFarFromHome()) then
                 self:PickNewDirection()
             else
                 self:HoldPosition()
@@ -107,6 +113,7 @@ function Wander:Wait(t)
 end
 
 function Wander:PickNewDirection()
+
     self.far_from_home = self:IsFarFromHome()
 
     self.walking = true
@@ -128,8 +135,8 @@ function Wander:PickNewDirection()
             end
         end
 
-        local radius = 12
-        local attempts = 8
+        local radius = self.wander_dist
+        local attempts = self.offest_attempts
         local offset, check_angle, deflected = self.inst.components.locomotor:IsAquatic() 
 												and FindSwimmableOffset(pt, angle, radius, attempts, true, false, self.checkpointFn)
 												or FindWalkableOffset(pt, angle, radius, attempts, true, false, self.checkpointFn) -- try to avoid walls
@@ -150,10 +157,16 @@ function Wander:PickNewDirection()
             --print(self.inst, "no walkdable wander, fall back to random")
         end
         --print(self.inst, pt, string.format("wander to %s @ %2.2f %s", tostring(offset), angle/DEGREES, deflected and "(deflected)" or ""))
+
+		local run = self.should_run
+		if type(run) == "function" then
+			run = run(self.inst)
+		end
+
         if offset then
-            self.inst.components.locomotor:GoToPoint(self.inst:GetPosition() + offset)
+            self.inst.components.locomotor:GoToPoint(self.inst:GetPosition() + offset, nil, run)
         else
-            self.inst.components.locomotor:WalkInDirection(angle/DEGREES)
+            self.inst.components.locomotor:WalkInDirection(angle/DEGREES, run)
         end
     end
 

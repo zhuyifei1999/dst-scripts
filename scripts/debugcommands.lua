@@ -540,6 +540,64 @@ function d_spawnlayout(name, offset)
 	obj_layout.Place({math.floor(x) - 3, math.floor(z) - 3}, name, add_fn, nil, TheWorld.Map)
 end
 
+function d_allfish()
+	local allfish = {"oceanfish_small_1", "oceanfish_small_2", "oceanfish_small_3",  "oceanfish_small_4", "oceanfish_small_5",
+						 "oceanfish_medium_1", "oceanfish_medium_2", "oceanfish_medium_3",  "oceanfish_medium_4", "oceanfish_medium_5", 
+						 }
+
+	local pt = ConsoleWorldPosition()
+	if TheWorld.Map:IsVisualGroundAtPoint(pt:Get()) then
+		for i, fish in ipairs(allfish) do
+			allfish[i] = fish .. "_inv"
+		end
+	end
+
+	allfish = JoinArrays(allfish, {"spoiled_fish", "fishmeat", "fishmeat_cooked", "fishmeat_small", "fishmeat_small_cooked"})
+
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(#allfish))
+
+	for y = 0, num_wide-1 do
+		for x = 0, num_wide-1 do
+			local inst = SpawnPrefab(allfish[(y*num_wide + x + 1)])
+			if inst ~= nil then
+				inst.Transform:SetPosition((pt + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
+		end
+	end
+end
+
+function d_fishing()
+	local items = {"oceanfishingbobber_ball", "oceanfishingbobber_oval", "oceanfishingrod",  "twigs", "trinket_8", 
+					 "oceanfishingbobber_crow", "oceanfishingbobber_robin", "oceanfishingbobber_robin_winter",  "oceanfishingbobber_canary", 
+					 "oceanfishingbobber_goose", "oceanfishingbobber_malbatross", 
+				 	"oceanfishinglure_spinner_red", "oceanfishinglure_spinner_blue", "oceanfishinglure_spinner_green", "oceanfishinglure_spinner_orange", "oceanfishinglure_spinner_yellow", "oceanfishinglure_spinner_white",
+					 "berries", "butterflywings"}
+
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(#items))
+
+	local pt = ConsoleWorldPosition()
+
+	for y = 0, num_wide-1 do
+		for x = 0, num_wide-1 do
+			local inst = SpawnPrefab(items[(y*num_wide + x + 1)])
+			if inst ~= nil then
+				inst.Transform:SetPosition((pt + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
+		end
+	end
+end
+
+function d_gofishing()
+	c_give("oceanfishingrod", 1)
+	c_give("oceanfishingbobber_ball", 5)
+	c_give("oceanfishingbobber_robin_winter", 5)
+	c_give("oceanfishingbobber_malbatross", 5)
+	c_give("oceanfishinglure_spinner_red", 5)
+	c_give("oceanfishinglure_spinner_green", 5)
+end
+
 -- d_setup_placeholders( STRINGS.CHARACTERS.WARLY, "scripts\\speech_warly.lua" )
 function d_setup_placeholders( reuse, out_file_name )
 	local use_table = nil

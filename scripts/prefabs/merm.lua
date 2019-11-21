@@ -14,7 +14,7 @@ local assets =
 
 local prefabs =
 {
-    "fish",
+    "pondfish",
     "froglegs",
     "mermking",
     "merm_splash",
@@ -23,13 +23,13 @@ local prefabs =
 
 local merm_loot =
 {
-    "fish",
+    "pondfish",
     "froglegs",
 }
 
 local merm_guard_loot =
 {
-    "fish",
+    "pondfish",
     "froglegs",
 }
 

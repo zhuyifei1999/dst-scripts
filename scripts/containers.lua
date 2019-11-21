@@ -275,6 +275,7 @@ params.construction_container =
             position = Vector3(0, -94, 0),
         }
     },
+    usespecificslotsforitems = true,
     type = "cooker",
 }
 
@@ -283,6 +284,7 @@ for x = -1.5, 1.5, 1 do
 end
 
 function params.construction_container.itemtestfn(container, item, slot)
+
     local doer = container.inst.entity:GetParent()
     return doer ~= nil
         and doer.components.constructionbuilderuidata ~= nil
@@ -429,6 +431,10 @@ function params.icebox.itemtestfn(container, item, slot)
         return false
     end
 
+	if item:HasTag("smallcreature") then
+		return false
+	end
+
     --Edible
     for k, v in pairs(FOODTYPE) do
         if item:HasTag("edible_"..v) then
@@ -449,6 +455,7 @@ function params.saltbox.itemtestfn(container, item, slot)
 	return ((item:HasTag("fresh") or item:HasTag("stale") or item:HasTag("spoiled"))
 		and item:HasTag("cookable")
 		and not item:HasTag("deployable")
+		and not item:HasTag("smallcreature")
 		and item.replica.health == nil)
 		or item:HasTag("saltbox_valid")
 end
@@ -567,6 +574,68 @@ params.quagmire_safe.widget.animbank = "quagmire_ui_chest_3x3"
 params.quagmire_safe.widget.animbuild = "quagmire_ui_chest_3x3"
 
 params.dragonflychest = params.shadowchester
+
+--------------------------------------------------------------------------
+--[[ fish_box ]]
+--------------------------------------------------------------------------
+
+params.fish_box =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_fish_box_3x4",
+        animbuild = "ui_fish_box_3x4",
+        pos = Vector3(0, 220, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 2.5, -0.5, -1 do
+    for x = 0, 2 do
+        table.insert(params.fish_box.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75, 0))
+    end
+end
+
+function params.fish_box.itemtestfn(container, item, slot)
+    return item:HasTag("oceanfish") or item.prefab == "spoiled_fish"
+end
+
+
+--------------------------------------------------------------------------
+--[[ ocean fishing rod ]]
+--------------------------------------------------------------------------
+
+params.oceanfishingrod =
+{
+
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(0,   32 + 4,  0),
+            Vector3(0, -(32 + 4), 0),
+        },
+        slotbg =
+        {
+            { image = "fishing_slot_bobber.tex" },
+            { image = "fishing_slot_lure.tex" },
+        },
+        animbank = "ui_cookpot_1x2",
+        animbuild = "ui_cookpot_1x2",
+        pos = Vector3(0, 60, 0),
+    },
+    acceptsstacks = false,
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+function params.oceanfishingrod.itemtestfn(container, item, slot)
+	return (slot == nil and ((container:GetItemInSlot(1) == nil and item:HasTag("oceanfishing_bobber")) or (container:GetItemInSlot(2) == nil and item:HasTag("oceanfishing_lure"))))
+		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
+		or (slot == 2 and item:HasTag("oceanfishing_lure"))
+end
 
 --------------------------------------------------------------------------
 --[[ sacred_chest ]]

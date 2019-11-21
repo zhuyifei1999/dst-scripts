@@ -69,7 +69,10 @@ local function MakeWorkable(inst, bool)
 
         inst.components.workable:SetOnWorkCallback(function(inst, worker)
             if worker.components.combat then
-                worker.components.combat:GetAttacked(inst, TUNING.MOOSE_EGG_DAMAGE, nil, "electric")
+                -- Don't electrocute the worker if they're insulated.
+                if worker.components.inventory == nil or not worker.components.inventory:IsInsulated() then
+                    worker.components.combat:GetAttacked(inst, TUNING.MOOSE_EGG_DAMAGE, nil, "electric")
+                end
             end
             if not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("hit")

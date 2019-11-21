@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Come closer, ye wee fishy cowards!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Tis not the rod I require.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "'Tis shielded!",
             ALREADY_BOMBED = "Someone has enchanted it already.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We have already conquered this knowledge.",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This wee beastie will not bring me glory.",
+		},
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
 	ANNOUNCE_BOAT_LEAK = "Our vessel hath sprung a leak!",
@@ -451,6 +463,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I think I've done my share.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "The tides have turned for the wetter.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "By Freya, the little fiend snapped my line!",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "The line has gone slack, tis time to reel!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "It lives to fight another day.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "I'm more suited to fighting than fishing.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"I tire of waiting!",
+		"I'm tempted to simply wade in with my spear...",
+		"Come to me, delicious sea meats!",
+		"It's not befitting of a warrior to just stand around waiting!",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2865,6 +2891,9 @@ return{
 		SALTROCK = "It hath a strange shape to it.",
 		SALTBOX = "A fine place to store meats!",
 
+		TACKLESTATION = "I shall create a fishing weapon like no other!",
+		TACKLESKETCH = "This scroll bears hidden secrets of fishing!",
+
         MALBATROSS = "I will slay the four-winged beast!",
         MALBATROSS_FEATHER = "The plume of a fallen foe.",
         MALBATROSS_BEAK = "A trophy from my victory!",
@@ -2872,9 +2901,72 @@ return{
         MAST_MALBATROSS = "Let us be off, with the speed of the Valkyrie!",
 		MALBATROSS_FEATHERED_WEAVE = "A bolt of thine finest bird-cloth!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Draw your weapon and fight me, beastie!",
+            BROKENHORN = "The beast's been disarmed!",
+            FOLLOWER = "Tis a fair and noble beast!",
+            BROKENHORN_FOLLOWER = "You are still a great warrior!",
+        },
+        GNARWAIL_HORN = "A fine horn, indeed!",
+
         WALKINGPLANK = "I shall never abandon my vessel!",
         OAR = "The Norseman's way to sail!",
 		OAR_DRIFTWOOD = "Back to the sea!",
+
+		OCEANFISHINGROD = "Tremble before me, creatures of the deep!",
+        OCEANFISHINGBOBBER_BALL = "My keen hunter's eyes can detect the smallest nibble!",
+        OCEANFISHINGBOBBER_OVAL = "My keen hunter's eyes can detect the smallest nibble!",
+		OCEANFISHINGBOBBER_CROW = "Fly straight and true!",
+		OCEANFISHINGBOBBER_ROBIN = "Fly straight and true!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Fly straight and true!",
+		OCEANFISHINGBOBBER_CANARY = "Fly straight and true!",
+		OCEANFISHINGBOBBER_GOOSE = "Njoror, guide my line!",
+		OCEANFISHINGBOBBER_MALBATROSS = "Njoror, guide my line!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPOON_RED = "This should attract their attention!",
+		OCEANFISHINGLURE_SPOON_GREEN = "This should attract their attention!",
+		OCEANFISHINGLURE_SPOON_BLUE = "This should attract their attention!",
+
+		OCEANFISH_SMALL_1 = "Tis barely a morsel!",
+		OCEANFISH_SMALL_2 = "There's barely any meat on these fishbones!",
+		OCEANFISH_SMALL_3 = "Tis only a wee beastie.",
+		OCEANFISH_SMALL_4 = "This amount of meat will hardly satisfy a Viking!",
+		OCEANFISH_SMALL_5 = "Tis naught but a small snack.",
+		OCEANFISH_MEDIUM_1 = "Meat is meat.",
+		OCEANFISH_MEDIUM_2 = "You will make a fine meal!",
+		OCEANFISH_MEDIUM_3 = "The beastie put up an admirable fight.",
+		OCEANFISH_MEDIUM_4 = "There's an air of ill luck around this one...",
+		OCEANFISH_MEDIUM_5 = "This looks suspiciously veggie-like.",
+
+		PONDFISH = "Pond meat!",
+
+        FISHMEAT = "This sea meat will serve me well.",
+        FISHMEAT_COOKED = "Joy!",
+        FISHMEAT_SMALL = "This sea meat will serve me well.",
+        FISHMEAT_SMALL_COOKED = "This meat will swim in my belly!",
+		SPOILED_FISH = "You smell of your failure.",
+
+		FISH_BOX = "Meat is best when it's fresh!",
+        POCKET_SCALE = "How did I fare with my catch?",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "I will stand victorious!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "By the gods, that fishbowl's ablaze!",
+			BURNT = "Tis naught but cinders.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nTake heed of my fishing prowess!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Tis naught but a clump of mud and grass!",
+
+		CALIFORNIAROLL = "That's just a morsel of fish food.",
+		SEAFOODGUMBO = "A meal fit for a Viking queen.",
+		SURFNTURF = "Nothing goes better with meat than more meat!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2958,7 +3050,7 @@ return{
         MERMTHRONE =
         {
             GENERIC = "Have you chosen a chieftain?",
-            BURNT = "The throne hath been smited!",
+            BURNT = "The throne hath been set ablaze!",
         },        
         MERMTHRONE_CONSTRUCTION =
         {

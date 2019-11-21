@@ -351,6 +351,9 @@ function Combat:GetDebugString()
         local dist = math.sqrt(self.inst:GetDistanceSqToInst(self.target)) or 0
         local atkrange = math.sqrt(self:CalcAttackRangeSq()) or 0
         str = str .. string.format(" dist/range: %2.2f/%2.2f", dist, atkrange)
+        if self:InCooldown() then
+            str = str .. " IN COOLDOWN"
+        end
     end
     if self.targetfn and self.retargetperiod then
         str = str.. " Retarget set"

@@ -832,6 +832,7 @@ TECH =
     PIGOFFERING_THREE = { PIGOFFERING = 3 },
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
     FOODPROCESSING_ONE = { FOODPROCESSING = 1 },
+	FISHING_ONE = { FISHING = 1 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
@@ -1040,6 +1041,7 @@ RECIPETABS =
     PERDOFFERING =  { str = "PERDOFFERING", sort = 100,  icon = "tab_perd_offering.tex",     crafting_station = true },
     MADSCIENCE =    { str = "MADSCIENCE",   sort = 100,  icon = "tab_madscience_lab.tex",	 crafting_station = true, manufacturing_station = true },
     FOODPROCESSING = { str = "FOODPROCESSING", sort = 100, icon = "tab_foodprocessing.tex",  crafting_station = true },
+	FISHING =		{ str = "FISHING",		sort = 100,  icon = "tab_fishing.tex",	 crafting_station = true },
 }
 
 CUSTOM_RECIPETABS =
@@ -1569,6 +1571,11 @@ DEPLOYSPACING_RADIUS =
     [DEPLOYSPACING.NONE] = 0,
 	[DEPLOYSPACING.PLACER_DEFAULT] = 3.2,
     [DEPLOYSPACING.LARGE] = 4.0,
+}
+
+TROPHYSCALE_TYPES =
+{
+	FISH = "fish",
 }
 
 DONT_STARVE_TOGETHER_APPID = 322330

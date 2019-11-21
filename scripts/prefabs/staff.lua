@@ -484,6 +484,8 @@ local function SpawnLootPrefab(inst, lootprefab)
 
     loot.Transform:SetPosition(x, y, z)
 
+	loot:PushEvent("on_loot_dropped", {dropper = inst})
+
     return loot
 end
 

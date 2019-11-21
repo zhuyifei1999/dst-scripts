@@ -170,16 +170,24 @@ local function CheckForFleeAndDive(inst)
 end
 
 local SEE_BAIT_DIST = 15
+local EAT_MUST_TAGS = {"oceanfish", "oceanfishable"}
+local EAT_MUST_NOT_TAGS = {"INLIMBO", "outofreach", "FX"}
 local function GetEatAction(inst)
     if not inst:IsHungry() then
         return nil
     end
 
-    local target = FindEntity(inst, SEE_BAIT_DIST, 
-        function(found_entity) 
-            return not (found_entity.components.inventoryitem and found_entity.components.inventoryitem:IsHeld()) and 
+    local target = FindEntity(
+        inst,
+        SEE_BAIT_DIST, 
+        function(found_entity)
+            return not (found_entity.components.inventoryitem and found_entity.components.inventoryitem:IsHeld()) and
                     not found_entity:IsOnPassablePoint()
-        end, {"oceanfishable"}, {"INLIMBO"})
+        end,
+        EAT_MUST_TAGS,
+        EAT_MUST_NOT_TAGS
+    )
+
     if target then
         local act = BufferedAction(inst, target, ACTIONS.EAT)
         act.validfn = function()

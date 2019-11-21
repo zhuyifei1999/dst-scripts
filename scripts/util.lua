@@ -321,7 +321,18 @@ function PickSomeWithDups(num, choices)
     return ret
 end
 
--- concatenate two array-style tables
+-- Appends array-style tables to the first one passed in
+function ConcatArrays(ret, ...)
+	for i,array in ipairs({...}) do
+		for j,val in ipairs(array) do
+			table.insert(ret, val)
+		end
+	end
+	return ret
+end
+
+
+-- concatenate two or more array-style tables
 function JoinArrays(...)
 	local ret = {}
 	for i,array in ipairs({...}) do

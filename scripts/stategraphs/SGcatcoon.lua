@@ -229,6 +229,9 @@ local states=
                 if inst.vomit and inst.vomit.components.inventoryitem and inst.vomit.components.inventoryitem.ondropfn then
                     inst.vomit.components.inventoryitem.ondropfn(inst.vomit)
                 end
+				if inst.vomit.components.weighable ~= nil then
+					inst.vomit.components.weighable.prefab_override_owner = inst.prefab
+				end
                 if inst.vomit then
                     local downvec = TheCamera:GetDownVec()
                     local face = math.atan2(downvec.z, downvec.x) * (180/math.pi)
