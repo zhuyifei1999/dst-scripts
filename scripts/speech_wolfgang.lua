@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Wolfgang can't reach fish with tiny rod!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Don't need mighty fishing rod for tiny pond!",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "Is covered in see-through sharp stuff!",
             ALREADY_BOMBED = "Is already prettified.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Little recipe is already in there!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "Tiny fish not mighty enough!",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_BOAT_LEAK = "Drippy drops is come through boat!",
@@ -452,6 +464,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Time for little break.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Feels damp... Wolfgang hope not to catch cold.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Fish was too mighty for weak little string.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Wolfgang must reel in faster!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Seems no fish stew for dinner.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Was practice! Wolfgang will try for real now!",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Wolfgang can wait!",
+		"Wolfgang can wait a little longer.",
+		"Wolfgang getting bored.",
+		"Wolfgang would like fish to go on hook now.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2871,6 +2897,9 @@ return{
 		SALTROCK = "Wolfgang confused, thought salt came from tiny shakers?",
 		SALTBOX = "Put food inside!",
 
+		TACKLESTATION = "Make better rod for fish!",
+		TACKLESKETCH = "Picture will help Wolfgang catch fish!",
+
         MALBATROSS = "Big fishy bird!",
         MALBATROSS_FEATHER = "Feather from big water bird.",
         MALBATROSS_BEAK = "Hmm, too big for stew.",
@@ -2878,9 +2907,73 @@ return{
         MAST_MALBATROSS = "Bird make good sail.",
 		MALBATROSS_FEATHERED_WEAVE = "Is cloth of bird!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Big fish think it can poke holes in Wolfgang's boat?!",
+            BROKENHORN = "Big fish know better than to mess with Wolfgang now!",
+            FOLLOWER = "Yes, you follow mighty Wolfgang!",
+            BROKENHORN_FOLLOWER = "Don't need horn to be mighty! You big, like Wolfgang!",
+        },
+        GNARWAIL_HORN = "Will make good pokey spear!",
+
         WALKINGPLANK = "Maybe Wolfgang go for dip.",
         OAR = "Wolfgang will be mighty rower!",
 		OAR_DRIFTWOOD = "Oar feels so light in Wolfgang's mighty hands!",
+
+		OCEANFISHINGROD = "Strong rod to catch mighty fish!",
+        OCEANFISHINGBOBBER_BALL = "Float well, tiny bobber!",
+        OCEANFISHINGBOBBER_OVAL = "Float well, tiny bobber!",
+		OCEANFISHINGBOBBER_CROW = "Feather of crow float well on water!",
+		OCEANFISHINGBOBBER_ROBIN = "Feather of red bird float well on water!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Feather of winter bird float well on water!",
+		OCEANFISHINGBOBBER_CANARY = "Feather of yellow bird float well on water!",
+		OCEANFISHINGBOBBER_GOOSE = "Wolfgang use big feather to catch big fish!",
+		OCEANFISHINGBOBBER_MALBATROSS = "Wolfgang use big feather to catch big fish!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_RED = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Is tiny fish bait.",
+
+		OCEANFISH_SMALL_1 = "Fish is puny!",
+		OCEANFISH_SMALL_2 = "Is tiny fish!",
+		OCEANFISH_SMALL_3 = "Wolfgang could eat in one bite!",
+		OCEANFISH_SMALL_4 = "Is small and weak fish.",
+		OCEANFISH_SMALL_5 = "Would make good snack for Wolfgang.",
+		OCEANFISH_MEDIUM_1 = "Don't like way its buggy eyes stare.",
+		OCEANFISH_MEDIUM_2 = "Aha! Big fish for dinner!",
+		OCEANFISH_MEDIUM_3 = "This fish very pokey.",
+		OCEANFISH_MEDIUM_4 = "Wolfgang doesn't want bad luck!",
+		OCEANFISH_MEDIUM_5 = "Haha! Is corn and fish!",
+
+		PONDFISH = "Is fishy.",
+		PONDEEL = "Eel needs cooking!",
+
+        FISHMEAT = "Lump of stinky protein.",
+        FISHMEAT_COOKED = "Meat from water still make Wolfgang strong.",
+        FISHMEAT_SMALL = "Fish lump for eating.",
+        FISHMEAT_SMALL_COOKED = "Looks better now.",
+		SPOILED_FISH = "Is good no more.",
+
+		FISH_BOX = "Is new home for fish. For now.",
+        POCKET_SCALE = "Tiny scale fit in palm of Wolfgang's hand!",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Is scale to measure mightiness of fish!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Little scale is burning!",
+			BURNT = "Little scale is all burned away.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nOf course Wolfgang's fish is mightiest!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Is just lump of mud?",
+
+		CALIFORNIAROLL = "Get in Wolfgang's stomach!",
+		SEAFOODGUMBO = "This will make very strong Wolfgang!",
+		SURFNTURF = "Very good.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 

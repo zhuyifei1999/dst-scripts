@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Can't reach Glub Glub",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Not right Glub Glub stick",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "Water too hard",
             ALREADY_BOMBED = "Already has friends",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Already know it",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "Too tiny",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Nope",
 	ANNOUNCE_BOAT_LEAK = "Water! Water coming!",
@@ -449,12 +461,26 @@ return{
     ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "Faster gooder!",
     ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "No more wet!",
     
-    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Aww. No more zaps.",
-    ANNOUNCE_DETACH_BUFF_ATTACK            = "Feel less fighty now.",
-    ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Back to normal.",
-    ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired now.",
+    ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Aww. No more zaps",
+    ANNOUNCE_DETACH_BUFF_ATTACK            = "Feel less fighty now",
+    ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Back to normal",
+    ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired now",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Water back!",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Oh!",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Too loose?",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Too bad",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Will try again",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Waiting...",
+		"Hm...",
+		"Glub Glubs?",
+		"Not yet",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -686,7 +712,7 @@ return{
 
         WURT =
         {
-            GENERIC = "Hello scaley friend!",
+            GENERIC = "Hello scaly friend!",
             ATTACKER = "Not very nice, %s",
             MURDERER = "%s kill! Very bad!",
             REVIVER = "You good helper",
@@ -2874,6 +2900,9 @@ return{
 		SALTROCK = "Hmm...",
 		SALTBOX = "Salty Food Holder",
 
+		TACKLESTATION = "Help catch Glub Glubs",
+		TACKLESKETCH = "Glub Glub pictures",
+
         MALBATROSS = "Big Tweeter",
         MALBATROSS_FEATHER = "Big Tweeter clothes",
         MALBATROSS_BEAK = "Tweeter nose",
@@ -2881,9 +2910,73 @@ return{
         MAST_MALBATROSS = "Came from Tweeter",
 		MALBATROSS_FEATHERED_WEAVE = "Feather cloth",
 
+        GNARWAIL =
+        {
+            GENERIC = "Pointy head",
+            BROKENHORN = "Not so pointy head",
+            FOLLOWER = "Pointy head friend!",
+            BROKENHORN_FOLLOWER = "Friend lost pointy bit",
+        },
+        GNARWAIL_HORN = "Sharp!",
+
         WALKINGPLANK = "Splashy jump spot",
         OAR = "Friend helps push water",
 		OAR_DRIFTWOOD = "Friend helps push water fast!",
+
+		OCEANFISHINGROD = "Strong Glub Glub stick",
+        OCEANFISHINGBOBBER_BALL = "Floaty thing",
+        OCEANFISHINGBOBBER_OVAL = "Floaty thing",
+		OCEANFISHINGBOBBER_CROW = "Floaty thing",
+		OCEANFISHINGBOBBER_ROBIN = "Floaty thing",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Floaty thing",
+		OCEANFISHINGBOBBER_CANARY = "Floaty thing",
+		OCEANFISHINGBOBBER_GOOSE = "Floaty thing",
+		OCEANFISHINGBOBBER_MALBATROSS = "Floaty thing",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_SPOON_RED = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_SPOON_GREEN = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_SPOON_BLUE = "Glub Glub belly stuff",
+
+		OCEANFISH_SMALL_1 = "Small Glub Glub",
+		OCEANFISH_SMALL_2 = "Small Glub Glub",
+		OCEANFISH_SMALL_3 = "Small Glub Glub",
+		OCEANFISH_SMALL_4 = "Small Glub Glub",
+		OCEANFISH_SMALL_5 = "Popped Glub Glub",
+		OCEANFISH_MEDIUM_1 = "Oooh, mud!",
+		OCEANFISH_MEDIUM_2 = "Big Glub Glub",
+		OCEANFISH_MEDIUM_3 = "Pointy Glub Glub",
+		OCEANFISH_MEDIUM_4 = "Good for belly",
+		OCEANFISH_MEDIUM_5 = "Is friend?",
+
+		PONDFISH = "Glub Glub",
+		PONDEEL = "Sea Wiggly",
+
+        FISHMEAT = "Glub Glub",
+        FISHMEAT_COOKED = "Watch for bones",
+        FISHMEAT_SMALL = "Wee Glub Glub",
+        FISHMEAT_SMALL_COOKED = "Cute little belly stuff",
+		SPOILED_FISH = "Smells good. Mmmmm...",
+
+		FISH_BOX = "Glub Glubs go in there",
+        POCKET_SCALE = "Weigh thing",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Glub Glub holder",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "On fire!",
+			BURNT = "Gone",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nBig!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Oh! Mud!",
+
+		CALIFORNIAROLL = "Rolled Glub Glub",
+		SEAFOODGUMBO = "Glub Glub stew",
+		SURFNTURF = "Fills belly",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2940,7 +3033,7 @@ return{
         GARLIC_SEEDS = "Mystery baby",
         
         ONION = "Makes eyes wet",
-        ONION_COOKED = "Sky Belly will like this",
+        ONION_COOKED = "Smells nice",
         ONION_SEEDS = "Mystery baby",
         
         POTATO = "Thanks, dirt!",

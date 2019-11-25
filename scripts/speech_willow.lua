@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Stupid fish. Get on my hook!!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Seems like overkill.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "Pfft, that wouldn't work with glass in the way.",
             ALREADY_BOMBED = "Aww, someone did that one already!",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Awww, we already know that one!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This thing's too small to even bother weighing.",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
 	ANNOUNCE_BOAT_LEAK = "Gross, I hate water.",
@@ -458,6 +470,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Welp. The motivation didn't last.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Ugh. Back to watching out for puddles.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Hey! That dumb fish stole my tackle!",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Better start reeling or it's gonna get away!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Ugh! Stupid! Fish!",
+	ANNOUNCE_OCEANFISHING_BADCAST = "This really isn't my thing.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"This is BORING.",
+		"Ugh. Can't this go any faster?",
+		"Come on, you stupid fish!",
+		"I could be setting so many fires right now.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -2877,6 +2903,9 @@ return{
 		SALTROCK = "I wonder if it's flammable.",
 		SALTBOX = "It'll keep my stuff from rotting, for a little while.",
 
+		TACKLESTATION = "Gross, it looks full of bugs.",
+		TACKLESKETCH = "Who even reads fishing magazines? Uh, apart from me right now...",
+
         MALBATROSS = "Uh... nice bird?",
         MALBATROSS_FEATHER = "Ha! That thing was just a featherweight after all.",
         MALBATROSS_BEAK = "Nasty.",
@@ -2884,9 +2913,73 @@ return{
         MAST_MALBATROSS = "Just think how much cooler it'd look if I set it on fire.",
 		MALBATROSS_FEATHERED_WEAVE = "That took way too much effort.",
 
+        GNARWAIL =
+        {
+            GENERIC = "Geez, look at the nose on that thing!",
+            BROKENHORN = "Not so tough without your horn, are you?",
+            FOLLOWER = "Yeah, that's right! You work for ME now!",
+            BROKENHORN_FOLLOWER = "Ha! You look kinda dumb without your horn.",
+        },
+        GNARWAIL_HORN = "Ha ha, cool.",
+
         WALKINGPLANK = "So, who're we gonna make walk it?",
         OAR = "Rowing's dumb. Why don't we just use a sail?",
 		OAR_DRIFTWOOD = "Ugh. Can it be someone else's turn to row?",
+
+		OCEANFISHINGROD = "Nowhere to hide now, fish!",
+        OCEANFISHINGBOBBER_BALL = "How am I supposed to burn it when it's in the water?",
+        OCEANFISHINGBOBBER_OVAL = "How am I supposed to burn it when it's in the water?",
+		OCEANFISHINGBOBBER_CROW = "How am I supposed to burn it when it's in the water?",
+		OCEANFISHINGBOBBER_ROBIN = "How am I supposed to burn it when it's in the water?",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "How am I supposed to burn it when it's in the water?",
+		OCEANFISHINGBOBBER_CANARY = "How am I supposed to burn it when it's in the water?",
+		OCEANFISHINGBOBBER_GOOSE = "What if, now hear me out... I just set it on fire?",
+		OCEANFISHINGBOBBER_MALBATROSS = "What if, now hear me out... I just set it on fire?",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+		OCEANFISHINGLURE_SPOON_RED = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Ha! Fish are so dumb- Ow! Man, that's sharp.",
+
+		OCEANFISH_SMALL_1 = "Just a dumb little fish.",
+		OCEANFISH_SMALL_2 = "What the-? It's so small!",
+		OCEANFISH_SMALL_3 = "Hey! I thought you were gonna be a big fish!",
+		OCEANFISH_SMALL_4 = "Looks more like a shrimp to me.",
+		OCEANFISH_SMALL_5 = "Weird...",
+		OCEANFISH_MEDIUM_1 = "Ew, that thing looks nasty!",
+		OCEANFISH_MEDIUM_2 = "Quit looking at me like that!",
+		OCEANFISH_MEDIUM_3 = "What's so dandy about it?",
+		OCEANFISH_MEDIUM_4 = "Ha! I'm not scared of a little bad luck.",
+		OCEANFISH_MEDIUM_5 = "What... is it?",
+
+		PONDFISH = "Slippery fishy!",
+		PONDEEL = "I don't like the look it's giving me!",
+
+        FISHMEAT = "Needs fire!",
+        FISHMEAT_COOKED = "Less slippery now that it's found fire.",
+        FISHMEAT_SMALL = "I like sushi, but I prefer it flame-broiled.",
+        FISHMEAT_SMALL_COOKED = "Fish and fire go well together.",
+		SPOILED_FISH = "Gross.",
+
+		FISH_BOX = "Did we just... put a hole in the boat?",
+        POCKET_SCALE = "Hey, now I can weigh my fish... not that I care.",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Who cares about weighing some dumb fish?",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Heh... wasn't sure if that would work.",
+			BURNT = "Nice.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nPfft, that wasn't even hard.",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Just a big hunk of yuck.",
+
+		CALIFORNIAROLL = "Oh, goody. Fish rolled in seaweed.",
+		SEAFOODGUMBO = "Ew, what IS this?",
+		SURFNTURF = "Ugh. This is old person food!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 

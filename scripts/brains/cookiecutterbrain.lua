@@ -45,7 +45,7 @@ end
 
 local function CalcWanderDir(inst)
 	local r = math.random() * 2 - 1
-	return inst.Transform:GetRotation() + r*r*r * 60 * DEGREES
+	return (inst.Transform:GetRotation() + r*r*r * 60) * DEGREES
 end
 
 local function BoatInRange(inst)

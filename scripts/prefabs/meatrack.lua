@@ -32,6 +32,8 @@ local prefabs =
     "batwing", --uses smallmeat_dried
     "fish", -- uses smallmeat_dried
     "froglegs", -- uses smallmeat_dried
+    "fishmeat", -- uses smallmeat_dried
+    "fishmeat_small", -- uses meat_dried
     "eel",
     "collapse_small",
     "kelp",

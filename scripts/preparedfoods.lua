@@ -268,7 +268,7 @@ local foods =
 	},
 	fishtacos =
 	{
-		test = function(cooker, names, tags) return tags.fish and (names.corn or names.corn_cooked) end,
+		test = function(cooker, names, tags) return tags.fish and (names.corn or names.corn_cooked or names.oceanfish_small_5_inv or names.oceanfish_medium_5_inv) end,
 		priority = 10,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -309,7 +309,7 @@ local foods =
 
 	powcake =
 	{
-		test = function(cooker, names, tags) return names.twigs and names.honey and (names.corn or names.corn_cooked) end,
+		test = function(cooker, names, tags) return names.twigs and names.honey and (names.corn or names.corn_cooked or names.oceanfish_small_5_inv or names.oceanfish_medium_5_inv) end,
 		priority = 10,
 		foodtype = FOODTYPE.VEGGIE,
 		health = -TUNING.HEALING_SMALL,
@@ -324,7 +324,7 @@ local foods =
 
 	unagi =
 	{
-		test = function(cooker, names, tags) return names.cutlichen and (names.eel or names.eel_cooked) end,
+		test = function(cooker, names, tags) return (names.cutlichen or names.kelp or names.kelp_cooked or names.kelp_dried) and (names.eel or names.eel_cooked or names.pondeel) end,
 		priority = 20,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -575,7 +575,51 @@ local foods =
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
         --floater = nil,
-	}
+	},
+
+	californiaroll = 
+	{
+		test = function(cooker, names, tags) return ((names.kelp or 0) + (names.kelp_cooked or 0) + (names.kelp_dried or 0)) == 2 and (tags.fish and tags.fish >= 1) end,
+		priority = 20,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_SMALL,
+		cooktime = .5,
+		overridebuild = "cook_pot_food2",
+		potlevel = "high",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
+
+	seafoodgumbo = 
+	{
+		test = function(cooker, names, tags) return tags.fish and tags.fish > 2 end,
+		priority = 10,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_LARGE,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_MEDLARGE,
+		cooktime = 1,
+		overridebuild = "cook_pot_food2",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
+
+	surfnturf = 
+	{
+		test = function(cooker, names, tags) return tags.meat and tags.meat >= 2.5 and tags.fish and tags.fish >= 1.5 and not tags.frozen end,
+		priority = 30,
+		foodtype = "MEAT",
+		health = TUNING.HEALING_HUGE,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_LARGE,
+		cooktime = 1,
+		overridebuild = "cook_pot_food2",
+		potlevel = "high",
+		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+	},
 }
 
 for k, v in pairs(foods) do

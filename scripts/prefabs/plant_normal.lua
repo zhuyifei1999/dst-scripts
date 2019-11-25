@@ -274,6 +274,9 @@ local function MakePlant(name, build, isground)
 
 		inst:ListenForEvent("onhalloweenmoonmutate", function(inst)
 			if inst.components.crop.grower ~= nil and inst.components.crop.grower.components.grower ~= nil then
+                inst.components.crop.matured = false
+                inst.components.crop.growthpercent = 0
+                inst.components.crop.product_prefab = nil
 				inst.components.crop.grower.components.grower:RemoveCrop(inst)
 			end
 		end)

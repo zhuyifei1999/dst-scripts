@@ -51,7 +51,7 @@ local function OnKingRemoval(inst, data)
 	local manager = TheWorld.components.mermkingmanager
 	
 	manager.inst:RemoveEventCallback("onremove", OnKingRemoval, manager.king)
-	manager.inst:RemoveEventCallback("ondeath", OnKingDeath, manager.king)
+	manager.inst:RemoveEventCallback("death", OnKingDeath, manager.king)
 	
 	TheWorld:PushEvent("onmermkingdestroyed", {throne = manager.main_throne})
 
@@ -68,7 +68,7 @@ local function OnKingRemoval(inst, data)
 	end
 end
 
-local function OnCandidateDeath(inst, data)
+local function OnCandidateRemoved(inst, data)
 	local manager = TheWorld.components.mermkingmanager
 	local throne = manager:GetThrone(inst)
 
@@ -76,10 +76,10 @@ local function OnCandidateDeath(inst, data)
 		manager.candidate_transforming = nil
 	end
 
-	manager.inst:RemoveEventCallback("death", OnCandidateDeath, inst)
-	manager.candidates[throne] = nil
+	manager.inst:RemoveEventCallback("death", OnCandidateRemoved, inst)
+	manager.inst:RemoveEventCallback("onremove", OnCandidateRemoved, inst)
 
-	TheWorld:PushEvent("oncandidatedeath", {throne = throne})
+	manager.candidates[throne] = nil
 
 	if manager:IsThroneValid(throne) then
 		manager:FindMermCandidate(throne)
@@ -108,7 +108,8 @@ function MermKingManager:OnThroneDestroyed(throne)
 		end
 
 		candidate.nameoverride = nil
-		self.inst:RemoveEventCallback("death", OnCandidateDeath, candidate)
+		self.inst:RemoveEventCallback("death", OnCandidateRemoved, candidate)
+        self.inst:RemoveEventCallback("onremove", OnCandidateRemoved, candidate)
 		self.candidates[throne] = nil
 	end
 
@@ -125,13 +126,14 @@ end
 function MermKingManager:CreateMermKing(candidate, throne)
 
 	candidate.components.inventory:DropEverything()
-	self.inst:RemoveEventCallback("death", OnCandidateDeath, candidate)
+    self.inst:RemoveEventCallback("onremove", OnCandidateRemoved, candidate)
+	self.inst:RemoveEventCallback("death", OnCandidateRemoved, candidate)
 
 	self.king = ReplacePrefab(candidate, "mermking")
 	self.king:PushEvent("oncreated")
 	
 	self.inst:ListenForEvent("onremove", OnKingRemoval, self.king)
-	self.inst:ListenForEvent("ondeath", OnKingDeath, self.king)
+	self.inst:ListenForEvent("death", OnKingDeath, self.king)
 
 	self.main_throne = throne
 	for i,v in ipairs(self.thrones) do
@@ -144,7 +146,8 @@ function MermKingManager:CreateMermKing(candidate, throne)
 	for k,v in pairs(self.candidates) do
 		if v.components.mermcandidate then
 			v.components.mermcandidate:ResetCalories()
-			self.inst:RemoveEventCallback("death", OnCandidateDeath, v)
+            self.inst:RemoveEventCallback("onremove", OnCandidateRemoved, v)
+			self.inst:RemoveEventCallback("death", OnCandidateRemoved, v)
 		end
 	end
 	self.candidates = {}
@@ -180,7 +183,8 @@ function MermKingManager:ShouldGoToThrone(merm, throne)
 			if self:GetCandidate(throne) == nil then
 				self.candidates[throne] = merm
 				merm.nameoverride = "MERM_PRINCE"
-				self.inst:ListenForEvent("death", OnCandidateDeath, merm)
+                self.inst:ListenForEvent("onremove", OnCandidateRemoved, merm)
+				self.inst:ListenForEvent("death", OnCandidateRemoved, merm)
 			end
 			return true
 		end
@@ -327,14 +331,15 @@ function MermKingManager:LoadPostPass(newents, savedata)
 			self.candidates[throne] = candidate
 
 			candidate.nameoverride = "MERM_PRINCE"
-			self.inst:ListenForEvent("death", OnCandidateDeath, candidate)
+            self.inst:ListenForEvent("onremove", OnCandidateRemoved, candidate)
+			self.inst:ListenForEvent("death", OnCandidateRemoved, candidate)
 		end
 	end
 
 	if savedata.king and newents[savedata.king] ~= nil then
 		self.king = newents[savedata.king].entity
 		self.inst:ListenForEvent("onremove", OnKingRemoval, self.king)
-		self.inst:ListenForEvent("ondeath", OnKingDeath, self.king)
+		self.inst:ListenForEvent("death", OnKingDeath, self.king)
 	end
 
 	if savedata.candidate_transforming then

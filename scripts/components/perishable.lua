@@ -56,7 +56,8 @@ function Perishable:OnRemoveEntity()
 end
 
 local function Update(inst, dt)
-    if inst.components.perishable then
+	local self = inst.components.perishable
+    if self ~= nil then
 		local modifier = 1
 		local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
         if not owner and inst.components.occupier then
@@ -65,7 +66,7 @@ local function Update(inst, dt)
 
 		if owner then
 			if owner.components.preserver ~= nil then
-				modifier = owner.components.preserver:GetPerishRateMultiplier()
+				modifier = owner.components.preserver:GetPerishRateMultiplier(inst) or modifier
 			elseif owner:HasTag("fridge") then
 				if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
 					modifier = TUNING.PERISH_COLD_FROZEN_MULT
@@ -88,14 +89,14 @@ local function Update(inst, dt)
 		end
 
 		if TheWorld.state.temperature < 0 then
-			if inst:HasTag("frozen") and not inst.components.perishable.frozenfiremult then
+			if inst:HasTag("frozen") and not self.frozenfiremult then
 				modifier = TUNING.PERISH_COLD_FROZEN_MULT
 			else
 				modifier = modifier * TUNING.PERISH_WINTER_MULT
 			end
 		end
 
-		if inst.components.perishable.frozenfiremult then
+		if self.frozenfiremult then
 			modifier = modifier * TUNING.PERISH_FROZEN_FIRE_MULT
 		end
 
@@ -103,16 +104,16 @@ local function Update(inst, dt)
 			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end
 
-        modifier = modifier * inst.components.perishable.localPerishMultiplyer
+        modifier = modifier * self.localPerishMultiplyer
 
 		modifier = modifier * TUNING.PERISH_GLOBAL_MULT
 		
-		local old_val = inst.components.perishable.perishremainingtime
+		local old_val = self.perishremainingtime
 		local delta = dt or (10 + math.random()*FRAMES*8)
-		if inst.components.perishable.perishremainingtime then 
-			inst.components.perishable.perishremainingtime = inst.components.perishable.perishremainingtime - delta*modifier
-	        if math.floor(old_val*100) ~= math.floor(inst.components.perishable.perishremainingtime*100) then
-		        inst:PushEvent("perishchange", {percent = inst.components.perishable:GetPercent()})
+		if self.perishremainingtime then 
+			self.perishremainingtime = math.min(self.perishtime, self.perishremainingtime - delta*modifier)
+	        if math.floor(old_val*100) ~= math.floor(self.perishremainingtime*100) then
+		        inst:PushEvent("perishchange", {percent = self:GetPercent()})
 		    end
 		end
 
@@ -127,8 +128,8 @@ local function Update(inst, dt)
         end
 
         --trigger the next callback
-        if inst.components.perishable.perishremainingtime and inst.components.perishable.perishremainingtime <= 0 then
-			inst.components.perishable:Perish()
+        if self.perishremainingtime and self.perishremainingtime <= 0 then
+			self:Perish()
         end
     end
 end

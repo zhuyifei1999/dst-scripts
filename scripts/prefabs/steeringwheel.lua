@@ -12,6 +12,7 @@ local item_assets =
 local prefabs =
 {
     "collapse_small",
+	"steeringwheel_item", -- deprecated but kept for existing worlds and mods
 }
 
 local item_prefabs =
@@ -59,6 +60,12 @@ local function onburnt(inst)
 	DefaultBurntStructureFn(inst)
 
 	inst:RemoveComponent("steeringwheel")
+end
+
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/place")
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function onsave(inst, data)
@@ -117,6 +124,8 @@ local function fn()
     MakeSmallPropagator(inst)
 
     MakeHauntableWork(inst)
+
+    inst:ListenForEvent("onbuilt", onbuilt)
 
 	inst.OnSave = onsave
     inst.OnLoad = onload
