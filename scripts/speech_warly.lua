@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "You belong in a pan!", --WHITE
 		PIGELITE4 = "Stay away!", --GREEN
 
+		PIGELITEFIGHTER1 = "Perhaps we can talk this out?", --BLUE
+		PIGELITEFIGHTER2 = "Sorry mon ami, that gold's mine!", --RED
+		PIGELITEFIGHTER3 = "You belong in a pan!", --WHITE
+		PIGELITEFIGHTER4 = "Stay away!", --GREEN
+
 		BISHOP_CHARGE_HIT = "Mon dieu!",
 		TRUNKVEST_SUMMER = "Fashionably refreshing.",
 		TRUNKVEST_WINTER = "Toasty and trendy.",

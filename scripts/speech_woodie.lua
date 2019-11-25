@@ -2245,6 +2245,11 @@ return{
 		PIGELITE3 = "Sure likes that gold.", --WHITE
 		PIGELITE4 = "Something aboot that guy I like.", --GREEN
 
+		PIGELITEFIGHTER1 = "Looks a little blue.", --BLUE
+		PIGELITEFIGHTER2 = "Too hot-headed if you ask me.", --RED
+		PIGELITEFIGHTER3 = "Sure likes that gold.", --WHITE
+		PIGELITEFIGHTER4 = "Something aboot that guy I like.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Hey now!",
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",

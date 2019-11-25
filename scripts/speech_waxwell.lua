@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "Filthy.", --WHITE
 		PIGELITE4 = "Rotten to the core.", --GREEN
 
+		PIGELITEFIGHTER1 = "He's a slippery fellow.", --BLUE
+		PIGELITEFIGHTER2 = "A fiery one.", --RED
+		PIGELITEFIGHTER3 = "Filthy.", --WHITE
+		PIGELITEFIGHTER4 = "Rotten to the core.", --GREEN
+
 		BISHOP_CHARGE_HIT = "How DARE you!",
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",

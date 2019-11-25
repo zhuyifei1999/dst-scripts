@@ -81,9 +81,6 @@ local function fn()
     inst.components.spellcaster.canusefrominventory = true
     inst.components.spellcaster.canonlyuseonlocomotorspvp = true
 
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeSmallPropagator(inst)
-
     inst:AddComponent("tradable")
 
     inst:AddComponent("inspectable")

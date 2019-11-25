@@ -2253,6 +2253,11 @@ return {
 		PIGELITE3 = "Here's mud in your eye!", --WHITE
 		PIGELITE4 = "Wouldn't you rather hit someone else?", --GREEN
 
+		PIGELITEFIGHTER1 = "What are you looking at?", --BLUE
+		PIGELITEFIGHTER2 = "He's got gold fever!", --RED
+		PIGELITEFIGHTER3 = "Here's mud in your eye!", --WHITE
+		PIGELITEFIGHTER4 = "Wouldn't you rather hit someone else?", --GREEN
+
 		BISHOP_CHARGE_HIT = "Ow!",
 		TRUNKVEST_SUMMER = "Wilderness casual.",
 		TRUNKVEST_WINTER = "Winter survival gear.",

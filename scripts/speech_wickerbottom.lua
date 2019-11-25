@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "Has an earthy musk to him.", --WHITE
 		PIGELITE4 = "I wonder what those green markings signify.", --GREEN
 
+		PIGELITEFIGHTER1 = "He's saturated with markings.", --BLUE
+		PIGELITEFIGHTER2 = "Rather hot-tempered.", --RED
+		PIGELITEFIGHTER3 = "Has an earthy musk to him.", --WHITE
+		PIGELITEFIGHTER4 = "I wonder what those green markings signify.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Augh!",
 		TRUNKVEST_SUMMER = "Durable outerwear.",
 		TRUNKVEST_WINTER = "Ample protection against the elements.",

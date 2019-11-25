@@ -239,7 +239,7 @@ function Tune(overrides)
         PIG_LOYALTY_PER_HUNGER = total_day_time/25,
         PIG_MIN_POOP_PERIOD = seg_time * .5,
 
-        PIG_TOKEN_CHANCE = 0.05,
+        PIG_TOKEN_CHANCE = 0.01,
         PIG_TOKEN_CHANCE_YOTP = .5,
         PIG_MINIGAME_ARENA_RADIUS = 12,
         PIG_MINIGAME_REQUIRED_TIME = seg_time * 4,

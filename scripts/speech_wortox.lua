@@ -2250,6 +2250,11 @@ return{
 		PIGELITE3 = "You won't beat me, no siree!", --WHITE
 		PIGELITE4 = "You won't beat me, no siree!", --GREEN
 
+		PIGELITEFIGHTER1 = "You won't beat me, no siree!", --BLUE
+		PIGELITEFIGHTER2 = "You won't beat me, no siree!", --RED
+		PIGELITEFIGHTER3 = "You won't beat me, no siree!", --WHITE
+		PIGELITEFIGHTER4 = "You won't beat me, no siree!", --GREEN
+
 		BISHOP_CHARGE_HIT = "Hyuyu! Owie!",
 		TRUNKVEST_SUMMER = "It's my very best vest!",
 		TRUNKVEST_WINTER = "A puffy, poofy vest, oh yes.",

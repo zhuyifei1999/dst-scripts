@@ -2248,6 +2248,11 @@ return{
 		PIGELITE3 = "Friend?", --WHITE
 		PIGELITE4 = "Like him", --GREEN
 
+		PIGELITEFIGHTER1 = "Hello, Twirly Tail!", --BLUE
+		PIGELITEFIGHTER2 = "Angry Twirly Tail", --RED
+		PIGELITEFIGHTER3 = "Friend?", --WHITE
+		PIGELITEFIGHTER4 = "Like him", --GREEN
+
 		BISHOP_CHARGE_HIT = "Aggh!",
 		TRUNKVEST_SUMMER = "Cool",
 		TRUNKVEST_WINTER = "Warm",

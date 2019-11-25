@@ -51,6 +51,16 @@ local function OnTimerDone(inst, data)
     end
 end
 
+local function OnAttacked(inst, data)
+    local attacker = data ~= nil and data.attacker or nil
+	if attacker ~= nil and inst.components.follower ~= nil and inst.components.follower:GetLeader() == attacker then
+		PreventTargetingOnAttacked(inst, attacker, "player")
+		inst.components.follower:StopFollowing()
+	elseif attacker.components.combat ~= nil and inst.components.combat.target == nil then
+        inst.components.combat:SetTarget(attacker)
+	end
+end
+
 local function OnFullMoon(inst, isfullmoon)
 	if isfullmoon then
 		if inst.components.follower ~= nil then
@@ -148,8 +158,6 @@ local function MakePigEliteFighter(variation)
 
         inst:AddComponent("follower")
         inst.components.follower:KeepLeaderOnAttacked()
-        inst.components.follower.keepdeadleader = false
-        inst.components.follower.keepleaderduringminigame = false
 
         inst:AddComponent("inspectable")
         inst:AddComponent("entitytracker")
@@ -176,6 +184,8 @@ local function MakePigEliteFighter(variation)
         inst.sg.mem.variation = variation
 
 		inst:ListenForEvent("newcombattarget", onnewcombattarget)
+	    inst:ListenForEvent("attacked", OnAttacked)
+	    inst:ListenForEvent("blocked", OnAttacked)
 
         inst:WatchWorldState("isfullmoon", OnFullMoon)
 		inst:DoTaskInTime(0, function(i) OnFullMoon(i, TheWorld.state.isfullmoon) end)

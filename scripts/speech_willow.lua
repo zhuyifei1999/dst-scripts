@@ -2251,6 +2251,11 @@ return{
 		PIGELITE3 = "Eat dirt!", --WHITE
 		PIGELITE4 = "Sure does like using those signs.", --GREEN
 
+		PIGELITEFIGHTER1 = "All washed up.", --BLUE
+		PIGELITEFIGHTER2 = "You, I like.", --RED
+		PIGELITEFIGHTER3 = "Eat dirt!", --WHITE
+		PIGELITEFIGHTER4 = "Sure does like using those signs.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Owwww!",
 		TRUNKVEST_SUMMER = "Now my friend will never leave.",
 		TRUNKVEST_WINTER = "Not as warm as a good fire, but still pretty good!",

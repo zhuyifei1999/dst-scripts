@@ -2245,6 +2245,11 @@ return{
 		PIGELITE3 = "Is dirty fighter.", --WHITE
 		PIGELITE4 = "Is mighty. Wolfgang mightier.", --GREEN
 
+		PIGELITEFIGHTER1 = "Wolfgang wave to little piggy!", --BLUE
+		PIGELITEFIGHTER2 = "He is having nasty temper.", --RED
+		PIGELITEFIGHTER3 = "Is dirty fighter.", --WHITE
+		PIGELITEFIGHTER4 = "Is mighty. Wolfgang mightier.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Rrrraa!",
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "Cozy nosy!",
