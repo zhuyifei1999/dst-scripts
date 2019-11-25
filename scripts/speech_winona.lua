@@ -2250,6 +2250,11 @@ return{
 		PIGELITE3 = "He's giving me a dirty look.", --WHITE
 		PIGELITE4 = "Stand still so I can hit you with a sign.", --GREEN
 
+		PIGELITEFIGHTER1 = "Swell tattoos you got there.", --BLUE
+		PIGELITEFIGHTER2 = "Chill out, red.", --RED
+		PIGELITEFIGHTER3 = "He's giving me a dirty look.", --WHITE
+		PIGELITEFIGHTER4 = "Stand still so I can hit you with a sign.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Yeow!",
 		TRUNKVEST_SUMMER = "They weren't kidding about the breeze.",
 		TRUNKVEST_WINTER = "I wish it had sleeves.",

@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "Leave us alone!", --WHITE
 		PIGELITE4 = "Wish he wouldn't hit us so much.", --GREEN
 
+		PIGELITEFIGHTER1 = "Cool tattoos!", --BLUE
+		PIGELITEFIGHTER2 = "Yikes! He's angry.", --RED
+		PIGELITEFIGHTER3 = "Leave us alone!", --WHITE
+		PIGELITEFIGHTER4 = "Wish he wouldn't hit us so much.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Owie!",
 		TRUNKVEST_SUMMER = "It's so puffy!",
 		TRUNKVEST_WINTER = "You're always supposed to wear a jacket!",

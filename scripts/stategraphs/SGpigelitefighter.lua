@@ -12,6 +12,7 @@ local events =
 
     CommonHandlers.OnLocomote(true, true),
     CommonHandlers.OnAttack(),
+    CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnHop(),
 
@@ -77,6 +78,24 @@ local states =
                 inst.sg:RemoveStateTag("busy")
             end),
         },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
+
+    State{
+        name = "hit",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/pig/oink")
+            inst.AnimState:PlayAnimation("hit")
+            inst.Physics:Stop()
+        end,
 
         events =
         {

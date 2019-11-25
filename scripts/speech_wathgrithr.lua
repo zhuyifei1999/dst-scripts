@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "He shall not soil mine warrior reputation!", --WHITE
 		PIGELITE4 = "Hath the strength of Yggdrasil.", --GREEN
 
+		PIGELITEFIGHTER1 = "The warrior spirit runs deep within him.", --BLUE
+		PIGELITEFIGHTER2 = "He rages with berserker fury.", --RED
+		PIGELITEFIGHTER3 = "He shall not soil mine warrior reputation!", --WHITE
+		PIGELITEFIGHTER4 = "Hath the strength of Yggdrasil.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Rrraugh!",
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",

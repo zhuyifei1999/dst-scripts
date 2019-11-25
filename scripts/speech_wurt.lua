@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "Nasty Pigman!", --WHITE
 		PIGELITE4 = "Enemy of Mermfolk!", --GREEN
 
+		PIGELITEFIGHTER1 = "Stay away!", --BLUE
+		PIGELITEFIGHTER2 = "Grrr, bad Pig!", --RED
+		PIGELITEFIGHTER3 = "Nasty Pigman!", --WHITE
+		PIGELITEFIGHTER4 = "Enemy of Mermfolk!", --GREEN
+
 		BISHOP_CHARGE_HIT = "GLOP!",
 		TRUNKVEST_SUMMER = "Wearing a nose!",
 		TRUNKVEST_WINTER = "Cozy...",

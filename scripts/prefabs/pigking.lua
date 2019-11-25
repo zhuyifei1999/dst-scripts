@@ -567,7 +567,7 @@ end
 
 local function AcceptTest(inst, item, giver)
     -- Wurt can still play the mini-game though
-    if giver:HasTag("merm") and not item.prefab == "pig_token" then
+    if giver:HasTag("merm") and item.prefab ~= "pig_token" then
         return
     end
 

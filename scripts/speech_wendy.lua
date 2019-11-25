@@ -2244,6 +2244,11 @@ return{
 		PIGELITE3 = "His whole career is grounded in violence.", --WHITE
 		PIGELITE4 = "Petrifying.", --GREEN
 
+		PIGELITEFIGHTER1 = "A storm rages within him.", --BLUE
+		PIGELITEFIGHTER2 = "Furious.", --RED
+		PIGELITEFIGHTER3 = "His whole career is grounded in violence.", --WHITE
+		PIGELITEFIGHTER4 = "Petrifying.", --GREEN
+
 		BISHOP_CHARGE_HIT = "Ouch...",
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",
