@@ -3076,6 +3076,7 @@ return{
         MERMGUARD = "They stand on guard for the king.",
         MERM_PRINCE = "This guy's really the best you got, eh?",
 
+        SQUID = "Squirmy little guys, eh?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

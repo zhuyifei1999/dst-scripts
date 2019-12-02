@@ -3084,6 +3084,7 @@ return {
         MERMGUARD = "I feel very guarded around these guys...",
         MERM_PRINCE = "They operate on a first-come, first-sovereigned basis.",
 
+        SQUID = "I have an inkling they'll come in handy.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

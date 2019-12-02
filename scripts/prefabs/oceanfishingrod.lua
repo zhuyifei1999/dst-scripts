@@ -47,13 +47,27 @@ local function onunequip(inst, owner)
 end
 
 local function GetTackle(inst)
-	if inst.components.oceanfishingrod ~= nil and inst.components.container ~= nil then
-		return 
+	return (inst.components.oceanfishingrod ~= nil and inst.components.container ~= nil) and
 		{
 			bobber = inst.components.container.slots[1], 
 			lure = inst.components.container.slots[2]
 		}
+		or {}
+end
+
+local function OnTackleChanged(inst, data)
+	if inst.components.oceanfishingrod ~= nil then
+		inst.components.oceanfishingrod:UpdateClientMaxCastDistance()
 	end
+end
+
+local function reticuletargetfn(inst, pos)
+	local offset = inst.replica.oceanfishingrod ~= nil and inst.replica.oceanfishingrod:GetMaxCastDist() or TUNING.OCEANFISHING_TACKLE.BASE.dist_max
+    return Vector3(ThePlayer.entity:LocalToWorldSpace(offset, 0.001, 0)) -- raised this off the ground a touch so it wont have any z-fighting with the ground biome transition tiles.
+end
+
+local function reticuleshouldhidefn(inst)
+    return inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:IsHeldBy(ThePlayer) and ThePlayer.components.playercontroller ~= nil and ThePlayer:HasTag("fishing")
 end
 
 local function OnStartedFishing(inst, fisher, target)
@@ -116,6 +130,12 @@ local function fn()
     }
     MakeInventoryFloatable(inst, "med", 0.05, {0.8, 0.4, 0.8}, true, -12, floater_swap_data)
 
+    inst:AddComponent("reticule")
+    inst.components.reticule.targetfn = reticuletargetfn
+    inst.components.reticule.shouldhidefn = reticuleshouldhidefn
+    inst.components.reticule.ease = true
+    inst.components.reticule.ispassableatallpoints = true
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -136,15 +156,9 @@ local function fn()
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("oceanfishingrod")
 	inst.components.container.canbeopened = false
---    inst.components.container.onopenfn = onopen
---    inst.components.container.onclosefn = onclose
+    inst:ListenForEvent("itemget", OnTackleChanged)
+    inst:ListenForEvent("itemlose", OnTackleChanged)
 
---[[
-    inst:AddComponent("finiteuses")
-    inst.components.finiteuses:SetMaxUses(TUNING.OCEANFISHINGROD.USES)
-    inst.components.finiteuses:SetUses(TUNING.OCEANFISHINGROD.USES)
-    inst.components.finiteuses:SetOnFinished(inst.Remove)
-]]
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")

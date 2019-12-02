@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "They look pretty scary!",
         MERM_PRINCE = "Wow, becoming a king looks easy!",
 
+        SQUID = "Wish we had eyes like that!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

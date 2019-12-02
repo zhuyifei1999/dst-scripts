@@ -196,6 +196,8 @@ local function fn()
 	inst:SetStateGraph("SGcookiecutter")
     inst:SetBrain(brain)
 
+    MakeHauntablePanic(inst)
+
 	inst.onspawntask = inst:DoTaskInTime(0, function(i) ValidateSpawnPt(i) end)
 
 	inst.OnEntitySleep = OnEntitySleep

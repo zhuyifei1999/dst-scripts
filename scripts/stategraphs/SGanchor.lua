@@ -21,7 +21,7 @@ local states =
     State
     {
         name = "raised",
-        onenter = function(inst)            
+        onenter = function(inst)
             inst.AnimState:PlayAnimation("untethered_idle_loop", true)
             anchor_raised(inst)
         end,
@@ -41,7 +41,7 @@ local states =
                 function(inst, data)
                     inst.AnimState:PlayAnimation("idle_hit")
                     inst.AnimState:PushAnimation("untethered_idle_loop", true)
-                end),             
+                end),
         },
     },
 
@@ -56,9 +56,9 @@ local states =
             elseif depth > TUNING.ANCHOR_DEPTH_TIMES.BASIC then
                 inst.AnimState:PlayAnimation("tethered_idle_loop_low", true)
             elseif depth > TUNING.ANCHOR_DEPTH_TIMES.SHALLOW then
-                inst.AnimState:PlayAnimation("tethered_idle_loop_med", true)              
+                inst.AnimState:PlayAnimation("tethered_idle_loop_med", true)
             else
-                inst.AnimState:PlayAnimation("tethered_idle_loop_full", true)                 
+                inst.AnimState:PlayAnimation("tethered_idle_loop_full", true)
             end
 
             anchor_lowered(inst)
@@ -66,6 +66,7 @@ local states =
 
         events =
         {
+            EventHandler("lowering_anchor", function(inst) inst.sg:GoToState("lowering") end),
             EventHandler("raising_anchor", function(inst) inst.sg:GoToState("raising") end),
             EventHandler("workinghit", 
                 function(inst, data)
@@ -80,12 +81,12 @@ local states =
                         inst.AnimState:PushAnimation("tethered_idle_loop_low", true)
                     elseif depth > TUNING.ANCHOR_DEPTH_TIMES.SHALLOW then
                         inst.AnimState:PlayAnimation("tethered_hit_med")
-                        inst.AnimState:PushAnimation("tethered_idle_loop_med", true)                
+                        inst.AnimState:PushAnimation("tethered_idle_loop_med", true)
                     else
                         inst.AnimState:PlayAnimation("tethered_hit_full")
                         inst.AnimState:PushAnimation("tethered_idle_loop_full", true)
-                    end                    
-                end),             
+                    end
+                end),
         },
     },
 
@@ -104,15 +105,15 @@ local states =
             EventHandler("workinghit", 
                 function(inst, data)
                     inst.AnimState:PlayAnimation("tether_land_hit")
-                    inst.AnimState:PushAnimation("tether_land_idle", false)                  
-                end),            
+                    inst.AnimState:PushAnimation("tether_land_idle", false)
+                end),
         },
     },
 
     State
     {
         name = "raising",
-        onenter = function(inst)   
+        onenter = function(inst)
             inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.VERY_DEEP
             inst.AnimState:PlayAnimation("untethering_pre_empty")
             inst.AnimState:PushAnimation("untethering_loop_empty", true)
@@ -138,13 +139,20 @@ local states =
                 if inst.sg.statemem.depth ~= TUNING.ANCHOR_DEPTH_TIMES.BASIC then
                     inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.BASIC
                     inst.AnimState:PlayAnimation("untethering_loop_med", true)
-                end             
+                end
             else
                 if inst.sg.statemem.depth ~= TUNING.ANCHOR_DEPTH_TIMES.SHALLOW then
                     inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.SHALLOW
                     inst.AnimState:PlayAnimation("untethering_loop_full", true)
                 end  
             end 
+            if not inst.components.anchor.is_anchor_transitioning then
+                if inst.components.anchor.raiseunits == 0 then
+                    inst.sg:GoToState("raising_pst")
+                else
+                    inst.sg:GoToState("lowering_pst")
+                end
+            end
         end,
 
         timeline =
@@ -157,9 +165,14 @@ local states =
 
         events =
         {
-            EventHandler("anchor_raised", function(inst) inst.sg:GoToState("raising_pst") end),
-            EventHandler("lowering_anchor", function(inst) inst.sg:GoToState("lowering") end),   
-            EventHandler("anchor_lowered", function(inst) inst.sg:GoToState("lowering_pst") end),      
+            EventHandler("lowering_anchor", function(inst)
+                local anchor_x, anchor_y, anchor_z = inst.Transform:GetWorldPosition()
+                if TheWorld.Map:GetPlatformAtPoint(anchor_x, anchor_z) ~= nil then
+                    inst.sg:GoToState("lowering")
+                else
+                    inst.sg:GoToState("lowering_land")
+                end
+             end),
         },
     },
 
@@ -182,6 +195,14 @@ local states =
 
         events =
         {
+            EventHandler("lowering_anchor", function(inst) 
+                local anchor_x, anchor_y, anchor_z = inst.Transform:GetWorldPosition()
+                if TheWorld.Map:GetPlatformAtPoint(anchor_x, anchor_z) ~= nil then
+                    inst.sg:GoToState("lowering")
+                else
+                    inst.sg:GoToState("lowering_land")
+                end
+            end),
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("raised") end),
         },
     },
@@ -203,6 +224,7 @@ local states =
         
         events =
         {
+            EventHandler("lowering_anchor", function(inst) inst.sg:GoToState("lowering_land") end),
             EventHandler("animover", function(inst) inst.sg:GoToState("raised") end),
         },
     },
@@ -231,7 +253,7 @@ local states =
     {
         name = "lowering",
 
-        onenter = function(inst)   
+        onenter = function(inst)
             inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.LAND
             inst.AnimState:PlayAnimation("tethering_pre_full")
             inst.AnimState:PushAnimation("tethering_loop_full", true)
@@ -239,7 +261,6 @@ local states =
         end,
 
         onupdate = function(inst)
-
             local depth = inst.components.anchor.raiseunits
 
             if depth < TUNING.ANCHOR_DEPTH_TIMES.SHALLOW then
@@ -256,13 +277,21 @@ local states =
                 if inst.sg.statemem.depth ~= TUNING.ANCHOR_DEPTH_TIMES.BASIC then
                     inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.BASIC
                     inst.AnimState:PlayAnimation("tethering_loop_low", true)
-                end             
+                end
             else
                 if inst.sg.statemem.depth ~= TUNING.ANCHOR_DEPTH_TIMES.DEEP then
                     inst.sg.statemem.depth = TUNING.ANCHOR_DEPTH_TIMES.DEEP
                     inst.AnimState:PlayAnimation("tethering_loop_empty", true)
                 end  
             end 
+
+            if not inst.components.anchor.is_anchor_transitioning then
+                if inst.components.anchor.raiseunits == 0 then
+                    inst.sg:GoToState("raising_pst")
+                else
+                    inst.sg:GoToState("lowering_pst")
+                end
+            end
         end,
 
         timeline =
@@ -277,8 +306,6 @@ local states =
 
         events =
         {
-            EventHandler("anchor_lowered", function(inst) inst.sg:GoToState("lowering_pst") end),            
-            EventHandler("anchor_raised", function(inst) inst.sg:GoToState("raising_pst") end),
             EventHandler("raising_anchor", function(inst) inst.sg:GoToState("raising") end),
         },
     },
@@ -295,9 +322,9 @@ local states =
             elseif depth > TUNING.ANCHOR_DEPTH_TIMES.BASIC then
                 inst.AnimState:PlayAnimation("tethering_pst_low")
             elseif depth > TUNING.ANCHOR_DEPTH_TIMES.SHALLOW then
-                inst.AnimState:PlayAnimation("tethering_pst_med")              
+                inst.AnimState:PlayAnimation("tethering_pst_med")
             else
-                inst.AnimState:PlayAnimation("tethering_pst_full")                          
+                inst.AnimState:PlayAnimation("tethering_pst_full")
             end
 
             anchor_lowered(inst)
@@ -310,6 +337,8 @@ local states =
 
         events =
         {
+            EventHandler("lowering_anchor", function(inst) inst.sg:GoToState("lowering") end),
+            EventHandler("raising_anchor", function(inst) inst.sg:GoToState("raising") end),
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("lowered") end),
         },
     },

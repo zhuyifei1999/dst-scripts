@@ -159,6 +159,7 @@ local function fncommon()
     inst:AddTag("monster")
     inst:AddTag("squid")
     inst:AddTag("herdmember")
+    inst:AddTag("likewateroffducksback")
 
     inst.AnimState:SetBank("squiderp")
     inst.AnimState:SetBuild("squid_build")

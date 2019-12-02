@@ -509,7 +509,7 @@ return{
 	COMBAT_QUIT =
 	{
 		GENERIC = "I am the wimp imp!",
-		PIG = "Nevermind, I've forgotten my dancing shoes.",
+		PIG = "Never mind, I've forgotten my dancing shoes.",
 		PREY = "You no longer entertain me.",
 		SPIDER = "I am the wimp imp!",
 		SPIDER_WARRIOR = "I'll take my leave. Hyuyu!",
@@ -3081,6 +3081,7 @@ return{
         MERMGUARD = "The horns are an improvement.",
         MERM_PRINCE = "Hyuyuyu, a prince! Charming!",
 
+        SQUID = "An eerie eye to see the sea.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

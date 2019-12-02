@@ -3,6 +3,7 @@ local OceanFishingRod = Class(function(self, inst)
 
     self._target = net_entity(inst.GUID, "oceanfishingrod._hook")
     self._line_tension = net_tinybyte(inst.GUID, "oceanfishingrod._line_tension") --  [0..7]
+    self._max_cast_dist = net_smallbyte(inst.GUID, "oceanfishingrod._max_cast_dist") --  [0..63]
 end)
 
 function OceanFishingRod:GetTarget()
@@ -30,6 +31,14 @@ end
 
 function OceanFishingRod:IsLineTensionLow()
 	return self._line_tension:value() == 0
+end
+
+function OceanFishingRod:SetClientMaxCastDistance(dist)
+	self._max_cast_dist:set(math.floor(dist))
+end
+
+function OceanFishingRod:GetMaxCastDist()
+	return self._max_cast_dist:value()
 end
 
 function OceanFishingRod:GetDebugString()

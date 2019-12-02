@@ -2029,7 +2029,7 @@ function PlayerController:OnUpdate(dt)
             end
 
             if self.reticule ~= nil and self.reticule.reticule ~= nil then
-                if hidespecialactionreticule then
+                if hidespecialactionreticule or self.reticule:ShouldHide() then
                     self.reticule.reticule:Hide()
                 else
                     self.reticule.reticule:Show()
@@ -2661,6 +2661,10 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
     else
         platform_for_velocity_calculation = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)
     end
+
+	if platform == nil and (platform_for_velocity_calculation == nil or TheWorld.Map:IsOceanAtPoint(target_x, 0, target_z)) then
+        return 
+	end
 
     local hop_dir_x, hop_dir_z = target_x - my_x, target_z - my_z
     local hop_distance_sq = hop_dir_x * hop_dir_x + hop_dir_z * hop_dir_z

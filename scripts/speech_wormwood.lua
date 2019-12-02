@@ -3079,6 +3079,7 @@ return{
         MERMGUARD = "Friends?",
         MERM_PRINCE = "Special Glub Glub?",
 
+        SQUID = "Bright Eye Glub Glub",
     },
 
     DESCRIBE_GENERIC = "Friend?",

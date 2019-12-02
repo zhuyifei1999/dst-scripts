@@ -3076,6 +3076,7 @@ return{
         MERMGUARD = "Not as mighty as Wolfgang!",
         MERM_PRINCE = "Looks too scrawny to be king!",
 
+        SQUID = "Wolfgang make friends with bright little fishies.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

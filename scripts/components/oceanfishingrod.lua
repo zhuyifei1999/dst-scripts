@@ -87,6 +87,16 @@ function OceanFishingRod:GetLureData()
 	return self.lure_data
 end
 
+function OceanFishingRod:UpdateClientMaxCastDistance()
+	if self.inst.replica.oceanfishingrod ~= nil then
+		local tackle = self.gettackledatafn(self.inst)
+		local bobber_data = (tackle.bobber ~= nil and tackle.bobber.components.oceanfishingtackle ~= nil) and tackle.bobber.components.oceanfishingtackle.casting_data or nil
+		local lure_data = (tackle.lure ~= nil and tackle.lure.components.oceanfishingtackle ~= nil) and tackle.lure.components.oceanfishingtackle.lure_data or nil
+
+		self.inst.replica.oceanfishingrod:SetClientMaxCastDistance(math.max(0, self.casting_base.dist_max + (bobber_data ~= nil and bobber_data.dist_max or 0) + (lure_data ~= nil and lure_data.dist_max or 0)))
+	end
+end
+
 function OceanFishingRod:_CacheTackleData(bobber, lure)
 	local bobber_data = (bobber ~= nil and bobber.components.oceanfishingtackle ~= nil) and bobber.components.oceanfishingtackle.casting_data or nil
 	local lure_data = (lure ~= nil and lure.components.oceanfishingtackle ~= nil) and lure.components.oceanfishingtackle.lure_data or nil

@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "A formidable warrior, to be sure.",
         MERM_PRINCE = "Thou art certain he is fit to be leader?",
 
+        SQUID = "It lights my voyage through murky waters.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

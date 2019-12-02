@@ -116,7 +116,6 @@ local function EatFishAction(inst)
                     end
                 end
             end
-            print(target.prefab,target.Transform:GetWorldPosition())
             local act = BufferedAction(inst, target, ACTIONS.EAT)
             act.validfn = function() return not (target.components.inventoryitem and target.components.inventoryitem:IsHeld()) end
             return act

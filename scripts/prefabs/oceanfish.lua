@@ -115,6 +115,12 @@ local function OnReelingIn(inst, doer)
 		-- now fully hooked!
 		inst:RemoveTag("partiallyhooked")
 		inst.components.oceanfishable:ResetStruggling()
+        if inst.components.homeseeker ~= nil
+                and inst.components.homeseeker.home ~= nil
+                and inst.components.homeseeker.home:IsValid()
+                and inst.components.homeseeker.home.prefab == "oceanfish_shoalspawner" then
+            TheWorld:PushEvent("ms_shoalfishhooked", inst.components.homeseeker.home)
+        end
 	end
 end
 
@@ -304,7 +310,7 @@ local function inv_common(data)
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY)
     inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = "spoiled_fish"
+    inst.components.perishable.onperishreplacement = inst.fish_def.perish_product
 	
 	inst:AddComponent("murderable")
 

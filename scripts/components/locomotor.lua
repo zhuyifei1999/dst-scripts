@@ -1225,6 +1225,11 @@ function LocoMotor:IsAquatic()
 	return self.pathcaps ~= nil and self.pathcaps.allowocean == true and self.pathcaps.ignoreLand == true
 end
 
+function LocoMotor:IsTerrestrial()
+    -- We use "not" because the pathcaps may be unassigned or assigned false (i.e. if they're changed at runtime)
+    return self.pathcaps ~= nil and (not self.pathcaps.allowocean) and (not self.pathcaps.ignoreLand)
+end
+
 function LocoMotor:FindPath()
     --Print(VERBOSITY.DEBUG, "LocoMotor:FindPath", self.inst.prefab)
 

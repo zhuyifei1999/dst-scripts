@@ -17,12 +17,7 @@ local pondeel_prefabs =
 {
 	"fishmeat_small",
     "fishmeat_small_cooked",
-	"spoiled_food",
-}
-
-local default_loot =
-{
-	"fishmeat_small",
+	"eel",
 }
 
 local function CalcNewSize()
@@ -97,12 +92,12 @@ local function commonfn(bank, build, char_anim_build, data)
     inst:AddComponent("bait")
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(data.perish_time or TUNING.PERISH_SUPERFAST)
+    inst.components.perishable:SetPerishTime(data.perish_time)
     inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = data.perish_product or "spoiled_food"
+    inst.components.perishable.onperishreplacement = data.perish_product
 
     inst:AddComponent("cookable")
-    inst.components.cookable.product = data.cookable_product or "fishmeat_small_cooked"
+    inst.components.cookable.product = data.cookable_product
 
     inst:AddComponent("inspectable")
 
@@ -114,12 +109,12 @@ local function commonfn(bank, build, char_anim_build, data)
 	inst:AddComponent("murderable")
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot(data.loot or default_loot)
+	inst.components.lootdropper:SetLoot(data.loot)
 
     inst:AddComponent("edible")
     inst.components.edible.ismeat = true
-	inst.components.edible.healthvalue = data.healthvalue or TUNING.HEALING_TINY
-	inst.components.edible.hungervalue = data.hungervalue or TUNING.CALORIES_SMALL
+	inst.components.edible.healthvalue = data.healthvalue
+	inst.components.edible.hungervalue = data.hungervalue
 	inst.components.edible.sanityvalue = 0
     inst.components.edible.foodtype = FOODTYPE.MEAT
 
@@ -142,12 +137,34 @@ local function commonfn(bank, build, char_anim_build, data)
     return inst
 end
 
+local pondfish_data =
+{
+    weight_min = 40.89,
+    weight_max = 55.28,
+    perish_product = "fishmeat_small",
+    loot = { "fishmeat_small" },
+    cookable_product = "fishmeat_small_cooked",
+    healthvalue = TUNING.HEALING_TINY,
+    hungervalue = TUNING.CALORIES_SMALL,
+    perish_time = TUNING.PERISH_SUPERFAST,
+}
 local function pondfishfn()
-	return commonfn("fish", "fish", "fish01", { weight_min = 40.89, weight_max = 55.28, perish_product = "spoiled_fish" })
+	return commonfn("fish", "fish", "fish01", pondfish_data)
 end
 
+local pondeel_data =
+{
+    weight_min = 165.16,
+    weight_max = 212.12,
+    perish_product = "eel",
+    loot = { "eel" },
+    cookable_product = "eel_cooked",
+    healthvalue = TUNING.HEALING_SMALL,
+    hungervalue = TUNING.CALORIES_TINY,
+    perish_time = TUNING.PERISH_SUPERFAST,
+}
 local function pondeelfn()
-	return commonfn("eel", "eel", "eel01", { weight_min = 165.16, weight_max = 212.12, perish_product = "spoiled_food", loot = {"eel"}, cookable_product = "eel_cooked", healthvalue = TUNING.HEALING_SMALL, hungervalue = TUNING.CALORIES_TINY })
+	return commonfn("eel", "eel", "eel01", pondeel_data)
 end
 
 return Prefab("pondfish", pondfishfn, assets, pondeel_prefabs),

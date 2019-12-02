@@ -629,7 +629,7 @@ return{
             BEAVERGHOST = "The curse haunts you even in death, %s?",
             MOOSE = "It looks like your condition has worsened, %s.",
             MOOSEGHOST = "I'll find a way to return you to this mortal coil. If you wish.",
-            GOOSE = "Hah... you look so silly I almost... well, nevermind.",
+            GOOSE = "Hah... you look so silly I almost... well, never mind.",
             GOOSEGHOST = "Why stay when you could fly away from this place?",
             FIRESTARTER = "Fire setting does not seem in your best interest...",
         },
@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "Friend or foe?",
         MERM_PRINCE = "Are you ready to shoulder the burdens of leadership?",
 
+        SQUID = "Bright eyes for dark times.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

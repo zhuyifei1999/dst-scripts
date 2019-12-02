@@ -102,6 +102,18 @@ local function OnMalbatrossKilledOrRemoved(source, the_malbatross)
     TryBeginningMalbatrossSpawns()
 end
 
+local function OnShoalFishHooked(source, fish_shoal)
+    if _activemalbatross == nil and fish_shoal ~= nil and math.random() < TUNING.MALBATROSS_HOOKEDFISH_SUMMONCHANCE then
+        _time_until_spawn = _time_until_spawn or
+                (_firstspawn and 0) or
+                (TUNING.TOTAL_DAY_TIME * GetRandomWithVariance(MALBATROSS_SPAWNDELAY.BASE, MALBATROSS_SPAWNDELAY.RANDOM))
+
+        _shuffled_shoals_for_spawning = {fish_shoal}
+
+        self.inst:StartUpdatingComponent(self)
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
@@ -241,6 +253,7 @@ end
 --------------------------------------------------------------------------
 
 self.inst:ListenForEvent("ms_registerfishshoal", OnFishShoalAdded, TheWorld)
+self.inst:ListenForEvent("ms_shoalfishhooked", OnShoalFishHooked, TheWorld)
 self.inst:ListenForEvent("malbatrossremoved", OnMalbatrossKilledOrRemoved, TheWorld)
 self.inst:ListenForEvent("malbatrosskilled", OnMalbatrossKilledOrRemoved, TheWorld)
 

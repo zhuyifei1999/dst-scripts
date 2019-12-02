@@ -70,7 +70,7 @@ local total = 1
                     loop = false
                 else
                     local origin = inst.components.knownlocations:GetLocation("nav1")
-                    angle = angle + ( (2*PI/triesmax) * tries)                                        
+                    angle = angle + ( (2*PI/triesmax) * tries)
                     local offsetx = math.cos(angle) * dist
                     local offsetz = math.sin(angle) * dist
                     local water = not TheWorld.Map:IsVisualGroundAtPoint(origin.x + offsetx,0, origin.z + offsetz) and TheWorld.Map:IsValidTileAtPoint(origin.x + offsetx,0, origin.z + offsetz)
@@ -81,7 +81,6 @@ local total = 1
                         tries = tries + 1
                         if tries > triesmax then
                             loop = false
-                            print("SQUID HERD: FAILED TO FIND SPOT AFTER "..triesmax.." TRIES, NAV",i)
                         end
                     end
                 end
@@ -105,14 +104,13 @@ end
 local function checkforremoval(inst)
     local remove = true
     for k,v in pairs(inst.components.herd.members)do
-        if k.entity:IsAwake() or not k:IsOnOcean() then
+        if k.entity:IsAwake() or (k:IsValid() and not k:IsOnOcean()) then
 
             remove = false
             break
         end
     end    
     if remove then
-        print("ALL SQUID IN HERD ASLEEP AND ON WATER: REMOVE SQUID HERD")
         for k,v in pairs(inst.components.herd.members)do
             k:Remove()
         end 

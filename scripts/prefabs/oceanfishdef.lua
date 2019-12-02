@@ -91,6 +91,18 @@ local LOOT = {
 	MEDIUM = 	{ "fishmeat" },
 	LARGE = 	{ "fishmeat" },
 	HUGE = 		{ "fishmeat" },
+    CORN =      { "corn" },
+    POPCORN =   { "corn_cooked" },
+}
+
+local PERISH = {
+	TINY = 		"fishmeat_small",
+	SMALL = 	"fishmeat_small",
+	MEDIUM = 	"fishmeat",
+	LARGE = 	"fishmeat",
+	HUGE = 		"fishmeat",
+    CORN =      "corn",
+    POPCORN =   "corn_cooked",
 }
 
 local COOKING_PRODUCT = {
@@ -99,6 +111,7 @@ local COOKING_PRODUCT = {
 	MEDIUM = 	"fishmeat_cooked",
 	LARGE = 	"fishmeat_cooked",
 	HUGE = 		"fishmeat_cooked",
+    CORN =      "corn_cooked",
 }
 
 local DIET = {
@@ -130,7 +143,7 @@ local FISH_DEFS =
 	oceanfish_small_1 = { 
 	  	prefab = "oceanfish_small_1", 
 	  	bank = "oceanfish_small", 
-	  	build = "oceanfish_small_1",		
+	  	build = "oceanfish_small_1",
 	  	weight_min = 48.34, 
 	  	weight_max = 60.30, 
 
@@ -147,7 +160,7 @@ local FISH_DEFS =
 
 	  	schoolmin = SCHOOL_SIZE.LARGE.min,
 	  	schoolmax = SCHOOL_SIZE.LARGE.max,
-	  	schoolrange = SCHOOL_AREA.TINY,	  
+	  	schoolrange = SCHOOL_AREA.TINY,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
 	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
@@ -156,11 +169,12 @@ local FISH_DEFS =
 	  	herdarrivedist = ARRIVE_DIST.MEDIUM,
 	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
 		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
-		
+
 		set_hook_time = SET_HOOK_TIME_SHORT,
 		breach_fx = BREACH_FX_SMALL,
 		loot = LOOT.SMALL,
 		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
@@ -172,7 +186,7 @@ local FISH_DEFS =
 	oceanfish_small_2 = { 
 		prefab = "oceanfish_small_2", 
 		bank = "oceanfish_small", 
-		build = "oceanfish_small_2",		
+		build = "oceanfish_small_2",
 	  	weight_min = 37.54, 
 	  	weight_max = 57.62, 
 
@@ -189,7 +203,7 @@ local FISH_DEFS =
 
 	  	schoolmin = SCHOOL_SIZE.MEDIUM.min,
 	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
-	  	schoolrange = SCHOOL_AREA.SMALL,		 		
+	  	schoolrange = SCHOOL_AREA.SMALL,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
 	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
@@ -203,6 +217,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_SMALL,
 		loot = LOOT.SMALL,
 		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
@@ -214,7 +229,7 @@ local FISH_DEFS =
 	oceanfish_small_3 = { 
 		prefab = "oceanfish_small_3", 
 		bank = "oceanfish_small", 
-		build = "oceanfish_small_3",		
+		build = "oceanfish_small_3",
 	  	weight_min = 39.66, 
 	  	weight_max = 63.58, 
 
@@ -233,7 +248,7 @@ local FISH_DEFS =
 	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
 	  	schoolrange = SCHOOL_AREA.SMALL,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
-	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,	
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max, 
@@ -245,6 +260,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_SMALL,
 		loot = LOOT.SMALL,
 		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_MEAT,
@@ -256,7 +272,7 @@ local FISH_DEFS =
 	oceanfish_small_4 = { 
 		prefab = "oceanfish_small_4", 
 		bank = "oceanfish_small", 
-		build = "oceanfish_small_4",		
+		build = "oceanfish_small_4",
 	  	weight_min = 39.70, 
 	  	weight_max = 56.26, 
 
@@ -279,7 +295,7 @@ local FISH_DEFS =
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max,
-	  	herdarrivedist = ARRIVE_DIST.MEDIUM,	
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,
 	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
 		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
 
@@ -287,6 +303,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_SMALL,
 		loot = LOOT.SMALL,
 		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_OMNI,
@@ -298,7 +315,7 @@ local FISH_DEFS =
 	oceanfish_small_5 = { 
 		prefab = "oceanfish_small_5", 
 		bank = "oceanfish_small", 
-		build = "oceanfish_small_5",		
+		build = "oceanfish_small_5",
 	  	weight_min = 33.08, 
 	  	weight_max = 47.74, 
 
@@ -327,8 +344,9 @@ local FISH_DEFS =
 
 		set_hook_time = SET_HOOK_TIME_MEDIUM,
 		breach_fx = BREACH_FX_SMALL,
-		loot = { "corn_cooked" },
-		cooking_product = "corn_cooked",
+		loot = LOOT.POPCORN,
+		cooking_product = COOKING_PRODUCT.CORN,
+        perish_product = PERISH.POPCORN,
         fishtype = "veggie",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
@@ -340,7 +358,7 @@ local FISH_DEFS =
 	oceanfish_medium_1 = { 
 		prefab = "oceanfish_medium_1", 
 		bank = "oceanfish_medium", 
-		build = "oceanfish_medium_1",	
+		build = "oceanfish_medium_1",
 	  	weight_min = 154.32, 
 	  	weight_max = 214.97, 
 
@@ -359,7 +377,7 @@ local FISH_DEFS =
 	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
 	  	schoolrange = SCHOOL_AREA.SMALL,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
-	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,	
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max,
@@ -371,6 +389,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_MEDIUM,
 		loot = LOOT.MEDIUM,
 		cooking_product = COOKING_PRODUCT.MEDIUM,
+        perish_product = PERISH.MEDIUM,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.OMNI,
@@ -382,7 +401,7 @@ local FISH_DEFS =
 	oceanfish_medium_2 = { 
 		prefab = "oceanfish_medium_2", 
 		bank = "oceanfish_medium", 
-		build = "oceanfish_medium_2",	
+		build = "oceanfish_medium_2",
 	  	weight_min = 172.41, 
 	  	weight_max = 228.88, 
 
@@ -401,7 +420,7 @@ local FISH_DEFS =
 	  	schoolmax = SCHOOL_SIZE.SMALL.max,
 	  	schoolrange = SCHOOL_AREA.MEDIUM,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
-	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,	
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.LONG.min,
 	  	herdwandermax = WANDER_DIST.LONG.max,
@@ -413,6 +432,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_MEDIUM,
 		loot = LOOT.MEDIUM,
 		cooking_product = COOKING_PRODUCT.MEDIUM,
+        perish_product = PERISH.MEDIUM,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.MEAT,
@@ -424,7 +444,7 @@ local FISH_DEFS =
 	oceanfish_medium_3 = { 
 		prefab = "oceanfish_medium_3", 
 		bank = "oceanfish_medium", 
-		build = "oceanfish_medium_3",	
+		build = "oceanfish_medium_3",
 	  	weight_min = 246.77, 
 	  	weight_max = 302.32, 
 
@@ -447,7 +467,7 @@ local FISH_DEFS =
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max,
-	  	herdarrivedist = ARRIVE_DIST.MEDIUM, 	
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,
 	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
 		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
 
@@ -455,6 +475,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_MEDIUM,
 		loot = LOOT.MEDIUM,
 		cooking_product = COOKING_PRODUCT.MEDIUM,
+        perish_product = PERISH.MEDIUM,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.MEAT,
@@ -467,7 +488,7 @@ local FISH_DEFS =
 	oceanfish_medium_4 = { 
 		prefab = "oceanfish_medium_4", 
 		bank = "oceanfish_medium", 
-		build = "oceanfish_medium_4",	
+		build = "oceanfish_medium_4",
 	  	weight_min = 193.27, 
 	  	weight_max = 278.50, 
 
@@ -489,7 +510,7 @@ local FISH_DEFS =
 	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
-	  	herdwandermax = WANDER_DIST.MEDIUM.max,	 
+	  	herdwandermax = WANDER_DIST.MEDIUM.max,
 	  	herdarrivedist = ARRIVE_DIST.MEDIUM,
 	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
 		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
@@ -498,6 +519,7 @@ local FISH_DEFS =
 		breach_fx = BREACH_FX_MEDIUM,
 		loot = LOOT.MEDIUM,
 		cooking_product = COOKING_PRODUCT.MEDIUM,
+        perish_product = PERISH.MEDIUM,
         fishtype = "meat",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.OMNI,
@@ -509,7 +531,7 @@ local FISH_DEFS =
 	oceanfish_medium_5 = { 
 		prefab = "oceanfish_medium_5", 
 		bank = "oceanfish_medium", 
-		build = "oceanfish_medium_5",	
+		build = "oceanfish_medium_5",
 	  	weight_min = 161.48, 
 	  	weight_max = 241.80, 
 
@@ -528,7 +550,7 @@ local FISH_DEFS =
 	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
 	  	schoolrange = SCHOOL_AREA.SMALL,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
-	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,	  	
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max,	 
@@ -538,8 +560,9 @@ local FISH_DEFS =
 
 		set_hook_time = SET_HOOK_TIME_SHORT,
 		breach_fx = BREACH_FX_MEDIUM,
-		loot = { "corn" },
-		cooking_product = "corn_cooked",
+		loot = LOOT.CORN,
+		cooking_product = COOKING_PRODUCT.CORN,
+        perish_product = PERISH.CORN,
         fishtype = "veggie",
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.VEGGIE,

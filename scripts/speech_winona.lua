@@ -3081,6 +3081,7 @@ return{
         MERMGUARD = "Just doin' their job.",
         MERM_PRINCE = "Looks like someone got a promotion!",
 
+        SQUID = "Jeepers, those peepers move fast!",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

@@ -72,7 +72,7 @@ local function testforsquid(comp, forcesquid)
             local squidcount = #TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, {"squid"})
             local fishlist = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, {"oceanfish", "oceanfishable"})
             local fishcount = #fishlist
-                           
+
             local chance = SQUID_CHANCE[TheWorld.state.moonphase]
             chance = Remap(math.min(fishcount,MAX_FISH), 0, MAX_FISH, 0, chance)
             if TheWorld.state.isnight then
@@ -84,10 +84,8 @@ local function testforsquid(comp, forcesquid)
             if TheWorld.state.iswaxingmoon then
                 chance = chance / 3
                 max = 2
-            end                
-            
-     --       print("SQUID CHANCE squid:",squidcount,max,"fish:",fishcount,"night:",TheWorld.state.isnight,"chance:", chance )        
-            
+            end
+
             if (squidcount < max and  math.random() < chance ) or forcesquid then
                 local herd = SpawnPrefab("squidherd")
                 local num = math.random(2,SQUID_MAX_NUMBERS[TheWorld.state.moonphase])
@@ -187,9 +185,7 @@ end
 inst.spawntask = spawntask
 spawntask()
 
-inst:WatchWorldState("isnight", function() print("SQUID NIGHT")  spawntask() end)
-inst:WatchWorldState("isdusk",  function() print("SQUID DUSK") spawntask()  end)
-inst:WatchWorldState("isday",  function() print("SQUID DAY") spawntask() end)
+inst:WatchWorldState("phase", function() spawntask() end)
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
 

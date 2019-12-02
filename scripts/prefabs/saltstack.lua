@@ -251,6 +251,8 @@ local function fn()
     inst:AddComponent("inspectable")
 	inst.components.inspectable.getstatus = getstatusfn
 
+    MakeHauntableWork(inst)
+
     inst:ListenForEvent("on_collide", OnCollide)
 
 	if not POPULATING then -- Used for variety in debug spawned saltstacks

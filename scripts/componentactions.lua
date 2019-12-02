@@ -1361,9 +1361,9 @@ local COMPONENT_ACTIONS =
         deployable = function(inst, doer, actions)
             if doer.components.playercontroller ~= nil and not doer.components.playercontroller.deploy_mode then
                 local inventoryitem = inst.replica.inventoryitem
-                if inventoryitem ~= nil and inventoryitem:IsGrandOwner(doer) and inventoryitem:IsDeployable(doer) then
-                table.insert(actions, ACTIONS.TOGGLE_DEPLOY_MODE)
-            end
+				if inventoryitem ~= nil and inventoryitem:IsGrandOwner(doer) and inventoryitem:IsDeployable(doer) then
+					table.insert(actions, ACTIONS.TOGGLE_DEPLOY_MODE)
+				end
             end
         end,
 

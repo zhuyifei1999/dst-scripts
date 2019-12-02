@@ -40,8 +40,8 @@ local function HasSoul(victim)
                 victim:HasTag("shadowchesspiece") or
                 victim:HasTag("groundspike") or
                 victim:HasTag("smashable"))
-        and victim.components.combat ~= nil
-        and victim.components.health ~= nil
+        and (  (victim.components.combat ~= nil and victim.components.health ~= nil)
+            or victim.components.murderable ~= nil )
 end
 
 local function GetNumSouls(victim)

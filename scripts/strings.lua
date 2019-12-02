@@ -2197,9 +2197,11 @@ STRINGS =
 
         FISHMEAT = "Raw Fish",
         FISHMEAT_COOKED = "Fish Steak",
+		SPOILED_FISH = "Spoiled Fish",
+
         FISHMEAT_SMALL = "Fish Morsel",
         FISHMEAT_SMALL_COOKED = "Cooked Fish Morsel",
-		SPOILED_FISH = "Spoiled Fish",
+        SPOILED_FISH_SMALL = "Spoiled Fish Morsel",
 
 		CALIFORNIAROLL = "California Roll",
 		SEAFOODGUMBO = "Seafood Gumbo",
@@ -2215,7 +2217,6 @@ STRINGS =
 		OCEANFISHINGBOBBER_GOOSE = "Down Quill Float",
 		OCEANFISHINGBOBBER_MALBATROSS = "Malbatross Quill Float",
 
-		-- TODO:JEN
 		OCEANFISHINGLURE_SPINNER_RED = "Sunrise Spinnerbait",
 		OCEANFISHINGLURE_SPINNER_GREEN = "Dusky Spinnerbait",
 		OCEANFISHINGLURE_SPINNER_BLUE = "Nightflyer Spinnerbait",
@@ -7256,7 +7257,7 @@ STRINGS.UI =
         COMMERCE_INFO_GRIND = "This curio can be unraveled into {doodad_value} Spools.",
         COMMERCE_INFO_NOGRIND = "This curio cannot be unraveled.",
         NO_MARKET = "This curio cannot be traded or sold.",
-        CANCEL = "Nevermind",
+        CANCEL = "Never mind",
         OK = "OK",
         
         UNRAVEL_WARNING_TITLE = "Warning!",
@@ -7327,7 +7328,7 @@ STRINGS.UI =
         PURCHASE_WARNING_TITLE = "No New Items in Chest",
         PURCHASE_WARNING_DESC = "You already own all the items in this chest. Would you like to purchase it anyway?",
         PURCHASE_WARNING_OK = "Continue Purchase",
-        PURCHASE_WARNING_CANCEL = "Nevermind!",
+        PURCHASE_WARNING_CANCEL = "Never mind!",
 
         PACK_SAVINGS = "-{savings}%",
         SALE_TXT = "-{sale_percent}%\nSale!",

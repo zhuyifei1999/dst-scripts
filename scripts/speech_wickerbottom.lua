@@ -315,7 +315,7 @@ return{
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
 	ANNOUNCE_NODANGERSLEEP = "I can barely sleep even when I'm not in danger!",
-	ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, nevermind during the day.",
+	ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, never mind during the day.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "These caves don't make it any easier to sleep.",
 	ANNOUNCE_NOHUNGERSLEEP = "I can barely sleep even when I'm not starving!",
 	ANNOUNCE_NOSLEEPONFIRE = "Even if I could sleep, these temperatures are highly unsafe.",
@@ -2110,7 +2110,7 @@ return{
 		},
 		SIESTAHUT = 
 		{
-			GENERIC = "I can barely sleep on a bed, nevermind the ground.",
+			GENERIC = "I can barely sleep on a bed, never mind the ground.",
 			BURNT = "It wasn't doing me much good anyhow.",
 		},
 		TENTACLE = "A horror waiting in the mud.",
@@ -2944,7 +2944,7 @@ return{
 		OCEANFISH_MEDIUM_1 = "Oh my... is it supposed to look like that?",
 		OCEANFISH_MEDIUM_2 = "This species usually prefers deeper waters.",
 		OCEANFISH_MEDIUM_3 = "Oh dear, I believe these are actually an invasive species.",
-		OCEANFISH_MEDIUM_4 = "I've never been superstitious about black cats, nevermind a catfish!",
+		OCEANFISH_MEDIUM_4 = "I've never been superstitious about black cats, never mind a catfish!",
 		OCEANFISH_MEDIUM_5 = "A fascinating blend of animal and vegetable.",
 
 		PONDFISH = "Some kind of whitefish, I believe.",
@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "A royal bodyguard.",
         MERM_PRINCE = "The heir, apparently.",
 
+        SQUID = "Luminesca Cephalopoda! What beautiful bioluminescence!",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

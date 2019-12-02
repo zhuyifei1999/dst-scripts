@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "A most fearsome fishmonger!",
         MERM_PRINCE = "Hm... he doesn't seem so different from the others.",
 
+        SQUID = "Incandescent calamari!",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "Will grow up big and strong like that one day!",
         MERM_PRINCE = "Need to fatten up if you gonna be proper King!",
 
+         SQUID = "Stay still, little squiddies!",
     },
 
     DESCRIBE_GENERIC = "What that?",

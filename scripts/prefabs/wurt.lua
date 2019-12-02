@@ -199,6 +199,7 @@ local function OnRespawn(inst)
 end
 
 local function common_postinit(inst)
+    inst:AddTag("playermerm")
     inst:AddTag("merm")
     inst:AddTag("mermguard")
     inst:AddTag("mermfluent")
@@ -235,10 +236,11 @@ local function master_postinit(inst)
     inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", 1.6 )
 
     inst:AddComponent("itemaffinity")
+    inst.components.itemaffinity:AddAffinity("hutch_fishbowl", nil, TUNING.DAPPERNESS_MED, 1)
     inst.components.itemaffinity:AddAffinity(nil, "fish", TUNING.DAPPERNESS_MED, 1)
     inst.components.itemaffinity:AddAffinity(nil, "fishmeat", -TUNING.DAPPERNESS_MED_LARGE, 2)
     inst.components.itemaffinity:AddAffinity(nil, "spoiled_fish", -TUNING.DAPPERNESS_MED_LARGE, 2)
-	
+
 	inst:AddComponent("preserver")
 	inst.components.preserver:SetPerishRateMultiplier(FishPreserverRate)
 

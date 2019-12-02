@@ -22,14 +22,6 @@ local function OnEntityWake(inst)
 	inst.releasefishtask = inst:DoTaskInTime(0.1, ReleaseAllFish)
 end
 
-local function OnSave(inst, data)
-
-end
-
-local function OnLoad(inst, data)
-
-end
-
 local function OnInit(inst)
     TheWorld:PushEvent("ms_registerfishshoal", inst)
 end
@@ -42,7 +34,8 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst.MiniMapEntity:SetIcon("oceanfish_shoalspawner.png")
-
+    
+    inst:AddTag("NOBLOCK")
 	inst:AddTag("ignorewalkableplatforms")
 
     inst.entity:SetPristine()
@@ -57,15 +50,12 @@ local function fn()
     inst.components.childspawner:SetMaxChildren(TUNING.OCEANFISH_SHOAL.MAX_CHILDREN)
     inst.components.childspawner:StartRegen()
 	inst.components.childspawner.spawnradius = TUNING.OCEANFISH_SHOAL.SPAWNRADIUS
-	inst.components.childspawner.childname = "oceanfish_medium_4"
+	inst.components.childspawner.childname = "oceanfish_medium_2"
 	inst.components.childspawner.wateronly = true
 	inst.components.childspawner:StartSpawning()
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
-
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
 
     inst:DoTaskInTime(0, OnInit)
 

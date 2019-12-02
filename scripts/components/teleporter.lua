@@ -130,19 +130,45 @@ function Teleporter:Teleport(obj)
     if self.targetTeleporter ~= nil then
         local target_x, target_y, target_z = self.targetTeleporter.Transform:GetWorldPosition()
         local offset = self.targetTeleporter.components.teleporter ~= nil and self.targetTeleporter.components.teleporter.offset or 0
+
+        local is_aquatic = obj.components.locomotor ~= nil and obj.components.locomotor:IsAquatic()
+
         if offset ~= 0 then
             local pt = Vector3(target_x, target_y, target_z)
             local angle = math.random() * 2 * PI
-            offset =
-                FindWalkableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
-                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
-                FindWalkableOffset(pt, angle, offset, 8, true, false, NoHoles) or
-                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoHoles)
+
+            if not is_aquatic then
+                offset =
+                    FindWalkableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
+                    FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
+                    FindWalkableOffset(pt, angle, offset, 8, true, false, NoHoles) or
+                    FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoHoles)
+            else
+                offset =
+                    FindSwimmableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
+                    FindSwimmableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
+                    FindSwimmableOffset(pt, angle, offset, 8, true, false, NoHoles) or
+                    FindSwimmableOffset(pt, angle, offset * .5, 6, true, false, NoHoles)
+            end
+
             if offset ~= nil then
                 target_x = target_x + offset.x
                 target_z = target_z + offset.z
             end
         end
+
+        local ocean_at_point = TheWorld.Map:IsOceanAtPoint(target_x, target_y, target_z, false)
+        if ocean_at_point then
+            local terrestrial = obj.components.locomotor ~= nil and obj.components.locomotor:IsTerrestrial()
+            if terrestrial then
+                return
+            end
+        else
+            if is_aquatic then
+                return
+            end
+        end
+
         if obj.Physics ~= nil then
             obj.Physics:Teleport(target_x, target_y, target_z)
         elseif obj.Transform ~= nil then

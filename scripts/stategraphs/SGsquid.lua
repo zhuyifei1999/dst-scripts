@@ -116,6 +116,14 @@ local function RestoreCollidesWith(inst)
                         + COLLISION.GIANTS)
 end
 
+local function AddNoClick(inst)
+    inst:AddTag("NOCLICK")
+end
+
+local function RemoveNoClick(inst)
+    inst:RemoveTag("NOCLICK")
+end
+
 local states =
 {
     State{
@@ -184,12 +192,20 @@ local states =
             dimLight(inst,false,false,true,20*FRAMES)            
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("spawn", false)
+            AddNoClick(inst)
         end,
 
         events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
+
+        timeline =
+        {
+            TimeEvent(14*FRAMES, RemoveNoClick),
+        },
+
+        onexit = RemoveNoClick,
     },
 
     State{
@@ -206,6 +222,13 @@ local states =
         {
             EventHandler("animover", function(inst) inst:Remove() end),
         },
+
+        timeline =
+        {
+            TimeEvent(12*FRAMES, AddNoClick),
+        },
+
+        onexit = RemoveNoClick,
     },    
 
     State{
@@ -227,7 +250,12 @@ local states =
 
         timeline =
         {
-        
+            TimeEvent(8*FRAMES, function(inst)
+                if inst:HasTag("swimming") then 
+                    SpawnPrefab("splash_green").Transform:SetPosition(inst.Transform:GetWorldPosition())
+                end
+            end),
+
             TimeEvent(10*FRAMES, function(inst)
                 inst.components.combat:DoAttack(inst.sg.statemem.target) 
                 inst.SoundEmitter:PlaySound(inst.sounds.attack)
@@ -243,7 +271,6 @@ local states =
                 inst.components.combat:DoAttack(inst.sg.statemem.target) 
                 inst.components.locomotor:Stop()
             end),
-
         },
 
         events =
@@ -276,9 +303,9 @@ local states =
                 if inst.sg.statemem.target and inst.sg.statemem.target:IsValid() then
                     inst.sg.statemem.inkpos = Vector3(inst.sg.statemem.target.Transform:GetWorldPosition())            
                     inst:LaunchProjectile(inst.sg.statemem.inkpos)
-                    
+
                     inst.components.timer:StopTimer("ink_cooldown")
-                    inst.components.timer:StartTimer("ink_cooldown", 10 + math.random()*3)                    
+                    inst.components.timer:StartTimer("ink_cooldown", 10 + math.random()*3)
                 end
             end),
         },
@@ -319,6 +346,7 @@ local states =
             inst.AnimState:PlayAnimation("gobble_pre")
             setdivelayering(inst,true)
             inst.components.timer:StartTimer("gobble_cooldown", 2 + math.random()*5)
+            AddNoClick(inst)
         end,      
 
 
@@ -367,6 +395,7 @@ local states =
                 inst.components.oceanfishable:ResetStruggling()
             end
             setdivelayering(inst,false)
+            RemoveNoClick(inst)
         end,         
     },
 
@@ -391,6 +420,8 @@ local states =
             inst.Physics:SetMotorVelOverride(20,0,0)
             inst.AnimState:PlayAnimation("gobble_success")
             inst.SoundEmitter:PlaySound(inst.sounds.gobble)
+
+            AddNoClick(inst)
         end,
 
         timeline =
@@ -405,6 +436,7 @@ local states =
                 setdivelayering(inst,false)
             end),
             
+            TimeEvent(12*FRAMES, RemoveNoClick),
         },
 
         events =
@@ -417,6 +449,8 @@ local states =
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
             inst.Physics:ClearMotorVelOverride()
             setdivelayering(inst,false)
+
+            RemoveNoClick(inst)
         end,        
     },
 
@@ -445,6 +479,8 @@ local states =
                     inst.foodtarget = list[math.random(1,#list)]
                 end
             end
+
+            AddNoClick(inst)
         end,
 
         timeline =
@@ -452,6 +488,7 @@ local states =
             TimeEvent(7*FRAMES, function(inst)
                 setdivelayering(inst,false)
             end),
+            TimeEvent(9*FRAMES, RemoveNoClick),
         },        
 
         events =
@@ -461,6 +498,7 @@ local states =
         
         onexit = function(inst)
             setdivelayering(inst,false)
+            RemoveNoClick(inst)
         end,        
     },
 
@@ -698,6 +736,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("struggle_pre")
             inst:PerformBufferedAction()
+            AddNoClick(inst)
         end,
         
         events =
@@ -712,6 +751,8 @@ local states =
                 end
             end),
         },
+
+        onexit = RemoveNoClick,
     },    
 
     State{
@@ -765,11 +806,12 @@ local states =
                 local theta, speed = math.random() * 2 * PI, 1
                 inst.Physics:SetMotorVelOverride(math.sin(theta) * speed, 0, math.cos(theta) * speed)
             end),
-            TimeEvent(21*FRAMES,
-                function(inst)
-                    inst.Physics:ClearMotorVelOverride()
-                    inst.components.locomotor:Stop()
-                end),
+            TimeEvent(21*FRAMES, function(inst)
+                inst.Physics:ClearMotorVelOverride()
+                inst.components.locomotor:Stop()
+
+                AddNoClick(inst)
+            end),
         },
         
         events =
@@ -796,6 +838,8 @@ local states =
             if inst:HasTag("partiallyhooked") and inst.components.oceanfishable ~= nil then
                 inst.components.oceanfishable:SetRod(nil)
             end
+
+            RemoveNoClick(inst)
         end,
     },    
 
@@ -815,6 +859,13 @@ local states =
                 inst.sg:GoToState("idle")
             end),
         },
+
+        timeline =
+        {
+            TimeEvent(25*FRAMES, AddNoClick),
+        },
+
+        onexit = RemoveNoClick,
     },  
 
 -- END FISHING STATES
@@ -848,7 +899,8 @@ local states =
             TimeEvent(3 * FRAMES, function(inst) 
                 testExtinguish(inst) 
                 setdivelayering(inst,true)
-            end),                
+            end),
+            TimeEvent(5 * FRAMES, AddNoClick),
         },        
 
         onexit = function(inst)           
@@ -863,6 +915,8 @@ local states =
             end
             setdivelayering(inst,false)
             --RestorRunSpeed(inst)
+
+            RemoveNoClick(inst)
         end,        
 
         events =
@@ -896,11 +950,9 @@ local states =
                 end)
             end
             UpdateRunSpeed(inst)
-        end,
 
-        onupdate = function(inst)
-            --UpdateRunSpeed(inst)
-        end,        
+            AddNoClick(inst)
+        end,
 
         timeline =
         {
@@ -961,6 +1013,8 @@ local states =
                 end
             end
             setdivelayering(inst,false)
+
+            RemoveNoClick(inst)
         end,
 
         ontimeout = function(inst)
@@ -975,8 +1029,10 @@ local states =
 
         onenter = function(inst)
             setdivelayering(inst,true)
-            inst.components.locomotor:StopMoving()            
-            inst.AnimState:PlayAnimation("run_pst")        
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("run_pst")
+
+            AddNoClick(inst)
         end,
 
         timeline =
@@ -984,6 +1040,7 @@ local states =
             TimeEvent(7 * FRAMES, function(inst)
                 setdivelayering(inst,false)
             end),
+            TimeEvent(9 * FRAMES, RemoveNoClick),
         },
 
         onexit = function(inst)

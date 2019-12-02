@@ -1579,10 +1579,54 @@ local function MakeHat(name)
         return inst
     end
 
+    local function merm_disable(inst)
+        local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
+        if owner then
+			if inst.wasmonster then
+                owner:AddTag("monster")
+			end
+			if inst.notamerm then
+                owner:RemoveTag("merm")
+	            owner:RemoveTag("mermdisguise")
+				if owner.components.leader then
+					owner.components.leader:RemoveFollowersByTag("merm")
+				end
+			end
+		end
+    end
+
+    local function merm_enable(inst)
+        local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
+        if owner then
+			if owner.components.leader then
+	            owner.components.leader:RemoveFollowersByTag("pig")
+			end
+
+			if not owner:HasTag("merm") then
+				inst.notamerm = true
+	            owner:AddTag("merm")
+	            owner:AddTag("mermdisguise")
+			end
+			if owner:HasTag("monster") then
+				inst.wasmonster = true
+	            owner:RemoveTag("monster")
+			end
+        end
+    end
+
+    local function merm_equip(inst, owner)
+        opentop_onequip(inst, owner)
+        merm_enable(inst)
+    end
+
+    local function merm_unequip(inst, owner)
+        onunequip(inst, owner)
+        merm_disable(inst)
+    end
+
     local function merm_custom_init(inst)
         inst:AddTag("open_top_hat")
         inst:AddTag("show_spoilage")
-        inst:AddTag("merm")
     end
 
     local function merm()
@@ -1595,9 +1639,9 @@ local function MakeHat(name)
             return inst
         end
 
-        -- Should we add this as a mask downside?
-        --inst.components.equippable.dapperness = -TUNING.DAPPERNESS_TINY
-        inst.components.equippable:SetOnEquip(opentop_onequip)
+        inst.components.equippable.dapperness = -TUNING.DAPPERNESS_TINY
+        inst.components.equippable:SetOnEquip(merm_equip)
+        inst.components.equippable:SetOnUnequip(merm_unequip)
 
         inst:AddComponent("perishable")
         inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)

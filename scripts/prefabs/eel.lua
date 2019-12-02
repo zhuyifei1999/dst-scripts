@@ -7,7 +7,7 @@ local assets =
 local prefabs =
 {
     "eel_cooked",
-    "spoiled_food",
+    "spoiled_fish",
 }
 
 local function stopkicking(inst)
@@ -60,7 +60,7 @@ local function commonfn(build, anim, loop, dryable, cookable)
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = "spoiled_food"
+    inst.components.perishable.onperishreplacement = "spoiled_fish"
 
     if dryable then
         inst:AddComponent("dryable")

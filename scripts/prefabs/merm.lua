@@ -63,7 +63,6 @@ local function FindInvaderFn(guy, inst)
         return test_guy.components.inventory and test_guy.components.inventory:EquipHasTag("merm")
     end
 
-    local has_merm_disguise = test_disguise(guy)
     local leader = inst.components.follower and inst.components.follower.leader
     
     local leader_guy = guy.components.follower and guy.components.follower.leader
@@ -71,10 +70,10 @@ local function FindInvaderFn(guy, inst)
         leader_guy = leader_guy.components.inventoryitem:GetGrandOwner()
     end
 
-    return (guy:HasTag("character") and not (guy:HasTag("merm") or has_merm_disguise)) and 
+    return (guy:HasTag("character") and not (guy:HasTag("merm"))) and 
            not ((TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing())) and 
            not (leader and leader:HasTag("player")) and 
-           not (leader_guy and (leader_guy:HasTag("merm") or test_disguise(leader_guy)) and 
+           not (leader_guy and (leader_guy:HasTag("merm")) and 
            not guy:HasTag("pig"))
 end
 
@@ -168,7 +167,6 @@ local function IsAbleToAccept(inst, item, giver)
 end
 
 local function ShouldAcceptItem(inst, item, giver)
-
     if inst:HasTag("mermguard") and inst.king ~= nil then
         return false
     end
@@ -177,7 +175,7 @@ local function ShouldAcceptItem(inst, item, giver)
         inst.components.sleeper:WakeUp()
     end
 
-    return (giver:HasTag("merm") or (not inst:HasTag("mermguard") and giver.components.inventory:EquipHasTag("merm"))) and 
+    return (giver:HasTag("merm") and not (inst:HasTag("mermguard") and giver:HasTag("mermdisguise"))) and 
            ((item.components.equippable ~= nil and item.components.equippable.equipslot == EQUIPSLOTS.HEAD) or
            (item.components.edible and inst.components.eater:CanEat(item)) or 
            (item:HasTag("fish") and not (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:IsCandidate(inst))))

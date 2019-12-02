@@ -189,7 +189,7 @@ ACTIONS =
     FISH = Action(),
     REEL = Action({ instant=true }),
     OCEAN_FISHING_POND = Action(),
-    OCEAN_FISHING_CAST = Action({priority=3, rmb=true, customarrivecheck=CheckOceanFishingCastRange, is_relative_to_platform = true, disable_platform_hopping=true}),
+    OCEAN_FISHING_CAST = Action({priority=3, rmb=true, customarrivecheck=CheckOceanFishingCastRange, is_relative_to_platform=true, disable_platform_hopping=true}),
     OCEAN_FISHING_REEL = Action({priority=5, rmb=true, do_not_locomote=true, silent_fail = true }),
     OCEAN_FISHING_STOP = Action({instant=true}),
     OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),

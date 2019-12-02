@@ -44,13 +44,10 @@ function RunAway:GetRunAngle(pt, hp)
 
     local radius = 6
 
-    local result_offset, result_angle, deflected = self.inst.components.locomotor:IsAquatic()
-                                                    and FindSwimmableOffset(pt, angle*DEGREES, radius, 8, true, false)
-                                                    or FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, false) -- try avoiding walls
+	local find_offset_fn = self.inst.components.locomotor:IsAquatic() and FindSwimmableOffset or FindWalkableOffset
+	local result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, false) -- try avoiding walls
     if result_angle == nil then
-        result_offset, result_angle, deflected = self.inst.components.locomotor:IsAquatic()
-                                                    and FindSwimmableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid land
-                                                    or FindWalkableOffset(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls, but at least avoid water
+		result_offset, result_angle, deflected = find_offset_fn(pt, angle*DEGREES, radius, 8, true, true) -- ok don't try to avoid walls
         if result_angle == nil then
 			if self.fix_overhang and not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
                 if self.inst.components.locomotor:IsAquatic() then

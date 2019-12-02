@@ -181,6 +181,7 @@ local function fn()
         StartSpawning(inst)
     end
 
+    MakeHauntableWork(inst)
     MakeMediumBurnable(inst, nil, nil, true)
     MakeLargePropagator(inst)
     MakeSnowCovered(inst)

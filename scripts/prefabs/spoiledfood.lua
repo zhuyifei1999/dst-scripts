@@ -8,6 +8,11 @@ local fish_assets =
     Asset("ANIM", "anim/spoiled_fish.zip"),
 }
 
+local fish_small_assets =
+{
+    Asset("ANIM", "anim/spoiled_fish_small.zip"),
+}
+
 local fish_prefabs =
 {
 	"boneshard",
@@ -111,6 +116,8 @@ local function fish_init(inst)
     inst.AnimState:SetBank("spoiled_fish")
     inst.AnimState:SetBuild("spoiled_fish")
     inst:AddTag("spoiled_fish")
+
+    inst.Transform:SetScale(1.3, 1.3, 1.3)
 end
 
 local function fish_mastersim_init(inst)
@@ -127,5 +134,30 @@ local function fish_mastersim_init(inst)
 	inst:ListenForEvent("stacksizechange", fish_stack_size_changed)
 end
 
+local function fish_small_init(inst)
+    inst.AnimState:SetBank("spoiled_fish_small")
+    inst.AnimState:SetBuild("spoiled_fish_small")
+    inst:AddTag("spoiled_fish")
+
+    inst.Transform:SetScale(1.3, 1.3, 1.3)
+end
+
+local function fish_small_mastersim_init(inst)
+    inst.components.inspectable.nameoverride = "spoiled_fish"
+
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:AddRandomLoot("spoiled_food", 3)
+	inst.components.lootdropper:AddRandomLoot("boneshard", 1)
+	inst.components.lootdropper.numrandomloot = 1
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(inst.components.stackable.stacksize * TUNING.SPOILED_FISH_SMALL_WORK_REQUIRED)
+    inst.components.workable:SetOnWorkCallback(fish_onhit)
+
+	inst:ListenForEvent("stacksizechange", fish_stack_size_changed)
+end
+
 return Prefab("spoiled_food", function() return fn() end, assets),
-		Prefab("spoiled_fish", function() return fn(fish_init, fish_mastersim_init) end, fish_assets)
+		Prefab("spoiled_fish", function() return fn(fish_init, fish_mastersim_init) end, fish_assets, fish_prefabs),
+        Prefab("spoiled_fish_small", function() return fn(fish_small_init, fish_small_mastersim_init) end, fish_small_assets, fish_prefabs)

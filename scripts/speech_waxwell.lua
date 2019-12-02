@@ -3075,6 +3075,7 @@ return{
         MERMGUARD = "I'd best try to stay on their good side.",
         MERM_PRINCE = "Kings are easily made around here.",
 
+        SQUID = "I hope they stay close. But not too close.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

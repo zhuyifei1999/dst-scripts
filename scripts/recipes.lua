@@ -23,7 +23,7 @@ Recipe("mushroom_light2", {Ingredient("shroom_skin", 1), Ingredient("fertilizer"
 
 --STRUCTURES
 -- Wurt
-Recipe("mermhouse_crafted", {Ingredient("boards", 4), Ingredient("cutreeds", 3), Ingredient("pondfish", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermhouse_crafted_placer", nil, nil, nil, "merm_builder", nil, nil,
+Recipe("mermhouse_crafted", {Ingredient("boards", 4), Ingredient("cutreeds", 3), Ingredient("pondfish", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermhouse_crafted_placer", nil, nil, nil, "merm_builder", nil, nil,
 	function(pt, rot)
 		local ground_tile = TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
 		return ground_tile and ground_tile == GROUND.MARSH
@@ -477,7 +477,7 @@ Recipe("mermthrone",      {Ingredient("pondfish", 15), Ingredient("kelp", 20), I
 CONSTRUCTION_PLANS =
 {
     ["multiplayer_portal_moonrock_constr"] = { Ingredient("purplemooneye", 1), Ingredient("moonrocknugget", 20) },
-    ["mermthrone_construction"] = { Ingredient("pondfish", 15), Ingredient("kelp", 20), Ingredient("pigskin", 10), Ingredient("beefalowool", 15) },
+    ["mermthrone_construction"] = { Ingredient("kelp", 20), Ingredient("pigskin", 10), Ingredient("beefalowool", 15) },
 }
 
 mod_protect_Recipe = true

@@ -56,14 +56,14 @@ local fishmeat_smallprefabs =
 {
     "fishmeat_small_cooked",
     "meat_dried",
-    "spoiled_food",
+    "spoiled_fish_small",
 }
 
 local fishmeat_prefabs =
 {
     "fishmeat_cooked",
     "meat_dried",
-    "spoiled_food",
+    "spoiled_fish",
 }
 
 local batwingprefabs =
@@ -485,6 +485,7 @@ local function fishmeat_small()
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
 
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
+    inst.components.perishable.onperishreplacement = "spoiled_fish_small"
 
     return inst
 end
@@ -498,7 +499,9 @@ local function fishmeat_small_cooked()
 
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable.onperishreplacement = "spoiled_fish_small"
 
     inst.components.floater:SetVerticalOffset(0.2)
     inst.components.floater:SetScale(0.75)
@@ -515,7 +518,9 @@ local function fishmeat()
 
     inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
+
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
+    inst.components.perishable.onperishreplacement = "spoiled_fish"
 
     return inst
 end
@@ -529,7 +534,9 @@ local function fishmeat_cooked()
 
     inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_MED
+
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable.onperishreplacement = "spoiled_fish"
 
     return inst
 end

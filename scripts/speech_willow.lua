@@ -3082,6 +3082,7 @@ return{
         MERMGUARD = "I can't tell which way it's looking.",
         MERM_PRINCE = "What makes that guy so special?",
 
+        SQUID = "No substitute for a good torch.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",
