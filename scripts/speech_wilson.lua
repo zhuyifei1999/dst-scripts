@@ -2929,6 +2929,7 @@ return {
 		OAR_DRIFTWOOD = "Manual ship acceleration.",
 
 		OCEANFISHINGROD = "Now this is the reel deal!",
+		OCEANFISHINGBOBBER_NONE = "todo",
         OCEANFISHINGBOBBER_BALL = "The fish will have a ball with this.",
         OCEANFISHINGBOBBER_OVAL = "Those fish won't give me the slip this time!",
 		OCEANFISHINGBOBBER_CROW = "I'd rather eat fish than crow.",

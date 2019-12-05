@@ -193,6 +193,7 @@ ACTIONS =
     OCEAN_FISHING_REEL = Action({priority=5, rmb=true, do_not_locomote=true, silent_fail = true }),
     OCEAN_FISHING_STOP = Action({instant=true}),
     OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),
+    CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true}),
     POLLINATE = Action(),
     FERTILIZE = Action({ mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
@@ -657,7 +658,7 @@ ACTIONS.OCEAN_FISHING_STOP.fn = function(act)
     local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	if rod ~= nil and rod.components.oceanfishingrod ~= nil then
         act.doer.sg:GoToState("oceanfishing_stop")
-		rod.components.oceanfishingrod:StopFishing()
+		rod.components.oceanfishingrod:StopFishing("reeledin")
 	end
 	
 	return true
@@ -671,6 +672,58 @@ ACTIONS.OCEAN_FISHING_CATCH.fn = function(act)
 	end
 	
 	return true
+end
+
+ACTIONS.CHANGE_TACKLE.strfn = function(act)
+	return (not act.invobject.replica.inventoryitem:IsHeldBy(ThePlayer)) and "REMOVE"
+			or nil
+end
+
+ACTIONS.CHANGE_TACKLE.fn = function(act)
+	local rod = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if act.invobject == nil or rod == nil or rod.components.container == nil then
+		return false
+	end
+	
+	if act.invobject.components.inventoryitem:IsHeldBy(act.doer) then
+		local targetslot = rod.components.container:GetSpecificSlotForItem(act.invobject)
+		if targetslot == nil then
+			return false
+		end
+
+		local cur_item = rod.components.container:GetItemInSlot(targetslot)
+		if cur_item ~= nil and act.invobject.prefab == cur_item.prefab and act.invobject.skinname == cur_item.skinname and cur_item.components.perishable == nil then
+			return false
+		end
+
+		local item = act.invobject.components.inventoryitem:RemoveFromOwner(false)
+		if item ~= nil then
+			local old_item = rod.components.container:RemoveItemBySlot(targetslot)
+			if not rod.components.container:GiveItem(item, targetslot, nil, false) then
+				if old_item ~= nil then
+					rod.components.container:GiveItem(old_item, targetslot)
+				end
+				act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
+				return false
+			end
+			if old_item ~= nil then 
+				act.doer.components.inventory:GiveItem(old_item, nil, rod:GetPosition())
+			end
+			return true
+		end
+	elseif act.invobject.components.inventoryitem:IsHeldBy(rod) then
+		local item = rod.components.container:RemoveItem(act.invobject, true)
+
+		if item ~= nil then
+	        item.prevcontainer = nil
+	        item.prevslot = nil
+
+			act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
+			return true
+		end
+	end
+
+	return false
 end
 
 ACTIONS.TALKTO.fn = function(act)    local targ = act.target or act.invobject

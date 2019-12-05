@@ -478,7 +478,8 @@ local function gnarwail()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    MakeCharacterPhysics(inst, 1, 1.25)
+    local phys = MakeCharacterPhysics(inst, 1, 1.25)
+    phys:TEMPHACK_DisableSleepDeactivation() -- TODO @stevenm we need a better solution for the issue of gnarwails popping onto boats.
 
     inst.Transform:SetSixFaced()
 

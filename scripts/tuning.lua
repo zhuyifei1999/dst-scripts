@@ -206,7 +206,8 @@ function Tune(overrides)
 			-- a basic hook, kind of shinny, maybe it can hook something if you are lucky
 			HOOK				= { charm = 0.1, reel_charm =  0.0, radius = 1.0, style = "hook", timeofday = {day = 1, dusk = 1, night = 1} }, 
 
-			-- everything below here is in addition to BASE
+			SPOILED_FOOD		= { charm = 0.1, reel_charm = -0.3, radius = 2.0, style = "rot", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 2 }, 
+
 			SEED				= { charm = 0.2, reel_charm = -0.3, radius = 3.0, style = "seed", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1 }, 
 			BERRY				= { charm = 0.3, reel_charm = -0.3, radius = 3.0, style = "berry", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1 }, 
 
@@ -226,12 +227,12 @@ function Tune(overrides)
 
 		OCEANFISH_LURE_PREFERENCE = 
 		{
-			SMALL_VEGGIE	= { hook = 0.25, seed = 1.50, berry = 1.50, spoon = 0.00, spinnerbait = 0.00, insect = 0.00 },
-			VEGGIE			= { hook = 0.25, seed = 1.50, berry = 1.50, spoon = 0.50, spinnerbait = 0.00, insect = 0.00 },
-			SMALL_OMNI		= { hook = 0.25, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			OMNI			= { hook = 0.25, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
-			SMALL_MEAT		= { hook = 0.25, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			MEAT			= { hook = 0.25, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+			SMALL_VEGGIE	= { hook = 0.25, rot = 1.0, seed = 1.50, berry = 1.50, spoon = 0.00, spinnerbait = 0.00, insect = 0.00 },
+			VEGGIE			= { hook = 0.25, rot = 0.5, seed = 1.50, berry = 1.50, spoon = 0.50, spinnerbait = 0.00, insect = 0.00 },
+			SMALL_OMNI		= { hook = 0.25, rot = 1.0, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
+			OMNI			= { hook = 0.25, rot = 0.5, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+			SMALL_MEAT		= { hook = 0.25, rot = 1.0, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
+			MEAT			= { hook = 0.25, rot = 0.5, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
 		},
 		
 		OCEANFISH_MIN_INTEREST_TO_BITE = 0.2,

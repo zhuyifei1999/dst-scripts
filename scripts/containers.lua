@@ -632,7 +632,7 @@ params.oceanfishingrod =
 }
 
 function params.oceanfishingrod.itemtestfn(container, item, slot)
-	return (slot == nil and ((container:GetItemInSlot(1) == nil and item:HasTag("oceanfishing_bobber")) or (container:GetItemInSlot(2) == nil and item:HasTag("oceanfishing_lure"))))
+	return (slot == nil and (item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")))
 		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
 		or (slot == 2 and item:HasTag("oceanfishing_lure"))
 end

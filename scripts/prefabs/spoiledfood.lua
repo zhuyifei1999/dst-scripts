@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/spoiled_food.zip"),
+	Asset("ANIM", "anim/oceanfishing_lure_mis.zip"),
 }
 
 local fish_assets =
@@ -112,6 +113,15 @@ local function fn(common_init, mastersim_init)
     return inst
 end
 
+local function food_init(inst)
+	inst:AddTag("oceanfishing_lure")
+end
+
+local function food_mastersim_init(inst)
+	inst:AddComponent("oceanfishingtackle")
+	inst.components.oceanfishingtackle:SetupLure({build = "oceanfishing_lure_mis", symbol = "hook_spoiledfood", single_use = true, lure_data = TUNING.OCEANFISHING_LURE.SPOILED_FOOD})
+end
+
 local function fish_init(inst)
     inst.AnimState:SetBank("spoiled_fish")
     inst.AnimState:SetBuild("spoiled_fish")
@@ -158,6 +168,6 @@ local function fish_small_mastersim_init(inst)
 	inst:ListenForEvent("stacksizechange", fish_stack_size_changed)
 end
 
-return Prefab("spoiled_food", function() return fn() end, assets),
+return Prefab("spoiled_food", function() return fn(food_init, food_mastersim_init) end, assets),
 		Prefab("spoiled_fish", function() return fn(fish_init, fish_mastersim_init) end, fish_assets, fish_prefabs),
         Prefab("spoiled_fish_small", function() return fn(fish_small_init, fish_small_mastersim_init) end, fish_small_assets, fish_prefabs)

@@ -18,8 +18,6 @@ local Weighable = Class(function(self, inst)
 
 	-- Set when trophy is dropped (considered "caught") by a mob, e.g. a merm
 	-- self.prefab_override_owner = nil
-
-	self.inst:AddTag("weighable")
 end,
 nil,
 {
@@ -27,11 +25,15 @@ nil,
 })
 
 function Weighable:OnRemoveFromEntity()
-    self.inst:RemoveTag("weighable")
+	if self.type ~= nil then
+		self.inst:Removetag("weighable_"..self.type)
+	end
 end
 
-function Weighable:GetDebugString()
-    return string.format("weight %.5f, owner_userid %s, override owner: %s", self.weight, tostring(self.owner_userid), tostring(self.prefab_override_owner))
+function Weighable:CopyWeighable(src_weighable)
+	if src_weighable ~= nil then
+		self:OnLoad(src_weighable:OnSave())
+	end
 end
 
 function Weighable:GetWeight()
@@ -43,15 +45,22 @@ function Weighable:SetWeight(weight)
 end
 
 function Weighable:SetPlayerAsOwner(owner)
-	self.owner_userid = owner.userid
-	self.owner_name = owner.name
+	if owner ~= nil then
+		self.owner_userid = owner.userid
+		self.owner_name = owner.name
+	else
+		self.owner_userid = nil
+		self.owner_name = nil
+	end
 end
 
 function Weighable:OnSave()
-	return { weight = self.weight,
+	return { 
+		weight = self.weight,
 		owner_userid = self.owner_userid,
 		owner_name = self.owner_name,
-		prefab_override_owner = self.prefab_override_owner }
+		prefab_override_owner = self.prefab_override_owner 
+	}
 end
 
 function Weighable:OnLoad(data)
@@ -61,6 +70,10 @@ function Weighable:OnLoad(data)
 		self.owner_name = data.owner_name
 		self.prefab_override_owner = data.prefab_override_owner
 	end
+end
+
+function Weighable:GetDebugString()
+    return string.format("weight %.5f, owner_userid %s, override owner: %s", self.weight, tostring(self.owner_userid), tostring(self.prefab_override_owner))
 end
 
 return Weighable

@@ -1480,6 +1480,17 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+       oceanfishingtackle = function(inst, doer, actions, right)
+            if doer.replica.inventory ~= nil and not doer.replica.inventory:IsHeavyLifting()
+                and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
+
+                local rod = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                if rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsOpenedBy(doer) and rod.replica.container:CanTakeItemInSlot(inst) then
+                    table.insert(actions, ACTIONS.CHANGE_TACKLE)
+                end
+            end
+        end,
+
         shaver = function(inst, doer, actions)
             if doer:HasTag("bearded") and
                 not (doer.replica.inventory:GetActiveItem() == inst and

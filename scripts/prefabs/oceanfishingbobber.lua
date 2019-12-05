@@ -4,7 +4,7 @@ local BOBBERS =
 	["oceanfishingbobber_none"]			= { make_inv_item = false, bank = "oceanfishing_hook",        build = "oceanfishing_hook",						land_splash_fx = "ocean_splash_ripple",	casting_data = nil, },
 	["oceanfishingbobber_twig"]			= { make_inv_item = false, bank = "oceanfishing_bobber_ball", build = "oceanfishing_bobber_twig_build",			land_splash_fx = "ocean_splash_med",		casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_TWIG, },
 	["oceanfishingbobber_plug"]			= { make_inv_item = false, bank = "oceanfishing_bobber_ball", build = "oceanfishing_bobber_plug_build",			land_splash_fx = "ocean_splash_med",		casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_PLUG, },
-	["oceanfishingbobber_ball"]			= { make_inv_item = true,  bank = "oceanfishing_bobber_ball", build = "oceanfishing_bobber_ball_build",			land_splash_fx = "ocean_splash_med",		casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_ROUND,},
+	["oceanfishingbobber_ball"]			= { make_inv_item = true,  bank = "oceanfishing_bobber_ball", build = "oceanfishing_bobber_ball_build",			land_splash_fx = "ocean_splash_med",		casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_BALL,},
 	["oceanfishingbobber_oval"]			= { make_inv_item = true,  bank = "oceanfishing_bobber_ball", build = "oceanfishing_bobber_sporty_build",		land_splash_fx = "ocean_splash_med",		casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_OVAL, },
 
 	["oceanfishingbobber_crow"]			= { make_inv_item = true,  bank = "oceanfishing_bobber_ball", build = "oceanfishingbobber_crow_build",			land_splash_fx = "ocean_splash_ripple",  casting_data = TUNING.OCEANFISHING_TACKLE.BOBBER_CROW, },

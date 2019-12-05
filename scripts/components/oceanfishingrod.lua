@@ -1,4 +1,5 @@
-
+local Stats = require("stats")
+local easing = require("easing")
 
 local function onsettarget(self, target)
     self.inst.replica.oceanfishingrod:_SetTarget(target)
@@ -41,7 +42,37 @@ nil,
 	line_tension = onsetlinetension,
 })
 
-local easing = require("easing")
+local function TrackFishingStart(self, tackle)
+	self.fishing_stats = 
+	{
+		bobber = tackle.bobber ~= nil and tackle.bobber.prefab or "oceanfishingbobber_none",
+		lure = tackle.lure ~= nil and tackle.lure.prefab or "emptyhook",
+		cast_time = GetTime(),
+	}
+end
+
+local function TrackFishingHookedSomething(self)
+	if self.fishing_stats ~= nil and self.fishing_stats.cast_time ~= nil and self.fishing_stats.wait_time == nil then
+		self.fishing_stats.phase = TheWorld.state.phase or "unknown"
+		self.fishing_stats.wait_time = GetTime() - self.fishing_stats.cast_time
+	end
+end
+
+local function TrackFishingDone(self, reason)
+	if self.fishing_stats ~= nil then
+		self.fishing_stats.result = reason or "unknown"
+		self.fishing_stats.target = (self.target ~= nil and self.target.components.oceanfishinghook == nil and not self.target:HasTag("projectile")) and self.target.prefab or "none"
+		self.fishing_stats.isafish = self.target ~= nil and self.target:HasTag("oceanfish")
+		self.fishing_stats.weight = self.target.components.weighable ~= nil and self.target.components.weighable:GetWeight() or 0
+
+		TrackFishingHookedSomething(self)
+		self.fishing_stats.catch_time = math.max(0, GetTime() - (self.fishing_stats.cast_time + self.fishing_stats.wait_time))
+
+		self.fishing_stats.cast_time = nil
+		Stats.PushMetricsEvent("fishing", self.fisher, {fishing = self.fishing_stats})
+		self.fishing_stats = nil
+	end
+end
 
 function OceanFishingRod:_LaunchCastingProjectile(source, targetpos, prefab)
 	source:ForceFacePoint(targetpos:Get())
@@ -81,6 +112,8 @@ function OceanFishingRod:SetDefaults(default_projectile_prefab, default_casting_
 	self.lure_data = default_lure_tuning
 	self.default_lure_setup = default_lure_setup
 	self.lure_setup = default_lure_setup
+
+	self:UpdateClientMaxCastDistance()
 end
 
 function OceanFishingRod:GetLureData()
@@ -89,7 +122,7 @@ end
 
 function OceanFishingRod:UpdateClientMaxCastDistance()
 	if self.inst.replica.oceanfishingrod ~= nil then
-		local tackle = self.gettackledatafn(self.inst)
+		local tackle = self.gettackledatafn ~= nil and self.gettackledatafn(self.inst) or {}
 		local bobber_data = (tackle.bobber ~= nil and tackle.bobber.components.oceanfishingtackle ~= nil) and tackle.bobber.components.oceanfishingtackle.casting_data or nil
 		local lure_data = (tackle.lure ~= nil and tackle.lure.components.oceanfishingtackle ~= nil) and tackle.lure.components.oceanfishingtackle.lure_data or nil
 
@@ -129,6 +162,8 @@ end
 function OceanFishingRod:Cast(fisher, targetpos)
 	local tackle = self.gettackledatafn(self.inst)
 	self:_CacheTackleData(tackle.bobber, tackle.lure)
+
+	TrackFishingStart(self, tackle)
 
 	targetpos = self:_CalcCastDest(self.inst:GetPosition(), targetpos)
     self.fisher = fisher
@@ -227,6 +262,7 @@ function OceanFishingRod:SetTarget(new_target)
 			self.inst:RemoveEventCallback("onremove", self.target_onremove, prev_target)
 			if prev_target.components.oceanfishable ~= nil then
 				if new_target ~= nil then
+					TrackFishingHookedSomething(self)
 					prev_target.components.oceanfishable:WasEatenByA(new_target) -- this will call prev_target:Remove()
 				else
 					prev_target.components.oceanfishable:SetRod(nil)
@@ -263,9 +299,9 @@ function OceanFishingRod:OnUpdate(dt)
 		or (not self.fisher.sg:HasStateTag("fishing") and not self.fisher.sg:HasStateTag("catchfish")) then
 
 		local has_fish = self.target.components.oceanfishinghook == nil and not self.target:HasTag("projectile")
-		self:StopFishing(nil, has_fish)
+		self:StopFishing("interupted", has_fish)
 	elseif not self.inst:IsNear(self.target, TUNING.OCEAN_FISHING.MAX_HOOK_DIST) then
-		self:StopFishing("linesnapped", true)
+		self:StopFishing("toofaraway", true)
 	else
 		if self.target ~= nil then
 			self.fisher:ForceFacePoint(self.target.Transform:GetWorldPosition())
@@ -296,10 +332,14 @@ function OceanFishingRod:CatchFish()
     self.inst:StopUpdatingComponent(self)
 
 	if self.target ~= nil and self.target.components.oceanfishable ~= nil then
+		TrackFishingDone(self, "success")
+
 		local targetpos = self:CalcCatchDest(self.target:GetPosition(), self.fisher:GetPosition())
 		local startpos = self.target:GetPosition()
 		local fish = self.target.components.oceanfishable:MakeProjectile()
-		fish.components.oceanfishable.caught_by = self.fisher
+		if fish.components.weighable ~= nil then
+			fish.components.weighable:SetPlayerAsOwner(self.fisher)
+		end
 		self:_LaunchFishProjectile(fish, startpos, targetpos)
 
 		if self.ondonefishing ~= nil then
@@ -319,6 +359,7 @@ function OceanFishingRod:StopFishing(reason, lost_tackle)
 		self.ondonefishing(self.inst, reason, lost_tackle, self.fisher, self.target)
 	end
 	if self.fisher ~= nil then
+		TrackFishingDone(self, reason)
 		self.fisher:PushEvent("oceanfishing_stoppedfishing", {reason = reason, rod = self.inst, fisher = self.fisher, target = self.target})
 	end
 	if self.target ~= nil then

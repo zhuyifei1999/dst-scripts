@@ -1177,7 +1177,7 @@ local events =
         function(inst, data)
             if inst.sg:HasStateTag("fishing") and (inst.components.health == nil or not inst.components.health:IsDead()) then
 				if data ~= nil and data.reason ~= nil then
-					if data.reason == "linesnapped" then
+					if data.reason == "linesnapped" or data.reason == "toofaraway" then
 						inst.sg:GoToState("oceanfishing_linesnapped")
 					else
 		                inst.sg:GoToState("oceanfishing_stop", {escaped_str = data.reason == "linetooloose" and "ANNOUNCE_OCEANFISHING_LINETOOLOOSE"
@@ -7847,11 +7847,6 @@ local states =
 			end
         end,
 
-        events =
-        {
-            EventHandler("fishingnibble", function(inst) inst.sg:GoToState("fishing_nibble") end),
-        },
-
 		onexit = function(inst)
 			inst:RemoveTag("fishing_idle")
 		end,
@@ -8009,6 +8004,9 @@ local states =
 
         timeline =
         {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_linebreak")
+            end),
             TimeEvent(29*FRAMES, function(inst) 
 				if inst.components.talker ~= nil then 
 					inst.components.talker:Say(GetString(inst, "ANNOUNCE_OCEANFISHING_LINESNAP"), nil, nil, true)

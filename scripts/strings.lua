@@ -549,6 +549,11 @@ STRINGS =
 	    },
 		OCEAN_FISHING_STOP = "Stop",
 		OCEAN_FISHING_CATCH = "Catch",
+		CHANGE_TACKLE = 
+		{
+            GENERIC = "Attach Tackle",
+            REMOVE = "Remove Tackle",
+		},
 		COMPARE_WEIGHABLE = "Give",
 		WEIGH_ITEM = "Weigh",
 		GIVE_TACKLESKETCH = "Give",
@@ -2208,6 +2213,7 @@ STRINGS =
 		SURFNTURF = "Surf 'n' Turf",
 
         OCEANFISHINGROD = "Sea Fishing Rod",
+		OCEANFISHINGBOBBER_NONE = "Fish Hook",
         OCEANFISHINGBOBBER_BALL = "Wooden Ball Bobber",
         OCEANFISHINGBOBBER_OVAL = "Hardened Slip Bobber",
 		OCEANFISHINGBOBBER_CROW = "Jet Quill Float",

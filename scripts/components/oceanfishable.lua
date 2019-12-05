@@ -7,9 +7,6 @@ local OceanFishable = Class(function(self, inst)
 
 	self.catch_distance = 4
 
-	-- Used to keep track of fisher while fish is in air.
-	self.caught_by = nil
-
 --	self.onsetrodfn = nil
 --	self.oneatenfn = nil
 --	self.onreelinginfn = nil

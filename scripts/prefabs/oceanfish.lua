@@ -61,10 +61,14 @@ local function OnProjectileLand(inst)
 		inst.Physics:SetCollisionMask(SWIMMING_COLLISION_MASK)
 		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
 		inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+		if inst.components.weighable ~= nil then
+			inst.components.weighable:SetPlayerAsOwner(nil)
+		end
+		inst.leaving = true
+		inst.persists = false
 		inst.sg:GoToState("idle")
 		inst:RestartBrain()
 	    SpawnPrefab("splash").Transform:SetPosition(x, y, z)
-		inst.components.oceanfishable.caught_by = nil
 	else
 		local fish = SpawnPrefab(inst.fish_def.prefab.."_inv")
 		fish.Transform:SetPosition(x, y, z)
@@ -74,8 +78,8 @@ local function OnProjectileLand(inst)
 			fish.flop_task:Cancel()
 		end
 		Flop(fish)
-		if inst.components.oceanfishable ~= nil and inst.components.oceanfishable.caught_by ~= nil and fish.components.weighable ~= nil then
-			fish.components.weighable:SetPlayerAsOwner(inst.components.oceanfishable.caught_by)
+		if inst.components.oceanfishable ~= nil and fish.components.weighable ~= nil then
+			fish.components.weighable:CopyWeighable(inst.components.weighable)
 		end
 
 	    inst:Remove()
@@ -142,7 +146,7 @@ end
 
 local function HandleEntitySleep(inst)
 	local home = inst.components.homeseeker and inst.components.homeseeker.home or nil
-	if home ~= nil and home:IsValid() then
+	if home ~= nil and home:IsValid() and not inst.leaving and inst.persists then
 		home.components.childspawner:GoHome(inst)
 	else
 		inst:Remove()
@@ -251,17 +255,15 @@ local function water_common(data)
     inst:AddComponent("herdmember")
     inst.components.herdmember:Enable(false)
 
+	inst:AddComponent("weighable")
+	--inst.components.weighable.type = TROPHYSCALE_TYPES.FISH -- No need to set a weighable type, this is just here for data and will be copied over to the inventory item
+	inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, CalcNewSize()))
+
     inst:SetStateGraph("SGoceanfish")
     inst:SetBrain(brain)
 
 	inst.OnEntityWake = OnEntityWake
     inst.OnEntitySleep = OnEntitySleep
-
- 	inst:ListenForEvent("doleave", function() 
- 		inst:DoTaskInTime(math.random()*3, function()
- 			inst.timetoleave = true
- 		end)
-    end)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

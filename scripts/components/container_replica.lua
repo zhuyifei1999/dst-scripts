@@ -399,6 +399,14 @@ function Container:SwapActiveItemWithSlot(slot)
     end
 end
 
+function Container:SwapOneOfActiveItemWithSlot(slot)
+    if self.inst.components.container ~= nil then
+        self.inst.components.container:SwapOneOfActiveItemWithSlot(slot)
+    elseif self.classified ~= nil then
+        self.classified:SwapOneOfActiveItemWithSlot(slot)
+    end
+end
+
 function Container:MoveItemFromAllOfSlot(slot, container)
     if self.inst.components.container ~= nil then
         self.inst.components.container:MoveItemFromAllOfSlot(slot, container)

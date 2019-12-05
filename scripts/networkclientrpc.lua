@@ -558,6 +558,25 @@ local RPC_HANDLERS =
         end
     end,
 
+    SwapOneOfActiveItemWithSlot = function(player, slot, container)
+        if not (checkuint(slot) and
+                optentity(container)) then
+            printinvalid("SwapOneOfActiveItemWithSlot", player)
+            return
+        end
+        local inventory = player.components.inventory
+        if inventory ~= nil then
+            if container == nil then
+                inventory:SwapOneOfActiveItemWithSlot(slot)
+            else
+                container = container.components.container
+                if container ~= nil and container:IsOpenedBy(player) then
+                    container:SwapOneOfActiveItemWithSlot(slot)
+                end
+            end
+        end
+    end,
+
     UseItemFromInvTile = function(player, action, item, controlmods, mod_name)
         if not (checknumber(action) and
                 checkentity(item) and

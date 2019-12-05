@@ -10,8 +10,6 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-
     inst.AnimState:SetBank("water_squid_wake")
     inst.AnimState:SetBuild("water_squid_wake")
     inst.AnimState:PlayAnimation("wake"..math.random(1,3))
@@ -22,12 +20,11 @@ local function fn()
     inst:AddTag("fx")
 
     inst.entity:SetPristine()
-
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:ListenForEvent("animover", function() inst:Remove() end)
+    inst:ListenForEvent("animover", inst.Remove)
 
     return inst
 end
