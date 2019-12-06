@@ -1,4 +1,4 @@
-    require("stategraphs/commonstates")
+require("stategraphs/commonstates")
 
 local actionhandlers =
 {
@@ -914,7 +914,11 @@ local states =
                 testExtinguish(inst) 
                 setdivelayering(inst,true)
             end),
-            TimeEvent(5 * FRAMES, AddNoClick),
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst:HasTag("swimming") then
+                    AddNoClick(inst)
+                end
+            end),
         },        
 
         onexit = function(inst)
@@ -961,11 +965,11 @@ local states =
 
                     wake.Transform:SetRotation(rotation - 90)
                 end)
+
+                AddNoClick(inst)
             end
 
             UpdateRunSpeed(inst)
-
-            AddNoClick(inst)
         end,
 
         timeline =
@@ -1044,7 +1048,9 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("run_pst")
 
-            AddNoClick(inst)
+            if inst:HasTag("swimming") then
+                AddNoClick(inst)
+            end
         end,
 
         timeline =
@@ -1057,6 +1063,7 @@ local states =
 
         onexit = function(inst)
             setdivelayering(inst,false)
+            RemoveNoClick(inst)
         end,
 
         events =

@@ -175,7 +175,7 @@ local function gnarwail_attack_horn()
     horn_inst.components.inspectable.nameoverride = "gnarwail"
 
     horn_inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
+    horn_inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
 
     horn_inst._retreat_timer = horn_inst:DoTaskInTime(TUNING.GNARWAIL.HORN_RETREAT_TIME, EndHornAttack)
 

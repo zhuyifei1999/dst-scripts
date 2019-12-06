@@ -66,7 +66,7 @@ local function TrackFishingDone(self, reason)
 		self.fishing_stats.weight = self.target.components.weighable ~= nil and self.target.components.weighable:GetWeight() or 0
 
 		TrackFishingHookedSomething(self)
-		self.fishing_stats.catch_time = math.max(0, GetTime() - (self.fishing_stats.cast_time + self.fishing_stats.wait_time))
+		self.fishing_stats.catch_time = math.max(0, GetTime() - (self.fishing_stats.cast_time + (self.fishing_stats.wait_time or 0)))
 
 		self.fishing_stats.cast_time = nil
 		Stats.PushMetricsEvent("fishing", self.fisher, {fishing = self.fishing_stats})
@@ -262,7 +262,9 @@ function OceanFishingRod:SetTarget(new_target)
 			self.inst:RemoveEventCallback("onremove", self.target_onremove, prev_target)
 			if prev_target.components.oceanfishable ~= nil then
 				if new_target ~= nil then
-					TrackFishingHookedSomething(self)
+					if self.target ~= nil and self.target.components.oceanfishinghook == nil and not self.target:HasTag("projectile") then
+						TrackFishingHookedSomething(self)
+					end
 					prev_target.components.oceanfishable:WasEatenByA(new_target) -- this will call prev_target:Remove()
 				else
 					prev_target.components.oceanfishable:SetRod(nil)
