@@ -635,6 +635,8 @@ function Builder:BufferBuild(recname)
             if self.freebuildmode then
                 --V2C: free-build should still trigger prototyping
                 if not table.contains(self.recipes, recname) and CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) then
+					-- Note:	This can currently activate prototypers that have no relation to the item or structure
+					--			built, such as when building a Fire Pit near a Science Machine or Mad Science Lab.
                     self:ActivateCurrentResearchMachine(recipe)
                 end
             elseif not recipe.nounlock then

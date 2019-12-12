@@ -3,6 +3,7 @@
 local SKIN_GIFT_TYPES =
 {
 	arrowsign_post_circus = "TWITCH_DROP",
+	beefalohat_klaus = "TWITCH_DROP",
 	beefalohat_pigking = "YOTP",
 	birdcage_circus = "TWITCH_DROP",
 	cane_ancient = "ANRARG",
@@ -22,6 +23,7 @@ local SKIN_GIFT_TYPES =
 	pack_rog_gift = "ROG",
 	pack_sw_gift = "SW",
 	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",
+	playerportrait_bg_beefalohatklaus = "TWITCH_DROP",
 	playerportrait_bg_birdcagecircus = "TWITCH_DROP",
 	playerportrait_bg_coldfirepitteeth = "TWITCH_DROP",
 	playerportrait_bg_eyebrellahatcrystal = "TWITCH_DROP",
@@ -40,6 +42,7 @@ local SKIN_GIFT_TYPES =
 	playerportrait_bg_umbrellacircus = "TWITCH_DROP",
 	playerportrait_bg_winterometercircus = "TWITCH_DROP",
 	profileflair_arrowsignpost_circus = "TWITCH_DROP",
+	profileflair_beefalohat_klaus = "TWITCH_DROP",
 	profileflair_birdcage_circus = "TWITCH_DROP",
 	profileflair_coldfirepit_teeth = "TWITCH_DROP",
 	profileflair_eyebrellahat_crystal = "TWITCH_DROP",

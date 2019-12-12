@@ -32,6 +32,9 @@ function WargBrain:OnStart()
     local isclay = self.inst:HasTag("clay")
     local root = PriorityNode(
     {
+        WhileNode(function() return self.inst.sg:HasStateTag("intro_state") end, "intro",
+            StandStill(self.inst)),
+
         WhileNode(function() return isclay and self.inst.sg:HasStateTag("statue") end, "Statue",
             ActionNode(function() TryReanimate(self) end, "TryReanimate")),
 

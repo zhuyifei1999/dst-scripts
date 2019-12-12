@@ -6,8 +6,6 @@ local MadScienceLab = Class(function(self, inst)
     self.product = nil
 
 	self.stages = {}
-
-    self.inst:AddTag("madsciencelab")
 end)
 
 function MadScienceLab:OnRemoveFromEntity()

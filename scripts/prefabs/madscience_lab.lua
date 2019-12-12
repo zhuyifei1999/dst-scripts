@@ -247,6 +247,7 @@ local function fn()
    -- inst.Light:EnableClientModulation(true)
 
     inst:AddTag("structure")
+	inst:AddTag("madsciencelab")
 
     inst.AnimState:SetBank("madscience_lab")
     inst.AnimState:SetBuild("madscience_lab")

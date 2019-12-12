@@ -32,7 +32,7 @@ local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
-local IS_BETA = BRANCH == "dev" or BRANCH == "staging"
+local IS_BETA = BRANCH == "staging"
 
 local function PlayBannerSound(inst, self, sound)
     if self.bannersoundsenabled then
@@ -72,7 +72,12 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-		local anim_bg = baner_root:AddChild(UIAnim())
+        anim:GetAnimState():SetBuild("dst_menu_inker_winter")
+        anim:GetAnimState():SetBank("dst_menu_inker_winter")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
+
+--[[	local anim_bg = baner_root:AddChild(UIAnim())
 		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
 		anim_bg:GetAnimState():SetBank("dst_menu_bg")
 		anim_bg:SetScale(0.7)
@@ -84,6 +89,7 @@ function MakeBanner(self)
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:SetScale(0.7)
 		anim:GetAnimState():PlayAnimation("loop", true)
+]]
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
 		local anim_bg = baner_root:AddChild(UIAnim())
 		anim_bg:GetAnimState():SetBuild("dst_menu_pig_bg")

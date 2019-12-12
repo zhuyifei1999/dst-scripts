@@ -65,6 +65,11 @@ local EMOTES =
         aliases = { "strut", "strikepose" },
         data = { anim = "emote_strikepose", zoom = true, soundoverride = "pose", mounted = true },
     },
+
+    ["toast"] = {
+        aliases = { "toasting", "cheers" },
+        data = { anim = { "emote_pre_toast", "emote_loop_toast" }, soundoverride = "pose", loop = true, fx = false, sounddelay = 0.55, },
+    },
 }
 
 local function CreateEmoteCommand(emotedef)

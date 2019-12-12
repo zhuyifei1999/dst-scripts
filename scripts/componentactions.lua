@@ -468,6 +468,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        wintersfeasttable = function(inst, doer, actions, right)
+            if right and inst:HasTag("readyforfeast") and not inst:HasTag("fire") and not inst:HasTag("burnt") then
+				table.insert(actions, ACTIONS.WINTERSFEAST_FEAST)
+			end
+        end,
+
         quagmire_tappable = function(inst, doer, actions, right)
             if not inst:HasTag("tappable") and not inst:HasTag("fire") then
                 if right then

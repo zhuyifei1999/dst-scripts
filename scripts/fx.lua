@@ -107,6 +107,36 @@ local fx =
         anim = "melted",
     },
     {
+        name = "icing_splat_fx",
+        bank = "warg_gingerbread_splat",
+        build = "warg_gingerbread_splat",
+        anim = "idle",
+    },
+    {
+        name = "icing_splash_fx_full",
+        bank = "warg_gingerbread_splash",
+        build = "warg_gingerbread_splash",
+        anim = "full",
+    },
+    {
+        name = "icing_splash_fx_med",
+        bank = "warg_gingerbread_splash",
+        build = "warg_gingerbread_splash",
+        anim = "med",
+    },
+    {
+        name = "icing_splash_fx_low",
+        bank = "warg_gingerbread_splash",
+        build = "warg_gingerbread_splash",
+        anim = "low",
+    },
+    {
+        name = "icing_splash_fx_melted", 
+        bank = "warg_gingerbread_splash", 
+        build = "warg_gingerbread_splash", 
+        anim = "melted",
+    },
+    {
         name = "small_puff",
         bank = "small_puff",
         build = "smoke_puff_small",
@@ -1380,6 +1410,29 @@ local fx =
         build = "flotsam",
         anim = "break",
     },
+    {
+        name = "winters_feast_depletefood",
+        bank = "winters_feast_table_fx",
+        build = "winters_feast_table_fx",
+        anim = "1",
+		bloom = true,
+        fn = function(inst)
+			inst.AnimState:SetLightOverride(1)
+            inst.AnimState:PlayAnimation(math.random(1, 5))
+            inst.AnimState:SetFinalOffset(3)
+        end,
+    },
+    {
+        name = "winters_feast_food_depleted",
+        bank = "winters_feast_table_fx",
+        build = "winters_feast_table_fx",
+        anim = "burst",
+        --sound = ,
+        fn = function(inst)
+            inst.AnimState:SetLightOverride(1)
+            inst.AnimState:SetFinalOffset(3)
+        end,
+    },    
 }
 
 for cratersteamindex = 1, 4 do

@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Okay, let's play!",
 	ANNOUNCE_MOONPOTION_FAILED = "Oh, you're no fun at all.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I'm not going to eat it, might as well give it to the mortals.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Hyuyu, how splendid!",
+	ANNOUNCE_IS_FEASTING = "A fancy feast... or a fancied feast? Hyuyu!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "I'll never lose the impish sparkle in my eye.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "C'mon back, silly goose.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Up and at'em!",
@@ -514,6 +520,7 @@ return{
 		SPIDER = "I am the wimp imp!",
 		SPIDER_WARRIOR = "I'll take my leave. Hyuyu!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "I can come and go as I please.",
@@ -2374,6 +2381,47 @@ return{
         WINTER_FOOD8 = "Maybe just a sip.", --hot cocoa
         WINTER_FOOD9 = "I might try this mortal treat.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Oh ho! What magic conjured you up?",
+			COOKING = "Just what are you cooking up?",
+			ALMOST_DONE_COOKING = "It's nearly time.",
+			DISH_READY = "Culinary alchemy!",
+		},
+		BERRYSAUCE = "Hyuyuyu, what a fun trick!",
+		BIBINGKA = "I would've made a great Ani-ani.",
+		CABBAGEROLLS = "They look so real!",
+		FESTIVEFISH = "Nothing fishy here at all, hyuyu!",
+		GRAVY = "It sits in a boat that doesn't float.",
+		LATKES = "I wonder what would happen if I took a bite.",
+		LUTEFISK = "It smells real enough.",
+		MULLEDDRINK = "Perhaps I'll mull it over, hyuyu!",
+		PANETTONE = "This holiday bread is all in your head!",
+		PAVLOVA = "I'm afraid you can't fool me.",
+		PICKLEDHERRING = "Shall I pick a peck of pickled herring?",
+		POLISHCOOKIE = "You can't prank a prankster, hyuyu!",
+		PUMPKINPIE = "Don't be shy, try the pie!",
+		ROASTTURKEY = "It certainly looks like a turkey.",
+		STUFFING = "Why fill yourself with dread when you could fill yourself with bread?",
+		SWEETPOTATO = "Should I tell them it's a prank? Hyuyu!",
+		TAMALES = "Very convincing.",
+		TOURTIERE = "A pie, not sweet, but filled with meat.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A special place to stuff your face!",
+			HAS_FOOD = "The stage is set!",
+			WRONG_TYPE = "Best not to break the illusion.",
+			BURNT = "Double the pranks!",
+		},
+
+		GINGERBREADWARG = "That cookie wants to sink its teeth into me!", 
+		GINGERBREADHOUSE = "What a charming cookie cottage.", 
+		GINGERBREADPIG = "Here little piggy!",
+		CRUMBS = "That's the way the cookie crumbles, hyuyu!",
+		WINTERSFEASTFUEL = "Ah, are you the source of this magic?",
+
         KLAUS = "Are we not brethren?",
         KLAUS_SACK = "What tasty treats lie within?",
 		KLAUSSACKKEY = "Now where oh where did he leave that stash.",
@@ -2926,6 +2974,7 @@ return{
 		OAR_DRIFTWOOD = "It's an oar, for shore!",
 
 		OCEANFISHINGROD = "I'd rather catch a soul than a sole.",
+		OCEANFISHINGBOBBER_NONE = "A piece of this fishing puzzle is missing.",
         OCEANFISHINGBOBBER_BALL = "I'm just having a ball! Hyuyu!",
         OCEANFISHINGBOBBER_OVAL = "This doesn't look so hard!",
 		OCEANFISHINGBOBBER_CROW = "Never underestimate the power of a strong quill.",
@@ -3090,5 +3139,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Doing that hurt my feelings.",
+		WINTERSFEASTFUEL = "Hyuyu, how fun!",
     },
 }

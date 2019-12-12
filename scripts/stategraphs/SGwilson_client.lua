@@ -427,6 +427,7 @@ local actionhandlers =
 	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
 	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
 	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
+	ActionHandler(ACTIONS.WINTERSFEAST_FEAST, "winters_feast_eat"),
 }
 
 local events =
@@ -1306,9 +1307,10 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
-            inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_lag", false)
-
+            if not inst:HasTag("doing") then
+				inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
+				inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_lag", false)
+			end
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -1339,18 +1341,17 @@ local states =
 
             local rod = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 			rod = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod or nil
-			if rod.replica.oceanfishingrod:IsLineTensionHigh() then
-				if not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
-					inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
+			local target = rod ~= nil and rod.replica.oceanfishingrod:GetTarget() or nil
+			if target == nil or target.components.oceanfishinghook ~= nil or rod.replica.oceanfishingrod:IsLineTensionLow() then
+				if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
+					inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
 				end
 			elseif rod.replica.oceanfishingrod:IsLineTensionGood() then
 				if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
 					inst.AnimState:PlayAnimation("hooked_good_reeling", true)
 				end
-			else
-				if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
-					inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
-				end
+			elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
+				inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
 			end
 
             inst:PerformPreviewBufferedAction()
@@ -3002,7 +3003,7 @@ local states =
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("dart_pre")
-            if inst.sg.prevstate == inst.sg.currentstate then
+            if inst.sg.laststate == inst.sg.currentstate then
                 inst.sg.statemem.chained = true
                 inst.AnimState:SetTime(5 * FRAMES)
             end
@@ -3635,6 +3636,32 @@ local states =
             inst:ClearBufferedAction()
             inst.sg:GoToState("idle")
         end,
+    },
+
+    State{
+        name = "winters_feast_eat",
+        tags = { "doing", "feasting" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("feast_eat_pre")
+			inst.AnimState:PushAnimation("feast_eat_loop")
+			inst.AnimState:PushAnimation("feast_eat_loop")
+			inst.AnimState:PushAnimation("feast_eat_pst", false)
+			inst:PerformPreviewBufferedAction()
+        end,
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+				local act = inst:GetBufferedAction()
+				if act ~= nil and act.target ~= nil and act.target:HasTag("readyforfeast") then
+					inst.sg:GoToState("winters_feast_eat")
+				else
+					inst.sg:GoToState("idle")
+				end
+            end),
+        },
     },
 }
 

@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Me was never scared, florp!",
 	ANNOUNCE_MOONPOTION_FAILED = "Awww... nothing happen.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Should share with others, florp.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Oooooh, feel sparkly!",
+	ANNOUNCE_IS_FEASTING = "So much food, flurt!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Hey! Where sparkles go?",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Us friends now... florp?",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "All better, flurp!",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "Oh... might be friend of Webby boy.",
 		SPIDER_WARRIOR = "Don't like you anyway, flurt!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Scale-less say this what brought them here?",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "This. Best. Thing. Ever.", --hot cocoa
         WINTER_FOOD9 = "Sluuuurrrrp!", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Is big burny thing!",
+			COOKING = "It making the food now, florp.",
+			ALMOST_DONE_COOKING = "Can eat now? Maybe now? Now?",
+			DISH_READY = "FOOD READY!",
+		},
+		BERRYSAUCE = "Yummy yummy berries!",
+		BIBINGKA = "Like this!",
+		CABBAGEROLLS = "Cabbage rolled up with more cabbage, flort!",
+		FESTIVEFISH = "Someone playing tricks, it just veggies shaped like fish!",
+		GRAVY = "Mmmm, is chocolate!",
+		LATKES = "Is good and crunchy!",
+		LUTEFISK = "Is just potatoes made into fish shape!",
+		MULLEDDRINK = "Mmmm, warms up tummy!",
+		PANETTONE = "Tasty tasty bread!",
+		PAVLOVA = "Fancy cook man call it a mer... mer-ingy... mer-angy...",
+		PICKLEDHERRING = "Someone playing tricks, it just veggies shaped like fish!",
+		POLISHCOOKIE = "Yummy fruit pockets!",
+		PUMPKINPIE = "Mmmmmmmmmm!",
+		ROASTTURKEY = "It look like yucky turkey, but smell like veggies?",
+		STUFFING = "Tasty bready bits.",
+		SWEETPOTATO = "This even better than normal potato!",
+		TAMALES = "Mmm, hot veggie bits inside.",
+		TOURTIERE = "Mmm, is hot veggie pie!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Is very fancy table.",
+			HAS_FOOD = "Ready to eat! Ready to eat!",
+			WRONG_TYPE = "That not go there!",
+			BURNT = "Aww, feast over?",
+		},
+
+		GINGERBREADWARG = "Will eat you all up!", 
+		GINGERBREADHOUSE = "Anybody home?", 
+		GINGERBREADPIG = "No mercy for tiny Cookie-Pigfolk!",
+		CRUMBS = "Left tasty trail, florp.",
+		WINTERSFEASTFUEL = "It look tasty.",
+
         KLAUS = "You have presents for me?",
         KLAUS_SACK = "Open it! Open it!",
 		KLAUSSACKKEY = "Funny-looking antler, florp...",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "Make boat go!",
 
 		OCEANFISHINGROD = "Gonna catch fish from the big water, florp!",
+		OCEANFISHINGBOBBER_NONE = "Need something...",
         OCEANFISHINGBOBBER_BALL = "Bobby floaty!",
         OCEANFISHINGBOBBER_OVAL = "Bobby floaty!",
 		OCEANFISHINGBOBBER_CROW = "Feather floaty!",
@@ -3075,7 +3124,7 @@ return{
         MERMGUARD = "Will grow up big and strong like that one day!",
         MERM_PRINCE = "Need to fatten up if you gonna be proper King!",
 
-         SQUID = "Stay still, little squiddies!",
+        SQUID = "Stay still, little squiddies!",
     },
 
     DESCRIBE_GENERIC = "What that?",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Blegh, who wanna eat that?",
+		WINTERSFEASTFUEL = "Mmmmm, sweets!",
     },
 }

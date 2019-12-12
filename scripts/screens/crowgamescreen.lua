@@ -61,6 +61,7 @@ local TILE_TYPES = {"oddment_chevron_wrapper",
 local NUM_ROWS = 7
 local NUM_COLUMNS = 5
 local SPACING = 75
+local TILE_SCALE = 1
 local PWUP_BUTTON_SCALE = 1.2
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --TODO(Peter)
@@ -121,9 +122,10 @@ local function GameGridConstructor(screen, parent)
 	return widgets
 end
 
-MoverGameTile = function(screen)
+local MoverGameTile = function(screen)
 	local widg = MiniGameTile(screen, 0, true)
- 	widg:Hide()
+	widg:Hide()
+	widg:SetScale(TILE_SCALE)
 	widg.Move = function(tile_type, src_pos, dest_pos, drop_time, callbackfn)
 		widg:SetTileTypeUnHidden(tile_type)
 		widg:Show()
@@ -289,7 +291,7 @@ function CrowGameScreen:SetupUI()
 	self.pwup_root:SetFocusChangeDir(MOVE_UP, self.game_grid[XYtoIndex( 2, 0 )])
 
 	-- Skin collector
-	self.innkeeper = self.fixed_root:AddChild(SkinCollector( 0, true )) 
+	self.innkeeper = self.fixed_root:AddChild(SkinCollector( 0, true, STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH_CROW.START )) 
 	self.innkeeper:SetPosition(410, -400)
 	self.innkeeper:Appear()
 

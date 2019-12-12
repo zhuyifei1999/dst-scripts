@@ -36,7 +36,8 @@ EVENT_ICONS =
 	event_ice = {"ICE", "WINTER"},
 	event_yotv = {"VARG"},
 	event_quagmire = {"VICTORIAN"},
-	event_hallowed = {"HALLOWED"}
+	event_hallowed = {"HALLOWED"},
+	event_yule = {"YULE"}
 }
 
 local function GetSpecialItemCategories()

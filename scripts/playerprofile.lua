@@ -1168,6 +1168,19 @@ function PlayerProfile:GetKlumpCipher(file)
 	return self.persistdata.klump_ciphers[file]
 end
 
+function PlayerProfile:GetSnowbirdGameHighScore(score_version)
+	if self:GetValue("snowbird_game_high_score"..score_version) ~= nil then
+		return self:GetValue("snowbird_game_high_score"..score_version)
+	end
+	return 0
+end
+
+function PlayerProfile:SetSnowbirdGameHighScore(score, score_version)
+	self:SetValue("snowbird_game_high_score"..score_version, score)
+	self.dirty = true
+    self:Save()
+end
+
 
 function PlayerProfile:GetCrowGameHighScore(score_version)
 	if self:GetValue("crow_game_high_score"..score_version) ~= nil then

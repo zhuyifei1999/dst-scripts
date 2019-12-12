@@ -589,6 +589,27 @@ function d_fishing()
 	end
 end
 
+function d_tables()
+    local items = {"table_winters_feast", "table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast",
+                    "table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast",
+                    "table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast",
+                    "table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast","table_winters_feast",}
+
+    local spacing = 1
+    local num_wide = math.ceil(math.sqrt(#items))
+
+    local pt = ConsoleWorldPosition()
+
+    for y = 0, num_wide-1 do
+        for x = 0, num_wide-1 do
+            local inst = SpawnPrefab(items[(y*num_wide + x + 1)])
+            if inst ~= nil then
+                inst.Transform:SetPosition((pt + Vector3(x*spacing, 0, y*spacing)):Get())
+            end
+        end
+    end
+end
+
 function d_gofishing()
 	c_give("oceanfishingrod", 1)
 	c_give("oceanfishingbobber_ball", 5)

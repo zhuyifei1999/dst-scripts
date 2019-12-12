@@ -11,6 +11,8 @@ ITEM_DISPLAY_BLACKLIST =
 	dragonling_winter_builder = true,
 	dragonling_wyvern_builder = true,
 	fence_factory_item = true,
+	fence_gingerbread_item = true,
+	fencegate_gingerbread_item = true,
 	firestaff_bee = true,
 	firestaff_gungnir = true,
 	firestaff_hockey = true,
@@ -32,6 +34,7 @@ ITEM_DISPLAY_BLACKLIST =
 	minerhat_floppy = true,
 	moonstaff_crystal = true,
 	orangestaff_ancient = true,
+	orangestaff_candycane = true,
 	orangestaff_victorian = true,
 	perdling_rooster_builder = true,
 	perdling_winter_builder = true,
@@ -48,6 +51,5 @@ ITEM_DISPLAY_BLACKLIST =
 	researchlab4_hutch_costume = true,
 	researchlab4_tophat_circus = true,
 	researchlab4_witch_pyre = true,
-	backpack_mushy = true,
 }
 

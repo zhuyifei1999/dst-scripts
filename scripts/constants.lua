@@ -575,7 +575,7 @@ SPECIAL_EVENTS =
     YOTV = "year_of_the_varg",
     YOTP = "year_of_the_pig",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
 
 FESTIVAL_EVENTS =
 {
@@ -833,6 +833,7 @@ TECH =
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
     FOODPROCESSING_ONE = { FOODPROCESSING = 1 },
 	FISHING_ONE = { FISHING = 1 },
+	WINTERSFEASTCOOKING_ONE = { WINTERSFEASTCOOKING = 1 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
@@ -1042,6 +1043,7 @@ RECIPETABS =
     MADSCIENCE =    { str = "MADSCIENCE",   sort = 100,  icon = "tab_madscience_lab.tex",	 crafting_station = true, manufacturing_station = true },
     FOODPROCESSING = { str = "FOODPROCESSING", sort = 100, icon = "tab_foodprocessing.tex",  crafting_station = true },
 	FISHING =		{ str = "FISHING",		sort = 100,  icon = "tab_fishing.tex",	 crafting_station = true },
+	WINTERSFEASTCOOKING = { str = "WINTERSFEASTCOOKING", sort = 100, icon = "tab_feast_oven.tex",	crafting_station = true, manufacturing_station = true },--placeholder icon
 }
 
 CUSTOM_RECIPETABS =

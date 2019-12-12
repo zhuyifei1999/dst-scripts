@@ -14,13 +14,19 @@ local HungerBadge = Class(Badge, function(self, owner)
 end)
 
 function HungerBadge:OnUpdate(dt)
-    local anim =
-        self.owner ~= nil and
+    local anim = "neutral"
+    if  self.owner ~= nil and
         self.owner:HasTag("sleeping") and
         self.owner.replica.hunger ~= nil and
-        self.owner.replica.hunger:GetPercent() > 0 and
-        "arrow_loop_decrease" or
-        "neutral"
+        self.owner.replica.hunger:GetPercent() > 0 then
+
+        anim = "arrow_loop_decrease" 
+    end
+
+    if self.owner.components.debuffable and self.owner.components.debuffable:HasDebuff("wintersfeastbuff") then
+        anim = "arrow_loop_increase"
+    end
+
     if self.arrowdir ~= anim then
         self.arrowdir = anim
         self.hungerarrow:GetAnimState():PlayAnimation(anim, true)

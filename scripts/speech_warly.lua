@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "I feel bold as a sharp cheddar!",
 	ANNOUNCE_MOONPOTION_FAILED = "Perhaps that is for the best.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "The others might enjoy this!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Mon dieu, my world is aglow!",
+	ANNOUNCE_IS_FEASTING = "Winter's Feast is served!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Ah non, is it over already?",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, mon amie.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Et voilà!",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "I hope it didn't take any bites out of me.",
 		SPIDER_WARRIOR = "That could have been worse.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Is anyone else coming for dinner?",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "It smells like comfort and contentment.", --hot cocoa
         WINTER_FOOD9 = "I'm so happy I could weep.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Finally, a proper oven!",
+			COOKING = "Cooking should never be rushed.",
+			ALMOST_DONE_COOKING = "Ah, that delicious aroma tells me it's almost done!",
+			DISH_READY = "Et voila! Food is served.",
+		},
+		BERRYSAUCE = "Made from only the most festive berries.",
+		BIBINGKA = "A tasty holiday treat from the Philippines.",
+		CABBAGEROLLS = "A surprisingly time consuming dish, but well worth the wait.",
+		FESTIVEFISH = "There's always room for new traditions!",
+		GRAVY = "Rich and full of flavor.",
+		LATKES = "Some chives, a dollop of sour cream, c'est parfait!",
+		LUTEFISK = "A traditional Scandinavian holiday recipe.",
+		MULLEDDRINK = "The taste of cinnamon always puts me in the holiday spirit!",
+		PANETTONE = "A traditional Italian Yuletide treat.",
+		PAVLOVA = "A perfect Pavlova!",
+		PICKLEDHERRING = "It's really quite delicious.",
+		POLISHCOOKIE = "A rich pastry with a sweet fruity filling.",
+		PUMPKINPIE = "Simple and classic.",
+		ROASTTURKEY = "The pièce de résistance of any holiday feast!",
+		STUFFING = "To preserve the crispness, I actually cook it separate from the turkey.",
+		SWEETPOTATO = "All the sweetness of the holidays.",
+		TAMALES = "You can taste the care that went into this dish.",
+		TOURTIERE = "Ah oui, now that's a meat pie!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Ah yes! A proper feasting table!",
+			HAS_FOOD = "A masterpiece!",
+			WRONG_TYPE = "Ah no! That does not seem right!",
+			BURNT = "Oh dear, it looks a bit overdone.",
+		},
+
+		GINGERBREADWARG = "Looks sweet, but acts sour!", 
+		GINGERBREADHOUSE = "The piping on those roofs - magnifique!", 
+		GINGERBREADPIG = "I can catch you, gingerbread pig!",
+		CRUMBS = "I'm on its delicious trail!",
+		WINTERSFEASTFUEL = "To imbue my food with festive spirit.",
+
         KLAUS = "He doesn't look very jolly.",
         KLAUS_SACK = "There might be all sorts of treats inside.",
 		KLAUSSACKKEY = "Well, it's the key to something.",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "A nice, light paddle.",
 
 		OCEANFISHINGROD = "I wonder what deep sea delicacies are waiting for me?",
+		OCEANFISHINGBOBBER_NONE = "A float might make fishing easier.",
         OCEANFISHINGBOBBER_BALL = "Simple, pas compliqué, parfait!",
         OCEANFISHINGBOBBER_OVAL = "This world can harden the best of us, mon ami.",
 		OCEANFISHINGBOBBER_CROW = "Feathers are surprisingly useful for fishing!",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Fresh! Err... perhaps too fresh.",
+		WINTERSFEASTFUEL = "Do I taste a hint of cinnamon?",
     },
 }

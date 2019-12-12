@@ -126,7 +126,10 @@ function UIAnimButton:SetLoop(animation_name, loop)
     if animation_name and loop then
         self.loops[animation_name] = loop
     end
-    -- TODO: maybe we should check if an animation is already playing and start looping it. Maybe.
+
+    if self.animstate:IsCurrentAnimation(animation_name) then
+        self.animstate:PlayAnimation(animation_name, loop)
+    end
 end
 
 -- This was made with a very specific reason in mind (check EnableClick on giftitemtoast.lua),

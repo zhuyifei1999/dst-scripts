@@ -44,6 +44,12 @@ Recipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1
 	end
 )
 
+Recipe("wintersfeastoven", {Ingredient("cutstone", 1), Ingredient("marble", 1), Ingredient("log", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "wintersfeastoven_placer", nil, true)
+Recipe("table_winters_feast", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "table_winters_feast_placer", 2.8, true, nil, nil, nil, nil,
+    function(pt)
+       return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, 0.5) == nil
+    end)
+
 Recipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO, nil, nil, nil, nil, "merm_builder")
 
 Recipe("spidereggsack", {Ingredient("silk", 12), Ingredient("spidergland", 6), Ingredient("papyrus", 6)}, RECIPETABS.TOWN, TECH.NONE, nil, nil, nil, nil, "spiderwhisperer")
@@ -427,6 +433,27 @@ Recipe("halloween_experiment_sanity", 	{Ingredient("crow", 1), 	 		  Ingredient(
 Recipe("halloween_experiment_volatile", {Ingredient("rottenegg", 1), 		  Ingredient("charcoal", 1), 		  Ingredient(CHARACTER_INGREDIENT.SANITY, 10)}, RECIPETABS.MADSCIENCE, TECH.MADSCIENCE_ONE, nil, nil, true, nil, nil, nil, "halloweenpotion_embers.tex")
 Recipe("halloween_experiment_moon", 	{Ingredient("moonbutterflywings", 1), Ingredient("moon_tree_blossom", 1), Ingredient(CHARACTER_INGREDIENT.SANITY, 10)}, RECIPETABS.MADSCIENCE, TECH.MADSCIENCE_ONE, nil, nil, true, nil, nil, nil, "halloweenpotion_moon.tex")
 Recipe("halloween_experiment_root", 	{Ingredient("batwing", 1), 			  Ingredient("livinglog", 1),		  Ingredient(CHARACTER_INGREDIENT.SANITY, 20)}, RECIPETABS.MADSCIENCE, TECH.MADSCIENCE_ONE, nil, nil, true, nil, nil, nil, "livingtree_root.tex")
+
+----WINTERSFEASTCOOKING-----
+--placeholder ingredients and override icons
+Recipe("wintercooking_berrysauce",		{Ingredient("wintersfeastfuel", 1), Ingredient("mosquitosack", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "berrysauce.tex")
+Recipe("wintercooking_bibingka",		{Ingredient("wintersfeastfuel", 1), Ingredient("foliage", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "bibingka.tex")
+Recipe("wintercooking_cabbagerolls",	{Ingredient("wintersfeastfuel", 1), Ingredient("cutreeds", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "cabbagerolls.tex")
+Recipe("wintercooking_festivefish",		{Ingredient("wintersfeastfuel", 1), Ingredient("spoiled_fish_small", 1), Ingredient("petals", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "festivefish.tex")
+Recipe("wintercooking_gravy",			{Ingredient("wintersfeastfuel", 1), Ingredient("spoiled_food", 1), Ingredient("boneshard", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "gravy.tex")
+Recipe("wintercooking_latkes",			{Ingredient("wintersfeastfuel", 1), Ingredient("twigs", 1), Ingredient("cutgrass", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "latkes.tex")
+Recipe("wintercooking_lutefisk",		{Ingredient("wintersfeastfuel", 1), Ingredient("spoiled_fish", 1), Ingredient("driftwood_log", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "lutefisk.tex")
+Recipe("wintercooking_mulleddrink",		{Ingredient("wintersfeastfuel", 1), Ingredient("petals_evil", 1), Ingredient("ice", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "mulleddrink.tex")
+Recipe("wintercooking_panettone",		{Ingredient("wintersfeastfuel", 1), Ingredient("rock_avocado_fruit", 2, nil, nil, "rock_avocado_fruit_rockhard.tex")},  RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "panettone.tex")
+Recipe("wintercooking_pavlova",			{Ingredient("wintersfeastfuel", 1), Ingredient("moon_tree_blossom", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "pavlova.tex")
+Recipe("wintercooking_pickledherring",	{Ingredient("wintersfeastfuel", 1), Ingredient("flint", 1), Ingredient("saltrock", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "pickledherring.tex")
+Recipe("wintercooking_polishcookie",	{Ingredient("wintersfeastfuel", 1), Ingredient("butterflywings", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "polishcookie.tex")
+Recipe("wintercooking_pumpkinpie",		{Ingredient("wintersfeastfuel", 1), Ingredient("ash", 1), Ingredient("phlegm", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "pumpkinpie.tex")
+Recipe("wintercooking_roastturkey",		{Ingredient("wintersfeastfuel", 1), Ingredient("log", 1), Ingredient("charcoal", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "roastturkey.tex")
+Recipe("wintercooking_stuffing",		{Ingredient("wintersfeastfuel", 1), Ingredient("beardhair", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "stuffing.tex")
+Recipe("wintercooking_sweetpotato",		{Ingredient("wintersfeastfuel", 1), Ingredient("rocks", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "sweetpotato.tex")
+Recipe("wintercooking_tamales",			{Ingredient("wintersfeastfuel", 1), Ingredient("stinger", 2)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "tamales.tex")
+Recipe("wintercooking_tourtiere",		{Ingredient("wintersfeastfuel", 1), Ingredient("acorn", 1), Ingredient("pinecone", 1)}, RECIPETABS.WINTERSFEASTCOOKING, TECH.WINTERSFEASTCOOKING_ONE, nil, nil, true, nil, nil, nil, "tourtiere.tex")
 
 ----FOODPROCESSING-----
 Recipe("spice_garlic", {Ingredient("garlic", 3, nil, nil, "quagmire_garlic.tex")}, RECIPETABS.FOODPROCESSING, TECH.FOODPROCESSING_ONE, nil, nil, true, 2, "professionalchef")

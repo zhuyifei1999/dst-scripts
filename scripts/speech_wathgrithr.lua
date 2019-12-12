@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Fear! I hath bested you!",
 	ANNOUNCE_MOONPOTION_FAILED = "Twas all in vain!",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Tis more than enough to share!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I feel Odin's blessing upon me!",
+	ANNOUNCE_IS_FEASTING = "My friends, let us celebrate this great bounty!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "The blessing hath faded.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Rise, my ally!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "To battle!",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "Leggy coward.",
 		SPIDER_WARRIOR = "Flee, monster! I will return.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "It makes me long for the stage!",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "Warms the soul.", --hot cocoa
         WINTER_FOOD9 = "Imbibable eggs!", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A hearth for cooking a glorious feast!",
+			COOKING = "Locked in a glorious cooking battle.",
+			ALMOST_DONE_COOKING = "The wait is almost at an end.",
+			DISH_READY = "At long last, we feast!",
+		},
+		BERRYSAUCE = "It looks like vile berries but... that smell... could it be meat?",
+		BIBINGKA = "Surely this loaf must be made of meat!",
+		CABBAGEROLLS = "Begone foul cabbage, I shall feast on the meat within.",
+		FESTIVEFISH = "Let us celebrate the season by feasting on fish flesh!",
+		GRAVY = "A sauce worthy of the gods themselves!",
+		LATKES = "My eyes see foul potatoes, but the taste of meat is unmistakable!",
+		LUTEFISK = "A true Viking delicacy!",
+		MULLEDDRINK = "Ha ha! Another!",
+		PANETTONE = "My eyes doth deceive me, tis surely meat.",
+		PAVLOVA = "Once the berries hath been removed, tis a fine dessert indeed.",
+		PICKLEDHERRING = "A briny taste of the sea!",
+		POLISHCOOKIE = "My nose shall not be deceived, these are surely meat!",
+		PUMPKINPIE = "Tis surely a delicious meat pie in disguise!",
+		ROASTTURKEY = "A glorious feast indeed!",
+		STUFFING = "It bears the scent of meat. I will sample a morsel.",
+		SWEETPOTATO = "Marshmallows on meat... tis an odd choice, but somehow delicious!",
+		TAMALES = "Oh ho! This bready wrap hides a morsel of spiced meat!",
+		TOURTIERE = "Pie hath redeemed itself!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A feast table worthy of Valhalla!",
+			HAS_FOOD = "A feast fit for The Great Hall!",
+			WRONG_TYPE = "It is not worthy of a place here.",
+			BURNT = "It's been consumed by fire.",
+		},
+
+		GINGERBREADWARG = "I will fight thee for defying thy meaty origins.", 
+		GINGERBREADHOUSE = "Neither a house nor a meal I will enjoy.", 
+		GINGERBREADPIG = "You shall not escape me!!",
+		CRUMBS = "Telltale spoor left by a festive foe.",
+		WINTERSFEASTFUEL = "The essence of Jol!",
+
         KLAUS = "I shall free thy deer this day!",
         KLAUS_SACK = "A secret, kept under lock and key!",
 		KLAUSSACKKEY = "What wonders will you reveal?",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "Back to the sea!",
 
 		OCEANFISHINGROD = "Tremble before me, creatures of the deep!",
+		OCEANFISHINGBOBBER_NONE = "The line hath need of a float.",
         OCEANFISHINGBOBBER_BALL = "My keen hunter's eyes can detect the smallest nibble!",
         OCEANFISHINGBOBBER_OVAL = "My keen hunter's eyes can detect the smallest nibble!",
 		OCEANFISHINGBOBBER_CROW = "Fly straight and true!",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Bones and all.",
+		WINTERSFEASTFUEL = "It doth taste just like chicken!",
     },
 }

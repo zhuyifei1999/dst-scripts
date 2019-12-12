@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Hey, those trees aren't so scary anymore!",
 	ANNOUNCE_MOONPOTION_FAILED = "Whoops!",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "We really should share.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Hey! Everything's all sparkly!",
+	ANNOUNCE_IS_FEASTING = "We want to try everything!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Aww, we were having fun!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, we'll help!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "There you go!",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "We didn't actually want to hurt you.",
 		SPIDER_WARRIOR = "Simmer down, friend.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "It makes our claws and tummy so warm.", --hot cocoa
         WINTER_FOOD9 = "It's really, really good!", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Woah, that oven's huge!",
+			COOKING = "Should we set the table while it's cooking?",
+			ALMOST_DONE_COOKING = "We can't wait til it's done!",
+			DISH_READY = "It's ready to eat!",
+		},
+		BERRYSAUCE = "It's so sweet, it almost tastes like candy!",
+		BIBINGKA = "Huh, it's like a sweet bread!",
+		CABBAGEROLLS = "We hope Ms. Wickerbottom doesn't find out we didn't eat the cabbage...",
+		FESTIVEFISH = "Mmm, tasty!",
+		GRAVY = "We like lots of gravy!",
+		LATKES = "They're like pancakes made out of potatoes!",
+		LUTEFISK = "It looks weird... but tastes great!",
+		MULLEDDRINK = "Warms us right up!",
+		PANETTONE = "Are we sure that isn't a fruitcake in disguise?",
+		PAVLOVA = "We love anything with sugar!",
+		PICKLEDHERRING = "It looks tasty but... pickled fish?",
+		POLISHCOOKIE = "Yay! We love cookies!",
+		PUMPKINPIE = "We'd like a big slice, please!",
+		ROASTTURKEY = "Can we have the wishbone?",
+		STUFFING = "It smells so good!",
+		SWEETPOTATO = "Are those marshmallows on top?",
+		TAMALES = "Mmm, spicy!",
+		TOURTIERE = "We've never had meat in a pie before.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "So big it could fit everyone!",
+			HAS_FOOD = "Enough food for everyone!",
+			WRONG_TYPE = "Not the season for this.",
+			BURNT = "Aww, someone ruined it.",
+		},
+
+		GINGERBREADWARG = "Aaah! A gingerbread nightmare!", 
+		GINGERBREADHOUSE = "Let's eat it!", 
+		GINGERBREADPIG = "Come back! Come back!!!",
+		CRUMBS = "That gingerbread guy has been here.",
+		WINTERSFEASTFUEL = "It fills us with peace and joy!",
+
         KLAUS = "That meanie imprisoned those deer!",
         KLAUS_SACK = "Presents?!",
 		KLAUSSACKKEY = "I think maybe this goes somewhere.",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "Rowing is kinda fun!",
 
 		OCEANFISHINGROD = "Wonder what kind of fish we'll catch!",
+		OCEANFISHINGBOBBER_NONE = "It's missing a bobber.",
         OCEANFISHINGBOBBER_BALL = "It's a bobbin' bobber!",
         OCEANFISHINGBOBBER_OVAL = "It's a bobbin' bobber!",
 		OCEANFISHINGBOBBER_CROW = "We turned a feather into a float!",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",
+		WINTERSFEASTFUEL = "It... reminds me of mom's cooking...",
     },
 }

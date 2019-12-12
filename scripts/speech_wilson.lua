@@ -391,6 +391,12 @@ return {
 	ANNOUNCE_BRAVERY_POTION = "Those trees don't seem so spooky anymore.",
 	ANNOUNCE_MOONPOTION_FAILED = "Perhaps I didn't let it steep long enough...",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I should really share this with the others.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I'm feeling a surge of holiday spirit!",
+	ANNOUNCE_IS_FEASTING = "Happy Winter's Feast!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "The holiday goes by so fast...",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Let me help you.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Good as new!",
@@ -518,6 +524,7 @@ return {
 		SPIDER = "He's too gross, anyway.",
 		SPIDER_WARRIOR = "Shoo, you nasty thing!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
@@ -2377,6 +2384,47 @@ return {
         WINTER_FOOD8 = "How does it stay warm? A thermodynamical mug?", --hot cocoa
         WINTER_FOOD9 = "Can science explain why it tastes so good?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A festive furnace for flame-grilled foodstuffs!",
+			COOKING = "Cooking really is a science.",
+			ALMOST_DONE_COOKING = "The science is almost done!",
+			DISH_READY = "Science says it's done.",
+		},
+		BERRYSAUCE = "Equal parts merry and berry.",
+		BIBINGKA = "Soft and spongy.",
+		CABBAGEROLLS = "The meat hides inside the cabbage to avoid predators.",
+		FESTIVEFISH = "I wouldn't mind sampling some seasonal seafood.",
+		GRAVY = "It's all gravy.",
+		LATKES = "I could eat a latke more of these.",
+		LUTEFISK = "Is there any trumpetfisk?",
+		MULLEDDRINK = "This punch has a kick to it.",
+		PANETTONE = "This Yuletide bread really rose to the occasion.",
+		PAVLOVA = "I lova good Pavlova.",
+		PICKLEDHERRING = "You won't be herring any complaints from me.",
+		POLISHCOOKIE = "I'll polish off this whole plate!",
+		PUMPKINPIE = "I should probably just eat the whole thing... for science.",
+		ROASTTURKEY = "I see a big juicy drumstick with my name on it.",
+		STUFFING = "That's the good stuff!",
+		SWEETPOTATO = "Science has created a hybrid between dinner and dessert.",
+		TAMALES = "If I eat much more I'm going to start feeling a bit husky.",
+		TOURTIERE = "Pleased to eat you.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A feastival table.",
+			HAS_FOOD = "Time to eat!",
+			WRONG_TYPE = "It's not the season for that.",
+			BURNT = "Who would do such a thing?",
+		},
+
+		GINGERBREADWARG = "Time to desert this dessert.", 
+		GINGERBREADHOUSE = "Room and board all rolled into one.", 
+		GINGERBREADPIG = "I'd better follow him.",
+		CRUMBS = "A crummy way to hide yourself.",
+		WINTERSFEASTFUEL = "The spirit of the season!",
+
         KLAUS = "What on earth is that thing!",
         KLAUS_SACK = "We should definitely open that.",
 		KLAUSSACKKEY = "It's really fancy for a deer antler.",
@@ -2929,7 +2977,7 @@ return {
 		OAR_DRIFTWOOD = "Manual ship acceleration.",
 
 		OCEANFISHINGROD = "Now this is the reel deal!",
-		OCEANFISHINGBOBBER_NONE = "todo",
+		OCEANFISHINGBOBBER_NONE = "A bobber might improve its accuracy.",
         OCEANFISHINGBOBBER_BALL = "The fish will have a ball with this.",
         OCEANFISHINGBOBBER_OVAL = "Those fish won't give me the slip this time!",
 		OCEANFISHINGBOBBER_CROW = "I'd rather eat fish than crow.",
@@ -3094,5 +3142,6 @@ return {
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Mmm. Beaky.",
+		WINTERSFEASTFUEL = "Tastes like the holidays.",
     },
 }

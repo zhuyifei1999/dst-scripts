@@ -23,6 +23,7 @@ local prefabs =
     "mast_malbatross_item",
     "malbatross_feather",
     "malbatross_feather_fall",
+	"winter_ornament_boss_malbatross",
 }
 
 --------------------------------------------------------------------------

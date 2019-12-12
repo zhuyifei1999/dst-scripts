@@ -272,6 +272,8 @@ ACTIONS =
 
 	HALLOWEENMOONMUTATE = Action({ priority=-1 }),
 
+	WINTERSFEAST_FEAST = Action({ priority=1 }),
+
     --Quagmire
     TILL = Action({ distance=0.5 }),
     PLANTSOIL = Action(),
@@ -1146,9 +1148,11 @@ ACTIONS.GIVE.strfn = function(act)
 end
 
 ACTIONS.GIVE.stroverridefn = function(act)
-    --Quagmire action strings
+    --Quagmire & Winter's Feast action strings
     if act.target ~= nil and act.invobject ~= nil then
-        if act.target.nameoverride ~= nil and act.invobject:HasTag("quagmire_stewer") then
+		if act.target:HasTag("wintersfeasttable") then
+			return subfmt(STRINGS.ACTIONS.GIVE["PLACE_ITEM"], { item = act.invobject:GetBasicDisplayName() })
+        elseif act.target.nameoverride ~= nil and act.invobject:HasTag("quagmire_stewer") then
             return subfmt(STRINGS.ACTIONS.GIVE[string.upper(act.target.nameoverride)], { item = act.invobject:GetBasicDisplayName() })
         elseif act.target:HasTag("quagmire_altar") then
             if act.invobject.prefab == "quagmire_portal_key" then
@@ -1768,6 +1772,10 @@ ACTIONS.TAKEITEM.strfn = function(act)
 end
 
 ACTIONS.TAKEITEM.stroverridefn = function(act)
+	if act.target.prefab == "table_winters_feast" then
+		return STRINGS.ACTIONS.TAKEITEM.GENERIC
+	end
+
     local item = act.target.takeitem ~= nil and act.target.takeitem:value() or nil
     return item ~= nil and subfmt(STRINGS.ACTIONS.TAKEITEM.ITEM, { item = item:GetBasicDisplayName() }) or nil
 end
@@ -2730,6 +2738,10 @@ ACTIONS.REMOVE_FROM_TROPHYSCALE.fn = function(act)
 			return act.target.components.trophyscale:TakeItem(act.doer)
 		end
 	end
+end
+
+ACTIONS.WINTERSFEAST_FEAST.fn = function(act)
+	-- Logic is handled from stategraph; action is never actually performed
 end
 
 ACTIONS.REPLATE.fn = function(act)

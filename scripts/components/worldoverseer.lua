@@ -366,7 +366,7 @@ function WorldOverseer:HeartbeatPoll()
 
     local time_now = os.time()
 
-    local client_table = TheNet:GetClientTable()
+    local client_table = TheNet:GetClientTable() or {}
     local current_players = {}
     for _,v in ipairs(client_table) do
         current_players[v.userid] = { prefab = v.prefab }

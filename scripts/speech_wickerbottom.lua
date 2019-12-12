@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "My intestinal fortitude has returned!",
 	ANNOUNCE_MOONPOTION_FAILED = "Oh dear, that didn't go as planned.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I couldn't possibly eat this all myself!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Intriguing! I appear to be filled with \"cheer\".",
+	ANNOUNCE_IS_FEASTING = "I hope everyone remembered to wash their hands before eating.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "That was very illuminating.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on a moment, dear.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Off you go now.",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "I must read up on this!",
 		SPIDER_WARRIOR = "Back to the drawing board!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
         WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "What sort of fuel does it run on?",
+			COOKING = "Roasting nicely.",
+			ALMOST_DONE_COOKING = "It will be done, momentarily.",
+			DISH_READY = "It is complete!",
+		},
+		BERRYSAUCE = "How festive!",
+		BIBINGKA = "Traditionally, bibingka is baked in a specialized clay oven.",
+		CABBAGEROLLS = "Variations of this dish can be found across Europe and Asia.",
+		FESTIVEFISH = "I'm unfamiliar with the origins of this dish.",
+		GRAVY = "Oh my, it's a bit rich for me.",
+		LATKES = "Delightfully crispy.",
+		LUTEFISK = "The fish is dried and then soaked in lye, hence the odd aroma.",
+		MULLEDDRINK = "A taste of Yuletide cheer.",
+		PANETTONE = "The origins of this cake trace all the way back to ancient Rome.",
+		PAVLOVA = "It takes its name from the Russian ballerina Anna Pavlova.",
+		PICKLEDHERRING = "I do enjoy some pickled herring around the holidays.",
+		POLISHCOOKIE = "Now it feels like the holidays.",
+		PUMPKINPIE = "Perhaps just a nibble...",
+		ROASTTURKEY = "I do hope it had enough time in the oven.",
+		STUFFING = "Pairs perfectly with some turkey and gravy.",
+		SWEETPOTATO = "It's always a hit at holiday get-togethers.",
+		TAMALES = "The spice is actually quite mild, quite to my liking.",
+		TOURTIERE = "A rather hearty meat pie.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Big enough for company.",
+			HAS_FOOD = "A considerable amount of food!",
+			WRONG_TYPE = "Most certainly the wrong type.",
+			BURNT = "Oh my, that won't do at all.",
+		},
+
+		GINGERBREADWARG = "Canis Festivus.", 
+		GINGERBREADHOUSE = "Reminds me of a story I know.", 
+		GINGERBREADPIG = "If it would sit still long enough, I could classify it.",
+		CRUMBS = "I believe this came from the walking confectionery.",
+		WINTERSFEASTFUEL = "It reminds me of reading holiday stories by the fire.",
+
         KLAUS = "It uses its powerful olfactory sense to locate prey.",
         KLAUS_SACK = "How curious.",
 		KLAUSSACKKEY = "Hmm. Quite a sturdy antler.",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "A much more efficient, lighter design.",
 
 		OCEANFISHINGROD = "A sturdy rod for ocean fishing.",
+		OCEANFISHINGBOBBER_NONE = "A float might improve the rod's accuracy.",
         OCEANFISHINGBOBBER_BALL = "The use of a fishing float was first documented in 1496.",
         OCEANFISHINGBOBBER_OVAL = "The use of a fishing float was first documented in 1496.",
 		OCEANFISHINGBOBBER_CROW = "The use of a fishing float was first documented in 1496.",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Al dente.",
+		WINTERSFEASTFUEL = "I feel as though I've been wrapped in a cozy blanket.",
     },
 }

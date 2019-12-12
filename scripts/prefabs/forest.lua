@@ -364,6 +364,11 @@ local prefabs =
 	"oceanfish_shoalspawner",
 	"fishschoolspawnblocker",
 	"oceanfishableflotsam_water",
+
+    "gingerbreadhouse",
+    "gingerbreadpig",
+	"gingerbreadwarg",
+	"crumbs",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")
@@ -487,6 +492,12 @@ local function master_postinit(inst)
     inst:AddComponent("malbatrossspawner")
 
     inst:AddComponent("flotsamgenerator")
+
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        inst:AddComponent("gingerbreadhunter")
+    end
+    
+    inst:AddComponent("feasts")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

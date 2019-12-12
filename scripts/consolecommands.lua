@@ -235,7 +235,7 @@ end
 function c_listplayers()
     local isdedicated = not TheNet:GetServerIsClientHosted()
     local index = 1
-    for i, v in ipairs(TheNet:GetClientTable()) do
+    for i, v in ipairs(TheNet:GetClientTable() or {}) do
         if not isdedicated or v.performance == nil then
             print(string.format("%s[%d] (%s) %s <%s>", v.admin and "*" or " ", index, v.userid, v.name, v.prefab))
             index = index + 1

@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "I got my moxie back. Now to tackle those trees.",
 	ANNOUNCE_MOONPOTION_FAILED = "Back to the drawing board.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I ain't gonna hog this all to myself!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Woah! I'm sparklin like a Winter's Feast tree!",
+	ANNOUNCE_IS_FEASTING = "What a spread!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Hey, someone cut the power!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up'n'attem now.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Back to work!",
@@ -515,6 +521,7 @@ return{
 		SPIDER = "This isn't over!",
 		SPIDER_WARRIOR = "Next time!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "That was a one-way ticket.",
@@ -2374,6 +2381,47 @@ return{
         WINTER_FOOD8 = "Don't burn your mouth.", --hot cocoa
         WINTER_FOOD9 = "I know what eggs are, but what's a \"nog\"?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A nice sturdy oven.",
+			COOKING = "What's cookin', oven?",
+			ALMOST_DONE_COOKING = "Smells like it's almost done.",
+			DISH_READY = "Mmmm mmmm! Good eatin'!",
+		},
+		BERRYSAUCE = "Pass it over here!",
+		BIBINGKA = "I'll give it a try!",
+		CABBAGEROLLS = "That'll put meat on your bones!",
+		FESTIVEFISH = "Sure, why not.",
+		GRAVY = "Now we're talking!",
+		LATKES = "I love me some potatoes!",
+		LUTEFISK = "That doesn't look half bad!",
+		MULLEDDRINK = "I ain't one to pull my punches... but I'll mull them! Ha!",
+		PANETTONE = "Huh. Some kinda fancy-shmancy holiday bread?",
+		PAVLOVA = "Is cake supposed to crunch? Not that I'm complainin!",
+		PICKLEDHERRING = "It's actually not bad!",
+		POLISHCOOKIE = "Tasty!",
+		PUMPKINPIE = "Tis the season for some good eatin'!",
+		ROASTTURKEY = "Now that's a beautiful bird!",
+		STUFFING = "I could eat this for days!",
+		SWEETPOTATO = "Sticks to yer ribs!",
+		TAMALES = "Now that'll warm ya right up!",
+		TOURTIERE = "Now that's a good meat pie!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Now that's a sturdy table!",
+			HAS_FOOD = "When do we eat?",
+			WRONG_TYPE = "Whoops! That doesn't go here.",
+			BURNT = "A darn shame.",
+		},
+
+		GINGERBREADWARG = "This guy's just making me hungry.", 
+		GINGERBREADHOUSE = "Better as a dessert than a dwelling.", 
+		GINGERBREADPIG = "Hey cookie, what's the rush?",
+		CRUMBS = "A trail of crumbs to follow!",
+		WINTERSFEASTFUEL = "This season always makes me think of Charlie.",
+
         KLAUS = "Get out of here ya big creep.",
         KLAUS_SACK = "There's gotta be something good in there.",
 		KLAUSSACKKEY = "This must be the actual key.",
@@ -2926,6 +2974,7 @@ return{
 		OAR_DRIFTWOOD = "Catch my drift? Ha!",
 
 		OCEANFISHINGROD = "The right tool for the job!",
+		OCEANFISHINGBOBBER_NONE = "I think that line needs something.",
         OCEANFISHINGBOBBER_BALL = "Bobber's yer uncle! Ha!",
         OCEANFISHINGBOBBER_OVAL = "Bobber's yer uncle! Ha!",
 		OCEANFISHINGBOBBER_CROW = "It's nothin' to crow about, but it ain't half bad!",
@@ -3090,5 +3139,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "That crunch was upsetting.",
+		WINTERSFEASTFUEL = "I remember the last holiday we spent as a family.",
     },
 }

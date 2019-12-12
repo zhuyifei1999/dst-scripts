@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "I was never really scared of those trees anyhow.",
 	ANNOUNCE_MOONPOTION_FAILED = "How disappointing.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I suppose it's only right to share this with the others.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "That food seems to have had an odd affect on me...",
+	ANNOUNCE_IS_FEASTING = "At last, a decent meal.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Its power was short-lived.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Allow me to assist.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "No need to thank me.",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "I won't be made a fool of... next time!",
 		SPIDER_WARRIOR = "Next time the gloves come off!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "Such a decadent beverage.", --hot cocoa
         WINTER_FOOD9 = "My... favorite... she remembered.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Something about it... ah, I'm sure it's nothing.",
+			COOKING = "What's it cooking up now?",
+			ALMOST_DONE_COOKING = "I do wish it would hurry up.",
+			DISH_READY = "Finally!",
+		},
+		BERRYSAUCE = "This seems like a lot of fuss for some mashed berries.",
+		BIBINGKA = "It has a unique spongy texture.",
+		CABBAGEROLLS = "Meat rolled in cabbage. How exciting.",
+		FESTIVEFISH = "I don't know what's so festive about it.",
+		GRAVY = "I have a tendency to overdo it on the gravy.",
+		LATKES = "They're acceptable.",
+		LUTEFISK = "It has an odd, yet strangely mouthwatering aroma.",
+		MULLEDDRINK = "It brings a small respite from this wretched cold.",
+		PANETTONE = "Fruitcake's more agreeable cousin.",
+		PAVLOVA = "It has a certain elegance to it.",
+		PICKLEDHERRING = "I suppose I can't be picky.",
+		POLISHCOOKIE = "How quaint.",
+		PUMPKINPIE = "Well... perhaps just a slice.",
+		ROASTTURKEY = "I myself will carve this roast beast.",
+		STUFFING = "Something to fill the void in my stomach.",
+		SWEETPOTATO = "How very... rustic.",
+		TAMALES = "They've got a bit of kick to them.",
+		TOURTIERE = "I haven't had a meat pie since I left Liverpool.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Must we go through this production for a little food?",
+			HAS_FOOD = "I suppose I'll have to share.",
+			WRONG_TYPE = "The wrong place for this.",
+			BURNT = "Humbug.",
+		},
+
+		GINGERBREADWARG = "Pretty brash for something so edible.", 
+		GINGERBREADHOUSE = "Entirely too gaudy.", 
+		GINGERBREADPIG = "Must you make me chase you?",
+		CRUMBS = "It's falling apart.",
+		WINTERSFEASTFUEL = "I prefer my fuel more nightmarish.",
+
         KLAUS = "My, what a magnificently horrific creature.",
         KLAUS_SACK = "What dark treasures lie within?",
 		KLAUSSACKKEY = "Magic has done things to this beast's horn.",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "Hmph. I've never been one for manual lab-oar.",
 
 		OCEANFISHINGROD = "A more in-depth approach to fishing.",
+		OCEANFISHINGBOBBER_NONE = "It seems to be missing something.",
         OCEANFISHINGBOBBER_BALL = "How quaint.",
         OCEANFISHINGBOBBER_OVAL = "It's made of tougher stuff.",
 		OCEANFISHINGBOBBER_CROW = "I used to see quill floats like this back in England.",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "That tasted about as good as you'd expect.",
+		WINTERSFEASTFUEL = "It tastes bitter.",
     },
 }

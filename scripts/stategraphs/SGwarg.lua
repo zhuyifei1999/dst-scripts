@@ -14,6 +14,17 @@ local events =
     CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(true, false),
 
+    EventHandler("doattack", function(inst, data)
+		if inst.components.health ~= nil and not inst.components.health:IsDead()
+			and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+			if inst:HasTag("gingerbread") and (inst._next_goo_time == nil or inst._next_goo_time < GetTime()) then
+				inst.sg:GoToState("attack_icing")
+			else
+				inst.sg:GoToState("attack")
+			end
+		end
+	end),
+
     EventHandler("heardwhistle", function(inst, data)
         if not (inst.sg:HasStateTag("statue") or
                 inst.components.health:IsDead() or
@@ -161,6 +172,83 @@ local states =
                     inst.sg:GoToState("idle")
                 end
             end),
+        },
+    },
+
+	--Gingerbread warg
+    State
+    {
+        name = "attack_icing",
+        tags = { "attack", "busy" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("attack_icing")
+            inst.components.combat:StartAttack()
+        end,
+
+        timeline = 
+		{
+            TimeEvent(14 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+            TimeEvent(17 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+            TimeEvent(26 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+            TimeEvent(33 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(33*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+            TimeEvent(42 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(42*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+            TimeEvent(49 * FRAMES, function(inst) inst:LaunchGooIcing() end),
+            TimeEvent(49*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/whoosh") end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+			        inst.sg:GoToState("idle")
+			    end
+			end),
+        },
+    },
+
+    State
+    {
+        name = "gingerbread_intro",
+        tags = { "intro_state" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("gingerbread_eat_loop")
+        end,
+
+        timeline = 
+		{
+			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/eat") end),
+            TimeEvent(6*FRAMES, function(inst) if math.random() < 0.5 then inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbreadpig/vocal") end end),
+            TimeEvent(12*FRAMES, function(inst) if math.random() < 0.7 then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/vargr/idle") end end),
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/eat") end),
+            -- TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbreadpig/vocal") end),
+            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbread_vargr/eat") end),
+            -- TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbreadpig/vocal") end),
+		},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					if inst.components.combat == nil or inst.components.combat:HasTarget() then
+				        inst.sg:GoToState("idle")
+					else
+				        inst.sg:GoToState("gingerbread_intro")
+					end
+			    end
+			end),
         },
     },
 

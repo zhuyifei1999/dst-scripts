@@ -5,12 +5,13 @@ local wall_prefabs =
     "collapse_small",
 }
 
-local function CalcRotationEnum(rot, isdoor)
-    return math.floor((math.floor(rot + 0.5) / 45) % (isdoor and 8 or 4))
+local ROT_SIDES = 8
+local function CalcRotationEnum(rot)
+    return math.floor((math.floor(rot + 0.5) / 45) % ROT_SIDES)
 end
 
-local function CalcFacingAngle(rot, isdoor)
-    return CalcRotationEnum(rot, isdoor) * 45 
+local function CalcFacingAngle(rot)
+    return CalcRotationEnum(rot) * 45 
 end
 
 local function IsNarrow(inst)
@@ -129,7 +130,7 @@ local function ApplyDoorOffset(inst)
 end
 
 local function SetOrientation(inst, rotation)
-    rotation = CalcFacingAngle(rotation, inst.isdoor)
+    rotation = CalcFacingAngle(rotation)
 
     inst.Transform:SetRotation(rotation)
     if inst.dooranim ~= nil then
@@ -142,11 +143,13 @@ local function SetOrientation(inst, rotation)
             if not inst.bank_narrow_set then
                 inst.bank_narrow_set = true
                 inst.bank_wide_set = nil
-                local skin_build = inst:GetSkinBuild()
-                if skin_build then
-					GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts_thin" )
-                else
-                    GetAnimState(inst):SetBuild(inst.builds.narrow)
+                if not inst.isdoor then
+                    local skin_build = inst:GetSkinBuild()
+                    if skin_build then
+                        GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts_thin" )
+                    else
+                        GetAnimState(inst):SetBuild(inst.builds.narrow)
+                    end
                 end
                 GetAnimState(inst):SetBank(inst.builds.narrow)
             end
@@ -154,11 +157,13 @@ local function SetOrientation(inst, rotation)
             if not inst.bank_wide_set then
                 inst.bank_wide_set = true
                 inst.bank_narrow_set = nil
-                local skin_build = inst:GetSkinBuild()
-                if skin_build then
-					GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts" )
-                else
-                    GetAnimState(inst):SetBuild(inst.builds.wide)
+                if not inst.isdoor then
+                    local skin_build = inst:GetSkinBuild()
+                    if skin_build then
+                        GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts" )
+                    else
+                        GetAnimState(inst):SetBuild(inst.builds.wide)
+                    end
                 end
                 GetAnimState(inst):SetBank(inst.builds.wide)
             end
@@ -205,74 +210,69 @@ local function RefreshDoorOffset(inst, neighbors)
     if otherdoor and do_offset == false then
         do_offset = _calcdooroffset(otherdoor)
     end
-        
+    
     if inst.offsetdoor ~= do_offset then
         inst.offsetdoor = do_offset
         ApplyDoorOffset(inst)
     end
 end
 
-local function FixUpFenceOrientation(inst, deployedrotation) -- rotates the placer but not the any near by "alignwall"
+
+local function FixUpFenceOrientation(inst, deployedrotation)
     local neighbors = GetNeighbors(inst)
 
-    if deployedrotation ~= nil then
-        if inst.isdoor then
-            local neighbor = neighbors[2]
-            if neighbor ~= nil then
-                if neighbor.isdoor then
-                    SetIsSwingRight(inst, not IsSwingRight(neighbor))
-                else
-                    local x, y, z = inst.Transform:GetWorldPosition()
-                    local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
-                    local rot = math.atan2(x - x1, z - z1) * RADIANS
-                    SetIsSwingRight(inst, CalcRotationEnum(deployedrotation, true) ~= CalcRotationEnum(rot, true))
-                end
-            end
+    local rot = inst.Transform:GetRotation()
+    local neighbor_index = 1
+    local neighbor = neighbors[neighbor_index]
+    if deployedrotation ~= nil then --has a value for spawned items
+        neighbor_index = 2
+        neighbor = neighbors[neighbor_index]
+        rot = deployedrotation
+    end
+
+    if inst.isdoor then
+        SetIsSwingRight(inst, false) --set it to false and assume we'll recalculate each frame
+    end
+
+    
+    --Only look for parallel neighbours when matching rotation and doing swing-side changes
+    local this_e = CalcRotationEnum(rot)
+    local neighbor_e = nil
+    while neighbor ~= nil do
+        neighbor_e = CalcRotationEnum(neighbor.Transform:GetRotation())
+        if this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2) then
+            --print("Found parallel neighbor!", neighbor)
+            break
+        end
+        neighbor_index = neighbor_index + 1
+        neighbor = neighbors[neighbor_index]
+    end
+        
+    if neighbor ~= nil then
+        --align with neighbor if we're placing from behind. This exists so that you can fix a hole in a wall from the back of wall. Needed for the case where the camera is obstructed from placing from the front of the wall
+        if (this_e + ROT_SIDES/2) % ROT_SIDES == neighbor_e then
+            rot = rot + 180
+            this_e = CalcRotationEnum(rot)
         end
 
-        SetOrientation(inst, deployedrotation)
-        RefreshDoorOffset(inst, neighbors)
-    else
-        local neighbor = neighbors[1]
-        if neighbor ~= nil then
-            local x, y, z = inst.Transform:GetWorldPosition()
-            local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
-            local rot_to_neighbor = math.atan2(x - x1, z - z1) * RADIANS
-            local rot = CalcFacingAngle(rot_to_neighbor, inst.isdoor)
-            
-            if inst.isdoor then
-                if Vector3(x - x1, 0, z - z1):Dot(TheCamera:GetRightVec()) < 0 then
-                    rot = rot + 180
-                end
-                
-                if neighbor.isdoor then
-                    if CalcRotationEnum(neighbor.Transform:GetRotation(), false) == CalcRotationEnum(rot, false) then
-                        rot = neighbor.Transform:GetRotation()
-                    end
+        if inst.isdoor then
+            if neighbor.isdoor then
+                if this_e == neighbor_e then
                     SetIsSwingRight(inst, not IsSwingRight(neighbor))
-                else
-                    SetIsSwingRight(inst, CalcRotationEnum(rot, true) ~= CalcRotationEnum(rot_to_neighbor, true))
-
-                    -- some extra fixup to handle the case when two doors are placed with opposite camera angles, but the found neighbour was a wall even though there is a door on the otherside
-                    inst.Transform:SetRotation(rot)
-                    local otherdoor = FindPairedDoor(inst)
-                    if otherdoor ~= nil then
-                        rot = otherdoor.Transform:GetRotation()
-                        SetIsSwingRight(inst, not IsSwingRight(otherdoor))
-                    end
                 end
-            end
+            else
+                local x, y, z = inst.Transform:GetWorldPosition()
+                local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
+                local rot_to_neighbor = math.atan2(x - x1, z - z1) * RADIANS
 
-            SetOrientation(inst, rot)
-
-            RefreshDoorOffset(inst, neighbors)
-        else
-            if inst.isdoor then
-                SetIsSwingRight(inst, false)
+                local swing_right = CalcRotationEnum(rot) ~= CalcRotationEnum(rot_to_neighbor)
+                SetIsSwingRight(inst, swing_right)
             end
-            SetOrientation(inst, inst.Transform:GetRotation())
         end
     end
+
+    SetOrientation(inst, rot)
+    RefreshDoorOffset(inst, neighbors)
 
     GetAnimState(inst):PlayAnimation(GetAnimName(inst, "idle"))
 end
@@ -421,7 +421,7 @@ end
 -------------------------------------------------------------------------------
 
 local function onsave(inst, data)
-    local rot = CalcRotationEnum(inst.Transform:GetRotation(), inst.isdoor)
+    local rot = CalcRotationEnum(inst.Transform:GetRotation())
     data.rot = rot > 0 and rot or nil
     data.offsetdoor = inst.offsetdoor
     data.swingright = inst._isswingright ~= nil and inst._isswingright:value() or nil

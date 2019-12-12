@@ -184,6 +184,7 @@ local function master_postinit(inst)
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
     inst:AddComponent("mermkingmanager")
+    inst:AddComponent("feasts")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

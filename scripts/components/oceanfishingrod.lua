@@ -59,11 +59,11 @@ local function TrackFishingHookedSomething(self)
 end
 
 local function TrackFishingDone(self, reason)
-	if self.fishing_stats ~= nil then
+	if self.fishing_stats ~= nil and self.fisher ~= nil then
 		self.fishing_stats.result = reason or "unknown"
 		self.fishing_stats.target = (self.target ~= nil and self.target.components.oceanfishinghook == nil and not self.target:HasTag("projectile")) and self.target.prefab or "none"
 		self.fishing_stats.isafish = self.target ~= nil and self.target:HasTag("oceanfish")
-		self.fishing_stats.weight = self.target.components.weighable ~= nil and self.target.components.weighable:GetWeight() or 0
+		self.fishing_stats.weight = (self.target ~= nil and self.target.components.weighable ~= nil) and self.target.components.weighable:GetWeight() or 0
 
 		TrackFishingHookedSomething(self)
 		self.fishing_stats.catch_time = math.max(0, GetTime() - (self.fishing_stats.cast_time + (self.fishing_stats.wait_time or 0)))
@@ -190,7 +190,7 @@ function OceanFishingRod:IsLineTensionHigh()
 end
 
 function OceanFishingRod:IsLineTensionGood()
-	return self.line_tension > TUNING.OCEAN_FISHING.LINE_TENSION_GOOD
+	return self.line_tension > TUNING.OCEAN_FISHING.LINE_TENSION_GOOD and self.line_tension <= TUNING.OCEAN_FISHING.LINE_TENSION_HIGH
 end
 
 function OceanFishingRod:IsLineTensionLow()
@@ -323,11 +323,9 @@ function OceanFishingRod:OnUpdate(dt)
     end
 end
 
-function OceanFishingRod:CalcCatchDest(src_pos, dest_pos)
+function OceanFishingRod:CalcCatchDest(src_pos, dest_pos, catch_dist)
 	local catch_vect = dest_pos - src_pos
-	catch_vect = catch_vect:GetNormalized() * (math.random()*1 + .5)
-
-	return dest_pos + catch_vect
+	return src_pos + catch_vect:GetNormalized() * (math.min(catch_dist, catch_vect:Length()) + (math.random()*1 + .5))
 end
 
 function OceanFishingRod:CatchFish()
@@ -336,7 +334,7 @@ function OceanFishingRod:CatchFish()
 	if self.target ~= nil and self.target.components.oceanfishable ~= nil then
 		TrackFishingDone(self, "success")
 
-		local targetpos = self:CalcCatchDest(self.target:GetPosition(), self.fisher:GetPosition())
+		local targetpos = self:CalcCatchDest(self.target:GetPosition(), self.fisher:GetPosition(), self.target.components.oceanfishable.catch_distance)
 		local startpos = self.target:GetPosition()
 		local fish = self.target.components.oceanfishable:MakeProjectile()
 		if fish.components.weighable ~= nil then

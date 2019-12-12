@@ -226,6 +226,7 @@ STRINGS =
                 PLATE = "Snackrifice Plate of {food}",
                 BOWL = "Snackrifice Bowl of {food}",
             },
+			PLACE_ITEM = "Place {item}",
         },
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
@@ -557,6 +558,9 @@ STRINGS =
 		COMPARE_WEIGHABLE = "Give",
 		WEIGH_ITEM = "Weigh",
 		GIVE_TACKLESKETCH = "Give",
+
+		-- Winter's Feast 2019
+		WINTERSFEAST_FEAST = "Feast",
 	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -1727,6 +1731,56 @@ STRINGS =
         WINTER_FOOD8 = "Hot Cocoa",
         WINTER_FOOD9 = "Heavenly Eggnog",
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN = "Masonry Oven",
+		WINTERCOOKING_BERRYSAUCE = "Merry Berrysauce",
+		WINTERCOOKING_BIBINGKA = "Bibingka",
+		WINTERCOOKING_CABBAGEROLLS = "Cabbage Rolls",
+		WINTERCOOKING_FESTIVEFISH = "Festive Fish Dish",
+		WINTERCOOKING_GRAVY = "Good Gravy",
+		WINTERCOOKING_LATKES = "Latkes",
+		WINTERCOOKING_LUTEFISK = "Lutefisk",
+		WINTERCOOKING_MULLEDDRINK = "Mulled Punch",
+		WINTERCOOKING_PANETTONE = "Panettone",
+		WINTERCOOKING_PAVLOVA = "Pavlova",
+		WINTERCOOKING_PICKLEDHERRING = "Pickled Herring",
+		WINTERCOOKING_POLISHCOOKIE = "Polish Cookies",
+		WINTERCOOKING_PUMPKINPIE = "Pumpkin Pie",
+		WINTERCOOKING_ROASTTURKEY = "Roasted Turkey",
+		WINTERCOOKING_STUFFING = "Stuffing",
+		WINTERCOOKING_SWEETPOTATO = "Sweet Potato Casserole",
+		WINTERCOOKING_TAMALES = "Tamales",
+		WINTERCOOKING_TOURTIERE = "Tourtiere",
+
+		GINGERBREADWARG = "Gingerbread Varg",
+		GINGERBREADHOUSE = "Gingerbread Pig House",
+		GINGERBREADPIG = "Gingerbread Pig",
+        GINGERDEADPIG = "Gingerbread Pig",
+		CRUMBS = "Cookie Crumbles" ,
+		WINTERSFEASTFUEL = "Holiday Cheer",
+
+		--Dishes are not final - let these be for now
+		BERRYSAUCE = "Merry Berrysauce",
+		BIBINGKA = "Bibingka",
+		CABBAGEROLLS = "Cabbage Rolls",
+		FESTIVEFISH = "Festive Fish Dish",
+		GRAVY = "Good Gravy",
+		LATKES = "Latkes",
+		LUTEFISK = "Lutefisk",
+		MULLEDDRINK = "Mulled Punch",
+		PANETTONE = "Panettone",
+		PAVLOVA = "Pavlova",
+		PICKLEDHERRING = "Pickled Herring",
+		POLISHCOOKIE = "Polish Cookies",
+		PUMPKINPIE = "Pumpkin Pie",
+		ROASTTURKEY = "Roasted Turkey",
+		STUFFING = "Stuffing",
+		SWEETPOTATO = "Sweet Potato Casserole",
+		TAMALES = "Tamales",
+		TOURTIERE = "Tourtiere",
+
+		TABLE_WINTERS_FEAST = "Winter's Feast Table",
+
 		HALLOWEEN_ORNAMENT_1 = "Ghost Decoration",
 		HALLOWEEN_ORNAMENT_2 = "Bat Decoration",
 		HALLOWEEN_ORNAMENT_3 = "Spider Decoration",
@@ -2649,6 +2703,29 @@ STRINGS =
 		HALLOWEEN_EXPERIMENT_ROOT = "Spine-chilling saplings.",  
 
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
+
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN = "It's all fired up for the holidays.",
+		WINTERCOOKING_BERRYSAUCE = "Fill your belly with a bowl full of jelly.",
+		WINTERCOOKING_BIBINGKA = "This dish will leaf you wanting more.",
+		WINTERCOOKING_CABBAGEROLLS = "Get your holiday feast rolling.",
+		WINTERCOOKING_FESTIVEFISH = "It just isn't the holidays without it.",
+		WINTERCOOKING_GRAVY = "All aboard the gravy train.",
+		WINTERCOOKING_LATKES = "You'll like them a latke.",
+		WINTERCOOKING_LUTEFISK = "Sea-son's eatings.",
+		WINTERCOOKING_MULLEDDRINK = "A hot drink for a cold winter.",
+		WINTERCOOKING_PANETTONE = "Like fruitcake, but edible!",
+		WINTERCOOKING_PAVLOVA = "Light and crisp as new fallen snow.",
+		WINTERCOOKING_PICKLEDHERRING = "A salty seasonal supper.",
+		WINTERCOOKING_POLISHCOOKIE = "Just like babcia used to make.",
+		WINTERCOOKING_PUMPKINPIE = "Gourd tidings we bring.",
+		WINTERCOOKING_ROASTTURKEY = "Gobble-gobble it up.",
+		WINTERCOOKING_STUFFING = "Stuff your face!",
+		WINTERCOOKING_SWEETPOTATO = "It's a marshmallow world in the winter.",
+		WINTERCOOKING_TAMALES = "Spice up your holiday spread.",
+		WINTERCOOKING_TOURTIERE = "A savory seasonal pie.",
+
+		TABLE_WINTERS_FEAST = "Gather round for the Winter's Feast.",
 
         --Quagmire
         QUAGMIRE_CRATE_POT_HANGER = "Everything you need to set up a cookpot.",
@@ -3582,7 +3659,8 @@ STRINGS =
 		QUAGMIRE_TRADER_KID = "Billy",
 		MADSCIENCE = "Mad Science",
         FOODPROCESSING = "Seasonings",
-		FISHING = "Fishing"
+		FISHING = "Fishing",
+		WINTERSFEASTCOOKING = "Feast",
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -4029,6 +4107,7 @@ STRINGS.UI =
 			"Felix Hard",
             "Jen Davreux",
             "Steph Mahoney",
+            "Anne-Marie Cyr",
         },
 
         ALTGAMES =
@@ -7466,6 +7545,7 @@ STRINGS.UI =
         TEMPORARILY_CLOSED_BODY = "The Trade Inn is closed for a bit.\n\nBe back soon, okay?",
 
         CROW = "Chase Crow",
+        SNOWBIRD = "Chase Snowbird",
         RESET = "Reset",
         START = "Start",
         TRADE = "Trade",
@@ -7580,7 +7660,7 @@ STRINGS.UI =
                 "I've done witnessed a murder! And they're stealin' all my hard-earned candy wrappers!",
                 "Gimme a hand gettin' rid of these crows, will ya?",
                 "Wanna play a game? Help me pickup my wrappers and get rid of those dang crows. Doesn't that sound fun?",
-                "What, you got something better to do? Help me get these crows outta here!",
+                "What, ya got something better to do? Help me get these crows outta here!",
             },
             
             POWERUP_SELECTED =
@@ -7607,7 +7687,7 @@ STRINGS.UI =
 
                 seeds =
                 {
-                    "What are ya doing with those seeds!? You're supposed to be chasing the crows away, not attractin' 'em!",
+                    "What are ya doing with those seeds!? Y'er supposed to be chasing the crows away, not attractin' 'em!",
                 },
             },
             
@@ -7622,7 +7702,7 @@ STRINGS.UI =
 
             GAME_OVER =
             {
-                "Looks like you're all out of options!",
+                "Looks like y'er all out of options!",
                 "Try again! There's many more wrappers in my collection to tidy up.",
                 "Thanks for helpin', but I can't give you a better trade. I've got mouths to feed, ya'know.",
                 "All done for now, but ya made some progress tidyin' up my wrapper collection. ",
@@ -7630,10 +7710,55 @@ STRINGS.UI =
 
             USE_POWERUP =
             {
-                "Looks like you're stuck kid. Maybe ya ought to use one of those tools.",
-                "You're out of moves, try using a tool to help ya out.",
+                "Looks like y'er stuck kid. Maybe ya ought to use one of those tools.",
+                "Y'er out of moves, try using a tool to help ya out.",
             }
         },
+
+        
+        SNOW_GAME =
+        {
+            HIGH_SCORE = "High Score: ",
+            GAME_SCORE = "Score: ",
+            LIVES = "Guesses Remaining: ",
+            REPORTING = "Reporting feast memories'...",  
+            THANKS = "Thanks for playing!",
+            GAME_OVER_POPUP_TITLE = "All done rememberin'",
+            GAME_OVER_POPUP_BODY = "Great job matching'.\nYou completed {score} pairs!",
+            OPEN_GIFT = "Open Gift",
+
+            HELP = "Help",
+            HELP_TITLE = "A feastin' pair of birds",
+            HELP_BODY = "Match pairs of food tiles from the feast. Clearing a pair will cause the tiles above to drop down, so be sure to remember what foods were there. Matching a pair of snowbirds will grant you an extra guess.\n\nGood luck!",
+        },
+        
+        SKIN_COLLECTOR_SPEECH_SNOW =
+        {
+            START =
+            {
+                "Let's play a game! Use that big brain to match pairs of food from the feast!",
+                "Use y'er noggin to remember pairs. Chase off any pesky snowbirds while y'er at it.",
+                "My ol' pops taught me this game. Try to remember and match pairs."
+            },
+
+            ADD_LIFE =
+            {
+                "Yeehaw! I'll give you another guess for that.",
+                "They sure want in on our feast! Scare 'em away!",
+                "Tha birds are after my favorite! Tha sweet Pumpkin Pie.",
+                "It's a festive time for sharin' but not with those bothersome birds.",
+                "I've got mouths to feed. Tha birds will have to find their own feast.",
+                "Ya'll can come back when tha feast is over!",
+            },
+
+            GAME_OVER =
+            {
+                "Y'er all out of guesses!",
+                "Try again! Ya can do better, I know it!",
+                "Y'er all done!",
+            },
+        },
+
 
         SKIN_COLLECTOR_SPEECH =
         {
@@ -7649,25 +7774,25 @@ STRINGS.UI =
             {
                 "C'mon back when ya got something ta trade!",
                 "Sorry, but I can't give ya something for nothing, ya know.",
-                "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me.",
+                "If ya find any items while y'er adventuring around out there, ya can bring the ones ya don't need ta me.",
             },
             SPECIALS =
             {
-                "These're my special deals. Gimme the stuff I'm looking for and I'll give ya a better item in exchange.",
+                "These're my special deals. Gimme tha stuff I'm looking for and I'll give ya a better item in exchange.",
                 "I'm lookin' for some particular things right now. If ya can give 'em to me, I'll give ya a new one of higher quality.",
-                "The special deals are cheaper than tha normal ones, but ya gotta give me the exact things I'm lookin' for.",
+                "Tha special deals are cheaper than tha normal ones, but ya gotta give me tha exact things I'm lookin' for.",
             },
             ADDMORE =
             {
                 "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed.",
                 "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange.",
-                "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out.",
+                "Tha's it, fill tha machine on up with <rarity> items and ya'll get a higher quality item back out.",
                 "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!",
             },
             ADDMORESPECIALS =
             {
-                "Ya got the rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
-                "I just need tha rest of the items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
+                "Ya got tha rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
+                "I just need tha rest of tha items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
             },
             SPECIALRECIPE =
             {
@@ -7682,7 +7807,8 @@ STRINGS.UI =
                 "If ya wanna make tha trade, just push tha green button.",
             },
             TRADE =
-            {   "It'll be here in a jiffy.",
+            {
+                "It'll be here in a jiffy.",
                 "I bet ya can't wait to see what comes out!",
                 "It should be here real soon now.",
             },
@@ -7703,7 +7829,7 @@ STRINGS.UI =
                 "Hey, ya struck it rich! Look at that <item>. Ya must be extra lucky today.",
                 "Here ya go, one bran' new <item>. Jus' remember I can't afford to give ya items this good all tha time.",
                 "Well, I guess me & tha machine are feelin' gen'rous today. Ya won a <item>!",
-                "Ain't that just the koalefant's toenails! Ya got one very purty <item>.",
+                "Ain't that just tha koalefant's toenails! Ya got one very purty <item>.",
             },
             JOYSTICK =
             {
@@ -7720,7 +7846,7 @@ STRINGS.UI =
             {
                 "Ya may not feel young, but I've been tradin' longer than ya been around, young pup.",
                 "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine.",
-                "Take yer time. I can stand here yammerin' all day.",
+                "Take y'er time. I can stand here yammerin' all day.",
                 "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow.",
                 "Once, when I was but a young shaver... ah, but ya don' wanna listen to an old trader's stories.",
                 "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not.",
@@ -8590,6 +8716,7 @@ STRINGS.UI =
         SHRUG = "Shrug",
         SLOWCLAP = "Slow Clap",
         STEP = "Step Dance",
+		TOAST = "Toast",
     },
 
     PRESENCE = 

@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Feeling strong!",
 	ANNOUNCE_MOONPOTION_FAILED = "No work",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Friends might like?",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Oooooh",
+	ANNOUNCE_IS_FEASTING = "Fill belly with good belly stuff",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Gone",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Helping...",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Made better",
@@ -513,6 +519,7 @@ return{
 		SPIDER = "Don't want to fight",
 		SPIDER_WARRIOR = "Don't want to fight",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Hmm... new door",
@@ -2372,6 +2379,47 @@ return{
         WINTER_FOOD8 = "Mmm... Makes belly warm", --hot cocoa
         WINTER_FOOD9 = "Makes belly full", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Doesn't use friends",
+			COOKING = "Mmm...",
+			ALMOST_DONE_COOKING = "Almost...",
+			DISH_READY = "Food!",
+		},
+		BERRYSAUCE = "Mushy sweet balls",
+		BIBINGKA = "Wrapped in friends",
+		CABBAGEROLLS = "Rolled up belly stuff",
+		FESTIVEFISH = "Fancy Glub Glub",
+		GRAVY = "Not mud?",
+		LATKES = "Potato bits",
+		LUTEFISK = "Mushy Glub Glub",
+		MULLEDDRINK = "Makes insides warm",
+		PANETTONE = "Tiny friends inside!",
+		PAVLOVA = "Crunchy",
+		PICKLEDHERRING = "Salty Glub Glub",
+		POLISHCOOKIE = "Sweet belly stuff",
+		PUMPKINPIE = "Mmmm...",
+		ROASTTURKEY = "Tweeter go in belly!",
+		STUFFING = "Tasty bready bits",
+		SWEETPOTATO = "Yummy yum!",
+		TAMALES = "Friends holding it",
+		TOURTIERE = "Mmm... hot belly stuff",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Friends can eat here",
+			HAS_FOOD = "Friends eat?",
+			WRONG_TYPE = "Oops. Nope",
+			BURNT = "Oh...",
+		},
+
+		GINGERBREADWARG = "Scary Sweet Woofer", 
+		GINGERBREADHOUSE = "Yummy house. Mmmmm!", 
+		GINGERBREADPIG = "Come back, friend!",
+		CRUMBS = "Oh. Friend lost thing",
+		WINTERSFEASTFUEL = "Friends...",
+
         KLAUS = "Hello! Friend?",
         KLAUS_SACK = "Prize inside?",
 		KLAUSSACKKEY = "Branch? No",
@@ -2924,6 +2972,7 @@ return{
 		OAR_DRIFTWOOD = "Friend helps push water fast!",
 
 		OCEANFISHINGROD = "Strong Glub Glub stick",
+		OCEANFISHINGBOBBER_NONE = "Missing thing...",
         OCEANFISHINGBOBBER_BALL = "Floaty thing",
         OCEANFISHINGBOBBER_OVAL = "Floaty thing",
 		OCEANFISHINGBOBBER_CROW = "Floaty thing",
@@ -3088,5 +3137,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Don't feel good",
+		WINTERSFEASTFUEL = "Friends?",
     },
 }

@@ -18,6 +18,7 @@ local AVAILABLE_TECH =
 	"MADSCIENCE",
     "FOODPROCESSING",
 	"FISHING",
+	"WINTERSFEASTCOOKING",
 }
 
 local function Create(t)

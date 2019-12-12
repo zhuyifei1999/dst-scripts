@@ -103,10 +103,10 @@ local function OnMalbatrossKilledOrRemoved(source, the_malbatross)
 end
 
 local function OnShoalFishHooked(source, fish_shoal)
-    if _activemalbatross == nil and fish_shoal ~= nil and math.random() < TUNING.MALBATROSS_HOOKEDFISH_SUMMONCHANCE then
-        _time_until_spawn = _time_until_spawn or
-                (_firstspawn and 0) or
-                (TUNING.TOTAL_DAY_TIME * GetRandomWithVariance(MALBATROSS_SPAWNDELAY.BASE, MALBATROSS_SPAWNDELAY.RANDOM))
+    if _activemalbatross == nil and fish_shoal ~= nil and (_time_until_spawn == nil or _time_until_spawn < 10)
+            and math.random() < TUNING.MALBATROSS_HOOKEDFISH_SUMMONCHANCE then
+
+        _time_until_spawn = _time_until_spawn or 0
 
         _shuffled_shoals_for_spawning = {fish_shoal}
 

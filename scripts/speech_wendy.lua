@@ -382,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Bats can't scare me anymore. I can return to my melancholy.",
 	ANNOUNCE_MOONPOTION_FAILED = "Sigh... I didn't really expect that to work.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Maybe I could... join in the feast...",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I feel... warm...",
+	ANNOUNCE_IS_FEASTING = "This is... nice.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Everything fades.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You'll not glimpse death today...",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "All done.",
@@ -509,6 +515,7 @@ return{
 		SPIDER = "You should be thankful I'm sparing you.",
 		SPIDER_WARRIOR = "I won't forget this.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Its beauty is tinged with a heartbreaking sadness.",
@@ -2368,6 +2375,47 @@ return{
         WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
         WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A place to cook dead things.",
+			COOKING = "At least something is warm in this world.",
+			ALMOST_DONE_COOKING = "The end is almost nigh.",
+			DISH_READY = "I suppose I could eat something.",
+		},
+		BERRYSAUCE = "Abigail would love this...",
+		BIBINGKA = "This bread has a most curious texture.",
+		CABBAGEROLLS = "I wouldn't mind rolling up in a blanket and forgetting my troubles...",
+		FESTIVEFISH = "It's about as festive as I feel.",
+		GRAVY = "How we try in vain to add flavor to our bland and meaningless lives.",
+		LATKES = "They are... quite tasty.",
+		LUTEFISK = "Maybe I'll try just a bite.",
+		MULLEDDRINK = "Can it thaw a cold, broken heart?",
+		PANETTONE = "It's... delicious.",
+		PAVLOVA = "It's brittle and delicate, like life itself.",
+		PICKLEDHERRING = "It tastes... good.",
+		POLISHCOOKIE = "I suppose... it wouldn't hurt to have one...",
+		PUMPKINPIE = "Is it sweet enough to help me forget the bitterness in my heart?",
+		ROASTTURKEY = "The holiday was cut short for this poor bird.",
+		STUFFING = "Perhaps filling my belly will make me feel less empty inside.",
+		SWEETPOTATO = "Oh Abigail, remember how mother would make this every year?",
+		TAMALES = "Little pockets of warmth in this cold world.",
+		TOURTIERE = "I cannot be comforted by comfort food... but I will have some more...",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A table for gatherings.",
+			HAS_FOOD = "I wish Abigail could enjoy some of that.",
+			WRONG_TYPE = "Like me, it doesn't belong here.",
+			BURNT = "It seems the time for celebration is over.",
+		},
+
+		GINGERBREADWARG = "Horrible evil in a festive coating.", 
+		GINGERBREADHOUSE = "Temporary joy, meant to be consumed.", 
+		GINGERBREADPIG = "No one wants to be my friend.",
+		CRUMBS = "The little guy is falling apart.",
+		WINTERSFEASTFUEL = "Makes me think of holidays with Abigail.",
+
         KLAUS = "I see him when I'm sleeping...",
         KLAUS_SACK = "Should we peek inside...?",
 		KLAUSSACKKEY = "The key to our prosperity...",
@@ -2920,6 +2968,7 @@ return{
 		OAR_DRIFTWOOD = "Just when it thought it had escaped the ocean...",
 
 		OCEANFISHINGROD = "The depths will offer no safety from my hook.",
+		OCEANFISHINGBOBBER_NONE = "The line seems terribly bare... perhaps it needs something...",
         OCEANFISHINGBOBBER_BALL = "It floats happily until something drags it under.",
         OCEANFISHINGBOBBER_OVAL = "It floats happily until something drags it under.",
 		OCEANFISHINGBOBBER_CROW = "It floats happily until something drags it under.",
@@ -3084,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "I spared it the torment of living.",
+		WINTERSFEASTFUEL = "Abigail, it's like I can taste mother's cooking...",
     },
 }

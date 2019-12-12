@@ -383,6 +383,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Glad that's over. Never thought I'd be scared of trees.",
 	ANNOUNCE_MOONPOTION_FAILED = "Consider yourself lucky, eh?",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I wouldn't feel good aboot keeping this all to myself.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I'm lit up like the first of July!",
+	ANNOUNCE_IS_FEASTING = "My favourite thing aboot any holiday - eating!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Eh, I was probably a walkin' fire hazard anyway.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You fell like a tree, eh?",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "There we go.",
@@ -510,6 +516,7 @@ return{
 		SPIDER = "Sorry!",
 		SPIDER_WARRIOR = "Same time again tomorrow, eh?",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
@@ -2369,6 +2376,47 @@ return{
         WINTER_FOOD8 = "Perfect for drinking next to a good fire, eh?", --hot cocoa
         WINTER_FOOD9 = "Psst, Lucy. Do I have a 'nog moustache?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "What kind of oven doesn't take wood?",
+			COOKING = "Smells good, eh?",
+			ALMOST_DONE_COOKING = "Almost done.",
+			DISH_READY = "Dinner's ready.",
+		},
+		BERRYSAUCE = "It's as sweet as you are, Luce.",
+		BIBINGKA = "It's got a nice flavour to it.",
+		CABBAGEROLLS = "That's some tasty grub!",
+		FESTIVEFISH = "Season's fishings!",
+		GRAVY = "It really floats my gravy boat.",
+		LATKES = "I'll never say no to potatoes.",
+		LUTEFISK = "Weird, it almost tastes like salmon.",
+		MULLEDDRINK = "Nothin better against the cold!",
+		PANETTONE = "Even bread gets sweeter over the holidays!",
+		PAVLOVA = "Reminds me of the snow-capped mountains back home.",
+		PICKLEDHERRING = "It actually looks pretty good.",
+		POLISHCOOKIE = "Whoops, I think I got some jam in my beard.",
+		PUMPKINPIE = "I won't say no to some pie.",
+		ROASTTURKEY = "My favourite kind of bird is a roasted one.",
+		STUFFING = "I'm stuffed to the brim!",
+		SWEETPOTATO = "Don't mind if I do!",
+		TAMALES = "These'll spice up our holiday feast, eh?",
+		TOURTIERE = "If only I had some ketchup!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "We having company?",
+			HAS_FOOD = "Yep. That's some good lookin' food.",
+			WRONG_TYPE = "Whoops. Not the right food.",
+			BURNT = "Guess that's one way to clear the dishes, eh?",
+		},
+
+		GINGERBREADWARG = "Not like any dog I've ever seen.", 
+		GINGERBREADHOUSE = "I prefer my houses made of wood.", 
+		GINGERBREADPIG = "Where ya goin', eh?",
+		CRUMBS = "I think we're supposed to follow these.",
+		WINTERSFEASTFUEL = "Making me think of that blue spruce we cut down years ago...",
+
         KLAUS = "Thing's got no eyes, eh?",
         KLAUS_SACK = "Something good's in there, eh?",
 		KLAUSSACKKEY = "Gotta be some use for that.",
@@ -2921,6 +2969,7 @@ return{
 		OAR_DRIFTWOOD = "Nice day for rowin', eh?.",
 
 		OCEANFISHINGROD = "Let's see if the fish are bitin', eh?",
+		OCEANFISHINGBOBBER_NONE = "Hm. Could really use a float of some kind.",
         OCEANFISHINGBOBBER_BALL = "Nothing like a nice day of fishin'.",
         OCEANFISHINGBOBBER_OVAL = "Nothing like a nice day of fishin'.",
 		OCEANFISHINGBOBBER_CROW = "Hmph. Guess birds are good for some things.",
@@ -3085,5 +3134,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "You can taste the beak, eh?",
+		WINTERSFEASTFUEL = "Mmm, maple!",
     },
 }

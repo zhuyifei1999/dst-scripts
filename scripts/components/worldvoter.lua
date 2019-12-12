@@ -97,7 +97,7 @@ local function GetVoteDialogData(commandhash, targetuserid, starteruserid)
             }
 
             if targetuserid ~= nil and targetuserid ~= "" then
-                for i, v in ipairs(TheNet:GetClientTable()) do
+                for i, v in ipairs(TheNet:GetClientTable() or {}) do
                     if v.userid == targetuserid and (v.performance == nil or TheNet:GetServerIsClientHosted()) then
                         _dialogdata.targetclient = v
                         break
@@ -106,7 +106,7 @@ local function GetVoteDialogData(commandhash, targetuserid, starteruserid)
             end
 
             if starteruserid ~= nil and starteruserid ~= "" then
-                for i, v in ipairs(TheNet:GetClientTable()) do
+                for i, v in ipairs(TheNet:GetClientTable() or {}) do
                     if v.userid == starteruserid and (v.performance == nil or TheNet:GetServerIsClientHosted()) then
                         _dialogdata.starterclient = v
                         break
@@ -336,7 +336,7 @@ local OnStartVote = _ismastershard and function(src, data)
             _votesdirty = false
             _voterdata = {}
             _targetname = UserToName(data.targetuserid)
-            for i, v in ipairs(TheNet:GetClientTable()) do
+            for i, v in ipairs(TheNet:GetClientTable() or {}) do
                 if v.performance == nil or TheNet:GetServerIsClientHosted() then
                     _voterdata[v.userid] = not newdata.cantargetself and v.userid == data.targetuserid and CANNOT_VOTE or VOTE_PENDING
                 end

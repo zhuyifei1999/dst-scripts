@@ -383,6 +383,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Wolfgang is brave! Not scared of spooky tree!",
 	ANNOUNCE_MOONPOTION_FAILED = "Wolfgang expected something to happen.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Wolfgang should share with tiny, weaker friends.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Why do tiny sparks follow Wolfgang?",
+	ANNOUNCE_IS_FEASTING = "Is the time for feasting!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Goodbye tiny sparks.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up now, friend!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Go! Fight many things!",
@@ -510,6 +516,7 @@ return{
 		SPIDER = "He ran away from me.",
 		SPIDER_WARRIOR = "He knows I am stronger.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
@@ -2369,6 +2376,47 @@ return{
         WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
         WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Oven needs mighty fuel!",
+			COOKING = "Is making Wolfgang's mouth water.",
+			ALMOST_DONE_COOKING = "Is almost done...",
+			DISH_READY = "Wolfgang will share with all his friends!",
+		},
+		BERRYSAUCE = "Is very berry!",
+		BIBINGKA = "Leafy bread fills Wolfgang's mighty belly!",
+		CABBAGEROLLS = "Wolfgang likes his cabbage rolls smothered in sauerkraut!",
+		FESTIVEFISH = "Is good fish for holidays.",
+		GRAVY = "Gravy is good indeed!",
+		LATKES = "Will eat many, many of these.",
+		LUTEFISK = "Wolfgang will eat the stinky fish.",
+		MULLEDDRINK = "Is good, cozy drink.",
+		PANETTONE = "Is good, sweet bread.",
+		PAVLOVA = "Look very delicate, not like mighty Wolfgang.",
+		PICKLEDHERRING = "Good fish, get in belly.",
+		POLISHCOOKIE = "Ah, bring back good memories.",
+		PUMPKINPIE = "Wolfgang's belly is going to grow bigger than muscles...",
+		ROASTTURKEY = "Wolfgang hungry for bird meat!",
+		STUFFING = "Bread chunks very good!",
+		SWEETPOTATO = "Is very sweet, but see no potato.",
+		TAMALES = "Was Wolfgang not supposed to eat husk of corn?",
+		TOURTIERE = "Is pie filled with much protein!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Is place for all of Wolfgang's friends!",
+			HAS_FOOD = "Come, friends, and eat the mighty food!",
+			WRONG_TYPE = "Oops. Is not going here.",
+			BURNT = "Think party has gotten out of hand.",
+		},
+
+		GINGERBREADWARG = "Wolfgang will defeat it. Then, dessert!", 
+		GINGERBREADHOUSE = "Wolfgang will punch it for the candy.", 
+		GINGERBREADPIG = "Hehe! Come back, little guy!",
+		CRUMBS = "Is clue! Yummy, yummy clue!",
+		WINTERSFEASTFUEL = "Is making Wolfgang think of friends.",
+
         KLAUS = "If Wolfgang had no eyes, he would not see terrible beast!",
         KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		KLAUSSACKKEY = "Is very special antler!",
@@ -2921,6 +2969,7 @@ return{
 		OAR_DRIFTWOOD = "Oar feels so light in Wolfgang's mighty hands!",
 
 		OCEANFISHINGROD = "Strong rod to catch mighty fish!",
+		OCEANFISHINGBOBBER_NONE = "Need something to fish better.",
         OCEANFISHINGBOBBER_BALL = "Float well, tiny bobber!",
         OCEANFISHINGBOBBER_OVAL = "Float well, tiny bobber!",
 		OCEANFISHINGBOBBER_CROW = "Feather of crow float well on water!",
@@ -3085,5 +3134,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "This egg too crunchy.",
+		WINTERSFEASTFUEL = "Remind Wolfgang of old country...",
     },
 }

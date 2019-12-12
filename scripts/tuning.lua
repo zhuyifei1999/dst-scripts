@@ -171,7 +171,8 @@ function Tune(overrides)
 
 			START_UNREELING_TENSION = 0.7,
 
-			IDLE_QUOTE_TIME = 10,
+			IDLE_QUOTE_TIME_MIN = 15,
+			IDLE_QUOTE_TIME_VAR = 5,
 		},
 
 		OCEANFISHING_TACKLE =
@@ -1133,6 +1134,10 @@ function Tune(overrides)
             FISHING = TechTree.Create({
                 FISHING = 1,
             }),
+		
+			WINTERSFEASTCOOKING = TechTree.Create({
+				WINTERSFEASTCOOKING = 1,
+			}),
 		},
 
         RABBIT_HEALTH = 25 * multiplayer_attack_modifier,
@@ -2877,6 +2882,7 @@ function Tune(overrides)
             TOADSTOOL_DARK   = {basic=3, special="winter_ornament_boss_toadstool"},
             MOOSE            = {basic=1, special="winter_ornament_boss_moose"}, -- goose?
             ANTLION          = {basic=1, special="winter_ornament_boss_antlion"},
+            MALBATROSS       = {basic=1, special="winter_ornament_boss_malbatross"},
         },
 
         WINTERS_FEAST_LOOT_EXCLUSION =
@@ -2888,6 +2894,8 @@ function Tune(overrides)
             STALKER = true,
             STALKER_FOREST = true,
         },
+
+		WINTERS_FEAST_OVEN_BASE_COOK_TIME = night_time*.3333,
 
         FIRECRACKERS_STARTLE_RANGE = 10,
         REDLANTERN_LIGHTTIME = total_day_time * 12,
@@ -3765,7 +3773,37 @@ function Tune(overrides)
 		SCHOOL_SPAWNER_BLOCKER_LIFETIME = total_day_time,
 
 		FISH_BOX_PRESERVER_RATE = -1/3,
-    }
+
+
+        -- Wintersfeast 2019
+		WARG_GINGERBREAD_GOO_DIST_VAR = 3,
+		WARG_GOO_DAMAGE = 20,
+        WARG_GOO_RADIUS = 1.5,
+		WARG_GINGERBREAD_GOO_COOLDOWN = 10,
+        
+        GINGERBREADPIG_RUN_SPEED = 10,
+		GINGERBREADPIG_HEALTH = 60,
+		
+		WINTERSFEASTTABLE =
+		{
+            TABLE_RANGE = 3.5, -- this will make FEAST RANGE obsolete. 
+			FEAST_RANGE = 8,
+			PERISH_TIME_DEPLETION = 50,
+			PERISH_OVER_TIME_MULTIPLIER = 0.25,
+		},
+		WINTERSFEASTBUFF =
+		{
+			MAXDURATION = 50,
+			DURATION_GAIN_BASE = 7,
+			DURATION_GAIN_MAXBONUS = 15,
+			DROP_SPIRIT_PERCENTAGE_THRESHOLD = 0.5,
+            EATTIME = 180,
+			TICKRATE = 2,
+			HEALTH_GAIN = 1,
+			HUNGER_GAIN = (calories_per_day/total_day_time)*2,
+			SANITY_GAIN = 100/(night_time*10),
+		},
+	}
 end
 
 Tune()

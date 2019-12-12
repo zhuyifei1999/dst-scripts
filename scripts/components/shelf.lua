@@ -45,7 +45,7 @@ function Shelf:TakeItem(taker)
             self.ontakeitemfn(self.inst, taker, self.itemonshelf)
         end
 
-        if taker.components.inventory ~= nil then
+        if taker ~= nil and taker.components.inventory ~= nil then
             if self.inst.components.inventory ~= nil then
                 self.inst.components.inventory:RemoveItem(self.itemonshelf)
             end
@@ -55,6 +55,7 @@ function Shelf:TakeItem(taker)
             self.itemonshelf = nil
         else
             self.inst.components.inventory:DropItem(self.itemonshelf)
+			self.itemonshelf = nil
         end
     end
 end

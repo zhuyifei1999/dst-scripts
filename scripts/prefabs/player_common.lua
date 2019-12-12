@@ -1188,6 +1188,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),
+		Asset("ANIM", "anim/player_actions_feast_eat.zip"),
         Asset("ANIM", "anim/player_boat.zip"),
         Asset("ANIM", "anim/player_boat_plank.zip"),
         Asset("ANIM", "anim/player_oar.zip"),
@@ -1439,6 +1440,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean")
         inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
+
+		inst.AnimState:AddOverrideBuild("player_actions_feast_eat")
         inst.DynamicShadow:SetSize(1.3, .6)
 
         inst.MiniMapEntity:SetIcon(name..".png")

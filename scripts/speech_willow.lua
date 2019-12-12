@@ -384,6 +384,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Haha! Those bats don't scare me anymore!",
 	ANNOUNCE_MOONPOTION_FAILED = "Huh. Alright then.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Fiiiiiine, I'll share with everyone else.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "It's like there's little sparks flying around me!",
+	ANNOUNCE_IS_FEASTING = "Can't talk, must eat.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Aw man. Guess it's time to get some real sparks flying!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hey! Get back up!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "You got this!",
@@ -516,6 +522,7 @@ return{
 		SPIDER = "Bleh. I'll kill him later.",
 		SPIDER_WARRIOR = "Not so tough now!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",
@@ -2375,6 +2382,47 @@ return{
         WINTER_FOOD8 = "I only like it when it's SCALDING.", --hot cocoa
         WINTER_FOOD9 = "Who knew stuff from a bird's butt could be so tasty?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "I'm on board with anything that involves fire.",
+			COOKING = "Ugh, this is the most boring part.",
+			ALMOST_DONE_COOKING = "Is it done yet?!",
+			DISH_READY = "Mmmm, you can still taste the fire!",
+		},
+		BERRYSAUCE = "This is the best part!",
+		BIBINGKA = "Mmm, I can still smell the fire.",
+		CABBAGEROLLS = "Yeah, I can roll with these.",
+		FESTIVEFISH = "It's just so festive!",
+		GRAVY = "Yeah! Pour on the gravy!",
+		LATKES = "No skimping on the sour cream!",
+		LUTEFISK = "It actually looks pretty tasty.",
+		MULLEDDRINK = "Ahh, it's like there's a warm fire in my belly.",
+		PANETTONE = "Am I just hungry, or does everything look extra tasty?",
+		PAVLOVA = "It's so delicate looking, I just want to smush it.",
+		PICKLEDHERRING = "How does it smell so good?",
+		POLISHCOOKIE = "Yup, I'll be having ten more of those.",
+		PUMPKINPIE = "Yep, I'm eating this whole thing.",
+		ROASTTURKEY = "Everything tastes better with fire.",
+		STUFFING = "Out of the turkey and into my stomach!",
+		SWEETPOTATO = "Don't mind if I do.",
+		TAMALES = "It's like a little bit of fire in my mouth!",
+		TOURTIERE = "Get into my pie hole!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Are we having company?",
+			HAS_FOOD = "Looks so good I almost don't want to burn it.",
+			WRONG_TYPE = "Oops, wrong food. Burn the mistake.",
+			BURNT = "Now I'm really feeling the holiday spirit!",
+		},
+
+		GINGERBREADWARG = "Desserts should not eat people!", 
+		GINGERBREADHOUSE = "I almost don't want to burn this one.", 
+		GINGERBREADPIG = "Hey get back here!",
+		CRUMBS = "Haha. That little guy is losing his parts.",
+		WINTERSFEASTFUEL = "Reminds me of sitting by the fire on cold winter nights.",
+
         KLAUS = "A lump of coal would be really useful, actually!",
         KLAUS_SACK = "Nothing says \"Open Me\" quite like a lock!!",
 		KLAUSSACKKEY = "Ha! I wouldn't wanna get smacked with that thing!",
@@ -2927,6 +2975,7 @@ return{
 		OAR_DRIFTWOOD = "Ugh. Can it be someone else's turn to row?",
 
 		OCEANFISHINGROD = "Nowhere to hide now, fish!",
+		OCEANFISHINGBOBBER_NONE = "Doesn't it need a float or something?",
         OCEANFISHINGBOBBER_BALL = "How am I supposed to burn it when it's in the water?",
         OCEANFISHINGBOBBER_OVAL = "How am I supposed to burn it when it's in the water?",
 		OCEANFISHINGBOBBER_CROW = "How am I supposed to burn it when it's in the water?",
@@ -3091,5 +3140,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Ugh. Crunchy.",
+		WINTERSFEASTFUEL = "Does anyone else smell a campfire?",
     },
 }

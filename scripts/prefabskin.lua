@@ -1,7 +1,6 @@
 require("class")
 require("prefabs")
 
-local BACKPACK_DECAY_TIME = 3 * TUNING.TOTAL_DAY_TIME -- will decay after this amount of time on the ground
 
 --tuck_torso = "full" - torso goes behind pelvis slot
 --tuck_torso = "none" - torso goes above the skirt
@@ -19,69 +18,6 @@ SKIN_FX_PREFAB = {}
 --------------------------------------------------------------------------
 --[[ Backpack skin functions ]]
 --------------------------------------------------------------------------
-local function backpack_pickedup(inst)
-    if inst.decay_task ~= nil then
-        inst.decay_task:Cancel()
-        inst.decay_task = nil
-    end
-end 
-
-local function backpack_decay_fn(inst, backpack_dropped)
-    inst.decay_task = nil
-    if not inst.decayed then
-        inst.AnimState:SetSkin("backpack_mushy", "swap_backpack")
-        inst.skin_build_name = "backpack_mushy"
-        inst.override_skinname = "backpack_mushy"
-        inst.components.inventoryitem:ChangeImageName("backpack_mushy")
-        inst.decayed = true
-        inst:RemoveEventCallback("ondropped", backpack_dropped)
-        inst:RemoveEventCallback("onputininventory", backpack_pickedup)
-    end
-end
-
-local function backpack_dropped(inst)
-    if not inst.decayed then
-        if inst.decay_task ~= nil then
-            inst.decay_task:Cancel()
-        end
-        inst.decay_task = inst:DoTaskInTime(BACKPACK_DECAY_TIME, backpack_decay_fn, backpack_dropped)
-    end
-end
-
-local function backpack_decay_long_update(inst, dt)
-    if inst.decay_task ~= nil then
-        local time_remaining = GetTaskRemaining(inst.decay_task)
-        inst.decay_task:Cancel()
-        if time_remaining > dt then
-            inst.decay_task = inst:DoTaskInTime(time_remaining - dt, backpack_decay_fn, backpack_dropped)
-        else
-            backpack_decay_fn(inst, backpack_dropped)
-        end
-    end
-end
-
-local function backpack_skin_save_fn(inst, data)
-    if inst.decayed then
-        data.decayed = true
-    elseif inst.decay_task ~= nil then
-        data.remaining_decay_time = math.floor(GetTaskRemaining(inst.decay_task))
-    end
-end
-
-local function backpack_skin_load_fn(inst, data)
-    if data.decayed then
-        if inst.decay_task ~= nil then
-            inst.decay_task:Cancel()
-        end
-        backpack_decay_fn(inst, backpack_dropped)
-    elseif data.remaining_decay_time ~= nil and not (inst.decayed or inst.components.inventoryitem:IsHeld()) then
-        if inst.decay_task ~= nil then
-            inst.decay_task:Cancel()
-        end
-        inst.decay_task = inst:DoTaskInTime(math.max(0, data.remaining_decay_time), backpack_decay_fn, backpack_dropped)
-    end
-end
-
 function backpack_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
@@ -89,15 +25,6 @@ function backpack_init_fn(inst, build_name)
 
     inst.AnimState:SetSkin(build_name, "swap_backpack")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-
-    --Now add decay logic
-    inst:ListenForEvent("ondropped", backpack_dropped)
-    inst:ListenForEvent("onputininventory", backpack_pickedup)
-    backpack_dropped(inst)
-
-    inst.OnSave = backpack_skin_save_fn
-    inst.OnLoad = backpack_skin_load_fn
-    inst.OnLongUpdate = backpack_decay_long_update
 end
 
 
@@ -353,6 +280,7 @@ watermelonhat_init_fn = hat_init_fn
 wathgrithrhat_init_fn = hat_init_fn
 beefalohat_init_fn = hat_init_fn
 eyebrellahat_init_fn = hat_init_fn
+earmuffshat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -581,6 +509,51 @@ function firepit_init_fn(inst, build_name, fxoffset)
     end
 end
 
+
+--------------------------------------------------------------------------
+--[[ Campfire skin functions ]]
+--------------------------------------------------------------------------
+function campfire_init_fn(inst, build_name, fxoffset)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:SetSkin(build_name, "campfire")
+        return
+    elseif not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "campfire")
+    --[[inst.components.burnable:SetFXOffset(fxoffset)
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil and skin_fx[1] ~= nil then
+        inst:ListenForEvent("takefuel", function(inst, data)
+            local fuelvalue = data ~= nil and data.fuelvalue or 0
+            if fuelvalue > 0 then
+                local fx = SpawnPrefab(skin_fx[1])
+                fx.entity:SetParent(inst.entity)
+                fx.level:set(
+                    (fuelvalue >= TUNING.LARGE_FUEL and 3) or
+                    (fuelvalue >= TUNING.MED_FUEL and 2) or
+                    1
+                )
+            end
+        end)
+    end]]
+end
+
+
+--------------------------------------------------------------------------
+--[[ Scaled Furnace skin functions ]]
+--------------------------------------------------------------------------
+function dragonflyfurnace_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "dragonfly_furnace")
+end
+
 --------------------------------------------------------------------------
 --[[ Endothermic Firepit skin functions ]]
 --------------------------------------------------------------------------
@@ -666,6 +639,24 @@ function fence_init_fn(inst, build_name)
     end
     inst.AnimState:SetSkin(build_name, "fence")
 end
+
+
+--------------------------------------------------------------------------
+--[[ Fence gate skin functions ]]
+--------------------------------------------------------------------------
+function fence_gate_item_init_fn(inst, build_name)
+    inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
+    inst.AnimState:SetSkin(build_name, "fence_gate") --same hack is used here by the deployable code in player controller
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+function fence_gate_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+    inst.dooranim.skin_id = inst.skin_id
+    inst.dooranim.AnimState:SetSkin(build_name, "fence_gate")
+end
+
 
 
 --------------------------------------------------------------------------
