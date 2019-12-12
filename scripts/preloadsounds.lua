@@ -73,6 +73,8 @@ local MainSounds =
 	"turnoftides_amb.fsb",
 	"saltydog.fev",
 	"saltydog.fsb",
+    "hookline.fev",
+    "hookline.fsb",
 
     "warly.fsb",
 	"wendy.fsb",
@@ -90,6 +92,9 @@ local MainSounds =
     "wormwood.fsb",
 	"wx78.fsb",
 	"wurt.fsb",
+
+	"wintersfeast2019.fev",
+	"wintersfeast2019.fsb",
 }
 
 function PreloadSoundList(list)

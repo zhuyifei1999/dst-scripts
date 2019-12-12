@@ -31,12 +31,11 @@ local function band_update( inst )
 
                 if v:HasTag("merm") then
                     if v:HasTag("mermguard") then
-                        if owner:HasTag("merm") then
+                        if owner:HasTag("merm") and not owner:HasTag("mermdisguise") then
                             owner.components.leader:AddFollower(v)
                         end
                     else
-                        if owner:HasTag("merm") or owner.components.inventory:EquipHasTag("merm") or 
-                             (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing()) then
+                        if owner:HasTag("merm") or (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing()) then
                             owner.components.leader:AddFollower(v)
                         end
                     end
@@ -53,12 +52,11 @@ local function band_update( inst )
 
                 elseif k:HasTag("merm") then
                     if k:HasTag("mermguard") then
-                        if owner:HasTag("merm") then
+                        if owner:HasTag("merm") and not owner:HasTag("mermdisguise") then
                             k.components.follower:AddLoyaltyTime(3)
                         end
                     else
-                        if owner:HasTag("merm") or owner.components.inventory:EquipHasTag("merm") or 
-                             (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing()) then
+                        if owner:HasTag("merm") or (TheWorld.components.mermkingmanager and TheWorld.components.mermkingmanager:HasKing()) then
                             k.components.follower:AddLoyaltyTime(3)
                         end
                     end

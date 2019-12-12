@@ -13,6 +13,7 @@ local FumeOver = require "widgets/fumeover"
 local SandOver = require "widgets/sandover"
 local SandDustOver = require "widgets/sanddustover"
 local MindControlOver = require "widgets/mindcontrolover"
+local InkOver = require "widgets/inkover"
 local GogglesOver = require "widgets/gogglesover"
 local BatOver = require "widgets/batover"
 local FlareOver = require "widgets/flareover"
@@ -132,6 +133,8 @@ function PlayerHud:CreateOverlays(owner)
     self.heatover = self.overlayroot:AddChild(HeatOver(owner))
     self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
     self.flareover = self.overlayroot:AddChild(FlareOver(owner))
+
+    self.InkOver = self.overlayroot:AddChild(InkOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}
@@ -269,7 +272,17 @@ end
 
 local function OpenContainerWidget(self, container, side)
     local containerwidget = ContainerWidget(self.owner)
-    self.controls[side and "containerroot_side" or "containerroot"]:AddChild(containerwidget)
+	local parent = side and self.controls.containerroot_side
+					or (container.replica.container ~= nil and container.replica.container.type == "hand_inv") and self.controls.inv.hand_inv
+					or self.controls.containerroot
+
+	parent:AddChild(containerwidget)
+
+    --self.controls[side and "containerroot_side" or "containerroot"]:AddChild(containerwidget)
+    --self.controls.bottom_root:AddChild(containerwidget)
+    --self.controls.inv.hand_inv:AddChild(containerwidget)
+	
+	containerwidget:MoveToBack()
     containerwidget:Open(container, self.owner)
     self.controls.containers[container] = containerwidget
 end

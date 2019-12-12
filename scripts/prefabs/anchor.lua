@@ -12,6 +12,7 @@ local item_assets =
 local prefabs =
 {
     "collapse_small",
+	"anchor_item", -- deprecated but kept for existing worlds and mods
 }
 
 local item_prefabs =
@@ -30,6 +31,11 @@ local function on_hammered(inst, hammerer)
 		inst.components.anchor:SetIsAnchorLowered(false)
 	end
 
+	local boat = TheWorld.Map:GetPlatformAtPoint(inst.Transform:GetWorldPosition())
+	if boat ~= nil then
+		boat:PushEvent("spawnnewboatleak", { pt = inst:GetPosition(), leak_size = "med_leak", playsoundfx = true })
+	end
+
     inst:Remove()
 end
 
@@ -40,6 +46,12 @@ end
 local function onburnt(inst)
     inst.SoundEmitter:KillSound("mooring")
     inst.sg:Stop()
+end
+
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/place")
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle")
 end
 
 local function onsave(inst, data)
@@ -94,6 +106,8 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(on_hammered)
     inst.components.workable:SetOnWorkCallback(onhit)
+
+    inst:ListenForEvent("onbuilt", onbuilt)
 
     inst:DoTaskInTime(0,function()
         local pt = Vector3(inst.Transform:GetWorldPosition())

@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Those fish are far too deep.",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "I don't require this for some simple pond fishing.",
+		},
         --wickerbottom specific action
         READ =
         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "The surface of the spring has crystallized, unfortunately.",
             ALREADY_BOMBED = "No need to be excessive.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We've already taken note of this recipe.",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This specimen is far too insubstantial.",
+		},
 	},
 	ACTIONFAIL_GENERIC = "It seems I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat has fallen into dangerous disrepair.",
@@ -303,7 +315,7 @@ return{
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
 	ANNOUNCE_NODANGERSLEEP = "I can barely sleep even when I'm not in danger!",
-	ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, nevermind during the day.",
+	ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, never mind during the day.",
 	ANNOUNCE_NODAYSLEEP_CAVE = "These caves don't make it any easier to sleep.",
 	ANNOUNCE_NOHUNGERSLEEP = "I can barely sleep even when I'm not starving!",
 	ANNOUNCE_NOSLEEPONFIRE = "Even if I could sleep, these temperatures are highly unsafe.",
@@ -369,6 +381,12 @@ return{
     ANNOUNCE_SPOOKED = "Curious. I seem to be hallucinating.",
 	ANNOUNCE_BRAVERY_POTION = "My intestinal fortitude has returned!",
 	ANNOUNCE_MOONPOTION_FAILED = "Oh dear, that didn't go as planned.",
+
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I couldn't possibly eat this all myself!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Intriguing! I appear to be filled with \"cheer\".",
+	ANNOUNCE_IS_FEASTING = "I hope everyone remembered to wash their hands before eating.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "That was very illuminating.",
 
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on a moment, dear.",
@@ -451,6 +469,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I can only work tirelessly for so long.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Did I just feel a raindrop?",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Oh dear, I must have put too much strain on my line.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "The line must remain taut!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "I suppose there will be no fish dinner for me this time.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Let's give that another go, shall we?",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Patience is a virtue.",
+		"I do not appreciate the tardiness of these fish.",
+		"Perhaps if I tried a different lure...",
+		"I wonder if I could get some reading done while I wait.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,6 +515,7 @@ return{
 		SPIDER = "I must read up on this!",
 		SPIDER_WARRIOR = "Back to the drawing board!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -2084,7 +2117,7 @@ return{
 		},
 		SIESTAHUT = 
 		{
-			GENERIC = "I can barely sleep on a bed, nevermind the ground.",
+			GENERIC = "I can barely sleep on a bed, never mind the ground.",
 			BURNT = "It wasn't doing me much good anyhow.",
 		},
 		TENTACLE = "A horror waiting in the mud.",
@@ -2341,6 +2374,47 @@ return{
         WINTER_FOOD7 = "Pair it with a good book and you've a cure for the winter blues.", --apple cider
         WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
         WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
+
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "What sort of fuel does it run on?",
+			COOKING = "Roasting nicely.",
+			ALMOST_DONE_COOKING = "It will be done, momentarily.",
+			DISH_READY = "It is complete!",
+		},
+		BERRYSAUCE = "How festive!",
+		BIBINGKA = "Traditionally, bibingka is baked in a specialized clay oven.",
+		CABBAGEROLLS = "Variations of this dish can be found across Europe and Asia.",
+		FESTIVEFISH = "I'm unfamiliar with the origins of this dish.",
+		GRAVY = "Oh my, it's a bit rich for me.",
+		LATKES = "Delightfully crispy.",
+		LUTEFISK = "The fish is dried and then soaked in lye, hence the odd aroma.",
+		MULLEDDRINK = "A taste of Yuletide cheer.",
+		PANETTONE = "The origins of this cake trace all the way back to ancient Rome.",
+		PAVLOVA = "It takes its name from the Russian ballerina Anna Pavlova.",
+		PICKLEDHERRING = "I do enjoy some pickled herring around the holidays.",
+		POLISHCOOKIE = "Now it feels like the holidays.",
+		PUMPKINPIE = "Perhaps just a nibble...",
+		ROASTTURKEY = "I do hope it had enough time in the oven.",
+		STUFFING = "Pairs perfectly with some turkey and gravy.",
+		SWEETPOTATO = "It's always a hit at holiday get-togethers.",
+		TAMALES = "The spice is actually quite mild, quite to my liking.",
+		TOURTIERE = "A rather hearty meat pie.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Big enough for company.",
+			HAS_FOOD = "A considerable amount of food!",
+			WRONG_TYPE = "Most certainly the wrong type.",
+			BURNT = "Oh my, that won't do at all.",
+		},
+
+		GINGERBREADWARG = "Canis Festivus.", 
+		GINGERBREADHOUSE = "Reminds me of a story I know.", 
+		GINGERBREADPIG = "If it would sit still long enough, I could classify it.",
+		CRUMBS = "I believe this came from the walking confectionery.",
+		WINTERSFEASTFUEL = "It reminds me of reading holiday stories by the fire.",
 
         KLAUS = "It uses its powerful olfactory sense to locate prey.",
         KLAUS_SACK = "How curious.",
@@ -2870,6 +2944,9 @@ return{
 		SALTROCK = "It's growing in a curiously geometric formation.",
 		SALTBOX = "This should help prevent food spoilage.",
 
+		TACKLESTATION = "I can improve my chances of success with better fishing implements.",
+		TACKLESKETCH = "Interesting! These would improve my fishing significantly!",
+
         MALBATROSS = "It appears to be of the family Diomedeidae.",
         MALBATROSS_FEATHER = "Its plumage has an almost scale-like texture.",
         MALBATROSS_BEAK = "These beaks are designed to catch slippery prey.",
@@ -2877,9 +2954,74 @@ return{
         MAST_MALBATROSS = "What an impressive wingspan.",
 		MALBATROSS_FEATHERED_WEAVE = "A sturdy, lightweight material.",
 
+        GNARWAIL =
+        {
+            GENERIC = "It appears to be a variation of the Monodon monoceros.",
+            BROKENHORN = "Serves you right.",
+            FOLLOWER = "His manners have improved considerably.",
+            BROKENHORN_FOLLOWER = "I'm sure it will grow back in time, dear.",
+        },
+        GNARWAIL_HORN = "A gnarwail's \"horn\" is actually a tooth, you know.",
+
         WALKINGPLANK = "A dangerous escape route for one stranded at sea.",
         OAR = "One and two, and one and two!",
 		OAR_DRIFTWOOD = "A much more efficient, lighter design.",
+
+		OCEANFISHINGROD = "A sturdy rod for ocean fishing.",
+		OCEANFISHINGBOBBER_NONE = "A float might improve the rod's accuracy.",
+        OCEANFISHINGBOBBER_BALL = "The use of a fishing float was first documented in 1496.",
+        OCEANFISHINGBOBBER_OVAL = "The use of a fishing float was first documented in 1496.",
+		OCEANFISHINGBOBBER_CROW = "The use of a fishing float was first documented in 1496.",
+		OCEANFISHINGBOBBER_ROBIN = "The use of a fishing float was first documented in 1496.",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "The use of a fishing float was first documented in 1496.",
+		OCEANFISHINGBOBBER_CANARY = "The use of a fishing float was first documented in 1496.",
+		OCEANFISHINGBOBBER_GOOSE = "The large plumage adds a little something special.",
+		OCEANFISHINGBOBBER_MALBATROSS = "The large plumage adds a little something special.",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Its effect appears to be stronger during the day.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Its effect appears to be stronger at dusk.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Its effect appears to be stronger at night.",
+		OCEANFISHINGLURE_SPOON_RED = "Its effect appears to be stronger during the day.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Its effect appears to be stronger at dusk.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Its effect appears to be stronger at night.",
+
+		OCEANFISH_SMALL_1 = "A rather dimimutive specimen.",
+		OCEANFISH_SMALL_2 = "A smaller species of saltwater fish.",
+		OCEANFISH_SMALL_3 = "One of the smaller varieties.",
+		OCEANFISH_SMALL_4 = "I believe they only grow to about this size.",
+		OCEANFISH_SMALL_5 = "I don't think I'm familiar with this genus...",
+		OCEANFISH_MEDIUM_1 = "Oh my... is it supposed to look like that?",
+		OCEANFISH_MEDIUM_2 = "This species usually prefers deeper waters.",
+		OCEANFISH_MEDIUM_3 = "Oh dear, I believe these are actually an invasive species.",
+		OCEANFISH_MEDIUM_4 = "I've never been superstitious about black cats, never mind a catfish!",
+		OCEANFISH_MEDIUM_5 = "A fascinating blend of animal and vegetable.",
+
+		PONDFISH = "Some kind of whitefish, I believe.",
+		PONDEEL = "It's an eel.",
+
+        FISHMEAT = "An odorous slab of fish meat.",
+        FISHMEAT_COOKED = "Beautifully grilled.",
+        FISHMEAT_SMALL = "Fish flesh.",
+        FISHMEAT_SMALL_COOKED = "A small bit of nourishment.",
+		SPOILED_FISH = "That fish matter is becoming a biohazard.",
+
+		FISH_BOX = "A clever contraption to keep seafood fresh.",
+        POCKET_SCALE = "I'm always prepared to weigh in.",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "A place to display only the largest aquatic specimens.",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "My, I don't think it's supposed to do that.",
+			BURNT = "Oh dear...",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nOh ho! I seem to be the victor!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Oh my, what a mess!",
+
+		CALIFORNIAROLL = "Delicious makizushi.",
+		SEAFOODGUMBO = "I can feel the heartburn already!",
+		SURFNTURF = "The perfect dish.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2982,6 +3124,7 @@ return{
         MERMGUARD = "A royal bodyguard.",
         MERM_PRINCE = "The heir, apparently.",
 
+        SQUID = "Luminesca Cephalopoda! What beautiful bioluminescence!",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
@@ -2990,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Al dente.",
+		WINTERSFEASTFUEL = "I feel as though I've been wrapped in a cozy blanket.",
     },
 }

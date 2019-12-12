@@ -8,10 +8,11 @@ local TEMPLATES = require "widgets/templates"
 local SPEECH_TIME = 9
 local IDLE_SPEECH_DELAY = 180
 
-local SkinCollector = Class(Widget, function(self, num_items, crow_game)
+local SkinCollector = Class(Widget, function(self, num_items, mini_game, start_text)
     Widget._ctor(self, "SkinCollector")
     
-	self.crow_game = crow_game
+	self.mini_game = mini_game
+	self.start_text = start_text
 	
 	self.root = self:AddChild(Widget("root"))
     
@@ -146,8 +147,8 @@ function SkinCollector:OnUpdate(dt)
 		self.innkeeper:GetAnimState():PlayAnimation("idle", true)
 		self.intro_done = true
 
-		if self.crow_game then
-			self:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH_CROW.START)			
+		if self.mini_game then
+			self:Say(self.start_text)			
 		elseif self.num_items > 0 then 
 			self:Say(STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.START)
 		else

@@ -102,6 +102,7 @@ local BUSYTHEMES = {
     RUINS = 3,
     OCEAN = 4,
     LUNARISLAND = 5,
+    FEAST = 6,
 }
 
 --------------------------------------------------------------------------
@@ -219,6 +220,27 @@ local function StartOcean(player)
     end
 end
 
+local function StartFeasting(player)
+    if _busytask ~= nil then
+        --_extendtime = GetTime() + 15
+        _extendtime = 0
+        _busytask:Cancel()
+        _busytask = nil
+        _busytask = inst:DoTaskInTime(5, StopBusy, true)
+    elseif _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
+
+        if _busytheme ~= BUSYTHEMES.FEAST then
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound("wintersfeast2019/music/feast", "busy")
+        end
+        _busytheme = BUSYTHEMES.FEAST
+
+        _soundemitter:SetParameter("busy", "intensity", 1)
+        _busytask = inst:DoTaskInTime(5, StopBusy, true)
+        _extendtime = 0
+    end
+end
+
 local function ExtendBusy()
     if _busytask ~= nil then
         _extendtime = math.max(_extendtime, GetTime() + 10)
@@ -286,6 +308,12 @@ end
 local function StartTriggeredWater(player, data)
     if player:GetCurrentPlatform() then
         StartOcean(player)
+    end
+end
+
+local function StartTriggeredFeasting(player, data)
+    if player.sg:HasStateTag("feasting") then
+        StartFeasting(player)
     end
 end
 
@@ -368,6 +396,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("goenlightened", OnEnlightened, player)
     inst:ListenForEvent("triggeredevent", StartTriggeredDanger, player)
     inst:ListenForEvent("boatspedup", StartTriggeredWater, player)
+    inst:ListenForEvent("isfeasting", StartTriggeredFeasting, player)
 end
 
 local function StopPlayerListeners(player)
@@ -379,6 +408,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("goenlightened", OnEnlightened, player)
     inst:RemoveEventCallback("triggeredevent", StartTriggeredDanger, player)
     inst:RemoveEventCallback("boatspedup", StartTriggeredWater, player)
+    inst:RemoveEventCallback("isfeasting", StartTriggeredFeasting, player)
 end
 
 local function OnPhase(inst, phase)

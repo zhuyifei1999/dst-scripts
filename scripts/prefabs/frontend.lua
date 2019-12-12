@@ -176,12 +176,14 @@ local assets =
     Asset("PKGREF", "anim/dynamic/box_bolt.dyn"),
 
     
-    --Crow Game Assets
+    --Mini Game Assets
     Asset("ANIM", "anim/crow.zip"),
     Asset("ANIM", "anim/crow_build.zip"),
+    Asset("ANIM", "anim/robin_winter_build.zip"),
     Asset("ANIM", "anim/explode.zip"),
     Asset("ANIM", "anim/minigametile.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_crow.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_snowbird.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_chevron_wrapper.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_dotted_wrapper.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_flower_wrapper.zip"),
@@ -189,7 +191,12 @@ local assets =
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_paper_wrapper.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_striped_wrapper.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_bluestriped_wrapper.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_roastturkey.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_gravy.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_berrysauce.zip"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_pumpkinpie.zip"),
     Asset("PKGREF", "anim/dynamic/oddment_crow.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_snowbird.dyn"),
     Asset("PKGREF", "anim/dynamic/oddment_chevron_wrapper.dyn"),
     Asset("PKGREF", "anim/dynamic/oddment_dotted_wrapper.dyn"),
     Asset("PKGREF", "anim/dynamic/oddment_flower_wrapper.dyn"),
@@ -197,6 +204,10 @@ local assets =
     Asset("PKGREF", "anim/dynamic/oddment_paper_wrapper.dyn"),
     Asset("PKGREF", "anim/dynamic/oddment_striped_wrapper.dyn"),
     Asset("PKGREF", "anim/dynamic/oddment_bluestriped_wrapper.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_roastturkey.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_gravy.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_berrysauce.dyn"),
+    Asset("PKGREF", "anim/dynamic/oddment_pumpkinpie.dyn"),
 }
 
 --Including these here as well as global to ensure the exporter's resizing dependency works

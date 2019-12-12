@@ -284,22 +284,30 @@ local function runontimeout(inst)
     inst.sg:GoToState("run")
 end
 
-CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddRunStates = function(states, timelines, anims, softstop, delaystart, fns)
     table.insert(states, State
     {
         name = "run_start",
         tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.startonenter ~= nil then
+				fns.startonenter(inst)
+			end
 			if not delaystart then
 	            inst.components.locomotor:RunForward()
 			end
             inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.startrun or nil, "run_pre"))
+			if fns ~= nil and fns.startonenter ~= nil then
+				fns.startonenter(inst)
+			end
         end,
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
 
-		onexit = onexits ~= nil and onexits.startonexit or nil,
+		onupdate = fns ~= nil and fns.startonupdate or nil,
+
+		onexit = fns ~= nil and fns.startonexit or nil,
 
         events =
         {
@@ -313,6 +321,9 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.runonenter ~= nil then
+				fns.runonenter(inst)
+			end
             inst.components.locomotor:RunForward()
             local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.run or nil, "run_loop")
             inst.AnimState:PlayAnimation(anim_to_play, true)
@@ -321,7 +332,9 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
 
         timeline = timelines ~= nil and timelines.runtimeline or nil,
 
-		onexit = onexits ~= nil and onexits.runonexit or nil,
+		onupdate = fns ~= nil and fns.runonupdate or nil,
+
+		onexit = fns ~= nil and fns.runonexit or nil,
 
         ontimeout = runontimeout,
     })
@@ -332,17 +345,25 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop, delayst
         tags = { "idle" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.endonenter ~= nil then
+				fns.endonenter(inst)
+			end
             inst.components.locomotor:StopMoving()
             if softstop == true or (type(softstop) == "function" and softstop(inst)) then
                 inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"), false)
             else
                 inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.stoprun or nil, "run_pst"))
             end
+			if fns ~= nil and fns.endonenter ~= nil then
+				fns.endonenter(inst)
+			end
         end,
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
 
-		onexit = onexits ~= nil and onexits.endonexit or nil,
+		onupdate = fns ~= nil and fns.endonupdate or nil,
+
+		onexit = fns ~= nil and fns.endonexit or nil,
 
         events =
         {
@@ -367,13 +388,16 @@ local function walkontimeout(inst)
     inst.sg:GoToState("walk")
 end
 
-CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart, onexits)
+CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delaystart, fns)
     table.insert(states, State
     {
         name = "walk_start",
         tags = { "moving", "canrotate" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.startonenter ~= nil then -- this has to run before WalkForward so that startonenter has a chance to update the walk speed
+				fns.startonenter(inst)
+			end
 			if not delaystart then
 	            inst.components.locomotor:WalkForward()
 			end
@@ -382,7 +406,9 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
 
         timeline = timelines ~= nil and timelines.starttimeline or nil,
 
-		onexit = onexits ~= nil and onexits.startonexit or nil,
+		onupdate = fns ~= nil and fns.startonupdate or nil,
+
+		onexit = fns ~= nil and fns.startonexit or nil,
 
         events =
         {
@@ -396,6 +422,9 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         tags = { "moving", "canrotate" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.walkonenter ~= nil then
+				fns.walkonenter(inst)
+			end
             inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.walk or nil, "walk_loop"), true)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
@@ -403,7 +432,9 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
 
         timeline = timelines ~= nil and timelines.walktimeline or nil,
 
-		onexit = onexits ~= nil and onexits.walkonexit or nil,
+		onupdate = fns ~= nil and fns.walkonupdate or nil,
+
+		onexit = fns ~= nil and fns.walkonexit or nil,
 
         ontimeout = walkontimeout,
     })
@@ -414,6 +445,9 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
         tags = { "canrotate" },
 
         onenter = function(inst)
+			if fns ~= nil and fns.exitonenter ~= nil then
+				fns.exitonenter(inst)
+			end
             inst.components.locomotor:StopMoving()
             if softstop == true or (type(softstop) == "function" and softstop(inst)) then
                 inst.AnimState:PushAnimation(get_loco_anim(inst, anims ~= nil and anims.stopwalk or nil, "walk_pst"), false)
@@ -424,7 +458,9 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop, delays
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
 
-		onexit = onexits ~= nil and onexits.endonexit or nil,
+		onupdate = fns ~= nil and fns.endonupdate or nil,
+
+		onexit = fns ~= nil and fns.endonexit or nil,
 
         events =
         {

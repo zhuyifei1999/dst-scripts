@@ -1,12 +1,14 @@
 local assets =
 {
     Asset("ANIM", "anim/carrat_basic.zip"),
+    Asset("ANIM", "anim/carrat_build.zip"),
     Asset("INV_IMAGE", "carrat"),
 }
 
 local planted_assets =
 {
     Asset("ANIM", "anim/carrat_basic.zip"),
+    Asset("ANIM", "anim/carrat_build.zip"),
 }
 
 local prefabs =
@@ -73,7 +75,7 @@ local function fn()
     inst.Transform:SetSixFaced()
 
     inst.AnimState:SetBank("carrat")
-    inst.AnimState:SetBuild("carrat_basic")
+    inst.AnimState:SetBuild("carrat_build")
     inst.AnimState:PlayAnimation("planted")
 
     inst:AddTag("animal")
@@ -193,7 +195,7 @@ local function planted_fn()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("carrat")
-    inst.AnimState:SetBuild("carrat_basic")
+    inst.AnimState:SetBuild("carrat_build")
     inst.AnimState:PlayAnimation("planted")
     inst.AnimState:SetRayTestOnBB(true)
 

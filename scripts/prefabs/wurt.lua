@@ -147,6 +147,10 @@ local function SetGhostMode(inst, isghost)
     end
 end
 
+local function FishPreserverRate(inst, item)
+	return (item ~= nil and item:HasTag("fish")) and TUNING.WURT_FISH_PRESERVER_RATE or nil
+end
+
 -- PERUSE BOOKS
 local function peruse_brimstone(inst)
     inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
@@ -195,6 +199,7 @@ local function OnRespawn(inst)
 end
 
 local function common_postinit(inst)
+    inst:AddTag("playermerm")
     inst:AddTag("merm")
     inst:AddTag("mermguard")
     inst:AddTag("mermfluent")
@@ -231,7 +236,13 @@ local function master_postinit(inst)
     inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", 1.6 )
 
     inst:AddComponent("itemaffinity")
+    inst.components.itemaffinity:AddAffinity("hutch_fishbowl", nil, TUNING.DAPPERNESS_MED, 1)
     inst.components.itemaffinity:AddAffinity(nil, "fish", TUNING.DAPPERNESS_MED, 1)
+    inst.components.itemaffinity:AddAffinity(nil, "fishmeat", -TUNING.DAPPERNESS_MED_LARGE, 2)
+    inst.components.itemaffinity:AddAffinity(nil, "spoiled_fish", -TUNING.DAPPERNESS_MED_LARGE, 2)
+
+	inst:AddComponent("preserver")
+	inst.components.preserver:SetPerishRateMultiplier(FishPreserverRate)
 
     if inst.components.eater ~= nil then
         inst.components.eater:SetDiet({ FOODGROUP.VEGETARIAN }, { FOODGROUP.VEGETARIAN })

@@ -16,7 +16,7 @@ end
 function SinkholeSpawner:StartSinkholes()
     local weighted_players = {}
     local num_players = 0
-    for i, v in ipairs(TheNet:GetClientTable()) do
+    for i, v in ipairs(TheNet:GetClientTable() or {}) do
 		local player = GetPlayerFromClientTable(v)
         if #v.prefab > 0 and (player == nil or TheWorld.Map:IsVisualGroundAtPoint(player.Transform:GetWorldPosition())) then
             weighted_players[v] = math.sqrt(v.playerage or 1)

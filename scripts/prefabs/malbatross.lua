@@ -23,6 +23,7 @@ local prefabs =
     "mast_malbatross_item",
     "malbatross_feather",
     "malbatross_feather_fall",
+	"winter_ornament_boss_malbatross",
 }
 
 --------------------------------------------------------------------------
@@ -66,6 +67,7 @@ end
 local function Relocate(inst)
     SetEngaged(inst, false)
 
+    inst._stolen_fish_count = 0
     inst.components.health:SetCurrentHealth(inst.components.health:GetMaxWithPenalty())
 
     TheWorld.components.malbatrossspawner:Relocate(inst)
@@ -299,13 +301,23 @@ end
 local function OnSave(inst, data)
     if inst.feathers then
         data.feathers = inst.feathers
-    end    
+    end
+
+    -- Our default is 0, so we don't have to save in that case.
+    if inst._stolen_fish_count ~= nil and inst._stolen_fish_count ~= 0 then
+        data.stolen_fish = inst._stolen_fish_count
+    end
 end
 
 local function OnLoad(inst, data)
     --print("OnLoad", inst, data.ispet)
-    if data ~= nil and data.feathers then
-        inst.feathers = data.feathers
+    if data ~= nil then
+        if data.feathers then
+            inst.feathers = data.feathers
+        end
+        if data.stolen_fish then
+            inst._stolen_fish_count = data.stolen_fish
+        end
     end
 end
 
@@ -324,6 +336,58 @@ local function CreateWeapon(inst)
     inst.weapon = weapon
 end
 
+--[[ PLAYER TRACKING ]]
+
+local function OnPlayerAction(inst, player, data)
+    if data.action == nil or inst.components.sleeper:IsAsleep() or inst.components.health:IsDead() then
+        return -- don't react to things when asleep
+    end
+
+    if data.action.action ~= ACTIONS.OCEAN_FISHING_CATCH then
+        return
+    end
+
+    local distsq_to_player = inst:GetDistanceSqToInst(player)
+    if distsq_to_player > TUNING.MALBATROSS_NOTICEPLAYER_DISTSQ then
+        return
+    end
+
+    inst._stolen_fish_count = (inst._stolen_fish_count or 0) + 1
+    if inst._stolen_fish_count < TUNING.MALBATROSS_STOLENFISH_AGGROCOUNT then
+        if not inst.sg:HasStateTag("busy") then
+            inst:ForceFacePoint(player.Transform:GetWorldPosition())
+            inst.sg:GoToState("taunt")
+        end
+    else
+        -- Ensure that the next caught fish will suggest a new target
+        inst._stolen_fish_count = TUNING.MALBATROSS_STOLENFISH_AGGROCOUNT - 1
+        inst.components.combat:SuggestTarget(player)
+    end
+end
+
+local function OnPlayerJoined(inst, player)
+    for i, v in ipairs(inst._activeplayers) do
+        if v == player then
+            return
+        end
+    end
+
+    inst:ListenForEvent("performaction", inst._OnPlayerAction, player)
+    table.insert(inst._activeplayers, player)
+end
+
+local function OnPlayerLeft(inst, player)
+    for i, v in ipairs(inst._activeplayers) do
+        if v == player then
+            inst:RemoveEventCallback("performaction", inst._OnPlayerAction, player)
+            table.remove(inst._activeplayers, i)
+            return
+        end
+    end
+end
+
+--[[ END PLAYER TRACKING ]]
+
 SetSharedLootTable( 'malbatross',
 {
     {'meat',                                1.00},
@@ -340,6 +404,7 @@ SetSharedLootTable( 'malbatross',
     {'bluegem',                             1},
     {'bluegem',                             0.3},
     {'yellowgem',                           0.05},
+	{'oceanfishingbobber_malbatross_tacklesketch',1.00},
 })
 
 
@@ -360,10 +425,10 @@ local function fn()
     inst.AnimState:SetBank("malbatross")
     inst.AnimState:SetBuild("malbatross_build")
 
+    inst:AddTag("malbatross")
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
-    inst:AddTag("monster")
-    inst:AddTag("malbatross")
+    inst:AddTag("animal")
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
     inst:AddTag("flying")
@@ -477,7 +542,6 @@ local function fn()
 
     CreateWeapon(inst)
 
-
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
@@ -496,6 +560,20 @@ local function fn()
     inst.readytoswoop = true
     inst.readytosplash = true
     inst.willswoop = false -- changed when health is lowered.
+
+    --[[ PLAYER TRACKING ]]
+
+    --inst._stolen_fish_count = nil
+    inst._activeplayers = {}
+    inst._OnPlayerAction = function(player, data) OnPlayerAction(inst, player, data) end
+    inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(inst, player) end, TheWorld)
+    inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(inst, player) end, TheWorld)
+
+    for i, v in ipairs(AllPlayers) do
+        OnPlayerJoined(inst, v)
+    end
+
+    --[[ END PLAYER TRACKING ]]
 
     return inst
 end

@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/cook_pot_food.zip"),
+	Asset("ANIM", "anim/cook_pot_food2.zip"),
 }
 
 local prefabs =
@@ -41,6 +42,7 @@ local function MakePreparedFood(data)
 
         MakeInventoryPhysics(inst)
 
+		local food_symbol_build = nil
         if spicename ~= nil then
             inst.AnimState:SetBuild("plate_food")
             inst.AnimState:SetBank("plate_food")
@@ -50,12 +52,15 @@ local function MakePreparedFood(data)
 
             inst.inv_image_bg = { image = (data.basename or data.name)..".tex" }
             inst.inv_image_bg.atlas = GetInventoryItemAtlas(inst.inv_image_bg.image)
+
+			food_symbol_build = data.overridebuild or "cook_pot_food"
         else
-        inst.AnimState:SetBuild("cook_pot_food")
-        inst.AnimState:SetBank("cook_pot_food")
+			inst.AnimState:SetBuild(data.overridebuild or "cook_pot_food")
+			inst.AnimState:SetBank("cook_pot_food")
         end
+
         inst.AnimState:PlayAnimation("idle")
-        inst.AnimState:OverrideSymbol("swap_food", "cook_pot_food", data.basename or data.name)
+        inst.AnimState:OverrideSymbol("swap_food", data.overridebuild or "cook_pot_food", data.basename or data.name)
 
         inst:AddTag("preparedfood")
         if data.tags ~= nil then
@@ -82,6 +87,8 @@ local function MakePreparedFood(data)
         if not TheWorld.ismastersim then
             return inst
         end
+
+		inst.food_symbol_build = food_symbol_build or data.overridebuild
 
         inst:AddComponent("edible")
         inst.components.edible.healthvalue = data.health

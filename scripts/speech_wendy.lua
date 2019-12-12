@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "I can't catch anything out here with this flimsy rod.",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "This might be overdoing it a bit.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "It's covered in glass...",
             ALREADY_BOMBED = "It's already been done.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Oh... my information's useless...",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "It was taken too soon...",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_BOAT_LEAK = "Our boat weeps salty tears.",
@@ -370,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Bats can't scare me anymore. I can return to my melancholy.",
 	ANNOUNCE_MOONPOTION_FAILED = "Sigh... I didn't really expect that to work.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Maybe I could... join in the feast...",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I feel... warm...",
+	ANNOUNCE_IS_FEASTING = "This is... nice.",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Everything fades.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You'll not glimpse death today...",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "All done.",
@@ -451,6 +469,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "It seems my zeal was short-lived.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Once more I'm left defenseless against the elements.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah. Predictable.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "My line is too loose.",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "It can't evade death forever.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Sigh. Of course.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"It's not like I have anything better to do.",
+		"I suppose I'll just starve.",
+		"Perhaps I will be standing here forever.",
+		"Fishing is rather dull, I don't know why people enjoy it.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,6 +515,7 @@ return{
 		SPIDER = "You should be thankful I'm sparing you.",
 		SPIDER_WARRIOR = "I won't forget this.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Its beauty is tinged with a heartbreaking sadness.",
@@ -603,7 +636,7 @@ return{
             BEAVERGHOST = "The curse haunts you even in death, %s?",
             MOOSE = "It looks like your condition has worsened, %s.",
             MOOSEGHOST = "I'll find a way to return you to this mortal coil. If you wish.",
-            GOOSE = "Hah... you look so silly I almost... well, nevermind.",
+            GOOSE = "Hah... you look so silly I almost... well, never mind.",
             GOOSEGHOST = "Why stay when you could fly away from this place?",
             FIRESTARTER = "Fire setting does not seem in your best interest...",
         },
@@ -2342,6 +2375,47 @@ return{
         WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
         WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A place to cook dead things.",
+			COOKING = "At least something is warm in this world.",
+			ALMOST_DONE_COOKING = "The end is almost nigh.",
+			DISH_READY = "I suppose I could eat something.",
+		},
+		BERRYSAUCE = "Abigail would love this...",
+		BIBINGKA = "This bread has a most curious texture.",
+		CABBAGEROLLS = "I wouldn't mind rolling up in a blanket and forgetting my troubles...",
+		FESTIVEFISH = "It's about as festive as I feel.",
+		GRAVY = "How we try in vain to add flavor to our bland and meaningless lives.",
+		LATKES = "They are... quite tasty.",
+		LUTEFISK = "Maybe I'll try just a bite.",
+		MULLEDDRINK = "Can it thaw a cold, broken heart?",
+		PANETTONE = "It's... delicious.",
+		PAVLOVA = "It's brittle and delicate, like life itself.",
+		PICKLEDHERRING = "It tastes... good.",
+		POLISHCOOKIE = "I suppose... it wouldn't hurt to have one...",
+		PUMPKINPIE = "Is it sweet enough to help me forget the bitterness in my heart?",
+		ROASTTURKEY = "The holiday was cut short for this poor bird.",
+		STUFFING = "Perhaps filling my belly will make me feel less empty inside.",
+		SWEETPOTATO = "Oh Abigail, remember how mother would make this every year?",
+		TAMALES = "Little pockets of warmth in this cold world.",
+		TOURTIERE = "I cannot be comforted by comfort food... but I will have some more...",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A table for gatherings.",
+			HAS_FOOD = "I wish Abigail could enjoy some of that.",
+			WRONG_TYPE = "Like me, it doesn't belong here.",
+			BURNT = "It seems the time for celebration is over.",
+		},
+
+		GINGERBREADWARG = "Horrible evil in a festive coating.", 
+		GINGERBREADHOUSE = "Temporary joy, meant to be consumed.", 
+		GINGERBREADPIG = "No one wants to be my friend.",
+		CRUMBS = "The little guy is falling apart.",
+		WINTERSFEASTFUEL = "Makes me think of holidays with Abigail.",
+
         KLAUS = "I see him when I'm sleeping...",
         KLAUS_SACK = "Should we peek inside...?",
 		KLAUSSACKKEY = "The key to our prosperity...",
@@ -2870,6 +2944,9 @@ return{
 		SALTROCK = "Almost as salty as my bitter tears.",
 		SALTBOX = "It'll only prolong the inevitable.",
 
+		TACKLESTATION = "All fish beware.",
+		TACKLESKETCH = "New methods for ripping fish from their peaceful lives.",
+
         MALBATROSS = "What a horrid bird!",
         MALBATROSS_FEATHER = "It won't be needing these anymore.",
         MALBATROSS_BEAK = "How gruesome.",
@@ -2877,9 +2954,74 @@ return{
         MAST_MALBATROSS = "Fly me away from this place.",
 		MALBATROSS_FEATHERED_WEAVE = "My fingers ache from sewing in all those feathers.",
 
+        GNARWAIL =
+        {
+            GENERIC = "I cannot escape its piercing gaze... or horn.",
+            BROKENHORN = "Some things remain broken forever.",
+            FOLLOWER = "Do you really wish to come with me?",
+            BROKENHORN_FOLLOWER = "You've lost something dear to you too, haven't you?",
+        },
+        GNARWAIL_HORN = "It's so sharp...",
+
         WALKINGPLANK = "That would be too easy.",
         OAR = "I'd prefer to be stranded at sea.",
 		OAR_DRIFTWOOD = "Just when it thought it had escaped the ocean...",
+
+		OCEANFISHINGROD = "The depths will offer no safety from my hook.",
+		OCEANFISHINGBOBBER_NONE = "The line seems terribly bare... perhaps it needs something...",
+        OCEANFISHINGBOBBER_BALL = "It floats happily until something drags it under.",
+        OCEANFISHINGBOBBER_OVAL = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_CROW = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_ROBIN = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_CANARY = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_GOOSE = "It floats happily until something drags it under.",
+		OCEANFISHINGBOBBER_MALBATROSS = "It floats happily until something drags it under.",
+
+		OCEANFISHINGLURE_SPINNER_RED = "A paltry last meal for the fish.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "A paltry last meal for the fish.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "A paltry last meal for the fish.",
+		OCEANFISHINGLURE_SPOON_RED = "A paltry last meal for the fish.",
+		OCEANFISHINGLURE_SPOON_GREEN = "A paltry last meal for the fish.",
+		OCEANFISHINGLURE_SPOON_BLUE = "A paltry last meal for the fish.",
+
+		OCEANFISH_SMALL_1 = "It didn't have enough time to grow.",
+		OCEANFISH_SMALL_2 = "I'm afraid you've splished your last splash.",
+		OCEANFISH_SMALL_3 = "I suppose it will do for now.",
+		OCEANFISH_SMALL_4 = "All my efforts reap only the smallest rewards.",
+		OCEANFISH_SMALL_5 = "It looks oddly... crunchy?",
+		OCEANFISH_MEDIUM_1 = "What a horrendous looking creature.",
+		OCEANFISH_MEDIUM_2 = "I'm afraid your time is up.",
+		OCEANFISH_MEDIUM_3 = "It fought hard to live. A shame, really.",
+		OCEANFISH_MEDIUM_4 = "My luck couldn't possibly be worse than it already is.",
+		OCEANFISH_MEDIUM_5 = "Its existence must be so confusing.",
+
+		PONDFISH = "It was flopping around desperately for life. The poor fool.",
+		PONDEEL = "An eel.",
+
+        FISHMEAT = "It's been decapitated.",
+        FISHMEAT_COOKED = "A proper grilling puts a stop to the flopping.",
+        FISHMEAT_SMALL = "There are other fish in the sea. Bigger ones, hopefully.",
+        FISHMEAT_SMALL_COOKED = "It will... tide... me over for now.",
+		SPOILED_FISH = "Farewell, chum.",
+
+		FISH_BOX = "It feels a bit cruel to trap them within sight of freedom.",
+        POCKET_SCALE = "What is the weight of my actions?",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "If my fish was as heavy as my heart, I'd surely win.",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Nothing is safe.",
+			BURNT = "How sad.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nOh... I... I did it...",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Nothing but grass and muck.",
+
+		CALIFORNIAROLL = "A cold fish, dressed up in a seaweed jacket.",
+		SEAFOODGUMBO = "A sea once teeming with life. No more.",
+		SURFNTURF = "It could be worse.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2910,7 +3052,7 @@ return{
         MONSTERTARTARE = "Looks good, tastes horrible.",
         FRESHFRUITCREPES = "Could I get this a la mode?",
         FROGFISHBOWL = "It's actually... really good...",
-        POTATOTORNADO = "Spiralling, just like my life.",
+        POTATOTORNADO = "Spiraling, just like my life.",
         DRAGONCHILISALAD = "I missed having someone make me dinner...",
         GLOWBERRYMOUSSE = "It swirls like the endless abyss.",
         VOLTGOATJELLY = "It zaps your tongue.",
@@ -2982,6 +3124,7 @@ return{
         MERMGUARD = "Friend or foe?",
         MERM_PRINCE = "Are you ready to shoulder the burdens of leadership?",
 
+        SQUID = "Bright eyes for dark times.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",
@@ -2990,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "I spared it the torment of living.",
+		WINTERSFEASTFUEL = "Abigail, it's like I can taste mother's cooking...",
     },
 }

@@ -2029,7 +2029,7 @@ function PlayerController:OnUpdate(dt)
             end
 
             if self.reticule ~= nil and self.reticule.reticule ~= nil then
-                if hidespecialactionreticule then
+                if hidespecialactionreticule or self.reticule:ShouldHide() then
                     self.reticule.reticule:Hide()
                 else
                     self.reticule.reticule:Show()
@@ -2416,9 +2416,13 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
         end
     end
 
+    local equiped_item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
     --Fishing targets may have large radius, making it hard to target with normal priority
-    local fishing = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-    fishing = fishing ~= nil and fishing:HasTag("fishingrod")
+    local fishing = equiped_item ~= nil and equiped_item:HasTag("fishingrod")
+
+    -- we want to never target our fishing hook, but others can
+    local ocean_fishing_target = (equiped_item ~= nil and equiped_item.replica.oceanfishingrod ~= nil) and equiped_item.replica.oceanfishingrod:GetTarget() or nil
 
     local min_rad = 1.5
     local max_rad = 6
@@ -2439,89 +2443,94 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     local target = nil
     local target_score = 0
-    local canexamine = self.inst.CanExamine == nil or self.inst:CanExamine()
+    local canexamine = (self.inst.CanExamine == nil or self.inst:CanExamine()) 
+				and (not self.inst.HUD:IsPlayerAvatarPopUpOpen())
+				and (self.inst.sg == nil or self.inst.sg:HasStateTag("moving") or self.inst.sg:HasStateTag("idle") or self.inst.sg:HasStateTag("channeling"))
+				and (self.inst:HasTag("moving") or self.inst:HasTag("idle") or self.inst:HasTag("channeling"))
 
     for i, v in ipairs(nearby_ents) do
-        --Only handle controller_target if it's the one we added at the front
-        if v ~= self.inst and (v ~= self.controller_target or i == 1) and v.entity:IsVisible() then
-            if v.entity:GetParent() == self.inst and v:HasTag("bundle") then
-                --bundling or constructing
-                target = v
-                break
-            end
+        if v ~= ocean_fishing_target then
 
-            --Check distance including y value
-            local x1, y1, z1 = v.Transform:GetWorldPosition()
-            local dx, dy, dz = x1 - x, y1 - y, z1 - z
-            local dsq = dx * dx + dy * dy + dz * dz
-
-            if fishing and v:HasTag("fishable") then
-                local r = v:GetPhysicsRadius(0)
-                if dsq <= r * r then
-                    dsq = 0
-                end
-            end
-
-            if (dsq < min_rad_sq
-                or (dsq <= rad_sq
-                    and (v == self.controller_target or
-                        v == self.controller_attack_target or
-                        dx * dirx + dz * dirz > 0))) and
-                CanEntitySeePoint(self.inst, x1, y1, z1) then
-
-                local dist = dsq > 0 and math.sqrt(dsq) or 0
-                local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
-
-                --keep the angle component between [0..1]
-                local angle_component = (dot + 1) / 2
-
-                --distance doesn't matter when you're really close, and then attenuates down from 1 as you get farther away
-                local dist_component = dsq < min_rad_sq and 1 or min_rad_sq / dsq
-
-                --for stuff that's *really* close - ie, just dropped
-                local add = dsq < .0625 --[[.25 * .25]] and 1 or 0
-
-                --just a little hysteresis
-                local mult = v == self.controller_target and not v:HasTag("wall") and 1.5 or 1
-
-                local score = angle_component * dist_component * mult + add
-
-                --make it easier to target stuff dropped inside the portal when alive
-                --make it easier to haunt the portal for resurrection in endless mode
-                if v:HasTag("portal") then
-                    score = score * (self.inst:HasTag("playerghost") and GetPortalRez(TheNet:GetServerGameMode()) and 1.1 or .9)
-                end
-
-                --print(v, angle_component, dist_component, mult, add, score)
-
-                if score < target_score or
-                    (   score == target_score and
-                        (   (target ~= nil and not (target.CanMouseThrough ~= nil and target:CanMouseThrough())) or
-                            (v.CanMouseThrough ~= nil and v:CanMouseThrough())
-                        )
-                    ) then
-                    --skip
-                elseif canexamine and v:HasTag("inspectable") then
+            --Only handle controller_target if it's the one we added at the front
+            if v ~= self.inst and (v ~= self.controller_target or i == 1) and v.entity:IsVisible() then
+                if v.entity:GetParent() == self.inst and v:HasTag("bundle") then
+                    --bundling or constructing
                     target = v
-                    target_score = score
-                else
-                    --this is kind of expensive, so ideally we don't get here for many objects
-                    local lmb, rmb = self:GetSceneItemControllerAction(v)
-                    if lmb ~= nil or rmb ~= nil then
+                    break
+                end			
+
+                --Check distance including y value
+                local x1, y1, z1 = v.Transform:GetWorldPosition()
+                local dx, dy, dz = x1 - x, y1 - y, z1 - z
+                local dsq = dx * dx + dy * dy + dz * dz
+
+                if fishing and v:HasTag("fishable") then
+                    local r = v:GetPhysicsRadius(0)
+                    if dsq <= r * r then
+                        dsq = 0
+                    end
+                end
+
+                if (dsq < min_rad_sq
+                    or (dsq <= rad_sq
+                        and (v == self.controller_target or
+                            v == self.controller_attack_target or
+                            dx * dirx + dz * dirz > 0))) and
+                    CanEntitySeePoint(self.inst, x1, y1, z1) then
+
+                    local dist = dsq > 0 and math.sqrt(dsq) or 0
+                    local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
+
+                    --keep the angle component between [0..1]
+                    local angle_component = (dot + 1) / 2
+
+                    --distance doesn't matter when you're really close, and then attenuates down from 1 as you get farther away
+                    local dist_component = dsq < min_rad_sq and 1 or min_rad_sq / dsq
+
+                    --for stuff that's *really* close - ie, just dropped
+                    local add = dsq < .0625 --[[.25 * .25]] and 1 or 0
+
+                    --just a little hysteresis
+                    local mult = v == self.controller_target and not v:HasTag("wall") and 1.5 or 1
+
+                    local score = angle_component * dist_component * mult + add
+
+                    --make it easier to target stuff dropped inside the portal when alive
+                    --make it easier to haunt the portal for resurrection in endless mode
+                    if v:HasTag("portal") then
+                        score = score * (self.inst:HasTag("playerghost") and GetPortalRez(TheNet:GetServerGameMode()) and 1.1 or .9)
+                    end
+
+                    --print(v, angle_component, dist_component, mult, add, score)
+
+                    if score < target_score or
+                        (   score == target_score and
+                            (   (target ~= nil and not (target.CanMouseThrough ~= nil and target:CanMouseThrough())) or
+                                (v.CanMouseThrough ~= nil and v:CanMouseThrough())
+                            )
+                        ) then
+                        --skip
+                    elseif canexamine and v:HasTag("inspectable") then
                         target = v
                         target_score = score
                     else
-                        local inv_obj = self:GetCursorInventoryObject()
-                        if inv_obj ~= nil and self:GetItemUseAction(inv_obj, v) ~= nil then
+                        --this is kind of expensive, so ideally we don't get here for many objects
+                        local lmb, rmb = self:GetSceneItemControllerAction(v)
+                        if lmb ~= nil or rmb ~= nil then
                             target = v
                             target_score = score
+                        else
+                            local inv_obj = self:GetCursorInventoryObject()
+                            if inv_obj ~= nil and self:GetItemUseAction(inv_obj, v) ~= nil then
+                                target = v
+                                target_score = score
+                            end
                         end
                     end
                 end
             end
         end
     end
-
     if target ~= self.controller_target then
         self.controller_target = target
         self.controller_target_age = 0
@@ -2534,7 +2543,7 @@ function PlayerController:UpdateControllerTargets(dt)
         self.controller_target_age = 0
         self.controller_attack_target = nil
         self.controller_attack_target_ally_cd = nil
-		self.controller_targeting_lock_target = nil
+        self.controller_targeting_lock_target = nil
         return
     end
     local x, y, z = self.inst.Transform:GetWorldPosition()
@@ -2554,7 +2563,7 @@ function PlayerController:GetControllerAttackTarget()
 end
 
 function PlayerController:IsControllerTargetingModifierDown()
-	return self.controller_targeting_modifier_down
+    return self.controller_targeting_modifier_down
 end
 
 function PlayerController:IsControllerTargetLockEnabled()
@@ -2661,6 +2670,10 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
     else
         platform_for_velocity_calculation = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)
     end
+
+	if platform == nil and (platform_for_velocity_calculation == nil or TheWorld.Map:IsOceanAtPoint(target_x, 0, target_z)) then
+        return 
+	end
 
     local hop_dir_x, hop_dir_z = target_x - my_x, target_z - my_z
     local hop_distance_sq = hop_dir_x * hop_dir_x + hop_dir_z * hop_dir_z

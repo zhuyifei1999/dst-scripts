@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Ah non, the fish are too deep for my rod to reach.",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "This is a bit much for pond fishing, non?",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "No need, it's already en glace.",
             ALREADY_BOMBED = "That would be wasteful.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We've learned that already.",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "Ah non, this fish is far too small.",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I cannot do that.",
 	ANNOUNCE_BOAT_LEAK = "Mon dieu! She is sinking!",
@@ -370,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "I feel bold as a sharp cheddar!",
 	ANNOUNCE_MOONPOTION_FAILED = "Perhaps that is for the best.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "The others might enjoy this!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Mon dieu, my world is aglow!",
+	ANNOUNCE_IS_FEASTING = "Winter's Feast is served!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Ah non, is it over already?",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, mon amie.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Et voilà!",
@@ -451,6 +469,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Ah non, I think I'm losing steam.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Is it getting a bit soggy in here?",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah, zut! I've lost my tackle.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "I should tighten my line a bit.",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "You have escaped my crockpot for now, mon ami.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Ah non, that was terrible!",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Fishing requires lots of patience.",
+		"Fish! Wouldn't you like to sample my hook?",
+		"Hum dum dee da...",
+		"I wonder if there's a better spot elsewhere.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,6 +515,7 @@ return{
 		SPIDER = "I hope it didn't take any bites out of me.",
 		SPIDER_WARRIOR = "That could have been worse.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Is anyone else coming for dinner?",
@@ -2342,6 +2375,47 @@ return{
         WINTER_FOOD8 = "It smells like comfort and contentment.", --hot cocoa
         WINTER_FOOD9 = "I'm so happy I could weep.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Finally, a proper oven!",
+			COOKING = "Cooking should never be rushed.",
+			ALMOST_DONE_COOKING = "Ah, that delicious aroma tells me it's almost done!",
+			DISH_READY = "Et voila! Food is served.",
+		},
+		BERRYSAUCE = "Made from only the most festive berries.",
+		BIBINGKA = "A tasty holiday treat from the Philippines.",
+		CABBAGEROLLS = "A surprisingly time consuming dish, but well worth the wait.",
+		FESTIVEFISH = "There's always room for new traditions!",
+		GRAVY = "Rich and full of flavor.",
+		LATKES = "Some chives, a dollop of sour cream, c'est parfait!",
+		LUTEFISK = "A traditional Scandinavian holiday recipe.",
+		MULLEDDRINK = "The taste of cinnamon always puts me in the holiday spirit!",
+		PANETTONE = "A traditional Italian Yuletide treat.",
+		PAVLOVA = "A perfect Pavlova!",
+		PICKLEDHERRING = "It's really quite delicious.",
+		POLISHCOOKIE = "A rich pastry with a sweet fruity filling.",
+		PUMPKINPIE = "Simple and classic.",
+		ROASTTURKEY = "The pièce de résistance of any holiday feast!",
+		STUFFING = "To preserve the crispness, I actually cook it separate from the turkey.",
+		SWEETPOTATO = "All the sweetness of the holidays.",
+		TAMALES = "You can taste the care that went into this dish.",
+		TOURTIERE = "Ah oui, now that's a meat pie!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Ah yes! A proper feasting table!",
+			HAS_FOOD = "A masterpiece!",
+			WRONG_TYPE = "Ah no! That does not seem right!",
+			BURNT = "Oh dear, it looks a bit overdone.",
+		},
+
+		GINGERBREADWARG = "Looks sweet, but acts sour!", 
+		GINGERBREADHOUSE = "The piping on those roofs - magnifique!", 
+		GINGERBREADPIG = "I can catch you, gingerbread pig!",
+		CRUMBS = "I'm on its delicious trail!",
+		WINTERSFEASTFUEL = "To imbue my food with festive spirit.",
+
         KLAUS = "He doesn't look very jolly.",
         KLAUS_SACK = "There might be all sorts of treats inside.",
 		KLAUSSACKKEY = "Well, it's the key to something.",
@@ -2870,6 +2944,9 @@ return{
 		SALTROCK = "Quelle chance! I've found salt!",
 		SALTBOX = "Just the thing for preserving ingredients.",
 
+		TACKLESTATION = "I've got bigger fish to fry! And bake, and poach, and...",
+		TACKLESKETCH = "Ah, it looks like a recipe for some fishing tackle.",
+
         MALBATROSS = "Très mal, indeed.",
         MALBATROSS_FEATHER = "\"Alouette, je te plumerai.\"",
         MALBATROSS_BEAK = "I'm sure I could find a use for this.",
@@ -2877,9 +2954,74 @@ return{
         MAST_MALBATROSS = "It looks nice, non?",
 		MALBATROSS_FEATHERED_WEAVE = "This fabric is light as a feather!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Mon dieu, don't skewer me!",
+            BROKENHORN = "Ha! You've no shish left to kabob with!",
+            FOLLOWER = "You're really quite a gentle soul, aren't you mon ami?",
+            BROKENHORN_FOLLOWER = "I am very sorry about your horn, mon ami.",
+        },
+        GNARWAIL_HORN = "I was nearly run through with that thing!",
+
         WALKINGPLANK = "That doesn't look safe.",
         OAR = "A paddle.",
 		OAR_DRIFTWOOD = "A nice, light paddle.",
+
+		OCEANFISHINGROD = "I wonder what deep sea delicacies are waiting for me?",
+		OCEANFISHINGBOBBER_NONE = "A float might make fishing easier.",
+        OCEANFISHINGBOBBER_BALL = "Simple, pas compliqué, parfait!",
+        OCEANFISHINGBOBBER_OVAL = "This world can harden the best of us, mon ami.",
+		OCEANFISHINGBOBBER_CROW = "Feathers are surprisingly useful for fishing!",
+		OCEANFISHINGBOBBER_ROBIN = "Feathers are surprisingly useful for fishing!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Feathers are surprisingly useful for fishing!",
+		OCEANFISHINGBOBBER_CANARY = "Feathers are surprisingly useful for fishing!",
+		OCEANFISHINGBOBBER_GOOSE = "Fishing can sometimes require a soft touch.",
+		OCEANFISHINGBOBBER_MALBATROSS = "Not bad at all!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Not very appetizing, but fish seem to like it.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Not very appetizing, but fish seem to like it.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Not very appetizing, but fish seem to like it.",
+		OCEANFISHINGLURE_SPOON_RED = "Not very appetizing, but smaller fish seem to like it.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Not very appetizing, but smaller fish seem to like it.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Not very appetizing, but smaller fish seem to like it.",
+
+		OCEANFISH_SMALL_1 = "This will barely do as an appetizer!",
+		OCEANFISH_SMALL_2 = "A tasty little morsel!",
+		OCEANFISH_SMALL_3 = "Small, but surely delicious with the right accoutrements!",
+		OCEANFISH_SMALL_4 = "I do wish I had bigger fish to fry.",
+		OCEANFISH_SMALL_5 = "Has this fish already been cooked?",
+		OCEANFISH_MEDIUM_1 = "I've worked with worse looking ingredients.",
+		OCEANFISH_MEDIUM_2 = "You will make a fine fish dinner!",
+		OCEANFISH_MEDIUM_3 = "Hm, I wonder if those spines are poisonous.",
+		OCEANFISH_MEDIUM_4 = "Ah yes, with a squeeze of lemon, some pepper...",
+		OCEANFISH_MEDIUM_5 = "Ah, some butter, some salt, and you'll be scrumptious!",
+
+		PONDFISH = "Poisson!",
+		PONDEEL = "Anguille.",
+
+        FISHMEAT = "Doesn't even smell fishy it's so fresh!",
+        FISHMEAT_COOKED = "Could use a squeeze of lemon...",
+        FISHMEAT_SMALL = "I will honor this ingredient.",
+        FISHMEAT_SMALL_COOKED = "Could use fresh herbs and butter...",
+		SPOILED_FISH = "Such a shame...",
+
+		FISH_BOX = "Is the fish fresh or canned? I feel rather conflicted.",
+        POCKET_SCALE = "A simple way to weigh!",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Perhaps I will try my luck?",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "(Sniff) Is that... fish soup?",
+			BURNT = "Ah, quelle dommage...",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nI do have a bit of experience with fishing!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Ah, I was hoping for something more delicious.",
+
+		CALIFORNIAROLL = "Classic Japanese fusion!",
+		SEAFOODGUMBO = "Incredible! Just like Nana used to make!",
+		SURFNTURF = "Mwah! Perfection.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2982,6 +3124,7 @@ return{
         MERMGUARD = "A most fearsome fishmonger!",
         MERM_PRINCE = "Hm... he doesn't seem so different from the others.",
 
+        SQUID = "Incandescent calamari!",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",
@@ -2990,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Fresh! Err... perhaps too fresh.",
+		WINTERSFEASTFUEL = "Do I taste a hint of cinnamon?",
     },
 }

@@ -86,7 +86,6 @@ function c_mermthrone()
     c_spawn("mermthrone_construction")
     c_give("kelp", 20)
     c_give("beefalowool", 15)
-    c_give("fish", 30)
     c_give("pigskin", 10)
     c_give("carrot", 4)
     c_spawn("merm")
@@ -236,7 +235,7 @@ end
 function c_listplayers()
     local isdedicated = not TheNet:GetServerIsClientHosted()
     local index = 1
-    for i, v in ipairs(TheNet:GetClientTable()) do
+    for i, v in ipairs(TheNet:GetClientTable() or {}) do
         if not isdedicated or v.performance == nil then
             print(string.format("%s[%d] (%s) %s <%s>", v.admin and "*" or " ", index, v.userid, v.name, v.prefab))
             index = index + 1
@@ -1238,6 +1237,9 @@ function c_makeboat()
 
 	inst = SpawnPrefab("lantern")
 	inst.Transform:SetPosition(x - 3.25, y, z)
+	
+	inst = SpawnPrefab("oceanfishingrod")
+	inst.Transform:SetPosition(x - 3.25, y, z + 1.25)
 	
 end
 

@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Wolfgang can't reach fish with tiny rod!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Don't need mighty fishing rod for tiny pond!",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "Is covered in see-through sharp stuff!",
             ALREADY_BOMBED = "Is already prettified.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "Little recipe is already in there!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "Tiny fish not mighty enough!",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_BOAT_LEAK = "Drippy drops is come through boat!",
@@ -371,6 +383,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Wolfgang is brave! Not scared of spooky tree!",
 	ANNOUNCE_MOONPOTION_FAILED = "Wolfgang expected something to happen.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Wolfgang should share with tiny, weaker friends.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Why do tiny sparks follow Wolfgang?",
+	ANNOUNCE_IS_FEASTING = "Is the time for feasting!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Goodbye tiny sparks.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up now, friend!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Go! Fight many things!",
@@ -452,6 +470,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Time for little break.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Feels damp... Wolfgang hope not to catch cold.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Fish was too mighty for weak little string.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Wolfgang must reel in faster!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Seems no fish stew for dinner.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Was practice! Wolfgang will try for real now!",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Wolfgang can wait!",
+		"Wolfgang can wait a little longer.",
+		"Wolfgang getting bored.",
+		"Wolfgang would like fish to go on hook now.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -484,6 +516,7 @@ return{
 		SPIDER = "He ran away from me.",
 		SPIDER_WARRIOR = "He knows I am stronger.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
@@ -2343,6 +2376,47 @@ return{
         WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
         WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Oven needs mighty fuel!",
+			COOKING = "Is making Wolfgang's mouth water.",
+			ALMOST_DONE_COOKING = "Is almost done...",
+			DISH_READY = "Wolfgang will share with all his friends!",
+		},
+		BERRYSAUCE = "Is very berry!",
+		BIBINGKA = "Leafy bread fills Wolfgang's mighty belly!",
+		CABBAGEROLLS = "Wolfgang likes his cabbage rolls smothered in sauerkraut!",
+		FESTIVEFISH = "Is good fish for holidays.",
+		GRAVY = "Gravy is good indeed!",
+		LATKES = "Will eat many, many of these.",
+		LUTEFISK = "Wolfgang will eat the stinky fish.",
+		MULLEDDRINK = "Is good, cozy drink.",
+		PANETTONE = "Is good, sweet bread.",
+		PAVLOVA = "Look very delicate, not like mighty Wolfgang.",
+		PICKLEDHERRING = "Good fish, get in belly.",
+		POLISHCOOKIE = "Ah, bring back good memories.",
+		PUMPKINPIE = "Wolfgang's belly is going to grow bigger than muscles...",
+		ROASTTURKEY = "Wolfgang hungry for bird meat!",
+		STUFFING = "Bread chunks very good!",
+		SWEETPOTATO = "Is very sweet, but see no potato.",
+		TAMALES = "Was Wolfgang not supposed to eat husk of corn?",
+		TOURTIERE = "Is pie filled with much protein!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "Is place for all of Wolfgang's friends!",
+			HAS_FOOD = "Come, friends, and eat the mighty food!",
+			WRONG_TYPE = "Oops. Is not going here.",
+			BURNT = "Think party has gotten out of hand.",
+		},
+
+		GINGERBREADWARG = "Wolfgang will defeat it. Then, dessert!", 
+		GINGERBREADHOUSE = "Wolfgang will punch it for the candy.", 
+		GINGERBREADPIG = "Hehe! Come back, little guy!",
+		CRUMBS = "Is clue! Yummy, yummy clue!",
+		WINTERSFEASTFUEL = "Is making Wolfgang think of friends.",
+
         KLAUS = "If Wolfgang had no eyes, he would not see terrible beast!",
         KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		KLAUSSACKKEY = "Is very special antler!",
@@ -2871,6 +2945,9 @@ return{
 		SALTROCK = "Wolfgang confused, thought salt came from tiny shakers?",
 		SALTBOX = "Put food inside!",
 
+		TACKLESTATION = "Make better rod for fish!",
+		TACKLESKETCH = "Picture will help Wolfgang catch fish!",
+
         MALBATROSS = "Big fishy bird!",
         MALBATROSS_FEATHER = "Feather from big water bird.",
         MALBATROSS_BEAK = "Hmm, too big for stew.",
@@ -2878,9 +2955,74 @@ return{
         MAST_MALBATROSS = "Bird make good sail.",
 		MALBATROSS_FEATHERED_WEAVE = "Is cloth of bird!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Big fish think it can poke holes in Wolfgang's boat?!",
+            BROKENHORN = "Big fish know better than to mess with Wolfgang now!",
+            FOLLOWER = "Yes, you follow mighty Wolfgang!",
+            BROKENHORN_FOLLOWER = "Don't need horn to be mighty! You big, like Wolfgang!",
+        },
+        GNARWAIL_HORN = "Will make good pokey spear!",
+
         WALKINGPLANK = "Maybe Wolfgang go for dip.",
         OAR = "Wolfgang will be mighty rower!",
 		OAR_DRIFTWOOD = "Oar feels so light in Wolfgang's mighty hands!",
+
+		OCEANFISHINGROD = "Strong rod to catch mighty fish!",
+		OCEANFISHINGBOBBER_NONE = "Need something to fish better.",
+        OCEANFISHINGBOBBER_BALL = "Float well, tiny bobber!",
+        OCEANFISHINGBOBBER_OVAL = "Float well, tiny bobber!",
+		OCEANFISHINGBOBBER_CROW = "Feather of crow float well on water!",
+		OCEANFISHINGBOBBER_ROBIN = "Feather of red bird float well on water!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Feather of winter bird float well on water!",
+		OCEANFISHINGBOBBER_CANARY = "Feather of yellow bird float well on water!",
+		OCEANFISHINGBOBBER_GOOSE = "Wolfgang use big feather to catch big fish!",
+		OCEANFISHINGBOBBER_MALBATROSS = "Wolfgang use big feather to catch big fish!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_RED = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Is tiny fish bait.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Is tiny fish bait.",
+
+		OCEANFISH_SMALL_1 = "Fish is puny!",
+		OCEANFISH_SMALL_2 = "Is tiny fish!",
+		OCEANFISH_SMALL_3 = "Wolfgang could eat in one bite!",
+		OCEANFISH_SMALL_4 = "Is small and weak fish.",
+		OCEANFISH_SMALL_5 = "Would make good snack for Wolfgang.",
+		OCEANFISH_MEDIUM_1 = "Don't like way its buggy eyes stare.",
+		OCEANFISH_MEDIUM_2 = "Aha! Big fish for dinner!",
+		OCEANFISH_MEDIUM_3 = "This fish very pokey.",
+		OCEANFISH_MEDIUM_4 = "Wolfgang doesn't want bad luck!",
+		OCEANFISH_MEDIUM_5 = "Haha! Is corn and fish!",
+
+		PONDFISH = "Is fishy.",
+		PONDEEL = "Eel needs cooking!",
+
+        FISHMEAT = "Lump of stinky protein.",
+        FISHMEAT_COOKED = "Meat from water still make Wolfgang strong.",
+        FISHMEAT_SMALL = "Fish lump for eating.",
+        FISHMEAT_SMALL_COOKED = "Looks better now.",
+		SPOILED_FISH = "Is good no more.",
+
+		FISH_BOX = "Is new home for fish. For now.",
+        POCKET_SCALE = "Tiny scale fit in palm of Wolfgang's hand!",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Is scale to measure mightiness of fish!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Little scale is burning!",
+			BURNT = "Little scale is all burned away.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nOf course Wolfgang's fish is mightiest!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Is just lump of mud?",
+
+		CALIFORNIAROLL = "Get in Wolfgang's stomach!",
+		SEAFOODGUMBO = "This will make very strong Wolfgang!",
+		SURFNTURF = "Very good.",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2983,6 +3125,7 @@ return{
         MERMGUARD = "Not as mighty as Wolfgang!",
         MERM_PRINCE = "Looks too scrawny to be king!",
 
+        SQUID = "Wolfgang make friends with bright little fishies.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",
@@ -2991,5 +3134,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "This egg too crunchy.",
+		WINTERSFEASTFUEL = "Remind Wolfgang of old country...",
     },
 }

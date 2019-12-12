@@ -321,6 +321,7 @@ end
 
 local function OnActionFailed(inst, data)
     if inst.components.talker ~= nil
+		and not data.action.action.silent_fail
         and (data.reason ~= nil or
             not data.action.autoequipped or
             inst.components.inventory.activeitem == nil) then
@@ -1182,9 +1183,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_unsaddle.zip"),
         Asset("ANIM", "anim/player_actions_fishing.zip"),
         Asset("ANIM", "anim/player_actions_fishing_ocean.zip"),
+        Asset("ANIM", "anim/player_actions_fishing_ocean_new.zip"),
+        Asset("ANIM", "anim/player_actions_pocket_scale.zip"),
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),
+		Asset("ANIM", "anim/player_actions_feast_eat.zip"),
         Asset("ANIM", "anim/player_boat.zip"),
         Asset("ANIM", "anim/player_boat_plank.zip"),
         Asset("ANIM", "anim/player_oar.zip"),
@@ -1289,6 +1293,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_emotes_sit.zip"),
         Asset("ANIM", "anim/player_mount_bow.zip"),
         Asset("ANIM", "anim/player_mount_cointoss.zip"),
+        Asset("ANIM", "anim/player_mount_hornblow.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
 
@@ -1412,6 +1417,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:OverrideSymbol("fx_wipe", "wilson_fx", "fx_wipe")
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
         inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
+        inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
 
         --Additional effects symbols for hit_darkness animation
         inst.AnimState:AddOverrideBuild("player_hit_darkness")
@@ -1430,9 +1436,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_boat_sink")
         inst.AnimState:AddOverrideBuild("player_oar")
         inst.AnimState:AddOverrideBuild("player_peruse")
+		inst.AnimState:AddOverrideBuild("player_boat_channel")
 
-        inst.AnimState:AddOverrideBuild("player_boat_channel")        
+        inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean")
+        inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
 
+		inst.AnimState:AddOverrideBuild("player_actions_feast_eat")
         inst.DynamicShadow:SetSize(1.3, .6)
 
         inst.MiniMapEntity:SetIcon(name..".png")
@@ -1489,6 +1498,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("playeravatardata")
         inst:AddComponent("constructionbuilderuidata")
+        
+        inst:AddComponent("inkable")
 
         if TheNet:GetServerGameMode() == "lavaarena" then
             inst:AddComponent("healthsyncer")

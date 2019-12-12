@@ -41,4 +41,5 @@ if PLATFORM == "WIN32_RAIL" then
 	RailUserCommandInject( "facepalm", "叹" )
 	RailUserCommandInject( "kiss", "吻" )
 	RailUserCommandInject( "pose", "姿势" )
+	RailUserCommandInject( "toast", "干杯" )
 end

@@ -105,6 +105,7 @@ local function construction_fn()
     inst:SetPhysicsRadiusOverride(1.5)
     MakeObstaclePhysics(inst, inst.physicsradiusoverride)
 
+    MakeHauntableWork(inst)
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
 
@@ -204,6 +205,7 @@ local function fn()
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered_regular)
 
+    MakeHauntableWork(inst)
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
 

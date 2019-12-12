@@ -24,11 +24,11 @@ end
 
 local function SetBoat(self, boat)
 	if self.boat ~= nil then
-		self.inst:RemoveEventCallback("boat_onremove", self.OnLeaderRemoved, self.boat)
+		self.inst:RemoveEventCallback("boat_onremove", self.OnBoatRemoved, self.boat)
 	end
 	self.boat = boat
 	if self.boat ~= nil then
-	    self.inst:ListenForEvent("boat_onremove", self.OnLeaderRemoved, self.boat)
+	    self.inst:ListenForEvent("boat_onremove", self.OnBoatRemoved, self.boat)
 	end
 end
 
@@ -226,15 +226,12 @@ end
 
 function Anchor:OnUpdate(dt)
 
-    -- print("RAISE UNITS",self.raiseunits, "BOTTOM",self:GetCurrentDepth())
-
+    local depth = self:GetCurrentDepth()
+    --print("RAISE UNITS",self.raiseunits, "BOTTOM",self:GetCurrentDepth(),self.is_anchor_transitioning)    
     if self.is_anchor_transitioning then
-
-        local depth = self:GetCurrentDepth()
-
         if next(self.raisers) then    
             self.raiseunits =  math.max(0,self.raiseunits - (dt*self.currentraiseunits))
-        else        
+        else
             self.raiseunits = math.min(depth ,self.raiseunits + (dt*self.autolowerunits))
         end
         --print("self.raiseunits",self.raiseunits)
@@ -250,10 +247,15 @@ function Anchor:OnUpdate(dt)
         if self.raiseunits <= 0 then
             self:AnchorRaised()
         end
-        if self.raiseunits >= depth then
+        if self.raiseunits >= depth and self.numberofraisers <= 0 then
             self:AnchorLowered()
-        end        
-    end    
+        end
+    else
+        if self.raiseunits > 0 and self.raiseunits < depth then
+            self.inst:RemoveTag("anchor_lowered")
+            self:StartLoweringAnchor()
+        end
+    end
 end
 
 function Anchor:GetDebugString()

@@ -125,10 +125,11 @@ local OnSinkholesUpdate = not _ismastershard and function(inst, data)
             end
         end
     end
+
     if next(_targets) ~= nil then
         inst:StartUpdatingComponent(self)
     else
-        inst:StartUpdatingComponent(self)
+        inst:StopUpdatingComponent(self)
     end
 end or nil
 

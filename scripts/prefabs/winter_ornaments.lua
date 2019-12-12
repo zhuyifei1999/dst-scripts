@@ -302,4 +302,6 @@ table.insert(ornament, MakeOrnament("boss_noeyeblue", "winter_ornamentboss", nil
 table.insert(ornament, MakeOrnament("boss_noeyered", "winter_ornamentboss", nil, nil, 0.90))
 table.insert(ornament, MakeOrnament("boss_toadstool", "winter_ornamentboss"))
 
+table.insert(ornament, MakeOrnament("boss_malbatross", "winter_ornamentboss", nil, "winter_ornaments2019", 0.95))
+
 return unpack(ornament)

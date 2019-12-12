@@ -89,9 +89,7 @@ function InvSlot:Click(stack_mod)
             end
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.prefab == active_item.prefab and container_item.skinname == active_item.skinname and
-                container_item.replica.stackable ~= nil and
-                container:AcceptsStacks() then
+            if container_item.prefab == active_item.prefab and container_item.skinname == active_item.skinname and container_item.replica.stackable ~= nil and container:AcceptsStacks() then
                 --Add active item to slot stack
                 if stack_mod and
                     active_item.replica.stackable ~= nil and
@@ -104,9 +102,11 @@ function InvSlot:Click(stack_mod)
                     container:AddAllOfActiveItemToSlot(slot_number)
                 end             
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
-            elseif container:AcceptsStacks() or
-                not (active_item.replica.stackable ~= nil and
-                    active_item.replica.stackable:IsStack()) then
+
+            elseif active_item.replica.stackable ~= nil and active_item.replica.stackable:IsStack() and not container:AcceptsStacks() then
+                container:SwapOneOfActiveItemWithSlot(slot_number)
+
+            elseif container:AcceptsStacks() or not (active_item.replica.stackable ~= nil and active_item.replica.stackable:IsStack()) then
                 --Swap active item with slot item
                 container:SwapActiveItemWithSlot(slot_number)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")

@@ -7,6 +7,10 @@ local assets =
 local function onsprungleak(inst)
 	if inst.components.inspectable == nil then
 		inst:AddComponent("inspectable")
+
+        inst:AddComponent("hauntable")
+        inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
 	end
 
 	inst:RemoveTag("NOBLOCK")
@@ -15,6 +19,8 @@ end
 local function onrepairedleak(inst)
 	if inst.components.inspectable ~= nil then
 		inst:RemoveComponent("inspectable")
+
+        inst:RemoveComponent("hauntable")
 	end
 
 	inst:AddTag("NOBLOCK")

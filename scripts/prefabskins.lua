@@ -82,6 +82,7 @@ PREFAB_SKINS = {
 	},
 	beefalohat = 
 	{
+		"beefalohat_klaus",
 		"beefalohat_pigking",
 	},
 	beehat = 
@@ -128,6 +129,7 @@ PREFAB_SKINS = {
 	cane = 
 	{
 		"cane_ancient",
+		"cane_candycane",
 		"cane_victorian",
 	},
 	catcoonhat = 
@@ -210,6 +212,10 @@ PREFAB_SKINS = {
 		"puppy_tzu_builder",
 		"puppy_winter_builder",
 	},
+	earmuffshat = 
+	{
+		"earmuffshat_deerclops",
+	},
 	endtable = 
 	{
 		"endtable_carpet",
@@ -227,10 +233,20 @@ PREFAB_SKINS = {
 	fence = 
 	{
 		"fence_factory",
+		"fence_gingerbread",
+	},
+	fence_gate = 
+	{
+		"fence_gate_gingerbread",
+	},
+	fence_gate_item = 
+	{
+		"fencegate_gingerbread_item",
 	},
 	fence_item = 
 	{
 		"fence_factory_item",
+		"fence_gingerbread_item",
 	},
 	firepit = 
 	{
@@ -324,6 +340,14 @@ PREFAB_SKINS = {
 		"minerhat_cowboy",
 		"minerhat_floppy",
 	},
+	mushroom_light = 
+	{
+		"mushroom_light_festive",
+	},
+	oceanfishingrod = 
+	{
+		"oceanfishingrod_ice",
+	},
 	opalstaff = 
 	{
 		"moonstaff_crystal",
@@ -331,6 +355,7 @@ PREFAB_SKINS = {
 	orangestaff = 
 	{
 		"orangestaff_ancient",
+		"orangestaff_candycane",
 		"orangestaff_victorian",
 	},
 	pickaxe = 
@@ -479,6 +504,7 @@ PREFAB_SKINS = {
 		"wathgrithr_survivor",
 		"wathgrithr_victorian",
 		"wathgrithr_wrestler",
+		"wathgrithr_yule",
 	},
 	wathgrithrhat = 
 	{
@@ -500,6 +526,7 @@ PREFAB_SKINS = {
 		"waxwell_unshadow",
 		"waxwell_vampire",
 		"waxwell_victorian",
+		"waxwell_yule",
 	},
 	webber = 
 	{
@@ -553,6 +580,7 @@ PREFAB_SKINS = {
 		"wes_survivor",
 		"wes_victorian",
 		"wes_wrestler",
+		"wes_yule",
 	},
 	wickerbottom = 
 	{
@@ -632,6 +660,7 @@ PREFAB_SKINS = {
 		"winona_survivorp",
 		"winona_victorian",
 		"winona_wrestler",
+		"winona_yule",
 	},
 	winterhat = 
 	{
@@ -683,6 +712,7 @@ PREFAB_SKINS = {
 		"woodie_treeguard",
 		"woodie_treeguard_d",
 		"woodie_victorian",
+		"woodie_yule",
 	},
 	wormwood = 
 	{
@@ -723,6 +753,7 @@ PREFAB_SKINS = {
 		"wx78_victorian",
 		"wx78_wip",
 		"wx78_wrestler",
+		"wx78_yule",
 	},
 	yellowstaff = 
 	{

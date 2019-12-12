@@ -11,7 +11,7 @@ assert(TheWorld.ismastersim, "Malbatross spawner should not exist on the client"
 --------------------------------------------------------------------------
 
 local MALBATROSS_SPAWN_DIST = 10
-local MALBATROSS_PLAYER_SPAWN_DISTSQ = 400 -- 20 * 20
+local MALBATROSS_PLAYER_SPAWN_DISTSQ = TUNING.MALBATROSS_NOTICEPLAYER_DISTSQ
 local SHOAL_PERCENTAGE_TO_TEST = 0.25
 local MALBATROSS_SPAWNDELAY = { BASE = 10, RANDOM = 5 }
 
@@ -100,6 +100,18 @@ end
 local function OnMalbatrossKilledOrRemoved(source, the_malbatross)
     _activemalbatross = nil
     TryBeginningMalbatrossSpawns()
+end
+
+local function OnShoalFishHooked(source, fish_shoal)
+    if _activemalbatross == nil and fish_shoal ~= nil and (_time_until_spawn == nil or _time_until_spawn < 10)
+            and math.random() < TUNING.MALBATROSS_HOOKEDFISH_SUMMONCHANCE then
+
+        _time_until_spawn = _time_until_spawn or 0
+
+        _shuffled_shoals_for_spawning = {fish_shoal}
+
+        self.inst:StartUpdatingComponent(self)
+    end
 end
 
 --------------------------------------------------------------------------
@@ -241,6 +253,7 @@ end
 --------------------------------------------------------------------------
 
 self.inst:ListenForEvent("ms_registerfishshoal", OnFishShoalAdded, TheWorld)
+self.inst:ListenForEvent("ms_shoalfishhooked", OnShoalFishHooked, TheWorld)
 self.inst:ListenForEvent("malbatrossremoved", OnMalbatrossKilledOrRemoved, TheWorld)
 self.inst:ListenForEvent("malbatrosskilled", OnMalbatrossKilledOrRemoved, TheWorld)
 

@@ -5,7 +5,7 @@ local assets =
 
 local prefabs =
 {
-    "fish",
+    "pondfish",
     "kelp",
     "froglegs",
     "merm_king_splash",
@@ -13,9 +13,9 @@ local prefabs =
 
 local loot =
 {
-    "fish",
-    "fish",
-    "fish",
+    "pondfish",
+    "pondfish",
+    "pondfish",
     "froglegs",
     "kelp",
     "kelp",
@@ -57,11 +57,11 @@ local function OnAttacked(inst, data)
 end
 
 local function ShouldAcceptItem(inst, item, giver)
-    local is_merm = (giver:HasTag("merm") or (giver.components.inventory and giver.components.inventory:EquipHasTag("merm")))
-    local can_eat = (item.components.edible and inst.components.eater:CanEat(item)) and (inst.components.hunger and inst.components.hunger:GetPercent() < 1)
-    local is_fish = item:HasTag("fish")
-
-    return is_merm and (can_eat or is_fish)
+	if giver:HasTag("merm") then
+		local can_eat = (item.components.edible and inst.components.eater:CanEat(item)) and (inst.components.hunger and inst.components.hunger:GetPercent() < 1)
+		return can_eat or item:HasTag("fish")
+	end
+	return false
 end
 
 local function launchitem(item, angle)
@@ -137,6 +137,15 @@ end
 
 local function OnRefuseItem(inst, item)
     inst.sg:GoToState("refuse")
+end
+
+local function OnHaunt(inst, haunter)
+    if inst.components.trader ~= nil and inst.components.trader.enabled then
+        OnRefuseItem(inst)
+        return true
+    else
+        return false
+    end
 end
 
 local function HungerDelta(inst, data)
@@ -427,6 +436,10 @@ local function fn()
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader.deleteitemonaccept = false
+
+    inst:AddComponent("hauntable")
+    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+    inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("hungerdelta", function(_, data) HungerDelta(inst, data) end)

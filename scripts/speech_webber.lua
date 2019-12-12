@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "We can't reach the fish with this rod!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "We think we should use a different fishing rod.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "There's too much glass in the way.",
             ALREADY_BOMBED = "Aw, we wanted to do it!",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We don't need two!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This little guy's too small!",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
@@ -370,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Hey, those trees aren't so scary anymore!",
 	ANNOUNCE_MOONPOTION_FAILED = "Whoops!",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "We really should share.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Hey! Everything's all sparkly!",
+	ANNOUNCE_IS_FEASTING = "We want to try everything!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Aww, we were having fun!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on, we'll help!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "There you go!",
@@ -451,6 +469,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "We're bored now.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Nooo! Spiders don't like the damp!",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah! Aww, our line snapped...",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Should we reel it in a bit?",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Aww, it got away...",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Whoops! Let's try that again.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Was that a nibble? Nope.",
+		"Come on out, fishies!",
+		"This is getting kinda boring...",
+		"I thought fishing would be a bit more exciting.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,6 +515,7 @@ return{
 		SPIDER = "We didn't actually want to hurt you.",
 		SPIDER_WARRIOR = "Simmer down, friend.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
@@ -2342,6 +2375,47 @@ return{
         WINTER_FOOD8 = "It makes our claws and tummy so warm.", --hot cocoa
         WINTER_FOOD9 = "It's really, really good!", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Woah, that oven's huge!",
+			COOKING = "Should we set the table while it's cooking?",
+			ALMOST_DONE_COOKING = "We can't wait til it's done!",
+			DISH_READY = "It's ready to eat!",
+		},
+		BERRYSAUCE = "It's so sweet, it almost tastes like candy!",
+		BIBINGKA = "Huh, it's like a sweet bread!",
+		CABBAGEROLLS = "We hope Ms. Wickerbottom doesn't find out we didn't eat the cabbage...",
+		FESTIVEFISH = "Mmm, tasty!",
+		GRAVY = "We like lots of gravy!",
+		LATKES = "They're like pancakes made out of potatoes!",
+		LUTEFISK = "It looks weird... but tastes great!",
+		MULLEDDRINK = "Warms us right up!",
+		PANETTONE = "Are we sure that isn't a fruitcake in disguise?",
+		PAVLOVA = "We love anything with sugar!",
+		PICKLEDHERRING = "It looks tasty but... pickled fish?",
+		POLISHCOOKIE = "Yay! We love cookies!",
+		PUMPKINPIE = "We'd like a big slice, please!",
+		ROASTTURKEY = "Can we have the wishbone?",
+		STUFFING = "It smells so good!",
+		SWEETPOTATO = "Are those marshmallows on top?",
+		TAMALES = "Mmm, spicy!",
+		TOURTIERE = "We've never had meat in a pie before.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "So big it could fit everyone!",
+			HAS_FOOD = "Enough food for everyone!",
+			WRONG_TYPE = "Not the season for this.",
+			BURNT = "Aww, someone ruined it.",
+		},
+
+		GINGERBREADWARG = "Aaah! A gingerbread nightmare!", 
+		GINGERBREADHOUSE = "Let's eat it!", 
+		GINGERBREADPIG = "Come back! Come back!!!",
+		CRUMBS = "That gingerbread guy has been here.",
+		WINTERSFEASTFUEL = "It fills us with peace and joy!",
+
         KLAUS = "That meanie imprisoned those deer!",
         KLAUS_SACK = "Presents?!",
 		KLAUSSACKKEY = "I think maybe this goes somewhere.",
@@ -2870,6 +2944,9 @@ return{
 		SALTROCK = "What a weird rock.",
 		SALTBOX = "Makes our food last longer.",
 
+		TACKLESTATION = "Father used to take me fishing sometimes.",
+		TACKLESKETCH = "It has fishing secrets!",
+
         MALBATROSS = "Woah! That's a big bird!",
         MALBATROSS_FEATHER = "Tickly!",
         MALBATROSS_BEAK = "It could've eaten us in one bite!",
@@ -2877,9 +2954,74 @@ return{
         MAST_MALBATROSS = "Our boat looks ready to fly away!",
 		MALBATROSS_FEATHERED_WEAVE = "We used our nicest spider silk!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Woah, it's got a spear on its head!",
+            BROKENHORN = "Still looks pretty dangerous.",
+            FOLLOWER = "We're glad you're our friend now!",
+            BROKENHORN_FOLLOWER = "We feel a bit bad about your horn...",
+        },
+        GNARWAIL_HORN = "Maybe it's magic?",
+
         WALKINGPLANK = "It's the least fun diving board.",
         OAR = "More legs means faster rowing!",
 		OAR_DRIFTWOOD = "Rowing is kinda fun!",
+
+		OCEANFISHINGROD = "Wonder what kind of fish we'll catch!",
+		OCEANFISHINGBOBBER_NONE = "It's missing a bobber.",
+        OCEANFISHINGBOBBER_BALL = "It's a bobbin' bobber!",
+        OCEANFISHINGBOBBER_OVAL = "It's a bobbin' bobber!",
+		OCEANFISHINGBOBBER_CROW = "We turned a feather into a float!",
+		OCEANFISHINGBOBBER_ROBIN = "We turned a feather into a float!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "We turned a feather into a float!",
+		OCEANFISHINGBOBBER_CANARY = "We turned a feather into a float!",
+		OCEANFISHINGBOBBER_GOOSE = "We made this float extra fancy.",
+		OCEANFISHINGBOBBER_MALBATROSS = "We made this float extra fancy.",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_SPOON_RED = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_SPOON_GREEN = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_SPOON_BLUE = "Ouch! It's sharp!",
+
+		OCEANFISH_SMALL_1 = "It's so little!",
+		OCEANFISH_SMALL_2 = "Aww, just a little guy.",
+		OCEANFISH_SMALL_3 = "It's kind of cute. Too bad we're gonna eat it.",
+		OCEANFISH_SMALL_4 = "We know we can catch a bigger fish!",
+		OCEANFISH_SMALL_5 = "Woah, this fish is weird!",
+		OCEANFISH_MEDIUM_1 = "Eww, it'd covered in mud!",
+		OCEANFISH_MEDIUM_2 = "You'd be pretty tasty with some chips.",
+		OCEANFISH_MEDIUM_3 = "Yikes, this one's all prickly!",
+		OCEANFISH_MEDIUM_4 = "This one was really tough to catch.",
+		OCEANFISH_MEDIUM_5 = "Does this count as eating our vegetables?",
+
+		PONDFISH = "It could stand to be fried.",
+		PONDEEL = "Fresh water-snake.",
+
+        FISHMEAT = "It would probably be better cooked.",
+        FISHMEAT_COOKED = "Mmm, delicious!",
+        FISHMEAT_SMALL = "It's a little fishy.",
+        FISHMEAT_SMALL_COOKED = "Boney.",
+		SPOILED_FISH = "It's no good to anyone now.",
+
+		FISH_BOX = "It's like an aquarium! Except we eat the fish...",
+        POCKET_SCALE = "Wonder how heavy our fish is!",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "Woah! We should find a big fish to put in there!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Oh no oh no!",
+			BURNT = "Aww...",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nWe did it!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Yuck, it's just a big chunk of mud!",
+
+		CALIFORNIAROLL = "Hmm, something smells fishy about this!",
+		SEAFOODGUMBO = "We could eat it forever!",
+		SURFNTURF = "Eww, healthy!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2982,6 +3124,7 @@ return{
         MERMGUARD = "They look pretty scary!",
         MERM_PRINCE = "Wow, becoming a king looks easy!",
 
+        SQUID = "Wish we had eyes like that!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",
@@ -2990,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",
+		WINTERSFEASTFUEL = "It... reminds me of mom's cooking...",
     },
 }

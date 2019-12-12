@@ -110,6 +110,8 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    MakeHauntableWork(inst)
+
     inst:ListenForEvent("on_collide", OnCollide)
 
     if not POPULATING then

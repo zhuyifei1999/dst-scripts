@@ -226,6 +226,7 @@ STRINGS =
                 PLATE = "Snackrifice Plate of {food}",
                 BOWL = "Snackrifice Bowl of {food}",
             },
+			PLACE_ITEM = "Place {item}",
         },
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
@@ -415,6 +416,7 @@ STRINGS =
         {
             GENERIC = "Cast Spell", --"Cast Spell on"
             SCIENCE = "Use Gadget",
+            MUSIC = "Play",
         },
         BLINK =
         {
@@ -539,7 +541,27 @@ STRINGS =
         ROW_CONTROLLER = "Row",
         CAST_NET = "Cast Net",
         BATHBOMB = "Toss In",
-    },
+		OCEAN_FISHING_POND = "Cast",
+		OCEAN_FISHING_CAST = "Cast",
+		OCEAN_FISHING_REEL =
+		{
+            GENERIC = "Reel",
+            SETHOOK = "Set Hook",
+	    },
+		OCEAN_FISHING_STOP = "Stop",
+		OCEAN_FISHING_CATCH = "Catch",
+		CHANGE_TACKLE = 
+		{
+            GENERIC = "Attach Tackle",
+            REMOVE = "Remove Tackle",
+		},
+		COMPARE_WEIGHABLE = "Give",
+		WEIGH_ITEM = "Weigh",
+		GIVE_TACKLESKETCH = "Give",
+
+		-- Winter's Feast 2019
+		WINTERSFEAST_FEAST = "Feast",
+	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
     LMB = "\238\132\128",
@@ -1288,6 +1310,7 @@ STRINGS =
         BLUEPRINT = "Blueprint",
         BLUEPRINT_RARE = "{item} Blueprint",
         SKETCH = "{item} Sketch",
+        TACKLESKETCH = "{item} Advert",
         BAT = "Batilisk",
         TEAMLEADER = "Team Leader",
         BATWING = "Batilisk Wing",
@@ -1708,6 +1731,56 @@ STRINGS =
         WINTER_FOOD8 = "Hot Cocoa",
         WINTER_FOOD9 = "Heavenly Eggnog",
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN = "Masonry Oven",
+		WINTERCOOKING_BERRYSAUCE = "Merry Berrysauce",
+		WINTERCOOKING_BIBINGKA = "Bibingka",
+		WINTERCOOKING_CABBAGEROLLS = "Cabbage Rolls",
+		WINTERCOOKING_FESTIVEFISH = "Festive Fish Dish",
+		WINTERCOOKING_GRAVY = "Good Gravy",
+		WINTERCOOKING_LATKES = "Latkes",
+		WINTERCOOKING_LUTEFISK = "Lutefisk",
+		WINTERCOOKING_MULLEDDRINK = "Mulled Punch",
+		WINTERCOOKING_PANETTONE = "Panettone",
+		WINTERCOOKING_PAVLOVA = "Pavlova",
+		WINTERCOOKING_PICKLEDHERRING = "Pickled Herring",
+		WINTERCOOKING_POLISHCOOKIE = "Polish Cookies",
+		WINTERCOOKING_PUMPKINPIE = "Pumpkin Pie",
+		WINTERCOOKING_ROASTTURKEY = "Roasted Turkey",
+		WINTERCOOKING_STUFFING = "Stuffing",
+		WINTERCOOKING_SWEETPOTATO = "Sweet Potato Casserole",
+		WINTERCOOKING_TAMALES = "Tamales",
+		WINTERCOOKING_TOURTIERE = "Tourtiere",
+
+		GINGERBREADWARG = "Gingerbread Varg",
+		GINGERBREADHOUSE = "Gingerbread Pig House",
+		GINGERBREADPIG = "Gingerbread Pig",
+        GINGERDEADPIG = "Gingerbread Pig",
+		CRUMBS = "Cookie Crumbles" ,
+		WINTERSFEASTFUEL = "Holiday Cheer",
+
+		--Dishes are not final - let these be for now
+		BERRYSAUCE = "Merry Berrysauce",
+		BIBINGKA = "Bibingka",
+		CABBAGEROLLS = "Cabbage Rolls",
+		FESTIVEFISH = "Festive Fish Dish",
+		GRAVY = "Good Gravy",
+		LATKES = "Latkes",
+		LUTEFISK = "Lutefisk",
+		MULLEDDRINK = "Mulled Punch",
+		PANETTONE = "Panettone",
+		PAVLOVA = "Pavlova",
+		PICKLEDHERRING = "Pickled Herring",
+		POLISHCOOKIE = "Polish Cookies",
+		PUMPKINPIE = "Pumpkin Pie",
+		ROASTTURKEY = "Roasted Turkey",
+		STUFFING = "Stuffing",
+		SWEETPOTATO = "Sweet Potato Casserole",
+		TAMALES = "Tamales",
+		TOURTIERE = "Tourtiere",
+
+		TABLE_WINTERS_FEAST = "Winter's Feast Table",
+
 		HALLOWEEN_ORNAMENT_1 = "Ghost Decoration",
 		HALLOWEEN_ORNAMENT_2 = "Bat Decoration",
 		HALLOWEEN_ORNAMENT_3 = "Spider Decoration",
@@ -2085,8 +2158,9 @@ STRINGS =
         BOATFRAGMENT04 = "Boat Fragment",
         BOATFRAGMENT05 = "Boat Fragment",
         MAST = "Mast",
-        MAST_ITEM = "Mast",
+        MAST_ITEM = "Mast Kit",
 		BOAT_LEAK = "Leak",
+		FISH_BOX = "Tin Fishin' Bin",
         WORLD = "The World",
         DROWNING = "Drowning",
         SEASTACK = "Sea Stack",
@@ -2165,7 +2239,58 @@ STRINGS =
         CARRAT = "Carrat",
         CARRAT_PLANTED = "Carrot",
 
-		OCEANFISH_MEDIUM_4 = "Deep Ocean Fish",
+		OCEANFISH_ANTCHOVY = "Antchovy",
+		OCEANFISH_SMALL_1 = "Runty Guppy",
+		OCEANFISH_SMALL_2 = "Needlenosed Squirt",
+		OCEANFISH_SMALL_3 = "Bitty Baitfish",
+		OCEANFISH_SMALL_4 = "Smolt Fry",
+		OCEANFISH_SMALL_5 = "Popperfish",
+		OCEANFISH_MEDIUM_1 = "Mudfish",
+		OCEANFISH_MEDIUM_2 = "Deep Bass",
+		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
+		OCEANFISH_MEDIUM_4 = "Black Catfish",
+		OCEANFISH_MEDIUM_5 = "Corn Cod",
+
+		PONDFISH = "Freshwater Fish",
+		PONDEEL = "Live Eel",
+
+        FISHMEAT = "Raw Fish",
+        FISHMEAT_COOKED = "Fish Steak",
+		SPOILED_FISH = "Spoiled Fish",
+
+        FISHMEAT_SMALL = "Fish Morsel",
+        FISHMEAT_SMALL_COOKED = "Cooked Fish Morsel",
+        SPOILED_FISH_SMALL = "Spoiled Fish Morsel",
+
+		CALIFORNIAROLL = "California Roll",
+		SEAFOODGUMBO = "Seafood Gumbo",
+		SURFNTURF = "Surf 'n' Turf",
+
+        OCEANFISHINGROD = "Sea Fishing Rod",
+		OCEANFISHINGBOBBER_NONE = "Fish Hook",
+        OCEANFISHINGBOBBER_BALL = "Wooden Ball Bobber",
+        OCEANFISHINGBOBBER_OVAL = "Hardened Slip Bobber",
+		OCEANFISHINGBOBBER_CROW = "Jet Quill Float",
+		OCEANFISHINGBOBBER_ROBIN = "Crimson Quill Float",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Azure Quill Float",
+		OCEANFISHINGBOBBER_CANARY = "Saffron Quill Float",
+		OCEANFISHINGBOBBER_GOOSE = "Down Quill Float",
+		OCEANFISHINGBOBBER_MALBATROSS = "Malbatross Quill Float",
+
+		OCEANFISHINGLURE_SPINNER_RED = "Sunrise Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_GREEN = "Dusky Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Nightflyer Spinnerbait",
+		OCEANFISHINGLURE_SPINNER_ORANGE = "not used",
+		OCEANFISHINGLURE_SPINNER_YELLOW = "not used",
+		OCEANFISHINGLURE_SPINNER_WHITE = "not used",
+		OCEANFISHINGLURE_SPOON_RED = "Sunrise Spoon",
+		OCEANFISHINGLURE_SPOON_GREEN = "Dusky Spoon",
+		OCEANFISHINGLURE_SPOON_BLUE = "Nightflyer Spoon",
+		OCEANFISHINGLURE_SPOON_BROWN = "not used",
+		OCEANFISHINGLURE_SPOON_YELLOW = "not used",
+		OCEANFISHINGLURE_SPOON_SILVER = "not used",
+
+        POCKET_SCALE = "Pocket Scale",
 
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
 		WATERCHEST = "Chest",
@@ -2188,12 +2313,23 @@ STRINGS =
 		SALTROCK = "Salt Crystals",
 		SALTBOX = "Salt Box",
 
+		TACKLESTATION = "Tackle Receptacle",
+
         MALBATROSS = "Malbatross",
         MALBATROSS_BEAK = "Malbatross Bill",
         MALBATROSS_FEATHER = "Malbatross Feather",
         MAST_MALBATROSS = "Winged Sail",
-        MAST_MALBATROSS_ITEM = "Winged Sail", 
+        MAST_MALBATROSS_ITEM = "Winged Sail Kit", 
 		MALBATROSS_FEATHERED_WEAVE = "Feathery Canvas",
+
+        GNARWAIL = "Gnarwail",
+        GNARWAIL_HORN = "Gnarwail Horn",
+
+        SQUID = "Skittersquid",
+	
+		TROPHYSCALE_FISH = "Fish Scale-O-Matic",
+
+		OCEANFISHABLEFLOTSAM = "Ocean Debris",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2320,7 +2456,23 @@ STRINGS =
         BEDROLL_STRAW = "Sleep through the night.",
         BEDROLL_FURRY = "Sleep through the night in comfort!",
         PUMPKIN_LANTERN = "Spooky illumination.",
+		POCKET_SCALE = "Weigh your fish on the go!",
         FISHINGROD = "Go fishing. For fish.",
+        OCEANFISHINGROD = "Fish like a pro.",
+        OCEANFISHINGBOBBER_BALL = "A classic design for pros and beginners.",
+        OCEANFISHINGBOBBER_OVAL = "A more stylish take on the classic bobber.",
+		OCEANFISHINGBOBBER_CROW = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_ROBIN = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_CANARY = "Favoured by more discerning anglers.",
+		OCEANFISHINGBOBBER_GOOSE = "A fancy downy float.",
+		OCEANFISHINGBOBBER_MALBATROSS = "A fancy float from a furious fowl.",
+		OCEANFISHINGLURE_SPINNER_RED = "The early fish gets the worm.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "A lure that works best in low light.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "Go for a quick evening bite.",
+		OCEANFISHINGLURE_SPOON_RED = "The early fish gets the worm.",
+		OCEANFISHINGLURE_SPOON_GREEN = "Fish on into the sunset.",
+		OCEANFISHINGLURE_SPOON_BLUE = "Go for a quick evening bite.",
         FEATHERHAT = "A dress for your head.",
         MINERHAT = "Light up the night with your noggin.",
         FOOTBALLHAT = "Protect your braincase.",
@@ -2552,6 +2704,29 @@ STRINGS =
 
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN = "It's all fired up for the holidays.",
+		WINTERCOOKING_BERRYSAUCE = "Fill your belly with a bowl full of jelly.",
+		WINTERCOOKING_BIBINGKA = "This dish will leaf you wanting more.",
+		WINTERCOOKING_CABBAGEROLLS = "Get your holiday feast rolling.",
+		WINTERCOOKING_FESTIVEFISH = "It just isn't the holidays without it.",
+		WINTERCOOKING_GRAVY = "All aboard the gravy train.",
+		WINTERCOOKING_LATKES = "You'll like them a latke.",
+		WINTERCOOKING_LUTEFISK = "Sea-son's eatings.",
+		WINTERCOOKING_MULLEDDRINK = "A hot drink for a cold winter.",
+		WINTERCOOKING_PANETTONE = "Like fruitcake, but edible!",
+		WINTERCOOKING_PAVLOVA = "Light and crisp as new fallen snow.",
+		WINTERCOOKING_PICKLEDHERRING = "A salty seasonal supper.",
+		WINTERCOOKING_POLISHCOOKIE = "Just like babcia used to make.",
+		WINTERCOOKING_PUMPKINPIE = "Gourd tidings we bring.",
+		WINTERCOOKING_ROASTTURKEY = "Gobble-gobble it up.",
+		WINTERCOOKING_STUFFING = "Stuff your face!",
+		WINTERCOOKING_SWEETPOTATO = "It's a marshmallow world in the winter.",
+		WINTERCOOKING_TAMALES = "Spice up your holiday spread.",
+		WINTERCOOKING_TOURTIERE = "A savory seasonal pie.",
+
+		TABLE_WINTERS_FEAST = "Gather round for the Winter's Feast.",
+
         --Quagmire
         QUAGMIRE_CRATE_POT_HANGER = "Everything you need to set up a cookpot.",
         QUAGMIRE_CRATE_OVEN = "Everything you need to set up an oven.",
@@ -2617,13 +2792,17 @@ STRINGS =
         WEREITEM_MOOSE =  "Invokes the curse of the Weremoose.",
 
         FISHINGNET = "Nothin' but net.",
-        ANCHOR_ITEM = "Boat brakes.",
-        STEERINGWHEEL_ITEM = "It's wheely important to have one.",
+        ANCHOR = "Boat brakes.",
+        STEERINGWHEEL = "It's wheely important to have one.",
         BOAT_ITEM = "Let the seas be your domain.",
-        MAST_ITEM = "Sail away, sail away.",
+        MAST = "Sail away, sail away.",
+        ANCHOR_ITEM = "Boat brakes.", -- DEPRECATED, keeping for posterity's sake
+        STEERINGWHEEL_ITEM = "It's wheely important to have one.", -- DEPRECATED, keeping for posterity's sake
+        MAST_ITEM = "Sail away, sail away.", -- DEPRECATED, keeping for posterity's sake
         OAR = "Row, row, row your boat.",
         OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
         BOATPATCH = "It's never too late to patch things up.",
+		FISH_BOX = "Keep fish as fresh as the day you net them.",
 
         -- Wurt
         MERMHOUSE_CRAFTED = "A home fit for a Merm.",
@@ -2635,8 +2814,13 @@ STRINGS =
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
 		SALTBOX = "Salty storage for your foodstuffs.",
 
+		TACKLESTATION = "The old bait-n-fish.",
+
+        MAST_MALBATROSS = "Sail like a seabird into the blue.",
         MAST_MALBATROSS_ITEM = "Sail like a seabird into the blue.",
 		MALBATROSS_FEATHERED_WEAVE = "A fine feathered fabric.",
+	
+		TROPHYSCALE_FISH = "Show off your prized catch.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -2806,8 +2990,8 @@ STRINGS =
     MERM_TALK_HELP_CHOP_WOOD = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Chop, choppy, chop!", "Grop, groppy, grop!"}, {"Work hard, florp!", "Glort blut, florp!"}},
     MERM_TALK_HELP_MINE_ROCK = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Break rock, easy!", "Wult wop, florty flort!"}, {"Work hard, florp!", "Glort blut, florp!"}},
     MERM_TALK_HELP_HAMMER    = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"Smash! Smash!", "Florph! Florph!"}, {"Work hard, florp!", "Glort blut, florp!"}},
-    MERM_TALK_FIND_FOOD      = {{"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"},   {"(Sniff) Smell good!", "(Sniff) Groph flort!"}},
-    MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"}},
+    MERM_TALK_FIND_FOOD      = {{"Will come with you.", "Flort glut."}, {"Make Mermfolk strong!", "Blut gloppy Glurtsu!"}, {"This do fine.", "Glort grolt flut."}, {"Find something tasty!", "Glurt florpy flut!"}},
+    MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"},},
     MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For glory of Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"}, {"Defend King!", "Glurph Glurtsen!"}},
     MERM_TALK_PANICBOSS      = {{"Something coming!", "Gloppy flort!"}, {"Aaah!! Bad thing! Bad thing!", "Gloooorph!! Glurph glot! Glurph glot!"}, {"It come to destroy us!", "Flort wult Glurtsu!"}},
     MERM_TALK_PANICBOSS_KING = {{"Rally to King!", "Glurtsen blut flort!"}, {"Hurry! Protect kingdom!", "Flurph flrot! Gloppy Glurtsam!"}, {"S-stay brave!!", "G-glop blut flrot!!"}},
@@ -3475,6 +3659,8 @@ STRINGS =
 		QUAGMIRE_TRADER_KID = "Billy",
 		MADSCIENCE = "Mad Science",
         FOODPROCESSING = "Seasonings",
+		FISHING = "Fishing",
+		WINTERSFEASTCOOKING = "Feast",
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -3921,6 +4107,7 @@ STRINGS.UI =
 			"Felix Hard",
             "Jen Davreux",
             "Steph Mahoney",
+            "Anne-Marie Cyr",
         },
 
         ALTGAMES =
@@ -4310,7 +4497,7 @@ STRINGS.UI =
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
-		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta",
+		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nHook, Line, and Inker",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -4608,7 +4795,19 @@ STRINGS.UI =
 
 		RETROFITTING_ANNOUNCEMENT = "World will reload in {time} seconds to complete retrofitting.",
 		RETROFITTING_ANNOUNCEMENT_NOW = "World is reloading to complete retrofitting.",
-    },
+    
+		TROPHYSCALE_PREFAB_OVERRIDE_OWNER =
+		{
+			catcoon = "A Catcoon",
+			merm = "A Merm",
+			mermguard = "A Loyal Merm Guard",
+			mermking = "The King of the Merms",
+			mermhouse = "A family of Merms",
+			mermhouse_crafted = "A well-to-do Merm",
+			mermthrone = "The King of the Merms",
+		},
+		TROPHYSCALE_UNKNOWN_OWNER = "An Unnamed Donor",
+	},
 
     ACCOUNT =
     {
@@ -7143,7 +7342,7 @@ STRINGS.UI =
         COMMERCE_INFO_GRIND = "This curio can be unraveled into {doodad_value} Spools.",
         COMMERCE_INFO_NOGRIND = "This curio cannot be unraveled.",
         NO_MARKET = "This curio cannot be traded or sold.",
-        CANCEL = "Nevermind",
+        CANCEL = "Never mind",
         OK = "OK",
         
         UNRAVEL_WARNING_TITLE = "Warning!",
@@ -7214,7 +7413,7 @@ STRINGS.UI =
         PURCHASE_WARNING_TITLE = "No New Items in Chest",
         PURCHASE_WARNING_DESC = "You already own all the items in this chest. Would you like to purchase it anyway?",
         PURCHASE_WARNING_OK = "Continue Purchase",
-        PURCHASE_WARNING_CANCEL = "Nevermind!",
+        PURCHASE_WARNING_CANCEL = "Never mind!",
 
         PACK_SAVINGS = "-{savings}%",
         SALE_TXT = "-{sale_percent}%\nSale!",
@@ -7346,6 +7545,7 @@ STRINGS.UI =
         TEMPORARILY_CLOSED_BODY = "The Trade Inn is closed for a bit.\n\nBe back soon, okay?",
 
         CROW = "Chase Crow",
+        SNOWBIRD = "Chase Snowbird",
         RESET = "Reset",
         START = "Start",
         TRADE = "Trade",
@@ -7460,7 +7660,7 @@ STRINGS.UI =
                 "I've done witnessed a murder! And they're stealin' all my hard-earned candy wrappers!",
                 "Gimme a hand gettin' rid of these crows, will ya?",
                 "Wanna play a game? Help me pickup my wrappers and get rid of those dang crows. Doesn't that sound fun?",
-                "What, you got something better to do? Help me get these crows outta here!",
+                "What, ya got something better to do? Help me get these crows outta here!",
             },
             
             POWERUP_SELECTED =
@@ -7487,7 +7687,7 @@ STRINGS.UI =
 
                 seeds =
                 {
-                    "What are ya doing with those seeds!? You're supposed to be chasing the crows away, not attractin' 'em!",
+                    "What are ya doing with those seeds!? Y'er supposed to be chasing the crows away, not attractin' 'em!",
                 },
             },
             
@@ -7502,7 +7702,7 @@ STRINGS.UI =
 
             GAME_OVER =
             {
-                "Looks like you're all out of options!",
+                "Looks like y'er all out of options!",
                 "Try again! There's many more wrappers in my collection to tidy up.",
                 "Thanks for helpin', but I can't give you a better trade. I've got mouths to feed, ya'know.",
                 "All done for now, but ya made some progress tidyin' up my wrapper collection. ",
@@ -7510,10 +7710,55 @@ STRINGS.UI =
 
             USE_POWERUP =
             {
-                "Looks like you're stuck kid. Maybe ya ought to use one of those tools.",
-                "You're out of moves, try using a tool to help ya out.",
+                "Looks like y'er stuck kid. Maybe ya ought to use one of those tools.",
+                "Y'er out of moves, try using a tool to help ya out.",
             }
         },
+
+        
+        SNOW_GAME =
+        {
+            HIGH_SCORE = "High Score: ",
+            GAME_SCORE = "Score: ",
+            LIVES = "Guesses Remaining: ",
+            REPORTING = "Reporting feast memories'...",  
+            THANKS = "Thanks for playing!",
+            GAME_OVER_POPUP_TITLE = "All done rememberin'",
+            GAME_OVER_POPUP_BODY = "Great job matching'.\nYou completed {score} pairs!",
+            OPEN_GIFT = "Open Gift",
+
+            HELP = "Help",
+            HELP_TITLE = "A feastin' pair of birds",
+            HELP_BODY = "Match pairs of food tiles from the feast. Clearing a pair will cause the tiles above to drop down, so be sure to remember what foods were there. Matching a pair of snowbirds will grant you an extra guess.\n\nGood luck!",
+        },
+        
+        SKIN_COLLECTOR_SPEECH_SNOW =
+        {
+            START =
+            {
+                "Let's play a game! Use that big brain to match pairs of food from the feast!",
+                "Use y'er noggin to remember pairs. Chase off any pesky snowbirds while y'er at it.",
+                "My ol' pops taught me this game. Try to remember and match pairs."
+            },
+
+            ADD_LIFE =
+            {
+                "Yeehaw! I'll give you another guess for that.",
+                "They sure want in on our feast! Scare 'em away!",
+                "Tha birds are after my favorite! Tha sweet Pumpkin Pie.",
+                "It's a festive time for sharin' but not with those bothersome birds.",
+                "I've got mouths to feed. Tha birds will have to find their own feast.",
+                "Ya'll can come back when tha feast is over!",
+            },
+
+            GAME_OVER =
+            {
+                "Y'er all out of guesses!",
+                "Try again! Ya can do better, I know it!",
+                "Y'er all done!",
+            },
+        },
+
 
         SKIN_COLLECTOR_SPEECH =
         {
@@ -7529,25 +7774,25 @@ STRINGS.UI =
             {
                 "C'mon back when ya got something ta trade!",
                 "Sorry, but I can't give ya something for nothing, ya know.",
-                "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me.",
+                "If ya find any items while y'er adventuring around out there, ya can bring the ones ya don't need ta me.",
             },
             SPECIALS =
             {
-                "These're my special deals. Gimme the stuff I'm looking for and I'll give ya a better item in exchange.",
+                "These're my special deals. Gimme tha stuff I'm looking for and I'll give ya a better item in exchange.",
                 "I'm lookin' for some particular things right now. If ya can give 'em to me, I'll give ya a new one of higher quality.",
-                "The special deals are cheaper than tha normal ones, but ya gotta give me the exact things I'm lookin' for.",
+                "Tha special deals are cheaper than tha normal ones, but ya gotta give me tha exact things I'm lookin' for.",
             },
             ADDMORE =
             {
                 "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed.",
                 "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange.",
-                "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out.",
+                "Tha's it, fill tha machine on up with <rarity> items and ya'll get a higher quality item back out.",
                 "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!",
             },
             ADDMORESPECIALS =
             {
-                "Ya got the rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
-                "I just need tha rest of the items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
+                "Ya got tha rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
+                "I just need tha rest of tha items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
             },
             SPECIALRECIPE =
             {
@@ -7562,7 +7807,8 @@ STRINGS.UI =
                 "If ya wanna make tha trade, just push tha green button.",
             },
             TRADE =
-            {   "It'll be here in a jiffy.",
+            {
+                "It'll be here in a jiffy.",
                 "I bet ya can't wait to see what comes out!",
                 "It should be here real soon now.",
             },
@@ -7583,7 +7829,7 @@ STRINGS.UI =
                 "Hey, ya struck it rich! Look at that <item>. Ya must be extra lucky today.",
                 "Here ya go, one bran' new <item>. Jus' remember I can't afford to give ya items this good all tha time.",
                 "Well, I guess me & tha machine are feelin' gen'rous today. Ya won a <item>!",
-                "Ain't that just the koalefant's toenails! Ya got one very purty <item>.",
+                "Ain't that just tha koalefant's toenails! Ya got one very purty <item>.",
             },
             JOYSTICK =
             {
@@ -7600,7 +7846,7 @@ STRINGS.UI =
             {
                 "Ya may not feel young, but I've been tradin' longer than ya been around, young pup.",
                 "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine.",
-                "Take yer time. I can stand here yammerin' all day.",
+                "Take y'er time. I can stand here yammerin' all day.",
                 "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow.",
                 "Once, when I was but a young shaver... ah, but ya don' wanna listen to an old trader's stories.",
                 "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not.",
@@ -8470,6 +8716,7 @@ STRINGS.UI =
         SHRUG = "Shrug",
         SLOWCLAP = "Slow Clap",
         STEP = "Step Dance",
+		TOAST = "Toast",
     },
 
     PRESENCE = 

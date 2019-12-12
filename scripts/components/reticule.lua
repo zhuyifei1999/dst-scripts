@@ -170,6 +170,10 @@ function Reticule:OnCameraUpdate(dt)
     end
 end
 
+function Reticule:ShouldHide()
+	return self.shouldhidefn ~= nil and self.shouldhidefn(self.inst) or false
+end
+
 Reticule.OnRemoveFromEntity = Reticule.DestroyReticule
 Reticule.OnRemoveEntity = Reticule.DestroyReticule
 

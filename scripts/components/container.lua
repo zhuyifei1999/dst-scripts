@@ -693,8 +693,25 @@ function Container:SwapActiveItemWithSlot(slot)
 
         inventory:RemoveItem(active_item, true)
         self:RemoveItemBySlot(slot)
-        inventory:GiveActiveItem(item)
         self:GiveItem(active_item, slot)
+        inventory:GiveActiveItem(item)
+    end
+end
+
+function Container:SwapOneOfActiveItemWithSlot(slot)
+    local inventory, active_item = QueryActiveItem(self)
+    local item = self:GetItemInSlot(slot)
+
+    if active_item ~= nil and
+        item ~= nil and
+        self:CanTakeItemInSlot(active_item, slot) and
+        not (item.prefab == active_item.prefab and item.skinname == active_item.skinname and item.components.stackable ~= nil) and
+        (active_item.components.stackable ~= nil and active_item.components.stackable:IsStack()) then
+
+        active_item = inventory:RemoveItem(active_item, false)
+        self:RemoveItemBySlot(slot)
+        self:GiveItem(active_item, slot)
+        inventory:GiveItem(item, nil, self.inst:GetPosition())
     end
 end
 

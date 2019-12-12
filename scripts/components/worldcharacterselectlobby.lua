@@ -355,7 +355,7 @@ function self:OnUpdate(dt)
         local clients = TheNet:GetClientTable()
         if clients ~= nil then
             local isdedicated = not TheNet:GetServerIsClientHosted()
-            for i, v in ipairs(TheNet:GetClientTable()) do
+            for i, v in ipairs(TheNet:GetClientTable() or {}) do
                 if not isdedicated or v.performance == nil then
                     --Still someone connected
                     return

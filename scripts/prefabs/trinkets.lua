@@ -67,8 +67,21 @@ local SMALLFLOATS =
     [45]    = {0.9, 0.05},
 }
 
+OCEANFISHING_BOBBER =
+{
+	[8] = {tuning = TUNING.OCEANFISHING_TACKLE.BOBBER_PLUG, projectile_prefab = "oceanfishingbobber_plug_projectile"},
+}
+
+OCEANFISHING_LURE =
+{
+	[17] = { build = "oceanfishing_lure_spoon", symbol = "spork", lure_data = TUNING.OCEANFISHING_LURE.SPOON_SPORK, },
+}
+
 local function MakeTrinket(num)
-    local prefabs = TRADEFOR[num]
+    local prefabs = TRADEFOR[num] or {}
+	if OCEANFISHING_BOBBER[num] ~= nil and OCEANFISHING_BOBBER[num].projectile_prefab ~= nil then
+		table.insert(prefabs, OCEANFISHING_BOBBER[num].projectile_prefab)
+	end
 
     local function fn()
         local inst = CreateEntity()
@@ -86,6 +99,14 @@ local function MakeTrinket(num)
 
         inst:AddTag("molebait")
         inst:AddTag("cattoy")
+
+		if OCEANFISHING_BOBBER[num] ~= nil then
+			inst:AddTag("oceanfishing_bobber")
+		end
+
+		if OCEANFISHING_LURE[num] ~= nil then
+			inst:AddTag("oceanfishing_lure")
+		end
 
         MakeInventoryFloatable(inst)
 
@@ -120,6 +141,15 @@ local function MakeTrinket(num)
         MakeHauntableLaunchAndSmash(inst)
 
         inst:AddComponent("bait")
+
+		if OCEANFISHING_BOBBER[num] ~= nil then
+			inst:AddComponent("oceanfishingtackle")
+			inst.components.oceanfishingtackle:SetCastingData(OCEANFISHING_BOBBER[num].tuning, OCEANFISHING_BOBBER[num].projectile_prefab)
+		end
+		if 	OCEANFISHING_LURE[num] ~= nil then
+			inst:AddComponent("oceanfishingtackle")
+			inst.components.oceanfishingtackle:SetupLure(OCEANFISHING_LURE[num])
+		end
 
         return inst
     end

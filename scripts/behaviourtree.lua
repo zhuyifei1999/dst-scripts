@@ -253,7 +253,7 @@ function WaitNode:Visit()
     local current_time = GetTime() 
     
     if self.status ~= RUNNING then
-        self.wake_time = current_time + self.wait_time
+        self.wake_time = current_time + (type(self.wait_time) == "function" and self.wait_time() or self.wait_time)
         self.status = RUNNING
     end
     
@@ -743,7 +743,7 @@ end
 function WhileNode(cond, name, node)
     return ParallelNode
         {
-            ConditionNode( cond, name),
+            ConditionNode(cond, name),
             node
         }
 end
@@ -753,7 +753,7 @@ end
 function IfNode(cond, name, node)
     return SequenceNode
         {
-            ConditionNode( cond, name),
+            ConditionNode(cond, name),
             node
         }
 end

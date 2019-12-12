@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Come closer, ye wee fishy cowards!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "Tis not the rod I require.",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "'Tis shielded!",
             ALREADY_BOMBED = "Someone has enchanted it already.",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We have already conquered this knowledge.",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This wee beastie will not bring me glory.",
+		},
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
 	ANNOUNCE_BOAT_LEAK = "Our vessel hath sprung a leak!",
@@ -370,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Fear! I hath bested you!",
 	ANNOUNCE_MOONPOTION_FAILED = "Twas all in vain!",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "Tis more than enough to share!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "I feel Odin's blessing upon me!",
+	ANNOUNCE_IS_FEASTING = "My friends, let us celebrate this great bounty!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "The blessing hath faded.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Rise, my ally!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "To battle!",
@@ -451,6 +469,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I think I've done my share.",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "The tides have turned for the wetter.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "By Freya, the little fiend snapped my line!",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "The line has gone slack, tis time to reel!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "It lives to fight another day.",
+	ANNOUNCE_OCEANFISHING_BADCAST = "I'm more suited to fighting than fishing.",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"I tire of waiting!",
+		"I'm tempted to simply wade in with my spear...",
+		"Come to me, delicious sea meats!",
+		"It's not befitting of a warrior to just stand around waiting!",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,6 +515,7 @@ return{
 		SPIDER = "Leggy coward.",
 		SPIDER_WARRIOR = "Flee, monster! I will return.",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "It makes me long for the stage!",
@@ -2342,6 +2375,47 @@ return{
         WINTER_FOOD8 = "Warms the soul.", --hot cocoa
         WINTER_FOOD9 = "Imbibable eggs!", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "A hearth for cooking a glorious feast!",
+			COOKING = "Locked in a glorious cooking battle.",
+			ALMOST_DONE_COOKING = "The wait is almost at an end.",
+			DISH_READY = "At long last, we feast!",
+		},
+		BERRYSAUCE = "It looks like vile berries but... that smell... could it be meat?",
+		BIBINGKA = "Surely this loaf must be made of meat!",
+		CABBAGEROLLS = "Begone foul cabbage, I shall feast on the meat within.",
+		FESTIVEFISH = "Let us celebrate the season by feasting on fish flesh!",
+		GRAVY = "A sauce worthy of the gods themselves!",
+		LATKES = "My eyes see foul potatoes, but the taste of meat is unmistakable!",
+		LUTEFISK = "A true Viking delicacy!",
+		MULLEDDRINK = "Ha ha! Another!",
+		PANETTONE = "My eyes doth deceive me, tis surely meat.",
+		PAVLOVA = "Once the berries hath been removed, tis a fine dessert indeed.",
+		PICKLEDHERRING = "A briny taste of the sea!",
+		POLISHCOOKIE = "My nose shall not be deceived, these are surely meat!",
+		PUMPKINPIE = "Tis surely a delicious meat pie in disguise!",
+		ROASTTURKEY = "A glorious feast indeed!",
+		STUFFING = "It bears the scent of meat. I will sample a morsel.",
+		SWEETPOTATO = "Marshmallows on meat... tis an odd choice, but somehow delicious!",
+		TAMALES = "Oh ho! This bready wrap hides a morsel of spiced meat!",
+		TOURTIERE = "Pie hath redeemed itself!",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A feast table worthy of Valhalla!",
+			HAS_FOOD = "A feast fit for The Great Hall!",
+			WRONG_TYPE = "It is not worthy of a place here.",
+			BURNT = "It's been consumed by fire.",
+		},
+
+		GINGERBREADWARG = "I will fight thee for defying thy meaty origins.", 
+		GINGERBREADHOUSE = "Neither a house nor a meal I will enjoy.", 
+		GINGERBREADPIG = "You shall not escape me!!",
+		CRUMBS = "Telltale spoor left by a festive foe.",
+		WINTERSFEASTFUEL = "The essence of Jol!",
+
         KLAUS = "I shall free thy deer this day!",
         KLAUS_SACK = "A secret, kept under lock and key!",
 		KLAUSSACKKEY = "What wonders will you reveal?",
@@ -2870,6 +2944,9 @@ return{
 		SALTROCK = "It hath a strange shape to it.",
 		SALTBOX = "A fine place to store meats!",
 
+		TACKLESTATION = "I shall create a fishing weapon like no other!",
+		TACKLESKETCH = "This scroll bears hidden secrets of fishing!",
+
         MALBATROSS = "I will slay the four-winged beast!",
         MALBATROSS_FEATHER = "The plume of a fallen foe.",
         MALBATROSS_BEAK = "A trophy from my victory!",
@@ -2877,9 +2954,74 @@ return{
         MAST_MALBATROSS = "Let us be off, with the speed of the Valkyrie!",
 		MALBATROSS_FEATHERED_WEAVE = "A bolt of thine finest bird-cloth!",
 
+        GNARWAIL =
+        {
+            GENERIC = "Draw your weapon and fight me, beastie!",
+            BROKENHORN = "The beast's been disarmed!",
+            FOLLOWER = "Tis a fair and noble beast!",
+            BROKENHORN_FOLLOWER = "You are still a great warrior!",
+        },
+        GNARWAIL_HORN = "A fine horn, indeed!",
+
         WALKINGPLANK = "I shall never abandon my vessel!",
         OAR = "The Norseman's way to sail!",
 		OAR_DRIFTWOOD = "Back to the sea!",
+
+		OCEANFISHINGROD = "Tremble before me, creatures of the deep!",
+		OCEANFISHINGBOBBER_NONE = "The line hath need of a float.",
+        OCEANFISHINGBOBBER_BALL = "My keen hunter's eyes can detect the smallest nibble!",
+        OCEANFISHINGBOBBER_OVAL = "My keen hunter's eyes can detect the smallest nibble!",
+		OCEANFISHINGBOBBER_CROW = "Fly straight and true!",
+		OCEANFISHINGBOBBER_ROBIN = "Fly straight and true!",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Fly straight and true!",
+		OCEANFISHINGBOBBER_CANARY = "Fly straight and true!",
+		OCEANFISHINGBOBBER_GOOSE = "Njoror, guide my line!",
+		OCEANFISHINGBOBBER_MALBATROSS = "Njoror, guide my line!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPINNER_GREEN = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPINNER_BLUE = "A cunning ruse, indeed.",
+		OCEANFISHINGLURE_SPOON_RED = "This should attract their attention!",
+		OCEANFISHINGLURE_SPOON_GREEN = "This should attract their attention!",
+		OCEANFISHINGLURE_SPOON_BLUE = "This should attract their attention!",
+
+		OCEANFISH_SMALL_1 = "Tis barely a morsel!",
+		OCEANFISH_SMALL_2 = "There's barely any meat on these fishbones!",
+		OCEANFISH_SMALL_3 = "Tis only a wee beastie.",
+		OCEANFISH_SMALL_4 = "This amount of meat will hardly satisfy a Viking!",
+		OCEANFISH_SMALL_5 = "Tis naught but a small snack.",
+		OCEANFISH_MEDIUM_1 = "Meat is meat.",
+		OCEANFISH_MEDIUM_2 = "You will make a fine meal!",
+		OCEANFISH_MEDIUM_3 = "The beastie put up an admirable fight.",
+		OCEANFISH_MEDIUM_4 = "There's an air of ill luck around this one...",
+		OCEANFISH_MEDIUM_5 = "This looks suspiciously veggie-like.",
+
+		PONDFISH = "Pond meat!",
+		PONDEEL = "Delicious slimy snake fish.",
+
+        FISHMEAT = "This sea meat will serve me well.",
+        FISHMEAT_COOKED = "Joy!",
+        FISHMEAT_SMALL = "This sea meat will serve me well.",
+        FISHMEAT_SMALL_COOKED = "This meat will swim in my belly!",
+		SPOILED_FISH = "You smell of your failure.",
+
+		FISH_BOX = "Meat is best when it's fresh!",
+        POCKET_SCALE = "How did I fare with my catch?",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "I will stand victorious!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "By the gods, that fishbowl's ablaze!",
+			BURNT = "Tis naught but cinders.",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nTake heed of my fishing prowess!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "Tis naught but a clump of mud and grass!",
+
+		CALIFORNIAROLL = "That's just a morsel of fish food.",
+		SEAFOODGUMBO = "A meal fit for a Viking queen.",
+		SURFNTURF = "Nothing goes better with meat than more meat!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2963,7 +3105,7 @@ return{
         MERMTHRONE =
         {
             GENERIC = "Have you chosen a chieftain?",
-            BURNT = "The throne hath been smited!",
+            BURNT = "The throne hath been set ablaze!",
         },        
         MERMTHRONE_CONSTRUCTION =
         {
@@ -2982,6 +3124,7 @@ return{
         MERMGUARD = "A formidable warrior, to be sure.",
         MERM_PRINCE = "Thou art certain he is fit to be leader?",
 
+        SQUID = "It lights my voyage through murky waters.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",
@@ -2990,5 +3133,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Bones and all.",
+		WINTERSFEASTFUEL = "It doth taste just like chicken!",
     },
 }

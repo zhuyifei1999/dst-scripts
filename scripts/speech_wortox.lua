@@ -70,6 +70,10 @@ return{
 		{
 			TOODEEP = "Stop, abort! My line's too short!",
 		},
+        OCEAN_FISHING_POND =
+		{
+			WRONGGEAR = "I fear I've brought the wrong gear, hyuyu!",
+		},
         --wickerbottom specific action
 --fallback to speech_wilson.lua         READ =
 --fallback to speech_wilson.lua         {
@@ -193,6 +197,14 @@ return{
             GLASSED = "I can't throw it through the looking glass!",
             ALREADY_BOMBED = "Someone else took the fun!",
         },
+		GIVE_TACKLESKETCH =
+		{
+			DUPLICATE = "We cannot learn what we already know!",
+		},
+		COMPARE_WEIGHABLE =
+		{
+			TOO_SMALL = "This minnow won't win, no!",
+		},
 	},
 	ACTIONFAIL_GENERIC = "No, no, no.",
 	ANNOUNCE_BOAT_LEAK = "Now this ride's getting fun!",
@@ -370,6 +382,12 @@ return{
 	ANNOUNCE_BRAVERY_POTION = "Okay, let's play!",
 	ANNOUNCE_MOONPOTION_FAILED = "Oh, you're no fun at all.",
 
+	--winter's feast
+	ANNOUNCE_EATING_NOT_FEASTING = "I'm not going to eat it, might as well give it to the mortals.",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Hyuyu, how splendid!",
+	ANNOUNCE_IS_FEASTING = "A fancy feast... or a fancied feast? Hyuyu!",
+	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "I'll never lose the impish sparkle in my eye.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "C'mon back, silly goose.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Up and at'em!",
@@ -456,6 +474,20 @@ return{
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "All work and no play doesn't suit an imp. Hyuyu!",
     ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Alas and alack, the dampness is back.",
     
+	ANNOUNCE_OCEANFISHING_LINESNAP = "Well drat, I guess that's that.",
+	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "The line's gone slack, best reel it back!",
+	ANNOUNCE_OCEANFISHING_GOTAWAY = "Hyuyu, what a slippery little fellow!",
+	ANNOUNCE_OCEANFISHING_BADCAST = "Try and try again!",
+	ANNOUNCE_OCEANFISHING_IDLE_QUOTE = 
+	{
+		"Surely there's more fun ways to catch a fish.",
+		"I'm really only interested in catching soles.",
+		"I do hope a fish will fall for my prank.",
+		"Perhaps they're still spawning.",
+	},
+
+	ANNOUNCE_WEIGHT = "Weight: {weight}",
+
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
 --fallback to speech_wilson.lua     ANNOUNCE_KINGDESTROYED = "only_used_by_wurt",
@@ -483,11 +515,12 @@ return{
 	COMBAT_QUIT =
 	{
 		GENERIC = "I am the wimp imp!",
-		PIG = "Nevermind, I've forgotten my dancing shoes.",
+		PIG = "Never mind, I've forgotten my dancing shoes.",
 		PREY = "You no longer entertain me.",
 		SPIDER = "I am the wimp imp!",
 		SPIDER_WARRIOR = "I'll take my leave. Hyuyu!",
 	},
+
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "I can come and go as I please.",
@@ -2348,6 +2381,47 @@ return{
         WINTER_FOOD8 = "Maybe just a sip.", --hot cocoa
         WINTER_FOOD9 = "I might try this mortal treat.", --eggnog
 
+		--Dishes are not final - let these be for now
+		WINTERSFEASTOVEN =
+		{
+			GENERIC = "Oh ho! What magic conjured you up?",
+			COOKING = "Just what are you cooking up?",
+			ALMOST_DONE_COOKING = "It's nearly time.",
+			DISH_READY = "Culinary alchemy!",
+		},
+		BERRYSAUCE = "Hyuyuyu, what a fun trick!",
+		BIBINGKA = "I would've made a great Ani-ani.",
+		CABBAGEROLLS = "They look so real!",
+		FESTIVEFISH = "Nothing fishy here at all, hyuyu!",
+		GRAVY = "It sits in a boat that doesn't float.",
+		LATKES = "I wonder what would happen if I took a bite.",
+		LUTEFISK = "It smells real enough.",
+		MULLEDDRINK = "Perhaps I'll mull it over, hyuyu!",
+		PANETTONE = "This holiday bread is all in your head!",
+		PAVLOVA = "I'm afraid you can't fool me.",
+		PICKLEDHERRING = "Shall I pick a peck of pickled herring?",
+		POLISHCOOKIE = "You can't prank a prankster, hyuyu!",
+		PUMPKINPIE = "Don't be shy, try the pie!",
+		ROASTTURKEY = "It certainly looks like a turkey.",
+		STUFFING = "Why fill yourself with dread when you could fill yourself with bread?",
+		SWEETPOTATO = "Should I tell them it's a prank? Hyuyu!",
+		TAMALES = "Very convincing.",
+		TOURTIERE = "A pie, not sweet, but filled with meat.",
+
+		TABLE_WINTERS_FEAST = 
+		{
+			GENERIC = "A special place to stuff your face!",
+			HAS_FOOD = "The stage is set!",
+			WRONG_TYPE = "Best not to break the illusion.",
+			BURNT = "Double the pranks!",
+		},
+
+		GINGERBREADWARG = "That cookie wants to sink its teeth into me!", 
+		GINGERBREADHOUSE = "What a charming cookie cottage.", 
+		GINGERBREADPIG = "Here little piggy!",
+		CRUMBS = "That's the way the cookie crumbles, hyuyu!",
+		WINTERSFEASTFUEL = "Ah, are you the source of this magic?",
+
         KLAUS = "Are we not brethren?",
         KLAUS_SACK = "What tasty treats lie within?",
 		KLAUSSACKKEY = "Now where oh where did he leave that stash.",
@@ -2876,6 +2950,9 @@ return{
 		SALTROCK = "Hissss!",
 		SALTBOX = "You needn't worry about protecting your food from me.",
 
+		TACKLESTATION = "Let's build a better fish trap, hyuyu!",
+		TACKLESKETCH = "Some cunning plans to put fish in our hands!",
+
         MALBATROSS = "It's bad luck to shoot it down, but what do I know? Hyuyu!",
         MALBATROSS_FEATHER = "A feather for me, from the bird of the sea.",
         MALBATROSS_BEAK = "It squawks no more.",
@@ -2883,9 +2960,74 @@ return{
         MAST_MALBATROSS = "It fought to no avail, and became our sail!",
 		MALBATROSS_FEATHERED_WEAVE = "This fabric tickles, hyuyu.",
 
+        GNARWAIL =
+        {
+            GENERIC = "Now now, no need to put a dent in my dinghy.",
+            BROKENHORN = "I don't see your point, hyuyu!",
+            FOLLOWER = "Come along, there's a sea full of mischief to be had!",
+            BROKENHORN_FOLLOWER = "I'm afraid I don't have any spare horns.",
+        },
+        GNARWAIL_HORN = "It makes a compelling point, hyuyu!",
+
         WALKINGPLANK = "It's just a last resort, worrywart!",
         OAR = "I'll splash all my friends with this!",
 		OAR_DRIFTWOOD = "It's an oar, for shore!",
+
+		OCEANFISHINGROD = "I'd rather catch a soul than a sole.",
+		OCEANFISHINGBOBBER_NONE = "A piece of this fishing puzzle is missing.",
+        OCEANFISHINGBOBBER_BALL = "I'm just having a ball! Hyuyu!",
+        OCEANFISHINGBOBBER_OVAL = "This doesn't look so hard!",
+		OCEANFISHINGBOBBER_CROW = "Never underestimate the power of a strong quill.",
+		OCEANFISHINGBOBBER_ROBIN = "Never underestimate the power of a strong quill.",
+		OCEANFISHINGBOBBER_ROBIN_WINTER = "Never underestimate the power of a strong quill.",
+		OCEANFISHINGBOBBER_CANARY = "Never underestimate the power of a strong quill.",
+		OCEANFISHINGBOBBER_GOOSE = "A fearsome feathery float!",
+		OCEANFISHINGBOBBER_MALBATROSS = "A fearsome feathery float!",
+
+		OCEANFISHINGLURE_SPINNER_RED = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_SPINNER_GREEN = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_SPINNER_BLUE = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_SPOON_RED = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_SPOON_GREEN = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_SPOON_BLUE = "What a fun prank for the fish!",
+
+		OCEANFISH_SMALL_1 = "Splash, splish, it's a tiny fish!",
+		OCEANFISH_SMALL_2 = "This soul is so small it's hardly worth snatching.",
+		OCEANFISH_SMALL_3 = "You took the bait, now suffer your fate!",
+		OCEANFISH_SMALL_4 = "It's hardly bigger than a minnow!",
+		OCEANFISH_SMALL_5 = "This one really pops, hyuyu!",
+		OCEANFISH_MEDIUM_1 = "Your name is mud, fish!",
+		OCEANFISH_MEDIUM_2 = "If I hold it up, it becomes an upright bass!",
+		OCEANFISH_MEDIUM_3 = "How dandy indeed! You've a soul that I need.",
+		OCEANFISH_MEDIUM_4 = "Oooh, how delightfully superstitious!",
+		OCEANFISH_MEDIUM_5 = "It looks like nature played quite the prank on this one.",
+
+		PONDFISH = "You are quite fragrant.",
+		PONDEEL = "A slippery soul, that one.",
+
+        FISHMEAT = "Looks like the soul's already left this one.",
+        FISHMEAT_COOKED = "I do not wish to eat this fish.",
+        FISHMEAT_SMALL = "Looks like the soul's already left this one.",
+        FISHMEAT_SMALL_COOKED = "I do not wish to eat this fish.",
+		SPOILED_FISH = "It's spoiled rotten!",
+
+		FISH_BOX = "Fill it to the brim with bream!",
+        POCKET_SCALE = "Allow me to quickly weigh in, hyuyu!",
+
+		TROPHYSCALE_FISH =
+		{
+			GENERIC = "For a fish it must be quite ideal, to be a prize and not a meal!",
+			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			BURNING = "Double, double toil and trouble, fire burn and fishbowl bubble!",
+			BURNT = "How fun!",
+			OWNER = "Weight: {weight}\nCaught by: {owner}\nMy fish is best, as this scale can attest!",
+		},
+
+		OCEANFISHABLEFLOTSAM = "I will shape it into a delicious mud pie! Hyuyu.",
+
+		CALIFORNIAROLL = "We're on a roll! Hyuyu!",
+		SEAFOODGUMBO = "Gleefully gilly gumbo!",
+		SURFNTURF = "My my, what an odd pair!",
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -2910,7 +3052,7 @@ return{
         },
         SPICEPACK = "What a cute little pack. Hyuyu!",
         SPICE_GARLIC = "Hissss!",
-        SPICE_SUGAR = "A saccharine collection of liquified confection.",
+        SPICE_SUGAR = "A saccharine collection of liquefied confection.",
         SPICE_CHILI = "I'll spike some mortal's food. Hyuyu!",
         SPICE_SALT = "Careful with that stuff!",
         MONSTERTARTARE = "Monster flesh that's very fresh. ",
@@ -2928,7 +3070,7 @@ return{
         GAZPACHO = "This human food stuff seems more watery than usual.",
         ASPARAGUSSOUP = "Even for human food, this is odd.",
         VEGSTINGER = "I can't decide if it's for sipping or souping.",
-        BANANAPOP = "Hyuyu, what will the mortals think of next.",
+        BANANAPOP = "Hyuyu, what will the mortals think of next?",
         CEVICHE = "I'd rather leave this for the humans.",
         SALSA = "A spicy treat for mortals to eat.",
         PEPPERPOPPER = "I'll stuff them with toothpaste when Warly's not looking. Hyuyu!",
@@ -2942,7 +3084,7 @@ return{
         GARLIC_SEEDS = "Strange little seeds, indeed, indeed.",
         
         ONION = "You'll see no tears from my eye. I cannot cry!",
-        ONION_COOKED = "Like tiny circles decending.",
+        ONION_COOKED = "Like tiny circles descending.",
         ONION_SEEDS = "Strange little seeds, indeed, indeed.",
         
         POTATO = "Mortals like this in all its forms.",
@@ -2988,6 +3130,7 @@ return{
         MERMGUARD = "The horns are an improvement.",
         MERM_PRINCE = "Hyuyuyu, a prince! Charming!",
 
+        SQUID = "An eerie eye to see the sea.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",
@@ -2996,5 +3139,6 @@ return{
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Doing that hurt my feelings.",
+		WINTERSFEASTFUEL = "Hyuyu, how fun!",
     },
 }

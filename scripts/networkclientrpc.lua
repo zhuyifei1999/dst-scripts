@@ -43,7 +43,7 @@ end
 
 local function ConvertPlatformRelativePositionToAbsolutePosition(relative_x, relative_z, platform, platform_relative)    
     if platform_relative then
-		if platform ~= nil then
+		if platform ~= nil and platform.Transform ~= nil then
 			local platform_x, platform_y, platform_z = platform.Transform:GetWorldPosition()
 			return relative_x + platform_x, relative_z + platform_z
 		else
@@ -368,7 +368,8 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller == nil then return end
-        if has_platform and (platform == nil or not platform:IsValid()) then return end
+        if has_platform and (platform == nil or platform.components.walkableplatform == nil) then return end
+        if platform ~= nil and not has_platform then return end
 
         playercontroller:OnRemoteStartHop(x, z, platform)
 
@@ -552,6 +553,25 @@ local RPC_HANDLERS =
                 container = container.components.container
                 if container ~= nil and container:IsOpenedBy(player) then
                     container:SwapActiveItemWithSlot(slot)
+                end
+            end
+        end
+    end,
+
+    SwapOneOfActiveItemWithSlot = function(player, slot, container)
+        if not (checkuint(slot) and
+                optentity(container)) then
+            printinvalid("SwapOneOfActiveItemWithSlot", player)
+            return
+        end
+        local inventory = player.components.inventory
+        if inventory ~= nil then
+            if container == nil then
+                inventory:SwapOneOfActiveItemWithSlot(slot)
+            else
+                container = container.components.container
+                if container ~= nil and container:IsOpenedBy(player) then
+                    container:SwapOneOfActiveItemWithSlot(slot)
                 end
             end
         end
@@ -749,14 +769,12 @@ local RPC_HANDLERS =
 
     MovementPredictionEnabled = function(player, target)
         if ThePlayer ~= target then
-            print("Platform hopping disabled on: " .. target.name)
             target.components.locomotor:SetAllowPlatformHopping(false)
         end
     end,    
 
     MovementPredictionDisabled = function(player, target)
         if ThePlayer ~= target then
-            print("Platform hopping enabled on: " .. target.name)
             target.components.locomotor:SetAllowPlatformHopping(true)
         end    
     end,    
@@ -766,8 +784,8 @@ local RPC_HANDLERS =
     end,       
 
     StopHopping = function(player, hopper)
-        local playercontroller = hopper.components.playercontroller
-        playercontroller:OnRemoteStopHopping()
+        --local playercontroller = hopper.components.playercontroller
+        --playercontroller:OnRemoteStopHopping()
     end, 
 
     MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index, platform, platform_relative)

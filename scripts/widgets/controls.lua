@@ -423,6 +423,8 @@ function Controls:OnUpdate(dt)
             if (self.owner.CanExamine == nil or self.owner:CanExamine()) and
                 --V2C: Closing the avatar popup takes priority
                 not self.owner.HUD:IsPlayerAvatarPopUpOpen() and
+				(self.owner.sg == nil or self.owner.sg:HasStateTag("moving") or self.owner.sg:HasStateTag("idle") or self.owner.sg:HasStateTag("channeling")) and
+				(self.owner:HasTag("moving") or self.owner:HasTag("idle") or self.owner:HasTag("channeling")) and
                 controller_target:HasTag("inspectable") then
                 table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.HUD.INSPECT)
             end

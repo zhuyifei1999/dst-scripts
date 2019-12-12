@@ -14,9 +14,27 @@ local prefabs_clay =
     "clayhound",
 }
 
+local prefabs_gingerbread =
+{
+	"warg_gooicing",
+	"wintersfeastfuel",
+    "houndstooth",
+	"crumbs",
+}
+
 local brain = require("brains/wargbrain")
 
 local sounds =
+{
+    idle = "dontstarve_DLC001/creatures/vargr/idle",
+    howl = "dontstarve_DLC001/creatures/vargr/howl",
+    hit = "dontstarve_DLC001/creatures/vargr/hit",
+    attack = "dontstarve_DLC001/creatures/vargr/attack",
+    death = "dontstarve_DLC001/creatures/vargr/death",
+    sleep = "dontstarve_DLC001/creatures/vargr/sleep",
+}
+
+local sounds_gingerbread =
 {
     idle = "dontstarve_DLC001/creatures/vargr/idle",
     howl = "dontstarve_DLC001/creatures/vargr/howl",
@@ -65,6 +83,25 @@ SetSharedLootTable('claywarg',
     {'houndstooth',             0.33},
 })
 
+SetSharedLootTable('gingerbreadwarg',
+{
+    {'wintersfeastfuel',		1.00},
+    {'wintersfeastfuel',		1.00},
+    {'wintersfeastfuel',		1.00},
+    {'wintersfeastfuel',		1.00},
+    {'wintersfeastfuel',		1.00},
+    {'wintersfeastfuel',        0.66},
+    {'wintersfeastfuel',        0.33},
+    {'crumbs',					1.00},
+    {'crumbs',					1.00},
+    {'crumbs',					0.50},
+    {'crumbs',					0.50},
+
+    {'houndstooth',             1.00},
+    {'houndstooth',             0.66},
+    {'houndstooth',             0.33},
+})
+
 local function RetargetFn(inst)
     return not (inst.sg:HasStateTag("hidden") or inst.sg:HasStateTag("statue"))
         and FindEntity(
@@ -73,7 +110,7 @@ local function RetargetFn(inst)
                 function(guy)
                     return inst.components.combat:CanTarget(guy)
                 end,
-                nil,
+                inst.sg:HasStateTag("intro_state") and {"character"} or nil,
                 { "wall", "warg", "hound" }
             )
         or nil
@@ -325,6 +362,25 @@ local function GetStatus(inst)
         or nil
 end
 
+local function LaunchGooIcing(inst)
+	local theta = math.random() * 2 * PI
+	local r = inst:GetPhysicsRadius(0) + 0.25 + math.sqrt(math.random()) * TUNING.WARG_GINGERBREAD_GOO_DIST_VAR
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local dest_x, dest_z = math.cos(theta) * r + x, math.sin(theta) * r + z
+
+	local goo = SpawnPrefab("warg_gooicing")
+    goo.Transform:SetPosition(x, y, z)
+	goo.Transform:SetRotation(theta / DEGREES)
+	goo._caster = inst
+
+	Launch2(goo, inst, 1.5, 1, 3, .75)
+
+	inst._next_goo_time = GetTime() + TUNING.WARG_GINGERBREAD_GOO_COOLDOWN
+end
+
+local function NoGooIcing()
+end
+
 local function MakeWarg(name, bank, build, prefabs, tag)
     local assets =
     {
@@ -335,6 +391,9 @@ local function MakeWarg(name, bank, build, prefabs, tag)
     elseif bank ~= build then
         table.insert(assets, Asset("ANIM", "anim/"..bank..".zip"))
     end
+	if tag == "gingerbread" then
+        table.insert(assets, Asset("ANIM", "anim/warg_gingerbread.zip"))
+	end
     table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
 
     local function fn()
@@ -402,6 +461,7 @@ local function MakeWarg(name, bank, build, prefabs, tag)
 
         if tag == "clay" then
             inst.NumHoundsToSpawn = NoHoundsToSpawn
+			inst.LaunchGooIcing = NoGooIcing
             inst.OnSave = OnClaySave
             inst.OnPreLoad = OnClayPreLoad
             inst.OnReanimated = OnClayReanimated
@@ -414,12 +474,21 @@ local function MakeWarg(name, bank, build, prefabs, tag)
 
             inst:ListenForEvent("spawnedforhunt", OnSpawnedForHunt)
             inst:ListenForEvent("restoredfollower", OnRestoredFollower)
+		elseif tag == "gingerbread" then
+            inst.NumHoundsToSpawn = NoHoundsToSpawn
+			inst.LaunchGooIcing = LaunchGooIcing
+            inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/vargr/hit")
+            inst:AddComponent("sleeper")
+            inst.sounds = sounds_gingerbread
+            inst.AnimState:AddOverrideBuild("gingerbread_pigman")
+            MakeLargeBurnableCharacter(inst, "swap_fire")
         else
             inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/vargr/hit")
 
             inst:AddComponent("sleeper")
 
             inst.NumHoundsToSpawn = NumHoundsToSpawn
+			inst.LaunchGooIcing = NoGooIcing
 
             inst.sounds = sounds
 
@@ -430,16 +499,20 @@ local function MakeWarg(name, bank, build, prefabs, tag)
 
         inst:SetStateGraph("SGwarg")
 
-        if tag == "clay" then
+        if tag == "clay" or tag == "gingerbread" then
             inst:AddComponent("hauntable")
             inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
         else
             MakeHauntableGoToState(inst, "howl", TUNING.HAUNT_CHANCE_OCCASIONAL, TUNING.HAUNT_COOLDOWN_MEDIUM, TUNING.HAUNT_CHANCE_LARGE)
         end
 
+		if tag == "gingerbread" then
+            inst.sg:GoToState("gingerbread_intro")
+		end
+
         inst:SetBrain(brain)
 
-        if inst:HasTag("clay") then
+        if tag == "clay" then
             inst.noidlesound = false
             inst.sg:GoToState("statue")
         end
@@ -451,4 +524,5 @@ local function MakeWarg(name, bank, build, prefabs, tag)
 end
 
 return MakeWarg("warg", "warg", "warg_build", prefabs_basic, nil),
-    MakeWarg("claywarg", "claywarg", "claywarg", prefabs_clay, "clay")
+    MakeWarg("claywarg", "claywarg", "claywarg", prefabs_clay, "clay"),
+    MakeWarg("gingerbreadwarg", "warg", "warg_gingerbread_build", prefabs_gingerbread, "gingerbread")
