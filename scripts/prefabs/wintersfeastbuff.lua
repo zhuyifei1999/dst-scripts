@@ -16,7 +16,7 @@ local function OnTick(inst, target)
 		if target.components.hunger ~= nil then
 			target.components.hunger:DoDelta(TUNING.WINTERSFEASTBUFF.HUNGER_GAIN, true)
 		end
-		print("remaining:", inst.components.timer:GetTimeLeft("buffover"))
+		--print("remaining:", inst.components.timer:GetTimeLeft("buffover"))
 	else
 		inst.components.debuff:Stop()
 	end
@@ -77,13 +77,13 @@ local function AddEffectBonus(inst, num_feasters, num_foodtypes, num_totalfood)
 	num_feasters, num_foodtypes = num_feasters or 1, num_foodtypes or 1
 
 	local timeleft = inst.components.timer:GetTimeLeft("buffover")
-    print("timeleft",timeleft)
+    --print("timeleft",timeleft)
 
 	--local gainmultiplier = math.min((num_foodtypes - 1) / 2, 1)--
 
     local score = ((num_feasters^0.3)*0.3* (num_foodtypes))  + ((num_totalfood-num_foodtypes)*0.2)    
     local bonus = (score * TUNING.TOTAL_DAY_TIME/2)/TUNING.WINTERSFEASTBUFF.EATTIME
-    print("Score",score,"bonus",bonus)
+--    print("Score",score,"bonus",bonus)
 	if bonus > 0 then
 		inst.components.timer:SetTimeLeft("buffover", timeleft + bonus )
 --		print("bonus duration:", bonus)

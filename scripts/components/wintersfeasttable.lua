@@ -55,7 +55,6 @@ end
 function WintersFeastTable:CancelFeasting()
 	for k,_ in pairs(self.current_feasters) do
 		if k:IsValid() then
-			print("interrupting feast for:", k)
 			k:PushEvent("feastinterrupted")
 		end
 	end

@@ -7851,9 +7851,9 @@ local states =
 				elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_idle") then
 					inst.SoundEmitter:KillSound("unreel_loop")
 					--inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in1_LP", "unreel_loop") -- SFX WIP
-					inst.AnimState:PlayAnimation("hooked_tight_idle", true)
+						inst.AnimState:PlayAnimation("hooked_tight_idle", true)
+					end
 				end
-			end
 		end,
 
         ontimeout = function(inst)
@@ -7887,7 +7887,7 @@ local states =
 				if inst:PerformBufferedAction() then
 					if target.components.oceanfishinghook ~= nil or rod.components.oceanfishingrod:IsLineTensionLow() then
 						if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
-							inst.SoundEmitter:KillSound("reel_loop")
+                            inst.SoundEmitter:KillSound("reel_loop")
 							inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
 						end
 					elseif rod.components.oceanfishingrod:IsLineTensionGood() then
@@ -7897,10 +7897,10 @@ local states =
 							inst.AnimState:PlayAnimation("hooked_good_reeling", true)
 						end
 					elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
-						inst.SoundEmitter:KillSound("reel_loop")
+							inst.SoundEmitter:KillSound("reel_loop")
 						--inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in3_LP", "reel_loop") -- SFX WIP
-						inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
-					end
+							inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
+						end
 
 					inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 				end
@@ -12602,28 +12602,34 @@ local states =
         name = "winters_feast_eat",
         tags = { "doing", "feasting" },
 
-        onenter = function(inst)
+        onenter = function(inst, target)
             inst:PushEvent("isfeasting")
 			inst.components.locomotor:Stop()
 
-			inst.sg.statemem.act = inst:GetBufferedAction()
-
-			local target = inst.sg.statemem.act.target
-			if target ~= nil and target.entity:IsValid() then
-				target.components.wintersfeasttable.current_feasters[inst] = true
+			if target == nil then
+				target = inst:GetBufferedAction() ~= nil and inst:GetBufferedAction().target
 			end
+			inst.sg.statemem.target = target
+	        inst:PerformBufferedAction()
 
-			inst.AnimState:PlayAnimation("feast_eat_pre")
-			inst.AnimState:PushAnimation("feast_eat_loop")
-			inst.AnimState:PushAnimation("feast_eat_loop")
-			inst.AnimState:PushAnimation("feast_eat_pst", false)
+			if target ~= nil and target:IsValid() then
+				target.components.wintersfeasttable.current_feasters[inst] = true
+
+				inst.AnimState:PlayAnimation("feast_eat_pre_pre")
+				inst.AnimState:PushAnimation("feast_eat_pre", false)
+				inst.AnimState:PushAnimation("feast_eat_loop", false)
+				inst.AnimState:PushAnimation("feast_eat_loop", false)
+				inst.AnimState:PushAnimation("feast_eat_pst", false)
+			else
+				inst.sg:GoToState("idle")
+			end
         end,
 
         timeline =
         {
 			TimeEvent(21 * FRAMES, function(inst)
-				local target = inst.sg.statemem.act.target
-				if target ~= nil and target.entity:IsValid() and target:HasTag("readyforfeast") then
+				local target = inst.sg.statemem.target
+				if target ~= nil and target:IsValid() and target:HasTag("readyforfeast") then
 					inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
 				else
 					inst.sg:GoToState("idle")
@@ -12644,10 +12650,10 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst)
-				local target = inst.sg.statemem.act.target
-				if target ~= nil and target.entity:IsValid() and target:HasTag("readyforfeast") then
+				local target = inst.sg.statemem.target
+				if target ~= nil and target:IsValid() and target:HasTag("readyforfeast") then
                     inst.sg.statemem.keep_eating = true
-					inst.sg:GoToState("winters_feast_eat")
+					inst.sg:GoToState("winters_feast_eat", target)
 				else
 					inst.sg:GoToState("idle")
 				end
@@ -12655,7 +12661,7 @@ local states =
         },
 
         onexit = function(inst)
-			local target = inst.sg.statemem.act.target
+			local target = inst.sg.statemem.target
 
 			if target ~= nil and target.entity:IsValid() then
 				target.components.wintersfeasttable.current_feasters[inst] = nil

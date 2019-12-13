@@ -2741,6 +2741,7 @@ ACTIONS.REMOVE_FROM_TROPHYSCALE.fn = function(act)
 end
 
 ACTIONS.WINTERSFEAST_FEAST.fn = function(act)
+	return true
 	-- Logic is handled from stategraph; action is never actually performed
 end
 

@@ -3640,29 +3640,35 @@ local states =
 
     State{
         name = "winters_feast_eat",
-        tags = { "doing", "feasting" },
+        tags = { "doing", "feasting" }, -- feasting tag is for music
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("feast_eat_pre")
-			inst.AnimState:PushAnimation("feast_eat_loop")
-			inst.AnimState:PushAnimation("feast_eat_loop")
-			inst.AnimState:PushAnimation("feast_eat_pst", false)
-			inst:PerformPreviewBufferedAction()
+            inst.AnimState:PlayAnimation("feast_eat_pre_pre")
+            inst.AnimState:PushAnimation("feast_eat_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
         end,
 
-        events = 
-        {
-            EventHandler("animqueueover", function(inst)
-				local act = inst:GetBufferedAction()
-				if act ~= nil and act.target ~= nil and act.target:HasTag("readyforfeast") then
-					inst.sg:GoToState("winters_feast_eat")
-				else
-					inst.sg:GoToState("idle")
-				end
-            end),
-        },
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("feast_eat_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("feast_eat_pst")
+            inst.sg:GoToState("idle", true)
+        end,
     },
+
 }
 
 CommonStates.AddRowStates(states, true)
