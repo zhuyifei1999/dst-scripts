@@ -1,4 +1,5 @@
 local TEXTURE = "fx/snow.tex"
+local WINTER_TEXTURE_OLD = "fx/wintersnow.tex"
 local WINTER_TEXTURE = "fx/wintersnow_cane.tex"
 
 local SHADER = "shaders/vfx_particle.ksh"
@@ -10,6 +11,7 @@ local WINTER_SCALE_ENVELOPE_NAME = "wintersnowscaleenvelope"
 local assets =
 {
     Asset("IMAGE", TEXTURE),
+    Asset("IMAGE", WINTER_TEXTURE_OLD),
     Asset("IMAGE", WINTER_TEXTURE),
     Asset("SHADER", SHADER),
 }

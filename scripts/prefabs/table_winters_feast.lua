@@ -9,7 +9,7 @@ local prefabs =
 	"collapse_small",
 	"wintersfeastbuff",
 	"winters_feast_depletefood",
-	"winters_feast_finishfood",
+	"winters_feast_food_depleted",
 }
 
 -- Placeholder sounds
@@ -163,7 +163,11 @@ local function OnDepleteFood(inst)
 end
 
 local function OnFinishFood(inst)
-	inst.persists = false
+	local item_on_table = inst.components.inventory:GetItemInSlot(1)
+	if item_on_table ~= nil then
+		item_on_table.persists = false
+	end
+
 	inst:DoTaskInTime(math.random()*0.5,function()
 		local item = DropFoodFromShelf(inst)
 		if item ~= nil then

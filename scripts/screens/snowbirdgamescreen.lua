@@ -582,7 +582,11 @@ function SnowbirdGameScreen:OnTileClick(x, y)
 		for _,tile in pairs(self.game_grid) do
 			tile:HideTile()
 		end
-		scheduler:ExecuteInTime(FLIP_TIME, function() self.game_state = GS_TILE_SELECT_1 end)
+		scheduler:ExecuteInTime(FLIP_TIME, function()
+			if self.game_state == GS_REVIEWING then --fixes reset triggering a click
+				self.game_state = GS_TILE_SELECT_1
+			end
+		end)
 
 	elseif self.game_state == GS_TILE_SELECT_1 then
 		self.game_state = GS_TRANSITION
@@ -741,7 +745,7 @@ end
 
 
 function SnowbirdGameScreen:OnControl(control, down)
-	if self.game_state == GS_REVIEWING and control == CONTROL_ACCEPT then --click anywhere to bypass reviewing
+	if down and self.game_state == GS_REVIEWING and control == CONTROL_ACCEPT then --click anywhere to bypass reviewing
 		self:OnTileClick(0, 0)
 	end
 

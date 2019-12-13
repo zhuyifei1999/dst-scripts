@@ -198,6 +198,10 @@ local function OnInactive(inst)
 end
 
 local function OnStageStarted(inst, stage)
+	if inst._firefx == nil or not inst._firefx:IsValid() then
+		MakeFireFx(inst)
+	end
+
     inst:RemoveComponent("prototyper")
 
 	local stagedata = inst.science_stages[stage]
@@ -331,7 +335,6 @@ local function fn()
     inst.AnimState:SetBank("wintersfeast_oven")
     inst.AnimState:SetBuild("wintersfeast_oven")
     inst.AnimState:PlayAnimation("idle_closed")
-    inst.AnimState:SetLightOverride(.05)
 	inst.AnimState:SetFinalOffset(1)
 
     MakeSnowCoveredPristine(inst)
