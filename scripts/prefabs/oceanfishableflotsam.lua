@@ -70,7 +70,7 @@ local function OnUpdate(inst)
 	if rod == nil then
 		local hook = FindEntity(inst, MAX_CATCH_RADIUS, nil, nil, { "INLIMBO" }, { "fishinghook" })
 
-		if hook ~= nil then
+		if hook ~= nil and hook.components.oceanfishable ~= nil then
 			inst.components.oceanfishable:SetRod(hook.components.oceanfishable:GetRod())
 		end
 	else

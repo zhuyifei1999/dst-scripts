@@ -9,7 +9,13 @@ local OceanFishingHook = Class(function(self, inst)
 	self.reel_mod = 0
 
     self.inst:StartWallUpdatingComponent(self)
+
+	inst:AddTag("fishinghook")
 end)
+
+function OceanFishingHook:OnRemoveFromEntity()
+	self.inst:RemoveTag("fishinghook")
+end
 
 function OceanFishingHook:SetLureData(lure_data)
 	self.lure_data = lure_data

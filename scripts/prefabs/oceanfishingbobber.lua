@@ -185,7 +185,7 @@ local function floater_fn(data, name)
 
 	inst.Transform:SetSixFaced()
 
-	inst:AddTag("fishinghook")
+	inst:AddTag("fishinghook") -- for oceanfishinghook
 
 	if not TheNet:IsDedicated() then
 		local ripple_fx = SpawnPrefab("oceanfishinghook_ripple")
