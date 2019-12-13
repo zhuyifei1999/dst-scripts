@@ -238,12 +238,12 @@ function self:RegisterTable(inst)
         table.insert(_tablegroups[closegroups[1]],inst)
         
         if #closegroups > 1 then
+			table.sort(closegroups)
             for i=#closegroups, 2, -1 do
                 for t,grouptable in ipairs(_tablegroups[closegroups[i]])do
                     table.insert(_tablegroups[closegroups[1]],grouptable)
                 end
                 table.remove(_tablegroups,closegroups[i])            
-                table.remove(closegroups,i)
             end
         end
     else
@@ -277,10 +277,10 @@ function self:UnregisterTable(inst)
             end                    
         end
     end
+
     -- group up remaining tables here    
     if group then -- table might have burned?
         while #_tablegroups[group] > 0 do
-       
             local openlist = {_tablegroups[group][1]}
             local closedlist = {}
 
@@ -301,6 +301,7 @@ function self:UnregisterTable(inst)
             table.insert(_tablegroups,closedlist)
         end
         table.remove(_tablegroups,group)
+
     end
 end
 

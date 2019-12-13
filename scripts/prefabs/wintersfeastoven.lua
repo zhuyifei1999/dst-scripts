@@ -65,6 +65,7 @@ end
 local function RemoveFireFx(inst)
 	if inst._firefx ~= nil then
 		inst._firefx:Remove()
+		inst._firefx = nil
 	end
 end
 
