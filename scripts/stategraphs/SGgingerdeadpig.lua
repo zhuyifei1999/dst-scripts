@@ -39,7 +39,7 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("crawl_death")
             inst.components.locomotor:StopMoving()
-            RemovePhysicsColliders(inst)            
+            RemovePhysicsColliders(inst)
         end,
 
         timeline=
@@ -49,6 +49,10 @@ local states =
             TimeEvent(47* FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/frog/splat",nil,.5) end),
         },
 
+        events =
+        {
+            EventHandler("animover", function(inst) inst:DoTaskInTime(1, ErodeAway) end),
+        },
     },
 
     State{
@@ -60,14 +64,12 @@ local states =
             inst.AnimState:PlayAnimation("crawl_loop")
         end,
 
-         timeline=
+        timeline=
         {
             TimeEvent(6 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbreadpig/step",nil,.25) end),
             TimeEvent(13* FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/movement/foley/bushhat") end),
             TimeEvent(24* FRAMES, function(inst) inst.SoundEmitter:PlaySound("wintersfeast2019/creatures/gingerbreadpig/step",nil,.25) end),
             TimeEvent(31* FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/movement/foley/bushhat") end),
-
-           
         },
 
         events =
@@ -93,7 +95,7 @@ local states =
             TimeEvent(31* FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/movement/foley/bushhat") end),
         },
 
-        ontimeout = function(inst) inst.components.health:Kill() end--inst.sg:GoToState("walk_stop") end,
+        ontimeout = function(inst) inst.sg:GoToState("death") end,
     },
 
     State{

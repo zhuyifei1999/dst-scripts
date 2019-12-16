@@ -59,11 +59,17 @@ local function GetFisherPosition(inst)
 end
 
 local function GetFoodTarget(inst)
-    return (inst.food_target ~= nil and inst.food_target:IsValid()) and inst.food_target or nil
+	if inst.food_target ~= nil then
+		if inst.food_target:IsValid() and not inst.food_target:HasTag("INLIMBO") then
+			return inst.food_target
+		end
+		inst.food_target = nil
+	end
 end
 
 local function GetFoodTargetPos(inst)
-    return (inst.food_target ~= nil and inst.food_target:IsValid()) and inst.food_target:GetPosition() or nil
+	local target = GetFoodTarget(inst)
+	return target ~= nil and target:GetPosition() or nil
 end
 
 local function FindFoodAction(inst)
@@ -78,7 +84,7 @@ local function FindFoodAction(inst)
 							return inst:IsNear(food, SEE_FOOD_DIST) and TheWorld.Map:IsOceanAtPoint(food.Transform:GetWorldPosition())
 						end,
 						nil,
-						{"planted"},
+						{"planted", "INLIMBO"},
 						JoinArrays(inst.components.eater:GetEdibleTags(), {"fishinghook"}))
 
 		inst.food_target = target

@@ -323,7 +323,7 @@ end
 function CanEntitySeePoint(inst, x, y, z)
     return inst ~= nil
         and inst:IsValid()
-        and (inst.components.inkable and not inst.components.inkable.inked) 
+        and (not inst.components.inkable or not inst.components.inkable.inked) 
         and (TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF or
             _CanEntitySeeInDark(inst))
         and (_GetEntitySandstormLevel(inst) < TUNING.SANDSTORM_FULL_LEVEL or

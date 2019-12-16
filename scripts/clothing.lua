@@ -5373,7 +5373,7 @@ CLOTHING =
 		symbol_hides = { "skirt", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
-		legs_cuff_size = 3,
+		legs_cuff_size = 1,
 		release_group = 70,
 	},
 	legs_wathgrithr_gladiator =

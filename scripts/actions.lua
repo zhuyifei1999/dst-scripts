@@ -193,7 +193,7 @@ ACTIONS =
     OCEAN_FISHING_REEL = Action({priority=5, rmb=true, do_not_locomote=true, silent_fail = true }),
     OCEAN_FISHING_STOP = Action({instant=true}),
     OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),
-    CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true}),
+    CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true, mount_valid=true}),
     POLLINATE = Action(),
     FERTILIZE = Action({ mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
@@ -643,8 +643,8 @@ ACTIONS.OCEAN_FISHING_CAST.fn = function(act)
 end
 
 ACTIONS.OCEAN_FISHING_REEL.strfn = function(act)
-    local rod = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	local target = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod.replica.oceanfishingrod:GetTarget() or nil
+    local rod = act.invobject or act.doer.replica.inventory ~= nil and act.doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+	local target = (rod ~= nil and rod:IsValid() and rod.replica.oceanfishingrod ~= nil) and rod.replica.oceanfishingrod:GetTarget() or nil
 	return (target ~= nil and target:HasTag("partiallyhooked")) and "SETHOOK"
 			or nil
 end
@@ -677,7 +677,7 @@ ACTIONS.OCEAN_FISHING_CATCH.fn = function(act)
 end
 
 ACTIONS.CHANGE_TACKLE.strfn = function(act)
-	return (not act.invobject.replica.inventoryitem:IsHeldBy(ThePlayer)) and "REMOVE"
+	return (act.invobject ~= nil and act.invobject:IsValid() and act.invobject.replica.inventoryitem ~= nil and not act.invobject.replica.inventoryitem:IsHeldBy(ThePlayer)) and "REMOVE"
 			or nil
 end
 
