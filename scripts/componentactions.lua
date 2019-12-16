@@ -1487,11 +1487,9 @@ local COMPONENT_ACTIONS =
         end,
 
        oceanfishingtackle = function(inst, doer, actions, right)
-            if doer.replica.inventory ~= nil and not doer.replica.inventory:IsHeavyLifting()
-                and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-
+            if doer.replica.inventory ~= nil and not doer.replica.inventory:IsHeavyLifting() then
                 local rod = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                if rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsOpenedBy(doer) and rod.replica.container:CanTakeItemInSlot(inst) then
+                if rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsOpenedBy(doer) and rod:HasTag("accepts_oceanfishingtackle") and rod.replica.container:CanTakeItemInSlot(inst) then
                     table.insert(actions, ACTIONS.CHANGE_TACKLE)
                 end
             end

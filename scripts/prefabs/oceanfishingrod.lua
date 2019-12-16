@@ -122,6 +122,7 @@ local function fn()
 
     inst:AddTag("weapon") --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("allow_action_on_impassable")
+    inst:AddTag("accepts_oceanfishingtackle")
 
     local floater_swap_data =
     {

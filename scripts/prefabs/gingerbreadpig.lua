@@ -198,7 +198,9 @@ local function dead_fn()
     inst.AnimState:SetBank("gingerbread_pigman")
     inst.AnimState:SetBuild("gingerbread_pigman")
 
-    inst:AddTag("character")
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -210,11 +212,6 @@ local function dead_fn()
 
     inst:SetStateGraph("SGgingerdeadpig")
     inst:DoTaskInTime(0, function() inst.sg:GoToState("walk_start") end)
-
-    inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.GINGERBREADPIG_HEALTH)
-
-    inst:AddComponent("inspectable")
 
     inst.persists = false
 
