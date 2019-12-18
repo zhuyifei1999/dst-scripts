@@ -60,7 +60,7 @@ end
 
 local function GetFoodTarget(inst)
 	if inst.food_target ~= nil then
-		if inst.food_target:IsValid() and not inst.food_target:HasTag("INLIMBO") then
+		if inst.food_target:IsValid() and not inst.food_target:HasTag("INLIMBO") and TheWorld.Map:IsOceanAtPoint(inst.food_target.Transform:GetWorldPosition())  then
 			return inst.food_target
 		end
 		inst.food_target = nil

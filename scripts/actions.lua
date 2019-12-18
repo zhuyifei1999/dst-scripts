@@ -677,8 +677,9 @@ ACTIONS.OCEAN_FISHING_CATCH.fn = function(act)
 end
 
 ACTIONS.CHANGE_TACKLE.strfn = function(act)
-	return (act.invobject ~= nil and act.invobject:IsValid() and act.invobject.replica.inventoryitem ~= nil and not act.invobject.replica.inventoryitem:IsHeldBy(ThePlayer)) and "REMOVE"
-			or nil
+	local item = (act.invobject ~= nil and act.invobject:IsValid()) and act.invobject or nil
+    local rod = (item ~= nil and act.doer.replica.inventory ~= nil) and act.doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+	return (rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsHolding(item)) and "REMOVE" or nil
 end
 
 ACTIONS.CHANGE_TACKLE.fn = function(act)
@@ -687,7 +688,17 @@ ACTIONS.CHANGE_TACKLE.fn = function(act)
 		return false
 	end
 	
-	if act.invobject.components.inventoryitem:IsHeldBy(act.doer) then
+	if act.invobject.components.inventoryitem:IsHeldBy(rod) then
+		local item = rod.components.container:RemoveItem(act.invobject, true)
+
+		if item ~= nil then
+	        item.prevcontainer = nil
+	        item.prevslot = nil
+
+			act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
+			return true
+		end
+	else
 		local targetslot = rod.components.container:GetSpecificSlotForItem(act.invobject)
 		if targetslot == nil then
 			return false
@@ -711,16 +722,6 @@ ACTIONS.CHANGE_TACKLE.fn = function(act)
 			if old_item ~= nil then 
 				act.doer.components.inventory:GiveItem(old_item, nil, rod:GetPosition())
 			end
-			return true
-		end
-	elseif act.invobject.components.inventoryitem:IsHeldBy(rod) then
-		local item = rod.components.container:RemoveItem(act.invobject, true)
-
-		if item ~= nil then
-	        item.prevcontainer = nil
-	        item.prevslot = nil
-
-			act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
 			return true
 		end
 	end

@@ -187,13 +187,13 @@ local function floater_fn(data, name)
 
 	inst:AddTag("fishinghook") -- for oceanfishinghook
 
+	inst:SetPrefabNameOverride(name)
+
 	if not TheNet:IsDedicated() then
 		local ripple_fx = SpawnPrefab("oceanfishinghook_ripple")
 		inst:AddChild(ripple_fx)
 	    ripple_fx.Transform:SetPosition(0, 0, 0)
 	end
-
-	inst:SetPrefabNameOverride(name)
 
     inst.entity:SetPristine()
 
