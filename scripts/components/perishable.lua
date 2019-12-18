@@ -235,7 +235,8 @@ function Perishable:StartPerishing()
     end
 
     local dt = 10 + math.random()*FRAMES*8
-    self.updatetask = self.inst:DoPeriodicTask(dt, Update, math.random()*2, dt)
+	local start_delay = math.random()*2
+    self.updatetask = self.inst:DoPeriodicTask(dt, Update, start_delay, start_delay)
 end
 
 function Perishable:Perish()

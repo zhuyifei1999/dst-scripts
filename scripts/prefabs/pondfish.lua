@@ -121,7 +121,7 @@ local function commonfn(bank, build, char_anim_build, data)
     MakeHauntableLaunchAndPerish(inst)
 
     inst:AddComponent("tradable")
-    inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.MEAT
+    inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.RAREMEAT
     inst.data = {}--
 
 	if data.weight_min ~= nil and data.weight_max ~= nil then
