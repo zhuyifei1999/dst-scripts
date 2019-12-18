@@ -58,6 +58,9 @@ end
 local function Update(inst, dt)
 	local self = inst.components.perishable
     if self ~= nil then
+		dt = self.start_dt or dt
+		self.start_dt = nil
+
 		local modifier = 1
 		local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
         if not owner and inst.components.occupier then
@@ -235,8 +238,8 @@ function Perishable:StartPerishing()
     end
 
     local dt = 10 + math.random()*FRAMES*8
-	local start_delay = math.random()*2
-    self.updatetask = self.inst:DoPeriodicTask(dt, Update, start_delay, start_delay)
+	self.start_dt = math.random()*2
+    self.updatetask = self.inst:DoPeriodicTask(dt, Update, self.start_dt, dt)
 end
 
 function Perishable:Perish()
