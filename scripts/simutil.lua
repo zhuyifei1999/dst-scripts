@@ -376,6 +376,7 @@ end
 function ApplySpecialEvent(event)
     if event ~= nil and event ~= "default" then
         WORLD_SPECIAL_EVENT = event
+		print("Overriding World Event to: " .. tostring(event))
     end
 
     --LOST tech level when event is not active
