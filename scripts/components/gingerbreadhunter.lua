@@ -78,7 +78,7 @@ local function GetNextSpawnAngle(pt, radius)
     local deviation = math.random(-TUNING.TRACK_ANGLE_DEVIATION, TUNING.TRACK_ANGLE_DEVIATION)*DEGREES
     local start_angle = base_angle + deviation
 
-    local offset, result_angle = FindWalkableOffset(pt, start_angle, radius, 14, true)
+    local offset, result_angle = FindWalkableOffset(pt, start_angle, radius, 14, true, true)
 
     return result_angle
 end
@@ -184,24 +184,24 @@ function GingerbreadHunter:SpawnCrumbTrail(killtime)
 	for i, pt in ipairs(self.crumb_pts) do
 		if i == #self.crumb_pts then
 			if self.hunt_count > MAX_HUNT_COUNT then
-				if math.random() <= GINGERWARG_CHANCE then
-					local warg = SpawnPrefab("gingerbreadwarg")
-					warg.Transform:SetPosition(pt:Get())
-				else
+				local num_houses = 0
+				if math.random() > GINGERWARG_CHANCE then
 					local house_amount = math.random(GINGERBREADHOUSE_MIN, GINGERBREADHOUSE_MAX)
 					for i = 1, house_amount do
 						local x,y,z = pt:Get()
-						local house = SpawnPrefab("gingerbreadhouse")
-
-						
 						x = x + house_positions[i].x + math.random(-0.5, 0.5)
 						z = z + house_positions[i].z + math.random(-0.5, 0.5)
 
-						if TheWorld.Map:IsValidTileAtPoint(x, y, z) then
+						if TheWorld.Map:IsAboveGroundAtPoint(x, y, z) then
+							local house = SpawnPrefab("gingerbreadhouse")
 							house.Transform:SetPosition(x, y, z)
+							num_houses = num_houses + 1
 						end
 					end
-
+				end
+				if num_houses == 0 then
+					local warg = SpawnPrefab("gingerbreadwarg")
+					warg.Transform:SetPosition(pt:Get())
 				end
 				self.hunt_count = 0
 			else

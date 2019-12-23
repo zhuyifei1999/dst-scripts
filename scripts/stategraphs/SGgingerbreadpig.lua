@@ -62,7 +62,7 @@ local states =
             inst.AnimState:PlayAnimation("death")
             inst.components.locomotor:StopMoving()
             
-            if inst.chased and inst.chased_by_player then
+            if (inst.chased and inst.chased_by_player) or inst:IsNearPlayer(30) then
                 inst.components.lootdropper:DropLoot(inst:GetPosition())
             end
             

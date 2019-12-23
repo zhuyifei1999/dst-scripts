@@ -144,7 +144,6 @@ local function fn()
     inst.components.sleeper:SetWakeTest(ShouldWakeUp)
 
     MakeSmallBurnableCharacter(inst, "gingerbread_pigman_body")
-    MakeSmallPropagator(inst)
 
     MakeSmallFreezableCharacter(inst)
 

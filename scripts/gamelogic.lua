@@ -328,6 +328,8 @@ local function PopulateWorld(savedata, profile)
     Print(VERBOSITY.DEBUG, "PopulateWorld")
     Print(VERBOSITY.DEBUG, "[Instantiating objects...]")
     if savedata ~= nil then
+		ApplySpecialEvent(savedata.map.topology.overrides and savedata.map.topology.overrides.specialevent or nil)
+
         local world = SpawnPrefab(savedata.map.prefab)
         if DEBUG_MODE then
             -- Common error in development when switching branches.
@@ -518,8 +520,6 @@ local function PopulateWorld(savedata, profile)
         -- Force overrides for ambient
         local tuning_override = require("tuning_override")
         tuning_override.areaambientdefault(savedata.map.prefab)
-
-		ApplySpecialEvent(world.topology.overrides and world.topology.overrides.specialevent or nil)
 
         -- Check for map overrides
         if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then
