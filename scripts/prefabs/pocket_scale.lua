@@ -4,6 +4,9 @@ local assets =
 }
 
 local function doweight(inst, target, doer)
+	if inst.components.finiteuses then
+		inst.components.finiteuses:Use(1)
+	end
 	return true
 end
 
@@ -36,7 +39,6 @@ local function fn()
     inst.components.finiteuses:SetMaxUses(TUNING.POCKETSCALE_USES)
     inst.components.finiteuses:SetUses(TUNING.POCKETSCALE_USES)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
-    inst.components.finiteuses:SetConsumption(ACTIONS.WEIGH_ITEM, 1)
 
 	inst:AddComponent("itemweigher")
 	inst.components.itemweigher.type = TROPHYSCALE_TYPES.FISH

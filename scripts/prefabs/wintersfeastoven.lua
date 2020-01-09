@@ -163,7 +163,6 @@ local function onturnoff(inst)
 		inst.AnimState:PushAnimation("idle_closed")
 
         inst.SoundEmitter:KillSound("cooking_loop")
-		print("delay door close sound:", (inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime()))
 		inst:DoTaskInTime(math.max(0, inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime()), function(inst)
 			inst.SoundEmitter:PlaySound(sounds.door_close)
 		end)

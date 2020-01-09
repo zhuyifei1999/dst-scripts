@@ -27,7 +27,7 @@ end
 
 local function ShouldChaseAndHarass(self)
     return self.inst.components.locomotor.walkspeed < 5
-        or not self.inst:IsNear(self._harasstarget, HARASS_MED)
+        or (self._harasstarget ~= nil and self._harasstarget:IsValid() and not self.inst:IsNear(self._harasstarget, HARASS_MED))
 end
 
 local function GetHarassWanderDir(self)
