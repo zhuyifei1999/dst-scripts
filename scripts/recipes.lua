@@ -44,11 +44,12 @@ Recipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1
 	end
 )
 
-Recipe("wintersfeastoven", {Ingredient("cutstone", 1), Ingredient("marble", 1), Ingredient("log", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "wintersfeastoven_placer", nil, true)
-Recipe("table_winters_feast", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "table_winters_feast_placer", 2.8, true, nil, nil, nil, nil,
+Recipe("wintersfeastoven", {Ingredient("cutstone", 1), Ingredient("marble", 1), Ingredient("log", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "wintersfeastoven_placer")
+Recipe("table_winters_feast", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "table_winters_feast_placer", 2.8, nil, nil, nil, nil, nil,
     function(pt)
        return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, 0.5) == nil
     end)
+
 
 Recipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO, nil, nil, nil, nil, "merm_builder")
 

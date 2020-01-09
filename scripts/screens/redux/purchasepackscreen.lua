@@ -694,10 +694,10 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
         self.text:EnableWordWrap( true )
         self.collection:SetPosition(0,32)
         self.collection:SetRegionSize(contentw,20)
-        self.price:SetRegionSize(130,30)
-        self.oldprice:SetRegionSize(130,16)
-        self.price:SetPosition( -80, -58)
+        self.price:SetRegionSize( 200,30 )
+        self.price:SetPosition( -45, -58 )
 
+        self.oldprice:SetRegionSize(130,16)
         self.oldprice:SetPosition(-78, -36)
         self.oldprice_line:SetPosition(-113, -36)
 

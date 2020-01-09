@@ -121,7 +121,7 @@ local function commonfn(bank, build, char_anim_build, data)
     MakeHauntableLaunchAndPerish(inst)
 
     inst:AddComponent("tradable")
-    inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.RAREMEAT
+    inst.components.tradable.goldvalue = data.goldvalue or TUNING.GOLD_VALUES.MEAT
     inst.data = {}--
 
 	if data.weight_min ~= nil and data.weight_max ~= nil then
@@ -147,6 +147,7 @@ local pondfish_data =
     healthvalue = TUNING.HEALING_TINY,
     hungervalue = TUNING.CALORIES_SMALL,
     perish_time = TUNING.PERISH_SUPERFAST,
+	goldvalue = TUNING.GOLD_VALUES.MEAT,
 }
 local function pondfishfn()
 	return commonfn("fish", "fish", "fish01", pondfish_data)
@@ -162,6 +163,7 @@ local pondeel_data =
     healthvalue = TUNING.HEALING_SMALL,
     hungervalue = TUNING.CALORIES_TINY,
     perish_time = TUNING.PERISH_SUPERFAST,
+	goldvalue = TUNING.GOLD_VALUES.RAREMEAT,
 }
 local function pondeelfn()
 	return commonfn("eel", "eel", "eel01", pondeel_data)

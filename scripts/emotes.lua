@@ -68,7 +68,7 @@ local EMOTES =
 
     ["toast"] = {
         aliases = { "toasting", "cheers" },
-        data = { anim = { "emote_pre_toast", "emote_loop_toast" }, soundoverride = "pose", loop = true, fx = false, sounddelay = 0.55, },
+        data = { anim = { "emote_pre_toast", "emote_loop_toast" }, mounted = true, soundoverride = "pose", loop = true, fx = false, sounddelay = 0.55, },
     },
 }
 

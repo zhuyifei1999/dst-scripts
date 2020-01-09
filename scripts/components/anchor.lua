@@ -24,11 +24,11 @@ end
 
 local function SetBoat(self, boat)
 	if self.boat ~= nil then
-		self.inst:RemoveEventCallback("boat_onremove", self.OnBoatRemoved, self.boat)
+		self.inst:RemoveEventCallback("onremove", self.OnBoatRemoved, self.boat)
 	end
 	self.boat = boat
 	if self.boat ~= nil then
-	    self.inst:ListenForEvent("boat_onremove", self.OnBoatRemoved, self.boat)
+	    self.inst:ListenForEvent("onremove", self.OnBoatRemoved, self.boat)
 	end
 end
 

@@ -47,11 +47,6 @@ local function doprojectilehit(inst, other)
     inst:Remove()
 end
 
-local function OnProjectileHit(inst, attacker, other)
-    doprojectilehit(inst, attacker, other)
-    inst:Remove()
-end
-
 local function TestProjectileLand(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	if y <= inst:GetPhysicsRadius() + 0.05 then
@@ -64,7 +59,7 @@ local function oncollide(inst, other)
     -- If there is a physics collision, try to do some damage to that thing.
     -- This is so you can't hide forever behind walls etc.
 
-	if other:HasTag("_combat") or other:HasTag("_health") and not other:HasTag("gingerbread") then
+	if other ~= nil and other:IsValid() and other:HasTag("_combat") or other:HasTag("_health") and not other:HasTag("gingerbread") then
 		doprojectilehit(inst, other)
 	end
 end
@@ -106,14 +101,6 @@ local function projectilefn()
     inst:AddComponent("locomotor")
 
 	inst:DoPeriodicTask(0, TestProjectileLand)
-
---[[
-    inst:AddComponent("complexprojectile")
-    inst.components.complexprojectile:SetOnHit(OnProjectileHit)
-    inst.components.complexprojectile:SetHorizontalSpeed(30)
-    inst.components.complexprojectile:SetLaunchOffset(Vector3(3, 2, 0))
-    inst.components.complexprojectile.usehigharc = false
-]]
 
     return inst
 end
