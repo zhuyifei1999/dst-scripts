@@ -34,6 +34,20 @@ local animdata =
     { build = "gingerbread_house4", bank = "gingerbread_house1" },
 }
 
+local function sethousetype(inst, bank, build)
+	if build == nil or bank == nil then
+		local index = math.random(#animdata)
+		inst.build = animdata[index].build
+		inst.bank  = animdata[index].bank
+	else
+        inst.build = build
+        inst.bank = bank
+	end
+
+    inst.AnimState:SetBuild(inst.build)
+    inst.AnimState:SetBank(inst.bank)
+end
+
 local function onhammered(inst, worker)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
         inst.components.burnable:Extinguish()
@@ -59,7 +73,7 @@ end
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then 
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle")
+        inst.AnimState:PushAnimation("idle", false)
     end
 end
 
@@ -69,13 +83,7 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data ~= nil then
-        inst.build = data.build or animdata[1].build
-        inst.bank = data.bank or animdata[1].bank
-
-        inst.AnimState:SetBuild(inst.build)
-        inst.AnimState:SetBank(inst.bank)
-    end
+	sethousetype(inst, data ~= nil and data.bank, data ~= nil and data.build)
 end
 
 local function fn()
@@ -88,13 +96,9 @@ local function fn()
 
     MakeObstaclePhysics(inst, 1)
 
-    local index = math.random(#animdata)
-    inst.build = animdata[index].build
-    inst.bank  = animdata[index].bank
-
-    inst.AnimState:SetBank (inst.bank)
-    inst.AnimState:SetBuild(inst.build)
-    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:SetBank(animdata[1].build)
+    inst.AnimState:SetBuild(animdata[1].bank)
+    inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("structure")
 
@@ -105,6 +109,10 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	if not POPULATING then
+		sethousetype(inst)
+	end
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('gingerbreadhouse')

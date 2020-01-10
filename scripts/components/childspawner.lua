@@ -572,13 +572,16 @@ function ChildSpawner:OnChildKilled(child)
 end
 
 function ChildSpawner:ReleaseAllChildren(target, prefab)
-    while self:CanSpawn() do
-        self:SpawnChild(target, prefab)
-    end
-    self:UpdateMaxEmergencyCommit()
-    while self:CanEmergencySpawn() do
-        self:SpawnEmergencyChild(target, prefab)
-    end
+	local failures = 0 -- prevent infinate loops when SpawnChild fails to spawn its child
+	while self:CanSpawn() and failures < 3 do
+		failures = self:SpawnChild(target, prefab) == nil and (failures + 1) or 0
+	end
+
+	failures = 0
+	self:UpdateMaxEmergencyCommit()
+	while self:CanEmergencySpawn() and failures < 3 do
+		failures = self:SpawnEmergencyChild(target, prefab) == nil and (failures + 1) or 0
+	end
 end
 
 function ChildSpawner:AddChildrenInside(count)

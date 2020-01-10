@@ -149,15 +149,6 @@ local function DoAddClassPostConstruct(classdef, postfn)
 		constructor(self, ...)
 		postfn(self, ...)
 	end
-	local mt = getmetatable(classdef)
-	mt.__call = function(class_tbl, ...)
-        local obj = {}
-        setmetatable(obj, classdef)
-        if classdef._ctor then
-            classdef._ctor(obj, ...)
-        end
-        return obj
-    end
 end
 
 local function AddClassPostConstruct(package, postfn)
