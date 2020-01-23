@@ -58,6 +58,10 @@ return{
             INUSE = "Mortals need physical food more than I do.",
             TOOFAR = "I could hop over, I suppose.",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "Now that's quite the trick, invisible racing Carrats!",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "I am cautious about touching it.",
 			INUSE = "Another soul has use of it.",
+            NOTMINE_YOTC =
+            {
+                "What's the matter? I won't bite.",
+                "This soul is already bound to someone else.",
+            },
         },
         SLAUGHTER =
         {
@@ -502,6 +511,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "Time has nearly run out for this would-be racer.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Let the race begin, I'm sure to win!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Your route seems rather roundabout.",
+        "The path to victory is the other way, my friend!",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Oh pardon me, does this race bore you?",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "If you don't quicken your pace, we'll lose this race!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "Gotten cold feet? And have they frozen to the ground?",
 
 	BATTLECRY =
 	{
@@ -1293,6 +1313,7 @@ return{
         CHESSPIECE_BUTTERFLY = "It does not float, nor does it sting.",
         CHESSPIECE_ANCHOR = "So heavy, heavy, dreary, dreary.",
         CHESSPIECE_MOON = "The mortals thought it was made of cheese! Hyuyu!",
+        CHESSPIECE_CARRAT = "Not so light on its feet now, hyuyu!",
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
         CHESSJUNK3 = "It looks quite broke, and that's no joke!",
@@ -2269,7 +2290,7 @@ return{
 		PIGSHRINE =
 		{
             GENERIC = "Let us celebrate!",
-            EMPTY = "Rumble and grumble, it wants to eat meat!",
+            EMPTY = "Rumble and grumble, it wants a torch!",
             BURNT = "That's that.",
 		},
 		PIG_TOKEN = "Let's start the game, oh please, oh please!",
@@ -2287,6 +2308,73 @@ return{
 		PIGELITEFIGHTER2 = "You won't beat me, no siree!", --RED
 		PIGELITEFIGHTER3 = "You won't beat me, no siree!", --WHITE
 		PIGELITEFIGHTER4 = "You won't beat me, no siree!", --GREEN
+
+		CARRAT_GHOSTRACER = "I had a feeling she liked to play games too, hyuyu!",
+
+        YOTC_CARRAT_RACE_START = "Hyuyu, what fun!",
+        YOTC_CARRAT_RACE_CHECKPOINT = "I make a point of checking checkpoints, hyuyu.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Surely the cleverest will win.",
+            BURNT = "How silly!",
+            I_WON = "We won with wit and cunning (and a little bit of running).",
+            SOMEONE_ELSE_WON = "{winner} put us to the test, and it turns out they're the best.",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "Let the races begin!",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Mark the way!",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Where to put the finish line...",
+
+		YOTC_SEEDPACKET = "A packet of seeds, to do with as I please.",
+		YOTC_SEEDPACKET_RARE = "Perhaps it contains magic beans? Hyuyu!",
+
+		MINIBOATLANTERN = "I'm sorry, but the souls I take cannot follow you.",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "Hyuyu, I know a trickster when I see one!",
+            EMPTY = "What is it you need? Perhaps carrots and seeds?",
+            BURNT = "Well, that's that.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "North, South, East, West, your sense of direction we'll put to the test!",
+            RAT = "Clever creature.",
+            BURNT = "That prank went a bit too far.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Spin, spin, spin the wheel of fate!",
+            RAT = "You're getting fast, indeed!",
+            BURNT = "That prank went a bit too far.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "I just wanted to see how you'd react, hyuyu!",
+            RAT = "Your reflexes are quite good, for a vegetable.",
+            BURNT = "That prank went a bit too far.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "My, that looks strenuous.",
+            RAT = "Such determination for one so small!",
+            BURNT = "That prank went a bit too far.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "A bit of this, a bit of that, all to train my dear Carrat!",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "A bit of this, a bit of that, all to train my dear Carrat!",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "A bit of this, a bit of that, all to train my dear Carrat!",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "A bit of this, a bit of that, all to train my dear Carrat!",
+
+        YOTC_CARRAT_SCALE_ITEM = "To win the race, I need a Carrat that can keep up the pace!",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "I hope I get a high score, hyuyu!",
+            CARRAT = "I think we can do better than that.",
+            CARRAT_GOOD = "A veritable virtuoso of a vegetable!",
+            BURNT = "Hyuyu, what fun!",
+        },                
 
 		BISHOP_CHARGE_HIT = "Hyuyu! Owie!",
 		TRUNKVEST_SUMMER = "It's my very best vest!",
@@ -2381,7 +2469,6 @@ return{
         WINTER_FOOD8 = "Maybe just a sip.", --hot cocoa
         WINTER_FOOD9 = "I might try this mortal treat.", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "Oh ho! What magic conjured you up?",
@@ -3001,6 +3088,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "How dandy indeed! You've a soul that I need.",
 		OCEANFISH_MEDIUM_4 = "Oooh, how delightfully superstitious!",
 		OCEANFISH_MEDIUM_5 = "It looks like nature played quite the prank on this one.",
+		OCEANFISH_MEDIUM_6 = "I'm afraid your journey has been cut short.",
+		OCEANFISH_MEDIUM_7 = "I'm afraid your journey has been cut short.",
 
 		PONDFISH = "You are quite fragrant.",
 		PONDEEL = "A slippery soul, that one.",

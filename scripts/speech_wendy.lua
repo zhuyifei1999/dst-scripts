@@ -58,6 +58,10 @@ return{
             INUSE = "What are you making...? Smells good...",
             TOOFAR = "It's so... far away...",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "I suppose I'll have to go find some Carrats...",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "No... I don't want that...",
 			INUSE = "Someone's beat me to it.",
+            NOTMINE_YOTC =
+            {
+                "It... doesn't seem to like me very much.",
+                "I shouldn't take what isn't mine.",
+            },
         },
         SLAUGHTER =
         {
@@ -497,6 +506,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "The poor creature is too far gone.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Sigh. Go.",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Of course you'd go in the opposite direction.",
+        "Are you trying to mock me, Carrat?",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Wake up, you silly Carrat!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Must you drag your heels so?",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "Why won't you move?",
 
 	BATTLECRY =
 	{
@@ -1277,7 +1297,7 @@ return{
         CHESSPIECE_FORMAL = "Alas, the king is but a figurehead, at best.",
         CHESSPIECE_HORNUCOPIA = "A cold mockery.",
         CHESSPIECE_PIPE = "A bubble, frozen in time, can never pop.",
-        CHESSPIECE_DEERCLOPS = "What terrible beast.",
+        CHESSPIECE_DEERCLOPS = "What a terrible beast.",
         CHESSPIECE_BEARGER = "Ashes to ashes, bust to bust. Oh.",
         CHESSPIECE_MOOSEGOOSE =
         {
@@ -1287,6 +1307,7 @@ return{
         CHESSPIECE_BUTTERFLY = "But a simulacrum of life. Sigh.",
         CHESSPIECE_ANCHOR = "Why did we sculpt an anchor.",
         CHESSPIECE_MOON = "I'd prefer to look at this over the real thing.",
+        CHESSPIECE_CARRAT = "If only I could feel so serene.",
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",
@@ -2282,6 +2303,73 @@ return{
 		PIGELITEFIGHTER3 = "His whole career is grounded in violence.", --WHITE
 		PIGELITEFIGHTER4 = "Petrifying.", --GREEN
 
+		CARRAT_GHOSTRACER = "It's merely a shade.",
+
+        YOTC_CARRAT_RACE_START = "Why do I bother with such silly things.",
+        YOTC_CARRAT_RACE_CHECKPOINT = "If only I had a signpost to guide me...",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Don't worry, the end is near.",
+            BURNT = "I suppose this means the race is over.",
+            I_WON = "Oh. I won.",
+            SOMEONE_ELSE_WON = "Enjoy your victory {winner}... good things never last.",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "I should find a resting place for this.",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "I fear I've already lost my way.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "It's time to finish this... race track.",
+
+		YOTC_SEEDPACKET = "Nothing grows in the garden of my heart.",
+		YOTC_SEEDPACKET_RARE = "Everything that grows just dies eventually.",
+
+		MINIBOATLANTERN = "Such a happy little glow... I despise it.",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "I must pay my respects.",
+            EMPTY = "It hungers for a tribute.",
+            BURNT = "Ashes to ashes.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "If only my life could find some direction.",
+            RAT = "An exercise in futility.",
+            BURNT = "Returned to dust.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "I had a hamster once. It died.",
+            RAT = "Running, running, yet going nowhere.",
+            BURNT = "Returned to dust.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "After all, one never knows when disaster will strike...",
+            RAT = "What a silly creature.",
+            BURNT = "Returned to dust.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Abigail would have enjoyed this.",
+            RAT = "You know you'll never get that berry, don't you?",
+            BURNT = "Returned to dust.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "I suppose I'd better get started.",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "I'd rather not carry it any longer.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Perhaps I could put it over here...",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "What a lot of trouble to go to.",
+
+        YOTC_CARRAT_SCALE_ITEM = "How do you measure one's worth?",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "What is the measure of a Carrat?",
+            CARRAT = "I don't know what I expected, really.",
+            CARRAT_GOOD = "Oh... that's actually pretty good.",
+            BURNT = "\"Ashes, ashes, we all fall down.\"",
+        },                
+
 		BISHOP_CHARGE_HIT = "Ouch...",
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",
@@ -2375,7 +2463,6 @@ return{
         WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
         WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "A place to cook dead things.",
@@ -2995,6 +3082,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "It fought hard to live. A shame, really.",
 		OCEANFISH_MEDIUM_4 = "My luck couldn't possibly be worse than it already is.",
 		OCEANFISH_MEDIUM_5 = "Its existence must be so confusing.",
+		OCEANFISH_MEDIUM_6 = "It's almost too pretty to eat. Almost.",
+		OCEANFISH_MEDIUM_7 = "It's almost too pretty to eat. Almost.",
 
 		PONDFISH = "It was flopping around desperately for life. The poor fool.",
 		PONDEEL = "An eel.",

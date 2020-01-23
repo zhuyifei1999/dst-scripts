@@ -614,6 +614,10 @@ function FrontEnd:UpdateConsoleOutput()
 end
 
 function FrontEnd:Update(dt)
+    if DEBUGGER_ENABLED then
+        Debuggee.poll()
+    end
+
     if CHEATS_ENABLED then
         ProbeReload(TheInput:IsKeyDown(KEY_F6))
     end

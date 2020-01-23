@@ -574,8 +574,9 @@ SPECIAL_EVENTS =
     YOTG = "year_of_the_gobbler",
     YOTV = "year_of_the_varg",
     YOTP = "year_of_the_pig",
+    YOTC = "year_of_the_carrat",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTC
 
 FESTIVAL_EVENTS =
 {
@@ -637,6 +638,13 @@ SPECIAL_EVENT_MUSIC =
     {
         bank = "music_frontend_yotg.fsb",
         sound = "dontstarve/music/music_FE_yotg",
+    },
+
+    --year of the carrat
+    [SPECIAL_EVENTS.YOTC] =
+    {
+        bank = "music_frontend_yotc.fsb",
+        sound = "dontstarve/music/music_FE_yotc",
     },
 }
 
@@ -700,6 +708,12 @@ function IsAnySpecialEventActive()
     return WORLD_SPECIAL_EVENT ~= SPECIAL_EVENTS.NONE
 end
 
+---------------------------------------------------------
+-- Checks if any of the "Year of the <creature>" events are active
+function IsAny_YearOfThe_EventActive()
+	return WORLD_SPECIAL_EVENT == SPECIAL_EVENTS.YOTG or WORLD_SPECIAL_EVENT == SPECIAL_EVENTS.YOTV or WORLD_SPECIAL_EVENT == SPECIAL_EVENTS.YOTP or WORLD_SPECIAL_EVENT == SPECIAL_EVENTS.YOTC
+end
+
 function GetSpecialEventSkinTag()
     return SPECIAL_EVENT_SKIN_TAGS[WORLD_SPECIAL_EVENT]
 end
@@ -739,7 +753,7 @@ end
 -- Used by C side. Do NOT rename without editing simulation.cpp
 function GetActiveFestivalEventServerName()
     local festival = IsAnyFestivalEventActive() and WORLD_FESTIVAL_EVENT
-    return FESTIVAL_EVENT_INFO[festival] ~= nil and (string.format( "%s_s%d", FESTIVAL_EVENT_INFO[festival].SERVER_NAME, FESTIVAL_EVENT_INFO[festival].LATEST_SEASON )) or ""
+    return GetFestivalEventServerName( festival, GetFestivalEventSeasons(festival) )
 end
 
 -- Used by C side. Do NOT rename without editing simulation.cpp
@@ -830,6 +844,7 @@ TECH =
     PERDOFFERING_THREE = { PERDOFFERING = 3 },
     WARGOFFERING_THREE = { WARGOFFERING = 3 },
     PIGOFFERING_THREE = { PIGOFFERING = 3 },
+    CARRATOFFERING_THREE = { CARRATOFFERING = 3 },
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
     FOODPROCESSING_ONE = { FOODPROCESSING = 1 },
 	FISHING_ONE = { FISHING = 1 },
@@ -840,6 +855,7 @@ TECH =
     YOTG = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTV = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTP = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    YOTC = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
 
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }
@@ -1535,6 +1551,7 @@ TOOLACTIONS =
 	REACH_HIGH = true,
 }
 
+-- this is a net_tinybyte on inventoryitem_classified.deploymode
 DEPLOYMODE =
 {
     NONE = 0,
@@ -1544,7 +1561,8 @@ DEPLOYMODE =
     PLANT = 4,
     WALL = 5,
     WATER = 6,
-    MAST = 7
+    MAST = 7,-- Keeping MAST around for mod support
+    CUSTOM = 7,
 }
 
 BUILDMODE =
@@ -1801,6 +1819,17 @@ COMMAND_RESULT = {
     VOTE = "VOTE",
     DENY = "DENY", --cannot start vote right now
     INVALID = "INVALID",
+}
+
+CARRAT_MUSIC_STATES = {   
+    NONE = 0,
+    TRAINING = 1,
+    RACE = 2,
+}
+
+LOCALPLAYER_MUSIC = {   
+    NONE = 0,
+    WINTERS_FEAST = 1,
 }
 
 MAX_VOTE_OPTIONS = 6

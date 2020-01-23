@@ -299,6 +299,80 @@ local redpouch_yotp =
     end,
 }
 
+local redpouch_yotc =
+{
+    master_postinit = function(inst, setupdata)
+        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
+    end,
+    common_postinit = function(inst, setupdata)
+        inst:SetPrefabNameOverride("redpouch")
+    end,
+}
+
+local yotc_seedpacket_loots =
+{
+	set1 =
+	{
+		carrot_seeds = 1,
+		corn_seeds = 1,
+		tomato_seeds = 1,
+		pumpkin_seeds = 1,
+		eggplant_seeds = 1,
+		potato_seeds = 1,
+		watermelon_seeds = 1,
+	},
+	set2 =
+	{
+		asparagus_seeds = 1,
+		pomegranate_seeds = 1,
+		durian_seeds = 1,
+		dragonfruit_seeds = 1,
+	},
+}
+
+local yotc_seedpacket =
+{
+    common_postinit = function(inst, setupdata)
+        MakeInventoryFloatable(inst, "small")
+    end,
+
+    master_postinit = function(inst, setupdata)
+        inst.components.inventoryitem:SetSinks(false)
+    end,
+
+	lootfn = function(inst, doer)
+        local loots = {}
+        local r = 0
+
+		table.insert(loots, "seeds")
+		table.insert(loots, "seeds")
+		table.insert(loots, weighted_random_choice(yotc_seedpacket_loots.set1))
+
+		return loots
+	end,
+}
+local yotc_seedpacket_rare =
+{
+    common_postinit = function(inst, setupdata)
+        MakeInventoryFloatable(inst, "small")
+    end,
+
+    master_postinit = function(inst, setupdata)
+        inst.components.inventoryitem:SetSinks(false)
+    end,
+
+	lootfn = function(inst, doer)
+		local loots = {}
+        local r = 0
+        
+		table.insert(loots, weighted_random_choice(yotc_seedpacket_loots.set1))
+		table.insert(loots, weighted_random_choice(yotc_seedpacket_loots.set1))
+		table.insert(loots, weighted_random_choice(yotc_seedpacket_loots.set2))
+		
+		return loots
+	end,
+}
+
 local wetpouch =
 {
     loottable =
@@ -377,4 +451,7 @@ return MakeContainer("bundle_container", "ui_bundle_2x2"),
     --"redpouch"
     MakeBundle("redpouch", true, nil, { "lucky_goldnugget" }, true, redpouch),
     MakeBundle("redpouch_yotp", false, nil, nil, true, redpouch_yotp),
+    MakeBundle("redpouch_yotc", false, nil, nil, true, redpouch_yotc),
+	MakeBundle("yotc_seedpacket", true, nil, nil, true, yotc_seedpacket),
+	MakeBundle("yotc_seedpacket_rare", true, nil, nil, true, yotc_seedpacket_rare),
     MakeBundle("wetpouch", true, nil, JoinArrays(table.invert(wetpouch.loottable), GetAllWinterOrnamentPrefabs()), false, wetpouch)

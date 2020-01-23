@@ -88,7 +88,13 @@ local function common_fn(bank, build)
 end
 
 local function onequipgold(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_goldenpickaxe", "swap_goldenpickaxe")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_goldenpickaxe", inst.GUID, "swap_goldenpickaxe")
+    else
+        owner.AnimState:OverrideSymbol("swap_object", "swap_goldenpickaxe", "swap_goldenpickaxe")
+    end
     owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")

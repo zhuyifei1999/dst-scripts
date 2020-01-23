@@ -90,18 +90,40 @@ function MakeBanner(self)
 		anim:SetScale(0.7)
 		anim:GetAnimState():PlayAnimation("loop", true)
 ]]
-	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
+
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
 		local anim_bg = baner_root:AddChild(UIAnim())
-		anim_bg:GetAnimState():SetBuild("dst_menu_pig_bg")
-		anim_bg:GetAnimState():SetBank("dst_menu_pig_bg")
+		anim_bg:GetAnimState():SetBuild("dst_menu_carrat_bg")
+		anim_bg:GetAnimState():SetBank("dst_carrat_bg")
 		anim_bg:SetScale(0.7)
 		anim_bg:GetAnimState():PlayAnimation("loop", true)
 		anim_bg:MoveToBack()
         
-		anim:GetAnimState():SetBuild("dst_menu_pigs")
-		anim:GetAnimState():SetBank("dst_menu_pigs")
-		anim:SetScale(2/3)
+		anim:GetAnimState():SetBuild("dst_menu_carrat")
+		anim:GetAnimState():SetBank("dst_carrat")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(0.6)
 
+        local colors ={
+            "blue",
+            "brown",
+            "pink",
+            "purple",
+            "yellow",
+            "green",
+            "white",
+            nil, -- normal?
+            }
+
+        local color = colors[math.random(1,#colors)]
+
+        if color then
+            anim:GetAnimState():OverrideSymbol("ear1", "dst_menu_carrat_swaps", color.."_ear1")
+            anim:GetAnimState():OverrideSymbol("ear2", "dst_menu_carrat_swaps", color.."_ear2")
+            anim:GetAnimState():OverrideSymbol("tail", "dst_menu_carrat_swaps", color.."_tail")        
+        end
+
+--[[
         local function onanimover(inst)
             inst.AnimState:PlayAnimation("loop")
 
@@ -115,8 +137,10 @@ function MakeBanner(self)
             inst:DoTaskInTime(151 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
             inst:DoTaskInTime(161 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
         end
+
         anim.inst:ListenForEvent("animover", onanimover)
         onanimover(anim.inst)
+    ]]
 	else
 		anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
@@ -706,7 +730,7 @@ end
 
 function MultiplayerMainScreen:FinishedFadeIn()
     if HasNewSkinDLCEntitlements() then
-        if IsSteam() then
+        if IsSteam() or IsRail() then
             local popup_screen = PopupDialogScreen( STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_BODY,
                     {
                         { text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function()

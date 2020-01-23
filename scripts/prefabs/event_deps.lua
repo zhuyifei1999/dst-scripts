@@ -37,6 +37,11 @@ LOADING_IMAGES =
         { atlas = "images/bg_loading_yotv1.xml", tex = "bg_image1.tex" },
     },
 
+    [SPECIAL_EVENTS.YOTC] =
+    {
+        { atlas = "images/bg_loading_yotc.xml", tex = "bg_image1.tex" },
+    },
+
     [SPECIAL_EVENTS.NONE] =
     {
         { atlas = "images/bg_spiral_fill1.xml", tex = "bg_image1.tex", spiral = true },
@@ -135,6 +140,20 @@ local SPECIAL_EVENT_DEPS =
         },
     },
 
+    [SPECIAL_EVENTS.YOTC] =
+    {
+        frontend =
+        {
+            assets =
+            {
+                Asset("ANIM", "anim/dst_menu_carrat_bg.zip"),
+                Asset("ANIM", "anim/dst_menu_carrat.zip"),
+                Asset("ANIM", "anim/dst_menu_carrat_swaps.zip"),
+                Asset("SOUND", "sound/music_frontend_yotc.fsb"),
+            },
+        },
+    },
+
     [SPECIAL_EVENTS.NONE] =
     {
         frontend =
@@ -148,9 +167,9 @@ local SPECIAL_EVENT_DEPS =
                 Asset("PKGREF", "anim/dst_menu_wormwood.zip"),
                 Asset("PKGREF", "anim/dst_menu_warly.zip"),
                 Asset("PKGREF", "anim/dst_menu_lunacy.zip"),
-                Asset("PKGREF", "anim/dst_menu_woodie.zip"),                
+                Asset("PKGREF", "anim/dst_menu_woodie.zip"),
                 Asset("PKGREF", "anim/dst_menu_rot2.zip"),
-                Asset("ANIM",   "anim/dst_menu_inker.zip"),                
+                Asset("ANIM",   "anim/dst_menu_inker.zip"),
             },
         },
     },

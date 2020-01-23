@@ -58,6 +58,10 @@ return{
             INUSE = "Mmm... what that smell?",
             TOOFAR = "It way over there!",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "Can't start yet! Need veggie rats!",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "Don't wanna.",
 			INUSE = "Flurmph. Gotta wait.",
+            NOTMINE_YOTC =
+            {
+                "It not want to come, flort.",
+                "That one already have owner.",
+            },
         },
         SLAUGHTER =
         {
@@ -497,6 +506,17 @@ return{
         BOOK_BRIMSTONE = "Flurrgh, wanna know how it ends!",
         BOOK_GARDENING = "So many hard words...",
     },
+    ANNOUNCE_WEAK_RAT = "It not look so good...",
+
+    ANNOUNCE_CARRAT_START_RACE = "Go! Go! Go!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Hey! That way! THAT WAY!",
+        "Glurph, veggie rat going wrong way!",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "No sleepy! Gotta win!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Not move fast enough, florp!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "What wrong, why you not going?!",
 
 	BATTLECRY =
 	{
@@ -1287,6 +1307,7 @@ return{
         CHESSPIECE_BUTTERFLY = "It so ugly.",
         CHESSPIECE_ANCHOR = "Why made anchor for land, florpt?",
         CHESSPIECE_MOON = "It look just like real thing!",
+        CHESSPIECE_CARRAT = "Veggie rat look happy.",
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
         CHESSJUNK3 = "It all messed up.",
@@ -2282,6 +2303,73 @@ return{
 		PIGELITEFIGHTER3 = "Nasty Pigman!", --WHITE
 		PIGELITEFIGHTER4 = "Enemy of Mermfolk!", --GREEN
 
+		CARRAT_GHOSTRACER = "That one creepy, flurp.",
+
+        YOTC_CARRAT_RACE_START = "Veggie race start here!",
+        YOTC_CARRAT_RACE_CHECKPOINT = "It show the way!",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Is the finish place.",
+            BURNT = "Awwwwww.",
+            I_WON = "Yeah!! Beat you, ha ha!",
+            SOMEONE_ELSE_WON = "Glurgh, {winner} cheated...",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "Is starting spot for veggie race.",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Help veggie rats find way.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Where finish place go?",
+
+		YOTC_SEEDPACKET = "Tiny snacks!",
+		YOTC_SEEDPACKET_RARE = "Wonder if it grow into something tasty.",
+
+		MINIBOATLANTERN = "Pretty water floaty.",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "It look like veggie rat, flort.",
+            EMPTY = "Want presents?",
+            BURNT = "Didn't do it!!",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "Hee-hee, my veggie rat gonna be best!",
+            RAT = "Go, go!",
+            BURNT = "Aww...",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Race wheel.",
+            RAT = "Spinny, spinny, spin!",
+            BURNT = "Aww...",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Is very good racing training, flort.",
+            RAT = "Getting better, florp!",
+            BURNT = "Aww...",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Hoppy string machine.",
+            RAT = "Jump!",
+            BURNT = "Aww...",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "Gotta make veggie rat the best!",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "For veggie rat.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Where a good place to put this, flort?",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Glurph, lot of pieces to put together.",
+
+        YOTC_CARRAT_SCALE_ITEM = "Will see which veggie rat is best one!",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "Need to get best veggie rat!",
+            CARRAT = "Not very good, flort.",
+            CARRAT_GOOD = "Gonna be good racer, florp!",
+            BURNT = "Didn't do it!",
+        },                
+
 		BISHOP_CHARGE_HIT = "GLOP!",
 		TRUNKVEST_SUMMER = "Wearing a nose!",
 		TRUNKVEST_WINTER = "Cozy...",
@@ -2291,7 +2379,7 @@ return{
 		TUMBLEWEED = "Where you going?",
 		TURKEYDINNER = "Horrible, flort.",
 		TWIGS = "Buncha sticks, florp.",
-		UMBRELLA = "Don't need umm-brella!",
+		UMBRELLA = "Umm-brella keep rain away!",
 		GRASS_UMBRELLA = "Don't see what so pretty about it.",
 		UNIMPLEMENTED = "What that?",
 		WAFFLES = "Fluffy sweet squares!",
@@ -2300,7 +2388,7 @@ return{
 			GENERIC = "Will huff and puff and blow wall down!",
 			BURNT = "That not how story usually end, flort.",
 		},
-		WALL_HAY_ITEM = "Wicker-lady has story of house built with straw...",
+		WALL_HAY_ITEM = "Wicker-lady has story of house built with straw.",
 		WALL_STONE = "Look good, florp!",
 		WALL_STONE_ITEM = "Rock pile!",
 		WALL_RUINS = "How look so old already, flort?",
@@ -2375,7 +2463,6 @@ return{
         WINTER_FOOD8 = "This. Best. Thing. Ever.", --hot cocoa
         WINTER_FOOD9 = "Sluuuurrrrp!", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "Is big burny thing!",
@@ -2633,34 +2720,34 @@ return{
         QUAGMIRE_RUBBLE_CATHEDRAL = "Mermfolk have story passed down... about mouth in the sky...",
         QUAGMIRE_RUBBLE_PUBDOOR = "It all broken.",
         QUAGMIRE_RUBBLE_ROOF = "Was there fight? Look like Goatfolk lose.",
-        QUAGMIRE_RUBBLE_CLOCKTOWER = "PLACEHOLDER",
+        QUAGMIRE_RUBBLE_CLOCKTOWER = "All broken up.",
         QUAGMIRE_RUBBLE_BIKE = "Weird looking thing...",
         QUAGMIRE_RUBBLE_HOUSE =
         {
-            "No one's here.",
-            "Something destroyed this town.",
-            "I wonder who they angered.",
+            "Hellooooo?",
+            "Glurph... it feel spooky here.",
+            "Nobody home, flort.",
         },
-        QUAGMIRE_RUBBLE_CHIMNEY = "Something put a damper on that chimney.",
-        QUAGMIRE_RUBBLE_CHIMNEY2 = "Something put a damper on that chimney.",
-        QUAGMIRE_MERMHOUSE = "What an ugly little house.",
-        QUAGMIRE_SWAMPIG_HOUSE = "It's seen better days.",
-        QUAGMIRE_SWAMPIG_HOUSE_RUBBLE = "Some pig's house was ruined.",
+        QUAGMIRE_RUBBLE_CHIMNEY = "Nobody live here anymore?",
+        QUAGMIRE_RUBBLE_CHIMNEY2 = "Nobody live here anymore?",
+        QUAGMIRE_MERMHOUSE = "Just bit of a fixer upper!",
+        QUAGMIRE_SWAMPIG_HOUSE = "Glurgh, it smell like Pigfolk!",
+        QUAGMIRE_SWAMPIG_HOUSE_RUBBLE = "Ha ha! Pig house all broken.",
         QUAGMIRE_SWAMPIGELDER =
         {
-            GENERIC = "I guess you're in charge around here?",
-            SLEEPING = "It's sleeping, for now.",
+            GENERIC = "Something weird about that Pigfolk.",
+            SLEEPING = "Is asleep?",
         },
-        QUAGMIRE_SWAMPIG = "It's a super hairy pig.",
+        QUAGMIRE_SWAMPIG = "You a weird looking Pigfolk.",
         
         QUAGMIRE_PORTAL = "Another dead end.",
-        QUAGMIRE_SALTROCK = "Salt. The tastiest mineral.",
-        QUAGMIRE_SALT = "It's full of salt.",
+        QUAGMIRE_SALTROCK = "Tasty rock!",
+        QUAGMIRE_SALT = "Shaky shaky!",
         --food--
-        QUAGMIRE_FOOD_BURNT = "That one was an experiment.",
+        QUAGMIRE_FOOD_BURNT = "Glurp, didn't mean to burn it!",
         QUAGMIRE_FOOD =
         {
-        	GENERIC = "I should offer it on the Altar of Gnaw.",
+        	GENERIC = "PLACEHOLDER",
             MISMATCH = "That's not what it wants.",
             MATCH = "Science says this will appease the sky God.",
             MATCH_BUT_SNACK = "It's more of a light snack, really.",
@@ -2995,6 +3082,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "Look like it has little spiky crown on head!",
 		OCEANFISH_MEDIUM_4 = "Will you be new pet?",
 		OCEANFISH_MEDIUM_5 = "Feel... weird mixed feeling about this one, florp.",
+		OCEANFISH_MEDIUM_6 = "You very pretty, florp.",
+		OCEANFISH_MEDIUM_7 = "Like your scales, flort!",
 
 		PONDFISH = "Awwww, it so cute!",
 		PONDEEL = "Hello long fishy!",

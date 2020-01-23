@@ -108,7 +108,7 @@ local TextListPopup = Class(Screen, function(self, list_items, title_text, body_
                 num_columns      = 1,
                 item_ctor_fn = ScrollWidgetsCtor,
                 apply_fn     = ScrollWidgetApply,
-                scrollbar_height_offset = -60,
+                scrollbar_height_offset = -60
             }
         ))
     self.scroll_list:SetPosition(0, 30)

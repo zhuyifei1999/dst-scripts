@@ -24,7 +24,7 @@ local prefabs_item =
 }
 
 local function ondeploy(inst, pt)--, deployer)
-    local ent = SpawnPrefab("minisign")
+    local ent = SpawnPrefab("minisign", inst.linked_skinname, inst.skin_id ) 
 
     if inst.components.stackable ~= nil then
         inst.components.stackable:Get():Remove()

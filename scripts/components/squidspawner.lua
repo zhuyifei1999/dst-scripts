@@ -152,8 +152,7 @@ local function onschoolspawned(src,data)
     testforsquid(self,data.spawnpoint)
 end
 
-local function spawntask()
- 
+local function spawntask() 
     if TheWorld.state.isnight or TheWorld.state.isdusk then
         testforsquid(self)   
         if inst.squidtask then

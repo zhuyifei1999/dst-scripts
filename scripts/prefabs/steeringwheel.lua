@@ -15,11 +15,6 @@ local prefabs =
 	"steeringwheel_item", -- deprecated but kept for existing worlds and mods
 }
 
-local item_prefabs =
-{
-    "steeringwheel",
-}
-
 local function on_start_steering(inst)
 	inst.AnimState:HideSymbol("boat_wheel_round")
 	inst.AnimState:HideSymbol("boat_wheel_stick")	
@@ -145,47 +140,6 @@ local function ondeploy(inst, pt, deployer)
     end
 end
 
-local function item_fn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
-
-    inst:AddTag("boat_accessory")
-
-    MakeInventoryPhysics(inst)
-
-    inst.AnimState:SetBank("seafarer_wheel")
-    inst.AnimState:SetBuild("seafarer_wheel")
-    inst.AnimState:PlayAnimation("idle")
-
-    MakeInventoryFloatable(inst, "med", nil, 0.77)
-
-    inst.entity:SetPristine()
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    MakeSmallBurnable(inst)
-    MakeSmallPropagator(inst)
-
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("inventoryitem")
-
-    inst:AddComponent("deployable")
-    inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.MAST)
-
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
-
-    MakeHauntableLaunch(inst)
-
-    return inst
-end
-
 return Prefab("steeringwheel", fn, assets, prefabs),
-       Prefab("steeringwheel_item", item_fn, item_assets, item_prefabs),
+       MakeDeployableKitItem("steeringwheel_item", "steeringwheel", "seafarer_wheel", "seafarer_wheel", "idle", item_assets, {size = "med", scale = 0.77}, {"boat_accessory"}, {fuelvalue = TUNING.LARGE_FUEL}),
        MakePlacer("steeringwheel_item_placer", "boat_wheel", "boat_wheel", "idle")

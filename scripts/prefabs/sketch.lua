@@ -21,6 +21,7 @@ local SKETCHES =
     { item = "chesspiece_butterfly",    recipe = "chesspiece_butterfly_builder",    image = "chesspiece_butterfly_sketch" },
     { item = "chesspiece_anchor",       recipe = "chesspiece_anchor_builder",       image = "chesspiece_anchor_sketch" },
     { item = "chesspiece_moon",         recipe = "chesspiece_moon_builder",         image = "chesspiece_moon_sketch" },
+    { item = "chesspiece_carrat",       recipe = "chesspiece_carrat_builder",       image = "chesspiece_carrat_sketch" },
 }
 
 local function onload(inst, data)

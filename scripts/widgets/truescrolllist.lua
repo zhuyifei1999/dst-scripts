@@ -29,7 +29,7 @@ local TrueScrollList = Class(Widget, function(self, context, create_widgets_fn, 
     self.context = context or {}
 
 	-- 
-	self.scroll_per_click = scroll_per_click or 0.33
+	self.scroll_per_click = scroll_per_click or 1
 	
     -- Scroll-region-sized spanning image to ensure we don't lose focus
     -- due to gaps between widgets.
@@ -267,7 +267,7 @@ function TrueScrollList:SetItemsData(items)
 end
 
 function TrueScrollList:OnUpdate(dt)
-	local blend_weight = 0.4
+	local blend_weight = 0.7
 	local last_scroll_pos = self.current_scroll_pos
 	self.current_scroll_pos = self.current_scroll_pos * blend_weight + self.target_scroll_pos * (1 - blend_weight)
 	
@@ -430,12 +430,20 @@ function TrueScrollList:OnControl(control, down)
 
     if down and (self.focus and self.scroll_bar:IsVisible()) then
         if control == CONTROL_SCROLLBACK then
-            if self:Scroll(-self.scroll_per_click) then
+            local scroll_amt = -self.scroll_per_click
+            if TheInput:ControllerAttached() then
+                scroll_amt = scroll_amt / 2
+            end
+            if self:Scroll(scroll_amt) then
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true
         elseif control == CONTROL_SCROLLFWD then
-            if self:Scroll(self.scroll_per_click) then
+            local scroll_amt = self.scroll_per_click
+            if TheInput:ControllerAttached() then
+                scroll_amt = scroll_amt / 2
+            end
+            if self:Scroll(scroll_amt) then
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true

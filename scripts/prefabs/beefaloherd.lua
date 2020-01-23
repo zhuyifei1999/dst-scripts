@@ -3,6 +3,24 @@ local prefabs =
     "babybeefalo",
 }
 
+local function spawncarrat(inst, phase)
+    if phase == "night" then
+        local carrat = false
+        local beefalo = {}
+        for k, v in pairs(inst.components.herd.members) do
+            if k:HasTag("HasCarrat") then
+                carrat = true                
+                break
+            end
+            table.insert(beefalo,k)
+        end
+
+        if not carrat and #beefalo > 0 and math.random() < 0.33 then
+            beefalo[math.random(1,#beefalo)]:AddTag("HasCarrat")
+        end
+    end
+end
+
 local function InMood(inst)
     if inst.components.periodicspawner ~= nil then
         inst.components.periodicspawner:Start()
@@ -115,6 +133,10 @@ local function fn()
     inst.components.periodicspawner:SetSpawnTestFn(CanSpawn)
     inst.components.periodicspawner:SetDensityInRange(20, 6)
     inst.components.periodicspawner:SetOnlySpawnOffscreen(true)
+
+    if IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+	    inst:ListenForEvent("phasechanged", function(src,phase) spawncarrat(inst,phase) end, TheWorld)
+	end
 
     return inst
 end

@@ -58,6 +58,10 @@ return{
             INUSE = "Careful now, don't burn it.",
             TOOFAR = "I gotta get closer, eh?",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "Just who's racing against who, eh?",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "I ain't too keen on that, eh?",
 			INUSE = "Oops! Sorry. Someone's using that.",
+            NOTMINE_YOTC =
+            {
+                "Sorry, wrong Carrat!",
+                "Why don't you scurry back to your owner, eh?",
+            },
         },
         SLAUGHTER =
         {
@@ -498,6 +507,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "That one's not looking so good.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Aaaaand go!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Seems like its sense of direction isn't the greatest, eh Lucy?",
+        "How aboot you try going the other way?",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Now's not the best time to catch some zeds!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "You've gotta move faster than that!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "We shoulda worked more on those reflexes, eh?",
 
 	BATTLECRY =
 	{
@@ -1288,6 +1308,7 @@ return{
         CHESSPIECE_BUTTERFLY = "Reminds me of nature.",
         CHESSPIECE_ANCHOR = "Looks good to me.",
         CHESSPIECE_MOON = "Someone did a good job on this.",
+        CHESSPIECE_CARRAT = "Looks well made.",
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
         CHESSJUNK3 = "Dead metal.",
@@ -2283,6 +2304,73 @@ return{
 		PIGELITEFIGHTER3 = "Sure likes that gold.", --WHITE
 		PIGELITEFIGHTER4 = "Something aboot that guy I like.", --GREEN
 
+		CARRAT_GHOSTRACER = "That thing's giving me the creeps.",
+
+        YOTC_CARRAT_RACE_START = "How aboot a little race, eh?",
+        YOTC_CARRAT_RACE_CHECKPOINT = "This marker should help 'em find the finish line.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Can't have a race without a finish line.",
+            BURNT = "I guess nobody wins.",
+            I_WON = "I knew you could do it, bud!",
+            SOMEONE_ELSE_WON = "{winner} sure gave us the run-around, eh?",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "Alright, where do we start this race?",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "How aboot I start settin' up the racetrack?",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Let's get this all set up!",
+
+		YOTC_SEEDPACKET = "It's a bit of a mixed bag. Of seeds.",
+		YOTC_SEEDPACKET_RARE = "Whatcha think it'll grow into, Lucy?",
+
+		MINIBOATLANTERN = "Light the way, little lantern!",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "Pretty nice setup, eh?",
+            EMPTY = "It needs a little something...",
+            BURNT = "What a shame.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "You ain't gettin' far without a good sense of direction.",
+            RAT = "You've got this, bud!",
+            BURNT = "Well, I guess that's that.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Let's hit the ground running, eh?",
+            RAT = "Yer doin great!",
+            BURNT = "Well, I guess that's that.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Better look sharp.",
+            RAT = "Nice reflexes!",
+            BURNT = "Well, I guess that's that.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Wait a minute, is that my fishing reel?",
+            RAT = "There ya go!",
+            BURNT = "Well, I guess that's that.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "My Carrat's gonna be as quick as a Canadian summer!",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "I'd better find a place to set this up.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Just aboot everything I need to toughen up my Carrat.",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Better find a good place to put this, eh?",
+
+        YOTC_CARRAT_SCALE_ITEM = "This will help me get the measure of my racer.",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "How aboot we see what our Carrat's made of, eh?",
+            CARRAT = "Sorry bud, looks like you need more time at the gym.",
+            CARRAT_GOOD = "Not bad! Not bad at all!",
+            BURNT = "Hey, it's not fire season!",
+        },                
+
 		BISHOP_CHARGE_HIT = "Hey now!",
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",
@@ -2376,7 +2464,6 @@ return{
         WINTER_FOOD8 = "Perfect for drinking next to a good fire, eh?", --hot cocoa
         WINTER_FOOD9 = "Psst, Lucy. Do I have a 'nog moustache?", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "What kind of oven doesn't take wood?",
@@ -2996,6 +3083,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "Never seen a fish so pointy before.",
 		OCEANFISH_MEDIUM_4 = "Don't recall ever trying catfish. First time for everything!",
 		OCEANFISH_MEDIUM_5 = "Now that's just confusing.",
+		OCEANFISH_MEDIUM_6 = "Sorry bud, but your whiskers don't hold a candle to mine.",
+		OCEANFISH_MEDIUM_7 = "Sorry bud, but your whiskers don't hold a candle to mine.",
 
 		PONDFISH = "Looks like a cod.",
 		PONDEEL = "This should cook up nicely.",

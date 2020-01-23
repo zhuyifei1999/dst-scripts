@@ -286,7 +286,7 @@ function BanTab:MakePlayerList()
                 item_ctor_fn = bannedPlayerRowConstructor,
                 apply_fn = bannedPlayerRowUpdate,
                 scrollbar_offset = 20,
-                scrollbar_height_offset = -60,
+                scrollbar_height_offset = -60
                 -- Don't need peek_percent since the list should never grow within this screen.
             }
         ))

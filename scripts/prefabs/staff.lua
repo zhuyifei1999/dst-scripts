@@ -843,7 +843,7 @@ local function yellow()
 end
 
 local function green()
-    local inst = commonfn("green", { "nopunch" })
+    local inst = commonfn("green", { "nopunch" }, true)
 
     if not TheWorld.ismastersim then
         return inst

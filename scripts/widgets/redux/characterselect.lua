@@ -84,7 +84,7 @@ function CharacterSelect:_BuildCharacterGrid(characters, character_widget_ctor, 
             num_columns      = self.grid_columns,
             item_ctor_fn = ScrollWidgetsCtor,
             apply_fn     = ScrollWidgetApply,
-            scrollbar_offset = 0,
+            scrollbar_offset = 0
         })
 
     return grid

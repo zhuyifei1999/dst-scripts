@@ -1160,6 +1160,11 @@ local function OnGotOffPlatform(player, platform)
     player.Transform:SetIsOnPlatform(false)
 end
 
+local function OnWintersFeastMusic(inst)
+    if ThePlayer ~= nil and  ThePlayer == inst then
+        ThePlayer:PushEvent("isfeasting")
+    end
+end
 --------------------------------------------------------------------------
 
 --V2C: starting_inventory passed as a parameter here is now deprecated
@@ -1533,6 +1538,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         --TODO(YOG): Replace these with relative error prediction in transform component
         inst:ListenForEvent("got_on_platform", function(player, platform) OnGotOnPlatform(inst, platform) end)
         inst:ListenForEvent("got_off_platform", function(player, platform) OnGotOffPlatform(inst, platform) end)
+
+
+        inst._winters_feast_music = net_event(inst.GUID, "localplayer._winters_feast_music")
+        if not TheNet:IsDedicated() then
+            inst:ListenForEvent("localplayer._winters_feast_music", OnWintersFeastMusic)
+        end
 
         inst.entity:SetPristine()
 

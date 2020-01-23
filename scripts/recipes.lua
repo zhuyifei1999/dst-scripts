@@ -4,6 +4,10 @@ require("recipe")
 
 mod_protect_Recipe = false
 
+local function IsMarshLand(pt, rot)
+	local ground_tile = TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
+	return ground_tile and ground_tile == GROUND.MARSH
+end
 
 --LIGHT
 Recipe("campfire", {Ingredient("cutgrass", 3),Ingredient("log", 2)}, RECIPETABS.LIGHT, TECH.NONE, "campfire_placer")
@@ -22,38 +26,26 @@ Recipe("mushroom_light", {Ingredient("shroom_skin", 1), Ingredient("fertilizer",
 Recipe("mushroom_light2", {Ingredient("shroom_skin", 1), Ingredient("fertilizer", 1, nil, true), Ingredient("boards", 1)}, RECIPETABS.LIGHT, TECH.LOST, "mushroom_light2_placer", 1.5)
 
 --STRUCTURES
--- Wurt
-Recipe("mermhouse_crafted", {Ingredient("boards", 4), Ingredient("cutreeds", 3), Ingredient("pondfish", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermhouse_crafted_placer", nil, nil, nil, "merm_builder", nil, nil,
-	function(pt, rot)
-		local ground_tile = TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
-		return ground_tile and ground_tile == GROUND.MARSH
-	end
-)
-
-Recipe("mermthrone_construction", {Ingredient("boards", 5), Ingredient("rope", 5)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermthrone_construction_placer", nil, nil, nil, "merm_builder", nil, nil,
-	function(pt, rot)
-		local ground_tile = TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
-		return ground_tile and ground_tile == GROUND.MARSH
-	end
-)
-
-Recipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1), Ingredient("spear", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "mermwatchtower_placer", nil, nil, nil, "merm_builder", nil, nil,
-	function(pt, rot)
-		local ground_tile = TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
-		return ground_tile and ground_tile == GROUND.MARSH
-	end
-)
-
 Recipe("wintersfeastoven", {Ingredient("cutstone", 1), Ingredient("marble", 1), Ingredient("log", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "wintersfeastoven_placer")
 Recipe("table_winters_feast", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "table_winters_feast_placer", 2.8, nil, nil, nil, nil, nil,
     function(pt)
        return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, 0.5) == nil
     end)
 
+Recipe("winter_treestand", {Ingredient("poop", 2), Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "winter_treestand_placer")
 
+Recipe("perdshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTG, "perdshrine_placer")
+Recipe("wargshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTV, "wargshrine_placer")
+Recipe("pigshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTP, "pigshrine_placer")
+
+Recipe("yotc_carratshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTC, "yotc_carratshrine_placer")
+Recipe("mermhouse_crafted", {Ingredient("boards", 4), Ingredient("cutreeds", 3), Ingredient("pondfish", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermhouse_crafted_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
+Recipe("mermthrone_construction", {Ingredient("boards", 5), Ingredient("rope", 5)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "mermthrone_construction_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
+Recipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1), Ingredient("spear", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "mermwatchtower_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
 Recipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO, nil, nil, nil, nil, "merm_builder")
 
 Recipe("spidereggsack", {Ingredient("silk", 12), Ingredient("spidergland", 6), Ingredient("papyrus", 6)}, RECIPETABS.TOWN, TECH.NONE, nil, nil, nil, nil, "spiderwhisperer")
+
 Recipe("treasurechest", {Ingredient("boards", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "treasurechest_placer",1)
 Recipe("homesign", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "homesign_placer")
 Recipe("arrowsign_post", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "arrowsign_post_placer")
@@ -81,10 +73,6 @@ Recipe("turf_checkerfloor", {Ingredient("marble", 1)}, RECIPETABS.TOWN, TECH.SCI
 Recipe("turf_carpetfloor", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_dragonfly", {Ingredient("dragon_scales", 1), Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, nil, nil, nil, 6)
 
-Recipe("winter_treestand", {Ingredient("poop", 2), Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "winter_treestand_placer")
-Recipe("perdshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTG, "perdshrine_placer")
-Recipe("wargshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTV, "wargshrine_placer")
-Recipe("pigshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTP, "pigshrine_placer")
 Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pottedfern_placer", 0.9)
 Recipe("succulent_potted", {Ingredient("succulent_picked", 5), Ingredient("cutstone", 1)}, RECIPETABS.TOWN, TECH.LOST, "succulent_potted_placer", 0.9)
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
@@ -403,6 +391,7 @@ Recipe("chesspiece_claywarg_builder", 	{Ingredient(TECH_INGREDIENT.SCULPTING, 2)
 Recipe("chesspiece_butterfly_builder", 	{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_butterfly.tex")
 Recipe("chesspiece_anchor_builder",     {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_anchor.tex")
 Recipe("chesspiece_moon_builder", 	    {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_moon.tex")
+Recipe("chesspiece_carrat_builder",     {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_carrat.tex")
 
 ----CRITTERS----
 Recipe("critter_kitten_builder", 		{Ingredient("coontail", 1),      Ingredient("fishsticks", 1)}, 	   RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
@@ -414,18 +403,35 @@ Recipe("critter_glomling_builder",   	{Ingredient("glommerfuel", 1),   Ingredien
 Recipe("critter_lunarmothling_builder", {Ingredient("moonbutterfly", 1), Ingredient("flowersalad", 1)},    RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
 
 ----PERDSHRINE-----
-Recipe("firecrackers", {Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true, 3)
-Recipe("redlantern",   {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
-Recipe("perdfan", 	   {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_THREE, nil, nil, true)
-Recipe("houndwhistle", {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
-Recipe("chesspiece_clayhound_sketch", {Ingredient("lucky_goldnugget", 8) }, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
-Recipe("chesspiece_claywarg_sketch",  {Ingredient("lucky_goldnugget", 16)}, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
-Recipe("yotp_food3", 	{Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
-Recipe("yotp_food1", 	{Ingredient("lucky_goldnugget", 6)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
-Recipe("yotp_food2", 	{Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
-Recipe("dragonheadhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
-Recipe("dragonbodyhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
-Recipe("dragontailhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("yotc_carrat_race_start_item",       {Ingredient("goldnugget", 1)},       RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_race_finish_item",      {Ingredient("goldnugget", 1)},       RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_race_checkpoint_item",  {Ingredient("lucky_goldnugget", 2)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_shrinecarrat",			        {Ingredient("goldnugget", 4)},       RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true, nil, nil, nil, nil, nil, "carrat")
+Recipe("yotc_carrat_gym_speed_item",        {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_gym_reaction_item",     {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_gym_stamina_item",      {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_gym_direction_item",    {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_carrat_scale_item",            {Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_seedpacket",			        {Ingredient("lucky_goldnugget", 2)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("yotc_seedpacket_rare",		        {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+Recipe("chesspiece_carrat_sketch",          {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.CARRATOFFERING_THREE, nil, nil, true)
+
+Recipe("perdfan", 	                         {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_THREE, nil, nil, true)
+
+Recipe("houndwhistle",                       {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
+Recipe("chesspiece_clayhound_sketch",        {Ingredient("lucky_goldnugget", 8) }, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
+Recipe("chesspiece_claywarg_sketch",         {Ingredient("lucky_goldnugget", 16)}, RECIPETABS.PERDOFFERING, TECH.WARGOFFERING_THREE, nil, nil, true)
+
+Recipe("yotp_food3", 	                     {Ingredient("lucky_goldnugget", 4)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
+Recipe("yotp_food1", 	                     {Ingredient("lucky_goldnugget", 6)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
+Recipe("yotp_food2", 	                     {Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.PIGOFFERING_THREE, nil, nil, true)
+
+Recipe("firecrackers",                       {Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true, 3)
+Recipe("redlantern",                         {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("miniboatlantern",                    {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragonheadhat",                      {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragonbodyhat",                      {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragontailhat",                      {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
 
 ----MADSCIENCE-----
 Recipe("halloween_experiment_bravery",  {Ingredient("froglegs", 1),  		  Ingredient("goldnugget", 1),  	  Ingredient(CHARACTER_INGREDIENT.SANITY, 10)}, RECIPETABS.MADSCIENCE, TECH.MADSCIENCE_ONE, nil, nil, true, nil, nil, nil, "halloweenpotion_bravery_small.tex")
@@ -499,6 +505,14 @@ Recipe("yellowmooneye",   {Ingredient("moonrockcrater", 1), Ingredient("yellowge
 Recipe("greenmooneye",    {Ingredient("moonrockcrater", 1), Ingredient("greengem",  1)}, nil, TECH.LOST, nil, nil, true)
 Recipe("opalstaff",       {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("opalpreciousgem", 1)}, nil, TECH.LOST, nil, nil, true)
 Recipe("mermthrone",      {Ingredient("kelp", 20), Ingredient("pigskin", 10), Ingredient("beefalowool", 15)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_race_start",      	{Ingredient("goldnugget", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_race_finish",      	{Ingredient("goldnugget", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_race_checkpoint",   {Ingredient("lucky_goldnugget", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_gym_direction",     {Ingredient("lucky_goldnugget", 4)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_gym_speed",       	{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_gym_reaction",   	{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_gym_stamina",		{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_scale",			    {Ingredient("lucky_goldnugget", 6)}, nil, TECH.LOST, nil, nil, true)
 
 
 ----CONSTRUCTION PLANS----

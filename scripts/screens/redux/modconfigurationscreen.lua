@@ -184,7 +184,7 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
                 item_ctor_fn = ScrollWidgetsCtor,
                 apply_fn = ApplyDataToWidget,
                 scrollbar_offset = 20,
-                scrollbar_height_offset = -60,
+                scrollbar_height_offset = -60
             }
         ))
     self.options_scroll_list:SetPosition(0,-6)

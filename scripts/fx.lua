@@ -173,6 +173,18 @@ local fx =
         end,
     },
     {
+        name = "shadow_puff",
+        bank = "sand_puff",
+        build = "sand_puff",
+        anim = "forage_out",
+        sound = "dontstarve/common/deathpoof",
+        tint = Vector3(0, 0, 0),
+        tintalpha = .5,
+        fn = function(inst)
+            inst.AnimState:SetFinalOffset(2)
+        end,
+    },
+    {
         name = "shadow_puff_large_front",
         bank = "sand_puff",
         build = "sand_puff",
@@ -973,6 +985,24 @@ local fx =
         anim = "unwrap",
     },
     {
+        name = "redpouch_yotc_unwrap",
+        bank = "redpouch",
+        build = "redpouch",
+        anim = "unwrap",
+    },    
+    {
+        name = "yotc_seedpacket_unwrap",
+        bank = "bundle",
+        build = "bundle",
+        anim = "unwrap",
+    },    
+    {
+        name = "yotc_seedpacket_rare_unwrap",
+        bank = "bundle",
+        build = "bundle",
+        anim = "unwrap",
+    },    
+    {
         name = "wetpouch_unwrap",
         bank = "wetpouch",
         build = "wetpouch",
@@ -1432,7 +1462,16 @@ local fx =
             inst.AnimState:SetLightOverride(1)
             inst.AnimState:SetFinalOffset(3)
         end,
-    },    
+    },
+    {
+        name = "miniboatlantern_loseballoon",
+        bank = "lantern_boat",
+        build = "yotc_lantern_boat",
+        anim = "balloon_fly",
+        fn = function(inst)
+            inst.Transform:SetSixFaced()
+        end,
+    },
 }
 
 for cratersteamindex = 1, 4 do

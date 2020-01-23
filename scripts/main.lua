@@ -60,6 +60,12 @@ RELOADING = false
 
 ExecutingLongUpdate = false
 
+DEBUGGER_ENABLED = TheSim:ShouldInitDebugger() and IsNotConsole() and CONFIGURATION ~= "PRODUCTION" and not TheNet:IsDedicated()
+if DEBUGGER_ENABLED then
+	Debuggee = require 'debuggee'
+end
+
+
 local servers =
 {
 	release = "http://dontstarve-release.appspot.com",

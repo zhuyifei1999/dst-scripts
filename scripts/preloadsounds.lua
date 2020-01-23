@@ -76,6 +76,9 @@ local MainSounds =
     "hookline.fev",
     "hookline.fsb",
 
+    "yotc_2020.fev",
+    "yotc_2020.fsb",
+
     "warly.fsb",
 	"wendy.fsb",
 	"wickerbottom.fsb",

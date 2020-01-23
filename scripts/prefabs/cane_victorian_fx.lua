@@ -52,7 +52,7 @@ local function emit_sparkle_fn(effect, sphere_emitter)
     local lifetime = MAX_LIFETIME * (.7 + UnitRand() * .3)
     local px, py, pz = sphere_emitter()
 
-    local angle = math.random() * 360    
+    local angle = math.random() * 360
     local uv_offset = math.random(0, 3) * .25
     local ang_vel = (UnitRand() - 1) * 5
 

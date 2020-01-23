@@ -32,6 +32,14 @@ local function StopRiddenTick(self)
     end
 end
 
+local function OnSaddleDiscard(inst)
+	if inst.components.saddler.discardedcb ~= nil then
+		inst.components.saddler.discardedcb(inst)
+	end
+
+	inst:RemoveEventCallback("on_landed", OnSaddleDiscard)
+end
+
 local Rideable = Class(function(self, inst)
     self.inst = inst
     self.saddleable = false
@@ -89,7 +97,11 @@ function Rideable:SetSaddle(doer, newsaddle)
         local pt = self.inst:GetPosition()
         pt.y = 3
 
-        self.inst.components.lootdropper:FlingItem(self.saddle, pt, doer == nil and self.saddle.components.saddler.discardedcb or nil)
+		if doer == nil then
+			self.saddle:ListenForEvent("on_landed", OnSaddleDiscard)
+		end
+		self.inst.components.lootdropper:FlingItem(self.saddle, pt)
+		
         self.canride = false
         self.saddle = nil
         self.inst:PushEvent("saddlechanged", { saddle = nil })

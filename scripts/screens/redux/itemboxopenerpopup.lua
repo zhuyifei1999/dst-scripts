@@ -324,6 +324,9 @@ function ItemBoxOpenerPopup:_OpenItemBox()
             elseif #item_types == 35 then
                 columns = 9
                 self.resize_root_small = true
+            elseif #item_types == 38 then
+                columns = 10
+                self.resize_root_small = true
             else
                 print("Warning: Found an unexpected number of items in a box.", #item_types)
             end

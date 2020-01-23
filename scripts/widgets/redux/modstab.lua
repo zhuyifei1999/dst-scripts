@@ -703,7 +703,7 @@ function ModsTab:UpdateForWorkshop( force_refresh )
                         scrollbar_offset = 10,
                         scrollbar_height_offset = -60,
                         peek_percent = 0.25, -- may init with few clientmods, but have many servermods.
-                        allow_bottom_empty_row = true, -- it's hidden anyway
+                        allow_bottom_empty_row = true -- it's hidden anyway
                     }
                 ))
 

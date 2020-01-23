@@ -239,6 +239,7 @@ STRINGS =
             SETMINE = "Set Mine",
             FREESOUL = "Release Soul",
             PLACELANTERN = "Place",
+            YOTC_ENTERRACE = "Enter Race",
         },
         PICK = "Pick",
         REPAIR = 
@@ -561,6 +562,9 @@ STRINGS =
 
 		-- Winter's Feast 2019
 		WINTERSFEAST_FEAST = "Feast",
+
+		-- YOTC
+		START_CARRAT_RACE = "Start the Carrat Race",
 	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -1649,6 +1653,7 @@ STRINGS =
         CHESSPIECE_BUTTERFLY = "Moon Moth Figure",
         CHESSPIECE_ANCHOR = "Anchor Figure",
         CHESSPIECE_MOON = "\"Moon\" Figure",
+        CHESSPIECE_CARRAT = "Carrat Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1667,10 +1672,12 @@ STRINGS =
         CHESSPIECE_BUTTERFLY_BUILDER = "Moon Moth Figure",
         CHESSPIECE_ANCHOR_BUILDER = "Anchor Figure",
         CHESSPIECE_MOON_BUILDER = "\"Moon\" Figure",
+        CHESSPIECE_CARRAT_BUILDER = "Carrat Figure",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
         CHESSPIECE_MOON_SKETCH = "\"Moon\" Figure Sketch",
+        CHESSPIECE_CARRAT_SKETCH = "Carrat Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -1797,6 +1804,16 @@ STRINGS =
 		HALLOWEENPOTION_EMBERS = "Sulfuric Crystals of Lime",
 		HALLOWEENPOTION_SPARKS = "Sulfuric Crystals of Saltpeter",
 		HALLOWEENPOTION_MOON = "Steeped Lunar Essence",
+
+		YOTC_CARRAT_RACE_START = "Starting Point",
+		YOTC_CARRAT_RACE_START_ITEM = "Starting Point Kit",
+        YOTC_CARRAT_RACE_CHECKPOINT = "Checkpoint",
+		YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Checkpoint Kit",
+		YOTC_CARRAT_RACE_FINISH = "Finish Line",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Finish Line Kit",
+
+		YOTC_SEEDPACKET = "Packet of Seeds",
+		YOTC_SEEDPACKET_RARE = "Premium Seed Packet",
 
         --Arena Event
         LAVAARENA_BOARLORD = "Battlemaster Pugna",
@@ -2250,6 +2267,8 @@ STRINGS =
 		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
 		OCEANFISH_MEDIUM_4 = "Black Catfish",
 		OCEANFISH_MEDIUM_5 = "Corn Cod",
+		OCEANFISH_MEDIUM_6 = "Dappled Koi",
+		OCEANFISH_MEDIUM_7 = "Golden Koi",
 
 		PONDFISH = "Freshwater Fish",
 		PONDEEL = "Live Eel",
@@ -2330,6 +2349,28 @@ STRINGS =
 		TROPHYSCALE_FISH = "Fish Scale-O-Matic",
 
 		OCEANFISHABLEFLOTSAM = "Ocean Debris",
+
+        -- YOTC
+        CARRATSHRINE = "Carrat Shrine",
+        YOTC_CARRATSHRINE = "Carrat Shrine",
+
+        YOTC_CARRAT_GYM_DIRECTION = "Navigation Gym",
+        YOTC_CARRAT_GYM_SPEED = "Speed Gym",
+        YOTC_CARRAT_GYM_STAMINA = "Endurance Gym",
+        YOTC_CARRAT_GYM_REACTION = "Reflex Gym",
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "Navigation Gym Kit",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "Speed Gym Kit",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Endurance Gym Kit",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Reflex Gym Kit",
+
+        YOTC_CARRAT_SCALE = "Carrat Scale",
+        YOTC_CARRAT_SCALE_ITEM = "Carrat Scale Kit",
+        YOTC_OWNED_CARRAT = "{trainer}'s Carrat",
+        YOTC_OWNED_CARRAT = "{trainer}'s Carrat",
+		CARRAT_GHOSTRACER = "Charlie's Carrat",
+
+		MINIBOATLANTERN = "Floating Lantern",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2679,10 +2720,12 @@ STRINGS =
         CHESSPIECE_BUTTERFLY_BUILDER = "This sculpture's a moth-have.",
         CHESSPIECE_ANCHOR_BUILDER = "Ground your base with a stone anchor.",
         CHESSPIECE_MOON_BUILDER = "It's a selene figurine!",
+        CHESSPIECE_CARRAT_BUILDER = "A winsome sculpture of a champion.",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
         CHESSPIECE_MOON_SKETCH = "A sculpture sketch of the moon itself.",
+        CHESSPIECE_CARRAT_SKETCH = "A sculpture sketch of a victorious Carrat.",
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
@@ -2726,6 +2769,13 @@ STRINGS =
 		WINTERCOOKING_TOURTIERE = "A savory seasonal pie.",
 
 		TABLE_WINTERS_FEAST = "Gather round for the Winter's Feast.",
+
+		YOTC_CARRAT_RACE_START = "Off to the races!",
+		YOTC_CARRAT_RACE_START_ITEM = "Off to the races!",
+        YOTC_CARRAT_RACE_CHECKPOINT = "Just one stop on the road to glory.",
+		YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Just one stop on the road to glory.",
+		YOTC_CARRAT_RACE_FINISH = "End of the line.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "End of the line.",
 
         --Quagmire
         QUAGMIRE_CRATE_POT_HANGER = "Everything you need to set up a cookpot.",
@@ -2821,6 +2871,22 @@ STRINGS =
 		MALBATROSS_FEATHERED_WEAVE = "A fine feathered fabric.",
 	
 		TROPHYSCALE_FISH = "Show off your prized catch.",
+
+        YOTC_CARRATSHRINE = "Make offerings to the nimble Carrat.",
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "Improve your carrat's sense of direction.",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "Step up your carrat's speed.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Boost your carrat's stamina.",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Accelerate your carrat's reaction time.",
+
+        YOTC_CARRAT_SCALE_ITEM = "Find out how your Carrat measures up.",                
+
+		CARRAT = "Nimble, clever, and rich in beta carotene.",
+
+		YOTC_SEEDPACKET = "A humble pack of assorted seeds.",
+		YOTC_SEEDPACKET_RARE = "A pack of high quality seeds.",
+
+		MINIBOATLANTERN = "It flickers with a warm glow.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -7444,6 +7510,7 @@ STRINGS.UI =
         TYPE_FILTER = "Type:",
         DISCOUNT_FILTER = "Discount:",
         FILTER_ALL = "All",
+        FILTER_NEW = "New",
         FILTER_UNOWNED = "Unowned",
         FILTER_ITEMS = "Belongings",
         FILTER_BUNDLE = "Bundles",
@@ -8634,6 +8701,7 @@ STRINGS.UI =
             YOTG = "Year of the Gobbler",
             YOTV = "Year of the Varg",
             YOTP = "Year of the Pig King",
+            YOTC = "Year of the Carrat",
         },
     },
 

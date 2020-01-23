@@ -100,10 +100,9 @@ local function doFeastCheck()
             ApplyFeastBuff(feaster,_tablegroups[group],#feasters)
         end
 
-		_tablegroups[group].time_until_announce = _tablegroups[group].time_until_announce or ANNOUNCE_INITIAL_DELAY
-		_tablegroups[group].time_until_announce = _tablegroups[group].time_until_announce - TICK_RATE
+		_tablegroups[group].time_until_announce = (_tablegroups[group].time_until_announce or ANNOUNCE_INITIAL_DELAY) - TICK_RATE
 		if _tablegroups[group].time_until_announce <= 0 then
-			local announcer = #feasters > 0 and feasters[math.random(1, #feasters)]
+			local announcer = #feasters > 0 and (_tablegroups[group].force_announcer or feasters[math.random(1, #feasters)])
 			if announcer ~= nil and announcer:IsValid() and announcer.components.talker ~= nil and
 				(#feasters == 1 or announcer ~= _tablegroups[group].previous_announcer) then
 
@@ -118,6 +117,8 @@ local function doFeastCheck()
 				-- Else keep trying every tick
 				_tablegroups[group].time_until_announce = 0
 			end
+
+			_tablegroups[group].force_announcer = nil
 		end
     end
 end
@@ -126,26 +127,26 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
+local function FeasterOnRemove(inst)--Runs on player inst that was removed from feast
+	TheWorld:PushEvent("feasterfinished",{player=inst, target=nil})
+end
 
 local function OnFeasterAdded(inst,data)
-    table.insert(_feasters,{player=data.player,target=data.target})    
+	table.insert(_feasters,{player=data.player,target=data.target})
+	data.player:ListenForEvent("onremove", FeasterOnRemove)
     if not inst.feastingtask then
         inst.feastingtask = inst:DoPeriodicTask(TICK_RATE,doFeastCheck)
-    end
+	end
+	
+	local group = gettablegroup(data.target)
+	if group ~= nil then
+		_tablegroups[group].time_until_announce = ANNOUNCE_INITIAL_DELAY
+		_tablegroups[group].force_announcer = data.player
+	end
 end
 
 local function OnFeasterRemoved(inst,data)
-	local leavingtable = data.target
-	if leavingtable ~= nil and #_tablegroups > 0 then
-		for i,group in ipairs(_tablegroups) do
-			for j,table in ipairs(group) do
-				if table == leavingtable then
-					group.time_until_announce = nil
-					break
-				end
-			end
-		end
-	end
+	data.player:RemoveEventCallback("onremove", FeasterOnRemove)
 
     local feaster = nil
     for i,set in ipairs(_feasters)do

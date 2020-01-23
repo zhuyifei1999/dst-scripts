@@ -52,6 +52,11 @@ local events=
             end
         end
     end),
+    EventHandler("carratboarded", function(inst, data)
+        if not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("idle_carrat")
+        end
+    end),
 }
 
 local states=
@@ -87,6 +92,8 @@ local states=
             local herd = inst.components.herdmember and inst.components.herdmember:GetHerd()
             if inst.components.rideable and inst.components.rideable:IsSaddled() and inst.components.domesticatable and inst.components.domesticatable:GetObedience() < TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE then
                 inst.sg:GoToState("shake_off_saddle")
+            elseif inst:HasTag("HasCarrat") and math.random() < 0.3 and IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+                inst.sg:GoToState("idle_carrat")
             elseif not inst:HasTag("baby") 
                 and ((herd and herd.components.mood and herd.components.mood:IsInMood())
                      or (inst.components.mood and inst.components.mood:IsInMood())) then
@@ -303,6 +310,49 @@ local states=
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
+
+    State{
+        name = "idle_carrat",
+        tags = {},
+        onenter = function(inst)
+            inst.AnimState:AddOverrideBuild("carrat_build")
+            inst.setcarratart(inst)
+            inst.components.locomotor:StopMoving()
+            if math.random() < 0.5 then
+                inst.AnimState:PlayAnimation("carrat_idle1")
+                inst.sg.statemem.idlenum = 1
+            else
+                inst.AnimState:PlayAnimation("carrat_idle_2")
+                inst.sg.statemem.idlenum = 2
+            end
+        end,
+
+        onexit = function(inst)
+            inst.AnimState:ClearOverrideBuild("carrat_build")
+        end,
+        
+        timeline=
+        {   
+            ---carrat_idle1
+            TimeEvent(41*FRAMES, function(inst) if inst.sg.statemem.idlenum == 1 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/reaction") end end),
+            TimeEvent(99*FRAMES, function(inst) if inst.sg.statemem.idlenum == 1 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/reaction") end end),
+            TimeEvent(119*FRAMES, function(inst) if inst.sg.statemem.idlenum == 1 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/reaction") end end),
+            TimeEvent(174*FRAMES, function(inst) if inst.sg.statemem.idlenum == 1 then inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_vocal") end end),
+            ---carrat_idle2
+            TimeEvent(45*FRAMES, function(inst) if inst.sg.statemem.idlenum == 2 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/eat") end end),
+            TimeEvent(81*FRAMES, function(inst) if inst.sg.statemem.idlenum == 2 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/eat") end end),
+            TimeEvent(130*FRAMES, function(inst) if inst.sg.statemem.idlenum == 2 then inst.SoundEmitter:PlaySound("turnoftides/creatures/together/carrat/reaction") end end), 
+
+        },
+        
+        events=
+        {
+            EventHandler("animover", function(inst) 
+                inst.testforcarratexit(inst)
+                inst.sg:GoToState("idle") 
+            end),
+        },
+    },    
     
     State{
         name="graze",

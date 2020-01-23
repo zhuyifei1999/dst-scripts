@@ -781,6 +781,8 @@ local actionhandlers =
             end
             return "winters_feast_eat"
         end),
+
+	ActionHandler(ACTIONS.START_CARRAT_RACE, "give"),
 }
 
 local events =
@@ -11089,14 +11091,13 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("fan", false)
-            inst.AnimState:OverrideSymbol(
-                "fan01",
-                "fan",
-                invobject ~= nil and
-                invobject.components.fan ~= nil and
-                invobject.components.fan.overridesymbol or
-                "swap_fan"
-            )
+            local skin_build = invobject:GetSkinBuild()
+            local src_symbol = invobject ~= nil and invobject.components.fan ~= nil and invobject.components.fan.overridesymbol or "swap_fan"
+            if skin_build ~= nil then
+                inst.AnimState:OverrideItemSkinSymbol( "fan01", skin_build, src_symbol, invobject.GUID, "fan" )
+            else
+                inst.AnimState:OverrideSymbol( "fan01", "fan", src_symbol )
+            end
             inst.AnimState:Show("ARM_normal")
             inst.components.inventory:ReturnActiveActionItem(invobject)
         end,
@@ -12603,7 +12604,8 @@ local states =
         tags = { "doing", "feasting" },
 
         onenter = function(inst, target)
-            inst:PushEvent("isfeasting")
+            inst._winters_feast_music:push()
+            
 			inst.components.locomotor:Stop()
 
 			if target == nil then
@@ -12666,6 +12668,7 @@ local states =
 			if target ~= nil and target.entity:IsValid() then
 				target.components.wintersfeasttable.current_feasters[inst] = nil
 			end
+
             inst.SoundEmitter:KillSound("eating")
             if not inst.sg.statemem.keep_eating then
                 TheWorld:PushEvent("feasterfinished",{player=inst, target=target, is_in_dark=inst.sg.statemem.is_in_dark})                

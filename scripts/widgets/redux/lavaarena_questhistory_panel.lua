@@ -197,7 +197,7 @@ function LavaarenaQuestHistoryPanel:_BuildAchievementsExplorer(festival_key, sea
             apply_fn     = ScrollWidgetApply,
             scrollbar_offset = 0,
             scrollbar_height_offset = -60,
-			scroll_per_click = .5,
+			scroll_per_click = 0.5,
         })
 
     return grid
