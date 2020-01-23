@@ -197,7 +197,7 @@ function LootDropper:SetFlingTarget(pos, variance)
     self.flingtargetvariance = variance
 end
 
-function LootDropper:FlingItem(loot, pt, bouncedcb)
+function LootDropper:FlingItem(loot, pt)
     if loot ~= nil then
         if pt == nil then
             pt = self.inst:GetPosition()

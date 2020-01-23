@@ -435,7 +435,7 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
                     apply_fn = UpdatePlayerListing,
                     scrollbar_offset = 20,
                     scrollbar_height_offset = -50,
-                    peek_percent = TheNet:GetServerMaxPlayers() > NUM_ROWS and 0.3 or 0,
+                    peek_percent = TheNet:GetServerMaxPlayers() > NUM_ROWS and 0.3 or 0
                 }
             ))
         self.scroll_list:SetPosition(-40, -143)

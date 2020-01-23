@@ -15,96 +15,91 @@ BASE_FEET_SIZE = {}
 
 SKIN_FX_PREFAB = {}
 
---------------------------------------------------------------------------
---[[ Backpack skin functions ]]
---------------------------------------------------------------------------
-function backpack_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_backpack")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
 
 
 --------------------------------------------------------------------------
---[[ Armor skin functions ]]
+--[[ Basic skin functions ]]
 --------------------------------------------------------------------------
-function armor_init_fn(inst, build_name, def_build)
-    if not TheWorld.ismastersim then
+function basic_init_fn(inst, build_name, def_build)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
 
     inst.AnimState:SetSkin(build_name, def_build)
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
-armordragonfly_init_fn = function(inst, build_name) armor_init_fn(inst, build_name, "torso_dragonfly" ) end
-armorgrass_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_grass" ) end
-armormarble_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_marble" ) end
-armorwood_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armour_wood") end
-armorruins_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_ruins" ) end
-
---------------------------------------------------------------------------
---[[ Ruins Bat skin functions ]]
---------------------------------------------------------------------------
-function ruins_bat_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
     end
-
-    inst.AnimState:SetSkin(build_name, "swap_ruins_bat")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+backpack_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_backpack" ) end
+piggyback_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_piggyback" ) end
+ruins_bat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ruins_bat" ) end
+hambat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ham_bat" ) end
+batbat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "batbat" ) end
+boomerang_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "boomerang" ) end
+hammer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_hammer" ) end
+torch_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_torch" ) end
+lighter_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "lighter" ) end
+spear_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_spear" ) end
+spear_wathgrithr_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_spear_wathgrithr" ) end
+axe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "axe" ) end
+goldenaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenaxe" ) end
+pickaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "pickaxe" ) end
+goldenpickaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenpickaxe" ) end
+shovel_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "shovel" ) end
+goldenshovel_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenshovel" ) end
+umbrella_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "umbrella" ) end
+oceanfishingrod_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fishingrod_ocean" ) end
+amulet_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "amulets" ) end
+book_brimstone_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "books" ) end
+bedroll_furry_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_bedroll_straw" ) end
+featherfan_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fan" ) end
+armordragonfly_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "torso_dragonfly" ) end
+armorgrass_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_grass" ) end
+armormarble_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_marble" ) end
+armorwood_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armour_wood") end
+armorruins_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_ruins" ) end
+armor_sanity_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_sanity" ) end
+tophat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_top" ) end
+flowerhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_flower" ) end
+strawhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_straw" ) end
+winterhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_winter" ) end
+catcoonhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_catcoon" ) end
+rainhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_rain" ) end
+minerhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_miner" ) end
+footballhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_football" ) end
+featherhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_feather" ) end
+beehat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_bee" ) end
+watermelonhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_watermelon" ) end
+wathgrithrhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_wathgrithr" ) end
+beefalohat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_beefalo" ) end
+eyebrellahat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_eyebrella" ) end
+earmuffshat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_earmuffs" ) end
+ruinshat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_ruins" ) end
+researchlab3_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "researchlab3" ) end
+mushroom_light_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "mushroom_light" ) end
+mushroom_light2_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "mushroom_light2" ) end
+tent_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "tent" ) end
+rainometer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "rain_meter" ) end
+winterometer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "winter_meter" ) end
+lightning_rod_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "lightning_rod" ) end
+arrowsign_post_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "sign_arrow_post" ) end
+treasurechest_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "treasure_chest" ) end
+wardrobe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "wardrobe" ) end
+endtable_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "stagehand" ) end
+dragonflyfurnace_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "dragonfly_furnace" ) end
+birdcage_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bird_cage" ) end
+meatrack_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "meat_rack" ) end
+beebox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bee_box" ) end
+pighouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "pig_house" ) end
+rabbithouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "rabbit_house" ) end
+researchlab3_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "researchlab3" ) end
+beemine_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bee_mine" ) end
+trap_teeth_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "trap_teeth" ) end
+trap_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "trap" ) end
+birdtrap_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "birdtrap" ) end
 
---------------------------------------------------------------------------
---[[ Hammer skin functions ]]
---------------------------------------------------------------------------
-function hammer_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
 
-    inst.AnimState:SetSkin(build_name, "swap_hammer")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
 
---------------------------------------------------------------------------
---[[ Torch skin functions ]]
---------------------------------------------------------------------------
-function torch_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_torch")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Lighter skin functions ]]
---------------------------------------------------------------------------
-function lighter_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_lighter")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Spear skin functions ]]
---------------------------------------------------------------------------
-function spear_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_spear")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
 
 --------------------------------------------------------------------------
 --[[ Bug Net skin functions ]]
@@ -119,193 +114,6 @@ function bugnet_init_fn(inst, build_name)
     
     local skin_data = GetSkinData(inst:GetSkinName())
     inst.overridebugnetsound = skin_data.skin_sound
-end
-
---------------------------------------------------------------------------
---[[ Axe skin functions ]]
---------------------------------------------------------------------------
-function axe_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "axe")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Pickaxe skin functions ]]
---------------------------------------------------------------------------
-function pickaxe_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "pickaxe")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Boomerang skin functions ]]
---------------------------------------------------------------------------
-function boomerang_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "boomerang")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Battle Spear skin functions ]]
---------------------------------------------------------------------------
-function spear_wathgrithr_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_spear_wathgrithr")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Umbrella skin functions ]]
---------------------------------------------------------------------------
-function umbrella_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_umbrella")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Shovel skin functions ]]
---------------------------------------------------------------------------
-function shovel_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_shovel")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Hambat skin functions ]]
---------------------------------------------------------------------------
-function hambat_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_ham_bat")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Batbat skin functions ]]
---------------------------------------------------------------------------
-function batbat_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "batbat")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Fishingrod ocean skin functions ]]
---------------------------------------------------------------------------
-function oceanfishingrod_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "fishingrod_ocean")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Amulet skin functions ]]
---------------------------------------------------------------------------
-function amulet_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "amulets")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Books skin functions ]]
---------------------------------------------------------------------------
-function book_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "books")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-book_brimstone_init_fn = book_init_fn
-
---------------------------------------------------------------------------
---[[ Hat skin functions ]]
---------------------------------------------------------------------------
-function hat_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "hat_flower") --needs to be the default for the specific prefab
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
-tophat_init_fn = hat_init_fn
-flowerhat_init_fn = hat_init_fn
-strawhat_init_fn = hat_init_fn
-winterhat_init_fn = hat_init_fn
-catcoonhat_init_fn = hat_init_fn
-rainhat_init_fn = hat_init_fn
-minerhat_init_fn = hat_init_fn
-footballhat_init_fn = hat_init_fn
-featherhat_init_fn = hat_init_fn
-beehat_init_fn = hat_init_fn
-watermelonhat_init_fn = hat_init_fn
-wathgrithrhat_init_fn = hat_init_fn
-beefalohat_init_fn = hat_init_fn
-eyebrellahat_init_fn = hat_init_fn
-earmuffshat_init_fn = hat_init_fn
-
---------------------------------------------------------------------------
---[[ Bedroll skin functions ]]
---------------------------------------------------------------------------
-function bedroll_furry_init_fn(inst, build_name)
-    if not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "swap_bedroll_straw")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Beemine skin functions ]]
---------------------------------------------------------------------------
-function beemine_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "bee_mine")
-    if inst.components.inventoryitem ~= nil then
-        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-    end
 end
 
 --------------------------------------------------------------------------
@@ -332,73 +140,6 @@ function portablecookpot_init_fn(inst, build_name)
 end
 
 
-
---------------------------------------------------------------------------
---[[ Tent skin functions ]]
---------------------------------------------------------------------------
-function tent_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "tent")
-end
-
---------------------------------------------------------------------------
---[[ Rainometer functions ]]
---------------------------------------------------------------------------
-function rainometer_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "rain_meter")
-end
-
---------------------------------------------------------------------------
---[[ Winterometer functions ]]
---------------------------------------------------------------------------
-function winterometer_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "winter_meter")
-end
-
---------------------------------------------------------------------------
---[[ Lightning Rood functions ]]
---------------------------------------------------------------------------
-function lightning_rod_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "lightning_rod")
-end
-
---------------------------------------------------------------------------
---[[ Arrowsign_post functions ]]
---------------------------------------------------------------------------
-function arrowsign_post_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "sign_arrow_post")
-end
-
---------------------------------------------------------------------------
---[[ Chest skin functions ]]
---------------------------------------------------------------------------
-function treasurechest_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "treasure_chest")
-end
-
 --------------------------------------------------------------------------
 --[[ Firesuppressor skin functions ]]
 --------------------------------------------------------------------------
@@ -417,65 +158,8 @@ function firesuppressor_init_fn(inst, build_name)
     end
 end
 
---------------------------------------------------------------------------
---[[ Wardrobe skin functions ]]
---------------------------------------------------------------------------
-function wardrobe_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
 
-    inst.AnimState:SetSkin(build_name, "wardrobe")
-end
 
---------------------------------------------------------------------------
---[[ Tooth Trap skin functions ]]
---------------------------------------------------------------------------
-function trap_teeth_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "trap_teeth")
-    if inst.components.inventoryitem ~= nil then
-        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-    end
-end
-
---------------------------------------------------------------------------
---[[ Trap skin functions ]]
---------------------------------------------------------------------------
-function trap_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "trap")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Bird Trap skin functions ]]
---------------------------------------------------------------------------
-function birdtrap_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "birdtrap")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
---------------------------------------------------------------------------
---[[ Endtable skin functions ]]
---------------------------------------------------------------------------
-function endtable_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "stagehand")
-end
 
 --------------------------------------------------------------------------
 --[[ Firepit skin functions ]]
@@ -523,36 +207,10 @@ function campfire_init_fn(inst, build_name, fxoffset)
     end
 
     inst.AnimState:SetSkin(build_name, "campfire")
-    --[[inst.components.burnable:SetFXOffset(fxoffset)
-
-    local skin_fx = SKIN_FX_PREFAB[build_name]
-    if skin_fx ~= nil and skin_fx[1] ~= nil then
-        inst:ListenForEvent("takefuel", function(inst, data)
-            local fuelvalue = data ~= nil and data.fuelvalue or 0
-            if fuelvalue > 0 then
-                local fx = SpawnPrefab(skin_fx[1])
-                fx.entity:SetParent(inst.entity)
-                fx.level:set(
-                    (fuelvalue >= TUNING.LARGE_FUEL and 3) or
-                    (fuelvalue >= TUNING.MED_FUEL and 2) or
-                    1
-                )
-            end
-        end)
-    end]]
+    inst.components.burnable.fxchildren[1].Transform:SetPosition(fxoffset.x, fxoffset.y, fxoffset.z)
 end
 
 
---------------------------------------------------------------------------
---[[ Scaled Furnace skin functions ]]
---------------------------------------------------------------------------
-function dragonflyfurnace_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "dragonfly_furnace")
-end
 
 --------------------------------------------------------------------------
 --[[ Endothermic Firepit skin functions ]]
@@ -604,25 +262,18 @@ function glomling_init_fn(inst, build_name, default_build, skin_sound)
 end
 
 --------------------------------------------------------------------------
---[[ Birdcage skin functions ]]
+--[[ Mini Sign skin functions ]]
 --------------------------------------------------------------------------
-function birdcage_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "bird_cage")
+function minisign_item_init_fn(inst, build_name)
+    inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
+    inst.AnimState:SetSkin(build_name, "sign_mini") --same hack is used here by the deployable code in player controller
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
-
---------------------------------------------------------------------------
---[[ Pighouse skin functions ]]
---------------------------------------------------------------------------
-function pighouse_init_fn(inst, build_name)
+function minisign_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
-
-    inst.AnimState:SetSkin(build_name, "pig_house")
+    inst.AnimState:SetSkin(build_name, "sign_mini")
 end
 
 --------------------------------------------------------------------------
@@ -639,7 +290,6 @@ function fence_init_fn(inst, build_name)
     end
     inst.AnimState:SetSkin(build_name, "fence")
 end
-
 
 --------------------------------------------------------------------------
 --[[ Fence gate skin functions ]]
@@ -700,23 +350,20 @@ function bernie_big_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
---[[ Mushroomlight skin functions ]]
+--[[ ResearchLab4 skin functions ]]
 --------------------------------------------------------------------------
-function mushroom_light_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
+function researchlab4_init_fn(inst, build_name)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
+        return
+    elseif not TheWorld.ismastersim then
         return
     end
 
-    inst.AnimState:SetSkin(build_name, "mushroom_light")
+    inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
 end
 
-function mushroom_light2_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "mushroom_light2")
-end
 
 --------------------------------------------------------------------------
 --[[ Reviver skin functions ]]
@@ -825,12 +472,52 @@ function cane_init_fn(inst, build_name)
             inst:ListenForEvent("equipped", cane_equipped)
             inst:ListenForEvent("unequipped", cane_unequipped)
             if inst.vfx_fx ~= nil then
-                inst.vfx_fx_offset = -60
+                inst.vfx_fx_offset = -105
                 inst:ListenForEvent("onremove", cane_unequipped)
             end
         end
     end
 end
+
+
+
+local function nightsword_equipped(inst, data)
+    if inst.vfx_fx ~= nil then
+        if inst._vfx_fx_inst == nil then
+            inst._vfx_fx_inst = SpawnPrefab(inst.vfx_fx)
+            inst._vfx_fx_inst.entity:AddFollower()
+        end
+        inst._vfx_fx_inst.entity:SetParent(data.owner.entity)
+        inst._vfx_fx_inst.Follower:FollowSymbol(data.owner.GUID, "swap_object", 0, -100, 0)
+    end
+end
+
+local function nightsword_unequipped(inst, owner)
+    if inst._vfx_fx_inst ~= nil then
+        inst._vfx_fx_inst:Remove()
+        inst._vfx_fx_inst = nil
+    end
+end
+
+function nightsword_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "nightmaresword")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+
+    local skin_fx = SKIN_FX_PREFAB[build_name] --build_name is prefab name for nightsword
+    if skin_fx ~= nil then
+        inst.vfx_fx = skin_fx[1] ~= nil and skin_fx[1]:len() > 0 and skin_fx[1] or nil
+        if inst.vfx_fx ~= nil then
+            inst:ListenForEvent("equipped", nightsword_equipped)
+            inst:ListenForEvent("unequipped", nightsword_unequipped)
+            inst:ListenForEvent("onremove", nightsword_unequipped)
+        end
+    end
+end
+
 
 --------------------------------------------------------------------------
 --[[ Staff skin functions ]]
@@ -860,7 +547,7 @@ function orangestaff_init_fn(inst, build_name)
             inst:ListenForEvent("equipped", cane_equipped)
             inst:ListenForEvent("unequipped", cane_unequipped)
             if inst.vfx_fx ~= nil then
-                inst.vfx_fx_offset = -110
+                inst.vfx_fx_offset = -120
                 inst:ListenForEvent("onremove", cane_unequipped)
             end
         end
@@ -881,7 +568,7 @@ end
 opalstaff_init_fn = staff_init_fn
 firestaff_init_fn = staff_init_fn
 icestaff_init_fn = staff_init_fn
-
+greenstaff_init_fn = staff_init_fn
 
 
 --------------------------------------------------------------------------
@@ -1117,21 +804,6 @@ function researchlab2_init_fn(inst, build_name)
         inst._PlayAnimation = researchlab2_playanimation
         inst._PushAnimation = researchlab2_pushanimation
     end
-end
-
---------------------------------------------------------------------------
---[[ ResearchLab4 skin functions ]]
---------------------------------------------------------------------------
-function researchlab4_init_fn(inst, build_name)
-    if inst.components.placer ~= nil then
-        --Placers can run this on clients as well as servers
-        inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
-        return
-    elseif not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
 end
 
 --------------------------------------------------------------------------

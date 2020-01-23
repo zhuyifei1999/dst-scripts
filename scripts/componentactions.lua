@@ -111,6 +111,15 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+		yotc_racestart = function(inst, doer, actions, right)
+			if right and not (inst:HasTag("burnt") or inst:HasTag("fire") or inst:HasTag("race_on")) then
+                if doer and inst.racestartstring then
+                    doer:DoTaskInTime(2,function() doer.components.talker:Say(GetString(doer, inst.racestartstring)) end)
+                end
+				table.insert(actions, ACTIONS.START_CARRAT_RACE)
+			end
+		end,
+
         catcher = function(inst, doer, actions)
             if inst:HasTag("cancatch") then
                 table.insert(actions, ACTIONS.CATCH)
@@ -482,6 +491,13 @@ local COMPONENT_ACTIONS =
                 elseif inst:HasTag("tapped_harvestable") then
                     table.insert(actions, ACTIONS.HARVEST)
                 end
+            end
+        end,
+
+        yotc_racecompetitor = function(inst, doer, actions, right)
+            if (inst:HasTag("has_prize") or inst:HasTag("has_no_prize"))
+                    and (inst.replica.health == nil or not inst.replica.health:IsDead()) then
+                table.insert(actions, ACTIONS.PICKUP)
             end
         end,
     },

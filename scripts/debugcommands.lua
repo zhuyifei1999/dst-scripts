@@ -619,6 +619,67 @@ function d_gofishing()
 	c_give("oceanfishinglure_spinner_green", 5)
 end
 
+function d_ratracer(speed, stamina, direction, reaction)
+	local rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.speed = speed or math.random(TUNING.RACE_STATS.MAX_STAT_VALUE + 1) - 1
+	rat.components.yotc_racestats.stamina = stamina or math.random(TUNING.RACE_STATS.MAX_STAT_VALUE + 1) - 1
+	rat.components.yotc_racestats.direction = direction or math.random(TUNING.RACE_STATS.MAX_STAT_VALUE + 1) - 1
+	rat.components.yotc_racestats.reaction = reaction or math.random(TUNING.RACE_STATS.MAX_STAT_VALUE + 1) - 1
+	rat:_setcolorfn("RANDOM")
+	c_select(rat)
+	ConsoleCommandPlayer().components.inventory:GiveItem(rat)
+end
+
+function d_ratracers()
+    local MainCharacter = ConsoleCommandPlayer()
+	local rat 
+
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.speed = TUNING.RACE_STATS.MAX_STAT_VALUE
+	rat:_setcolorfn("white")
+	MainCharacter.components.inventory:GiveItem(rat)
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.speed = 0
+	rat:_setcolorfn("yellow")
+	MainCharacter.components.inventory:GiveItem(rat)
+
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.stamina = TUNING.RACE_STATS.MAX_STAT_VALUE
+	rat:_setcolorfn("green")
+	MainCharacter.components.inventory:GiveItem(rat)
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.stamina = 0
+	rat:_setcolorfn("brown")
+	MainCharacter.components.inventory:GiveItem(rat)
+
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.direction = TUNING.RACE_STATS.MAX_STAT_VALUE
+	rat:_setcolorfn("blue")
+	MainCharacter.components.inventory:GiveItem(rat)
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.direction = 0
+	rat:_setcolorfn("NEUTRAL")
+	MainCharacter.components.inventory:GiveItem(rat)
+
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.reaction = TUNING.RACE_STATS.MAX_STAT_VALUE
+	rat:_setcolorfn("purple")
+	MainCharacter.components.inventory:GiveItem(rat)
+	rat = DebugSpawn("carrat")
+	rat._spread_stats_task:Cancel() rat._spread_stats_task = nil
+	rat.components.yotc_racestats.reaction = 0
+	rat:_setcolorfn("pink")
+	MainCharacter.components.inventory:GiveItem(rat)
+end
+
 -- d_setup_placeholders( STRINGS.CHARACTERS.WARLY, "scripts\\speech_warly.lua" )
 function d_setup_placeholders( reuse, out_file_name )
 	local use_table = nil

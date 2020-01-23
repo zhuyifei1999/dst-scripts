@@ -253,8 +253,12 @@ function InventoryItem:CanDeploy(pt, mouseover, deployer)
         {
             land = 0.2, boat = 0.2, radius = self:DeploySpacingRadius(),
         })
-    elseif self.classified.deploymode:value() == DEPLOYMODE.MAST then
-        return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)
+    elseif self.classified.deploymode:value() == DEPLOYMODE.CUSTOM then
+        if self.inst._custom_candeploy_fn ~= nil then
+            return self.inst._custom_candeploy_fn(self.inst, pt, mouseover, deployer)
+        else -- use old DEPLOYMODE.MAST logic
+            return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)
+        end
     end
 end
 

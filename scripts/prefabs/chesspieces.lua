@@ -33,6 +33,7 @@ local PIECES =
     {name="butterfly",  moonevent=false},
     {name="anchor",     moonevent=false},
     {name="moon",       moonevent=false},
+    {name="carrat",     moonevent=false},
 } 
 
 local MOON_EVENT_RADIUS = 12

@@ -735,8 +735,8 @@ function Inventory:GiveItem(inst, slot, src_pos)
                     leftovers = self.itemslots[slot].components.stackable:Put(inst, src_pos)
                 end
             else
-                inst.components.inventoryitem:OnPutInInventory(self.inst)
                 self.itemslots[slot] = inst
+                inst.components.inventoryitem:OnPutInInventory(self.inst)
                 self.inst:PushEvent("itemget", { item = inst, slot = slot, src_pos = src_pos })
             end
 

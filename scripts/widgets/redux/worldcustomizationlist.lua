@@ -265,7 +265,7 @@ function CustomizationList:MakeOptionSpinners()
                 item_ctor_fn = ScrollWidgetsCtor,
                 apply_fn     = ApplyDataToWidget,
                 scrollbar_offset = 20,
-                scrollbar_height_offset = -50,
+                scrollbar_height_offset = -50
             }
         ))
 

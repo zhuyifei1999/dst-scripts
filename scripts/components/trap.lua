@@ -241,6 +241,9 @@ function Trap:DoSpring()
 
         if self.target.components.inventoryitem ~= nil and self.target.components.inventoryitem.trappable then
             self.lootprefabs = { self.target.prefab }
+            if self.target.settrapdata then
+                self.lootdata = self.target.settrapdata(self.target)
+            end
             self.numsouls = nil
             self.starvednumsouls = wortox_soul_common.HasSoul(self.target) and wortox_soul_common.GetNumSouls(self.target) or nil
         else
@@ -324,6 +327,10 @@ function Trap:Harvest(doer)
                     if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
                     end
+                    if loot.getcarratfromtrap then
+                        loot.getcarratfromtrap(loot,self.lootdata)       
+                        self.lootdata = nil                 
+                    end
                 end
             end
         end
@@ -395,6 +402,7 @@ function Trap:OnSave()
         souls = self.numsouls,
         starvedsouls = self.starvednumsouls,
         starvedloot = self.starvedlootprefabs,
+        lootdata = self.lootdata,        
     },
     {
         self.bait ~= nil and self.bait.GUID or nil,
@@ -418,7 +426,9 @@ function Trap:OnLoad(data)
         (type(data.starvedloot) == "string" and { data.starvedloot }) or
         (type(data.starvedloot) == "table" and data.starvedloot) or
         { "spoiled_food" }
-
+    
+    self.lootdata = data and data.lootdata
+    
     if self.isset then
         self:StartUpdate()
     elseif self.issprung then

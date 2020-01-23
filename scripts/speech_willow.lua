@@ -58,6 +58,10 @@ return{
             INUSE = "Hey! What're you making? Can I have it?",
             TOOFAR = "It's all the way over thereeeee!",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "A race isn't any fun without someone to beat.",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "I'm not using that!",
 			INUSE = "But I want to use it!",
+            NOTMINE_YOTC =
+            {
+                "Hey, you're not my Carrat!",
+                "Mine is the little orange one, with whiskers.",
+            },
         },
         SLAUGHTER =
         {
@@ -504,6 +513,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "That thing's looking kinda rough.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Alright, let's win that prize!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "You dumb Carrat, you're going the wrong way!",
+        "Hey! The finish line's THAT way!",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Hey! WAKE UP!!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Um, can we maybe go a bit faster?!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "Not so good with the reflexes, huh?",
 
 	BATTLECRY =
 	{
@@ -1294,6 +1314,7 @@ return{
         CHESSPIECE_BUTTERFLY = "Meh. I can't even burn it.",
         CHESSPIECE_ANCHOR = "It's hard to burn stuff at sea.",
         CHESSPIECE_MOON = "I guess it's nice.",
+        CHESSPIECE_CARRAT = "Now all I can think of is roasted carrots.",
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
         CHESSJUNK3 = "Dead windup castle.",
@@ -2289,6 +2310,73 @@ return{
 		PIGELITEFIGHTER3 = "Eat dirt!", --WHITE
 		PIGELITEFIGHTER4 = "Sure does like using those signs.", --GREEN
 
+		CARRAT_GHOSTRACER = "That's a weird looking Carrat.",
+
+        YOTC_CARRAT_RACE_START = "Mine's gonna win, obviously.",
+        YOTC_CARRAT_RACE_CHECKPOINT = "Looks perfectly flammable to me.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "I should set it on fire, it'll be easier to see that way.",
+            BURNT = "Now that's more like it.",
+            I_WON = "Pfft, as if there was any doubt I'd win.",
+            SOMEONE_ELSE_WON = "{winner} was just lucky, I'm winning the next one.",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "What a gong show.",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "There's not nearly enough fire in those lanterns.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Let's see, where's a good spot for me to win?",
+
+		YOTC_SEEDPACKET = "Just a bunch of seeds.",
+		YOTC_SEEDPACKET_RARE = "Oh wow, special seeds, how exciting.",
+
+		MINIBOATLANTERN = "Ha! Fire beats water!",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "How come the rat-thing gets a shrine and I don't?",
+            EMPTY = "Let me guess, I've gotta give you something.",
+            BURNT = "No regrets.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "This should be fun.",
+            RAT = "Getting dizzy yet?",
+            BURNT = "All's well that burns well.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "What if I just set it on fire a little bit? For motivation!",
+            RAT = "Look at those little legs go!",
+            BURNT = "All's well that burns well.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Sure, why not.",
+            RAT = "Ha! I could watch this all day.",
+            BURNT = "All's well that burns well.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Not my idea of \"feeling the burn\".",
+            RAT = "Go on, get the berry!",
+            BURNT = "All's well that burns well.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "A gym-shaped pile of potential kindling.",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "A gym-shaped pile of potential kindling.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "A gym-shaped pile of potential kindling.",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "A gym-shaped pile of potential kindling.",
+
+        YOTC_CARRAT_SCALE_ITEM = "A nice, scale-shaped pile of potential kindling.",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "My Carrat's off the scale! I mean literally.",
+            CARRAT = "Meh. I've seen better.",
+            CARRAT_GOOD = "Now we're talking!",
+            BURNT = "Ha! Nice.",
+        },                
+
 		BISHOP_CHARGE_HIT = "Owwww!",
 		TRUNKVEST_SUMMER = "Now my friend will never leave.",
 		TRUNKVEST_WINTER = "Not as warm as a good fire, but still pretty good!",
@@ -2382,7 +2470,6 @@ return{
         WINTER_FOOD8 = "I only like it when it's SCALDING.", --hot cocoa
         WINTER_FOOD9 = "Who knew stuff from a bird's butt could be so tasty?", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "I'm on board with anything that involves fire.",
@@ -3002,6 +3089,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "What's so dandy about it?",
 		OCEANFISH_MEDIUM_4 = "Ha! I'm not scared of a little bad luck.",
 		OCEANFISH_MEDIUM_5 = "What... is it?",
+		OCEANFISH_MEDIUM_6 = "It's kind of pretty for something that lives in the water.",
+		OCEANFISH_MEDIUM_7 = "It's kind of pretty for something that lives in the water.",
 
 		PONDFISH = "Slippery fishy!",
 		PONDEEL = "I don't like the look it's giving me!",

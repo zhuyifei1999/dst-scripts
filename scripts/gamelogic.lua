@@ -977,7 +977,7 @@ local function DoResetAction()
 
 		RECIPE_PREFABS = {}
 		for k,v in pairs(AllRecipes) do
-			table.insert(RECIPE_PREFABS, v.name)
+			table.insert(RECIPE_PREFABS, v.product)
 			if v.placer then
 				table.insert(RECIPE_PREFABS, v.placer)
 			end
@@ -1125,3 +1125,10 @@ if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOffli
 end
 
 Stats.InitStats()
+
+
+--Now let's setup debugging!!!
+if DEBUGGER_ENABLED then
+    local startResult, breakerType = Debuggee.start()
+    print('Debuggee start ->', startResult, breakerType )
+end

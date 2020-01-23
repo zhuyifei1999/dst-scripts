@@ -1122,6 +1122,11 @@ function Tune(overrides)
                 PIGOFFERING = 3,
                 PERDOFFERING = 1,
             }),
+            
+            CARRATSHRINE = TechTree.Create({
+                CARRATOFFERING = 3,
+                PERDOFFERING = 1,
+            }),            
 
             MADSCIENCE = TechTree.Create({
                 MADSCIENCE = 1,
@@ -3357,7 +3362,8 @@ function Tune(overrides)
 
         CARRAT =
         {
-            WALK_SPEED = 7,
+            WALK_SPEED = 4,
+            RUN_SPEED = 7,
             HEALTH = 25 * multiplayer_attack_modifier,
             PERISH_TIME = total_day_time * 5,
             EAT_TIME = { BASE = 4, VAR = 4 },
@@ -3802,6 +3808,66 @@ function Tune(overrides)
 			HUNGER_GAIN = (calories_per_day/total_day_time)*2,
 			SANITY_GAIN = 100/(night_time*10),
 		},
+
+
+        -- Year of the Carrat, 2020 --
+        RACE_STATS =
+        {
+            MIN_STAT_VALUE = 0,
+            MAX_STAT_VALUE = 5,
+            INIT_STAT_VALUE = 0,
+
+            BAD_STAT_SPREAD = 3,
+            WILD_STAT_SPREAD = 5,
+        },
+
+        CARRAT_GYM = 
+        {
+            TRAINS_PER_DAY = 4,
+            TRAINING_TIME = 3*seg_time,
+        },
+
+		YOTC_ADDTORACE_DIST = 5,
+
+		YOTC_RACER_MAX_VISITS_PER_CHECKPOINT = 5,
+		YOTC_RACER_CHECKPOINT_FIND_DIST = 20,
+		YOTC_RACER_CHECKPOINT_TOO_FAR_AWAY = 40, -- double YOTC_RACER_CHECKPOINT_FIND_DIST
+        YOTC_RACER_CHECKPOINT_REACHED_DIST = 2,
+		YOTC_RACER_FORGETFULNESS_MAX_CHECKPOINTS = 8,
+		YOTC_RACER_CHECKPOINT_TIMEOUT = 75, -- racers will abort the race if it takes longer then this amount of time to get to the next check point
+
+		YOTC_RACE_MAX_DISTANCE_REWARDS = 9,
+
+		YOTC_RACER_STAMINA_BAD = 2,
+		YOTC_RACER_STAMINA_GOOD = 22,
+		YOTC_RACER_STAMINA_VAR = 3,
+		YOTC_RACER_STAMINA_EXHAUSTED_TIME = 2,
+		YOTC_RACER_STAMINA_EXHAUSTED_TIME_VAR = 1,
+		YOTC_RACER_STAMINA_SLEEP_CHANCE = .1,
+		YOTC_RACER_STAMINA_SLEEP_TIME = 3,
+		YOTC_RACER_STAMINA_SLEEP_TIME_VAR = 3,
+
+        YOTC_RACER_SPEED_BAD = 5, -- carrat's walk speed is 4
+        YOTC_RACER_SPEED_GOOD = 7, -- carrat's run speed is 7
+		YOTC_RACER_SPEED_VAR = 0.5,
+
+		YOTC_RACER_REACTION_START_STUN_LOOPS_MIN = 4,
+		YOTC_RACER_REACTION_START_STUN_LOOPS_MAX = 5,
+		YOTC_RACER_REACTION_START_BAD = 2,
+		YOTC_RACER_REACTION_START_GOOD = 0,
+		YOTC_RACER_REACTION_START_BAD_VAR = 2,
+		YOTC_RACER_REACTION_START_GOOD_VAR = 0,
+
+		YOTC_RACER_DIRECTION_BAD = 100, -- +/- degrees
+		YOTC_RACER_DIRECTION_GOOD = 30, -- +/- degrees
+
+        YOTC_RACER_TRAINER_DIST = 6,
+
+		MINIBOATLANTERN_SPEED = 0.4,
+		MINIBOATLANTERN_ACCELERATION = 0.3*FRAMES,
+		MINIBOATLANTERN_WANDER_DIST = 6,
+        MINIBOATLANTERN_LIGHTTIME = total_day_time*6,
+        MINIBOATLANTERN_BURNTIME = 1.7,
 	}
 end
 

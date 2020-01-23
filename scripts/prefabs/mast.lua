@@ -220,6 +220,7 @@ local function item_fn_pre(inst)
     inst.entity:AddNetwork()
 
     inst:AddTag("boat_accessory")
+    inst:AddTag("deploykititem")
 
     MakeInventoryPhysics(inst)
 
@@ -229,7 +230,7 @@ end
 local function item_fn_pst(inst)
     inst:AddComponent("deployable")
     setondeploy(inst, "mast")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.MAST) 
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.MAST)
     inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LESS)   
 
     MakeLargeBurnable(inst)

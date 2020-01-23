@@ -58,6 +58,10 @@ return{
             INUSE = "Oh, smells good, friend!",
             TOOFAR = "Is pot very small, or just far away?",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "Wolfgang must find leggy carrots for race!",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "That is not mighty weapon!",
 			INUSE = "Wolfgang will wait for friend to finish.",
+            NOTMINE_YOTC =
+            {
+                "Is not Wolfgang's leggy carrot.",
+                "Wolfgang's leggy carrot look completely different!",
+            },
         },
         SLAUGHTER =
         {
@@ -498,6 +507,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "Is too weak for race.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Leggy carrot race start NOW!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "No! Wrong way!",
+        "You go wrong way, leggy carrot!",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Is not the sleepytime!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Leggy carrot must go faster!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "Will not win like that! Must go!",
 
 	BATTLECRY =
 	{
@@ -1288,6 +1308,7 @@ return{
         CHESSPIECE_BUTTERFLY = "Is look like little flutterby, but bigger!",
         CHESSPIECE_ANCHOR = "Is big. And heavy. Wolfgang would like to lift.",
         CHESSPIECE_MOON = "Is look just like sky cheese!",
+        CHESSPIECE_CARRAT = "Wolfgang liked racing leggy carrots.",
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -2283,6 +2304,73 @@ return{
 		PIGELITEFIGHTER3 = "Is dirty fighter.", --WHITE
 		PIGELITEFIGHTER4 = "Is mighty. Wolfgang mightier.", --GREEN
 
+		CARRAT_GHOSTRACER = "Something wrong with that one...",
+
+        YOTC_CARRAT_RACE_START = "Is starting place for tiny leggy carrots.",
+        YOTC_CARRAT_RACE_CHECKPOINT = "Is point for checking.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Wolfgang will win, have leggy-est carrot!",
+            BURNT = "Is all burnt away.",
+            I_WON = "Haha! Good job, tiny friend!",
+            SOMEONE_ELSE_WON = "{winner} trained leggy carrot well.",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "Is gong-thing for race starting.",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Is point for checking.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "Wolfgang will find good place for finish spot.",
+
+		YOTC_SEEDPACKET = "Is seeds for growing.",
+		YOTC_SEEDPACKET_RARE = "Is fancy seeds for growing.",
+
+		MINIBOATLANTERN = "Is floaty water light.",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "Shiny leggy carrot was hungry!",
+            EMPTY = "Is wanting nibbles. Wolfgang will find.",
+            BURNT = "Very sad.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "Is tiny turny gym.",
+            RAT = "You learning well!",
+            BURNT = "Tiny gym burnt away.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Speed almost as important as mightiness.",
+            RAT = "Haha! Run, little friend!",
+            BURNT = "Tiny gym burnt away.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Wolfgang smell popcorn.",
+            RAT = "Good! Is learning!",
+            BURNT = "Tiny gym burnt away.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Yes!! Tiny gym will make leggy carrot strong!",
+            RAT = "You will be mighty!",
+            BURNT = "Tiny gym burnt away.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "Will make leggy carrot smarter!",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "Will make leggy carrot faster!",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Will make leggy carrot stronger!",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Will give good reflexes to leggy carrot!",
+
+        YOTC_CARRAT_SCALE_ITEM = "Is measurer of racing mightiness!",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "Will see how mighty Wolfgang's leggy carrot is!",
+            CARRAT = "Hmmm, could be mightier.",
+            CARRAT_GOOD = "You will be good racer!",
+            BURNT = "Will probably not work anymore.",
+        },                
+
 		BISHOP_CHARGE_HIT = "Rrrraa!",
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "Cozy nosy!",
@@ -2376,7 +2464,6 @@ return{
         WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
         WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "Oven needs mighty fuel!",
@@ -2996,6 +3083,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "This fish very pokey.",
 		OCEANFISH_MEDIUM_4 = "Wolfgang doesn't want bad luck!",
 		OCEANFISH_MEDIUM_5 = "Haha! Is corn and fish!",
+		OCEANFISH_MEDIUM_6 = "Is mighty fish!",
+		OCEANFISH_MEDIUM_7 = "Is mighty fish!",
 
 		PONDFISH = "Is fishy.",
 		PONDEEL = "Eel needs cooking!",

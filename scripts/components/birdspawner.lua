@@ -281,7 +281,7 @@ function self:SpawnBird(spawnpoint, ignorebait)
         local bait = TheSim:FindEntities(spawnpoint.x, 0, spawnpoint.z, 15)
         for k, v in pairs(bait) do
             local x, y, z = v.Transform:GetWorldPosition()
-            if bird.components.eater:CanEat(v) and
+            if bird.components.eater:CanEat(v) and not v:IsInLimbo() and
                 v.components.bait and
                 not (v.components.inventoryitem and v.components.inventoryitem:IsHeld()) and
                 not IsDangerNearby(x, y, z) and

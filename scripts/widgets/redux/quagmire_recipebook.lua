@@ -642,7 +642,7 @@ function QuagmireRecipeBook:BuildRecipeBook()
             item_ctor_fn = ScrollWidgetsCtor,
             apply_fn     = ScrollWidgetApply,
             scrollbar_offset = 20,
-            scrollbar_height_offset = -60,
+            scrollbar_height_offset = -60
         })
 
 	grid.up_button:SetTextures("images/quagmire_recipebook.xml", "quagmire_recipe_scroll_arrow_hover.tex")

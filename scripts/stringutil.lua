@@ -8,10 +8,17 @@ local function getmodifiedstring(topic_tab, modifier)
 			ret = ret[v]
 		end
 		return ret
-	else
-		return (modifier ~= nil and topic_tab[modifier])
-			or topic_tab.GENERIC
-			or (#topic_tab > 0 and topic_tab[math.random(#topic_tab)] or nil)
+	elseif modifier ~= nil then
+        local ret = topic_tab[modifier]
+        return (type(ret) == "table" and #ret > 0 and ret[math.random(#ret)])
+                or ret
+                or topic_tab.GENERIC
+                or (#topic_tab > 0 and topic_tab[math.random(#topic_tab)])
+                or nil
+    else
+		return topic_tab.GENERIC
+                or (#topic_tab > 0 and topic_tab[math.random(#topic_tab)])
+                or nil
 	end
 end
 

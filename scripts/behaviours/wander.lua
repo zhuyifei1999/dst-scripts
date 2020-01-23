@@ -135,7 +135,7 @@ function Wander:PickNewDirection()
             end
         end
 
-        local radius = self.wander_dist
+        local radius = type(self.wander_dist) ~= "function" and self.wander_dist or self.wander_dist(self.inst)
         local attempts = self.offest_attempts
 		local find_offset_fn = self.inst.components.locomotor:IsAquatic() and FindSwimmableOffset or FindWalkableOffset
         local offset, check_angle, deflected = find_offset_fn(pt, angle, radius, attempts, true, false, self.checkpointFn) -- try to avoid walls

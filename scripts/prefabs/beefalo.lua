@@ -13,6 +13,9 @@ local assets =
     Asset("ANIM", "anim/beefalo_personality_ornery.zip"),
     Asset("ANIM", "anim/beefalo_personality_pudgy.zip"),
 
+    Asset("ANIM", "anim/beefalo_carrat_idles.zip"),
+    Asset("ANIM", "anim/yotc_carrat_colour_swaps.zip"),
+
     Asset("ANIM", "anim/beefalo_fx.zip"),
     Asset("ANIM", "anim/poop_cloud.zip"),
 
@@ -25,6 +28,7 @@ local prefabs =
     "poop",
     "beefalowool",
     "horn",
+    "carrat",
 }
 
 local brain = require("brains/beefalobrain")
@@ -80,6 +84,64 @@ local tendencies =
         end,
     },
 }
+
+local function removecarrat(inst, carrat)
+    inst:RemoveTag("HasCarrat")
+    carrat._color = inst._carratcolor
+    carrat._setcolorfn(carrat, carrat._color)
+end
+
+local function setcarratart(inst)
+    --[[
+    if not inst._carratcolor then
+        inst.AnimState:ClearOverrideSymbol("carrat_tail")
+        inst.AnimState:ClearOverrideSymbol("carrat_ear")
+        inst.AnimState:ClearOverrideSymbol("carrot_parts")
+        ]]
+    if inst._carratcolor then
+        inst.AnimState:OverrideSymbol("carrat_tail", "yotc_carrat_colour_swaps", inst._carratcolor.."_carrat_tail")
+        inst.AnimState:OverrideSymbol("carrat_ear", "yotc_carrat_colour_swaps", inst._carratcolor.."_carrat_ear")
+        inst.AnimState:OverrideSymbol("carrot_parts", "yotc_carrat_colour_swaps", inst._carratcolor.."_carrot_parts")
+    end
+end
+
+local function addcarrat(inst, carrat)
+    inst:AddTag("HasCarrat")
+    inst._carratcolor = carrat._color
+    setcarratart(inst)
+end
+
+local function createcarrat(inst)
+    local carrat = SpawnPrefab("carrat")
+    if inst._carratcolor then
+        carrat._setcolorfn(carrat, inst._carratcolor)
+    end
+    carrat.setbeefalocarratrat(carrat)
+    return carrat
+end
+
+local function testforcarratexit(inst)
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, 12)
+    local carrat = createcarrat(inst)
+     
+    local foundfood = nil
+    for i,ent in ipairs(ents) do
+        if carrat.components.eater:CanEat(ent) and ent.components.bait and not ent:HasTag("planted") and
+            not (ent.components.inventoryitem and ent.components.inventoryitem:IsHeld()) and
+            ent:IsOnPassablePoint() and
+            ent:GetCurrentPlatform() == inst:GetCurrentPlatform() then
+                foundfood = ent
+                break
+        end
+    end
+    if foundfood then
+        removecarrat(inst,carrat)           
+        carrat.Transform:SetPosition(x,y,z)        
+    else
+        carrat:Remove()
+    end
+end
 
 local function ClearBuildOverrides(inst, animstate)
     if animstate ~= inst.AnimState then
@@ -401,6 +463,16 @@ local function OnDeath(inst, data)
         --SG is forced into death state AFTER dismounting (OnRiderChanged)
         inst.components.rideable:Buck(true)
     end
+
+    if inst:HasTag("HasCarrat") and IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local carrat = createcarrat(inst)
+        
+        if inst._carratcolor then
+            carrat._setcolorfn(carrat, inst._carratcolor)
+        end        
+        carrat.Transform:SetPosition(x,y,z)        
+    end
 end
 
 local function DomesticationTriggerFn(inst)
@@ -532,6 +604,13 @@ local function ToggleDomesticationDecay(inst)
     inst.components.domesticatable:PauseDomesticationDecay(inst.components.saltlicker.salted or inst.components.sleeper:IsAsleep())
 end
 
+local function onwenthome(inst,data)
+    if data.doer and data.doer.prefab == "carrat" then
+        addcarrat(inst,data.doer)
+        inst:PushEvent("carratboarded")
+    end
+end
+
 local function OnInit(inst)
     inst.components.mood:ValidateMood()
     inst:UpdateDomestication()
@@ -544,12 +623,23 @@ end
 
 local function OnSave(inst, data)
     data.tendency = inst.tendency
+    data.hascarrat = inst:HasTag("HasCarrat")
+    data.carratcolor = inst._carratcolor
 end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.tendency ~= nil then
         inst.tendency = data.tendency
     end
+
+    if IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+		if data ~= nil and data.hascarrat then
+			inst:AddTag("HasCarrat")
+		end
+		if data ~= nil and data.carratcolor then
+			inst._carratcolor = data.carratcolor
+		end
+	end
 end
 
 local function GetDebugString(inst)
@@ -573,6 +663,7 @@ local function beefalo()
     inst.AnimState:SetBank("beefalo")
     inst.AnimState:SetBuild("beefalo_build")
     inst.AnimState:AddOverrideBuild("poop_cloud")
+    inst.AnimState:AddOverrideBuild("beefalo_carrat_idles")
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("HEAT")
 
@@ -704,6 +795,8 @@ local function beefalo()
     inst:ListenForEvent("saltchange", ToggleDomesticationDecay)
     inst:ListenForEvent("gotosleep", ToggleDomesticationDecay)
     inst:ListenForEvent("onwakeup", ToggleDomesticationDecay)
+    inst:ListenForEvent("onwenthome", onwenthome)
+    inst.setcarratart = setcarratart
 
     inst.ApplyBuildOverrides = ApplyBuildOverrides
     inst.ClearBuildOverrides = ClearBuildOverrides
@@ -745,6 +838,7 @@ local function beefalo()
     inst:SetTendency()
 
     inst.ShouldBeg = ShouldBeg
+    inst.testforcarratexit = testforcarratexit
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGBeefalo")

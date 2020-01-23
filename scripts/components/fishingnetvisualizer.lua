@@ -37,6 +37,7 @@ end
 function FishingNetVisualizer:UpdateWhenMovingToTarget(dt)
 	local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
 	local distance_traveled = dt * self.velocity
+	self.distance_remaining = self.distance_remaining or 0 -- just add this to stop a crash that modds were causing
 	if distance_traveled >= self.distance_remaining then
 		distance_traveled = self.distance_remaining
 		

@@ -58,6 +58,10 @@ return{
             INUSE = "Someone else using it",
             TOOFAR = "Get closer. Not too close",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "Find friends for race",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "Nope. Can't use it",
 			INUSE = "Someone else's",
+            NOTMINE_YOTC =
+            {
+                "Someone else's friend",
+                "Not friend",
+            },
         },
         SLAUGHTER =
         {
@@ -501,6 +510,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "Tired",
+
+    ANNOUNCE_CARRAT_START_RACE = "Go!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Not right",
+        "Wrong way",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "Tired",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Too slow",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "Confused?",
 
 	BATTLECRY =
 	{
@@ -1291,6 +1311,7 @@ return{
         CHESSPIECE_BUTTERFLY = "Can't fly like that",
         CHESSPIECE_ANCHOR = "Heavy",
         CHESSPIECE_MOON = "Night Ball broken.",
+        CHESSPIECE_CARRAT = "Friends!",
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
         CHESSJUNK3 = "Full of machine stuff",
@@ -2286,6 +2307,73 @@ return{
 		PIGELITEFIGHTER3 = "Friend?", --WHITE
 		PIGELITEFIGHTER4 = "Like him", --GREEN
 
+		CARRAT_GHOSTRACER = "Dark floaty... friend?",
+
+        YOTC_CARRAT_RACE_START = "Start place",
+        YOTC_CARRAT_RACE_CHECKPOINT = "Friend help show the way",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "End place",
+            BURNT = "Oh",
+            I_WON = "Good job friend!",
+            SOMEONE_ELSE_WON = "{winner}'s friend did good job",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "Start place",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "Friend help show the way",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "End place",
+
+		YOTC_SEEDPACKET = "Shh... friends sleeping inside",
+		YOTC_SEEDPACKET_RARE = "Shh... friends sleeping inside",
+
+		MINIBOATLANTERN = "Little Floater",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "Shiny thing has little house",
+            EMPTY = "Hungry?",
+            BURNT = "Oh",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "Turn-arounder",
+            RAT = "Learning",
+            BURNT = "(sigh)",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Fast spinner",
+            RAT = "Going faster",
+            BURNT = "(sigh)",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Springy box",
+            RAT = "Can little friend get poppy corn?",
+            BURNT = "(sigh)",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "Jumper",
+            RAT = "Getting strong",
+            BURNT = "(sigh)",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "For little friend",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "For little friend",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "For little friend",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "For little friend",
+
+        YOTC_CARRAT_SCALE_ITEM = "Measure little friend",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "Measure little friend",
+            CARRAT = "Not so good",
+            CARRAT_GOOD = "Good!",
+            BURNT = "Oh",
+        },                
+
 		BISHOP_CHARGE_HIT = "Aggh!",
 		TRUNKVEST_SUMMER = "Cool",
 		TRUNKVEST_WINTER = "Warm",
@@ -2379,7 +2467,6 @@ return{
         WINTER_FOOD8 = "Mmm... Makes belly warm", --hot cocoa
         WINTER_FOOD9 = "Makes belly full", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "Doesn't use friends",
@@ -2999,6 +3086,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "Pointy Glub Glub",
 		OCEANFISH_MEDIUM_4 = "Good for belly",
 		OCEANFISH_MEDIUM_5 = "Is friend?",
+		OCEANFISH_MEDIUM_6 = "Pretty Glub Glub",
+		OCEANFISH_MEDIUM_7 = "Gold Glub Glub",
 
 		PONDFISH = "Glub Glub",
 		PONDEEL = "Sea Wiggly",

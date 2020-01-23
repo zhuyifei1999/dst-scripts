@@ -64,6 +64,7 @@ local SKIN_GIFT_TYPES =
 	reviver_cupid = "CUPID",
 	reviver_cupid_2 = "CUPID",
 	reviver_cupid_3 = "CUPID",
+	reviver_cupid_4 = "CUPID",
 	starstaff_crystal = "TWITCH_DROP",
 	tent_circus = "TWITCH_DROP",
 	tophat_circus = "TWITCH_DROP",

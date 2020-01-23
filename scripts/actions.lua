@@ -137,6 +137,10 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.extra_arrive_dist = data.extra_arrive_dist
 end)
 
+-- NOTE: High priority is intended to be a shortcut flag for actions that we expect to always dominate if they are available.
+-- We also expect that no two HIGH_ACTION_PRIORITY actions overlap with each other.
+local HIGH_ACTION_PRIORITY = 10
+
 ACTIONS =
 {
     REPAIR = Action({ mount_valid=true, encumbered_valid=true }),
@@ -219,9 +223,9 @@ ACTIONS =
     TAKEITEM = Action(),
     MAKEBALLOON = Action({ mount_valid=true }),
     CASTSPELL = Action({ priority=-1, rmb=true, distance=20, mount_valid=true }),
-    BLINK = Action({ priority=10, rmb=true, distance=36, mount_valid=true }),
+    BLINK = Action({ priority=HIGH_ACTION_PRIORITY, rmb=true, distance=36, mount_valid=true }),
     COMBINESTACK = Action({ mount_valid=true }),
-    TOGGLE_DEPLOY_MODE = Action({ priority=1, instant=true }),
+    TOGGLE_DEPLOY_MODE = Action({ priority=HIGH_ACTION_PRIORITY, instant=true }),
     SUMMONGUARDIAN = Action({ rmb=false, distance=5 }),
     HAUNT = Action({ rmb=false, mindistance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     UNPIN = Action(),
@@ -248,6 +252,7 @@ ACTIONS =
 	APPLYPRESERVATIVE = Action(),
 	COMPARE_WEIGHABLE = Action(),
 	WEIGH_ITEM = Action(),
+	START_CARRAT_RACE = Action({ rmb = true }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -268,7 +273,7 @@ ACTIONS =
 	GIVE_TACKLESKETCH = Action(),
 	REMOVE_FROM_TROPHYSCALE = Action(),
 
-    CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
+    CASTAOE = Action({ priority=HIGH_ACTION_PRIORITY, rmb=true, distance=8 }),
 
 	HALLOWEENMOONMUTATE = Action({ priority=-1 }),
 
@@ -301,7 +306,7 @@ ACTIONS =
     STEER_BOAT = Action({ distance=0.1 }),
     SET_HEADING = Action({distance=9999, do_not_locomote=true}),
     STOP_STEERING_BOAT = Action({instant=true}),
-    CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
+    CAST_NET = Action({ priority=HIGH_ACTION_PRIORITY, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
     ROW_FAIL = Action({customarrivecheck=function() return true end, disable_platform_hopping=true, skip_locomotor_facing=true}),
     ROW = Action({priority=3, customarrivecheck=CheckRowRange, is_relative_to_platform=true, disable_platform_hopping=true}),
     ROW_CONTROLLER = Action({priority=3, is_relative_to_platform=true, disable_platform_hopping=true, do_not_locomote=true}),    
@@ -418,6 +423,11 @@ ACTIONS.PICKUP.fn = function(act)
             return false, "restriction"
         elseif act.target.components.container ~= nil and act.target.components.container:IsOpen() and not act.target.components.container:IsOpenedBy(act.doer) then
             return false, "inuse"
+        elseif (act.target.components.yotc_racecompetitor ~= nil and act.target.components.entitytracker ~= nil) then
+            local trainer = act.target.components.entitytracker:GetEntity("yotc_trainer")
+            if trainer ~= nil and trainer ~= act.doer then
+                return false, "NOTMINE_YOTC"
+            end
         end
 
         act.doer:PushEvent("onpickupitem", { item = act.target })
@@ -556,6 +566,7 @@ ACTIONS.DROP.strfn = function(act)
             or (act.invobject:HasTag("mine") and "SETMINE")
             or (act.invobject:HasTag("soul") and "FREESOUL")
             or (act.invobject.prefab == "pumpkin_lantern" and "PLACELANTERN")
+            or (act.invobject.GetDropActionString ~= nil and act.invobject:GetDropActionString(act:GetActionPoint()))
             or nil
     end
 end
@@ -773,8 +784,8 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("gatebuilder") and "GATE") or
                 (act.invobject:HasTag("portableitem") and "PORTABLE") or
                 (act.invobject:HasTag("boatbuilder") and "WATER") or
-                (act.invobject:HasTag("boat_accessory") and "TURRET") or
-                (act.invobject:HasTag("eyeturret") and "TURRET")   )
+                (act.invobject:HasTag("deploykititem") and "TURRET") or
+                (act.invobject:HasTag("eyeturret") and "TURRET")    )
         or nil
 end
 
@@ -2444,6 +2455,19 @@ ACTIONS.WEIGH_ITEM.fn = function(act)
 		end
 	end
 	return false
+end
+
+ACTIONS.START_CARRAT_RACE.fn = function(act)
+	if act.target ~= nil and act.target.components.yotc_racestart ~= nil and act.target.components.yotc_racestart:CanInteract() and
+		not (act.target:HasTag("fire") or act.target:HasTag("burnt")) then
+
+        local race_data = TheWorld.components.yotc_raceprizemanager ~= nil and TheWorld.components.yotc_raceprizemanager:GetRaceById(act.target) or nil
+        if not race_data or (race_data.num_racers == nil or race_data.num_racers == 0) then
+            return false, "NO_RACERS"
+        end
+		act.target.components.yotc_racestart:StartRace()
+		return true
+	end
 end
 
 --Quagmire

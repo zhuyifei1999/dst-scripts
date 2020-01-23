@@ -58,6 +58,10 @@ return{
             INUSE = "I shall wait whilst my allies plan their feast.",
             TOOFAR = "I must close the gap between us!",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "The veggie beasts must take their places for the race to commence!",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "There is no glory in that weapon!",
 			INUSE = "Someone hath beat me to it!",
+            NOTMINE_YOTC =
+            {
+                "Thou art not the one I seek.",
+                "Where is your master, veggie beast?",
+            },
         },
         SLAUGHTER =
         {
@@ -497,6 +506,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "The wee beast is on death's door.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Onward, to victory!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Foolish vegetable, the race is that way!",
+        "Thou cannot trust a vegetable to do anything right.",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "By Odin, wake up!",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Quicken thine step, rodent!",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "No! You musn't hesitate!",
 
 	BATTLECRY =
 	{
@@ -1287,6 +1307,7 @@ return{
         CHESSPIECE_BUTTERFLY = "To celebrate the moon's messenger!",
         CHESSPIECE_ANCHOR = "'Twas made in honor of our stalwart vessel!",
         CHESSPIECE_MOON = "Offered in honor of our beauteous moon!",
+        CHESSPIECE_CARRAT = "I'm not keen on honoring a vegetable so.",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",
@@ -2282,6 +2303,73 @@ return{
 		PIGELITEFIGHTER3 = "He shall not soil mine warrior reputation!", --WHITE
 		PIGELITEFIGHTER4 = "Hath the strength of Yggdrasil.", --GREEN
 
+		CARRAT_GHOSTRACER = "This shadowy creature seeks to challenge me.",
+
+        YOTC_CARRAT_RACE_START = "We shall see which vegetable beast prevails!",
+        YOTC_CARRAT_RACE_CHECKPOINT = "A waypoint to guide our vegetable beasts.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "Who shall claim this noble victory?",
+            BURNT = "Alas, it is no more.",
+            I_WON = "The day is won!",
+            SOMEONE_ELSE_WON = "{winner}'s vegetable champion has seized victory.",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "The race cannot commence without it!",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "A waypoint to guide our vegetable beasts.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "This shall mark the race's end point.",
+
+		YOTC_SEEDPACKET = "I care not for growing vegetables.",
+		YOTC_SEEDPACKET_RARE = "The rarity of these non-meats doth not impress me.",
+
+		MINIBOATLANTERN = "The small vessel shall light my way.",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "It irks me to honor a vegetable.",
+            EMPTY = "What dost thou need?",
+            BURNT = "Tis naught but ashes now.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "I must ensure my veggie beast is quick-witted!",
+            RAT = "You must train harder!",
+            BURNT = "Reduced to cinders.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "We shall test thine speed.",
+            RAT = "Run! Run as if thine life depends on it!",
+            BURNT = "Reduced to cinders.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "Reflexes are key in battle, and racing!",
+            RAT = "Too slow!",
+            BURNT = "Reduced to cinders.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "This odd training ground will suffice.",
+            RAT = "Feel the warrior's spirit within you!",
+            BURNT = "Reduced to cinders.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "A trial of wit.",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "A trial of speed.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "A trial of endurance.",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "A trial of reflexes.",
+
+        YOTC_CARRAT_SCALE_ITEM = "It's time to put my veggie beast to the test.",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "We shall see just how strong my veggie beast truly is.",
+            CARRAT = "You are not yet ready!",
+            CARRAT_GOOD = "This beast will serve me well in the coming battle.",
+            BURNT = "Naught but ash.",
+        },                
+
 		BISHOP_CHARGE_HIT = "Rrraugh!",
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",
@@ -2375,7 +2463,6 @@ return{
         WINTER_FOOD8 = "Warms the soul.", --hot cocoa
         WINTER_FOOD9 = "Imbibable eggs!", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "A hearth for cooking a glorious feast!",
@@ -2995,6 +3082,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "The beastie put up an admirable fight.",
 		OCEANFISH_MEDIUM_4 = "There's an air of ill luck around this one...",
 		OCEANFISH_MEDIUM_5 = "This looks suspiciously veggie-like.",
+		OCEANFISH_MEDIUM_6 = "Your bad luck is my good fortune, beastie.",
+		OCEANFISH_MEDIUM_7 = "Your bad luck is my good fortune, beastie.",
 
 		PONDFISH = "Pond meat!",
 		PONDEEL = "Delicious slimy snake fish.",

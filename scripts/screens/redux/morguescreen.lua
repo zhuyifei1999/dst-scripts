@@ -493,7 +493,7 @@ function MorgueScreen:BuildObituariesTab()
                 item_ctor_fn = obit_widget_constructor,
                 apply_fn = obit_widget_update,
                 scrollbar_offset = 20,
-                scrollbar_height_offset = -60,
+                scrollbar_height_offset = -60
             }))
     self.obits_scroll_list:SetPosition(105, 20 * units_per_row)
     
@@ -518,7 +518,7 @@ function MorgueScreen:BuildEncountersTab()
                 item_ctor_fn = ecounter_widget_constructor,
                 apply_fn = encounter_widget_update,
                 scrollbar_offset = 20,
-                scrollbar_height_offset = -60,
+                scrollbar_height_offset = -60
             }))
     self.encounters_scroll_list:SetPosition(105, 20 * units_per_row)
 

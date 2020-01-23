@@ -427,7 +427,9 @@ local actionhandlers =
 	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
 	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
 	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
+
 	ActionHandler(ACTIONS.WINTERSFEAST_FEAST, "winters_feast_eat"),
+	ActionHandler(ACTIONS.START_CARRAT_RACE, "give"),
 }
 
 local events =

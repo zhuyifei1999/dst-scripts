@@ -58,6 +58,10 @@ return{
             INUSE = "Mmm, smells lovely, dear.",
             TOOFAR = "It is not within my reach.",
         },
+        START_CARRAT_RACE =
+        {
+            NO_RACERS = "I can't gather any data with no subjects.",
+        },
         
         --warly specific action
 --fallback to speech_wilson.lua 		DISMANTLE =
@@ -166,6 +170,11 @@ return{
         {
 			RESTRICTION = "That's not my area of expertise.",
 			INUSE = "It's already in use.",
+            NOTMINE_YOTC =
+            {
+                "Oh my, I seem to have gotten a bit mixed up.",
+                "My glasses need a good cleaning, that's clearly not my Daucus carota rattus!",
+            },
         },
         SLAUGHTER =
         {
@@ -497,6 +506,17 @@ return{
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
     },
+    ANNOUNCE_WEAK_RAT = "I'm afraid it's in no condition to race.",
+
+    ANNOUNCE_CARRAT_START_RACE = "Let the race commence!",
+
+    ANNOUNCE_CARRAT_ERROR_WRONG_WAY = {
+        "Wrong way, dear.",
+        "Oh my, I'll have to make a note of this.",
+    },
+    ANNOUNCE_CARRAT_ERROR_FELL_ASLEEP = "The subject seems to be exhibiting low levels of stamina.",    
+    ANNOUNCE_CARRAT_ERROR_WALKING = "Let's try to look a bit more lively, dear.",    
+    ANNOUNCE_CARRAT_ERROR_STUNNED = "You must pay attention!",
 
 	BATTLECRY =
 	{
@@ -1287,6 +1307,7 @@ return{
         CHESSPIECE_BUTTERFLY = "Carved in the lunar moth's likeness.",
         CHESSPIECE_ANCHOR = "Artists tend to reference what they're familiar with.",
         CHESSPIECE_MOON = "The missing chunk is a recent development.",
+        CHESSPIECE_CARRAT = "A delightfully rendered likeness of the Daucus carota rattus.",
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
@@ -2282,6 +2303,73 @@ return{
 		PIGELITEFIGHTER3 = "Has an earthy musk to him.", --WHITE
 		PIGELITEFIGHTER4 = "I wonder what those green markings signify.", --GREEN
 
+		CARRAT_GHOSTRACER = "Fascinating! A new genus, perhaps?",
+
+        YOTC_CARRAT_RACE_START = "This will be a unique opportunity to observe the Daucus carota rattus.",
+        YOTC_CARRAT_RACE_CHECKPOINT = "This marker should help keep things on track.",
+        YOTC_CARRAT_RACE_FINISH =
+        {
+            GENERIC = "I'm eager to document the results!",
+            BURNT = "Oh dear, that won't do at all.",
+            I_WON = "Oh ho! Superb results, if I do say so myself.",
+            SOMEONE_ELSE_WON = "\"Note: {winner}'s specimen displays superior racing ability.\"",
+        },
+
+		YOTC_CARRAT_RACE_START_ITEM = "I should find a suitable place for this.",
+        YOTC_CARRAT_RACE_CHECKPOINT_ITEM = "I'd best make sure I have enough to reach the finish line.",
+		YOTC_CARRAT_RACE_FINISH_ITEM = "The ending point for this little experiment.",
+
+		YOTC_SEEDPACKET = "I used to be quite an avid gardener.",
+		YOTC_SEEDPACKET_RARE = "I wonder what species it will turn out to be.",
+
+		MINIBOATLANTERN = "The balloon seems a bit redundant, doesn't it?",
+
+        YOTC_CARRATSHRINE =
+        {
+            GENERIC = "It's a tribute to the small plant-animal hybrid.",
+            EMPTY = "It requires an offering of some sort.",
+            BURNT = "That won't do at all.",
+        },
+
+        YOTC_CARRAT_GYM_DIRECTION = 
+        {
+            GENERIC = "This will put the creature's sense of direction to the test.",
+            RAT = "Who's a clever little Daucus carota rattus?",
+            BURNT = "I'm afraid it won't be of much use to anyone now.",
+        },
+        YOTC_CARRAT_GYM_SPEED = 
+        {
+            GENERIC = "Speed is no replacement for cleverness, but it helps.",
+            RAT = "Oh my, look at it go!",
+            BURNT = "I'm afraid it won't be of much use to anyone now.",
+        },
+        YOTC_CARRAT_GYM_REACTION = 
+        {
+            GENERIC = "This should be a good test of reflexes.",
+            RAT = "I do believe its reaction time is improving!",
+            BURNT = "I'm afraid it won't be of much use to anyone now.",
+        },
+        YOTC_CARRAT_GYM_STAMINA = 
+        {
+            GENERIC = "The repeated jumping should help build the creature's stamina.",
+            RAT = "The little dear is working so hard.",
+            BURNT = "I'm afraid it won't be of much use to anyone now.",
+        }, 
+
+        YOTC_CARRAT_GYM_DIRECTION_ITEM = "An easily constructed directional testing apparatus.",
+        YOTC_CARRAT_GYM_SPEED_ITEM = "An easily constructed speed testing device.",
+        YOTC_CARRAT_GYM_STAMINA_ITEM = "Everything I need to test the stamina of my subject.",
+        YOTC_CARRAT_GYM_REACTION_ITEM = "Everything I need to test my subject's alertness.",
+
+        YOTC_CARRAT_SCALE_ITEM = "It measures the racing prowess of herbaceous rodents.",           
+        YOTC_CARRAT_SCALE = 
+        {
+            GENERIC = "Fascinating! I never realized skill could be measured by weight.",
+            CARRAT = "Hm, it seems that more training might be in order.",
+            CARRAT_GOOD = "The specimen seems to have responded well to the training!",
+            BURNT = "Oh my, that won't do at all.",
+        },                
+
 		BISHOP_CHARGE_HIT = "Augh!",
 		TRUNKVEST_SUMMER = "Durable outerwear.",
 		TRUNKVEST_WINTER = "Ample protection against the elements.",
@@ -2375,7 +2463,6 @@ return{
         WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
         WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
 
-		--Dishes are not final - let these be for now
 		WINTERSFEASTOVEN =
 		{
 			GENERIC = "What sort of fuel does it run on?",
@@ -2995,6 +3082,8 @@ return{
 		OCEANFISH_MEDIUM_3 = "Oh dear, I believe these are actually an invasive species.",
 		OCEANFISH_MEDIUM_4 = "I've never been superstitious about black cats, never mind a catfish!",
 		OCEANFISH_MEDIUM_5 = "A fascinating blend of animal and vegetable.",
+		OCEANFISH_MEDIUM_6 = "It appears to be a subspecies of Cyprinus carpio.",
+		OCEANFISH_MEDIUM_7 = "It appears to be a subspecies of Cyprinus carpio.",
 
 		PONDFISH = "Some kind of whitefish, I believe.",
 		PONDEEL = "It's an eel.",

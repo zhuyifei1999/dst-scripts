@@ -779,9 +779,12 @@ end
 function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
     local unvalidated_iap_defs = TheItems:GetIAPDefs()
     local all_iap_defs = {}
+    local latest_release_pack = 0
     for _,iap in ipairs(unvalidated_iap_defs) do
         -- Don't show items unless we have data/strings to describe them.
         if MISC_ITEMS[iap.item_type] then
+            latest_release_pack = math.max(latest_release_pack, GetReleaseGroup(iap.item_type))
+
             if SUPPORT_VIRTUAL_IAP then
                 if self.view_mode == MODE_REGULAR and iap.iap_type == IAP_TYPE_VIRTUAL then
                     table.insert(all_iap_defs, iap)
@@ -820,6 +823,11 @@ function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
                     local filter_data = filter.spinner:GetSelectedData()
                     if filter_data == "ALL" then
                         --all good
+                    elseif filter_data == "NEW" then
+                        --Only the most recent release
+                        if GetReleaseGroup(iap.item_type) ~= latest_release_pack  then
+                            is_valid_with_filters = false
+                        end
                     elseif filter_data == "ITEMS" then
                         if not DoesPackHaveBelongings(iap.item_type) then
                             is_valid_with_filters = false
@@ -902,8 +910,12 @@ local function build_type_options(initial_item_key)
         table.insert( type_options, { text = STRINGS.NAMES[string.upper(character)], data = character } )
     end
 
-    if initial_item_key ~= nil and not itemKeyIsCharacter(initial_item_key) then
-        table.insert(type_options, 1, { text = GetSkinName(initial_item_key), data = initial_item_key });
+    if initial_item_key ~= nil then
+        if initial_item_key == "NEW" then
+            table.insert(type_options, 1, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_NEW, data = "NEW" })
+        elseif not itemKeyIsCharacter(initial_item_key) then
+            table.insert(type_options, 1, { text = GetSkinName(initial_item_key), data = initial_item_key })
+        end
     end
 
     return type_options
@@ -949,6 +961,7 @@ function PurchasePackScreen:_BuildPurchasePanel()
                         scrollbar_offset = 20,
 						scrollbar_height_offset = -60,
                         scissor_pad = 35,
+                        scroll_per_click = 0.5
                     }
                 )
 			)
@@ -1145,6 +1158,11 @@ function PurchasePackScreen:OnBecomeActive()
 
     self.leaving = nil
     
+    --Just in-case we came direct from the main menu, the music might not be playing
+    if not TheFrontEnd:GetSound():PlayingSound("FEMusic") then
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/music/jukebox", "FEMusic")
+    end
+    
     DisplayInventoryFailedPopup( self )
 end
 
@@ -1169,7 +1187,9 @@ function PurchasePackScreen:GetHelpText()
 end
 
 
-function PurchasePackScreen:OnUpdate(dt)
+function PurchasePackScreen:OnUpdate(dt)    
+--TheSim:ProfilerPush("PurchasePackScreen:OnUpdate")
+
     self.update_timer = self.update_timer + dt
     if self.update_timer > 1.0 then
         self.update_timer = 0
@@ -1177,6 +1197,8 @@ function PurchasePackScreen:OnUpdate(dt)
 			self.purchase_root.scroll_window.grid:RefreshView()
 		end
     end
+    
+--TheSim:ProfilerPop()
 end
 
 

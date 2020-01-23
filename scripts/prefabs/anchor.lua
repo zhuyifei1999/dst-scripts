@@ -15,11 +15,6 @@ local prefabs =
 	"anchor_item", -- deprecated but kept for existing worlds and mods
 }
 
-local item_prefabs =
-{
-    "anchor",
-}
-
 local function on_hammered(inst, hammerer)
     inst.components.lootdropper:DropLoot()
 
@@ -134,46 +129,6 @@ local function ondeploy(inst, pt, deployer)
     end
 end
 
-local function anchor_itemfn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
-
-    inst:AddTag("boat_accessory")
-
-    MakeInventoryPhysics(inst)
-
-    inst.AnimState:SetBank("seafarer_anchor")
-    inst.AnimState:SetBuild("seafarer_anchor")
-    inst.AnimState:PlayAnimation("idle")
-
-    inst.entity:SetPristine()
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    MakeSmallBurnable(inst)
-    MakeSmallPropagator(inst)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.nameoverride = "anchor"
-
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
-
-    inst:AddComponent("deployable")
-    inst.components.deployable.ondeploy = ondeploy
-
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
-
-    MakeHauntableLaunch(inst)
-
-    return inst
-end
-
 return Prefab("anchor", fn, assets, prefabs),
-       Prefab("anchor_item", anchor_itemfn, item_assets, item_prefabs),
+       MakeDeployableKitItem("anchor_item", "anchor", "seafarer_anchor", "seafarer_anchor", "idle", item_assets, nil, {"boat_accessory"}, {fuelvalue = TUNING.LARGE_FUEL}),
        MakePlacer("anchor_item_placer", "boat_anchor", "boat_anchor", "idle")

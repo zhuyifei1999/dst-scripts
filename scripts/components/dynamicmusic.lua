@@ -103,6 +103,8 @@ local BUSYTHEMES = {
     OCEAN = 4,
     LUNARISLAND = 5,
     FEAST = 6,
+    RACE = 7,
+    TRAINING = 8,
 }
 
 --------------------------------------------------------------------------
@@ -222,7 +224,6 @@ end
 
 local function StartFeasting(player)
     if _busytask ~= nil then
-        --_extendtime = GetTime() + 15
         _extendtime = 0
         _busytask:Cancel()
         _busytask = nil
@@ -234,6 +235,42 @@ local function StartFeasting(player)
             _soundemitter:PlaySound("wintersfeast2019/music/feast", "busy")
         end
         _busytheme = BUSYTHEMES.FEAST
+
+        _soundemitter:SetParameter("busy", "intensity", 1)
+        _busytask = inst:DoTaskInTime(5, StopBusy, true)
+        _extendtime = 0
+    end
+end
+
+local function StartRacing(player)
+    if _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
+        if _busytask then
+            _busytask:Cancel()
+            _busytask = nil
+        end
+        if _busytheme ~= BUSYTHEMES.RACE then
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound("yotc_2020/music/race", "busy")
+        end
+        _busytheme = BUSYTHEMES.RACE
+
+        _soundemitter:SetParameter("busy", "intensity", 1)
+        _busytask = inst:DoTaskInTime(5, StopBusy, true)
+        _extendtime = 0
+    end
+end
+
+local function StartTraining(player)
+    if _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled and _busytheme ~= BUSYTHEMES.RACE then
+        if _busytask then
+            _busytask:Cancel()
+            _busytask = nil
+        end
+        if _busytheme ~= BUSYTHEMES.TRAINING then
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound("yotc_2020/music/training", "busy")
+        end
+        _busytheme = BUSYTHEMES.TRAINING
 
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(5, StopBusy, true)
@@ -397,6 +434,8 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("triggeredevent", StartTriggeredDanger, player)
     inst:ListenForEvent("boatspedup", StartTriggeredWater, player)
     inst:ListenForEvent("isfeasting", StartTriggeredFeasting, player)
+    inst:ListenForEvent("playracemusic", StartRacing, player)   
+    inst:ListenForEvent("playtrainingmusic", StartTraining, player)
 end
 
 local function StopPlayerListeners(player)
@@ -409,6 +448,8 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("triggeredevent", StartTriggeredDanger, player)
     inst:RemoveEventCallback("boatspedup", StartTriggeredWater, player)
     inst:RemoveEventCallback("isfeasting", StartTriggeredFeasting, player)
+    inst:RemoveEventCallback("playracemusic", StartRacing, player)
+    inst:RemoveEventCallback("playtrainingmusic", StartTraining, player)
 end
 
 local function OnPhase(inst, phase)
