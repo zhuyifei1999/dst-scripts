@@ -2466,6 +2466,9 @@ ACTIONS.START_CARRAT_RACE.fn = function(act)
             return false, "NO_RACERS"
         end
 		act.target.components.yotc_racestart:StartRace()
+        if act.doer and act.target.racestartstring then
+            act.doer:DoTaskInTime(2,function() if act.target:HasTag("race_on") then act.doer.components.talker:Say(GetString(act.doer, act.target.racestartstring)) end end)
+        end        
 		return true
 	end
 end

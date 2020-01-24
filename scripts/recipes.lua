@@ -512,7 +512,7 @@ Recipe("yotc_carrat_gym_direction",     {Ingredient("lucky_goldnugget", 4)}, nil
 Recipe("yotc_carrat_gym_speed",       	{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
 Recipe("yotc_carrat_gym_reaction",   	{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
 Recipe("yotc_carrat_gym_stamina",		{Ingredient("lucky_goldnugget", 4)},nil, TECH.LOST, nil, nil, true)
-Recipe("yotc_carrat_scale",			    {Ingredient("lucky_goldnugget", 6)}, nil, TECH.LOST, nil, nil, true)
+Recipe("yotc_carrat_scale",			    {Ingredient("lucky_goldnugget", 1)}, nil, TECH.LOST, nil, nil, true)
 
 
 ----CONSTRUCTION PLANS----

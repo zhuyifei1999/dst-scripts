@@ -9,10 +9,14 @@ local function spawncarrat(inst, phase)
         local beefalo = {}
         for k, v in pairs(inst.components.herd.members) do
             if k:HasTag("HasCarrat") then
-                carrat = true                
+                carrat = true
                 break
             end
-            table.insert(beefalo,k)
+
+            -- Baby beefalo cannot have carrats spawn on them.
+            if not k:HasTag("baby") then
+                table.insert(beefalo,k)
+            end
         end
 
         if not carrat and #beefalo > 0 and math.random() < 0.33 then

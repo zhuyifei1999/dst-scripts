@@ -349,7 +349,7 @@ local function StartTriggeredWater(player, data)
 end
 
 local function StartTriggeredFeasting(player, data)
-    if player.sg:HasStateTag("feasting") then
+    if player and player.sg and player.sg:HasStateTag("feasting") then
         StartFeasting(player)
     end
 end

@@ -113,9 +113,6 @@ local COMPONENT_ACTIONS =
 
 		yotc_racestart = function(inst, doer, actions, right)
 			if right and not (inst:HasTag("burnt") or inst:HasTag("fire") or inst:HasTag("race_on")) then
-                if doer and inst.racestartstring then
-                    doer:DoTaskInTime(2,function() doer.components.talker:Say(GetString(doer, inst.racestartstring)) end)
-                end
 				table.insert(actions, ACTIONS.START_CARRAT_RACE)
 			end
 		end,
