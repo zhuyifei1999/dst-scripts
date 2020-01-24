@@ -9,6 +9,8 @@ local assets =
 	Asset("SCRIPT", "scripts/prefabs/yotc_carrat_race_common.lua"),
 	Asset("ANIM", "anim/winona_battery_placement.zip"),
 	Asset("ANIM", "anim/winona_spotlight_placement.zip"),
+
+    --yotc_carrat_race_checkpoint
 }
 
 local prefabs =
@@ -94,7 +96,7 @@ local function fn()
     inst.entity:AddNetwork()
     inst.entity:AddLight()
 
-    inst.MiniMapEntity:SetIcon("meatrack.png")
+    inst.MiniMapEntity:SetIcon("yotc_carrat_race_checkpoint.png")
 
     inst:AddTag("structure")
     inst:AddTag("yotc_racecheckpoint")

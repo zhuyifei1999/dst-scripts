@@ -269,11 +269,20 @@ function minisign_item_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "sign_mini") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+function minisign_drawn_init_fn(inst, build_name)
+    inst.use_high_symbol = true
+    inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
+    inst.AnimState:SetSkin(build_name, "sign_mini") --same hack is used here by the deployable code in player controller
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
 function minisign_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
     inst.AnimState:SetSkin(build_name, "sign_mini")
+    inst.use_high_symbol = true
+    inst.linked_skinname = build_name.."_item" --hack that relies on the build name to match the linked skinname, plus addition for the _item
+    inst.linked_skinname_drawn = build_name.."_drawn" --hack that relies on the build name to match the linked skinname, plus addition for the _item
 end
 
 --------------------------------------------------------------------------

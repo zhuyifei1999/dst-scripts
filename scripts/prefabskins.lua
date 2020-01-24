@@ -406,6 +406,12 @@ PREFAB_SKINS = {
 		"minisign_pickettan",
 		"minisign_picketwhite",
 	},
+	minisign_drawn = 
+	{
+		"minisign_picketbrown_drawn",
+		"minisign_pickettan_drawn",
+		"minisign_picketwhite_drawn",
+	},
 	minisign_item = 
 	{
 		"minisign_picketbrown_item",

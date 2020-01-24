@@ -41,11 +41,11 @@ end
 local function dig_up(inst)--, worker)
     local image = inst.components.drawable:GetImage()
     if image ~= nil then
-        local item = inst.components.lootdropper:SpawnLootPrefab("minisign_drawn")
+        local item = inst.components.lootdropper:SpawnLootPrefab("minisign_drawn", nil, inst.linked_skinname_drawn, inst.skin_id)
         item.components.drawable:OnDrawn(image, nil, inst.components.drawable:GetAtlas(), inst.components.drawable:GetBGImage(), inst.components.drawable:GetBGAtlas())
         item._imagename:set(inst._imagename:value())
     else
-        inst.components.lootdropper:SpawnLootPrefab("minisign_item")
+        inst.components.lootdropper:SpawnLootPrefab("minisign_item", nil, inst.linked_skinname, inst.skin_id)
     end
     inst:Remove()
 end
@@ -64,12 +64,26 @@ end
 
 local function OnDrawnFn(inst, image, src, atlas, bgimage, bgatlas)
     if image ~= nil then
-        inst.AnimState:OverrideSymbol("SWAP_SIGN", atlas or GetInventoryItemAtlas(image..".tex"), image..".tex")
-        if bgimage ~= nil then
-            inst.AnimState:OverrideSymbol("SWAP_SIGN_BG", bgatlas or GetInventoryItemAtlas(bgimage..".tex"), bgimage..".tex")
-        else
+        if inst.use_high_symbol then
+            inst.AnimState:OverrideSymbol("SWAP_SIGN_HIGH", atlas or GetInventoryItemAtlas(image..".tex"), image..".tex")
+            if bgimage ~= nil then
+                inst.AnimState:OverrideSymbol("SWAP_SIGN_BG_HIGH", bgatlas or GetInventoryItemAtlas(bgimage..".tex"), bgimage..".tex")
+            else
+                inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG_HIGH")
+            end
+            inst.AnimState:ClearOverrideSymbol("SWAP_SIGN")
             inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG")
+        else
+            inst.AnimState:OverrideSymbol("SWAP_SIGN", atlas or GetInventoryItemAtlas(image..".tex"), image..".tex")
+            if bgimage ~= nil then
+                inst.AnimState:OverrideSymbol("SWAP_SIGN_BG", bgatlas or GetInventoryItemAtlas(bgimage..".tex"), bgimage..".tex")
+            else
+                inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG")
+            end
+            inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_HIGH")
+            inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG_HIGH")        
         end
+
         if inst:HasTag("sign") then
             inst.components.drawable:SetCanDraw(false)
             inst._imagename:set(src ~= nil and (src.drawnameoverride or src:GetBasicDisplayName()) or "")
@@ -80,6 +94,8 @@ local function OnDrawnFn(inst, image, src, atlas, bgimage, bgatlas)
     else
         inst.AnimState:ClearOverrideSymbol("SWAP_SIGN")
         inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG")
+        inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_HIGH")
+        inst.AnimState:ClearOverrideSymbol("SWAP_SIGN_BG_HIGH")
         if inst:HasTag("sign") then
             if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
                 inst.components.drawable:SetCanDraw(true)

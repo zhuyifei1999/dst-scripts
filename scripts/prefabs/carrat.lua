@@ -210,14 +210,12 @@ local function go_to_submerged(inst)
     inst:RemoveTag("prey")
     inst:RemoveTag("smallcreature")
     inst:RemoveComponent("locomotor")
-    inst:RemoveComponent("eater")
     inst:RemoveComponent("cookable")
     inst:RemoveComponent("lootdropper")
     inst:RemoveComponent("combat")
     inst:RemoveComponent("sleeper")
     inst:RemoveComponent("tradable")
     inst:RemoveComponent("freezable")
-    inst:RemoveComponent("perishable")
 
     -- Update shared components --
     inst.components.burnable.canlight = true
@@ -284,6 +282,8 @@ local function yotc_on_inventory(inst, owner)
 
         inst:RemoveComponent("yotc_racecompetitor")
     end
+
+    inst:RemoveTag("noauradamage")
 
     inst.components.named:SetName(nil)
     inst.beefalo_carrat = nil
@@ -364,6 +364,9 @@ local function on_dropped(inst)
 
     local nearby_race_startentity = find_yotc_race_startentity(inst)
     if nearby_race_startentity ~= nil then
+        -- Racing rats should not be targeted by Abigail
+        inst:AddTag("noauradamage")
+
         local trainer = (inst.components.entitytracker and inst.components.entitytracker:GetEntity("yotc_trainer")) or nil
 
         if TheWorld.components.yotc_raceprizemanager ~= nil then
@@ -402,6 +405,9 @@ local function on_dropped(inst)
         inst.components.inventoryitem.canbepickedup = true
 
     elseif inst:HasTag("has_no_prize") or inst:HasTag("has_prize") then
+        -- Racing rats should not be targeted by Abigail
+        inst:AddTag("noauradamage")
+
         inst.sg:GoToState("idle")
 
         -- NOTE: It's important that this is set after the GoToState, because we may be leaving the stunned state
@@ -437,14 +443,12 @@ local function go_to_emerged(inst)
 
     MakeHauntablePanic(inst)
 
+    inst.components.perishable:SetPercent(1)
+
     -- Add components --
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.CARRAT.WALK_SPEED
     inst.components.locomotor.runspeed = TUNING.CARRAT.RUN_SPEED
-
-    inst:AddComponent("eater")
-    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
-    inst.components.eater.strongstomach = true
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("carrat")
@@ -460,9 +464,6 @@ local function go_to_emerged(inst)
     inst:AddComponent("tradable")
 
     MakeTinyFreezableCharacter(inst, "carrat_body")
-
-    local _on_added_to_inventory = IsSpecialEventActive(SPECIAL_EVENTS.YOTC) and yotc_on_inventory or nil
-    MakeFeedableSmallLivestock(inst, TUNING.CARRAT.PERISH_TIME, _on_added_to_inventory, on_dropped)
 
     -- Non-component setup --
     inst.AnimState:SetRayTestOnBB(false)

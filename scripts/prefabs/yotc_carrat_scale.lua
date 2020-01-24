@@ -5,12 +5,12 @@ local FOOD_LAUNCH_SPEED = 2
 local FOOD_LAUNCH_STARTHEIGHT = 1
 
 local function SetStat(inst, dir, stam, reac, speed)
-   
-    inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_direction", "yotc_carrat_scale", "direction_"..dir) end)        
-    inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_stamina", "yotc_carrat_scale", "stamina_"..stam) end)
-    inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_reaction", "yotc_carrat_scale", "reaction_"..reac) end)
-    inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_speed", "yotc_carrat_scale", "speed_"..speed) end)
-    
+    if dir and stam and reac and speed then
+        inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_direction", "yotc_carrat_scale", "direction_"..dir) end)        
+        inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_stamina", "yotc_carrat_scale", "stamina_"..stam) end)
+        inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_reaction", "yotc_carrat_scale", "reaction_"..reac) end)
+        inst:DoTaskInTime(12 * FRAMES, function() inst.AnimState:OverrideSymbol("scale_rod_speed", "yotc_carrat_scale", "speed_"..speed) end)
+    end
     inst:DoTaskInTime(29 * FRAMES, function() 
         if inst.AnimState:IsCurrentAnimation("on_extend") then
             inst.SoundEmitter:PlaySound("yotc_2020/gym/scale/close")
@@ -106,6 +106,13 @@ local function OnGetItem(inst, data, notrain)
             inst.AnimState:PushAnimation("on_loop",true)
 
             local stats = inst.rat.components.yotc_racestats
+            if not stats then
+                stats = {}
+                stats.direction = 0
+                stats.stamina = 0
+                stats.reaction = 0
+                stats.speed = 0
+            end
             SetStat(inst,stats.direction,stats.stamina,stats.reaction,stats.speed)
 
             inst.SoundEmitter:PlaySound("yotc_2020/gym/scale/slide")
@@ -128,7 +135,15 @@ end
 local function updateratstats(inst)
     if inst.rat then
         local stats = inst.rat.components.yotc_racestats
+        if not stats then
+            stats = {}
+            stats.direction = 0
+            stats.stamina = 0
+            stats.reaction = 0
+            stats.speed = 0
+        end
         SetStat(inst,stats.direction,stats.stamina,stats.reaction,stats.speed)
+
         inst.AnimState:PlayAnimation("on_extend")
         inst.AnimState:PushAnimation("on_loop",true)
 
@@ -252,22 +267,26 @@ end
 local function TestForCarratIdle(inst)
     if inst.AnimState:IsCurrentAnimation("on_loop") then
         if inst.rat then
-            local total = inst.rat.components.yotc_racestats:GetNumStatPoints()
-            local stat = "speed"
-            local rand = math.random(1,50)
-            if rand <= total then
-                if rand <= inst.rat.components.yotc_racestats.speed then
-                    stat = "speed"
-                elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction then
-                    stat = "direction"
-                elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction + inst.rat.components.yotc_racestats.reaction then
-                    stat = "reaction"
-                elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction + inst.rat.components.yotc_racestats.reaction + inst.rat.components.yotc_racestats.stamina then
-                    stat = "stamina"   
-                end                 
-                inst.AnimState:PlayAnimation(stat)
-                inst.AnimState:PushAnimation("on_loop", true)
-            else                
+            if inst.rat.components.yotc_racestats then
+                local total = inst.rat.components.yotc_racestats:GetNumStatPoints()
+                local stat = "speed"
+                local rand = math.random(1,50)
+                if rand <= total then
+                    if rand <= inst.rat.components.yotc_racestats.speed then
+                        stat = "speed"
+                    elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction then
+                        stat = "direction"
+                    elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction + inst.rat.components.yotc_racestats.reaction then
+                        stat = "reaction"
+                    elseif rand <= inst.rat.components.yotc_racestats.speed + inst.rat.components.yotc_racestats.direction + inst.rat.components.yotc_racestats.reaction + inst.rat.components.yotc_racestats.stamina then
+                        stat = "stamina"   
+                    end                 
+                    inst.AnimState:PlayAnimation(stat)
+                    inst.AnimState:PushAnimation("on_loop", true)
+                else                
+                    inst.AnimState:PlayAnimation("on_loop", true)
+                end
+            else
                 inst.AnimState:PlayAnimation("on_loop", true)
             end
         end

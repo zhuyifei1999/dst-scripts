@@ -176,6 +176,24 @@ function d_test_skins_gift(param)
 	TheFrontEnd:PushScreen( GiftItemPopUp(ThePlayer, { param or TEST_ITEM_NAME }, { 0 }) )
 end
 
+function d_print_skin_info()
+	
+	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+    local a = {
+        "campfire_cabin",
+        "armor_wood_roman",
+        "spear_northern",
+        "pickaxe_northern"
+    }
+
+    for _,v in pairs(a) do
+        print( GetSkinName(v), GetSkinUsableOnString(v) )
+	end
+	
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+end
+
 function d_skin_mode(mode)
     ConsoleCommandPlayer().components.skinner:SetSkinMode(mode)
 end
