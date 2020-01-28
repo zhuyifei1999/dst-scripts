@@ -262,6 +262,10 @@ local function on_cooked_fn(inst, cooker, chef)
 end
 
 local function yotc_on_inventory(inst, owner)
+    if owner.components.inventoryitem then
+        owner = owner.components.inventoryitem:GetGrandOwner()
+    end
+
     if owner ~= nil and owner:HasTag("player") then
         inst.components.entitytracker:TrackEntity("yotc_trainer", owner)
     end
@@ -353,7 +357,10 @@ local function reached_finish_line(inst)
 end
 
 local function full_race_over(inst)
-    inst.components.inventoryitem.canbepickedup = true
+    local racestate = (inst.components.yotc_racecompetitor and inst.components.yotc_racecompetitor.racestate) or nil
+    if racestate == "postrace" or racestate == "prerace" or racestate == "raceover" then
+        inst.components.inventoryitem.canbepickedup = true
+    end
 end
 
 local function on_dropped(inst)
@@ -694,7 +701,8 @@ local function fn()
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem:SetSinks(true)
 
-    if IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+    local yotc_carrat = IsSpecialEventActive(SPECIAL_EVENTS.YOTC)
+    if yotc_carrat then
 		--inst._color = nil
 		inst._setcolorfn = common_setcolor
 
@@ -768,7 +776,7 @@ local function fn()
 
     MakeHauntablePanic(inst)
 
-    local _on_added_to_inventory = IsSpecialEventActive(SPECIAL_EVENTS.YOTC) and yotc_on_inventory or nil
+    local _on_added_to_inventory = (yotc_carrat and yotc_on_inventory) or nil
     MakeFeedableSmallLivestock(inst, TUNING.CARRAT.PERISH_TIME, _on_added_to_inventory, on_dropped)
 
     inst.GoToSubmerged = go_to_submerged

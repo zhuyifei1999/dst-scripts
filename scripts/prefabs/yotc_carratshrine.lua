@@ -201,14 +201,14 @@ local function GetStatus(inst)
         or nil
 end
 
-local function PrizeChange(inst, instant)  
+local function PrizeChange(inst, instant)
     if TheWorld.components.yotc_raceprizemanager then
         if TheWorld.components.yotc_raceprizemanager:HasPrizeAvailable() then
             inst.AnimState:Hide("idol_1")
-            inst.AnimState:Show("idol_3")                        
+            inst.AnimState:Show("idol_3")
         else
             inst.AnimState:Show("idol_1")
-            inst.AnimState:Hide("idol_3")                        
+            inst.AnimState:Hide("idol_3")
         end
         if not instant then
             inst.AnimState:PlayAnimation("switch_idol")

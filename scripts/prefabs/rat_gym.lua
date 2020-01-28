@@ -74,21 +74,15 @@ local function OnGetItemFromPlayer(inst, giver, item)
     if giver:HasTag("player") then
         inst.rat_trainer_id = giver.userid
     end
-end
-
-local function OnGetItem(inst, data, notrain)
-    local item = data.item
     if item then
         if item.prefab == "carrat" and not inst.components.burnable:IsBurning() then
             inst:PushEvent("ratupdate") 
-			if inst.components.trader ~= nil then
-	            inst.components.trader:Disable()
-			end
-            inst.components.shelf:PutItemOnShelf(data.item)
-            inst.components.gym:SetTrainee(data.item)
-            if not TheWorld.state.isnight then
-                inst.components.gym:StartTraining(inst)
+            if inst.components.trader ~= nil then
+                inst.components.trader:Disable()
             end
+            inst.components.shelf:PutItemOnShelf(item)
+            inst.components.gym:SetTrainee(item)
+            inst.components.gym:StartTraining(inst)
             if item._color ~= nil then
                 inst.AnimState:OverrideSymbol("carrat_tail", "yotc_carrat_colour_swaps", item._color.."_carrat_tail")
                 inst.AnimState:OverrideSymbol("carrat_ear", "yotc_carrat_colour_swaps", item._color.."_carrat_ear")
@@ -98,6 +92,9 @@ local function OnGetItem(inst, data, notrain)
                 inst.AnimState:OverrideSymbol("carrat_ear", "carrat_build", "carrat_ear")
                 inst.AnimState:OverrideSymbol("carrot_parts", "carrat_build", "carrot_parts")
             end
+            if TheWorld.state.isnight then
+                inst:PushEvent("rest")
+            end            
         else
             ejectitem(inst,item)
         end
@@ -114,6 +111,7 @@ local function OnLoseItem(inst)
     inst.AnimState:ClearOverrideSymbol("carrat_tail")
     inst.AnimState:ClearOverrideSymbol("carrat_ear")
     inst.AnimState:ClearOverrideSymbol("carrot_parts")
+    inst.rat_trainer_id = nil
 end
 
 local function OnGotShelfItem(inst, item)
@@ -321,7 +319,7 @@ local function MakeGym(name, build, size)
         end
         inst.components.gym:SetOnRemoveTraineeFn(OnLoseItem)
           
-        inst:ListenForEvent("itemget", OnGetItem)
+        --inst:ListenForEvent("itemget", OnGetItem)
         inst:ListenForEvent("itemlose", OnLoseItem)
 
         inst:AddComponent("inspectable")
