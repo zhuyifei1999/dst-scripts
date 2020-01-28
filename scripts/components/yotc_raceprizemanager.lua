@@ -36,6 +36,7 @@ local function setbundle(prize)
 end
 
 function self:GivePrizes(race)
+
 	local first_prize, consolation_prize = 0, 0
     if _prize > 0 then
         local distancebonus =  math.min(math.floor(race.results.distance / (TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST - 2)), TUNING.YOTC_RACE_MAX_DISTANCE_REWARDS)
@@ -49,8 +50,8 @@ function self:GivePrizes(race)
 			racer.components.yotc_racecompetitor:OnAllRacersFinished(setbundle(racer == race.results.first_place and first_prize or consolation_prize))
 		end
 	end
-
     _prize = 0
+
     TheWorld:PushEvent("yotc_ratraceprizechange", _prize)
 end
 
@@ -74,6 +75,7 @@ end
 --Register events
 
 inst:WatchWorldState("phase", setprize )
+inst:WatchWorldState("cavephase", setprize )
 
 
 --------------------------------------------------------------------------
