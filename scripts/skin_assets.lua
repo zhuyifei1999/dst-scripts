@@ -22,6 +22,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/armor_dragonfly_haramaki.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/armor_dragonfly_lamellar.zip"),
 	Asset("PKGREF", "anim/dynamic/armor_dragonfly_lamellar.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/armor_dragonfly_roman.zip"),
+	Asset("PKGREF", "anim/dynamic/armor_dragonfly_roman.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/armor_grass_cloak.zip"),
 	Asset("PKGREF", "anim/dynamic/armor_grass_cloak.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/armor_grass_woven.zip"),

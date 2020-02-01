@@ -371,13 +371,10 @@ local function on_dropped(inst)
 
     local nearby_race_startentity = find_yotc_race_startentity(inst)
     if nearby_race_startentity ~= nil then
-        -- Racing rats should not be targeted by Abigail
-        inst:AddTag("noauradamage")
-
-        local trainer = (inst.components.entitytracker and inst.components.entitytracker:GetEntity("yotc_trainer")) or nil
-
+		local added_to_race = false
         if TheWorld.components.yotc_raceprizemanager ~= nil then
-            local old_racer = TheWorld.components.yotc_raceprizemanager:RegisterRacer(inst, nearby_race_startentity)
+            local old_racer
+			added_to_race, old_racer = TheWorld.components.yotc_raceprizemanager:RegisterRacer(inst, nearby_race_startentity)
             if old_racer ~= nil then
                 if old_racer.components.yotc_racecompetitor ~= nil then
                     old_racer.components.yotc_racecompetitor:AbortRace()
@@ -385,32 +382,36 @@ local function on_dropped(inst)
             end
         end
 
-        -- Might be dropped on pickup if the player's inventory is full. If it's not added to the inventory,
-        -- it will keep its racecompetitor component.
-        if inst.components.yotc_racecompetitor == nil then
-            inst:AddComponent("yotc_racecompetitor")
-            inst.components.yotc_racecompetitor:SetRaceBegunFn(race_begun)
-            inst.components.yotc_racecompetitor:SetRaceFinishedFn(reached_finish_line)
-            inst.components.yotc_racecompetitor:SetRaceOverFn(full_race_over)
-		    inst.components.yotc_racecompetitor.stamina_max_var = TUNING.YOTC_RACER_STAMINA_VAR
+		if added_to_race then
+			-- Might be dropped on pickup if the player's inventory is full. If it's not added to the inventory,
+			-- it will keep its racecompetitor component.
+			if inst.components.yotc_racecompetitor == nil then
+				inst:AddComponent("yotc_racecompetitor")
+				inst.components.yotc_racecompetitor:SetRaceBegunFn(race_begun)
+				inst.components.yotc_racecompetitor:SetRaceFinishedFn(reached_finish_line)
+				inst.components.yotc_racecompetitor:SetRaceOverFn(full_race_over)
+				inst.components.yotc_racecompetitor.stamina_max_var = TUNING.YOTC_RACER_STAMINA_VAR
 
-            -- Even if we were dropped closer to a new start point, if we had our old competitor component,
-            -- we probably want to stay attached to our old start point instead of re-assigning it.
-            inst.components.yotc_racecompetitor:SetRaceStartPoint(nearby_race_startentity)
-        end
+				-- Even if we were dropped closer to a new start point, if we had our old competitor component,
+				-- we probably want to stay attached to our old start point instead of re-assigning it.
+				inst.components.yotc_racecompetitor:SetRaceStartPoint(nearby_race_startentity)
+			end
 
-        local trainer = (inst.components.entitytracker and inst.components.entitytracker:GetEntity("yotc_trainer")) or nil
-        if trainer then
-            local new_name = subfmt(STRINGS.NAMES.YOTC_OWNED_CARRAT, { trainer = trainer.name })
-            inst.components.named:SetName(new_name)
-        end
+			local trainer = (inst.components.entitytracker and inst.components.entitytracker:GetEntity("yotc_trainer")) or nil
+			if trainer then
+				local new_name = subfmt(STRINGS.NAMES.YOTC_OWNED_CARRAT, { trainer = trainer.name })
+				inst.components.named:SetName(new_name)
+			end
 
-        inst.sg:GoToState("idle")
+			inst.sg:GoToState("idle")
 
-        -- NOTE: It's important that these are set after the GoToState, because we may be leaving the stunned state
-        inst:AddTag("has_no_prize")
-        inst.components.inventoryitem.canbepickedup = true
+			-- Racing rats should not be targeted by Abigail
+			inst:AddTag("noauradamage")
 
+			-- NOTE: It's important that these are set after the GoToState, because we may be leaving the stunned state
+			inst:AddTag("has_no_prize")
+			inst.components.inventoryitem.canbepickedup = true
+		end
     elseif inst:HasTag("has_no_prize") or inst:HasTag("has_prize") then
         -- Racing rats should not be targeted by Abigail
         inst:AddTag("noauradamage")
@@ -419,11 +420,9 @@ local function on_dropped(inst)
 
         -- NOTE: It's important that this is set after the GoToState, because we may be leaving the stunned state
         inst.components.inventoryitem.canbepickedup = (inst:HasTag("has_no_prize") or inst:HasTag("has_prize"))
-
     else
         inst.components.entitytracker:ForgetEntity("yotc_trainer")
         inst.sg:GoToState("stunned")
-
     end
 end
 

@@ -19,7 +19,7 @@ self.inst = inst
 self._races = {}
 
 --Private
-local _prize = 1
+local _prize = -1
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -36,9 +36,10 @@ local function setbundle(prize)
 end
 
 function self:GivePrizes(race)
+	local prize_available = _prize < TheWorld.state.cycles
 
 	local first_prize, consolation_prize = 0, 0
-    if _prize > 0 then
+    if prize_available then
         local distancebonus =  math.min(math.floor(race.results.distance / (TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST - 2)), TUNING.YOTC_RACE_MAX_DISTANCE_REWARDS)
         local multiplier = GetTableSize(race.racers) / race.num_racers
 		first_prize = math.max(2, math.floor(multiplier * (distancebonus + 3)))
@@ -50,20 +51,19 @@ function self:GivePrizes(race)
 			racer.components.yotc_racecompetitor:OnAllRacersFinished(setbundle(racer == race.results.first_place and first_prize or consolation_prize))
 		end
 	end
-    _prize = 0
 
-    TheWorld:PushEvent("yotc_ratraceprizechange", _prize)
+	if prize_available then
+		_prize = TheWorld.state.cycles
+		TheWorld:PushEvent("yotc_ratraceprizechange")
+	end
 end
 
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
-local function setprize(inst, phase)
-    if phase == "day" then
-        if _prize == 0 then
-            _prize = 1
-	        TheWorld:PushEvent("yotc_ratraceprizechange", _prize)
-        end
+local function updateprize(inst, cycles)
+    if _prize == (cycles - 1) then
+        TheWorld:PushEvent("yotc_ratraceprizechange")
     end
 end
 
@@ -74,9 +74,7 @@ end
 
 --Register events
 
-inst:WatchWorldState("phase", setprize )
-inst:WatchWorldState("cavephase", setprize )
-
+inst:WatchWorldState("cycles", updateprize)
 
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
@@ -87,11 +85,12 @@ inst:WatchWorldState("cavephase", setprize )
 --------------------------------------------------------------------------
 
 function self:HasPrizeAvailable()
-	return _prize > 0
+	return _prize < TheWorld.state.cycles
 end
 
 function self:RegisterRacer(new_racer, start_line)
-    if self:GetRaceByRacer(new_racer) == nil then
+    local racer_trainer = (new_racer.components.entitytracker and new_racer.components.entitytracker:GetEntity("yotc_trainer")) or nil
+    if (racer_trainer ~= nil or (new_racer.components.yotc_racecompetitor ~= nil and new_racer.components.yotc_racecompetitor.is_ghostracer)) and self:GetRaceByRacer(new_racer) == nil then
         if not self._races[start_line] then
             self._races[start_line] = {}
             self._races[start_line].race_id = start_line
@@ -104,14 +103,11 @@ function self:RegisterRacer(new_racer, start_line)
 
         local old_racer = nil
         if self._races[start_line].num_racers > 0 then
-            local new_racer_trainer = (new_racer.components.entitytracker and new_racer.components.entitytracker:GetEntity("yotc_trainer")) or nil
-            if new_racer_trainer ~= nil then
-                for racer, _ in pairs(self._races[start_line].racers) do
-                    local existing_racer_trainer = (racer.components.entitytracker and racer.components.entitytracker:GetEntity("yotc_trainer")) or nil
-                    if existing_racer_trainer == new_racer_trainer then
-                        old_racer = racer
-                        break
-                    end
+            for racer, _ in pairs(self._races[start_line].racers) do
+                local existing_racer_trainer = (racer.components.entitytracker and racer.components.entitytracker:GetEntity("yotc_trainer")) or nil
+                if existing_racer_trainer == racer_trainer then
+                    old_racer = racer
+                    break
                 end
             end
         end
@@ -119,10 +115,10 @@ function self:RegisterRacer(new_racer, start_line)
         self._races[start_line].racers[new_racer] = true
         self._races[start_line].num_racers = self._races[start_line].num_racers + 1
 
-        return old_racer
+        return true, old_racer
     end
 
-    return nil
+    return false, nil
 end
 
 function self:racethemecheck()
@@ -258,18 +254,22 @@ end
 
 function self:OnSave()
     local data = {}
-    data.prize = _prize
+    data.prize_date = _prize
     return data
 end
 
-function self:OnLoad(data)
-    if data then
-        _prize = data.prize
-    end
-end
-
 function self:LoadPostPass(ents, data)
-    TheWorld:PushEvent("yotc_ratraceprizechange", _prize)
+    if data then
+		print("prize manager: data.prize", tostring(data.prize))
+		if data.prize ~= nil then
+	        _prize = data.prize == 1 and (TheWorld.state.cycles - 1) or TheWorld.state.cycles -- retrofitting for worlds that had the 0/1 prize value
+		elseif data.prize_date then
+			_prize = data.prize_date
+		end
+		print("prize manager: _prize ", _prize, TheWorld.state.cycles)
+    end
+
+    TheWorld:PushEvent("yotc_ratraceprizechange")
 end
 
 

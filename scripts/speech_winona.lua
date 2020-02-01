@@ -393,7 +393,7 @@ return{
 
 	--winter's feast
 	ANNOUNCE_EATING_NOT_FEASTING = "I ain't gonna hog this all to myself!",
-	ANNOUNCE_WINTERS_FEAST_BUFF = "Woah! I'm sparklin like a Winter's Feast tree!",
+	ANNOUNCE_WINTERS_FEAST_BUFF = "Woah! I'm sparklin' like a Winter's Feast tree!",
 	ANNOUNCE_IS_FEASTING = "What a spread!",
 	ANNOUNCE_WINTERS_FEAST_BUFF_OVER = "Hey, someone cut the power!",
 
