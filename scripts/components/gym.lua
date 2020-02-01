@@ -128,7 +128,9 @@ end
 
 function Gym:LoadPostPass(newents, data)
     if data.timer then
-		self:StartTraining(self.inst, data.timer)
+        self.inst:DoTaskInTime(0, function()
+		    self:StartTraining(self.inst, data.timer)
+        end)
     end
 end
 

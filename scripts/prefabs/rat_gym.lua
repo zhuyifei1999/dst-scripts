@@ -70,31 +70,37 @@ local function ShouldAcceptItem(inst, item,giver)
     end
 end
 
+local function getcarrat(inst, item, train)
+    inst:PushEvent("ratupdate") 
+    if inst.components.trader ~= nil then
+        inst.components.trader:Disable()
+    end
+    inst.components.shelf:PutItemOnShelf(item)
+    inst.components.gym:SetTrainee(item)
+    if train then
+        inst.components.gym:StartTraining(inst)
+    end
+    if item._color ~= nil then
+        inst.AnimState:OverrideSymbol("carrat_tail", "yotc_carrat_colour_swaps", item._color.."_carrat_tail")
+        inst.AnimState:OverrideSymbol("carrat_ear", "yotc_carrat_colour_swaps", item._color.."_carrat_ear")
+        inst.AnimState:OverrideSymbol("carrot_parts", "yotc_carrat_colour_swaps", item._color.."_carrot_parts")
+    else
+        inst.AnimState:OverrideSymbol("carrat_tail", "carrat_build", "carrat_tail")
+        inst.AnimState:OverrideSymbol("carrat_ear", "carrat_build", "carrat_ear")
+        inst.AnimState:OverrideSymbol("carrot_parts", "carrat_build", "carrot_parts")
+    end
+    if TheWorld.state.isnight then
+        inst:PushEvent("rest")
+    end
+end
+
 local function OnGetItemFromPlayer(inst, giver, item)
     if giver:HasTag("player") then
         inst.rat_trainer_id = giver.userid
     end
     if item then
         if item.prefab == "carrat" and not inst.components.burnable:IsBurning() then
-            inst:PushEvent("ratupdate") 
-            if inst.components.trader ~= nil then
-                inst.components.trader:Disable()
-            end
-            inst.components.shelf:PutItemOnShelf(item)
-            inst.components.gym:SetTrainee(item)
-            inst.components.gym:StartTraining(inst)
-            if item._color ~= nil then
-                inst.AnimState:OverrideSymbol("carrat_tail", "yotc_carrat_colour_swaps", item._color.."_carrat_tail")
-                inst.AnimState:OverrideSymbol("carrat_ear", "yotc_carrat_colour_swaps", item._color.."_carrat_ear")
-                inst.AnimState:OverrideSymbol("carrot_parts", "yotc_carrat_colour_swaps", item._color.."_carrot_parts")
-            else
-                inst.AnimState:OverrideSymbol("carrat_tail", "carrat_build", "carrat_tail")
-                inst.AnimState:OverrideSymbol("carrat_ear", "carrat_build", "carrat_ear")
-                inst.AnimState:OverrideSymbol("carrot_parts", "carrat_build", "carrot_parts")
-            end
-            if TheWorld.state.isnight then
-                inst:PushEvent("rest")
-            end            
+            getcarrat(inst, item, true)
         else
             ejectitem(inst,item)
         end
@@ -212,6 +218,11 @@ local function OnLoadPostPass(inst)
 	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
 		inst.components.inventory:DropEverything()
 	end
+
+    if inst.components.inventory:FindItem(function(item) if item.prefab == "carrat" then return true end end) then
+        local item = inst.components.inventory:FindItem(function(item) if item.prefab == "carrat" then return true end end)
+        getcarrat(inst, item)
+    end
 end
 
 local function onburnt(inst)

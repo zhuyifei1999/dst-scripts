@@ -15,6 +15,7 @@ PREFAB_SKINS = {
 		"armor_dragonfly_fangedcollar",
 		"armor_dragonfly_haramaki",
 		"armor_dragonfly_lamellar",
+		"armor_dragonfly_roman",
 	},
 	armorgrass = 
 	{

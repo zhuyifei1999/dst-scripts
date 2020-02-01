@@ -139,6 +139,7 @@ local function fn()
     inst.components.yotc_racecompetitor:SetRaceBegunFn(race_begun)
     inst.components.yotc_racecompetitor:SetRaceOverFn(race_over_fn)
 	inst.components.yotc_racecompetitor.stamina_max_var = TUNING.YOTC_RACER_STAMINA_VAR
+	inst.components.yotc_racecompetitor.is_ghostracer = true
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = TUNING.CARRAT.WALK_SPEED

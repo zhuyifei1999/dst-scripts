@@ -57,6 +57,17 @@ table.insert(prefs, CreatePrefabSkin("armor_dragonfly_lamellar",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_dragonfly_roman",
+{
+	base_prefab = "armordragonfly",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) armordragonfly_init_fn(inst, "armor_dragonfly_roman") end,
+	skin_tags = { },
+	release_group = 86,
+}))
+
 table.insert(prefs, CreatePrefabSkin("armor_grass_cloak",
 {
 	base_prefab = "armorgrass",
@@ -201,6 +212,7 @@ table.insert(prefs, CreatePrefabSkin("armor_wood_roman",
 	init_fn = function(inst) armorwood_init_fn(inst, "armor_wood_roman") end,
 	skin_tags = { "YOTC", "ARMORWOOD", "CRAFTABLE", },
 	release_group = 86,
+	granted_items = { "armor_dragonfly_roman", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("arrowsign_post_circus",
