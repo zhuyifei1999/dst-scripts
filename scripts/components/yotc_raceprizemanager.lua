@@ -260,13 +260,11 @@ end
 
 function self:LoadPostPass(ents, data)
     if data then
-		print("prize manager: data.prize", tostring(data.prize))
 		if data.prize ~= nil then
 	        _prize = data.prize == 1 and (TheWorld.state.cycles - 1) or TheWorld.state.cycles -- retrofitting for worlds that had the 0/1 prize value
 		elseif data.prize_date then
 			_prize = data.prize_date
 		end
-		print("prize manager: _prize ", _prize, TheWorld.state.cycles)
     end
 
     TheWorld:PushEvent("yotc_ratraceprizechange")

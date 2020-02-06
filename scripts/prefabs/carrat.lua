@@ -209,6 +209,19 @@ local function go_to_submerged(inst)
     inst:RemoveTag("cattoy")
     inst:RemoveTag("prey")
     inst:RemoveTag("smallcreature")
+
+	if inst.components.yotc_racecompetitor ~= nil then
+        local prize = inst.components.yotc_racecompetitor:CollectPrize()
+        if prize ~= nil then
+            if inst.components.lootdropper ~= nil then
+                inst.components.lootdropper:FlingItem(prize, inst:GetPosition())
+            else
+                prize.Transform:SetPosition(inst.Transform:GetWorldPosition())
+			end
+		end
+        inst:RemoveComponent("yotc_racecompetitor")
+	end		
+
     inst:RemoveComponent("locomotor")
     inst:RemoveComponent("cookable")
     inst:RemoveComponent("lootdropper")
@@ -216,6 +229,8 @@ local function go_to_submerged(inst)
     inst:RemoveComponent("sleeper")
     inst:RemoveComponent("tradable")
     inst:RemoveComponent("freezable")
+
+	inst.components.inventoryitem.canbepickedup = false
 
     -- Update shared components --
     inst.components.burnable.canlight = true

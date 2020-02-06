@@ -767,16 +767,12 @@ local RPC_HANDLERS =
         end
     end,
 
-    MovementPredictionEnabled = function(player, target)
-        if ThePlayer ~= target then
-            target.components.locomotor:SetAllowPlatformHopping(false)
-        end
+    MovementPredictionEnabled = function(player)
+        player.components.locomotor:SetAllowPlatformHopping(false)
     end,    
 
-    MovementPredictionDisabled = function(player, target)
-        if ThePlayer ~= target then
-            target.components.locomotor:SetAllowPlatformHopping(true)
-        end    
+    MovementPredictionDisabled = function(player)
+        player.components.locomotor:SetAllowPlatformHopping(true)
     end,    
 
     Hop = function(player, hopper, hop_x, hop_z, other_platform)

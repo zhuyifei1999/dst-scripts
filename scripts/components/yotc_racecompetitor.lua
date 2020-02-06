@@ -37,6 +37,7 @@ function YOTC_RaceCompetitor:OnRemoveEntity()
 end
 
 function YOTC_RaceCompetitor:OnRemoveFromEntity()
+	self.racestate = ""
 	if self.queuedstarttask ~= nil then
 		self.queuedstarttask:Cancel()
 		self.queuedstarttask = nil
