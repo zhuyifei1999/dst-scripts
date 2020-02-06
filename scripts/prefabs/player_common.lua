@@ -546,7 +546,7 @@ local function EnableMovementPrediction(inst, enable)
                 --This is unfortunate but it doesn't seem like you can send an rpc on the first
                 --frame when a character is spawned
                 inst:DoTaskInTime(0, function(inst)
-                    SendRPCToServer(RPC.MovementPredictionEnabled, inst)
+                    SendRPCToServer(RPC.MovementPredictionEnabled)
                     end)
             end            
         elseif inst.components.locomotor ~= nil then
@@ -562,7 +562,7 @@ local function EnableMovementPrediction(inst, enable)
             --This is unfortunate but it doesn't seem like you can send an rpc on the first
             --frame when a character is spawned            
             inst:DoTaskInTime(0, function(inst)
-                SendRPCToServer(RPC.MovementPredictionDisabled, inst)
+                SendRPCToServer(RPC.MovementPredictionDisabled)
                 end)            
         end
     end
