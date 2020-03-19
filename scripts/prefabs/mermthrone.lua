@@ -93,6 +93,13 @@ local function construction_fn()
 
     inst.Transform:SetScale(0.9, 0.9, 0.9)
 
+    inst.AnimState:SetBank("merm_king_carpet_construction")
+    inst.AnimState:SetBuild("merm_king_carpet_construction")
+    inst.AnimState:PlayAnimation("idle", true)
+
+    inst:SetPhysicsRadiusOverride(1.5)
+    MakeObstaclePhysics(inst, inst.physicsradiusoverride)
+
     inst.MiniMapEntity:SetIcon("merm_king_carpet_construction.png")
     inst:AddTag("constructionsite")
 
@@ -102,16 +109,9 @@ local function construction_fn()
         return inst
     end
 
-    inst:SetPhysicsRadiusOverride(1.5)
-    MakeObstaclePhysics(inst, inst.physicsradiusoverride)
-
     MakeHauntableWork(inst)
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
-
-    inst.AnimState:SetBank("merm_king_carpet_construction")
-    inst.AnimState:SetBuild("merm_king_carpet_construction")
-    inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddComponent("constructionsite")
     inst.components.constructionsite:SetConstructionPrefab("construction_container")

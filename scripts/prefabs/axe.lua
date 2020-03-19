@@ -149,8 +149,12 @@ local function golden()
         return inst
     end
 
-    inst.components.finiteuses:SetConsumption(ACTIONS.CHOP, 1 / TUNING.GOLDENTOOLFACTOR)
-    inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
+	if inst.components.finiteuses ~= nil then
+		inst.components.finiteuses:SetConsumption(ACTIONS.CHOP, 1 / TUNING.GOLDENTOOLFACTOR)
+	end
+	if inst.components.weapon ~= nil then
+	    inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
+	end
     inst.components.equippable:SetOnEquip(onequipgold)
 
     inst.components.floater:SetBankSwapOnFloat(true, -11, {sym_build = "swap_goldenaxe"})
@@ -166,10 +170,15 @@ local function moonglass()
     end
 
     inst.components.tool:SetAction(ACTIONS.CHOP, TUNING.MOONGLASSAXE.EFFECTIVENESS)
-    inst.components.finiteuses:SetConsumption(ACTIONS.CHOP, TUNING.MOONGLASSAXE.CONSUMPTION)
+
+	if inst.components.finiteuses ~= nil then
+	    inst.components.finiteuses:SetConsumption(ACTIONS.CHOP, TUNING.MOONGLASSAXE.CONSUMPTION)
+	end
+	if inst.components.weapon ~= nil then
+		inst.components.weapon:SetDamage(TUNING.MOONGLASSAXE.DAMAGE)
+		inst.components.weapon:SetOnAttack(onattack_moonglass)
+	end
     inst.components.equippable:SetOnEquip(onequip_moonglass)
-    inst.components.weapon:SetDamage(TUNING.MOONGLASSAXE.DAMAGE)
-	inst.components.weapon:SetOnAttack(onattack_moonglass)
 
     local swap_data = {sym_build = "swap_glassaxe", bank = "glassaxe"}
     inst.components.floater:SetBankSwapOnFloat(true, -11, swap_data)

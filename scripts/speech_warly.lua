@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "Ah non, this fish is far too small.",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I cannot do that.",
 	ANNOUNCE_BOAT_LEAK = "Mon dieu! She is sinking!",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "You must move faster!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "My Carrat is frozen!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "I'm also an accomplished butcher!",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="I don't think it's edible.",
+			LEVEL1 = "Something's stirring inside.",
+			LEVEL2 = "Bonjour? Anyone there?",
+			LEVEL3 = "Ah, you are looking quite well today little flower!",
+
+			-- deprecated
             LONG = "Something's stirring inside.",
             MEDIUM = "I think it's waking up.",
             SOON = "I get the feeling something will happen soon.",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "I wonder what is in his record collection?",
 		BOOMERANG = "Oh good. I have separation anxiety.",
 		PIGGUARD = "What are you guarding, besides your own deliciousness?",
-		ABIGAIL = "Bonjour, Mademoiselle Abigail!",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Bonjour, Mademoiselle Abigail!",
+                "Bonjour, Mademoiselle Abigail!",
+            },
+            LEVEL2 = 
+            {
+                "Bonjour, Mademoiselle Abigail!",
+                "Bonjour, Mademoiselle Abigail!",
+            },
+            LEVEL3 = 
+            {
+                "Bonjour, Mademoiselle Abigail!",
+                "Bonjour, Mademoiselle Abigail!",
+            },
+		},
 		ADVENTURE_PORTAL = "What fresh devilment is this?",
 		AMULET = "I wear safety.",
 		ANIMAL_TRACK = "These tracks point to fresh game.",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "Hm. Not edible.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "You'd have to be a real dupe to think you could get that working.", -- Odd Radio ONI trinket
         TRINKET_46 = "Hm, what's that? I spaced out.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_2  = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_7  = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_10 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_11 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_14 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_18 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_19 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_42 = "Mon dieu! My hand passes right through it!",
+        LOST_TOY_43 = "Mon dieu! My hand passes right through it!",
         
         HALLOWEENCANDY_1 = "These can be enjoyable, now and then.",
         HALLOWEENCANDY_2 = "There are better confections available, in my professional opinion.",
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "I'm not sure about some of those ingredients, mademoiselle.",
+		GHOSTLYELIXIR_FASTREGEN = "I'm not sure about some of those ingredients, mademoiselle.",
+		GHOSTLYELIXIR_SHIELD = "I'm not sure about some of those ingredients, mademoiselle.",
+		GHOSTLYELIXIR_ATTACK = "I'm not sure about some of those ingredients, mademoiselle.",
+		GHOSTLYELIXIR_SPEED = "I'm not sure about some of those ingredients, mademoiselle.",
+		GHOSTLYELIXIR_RETALIATION = "I'm not sure about some of those ingredients, mademoiselle.",
+		SISTURN =
+		{
+			GENERIC = "Poor mademoiselle...",
+			SOME_FLOWERS = "Oh, that's looking very nice!",
+			LOTS_OF_FLOWERS = "Such a calming presence...",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "Hm... he doesn't seem so different from the others.",
 
         SQUID = "Incandescent calamari!",
+
+		GHOSTFLOWER = "Looking at it makes me feel... peaceful.",
+        SMALLGHOST = "Oh! You gave me a little fright!",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

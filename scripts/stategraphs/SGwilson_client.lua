@@ -275,7 +275,8 @@ local actionhandlers =
             return action.invobject ~= nil
                 and action.target ~= nil
                 and (   (action.target:HasTag("moonportal") and action.invobject:HasTag("moonportalkey") and "dochannelaction") or
-                        (action.invobject.prefab == "quagmire_portal_key" and action.target:HasTag("quagmire_altar") and "dolongaction")
+                        (action.invobject.prefab == "quagmire_portal_key" and action.target:HasTag("quagmire_altar") and "dolongaction") or
+						(action.target:HasTag("give_dolongaction") and "dolongaction")
                     )
                 or "give"
         end),
@@ -320,6 +321,18 @@ local actionhandlers =
     ActionHandler(ACTIONS.BLINK,
         function(inst, action)
             return action.invobject == nil and inst:HasTag("soulstealer") and "portal_jumpin_pre" or "quicktele"
+        end),
+    ActionHandler(ACTIONS.CASTSUMMON,
+        function(inst, action)
+            return action.invobject ~= nil and action.invobject:HasTag("abigail_flower") and "summon_abigail" or "castspell"
+        end),
+    ActionHandler(ACTIONS.CASTUNSUMMON,
+        function(inst, action)
+            return action.invobject ~= nil and action.invobject:HasTag("abigail_flower") and "unsummon_abigail" or "castspell"
+        end),
+    ActionHandler(ACTIONS.COMMUNEWITHSUMMONED,
+        function(inst, action)
+            return action.invobject ~= nil and action.invobject:HasTag("abigail_flower") and "commune_with_abigail" or "dolongaction"
         end),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
@@ -430,6 +443,9 @@ local actionhandlers =
 
 	ActionHandler(ACTIONS.WINTERSFEAST_FEAST, "winters_feast_eat"),
 	ActionHandler(ACTIONS.START_CARRAT_RACE, "give"),
+
+    ActionHandler(ACTIONS.BEGIN_QUEST, "doshortaction"),
+    ActionHandler(ACTIONS.ABANDON_QUEST, "dolongaction"),
 }
 
 local events =
@@ -2419,6 +2435,134 @@ local states =
                     inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
             end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "summon_abigail",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wendy_channel")
+            inst.AnimState:PushAnimation("wendy_channel_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+	            inst:PerformPreviewBufferedAction()
+
+				local flower = inst.bufferedaction.invobject
+                if flower ~= nil and flower:IsValid() then
+                    if flower.skin_id ~= 0 then
+                        inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
+                    else
+                        inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
+                    end
+				end
+			end
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "unsummon_abigail",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wendy_recall")
+            inst.AnimState:PushAnimation("wendy_recall_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+	            inst:PerformPreviewBufferedAction()
+
+				local flower = inst.bufferedaction.invobject
+                if flower ~= nil and flower:IsValid() then
+                    if flower.skin_id ~= 0 then
+                        inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
+                    else
+                        inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
+                    end
+				end
+			end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "commune_with_abigail",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wendy_commune_pre")
+            inst.AnimState:PushAnimation("wendy_commune_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+	            inst:PerformPreviewBufferedAction()
+
+				local flower = inst.bufferedaction.invobject
+                if flower ~= nil and flower:IsValid() then
+                    if flower.skin_id ~= 0 then
+                        inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
+                    else
+                        inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
+                    end
+				end
+			end
 
             inst.sg:SetTimeout(TIMEOUT)
         end,

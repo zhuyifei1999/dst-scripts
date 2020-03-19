@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "Tiny fish not mighty enough!",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_BOAT_LEAK = "Drippy drops is come through boat!",
@@ -519,6 +523,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Leggy carrot must go faster!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Will not win like that! Must go!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "I will punch you!",
@@ -558,6 +582,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="Is pretty.",
+			LEVEL1 = "Little flower gives Wolfgang the \"heebie jeebies\".",
+			LEVEL2 = "I do not like.",
+			LEVEL3 = "Is making Wolfgang scared!",
+
+			-- deprecated
             LONG = "Is pretty.",
             MEDIUM = "Little flower gives Wolfgang the \"heebie jeebies\".",
             SOON = "I do not like.",
@@ -1060,7 +1089,24 @@ return{
 		MAXWELLPHONOGRAPH = "Is box that sings!",
 		BOOMERANG = "Boom! A rang! Ha!",
 		PIGGUARD = "Is bad piggie!",
-		ABIGAIL = "Are you friendly ghost?",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Are you friendly ghost?",
+                "Are you friendly ghost?",
+            },
+            LEVEL2 = 
+            {
+                "Are you friendly ghost?",
+                "Are you friendly ghost?",
+            },
+            LEVEL3 = 
+            {
+                "Are you friendly ghost?",
+                "Are you friendly ghost?",
+            },
+		},
 		ADVENTURE_PORTAL = "Is mouth door! Say Ahhhhh!",
 		AMULET = "Is very pretty.",
 		ANIMAL_TRACK = "Animal went this way.",
@@ -1180,11 +1226,11 @@ return{
 		BIRDCAGE =
 		{
 			GENERIC = "Is home for birdies.",
-			OCCUPIED = "Hello birdie!",
+			OCCUPIED = "Hello birdy!",
 			SLEEPING = "I should be quiet!",
 			HUNGRY = "I hear tiny grumbles!",
 			STARVING = "His tiny stomach is empty!",
-			DEAD = "Birdie? Are you okay?",
+			DEAD = "Birdy? Are you okay?",
 			SKELETON = "He is not okay.",
 		},
 		BIRDTRAP = "This will catch bird!",
@@ -2214,6 +2260,18 @@ return{
         TRINKET_44 = "Is very broke.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "Wolfgang can barely hear this.", -- Odd Radio ONI trinket
         TRINKET_46 = "Is useless thing, I think.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_2  = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_7  = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_10 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_11 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_14 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_18 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_19 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_42 = "Gives Wolfgang the heebiddy jeebers!",
+        LOST_TOY_43 = "Gives Wolfgang the heebiddy jeebers!",
         
         HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
         HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",
@@ -3115,6 +3173,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",
+		GHOSTLYELIXIR_FASTREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",
+		GHOSTLYELIXIR_SHIELD = "Wolfgang not trust tiny bottles made by creepy girl.",
+		GHOSTLYELIXIR_ATTACK = "Wolfgang not trust tiny bottles made by creepy girl.",
+		GHOSTLYELIXIR_SPEED = "Wolfgang not trust tiny bottles made by creepy girl.",
+		GHOSTLYELIXIR_RETALIATION = "Wolfgang not trust tiny bottles made by creepy girl.",
+		SISTURN =
+		{
+			GENERIC = "Is like tiny house for bird! But why is little pot here?",
+			SOME_FLOWERS = "Wolfgang will find more flowers for tiny house!",
+			LOTS_OF_FLOWERS = "Wolfgang like the flowers, but why is little pot floating?",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3215,6 +3286,9 @@ return{
         MERM_PRINCE = "Looks too scrawny to be king!",
 
         SQUID = "Wolfgang make friends with bright little fishies.",
+
+		GHOSTFLOWER = "Is pretty... pretty scary.",
+        SMALLGHOST = "Aaaaah! Er, ahem, meant AAAAAAAAAAAAAAH!!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

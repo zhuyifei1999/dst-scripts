@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "Too tiny",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Nope",
 	ANNOUNCE_BOAT_LEAK = "Water! Water coming!",
@@ -522,6 +526,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Too slow",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Confused?",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Attack!",
@@ -561,6 +585,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="Friend?",
+			LEVEL1 = "Hello there!",
+			LEVEL2 = "Growing",
+			LEVEL3 = "Floaty friend!",
+
+			-- deprecated
             LONG = "Sleeping",
             MEDIUM = "Hello there!",
             SOON = "Ready!",
@@ -1063,7 +1092,24 @@ return{
 		MAXWELLPHONOGRAPH = "Can't dance to it",
 		BOOMERANG = "Returny Stick",
 		PIGGUARD = "Twirly Tail Tough Guy",
-		ABIGAIL = "Floaty Friend",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Floaty Friend",
+                "Floaty Friend",
+            },
+            LEVEL2 = 
+            {
+                "Floaty Friend",
+                "Floaty Friend",
+            },
+            LEVEL3 = 
+            {
+                "Floaty Friend",
+                "Floaty Friend",
+            },
+		},
 		ADVENTURE_PORTAL = "Adventure?",
 		AMULET = "Yay! More life!",
 		ANIMAL_TRACK = "Mystery Prints!",
@@ -2217,6 +2263,18 @@ return{
         TRINKET_44 = "Friend has broken home", -- Broken Terrarium ONI trinket
         TRINKET_45 = "Not working", -- Odd Radio ONI trinket
         TRINKET_46 = "What's this?", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "Spooky",
+        LOST_TOY_2  = "Spooky",
+        LOST_TOY_7  = "Spooky",
+        LOST_TOY_10 = "Spooky",
+        LOST_TOY_11 = "Spooky",
+        LOST_TOY_14 = "Spooky",
+        LOST_TOY_18 = "Spooky",
+        LOST_TOY_19 = "Spooky",
+        LOST_TOY_42 = "Spooky",
+        LOST_TOY_43 = "Spooky",
         
         HALLOWEENCANDY_1 = "Careful! Don't eat stick",
         HALLOWEENCANDY_2 = "Not for dirt",
@@ -3118,6 +3176,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "For ghost friend",
+		GHOSTLYELIXIR_FASTREGEN = "For ghost friend",
+		GHOSTLYELIXIR_SHIELD = "For ghost friend",
+		GHOSTLYELIXIR_ATTACK = "For ghost friend",
+		GHOSTLYELIXIR_SPEED = "For ghost friend",
+		GHOSTLYELIXIR_RETALIATION = "For ghost friend",
+		SISTURN =
+		{
+			GENERIC = "Lonely",
+			SOME_FLOWERS = "Friends!",
+			LOTS_OF_FLOWERS = "Nice here",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3218,6 +3289,9 @@ return{
         MERM_PRINCE = "Special Glub Glub?",
 
         SQUID = "Bright Eye Glub Glub",
+
+		GHOSTFLOWER = "Friend...?",
+        SMALLGHOST = "Floaty is... sad?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

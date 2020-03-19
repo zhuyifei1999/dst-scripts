@@ -715,10 +715,10 @@ local function fn()
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem:SetSinks(true)
 
+	inst._setcolorfn = common_setcolor
     local yotc_carrat = IsSpecialEventActive(SPECIAL_EVENTS.YOTC)
     if yotc_carrat then
 		--inst._color = nil
-		inst._setcolorfn = common_setcolor
 
         inst.dospeedgym = _dospeedgym
         inst.dodirectiongym = _dodirectiongym

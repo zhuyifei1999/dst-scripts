@@ -50,6 +50,7 @@ local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild)
         self.circleframe:GetAnimState():PlayAnimation("frame")
         if iconbuild ~= nil then
             self.circleframe:GetAnimState():OverrideSymbol("icon", iconbuild, "icon")
+            self.iconbuild = iconbuild
         end
     end
 
@@ -60,6 +61,17 @@ local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild)
     self.num:SetPosition(3, 0, 0)
     self.num:Hide()
 end)
+
+function Badge:SetIconSkin( skinname )
+    if self.iconbuild ~= nil then --Do we want to allow a skin on the icon for badges that didn't have a default?
+        if skinname ~= "" then
+            self.circleframe:GetAnimState():OverrideSkinSymbol("icon", GetBuildForItem(skinname), "icon")
+            --self.circleframe:GetAnimState():OverrideSkinSymbol("icon_angry", GetBuildForItem(skinname), "icon_angry")
+        else
+            self.circleframe:GetAnimState():OverrideSymbol("icon", self.iconbuild, "icon")
+        end
+    end
+end
 
 function Badge:OnGainFocus()
     Badge._base.OnGainFocus(self)

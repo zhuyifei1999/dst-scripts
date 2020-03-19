@@ -60,8 +60,8 @@ local function onhammered(inst)
     inst:Remove()
 end
 
-local function ShouldAcceptItem(inst, item,giver)
-    if item.prefab == "carrat" then
+local function ShouldAcceptItem(inst, item, giver)
+    if item.prefab == "carrat" and inst.components.inventory:NumItems() <= 0 then
         if (not item.components.perishable or item.components.perishable:GetPercent() >(TUNING.CARRAT_GYM.TRAINING_TIME/TUNING.CARRAT.PERISH_TIME + 0.1) ) then
             return true
         else

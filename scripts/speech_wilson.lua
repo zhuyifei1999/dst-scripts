@@ -223,6 +223,10 @@ return {
 		{
 			TOO_SMALL = "This one's just a small fry.",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "We're taking on a lot of water.",
@@ -527,6 +531,26 @@ return {
     ANNOUNCE_CARRAT_ERROR_WALKING = "Don't walk, RUN!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Get up! GO GO!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+    ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+    ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+    ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+		LEVEL1 = "only_used_by_wendy",
+		LEVEL2 = "only_used_by_wendy",
+		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+		LEVEL2 = "only_used_by_wendy",
+		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Go for the eyes!",
@@ -566,6 +590,11 @@ return {
         ABIGAIL_FLOWER =
         {
             GENERIC ="It's hauntingly beautiful.",
+			LEVEL1 = "Do you need some alone time?",
+			LEVEL2 = "I think she's starting to open up to us.",
+			LEVEL3 = "Looks like someone's feeling especially spirited today!",
+
+			-- deprecated
             LONG = "It hurts my soul to look at that thing.",
             MEDIUM = "It's giving me the creeps.",
             SOON = "Something is up with that flower!",
@@ -1068,7 +1097,24 @@ return {
 		MAXWELLPHONOGRAPH = "So that's where the music was coming from.",
 		BOOMERANG = "Aerodynamical!",
 		PIGGUARD = "He doesn't look as friendly as the others.",
-		ABIGAIL = "Awww, she has a cute little bow.",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Awww, she has a cute little bow.",
+                "Awww, she has a cute little bow.",
+            },
+            LEVEL2 = 
+            {
+                "Awww, she has a cute little bow.",
+                "Awww, she has a cute little bow.",
+            },
+            LEVEL3 = 
+            {
+                "Awww, she has a cute little bow.",
+                "Awww, she has a cute little bow.",
+            },
+		},
 		ADVENTURE_PORTAL = "I'm not sure I want to fall for that a second time.",
 		AMULET = "I feel so safe when I get to wear it.",
 		ANIMAL_TRACK = "Tracks left by food. I mean... an animal.",
@@ -2222,6 +2268,18 @@ return {
         TRINKET_44 = "It's some sort of plant specimen.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "It's picking up frequencies from another world.", -- Odd Radio ONI trinket
         TRINKET_46 = "Maybe a tool for testing aerodynamics?", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_2  = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_7  = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_10 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_11 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_14 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_18 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_19 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_42 = "I'm sure there's a perfectly scientific explanation for that.",
+        LOST_TOY_43 = "I'm sure there's a perfectly scientific explanation for that.",
         
         HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
         HALLOWEENCANDY_2 = "What corruption of science grew these?",
@@ -2621,7 +2679,7 @@ return {
         LAVAARENA_STRONGDAMAGERHAT = "It looks like it packs a wallop.",
         LAVAARENA_TIARAFLOWERPETALSHAT = "Looks like it amplifies healing expertise.",
         LAVAARENA_EYECIRCLETHAT = "It has a gaze full of science.",
-        LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
+        LAVAARENA_RECHARGERHAT = "Those crystals will quicken my abilities.",
         LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
         LAVAARENA_CROWNDAMAGERHAT = "That could cause some major destruction.",
 
@@ -3123,6 +3181,19 @@ return {
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Ah yes. Very science-y.",
+		GHOSTLYELIXIR_FASTREGEN = "Ah yes. Very science-y.",
+		GHOSTLYELIXIR_SHIELD = "Ah yes. Very science-y.",
+		GHOSTLYELIXIR_ATTACK = "Ah yes. Very science-y.",
+		GHOSTLYELIXIR_SPEED = "Ah yes. Very science-y.",
+		GHOSTLYELIXIR_RETALIATION = "Ah yes. Very science-y.",
+		SISTURN =
+		{
+			GENERIC = "Some flowers would liven it up a bit.",
+			SOME_FLOWERS = "A few more flowers should do the trick.",
+			LOTS_OF_FLOWERS = "What a brilliant boo-quet!",
+		},
+
         --Wortox
         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3223,6 +3294,9 @@ return {
         MERM_PRINCE = "They operate on a first-come, first-sovereigned basis.",
 
         SQUID = "I have an inkling they'll come in handy.",
+
+		GHOSTFLOWER = "My scientific brain refuses to perceive it.",
+        SMALLGHOST = "Aww, does someone have a little boo-boo?",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

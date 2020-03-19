@@ -614,13 +614,9 @@ function Tune(overrides)
         GHOST_DMG_PERIOD = 1.2,
         GHOST_DMG_PLAYER_PERCENT = 1,
         GHOST_LIGHT_OVERRIDE = .5,
-
-        ABIGAIL_SPEED = 5,
-        ABIGAIL_HEALTH = wilson_health*4,
-        ABIGAIL_DAMAGE_PER_SECOND = 20,
-        ABIGAIL_DMG_PERIOD = 1.5,
-        ABIGAIL_DMG_PLAYER_PERCENT = 0.25,
-        ABIGAIL_FLOWER_DECAY_TIME = total_day_time * 3,
+        GHOST_GRAVESTONE_CHANCE = 0.05,
+        GHOST_FOLLOW_DSQ = 30 * 30, -- Used in ghost.lua and ghostbrain.lua
+        GHOST_SISTURN_CHANCE_PER_DECOR = 0.05,
 
         MIN_LEAF_CHANGE_TIME = .1 * day_time,
         MAX_LEAF_CHANGE_TIME = 3 * day_time,
@@ -3665,6 +3661,94 @@ function Tune(overrides)
         MERMHOUSE_EMERGENCY_RADIUS = 15,
 
         MERMWATCHTOWER_MERMS = 1,
+
+        -- WENDY
+        GHOST_HUNT =
+        {
+            TOY_COUNT =
+            {
+                MIN = 3,
+                MAX = 5,
+            },
+            TOY_DIST =
+            {
+                BASE = 150,
+                RADIUS = 35,
+                VARIANCE = 5,
+            },
+            PICKUP_DSQ = 4,
+            HINT_OFFSET = 3,
+            MINIMUM_HINT_DIST = 40,
+            MAXIMUM_HINT_DIST = 180,
+        },
+
+        UNIQUE_SMALLGHOST_DISTANCE = 50,
+
+        ABIGAIL_SPEED = 5,
+        ABIGAIL_HEALTH = wilson_health*4,
+        ABIGAIL_HEALTH_LEVEL1 = wilson_health*1,
+        ABIGAIL_HEALTH_LEVEL2 = wilson_health*2,
+        ABIGAIL_HEALTH_LEVEL3 = wilson_health*4,
+		ABIGAIL_FORCEFIELD_ABSORPTION = 1.0,
+        ABIGAIL_DAMAGE_PER_SECOND = 40,
+
+		ABIGAIL_DAMAGE_WENDY_HEALTH_BASE = 40,
+        ABIGAIL_DAMAGE_PER_CREATURE = 
+        {
+            20, -- 1 target			
+            12, -- 2 or more targets
+        },
+
+        ABIGAIL_DMG_PERIOD = 1.5,
+        ABIGAIL_DMG_PLAYER_PERCENT = 0.25,
+        ABIGAIL_FLOWER_DECAY_TIME = total_day_time * 3,
+
+        ABIGAIL_BOND_LEVELUP_TIME = total_day_time * 1,
+        ABIGAIL_BOND_LEVELUP_TIME_MULT = 4,
+        ABIGAIL_MAX_STAGE = 3,
+
+        ABIGAIL_LIGHTING = 
+		{
+			{l = 0.0, r = 0.0},
+			{l = 0.1, r = 0.3, i = 0.7, f = 0.5},
+			{l = 0.5, r = 0.7, i = 0.6, f = 0.6},
+		},
+
+        ABIGAIL_FLOWER_PROX_DIST = 6*6,
+        ABIGAIL_COMBAT_TARGET_DISTANCE = 15,
+
+        ABIGAIL_DEFENSIVE_MIN_FOLLOW = 1,
+        ABIGAIL_DEFENSIVE_MAX_FOLLOW = 5,
+        ABIGAIL_DEFENSIVE_MED_FOLLOW = 3,
+
+        ABIGAIL_AGGRESSIVE_MIN_FOLLOW = 3,
+        ABIGAIL_AGGRESSIVE_MAX_FOLLOW = 10,
+        ABIGAIL_AGGRESSIVE_MED_FOLLOW = 6,
+
+        DEFENSIVE_MAX_CHASE_TIME = 3,
+        AGGRESSIVE_MAX_CHASE_TIME = 6,
+
+		GHOSTLYELIXIR_SLOWREGEN_HEALING = 1,
+		GHOSTLYELIXIR_SLOWREGEN_TICK_TIME = 1,
+		GHOSTLYELIXIR_SLOWREGEN_DURATION = total_day_time * 2, -- 960 over 2 days
+
+		GHOSTLYELIXIR_FASTREGEN_HEALING = 20, -- 300 total
+		GHOSTLYELIXIR_FASTREGEN_TICK_TIME = 1,
+		GHOSTLYELIXIR_FASTREGEN_DURATION = 15, 
+
+		GHOSTLYELIXIR_DAMAGE_MULT = 1.2,
+		GHOSTLYELIXIR_DAMAGE_DURATION = seg_time * 2,
+
+		GHOSTLYELIXIR_SPEED_LOCO_MULT = 1.75,
+		GHOSTLYELIXIR_SPEED_DURATION = total_day_time * 3,
+		GHOSTLYELIXIR_SPEED_PLAYER_GHOST_DURATION = 3,
+
+		GHOSTLYELIXIR_SHIELD_DURATION = seg_time * 2,
+
+		GHOSTLYELIXIR_RETALIATION_DAMAGE = 20,
+		GHOSTLYELIXIR_RETALIATION_DURATION = seg_time * 2,
+
+		GHOSTLYELIXIR_DRIP_FX_DELAY = seg_time / 2,
 
         -- Salty dog
         FLOTSAM_SPAWN_MAX = 4,

@@ -116,10 +116,15 @@ function Health:OnSave()
     {
         health = self.currenthealth,
         penalty = self.penalty > 0 and self.penalty or nil,
+		maxhealth = self.save_maxhealth and self.maxhealth or nil
     }
 end
 
 function Health:OnLoad(data)
+	if data.maxhealth ~= nil then
+		self.maxhealth = data.maxhealth
+	end
+
     local haspenalty = data.penalty ~= nil and data.penalty > 0 and data.penalty < 1
     if haspenalty then
         self:SetPenalty(data.penalty)
@@ -271,6 +276,10 @@ end
 
 function Health:GetPercent()
     return self.currenthealth / self.maxhealth
+end
+
+function Health:GetPercentWithPenalty()
+    return self.currenthealth / self:GetMaxWithPenalty()
 end
 
 function Health:IsInvincible()

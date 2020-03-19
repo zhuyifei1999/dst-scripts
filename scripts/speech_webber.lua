@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "This little guy's too small!",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Come on, you've got to run faster!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Oh no! Snap out of it!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "En garde!",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="Pretty petals!",
+			LEVEL1 = "Can she hear us in there?",
+			LEVEL2 = "C'mon Abigail, Wendy misses you!",
+			LEVEL3 = "Helloooo? Do you want to come out now?",
+
+			-- deprecated
             LONG = "I think it's listening to us!",
             MEDIUM = "It's getting creepy!",
             SOON = "It gives us itches and skritches up our spine!",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "We could listen to that forever!",
 		BOOMERANG = "Boomerangarangarang!",
 		PIGGUARD = "We wouldn't want to cross that one.",
-		ABIGAIL = "That's no party poltergeist!",
+		LEVEL1 =
+		{
+            GENERIC =
+            {
+                "We're a bit old for playing peek-a-boo.",
+                "We're a bit old for playing peek-a-boo.",
+            },
+            LEVEL2 = 
+            {
+                "We're a bit old for playing peek-a-boo.",
+                "We're a bit old for playing peek-a-boo.",
+            },
+            LEVEL3 = 
+            {
+                "We're a bit old for playing peek-a-boo.",
+                "We're a bit old for playing peek-a-boo.",
+            },
+		},
 		ADVENTURE_PORTAL = "Something wicked this way comes.",
 		AMULET = "It's a fine necklace, I suppose.",
 		ANIMAL_TRACK = "Whatever it is, it travels single file.",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "The plant is so pretty!", -- Broken Terrarium ONI trinket
         TRINKET_45 = "It doesn't get any good channels.", -- Odd Radio ONI trinket
         TRINKET_46 = "What's it for?", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "We think those might belong to someone else.",
+        LOST_TOY_2  = "We think those might belong to someone else.",
+        LOST_TOY_7  = "We think those might belong to someone else.",
+        LOST_TOY_10 = "We think those might belong to someone else.",
+        LOST_TOY_11 = "We think those might belong to someone else.",
+        LOST_TOY_14 = "We think those might belong to someone else.",
+        LOST_TOY_18 = "We think those might belong to someone else.",
+        LOST_TOY_19 = "We think those might belong to someone else.",
+        LOST_TOY_42 = "We think those might belong to someone else.",
+        LOST_TOY_43 = "We think those might belong to someone else.",
         
         HALLOWEENCANDY_1 = "Oh, Wendy! We'll trade you for your choco pigs!",
         HALLOWEENCANDY_2 = "Haha ew! It's weird!",
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_FASTREGEN = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_SHIELD = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_ATTACK = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_SPEED = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_RETALIATION = "Hey, you didn't tell me you were making crafts!",
+		SISTURN =
+		{
+			GENERIC = "It's a little Abigail house!",
+			SOME_FLOWERS = "We can find more flowers!",
+			LOTS_OF_FLOWERS = "We feel warm and fuzzy... well, more than usual.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "Wow, becoming a king looks easy!",
 
         SQUID = "Wish we had eyes like that!",
+
+		GHOSTFLOWER = "This seems like something Wendy would like.",
+        SMALLGHOST = "Hey little guy! Wanna play?",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

@@ -1,6 +1,7 @@
 require "playerdeaths"
 require "playerhistory"
 require "serverpreferences"
+require "util/profanityfilter"
 require "saveindex"
 require "map/extents"
 require "perfutil"
@@ -1104,6 +1105,7 @@ SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()
 PlayerHistory = PlayerHistory()
 ServerPreferences = ServerPreferences()
+ProfanityFilter = ProfanityFilter()
 
 Print(VERBOSITY.DEBUG, "[Loading Morgue]")
 Morgue:Load( function(did_it_load) 
@@ -1111,6 +1113,13 @@ Morgue:Load( function(did_it_load)
 end )
 PlayerHistory:Load( function() end )
 ServerPreferences:Load( function() end )
+ProfanityFilter:AddDictionary("default", require("wordfilter"))
+
+--Now let's setup debugging!!!
+if DEBUGGER_ENABLED then
+    local startResult, breakerType = Debuggee.start()
+    print('Debuggee start ->', startResult, breakerType )
+end
 
 Print(VERBOSITY.DEBUG, "[Loading profile and save index]")
 Profile:Load( function() 
@@ -1125,10 +1134,3 @@ if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOffli
 end
 
 Stats.InitStats()
-
-
---Now let's setup debugging!!!
-if DEBUGGER_ENABLED then
-    local startResult, breakerType = Debuggee.start()
-    print('Debuggee start ->', startResult, breakerType )
-end

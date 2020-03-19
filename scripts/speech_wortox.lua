@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "This minnow won't win, no!",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "No, no, no.",
 	ANNOUNCE_BOAT_LEAK = "Now this ride's getting fun!",
@@ -523,6 +527,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "If you don't quicken your pace, we'll lose this race!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Gotten cold feet? And have they frozen to the ground?",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Let's have some fun.",
@@ -562,6 +586,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="I think it eats souls, too.",
+			LEVEL1 = "No need to hide from me... tasty as you might be.",
+			LEVEL2 = "How are you doing in there?",
+			LEVEL3 = "My, you're looking spirited! Hyuyu!",
+
+			-- deprecated
             LONG = "It's very sad. Full of regrets.",
             MEDIUM = "Waking up, are we?",
             SOON = "It seems the fun will soon begin.",
@@ -1064,7 +1093,24 @@ return{
 		MAXWELLPHONOGRAPH = "Ooo, music! I'm practically giddy!",
 		BOOMERANG = "What goes around comes around, they say, they say!",
 		PIGGUARD = "We don't have to fight, you know.",
-		ABIGAIL = "Poor soul.",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Poor soul.",
+                "Poor soul.",
+            },
+            LEVEL2 = 
+            {
+                "Poor soul.",
+                "Poor soul.",
+            },
+            LEVEL3 = 
+            {
+                "Poor soul.",
+                "Poor soul.",
+            },
+		},
 		ADVENTURE_PORTAL = "I want to play a game with you!",
 		AMULET = "A glimmering jewel that's rife with life.",
 		ANIMAL_TRACK = "Those aren't my hoofprints!",
@@ -2219,6 +2265,18 @@ return{
         TRINKET_44 = "There's cracks in it for pests to get into.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "Though you may think me quite a loon, I swear I hear a little tune.", -- Odd Radio ONI trinket
         TRINKET_46 = "We don't have these on my plane.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "You're not from around this plane, are you?",
+        LOST_TOY_2  = "You're not from around this plane, are you?",
+        LOST_TOY_7  = "You're not from around this plane, are you?",
+        LOST_TOY_10 = "You're not from around this plane, are you?",
+        LOST_TOY_11 = "You're not from around this plane, are you?",
+        LOST_TOY_14 = "You're not from around this plane, are you?",
+        LOST_TOY_18 = "You're not from around this plane, are you?",
+        LOST_TOY_19 = "You're not from around this plane, are you?",
+        LOST_TOY_42 = "You're not from around this plane, are you?",
+        LOST_TOY_43 = "You're not from around this plane, are you?",
         
         HALLOWEENCANDY_1 = "Something to sink my fangs into!",
         HALLOWEENCANDY_2 = "I suppose I could eat a delightful treat.",
@@ -3120,6 +3178,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Hyuyu! Someone's getting crafty!",
+		GHOSTLYELIXIR_FASTREGEN = "Hyuyu! Someone's getting crafty!",
+		GHOSTLYELIXIR_SHIELD = "Hyuyu! Someone's getting crafty!",
+		GHOSTLYELIXIR_ATTACK = "Hyuyu! Someone's getting crafty!",
+		GHOSTLYELIXIR_SPEED = "Hyuyu! Someone's getting crafty!",
+		GHOSTLYELIXIR_RETALIATION = "Hyuyu! Someone's getting crafty!",
+		SISTURN =
+		{
+			GENERIC = "A touching tribute to a treasured twin.",
+			SOME_FLOWERS = "A flowery addition for our apparition!",
+			LOTS_OF_FLOWERS = "Maybe I should keep my distance...",
+		},
+
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
 
@@ -3220,6 +3291,9 @@ return{
         MERM_PRINCE = "Hyuyuyu, a prince! Charming!",
 
         SQUID = "An eerie eye to see the sea.",
+
+		GHOSTFLOWER = "What a fetching phantom flower.",
+        SMALLGHOST = "I prefer souls with more meat on their bones... metaphorically speaking.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

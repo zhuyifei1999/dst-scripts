@@ -248,9 +248,9 @@ function LootDropper:FlingItem(loot, pt)
     end
 end
 
-function LootDropper:SpawnLootPrefab(lootprefab, pt, linked_skinname, skin_id )
+function LootDropper:SpawnLootPrefab( lootprefab, pt, linked_skinname, skin_id, userid )
     if lootprefab ~= nil then
-        local loot = SpawnPrefab(lootprefab, linked_skinname, skin_id)
+        local loot = SpawnPrefab( lootprefab, linked_skinname, skin_id, userid )
         if loot ~= nil then
             if loot.components.inventoryitem ~= nil then
                 if self.inst.components.inventoryitem ~= nil then

@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "This one's too shrimpy!",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_BOAT_LEAK = "We gotta repair this ol'girl!",
@@ -524,6 +528,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Hey! Let's get a move on!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "What's with the lollygagging? Hop to it!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "I'll demolish you!",
@@ -563,6 +587,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="What a nice little flower.",
+			LEVEL1 = "Looks like someone needed a break.",
+			LEVEL2 = "Up'n'attem! The day's a-wasting!",
+			LEVEL3 = "That flower looks raring to go.",
+
+			-- deprecated
             LONG = "What a nice little flower.",
             MEDIUM = "It's getting antsy.",
             SOON = "Something's coming.",
@@ -1065,7 +1094,24 @@ return{
 		MAXWELLPHONOGRAPH = "I prefer blues.",
 		BOOMERANG = "It's great at comebacks. Ha!",
 		PIGGUARD = "You don't look so tough.",
-		ABIGAIL = "How are you, boo?",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "How are you, boo?",
+                "How are you, boo?",
+            },
+            LEVEL2 = 
+            {
+                "How are you, boo?",
+                "How are you, boo?",
+            },
+            LEVEL3 = 
+            {
+                "How are you, boo?",
+                "How are you, boo?",
+            },
+		},
 		ADVENTURE_PORTAL = "I ain't jumping willy-nilly through strange portals!",
 		AMULET = "Jewelry ain't really my thing.",
 		ANIMAL_TRACK = "Something tasty passed through here.",
@@ -2219,6 +2265,18 @@ return{
         TRINKET_44 = "Nope. Can't fix that.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "I'm not messing with anymore radios.", -- Odd Radio ONI trinket
         TRINKET_46 = "That might be fun to take apart.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "Nope. Not touchin' that.",
+        LOST_TOY_2  = "Nope. Not touchin' that.",
+        LOST_TOY_7  = "Nope. Not touchin' that.",
+        LOST_TOY_10 = "Nope. Not touchin' that.",
+        LOST_TOY_11 = "Nope. Not touchin' that.",
+        LOST_TOY_14 = "Nope. Not touchin' that.",
+        LOST_TOY_18 = "Nope. Not touchin' that.",
+        LOST_TOY_19 = "Nope. Not touchin' that.",
+        LOST_TOY_42 = "Nope. Not touchin' that.",
+        LOST_TOY_43 = "Nope. Not touchin' that.",
         
         HALLOWEENCANDY_1 = "A nice change from baked apples.",
         HALLOWEENCANDY_2 = "Is this even food?",
@@ -3120,6 +3178,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "I don't think that's safe to drink...",
+		GHOSTLYELIXIR_FASTREGEN = "I don't think that's safe to drink...",
+		GHOSTLYELIXIR_SHIELD = "I don't think that's safe to drink...",
+		GHOSTLYELIXIR_ATTACK = "I don't think that's safe to drink...",
+		GHOSTLYELIXIR_SPEED = "I don't think that's safe to drink...",
+		GHOSTLYELIXIR_RETALIATION = "I don't think that's safe to drink...",
+		SISTURN =
+		{
+			GENERIC = "Nothin' stronger than the bond between sisters.",
+			SOME_FLOWERS = "Looks a bit sparse. Maybe I can chip in a flower or two.",
+			LOTS_OF_FLOWERS = "It looks real nice, kiddo.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3220,6 +3291,9 @@ return{
         MERM_PRINCE = "Looks like someone got a promotion!",
 
         SQUID = "Jeepers, those peepers move fast!",
+
+		GHOSTFLOWER = "Don't know if I want that in my garden.",
+        SMALLGHOST = "Y'know, you're awful cute for a grim reminder of my own mortality.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

@@ -69,6 +69,9 @@ local Sanity = Class(function(self, inst)
 
     self.custom_rate_fn = nil
 
+    self.sanity_aura_immunities = {}
+    self.player_ghost_immune = false
+
     self._oldissane = self:IsSane()
     self._oldpercent = self:GetPercent()
 
@@ -150,6 +153,33 @@ function Sanity:RecalculatePenalty()
     self.penalty = penalty
 
     self:DoDelta(0)
+end
+
+function Sanity:AddSanityAuraImmunity(tag)
+    if not table.contains(self.sanity_aura_immunities, tag) then
+        table.insert(self.sanity_aura_immunities, tag)
+    end
+end
+
+function Sanity:RemoveSanityAuraImmunity(tag)
+    if table.contains(self.sanity_aura_immunities, tag) then
+        local remove_index = -1
+
+        for i,v in ipairs(self.sanity_aura_immunities) do
+            if tag == v then
+                remove_index = i
+                break
+            end
+        end
+
+        if remove_index ~= -1 then
+            table.remove(self.sanity_aura_immunities, remove_index)
+        end
+    end
+end
+
+function Sanity:SetPlayerGhostImmunity(immunity)
+    self.player_ghost_immune = immunity
 end
 
 function Sanity:OnSave()
@@ -307,7 +337,7 @@ function Sanity:OnUpdate(dt)
 end
 
 function Sanity:RecalcGhostDrain()
-    if GetGhostSanityDrain(TheNet:GetServerGameMode()) then
+    if GetGhostSanityDrain(TheNet:GetServerGameMode()) and not self.player_ghost_immune then
         local num_ghosts = TheWorld.shard.components.shard_players:GetNumGhosts()
         local num_alive = TheWorld.shard.components.shard_players:GetNumAlive()
         local group_resist = num_alive > num_ghosts and 1 - num_ghosts / num_alive or 0
@@ -366,8 +396,19 @@ function Sanity:Recalc(dt)
     local ents = TheSim:FindEntities(x, y, z, TUNING.SANITY_AURA_SEACH_RANGE, { "sanityaura" }, { "FX", "NOCLICK", "DECOR","INLIMBO" })
     for i, v in ipairs(ents) do 
         if v.components.sanityaura ~= nil and v ~= self.inst then
-            local aura_val = v.components.sanityaura:GetAura(self.inst)
-            aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+
+            local is_aura_immune = false
+            for _, tag in ipairs(self.sanity_aura_immunities) do
+                if v:HasTag(tag) then
+                    is_aura_immune = true
+                    break
+                end
+            end
+
+            if not is_aura_immune then
+                local aura_val = v.components.sanityaura:GetAura(self.inst)
+                aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+            end
         end
     end
 

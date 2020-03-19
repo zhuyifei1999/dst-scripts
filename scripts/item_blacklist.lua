@@ -2,6 +2,11 @@
 
 ITEM_DISPLAY_BLACKLIST =
 {
+	abigail_flower_formal = true,
+	abigail_flower_handmedown = true,
+	abigail_flower_rose = true,
+	abigail_flower_shadow = true,
+	abigail_flower_survivor = true,
 	armor_dragonfly_fangedcollar = true,
 	armor_dragonfly_haramaki = true,
 	armor_dragonfly_lamellar = true,
@@ -39,6 +44,7 @@ ITEM_DISPLAY_BLACKLIST =
 	kitten_winter_builder = true,
 	lamb_winter_builder = true,
 	mast_rose_item = true,
+	minerhat_bonnet = true,
 	minerhat_cowboy = true,
 	minerhat_floppy = true,
 	minisign_picketbrown_drawn = true,
@@ -57,6 +63,7 @@ ITEM_DISPLAY_BLACKLIST =
 	puppy_chow_builder = true,
 	puppy_tzu_builder = true,
 	puppy_winter_builder = true,
+	rainhat_bonnet = true,
 	rainhat_cowboy = true,
 	rainhat_floppy = true,
 	researchlab4_catcoon_costume = true,

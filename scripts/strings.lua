@@ -218,6 +218,7 @@ STRINGS =
             READY    = "Sacrifice",
             SOCKET   = "Socket",
             CELESTIAL = "Offer",
+			APPLY    = "Apply {item}",
             QUAGMIRE_POT_HANGER = "Hang {item}",
             QUAGMIRE_OVEN       = "Place {item}",
             QUAGMIRE_ALTAR =
@@ -560,11 +561,23 @@ STRINGS =
 		WEIGH_ITEM = "Weigh",
 		GIVE_TACKLESKETCH = "Give",
 
+		CASTSUMMON = "Summon",
+		CASTUNSUMMON = "Return",
+		COMMUNEWITHSUMMONED = 
+		{
+			MAKE_AGGRESSIVE = "Rile Up",
+			MAKE_DEFENSIVE = "Soothe",
+		},
+
 		-- Winter's Feast 2019
 		WINTERSFEAST_FEAST = "Feast",
 
 		-- YOTC
 		START_CARRAT_RACE = "Start the Carrat Race",
+
+        -- Wendy
+        BEGIN_QUEST = "Assist",
+        ABANDON_QUEST = "Abandon",
 	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -1154,6 +1167,18 @@ STRINGS =
         TRINKET_46 = "Broken Hairdryer", -- ONI trinket
         --
         ANTLIONTRINKET = "Beach Toy", --bucket and shovel
+
+        -- Lost toy number aligns with trinket names above.
+        LOST_TOY_1 = "Lost Marbles",
+        LOST_TOY_2 = "Sentimental Kazoo",
+        LOST_TOY_7 = "Prized Ball and Cup",
+        LOST_TOY_10 = "Missing Teeth",
+        LOST_TOY_11 = "Cherished Toy Robot",
+        LOST_TOY_14 = "Mother's Favorite Teacup",
+        LOST_TOY_18 = "Treasured Toy Trojan Horse",
+        LOST_TOY_19 = "Favorite Spinning Top",
+        LOST_TOY_42 = "Misplaced Toy Cobra",
+        LOST_TOY_43 = "Beloved Crocodile Toy",
 
         CARROT_PLANTED = "Carrot",
         LEIF = "Treeguard",
@@ -2371,6 +2396,17 @@ STRINGS =
 		CARRAT_GHOSTRACER = "Charlie's Carrat",
 
 		MINIBOATLANTERN = "Floating Lantern",
+
+        -- Wendy
+		GHOSTFLOWER = "Mourning Glory",
+        SMALLGHOST = "Pipspook",
+		GHOSTLYELIXIR_SLOWREGEN = "Revenant Restorative",
+		GHOSTLYELIXIR_FASTREGEN = "Spectral Cure-All",
+		GHOSTLYELIXIR_SHIELD = "Unyielding Draught",
+		GHOSTLYELIXIR_ATTACK = "Choleric Tonic",
+		GHOSTLYELIXIR_SPEED = "Vigor Mortis",
+		GHOSTLYELIXIR_RETALIATION = "Distilled Vengeance",
+		SISTURN = "Sisturn",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2859,6 +2895,15 @@ STRINGS =
         MERMWATCHTOWER = "True warriors live within.",
         MERMHAT = "Merm-ify your friends.",
         MERMTHRONE_CONSTRUCTION = "Usher in a new Merm Monarchy.",
+
+		-- Wendy
+		GHOSTLYELIXIR_SLOWREGEN = "Time heals all wounds.",
+		GHOSTLYELIXIR_FASTREGEN = "A potent cure for grave injuries.",
+		GHOSTLYELIXIR_SHIELD = "Shield your sister from harm.",
+		GHOSTLYELIXIR_ATTACK = "Revive Abigail's fighting spirit.",
+		GHOSTLYELIXIR_SPEED = "Give your soul a little boo-st.",
+		GHOSTLYELIXIR_RETALIATION = "Give foes a taste of their own medicine.",
+		SISTURN = "A place to rest your weary soul.",
 
         TURF_MARSH = "Home is where the marsh is.",
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
@@ -3402,6 +3447,14 @@ STRINGS =
         "Speak with Mumsy. Hurry on, then.",
     },
 
+    -- Lines that the small ghosts deliver when a player approaches them.
+    SMALLGHOST_TALK =
+    {
+        "ooOOoo",
+        "OOoo",
+        "OoOoOoO",
+    },
+
     --Quagmire Event
     --NOTE: Keep intro short (no more than 4 lines)
     --      If there's a lot of story to tell, we can pick
@@ -3711,6 +3764,7 @@ STRINGS =
 		MOON_ALTAR = "Celestial",
         SHADOW = "Shadow",
         ENGINEERING = "Engineering",
+		ELIXIRBREWING = "Ectoherbology",
         NATURE = "Green Thumb",
         CARTOGRAPHY = "Cartography",
         SEAFARING = "Seafaring",
@@ -5010,6 +5064,7 @@ STRINGS.UI =
         AUTOSAVE = "Auto-save",
         AUTOMODS = "Auto-Subscribe Mods:",
         SHOWPASSWORD = "Show Passwords:",
+		SERVER_NAME_PROFANITY_FILTER = "Filter Server Names:",
         SNAPSHOTS = "Server Snapshots",
         INPUT = "Input Device:",
         ACTION = "Action",
@@ -5885,6 +5940,7 @@ STRINGS.UI =
         ONLINE = "Online",
         OFFLINE = "Offline",
         DEDICATED = "Dedicated",
+		OFFICIAL = "Klei Official",
         HOSTED = "Hosted",
         WILDERNESS = "Wilderness",
         CUSTOM = "Custom",
@@ -5897,7 +5953,7 @@ STRINGS.UI =
         NOTAGS = "No Tags",
         VIEWTAGS = "View Tags",
         MODSENABLED = "Mods Enabled:",
-		TOGGLE_SERVER_NAME = "Toggle Server Name",
+		TOGGLE_SERVER_NAME = "Filter Server Name",
         MODSTITLE = "Mods",
         TAGSTITLE = "Tags",
         MOD_WARNING_TITLE = "Mods Enabled",
@@ -5991,7 +6047,8 @@ STRINGS.UI =
         MISSINGDATABODY = "This server is not up to date. We cannot display its world settings.",
         SERVER_LANGUAGE_WARNING_TITLE = "Server Language Mismatch",
         SERVER_LANGUAGE_WARNING_BODY = "Your language option doesn't match the language set by this server, do want to join anyways?",
-		HIDDEN_NAME = "*****",
+		HIDDEN_NAME = "This server name has been filtered",
+        HIDDEN_NAME_LISTING = "This server name has been filtered",
 		HIDDEN_DESCRIPTION = "*****",
     },
     

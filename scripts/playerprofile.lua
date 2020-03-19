@@ -630,6 +630,24 @@ function PlayerProfile:GetMovementPredictionEnabled()
     end
 end
 
+function PlayerProfile:SetProfanityFilterServerNamesEanbled(enabled)
+    if USE_SETTINGS_FILE then
+        TheSim:SetSetting("misc", "profanityfilterservernames", tostring(enabled))
+    else
+        self:SetValue("profanityfilterservernames", enabled)
+        self.dirty = true
+    end
+end
+
+function PlayerProfile:GetProfanityFilterServerNamesEanbled()
+    -- an undefined setting is considered to be enabled
+    if USE_SETTINGS_FILE then
+        return TheSim:GetSetting("misc", "profanityfilterservernames") ~= "false"
+    else
+        return self:GetValue("profanityfilterservernames") ~= false
+    end
+end
+
 function PlayerProfile:SetAutoSubscribeModsEnabled(enabled)
  	if USE_SETTINGS_FILE then
 		TheSim:SetSetting("misc", "autosubscribemods", tostring(enabled))

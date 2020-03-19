@@ -576,7 +576,7 @@ SPECIAL_EVENTS =
     YOTP = "year_of_the_pig",
     YOTC = "year_of_the_carrat",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTC
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
 FESTIVAL_EVENTS =
 {
@@ -1067,6 +1067,7 @@ CUSTOM_RECIPETABS =
     BOOKS =         { str = "BOOKS",        sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder" },
     SHADOW =        { str = "SHADOW",       sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic" },
     ENGINEERING =   { str = "ENGINEERING",  sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson" },
+	ELIXIRBREWING = { str = "ELIXIRBREWING",sort = 999, icon = "tab_elixirbrewing.tex", owner_tag = "elixirbrewer" },
     NATURE =        { str = "NATURE",       sort = 999, icon = "tab_nature.tex",        owner_tag = "plantkin" },
 }
 

@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "This specimen is far too insubstantial.",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "It seems I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat has fallen into dangerous disrepair.",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Let's try to look a bit more lively, dear.",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "You must pay attention!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Combat!",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="Ah... I'm not familiar with this strain of flower.",
+			LEVEL1 = "It's emitting a strange energy.",
+			LEVEL2 = "That flower has perked up quite a bit.",
+			LEVEL3 = "Its magic has reached maximum potency.",
+
+			-- deprecated
             LONG = "Odd...",
             MEDIUM = "It's emitting a strange energy.",
             SOON = "The flower's energy is growing powerful.",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "It appears to have no power source.",
 		BOOMERANG = "It is a flat aerofoil.",
 		PIGGUARD = "One of the warrior caste.",
-		ABIGAIL = "Fascinating. Can you speak, specter?",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Fascinating. Can you speak, specter?",
+                "Fascinating. Can you speak, specter?",
+            },
+            LEVEL2 = 
+            {
+                "Fascinating. Can you speak, specter?",
+                "Fascinating. Can you speak, specter?",
+            },
+            LEVEL3 = 
+            {
+                "Fascinating. Can you speak, specter?",
+                "Fascinating. Can you speak, specter?",
+            },
+		},
 		ADVENTURE_PORTAL = "That violates some pretty fundamental physical laws.",
 		AMULET = "A relic from another time.",
 		ANIMAL_TRACK = "A sign of animal activity. Leads away.",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "A waste of a unique flora specimen.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "What a curious device!", -- Odd Radio ONI trinket
         TRINKET_46 = "What an odd contraption.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_2  = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_7  = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_10 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_11 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_14 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_18 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_19 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_42 = "How odd... perhaps it's merely a mirage.",
+        LOST_TOY_43 = "How odd... perhaps it's merely a mirage.",
         
         HALLOWEENCANDY_1 = "Remember to eat in moderation, children.",
         HALLOWEENCANDY_2 = "Delightfully colored kernels of high fructose corn syrup.",
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Color-coded and clearly labeled. Well done!",
+		GHOSTLYELIXIR_FASTREGEN = "Color-coded and clearly labeled. Well done!",
+		GHOSTLYELIXIR_SHIELD = "Color-coded and clearly labeled. Well done!",
+		GHOSTLYELIXIR_ATTACK = "Color-coded and clearly labeled. Well done!",
+		GHOSTLYELIXIR_SPEED = "Color-coded and clearly labeled. Well done!",
+		GHOSTLYELIXIR_RETALIATION = "Color-coded and clearly labeled. Well done!",
+		SISTURN =
+		{
+			GENERIC = "The poor dear.",
+			SOME_FLOWERS = "I believe flowers are a traditional offering to the deceased.",
+			LOTS_OF_FLOWERS = "The flowers seem to give off an aromatic effect.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "The heir, apparently.",
 
         SQUID = "Luminesca Cephalopoda! What beautiful bioluminescence!",
+
+		GHOSTFLOWER = "I'm afraid I'm unfamiliar with this genus.",
+        SMALLGHOST = "Your adorable appearance won't make me believe in you!",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

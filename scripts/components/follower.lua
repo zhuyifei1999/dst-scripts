@@ -73,11 +73,16 @@ local function OnEntitySleep(inst)
             inst.components.combat:SetTarget(nil)
         end
 
-        local angle = self.leader:GetAngleToPoint(init_pos)
-        local aquatic = inst.components.locomotor ~= nil and inst.components.locomotor:IsAquatic()
+        local allow_land = true
+        local allow_ocean = false
+        if inst.components.locomotor ~= nil then
+            allow_land = inst.components.locomotor:CanPathfindOnLand()
+            allow_ocean = inst.components.locomotor:CanPathfindOnWater()
+        end
 
-        if aquatic then
-            local offset = FindSwimmableOffset(leader_pos, angle*DEGREES, 30, 10, false, true, NoHoles, false)
+        local angle = self.leader:GetAngleToPoint(init_pos) * DEGREES
+        if allow_ocean then
+            local offset = FindSwimmableOffset(leader_pos, angle, 30, 10, false, true, NoHoles, false)
             if offset ~= nil then
                 leader_pos.x = leader_pos.x + offset.x
                 leader_pos.z = leader_pos.z + offset.z
@@ -88,12 +93,11 @@ local function OnEntitySleep(inst)
                 --There's a crash if you teleport without the delay
                 --V2C: ORLY
                 self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
-            else
-                -- No water position to teleport to. Retry later.
-                self.porttask = inst:DoTaskInTime(3, OnEntitySleep)
             end
-        else
-            local offset = FindWalkableOffset(leader_pos, angle*DEGREES, 30, 10, false, true, NoHoles)
+        end
+
+        if self.porttask == nil and allow_land then
+            local offset = FindWalkableOffset(leader_pos, angle, 30, 10, false, true, NoHoles)
             if offset ~= nil then
                 leader_pos.x = leader_pos.x + offset.x
                 leader_pos.z = leader_pos.z + offset.z
@@ -106,10 +110,12 @@ local function OnEntitySleep(inst)
                 --There's a crash if you teleport without the delay
                 --V2C: ORLY
                 self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
-            else
-                -- No land position to teleport to. Retry later.
-                self.porttask = inst:DoTaskInTime(3, OnEntitySleep)
             end
+        end
+
+        if self.porttask == nil then
+            -- No position to teleport to. Retry later.
+            self.porttask = inst:DoTaskInTime(3, OnEntitySleep)
         end
     else
         --Retry later

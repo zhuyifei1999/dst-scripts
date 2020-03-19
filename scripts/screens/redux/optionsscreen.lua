@@ -219,6 +219,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 		netbookmode = TheSim:IsNetbookMode(),
 		vibration = Profile:GetVibrationEnabled(),
 		showpassword = Profile:GetShowPasswordEnabled(),
+		profanityfilterservernames = Profile:GetProfanityFilterServerNamesEanbled(),
         movementprediction = Profile:GetMovementPredictionEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
 		wathgrithrfont = Profile:IsWathgrithrFontEnabled(),
@@ -504,6 +505,7 @@ function OptionsScreen:Save(cb)
 	Profile:SetHUDSize( self.options.hudSize )
 	Profile:SetVibrationEnabled( self.options.vibration )
 	Profile:SetShowPasswordEnabled( self.options.showpassword )
+	Profile:SetProfanityFilterServerNamesEanbled( self.options.profanityfilterservernames )
     Profile:SetMovementPredictionEnabled(self.options.movementprediction)
 	Profile:SetAutoSubscribeModsEnabled( self.options.automods )
 
@@ -1148,6 +1150,14 @@ function OptionsScreen:_BuildSettings()
 			self:UpdateMenu()
 		end
 
+	self.profanityfilterSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.SERVER_NAME_PROFANITY_FILTER, enableDisableOptions)
+	self.profanityfilterSpinner.OnChanged =
+		function( _, data )
+			this.working.profanityfilterservernames = data
+			--this:Apply()
+			self:UpdateMenu()
+		end
+
 	self.wathgrithrfontSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.WATHGRITHRFONT, enableDisableOptions)
 	self.wathgrithrfontSpinner.OnChanged =
 		function( _, data )
@@ -1256,14 +1266,11 @@ function OptionsScreen:_BuildSettings()
     table.insert( self.left_spinners, self.musicVolume )
     table.insert( self.left_spinners, self.ambientVolume )
     table.insert( self.left_spinners, self.passwordSpinner)
+    table.insert( self.left_spinners, self.profanityfilterSpinner)
     table.insert( self.left_spinners, self.automodsSpinner )
     table.insert( self.left_spinners, self.wathgrithrfontSpinner)
     table.insert( self.left_spinners, self.hudSize)
     table.insert( self.left_spinners, self.boatcameraSpinner)
-
-	if self.show_datacollection then
-		table.insert( self.left_spinners, self.datacollectionCheckbox)
-	end
 
     table.insert( self.right_spinners, self.screenshakeSpinner )
     table.insert( self.right_spinners, self.distortionSpinner )
@@ -1277,6 +1284,10 @@ function OptionsScreen:_BuildSettings()
 		table.insert( self.right_spinners, self.smallTexturesSpinner )
 		table.insert( self.right_spinners, self.netbookModeSpinner )
         table.insert( self.right_spinners, self.movementpredictionSpinner )
+	end
+
+	if self.show_datacollection then
+		table.insert( self.right_spinners, self.datacollectionCheckbox)
 	end
 
 	self.grid:UseNaturalLayout()
@@ -1511,6 +1522,7 @@ function OptionsScreen:InitializeSpinners(first)
 	self.hudSize:SetSelectedIndex( self.working.hudSize or 5)
 	self.vibrationSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.vibration ) )
 	self.passwordSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.showpassword ) )
+	self.profanityfilterSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.profanityfilterservernames ) )
     self.movementpredictionSpinner:SetSelectedIndex(EnabledOptionsIndex(self.working.movementprediction))
 	self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) )
 	self.boatcameraSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.boatcamera ) )

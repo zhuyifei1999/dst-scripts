@@ -30,76 +30,245 @@ function basic_init_fn(inst, build_name, def_build)
         inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
     end
 end
+function basic_clear_fn(inst, def_build)
+    inst.AnimState:SetBuild(def_build)
+end
+
 backpack_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_backpack" ) end
+backpack_clear_fn = function(inst) basic_clear_fn(inst, "swap_backpack" ) end
+
 piggyback_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_piggyback" ) end
+piggyback_clear_fn = function(inst) basic_clear_fn(inst, "swap_piggyback" ) end
+
 ruins_bat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ruins_bat" ) end
+ruins_bat_clear_fn = function(inst) basic_clear_fn(inst, "swap_ruins_bat" ) end
+
 hambat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ham_bat" ) end
+hambat_clear_fn = function(inst) basic_clear_fn(inst, "swap_ham_bat" ) end
+
 batbat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "batbat" ) end
+batbat_clear_fn = function(inst) basic_clear_fn(inst, "batbat" ) end
+
 boomerang_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "boomerang" ) end
+boomerang_clear_fn = function(inst) basic_clear_fn(inst, "boomerang" ) end
+
 hammer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_hammer" ) end
+hammer_clear_fn = function(inst) basic_clear_fn(inst, "swap_hammer" ) end
+
 torch_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_torch" ) end
+torch_clear_fn = function(inst) basic_clear_fn(inst, "swap_torch" ) end
+
 lighter_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "lighter" ) end
+lighter_clear_fn = function(inst) basic_clear_fn(inst, "lighter" ) end
+
 spear_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_spear" ) end
+spear_clear_fn = function(inst) basic_clear_fn(inst, "swap_spear" ) end
+
 spear_wathgrithr_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_spear_wathgrithr" ) end
+spear_wathgrithr_clear_fn = function(inst) basic_clear_fn(inst, "swap_spear_wathgrithr" ) end
+
 axe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "axe" ) end
+axe_clear_fn = function(inst) basic_clear_fn(inst, "axe" ) end
+
 goldenaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenaxe" ) end
+goldenaxe_clear_fn = function(inst) basic_clear_fn(inst, "goldenaxe" ) end
+
 pickaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "pickaxe" ) end
+pickaxe_clear_fn = function(inst) basic_clear_fn(inst, "pickaxe" ) end
+
 goldenpickaxe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenpickaxe" ) end
+goldenpickaxe_clear_fn = function(inst) basic_clear_fn(inst, "goldenpickaxe" ) end
+
 shovel_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "shovel" ) end
+shovel_clear_fn = function(inst) basic_clear_fn(inst, "shovel" ) end
+
 goldenshovel_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "goldenshovel" ) end
+goldenshovel_clear_fn = function(inst) basic_clear_fn(inst, "goldenshovel" ) end
+
 umbrella_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "umbrella" ) end
+umbrella_clear_fn = function(inst) basic_clear_fn(inst, "umbrella" ) end
+
 oceanfishingrod_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fishingrod_ocean" ) end
+oceanfishingrod_clear_fn = function(inst) basic_clear_fn(inst, "fishingrod_ocean" ) end
+
 amulet_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "amulets" ) end
+amulet_clear_fn = function(inst) basic_clear_fn(inst, "amulets" ) end
+
 book_brimstone_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "books" ) end
+book_brimstone_clear_fn = function(inst) basic_clear_fn(inst, "books" ) end
+
 bedroll_furry_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_bedroll_straw" ) end
+bedroll_furry_clear_fn = function(inst) basic_clear_fn(inst, "swap_bedroll_straw" ) end
+
 featherfan_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fan" ) end
+featherfan_clear_fn = function(inst) basic_clear_fn(inst, "fan" ) end
+
 armordragonfly_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "torso_dragonfly" ) end
+armordragonfly_clear_fn = function(inst) basic_clear_fn(inst, "torso_dragonfly" ) end
+
 armorgrass_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_grass" ) end
+armorgrass_clear_fn = function(inst) basic_clear_fn(inst, "armor_grass" ) end
+
 armormarble_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_marble" ) end
+armormarble_clear_fn = function(inst) basic_clear_fn(inst, "armor_marble" ) end
+
 armorwood_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armour_wood") end
+armorwood_clear_fn = function(inst) basic_clear_fn(inst, "armour_wood" ) end
+
 armorruins_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_ruins" ) end
+armorruins_clear_fn = function(inst) basic_clear_fn(inst, "armor_ruins" ) end
+
 armor_sanity_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_sanity" ) end
+armor_sanity_clear_fn = function(inst) basic_clear_fn(inst, "armor_sanity" ) end
+
 tophat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_top" ) end
+tophat_clear_fn = function(inst) basic_clear_fn(inst, "hat_top" ) end
+
 flowerhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_flower" ) end
+flowerhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_flower" ) end
+
 strawhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_straw" ) end
+strawhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_straw" ) end
+
 winterhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_winter" ) end
+winterhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_winter" ) end
+
 catcoonhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_catcoon" ) end
+catcoonhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_catcoon" ) end
+
 rainhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_rain" ) end
+rainhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_rain" ) end
+
 minerhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_miner" ) end
+minerhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_miner" ) end
+
 footballhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_football" ) end
+footballhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_football" ) end
+
 featherhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_feather" ) end
+featherhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_feather" ) end
+
 beehat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_bee" ) end
+beehat_clear_fn = function(inst) basic_clear_fn(inst, "hat_bee" ) end
+
 watermelonhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_watermelon" ) end
+watermelonhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_watermelon" ) end
+
 wathgrithrhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_wathgrithr" ) end
+wathgrithrhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_wathgrithr" ) end
+
 beefalohat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_beefalo" ) end
+beefalohat_clear_fn = function(inst) basic_clear_fn(inst, "hat_beefalo" ) end
+
 eyebrellahat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_eyebrella" ) end
+eyebrellahat_clear_fn = function(inst) basic_clear_fn(inst, "hat_eyebrella" ) end
+
 earmuffshat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_earmuffs" ) end
+earmuffshat_clear_fn = function(inst) basic_clear_fn(inst, "hat_earmuffs" ) end
+
 ruinshat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_ruins" ) end
+ruinshat_clear_fn = function(inst) basic_clear_fn(inst, "hat_ruins" ) end
+
 researchlab3_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "researchlab3" ) end
+researchlab3_clear_fn = function(inst) basic_clear_fn(inst, "researchlab3" ) end
+
 mushroom_light_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "mushroom_light" ) end
+mushroom_light_clear_fn = function(inst) basic_clear_fn(inst, "mushroom_light" ) end
+
 mushroom_light2_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "mushroom_light2" ) end
+mushroom_light2_clear_fn = function(inst) basic_clear_fn(inst, "mushroom_light2" ) end
+
 tent_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "tent" ) end
+tent_clear_fn = function(inst) basic_clear_fn(inst, "tent" ) end
+
 rainometer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "rain_meter" ) end
+rainometer_clear_fn = function(inst) basic_clear_fn(inst, "rain_meter" ) end
+
 winterometer_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "winter_meter" ) end
+winterometer_clear_fn = function(inst) basic_clear_fn(inst, "winter_meter" ) end
+
 lightning_rod_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "lightning_rod" ) end
+lightning_rod_clear_fn = function(inst) basic_clear_fn(inst, "lightning_rod" ) end
+
 arrowsign_post_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "sign_arrow_post" ) end
+arrowsign_post_clear_fn = function(inst) basic_clear_fn(inst, "sign_arrow_post" ) end
+
 treasurechest_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "treasure_chest" ) end
+treasurechest_clear_fn = function(inst) basic_clear_fn(inst, "treasure_chest" ) end
+
 wardrobe_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "wardrobe" ) end
+wardrobe_clear_fn = function(inst) basic_clear_fn(inst, "wardrobe" ) end
+
 endtable_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "stagehand" ) end
+endtable_clear_fn = function(inst) basic_clear_fn(inst, "stagehand" ) end
+
 dragonflyfurnace_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "dragonfly_furnace" ) end
+dragonflyfurnace_clear_fn = function(inst) basic_clear_fn(inst, "dragonfly_furnace" ) end
+
 birdcage_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bird_cage" ) end
+birdcage_clear_fn = function(inst) basic_clear_fn(inst, "bird_cage" ) end
+
 meatrack_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "meat_rack" ) end
+meatrack_clear_fn = function(inst) basic_clear_fn(inst, "meat_rack" ) end
+
 beebox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bee_box" ) end
+beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end
+
 pighouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "pig_house" ) end
+pighouse_clear_fn = function(inst) basic_clear_fn(inst, "pig_house" ) end
+
 rabbithouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "rabbit_house" ) end
+rabbithouse_clear_fn = function(inst) basic_clear_fn(inst, "rabbit_house" ) end
+
 researchlab3_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "researchlab3" ) end
+researchlab3_clear_fn = function(inst) basic_clear_fn(inst, "researchlab3" ) end
+
 beemine_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bee_mine" ) end
+beemine_clear_fn = function(inst) basic_clear_fn(inst, "bee_mine" ) end
+
 trap_teeth_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "trap_teeth" ) end
+trap_teeth_clear_fn = function(inst) basic_clear_fn(inst, "trap_teeth" ) end
+
 trap_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "trap" ) end
+trap_clear_fn = function(inst) basic_clear_fn(inst, "trap" ) end
+
 birdtrap_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "birdtrap" ) end
+birdtrap_clear_fn = function(inst) basic_clear_fn(inst, "birdtrap" ) end
+
+grass_umbrella_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_parasol" ) end
+grass_umbrella_clear_fn = function(inst) basic_clear_fn(inst, "swap_parasol" ) end
+
+saltbox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "saltbox" ) end
+saltbox_clear_fn = function(inst) basic_clear_fn(inst, "saltbox" ) end
 
 
+--------------------------------------------------------------------------
+--[[ Abigail skin functions ]]
+--------------------------------------------------------------------------
+function abigail_flower_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.flower_skin_id:set(inst.skin_id)
+    
+    inst.AnimState:SetSkin(build_name, "abigail_flower")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    inst.linked_skinname = string.gsub(build_name, "_flower", "")
+end
+function abigail_flower_clear_fn(inst)
+    inst.AnimState:SetBuild("abigail_flower")
+    inst.linked_skinname = nil
+end
 
+function abigail_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:OverrideItemSkinSymbol("ghost_Hat", build_name, "ghost_Hat", inst.GUID, "ghost_abigail_build")
+end
+function abigail_clear_fn(inst)
+    inst.AnimState:ClearOverrideSymbol("ghost_Hat")
+end
 
 --------------------------------------------------------------------------
 --[[ Bug Net skin functions ]]
@@ -115,6 +284,10 @@ function bugnet_init_fn(inst, build_name)
     local skin_data = GetSkinData(inst:GetSkinName())
     inst.overridebugnetsound = skin_data.skin_sound
 end
+function bugnet_clear_fn(inst)
+    inst.AnimState:SetBuild("swap_bugnet")
+    inst.overridebugnetsound = nil
+end
 
 --------------------------------------------------------------------------
 --[[ Crockpot skin functions ]]
@@ -125,11 +298,18 @@ function cookpot_init_fn(inst, build_name)
     end
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
+function cookpot_clear_fn(inst, build_name)
+    inst.AnimState:SetBuild("cook_pot")
+end
 
 function portablecookpot_item_init_fn(inst, build_name)
     inst.linked_skinname = string.gsub(build_name, "cookpot", "portablecookpot")
     inst.AnimState:SetSkin(build_name, "portable_cook_pot") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+function portablecookpot_item_clear_fn(inst, build_name)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("portable_cook_pot")
 end
 function portablecookpot_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
@@ -137,6 +317,10 @@ function portablecookpot_init_fn(inst, build_name)
     end
     inst.linked_skinname = string.gsub(build_name, "cookpot", "portablecookpot") .. "_item"
     inst.AnimState:SetSkin(build_name, "portable_cook_pot")
+end
+function portablecookpot_clear_fn(inst, build_name)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("portable_cook_pot")
 end
 
 
@@ -157,9 +341,10 @@ function firesuppressor_init_fn(inst, build_name)
         inst.AnimState:OverrideItemSkinSymbol("swap_meter", build_name, "10", inst.GUID, "firefighter_meter")
     end
 end
-
-
-
+function firesuppressor_clear_fn(inst)
+    inst.AnimState:SetBuild("firefighter")
+    inst.AnimState:ClearOverrideSymbol("swap_meter")
+end
 
 --------------------------------------------------------------------------
 --[[ Firepit skin functions ]]
@@ -178,7 +363,7 @@ function firepit_init_fn(inst, build_name, fxoffset)
 
     local skin_fx = SKIN_FX_PREFAB[build_name]
     if skin_fx ~= nil and skin_fx[1] ~= nil then
-        inst:ListenForEvent("takefuel", function(inst, data)
+        inst._takefuel_fn = function(inst, data)
             local fuelvalue = data ~= nil and data.fuelvalue or 0
             if fuelvalue > 0 then
                 local fx = SpawnPrefab(skin_fx[1])
@@ -189,10 +374,19 @@ function firepit_init_fn(inst, build_name, fxoffset)
                     1
                 )
             end
-        end)
+        end
+        inst:ListenForEvent("takefuel", inst._takefuel_fn)
     end
 end
-
+function firepit_clear_fn(inst)
+    inst.AnimState:SetBuild("firepit")
+    inst.components.burnable.fxoffset = nil
+    if inst._takefuel_fn ~= nil then
+        inst:RemoveEventCallback("takefuel", inst._takefuel_fn )
+        inst._takefuel_fn = nil
+    end
+    inst.components.fueled:MakeEmpty() --Maybe do something better? For now this is the simplest to avoid bugs. Clearing a skin will turn off the fire
+end
 
 --------------------------------------------------------------------------
 --[[ Campfire skin functions ]]
@@ -209,7 +403,10 @@ function campfire_init_fn(inst, build_name, fxoffset)
     inst.AnimState:SetSkin(build_name, "campfire")
     inst.components.burnable.fxchildren[1].Transform:SetPosition(fxoffset.x, fxoffset.y, fxoffset.z)
 end
-
+function campfire_clear_fn(inst)
+    inst.AnimState:SetBuild("campfire")
+    inst.components.burnable.fxchildren[1].Transform:SetPosition(0, 0, 0)
+end
 
 
 --------------------------------------------------------------------------
@@ -227,6 +424,12 @@ function coldfirepit_init_fn(inst, build_name, fxoffset)
     inst.AnimState:SetSkin(build_name, "coldfirepit")
     inst.components.burnable:SetFXOffset(fxoffset)
 end
+function coldfirepit_clear_fn(inst)
+    inst.AnimState:SetBuild("coldfirepit")
+    inst.components.burnable.fxoffset = nil
+    inst.components.fueled:MakeEmpty() --Maybe do something better? For now this is the simplest to avoid bugs. Clearing a skin will turn off the fire
+end
+
 
 --------------------------------------------------------------------------
 --[[ Pet skin functions ]]
@@ -258,8 +461,54 @@ function glomling_init_fn(inst, build_name, default_build, skin_sound)
     end
 
     inst.AnimState:SetSkin(build_name, default_build)
-    inst.skin_sound = skin_sound
+    inst.skin_sound = skin_sound   
 end
+
+
+function critter_dragonling_clear_fn(inst)
+    inst.AnimState:SetBuild("dragonling_build")
+end
+function critter_dragonling_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
+function critter_glomling_clear_fn(inst)
+    inst.AnimState:SetBuild("glomling_build")
+    inst.skin_sound = nil
+end
+function critter_glomling_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
+function critter_kitten_clear_fn(inst)
+    inst.AnimState:SetBuild("kittington_build")
+end
+function critter_kitten_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
+function critter_lamb_clear_fn(inst)
+    inst.AnimState:SetBuild("sheepington_build")
+end
+function critter_lamb_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
+function critter_perdling_clear_fn(inst)
+    inst.AnimState:SetBuild("sheepington_build")
+    inst.skin_hungry_sound = nil
+end
+function critter_perdling_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
+function critter_puppy_clear_fn(inst)
+    inst.AnimState:SetBuild(build_name, "pupington_build")
+end
+function critter_puppy_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
 
 --------------------------------------------------------------------------
 --[[ Mini Sign skin functions ]]
@@ -269,20 +518,31 @@ function minisign_item_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "sign_mini") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+function minisign_item_clear_fn(inst)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("sign_mini")
+end
 function minisign_drawn_init_fn(inst, build_name)
-    inst.use_high_symbol = true
     inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
     inst.AnimState:SetSkin(build_name, "sign_mini") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+function minisign_drawn_clear_fn(inst)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("sign_mini")
 end
 function minisign_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
     inst.AnimState:SetSkin(build_name, "sign_mini")
-    inst.use_high_symbol = true
     inst.linked_skinname = build_name.."_item" --hack that relies on the build name to match the linked skinname, plus addition for the _item
     inst.linked_skinname_drawn = build_name.."_drawn" --hack that relies on the build name to match the linked skinname, plus addition for the _item
+end
+function minisign_clear_fn(inst)
+    inst.linked_skinname = nil
+    inst.linked_skinname_drawn = nil
+    inst.AnimState:SetBuild("sign_mini")
 end
 
 --------------------------------------------------------------------------
@@ -293,11 +553,18 @@ function fence_item_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "fence") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+function fence_item_clear_fn(inst)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("fence")
+end
 function fence_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
     inst.AnimState:SetSkin(build_name, "fence")
+end
+function fence_clear_fn(inst)
+    inst.AnimState:SetBuild("fence")
 end
 
 --------------------------------------------------------------------------
@@ -308,12 +575,20 @@ function fence_gate_item_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "fence_gate") --same hack is used here by the deployable code in player controller
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+function fence_gate_item_clear_fn(inst)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("fence_gate")
+end
 function fence_gate_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
     inst.dooranim.skin_id = inst.skin_id
     inst.dooranim.AnimState:SetSkin(build_name, "fence_gate")
+end
+function fence_gate_clear_fn(inst)
+    inst.dooranim.skin_id = nil
+    inst.dooranim.AnimState:SetBuild("fence_gate")
 end
 
 
@@ -332,6 +607,19 @@ function mast_init_fn(inst, build_name)
     end
     inst.AnimState:SetSkin(build_name, "boat_mast2")
 end
+function mast_item_clear_fn(inst, build_name)
+    inst.linked_skinname = nil
+    inst.AnimState:SetBuild("seafarer_mast")
+end
+function mast_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "boat_mast2")
+end
+function mast_clear_fn(inst, build_name)
+    inst.AnimState:SetBuild("boat_mast2")
+end
 
 
 --------------------------------------------------------------------------
@@ -344,6 +632,9 @@ function bernie_inactive_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "bernie_build")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+function bernie_inactive_clear_fn(inst)
+    inst.AnimState:SetBuild("bernie_build")
+end
 
 function bernie_active_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
@@ -351,11 +642,18 @@ function bernie_active_init_fn(inst, build_name)
     end
     inst.AnimState:SetSkin(build_name, "bernie_build")
 end
+function bernie_active_clear_fn(inst)
+    inst.AnimState:SetBuild("bernie_build")
+end
+
 function bernie_big_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
     end
     inst.AnimState:SetSkin(build_name, "bernie_build")
+end
+function bernie_big_clear_fn(inst)
+    inst.AnimState:SetBuild("bernie_build")
 end
 
 --------------------------------------------------------------------------
@@ -371,6 +669,9 @@ function researchlab4_init_fn(inst, build_name)
     end
 
     inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
+end
+function researchlab4_clear_fn(inst)
+    inst.AnimState:ClearOverrideSymbol("machine_hat")
 end
 
 
@@ -401,6 +702,12 @@ function reviver_init_fn(inst, build_name)
             inst.highlightchildren = { fx }
             inst.PlayBeatAnimation = reviver_playbeatanimation
         end
+    end
+end
+function reviver_clear_fn(inst)
+    inst.AnimState:SetBuild("bloodpump")
+    for _,v in pairs( inst.highlightchildren ) do
+        v:Remove()
     end
 end
 
@@ -487,7 +794,14 @@ function cane_init_fn(inst, build_name)
         end
     end
 end
+function cane_clear_fn(inst)
+    inst.AnimState:SetBuild("swap_cane")
+    inst.AnimState:ClearOverrideSymbol("grass")
 
+    inst:RemoveEventCallback("equipped", cane_equipped)
+    inst:RemoveEventCallback("unequipped", cane_unequipped)
+    inst:RemoveEventCallback("onremove", cane_unequipped)
+end
 
 
 local function nightsword_equipped(inst, data)
@@ -526,8 +840,13 @@ function nightsword_init_fn(inst, build_name)
         end
     end
 end
-
-
+function nightsword_clear_fn(inst)
+    inst.AnimState:SetBuild("nightmaresword")
+    
+    inst:RemoveEventCallback("equipped", nightsword_equipped)
+    inst:RemoveEventCallback("unequipped", nightsword_unequipped)
+    inst:RemoveEventCallback("onremove", nightsword_unequipped)
+end
 --------------------------------------------------------------------------
 --[[ Staff skin functions ]]
 --------------------------------------------------------------------------
@@ -539,6 +858,10 @@ local function staff_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "staffs")
     inst.AnimState:OverrideSymbol("grass", "staffs", "grass")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+local function staff_clear_fn(inst)
+    inst.AnimState:SetBuild("staffs")
+    inst.AnimState:ClearOverrideSymbol("grass")
 end
 
 function orangestaff_init_fn(inst, build_name)
@@ -566,6 +889,15 @@ function orangestaff_init_fn(inst, build_name)
         end
     end
 end
+function orangestaff_clear_fn(inst)
+    staff_clear_fn(inst)
+
+    inst:RemoveEventCallback("equipped", cane_equipped)
+    inst:RemoveEventCallback("unequipped", cane_unequipped)
+    inst:RemoveEventCallback("onremove", cane_unequipped)
+
+    inst.components.blinkstaff:SetFX(nil, nil)
+end
 
 function yellowstaff_init_fn(inst, build_name)
     staff_init_fn(inst, build_name)
@@ -573,11 +905,19 @@ function yellowstaff_init_fn(inst, build_name)
     local skin_data = GetSkinData( build_name ) --build_name is skin name for yellowstaff
     inst.morph_skin = skin_data.granted_items[1]
 end
+function yellowstaff_clear_fn(inst)
+    staff_init_fn(inst)
+    inst.morph_skin = nil
+end
 
 opalstaff_init_fn = staff_init_fn
+opalstaff_clear_fn = staff_clear_fn
 firestaff_init_fn = staff_init_fn
+firestaff_clear_fn = staff_clear_fn
 icestaff_init_fn = staff_init_fn
+icestaff_clear_fn = staff_clear_fn
 greenstaff_init_fn = staff_init_fn
+greenstaff_clear_fn = staff_clear_fn
 
 
 --------------------------------------------------------------------------
@@ -591,7 +931,9 @@ function heatrock_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "heat_rock")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName()..tostring(inst.currentTempRange))
 end
-
+function heatrock_clear_fn(inst)
+    inst.AnimState:SetBuild("heat_rock")
+end
 
 
 --------------------------------------------------------------------------
@@ -708,6 +1050,20 @@ function lantern_init_fn(inst, build_name, overridesymbols, followoffset)
     end
 end
 
+function lantern_clear_fn(inst)
+    inst.AnimState:SetBuild("lantern")
+
+    inst._heldfx = nil
+    inst._groundfx = nil
+    inst._overridesymbols = nil
+    inst._followoffset = nil
+
+    inst:RemoveEventCallback("lantern_on", lantern_on)
+    inst:RemoveEventCallback("lantern_off", lantern_off)
+    inst:RemoveEventCallback("unequipped", lantern_off)
+    inst:RemoveEventCallback("onremove", lantern_off)
+end
+
 --------------------------------------------------------------------------
 --[[ ResearchLab2 skin functions ]]
 --------------------------------------------------------------------------
@@ -814,6 +1170,18 @@ function researchlab2_init_fn(inst, build_name)
         inst._PushAnimation = researchlab2_pushanimation
     end
 end
+function researchlab2_clear_fn(inst)
+    inst.AnimState:SetBuild("researchlab2")
+    inst.AnimState:ClearOverrideSymbol("shadow_plume")
+    inst.AnimState:ClearOverrideSymbol("shadow_wisp")
+
+    for _,v in pairs( inst.highlightchildren ) do
+        v:Remove()
+    end
+    inst.flashtasks = nil
+    inst._PlayAnimation = Default_PlayAnimation
+    inst._PushAnimation = Default_PushAnimation
+end
 
 --------------------------------------------------------------------------
 --[[ Icebox skin functions ]]
@@ -868,12 +1236,27 @@ function icebox_init_fn(inst, build_name)
         end
     end
 end
+function icebox_clear_fn(inst)
+    inst.AnimState:SetBuild("ice_box")
+
+    icebox_closed(inst)
+    inst:RemoveEventCallback("onopen", icebox_opened)
+    inst:RemoveEventCallback("onclose", icebox_closed)
+    inst:RemoveEventCallback("onremove", icebox_closed)
+end
+
 
 --------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)
     prefab_skin.is_skin = true
+
+    --Hack to deal with mods with bad data. Type is now required, and who knows how many character mods are missing this field.
+    if info.type == nil then
+        info.type = "base"
+    end
+
 
     prefab_skin.base_prefab         = info.base_prefab
     prefab_skin.type                = info.type
@@ -934,6 +1317,10 @@ function CreatePrefabSkin(name, info)
 
     if info.fx_prefab ~= nil then
         SKIN_FX_PREFAB[name] = info.fx_prefab
+    end
+
+    if info.type ~= "base" then
+        prefab_skin.clear_fn = _G[prefab_skin.base_prefab.."_clear_fn"]
     end
 
     return prefab_skin

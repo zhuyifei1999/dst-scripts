@@ -1,10 +1,10 @@
 require "prefabutil"
 
-local function Default_PlayAnimation(inst, anim, loop)
+function Default_PlayAnimation(inst, anim, loop)
     inst.AnimState:PlayAnimation(anim, loop)
 end
 
-local function Default_PushAnimation(inst, anim, loop)
+function Default_PushAnimation(inst, anim, loop)
     inst.AnimState:PushAnimation(anim, loop)
 end
 
