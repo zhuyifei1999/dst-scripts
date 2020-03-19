@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "It's not worth my time.",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_BOAT_LEAK = "We've sprung a leak!",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Faster! Faster I say!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "What's the matter? Get going!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "To arms!",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="Hm? What a familiar presence.",
+			LEVEL1 = "I can sense strong magic within it.",
+			LEVEL2 = "A powerful bond tethers this spirit to our world.",
+			LEVEL3 = "...I wonder how my brother is doing.",
+
+			-- deprecated
             LONG = "I can sense strong magic within it.",
             MEDIUM = "This enchantment is not of my doing.",
             SOON = "Whatever it is will be arriving soon.",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "That accursed thing!",
 		BOOMERANG = "Beats getting your hands dirty.",
 		PIGGUARD = "Blech. Disgusting brute.",
-		ABIGAIL = "Why won't these mortals just stay dead?",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "Quite the precocious poltergeist, aren't you?",
+                "Quite the precocious poltergeist, aren't you?",
+            },
+            LEVEL2 = 
+            {
+                "Quite the precocious poltergeist, aren't you?",
+                "Quite the precocious poltergeist, aren't you?",
+            },
+            LEVEL3 = 
+            {
+                "Quite the precocious poltergeist, aren't you?",
+                "Quite the precocious poltergeist, aren't you?",
+            },
+		},
 		ADVENTURE_PORTAL = "So that's where I left that thing!",
 		AMULET = "It channels the darkest energies of the universe.",
 		ANIMAL_TRACK = "Some dumb beast passed through here.",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "Rosebud.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "At least it's not ragtime.", -- Odd Radio ONI trinket
         TRINKET_46 = "Some harebrained invention of the scientist's, perhaps?", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "I'd better leave that be.",
+        LOST_TOY_2  = "I'd better leave that be.",
+        LOST_TOY_7  = "I'd better leave that be.",
+        LOST_TOY_10 = "I'd better leave that be.",
+        LOST_TOY_11 = "I'd better leave that be.",
+        LOST_TOY_14 = "I'd better leave that be.",
+        LOST_TOY_18 = "I'd better leave that be.",
+        LOST_TOY_19 = "I'd better leave that be.",
+        LOST_TOY_42 = "I'd better leave that be.",
+        LOST_TOY_43 = "I'd better leave that be.",
         
         HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
         HALLOWEENCANDY_2 = "Waxy, just like me.",
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "It appears someone has been toying with the dark arts and crafts.",
+		GHOSTLYELIXIR_FASTREGEN = "It appears someone has been toying with the dark arts and crafts.",
+		GHOSTLYELIXIR_SHIELD = "It appears someone has been toying with the dark arts and crafts.",
+		GHOSTLYELIXIR_ATTACK = "It appears someone has been toying with the dark arts and crafts.",
+		GHOSTLYELIXIR_SPEED = "It appears someone has been toying with the dark arts and crafts.",
+		GHOSTLYELIXIR_RETALIATION = "It appears someone has been toying with the dark arts and crafts.",
+		SISTURN =
+		{
+			GENERIC = "I can't help but wonder... no, it couldn't be.",
+			SOME_FLOWERS = "Perhaps I should pay my respects as well.",
+			LOTS_OF_FLOWERS = "It has a strangely calming effect.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "Kings are easily made around here.",
 
         SQUID = "I hope they stay close. But not too close.",
+
+		GHOSTFLOWER = "I hope they found peace.",
+        SMALLGHOST = "I'm so sorry.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

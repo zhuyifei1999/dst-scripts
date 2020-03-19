@@ -420,7 +420,7 @@ local function OnTimerDone(inst, data)
         --morph staff
         inst.components.pickable:ChangeProduct(MORPHED_STAFF)
         if inst._staffinst ~= nil then
-            local new_staff = SpawnPrefab(MORPHED_STAFF, inst._staffinst.morph_skin, inst._staffinst.skin_id, "RESIG") or nil
+            local new_staff = SpawnPrefab(MORPHED_STAFF, inst._staffinst.morph_skin, inst._staffinst.skin_id) or nil
             inst._staffinst:Remove()
             inst._staffinst = new_staff
             inst:AddChild(new_staff)

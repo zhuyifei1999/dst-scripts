@@ -65,8 +65,8 @@ local LoadingWidget = Class(Widget, function(self, session_random_index)
     -- common
 
     self.loading_widget = self:AddChild(ShadowedText(HEADERFONT, 35))
-    self.loading_widget:SetPosition(115, 60)
-    self.loading_widget:SetRegionSize(130, 44)
+    self.loading_widget:SetPosition(170, 60)
+    self.loading_widget:SetRegionSize(250, 44)
     self.loading_widget:SetHAlign(ANCHOR_LEFT)
     self.loading_widget:SetVAlign(ANCHOR_BOTTOM)
     self.loading_widget:SetString(STRINGS.UI.NOTIFICATION.LOADING)

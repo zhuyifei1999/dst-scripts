@@ -903,6 +903,129 @@ local fx =
         sound = "dontstarve/ghost/ghost_haunt",
     },
     {
+        name = "ghostflower_spirit1_fx",
+        bank = "ghostflower",
+        build = "ghostflower",
+        anim = "fx1",
+        sound = "dontstarve/characters/wendy/small_ghost/wisp",
+    },
+    {
+        name = "ghostflower_spirit2_fx",
+        bank = "ghostflower",
+        build = "ghostflower",
+        anim = "fx1",
+        sound = "dontstarve/characters/wendy/small_ghost/wisp",
+        
+    },
+    {
+        name = "ghostlyelixir_slowregen_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_regen",
+        sound = "dontstarve/characters/wendy/abigail/buff/gen",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_fastregen_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_heal",
+        sound = "dontstarve/characters/wendy/abigail/buff/gen",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_shield_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_shield",
+        sound = "dontstarve/characters/wendy/abigail/buff/shield",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_attack_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_attack",
+        sound = "dontstarve/characters/wendy/abigail/buff/attack",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_speed_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_speed",
+        sound = "dontstarve/characters/wendy/abigail/buff/speed",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_retaliation_fx",
+        bank = "abigail_vial_fx",
+        build = "abigail_vial_fx",
+        anim = "buff_retaliation",
+        sound = "dontstarve/characters/wendy/abigail/buff/retaliation",
+        fn = FinalOffset3,
+    },
+    {
+        name = "ghostlyelixir_slowregen_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_regen_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
+        name = "ghostlyelixir_fastregen_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_heal_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
+        name = "ghostlyelixir_shield_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_shield_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
+        name = "ghostlyelixir_attack_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_attack_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
+        name = "ghostlyelixir_speed_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_speed_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
+        name = "ghostlyelixir_retaliation_dripfx",
+        bank = "abigail_buff_drip",
+        build = "abigail_vial_fx",
+        anim = "abigail_buff_drip",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("fx_swap", "abigail_vial_fx", "fx_retaliation_02")
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    },
+    {
         name = "disease_puff",
         bank = "flies",
         build = "flies",

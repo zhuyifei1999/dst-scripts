@@ -35,6 +35,7 @@ local assets =
     Asset("PKGREF", "anim/beaver_meter.zip"),
     Asset("ANIM", "anim/status_meter.zip"),
     Asset("ANIM", "anim/status_health.zip"),
+    Asset("ANIM", "anim/status_abigail.zip"),
     Asset("ANIM", "anim/status_hunger.zip"),
     Asset("ANIM", "anim/status_sanity.zip"),
     Asset("ANIM", "anim/status_wet.zip"),

@@ -7,6 +7,7 @@ local Gym = Class(function(self, inst)
 
     self.inst:WatchWorldState("phase", function(inst, phase) self:checktraineesleep(phase) end )
 
+    self.traintime = TUNING.CARRAT_GYM.TRAINING_TIME
 end)
 
 function Gym:SetOnRemoveTraineeFn(fn)
@@ -48,12 +49,16 @@ end
 
 function Gym:StartTraining(inst, time)
     if not time then
-        time = TUNING.CARRAT_GYM.TRAINING_TIME
+        time = self.traintime
     end
     if not self.inst.components.timer:TimerExists("training") then   
         self.inst.components.timer:StartTimer("training", time )
     end
-    self.inst:PushEvent("starttraining")
+    if TheWorld.state.isnight then
+        self.inst:PushEvent("rest")
+    else
+        self.inst:PushEvent("starttraining")
+    end
     self.perishcheck = self.inst:DoPeriodicTask(5,function() self:CheckPerish() end)
     self:PushMontage()
     self.montagemusic = self.inst:DoPeriodicTask(4,function() self:PushMontage() end)

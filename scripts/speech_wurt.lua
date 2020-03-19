@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "Glurph... this fish too small!",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Grrr... can't do it, florpt.",
 	ANNOUNCE_BOAT_LEAK = "Yay! Boat getting wetter!",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Not move fast enough, florp!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "What wrong, why you not going?!",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Not scared of you, florp!",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="It not quite as ugly as most flowers.",
+			LEVEL1 = "Abby-gill hiding.",
+			LEVEL2 = "She sure taking her time, flort.",
+			LEVEL3 = "Come out!",
+
+			-- deprecated
             LONG = "Pretty.",
             MEDIUM = "Hmm?",
             SOON = "Something happening!",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "Music comes out of it, florp!",
 		BOOMERANG = "Come-back stick!",
 		PIGGUARD = "Glurp, he even scarier than others.",
-		ABIGAIL = "You... nice?",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "You... nice?",
+                "You... nice?",
+            },
+            LEVEL2 = 
+            {
+                "You... nice?",
+                "You... nice?",
+            },
+            LEVEL3 = 
+            {
+                "You... nice?",
+                "You... nice?",
+            },
+		},
 		ADVENTURE_PORTAL = "Where this go?",
 		AMULET = "Pretty magic rock!",
 		ANIMAL_TRACK = "Tracks!",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "Someone broke plant house.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "What it do?", -- Odd Radio ONI trinket
         TRINKET_46 = "Hm...", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "Huh? Can't pick it up!",
+        LOST_TOY_2  = "Huh? Can't pick it up!",
+        LOST_TOY_7  = "Huh? Can't pick it up!",
+        LOST_TOY_10 = "Huh? Can't pick it up!",
+        LOST_TOY_11 = "Huh? Can't pick it up!",
+        LOST_TOY_14 = "Huh? Can't pick it up!",
+        LOST_TOY_18 = "Huh? Can't pick it up!",
+        LOST_TOY_19 = "Huh? Can't pick it up!",
+        LOST_TOY_42 = "Huh? Can't pick it up!",
+        LOST_TOY_43 = "Huh? Can't pick it up!",
         
         HALLOWEENCANDY_1 = "These even better than regular apple, flort!",
         HALLOWEENCANDY_2 = "Made corn even better?!",
@@ -2664,9 +2722,9 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Nooooooo!!",
 		QUAGMIRE_CRABMEAT = "(Sniff) poor crab...",
 		QUAGMIRE_CRABMEAT_COOKED = "Glurph... can't look.",
-        QUAGMIRE_POT = "This pot holds more ingredients.",
-        QUAGMIRE_POT_SMALL = "Let's get cooking!",
-        QUAGMIRE_POT_HANGER_ITEM = "For suspension-based cookery.",
+        QUAGMIRE_POT = "Is just normal pot.",
+        QUAGMIRE_POT_SMALL = "Bitty pot.",
+        QUAGMIRE_POT_HANGER_ITEM = "It help for cooking.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "There sweet stuff inside!",
@@ -2747,78 +2805,78 @@ return{
         QUAGMIRE_FOOD_BURNT = "Glurp, didn't mean to burn it!",
         QUAGMIRE_FOOD =
         {
-        	GENERIC = "PLACEHOLDER",
-            MISMATCH = "That's not what it wants.",
-            MATCH = "Science says this will appease the sky God.",
-            MATCH_BUT_SNACK = "It's more of a light snack, really.",
+        	GENERIC = "Should give to big mouth in sky!",
+            MISMATCH = "Don't think it'll like that, florp.",
+            MATCH = "Is good food for sky mouth!",
+            MATCH_BUT_SNACK = "Food seem small for such big mouth.",
         },
         
-        QUAGMIRE_FERN = "Probably chock full of vitamins.",
-        QUAGMIRE_FOLIAGE_COOKED = "We cooked the foliage.",
-        QUAGMIRE_COIN1 = "I'd like more than a penny for my thoughts.",
-        QUAGMIRE_COIN2 = "A decent amount of coin.",
-        QUAGMIRE_COIN3 = "Seems valuable.",
-        QUAGMIRE_COIN4 = "We can use these to reopen the Gateway.",
-        QUAGMIRE_GOATMILK = "Good if you don't think about where it came from.",
-        QUAGMIRE_SYRUP = "Adds sweetness to the mixture.",
-        QUAGMIRE_SAP_SPOILED = "Might as well toss it on the fire.",
-        QUAGMIRE_SEEDPACKET = "Sow what?",
+        QUAGMIRE_FERN = "Is dee-lishuss and newt-rishuss.",
+        QUAGMIRE_FOLIAGE_COOKED = "Yummy yum!",
+        QUAGMIRE_COIN1 = "Can't eat this, florp!",
+        QUAGMIRE_COIN2 = "Ooooh, shiny!",
+        QUAGMIRE_COIN3 = "Look extra fancy.",
+        QUAGMIRE_COIN4 = "This help me get home!",
+        QUAGMIRE_GOATMILK = "Glurgh...",
+        QUAGMIRE_SYRUP = "Sticky sweet!",
+        QUAGMIRE_SAP_SPOILED = "Glurgh... not so good anymore.",
+        QUAGMIRE_SEEDPACKET = "Seeeeeeds!!",
         
-        QUAGMIRE_POT = "This pot holds more ingredients.",
-        QUAGMIRE_POT_SMALL = "Let's get cooking!",
-        QUAGMIRE_POT_SYRUP = "I need to sweeten this pot.",
-        QUAGMIRE_POT_HANGER = "It has hang-ups.",
-        QUAGMIRE_POT_HANGER_ITEM = "For suspension-based cookery.",
-        QUAGMIRE_GRILL = "Now all I need is a backyard to put it in.",
-        QUAGMIRE_GRILL_ITEM = "I'll have to grill someone about this.",
-        QUAGMIRE_GRILL_SMALL = "Barbecurious.",
-        QUAGMIRE_GRILL_SMALL_ITEM = "For grilling small meats.",
-        QUAGMIRE_OVEN = "It needs ingredients to make the science work.",
-        QUAGMIRE_OVEN_ITEM = "For scientifically burning things.",
-        QUAGMIRE_CASSEROLEDISH = "A dish for all seasonings.",
-        QUAGMIRE_CASSEROLEDISH_SMALL = "For making minuscule motleys.",
-        QUAGMIRE_PLATE_SILVER = "A silver plated plate.",
-        QUAGMIRE_BOWL_SILVER = "A bright bowl.",
-        QUAGMIRE_CRATE = "Kitchen stuff.",
+        QUAGMIRE_POT = "Is just normal pot.",
+        QUAGMIRE_POT_SMALL = "Bitty pot.",
+        QUAGMIRE_POT_SYRUP = "Is for sweet stuff.",
+        QUAGMIRE_POT_HANGER = "Put food over fire!",
+        QUAGMIRE_POT_HANGER_ITEM = "It help for cooking.",
+        QUAGMIRE_GRILL = "Make food hot and tasty.",
+        QUAGMIRE_GRILL_ITEM = "Is for making food hot and tasty!",
+        QUAGMIRE_GRILL_SMALL = "Teeny food cooker.",
+        QUAGMIRE_GRILL_SMALL_ITEM = "Teeny food cooker.",
+        QUAGMIRE_OVEN = "Wonder what to cook...",
+        QUAGMIRE_OVEN_ITEM = "Food cooker.",
+        QUAGMIRE_CASSEROLEDISH = "Not good with breakable things...",
+        QUAGMIRE_CASSEROLEDISH_SMALL = "Is so teeny tiny!",
+        QUAGMIRE_PLATE_SILVER = "Shiny!",
+        QUAGMIRE_BOWL_SILVER = "Can see own cute reflection!",
+        QUAGMIRE_CRATE = "Ooooooh, present for me?",
         
-        QUAGMIRE_MERM_CART1 = "Any science in there?", --sammy's wagon
-        QUAGMIRE_MERM_CART2 = "I could use some stuff.", --pipton's cart
-        QUAGMIRE_PARK_ANGEL = "Take that, creature!",
-        QUAGMIRE_PARK_ANGEL2 = "So lifelike.",
-        QUAGMIRE_PARK_URN = "Ashes to ashes.",
-        QUAGMIRE_PARK_OBELISK = "A monumental monument.",
+        QUAGMIRE_MERM_CART1 = "Ooooh, what you have?", --sammy's wagon
+        QUAGMIRE_MERM_CART2 = "You gimme stuff?", --pipton's cart
+        QUAGMIRE_PARK_ANGEL = "Don't like it.",
+        QUAGMIRE_PARK_ANGEL2 = "Is creepy...",
+        QUAGMIRE_PARK_URN = "Cookies inside?",
+        QUAGMIRE_PARK_OBELISK = "Big stone thing.",
         QUAGMIRE_PARK_GATE =
         {
-            GENERIC = "Turns out a key was the key to getting in.",
-            LOCKED = "Locked tight.",
+            GENERIC = "Better be good stuff in here.",
+            LOCKED = "Lemme iiiin!!",
         },
-        QUAGMIRE_PARKSPIKE = "The scientific term is: \"Sharp pointy thing\".",
-        QUAGMIRE_CRABTRAP = "A crabby trap.",
-        QUAGMIRE_TRADER_MERM = "Maybe they'd be willing to trade.",
-        QUAGMIRE_TRADER_MERM2 = "Maybe they'd be willing to trade.",
+        QUAGMIRE_PARKSPIKE = "Look real pointy.",
+        QUAGMIRE_CRABTRAP = "Look like little house!",
+        QUAGMIRE_TRADER_MERM = "Finally find someone normal!",
+        QUAGMIRE_TRADER_MERM2 = "Hello! How you do, florp?",
         
-        QUAGMIRE_GOATMUM = "Reminds me of my old nanny.",
-        QUAGMIRE_GOATKID = "This goat's much smaller.",
+        QUAGMIRE_GOATMUM = "She seem nice enough.",
+        QUAGMIRE_GOATKID = "Hello weird kid! Wanna play?",
         QUAGMIRE_PIGEON =
         {
-            DEAD = "They're dead.",
-            GENERIC = "He's just winging it.",
-            SLEEPING = "It's sleeping, for now.",
+            DEAD = "Ewww, it dead.",
+            GENERIC = "Hello birdy!",
+            SLEEPING = "Sleepy bird.",
         },
-        QUAGMIRE_LAMP_POST = "Huh. Reminds me of home.",
+        QUAGMIRE_LAMP_POST = "Ooooooh, glowy!",
 
-        QUAGMIRE_BEEFALO = "Science says it should have died by now.",
-        QUAGMIRE_SLAUGHTERTOOL = "Laboratory tools for surgical butchery.",
+        QUAGMIRE_BEEFALO = "Where all its fluff?",
+        QUAGMIRE_SLAUGHTERTOOL = "Huh? What this for?",
 
-        QUAGMIRE_SAPLING = "I can't get anything else out of that.",
-        QUAGMIRE_BERRYBUSH = "Those berries are all gone.",
+        QUAGMIRE_SAPLING = "Baby tree!",
+        QUAGMIRE_BERRYBUSH = "Aww, where the berries?!",
 
-        QUAGMIRE_ALTAR_STATUE2 = "What are you looking at?",
-        QUAGMIRE_ALTAR_QUEEN = "A monumental monument.",
-        QUAGMIRE_ALTAR_BOLLARD = "As far as posts go, this one is adequate.",
-        QUAGMIRE_ALTAR_IVY = "Kind of clingy.",
+        QUAGMIRE_ALTAR_STATUE2 = "What red eyes it have...",
+        QUAGMIRE_ALTAR_QUEEN = "She look nice.",
+        QUAGMIRE_ALTAR_BOLLARD = "Not that interesting, florp.",
+        QUAGMIRE_ALTAR_IVY = "Creepy crawly.",
 
-        QUAGMIRE_LAMP_SHORT = "Enlightening.",
+        QUAGMIRE_LAMP_SHORT = "Is fancy light.",
 
         --v2 Winona
         WINONA_CATAPULT = 
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Ooooh! Me wanna make some too, florp!",
+		GHOSTLYELIXIR_FASTREGEN = "Ooooh! Me wanna make some too, florp!",
+		GHOSTLYELIXIR_SHIELD = "Ooooh! Me wanna make some too, florp!",
+		GHOSTLYELIXIR_ATTACK = "Ooooh! Me wanna make some too, florp!",
+		GHOSTLYELIXIR_SPEED = "Ooooh! Me wanna make some too, florp!",
+		GHOSTLYELIXIR_RETALIATION = "Ooooh! Me wanna make some too, florp!",
+		SISTURN =
+		{
+			GENERIC = "What in jar? Snacks?",
+			SOME_FLOWERS = "Scaleless like putting flowers here.",
+			LOTS_OF_FLOWERS = "So is... not snack jar?",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "Need to fatten up if you gonna be proper King!",
 
         SQUID = "Stay still, little squiddies!",
+
+		GHOSTFLOWER = "Spooky!",
+        SMALLGHOST = "Glurp! Y-you not scare me!",
     },
 
     DESCRIBE_GENERIC = "What that?",

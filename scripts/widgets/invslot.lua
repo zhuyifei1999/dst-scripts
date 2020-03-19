@@ -89,7 +89,7 @@ function InvSlot:Click(stack_mod)
             end
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.prefab == active_item.prefab and container_item.skinname == active_item.skinname and container_item.replica.stackable ~= nil and container:AcceptsStacks() then
+            if container_item.prefab == active_item.prefab and container_item.AnimState:GetSkinBuild() == active_item.AnimState:GetSkinBuild() and container_item.replica.stackable ~= nil and container:AcceptsStacks() then --active_item.prefab and container_item.skinname (this does not work on clients, so we're going to use the AnimState hack instead)
                 --Add active item to slot stack
                 if stack_mod and
                     active_item.replica.stackable ~= nil and

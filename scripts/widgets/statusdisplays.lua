@@ -5,6 +5,7 @@ local HungerBadge = require "widgets/hungerbadge"
 local WereBadge = require "widgets/werebadge"
 local MoistureMeter = require "widgets/moisturemeter"
 local BoatMeter = require "widgets/boatmeter"
+local PetHealthBadge = require "widgets/pethealthbadge"
 local ResurrectButton = require "widgets/resurrectbutton"
 local UIAnim = require "widgets/uianim"
 
@@ -53,6 +54,22 @@ local function OnSetPlayerMode(inst, self)
         self.inst:ListenForEvent("werenessdelta", self.onwerenessdelta, self.owner)
         self:SetWerenessPercent(self.owner:GetWereness())
     end
+
+	if self.pethealthbadge ~= nil and self.onpethealthdirty == nil then
+        self.onpethealthdirty = function() self:RefreshPetHealth() end
+        inst:ListenForEvent("clientpethealthdirty", self.onpethealthdirty, self.owner)
+        inst:ListenForEvent("clientpethealthsymboldirty", self.onpethealthdirty, self.owner)
+        inst:ListenForEvent("clientpetmaxhealthdirty", self.onpethealthdirty, self.owner)
+        inst:ListenForEvent("clientpethealthpulsedirty", self.onpethealthdirty, self.owner)
+        inst:ListenForEvent("clientpethealthstatusdirty", self.onpethealthdirty, self.owner)
+        self:RefreshPetHealth()
+    end
+    
+    if self.pethealthbadge ~= nil and self.onpetskindirty == nil then
+        self.onpetskindirty = function() self:RefreshPetSkin() end
+        inst:ListenForEvent("clientpetskindirty", self.onpetskindirty, self.owner)
+        self:RefreshPetSkin()
+    end
 end
 
 local function OnSetGhostMode(inst, self)
@@ -91,6 +108,19 @@ local function OnSetGhostMode(inst, self)
     if self.onwerenessdelta ~= nil then
         self.inst:RemoveEventCallback("werenessdelta", self.onwerenessdelta, self.owner)
         self.onwerenessdelta = nil
+    end
+
+    if self.onpethealthdirty ~= nil then
+        self.inst:RemoveEventCallback("clientpethealthdirty", self.onpethealthdirty, self.owner)
+        self.inst:RemoveEventCallback("clientpethealthsymboldirty", self.onpethealthdirty, self.owner)
+        self.inst:RemoveEventCallback("clientpetmaxhealthdirty", self.onpethealthdirty, self.owner)
+        self.inst:RemoveEventCallback("clientpethealthstatusdirty", self.onpethealthdirty, self.owner)
+        self.onpethealthdirty = nil
+    end
+
+    if self.onpetskindirty ~= nil then        
+        self.inst:RemoveEventCallback("clientpetskindirty", self.onpetskindirty, self.owner)
+        self.onpetskindirty = nil
     end
 end
 
@@ -189,6 +219,15 @@ local StatusDisplays = Class(Widget, function(self, owner)
     if owner:HasTag("wereness") then
         self:AddWereness()
     end
+
+	if owner.components.pethealthbar ~= nil then
+		if owner.prefab == "wendy" then
+			self.pethealthbadge = self:AddChild(PetHealthBadge(owner, { 254 / 255, 253 / 255, 237 / 255, 1 }, "status_abigail"))
+			self.pethealthbadge:SetPosition(40, -100, 0)
+
+		    self.moisturemeter:SetPosition(-40, -100, 0)
+		end
+	end
 end)
 
 function StatusDisplays:ShowStatusNumbers()
@@ -199,6 +238,9 @@ function StatusDisplays:ShowStatusNumbers()
     if self.boatmeter.boat then
         self.boatmeter.num:Show()
     end
+	if self.pethealthbadge then
+		self.pethealthbadge.num:Show()
+	end
     if self.wereness ~= nil then
         self.wereness.num:Show()
     end
@@ -210,6 +252,9 @@ function StatusDisplays:HideStatusNumbers()
     self.heart.num:Hide()
     self.moisturemeter.num:Hide()
     self.boatmeter.num:Hide()
+	if self.pethealthbadge then
+		self.pethealthbadge.num:Hide()
+	end
     if self.wereness ~= nil then
         self.wereness.num:Hide()
     end
@@ -294,6 +339,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
             self.wereness:Hide()
             self.wereness:StopWarning()
         end
+
+		if self.pethealthbadge ~= nil then
+			self.pethealthbadge:Hide()
+		end
     else
         self.isghostmode = nil
 
@@ -306,6 +355,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
         if self.wereness ~= nil then
             self.wereness:Show()
         end
+
+		if self.pethealthbadge ~= nil then
+			self.pethealthbadge:Show()
+		end
     end
 
     if self.rezbuttontask ~= nil then
@@ -430,6 +483,18 @@ end
 
 function StatusDisplays:GetResurrectButton()
     return self.resurrectbutton:IsVisible() and self.resurrectbutton or nil
+end
+
+function StatusDisplays:RefreshPetHealth()
+    local pethealthbar = self.owner.components.pethealthbar
+	self.pethealthbadge:SetValues(pethealthbar:GetSymbol(), pethealthbar:GetPercent(), pethealthbar:GetOverTime(), pethealthbar:GetMaxHealth(), pethealthbar:GetPulse())
+	pethealthbar:ResetPulse()
+end
+
+function StatusDisplays:RefreshPetSkin()
+    local pethealthbar = self.owner.components.pethealthbar
+    local skinname = TheInventory:LookupSkinname( pethealthbar._petskin:value() )
+    self.pethealthbadge:SetIconSkin( skinname )
 end
 
 function StatusDisplays:EnableResurrect(enable)

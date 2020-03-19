@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "ERROR: TOO PUNY",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "ERROR: ACTION UNAVAILABLE",
 	ANNOUNCE_BOAT_LEAK = "MY WORST NIGHTMARE IS REALIZED",
@@ -518,6 +522,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "RUNTIME ERROR DETECTED",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "THE ORGANIC SEEMS TO BE MALFUNCTIONING",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "I WILL DESTROY YOU",
@@ -557,6 +581,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="FEEBLE PLANTLIFE",
+			LEVEL1 = "IT IS CREEPY",
+			LEVEL2 = "IT IS STILL CREEPY",
+			LEVEL3 = "ACTUALLY, IT'S NOT SO BAD NOW",
+
+			-- deprecated
             LONG = "FEEBLE PLANTLIFE",
             MEDIUM = "CREEPINESS READINGS DETECTED",
             SOON = "CREEPINESS READINGS RISING",
@@ -1059,7 +1088,24 @@ return{
 		MAXWELLPHONOGRAPH = "IT IS A MUSICAL SLAVE.",
 		BOOMERANG = "REUSABLE PROJECTILE.",
 		PIGGUARD = "HOSTILE DETECTED.",
-		ABIGAIL = "UNDEAD ALERT",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "UNDEAD ALERT",
+                "UNDEAD ALERT",
+            },
+            LEVEL2 = 
+            {
+                "UNDEAD ALERT",
+                "UNDEAD ALERT",
+            },
+            LEVEL3 = 
+            {
+                "UNDEAD ALERT",
+                "UNDEAD ALERT",
+            },
+		},
 		ADVENTURE_PORTAL = "HE IS NOT MUCH OF A CONVERSATIONALIST",
 		AMULET = "ANOMALY DETECTED",
 		ANIMAL_TRACK = "LIFEFORM DETECTED",
@@ -2213,6 +2259,18 @@ return{
         TRINKET_44 = "DESTROYED. HA HA", -- Broken Terrarium ONI trinket
         TRINKET_45 = "MY LOGIC FEELS FUNNY", -- Odd Radio ONI trinket
         TRINKET_46 = "NONFUNCTIONAL", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "ERROR: NULL VALUE",
+        LOST_TOY_2  = "ERROR: NULL VALUE",
+        LOST_TOY_7  = "ERROR: NULL VALUE",
+        LOST_TOY_10 = "ERROR: NULL VALUE",
+        LOST_TOY_11 = "ERROR: NULL VALUE",
+        LOST_TOY_14 = "ERROR: NULL VALUE",
+        LOST_TOY_18 = "ERROR: NULL VALUE",
+        LOST_TOY_19 = "ERROR: NULL VALUE",
+        LOST_TOY_42 = "ERROR: NULL VALUE",
+        LOST_TOY_43 = "ERROR: NULL VALUE",
         
         HALLOWEENCANDY_1 = "WHAT IS THE PURPOSE OF SHAPING FOODS LIKE OTHER FOODS",
         HALLOWEENCANDY_2 = "HORRIBLE TEXTURE, LOOKS NOTHING LIKE CORN. I LOVE IT",
@@ -3114,6 +3172,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		GHOSTLYELIXIR_FASTREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		GHOSTLYELIXIR_SHIELD = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		GHOSTLYELIXIR_ATTACK = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		GHOSTLYELIXIR_SPEED = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		GHOSTLYELIXIR_RETALIATION = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
+		SISTURN =
+		{
+			GENERIC = "WEAK ORGANIC SENTIMENTALITY",
+			SOME_FLOWERS = "FRIVOLOUS",
+			LOTS_OF_FLOWERS = "FRIVOLOUS...",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3285,9 @@ return{
         MERM_PRINCE = "SUBJECT DOES NOT POSSESS REQUIRED GIRTH TO BE KING",
 
         SQUID = "FLESHSACK WITH AN INDICATOR LIGHT",
+
+		GHOSTFLOWER = "ITS EXISTENCE CANNOT BE EXPLAINED",
+        SMALLGHOST = "ERROR: VISUAL PROCESSOR MUST BE MALFUNCTIONING",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

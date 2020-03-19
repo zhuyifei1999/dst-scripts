@@ -253,6 +253,9 @@ ACTIONS =
 	COMPARE_WEIGHABLE = Action(),
 	WEIGH_ITEM = Action(),
 	START_CARRAT_RACE = Action({ rmb = true }),
+    CASTSUMMON = Action({ rmb=true, mount_valid=true }),
+    CASTUNSUMMON = Action({ mount_valid=true, distance=math.huge }),
+	COMMUNEWITHSUMMONED = Action({ rmb=true, mount_valid=true }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -278,6 +281,9 @@ ACTIONS =
 	HALLOWEENMOONMUTATE = Action({ priority=-1 }),
 
 	WINTERSFEAST_FEAST = Action({ priority=1 }),
+
+    BEGIN_QUEST = Action(),
+    ABANDON_QUEST = Action(),
 
     --Quagmire
     TILL = Action({ distance=0.5 }),
@@ -1162,8 +1168,10 @@ end
 ACTIONS.GIVE.stroverridefn = function(act)
     --Quagmire & Winter's Feast action strings
     if act.target ~= nil and act.invobject ~= nil then
-		if act.target:HasTag("wintersfeasttable") then
-			return subfmt(STRINGS.ACTIONS.GIVE["PLACE_ITEM"], { item = act.invobject:GetBasicDisplayName() })
+		if act.target:HasTag("ghostlyelixirable") and act.invobject:HasTag("ghostlyelixir") then
+			return subfmt(STRINGS.ACTIONS.GIVE.APPLY, { item = act.invobject:GetBasicDisplayName() })
+		elseif act.target:HasTag("wintersfeasttable") then
+			return subfmt(STRINGS.ACTIONS.GIVE.PLACE_ITEM, { item = act.invobject:GetBasicDisplayName() })
         elseif act.target.nameoverride ~= nil and act.invobject:HasTag("quagmire_stewer") then
             return subfmt(STRINGS.ACTIONS.GIVE[string.upper(act.target.nameoverride)], { item = act.invobject:GetBasicDisplayName() })
         elseif act.target:HasTag("quagmire_altar") then
@@ -1189,7 +1197,9 @@ end
 
 ACTIONS.GIVE.fn = function(act)
     if act.target ~= nil then
-        if act.target.components.trader ~= nil then
+		if act.target.components.ghostlyelixirable ~= nil and act.invobject.components.ghostlyelixir ~= nil then
+            return act.invobject.components.ghostlyelixir:Apply(act.doer, act.target)
+        elseif act.target.components.trader ~= nil then
             local able, reason = act.target.components.trader:AbleToAccept(act.invobject, act.doer)
             if not able then
                 return false, reason
@@ -1826,6 +1836,28 @@ ACTIONS.BLINK.fn = function(act)
         act.doer.sg:GoToState("portal_jumpin", act_pos)
         return true
     end
+end
+
+ACTIONS.CASTSUMMON.fn = function(act)
+	if act.invobject ~= nil and act.invobject.components.summoningitem and act.doer ~= nil and act.doer.components.ghostlybond ~= nil then
+		return act.doer.components.ghostlybond:Summon( act.invobject.components.summoningitem.inst )
+	end
+end
+
+ACTIONS.CASTUNSUMMON.fn = function(act)
+	if act.invobject ~= nil and act.invobject.components.summoningitem and act.doer ~= nil and act.doer.components.ghostlybond ~= nil then
+		return act.doer.components.ghostlybond:Recall(false)
+	end
+end
+
+ACTIONS.COMMUNEWITHSUMMONED.strfn = function(act)
+    return act.doer:HasTag("has_aggressive_follower") and "MAKE_DEFENSIVE" or "MAKE_AGGRESSIVE"
+end
+
+ACTIONS.COMMUNEWITHSUMMONED.fn = function(act)
+	if act.invobject ~= nil and act.invobject.components.summoningitem and act.doer ~= nil and act.doer.components.ghostlybond ~= nil then
+		return act.doer.components.ghostlybond:ChangeBehaviour()
+	end
 end
 
 ACTIONS.COMBINESTACK.fn = function(act)
@@ -2771,6 +2803,20 @@ end
 ACTIONS.WINTERSFEAST_FEAST.fn = function(act)
 	return true
 	-- Logic is handled from stategraph; action is never actually performed
+end
+
+ACTIONS.BEGIN_QUEST.fn = function(act)
+    if act.target.components.questowner ~= nil and act.target.components.questowner:CanBeginQuest(act.doer) then
+        local success, message = act.target.components.questowner:BeginQuest(act.doer)
+        return (success ~= false), message
+    end
+end
+
+ACTIONS.ABANDON_QUEST.fn = function(act)
+    if act.target.components.questowner ~= nil and act.target.components.questowner:CanAbandonQuest(act.doer) then
+        local success, message = act.target.components.questowner:AbandonQuest(act.doer)
+        return (success ~= false), message
+    end
 end
 
 ACTIONS.REPLATE.fn = function(act)

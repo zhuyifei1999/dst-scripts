@@ -70,26 +70,31 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
 
 	if IsPrefabSkinned(self.currentcharacter) then
 		self.skinmodes = GetSkinModes(self.currentcharacter)
-	else
-		self.skinmodes = {}
-		table.insert(self.skinmodes, GetSkinModes("default")[1])
+    else
+        self.skinmodes = {}
+        table.insert(self.skinmodes, GetSkinModes("default")[1])
+    end
+    
+    if MODCHARACTERMODES[self.currentcharacter] ~= nil then
+        --Mod characters with modes set!
+        self.skinmodes = {}
+        table.insert(self.skinmodes, GetSkinModes("default")[1])
+        
+        for _,v in pairs(MODCHARACTERMODES[self.currentcharacter]) do
+            table.insert(self.skinmodes,
+                {
+                    type = v.type,
+                    anim_bank = v.anim_bank,
+                    idle_anim = v.idle_anim,
+                    play_emotes = v.play_emotes,
+                    scale = v.scale,
+                    offset = v.offset,
+                }
+            )
+        end
+    end
+    
 
-		if MODCHARACTERMODES[self.currentcharacter] ~= nil then
-			for _,v in pairs(MODCHARACTERMODES[self.currentcharacter]) do
-				table.insert(self.skinmodes,
-				{
-					type = {
-						build = v.build,
-						anim_bank = v.bank,
-						idle_anim = v.idle_anim,
-						play_emotes = v.play_emotes,
-					},
-					scale = v.scale,
-					offset = v.offset,
-				})
-			end
-		end
-	end
 	self.view_index = 1
 	self.selected_skinmode = self.skinmodes[self.view_index]
 

@@ -142,11 +142,11 @@ function MakeBanner(self)
         onanimover(anim.inst)
     ]]
 	else
-		anim:GetAnimState():SetBuild("dst_menu")
+        --[[anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:GetAnimState():PlayAnimation("loop", true)
 		anim:SetScale(0.63)
-		anim:SetPosition(347, 85)
+		anim:SetPosition(347, 85)]]
         --[[anim:GetAnimState():SetBuild("dst_menu_winona")
         anim:GetAnimState():SetBank("dst_menu_winona")
         anim:GetAnimState():PlayAnimation("loop", true)
@@ -171,7 +171,17 @@ function MakeBanner(self)
         anim:GetAnimState():SetBank("dst_menu_warly")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
+        anim:SetPosition(0, 0)]]  
+        --[[anim:GetAnimState():SetBuild("dst_menu_inker")
+        anim:GetAnimState():SetBank("dst_menu_inker")
+        anim:GetAnimState():PlayAnimation("loop2", true)
+        anim:SetScale(.667)
         anim:SetPosition(0, 0)]]
+        anim:GetAnimState():SetBuild("dst_menu_wendy")
+        anim:GetAnimState():SetBank("dst_menu_wendy")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
+        anim:SetPosition(0, 0)
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then

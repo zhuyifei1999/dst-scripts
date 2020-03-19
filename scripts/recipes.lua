@@ -45,6 +45,7 @@ Recipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1
 Recipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO, nil, nil, nil, nil, "merm_builder")
 
 Recipe("spidereggsack", {Ingredient("silk", 12), Ingredient("spidergland", 6), Ingredient("papyrus", 6)}, RECIPETABS.TOWN, TECH.NONE, nil, nil, nil, nil, "spiderwhisperer")
+Recipe("sisturn", {Ingredient("cutstone", 3), Ingredient("boards", 3), Ingredient("ash", 1)}, RECIPETABS.TOWN, TECH.NONE, "sisturn_placer", nil, nil, nil, "ghostlyfriend")
 
 Recipe("treasurechest", {Ingredient("boards", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "treasurechest_placer",1)
 Recipe("homesign", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "homesign_placer")
@@ -172,7 +173,7 @@ Recipe("lightning_rod", {Ingredient("goldnugget", 4), Ingredient("cutstone", 1)}
 Recipe("firesuppressor", {Ingredient("gears", 2),Ingredient("ice", 15),Ingredient("transistor", 2)}, RECIPETABS.SCIENCE,  TECH.SCIENCE_TWO, "firesuppressor_placer")
 
 --MAGIC
-Recipe("abigail_flower", {Ingredient("petals", 6), Ingredient("nightmarefuel", 1)}, RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "ghostlyfriend")
+Recipe("abigail_flower", {Ingredient("ghostflower", 1), Ingredient("nightmarefuel", 1)}, RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "ghostlyfriend")
 Recipe("wereitem_goose", {Ingredient("monstermeat", 3), Ingredient("seeds", 3)}, RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "werehuman")
 Recipe("wereitem_beaver", {Ingredient("monstermeat", 3), Ingredient("log", 2)}, RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "werehuman")
 Recipe("wereitem_moose", {Ingredient("monstermeat", 3), Ingredient("cutgrass", 2)}, RECIPETABS.MAGIC, TECH.NONE, nil, nil, nil, nil, "werehuman")
@@ -346,6 +347,14 @@ Recipe("winona_catapult",     {Ingredient("sewing_tape", 1), Ingredient("twigs",
 Recipe("winona_spotlight",    {Ingredient("sewing_tape", 1), Ingredient("goldnugget", 2), Ingredient("fireflies", 1)},  CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_spotlight_placer",    TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
 Recipe("winona_battery_low",  {Ingredient("sewing_tape", 1), Ingredient("log", 2), 		  Ingredient("nitre", 2)}, 	    CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_battery_low_placer",  TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
 Recipe("winona_battery_high", {Ingredient("sewing_tape", 1), Ingredient("boards", 2), 	  Ingredient("transistor", 2)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_battery_high_placer", TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
+
+----elixirbrewing----
+Recipe("ghostlyelixir_slowregen",	{Ingredient("spidergland", 1), 	Ingredient("ghostflower", 1)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
+Recipe("ghostlyelixir_fastregen",	{Ingredient("reviver", 1),		Ingredient("ghostflower", 4)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
+Recipe("ghostlyelixir_shield",		{Ingredient("log", 1),			Ingredient("ghostflower", 2)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
+Recipe("ghostlyelixir_retaliation",	{Ingredient("livinglog", 1),	Ingredient("ghostflower", 4)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
+Recipe("ghostlyelixir_attack",		{Ingredient("stinger", 1), 		Ingredient("ghostflower", 2)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
+Recipe("ghostlyelixir_speed",		{Ingredient("honey", 1), 		Ingredient("ghostflower", 2)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
 
 ----NATURE----
 Recipe("livinglog", 	{Ingredient(CHARACTER_INGREDIENT.HEALTH, 20)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")

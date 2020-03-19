@@ -372,6 +372,41 @@ params.winter_twiggytree = params.winter_tree
 params.winter_deciduoustree = params.winter_tree
 
 --------------------------------------------------------------------------
+--[[ sisturn ]]
+--------------------------------------------------------------------------
+
+params.sisturn =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(-37.5, 32 + 4, 0), 
+            Vector3(37.5, 32 + 4, 0),
+            Vector3(-37.5, -(32 + 4), 0), 
+            Vector3(37.5, -(32 + 4), 0),
+        },
+        slotbg =
+        {
+            { image = "sisturn_slot_petals.tex" },
+            { image = "sisturn_slot_petals.tex" },
+            { image = "sisturn_slot_petals.tex" },
+            { image = "sisturn_slot_petals.tex" },
+        },
+        animbank = "ui_chest_2x2",
+        animbuild = "ui_chest_2x2",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 120,
+    },
+    acceptsstacks = false,
+    type = "cooker",
+}
+
+function params.sisturn.itemtestfn(container, item, slot)
+    return item.prefab == "petals"
+end
+
+--------------------------------------------------------------------------
 --[[ livingtree_halloween ]]
 --------------------------------------------------------------------------
 

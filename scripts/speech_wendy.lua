@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "It was taken too soon...",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "I can only ferry one soul to their destination at a time...",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_BOAT_LEAK = "Our boat weeps salty tears.",
@@ -518,6 +522,31 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "Must you drag your heels so?",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "Why won't you move?",
 
+    ANNOUNCE_GHOST_QUEST = "You need me to... find something you've lost?",
+    ANNOUNCE_GHOST_HINT = "Are you showing me the way?",
+    ANNOUNCE_GHOST_TOY_NEAR = {
+        "It's close... I can feel it...",
+        "It's calling to me... it's nearby...",
+        "We're almost there...",
+        "Your journey is almost over.",
+        "Am I getting warmer?",
+    },    
+    ANNOUNCE_ABIGAIL_DEATH = "No... don't leave me alone again!",
+    ANNOUNCE_ABIGAIL_RETRIEVE = "I'm sorry... it's not safe for you out here.",
+	ANNOUNCE_ABIGAIL_LOW_HEALTH = "Be careful, Abigail!",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+		LEVEL1 = "I know you're tired, but I can't do this alone...",
+		LEVEL2 = "I need your help, Abigail...",
+		LEVEL3 = "You've rested in peace long enough, dear sister.",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+		LEVEL2 = "You seem to have brightened up a bit, Abigail.",
+		LEVEL3 = "Abigail has always been my guiding light in the darkness...",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Death will find you!",
@@ -557,7 +586,12 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="It's still so pretty.",
-            LONG = "It was my sister's flower. She's gone far away.",
+			LEVEL1 = "It was my sister's flower. She's gone far away.",
+			LEVEL2 = "I can sense Abigail's spirit growing stronger.",
+			LEVEL3 = "Abigail! Are you ready to play?",
+
+			-- deprecated
+            LONG = "",
             MEDIUM = "I can sense Abigail's presence growing stronger.",
             SOON = "Abigail is almost here!",
             HAUNTED_POCKET = "Abigail is ready to play, but she needs some space.",
@@ -1059,7 +1093,24 @@ return{
 		MAXWELLPHONOGRAPH = "Shall we have a danse macabre?",
 		BOOMERANG = "Death returns to the sender.",
 		PIGGUARD = "This little piggie looks mean.",
-		ABIGAIL = "That's my twin sister, Abigail.",
+		ABIGAIL =
+		{
+			LEVEL1 =
+            {
+                "It was so lonely without you here.",
+                "That's my twin sister, Abigail.",
+            },
+			LEVEL2 = 
+            {
+                "We'll never be apart again.",
+                "That's my twin sister, Abigail.",
+            },
+			LEVEL3 = 
+            {
+                "Let's play, Abigail!",
+                "That's my twin sister, Abigail.",
+            },
+		},
 		ADVENTURE_PORTAL = "What technological terror is this?",
 		AMULET = "I wonder who used to own this.",
 		ANIMAL_TRACK = "Signs of the beast.",
@@ -2213,6 +2264,18 @@ return{
         TRINKET_44 = "Some breaks cannot be mended.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "It is so colorful...", -- Odd Radio ONI trinket
         TRINKET_46 = "I simply do not know what it is.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_2  = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_7  = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_10 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_11 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_14 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_18 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_19 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_42 = "I get the feeling... that this meant a great deal to someone.",
+        LOST_TOY_43 = "I get the feeling... that this meant a great deal to someone.",
         
         HALLOWEENCANDY_1 = "Oh... it's... g-good.",
         HALLOWEENCANDY_2 = "The most delicious lie.",
@@ -3114,6 +3177,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "It's all I can do to help...",
+		GHOSTLYELIXIR_FASTREGEN = "You have to take your medicine, Abigail.",
+		GHOSTLYELIXIR_SHIELD = "This time... I can protect you.",
+		GHOSTLYELIXIR_ATTACK = "Abigail was always the strong one.",
+		GHOSTLYELIXIR_SPEED = "It's quite sugary.",
+		GHOSTLYELIXIR_RETALIATION = "It has a bitter aftertaste.",
+		SISTURN =
+		{
+			GENERIC = "It's a memorial to my sister... but it's so bare...",
+			SOME_FLOWERS = "Abigail always loved flowers...",
+			LOTS_OF_FLOWERS = "I won't let you fade away, Abigail. Never.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3214,6 +3290,9 @@ return{
         MERM_PRINCE = "Are you ready to shoulder the burdens of leadership?",
 
         SQUID = "Bright eyes for dark times.",
+
+		GHOSTFLOWER = "I promise to use it well.",
+        SMALLGHOST = "Another life cut short.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

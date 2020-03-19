@@ -10,7 +10,7 @@ local Growable = Class(function(self, inst)
 end)
 
 function Growable:GetDebugString()
-    return (self.targettime ~= nil and string.format("Growing! stage %d, timeleft %2.2fs", self.stage, self.targettime - GetTime()))
+    return (self.targettime ~= nil and self.stage ~= self:GetNextStage() and string.format("Growing! stage %d, timeleft %2.2fs", self.stage, self.targettime - GetTime()))
         or (self.pausedremaining ~= nil and string.format("Paused! stage %d, timeleft %2.2fs", self.stage, self.pausedremaining))
         or "Not Growing"
 end
@@ -105,6 +105,7 @@ function Growable:Resume()
         local remainingtime = math.max(0, self.pausedremaining)
         self.pausedremaining = nil
         self:StartGrowing(remainingtime)
+		return true
     end
 end
 
@@ -134,7 +135,7 @@ function Growable:SetStage(stage)
     self.stage = stage
 
     if self.stages[stage] ~= nil and self.stages[stage].fn ~= nil then
-        self.stages[stage].fn(self.inst)
+        self.stages[stage].fn(self.inst, stage)
     end
 end
 

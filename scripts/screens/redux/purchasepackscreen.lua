@@ -876,7 +876,7 @@ function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
     return iap_defs        
 end
 
-local label_width = 70
+local label_width = 72
 local widget_width = 190
 local height = 30
 local spacing = 3

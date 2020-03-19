@@ -214,6 +214,10 @@ return{
 		{
 			TOO_SMALL = "Should've thrown this little guy back.",
 		},
+        BEGIN_QUEST =
+        {
+            ONEGHOST = "only_used_by_wendy",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "All this water is making me very anxious.",
@@ -519,6 +523,26 @@ return{
     ANNOUNCE_CARRAT_ERROR_WALKING = "You've gotta move faster than that!",    
     ANNOUNCE_CARRAT_ERROR_STUNNED = "We shoulda worked more on those reflexes, eh?",
 
+    ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
+    
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
+--fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
+--fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
+    ANNOUNCE_ABIGAIL_SUMMON = 
+	{
+--fallback to speech_wilson.lua 		LEVEL1 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
+    ANNOUNCE_GHOSTLYBOND_LEVELUP = 
+	{
+--fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
+--fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
+	},
+
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -558,6 +582,11 @@ return{
         ABIGAIL_FLOWER =
         {
             GENERIC ="It's a flower? I guess.",
+			LEVEL1 = "That flower's lookin' a bit run down.",
+			LEVEL2 = "A haunted flower... pretty strange don't ya think, Lucy?",
+			LEVEL3 = "I guess I should be used to weird stuff by now.",
+
+			-- deprecated
             LONG = "Yup. It's a flower.",
             MEDIUM = "That flower's acting funny...",
             SOON = "Did it just move?",
@@ -1060,7 +1089,24 @@ return{
 		MAXWELLPHONOGRAPH = "Better than most of the stuff on the radio.",
 		BOOMERANG = "That looks hard to throw.",
 		PIGGUARD = "I don't want to make him mad.",
-		ABIGAIL = "That ain't right.",
+		ABIGAIL =
+		{
+            LEVEL1 =
+            {
+                "That ain't right.",
+                "That ain't right.",
+            },
+            LEVEL2 = 
+            {
+                "That ain't right.",
+                "That ain't right.",
+            },
+            LEVEL3 = 
+            {
+                "That ain't right.",
+                "That ain't right.",
+            },
+		},
 		ADVENTURE_PORTAL = "I wonder if that's the way out of here.",
 		AMULET = "Always have a backup plan.",
 		ANIMAL_TRACK = "A large woodland creature passed this way!",
@@ -2214,6 +2260,18 @@ return{
         TRINKET_44 = "Smashed to bits.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "What sorta shows d'you think it gets?", -- Odd Radio ONI trinket
         TRINKET_46 = "I prefer to let mine air dry.", -- Hairdryer ONI trinket
+
+        -- The numbers align with the trinket numbers above.
+        LOST_TOY_1  = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_2  = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_7  = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_10 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_11 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_14 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_18 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_19 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_42 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
+        LOST_TOY_43 = "There's something unnatural about that thing... wouldn't ya say, Luce?",
         
         HALLOWEENCANDY_1 = "Even the stick is delicious.",
         HALLOWEENCANDY_2 = "Don't worry, I'll eat enough for the both of us, Lucy.",
@@ -3115,6 +3173,19 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		GHOSTLYELIXIR_SLOWREGEN = "Whoof, smells like week-old sockeye!",
+		GHOSTLYELIXIR_FASTREGEN = "Whoof, smells like week-old sockeye!",
+		GHOSTLYELIXIR_SHIELD = "Whoof, smells like week-old sockeye!",
+		GHOSTLYELIXIR_ATTACK = "Whoof, smells like week-old sockeye!",
+		GHOSTLYELIXIR_SPEED = "Whoof, smells like week-old sockeye!",
+		GHOSTLYELIXIR_RETALIATION = "Whoof, smells like week-old sockeye!",
+		SISTURN =
+		{
+			GENERIC = "Better pay our respects, eh Lucy?",
+			SOME_FLOWERS = "Think it could use a few more flowers, eh?",
+			LOTS_OF_FLOWERS = "Pretty as a Canadian sunset.",
+		},
+
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
 
@@ -3215,6 +3286,9 @@ return{
         MERM_PRINCE = "This guy's really the best you got, eh?",
 
         SQUID = "Squirmy little guys, eh?",
+
+		GHOSTFLOWER = "That ghost left a parting gift.",
+        SMALLGHOST = "Hey little buddy, you need some help?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

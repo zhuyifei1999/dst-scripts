@@ -134,6 +134,7 @@ local states =
 
     State{
         name = "dissipate",
+        tags = { "busy", "noattack", "nointerrupt" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -228,7 +229,7 @@ local states =
             inst.SoundEmitter:PlaySound(inst:HasTag("girl") and "dontstarve/ghost/ghost_girl_howl" or "dontstarve/ghost/ghost_howl")
 
             inst.components.health:SetInvincible(true)
-            inst.components.aura:Enable(false)
+            inst.components.aura:Enable(true)
         end,
 
         events =

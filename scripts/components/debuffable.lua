@@ -74,11 +74,19 @@ local function RegisterDebuff(self, name, ent)
         self.debuffs[name] =
         {
             inst = ent,
-            onremove = function() self.debuffs[name] = nil end,
+            onremove = function(debuff) 
+							self.debuffs[name] = nil 
+							if self.ondebuffremoved ~= nil then 
+								self.ondebuffremoved(self.inst, name, debuff)
+							end
+						end,
         }
         self.inst:ListenForEvent("onremove", self.debuffs[name].onremove, ent)
         ent.persists = false
         ent.components.debuff:AttachTo(name, self.inst, self.followsymbol, self.followoffset)
+		if self.ondebuffadded ~= nil then
+			self.ondebuffadded(self.inst, name, ent)
+		end
     else
         ent:Remove()
     end
@@ -102,6 +110,9 @@ function Debuffable:RemoveDebuff(name)
     if debuff ~= nil then
         self.debuffs[name] = nil
         self.inst:RemoveEventCallback("onremove", debuff.onremove, debuff.inst)
+		if self.ondebuffremoved ~= nil then 
+			self.ondebuffremoved(self.inst, name, debuff.inst)
+		end
         if debuff.inst.components.debuff ~= nil then
             debuff.inst.components.debuff:OnDetach()
         else

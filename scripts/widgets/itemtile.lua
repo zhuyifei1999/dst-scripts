@@ -88,7 +88,12 @@ local ItemTile = Class(Widget, function(self, invitem)
             end
             self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
         end, invitem)
-
+	self.inst:ListenForEvent("inventoryitem_updatetooltip",
+		function(invitem)
+			if not TheInput:ControllerAttached() then
+				self:UpdateTooltip()
+			end
+		end, invitem)
     self.inst:ListenForEvent("stacksizechange",
         function(invitem, data)
             if invitem.replica.stackable ~= nil then
@@ -296,7 +301,7 @@ function ItemTile:GetDescriptionString()
             end
         elseif active_item:IsValid() then
             if not (self.item.replica.equippable ~= nil and self.item.replica.equippable:IsEquipped()) then
-                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab and active_item.skinname == self.item.skinname then
+                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab and active_item.AnimState:GetSkinBuild() == self.item.AnimState:GetSkinBuild() then --active_item.skinname == self.item.skinname (this does not work on clients, so we're going to use the AnimState hack instead)
                     str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.PUT
                 else
                     str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.SWAP

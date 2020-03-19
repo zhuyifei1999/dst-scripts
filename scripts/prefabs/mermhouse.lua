@@ -146,11 +146,11 @@ local function MakeMermHouse(name, common_postinit, master_postinit)
 
         MakeSnowCoveredPristine(inst)
 
-        inst.entity:SetPristine()
-
         if common_postinit ~= nil then
             common_postinit(inst)
         end
+
+        inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst

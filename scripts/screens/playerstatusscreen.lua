@@ -313,7 +313,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     end
     self.players_number:SetString(tostring(not TheNet:GetServerIsClientHosted() and self.numPlayers - 1 or self.numPlayers).."/"..(TheNet:GetServerMaxPlayers() or "?"))
 
-    local serverDescStr = ServerPreferences:IsNameAndDescriptionHidden() and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME or TheNet:GetServerDescription()
+    local serverDescStr = ServerPreferences:IsNameAndDescriptionHidden() and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_DESCRIPTION or TheNet:GetServerDescription()
     if not self.serverdesc then
         self.serverdesc = self.root:AddChild(Text(UIFONT,30))
         self.serverdesc:SetColour(1,1,1,1)

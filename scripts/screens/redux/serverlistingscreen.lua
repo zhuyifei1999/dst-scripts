@@ -78,6 +78,8 @@ end
 local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, cb, offlineMode, session_mapping, forced_settings, event_id)
     Screen._ctor(self, "ServerListingScreen")
 
+	ServerPreferences:ClearProfanityFilteredServers()
+
 	self.event_id = event_id or ""
 
     self.should_save = ShouldAllowSave(filters, forced_settings)
@@ -876,6 +878,8 @@ function ServerListingScreen:RefreshView(skipPoll, keepScrollFocusPos)
 
         self.servers = servers
 
+		ServerPreferences:UpdateProfanityFilteredServers(servers)
+
         self:DoFiltering(false, keepScrollFocusPos) -- This also calls DoSorting
     end
 
@@ -1092,7 +1096,7 @@ function ServerListingScreen:MakeServerListWidgets()
 
 			local hide_name = ServerPreferences:IsNameAndDescriptionHidden(serverdata)
 
-            widget.NAME:SetTruncatedString(hide_name and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME or serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
+            widget.NAME:SetTruncatedString(hide_name and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME_LISTING or serverdata.name, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
             widget.NAME:SetPosition(widget.NAME._align.x + w * .5, widget.NAME._align.y, 0)
 
@@ -1451,7 +1455,7 @@ function ServerListingScreen:IsValidWithFilters(server)
             or (v.name == "CLANONLY" and v.spinner:GetSelectedData() == "PRIVATE" and not server.clan_only )
             or (v.name == "SEASON" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.season )
             or (v.name == "VERSIONCHECK" and v.spinner:GetSelectedData() and version_mismatch )
-            or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and server.dedicated ~= v.spinner:GetSelectedData())
+            or (v.name == "ISDEDICATED" and v.spinner:GetSelectedData() ~= "ANY" and not((v.spinner:GetSelectedData() == "DEDICATED" and server.dedicated) or (v.spinner:GetSelectedData() == "OFFICIAL" and server.kleiofficial) or (v.spinner:GetSelectedData() == "HOSTED" and not server.dedicated)))
             or (v.name == "MODSENABLED" and v.spinner:GetSelectedData() ~= "ANY" and server.mods_enabled ~= v.spinner:GetSelectedData())
             or (v.name == "HASCHARACTER" and v.spinner:GetSelectedData() ~= "ANY" and charInvalid(server.session, v.spinner:GetSelectedData()))) then
                 return false
@@ -1558,7 +1562,7 @@ function ServerListingScreen:DoFiltering(doneSearching, keepScrollFocusPos)
                 table.insert(filtered_servers, 
                     {
                         name=v.name,
-                        mode = v.mode,
+                        mode=v.mode,
                         has_password=v.has_password,
                         description=v.description,
                         mods_description=v.mods_description,
@@ -1708,7 +1712,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data, details_height)
     local any_mine_private = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.MINE, data = "MINE" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.PRIVATE, data = "PRIVATE" }}
     local yes_no = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }}
     local no_yes = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.NO, data = false }, { text = STRINGS.UI.SERVERLISTINGSCREEN.YES, data = true }}
-    local any_dedicated_hosted = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED, data = true }, { text = STRINGS.UI.SERVERLISTINGSCREEN.HOSTED, data = false }}
+    local any_dedicated_hosted = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED, data = "DEDICATED" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.OFFICIAL, data = "OFFICIAL" }, { text = STRINGS.UI.SERVERLISTINGSCREEN.HOSTED, data = "HOSTED" }}
 
     local seasons = {{ text = STRINGS.UI.SERVERLISTINGSCREEN.ANY, data = "ANY" },
                     { text = STRINGS.UI.SERVERLISTINGSCREEN.SEASONS.AUTUMN, data = "autumn" },

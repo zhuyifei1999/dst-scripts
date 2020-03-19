@@ -461,7 +461,7 @@ function WorldCustomizationTab:LoadPreset(preset)
     end
 
     if self.allowEdit then
-        assert(presetdata ~= nil, "Could not load a preset with id "..tostring(preset))
+        assert(presetdata ~= nil, "Could not load a preset with id "..tostring(preset) ..". ", tostring(self.servercreationscreen:GetGameMode()), tostring(GetLevelType(self.servercreationscreen:GetGameMode())), tostring(self.current_level_locations[self.tab_location_index]))
     else
         if presetdata == nil then
             print(string.format("WARNING! Could not load a preset with id %s, loading MOD_MISSING preset instead.", tostring(preset)))
