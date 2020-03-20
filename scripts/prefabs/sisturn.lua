@@ -37,7 +37,7 @@ end
 
 local function onhit(inst, worker, workleft)
     if workleft > 0 and not inst:HasTag("burnt") then
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stagehand/hit")
+        inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/sisturn/hit")
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle")
 
@@ -51,7 +51,7 @@ local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/sisturn/place")
     inst.AnimState:PushAnimation("idle", false)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stagehand/hit")
+    inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/sisturn/hit")
 end
 
 local function update_saityaura(inst)
@@ -73,9 +73,11 @@ local function update_idle_anim(inst)
 	if IsFullOfFlowers(inst) then
 		inst.AnimState:PlayAnimation("on_pre")
 		inst.AnimState:PushAnimation("on", true)
+        inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/sisturn/LP","sisturn_on")
 	else
 		inst.AnimState:PlayAnimation("on_pst")
 		inst.AnimState:PushAnimation("idle", false)
+        inst.SoundEmitter:KillSound("sisturn_on")
 	end
 end
 
@@ -94,7 +96,14 @@ local function AddDecor(inst, data)
     end
 	update_saityaura(inst)
 	update_idle_anim(inst)
-	TheWorld:PushEvent("ms_updatesisturnstate", {inst = inst, is_active = IsFullOfFlowers(inst)})
+
+	local is_full = IsFullOfFlowers(inst)
+	TheWorld:PushEvent("ms_updatesisturnstate", {inst = inst, is_active = is_full})
+
+	local doer = (is_full and inst.components.container ~= nil) and inst.components.container.opener or nil
+	if doer ~= nil and doer.components.talker ~= nil and doer:HasTag("ghostlyfriend") then
+		doer.components.talker:Say(GetString(doer, "ANNOUNCE_SISTURN_FULL"), nil, nil, true)
+	end
 end
 
 local function getstatus(inst)

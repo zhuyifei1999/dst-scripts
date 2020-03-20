@@ -530,7 +530,8 @@ return{
         "We're almost there...",
         "Your journey is almost over.",
         "Am I getting warmer?",
-    },    
+    },
+	ANNOUNCE_SISTURN_FULL = "Now Abigail can find her way back to me faster.",
     ANNOUNCE_ABIGAIL_DEATH = "No... don't leave me alone again!",
     ANNOUNCE_ABIGAIL_RETRIEVE = "I'm sorry... it's not safe for you out here.",
 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "Be careful, Abigail!",
@@ -1095,17 +1096,17 @@ return{
 		PIGGUARD = "This little piggie looks mean.",
 		ABIGAIL =
 		{
-			LEVEL1 =
+            LEVEL1 =
             {
                 "It was so lonely without you here.",
                 "That's my twin sister, Abigail.",
             },
-			LEVEL2 = 
+            LEVEL2 = 
             {
                 "We'll never be apart again.",
                 "That's my twin sister, Abigail.",
             },
-			LEVEL3 = 
+            LEVEL3 = 
             {
                 "Let's play, Abigail!",
                 "That's my twin sister, Abigail.",

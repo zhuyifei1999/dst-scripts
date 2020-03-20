@@ -524,8 +524,10 @@ return{
 
     ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
---fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
-    
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = {
+--fallback to speech_wilson.lua         "only_used_by_wendy",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 --fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
@@ -2670,7 +2672,7 @@ return{
 --fallback to speech_wilson.lua         LAVAARENA_STRONGDAMAGERHAT = "It looks like it packs a wallop.",
 --fallback to speech_wilson.lua         LAVAARENA_TIARAFLOWERPETALSHAT = "Looks like it amplifies healing expertise.",
 --fallback to speech_wilson.lua         LAVAARENA_EYECIRCLETHAT = "It has a gaze full of science.",
---fallback to speech_wilson.lua         LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
+--fallback to speech_wilson.lua         LAVAARENA_RECHARGERHAT = "Those crystals will quicken my abilities.",
 --fallback to speech_wilson.lua         LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
 --fallback to speech_wilson.lua         LAVAARENA_CROWNDAMAGERHAT = "That could cause some major destruction.",
 
