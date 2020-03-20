@@ -48,16 +48,24 @@ end
 -- Ghosts on a quest (following someone) shouldn't block other ghost spawns!
 local CANTHAVE_GHOST_TAGS = {"questing"}
 local MUSTHAVE_GHOST_TAGS = {"ghostkid"}
-local function on_night(inst, isnight)
-    if isnight and 
-            (inst.ghost == nil or not inst.ghost:IsValid()) and
-            math.random() < TUNING.GHOST_GRAVESTONE_CHANCE then
-        local gx, gy, gz = inst.Transform:GetWorldPosition()
-        local nearby_ghosts = TheSim:FindEntities(gx, gy, gz, TUNING.UNIQUE_SMALLGHOST_DISTANCE, MUSTHAVE_GHOST_TAGS, CANTHAVE_GHOST_TAGS)
-        if #nearby_ghosts == 0 then
-            inst.ghost = SpawnPrefab("smallghost")
-            inst.ghost.Transform:SetPosition(gx + 0.3, gy, gz + 0.3)
-            inst.ghost:LinkToHome(inst)
+local function on_day_change(inst)
+    if inst.ghost == nil or not inst.ghost:IsValid() and #AllPlayers > 0 then
+        local ghost_spawn_chance = 0
+        for _, v in ipairs(AllPlayers) do
+            if v:HasTag("ghostlyfriend") then
+                ghost_spawn_chance = ghost_spawn_chance + TUNING.GHOST_GRAVESTONE_CHANCE
+            end
+        end
+        ghost_spawn_chance = math.max(ghost_spawn_chance, TUNING.GHOST_GRAVESTONE_CHANCE)
+
+        if math.random() < ghost_spawn_chance then
+            local gx, gy, gz = inst.Transform:GetWorldPosition()
+            local nearby_ghosts = TheSim:FindEntities(gx, gy, gz, TUNING.UNIQUE_SMALLGHOST_DISTANCE, MUSTHAVE_GHOST_TAGS, CANTHAVE_GHOST_TAGS)
+            if #nearby_ghosts == 0 then
+                inst.ghost = SpawnPrefab("smallghost")
+                inst.ghost.Transform:SetPosition(gx + 0.3, gy, gz + 0.3)
+                inst.ghost:LinkToHome(inst)
+            end
         end
     end
 end
@@ -125,7 +133,7 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
-    inst:WatchWorldState("iscavenight", on_night)
+    inst:WatchWorldState("cycles", on_day_change)
 
     inst.OnLoad = onload
     inst.OnSave = onsave

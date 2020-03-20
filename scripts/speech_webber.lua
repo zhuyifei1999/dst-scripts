@@ -524,8 +524,10 @@ return{
 
     ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
---fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
-    
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = {
+--fallback to speech_wilson.lua         "only_used_by_wendy",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 --fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
@@ -1088,9 +1090,9 @@ return{
 		MAXWELLPHONOGRAPH = "We could listen to that forever!",
 		BOOMERANG = "Boomerangarangarang!",
 		PIGGUARD = "We wouldn't want to cross that one.",
-		LEVEL1 =
+		ABIGAIL =
 		{
-            GENERIC =
+            LEVEL1 =
             {
                 "We're a bit old for playing peek-a-boo.",
                 "We're a bit old for playing peek-a-boo.",

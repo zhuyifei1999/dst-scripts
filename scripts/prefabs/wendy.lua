@@ -67,7 +67,7 @@ end
 
 local function OnPlayerActivated(inst)
 	if inst == ThePlayer then
-		if inst.HUD.wendyflowerover == nil then
+		if inst.HUD.wendyflowerover == nil and inst.components.pethealthbar ~= nil then
 			inst.HUD.wendyflowerover = inst.HUD.overlayroot:AddChild(WendyFlowerOver(inst))
 			inst.HUD.wendyflowerover:MoveToBack()
 			OnClientPetSkinChanged( inst )
@@ -118,6 +118,7 @@ end
 
 local function onresurrection(inst)
 	inst.components.ghostlybond:SetBondLevel(1)
+	inst.components.ghostlybond:ResumeBonding()
 end
 
 local function ghostlybond_onlevelchange(inst, ghost, level, prev_level, isloading)

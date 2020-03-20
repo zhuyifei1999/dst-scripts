@@ -56,21 +56,41 @@ end
 
 local COMBAT_MUSHAVE_TAGS = { "_combat", "_health" }
 local COMBAT_CANTHAVE_TAGS = { "INLIMBO", "noauradamage" }
+local COMBAT_MUSTONEOF_TAGS = { "monster", "prey" }
+
 local COMBAT_TARGET_DSQ = TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE * TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE
 
 local function HasFriendlyLeader(inst, target)
-    local leader = inst.components.follower.leader
 
+    local leader = inst.components.follower.leader
     if leader ~= nil then
-        return leader == target or 
-                (target.components.follower ~= nil and 
-                target.components.follower.leader ~= nil and
-                (target.components.follower.leader == leader or
-                (target.components.follower.leader:HasTag("player") and 
-                not TheNet:GetPVPEnabled())))
+        local target_leader = (target.components.follower ~= nil) and target.components.follower.leader or nil
+
+        if target_leader and target_leader.components.inventoryitem then
+            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
+            -- Don't attack followers if their follow object has no owner
+            if target_leader == nil then
+                return true
+            end
+        end
+
+        return leader == target or (target_leader ~= nil 
+                and (target_leader == leader or (target_leader:HasTag("player") 
+                and not TheNet:GetPVPEnabled()))) or
+                (target.components.domesticatable and target.components.domesticatable:IsDomesticated() 
+                and not TheNet:GetPVPEnabled())
     end
 
     return false    
+end
+
+local function CommonRetarget(inst, v)
+    return v ~= inst and v ~= inst._playerlink and v.entity:IsVisible()
+            and v:GetDistanceSqToInst(inst._playerlink) < COMBAT_TARGET_DSQ
+            and inst.components.combat:CanTarget(v)
+            and v.components.minigame_participator == nil
+            and not HasFriendlyLeader(inst, v)
+
 end
 
 local function DefensiveRetarget(inst)
@@ -83,20 +103,16 @@ local function DefensiveRetarget(inst)
         local ix, iy, iz = inst.Transform:GetWorldPosition()
         local entities_near_me = TheSim:FindEntities(
             ix, iy, iz, TUNING.ABIGAIL_DEFENSIVE_MAX_FOLLOW,
-            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS
+            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS
         )
 
         local leader = inst.components.follower.leader
         
         for _, v in ipairs(entities_near_me) do
-            if v ~= inst and v ~= inst._playerlink and v.entity:IsVisible()
-                    and v:GetDistanceSqToInst(inst._playerlink) < COMBAT_TARGET_DSQ
-                    and inst.components.combat:CanTarget(v)
-                    and v.components.minigame_participator == nil
+            if CommonRetarget(inst, v)
                     and (v.components.combat.target == inst._playerlink or
                         inst._playerlink.components.combat.target == v or
-                        v.components.combat.target == inst)
-                    and not HasFriendlyLeader(inst, v) then
+                        v.components.combat.target == inst) then
 
                 return v
             end
@@ -114,18 +130,13 @@ local function AggressiveRetarget(inst)
         local ix, iy, iz = inst.Transform:GetWorldPosition()
         local entities_near_me = TheSim:FindEntities(
             ix, iy, iz, TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE,
-            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS
+            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS
         )
 
         local leader = inst.components.follower.leader
 
         for _, v in ipairs(entities_near_me) do
-            if v ~= inst and v ~= inst._playerlink and v.entity:IsVisible()
-                    and v:GetDistanceSqToInst(inst._playerlink) < COMBAT_TARGET_DSQ
-                    and inst.components.combat:CanTarget(v)
-                    and v.components.minigame_participator == nil
-                    and not HasFriendlyLeader(inst, v) then
-
+            if CommonRetarget(inst, v) then
                 return v
             end
         end
@@ -219,8 +230,6 @@ local function auratest(inst, target)
         return true
     end
 
-    -- Don't aggressively aura-attack other players or ghosts,
-    -- or anything else that's not a monster or prey.
     return target:HasTag("monster") or target:HasTag("prey")
 end
 

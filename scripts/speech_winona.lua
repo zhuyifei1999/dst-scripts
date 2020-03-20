@@ -530,8 +530,10 @@ return{
 
     ANNOUNCE_GHOST_QUEST = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_GHOST_HINT = "only_used_by_wendy",
---fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = "only_used_by_wendy",
-    
+--fallback to speech_wilson.lua     ANNOUNCE_GHOST_TOY_NEAR = {
+--fallback to speech_wilson.lua         "only_used_by_wendy",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 --fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
