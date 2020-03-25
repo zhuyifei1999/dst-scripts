@@ -137,35 +137,19 @@ local function SetOrientation(inst, rotation)
         inst.dooranim.Transform:SetRotation(rotation)
     end
 
-    if inst.builds.narrow then
+    if inst.anims.narrow then
         
         if IsNarrow(inst) then
             if not inst.bank_narrow_set then
                 inst.bank_narrow_set = true
                 inst.bank_wide_set = nil
-                if not inst.isdoor then
-                    local skin_build = inst:GetSkinBuild()
-                    if skin_build then
-                        GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts_thin" )
-                    else
-                        GetAnimState(inst):SetBuild(inst.builds.narrow)
-                    end
-                end
-                GetAnimState(inst):SetBank(inst.builds.narrow)
+                GetAnimState(inst):SetBank(inst.anims.narrow)
             end
         else
             if not inst.bank_wide_set then
                 inst.bank_wide_set = true
                 inst.bank_narrow_set = nil
-                if not inst.isdoor then
-                    local skin_build = inst:GetSkinBuild()
-                    if skin_build then
-                        GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts" )
-                    else
-                        GetAnimState(inst):SetBuild(inst.builds.wide)
-                    end
-                end
-                GetAnimState(inst):SetBank(inst.builds.wide)
+                GetAnimState(inst):SetBank(inst.anims.wide)
             end
         end
 
@@ -458,7 +442,7 @@ local function onload(inst, data)
     end
 end
 
-local function MakeWall(name, builds, isdoor, klaussackkeyid)
+local function MakeWall(name, anims, isdoor, klaussackkeyid)
     local assets, custom_wall_prefabs
 
     if isdoor then
@@ -469,10 +453,10 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
     else
         assets =
         {
-            Asset("ANIM", "anim/"..builds.wide..".zip"),
+            Asset("ANIM", "anim/"..anims.wide..".zip"),
         }
-        if builds.narrow then
-            table.insert(assets, Asset("ANIM", "anim/"..builds.narrow..".zip"))
+        if anims.narrow then
+            table.insert(assets, Asset("ANIM", "anim/"..anims.narrow..".zip"))
         end
     end
 
@@ -504,8 +488,8 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
             end
             inst.GetActivateVerb = getdooractionstring
         else
-            inst.AnimState:SetBank(builds.wide)
-            inst.AnimState:SetBuild(builds.wide)
+            inst.AnimState:SetBank(anims.wide)
+            inst.AnimState:SetBuild(anims.wide)
             inst.AnimState:PlayAnimation("idle")
 
             MakeSnowCoveredPristine(inst)
@@ -541,7 +525,7 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
             end
         end
 
-        inst.builds = builds
+        inst.anims = anims
 
         inst:AddComponent("lootdropper")
         inst.components.lootdropper:SetLoot(
@@ -601,13 +585,13 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
 end
 
 -------------------------------------------------------------------------------
-local function MakeWallAnim(name, builds, isdoor)
+local function MakeWallAnim(name, anims, isdoor)
     local assets =
     {
-        Asset("ANIM", "anim/"..builds.wide..".zip"),
+        Asset("ANIM", "anim/"..anims.wide..".zip"),
     }
-    if builds.narrow then
-        table.insert(assets, Asset("ANIM", "anim/"..builds.narrow..".zip"))
+    if anims.narrow then
+        table.insert(assets, Asset("ANIM", "anim/"..anims.narrow..".zip"))
     end
 
     local function fn()
@@ -624,8 +608,8 @@ local function MakeWallAnim(name, builds, isdoor)
 
         inst.Transform:SetEightFaced()
 
-        inst.AnimState:SetBank(builds.wide)
-        inst.AnimState:SetBuild(builds.wide)
+        inst.AnimState:SetBank(anims.wide)
+        inst.AnimState:SetBuild(anims.wide)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("FX")
@@ -735,7 +719,7 @@ local function placerupdate(inst)
     FixUpFenceOrientation(inst, nil)
 end
 
-local function MakeWallPlacer(placer, placement, builds, isdoor)
+local function MakeWallPlacer(placer, placement, anims, isdoor)
     local CreateDoorAnim = isdoor and function(inst)
         local inst = CreateEntity()
 
@@ -744,8 +728,8 @@ local function MakeWallPlacer(placer, placement, builds, isdoor)
 
         inst.Transform:SetEightFaced()
 
-        inst.AnimState:SetBank(builds.wide)
-        inst.AnimState:SetBuild(builds.wide)
+        inst.AnimState:SetBank(anims.wide)
+        inst.AnimState:SetBuild(anims.wide)
         inst.AnimState:PlayAnimation("idle")
         inst.AnimState:Hide("mouseover")
         inst.AnimState:SetLightOverride(1)
@@ -762,13 +746,13 @@ local function MakeWallPlacer(placer, placement, builds, isdoor)
 
     return MakePlacer(
         placer,
-        builds.wide,
-        builds.wide,
+        anims.wide,
+        anims.wide,
         not isdoor and "idle" or nil,
         nil, nil, true, nil, 0, "eight", 
         function(inst)
             inst.components.placer.onupdatetransform = placerupdate
-            inst.builds = builds
+            inst.anims = anims
             if isdoor then
                 inst.isdoor = true
                 inst.isswingright = false

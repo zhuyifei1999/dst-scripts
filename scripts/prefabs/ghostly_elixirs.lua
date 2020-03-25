@@ -24,8 +24,17 @@ local potion_tunings =
 	},
 	ghostlyelixir_attack = 
 	{
+		ONAPPLY = function(inst, target) 
+			if target.UpdateDamage ~= nil then
+				target:UpdateDamage()
+			end
+		end,
+		ONDETACH = function(inst, target)
+			if target:IsValid() and target.UpdateDamage ~= nil then
+				target:UpdateDamage()
+			end
+		end,
 		DURATION = TUNING.GHOSTLYELIXIR_DAMAGE_DURATION,
-		ONAPPLY = function(inst, target) target.components.combat.externaldamagemultipliers:SetModifier(inst, TUNING.GHOSTLYELIXIR_DAMAGE_MULT, "ghostlyelixir") end,
         FLOATER = {"small", 0.1, 0.5},
 		fx = "ghostlyelixir_attack_fx",
 		dripfx = "ghostlyelixir_attack_dripfx",
@@ -209,7 +218,7 @@ local function buff_OnExtended(inst, target)
 	end
 end
 
-local function buff_OnDetached(inst)
+local function buff_OnDetached(inst, target)
 	if inst.task ~= nil then
 		inst.task:Cancel()
 		inst.task = nil
@@ -217,6 +226,9 @@ local function buff_OnDetached(inst)
 	if inst.driptask ~= nil then
 		inst.driptask:Cancel()
 		inst.driptask = nil
+	end
+	if inst.potion_tunings.ONDETACH ~= nil then
+		inst.potion_tunings.ONDETACH(inst, target)
 	end
 	inst:Remove()
 end
@@ -283,7 +295,7 @@ end
 local potions = {}
 AddPotion(potions, "slowregen", "regeneration")
 AddPotion(potions, "fastregen", "healing")
-AddPotion(potions, "shield", "defence")
+AddPotion(potions, "shield", "shield")
 AddPotion(potions, "attack", "attack")
 AddPotion(potions, "speed", "speed")
 AddPotion(potions, "retaliation", "retaliation")

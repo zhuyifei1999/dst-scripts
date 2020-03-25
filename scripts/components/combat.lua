@@ -697,6 +697,7 @@ function Combat:CalcDamage(target, weapon, multiplier)
         * (multiplier or 1)
         * playermultiplier
         * pvpmultiplier
+		* (self.customdamagemultfn ~= nil and self.customdamagemultfn(self.inst, target, weapon, multiplier) or 1)
         + (bonus or 0)
 end
 

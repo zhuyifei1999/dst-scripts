@@ -3672,9 +3672,14 @@ function Tune(overrides)
             },
             TOY_DIST =
             {
-                BASE = 150,
-                RADIUS = 35,
+                BASE = 125,
+                RADIUS = 20,
                 VARIANCE = 5,
+            },
+            TOY_FADE =
+            {
+                IN = 5.5,
+                OUT = 6.5,
             },
             PICKUP_DSQ = 4,
             HINT_OFFSET = 3,
@@ -3690,14 +3695,17 @@ function Tune(overrides)
         ABIGAIL_HEALTH_LEVEL2 = wilson_health*2,
         ABIGAIL_HEALTH_LEVEL3 = wilson_health*4,
 		ABIGAIL_FORCEFIELD_ABSORPTION = 1.0,
-        ABIGAIL_DAMAGE_PER_SECOND = 40,
-
-		ABIGAIL_DAMAGE_WENDY_HEALTH_BASE = 40,
-        ABIGAIL_DAMAGE_PER_CREATURE = 
+        ABIGAIL_DAMAGE_PER_SECOND = 20, -- deprecated
+        ABIGAIL_DAMAGE = 
         {
-            20, -- 1 target			
-            12, -- 2 or more targets
+            day = 15,
+			dusk = 25,
+			night = 40,
         },
+		ABIGAIL_VEX_DURATION = 2,
+		ABIGAIL_VEX_DAMAGE_MOD = 1.1,
+		ABIGAIL_VEX_GHOSTLYFRIEND_DAMAGE_MOD = 1.4,
+
 
         ABIGAIL_DMG_PERIOD = 1.5,
         ABIGAIL_DMG_PLAYER_PERCENT = 0.25,
@@ -3728,25 +3736,24 @@ function Tune(overrides)
         DEFENSIVE_MAX_CHASE_TIME = 3,
         AGGRESSIVE_MAX_CHASE_TIME = 6,
 
-		GHOSTLYELIXIR_SLOWREGEN_HEALING = 1,
+		GHOSTLYELIXIR_SLOWREGEN_HEALING = 2,
 		GHOSTLYELIXIR_SLOWREGEN_TICK_TIME = 1,
-		GHOSTLYELIXIR_SLOWREGEN_DURATION = total_day_time * 2, -- 960 over 2 days
+		GHOSTLYELIXIR_SLOWREGEN_DURATION = total_day_time, -- 960 hp
 
-		GHOSTLYELIXIR_FASTREGEN_HEALING = 20, -- 300 total
+		GHOSTLYELIXIR_FASTREGEN_HEALING = 20, 
 		GHOSTLYELIXIR_FASTREGEN_TICK_TIME = 1,
-		GHOSTLYELIXIR_FASTREGEN_DURATION = 15, 
+		GHOSTLYELIXIR_FASTREGEN_DURATION = seg_time, -- 600 hp
 
-		GHOSTLYELIXIR_DAMAGE_MULT = 1.2,
-		GHOSTLYELIXIR_DAMAGE_DURATION = seg_time * 2,
+		GHOSTLYELIXIR_DAMAGE_DURATION = total_day_time,
 
 		GHOSTLYELIXIR_SPEED_LOCO_MULT = 1.75,
-		GHOSTLYELIXIR_SPEED_DURATION = total_day_time * 3,
+		GHOSTLYELIXIR_SPEED_DURATION = total_day_time,
 		GHOSTLYELIXIR_SPEED_PLAYER_GHOST_DURATION = 3,
 
-		GHOSTLYELIXIR_SHIELD_DURATION = seg_time * 2,
+		GHOSTLYELIXIR_SHIELD_DURATION = total_day_time,
 
 		GHOSTLYELIXIR_RETALIATION_DAMAGE = 20,
-		GHOSTLYELIXIR_RETALIATION_DURATION = seg_time * 2,
+		GHOSTLYELIXIR_RETALIATION_DURATION = total_day_time,
 
 		GHOSTLYELIXIR_DRIP_FX_DELAY = seg_time / 2,
 

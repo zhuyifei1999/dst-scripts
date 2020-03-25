@@ -168,6 +168,10 @@ local function update_sisturn_state(inst, is_active)
 	end
 end
 
+local function CustomCombatDamage(inst, target)
+	return (target.components.debuffable ~= nil and target.components.debuffable:HasDebuff("abigail_vex_debuff")) and TUNING.ABIGAIL_VEX_GHOSTLYFRIEND_DAMAGE_MOD or 1
+end
+
 -------------------------------------------------------------------------------
 local function OnSave(inst, data)
     if inst.questghost ~= nil then
@@ -205,8 +209,6 @@ local function master_postinit(inst)
     inst.components.sanity:AddSanityAuraImmunity("ghost")
     inst.components.sanity:SetPlayerGhostImmunity(true)
 
-    --inst.questghost = nil
-
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wendy").master_postinit(inst, OnSave, OnLoad)
     elseif TheNet:GetServerGameMode() == "quagmire" then
@@ -219,6 +221,8 @@ local function master_postinit(inst)
 		inst.components.ghostlybond.changebehaviourfn = ghostlybond_changebehaviour
 		
 		inst.components.ghostlybond:Init("abigail", TUNING.ABIGAIL_BOND_LEVELUP_TIME)
+
+		inst.components.combat.customdamagemultfn = CustomCombatDamage
 
 		inst:ListenForEvent("death", ondeath)
 		inst:ListenForEvent("ms_becameghost", ondeath)

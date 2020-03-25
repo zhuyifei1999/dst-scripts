@@ -205,7 +205,7 @@ local function common_fn(build, tag)
 end
 
 local function rook_fn()
-    local inst = common_fn("rook_build")
+    local inst = common_fn("rook_build", "largecreature")
 
     if not TheWorld.ismastersim then
         return inst
