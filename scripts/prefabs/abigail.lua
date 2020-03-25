@@ -13,6 +13,7 @@ local prefabs =
 	"abigail_retaliation",
 	"abigailforcefield",
 	"abigaillevelupfx",
+	"abigail_vex_debuff",
 }
 
 local brain = require("brains/abigailbrain")
@@ -56,12 +57,13 @@ end
 
 local COMBAT_MUSHAVE_TAGS = { "_combat", "_health" }
 local COMBAT_CANTHAVE_TAGS = { "INLIMBO", "noauradamage" }
-local COMBAT_MUSTONEOF_TAGS = { "monster", "prey" }
+
+local COMBAT_MUSTONEOF_TAGS_AGGRESSIVE = { "monster", "prey", "insect", "hostile", "character", "animal" }
+local COMBAT_MUSTONEOF_TAGS_DEFENSIVE = { "monster", "prey" }
 
 local COMBAT_TARGET_DSQ = TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE * TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE
 
 local function HasFriendlyLeader(inst, target)
-
     local leader = inst.components.follower.leader
     if leader ~= nil then
         local target_leader = (target.components.follower ~= nil) and target.components.follower.leader or nil
@@ -74,11 +76,15 @@ local function HasFriendlyLeader(inst, target)
             end
         end
 
+        local PVP_enabled = TheNet:GetPVPEnabled()
+
         return leader == target or (target_leader ~= nil 
                 and (target_leader == leader or (target_leader:HasTag("player") 
-                and not TheNet:GetPVPEnabled()))) or
+                and not PVP_enabled))) or
                 (target.components.domesticatable and target.components.domesticatable:IsDomesticated() 
-                and not TheNet:GetPVPEnabled())
+                and not PVP_enabled) or
+                (target.components.saltlicker and target.components.saltlicker.salted
+                and not PVP_enabled)
     end
 
     return false    
@@ -94,7 +100,6 @@ local function CommonRetarget(inst, v)
 end
 
 local function DefensiveRetarget(inst)
-
     if inst._playerlink == nil then
         return nil
     elseif not IsWithinDefensiveRange(inst) then
@@ -103,7 +108,7 @@ local function DefensiveRetarget(inst)
         local ix, iy, iz = inst.Transform:GetWorldPosition()
         local entities_near_me = TheSim:FindEntities(
             ix, iy, iz, TUNING.ABIGAIL_DEFENSIVE_MAX_FOLLOW,
-            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS
+            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS_DEFENSIVE
         )
 
         local leader = inst.components.follower.leader
@@ -123,14 +128,13 @@ local function DefensiveRetarget(inst)
 end
 
 local function AggressiveRetarget(inst)
-
     if inst._playerlink == nil then
         return nil
     else
         local ix, iy, iz = inst.Transform:GetWorldPosition()
         local entities_near_me = TheSim:FindEntities(
             ix, iy, iz, TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE,
-            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS
+            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS_AGGRESSIVE
         )
 
         local leader = inst.components.follower.leader
@@ -153,8 +157,6 @@ local function StartForceField(inst)
 end
 
 local function OnAttacked(inst, data)
---    print("onattack", data.attacker, data.damage, data.damageresolved)
-
     if data.attacker == nil then
         inst.components.combat:SetTarget(nil)
     elseif data.attacker == inst._playerlink then
@@ -162,8 +164,7 @@ local function OnAttacked(inst, data)
     elseif not data.attacker:HasTag("noauradamage") then
         if not inst.is_defensive then
             inst.components.combat:SetTarget(data.attacker)
-        elseif inst:IsWithinDefensiveRange() and
-                inst._playerlink:GetDistanceSqToInst(data.attacker) < ABIGAIL_DEFENSIVE_MAX_FOLLOW_DSQ then
+        elseif inst:IsWithinDefensiveRange() and inst._playerlink:GetDistanceSqToInst(data.attacker) < ABIGAIL_DEFENSIVE_MAX_FOLLOW_DSQ then
             -- Basically, we avoid targetting the attacker if they're far enough away that we wouldn't reach them anyway.
             inst.components.combat:SetTarget(data.attacker)
         end
@@ -233,38 +234,15 @@ local function auratest(inst, target)
     return target:HasTag("monster") or target:HasTag("prey")
 end
 
-local function RecalculateDamage(inst)
-    local enemy_count = 0
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, { "_combat" }, inst.components.aura.auraexcludetags)
-    for i, ent in ipairs(ents) do
-        if ent ~= inst and auratest(inst, ent) then
-            enemy_count = enemy_count + 1
-            if enemy_count >= #TUNING.ABIGAIL_DAMAGE_PER_CREATURE then
-                break
-            end
-        end
-    end
-
-    local damage = TUNING.ABIGAIL_DAMAGE_PER_CREATURE[math.clamp(enemy_count, 1, #TUNING.ABIGAIL_DAMAGE_PER_CREATURE)]
-    local bonus_percent = (inst._playerlink ~= nil and inst._playerlink.components.health ~= nil) and (1 - inst._playerlink.components.health:GetPercentWithPenalty()) or 0
-	bonus_percent = bonus_percent * bonus_percent
-
-	damage = damage + (TUNING.ABIGAIL_DAMAGE_WENDY_HEALTH_BASE * bonus_percent)
+local function UpdateDamage(inst)
     local buff = inst.components.debuffable:GetDebuff("elixir_buff")
-    if buff ~= nil and buff.prefab == "ghostlyelixir_attack" then
-        damage = damage * TUNING.GHOSTLYELIXIR_DAMAGE_MULT
-    end
-    inst.components.combat.defaultdamage = damage
 
-    if inst.SoundEmitter:PlayingSound("angry") then
-        inst.SoundEmitter:SetParameter("angry", "intensity", bonus_percent)
-    end
+	local phase = (buff ~= nil and buff.prefab == "ghostlyelixir_attack_buff") and "night" or TheWorld.state.phase
+	inst.components.combat.defaultdamage = (TUNING.ABIGAIL_DAMAGE[phase] or TUNING.ABIGAIL_DAMAGE.day) / TUNING.ABIGAIL_VEX_DAMAGE_MOD -- so abigail does her intended damage defined in tunings.lua
 
-    -- Changes the animation FX
-    inst.attack_level = bonus_percent > 0.8 and 3
-                        or bonus_percent > 0.5 and 2
-                        or 1
+    inst.attack_level = phase == "day" and 1
+						or phase == "dusk" and 2
+						or 3
 
     -- If the animation fx was already playing we update its animation
     local level_str = tostring(inst.attack_level)
@@ -334,6 +312,16 @@ local function onlostplayerlink(inst)
 	inst._playerlink = nil
 end
 
+local function ApplyDebuff(inst, data)
+	local target = data ~= nil and data.target
+	if target ~= nil then
+		if target.components.debuffable == nil then
+			target:AddComponent("debuffable")
+		end
+		target.components.debuffable:AddDebuff("abigail_vex_debuff", "abigail_vex_debuff")
+	end
+end
+
 local function linktoplayer(inst, player)
     inst.persists = false
     inst._playerlink = player
@@ -341,6 +329,7 @@ local function linktoplayer(inst, player)
     BecomeDefensive(inst)
 
     inst:ListenForEvent("healthdelta", AbigailHealthDelta)
+    inst:ListenForEvent("onareaattackother", ApplyDebuff)
 
     player.components.leader:AddFollower(inst)
     if player.components.pethealthbar ~= nil then
@@ -441,12 +430,10 @@ local function fn()
 	inst.components.health.save_maxhealth = true
 
     inst:AddComponent("combat")
-    inst.components.combat.defaultdamage = TUNING.ABIGAIL_DAMAGE_PER_CREATURE[1]
     inst.components.combat.playerdamagepercent = TUNING.ABIGAIL_DMG_PLAYER_PERCENT
 	inst.components.combat:SetKeepTargetFunction(auratest)
 
     inst:AddComponent("aura")
-    inst.components.aura.pretickfn = RecalculateDamage
     inst.components.aura.radius = 4
     inst.components.aura.tickperiod = 1
     inst.components.aura.ignoreallies = true
@@ -482,9 +469,13 @@ local function fn()
 
     inst.LinkToPlayer = linktoplayer
     
-    inst.attack_level = 1
+
     inst.is_defensive = true
     inst.issued_health_warning = false
+
+    inst:WatchWorldState("phase", UpdateDamage)
+	UpdateDamage(inst, TheWorld.state.phase)
+	inst.UpdateDamage = UpdateDamage
 
 	inst._on_ghostlybond_level_change = function(player, data) on_ghostlybond_level_change(inst, player, data) end
 	inst._onlostplayerlink = function(player) onlostplayerlink(inst, player) end
@@ -492,9 +483,15 @@ local function fn()
     return inst
 end
 
+-------------------------------------------------------------------------------
+
 local function SetRetaliationTarget(inst, target)
 	inst._RetaliationTarget = target
 	inst.entity:SetParent(target.entity)
+	local s = (1 / target.Transform:GetScale()) * (target:HasTag("largecreature") and 1.1 or .8)
+	if s ~= 1 and s ~= 0 then
+		inst.Transform:SetScale(s, s, s)
+	end
 
 	inst.detachretaliationattack = function(t)
 		if inst._RetaliationTarget ~= nil and inst._RetaliationTarget == t then
@@ -551,5 +548,125 @@ local function retaliationattack_fn()
 	return inst
 end
 
+-------------------------------------------------------------------------------
+
+local function do_hit_fx(inst)
+	local fx = SpawnPrefab("abigail_vex_hit")
+	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+end
+
+local function on_target_attacked(inst, target, data)
+	if data.attacker ~= nil and data.attacker:HasTag("ghostlyfriend") then
+		inst.hitevent:push()
+	end
+end
+
+local function buff_OnExtended(inst)
+	if inst.decaytimer ~= nil then
+		inst.decaytimer:Cancel()
+	end
+	inst.decaytimer = inst:DoTaskInTime(TUNING.ABIGAIL_VEX_DURATION, function() inst.components.debuff:Stop() end)
+end
+
+local function buff_OnAttached(inst, target)
+	if target ~= nil and target:IsValid() and not target.inlimbo and target.components.combat ~= nil and target.components.health ~= nil and not target.components.health:IsDead() then
+		target.components.combat.externaldamagetakenmultipliers:SetModifier(inst, TUNING.ABIGAIL_VEX_DAMAGE_MOD)
+
+		inst.entity:SetParent(target.entity)
+		inst.Transform:SetPosition(0, 0, 0)
+		local s = (1 / target.Transform:GetScale()) * (target:HasTag("largecreature") and 1.6 or 1.2)
+		if s ~= 1 and s ~= 0 then
+			inst.Transform:SetScale(s, s, s)
+		end
+
+		inst:ListenForEvent("attacked", inst._on_target_attacked, target)
+	end
+
+	buff_OnExtended(inst)
+
+    inst:ListenForEvent("death", function() inst.components.debuff:Stop() end, target)
+end
+
+local function buff_OnDetached(inst, target)
+	if inst.decaytimer ~= nil then
+		inst.decaytimer:Cancel()
+		inst.decaytimer = nil
+
+		if target ~= nil and target:IsValid() and target.components.combat ~= nil then
+			target.components.combat.externaldamagetakenmultipliers:RemoveModifier(inst)
+		end
+
+		inst.AnimState:PushAnimation("vex_debuff_pst", false)
+		inst:ListenForEvent("animqueueover", inst.Remove)
+	end
+end
+
+local function abigail_vex_debuff_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+	inst.AnimState:SetBank("abigail_debuff_fx")
+	inst.AnimState:SetBuild("abigail_debuff_fx")
+
+	inst.AnimState:PlayAnimation("vex_debuff_pre")
+	inst.AnimState:PushAnimation("vex_debuff_loop", true)
+	inst.AnimState:SetFinalOffset(3)
+
+	inst:AddTag("FX")
+
+	inst.hitevent = net_event(inst.GUID, "abigail_vex_debuff.hitevent")
+
+	if not TheNet:IsDedicated() then
+        inst:ListenForEvent("abigail_vex_debuff.hitevent", do_hit_fx)
+	end
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+	inst._on_target_attacked = function(target, data) on_target_attacked(inst, target, data) end
+
+    inst:AddComponent("debuff")
+    inst.components.debuff:SetAttachedFn(buff_OnAttached)
+    inst.components.debuff:SetDetachedFn(buff_OnDetached)
+    inst.components.debuff:SetExtendedFn(buff_OnExtended)
+
+	return inst
+end
+
+
+-------------------------------------------------------------------------------
+
+local function abigail_vex_hit_fn()
+    local inst = CreateEntity()
+
+	inst:AddTag("CLASSIFIED")
+    --[[Non-networked entity]]
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+	inst.AnimState:SetBank("abigail_debuff_fx")
+	inst.AnimState:SetBuild("abigail_debuff_fx")
+
+	inst.AnimState:PlayAnimation("vex_hit")
+	inst.AnimState:SetFinalOffset(3)
+
+	inst:AddTag("FX")
+
+    inst.persists = false
+	inst:ListenForEvent("animover", inst.Remove)
+
+	return inst
+end
+
 return Prefab("abigail", fn, assets, prefabs),
-	   Prefab("abigail_retaliation", retaliationattack_fn, {Asset("ANIM", "anim/abigail_shield.zip")} )
+	   Prefab("abigail_retaliation", retaliationattack_fn, {Asset("ANIM", "anim/abigail_shield.zip")} ),
+	   Prefab("abigail_vex_debuff", abigail_vex_debuff_fn, {Asset("ANIM", "anim/abigail_debuff_fx.zip")}, {"abigail_vex_hit"} ),
+	   Prefab("abigail_vex_hit", abigail_vex_hit_fn, {Asset("ANIM", "anim/abigail_debuff_fx.zip")} )
+	   

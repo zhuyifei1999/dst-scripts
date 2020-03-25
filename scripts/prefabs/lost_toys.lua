@@ -84,7 +84,7 @@ local function MakeTrinket(num)
         inst:AddComponent("inspectable")
 
         inst:AddComponent("playerprox")
-        inst.components.playerprox:SetDist(5, 6)
+        inst.components.playerprox:SetDist(TUNING.GHOST_HUNT.TOY_FADE.IN, TUNING.GHOST_HUNT.TOY_FADE.IN)
         inst.components.playerprox:SetOnPlayerNear(on_player_near)
         inst.components.playerprox:SetOnPlayerFar(on_player_far)
 

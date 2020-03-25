@@ -174,7 +174,7 @@ local function LoadAssets(asset_set, savedata)
 
 	RECIPE_PREFABS = {}
 	for k,v in pairs(AllRecipes) do
-		table.insert(RECIPE_PREFABS, v.name)
+		table.insert(RECIPE_PREFABS, v.product)
 		if v.placer then
 			table.insert(RECIPE_PREFABS, v.placer)
 		end
