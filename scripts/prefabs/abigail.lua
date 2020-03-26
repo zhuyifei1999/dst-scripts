@@ -318,7 +318,12 @@ local function ApplyDebuff(inst, data)
 		if target.components.debuffable == nil then
 			target:AddComponent("debuffable")
 		end
-		target.components.debuffable:AddDebuff("abigail_vex_debuff", "abigail_vex_debuff")
+		local debuff = target.components.debuffable:AddDebuff("abigail_vex_debuff", "abigail_vex_debuff")
+
+        local skin_build = inst:GetSkinBuild()
+        if skin_build ~= nil and debuff ~= nil then
+            debuff.AnimState:OverrideItemSkinSymbol("flower", skin_build, "flower", inst.GUID, "abigail_attack_fx" )
+        end
 	end
 end
 
