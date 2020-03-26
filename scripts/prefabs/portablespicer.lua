@@ -6,6 +6,7 @@ local assets =
 {
     Asset("ANIM", "anim/portable_spicer.zip"),
     Asset("ANIM", "anim/cook_pot_food.zip"),
+    Asset("ANIM", "anim/cook_pot_food2.zip"),
     Asset("ANIM", "anim/plate_food.zip"),
     Asset("ANIM", "anim/spices.zip"),
     Asset("ANIM", "anim/ui_cookpot_1x2.zip"),
@@ -146,7 +147,8 @@ local function ShowProduct(inst)
         if IsModCookingProduct(inst.prefab, inst.components.stewer.product) then
             inst.AnimState:OverrideSymbol("swap_cooked", product, product)
         else
-            inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", product)
+            local symbol_override_build = (recipe ~= nil and recipe.overridebuild) or "cook_pot_food"
+            inst.AnimState:OverrideSymbol("swap_cooked", symbol_override_build, product)
         end
     end
 end

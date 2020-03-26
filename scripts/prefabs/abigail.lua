@@ -561,7 +561,7 @@ local function do_hit_fx(inst)
 end
 
 local function on_target_attacked(inst, target, data)
-	if data.attacker ~= nil and data.attacker:HasTag("ghostlyfriend") then
+	if data ~= nil and data.attacker ~= nil and data.attacker:HasTag("ghostlyfriend") then
 		inst.hitevent:push()
 	end
 end
