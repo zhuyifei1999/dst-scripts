@@ -421,6 +421,21 @@ function c_give(prefab, count, dontselect)
     end
 end
 
+-- Receives a prefab and gives the player all ingredients to craft that prefab
+-- Nothing happens if there's no recipe
+function c_giveingredients(prefab)
+    local recipe = AllRecipes[prefab]
+    if recipe == nil then
+        print ("No recipe found for prefab ", prefab)
+        return
+    end
+
+    for i, v in ipairs(recipe.ingredients) do
+        c_give(v.type, v.amount)
+    end
+
+end
+
 function c_mat(recname)
     local player = ConsoleCommandPlayer()
     local recipe = AllRecipes[recname]
