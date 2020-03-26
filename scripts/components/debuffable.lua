@@ -99,8 +99,10 @@ function Debuffable:AddDebuff(name, prefab)
 			if ent ~= nil then
 				RegisterDebuff(self, name, ent)
 			end
+			return ent
 		else
 			self.debuffs[name].inst.components.debuff:Extend(self.followsymbol, self.followoffset)
+			return self.debuffs[name].inst
 		end
     end
 end
