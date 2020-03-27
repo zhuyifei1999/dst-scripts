@@ -289,7 +289,7 @@ local function pickup_toy(inst, toy)
             spawn_ghostflower(tx, ty, tz, math.random(90, 179) * DEGREES)
 
             spawn_ghostflower(tx, ty, tz, math.random(180, 269) * DEGREES)
-            
+
             spawn_ghostflower(tx, ty, tz, math.random(270, 359) * DEGREES)
         end
 
@@ -397,7 +397,6 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.GHOST_SPEED
     inst.components.locomotor.runspeed = TUNING.GHOST_SPEED * 3
-    inst.components.locomotor.directdrive = true
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { allowocean = true }
 

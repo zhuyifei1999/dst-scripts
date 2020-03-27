@@ -112,7 +112,7 @@ function Inventory:OnSave()
         end
     end
 
-    if self.activeitem and not (self.activeitem.components.equippable and self.equipslots[self.activeitem.components.equippable.equipslot] == self.activeitem) then
+    if self.activeitem and self.activeitem.persists and not (self.activeitem.components.equippable and self.equipslots[self.activeitem.components.equippable.equipslot] == self.activeitem) then
         data.activeitem, refs = self.activeitem:GetSaveRecord()
         if refs then
             for k,v in pairs(refs) do
