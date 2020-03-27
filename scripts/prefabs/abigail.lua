@@ -159,8 +159,6 @@ end
 local function OnAttacked(inst, data)
     if data.attacker == nil then
         inst.components.combat:SetTarget(nil)
-    elseif data.attacker == inst._playerlink then
-        inst.components.health:Kill()
     elseif not data.attacker:HasTag("noauradamage") then
         if not inst.is_defensive then
             inst.components.combat:SetTarget(data.attacker)
@@ -184,6 +182,14 @@ local function OnAttacked(inst, data)
     end
 
     StartForceField(inst)
+end
+
+local function OnBlocked(inst, data)
+    if data ~= nil and inst._playerlink ~= nil and data.attacker == inst._playerlink then
+		if inst.components.health ~= nil and not inst.components.health:IsDead() then
+			inst._playerlink.components.ghostlybond:Recall()
+		end
+	end
 end
 
 local function OnDeath(inst)
@@ -463,6 +469,7 @@ local function fn()
 	inst:AddComponent("timer")
 
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("blocked", OnBlocked)
     inst:ListenForEvent("death", OnDeath)
     inst:ListenForEvent("onremoved", OnRemoved)
 	inst:ListenForEvent("exitlimbo", OnExitLimbo)
