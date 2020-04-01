@@ -618,6 +618,14 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	loading_wes_trailer =
+	{
+		type = "loading",
+		skin_tags = { "SHORTS", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 94,
+	},
 	loading_wes_victorian =
 	{
 		type = "loading",
@@ -2916,6 +2924,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 48,
 	},
+	playerportrait_bg_beeboxcrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 94,
+	},
 	playerportrait_bg_beefalo =
 	{
 		type = "playerportrait",
@@ -3389,6 +3404,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	playerportrait_bg_saltboxshaker =
+	{
+		type = "playerportrait",
+		skin_tags = { "FOOLS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 94,
+	},
 	playerportrait_bg_shoreline =
 	{
 		type = "playerportrait",
@@ -3646,6 +3668,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_beebox_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 94,
 	},
 	profileflair_beefalo =
 	{
@@ -4416,6 +4445,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_saltbox_shaker =
+	{
+		type = "profileflair",
+		skin_tags = { "FOOLS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 94,
 	},
 	profileflair_shadowhand =
 	{

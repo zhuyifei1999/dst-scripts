@@ -106,6 +106,7 @@ PREFAB_SKINS = {
 	},
 	beebox = 
 	{
+		"beebox_crystal",
 		"beebox_house",
 	},
 	beefalohat = 
@@ -529,6 +530,10 @@ PREFAB_SKINS = {
 	ruinshat = 
 	{
 		"ruinshat_arcane",
+	},
+	saltbox = 
+	{
+		"saltbox_shaker",
 	},
 	shovel = 
 	{
