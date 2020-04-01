@@ -167,7 +167,6 @@ local function fn()
     inst:ListenForEvent("itemlose", RemoveDecor)
     inst:ListenForEvent("onbuilt", onbuilt)
 
-
 	if TheWorld.components.sisturnregistry == nil then
 		TheWorld:AddComponent("sisturnregistry")
 	end

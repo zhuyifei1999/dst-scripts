@@ -171,6 +171,7 @@ local SPECIAL_EVENT_DEPS =
                 Asset("PKGREF", "anim/dst_menu_rot2.zip"),
                 Asset("PKGREF", "anim/dst_menu_inker.zip"),
                 Asset("ANIM", "anim/dst_menu_wendy.zip"),
+                Asset("ANIM", "anim/dst_menu_wes.zip"),
             },
         },
     },

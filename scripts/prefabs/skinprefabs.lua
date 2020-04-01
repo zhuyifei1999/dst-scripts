@@ -682,6 +682,16 @@ table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_white_ivory",
 	release_group = 7,
 }))
 
+table.insert(prefs, CreatePrefabSkin("beebox_crystal",
+{
+	base_prefab = "beebox",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) beebox_init_fn(inst, "beebox_crystal") end,
+	skin_tags = { "BEEBOX", "CRAFTABLE", },
+	release_group = 94,
+}))
+
 table.insert(prefs, CreatePrefabSkin("beebox_house",
 {
 	base_prefab = "beebox",
@@ -2768,6 +2778,16 @@ table.insert(prefs, CreatePrefabSkin("ruinshat_arcane",
 	init_fn = function(inst) ruinshat_init_fn(inst, "ruinshat_arcane") end,
 	skin_tags = { "YOTC", "RUINSHAT", "CRAFTABLE", },
 	release_group = 88,
+}))
+
+table.insert(prefs, CreatePrefabSkin("saltbox_shaker",
+{
+	base_prefab = "saltbox",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) saltbox_init_fn(inst, "saltbox_shaker") end,
+	skin_tags = { "SALTBOX", "FOOLS", "CRAFTABLE", },
+	release_group = 94,
 }))
 
 table.insert(prefs, CreatePrefabSkin("shovel_northern",

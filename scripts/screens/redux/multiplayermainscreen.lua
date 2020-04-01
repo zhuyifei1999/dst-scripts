@@ -177,11 +177,21 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop2", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)]]
-        anim:GetAnimState():SetBuild("dst_menu_wendy")
-        anim:GetAnimState():SetBank("dst_menu_wendy")
-        anim:GetAnimState():PlayAnimation("loop", true)
-        anim:SetScale(.667)
-        anim:SetPosition(0, 0)
+
+		local cur_time = os.time() 
+		if cur_time <= 1585810740 and (not IsConsole() or cur_time >= 1585759200) then -- 9:40am to 11:59pm PDT
+			anim:GetAnimState():SetBuild("dst_menu_wes")
+			anim:GetAnimState():SetBank("dst_menu_wes")
+			anim:GetAnimState():PlayAnimation("loop", true)
+			anim:SetScale(.667)
+			anim:SetPosition(0, 0)
+		else
+			anim:GetAnimState():SetBuild("dst_menu_wendy")
+			anim:GetAnimState():SetBank("dst_menu_wendy")
+			anim:GetAnimState():PlayAnimation("loop", true)
+			anim:SetScale(.667)
+			anim:SetPosition(0, 0)
+		end
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then

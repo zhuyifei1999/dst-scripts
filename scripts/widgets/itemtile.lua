@@ -90,7 +90,7 @@ local ItemTile = Class(Widget, function(self, invitem)
         end, invitem)
 	self.inst:ListenForEvent("inventoryitem_updatetooltip",
 		function(invitem)
-			if not TheInput:ControllerAttached() then
+			if self.focus and not TheInput:ControllerAttached() then
 				self:UpdateTooltip()
 			end
 		end, invitem)

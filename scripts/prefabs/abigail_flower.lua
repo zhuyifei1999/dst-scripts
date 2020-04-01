@@ -33,7 +33,7 @@ local function UpdateInventoryIcon(inst, player, level)
 
 			UpdateInventoryActions(inst)
 			if inst._inventoryactionstask == nil then
-				inst._inventoryactionstask = inst:DoPeriodicTask(0.0, UpdateInventoryActions)
+				inst._inventoryactionstask = inst:DoPeriodicTask(0.1, UpdateInventoryActions)
 			end
 		else
 			inst._playerlink = nil
