@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "Is it upside down? Nope. It's just wrong.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "We should wait until we get outside.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -495,6 +498,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nWoah, that's heavy!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Oops! We missed it.",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Aww... nothing.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -3131,12 +3139,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Ouch! It's sharp!",
 		OCEANFISHINGLURE_SPOON_GREEN = "Ouch! It's sharp!",
 		OCEANFISHINGLURE_SPOON_BLUE = "Ouch! It's sharp!",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Do fish know when it's raining?",
+		OCEANFISHINGLURE_HERMIT_SNOW = "Fishing in the snow might be fun!",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "It makes our head feel fuzzy... fuzzier than normal.",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "We're gonna catch the biggest fish with this!",
 
 		OCEANFISH_SMALL_1 = "It's so little!",
 		OCEANFISH_SMALL_2 = "Aww, just a little guy.",
 		OCEANFISH_SMALL_3 = "It's kind of cute. Too bad we're gonna eat it.",
 		OCEANFISH_SMALL_4 = "We know we can catch a bigger fish!",
 		OCEANFISH_SMALL_5 = "Woah, this fish is weird!",
+		OCEANFISH_SMALL_6 = "What if we got a pile of these and jumped in it?",
+		OCEANFISH_SMALL_7 = "Wendy got mad when we said it reminded us of her...",
+		OCEANFISH_SMALL_8 = "Ow! Owie! Hot!!",
+
 		OCEANFISH_MEDIUM_1 = "Eww, it'd covered in mud!",
 		OCEANFISH_MEDIUM_2 = "You'd be pretty tasty with some chips.",
 		OCEANFISH_MEDIUM_3 = "Yikes, this one's all prickly!",
@@ -3144,6 +3160,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Does this count as eating our vegetables?",
 		OCEANFISH_MEDIUM_6 = "It looks like it has whiskers!",
 		OCEANFISH_MEDIUM_7 = "It looks like it has whiskers!",
+		OCEANFISH_MEDIUM_8 = "It's a fishsicle!",
 
 		PONDFISH = "It could stand to be fried.",
 		PONDEEL = "Fresh water-snake.",
@@ -3157,13 +3174,18 @@ return{
 		FISH_BOX = "It's like an aquarium! Except we eat the fish...",
         POCKET_SCALE = "Wonder how heavy our fish is!",
 
+		TACKLECONTAINER = "It's like a toybox, but for fishing stuff!",
+		SUPERTACKLECONTAINER = "We can put way more fishing stuff in there!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "Woah! We should find a big fish to put in there!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nWe've never seen such a heavy fish!",
 			BURNING = "Oh no oh no!",
 			BURNT = "Aww...",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nWe did it!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nWe caught it all by ourselves!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Yuck, it's just a big chunk of mud!",
@@ -3171,6 +3193,56 @@ return{
 		CALIFORNIAROLL = "Hmm, something smells fishy about this!",
 		SEAFOODGUMBO = "We could eat it forever!",
 		SURFNTURF = "Eww, healthy!",
+
+        WOBSTER_SHELLER = "We'd better stay away from the pinchy bits.", 
+        WOBSTER_DEN = "Wonder what lives in there?",
+        WOBSTER_SHELLER_DEAD = "It's not moving anymore.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Yum, yum, yum!",
+
+        LOBSTERBISQUE = "We want to pour it all over our tongues!",
+        LOBSTERDINNER = "We have to eat it with our eyes closed. Too many legs!",
+
+        WOBSTER_MOONGLASS = "That's not how they usually look, is it?",
+        MOONGLASS_WOBSTER_DEN = "We hear something tip-tapping in there.",
+
+		TRIDENT = "We don't know how to play, but we can try!",
+		
+		WINCH =
+		{
+			GENERIC = "We're going hunting for treasure!",
+			RETRIEVING_ITEM = "We got something!",
+			HOLDING_ITEM = "Is it something good?",
+		},
+
+		HERMITHOUSE_CONSTRUCTION1 = "We hope this makes her feel happier!",
+        HERMITHOUSE = "She must be sad living here all alone...",
+        
+        SHELL_CLUSTER = "Any pretty shells in there?",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "We thought we saw something skitter inside it!",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "It makes us want to hum along.",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Do you know any songs?",
+        },
+
+        CHUM = "We like feeding the fish!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Whew... we thought there might be an angry clam inside.",
+            LOCKED = "It won't let us in!",
+        },
+
+        RESKIN_TOOL = "Awww do we have to clean?",
+        MOON_FISSURE_PLUGGED = "Woah! Why didn't we think of that?",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3290,6 +3362,39 @@ return{
 
 		GHOSTFLOWER = "This seems like something Wendy would like.",
         SMALLGHOST = "Hey little guy! Wanna play?",
+
+        CRABKING = 
+        {
+            GENERIC = "He looks pretty crabby!",
+            INERT = "Someone forgot to decorate their sandcastle.",
+        },
+		CRABKING_CLAW = "Aaah! Leave us alone!",
+		
+		MESSAGEBOTTLE = "There's something inside!",
+		MESSAGEBOTTLEEMPTY = "It's like the jars grandma used for her preserves.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Ma'am! It's food time!",
+            DRYING = "Is it done yet?",
+            DRYINGINRAIN = "It's hard to dry when it's raining.",
+            GENERIC = "Maybe we could share some meat?",
+            BURNT = "It burned away.",
+            DONE_NOTMEAT = "Ma'am! It's food time!",
+            DRYING_NOTMEAT = "Is it done yet? I'm hungry.",
+            DRYINGINRAIN_NOTMEAT = "It's hard to dry when it's raining.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Hey Ms. old lady! Look at all the honey they made!",
+            FULLHONEY = "Hey Ms. old lady! Look at all the honey they made!",
+            GENERIC = "We hear a lot of buzzing inside...",
+            NOHONEY = "There's no honey inside.",
+            SOMEHONEY = "Work faster, bees!",
+            BURNT = "The site of The Great Honey Fire.",
+        },
+
+        MOON_FISSURE_PLUGGED = "Woah! Why didn't we think of that?",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

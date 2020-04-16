@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "Not for here",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "Not here",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -499,6 +502,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nHeavy",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Oh. Missed",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Nothing",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -3135,12 +3143,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Glub Glub belly stuff",
 		OCEANFISHINGLURE_SPOON_GREEN = "Glub Glub belly stuff",
 		OCEANFISHINGLURE_SPOON_BLUE = "Glub Glub belly stuff",
+		OCEANFISHINGLURE_HERMIT_RAIN = "For raining time",
+		OCEANFISHINGLURE_HERMIT_SNOW = "For snow time",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "Dizzy...",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Oh. Heavy",
 
 		OCEANFISH_SMALL_1 = "Small Glub Glub",
 		OCEANFISH_SMALL_2 = "Small Glub Glub",
 		OCEANFISH_SMALL_3 = "Small Glub Glub",
 		OCEANFISH_SMALL_4 = "Small Glub Glub",
 		OCEANFISH_SMALL_5 = "Popped Glub Glub",
+		OCEANFISH_SMALL_6 = "Friends?",
+		OCEANFISH_SMALL_7 = "Friend?",
+		OCEANFISH_SMALL_8 = "Hot!",
+
 		OCEANFISH_MEDIUM_1 = "Oooh, mud!",
 		OCEANFISH_MEDIUM_2 = "Big Glub Glub",
 		OCEANFISH_MEDIUM_3 = "Pointy Glub Glub",
@@ -3148,6 +3164,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Is friend?",
 		OCEANFISH_MEDIUM_6 = "Pretty Glub Glub",
 		OCEANFISH_MEDIUM_7 = "Gold Glub Glub",
+		OCEANFISH_MEDIUM_8 = "Cold!",
 
 		PONDFISH = "Glub Glub",
 		PONDEEL = "Sea Wiggly",
@@ -3161,13 +3178,18 @@ return{
 		FISH_BOX = "Glub Glubs go in there",
         POCKET_SCALE = "Weigh thing",
 
+		TACKLECONTAINER = "Glub Glub stuff",
+		SUPERTACKLECONTAINER = "More Glub Glub stuff",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "Glub Glub holder",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nHeavy Glub Glub",
 			BURNING = "On fire!",
 			BURNT = "Gone",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nBig!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nHeavy Glub Glub",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Oh! Mud!",
@@ -3175,6 +3197,56 @@ return{
 		CALIFORNIAROLL = "Rolled Glub Glub",
 		SEAFOODGUMBO = "Glub Glub stew",
 		SURFNTURF = "Fills belly",
+
+        WOBSTER_SHELLER = "Snappy Glub Glub", 
+        WOBSTER_DEN = "Wet nest",
+        WOBSTER_SHELLER_DEAD = "Oh. Belly stuff now.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Why changed color?",
+
+        LOBSTERBISQUE = "Still snappy?",
+        LOBSTERDINNER = "For belly",
+
+        WOBSTER_MOONGLASS = "Moony Snappy Glub Glub",
+        MOONGLASS_WOBSTER_DEN = "Moony wet nest",
+
+		TRIDENT = "Pokey",
+		
+		WINCH =
+		{
+			GENERIC = "Thing lifter",
+			RETRIEVING_ITEM = "Bringing thing",
+			HOLDING_ITEM = "Got thing",
+		},
+
+		HERMITHOUSE_CONSTRUCTION1 = "Happy now",
+        HERMITHOUSE = "Sad shell...",
+        
+        SHELL_CLUSTER = "Shells!",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "It sings",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "It sings",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "It sings",
+        },
+
+        CHUM = "Glub Glub belly stuff",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Shell stuff",
+            LOCKED = "Oh. Locked",
+        },
+
+        RESKIN_TOOL = "Dusty changer",
+        MOON_FISSURE_PLUGGED = "Can't hear them",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3294,6 +3366,39 @@ return{
 
 		GHOSTFLOWER = "Friend...?",
         SMALLGHOST = "Floaty is... sad?",
+
+        CRABKING = 
+        {
+            GENERIC = "Crabby...",
+            INERT = "Something missing?",
+        },
+		CRABKING_CLAW = "Scary!",
+		
+		MESSAGEBOTTLE = "Holding thing",
+		MESSAGEBOTTLEEMPTY = "Empty",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Done",
+            DRYING = "Getting unwet",
+            DRYINGINRAIN = "Rain can't help",
+            GENERIC = "Need food?",
+            BURNT = "Oh",
+            DONE_NOTMEAT = "Done?",
+            DRYING_NOTMEAT = "Getting unwet",
+            DRYINGINRAIN_NOTMEAT = "Rain not helping",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Buzz Juice ready!",
+            FULLHONEY = "Buzz Juice ready!",
+            GENERIC = "Buzzing...",
+            NOHONEY = "Empty",
+            SOMEHONEY = "Wait",
+            BURNT = "Fire breaks everything",
+        },
+
+        MOON_FISSURE_PLUGGED = "Can't hear them",
     },
 
     DESCRIBE_GENERIC = "Friend?",

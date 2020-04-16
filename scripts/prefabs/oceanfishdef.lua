@@ -7,6 +7,9 @@
 3	Bitty Baitfish		39.66, 63.58	+		+		+									SMALL_MEAT		long bursts, low stamina drain
 4	Smolt Fry			39.70, 56.26	++++												SMALL_OMNI		quick and easy catch
 5	Popperfish			33.08, 47.74	+++													SMALL_VEGGIE	quick and easy catch
+6   fallounder			28.87, 44.44			++											SMALL_VEGGIE	
+7   bloomfin tuna       53.64, 63.36    ++													SMALL_VEGGIE	
+8   scourching sunfish  41.14, 56.78            ++											SMALL_MEAT		
 
 --pond fish weight 
 fish	40.89, 55.28
@@ -21,6 +24,7 @@ eel		165.16, 212.12
 5	Corn Cod			161.48, 241.80			+++		++									VEGGIE			medium catch
 6	YOT Koi 1			188.88, 238.88	+-		+-		+-									OMNI			easy-medium catch
 7	YOT Koi 2			188.88, 238.88	+-		+-		+-									OMNI			easy-medium catch
+8   Snowy Whitefish		190.90, 270.70			++											OMNI			long pulls
 ]]
 
 --[[ Catching Behaviours
@@ -35,6 +39,10 @@ num		walk	run		stam.drain	stam.recover	stam.struggle_time	stam.tired_time		tired
 3		1.2		2.5		0.05		0.01			5+1		5+3			2+2		2+1			60				90				
 4		1.2		2.0		0.5			0.5				1+1		3+1			5+1		3+1			80				120				
 5		1.0		2.0		0.5			0.5				1+1		3+1			5+1		3+1			80				160				
+6		1.5		2.0		0.5			0.5				1+1		3+1			5+1		1+1			80				120				
+7		0.8		2.5		0.2			0.1				2+1		8+1			5+1		1+1			45				120				
+8		1.5		3.0		0.05		0.5				3+1		3+2			1+2		1+1			80				120				
+
 
 -- medium fish
 num		walk	run		stam.drain	stam.recover	stam.struggle_time	stam.tired_time		tired_ang_good	tired_ang_low		
@@ -45,6 +53,7 @@ num		walk	run		stam.drain	stam.recover	stam.struggle_time	stam.tired_time		tired
 5		1.3		2.8		0.05		0.10			3+1		8+1			4+1		2+1			80				120				
 6		1.2		3.0		0.05		0.10			2+1		6+1			3+1		2+1			80				120				
 7		1.2		3.0		0.05		0.10			2+1		6+1			3+1		2+1			80				120				
+8		1.5		3.0		0.05		0.15			7+1		10+5		3+1		2+1			90				100				
 
 ]]
 
@@ -90,13 +99,16 @@ local SCHOOL_WORLD_TIME = {
 }
 
 local LOOT = {
-	TINY = 		{ "fishmeat_small" },
-	SMALL = 	{ "fishmeat_small" },
-	MEDIUM = 	{ "fishmeat" },
-	LARGE = 	{ "fishmeat" },
-	HUGE = 		{ "fishmeat" },
-    CORN =      { "corn" },
-    POPCORN =   { "corn_cooked" },
+	TINY = 			{ "fishmeat_small" },
+	SMALL = 		{ "fishmeat_small" },
+	SMALL_COOKED = 	{ "fishmeat_small_cooked" },
+	MEDIUM = 		{ "fishmeat" },
+	LARGE = 		{ "fishmeat" },
+	HUGE = 			{ "fishmeat" },
+    CORN =			{ "corn" },
+    POPCORN =		{ "corn_cooked" },
+    ICE =			{ "fishmeat", "ice", "ice" },
+    PLANTMEAT =		{ "plantmeat" },
 }
 
 local PERISH = {
@@ -107,6 +119,7 @@ local PERISH = {
 	HUGE = 		"fishmeat",
     CORN =      "corn",
     POPCORN =   "corn_cooked",
+	PLANTMEAT = "spoiled_food",
 }
 
 local COOKING_PRODUCT = {
@@ -116,6 +129,7 @@ local COOKING_PRODUCT = {
 	LARGE = 	"fishmeat_cooked",
 	HUGE = 		"fishmeat_cooked",
     CORN =      "corn_cooked",
+	PLANTMEAT = "plantmeat_cooked",
 }
 
 local DIET = {
@@ -127,11 +141,13 @@ local DIET = {
 -- crokpot values
 COOKER_INGREDIENT_SMALL = { meat = .5, fish = .5 }
 COOKER_INGREDIENT_MEDIUM = { meat = 1, fish = 1 }
+COOKER_INGREDIENT_MEDIUM_ICE = { meat = 1, fish = 1, frozen = 1 }
 
 EDIBLE_VALUES_SMALL_MEAT = {health = TUNING.HEALING_TINY, hunger = TUNING.CALORIES_SMALL, sanity = 0, foodtype = FOODTYPE.MEAT}
 EDIBLE_VALUES_MEDIUM_MEAT = {health = TUNING.HEALING_MEDSMALL, hunger = TUNING.CALORIES_MED, sanity = 0, foodtype = FOODTYPE.MEAT}
 EDIBLE_VALUES_SMALL_VEGGIE = {health = TUNING.HEALING_SMALL, hunger = TUNING.CALORIES_SMALL, sanity = 0, foodtype = FOODTYPE.VEGGIE}
 EDIBLE_VALUES_MEDIUM_VEGGIE = {health = TUNING.HEALING_SMALL, hunger = TUNING.CALORIES_MED, sanity = 0, foodtype = FOODTYPE.VEGGIE}
+EDIBLE_VALUES_PLANTMEAT = {health = 0, hunger = TUNING.CALORIES_SMALL, sanity = -TUNING.SANITY_SMALL, foodtype = FOODTYPE.MEAT}
 
 -- how long the player has to set the hook before it escapes
 local SET_HOOK_TIME_SHORT = { base = 1, var = 0.5 }
@@ -139,6 +155,9 @@ local SET_HOOK_TIME_MEDIUM = { base = 2, var = 0.5 }
 
 local BREACH_FX_SMALL = { "ocean_splash_small1", "ocean_splash_small2"}
 local BREACH_FX_MEDIUM = { "ocean_splash_med1", "ocean_splash_med2"}
+
+local SHADOW_SMALL = {1, .75}
+local SHADOW_MEDIUM = {1.5, 0.75}
 
 local FISH_DEFS = 
 {
@@ -185,6 +204,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
 	},
 
 	oceanfish_small_2 = { 
@@ -228,6 +249,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
 	},
 
 	oceanfish_small_3 = { 
@@ -271,6 +294,8 @@ local FISH_DEFS =
 		diet = DIET.MEAT,
 		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
 	},
 
 	oceanfish_small_4 = { 
@@ -314,6 +339,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
 	},
 
 	oceanfish_small_5 = { 
@@ -357,6 +384,145 @@ local FISH_DEFS =
 		diet = DIET.VEGGIE,
 		cooker_ingredient_value = {veggie=1}, 
 		edible_values = EDIBLE_VALUES_SMALL_VEGGIE,
+
+		dynamic_shadow = SHADOW_SMALL,
+	},
+
+	oceanfish_small_6 = { -- autumn
+		prefab = "oceanfish_small_6", 
+		bank = "oceanfish_small", 
+		build = "oceanfish_small_6",
+	  	weight_min = 28.87, 
+	  	weight_max = 44.44, 
+
+	  	walkspeed = 1.5,
+	  	runspeed = 2.0,
+		stamina =
+		{
+			drain_rate = 0.5,
+			recover_rate = 0.5,
+			struggle_times	= {low = 1, r_low = 1, high = 3, r_high = 1},
+			tired_times		= {low = 5, r_low = 1, high = 1, r_high = 1},
+			tiredout_angles = {has_tention = 80, low_tention = 120},
+		},
+
+	  	schoolmin = SCHOOL_SIZE.MEDIUM.min,
+	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
+	  	schoolrange = SCHOOL_AREA.SMALL,	
+	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
+
+	  	herdwandermin = WANDER_DIST.MEDIUM.min,
+	  	herdwandermax = WANDER_DIST.MEDIUM.max,
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,	
+	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
+		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
+
+		set_hook_time = SET_HOOK_TIME_MEDIUM,
+		breach_fx = BREACH_FX_SMALL,
+		loot = LOOT.PLANTMEAT,
+		cooking_product = COOKING_PRODUCT.PLANTMEAT,
+        perish_product = PERISH.PLANTMEAT,
+        fishtype = "veggie",
+
+		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
+		diet = DIET.VEGGIE,
+		cooker_ingredient_value = nil, -- plantmeat does not go in the crokpot
+		edible_values = EDIBLE_VALUES_PLANTMEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
+	},
+
+	oceanfish_small_7 = { -- spring
+		prefab = "oceanfish_small_7", 
+		bank = "oceanfish_small", 
+		build = "oceanfish_small_7",
+	  	weight_min = 53.64, 
+	  	weight_max = 63.36, 
+
+	  	walkspeed = 0.8,
+	  	runspeed = 2.5,
+		stamina =
+		{
+			drain_rate = 0.2,
+			recover_rate = 0.1,
+			struggle_times	= {low = 2, r_low = 1, high = 8, r_high = 1},
+			tired_times		= {low = 5, r_low = 1, high = 1, r_high = 1},
+			tiredout_angles = {has_tention = 45, low_tention = 120},
+		},
+
+	  	schoolmin = SCHOOL_SIZE.MEDIUM.min,
+	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
+	  	schoolrange = SCHOOL_AREA.SMALL,	
+	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
+
+	  	herdwandermin = WANDER_DIST.MEDIUM.min,
+	  	herdwandermax = WANDER_DIST.MEDIUM.max,
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,	
+	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
+		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
+
+		set_hook_time = SET_HOOK_TIME_MEDIUM,
+		breach_fx = BREACH_FX_SMALL,
+		loot = LOOT.PLANTMEAT,
+		cooking_product = COOKING_PRODUCT.PLANTMEAT,
+        perish_product = PERISH.PLANTMEAT,
+        fishtype = "veggie",
+
+		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
+		diet = DIET.VEGGIE,
+		cooker_ingredient_value = nil, -- plantmeat does not go in the crokpot
+		edible_values = EDIBLE_VALUES_PLANTMEAT,
+
+		dynamic_shadow = SHADOW_SMALL,
+	},
+
+	oceanfish_small_8 = { -- summer
+		prefab = "oceanfish_small_8", 
+		bank = "oceanfish_small", 
+		build = "oceanfish_small_8",
+	  	weight_min = 41.14,
+	  	weight_max = 56.78, 
+
+	  	walkspeed = 1.5,
+	  	runspeed = 3.0,
+		stamina =
+		{
+			drain_rate = 0.05,
+			recover_rate = 0.5,
+			struggle_times	= {low = 3, r_low = 1, high = 3, r_high = 2},
+			tired_times		= {low = 1, r_low = 2, high = 1, r_high = 1},
+			tiredout_angles = {has_tention = 80, low_tention = 120},
+		},
+
+	  	schoolmin = SCHOOL_SIZE.MEDIUM.min,
+	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
+	  	schoolrange = SCHOOL_AREA.SMALL,	
+	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
+
+	  	herdwandermin = WANDER_DIST.MEDIUM.min,
+	  	herdwandermax = WANDER_DIST.MEDIUM.max,
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,	
+	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
+		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
+
+		set_hook_time = SET_HOOK_TIME_MEDIUM,
+		breach_fx = BREACH_FX_SMALL,
+		loot = LOOT.SMALL_COOKED,
+		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
+        fishtype = "meat",
+
+		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_MEAT,
+		diet = DIET.MEAT,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
+		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+		heater = { carriedheat = 70, heat = 70, carriedheatmultiplier = 2 },
+		propagator = { propagaterange = 3, heatoutput = 2 },
+		light = {r = 0.6, i = 0.5, f = 1, c = {235 / 255, 165 / 255, 12 / 255} },
 	},
 
 	oceanfish_medium_1 = { 
@@ -400,6 +566,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
 	oceanfish_medium_2 = { 
@@ -443,6 +611,8 @@ local FISH_DEFS =
 		diet = DIET.MEAT,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
 	oceanfish_medium_3 = { 
@@ -486,6 +656,8 @@ local FISH_DEFS =
 		diet = DIET.MEAT,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
 	-- mostly found in the ROUGH water
@@ -530,6 +702,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
 	oceanfish_medium_5 = { 
@@ -573,9 +747,11 @@ local FISH_DEFS =
 		diet = DIET.VEGGIE,
 		cooker_ingredient_value = {veggie=1}, 
 		edible_values = EDIBLE_VALUES_MEDIUM_VEGGIE,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
-	oceanfish_medium_6 = { 
+	oceanfish_medium_6 = {
 		prefab = "oceanfish_medium_6", 
 		bank = "oceanfish_medium", 
 		build = "oceanfish_medium_6",
@@ -616,6 +792,8 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
 	},
 
 	oceanfish_medium_7 = { 
@@ -659,34 +837,56 @@ local FISH_DEFS =
 		diet = DIET.OMNI,
 		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM, 
 		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
-	},
---[[
-	-- large school
-	oceanfish_antchovy = { 
-		prefab = "oceanfish_antchovy", 
-		bank = "antchovy", 
-		build = "antchovy",
-	  	weight_min = WEIGHTS.TINY.min, 
-	  	weight_max = WEIGHTS.TINY.max, 
 
-	  	schoolmin = SCHOOL_SIZE.LARGE.min,
-	  	schoolmax = SCHOOL_SIZE.LARGE.max,
-	  	schoolrange = SCHOOL_AREA.MEDIUM,	
+		dynamic_shadow = SHADOW_MEDIUM,
+	},
+
+	oceanfish_medium_8 = { -- winter fish
+		prefab = "oceanfish_medium_8", 
+		bank = "oceanfish_medium", 
+		build = "oceanfish_medium_8",
+	  	weight_min = 190.90, 
+	  	weight_max = 270.70, 
+
+	  	walkspeed = 1.5,
+	  	runspeed = 3.0,
+		stamina =
+		{
+			drain_rate = 0.05,
+			recover_rate = 0.15,
+			struggle_times	= {low = 7, r_low = 1, high = 10, r_high = 5},
+			tired_times		= {low = 3, r_low = 1, high = 2, r_high = 1},
+			tiredout_angles = {has_tention = 90, low_tention = 100},
+		},
+
+	  	schoolmin = SCHOOL_SIZE.MEDIUM.min,
+	  	schoolmax = SCHOOL_SIZE.MEDIUM.max,
+	  	schoolrange = SCHOOL_AREA.SMALL,
 	  	schoollifetimemin = SCHOOL_WORLD_TIME.MEDIUM.min,
-	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,	  	
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.MEDIUM.max,
 
 	  	herdwandermin = WANDER_DIST.MEDIUM.min,
 	  	herdwandermax = WANDER_DIST.MEDIUM.max,
-	  	herdarrivedist = ARRIVE_DIST.MEDIUM,		
+	  	herdarrivedist = ARRIVE_DIST.MEDIUM,	 
 	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
 		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
 
 		set_hook_time = SET_HOOK_TIME_MEDIUM,
-		breach_fx = BREACH_FX_SMALL,
-		loot = LOOT.TINY,
-		cooking_product = COOKING_PRODUCT.TINY,
+		breach_fx = BREACH_FX_MEDIUM,
+		loot = LOOT.ICE,
+		cooking_product = COOKING_PRODUCT.MEDIUM,
+        perish_product = PERISH.MEDIUM,
+        fishtype = "meat",
+
+		lures = TUNING.OCEANFISH_LURE_PREFERENCE.OMNI,
+		diet = DIET.OMNI,
+		cooker_ingredient_value = COOKER_INGREDIENT_MEDIUM_ICE, 
+		edible_values = EDIBLE_VALUES_MEDIUM_MEAT,
+
+		dynamic_shadow = SHADOW_MEDIUM,
+
+		heater = { endothermic = true, carriedheat = -5, heat = -5, carriedheatmultiplier = 2 }, -- heat radius is only 5 for this
 	},
-]]
 }
 
 local SCHOOL_VERY_COMMON		= 4
@@ -737,17 +937,17 @@ local SCHOOL_WEIGHTS = {
 		},
     },
 }
-
 SCHOOL_WEIGHTS[SEASONS.WINTER] = deepcopy(SCHOOL_WEIGHTS[SEASONS.AUTUMN])
 SCHOOL_WEIGHTS[SEASONS.SPRING] = deepcopy(SCHOOL_WEIGHTS[SEASONS.AUTUMN])
 SCHOOL_WEIGHTS[SEASONS.SUMMER] = deepcopy(SCHOOL_WEIGHTS[SEASONS.AUTUMN])
 
--- EXAMPLE OF EDITING THE SEASONAL data
---SCHOOL_WEIGHTS[SEASONS.WINTER][GROUND.OCEAN_COASTAL].oceanfish_medium_1 = 1
---SCHOOL_WEIGHTS[SEASONS.WINTER][GROUND.OCEAN_COASTAL].oceanfish_small_1 = nil
---SCHOOL_WEIGHTS[SEASONS.WINTER][GROUND.OCEAN_COASTAL_SHORE] = {
---	                                oceanfish_medium_4 = 10,
---	                            },
+
+-- Seasonal Fish
+SCHOOL_WEIGHTS[SEASONS.AUTUMN][GROUND.OCEAN_SWELL].oceanfish_small_6 = SCHOOL_UNCOMMON
+SCHOOL_WEIGHTS[SEASONS.WINTER][GROUND.OCEAN_SWELL].oceanfish_medium_8 = SCHOOL_UNCOMMON
+SCHOOL_WEIGHTS[SEASONS.SPRING][GROUND.OCEAN_COASTAL].oceanfish_small_7 = SCHOOL_UNCOMMON
+SCHOOL_WEIGHTS[SEASONS.SUMMER][GROUND.OCEAN_SWELL].oceanfish_small_8 = SCHOOL_UNCOMMON
+
 
 local function SpecialEventSetup()
 	if IsAny_YearOfThe_EventActive() then

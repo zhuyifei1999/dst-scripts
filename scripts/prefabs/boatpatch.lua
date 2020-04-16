@@ -37,6 +37,10 @@ local function fn()
 
     inst:AddComponent("boatpatch")
 
+    inst:AddComponent("repairer")
+    inst.components.repairer.repairmaterial = MATERIALS.WOOD
+    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_BOARDS_HEALTH
+
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
 

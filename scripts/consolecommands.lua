@@ -1258,6 +1258,58 @@ function c_makeboat()
 	
 end
 
+function c_makecrabboat()
+    local x, y, z = ConsoleWorldPosition():Get()
+
+    local inst = SpawnPrefab("boat")
+    inst.Transform:SetPosition(x, y, z)
+
+    inst = SpawnPrefab("oar")    
+    inst.Transform:SetPosition(x + 1, y, z - 2)        
+
+    inst = SpawnPrefab("oar_driftwood")
+    inst.Transform:SetPosition(x + 1, y, z - 1.25)
+
+    inst = SpawnPrefab("hambat")
+    inst.Transform:SetPosition(x + 1, y, z - 0.8)
+    inst = SpawnPrefab("hambat")
+    inst.Transform:SetPosition(x + 1, y, z - 0.8)
+
+    inst = SpawnPrefab("boatpatch")
+    inst.Transform:SetPosition(x, y, z + 1.25)
+    inst.components.stackable:SetStackSize(20)
+
+    inst = SpawnPrefab("boards")
+    inst.Transform:SetPosition(x+1, y, z + 1.25)
+    inst.components.stackable:SetStackSize(10)    
+
+
+
+
+    inst = SpawnPrefab("lantern")
+    inst.Transform:SetPosition(x - 3, y, z)
+
+    inst = SpawnPrefab("redgem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    inst = SpawnPrefab("orangegem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    inst = SpawnPrefab("yellowgem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    inst = SpawnPrefab("greengem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    inst = SpawnPrefab("bluegem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    inst = SpawnPrefab("purplegem")
+    inst.Transform:SetPosition(x - 3.25, y, z)
+    inst.components.stackable:SetStackSize(9)
+    
+end
+
 function c_makeboatspiral()
     local items = {
         boat_item = 1,
@@ -1369,6 +1421,277 @@ function c_dumpentities()
     end
 	print("Total: ", total)
 end
+
+-- ========================================
+-- Singing Shell song scripts
+
+local note_to_semitone = {}
+note_to_semitone["C"] = 1
+note_to_semitone["C#"] = 2
+note_to_semitone["D"] = 3
+note_to_semitone["D#"] = 4
+note_to_semitone["E"] = 5
+note_to_semitone["F"] = 6
+note_to_semitone["F#"] = 7
+note_to_semitone["G"] = 8
+note_to_semitone["G#"] = 9
+note_to_semitone["A"] = 10
+note_to_semitone["A#"] = 11
+note_to_semitone["B"] = 12
+
+local function NoteToSemitone(note)
+    --print("note to semitone table:", note_to_semitone[string.upper(string.sub(note, 1, -2))])
+	return tonumber(string.sub(note, -1)) * 12 + note_to_semitone[string.upper(string.sub(note, 1, -2))]
+end
+
+function c_shellsfromtable(song, startpos, placementfn, spacing_multiplier, out_of_range_mode)
+	if song == nil or type(song) ~= "table" then
+		print("Error: Invalid 'notes' table")
+		return false, "INVALID_NOTES_TABLE"
+	end
+
+	--
+
+	local semitone_shell_start =
+	{
+		-- Semitone of lowest note of each shell
+		singingshell_octave3 = 37,
+		singingshell_octave4 = 49, -- middle C
+		singingshell_octave5 = 61,
+    }
+    
+    local allowed_semitone_range = { lower = 37, upper = 72 }
+
+	local semitone_to_shell = {}
+	for i = 1, 36 do
+		table.insert(semitone_to_shell, "")
+	end
+	for i = 37, 48 do
+		table.insert(semitone_to_shell, "singingshell_octave3")
+	end
+	for i = 49, 60 do
+		table.insert(semitone_to_shell, "singingshell_octave4")
+	end
+	for i = 61, 72 do
+		table.insert(semitone_to_shell, "singingshell_octave5")
+	end
+
+    --
+    
+    if out_of_range_mode ~= "AUTO_TRANSPOSE" and out_of_range_mode ~= "OMIT" and out_of_range_mode ~= "TRUNCATE" and out_of_range_mode ~= "TERMINATE" then
+        out_of_range_mode = "AUTO_TRANSPOSE"
+    end
+
+    --
+
+	startpos = startpos or TheInput:GetWorldPosition()
+
+	placementfn = placementfn or function(currentpos, multiplier)
+		-- Default placementfn spawns shells in a straight line along world x
+		return Vector3( currentpos.x - 1 * multiplier, 0, currentpos.z)
+	end
+
+	spacing_multiplier = spacing_multiplier or 1
+
+    --
+    
+    local shells_to_spawn = {}
+
+	local spawning_pos = startpos
+    local spawned_shells = {}
+    
+    local lowest_semitone = allowed_semitone_range.upper
+    local highest_semitone = allowed_semitone_range.lower
+
+	for i, notes in ipairs(song) do
+		local applied_spawning_pos
+
+		if notes.t == nil then
+			spawning_pos = placementfn(spawning_pos, spacing_multiplier)
+			applied_spawning_pos = spawning_pos
+		else
+			applied_spawning_pos = placementfn(spawning_pos, notes.t * spacing_multiplier)
+		end
+
+		if type(notes) ~= "table" then
+			notes = { notes }
+		end
+
+		for _, note in ipairs(notes) do
+			local sx = applied_spawning_pos.x
+			local sy = applied_spawning_pos.y or 0
+			local sz = applied_spawning_pos.z
+
+			local semitone
+
+			if type(note) == "string" then
+				if tonumber(note) < 0 then
+					semitone = -1
+				else
+					semitone = NoteToSemitone(note)
+				end
+			else
+				-- Assume type is number
+				semitone = note
+            end
+            
+            if semitone >= 0 then
+                lowest_semitone = math.min(semitone, lowest_semitone)
+                highest_semitone = math.max(semitone, highest_semitone)
+
+                table.insert(shells_to_spawn, {
+                    semitone = semitone,
+                    position = Vector3(sx, sy, sz),
+                })
+			end
+		end
+    end
+
+    --
+
+    local function CleanupShells(shells)
+        for i, v in ipairs(shells) do
+            v:Remove()
+        end
+    end
+
+    local function SpawnShell(prefab, shell_data, semitones_to_raise)
+        local shell = SpawnPrefab(prefab)
+        shell.Transform:SetPosition(shell_data.position.x, shell_data.position.y, shell_data.position.z)
+        shell.components.cyclable:SetStep(semitones_to_raise + 1, nil, true)
+
+        return shell
+    end
+
+    local song_semitone_range = highest_semitone - lowest_semitone
+
+    if out_of_range_mode == "AUTO_TRANSPOSE" then
+        if song_semitone_range < allowed_semitone_range.upper - allowed_semitone_range.lower then
+            local auto_transposition_steps = 0
+
+            if lowest_semitone < allowed_semitone_range.lower then
+                auto_transposition_steps = allowed_semitone_range.lower - lowest_semitone
+            elseif highest_semitone > allowed_semitone_range.upper then
+                auto_transposition_steps = -(highest_semitone - allowed_semitone_range.upper)
+            end
+
+            for i, shell_data in ipairs(shells_to_spawn) do
+                
+                local transposed_semitone = shell_data.semitone + auto_transposition_steps
+                
+                local shell_prefab = semitone_to_shell[transposed_semitone]
+
+                if shell_prefab == nil or shell_prefab == "" then
+                    print("Error: Auto-transposition failed for semitone "..shell_data.semitone.." at index "..i..".\nRemoving all spawned shell instances.")
+
+                    CleanupShells(spawned_shells)
+                    return nil
+                else
+                    table.insert(spawned_shells, SpawnShell(shell_prefab, shell_data, transposed_semitone - semitone_shell_start[shell_prefab]))
+                end
+            end
+        else
+            print("Error: Auto-transposition failed: Tonal range of song data is greater than 3 octaves")
+
+            return nil
+        end
+    elseif out_of_range_mode == "OMIT" then
+        for i, shell_data in ipairs(shells_to_spawn) do
+            local shell_prefab = semitone_to_shell[shell_data.semitone]
+
+            if shell_prefab ~= nil and shell_prefab ~= "" then
+                table.insert(spawned_shells, SpawnShell(shell_prefab, shell_data, shell_data.semitone - semitone_shell_start[shell_prefab]))
+            else
+                print("Warning: Omitting shell at index "..i.." semitone "..shell_data.semitone..".\nSemitone outside shell tonal range 37(C3) - 72(B5).")
+            end
+        end
+    elseif out_of_range_mode == "TRUNCATE" then
+        for i, shell_data in ipairs(shells_to_spawn) do
+            local shell_prefab = semitone_to_shell[shell_data.semitone]
+
+            if shell_prefab ~= nil and shell_prefab ~= "" then
+                table.insert(spawned_shells, SpawnShell(shell_prefab, shell_data, shell_data.semitone - semitone_shell_start[shell_prefab]))
+            else
+                print("Discontinuing shell spawning at index "..i..".\nSemitone "..shell_data.semitone.." outside shell tonal range 37(C3) - 72(B5).")
+
+                return spawned_shells
+            end
+        end
+    else
+        -- else out_of_range_mode == "TERMINATE"
+        for i, shell_data in ipairs(shells_to_spawn) do
+            local shell_prefab = semitone_to_shell[shell_data.semitone]
+
+            if shell_prefab ~= nil and shell_prefab ~= "" then
+                table.insert(spawned_shells, SpawnShell(shell_prefab, shell_data, shell_data.semitone - semitone_shell_start[shell_prefab]))
+            else
+                print("Terminating shell spawning at index "..i..".\nSemitone "..shell_data.semitone.." outside shell tonal range 37(C3) - 72(B5).\nRemoving all spawned shell instances.")
+
+                CleanupShells(spawned_shells)
+                return nil
+            end
+        end
+    end
+    
+	return spawned_shells
+end
+
+function c_guitartab(songdata, overrides, dont_spawn_shells)
+	if overrides == nil or type(overrides) ~= "table" then
+		overrides = {}
+    end
+    
+    songdata = songdata == nil and "guitartab_dsmaintheme" or songdata
+
+	if type(songdata) == "string" then
+		songdata = require(songdata)
+	elseif type(songdata) ~= "table" then
+		print("Error: Invalid file name/table")
+		return false, "INVALID_SONGDATA"
+	end
+
+	local tab = songdata.tab
+	if tab == nil then
+		print("Error: No 'tab' table found in file")
+		return false, "NO_TABLATURE_FOUND"
+	end
+
+	--
+
+	-- Fallback to standard tuning:									E2, A2, D3, G3, B3, E4
+	local tuning = overrides.tuning or songdata.tuning or		{	29,	34,	39,	44,	48,	53	}
+	local transposition = overrides.transposition or songdata.transposition or 0
+
+	local song = {}
+
+	for beat_ind, beat in ipairs(songdata.tab) do
+		local transcribed_beat = {}
+		beat = type(beat) ~= "table" and { -1, -1, -1, -1, -1, -1 } or beat
+
+		for string_ind, fret in ipairs(beat) do
+			if fret >= 0 then
+				table.insert(transcribed_beat, tuning[string_ind] + fret + transposition)
+			end
+			transcribed_beat.t = beat.t
+		end
+
+		table.insert(song, transcribed_beat)
+	end
+
+	local ret = { songtable = song }
+
+	if not dont_spawn_shells then
+		ret.shells_spawned = c_shellsfromtable(song, overrides.startpos,
+			overrides.placementfn,
+			overrides.spacing_multiplier or songdata.spacing_multiplier or 1)
+	end
+
+	return ret
+end
+
+-- ========================================
+
+
 
 -- Nuke any controller mappings, for when people get in a hairy situation with a controller mapping that is totally busted.
 function ResetControllersAndQuitGame()

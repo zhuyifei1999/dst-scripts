@@ -151,15 +151,15 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.OCEAN_FISHING_CAST, "oceanfishing_cast"),
     ActionHandler(ACTIONS.OCEAN_FISHING_REEL, 
-		function(inst, action)
-			local fishable = action.invobject ~= nil and action.invobject.replica.oceanfishingrod:GetTarget() or nil
-			if fishable ~= nil and fishable:HasTag("partiallyhooked") then
-				return "oceanfishing_sethook"
-			elseif inst:HasTag("fishing_idle") then
-				return "oceanfishing_reel"
-			end
-			return nil
-		end),
+        function(inst, action)
+            local fishable = action.invobject ~= nil and action.invobject.replica.oceanfishingrod:GetTarget() or nil
+            if fishable ~= nil and fishable:HasTag("partiallyhooked") then
+                return "oceanfishing_sethook"
+            elseif inst:HasTag("fishing_idle") then
+                return "oceanfishing_reel"
+            end
+            return nil
+        end),
     ActionHandler(ACTIONS.FERTILIZE,
         function(inst, action)
             return (action.target ~= nil and action.target ~= inst and "doshortaction")
@@ -276,7 +276,7 @@ local actionhandlers =
                 and action.target ~= nil
                 and (   (action.target:HasTag("moonportal") and action.invobject:HasTag("moonportalkey") and "dochannelaction") or
                         (action.invobject.prefab == "quagmire_portal_key" and action.target:HasTag("quagmire_altar") and "dolongaction") or
-						(action.target:HasTag("give_dolongaction") and "dolongaction")
+                        (action.target:HasTag("give_dolongaction") and "dolongaction")
                     )
                 or "give"
         end),
@@ -300,10 +300,12 @@ local actionhandlers =
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
             return action.invobject ~= nil
-				and ((action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn")
-					or (action.invobject:HasTag("cointosscast") and "cointosscastspell")
-					or (action.invobject:HasTag("quickcast") and "quickcastspell")
-					)
+                and ((action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn")
+                    or (action.invobject:HasTag("guitar") and "play_strum")
+                    or (action.invobject:HasTag("cointosscast") and "cointosscastspell")
+                    or (action.invobject:HasTag("quickcast") and "quickcastspell")
+                    or (action.invobject:HasTag("veryquickcast") and "veryquickcastspell")
+                    )
                 or "castspell"
         end),
     ActionHandler(ACTIONS.CASTAOE,
@@ -404,7 +406,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
     ActionHandler(ACTIONS.DISMANTLE, "dolongaction"),
     ActionHandler(ACTIONS.TACKLE, "tackle_pre"),
-	ActionHandler(ACTIONS.HALLOWEENMOONMUTATE, "give"),
+    ActionHandler(ACTIONS.HALLOWEENMOONMUTATE, "give"),
 
     --Quagmire
     ActionHandler(ACTIONS.TILL, "till_start"),
@@ -435,14 +437,16 @@ local actionhandlers =
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
-	ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
-	ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
-	ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
-	ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
-	ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
+    ActionHandler(ACTIONS.APPLYPRESERVATIVE, "doshortaction"),
+    ActionHandler(ACTIONS.COMPARE_WEIGHABLE, "give"),
+    ActionHandler(ACTIONS.WEIGH_ITEM, "use_pocket_scale"),
+    ActionHandler(ACTIONS.GIVE_TACKLESKETCH, "give"),
+    ActionHandler(ACTIONS.REMOVE_FROM_TROPHYSCALE, "dolongaction"),
+    ActionHandler(ACTIONS.CYCLE, "give"),
+    ActionHandler(ACTIONS.OCEAN_TOSS, "throw"),
 
-	ActionHandler(ACTIONS.WINTERSFEAST_FEAST, "winters_feast_eat"),
-	ActionHandler(ACTIONS.START_CARRAT_RACE, "give"),
+    ActionHandler(ACTIONS.WINTERSFEAST_FEAST, "winters_feast_eat"),
+    ActionHandler(ACTIONS.START_CARRAT_RACE, "give"),
 
     ActionHandler(ACTIONS.BEGIN_QUEST, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_QUEST, "dolongaction"),
@@ -1326,9 +1330,9 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             if not inst:HasTag("doing") then
-				inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
-				inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_lag", false)
-			end
+                inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
+                inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_lag", false)
+            end
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -1358,19 +1362,19 @@ local states =
             inst.components.locomotor:Stop()
 
             local rod = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			rod = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod or nil
-			local target = rod ~= nil and rod.replica.oceanfishingrod:GetTarget() or nil
-			if target == nil or target.components.oceanfishinghook ~= nil or rod.replica.oceanfishingrod:IsLineTensionLow() then
-				if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
-					inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
-				end
-			elseif rod.replica.oceanfishingrod:IsLineTensionGood() then
-				if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
-					inst.AnimState:PlayAnimation("hooked_good_reeling", true)
-				end
-			elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
-				inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
-			end
+            rod = (rod ~= nil and rod.replica.oceanfishingrod ~= nil) and rod or nil
+            local target = rod ~= nil and rod.replica.oceanfishingrod:GetTarget() or nil
+            if target == nil or target.components.oceanfishinghook ~= nil or rod.replica.oceanfishingrod:IsLineTensionLow() then
+                if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
+                    inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
+                end
+            elseif rod.replica.oceanfishingrod:IsLineTensionGood() then
+                if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
+                    inst.AnimState:PlayAnimation("hooked_good_reeling", true)
+                end
+            elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
+                inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
+            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -1734,10 +1738,10 @@ local states =
             if inst:HasTag("beaver") then
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk_lag", false)
-			else
-				inst.AnimState:PlayAnimation("pickup")
-				inst.AnimState:PushAnimation("pickup_lag", false)
-			end
+            else
+                inst.AnimState:PlayAnimation("pickup")
+                inst.AnimState:PushAnimation("pickup_lag", false)
+            end
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -2039,7 +2043,7 @@ local states =
 
         onenter = function(inst, snap)
             inst.components.locomotor:Stop()
-			inst.Transform:SetNoFaced()
+            inst.Transform:SetNoFaced()
             inst.AnimState:PlayAnimation("steer_idle_pre")  
             inst.AnimState:PushAnimation("steer_lag", false)          
             inst:PerformPreviewBufferedAction()
@@ -2053,14 +2057,14 @@ local states =
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-				inst.Transform:SetFourFaced()
+                inst.Transform:SetFourFaced()
                 inst.sg:GoToState("idle")
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-			inst.Transform:SetFourFaced()
+            inst.Transform:SetFourFaced()
             inst.sg:GoToState("idle")
         end,  
     },   
@@ -2389,6 +2393,48 @@ local states =
 
     State
     {
+        name = "veryquickcastspell",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+                inst.AnimState:PlayAnimation("player_atk_pre")
+                inst.AnimState:PushAnimation("player_atk_lag", false)
+            else
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(9 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "cointosscastspell",
         tags = { "doing", "busy", "canrotate" },
 
@@ -2457,6 +2503,44 @@ local states =
 
     State
     {
+        name = "play_strum",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("strum_pre")
+            inst.AnimState:PushAnimation("strum_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
+                end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "summon_abigail",
         tags = { "doing", "busy" },
 
@@ -2467,17 +2551,17 @@ local states =
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
-	            inst:PerformPreviewBufferedAction()
+                inst:PerformPreviewBufferedAction()
 
-				local flower = inst.bufferedaction.invobject
+                local flower = inst.bufferedaction.invobject
                 if flower ~= nil and flower:IsValid() then
                     if flower.skin_id ~= 0 then
                         inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
                     else
                         inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
                     end
-				end
-			end
+                end
+            end
             inst.sg:SetTimeout(TIMEOUT)
         end,
 
@@ -2509,17 +2593,17 @@ local states =
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
-	            inst:PerformPreviewBufferedAction()
+                inst:PerformPreviewBufferedAction()
 
-				local flower = inst.bufferedaction.invobject
+                local flower = inst.bufferedaction.invobject
                 if flower ~= nil and flower:IsValid() then
                     if flower.skin_id ~= 0 then
                         inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
                     else
                         inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
                     end
-				end
-			end
+                end
+            end
 
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -2552,17 +2636,17 @@ local states =
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
-	            inst:PerformPreviewBufferedAction()
+                inst:PerformPreviewBufferedAction()
 
-				local flower = inst.bufferedaction.invobject
+                local flower = inst.bufferedaction.invobject
                 if flower ~= nil and flower:IsValid() then
                     if flower.skin_id ~= 0 then
                         inst.AnimState:OverrideItemSkinSymbol( "flower", flower.AnimState:GetBuild(), "flower", flower.GUID, flower.AnimState:GetBuild() )
                     else
                         inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
                     end
-				end
-			end
+                end
+            end
 
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -3817,7 +3901,27 @@ local states =
 
 }
 
+local hop_timelines = 
+{
+    hop_pre = 
+    {
+        TimeEvent(0, function(inst) 
+            inst.components.embarker.embark_speed = math.clamp(inst.components.locomotor:RunSpeed() * inst.components.locomotor:GetSpeedMultiplier() + TUNING.WILSON_EMBARK_SPEED_BOOST, TUNING.WILSON_EMBARK_SPEED_MIN, TUNING.WILSON_EMBARK_SPEED_MAX)
+        end),
+        TimeEvent(4, function(inst) 
+            inst.components.embarker:StartMoving()
+        end),
+    },
+}
+
+local hop_anims =
+{
+    pre = function(inst) return (inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() and (inst.replica.rider == nil or not inst.replica.rider:IsRiding())) and "boat_jumpheavy_pre" or "boat_jump_pre" end,
+    loop = function(inst) return (inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() and (inst.replica.rider == nil or not inst.replica.rider:IsRiding())) and "boat_jumpheavy_loop" or "boat_jump_loop" end,
+    pst = function(inst) return (inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() and (inst.replica.rider == nil or not inst.replica.rider:IsRiding())) and "boat_jumpheavy_pst" or "boat_jump_pst" end,
+}
+
+CommonStates.AddHopStates(states, true, hop_anims, hop_timelines, "turnoftides/common/together/boat/jump_on", nil, {start_embarking_pre_frame = 4*FRAMES})
 CommonStates.AddRowStates(states, true)
-CommonStates.AddHopStates(states, false, {pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
 
 return StateGraph("wilson_client", states, events, "idle", actionhandlers)

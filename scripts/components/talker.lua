@@ -202,6 +202,7 @@ local function CancelSay(self)
 end
 
 function Talker:Say(script, time, noanim, force, nobroadcast, colour)
+    if TheWorld.speechdisabled then return nil end
     if TheWorld.ismastersim then
         if not force
             and (self.ignoring ~= nil or

@@ -35,6 +35,11 @@ local SEASON_DANGER_MUSIC =
 local TRIGGERED_DANGER_MUSIC =
 {
 
+    crabking =
+    {
+        "dontstarve/music/music_epicfight_crabking",
+    },
+
     malbatross =
     {
         "saltydog/music/malbatross",

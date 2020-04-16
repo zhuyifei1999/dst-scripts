@@ -4,13 +4,19 @@ local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
 end
 
-local function makepiece(name)
+local function makepiece(name, socket_product)
     local assets =
     {
         Asset("ANIM", "anim/moon_altar_pieces.zip"),
         Asset("ANIM", "anim/swap_altar_"..name.."piece.zip"),
 	    Asset("MINIMAP_IMAGE", "moon_altar_"..name.."_piece"),
-    }
+	}
+	
+	local piece_prefabs =
+	{
+		"underwater_salvageable",
+		"splash_green",
+	}
 
     local function onequip(inst, owner)
         owner.AnimState:OverrideSymbol("swap_body", "swap_altar_"..name.."piece", "swap_body")
@@ -44,6 +50,8 @@ local function makepiece(name)
             return inst
         end
 
+        inst._socket_product = socket_product
+
         inst:AddComponent("heavyobstaclephysics")
         inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
         inst.components.heavyobstaclephysics:MakeSmallObstacle()
@@ -65,7 +73,11 @@ local function makepiece(name)
         inst.components.repairer.repairmaterial = MATERIALS.MOON_ALTAR
 
         -- There are 3 altar piece variations, so each one repairs 1/3rd of the total amount.
-        inst.components.repairer.workrepairvalue = TUNING.MOON_ALTAR_COMPLETE_WORK / 3
+		inst.components.repairer.workrepairvalue = TUNING.MOON_ALTAR_COMPLETE_WORK / 3
+		
+		inst:AddComponent("submersible")
+		inst:AddComponent("symbolswapdata")
+		inst.components.symbolswapdata:SetData("swap_altar_"..name.."piece", "swap_body")
 
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
@@ -73,7 +85,7 @@ local function makepiece(name)
         return inst
     end
 
-    return Prefab("moon_altar_"..name, fn, assets)
+    return Prefab("moon_altar_"..name, fn, assets, piece_prefabs)
 end
 
 local function OnWork(inst, worker, workleft, numworks)
@@ -106,7 +118,7 @@ local function OnWork(inst, worker, workleft, numworks)
     end
 end
 
-local function makerockpiece(name)
+local function makerockpiece(name, socket_product)
     local assets =
     {
         Asset("ANIM", "anim/altar_"..name.."piece.zip"),
@@ -170,10 +182,11 @@ local function makerockpiece(name)
     return Prefab("moon_altar_rock_"..name, fn, assets, rock_prefabs)
 end
 
---For searching: "moon_altar_idol, "moon_altar_glass", "moon_altar_seed", "moon_altar_rock_glass", "moon_altar_rock_seed", "moon_altar_rock_idol"
+--For searching: "moon_altar_idol", "moon_altar_glass", "moon_altar_seed", "moon_altar_crown", "moon_altar_rock_glass", "moon_altar_rock_seed", "moon_altar_rock_idol"
 return makepiece("idol"),
 	makerockpiece("idol"),
-    makepiece("glass"),
+    makepiece("glass", "moon_altar"),
 	makerockpiece("glass"),
     makepiece("seed"),
-	makerockpiece("seed")
+	makerockpiece("seed"),
+    makepiece("crown", "moon_altar_cosmic")

@@ -34,7 +34,7 @@ local item_prefabs =
 }
 
 local function OnRepaired(inst)    
-    --inst.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/repair_with_wood")
 end
 
 local function BoatCam_IsEnabledFn()
@@ -224,6 +224,7 @@ local function fn()
 
     inst:AddTag("ignorewalkableplatforms")
 	inst:AddTag("boat")
+    inst:AddTag("wood")
 
     local radius = 4
     local max_health = TUNING.BOAT.HEALTH

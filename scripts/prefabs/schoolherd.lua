@@ -62,7 +62,7 @@ local function setupnavs(inst)
             if i == 4 then            
                 inst.components.knownlocations:RememberLocation("nav"..i, origin)
             else
-	            local dist = math.sqrt(math.random())*(data and data.herdwandermin or 15) + (data and (data.herdwandermax - data.herdwandermin) or 15)
+                local dist = math.sqrt(math.random())*(data and data.herdwandermin or 15) + (data and (data.herdwandermax - data.herdwandermin) or 15)
                 local swim_offset = FindSwimmableOffset(origin, math.random()*PI*2, dist, triesmax, true, nil, nil, true)
                 if swim_offset then             
                     inst.components.knownlocations:RememberLocation("nav"..i, Vector3(origin.x + swim_offset.x, 0, origin.z + swim_offset.z))
@@ -70,7 +70,7 @@ local function setupnavs(inst)
             end
         end
 
-        inst.currentnav = 1
+        inst.currentnav = 2
     end
 
     if not inst.components.timer:TimerExists("lifetime") then

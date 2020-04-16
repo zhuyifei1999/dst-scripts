@@ -170,6 +170,9 @@ return {
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "This map was made for some other place.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "I can't make anything out in this lighting!",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -504,6 +507,11 @@ return {
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nI'm a fishing heavyweight!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "I think I missed the mark.",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Drat! I've come up empty handed.",
 
     --Wurt announce strings
     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -3140,12 +3148,20 @@ return {
 		OCEANFISHINGLURE_SPOON_RED = "Some smaller fish might find this a-luring!",
 		OCEANFISHINGLURE_SPOON_GREEN = "Some smaller fish might find this a-luring!",
 		OCEANFISHINGLURE_SPOON_BLUE = "Some smaller fish might find this a-luring!",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Soaking myself might help me think like a fish...",
+		OCEANFISHINGLURE_HERMIT_SNOW = "The fish won't snow what hit them!",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "My brain is protected by a thick layer of hard science!",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "This feels a bit heavy handed.",
 
 		OCEANFISH_SMALL_1 = "Looks like the runt of its school.",
 		OCEANFISH_SMALL_2 = "I won't win any bragging rights with this one.",
 		OCEANFISH_SMALL_3 = "It's a bit on the small side.",
 		OCEANFISH_SMALL_4 = "A fish this size won't tide me over for long.",
 		OCEANFISH_SMALL_5 = "I can't wait to pop it in my mouth.",
+		OCEANFISH_SMALL_6 = "You have to sea it to beleaf it.",
+		OCEANFISH_SMALL_7 = "I finally caught this bloomin' fish!",
+		OCEANFISH_SMALL_8 = "It's a scorcher!",
+
 		OCEANFISH_MEDIUM_1 = "I certainly hope it tastes better than it looks.",
 		OCEANFISH_MEDIUM_2 = "I went to a lot of treble to catch it.",
 		OCEANFISH_MEDIUM_3 = "I wasn't lion about my aptitude for fishing!",
@@ -3153,6 +3169,7 @@ return {
 		OCEANFISH_MEDIUM_5 = "This one seems kind of corny.",
 		OCEANFISH_MEDIUM_6 = "Now that's the real McKoi!",
 		OCEANFISH_MEDIUM_7 = "Now that's the real McKoi!",
+		OCEANFISH_MEDIUM_8 = "Ice bream, youse bream.",
 
 		PONDFISH = "Now I shall eat for a day.",
 		PONDEEL = "This will make a delicious meal.",
@@ -3166,13 +3183,18 @@ return {
 		FISH_BOX = "They're stuffed in there like sardines!",
         POCKET_SCALE = "A scaled-down weighing device.",
 
+		TACKLECONTAINER = "This extra storage space has me hooked!",
+		SUPERTACKLECONTAINER = "I had to shell out quite a bit to get this.",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "I wonder how my catch of the day will measure up!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nWhat a catch!",
 			BURNING = "On a scale of 1 to on fire... that's pretty on fire.",
 			BURNT = "All my bragging rights, gone up in flames!",
 			OWNER = "Not to throw my weight around, buuut...\nWeight: {weight}\nCaught by: {owner}",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nIt's the one that DIDN'T get away!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Just some muddy grass.",
@@ -3180,6 +3202,56 @@ return {
 		CALIFORNIAROLL = "But I don't have chopsticks.",
 		SEAFOODGUMBO = "It's a jumbo seafood gumbo.",
 		SURFNTURF = "It's perf!",
+
+        WOBSTER_SHELLER = "What a wascally Wobster.", 
+        WOBSTER_DEN = "It's a rock with Wobsters in it.",
+        WOBSTER_SHELLER_DEAD = "You should cook up nicely.",
+        WOBSTER_SHELLER_DEAD_COOKED = "I can't wait to eat you.",
+
+        LOBSTERBISQUE = "Could use more salt, but that's none of my bisque-ness.",
+        LOBSTERDINNER = "If I eat it in the morning is it still dinner?",
+
+        WOBSTER_MOONGLASS = "What a wascally Lunar Wobster.",
+        MOONGLASS_WOBSTER_DEN = "It's a chunk of moonglass with Lunar Wobsters in it.",
+
+		TRIDENT = "This is going to be a blast!",
+		
+		WINCH =
+		{
+			GENERIC = "It'll do in a pinch.",
+			RETRIEVING_ITEM = "I'll let it do the heavy lifting.",
+			HOLDING_ITEM = "What do we have here?",
+		},
+
+		HERMITHOUSE_CONSTRUCTION1 = "It just needed a little love.",
+        HERMITHOUSE = "It's just an empty shell of a house.",
+        
+        SHELL_CLUSTER = "I bet there's some nice shells in there.",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "It's a bit more toned down.",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Is that what the ocean sounds like?",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "It's ready for the high C's.",
+        },
+
+        CHUM = "It's a fish meal!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "The real treasure is the treasure we found along the way.",
+            LOCKED = "It's clammed right up!",
+        },
+
+        RESKIN_TOOL = "I like the dust! It feels scholarly!",
+        MOON_FISSURE_PLUGGED = "It's not very scientific... but pretty effective.",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3299,6 +3371,39 @@ return {
 
 		GHOSTFLOWER = "My scientific brain refuses to perceive it.",
         SMALLGHOST = "Aww, does someone have a little boo-boo?",
+
+        CRABKING = 
+        {
+            GENERIC = "Yikes! A little too crabby for me.",
+            INERT = "That castle needs a little decoration.",
+        },
+		CRABKING_CLAW = "That's claws for alarm!",
+		
+		MESSAGEBOTTLE = "I wonder if it's for me!",
+		MESSAGEBOTTLEEMPTY = "It's full of nothing.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Jerky time!",
+            DRYING = "Meat takes a while to dry.",
+            DRYINGINRAIN = "Meat takes even longer to dry in rain.",
+            GENERIC = "Those look like they could use some meat.",
+            BURNT = "The rack got dried.",
+            DONE_NOTMEAT = "In laboratory terms, we would call that \"dry\".",
+            DRYING_NOTMEAT = "Drying things is not an exact science.",
+            DRYINGINRAIN_NOTMEAT = "Rain, rain, go away. Be wet again another day.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "It's full of honey.",
+            FULLHONEY = "It's full of honey.",
+            GENERIC = "I'm sure there's a little sweetness to be found inside.",
+            NOHONEY = "It's empty.",
+            SOMEHONEY = "Need to wait a bit.",
+            BURNT = "How did it get burned?!!",
+        },
+
+        MOON_FISSURE_PLUGGED = "That doesn't look sound.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

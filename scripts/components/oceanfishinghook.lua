@@ -5,6 +5,7 @@ local OceanFishingHook = Class(function(self, inst)
 	self.interest = {}
 
 	--self.lure_data = nil
+	self.lure_fns = {}
 
 	self.reel_mod = 0
 
@@ -17,18 +18,27 @@ function OceanFishingHook:OnRemoveFromEntity()
 	self.inst:RemoveTag("fishinghook")
 end
 
-function OceanFishingHook:SetLureData(lure_data)
+function OceanFishingHook:SetLureData(lure_data, lure_fns)
 	self.lure_data = lure_data
+	self.lure_fns = lure_fns or {}
 
 	if self.lure_data.reel_charm ~= nil then
 		self.inst:StartUpdatingComponent(self)
 	end
 end
 
-function OceanFishingHook:_ClacCharm(fish_lure_prefs)
+function OceanFishingHook:_ClacCharm(fish)
+	local fish_lure_prefs = fish ~= nil and fish.fish_def.lures or nil
+
+	local weather = TheWorld.state.israining and "raining"
+					or TheWorld.state.issnowing and "snowing"
+					or "default"
+
 	local mod = (self.inst.components.perishable ~= nil and self.inst.components.perishable:GetPercent() or 1)
 				* (self.lure_data.timeofday ~= nil and self.lure_data.timeofday[TheWorld.state.phase] or 0)
 				* (fish_lure_prefs == nil and 1 or self.lure_data.style ~= nil and fish_lure_prefs[self.lure_data.style] or 0)
+				* (self.lure_data.weather ~= nil and self.lure_data.weather[weather] or TUNING.OCEANFISHING_LURE_WEATHER_DEFAULT[weather] or 1)
+				* (self.lure_fns.charm_mod_fn ~= nil and self.lure_fns.charm_mod_fn(fish) or 1)
 
 	self.debug_fish_lure_prefs = fish_lure_prefs
 	return (self.lure_data.charm + self.lure_data.reel_charm*self.reel_mod) * mod
@@ -48,7 +58,7 @@ end
 
 function OceanFishingHook:UpdateInterestForFishable(fish)
 	if self.interest[fish.GUID] == nil or self.interest[fish.GUID] > 0 then
-		local charm = self:_ClacCharm(fish.fish_def.lures)
+		local charm = self:_ClacCharm(fish)
 		if self.interest[fish.GUID] == nil then
 			self.interest[fish.GUID] = charm
 		else
@@ -76,7 +86,7 @@ end
 
 function OceanFishingHook:GetDebugString()
 	local perish = self.inst.components.perishable ~= nil and self.inst.components.perishable:GetPercent() or 1
-	local str = "Total: " .. string.format("%.2f", self:_ClacCharm(self.debug_fish_lure_prefs))
+	local str = "Total: " .. string.format("%.2f", self:_ClacCharm(nil))
 			.. " Charm: " .. string.format("%.2f, %.2f", self.lure_data.charm, self.lure_data.reel_charm*self.reel_mod)
 			.. " Perish: " .. string.format("%.2f", self.inst.components.perishable ~= nil and self.inst.components.perishable:GetPercent() or 1)
 			.. ", TimeOfDay: " .. string.format("%.2f", self.lure_data.timeofday ~= nil and self.lure_data.timeofday[TheWorld.state.phase] or 0)

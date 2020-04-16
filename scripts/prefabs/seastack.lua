@@ -26,6 +26,7 @@ end
 
 local function OnWork(inst, worker, workleft)
     if workleft <= 0 then
+        TheWorld:PushEvent("CHEVO_seastack_mined", {target=inst,doer=worker}) 
         local pt = inst:GetPosition()
         SpawnPrefab("rock_break_fx").Transform:SetPosition(pt:Get())
 
@@ -76,6 +77,7 @@ local function fn()
     MakeWaterObstaclePhysics(inst, 0.80, 2, 1.25)
 
     inst:AddTag("ignorewalkableplatforms")
+    inst:AddTag("seastack")
 
     inst.AnimState:SetBank("water_rock01")
     inst.AnimState:SetBuild("water_rock_01")

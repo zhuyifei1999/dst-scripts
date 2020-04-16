@@ -60,6 +60,14 @@ function Temperature:SetOverheatHurtRate(rate)
 end
 
 function Temperature:DoDelta(delta)
+    local winterInsulation,summerInsulation = self:GetInsulation()
+
+    if delta > 0 then
+        delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + summerInsulation))
+    else
+        delta = delta * (TUNING.SEG_TIME / (TUNING.SEG_TIME + winterInsulation))
+    end
+
     self:SetTemperature(self.current + delta)
 end
 

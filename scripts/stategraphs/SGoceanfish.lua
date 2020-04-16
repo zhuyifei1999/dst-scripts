@@ -47,10 +47,16 @@ local function SetBreaching(inst, is_in_air)
 		inst.Transform:SetTwoFaced()
 		inst.AnimState:SetSortOrder(0)
         inst.AnimState:SetLayer(LAYER_WORLD)
+		if inst.Light then
+			inst.Light:Enable(true)
+		end
 	else
 		inst.Transform:SetSixFaced()
 		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-        inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+        inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
+		if inst.Light then
+			inst.Light:Enable(false)
+		end
 	end
 end
 

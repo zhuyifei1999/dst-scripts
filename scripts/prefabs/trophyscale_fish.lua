@@ -244,15 +244,16 @@ local function getdesc(inst, viewer)
 		return GetDescription(viewer, inst, "BURNING")
 	elseif IsHoldingItem(inst) then
 		local data = inst.components.trophyscale.item_data
+		local heavy_postfix =  (data.is_heavy and "_HEAVY" or "")
 
 		if data.prefab_override_owner ~= nil then
-			return subfmt(GetDescription(viewer, inst, "HAS_ITEM"), {weight = data.weight or "",
+			return subfmt(GetDescription(viewer, inst, "HAS_ITEM"..heavy_postfix), {weight = data.weight or "",
 				owner = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER[data.prefab_override_owner] ~= nil and STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER[data.prefab_override_owner]
 				or STRINGS.UI.HUD.TROPHYSCALE_UNKNOWN_OWNER})
 		else
 			local name = data.owner_userid == nil and STRINGS.UI.HUD.TROPHYSCALE_UNKNOWN_OWNER or data.owner_name
-			return data.owner_userid ~= nil and data.owner_userid == viewer.userid and subfmt(GetDescription(viewer, inst, "OWNER"), {weight = data.weight or "", owner = name or ""}) or
-				subfmt(GetDescription(viewer, inst, "HAS_ITEM"), {weight = data.weight or "", owner = name or ""})
+			return data.owner_userid ~= nil and data.owner_userid == viewer.userid and subfmt(GetDescription(viewer, inst, "OWNER"..heavy_postfix), {weight = data.weight or "", owner = name or ""}) or
+				subfmt(GetDescription(viewer, inst, "HAS_ITEM"..heavy_postfix), {weight = data.weight or "", owner = name or ""})
 		end
 	end
 	

@@ -593,7 +593,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 	if story_gen_params.has_ocean then
 		local ocean_gen_config = require("map/ocean_gen_config")
 		Ocean_SetWorldForOceanGen(WorldSim)
-		Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout, GROUND.IMPASSABLE, ocean_gen_config.ocean_prefill_setpieces_min_land_dist)
+		Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout, GROUND.IMPASSABLE, ocean_gen_config.ocean_prefill_setpieces_min_land_dist, save.map.topology, map_width, map_height)
 --		local required_treasure_placed = WorldGenPlaceTreasures(topology_save.root:GetChildren(), entities, map_width, map_height, 4600000, level)
 --		if not required_treasure_placed then
 --			print("PANIC: Missing required treasure!")
@@ -602,7 +602,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 --			end
 --		end
 		Ocean_ConvertImpassibleToWater(map_width, map_height, ocean_gen_config)
-		PopulateOcean(SpawnFunctions, entities, map_width, map_height, storygen.ocean_population, current_gen_params)
+		PopulateOcean(SpawnFunctions, entities, map_width, map_height, storygen.ocean_population, current_gen_params, ocean_gen_config.ocean_prefill_setpieces_min_land_dist, save.map.topology)
 	end
     topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
 
@@ -636,9 +636,11 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
         end
     end
 
+  	BunchSpawnerInit(entities, map_width, map_height)
+	BunchSpawnerRun(WorldSim)
 
     local double_check = {}
-    for i,prefab in ipairs(level.required_prefabs or {}) do
+    for i, prefab in ipairs(level.required_prefabs or {}) do
         if double_check[prefab] == nil then
             double_check[prefab] = 1
         else
@@ -652,9 +654,19 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
             double_check[prefab] = double_check[prefab] + count
         end
     end
-
-  	BunchSpawnerInit(entities, map_width, map_height)
-	BunchSpawnerRun(WorldSim)
+    if storygen.ocean_population ~= nil then
+        for _, ocean_room in pairs(storygen.ocean_population) do
+            if ocean_room.data ~= nil and ocean_room.data.required_prefabs ~= nil then
+                for _, prefab in ipairs(ocean_room.data.required_prefabs) do
+                    if double_check[prefab] == nil then
+                        double_check[prefab] = 1
+                    else
+                        double_check[prefab] = double_check[prefab] + 1
+                    end
+                end
+            end
+        end
+    end
 
     for prefab,count in pairs(double_check) do
 		print ("Checking Required Prefab " .. prefab .. " has at least " .. count .. " instances (" .. (entities[prefab] ~= nil and #entities[prefab] or 0) .. " found).")

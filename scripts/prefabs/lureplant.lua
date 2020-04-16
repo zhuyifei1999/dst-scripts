@@ -191,6 +191,8 @@ local function OnDeath(inst)
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
     inst.components.lootdropper:DropLoot(inst:GetPosition())
+
+    TheWorld:PushEvent("CHEVO_lureplantdied",{target=inst,pt=Vector3(inst.Transform:GetWorldPosition())})
 end
 
 local function CanDigest(owner, item)

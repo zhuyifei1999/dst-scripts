@@ -18,7 +18,10 @@ local prefabs =
     "flint",
     "rock_break_fx",
     "cavein_dust_low",
-    "cavein_dust_high",
+	"cavein_dust_high",
+
+	"underwater_salvageable",
+	"splash_green",
 }
 
 SetSharedLootTable("cavein_boulder",
@@ -208,9 +211,12 @@ local function SetVariation(inst, variation)
         variation = nil
     end
     if inst.variation ~= variation then
-        inst.variation = variation
-        if variation ~= nil then
-            inst.AnimState:OverrideSymbol("swap_boulder", "swap_cavein_boulder", "swap_boulder"..tostring(variation))
+		inst.variation = variation
+		
+		if variation ~= nil then
+			local new_symbol = "swap_boulder"..tostring(variation)
+			inst.AnimState:OverrideSymbol("swap_boulder", "swap_cavein_boulder", new_symbol)
+			inst.components.symbolswapdata:SetData("swap_cavein_boulder", new_symbol)
         else
             inst.AnimState:ClearOverrideSymbol("swap_boulder")
         end
@@ -585,7 +591,11 @@ local function fn()
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.CAVEIN_BOULDER_MINE)
-    inst.components.workable:SetOnFinishCallback(OnWorked)
+	inst.components.workable:SetOnFinishCallback(OnWorked)
+	
+	inst:AddComponent("submersible")
+	inst:AddComponent("symbolswapdata")
+	inst.components.symbolswapdata:SetData("swap_cavein_boulder", "swap_boulder")
 
     MakeHauntableWork(inst)
 

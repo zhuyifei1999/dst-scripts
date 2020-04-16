@@ -2698,7 +2698,7 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
     end    
 
     local locomotor = self.inst.components.locomotor
-    local hop_rubber_band_distance = RUBBER_BAND_DISTANCE + target_velocity_rubber_band_distance + locomotor.hop_distance
+    local hop_rubber_band_distance = RUBBER_BAND_DISTANCE + target_velocity_rubber_band_distance + locomotor:GetHopDistance()
     local hop_rubber_band_distance_sq = hop_rubber_band_distance * hop_rubber_band_distance    
 
     if hop_distance_sq > hop_rubber_band_distance_sq then 

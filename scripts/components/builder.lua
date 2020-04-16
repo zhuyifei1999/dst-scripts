@@ -1,21 +1,5 @@
 local TechTree = require("techtree")
 
-local function onsciencebonus(self, sciencebonus)
-    self.inst.replica.builder:SetScienceBonus(sciencebonus)
-end
-
-local function onmagicbonus(self, magicbonus)
-    self.inst.replica.builder:SetMagicBonus(magicbonus)
-end
-
-local function onancientbonus(self, ancientbonus)
-    self.inst.replica.builder:SetAncientBonus(ancientbonus)
-end
-
-local function onshadowbonus(self, shadowbonus)
-    self.inst.replica.builder:SetShadowBonus(shadowbonus)
-end
-
 local function oningredientmod(self, ingredientmod)
     assert(INGREDIENT_MOD[ingredientmod] ~= nil, "Ingredient mods restricted to certain values, see constants.lua INGREDIENT_MOD")
     self.inst.replica.builder:SetIngredientMod(ingredientmod)
@@ -23,6 +7,17 @@ end
 
 local function onfreebuildmode(self, freebuildmode)
     self.inst.replica.builder:SetIsFreeBuildMode(freebuildmode)
+end
+
+local function metafn()
+	local t =	{
+		ingredientmod = oningredientmod,
+		freebuildmode = onfreebuildmode,
+	}
+    for i, v in ipairs(TechTree.BONUS_TECH) do
+        t[string.lower(v).."_bonus"] = function(self, bonus) self.inst.replica.builder:SetTechBonus(string.lower(v), bonus) end
+    end
+	return t
 end
 
 local Builder = Class(function(self, inst)
@@ -34,11 +29,10 @@ local Builder = Class(function(self, inst)
     self.inst:StartUpdatingComponent(self)
     self.current_prototyper = nil
     self.buffered_builds = {}
-    self.bonus_tech_level = 0
-    self.science_bonus = 0
-    self.magic_bonus = 0
-    self.ancient_bonus = 0
-    self.shadow_bonus = 0
+
+    for i, v in ipairs(TechTree.BONUS_TECH) do
+        self[string.lower(v).."_bonus"] = 0
+    end
     self.ingredientmod = 1
     --self.last_hungry_build = nil
 
@@ -59,14 +53,8 @@ local Builder = Class(function(self, inst)
     end
 end,
 nil,
-{
-    science_bonus = onsciencebonus,
-    magic_bonus = onmagicbonus,
-    ancient_bonus = onancientbonus,
-    shadow_bonus = onshadowbonus,
-    ingredientmod = oningredientmod,
-    freebuildmode = onfreebuildmode,
-})
+metafn()
+)
 
 function Builder:ActivateCurrentResearchMachine(recipe)
     if self.current_prototyper ~= nil and
@@ -141,6 +129,14 @@ function Builder:UnlockRecipesForTech(tech)
     end
 end
 
+function Builder:GetTechBonuses()
+	local bonus = {}
+    for i, v in ipairs(TechTree.BONUS_TECH) do
+        bonus[v] = self[string.lower(v).."_bonus"] or nil
+    end
+	return bonus
+end
+
 function Builder:EvaluateTechTrees()
     local pos = self.inst:GetPosition()
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, { "prototyper" }, self.exclude_tags)
@@ -197,11 +193,10 @@ function Builder:EvaluateTechTrees()
             self.accessible_tech_trees[v] = self[string.lower(v).."_bonus"] or 0
         end
     else
-        self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
-        self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
-        self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
-        self.accessible_tech_trees.SHADOW = self.accessible_tech_trees.SHADOW + self.shadow_bonus
-    end
+		for i, v in ipairs(TechTree.BONUS_TECH) do
+			self.accessible_tech_trees[v] = self.accessible_tech_trees[v] + (self[string.lower(v).."_bonus"] or 0)
+		end
+	end
 
     if old_prototyper ~= nil and
         old_prototyper ~= self.current_prototyper and

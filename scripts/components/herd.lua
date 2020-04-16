@@ -43,6 +43,12 @@ function Herd:OnRemoveFromEntity()
     end
 end
 
+function Herd:OnRemoveEntity()
+    for k, v in pairs(self.members) do
+        self:RemoveMember(k)
+    end
+end
+
 function Herd:GetDebugString()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.gatherrange, { "herdmember", self.membertag })

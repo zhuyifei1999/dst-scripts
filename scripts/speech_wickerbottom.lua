@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "This map is for some other location.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "It's much too dark to make any sense of this.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -495,6 +498,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nThis specimen is decidedly larger than average.",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "This will require a bit more precision on my part.",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Oh dear... perhaps it's time to clean my glasses.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -3131,12 +3139,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Its effect appears to be stronger during the day.",
 		OCEANFISHINGLURE_SPOON_GREEN = "Its effect appears to be stronger at dusk.",
 		OCEANFISHINGLURE_SPOON_BLUE = "Its effect appears to be stronger at night.",
+		OCEANFISHINGLURE_HERMIT_RAIN = "It seems to work in conjunction with precipitation.",
+		OCEANFISHINGLURE_HERMIT_SNOW = "It would be best utilized in snowy weather.",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "Fascinating! The spines secrete a potent neurotoxin.",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "This will ensure that I catch a larger specimen.",
 
 		OCEANFISH_SMALL_1 = "A rather dimimutive specimen.",
 		OCEANFISH_SMALL_2 = "A smaller species of saltwater fish.",
 		OCEANFISH_SMALL_3 = "One of the smaller varieties.",
 		OCEANFISH_SMALL_4 = "I believe they only grow to about this size.",
 		OCEANFISH_SMALL_5 = "I don't think I'm familiar with this genus...",
+		OCEANFISH_SMALL_6 = "Curious, it seems to be camouflaged for the wrong environment.",
+		OCEANFISH_SMALL_7 = "Oh my, you'd look right at home in my old garden.",
+		OCEANFISH_SMALL_8 = "Careful not to look directly at it, dears.",
+
 		OCEANFISH_MEDIUM_1 = "Oh my... is it supposed to look like that?",
 		OCEANFISH_MEDIUM_2 = "This species usually prefers deeper waters.",
 		OCEANFISH_MEDIUM_3 = "Oh dear, I believe these are actually an invasive species.",
@@ -3144,6 +3160,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "A fascinating blend of animal and vegetable.",
 		OCEANFISH_MEDIUM_6 = "It appears to be a subspecies of Cyprinus carpio.",
 		OCEANFISH_MEDIUM_7 = "It appears to be a subspecies of Cyprinus carpio.",
+		OCEANFISH_MEDIUM_8 = "All fish are cold-blooded of course, but this is exceptional.",
 
 		PONDFISH = "Some kind of whitefish, I believe.",
 		PONDEEL = "It's an eel.",
@@ -3157,13 +3174,18 @@ return{
 		FISH_BOX = "A clever contraption to keep seafood fresh.",
         POCKET_SCALE = "I'm always prepared to weigh in.",
 
+		TACKLECONTAINER = "Organized belongings are key to an organized mind.",
+		SUPERTACKLECONTAINER = "A place for everything, and everything in its place.",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "A place to display only the largest aquatic specimens.",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nQuite the accomplishment!",
 			BURNING = "My, I don't think it's supposed to do that.",
 			BURNT = "Oh dear...",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nOh ho! I seem to be the victor!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nFishing is really quite easy, isn't it?",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Oh my, what a mess!",
@@ -3171,6 +3193,56 @@ return{
 		CALIFORNIAROLL = "Delicious makizushi.",
 		SEAFOODGUMBO = "I can feel the heartburn already!",
 		SURFNTURF = "The perfect dish.",
+
+        WOBSTER_SHELLER = "A most interesting invertebrate.", 
+        WOBSTER_DEN = "Home to the arthropod.",
+        WOBSTER_SHELLER_DEAD = "I might as well eat it now.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Dinner is served!",
+
+        LOBSTERBISQUE = "I'd almost forgotten what real food tasted like.",
+        LOBSTERDINNER = "How decadent.",
+
+        WOBSTER_MOONGLASS = "This arthropod seems to have evolved to suit its environment.",
+        MOONGLASS_WOBSTER_DEN = "It appears to be a den of some sort.",
+
+		TRIDENT = "It produces quite literal sound waves!",
+		
+		WINCH =
+		{
+			GENERIC = "Mankind has used winches for many hundreds of years.",
+			RETRIEVING_ITEM = "Practice and precision make perfect!",
+			HOLDING_ITEM = "I've caught something!",
+		},
+
+		HERMITHOUSE_CONSTRUCTION1 = "Improving your living space can do wonders for one's mood.",
+        HERMITHOUSE = "Tsk. Look at the state of it...",
+        
+        SHELL_CLUSTER = "A fascinating assortment of mollusks!",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "SHHH!",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Shhh!",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Shhh!",
+        },
+
+        CHUM = "I find it best not to dwell on what it's made of.",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "A mollusk of exceptional size and functionality.",
+            LOCKED = "Oh dear. I believe this will require a key.",
+        },
+
+        RESKIN_TOOL = "We're well past due for a spring cleaning around here.",
+        MOON_FISSURE_PLUGGED = "Goodness, that must have required some tenacity!",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3290,6 +3362,39 @@ return{
 
 		GHOSTFLOWER = "I'm afraid I'm unfamiliar with this genus.",
         SMALLGHOST = "Your adorable appearance won't make me believe in you!",
+
+        CRABKING = 
+        {
+            GENERIC = "I wonder if its size is natural or caused by lunar mutations?",
+            INERT = "Those impressions appear to have been made to house gems.",
+        },
+		CRABKING_CLAW = "Thank goodness I'm not allergic to shellfish.",
+		
+		MESSAGEBOTTLE = "Not the most effective postal service.",
+		MESSAGEBOTTLEEMPTY = "This type of jar is most commonly used for canning.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "The process has completed.",
+            DRYING = "Dehydration is a slow process.",
+            DRYINGINRAIN = "The rain has temporarily halted the dehydration process.",
+            GENERIC = "It seems our chitinous friend could use some assistance.",
+            BURNT = "It doesn't seem stable.",
+            DONE_NOTMEAT = "The process has completed.",
+            DRYING_NOTMEAT = "Dehydration is a slow process.",
+            DRYINGINRAIN_NOTMEAT = "The rain has temporarily halted the dehydration process.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Honey can be harvested from it.",
+            FULLHONEY = "Honey can be harvested from it.",
+            GENERIC = "It appears to be a crudely fashioned apiary.",
+            NOHONEY = "It's devoid of honey.",
+            SOMEHONEY = "It's not ready for harvesting.",
+            BURNT = "Poor bees!",
+        },
+
+        MOON_FISSURE_PLUGGED = "Goodness, that must have required some tenacity!",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

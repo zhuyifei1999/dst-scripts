@@ -169,6 +169,7 @@ local function fn()
     inst:AddTag("baitstealer")
     inst:AddTag("cattoy")
     inst:AddTag("catfood")
+    inst:AddTag("whackable")
     --inst:AddTag("wildfireprotected") --Only if burnable
 
     --cookable (from cookable component) added to pristine state for optimization

@@ -111,26 +111,26 @@ local function onextinguish(inst)
     inst.components.unwrappable.canbeunwrapped = true
 end
 
-local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
+local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata, bank, build, inventoryimage)
     local assets =
     {
-        Asset("ANIM", "anim/"..name..".zip"),
+        Asset("ANIM", "anim/"..(inventoryimage or name)..".zip"),
     }
 
     if variations ~= nil then
         for i = 1, variations do
             if onesize then
-                table.insert(assets, Asset("INV_IMAGE", name..tostring(i)))
+                table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name)..tostring(i)))
             else
-                table.insert(assets, Asset("INV_IMAGE", name.."_small"..tostring(i)))
-                table.insert(assets, Asset("INV_IMAGE", name.."_medium"..tostring(i)))
-                table.insert(assets, Asset("INV_IMAGE", name.."_large"..tostring(i)))
+                table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_small"..tostring(i)))
+                table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_medium"..tostring(i)))
+                table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_large"..tostring(i)))
             end
         end
     elseif not onesize then
-        table.insert(assets, Asset("INV_IMAGE", name.."_small"))
-        table.insert(assets, Asset("INV_IMAGE", name.."_medium"))
-        table.insert(assets, Asset("INV_IMAGE", name.."_large"))
+        table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_small"))
+        table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_medium"))
+        table.insert(assets, Asset("INV_IMAGE", (inventoryimage or name).."_large"))
     end
 
     local prefabs =
@@ -221,8 +221,8 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
 
         MakeInventoryPhysics(inst)
 
-        inst.AnimState:SetBank(name)
-        inst.AnimState:SetBuild(name)
+        inst.AnimState:SetBank(bank or name)
+        inst.AnimState:SetBuild(build or name)
         inst.AnimState:PlayAnimation(
             variations ~= nil and
             (onesize and "idle_onesize1" or "idle_large1") or
@@ -248,6 +248,10 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
 
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem:SetSinks(true)
+        
+        if inventoryimage then
+            inst.components.inventoryitem:ChangeImageName(inventoryimage)
+        end
 
         if variations ~= nil or not onesize then
             inst.components.inventoryitem:ChangeImageName(
@@ -330,6 +334,14 @@ local yotc_seedpacket_loots =
 	},
 }
 
+local hermit_bundle_shell_loots =
+{
+    singingshell_octave5 = 2,
+    singingshell_octave4 = 2,
+    singingshell_octave3 = 1,    
+}
+
+
 local yotc_seedpacket =
 {
     common_postinit = function(inst, setupdata)
@@ -371,6 +383,36 @@ local yotc_seedpacket_rare =
 		
 		return loots
 	end,
+}
+
+local hermit_bundle =
+{
+    master_postinit = function(inst, setupdata)
+        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
+    end,
+    common_postinit = function(inst, setupdata)
+        inst:SetPrefabNameOverride("hermit_bundle")
+    end,
+}
+
+local hermit_bundle_shells =
+{
+    master_postinit = function(inst, setupdata)
+        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
+    end,
+    common_postinit = function(inst, setupdata)
+        inst:SetPrefabNameOverride("hermit_bundle")
+    end,
+    lootfn = function(inst, doer)
+        local loots = {}
+        local r = 0
+        
+        table.insert(loots, weighted_random_choice(hermit_bundle_shell_loots))
+        table.insert(loots, weighted_random_choice(hermit_bundle_shell_loots))
+        table.insert(loots, weighted_random_choice(hermit_bundle_shell_loots))
+        table.insert(loots, weighted_random_choice(hermit_bundle_shell_loots))
+        return loots
+    end,    
 }
 
 local wetpouch =
@@ -454,4 +496,7 @@ return MakeContainer("bundle_container", "ui_bundle_2x2"),
     MakeBundle("redpouch_yotc", false, nil, nil, true, redpouch_yotc),
 	MakeBundle("yotc_seedpacket", true, nil, nil, true, yotc_seedpacket),
 	MakeBundle("yotc_seedpacket_rare", true, nil, nil, true, yotc_seedpacket_rare),
+    MakeBundle("hermit_bundle", true, nil, nil, true, hermit_bundle),
+    MakeBundle("hermit_bundle_shells", true, nil, nil, true, hermit_bundle_shells, "hermit_bundle","hermit_bundle","hermit_bundle"),
     MakeBundle("wetpouch", true, nil, JoinArrays(table.invert(wetpouch.loottable), GetAllWinterOrnamentPrefabs()), false, wetpouch)
+

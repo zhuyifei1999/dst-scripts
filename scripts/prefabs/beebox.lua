@@ -3,6 +3,9 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/bee_box.zip"),
+
+    Asset("ANIM", "anim/bee_box_hermitcrab.zip"),
+    Asset("MINIMAP_IMAGE", "beebox_hermitcrab"),
 }
 
 local prefabs =
@@ -204,60 +207,110 @@ local function SeasonalSpawnChanges(inst, season)
     end
 end
 
-local function fn()
-    local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddNetwork()
-    inst.entity:AddLightWatcher()
 
-    MakeObstaclePhysics(inst, .5)
+local function MakeBeebox(name, common_postinit, master_postinit)
 
-    inst.MiniMapEntity:SetIcon("beebox.png")
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.AnimState:SetBank("bee_box")
-    inst.AnimState:SetBuild("bee_box")
-    inst.AnimState:PlayAnimation("idle")
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddMiniMapEntity()
+        inst.entity:AddNetwork()
+        inst.entity:AddLightWatcher()
 
-    inst:AddTag("structure")
-    inst:AddTag("playerowned")
-    inst:AddTag("beebox")
+        MakeObstaclePhysics(inst, .5)
 
-    MakeSnowCoveredPristine(inst)
+        inst.MiniMapEntity:SetIcon("beebox.png")
 
-    inst.entity:SetPristine()
+        inst.AnimState:SetBank("bee_box")
+        inst.AnimState:SetBuild("bee_box")
+        inst.AnimState:PlayAnimation("idle")
 
-    if not TheWorld.ismastersim then
+        inst:AddTag("structure")
+        inst:AddTag("playerowned")
+        inst:AddTag("beebox")
+
+        MakeSnowCoveredPristine(inst)        
+        
+        if common_postinit ~= nil then
+            common_postinit(inst)
+        end
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        ---------------------  
+
+        inst:AddComponent("harvestable")
+        inst.components.harvestable:SetUp("honey", 6, nil, onharvest, updatelevel)
+        inst:ListenForEvent("childgoinghome", onchildgoinghome)
+        -------------------
+
+        inst:AddComponent("childspawner")
+        inst.components.childspawner.childname = "bee"
+        inst.components.childspawner.allowwater = true
+        SeasonalSpawnChanges(inst, TheWorld.state.season)
+        inst:WatchWorldState("season", SeasonalSpawnChanges)
+
+        if TheWorld.state.isday and not TheWorld.state.iswinter then
+            inst.components.childspawner:StartSpawning()
+        end
+
+        inst:WatchWorldState("iscaveday", OnIsCaveDay)
+        inst:ListenForEvent("enterlight", OnEnterLight)
+        inst:ListenForEvent("enterdark", OnEnterDark)
+
+        inst:AddComponent("inspectable")
+        inst.components.inspectable.getstatus = GetStatus
+
+
+
+        inst:ListenForEvent("entitysleep", onsleep)
+        inst:ListenForEvent("entitywake", stopsleep)
+
+        updatelevel(inst)
+
+        MakeHauntableWork(inst)
+
+        MakeSnowCovered(inst)
+        inst:ListenForEvent("onbuilt", onbuilt)
+
+        inst.OnSave = OnSave
+        inst.OnLoad = OnLoad
+        inst.OnEntitySleep = OnEntitySleep
+        inst.OnEntityWake = OnEntityWake
+
+        if master_postinit then
+            master_postinit(inst)
+        end        
+
         return inst
     end
 
-    ---------------------  
+    return Prefab(name, fn, assets, prefabs)
+end
 
-    inst:AddComponent("harvestable")
-    inst.components.harvestable:SetUp("honey", 6, nil, onharvest, updatelevel)
-    inst:ListenForEvent("childgoinghome", onchildgoinghome)
-    -------------------
+local function beebox_common(inst)
+    inst.AnimState:SetBank("bee_box")
+    inst.AnimState:SetBuild("bee_box")
+    inst.AnimState:PlayAnimation("idle")
+end
 
-    inst:AddComponent("childspawner")
-    inst.components.childspawner.childname = "bee"
-    inst.components.childspawner.allowwater = true
-    SeasonalSpawnChanges(inst, TheWorld.state.season)
-    inst:WatchWorldState("season", SeasonalSpawnChanges)
+local function beebox_hermit(inst)
+    inst.MiniMapEntity:SetIcon("beebox_hermitcrab.png")
 
-    if TheWorld.state.isday and not TheWorld.state.iswinter then
-        inst.components.childspawner:StartSpawning()
-    end
+    inst.AnimState:SetBank("bee_box_hermitcrab")
+    inst.AnimState:SetBuild("bee_box_hermitcrab")
+    inst.AnimState:PlayAnimation("idle")
+end
 
-    inst:WatchWorldState("iscaveday", OnIsCaveDay)
-    inst:ListenForEvent("enterlight", OnEnterLight)
-    inst:ListenForEvent("enterdark", OnEnterDark)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = GetStatus
-
+local function beebox_master(inst)
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
@@ -265,27 +318,17 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
-    inst:ListenForEvent("entitysleep", onsleep)
-    inst:ListenForEvent("entitywake", stopsleep)
-
-    updatelevel(inst)
-
-    MakeHauntableWork(inst)
-
-    MakeSnowCovered(inst)
-    inst:ListenForEvent("onbuilt", onbuilt)
-
     MakeMediumBurnable(inst, nil, nil, true)
     MakeLargePropagator(inst)
-    inst:ListenForEvent("onignite", onignite)
-
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
-    inst.OnEntitySleep = OnEntitySleep
-    inst.OnEntityWake = OnEntityWake
-
-    return inst
+    inst:ListenForEvent("onignite", onignite)    
 end
 
-return Prefab("beebox", fn, assets, prefabs),
-    MakePlacer("beebox_placer", "bee_box", "bee_box", "idle")
+local function beebox_hermit_master(inst)
+
+end
+
+return MakeBeebox("beebox", beebox_common, beebox_master),
+        MakePlacer("beebox_placer", "bee_box", "bee_box", "idle"),
+        MakeBeebox("beebox_hermit", beebox_hermit, beebox_hermit_master)
+
+    

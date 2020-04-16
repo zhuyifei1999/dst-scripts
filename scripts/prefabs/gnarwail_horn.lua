@@ -33,7 +33,6 @@ local function onunequipped(inst, equipper)
     equipper.AnimState:Show("ARM_normal")
 end
 
-local SPELL_FX_COLOUR = {150/255, 190/255, 1}
 local function create_waves(inst, target, position)
     local owner = inst.components.inventoryitem:GetGrandOwner()
     if owner == nil then
@@ -78,9 +77,6 @@ local function fn()
     inst:AddTag("gnarwail_horn")
     inst:AddTag("nopunch")
     inst:AddTag("allow_action_on_impassable")
-
-    -- tool (from tool component) added to pristine state for optimization
-    inst:AddTag("tool")
     
     inst.spelltype = "MUSIC"
     
@@ -129,7 +125,6 @@ local function fn()
 
     ---------------------------------------------------------------------
 
-    inst.fxcolour = SPELL_FX_COLOUR
     inst.playsound = "hookline/creatures/gnarwail/horn"
 
     inst:AddComponent("spellcaster")

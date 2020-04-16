@@ -37,6 +37,7 @@ local events=
     CommonHandlers.OnSleep(),
     CommonHandlers.OnLocomote(false,true),
     CommonHandlers.OnHop(),
+	CommonHandlers.OnSink(),
     EventHandler("attacked", function(inst)
         if inst.components.health and not inst.components.health:IsDead() then
             inst.sg:GoToState("hit")
@@ -440,6 +441,7 @@ CommonStates.AddSleepStates(states,
 })
 
 CommonStates.AddSimpleState(states, "hit", "hit", {"busy"})
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("chester", states, events, "idle", actionhandlers)
 

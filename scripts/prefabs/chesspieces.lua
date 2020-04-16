@@ -34,6 +34,8 @@ local PIECES =
     {name="anchor",     moonevent=false},
     {name="moon",       moonevent=false},
     {name="carrat",     moonevent=false},
+    {name="crabking",   moonevent=false},
+    {name="malbatross", moonevent=false},
 } 
 
 local MOON_EVENT_RADIUS = 12
@@ -60,10 +62,13 @@ local function GetBuildName(pieceid, materialid)
 end
 
 local function SetMaterial(inst, materialid)
-    inst.materialid = materialid
-    inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
+	inst.materialid = materialid
+	local build = GetBuildName(inst.pieceid, materialid)
+    inst.AnimState:SetBuild(build)
 
-    inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+	
+	inst.components.symbolswapdata:SetData(build, "swap_body")
 end
 
 local function DoStruggle(inst, count)
@@ -198,7 +203,10 @@ local function makepiece(pieceid, materialid)
 
     local prefabs = 
     {
-        "collapse_small",
+		"collapse_small",
+		
+		"underwater_salvageable",
+		"splash_green",
     }
     if materialid then
         table.insert(prefabs, MATERIALS[materialid].prefab)
@@ -273,7 +281,11 @@ local function makepiece(pieceid, materialid)
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
         inst.components.workable:SetWorkLeft(1)
-        inst.components.workable:SetOnFinishCallback(onworkfinished)
+		inst.components.workable:SetOnFinishCallback(onworkfinished)
+		
+		inst:AddComponent("submersible")
+		inst:AddComponent("symbolswapdata")
+		inst.components.symbolswapdata:SetData(build, "swap_body")
 
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)

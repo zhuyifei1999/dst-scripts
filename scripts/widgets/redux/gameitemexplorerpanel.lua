@@ -21,6 +21,7 @@ local GameItemExplorerPanel = Class(Widget, function(self, owner, profile)
     self.picker.header:AddChild( self.filter_bar:AddFilter(STRINGS.UI.WARDROBESCREEN.OWNED_FILTER_FMT, "owned_filter_on.tex", "owned_filter_off.tex", "lockedFilter", GetLockedSkinFilter()) )
     self.picker.header:AddChild( self.filter_bar:AddFilter(STRINGS.UI.WARDROBESCREEN.WEAVEABLE_FILTER_FMT, "weave_filter_on.tex", "weave_filter_off.tex", "weaveableFilter", GetWeaveableSkinFilter()) )
     self.picker.header:AddChild( self.filter_bar:AddSorter() )
+    self.picker.header:AddChild( self.filter_bar:AddSearch() )
 
     self:_DoFocusHookups()
     self.focus_forward = self.filter_bar:BuildFocusFinder()
@@ -48,6 +49,8 @@ function GameItemExplorerPanel:OnClickedItem(item_data, is_selected)
 	end
 
 	self.current_item_type = item_type
+    
+    self.details_panel:Show()
 
 	if type == "base"  then 
 		self.details_panel.shadow:SetScale(.4)
@@ -102,6 +105,9 @@ end
 function GameItemExplorerPanel:BuildInventoryList()
     self.picker = self:AddChild(self:_BuildItemExplorer())
     self.picker:SetPosition(310, 140)
+    self.picker.clearSelectionCB = function()
+        self.details_panel:Hide()
+    end
 	self.scroll_list = self.picker.scroll_list
 
 	self.list_widgets = self.scroll_list:GetListWidgets()

@@ -68,6 +68,7 @@ function TrophyScale:Compare(inst_compare, doer)
 
 		self.item_data = {}
 		self.item_data.weight = new_weight
+		self.item_data.is_heavy = inst_compare.components.weighable.weight_percent >= TUNING.WEIGHABLE_HEAVY_WEIGHT_PERCENT
 		self.item_data.prefab = inst_compare.prefab
 		self.item_data.build = inst_compare.AnimState:GetBuild()
 		self.item_data.owner_userid = inst_compare.components.weighable.owner_userid

@@ -184,6 +184,12 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.HARVEST)
             end
         end,
+        
+        cyclable = function(inst, doer, actions, right)
+            if right and inst:HasTag("cancycle") then
+                table.insert(actions, ACTIONS.CYCLE)
+            end
+        end,
 
         dryer = function(inst, doer, actions)
             if inst:HasTag("dried") and not inst:HasTag("burnt") then 
@@ -469,7 +475,7 @@ local COMPONENT_ACTIONS =
                     end
                 end
             end            
-        end,
+		end,
 
         writeable = function(inst, doer, actions)
             if inst:HasTag("writeable") then
@@ -940,7 +946,7 @@ local COMPONENT_ACTIONS =
                     not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
                 table.insert(actions, ACTIONS.GIVE)
             end
-        end,
+		end,
 
 		itemweigher = function(inst, doer, target, actions)
 			for _,v in pairs(TROPHYSCALE_TYPES) do
@@ -1175,6 +1181,14 @@ local COMPONENT_ACTIONS =
 				end
             end
         end,
+
+		oceanthrowable = function(inst, doer, pos, actions, right)
+            if right then
+                if CanCastFishingNetAtPoint(doer, pos.x, pos.z) then
+                    table.insert(actions, ACTIONS.OCEAN_TOSS)
+                end
+            end
+        end,
 		
 		spellcaster = function(inst, doer, pos, actions, right)
             if right then
@@ -1313,6 +1327,15 @@ local COMPONENT_ACTIONS =
 
         end,
 
+        oceanthrowable = function(inst, doer, target, actions, right)
+            if right and
+                not (doer.components.playercontroller ~= nil and
+                    doer.components.playercontroller.isclientcontrollerattached) and
+                TheWorld.Map:IsOceanAtPoint(target:GetPosition():Get()) then
+                table.insert(actions, ACTIONS.OCEAN_TOSS)
+            end
+        end,
+
         spellcaster = function(inst, doer, target, actions, right)
             if right and (
                     inst:HasTag("castontargets") or
@@ -1341,7 +1364,7 @@ local COMPONENT_ACTIONS =
                     end
                 end
             end
-        end,
+		end,
 
         unsaddler = function(inst, doer, target, actions, right)
             if target:HasTag("saddled") and not right then
@@ -1403,7 +1426,7 @@ local COMPONENT_ACTIONS =
                     table.insert(actions, ACTIONS.RUMMAGE)
                 end
             end
-        end,
+		end,
 
         deployable = function(inst, doer, actions)
             if doer.components.playercontroller ~= nil and not doer.components.playercontroller.deploy_mode then
@@ -1507,6 +1530,12 @@ local COMPONENT_ACTIONS =
         --]]
 
         maprecorder = function(inst, doer, actions)
+            if doer:HasTag("player") then
+                table.insert(actions, ACTIONS.TEACH)
+            end
+        end,
+
+        mapspotrevealer = function(inst, doer, actions, right)
             if doer:HasTag("player") then
                 table.insert(actions, ACTIONS.TEACH)
             end

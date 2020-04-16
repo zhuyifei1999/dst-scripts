@@ -26,7 +26,7 @@ local Bunches =
         valid_tile_types = {
             GROUND.OCEAN_ROUGH,
         },
-    },        
+    },
     saltstack_spawner_rough = {
         prefab = "saltstack",
         range = 12,
@@ -37,10 +37,40 @@ local Bunches =
             GROUND.OCEAN_ROUGH,
         },
     },
+    wobster_den_spawner_shore = {
+        prefab = function(world, spawnerx, spawnerz)
+            for _z = 1, -1, -1 do
+                for _x = -1, 1 do
+                    local x = spawnerx + (_x * 4)
+                    local z = spawnerz + (_z * 4)
+                    local tile = world:GetTile(x, z)
+
+                    -- We reject INVALID and IMPASSABLE out of hand.
+                    -- ROCKY can appear on the mainland or moon island, so we have to look for something else.
+                    if tile ~= GROUND.INVALID and tile ~= GROUND.IMPASSABLE and tile ~= GROUND.ROCKY then
+                        if tile == GROUND.PEBBLEBEACH or tile == GROUND.METEOR or tile == GROUND.SHELLBEACH then
+                            return "moonglass_wobster_den"
+                        elseif not IsOceanTile(tile) then
+                            return "wobster_den"
+                        end
+                    end
+                end
+            end
+
+            return nil
+        end,
+        range = 12,
+        min = 4,
+        max = 5,
+        min_spacing = 3,
+        valid_tile_types = {
+            GROUND.OCEAN_COASTAL,
+        },
+    },
 }
 
 return 
 {
-	Bunches = Bunches,
-	BunchBlockers = BunchBlockers,
+    Bunches = Bunches,
+    BunchBlockers = BunchBlockers,
 }

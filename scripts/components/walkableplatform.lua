@@ -79,7 +79,7 @@ function WalkablePlatform:DestroyObjectsOnPlatform()
     if not TheWorld.ismastersim then return end
 
     for k,v in pairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
-        if v:IsValid() and v.components.amphibiouscreature == nil then
+        if v:IsValid() and v.components.amphibiouscreature == nil and v.components.drownable == nil then
             if v.components.inventoryitem ~= nil then
                 v.components.inventoryitem:SetLanded(false, true)
             else

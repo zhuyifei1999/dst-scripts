@@ -31,6 +31,9 @@ local ClothingExplorerPanel = Class(Widget, function(self, owner, user_profile, 
     self.picker.header:AddChild( self.filter_bar:AddSorter() )
     if self.item_type == "base" or (filter_options ~= nil and filter_options.ignore_hero) then
         self.filter_bar:HideFilter("heroFilter")
+        self.picker.header:AddChild( self.filter_bar:AddSearch() )
+    else
+        self.picker.header:AddChild( self.filter_bar:AddSearch( true ) )
     end
 
     self:_DoFocusHookups()

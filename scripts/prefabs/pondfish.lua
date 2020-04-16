@@ -127,6 +127,7 @@ local function commonfn(bank, build, char_anim_build, data)
 	if data.weight_min ~= nil and data.weight_max ~= nil then
 		inst:AddComponent("weighable")
 		inst.components.weighable.type = TROPHYSCALE_TYPES.FISH
+		inst.components.weighable:Initialize(data.weight_min, data.weight_max)
 		inst.components.weighable:SetWeight(Lerp(data.weight_min, data.weight_max, CalcNewSize()))
 	end
 

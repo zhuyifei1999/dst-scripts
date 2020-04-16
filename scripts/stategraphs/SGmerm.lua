@@ -19,6 +19,7 @@ local events=
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnHop(),
+	CommonHandlers.OnSink(),
 
     EventHandler("onarrivedatthrone", function(inst)
 
@@ -361,6 +362,7 @@ CommonStates.AddSimpleActionState(states, "gohome", "pig_pickup", 4*FRAMES, {"bu
 CommonStates.AddSimpleState(states, "refuse", "pig_reject", { "busy" })
 CommonStates.AddFrozenStates(states)
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
+CommonStates.AddSinkAndWashAsoreStates(states)
 
     
 return StateGraph("merm", states, events, "idle", actionhandlers)

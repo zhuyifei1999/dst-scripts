@@ -234,6 +234,7 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
 
             inst:AddComponent("embarker")
             inst.components.embarker.embark_speed = inst.components.locomotor.walkspeed
+		    inst:AddComponent("drownable")
         end
 
         inst:AddComponent("crittertraits")

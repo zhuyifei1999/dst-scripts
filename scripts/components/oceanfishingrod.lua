@@ -120,6 +120,10 @@ function OceanFishingRod:GetLureData()
 	return self.lure_data
 end
 
+function OceanFishingRod:GetLureFunctions()
+	return self.lure_setup.fns
+end
+
 function OceanFishingRod:UpdateClientMaxCastDistance()
 	if self.inst.replica.oceanfishingrod ~= nil then
 		local tackle = self.gettackledatafn ~= nil and self.gettackledatafn(self.inst) or {}
@@ -298,7 +302,7 @@ function OceanFishingRod:OnUpdate(dt)
     if not self.fisher:IsValid() or self.target == nil then
 		self:StopFishing()
     elseif (not self.inst.components.equippable or not self.inst.components.equippable.isequipped) 
-		or (not self.fisher.sg:HasStateTag("fishing") and not self.fisher.sg:HasStateTag("catchfish")) then
+		or (not self.fisher.sg:HasStateTag("fishing") and not self.fisher.sg:HasStateTag("npc_fishing") and not self.fisher.sg:HasStateTag("catchfish")) then
 
 		local has_fish = self.target.components.oceanfishinghook == nil and not self.target:HasTag("projectile")
 		self:StopFishing("interupted", has_fish)
@@ -370,6 +374,10 @@ function OceanFishingRod:StopFishing(reason, lost_tackle)
 	self:SetTarget(nil)
 end
 
+function OceanFishingRod:GetExtraStaminaDrain()
+	return self.lure_data.stamina_drain or 0
+end
+
 function OceanFishingRod:GetDebugString()
     local str = "Target: " .. tostring(self.target) .. string.format(", Tension: %0.3f (%0.2f / %0.2f)", self.line_tension > 0 and self.line_tension or -self.line_slack, self.target ~= nil and (self.inst:GetPosition() - self.target:GetPosition()):Length() or 0,  self.line_dist or 0)
 
@@ -380,15 +388,21 @@ function OceanFishingRod:GetDebugString()
 		local b_data = (bobber ~= nil and bobber.components.oceanfishingtackle ~= nil) and bobber.components.oceanfishingtackle.casting_data or {}
 		local l_data = (lure ~= nil and lure.components.oceanfishingtackle ~= nil) and lure.components.oceanfishingtackle.lure_data or {}
 
-		local bobber_str = "  Bobber: " .. (bobber ~= nil and bobber.prefab or "nil") .. ","
-		local lure_str = "  Lure: " .. (lure ~= nil and lure.prefab or "nil") .. ","
+		local bobber_str = "  Bobber: " .. (bobber ~= nil and bobber.prefab or "nil")
+		local lure_str = "  Lure: " .. (lure ~= nil and lure.prefab or "nil")
 
 		for k, _ in pairs(self.casting_base) do
-			bobber_str = bobber_str .. " " .. tostring(k) .. "=" .. tostring(self.casting_data[k] or 0)
+			bobber_str = bobber_str .. ", " .. tostring(k) .. "=" .. tostring(self.casting_data[k] or 0)
 		end
 
-		for k, _ in pairs(self.lure_base) do
-			lure_str = lure_str .. " " .. tostring(k) .. "=" .. tostring(self.lure_data[k] or 0)
+		for k, data in pairs(self.lure_data) do
+			if type(data) == "table" then
+				for k2, data2 in pairs(data) do
+					lure_str = lure_str .. ", " .. tostring(k2) .. "=" .. tostring(data2 or 0)
+				end
+			else
+				lure_str = lure_str .. ", " .. tostring(k) .. "=" .. tostring(data or 0)
+			end
 		end
 
 		str = str .. "\n" .. bobber_str .. "\n" .. lure_str

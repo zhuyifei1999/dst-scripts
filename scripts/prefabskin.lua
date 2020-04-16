@@ -133,8 +133,8 @@ flowerhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_flower" ) end
 strawhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_straw" ) end
 strawhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_straw" ) end
 
-warlushat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_warlus" ) end
-warlushat_clear_fn = function(inst) basic_clear_fn(inst, "hat_warlus" ) end
+walrushat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_walrus" ) end
+walrushat_clear_fn = function(inst) basic_clear_fn(inst, "hat_walrus" ) end
 
 winterhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_winter" ) end
 winterhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_winter" ) end

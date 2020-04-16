@@ -559,18 +559,15 @@ function d_spawnlayout(name, offset)
 end
 
 function d_allfish()
-	local allfish = {"oceanfish_small_1", "oceanfish_small_2", "oceanfish_small_3",  "oceanfish_small_4", "oceanfish_small_5",
-						 "oceanfish_medium_1", "oceanfish_medium_2", "oceanfish_medium_3",  "oceanfish_medium_4", "oceanfish_medium_5", 
-						 }
+	
+	local fish_defs = require("prefabs/oceanfishdef").fish
+	local allfish = {"spoiled_fish", "fishmeat", "fishmeat_cooked", "fishmeat_small", "fishmeat_small_cooked"}
 
 	local pt = ConsoleWorldPosition()
-	if TheWorld.Map:IsVisualGroundAtPoint(pt:Get()) then
-		for i, fish in ipairs(allfish) do
-			allfish[i] = fish .. "_inv"
-		end
+	local pst = TheWorld.Map:IsVisualGroundAtPoint(pt:Get()) and "_inv" or ""
+	for k, _ in pairs(fish_defs) do
+		table.insert(allfish, k .. pst)
 	end
-
-	allfish = JoinArrays(allfish, {"spoiled_fish", "fishmeat", "fishmeat_cooked", "fishmeat_small", "fishmeat_small_cooked"})
 
 	local spacing = 2
 	local num_wide = math.ceil(math.sqrt(#allfish))
@@ -586,11 +583,13 @@ function d_allfish()
 end
 
 function d_fishing()
-	local items = {"oceanfishingbobber_ball", "oceanfishingbobber_oval", "oceanfishingrod",  "twigs", "trinket_8", 
+	local items = {"oceanfishingbobber_ball", "oceanfishingbobber_oval",  "twigs", "trinket_8", 
 					 "oceanfishingbobber_crow", "oceanfishingbobber_robin", "oceanfishingbobber_robin_winter",  "oceanfishingbobber_canary", 
 					 "oceanfishingbobber_goose", "oceanfishingbobber_malbatross", 
-				 	"oceanfishinglure_spinner_red", "oceanfishinglure_spinner_blue", "oceanfishinglure_spinner_green", "oceanfishinglure_spinner_orange", "oceanfishinglure_spinner_yellow", "oceanfishinglure_spinner_white",
-					 "berries", "butterflywings"}
+				 	"oceanfishinglure_spinner_red", "oceanfishinglure_spinner_blue", "oceanfishinglure_spinner_green",
+				 	"oceanfishinglure_spoon_red", "oceanfishinglure_spoon_blue", "oceanfishinglure_spoon_green",
+					"oceanfishinglure_hermit_snow", "oceanfishinglure_hermit_rain", "oceanfishinglure_hermit_drowsy", "oceanfishinglure_hermit_heavy", 
+					 "berries", "butterflywings", "oceanfishingrod"}
 
 	local spacing = 2
 	local num_wide = math.ceil(math.sqrt(#items))
@@ -754,4 +753,60 @@ function d_setup_placeholders( reuse, out_file_name )
 	
 	out_file:write("}")
 	out_file:close()
+end
+
+function d_allshells()
+	local x, y, z = TheInput:GetWorldPosition():Get() 
+	for i=1, 12 do 
+		local shell=SpawnPrefab("singingshell_large") 
+		shell.Transform:SetPosition(x + i*2, 0, z) 
+		shell.components.cyclable:SetStep(i) 
+		local shell=SpawnPrefab("singingshell_medium") 
+		shell.Transform:SetPosition(x + i*2, 0, z + 6) 
+		shell.components.cyclable:SetStep(i) 
+		local shell=SpawnPrefab("singingshell_small") 
+		shell.Transform:SetPosition(x + i*2, 0, z + 12) 
+		shell.components.cyclable:SetStep(i) 
+	end 
+end
+
+
+function d_fish(swim, r,g,b)
+	local x, y, z = TheInput:GetWorldPosition():Get() 
+
+	local fish
+	fish = c_spawn "oceanfish_medium_4"
+	if not swim then
+		fish:StopBrain()
+		fish:SetBrain(nil)
+	end
+	fish.Transform:SetPosition(x, y, z)
+	fish:RemoveTag("NOCLICK")
+
+	fish = c_spawn "oceanfish_medium_3"
+	if not swim then
+		fish:StopBrain()
+		fish:SetBrain(nil)
+	end
+	fish.Transform:SetPosition(x+2, y, z)
+	fish:RemoveTag("NOCLICK")
+
+	fish = c_spawn "oceanfish_medium_8"
+	if not swim then
+		fish:StopBrain()
+		fish:SetBrain(nil)
+	end
+	fish.Transform:SetPosition(x, y, z+2)
+	fish:RemoveTag("NOCLICK")
+
+
+	fish = c_spawn "oceanfish_medium_3"
+	if not swim then
+		fish:StopBrain()
+		fish:SetBrain(nil)
+	end
+	fish.Transform:SetPosition(x+2, y, z+2)
+	fish:RemoveTag("NOCLICK")
+	fish.AnimState:SetAddColour((r or 0)/255, (g or 5)/255, (b or 5)/255, 0)
+
 end

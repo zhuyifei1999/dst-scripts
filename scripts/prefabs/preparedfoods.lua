@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/cook_pot_food.zip"),
 	Asset("ANIM", "anim/cook_pot_food2.zip"),
+	Asset("ANIM", "anim/cook_pot_food3.zip"),
 }
 
 local prefabs =

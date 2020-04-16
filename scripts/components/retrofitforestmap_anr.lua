@@ -69,6 +69,47 @@ local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_struc
 	print ("Retrofitting world for " .. prefab .. ": " .. (attempt < MAX_PLACEMENT_ATTEMPTS and ("Success after "..attempt.." attempts.") or "Failed."))
 end
 
+local function RetrofitNewOceanContentPrefab(inst, width, height, prefab, min_space, dist_from_structures, canplacefn)
+	local function dowork()
+		local attempt = 1
+		local topology = TheWorld.topology
+		local world_width, world_width = width * TILE_SCALE, height * TILE_SCALE
+		local start_x, start_y = math.random(width), math.random(0, height)
+		local edge_dist = 8
+		local tile_step = 7
+
+		for zz = 1, height, tile_step do
+			local z = ((start_y + zz) % height) + edge_dist
+			z = z - (0.5*height) * TILE_SCALE
+			for xx = 1, width, tile_step do
+				local x = ((start_x + xx) % width) + edge_dist
+				x = x - (0.5*width) * TILE_SCALE
+				if canplacefn(x, 0, z, prefab) then
+					local ents = TheSim:FindEntities(x, 0, z, min_space)
+					if #ents == 0 then
+						if dist_from_structures ~= nil then
+							ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
+						end
+					
+						if #ents == 0 then
+							local e = SpawnPrefab(prefab)
+							e.Transform:SetPosition(x, 0, z)
+							return attempt
+						end
+					end
+				end
+				attempt = attempt + 1
+			end
+			attempt = attempt + 1
+		end
+
+		return nil
+	end
+
+	local attempts = dowork()
+	print ("Retrofitting ocean for " .. prefab .. ": " .. (attempts ~= nil and ("Success after "..attempts.." attempts.") or "Failed."))
+end
+
 local function RemovePrefabs(prefabs_to_remove, biomes_to_cleanup)
 	local count = 0
 	for _,ent in pairs(Ents) do
@@ -285,6 +326,58 @@ local function SaltyRetrofitting_PopulateBrinePools()
 	end
 
 	print("Retrofitting for Return Of Them: Salty Dog - Added " .. tostring(num_spawners) .. " 'cookiecutter_spawner' and " .. tostring(num_stacks) .. " 'saltstack' prefabs.")
+end
+
+local function SheSellsSeashellsRetrofitting_PopulateWobsterDens()
+	require "map/bunch_spawner"
+	local width, height = TheWorld.Map:GetSize()
+	
+	local count = 0
+
+	BunchSpawnerInit(nil, width, height)
+	local function SpawnBoatingSafePrefab(prefab, x, z)
+		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+			local obj = SpawnPrefab(prefab)
+			obj.Transform:SetPosition(x, 0, z)
+			count = count + 1
+		end
+	end
+
+	local function populate(tile_type, contents)
+		for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+			for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+				if TheWorld.Map:GetTile(x, y) == tile_type then
+					if math.random() < contents.distributepercent then
+						local spawn_x, spawn_z = (x - width/2.0)*TILE_SCALE + math.random()*2-1, (y - height/2.0)*TILE_SCALE + math.random()*2-1
+						local prefab = weighted_random_choice(contents.distributeprefabs)
+						if prefab ~= nil then
+							if IsBunchSpawner( prefab ) then
+								BunchSpawnerRunSingleBatchSpawner(TheWorld.Map, prefab, spawn_x, spawn_z, SpawnBoatingSafePrefab)
+							else
+								local obj = SpawnPrefab(prefab)
+								obj.Transform:SetPosition(spawn_x, 0, spawn_z)
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	local pop = {
+		OCEAN_COASTAL_SHORE = {
+			distributepercent = 0.005,
+			distributeprefabs =
+			{
+				wobster_den_spawner_shore = 1,
+			},
+		},
+	}
+
+	for k, v in pairs(pop) do
+		populate(GROUND[k], v)
+	end
+
+	print("Retrofitting for Return Of Them : She Sells Seashells - Added " .. tostring(count) .. " Wobster Dens.")
 end
 
 --------------------------------------------------------------------------
@@ -679,6 +772,12 @@ function self:OnPostInit()
 --		SaltyRetrofitting_PopulateBrinePools()
 	end
 
+
+    if self.retrofit_shesellsseashells then
+        print("Retrofitting for Return Of Them: She Sells Seashells - Adding Wobster Dens")
+        SheSellsSeashellsRetrofitting_PopulateWobsterDens()
+    end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -719,6 +818,7 @@ function self:OnLoad(data)
         self.retrofit_turnoftides_seastacks = data.retrofit_turnoftides_seastacks or false
 		self.retrofit_fix_sculpture_pieces = data.retrofit_fix_sculpture_pieces or false
 		self.retrofit_salty = data.retrofit_salty or false
+        self.retrofit_shesellsseashells = data.retrofit_shesellsseashells or false
     end
 end
 

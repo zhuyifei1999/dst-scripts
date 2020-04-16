@@ -117,10 +117,15 @@ function OceanFishable:UpdateRunSpeed()
 	end
 end
 
+function OceanFishable:CalcStaminaDrainRate()
+	local extra_stamina_drain = (self.rod ~= nil and self.rod.components.oceanfishingrod ~= nil) and self.rod.components.oceanfishingrod:GetExtraStaminaDrain() or 0
+	return -(self.stamina_def.drain_rate + extra_stamina_drain)
+end
+
 function OceanFishable:OnUpdate(dt)
 	if self.stamina ~= nil then
 		local delta = dt * ((self.rod == nil or self.rod.components.oceanfishingrod == nil) and 0
-							or self.rod.components.oceanfishingrod:IsLineTensionHigh() and -self.stamina_def.drain_rate
+							or self.rod.components.oceanfishingrod:IsLineTensionHigh() and self:CalcStaminaDrainRate()
 							or self.rod.components.oceanfishingrod:IsLineTensionLow() and self.stamina_def.recover_rate
 							or 0)
 		self.stamina = math.clamp(self.stamina + delta, 0, 1)

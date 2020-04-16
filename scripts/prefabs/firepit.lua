@@ -128,6 +128,11 @@ local function OnPreLoad(inst, data)
 	end
 end
 
+local function default_skin_clear(inst)
+    inst.components.burnable.fxoffset = nil
+    inst.components.fueled:MakeEmpty() --Maybe do something better? For now this is the simplest to avoid bugs. Clearing a skin will turn off the fire
+end
+
 --------------------------------------------------------------------------
 
 local function fn()
@@ -229,8 +234,12 @@ local function fn()
 	inst.OnSave = OnSave
 	inst.OnPreLoad = OnPreLoad
 
+    inst.clear_fn = default_skin_clear
+    
     return inst
 end
+
+
 
 return Prefab("firepit", fn, assets, prefabs),
     MakePlacer("firepit_placer", "firepit", "firepit", "preview")

@@ -121,6 +121,7 @@ local prefabs =
     "turf_savanna",
     "turf_meteor",
     "turf_pebblebeach",
+    "turf_shellbeach",
     "turf_cave",
     "turf_fungus",
     "turf_fungus_red",

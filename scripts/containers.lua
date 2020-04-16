@@ -602,7 +602,7 @@ end
 params.pandoraschest = params.treasurechest
 params.skullchest = params.treasurechest
 params.minotaurchest = params.treasurechest
-params.waterchest = params.treasurechest
+params.sunkenchest = params.treasurechest
 
 params.quagmire_safe = deepcopy(params.treasurechest)
 params.quagmire_safe.widget.animbank = "quagmire_ui_chest_3x3"
@@ -671,6 +671,60 @@ function params.oceanfishingrod.itemtestfn(container, item, slot)
 		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
 		or (slot == 2 and item:HasTag("oceanfishing_lure"))
 end
+
+
+--------------------------------------------------------------------------
+--[[ tacklecontainer ]]
+--------------------------------------------------------------------------
+
+params.tacklecontainer =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x2",
+        animbuild = "ui_tacklecontainer_3x2",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 1, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.tacklecontainer.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0))
+    end
+end
+
+function params.tacklecontainer.itemtestfn(container, item, slot)
+	return item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")
+end
+
+
+--------------------------------------------------------------------------
+--[[ supertacklecontainer ]]
+--------------------------------------------------------------------------
+
+params.supertacklecontainer =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x5",
+        animbuild = "ui_tacklecontainer_3x5",
+        pos = Vector3(0, 280, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 1, -3, -1 do
+    for x = 0, 2 do
+        table.insert(params.supertacklecontainer.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 45, 0))
+    end
+end
+
+params.supertacklecontainer.itemtestfn = params.tacklecontainer.itemtestfn
 
 --------------------------------------------------------------------------
 --[[ sacred_chest ]]

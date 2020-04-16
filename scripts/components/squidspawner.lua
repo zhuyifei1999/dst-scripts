@@ -32,6 +32,7 @@ local SQUID_SPAWN_INTERVAL = 6 * TUNING.TOTAL_DAY_TIME
 local SQUID_SPAWN_RADIUS = 6
 local MAX_FISH = 10
 local SQUID_TIMING = {5, 7}
+local MAX_FISH = 10
 local SQUID_MAX_NUMBERS = {
     ["new"] = 6,
     ["quarter"] = 3,

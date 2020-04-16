@@ -173,6 +173,8 @@ local function fn()
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
+    inst:AddComponent("drownable")
+
     MakeMediumBurnableCharacter(inst, "beefalo_body")
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph

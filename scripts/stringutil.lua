@@ -115,7 +115,7 @@ function Umlautify(string)
     for i = 1, #string do
         local c = string:sub(i,i)
         if not last and (c == "o" or c == "O") then
-            ret = ret .. ((c == "o" and "ö") or (c == "O" and "Ö") or c)
+            ret = ret .. ((c == "o" and "Ã¶") or (c == "O" and "Ã–") or c)
             last = true
         else
             ret = ret .. c
@@ -363,4 +363,65 @@ function str_play_time(time)
 	else
 		return subfmt(STRINGS.UI.DAYS_FORMAT.M, {minutes=minutes or 1})
 	end
+end
+
+--Damerauâ€“Levenshtein distance with limit
+function DamLevDist( a, b, limit )
+    local a_len = a:len()
+    local b_len = b:len()
+
+    --early out optimization, if the lengths are more than "limit" difference then we can return
+    if math.abs( a_len - b_len ) >= limit then
+        return limit
+    end
+
+    --Note(Peter): does this work with unicode?
+    a = { string.byte( a, 1, a_len ) } 
+    b = { string.byte( b, 1, b_len ) }
+
+    local d = {} --2d array, 0-based, indexed as [i * num_columns + j]
+    local num_columns = b_len + 1
+
+    local id = function( i, j )
+        return i * num_columns + j
+    end
+
+    --Initialize insertion and deletion costs
+    for i = 0, a_len do
+        d[ id(i,0) ] = i 
+    end
+    for j = 0, b_len do
+        d[ id(0,j) ] = j
+    end
+
+
+    for i = 1, a_len do
+        local low = limit --Used to early out when we get to the limit
+
+        for j = 1, b_len do
+            local cost = a[i] ~= b[j] and 1 or 0
+            
+            local current = math.min( 
+                d[ id(i-1, j  ) ] + 1,    --Deletion
+                d[ id(i,   j-1) ] + 1,    --Insertion
+                d[ id(i-1, j-1) ] + cost  --Cost of substitution, could be 0 if they are the same
+            )
+            d[ id(i,j) ] = current
+            
+            --Check if we can transpose
+            if i > 1 and j > 1 and a[ i ] == b[ j-1 ] and a[ i-1 ] == b[ j ] then
+                d[ id(i,j) ] = math.min( current, d[ id(i-2, j-2) ] + cost ) -- Cost of transposition
+            end
+            
+            if current < low then
+                low = current
+            end
+        end
+        
+        if low >= limit then
+            return limit
+        end
+    end
+    
+    return d[ id(a_len,b_len) ]
 end

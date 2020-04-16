@@ -1,5 +1,7 @@
 require "prefabutil"
 
+local SUNKEN_PHYSICS_RADIUS = .45
+
 local function onopen(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("open")
@@ -58,12 +60,13 @@ local function onload(inst, data)
     end
 end
 
-local function MakeChest(name, bank, build, indestructible, custom_postinit, prefabs)
-    local assets =
+local function MakeChest(name, bank, build, indestructible, master_postinit, prefabs, assets, common_postinit)
+    local default_assets =
     {
         Asset("ANIM", "anim/"..build..".zip"),
         Asset("ANIM", "anim/ui_chest_3x2.zip"),
     }
+    assets = assets ~= nil and JoinArrays(assets, default_assets) or default_assets
 
     local function fn()
         local inst = CreateEntity()
@@ -83,7 +86,11 @@ local function MakeChest(name, bank, build, indestructible, custom_postinit, pre
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("closed")
 
-        MakeSnowCoveredPristine(inst)
+		MakeSnowCoveredPristine(inst)
+		
+        if common_postinit ~= nil then
+            common_postinit(inst)
+        end
 
         inst.entity:SetPristine()
 
@@ -115,11 +122,12 @@ local function MakeChest(name, bank, build, indestructible, custom_postinit, pre
         inst:ListenForEvent("onbuilt", onbuilt)
         MakeSnowCovered(inst)
 
+		-- Save / load is extended by some prefab variants
         inst.OnSave = onsave 
         inst.OnLoad = onload
 
-        if custom_postinit ~= nil then
-            custom_postinit(inst)
+        if master_postinit ~= nil then
+            master_postinit(inst)
         end
 
         return inst
@@ -128,7 +136,11 @@ local function MakeChest(name, bank, build, indestructible, custom_postinit, pre
     return Prefab(name, fn, assets, prefabs)
 end
 
-local function pandora_custom_postinit(inst)
+--------------------------------------------------------------------------
+--[[ pandora ]]
+--------------------------------------------------------------------------
+
+local function pandora_master_postinit(inst)
     inst:ListenForEvent("resetruins", function()
         local was_open = inst.components.container:IsOpen()
 
@@ -154,7 +166,11 @@ local function pandora_custom_postinit(inst)
     end, TheWorld)
 end
 
-local function minotuar_custom_postinit(inst)
+--------------------------------------------------------------------------
+--[[ minotaur ]]
+--------------------------------------------------------------------------
+
+local function minotuar_master_postinit(inst)
     inst:ListenForEvent("resetruins", function()
         inst.components.container:Close()
         inst.components.container:DropEverything()
@@ -169,20 +185,75 @@ local function minotuar_custom_postinit(inst)
     end, TheWorld)
 end
 
-local function water_custom_postinit(inst)
-	MakeInventoryFloatable(inst, "med", nil, 0.74)
+--------------------------------------------------------------------------
+--[[ sunken ]]
+--------------------------------------------------------------------------
 
-    if not TheWorld.ismastersim then
-        return inst
+local function sunken_onhit(inst, worker)
+    if not inst:HasTag("burnt") then
+        inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation("closed", false)
+        if inst.components.container ~= nil then
+            --inst.components.container:DropEverything()
+            inst.components.container:Close()
+        end
     end
+end
 
-	inst:DoTaskInTime(0, function(inst)
-		inst.components.floater:OnLandedServer()
-	end)
+local function sunken_OnUnequip(inst, owner)
+    owner.AnimState:ClearOverrideSymbol("swap_body")
+end
+
+local function sunken_OnEquip(inst, owner)
+	inst.components.container:Close()
+    owner.AnimState:OverrideSymbol("swap_body", "swap_sunken_treasurechest", "swap_body")--@felix: placeholder, so the art doesn't really work at all right now
+end
+
+local function sunken_OnSubmerge(inst)
+	if inst.components.container ~= nil then
+		inst.components.container:Close()
+	end
+end
+
+local function sunken_GetStatus(inst)
+    return not inst.components.container.canbeopened and "LOCKED" or nil
+end
+
+local function sunken_common_postinit(inst)
+	inst:AddTag("heavy")
+	
+	MakeHeavyObstaclePhysics(inst, SUNKEN_PHYSICS_RADIUS)
+	inst:SetPhysicsRadiusOverride(SUNKEN_PHYSICS_RADIUS)
+end
+
+local function sunken_master_postinit(inst)
+    inst.components.workable:SetOnWorkCallback(sunken_onhit)
+
+    inst.components.inspectable.getstatus = sunken_GetStatus
+
+	inst:AddComponent("heavyobstaclephysics")
+	inst.components.heavyobstaclephysics:SetRadius(SUNKEN_PHYSICS_RADIUS)
+	
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.cangoincontainer = false
+
+    inst:AddComponent("equippable")
+    inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+    inst.components.equippable:SetOnEquip(sunken_OnEquip)
+    inst.components.equippable:SetOnUnequip(sunken_OnUnequip)
+    inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
+    
+    inst.components.container.canbeopened = false
+	
+	inst:AddComponent("submersible")
+	inst:AddComponent("symbolswapdata")
+    inst.components.symbolswapdata:SetData("swap_sunken_treasurechest", "swap_body")
+	
+	inst:ListenForEvent("on_submerge", sunken_OnSubmerge)
 end
 
 return MakeChest("treasurechest", "chest", "treasure_chest", false, nil, { "collapse_small" }),
     MakePlacer("treasurechest_placer", "chest", "treasure_chest", "closed"),
-    MakeChest("pandoraschest", "pandoras_chest", "pandoras_chest", true, pandora_custom_postinit, { "pandorachest_reset" }),
-    MakeChest("minotaurchest", "pandoras_chest_large", "pandoras_chest_large", true, minotuar_custom_postinit, { "collapse_small" }),
-	MakeChest("waterchest", "chest", "treasure_chest", true, water_custom_postinit, { "collapse_small" })
+    MakeChest("pandoraschest", "pandoras_chest", "pandoras_chest", true, pandora_master_postinit, { "pandorachest_reset" }),
+    MakeChest("minotaurchest", "pandoras_chest_large", "pandoras_chest_large", true, minotuar_master_postinit, { "collapse_small" }),
+	MakeChest("sunkenchest", "sunken_treasurechest", "sunken_treasurechest", false, sunken_master_postinit, { "collapse_small", "underwater_salvageable", "splash_green" }, { Asset("ANIM", "anim/swap_sunken_treasurechest.zip") }, sunken_common_postinit)

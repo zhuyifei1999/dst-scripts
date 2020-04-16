@@ -531,6 +531,9 @@ function ItemExplorer:ClearSelection()
     if self.interact_root then
         self.interact_root:Hide()
     end
+    if self.clearSelectionCB ~= nil then
+        self.clearSelectionCB()
+    end
 end
 
 function ItemExplorer:RefreshItems(new_item_filter_fn)

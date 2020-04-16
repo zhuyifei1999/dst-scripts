@@ -124,10 +124,9 @@ end
 
 function Spawner:OnSave()
     local data = {}
-
     if self.child ~= nil and self:IsOccupied() then
         data.child = self.child:GetSaveRecord()
-    elseif self.child ~= nil and self.child.components.health ~= nil and not self.child.components.health:IsDead() then
+    elseif self.child ~= nil and (self.child.components.health == nil or not self.child.components.health:IsDead()) then
         data.childid = self.child.GUID
     elseif self.nextspawntime ~= nil then
         data.startdelay = self.nextspawntime - GetTime()

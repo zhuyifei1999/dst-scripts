@@ -15,6 +15,7 @@ local events =
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
     CommonHandlers.OnHop(),
+	CommonHandlers.OnSink(),
 }
 
 local states =
@@ -97,5 +98,6 @@ CommonStates.AddSleepExStates(states,
 		})
 
 CommonStates.AddHopStates(states, true)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("SGcritter_lamb", states, events, "idle", actionhandlers)

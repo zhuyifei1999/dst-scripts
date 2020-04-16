@@ -15,6 +15,7 @@ local events=
     CommonHandlers.OnLocomote(true,true),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnSink(),
 
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() then inst.sg:GoToState("attack", data.target) end end),
     EventHandler("death", function(inst)
@@ -759,6 +760,7 @@ CommonStates.AddWalkStates(
 
 CommonStates.AddSimpleState(states,"hit", "hit")
 CommonStates.AddFrozenStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 CommonStates.AddSleepStates(states,
 {

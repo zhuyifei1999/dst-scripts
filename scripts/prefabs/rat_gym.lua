@@ -110,9 +110,9 @@ end
 local function OnLoseItem(inst)
     inst._musicstate:set(CARRAT_MUSIC_STATES.NONE)
     inst:PushEvent("ratupdate") 
-	if inst.components.trader ~= nil then
-	    inst.components.trader:Enable()
-	end
+    if inst.components.trader ~= nil then
+        inst.components.trader:Enable()
+    end
     inst.components.gym:StopTraining()
     inst.AnimState:ClearOverrideSymbol("carrat_tail")
     inst.AnimState:ClearOverrideSymbol("carrat_ear")
@@ -215,9 +215,9 @@ local function OnLoad(inst, data)
 end
 
 local function OnLoadPostPass(inst)
-	if not IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
-		inst.components.inventory:DropEverything()
-	end
+    if not IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+        inst.components.inventory:DropEverything()
+    end
 
     if inst.components.inventory:FindItem(function(item) if item.prefab == "carrat" then return true end end) then
         local item = inst.components.inventory:FindItem(function(item) if item.prefab == "carrat" then return true end end)
@@ -306,12 +306,12 @@ local function MakeGym(name, build, size)
         inst.components.shelf.cantakeitem = true
         inst.components.shelf.takeitemtstfn = OnShelfTakeTest
 
-		if IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
-			inst:AddComponent("trader")
-			inst.components.trader:SetAcceptTest(ShouldAcceptItem)
-			inst.components.trader.onaccept = OnGetItemFromPlayer
-			inst.components.trader.deleteitemonaccept = false       
-		end
+        if IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
+            inst:AddComponent("trader")
+            inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+            inst.components.trader.onaccept = OnGetItemFromPlayer
+            inst.components.trader.deleteitemonaccept = false       
+        end
 
         inst:AddComponent("inventory")
         inst.components.inventory.maxslots = 1
@@ -348,7 +348,7 @@ local function MakeGym(name, build, size)
 
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
-		inst.OnLoadPostPass = OnLoadPostPass
+        inst.OnLoadPostPass = OnLoadPostPass
 
         return inst
     end

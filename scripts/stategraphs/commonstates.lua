@@ -492,9 +492,10 @@ CommonHandlers.OnHop = function()
         end)
 end
 
-CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_water_state)
+CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_water_state, data)
 	anims = anims or {}
     timelines = timelines or {}
+	data = data or {}
 
     table.insert(states, State
     {
@@ -502,16 +503,29 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "busy", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst)
-            inst.AnimState:PlayAnimation(anims.pre or "jump_pre", false)
             local embark_x, embark_z = inst.components.embarker:GetEmbarkPosition()
             inst:ForceFacePoint(embark_x, 0, embark_z)
             if not wait_for_pre then
 				inst.sg.statemem.not_interrupted = true
                 inst.sg:GoToState("hop_loop", inst.sg.statemem.queued_post_land_state)
+			else
+	            inst.AnimState:PlayAnimation(type(anims.pre) == "function" and anims.pre(inst) or anims.pre or "jump_pre", false)
+				if data.start_embarking_pre_frame ~= nil then
+					inst.sg:SetTimeout(data.start_embarking_pre_frame)
+				end
             end
         end,
 
         timeline = timelines.hop_pre or nil,
+
+		ontimeout = function(inst)
+			inst.sg.statemem.collisionmask = inst.Physics:GetCollisionMask()
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+			if not TheWorld.ismastersim then
+	            inst.Physics:SetLocalCollisionMask(COLLISION.GROUND)
+			end
+			inst.components.embarker:StartMoving()
+		end,
 
         events =
         {
@@ -519,13 +533,19 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 function(inst) 
                     if wait_for_pre then
 						inst.sg.statemem.not_interrupted = true
-                        inst.sg:GoToState("hop_loop", inst.sg.statemem.queued_post_land_state)
+                        inst.sg:GoToState("hop_loop", {queued_post_land_state = inst.sg.statemem.queued_post_land_state, collisionmask = inst.sg.statemem.collisionmask})
                     end
                 end),
         },
 
 		onexit = function(inst)
 			if not inst.sg.statemem.not_interrupted then
+				if data.start_embarking_pre_frame ~= nil then
+					inst.Physics:ClearLocalCollisionMask()
+					if inst.sg.statemem.collisionmask ~= nil then
+						inst.Physics:SetCollisionMask(inst.sg.statemem.collisionmask)
+					end
+				end
 	            inst.components.embarker:Cancel()
 			end
 		end,
@@ -536,10 +556,10 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         name = "hop_loop",
         tags = { "doing", "nointerrupt", "busy", "jumping", "autopredict", "nomorph", "nosleep" },
 
-        onenter = function(inst, queued_post_land_state)
-			inst.sg.statemem.queued_post_land_state = queued_post_land_state
-            inst.AnimState:PlayAnimation(anims.loop or "jump_loop", true)
-			inst.sg.statemem.collisionmask = inst.Physics:GetCollisionMask()
+        onenter = function(inst, data)
+			inst.sg.statemem.queued_post_land_state = data ~= nil and data.queued_post_land_state or nil
+            inst.AnimState:PlayAnimation(type(anims.loop) == "function" and anims.loop(inst) or anims.loop or "jump_loop", true)
+			inst.sg.statemem.collisionmask = data ~= nil and data.collisionmask or inst.Physics:GetCollisionMask()
 	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
 			if not TheWorld.ismastersim then
 	            inst.Physics:SetLocalCollisionMask(COLLISION.GROUND)
@@ -582,7 +602,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst, data)
-            inst.AnimState:PlayAnimation(anims.pst or "jump_pst", false)
+            inst.AnimState:PlayAnimation(type(anims.pst) == "function" and anims.pst(inst) or anims.pst or "jump_pst", false)
 
             inst.components.embarker:Embark()
 			inst:RemoveTag("busy")
@@ -1633,4 +1653,151 @@ CommonStates.AddRowStates = function(states, is_client)
         end,                    
     })
 
+end
+
+--------------------------------------------------------------------------
+
+local function onsink(inst, data)
+    if (inst.components.health == nil or not inst.components.health:IsDead()) and not inst.sg:HasStateTag("drowning") and (inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown()) then
+        inst.sg:GoToState("sink", data)
+    end
+end
+
+CommonHandlers.OnSink = function()
+    return EventHandler("onsink", onsink)
+end
+
+local function DoWashAshore(inst, skip_splash)
+	if not skip_splash then
+		SpawnPrefab("splash_green").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	end
+	
+	inst.sg.statemem.isteleporting = true
+	inst:Hide()
+	if inst.components.health ~= nil then
+		inst.components.health:SetInvincible(true)
+	end
+	inst.components.drownable:WashAshore()
+end
+
+CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
+	anims = anims or {}
+	timelines = timelines or {}
+	fns = fns or {}
+
+    table.insert(states, State
+    {
+        name = "sink",
+        tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt" },
+
+        onenter = function(inst, data)
+            inst:ClearBufferedAction()
+
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+
+			inst.sg.statemem.collisionmask = inst.Physics:GetCollisionMask()
+	        inst.Physics:SetCollisionMask(COLLISION.GROUND)
+
+			if data ~= nil and data.shore_pt ~= nil then
+				inst.components.drownable:OnFallInOcean(data.shore_pt:Get())
+			else
+				inst.components.drownable:OnFallInOcean()
+			end
+			if inst.DynamicShadow ~= nil then
+			    inst.DynamicShadow:Enable(false)
+			end
+
+			local skip_anim = data ~= nil and data.noanim
+			if anims.sink ~= nil and not skip_anim then
+				inst.sg.statemem.has_anim = true
+	            inst.AnimState:PlayAnimation(anims.sink)
+			else
+				DoWashAshore(inst, skip_anim)
+			end
+
+        end,
+
+		timeline = timelines.sink,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.sg.statemem.has_anim and inst.AnimState:AnimDone() then
+					DoWashAshore(inst)
+				end
+            end),
+
+            EventHandler("on_washed_ashore", function(inst)
+				inst.sg:GoToState("washed_ashore")
+			end),
+        },        
+
+        onexit = function(inst)
+			if inst.sg.statemem.collisionmask ~= nil then
+				inst.Physics:SetCollisionMask(inst.sg.statemem.collisionmask)
+			end
+
+            if inst.sg.statemem.isteleporting then
+				if inst.components.health ~= nil then
+					inst.components.health:SetInvincible(false)
+				end
+				inst:Show()
+			end
+
+			if inst.DynamicShadow ~= nil then
+				inst.DynamicShadow:Enable(true)
+			end
+
+			if inst.components.herdmember ~= nil then
+				inst.components.herdmember:Leave()
+			end
+
+			if inst.components.combat ~= nil then
+				inst.components.combat:DropTarget()
+			end
+        end,
+    })
+
+	table.insert(states, State
+    {
+		name = "washed_ashore",
+        tags = { "doing", "busy", "nopredict", "silentmorph" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+			if type(anims.washashore) == "table" then
+				for i, v in ipairs(anims.washashore) do
+					if i == 1 then
+			            inst.AnimState:PlayAnimation(v)
+					else
+			            inst.AnimState:PushAnimation(v, false)
+					end
+				end
+			elseif anims.washashore ~= nil then
+				inst.AnimState:PlayAnimation(anims.washashore)
+			else
+				inst.AnimState:PlayAnimation("sleep_loop")
+	            inst.AnimState:PushAnimation("sleep_pst", false)
+			end
+			if inst.components.drownable ~= nil then
+				inst.components.drownable:TakeDrowningDamage()
+			end
+
+			local x, y, z = inst.Transform:GetWorldPosition()
+			SpawnPrefab("washashore_puddle_fx").Transform:SetPosition(x, y, z)
+			SpawnPrefab("splash_green").Transform:SetPosition(x, y, z) 
+        end,
+
+		timeline = timelines.washashore,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+	})
 end

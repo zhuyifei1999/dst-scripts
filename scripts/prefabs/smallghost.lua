@@ -381,6 +381,7 @@ local function fn()
     inst:AddTag("ghostkid")
     inst:AddTag("girl")
     inst:AddTag("noauradamage")
+    inst:AddTag("NOBLOCK")
 
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")

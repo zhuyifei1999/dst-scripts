@@ -49,6 +49,14 @@ local function onbuilt(inst)
     inst.AnimState:PushAnimation("idle")
 end
 
+local function onanchorlowered(inst)
+	local boat = inst.components.anchor ~= nil and inst.components.anchor.boat or nil
+	if boat ~= nil then
+		ShakeAllCamerasOnPlatform(CAMERASHAKE.VERTICAL, 0.3, 0.03, 0.12, boat)
+	end
+	inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/ocean_hit")
+end
+
 local function onsave(inst, data)
 	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
 		data.burnt = true
@@ -84,9 +92,13 @@ local function fn()
 
     MakeMediumBurnable(inst, nil, nil, true)
 	inst:ListenForEvent("onburnt", onburnt)
-    MakeMediumPropagator(inst)
+	MakeMediumPropagator(inst)
 
-    inst:AddComponent("anchor")
+	inst:AddComponent("anchor")
+
+	inst:AddComponent("boatdrag")
+	inst.components.boatdrag.drag = TUNING.BOAT.ANCHOR.BASIC.ANCHOR_DRAG
+	inst.components.boatdrag.max_velocity_mod = TUNING.BOAT.ANCHOR.BASIC.MAX_VELOCITY_MOD
 
     inst:AddComponent("hauntable")
     inst:AddComponent("inspectable")
@@ -102,7 +114,8 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(on_hammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
-    inst:ListenForEvent("onbuilt", onbuilt)
+	inst:ListenForEvent("onbuilt", onbuilt)
+	inst:ListenForEvent("anchor_lowered", onanchorlowered)
 
     inst:DoTaskInTime(0,function()
         local pt = Vector3(inst.Transform:GetWorldPosition())

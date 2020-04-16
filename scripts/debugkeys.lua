@@ -1102,10 +1102,13 @@ AddGameDebugKey(KEY_9, function()
     else
         if not ThePlayer.shownothightlight then
             ThePlayer.shownothightlight = true
+            TheWorld.speechdisabled = true
         else
+            TheWorld.speechdisabled = nil
             ThePlayer.shownothightlight = nil
         end
         ThePlayer.HUD:Toggle()
+
     end
 end)
 

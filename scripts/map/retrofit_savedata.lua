@@ -180,6 +180,11 @@ local function DoRetrofitting(savedata, world_map)
 		FixNoBrinePools(savedata, world_map)
 	end
 
+	if savedata.retrofit_shesellsseashells_hermitisland then
+		savedata.retrofit_shesellsseashells_hermitisland = nil
+		require("map/ocean_retrofit_island").TurnOfTidesRetrofitting_HermitIsland(TheWorld.Map, savedata)
+	end
+
 
 end
 

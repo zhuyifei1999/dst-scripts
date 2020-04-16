@@ -1,6 +1,17 @@
 
 -- these are rooms used to populate the ocean as if each ocean tile type is a room (instead of a node being a room)
 
+AddRoom("OceanCoastalShore", {
+					colour={r=.5,g=0.6,b=.080,a=.10},
+					value = GROUND.OCEAN_COASTAL_SHORE,
+					contents =  {
+						distributepercent = 0.005,
+						distributeprefabs =
+						{
+							wobster_den_spawner_shore = 1,
+						},
+					}})
+
 AddRoom("OceanCoastal", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_COASTAL,
@@ -10,6 +21,7 @@ AddRoom("OceanCoastal", {
 						{
 							driftwood_log = 1,
 							bullkelp_plant = 2,
+							messagebottle = 0.08,
 						},
 
 						countstaticlayouts =
@@ -22,6 +34,7 @@ AddRoom("OceanCoastal", {
 AddRoom("OceanSwell", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_SWELL,
+				    required_prefabs = {"crabking"},
 					contents =  {
 						distributepercent = 0.005,
 						distributeprefabs =
@@ -29,19 +42,28 @@ AddRoom("OceanSwell", {
 							seastack = 1.0,
 							seastack_spawner_swell = 0.1,
 							oceanfish_shoalspawner = 0.07,
-						},						
+						},
+						countstaticlayouts =
+						{
+							["CrabKing"] = 1,
+						},
 					}})
 
 AddRoom("OceanRough", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_ROUGH,
+				    required_prefabs = {"hermithouse_construction1"},
 					contents =  {
 						distributepercent = 0.01 ,
 						distributeprefabs =
 						{
 							seastack = 1,
 							seastack_spawner_rough = 0.13,
-						},							
+						},
+						countstaticlayouts =
+						{
+							["HermitcrabIsland"] = 1,
+						},
 					}})
 
 AddRoom("OceanHazardous", {
@@ -57,7 +79,7 @@ AddRoom("OceanHazardous", {
 							boatfragment04 = 1,
 							boatfragment05 = 1,
 							seastack = 1,
-						},							
+						},
 					}})
 
 

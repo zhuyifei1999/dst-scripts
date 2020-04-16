@@ -122,7 +122,7 @@ local function OnLand(inst)
 	    inst:RemoveComponent("complexprojectile")
 		inst.Physics:SetCollisionMask(SWIMMING_COLLISION_MASK)
 		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-		inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+		inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
 		inst.AnimState:PlayAnimation("idle_water_loop", true)
 	    SpawnPrefab("splash").Transform:SetPosition(x, y, z)
 	else
@@ -245,7 +245,7 @@ local function waterfn(data)
     inst.AnimState:PlayAnimation("idle_water_loop", true)
 
     inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-    inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+    inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
 
     inst.entity:SetPristine()
 

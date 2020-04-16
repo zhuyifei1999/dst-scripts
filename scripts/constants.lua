@@ -35,6 +35,9 @@ LAYER_WORLD_DEBUG = 6
 LAYER_FRONTEND = 7
 LAYER_FRONTEND_DEBUG = 8
 
+LAYER_WIP_BELOW_OCEAN = 2 --1
+
+
 ANCHOR_MIDDLE = 0
 ANCHOR_LEFT = 1
 ANCHOR_RIGHT = 2
@@ -506,6 +509,7 @@ GROUND =
 
 	PEBBLEBEACH = 42,
 	METEOR = 43,
+    SHELLBEACH = 44,
 
 	-- PUBLIC USE SPACE FOR MODS is 70 to 89 --
 
@@ -848,6 +852,13 @@ TECH =
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
     FOODPROCESSING_ONE = { FOODPROCESSING = 1 },
 	FISHING_ONE = { FISHING = 1 },
+
+	HERMITCRABSHOP_ONE = { HERMITCRABSHOP = 1 },
+	HERMITCRABSHOP_THREE = { HERMITCRABSHOP = 3 },
+	HERMITCRABSHOP_FIVE = { HERMITCRABSHOP = 5 },
+    HERMITCRABSHOP_SEVEN = { HERMITCRABSHOP = 7 },
+    HERMITCRABSHOP_NINE = { HERMITCRABSHOP = 9 },    
+
 	WINTERSFEASTCOOKING_ONE = { WINTERSFEASTCOOKING = 1 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
@@ -1059,7 +1070,8 @@ RECIPETABS =
     MADSCIENCE =    { str = "MADSCIENCE",   sort = 100,  icon = "tab_madscience_lab.tex",	 crafting_station = true, manufacturing_station = true },
     FOODPROCESSING = { str = "FOODPROCESSING", sort = 100, icon = "tab_foodprocessing.tex",  crafting_station = true },
 	FISHING =		{ str = "FISHING",		sort = 100,  icon = "tab_fishing.tex",	 crafting_station = true },
-	WINTERSFEASTCOOKING = { str = "WINTERSFEASTCOOKING", sort = 100, icon = "tab_feast_oven.tex",	crafting_station = true, manufacturing_station = true },--placeholder icon
+	WINTERSFEASTCOOKING = { str = "WINTERSFEASTCOOKING", sort = 100, icon = "tab_feast_oven.tex",	crafting_station = true },
+	HERMITCRABSHOP = { str = "HERMITCRABSHOP", sort = 100, icon = "tab_hermitcrab_shop.tex",		 crafting_station = true, shop = true},
 }
 
 CUSTOM_RECIPETABS =

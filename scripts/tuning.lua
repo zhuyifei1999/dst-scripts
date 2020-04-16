@@ -186,6 +186,7 @@ function Tune(overrides)
 			BOBBER_BALL			= {dist_max =  4, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -20 },
 			BOBBER_OVAL			= {dist_max =  6, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -20 },
 			BOBBER_PLUG			= {dist_max =  8, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -10 },
+			BOBBER_LIGHTBULB	= {dist_max =  4, dist_min_accuracy = 0.10, dist_max_accuracy = -0.10, max_angle_offset = -20 },
 
 			BOBBER_CROW			= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
 			BOBBER_ROBIN		= {dist_max =  4, dist_min_accuracy = 0.15, dist_max_accuracy = -0.15, max_angle_offset = -25 },
@@ -205,7 +206,7 @@ function Tune(overrides)
 			-- dist_max = added to the casting distance
 
 			-- a basic hook, kind of shinny, maybe it can hook something if you are lucky
-			HOOK				= { charm = 0.1, reel_charm =  0.0, radius = 1.0, style = "hook", timeofday = {day = 1, dusk = 1, night = 1} }, 
+			HOOK				= { charm = 0.1, reel_charm =  0.0, radius = 1.0, style = "hook", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 0 }, 
 
 			SPOILED_FOOD		= { charm = 0.1, reel_charm = -0.3, radius = 2.0, style = "rot", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 2 }, 
 
@@ -221,22 +222,32 @@ function Tune(overrides)
 			SPINNERBAIT_DUSK	= { charm = 0.4, reel_charm =  0.4, radius = 5.0, style = "spinnerbait", timeofday = {day = 0.3, dusk = 1.0, night = 0.3}, dist_max = 2 }, 
 			SPINNERBAIT_NIGHT	= { charm = 0.4, reel_charm =  0.4, radius = 5.0, style = "spinnerbait", timeofday = {day = 0.3, dusk = 0.3, night = 1.0}, dist_max = 2 }, 
 
+			SPECIAL_RAIN		= { charm = 0.3, reel_charm =  0.5, radius = 5.0, style = "special", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1, weather = {default = 0.0, raining = 1.0, snowing = 0.0} }, 
+			SPECIAL_SNOW		= { charm = 0.3, reel_charm =  0.5, radius = 5.0, style = "special", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1, weather = {default = 0.0, raining = 0.0, snowing = 1.0} }, 
+			SPECIAL_DROWSY		= { charm = 0.1, reel_charm =  0.3, radius = 3.0, style = "special", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1, stamina_drain = 1.0 }, 
+			SPECIAL_HEAVY		= { charm = 0.5, reel_charm =  0.0, radius = 5.0, style = "special", timeofday = {day = 1, dusk = 1, night = 1}, dist_max = 1, }, 
 
 			SPOON_WIP			= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spoon", timeofday = {day = 0.0, dusk = 0.0, night = 0.0} }, 
 			SPINNERBAIT_WIP		= { charm = 0.2, reel_charm =  0.3, radius = 4.0, style = "spinnerbait", timeofday = {day = 0.0, dusk = 0.0, night = 0.0} }, 
 		},
 
+		OCEANFISHING_LURE_WEATHER_DEFAULT = {default = 1.0, raining = 0.5, snowing = 0.5},
+
 		OCEANFISH_LURE_PREFERENCE = 
 		{
-			SMALL_VEGGIE	= { hook = 0.25, rot = 1.0, seed = 1.50, berry = 1.50, spoon = 0.00, spinnerbait = 0.00, insect = 0.00 },
-			VEGGIE			= { hook = 0.25, rot = 0.5, seed = 1.50, berry = 1.50, spoon = 0.50, spinnerbait = 0.00, insect = 0.00 },
-			SMALL_OMNI		= { hook = 0.25, rot = 1.0, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			OMNI			= { hook = 0.25, rot = 0.5, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
-			SMALL_MEAT		= { hook = 0.25, rot = 1.0, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
-			MEAT			= { hook = 0.25, rot = 0.5, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+			SMALL_VEGGIE	= { hook = 0.25, special = 1.0, rot = 1.0, seed = 1.50, berry = 1.50, spoon = 0.00, spinnerbait = 0.00, insect = 0.00 },
+			VEGGIE			= { hook = 0.25, special = 1.0, rot = 0.5, seed = 1.50, berry = 1.50, spoon = 0.50, spinnerbait = 0.00, insect = 0.00 },
+			SMALL_OMNI		= { hook = 0.25, special = 1.0, rot = 1.0, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
+			OMNI			= { hook = 0.25, special = 1.0, rot = 0.5, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+			SMALL_MEAT		= { hook = 0.25, special = 1.0, rot = 1.0, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
+			MEAT			= { hook = 0.25, special = 1.0, rot = 0.5, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+            WOBSTER         = { hook = 1.00, special = 1.0, rot = 1.0, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
 		},
 		
-		OCEANFISH_MIN_INTEREST_TO_BITE = 0.2,
+        OCEANFISH_MIN_INTEREST_TO_BITE = 0.2,
+        OCEANFISH_SEE_CHUM_DIST = 16,
+
+		WEIGHABLE_HEAVY_WEIGHT_PERCENT = 0.8, -- anything >= to this is "heavy" for its type of fish
 
         STAGEHAND_HITS_TO_GIVEUP = 86,
         ENDTABLE_FLOWER_WILTTIME = total_day_time * 2.25,
@@ -376,6 +387,14 @@ function Tune(overrides)
 
         WILSON_WALK_SPEED = 4,
         WILSON_RUN_SPEED = 6,
+
+		WILSON_EMBARK_SPEED_MIN = 4,
+		WILSON_EMBARK_SPEED_MAX = 10,
+		WILSON_EMBARK_SPEED_BOOST = 1.5,
+
+		WILSON_HOP_DISTANCE_SHORT = 2.5,
+		WILSON_HOP_DISTANCE = 4,
+		WILSON_HOP_DISTANCE_FAR = 6,
 
         CRITTER_WALK_SPEED = 6,
         CRITTER_HUNGERTIME = total_day_time * 3.25,
@@ -691,7 +710,8 @@ function Tune(overrides)
         MARBLETREE_MINE = 8,
         CAVEIN_BOULDER_MINE = 3,
         SEASTACK_MINE = 9,
-        SEACOCOON_MINE = 1,
+		SEACOCOON_MINE = 1,
+		SHELL_CLUSTER_MINE = 3,
 
         PETRIFIED_TREE_SMALL = 2,
         PETRIFIED_TREE_NORMAL = 3,
@@ -1139,6 +1159,22 @@ function Tune(overrides)
 			WINTERSFEASTCOOKING = TechTree.Create({
 				WINTERSFEASTCOOKING = 1,
 			}),
+		
+			HERMITCRABSHOP_L1 = TechTree.Create({
+				HERMITCRABSHOP = 1,
+			}),
+			HERMITCRABSHOP_L2 = TechTree.Create({
+				HERMITCRABSHOP = 3,
+			}),
+			HERMITCRABSHOP_L3 = TechTree.Create({
+				HERMITCRABSHOP = 5,
+			}),
+            HERMITCRABSHOP_L4 = TechTree.Create({
+                HERMITCRABSHOP = 7,
+            }),
+            HERMITCRABSHOP_L5 = TechTree.Create({
+                HERMITCRABSHOP = 9,
+            }),            
 		},
 
         RABBIT_HEALTH = 25 * multiplayer_attack_modifier,
@@ -1664,7 +1700,7 @@ function Tune(overrides)
         REPAIR_THULECITE_PIECES_WORK = 1.5/6,
         REPAIR_THULECITE_PIECES_HEALTH = 100/6,
 
-        REPAIR_BOARDS_HEALTH = 25,
+        REPAIR_BOARDS_HEALTH = 50,
         REPAIR_LOGS_HEALTH = 25/4,
         REPAIR_STICK_HEALTH = 13,
         REPAIR_CUTGRASS_HEALTH = 13,
@@ -3353,7 +3389,12 @@ function Tune(overrides)
                 HUNGER = 0,
                 SANITY = 0,
                 WETNESS = 50,  
-            }
+            },
+
+			CREATURE =
+			{
+				WETNESS = 100,
+			},
 		},
 
         CARRAT =
@@ -3959,7 +4000,132 @@ function Tune(overrides)
 		MINIBOATLANTERN_WANDER_DIST = 6,
         MINIBOATLANTERN_LIGHTTIME = total_day_time*6,
         MINIBOATLANTERN_BURNTIME = 1.7,
-	}
+
+
+
+        CRABKING_HEALTH = 15000,
+
+        CRABKING_CLAW_BOATDAMAGE = 35,
+        CRABKING_CLAW_HEALTH = 500,
+        CRABKING_CLAW_HEALTH_BOOST = 200,
+        CRABKING_CLAW_WALK_SPEED = 1,
+        CRABKING_CLAW_RUN_SPEED = 4,
+        CRABKING_CLAW_RESPAWN_DELAY = 30,-- time each claw must regen for before being spawnable
+        CRABKING_CLAW_PLAYER_DAMAGE = 15, 
+        CRABKING_CLAW_REGEN_DELAY = 5,  -- time between regening claws while healing
+        CRABKING_BASE_CLAWS = 5,
+
+        CRABKING_MAX_VELOCITY_MOD = 0,
+        CRABKING_ANCHOR_DRAG = 10,
+        
+        CRABKING_STACKS = 20,        
+        CRABKING_DEADLY_GEYSERS = 5,
+        CRABKING_GEYSER_BOATDAMAGE = 10,
+        CRABKING_CAST_TIME = 8,
+        CRABKING_CAST_TIME_FREEZE = 5,
+        CRABKING_STACK_SUMMON_DELAY = 20,
+        CRABKING_HEAL_DELAY = 40,
+        CRABKING_CAST_DELAY = 5,
+        CRABKING_FIX_TIME = 10,
+        CRABKING_BASE_FREEZE_AMOUNT = 40,
+        CRABKING_FREEZE_INCRAMENT = 10,
+        CRABKING_FREEZE_RANGE = 10,
+        CRABKING_REGEN = 650,
+        CRABKING_REGEN_BUFF = 100,
+
+        CRABKING_RESPAWN_TIME = total_day_time * 20,
+
+        CRABKING_CLAW_THRESHOLD = 0.9,
+        CRABKING_HEAL_THRESHOLD = 0.85,
+        CRABKING_FREEZE_THRESHOLD = 0.85,
+
+        -- why not.
+        CRABKING_DAMAGE = 150, 
+        CRABKING_DAMAGE_PLAYER_PERCENT = .5,
+        CRABKING_ATTACK_RANGE = 5,
+        CRABKING_AOE_RANGE = 3,
+        CRABKING_AOE_SCALE = 0.8, 
+        CRABKING_ATTACK_PERIOD = 4,       
+
+        TRIDENT =
+        {
+            DAMAGE = wilson_attack * 0.8, -- Same damage as an axe... hahaha.
+            USES = 300,
+            SPELL =
+            {
+                RADIUS = 2.5,
+                DAMAGE = wilson_attack * 2.5,
+            },
+        },
+
+        WOBSTER_DEN =
+        {
+            REGEN_PERIOD = 3*seg_time,
+            SPAWN_PERIOD = 8*seg_time,
+            MAX_CHILDREN = 2,
+
+            SPAWNRADIUS = 4,
+            WORK = 9,
+        },
+
+        WOBSTER =
+        {
+            SURVIVE_TIME = 4*total_day_time,
+            HEALTH = 25 * multiplayer_attack_modifier,
+            SPEED =
+            {
+                SWIM = 0.5,
+                GROUND = 1,
+            },
+            FISHABLE_STAMINA =
+            {
+                drain_rate = 0.05,
+                recover_rate = 0.1,
+                struggle_times =
+                {
+                    low = 3,
+                    high = 8,
+                    r_low = 1,
+                    r_high = 1,
+                },
+                tired_times =
+                {
+                    low = 4,
+                    high = 2,
+                    r_low = 1,
+                    r_high = 1,
+                },
+            },
+		},
+		
+		BOAT_WINCH =
+		{
+			LOWERING_SPEED = 2,
+			RAISING_SPEED_FAST = 1.8,
+			RAISING_SPEED_SLOW = 1.1,
+
+			DURATION_LOWERED_SUCCESS = 1,
+			DURATION_LOWERED_FAILURE = 0.5,
+
+			BOAT_DRAG_DURATION = 1,
+		},
+
+        HERMITCRAB =
+        {
+            UNFRIENDLY_LEVEL = 0,
+            SPEAKTIME = 3.5,
+            DANCE_RANGE = 8,
+            WALKSPEED = 2.8,
+            RUNSPEED = 5,
+
+            HEAVY_FISH_THRESHHOLD = 0.70,
+
+            MEETING_RADIUS = 16,
+        },
+
+        MESSAGEBOTTLE_NOTE_CHANCE = 0.66,
+
+        SINGINGSHELL_TRIGGER_RANGE = 4,    }
 end
 
 Tune()
