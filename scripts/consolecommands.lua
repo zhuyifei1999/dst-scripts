@@ -1445,6 +1445,8 @@ local function NoteToSemitone(note)
 end
 
 function c_shellsfromtable(song, startpos, placementfn, spacing_multiplier, out_of_range_mode)
+    song = song or require("notetable_dsmaintheme")
+    
 	if song == nil or type(song) ~= "table" then
 		print("Error: Invalid 'notes' table")
 		return false, "INVALID_NOTES_TABLE"

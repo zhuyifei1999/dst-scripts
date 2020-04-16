@@ -16,7 +16,11 @@ end
 --------------------------------------------------------------------------
 local function onsleep(inst)
     if inst.components.health ~= nil and not inst.components.health:IsDead() then
-        inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
+		if inst.sg:HasStateTag("jumping") and inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown() then
+			inst.sg:GoToState("sink")			
+		else
+		    inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
+		end
     end
 end
 
@@ -848,7 +852,9 @@ local function sleeponanimover(inst)
 end
 
 local function onwakeup(inst)
-    inst.sg:GoToState("wake")
+	if not inst.sg:HasStateTag("nowake") then
+	    inst.sg:GoToState("wake")
+	end
 end
 
 local function onentersleeping(inst)
@@ -1173,9 +1179,12 @@ end
 
 local function onsleepex(inst)
     inst.sg.mem.sleeping = true
-    if not (inst.sg:HasStateTag("nosleep") or inst.sg:HasStateTag("sleeping") or
-            (inst.components.health ~= nil and inst.components.health:IsDead())) then
-        inst.sg:GoToState("sleep")
+	if inst.components.health == nil or not inst.components.health:IsDead() then
+		if inst.sg:HasStateTag("jumping") and inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown() then
+			inst.sg:GoToState("sink")			
+		elseif not (inst.sg:HasStateTag("nosleep") or inst.sg:HasStateTag("sleeping")) then
+		    inst.sg:GoToState("sleep")
+		end
     end
 end
 
@@ -1688,7 +1697,7 @@ CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
     table.insert(states, State
     {
         name = "sink",
-        tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt" },
+        tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt", "nowake" },
 
         onenter = function(inst, data)
             inst:ClearBufferedAction()
@@ -1704,8 +1713,13 @@ CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
 			else
 				inst.components.drownable:OnFallInOcean()
 			end
+
 			if inst.DynamicShadow ~= nil then
 			    inst.DynamicShadow:Enable(false)
+			end
+
+		    if inst.brain ~= nil then
+				inst.brain:Stop()
 			end
 
 			local skip_anim = data ~= nil and data.noanim
@@ -1756,6 +1770,10 @@ CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
 			if inst.components.combat ~= nil then
 				inst.components.combat:DropTarget()
 			end
+
+		    if inst.brain ~= nil then
+				inst.brain:Start()
+			end
         end,
     })
 
@@ -1780,6 +1798,11 @@ CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
 				inst.AnimState:PlayAnimation("sleep_loop")
 	            inst.AnimState:PushAnimation("sleep_pst", false)
 			end
+
+		    if inst.brain ~= nil then
+				inst.brain:Stop()
+			end
+
 			if inst.components.drownable ~= nil then
 				inst.components.drownable:TakeDrowningDamage()
 			end
@@ -1799,5 +1822,11 @@ CommonStates.AddSinkAndWashAsoreStates = function(states, anims, timelines, fns)
                 end
             end),
         },
+
+        onexit = function(inst)
+		    if inst.brain ~= nil then
+				inst.brain:Start()
+			end
+        end,
 	})
 end

@@ -206,7 +206,7 @@ local function onhit(inst, hitter, work_left, work_done)
             inst._activetask = nil
         end
 
-        inst.SoundEmitter:PlaySound(inst._sounds.hit)
+        -- inst.SoundEmitter:PlaySound(inst._sounds.hit)
     end
 end
 

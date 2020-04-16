@@ -3031,6 +3031,8 @@ STRINGS =
         HERMIT_BUNDLE_SHELLS = "The shells she sells.",
         WINCH_BLUEPRINT = "For deep sea grabs.",
         TURF_SHELLBEACH_BLUEPRINT = "A soft patch of sand, scattered with seashells.",
+
+        CHUM = "Get chummy with the fish.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -3471,13 +3473,7 @@ STRINGS =
         MED = {"You couldn't wait for a better time?",},
         HIGH = {"I can always make time for you, dearie.",},
     },
-    HERMITCRAB_ANNOUNCE_OCEANFISHING_IDLE_QUOTE = {
-        "Where are the fish?",
-        "Maybe I should find a better fishing spot.",
-        "I thought there were supposed to be plenty of fish in the sea!",
-        "I could be doing so many more scientific things right now...",
-    },
-
+    
     HERMITCRAB_LEVEL10_PLAYERGOOD = {
         "Glad to see you looking well, dearie."
     },

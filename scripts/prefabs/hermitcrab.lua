@@ -152,7 +152,8 @@ local MEET_PLAYERS_RANGE_SQ = 20*20
 local MEET_PLAYERS_FREQUENCY = 1.5
 
 local function displaynamefn(inst)    
-    return inst.getgeneralfriendlevel(inst) == "HIGH" and STRINGS.NAMES.HERMITCRAB_NAME or STRINGS.NAMES.HERMITCRAB
+
+    return inst:HasTag("highfriendlevel") and STRINGS.NAMES.HERMITCRAB_NAME or STRINGS.NAMES.HERMITCRAB
 end
 
 local function dotalkingtimers(inst)
@@ -324,6 +325,7 @@ local function OnSave(inst, data)
     if inst.storelevelunlocktask then
         data.storelevelunlocked = true
     end
+    data.highfriendlevel = inst:HasTag("highfriendlevel")
 end
 
 local function OnLoad(inst, data)
@@ -343,6 +345,9 @@ local function OnLoad(inst, data)
         end
         if data.pearlgiven then
             inst.pearlgiven = data.pearlgiven
+        end
+        if data.highfriendlevel then
+            inst:AddTag("highfriendlevel")
         end
     end
 end
@@ -485,6 +490,13 @@ local function onTaskComplete(inst, defaulttask)
                 end
             end
         end)
+    end
+
+    if inst.getgeneralfriendlevel(inst) == "HIGH" and not inst:HasTag("highfriendlevel")  then
+        inst:AddTag("highfriendlevel")
+        if inst.components.homeseeker and inst.components.homeseeker.home then
+            inst.components.homeseeker.home:AddTag("highfriendlevel")
+        end
     end
 end
 

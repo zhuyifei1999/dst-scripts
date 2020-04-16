@@ -95,6 +95,10 @@ function Drownable:OnFallInOcean(shore_x, shore_y, shore_z)
 
 	self.dest_x, self.dest_y, self.dest_z = shore_x, shore_y, shore_z
 
+	if self.inst.components.sleeper ~= nil then
+		self.inst.components.sleeper:WakeUp()
+	end
+
 	local inv = self.inst.components.inventory
 	if inv ~= nil then
 		Launch(inv:DropActiveItem(), self.inst, 3)

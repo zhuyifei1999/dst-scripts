@@ -3221,7 +3221,7 @@ return{
         --
 		SINGINGSHELL_OCTAVE3 =
 		{
-			GENERIC = "I expected it to sound more like a war bugle.",
+			GENERIC = "{note}? I expected it to sound more like a war bugle.",
 		},
 		SINGINGSHELL_OCTAVE4 =
 		{

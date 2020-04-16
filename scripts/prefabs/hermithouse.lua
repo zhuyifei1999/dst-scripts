@@ -17,8 +17,7 @@ local construction_data = {
 }
 
 local function displaynamefn(inst)
-    local child = inst.components.spawner.child
-    return child and child.getgeneralfriendlevel(child) == "HIGH" and STRINGS.NAMES.HERMITHOUSE_PEARL or STRINGS.NAMES.HERMITHOUSE
+    return inst:HasTag("highfriendlevel") and STRINGS.NAMES.HERMITHOUSE_PEARL or STRINGS.NAMES.HERMITHOUSE
 end
 
 local function LightsOn(inst)
@@ -156,8 +155,10 @@ local function OnConstructed(inst, doer)
         end        
         new_house.AnimState:PlayAnimation("stage"..new_house.level.."_placing")
         new_house.AnimState:PushAnimation("idle_stage"..new_house.level)
+        if inst:HasTag("highfriendlevel") then
+            new_house:AddTag("highfriendlevel")
+        end
     end
-
 end
 
 local function onconstruction_built(inst)
@@ -166,17 +167,15 @@ local function onconstruction_built(inst)
     inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/stage".. inst.level.."_place")
 end
 
--- local function onsave(inst, data)
---     if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
---         data.burnt = true
---     end
--- end
+local function onsave(inst, data)
+    data.highfriendlevel = inst:HasTag("highfriendlevel")
+ end
 
--- local function onload(inst, data)
---     if data ~= nil and data.burnt then
---         inst.components.burnable.onburnt(inst)
---     end
--- end
+local function onload(inst, data)
+    if data and data.highfriendlevel then
+        inst:AddTag("highfriendlevel")
+    end
+ end
 
 local function onstartdaydoortask(inst)
     inst.doortask = nil
@@ -266,10 +265,6 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
             inst.level = 4
         end
 
-        if inst.level == 3 or inst.level == 4 then
-            inst:DoTaskInTime(math.random()*5, function() inst.dowind(inst) end)
-        end
-
 		inst:SetPhysicsRadiusOverride(1.5)
 		MakeObstaclePhysics(inst, inst.physicsradiusoverride)
 
@@ -304,6 +299,7 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
 			return inst
 		end
 
+
         if name == "hermithouse_construction1" then
             inst.nolight = true
             inst.MiniMapEntity:SetIcon("hermitcrab_home.png")
@@ -337,8 +333,12 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
 		inst.inittask = inst:DoTaskInTime(0, oninit)
         inst.dowind = dowind
 		
-		-- inst.OnSave = onsave
-		-- inst.OnLoad = onload
+        if inst.level == 3 or inst.level == 4 then
+            inst:DoTaskInTime(math.random()*5, function() inst.dowind(inst) end)
+        end        
+
+		inst.OnSave = onsave
+		inst.OnLoad = onload
 
         if master_postinit then
            master_postinit(inst)

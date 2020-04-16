@@ -20,6 +20,7 @@ AddModReleaseID( "R07_ANR_HEARTOFTHERUINS" )
 AddModReleaseID( "R08_ROT_TURNOFTIDES" )
 AddModReleaseID( "R09_ROT_SALTYDOG" )
 AddModReleaseID( "R09_ROT_HOOKLINEANDINKER" )
+AddModReleaseID( "R11_ROT_SHESELLSSEASHELLS" )
 
 -----------------------------------------------------------------------------------------------
 

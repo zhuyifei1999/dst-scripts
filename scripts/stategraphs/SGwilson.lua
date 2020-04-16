@@ -7201,7 +7201,7 @@ local states =
         events =
         {
             EventHandler("firedamage", function(inst)
-                if inst.sg:HasStateTag("sleeping") then
+                if inst.sg:HasStateTag("sleeping") and not inst.sg:HasStateTag("drowning") then
                     inst.sg.statemem.iswaking = true
                     inst.sg:GoToState("wakeup")
                 else
@@ -7209,7 +7209,7 @@ local states =
                 end
             end),
             EventHandler("cometo", function(inst)
-                if inst.sg:HasStateTag("sleeping") then
+                if inst.sg:HasStateTag("sleeping") and not inst.sg:HasStateTag("drowning") then
                     inst.sg.statemem.iswaking = true
                     inst.sg:GoToState("wakeup")
                 else

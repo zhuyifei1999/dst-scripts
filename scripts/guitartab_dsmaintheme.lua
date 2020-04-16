@@ -7,8 +7,8 @@ local m = -1
 -- Standard tuning:			E2, A2, D3, G3, B3, E4
 local tuning =			{	29,	34,	39,	44,	48,	53	}
 
-local transposition = 0
-local spacing_multiplier = 1
+local transposition = 8
+local spacing_multiplier = 2.25
 
 local tab =
 {
