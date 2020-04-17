@@ -1026,9 +1026,12 @@ local function initfriendlevellisteners(inst)
                         inst.heavyfish = nil
                     end
                 end
-                str = STRINGS.HERMITCRAB_GETFISH_BIG[math.random(1,#STRINGS.HERMITCRAB_GETFISH_BIG)]
+
+				str = STRINGS.HERMITCRAB_GETFISH_BIG[math.random(1,#STRINGS.HERMITCRAB_GETFISH_BIG)]
             else
-                str = STRINGS.HERMITCRAB_REFUSE_SMALL_FISH[math.random(#STRINGS.HERMITCRAB_REFUSE_SMALL_FISH)]
+                local weight = data.item.components.weighable:GetWeight()
+                str = subfmt(STRINGS.HERMITCRAB_REFUSE_SMALL_FISH[math.random(1,#STRINGS.HERMITCRAB_REFUSE_SMALL_FISH)], {weight = string.format("%0.2f", weight)})
+
                 inst.itemstotoss = {data.item}
                 keepitem = true
                 --inst.components.entitytracker:TrackEntity("tossitem", data.item)
@@ -1153,7 +1156,7 @@ end
 local function onmoonvent(inst,doer)
     if math.random() < 0.3  then
     local source = inst.CHEVO_marker
-        if not inst.comment_data and source:GetDistanceSqToInst(doer) < ISLAND_RADIUS * ISLAND_RADIUS then
+        if source and not inst.comment_data and source:GetDistanceSqToInst(doer) < ISLAND_RADIUS * ISLAND_RADIUS then
             local gfl = inst.getgeneralfriendlevel(inst)
         
             inst.comment_data= {
@@ -1169,16 +1172,18 @@ local function OnSpringChange(inst)
     if not inst.components.friendlevels.friendlytasks[TASKS.REMOVE_LUREPLANT].complete then
         --look for lureplant?
         local source = inst.CHEVO_marker
-        local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"lureplant"})
-        if #ents <= 0 then
-            -- spawnlureplant
-            local markerents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"hermitcrab_lure_marker"})
-            if #markerents > 0 then
-                local markerpos = Vector3(markerents[1].Transform:GetWorldPosition())
-                local plant = SpawnPrefab("lureplant")
-                plant.Transform:SetPosition(markerpos.x,markerpos.y,markerpos.z)
-                plant.sg:GoToState("spawn")
+        if source then
+            local pos = Vector3(source.Transform:GetWorldPosition())
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"lureplant"})
+            if #ents <= 0 then
+                -- spawnlureplant
+                local markerents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"hermitcrab_lure_marker"})
+                if #markerents > 0 then
+                    local markerpos = Vector3(markerents[1].Transform:GetWorldPosition())
+                    local plant = SpawnPrefab("lureplant")
+                    plant.Transform:SetPosition(markerpos.x,markerpos.y,markerpos.z)
+                    plant.sg:GoToState("spawn")
+                end
             end
         end
     end
@@ -1419,8 +1424,10 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:DoTaskInTime(0,function()
         inst.CHEVO_marker = FindEntity(inst, ISLAND_RADIUS, nil, {"hermitcrab_marker"})
+        if inst.CHEVO_marker then        
+            inst:ListenForEvent("onremove",  function() inst.CHEVO_marker = nil end, inst.CHEVO_marker)
+        end
     end)    
-    --inst:ListenForEvent("newcombattarget", OnNewTarget)
     
     inst:DoTaskInTime(0, RegisterToBottleManager) 
 

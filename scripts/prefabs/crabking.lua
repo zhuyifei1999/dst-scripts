@@ -371,7 +371,11 @@ local function endcastspell(inst, lastwasfreeze)
     local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
     if #ents > 0 then
         for i,ent in pairs(ents)do
-            ent:PushEvent("endspell")
+            if not inst.components.freezable:IsFrozen() and not inst.components.sleeper:IsAsleep() then
+                ent:PushEvent("endspell")
+            else
+                ent:Remove()
+            end
         end
     end    
     if lastwasfreeze then
@@ -790,13 +794,6 @@ local function fn()
 
     ------------------------------------------
 
-    inst:AddComponent("sleeper")
-    inst.components.sleeper:SetResistance(4)
-    inst.components.sleeper:SetSleepTest(ShouldSleep)
-    inst.components.sleeper:SetWakeTest(ShouldWake)
-
-    ------------------------------------------
-
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('crabking')
 
@@ -866,6 +863,8 @@ local function fn()
     inst.spawnchunk = spawnchunk
     inst.removegem = removegem
     inst.addgem = addgem
+    inst.ShouldSleep = ShouldSleep
+    inst.ShouldWake = ShouldWake
 
     inst.spawnyellowwhirls = spawnyellowwhirls
 

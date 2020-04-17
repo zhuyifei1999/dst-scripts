@@ -60,7 +60,7 @@ local function onload(inst, data)
     end
 end
 
-local function MakeChest(name, bank, build, indestructible, master_postinit, prefabs, assets, common_postinit)
+local function MakeChest(name, bank, build, indestructible, master_postinit, prefabs, assets, common_postinit, force_non_burnable)
     local default_assets =
     {
         Asset("ANIM", "anim/"..build..".zip"),
@@ -112,8 +112,10 @@ local function MakeChest(name, bank, build, indestructible, master_postinit, pre
             inst.components.workable:SetOnFinishCallback(onhammered)
             inst.components.workable:SetOnWorkCallback(onhit)
 
-            MakeSmallBurnable(inst, nil, nil, true)
-            MakeMediumPropagator(inst)
+            if not force_non_burnable then
+                MakeSmallBurnable(inst, nil, nil, true)
+                MakeMediumPropagator(inst)
+            end
         end
 
         inst:AddComponent("hauntable")
@@ -194,7 +196,6 @@ local function sunken_onhit(inst, worker)
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("closed", false)
         if inst.components.container ~= nil then
-            --inst.components.container:DropEverything()
             inst.components.container:Close()
         end
     end
@@ -206,7 +207,7 @@ end
 
 local function sunken_OnEquip(inst, owner)
 	inst.components.container:Close()
-    owner.AnimState:OverrideSymbol("swap_body", "swap_sunken_treasurechest", "swap_body")--@felix: placeholder, so the art doesn't really work at all right now
+    owner.AnimState:OverrideSymbol("swap_body", "swap_sunken_treasurechest", "swap_body")
 end
 
 local function sunken_OnSubmerge(inst)
@@ -256,4 +257,4 @@ return MakeChest("treasurechest", "chest", "treasure_chest", false, nil, { "coll
     MakePlacer("treasurechest_placer", "chest", "treasure_chest", "closed"),
     MakeChest("pandoraschest", "pandoras_chest", "pandoras_chest", true, pandora_master_postinit, { "pandorachest_reset" }),
     MakeChest("minotaurchest", "pandoras_chest_large", "pandoras_chest_large", true, minotuar_master_postinit, { "collapse_small" }),
-	MakeChest("sunkenchest", "sunken_treasurechest", "sunken_treasurechest", false, sunken_master_postinit, { "collapse_small", "underwater_salvageable", "splash_green" }, { Asset("ANIM", "anim/swap_sunken_treasurechest.zip") }, sunken_common_postinit)
+	MakeChest("sunkenchest", "sunken_treasurechest", "sunken_treasurechest", false, sunken_master_postinit, { "collapse_small", "underwater_salvageable", "splash_green" }, { Asset("ANIM", "anim/swap_sunken_treasurechest.zip") }, sunken_common_postinit, true)

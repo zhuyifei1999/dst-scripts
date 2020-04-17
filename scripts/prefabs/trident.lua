@@ -73,11 +73,12 @@ local function do_water_explosion_effect(inst, affected_entity, owner, position)
             launch_away(projectile, position)
         end
     elseif affected_entity.components.inventoryitem ~= nil then
-        -- TODO @stevenm consider setting this to go through walls as well...
         launch_away(affected_entity, position)
         affected_entity.components.inventoryitem:SetLanded(false, true)
     elseif affected_entity.waveactive then
         affected_entity:DoSplash()
+    elseif affected_entity.components.workable ~= nil and affected_entity.components.workable:GetWorkAction() == ACTIONS.MINE then
+        affected_entity.components.workable:WorkedBy(owner, TUNING.TRIDENT.SPELL.MINES)
     end
 end
 
@@ -85,6 +86,7 @@ local MUST_HAVE_SPELL_TAGS = nil
 local CANT_HAVE_SPELL_TAGS = {"INLIMBO", "outofreach", "DECOR"}
 local MUST_HAVE_ONE_OF_SPELL_TAGS = nil
 local FX_RADIUS = TUNING.TRIDENT.SPELL.RADIUS * 0.65
+local COST_PER_EXPLOSION = TUNING.TRIDENT.USES / TUNING.TRIDENT.SPELL.USE_COUNT
 local function create_water_explosion(inst, target, position)
     local owner = inst.components.inventoryitem:GetGrandOwner()
     if owner == nil then
@@ -134,7 +136,7 @@ local function create_water_explosion(inst, target, position)
         end
     end
 
-    inst.components.finiteuses:Use(30)
+    inst.components.finiteuses:Use(COST_PER_EXPLOSION)
 end
 
 local FLOATER_SWAP_DATA = {sym_build = "swap_trident"}
@@ -203,7 +205,6 @@ local function trident()
 
     -------
 
-    -- inst.playsound = "hookline/creatures/gnarwail/horn" -- TODO @stevenm guitar sound
     inst.DoWaterExplosionEffect = do_water_explosion_effect
 
     inst:AddComponent("spellcaster")

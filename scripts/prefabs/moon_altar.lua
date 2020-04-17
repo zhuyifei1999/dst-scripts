@@ -197,8 +197,8 @@ local function onhit(inst, hitter, work_left, work_done)
             inst.AnimState:PlayAnimation("hit_proximity")
             inst.AnimState:PushAnimation("proximity_loop", true)
         else
-            inst.AnimState:PlayAnimation("hit_inactive"..inst._stage)
-            inst.AnimState:PushAnimation("idle"..inst._stage, false)
+            inst.AnimState:PlayAnimation(GetStageAnim(inst, "hit_inactive"))
+            inst.AnimState:PushAnimation(GetStageAnim(inst, "idle"), false)
         end
 
         if inst._activetask ~= nil then

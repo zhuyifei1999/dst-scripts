@@ -1,5 +1,24 @@
 require("stategraphs/commonstates")
 
+local function sleeponanimover(inst)
+    if inst.AnimState:AnimDone() then
+        if math.random() < 0.3 then
+            inst.sg:GoToState("sleeping_blink")
+        else
+            inst.sg:GoToState("sleeping")
+        end
+    end
+end
+
+local function onwakeup(inst)
+    if not inst.sg:HasStateTag("nowake") then
+        inst.sg:GoToState("wake")
+    end
+end
+
+local function onentersleeping(inst)    
+    inst.AnimState:PlayAnimation("sleep_loop")
+end
 
 local function heal(inst)
     inst.components.health:DoDelta(TUNING.CRABKING_REGEN + math.floor(inst.countgems(inst).orange/2) * TUNING.CRABKING_REGEN_BUFF )
@@ -76,6 +95,12 @@ local states =
         tags = { "idle", "canrotate" },
 
         onenter = function(inst, pushanim)
+            if not inst.components.sleeper then
+                inst:AddComponent("sleeper")
+                inst.components.sleeper:SetResistance(4)
+                inst.components.sleeper:SetSleepTest(inst.ShouldSleep)
+                inst.components.sleeper:SetWakeTest(inst.ShouldWake)
+            end        
             --pushanim could be bool or string?
             local transitionstate = GetTransitionState(inst)
             if transitionstate then
@@ -126,6 +151,9 @@ local states =
         tags = { "inert", "canrotate", "noattack"},
 
         onenter = function(inst, pushanim)
+            if inst.components.sleeper then
+                inst:RemoveComponent("sleeper")
+            end
             inst.AnimState:PlayAnimation("inert")
         end,
         
@@ -683,9 +711,97 @@ local states =
             end),
         },
     },
+
+    State{
+        name = "sleep",
+        tags = { "busy", "sleeping" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("sleep_pre")
+        end,
+
+        timeline=
+        {
+            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/inert_hide") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", sleeponanimover),
+            EventHandler("onwakeup", onwakeup),
+        },
+    },
+
+    State{
+        name = "sleeping",
+        tags = { "busy", "sleeping" },
+
+        onenter = onentersleeping,
+
+        events =
+        {
+            EventHandler("animover", sleeponanimover),
+            EventHandler("onwakeup", onwakeup),
+        },
+    },    
+
+    State{
+        name = "sleeping_blink",
+        tags = { "busy", "sleeping" },
+
+        onenter = function(inst)
+             inst.AnimState:PlayAnimation("sleep_loop_blink")
+        end,
+
+        timeline=
+        {
+            TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
+            TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
+            TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
+            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", sleeponanimover),
+            EventHandler("onwakeup", onwakeup),
+        },
+    },    
+
+    State{
+        name = "wake",
+        tags = { "busy", "waking" },
+
+        onenter = function(inst)        
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("sleep_pst")
+            if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+        end,
+
+        timeline=
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/inert_hide") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
 }
 
-CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
 CommonStates.AddCombatStates(states,{
     deathtimeline ={

@@ -3053,6 +3053,9 @@ return {
         MOON_ALTAR_ROCK_GLASS = "There's something trapped inside.",
         MOON_ALTAR_ROCK_SEED = "There's something trapped inside.",
 
+        MOON_ALTAR_CROWN = "",--[TODO:JEN]
+        MOON_ALTAR_COSMIC = "",--[TODO:JEN]
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "I think tanks are in order.",

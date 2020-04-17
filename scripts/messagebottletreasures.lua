@@ -413,8 +413,7 @@ local trinkets =
 	"trinket_27",
 }
 
--- local TRINKET_CHANCE = 0.015
-local TRINKET_CHANCE = 0.99--@felix
+local TRINKET_CHANCE = 0.02
 
 local weighted_treasure_prefabs = {}
 local weighted_treasure_contents = {}

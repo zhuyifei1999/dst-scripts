@@ -3243,8 +3243,8 @@ STRINGS =
             },
             GIVE_HEAVY_FISH = {
                 LOW = {{"(Grumble)... only ever catch minnows...","Never a nice big fish..."}},
-                MED = {"If only SOMEONE could bring me a big, juicy fish..."},
-                HIGH = {{"If you could bring me a big fish...","I'd be so happy!"}},
+                MED = {"If only SOMEONE could bring me some big, juicy fish..."},
+                HIGH = {{"If you could bring me some big fish...","I'd be so happy!"}},
             },
             REMOVE_LUREPLANT = {
                 LOW = {{"That horrible plant...","Such an eyesore..."}},
@@ -3439,7 +3439,11 @@ STRINGS =
     },
     HERMITCRAB_GETFISH_BIG = {"Now that's a proper-sized fish!"},
     
-    HERMITCRAB_REFUSE_SMALL_FISH = {"What is that? A minnow?"},
+    HERMITCRAB_REFUSE_SMALL_FISH = {
+		"It only weighs {weight}\nWhat is that? A minnow?",
+		"Wow {weight},\nI've never caught a fish this small.",
+		"Only {weight}?\nYou should have put it back.",
+		},
     HERMITCRAB_REFUSE_SALAD = {{"I don't want that right now...","it makes me too sad..."}},
     HERMITCRAB_REFUSE_ICE_HOT = {"Don't be silly, it's already freezing out here!"},
     HERMITCRAB_REFUSE_ICE_HAD = {"I don't need any more ice."},

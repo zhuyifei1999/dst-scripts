@@ -4053,8 +4053,10 @@ function Tune(overrides)
             USES = 300,
             SPELL =
             {
-                RADIUS = 2.5,
+                USE_COUNT = 50,
+                RADIUS = 2.75,
                 DAMAGE = wilson_attack * 2.5,
+                MINES = 10,
             },
         },
 
