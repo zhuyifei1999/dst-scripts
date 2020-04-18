@@ -34,6 +34,12 @@ local prefabs =
     "crabking_yellow_whirl_back",
     "moon_altar_cosmic",
     "hermit_cracked_pearl",
+	"chesspiece_crabking_sketch",
+	"trident_blueprint",
+	"meat",
+	"singingshell_octave5",
+	"singingshell_octave4",
+	"singingshell_octave3",
 }
 
 local geyserprefabs =
@@ -59,18 +65,24 @@ local ARMTIME = {
     0.25,
     0.1,
     0.2,
-    0.15,        
+    0.15,
     0.3,
     0,
     0.25,
     0.1,
     0.2,
-    0.15,        
+    0.15,
     0.3,
     0,
     0.25,
-    0.1,        
+    0.1,
 }
+
+local function removecrab(inst) 
+    inst:RemoveEventCallback("onremove", function() removecrab( inst ) end, inst.crab)
+    inst.crab = nil
+    inst:Remove()
+end
 
 local function RemoveDecor(inst, data)
     inst.AnimState:ClearOverrideSymbol("gems_blue")    
@@ -331,7 +343,8 @@ local function startcastspell(inst, freeze)
     if freeze then
         local x,y,z = inst.Transform:GetWorldPosition()
         local fx = SpawnPrefab("crabking_feeze")
-        fx.crab = inst    
+        fx.crab = inst
+        fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
         fx.Transform:SetPosition(x,y,z)
         local scale = 0.75 + Remap(inst.countgems(inst).blue,0,9,0,0.75)
         fx.Transform:SetScale(scale,scale,scale)
@@ -346,7 +359,8 @@ local function startcastspell(inst, freeze)
                 local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
                 local boatpt = Vector3(boat.Transform:GetWorldPosition())
                 local fx = SpawnPrefab("crabking_geyserspawner")
-                fx.crab = inst      
+                fx.crab = inst
+                fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
                 fx.Transform:SetPosition(boatpt.x,boatpt.y,boatpt.z)
                 fx.dogeyserburbletask(fx)
             end
@@ -673,28 +687,29 @@ end
 
 SetSharedLootTable( 'crabking',
 {
-    {'meat',                                1.00},
-    {'meat',                                1.00},
-    {'meat',                                1.00},
-    {'meat',                                1.00},
-    {'meat',                                1.00},
-    {'meat',                                1.00},
-    {'meat',                                1.00},
+	{"chesspiece_crabking_sketch",			1.00},
     {"trident_blueprint",                   1.00},
-    {"singingshell_octave5",                  1.00},
-    {"singingshell_octave5",                  1.00},
-    {"singingshell_octave5",                  1.00},
-    {"singingshell_octave5",                  1.00},
-    {"singingshell_octave5",                  0.50},
-    {"singingshell_octave5",                  0.25},
-    {"singingshell_octave4",                 1.00},
-    {"singingshell_octave4",                 1.00},
-    {"singingshell_octave4",                 1.00},
-    {"singingshell_octave4",                 0.50},
-    {"singingshell_octave4",                 0.25},
-    {"singingshell_octave3",                  1.00},
-    {"singingshell_octave3",                  1.00},
-    {"singingshell_octave3",                  0.50},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {'meat',                                1.00},
+    {"singingshell_octave5",                1.00},
+    {"singingshell_octave5",                1.00},
+    {"singingshell_octave5",                1.00},
+    {"singingshell_octave5",                1.00},
+    {"singingshell_octave5",                0.50},
+    {"singingshell_octave5",                0.25},
+    {"singingshell_octave4",                1.00},
+    {"singingshell_octave4",                1.00},
+    {"singingshell_octave4",                1.00},
+    {"singingshell_octave4",                0.50},
+    {"singingshell_octave4",                0.25},
+    {"singingshell_octave3",                1.00},
+    {"singingshell_octave3",                1.00},
+    {"singingshell_octave3",                0.50},
 })
 
 local function PushMusic(inst)
@@ -876,7 +891,7 @@ local function dogeyserburbletask(inst)
         inst.burbletask:Cancel()
         inst.burbletask = nil
     end
-    local totalcasttime = TUNING.CRABKING_CAST_TIME - math.floor(inst.crab.countgems(inst.crab).yellow/2)
+    local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)
     local time = Remap(inst.components.age:GetAge(),0,totalcasttime,0.2,0.01)
     inst.burbletask = inst:DoTaskInTime(time,function() inst.burble(inst) end) -- 0.01+ math.random()*0.1
 end
@@ -910,7 +925,7 @@ local function endgeyser(inst)
         end
     end)
     local extrageysers = 0
-    if inst.crab then
+    if inst.crab and inst.crab:IsValid() then
         extrageysers = math.floor(inst.crab.countgems(inst.crab).purple/2)
     end
     for i=1,TUNING.CRABKING_DEADLY_GEYSERS + extrageysers do
@@ -1009,7 +1024,7 @@ local function geyserfn()
     inst.SoundEmitter:SetParameter("burble", "intensity", 0)
     inst.burblestarttime = GetTime()
     inst.burbleintensity = inst:DoPeriodicTask(1,function()
-            local totalcasttime = TUNING.CRABKING_CAST_TIME - math.floor(inst.crab.countgems(inst.crab).yellow/2)
+            local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)
             local intensity = math.min(1,( GetTime() - inst.burblestarttime ) / totalcasttime)
 
             inst.SoundEmitter:SetParameter("burble", "intensity", intensity)
@@ -1060,11 +1075,11 @@ local function onfreeze(inst, target)
         end
     end
 
-    if target.components.combat ~= nil then
+    if target.components.combat ~= nil and inst.crab and inst.crab:IsValid() then
         target.components.combat:SuggestTarget(inst.crab)
     end
 
-    if target.sg ~= nil and not target.sg:HasStateTag("frozen") then
+    if target.sg ~= nil and not target.sg:HasStateTag("frozen") and inst.crab and inst.crab:IsValid() then
         target:PushEvent("attacked", { attacker = inst.crab, damage = 0, weapon = inst })
     end
 
@@ -1079,13 +1094,13 @@ local function dofreezefz(inst)
         inst.freezetask:Cancel()
         inst.freezetask = nil
     end
-    local time = 0.1 -- Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - math.floor(inst.crab.countgems(inst.crab).blue/2),0.3,0.08)
-    inst.freezetask = inst:DoTaskInTime(time,function() inst.freezefx(inst) end) -- 0.01+ math.random()*0.1
+    local time = 0.1 
+    inst.freezetask = inst:DoTaskInTime(time,function() inst.freezefx(inst) end)
 end
 
 local function freezefx(inst)
     local function spawnfx()
-        local MAXRADIUS = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.crab.countgems(inst.crab).blue,0,9,0,0.75)) /2
+        local MAXRADIUS = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75)) /2
         local x,y,z = inst.Transform:GetWorldPosition()
         local theta = math.random()*2*PI
         local radius = 4+ math.pow(math.random(),0.8)* MAXRADIUS
@@ -1096,7 +1111,7 @@ local function freezefx(inst)
         fx.Transform:SetPosition(x+offset.x,y+offset.y,z+offset.z)
     end
 
-    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - math.floor(inst.crab.countgems(inst.crab).yellow/2),1,5)
+    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2),1,5)
     for i=1,fx do
         if math.random()<0.2 then
             spawnfx()
@@ -1109,12 +1124,12 @@ end
 local function dofreeze(inst)
     local interval = 0.2
     local pos = Vector3(inst.Transform:GetWorldPosition())
-    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.crab.countgems(inst.crab).blue,0,9,0,0.75))
+    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75))
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,v in pairs(ents)do
         if v.components.temperature then
 
-            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + ((inst.crab.countgems(inst.crab).blue) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - math.floor(inst.crab.countgems(inst.crab).yellow/2)) /interval)
+            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + (((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0)) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)) /interval)
 
             if v.components.moisture then
                 rate = rate * Remap(v.components.moisture:GetMoisture(),0,v.components.moisture.maxmoisture,1,3)
@@ -1144,7 +1159,7 @@ local function endfreeze(inst)
     end
 
     local pos = Vector3(inst.Transform:GetWorldPosition())
-    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.crab.countgems(inst.crab).blue,0,9,0,0.75))
+    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75))
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,v in pairs(ents)do
         onfreeze(inst, v)

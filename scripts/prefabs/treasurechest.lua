@@ -206,7 +206,9 @@ local function sunken_OnUnequip(inst, owner)
 end
 
 local function sunken_OnEquip(inst, owner)
-	inst.components.container:Close()
+    if inst.components.container ~= nil then
+		inst.components.container:Close()
+	end
     owner.AnimState:OverrideSymbol("swap_body", "swap_sunken_treasurechest", "swap_body")
 end
 
@@ -217,7 +219,7 @@ local function sunken_OnSubmerge(inst)
 end
 
 local function sunken_GetStatus(inst)
-    return not inst.components.container.canbeopened and "LOCKED" or nil
+    return (inst.components.container ~= nil and not inst.components.container.canbeopened) and "LOCKED" or nil
 end
 
 local function sunken_common_postinit(inst)

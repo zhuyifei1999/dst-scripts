@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "'Twas made in honor of our stalwart vessel!",
         CHESSPIECE_MOON = "Offered in honor of our beauteous moon!",
         CHESSPIECE_CARRAT = "I'm not keen on honoring a vegetable so.",
+        CHESSPIECE_MALBATROSS = "To honor our victory at sea!",
+        CHESSPIECE_CRABKING = "'Twas a hard-fought battle, but we prevailed!",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "The gods call me to it, I shall not resist.",
         MOON_ALTAR_ROCK_SEED = "The gods call me to it, I shall not resist.",
 
+        MOON_ALTAR_CROWN = "I wonder how that creature got his claws on this?",
+        MOON_ALTAR_COSMIC = "It is grateful, but my work is not yet done.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "A seafaring Viking is keen of mind and sharp of wit.",
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "The old crone has been waging war against the moon's apparitions.",
+
+        HERMIT_PEARL = "I shall protect it with my life!",
+        HERMIT_CRACKED_PEARL = "The battle is won, but at what cost?",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

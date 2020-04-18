@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "Artists tend to reference what they're familiar with.",
         CHESSPIECE_MOON = "The missing chunk is a recent development.",
         CHESSPIECE_CARRAT = "A delightfully rendered likeness of the Daucus carota rattus.",
+        CHESSPIECE_MALBATROSS = "I'll have to add an appendix to \"Birds of the World\".",
+        CHESSPIECE_CRABKING = "A rendering of a treasure-obsessed crustacean.",
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "I think I had best mine it out.",
         MOON_ALTAR_ROCK_SEED = "I think I had best mine it out.",
 
+        MOON_ALTAR_CROWN = "Come now, let's get you back where you belong.",
+        MOON_ALTAR_COSMIC = "It says there's more knowledge yet to be found.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "It's good to keep the mind occupied at sea.",
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Goodness, that must have required some tenacity!",
+
+        HERMIT_PEARL = "Oh dear, I do hope I can find him.",
+        HERMIT_CRACKED_PEARL = "I should tell her.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

@@ -1370,6 +1370,8 @@ return{
         CHESSPIECE_ANCHOR = "So heavy, heavy, dreary, dreary.",
         CHESSPIECE_MOON = "The mortals thought it was made of cheese! Hyuyu!",
         CHESSPIECE_CARRAT = "Not so light on its feet now, hyuyu!",
+        CHESSPIECE_MALBATROSS = "Oh my word, that was a feisty bird!",
+        CHESSPIECE_CRABKING = "He was better at sinking than being a sea king.",
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
         CHESSJUNK3 = "It looks quite broke, and that's no joke!",
@@ -3050,6 +3052,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "There's a surprise inside!",
         MOON_ALTAR_ROCK_SEED = "There's a surprise inside!",
 
+        MOON_ALTAR_CROWN = "Well, you've had quite the adventure, hyuyu!",
+        MOON_ALTAR_COSMIC = "The stage is nearly set!",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "For a mind as vast as the sea is deep!",
@@ -3401,6 +3406,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Hyuyu! Can you not get out, little ones?",
+
+        HERMIT_PEARL = "A treasured treasure.",
+        HERMIT_CRACKED_PEARL = "A shattered hope.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

@@ -1370,6 +1370,8 @@ return{
         CHESSPIECE_ANCHOR = "I'm fond'a this one.",
         CHESSPIECE_MOON = "That statue's moonin' me! HA!",
         CHESSPIECE_CARRAT = "Look at it, just lazing around!",
+        CHESSPIECE_MALBATROSS = "It tried to mess with the wrong gal.",
+        CHESSPIECE_CRABKING = "Hey Max, you guys have a lot in common!",
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
         CHESSJUNK3 = "A heap of spare parts.",
@@ -3050,6 +3052,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Somethin' inside is itching to get out.",
         MOON_ALTAR_ROCK_SEED = "Somethin' inside is itching to get out.",
 
+        MOON_ALTAR_CROWN = "Don't worry, I'll get you where you need to go.",
+        MOON_ALTAR_COSMIC = "Can't shake the feeling that this is all building up to somethin'...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Always be inventing.",
@@ -3401,6 +3406,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "That old lady's more resourceful than I gave her credit for.",
+
+        HERMIT_PEARL = "I know a bit about not givin' up on someone.",
+        HERMIT_CRACKED_PEARL = "I'm so sorry, Pearl.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

@@ -1368,6 +1368,8 @@ return{
         CHESSPIECE_ANCHOR = "Why did we sculpt an anchor.",
         CHESSPIECE_MOON = "I'd prefer to look at this over the real thing.",
         CHESSPIECE_CARRAT = "If only I could feel so serene.",
+        CHESSPIECE_MALBATROSS = "No more will she soar over the gloomy shoals.",
+        CHESSPIECE_CRABKING = "We put him out of his misery.",
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",
@@ -3048,6 +3050,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "I sense a presence within...",
         MOON_ALTAR_ROCK_SEED = "I sense a presence within...",
 
+        MOON_ALTAR_CROWN = "You're safe now.",
+        MOON_ALTAR_COSMIC = "The whispers... are getting louder...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Thinking on the waves makes me nauseous.",
@@ -3399,6 +3404,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "They're trapped... for now.",
+
+        HERMIT_PEARL = "I will be its caretaker.",
+        HERMIT_CRACKED_PEARL = "I seem to leave only misery in my wake...",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

@@ -1,6 +1,13 @@
 require("stategraphs/commonstates")
 
 
+
+local function removeboat(inst)
+    inst:RemoveEventCallback("onremove", function() removeboat( inst ) end, inst.boat)
+    inst.boat = nil
+    inst:PushEvent("releaseclamp")
+end
+
 local function removeshadow(inst)
     if inst.shadow then
         inst.shadow:Remove()
@@ -68,7 +75,7 @@ local events =
     end),
     EventHandler("releaseclamp", function(inst, data)
         if inst.sg:HasStateTag("clampped") then
-            inst.sg:GoToState("clamp_pst",data.target)
+            inst.sg:GoToState("clamp_pst")
         end
     end),
 }
@@ -117,8 +124,7 @@ local states =
             EventHandler("animover", function(inst)
                 inst.sg:GoToState("idle")
             end),
-        },        
-        
+        },
     },
 
     --[[ CLAMP STATES ]]
@@ -126,24 +132,26 @@ local states =
         name = "clamp_pre",
         tags = { "busy", "canrotate","clampped"},
 
-        onenter = function(inst,target)               
+        onenter = function(inst,target)
 
             inst.Transform:SetEightFaced()
-  
-            inst.sg.statemem.target = target
-
+            if target:IsValid() then  
+                inst.boat = target
+                inst:ListenForEvent("onremove", function() removeboat( inst ) end, inst.boat)
+            end
             play_shadow_animation(inst, "clamp_pre")
         end,
 
         onupdate = function(inst)
-            inst:ForceFacePoint(inst.sg.statemem.target:GetPosition())
+            if inst.boat and inst.boat:IsValid() then
+                inst:ForceFacePoint(inst.boat:GetPosition())
+            end
         end,
 
         timeline=
         {
             TimeEvent(14*FRAMES, function(inst)
                 inst.components.locomotor:StopMoving()
-                inst.boat = inst.sg.statemem.target
                 inst.clamp(inst)
                 inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity= .5})
             end),
@@ -162,13 +170,13 @@ local states =
                 inst.sg.statemem.keepclamp = true
                 inst.sg:GoToState("clamp")
             end),
-        },            
+        },
     }, 
     State{
         name = "clamp",
         tags = {"canrotate","clampped"},
 
-        onenter = function(inst)   
+        onenter = function(inst)
             inst.Transform:SetEightFaced()
          
             play_shadow_animation(inst, "clamp")
@@ -180,7 +188,7 @@ local states =
             if not inst.sg.statemem.keepclamp then
                 inst.releaseclamp(inst)
             end
-        end,        
+        end,
 
         events =
         {
@@ -192,13 +200,13 @@ local states =
                 inst.sg.statemem.keepclamp = true
                 inst.sg:GoToState("clamp")
             end),
-        },                
+        },
     },
     State{
         name = "clamp_hit",
         tags = {"busy","canrotate","clampped"},
 
-        onenter = function(inst)         
+        onenter = function(inst)
             inst.Transform:SetEightFaced()
             
             play_shadow_animation(inst, "clamp_hit")
@@ -210,7 +218,7 @@ local states =
             if not inst.sg.statemem.keepclamp then
                 inst.releaseclamp(inst)
             end
-        end,        
+        end,
 
         events =
         {
@@ -218,7 +226,7 @@ local states =
                 inst.sg.statemem.keepclamp = true
                 inst.sg:GoToState("clamp")
             end),
-        },                
+        },
     },
     State{
         name = "clamp_attack",

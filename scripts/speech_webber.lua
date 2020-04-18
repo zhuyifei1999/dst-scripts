@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "Anchors away!",
         CHESSPIECE_MOON = "Almost as pretty as the real thing.",
         CHESSPIECE_CARRAT = "It makes us feel content.",
+        CHESSPIECE_MALBATROSS = "Not such a big bad bird now!",
+        CHESSPIECE_CRABKING = "He didn't seem very happy.",
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
         CHESSJUNK3 = "A mess of chess.",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Oh no, someone's trapped inside that rock!",
         MOON_ALTAR_ROCK_SEED = "Oh no, someone's trapped inside that rock!",
 
+        MOON_ALTAR_CROWN = "It wants to go back home.",
+        MOON_ALTAR_COSMIC = "We think it says we're getting closer.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "There's all kinds of fun things you can do at sea.",
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Woah! Why didn't we think of that?",
+
+        HERMIT_PEARL = "We'll take really good care of it!",
+        HERMIT_CRACKED_PEARL = "We hope Ms. Pearl isn't too mad at us...",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

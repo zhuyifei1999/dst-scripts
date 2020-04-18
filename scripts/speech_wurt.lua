@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "Why made anchor for land, florpt?",
         CHESSPIECE_MOON = "It look just like real thing!",
         CHESSPIECE_CARRAT = "Veggie rat look happy.",
+        CHESSPIECE_MALBATROSS = "It very fancy looking statue.",
+        CHESSPIECE_CRABKING = "Glurgh, he made crab lady sad!",
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
         CHESSJUNK3 = "It all messed up.",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Hello?",
         MOON_ALTAR_ROCK_SEED = "Hello?",
 
+        MOON_ALTAR_CROWN = "Time to go home!",
+        MOON_ALTAR_COSMIC = "It saying something...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Make things for water, florp!",
@@ -3241,7 +3246,7 @@ return{
         },
 
         RESKIN_TOOL = "Change things to... different things!",
-        MOON_FISSURE_PLUGGED = "Shells not look very comforable like that.",
+        MOON_FISSURE_PLUGGED = "Bad moon things can't get out, florp!",
 
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Bad moon things can't get out, florp!",
+
+        HERMIT_PEARL = "Oooooh, so shiny!",
+        HERMIT_CRACKED_PEARL = "D-didn't do it!",
     },
 
     DESCRIBE_GENERIC = "What that?",

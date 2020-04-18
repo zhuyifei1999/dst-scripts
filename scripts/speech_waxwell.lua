@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "How kitsch.",
         CHESSPIECE_MOON = "I'm fairly partial to this one.",
         CHESSPIECE_CARRAT = "If only I had a mantle to set it on.",
+        CHESSPIECE_MALBATROSS = "Such a fowl-tempered bird.",
+        CHESSPIECE_CRABKING = "I am not that crabby!",
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
         CHESSJUNK3 = "Didn't like that one's face.",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "The thing inside wants out.",
         MOON_ALTAR_ROCK_SEED = "The thing inside wants out.",
 
+        MOON_ALTAR_CROWN = "This powerful energy... I've seen it before.",
+        MOON_ALTAR_COSMIC = "It is not yet time?",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Now to see if Higgsbury's ideas hold water.",
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "It's almost genius in its simplicity... but it does smell.",
+
+        HERMIT_PEARL = "It's... strange to be so trusted.",
+        HERMIT_CRACKED_PEARL = "Ah. I thought I'd run out of people to disappoint.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

@@ -1365,6 +1365,8 @@ return{
         CHESSPIECE_ANCHOR = "Is big. And heavy. Wolfgang would like to lift.",
         CHESSPIECE_MOON = "Is look just like sky cheese!",
         CHESSPIECE_CARRAT = "Wolfgang liked racing leggy carrots.",
+        CHESSPIECE_MALBATROSS = "How will bird fly if it is stone?",
+        CHESSPIECE_CRABKING = "Wolfgang was seasick for days...",
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -3045,6 +3047,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Special things is trapped inside!",
         MOON_ALTAR_ROCK_SEED = "Special things is trapped inside!",
 
+        MOON_ALTAR_CROWN = "Wolfgang will help you!",
+        MOON_ALTAR_COSMIC = "Such loud whisperings. Make head hurt.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Wolfgang need help thinking on scary water.",
@@ -3396,6 +3401,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Why is ground stuffed with stinky shells?",
+
+        HERMIT_PEARL = "Will take good care of shiny stone!",
+        HERMIT_CRACKED_PEARL = "Wolfgang did not take good care of shiny stone.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

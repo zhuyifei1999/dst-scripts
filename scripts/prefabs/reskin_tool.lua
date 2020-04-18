@@ -11,13 +11,21 @@ local prefabs =
     "tornado",
 }
 
+local function FuelTaken(inst, taker)
+    if taker ~= nil and taker.SoundEmitter ~= nil then
+        taker.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
+    end
+end
+
+local function onignite(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
+end
+
 local function spellCB(tool, target, pos)
 
     local fx = SpawnPrefab("explode_reskin")
     fx.Transform:SetPosition(target.Transform:GetWorldPosition())
     fx.scale_override = 1.7 * target:GetPhysicsRadius(0.5)
-    print( "fx.scale_override", fx.scale_override )
-
 
     tool:DoTaskInTime(0, function()
         if target.skinname == tool._cached_reskinname[target.prefab] then
@@ -90,6 +98,8 @@ local function tool_fn()
 
     inst:AddTag("nopunch")
 
+    inst.spelltype = "RESKIN"
+
     --Sneak these into pristine state for optimization
     inst:AddTag("veryquickcast")
 
@@ -118,7 +128,15 @@ local function tool_fn()
     inst.components.spellcaster:SetSpellFn(spellCB)
     inst.components.spellcaster:SetCanCastFn(can_cast_fn)
 
-    MakeHauntableLaunch(inst)
+    inst:AddComponent("fuel")
+    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+    inst.components.fuel:SetOnTakenFn(FuelTaken)
+
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    MakeSmallPropagator(inst)
+    MakeHauntableLaunchAndIgnite(inst)
+
+    inst:ListenForEvent("onignite", onignite)
 
     inst._cached_reskinname = {}
 

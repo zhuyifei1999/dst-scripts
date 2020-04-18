@@ -1371,6 +1371,8 @@ return{
         CHESSPIECE_ANCHOR = "It's hard to burn stuff at sea.",
         CHESSPIECE_MOON = "I guess it's nice.",
         CHESSPIECE_CARRAT = "Now all I can think of is roasted carrots.",
+        CHESSPIECE_MALBATROSS = "She was a pretty tough old bird.",
+        CHESSPIECE_CRABKING = "Was the treasure worth it?",
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
         CHESSJUNK3 = "Dead windup castle.",
@@ -3051,6 +3053,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Something inside is calling for me.",
         MOON_ALTAR_ROCK_SEED = "Something inside is calling for me.",
 
+        MOON_ALTAR_CROWN = "Y'know, this would be a lot easier if you weren't so heavy.",
+        MOON_ALTAR_COSMIC = "Why do I get the feeling we aren't done yet?",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Watery nerd stuff.",
@@ -3401,7 +3406,10 @@ return{
             BURNT = "Smoked you out!",
         },
 
-        MOON_FISSURE_PLUGGED = "Ohh, so that's how she did it.",
+        MOON_FISSURE_PLUGGED = "Ohh, so that's how she keeps those creeps away.",
+
+        HERMIT_PEARL = "Don't worry grams, it's safe with me!",
+        HERMIT_CRACKED_PEARL = "Oops...",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

@@ -1368,6 +1368,8 @@ return{
         CHESSPIECE_ANCHOR = "Heavy",
         CHESSPIECE_MOON = "Night Ball broken.",
         CHESSPIECE_CARRAT = "Friends!",
+        CHESSPIECE_MALBATROSS = "Bad tweeter",
+        CHESSPIECE_CRABKING = "Snip snap!",
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
         CHESSJUNK3 = "Full of machine stuff",
@@ -3048,6 +3050,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Trapped?",
         MOON_ALTAR_ROCK_SEED = "Trapped?",
 
+        MOON_ALTAR_CROWN = "Lost?",
+        MOON_ALTAR_COSMIC = "Soon",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Can build Floaty stuff",
@@ -3399,6 +3404,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Can't hear them",
+
+        HERMIT_PEARL = "Shiny!",
+        HERMIT_CRACKED_PEARL = "Broken...",
     },
 
     DESCRIBE_GENERIC = "Friend?",

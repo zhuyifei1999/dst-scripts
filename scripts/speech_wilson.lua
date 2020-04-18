@@ -1373,6 +1373,8 @@ return {
         CHESSPIECE_ANCHOR = "It's as heavy as it looks.",
         CHESSPIECE_MOON = "I've been feeling pretty inspired lately.",
         CHESSPIECE_CARRAT = "We have a winner!",
+        CHESSPIECE_MALBATROSS = "It's not so bad when it isn't trying to kill you.",
+        CHESSPIECE_CRABKING = "Still not as crabby as Maxwell.",
         CHESSJUNK1 = "A pile of broken chess pieces.",
         CHESSJUNK2 = "Another pile of broken chess pieces.",
         CHESSJUNK3 = "Even more broken chess pieces.",
@@ -3053,8 +3055,8 @@ return {
         MOON_ALTAR_ROCK_GLASS = "There's something trapped inside.",
         MOON_ALTAR_ROCK_SEED = "There's something trapped inside.",
 
-        MOON_ALTAR_CROWN = "",--[TODO:JEN]
-        MOON_ALTAR_COSMIC = "",--[TODO:JEN]
+        MOON_ALTAR_CROWN = "I fished it up, now to find a fissure!",
+        MOON_ALTAR_COSMIC = "It feels like it's waiting for something.",
 
         SEAFARING_PROTOTYPER =
         {
@@ -3407,6 +3409,9 @@ return {
         },
 
         MOON_FISSURE_PLUGGED = "That doesn't look sound.",
+
+        HERMIT_PEARL = "I'll take good care of it.",
+        HERMIT_CRACKED_PEARL = "I... didn't take good care of it.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

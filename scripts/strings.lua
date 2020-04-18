@@ -419,6 +419,7 @@ STRINGS =
             GENERIC = "Cast Spell", --"Cast Spell on"
             SCIENCE = "Use Gadget",
             MUSIC = "Play",
+            RESKIN = "Sweep",
         },
         BLINK =
         {
@@ -3440,8 +3441,8 @@ STRINGS =
     HERMITCRAB_GETFISH_BIG = {"Now that's a proper-sized fish!"},
     
     HERMITCRAB_REFUSE_SMALL_FISH = {
-		"It only weighs {weight}\nWhat is that? A minnow?",
-		"Wow {weight},\nI've never caught a fish this small.",
+		"You think {weight} is impressive?\nWhat is that, a minnow?",
+		"Wow, {weight}...\nI've never caught a fish this small.",
 		"Only {weight}?\nYou should have put it back.",
 		},
     HERMITCRAB_REFUSE_SALAD = {{"I don't want that right now...","it makes me too sad..."}},

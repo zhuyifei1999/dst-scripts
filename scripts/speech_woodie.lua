@@ -1365,6 +1365,8 @@ return{
         CHESSPIECE_ANCHOR = "Looks good to me.",
         CHESSPIECE_MOON = "Someone did a good job on this.",
         CHESSPIECE_CARRAT = "Looks well made.",
+        CHESSPIECE_MALBATROSS = "I'm not puttin' that anywhere near my base.",
+        CHESSPIECE_CRABKING = "That's nicely made.",
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
         CHESSJUNK3 = "Dead metal.",
@@ -3045,6 +3047,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "There's a little whisper coming from inside.",
         MOON_ALTAR_ROCK_SEED = "There's a little whisper coming from inside.",
 
+        MOON_ALTAR_CROWN = "I know the drill, let's get you back where you belong.",
+        MOON_ALTAR_COSMIC = "I don't get it, why does it feel like we're not finished yet?",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "It's good to be ready for anything at sea.",
@@ -3396,6 +3401,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "Guess sometimes stubbornness pays off, eh Lucy?",
+
+        HERMIT_PEARL = "C'mon Lucy, let's find that crab!",
+        HERMIT_CRACKED_PEARL = "I was only trying to help...",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

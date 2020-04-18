@@ -1364,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "I think Maman would like this.",
         CHESSPIECE_MOON = "Hits my eye like a big pizza pie.",
         CHESSPIECE_CARRAT = "Looking at it is making me a little hungry...",
+        CHESSPIECE_MALBATROSS = "I hope this won't bring us ill luck at sea...",
+        CHESSPIECE_CRABKING = "I'm getting a sudden craving for seafood.",
         CHESSJUNK1 = "Broken chess pieces?",
         CHESSJUNK2 = "More broken chess pieces?",
         CHESSJUNK3 = "And yet more broken chess pieces?",
@@ -3044,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "There's something inside that wants out.",
         MOON_ALTAR_ROCK_SEED = "There's something inside that wants out.",
 
+        MOON_ALTAR_CROWN = "Come on mon ami, let's get you back where you belong!",
+        MOON_ALTAR_COSMIC = "Something tells me this is part of a bigger recipe...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "All the knowledge of a seasoned seafarer!",
@@ -3395,6 +3400,9 @@ return{
         },
 
         MOON_FISSURE_PLUGGED = "I wonder why she's so determined to stay here.",
+
+        HERMIT_PEARL = "Madame Pearl entrusted it to me.",
+        HERMIT_CRACKED_PEARL = "Oh... oh dear...",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

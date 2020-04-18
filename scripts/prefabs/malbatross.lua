@@ -24,6 +24,7 @@ local prefabs =
     "malbatross_feather",
     "malbatross_feather_fall",
 	"winter_ornament_boss_malbatross",
+	"chesspiece_malbatross_sketch",
 }
 
 --------------------------------------------------------------------------
@@ -405,6 +406,8 @@ SetSharedLootTable( 'malbatross',
     {'bluegem',                             0.3},
     {'yellowgem',                           0.05},
 	{'oceanfishingbobber_malbatross_tacklesketch',1.00},
+	{'chesspiece_malbatross_sketch',		1.00},
+
 })
 
 
