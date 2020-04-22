@@ -104,7 +104,8 @@ local states =
     {
         name = "raising",
         onenter = function(inst)
-            if inst.components.inventory:GetItemInSlot(1) ~= nil then
+            local item = inst.components.inventory:GetItemInSlot(1)
+            if item ~= nil and item:HasTag("heavy") then
                 inst.AnimState:PlayAnimation("pull_heavy_pre")
                 inst.AnimState:PushAnimation("pull_heavy_loop", true)
             else
@@ -139,10 +140,15 @@ local states =
                 inst.SoundEmitter:PlaySound(inst.sounds.pull_pst)
             end),
             TimeEvent(18 * FRAMES, function(inst)
-                if inst.components.inventory ~= nil and inst.components.inventory:GetItemInSlot(1) ~= nil then
+                local item = inst.components.inventory ~= nil and inst.components.inventory:GetItemInSlot(1) or nil
+                if item ~= nil then
                     local boat =  TheWorld.Map:GetPlatformAtPoint(inst.Transform:GetWorldPosition())
                     if boat ~= nil then
-                        ShakeAllCamerasOnPlatform(CAMERASHAKE.VERTICAL, 0.3, 0.015, 0.35, boat)
+                        if item:HasTag("heavy") then
+                            ShakeAllCamerasOnPlatform(CAMERASHAKE.VERTICAL, 0.3, 0.015, 0.35, boat)
+                        else
+                            ShakeAllCamerasOnPlatform(CAMERASHAKE.VERTICAL, 0.2, 0.015, 0.1, boat)
+                        end
                     end
                 end
             end),

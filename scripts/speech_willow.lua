@@ -3226,9 +3226,11 @@ return{
 			HOLDING_ITEM = "Unless it's something flammable, I'm not that interested.",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "I never needed a home, but some people do I guess.",
-        HERMITHOUSE = "What a dump.",
-        
+        HERMITHOUSE = {
+            GENERIC = "What a dump.",
+            BUILTUP = "I never needed a home, but some people do I guess.",
+        }, 
+
         SHELL_CLUSTER = "Just a bunch of shells.",
         --
 		SINGINGSHELL_OCTAVE3 =

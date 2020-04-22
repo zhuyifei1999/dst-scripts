@@ -420,8 +420,10 @@ local function PopulateWorld(savedata, profile)
 
 		-- This happens after calling 'map:SetFromString' so that we can use the map API to read tile data instead of trying to read/write the save data tile stream
 		-- no objects have been spawned, so modifying savedata.ents is the correct thing to do
-		local retrofiting = require("map/retrofit_savedata")
-		retrofiting.DoRetrofitting(savedata, world.Map)
+		if world.ismastersim then 
+			local retrofiting = require("map/retrofit_savedata")
+			retrofiting.DoRetrofitting(savedata, world.Map)
+		end
 
         if savedata.map.prefab == "cave" then
             TheFrontEnd:GetGraphicsOptions():DisableStencil()

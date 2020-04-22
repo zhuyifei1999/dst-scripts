@@ -164,6 +164,7 @@ end
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 local function DoRetrofitting(savedata, world_map)
+	local dirty = false
 	if savedata.retrofit_oceantiles then
 		savedata.retrofit_oceantiles = nil
 
@@ -172,20 +173,27 @@ local function DoRetrofitting(savedata, world_map)
 		Ocean_ConvertImpassibleToWater(savedata.map.width, savedata.map.height, require("map/ocean_gen_config"))
 		print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean done")
 		require("map/ocean_retrofit_island").TurnOfTidesRetrofitting_MoonIsland(TheWorld.Map, savedata)
+		dirty = true
 	end
 
 	if savedata.retrofit_savedata_fixupbrinepools then
 		savedata.retrofit_savedata_fixupbrinepools = nil
 		print ("Retrofitting for Return Of Them: Brine Pools Fixup - Checking for missing brine pools...")
 		FixNoBrinePools(savedata, world_map)
+		dirty = true
 	end
 
 	if savedata.retrofit_shesellsseashells_hermitisland then
 		savedata.retrofit_shesellsseashells_hermitisland = nil
 		require("map/ocean_retrofit_island").TurnOfTidesRetrofitting_HermitIsland(TheWorld.Map, savedata)
+		dirty = true
 	end
 
+	if dirty then
+        savedata.map.tiles = world_map:GetStringEncode()
 
+		-- if we could trigger a save here then we would not need to rest after
+	end
 end
 
 return {DoRetrofitting = DoRetrofitting}

@@ -1156,7 +1156,7 @@ local function researchlab2_flashupdate(inst, intensity, totalframes)
 end
 
 local function researchlab2_flash(inst, intensity, frames)
-    if not inst.AnimState:IsCurrentAnimation("proximity_loop") then
+    if not inst.AnimState:IsCurrentAnimation("proximity_loop") and not inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
         researchlab2_cancelflash(inst)
         return
     end
@@ -1174,7 +1174,7 @@ local function researchlab2_checkflashing(inst, anim, offset)
         inst.checkanimtask = nil
     end
     researchlab2_cancelflash(inst)
-    if anim == "proximity_loop" then
+    if anim == "proximity_loop" or anim == "proximity_gift_loop" then
         local period = 49 * FRAMES
         table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 18 * FRAMES, .2, 8))
         table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 24 * FRAMES, .2, 10))
@@ -1182,7 +1182,7 @@ local function researchlab2_checkflashing(inst, anim, offset)
 end
 
 local function researchlab2_checkanim(inst)
-    if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+    if inst.AnimState:IsCurrentAnimation("proximity_loop") or inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
         inst.checkanimtask = nil
         researchlab2_checkflashing(inst, "proximity_loop", inst.AnimState:GetCurrentAnimationTime())
     else
@@ -1202,7 +1202,7 @@ local function researchlab2_pushanimation(inst, anim, loop)
     inst.highlightchildren[1].AnimState:PushAnimation(anim, loop)
     if not wasplaying and inst.AnimState:IsCurrentAnimation(anim) then
         researchlab2_checkflashing(inst, anim, 0)
-    elseif anim == "proximity_loop" and inst.checkanimtask == nil then
+    elseif (anim == "proximity_gift_loop" or anim == "proximity_loop") and inst.checkanimtask == nil then
         inst.checkanimtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() + FRAMES, researchlab2_checkanim)
     end
 end

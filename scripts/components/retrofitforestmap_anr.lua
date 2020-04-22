@@ -776,6 +776,7 @@ function self:OnPostInit()
     if self.retrofit_shesellsseashells then
         print("Retrofitting for Return Of Them: She Sells Seashells - Adding Wobster Dens")
         SheSellsSeashellsRetrofitting_PopulateWobsterDens()
+		self.requiresreset = true -- for hermit island retofitting (retrofit_shesellsseashells_hermitisland)
     end
 
 	---------------------------------------------------------------------------

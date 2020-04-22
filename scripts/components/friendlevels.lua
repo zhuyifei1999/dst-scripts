@@ -92,12 +92,14 @@ function Friendlevels:OnLoad(data)
     end
 end
 
-function Friendlevels:OnLoadPostPass(data)
-    for i,task in ipairs(self.friendlytasks) do
-        if data.taskscomplete[i] then
-            task.complete = data.taskscomplete[i].complete
-        end
-    end
+function Friendlevels:LoadPostPass(newents, data)
+	if data ~= nil and data.taskscomplete ~= nil then
+		for i,task in ipairs(self.friendlytasks) do
+			if data.taskscomplete[i] then
+				task.complete = data.taskscomplete[i].complete
+			end
+		end
+	end
 end
 
 return Friendlevels

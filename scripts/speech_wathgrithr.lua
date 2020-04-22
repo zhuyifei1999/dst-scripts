@@ -3219,8 +3219,10 @@ return{
 			HOLDING_ITEM = "Behold, my prize!",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "The sea witch seems to be pleased with it.",
-        HERMITHOUSE = "The old crone resides here?",
+        HERMITHOUSE = {
+            GENERIC = "The sea witch seems to be pleased with it.",
+            BUILTUP = "The old crone resides here?",
+        }, 
         
         SHELL_CLUSTER = "Tis naught but a clump of shells.",
         --

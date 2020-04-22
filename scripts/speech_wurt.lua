@@ -3219,9 +3219,11 @@ return{
 			HOLDING_ITEM = "Huh? What is it?",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Crabby lady's house got taller!",
-        HERMITHOUSE = "Is very nice home.",
-        
+        HERMITHOUSE = {
+            GENERIC = "Is very nice home.",
+            BUILTUP = "Crabby lady's house got taller!",
+        }, 
+
         SHELL_CLUSTER = "Tried biting, isn't food.",
         --
 		SINGINGSHELL_OCTAVE3 =

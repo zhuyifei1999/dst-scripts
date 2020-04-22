@@ -3220,9 +3220,11 @@ return{
 			HOLDING_ITEM = "Looks like we got something!",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "It looks like a real home now.",
-        HERMITHOUSE = "This place has seen better days.",
-        
+        HERMITHOUSE = {
+            GENERIC = "This place has seen better days.",
+            BUILTUP = "It looks like a real home now.",
+        }, 
+
         SHELL_CLUSTER = "I almost hate to break up such a tight-knit bunch.",
         --
 		SINGINGSHELL_OCTAVE3 =

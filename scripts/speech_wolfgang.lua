@@ -3220,8 +3220,10 @@ return{
 			HOLDING_ITEM = "Ha! Easy job for Wolfgang!",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Make good home for old shell lady.",
-        HERMITHOUSE = "This no place for someone's babushka.",
+        HERMITHOUSE = {
+            GENERIC = "This no place for someone's babushka.",
+            BUILTUP = "Make good home for old shell lady.",
+        },
         
         SHELL_CLUSTER = "Wolfgang will break it open with own mighty fists!",
         --

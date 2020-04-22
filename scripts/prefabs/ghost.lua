@@ -75,6 +75,7 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("ghost")
+    inst:AddTag("flying")
     inst:AddTag("noauradamage")
 
     --trader (from trader component) added to pristine state for optimization

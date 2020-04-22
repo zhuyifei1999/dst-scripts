@@ -208,6 +208,12 @@ local function overrideflotsamsinkfn(inst)
 	end
 end
 
+local function OnSalvage(inst)
+	local product = SpawnPrefab("oceanfishableFlotsam")
+	product.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	return product
+end
+
 local function OnEntityWake(inst)
 	StartUpdating(inst)
 end
@@ -239,6 +245,7 @@ local function waterfn(data)
 	inst:AddTag("oceanfishable")
 	inst:AddTag("oceanfishinghookable")
 	inst:AddTag("swimming")
+	inst:AddTag("winchtarget")--from winchtarget component
 
     inst.AnimState:SetBank("flotsam")
     inst.AnimState:SetBuild("flotsam")
@@ -260,6 +267,10 @@ local function waterfn(data)
 	inst.components.oceanfishable.onsetrodfn = OnSetRod
 	inst.components.oceanfishable.overrideunreelratefn = OverrideUnreelRateFn
 	inst.components.oceanfishable.catch_distance = TUNING.OCEAN_FISHING.MUDBALL_CATCH_DIST
+
+    inst:AddComponent("winchtarget")
+	inst.components.winchtarget:SetSalvageFn(OnSalvage)
+	inst.components.winchtarget.depth = 2
 
 	-- Overrides default sink behavior defined in flotsamgenerator
 	inst.overrideflotsamsinkfn = overrideflotsamsinkfn
@@ -295,6 +306,10 @@ local function landfn(data)
 
 	inst:AddComponent("inspectable")
 
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.canbepickedup = false
+	inst.components.inventoryitem.cangoincontainer = false
+
 	inst:AddComponent("pickable")
 	inst.components.pickable.picksound = "hookline/common/ocean_flotsam/picked"
 	inst.components.pickable.onpickedfn = OnPicked
@@ -302,6 +317,9 @@ local function landfn(data)
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetChanceLootTable("oceanfishableflotsam")
+
+	inst:AddComponent("symbolswapdata")
+	inst.components.symbolswapdata:SetData("flotsam", "swap_body")
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)

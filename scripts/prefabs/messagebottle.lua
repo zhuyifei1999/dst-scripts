@@ -19,11 +19,15 @@ JoinArrays(prefabs, messagebottletreasures.GetPrefabs())
 
 local function playidleanim(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	if TheWorld.Map:IsOceanAtPoint(x, y, z, true) then
+	if TheWorld.Map:IsOceanAtPoint(x, y, z, false) then
 		inst.AnimState:PlayAnimation("idle_water")
 	else
 		inst.AnimState:PlayAnimation("idle")
 	end
+end
+
+local function ondropped(inst)
+	inst.AnimState:PlayAnimation("idle")
 end
 
 local function getrevealtargetpos(inst, doer)
@@ -113,16 +117,22 @@ local function messagebottlefn()
 	inst:ListenForEvent("on_landed", playidleanim)
 	inst:ListenForEvent("on_reveal_map_spot_pst", turn_empty)
 
+	inst:ListenForEvent("ondropped", ondropped)
+
 	return inst
 end
 
 local function playidleanim_empty(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	if TheWorld.Map:IsOceanAtPoint(x, y, z, true) then
+	if TheWorld.Map:IsOceanAtPoint(x, y, z, false) then
 		inst.AnimState:PlayAnimation("idle_empty_water")
 	else
 		inst.AnimState:PlayAnimation("idle_empty")
 	end
+end
+
+local function ondropped_empty(inst)
+	inst.AnimState:PlayAnimation("idle_empty")
 end
 
 local function emptybottlefn()
@@ -155,6 +165,8 @@ local function emptybottlefn()
 	inst.components.waterproofer:SetEffectiveness(0)
 
 	inst:ListenForEvent("on_landed", playidleanim_empty)
+
+	inst:ListenForEvent("ondropped_empty", ondropped)
 
 	return inst
 end

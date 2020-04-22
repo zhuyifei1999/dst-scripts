@@ -3223,9 +3223,11 @@ return{
 			HOLDING_ITEM = "This is what I have to show for my efforts.",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Perhaps broken things can be fixed... over time...",
-        HERMITHOUSE = "It's hardly worth saving.",
-        
+        HERMITHOUSE = {
+            GENERIC = "Perhaps broken things can be fixed... over time...",
+            BUILTUP = "It's hardly worth saving.",
+        },
+
         SHELL_CLUSTER = "They're all clumped together... it seems a shame to separate them...",
         --
 		SINGINGSHELL_OCTAVE3 =

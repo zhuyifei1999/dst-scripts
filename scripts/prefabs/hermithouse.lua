@@ -231,8 +231,15 @@ local function oninit(inst)
         if child ~= nil then
             inst.components.spawner:TakeOwnership(child)
             inst.components.spawner:GoHome(child)
+			if child.retrofitconstuctiontasks ~= nil then
+				child:retrofitconstuctiontasks(inst.prefab)
+			end
         end
     end
+
+	if inst.components.spawner.child ~= nil and inst.components.spawner.child.retrofitconstuctiontasks ~= nil then
+		inst.components.spawner.child:retrofitconstuctiontasks(inst.prefab)
+	end
 end
 
 local function dowind(inst)
@@ -241,6 +248,12 @@ local function dowind(inst)
         inst.AnimState:PushAnimation("idle_stage"..inst.level)
     end
     inst:DoTaskInTime(math.random()*5, function() inst.dowind(inst) end)
+end
+
+local function getstatus(inst)
+    if inst.prefab ~= "hermithouse_construction1"  then
+        return "BUILTUP"
+    end
 end
 
 local function MakeHermitCrabHouse(name, client_postinit, master_postinit, construction_data)
@@ -328,6 +341,7 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
 		inst:SetPrefabNameOverride("hermithouse")
 
 		inst:AddComponent("inspectable")
+        inst.components.inspectable.getstatus = getstatus
 
 		inst:ListenForEvent("onbuilt", onconstruction_built)
 		inst.inittask = inst:DoTaskInTime(0, oninit)

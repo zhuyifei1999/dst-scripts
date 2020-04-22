@@ -3219,9 +3219,11 @@ return{
 			HOLDING_ITEM = "I've caught something!",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Improving your living space can do wonders for one's mood.",
-        HERMITHOUSE = "Tsk. Look at the state of it...",
-        
+        HERMITHOUSE = {
+            GENERIC = "Tsk. Look at the state of it...",
+            BUILTUP = "Improving your living space can do wonders for one's mood.",
+        }, 
+
         SHELL_CLUSTER = "A fascinating assortment of mollusks!",
         --
 		SINGINGSHELL_OCTAVE3 =

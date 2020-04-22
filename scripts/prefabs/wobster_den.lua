@@ -111,12 +111,45 @@ local function on_den_vacated(inst)
     end
 end
 
+local function stop_spawning(inst)
+    if inst.components.childspawner.spawning then
+        inst.components.childspawner:StopSpawning()
+    end
+end
+
+local function on_day_started(inst)
+    if inst._spawning_update_task ~= nil then
+        inst._spawning_update_task:Cancel()
+    end
+    inst._spawning_update_task = inst:DoTaskInTime(1 + math.random() * 2, stop_spawning)
+end
+
+local function start_spawning(inst)
+    if not inst.components.childspawner.spawning then
+        inst.components.childspawner:StartSpawning()
+    end
+end
+
+local function on_day_ended(inst)
+    if inst._spawning_update_task ~= nil then
+        inst._spawning_update_task:Cancel()
+    end
+    inst._spawning_update_task = inst:DoTaskInTime(1 + math.random() * 2, start_spawning)
+end
+
 local function initialize(inst)
     updateart(inst)
 
     if inst.components.childspawner.childreninside > 0 then
         inst._blink_task = inst:DoPeriodicTask(5, try_blink, math.random() * 3)
     end
+
+    if TheWorld.state.iscaveday then
+        inst.components.childspawner:StopSpawning()
+    end
+
+    inst:WatchWorldState("startcaveday", on_day_started)
+    inst:WatchWorldState("stopcaveday", on_day_ended)
 end
 
 local function OnWork(inst, worker, workleft)

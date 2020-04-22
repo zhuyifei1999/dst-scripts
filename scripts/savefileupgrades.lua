@@ -744,8 +744,7 @@ t = {
         {
             version = 5.04, -- RoT: She Sells Seashells - new content
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest"
-                        and savedata.map.persistdata ~= nil then
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
                     if savedata.map.persistdata.retrofitforestmap_anr == nil then
                         savedata.map.persistdata.retrofitforestmap_anr = {}
                     end

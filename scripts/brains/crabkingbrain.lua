@@ -39,14 +39,25 @@ local function ShouldHeal(inst)
     return nil
 end
 
-
 local function ShouldDoAttackSpell(inst)
     if not inst.components.timer:TimerExists("spell_cooldown") then
-
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        local boatents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        local range = inst.getfreezerange(inst)
+        local ents = TheSim:FindEntities(x,y,z, range, nil,nil, {"character","animal","monster","smallcreature"})
         if #ents > 0 then
-            inst.wantstocast = true        
+            for i=#ents,1,-1 do
+                local ent = ents[i]
+                if (not ent:HasTag("character") and (not ent.components.combat or ent.components.combat.target ~= inst) ) or not ent.components.freezable or ent.components.freezable:IsFrozen() then
+                    table.remove(ents,i)
+                end
+            end
+        end
+        if #boatents > 0 or #ents > 0 then
+            if #ents > 0 and #boatents < 1 then
+                inst.dofreezecast = true
+            end
+            inst.wantstocast = true
         end
     end
     return nil

@@ -8,6 +8,7 @@ local actionhandlers =
             return (action.target.components.oceanfishable ~= nil and "bitehook_pre") or nil
         end
     ),
+    ActionHandler(ACTIONS.GOHOME, "enter_home"),
 }
 
 local events =
@@ -237,5 +238,6 @@ CommonStates.AddRunStates(states,
         TimeEvent(2*FRAMES, play_run_step),
     },
 })
+CommonStates.AddSimpleActionState(states, "enter_home", "idle", 2*FRAMES, {"busy"})
 
 return StateGraph("wobster", states, events, "spawn_in", actionhandlers)

@@ -129,9 +129,10 @@ local function OnFullyLowered(inst)
 	local salvaged_item = nil
 	if GetHeldItem(inst) == nil then
 		if boat ~= nil then
-			local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, {"underwater_salvageable"}, nil)
+			local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, {"winchtarget"}, nil)
 			if salvageable ~= nil then
-				salvaged_item = salvageable.components.inventory:GetItemInSlot(1)
+				salvaged_item = salvageable.components.winchtarget:Salvage()
+
 				if salvaged_item ~= nil then
 					inst.components.inventory:GiveItem(salvaged_item)
 					salvaged_item:PushEvent("on_salvaged")
@@ -139,7 +140,9 @@ local function OnFullyLowered(inst)
 					turn_on_boat_drag(inst, boat, TUNING.BOAT_WINCH.BOAT_DRAG_DURATION)
 				end
 
-				salvageable:Remove()
+				if salvageable.components.winchtarget.destroy_on_salvage then
+					salvageable:Remove()
+				end
 			end
 		end
 		
@@ -163,6 +166,33 @@ local function OnFullyLowered(inst)
 	end
 end
 
+local function OnLoweringUpdate(inst)
+	local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, {"winchtarget"}, nil)
+	if salvageable ~= nil then
+		local depth = salvageable.components.winchtarget.depth
+
+		if depth > 0 and inst.components.winch.line_length >= depth then
+			local salvaged_item = salvageable.components.winchtarget:Salvage()
+
+			if salvaged_item ~= nil then
+				inst.components.inventory:GiveItem(salvaged_item)
+				salvaged_item:PushEvent("on_salvaged")
+			end
+
+			if salvageable.components.winchtarget.destroy_on_salvage then
+				salvageable:Remove()
+			end
+
+			local boat = TheWorld.Map:GetPlatformAtPoint(inst.Transform:GetWorldPosition())
+			if boat ~= nil then
+				ShakeAllCamerasOnPlatform(CAMERASHAKE.VERTICAL, 0.2, 0.015, 0.07, boat)
+			end
+
+			inst.components.winch:StartRaising()
+		end
+	end
+end
+
 local function OnFullyRaised(inst)
 	if GetHeldItem(inst) ~= nil then
 		inst.components.winch.winch_ready = false
@@ -179,10 +209,17 @@ end
 
 local function OnStartLowering(inst)
 	inst.components.winch.winch_ready = false
+
+	inst._winch_update_task = inst:DoPeriodicTask(FRAMES, OnLoweringUpdate)
 end
 
 local function OnStartRaising(inst)
 	inst.components.winch:SetRaisingSpeedMultiplier(GetHeldItem(inst) == nil and TUNING.BOAT_WINCH.RAISING_SPEED_FAST or TUNING.BOAT_WINCH.RAISING_SPEED_SLOW)
+
+	if inst._winch_update_task ~= nil then
+		inst._winch_update_task:Cancel()
+		inst._winch_update_task = nil
+	end
 end
 
 local function GetCurrentWinchDepth(inst)
@@ -347,6 +384,7 @@ local function fn()
 	
 	-- inst._most_recent_interacting_player = nil
 	-- inst._boat_drag_task = nil
+	-- inst._winch_update_task = nil
 
 	inst.sounds = sounds
 
@@ -400,6 +438,16 @@ local function fn()
 	inst:ListenForEvent("ondeconstructstructure", dropitems)
 	inst:ListenForEvent("onremove", dropitems)
 	inst:ListenForEvent("itemget", onitemget)
+
+	-- inst:ListenForEvent("start_lowering_winch", function()
+	-- 	inst._winch_update_task = inst:DoPeriodicTask(FRAMES, OnLoweringUpdate)
+	-- end)
+	-- inst:ListenForEvent("start_raising_winch", function()
+	-- 	if inst._winch_update_task ~= nil then
+	-- 		inst._winch_update_task:Cancel()
+	-- 		inst._winch_update_task = nil
+	-- 	end
+	-- end)
 
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad

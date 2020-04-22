@@ -31,7 +31,7 @@ end
 local function doprojectilehit(inst, other)
     local caster = (inst._caster ~= nil and inst._caster:IsValid()) and inst._caster or nil
 
-	local other = other or FindEntity(inst, TUNING.WARG_GOO_RADIUS, nil, { "_combat", "_health" }, { "INLIMBO", "fire", "burnt", "gingerbread" })
+	local other = other or FindEntity(inst, TUNING.WARG_GOO_RADIUS, nil, { "_combat" }, { "INLIMBO", "fire", "burnt", "gingerbread" })
 	if other ~= nil and other ~= caster and other.components.combat ~= nil  then
         if other.components.pinnable ~= nil and (other.components.health == nil or not other.components.health:IsDead()) then
 			DoSplatFx(other.components.pinnable.stuck and inst or other)
@@ -59,7 +59,7 @@ local function oncollide(inst, other)
     -- If there is a physics collision, try to do some damage to that thing.
     -- This is so you can't hide forever behind walls etc.
 
-	if other ~= nil and other:IsValid() and other:HasTag("_combat") or other:HasTag("_health") and not other:HasTag("gingerbread") then
+	if other ~= nil and other:IsValid() and other:HasTag("_combat") and not other:HasTag("gingerbread") then
 		doprojectilehit(inst, other)
 	end
 end

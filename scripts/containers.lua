@@ -634,7 +634,7 @@ for y = 2.5, -0.5, -1 do
 end
 
 function params.fish_box.itemtestfn(container, item, slot)
-    return item:HasTag("oceanfish") or item.prefab == "spoiled_fish"
+    return item:HasTag("smalloceancreature")
 end
 
 

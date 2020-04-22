@@ -34,6 +34,12 @@ local function get_fisher_position(inst)
     return (rod ~= nil and rod:GetPosition()) or nil
 end
 
+local function go_home_action(inst)
+    if inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome() then
+        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
+    end
+end
+
 local HALF_STRUGGLE_ANGLE_RANGE = 25
 local STRUGGLE_ANGLE_RANGE = HALF_STRUGGLE_ANGLE_RANGE * 2
 local function get_struggle_direction(inst)
@@ -114,37 +120,48 @@ local function nibble_lure(inst)
 end
 
 function WobsterBrain:OnStart()
+    local is_jumping = function()
+        return not self.inst.sg:HasStateTag("jumping")
+    end
+
+    local has_fishing_rod = function()
+        return self.inst.components.oceanfishable ~= nil
+            and self.inst.components.oceanfishable:GetRod() ~= nil
+    end
+
+    local is_partially_hooked = function()
+        return self.inst:HasTag("partiallyhooked")
+    end
+
+    local struggle_update = function()
+        self.inst.components.oceanfishable:UpdateStruggleState()
+        return self.inst.components.oceanfishable:IsStruggling()
+    end
+
+    local should_go_home = function()
+        return TheWorld.state.isday or TheWorld.state.iscaveday
+    end
+
     local root = PriorityNode(
     {
-        WhileNode(
-            function() return not self.inst.sg:HasStateTag("jumping") end,
-            "<Jump Guard>",
+        WhileNode( is_jumping, "<Jump Guard>",
             PriorityNode({
-                WhileNode(
-                    function()
-                        return self.inst.components.oceanfishable ~= nil and self.inst.components.oceanfishable:GetRod() ~= nil
-                    end,
-                    "Hooked",
+                WhileNode( has_fishing_rod, "Hooked",
                     PriorityNode({
-                        WhileNode(
-                            function()
-                                return self.inst:HasTag("partiallyhooked")
-                            end,
-                            "Partially Hooked",
+                        WhileNode( is_partially_hooked, "Partially Hooked",
                             StandStill(self.inst)
                         ),
                         PriorityNode({
-                            WhileNode(
-                                function()
-                                    self.inst.components.oceanfishable:UpdateStruggleState()
-                                    return self.inst.components.oceanfishable:IsStruggling()
-                                end,
-                                "Struggling",
+                            WhileNode( struggle_update, "Struggling",
                                 Wander(self.inst, get_fisher_position, TUNING.OCEAN_FISHING.MAX_HOOK_DIST, STRUGGLE_WANDER_TIMES, get_struggle_direction, nil, nil, STRUGGLE_WANDER_DATA)
                             ),
                             Wander(self.inst, get_fisher_position, TUNING.OCEAN_FISHING.MAX_HOOK_DIST, TIREDOUT_WANDER_TIMES, get_tired_out_direction, nil, nil, TIREDOUT_WANDER_DATA),
                         }),
                     })
+                ),
+
+                WhileNode( should_go_home, "Should Go Home",
+                    DoAction(self.inst, go_home_action, "Going Home")
                 ),
 
                 NotDecorator(

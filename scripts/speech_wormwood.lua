@@ -677,7 +677,7 @@ return{
             MURDERER = "Killing bad, %s!",
             REVIVER = "%s is helping friend",
             GHOST = "Oh. Need help?",
-            FIRESTARTER = "Made too much fire, $s!",
+            FIRESTARTER = "Made too much fire, %s!",
         },
         WENDY =
         {
@@ -3223,9 +3223,11 @@ return{
 			HOLDING_ITEM = "Got thing",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Happy now",
-        HERMITHOUSE = "Sad shell...",
-        
+        HERMITHOUSE = {
+            GENERIC = "Sad shell...",
+            BUILTUP = "Happy now",
+        }, 
+
         SHELL_CLUSTER = "Shells!",
         --
 		SINGINGSHELL_OCTAVE3 =

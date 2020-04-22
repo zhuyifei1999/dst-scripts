@@ -318,6 +318,8 @@ local function base_land_wobster(build_name, nameoverride, fish_def, fadeout, co
     inst:AddTag("show_spoilage")
     inst:AddTag("smallcreature")
     inst:AddTag("whackable")
+	inst:AddTag("smalloceancreature")
+
 
     if cook_product ~= nil then
         --cookable (from cookable component) added to pristine state for optimization

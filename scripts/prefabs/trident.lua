@@ -15,6 +15,11 @@ local function reticule_target_function(inst)
     return Vector3(ThePlayer.entity:LocalToWorldSpace(3.5, 0.001, 0))
 end
 
+local function trident_damage_calculation(inst, attacker, target)
+    local is_over_ground = TheWorld.Map:IsVisualGroundAtPoint(attacker:GetPosition():Get())
+    return (is_over_ground and TUNING.TRIDENT.DAMAGE) or TUNING.TRIDENT.OCEAN_DAMAGE
+end
+
 local function on_uses_finished(inst)
     if inst.components.inventoryitem.owner ~= nil then
         inst.components.inventoryitem.owner:PushEvent("toolbroke", { tool = inst })
@@ -176,7 +181,7 @@ local function trident()
     -------
 
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(TUNING.TRIDENT.DAMAGE)
+    inst.components.weapon:SetDamage(trident_damage_calculation)
 
     -------
 

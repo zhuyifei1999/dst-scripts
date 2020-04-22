@@ -3219,9 +3219,11 @@ return{
 			HOLDING_ITEM = "Interesting.",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "It's an improvement.",
-        HERMITHOUSE = "What a sad little hovel.",
-        
+        HERMITHOUSE = {
+            GENERIC = "What a sad little hovel.",
+            BUILTUP = "It's an improvement.",
+        }, 
+
         SHELL_CLUSTER = "That was not worth the effort.",
         --
 		SINGINGSHELL_OCTAVE3 =

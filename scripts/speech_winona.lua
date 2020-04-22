@@ -3225,9 +3225,11 @@ return{
 			HOLDING_ITEM = "All in a day's work.",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "Just needed a bit of elbow grease.",
-        HERMITHOUSE = "That can't be up to code.",
-        
+        HERMITHOUSE = {
+            GENERIC = "That can't be up to code.",
+            BUILTUP = "Just needed a bit of elbow grease.",
+        }, 
+
         SHELL_CLUSTER = "Time to break out the ol' hammer.",
         --
 		SINGINGSHELL_OCTAVE3 =

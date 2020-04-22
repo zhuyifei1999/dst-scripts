@@ -67,16 +67,12 @@ local ARMTIME = {
     0.2,
     0.15,
     0.3,
-    0,
-    0.25,
-    0.1,
-    0.2,
-    0.15,
-    0.3,
-    0,
-    0.25,
-    0.1,
 }
+
+local function getfreezerange(inst)
+    print("FREEZE RANGE",TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.countgems(inst).blue,0,9,0,2.25)) /2)
+    return TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.countgems(inst).blue,0,9,0,2.25)) /2
+end
 
 local function removecrab(inst) 
     inst:RemoveEventCallback("onremove", function() removecrab( inst ) end, inst.crab)
@@ -151,8 +147,10 @@ local function socketitem(inst,item,slot)
     item:Remove()
 
     if #inst.socketed >= MAX_SOCKETS then
-        inst.components.health:SetMaxHealth(TUNING.CRABKING_HEALTH + (math.floor(inst.countgems(inst).red/2) * math.floor(inst.countgems(inst).red/2) *2000 ))
+        inst.components.health:SetMaxHealth(TUNING.CRABKING_HEALTH + (math.floor(inst.countgems(inst).red/2) * math.floor(inst.countgems(inst).red/2) *TUNING.CRABKING_HEALTH_BONUS ))
         inst.components.health.currenthealth = inst.components.health.maxhealth
+
+        inst.components.freezable:SetResistance(3 + inst.countgems(inst).blue)
         inst:PushEvent("activate")
     end
 end
@@ -220,14 +218,6 @@ end
 
 local function OnRefuseItem(inst, item)
 
-end
-
-local function ShouldSleep(inst)
-    return false
-end
-
-local function ShouldWake(inst)
-    return true
 end
 
 local function OnAttacked(inst, data)
@@ -339,14 +329,14 @@ local function OnLoadPostPass(inst, newents, data)
     end
 end
 
-local function startcastspell(inst, freeze)
+local function startcastspell(inst, freeze) 
     if freeze then
         local x,y,z = inst.Transform:GetWorldPosition()
         local fx = SpawnPrefab("crabking_feeze")
         fx.crab = inst
         fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
         fx.Transform:SetPosition(x,y,z)
-        local scale = 0.75 + Remap(inst.countgems(inst).blue,0,9,0,0.75)
+        local scale = 0.75 + Remap(inst.countgems(inst).blue,0,9,0,1.55)
         fx.Transform:SetScale(scale,scale,scale)
     else
         local x,y,z = inst.Transform:GetWorldPosition()
@@ -362,7 +352,7 @@ local function startcastspell(inst, freeze)
                 fx.crab = inst
                 fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
                 fx.Transform:SetPosition(boatpt.x,boatpt.y,boatpt.z)
-                fx.dogeyserburbletask(fx)
+                fx.dogeyserburbletask(fx)  
             end
         end
     end
@@ -377,7 +367,9 @@ local function endcastspell(inst, lastwasfreeze)
     inst.dofreezecast = nil
     inst.wantstocast = nil
     
-    if inst.components.health:GetPercent() < TUNING.CRABKING_FREEZE_THRESHOLD and inst:IsNearPlayer(8) then
+    local range = getfreezerange(inst)
+
+    if inst.components.health:GetPercent() < TUNING.CRABKING_FREEZE_THRESHOLD and inst:IsNearPlayer(range) then
         inst.dofreezecast = true
     end
     
@@ -385,7 +377,7 @@ local function endcastspell(inst, lastwasfreeze)
     local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
     if #ents > 0 then
         for i,ent in pairs(ents)do
-            if not inst.components.freezable:IsFrozen() and not inst.components.sleeper:IsAsleep() then
+            if not inst.components.freezable:IsFrozen() then
                 ent:PushEvent("endspell")
             else
                 ent:Remove()
@@ -394,7 +386,11 @@ local function endcastspell(inst, lastwasfreeze)
     end    
     if lastwasfreeze then
         inst.dofreezecast = nil
-        inst.wantstocast = true
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local boatents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        if #boatents > 0 then    
+            inst.wantstocast = true
+        end
         inst.gemshine(inst,"blue")
     else
         inst.gemshine(inst,"purple")
@@ -455,7 +451,7 @@ local function spawnarm(inst,armpos, fx)
         arm.Transform:SetPosition(pos.x, 0, pos.z)
         arm.armpos = armpos
         inst.arms[armpos] = arm    
-        local health = TUNING.CRABKING_CLAW_HEALTH  -- + (math.ceil(inst.countgems(inst).green/2)* TUNING.CRABKING_CLAW_HEALTH_BOOST )
+        local health = TUNING.CRABKING_CLAW_HEALTH + (math.ceil(inst.countgems(inst).green/2)* TUNING.CRABKING_CLAW_HEALTH_BOOST )
         arm.components.health:SetMaxHealth(health)
         arm.components.health:SetCurrentHealth(health)
         arm:PushEvent("emerge")
@@ -482,7 +478,7 @@ local function spawnarms(inst)
 
     for i=1,clawsnum do
         if not inst.arms[i] or not inst.arms[i].prefab or not inst.arms[i]:IsValid() then
-            inst:DoTaskInTime(ARMTIME[i],function() inst.spawnarm(inst,i)end)
+            inst:DoTaskInTime(ARMTIME[i%#ARMTIME+1],function() inst.spawnarm(inst,i)end)
         end
     end
 end
@@ -599,10 +595,8 @@ local function spawnsparkle(inst,symbol)
 end
 
 local function spawnchunk(inst,prefab,pos)
-    print("DAMAGE CHUNK POS",pos.x,pos.y,pos.z)
     local chip = SpawnPrefab(prefab)
     if chip and pos then
-        print("pOS:",pos.x,pos.y,pos.z, "inst:",inst.Transform:GetWorldPosition())
         local pos = Vector3(inst.Transform:GetWorldPosition())
         chip.Transform:SetPosition(pos.x,0,pos.z)
     end
@@ -878,8 +872,7 @@ local function fn()
     inst.spawnchunk = spawnchunk
     inst.removegem = removegem
     inst.addgem = addgem
-    inst.ShouldSleep = ShouldSleep
-    inst.ShouldWake = ShouldWake
+    inst.getfreezerange = getfreezerange
 
     inst.spawnyellowwhirls = spawnyellowwhirls
 
@@ -1063,10 +1056,6 @@ local function onfreeze(inst, target)
         return
     end
 
-    if target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
-        target.components.sleeper:WakeUp()
-    end
-
     if target.components.burnable ~= nil then
         if target.components.burnable:IsBurning() then
             target.components.burnable:Extinguish()
@@ -1084,7 +1073,7 @@ local function onfreeze(inst, target)
     end
 
     if target.components.freezable ~= nil then
-        target.components.freezable:AddColdness(10)
+        target.components.freezable:AddColdness(10,10 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,10) )
         target.components.freezable:SpawnShatterFX()
     end
 end
@@ -1100,7 +1089,7 @@ end
 
 local function freezefx(inst)
     local function spawnfx()
-        local MAXRADIUS = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75)) /2
+        local MAXRADIUS = inst.crab and inst.crab:IsValid() and getfreezerange(inst.crab) or (TUNING.CRABKING_FREEZE_RANGE * 0.75)
         local x,y,z = inst.Transform:GetWorldPosition()
         local theta = math.random()*2*PI
         local radius = 4+ math.pow(math.random(),0.8)* MAXRADIUS
@@ -1111,7 +1100,9 @@ local function freezefx(inst)
         fx.Transform:SetPosition(x+offset.x,y+offset.y,z+offset.z)
     end
 
-    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2),1,5)
+    local MAXFX = Remap(( inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0, 9,5,15)
+
+    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2),1,MAXFX)
     for i=1,fx do
         if math.random()<0.2 then
             spawnfx()
@@ -1124,7 +1115,7 @@ end
 local function dofreeze(inst)
     local interval = 0.2
     local pos = Vector3(inst.Transform:GetWorldPosition())
-    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75))
+    local range = inst.crab and inst.crab:IsValid() and getfreezerange(inst.crab) or (TUNING.CRABKING_FREEZE_RANGE * 0.75)
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,v in pairs(ents)do
         if v.components.temperature then
@@ -1158,9 +1149,9 @@ local function endfreeze(inst)
         inst.lowertemptask = nil
     end
 
-    local pos = Vector3(inst.Transform:GetWorldPosition())
-    local range = TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0,9,0,0.75))
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
+    local pos = Vector3(inst.Transform:GetWorldPosition())  
+    local range = inst.crab and inst.crab:IsValid() and getfreezerange(inst.crab) or (TUNING.CRABKING_FREEZE_RANGE * 0.75)
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,v in pairs(ents)do
         onfreeze(inst, v)
     end    

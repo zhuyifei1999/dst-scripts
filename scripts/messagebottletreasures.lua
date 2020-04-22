@@ -1,3 +1,4 @@
+
 local treasure_templates =
 {
 --	TREASUREPREFAB1 = -- Prefab to spawn at point
@@ -13,7 +14,7 @@ local treasure_templates =
 --				guaranteed_loot =
 --				{
 --					-- Container is guaranteed to contain this many of these prefabs
---					ITEMPREFAB1 = 5,
+--					ITEMPREFAB1 = {5, 8},
 --					ITEMPREFAB2 = 7,
 --					ITEMPREFAB3 = 9,
 --				},
@@ -27,13 +28,6 @@ local treasure_templates =
 --					},
 --					... {}, ...
 --				},
---				chance_loot =
---				{
---					-- Each of these have a chance to spawn and be added to the container
---					ITEMPREFAB7 = 0.5,
---					ITEMPREFAB8 = 0.5,
---					ITEMPREFAB9 = 0.1,
---				},
 --			},
 --			... PRESET2, PRESET3 ...
 --		}
@@ -43,127 +37,23 @@ local treasure_templates =
 	sunkenchest =
 	{
 		treasure_type_weight = 1,
-
+		
 		presets =
 		{
-			---------------------------------------------------------------------------
-			luxurytools =
+			saltminer =
 			{
-				preset_weight = 0.5,
+				preset_weight = 3,
 
 				guaranteed_loot =
 				{
-					goldenaxe = 1,
-					goldenshovel = 1,
+					cookiecuttershell = {4, 6},
+					boatpatch = {2, 4},
+					saltrock = {5, 8},
 					goldenpickaxe = 1,
 				},
 				randomly_selected_loot =
 				{
-					{
-						goldenaxe = 2,
-						goldenshovel = 2,
-						goldenpickaxe = 2,
-						redgem = 1,
-						bluegem = 1,
-						purplegem = 0.5,
-						greengem = 0.5,
-						orangegem = 0.5,
-						yellowgem = 0.5,
-					},
-				},
-				chance_loot =
-				{
-					hammer = 0.25,
-					rocks = 0.65,
-					cutstone = 0.5,
-					cutstone = 0.5,
-					log = 0.65,
-					boards = 0.5,
-					boards = 0.5,
-
-					bluegem = 0.1,
-					purplegem = 0.1,
-				},
-			},
-			---------------------------------------------------------------------------
-			saltminer =
-			{
-				preset_weight = 1,
-
-				guaranteed_loot =
-				{
-					cookiecuttershell = 2,
-					spear = 1,
-					boatpatch = 2,
-					saltrock = 2,
-				},
-				randomly_selected_loot =
-				{
-					{
-						cookiecutterhat = 2,
-						armormarble = 1,
-						footballhat = 1,
-						boat_item = 1,
-					},
-				},
-				chance_loot =
-				{
-					spear = 0.5,
-					cookiecuttershell = 0.5,
-					cookiecuttershell = 0.25,
-					saltrock = 0.5,
-					saltrock = 0.5,
-					saltrock = 0.25,
-					boatpatch = 0.5,
-					boatpatch = 0.5,
-					boards = 0.25,
-					boards = 0.25,
-					boards = 0.25,
-					boards = 0.25,
-				},
-			},
-			---------------------------------------------------------------------------
-			shadowmagic =
-			{
-				preset_weight = 0.5,
-
-				guaranteed_loot =
-				{
-					nightmarefuel = 2,
-					papyrus = 1,
-				},
-				randomly_selected_loot =
-				{
-					{
-						pigskin = 1,
-						livinglog = 1,
-					},
-					{
-						pigskin = 1,
-						livinglog = 1,
-					},
-					{
-						redgem = 1,
-						bluegem = 1,
-						purplegem = 2,
-						livinglog = 0.5,
-					},
-					{
-						nightsword = 1,
-						armor_sanity = 1,
-						purpleamulet = 1,
-					},
-				},
-				chance_loot =
-				{
-					nightmarefuel = 0.5,
-					nightmarefuel = 0.5,
-					purplegem = 0.75,
-					purplegem = 0.25,
-					goldnugget = 0.5,
-					goldnugget = 0.5,
-					goldnugget = 0.1,
-					papyrus = 0.25,
+					{ bluegem = 1, redgem = 1 },
 				},
 			},
 			---------------------------------------------------------------------------
@@ -173,230 +63,77 @@ local treasure_templates =
 
 				guaranteed_loot =
 				{
-					strawhat = 1,
-					compass = 1,
+					cane = 1,
+					heatrock = 1,
+					gnarwail_horn = 1,
+					papyrus = {4, 8},
+					featherpencil = {2, 4},
+					spoiled_fish = {3, 5},
 				},
 				randomly_selected_loot =
 				{
-					{
-						bedroll_straw = 1,
-						bedroll_furry = 0.25,
-					},
-					{
-						goggleshat = 1,
-						trap = 1,
-						birdtrap = 1,
-						oceanfishingrod = 1,
-						minerhat = 0.5,
-						lantern = 0.5,
-						cane = 0.75,
-						orangestaff = 0.25,
-					},
-				},
-				chance_loot =
-				{
-					strawhat = 0.1,
-					papyrus = 0.5,
-					papyrus = 0.5,
-					papyrus = 0.5,
-					rope = 0.5,
-					rope = 0.5,
-					rope = 0.5,
-					orangegem = 0.1,
+					{ compass = .25, goggleshat = .75 },
 				},
 			},
 			---------------------------------------------------------------------------
-			lunarisland =
+			fisher =
 			{
-				preset_weight = 1,
-
-				guaranteed_loot =
-				{
-					moonglass = 4,
-				},
-				randomly_selected_loot =
-				{
-					{
-						moonglassaxe = 2,
-						glasscutter = 1,
-					},
-					{
-						turf_meteor = 1,
-						turf_pebblebeach = 1,
-						bathbomb = 1,
-						dug_sapling_moon = 1,
-					},
-					{
-						oar_driftwood = 1,
-						driftwood_log = 1,
-					}
-				},
-				chance_loot =
-				{
-					moonglass = 0.5,
-					moonglass = 0.5,
-					moonglass = 0.5,
-					rock_avocado_fruit = 0.5,
-					rock_avocado_fruit = 0.5,
-					moonrocknugget = 0.25,
-				},
-			},
-			---------------------------------------------------------------------------
-			seafarer =
-			{
-				preset_weight = 1,
+				preset_weight = 3,
 				
 				guaranteed_loot =
 				{
-					boards = 3,
-					boat_item = 1,
-					rope = 2,
-					oar = 1,
+					boatpatch = {4, 8},
+					malbatross_feather = {4, 10},
+					oceanfishingrod = 1,
+					oceanfishingbobber_robin_winter = {2, 5},
+					oceanfishinglure_spoon_green = {1, 4},
+					oceanfishinglure_hermit_heavy = {0, 2},
 				},
 				randomly_selected_loot =
 				{
-					{ anchor_item = 1, mast_item = 1, steeringwheel_item = 1, oar = 1, },
-					{ anchor_item = 1, mast_item = 1, steeringwheel_item = 1, oar = 1, },
-				},
-				chance_loot =
-				{
-					rope = 0.25,
-					boards = 0.5,
-					boards = 0.5,
-					bluegem = 0.1,
-					redgem = 0.1,
-					malbatross_feathered_weave = 0.1,
+					{ boat_item = 1, anchor_item = 1, mast_item = 1, steeringwheel_item = 1, fish_box_blueprint = 1 },
 				},
 			},
 			---------------------------------------------------------------------------
 			miner =
 			{
-				preset_weight = 1,
+				preset_weight = 2,
 				
 				guaranteed_loot =
 				{
-					goldnugget = 4,
-					rocks = 2,
-					pickaxe = 1,
+					cutstone = {3, 6},
+					goldnugget = {3, 6},
+					moonglass = {3, 6},
+					moonrocknugget = {3, 6},
+					goldenpickaxe = 1,
 				},
 				randomly_selected_loot =
 				{
-					{ redgem = 1, bluegem = 1, yellowgem = 0.5, greengem = 0.5, orangegem = 0.5, purplegem = 0.5, },
-					{ redgem = 1, bluegem = 1, yellowgem = 0.5, greengem = 0.5, orangegem = 0.5, purplegem = 0.5, },
-					{ pickaxe = 3, goldenpickaxe = 1 },
+					{ purplegem = 0.5, greengem = 0.1, yellowgem = 0.2, orangegem = 0.2, },
 				},
-				chance_loot =
-				{
-					goldnugget = 0.5,
-					goldnugget = 0.25,
-					rocks = 0.5,
-					redgem = 0.25,
-					redgem = 0.25,
-					bluegem = 0.25,
-					bluegem = 0.25,
-					cutstone = 0.5,
-				},
+
 			},
 			---------------------------------------------------------------------------
-			warpreparations =
+			splunker =
 			{
 				preset_weight = 1,
 				
 				guaranteed_loot =
 				{
-					armorwood = 1,
-					spear = 1,
+					gears = {1, 2},
+					thulecite = {4, 8},
+					multitool_axe_pickaxe = 1,
+					armorruins = 1,
+					lantern = 1,
 				},
 				randomly_selected_loot =
 				{
-					{
-						armormarble = 1,
-						footballhat = 1,
-						staff_tornado = 1,
-						whip = 0.5,
-					},
-					{
-						boomerang = 1,
-						spear = 1,
-						axe = 1,
-						blowdart_fire = 1,
-						blowdart_sleep = 1,
-						blowdart_yellow = 1,
-					},
-				},
-				chance_loot =
-				{
-					trap_teeth = 0.5,
-					trap_teeth = 0.5,
-					blowdart_pipe = 0.5,
-					blowdart_pipe = 0.5,
-					blowdart_pipe = 0.5,
-					flint = 0.5,
-					flint = 0.25,
-					flint = 0.25,
-					flint = 0.25,
-					flint = 0.25,
+					{ yellowgem = 1, orangegem = 1, },
+					{ purplegem = .9, greengem = .1, },
 				},
 			},
-			---------------------------------------------------------------------------
-			firehazard =
-			{
-				preset_weight = 1,
-				
-				guaranteed_loot =
-				{
-					ash = 8,
-					firestaff = 1,
-					charcoal = 3,
-				},
-				chance_loot =
-				{
-					ash = 0.5,
-					ash = 0.5,
-					ash = 0.5,
-					ash = 0.5,
-					ash = 0.5,
-					ash = 0.5,
-					firestaff = 0.05,
-					charcoal = 0.5,
-					charcoal = 0.5,
-				},
-			},
-			---------------------------------------------------------------------------
-			telelocator =
-			{
-				preset_weight = 0.5,
-				
-				guaranteed_loot =
-				{
-					telestaff = 1,
-				},
-				randomly_selected_loot =
-				{
-					{
-						purplegem = 1,
-						livinglog = 1,
-						nightmarefuel = 1,
-						goldnugget = 1,
-					},
-					{
-						purplegem = 1,
-						livinglog = 1,
-						nightmarefuel = 1,
-					},
-				},
-				chance_loot =
-				{
-					livinglog = 0.5,
-					purplegem = 0.25,
-					purplegem = 0.25,
-					goldnugget = 0.5,
-					nightmarefuel = 0.25,
-				},
-			},
-			---------------------------------------------------------------------------
-		},
-	},
+		}
+	}
 }
 
 local trinkets =
@@ -445,7 +182,8 @@ local function GenerateTreasure(pt, overrideprefab, spawn_as_empty, postfn)
 			
 			if lootpreset.guaranteed_loot ~= nil then
 				for itemprefab, count in pairs(lootpreset.guaranteed_loot) do
-					for i = 1, count do
+					local total = type(count) ~= "table" and count or math.random(count[1], count[2])
+					for i = 1, total do
 						table.insert(prefabstospawn, itemprefab)
 					end
 				end
@@ -457,13 +195,6 @@ local function GenerateTreasure(pt, overrideprefab, spawn_as_empty, postfn)
 				end
 			end
 
-			if lootpreset.chance_loot ~= nil then
-				for itemprefab, chance in pairs(lootpreset.chance_loot) do
-					if math.random() < chance then
-						table.insert(prefabstospawn, itemprefab)
-					end
-				end
-			end
 			
 			local item = nil
 			for i, itemprefab in ipairs(prefabstospawn) do
@@ -479,11 +210,11 @@ local function GenerateTreasure(pt, overrideprefab, spawn_as_empty, postfn)
 			if math.random() < TRINKET_CHANCE then
 				if treasure.components.container ~= nil then
 					if not treasure.components.container:IsFull() then
-						treasure.components.container:GiveItem(SpawnPrefab(trinkets[#trinkets]))
+						treasure.components.container:GiveItem(SpawnPrefab(trinkets[math.random(#trinkets)]))
 					end
 				elseif treasure.components.inventory ~= nil then
 					if not treasure.components.inventory:IsFull() then
-						treasure.components.inventory:GiveItem(SpawnPrefab(trinkets[#trinkets]))
+						treasure.components.inventory:GiveItem(SpawnPrefab(trinkets[math.random(#trinkets)]))
 					end
 				end
 			end
@@ -515,12 +246,6 @@ local function GetPrefabs()
 						for itemprefab, _--[[weight]] in pairs(v) do
 							prefabscontain[itemprefab] = true
 						end
-					end
-				end
-
-				if weighted_list.chance_loot ~= nil then
-					for itemprefab, _--[[chance]] in pairs(weighted_list.chance_loot) do
-						prefabscontain[itemprefab] = true
 					end
 				end
 			end

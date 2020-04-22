@@ -3228,8 +3228,10 @@ return {
 			HOLDING_ITEM = "What do we have here?",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "It just needed a little love.",
-        HERMITHOUSE = "It's just an empty shell of a house.",
+        HERMITHOUSE = {
+            GENERIC = "It's just an empty shell of a house.",
+            BUILTUP = "It just needed a little love.",
+        }, 
         
         SHELL_CLUSTER = "I bet there's some nice shells in there.",
         --

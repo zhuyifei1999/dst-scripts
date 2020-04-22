@@ -13,7 +13,11 @@ local prefabs =
 local SWIMMING_COLLISION_MASK   = COLLISION.GROUND
 								+ COLLISION.LAND_OCEAN_LIMITS
 								+ COLLISION.OBSTACLES
-								+ COLLISION.SMALLOBSTACLES
+                                + COLLISION.SMALLOBSTACLES
+                                
+local function OnSalvage(inst)
+    return inst.components.inventory:GetItemInSlot(1)
+end
 
 local function fn(data)
    local inst = CreateEntity()
@@ -34,8 +38,8 @@ local function fn(data)
     inst:AddTag("ignorewalkableplatforms")
 	inst:AddTag("notarget")
 	inst:AddTag("NOCLICK")
-	inst:AddTag("NOBLOCK")-- it's fine to build things on top of them
-	inst:AddTag("underwater_salvageable")
+    inst:AddTag("NOBLOCK")-- it's fine to build things on top of them
+    inst:AddTag("winchtarget")--from winchtarget component
 
     inst.AnimState:SetBank("flotsam_heavy")
     inst.AnimState:SetBuild("flotsam_heavy")
@@ -49,6 +53,9 @@ local function fn(data)
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("winchtarget")
+    inst.components.winchtarget:SetSalvageFn(OnSalvage)
     
     inst:AddComponent("treasuremarked")
 

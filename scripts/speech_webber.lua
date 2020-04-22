@@ -3219,8 +3219,10 @@ return{
 			HOLDING_ITEM = "Is it something good?",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "We hope this makes her feel happier!",
-        HERMITHOUSE = "She must be sad living here all alone...",
+        HERMITHOUSE = {
+            GENERIC = "We hope this makes her feel happier!",
+            BUILTUP = "She must be sad living here all alone...",
+        }, 
         
         SHELL_CLUSTER = "Any pretty shells in there?",
         --

@@ -2474,9 +2474,9 @@ STRINGS =
 
         SHELL_CLUSTER = "Shell Cluster",
 
-		SINGINGSHELL_OCTAVE3 = "Large Shell Bell",
-		SINGINGSHELL_OCTAVE4 = "Medium Shell Bell",
-        SINGINGSHELL_OCTAVE5 = "Small Shell Bell",
+		SINGINGSHELL_OCTAVE3 = "Baritone Shell Bell",
+		SINGINGSHELL_OCTAVE4 = "Alto Shell Bell",
+        SINGINGSHELL_OCTAVE5 = "Soprano Shell Bell",
 
         SUNKENCHEST = "Sunken Chest",
 

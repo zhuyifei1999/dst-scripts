@@ -241,7 +241,7 @@ function Tune(overrides)
 			OMNI			= { hook = 0.25, special = 1.0, rot = 0.5, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
 			SMALL_MEAT		= { hook = 0.25, special = 1.0, rot = 1.0, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 0.00, insect = 1.00 },
 			MEAT			= { hook = 0.25, special = 1.0, rot = 0.5, seed = 0.00, berry = 0.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
-            WOBSTER         = { hook = 1.00, special = 1.0, rot = 1.0, seed = 1.00, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
+            WOBSTER         = { hook = 0.25, special = 1.0, rot = 1.0, seed = 0.25, berry = 1.00, spoon = 1.00, spinnerbait = 1.00, insect = 1.00 },
 		},
 		
         OCEANFISH_MIN_INTEREST_TO_BITE = 0.2,
@@ -4003,11 +4003,12 @@ function Tune(overrides)
 
 
 
-        CRABKING_HEALTH = 15000,
+        CRABKING_HEALTH = 20000,
+        CRABKING_HEALTH_BONUS = 3000,
 
         CRABKING_CLAW_BOATDAMAGE = 35,
         CRABKING_CLAW_HEALTH = 500,
-        CRABKING_CLAW_HEALTH_BOOST = 200,
+        CRABKING_CLAW_HEALTH_BOOST = 50,
         CRABKING_CLAW_WALK_SPEED = 1,
         CRABKING_CLAW_RUN_SPEED = 4,
         CRABKING_CLAW_RESPAWN_DELAY = 30,-- time each claw must regen for before being spawnable
@@ -4021,8 +4022,10 @@ function Tune(overrides)
         CRABKING_STACKS = 20,        
         CRABKING_DEADLY_GEYSERS = 5,
         CRABKING_GEYSER_BOATDAMAGE = 10,
+
         CRABKING_CAST_TIME = 8,
         CRABKING_CAST_TIME_FREEZE = 5,
+
         CRABKING_STACK_SUMMON_DELAY = 20,
         CRABKING_HEAL_DELAY = 40,
         CRABKING_CAST_DELAY = 5,
@@ -4050,7 +4053,8 @@ function Tune(overrides)
         TRIDENT =
         {
             DAMAGE = wilson_attack * 0.8, -- Same damage as an axe... hahaha.
-            USES = 300,
+            OCEAN_DAMAGE = wilson_attack * 2,
+            USES = 150,
             SPELL =
             {
                 USE_COUNT = 50,
@@ -4063,7 +4067,7 @@ function Tune(overrides)
         WOBSTER_DEN =
         {
             REGEN_PERIOD = 3*seg_time,
-            SPAWN_PERIOD = 8*seg_time,
+            SPAWN_PERIOD = 4*seg_time,
             MAX_CHILDREN = 2,
 
             SPAWNRADIUS = 4,

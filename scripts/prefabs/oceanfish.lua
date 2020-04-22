@@ -362,6 +362,7 @@ local function inv_common(fish_def)
 	inst:AddTag("oceanfish")
 	inst:AddTag("catfood")
 	inst:AddTag("smallcreature")
+	inst:AddTag("smalloceancreature")
 
 	if fish_def.heater ~= nil then
 		inst:AddTag("HASHEATER") --(from heater component) added to pristine state for optimization

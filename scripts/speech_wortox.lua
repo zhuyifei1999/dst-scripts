@@ -3225,9 +3225,11 @@ return{
 			HOLDING_ITEM = "I always enjoy the game more than the prize, hyuyu!",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "A little care can cause remarkable transformations.",
-        HERMITHOUSE = "What a sad little house for that cranky old louse.",
-        
+        HERMITHOUSE = {
+            GENERIC = "What a sad little house for that cranky old louse.",
+            BUILTUP = "A little care can cause remarkable transformations.",
+        }, 
+
         SHELL_CLUSTER = "I wonder if there's any goodies inside?",
         --
 		SINGINGSHELL_OCTAVE3 =

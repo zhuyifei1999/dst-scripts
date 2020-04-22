@@ -60,6 +60,7 @@ end
 local function onfinishwork(inst, worker)
 	inst.components.lootdropper:DropLoot()
 	SpawnPrefab("singingshell_critterfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	inst.SoundEmitter:PlaySound("dontstarve/common/destroy_pot")
 	inst:Remove()
 end
 
@@ -286,10 +287,17 @@ local function critterfn()
 
 	inst:DoTaskInTime(0,function()
 		local pos = Vector3(inst.Transform:GetWorldPosition())
-		if not TheWorld.Map:IsVisualGroundAtPoint(pos.x,pos.y,pos.z) and not TheWorld.Map:GetPlatformAtPoint(pos.x,pos.z) then		
+		local platform = TheWorld.Map:GetPlatformAtPoint(pos.x,pos.z)
+
+		if platform then
+			local platform_x, platform_y, platform_z = platform.entity:WorldToLocalSpace(pos.x, pos.y, pos.z)
+			inst.entity:SetParent(platform.entity)
+			inst.Transform:SetPosition(platform_x, platform_y, platform_z)
+		elseif not TheWorld.Map:IsVisualGroundAtPoint(pos.x,pos.y,pos.z) then		
 			SpawnPrefab("splash_green_small").Transform:SetPosition(pos.x,pos.y,pos.z)			
 			inst:Remove()
 		end
+
 	end)
 
     inst.persists = false

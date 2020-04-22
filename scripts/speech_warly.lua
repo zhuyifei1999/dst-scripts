@@ -3219,8 +3219,10 @@ return{
 			HOLDING_ITEM = "Just what have I fished from the depths?",
 		},
 
-		HERMITHOUSE_CONSTRUCTION1 = "I hope she's a bit more comfortable in there now.",
-        HERMITHOUSE = "That poor old woman... living here all on her own...",
+        HERMITHOUSE = {
+            GENERIC = "That poor old woman... living here all on her own...",
+            BUILTUP = "I hope she's a bit more comfortable in there now.",
+        }, 
         
         SHELL_CLUSTER = "Perhaps I could break it open?",
         --

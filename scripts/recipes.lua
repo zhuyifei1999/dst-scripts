@@ -73,7 +73,7 @@ Recipe("turf_woodfloor", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENC
 Recipe("turf_checkerfloor", {Ingredient("marble", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_carpetfloor", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_dragonfly", {Ingredient("dragon_scales", 1), Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, nil, nil, nil, 6)
-Recipe("turf_shellbeach", {Ingredient("slurtle_shellpieces", 3)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO)
+Recipe("turf_shellbeach", {Ingredient("slurtle_shellpieces", 3)}, RECIPETABS.TOWN,  TECH.LOST)
 
 Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pottedfern_placer", 0.9)
 Recipe("succulent_potted", {Ingredient("succulent_picked", 5), Ingredient("cutstone", 1)}, RECIPETABS.TOWN, TECH.LOST, "succulent_potted_placer", 0.9)
@@ -255,7 +255,7 @@ Recipe("beemine", {Ingredient("boards", 1),Ingredient("bee", 4),Ingredient("flin
 Recipe("trap_teeth", {Ingredient("log", 1),Ingredient("rope", 1),Ingredient("houndstooth", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("armordragonfly", {Ingredient("dragon_scales", 1), Ingredient("armorwood", 1), Ingredient("pigskin", 3)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("staff_tornado", {Ingredient("goose_feather", 10), Ingredient("lightninggoathorn", 1), Ingredient("gears", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
-
+Recipe("trident", {Ingredient("gnarwail_horn", 3), Ingredient("kelp", 4), Ingredient("twigs", 2)}, RECIPETABS.WAR, TECH.LOST)
 
 
 --DRESSUP
@@ -381,8 +381,7 @@ Recipe("fish_box",			   {Ingredient("cutstone", 1), 		Ingredient("rope", 3)}, RE
     function(pt)
        return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, - 0.5) ~= nil
     end)
-Recipe("trident",              {Ingredient("gnarwail_horn", 3), Ingredient("kelp", 4), Ingredient("twigs", 2)},                      RECIPETABS.WAR, TECH.LOST)
-Recipe("winch",				   {Ingredient("boards", 2), Ingredient("cutstone", 1), Ingredient("rope", 2)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "winch_placer", 1.5)
+Recipe("winch",				   {Ingredient("boards", 2), Ingredient("cutstone", 1), Ingredient("rope", 2)}, RECIPETABS.SEAFARING, TECH.LOST, "winch_placer", 1.5)
 
 --Recipe("fishingnet", {Ingredient("silk", 6)}, RECIPETABS.SEAFARING, TECH.SEAFARING_ONE, nil, nil, true)
 Recipe("chesspiece_anchor_sketch", {Ingredient("papyrus", 1)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)

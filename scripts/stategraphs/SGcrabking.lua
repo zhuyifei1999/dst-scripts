@@ -1,25 +1,5 @@
 require("stategraphs/commonstates")
 
-local function sleeponanimover(inst)
-    if inst.AnimState:AnimDone() then
-        if math.random() < 0.3 then
-            inst.sg:GoToState("sleeping_blink")
-        else
-            inst.sg:GoToState("sleeping")
-        end
-    end
-end
-
-local function onwakeup(inst)
-    if not inst.sg:HasStateTag("nowake") then
-        inst.sg:GoToState("wake")
-    end
-end
-
-local function onentersleeping(inst)    
-    inst.AnimState:PlayAnimation("sleep_loop")
-end
-
 local function heal(inst)
     inst.components.health:DoDelta(TUNING.CRABKING_REGEN + math.floor(inst.countgems(inst).orange/2) * TUNING.CRABKING_REGEN_BUFF )
 
@@ -29,6 +9,19 @@ local function heal(inst)
     shinefx.Follower:FollowSymbol(inst.GUID, "rays_placeholder", 0, 0, 0) 
     inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/repair")
 ]]
+end
+
+local function testforlostrock(inst, rightarm)
+    if not inst.fixhits then
+        inst.fixhits = 0
+    end
+    print(inst.fixhits,"MAX HITS",math.floor(inst.countgems(inst).orange/3) )
+    if inst.fixhits == math.floor(inst.countgems(inst).orange/3) then
+        inst.sg:GoToState("fix_lostrock", rightarm)
+        inst.fixhits = 0
+    else
+        inst.fixhits = inst.fixhits + 1
+    end
 end
 
 local function spawnwaves(inst, numWaves, totalAngle, waveSpeed, wavePrefab, initialOffset, idleTime, instantActivate, random_angle)
@@ -74,7 +67,6 @@ local actionhandlers =
 
 local events =
 {    
-    CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
     CommonHandlers.OnDeath(),
 
@@ -94,13 +86,7 @@ local states =
         name = "idle",
         tags = { "idle", "canrotate" },
 
-        onenter = function(inst, pushanim)
-            if not inst.components.sleeper then
-                inst:AddComponent("sleeper")
-                inst.components.sleeper:SetResistance(4)
-                inst.components.sleeper:SetSleepTest(inst.ShouldSleep)
-                inst.components.sleeper:SetWakeTest(inst.ShouldWake)
-            end        
+        onenter = function(inst, pushanim)       
             --pushanim could be bool or string?
             local transitionstate = GetTransitionState(inst)
             if transitionstate then
@@ -151,9 +137,6 @@ local states =
         tags = { "inert", "canrotate", "noattack"},
 
         onenter = function(inst, pushanim)
-            if inst.components.sleeper then
-                inst:RemoveComponent("sleeper")
-            end
             inst.AnimState:PlayAnimation("inert")
         end,
         
@@ -355,15 +338,16 @@ local states =
 
         onenter = function(inst)
             
-            if not inst.components.timer:TimerExists("casting_timer") then
+            if not inst.components.timer:TimerExists("casting_timer") then                
                 inst.startcastspell(inst,inst.dofreezecast)
                 if inst.dofreezecast then
                     inst.isfreezecast = true
                     inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME_FREEZE - math.floor(inst.countgems(inst).yellow/2))
                 else                    
-                    inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME - math.floor(inst.countgems(inst).yellow/2))
+                    inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME - math.floor(inst.countgems(inst).yellow/2))                    
                 end
             end
+            inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME )
             if inst.isfreezecast then
                 inst.AnimState:PlayAnimation("cast_blue_loop")
             else
@@ -547,14 +531,18 @@ local states =
                 inst.sg.statemem.past_interrupt = true
                 inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/repair")
             end),
-            TimeEvent(31*FRAMES, function(inst) heal(inst) end),
+            TimeEvent(31*FRAMES, function(inst) 
+                inst.fixhits = 0
+                heal(inst) 
+            end),
         },
 
         events =
         {
             EventHandler("attacked", function(inst)
                 if not inst.sg.statemem.past_interrupt then
-                    inst.sg:GoToState("fix_lostrock", not inst.sg.statemem.rightarm)
+                    testforlostrock(inst,  not inst.sg.statemem.rightarm)
+                   -- inst.sg:GoToState("fix_lostrock", not inst.sg.statemem.rightarm)
                 end
             end),
             EventHandler("animover", function(inst)
@@ -599,7 +587,10 @@ local states =
                     end
              end),                
             TimeEvent(20*FRAMES, function(inst) inst.sg:AddStateTag("nointerrupt")  end), -- inst.sg.statemem.past_interrupt = true
-            TimeEvent(29*FRAMES, function(inst) heal(inst) end),
+            TimeEvent(29*FRAMES, function(inst) 
+                inst.fixhits = 0 
+                heal(inst) 
+            end),
         },
 
         onexit = function(inst)
@@ -610,7 +601,8 @@ local states =
         {
             EventHandler("attacked", function(inst)
                 if not inst.sg:HasStateTag("nointerrupt") then -- inst.sg.statemem.past_interrupt
-                    inst.sg:GoToState("fix_lostrock",inst.sg.statemem.rightarm)
+                    testforlostrock(inst, inst.sg.statemem.rightarm)
+                    --inst.sg:GoToState("fix_lostrock",inst.sg.statemem.rightarm)
                 end
             end),
             EventHandler("animover", function(inst)
@@ -636,6 +628,7 @@ local states =
                 inst.sg.statemem.rightarm = rightarm 
             end
             inst.AnimState:PlayAnimation("fix_"..arm.."_lostrock")
+            inst.fixhits = 0
         end,
         
         timeline=
@@ -670,6 +663,7 @@ local states =
                 inst.sg.statemem.rightarm = rightarm
             end
             inst.AnimState:PlayAnimation("fix_"..arm.."_pst")
+            inst.fixhits = 0
         end,
         
         timeline=
@@ -711,95 +705,6 @@ local states =
             end),
         },
     },
-
-    State{
-        name = "sleep",
-        tags = { "busy", "sleeping" },
-
-        onenter = function(inst)
-            if inst.components.locomotor ~= nil then
-                inst.components.locomotor:StopMoving()
-            end
-            inst.AnimState:PlayAnimation("sleep_pre")
-        end,
-
-        timeline=
-        {
-            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/inert_hide") end),
-        },
-
-        events =
-        {
-            EventHandler("animover", sleeponanimover),
-            EventHandler("onwakeup", onwakeup),
-        },
-    },
-
-    State{
-        name = "sleeping",
-        tags = { "busy", "sleeping" },
-
-        onenter = onentersleeping,
-
-        events =
-        {
-            EventHandler("animover", sleeponanimover),
-            EventHandler("onwakeup", onwakeup),
-        },
-    },    
-
-    State{
-        name = "sleeping_blink",
-        tags = { "busy", "sleeping" },
-
-        onenter = function(inst)
-             inst.AnimState:PlayAnimation("sleep_loop_blink")
-        end,
-
-        timeline=
-        {
-            TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
-            TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
-            TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
-            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/idle") end),
-        },
-
-        events =
-        {
-            EventHandler("animover", sleeponanimover),
-            EventHandler("onwakeup", onwakeup),
-        },
-    },    
-
-    State{
-        name = "wake",
-        tags = { "busy", "waking" },
-
-        onenter = function(inst)        
-            if inst.components.locomotor ~= nil then
-                inst.components.locomotor:StopMoving()
-            end
-            inst.AnimState:PlayAnimation("sleep_pst")
-            if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
-                inst.components.sleeper:WakeUp()
-            end
-        end,
-
-        timeline=
-        {
-            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/inert_hide") end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
 }
 
 CommonStates.AddFrozenStates(states)
