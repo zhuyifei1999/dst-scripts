@@ -3410,6 +3410,7 @@ return {
             BURNT = "How did it get burned?!!",
         },
 
+        HERMITCRAB = "Living by yourshellf must get abalonely.",
 
         HERMIT_PEARL = "I'll take good care of it.",
         HERMIT_CRACKED_PEARL = "I... didn't take good care of it.",

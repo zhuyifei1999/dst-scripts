@@ -3401,6 +3401,7 @@ return{
             BURNT = "Disastrously caramelized.",
         },
 
+        HERMITCRAB = "She's all alone...",
 
         HERMIT_PEARL = "Madame Pearl entrusted it to me.",
         HERMIT_CRACKED_PEARL = "Oh... oh dear...",

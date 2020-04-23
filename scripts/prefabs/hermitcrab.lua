@@ -342,7 +342,7 @@ local function OnLoad(inst, data)
 end
 
 local function OnLoadPostPass(inst, new_ents, data)
-	if inst._shop_level >= 5 then
+	if inst._shop_level ~= nil and inst._shop_level >= 5 then
 		-- This is only done for retrofitting, it is not normally needed, do not copy/paste this
 		inst.components.craftingstation:LearnItem("supertacklecontainer", "hermitshop_supertacklecontainer")
 	end
@@ -543,6 +543,9 @@ local function createbundle(inst,gifts)
             table.insert(prize_items, SpawnPrefab(p))
         end
         pouch.components.unwrappable:WrapItems(prize_items) 
+		for i, v in ipairs(prize_items) do
+			v:Remove()
+		end
         table.insert(final,pouch)
     end
     final = extrarewardcheck(inst, final)

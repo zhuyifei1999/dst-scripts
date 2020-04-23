@@ -303,6 +303,9 @@ function YOTC_RaceCompetitor:CollectPrize()
             table.insert(prize_items, SpawnPrefab(p))
         end
         pouch.components.unwrappable:WrapItems(prize_items)
+		for i, v in ipairs(prize_items) do
+			v:Remove()
+		end
 
         self.inst:RemoveTag("has_prize")
         return pouch

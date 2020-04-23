@@ -3405,6 +3405,7 @@ return{
             BURNT = "Burnt honey.",
         },
 
+        HERMITCRAB = "It's a tragic fate, to be left behind by those you love.",
 
         HERMIT_PEARL = "I will be its caretaker.",
         HERMIT_CRACKED_PEARL = "I seem to leave only misery in my wake...",
