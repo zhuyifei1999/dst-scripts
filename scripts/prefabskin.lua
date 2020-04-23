@@ -416,6 +416,8 @@ function firepit_init_fn(inst, build_name, fxoffset)
         end
         inst:ListenForEvent("takefuel", inst._takefuel_fn)
     end
+
+    inst:restart_firepit() --restart any fire after getting skinned to reposition
 end
 function firepit_clear_fn(inst)
     inst.AnimState:SetBuild("firepit")
@@ -424,7 +426,8 @@ function firepit_clear_fn(inst)
         inst:RemoveEventCallback("takefuel", inst._takefuel_fn )
         inst._takefuel_fn = nil
     end
-    inst.components.fueled:MakeEmpty() --Maybe do something better? For now this is the simplest to avoid bugs. Clearing a skin will turn off the fire
+
+    inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
 end
 
 --------------------------------------------------------------------------

@@ -1172,9 +1172,6 @@ function Tune(overrides)
             HERMITCRABSHOP_L4 = TechTree.Create({
                 HERMITCRABSHOP = 7,
             }),
-            HERMITCRABSHOP_L5 = TechTree.Create({
-                HERMITCRABSHOP = 9,
-            }),            
 		},
 
         RABBIT_HEALTH = 25 * multiplayer_attack_modifier,

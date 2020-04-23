@@ -122,7 +122,7 @@ local SHOP_LEVELS =
     "HERMITCRABSHOP_L2",
     "HERMITCRABSHOP_L3",
     "HERMITCRABSHOP_L4",
-    "HERMITCRABSHOP_L5",    
+    "HERMITCRABSHOP_L4",
 }
 
 local TASKS = {
@@ -339,6 +339,13 @@ local function OnLoad(inst, data)
             inst:AddTag("highfriendlevel")
         end
     end
+end
+
+local function OnLoadPostPass(inst, new_ents, data)
+	if inst._shop_level >= 5 then
+		-- This is only done for retrofitting, it is not normally needed, do not copy/paste this
+		inst.components.craftingstation:LearnItem("supertacklecontainer", "hermitshop_supertacklecontainer")
+	end
 end
 
 local function RegisterToBottleManager(inst)
@@ -657,7 +664,8 @@ local function friendlevel_8_reward(inst,winner)
 end
 
 local function friendlevel_9_reward(inst,winner)
-    EnableShop(inst,5)
+	inst.components.craftingstation:LearnItem("supertacklecontainer", "hermitshop_supertacklecontainer")
+    inst._shop_level = 5
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
@@ -894,7 +902,7 @@ local function initfriendlevellisteners(inst)
         local range = ISLAND_RADIUS +10
         if source and data.target:GetDistanceSqToInst(source) < range * range then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range,nil,nil,{"heavy","seastack"})            
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range,{"heavy"})            
             for i=#ents,1,-1 do
                 local testpos = Vector3(ents[i].Transform:GetWorldPosition())
                 if TheWorld.Map:IsVisualGroundAtPoint(testpos.x,testpos.y,testpos.z) or TheWorld.Map:GetPlatformAtPoint(testpos.x,testpos.z) then
@@ -913,10 +921,6 @@ local function initfriendlevellisteners(inst)
     inst:ListenForEvent("CHEVO_heavyobject_winched", function(world,data) 
         checkforclearwaters(inst,data)
     end, TheWorld) 
-    inst:ListenForEvent("CHEVO_seastack_mined", function(world,data) 
-        checkforclearwaters(inst,data)
-    end, TheWorld)
-
 
     --REMOVE_LUREPLANT
     local function checklureplant(inst,data)
@@ -1393,6 +1397,10 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
+
+    ------------------------------------------
+
+    inst:AddComponent("craftingstation")
     
     ------------------------------------------
 
@@ -1410,6 +1418,7 @@ local function fn()
     inst.iscoat = iscoat
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
 
     inst:WatchWorldState("isspring", OnSpringChange)
 
