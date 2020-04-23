@@ -3401,7 +3401,6 @@ return{
             BURNT = "Disastrously caramelized.",
         },
 
-        MOON_FISSURE_PLUGGED = "I wonder why she's so determined to stay here.",
 
         HERMIT_PEARL = "Madame Pearl entrusted it to me.",
         HERMIT_CRACKED_PEARL = "Oh... oh dear...",

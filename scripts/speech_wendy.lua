@@ -3226,8 +3226,8 @@ return{
         HERMITHOUSE = {
             GENERIC = "Perhaps broken things can be fixed... over time...",
             BUILTUP = "It's hardly worth saving.",
-        },
-
+        }, 
+        
         SHELL_CLUSTER = "They're all clumped together... it seems a shame to separate them...",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3405,7 +3405,6 @@ return{
             BURNT = "Burnt honey.",
         },
 
-        MOON_FISSURE_PLUGGED = "They're trapped... for now.",
 
         HERMIT_PEARL = "I will be its caretaker.",
         HERMIT_CRACKED_PEARL = "I seem to leave only misery in my wake...",

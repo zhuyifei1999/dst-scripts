@@ -3223,7 +3223,7 @@ return{
             GENERIC = "Is very nice home.",
             BUILTUP = "Crabby lady's house got taller!",
         }, 
-
+        
         SHELL_CLUSTER = "Tried biting, isn't food.",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3401,7 +3401,6 @@ return{
             BURNT = "It not buzzing anymore...",
         },
 
-        MOON_FISSURE_PLUGGED = "Bad moon things can't get out, florp!",
 
         HERMIT_PEARL = "Oooooh, so shiny!",
         HERMIT_CRACKED_PEARL = "D-didn't do it!",

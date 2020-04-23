@@ -3401,7 +3401,6 @@ return{
             BURNT = "The site of The Great Honey Fire.",
         },
 
-        MOON_FISSURE_PLUGGED = "Woah! Why didn't we think of that?",
 
         HERMIT_PEARL = "We'll take really good care of it!",
         HERMIT_CRACKED_PEARL = "We hope Ms. Pearl isn't too mad at us...",

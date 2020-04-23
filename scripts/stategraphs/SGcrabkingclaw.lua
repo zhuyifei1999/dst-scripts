@@ -74,8 +74,8 @@ local events =
         inst.sg:GoToState("clamp_pre",data.target)
     end),
     EventHandler("releaseclamp", function(inst, data)
-        if inst.sg:HasStateTag("clampped") then
-            inst.sg:GoToState("clamp_pst")
+        if inst.components.health ~= nil and not inst.components.health:IsDead() and inst.sg:HasStateTag("clampped") then
+            inst.sg:GoToState((data ~= nil and data.immediate) and "idle" or "clamp_pst")
         end
     end),
 }

@@ -3410,7 +3410,6 @@ return {
             BURNT = "How did it get burned?!!",
         },
 
-        MOON_FISSURE_PLUGGED = "That doesn't look sound.",
 
         HERMIT_PEARL = "I'll take good care of it.",
         HERMIT_CRACKED_PEARL = "I... didn't take good care of it.",

@@ -174,11 +174,14 @@ local states =
 
         timeline= 
         {
-            TimeEvent(9*FRAMES, function(inst)
+            TimeEvent(8*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/water/splash/jump_small")
+            end),
+            TimeEvent(10*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySoundWithParams("hookline/creatures/gnarwail/idle", {timeoffset=math.random()})
             end),
-            TimeEvent(22*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySoundWithParams("hookline/creatures/gnarwail/idle", {timeoffset=math.random()})
+            TimeEvent(20*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/water/splash/jump_small")
             end),
         },
 
@@ -415,7 +418,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(19*FRAMES, function(inst)
+            TimeEvent(17*FRAMES, function(inst)
                 inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/chew")
             end),
@@ -429,7 +432,7 @@ local states =
         },
 
         onexit = function(inst)
-            inst:ClearBufferedAction()
+            inst:PerformBufferedAction()
         end,
     },
 
@@ -445,7 +448,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(20*FRAMES, function(inst)
+            TimeEvent(16*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/chew")
             end),
         },
@@ -582,7 +585,11 @@ local states =
                     end
                 end
             end),
-            TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/toss") end),
+            TimeEvent(20*FRAMES, function(inst)
+                if inst.sg.statemem.do_toss then
+                    inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/toss")
+                end
+            end),
         },
 
         events =

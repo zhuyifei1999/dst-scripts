@@ -15,7 +15,7 @@ local function testforlostrock(inst, rightarm)
     if not inst.fixhits then
         inst.fixhits = 0
     end
-    print(inst.fixhits,"MAX HITS",math.floor(inst.countgems(inst).orange/3) )
+
     if inst.fixhits == math.floor(inst.countgems(inst).orange/3) then
         inst.sg:GoToState("fix_lostrock", rightarm)
         inst.fixhits = 0

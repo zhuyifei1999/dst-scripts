@@ -1110,10 +1110,16 @@ function lantern_init_fn(inst, build_name, overridesymbols, followoffset)
             inst:ListenForEvent("onremove", lantern_off)
         end
     end
+
+    if inst.components.machine.ison then
+        lantern_on(inst)
+    end
 end
 
 function lantern_clear_fn(inst)
     inst.AnimState:SetBuild("lantern")
+
+    lantern_off(inst)
 
     inst._heldfx = nil
     inst._groundfx = nil

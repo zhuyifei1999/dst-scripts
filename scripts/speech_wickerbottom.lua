@@ -3223,7 +3223,7 @@ return{
             GENERIC = "Tsk. Look at the state of it...",
             BUILTUP = "Improving your living space can do wonders for one's mood.",
         }, 
-
+        
         SHELL_CLUSTER = "A fascinating assortment of mollusks!",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3401,7 +3401,6 @@ return{
             BURNT = "Poor bees!",
         },
 
-        MOON_FISSURE_PLUGGED = "Goodness, that must have required some tenacity!",
 
         HERMIT_PEARL = "Oh dear, I do hope I can find him.",
         HERMIT_CRACKED_PEARL = "I should tell her.",

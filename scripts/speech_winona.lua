@@ -3229,7 +3229,7 @@ return{
             GENERIC = "That can't be up to code.",
             BUILTUP = "Just needed a bit of elbow grease.",
         }, 
-
+        
         SHELL_CLUSTER = "Time to break out the ol' hammer.",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3407,7 +3407,6 @@ return{
             BURNT = "Factory fire!",
         },
 
-        MOON_FISSURE_PLUGGED = "That old lady's more resourceful than I gave her credit for.",
 
         HERMIT_PEARL = "I know a bit about not givin' up on someone.",
         HERMIT_CRACKED_PEARL = "I'm so sorry, Pearl.",

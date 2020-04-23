@@ -204,8 +204,8 @@ local WOBSTER_FISH_DEF =
     prefab = "wobster_sheller",
     loot = {"wobster_sheller_dead"},
     lures = TUNING.OCEANFISH_LURE_PREFERENCE.WOBSTER,
-    weight_min = 342.06,
-    weight_max = 404.44,
+    weight_min = 153.67,
+    weight_max = 307.34,
 }
 
 local function wobster_water()
@@ -217,8 +217,8 @@ local MOONGLASS_WOBSTER_FISH_DEF =
     prefab = "wobster_moonglass",
     loot = {"moonglass"},
     lures = TUNING.OCEANFISH_LURE_PREFERENCE.WOBSTER,
-    weight_min = 142.06,
-    weight_max = 204.44,
+    weight_min = 112.06,
+    weight_max = 224.12,
 }
 
 local function moonglass_water()
@@ -366,8 +366,8 @@ local function base_land_wobster(build_name, nameoverride, fish_def, fadeout, co
     inst.components.weighable.type = TROPHYSCALE_TYPES.FISH
     inst.components.weighable:Initialize(inst.fish_def.weight_min, inst.fish_def.weight_max)
 
-    local _weight = Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, math.random())
-    inst.components.weighable:SetWeight(_weight)
+	local _weight_scale = math.random()
+    inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, _weight_scale*_weight_scale*_weight_scale))
 
     if cook_product ~= nil then
         inst:AddComponent("cookable")

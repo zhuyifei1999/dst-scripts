@@ -283,6 +283,18 @@ local function waterfn(data)
     return inst
 end
 
+local function OnSink(inst)
+	SpawnPrefab("oceanfishableflotsam_water").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	inst:Remove()
+end
+
+local function OnLanded(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:IsOceanAtPoint(x, y, z, false) then
+		inst:PushEvent("onsink")
+	end
+end
+
 local function landfn(data)
     local inst = CreateEntity()
 
@@ -328,7 +340,10 @@ local function landfn(data)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
         end
         return true
-    end)
+	end)
+	
+	inst:ListenForEvent("onsink", OnSink)
+	inst:ListenForEvent("on_landed", OnLanded)
 
     return inst
 end

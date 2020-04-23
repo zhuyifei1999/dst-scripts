@@ -3230,7 +3230,7 @@ return{
             GENERIC = "What a dump.",
             BUILTUP = "I never needed a home, but some people do I guess.",
         }, 
-
+        
         SHELL_CLUSTER = "Just a bunch of shells.",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3255,7 +3255,7 @@ return{
         },
 
         RESKIN_TOOL = "Oh yeah, I'm gonna have fun with this.",
-        MOON_FISSURE_PLUGGED = "Ohh, so that's how she did it.",
+        MOON_FISSURE_PLUGGED = "Ohh, so that's how she keeps those creeps away.",
 
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
@@ -3408,7 +3408,6 @@ return{
             BURNT = "Smoked you out!",
         },
 
-        MOON_FISSURE_PLUGGED = "Ohh, so that's how she keeps those creeps away.",
 
         HERMIT_PEARL = "Don't worry grams, it's safe with me!",
         HERMIT_CRACKED_PEARL = "Oops...",

@@ -3229,7 +3229,7 @@ return{
             GENERIC = "What a sad little house for that cranky old louse.",
             BUILTUP = "A little care can cause remarkable transformations.",
         }, 
-
+        
         SHELL_CLUSTER = "I wonder if there's any goodies inside?",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3407,7 +3407,6 @@ return{
             BURNT = "Mayhaps it's caramelized within!",
         },
 
-        MOON_FISSURE_PLUGGED = "Hyuyu! Can you not get out, little ones?",
 
         HERMIT_PEARL = "A treasured treasure.",
         HERMIT_CRACKED_PEARL = "A shattered hope.",

@@ -200,10 +200,6 @@ local function ShouldAcceptItem(inst, item)
     local bodyequipped = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
     local hascoat = inst.components.inventory:FindItem(function(testitem) return iscoat(testitem) end) or (bodyequipped and iscoat(bodyequipped) and bodyequipped )
 
-    print("equipped?", (bodyequipped and iscoat(bodyequipped) and bodyequipped ))
-    print("invntory?", inst.components.inventory:FindItem(function(testitem) return iscoat(testitem) end))
-    print("HASCOAT?",hascoat)
-
     if item:HasTag("oceanfish") or
        ( item:HasTag("umbrella") and TheWorld.state.israining and not hasumbrella ) or
        ( iscoat(item) and TheWorld.state.issnowing and not hascoat ) or    
@@ -241,7 +237,6 @@ local function OnRefuseItem(inst, giver, item)
         if umbrella then
             inst.components.npc_talker:Say(STRINGS.HERMITCRAB_REFUSE_UMBRELLA_HASONE[math.random(#STRINGS.HERMITCRAB_REFUSE_UMBRELLA_HASONE)])            
         elseif not TheWorld.state.israining then
-            print("LENGTH OF STRING #STRINGS.HERMITCRAB_REFUSE_UMBRELLA",#STRINGS.HERMITCRAB_REFUSE_UMBRELLA)
             inst.components.npc_talker:Say(STRINGS.HERMITCRAB_REFUSE_UMBRELLA[math.random(#STRINGS.HERMITCRAB_REFUSE_UMBRELLA)])            
         end
     end      
@@ -252,12 +247,6 @@ local function OnRefuseItem(inst, giver, item)
     if inst.components.sleeper:IsAsleep() then
         inst.components.sleeper:WakeUp()
     end
-end
-
-local function OnAttacked(inst, data)    
-    local attacker = data.attacker
-    inst:ClearBufferedAction()
-    inst.components.combat:SetTarget(attacker) 
 end
 
 local function NormalRetargetFn(inst)
@@ -434,7 +423,6 @@ local function rewardcheck(inst)
         end                
         local gifts = inst.components.friendlevels:DoRewards()
 
-        print("--- SETTING ITEMS TO TOSS")
         if #gifts > 0 then
             inst.itemstotoss = gifts
             for i,gift in ipairs(gifts)do
@@ -593,7 +581,6 @@ local function honeycheck(inst,gifts)
 end
 
 local function defaultfriendrewards(inst,winner)
-    print("GIVE DEFAULT REWARDS")
     local gifts = {}
     for i=1,3 do
         table.insert(gifts, weighted_random_choice(hermit_bundle_shell_loots))
@@ -603,14 +590,12 @@ local function defaultfriendrewards(inst,winner)
 end
 
 local function friendlevel_1_reward(inst,winner)
-    print("LEVEL 1 REWARDS")
     EnableShop(inst, 1)
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
 
 local function friendlevel_2_reward(inst,winner)
-    print("LEVEL 2 REWARDS")
     local gifts = {}
 
     table.insert(gifts, weighted_random_choice(seasonal_lure))
@@ -620,14 +605,12 @@ local function friendlevel_2_reward(inst,winner)
 end
 
 local function friendlevel_3_reward(inst,winner)
-    print("LEVEL 3 REWARDS")
     EnableShop(inst, 2)
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
 
 local function friendlevel_4_reward(inst,winner)
-    print("LEVEL 4 REWARDS")
     local gifts = {}
     for i=1,3 do
         table.insert(gifts, weighted_random_choice(hermit_bundle_shell_loots))
@@ -640,7 +623,6 @@ local function friendlevel_4_reward(inst,winner)
 end
 
 local function friendlevel_5_reward(inst,winner)
-    print("LEVEL 5 REWARDS")
     local gifts = {}
     for i=1,3 do
         table.insert(gifts, weighted_random_choice(hermit_bundle_shell_loots))
@@ -652,14 +634,12 @@ local function friendlevel_5_reward(inst,winner)
 end
 
 local function friendlevel_6_reward(inst,winner)
-    print("LEVEL 6 REWARDS")
     EnableShop(inst,3)
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
 
 local function friendlevel_7_reward(inst,winner)
-    print("LEVEL 7 REWARDS")
     local gifts = {}
     for i=1,3 do
         table.insert(gifts, weighted_random_choice(hermit_bundle_shell_loots))
@@ -671,21 +651,18 @@ local function friendlevel_7_reward(inst,winner)
 end
 
 local function friendlevel_8_reward(inst,winner)
-    print("LEVEL 8 REWARDS")
     EnableShop(inst,4)
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
 
 local function friendlevel_9_reward(inst,winner)
-    print("LEVEL 9 REWARDS")
     EnableShop(inst,5)
     storelevelunlocked(inst)
     return createbundle(inst,{})
 end
 
 local function friendlevel_10_reward(inst,winner)
-    print("LEVEL 10 REWARDS")
     local gifts = {}
     gifts = createbundle(inst,gifts)
 
@@ -969,7 +946,18 @@ local function initfriendlevellisteners(inst)
         end
     end    
     inst:ListenForEvent("CHEVO_lureplantdied", function(world,data) 
-        checklureplant(inst,data)
+        if data.target and data.target:HasTag("planted") then
+            -- INVESTIGATE
+            local gfl = inst.getgeneralfriendlevel(inst)
+            if not inst.comment_data then
+                inst.comment_data= {
+                    pos = Vector3(data.target.Transform:GetWorldPosition()),
+                    speech = STRINGS.HERMITCRAB_PLANTED_LUREPLANT_DIED[gfl][math.random(1,#STRINGS.HERMITCRAB_PLANTED_LUREPLANT_DIED[gfl])],
+                }
+            end
+        else
+            checklureplant(inst,data)
+        end
     end, TheWorld)  
 
     -- ITEMS
@@ -1066,9 +1054,7 @@ local function initfriendlevellisteners(inst)
         elseif data.item.components.edible then            
             if inst.driedthings then                
                 inst.driedthings = inst.driedthings + 1
-                print(inst.driedthings)
                 if inst.driedthings == 6 then
-                    print("AT 6, deleting")
                     inst.driedthings = nil
                 end
             end
@@ -1227,6 +1213,21 @@ local function retrofitconstuctiontasks(inst, house_prefab)
     end
 end
 
+local function teleport_override_fn(inst)
+	local target = inst.components.homeseeker and inst.components.homeseeker.home
+					or inst.CHEVO_marker
+					or inst
+
+    local pt = target:GetPosition()
+    local offset = FindWalkableOffset(pt, math.random() * 2 * PI, 4, 8, true, false) or
+					FindWalkableOffset(pt, math.random() * 2 * PI, 8, 8, true, false)
+    if offset ~= nil then
+		pt = pt + offset
+    end
+
+	return pt 
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -1348,10 +1349,6 @@ local function fn()
 
     ------------------------------------------
 
-    inst:AddComponent("knownlocations")
-
-    ------------------------------------------
-
     inst:AddComponent("friendlevels")
     inst.components.friendlevels:SetDefaultRewards(defaultfriendrewards)
     inst.components.friendlevels:SetLeveltRewards(friendlevelrewards)
@@ -1371,6 +1368,11 @@ local function fn()
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader.deleteitemonaccept = false
+
+    ------------------------------------------
+
+	inst:AddComponent("teleportedoverride")
+	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
 
     ------------------------------------------
 
@@ -1437,7 +1439,6 @@ local function fn()
 
     inst:ListenForEvent("dancingplayer",  function(world,data) onplayerdance(inst,data) end, TheWorld)
     inst:ListenForEvent("moonfissurevent",  function(world,data) onmoonvent(inst,data) end, TheWorld)
-    inst:ListenForEvent("attacked", OnAttacked)
     inst:DoTaskInTime(0,function()
         inst.CHEVO_marker = FindEntity(inst, ISLAND_RADIUS, nil, {"hermitcrab_marker"})
         if inst.CHEVO_marker then        

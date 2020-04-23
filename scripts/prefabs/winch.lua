@@ -439,16 +439,6 @@ local function fn()
 	inst:ListenForEvent("onremove", dropitems)
 	inst:ListenForEvent("itemget", onitemget)
 
-	-- inst:ListenForEvent("start_lowering_winch", function()
-	-- 	inst._winch_update_task = inst:DoPeriodicTask(FRAMES, OnLoweringUpdate)
-	-- end)
-	-- inst:ListenForEvent("start_raising_winch", function()
-	-- 	if inst._winch_update_task ~= nil then
-	-- 		inst._winch_update_task:Cancel()
-	-- 		inst._winch_update_task = nil
-	-- 	end
-	-- end)
-
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	inst.OnLoadPostPass = OnLoadPostPass

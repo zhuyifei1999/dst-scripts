@@ -70,7 +70,6 @@ local ARMTIME = {
 }
 
 local function getfreezerange(inst)
-    print("FREEZE RANGE",TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.countgems(inst).blue,0,9,0,2.25)) /2)
     return TUNING.CRABKING_FREEZE_RANGE * (0.75 + Remap(inst.countgems(inst).blue,0,9,0,2.25)) /2
 end
 
@@ -151,6 +150,12 @@ local function socketitem(inst,item,slot)
         inst.components.health.currenthealth = inst.components.health.maxhealth
 
         inst.components.freezable:SetResistance(3 + inst.countgems(inst).blue)
+
+        inst:AddTag("epic")    
+        inst:AddTag("animal")
+        inst:AddTag("scarytoprey")
+        inst:AddTag("hostile")   
+
         inst:PushEvent("activate")
     end
 end
@@ -260,6 +265,10 @@ local function OnEntitySleep(inst)
             end
         end
         inst.arms = nil      
+        inst:RemoveTag("epic")    
+        inst:RemoveTag("animal")
+        inst:RemoveTag("scarytoprey")
+        inst:RemoveTag("hostile")           
    end
 end
 
@@ -496,7 +505,6 @@ local function regenarm(inst)
 end
 
 local function finishfixing(inst)
-    print("FINISHED FIXING. STARTING HEAL COOLDOWN")
     inst.wantstoheal = nil
     inst.components.timer:StartTimer("heal_cooldown",TUNING.CRABKING_HEAL_DELAY)
     if inst.components.timer:TimerExists("claw_regen_timer") then
@@ -521,8 +529,6 @@ local function removegem(inst,gemname)
             table.remove(inst.socketed,i)
         end
     end
-    print("REMOVE GEM",gemname)
-    dumptable(inst.socketed)
 end
 local function addgem(inst,gemname)
     table.insert(inst.socketed,{itemprefab = gemname})
@@ -624,7 +630,6 @@ local function setdamageart(inst)
     end
     inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/rock_hit")
     inst.AnimState:OverrideSymbol("damage"..art, "crab_king_build", "nil")
-    print("CRABKING: BREAK!")
 end
 
 local function setrepairedart(inst)
@@ -633,7 +638,6 @@ local function setrepairedart(inst)
     table.remove(inst.damagedsymbollist,index)
     table.insert(inst.nondamagedsymbollist,art)
     inst.AnimState:OverrideSymbol("damage"..art, "crab_king_build", "damage"..art)
-    print("CRABKING: FIX!")
 end
 
 local function onHealthChange(inst,data)
@@ -747,12 +751,8 @@ local function fn()
     inst.AnimState:SetBank("king_crab")
     inst.AnimState:SetBuild("crab_king_build")    
 
-    inst:AddTag("crabking")
-    inst:AddTag("epic")    
-    inst:AddTag("animal")
-    inst:AddTag("scarytoprey")
+    inst:AddTag("crabking") 
     inst:AddTag("largecreature")
-    inst:AddTag("hostile")
     inst:AddTag("gemsocket")
     inst:AddTag("birdblocker")
 
@@ -1101,8 +1101,8 @@ local function freezefx(inst)
     end
 
     local MAXFX = Remap(( inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0, 9,5,15)
-
-    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2),1,MAXFX)
+   
+    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - ((inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0)/2),1,MAXFX)
     for i=1,fx do
         if math.random()<0.2 then
             spawnfx()
@@ -1120,7 +1120,7 @@ local function dofreeze(inst)
     for i,v in pairs(ents)do
         if v.components.temperature then
 
-            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + (((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0)) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)) /interval)
+            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + (((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0)) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0/2)) /interval)
 
             if v.components.moisture then
                 rate = rate * Remap(v.components.moisture:GetMoisture(),0,v.components.moisture.maxmoisture,1,3)

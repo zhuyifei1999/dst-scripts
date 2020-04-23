@@ -22,7 +22,7 @@ local shadow_prefabs =
 
 }
 
-local function releaseclamp(inst)
+local function releaseclamp(inst, immediate)
 	if inst.boat then
 		if inst.boat.components.boatphysics ~= nil then
 			inst.boat.components.boatphysics:RemoveBoatDrag(inst)
@@ -33,7 +33,7 @@ local function releaseclamp(inst)
         end, inst.boat)  
     end  
     inst.boat = nil
-    inst:PushEvent("releaseclamp")
+    inst:PushEvent("releaseclamp", {immediate = immediate} )
     
     if inst.clamptask then
         inst.clamptask:Cancel()
@@ -82,6 +82,21 @@ local function clamp(inst)
         end, inst.boat)    
         inst.clamptask = inst:DoTaskInTime(math.random()+3,function() inst.crunchboat(inst,inst.boat) end)
     end   
+end
+
+local function teleport_override_fn(inst)
+    local pt = inst.components.knownlocations ~= nil and inst.components.knownlocations:GetLocation("spawnpoint") or inst:GetPosition()
+    local offset = FindSwimmableOffset(pt, math.random() * 2 * PI, 3, 8, true, false) or
+					FindSwimmableOffset(pt, math.random() * 2 * PI, 8, 8, true, false)
+    if offset ~= nil then
+		pt = pt + offset
+    end
+
+	return pt 
+end
+
+local function OnTeleported(inst)
+	inst:releaseclamp(true)
 end
 
 local function OnRemove(inst)
@@ -196,6 +211,10 @@ local function fn()
 
     MakeLargeBurnableCharacter(inst, "claw_parts_forearm")
     MakeHugeFreezableCharacter(inst, "claw_parts_forearm")
+
+	inst:AddComponent("teleportedoverride")
+	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
+	inst:ListenForEvent("teleported", OnTeleported)
 
     inst.shadow = inst:SpawnChild("crabking_claw_shadow")
 

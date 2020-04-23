@@ -3223,7 +3223,7 @@ return{
             GENERIC = "HA. IT IS SAD",
             BUILTUP = "IT IS SLIGHTLY LESS MISERABLE LOOKING",
         }, 
-
+        
         SHELL_CLUSTER = "I WANT TO BREAK IT",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3401,7 +3401,6 @@ return{
             BURNT = "ACTIVITY LEVELS AT ZERO",
         },
 
-        MOON_FISSURE_PLUGGED = "CURRENTLY INACTIVE",
 
         HERMIT_PEARL = "I WILL TAKE THIS AS PAYMENT",
         HERMIT_CRACKED_PEARL = "MISTAKES WERE MADE",

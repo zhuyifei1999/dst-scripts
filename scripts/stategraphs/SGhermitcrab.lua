@@ -330,6 +330,7 @@ local actionhandlers =
             return "talkto" 
         end 
     end),
+    ActionHandler(ACTIONS.WATER_TOSS, "toss"),
 }
 
 local events =
@@ -512,6 +513,10 @@ local events =
             end
         end),
 
+	EventHandler("teleported",
+		function(inst)
+            inst.sg:GoToState("idle")
+        end),    
 
     CommonHandlers.OnHop(),
 }
@@ -3522,8 +3527,6 @@ local states =
 
             if data ~= nil and data.escaped_str and inst.components.talker ~= nil then
                 inst.dotalkingtimers(inst)
-                print("TALK TALK TALK")
-                dumptable(data.escaped_str)
                 inst.components.npc_talker:Say(data.escaped_str, nil, nil, true)
             end
         end,

@@ -3224,7 +3224,7 @@ return{
             GENERIC = "This place has seen better days.",
             BUILTUP = "It looks like a real home now.",
         }, 
-
+        
         SHELL_CLUSTER = "I almost hate to break up such a tight-knit bunch.",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3402,7 +3402,6 @@ return{
             BURNT = "No, not the bees!",
         },
 
-        MOON_FISSURE_PLUGGED = "Guess sometimes stubbornness pays off, eh Lucy?",
 
         HERMIT_PEARL = "C'mon Lucy, let's find that crab!",
         HERMIT_CRACKED_PEARL = "I was only trying to help...",

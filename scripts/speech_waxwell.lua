@@ -3223,7 +3223,7 @@ return{
             GENERIC = "What a sad little hovel.",
             BUILTUP = "It's an improvement.",
         }, 
-
+        
         SHELL_CLUSTER = "That was not worth the effort.",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3401,7 +3401,6 @@ return{
             BURNT = "Honey roasted.",
         },
 
-        MOON_FISSURE_PLUGGED = "It's almost genius in its simplicity... but it does smell.",
 
         HERMIT_PEARL = "It's... strange to be so trusted.",
         HERMIT_CRACKED_PEARL = "Ah. I thought I'd run out of people to disappoint.",

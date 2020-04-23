@@ -3223,7 +3223,7 @@ return{
         HERMITHOUSE = {
             GENERIC = "This no place for someone's babushka.",
             BUILTUP = "Make good home for old shell lady.",
-        },
+        }, 
         
         SHELL_CLUSTER = "Wolfgang will break it open with own mighty fists!",
         --
@@ -3402,7 +3402,6 @@ return{
             BURNT = "Bees are burned.",
         },
 
-        MOON_FISSURE_PLUGGED = "Why is ground stuffed with stinky shells?",
 
         HERMIT_PEARL = "Will take good care of shiny stone!",
         HERMIT_CRACKED_PEARL = "Wolfgang did not take good care of shiny stone.",

@@ -92,7 +92,6 @@ local function onstartdrying(inst, ingredient, buildfile)
         inst.AnimState:PlayAnimation("drying_pre")
         inst.AnimState:PushAnimation("drying_loop", true)
     end
-    print("put_meat_rack SOUND!!!!!!!!!!!!!!!!")
     inst.SoundEmitter:PlaySound("dontstarve/common/together/put_meat_rack")
     inst.AnimState:OverrideSymbol("swap_dried", buildfile or "meat_rack_food", ingredient)
 end

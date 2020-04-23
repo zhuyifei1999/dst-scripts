@@ -3401,7 +3401,6 @@ return{
             BURNT = "The hive is silent.",
         },
 
-        MOON_FISSURE_PLUGGED = "The old crone has been waging war against the moon's apparitions.",
 
         HERMIT_PEARL = "I shall protect it with my life!",
         HERMIT_CRACKED_PEARL = "The battle is won, but at what cost?",

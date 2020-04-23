@@ -3428,6 +3428,12 @@ STRINGS =
     HERMITCRAB_STORE_UNLOCK_4 = {{"I've got some new things to trade","but they don't come cheap!"}},
     HERMITCRAB_STORE_UNLOCK_5 = {{"This old shell must be going soft...","I put something special in the shop."}},
 
+    HERMITCRAB_PLANTED_LUREPLANT_DIED = {
+                LOW = {"Nice try.\nYou don't get anything for cleaning up your own messes."},
+                MED = {"Do you want a reward that bad?"},
+                HIGH = {"Dearie, I know you planted that.\nYou don't need to impress me."},
+            },
+
     HERMITCRAB_GO_HOME = {"Time to rest this old chitin."},
     HERMITCRAB_PANIC = {"I can't see a darn thing!"},
     HERMITCRAB_PANICHAUNT = {"You're not taking me yet, spirits!"},

@@ -3227,7 +3227,7 @@ return{
             GENERIC = "Sad shell...",
             BUILTUP = "Happy now",
         }, 
-
+        
         SHELL_CLUSTER = "Shells!",
         --
 		SINGINGSHELL_OCTAVE3 =
@@ -3405,7 +3405,6 @@ return{
             BURNT = "Fire breaks everything",
         },
 
-        MOON_FISSURE_PLUGGED = "Can't hear them",
 
         HERMIT_PEARL = "Shiny!",
         HERMIT_CRACKED_PEARL = "Broken...",
