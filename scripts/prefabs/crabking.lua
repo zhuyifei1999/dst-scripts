@@ -386,7 +386,7 @@ local function endcastspell(inst, lastwasfreeze)
     local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
     if #ents > 0 then
         for i,ent in pairs(ents)do
-            if not inst.components.freezable:IsFrozen() then
+            if not inst.components.freezable:IsFrozen() and not inst.components.health:IsDead() then
                 ent:PushEvent("endspell")
             else
                 ent:Remove()
@@ -1102,7 +1102,7 @@ local function freezefx(inst)
 
     local MAXFX = Remap(( inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0, 9,5,15)
    
-    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - ((inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0)/2),1,MAXFX)
+    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0/2),1,MAXFX)
     for i=1,fx do
         if math.random()<0.2 then
             spawnfx()
@@ -1120,8 +1120,7 @@ local function dofreeze(inst)
     for i,v in pairs(ents)do
         if v.components.temperature then
 
-            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + (((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0)) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0/2)) /interval)
-
+            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + ((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0/2)) /interval)
             if v.components.moisture then
                 rate = rate * Remap(v.components.moisture:GetMoisture(),0,v.components.moisture.maxmoisture,1,3)
             end

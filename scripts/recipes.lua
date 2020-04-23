@@ -525,7 +525,7 @@ Recipe("hermitshop_oceanfishingbobber_goose", {Ingredient("messagebottleempty", 
 Recipe("hermitshop_oceanfishingbobber_malbatross", {Ingredient("messagebottleempty", 3)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_SEVEN, nil, nil, true, nil, nil, nil, nil, nil, "oceanfishingbobber_malbatross")
 Recipe("hermitshop_chum", {Ingredient("messagebottleempty", 3)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_SEVEN,          nil, nil, true, nil, nil, nil, "chum.tex", nil, "chum")
 
-Recipe("hermitshop_supertacklecontainer", {Ingredient("messagebottleempty", 8)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_NINE, nil, nil, true, nil, nil, nil, nil, nil, "supertacklecontainer")
+Recipe("hermitshop_supertacklecontainer", {Ingredient("messagebottleempty", 8)}, RECIPETABS.HERMITCRABSHOP, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "supertacklecontainer")
 
 
 ----UNCRAFTABLE----
