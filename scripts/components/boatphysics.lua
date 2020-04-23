@@ -104,6 +104,14 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
     end
 end
 
+local function on_boatdrag_removed(boatdraginst)
+	local x, y, z = boatdraginst.Transform:GetWorldPosition()
+	local boat = TheWorld.Map:GetPlatformAtPoint(x, z)
+	if boat ~= nil and boat.components.boatphysics ~= nil then
+		boat.components.boatphysics:RemoveBoatDrag(boatdraginst)
+	end
+end
+
 local BoatPhysics = Class(function(self, inst)
     self.inst = inst
     self.velocity_x = 0
@@ -113,7 +121,7 @@ local BoatPhysics = Class(function(self, inst)
     self.max_velocity = TUNING.BOAT.MAX_VELOCITY_MOD
     self.rudder_turn_speed = TUNING.BOAT.RUDDER_TURN_SPEED
     self.masts = {}
-    self.anchor_cmps = {}
+    self.boatdraginstances = {}
 
     self.lastzoomtime = nil
     self.lastzoomwasout = false
@@ -157,11 +165,27 @@ function BoatPhysics:OnLoad(data)
 end
 
 function BoatPhysics:AddAnchorCmp(anchor_cmp)
-    self.anchor_cmps[anchor_cmp] = anchor_cmp
+    print("BoatPhysics:AddAnchorCmp is deprecated, please use AddBoatDrag instead.")
 end
 
 function BoatPhysics:RemoveAnchorCmp(anchor_cmp)
-    self.anchor_cmps[anchor_cmp] = nil
+    print("BoatPhysics:RemoveAnchorCmp is deprecated, please use RemoveBoatDrag instead.")
+end
+
+function BoatPhysics:AddBoatDrag(boatdraginst)
+	self.boatdraginstances[boatdraginst] = boatdraginst
+	
+	self.inst:ListenForEvent("onremove", on_boatdrag_removed, boatdraginst)
+	self.inst:ListenForEvent("death", on_boatdrag_removed, boatdraginst)
+	self.inst:ListenForEvent("onburnt", on_boatdrag_removed, boatdraginst)
+end
+
+function BoatPhysics:RemoveBoatDrag(boatdraginst)
+	self.boatdraginstances[boatdraginst] = nil
+	
+	self.inst:RemoveEventCallback("onremove", on_boatdrag_removed, boatdraginst)
+	self.inst:RemoveEventCallback("death", on_boatdrag_removed, boatdraginst)
+	self.inst:RemoveEventCallback("onburnt", on_boatdrag_removed, boatdraginst)
 end
 
 function BoatPhysics:SetTargetRudderDirection(dir_x, dir_z)
@@ -195,7 +219,19 @@ function BoatPhysics:GetVelocity()
     return math.sqrt(self.velocity_x * self.velocity_x + self.velocity_z * self.velocity_z)
 end
 
+
+function BoatPhysics:GetForceDampening()
+    local dampening = 1
+    for k,v in pairs(self.boatdraginstances) do
+		dampening = dampening - k.components.boatdrag.forcedampening
+    end
+    return dampening    
+end
+
+
 function BoatPhysics:ApplyForce(dir_x, dir_z, force)
+
+    force = force * self:GetForceDampening()
 
     self.velocity_x, self.velocity_z = self.velocity_x + dir_x * force, self.velocity_z + dir_z * force
 
@@ -228,8 +264,8 @@ function BoatPhysics:GetMaxVelocity()
     max_vel = max_vel * self.max_velocity 
     max_vel = math.max(self.max_velocity, max_vel)
     
-    for k,v in pairs(self.anchor_cmps) do
-        max_vel = max_vel * k.max_velocity_mod
+    for k,v in pairs(self.boatdraginstances) do
+        max_vel = max_vel * k.components.boatdrag.max_velocity_mod
     end
 
     return max_vel
@@ -237,8 +273,8 @@ end
 
 function BoatPhysics:GetTotalAnchorDrag()
     local total_anchor_drag = 0
-    for k,v in pairs(self.anchor_cmps) do
-        total_anchor_drag = total_anchor_drag + k:GetDrag()
+    for k,v in pairs(self.boatdraginstances) do
+        total_anchor_drag = total_anchor_drag + k.components.boatdrag.drag
     end
     return total_anchor_drag
 end

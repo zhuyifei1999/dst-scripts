@@ -6,12 +6,21 @@ local assets =
     Asset("ANIM", "anim/moon_fissure_fx.zip"),
 }
 
+local assets_plugged = 
+{
+    Asset("ANIM", "anim/plugged_fissure.zip"),
+}
+
 local prefabs =
 {
 	"moon_fissure_fx",
 	"moon_altar",
     "moon_altar_idol",
+    "moon_altar_cosmic"
 }
+
+local prefabs_plugged = 
+{}
 
 local lightstate_data =
 {
@@ -59,13 +68,14 @@ end
 
 local function on_piece_slotted(inst, slotter, slotted_item)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local altar = SpawnPrefab("moon_altar")
+    local altar = SpawnPrefab(slotted_item._socket_product)
 	inst:Remove()
 	altar.Transform:SetPosition(x, y, z)
+    altar:PushEvent("on_fissure_socket")
 end
 
 local function check_piece(inst, piece)
-    if piece.prefab == "moon_altar_glass" then
+    if piece._socket_product ~= nil then
         return true
     else
         return false, "WRONGPIECE"
@@ -228,6 +238,51 @@ local function fx_fn()
     return inst
 end
 
+local function plugged_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork() -- this is networked coz we trigger animations on it
+    inst.entity:AddSoundEmitter()
+    
+    inst.AnimState:SetBank("plugged_fissure")
+    inst.AnimState:SetBuild("plugged_fissure")
+    inst.AnimState:PlayAnimation("idle", true)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+
+    inst:AddComponent("timer")
+    inst.components.timer:StartTimer("toot",(math.random()*10)* TUNING.SEG_TIME )
+
+    inst:ListenForEvent("timerdone", function(inst, data) 
+        if data.name == "toot" then            
+            inst.AnimState:PlayAnimation("toot_pre")
+        end
+    end)
+
+    inst:ListenForEvent("animover", function()
+        if inst.AnimState:IsCurrentAnimation("toot_pre") then
+            inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/plugged_fissure/"..math.random(1,3))
+            inst.AnimState:PlayAnimation("toot")
+            inst.AnimState:PushAnimation("toot_pst",false)
+            inst.AnimState:PushAnimation("idle",true)
+            inst.components.timer:StartTimer("toot",(6 + (math.random()*4)) * TUNING.SEG_TIME )
+            TheWorld:PushEvent("moonfissurevent",inst)            
+        end
+    end)
+
+
+    return inst
+end
 
 return Prefab("moon_fissure", fn, assets, prefabs),
-	Prefab("moon_fissure_fx", fx_fn, assets)
+       Prefab("moon_fissure_plugged", plugged_fn, assets_plugged, prefabs_plugged),
+	   Prefab("moon_fissure_fx", fx_fn, assets)
+

@@ -10,10 +10,24 @@ end)
 function BoatLeak:Repair(doer, patch_item)
     if not self.inst:HasTag("boat_leak") then return false end
 
-    if patch_item.components.stackable ~= nil then
-        patch_item.components.stackable:Get():Remove()
+    if patch_item.components.boatpatch.healthrepairvalue then
+        local boat = self.inst:GetCurrentPlatform()
+        if boat.components.health ~= nil then
+            if boat.components.health:GetPercent() < 1 then
+                boat.components.health:DoDelta(patch_item.components.boatpatch.healthrepairvalue)
+            end
+        end
+    end
+
+    if patch_item.components.repairer and self.inst:GetCurrentPlatform() and self.inst:GetCurrentPlatform().components.repairable then
+        self.inst:GetCurrentPlatform().components.repairable:Repair(doer, patch_item)
+        -- consumed in the repair
     else
-        patch_item:Remove()
+        if patch_item.components.stackable ~= nil then
+            patch_item.components.stackable:Get():Remove()
+        else
+            patch_item:Remove()
+        end
     end
 
     local repair_state = "repaired"
@@ -32,6 +46,7 @@ end
 
 function BoatLeak:ChangeToRepaired(repair_build_name)
     self.inst:RemoveTag("boat_leak")
+    self.inst:AddTag("boat_repaired_patch")
 
     local anim_state = self.inst.AnimState
     anim_state:SetBuild(repair_build_name)

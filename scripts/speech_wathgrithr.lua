@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "This map is for some distant land...",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "This is nary the time nor place.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -495,6 +498,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "By the gods, I've netted a monster!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "My aim wasn't true...",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "My efforts were for naught.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -1356,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "'Twas made in honor of our stalwart vessel!",
         CHESSPIECE_MOON = "Offered in honor of our beauteous moon!",
         CHESSPIECE_CARRAT = "I'm not keen on honoring a vegetable so.",
+        CHESSPIECE_MALBATROSS = "To honor our victory at sea!",
+        CHESSPIECE_CRABKING = "'Twas a hard-fought battle, but we prevailed!",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",
@@ -3036,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "The gods call me to it, I shall not resist.",
         MOON_ALTAR_ROCK_SEED = "The gods call me to it, I shall not resist.",
 
+        MOON_ALTAR_CROWN = "I wonder how that creature got his claws on this?",
+        MOON_ALTAR_COSMIC = "It is grateful, but my work is not yet done.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "A seafaring Viking is keen of mind and sharp of wit.",
@@ -3131,12 +3144,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "This should attract their attention!",
 		OCEANFISHINGLURE_SPOON_GREEN = "This should attract their attention!",
 		OCEANFISHINGLURE_SPOON_BLUE = "This should attract their attention!",
+		OCEANFISHINGLURE_HERMIT_RAIN = "The old crone has enchanted it to work best in the rain.",
+		OCEANFISHINGLURE_HERMIT_SNOW = "The old crone has enchanted it to work best in the snow.",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "It doth feel a bit like cheating...",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Only the greatest of fish will dare take a bite!",
 
 		OCEANFISH_SMALL_1 = "Tis barely a morsel!",
 		OCEANFISH_SMALL_2 = "There's barely any meat on these fishbones!",
 		OCEANFISH_SMALL_3 = "Tis only a wee beastie.",
 		OCEANFISH_SMALL_4 = "This amount of meat will hardly satisfy a Viking!",
 		OCEANFISH_SMALL_5 = "Tis naught but a small snack.",
+		OCEANFISH_SMALL_6 = "It is suspiciously leafy.",
+		OCEANFISH_SMALL_7 = "Are ye fish or flower?",
+		OCEANFISH_SMALL_8 = "By Sól! It wields the power of the sun!",
+
 		OCEANFISH_MEDIUM_1 = "Meat is meat.",
 		OCEANFISH_MEDIUM_2 = "You will make a fine meal!",
 		OCEANFISH_MEDIUM_3 = "The beastie put up an admirable fight.",
@@ -3144,6 +3165,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "This looks suspiciously veggie-like.",
 		OCEANFISH_MEDIUM_6 = "Your bad luck is my good fortune, beastie.",
 		OCEANFISH_MEDIUM_7 = "Your bad luck is my good fortune, beastie.",
+		OCEANFISH_MEDIUM_8 = "It must hail from the icy waters of Niflheim.",
 
 		PONDFISH = "Pond meat!",
 		PONDEEL = "Delicious slimy snake fish.",
@@ -3157,13 +3179,18 @@ return{
 		FISH_BOX = "Meat is best when it's fresh!",
         POCKET_SCALE = "How did I fare with my catch?",
 
+		TACKLECONTAINER = "A wise hunter treats their tools with care.",
+		SUPERTACKLECONTAINER = "A bounty of space for my bait!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "I will stand victorious!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nA most glorious catch indeed!",
 			BURNING = "By the gods, that fishbowl's ablaze!",
 			BURNT = "Tis naught but cinders.",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nTake heed of my fishing prowess!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nT'was nothing for a skilled hunter!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Tis naught but a clump of mud and grass!",
@@ -3171,6 +3198,58 @@ return{
 		CALIFORNIAROLL = "That's just a morsel of fish food.",
 		SEAFOODGUMBO = "A meal fit for a Viking queen.",
 		SURFNTURF = "Nothing goes better with meat than more meat!",
+
+        WOBSTER_SHELLER = "Have at thee, morsel!", 
+        WOBSTER_DEN = "The lair of the pinchy beasts.",
+        WOBSTER_SHELLER_DEAD = "Sleep in Valhalla, armored one.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Your armor hides tasty meat.",
+
+        LOBSTERBISQUE = "That's more like it.",
+        LOBSTERDINNER = "I triumphed over my wobster foe.",
+
+        WOBSTER_MOONGLASS = "The little beasties have acquired new armor!",
+        MOONGLASS_WOBSTER_DEN = "That must be their fortress.",
+
+		TRIDENT = "I shall lay waste to my enemies with the weapon of Poseidon!",
+		
+		WINCH =
+		{
+			GENERIC = "The ocean is mine to pillage.",
+			RETRIEVING_ITEM = "And to the victor, the spoils!",
+			HOLDING_ITEM = "Behold, my prize!",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "The sea witch seems to be pleased with it.",
+            BUILTUP = "The old crone resides here?",
+        }, 
+        
+        SHELL_CLUSTER = "Tis naught but a clump of shells.",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "{note}? I expected it to sound more like a war bugle.",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "It sings a siren's song. In {note}.",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "{note}... an impressively high register for a wee sea beast.",
+        },
+
+        CHUM = "A banquet for the sea beasties!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Perhaps it was a gift from Venus?",
+            LOCKED = "Fie! Locked tight!",
+        },
+
+        RESKIN_TOOL = "In the blink of an eye, what once was is no more!",
+        MOON_FISSURE_PLUGGED = "The old crone has been waging war against the moon's apparitions.",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3290,6 +3369,41 @@ return{
 
 		GHOSTFLOWER = "Tis all that remains.",
         SMALLGHOST = "Such a wee specter!",
+
+        CRABKING = 
+        {
+            GENERIC = "Have at thee, cursed crustacean!",
+            INERT = "A barren, sandy fortress.",
+        },
+		CRABKING_CLAW = "Prepare thyself to be de-clawed!",
+		
+		MESSAGEBOTTLE = "What's this? Battle plans?",
+		MESSAGEBOTTLEEMPTY = "This vessel might have some use.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "The moisture has been vanquished!",
+            DRYING = "It's being prepared just the way I like it.",
+            DRYINGINRAIN = "All this rain isn't helping.",
+            GENERIC = "I'd be cantankerous too if I were left without meat!",
+            BURNT = "Such a shame.",
+            DONE_NOTMEAT = "Tis as dry as an empty well!",
+            DRYING_NOTMEAT = "It's drying out nicely.",
+            DRYINGINRAIN_NOTMEAT = "All this rain isn't helping.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "It's a honey treasure trove!",
+            FULLHONEY = "It's a honey treasure trove!",
+            GENERIC = "The old crone would take my head if I dared steal a drop of honey.",
+            NOHONEY = "Where's the honey?",
+            SOMEHONEY = "Pithy honey. More patience is needed.",
+            BURNT = "The hive is silent.",
+        },
+
+
+        HERMIT_PEARL = "I shall protect it with my life!",
+        HERMIT_CRACKED_PEARL = "The battle is won, but at what cost?",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

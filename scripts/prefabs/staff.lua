@@ -272,7 +272,8 @@ local function teleport_start(teleportee, staff, caster, loctarget, target_in_oc
     local ground = TheWorld
 
     --V2C: Gotta do this RIGHT AWAY in case anything happens to loctarget or caster
-    local locpos = loctarget == nil and getrandomposition(caster, teleportee, target_in_ocean)
+    local locpos = teleportee.components.teleportedoverride ~= nil and teleportee.components.teleportedoverride:GetDestPosition()
+				or loctarget == nil and getrandomposition(caster, teleportee, target_in_ocean)
 				or loctarget.teletopos ~= nil and loctarget:teletopos()
 				or loctarget:GetPosition() 
 
@@ -337,9 +338,12 @@ local function teleport_func(inst, target)
     local x, y, z = target.Transform:GetWorldPosition()
 	local target_in_ocean = target.components.locomotor ~= nil and target.components.locomotor:IsAquatic()
 
-	local loctarget = nil
-	if not target_in_ocean then
-		loctarget = target.components.minigame_participator ~= nil and target.components.minigame_participator:GetMinigame() or FindNearestActiveTelebase(x, y, z, nil, 1)
+	local loctarget = target.components.minigame_participator ~= nil and target.components.minigame_participator:GetMinigame()
+						or target.components.teleportedoverride ~= nil and target.components.teleportedoverride:GetDestTarget()
+						or nil
+
+	if loctarget == nil and not target_in_ocean then
+		loctarget = FindNearestActiveTelebase(x, y, z, nil, 1)
 	end
     teleport_start(target, inst, caster, loctarget, target_in_ocean)
 end

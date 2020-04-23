@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "Little paper is not for here!",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "Wolfgang can't read in here.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -496,6 +499,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nGood thing Wolfgang have big muscles for carrying!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Boat is not in position!",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Mighty claw has turned up nothing.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -1357,6 +1365,8 @@ return{
         CHESSPIECE_ANCHOR = "Is big. And heavy. Wolfgang would like to lift.",
         CHESSPIECE_MOON = "Is look just like sky cheese!",
         CHESSPIECE_CARRAT = "Wolfgang liked racing leggy carrots.",
+        CHESSPIECE_MALBATROSS = "How will bird fly if it is stone?",
+        CHESSPIECE_CRABKING = "Wolfgang was seasick for days...",
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -3037,6 +3047,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Special things is trapped inside!",
         MOON_ALTAR_ROCK_SEED = "Special things is trapped inside!",
 
+        MOON_ALTAR_CROWN = "Wolfgang will help you!",
+        MOON_ALTAR_COSMIC = "Such loud whisperings. Make head hurt.",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Wolfgang need help thinking on scary water.",
@@ -3132,12 +3145,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Is tiny fish bait.",
 		OCEANFISHINGLURE_SPOON_GREEN = "Is tiny fish bait.",
 		OCEANFISHINGLURE_SPOON_BLUE = "Is tiny fish bait.",
+		OCEANFISHINGLURE_HERMIT_RAIN = "For fishing when raining.",
+		OCEANFISHINGLURE_HERMIT_SNOW = "For fishing when is snow outside.",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "Ha! It make fish stupid!",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Wolfgang will show all how to catch biggest fish!",
 
 		OCEANFISH_SMALL_1 = "Fish is puny!",
 		OCEANFISH_SMALL_2 = "Is tiny fish!",
 		OCEANFISH_SMALL_3 = "Wolfgang could eat in one bite!",
 		OCEANFISH_SMALL_4 = "Is small and weak fish.",
 		OCEANFISH_SMALL_5 = "Would make good snack for Wolfgang.",
+		OCEANFISH_SMALL_6 = "Has creepy flat face, Wolfgang not like.",
+		OCEANFISH_SMALL_7 = "Oh, is nice little flower fish.",
+		OCEANFISH_SMALL_8 = "Is strange burny fish.",
+
 		OCEANFISH_MEDIUM_1 = "Don't like way its buggy eyes stare.",
 		OCEANFISH_MEDIUM_2 = "Aha! Big fish for dinner!",
 		OCEANFISH_MEDIUM_3 = "This fish very pokey.",
@@ -3145,6 +3166,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Haha! Is corn and fish!",
 		OCEANFISH_MEDIUM_6 = "Is mighty fish!",
 		OCEANFISH_MEDIUM_7 = "Is mighty fish!",
+		OCEANFISH_MEDIUM_8 = "Brrr, gives Wolfgang the chills.",
 
 		PONDFISH = "Is fishy.",
 		PONDEEL = "Eel needs cooking!",
@@ -3158,13 +3180,18 @@ return{
 		FISH_BOX = "Is new home for fish. For now.",
         POCKET_SCALE = "Tiny scale fit in palm of Wolfgang's hand!",
 
+		TACKLECONTAINER = "Is good place for fish things!",
+		SUPERTACKLECONTAINER = "Is even better place for fish things!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "Is scale to measure mightiness of fish!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nIs very impressive.",
 			BURNING = "Little scale is burning!",
 			BURNT = "Little scale is all burned away.",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nOf course Wolfgang's fish is mightiest!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nCome see mighty fish caught by Wolfgang!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Is just lump of mud?",
@@ -3172,6 +3199,58 @@ return{
 		CALIFORNIAROLL = "Get in Wolfgang's stomach!",
 		SEAFOODGUMBO = "This will make very strong Wolfgang!",
 		SURFNTURF = "Very good.",
+
+        WOBSTER_SHELLER = "Wolfgang will steer clear of the pinchers.", 
+        WOBSTER_DEN = "Is home of the shellbeasts.",
+        WOBSTER_SHELLER_DEAD = "Wolfgang wish he had fearsome hand claws!",
+        WOBSTER_SHELLER_DEAD_COOKED = "Is ready to eat now.",
+
+        LOBSTERBISQUE = "Seems fancy.",
+        LOBSTERDINNER = "A meal fit for Wolfgang!",
+
+        WOBSTER_MOONGLASS = "Is glassy shellbeast?",
+        MOONGLASS_WOBSTER_DEN = "Is home of the glassy shellbeasts.",
+
+		TRIDENT = "Is good fork for Wolfgang-sized meals!",
+		
+		WINCH =
+		{
+			GENERIC = "Is mighty wooden arm for grabbing!",
+			RETRIEVING_ITEM = "Pull, mighty arm! Pull!",
+			HOLDING_ITEM = "Ha! Easy job for Wolfgang!",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "This no place for someone's babushka.",
+            BUILTUP = "Make good home for old shell lady.",
+        }, 
+        
+        SHELL_CLUSTER = "Wolfgang will break it open with own mighty fists!",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "Is mighty singing shell!",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Is singing shell?",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Is wimpy small singing shell.",
+        },
+
+        CHUM = "Eat, fish! Is good for you!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Is filled with treasure things, yes?",
+            LOCKED = "Wolfgang... can't... pry... open!",
+        },
+
+        RESKIN_TOOL = "Is like magic show!",
+        MOON_FISSURE_PLUGGED = "Why is ground stuffed with stinky shells?",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3291,6 +3370,41 @@ return{
 
 		GHOSTFLOWER = "Is pretty... pretty scary.",
         SMALLGHOST = "Aaaaah! Er, ahem, meant AAAAAAAAAAAAAAH!!",
+
+        CRABKING = 
+        {
+            GENERIC = "This makes Wolfgang very scared AND hungry.",
+            INERT = "Is giant castle of sand!",
+        },
+		CRABKING_CLAW = "Keep away from boat, big pinchers!",
+		
+		MESSAGEBOTTLE = "Has tiny note inside!",
+		MESSAGEBOTTLEEMPTY = "Nothing inside.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Will old lady be able to eat such tough meat?",
+            DRYING = "Dry meaty things! Dry!",
+            DRYINGINRAIN = "Go away, rain! Meat is drying!",
+            GENERIC = "Is sad and meat-less.",
+            BURNT = "Cannot dry meat now.",
+            DONE_NOTMEAT = "Is very good and dry now!",
+            DRYING_NOTMEAT = "Wolfgang could punch water out, maybe?",
+            DRYINGINRAIN_NOTMEAT = "Sky tears is re-wetting the dry things!",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Is ready for harvest!",
+            FULLHONEY = "Is ready for harvest!",
+            GENERIC = "Funny looking house for bees.",
+            NOHONEY = "It has no honey.",
+            SOMEHONEY = "Bees are busy.",
+            BURNT = "Bees are burned.",
+        },
+
+
+        HERMIT_PEARL = "Will take good care of shiny stone!",
+        HERMIT_CRACKED_PEARL = "Wolfgang did not take good care of shiny stone.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

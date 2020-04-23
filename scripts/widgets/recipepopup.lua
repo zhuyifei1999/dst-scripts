@@ -11,6 +11,7 @@ local Spinner = require "widgets/spinner"
 
 require "widgets/widgetutil"
 require "skinsutils"
+local TechTree = require "techtree"
 
 local TEASER_SCALE_TEXT = 1
 local TEASER_SCALE_BTN = 1.5
@@ -35,10 +36,10 @@ local function GetHintTextForRecipe(player, recipe)
     local adjusted_level = deepcopy(recipe.level)
 
     -- Adjust recipe's level for bonus so that the hint gives the right message
-    adjusted_level.SCIENCE = adjusted_level.SCIENCE - player.replica.builder:ScienceBonus()
-    adjusted_level.MAGIC = adjusted_level.MAGIC - player.replica.builder:MagicBonus()
-    adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
-    adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
+	local tech_bonus = player.replica.builder:GetTechBonuses()
+	for k, v in pairs(adjusted_level) do
+		adjusted_level[k] = math.max(0, v - (tech_bonus[k] or 0))
+	end
 
     for k, v in pairs(TUNING.PROTOTYPER_TREES) do
         local canbuild = CanPrototypeRecipe(adjusted_level, v)
@@ -56,18 +57,14 @@ local function GetHintTextForRecipe(player, recipe)
         --There's more than one machine that gives the valid tech level! We have to find the "lowest" one (taking bonus into account).
         for k,v in pairs(validmachines) do
             for rk,rv in pairs(adjusted_level) do
-                if TUNING.PROTOTYPER_TREES[v.TREE][rk] == rv then
-                    v.SCORE = v.SCORE + 1
-                    if player.replica.builder ~= nil then
-                        if v.TREE == "SCIENCEMACHINE" or v.TREE == "ALCHEMYMACHINE" then
-                            v.SCORE = v.SCORE + player.replica.builder:ScienceBonus()
-                        elseif v.TREE == "PRESTIHATITATOR" or v.TREE == "SHADOWMANIPULATOR" then
-                            v.SCORE = v.SCORE + player.replica.builder:MagicBonus()
-                        elseif v.TREE == "ANCIENTALTAR_LOW" or v.TREE == "ANCIENTALTAR_HIGH" then
-                            v.SCORE = v.SCORE + player.replica.builder:AncientBonus()
-                        elseif v.TREE == "WAXWELLJOURNAL" then
-                            v.SCORE = v.SCORE + player.replica.builder:ShadowBonus()
-                        end
+                local prototyper_level = TUNING.PROTOTYPER_TREES[v.TREE][rk]
+                if prototyper_level and (rv > 0 or prototyper_level > 0) then
+                    if rv == prototyper_level then
+                        --recipe level matches, add 1 to the score
+                        v.SCORE = v.SCORE + 1
+                    elseif rv < prototyper_level then
+                        --recipe level is less than prototyper level, remove 1 per level the prototyper overshot the recipe
+                        v.SCORE = v.SCORE - (prototyper_level - rv)
                     end
                 end
             end
@@ -342,16 +339,17 @@ function RecipePopup:Refresh()
 
         local str
         if should_hint then
-            local hint_text =
-            {
-                ["SCIENCEMACHINE"] = STRINGS.UI.CRAFTING.NEEDSCIENCEMACHINE,
-                ["ALCHEMYMACHINE"] = STRINGS.UI.CRAFTING.NEEDALCHEMYENGINE,
-                ["SHADOWMANIPULATOR"] = STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR,
-                ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
-                ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
-                ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
+            local hint_text = 
+			{
+                ["SCIENCEMACHINE"] = "NEEDSCIENCEMACHINE",
+                ["ALCHEMYMACHINE"] = "NEEDALCHEMYENGINE",
+                ["SHADOWMANIPULATOR"] = "NEEDSHADOWMANIPULATOR",
+                ["PRESTIHATITATOR"] = "NEEDPRESTIHATITATOR",
+                ["CANTRESEARCH"] = "CANTRESEARCH",
+                ["ANCIENTALTAR_HIGH"] = "NEEDSANCIENT_FOUR",
             }
-            str = hint_text[GetHintTextForRecipe(owner, recipe)]
+            local prototyper_tree = GetHintTextForRecipe(owner, recipe)
+            str = STRINGS.UI.CRAFTING[hint_text[prototyper_tree] or ("NEEDS"..prototyper_tree)]
         else
             str = STRINGS.UI.CRAFTING.NEEDSTECH[hint_tech_ingredient]
         end

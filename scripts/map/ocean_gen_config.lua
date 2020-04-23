@@ -9,7 +9,7 @@ local watergen =
 	fillOffset = 8,
 
 	--square fill
-	shallowRadius = 5,
+	shallowRadius = 4,
 	mediumRadius = 0,
 
 	ocean_prefill_setpieces_min_land_dist = 5, -- min distance between land and this set piece, should be no less than shallowRadius or the squarefill will stomp the set piece

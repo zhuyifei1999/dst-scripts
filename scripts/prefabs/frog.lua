@@ -79,6 +79,7 @@ local function fn()
     -- boat hopping enable.
     inst.components.locomotor:SetAllowPlatformHopping(true)
     inst:AddComponent("embarker")
+    inst:AddComponent("drownable")
 
     inst:SetStateGraph("SGfrog")
 

@@ -40,68 +40,25 @@ end
 
 --------------------------------------------------------------------------
 
-function Builder:SetScienceBonus(sciencebonus)
-    if self.classified ~= nil then
-        self.classified.sciencebonus:set(sciencebonus)
-    end
-end
-
-function Builder:ScienceBonus()
+function Builder:GetTechBonuses()
     if self.inst.components.builder ~= nil then
-        return self.inst.components.builder.science_bonus or 0
+        return self.inst.components.builder:GetTechBonuses()
     elseif self.classified ~= nil then
-        return self.classified.sciencebonus:value()
-    else
-        return 0
+		local bonus = {}
+        for i, v in ipairs(TechTree.BONUS_TECH) do
+            local netvar = self.classified[string.lower(v).."bonus"]
+			bonus[v] = netvar ~= nil and netvar:value() or nil
+        end
+		return bonus
     end
+	return {}
 end
 
-function Builder:SetMagicBonus(magicbonus)
-    if self.classified ~= nil then
-        self.classified.magicbonus:set(magicbonus)
-    end
-end
-
-function Builder:MagicBonus()
-    if self.inst.components.builder ~= nil then
-        return self.inst.components.builder.magic_bonus or 0
-    elseif self.classified ~= nil then
-        return self.classified.magicbonus:value()
-    else
-        return 0
-    end
-end
-
-function Builder:SetAncientBonus(ancientbonus)
-    if self.classified ~= nil then
-        self.classified.ancientbonus:set(ancientbonus)
-    end
-end
-
-function Builder:AncientBonus()
-    if self.inst.components.builder ~= nil then
-        return self.inst.components.builder.ancient_bonus or 0
-    elseif self.classified ~= nil then
-        return self.classified.ancientbonus:value()
-    else
-        return 0
-    end
-end
-
-function Builder:SetShadowBonus(shadowbonus)
-    if self.classified ~= nil then
-        self.classified.shadowbonus:set(shadowbonus)
-    end
-end
-
-function Builder:ShadowBonus()
-    if self.inst.components.builder ~= nil then
-        return self.inst.components.builder.shadow_bonus or 0
-    elseif self.classified ~= nil then
-        return self.classified.shadowbonus:value()
-    else
-        return 0
-    end
+function Builder:SetTechBonus(tech, bonus)
+    local netvar = self.classified[string.lower(tech).."bonus"]
+	if netvar ~= nil then
+		netvar:set(bonus)
+	end
 end
 
 function Builder:SetIngredientMod(ingredientmod)

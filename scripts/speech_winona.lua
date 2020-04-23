@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "That ain't gonna work here.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "It's kinda hard to read in here...",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -501,6 +504,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nI reeled in a whopper!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Shoot! Missed it!",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "A whole lotta nothing.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -1362,6 +1370,8 @@ return{
         CHESSPIECE_ANCHOR = "I'm fond'a this one.",
         CHESSPIECE_MOON = "That statue's moonin' me! HA!",
         CHESSPIECE_CARRAT = "Look at it, just lazing around!",
+        CHESSPIECE_MALBATROSS = "It tried to mess with the wrong gal.",
+        CHESSPIECE_CRABKING = "Hey Max, you guys have a lot in common!",
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
         CHESSJUNK3 = "A heap of spare parts.",
@@ -3042,6 +3052,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Somethin' inside is itching to get out.",
         MOON_ALTAR_ROCK_SEED = "Somethin' inside is itching to get out.",
 
+        MOON_ALTAR_CROWN = "Don't worry, I'll get you where you need to go.",
+        MOON_ALTAR_COSMIC = "Can't shake the feeling that this is all building up to somethin'...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Always be inventing.",
@@ -3137,12 +3150,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Not that lifelike, but it fools the fish.",
 		OCEANFISHINGLURE_SPOON_GREEN = "Not that lifelike, but it fools the fish.",
 		OCEANFISHINGLURE_SPOON_BLUE = "Not that lifelike, but it fools the fish.",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Sure wish it rained fish, not just cats and dogs.",
+		OCEANFISHINGLURE_HERMIT_SNOW = "At least fishing is more productive than taking a snow day.",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "I'll be extra careful with that one.",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "If I'm gonna catch fish, I may as well catch the biggest one!",
 
 		OCEANFISH_SMALL_1 = "A little on the puny side, ain't it?",
 		OCEANFISH_SMALL_2 = "Not a lot of meat on that one.",
 		OCEANFISH_SMALL_3 = "It's just a teeny thing!",
 		OCEANFISH_SMALL_4 = "My fish dinner might be a bit lean...",
 		OCEANFISH_SMALL_5 = "Not sure that fish is healthy.",
+		OCEANFISH_SMALL_6 = "Huh. Never heard a fish rustle before.",
+		OCEANFISH_SMALL_7 = "Aww, it's kinda cute!",
+		OCEANFISH_SMALL_8 = "That thing's a fire hazard!",
+
 		OCEANFISH_MEDIUM_1 = "Here's hoping it tastes better than it looks.",
 		OCEANFISH_MEDIUM_2 = "Now that's a nice fat fish!",
 		OCEANFISH_MEDIUM_3 = "Yeesh, I'd better watch the spines on that thing!",
@@ -3150,6 +3171,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Never had to shuck a fish before.",
 		OCEANFISH_MEDIUM_6 = "Looks like one of those fish rich people put in ponds.",
 		OCEANFISH_MEDIUM_7 = "Looks like one of those fish rich people put in ponds.",
+		OCEANFISH_MEDIUM_8 = "It's an ice fish if I do say so myself. Ha!",
 
 		PONDFISH = "I'd rather eat for a day than not at all.",
 		PONDEEL = "You're looking a little eel. Ha!",
@@ -3163,13 +3185,18 @@ return{
 		FISH_BOX = "Now there's a nice practical way to store fish!",
         POCKET_SCALE = "What a handy doo-hickey!",
 
+		TACKLECONTAINER = "Gotta keep your tools organized!",
+		SUPERTACKLECONTAINER = "I'll never say no to havin' more room for my tools!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "A challenge, huh?",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nWoo-wee, that's a big one!",
 			BURNING = "Yikes! That fish scale's in some hot water!",
 			BURNT = "Looks like someone was a sore loser.",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nHeh. No big deal.",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nAll it took was patience and hard work.",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Ugh, what sorta mess did I reel in?",
@@ -3177,6 +3204,58 @@ return{
 		CALIFORNIAROLL = "Looks a bit fancy, but I'll give it a try!",
 		SEAFOODGUMBO = "Sticks to yer ribs!",
 		SURFNTURF = "Now THAT'S a meal!",
+
+        WOBSTER_SHELLER = "Hey little guy, you look like dinner!", 
+        WOBSTER_DEN = "Anyone home?",
+        WOBSTER_SHELLER_DEAD = "I think we got 'em.",
+        WOBSTER_SHELLER_DEAD_COOKED = "That's some good eatin'!",
+
+        LOBSTERBISQUE = "Hey Warly? Can you just keep makin' this forever?",
+        LOBSTERDINNER = "That's some pretty fancy lookin' grub!",
+
+        WOBSTER_MOONGLASS = "I don't trust those glassy eyes.",
+        MOONGLASS_WOBSTER_DEN = "Wonder what lives in there?",
+
+		TRIDENT = "I ain't afraid to make waves! Ha!",
+		
+		WINCH =
+		{
+			GENERIC = "Now that's a handy bit of machinery!",
+			RETRIEVING_ITEM = "Time to haul up the goods!",
+			HOLDING_ITEM = "All in a day's work.",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "That can't be up to code.",
+            BUILTUP = "Just needed a bit of elbow grease.",
+        }, 
+        
+        SHELL_CLUSTER = "Time to break out the ol' hammer.",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "Never thought I'd be serenaded by a seashell.",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "It can sure hold a tune.",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "I'm usually against knicknacks, but this one's alright.",
+        },
+
+        CHUM = "I'm all for anything that makes fishing go faster.",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Here's hoping I never have to tussle with a live one.",
+            LOCKED = "Can't seem to get it open.",
+        },
+
+        RESKIN_TOOL = "Is this one of Max's magic doo-hickeys?",
+        MOON_FISSURE_PLUGGED = "That old lady's more resourceful than I gave her credit for.",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3296,6 +3375,41 @@ return{
 
 		GHOSTFLOWER = "Don't know if I want that in my garden.",
         SMALLGHOST = "Y'know, you're awful cute for a grim reminder of my own mortality.",
+
+        CRABKING = 
+        {
+            GENERIC = "Looks like he thinks he's the boss around here.",
+            INERT = "The foundation doesn't look very stable.",
+        },
+		CRABKING_CLAW = "Now that's some claws for alarm. Ha!",
+		
+		MESSAGEBOTTLE = "Wonder where this came from?",
+		MESSAGEBOTTLEEMPTY = "Might as well reuse this.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Ready for eatin'.",
+            DRYING = "It's well on its way.",
+            DRYINGINRAIN = "Not gonna make much progress like that.",
+            GENERIC = "Maybe I should give the old lady a hand.",
+            BURNT = "Well, it's dry.",
+            DONE_NOTMEAT = "Ready for eatin'.",
+            DRYING_NOTMEAT = "It's well on its way.",
+            DRYINGINRAIN_NOTMEAT = "Not gonna make much progress like that.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Excellent work, bees!",
+            FULLHONEY = "Excellent work, bees!",
+            GENERIC = "Huh. Interestin' construction.",
+            NOHONEY = "Where's that stellar work ethic, bees?!",
+            SOMEHONEY = "You've been working hard.",
+            BURNT = "Factory fire!",
+        },
+
+
+        HERMIT_PEARL = "I know a bit about not givin' up on someone.",
+        HERMIT_CRACKED_PEARL = "I'm so sorry, Pearl.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

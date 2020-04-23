@@ -208,6 +208,19 @@ function ShakeAllCameras(mode, duration, speed, scale, source_or_pt, maxDist)
     end
 end
 
+function ShakeAllCamerasOnPlatform(mode, duration, speed, scale, platform)
+	if platform == nil then
+		return nil
+	end
+	
+	for i, v in ipairs(AllPlayers) do
+		local x, y, z = v.Transform:GetWorldPosition()
+		if TheWorld.Map:GetPlatformAtPoint(x, z) == platform then
+			v:ShakeCamera(mode, duration, speed, scale)
+		end
+	end
+end
+
 -- Use this function to fan out a search for a point that meets a condition.
 -- If your condition is basically "walkable ground" use FindWalkableOffset instead.
 -- test_fn takes a parameter "offset" which is check_angle*radius.

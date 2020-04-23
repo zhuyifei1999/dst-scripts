@@ -135,7 +135,7 @@ local function placeitemoffgrids(world, x1,z1, data)
         x = x1+ xdiff
         z = z1+ zdiff
 
-        local ents = findEntsInRange(x,z,data.min_spacing or 1) 
+        local ents = findEntsInRange(x,z,data.min_spacing or 1)
         local test = true
         if #ents > 0 then
             test = false
@@ -144,8 +144,16 @@ local function placeitemoffgrids(world, x1,z1, data)
         spot_clear = test   
     end
     if x and z and checkIfValidGround(world, x, z, data.valid_tile_types, data.water) and checkforblockingitems(x,z) then
-        AddTempEnts(bunch,x,z,data.prefab)
-    end      
+        local prefab = data.prefab
+        if type(prefab) == "function" then
+            local spawnerx = math.floor((WIDTH/2)+0.5 + (x/TILE_SCALE))
+            local spawnerz = math.floor((HEIGHT/2)+0.5 + (z/TILE_SCALE))
+            prefab = prefab(world, spawnerx, spawnerz)
+        end
+        if prefab ~= nil then
+            AddTempEnts(bunch,x,z,prefab)
+        end
+    end
 end
 
 function BunchSpawnerInit(ents, map_width, map_height)

@@ -6,6 +6,7 @@ local atlas_info_filename = "minimap/minimap_data.xml"
 local MINIMAP_GROUND_PROPERTIES =
 {
     { GROUND.PEBBLEBEACH,{ name = "map_edge",      noise_texture = "levels/textures/mini_pebblebeach.tex" } },
+    { GROUND.SHELLBEACH, { name = "map_edge",      noise_texture = "levels/textures/mini_pebblebeach.tex" } },
     { GROUND.OCEAN_COASTAL_SHORE,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_shallow.tex" } },
     { GROUND.OCEAN_BRINEPOOL_SHORE,      { name = "map_edge",      noise_texture = "levels/textures/mini_water_coral.tex" } },
 

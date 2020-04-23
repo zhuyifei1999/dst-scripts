@@ -95,6 +95,10 @@ function Drownable:OnFallInOcean(shore_x, shore_y, shore_z)
 
 	self.dest_x, self.dest_y, self.dest_z = shore_x, shore_y, shore_z
 
+	if self.inst.components.sleeper ~= nil then
+		self.inst.components.sleeper:WakeUp()
+	end
+
 	local inv = self.inst.components.inventory
 	if inv ~= nil then
 		Launch(inv:DropActiveItem(), self.inst, 3)
@@ -108,7 +112,7 @@ end
 function Drownable:TakeDrowningDamage()
 	local tunings = self.customtuningsfn ~= nil and self.customtuningsfn(self.inst)
 					or TUNING.DROWNING_DAMAGE[string.upper(self.inst.prefab)]
-					or TUNING.DROWNING_DAMAGE.DEFAULT
+					or TUNING.DROWNING_DAMAGE[self.inst:HasTag("player") and "DEFAULT" or "CREATURE"]
 
 	if self.inst.components.hunger ~= nil and tunings.HUNGER ~= nil then
 		local delta = -math.min(tunings.HUNGER, self.inst.components.hunger.current - 30)
@@ -146,12 +150,6 @@ function Drownable:TakeDrowningDamage()
 	end
 end
 
-function Drownable:GiveupAndDrown()
-	self.inst.components.health:SetPercent(0, 0, "drowning")
-	self.inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = false })
-	self.inst.components.inventory:DropEverything(true)
-end
-
 function Drownable:DropInventory()
 	if self.inst:HasTag("stronggrip") then
 		return
@@ -159,7 +157,14 @@ function Drownable:DropInventory()
 
 	local inv = self.inst.components.inventory
 	if inv ~= nil then
-		local to_drop = shuffledKeys(inv.itemslots)
+		local to_drop = {}
+		for k, v in pairs(inv.itemslots) do
+			if not v:HasTag("irreplaceable") then
+				table.insert(to_drop, k)
+			end
+		end
+		shuffleArray(to_drop)
+
 		for i = 1, math.ceil(#to_drop / 2) do
 			Launch(inv:DropItem(inv.itemslots[ to_drop[i] ], true), self.inst, 2)
 		end

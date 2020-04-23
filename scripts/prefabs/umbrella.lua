@@ -96,6 +96,7 @@ local function common_fn(name)
     inst:AddTag("nopunch")
     inst:AddTag("umbrella")
 
+
     --waterproofer (from waterproofer component) added to pristine state for optimization
     inst:AddTag("waterproofer")
 
@@ -106,6 +107,8 @@ local function common_fn(name)
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("tradable")
 
     inst:AddComponent("waterproofer")
     inst:AddComponent("inspectable")

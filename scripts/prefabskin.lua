@@ -32,6 +32,9 @@ function basic_init_fn(inst, build_name, def_build)
 end
 function basic_clear_fn(inst, def_build)
     inst.AnimState:SetBuild(def_build)
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:ChangeImageName()
+    end
 end
 
 backpack_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_backpack" ) end
@@ -46,8 +49,8 @@ piggyback_clear_fn = function(inst) basic_clear_fn(inst, "swap_piggyback" ) end
 ruins_bat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ruins_bat" ) end
 ruins_bat_clear_fn = function(inst) basic_clear_fn(inst, "swap_ruins_bat" ) end
 
-hambat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_ham_bat" ) end
-hambat_clear_fn = function(inst) basic_clear_fn(inst, "swap_ham_bat" ) end
+hambat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "ham_bat" ) end
+hambat_clear_fn = function(inst) basic_clear_fn(inst, "ham_bat" ) end
 
 batbat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "batbat" ) end
 batbat_clear_fn = function(inst) basic_clear_fn(inst, "batbat" ) end
@@ -100,8 +103,8 @@ amulet_clear_fn = function(inst) basic_clear_fn(inst, "amulets" ) end
 book_brimstone_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "books" ) end
 book_brimstone_clear_fn = function(inst) basic_clear_fn(inst, "books" ) end
 
-bedroll_furry_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_bedroll_straw" ) end
-bedroll_furry_clear_fn = function(inst) basic_clear_fn(inst, "swap_bedroll_straw" ) end
+bedroll_furry_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_bedroll_furry" ) end
+bedroll_furry_clear_fn = function(inst) basic_clear_fn(inst, "swap_bedroll_furry" ) end
 
 featherfan_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fan" ) end
 featherfan_clear_fn = function(inst) basic_clear_fn(inst, "fan" ) end
@@ -115,8 +118,8 @@ armorgrass_clear_fn = function(inst) basic_clear_fn(inst, "armor_grass" ) end
 armormarble_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_marble" ) end
 armormarble_clear_fn = function(inst) basic_clear_fn(inst, "armor_marble" ) end
 
-armorwood_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armour_wood") end
-armorwood_clear_fn = function(inst) basic_clear_fn(inst, "armour_wood" ) end
+armorwood_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_wood") end
+armorwood_clear_fn = function(inst) basic_clear_fn(inst, "armor_wood" ) end
 
 armorruins_init_fn =  function(inst, build_name) basic_init_fn(inst, build_name, "armor_ruins" ) end
 armorruins_clear_fn = function(inst) basic_clear_fn(inst, "armor_ruins" ) end
@@ -133,8 +136,8 @@ flowerhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_flower" ) end
 strawhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_straw" ) end
 strawhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_straw" ) end
 
-warlushat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_warlus" ) end
-warlushat_clear_fn = function(inst) basic_clear_fn(inst, "hat_warlus" ) end
+walrushat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_walrus" ) end
+walrushat_clear_fn = function(inst) basic_clear_fn(inst, "hat_walrus" ) end
 
 winterhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_winter" ) end
 winterhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_winter" ) end
@@ -220,9 +223,6 @@ meatrack_clear_fn = function(inst) basic_clear_fn(inst, "meat_rack" ) end
 beebox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "bee_box" ) end
 beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end
 
-pighouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "pig_house" ) end
-pighouse_clear_fn = function(inst) basic_clear_fn(inst, "pig_house" ) end
-
 rabbithouse_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "rabbit_house" ) end
 rabbithouse_clear_fn = function(inst) basic_clear_fn(inst, "rabbit_house" ) end
 
@@ -241,11 +241,35 @@ trap_clear_fn = function(inst) basic_clear_fn(inst, "trap" ) end
 birdtrap_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "birdtrap" ) end
 birdtrap_clear_fn = function(inst) basic_clear_fn(inst, "birdtrap" ) end
 
-grass_umbrella_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "swap_parasol" ) end
-grass_umbrella_clear_fn = function(inst) basic_clear_fn(inst, "swap_parasol" ) end
+grass_umbrella_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "parasol" ) end
+grass_umbrella_clear_fn = function(inst) basic_clear_fn(inst, "parasol" ) end
 
 saltbox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "saltbox" ) end
 saltbox_clear_fn = function(inst) basic_clear_fn(inst, "saltbox" ) end
+
+
+--------------------------------------------------------------------------
+--[[ Pighouse skin functions ]]
+--------------------------------------------------------------------------
+pighouse_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "pig_house" )
+    if inst._window ~= nil then
+        inst._window.AnimState:SetSkin(build_name)
+    end
+    if inst._windowsnow ~= nil then
+        inst._windowsnow.AnimState:SetSkin(build_name)
+    end
+end
+pighouse_clear_fn = function(inst)
+    basic_clear_fn(inst, "pig_house" )
+    if inst._window ~= nil then
+        inst._window.AnimState:SetBuild("pig_house")
+    end
+    if inst._windowsnow ~= nil then
+        inst._windowsnow.AnimState:SetBuild("pig_house")
+    end
+end
+
 
 
 --------------------------------------------------------------------------
@@ -257,13 +281,14 @@ function abigail_flower_init_fn(inst, build_name)
     end
     inst.flower_skin_id:set(inst.skin_id)
     
-    inst.AnimState:SetSkin(build_name, "abigail_flower")
+    inst.AnimState:SetSkin(build_name, "abigail_flower_rework")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
     inst.linked_skinname = string.gsub(build_name, "_flower", "")
 end
 function abigail_flower_clear_fn(inst)
-    inst.AnimState:SetBuild("abigail_flower")
+    inst.AnimState:SetBuild("abigail_flower_rework")
     inst.linked_skinname = nil
+    inst.components.inventoryitem:ChangeImageName()
 end
 
 function abigail_init_fn(inst, build_name)
@@ -344,12 +369,20 @@ function firesuppressor_init_fn(inst, build_name)
         end
     else
         inst.AnimState:SetSkin(build_name, "firefighter")
-        inst.AnimState:OverrideItemSkinSymbol("swap_meter", build_name, "10", inst.GUID, "firefighter_meter")
+        if inst._fuellevel ~= nil then
+            inst.AnimState:OverrideItemSkinSymbol("swap_meter", build_name, tostring(inst._fuellevel), inst.GUID, "firefighter_meter")
+        else
+            inst.AnimState:OverrideItemSkinSymbol("swap_meter", build_name, "10", inst.GUID, "firefighter_meter")
+        end
     end
 end
 function firesuppressor_clear_fn(inst)
     inst.AnimState:SetBuild("firefighter")
     inst.AnimState:ClearOverrideSymbol("swap_meter")
+
+    if inst._fuellevel ~= nil then
+        inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", tostring(inst._fuellevel))
+    end
 end
 
 --------------------------------------------------------------------------
@@ -407,11 +440,15 @@ function campfire_init_fn(inst, build_name, fxoffset)
     end
 
     inst.AnimState:SetSkin(build_name, "campfire")
-    inst.components.burnable.fxchildren[1].Transform:SetPosition(fxoffset.x, fxoffset.y, fxoffset.z)
+    if inst.components.burnable.fxchildren[1] ~= nil then
+        inst.components.burnable.fxchildren[1].Transform:SetPosition(fxoffset.x, fxoffset.y, fxoffset.z)
+    end
 end
 function campfire_clear_fn(inst)
     inst.AnimState:SetBuild("campfire")
-    inst.components.burnable.fxchildren[1].Transform:SetPosition(0, 0, 0)
+    if inst.components.burnable.fxchildren[1] ~= nil then
+        inst.components.burnable.fxchildren[1].Transform:SetPosition(0, 0, 0)
+    end
 end
 
 
@@ -501,7 +538,7 @@ function critter_lamb_builder_clear_fn(inst)
 end
 
 function critter_perdling_clear_fn(inst)
-    inst.AnimState:SetBuild("sheepington_build")
+    inst.AnimState:SetBuild("perdling_build")
     inst.skin_hungry_sound = nil
 end
 function critter_perdling_builder_clear_fn(inst)
@@ -509,7 +546,7 @@ function critter_perdling_builder_clear_fn(inst)
 end
 
 function critter_puppy_clear_fn(inst)
-    inst.AnimState:SetBuild(build_name, "pupington_build")
+    inst.AnimState:SetBuild("pupington_build")
 end
 function critter_puppy_builder_clear_fn(inst)
     inst.linked_skinname = nil
@@ -527,6 +564,7 @@ end
 function minisign_item_clear_fn(inst)
     inst.linked_skinname = nil
     inst.AnimState:SetBuild("sign_mini")
+    inst.components.inventoryitem:ChangeImageName()
 end
 function minisign_drawn_init_fn(inst, build_name)
     inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
@@ -536,6 +574,7 @@ end
 function minisign_drawn_clear_fn(inst)
     inst.linked_skinname = nil
     inst.AnimState:SetBuild("sign_mini")
+    inst.components.inventoryitem:ChangeImageName()
 end
 function minisign_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
@@ -562,6 +601,7 @@ end
 function fence_item_clear_fn(inst)
     inst.linked_skinname = nil
     inst.AnimState:SetBuild("fence")
+    inst.components.inventoryitem:ChangeImageName()
 end
 function fence_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
@@ -584,6 +624,7 @@ end
 function fence_gate_item_clear_fn(inst)
     inst.linked_skinname = nil
     inst.AnimState:SetBuild("fence_gate")
+    inst.components.inventoryitem:ChangeImageName()
 end
 function fence_gate_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
@@ -612,6 +653,7 @@ function mast_init_fn(inst, build_name)
         return
     end
     inst.AnimState:SetSkin(build_name, "boat_mast2")
+    inst.components.inventoryitem:ChangeImageName()
 end
 function mast_item_clear_fn(inst, build_name)
     inst.linked_skinname = nil
@@ -640,6 +682,7 @@ function bernie_inactive_init_fn(inst, build_name)
 end
 function bernie_inactive_clear_fn(inst)
     inst.AnimState:SetBuild("bernie_build")
+    inst.components.inventoryitem:ChangeImageName()
 end
 
 function bernie_active_init_fn(inst, build_name)
@@ -709,12 +752,21 @@ function reviver_init_fn(inst, build_name)
             inst.PlayBeatAnimation = reviver_playbeatanimation
         end
     end
+    
+    inst:skin_switched()
 end
 function reviver_clear_fn(inst)
     inst.AnimState:SetBuild("bloodpump")
+    inst.components.inventoryitem:ChangeImageName()
+
+    inst.reviver_beat_fx = nil
     for _,v in pairs( inst.highlightchildren ) do
         v:Remove()
     end
+    inst.PlayBeatAnimation = inst.DefaultPlayBeatAnimation
+    inst.highlightchildren = nil
+
+    inst:skin_switched()
 end
 
 --------------------------------------------------------------------------
@@ -803,6 +855,7 @@ end
 function cane_clear_fn(inst)
     inst.AnimState:SetBuild("swap_cane")
     inst.AnimState:ClearOverrideSymbol("grass")
+    inst.components.inventoryitem:ChangeImageName()
 
     inst:RemoveEventCallback("equipped", cane_equipped)
     inst:RemoveEventCallback("unequipped", cane_unequipped)
@@ -848,6 +901,7 @@ function nightsword_init_fn(inst, build_name)
 end
 function nightsword_clear_fn(inst)
     inst.AnimState:SetBuild("nightmaresword")
+    inst.components.inventoryitem:ChangeImageName()
     
     inst:RemoveEventCallback("equipped", nightsword_equipped)
     inst:RemoveEventCallback("unequipped", nightsword_unequipped)
@@ -868,6 +922,7 @@ end
 local function staff_clear_fn(inst)
     inst.AnimState:SetBuild("staffs")
     inst.AnimState:ClearOverrideSymbol("grass")
+    inst.components.inventoryitem:ChangeImageName()
 end
 
 function orangestaff_init_fn(inst, build_name)
@@ -912,7 +967,7 @@ function yellowstaff_init_fn(inst, build_name)
     inst.morph_skin = skin_data.granted_items[1]
 end
 function yellowstaff_clear_fn(inst)
-    staff_init_fn(inst)
+    staff_clear_fn(inst)
     inst.morph_skin = nil
 end
 
@@ -939,6 +994,7 @@ function heatrock_init_fn(inst, build_name)
 end
 function heatrock_clear_fn(inst)
     inst.AnimState:SetBuild("heat_rock")
+    inst.components.inventoryitem:ChangeImageName("heat_rock"..tostring(inst.currentTempRange))
 end
 
 
@@ -1054,10 +1110,16 @@ function lantern_init_fn(inst, build_name, overridesymbols, followoffset)
             inst:ListenForEvent("onremove", lantern_off)
         end
     end
+
+    if inst.components.machine.ison then
+        lantern_on(inst)
+    end
 end
 
 function lantern_clear_fn(inst)
     inst.AnimState:SetBuild("lantern")
+
+    lantern_off(inst)
 
     inst._heldfx = nil
     inst._groundfx = nil
@@ -1074,8 +1136,10 @@ end
 --[[ ResearchLab2 skin functions ]]
 --------------------------------------------------------------------------
 local function researchlab2_cancelflash(inst)
-    for i = 1, #inst.flashtasks do
-        table.remove(inst.flashtasks):Cancel()
+    if inst.flashtasks ~= nil then
+        for i = 1, #inst.flashtasks do
+            table.remove(inst.flashtasks):Cancel()
+        end
     end
 end
 
@@ -1098,7 +1162,7 @@ local function researchlab2_flashupdate(inst, intensity, totalframes)
 end
 
 local function researchlab2_flash(inst, intensity, frames)
-    if not inst.AnimState:IsCurrentAnimation("proximity_loop") then
+    if not inst.AnimState:IsCurrentAnimation("proximity_loop") and not inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
         researchlab2_cancelflash(inst)
         return
     end
@@ -1116,7 +1180,7 @@ local function researchlab2_checkflashing(inst, anim, offset)
         inst.checkanimtask = nil
     end
     researchlab2_cancelflash(inst)
-    if anim == "proximity_loop" then
+    if anim == "proximity_loop" or anim == "proximity_gift_loop" then
         local period = 49 * FRAMES
         table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 18 * FRAMES, .2, 8))
         table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 24 * FRAMES, .2, 10))
@@ -1124,7 +1188,7 @@ local function researchlab2_checkflashing(inst, anim, offset)
 end
 
 local function researchlab2_checkanim(inst)
-    if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+    if inst.AnimState:IsCurrentAnimation("proximity_loop") or inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
         inst.checkanimtask = nil
         researchlab2_checkflashing(inst, "proximity_loop", inst.AnimState:GetCurrentAnimationTime())
     else
@@ -1144,7 +1208,7 @@ local function researchlab2_pushanimation(inst, anim, loop)
     inst.highlightchildren[1].AnimState:PushAnimation(anim, loop)
     if not wasplaying and inst.AnimState:IsCurrentAnimation(anim) then
         researchlab2_checkflashing(inst, anim, 0)
-    elseif anim == "proximity_loop" and inst.checkanimtask == nil then
+    elseif (anim == "proximity_gift_loop" or anim == "proximity_loop") and inst.checkanimtask == nil then
         inst.checkanimtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() + FRAMES, researchlab2_checkanim)
     end
 end
@@ -1184,6 +1248,7 @@ function researchlab2_clear_fn(inst)
     for _,v in pairs( inst.highlightchildren ) do
         v:Remove()
     end
+    researchlab2_cancelflash(inst)
     inst.flashtasks = nil
     inst._PlayAnimation = Default_PlayAnimation
     inst._PushAnimation = Default_PushAnimation
@@ -1241,14 +1306,19 @@ function icebox_init_fn(inst, build_name)
             end
         end
     end
+
+    if inst.AnimState:IsCurrentAnimation("open") then
+        icebox_opened(inst)
+    end
 end
 function icebox_clear_fn(inst)
     inst.AnimState:SetBuild("ice_box")
 
-    icebox_closed(inst)
     inst:RemoveEventCallback("onopen", icebox_opened)
     inst:RemoveEventCallback("onclose", icebox_closed)
     inst:RemoveEventCallback("onremove", icebox_closed)
+    
+    icebox_closed(inst)
 end
 
 

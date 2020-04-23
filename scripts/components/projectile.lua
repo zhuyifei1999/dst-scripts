@@ -192,12 +192,19 @@ function Projectile:Hit(target)
     StopTrackingDelayOwner(self)
     self:Stop()
     self.inst.Physics:Stop()
+	
     if attacker.components.combat == nil and attacker.components.weapon ~= nil and attacker.components.inventoryitem ~= nil then
         weapon = attacker
         attacker = weapon.components.inventoryitem.owner
     end
     if attacker ~= nil and attacker.components.combat ~= nil then
-        attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
+		if attacker.components.combat.ignorehitrange then
+	        attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
+		else
+			attacker.components.combat.ignorehitrange = true
+			attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
+			attacker.components.combat.ignorehitrange = false
+		end
     end
     if self.onhit ~= nil then
         self.onhit(self.inst, attacker, target)

@@ -230,7 +230,7 @@ end
 
 function Wardrobe:ApplyTargetSkins(target, doer, skins)
     if target.components.skinner ~= nil then
-        target.AnimState:AssignItemSkins(doer.userid, skins.body, skins.hand, skins.legs, skins.feet)
+        target.AnimState:AssignItemSkins(doer.userid, skins.body or "", skins.hand or "", skins.legs or "", skins.feet or "")
         target.components.skinner:ClearAllClothing()
         target.components.skinner:SetClothing(skins.body)
         target.components.skinner:SetClothing(skins.hand)

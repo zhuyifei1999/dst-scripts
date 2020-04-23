@@ -221,6 +221,7 @@ local LocoMotor = Class(function(self, inst)
     self.triggerscreep = true   
     self.is_prediction_enabled = false
     self.hop_distance = 6
+	--self.hop_distance_fn = nil
     self.hopping = false
     self.time_before_next_hop_is_allowed = 0
 
@@ -842,6 +843,10 @@ function LocoMotor:IsAtEdge(my_platform, map, my_x, my_z, dir_x, dir_z)
            self:CheckEdge(my_platform, map, my_x, my_z, dir_x, dir_z, radius + edge_range)
 end
 
+function LocoMotor:GetHopDistance(speed_mult)
+	return self.hop_distance_fn ~= nil and self.hop_distance_fn(self.inst, speed_mult or 1) or self.hop_distance
+end
+
 function LocoMotor:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir_z, steps, step_size)
     local is_at_edge = self:IsAtEdge(my_platform, map, my_x, my_z, dir_x, dir_z)
     local is_first_hop_point = true
@@ -885,13 +890,13 @@ function LocoMotor:TestForBlocked(my_x, my_z, dir_x, dir_z, radius, test_length)
     return false
 end
 
-function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
+function LocoMotor:ScanForPlatform(my_platform, target_x, target_z, hop_distance)
     local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
     local dir_x, dir_z = target_x - my_x, target_z - my_z
     local dir_length = VecUtil_Length(dir_x, dir_z)
     dir_x, dir_z = dir_x / dir_length, dir_z / dir_length
 
-    local step_count = math.min(dir_length + PLATFORM_SCAN_LANDING_RANGE, self.hop_distance) / PLATFORM_SCAN_STEP_SIZE
+    local step_count = math.min(dir_length + PLATFORM_SCAN_LANDING_RANGE, hop_distance) / PLATFORM_SCAN_STEP_SIZE
 
     local can_hop, px, pz, found_platform = self:ScanForPlatformInDir(my_platform, TheWorld.Map, my_x, my_z, dir_x, dir_z, step_count, PLATFORM_SCAN_STEP_SIZE)
     local blocked = false
@@ -983,9 +988,14 @@ function LocoMotor:OnUpdate(dt)
         local reached_dest, invalid
         if self.bufferedaction ~= nil and
             self.bufferedaction.action == ACTIONS.ATTACK and
-            not self.bufferedaction.forced and
             self.inst.replica.combat ~= nil then
-            reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
+
+            local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
+            local run_dist = self:GetRunSpeed() * dt * .5
+            reached_dest = dsq <= math.max(run_dist * run_dist, self.arrive_dist * self.arrive_dist)
+            if not reached_dest then
+                reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
+            end
         elseif self.bufferedaction ~= nil 
             and self.bufferedaction.action.customarrivecheck ~= nil then
             reached_dest, invalid = self.bufferedaction.action.customarrivecheck(self.inst, self.dest)
@@ -1156,9 +1166,11 @@ function LocoMotor:OnUpdate(dt)
 
             end 
 
+			local hop_distance = self:GetHopDistance(self:GetSpeedMultiplier())
+
             local forward_angle_span = 0.1
             if dest_dot_forward <= 1 - forward_angle_span then
-                destpos_x, destpos_z = forward_x * self.hop_distance + mypos_x, forward_z * self.hop_distance + mypos_z
+                destpos_x, destpos_z = forward_x * hop_distance + mypos_x, forward_z * hop_distance + mypos_z
             end
 
             local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
@@ -1166,12 +1178,9 @@ function LocoMotor:OnUpdate(dt)
             local can_hop = false
             local hop_x, hop_z, target_platform, blocked
             local too_early_top_hop = self.time_before_next_hop_is_allowed > 0
-            if my_platform ~= other_platform and not too_early_top_hop
-                    and (self.inst.replica.inventory == nil or not self.inst.replica.inventory:IsHeavyLifting())
-                    and (self.inst.replica.rider == nil or not self.inst.replica.rider:IsRiding())
-                then
+            if my_platform ~= other_platform and not too_early_top_hop then
 
-                can_hop, hop_x, hop_z, target_platform, blocked = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
+                can_hop, hop_x, hop_z, target_platform, blocked = self:ScanForPlatform(my_platform, destpos_x, destpos_z, hop_distance)
             end
 
             if not blocked then
@@ -1184,7 +1193,7 @@ function LocoMotor:OnUpdate(dt)
                     local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z
                     if my_platform ~= nil then
                         local temp_x, temp_z, temp_platform = nil, nil, nil
-                        can_hop, temp_x, temp_z, temp_platform, blocked = self:ScanForPlatform(nil, _x, _z)
+                        can_hop, temp_x, temp_z, temp_platform, blocked = self:ScanForPlatform(nil, _x, _z, hop_distance)
                     end
 
                     if not can_hop and self.inst.components.amphibiouscreature:ShouldTransition(_x, _z) then

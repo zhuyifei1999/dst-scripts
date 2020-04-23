@@ -325,6 +325,7 @@ local prefabs =
     "seastack",
     "seastack_spawner_swell",
     "seastack_spawner_rough",
+    "wobster_den_spawner_shore",
     "splash_sink",
 	"bullkelp_plant",
 	"bullkelp_beachedroot",
@@ -334,13 +335,20 @@ local prefabs =
     "driftwood_small2",
     "driftwood_tall",
     "driftwood_log",
-	"waterchest",
 	"saltstack",
 	"cookiecutter",
 	"cookiecutter_spawner",
     "gnarwail",
     "malbatross",
     "squid",    
+    "crabking",
+    "wobster_den",
+	"messagebottle",
+	"messagebottletreasure_marker",
+	"singingshell_octave3",
+	"singingshell_octave4",
+	"singingshell_octave5",
+    "shell_cluster",
 
     -- moon island
 	"gestalt",
@@ -359,6 +367,9 @@ local prefabs =
 	"moon_altar_rock_glass",
 	"moon_altar_rock_seed",
     "carrat_planted",
+    "hermitcrab",
+	
+	"hermithouse_construction1",
 
 	-- fish
 	"oceanfish_shoalspawner",
@@ -490,8 +501,10 @@ local function master_postinit(inst)
     inst:AddComponent("worldmeteorshower")
     inst:AddComponent("mermkingmanager")
     inst:AddComponent("malbatrossspawner")
+    inst:AddComponent("crabkingspawner")
 
-    inst:AddComponent("flotsamgenerator")
+	inst:AddComponent("flotsamgenerator")
+	inst:AddComponent("messagebottlemanager")
 
     if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
         inst:AddComponent("gingerbreadhunter")

@@ -236,7 +236,7 @@ function GhostlyBond:ChangeBehaviour()
 end
 
 function GhostlyBond:GetDebugString()
-	return tostring(self.ghost)..", "..tostring(self.bondlevel)..(self.bondleveltimer ~= nil and (", "..string.format("%0.2f", self.bondlevelmaxtime - self.bondleveltimer)) or "max") .. ", mult: " .. string.format("%0.2f", ThePlayer.components.ghostlybond.externalbondtimemultipliers:Get()).. (self.paused and ", paused" or "")
+	return tostring(self.ghost)..", "..tostring(self.bondlevel)..(self.bondleveltimer ~= nil and (", "..string.format("%0.2f", self.bondlevelmaxtime - self.bondleveltimer)) or "max") .. ", mult: " .. string.format("%0.2f", self.externalbondtimemultipliers:Get()).. (self.paused and ", paused" or "")
 end
 
 return GhostlyBond

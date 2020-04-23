@@ -72,6 +72,11 @@ function Weapon:SetAttackCallback(fn)
     self.onattack = fn
 end
 
+function Weapon:GetDamage(attacker, target)
+    return (type(self.damage) == "function" and self.damage(self.inst, attacker, target))
+            or self.damage
+end
+
 function Weapon:OnAttack(attacker, target, projectile)
     if self.onattack ~= nil then
         self.onattack(self.inst, attacker, target)

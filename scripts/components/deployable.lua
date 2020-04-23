@@ -98,7 +98,7 @@ function Deployable:CanDeploy(pt, mouseover, deployer)
             return self.inst._custom_candeploy_fn(self.inst, pt, mouseover, deployer)
         else -- use old DEPLOYMODE.MAST logic
             return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)
-        end
+        end      
     end
 end
 

@@ -122,7 +122,7 @@ local function OnLand(inst)
 	    inst:RemoveComponent("complexprojectile")
 		inst.Physics:SetCollisionMask(SWIMMING_COLLISION_MASK)
 		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-		inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+		inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
 		inst.AnimState:PlayAnimation("idle_water_loop", true)
 	    SpawnPrefab("splash").Transform:SetPosition(x, y, z)
 	else
@@ -208,6 +208,12 @@ local function overrideflotsamsinkfn(inst)
 	end
 end
 
+local function OnSalvage(inst)
+	local product = SpawnPrefab("oceanfishableFlotsam")
+	product.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	return product
+end
+
 local function OnEntityWake(inst)
 	StartUpdating(inst)
 end
@@ -239,13 +245,14 @@ local function waterfn(data)
 	inst:AddTag("oceanfishable")
 	inst:AddTag("oceanfishinghookable")
 	inst:AddTag("swimming")
+	inst:AddTag("winchtarget")--from winchtarget component
 
     inst.AnimState:SetBank("flotsam")
     inst.AnimState:SetBuild("flotsam")
     inst.AnimState:PlayAnimation("idle_water_loop", true)
 
     inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-    inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+    inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
 
     inst.entity:SetPristine()
 
@@ -261,6 +268,10 @@ local function waterfn(data)
 	inst.components.oceanfishable.overrideunreelratefn = OverrideUnreelRateFn
 	inst.components.oceanfishable.catch_distance = TUNING.OCEAN_FISHING.MUDBALL_CATCH_DIST
 
+    inst:AddComponent("winchtarget")
+	inst.components.winchtarget:SetSalvageFn(OnSalvage)
+	inst.components.winchtarget.depth = 2
+
 	-- Overrides default sink behavior defined in flotsamgenerator
 	inst.overrideflotsamsinkfn = overrideflotsamsinkfn
 
@@ -270,6 +281,18 @@ local function waterfn(data)
 	StartUpdating(inst)
 
     return inst
+end
+
+local function OnSink(inst)
+	SpawnPrefab("oceanfishableflotsam_water").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	inst:Remove()
+end
+
+local function OnLanded(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:IsOceanAtPoint(x, y, z, false) then
+		inst:PushEvent("onsink")
+	end
 end
 
 local function landfn(data)
@@ -295,6 +318,10 @@ local function landfn(data)
 
 	inst:AddComponent("inspectable")
 
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.canbepickedup = false
+	inst.components.inventoryitem.cangoincontainer = false
+
 	inst:AddComponent("pickable")
 	inst.components.pickable.picksound = "hookline/common/ocean_flotsam/picked"
 	inst.components.pickable.onpickedfn = OnPicked
@@ -303,6 +330,9 @@ local function landfn(data)
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetChanceLootTable("oceanfishableflotsam")
 
+	inst:AddComponent("symbolswapdata")
+	inst.components.symbolswapdata:SetData("flotsam", "swap_body")
+
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
@@ -310,7 +340,10 @@ local function landfn(data)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
         end
         return true
-    end)
+	end)
+	
+	inst:ListenForEvent("onsink", OnSink)
+	inst:ListenForEvent("on_landed", OnLanded)
 
     return inst
 end

@@ -147,7 +147,9 @@ local function med_fn()
     inst.SoundEmitter:PlaySound("turnoftides/common/together/water/wave/LP", "wave")
     inst.SoundEmitter:SetParameter("wave", "size", 0.5)
 
-    inst:ListenForEvent( "onremove", function() onRemove(inst) end)
+    inst:ListenForEvent("onremove", function() onRemove(inst) end)
+
+    inst.DoSplash = do_splash
 
     return inst
 end

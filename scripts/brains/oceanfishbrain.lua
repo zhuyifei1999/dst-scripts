@@ -195,6 +195,7 @@ function OceanFishBrain:OnStart()
 					}
 				),
 
+				FindClosest(self.inst, TUNING.OCEANFISH_SEE_CHUM_DIST, 0, { "chum" }),
 				Wander(self.inst, WanderTarget, getWanderDist(self.inst), WANDER_TIMES, getdirectionFn)
             }, 0.25)),
     }, 0.25)

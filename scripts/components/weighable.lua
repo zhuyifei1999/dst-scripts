@@ -7,11 +7,16 @@ local function ontype(self, type, old_type)
 	end
 end
 
+local function onweight(self)
+	self.weight_percent = (self.min_weight ~= nil and self.max_weight ~= nil) and math.clamp(Remap(self.weight, self.min_weight, self.max_weight, 0, 1), 0, 1) or .5
+end
+
 local Weighable = Class(function(self, inst)
     self.inst = inst
 
 	self.type = nil
 	self.weight = nil
+	self.weight_percent = nil
 
 	self.owner_userid = nil
 	self.owner_name = nil
@@ -21,7 +26,8 @@ local Weighable = Class(function(self, inst)
 end,
 nil,
 {
-	type = ontype
+	type = ontype,
+	weight = onweight,
 })
 
 function Weighable:OnRemoveFromEntity()
@@ -38,6 +44,15 @@ end
 
 function Weighable:GetWeight()
 	return self.weight
+end
+
+function Weighable:GetWeightPercent()
+	return self.weight_percent
+end
+
+function Weighable:Initialize(min_weight, max_weight)
+	self.min_weight = min_weight
+	self.max_weight = max_weight
 end
 
 function Weighable:SetWeight(weight)
@@ -59,7 +74,7 @@ function Weighable:OnSave()
 		weight = self.weight,
 		owner_userid = self.owner_userid,
 		owner_name = self.owner_name,
-		prefab_override_owner = self.prefab_override_owner 
+		prefab_override_owner = self.prefab_override_owner 		
 	}
 end
 
@@ -73,7 +88,7 @@ function Weighable:OnLoad(data)
 end
 
 function Weighable:GetDebugString()
-    return string.format("weight %.5f, owner_userid %s, override owner: %s", self.weight, tostring(self.owner_userid), tostring(self.prefab_override_owner))
+    return string.format("weight %.5f (%.02f%%), owner_userid %s, override owner: %s", self.weight, self.weight_percent*100, tostring(self.owner_userid), tostring(self.prefab_override_owner))
 end
 
 return Weighable

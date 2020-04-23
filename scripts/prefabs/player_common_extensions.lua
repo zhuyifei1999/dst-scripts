@@ -13,6 +13,12 @@ local function ShouldKnockout(inst)
     return DefaultKnockoutTest(inst) and not inst.sg:HasStateTag("yawn")
 end
 
+local function GetHopDistance(inst, speed_mult)
+	return speed_mult < 0.8 and TUNING.WILSON_HOP_DISTANCE_SHORT
+			or speed_mult >= 1.2 and TUNING.WILSON_HOP_DISTANCE_FAR
+			or TUNING.WILSON_HOP_DISTANCE
+end
+
 local function ConfigurePlayerLocomotor(inst)
     inst.components.locomotor:SetSlowMultiplier(0.6)
     inst.components.locomotor.pathcaps = { player = true, ignorecreep = true } -- 'player' cap not actually used, just useful for testing
@@ -21,6 +27,7 @@ local function ConfigurePlayerLocomotor(inst)
     inst.components.locomotor.fasteronroad = true
     inst.components.locomotor:SetTriggersCreep(not inst:HasTag("spiderwhisperer"))
     inst.components.locomotor:SetAllowPlatformHopping(true)
+	inst.components.locomotor.hop_distance_fn = GetHopDistance
 end
 
 local function ConfigureGhostLocomotor(inst)

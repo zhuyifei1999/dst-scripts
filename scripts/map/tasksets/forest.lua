@@ -56,6 +56,7 @@ AddTaskSet("default", {
 		},
 
 		ocean_population = {
+            "OceanCoastalShore",
 			"OceanCoastal", 
 			"OceanSwell",
 			"OceanRough",

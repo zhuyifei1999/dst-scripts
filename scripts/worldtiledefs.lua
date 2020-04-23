@@ -5,7 +5,7 @@ require "constants"
 ---------------- Ground colors ---------------- 
 -- primary == noise textures
 -- secondary == base colour
-local GROUND_OCEAN_COLOR = -- Color for the main island ground tiles 
+local GROUND_OCEAN_COLOR = -- Color for blending to the land ground tiles 
 { 
     primary_color =         {  0,   0,   0,  25 }, 
     secondary_color =       { 0,  20,  33,  0 }, 
@@ -102,7 +102,8 @@ local GROUND_PROPERTIES =
     { GROUND.ROAD,					{ name = "cobblestone", noise_texture = "images/square.tex",                          runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR   } },
 
     { GROUND.PEBBLEBEACH,			{ name = "rocky",		noise_texture = "levels/textures/noise_pebblebeach.tex",      runsound="turnoftides/movement/run_pebblebeach",        walksound="turnoftides/movement/run_pebblebeach",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR  } },
-
+    { GROUND.SHELLBEACH,            { name = "cave",       noise_texture = "levels/textures/ground_noise_shellbeach.tex",runsound="turnoftides/movement/run_pebblebeach",        walksound="turnoftides/movement/run_pebblebeach",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR  } },    
+    
     { GROUND.MARSH,      { name = "marsh",      noise_texture = "levels/textures/Ground_noise_marsh.tex",           runsound="dontstarve/movement/run_marsh",       walksound="dontstarve/movement/walk_marsh",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR   } },
     { GROUND.ROCKY,      { name = "rocky",      noise_texture = "levels/textures/noise_rocky.tex",                  runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR   } },
     { GROUND.SAVANNA,    { name = "yellowgrass",noise_texture = "levels/textures/Ground_noise_grass_detail.tex",    runsound="dontstarve/movement/run_tallgrass",   walksound="dontstarve/movement/walk_tallgrass", snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, colors=GROUND_OCEAN_COLOR   } },
@@ -172,6 +173,7 @@ local TURF_PROPERTIES =
     [GROUND.CHECKER] =      { name = "checkerfloor",    anim = "checker"        ,   bank_build = "turf" },
     [GROUND.METEOR] =       { name = "meteor",          anim = "meteor"         ,   bank_build = "turf_moon"    },
     [GROUND.PEBBLEBEACH] =  { name = "pebblebeach",     anim = "pebblebeach"    ,   bank_build = "turf_moon"    },
+    [GROUND.SHELLBEACH] =   { name = "shellbeach",      anim = "shellbeach",   bank_build = "turf_shellbeach"    },
 
     [GROUND.CAVE] =         { name = "cave",            anim = "cave"           ,   bank_build = "turf" },
     [GROUND.FUNGUS] =       { name = "fungus",          anim = "fungus"         ,   bank_build = "turf" },

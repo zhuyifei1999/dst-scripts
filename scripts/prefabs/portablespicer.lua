@@ -7,6 +7,7 @@ local assets =
     Asset("ANIM", "anim/portable_spicer.zip"),
     Asset("ANIM", "anim/cook_pot_food.zip"),
     Asset("ANIM", "anim/cook_pot_food2.zip"),
+    Asset("ANIM", "anim/cook_pot_food3.zip"),
     Asset("ANIM", "anim/plate_food.zip"),
     Asset("ANIM", "anim/spices.zip"),
     Asset("ANIM", "anim/ui_cookpot_1x2.zip"),

@@ -38,7 +38,7 @@ local function OnProjectileLand(inst, caster, target)
 
 			bobber.components.oceanfishable:SetRod(rod)
 			if bobber.components.oceanfishinghook ~= nil then
-				bobber.components.oceanfishinghook:SetLureData(rod.components.oceanfishingrod:GetLureData())
+				bobber.components.oceanfishinghook:SetLureData(rod.components.oceanfishingrod:GetLureData(), rod.components.oceanfishingrod:GetLureFunctions())
 			end
 
 		elseif TheWorld.Map:IsPassableAtPoint(x, y, z) then

@@ -543,6 +543,20 @@ local function OnLearnMapEvent(inst)
     end
 end
 
+local function OnRevealMapSpotEvent(inst)
+	local tx, ty, tz = inst.revealmapspot_worldx:value(), 0, inst.revealmapspot_worldz:value()
+	local player = inst._parent
+
+	if player ~= nil and player.HUD ~= nil then
+		player:DoTaskInTime(0, function()
+			if TheFocalPoint.entity:GetParent() == player then
+				TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/learn_map")
+			end
+			player.HUD.controls:ShowMap(Vector3(tx, ty, tz))
+		end)
+	end
+end
+
 local function OnRepairEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/repair_clothing")
@@ -864,6 +878,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("inked", OnInkedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
     inst:ListenForEvent("MapExplorer.learnmap", OnLearnMapEvent)
+	inst:ListenForEvent("MapSpotRevealer.revealmapspot", OnRevealMapSpotEvent)
     inst:ListenForEvent("repair.repair", OnRepairEvent)
     inst:ListenForEvent("giftsdirty", OnGiftsDirty)
     inst:ListenForEvent("ismounthurtdirty", OnMountHurtDirty)
@@ -998,11 +1013,11 @@ local function fn()
     inst.builderdamagedevent = net_event(inst.GUID, "builder.damaged")
     inst.learnrecipeevent = net_event(inst.GUID, "builder.learnrecipe")
     inst.techtrees = deepcopy(TECH.NONE)
-    inst.sciencebonus = net_tinybyte(inst.GUID, "builder.science_bonus")
-    inst.magicbonus = net_tinybyte(inst.GUID, "builder.magic_bonus")
-    inst.ancientbonus = net_tinybyte(inst.GUID, "builder.ancient_bonus")
-    inst.shadowbonus = net_tinybyte(inst.GUID, "builder.shadow_bonus")
     inst.ingredientmod = net_tinybyte(inst.GUID, "builder.ingredientmod")
+    for i, v in ipairs(TechTree.BONUS_TECH) do
+        local bonus = net_tinybyte(inst.GUID, "builder."..string.lower(v).."bonus")
+		inst[string.lower(v).."bonus"] = bonus
+    end
     for i, v in ipairs(TechTree.AVAILABLE_TECH) do
         local level = net_tinybyte(inst.GUID, "builder.accessible_tech_trees."..v, "techtreesdirty")
         level:set(inst.techtrees[v])
@@ -1021,6 +1036,11 @@ local function fn()
 
     --MapExplorer variables
     inst.learnmapevent = net_event(inst.GUID, "MapExplorer.learnmap")
+
+	--MapSpotRevealer variables
+	inst.revealmapspotevent = net_event(inst.GUID, "MapSpotRevealer.revealmapspot")
+	inst.revealmapspot_worldx = net_float(inst.GUID, "MapSpotRevealer.worldx")--note from branch: "second argument?"
+	inst.revealmapspot_worldz = net_float(inst.GUID, "MapSpotRevealer.worldz")
 
     --Repair variables
     inst.repairevent = net_event(inst.GUID, "repair.repair")

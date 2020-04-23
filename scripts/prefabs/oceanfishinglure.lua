@@ -1,6 +1,11 @@
 
 -- Baits and Lures
 
+local function heavy_charmfish(fish)
+	local weight_precent = (fish ~= nil and fish:IsValid() and fish.components.weighable ~= nil) and fish.components.weighable:GetWeightPercent() or 0
+	return weight_precent < TUNING.WEIGHABLE_HEAVY_WEIGHT_PERCENT and 0 or 1
+end
+
 local LURES =
 {
 	["oceanfishinglure_spoon_red"]			= { build = "oceanfishing_lure_spoon", symbol = "red",		lure_data = TUNING.OCEANFISHING_LURE.SPOON_DAY, },
@@ -11,6 +16,10 @@ local LURES =
 	["oceanfishinglure_spinner_green"]		= { build = "oceanfishing_lure_spinner", symbol = "green",	lure_data = TUNING.OCEANFISHING_LURE.SPINNERBAIT_DUSK, },
 	["oceanfishinglure_spinner_blue"]		= { build = "oceanfishing_lure_spinner", symbol = "blue",	lure_data = TUNING.OCEANFISHING_LURE.SPINNERBAIT_NIGHT, },
 
+	["oceanfishinglure_hermit_rain"]		= { build = "oceanfishing_lure_hermit", symbol = "rain",    lure_data = TUNING.OCEANFISHING_LURE.SPECIAL_RAIN, },
+	["oceanfishinglure_hermit_snow"]		= { build = "oceanfishing_lure_hermit", symbol = "snow",    lure_data = TUNING.OCEANFISHING_LURE.SPECIAL_SNOW, },
+	["oceanfishinglure_hermit_drowsy"]		= { build = "oceanfishing_lure_hermit", symbol = "drowsy",  lure_data = TUNING.OCEANFISHING_LURE.SPECIAL_DROWSY, },
+	["oceanfishinglure_hermit_heavy"]		= { build = "oceanfishing_lure_hermit", symbol = "heavy",   lure_data = TUNING.OCEANFISHING_LURE.SPECIAL_HEAVY,		fns = {charm_mod_fn = heavy_charmfish} },
 
 	-- WIP lures, will probably use them in the future
 	["oceanfishinglure_spoon_brown"]		= { build = "oceanfishing_lure_spoon", symbol = "brown",	lure_data = TUNING.OCEANFISHING_LURE.SPOON_WIP, },

@@ -830,6 +830,7 @@ local function beefalo()
 
     inst:AddComponent("uniqueid")
     inst:AddComponent("beefalometrics")
+    inst:AddComponent("drownable")
 
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)

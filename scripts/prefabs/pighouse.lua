@@ -20,14 +20,21 @@ local function OnUpdateWindow(window, inst, snow)
         snow:Remove()
         window:Remove()
     elseif inst.Light:IsEnabled() and inst.AnimState:IsCurrentAnimation("lit") then
-        if not window._shown then
-            window._shown = true
-            
-            local build_name = inst.AnimState:GetSkinBuild()
+        local build_name = inst.AnimState:GetSkinBuild()
+        if build_name ~= inst._last_skin_build then
+            inst._last_skin_build = build_name
             if build_name ~= "" then
                 window.AnimState:SetSkin(build_name)
                 snow.AnimState:SetSkin(build_name)
+            else
+                window.AnimState:SetBuild("pig_house")
+                snow.AnimState:SetBuild("pig_house")
             end
+        end
+        
+        if not window._shown then
+            window._shown = true
+            
             window:Show()
             snow:Show()
         end

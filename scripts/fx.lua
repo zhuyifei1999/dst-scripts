@@ -15,6 +15,20 @@ local function GroundOrientation(inst)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
 end
 
+local function Bloom(inst)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetFinalOffset(1)
+end
+
+local function BloomOrange(inst)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+--    inst.AnimState:SetMultColour(204/255,131/255,57/255,1)
+    inst.AnimState:SetMultColour(219/255,168/255,117/255,1)
+    inst.AnimState:SetFinalOffset(1)
+end
+
+
+
 local fx =
 {
     {
@@ -1132,6 +1146,18 @@ local fx =
         anim = "unwrap",
     },
     {
+        name = "hermit_bundle_unwrap",
+        bank = "hermit_bundle",
+        build = "hermit_bundle",
+        anim = "unwrap",
+    },
+    {
+        name = "hermit_bundle_shells_unwrap",
+        bank = "hermit_bundle",
+        build = "hermit_bundle",
+        anim = "unwrap",
+    },        
+    {
         name = "quagmire_seedpacket_unwrap",
         bank = "quagmire_seedpacket",
         build = "quagmire_seedpacket",
@@ -1595,6 +1621,96 @@ local fx =
             inst.Transform:SetSixFaced()
         end,
     },
+
+    {
+        name = "crab_king_bubble1",
+        bank = "Bubble_fx",
+        build ="crab_king_bubble_fx",
+        anim = "bubbles_1",        
+        fn = FinalOffset1,
+    },     
+    {
+        name = "crab_king_bubble2",
+        bank = "Bubble_fx",
+        build ="crab_king_bubble_fx",
+        anim = "bubbles_2",        
+        fn = FinalOffset1,
+    },     
+    {
+        name = "crab_king_bubble3",
+        bank = "Bubble_fx",
+        build ="crab_king_bubble_fx",
+        anim = "bubbles_3",        
+        fn = FinalOffset1,
+    },
+    {
+        name = "crab_king_waterspout",
+        bank = "Bubble_fx",
+        build ="crab_king_bubble_fx",
+        anim = "waterspout",        
+        sound = "hookline_2/creatures/boss/crabking/waterspout",
+        fn = FinalOffset1,
+    },  
+    {
+        name = "crab_king_shine",
+        bank = "crab_king_shine",
+        build ="crab_king_shine",
+        anim = "shine",        
+        fn = Bloom,
+    }, 
+    {
+        name = "crab_king_shine_orange",
+        bank = "crab_king_shine",
+        build ="crab_king_shine",
+        anim = "shine",        
+        fn = BloomOrange,
+    }, 
+    {
+        name = "crab_king_icefx",
+        bank = "deer_ice_flakes",
+        build ="deer_ice_flakes",
+        anim = "idle",        
+        fn = Bloom,
+    }, 
+    {
+        name = "crabking_ring_fx",
+        bank = "crabking_ring_fx",
+        build ="crabking_ring_fx",
+        anim = "idle",        
+        fn = GroundOrientation,
+    },           
+    {
+        name = "mushroomsprout_glow",
+        bank = "mushroomsprout_glow",
+        build ="mushroomsprout_glow",
+        anim = "mushroomsprout_glow",        
+        fn = FinalOffset1,
+    },    
+    {
+        name = "messagebottle_break_fx",
+        bank = "bottle",
+        build ="bottle",
+        anim = "break",  
+        sound = "dontstarve/creatures/monkey/poopsplat",      
+    }, 
+    {
+        name = "messagebottle_bob_fx",
+        bank = "bottle",
+        build ="bottle",
+        anim = "bob",    
+    },
+    {
+        name = "singingshell_creature_rockfx",
+        bank = "singingshell_creature_rockfx",
+        build ="singingshell_creature_rockfx",
+        anim = "idle",    
+    }, 
+    {
+        name = "singingshell_creature_woodfx",
+        bank = "singingshell_creature_woodfx",
+        build ="singingshell_creature_woodfx",
+        anim = "idle",    
+    },        
 }
 
 for cratersteamindex = 1, 4 do

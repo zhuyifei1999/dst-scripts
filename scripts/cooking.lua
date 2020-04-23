@@ -113,6 +113,7 @@ AddIngredientValues({"nightmarefuel"}, {inedible=1, magic=1})
 AddIngredientValues({"voltgoathorn"}, {inedible=1})
 AddIngredientValues({"boneshard"}, {inedible=1})
 
+AddIngredientValues({"wobster_sheller_land"}, {meat=1.0, fish=1.0})
 
 
 --our naming conventions aren't completely consistent, sadly

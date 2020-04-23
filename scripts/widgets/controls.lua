@@ -579,7 +579,7 @@ function Controls:HighlightActionItem(itemIndex, itemInActions)
     end
 end
 
-function Controls:ShowMap()
+function Controls:ShowMap(world_position)
     if self.owner ~= nil and self.owner.HUD ~= nil and (not self.owner.HUD:IsMapScreenOpen()) then
 		if TheNet:GetServerGameMode() == "quagmire" then
 			if self.owner.HUD:IsStatusScreenOpen() then
@@ -590,9 +590,30 @@ function Controls:ShowMap()
 			if self.owner.HUD:IsStatusScreenOpen() then
 				TheFrontEnd:PopScreen()
 			end
-			TheFrontEnd:PushScreen(MapScreen(self.owner))
+
+			local mapscr = MapScreen(self.owner)
+			TheFrontEnd:PushScreen(mapscr)
+
+			if world_position ~= nil and mapscr ~= nil then
+				self:FocusMapOnWorldPosition(mapscr, world_position.x, world_position.z)
+			end
 		end
     end
+end
+
+function Controls:FocusMapOnWorldPosition(mapscreen, worldx, worldz)
+	if mapscreen == nil or mapscreen.minimap == nil then return nil end
+
+	while mapscreen.minimap.minimap:GetZoom() > 1 do mapscreen.minimap:OnZoomIn() end
+
+	local player_x, player_y, player_z = self.owner.Transform:GetWorldPosition()
+	local dx, dy = worldx - player_x, worldz - player_z
+	
+	local angle_correction = (PI / 4) * (10 - (math.fmod(TheCamera:GetHeadingTarget() / 360, 1) * 8))
+	local theta = math.atan2(dy, dx)
+	local mag = math.sqrt(dx * dx + dy * dy)
+
+	mapscreen.minimap:Offset(math.cos(theta + angle_correction) * mag, math.sin(theta + angle_correction) * mag)
 end
 
 function Controls:HideMap()

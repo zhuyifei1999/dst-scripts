@@ -1201,6 +1201,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_boat_net.zip"),
         Asset("ANIM", "anim/player_boat_sink.zip"),
         Asset("ANIM", "anim/player_boat_jump.zip"),
+        Asset("ANIM", "anim/player_boat_jumpheavy.zip"),
         Asset("ANIM", "anim/player_boat_channel.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
@@ -1224,6 +1225,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_parryblock.zip"),
         Asset("ANIM", "anim/player_attack_prop.zip"),
         Asset("ANIM", "anim/player_peruse.zip"),
+        Asset("ANIM", "anim/player_strum.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1299,6 +1301,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_bow.zip"),
         Asset("ANIM", "anim/player_mount_cointoss.zip"),
         Asset("ANIM", "anim/player_mount_hornblow.zip"),
+        Asset("ANIM", "anim/player_mount_strum.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
 
@@ -1533,7 +1536,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.userid = ""
 
         inst:AddComponent("embarker")
-        inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED * 1.25
+        inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED
 
         --TODO(YOG): Replace these with relative error prediction in transform component
         inst:ListenForEvent("got_on_platform", function(player, platform) OnGotOnPlatform(inst, platform) end)
@@ -1731,7 +1734,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 		end
 
         inst:AddComponent("steeringwheeluser")
-        inst:AddComponent("walkingplankuser")
+		inst:AddComponent("walkingplankuser")
+		
+		inst:AddComponent("singingshelltrigger")
+        inst.components.singingshelltrigger.trigger_range = TUNING.SINGINGSHELL_TRIGGER_RANGE
 
         inst:AddInherentAction(ACTIONS.PICK)
         inst:AddInherentAction(ACTIONS.SLEEPIN)

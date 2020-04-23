@@ -14,6 +14,10 @@ local SKETCHES =
 	{ item = "oceanfishingbobber_canary",			recipe = "oceanfishingbobber_canary" },
 	{ item = "oceanfishingbobber_goose",			recipe = "oceanfishingbobber_goose" },
 	{ item = "oceanfishingbobber_malbatross",		recipe = "oceanfishingbobber_malbatross" },
+    { item = "oceanfishinglure_hermit_drowsy",      recipe = "oceanfishinglure_hermit_drowsy" },
+    { item = "oceanfishinglure_hermit_rain",        recipe = "oceanfishinglure_hermit_rain" },
+    { item = "oceanfishinglure_hermit_heavy",       recipe = "oceanfishinglure_hermit_heavy" },
+    { item = "oceanfishinglure_hermit_snow",        recipe = "oceanfishinglure_hermit_snow" },
 }
 
 local function onload(inst, data)

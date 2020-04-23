@@ -925,6 +925,20 @@ local ExampleLayout =
 		}
     }),
 
+	["CrabKing"] = StaticLayout.Get("map/static_layouts/crabking", {
+		min_dist_from_land = 0,
+		areas =
+		{
+			stack_area = function() return math.random() < 0.9 and {"seastack"} or nil end,
+		}
+    }),
+
+	["HermitcrabIsland"] = StaticLayout.Get("map/static_layouts/hermitcrab_01",
+	{
+		add_topology = {room_id = "StaticLayoutIsland:HermitcrabIsland", tags = {"RoadPoison", "nohunt", "nohasslers", "not_mainland"}},
+		min_dist_from_land = 0,
+	}),
+
 
 --------------------------------------------------------------------------------
 -- Return of Them Retrofitting

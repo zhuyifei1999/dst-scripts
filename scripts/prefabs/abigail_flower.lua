@@ -212,9 +212,6 @@ local function fn()
 	inst:AddComponent("ghostlyelixirable")
 	inst.components.ghostlyelixirable.overrideapplytotargetfn = GetElixirTarget
 
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
-
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	inst.components.burnable.fxdata = {}
     inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0))

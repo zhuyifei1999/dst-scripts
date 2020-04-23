@@ -581,7 +581,7 @@ local foods =
 	{
 		test = function(cooker, names, tags) return ((names.kelp or 0) + (names.kelp_cooked or 0) + (names.kelp_dried or 0)) == 2 and (tags.fish and tags.fish >= 1) end,
 		priority = 20,
-		foodtype = "MEAT",
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -596,7 +596,7 @@ local foods =
 	{
 		test = function(cooker, names, tags) return tags.fish and tags.fish > 2 end,
 		priority = 10,
-		foodtype = "MEAT",
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_LARGE,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -610,7 +610,7 @@ local foods =
 	{
 		test = function(cooker, names, tags) return tags.meat and tags.meat >= 2.5 and tags.fish and tags.fish >= 1.5 and not tags.frozen end,
 		priority = 30,
-		foodtype = "MEAT",
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_HUGE,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -620,6 +620,39 @@ local foods =
 		potlevel = "high",
 		floater = {"med", 0.05, {0.65, 0.6, 0.65}},
 	},
+
+    lobsterbisque = 
+    {
+        test = function(cooker, names, tags) return names.wobster_sheller_land and tags.frozen end,
+        priority = 30,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_HUGE,
+        hunger = TUNING.CALORIES_MED,
+        perishtime = TUNING.PERISH_MED,
+        sanity = TUNING.SANITY_SMALL,
+        cooktime = 0.5,
+        overridebuild = "cook_pot_food3",
+        potlevel = "high",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    lobsterdinner = 
+    {
+        test = function(cooker, names, tags)
+            return names.wobster_sheller_land and names.butter
+                    and (tags.meat == 1.0) and (tags.fish == 1.0) and not tags.frozen
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_HUGE,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_SLOW,
+        sanity = TUNING.SANITY_HUGE,
+        cooktime = 1,
+        overridebuild = "cook_pot_food3",
+        potlevel = "high",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
 }
 
 for k, v in pairs(foods) do

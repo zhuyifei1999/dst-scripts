@@ -259,6 +259,7 @@ local function fn()
     -- boat hopping setup
     inst.components.locomotor:SetAllowPlatformHopping(true)
     inst:AddComponent("embarker")
+    inst:AddComponent("drownable")
 
     inst:AddComponent("bloomer")
 

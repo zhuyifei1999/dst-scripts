@@ -81,7 +81,8 @@ local function battleborn_onattack(inst, data)
     local victim = data.target
     if not inst.components.health:IsDead() and IsValidVictim(victim) then
         local total_health = victim.components.health:GetMaxWithPenalty()
-        local damage = data.weapon ~= nil and data.weapon.components.weapon.damage or inst.components.combat.defaultdamage
+        local damage = (data.weapon ~= nil and data.weapon.components.weapon:GetDamage(inst, victim))
+                    or inst.components.combat.defaultdamage
         local percent = (damage <= 0 and 0)
                     or (total_health <= 0 and math.huge)
                     or damage / total_health

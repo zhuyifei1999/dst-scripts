@@ -191,7 +191,8 @@ function Dryer:StartDrying(dryable)
     end
     if not self.protectedfromrain then
         StartWatchingRain(self)
-    end
+    end    
+
     if self.onstartdrying ~= nil then
         self.onstartdrying(self.inst, self.ingredient, self.buildfile)
     end

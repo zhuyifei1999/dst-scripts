@@ -191,6 +191,8 @@ local function OnDeath(inst)
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
     inst.components.lootdropper:DropLoot(inst:GetPosition())
+
+    TheWorld:PushEvent("CHEVO_lureplantdied",{target=inst,pt=Vector3(inst.Transform:GetWorldPosition())})
 end
 
 local function CanDigest(owner, item)
@@ -205,10 +207,14 @@ local function OnLoad(inst, data)
     if data ~= nil and data.timeuntilwake ~= nil then
         ResumeSleep(inst, math.max(0, data.timeuntilwake))
     end
+    if data ~= nil and data.planted then
+        inst:AddTag("planted")
+    end
 end
 
 local function OnSave(inst, data)
     data.timeuntilwake = inst.hibernatetask ~= nil and math.floor(GetTaskRemaining(inst.hibernatetask)) or nil
+    data.planted = inst:HasTag("planted")
 end
 
 local function OnLongUpdate(inst, dt)

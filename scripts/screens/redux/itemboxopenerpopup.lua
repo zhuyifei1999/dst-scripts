@@ -313,6 +313,9 @@ function ItemBoxOpenerPopup:_OpenItemBox()
                 columns = 4
             elseif #item_types == 5 or #item_types == 10 or #item_types == 9 then
                 columns = 5
+            elseif #item_types == 13 then
+                columns = 5
+                self.resize_root = true
             elseif #item_types == 12 or #item_types == 11 then
                 columns = 6
             elseif #item_types == 16 or #item_types == 17 or #item_types == 18 then

@@ -49,7 +49,7 @@ local function on_hit(inst, hitter)
             inst.AnimState:PushAnimation("open_loop",true)
         else
             inst.AnimState:PlayAnimation("closed_hit")
-            inst.AnimState:PushAnimation("closed",true)
+            inst.AnimState:PushAnimation("closed",false)
         end
     end
 end

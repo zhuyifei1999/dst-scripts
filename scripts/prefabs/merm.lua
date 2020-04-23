@@ -360,6 +360,7 @@ local function MakeMerm(name, assets, prefabs, common_postinit, master_postinit)
         -- boat hopping setup
         inst.components.locomotor:SetAllowPlatformHopping(true)
         inst:AddComponent("embarker")
+	    inst:AddComponent("drownable")
 
         inst:AddComponent("eater")
         inst.components.eater:SetDiet({ FOODGROUP.VEGETARIAN }, { FOODGROUP.VEGETARIAN })

@@ -43,6 +43,7 @@ ITEM_DISPLAY_BLACKLIST =
 	kitten_black_builder = true,
 	kitten_winter_builder = true,
 	lamb_winter_builder = true,
+	mast_crabking_item = true,
 	mast_rose_item = true,
 	minerhat_bonnet = true,
 	minerhat_cowboy = true,

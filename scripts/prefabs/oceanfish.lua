@@ -7,14 +7,24 @@ local SWIMMING_COLLISION_MASK   = COLLISION.GROUND
 local PROJECTILE_COLLISION_MASK = COLLISION.GROUND
 
 local function CalcNewSize()
-	local p = 2 * math.random() - 1
-	return (p*p*p + 1) * 0.5
+	return math.random()
 end
 
 local brain = require "brains/oceanfishbrain"
 
+local function flopsoundcheck(inst)
+	if inst.AnimState:IsCurrentAnimation("flop_loop") then 
+		inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland") 
+	end
+end
+
 local function Flop(inst)
-	inst.AnimState:PushAnimation("flop_pre", false)
+	if inst.flopsnd1 then inst.flopsnd1:Cancel() inst.flopsnd1 = nil end
+	if inst.flopsnd2 then inst.flopsnd2:Cancel() inst.flopsnd2 = nil end
+	if inst.flopsnd3 then inst.flopsnd3:Cancel() inst.flopsnd3 = nil end
+	if inst.flopsnd4 then inst.flopsnd4:Cancel() inst.flopsnd4 = nil end
+
+	inst.AnimState:PlayAnimation("flop_pre", false)
 	local num = math.random(3)
 	inst.AnimState:PushAnimation("flop_loop", false)
 	for i = 1, num do
@@ -22,7 +32,12 @@ local function Flop(inst)
 	end
 	inst.AnimState:PushAnimation("flop_pst", false)
 
-	inst.flop_task = inst:DoTaskInTime(math.random() + 2 + 0.5*num, Flop)
+	inst.flopsnd1 = inst:DoTaskInTime((5+9)*FRAMES, function() flopsoundcheck(inst) end)
+	inst.flopsnd2 = inst:DoTaskInTime((5+9+13)*FRAMES, function() flopsoundcheck(inst) end)
+	inst.flopsnd3 = inst:DoTaskInTime((5+9+26)*FRAMES, function() flopsoundcheck(inst) end)
+	inst.flopsnd4 = inst:DoTaskInTime((5+9+39)*FRAMES, function() flopsoundcheck(inst) end)
+
+	inst.flop_task = inst:DoTaskInTime(math.random() + 2 + 0.5*num, Flop)	
 end
 
 local function OnInventoryLanded(inst)
@@ -60,7 +75,10 @@ local function OnProjectileLand(inst)
 	    inst:RemoveComponent("complexprojectile")
 		inst.Physics:SetCollisionMask(SWIMMING_COLLISION_MASK)
 		inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-		inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+		inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
+		if inst.Light ~= nil then
+			inst.Light:Enable(false)
+		end
 		if inst.components.weighable ~= nil then
 			inst.components.weighable:SetPlayerAsOwner(nil)
 		end
@@ -97,6 +115,9 @@ local function OnMakeProjectile(inst)
 
     inst.AnimState:SetSortOrder(0)
     inst.AnimState:SetLayer(LAYER_WORLD)
+	if inst.Light ~= nil then
+		inst.Light:Enable(true)
+	end
 
     SpawnPrefab("splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -154,6 +175,18 @@ local function HandleEntitySleep(inst)
 	inst.remove_task = nil
 end
 
+local function topocket(inst)
+	if inst.components.propagator ~= nil then
+	    inst.components.propagator:StopSpreading()
+	end
+end
+
+local function toground(inst)
+	if inst.components.propagator ~= nil then
+	    inst.components.propagator:StartSpreading()
+	end
+end
+
 local function OnEntityWake(inst)
 	if inst.remove_task ~= nil then
 		inst.remove_task:Cancel()
@@ -171,11 +204,17 @@ local function OnSave(inst, data)
 	if inst.components.herdmember.herdprefab then
     	data.herdprefab = inst.components.herdmember.herdprefab
     end
+    if inst.heavy then
+    	data.heavy = true
+    end
 end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.herdprefab ~= nil then
         inst.components.herdmember.herdprefab = data.herdprefab
+    end
+    if data ~= nil and data.heavy then
+    	inst.heavy = data.heavy
     end
 end
 
@@ -186,6 +225,16 @@ local function water_common(data)
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+
+	if data.light ~= nil then
+		inst.entity:AddLight()
+		inst.Light:SetRadius(data.light.r)
+		inst.Light:SetFalloff(data.light.f)
+		inst.Light:SetIntensity(data.light.i)
+		inst.Light:SetColour(unpack(data.light.c))
+		inst.Light:Enable(false)
+	end
+
 	inst.entity:AddPhysics()
 
 	inst.Transform:SetSixFaced()
@@ -213,7 +262,7 @@ local function water_common(data)
     inst.AnimState:PlayAnimation("idle_loop")
 
     inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-    inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+	inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)
 
     inst.entity:SetPristine()
 
@@ -256,7 +305,8 @@ local function water_common(data)
     inst.components.herdmember:Enable(false)
 
 	inst:AddComponent("weighable")
-	--inst.components.weighable.type = TROPHYSCALE_TYPES.FISH -- No need to set a weighable type, this is just here for data and will be copied over to the inventory item
+	--inst.components.weighable.type = TROPHYSCALE_TYPES.FISH -- No need to set a weighable type, this is just here for data and will be copied over to the inventory item	
+	inst.components.weighable:Initialize(inst.fish_def.weight_min, inst.fish_def.weight_max)
 	inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, CalcNewSize()))
 
     inst:SetStateGraph("SGoceanfish")
@@ -271,22 +321,39 @@ local function water_common(data)
     return inst
 end
 
-local function inv_common(data)
+local function inv_common(fish_def)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+
+	if fish_def.light ~= nil then
+		inst.entity:AddLight()
+		inst.Light:SetRadius(fish_def.light.r)
+		inst.Light:SetFalloff(fish_def.light.f)
+		inst.Light:SetIntensity(fish_def.light.i)
+		inst.Light:SetColour(unpack(fish_def.light.c))
+	end
+
+	if fish_def.dynamic_shadow then
+	    inst.entity:AddDynamicShadow()
+	end
+
     inst.entity:AddNetwork()    
     MakeInventoryPhysics(inst)
 
 	inst.Transform:SetTwoFaced()
 
-    inst.AnimState:SetBank(data.bank)
-    inst.AnimState:SetBuild(data.build)
+    inst.AnimState:SetBank(fish_def.bank)
+    inst.AnimState:SetBuild(fish_def.build)
     inst.AnimState:PlayAnimation("flop_pst")
 
-	inst:SetPrefabNameOverride(data.prefab)
+	if fish_def.dynamic_shadow then
+	    inst.DynamicShadow:SetSize(fish_def.dynamic_shadow[1], fish_def.dynamic_shadow[2])
+	end
+
+	inst:SetPrefabNameOverride(fish_def.prefab)
 
     --weighable_fish (from weighable component) added to pristine state for optimization
 	inst:AddTag("weighable_fish")
@@ -295,6 +362,11 @@ local function inv_common(data)
 	inst:AddTag("oceanfish")
 	inst:AddTag("catfood")
 	inst:AddTag("smallcreature")
+	inst:AddTag("smalloceancreature")
+
+	if fish_def.heater ~= nil then
+		inst:AddTag("HASHEATER") --(from heater component) added to pristine state for optimization
+	end
 
     inst.entity:SetPristine()
 
@@ -302,7 +374,7 @@ local function inv_common(data)
         return inst
     end
 
-	inst.fish_def = data
+	inst.fish_def = fish_def
 
 	inst:AddComponent("inspectable")
 
@@ -312,19 +384,19 @@ local function inv_common(data)
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY)
     inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = inst.fish_def.perish_product
+    inst.components.perishable.onperishreplacement = fish_def.perish_product
 	
 	inst:AddComponent("murderable")
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot(inst.fish_def.loot)
+	inst.components.lootdropper:SetLoot(fish_def.loot)
 
     inst:AddComponent("edible")
-	if data.edible_values ~= nil then
-		inst.components.edible.healthvalue = data.edible_values.health or TUNING.HEALING_TINY
-		inst.components.edible.hungervalue = data.edible_values.hunger or TUNING.CALORIES_SMALL
-		inst.components.edible.sanityvalue = data.edible_values.sanity or 0
-		inst.components.edible.foodtype = data.edible_values.foodtype or FOODTYPE.MEAT
+	if fish_def.edible_values ~= nil then
+		inst.components.edible.healthvalue = fish_def.edible_values.health or TUNING.HEALING_TINY
+		inst.components.edible.hungervalue = fish_def.edible_values.hunger or TUNING.CALORIES_SMALL
+		inst.components.edible.sanityvalue = fish_def.edible_values.sanity or 0
+		inst.components.edible.foodtype = fish_def.edible_values.foodtype or FOODTYPE.MEAT
 	else
 		inst.components.edible.healthvalue = 0
 		inst.components.edible.hungervalue = 0
@@ -338,24 +410,45 @@ local function inv_common(data)
 
 	inst:AddComponent("weighable")
 	inst.components.weighable.type = TROPHYSCALE_TYPES.FISH
-	inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, CalcNewSize()))
+	inst.components.weighable:Initialize(fish_def.weight_min, fish_def.weight_max)
+	inst.components.weighable:SetWeight(Lerp(fish_def.weight_min, fish_def.weight_max, CalcNewSize()))
 
 	inst:AddComponent("cookable")
-	inst.components.cookable.product = inst.fish_def.cooking_product
+	inst.components.cookable.product = fish_def.cooking_product
 
     inst:AddComponent("tradable")
     inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.MEAT
 
 	inst.flop_task = inst:DoTaskInTime(math.random() * 2 + 1, Flop)
+	
+	if fish_def.heater ~= nil then
+		inst:AddComponent("heater")
+		inst.components.heater.heat = fish_def.heater.heat
+		inst.components.heater.heatfn = fish_def.heater.heatfn
+		inst.components.heater.carriedheat = fish_def.heater.carriedheat
+		inst.components.heater.carriedheatfn = fish_def.heater.carriedheatfn
+	    inst.components.heater.carriedheatmultiplier = fish_def.heater.carriedheatmultiplier or 1
 
---    inst:AddComponent("stackable")
---    inst.components.stackable.maxsize = TUNING.STACK_SMALLITEM    
+		if fish_def.heater.endothermic then
+	        inst.components.heater:SetThermics(false, true)
+		end
+	end
+
+	if fish_def.propagator ~= nil then
+		inst:AddComponent("propagator")
+		inst.components.propagator.propagaterange = fish_def.propagator.propagaterange
+		inst.components.propagator.heatoutput = fish_def.propagator.heatoutput
+		inst.components.propagator:StartSpreading()
+
+		inst:ListenForEvent("onputininventory", topocket)
+		inst:ListenForEvent("ondropped", toground)
+	end
 
 	MakeHauntableLaunchAndPerish(inst)
 
 	inst:ListenForEvent("on_landed", OnInventoryLanded)
-	inst:ListenForEvent("animover", function() 
-		if inst.AnimState:IsCurrentAnimation("flop_loop") then 
+	inst:ListenForEvent("animover", function() 		
+		if inst.AnimState:IsCurrentAnimation("flop_loop") then			
 			inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland")
 		end
 	end)

@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "Map don't match this place...",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "Grrr, can't read! Too dark here!",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -495,6 +498,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nGlurgh... is so heavy!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Aww, no fair!",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Glurgh... gotta start over.",
 
     --Wurt announce strings
     ANNOUNCE_KINGCREATED = "Mermfolk have new King!",
@@ -1356,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "Why made anchor for land, florpt?",
         CHESSPIECE_MOON = "It look just like real thing!",
         CHESSPIECE_CARRAT = "Veggie rat look happy.",
+        CHESSPIECE_MALBATROSS = "It very fancy looking statue.",
+        CHESSPIECE_CRABKING = "Glurgh, he made crab lady sad!",
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
         CHESSJUNK3 = "It all messed up.",
@@ -3036,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "Hello?",
         MOON_ALTAR_ROCK_SEED = "Hello?",
 
+        MOON_ALTAR_CROWN = "Time to go home!",
+        MOON_ALTAR_COSMIC = "It saying something...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "Make things for water, florp!",
@@ -3131,12 +3144,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Won't hurt fish, will it?",
 		OCEANFISHINGLURE_SPOON_GREEN = "Won't hurt fish, will it?",
 		OCEANFISHINGLURE_SPOON_BLUE = "Won't hurt fish, will it?",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Can play with fish friends in rain!",
+		OCEANFISHINGLURE_HERMIT_SNOW = "Can play with fish friends in snow!",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "This one not very nice...",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Ooooooh, can catch big fishy!",
 
 		OCEANFISH_SMALL_1 = "Aww, so little!",
-		OCEANFISH_SMALL_2 = "Will be new pet! And will feed it and love it and-",
+		OCEANFISH_SMALL_2 = "Will be new pet! And will feed it and love it and squeeze it!",
 		OCEANFISH_SMALL_3 = "Hi little fishy!",
 		OCEANFISH_SMALL_4 = "Little baby fishy!",
 		OCEANFISH_SMALL_5 = "Hee-hee, looks silly!",
+		OCEANFISH_SMALL_6 = "Makes crunchy sounds!",
+		OCEANFISH_SMALL_7 = "Is ugly fish, but still like it!",
+		OCEANFISH_SMALL_8 = "Ow! Is hot!",
+
 		OCEANFISH_MEDIUM_1 = "Goopy!",
 		OCEANFISH_MEDIUM_2 = "Has such big pretty eyes!",
 		OCEANFISH_MEDIUM_3 = "Look like it has little spiky crown on head!",
@@ -3144,6 +3165,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Feel... weird mixed feeling about this one, florp.",
 		OCEANFISH_MEDIUM_6 = "You very pretty, florp.",
 		OCEANFISH_MEDIUM_7 = "Like your scales, flort!",
+		OCEANFISH_MEDIUM_8 = "Brrrr, chilly fishy!",
 
 		PONDFISH = "Awwww, it so cute!",
 		PONDEEL = "Hello long fishy!",
@@ -3157,13 +3179,18 @@ return{
 		FISH_BOX = "This where scale-less keep fish pets, florp?",
         POCKET_SCALE = "Is funny measure thing.",
 
+		TACKLECONTAINER = "What this for?",
+		SUPERTACKLECONTAINER = "Is dangerous, full of fish snacks with hooks on them!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "This good home for fish!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nOoooh, so big!",
 			BURNING = "AAAAAH! NOOOO!",
 			BURNT = "(Sniff) Poor fish home...",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nHee-hee. My fish best.",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nIs biggest fish ever!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Oooh! Found mud!",
@@ -3171,6 +3198,58 @@ return{
 		CALIFORNIAROLL = "Wait... there fish in here!",
 		SEAFOODGUMBO = "Fish looks so sad in there...",
 		SURFNTURF = "Blegh! Don't want it!",
+
+        WOBSTER_SHELLER = "No pinching!", 
+        WOBSTER_DEN = "Hey! Come out!",
+        WOBSTER_SHELLER_DEAD = "Is sleeping?",
+        WOBSTER_SHELLER_DEAD_COOKED = "Ewww, it all pink now!",
+
+        LOBSTERBISQUE = "Glurgh... what in this?",
+        LOBSTERDINNER = "Don't want it.",
+
+        WOBSTER_MOONGLASS = "Got moon stuff all over it, florp!",
+        MOONGLASS_WOBSTER_DEN = "Think saw something move in there.",
+
+		TRIDENT = "Pokey poke!",
+		
+		WINCH =
+		{
+			GENERIC = "Treasure grabber!",
+			RETRIEVING_ITEM = "Got something! Got something!",
+			HOLDING_ITEM = "Huh? What is it?",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "Is very nice home.",
+            BUILTUP = "Crabby lady's house got taller!",
+        }, 
+        
+        SHELL_CLUSTER = "Tried biting, isn't food.",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "Is big shell!",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Pretty!",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Think there some kind of bug inside?",
+        },
+
+        CHUM = "Eat up, fishies!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "Seashell is good for hiding things, florpt!",
+            LOCKED = "Grrr, open up!",
+        },
+
+        RESKIN_TOOL = "Change things to... different things!",
+        MOON_FISSURE_PLUGGED = "Bad moon things can't get out, florp!",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3290,6 +3369,41 @@ return{
 
 		GHOSTFLOWER = "Spooky!",
         SMALLGHOST = "Glurp! Y-you not scare me!",
+
+        CRABKING = 
+        {
+            GENERIC = "Glurp... he kinda cranky.",
+            INERT = "Castle not very pretty yet.",
+        },
+		CRABKING_CLAW = "Go away! No pinching!",
+		
+		MESSAGEBOTTLE = "Wicker-lady!! Read what it say!",
+		MESSAGEBOTTLEEMPTY = "There nothing in here!",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Crabby lady! Nasty dry stuff ready now!",
+            DRYING = "Crabby lady! Nasty dry stuff ready now!",
+            DRYINGINRAIN = "Not sure this thought through, flort.",
+            GENERIC = "These belong to crabby lady, florp.",
+            BURNT = "Oh well, flort.",
+            DONE_NOTMEAT = "Look even worse than usual, florp.",
+            DRYING_NOTMEAT = "That not look right.",
+            DRYINGINRAIN_NOTMEAT = "Thought you said this make things dry?",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "It look full of sweet stuff now!",
+            FULLHONEY = "It look full of sweet stuff now!",
+            GENERIC = "Crabby lady made nice bee house, flort!",
+            NOHONEY = "Aww no sweets inside.",
+            SOMEHONEY = "Don't wanna wait!!",
+            BURNT = "It not buzzing anymore...",
+        },
+
+
+        HERMIT_PEARL = "Oooooh, so shiny!",
+        HERMIT_CRACKED_PEARL = "D-didn't do it!",
     },
 
     DESCRIBE_GENERIC = "What that?",

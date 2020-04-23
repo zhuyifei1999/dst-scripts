@@ -20,6 +20,16 @@ local AVAILABLE_TECH =
     "FOODPROCESSING",
 	"FISHING",
 	"WINTERSFEASTCOOKING",
+	"HERMITCRABSHOP",
+}
+
+-- only these tech trees can have tech bonuses added to them
+local BONUS_TECH =
+{
+    "SCIENCE",
+    "MAGIC",
+	"SEAFARING",
+    "ANCIENT",
 }
 
 local function Create(t)
@@ -33,5 +43,6 @@ end
 return
 {
     AVAILABLE_TECH = AVAILABLE_TECH,
+	BONUS_TECH = BONUS_TECH,
     Create = Create,
 }

@@ -10,18 +10,6 @@ local function on_is_anchor_lowered(self, is_anchor_lowered)
 	end
 end
 
-local function on_remove(inst)
-    local anchor = inst.components.anchor
-    if anchor ~= nil then
-        if anchor.is_anchor_lowered then
-            local boat = anchor:GetBoat()
-            if boat ~= nil then
-                boat.components.boatphysics:RemoveAnchorCmp(anchor)
-            end
-        end
-    end
-end
-
 local function SetBoat(self, boat)
 	if self.boat ~= nil then
 		self.inst:RemoveEventCallback("onremove", self.OnBoatRemoved, self.boat)
@@ -34,11 +22,8 @@ end
 
 local Anchor = Class(function(self, inst)
     self.inst = inst
-    self.inst:ListenForEvent("onremove", on_remove)
 
     self.is_anchor_lowered = false
-    self.drag = TUNING.BOAT.ANCHOR.BASIC.ANCHOR_DRAG
-    self.max_velocity_mod =  TUNING.BOAT.ANCHOR.BASIC.MAX_VELOCITY_MOD
 
     self.raisers = {}        
     self.numberofraisers = 0
@@ -66,14 +51,6 @@ function Anchor:SetVelocityMod(set)
     self.max_velocity_mod = set
 end
 
-function Anchor:GetVelocityMod()
-    return (self.inst:HasTag("burnt") and 1) or self.max_velocity_mod 
-end
-
-function Anchor:GetDrag()
-    return (self.inst:HasTag("burnt") and 0) or self.drag
-end
-
 function Anchor:OnSave()
     local data =
     {
@@ -86,7 +63,7 @@ end
 function Anchor:GetCurrentDepth()
     local depth = self.bottomunits            
     local ground = TheWorld
-    if self.boat then
+    if self.boat and self.boat:IsValid() then
         local tile = ground.Map:GetTileAtPoint(self.boat.Transform:GetWorldPosition())
         if tile then
             local depthcategory = GetTileInfo(tile).ocean_depth
@@ -139,9 +116,9 @@ function Anchor:SetIsAnchorLowered(is_lowered)
 		local boat = self.boat
 		if boat ~= nil then
 			if is_lowered then
-				boat.components.boatphysics:AddAnchorCmp(self)
+				boat.components.boatphysics:AddBoatDrag(self.inst)
 			else
-				boat.components.boatphysics:RemoveAnchorCmp(self)
+				boat.components.boatphysics:RemoveBoatDrag(self.inst)
 			end
 		end
 	end
@@ -218,10 +195,6 @@ function Anchor:AnchorLowered()
     self.inst.AnimState:SetDeltaTimeMultiplier(1)
     self.inst:RemoveTag("anchor_transitioning")
     self.inst:PushEvent("anchor_lowered")
-    if self.boat then
-        ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.3, 0.03, 0.5, self.boat, self.boat:GetPhysicsRadius(4))
-    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/ocean_hit")
-    end
 end
 
 function Anchor:OnUpdate(dt)

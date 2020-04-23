@@ -419,6 +419,7 @@ STRINGS =
             GENERIC = "Cast Spell", --"Cast Spell on"
             SCIENCE = "Use Gadget",
             MUSIC = "Play",
+            RESKIN = "Sweep",
         },
         BLINK =
         {
@@ -495,6 +496,11 @@ STRINGS =
 			GENERIC = "Preserve",
 			SALT = "Preserve",
 		},
+        CYCLE =
+        {
+            GENERIC = "cycle [TODO:JEN]",
+            TUNE = "Hit",
+        },
 
         --Quagmire
         TILL = "Till",
@@ -567,7 +573,11 @@ STRINGS =
 		{
 			MAKE_AGGRESSIVE = "Rile Up",
 			MAKE_DEFENSIVE = "Soothe",
-		},
+        },
+        
+        OCEAN_TOSS = "Toss",
+
+		USE_WINCH = "Drop",
 
 		-- Winter's Feast 2019
 		WINTERSFEAST_FEAST = "Feast",
@@ -766,6 +776,7 @@ STRINGS =
         TURF_CARPETFLOOR = "Carpeted Flooring",
         TURF_CHECKERFLOOR = "Checkered Flooring",
         TURF_METEOR = "Moon Crater Turf",
+        TURF_SHELLBEACH = "Shell Beach Turf",
         TURF_PEBBLEBEACH = "Rocky Beach Turf",
         TURF_DRAGONFLY = "Scaled Flooring",
 
@@ -1574,6 +1585,8 @@ STRINGS =
         SADDLE_BASIC = "Saddle",
         SADDLE_WAR = "War Saddle",
 
+        RESKIN_TOOL = "Clean Sweeper",
+
         REVIVER = "Telltale Heart",
 
         SHADOWHEART = "Shadow Atrium",
@@ -1679,6 +1692,8 @@ STRINGS =
         CHESSPIECE_ANCHOR = "Anchor Figure",
         CHESSPIECE_MOON = "\"Moon\" Figure",
         CHESSPIECE_CARRAT = "Carrat Figure",
+        CHESSPIECE_MALBATROSS = "Malbatross Figure",
+        CHESSPIECE_CRABKING = "Crab King Figure",        
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1698,11 +1713,16 @@ STRINGS =
         CHESSPIECE_ANCHOR_BUILDER = "Anchor Figure",
         CHESSPIECE_MOON_BUILDER = "\"Moon\" Figure",
         CHESSPIECE_CARRAT_BUILDER = "Carrat Figure",
+        CHESSPIECE_MALBATROSS_BUILDER = "Malbatross Figure",
+        CHESSPIECE_CRABKING_BUILDER = "Crab King Figure",
+
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
         CHESSPIECE_MOON_SKETCH = "\"Moon\" Figure Sketch",
         CHESSPIECE_CARRAT_SKETCH = "Carrat Figure Sketch",
+        CHESSPIECE_MALBATROSS_SKETCH = "Malbatross Figure Sketch",
+        CHESSPIECE_CRABKING_SKETCH = "Crab King Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -2265,6 +2285,9 @@ STRINGS =
         MOON_ALTAR_GLASS = "Celestial Altar Base",
         MOON_ALTAR_SEED = "Celestial Altar Orb",
 
+        MOON_ALTAR_COSMIC = "Celestial Tribute",
+        MOON_ALTAR_CROWN = "Inactive Celestial Tribute",
+
         MOON_ALTAR_ROCK_IDOL = "Inviting Formation",
         MOON_ALTAR_ROCK_GLASS = "Inviting Formation",
         MOON_ALTAR_ROCK_SEED = "Inviting Formation",
@@ -2287,6 +2310,9 @@ STRINGS =
 		OCEANFISH_SMALL_3 = "Bitty Baitfish",
 		OCEANFISH_SMALL_4 = "Smolt Fry",
 		OCEANFISH_SMALL_5 = "Popperfish",
+		OCEANFISH_SMALL_6 = "Fallounder",
+		OCEANFISH_SMALL_7 = "Bloomfin Tuna",
+		OCEANFISH_SMALL_8 = "Scorching Sunfish",
 		OCEANFISH_MEDIUM_1 = "Mudfish",
 		OCEANFISH_MEDIUM_2 = "Deep Bass",
 		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
@@ -2294,6 +2320,7 @@ STRINGS =
 		OCEANFISH_MEDIUM_5 = "Corn Cod",
 		OCEANFISH_MEDIUM_6 = "Dappled Koi",
 		OCEANFISH_MEDIUM_7 = "Golden Koi",
+		OCEANFISH_MEDIUM_8 = "Ice Bream",
 
 		PONDFISH = "Freshwater Fish",
 		PONDEEL = "Live Eel",
@@ -2333,11 +2360,17 @@ STRINGS =
 		OCEANFISHINGLURE_SPOON_BROWN = "not used",
 		OCEANFISHINGLURE_SPOON_YELLOW = "not used",
 		OCEANFISHINGLURE_SPOON_SILVER = "not used",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Rainy Day Lure",
+		OCEANFISHINGLURE_HERMIT_SNOW = "Snow Day Lure",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "Stupefying Lure",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Heavy Weighted Lure",
 
-        POCKET_SCALE = "Pocket Scale",
+		POCKET_SCALE = "Pocket Scale",
+		
+		TACKLECONTAINER = "Tackle Box",
+		SUPERTACKLECONTAINER = "Spectackler Box",
 
 		BURNABLE_LOCATOR_MEDIUM = "Boat",
-		WATERCHEST = "Chest",
         WATER_TURTLE = "Sea Turtle",
 
         -- Wurt
@@ -2407,6 +2440,54 @@ STRINGS =
 		GHOSTLYELIXIR_SPEED = "Vigor Mortis",
 		GHOSTLYELIXIR_RETALIATION = "Distilled Vengeance",
 		SISTURN = "Sisturn",
+
+        CRABKING = "Crab King",
+        CRABKING_CLAW = "Imposing Claw",
+
+        HERMITCRAB = "Crabby Hermit",
+        HERMITCRAB_NAME = "Pearl",
+        HERMIT_PEARL = "Pearl's Pearl",
+        HERMIT_CRACKED_PEARL = "Cracked Pearl",
+        BEEBOX_HERMIT = "Bee Box",
+        MEATRACK_HERMIT = "Drying Rack",
+
+        WOBSTER_SHELLER = "Wobster",
+        WOBSTER_DEN = "Wobster Mound",
+        WOBSTER_SHELLER_DEAD = "Dead Wobster",
+        WOBSTER_SHELLER_DEAD_COOKED = "Delicious Wobster",
+
+        LOBSTERBISQUE = "Lobster Bisque",
+        LOBSTERDINNER = "Lobster Dinner",
+
+        WOBSTER_MOONGLASS = "Lunar Wobster",
+        MOONGLASS_WOBSTER_DEN = "Moonglass Mound",
+
+        TRIDENT = "Strident Trident",
+	
+		MESSAGEBOTTLE = "Message in a Bottle",
+		MESSAGEBOTTLEEMPTY = "Empty Bottle",
+
+		WINCH = "Pinchin' Winch",
+		HERMITHOUSE = "Hermit Home",
+        HERMITHOUSE_PEARL = "Pearl's Place",
+        WINCH_BLUEPRINT = "Pinchin' Winch Blueprint",
+
+        SHELL_CLUSTER = "Shell Cluster",
+
+		SINGINGSHELL_OCTAVE3 = "Baritone Shell Bell",
+		SINGINGSHELL_OCTAVE4 = "Alto Shell Bell",
+        SINGINGSHELL_OCTAVE5 = "Soprano Shell Bell",
+
+        SUNKENCHEST = "Sunken Chest",
+
+        HERMIT_BUNDLE = "Bundle of Thanks",
+        HERMIT_BUNDLE_SHELLS = "Shell Bell Bundle",
+
+        MOON_FISSURE_PLUGGED = "Plugged Fissure",
+
+        CHUM = "Fish Food",
+
+        TURF_SHELLBEACH_BLUEPRINT = "Shell Turf Blueprint",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2534,6 +2615,8 @@ STRINGS =
         BEDROLL_FURRY = "Sleep through the night in comfort!",
         PUMPKIN_LANTERN = "Spooky illumination.",
 		POCKET_SCALE = "Weigh your fish on the go!",
+		TACKLECONTAINER = "Tactfully store your tackle.",
+		SUPERTACKLECONTAINER = "More space for tackle? I'm hooked!",
         FISHINGROD = "Go fishing. For fish.",
         OCEANFISHINGROD = "Fish like a pro.",
         OCEANFISHINGBOBBER_BALL = "A classic design for pros and beginners.",
@@ -2550,6 +2633,10 @@ STRINGS =
 		OCEANFISHINGLURE_SPOON_RED = "The early fish gets the worm.",
 		OCEANFISHINGLURE_SPOON_GREEN = "Fish on into the sunset.",
 		OCEANFISHINGLURE_SPOON_BLUE = "Go for a quick evening bite.",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Keep one around for a rainy day.",
+		OCEANFISHINGLURE_HERMIT_SNOW = "There's snow better time for fishing!",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "A confused fish is a caught fish.",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "Reel in the big one!",
         FEATHERHAT = "A dress for your head.",
         MINERHAT = "Light up the night with your noggin.",
         FOOTBALLHAT = "Protect your braincase.",
@@ -2570,6 +2657,7 @@ STRINGS =
         BEARGERVEST = "A bear of a vest.",
         ARMORDRAGONFLY = "Armor with a fiery temper.",
         STAFF_TORNADO = "Blow your enemies away.",
+        RESKIN_TOOL = "Make a clean sweep of redecorating.",
         TRUNKVEST_SUMMER = "Warm, but not that warm.",
         TRUNKVEST_WINTER = "Warm enough for winter storms.",
         BIRDCAGE = "A happy home for your avian friends.",
@@ -2599,6 +2687,7 @@ STRINGS =
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_METEOR = "The cratered surface of the moon.",
+        TURF_SHELLBEACH = "A patch of seashell seashore.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
         TURF_ROAD = "Build your own road to nowhere.",
         TURF_DRAGONFLY = "Quell the spread of fire.",
@@ -2757,11 +2846,15 @@ STRINGS =
         CHESSPIECE_ANCHOR_BUILDER = "Ground your base with a stone anchor.",
         CHESSPIECE_MOON_BUILDER = "It's a selene figurine!",
         CHESSPIECE_CARRAT_BUILDER = "A winsome sculpture of a champion.",
+        CHESSPIECE_MALBATROSS_BUILDER = "A sculpted scourge of the seas.",
+        CHESSPIECE_CRABKING_BUILDER = "It looks even crabbier than you remember it.",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
         CHESSPIECE_MOON_SKETCH = "A sculpture sketch of the moon itself.",
         CHESSPIECE_CARRAT_SKETCH = "A sculpture sketch of a victorious Carrat.",
+        CHESSPIECE_MALBATROSS_SKETCH = "A sculpture sketch of the mighty Malbatross.",
+        CHESSPIECE_CRABKING_SKETCH = "A sculpture sketch of the Crab King",
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
@@ -2889,6 +2982,7 @@ STRINGS =
         OAR_DRIFTWOOD = "Oarn't you glad I didn't say banana?",
         BOATPATCH = "It's never too late to patch things up.",
 		FISH_BOX = "Keep fish as fresh as the day you net them.",
+		WINCH = "Let it do the heavy lifting for you.",
 
         -- Wurt
         MERMHOUSE_CRAFTED = "A home fit for a Merm.",
@@ -2932,6 +3026,14 @@ STRINGS =
 		YOTC_SEEDPACKET_RARE = "A pack of high quality seeds.",
 
 		MINIBOATLANTERN = "It flickers with a warm glow.",
+
+        TRIDENT = "Rock out in rocky waters.",
+
+        HERMIT_BUNDLE_SHELLS = "The shells she sells.",
+        WINCH_BLUEPRINT = "For deep sea grabs.",
+        TURF_SHELLBEACH_BLUEPRINT = "A soft patch of sand, scattered with seashells.",
+
+        CHUM = "Get chummy with the fish.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -3113,6 +3215,307 @@ STRINGS =
     MERM_KING_TALK_HUNGER_HUNGRY = "King desires food!",
     MERM_KING_TALK_HUNGER_HUNGRISH = "King feeling a bit peckish...",
     MERM_KING_TALK_HUNGER_FULL =  "Have done well. Now go.",
+
+	HERMITCRAB_TALK_ONPURCHASE = {
+                LOW = {"Great. Now leave me alone."},
+                MED = {"Pleasure doing business."},
+                HIGH = {"Give me a holler if you need anything else!"},
+            },
+    HERMITCRAB_COMPLAIN = {
+            PLANT_FLOWERS = {
+                LOW = {"Useless lazy bees... not a drop of honey..."},
+                MED = {"When I had my flower garden, the bees made honey all the time."},
+                HIGH = {{"Dearie, would you...","Help me plant some flowers?"}},
+            },
+            REMOVE_JUNK = {
+                LOW = {"(Grumble)... water's all full of junk..."},
+                MED = {"The water's so full of junk, I can't even see the fish!"},
+                HIGH = {"You look spry! Could you get rid of that junk in the water?"},
+            },
+            PLANT_BERRIES = {
+                LOW = {"All of my berry bushes died."},
+                MED = {"I miss my garden... I used to grow berries..."},
+                HIGH = {{"Care to help me with some gardening?","I need some new berry bushes."}},
+            },
+            FILL_MEATRACKS = {
+                LOW = {"Hmph... never any meat around here for drying..."},
+                MED = {{"My drying racks are empty again?","So much work for these old claws..."}},
+                HIGH = {"Could you dry some meat for me, dearie?"},
+            },
+            GIVE_HEAVY_FISH = {
+                LOW = {{"(Grumble)... only ever catch minnows...","Never a nice big fish..."}},
+                MED = {"If only SOMEONE could bring me some big, juicy fish..."},
+                HIGH = {{"If you could bring me some big fish...","I'd be so happy!"}},
+            },
+            REMOVE_LUREPLANT = {
+                LOW = {{"That horrible plant...","Such an eyesore..."}},
+                MED = {"That lureplant is going to take over my whole yard!"},
+                HIGH = {{"Would you be a dear?","Take care of that awful plant for me."}},
+            },
+            GIVE_UMBRELLA = {
+                LOW = {{"Miserable rain...","I'll catch my death..."}},
+                MED = {{"I'm getting soaked to the chitin!","If only I had an umbrella..."}},
+                HIGH = {{"What terrible weather.","Do you have an umbrella, dearie?"}},
+            },
+            GIVE_PUFFY_VEST = {
+                LOW = {"(Grumble) It's freezing out here!"},
+                MED = {"Brrr, this cold weather is terrible for my rheumatism."},
+                HIGH = {"Ooooh, I do wish I had something warm to wear."},
+            },
+            GIVE_FLOWER_SALAD = {
+                LOW = {"Hmph. No ingredients for flower salad around..."},
+                MED = {"My sweetie used to make my favorite... flower salad..."},
+                HIGH = {{"Flower salad brings back such memories...","Could you make some for me?"}},
+            },
+            GIVE_FISH_WINTER = {
+                LOW = {"Hmph. Should be Ice Bream season right about now."},
+                MED = {"I used to catch Ice Bream all through the winter..."},
+                HIGH = {"Dearie, could you catch an Ice Bream for me?"},
+            },
+            GIVE_FISH_SUMMER = {
+                LOW = {"The Scorching Sunfish should be migrating now."},
+                MED = {"Nothing says summer like some Scorching Sunfish..."},
+                HIGH = {"I would love a Scorching Sunfish, if you have it."},
+            },
+            GIVE_FISH_SPRING = {
+                LOW = {"Thought I saw some Bloomfin Tuna yesterday..."},
+                MED = {"This weather is perfect for Bloomfin Tuna..."},
+                HIGH = {"Let me know if you catch a Bloomfin Tuna, dearie!"},
+            },
+            GIVE_FISH_AUTUM = {
+                LOW = {"I think Fallounders are in season."},
+                MED = {"Nothing says autumn like some tasty Fallounder..."},
+                HIGH = {"Would you bring me a Fallounder, dearie?"},
+            },            
+    },
+
+    HERMITCRAB_INVESTIGATE = {
+            PLANT_FLOWERS = {
+                LOW = {"Huh? What are you doing?"},
+                MED = {"Hm... those look nice."},
+                HIGH = {"How pretty!"},
+            },
+            PLANT_BERRIES = {
+                LOW = {"Well. At least you're doing something useful."},
+                MED = {"Maybe another one over there?"},
+                HIGH = {"You are quite the gardener, dearie!"},
+            },
+            FILL_MEATRACKS = {
+                LOW = {"You don't want it anymore? Has it gone off?"},
+                MED = {"I'll never say no to free meat!"},
+                HIGH = {"Hoo-hoo! That's some tasty jerky in the making!"},
+            },            
+            REMOVE_LUREPLANT = {
+                LOW = {"Fantastic. My old pest was removed by my new pest."},
+                MED = {"Well, glad that's taken care of."},
+                HIGH = {"You really showed that awful plant!"},
+            },
+    },
+
+    HERMITCRAB_GREETING = {
+        [0] = {"Go away!", "Shoo!", "Leave me alone!", "No trespassing!","Get off my beach!"},
+        [1] = {"Hmph.", "Go find someone else to bother!"},
+        [2] = {"What are you doing here?", "What do you want?"},
+        [3] = {"You're back?", "Don't you have anything better to do?", "Troublesome whipper-snapper..."},
+        [4] = {{"You're persistent","I'll give you that."}, "Hmph. Just don't make a nuisance of yourself."},
+        [5] = {"Just can't get enough of my sparkling personality, hmm?", {"Well, if it isn't... hm...","What was your name?"}},
+        [6] = {"Why are you helping me?"},
+        [7] = {"It's been hard taking care of this old place by myself.", "I think I forgot how nice it is to have visitors.", "I've been awfully hard on you, haven't I?"},
+        [8] = {"Hello again!", "Well, if it isn't %s!"},
+        [9] = {"It's so nice to see you, dearie!", {"This world is so full of dangers...","You be careful out there, alright?"}},
+        [10] ={"How have you been, dearie?", "If it isn't my favorite visitor!", "Are you eating enough?"},
+    },
+
+    HERMITCRAB_DEFAULT_REWARD = {
+                LOW = {{"I guess you want something for helping me out?","Fine."}},
+                MED = {"I guess it's not so bad having you around."},
+                HIGH = {"Such a big help! Thank you."},
+            },
+    HERMITCRAB_GROUP_REWARD = {
+                LOW = {{"I don't know what you're playing at","but don't think I owe you now!"}},
+                MED = {"You've been busy! I suppose I should repay you."},
+                HIGH = {{"You've done such a wonderful job!","Here, it's the least I can do."}},
+            },
+
+    HERMITCRAB_INTRODUCE = {{"You've done so much for me.","Please, call me Pearl."}},
+
+    HERMITCRAB_REWARD = {
+            FIX_HOUSE_1 = { 
+                LOW = {"Oh good, you didn't completely ruin my house."},
+                MED = {"I'd been meaning to fix the place up for a while..."},
+                HIGH = {"My goodness, it looks good as new!"},
+            },
+            FIX_HOUSE_2 = { 
+                LOW = {"...I suppose that is an improvement."},
+                MED = {"You... did this for me...?"},
+                HIGH = {"Oh dearie, I love what you've done with the place!"},
+            },
+            FIX_HOUSE_3 = {
+                LOW = {"Oh. That does look a bit better."},
+                MED = {{"I barely recognize the place!","Oh don't look worried, that's a good thing."}},
+                HIGH = {{"Oh, it's wonderful!","I feel like a Queen in her palace","Hoo-hoo!"}},
+            },
+            PLANT_FLOWERS = {
+                LOW = {"Well, at least my bees are happy now."},
+                MED = {"My bees are buzzing with excitement!"},
+                HIGH = {"My bees haven't looked this happy in years!"},
+            },
+            REMOVE_JUNK = {
+                LOW = {"Hmph. Took you long enough."},
+                MED = {"Should be easier to fish with all that junk gone!"},
+                HIGH = {{"Ahhh...","It's such a weight off my mind to have that junk gone."}},
+            },
+            PLANT_BERRIES = {
+                LOW = {{"You could've planted them in neater rows...","But I guess it'll do."}},
+                MED = {"I can't remember the last time I had fresh berries!"},
+                HIGH = {{"Ooooh, such a thoughtful young whipper-snapper!","Let me pinch your cheeks!"}},
+            },
+            FILL_MEATRACKS = {
+                LOW = {"Let me guess, you want something in return? Fine..."},
+                MED = {"Thanks... but don't think this means we're friends!"},
+                HIGH = {"I hope it wasn't too much trouble..."},
+            },
+            GIVE_HEAVY_FISH = {
+                LOW = {{"Why are you giving me this?","Wait, I never said I wouldn't take it!"}},
+                MED = {"Ooooh, that's a hefty pile of fish!"},
+                HIGH = {{"Hoo-hoo!","That's some pretty impressive fish, dearie!"}},
+            },
+            REMOVE_LUREPLANT = {
+                LOW = {{"You think you deserve a reward or something?","Hmph."}},
+                MED = {"Guess you're at least a half decent weed killer."},
+                HIGH = {{"What a relief!","That plant's been side-eying me for some time."}},
+            },
+            GIVE_UMBRELLA = {
+                LOW = {"I guess this will do."},
+                MED = {"Why are you being so nice to me?"},
+                HIGH = {"What would I do without you, dearie?"},
+            },
+            GIVE_PUFFY_VEST = {
+                LOW = {"Hmph. At least I won't freeze to death."},
+                MED = {"That's... very nice of you."},
+                HIGH = {"Oh dearie, you're so thoughtful!"},
+            },
+            GIVE_FLOWER_SALAD = {
+                LOW = {"..."},
+                MED = {"...Thank you. It's been a long time."},
+                HIGH = {{"Thank you dearie...","Have you seen any other crabs on your travels?"}},
+            },
+            GIVE_FISH_WINTER = {
+                LOW = {"Hmph. You could've caught it faster if you used this."},
+                MED = {"Oh... thanks. Here, take this for your trouble."},
+                HIGH = {"Thank you dearie! Here, why don't you take one of these."},
+            },
+            GIVE_FISH_SUMMER = {
+                LOW = {"Hmph. You could've caught it faster if you used this."},
+                MED = {"Oh... thanks. Here, take this for your trouble."},
+                HIGH = {"Thank you dearie! Here, why don't you take one of these."},
+            },
+            GIVE_FISH_SPRING = {
+                LOW = {"Hmph. You could've caught it faster if you used this."},
+                MED = {"Oh... thanks. Here, take this for your trouble."},
+                HIGH = {"Thank you dearie! Here, why don't you take one of these."},
+            },
+            GIVE_FISH_AUTUM = {
+                LOW = {"Hmph. You could've caught it faster if you used this."},
+                MED = {"Oh... thanks. Here, take this for your trouble."},
+                HIGH = {"Thank you dearie! Here, why don't you take one of these."},
+            },                     
+    },
+
+    HERMITCRAB_STORE_UNLOCK_1 = {{"So do you want to trade?","or are you just wasting my time?"}},
+    HERMITCRAB_STORE_UNLOCK_2 = {{"I miiight have some lures to trade...","if you can afford them."}},
+    HERMITCRAB_STORE_UNLOCK_3 = {{"Alright, you've twisted my claw."," I'll show you my GOOD lures."}},
+    HERMITCRAB_STORE_UNLOCK_4 = {{"I've got some new things to trade","but they don't come cheap!"}},
+    HERMITCRAB_STORE_UNLOCK_5 = {{"This old shell must be going soft...","I put something special in the shop."}},
+
+    HERMITCRAB_PLANTED_LUREPLANT_DIED = {
+                LOW = {"Nice try.\nYou don't get anything for cleaning up your own messes."},
+                MED = {"Do you want a reward that bad?"},
+                HIGH = {"Dearie, I know you planted that.\nYou don't need to impress me."},
+            },
+
+    HERMITCRAB_GO_HOME = {"Time to rest this old chitin."},
+    HERMITCRAB_PANIC = {"I can't see a darn thing!"},
+    HERMITCRAB_PANICHAUNT = {"You're not taking me yet, spirits!"},
+    HERMITCRAB_PANICFIRE = {"Aaah! I will NOT be broiled!"},
+    HERMITCRAB_FIGHT = {{"You louse!","Bullying a sweet, innocent old lady like myself!"}},
+    HERMITCRAB_ATTEMPT_TRADE = {
+        LOW = {"Don't talk to me if you have nothing to trade.",},
+        MED = {"Have anything to trade today?",},
+        HIGH = {{"My favorite customer!","What do you need today, dearie?",}},
+    },
+    HERMITCRAB_GETFISH_BIG = {"Now that's a proper-sized fish!"},
+    
+    HERMITCRAB_REFUSE_SMALL_FISH = {
+		"You think {weight} is impressive?\nWhat is that, a minnow?",
+		"Wow, {weight}...\nI've never caught a fish this small.",
+		"Only {weight}?\nYou should have put it back.",
+		},
+    HERMITCRAB_REFUSE_SALAD = {{"I don't want that right now...","it makes me too sad..."}},
+    HERMITCRAB_REFUSE_ICE_HOT = {"Don't be silly, it's already freezing out here!"},
+    HERMITCRAB_REFUSE_ICE_HAD = {"I don't need any more ice."},
+    HERMITCRAB_REFUSE_UMBRELLA = {"It's not even raining..."},
+    HERMITCRAB_REFUSE_UMBRELLA_HASONE = {"My own umbrella will do just fine, thank you."},
+    HERMITCRAB_REFUSE_COAT = {"You keep it, I'm not chilly."},
+    HERMITCRAB_REFUSE_COAT_HASONE = {"I like the coat I have, thank you very much."},    
+    HERMITCRAB_REFUSE_VEST = {"I'd boil if I wore that in this heat!"},
+
+    HERMITCRAB_ANNOUNCE_ROYALTY = {
+        "Well, don't you look all high and mighty.",
+        "I didn't realize I was in the presence of \"royalty\".",
+        "It takes more than a hoity-toity hat to impress me.",
+    },
+
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_LINESNAP = {
+        "Ack! Stupid thing!",
+    },
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_IDLE_QUOTE = {
+        "Hmph. The fish aren't biting today...",
+        "Don't be so fussy, get on my hook!",
+        "\"I often look from the highest hill\"","\"that I might see my boatman...\"","hmm-de-dmm...",
+        "Never seem to catch anything...",
+    },
+    
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_LINETOOLOOSE = {"Oooh, these tired old claws!",},
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_BADCAST = {"I'm not quite as good at this as I used to be...",},
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_GOTAWAY = {{"Why you slippery little nincompoop!","Get back on my hook!"},},
+    HERMITCRAB_ANNOUNCE_OCEANFISHING_BOTHERED = {
+        LOW = {"Ack! You made me lose my fish!",},
+        MED = {"You couldn't wait for a better time?",},
+        HIGH = {"I can always make time for you, dearie.",},
+    },
+    
+    HERMITCRAB_LEVEL10_PLAYERGOOD = {
+        "Glad to see you looking well, dearie."
+    },
+
+    HERMITCRAB_LEVEL10_LOWHEALTH = {
+        {"Goodness, what happened to you?"," You need to be more careful!"},
+    },
+    HERMITCRAB_LEVEL10_LOWSANITY = {
+        {"You look like something's troubling you.","Is everything alright, dearie?"},
+    }, 
+    HERMITCRAB_LEVEL10_LOWHUNGER = {
+        {"Hmph... you look skinny.","Have you been eating well?"},
+    },        
+    HERMITCRAB_THROWBOTTLE = {
+        LOW = {{"You've been snatching up my bottles!","Now I need to send out twice as many!"}},
+        MED = {"I suppose I'm glad they reached anyone, really."},
+        HIGH = {"Maybe this will be the one to reach him..."},
+    }, 
+    HERMITCRAB_HARVESTMEAT = {
+        LOW = {"Hmph... looks pretty stringy."},
+        MED = {"Hm... doesn't look too bad."},
+        HIGH = {"Oooh, I do love some tasty dried meats!"},
+    },        
+    HERMITCRAB_MOON_FISSURE_VENT = {
+        LOW = {"Took me forever to plug up those darn fissures...", "Don't go messing with those!"},
+        MED = {"Not the best lawn ornaments, but they keep the head clear.",},
+        HIGH = {"I didn't notice those weird spooks until I'd settled in.","They were awful, made my shell crawl...","One of us had to go, and it wasn't going to be me!"},
+    },
+    HERMITCRAB_GOT_PEARL = {"Oh...","...I think I understand now.","Thank you for bringing this back to me.","I'm so glad you kept coming back.","My friend."},
+    HERMITCRAB_WANT_HOUSE = {"I could really use some help fixing up my house..."},
+    HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
 
     --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
@@ -3745,6 +4148,16 @@ STRINGS =
         "The inscription reads \"Always Watching\". Odd.",
     },
 
+    MESSAGEBOTTLE_NOTES =
+    {
+        "\"I know you're still out there, my dear. I won't ever give up.\"",
+        "\"I'm waiting for you. At the spot where we first met. I've been waiting so long...\"",
+        "\"Please come home. I miss you so much.\"",
+        "\"I still have the last gift you gave me. \"A pearl for Pearl\"... remember?\"",
+        "\"I'll keep sending messages, until one reaches you...\"",
+        "\"Have you found your treasure yet? When you do, will you come home?\""
+    },
+
     TABS =
     {
         TOOLS = "Tools",
@@ -3781,6 +4194,7 @@ STRINGS =
         FOODPROCESSING = "Seasonings",
 		FISHING = "Fishing",
 		WINTERSFEASTCOOKING = "Feast",
+        HERMITCRABSHOP = "Bottle Exchange",
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -4228,6 +4642,7 @@ STRINGS.UI =
             "Jen Davreux",
             "Steph Mahoney",
             "Anne-Marie Cyr",
+            "Matthew Barry",
         },
 
         ALTGAMES =
@@ -4617,7 +5032,7 @@ STRINGS.UI =
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
-		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nHook, Line, and Inker",
+		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nShe Sells Sea Shells",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -5058,6 +5473,10 @@ STRINGS.UI =
         MOVEMENTPREDICTION_ENABLED = "Predictive",
         MOVEMENTPREDICTION_DISABLED = "None",
 		TARGETLOCKING = "Target Locking:",
+        TEXTURESTREAMING = "Texture Streaming",
+        RESTART_TEXTURE_STREAMING_TITLE = "Restart Required",
+        RESTART_TEXTURE_STREAMING_BODY = "For Texture Streaming changes to take effect, you will have to exit and restart the game.", 
+        OK = "Okay",
         DISPLAY_AREA_LABEL = "Display Area:",
         DISPLAY_AREA_BUTTON = "Adjust",
         -- INPUTFREQENCY = "Input Frequency(hz):",
@@ -7492,7 +7911,8 @@ STRINGS.UI =
         OWNED_FILTER_FMT     = "Owned Filter: {mode}",
         WEAVEABLE_FILTER_FMT = "Weaveable Filter: {mode}",
         SORT_MODE_FMT        = "Sort Mode: {mode}",
-        
+        SEARCH = "Search",
+
         FILTER_ON       = "On",
         FILTER_OFF      = "Off",
         SORT_NAME       = "Name",
@@ -9608,3 +10028,4 @@ if PLATFORM == "WIN32_RAIL" then
     STRINGS.UI.BUGREPORTSCREEN.ENTER_BUG_DESCRIPTION = nil
     STRINGS.UI.BUGREPORTSCREEN.CHANGE_BUG_DESCRIPTION = nil
 end
+

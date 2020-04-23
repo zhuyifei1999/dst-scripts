@@ -131,6 +131,110 @@ function FilterBar:AddSorter()
     return btn
 end
 
+local search_subwords = function( search, str, sub_len )
+    local str_len = string.len(str)
+
+    local i = 1
+    for i=i,str_len - sub_len + 1 do        
+        local sub = str:sub( i, i + sub_len - 1 )
+        
+        local dist = DamLevDist( search, sub, 2 )
+        if dist < 2 then
+            return true
+        end
+    end
+
+    return false
+end
+
+local search_match = function( search, str )
+    search = search:gsub(" ", "")
+    str = str:gsub(" ", "")
+
+    --Simple find in strings for multi word search
+    if string.find( str, search ) ~= nil then
+        return true
+    end
+    local sub_len = string.len(search)
+
+    if sub_len > 3 then
+        if search_subwords( search, str, sub_len ) then return true end
+        
+        --Try again with 1 fewer character
+        sub_len = sub_len - 1
+        if search_subwords( search, str, sub_len ) then return true end
+    end
+
+    return false
+end
+
+function FilterBar:AddSearch( thin )
+    self.thin_mode = thin
+
+    local searchbox = Widget("search")
+    local box_size = 145
+    if self.thin_mode then
+        box_size = 120
+    end
+    local box_height = 40
+    searchbox.textbox_root = searchbox:AddChild(TEMPLATES.StandardSingleLineTextEntry(nil, box_size, box_height))
+    searchbox.textbox = searchbox.textbox_root.textbox
+    searchbox.textbox:SetTextLengthLimit(16)
+    searchbox.textbox:SetForceEdit(true)
+    searchbox.textbox:EnableWordWrap(false)
+    searchbox.textbox:EnableScrollEditWindow(true)
+    searchbox.textbox:SetHelpTextEdit("")
+    searchbox.textbox:SetHelpTextApply(STRINGS.UI.WARDROBESCREEN.SEARCH)
+    searchbox.textbox.OnTextEntered = function()
+        if not self.no_refresh_picker then
+            self.picker:RefreshItems(self:_ConstructFilter())
+        end
+        if IsNotConsole() then
+            searchbox.textbox:SetEditing(true)
+        end
+    end
+
+    self.filters["SEARCH"] = function(item_key)
+        local search_str = TrimString(string.upper(searchbox.textbox:GetString()))
+        if search_str == "" then
+            --Early out
+            return true
+        end
+
+        if search_match( search_str, string.upper(GetSkinName(item_key)) ) then
+            return true
+        end
+
+        local base_prefab = GetSkinData(item_key).base_prefab
+        if base_prefab ~= nil then
+            if search_match( search_str, string.upper(STRINGS.NAMES[string.upper(base_prefab)]) ) then
+                return true
+            end
+        end
+        
+        local collection_name = GetItemCollectionName(item_key)
+        if collection_name ~= nil then
+            if search_match( search_str, string.upper(collection_name) ) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+     -- If searchbox ends up focused, highlight the textbox so we can tell something is focused.
+    searchbox:SetOnGainFocus( function() searchbox.textbox:OnGainFocus() end )
+    searchbox:SetOnLoseFocus( function() searchbox.textbox:OnLoseFocus() end )
+
+    searchbox.focus_forward = searchbox.textbox
+
+    self.search_box = searchbox
+    
+    self:_UpdatePositions()
+
+    return searchbox
+end
+
 function FilterBar:HideFilter(id)
     for _,v in ipairs(self.filter_btns) do
         if v.btnid==id then
@@ -152,6 +256,11 @@ end
 
 function FilterBar:_UpdatePositions()
     local width,_ = self.picker.scroll_list:GetScrollRegionSize()
+    
+    local squeeze = 0
+    if self.thin_mode then
+        squeeze = 12
+    end
 
     local x_offset = 10
 
@@ -160,7 +269,7 @@ function FilterBar:_UpdatePositions()
     local num_btns = 0
     for a,v in ipairs(self.filter_btns) do
         if v.widget:IsVisible() then
-            v.widget:SetPosition( x_offset + -width/2 + v.widget.size_x/2 + num_btns*v.widget.size_x, 3)
+            v.widget:SetPosition( x_offset + -width/2 + v.widget.size_x/2 + num_btns*v.widget.size_x - num_btns*squeeze, 3)
             num_btns = num_btns + 1
 
             if prev_btn then
@@ -175,12 +284,25 @@ function FilterBar:_UpdatePositions()
 
     --Sort button now
     if self.sort_btn then
-        self.sort_btn:SetPosition( x_offset + -width/2 + self.sort_btn.size_x/2 + num_btns*self.sort_btn.size_x, 3
-        )
+        self.sort_btn:SetPosition( x_offset + -width/2 + self.sort_btn.size_x/2 + num_btns*self.sort_btn.size_x - num_btns*squeeze, 3)
+        num_btns = num_btns + 1
         if prev_btn then
             prev_btn:SetFocusChangeDir(MOVE_RIGHT, self.sort_btn)
             self.sort_btn:SetFocusChangeDir(MOVE_LEFT, prev_btn)
         end
+
+        prev_btn = self.sort_btn
+    end
+
+    if self.search_box and prev_btn then
+        local search_width = 80
+        if self.thin_mode then
+            search_width = 23
+        end
+        self.search_box:SetPosition( x_offset + -width/2 + num_btns*self.sort_btn.size_x + search_width, 4)
+        
+        prev_btn:SetFocusChangeDir(MOVE_RIGHT, self.search_box)
+        self.search_box:SetFocusChangeDir(MOVE_LEFT, prev_btn)
     end
 
     self.focus_forward = first_btn

@@ -112,7 +112,7 @@ local function setdivelayering(inst,under)
 
     if dive and not inst.under then
         inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-        inst.AnimState:SetLayer(LAYER_BELOW_GROUND)        
+        inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)        
         inst.under = true
     else
         inst.AnimState:SetSortOrder(0)
@@ -896,7 +896,7 @@ local states =
             --UpdateRunSpeed(inst)
 
             --inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
-            --inst.AnimState:SetLayer(LAYER_BELOW_GROUND)            
+            --inst.AnimState:SetLayer(LAYER_WIP_BELOW_OCEAN)            
         end,
 
         onupdate = function(inst)

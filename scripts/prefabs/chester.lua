@@ -283,6 +283,7 @@ local function create_chester()
     inst.components.locomotor:SetAllowPlatformHopping(true)
 
     inst:AddComponent("embarker")
+    inst:AddComponent("drownable")
 
     inst:AddComponent("follower")
     inst:ListenForEvent("stopfollowing", OnStopFollowing)

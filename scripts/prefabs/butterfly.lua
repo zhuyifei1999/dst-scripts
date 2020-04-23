@@ -62,6 +62,10 @@ local function OnDeploy(inst, pt, deployer)
         flower.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
         AwardPlayerAchievement("growfrombutterfly", deployer)
+        TheWorld:PushEvent("CHEVO_growfrombutterfly",{target=flower,doer=deployer})
+        if deployer and deployer.SoundEmitter then
+            deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
+        end
     end
 end
 

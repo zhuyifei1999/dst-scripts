@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "That doesn't belong in this world, much like myself.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "I think that can wait until I'm back outside.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -495,6 +498,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nEnough fish to feed an entire crew!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "Ah, just missed!",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "Perhaps I'll try again.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -1356,6 +1364,8 @@ return{
         CHESSPIECE_ANCHOR = "I think Maman would like this.",
         CHESSPIECE_MOON = "Hits my eye like a big pizza pie.",
         CHESSPIECE_CARRAT = "Looking at it is making me a little hungry...",
+        CHESSPIECE_MALBATROSS = "I hope this won't bring us ill luck at sea...",
+        CHESSPIECE_CRABKING = "I'm getting a sudden craving for seafood.",
         CHESSJUNK1 = "Broken chess pieces?",
         CHESSJUNK2 = "More broken chess pieces?",
         CHESSJUNK3 = "And yet more broken chess pieces?",
@@ -3036,6 +3046,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "There's something inside that wants out.",
         MOON_ALTAR_ROCK_SEED = "There's something inside that wants out.",
 
+        MOON_ALTAR_CROWN = "Come on mon ami, let's get you back where you belong!",
+        MOON_ALTAR_COSMIC = "Something tells me this is part of a bigger recipe...",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "All the knowledge of a seasoned seafarer!",
@@ -3131,12 +3144,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "Not very appetizing, but smaller fish seem to like it.",
 		OCEANFISHINGLURE_SPOON_GREEN = "Not very appetizing, but smaller fish seem to like it.",
 		OCEANFISHINGLURE_SPOON_BLUE = "Not very appetizing, but smaller fish seem to like it.",
+		OCEANFISHINGLURE_HERMIT_RAIN = "A chef must have fresh ingredients, rain or shine!",
+		OCEANFISHINGLURE_HERMIT_SNOW = "A chilly lure, purchased from an icy shopkeep.",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "I'd better handle this one carefully.",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "A heavy dish for a hefty fish, non?",
 
 		OCEANFISH_SMALL_1 = "This will barely do as an appetizer!",
 		OCEANFISH_SMALL_2 = "A tasty little morsel!",
 		OCEANFISH_SMALL_3 = "Small, but surely delicious with the right accoutrements!",
 		OCEANFISH_SMALL_4 = "I do wish I had bigger fish to fry.",
 		OCEANFISH_SMALL_5 = "Has this fish already been cooked?",
+		OCEANFISH_SMALL_6 = "The meat has a dry, oddly brittle texture.",
+		OCEANFISH_SMALL_7 = "It's almost too pretty to eat... almost.",
+		OCEANFISH_SMALL_8 = "Mon dieu! I'll be the one cooked if I stay too close!",
+
 		OCEANFISH_MEDIUM_1 = "I've worked with worse looking ingredients.",
 		OCEANFISH_MEDIUM_2 = "You will make a fine fish dinner!",
 		OCEANFISH_MEDIUM_3 = "Hm, I wonder if those spines are poisonous.",
@@ -3144,6 +3165,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "Ah, some butter, some salt, and you'll be scrumptious!",
 		OCEANFISH_MEDIUM_6 = "Its scales have such a lovely sheen.",
 		OCEANFISH_MEDIUM_7 = "Its scales have such a lovely sheen.",
+		OCEANFISH_MEDIUM_8 = "I prefer to use fresh fish, not frozen...",
 
 		PONDFISH = "Poisson!",
 		PONDEEL = "Anguille.",
@@ -3157,13 +3179,18 @@ return{
 		FISH_BOX = "Is the fish fresh or canned? I feel rather conflicted.",
         POCKET_SCALE = "A simple way to weigh!",
 
+		TACKLECONTAINER = "I like my tackle to be as organized as my kitchen.",
+		SUPERTACKLECONTAINER = "C'est super!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "Perhaps I will try my luck?",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nWhat a massive morsel!",
 			BURNING = "(Sniff) Is that... fish soup?",
 			BURNT = "Ah, quelle dommage...",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nI do have a bit of experience with fishing!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nAh, bon! It seems I've won for now!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "Ah, I was hoping for something more delicious.",
@@ -3171,6 +3198,58 @@ return{
 		CALIFORNIAROLL = "Classic Japanese fusion!",
 		SEAFOODGUMBO = "Incredible! Just like Nana used to make!",
 		SURFNTURF = "Mwah! Perfection.",
+
+        WOBSTER_SHELLER = "Enchanté, entrée!", 
+        WOBSTER_DEN = "Bonjour? Anyone home?",
+        WOBSTER_SHELLER_DEAD = "One step closer to my mouth.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Could use garlic-butter...",
+
+        LOBSTERBISQUE = "I've truly outdone myself!",
+        LOBSTERDINNER = "No place is too remote for some fine dining!",
+
+        WOBSTER_MOONGLASS = "A shame they're not edible...",
+        MOONGLASS_WOBSTER_DEN = "Wobster, under glass!",
+
+		TRIDENT = "What dish could accomodate a fork of that size?",
+		
+		WINCH =
+		{
+			GENERIC = "It reminds me a bit of my days on the trawler.",
+			RETRIEVING_ITEM = "Ah bon! I've caught something!",
+			HOLDING_ITEM = "Just what have I fished from the depths?",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "That poor old woman... living here all on her own...",
+            BUILTUP = "I hope she's a bit more comfortable in there now.",
+        }, 
+        
+        SHELL_CLUSTER = "Perhaps I could break it open?",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "I wonder if there's something delicious inside...",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Do you hear the seashells sing?",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Maman had a lovely seashell collection.",
+        },
+
+        CHUM = "I suppose fish don't have an especially sophisticated palate.",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "I was hoping there would still be a fresh clam inside...",
+            LOCKED = "Ah, zut! Locked.",
+        },
+
+        RESKIN_TOOL = "Ah, this will help freshen up the place, non?",
+        MOON_FISSURE_PLUGGED = "I wonder why she's so determined to stay here.",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3290,6 +3369,41 @@ return{
 
 		GHOSTFLOWER = "Looking at it makes me feel... peaceful.",
         SMALLGHOST = "Oh! You gave me a little fright!",
+
+        CRABKING = 
+        {
+            GENERIC = "Oh, the dishes I could make with that much crab meat...",
+            INERT = "It seems to be missing a few shiny ingredients.",
+        },
+		CRABKING_CLAW = "I had a nightmare like this back in culinary school.",
+		
+		MESSAGEBOTTLE = "I do hope that's a recipe inside!",
+		MESSAGEBOTTLEEMPTY = "There's nothing sadder than a jam-less jam jar.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "Your jerky is served!!",
+            DRYING = "Not quite dry enough.",
+            DRYINGINRAIN = "Now it is more like a rehydrating rack...",
+            GENERIC = "It looks so bare... perhaps I could put some meat on it.",
+            BURNT = "Too dry! Too dry!",
+            DONE_NOTMEAT = "Et voila! It is done!",
+            DRYING_NOTMEAT = "Not quite ready yet.",
+            DRYINGINRAIN_NOTMEAT = "Now we're just watering it.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "Madame, I believe your honey is ready!",
+            FULLHONEY = "Madame, I believe your honey is ready!",
+            GENERIC = "It's a little hive of honeymakers!",
+            NOHONEY = "No more honey...",
+            SOMEHONEY = "There is a little honey.",
+            BURNT = "Disastrously caramelized.",
+        },
+
+
+        HERMIT_PEARL = "Madame Pearl entrusted it to me.",
+        HERMIT_CRACKED_PEARL = "Oh... oh dear...",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

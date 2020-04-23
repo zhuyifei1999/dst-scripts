@@ -13,6 +13,7 @@ local function ondeploy(inst, pt)
         inst.components.stackable:Get():Remove()
         PreventCharacterCollisionsWithPlacedObjects(lp)
         lp.sg:GoToState("spawn")
+        lp:AddTag("planted")
     end
 end
 

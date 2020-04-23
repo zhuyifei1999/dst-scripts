@@ -161,6 +161,9 @@ return{
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "I'm on the wrong plane of existence for this.",
+			
+			--MapSpotRevealer/messagebottle
+			MESSAGEBOTTLEMANAGER_NOT_FOUND = "Not here, my dear.",--Likely trying to read messagebottle treasure map in caves
         },
         WRAPBUNDLE =
         {
@@ -500,6 +503,11 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nI got my wish, a hefty fish!",
+
+	-- these are just for testing for now, no need to write real strings yet
+	ANNOUNCE_WINCH_CLAW_MISS = "I thought I'd be better at this game.",
+	ANNOUNCE_WINCH_CLAW_NO_ITEM = "It's come up with nothing.",
 
     --Wurt announce strings
 --fallback to speech_wilson.lua     ANNOUNCE_KINGCREATED = "only_used_by_wurt",
@@ -1362,6 +1370,8 @@ return{
         CHESSPIECE_ANCHOR = "So heavy, heavy, dreary, dreary.",
         CHESSPIECE_MOON = "The mortals thought it was made of cheese! Hyuyu!",
         CHESSPIECE_CARRAT = "Not so light on its feet now, hyuyu!",
+        CHESSPIECE_MALBATROSS = "Oh my word, that was a feisty bird!",
+        CHESSPIECE_CRABKING = "He was better at sinking than being a sea king.",
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
         CHESSJUNK3 = "It looks quite broke, and that's no joke!",
@@ -3042,6 +3052,9 @@ return{
         MOON_ALTAR_ROCK_GLASS = "There's a surprise inside!",
         MOON_ALTAR_ROCK_SEED = "There's a surprise inside!",
 
+        MOON_ALTAR_CROWN = "Well, you've had quite the adventure, hyuyu!",
+        MOON_ALTAR_COSMIC = "The stage is nearly set!",
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "For a mind as vast as the sea is deep!",
@@ -3137,12 +3150,20 @@ return{
 		OCEANFISHINGLURE_SPOON_RED = "What a fun prank for the fish!",
 		OCEANFISHINGLURE_SPOON_GREEN = "What a fun prank for the fish!",
 		OCEANFISHINGLURE_SPOON_BLUE = "What a fun prank for the fish!",
+		OCEANFISHINGLURE_HERMIT_RAIN = "Rain or shine, the fish will be mine!",
+		OCEANFISHINGLURE_HERMIT_SNOW = "How fun to go and fish in the snow!",
+		OCEANFISHINGLURE_HERMIT_DROWSY = "Oh, the pranks I could pull with this!",
+		OCEANFISHINGLURE_HERMIT_HEAVY = "An enticing bait for a fish of great weight!",
 
 		OCEANFISH_SMALL_1 = "Splash, splish, it's a tiny fish!",
 		OCEANFISH_SMALL_2 = "This soul is so small it's hardly worth snatching.",
 		OCEANFISH_SMALL_3 = "You took the bait, now suffer your fate!",
 		OCEANFISH_SMALL_4 = "It's hardly bigger than a minnow!",
 		OCEANFISH_SMALL_5 = "This one really pops, hyuyu!",
+		OCEANFISH_SMALL_6 = "I'm afraid it's time for you to leaf, hyuyu!",
+		OCEANFISH_SMALL_7 = "What might happen if I planted it in the garden?",
+		OCEANFISH_SMALL_8 = "It has such a sunny disposition! Hyuyu!",
+
 		OCEANFISH_MEDIUM_1 = "Your name is mud, fish!",
 		OCEANFISH_MEDIUM_2 = "If I hold it up, it becomes an upright bass!",
 		OCEANFISH_MEDIUM_3 = "How dandy indeed! You've a soul that I need.",
@@ -3150,6 +3171,7 @@ return{
 		OCEANFISH_MEDIUM_5 = "It looks like nature played quite the prank on this one.",
 		OCEANFISH_MEDIUM_6 = "I'm afraid your journey has been cut short.",
 		OCEANFISH_MEDIUM_7 = "I'm afraid your journey has been cut short.",
+		OCEANFISH_MEDIUM_8 = "What a chilly reception!",
 
 		PONDFISH = "You are quite fragrant.",
 		PONDEEL = "A slippery soul, that one.",
@@ -3163,13 +3185,18 @@ return{
 		FISH_BOX = "Fill it to the brim with bream!",
         POCKET_SCALE = "Allow me to quickly weigh in, hyuyu!",
 
+		TACKLECONTAINER = "Hoohoo! What mysteries of fisheries does it hold?",
+		SUPERTACKLECONTAINER = "That's quite a lot to tackle, hyuyu!",
+
 		TROPHYSCALE_FISH =
 		{
 			GENERIC = "For a fish it must be quite ideal, to be a prize and not a meal!",
 			HAS_ITEM = "Weight: {weight}\nCaught by: {owner}",
+			HAS_ITEM_HEAVY = "Weight: {weight}\nCaught by: {owner}\nJust look at the size of this fishy prize!",
 			BURNING = "Double, double toil and trouble, fire burn and fishbowl bubble!",
 			BURNT = "How fun!",
 			OWNER = "Weight: {weight}\nCaught by: {owner}\nMy fish is best, as this scale can attest!",
+			OWNER_HEAVY = "Weight: {weight}\nCaught by: {owner}\nYour impressive weight saved you from landing on a plate!",
 		},
 
 		OCEANFISHABLEFLOTSAM = "I will shape it into a delicious mud pie! Hyuyu.",
@@ -3177,6 +3204,58 @@ return{
 		CALIFORNIAROLL = "We're on a roll! Hyuyu!",
 		SEAFOODGUMBO = "Gleefully gilly gumbo!",
 		SURFNTURF = "My my, what an odd pair!",
+
+        WOBSTER_SHELLER = "Hyuyu, it's a creature I shelldom care to sea!", 
+        WOBSTER_DEN = "Even crustaceans need a place to sleep now and den.",
+        WOBSTER_SHELLER_DEAD = "It is quite thoroughly dead.",
+        WOBSTER_SHELLER_DEAD_COOKED = "Oh dear, the best part's already gone.",
+
+        LOBSTERBISQUE = "Mortals seem to enjoy turning anything into a soup.",
+        LOBSTERDINNER = "I'm afraid I don't seafood the way most do.",
+
+        WOBSTER_MOONGLASS = "That will be a hard shell to crack, hyuyu!",
+        MOONGLASS_WOBSTER_DEN = "A home made of glass? I think I'll pass.",
+
+		TRIDENT = "Holding a pitchfork feels disturbingly natural.",
+		
+		WINCH =
+		{
+			GENERIC = "Hoohoo! The mortals invented a snatching machine!",
+			RETRIEVING_ITEM = "Hyuyu! My treasure will soon be revealed!",
+			HOLDING_ITEM = "I always enjoy the game more than the prize, hyuyu!",
+		},
+
+        HERMITHOUSE = {
+            GENERIC = "What a sad little house for that cranky old louse.",
+            BUILTUP = "A little care can cause remarkable transformations.",
+        }, 
+        
+        SHELL_CLUSTER = "I wonder if there's any goodies inside?",
+        --
+		SINGINGSHELL_OCTAVE3 =
+		{
+			GENERIC = "A barnacled baritone!",
+		},
+		SINGINGSHELL_OCTAVE4 =
+		{
+			GENERIC = "Sweet singing seashells!",
+		},
+		SINGINGSHELL_OCTAVE5 =
+		{
+			GENERIC = "Such a high pitch, it makes my ears itch...",
+        },
+
+        CHUM = "Shall we try to get chummy with the fish? Hyuyu!",
+
+        SUNKENCHEST =
+        {
+            GENERIC = "I fear it's only a shell of it's former self.",
+            LOCKED = "We need a key for this gift from the sea!",
+        },
+
+        RESKIN_TOOL = "Oooh, the pranks I could pull with this!",
+        MOON_FISSURE_PLUGGED = "Hyuyu! Can you not get out, little ones?",
+
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
@@ -3296,6 +3375,41 @@ return{
 
 		GHOSTFLOWER = "What a fetching phantom flower.",
         SMALLGHOST = "I prefer souls with more meat on their bones... metaphorically speaking.",
+
+        CRABKING = 
+        {
+            GENERIC = "Another cursed soul.",
+            INERT = "This castle is missing its crown jewels.",
+        },
+		CRABKING_CLAW = "Now that's claws for alarm, hyuyuyu!",
+		
+		MESSAGEBOTTLE = "I'm tempted to take a peek!",
+		MESSAGEBOTTLEEMPTY = "An empty vessel.",
+
+        MEATRACK_HERMIT =
+        {
+            DONE = "The jerky is ready.",
+            DRYING = "It's drying.",
+            DRYINGINRAIN = "It's undrying day.",
+            GENERIC = "Her hooks are bare, but should I care?",
+            BURNT = "A silly prank to be sure.",
+            DONE_NOTMEAT = "The food's ready.",
+            DRYING_NOTMEAT = "It's drying.",
+            DRYINGINRAIN_NOTMEAT = "It's undrying day.",
+        },
+        BEEBOX_HERMIT =
+        {
+            READY = "So much honey! That crabby mortal might crack a smile!",
+            FULLHONEY = "So much honey! That crabby mortal might crack a smile!",
+            GENERIC = "The whole hive is abuzz!",
+            NOHONEY = "Nothing inside but bees, oh yes!",
+            SOMEHONEY = "We could scrape a bit of honey out.",
+            BURNT = "Mayhaps it's caramelized within!",
+        },
+
+
+        HERMIT_PEARL = "A treasured treasure.",
+        HERMIT_CRACKED_PEARL = "A shattered hope.",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",
