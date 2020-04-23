@@ -1,3 +1,7 @@
+-- See consolecommands.lua c_guitartab() function for example use.
+
+--
+
 local m = -1
 
 ---------------------------------------------------------------

@@ -1306,14 +1306,19 @@ function icebox_init_fn(inst, build_name)
             end
         end
     end
+
+    if inst.AnimState:IsCurrentAnimation("open") then
+        icebox_opened(inst)
+    end
 end
 function icebox_clear_fn(inst)
     inst.AnimState:SetBuild("ice_box")
 
-    icebox_closed(inst)
     inst:RemoveEventCallback("onopen", icebox_opened)
     inst:RemoveEventCallback("onclose", icebox_closed)
     inst:RemoveEventCallback("onremove", icebox_closed)
+    
+    icebox_closed(inst)
 end
 
 

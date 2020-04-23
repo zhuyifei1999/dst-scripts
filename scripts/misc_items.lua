@@ -706,6 +706,14 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 77,
 	},
+	loading_winona2_trailer =
+	{
+		type = "loading",
+		skin_tags = { "SHORTS", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 95,
+	},
 	loading_winona_trailer =
 	{
 		type = "loading",
@@ -761,6 +769,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 85,
+	},
+	loading_wortox2_trailer =
+	{
+		type = "loading",
+		skin_tags = { "SHORTS", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 95,
 	},
 	loading_wortox_trailer =
 	{
@@ -1783,6 +1799,49 @@ MISC_ITEMS =
 		output_items = {  "firepit_stonehenge", },
 		legacy_popup_category = "ROG",
 		release_group = 42,
+	},
+	pack_spring_bundle =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 1289760,
+		display_order = 3,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_spring_bundle.xml",
+		display_tex = "spring_bundle.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "bugnet_frog", "tent_leaf", "beehat_sunhat", "earmuffshat_beeguard", "coldfirepit_flower", "walrushat_blue", "icebox_porcelain", "researchlab3_nature", "featherhat_exotic", "backpack_koalefant", "krampus_sack_basket", "nightsword_curve", "armor_sanity_curve", },
+		output_items = {  "bugnet_frog", "tent_leaf", "beehat_sunhat", "earmuffshat_beeguard", "coldfirepit_flower", "walrushat_blue", "icebox_porcelain", "researchlab3_nature", "featherhat_exotic", "backpack_koalefant", "krampus_sack_basket", "nightsword_curve", "armor_sanity_curve", },
+		release_group = 96,
+	},
+	pack_springadventure_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_springadventure_items.xml",
+		display_tex = "springadventure_items.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "featherhat_exotic", "backpack_koalefant", "krampus_sack_basket", "nightsword_curve", "armor_sanity_curve", },
+		output_items = {  "featherhat_exotic", "backpack_koalefant", "krampus_sack_basket", "nightsword_curve", "armor_sanity_curve", },
+		release_group = 96,
+	},
+	pack_springoutdoors_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_springoutdoors_items.xml",
+		display_tex = "springoutdoors_items.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "bugnet_frog", "tent_leaf", "beehat_sunhat", "earmuffshat_beeguard", "coldfirepit_flower", "walrushat_blue", "icebox_porcelain", "researchlab3_nature", },
+		output_items = {  "bugnet_frog", "tent_leaf", "beehat_sunhat", "earmuffshat_beeguard", "coldfirepit_flower", "walrushat_blue", "icebox_porcelain", "researchlab3_nature", },
+		release_group = 96,
 	},
 	pack_starter_2019 =
 	{
@@ -3032,6 +3091,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	playerportrait_bg_dragonflyfurnacecrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 95,
+	},
 	playerportrait_bg_elementals =
 	{
 		type = "playerportrait",
@@ -3217,6 +3283,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	playerportrait_bg_lanterncrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 95,
+	},
 	playerportrait_bg_lava =
 	{
 		type = "playerportrait",
@@ -3387,6 +3460,13 @@ MISC_ITEMS =
 		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
 		rarity = "Loyal",
 		release_group = 48,
+	},
+	playerportrait_bg_researchlab3crystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 95,
 	},
 	playerportrait_bg_rocks =
 	{
@@ -3785,6 +3865,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	profileflair_dragonflyfurnace_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 95,
+	},
 	profileflair_dragonfruit =
 	{
 		type = "profileflair",
@@ -4083,6 +4170,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_lantern_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 95,
 	},
 	profileflair_living_wood =
 	{
@@ -4429,6 +4523,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 56,
+	},
+	profileflair_researchlab3_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 95,
 	},
 	profileflair_rook =
 	{

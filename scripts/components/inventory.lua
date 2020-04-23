@@ -964,7 +964,9 @@ function Inventory:GetOverflowContainer()
         return
     end
     local item = self:GetEquippedItem(EQUIPSLOTS.BODY)
-    return item ~= nil and item.components.container or nil
+    return (item ~= nil and item.components.container ~= nil and item.components.container.canbeopened)
+        and item.components.container
+        or nil
 end
 
 function Inventory:Has(item, amount) --Note(Peter): We don't care about v.skinname for inventory Has requests.

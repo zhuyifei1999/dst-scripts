@@ -1445,6 +1445,9 @@ local function NoteToSemitone(note)
 end
 
 function c_shellsfromtable(song, startpos, placementfn, spacing_multiplier, out_of_range_mode)
+
+    -- Example file: notetable_dsmaintheme
+
     song = song or require("notetable_dsmaintheme")
     
 	if song == nil or type(song) ~= "table" then
@@ -1639,6 +1642,9 @@ function c_shellsfromtable(song, startpos, placementfn, spacing_multiplier, out_
 end
 
 function c_guitartab(songdata, overrides, dont_spawn_shells)
+
+    -- Example file: guitartab_dsmaintheme.lua
+
 	if overrides == nil or type(overrides) ~= "table" then
 		overrides = {}
     end

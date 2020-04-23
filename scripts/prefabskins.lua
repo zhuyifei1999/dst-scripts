@@ -24,6 +24,7 @@ PREFAB_SKINS = {
 	},
 	armor_sanity = 
 	{
+		"armor_sanity_curve",
 		"armor_sanity_sharp",
 	},
 	armordragonfly = 
@@ -87,6 +88,7 @@ PREFAB_SKINS = {
 		"backpack_dragonfly_fire",
 		"backpack_glommer",
 		"backpack_hound",
+		"backpack_koalefant",
 		"backpack_mandrake",
 		"backpack_mushy",
 		"backpack_poop",
@@ -117,6 +119,7 @@ PREFAB_SKINS = {
 	beehat = 
 	{
 		"beehat_mourning",
+		"beehat_sunhat",
 	},
 	beemine = 
 	{
@@ -153,6 +156,7 @@ PREFAB_SKINS = {
 	},
 	bugnet = 
 	{
+		"bugnet_frog",
 		"bugnet_spider",
 		"bugnet_spider_white",
 	},
@@ -175,6 +179,7 @@ PREFAB_SKINS = {
 	},
 	coldfirepit = 
 	{
+		"coldfirepit_flower",
 		"coldfirepit_teeth",
 	},
 	cookpot = 
@@ -251,9 +256,11 @@ PREFAB_SKINS = {
 	dragonflyfurnace = 
 	{
 		"dragonflyfurnace_antique",
+		"dragonflyfurnace_crystal",
 	},
 	earmuffshat = 
 	{
+		"earmuffshat_beeguard",
 		"earmuffshat_deerclops",
 	},
 	endtable = 
@@ -273,6 +280,7 @@ PREFAB_SKINS = {
 	featherhat = 
 	{
 		"featherhat_circus",
+		"featherhat_exotic",
 	},
 	fence = 
 	{
@@ -381,6 +389,7 @@ PREFAB_SKINS = {
 	{
 		"icebox_coffin",
 		"icebox_crystal",
+		"icebox_porcelain",
 		"icebox_victorian",
 	},
 	icestaff = 
@@ -392,8 +401,13 @@ PREFAB_SKINS = {
 		"icestaff_northern",
 		"icestaff_rose",
 	},
+	krampus_sack = 
+	{
+		"krampus_sack_basket",
+	},
 	lantern = 
 	{
+		"lantern_crystal",
 		"lantern_tesla",
 		"lantern_winter",
 	},
@@ -407,10 +421,12 @@ PREFAB_SKINS = {
 	},
 	mast = 
 	{
+		"mast_crabking",
 		"mast_rose",
 	},
 	mast_item = 
 	{
+		"mast_crabking_item",
 		"mast_rose_item",
 	},
 	meatrack = 
@@ -452,6 +468,7 @@ PREFAB_SKINS = {
 	},
 	nightsword = 
 	{
+		"nightsword_curve",
 		"nightsword_sharp",
 	},
 	oceanfishingrod = 
@@ -504,6 +521,8 @@ PREFAB_SKINS = {
 	researchlab3 = 
 	{
 		"researchlab3_ancient",
+		"researchlab3_crystal",
+		"researchlab3_nature",
 	},
 	researchlab4 = 
 	{
@@ -564,6 +583,7 @@ PREFAB_SKINS = {
 	tent = 
 	{
 		"tent_circus",
+		"tent_leaf",
 	},
 	tophat = 
 	{
@@ -611,6 +631,10 @@ PREFAB_SKINS = {
 		"umbrella_heart",
 		"umbrella_parasol",
 		"umbrella_spider",
+	},
+	walrushat = 
+	{
+		"walrushat_blue",
 	},
 	wardrobe = 
 	{

@@ -1,3 +1,7 @@
+-- See consolecommands.lua c_shellsfromtable() function for example use.
+
+--
+
 local notes =
 {
 { 44, t=0.048 },
