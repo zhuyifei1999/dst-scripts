@@ -3401,6 +3401,7 @@ return{
             BURNT = "Poor bees!",
         },
 
+        HERMITCRAB = "My, she is a bit rude, isn't she?",
 
         HERMIT_PEARL = "Oh dear, I do hope I can find him.",
         HERMIT_CRACKED_PEARL = "I should tell her.",

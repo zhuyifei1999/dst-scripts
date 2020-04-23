@@ -3401,6 +3401,7 @@ return{
             BURNT = "The hive is silent.",
         },
 
+        HERMITCRAB = "Be ye a sea witch? Or just an old crone?",
 
         HERMIT_PEARL = "I shall protect it with my life!",
         HERMIT_CRACKED_PEARL = "The battle is won, but at what cost?",

@@ -3393,14 +3393,15 @@ return{
         },
         BEEBOX_HERMIT =
         {
-            READY = "Hey Ms. old lady! Look at all the honey they made!",
-            FULLHONEY = "Hey Ms. old lady! Look at all the honey they made!",
+            READY = "Hey Ms. Old Lady! Look at all the honey they made!",
+            FULLHONEY = "Hey Ms. Old Lady! Look at all the honey they made!",
             GENERIC = "We hear a lot of buzzing inside...",
             NOHONEY = "There's no honey inside.",
             SOMEHONEY = "Work faster, bees!",
             BURNT = "The site of The Great Honey Fire.",
         },
 
+        HERMITCRAB = "She reminds me of grandma... but meaner.",
 
         HERMIT_PEARL = "We'll take really good care of it!",
         HERMIT_CRACKED_PEARL = "We hope Ms. Pearl isn't too mad at us...",

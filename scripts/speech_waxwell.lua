@@ -3401,6 +3401,7 @@ return{
             BURNT = "Honey roasted.",
         },
 
+        HERMITCRAB = "I have better things to do than being berated by an old crab.",
 
         HERMIT_PEARL = "It's... strange to be so trusted.",
         HERMIT_CRACKED_PEARL = "Ah. I thought I'd run out of people to disappoint.",

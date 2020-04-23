@@ -3408,6 +3408,7 @@ return{
             BURNT = "Smoked you out!",
         },
 
+        HERMITCRAB = "Heh. I kinda like her.",
 
         HERMIT_PEARL = "Don't worry grams, it's safe with me!",
         HERMIT_CRACKED_PEARL = "Oops...",
