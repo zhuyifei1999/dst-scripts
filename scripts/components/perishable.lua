@@ -78,11 +78,13 @@ local function Update(inst, dt)
 				end
             elseif owner:HasTag("foodpreserver") then
                 modifier = TUNING.PERISH_FOOD_PRESERVER_MULT
-			elseif owner:HasTag("spoiler") then
-				modifier = TUNING.PERISH_GROUND_MULT
 			elseif owner:HasTag("cage") and inst:HasTag("small_livestock") then
                 modifier = TUNING.PERISH_CAGE_MULT
             end
+
+			if owner:HasTag("spoiler") then
+				modifier = modifier * TUNING.PERISH_GROUND_MULT
+			end
 		else
 			modifier = TUNING.PERISH_GROUND_MULT
 		end

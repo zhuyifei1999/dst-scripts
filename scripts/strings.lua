@@ -5340,6 +5340,7 @@ STRINGS.UI =
 			mermhouse = "A family of Merms",
 			mermhouse_crafted = "A well-to-do Merm",
 			mermthrone = "The King of the Merms",
+			crabking = "The Crab King",
 		},
 		TROPHYSCALE_UNKNOWN_OWNER = "An Unnamed Donor",
 	},

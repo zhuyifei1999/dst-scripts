@@ -3407,6 +3407,7 @@ return{
             BURNT = "Factory fire!",
         },
 
+        HERMITCRAB = "Nothin' wrong with being independent.",
 
         HERMIT_PEARL = "I know a bit about not givin' up on someone.",
         HERMIT_CRACKED_PEARL = "I'm so sorry, Pearl.",

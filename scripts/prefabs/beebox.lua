@@ -308,6 +308,8 @@ local function beebox_hermit(inst)
     inst.AnimState:SetBank("bee_box_hermitcrab")
     inst.AnimState:SetBuild("bee_box_hermitcrab")
     inst.AnimState:PlayAnimation("idle")
+
+	inst:AddTag("antlion_sinkhole_blocker")
 end
 
 local function beebox_master(inst)

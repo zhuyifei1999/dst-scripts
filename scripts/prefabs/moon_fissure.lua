@@ -176,6 +176,8 @@ local function fn()
     inst._level:set(MOON_STATES[TheWorld.state.moonphase])
 
 	OnUpdateLight(inst)
+
+	inst:AddTag("antlion_sinkhole_blocker")
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -249,6 +251,8 @@ local function plugged_fn()
     inst.AnimState:SetBank("plugged_fissure")
     inst.AnimState:SetBuild("plugged_fissure")
     inst.AnimState:PlayAnimation("idle", true)
+
+	inst:AddTag("antlion_sinkhole_blocker")
 
     inst.entity:SetPristine()
 

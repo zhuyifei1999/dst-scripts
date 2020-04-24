@@ -3402,6 +3402,7 @@ return{
             BURNT = "Bees are burned.",
         },
 
+        HERMITCRAB = "Wolfgang never seen such crabby old lady.",
 
         HERMIT_PEARL = "Will take good care of shiny stone!",
         HERMIT_CRACKED_PEARL = "Wolfgang did not take good care of shiny stone.",

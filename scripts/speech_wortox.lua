@@ -3407,6 +3407,7 @@ return{
             BURNT = "Mayhaps it's caramelized within!",
         },
 
+        HERMITCRAB = "Hyuyu, let's see if we can't coax this crab out of her shell!",
 
         HERMIT_PEARL = "A treasured treasure.",
         HERMIT_CRACKED_PEARL = "A shattered hope.",

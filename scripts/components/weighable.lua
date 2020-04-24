@@ -60,6 +60,8 @@ function Weighable:SetWeight(weight)
 end
 
 function Weighable:SetPlayerAsOwner(owner)
+	self.prefab_override_owner = nil
+
 	if owner ~= nil then
 		self.owner_userid = owner.userid
 		self.owner_name = owner.name

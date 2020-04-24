@@ -25,13 +25,10 @@ local prefabs =
     "crabking_claw",
     "crab_king_shine",
     "crabking_feeze",
-    "crab_king_shine_orange",
     "crabking_ring_fx",
     "crabking_chip_high",
     "crabking_chip_med",
     "crabking_chip_low",
-    "crabking_yellow_whirl_front",
-    "crabking_yellow_whirl_back",
     "moon_altar_cosmic",
     "hermit_cracked_pearl",
 	"chesspiece_crabking_sketch",
@@ -114,9 +111,9 @@ local function AddDecor(inst, data)
 end
 
 local function clearsocketart(inst)
-    inst.AnimState:OverrideSymbol("gems_blue", "nil","nil")
+	inst.AnimState:ClearOverrideSymbol("gems_blue")
     for i=1,9 do
-        inst.AnimState:OverrideSymbol("gem"..i, "nil","nil")
+		inst.AnimState:ClearOverrideSymbol("gem"..i)
     end    
 end
 
@@ -359,6 +356,7 @@ local function startcastspell(inst, freeze)
                 local boatpt = Vector3(boat.Transform:GetWorldPosition())
                 local fx = SpawnPrefab("crabking_geyserspawner")
                 fx.crab = inst
+				fx.fisher_prefab = inst.prefab
                 fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
                 fx.Transform:SetPosition(boatpt.x,boatpt.y,boatpt.z)
                 fx.dogeyserburbletask(fx)  
@@ -594,12 +592,6 @@ local function countarms(inst)
     return count
 end
 
-local function spawnsparkle(inst,symbol)
-    inst.shinefx = SpawnPrefab("crab_king_shine_orange")
-    inst.shinefx.entity:AddFollower()
-    inst.shinefx.Follower:FollowSymbol(inst.GUID, symbol, 0, 0, 0)
-end
-
 local function spawnchunk(inst,prefab,pos)
     local chip = SpawnPrefab(prefab)
     if chip and pos then
@@ -723,14 +715,6 @@ end
 
 local function getstatus(inst)
     return inst.sg and inst.sg:HasStateTag("inert") and "INERT"
-end
-
-local function spawnyellowwhirls(inst)
-    local pos = Vector3(inst.Transform:GetWorldPosition())
-    local front = SpawnPrefab("crabking_yellow_whirl_front") --.Transform:SetPosition(pos.x,pos.y,pos.z)
-    inst:AddChild(front)
-    local back = SpawnPrefab("crabking_yellow_whirl_back") --.Transform:SetPosition(pos.x,pos.y,pos.z)
-    inst:AddChild(back)
 end
 
 local function fn()
@@ -874,8 +858,6 @@ local function fn()
     inst.addgem = addgem
     inst.getfreezerange = getfreezerange
 
-    inst.spawnyellowwhirls = spawnyellowwhirls
-
     return inst
 end
 
@@ -949,7 +931,11 @@ local function endgeyser(inst)
                 for _, v in ipairs(affected_entities) do
                     if v.components.oceanfishable ~= nil then
                         -- Launch fishable things because why not.
+
                         local projectile = v.components.oceanfishable:MakeProjectile()
+						if projectile.components.weighable ~= nil then
+							projectile.components.weighable.prefab_override_owner = inst.fisher_prefab
+						end
                         local position = Vector3(x+offset.x,y+offset.y,z+offset.z) 
                         if projectile.components.complexprojectile then
                             projectile.components.complexprojectile:SetHorizontalSpeed(16)

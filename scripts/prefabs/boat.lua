@@ -223,6 +223,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("ignorewalkableplatforms")
+	inst:AddTag("antlion_sinkhole_blocker")
 	inst:AddTag("boat")
     inst:AddTag("wood")
 

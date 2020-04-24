@@ -924,6 +924,10 @@ end
 
 
 function CrowGameScreen:UpdateInterface()
+	if not (self.inst:IsValid()) then
+        return
+    end
+
 	if self.game_state == GS_TILE_SELECT_REG then
 		local game_over = true
 		for powerup,_ in pairs(self.pwup_button) do

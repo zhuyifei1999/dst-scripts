@@ -2,13 +2,6 @@ require("stategraphs/commonstates")
 
 local function heal(inst)
     inst.components.health:DoDelta(TUNING.CRABKING_REGEN + math.floor(inst.countgems(inst).orange/2) * TUNING.CRABKING_REGEN_BUFF )
-
---[[
-    local shinefx = SpawnPrefab("crab_king_shine_orange")
-    shinefx.entity:AddFollower()
-    shinefx.Follower:FollowSymbol(inst.GUID, "rays_placeholder", 0, 0, 0) 
-    inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/repair")
-]]
 end
 
 local function testforlostrock(inst, rightarm)
@@ -392,7 +385,11 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.keepcast then
-                inst.endcastspell(inst, inst.isfreezecast)
+
+                inst:DoTaskInTime(0,function()
+                    inst.endcastspell(inst, inst.isfreezecast)
+                end)
+              
                 inst.SoundEmitter:KillSound("crabmagic")
                 inst.isfreezecast = nil
             end

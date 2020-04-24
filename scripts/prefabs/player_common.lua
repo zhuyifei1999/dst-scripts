@@ -1444,12 +1444,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_boat_sink")
         inst.AnimState:AddOverrideBuild("player_oar")
         inst.AnimState:AddOverrideBuild("player_peruse")
-		inst.AnimState:AddOverrideBuild("player_boat_channel")
 
-        inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean")
         inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
 
-		inst.AnimState:AddOverrideBuild("player_actions_feast_eat")
         inst.DynamicShadow:SetSize(1.3, .6)
 
         inst.MiniMapEntity:SetIcon(name..".png")

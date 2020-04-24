@@ -21,9 +21,6 @@ local function MakeExplosion(data)
         if data ~= nil and data.scale ~= nil then
             inst.Transform:SetScale(data.scale, data.scale, data.scale)
         end
-        if proxy.scale_override ~= nil then
-            inst.Transform:SetScale(proxy.scale_override, proxy.scale_override, proxy.scale_override)
-        end
 
         inst.AnimState:SetBank(data ~= nil and data.bank or "explode")
         inst.AnimState:SetBuild(data ~= nil and data.build or "explode")

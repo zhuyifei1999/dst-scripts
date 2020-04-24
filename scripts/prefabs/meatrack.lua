@@ -195,6 +195,8 @@ local function meatrack_hermit(inst)
     inst.AnimState:SetBuild("meatrack_hermit")
     inst.AnimState:PlayAnimation("idle_empty")
 
+	inst:AddTag("antlion_sinkhole_blocker")
+
 end
 
 local function meatrack_master(inst)
