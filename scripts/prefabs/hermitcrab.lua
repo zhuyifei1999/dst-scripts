@@ -21,7 +21,6 @@ local assets =
     Asset("ANIM", "anim/player_actions_boomerang.zip"),
     Asset("ANIM", "anim/player_actions_whip.zip"),
     Asset("ANIM", "anim/player_actions_till.zip"),
-    Asset("ANIM", "anim/player_actions_feast_eat.zip"),
     Asset("ANIM", "anim/player_boat.zip"),
     Asset("ANIM", "anim/player_boat_plank.zip"),
     Asset("ANIM", "anim/player_oar.zip"),
@@ -244,9 +243,6 @@ local function OnRefuseItem(inst, giver, item)
         inst.components.npc_talker:Say(STRINGS.HERMITCRAB_REFUSE_VEST[math.random(#STRINGS.HERMITCRAB_REFUSE_VEST)])
     end                
     inst.sg:GoToState("refuse")
-    if inst.components.sleeper:IsAsleep() then
-        inst.components.sleeper:WakeUp()
-    end
 end
 
 local function NormalRetargetFn(inst)
@@ -1285,12 +1281,9 @@ local function fn()
     inst.AnimState:AddOverrideBuild("player_boat_sink")
     inst.AnimState:AddOverrideBuild("player_oar")
     inst.AnimState:AddOverrideBuild("player_peruse")
-    inst.AnimState:AddOverrideBuild("player_boat_channel")
 
-    inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean")
     inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
 
-    inst.AnimState:AddOverrideBuild("player_actions_feast_eat")
     --Sneak these into pristine state for optimization
 
     --trader (from trader component) added to pristine state for optimization
@@ -1380,10 +1373,6 @@ local function fn()
 
 	inst:AddComponent("teleportedoverride")
 	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
-
-    ------------------------------------------
-
-    inst:AddComponent("sleeper")
 
     ------------------------------------------
 

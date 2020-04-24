@@ -35,11 +35,16 @@ end
 
 local function OnRespawnTimer()
     _respawntask = nil
+
     if _crabkinglocation ~= nil then
-        local king = SpawnPrefab("crabking")
-        king.Transform:SetPosition(_crabkinglocation.x,0,_crabkinglocation.z)
-        king.sg:GoToState("reappear")
-    end        
+        if not TheWorld.Map:GetPlatformAtPoint(_crabkinglocation.x, _crabkinglocation.z) then
+            local king = SpawnPrefab("crabking")
+            king.Transform:SetPosition(_crabkinglocation.x,0,_crabkinglocation.z)
+            king.sg:GoToState("reappear")
+        else
+            _respawntask = inst:DoTaskInTime(10, OnRespawnTimer)
+        end        
+    end
 end
 
 local function StartRespawnTimer(t)

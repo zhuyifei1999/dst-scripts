@@ -26,7 +26,7 @@ local _scheduledtasks = {}
 --------------------------------------------------------------------------
 
 local GNARWAIL_TEST_RADIUS = 100
-local GNARWAIL_SPAWN_CHANCE = 0.05
+local GNARWAIL_SPAWN_CHANCE = 0.075
 local GNARWAIL_SPAWN_RADIUS = 10
 local GNARWAIL_TIMING = {8, 10} -- min 8, max 10
 local function testforgnarwail(comp, spawnpoint)
@@ -35,9 +35,15 @@ local function testforgnarwail(comp, spawnpoint)
         local offset = FindSwimmableOffset(spawnpoint, math.random()*2*PI, GNARWAIL_SPAWN_RADIUS)
         if offset then
             comp.inst:DoTaskInTime(GetRandomMinMax(GNARWAIL_TIMING[1], GNARWAIL_TIMING[2]), function()
-                local gnarwail = SpawnPrefab("gnarwail")
-                gnarwail.Transform:SetPosition(spawnpoint.x + offset.x, 0, spawnpoint.z + offset.z)
-                gnarwail.sg:GoToState("emerge")
+                local spawn_x = spawnpoint.x + offset.x
+                local spawn_z = spawnpoint.z + offset.z
+
+                -- Make sure a boat didn't roll over our spawn point during the delay
+                if TheWorld.Map:GetPlatformAtPoint(spawn_x, spawn_z) == nil then
+                    local gnarwail = SpawnPrefab("gnarwail")
+                    gnarwail.Transform:SetPosition(spawn_x, 0, spawn_z)
+                    gnarwail.sg:GoToState("emerge")
+                end
             end)
         end
     end

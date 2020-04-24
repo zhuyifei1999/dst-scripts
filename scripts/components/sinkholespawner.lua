@@ -150,7 +150,7 @@ function SinkholeSpawner:SpawnSinkhole(spawnpt)
         end
         for dx = -1, 1 do
             for dz = -1, 1 do
-                if not TheWorld.Map:IsPassableAtPoint(x1 + dx * TUNING.ANTLION_SINKHOLE.RADIUS, 0, z1 + dz * TUNING.ANTLION_SINKHOLE.RADIUS) then
+                if not TheWorld.Map:IsPassableAtPoint(x1 + dx * TUNING.ANTLION_SINKHOLE.RADIUS, 0, z1 + dz * TUNING.ANTLION_SINKHOLE.RADIUS, false, true) then
                     return false
                 end
             end

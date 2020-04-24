@@ -300,6 +300,8 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
 
         inst.displaynamefn = displaynamefn
 
+		inst:AddTag("antlion_sinkhole_blocker")
+
         MakeSnowCoveredPristine(inst)
 
 		inst.entity:SetPristine()

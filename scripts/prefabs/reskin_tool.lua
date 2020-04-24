@@ -21,35 +21,100 @@ local function onignite(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livinglog_burn")
 end
 
+local reskin_fx_info = 
+{
+	abigail = { offset = 1.3, scale = 1.3 },
+	arrowsign_post = { offset = 0.9, scale = 1.2 },
+	beebox = { scale = 1.4 },
+	bernie_big = { offset = 1.2, scale = 1.8 },
+	birdcage = { offset = 1.2, scale = 1.8 },
+	bugnet = { offset = 0.4 },
+	campfire = { scale = 1.2 },
+	cane = { offset = 0.4 },
+	coldfirepit = { scale = 1.2 },
+	cookpot = { offset = 0.5, scale = 1.4 }, 
+	critter_dragonling = { offset = 0.8 },
+	critter_glomling = { offset = 0.8 },
+	dragonflyfurnace = { offset = 0.6, scale = 1.8 },
+	endtable = { offset = 0.2, scale = 1.3 },
+	featherfan = { scale = 1.3 },
+	featherhat = { scale = 1.1 },
+	fence = { offset = 0.1, scale = 1.2 },
+	fence_gate = { offset = 0.2, scale = 1.3 },
+	firepit = { scale = 1.2 },
+	firestaff = { offset = 0.4 },
+	firesuppressor = { offset = 0.5, scale = 1.5 },
+	goldenshovel = { offset = 0.2 },
+	grass_umbrella = { offset = 0.4 },
+	greenstaff = { offset = 0.4 },
+	hambat = { offset = 0.2 },
+	icebox = { offset = 0.3, scale = 1.3 },
+	icestaff = { offset = 0.4 },
+	lightning_rod = { offset = 0.8, scale = 1.3 },
+	mast = { offset = 4, scale = 2 },
+	meatrack = { offset = 1, scale = 1.7 },
+	mushroom_light = { offset = 1.2, scale = 1.4 },
+	mushroom_light2 = { offset = 1.2, scale = 1.8 },
+	nightsword = { offset = 0.2 },
+	opalstaff = { offset = 0.4 },
+	orangestaff = { offset = 0.4 },
+	pighouse = { offset = 1.5, scale = 2.2 },
+	rabbithouse = { offset = 1.5, scale = 2.2 },
+	rainometer = { offset = 0.9, scale = 1.6 }, 
+	researchlab2 = { offset = 0.5, scale = 1.4 }, 
+	researchlab3 = { offset = 0.5, scale = 1.4 }, 
+	researchlab4 = { offset = 0.5, scale = 1.4 }, 
+	ruins_bat = { offset = 0.4, scale = 1.2 }, 
+	saltbox = { offset = 0.3, scale = 1.3 },
+	shovel = { offset = 0.2 },
+	spear = { offset = 0.4 },
+	spear_wathgrithr = { offset = 0.4 },
+	tent = { offset = 0.4, scale = 2.0 },
+	treasurechest = { offset = 0.1, scale = 1.1 },
+	umbrella = { offset = 0.4 },
+	wardrobe = { offset = 0.5, scale = 1.4 }, 
+	winterometer = { offset = 0.8, scale = 1.3 },
+	yellowstaff = { offset = 0.4 },
+}
+
 local function spellCB(tool, target, pos)
 
     local fx = SpawnPrefab("explode_reskin")
-    fx.Transform:SetPosition(target.Transform:GetWorldPosition())
-    fx.scale_override = 1.7 * target:GetPhysicsRadius(0.5)
+
+    local fx_info = reskin_fx_info[target.prefab] or {}
+
+    local scale_override = fx_info.scale or 1
+    fx.Transform:SetScale(scale_override, scale_override, scale_override)
+
+    local fx_pos_x, fx_pos_y, fx_pos_z = target.Transform:GetWorldPosition()
+    fx_pos_y = fx_pos_y + (fx_info.offset or 0)
+    fx.Transform:SetPosition(fx_pos_x, fx_pos_y, fx_pos_z)
 
     tool:DoTaskInTime(0, function()
-        if target.skinname == tool._cached_reskinname[target.prefab] then
-            local new_reskinname = nil
-            local search_for_skin = tool._cached_reskinname[target.prefab] ~= nil
-            if PREFAB_SKINS[target.prefab] ~= nil then
-                for _,item_type in pairs(PREFAB_SKINS[target.prefab]) do
-                    if search_for_skin then
-                        if tool._cached_reskinname[target.prefab] == item_type then
-                            search_for_skin = false
-                        end
-                    else
-                        if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
-                            new_reskinname = item_type
-                            break
+        if target:IsValid() and tool:IsValid() then
+            if target.skinname == tool._cached_reskinname[target.prefab] then
+                local new_reskinname = nil
+                local search_for_skin = tool._cached_reskinname[target.prefab] ~= nil
+                if PREFAB_SKINS[target.prefab] ~= nil then
+                    for _,item_type in pairs(PREFAB_SKINS[target.prefab]) do
+                        if search_for_skin then
+                            if tool._cached_reskinname[target.prefab] == item_type then
+                                search_for_skin = false
+                            end
+                        else
+                            if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
+                                new_reskinname = item_type
+                                break
+                            end
                         end
                     end
-                end
-    
-                tool._cached_reskinname[target.prefab] = new_reskinname
-            end
-        end
         
-        TheSim:ReskinEntity( target.GUID, target.skinname, tool._cached_reskinname[target.prefab], nil, tool.parent.userid )
+                    tool._cached_reskinname[target.prefab] = new_reskinname
+                end
+            end
+            
+            TheSim:ReskinEntity( target.GUID, target.skinname, tool._cached_reskinname[target.prefab], nil, tool.parent.userid )
+        end
     end )
 end
 

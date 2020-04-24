@@ -83,9 +83,9 @@ local function on_projectile_landed(inst)
         wobster.Transform:SetRotation(inst.Transform:GetRotation())
         wobster.components.inventoryitem:SetLanded(true, false)
 
-        if inst.components.oceanfishable ~= nil and inst.components.oceanfishable.caught_by ~= nil and wobster.components.weighable ~= nil then
-            wobster.components.weighable:SetPlayerAsOwner(inst.components.oceanfishable.caught_by)
-        end
+		if inst.components.oceanfishable ~= nil and wobster.components.weighable ~= nil then
+			wobster.components.weighable:CopyWeighable(inst.components.weighable)
+		end
 
         inst:Remove()
     else
@@ -100,7 +100,10 @@ local function on_projectile_landed(inst)
 
         SpawnPrefab("splash").Transform:SetPosition(x, y, z)
 
-        inst.components.oceanfishable.caught_by = nil
+		if inst.components.oceanfishable ~= nil and wobster.components.weighable ~= nil then
+			wobster.components.weighable:CopyWeighable(inst.components.weighable)
+			inst.components.weighable:SetPlayerAsOwner(nil)
+		end
     end
 end
 
@@ -136,6 +139,14 @@ local function set_on_rod(inst, rod)
         inst:RemoveTag("partiallyhooked")
         inst:RemoveTag("scarytooceanprey")
     end
+end
+
+local function 	SetupWeighable(inst)
+    inst.components.weighable.type = TROPHYSCALE_TYPES.FISH
+    inst.components.weighable:Initialize(inst.fish_def.weight_min, inst.fish_def.weight_max)
+
+	local _weight_scale = math.random()
+    inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, _weight_scale*_weight_scale*_weight_scale))
 end
 
 local function base_water_wobster(build_name, fish_def)
@@ -177,6 +188,9 @@ local function base_water_wobster(build_name, fish_def)
     end
 
     inst.fish_def = fish_def
+
+    inst:AddComponent("weighable")
+	SetupWeighable(inst)
 
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
@@ -363,11 +377,7 @@ local function base_land_wobster(build_name, nameoverride, fish_def, fadeout, co
     inst.components.lootdropper:SetLoot(inst.fish_def.loot)
 
     inst:AddComponent("weighable")
-    inst.components.weighable.type = TROPHYSCALE_TYPES.FISH
-    inst.components.weighable:Initialize(inst.fish_def.weight_min, inst.fish_def.weight_max)
-
-	local _weight_scale = math.random()
-    inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, _weight_scale*_weight_scale*_weight_scale))
+	SetupWeighable(inst)
 
     if cook_product ~= nil then
         inst:AddComponent("cookable")

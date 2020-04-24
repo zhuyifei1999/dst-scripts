@@ -60,7 +60,9 @@ local function do_water_explosion_effect(inst, affected_entity, owner, position)
             affected_entity.components.health:DoDelta(-TUNING.TRIDENT.SPELL.DAMAGE, nil, inst.prefab, nil, owner)
         end
     elseif affected_entity.components.oceanfishable ~= nil then
-        affected_entity.components.oceanfishable.caught_by = owner
+		if affected_entity.components.weighable ~= nil then
+	        affected_entity.components.weighable:SetPlayerAsOwner(owner)
+		end
 
         local projectile = affected_entity.components.oceanfishable:MakeProjectile()
 

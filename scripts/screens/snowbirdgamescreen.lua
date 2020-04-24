@@ -653,6 +653,10 @@ local function game_over_display( over_title, over_body )
 end
 
 function SnowbirdGameScreen:UpdateInterface()
+	if not (self.inst:IsValid()) then
+        return
+	end
+	
 	if self.game_state == GS_REVIEWING then
 		local game_over = self.lives == 0
 

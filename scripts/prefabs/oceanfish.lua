@@ -98,6 +98,7 @@ local function OnProjectileLand(inst)
 		Flop(fish)
 		if inst.components.oceanfishable ~= nil and fish.components.weighable ~= nil then
 			fish.components.weighable:CopyWeighable(inst.components.weighable)
+			inst.components.weighable:SetPlayerAsOwner(nil)
 		end
 
 	    inst:Remove()

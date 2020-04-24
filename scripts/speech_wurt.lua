@@ -3401,6 +3401,7 @@ return{
             BURNT = "It not buzzing anymore...",
         },
 
+        HERMITCRAB = "Hee-hee, she funny.",
 
         HERMIT_PEARL = "Oooooh, so shiny!",
         HERMIT_CRACKED_PEARL = "D-didn't do it!",

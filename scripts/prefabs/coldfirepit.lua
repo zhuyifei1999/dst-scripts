@@ -181,7 +181,13 @@ local function fn()
     inst:DoTaskInTime(0, OnInit)
 
 	inst.OnSave = OnSave
-	inst.OnPreLoad = OnPreLoad
+    inst.OnPreLoad = OnPreLoad
+    
+    inst.restart_firepit = function( inst )
+        local fuel_percent = inst.components.fueled:GetPercent()
+        inst.components.fueled:MakeEmpty()
+        inst.components.fueled:SetPercent( fuel_percent )
+    end
 
     return inst
 end

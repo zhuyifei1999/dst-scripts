@@ -1659,13 +1659,6 @@ local fx =
         fn = Bloom,
     }, 
     {
-        name = "crab_king_shine_orange",
-        bank = "crab_king_shine",
-        build ="crab_king_shine",
-        anim = "shine",        
-        fn = BloomOrange,
-    }, 
-    {
         name = "crab_king_icefx",
         bank = "deer_ice_flakes",
         build ="deer_ice_flakes",

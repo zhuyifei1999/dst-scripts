@@ -3405,6 +3405,7 @@ return{
             BURNT = "Fire breaks everything",
         },
 
+        HERMITCRAB = "Crabby",
 
         HERMIT_PEARL = "Shiny!",
         HERMIT_CRACKED_PEARL = "Broken...",

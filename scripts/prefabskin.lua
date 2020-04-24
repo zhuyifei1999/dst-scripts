@@ -317,6 +317,7 @@ function bugnet_init_fn(inst, build_name)
 end
 function bugnet_clear_fn(inst)
     inst.AnimState:SetBuild("swap_bugnet")
+    inst.components.inventoryitem:ChangeImageName()
     inst.overridebugnetsound = nil
 end
 
@@ -469,11 +470,14 @@ function coldfirepit_init_fn(inst, build_name, fxoffset)
 
     inst.AnimState:SetSkin(build_name, "coldfirepit")
     inst.components.burnable:SetFXOffset(fxoffset)
+
+    inst:restart_firepit() --restart any fire after getting skinned to reposition
 end
 function coldfirepit_clear_fn(inst)
     inst.AnimState:SetBuild("coldfirepit")
     inst.components.burnable.fxoffset = nil
-    inst.components.fueled:MakeEmpty() --Maybe do something better? For now this is the simplest to avoid bugs. Clearing a skin will turn off the fire
+
+    inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
 end
 
 
@@ -1148,7 +1152,9 @@ end
 
 local function researchlab2_applyflash(inst, intensity)
     inst.AnimState:SetLightOverride(intensity * .6)
-    inst.highlightchildren[1].AnimState:SetLightOverride(intensity)
+    if inst.highlightchildren ~= nil then
+        inst.highlightchildren[1].AnimState:SetLightOverride(intensity)
+    end
 end
 
 local function researchlab2_flashupdate(inst, intensity, totalframes)
@@ -1242,6 +1248,13 @@ function researchlab2_init_fn(inst, build_name)
         inst._PlayAnimation = researchlab2_playanimation
         inst._PushAnimation = researchlab2_pushanimation
     end
+
+    if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+        researchlab2_playanimation(inst, "proximity_loop", true)
+    end
+    if inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
+        researchlab2_playanimation(inst, "proximity_gift_loop", true)
+    end
 end
 function researchlab2_clear_fn(inst)
     inst.AnimState:SetBuild("researchlab2")
@@ -1255,6 +1268,7 @@ function researchlab2_clear_fn(inst)
     inst.flashtasks = nil
     inst._PlayAnimation = Default_PlayAnimation
     inst._PushAnimation = Default_PushAnimation
+    inst.highlightchildren = nil
 end
 
 --------------------------------------------------------------------------
