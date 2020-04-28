@@ -3205,7 +3205,7 @@ return{
         WOBSTER_SHELLER_DEAD = "He's thorougly hooped.",
         WOBSTER_SHELLER_DEAD_COOKED = "Good eats!",
 
-        LOBSTERBISQUE = "Looks pretty good for desert island food. [TODO:JEN]",
+        LOBSTERBISQUE = "Looks so smooth and creamy, but I'd still prefer salmon.",
         LOBSTERDINNER = "I'd prefer salmon.",
 
         WOBSTER_MOONGLASS = "Huh. Don't recall them looking like that.",

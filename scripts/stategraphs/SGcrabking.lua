@@ -339,8 +339,9 @@ local states =
                 else                    
                     inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME - math.floor(inst.countgems(inst).yellow/2))                    
                 end
+                inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/magic_LP","crabmagic")
             end
-            inst.components.timer:StartTimer("casting_timer",TUNING.CRABKING_CAST_TIME )
+
             if inst.isfreezecast then
                 inst.AnimState:PlayAnimation("cast_blue_loop")
             else
@@ -349,7 +350,6 @@ local states =
 
             inst.dofreezecast = nil
 
-            inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/magic_LP","crabmagic")
             inst.SoundEmitter:SetParameter("crabmagic", "intensity", 0)
         end,
 

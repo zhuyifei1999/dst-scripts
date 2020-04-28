@@ -462,7 +462,9 @@ local events =
         end),
     EventHandler("eat_food",
         function(inst)
-            inst.sg:GoToState("eat")
+            if not inst.sg:HasStateTag("busy") then
+                inst.sg:GoToState("eat")
+            end
         end),
     EventHandler("tossitem",
         function(inst)
@@ -2498,8 +2500,10 @@ local states =
                     end
        
                     for i,gift in ipairs(inst.itemstotoss) do
-                        inst.components.inventory:DropItem(gift)
-                        inst.components.lootdropper:FlingItem(gift)
+                        if gift and gift:IsValid() then
+                            inst.components.inventory:DropItem(gift)
+                            inst.components.lootdropper:FlingItem(gift)
+                        end
                     end
                     inst.itemstotoss = nil
                 end

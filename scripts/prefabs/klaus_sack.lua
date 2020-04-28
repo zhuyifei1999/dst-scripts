@@ -43,6 +43,7 @@ local giant_loot2 =
     "mushroom_light_blueprint",
     "townportal_blueprint",
     "bundlewrap_blueprint",
+	"trident_blueprint",
 }
 
 local giant_loot3 =
@@ -54,6 +55,7 @@ local giant_loot3 =
     "spiderhat",
     "steelwool",
     "townportaltalisman",
+	"malbatross_beak",
 }
 
 for i, v in ipairs(giant_loot1) do

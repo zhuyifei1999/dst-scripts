@@ -555,9 +555,11 @@ function ModsTab:UpdateForWorkshop( force_refresh )
                 -- We also handle X button.
                 if not down then
                     if control == CONTROL_MENU_MISC_1 then
-                        self:EnableCurrent(widget.data.index)
-                        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-                        return true
+                        if widget.data ~= nil then
+                            self:EnableCurrent(widget.data.index)
+                            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                            return true
+                        end
                     end
                 end
             end

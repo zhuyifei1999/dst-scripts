@@ -83,7 +83,7 @@ local function on_projectile_landed(inst)
         wobster.Transform:SetRotation(inst.Transform:GetRotation())
         wobster.components.inventoryitem:SetLanded(true, false)
 
-		if inst.components.oceanfishable ~= nil and wobster.components.weighable ~= nil then
+		if inst.components.weighable ~= nil and wobster.components.weighable ~= nil then
 			wobster.components.weighable:CopyWeighable(inst.components.weighable)
 		end
 
@@ -100,8 +100,7 @@ local function on_projectile_landed(inst)
 
         SpawnPrefab("splash").Transform:SetPosition(x, y, z)
 
-		if inst.components.oceanfishable ~= nil and wobster.components.weighable ~= nil then
-			wobster.components.weighable:CopyWeighable(inst.components.weighable)
+		if inst.components.weighable ~= nil then
 			inst.components.weighable:SetPlayerAsOwner(nil)
 		end
     end
@@ -279,6 +278,11 @@ local function on_ground_wobster_landed(inst)
         ocean_wobster.Transform:SetPosition(x, y, z)
         ocean_wobster.Transform:SetRotation(inst.Transform:GetRotation())
 
+        if inst.components.weighable ~= nil and ocean_wobster.components.weighable ~= nil then
+            ocean_wobster.components.weighable:CopyWeighable(inst.components.weighable)
+            inst.components.weighable:SetPlayerAsOwner(nil)
+        end
+
         SpawnPrefab("splash").Transform:SetPosition(x, y, z)
 
         inst:Remove()
@@ -294,9 +298,14 @@ end
 local function enter_water(inst)
     local ix, iy, iz = inst.Transform:GetWorldPosition()
 
-    local water_wobster = SpawnPrefab(inst.fish_def.prefab)
-    water_wobster.Transform:SetPosition(ix, iy, iz)
-    water_wobster.sg:GoToState("hop_pst")
+    local ocean_wobster = SpawnPrefab(inst.fish_def.prefab)
+    ocean_wobster.Transform:SetPosition(ix, iy, iz)
+    ocean_wobster.sg:GoToState("hop_pst")
+
+    if inst.components.weighable ~= nil and ocean_wobster.components.weighable ~= nil then
+        ocean_wobster.components.weighable:CopyWeighable(inst.components.weighable)
+        inst.components.weighable:SetPlayerAsOwner(nil)
+    end
 
     inst:Remove()
 end
