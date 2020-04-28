@@ -213,7 +213,7 @@ local function FindSporeBombTargets(inst, preferredtargets)
 
     local newtargets = {}
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable" }, { "ghost", "playerghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable", "player" }, { "ghost", "playerghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
     for i, v in ipairs(ents) do
         if v.entity:IsVisible() and
             v.components.debuffable ~= nil and

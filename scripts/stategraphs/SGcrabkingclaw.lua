@@ -307,7 +307,7 @@ CommonStates.AddRunStates(states,
     stopwalk = "walk_pst",
 })
 --CommonStates.AddSleepStates(states)
---CommonStates.AddFrozenStates(states)
+CommonStates.AddFrozenStates(states)
 
 
 CommonStates.AddCombatStates(states,{

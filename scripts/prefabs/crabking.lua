@@ -404,6 +404,16 @@ local function endcastspell(inst, lastwasfreeze)
     end
 end
 
+local function oncrabfreeze(inst)
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
+    if #ents > 0 then
+        for i,ent in pairs(ents)do
+            ent:Remove()
+        end
+    end 
+end
+
 local function spawnstacks(inst)
     local pos = Vector3(inst.Transform:GetWorldPosition())
     local stacks =  math.max(0,TUNING.CRABKING_STACKS - #TheSim:FindEntities(pos.x,0,pos.z, 20,{"seastack"}))    
@@ -828,7 +838,7 @@ local function fn()
     inst:ListenForEvent("entitywake", OnEntityWake)
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("healthdelta", onHealthChange)
-
+    inst:ListenForEvent("freeze", oncrabfreeze)
 
     MakeLargeBurnableCharacter(inst, "body")
     MakeHugeFreezableCharacter(inst, "body")
