@@ -145,8 +145,14 @@ local function HasValidHome(inst)
         and not home:HasTag("burnt")
 end
 
+local function allnighttest(inst)
+    if inst.segs and inst.segs["night"] + inst.segs["dusk"] >= 16 then
+        return true
+    end
+end
+
 local function GoHomeAction(inst)
-    if HasValidHome(inst) then
+    if HasValidHome(inst) and not allnighttest(inst) then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end
@@ -398,15 +404,13 @@ local function DoThrow(inst)
     end
 end
 
-
-
 local HermitBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
 function HermitBrain:OnStart()
 
-    local day = WhileNode( function() return TheWorld.state.isday end, "IsDay",
+    local day = WhileNode( function() return TheWorld.state.isday or allnighttest(self.inst) end, "IsDay",
         PriorityNode{  
             WhileNode( function() return not self.inst.sg:HasStateTag("mandatory") end, "unfriendly",
                 PriorityNode{  
@@ -431,7 +435,7 @@ function HermitBrain:OnStart()
                 },0.5),
         }, 0.5)
 
-    local night = WhileNode( function() return not TheWorld.state.isday end, "IsNight",
+    local night = WhileNode( function() return not TheWorld.state.isday and not allnighttest(self.inst) end, "IsNight",
         PriorityNode{
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
             ChattyNode(self.inst, function(inst) return getstring(inst,STRINGS.HERMITCRAB_GO_HOME) end ,

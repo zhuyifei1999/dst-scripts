@@ -233,46 +233,47 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, function()
         local parent = inst.entity:GetParent()
         if parent ~= nil then
-            local attack_playing = parent.AnimState:IsCurrentAnimation("atk")
-            local anim_time = parent.AnimState:GetCurrentAnimationTime()
-         
-
-            if attack_playing then
-                if anim_time > 0.13 and burst_state == 0 then
-                    burst_state = 1 --do burst
+            local mount = parent.components.rider ~= nil and parent.components.rider:GetMount() or nil
+            if mount == nil then
+                local attack_playing = parent.AnimState:IsCurrentAnimation("atk")
+                local anim_time = parent.AnimState:GetCurrentAnimationTime()
+        
+                if attack_playing then
+                    if anim_time > 0.13 and burst_state == 0 then
+                        burst_state = 1 --do burst
+                    end
+                else
+                    burst_state = 0 --wait for atk anim
                 end
-            else
-                burst_state = 0 --wait for atk anim
+
+                if burst_state == 1 then
+                    burst_state = 2 --wait for new atk
+                    local num_to_emit_smoke = 10
+                    local num_to_emit_spark = 20
+                    local num_to_emit_ember = 60
+                    
+                    local adjust_vec = nil
+                    if parent.AnimState:GetCurrentFacing() == 1 then
+                        --Do custom positioning
+                        adjust_vec = TheCamera:GetRightVec() * 0.75 - TheCamera:GetDownVec() * 2.6
+                    end
+
+                    while num_to_emit_smoke > 1 do
+                        emit_smoke_fn(effect, smoke_sphere_emitter, adjust_vec)
+                        num_to_emit_smoke = num_to_emit_smoke - 1
+                    end
+                    
+                    while num_to_emit_spark > 1 do
+                        emit_spark_fn(effect, spark_sphere_emitter, adjust_vec)
+                        num_to_emit_spark = num_to_emit_spark - 1
+                    end
+
+                    while num_to_emit_ember > 1 do
+                        emit_ember_fn(effect, ember_sphere_emitter, adjust_vec)
+                        num_to_emit_ember = num_to_emit_ember - 1
+                    end
+                end
             end
-
-            if burst_state == 1 then
-                burst_state = 2 --wait for new atk
-                local num_to_emit_smoke = 10
-                local num_to_emit_spark = 20
-                local num_to_emit_ember = 60
-                
-                local adjust_vec = nil
-                if parent.AnimState:GetCurrentFacing() == 1 then
-                    --Do custom positioning
-                    adjust_vec = TheCamera:GetRightVec() * 0.75 - TheCamera:GetDownVec() * 2.6
-                end
-
-                while num_to_emit_smoke > 1 do
-                    emit_smoke_fn(effect, smoke_sphere_emitter, adjust_vec)
-                    num_to_emit_smoke = num_to_emit_smoke - 1
-                end
-                
-                while num_to_emit_spark > 1 do
-                    emit_spark_fn(effect, spark_sphere_emitter, adjust_vec)
-                    num_to_emit_spark = num_to_emit_spark - 1
-                end
-
-                while num_to_emit_ember > 1 do
-                    emit_ember_fn(effect, ember_sphere_emitter, adjust_vec)
-                    num_to_emit_ember = num_to_emit_ember - 1
-                end
-            end
-
         end
     end)
 

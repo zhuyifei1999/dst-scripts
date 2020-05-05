@@ -1446,6 +1446,10 @@ local function fn()
             inst:ListenForEvent("onremove",  function() inst.CHEVO_marker = nil end, inst.CHEVO_marker)
         end
     end)    
+
+    inst:ListenForEvent("clocksegschanged", function(world, data)
+        inst.segs = data
+    end, TheWorld)
     
     inst:DoTaskInTime(0, RegisterToBottleManager) 
 

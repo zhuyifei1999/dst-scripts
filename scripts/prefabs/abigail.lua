@@ -59,7 +59,7 @@ local COMBAT_MUSHAVE_TAGS = { "_combat", "_health" }
 local COMBAT_CANTHAVE_TAGS = { "INLIMBO", "noauradamage" }
 
 local COMBAT_MUSTONEOF_TAGS_AGGRESSIVE = { "monster", "prey", "insect", "hostile", "character", "animal" }
-local COMBAT_MUSTONEOF_TAGS_DEFENSIVE = { "monster" }
+local COMBAT_MUSTONEOF_TAGS_DEFENSIVE = { "monster", "prey" }
 
 local COMBAT_TARGET_DSQ = TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE * TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE
 
