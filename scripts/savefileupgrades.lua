@@ -663,10 +663,13 @@ t = {
                     return
                 end
 
-                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata.map ~= nil and savedata.map.prefab == "forest" then
 					if not savedata.map.has_ocean then
 						savedata.map.has_ocean = true
 
+						if savedata.map.persistdata == nil then
+							savedata.map.persistdata = {}
+						end
 						if savedata.map.persistdata.retrofitforestmap_anr == nil then
 							savedata.map.persistdata.retrofitforestmap_anr = {}
 						end
@@ -680,7 +683,10 @@ t = {
         {
             version = 5.01, -- RoT: Turn of Tides - adds the ocean and island to the nav grid for pathfinding
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" then
+					if savedata.map.persistdata == nil then
+						savedata.map.persistdata = {}
+					end
 					if savedata.map.persistdata.retrofitforestmap_anr == nil then
 						savedata.map.persistdata.retrofitforestmap_anr = {}
 					end
@@ -692,7 +698,10 @@ t = {
         {
             version = 5.02, -- RoT: Turn of Tides - repopulate the seastacks to something slightly more interesting
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" then
+					if savedata.map.persistdata == nil then
+						savedata.map.persistdata = {}
+					end
 					if savedata.map.persistdata.retrofitforestmap_anr == nil then
 						savedata.map.persistdata.retrofitforestmap_anr = {}
 					end
@@ -704,7 +713,10 @@ t = {
         {
             version = 5.021, -- Reposition the sculture pieces that are inside the physics radius of a body
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" then
+					if savedata.map.persistdata == nil then
+						savedata.map.persistdata = {}
+					end
 					if savedata.map.persistdata.retrofitforestmap_anr == nil then
 						savedata.map.persistdata.retrofitforestmap_anr = {}
 					end
@@ -716,7 +728,10 @@ t = {
         {
             version = 5.03, -- RoT: Salty Dog - add new content
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" then
+					if savedata.map.persistdata == nil then
+						savedata.map.persistdata = {}
+					end
 					if savedata.map.persistdata.retrofitforestmap_anr == nil then
 						savedata.map.persistdata.retrofitforestmap_anr = {}
 					end
@@ -733,7 +748,7 @@ t = {
                     return
                 end
 
-                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                if savedata.map ~= nil and savedata.map.prefab == "forest" then
 					if savedata.map.has_ocean then
 						savedata.retrofit_savedata_fixupbrinepools = true
 					end
@@ -742,9 +757,13 @@ t = {
         },
 
         {
-            version = 5.04, -- RoT: She Sells Seashells - new content
+            version = 5.040, -- RoT: She Sells Seashells - new content
             fn = function(savedata)
-                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+				print("savedata", savedata.map.prefab, savedata.map.persistdata)
+                if savedata ~= nil and savedata.map ~= nil and savedata.map.prefab == "forest" then
+					if savedata.map.persistdata == nil then
+						savedata.map.persistdata = {}
+					end
                     if savedata.map.persistdata.retrofitforestmap_anr == nil then
                         savedata.map.persistdata.retrofitforestmap_anr = {}
                     end

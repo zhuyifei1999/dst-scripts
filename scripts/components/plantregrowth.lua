@@ -9,6 +9,8 @@ local CurrentBucket = nil
 local LastTime = 0
 local InternalTimes = {}
 
+local BASE_RADIUS = 8
+
 local TimeMultipliers = {
     ["evergreen"] = function()
         return (TheWorld.state.issummer and 2) or (TheWorld.state.iswinter and 0) or 1
@@ -164,7 +166,8 @@ local function GetSpawnPoint(from_pt, radius, prefab)
         if map:CanPlantAtPoint(try_pos:Get())
             and map:CanPlacePrefabFilteredAtPoint(try_pos.x, try_pos.y, try_pos.z, prefab)
             and not (RoadManager ~= nil and RoadManager:IsOnRoad(try_pos.x, 0, try_pos.z))
-            and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 3) <= 0 then
+            and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 3) <= 0 
+			and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, BASE_RADIUS, nil, nil, { "structure", "wall" }) <= 0 then
             validpos = try_pos
             break
         end

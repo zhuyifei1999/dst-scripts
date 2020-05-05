@@ -349,6 +349,13 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, const
 		inst.inittask = inst:DoTaskInTime(0, oninit)
         inst.dowind = dowind
 		
+        inst:ListenForEvent("clocksegschanged", function(world, data) 
+            inst.segs = data
+            if inst.segs["night"] + inst.segs["dusk"] >= 16 then
+                inst.components.spawner:ReleaseChild()
+            end
+        end, TheWorld)
+
         if inst.level == 3 or inst.level == 4 then
             inst:DoTaskInTime(math.random()*5, function() inst.dowind(inst) end)
         end        

@@ -417,8 +417,10 @@ function firepit_init_fn(inst, build_name, fxoffset)
         end
         inst:ListenForEvent("takefuel", inst._takefuel_fn)
     end
-
-    inst:restart_firepit() --restart any fire after getting skinned to reposition
+    
+    if inst.restart_firepit ~= nil then
+        inst:restart_firepit() --restart any fire after getting skinned to reposition
+    end
 end
 function firepit_clear_fn(inst)
     inst.AnimState:SetBuild("firepit")
@@ -428,7 +430,9 @@ function firepit_clear_fn(inst)
         inst._takefuel_fn = nil
     end
 
-    inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
+    if inst.restart_firepit ~= nil then
+        inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
+    end
 end
 
 --------------------------------------------------------------------------
@@ -471,13 +475,17 @@ function coldfirepit_init_fn(inst, build_name, fxoffset)
     inst.AnimState:SetSkin(build_name, "coldfirepit")
     inst.components.burnable:SetFXOffset(fxoffset)
 
-    inst:restart_firepit() --restart any fire after getting skinned to reposition
+    if inst.restart_firepit ~= nil then
+        inst:restart_firepit() --restart any fire after getting skinned to reposition
+    end
 end
 function coldfirepit_clear_fn(inst)
     inst.AnimState:SetBuild("coldfirepit")
     inst.components.burnable.fxoffset = nil
 
-    inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
+    if inst.restart_firepit ~= nil then
+        inst:restart_firepit() --restart any fire after getting cleared of a skin to reposition
+    end
 end
 
 
