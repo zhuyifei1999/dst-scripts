@@ -180,15 +180,19 @@ function SkinsPuppet:_ResetIdleEmoteTimer()
     self.time_to_idle_emote = math.random(self.emote_min_time or emote_min_time, self.emote_max_time or emote_max_time)
 end
 
+function SkinsPuppet:RemoveEquipped()
+	self.item_equip = false
+	self.animstate:Hide("ARM_carry")
+	self.animstate:Show("ARM_normal")
+end
+
 function SkinsPuppet:EmoteUpdate(dt)
 	if self.sitting then
 		return
 	end
 	
 	if self.item_equip and self.animstate:IsCurrentAnimation("item_in") then
-		self.item_equip = false
-		self.animstate:Hide("ARM_carry")
-		self.animstate:Show("ARM_normal")
+		self:RemoveEquipped()
 	end
 
 	if self.time_to_idle_emote > 0 then
@@ -247,6 +251,7 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	self.sitting = false
 	self.animstate:SetMultColour(1, 1, 1, 1)
 
+	local force_to_idle = self.prefabname ~= prefabname
 	self.prefabname = prefabname
 
 	if skinmode == nil then
@@ -272,11 +277,13 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 
 	local previousbank = self.currentanimbank
 	self.currentanimbank = skinmode.anim_bank or "wilson"
-	if self.currentanimbank ~= previousbank then
+	if force_to_idle or self.currentanimbank ~= previousbank then
 		self.animstate:SetBank(self.currentanimbank)
 
 		self.current_idle_anim = skinmode.idle_anim or "idle_loop"
 		self.animstate:PlayAnimation(self.current_idle_anim, true)
+		self.animstate:SetTime(math.random()*1.5)
+		self:RemoveEquipped()
 	end
 
 	self.play_non_idle_emotes = skinmode.play_emotes

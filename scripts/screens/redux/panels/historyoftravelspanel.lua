@@ -9,6 +9,7 @@ local GenericWaitingPopup = require "screens/redux/genericwaitingpopup"
 local AchievementsPopup = require "screens/redux/achievementspopup"
 local CreditsScreen = require "screens/creditsscreen"
 local MovieDialog = require "screens/moviedialog"
+local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/redux/templates"
 
