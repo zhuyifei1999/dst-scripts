@@ -41,10 +41,10 @@ local add_details = function ( self, proot, fontsize )
 
 	self.icon_anim = self.icon_root:AddChild(UIAnim())
 	self.icon_anim:GetAnimState():SetBuild("frames_comp")
-	self.icon_anim:GetAnimState():SetBank("fr")
+	self.icon_anim:GetAnimState():SetBank("frames_comp")
 	self.icon_anim:GetAnimState():Hide("frame")
 	self.icon_anim:GetAnimState():Hide("NEW")
-	self.icon_anim:GetAnimState():PlayAnimation("icon")
+	self.icon_anim:GetAnimState():PlayAnimation("idle_on")
 	self.icon_anim:SetScale(1.75)
 
     self.icon_glow = self.icon_root:AddChild(Image("images/global_redux.xml", "shop_glow.tex"))
@@ -1068,11 +1068,13 @@ function PurchasePackScreen:_BuildPurchasePanel()
                 end
             },
         }
-        local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200,
-                STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_TITLE,
-                buttons, nil,
-                STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_BODY
-            ))
+        local title = STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_TITLE
+        local body = STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_BODY
+        if IsRail() then
+            title = STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_TITLE_RAIL
+            body = STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_BODY_RAIL
+        end
+        local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200, title, buttons, nil, body ))
         purchase_ss.focus_forward = dialog
     end
 

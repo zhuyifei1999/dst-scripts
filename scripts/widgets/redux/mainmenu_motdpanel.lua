@@ -95,9 +95,9 @@ function MotdPanel:OnImagesLoaded()
 
 	local cell = nil
 	local center_x = 167
-	local center_y = -162
+	local center_y = -163
 
-    local w = 295
+    local w = 296
 	local cell_size = {width = w, height = w/16*9}
 	local cell_spacing = 1
 
@@ -223,7 +223,7 @@ function MotdPanel:OnImagesLoaded()
 
 		local vignette = self.bg:AddChild(Image("images/bg_redux_dark_bottom_vignette1.xml", "dark_bottom_vignette1.tex"))
 		vignette:SetPosition(x, y)
-		vignette:SetScale(.669)--Should be the same as for bg_redux_dark_bottom instantiated further down.
+		vignette:SetScale(.7)--Should be the same as for bg_redux_dark_bottom instantiated further down.
 
 		if self.motd_info.last_seen ~= nil and data.time ~= nil and self.motd_info.last_seen <= tonumber(data.time) then
 			local image_is_new = self.fg:AddChild(Image("images/ui.xml", "new_label_motd.tex"))

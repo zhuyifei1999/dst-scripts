@@ -3,7 +3,7 @@ local function OnDayComplete(self)
         self.daysgrowth = self.daysgrowth + 1
         local cb = self.callbacks[self.daysgrowth]
         if cb ~= nil then
-            cb(self.inst)
+            cb(self.inst, self.skinname)
         end
     end
 end
@@ -114,6 +114,7 @@ function Beard:OnSave()
     {
         growth = self.daysgrowth,
         bits = self.bits,
+        skinname = self.skinname
     }
 end
 
@@ -127,10 +128,23 @@ function Beard:OnLoad(data)
     if data.growth ~= nil then
         self.daysgrowth = data.growth
     end
+    if data.skinname ~= nil then
+        self.skinname = data.skinname
+    end
     for k = 0, self.daysgrowth do
         local cb = self.callbacks[k]
         if cb ~= nil then
-            cb(self.inst)
+            cb(self.inst, self.skinname)
+        end
+    end
+end
+
+function Beard:SetSkin(skinname)
+    self.skinname = skinname
+    for k = 0, self.daysgrowth do
+        local cb = self.callbacks[k]
+        if cb ~= nil then
+            cb(self.inst, self.skinname)
         end
     end
 end

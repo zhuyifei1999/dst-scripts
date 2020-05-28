@@ -5,7 +5,7 @@ local Widget = require "widgets/widget"
 
 -- A character selection grid with a portrait for the focused character.
 -- Positioned relative to the portrait.
-local CharacterSelect = Class(Widget, function(self, owner, character_widget_ctor, character_widget_size, character_description_getter_fn, default_character, cbPortraitHighlighted, cbPortraitSelected, additionalCharacters)
+local CharacterSelect = Class(Widget, function(self, owner, character_widget_ctor, character_widget_size, character_description_getter_fn, default_character, cbPortraitHighlighted, cbPortraitSelected, additionalCharacters, scrollbar_offset, custom_character_details_widget)
     self.owner = owner
 	Widget._ctor(self, "CharacterSelect")
 
@@ -15,14 +15,14 @@ local CharacterSelect = Class(Widget, function(self, owner, character_widget_cto
     self.characters = self:_BuildCharactersList(additionalCharacters or {})
 
     self.grid_columns = 5
-    self.character_grid = self:AddChild(self:_BuildCharacterGrid(self.characters, character_widget_ctor, character_widget_size))
+    self.character_grid = self:AddChild(self:_BuildCharacterGrid(self.characters, character_widget_ctor, character_widget_size, scrollbar_offset))
     -- Layout is relative to oval portrait since it usually anchors the grid to
     -- the right side of the screen. Portrait is where next grid object would
     -- go plus a bit more because portrait is larger than grid items.
     local w,h = self.character_grid:GetScrollRegionSize()
     self.character_grid:SetPosition(w * -0.8, h * -0.2)
 
-    self.selectedportrait = self:AddChild(OvalPortrait(default_character, character_description_getter_fn))
+    self.selectedportrait = self:AddChild(custom_character_details_widget ~= nil and custom_character_details_widget(default_character) or OvalPortrait(default_character, character_description_getter_fn))
 
     self.focus_forward = self.character_grid
 end)
@@ -43,7 +43,7 @@ function CharacterSelect:_BuildCharactersList(additionalCharacters)
     return characters
 end
 
-function CharacterSelect:_BuildCharacterGrid(characters, character_widget_ctor, character_widget_size)
+function CharacterSelect:_BuildCharacterGrid(characters, character_widget_ctor, character_widget_size, scrollbar_offset)
     local function ScrollWidgetsCtor(context, index)
         local w = Widget("CharacterSelect-cell-".. index)
         local function OnPortraitFocused(is_enabled)
@@ -61,7 +61,7 @@ function CharacterSelect:_BuildCharacterGrid(characters, character_widget_ctor, 
             end
         end
         -- Using a valid character to silence load errors.
-        w.face = w:AddChild(character_widget_ctor("willow", OnPortraitFocused, OnPortraitClicked))
+        w.face = w:AddChild(character_widget_ctor("wilson", OnPortraitFocused, OnPortraitClicked))
         w.focus_forward = w.face
         return w
     end
@@ -84,7 +84,7 @@ function CharacterSelect:_BuildCharacterGrid(characters, character_widget_ctor, 
             num_columns      = self.grid_columns,
             item_ctor_fn = ScrollWidgetsCtor,
             apply_fn     = ScrollWidgetApply,
-            scrollbar_offset = 0
+            scrollbar_offset = scrollbar_offset
         })
 
     return grid
@@ -106,7 +106,7 @@ function CharacterSelect:RefocusCharacter(last_character)
     local grid = self:_GetGrid()
     local slot_c,slot_r = grid:FindItemSlot(
         function(a)
-            return a.herocharacter == last_character
+            return a.face.herocharacter == last_character
         end)
 
     if slot_c and slot_r then

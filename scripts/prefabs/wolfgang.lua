@@ -9,12 +9,7 @@ local assets =
     Asset("SOUND", "sound/wolfgang.fsb"),
 }
 
-local start_inv =
-{
-    default =
-    {
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WOLFGANG
 end
@@ -262,6 +257,8 @@ local function master_postinit(inst)
 
     inst.components.hunger:SetMax(TUNING.WOLFGANG_HUNGER)
 
+    inst.components.foodaffinity:AddPrefabAffinity("potato_cooked", TUNING.AFFINITY_15_CALORIES_MED)
+
     if TheNet:GetServerGameMode() == "lavaarena" then
         inst.OnIsAvatarDirty = lavaarena_onisavatardirty
         event_server_data("lavaarena", "prefabs/wolfgang").master_postinit(inst)
@@ -269,6 +266,7 @@ local function master_postinit(inst)
         inst.components.health:SetMaxHealth(TUNING.WOLFGANG_HEALTH_NORMAL)
         inst.components.hunger.current = TUNING.WOLFGANG_START_HUNGER
 
+		inst.components.sanity:SetMax(TUNING.WOLFGANG_SANITY)
         inst.components.sanity.night_drain_mult = 1.1
         inst.components.sanity.neg_aura_mult = 1.1
 

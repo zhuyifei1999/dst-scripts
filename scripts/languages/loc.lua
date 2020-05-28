@@ -12,7 +12,7 @@ local localizations =
     {id = LANGUAGE.RUSSIAN,         alt_id = nil,                   strings = "russian.po",        code = "ru",    scale = 0.8,  in_steam_menu = false, in_console_menu = true,  shrink_to_fit_word = true }, -- Russian strings are very long (often the longest), and the characters in the font are big. Bad combination.
     {id = LANGUAGE.KOREAN,          alt_id = nil,                   strings = "korean.po",         code = "ko",    scale = 0.85, in_steam_menu = false, in_console_menu = true,  shrink_to_fit_word = false },
     {id = LANGUAGE.CHINESE_S,       alt_id = LANGUAGE.CHINESE_T,    strings = "chinese_s.po",      code = "zh",    scale = 0.85, in_steam_menu = true,  in_console_menu = true,  shrink_to_fit_word = false },
-    {id = LANGUAGE.CHINESE_S_RAIL,  alt_id = nil,                   strings = "chinese_r.po",      code = "zhr",   scale = 0.85, in_steam_menu = false, in_console_menu = false, shrink_to_fit_word = false },
+    {id = LANGUAGE.CHINESE_S_RAIL,  alt_id = nil,                   strings = "chinese_s.po",      code = "zhr",   scale = 0.85, in_steam_menu = false, in_console_menu = false, shrink_to_fit_word = false },
     --{id = LANGUAGE.JAPANESE,      alt_id = nil,                   strings = "japanese.po",     code = "ja",    scale = 0.85, in_console_menu = true},
     --{id = LANGUAGE.CHINESE_T,     alt_id = nil,                   strings = "chinese_t.po",    code = "zh",    scale = 0.85, in_console_menu = true},  
 }

@@ -677,6 +677,44 @@ function PlayerProfile:GetAutoSubscribeModsEnabled()
 	end
 end
 
+function PlayerProfile:SetAutoLoginEnabled(enabled)
+	if USE_SETTINGS_FILE then
+	   TheSim:SetSetting("misc", "autologin", tostring(enabled))
+   else
+	   self:SetValue("autologin", enabled)
+	   self.dirty = true
+   end
+end
+
+function PlayerProfile:GetAutoLoginEnabled()
+	if USE_SETTINGS_FILE then
+		local autologin = TheSim:GetSetting("misc", "autologin")
+		if autologin == nil then
+			return true
+		end
+		return autologin == "true"
+	else
+		return GetValueOrDefault( self.persistdata.autologin, true )
+	end
+end
+
+function PlayerProfile:SetAutoCavesEnabled(enabled)
+	if USE_SETTINGS_FILE then
+	   TheSim:SetSetting("misc", "autocaves", tostring(enabled))
+   else
+	   self:SetValue("autocaves", enabled)
+	   self.dirty = true
+   end
+end
+
+function PlayerProfile:GetAutoCavesEnabled()
+	if USE_SETTINGS_FILE then
+		return TheSim:GetSetting("misc", "autocaves") == "true"
+	else
+		return GetValueOrDefault( self.persistdata.autocaves, false )
+	end
+end
+
 function PlayerProfile:GetTextureStreamingEnabled()
  	if USE_SETTINGS_FILE then
 		return TheSim:GetSetting("misc", "texture_streaming") == "true"
@@ -1085,7 +1123,7 @@ function PlayerProfile:SawControllerPopup()
  	if USE_SETTINGS_FILE then
 		sawPopup = (TheSim:GetSetting("misc", "controller_popup") == "true")
 	else
-		sawPopup = self:GetValueOrDefault(self.persistdata.controller_popup, false)
+		sawPopup = GetValueOrDefault(self.persistdata.controller_popup, false)
 	end
 
 	return sawPopup

@@ -259,7 +259,7 @@ function RecipePopup:Refresh()
         end
     end
 
-    self.name:SetTruncatedString(STRINGS.NAMES[string.upper(self.recipe.product)], TEXT_WIDTH, self.smallfonts and 51 or 41, true)
+    self.name:SetTruncatedString(STRINGS.NAMES[string.upper(self.recipe.product)], TEXT_WIDTH+38, nil, false)
     self.desc:SetMultilineTruncatedString(STRINGS.RECIPE_DESC[string.upper(self.recipe.product)], 2, TEXT_WIDTH, self.smallfonts and 40 or 33, true)
 
     for i, v in ipairs(self.ing) do

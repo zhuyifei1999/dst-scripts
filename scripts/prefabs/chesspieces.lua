@@ -36,6 +36,11 @@ local PIECES =
     {name="carrat",     moonevent=false},
     {name="crabking",   moonevent=false},
     {name="malbatross", moonevent=false},
+    {name="toadstool",	moonevent=false},
+    {name="stalker",	moonevent=false},
+    {name="klaus",		moonevent=false},
+    {name="beequeen",	moonevent=false},
+    {name="antlion",	moonevent=false},
 } 
 
 local MOON_EVENT_RADIUS = 12

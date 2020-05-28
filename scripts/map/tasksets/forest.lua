@@ -38,6 +38,9 @@ AddTaskSet("default", {
         },
 		required_prefabs = {
 			"gravestone",
+			"sculpture_rook",
+			"sculpture_bishop",
+			"sculpture_knight",
 		},
 		set_pieces = {
 			["ResurrectionStone"] = { count = 2, tasks={"Make a pick", "Dig that rock", "Great Plains", "Squeltch", "Beeeees!", "Speak to the king", "Forest hunters", "Badlands" } },
@@ -92,6 +95,9 @@ AddTaskSet("classic", {
 		},
         valid_start_tasks = {
             "Make a pick",
+			"sculpture_rook",
+			"sculpture_bishop",
+			"sculpture_knight",
         },
 		required_prefabs = {
 			"gravestone",

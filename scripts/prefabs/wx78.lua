@@ -12,12 +12,7 @@ local prefabs =
     "cracklehitfx",
 }
 
-local start_inv =
-{
-    default =
-    {
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WX78
 end
@@ -306,6 +301,8 @@ local function master_postinit(inst)
         inst.components.eater:SetOnEatFn(oneat)
     end
     applyupgrades(inst)
+
+    inst.components.foodaffinity:AddPrefabAffinity("butterflymuffin", TUNING.AFFINITY_15_CALORIES_LARGE)
 
     inst:ListenForEvent("ms_respawnedfromghost", onbecamerobot)
     inst:ListenForEvent("ms_becameghost", onbecameghost)

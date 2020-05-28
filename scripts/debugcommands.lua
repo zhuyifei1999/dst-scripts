@@ -706,7 +706,7 @@ function d_setup_placeholders( reuse, out_file_name )
 				if reuse_speech ~= nil and reuse_speech[k] ~= nil then
 					--do nothing
 				else
-					reuse_speech[k] = "PLACEHOLDER"
+					reuse_speech[k] = "TODO"
 				end
 			else
 				--table

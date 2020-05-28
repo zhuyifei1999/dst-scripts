@@ -65,6 +65,7 @@ PREFAB_SKINS = {
 	},
 	axe = 
 	{
+		"axe_feathered",
 		"axe_northern",
 		"axe_victorian",
 	},
@@ -488,6 +489,7 @@ PREFAB_SKINS = {
 	},
 	pickaxe = 
 	{
+		"pickaxe_feathered",
 		"pickaxe_northern",
 		"pickaxe_scythe",
 	},
@@ -809,6 +811,15 @@ PREFAB_SKINS = {
 		"wilson_shadow",
 		"wilson_survivor",
 		"wilson_victorian",
+	},
+	wilson_beard = 
+	{
+		"wilson_beard_formal",
+		"wilson_beard_ice",
+		"wilson_beard_rose",
+		"wilson_beard_shadow",
+		"wilson_beard_survivor",
+		"wilson_beard_victorian",
 	},
 	winona = 
 	{

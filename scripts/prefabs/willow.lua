@@ -13,14 +13,7 @@ local prefabs =
     "lavaarena_bernie",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "lighter",
-        "bernie_inactive",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WILLOW
 end
@@ -79,7 +72,10 @@ local function master_postinit(inst)
 
     inst.customidleanim = customidleanimfn
 
+    inst.components.health:SetMaxHealth(TUNING.WILLOW_HEALTH)
     inst.components.health.fire_damage_scale = TUNING.WILLOW_FIRE_DAMAGE
+
+    inst.components.hunger:SetMax(TUNING.WILLOW_HUNGER)
 
     inst.components.sanity:SetMax(TUNING.WILLOW_SANITY)
     inst.components.sanity.custom_rate_fn = sanityfn
@@ -89,6 +85,8 @@ local function master_postinit(inst)
     inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_TINY
     inst.components.temperature:SetFreezingHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_FREEZING_KILL_TIME)
     inst.components.temperature:SetOverheatHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_OVERHEAT_KILL_TIME)
+
+    inst.components.foodaffinity:AddPrefabAffinity("hotchili", TUNING.AFFINITY_15_CALORIES_LARGE)
 
     inst:ListenForEvent("ms_respawnedfromghost", OnRespawnedFromGhost)
     OnRespawnedFromGhost(inst)

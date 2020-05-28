@@ -1,9 +1,6 @@
 local assets =
 {
     --In-game only
-    Asset("ATLAS", "images/hud.xml"),
-    Asset("IMAGE", "images/hud.tex"),
-
     Asset("ATLAS", "images/fx.xml"),
     Asset("IMAGE", "images/fx.tex"),
 

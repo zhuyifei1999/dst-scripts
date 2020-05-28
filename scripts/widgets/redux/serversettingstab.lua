@@ -27,7 +27,7 @@ local privacy_options = {
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.FRIENDS,   data=PRIVACY_TYPE.FRIENDS},
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.LOCAL,     data=PRIVACY_TYPE.LOCAL},
 }
-if PLATFORM ~= "WIN32_RAIL" then
+if not IsRail() then
     table.insert( privacy_options, {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN, data=PRIVACY_TYPE.CLAN} )
 end
 local privacy_buttons = {

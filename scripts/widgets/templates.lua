@@ -1241,14 +1241,14 @@ TEMPLATES = {
 		widg.target_slot_index = slot_index
 		
         widg:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-        widg:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+        widg:GetAnimState():SetBank("frames_comp") -- top level symbol from frames_comp
 
         local rarity = GetRarityForItem(name)
 
         widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(name), "SWAP_ICON")
         widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(rarity))
 
-        widg:GetAnimState():PlayAnimation("icon", true)
+        widg:GetAnimState():PlayAnimation("idle_on", true)
         widg:GetAnimState():Hide("NEW")
 
         widg:Hide()

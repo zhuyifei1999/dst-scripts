@@ -11,7 +11,6 @@ local ItemImage = Class(Button, function(self, user_profile, screen)
     self.user_profile = user_profile
     self.screen = screen
     self.image_scale = .6
-    self.default_anim = "icon"
 
     self.frame = self:AddChild(AccountItemFrame())
     self.frame:MoveToBack()
@@ -35,12 +34,12 @@ end
 function ItemImage:PlaySpecialAnimation(name, pushdefault)
 	self.frame:GetAnimState():PlayAnimation(name, false)
 	if pushdefault then 
-		self.frame:GetAnimState():PushAnimation(self.default_anim, true)
+		self.frame:GetAnimState():PushAnimation("icon", true)
 	end
 end
 
 function ItemImage:PlayDefaultAnim()
-	self.frame:GetAnimState():PlayAnimation(self.default_anim, true)
+	self.frame:GetAnimState():PlayAnimation("icon", true)
 end
 
 function ItemImage:SetItem(type, name, item_id, timestamp)

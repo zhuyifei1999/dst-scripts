@@ -175,6 +175,22 @@ local WorldCustomizationTab = Class(Widget, function(self, tab_location_index, s
         -- Get the add caves button
         return self.sublevel_adder_overlay.actions.items[1]
     end
+	self.sublevel_adder_overlay.body:SetPosition(0, 60)
+
+	self.autoaddcaves = self.sublevel_adder_overlay:AddChild(TEMPLATES.LabelCheckbox(
+			function(w) 
+				w.checked = not w.checked
+				Profile:SetAutoCavesEnabled(w.checked)
+				Profile:Save()
+				w:Refresh()
+			end, 
+			Profile:GetAutoCavesEnabled(), 
+			string.format(STRINGS.UI.SANDBOXMENU.AUTOADDLEVEL, tabname)))
+
+	local text_width = self.autoaddcaves.text:GetRegionSize()
+    self.autoaddcaves:SetPosition(-0.5 * text_width, -10)
+    self.autoaddcaves:SetFocusChangeDir(MOVE_DOWN, self.sublevel_adder_overlay.actions.items[1])
+    self.sublevel_adder_overlay.actions.items[1]:SetFocusChangeDir(MOVE_UP, self.autoaddcaves)
 
     self.no_sublevel = self:AddChild(Text(HEADERFONT, 40, string.format(STRINGS.UI.SANDBOXMENU.DISABLEDLEVEL, tabname), UICOLOURS.GOLD_SELECTED))
 
@@ -600,10 +616,11 @@ function WorldCustomizationTab:UpdateSlot(slotnum, prevslot, delete)
                 self:LoadPreset(prev.preset)
                 self.current_option_settings[self.tab_location_index].tweaks = deepcopy(prev.tweaks)
             end
-        elseif self.tab_location_index == 1 then
+        elseif self.tab_location_index == 1 or Profile:GetAutoCavesEnabled() then
             -- If we're the default location, load up a preset. (Otherwise, we
             -- wait for user to add us.)
             self:LoadPreset(nil)
+			self:UpdateMultilevelUI()
         end
     else -- Save data
         self.allowEdit = false

@@ -301,8 +301,14 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
 		end
 	else			
 		-- Set lan mode
-		TheNet:NotifyAuthenticationFailure()
-		local confirm = PopupDialogScreen( STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE,STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC, 
+        TheNet:NotifyAuthenticationFailure()
+        local title = STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE
+        local desc = STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC
+        if IsRail() then 
+            title = STRINGS.UI.MAINSCREEN.WEGAMEOFFLINEMODE
+            desc = STRINGS.UI.MAINSCREEN.WEGAMEFFLINEMODEDESC
+        end
+		local confirm = PopupDialogScreen( title, desc, 
 						{
 						 {text=STRINGS.UI.MAINSCREEN.PLAYOFFLINE, cb = function() TheFrontEnd:PopScreen() GoToMultiplayerMainMenu(true) end },
 						 {text=STRINGS.UI.MAINSCREEN.CANCELOFFLINE,  cb = function() onCancel() TheFrontEnd:PopScreen() end}  
@@ -409,6 +415,19 @@ function MainScreen:OnBecomeActive()
     friendsmanager:SetHAnchor(ANCHOR_RIGHT)
     friendsmanager:SetVAnchor(ANCHOR_BOTTOM)
     friendsmanager:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+    if not self.auto_login_started then
+        if Profile:GetAutoLoginEnabled() then
+            self.auto_login_started = true
+            self.inst:DoTaskInTime(0, function() --wait a frame, so that this happens after construction
+                if self.play_button:IsEnabled() then
+                    print("Do AutoLogin")
+                    self.play_button:Disable()
+                    self:OnLoginButton(true)
+                end
+            end)
+        end
+    end
 end
 
 function MainScreen:OnUpdate(dt)

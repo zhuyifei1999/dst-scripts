@@ -27,13 +27,7 @@ local prefabs =
 	"abigailunsummonfx_mount",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "abigail_flower",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WENDY
 end
@@ -206,10 +200,16 @@ local function master_postinit(inst)
     inst.customidleanim = "idle_wendy"
     inst.AnimState:AddOverrideBuild("player_idles_wendy")
 
+    inst.components.health:SetMaxHealth(TUNING.WENDY_HEALTH)
+    inst.components.hunger:SetMax(TUNING.WENDY_HUNGER)
+    inst.components.sanity:SetMax(TUNING.WENDY_SANITY)
+
     inst.components.sanity.night_drain_mult = TUNING.WENDY_SANITY_MULT
     inst.components.sanity.neg_aura_mult = TUNING.WENDY_SANITY_MULT
     inst.components.sanity:AddSanityAuraImmunity("ghost")
     inst.components.sanity:SetPlayerGhostImmunity(true)
+
+    inst.components.foodaffinity:AddPrefabAffinity("bananapop", TUNING.AFFINITY_15_CALORIES_SMALL)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wendy").master_postinit(inst, OnSave, OnLoad)

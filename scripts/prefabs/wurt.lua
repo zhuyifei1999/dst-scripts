@@ -12,13 +12,7 @@ local prefabs =
 	"wurt_tentacle_warning",
 }
 
-local start_inv =
-{
-    default =
-    {
-    },
-}
-
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WURT
 end
@@ -227,13 +221,9 @@ local function master_postinit(inst)
 
     inst:AddComponent("reader")
 
-    inst:AddComponent("foodaffinity")
     inst.components.foodaffinity:AddFoodtypeAffinity(FOODTYPE.VEGGIE, 1.33)
-    inst.components.foodaffinity:AddPrefabAffinity  ("kelp",          1.33)
-    inst.components.foodaffinity:AddPrefabAffinity  ("kelp_cooked",   1.33)
-    inst.components.foodaffinity:AddPrefabAffinity  ("kelp_dried",    1.33)
-    inst.components.foodaffinity:AddPrefabAffinity  ("durian",        1.6 )
-    inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", 1.6 )
+    inst.components.foodaffinity:AddPrefabAffinity  ("durian",        TUNING.AFFINITY_15_CALORIES_MED)
+    inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", TUNING.AFFINITY_15_CALORIES_MED)
 
     inst:AddComponent("itemaffinity")
     inst.components.itemaffinity:AddAffinity("hutch_fishbowl", nil, TUNING.DAPPERNESS_MED, 1)

@@ -22,11 +22,13 @@ local prefabs =
     "trinket_8",
     "trinket_9",
     "antliontrinket",
+	"chesspiece_antlion_sketch",
 }
 
 SetSharedLootTable('antlion',
 {
     {'townportal_blueprint',    1.00},
+	{'chesspiece_antlion_sketch', 1.00},
 
     {'townportaltalisman',  1.00},
     {'townportaltalisman',  1.00},

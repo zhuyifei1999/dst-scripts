@@ -426,6 +426,7 @@ local function boat_player_collision_fn()
     phys:SetTriangleMesh(PLAYER_COLLISION_MESH)    
 
     inst:AddTag("NOBLOCK")
+    inst:AddTag("NOCLICK")
 
     inst.entity:SetPristine()
 

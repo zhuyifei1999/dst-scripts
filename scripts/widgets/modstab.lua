@@ -251,7 +251,7 @@ function ModsTab:CreateDetailPanel()
 
 		self:DisableConfigButton()
 		self:DisableUpdateButton("uptodate")
-        self.modlinkbutton:SetHoverText(STRINGS.UI.MODSSCREEN.MORE_MODS)
+        self.modlinkbutton:ClearHoverText()
 		self.modlinkbutton:Unselect()
     end
 
@@ -710,7 +710,11 @@ function ModsTab:OnConfirmEnable(restart, modname)
     if KnownModIndex:IsModEnabled(modname) and modinfo.all_clients_require_mod then
         local workshop_prefix = "workshop-"
         if string.sub( modname, 0, string.len(workshop_prefix) ) ~= workshop_prefix then
-            TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MODSSCREEN.MOD_WARNING_TITLE, STRINGS.UI.MODSSCREEN.MOD_WARNING, 
+			local warn_txt = STRINGS.UI.MODSSCREEN.MOD_WARNING
+			if IsRail() then
+				warn_txt = STRINGS.UI.MODSSCREEN.MOD_WARNING_RAIL
+			end
+			TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MODSSCREEN.MOD_WARNING_TITLE, warn_txt, 
             {
                 {text=STRINGS.UI.MODSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() end }
             }))

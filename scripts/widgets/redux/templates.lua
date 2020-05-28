@@ -933,7 +933,7 @@ function TEMPLATES.BoltCounter(number_of_bolts)
 
 	bolt.bolt_count = bolt:AddChild(Text(CHATFONT_OUTLINE, 35, nil, UICOLOURS.WHITE))
     bolt.bolt_count:SetPosition(0, -60)
-    bolt.bolt_count:SetRegionSize(120, 43)
+    bolt.bolt_count:SetRegionSize(200, 43)
     bolt.bolt_count:SetHAlign(ANCHOR_MIDDLE)
 
     bolt._CountFn = function(self)
@@ -1824,7 +1824,96 @@ function TEMPLATES.ReduxForeground()
     return fg
 end
 
+-- for making static health/hunger/sanity for using in the lobby
+function TEMPLATES.MakeUIStatusBadge(status_name, c)
+	local status = Widget(status_name.."_status")
+	status._status_name = status_name
+	
+	status.status_icon = status:AddChild(Image("images/global_redux.xml", "status_"..status_name..".tex"))
+	status.status_icon:SetScale(.55)
 
+	status.status_image = status:AddChild(Image("images/global_redux.xml", "value_gold.tex"))
+	status.status_image:SetScale(.66)
+	status.status_image:SetPosition(0, -33)
 
+	status.status_value = status:AddChild(Text(HEADERFONT, 20, "", UICOLOURS.BLACK))
+	status.status_value:SetPosition(0, -34) 
+
+	status.ChangeCharacter = function(self, character)
+		local v = tostring(TUNING[string.upper(character.."_"..status_name)] or STRINGS.CHARACTER_DETAILS.STAT_UNKNOW)
+		status.status_value:SetString(v)
+	end
+
+	if c ~= nil then
+		status:ChangeCharacter(c)
+	end
+
+	return status
+end
+
+function TEMPLATES.MakeStartingInventoryWidget(c, left_align)
+	local root = Widget("starting_inv_root")
+
+    local title = root:AddChild(Text(HEADERFONT, 25, STRINGS.CHARACTER_DETAILS.STARTING_ITEMS_TITLE, UICOLOURS.GOLD_UNIMPORTANT))
+    local title_w, title_h = title:GetRegionSize()
+	title:SetPosition(left_align and title_w/2 or 0, -title_h/2)
+	title:SetHAlign(left_align and ANCHOR_LEFT or ANCHOR_MIDDLE)
+
+	root._invitems = root:AddChild(Widget("items_root"))
+
+	root.ChangeCharacter = function(self, character)
+		character = string.upper(character)
+		self._invitems:KillAllChildren()
+
+		local inv_item_list = (TUNING.GAMEMODE_STARTING_ITEMS[TheNet:GetServerGameMode()] or TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT)[character]
+		if inv_item_list ~= nil and #inv_item_list > 0 then
+			local inv_items, item_count = {}, {}
+			for _, v in ipairs(inv_item_list) do
+				if item_count[v] == nil then
+					item_count[v] = 1
+					table.insert(inv_items, v)
+				else
+					item_count[v] = item_count[v] + 1
+				end
+			end
+
+			local scale = 0.85
+			local spacing = 5
+			local slot_width, total_width, x
+
+			for i, item in ipairs(inv_items) do
+				local slot = root._invitems:AddChild(Image("images/hud.xml", "inv_slot.tex"))
+				slot:AddChild(Image(GetInventoryItemAtlas(item..".tex"), item..".tex")):SetScale(0.9)
+				slot:SetScale(scale)
+				if slot_width == nil then
+					slot_width = slot:GetSize()
+					slot_width = slot_width * scale
+					total_width = (slot_width * #inv_items + spacing * (#inv_items - 1))
+					x = left_align and (slot_width/2) or (-total_width/2 + slot_width/2)
+				end
+				slot:SetPosition(x, -(title_h + spacing + slot_width/2))
+
+				if item_count[item] > 1 then
+					--local label = slot:AddChild(Text(NUMBERFONT, 32, tostring(item_count[item])))
+					--label:SetPosition(1, 15)
+				end
+
+				x = x + slot_width + spacing
+			end
+		else
+			-- no gear
+			local label = root._invitems:AddChild(Text(HEADERFONT, 21, STRINGS.CHARACTER_DETAILS.STARTING_ITEMS_NONE, UICOLOURS.GREY))
+		    local w = label:GetRegionSize()
+			label:SetPosition(left_align and (title_w/2 - (title_w/2 - w/2)) or 1, -35)
+			label:SetHAlign(left_align and ANCHOR_LEFT or ANCHOR_MIDDLE)
+		end
+	end
+
+	if c ~= nil then
+		root:ChangeCharacter(c)
+	end
+
+	return root
+end
 
 return TEMPLATES

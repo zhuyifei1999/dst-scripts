@@ -571,7 +571,11 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
     -- Can't start an online game if we're offline
     elseif self.server_settings_tab:GetOnlineMode() and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
-        local online_only_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE, STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY,
+        local body = STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY
+        if IsRail() then
+            body = STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_RAIL
+        end
+        local online_only_popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONYTITLE, body,
                             {
                                 {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
                                     TheFrontEnd:PopScreen() 

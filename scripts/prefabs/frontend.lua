@@ -100,10 +100,19 @@ local assets =
     Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
     Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
     Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
-    -- If we want nonitem emotes, we need these too.
-    --~ Asset("ANIM", "anim/player_emotes_dance0.zip"),
-    --~ Asset("ANIM", "anim/player_emotes_sit.zip"),
-
+    Asset("ANIM", "anim/player_emotes_sit.zip"),
+    Asset("ANIM", "anim/player_actions_item.zip"),
+    Asset("ANIM", "anim/player_idles_warly.zip"),
+    Asset("ANIM", "anim/player_idles_wendy.zip"),
+    Asset("ANIM", "anim/player_idles_willow.zip"),    
+    Asset("ANIM", "anim/player_idles_winona.zip"),
+    Asset("ANIM", "anim/player_idles_woodie.zip"),
+    Asset("ANIM", "anim/player_idles_wormwood.zip"),
+    Asset("ANIM", "anim/player_idles_wortox.zip"),    
+    Asset("ANIM", "anim/player_idles_wurt.zip"),
+    Asset("ANIM", "anim/bernie_build.zip"),
+    Asset("ANIM", "anim/swap_lucy_axe.zip"),
+    
     -- Wardrobe
     Asset("ANIM", "anim/player_emotesxl.zip"), -- idle emote animations
 

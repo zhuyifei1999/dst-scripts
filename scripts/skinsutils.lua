@@ -1279,7 +1279,7 @@ function IsDefaultSkinOwned( item_key )
         end
         return true
     end
-    return IsDefaultClothing( item_key ) --all default clothing is owned.
+    return IsDefaultClothing( item_key ) or IsDefaultMisc( item_key ) --all default clothing is owned.
 end
 
 function IsDefaultSkin( item_key )
@@ -1296,6 +1296,10 @@ end
 
 function IsDefaultClothing( item_key )
     return item_key ~= nil and item_key ~= "" and CLOTHING[item_key] ~= nil and CLOTHING[item_key].is_default
+end
+
+function IsDefaultMisc( item_key )
+    return item_key ~= nil and item_key ~= "" and MISC_ITEMS[item_key] ~= nil and MISC_ITEMS[item_key].is_default
 end
 
 -- Returns a table similar to MISC_ITEMS, but with character heads (skin bases).

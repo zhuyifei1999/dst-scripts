@@ -12326,6 +12326,9 @@ local states =
             inst.components.health:SetInvincible(false)
             inst.DynamicShadow:Enable(true)
             DoPortalTint(inst, 0)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
         end,
     },
 

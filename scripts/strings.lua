@@ -106,31 +106,31 @@ STRINGS =
         wormwood = "The Lonesome",
         warly = "The Culinarian",
         wurt = "The Half-Pint",
-        random = "?",
+        random = "Random Character",
     },
 
     -- Use GetCharacterDescription from stringutil -- it handles variants!
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "\n*Grows a magnificent beard",
-        willow = "*Is immune to fire, but hates the cold \n*Protected by her cuddly bear, Bernie \n*Can craft a reliable lighter",
-        wendy = "*Is haunted by her twin sister \n*Feels comfortable in the dark \n*Doesn't hit very hard",
-        wolfgang = "*Grows stronger on a full belly \n*Is afraid of monsters and the dark",
+        willow = "*Has a fondness for fire, but hates the cold \n*Protected by her cuddly bear, Bernie\n*Has a reliable lighter",
+        wendy = "*Is haunted by her twin sister \n*Feels comfortable in the dark \n*Dabbles in Ectoherbology \n*Doesn't hit very hard",
+        wolfgang = "*Grows mighty on a full belly \n*Becomes wimpy when hungry \n*Burns a lot of calories \n*Is afraid of monsters and the dark",
         wx78 = "*Not a picky eater \n*Is charged by lightning, but damaged by water \n*Can upgrade with gears",
-        wickerbottom = "*Knows many things \n*Self-publishes books \n*Can't sleep, hates spoilage",
-        wes = "*Can't talk \n*Has trouble staying alive \n*Practices balloonomancy",
+        wickerbottom = "*Knows many things \n*Self-publishes books \n*Suffers from insomnia \n*Has a delicate stomach",
+        wes = "*Can't talk \n*Practices balloonomancy \n*Is not a skilled fighter \n*Has a high metabolism \n*Has trouble staying alive",
         waxwell = "*Is dapper, but frail \n*Can split his mind into pieces \n*Was once the king of the world",
-        woodie = "*Has a lovely axe... \n*And a terrible secret \n*Is thankful for bountiful harvests",
-        woodie_us = "*Has a lovely axe... \n*And a terrible secret \n*Celebrates Thanksgiving too early",
-        woodie_canada = "*Has a lovely axe... \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
+        woodie = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Is thankful for bountiful harvests",
+        woodie_us = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Celebrates Thanksgiving too early",
+        woodie_canada = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Celebrates Thanksgiving at the correct time",
         wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Invents her own gadgets",
         wortox = "*Is an imp \n*Can hop through time and space \n*Less nourished by physical food",
-        wormwood = "*Plants relate to him\n*Has a Green Thumb\n*Food fills his stomach, but not his heart",
-        warly = "*Has a refined palate\n*Cooks in custom kitchenware\n*Brings a stylish chef pouch",
+        wormwood = "*Plants relate to him \n*Saddened when plants are killed \n*Has a Green Thumb \n*Food fills his stomach, but not his heart",
+        warly = "*Has his own line of custom portable cookware \n*Can spice things up \n*Has an insatiable appetite \n*Only eats gourmet food",
         wurt = "*At home in the swamp \n*Has big plans for Merm-kind \n*Is a vegetarian",
-        random = "\nSelect a random character",
+        random = "Anybody could be under that hat",
     },
 
     LAVAARENA_CHARACTER_DESCRIPTIONS =
@@ -197,6 +197,140 @@ STRINGS =
         wormwood = "An amalgam of vines given sentience by lunar magic, Wormwood searches for friends so he can finally belong.",
         warly = "To Warly, cooking is a language through which to express love and gratitude to those he holds dear.",
         wurt = "Wurt is a curious young Merm trying to expand her horizons... as long as those horizons don't extend into Pig territory.",
+    },
+
+	CHARACTER_BIOS =
+	{
+        wilson = 
+		{
+            { title = "Birthday", desc = "April 23" },
+            { title = "Favorite Food", desc = "Bacon and Eggs" },
+			{ title = "Secret Knowledge", desc = "While toiling away in his home laboratory late one night, Wilson was startled to hear a voice on the radio speaking directly to him. At first he feared he'd gone mad from too many late nights of experiments and accidentally-inhaled chemical fumes, but the voice assured him that it was no mere figment of the imagination. In fact, the voice had a proposition for him: if Wilson would build a machine according to their specifications, then he would be rewarded with secret knowledge, the likes of which no one had ever seen. Casting aside his better judgement (after all, what harm could come from making a vague bargain with a mysterious disembodied voice?) Wilson threw himself into constructing the machine. When at long last it was finally completed, the gentleman scientist had a moment of hesitation... a moment that might have saved him from his impending fate, had he been just a bit stronger of will. But at the voice's insistence, Wilson flipped the switch and activated his creation... and was never seen again.\nWell, at least not in this world." },
+		},
+        willow = 
+		{
+            { title = "Birthday", desc = "May 7" },
+            { title = "Favorite Food", desc = "Spicy Chili" },
+            { title = "From the Ashes", desc = "Willow always regarded being brought to The Constant as a new beginning. It allowed her to leave everything behind, after all. From a young age, Willow seemed to possess a knack for attracting bad luck. Orphaned at a young age and forced to live in a children's home with cruel caregivers, she soon found her nights plagued by shadowy visions of terrible creatures... creatures that could only be held at bay by her faithful teddy bear Bernie. But when Bernie was taken away as punishment for what her caregivers saw as unfit behavior, Willow was left to fend for herself when the shadows came for her. That's when she learned that nothing holds back the darkness like a roaring flame. Nothing is more comforting than watching your troubles light up and crumble to ash...\nIt wouldn't be the last time Willow burned it all down to start anew." },
+		},
+        wendy =
+		{
+            { title = "Birthday", desc = "November 11" },
+            { title = "Favorite Food", desc = "Banana Pop" },
+			{ title = "Wish You Were Here", desc = "Wendy's tale of woe began with the untimely loss of her dear sister Abigail. Unable to accept the thought of life without her twin, Wendy began turning to the occult in the hopes of finding some way to communicate with the other side. After much trial and error, seance candles burned down to nubs and spirit boards thrown away in frustration, Wendy was nearly ready to give up and fall into despair... until finally, there was a sign. A ragtime tune might seem like a strange message to send from the great beyond, but Wendy was desperate to grab hold of anything that might bring her closer to her sister. And sure enough, a voice would soon tell her exactly what she needed to do..." },
+		},
+        woodie =
+		{
+            { title = "Birthday", desc = "September 12" },
+            { title = "Favorite Food", desc = "Honey Nuggets" },
+			{ title = "A Mysterious Past", desc = "Hailing from the pine-covered mountains of the great white north, Woodie is an unassuming yet strangely mysterious man who keeps his past close to the vest (or in his case, the flannel). He is never seen without his signature bushy beard or trusty axe Lucy, who herself is a bit of an enigma. The other Survivors are not quite sure whether Woodie is simply mad, or if there might be something else to the seemingly inanimate object. Sometimes they swear they can hear a jovial female voice speaking to Woodie when no one else is around..." },
+            { title = "Tree's a Crowd", desc = "As the power of the moon has grown, so too have the effects of Woodie's curse. Woodie soon found that his form would shift into not only the Werebeaver, but a Weremoose and Weregoose as well. As his changing forms became more unpredictable, Woodie resolved to find a way to have more control over his curse. Using every bit of knowledge he'd gained from his time in the Constant (and some additional tips from Ms. Wickerbottom) he soon discovered that his transformations could in fact be controlled. By fashioning representations of each of the three beasts and consuming them only when he wanted to invoke that form, Woodie now feels more comfortable in his own skin than he has in quite a while." },
+		},
+        wolfgang =
+		{
+            { title = "Birthday", desc = "October 2" },
+            { title = "Favorite Food", desc = "Roasted Potato" },
+			{ title = "His Past...", desc = "Is yet to be revealed." },
+		},
+        wx78 =
+		{
+            { title = "Buildday", desc = "November 28" },
+            { title = "Favorite Food", desc = "Butter Muffin" },
+			{ title = "Their Past...", desc = "Is yet to be revealed." },
+		},
+        wickerbottom =
+		{
+            { title = "Birthday", desc = "December 6" },
+            { title = "Favorite Food", desc = "Surf 'n' Turf" },
+			{ title = "Her Past...", desc = "Is yet to be revealed." },
+		},
+        wes =
+		{
+            { title = "Birthday", desc = "April 16" },
+            { title = "Favorite Food", desc = "Fresh Fruit Crepes" },
+			{ title = "His Past...", desc = "Is yet to be revealed." },
+		},
+        waxwell =
+		{
+            { title = "Birthday", desc = "October 22" },
+            { title = "Favorite Food", desc = "Lobster Dinner" },
+			{ title = "The Nightmare King", desc = "The former king of the Nightmare Throne and an egomaniac to boot. Maxwell (who earned his name from his former stage persona \"The Amazing Maxwell\") was once the naive and unimposing \"William Carter\", a penniless man from London who dreamt of being a world-renowned magician. When fate put William in possession of the Codex Umbra, he felt true power for the first time in his life. Casting off his old, meek ways and fully embracing his new persona as a charismatic master of dark magic, Maxwell achieved fame and success, but still found himself hungering for more. As he delved deeper and deeper into his magical tome, immersing himself in its secrets, the dark knowledge within addled his mind and clouded his heart. In his final performance, Maxwell lost control of the shadow magic he'd used so brazenly and both he and his stage assistant Charlie were pulled into the Constant. There he would remain for what seemed like an eternity, tethered to the Nightmare Throne and compelled to ensnare more victims in the Constant's trap.\nHe is still baffled by the thought that someone he tricked into the Constant could find it in their heart to set him free... well, baffled and annoyed really. He never liked owing a favor." },
+		},
+        wathgrithr =
+		{
+            { title = "Birthday", desc = "July 23" },
+            { title = "Favorite Food", desc = "Turkey Dinner" },
+			{ title = "Her Past...", desc = "Is yet to be revealed." },
+		},
+        webber =
+		{
+            { title = "Birthday", desc = "April 30" },
+            { title = "Favorite Food", desc = "Ice Cream" },
+			{ title = "His Past...", desc = "Is yet to be revealed." },
+		},
+        winona =
+		{
+            { title = "Birthday", desc = "September 13" },
+            { title = "Favorite Food", desc = "Vegetable Stinger" },
+			{ title = "Next of Kin", desc = "There is nothing Winona wouldn't do for her family. When her younger sister Charlie disappeared under mysterious circumstances, Winona refused to let the case grow cold and dedicated herself to finding her. For over a decade she tracked down every clue, followed every lead, poked, prodded, and questioned anyone who might have a connection to the case, until all the loose strings started to come together. There was a radio factory, founded by a peculiar old man whose genius was only matched by his secretiveness, that might hold the answers she had sought for so long. Shortly after securing employment at the factory, the building was destroyed in an accident caused by a malfunctioning portal. Having caught sight of someone getting caught in the portal and vanishing, Winona hastily repaired it in the hopes of rescuing them, only to come face to face with her missing sister. Unfortunately, Charlie seemed to be held under the sway of a shadowy influence, and she dragged Winona into the Constant." },
+		},
+        wortox =
+		{
+            { title = "Birthday", desc = "March 28" },
+            { title = "Favorite Food", desc = "Wortox is not particularly interested in mortal food, but he does enjoy a Pomegranate now and then." },
+			{ title = "Possessions", desc = "Wortox learned the hard way that one should always be mindful of the company they keep. Once a playful imp without a care in the world, Wortox spent his days helping a Krampus make mischief throughout the Constant. While the pair of rascals revelled in their roguery for a time, Wortox slowly began to see a darkness in the Krampus' heart, and the malice in his pranks. Not wishing for any real harm to come to anyone, the little imp finally put his cloven foot down, but in trying to stop his fiendish friend he unwittingly awakened a terrible power in himself..." },
+		},
+        wormwood =
+		{
+            { title = "Birthday", desc = "June 6" },
+            { title = "Favorite Food", desc = "Cooked Banana" },
+			{ title = "Lunar Roots", desc = "Though the circumstances of his creation were unusual at best, Wormwood came into this world full of optimism and curiosity, ready to make new friends and see all that life had to offer. But as time wore on and he experienced the cold sting of rejection, he came to learn what the moon above had always known: Wormwood the Lonesome does not belong here." },
+		},
+        warly =
+		{
+            { title = "Birthday", desc = "July 25" },
+            { title = "Favorite Food", desc = "Warly could never pick a favorite, a connoisseur of great food must always be expanding his palate." },
+			{ title = "Taste of Home", desc = "Warly left a promising career as a sous chef in Paris to return home and care for his aging mother Angeline, whose memory had begun to deteriorate. His world soon revolved around telling her stories about her life, playing her favorite music, cooking the recipes she had taught him when he was young... all in the hopes of catching that spark of recognition in her eyes. As time went on and Angeline's moments of clarity became fewer and farther in-between, Warly became more desperate, willing to try anything to bring back his beloved Maman...\nThat was when he first started hearing the voice on the radio." },
+		},
+        wurt =
+		{
+            { title = "Birthday", desc = "October 17" },
+            { title = "Favorite Food", desc = "Durian" },
+			{ title = "A New Chapter", desc = "Wurt is a little Merm girl who wants to bring her people back to their former glory (if they did indeed ever have a former glory... the evidence is a bit shaky on that front). A bit more open-minded than other Merms, she has taken to following the Survivors around and learning more about them. She is particularly fascinated by books with pretty pictures inside and an amazing thing the humans call \"candy\". Though she enjoys living in the swamp and being around other Merms, being the smallest and the youngest often makes her feel quite isolated, and she is enjoying the novelty of having some friends closer to her own age amongst the Survivors." },
+		},
+	},
+
+	CHARACTER_DETAILS =
+	{
+		STAT_UNKNOW = "?",
+		STARTING_ITEMS_TITLE = "Enters the Constant With",
+		STARTING_ITEMS_NONE = "Nothing in hand",
+		VIDEO_BUTTON = "Play Animated Short",
+		CHARACTER_DESCRIPTION_TITLE = "Perks & Quirks",
+		CHARACTER_QUOTE_TITLE = "Quote",
+		SURVIVABILITY_TITLE = "Odds of Survival",
+	},
+
+    CHARACTER_SURVIVABILITY =
+    {
+        wilson = "Slim",
+        willow = "Slim",
+        wendy = "Slim",
+        woodie = "Slim",
+        wolfgang = "Grim",
+        wx78 = "Slim",
+        wickerbottom = "Grim",
+        wes = "None",
+        waxwell = "Grim",
+        wathgrithr = "Slim",
+        webber = "Grim",
+        winona = "Slim",
+        wortox = "Grim",
+        wormwood = "Grim",
+        warly = "Grim",
+        wurt = "Slim",
+        random = "Unknown",
+        default = "Unknown",
     },
 
     --ACTION MOUSEOVER TEXT
@@ -498,7 +632,7 @@ STRINGS =
 		},
         CYCLE =
         {
-            GENERIC = "cycle [TODO:JEN]",
+            GENERIC = "Cycle",
             TUNE = "Hit",
         },
 
@@ -1694,6 +1828,11 @@ STRINGS =
         CHESSPIECE_CARRAT = "Carrat Figure",
         CHESSPIECE_MALBATROSS = "Malbatross Figure",
         CHESSPIECE_CRABKING = "Crab King Figure",        
+        CHESSPIECE_TOADSTOOL = "Toadstool Figure",
+        CHESSPIECE_STALKER = "Ancient Fuelweaver Figure",
+        CHESSPIECE_KLAUS = "Klaus Figure",
+        CHESSPIECE_BEEQUEEN = "Bee Queen Figure",
+        CHESSPIECE_ANTLION = "Antlion Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1715,6 +1854,11 @@ STRINGS =
         CHESSPIECE_CARRAT_BUILDER = "Carrat Figure",
         CHESSPIECE_MALBATROSS_BUILDER = "Malbatross Figure",
         CHESSPIECE_CRABKING_BUILDER = "Crab King Figure",
+        CHESSPIECE_TOADSTOOL_BUILDER = "Toadstool Figure",
+        CHESSPIECE_STALKER_BUILDER = "Ancient Fuelweaver Figure",
+        CHESSPIECE_KLAUS_BUILDER = "Klaus Figure",
+        CHESSPIECE_BEEQUEEN_BUILDER = "Bee Queen Figure",
+        CHESSPIECE_ANTLION_BUILDER = "Antlion Figure",
 
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
@@ -2848,6 +2992,11 @@ STRINGS =
         CHESSPIECE_CARRAT_BUILDER = "A winsome sculpture of a champion.",
         CHESSPIECE_MALBATROSS_BUILDER = "A sculpted scourge of the seas.",
         CHESSPIECE_CRABKING_BUILDER = "It looks even crabbier than you remember it.",
+		CHESSPIECE_TOADSTOOL_BUILDER = "A toad-ally authentic reproduction of the original.",
+        CHESSPIECE_STALKER_BUILDER = "A de-animated reanimated skeleton.",
+        CHESSPIECE_KLAUS_BUILDER = "Klaus to perfection.",
+        CHESSPIECE_BEEQUEEN_BUILDER = "More regal than real.",
+        CHESSPIECE_ANTLION_BUILDER = "Ain't this Antlion beautiful?",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
@@ -4960,6 +5109,7 @@ STRINGS.UI =
 
         BROWSE = "Browse Games",
         CREATE = "Host Game",
+        COMPENDIUM = "Compendium",
         GAMEWIZARD = "Game Wizard",
         SKINS = "Curio Cabinet",
         MYSTERYBOX = "Treasury",
@@ -5041,6 +5191,8 @@ STRINGS.UI =
         OFFLINE = "Offline",
         OFFLINEMODE = "Connection to Klei Failed",
         OFFLINEMODEDESC = "Could not connect to Klei's servers. Characters and worlds from online games will be unavailable. Continue and play offline?",
+        WEGAMEOFFLINEMODE = "Connection to WeGame Failed",
+        WEGAMEFFLINEMODEDESC = "Couldn't connect to WeGame (scheduled maintenance or connectivity issues). Characters and worlds from online games will be unavailable. Play offline?",
         STEAMOFFLINEMODE = "Connection to Steam Failed",
         STEAMOFFLINEMODEDESC = "Couldn't connect to Steam (scheduled maintenance or connectivity issues). Characters and worlds from online games will be unavailable. Play offline?",
         PSN_OFFLINEMODE = "Connection to "..STRINGS.PSN.." failed",
@@ -5095,6 +5247,7 @@ STRINGS.UI =
         TOOLTIP_WIZARD = "Let us help you drill down the list of servers",
         TOOLTIP_MODS = "Customize your game",
         TOOLTIP_PLAYERSUMMARY = "Equip curios, craft items and view player history",
+		TOOLTIP_COMPENDIUM = "A summary of your adventures",
         TOOLTIP_OPTIONS = "Change your settings and controls",
         TOOLTIP_OPTIONS_PS4 = "Change your settings and view the controls",
         TOOLTIP_QUIT = "Scram!",
@@ -5402,7 +5555,7 @@ STRINGS.UI =
         AGE_DAY = "Day",
         AGE_DAYS = "Days",
         CLOSE = "Close",
-        STEAM = "View Steam Profile",
+        STEAM = "View Profile",
         CHOOSING = "is choosing their character",
     },
 
@@ -5483,6 +5636,7 @@ STRINGS.UI =
         -- INPUTFREQENCY = "Input Frequency(hz):",
         AUTOSAVE = "Auto-save",
         AUTOMODS = "Auto-Subscribe Mods:",
+        AUTOLOGIN = "Auto-Login:",
         SHOWPASSWORD = "Show Passwords:",
 		SERVER_NAME_PROFANITY_FILTER = "Filter Server Names:",
         SNAPSHOTS = "Server Snapshots",
@@ -5502,6 +5656,23 @@ STRINGS.UI =
 		CREDITS = "Credits",
 		VIDEO_CHANNEL = "More Klei Videos",
     },
+	
+	COMPENDIUM =
+	{
+		HISTORYOFTRAVELS = "History of Travels",
+		CHARACTERDETAILS = "Survivors",
+        OBITUARIES = "Obituaries",
+        ENCOUNTERS = "Encounters",
+		CINEMATICS = "Cinematics",
+
+		TOOLTIP_HISTORYOFTRAVELS = "A summary of your adventures",
+		TOOLTIP_CHARACTERDETAILS = "The survivors of the Constant",
+        TOOLTIP_OBITUARIES = "Reminisce over past mistakes",
+        TOOLTIP_ENCOUNTERS = "A history of those you've crossed paths with",
+		TOOLTIP_CINEMATICS = "Pretty movies!",
+
+		CAUSEOFDEATH_OTHER = "Other",
+	},
 
     NOTIFICATION =
     {
@@ -5658,11 +5829,14 @@ STRINGS.UI =
             E_UPGRADE = "Version Out of Date",
             ID_DST_USER_CONNECTION_FAILED = "Connection Failed",
             ID_DST_FRIENDS_ONLY_SERVER = "Friends Only",
-            APP_OWNERSHIP_CHECK_FAILED = "Steam Ownership Check Failed",
+            APP_OWNERSHIP_CHECK_FAILED = "Game Ownership Check Failed",
             SERVER_MODS_NOT_ON_WORKSHOP = "Disconnected Due To Missing Mods",
+            SERVER_MODS_NOT_ON_WORKSHOP_RAIL = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
+            SERVER_MODS_WORKSHOP_FAILURE_RAIL = "Disconnected Due To Missing Mods",
+            SERVER_MODS_WORKSHOP_ACCESS_DENIED_RAIL = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan",
@@ -5721,11 +5895,14 @@ STRINGS.UI =
             ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication failed. Please try again.",
             ID_DST_USER_CONNECTION_FAILED = "Something went awry while connecting. Please try again.",
             ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a \"friends only\" server, but you're not friends with the host.",
-            APP_OWNERSHIP_CHECK_FAILED = "Steam says you don't own the game. But you do... right?",
+            APP_OWNERSHIP_CHECK_FAILED = "The server says you don't own the game. But you do... right?",
             SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods that are not available on the Steam Workshop. You will need to manually download the missing mods.",
+            SERVER_MODS_NOT_ON_WORKSHOP_RAIL = "This server requires mods that are not available. You will need to manually download the missing mods.",
             SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods for new players to join.",
             SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods from the Steam Workshop failed. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Download of the required mods from the Steam Workshop failed because one or more mods is not visible to you.",
+            SERVER_MODS_WORKSHOP_FAILURE_RAIL = "Download of the required mods failed. Please try again.",
+            SERVER_MODS_WORKSHOP_ACCESS_DENIED_RAIL = "Download of the required mods failed because one or more mods is not visible to you.",
             ID_DST_SLOT_RESERVATION = "Attempt to join server failed because remaining player slots are reserved. Please try again once a slot frees up.",
             ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's Steam Group to connect.",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows players from their same local network.",
@@ -6015,15 +6192,9 @@ STRINGS.UI =
         NO_MODS_OK = "Show Me!",
         NO_MODS = "You have no mods installed. Mods can be downloaded from the Steam Workshop.",
         NO_MODS_TYPE = "You have no %s mods installed. Mods can be downloaded from the Steam Workshop.",
+        NO_MODS_CLIENT_TGP = "You don't have any client mods installed. You can download some from the WeGame client.",
+        NO_MODS_SERVER_TGP = "You don't have any server mods installed. You can download some from the WeGame client.",
         NO_MODS_LINK = "Take me to the mods!",
-        WORKSHOP =
-        {
-            UPDATE_TITLE = "Steam Workshop",
-            STATE_LIST = "Checking Workshop subscriptions...",
-            STATE_DETAILS = "Verifying mod details...",
-            STATE_DOWNLOAD_0 = "Verifying mod cache...",
-            STATE_DOWNLOAD = "Downloading mods:",
-        },
         SHOWCASEMODS = "Get Mods",
         NO_MODS_PLAIN_OK = "Ok",
         TOPMODS = "Top Mods",
@@ -6033,6 +6204,7 @@ STRINGS.UI =
         RESTART = "Exit Now",
         MOD_WARNING_TITLE = "Mod Warning",
         MOD_WARNING = "This is not a Steam Workshop mod. Players will need to download it manually if you host a server.",
+        MOD_WARNING_RAIL = "This is not a WeGame mod. Players will need to download it manually if you host a server.",
         DST_COMPAT_WARNING = "This mod hasn't been tagged as compatible with Don't Starve Together. It may cause issues with your game.",
         OK = "OK",
         MODPAGE = "Mod Page",
@@ -6055,7 +6227,6 @@ STRINGS.UI =
         CANCEL_TITLE = "Lose Changes?",
         CANCEL_BODY = "Do you want to abandon your changes?",
         NOCONFIG = "No Configurations",
-        MORE_MODS = "Steam Workshop",
     },
 
     CUSTOMIZATIONSCREEN =
@@ -6540,6 +6711,7 @@ STRINGS.UI =
         MAXPLAYERS = "Players:",
         ONLINEONYTITLE = "Online World",
         ONLINEONLYBODY = "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again.",
+        ONLINEONLYBODY_RAIL = "You can only resume an online world when you have a connection to the game servers. Please log in and try again.",
         ONLINEONLYBODY_PS4 = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
         ONLINEONLYBODY_SPLITSCREEN = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
         OFFLINEMODETITLE = "Offline Mode",
@@ -6661,7 +6833,7 @@ STRINGS.UI =
     {
         TITLE = "Create an Account",
         BODY = "It looks like this is your first time playing Don't Starve Together.\nPlease click below to create an account and start playing.",
-        BODY2 = "Account creation will temporarily minimize your game and open your web browser.\nIf this doesn't work, try enabling your Steam overlay.",
+        BODY2 = "Account creation will temporarily minimize your game and open your web browser.",
         CREATEBUTTON = "Create Account",
         CANCELBUTTON = "Cancel",
     },
@@ -7810,7 +7982,7 @@ STRINGS.UI =
         TRADING = "Trade Inn",
         PURCHASE = "Shop",
 
-        FESTIVAL_HISTORY = "History of Travels",
+        FESTIVAL_HISTORY = "Through the Gateway",
         CURRENCY_LABEL = "Spools",
         CURRENCY_EXPLAIN = "Items can be unraveled into Spools to weave special items.",
         XP_LABEL = "XP Earned",
@@ -7842,22 +8014,34 @@ STRINGS.UI =
         
         GET_INVENTORY = "Downloading Item Collection",
     },
-
+    
+    BEARDSCREEN =
+    {
+        BEARD_NAMES =
+        {
+            "Trimmed",
+            "Groomed",
+            "Magnificent"
+        },
+    },
+    
     COLLECTIONSCREEN = 
     {
         TITLE = "Curio Cabinet",
 
-        SKINS = "Wardrobe", 
-        GAMEITEM = "Belongings", 
-        EMOTE = "Emotes", 
-        EMOJI = "Emoticons", 
+        SKINS = "Wardrobe",
+        GAMEITEM = "Belongings",
+        BEARD = "Beards",
+        EMOTE = "Emotes",
+        EMOJI = "Emoticons",
         LOADERS = "Vignettes",
         PROFILEFLAIR = "Profile Icons",
         PORTRAITBACKGROUNDS = "Portrait Frames",
 
         TOOLTIP_SKINS = "View and equip your character skins",
-        TOOLTIP_GAMEITEM = "Equip your skins for craftable in-game items", 
-        TOOLTIP_EMOTE = "View and equip your character emotes", 
+        TOOLTIP_GAMEITEM = "View your skins for craftable in-game items",
+        TOOLTIP_BEARD = "View your character beards", 
+        TOOLTIP_EMOTE = "View your character emotes", 
         TOOLTIP_EMOJI = "View your available chat icons", 
         TOOLTIP_LOADERS = "Select loading screens to display between games",
         TOOLTIP_PROFILEFLAIR = "Select an icon for your profile",
@@ -7875,9 +8059,12 @@ STRINGS.UI =
         TITLE = "The Curio Loom",
         COMMERCE_BUY = "Weave",
         COMMERCE_GRIND = "Unravel",
+        COMMERCE_GRIND_DUPES = "Unravel Duplicates",
         CONFIRM_BUY_FMT = "Use {doodad_count} Spools to weave item: {item_name}?\n\nYou will be left with {doodad_net} Spools.\nSpools are used to weave \"Woven\" rarity curios.",
         FAIL_BUY_FMT = "{doodad_count} Spools are required to weave item: {item_name}.\n\nYou need {doodad_net} more Spool(s) to weave this item.\nSpools can be obtained by unraveling curios.",
         CONFIRM_GRIND_FMT = "Unravel this {item_name} into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.\nSpools are used to weave \"Woven\" rarity curios.",
+        CONFIRM_GRIND_DUPE_FMT = "Unravel 1 duplicate into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.",
+        CONFIRM_GRIND_DUPES_FMT = "Unravel {count} duplicates into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.",
         COMMERCE_INFO_BUY = "Use {doodad_value} Spools to weave this curio.",
         COMMERCE_INFO_NOBUY_NOT_ACTIVE = "This curio is not currently weaveable.",
         COMMERCE_INFO_NOBUY_NEVER = "This curio is not weaveable.",
@@ -7952,6 +8139,10 @@ STRINGS.UI =
 
         PURCHASE_OVERLAY_REQUIRED_TITLE = "Steam Overlay Required",
         PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable the Steam Overlay to purchase clothing sets.",
+        
+        PURCHASE_OVERLAY_REQUIRED_TITLE_RAIL = "Browser Required",
+        PURCHASE_OVERLAY_REQUIRED_BODY_RAIL = "Please enable your browser to purchase clothing sets.",
+    
         PURCHASE_OVERLAY_REQUIRED_HELP = "Help",
 
         PURCHASE_WARNING_TITLE = "No New Items in Chest",
@@ -8026,8 +8217,8 @@ STRINGS.UI =
         FAILED_EVENT_TITLE = "Achievements Failure",
         
         FAILED_DEFAULT = "Sorry!\nFailed to contact Klei Servers. Please try again.",
-        FAILED_MULTIPLE_PENDING_PURCHASES = "Unable to start a new transaction due to having an outstanding purchase active. Please close all other Steam purchases, and try again later.",
-        FAILED_IAP_RATE_LIMITED = "Unable to start a new transaction due to being limited by Steam. Please slow down and try again later.",
+        FAILED_MULTIPLE_PENDING_PURCHASES = "Unable to start a new transaction due to having an outstanding purchase active. Please close all other purchases, and try again later.",
+        FAILED_IAP_RATE_LIMITED = "Unable to start a new transaction due to being rate limited. Please slow down and try again later.",
         
         CONNECT = "Contacting Klei Servers",
     },
@@ -9042,6 +9233,7 @@ STRINGS.UI =
         DISABLEDLEVEL = "No %s",
 
         ADDLEVEL = "Add %s",
+        AUTOADDLEVEL = "Always Add %s",
         ADDLEVEL_WARNING = "This requires running multiple servers at the same time.\nIs your computer up to the task?",
 
         REMOVELEVEL = "Remove %s",
@@ -9616,6 +9808,7 @@ STRINGS.MODS =
     VERSIONING =
     {
         OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so other users can join.",
+        OUT_OF_DATE_RAIL = "Mod \"%s\" is out of date. The server needs to get the latest version so other users can join.",
     },
 }
 
@@ -9811,222 +10004,3 @@ end
 -- Include the names and descriptions of the clothing and craftable skins.
 ----------------------------------------------------------------------------
 require "skin_strings"
-
-if PLATFORM == "WIN32_RAIL" then
-	--Do Rail specific string adjustments here
-	STRINGS.UI.ACCOUNT.LINKSTEAMACCOUNT = ""
-	STRINGS.UI.ACCOUNT.LOGINWITHSTEAM = ""
-	
-	STRINGS.UI.BARTERSCREEN.NO_MARKET = ""
-	
-	STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET = ""
-	
-	STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE = ""
-	STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC = ""
-	
-	STRINGS.UI.MODSSCREEN.MOD_WARNING = ""
-	STRINGS.UI.MODSSCREEN.MORE_MODS = ""
-	STRINGS.UI.MODSSCREEN.NO_MODS = ""
-	STRINGS.UI.MODSSCREEN.NO_MODS_TYPE = ""
-	STRINGS.UI.MODSSCREEN.WORKSHOP.STATE_LIST = "Checking mod subscriptions..."
-	STRINGS.UI.MODSSCREEN.WORKSHOP.UPDATE_TITLE = ""
-	
-	STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_TGP = "You don't have any client mods installed. You can download some from the TGP client."
-    STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_TGP = "You don't have any server mods installed. You can download some from the TGP client."
-    STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_QQGAME = "You don't have any client mods installed. You can download some from the QQ Game client."
-    STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_QQGAME = "You don't have any server mods installed. You can download some from the QQ Game client."
-    STRINGS.UI.MODSSCREEN.MOD_WARNING_TGP = "This is not a TGP mod. Players will need to download it manually if you host a server."
-    STRINGS.UI.MODSSCREEN.MOD_WARNING_QQ = "This is not a QQ Game mod. Players will need to download it manually if you host a server."
-	
-	STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED = "The server says you don't own the game. But you do... right?"
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's group to connect."
-	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods that are not available. You will need to manually download the missing mods."
-	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods failed. Please try again."
-	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Download of the required mods failed because one or more mods is not visible to you."
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED = "Game Ownership Check Failed"
-	STRINGS.UI.NOAUTHENTICATIONSCREEN.BAD_BODY = "We can't verify that you own a copy of Don't Starve Together right now. Please try again later."
-	STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY2 = "Account creation will temporarily minimize your game and open your web browser"
-	
-	STRINGS.UI.PLAYER_AVATAR.STEAM = "View profile"
-	
-	STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable your browser to purchase clothing sets."
-	STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_TITLE = "Browser Required"
-	
-	STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN = "Group"
-	STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY = "You have to specify the Group you belong to! Please verify the group number."
-	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY = "You can only resume an online world when you have a connection to the game servers. Please log in and try again."
-	
-	STRINGS.UI.SERVERLISTINGSCREEN.CLANONLY = "Group:"
-	
-	STRINGS.UI.TRADESCREEN.MARKET = ""
-	
-	STRINGS.MODS.VERSIONING.OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version so other users can join."
-	
-	STRINGS.UI.ITEM_SERVER.FAILED_MULTIPLE_PENDING_PURCHASES = ""
-	STRINGS.UI.ITEM_SERVER.FAILED_IAP_RATE_LIMITED = ""
-	
-
-	--Remove console strings
-	STRINGS.PSN = nil
-	STRINGS.UI.HELP.CHANGEVALUE = nil
-	STRINGS.UI.CREDITS.XB1_THANKS = nil
-	STRINGS.UI.CREDITS.BLIT = nil
-	STRINGS.UI.CREDITS.LOLLI = nil
-	STRINGS.UI.CREDITS.VMEM = nil
-	
-	STRINGS.UI.MAINSCREEN.REGISTER_SECOND_PLAYER = nil
-	STRINGS.UI.MAINSCREEN.SPLITSCREEN = nil
-	STRINGS.UI.MAINSCREEN.ADJUST_DISPLAY_INSTRUCTIONS = nil
-	STRINGS.UI.MAINSCREEN.PSN_OFFLINEMODE = nil
-    STRINGS.UI.MAINSCREEN.PSN_OFFLINEMODEDESC = nil
-    STRINGS.UI.MAINSCREEN.NOT_SIGNED_IN_TO_PSN = nil
-    STRINGS.UI.MAINSCREEN.NOT_SIGNED_IN_TO_PSN_DESC = nil
-    STRINGS.UI.MAINSCREEN.NO_INTERNET_CONNECTION = nil
-    STRINGS.UI.MAINSCREEN.NO_INTERNET_CONNECTION_DESC = nil
-    STRINGS.UI.MAINSCREEN.NO_PS_PLUS_MEMBERSHIP = nil
-    STRINGS.UI.MAINSCREEN.NO_PS_PLUS_MEMBERSHIP_DESC = nil
-	STRINGS.UI.MAINSCREEN.ONLINE_AGE_RESTRICTION_TITLE = nil
-	STRINGS.UI.MAINSCREEN.ONLINE_AGE_RESTRICTION_DESC = nil
-	STRINGS.UI.MAINSCREEN.ONLINE_UGC_RESTRICTION_TITLE = nil
-	STRINGS.UI.MAINSCREEN.ONLINE_UGC_RESTRICTION_DESC = nil
-	STRINGS.UI.MAINSCREEN.TOOLTIP_OPTIONS_PS4 = nil
-    STRINGS.UI.MAINSCREEN.TOOLTIP_CREDITS = nil
-	STRINGS.UI.MAINSCREEN.TOOLTIP_LOGOUT = nil
-	STRINGS.UI.MAINSCREEN.INVITED_AS = nil
-    
-	STRINGS.UI.XB1_USER_DIALOG = nil
-	STRINGS.UI.SPLITSCREEN_REGISTRATION = nil
-	
-	STRINGS.UI.OPTIONS.MORE = nil
-	STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS_CONSOLE = nil
-	STRINGS.UI.OPTIONS.TOOLTIP_MORE = nil
-	STRINGS.UI.OPTIONS.BACKTITLE_PS4 = nil
-	STRINGS.UI.OPTIONS.BACKBODY_PS4 = nil
-	STRINGS.UI.OPTIONS.REDEEM = nil
-	STRINGS.UI.OPTIONS.EULA = nil
-	STRINGS.UI.OPTIONS.EULA_RESPONSE_CHANGED_TITLE = nil
-	STRINGS.UI.OPTIONS.EULA_RESPONSE_CHANGED_BODY = nil
-	STRINGS.UI.OPTIONS.OFFLINE_MODE_TITLE = nil
-	STRINGS.UI.OPTIONS.OFFLINE_MODE_BODY = nil
-	STRINGS.UI.OPTIONS.KLEI_ID_PREFIX = nil
-
-	STRINGS.UI.NOTIFICATION.CURRENTLY_SPEAKING = nil
-	STRINGS.UI.NOTIFICATION.RETRYING = nil
-	STRINGS.UI.NOTIFICATION.RESTORING = nil
-
-	STRINGS.UI.EULADIALOG = nil
-
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_SERVER_STARTUP_FAILED = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_NETWORK_CONNECTION_LOST = nil
-	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_SAVE_FILE_DAMAGED = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_NETWORK_CONNECTION_LOST = nil
-	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_SAVE_FILE_DAMAGED = nil
-
-	STRINGS.UI.PLAYERSTATUSSCREEN.VIEWGAMERCARD = nil
-
-	STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_TOGETHER_PS4 = nil
-	STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE_PS4 = nil
-
-	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_TITLE_PS4 = nil
-	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PS4 = nil
-	STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION_TO_MASTER_SERVER = nil
-	STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION_TO_MASTER_SERVER_DESC = nil
-	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_DESC = nil
-
-	STRINGS.UI.SERVERCREATIONSCREEN.FORESTWORLD = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.CAVEWORLD = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY_LABEL = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4 = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_PREFIX = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_POSTFIX = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_PREFIX_SPLITSCREEN = nil
-	STRINGS.UI.SERVERCREATIONSCREEN.OFFLINE_WORLD = nil
-
-	STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY_PS4 = nil
-
-	STRINGS.UI.SKINSSCREEN.NOW_OFFLINE_TITLE = nil
-	STRINGS.UI.SKINSSCREEN.NOW_OFFLINE_BODY = nil
-
-	STRINGS.UI.MORGUESCREEN.PLAYER_CHAR_PS4 = nil
-	STRINGS.UI.MORGUESCREEN.DECEASED_PS4 = nil
-	STRINGS.UI.MORGUESCREEN.MODE_PS4 = nil
-
-	STRINGS.UI.CONTROLSSCREEN.PS4 = nil
-
-	STRINGS.UI.CONTROLSSCREEN.VITA = nil
-
-    STRINGS.UI.SANDBOXMENU.PS4_SLIDESMALL = nil
-    STRINGS.UI.SANDBOXMENU.PS4_SLIDESMEDIUM = nil
-
-    STRINGS.UI.SAVELOAD.DATA_DAMAGED_PS4 = nil
-    STRINGS.UI.SAVELOAD.DATA_DAMAGED_BODY = nil
-    STRINGS.UI.SAVELOAD.DISABLE_AUTOSAVE_PS4 = nil
-    STRINGS.UI.SAVELOAD.DISABLE = nil
-    STRINGS.UI.SAVELOAD.RESTORE_BACKUP = nil
-    STRINGS.UI.SAVELOAD.RESTORE_BACKUP_BODY = nil
-    STRINGS.UI.SAVELOAD.RESTOREBACKUP_FAILED = nil
-	STRINGS.UI.SAVELOAD.OVERWRITE_SAVEDATA_TITLE = nil
-	STRINGS.UI.SAVELOAD.OVERWRITE_SAVEDATA_BODY = nil
-    
-    STRINGS.UI.COMMANDWHEEL = nil
-
-    STRINGS.UI.EMOTES = nil
-
-    STRINGS.UI.PRESENCE = nil
-    	
-	STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_TITLE_CONSOLE = nil
-	STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_BODY_CONSOLE = nil
-
-    STRINGS.UI.OPTIONS.LANGUAGES = nil
-    STRINGS.UI.OPTIONS.LANG_TITLE = nil
-    STRINGS.UI.OPTIONS.TOOLTIP_LANGUAGES = nil
-
-    STRINGS.UI.DATACOLLECTION_LOGIN.TITLE = nil
-    STRINGS.UI.DATACOLLECTION_LOGIN.BODY = nil
-    STRINGS.UI.DATACOLLECTION_POPUP.PRIVACY_PORTAL = nil
-    STRINGS.UI.DATACOLLECTION_POPUP.TITLE = nil
-    STRINGS.UI.DATACOLLECTION_POPUP.BODY = nil
-	
-    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_TITLE = nil
-    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_DESC = nil
-    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_RE_ENABLE = nil
-    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_OK = nil
-	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_DISABLE = nil
-	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_ENABLE = nil
-	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_CLEAR = nil
-	
-	STRINGS.UI.OPTIONS.BUGREPORT = nil
-    STRINGS.UI.OPTIONS.DYNAMICCONTENT_ENABLE = nil
-
-    STRINGS.UI.BUGREPORTSCREEN.YES = nil
-    STRINGS.UI.BUGREPORTSCREEN.NO = nil
-    STRINGS.UI.BUGREPORTSCREEN.OK = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TITLE = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TITLE = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TEXT = nil
-    STRINGS.UI.BUGREPORTSCREEN.DESCRIPTION_LABEL = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMITTING_TEXT = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_DIALOG_HEADER = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_DIALOG_BODY = nil
-    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_TEXT_PLACEHOLDER = nil
-    STRINGS.UI.BUGREPORTSCREEN.CANCEL_SUBMIT_HEADER = nil
-    STRINGS.UI.BUGREPORTSCREEN.CANCEL_SUBMIT_BODY = nil
-    STRINGS.UI.BUGREPORTSCREEN.ENTER_BUG_DESCRIPTION = nil
-    STRINGS.UI.BUGREPORTSCREEN.CHANGE_BUG_DESCRIPTION = nil
-end
-

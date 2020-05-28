@@ -617,14 +617,14 @@ function TradeScreen:Trade(done_warning)
 
 		        widg.frame = widg:AddChild(UIAnim())
 		        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-		        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+		        widg.frame:GetAnimState():SetBank("frames_comp") -- top level symbol from frames_comp
 
 		        local rarity = GetRarityForItem(self.frames_single[i].name)
 
 		        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  GetBuildForItem(self.frames_single[i].name), "SWAP_ICON")
 		        widg.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(rarity))
 
-		        widg.frame:GetAnimState():PlayAnimation("icon", true)
+		        widg.frame:GetAnimState():PlayAnimation("idle_on", true)
 		        widg.frame:GetAnimState():Hide("NEW")
 
 		        widg:SetScale(.5)
@@ -1477,7 +1477,7 @@ function TradeScreen:GetHelpText()
     	local str = self.specials_list:GetHelpText()
     	table.insert(t, str)
     end]]
-	if PLATFORM ~= "WIN32_RAIL" and IsNotConsole() then
+	if not IsRail() and IsNotConsole() then
 		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
 	end
 

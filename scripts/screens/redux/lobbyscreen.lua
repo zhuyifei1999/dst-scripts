@@ -163,29 +163,124 @@ end)
 local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
     LobbyPanel._ctor(self, "CharacterSelectPanel")
 
+    self:SetPosition(0, 100)
+
 	self.title = STRINGS.UI.LOBBYSCREEN.SELECTION_TITLE
 
     local function OnCharacterClick(hero)
         owner.next_button:onclick()
     end
 
+	local CharacterButtonCtor = Class(CharacterButton, function(self, character, cbPortraitFocused, cbPortraitClicked)
+		CharacterButton._ctor(self, character, cbPortraitFocused, cbPortraitClicked)
+		self:SetScale(0.95)
+		self.face:SetScale(1.1)
+	end)
+
+	local function BuildCharacterDetailsWidget(char)
+		local root = Widget("char_root")
+		root:SetPosition(85, -100)
+
+		root.portrait = root:AddChild(Image())
+		root.portrait:SetPosition(-100, 80)
+		root.portrait:SetScale(.4)
+
+		root.charactername = root:AddChild(Image())
+		root.charactername:SetScale(.38)
+		root.charactername:SetPosition(0, 260)
+
+		local status_x = 100
+		local status_y = 110
+		root.hunger_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("health"))
+		root.hunger_status:SetPosition(status_x - 70, status_y)
+		root.hunger_status:SetScale(0.9)
+		root.health_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("hunger"))
+		root.health_status:SetPosition(status_x, status_y)
+		root.health_status:SetScale(0.9)
+		root.sanity_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("sanity"))
+		root.sanity_status:SetPosition(status_x + 70, status_y)
+		root.sanity_status:SetScale(0.9)
+
+
+		root.survivability_title = root:AddChild(Text(HEADERFONT, 25, STRINGS.CHARACTER_DETAILS.SURVIVABILITY_TITLE, UICOLOURS.GOLD_UNIMPORTANT))
+		root.survivability_title:SetPosition(status_x, 25)
+		root.survivability = root.survivability_title:AddChild(Text(HEADERFONT, 20, STRINGS.CHARACTER_DETAILS.SURVIVABILITY_TITLE, UICOLOURS.GREY))
+		root.survivability:SetPosition(0, -22)
+
+		root._perks_top = -80
+		root._perks_left = -175
+
+		root.perks_title = root:AddChild(Text(HEADERFONT, 25, "", UICOLOURS.GOLD_UNIMPORTANT))
+		root.perks_title:SetHAlign(ANCHOR_LEFT)
+
+		root.perks = root:AddChild(Text(HEADERFONT, 20, "", UICOLOURS.GREY))
+		root.perks:SetHAlign(ANCHOR_LEFT)
+		root.perks:SetVAlign(ANCHOR_TOP)
+
+		root.inv = root:AddChild(TEMPLATES.MakeStartingInventoryWidget(nil, true))
+		root.inv:SetPosition(root._perks_left, -200)
+
+		root.SetPortrait = function(self, character)
+			self.currentcharacter = character -- required because this is how the lobbyscreen determines which character is selected
+
+			if character ~= nil then
+				local success = SetHeroNameTexture_Gold(self.charactername, character)
+				if not success then
+					self.charactername:Hide()
+				else
+					self.charactername:Show()
+				end
+				SetOvalPortraitTexture(self.portrait, character)
+				self.hunger_status:ChangeCharacter(character)
+				self.health_status:ChangeCharacter(character)
+				self.sanity_status:ChangeCharacter(character)
+				self.inv:ChangeCharacter(character)
+
+				self.survivability:SetString(tostring(STRINGS.CHARACTER_SURVIVABILITY[character] or STRINGS.CHARACTER_SURVIVABILITY.random))
+
+				self.perks_title:SetString(STRINGS.CHARACTER_TITLES[character] or "")
+				local w, h = root.perks_title:GetRegionSize()
+				root.perks_title:SetPosition(root._perks_left + 0.5 * w, root._perks_top)
+
+				local top = root._perks_top - 15
+	
+				self.perks:SetMultilineTruncatedString(GetCharacterDescription(character), 20, 375)
+				w, h = self.perks:GetRegionSize()
+				self.perks:SetPosition(root._perks_left + 0.5 * w, top - 0.5 * h)
+
+				top = top - h - 20
+
+				self.inv:SetPosition(root._perks_left, top)
+			end
+		end
+
+		return root
+
+	end
+
     self.character_scroll_list = self:AddChild(CharacterSelect(self,
-            CharacterButton,
-            125,
+            CharacterButtonCtor,
+            108,
             nil, -- use default gameplay descriptions
             nil,
             nil,
             OnCharacterClick,
-            {"random"}
+            {"random"},
+			12,
+			BuildCharacterDetailsWidget
         ))
-    self:SetPosition(300, 100)
+	self.character_scroll_list:SetPosition(170, 0)    
     
     self.focus_forward = self.character_scroll_list
     
     function self:OnGainFocus()
-		if owner.lobbycharacter ~= nil then
-			self.character_scroll_list:RefocusCharacter(owner.lobbycharacter)
-		end
+		self.character_scroll_list:RefocusCharacter(self.cached_currentcharacter or owner.lobbycharacter or self.character_scroll_list.selectedportrait.currentcharacter or "wilson")
+		owner.lobbycharacter = nil
+		self.cached_currentcharacter = nil
+    end
+
+    function self:OnLoseFocus()
+		self.cached_currentcharacter = self.character_scroll_list.selectedportrait.currentcharacter
     end
 
 	function self:OnControl(control, down)
@@ -211,7 +306,6 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 	    return table.concat(t, "  ")
 	end]]
 end)
-
 
 local LoadoutPanel = Class(LobbyPanel, function(self, owner)
     LobbyPanel._ctor(self, "LoadoutPanel")
@@ -631,14 +725,14 @@ function LobbyScreen:ToNextPanel(dir)
 	if prev_panel_index ~= self.current_panel_index then
 		self:Disable()
         local prev_penel = self.panel
-        self.inst:DoTaskInTime(0, function()
+        self.inst:DoTaskInTime(0, function() -- this delay is in here so the input handling can finish this frame before activating the new screen
 			if prev_penel ~= nil then
 				prev_penel:Kill()
 			end
-
 			self:Enable()
 			self.panel:Show()
-			self.panel:SetFocus()
+			self.panel_root:ClearFocus()
+			self.panel_root:SetFocus()
 		end)
 		
 		if self.panel ~= nil then
@@ -647,6 +741,7 @@ function LobbyScreen:ToNextPanel(dir)
 		end
 		
 		self.panel_root:ClearFocus()
+
 		self.panel = self.panel_root:AddChild(self.panels[self.current_panel_index].panelfn(self))
 		self.panel:Hide()
 
