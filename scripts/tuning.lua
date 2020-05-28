@@ -2910,6 +2910,11 @@ function Tune(overrides)
 			},
 		},
 
+		STARTING_ITEM_IMAGE_OVERRIDE =
+		{
+			-- this was added for mod characters and items. example: balloons_empty = {atlas = "images/inventoryimages2.xml", image = "spidereggsack.tex" },
+		},
+
         LAVAARENA_SURVIVOR_DIFFICULTY =
         {
             WILSON = 1,

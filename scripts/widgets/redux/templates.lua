@@ -1883,11 +1883,15 @@ function TEMPLATES.MakeStartingInventoryWidget(c, left_align)
 
 			for i, item in ipairs(inv_items) do
 				local slot = root._invitems:AddChild(Image("images/hud.xml", "inv_slot.tex"))
-				slot:AddChild(Image(GetInventoryItemAtlas(item..".tex"), item..".tex")):SetScale(0.9)
+
+				local override_item_image = TUNING.STARTING_ITEM_IMAGE_OVERRIDE[item]
+				local atlas = override_item_image ~= nil and override_item_image.atlas or GetInventoryItemAtlas(item..".tex")
+				local image = override_item_image ~= nil and override_item_image.image or (item..".tex")
+
+				slot:AddChild(Image(atlas, image)):SetScale(0.9)
 				slot:SetScale(scale)
 				if slot_width == nil then
-					slot_width = slot:GetSize()
-					slot_width = slot_width * scale
+					slot_width = 68 * scale
 					total_width = (slot_width * #inv_items + spacing * (#inv_items - 1))
 					x = left_align and (slot_width/2) or (-total_width/2 + slot_width/2)
 				end

@@ -124,7 +124,8 @@ function PlayerSummaryScreen:_BuildItemsSummary()
 		unopened_msg:SetRegionSize(width,30)
 		unopened_msg:Hide()
 
-		new_root.UpdateItems = function()
+        local counter = 0
+        new_root.UpdateItems = function()
 		    if self.hide_items or not TheInventory:HasDownloadedInventory() then
 				for i, item in ipairs(items) do
 					item:Hide()
@@ -175,9 +176,8 @@ function PlayerSummaryScreen:_BuildItemsSummary()
 		end
     end
    
-   --[[new_root.ScheduleRefresh = function()
-		-- Player could navigate to this screen before inventory finishes
-		-- downloading. Keep looking for updated data until it's ready.
+    new_root.ScheduleRefresh = function()
+		-- Player could navigate to this screen before inventory finishes downloading. Keep looking for updated data until it's ready.
 		if self.refresh_task then
 			self.refresh_task:Cancel()
 			self.refresh_task = nil
@@ -186,7 +186,7 @@ function PlayerSummaryScreen:_BuildItemsSummary()
 			self.refresh_task = nil
 			new_root.UpdateItems()
 		end)
-	end]]
+	end
 
     return new_root
 end

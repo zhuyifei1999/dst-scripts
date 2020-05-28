@@ -113,7 +113,9 @@ local function ecounter_widget_constructor(context, i)
     w.widgets.delete_btn = w.widgets:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "delete.tex", STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR, false, false,
         function()
             PlayerHistory:RemoveUser(w.widgets.delete_btn._userid)
-            context.screen:UpdatePlayerHistory()
+
+			context.screen.player_history = PlayerHistory:GetRows()
+			context.screen.encounters_scroll_list:SetItemsData( context.screen.player_history )
         end,
         {
             offset_x = 0,
