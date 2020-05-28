@@ -63,12 +63,9 @@ local PauseScreen = Class(Screen, function(self)
         end)
     end })
     table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.DISCONNECT, cb=function() self:doconfirmquit()	end})
-    if PLATFORM == "WIN32_RAIL" then
-    	if TheSim:RAILGetPlatform() == "TGP" then
-		    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://plat.tgp.qq.com/forum/index.html#/2000004?type=11") end })
-		else
-		    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://qqgame.gamebbs.qq.com/forum.php?mod=forumdisplay&fid=31043") end })
-		end
+    if IsRail() then
+        table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://plat.tgp.qq.com/forum/index.html#/2000004?type=11") end })
+        
 	elseif IsNotConsole() then
 		if BRANCH == "staging" then
 		    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("https://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together-return-of-them/") end })
@@ -82,11 +79,6 @@ local PauseScreen = Class(Screen, function(self)
     self.menu:SetPosition(0, y_pos, 0)
     for i,v in pairs(self.menu.items) do
         v:SetScale(.7)
-    end
-
-    if JapaneseOnPS4() then
-        self.menu:SetTextSize(30)
-        --self.afk_menu:SetTextSize(30)
     end
 
     TheInputProxy:SetCursorVisible(true)

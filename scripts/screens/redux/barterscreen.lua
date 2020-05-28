@@ -11,7 +11,7 @@ local TEMPLATES = require("widgets/redux/templates")
 require("skinsutils")
 
 
-local BarterScreen = Class(Screen, function(self, user_profile, prev_screen, item_key, is_buying, barter_success_cb)
+local BarterScreen = Class(Screen, function(self, user_profile, prev_screen, item_key, is_buying, owned_count, barter_success_cb)
 	Screen._ctor(self, "BarterScreen")
     self.user_profile = user_profile
     self.prev_screen = prev_screen
@@ -19,6 +19,7 @@ local BarterScreen = Class(Screen, function(self, user_profile, prev_screen, ite
     assert(item_key)
     self.item_key = item_key
     self.is_buying = is_buying
+    self.owned_count = owned_count
     self.barter_success_cb = barter_success_cb
 
 	self:DoInit()
@@ -43,6 +44,7 @@ function BarterScreen:_BuildDialog()
     local current_doodads = TheInventory:GetCurrencyAmount()
     local doodad_sign = nil
     local go_btn = nil
+    local go_dupe_btn = nil
     local barter_text = nil
     if self.is_buying then
         doodad_sign = -1
@@ -104,6 +106,55 @@ function BarterScreen:_BuildDialog()
                 end
             end
         }
+        
+        if self.owned_count > 1 then
+            go_dupe_btn = {
+                text = STRINGS.UI.BARTERSCREEN.COMMERCE_GRIND_DUPES,
+                cb = function()
+                    local grind_count = self.owned_count - 1
+                    local spool_gained = grind_count * self.doodad_value
+
+                    local PopupDialogScreen = require "screens/redux/popupdialog"
+                    local body_str = ""
+                    if grind_count == 1 then
+                        body_str = subfmt(STRINGS.UI.BARTERSCREEN.CONFIRM_GRIND_DUPE_FMT, {
+                            doodad_count = spool_gained,
+                            doodad_net = current_doodads + spool_gained }
+                        )
+                    else
+                        body_str = subfmt(STRINGS.UI.BARTERSCREEN.CONFIRM_GRIND_DUPES_FMT, {
+                            doodad_count = spool_gained,
+                            count = grind_count,
+                            doodad_net = current_doodads + spool_gained }
+                        )
+                    end
+                    local dupes_popup = PopupDialogScreen(STRINGS.UI.BARTERSCREEN.COMMERCE_GRIND_DUPES, body_str,
+                    {
+                        {
+                            text=STRINGS.UI.POPUPDIALOG.OK,
+                            cb = function()
+                                TheFrontEnd:PopScreen()
+
+                                local commerce_popup = PushWaitingPopup()
+                                TheItems:BarterLoseDuplicateItems(self.item_key, self.doodad_value, function(success, status)
+                                    self.inst:DoTaskInTime(0, function() --we need to delay a frame so that the popping of the screens happens at the right time in the frame.
+                                        commerce_popup:Close()
+                                        self:_BarterComplete(success, status, {"dontstarve/HUD/Together_HUD/collectionscreen/unweave"})
+                                    end, self)
+                                end)
+                            end
+                        },
+                        {
+                            text=STRINGS.UI.BARTERSCREEN.CANCEL,
+                            cb = function() 
+                                TheFrontEnd:PopScreen()
+                            end
+                        },
+                    })
+                    TheFrontEnd:PushScreen(dupes_popup)
+                end
+            }
+        end
     end
 
     local buttons = {
@@ -115,6 +166,10 @@ function BarterScreen:_BuildDialog()
             end
         },
     }
+    if go_dupe_btn ~= nil then
+        buttons[3] = buttons[2]
+        buttons[2] = go_dupe_btn
+    end
 
     -- Not enough -- must be buying. Replace all options with cancel.
     if self.doodad_net < 0 then

@@ -13,15 +13,7 @@ local prefabs =
     "webber_spider_minion",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "spidereggsack",
-        "monstermeat",
-        "monstermeat",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WEBBER
 end
@@ -77,6 +69,8 @@ local function master_postinit(inst)
         inst.components.eater.strongstomach = true
     end
 
+    inst.components.foodaffinity:AddPrefabAffinity("icecream", TUNING.AFFINITY_15_CALORIES_MED)
+
     inst.components.health:SetMaxHealth(TUNING.WEBBER_HEALTH)
     inst.components.hunger:SetMax(TUNING.WEBBER_HUNGER)
     inst.components.sanity:SetMax(TUNING.WEBBER_SANITY)
@@ -85,6 +79,7 @@ local function master_postinit(inst)
     inst.components.beard.insulation_factor = TUNING.WEBBER_BEARD_INSULATION_FACTOR
     inst.components.beard.onreset = OnResetBeard
     inst.components.beard.prize = "silk"
+    inst.components.beard.is_skinnable = true
     inst.components.beard:AddCallback(BEARD_DAYS[1], OnGrowShortBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)

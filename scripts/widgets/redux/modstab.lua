@@ -344,12 +344,8 @@ function ModsTab:CreateDetailPanel()
             self.detailpanel.whenempty:Show()
 
 			local no_mods
-			if PLATFORM == "WIN32_RAIL" then
-				if TheSim:RAILGetPlatform() == "TGP" then
-					no_mods =  (self.currentmodtype == "client") and STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_TGP or STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_TGP
-				else
-					no_mods = (self.currentmodtype == "client") and STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_QQGAME or STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_QQGAME
-				end
+			if IsRail() then
+				no_mods =  (self.currentmodtype == "client") and STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_TGP or STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_TGP
 				self.modlinkbutton:Select()
 			else
 				no_mods = string.format(STRINGS.UI.MODSSCREEN.NO_MODS_TYPE, self.currentmodtype )
@@ -358,7 +354,7 @@ function ModsTab:CreateDetailPanel()
             self.detaildesc_empty:SetString(no_mods)
             self:DisableConfigButton()
             self:DisableUpdateButton("uptodate")
-            self.modlinkbutton:SetHoverText(STRINGS.UI.MODSSCREEN.MORE_MODS)
+            self.modlinkbutton:ClearHoverText()
         end
     end
 end
@@ -424,7 +420,8 @@ function ModsTab:UpdateForWorkshop( force_refresh )
         local function alphasort(moda, modb)
             if not moda then return false end
             if not modb then return true end
-            return string.lower(KnownModIndex:GetModFancyName(moda.modname)) < string.lower(KnownModIndex:GetModFancyName(modb.modname))
+            return string.lower(KnownModIndex:GetModFancyName(moda.modname)):gsub('%W','')..KnownModIndex:GetModFancyName(moda.modname) < string.lower(KnownModIndex:GetModFancyName(modb.modname)):gsub('%W','')..KnownModIndex:GetModFancyName(modb.modname)
+
         end
         table.sort(curr_modnames_client, alphasort)
         table.sort(curr_modnames_server, alphasort)
@@ -474,11 +471,10 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 
             -- Only show popup one at a time.
             if not self.no_mods_popup then
-	            if PLATFORM ~= "WIN32_RAIL" then
+	            if not IsRail() then
 					self.no_mods_popup = PopupDialogScreen( STRINGS.UI.MODSSCREEN.NO_MODS_TITLE, STRINGS.UI.MODSSCREEN.NO_MODS,
 						{
-							-- We don't dismiss the popup! Only dismiss once we
-							-- have mods or user backs out.
+							-- We don't dismiss the popup! Only dismiss once we have mods or user backs out.
 							{text=STRINGS.UI.MODSSCREEN.NO_MODS_OK, cb = function() ModManager:ShowMoreMods() end },
 							{text=STRINGS.UI.MODSSCREEN.CANCEL, cb = function() self:_CancelTasks() TheFrontEnd:PopScreen() self.servercreationscreen:Cancel() end },
 						})
@@ -772,7 +768,11 @@ function ModsTab:OnConfirmEnable(restart, modname)
     if self.settings.is_configuring_server and KnownModIndex:IsModEnabled(modname) and modinfo.all_clients_require_mod then
         local workshop_prefix = "workshop-"
         if string.sub( modname, 0, string.len(workshop_prefix) ) ~= workshop_prefix then
-            TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MODSSCREEN.MOD_WARNING_TITLE, STRINGS.UI.MODSSCREEN.MOD_WARNING,
+            local warn_txt = STRINGS.UI.MODSSCREEN.MOD_WARNING
+			if IsRail() then
+				warn_txt = STRINGS.UI.MODSSCREEN.MOD_WARNING_RAIL
+			end
+            TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MODSSCREEN.MOD_WARNING_TITLE, warn_txt,
             {
                 {text=STRINGS.UI.MODSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() end }
             }))

@@ -12,19 +12,7 @@ local prefabs =
     "waxwell_shadowstriker",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "waxwelljournal",
-        "nightmarefuel",
-        "nightmarefuel",
-        "nightmarefuel",
-        "nightmarefuel",
-        "nightmarefuel",
-        "nightmarefuel",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
 	start_inv[string.lower(k)] = v.WAXWELL
 end
@@ -113,9 +101,13 @@ local function master_postinit(inst)
     inst.components.petleash:SetOnSpawnFn(OnSpawnPet)
     inst.components.petleash:SetOnDespawnFn(OnDespawnPet)
 
+    inst.components.hunger:SetMax(TUNING.WAXWELL_HUNGER)
+    inst.components.sanity:SetMax(TUNING.WAXWELL_SANITY)
     inst.components.sanity.dapperness = TUNING.DAPPERNESS_LARGE
-    inst.components.health:SetMaxHealth(TUNING.WILSON_HEALTH * .5)
+    inst.components.health:SetMaxHealth(TUNING.WAXWELL_HEALTH)
     inst.soundsname = "maxwell"
+
+    inst.components.foodaffinity:AddPrefabAffinity("lobsterdinner", TUNING.AFFINITY_15_CALORIES_LARGE)
 
     inst._onpetlost = function(pet) inst.components.sanity:RemoveSanityPenalty(pet) end
 

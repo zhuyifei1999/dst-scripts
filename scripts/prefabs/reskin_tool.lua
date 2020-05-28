@@ -80,6 +80,8 @@ local reskin_fx_info =
 local function spellCB(tool, target, pos)
 
     local fx = SpawnPrefab("explode_reskin")
+    
+    target = target or tool.components.inventoryitem.owner --if no target, then get the owner of the tool. Self target for beards
 
     local fx_info = reskin_fx_info[target.prefab] or {}
 
@@ -91,44 +93,70 @@ local function spellCB(tool, target, pos)
     fx.Transform:SetPosition(fx_pos_x, fx_pos_y, fx_pos_z)
 
     tool:DoTaskInTime(0, function()
+        
+        local prefab_to_skin = target.prefab
+        local is_beard = false
+        if target.components.beard ~= nil and target.components.beard.is_skinnable then
+            prefab_to_skin = target.prefab .. "_beard"
+            is_beard = true
+        end
+
         if target:IsValid() and tool:IsValid() then
-            if target.skinname == tool._cached_reskinname[target.prefab] then
+            local curr_skin = is_beard and target.components.beard.skinname or target.skinname
+            if curr_skin == tool._cached_reskinname[prefab_to_skin] then
                 local new_reskinname = nil
-                local search_for_skin = tool._cached_reskinname[target.prefab] ~= nil
-                if PREFAB_SKINS[target.prefab] ~= nil then
-                    for _,item_type in pairs(PREFAB_SKINS[target.prefab]) do
-                        if search_for_skin then
-                            if tool._cached_reskinname[target.prefab] == item_type then
-                                search_for_skin = false
-                            end
-                        else
-                            if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
-                                new_reskinname = item_type
-                                break
-                            end
+                local search_for_skin = tool._cached_reskinname[prefab_to_skin] ~= nil
+
+                for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
+                    if search_for_skin then
+                        if tool._cached_reskinname[prefab_to_skin] == item_type then
+                            search_for_skin = false
+                        end
+                    else
+                        if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
+                            new_reskinname = item_type
+                            break
                         end
                     end
-        
-                    tool._cached_reskinname[target.prefab] = new_reskinname
                 end
+    
+                tool._cached_reskinname[prefab_to_skin] = new_reskinname
             end
             
-            TheSim:ReskinEntity( target.GUID, target.skinname, tool._cached_reskinname[target.prefab], nil, tool.parent.userid )
+            if is_beard then
+                target.components.beard:SetSkin( tool._cached_reskinname[prefab_to_skin] )
+            else
+                TheSim:ReskinEntity( target.GUID, target.skinname, tool._cached_reskinname[prefab_to_skin], nil, tool.parent.userid )
+            end
         end
     end )
 end
 
 local function can_cast_fn(doer, target, pos)
-    if PREFAB_SKINS[target.prefab] ~= nil then
-        for _,item_type in pairs(PREFAB_SKINS[target.prefab]) do
+    
+    local prefab_to_skin = target.prefab
+    local is_beard = false
+
+    if table.contains( DST_CHARACTERLIST, prefab_to_skin ) then
+        --We found a player, check if it's us
+        if doer.userid == target.userid and target.components.beard ~= nil and target.components.beard.is_skinnable then
+            prefab_to_skin = target.prefab .. "_beard"
+            is_beard = true
+        else
+            return false
+        end
+    end
+
+    if PREFAB_SKINS[prefab_to_skin] ~= nil then
+        for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
             if TheInventory:CheckClientOwnership(doer.userid, item_type) then
                 return true
             end
         end
     end
 
-    --don't own any skins but check if we can go back to normal
-    if target.skinname ~= nil then
+    local curr_skin = is_beard and target.components.beard.skinname or target.skinname
+    if curr_skin ~= nil then
         return true
     end
 
@@ -190,6 +218,7 @@ local function tool_fn()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster.canuseontargets = true
     inst.components.spellcaster.veryquickcast = true
+    inst.components.spellcaster.canusefrominventory  = true
     inst.components.spellcaster:SetSpellFn(spellCB)
     inst.components.spellcaster:SetCanCastFn(can_cast_fn)
 

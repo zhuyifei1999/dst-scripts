@@ -27,6 +27,8 @@ function Tune(overrides)
 
     local wilson_attack = 34 * multiplayer_attack_modifier
     local wilson_health = 150
+    local wilson_hunger = 150
+    local wilson_sanity = 200
     local calories_per_day = 75
 
     local wilson_attack_period = .1
@@ -64,8 +66,9 @@ function Tune(overrides)
         DARK_SPAWNCUTOFF = 0.1,
         WILSON_HEALTH = wilson_health,
         WILSON_ATTACK_PERIOD = wilson_attack_period,
-        WILSON_HUNGER = 150, --stomach size
+        WILSON_HUNGER = wilson_hunger, --stomach size
         WILSON_HUNGER_RATE = calories_per_day/total_day_time, --calories burnt per day
+        WILSON_SANITY = wilson_sanity,
 
         WX78_MIN_HEALTH = 150,
         WX78_MIN_HUNGER = 150, -- 100 For pax we are increasing this.  Hungers out too easily.
@@ -75,7 +78,9 @@ function Tune(overrides)
         WX78_MAX_HUNGER = 200,
         WX78_MAX_SANITY = 300,
 
-        WILSON_SANITY = 200,
+        WX78_HEALTH = 150, -- this is used for the character descriptions, gameplay uses WX78_MIN_HEALTH 
+        WX78_HUNGER = 150, -- this is used for the character descriptions, gameplay uses WX78_MIN_HUNGER 
+        WX78_SANITY = 150, -- this is used for the character descriptions, gameplay uses WX78_MIN_SANITY 
 
         BALLOON_PILE_DECAY_TIME = total_day_time * 3,
         BALLOON_MAX_COUNT = 100,
@@ -105,7 +110,7 @@ function Tune(overrides)
         HAMBAT_USES = 100,
         BATBAT_USES = 75,
         MULTITOOL_AXE_PICKAXE_USES = 400,
-        RUINS_BAT_USES = 150,
+        RUINS_BAT_USES = 200,
         SADDLEHORN_USES = 10,
         BRUSH_USES = 75,
 
@@ -1658,6 +1663,14 @@ function Tune(overrides)
         CALORIES_HUGE = calories_per_day, -- crockpot foods?
         CALORIES_SUPERHUGE = calories_per_day*2, -- crockpot foods?
 
+		-- food affinity multipliers to add 15 calories
+		AFFINITY_15_CALORIES_TINY = 2.6,
+		AFFINITY_15_CALORIES_SMALL = 2.2,
+		AFFINITY_15_CALORIES_MED = 1.6,
+		AFFINITY_15_CALORIES_LARGE = 1.4,
+		AFFINITY_15_CALORIES_HUGE = 1.2,
+		AFFINITY_15_CALORIES_SUPERHUGE = 1.1,
+
         SPOILED_HEALTH = -1,
         SPOILED_HUNGER = -10,
         PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
@@ -2231,9 +2244,12 @@ function Tune(overrides)
         WOLFGANG_HUNGER_RATE_MULT_NORMAL = 1.5,
         WOLFGANG_HUNGER_RATE_MULT_WIMPY = 1,
 
+		WOLFGANG_HEALTH = 200, -- this is used for the character descriptions, gameplay uses WOLFGANG_HEALTH_NORMAL
         WOLFGANG_HEALTH_MIGHTY = 300,
         WOLFGANG_HEALTH_NORMAL = 200,
         WOLFGANG_HEALTH_WIMPY = 150,
+
+		WOLFGANG_SANITY = wilson_sanity,
 
         WOLFGANG_ATTACKMULT_MIGHTY_MAX = 2,
         WOLFGANG_ATTACKMULT_MIGHTY_MIN = 1.25,
@@ -2251,11 +2267,24 @@ function Tune(overrides)
         WEBBER_SANITY = 100,
         WEBBER_HUNGER = 175,
 
+		WENDY_HEALTH = wilson_health,
+		WENDY_HUNGER = wilson_hunger,
+        WENDY_SANITY = wilson_sanity,
+
         WENDY_DAMAGE_MULT = .75,
         WENDY_SANITY_MULT = .75,
 
+		WES_HEALTH = math.ceil(wilson_health * .75),
+		WES_HUNGER = math.ceil(wilson_hunger * .75),
+        WES_SANITY = math.ceil(wilson_sanity * .75),
         WES_DAMAGE_MULT = .75,
 
+		WAXWELL_HEALTH = math.ceil(wilson_health * .5),
+		WAXWELL_HUNGER = wilson_hunger,
+        WAXWELL_SANITY = wilson_sanity,
+
+        WICKERBOTTOM_HEALTH = wilson_health,
+        WICKERBOTTOM_HUNGER = wilson_hunger,
         WICKERBOTTOM_SANITY = 250,
         WICKERBOTTOM_STALE_FOOD_HUNGER = .333,
         WICKERBOTTOM_SPOILED_FOOD_HUNGER = .167,
@@ -2821,6 +2850,26 @@ function Tune(overrides)
 
 		GAMEMODE_STARTING_ITEMS =
 		{
+		    DEFAULT =
+			{
+				WILSON = {},
+				WILLOW = {"lighter", "bernie_inactive"},
+				WENDY = {"abigail_flower"},
+				WOLFGANG = {},
+				WX78 = {},
+				WICKERBOTTOM = {"papyrus", "papyrus"},
+				WES = {"balloons_empty"},
+				WAXWELL = {"waxwelljournal", "nightmarefuel", "nightmarefuel", "nightmarefuel", "nightmarefuel", "nightmarefuel", "nightmarefuel"},
+				WOODIE = {"lucy"},
+				WATHGRITHR = {"spear_wathgrithr", "wathgrithrhat", "meat", "meat", "meat", "meat"},
+				WEBBER = {"spidereggsack", "monstermeat", "monstermeat"},
+				WINONA = {"sewing_tape", "sewing_tape", "sewing_tape"},
+                WORTOX = {"wortox_soul", "wortox_soul", "wortox_soul", "wortox_soul", "wortox_soul", "wortox_soul"},
+                WORMWOOD = {},
+                WARLY = {"portablecookpot_item", "potato", "potato", "garlic"},
+                WURT = {},
+			},
+
 			LAVAARENA =
 			{
 				WILSON = { "blowdart_lava", "lavaarena_armormedium" },
@@ -2943,6 +2992,11 @@ function Tune(overrides)
         ROWING_RADIUS_ITERATIONS = 4,
 
         --v2 Winona
+		WINONA_HEALTH = wilson_health,
+		WINONA_HUNGER = wilson_hunger,
+        WINONA_SANITY = wilson_sanity,
+
+
         WINONA_ENGINEERING_SPACING = 3.2,
         --this is just the default recipe spacing
         --we still want to explicitly define it for engineering recipes because of the fixed range indicators
@@ -2982,6 +3036,9 @@ function Tune(overrides)
         BERNIE_BIG_ATTACK_RANGE = 3,
         BERNIE_BIG_HIT_RANGE = 3.25,
         BERNIE_BIG_COOLDOWN = 6,
+
+		WILLOW_HEALTH = wilson_health,
+		WILLOW_HUNGER = wilson_hunger,
         WILLOW_SANITY = 120,
         WILLOW_SANITY_MODIFIER = 1.1,
         WILLOW_FREEZING_KILL_TIME = 60,
@@ -3549,6 +3606,10 @@ function Tune(overrides)
         WORTOX_SOULHEAL_RANGE = 8,
 
         --Wormwood
+		WORMWOOD_HEALTH = wilson_health,
+		WORMWOOD_HUNGER = wilson_hunger,
+        WORMWOOD_SANITY = wilson_sanity,
+
         WORMWOOD_BURN_TIME = 4.3,
         WORMWOOD_FIRE_DAMAGE = 1.25,
         ARMORBRAMBLE_DMG = wilson_attack/1.5,
@@ -3577,6 +3638,8 @@ function Tune(overrides)
         },
 
         --v2 Warly
+		WARLY_HEALTH = wilson_health,
+        WARLY_SANITY = wilson_sanity,
         WARLY_HUNGER = 250,
         WARLY_HUNGER_RATE_MODIFIER = 1.2,
         WARLY_SAME_OLD_COOLDOWN = total_day_time * 2,
@@ -3602,6 +3665,10 @@ function Tune(overrides)
         BUFF_WORKEFFECTIVENESS_MODIFIER = 2,
 
         --v2 Woodie
+		WOODIE_HEALTH = wilson_health,
+		WOODIE_HUNGER = wilson_hunger,
+        WOODIE_SANITY = wilson_sanity,
+
         WERE_SANITY_PENALTY = -.1,
         WERE_FULLMOON_DRAIN_TIME_MULTIPLIER = 2,
         WOODCUTTER_LEIF_CHANCE_MOD = 1.5,

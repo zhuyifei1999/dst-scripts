@@ -113,10 +113,10 @@ function MysteryBoxScreen:_BuildBoxesPanel()
     
     boxes_ss.image = boxes_ss:AddChild(UIAnim())
 	boxes_ss.image:GetAnimState():SetBuild("frames_comp")
-	boxes_ss.image:GetAnimState():SetBank("fr")
+	boxes_ss.image:GetAnimState():SetBank("frames_comp")
 	boxes_ss.image:GetAnimState():Hide("frame")
 	boxes_ss.image:GetAnimState():Hide("NEW")
-	boxes_ss.image:GetAnimState():PlayAnimation("icon")
+	boxes_ss.image:GetAnimState():PlayAnimation("idle_on")
 	boxes_ss.image:SetPosition(-100, 0)
 	boxes_ss.image:SetScale(1.75)
     

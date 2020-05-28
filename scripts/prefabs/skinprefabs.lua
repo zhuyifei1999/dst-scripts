@@ -367,6 +367,17 @@ table.insert(prefs, CreatePrefabSkin("arrowsign_post_factory",
 	release_group = 60,
 }))
 
+table.insert(prefs, CreatePrefabSkin("axe_feathered",
+{
+	base_prefab = "axe",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) axe_init_fn(inst, "axe_feathered") end,
+	skin_tags = { "AXE", "CRAFTABLE", },
+	release_group = 97,
+}))
+
 table.insert(prefs, CreatePrefabSkin("axe_northern",
 {
 	base_prefab = "axe",
@@ -2587,6 +2598,17 @@ table.insert(prefs, CreatePrefabSkin("perdling_winter_builder",
 	init_fn = function(inst) critter_builder_init_fn(inst, "perdling_winter" ) end,
 	skin_tags = { },
 	release_group = 35,
+}))
+
+table.insert(prefs, CreatePrefabSkin("pickaxe_feathered",
+{
+	base_prefab = "pickaxe",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) pickaxe_init_fn(inst, "pickaxe_feathered") end,
+	skin_tags = { "PICKAXE", "CRAFTABLE", },
+	release_group = 97,
 }))
 
 table.insert(prefs, CreatePrefabSkin("pickaxe_northern",
@@ -5029,6 +5051,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_formal",
 	rarity = "Elegant",
 	skin_tags = { "FORMAL", "BASE", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_formal", },
+	linked_beard = "wilson_beard_formal",
 	marketable = true,
 	release_group = 2,
 }))
@@ -5121,6 +5144,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_rose",
 	rarity = "Elegant",
 	skin_tags = { "ROSE", "BASE", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_rose", },
+	linked_beard = "wilson_beard_rose",
 	marketable = true,
 	release_group = 10,
 }))
@@ -5132,6 +5156,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_shadow",
 	rarity = "Elegant",
 	skin_tags = { "SHADOW", "BASE", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_shadow", },
+	linked_beard = "wilson_beard_shadow",
 	marketable = true,
 	release_group = 6,
 }))
@@ -5143,6 +5168,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_survivor",
 	rarity = "Elegant",
 	skin_tags = { "SURVIVOR", "BASE", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_survivor", },
+	linked_beard = "wilson_beard_survivor",
 	marketable = true,
 	release_group = 4,
 }))
@@ -5156,6 +5182,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_victorian",
 	skin_tags = { "VICTORIAN", "BASE", "WILSON", },
 	bigportrait = { build = "bigportraits/wilson_victorian.xml", symbol = "wilson_victorian_oval.tex"},
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_victorian", },
+	linked_beard = "wilson_beard_victorian",
 	release_group = 43,
 }))
 

@@ -13,18 +13,7 @@ local prefabs =
     "wathgrithr_bloodlustbuff_self",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "spear_wathgrithr",
-        "wathgrithrhat",
-        "meat",
-        "meat",
-        "meat",
-        "meat",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WATHGRITHR
 end
@@ -136,6 +125,8 @@ local function master_postinit(inst)
     if inst.components.eater ~= nil then
         inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT, FOODTYPE.GOODIES })
     end
+
+    inst.components.foodaffinity:AddPrefabAffinity("turkeydinner", TUNING.AFFINITY_15_CALORIES_HUGE )
 
     inst.components.health:SetMaxHealth(TUNING.WATHGRITHR_HEALTH)
     inst.components.hunger:SetMax(TUNING.WATHGRITHR_HUNGER)

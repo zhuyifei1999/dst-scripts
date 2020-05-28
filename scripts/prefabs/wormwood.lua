@@ -18,12 +18,7 @@ local prefabs =
     "wormwood_plant_fx",
 }
 
-local start_inv =
-{
-    default =
-    {
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WORMWOOD
 end
@@ -566,6 +561,10 @@ local function master_postinit(inst)
     inst.endtalksound = "dontstarve/characters/wormwood/end"
     --inst.endghosttalksound = nil
 
+    inst.components.health:SetMaxHealth(TUNING.WORMWOOD_HEALTH)
+    inst.components.hunger:SetMax(TUNING.WORMWOOD_HUNGER)
+    inst.components.sanity:SetMax(TUNING.WORMWOOD_SANITY)
+
     inst.customidleanim = customidleanimfn
 
     inst.components.health.fire_damage_scale = TUNING.WORMWOOD_FIRE_DAMAGE
@@ -578,6 +577,8 @@ local function master_postinit(inst)
         --No health from food
         inst.components.eater:SetAbsorptionModifiers(0, 1, 1)
     end
+
+    inst.components.foodaffinity:AddPrefabAffinity("cave_banana_cooked", TUNING.AFFINITY_15_CALORIES_SMALL)
 
     inst.components.burnable:SetBurnTime(TUNING.WORMWOOD_BURN_TIME)
 

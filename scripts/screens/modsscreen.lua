@@ -418,7 +418,7 @@ function ModsScreen:CreateDetailPanel()
 		
 		self:DisableConfigButton()
 		self:DisableUpdateButton("uptodate")
-		self.modlinkbutton:SetHoverText(STRINGS.UI.MODSSCREEN.MORE_MODS)
+		self.modlinkbutton:ClearHoverText()
 		self.modlinkbutton:Unselect()
 	end
 	

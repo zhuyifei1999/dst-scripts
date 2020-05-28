@@ -27,9 +27,7 @@ local RARE = .5
 local QUAGMIRE_PORTS =
 {
     "tomato",
-    "potato",
     "onion",
-    "garlic",
 }
 
 VEGGIES =

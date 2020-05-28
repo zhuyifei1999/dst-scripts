@@ -93,7 +93,7 @@ function PlayerHud:CreateOverlays(owner)
 
     self.drops_vig = self.overlayroot:AddChild(UIAnim())
     self.drops_vig:GetAnimState():SetBuild("paddle_over")
-    self.drops_vig:GetAnimState():SetBank("sail_over")
+    self.drops_vig:GetAnimState():SetBank("paddle_over")
     self.drops_vig:GetAnimState():PlayAnimation("over", true)
 
     self.drops_vig:SetHAnchor(ANCHOR_MIDDLE)

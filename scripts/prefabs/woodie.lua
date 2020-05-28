@@ -80,14 +80,7 @@ local prefabs =
     "reticuleline2",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "lucy",
-    },
-}
-
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WOODIE
 end
@@ -1402,6 +1395,10 @@ local function master_postinit(inst)
     elseif TheNet:GetServerGameMode() == "quagmire" then
 		-- nothing to see here (dont go into the else case, or else!)
     else
+	    inst.components.health:SetMaxHealth(TUNING.WOODIE_HEALTH)
+		inst.components.hunger:SetMax(TUNING.WOODIE_HUNGER)
+		inst.components.sanity:SetMax(TUNING.WOODIE_SANITY)
+
         -- Give Woodie a beard so he gets some insulation from winter cold
         -- (Value is Wilson's level 2 beard.)
         inst:AddComponent("beard")
@@ -1410,6 +1407,8 @@ local function master_postinit(inst)
         inst.components.beard:EnableGrowth(false)
 
         OnResetBeard(inst)
+
+	    inst.components.foodaffinity:AddPrefabAffinity("honeynuggets", TUNING.AFFINITY_15_CALORIES_LARGE)
 
         inst:AddComponent("wereness")
 

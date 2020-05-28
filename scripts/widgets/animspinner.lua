@@ -9,7 +9,7 @@ local Spinner = require "widgets/spinner"
 -- To use AnimSpinner, call the constructor just as you would for Spinner.
 -- Then call SetAnim with a build filel, anim bank name, animation name, and symbol to be overridden. 
 -- If it is a skin, then you must pass a final parameter with the value true.
--- eg, spinner_group.spinner:SetAnim("frames_comp", "fr", "icon", "SWAP_ICON", true)
+-- eg, spinner_group.spinner:SetAnim("frames_comp", "frames_comp", "idle_on", "SWAP_ICON", true)
 -- 
 -- Each item in the options list must have a build name and a symbol name instead of the image value used previously.
 -- eg

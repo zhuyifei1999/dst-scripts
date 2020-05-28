@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/bernie.zip"),
     Asset("ANIM", "anim/bernie_build.zip"),
     Asset("SOUND", "sound/together.fsb"),
+	Asset("MINIMAP_IMAGE", "bernie"),
 }
 
 local prefabs =
@@ -84,6 +85,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 50, .25)
@@ -93,6 +95,8 @@ local function fn()
     inst.AnimState:SetBank("bernie")
     inst.AnimState:SetBuild("bernie_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
+
+    inst.MiniMapEntity:SetIcon("bernie.png")
 
     inst:AddTag("smallcreature")
     inst:AddTag("companion")

@@ -56,6 +56,7 @@ local prefabs_atrium =
     "skeletonhat",
     "flower_rose",
     "winter_ornament_boss_fuelweaver",
+	"chesspiece_stalker_sketch",
 }
 
 local brain = require("brains/stalkerbrain")
@@ -928,6 +929,7 @@ local function AtriumLootFn(lootdropper)
         lootdropper:AddChanceLoot("thurible", 1)
         lootdropper:AddChanceLoot("armorskeleton", 1)
         lootdropper:AddChanceLoot("skeletonhat", 1)
+        lootdropper:AddChanceLoot("chesspiece_stalker_sketch", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)

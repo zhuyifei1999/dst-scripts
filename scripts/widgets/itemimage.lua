@@ -16,24 +16,21 @@ local ItemImage = Class(Widget, function(self, screen, type, name, item_id, time
 
     self.frame = self:AddChild(UIAnim())
     self.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
-    self.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
+    self.frame:GetAnimState():SetBank("frames_comp") -- top level symbol from frames_comp
 
     self.new_tag = self.frame:AddChild(Text(BODYTEXTFONT, 20, STRINGS.UI.SKINSSCREEN.NEW))
     self.new_tag.inst.UITransform:SetRotation(43)
     self.new_tag:SetPosition(41, 34)
     self.new_tag:SetColour(WHITE)
 
+	self.frame:GetAnimState():PlayAnimation("idle_on", true)
+
     local collection_timestamp = self.screen and self.screen.profile:GetCollectionTimestamp() or timestamp
-    --print(name, "Timestamp is ", timestamp, collection_timestamp)
    	if not timestamp or (timestamp > collection_timestamp) then 
-    	self.frame:GetAnimState():PlayAnimation("idle_on", true)
     	self.new_tag:Show()
-    	self.default_anim = "idle_on"
     	self.frame:GetAnimState():Show("NEW")
     else
-    	self.frame:GetAnimState():PlayAnimation("icon", true)
     	self.new_tag:Hide()
-    	self.default_anim = "icon"
     	self.frame:GetAnimState():Hide("NEW")
     end
     self.frame:SetScale(image_scale)
@@ -50,12 +47,12 @@ end)
 function ItemImage:PlaySpecialAnimation(name, pushdefault)
 	self.frame:GetAnimState():PlayAnimation(name, false)
 	if pushdefault then 
-		self.frame:GetAnimState():PushAnimation(self.default_anim, true)
+		self.frame:GetAnimState():PushAnimation("idle_on", true)
 	end
 end
 
 function ItemImage:PlayDefaultAnim()
-	self.frame:GetAnimState():PlayAnimation(self.default_anim, true)
+	self.frame:GetAnimState():PlayAnimation("idle_on", true)
 end
 
 function ItemImage:DisableSelecting()
@@ -65,6 +62,8 @@ end
 function ItemImage:SetItem(type, name, item_id, timestamp)
 
 	self.warn_marker:Hide()
+
+	self.frame:GetAnimState():PlayAnimation("idle_on", true)
 
 	-- Display an empty frame if there's no data
 	if not type and not name then 
@@ -78,7 +77,6 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 		-- Reset the stuff that just got cleared to an empty frame state
 		self.frame:GetAnimState():SetBuild("frames_comp")
 		self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(self.rarity))
-		self.frame:GetAnimState():PlayAnimation("icon", true)
 		return
 	end
 
@@ -89,25 +87,20 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 	self.type = type
 	self.name = name
 	self.item_id = item_id
-
 	self.rarity = GetRarityForItem( name )
 	
-	name = GetBuildForItem(self.name) 
+	local buildname = GetBuildForItem(self.name) 
 	
-
 	if self.frame and name and name ~= "" then 
-		self.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON", name, "SWAP_ICON")
+		self.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON", buildname, "SWAP_ICON")
 		self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(self.rarity))
 	end
 
 	local collection_timestamp = self.screen and self.screen.profile:GetCollectionTimestamp() or timestamp
-    --print(name, "Timestamp is ", timestamp, collection_timestamp)
    	if timestamp and (timestamp > collection_timestamp) then 
-    	self.frame:GetAnimState():PlayAnimation("idle_on", true)
     	self.new_tag:Show()
     	self.frame:GetAnimState():Show("NEW")
     else
-    	self.frame:GetAnimState():PlayAnimation("icon", true)
     	self.new_tag:Hide()
     	self.frame:GetAnimState():Hide("NEW")
     end
@@ -124,7 +117,7 @@ function ItemImage:ClearFrame()
 	-- Reset the stuff that just got cleared to an empty frame state
 	self.frame:GetAnimState():SetBuild("frames_comp")
 	self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(self.rarity))
-	self.frame:GetAnimState():PlayAnimation("icon", true)
+	self.frame:GetAnimState():PlayAnimation("idle_on", true)
 	return
 end
 

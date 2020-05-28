@@ -94,7 +94,7 @@ function PlayerHistory:UpdateHistoryFromClientTable()
     end
 end
 
-function PlayerHistory:GetRows()
+function PlayerHistory:GetRows() -- sort by last seen
 	local history = {}
 	for k, v in pairs(self.seen_players) do
 		local data = deepcopy(v)
@@ -113,6 +113,29 @@ function PlayerHistory:GetRows()
 			return false
 		end
 
+		return a.name < b.name
+	end)
+	return history
+end
+
+function PlayerHistory:GetRowsMostTime()
+	local history = {}
+	for k, v in pairs(self.seen_players) do
+		local data = deepcopy(v)
+		table.insert(history, data)
+	end
+	table.sort(history, function(a, b) 
+		if (a.time_played_with or 0) > (b.time_played_with or 0) then
+			return true
+		elseif (a.time_played_with or 0) < (b.time_played_with or 0) then
+			return false
+		end
+
+		if (a.last_seen_date or 0) > (b.last_seen_date or 0) then
+			return true
+		elseif (a.last_seen_date or 0) < (b.last_seen_date or 0) then
+			return false
+		end
 		return a.name < b.name
 	end)
 	return history

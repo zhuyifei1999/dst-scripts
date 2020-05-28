@@ -331,6 +331,27 @@ DST_CHARACTERLIST =
     "wurt"
 }
 
+CHARACTER_VIDEOS =
+{
+	wilson = {"https://www.youtube.com/watch?v=N0QhvmisGWU&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+	willow = {"https://www.youtube.com/watch?v=TKKXXKtFiQw&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+	wendy = {"https://www.youtube.com/watch?v=7ozRwX35fHE&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+--	wolfgang = {},
+--	wx78 = {},
+--	wickerbottom = {},
+	wes = {"https://www.youtube.com/watch?v=Nf2Stngxj0U&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+	waxwell = {"https://youtu.be/8BUcTVIV5y0"},
+	woodie = {"https://www.youtube.com/watch?v=d0r0WfV2y5s&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+--	wathgrithr = {},
+--	webber = {},
+	winona = {"https://www.youtube.com/watch?v=G-Kn9tgO0mQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+    wortox = {"https://www.youtube.com/watch?v=tcYbA7ohJLM&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+    wormwood = {"https://www.youtube.com/watch?v=4hugrMLgDsQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+    warly = {"https://www.youtube.com/watch?v=SH1VebvIOSk&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+    wurt = {"https://www.youtube.com/watch?v=jG2euiPFkbg&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+}
+
+
 require("prefabskins")
 require("clothing")
 require("misc_items")
@@ -365,6 +386,14 @@ CLOTHING.feet_default1 =
     is_default = true,
     release_group = 999,
 }
+MISC_ITEMS.beard_default1 =
+{
+    type = "beard",
+    skin_tags = {},
+    is_default = true,
+    release_group = 999,
+}
+
 
 MAINSCREEN_TOOL_LIST =
 {

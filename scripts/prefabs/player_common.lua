@@ -1695,6 +1695,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         if not GetGameModeProperty("no_eating") then
             inst:AddComponent("eater")
         end
+	    inst:AddComponent("foodaffinity")
+
         inst:AddComponent("leader")
         inst:AddComponent("age")
         inst:AddComponent("rider")

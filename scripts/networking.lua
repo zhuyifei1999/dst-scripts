@@ -40,7 +40,11 @@ function Networking_SystemMessage(message)
 end
 
 function Networking_ModOutOfDateAnnouncement(mod)
-    Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod), nil, "mod")
+    if IsRail() then
+        Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE_RAIL, mod), nil, "mod")
+    else
+        Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod), nil, "mod")
+    end
 end
 
 function Networking_DeathAnnouncement(message, colour)
@@ -424,16 +428,24 @@ function DownloadMods( server_listing )
                                 TheNet:ServerModsDownloadCompleted(false, version_mismatch_msg, "SERVER_MODS_WORKSHOP_VERSION_MISMATCH" )
                             end
                         else
+                            local sku = ""
+                            if IsRail() then
+                                sku = "_RAIL"
+                            end
                             if msg == "Access to mod denied" then
-                                TheNet:ServerModsDownloadCompleted(false, msg, "SERVER_MODS_WORKSHOP_ACCESS_DENIED")                                
+                                TheNet:ServerModsDownloadCompleted(false, msg, "SERVER_MODS_WORKSHOP_ACCESS_DENIED"..sku)                                
                             else
-                                TheNet:ServerModsDownloadCompleted(false, msg, "SERVER_MODS_WORKSHOP_FAILURE")
+                                TheNet:ServerModsDownloadCompleted(false, msg, "SERVER_MODS_WORKSHOP_FAILURE"..sku)
                             end
                         end
                     end
                 )
             else
-                TheNet:ServerModsDownloadCompleted(false, "You don't have the required mods to play on this server and they don't exist on the Workshop. You will need to download them manually.", "SERVER_MODS_NOT_ON_WORKSHOP" )
+                local error = "SERVER_MODS_NOT_ON_WORKSHOP"
+                if IsRail() then
+                    error = "SERVER_MODS_NOT_ON_WORKSHOP_RAIL"
+                end
+                TheNet:ServerModsDownloadCompleted(false, "You don't have the required mods to play on this server and they don't exist on the Workshop. You will need to download them manually.", error )
             end
         end
     else

@@ -18,18 +18,7 @@ local prefabs =
     "wortox_eat_soul_fx",
 }
 
-local start_inv =
-{
-    default =
-    {
-        "wortox_soul",
-        "wortox_soul",
-        "wortox_soul",
-        "wortox_soul",
-        "wortox_soul",
-        "wortox_soul",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WORTOX
 end
@@ -359,6 +348,9 @@ local function master_postinit(inst)
     if inst.components.eater ~= nil then
         inst.components.eater:SetAbsorptionModifiers(TUNING.WORTOX_FOOD_MULT, TUNING.WORTOX_FOOD_MULT, TUNING.WORTOX_FOOD_MULT)
     end
+
+    inst.components.foodaffinity:AddPrefabAffinity("pomegranate", TUNING.AFFINITY_15_CALORIES_TINY)
+    inst.components.foodaffinity:AddPrefabAffinity("pomegranate_cooked", TUNING.AFFINITY_15_CALORIES_SMALL)
 
     inst:AddComponent("souleater")
     inst.components.souleater:SetOnEatSoulFn(OnEatSoul)

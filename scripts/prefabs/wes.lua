@@ -7,13 +7,7 @@ local assets =
     Asset("ANIM", "anim/player_mime.zip"),
 }
 
-local start_inv =
-{
-    default =
-    {
-        "balloons_empty",
-    },
-}
+local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.WES
 end
@@ -32,10 +26,12 @@ end
 local function master_postinit(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
-    inst.components.health:SetMaxHealth(TUNING.WILSON_HEALTH * .75)
-    inst.components.hunger:SetMax(TUNING.WILSON_HUNGER * .75)
+    inst.components.health:SetMaxHealth(TUNING.WES_HEALTH)
+    inst.components.hunger:SetMax(TUNING.WES_HUNGER)
     inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE * 1.25)
-    inst.components.sanity:SetMax(TUNING.WILSON_SANITY * .75)
+    inst.components.sanity:SetMax(TUNING.WES_SANITY)
+
+    inst.components.foodaffinity:AddPrefabAffinity("freshfruitcrepes", TUNING.AFFINITY_15_CALORIES_SUPERHUGE)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wes").master_postinit(inst)

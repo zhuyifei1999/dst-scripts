@@ -13,6 +13,7 @@ local prefabs =
     "deer_red",
     "deer_blue",
     "staff_castinglight",
+	"chesspiece_klaus_sketch",
 
     --winter loot
     "winter_food3", --Candy Cane
@@ -22,6 +23,7 @@ local loot =
 {
     "monstermeat",
     "charcoal",
+	"chesspiece_klaus_sketch",
 }
 
 --------------------------------------------------------------------------

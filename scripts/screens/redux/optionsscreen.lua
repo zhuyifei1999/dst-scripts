@@ -203,7 +203,6 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 
     self.show_language_options = (prev_screen ~= nil and prev_screen.name == "MultiplayerMainScreen") and (IsConsole() or IsSteam())
 	self.show_datacollection = IsSteam() and not InGamePlay()
-	self.show_cinematics = not InGamePlay()
 
 	local graphicsOptions = TheFrontEnd:GetGraphicsOptions()
 
@@ -222,6 +221,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 		profanityfilterservernames = Profile:GetProfanityFilterServerNamesEanbled(),
         movementprediction = Profile:GetMovementPredictionEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
+		autologin = Profile:GetAutoLoginEnabled(),
 		wathgrithrfont = Profile:IsWathgrithrFontEnabled(),
 		boatcamera = Profile:IsBoatCameraEnabled(),
         lang_id = Profile:GetLanguageID(),
@@ -282,9 +282,6 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
     if self.show_language_options then
         menu_items["languages"] = self.panel_root:AddChild(self:_BuildLanguages())
     end
-	if self.show_cinematics then
-	    menu_items.cinematics = self.panel_root:AddChild(self:_BuildCinematics())
-	end
 
     self.subscreener = Subscreener(self, self._BuildMenu, menu_items )
     self.subscreener:SetPostMenuSelectionAction(function(selection)
@@ -339,9 +336,6 @@ function OptionsScreen:_BuildMenu(subscreener)
     if self.show_language_options then
         table.insert( menu_items, 1, {widget = languages_button} )
     end
-	if self.show_cinematics then
-	    table.insert( menu_items, 1, {widget = subscreener:MenuButton(STRINGS.UI.OPTIONS.CINEMATICS, "cinematics", STRINGS.UI.OPTIONS.TOOLTIP_CINEMATICS, self.tooltip)} )
-	end
 
     return self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 38, nil, nil, true))
 end
@@ -509,6 +503,7 @@ function OptionsScreen:Save(cb)
 	Profile:SetProfanityFilterServerNamesEanbled( self.options.profanityfilterservernames )
     Profile:SetMovementPredictionEnabled(self.options.movementprediction)
 	Profile:SetAutoSubscribeModsEnabled( self.options.automods )
+	Profile:SetAutoLoginEnabled( self.options.autologin )
 	Profile:SetTextureStreamingEnabled( self.options.texturestreaming )
 
 	Profile:Save( function() if cb then cb() end end)
@@ -918,56 +913,6 @@ function OptionsScreen:_BuildLanguages()
     return languagesRoot
 end
 
-function OptionsScreen:_BuildCinematics()
-    local root = Widget("ROOT")
-    
-    root:SetPosition(85,0)
-
-    local scale = 0.6
-    local button_width = 432 * scale
-    local button_height = 90 * scale
-
-    local title = root:AddChild(BuildSectionTitle(STRINGS.UI.OPTIONS.CINEMATICS, 200))
-    title:SetPosition(0, 160)
-
-    self.buttons = {}
-
-	local function OnMovieDone()
-		TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
-		TheFrontEnd:GetSound():SetParameter("FEMusic", "fade", 0)
-		TheFrontEnd:Fade(FADE_IN, 1)
-		self:Show()
-	end
-
-	table.insert(self.buttons, TEMPLATES.StandardButton(function()
-			TheFrontEnd:GetSound():KillSound("FEMusic")
-			if self.debug_menu then self.debug_menu:Disable() end
-			TheFrontEnd:FadeToScreen( self, function() return MovieDialog("movies/intro.ogv", OnMovieDone) end, nil )
-		end,
-		STRINGS.UI.OPTIONS.INTRO_MOVIE, {button_width, button_height})
-	)
-	table.insert(self.buttons, TEMPLATES.StandardButton(function()
-			TheFrontEnd:GetSound():KillSound("FEMusic")
-			if self.debug_menu then self.debug_menu:Disable() end
-			TheFrontEnd:FadeToScreen( self, function() return CreditsScreen() end, nil )
-		end,
-		STRINGS.UI.OPTIONS.CREDITS, {button_width, button_height})
-	)
-	
-	if IsSteam() then
-		table.insert(self.buttons, TEMPLATES.StandardButton(function() VisitURL("https://www.youtube.com/channel/UCzbYAkDCuQYdZ_fKz9MLrWA") end, STRINGS.UI.OPTIONS.VIDEO_CHANNEL, {button_width, button_height}))
-	end
-	
-    self.grid = root:AddChild(Grid())
-    self.grid:SetPosition(0, 90)
-
-    self.grid:FillGrid(1, button_width, button_height, self.buttons)
-    
-    root.focus_forward = self.grid
-
-    return root
-end
-
 local function EnabledOptionsIndex(enabled)
     return enabled and 2 or 1
 end
@@ -1258,7 +1203,6 @@ function OptionsScreen:_BuildSettings()
 	self.automodsSpinner.OnChanged =
 		function( _, data )
 			this.working.automods = data
-			--this:Apply()
 			self:UpdateMenu()
 		end
 
@@ -1289,6 +1233,14 @@ function OptionsScreen:_BuildSettings()
             self:MakeDirty()
 		end
 		
+		
+	self.autologinSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.AUTOLOGIN, enableDisableOptions)
+	self.autologinSpinner.OnChanged =
+		function( _, data )
+			this.working.autologin = data
+			self:UpdateMenu()
+		end
+
 	self.left_spinners = {}
 	self.right_spinners = {}
 	
@@ -1319,6 +1271,7 @@ function OptionsScreen:_BuildSettings()
 	end
 
 	table.insert( self.right_spinners, self.texturestreamingSpinner )
+	table.insert( self.right_spinners, self.autologinSpinner )
 
 	if self.show_datacollection then
 		table.insert( self.left_spinners, self.datacollectionCheckbox)
@@ -1565,6 +1518,7 @@ function OptionsScreen:InitializeSpinners(first)
 	end
 
 	self.automodsSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.automods ) )
+	self.autologinSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.autologin ) )
 
 	if first then
 		-- Add the bg change when non-init value for all spinners

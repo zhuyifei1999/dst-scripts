@@ -1,10 +1,22 @@
 local Image = require "widgets/image"
+local Button = require "widgets/button"
 local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
 require "components/skinner"
 
 local emotes_to_choose = { "emoteXL_waving1", "emoteXL_waving2", "emoteXL_waving3" }
+local player_emotes_to_choose = {
+	warly = "idle_warly",
+	wendy = "idle_wendy",
+	willow = "idle_willow",
+	winona = "idle_winona",
+	woodie = "idle_woodie",
+	wormwood = "idle_wormwood",
+	wortox = "idle_wortox",
+	wurt = "idle_wurt"
+}
+
 local emote_min_time = 6
 local emote_max_time = 12
 
@@ -18,8 +30,8 @@ local change_emotes =
 	feet = { "emote_feet" },
 }
 
-local SkinsPuppet = Class(Widget, function(self)
-    Widget._ctor(self, "puppet")
+local SkinsPuppet = Class(Button, function(self, emote_min_time, emote_max_time)
+    Button._ctor(self)
 
 	--[[
 		Puppet formerly used to swap between corner_dude (now deprecated)
@@ -28,6 +40,8 @@ local SkinsPuppet = Class(Widget, function(self)
 		is probably no real need for it anymore. Idle anims for special
 		skin modes are taken care of anyway.
 	]]
+	self.emote_min_time = emote_min_time
+	self.emote_max_time = emote_max_time
 
     self.anim = self:AddChild(UIAnim())
     self.animstate = self.anim:GetAnimState()
@@ -39,7 +53,8 @@ local SkinsPuppet = Class(Widget, function(self)
 	--
     self.animstate:AddOverrideBuild("player_emote_extra")
     self.animstate:PlayAnimation(self.current_idle_anim, true)
-
+	self.animstate:SetTime(math.random()*1.5)
+	
 	self.anim:SetFacing(FACING_DOWN)
 
     self.animstate:Hide("ARM_carry")
@@ -51,11 +66,13 @@ local SkinsPuppet = Class(Widget, function(self)
     self.last_skins = { prefabname = "", base_skin = "", body = "", hand = "", legs = "", feet = "" }
     
     self.enable_idle_emotes = true
-    self.time_to_idle_emote = emote_max_time
+    self:_ResetIdleEmoteTimer()
     self.time_to_change_emote = -1
     self.queued_change_slot = ""
 
 	self.play_non_idle_emotes = true
+	self.add_change_emote_for_idle = false
+	self.sitting = false
 end)
 
 function SkinsPuppet:AddShadow()
@@ -65,8 +82,8 @@ function SkinsPuppet:AddShadow()
 	self.shadow:MoveToBack()
 end
 
-function SkinsPuppet:DoEmote(emote, loop, force)
-	if force or self.animstate:IsCurrentAnimation("idle_loop") then
+function SkinsPuppet:DoEmote(emote, loop, force, do_push)
+	if not self.sitting and (force or self.animstate:IsCurrentAnimation("idle_loop")) then
 		self.animstate:SetBank("wilson")
         if type(emote) == "table" then
 			self.animstate:PlayAnimation(emote[1])
@@ -75,14 +92,79 @@ function SkinsPuppet:DoEmote(emote, loop, force)
 			end
 			self.looping = loop
 		else
-			self.animstate:PlayAnimation(emote)
+			if do_push then
+				self.animstate:PushAnimation(emote)
+			else
+				self.animstate:PlayAnimation(emote)
+			end
 			self.looping = false
 		end
     end
 end
 
+function SkinsPuppet:Sit()
+	self.sitting = true
+	self.animstate:PlayAnimation("emote_loop_sit2", true)
+	self.animstate:SetTime(math.random()*1.5)
+	self.animstate:SetMultColour(.6, .6, .6, 1)
+end
+
+
 function SkinsPuppet:DoIdleEmote()
-    local r = math.random(1,#emotes_to_choose)    
+	if self.add_change_emote_for_idle then
+		local r = math.random()
+		if r > 0.8 then
+			self.queued_change_slot = GetRandomKey(change_emotes) --Hack to queue up a change emote
+			self:DoChangeEmote()
+			return 
+		end
+	end
+	if player_emotes_to_choose[self.prefabname] then
+		local r = math.random()
+		if r > 0.3 then
+			if self.prefabname == "wendy" then
+				self.override_build = "player_idles_wendy"
+				self.animstate:AddOverrideBuild(self.override_build)
+			elseif self.prefabname == "warly" then
+				self.override_build = "player_idles_warly"
+				self.animstate:AddOverrideBuild(self.override_build)
+
+			elseif self.prefabname == "willow" then
+				local skin_build = Profile:GetLastUsedSkinForItem("bernie_inactive")
+				if skin_build ~= nil then
+					self.animstate:OverrideItemSkinSymbol("swap_object", skin_build, "swap_bernie", 0, "bernie_build")
+					self.animstate:OverrideItemSkinSymbol("swap_object_bernie", skin_build, "swap_bernie_idle_willow", 0, "bernie_build")
+				else
+					self.animstate:OverrideSymbol("swap_object", "bernie_build", "swap_bernie")
+					self.animstate:OverrideSymbol("swap_object_bernie", "bernie_build", "swap_bernie_idle_willow")
+				end
+				self.animstate:Show("ARM_carry")
+				self.animstate:Hide("ARM_normal")
+				
+				self.animstate:PlayAnimation("item_out")
+				self.item_equip = true
+			
+			elseif self.prefabname == "woodie" then
+				self.animstate:OverrideSymbol("swap_object", "swap_lucy_axe", "swap_lucy_axe")
+
+				self.animstate:Show("ARM_carry")
+				self.animstate:Hide("ARM_normal")
+				
+				self.animstate:PlayAnimation("item_out")
+				self.item_equip = true
+			end
+
+			self:DoEmote(player_emotes_to_choose[self.prefabname], false, true, self.item_equip)
+			if self.item_equip then
+				self.animstate:PushAnimation("item_in")
+				self.animstate:PushAnimation("idle_loop", true) --fix for frame pop before the next play happens
+			end
+
+			return 
+		end
+	end
+	
+    local r = math.random(1,#emotes_to_choose) 
     self:DoEmote(emotes_to_choose[r])
 end
 
@@ -95,10 +177,20 @@ function SkinsPuppet:DoChangeEmote()
 end
 
 function SkinsPuppet:_ResetIdleEmoteTimer()
-    self.time_to_idle_emote = math.random(emote_min_time, emote_max_time)
+    self.time_to_idle_emote = math.random(self.emote_min_time or emote_min_time, self.emote_max_time or emote_max_time)
 end
 
 function SkinsPuppet:EmoteUpdate(dt)
+	if self.sitting then
+		return
+	end
+	
+	if self.item_equip and self.animstate:IsCurrentAnimation("item_in") then
+		self.item_equip = false
+		self.animstate:Hide("ARM_carry")
+		self.animstate:Show("ARM_normal")
+	end
+
 	if self.time_to_idle_emote > 0 then
 		self.time_to_idle_emote = self.time_to_idle_emote - dt
 	elseif self.enable_idle_emotes then
@@ -125,7 +217,10 @@ function SkinsPuppet:EmoteUpdate(dt)
 		if self.play_non_idle_emotes then
 			self.animstate:SetBank(self.currentanimbank)
 		end
-
+		
+		if self.override_build then
+			self.animstate:ClearOverrideBuild( self.override_build )
+		end
 		self.animstate:PlayAnimation(self.current_idle_anim, true)
 	end
 end
@@ -148,6 +243,11 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 			offset = { 0, -25 }
 		}
 	]]
+
+	self.sitting = false
+	self.animstate:SetMultColour(1, 1, 1, 1)
+
+	self.prefabname = prefabname
 
 	if skinmode == nil then
 		skinmode = GetSkinModes(prefabname)[1]
@@ -223,5 +323,37 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	self.last_skins.feet = clothing_names.feet
 end
 
+local beards = {
+	"beard_short",
+	"beard_medium",
+	"beard_long"
+}
+function SkinsPuppet:SetBeardLength(length)
+	self.beard_length = length
+	self:SetBeard( self.beard )
+end
+
+function SkinsPuppet:SetBeard(beard)
+	self.beard = beard
+	if self.beard_length ~= nil then
+		if beard == nil or beard == "beard_default1" then
+			self.animstate:OverrideSymbol("beard", "beard", beards[self.beard_length])
+		else
+			self.animstate:OverrideSkinSymbol("beard", beard, beards[self.beard_length])
+		end
+	end
+end
+
+function SkinsPuppet:OnGainFocus()
+	self._base.OnGainFocus(self)
+
+	--Only gets called if SetClickable(true) which is the default
+	if self.enable_idle_emotes then
+		if self.animstate:IsCurrentAnimation("idle_loop") then
+			self:_ResetIdleEmoteTimer()
+			self:DoIdleEmote()
+		end
+	end
+end
 
 return SkinsPuppet

@@ -1373,6 +1373,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.granted_items       = info.granted_items
 	prefab_skin.marketable			= info.marketable
     prefab_skin.release_group       = info.release_group
+    prefab_skin.linked_beard        = info.linked_beard
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

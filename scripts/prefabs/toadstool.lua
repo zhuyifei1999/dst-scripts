@@ -46,6 +46,7 @@ for i, v in ipairs({
     "green_mushroomhat_blueprint",
     "blue_mushroomhat_blueprint",
     "mushroom_light2_blueprint",
+    "chesspiece_toadstool_sketch",
     MUSHTREE_SPORE_RED,
     MUSHTREE_SPORE_GREEN,
     MUSHTREE_SPORE_BLUE,
@@ -92,6 +93,7 @@ SetSharedLootTable('toadstool',
     {"meat",          0.25},
 
     {"shroom_skin",   1.00},
+    {"chesspiece_toadstool_sketch", 1.00},
 
     {"red_cap",       1.00},
     {"red_cap",       0.33},

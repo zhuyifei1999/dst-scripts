@@ -232,10 +232,10 @@ function SkinsScreen:BuildDetailsPanel()
 
 	self.details_panel.image = self.details_panel:AddChild(UIAnim()) 
 	self.details_panel.image:GetAnimState():SetBuild("frames_comp")
-	self.details_panel.image:GetAnimState():SetBank("fr")
+	self.details_panel.image:GetAnimState():SetBank("frames_comp")
 	self.details_panel.image:GetAnimState():Hide("frame")
 	self.details_panel.image:GetAnimState():Hide("NEW")
-	self.details_panel.image:GetAnimState():PlayAnimation("icon")
+	self.details_panel.image:GetAnimState():PlayAnimation("idle_on")
 	self.details_panel.image:SetPosition(0, 130)
 	self.details_panel.image:SetScale(1.65)
 	

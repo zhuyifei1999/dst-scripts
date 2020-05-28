@@ -16,6 +16,7 @@ local SKETCHES =
     { item = "chesspiece_bearger",      recipe = "chesspiece_bearger_builder" },
     { item = "chesspiece_moosegoose",   recipe = "chesspiece_moosegoose_builder" },
     { item = "chesspiece_dragonfly",    recipe = "chesspiece_dragonfly_builder" },
+-- Note: The index is saved, always add to the end of the list! and never reorder!
     { item = "chesspiece_clayhound",    recipe = "chesspiece_clayhound_builder",    image = "chesspiece_clayhound_sketch" },
     { item = "chesspiece_claywarg",     recipe = "chesspiece_claywarg_builder",     image = "chesspiece_claywarg_sketch" },
     { item = "chesspiece_butterfly",    recipe = "chesspiece_butterfly_builder",    image = "chesspiece_butterfly_sketch" },
@@ -24,6 +25,14 @@ local SKETCHES =
     { item = "chesspiece_carrat",       recipe = "chesspiece_carrat_builder",       image = "chesspiece_carrat_sketch" },
     { item = "chesspiece_malbatross",   recipe = "chesspiece_malbatross_builder" },
     { item = "chesspiece_crabking",     recipe = "chesspiece_crabking_builder" },
+-- Note: The index is saved, always add to the end of the list! and never reorder!
+    { item = "chesspiece_toadstool",    recipe = "chesspiece_toadstool_builder" },
+    { item = "chesspiece_stalker",      recipe = "chesspiece_stalker_builder" },
+    { item = "chesspiece_klaus",        recipe = "chesspiece_klaus_builder" },
+    { item = "chesspiece_beequeen",     recipe = "chesspiece_beequeen_builder" },
+    { item = "chesspiece_antlion",      recipe = "chesspiece_antlion_builder" },
+-- Note: The index is saved, always add to the end of the list! and never reorder!
+
 }
 
 local function onload(inst, data)

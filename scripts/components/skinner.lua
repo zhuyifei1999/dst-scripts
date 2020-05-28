@@ -328,15 +328,16 @@ function Skinner:SetupNonPlayerData()
 	self:SetSkinMode("NO_BASE")
 end
 
-function Skinner:SetSkinName(skin_name)
+function Skinner:SetSkinName(skin_name, skip_beard_setup)
     if skin_name == "" then
         skin_name = self.inst.prefab.."_none"
     end
 
 	self.skin_name = skin_name
 	self.skin_data = {}
+	local skin_prefab = nil
 	if self.skin_name ~= nil and self.skin_name ~= "" then
-		local skin_prefab = Prefabs[skin_name] or nil
+		skin_prefab = Prefabs[skin_name] or nil
 		if skin_prefab and skin_prefab.skins then
 			for k,v in pairs(skin_prefab.skins) do
 				self.skin_data[k] = v
@@ -348,6 +349,17 @@ function Skinner:SetSkinName(skin_name)
         print("ERROR!!! Invisible werebeaver is probably about to happen!!!")
     end
 
+	--Attempt to assign a matching beard skin
+	if not skip_beard_setup then
+		if self.inst.components.beard ~= nil and self.inst.components.beard.is_skinnable then
+			if skin_prefab ~= nil and skin_prefab.linked_beard ~= nil and TheInventory:CheckClientOwnership(self.inst.userid, skin_prefab.linked_beard) then
+				self.inst.components.beard:SetSkin( skin_prefab.linked_beard )
+			else
+				self.inst.components.beard:SetSkin( nil )
+			end
+		end
+	end
+	
 	self:SetSkinMode()
 end
 
@@ -443,7 +455,7 @@ function Skinner:OnLoad(data)
 			--load base skin (check that it hasn't been traded away)
 			skin_name = data.skin_name
 		end
-		self:SetSkinName(skin_name)
+		self:SetSkinName(skin_name, true)
 	end
 end
 

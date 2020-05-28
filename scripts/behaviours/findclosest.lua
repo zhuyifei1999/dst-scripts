@@ -81,7 +81,7 @@ end
 function FindClosest:PickTarget()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.see_dist, self.tags, self.exclude_tag, self.one_of_tags)
-    self.targ = (#ents == 0) and nil or (ents[1] ~= self.inst and ents[1] or ents[2])
+    self.targ = ents[1] ~= self.inst and ents[1] or ents[2] -- note: its okay that ents[2] might be nil
 
     self.lastchecktime = GetTime()
 end
