@@ -83,9 +83,11 @@ function Trap:GetDebugString()
         end
     end
 
-    local souls = self.numsouls or self.starvednumsouls
-    if souls ~= nil then
-        str = str.." Souls:"..souls
+    if self.numsouls ~= nil then
+        str = str.." Souls:"..self.numsouls
+    end
+    if self.starvednumsouls ~= nil then
+        str = str.." Starved Souls:"..self.starvednumsouls
     end
 
     return str
@@ -336,7 +338,11 @@ function Trap:Harvest(doer)
         end
 
         if self.numsouls ~= nil then
-            doer:PushEvent("harvesttrapsouls", { numsouls = self.numsouls, pos = pos })
+			if doer ~= nil then
+	            doer:PushEvent("harvesttrapsouls", { numsouls = self.numsouls, pos = pos })
+			else
+	            TheWorld:PushEvent("starvedtrapsouls", { numsouls = self.numsouls, trap = self.inst })
+			end
         end
 
         if self.inst:IsValid() then

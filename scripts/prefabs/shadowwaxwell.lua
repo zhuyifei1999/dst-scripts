@@ -128,6 +128,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst:AddComponent("locomotor")
         inst.components.locomotor.runspeed = TUNING.SHADOWWAXWELL_SPEED
+	    inst.components.locomotor:SetTriggersCreep(false)
         inst.components.locomotor.pathcaps = { ignorecreep = true }
         inst.components.locomotor:SetSlowMultiplier(.6)
 

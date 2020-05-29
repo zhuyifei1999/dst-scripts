@@ -131,7 +131,7 @@ function SkinsPuppet:DoIdleEmote()
 
 			elseif self.prefabname == "willow" then
 				local skin_build = Profile:GetLastUsedSkinForItem("bernie_inactive")
-				if skin_build ~= nil then
+				if skin_build ~= nil and skin_build ~= "bernie_inactive" then
 					self.animstate:OverrideItemSkinSymbol("swap_object", skin_build, "swap_bernie", 0, "bernie_build")
 					self.animstate:OverrideItemSkinSymbol("swap_object_bernie", skin_build, "swap_bernie_idle_willow", 0, "bernie_build")
 				else

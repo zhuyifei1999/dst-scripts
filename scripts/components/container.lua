@@ -321,7 +321,7 @@ function Container:Open(doer)
             if self:IsSideWidget() then
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_open")
             else
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/container")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/container_open")
             end
         elseif self.widget ~= nil
             and self.widget.buttoninfo ~= nil
@@ -349,7 +349,7 @@ function Container:Close()
             if self:IsSideWidget() then
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_close")
             else
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/container")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/container_close")
             end
         elseif doer.components.playeractionpicker ~= nil then
             doer.components.playeractionpicker:UnregisterContainer(self.inst)
