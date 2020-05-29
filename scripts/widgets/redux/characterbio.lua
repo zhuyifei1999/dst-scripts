@@ -38,11 +38,11 @@ function CharacterBio:_BuildPortraitWidgets(character)
 	end
 
 	local status_y = -230
-	self.hunger_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("health", character))
-	self.hunger_status:SetPosition(-80, status_y)
+	self.health_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("health", character))
+	self.health_status:SetPosition(-80, status_y)
 
-	self.health_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("hunger", character))
-	self.health_status:SetPosition(0, status_y)
+	self.hunger_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("hunger", character))
+	self.hunger_status:SetPosition(0, status_y)
 
 	self.sanity_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("sanity", character))
 	self.sanity_status:SetPosition(80, status_y)

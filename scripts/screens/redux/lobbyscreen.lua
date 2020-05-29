@@ -191,12 +191,12 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 
 		local status_x = 100
 		local status_y = 110
-		root.hunger_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("health"))
-		root.hunger_status:SetPosition(status_x - 70, status_y)
-		root.hunger_status:SetScale(0.9)
-		root.health_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("hunger"))
-		root.health_status:SetPosition(status_x, status_y)
+		root.health_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("health"))
+		root.health_status:SetPosition(status_x - 70, status_y)
 		root.health_status:SetScale(0.9)
+		root.hunger_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("hunger"))
+		root.hunger_status:SetPosition(status_x, status_y)
+		root.hunger_status:SetScale(0.9)
 		root.sanity_status = root:AddChild(TEMPLATES.MakeUIStatusBadge("sanity"))
 		root.sanity_status:SetPosition(status_x + 70, status_y)
 		root.sanity_status:SetScale(0.9)
@@ -231,8 +231,8 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 					self.charactername:Show()
 				end
 				SetOvalPortraitTexture(self.portrait, character)
-				self.hunger_status:ChangeCharacter(character)
 				self.health_status:ChangeCharacter(character)
+				self.hunger_status:ChangeCharacter(character)
 				self.sanity_status:ChangeCharacter(character)
 				self.inv:ChangeCharacter(character)
 

@@ -311,6 +311,9 @@ local states =
             TimeEvent(3, function(inst)
                 if not inst:IsUnchained() then
                     inst.sg.statemem.resurrecting = true
+					if inst.brain.stopped then
+						inst.brain:Start()
+					end
                     inst.sg:GoToState("resurrect")
                 end
             end),

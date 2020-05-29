@@ -5559,6 +5559,7 @@ CLOTHING =
 		type = "legs",
 		skin_tags = { "YULE", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_in_base_hides = { "skirt", },
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 82,

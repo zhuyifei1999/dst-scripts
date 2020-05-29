@@ -5077,6 +5077,7 @@ table.insert(prefs, CreatePrefabSkin("wilson_ice",
 	skin_tags = { "ICE", "BASE", "WILSON", },
 	bigportrait = { build = "bigportraits/wilson_ice.xml", symbol = "wilson_ice_oval.tex"},
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_ice", },
+	linked_beard = "wilson_beard_ice",
 	release_group = 36,
 }))
 

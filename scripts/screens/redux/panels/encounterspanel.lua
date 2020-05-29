@@ -19,6 +19,7 @@ local EncountersPanel = Class(Widget, function(self)
     Widget._ctor(self, "EncountersPanel")
 
     self.player_history = PlayerHistory:GetRows()
+	self.can_view_profile = not IsPS4()
 
 	self.root = self:AddChild(Widget("ROOT"))
     self.root:SetPosition(0,0)
@@ -30,7 +31,6 @@ local EncountersPanel = Class(Widget, function(self)
     self.encounters_scroll_list:SetPosition(-15, 0)
 
     self.focus_forward = self.encounters_scroll_list
-
 end)
 
 local function get_character_icon(character)

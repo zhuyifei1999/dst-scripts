@@ -222,6 +222,8 @@ local function master_postinit(inst)
     inst:AddComponent("reader")
 
     inst.components.foodaffinity:AddFoodtypeAffinity(FOODTYPE.VEGGIE, 1.33)
+    inst.components.foodaffinity:AddPrefabAffinity  ("kelp",          1.33) -- prevents the negative stats, otherwise foodtypeaffinity would have suffice
+    inst.components.foodaffinity:AddPrefabAffinity  ("kelp_cooked",   1.33) -- prevents the negative stats, otherwise foodtypeaffinity would have suffice
     inst.components.foodaffinity:AddPrefabAffinity  ("durian",        TUNING.AFFINITY_15_CALORIES_MED)
     inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", TUNING.AFFINITY_15_CALORIES_MED)
 

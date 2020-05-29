@@ -954,7 +954,7 @@ function Start()
 
     CheckControllers()
 
-	if PLATFORM == "WIN32_RAIL" and RUN_GLOBAL_INIT then
+	if IsRail() and RUN_GLOBAL_INIT then
 		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
 		TheFrontEnd:PushScreen( HealthWarningPopup() )
 	end

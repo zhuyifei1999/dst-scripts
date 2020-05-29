@@ -373,6 +373,8 @@ local function commonfn(name, sixfaced)
     end
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+	inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor.pathcaps = { ignorecreep = true }
 
     inst:AddComponent("health")
     inst.components.health.nofadeout = true

@@ -107,19 +107,20 @@ local function spellCB(tool, target, pos)
                 local new_reskinname = nil
                 local search_for_skin = tool._cached_reskinname[prefab_to_skin] ~= nil
 
-                for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
-                    if search_for_skin then
-                        if tool._cached_reskinname[prefab_to_skin] == item_type then
-                            search_for_skin = false
-                        end
-                    else
-                        if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
-                            new_reskinname = item_type
-                            break
+                if PREFAB_SKINS[prefab_to_skin] ~= nil then
+                    for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
+                        if search_for_skin then
+                            if tool._cached_reskinname[prefab_to_skin] == item_type then
+                                search_for_skin = false
+                            end
+                        else
+                            if TheInventory:CheckClientOwnership(tool.parent.userid, item_type) then
+                                new_reskinname = item_type
+                                break
+                            end
                         end
                     end
                 end
-    
                 tool._cached_reskinname[prefab_to_skin] = new_reskinname
             end
             
@@ -155,6 +156,7 @@ local function can_cast_fn(doer, target, pos)
         end
     end
 
+    --Is there a skin to turn off?
     local curr_skin = is_beard and target.components.beard.skinname or target.skinname
     if curr_skin ~= nil then
         return true

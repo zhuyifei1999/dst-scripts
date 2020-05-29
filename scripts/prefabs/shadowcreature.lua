@@ -137,6 +137,9 @@ local function MakeShadowCreature(data)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.walkspeed = data.speed
+	    inst.components.locomotor:SetTriggersCreep(false)
+        inst.components.locomotor.pathcaps = { ignorecreep = true }
+
         inst.sounds = sounds
         inst:SetStateGraph("SGshadowcreature")
 

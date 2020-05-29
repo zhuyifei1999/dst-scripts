@@ -319,7 +319,7 @@ function ModsTab:CreateDetailPanel()
     -- No mods to display
     self.detaildesc_empty = self.detailpanel.whenempty:AddChild(Text(CHATFONT, 25))
     self.detaildesc_empty:SetColour(UICOLOURS.GOLD)
-    self.detaildesc_empty:SetPosition(-7, 55, 0)
+    self.detaildesc_empty:SetPosition(-117, 55, 0)
     self.detaildesc_empty:SetRegionSize(body_width, 225)
     self.detaildesc_empty:EnableWordWrap(true)
 

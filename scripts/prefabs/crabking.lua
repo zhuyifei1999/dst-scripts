@@ -31,12 +31,12 @@ local prefabs =
     "crabking_chip_low",
     "moon_altar_cosmic",
     "hermit_cracked_pearl",
-	"chesspiece_crabking_sketch",
-	"trident_blueprint",
-	"meat",
-	"singingshell_octave5",
-	"singingshell_octave4",
-	"singingshell_octave3",
+    "chesspiece_crabking_sketch",
+    "trident_blueprint",
+    "meat",
+    "singingshell_octave5",
+    "singingshell_octave4",
+    "singingshell_octave3",
 }
 
 local geyserprefabs =
@@ -111,9 +111,9 @@ local function AddDecor(inst, data)
 end
 
 local function clearsocketart(inst)
-	inst.AnimState:ClearOverrideSymbol("gems_blue")
+    inst.AnimState:ClearOverrideSymbol("gems_blue")
     for i=1,9 do
-		inst.AnimState:ClearOverrideSymbol("gem"..i)
+        inst.AnimState:ClearOverrideSymbol("gem"..i)
     end    
 end
 
@@ -356,7 +356,7 @@ local function startcastspell(inst, freeze)
                 local boatpt = Vector3(boat.Transform:GetWorldPosition())
                 local fx = SpawnPrefab("crabking_geyserspawner")
                 fx.crab = inst
-				fx.fisher_prefab = inst.prefab
+                fx.fisher_prefab = inst.prefab
                 fx:ListenForEvent("onremove", function() removecrab(fx) end, inst)
                 fx.Transform:SetPosition(boatpt.x,boatpt.y,boatpt.z)
                 fx.dogeyserburbletask(fx)  
@@ -687,7 +687,7 @@ end
 
 SetSharedLootTable( 'crabking',
 {
-	{"chesspiece_crabking_sketch",			1.00},
+    {"chesspiece_crabking_sketch",          1.00},
     {"trident_blueprint",                   1.00},
     {'meat',                                1.00},
     {'meat',                                1.00},
@@ -745,7 +745,7 @@ local function fn()
     inst.AnimState:SetBank("king_crab")
     inst.AnimState:SetBuild("crab_king_build")    
 
-    inst:AddTag("crabking") 
+    inst:AddTag("ignorewalkableplatforms") -- added so the crab king will not get attached to a moving boat when it is past entity-sleep range    inst:AddTag("crabking") 
     inst:AddTag("largecreature")
     inst:AddTag("gemsocket")
     inst:AddTag("birdblocker")
@@ -876,7 +876,7 @@ local function dogeyserburbletask(inst)
         inst.burbletask:Cancel()
         inst.burbletask = nil
     end
-    local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)
+    local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2 or 0))
     local time = Remap(inst.components.age:GetAge(),0,totalcasttime,0.2,0.01)
     inst.burbletask = inst:DoTaskInTime(time,function() inst.burble(inst) end) -- 0.01+ math.random()*0.1
 end
@@ -943,9 +943,9 @@ local function endgeyser(inst)
                         -- Launch fishable things because why not.
 
                         local projectile = v.components.oceanfishable:MakeProjectile()
-						if projectile.components.weighable ~= nil then
-							projectile.components.weighable.prefab_override_owner = inst.fisher_prefab
-						end
+                        if projectile.components.weighable ~= nil then
+                            projectile.components.weighable.prefab_override_owner = inst.fisher_prefab
+                        end
                         local position = Vector3(x+offset.x,y+offset.y,z+offset.z) 
                         if projectile.components.complexprojectile then
                             projectile.components.complexprojectile:SetHorizontalSpeed(16)
@@ -1013,7 +1013,7 @@ local function geyserfn()
     inst.SoundEmitter:SetParameter("burble", "intensity", 0)
     inst.burblestarttime = GetTime()
     inst.burbleintensity = inst:DoPeriodicTask(1,function()
-            local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow or 0)/2)
+            local totalcasttime = TUNING.CRABKING_CAST_TIME - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2 or 0))
             local intensity = math.min(1,( GetTime() - inst.burblestarttime ) / totalcasttime)
 
             inst.SoundEmitter:SetParameter("burble", "intensity", intensity)
@@ -1098,7 +1098,7 @@ local function freezefx(inst)
 
     local MAXFX = Remap(( inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0, 9,5,15)
 
-    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (math.min((inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0),4)/2),1,MAXFX)
+    local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (math.min((inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2) or 0),4)),1,MAXFX)
 
     for i=1,fx do
         if math.random()<0.2 then
@@ -1116,8 +1116,8 @@ local function dofreeze(inst)
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,v in pairs(ents)do
         if v.components.temperature then
-
-            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + ((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow) or 0/2)) /interval)
+            
+            local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + ((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2) or 0) ) /interval)
             if v.components.moisture then
                 rate = rate * Remap(v.components.moisture:GetMoisture(),0,v.components.moisture.maxmoisture,1,3)
             end
@@ -1129,7 +1129,7 @@ local function dofreeze(inst)
             end
         end
     end     
-        
+          
     local time = 0.2 
     inst.lowertemptask = inst:DoTaskInTime(time,function() inst.dofreeze(inst) end)
 end
