@@ -34,7 +34,7 @@ local function onhit(inst, attacker, target)
     if impactfx ~= nil then
         local follower = impactfx.entity:AddFollower()
         follower:FollowSymbol(target.GUID, target.components.combat.hiteffectsymbol, 0, 0, 0)
-        if attacker ~= nil then
+        if attacker ~= nil and attacker:IsValid() then
             impactfx:FacePoint(attacker.Transform:GetWorldPosition())
         end
     end

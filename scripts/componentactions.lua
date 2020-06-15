@@ -871,7 +871,7 @@ local COMPONENT_ACTIONS =
         end,
 
         saddler = function(inst, doer, target, actions)
-            if target:HasTag("saddleable") then
+            if target:HasTag("saddleable") and not target:HasTag("dogrider_only") then
                 table.insert(actions, ACTIONS.SADDLE)
             end
         end,
