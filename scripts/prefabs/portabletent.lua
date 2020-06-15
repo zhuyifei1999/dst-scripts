@@ -28,6 +28,7 @@ end
 
 local function ChangeToItem(inst)
     inst:RemoveComponent("sleepingbag")
+    inst:RemoveComponent("portablestructure")
     inst.AnimState:PlayAnimation("disassemble")
     inst.SoundEmitter:PlaySound("dontstarve/characters/walter/tent/close")
     inst:ListenForEvent("animover", OnAnimOver)
@@ -39,7 +40,8 @@ local function OnHammered(inst)--, worker)
     end
 
     if inst:HasTag("burnt") then
-        local fx = SpawnPrefab("collapse_small")
+        local fx = SpawnPrefab("collapse_big")
+        inst.components.lootdropper:DropLoot()
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
         fx:SetMaterial("wood")
         inst:Remove()
@@ -80,19 +82,10 @@ local function OnBurnt(inst)
     DefaultBurntStructureFn(inst)
     RemovePhysicsColliders(inst)
 
-    if inst.components.workable ~= nil then
-        inst:RemoveComponent("workable")
-    end
-
     if inst.components.portablestructure ~= nil then
         inst:RemoveComponent("portablestructure")
     end
 
-    inst.persists = false
-    inst:AddTag("FX")
-    inst:AddTag("NOCLICK")
-    inst:ListenForEvent("animover", ErodeAway)
-    inst.AnimState:PlayAnimation("burnt_collapse")
 end
 
 -----------------------------------------------------------------------
@@ -181,7 +174,7 @@ local function fn()
     MakeObstaclePhysics(inst, inst.physicsradiusoverride)
 
     -- Set Tent icon
-    inst.MiniMapEntity:SetIcon("portableblender.png")
+    inst.MiniMapEntity:SetIcon("portabletent.png")
 
     inst:AddTag("tent")
     inst:AddTag("portabletent")
@@ -203,7 +196,8 @@ local function fn()
     inst.components.portablestructure:SetOnDismantleFn(OnDismantle)
 
     inst:AddComponent("inspectable")
-
+    inst:AddComponent("lootdropper")
+    
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
@@ -229,6 +223,8 @@ local function fn()
     MakeHauntableWork(inst)
 
     MakeLargeBurnable(inst, nil, nil, true)
+    inst.components.burnable:SetOnBurntFn(OnBurnt)
+
     MakeMediumPropagator(inst)
 
     inst.OnSave = OnSave 

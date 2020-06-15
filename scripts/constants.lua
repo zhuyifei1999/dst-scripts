@@ -350,7 +350,7 @@ CHARACTER_VIDEOS =
     wormwood = {"https://www.youtube.com/watch?v=4hugrMLgDsQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     warly = {"https://www.youtube.com/watch?v=SH1VebvIOSk&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     wurt = {"https://www.youtube.com/watch?v=jG2euiPFkbg&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
---	walter = {},
+	walter = {"https://www.youtube.com/watch?v=14ou18F8bhw"},
 }
 
 

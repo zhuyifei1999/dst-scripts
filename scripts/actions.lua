@@ -2178,7 +2178,10 @@ ACTIONS.MOUNT.fn = function(act)
         return false
     elseif act.target.components.rideable:IsBeingRidden() then
         return false, "INUSE"
+    elseif act.target:HasTag("dogrider_only") and act.doer:HasTag("dogrider") and act.target._playerlink ~= act.doer then
+        return false
     end
+    
     act.doer.components.rider:Mount(act.target)
     return true
 end
