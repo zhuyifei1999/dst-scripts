@@ -35,6 +35,7 @@ local function IsValidSpawner(x, y, z)
     return true
 end
 
+local STRUCTURES_TAGS = { "structure" }
 local function SpawnKlausSack()
     local numstructsatspawn = {}
 
@@ -44,7 +45,7 @@ local function SpawnKlausSack()
     for i, v in ipairs(_spawners) do
         x, y, z = v.Transform:GetWorldPosition()
         if IsValidSpawner(x, y, z) and not IsAnyPlayerInRange(x, y, z, 35) then
-            local structs = TheSim:FindEntities(x, y, z, 5, { "structure" })
+            local structs = TheSim:FindEntities(x, y, z, 5, STRUCTURES_TAGS)
             if #structs == 0 then
                 break
             end
@@ -71,7 +72,7 @@ local function SpawnKlausSack()
     if x ~= nil then
         x, y, z = TheWorld.Map:GetTileCenterPoint(x, y, z)
         local sack = SpawnPrefab("klaus_sack")
-        local structs = TheSim:FindEntities(x, y, z, 2, { "structure" })
+        local structs = TheSim:FindEntities(x, y, z, 2, STRUCTURES_TAGS)
         for i, v in ipairs(structs) do
             if v.components.workable ~= nil then
                 v.components.workable:Destroy(sack)

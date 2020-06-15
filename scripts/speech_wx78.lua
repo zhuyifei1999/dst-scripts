@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "ERROR: ACTION UNAVAILABLE",
 	ANNOUNCE_BOAT_LEAK = "MY WORST NIGHTMARE IS REALIZED",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "ERROR: INVALID ORGANIC COMPONENTS",
@@ -780,6 +801,16 @@ return{
             REVIVER = "%s HAS SOME REDEEMING QUALITIES AFTER ALL",
             GHOST = "SIGH. NOW I'LL HAVE TO FIND A NEW MINION",
             FIRESTARTER = "HA HA. SHE'S AWFUL. I APPROVE",
+        },
+
+        WALTER =
+        {
+            GENERIC = "DETECTING... %s!",
+            ATTACKER = "IT SEEMS %S IS CAPABLE OF VIOLENCE. EXCELLENT",
+            MURDERER = "I WILL DESTROY YOU. AND YOUR LITTLE DOG TOO",
+            REVIVER = "WELL DONE. YOU WILL BE A MOST USEFUL MINION",
+            GHOST = "THIS MINION IS IN NEED OF REPAIR",
+            FIRESTARTER = "YES MY MINION! DESTROY! DESTROY!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "THE DROOL CREATURE HAS EXPANDED",
+            "THE DROOL CREATURE HAS EXPANDED",
+        },
+        WOBYSMALL = 
+        {
+            "IT SLOBBERED ON ME",
+            "IT SLOBBERED ON ME",
+        },
+		WALTERHAT = "I HAVE NO INTEREST IN THIS",
+		SLINGSHOT = "A RUDIMENTARY FLESHSACK WEAPON",
+		SLINGSHOTAMMO_ROCK = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",		
+		SLINGSHOTAMMO_MARBLE = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",		
+		SLINGSHOTAMMO_THULECITE = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",	
+        SLINGSHOTAMMO_GOLD = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",
+        SLINGSHOTAMMO_SLOW = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",
+        SLINGSHOTAMMO_FREEZE = "FLESHSACKS, FINDING NEW INNOVATIVE WAYS TO THROW ROCKS AT EACH OTHER",
+		SLINGSHOTAMMO_POOP = "DISGUSTING",
+        PORTABLETENT = "RECHARGING STATION",
+        PORTABLETENT_ITEM = "TENT LOADING... INCOMPLETE",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
 		GHOSTLYELIXIR_FASTREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
 		GHOSTLYELIXIR_SHIELD = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",

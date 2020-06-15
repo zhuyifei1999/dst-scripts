@@ -87,8 +87,9 @@ local function stophuntingfood(inst)
     end
 end
 
+local CANHAUNT_MUST_TAGS = { "buzzard" }
 local function CanBeHunted(food)
-    return food.buzzardHunted == nil and food:IsOnValidGround() and FindEntity(food, 3, nil, { "buzzard" }, NO_TAGS) == nil
+    return food.buzzardHunted == nil and food:IsOnValidGround() and FindEntity(food, 3, nil, CANHAUNT_MUST_TAGS, NO_TAGS) == nil
 end
 
 local function LookForFood(inst)

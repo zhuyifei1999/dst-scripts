@@ -149,10 +149,10 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper, is
     end
 end
 
-function Networking_Talk(guid, message)
+function Networking_Talk(guid, message, duration)
     local entity = Ents[guid]
     if entity ~= nil and entity.components.talker ~= nil then
-        entity.components.talker:Say(message, nil, nil, nil, true)
+        entity.components.talker:Say(message, duration, nil, nil, true)
     end
 end
 

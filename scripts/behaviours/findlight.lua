@@ -38,7 +38,8 @@ function FindLight:Visit()
     end
 end
 
+local LIGHTS_TAGS = {"lightsource"}
 function FindLight:PickTarget()
-    self.targ = GetClosestInstWithTag("lightsource", self.inst, self.see_dist)
+    self.targ = GetClosestInstWithTag(LIGHTS_TAGS, self.inst, self.see_dist)
     self.lastchecktime = GetTime()
 end

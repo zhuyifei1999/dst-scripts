@@ -66,11 +66,12 @@ local MAX_CHASEAWAY_DIST_SQ = 40 * 40
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
+local CHARACTER_TAGS = {"character"}
 local function BasicWakeCheck(inst)
     return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
         or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning() ~= nil)
         or (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() ~= nil)
-        or GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT) ~= nil
+        or GetClosestInstWithTag(CHARACTER_TAGS, inst, SLEEP_DIST_FROMTHREAT) ~= nil
 end
 
 local function ShouldSleep(inst)
@@ -87,6 +88,9 @@ local function ShouldWake(inst)
         or BasicWakeCheck(inst)
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "chess", "INLIMBO" }
+local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local function Retarget(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
     return not (homePos ~= nil and
@@ -98,9 +102,9 @@ local function Retarget(inst)
                 return not (inst.components.follower ~= nil and inst.components.follower.leader == guy)
                        and inst.components.combat:CanTarget(guy)
             end,
-            { "_combat" },
-            { "chess", "INLIMBO" },
-            { "character", "monster" }
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS,
+            RETARGET_ONEOF_TAGS
         )
         or nil
 end

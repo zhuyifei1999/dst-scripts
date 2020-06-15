@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "I can only ferry one soul to their destination at a time...",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_BOAT_LEAK = "Our boat weeps salty tears.",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Those foods weren't meant to be together.",
@@ -784,6 +805,16 @@ return{
             REVIVER = "That was very nice of you, %s.",
             GHOST = "I'm so sorry, %s.",
             FIRESTARTER = "Maybe we should play a different game...",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Hello %s, how do you do?",
+            ATTACKER = "I'll get you back for that, %s!",
+            MURDERER = "It seems the killer was among us all along.",
+            REVIVER = "Maybe I should listen to %s more often.",
+            GHOST = "Abigail's been dying to meet you, %s.",
+            FIRESTARTER = "You've been breaking your own rules, %s...",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3262,6 +3293,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "She's... soft. And nice.",
+            "She's... soft. And nice.",
+        },
+        WOBYSMALL = 
+        {
+            "I wonder how she came to this miserable place.",
+            "I wonder how she came to this miserable place.",
+        },
+		WALTERHAT = "It doesn't suit me.",
+		SLINGSHOT = "Abigail used to play with one of these.",
+		SLINGSHOTAMMO_ROCK = "Someone could trip and break their neck. Maybe it will be me.",		
+		SLINGSHOTAMMO_MARBLE = "Someone could trip and break their neck. Maybe it will be me.",		
+		SLINGSHOTAMMO_THULECITE = "Someone could trip and break their neck. Maybe it will be me.",	
+        SLINGSHOTAMMO_GOLD = "Someone could trip and break their neck. Maybe it will be me.",
+        SLINGSHOTAMMO_SLOW = "Someone could trip and break their neck. Maybe it will be me.",
+        SLINGSHOTAMMO_FREEZE = "Someone could trip and break their neck. Maybe it will be me.",
+		SLINGSHOTAMMO_POOP = "I suppose it has its uses.",
+        PORTABLETENT = "It makes no difference where I rest my head, my nights are filled with bad dreams.",
+        PORTABLETENT_ITEM = "Abigail and I set up a tent in our backyard once. It was... fun.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "It's all I can do to help...",
 		GHOSTLYELIXIR_FASTREGEN = "You have to take your medicine, Abigail.",
 		GHOSTLYELIXIR_SHIELD = "This time... I can protect you.",

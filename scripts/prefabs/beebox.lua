@@ -35,9 +35,10 @@ local function Stop(inst)
     end
 end
 
+local FLOWER_MUST_TAG = {"flower"}
 local function Start(inst)
     if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil
-        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, FLOWER_MUST_TAG) ~= nil then
         inst.components.harvestable:StartGrowing()
     end
     if inst.components.childspawner ~= nil then
@@ -141,7 +142,7 @@ end
 
 local function onsleep(inst)
     if not inst:HasTag("burnt") and inst.components.harvestable ~= nil
-        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, {"flower"}) ~= nil then
+        and FindEntity(inst, FLOWER_TEST_RADIUS, nil, FLOWER_MUST_TAG) ~= nil then
         inst.components.harvestable:SetGrowTime(TUNING.BEEBOX_HONEY_TIME)
         inst.components.harvestable:StartGrowing()
     end

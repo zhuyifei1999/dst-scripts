@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_BOAT_LEAK = "We've sprung a leak!",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "This combination of food was ill-advised.",
@@ -780,6 +801,16 @@ return{
             REVIVER = "Ah, thank you, %s.",
             GHOST = "Oh dear, whatever will become of your kingdom now?",
             FIRESTARTER = "Who left the tiny green demon unsupervised?!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Greetings, Mr. %s.",
+            ATTACKER = "I do not wish to quarrel!",
+            MURDERER = "Interesting, %s. I didn't think you had it in you.",
+            REVIVER = "I'm afraid I can't give you a badge, only my thanks.",
+            GHOST = "Perhaps you can add this to your roster of ghost stories.",
+            FIRESTARTER = "Wasn't it you who was railing on about fire safety?",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "I'd rather not get hair all over my suit.",
+            "I'd rather not get hair all over my suit.",
+        },
+        WOBYSMALL = 
+        {
+            "She slobbers...",
+            "She slobbers...",
+        },
+		WALTERHAT = "It's not quite my style.",
+		SLINGSHOT = "A rather childish weapon, but quite effective in the right hands.",
+		SLINGSHOTAMMO_ROCK = "Not particularly creative.",		
+		SLINGSHOTAMMO_MARBLE = "Not particularly creative.",		
+		SLINGSHOTAMMO_THULECITE = "Ah, now that might be interesting.",	
+        SLINGSHOTAMMO_GOLD = "Ah, now that might be interesting.",
+        SLINGSHOTAMMO_SLOW = "Ah, now that might be interesting.",
+        SLINGSHOTAMMO_FREEZE = "Ah, now that might be interesting.",
+		SLINGSHOTAMMO_POOP = "Must he leave that lying around? I nearly ruined my shoes.",
+        PORTABLETENT = "Oh, how I miss sleeping indoors.",
+        PORTABLETENT_ITEM = "Surely someone else can set it up.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "It appears someone has been toying with the dark arts and crafts.",
 		GHOSTLYELIXIR_FASTREGEN = "It appears someone has been toying with the dark arts and crafts.",
 		GHOSTLYELIXIR_SHIELD = "It appears someone has been toying with the dark arts and crafts.",

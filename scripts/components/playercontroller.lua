@@ -1203,6 +1203,8 @@ local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weap
     return target:GetDistanceSqToPoint(x, 0, z) <= reach * reach
 end
 
+local TARGET_MUST_TAGS = { "_combat" }
+local TARGET_CANT_TAGS = { "INLIMBO" }
 function PlayerController:GetAttackTarget(force_attack, force_target, isretarget)
     if self.inst:HasTag("playerghost") or
         self.inst:HasTag("weregoose") or
@@ -1265,7 +1267,7 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     --To deal with entity collision boxes we need to pad the radius.
     --Only include combat targets for auto-targetting, not light/extinguish
     --See entityreplica.lua (re: "_combat" tag)
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" }, { "INLIMBO" })
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, TARGET_MUST_TAGS, TARGET_CANT_TAGS)
     local nearest_dist = math.huge
     isretarget = false --reusing variable for flagging when we've found recent target
     force_target = nil --reusing variable for our nearest target
@@ -1446,6 +1448,9 @@ for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(HAUNT_TARGET_EXCLUDE_TAGS, v)
 end
 
+local CATCHABLE_TAGS = { "catchable" }
+local PINNED_TAGS = { "pinned" }
+local CORPSE_TAGS = { "corpse" }
 function PlayerController:GetActionButtonAction(force_target)
     --Don't want to spam the action button before the server actually starts the buffered action
     --Also check if playercontroller is enabled
@@ -1506,7 +1511,7 @@ function PlayerController:GetActionButtonAction(force_target)
         --catching
         if self.inst:HasTag("cancatch") then
             if force_target == nil then
-                local target = FindEntity(self.inst, 10, nil, { "catchable" }, TARGET_EXCLUDE_TAGS)
+                local target = FindEntity(self.inst, 10, nil, CATCHABLE_TAGS, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then
                     return BufferedAction(self.inst, target, ACTIONS.CATCH)
                 end
@@ -1518,7 +1523,7 @@ function PlayerController:GetActionButtonAction(force_target)
 
         --unstick
         if force_target == nil then
-            local target = FindEntity(self.inst, self.directwalking and 3 or 6, nil, { "pinned" }, TARGET_EXCLUDE_TAGS)
+            local target = FindEntity(self.inst, self.directwalking and 3 or 6, nil, PINNED_TAGS, TARGET_EXCLUDE_TAGS)
             if CanEntitySeeTarget(self.inst, target) then
                 return BufferedAction(self.inst, target, ACTIONS.UNPIN)
             end
@@ -1530,7 +1535,7 @@ function PlayerController:GetActionButtonAction(force_target)
         --revive (only need to do this if i am also revivable)
         if self.inst.components.revivablecorpse ~= nil then
             if force_target == nil then
-                local target = FindEntity(self.inst, 3, ValidateCorpseReviver, { "corpse" }, TARGET_EXCLUDE_TAGS)
+                local target = FindEntity(self.inst, 3, ValidateCorpseReviver, CORPSE_TAGS, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then
                     return BufferedAction(self.inst, target, ACTIONS.REVIVE_CORPSE)
                 end
@@ -2244,7 +2249,7 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
     local max_rad_sq = max_rad * max_rad
 
     --see entity_replica.lua for "_combat" tag
-    local nearby_ents = TheSim:FindEntities(x, y, z, max_rad, { "_combat" }, TARGET_EXCLUDE_TAGS)
+    local nearby_ents = TheSim:FindEntities(x, y, z, max_rad, TARGET_MUST_TAGS, TARGET_EXCLUDE_TAGS)
     if self.controller_attack_target ~= nil then
         --Note: it may already contain controller_attack_target,
         --      so make sure to handle it only once later
@@ -2406,7 +2411,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     --catching
     if self.inst:HasTag("cancatch") then
-        local target = FindEntity(self.inst, 10, nil, { "catchable" }, TARGET_EXCLUDE_TAGS)
+        local target = FindEntity(self.inst, 10, nil, CATCHABLE_TAGS, TARGET_EXCLUDE_TAGS)
         if CanEntitySeeTarget(self.inst, target) then
             if target ~= self.controller_target then
                 self.controller_target = target

@@ -59,6 +59,7 @@ local Sanity = Class(function(self, inst)
     self.night_drain_mult = 1
     self.neg_aura_mult = 1
     self.neg_aura_absorb = 0
+	--self.neg_aura_immune = nil
     self.dapperness_mult = 1
 
     self.penalty = 0
@@ -69,8 +70,12 @@ local Sanity = Class(function(self, inst)
 
     self.custom_rate_fn = nil
 
-    self.sanity_aura_immunities = {}
+    self.sanity_aura_immune = false -- This makes it so the player is unaffected by ANY auras
+    self.sanity_aura_immunities = {} -- This protects against specific auras, like Wendy with the ghosts
     self.player_ghost_immune = false
+
+    self.dapperness_immune = false
+    self.light_drain_immune = false
 
     self._oldissane = self:IsSane()
     self._oldpercent = self:GetPercent()
@@ -178,8 +183,24 @@ function Sanity:RemoveSanityAuraImmunity(tag)
     end
 end
 
+function Sanity:SetFullAuraImmunity(immunity)
+    self.sanity_aura_immune = immunity
+end
+
+function Sanity:SetNegativeAuraImmunity(immunity)
+    self.neg_aura_immune = immunity
+end
+
 function Sanity:SetPlayerGhostImmunity(immunity)
     self.player_ghost_immune = immunity
+end
+
+function Sanity:SetDappernessImmunity(immunity)
+    self.dapperness_immune = immunity
+end
+
+function Sanity:SetLightDrainImmune(immunity)
+    self.light_drain_immune = immunity
 end
 
 function Sanity:OnSave()
@@ -364,6 +385,8 @@ local LIGHT_SANITY_DRAINS =
 	},
 }
 
+local SANITYRECALC_MUST_TAGS = { "sanityaura" }
+local SANITYRECALC_CANT_TAGS = { "FX", "NOCLICK", "DECOR","INLIMBO" }
 function Sanity:Recalc(dt)
     local total_dapperness = self.dapperness
     for k, v in pairs(self.inst.components.inventory.equipslots) do
@@ -373,41 +396,49 @@ function Sanity:Recalc(dt)
     end
 
     total_dapperness = total_dapperness * self.dapperness_mult
-
     local dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
+
+    if self.dapperness_immune then
+        dapper_delta = 0
+    end
 
     local moisture_delta = easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
 
     local light_sanity_drain = LIGHT_SANITY_DRAINS[self.mode]
-	local light_delta
-    if TheWorld.state.isday and not TheWorld:HasTag("cave") then
-        light_delta = light_sanity_drain.DAY
-    else
-        local lightval = CanEntitySeeInDark(self.inst) and .9 or self.inst.LightWatcher:GetLightValue()
-        light_delta =
-            (   (lightval > TUNING.SANITY_HIGH_LIGHT and light_sanity_drain.NIGHT_LIGHT) or
-                (lightval < TUNING.SANITY_LOW_LIGHT and light_sanity_drain.NIGHT_DARK) or
-                light_sanity_drain.NIGHT_DIM
-            ) * self.night_drain_mult
+	local light_delta = 0
+
+    if not self.light_drain_immune then
+        if TheWorld.state.isday and not TheWorld:HasTag("cave") then
+            light_delta = light_sanity_drain.DAY
+        else
+            local lightval = CanEntitySeeInDark(self.inst) and .9 or self.inst.LightWatcher:GetLightValue()
+            light_delta =
+                (   (lightval > TUNING.SANITY_HIGH_LIGHT and light_sanity_drain.NIGHT_LIGHT) or
+                    (lightval < TUNING.SANITY_LOW_LIGHT and light_sanity_drain.NIGHT_DARK) or
+                    light_sanity_drain.NIGHT_DIM
+                ) * self.night_drain_mult
+        end
     end
 
     local aura_delta = 0
-    local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.SANITY_AURA_SEACH_RANGE, { "sanityaura" }, { "FX", "NOCLICK", "DECOR","INLIMBO" })
-    for i, v in ipairs(ents) do 
-        if v.components.sanityaura ~= nil and v ~= self.inst then
-
-            local is_aura_immune = false
-            for _, tag in ipairs(self.sanity_aura_immunities) do
-                if v:HasTag(tag) then
-                    is_aura_immune = true
-                    break
+	if not self.sanity_aura_immune then
+		local x, y, z = self.inst.Transform:GetWorldPosition()
+	    local ents = TheSim:FindEntities(x, y, z, TUNING.SANITY_AURA_SEACH_RANGE, SANITYRECALC_MUST_TAGS, SANITYRECALC_CANT_TAGS)
+	    for i, v in ipairs(ents) do 
+	        if v.components.sanityaura ~= nil and v ~= self.inst then
+                local is_aura_immune = false
+                for _, tag in ipairs(self.sanity_aura_immunities) do
+                    if v:HasTag(tag) then
+                        is_aura_immune = true
+                        break
+                    end
                 end
-            end
 
-            if not is_aura_immune then
-                local aura_val = v.components.sanityaura:GetAura(self.inst)
-                aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+                if not is_aura_immune then
+                    local aura_val = v.components.sanityaura:GetAura(self.inst)
+					aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+                    aura_delta = aura_delta + ((aura_val < 0 and self.neg_aura_immune) and 0 or aura_val)
+                end
             end
         end
     end
@@ -415,7 +446,8 @@ function Sanity:Recalc(dt)
     local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
     if mount ~= nil and mount.components.sanityaura ~= nil then
         local aura_val = mount.components.sanityaura:GetAura(self.inst)
-        aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+		aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+        aura_delta = aura_delta + ((aura_val < 0 and self.neg_aura_immune) and 0 or aura_val)
     end
 
     self:RecalcGhostDrain()

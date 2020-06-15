@@ -7,6 +7,7 @@ require "components/skinner"
 
 local emotes_to_choose = { "emoteXL_waving1", "emoteXL_waving2", "emoteXL_waving3" }
 local player_emotes_to_choose = {
+	walter = "idle_walter",
 	warly = "idle_warly",
 	wendy = "idle_wendy",
 	willow = "idle_willow",
@@ -153,14 +154,18 @@ function SkinsPuppet:DoIdleEmote()
 				self.animstate:PlayAnimation("item_out")
 				self.item_equip = true
 			end
+			
+			if self.prefabname == "wormwood" and not self.animstate:CompareSymbolBuilds("hand", "hand_idle_wormwood") then
+				--don't do player anim
+			else
+				self:DoEmote( player_emotes_to_choose[self.prefabname], false, true, self.item_equip)
+				if self.item_equip then
+					self.animstate:PushAnimation("item_in")
+					self.animstate:PushAnimation("idle_loop", true) --fix for frame pop before the next play happens
+				end
 
-			self:DoEmote(player_emotes_to_choose[self.prefabname], false, true, self.item_equip)
-			if self.item_equip then
-				self.animstate:PushAnimation("item_in")
-				self.animstate:PushAnimation("idle_loop", true) --fix for frame pop before the next play happens
+				return
 			end
-
-			return 
 		end
 	end
 	

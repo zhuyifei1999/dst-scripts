@@ -487,6 +487,7 @@ local fx =
         build = "puff_spawning",
         anim = "tiny",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
+        fn = FinalOffset1,
     },
     {
         name = "spawn_fx_small",
@@ -494,6 +495,7 @@ local fx =
         build = "puff_spawning",
         anim = "small",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
+        fn = FinalOffset1,
     },
     {
         name = "spawn_fx_medium",
@@ -501,6 +503,7 @@ local fx =
         build = "puff_spawning",
         anim = "medium",
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
+        fn = FinalOffset1,
     },
     --[[{
         name = "spawn_fx_large",
@@ -1738,6 +1741,20 @@ for j = 0, 3, 3 do
             fn = FinalOffset2,
         })
     end
+end
+
+local shot_types = {"rocks", "gold", "marble", "thulecite", "freeze", "slow", "poop", "trinket_1"}
+for _, shot_type in ipairs(shot_types) do
+    table.insert(fx, {
+        name = "slingshotammo_hitfx_"..shot_type,
+        bank = "slingshotammo",
+        build = "slingshotammo",
+        anim = "used",
+        fn = function(inst)
+	        inst.AnimState:OverrideSymbol("rock", "slingshotammo", shot_type)
+		    inst.AnimState:SetFinalOffset(3)
+		end,
+    })
 end
 
 FinalOffset1 = nil

@@ -1,6 +1,9 @@
+
+local SHELL_MUST_TAGS = { "singingshell" }
+local SHELL_CANT_TAGS = { "INLIMBO" }
 local function findentities(inst, range)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	return TheSim:FindEntities(x, y, z, range, { "singingshell" }, { "INLIMBO" })
+	return TheSim:FindEntities(x, y, z, range, SHELL_MUST_TAGS, SHELL_CANT_TAGS)
 end
 
 local function cleanup(inst, cmp)
@@ -77,7 +80,7 @@ function SingingShellTrigger:OnUpdate()
 	end
 
 	local x, y, z = self.inst.Transform:GetWorldPosition()
-	for i, v in ipairs(TheSim:FindEntities(x, y, z, self.trigger_range, { "singingshell" }, { "INLIMBO" })) do
+	for i, v in ipairs(TheSim:FindEntities(x, y, z, self.trigger_range, SHELL_MUST_TAGS, SHELL_CANT_TAGS)) do
 		if self.overlapping[v] == nil then
 			self.overlapping[v] = true
 			v:_activatefn()

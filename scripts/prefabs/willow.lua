@@ -25,11 +25,12 @@ local function customidleanimfn(inst)
     return item ~= nil and item.prefab == "bernie_inactive" and "idle_willow" or nil
 end
 
+local FIRE_TAGS = { "fire" }
 local function sanityfn(inst)--, dt)
     local delta = inst.components.temperature:IsFreezing() and -TUNING.SANITYAURA_LARGE or 0
     local x, y, z = inst.Transform:GetWorldPosition() 
     local max_rad = 10
-    local ents = TheSim:FindEntities(x, y, z, max_rad, { "fire" })
+    local ents = TheSim:FindEntities(x, y, z, max_rad, FIRE_TAGS)
     for i, v in ipairs(ents) do
         if v.components.burnable ~= nil and v.components.burnable:IsBurning() then
             local rad = v.components.burnable:GetLargestLightRadius() or 1

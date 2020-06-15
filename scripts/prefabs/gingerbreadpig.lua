@@ -21,13 +21,13 @@ local loot =
 local CRUMB_SPAWN_PERIOD = 3
 local brain = require "brains/gingerbreadpigbrain"
 
+local CRUMBS_TAGS = {"crumbs"}
 local function DropCrumb(inst)
-
     if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("sleeping") then
         return
     end
 
-    if GetClosestInstWithTag("crumbs", inst, 5) ~= nil then
+    if GetClosestInstWithTag(CRUMBS_TAGS, inst, 5) ~= nil then
         return
     end
 

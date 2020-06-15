@@ -105,7 +105,7 @@ function ServerPreferences:ClearProfanityFilteredServers()
 end
 
 function ServerPreferences:UpdateProfanityFilteredServers(servers)
-	if Profile:GetProfanityFilterServerNamesEanbled() then
+	if Profile:GetProfanityFilterServerNamesEnabled() then
 		local local_user_id = TheNet:GetUserID()
 		if servers ~= nil then
 			for i, server in ipairs(servers) do

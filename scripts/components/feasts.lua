@@ -214,10 +214,11 @@ function self:GetFeasterGroup(feaster)
     end
 end
 
+local FEAST_TABLE_TAG = { "wintersfeasttable" }
 function self:RegisterTable(inst)
     --find tables in range of this table. Check for their groups. Merge groups if necessary.
     local x,y,z = inst.Transform:GetWorldPosition()
-    local tables = TheSim:FindEntities(x, y, z, TUNING.WINTERSFEASTTABLE.TABLE_RANGE, { "wintersfeasttable" })
+    local tables = TheSim:FindEntities(x, y, z, TUNING.WINTERSFEASTTABLE.TABLE_RANGE, FEAST_TABLE_TAG)
     local closegroups = {}
     for f,foundtable in ipairs(tables)do
         if foundtable ~= inst then

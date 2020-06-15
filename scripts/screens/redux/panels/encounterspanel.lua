@@ -164,7 +164,8 @@ local function ecounter_widget_constructor(context, i)
                     if w.widgets.delete_btn._userid ~= nil then
                         PlayerHistory:RemoveUser(w.widgets.delete_btn._userid)
                     end
-					context.screen:UpdatePlayerHistory()
+					context.screen.player_history = PlayerHistory:GetRows()
+					context.screen.encounters_scroll_list:SetItemsData( context.screen.player_history )
 					return true
 				end
 			end

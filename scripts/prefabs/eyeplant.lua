@@ -16,6 +16,9 @@ local function checkmaster(tar, inst)
     end
 end
 
+local RETARGET_MUST_TAGS = { "_combat", "_health" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "plantkin" }
+local RETARGET_ONEOF_TAGS = { "character", "monster", "animal", "prey", "eyeplant", "lureplant" }
 local function retargetfn(inst)
     return FindEntity(
         inst,
@@ -23,9 +26,9 @@ local function retargetfn(inst)
         function(guy) 
             return not (guy.components.health:IsDead() or checkmaster(guy, inst))
         end,
-        { "_combat", "_health" }, -- see entityreplica.lua
-        { "INLIMBO", "plantkin" },
-        { "character", "monster", "animal", "prey", "eyeplant", "lureplant" }
+        RETARGET_MUST_TAGS, -- see entityreplica.lua
+        RETARGET_CANT_TAGS,
+        RETARGET_ONEOF_TAGS
     )
 end
 

@@ -197,7 +197,7 @@ ACTIONS =
     OCEAN_FISHING_REEL = Action({priority=5, rmb=true, do_not_locomote=true, silent_fail = true }),
     OCEAN_FISHING_STOP = Action({instant=true}),
     OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),
-    CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true, mount_valid=true}),
+    CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true, mount_valid=true}), -- this is now a generic "put item into the container of the equipped hand item"
     POLLINATE = Action(),
     FERTILIZE = Action({ mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
@@ -256,6 +256,7 @@ ACTIONS =
     CASTSUMMON = Action({ rmb=true, mount_valid=true }),
     CASTUNSUMMON = Action({ mount_valid=true, distance=math.huge }),
 	COMMUNEWITHSUMMONED = Action({ rmb=true, mount_valid=true }),
+    TELLSTORY = Action({ rmb=true, distance=3 }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -593,7 +594,7 @@ ACTIONS.LOOKAT.fn = function(act)
                 act.doer.components.locomotor:Stop()
             end
             if act.doer.components.talker ~= nil then
-                act.doer.components.talker:Say(desc, 2.5, targ.components.inspectable.noanim)
+                act.doer.components.talker:Say(desc, nil, targ.components.inspectable.noanim)
             end
             return true
         end
@@ -700,54 +701,65 @@ end
 
 ACTIONS.CHANGE_TACKLE.strfn = function(act)
 	local item = (act.invobject ~= nil and act.invobject:IsValid()) and act.invobject or nil
-    local rod = (item ~= nil and act.doer.replica.inventory ~= nil) and act.doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
-	return (rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsHolding(item)) and "REMOVE" or nil
+    local equipped = (item ~= nil and act.doer.replica.inventory ~= nil) and act.doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+	return (equipped ~= nil and equipped.replica.container ~= nil and equipped.replica.container:IsHolding(item)) and "REMOVE"
+			or item:HasTag("reloaditem_ammo") and "AMMO"
+			or nil
 end
 
 ACTIONS.CHANGE_TACKLE.fn = function(act)
-	local rod = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if act.invobject == nil or rod == nil or rod.components.container == nil then
+	local equipped = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if act.invobject == nil or equipped == nil or equipped.components.container == nil then
 		return false
 	end
 	
-	if act.invobject.components.inventoryitem:IsHeldBy(rod) then
-		local item = rod.components.container:RemoveItem(act.invobject, true)
+	if act.invobject.components.inventoryitem:IsHeldBy(equipped) then
+		local item = equipped.components.container:RemoveItem(act.invobject, true)
 
 		if item ~= nil then
 	        item.prevcontainer = nil
 	        item.prevslot = nil
 
-			act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
+			act.doer.components.inventory:GiveItem(item, nil, equipped:GetPosition())
 			return true
 		end
 	else
-		local targetslot = rod.components.container:GetSpecificSlotForItem(act.invobject)
+		local targetslot = equipped.components.container:GetSpecificSlotForItem(act.invobject)
 		if targetslot == nil then
 			return false
 		end
 
-		local cur_item = rod.components.container:GetItemInSlot(targetslot)
-		if cur_item ~= nil and act.invobject.prefab == cur_item.prefab and act.invobject.skinname == cur_item.skinname and cur_item.components.perishable == nil then
-			return false
-		end
+		local cur_item = equipped.components.container:GetItemInSlot(targetslot)
+		if cur_item == nil then
+	        local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks)
+			equipped.components.container:GiveItem(item, targetslot, nil, false)
+		else
+			if equipped.components.container.acceptsstacks and act.invobject.prefab == cur_item.prefab and act.invobject.skinname == cur_item.skinname 
+				and (cur_item.components.stackable == nil or not cur_item.components.stackable:IsFull()) then -- if full up the stack
 
-		local item = act.invobject.components.inventoryitem:RemoveFromOwner(false)
-		if item ~= nil then
-			local old_item = rod.components.container:RemoveItemBySlot(targetslot)
-			if not rod.components.container:GiveItem(item, targetslot, nil, false) then
-				if old_item ~= nil then
-					rod.components.container:GiveItem(old_item, targetslot)
+		        local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks)
+				if not equipped.components.container:GiveItem(act.invobject, targetslot, nil, false) then
+					if item.prevcontainer ~= nil then
+						item.prevcontainer.inst.components.container:GiveItem(item, item.prevslot)
+					else
+						act.doer.components.inventory:GiveItem(item, item.prevslot)
+					end
 				end
-				act.doer.components.inventory:GiveItem(item, nil, rod:GetPosition())
-				return false
+				return true
+			elseif (act.invobject.prefab ~= cur_item.prefab and (act.invobject.skinname == nil or act.invobject.skinname ~= cur_item.skinname)) or cur_item.components.perishable then
+		        local item = act.invobject.components.inventoryitem:RemoveFromOwner(equipped.components.container.acceptsstacks)
+				local old_item = equipped.components.container:RemoveItemBySlot(targetslot)
+				if not equipped.components.container:GiveItem(item, targetslot, nil, false) then
+					act.doer.components.inventory:GiveItem(item, nil, equipped:GetPosition())
+				end
+				if old_item ~= nil then 
+					act.doer.components.inventory:GiveItem(old_item, nil, equipped:GetPosition())
+				end
+				return true
 			end
-			if old_item ~= nil then 
-				act.doer.components.inventory:GiveItem(old_item, nil, rod:GetPosition())
-			end
-			return true
 		end
-	end
 
+	end
 	return false
 end
 
@@ -764,6 +776,13 @@ ACTIONS.TALKTO.fn = function(act)
         end
         return true
     end
+end
+
+ACTIONS.TELLSTORY.fn = function(act)
+    local targ = act.target or act.invobject
+	if act.doer.components.storyteller ~= nil then
+		return act.doer.components.storyteller:TellStory(act.target or act.invobject)
+	end
 end
 
 ACTIONS.BAIT.fn = function(act)
@@ -2202,12 +2221,13 @@ ACTIONS.BRUSH.fn = function(act)
     end
 end
 
+local ABANDON_MUST_TAGS = { "critterlab" }
 ACTIONS.ABANDON.fn = function(act)
     if act.doer.components.petleash ~= nil then
         if not (act.doer.components.builder ~= nil and act.doer.components.builder.accessible_tech_trees.ORPHANAGE > 0) then
             --we could've been in range but the pet was out of range
             local x, y, z = act.doer.Transform:GetWorldPosition()
-            if #TheSim:FindEntities(x, y, z, 10, { "critterlab" }) <= 0 then
+            if #TheSim:FindEntities(x, y, z, 10, ABANDON_MUST_TAGS) <= 0 then
                 return false
             end
         end
@@ -2427,7 +2447,7 @@ end
 
 ACTIONS.DISMANTLE.fn = function(act)
     if act.target ~= nil and
-        act.target.components.portablecookware ~= nil and
+        act.target.components.portablestructure ~= nil and
         not (act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning()) then
 
         if act.target.components.container ~= nil then
@@ -2438,9 +2458,11 @@ ACTIONS.DISMANTLE.fn = function(act)
             elseif not act.target.components.container.canbeopened then
                 return false, "COOKING"
             end
+        elseif act.target.components.sleepingbag and act.target.components.sleepingbag:InUse() then
+            return false, "INUSE"
         end
 
-        act.target.components.portablecookware:Dismantle(act.doer)
+        act.target.components.portablestructure:Dismantle(act.doer)
         return true
     end
 end

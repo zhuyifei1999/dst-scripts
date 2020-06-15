@@ -1,16 +1,16 @@
-local PortableCookware = Class(function(self, inst)
+local PortableStructure = Class(function(self, inst)
     self.inst = inst
     self.ondismantlefn = nil
 end)
 
-function PortableCookware:SetOnDismantleFn(fn)
+function PortableStructure:SetOnDismantleFn(fn)
     self.ondismantlefn = fn
 end
 
-function PortableCookware:Dismantle(doer)
+function PortableStructure:Dismantle(doer)
     if self.ondismantlefn ~= nil then
         self.ondismantlefn(self.inst, doer)
     end
 end
 
-return PortableCookware
+return PortableStructure

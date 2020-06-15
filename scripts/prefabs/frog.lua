@@ -12,6 +12,7 @@ local prefabs =
 
 local brain = require "brains/frogbrain"
 
+local RESTARGET_MUST_TAGS = {"_combat","_health"}
 local function retargetfn(inst)
     if not inst.components.health:IsDead() and not inst.components.sleeper:IsAsleep() then
         return FindEntity(inst, TUNING.FROG_TARGET_DIST, function(guy) 
@@ -19,7 +20,7 @@ local function retargetfn(inst)
                 return guy.components.inventory ~= nil
             end
         end,
-        {"_combat","_health"} -- see entityreplica.lua
+        RESTARGET_MUST_TAGS -- see entityreplica.lua
         )
     end
 end

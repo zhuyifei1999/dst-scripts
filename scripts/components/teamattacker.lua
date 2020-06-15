@@ -4,7 +4,10 @@ local function onteamtype(self, team, oldteam)
     end
     if team ~= nil then
         self.inst:AddTag("team_"..team)
-    end
+		self.teamsearchtags = {"teamleader_"..team}
+    else
+		self.teamsearchtags = nil
+	end
 end
 
 local TeamAttacker = Class(function(self, inst)
@@ -31,7 +34,7 @@ end
 
 function TeamAttacker:SearchForTeam()	
 	local pt = Vector3(self.inst.Transform:GetWorldPosition()) 
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, self.searchradius, {"teamleader_"..self.team_type})
+	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, self.searchradius, self.teamsearchtags)
 
 	for k,v in pairs(ents) do
 		if not v.components.teamleader:IsTeamFull() then

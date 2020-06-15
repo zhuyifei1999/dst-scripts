@@ -42,6 +42,7 @@ local function fn()
 
     inst:AddTag("NOBLOCK")   
     inst:AddTag("NOCLICK")   
+    inst:AddTag("ignorewalkableplatforms") -- because it is a child of the boat
     
     inst.entity:SetPristine()
 

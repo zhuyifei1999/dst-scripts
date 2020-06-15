@@ -1113,7 +1113,7 @@ AddGameDebugKey(KEY_9, function()
 end)
 
 -------------------------------------------MOUSE HANDLING
-
+local DEBUGRMB_IGNORE_TAGS = {"wall", "INLIMBO"}
 local function DebugRMB(x,y)
     local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
     local pos = TheInput:GetWorldPosition()
@@ -1133,7 +1133,7 @@ local function DebugRMB(x,y)
                 MouseCharacter:Remove()
             end
         else
-            local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 5, nil, {"wall", "INLIMBO"})
+            local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 5, nil, DEBUGRMB_IGNORE_TAGS)
             for k,v in pairs(ents) do
                 if v.components.health and v ~= DebugKeyPlayer() then
                     v.components.health:Kill()

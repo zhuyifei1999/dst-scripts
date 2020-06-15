@@ -77,8 +77,10 @@ function GhostlyBond:OnLoad(data)
 		self:SetBondLevel(data.bondlevel, data.elapsedtime, true)
 
 		if data.ghost ~= nil then
-			self.spawnghosttask:Cancel()
-			self.spawnghosttask = nil
+			if self.spawnghosttask ~= nil then
+				self.spawnghosttask:Cancel()
+				self.spawnghosttask = nil
+			end
 
 			local ghost = SpawnSaveRecord(data.ghost)
 			self.ghost = ghost

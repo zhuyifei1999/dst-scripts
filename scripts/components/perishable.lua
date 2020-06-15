@@ -1,13 +1,13 @@
 local function onpercent(self)
     local percent = self:GetPercent()
-    if percent >= .5 then
+    if percent >= 0.5 then
         if not self.inst:HasTag("fresh") then
             self.inst:RemoveTag("stale")
             self.inst:RemoveTag("spoiled")
             self.inst:AddTag("fresh")
             self.inst:PushEvent("forceperishchange")
         end
-    elseif percent > .2 then
+    elseif percent > 0.2 then
         if not self.inst:HasTag("stale") then
             self.inst:RemoveTag("fresh")
             self.inst:RemoveTag("spoiled")
@@ -89,7 +89,7 @@ local function Update(inst, dt)
 			modifier = TUNING.PERISH_GROUND_MULT
 		end
 
-		if inst:GetIsWet() then
+		if inst:GetIsWet() and not self.ignorewentness then
 			modifier = modifier * TUNING.PERISH_WET_MULT
 		end
 

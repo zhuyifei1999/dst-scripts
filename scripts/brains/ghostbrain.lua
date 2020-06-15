@@ -11,8 +11,10 @@ local function IsAlive(target)
         not target.components.health:IsDead()
 end
 
-local function GetFollowTarget(ghost)
+local TARGET_MUST_TAGS = { "character" }
+local TARGET_CANT_TAGS = { "INLIMBO", "noauradamage" }
 
+local function GetFollowTarget(ghost)
     if ghost.brain.followtarget ~= nil
         and (not ghost.brain.followtarget:IsValid() or
             not ghost.brain.followtarget.entity:IsVisible() or
@@ -27,7 +29,7 @@ local function GetFollowTarget(ghost)
     if ghost.brain.followtarget == nil then
 
         local gx, gy, gz = ghost.Transform:GetWorldPosition()
-        local potential_followtargets = TheSim:FindEntities(gx, gy, gz, 10, {"character"}, { "INLIMBO", "noauradamage" })
+        local potential_followtargets = TheSim:FindEntities(gx, gy, gz, 10, TARGET_MUST_TAGS, TARGET_CANT_TAGS)
         for _, pft in ipairs(potential_followtargets) do
             -- We should only follow living characters.
             if IsAlive(pft) then

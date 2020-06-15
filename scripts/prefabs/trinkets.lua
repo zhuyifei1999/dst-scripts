@@ -67,20 +67,30 @@ local SMALLFLOATS =
     [45]    = {0.9, 0.05},
 }
 
-OCEANFISHING_BOBBER =
+local OCEANFISHING_BOBBER =
 {
 	[8] = {tuning = TUNING.OCEANFISHING_TACKLE.BOBBER_PLUG, projectile_prefab = "oceanfishingbobber_plug_projectile"},
 }
 
-OCEANFISHING_LURE =
+local OCEANFISHING_LURE =
 {
 	[17] = { build = "oceanfishing_lure_spoon", symbol = "spork", lure_data = TUNING.OCEANFISHING_LURE.SPOON_SPORK, },
 }
+
+local EXTRA_DATA = {}
+for i = 1, NUM_TRINKETS do
+	table.insert(EXTRA_DATA, {})
+end
+EXTRA_DATA[1] = { slingshotammo = true }
+
 
 local function MakeTrinket(num)
     local prefabs = TRADEFOR[num] or {}
 	if OCEANFISHING_BOBBER[num] ~= nil and OCEANFISHING_BOBBER[num].projectile_prefab ~= nil then
 		table.insert(prefabs, OCEANFISHING_BOBBER[num].projectile_prefab)
+	end
+	if EXTRA_DATA[num].slingshotammo then
+		table.insert(prefabs, "trinket_"..tostring(num).."_proj")
 	end
 
     local function fn()
@@ -108,6 +118,11 @@ local function MakeTrinket(num)
 			inst:AddTag("oceanfishing_lure")
 		end
 
+		if EXTRA_DATA[num].slingshotammo then
+			inst:AddTag("slingshotammo")
+			inst:AddTag("reloaditem_ammo")
+		end
+
         MakeInventoryFloatable(inst)
 
         inst.entity:SetPristine()
@@ -115,6 +130,10 @@ local function MakeTrinket(num)
         if not TheWorld.ismastersim then
             return inst
         end
+
+		if EXTRA_DATA[num].slingshotammo then
+			inst:AddComponent("reloaditem")
+		end
 
         inst:AddComponent("inspectable")
         inst:AddComponent("stackable")

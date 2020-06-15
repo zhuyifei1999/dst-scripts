@@ -137,9 +137,10 @@ function Builder:GetTechBonuses()
 	return bonus
 end
 
+local PROTOTYPER_TAGS = { "prototyper" }
 function Builder:EvaluateTechTrees()
     local pos = self.inst:GetPosition()
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, { "prototyper" }, self.exclude_tags)
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, PROTOTYPER_TAGS, self.exclude_tags)
 
     local old_accessible_tech_trees = deepcopy(self.accessible_tech_trees or TECH.NONE)
     local old_station_recipes = self.station_recipes

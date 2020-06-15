@@ -48,7 +48,8 @@ local SQUID_CHANCE = {
     ["full"] = 0, 
 }
 
---local function testforsquid(comp,spawnpoint, forcesquid)
+local SQUID_TAGS = {"squid"}
+local FISHABLE_TAGS = {"oceanfish", "oceanfishable"}
 local function testforsquid(comp, forcesquid)
 
     if not TheWorld.state.isday then
@@ -70,8 +71,8 @@ local function testforsquid(comp, forcesquid)
         --    local tile_at_spawnpoint = TheWorld.Map:GetTileAtPoint(spawnpoint:Get())
         --    if tile_at_spawnpoint == GROUND.OCEAN_SWELL or tile_at_spawnpoint == GROUND.OCEAN_ROUGH then
 
-            local squidcount = #TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, {"squid"})
-            local fishlist = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, {"oceanfish", "oceanfishable"})
+            local squidcount = #TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, SQUID_TAGS)
+            local fishlist = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SQUID_TEST_RADIUS, FISHABLE_TAGS)
             local fishcount = #fishlist
 
             local chance = SQUID_CHANCE[TheWorld.state.moonphase]

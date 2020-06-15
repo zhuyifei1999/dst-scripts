@@ -176,9 +176,10 @@ local function OnEndEmergency(inst, self)
     end
 end
 
+local FIRE_TAGS = { "fire" }
 local function DetectFireEmergency(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.range, { "fire" }, NOTAGS)
+    local ents = TheSim:FindEntities(x, y, z, self.range, FIRE_TAGS, NOTAGS)
     for i, v in ipairs(ents) do
         if not self.detectedItems[v] and v:IsValid() then
             return v

@@ -28,6 +28,8 @@ local NO_LOOTING_TAGS = { "INLIMBO", "catchable", "fire", "irreplaceable", "heav
 local NO_PICKUP_TAGS = deepcopy(NO_LOOTING_TAGS)
 table.insert(NO_PICKUP_TAGS, "_container")
 
+local PICKUP_ONEOF_TAGS = { "_inventoryitem", "pickable", "readyforharvest" }
+
 local MonkeyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -98,7 +100,7 @@ local function EatFoodAction(inst)
     local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST,
         nil,
         NO_PICKUP_TAGS,
-        { "_inventoryitem", "pickable", "readyforharvest" })
+        PICKUP_ONEOF_TAGS)
 
     --If you're not wearing a hat, look for a hat to wear!
     if inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) == nil then
@@ -166,6 +168,8 @@ local function OnLootingCooldown(inst)
     inst.canlootchests = true
 end
 
+local ANNOY_ONEOF_TAGS = { "_inventoryitem", "_container" }
+local ANNOY_ALT_MUST_TAG = { "_inventoryitem" }
 local function AnnoyLeader(inst)
     if inst.sg:HasStateTag("busy") then
         return
@@ -175,8 +179,8 @@ local function AnnoyLeader(inst)
     local mx, my, mz = inst.Transform:GetWorldPosition()
     local ents =
         lootchests and
-        TheSim:FindEntities(mx, 0, mz, 30, nil, NO_LOOTING_TAGS, { "_inventoryitem", "_container" }) or
-        TheSim:FindEntities(mx, 0, mz, 30, { "_inventoryitem" }, NO_PICKUP_TAGS)
+        TheSim:FindEntities(mx, 0, mz, 30, nil, NO_LOOTING_TAGS, ANNOY_ONEOF_TAGS) or
+        TheSim:FindEntities(mx, 0, mz, 30, ANNOY_ALT_MUST_TAG, NO_PICKUP_TAGS)
 
     --Can we hassle the player by taking items from stuff he has killed or worked?
     for i, v in ipairs(ents) do

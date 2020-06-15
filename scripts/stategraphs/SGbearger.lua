@@ -2,9 +2,12 @@ require("stategraphs/commonstates")
 
 local SHAKE_DIST = 40
 
+local YAWNTARGET_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
+local YAWNTARGET_ONEOF_TAGS = { "sleeper", "player" }
+
 function yawnfn(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, YAWNTARGET_CANT_TAGS, YAWNTARGET_ONEOF_TAGS)
     for i, v in ipairs(ents) do
         if v ~= inst and v:IsValid() and
             not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
@@ -85,9 +88,10 @@ local function onattackfn(inst)
     end
 end
 
+local DESTROYSTUFF_CANT_TAGS = { "INLIMBO", "NET_workable" }
 local function destroystuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 5, nil, { "INLIMBO", "NET_workable" })
+    local ents = TheSim:FindEntities(x, y, z, 5, nil, DESTROYSTUFF_CANT_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() and
             v.components.workable ~= nil and

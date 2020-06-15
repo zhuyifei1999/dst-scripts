@@ -56,15 +56,17 @@ end
 local MAX_SUCCULENTS = 18
 local SUCCULENT_RANGE = 15
 local SUCCULENT_RANGE_MIN = WATER_RADIUS + 0.5
+local NOTENTCHECK_CANT_TAGS = { "FX", "INLIMBO" }
+local SUCCULENT_TAGS = { "succulent" }
 
 local function SpawnSucculents(inst)
     local pt = inst:GetPosition()
 
     local function noentcheckfn(offset)
-        return #TheSim:FindEntities(pt.x + offset.x, pt.y + offset.y, pt.z + offset.z, 2, nil, { "FX", "INLIMBO" }) == 0
+        return #TheSim:FindEntities(pt.x + offset.x, pt.y + offset.y, pt.z + offset.z, 2, nil, NOTENTCHECK_CANT_TAGS) == 0
     end
 
-    local succulents_to_spawn = MAX_SUCCULENTS - #TheSim:FindEntities(pt.x, pt.y, pt.z, SUCCULENT_RANGE, { "succulent" })
+    local succulents_to_spawn = MAX_SUCCULENTS - #TheSim:FindEntities(pt.x, pt.y, pt.z, SUCCULENT_RANGE, SUCCULENT_TAGS)
     for i = 1, succulents_to_spawn do
         local offset = FindWalkableOffset(pt, math.random() * 2 * PI, GetRandomMinMax(SUCCULENT_RANGE_MIN, SUCCULENT_RANGE), 10, false, true, noentcheckfn)
         if offset ~= nil then
@@ -108,8 +110,9 @@ local function HasPhysics(obj)
     return obj.Physics ~= nil
 end
 
+local BLOCKERS_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost", "ghost", "flying", "structure" }
 local function TryFillLake(inst, skipanim, OnSandstormChanged)
-    if FindEntity(inst, WATER_RADIUS, HasPhysics, nil, { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost", "ghost", "flying", "structure" }) ~= nil then
+    if FindEntity(inst, WATER_RADIUS, HasPhysics, nil, BLOCKERS_TAGS) ~= nil then
         --Something is on top of us, reschedule filling up...
         inst.filltask = inst:DoTaskInTime(5, TryFillLake, skipanim, OnSandstormChanged)
         return

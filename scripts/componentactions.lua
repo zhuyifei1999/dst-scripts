@@ -168,11 +168,15 @@ local COMPONENT_ACTIONS =
 
         crittertraits = function(inst, doer, actions, right)
             if inst.replica.follower ~= nil and inst.replica.follower:GetLeader() == doer then
-                if right and
-                    doer.replica.builder ~= nil and
-                    doer.replica.builder:GetTechTrees().ORPHANAGE > 0 then
-                    table.insert(actions, ACTIONS.ABANDON)
-                else
+                if right then
+                    if inst.replica.container then -- Added for wobysmall
+                        table.insert(actions, ACTIONS.PET)
+                    elseif doer.replica.builder ~= nil 
+                       and doer.replica.builder:GetTechTrees().ORPHANAGE > 0 
+                       and not inst:HasTag("noabandon") then
+                        table.insert(actions, ACTIONS.ABANDON)
+                    end
+                elseif inst.replica.container == nil then
                     --V2C: @Scott: Should this always be available???
                     table.insert(actions, ACTIONS.PET)
                 end
@@ -290,10 +294,10 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        portablecookware = function(inst, doer, actions, right)
+        portablestructure = function(inst, doer, actions, right)
             if right and not inst:HasTag("fire") and
-                --(not inst:HasTag("professionalcookware") or doer:HasTag("professionalchef")) and
                 (not inst:HasTag("mastercookware") or doer:HasTag("masterchef")) then
+                
                 local container = inst.replica.container
                 if container == nil or (container:CanBeOpened() and not container:IsOpenedBy(doer)) then
                     table.insert(actions, ACTIONS.DISMANTLE)
@@ -328,7 +332,10 @@ local COMPONENT_ACTIONS =
         end,
 
         rideable = function(inst, doer, actions, right)
-            if right and inst:HasTag("rideable") then
+            if right and inst:HasTag("rideable") and 
+               (not inst:HasTag("dogrider_only") or 
+               (inst:HasTag("dogrider_only") and doer:HasTag("dogrider"))) then
+                
                 local rider = doer.replica.rider
                 if rider ~= nil and not rider:IsRiding() then
                     table.insert(actions, ACTIONS.MOUNT)
@@ -383,6 +390,12 @@ local COMPONENT_ACTIONS =
                 ) then
                     table.insert(actions, ACTIONS.COOK)
                 end
+            end
+        end,
+
+		storytellingprop = function(inst, doer, actions, right)
+            if right and inst:HasTag("storytellingprop") then
+                table.insert(actions, ACTIONS.TELLSTORY)
             end
         end,
 
@@ -587,24 +600,27 @@ local COMPONENT_ACTIONS =
 
         edible = function(inst, doer, target, actions, right)
             local iscritter = target:HasTag("critter")
+            local ishandfed = target:HasTag("handfed")
+
             if (right or iscritter) and
                 not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
                 not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
                     not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) and
                 not target:HasTag("wereplayer") then
+
                 for k, v in pairs(FOODGROUP) do
                     if target:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do
                             if inst:HasTag("edible_"..v2) then
-                                if iscritter then
-                                    if target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer then
+                                if iscritter or ishandfed then
+                                    if (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer) or target:HasTag("fedbyall") then
                                         table.insert(actions, ACTIONS.FEED)
                                     end
                                 elseif target:HasTag("player") then
                                     if TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("unsafefood") or inst:HasTag("spoiled")) then
                                         table.insert(actions, ACTIONS.FEEDPLAYER)
                                     end
-                                elseif target:HasTag("small_livestock")
+                                elseif (target:HasTag("small_livestock") or ishandfed)
                                     and target.replica.inventoryitem ~= nil
                                     and target.replica.inventoryitem:IsHeld() then
                                     table.insert(actions, ACTIONS.FEED)
@@ -616,15 +632,15 @@ local COMPONENT_ACTIONS =
                 end
                 for k, v in pairs(FOODTYPE) do
                     if inst:HasTag("edible_"..v) and target:HasTag(v.."_eater") then
-                        if iscritter then
-                            if target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer then
+                        if iscritter or ishandfed then
+                            if (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer) or target:HasTag("fedbyall") then
                                 table.insert(actions, ACTIONS.FEED)
                             end
                         elseif target:HasTag("player") then
                             if TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("unsafefood") or inst:HasTag("spoiled")) then
                                 table.insert(actions, ACTIONS.FEEDPLAYER)
                             end
-                        elseif target:HasTag("small_livestock")
+                        elseif (target:HasTag("small_livestock") or ishandfed)
                             and target.replica.inventoryitem ~= nil
                             and target.replica.inventoryitem:IsHeld() then
                             table.insert(actions, ACTIONS.FEED)
@@ -1011,7 +1027,8 @@ local COMPONENT_ACTIONS =
             elseif not right and
                 doer.replica.combat ~= nil and
                 doer.replica.combat:CanTarget(target) and
-                (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) and
+				not inst:HasTag("outofammo") then
                 if target.replica.combat == nil then
                     -- lighting or extinguishing fires
                     table.insert(actions, ACTIONS.ATTACK)
@@ -1339,7 +1356,7 @@ local COMPONENT_ACTIONS =
         spellcaster = function(inst, doer, target, actions, right)
             if right and (
                     inst:HasTag("castontargets") or
-                    (inst:HasTag("castonrecipes") and AllRecipes[target.prefab] ~= nil) or
+                    (inst:HasTag("castonrecipes") and AllRecipes[target.prefab] ~= nil and not AllRecipes[target.prefab].no_deconstruction) or
                     (target:HasTag("locomotor") and (
                         inst:HasTag("castonlocomotors") or
                         (inst:HasTag("castonlocomotorspvp") and (target == doer or TheNet:GetPVPEnabled() or not (target:HasTag("player") and doer:HasTag("player"))))
@@ -1375,7 +1392,8 @@ local COMPONENT_ACTIONS =
         weapon = function(inst, doer, target, actions, right)
             if not right
                 and doer.replica.combat ~= nil
-                and (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                and (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) 
+				and not inst:HasTag("outofammo") then
                 if doer.replica.combat:CanExtinguishTarget(target, inst) or
                     doer.replica.combat:CanLightTarget(target, inst) then
                     table.insert(actions, ACTIONS.ATTACK)
@@ -1560,6 +1578,15 @@ local COMPONENT_ACTIONS =
             if doer.replica.inventory ~= nil and not doer.replica.inventory:IsHeavyLifting() then
                 local rod = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                 if rod ~= nil and rod.replica.container ~= nil and rod.replica.container:IsOpenedBy(doer) and rod:HasTag("accepts_oceanfishingtackle") and rod.replica.container:CanTakeItemInSlot(inst) then
+                    table.insert(actions, ACTIONS.CHANGE_TACKLE)
+                end
+            end
+        end,
+
+		reloaditem  = function(inst, doer, actions, right)
+            if doer.replica.inventory ~= nil and not doer.replica.inventory:IsHeavyLifting() then
+                local hand_item = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                if hand_item ~= nil and hand_item.replica.container ~= nil and hand_item.replica.container:IsOpenedBy(doer) and hand_item.replica.container:CanTakeItemInSlot(inst) then
                     table.insert(actions, ACTIONS.CHANGE_TACKLE)
                 end
             end

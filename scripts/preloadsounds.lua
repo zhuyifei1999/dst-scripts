@@ -98,6 +98,7 @@ local MainSounds =
     "wormwood.fsb",
 	"wx78.fsb",
 	"wurt.fsb",
+	"walter.fsb",
 
 	"wintersfeast2019.fev",
 	"wintersfeast2019.fsb",

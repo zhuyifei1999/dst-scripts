@@ -35,7 +35,7 @@ local function NoHoles(pt)
 end
 
 local function onattack(inst, owner, target)
-    if math.random() < .2 then
+    if math.random() < 0.2 then
         local pt
         if target ~= nil and target:IsValid() then
             pt = target:GetPosition()

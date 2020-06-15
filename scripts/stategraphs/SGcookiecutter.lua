@@ -80,6 +80,8 @@ local function UpdateWalkSpeedAndHopping(inst)
 	inst.components.locomotor.walkspeed = (inst.target_wood ~= nil and inst.target_wood:IsValid()) and TUNING.COOKIECUTTER.APPROACH_SPEED or TUNING.COOKIECUTTER.WANDER_SPEED
 end
 
+local WALKABLEPLATFORM_TAGS = {"walkableplatform"}
+
 local states =
 {
     State{
@@ -117,7 +119,7 @@ local states =
 				end
 				local start_angle = (inst.Transform:GetRotation() + 180 + a*a*a*30) * DEGREES
 				local min_dist_to_boat = TUNING.MAX_WALKABLE_PLATFORM_RADIUS + inst:GetPhysicsRadius(0) + 1
-				local function testfn(new_pt) return #TheSim:FindEntities(new_pt.x, 0, new_pt.z, min_dist_to_boat, {"walkableplatform"}) == 0 end
+				local function testfn(new_pt) return #TheSim:FindEntities(new_pt.x, 0, new_pt.z, min_dist_to_boat, WALKABLEPLATFORM_TAGS) == 0 end
 
 				local offset = FindSwimmableOffset(pt, start_angle, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + r, 16, true, nil, testfn, true) -- allowing boats because testfn will handle it
 										or FindSwimmableOffset(pt, start_angle, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + r + 3, 16, true, nil, testfn, true)

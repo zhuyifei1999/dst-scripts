@@ -147,12 +147,15 @@ local function eat_food_action(inst)
     end
 end
 
+local BEEFALO_MUST_TAGS = {"beefalo"}
+local BEEFALO_CANT_TAGS = {"baby","HasCarrat"}
+
 local function returntobeefalo(inst)
     if inst.beefalo_carrat then
         local target = nil
 
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 20, {"beefalo"}, {"baby","HasCarrat"})
+        local ents = TheSim:FindEntities(x, y, z, 20, BEEFALO_MUST_TAGS, BEEFALO_CANT_TAGS)
         if #ents > 0 then
             target = ents[1]
         end

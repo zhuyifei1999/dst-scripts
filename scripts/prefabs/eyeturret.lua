@@ -62,6 +62,8 @@ local function triggerlight(inst)
     OnLightDirty(inst)
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "player" }
 local function retargetfn(inst)
     local playertargets = {}
     for i, v in ipairs(AllPlayers) do
@@ -76,8 +78,8 @@ local function retargetfn(inst)
                 and (playertargets[guy] or
                     (guy.components.combat.target ~= nil and guy.components.combat.target:HasTag("player")))
         end,
-        { "_combat" }, --see entityreplica.lua
-        { "INLIMBO", "player" }
+        RETARGET_MUST_TAGS, --see entityreplica.lua
+        RETARGET_CANT_TAGS
     )
 end
 

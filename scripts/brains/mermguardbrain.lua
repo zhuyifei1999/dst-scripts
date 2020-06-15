@@ -57,13 +57,14 @@ end
 
 -----------------------------------------------------------------------------------------------
 -- Chop
+local CHOP_TAGS = { "CHOP_workable" }
 
 local function IsDeciduousTreeMonster(guy)
     return guy.monster and guy.prefab == "deciduoustree"
 end
 
 local function FindDeciduousTreeMonster(inst)
-    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, { "CHOP_workable" })
+    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, CHOP_TAGS)
 end
 
 local function KeepChoppingAction(inst)
@@ -86,7 +87,7 @@ local function StartChoppingCondition(inst)
 end
 
 local function FindTreeToChopAction(inst)
-    local target = FindEntity(inst, SEE_TREE_DIST, nil, { "CHOP_workable" })
+    local target = FindEntity(inst, SEE_TREE_DIST, nil, CHOP_TAGS)
     if target ~= nil then
         if inst.tree_target ~= nil then
             target = inst.tree_target
@@ -102,6 +103,7 @@ end
 
 ------------------------------------------------------------------------------
 -- Mine
+local MIND_TAGS = { "MINE_workable" }
 
 local function KeepMiningAction(inst)
     local keep_mining = (inst.components.follower.leader ~= nil and
@@ -119,7 +121,7 @@ local function StartMiningCondition(inst)
 end
 
 local function FindRockToMineAction(inst)
-    local target = FindEntity(inst, SEE_ROCK_DIST, nil, { "MINE_workable" })
+    local target = FindEntity(inst, SEE_ROCK_DIST, nil, MIND_TAGS)
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.MINE)
     end
@@ -130,6 +132,7 @@ end
 
 ------------------------------------------------------------------------------
 -- Hammer
+local HAMMER_TAGS =  { "HAMMER_workable" }
 
 local function KeepHammeringAction(inst)
     local keep_hammering = (inst.components.follower.leader ~= nil and
@@ -147,13 +150,16 @@ local function StartHammeringCondition(inst)
 end
 
 local function FindHammerTargetAction(inst)
-    local target = FindEntity(inst, SEE_HAMMER_DIST, nil, { "HAMMER_workable" })
+    local target = FindEntity(inst, SEE_HAMMER_DIST, nil, HAMMER_TAGS)
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.HAMMER)
     end
 end
 
 ------------------------------------------------------------------------------
+local EATFOOD_MUST_TAGS = { "edible_VEGGIE" }
+local EATFOOD_CANOT_TAGS = { "INLIMBO" }
+local SCARY_TAGS = { "scarytoprey" }
 
 local function EatFoodAction(inst)
     local target = nil
@@ -161,9 +167,9 @@ local function EatFoodAction(inst)
         target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
     end
     if target == nil then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) end, { "edible_VEGGIE" }, { "INLIMBO" })
+        target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) end, EATFOOD_MUST_TAGS, EATFOOD_CANOT_TAGS)
         --check for scary things near the food
-        if target ~= nil and (GetClosestInstWithTag("scarytoprey", target, SEE_PLAYER_DIST) ~= nil or not target:IsOnValidGround()) then  -- NOTE this ValidGround check should be removed if merms start swimming
+        if target ~= nil and (GetClosestInstWithTag(SCARY_TAGS, target, SEE_PLAYER_DIST) ~= nil or not target:IsOnValidGround()) then  -- NOTE this ValidGround check should be removed if merms start swimming
             target = nil
         end
     end

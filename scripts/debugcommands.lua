@@ -99,6 +99,7 @@ function d_light(c1, c2, c3)
     TheSim:SetAmbientColour(c1, c2 or c1, c3 or c1)
 end
 
+local COMBAT_TAGS = {"_combat"}
 function d_combatsimulator(prefab, count, force)
     count = count or 1
 
@@ -112,12 +113,12 @@ function d_combatsimulator(prefab, count, force)
             creature.components.knownlocations:RememberLocation("home", {x=x,y=y,z=z})
         end
         if force then
-            local target = FindEntity(creature, 20, nil, {"_combat"})
+            local target = FindEntity(creature, 20, nil, COMBAT_TAGS)
             if target then
                 creature.components.combat:SetTarget(target)
             end
             creature:ListenForEvent("droppedtarget", function()
-                local target = FindEntity(creature, 20, nil, {"_combat"})
+                local target = FindEntity(creature, 20, nil, COMBAT_TAGS)
                 if target then
                     creature.components.combat:SetTarget(target)
                 end

@@ -381,11 +381,10 @@ local function CanUserStartCommand(commandname, player, targetid)
 end
 
 local function CanUserStartVote(commandname, player, targetid)
-    local command = getcommand(commandname)
-    if command == nil then
+    local command = type(commandname) == "string" and getcommand(commandname) or getcommandfromhash(commandname)
+    if command == nil or not command.vote then
         return false, nil
     end
-    assert(command.vote)
     return validatevotestart(command, player, targetid)
 end
 

@@ -39,8 +39,10 @@ local function IsNestEmpty(inst)
 		(not inst.components.homeseeker.home.components.pickable or not inst.components.homeseeker.home.components.pickable:CanBePicked() )
 end
 
+local THREAT_CANT_TAGS = {'tallbird', 'notarget'}
+local THREAT_ONEOF_TAGS = {'character', 'animal'}
 local function GetNearbyThreatFn(inst)
-    return FindEntity(inst, START_FACE_DIST, nil, nil, {'tallbird', 'notarget'}, {'character', 'animal'})
+    return FindEntity(inst, START_FACE_DIST, nil, nil, THREAT_CANT_TAGS, THREAT_ONEOF_TAGS)
 end
 
 local function KeepFaceTargetFn(inst, target)

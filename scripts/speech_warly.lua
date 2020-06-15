@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I cannot do that.",
 	ANNOUNCE_BOAT_LEAK = "Mon dieu! She is sinking!",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "As a chef, I am quite embarrassed.",
@@ -780,6 +801,16 @@ return{
             REVIVER = "You are very kind, little one.",
             GHOST = "Don't you worry, we'll get this sorted out!",
             FIRESTARTER = "Ah-! Little ones shouldn't play with matches!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Salut, %s!",
+            ATTACKER = "Are you trying to scare us, %s?",
+            MURDERER = "You are worse than the monsters from your stories!",
+            REVIVER = "%s is very helpful.",
+            GHOST = "You're not finished just yet, mon ami!",
+            FIRESTARTER = "%s, are you feeling well?",
         },
 
         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "She is a beast with a gentle soul.",
+            "She is a beast with a gentle soul.",
+        },
+        WOBYSMALL = 
+        {
+            "She's quite good at cleaning up leftovers after a meal.",
+            "Oh alright, I'm sure I can find a scrap of meat for you.",
+        },
+		WALTERHAT = "A tidy little chapeau.",
+		SLINGSHOT = "Perhaps we could catch something for dinner with this.",
+		SLINGSHOTAMMO_ROCK = "This looks like a key ingredient for a slingshot.",		
+		SLINGSHOTAMMO_MARBLE = "This looks like a key ingredient for a slingshot.",		
+		SLINGSHOTAMMO_THULECITE = "This looks like a key ingredient for a slingshot.",	
+        SLINGSHOTAMMO_GOLD = "This looks like a key ingredient for a slingshot.",
+        SLINGSHOTAMMO_SLOW = "This looks like a key ingredient for a slingshot.",
+        SLINGSHOTAMMO_FREEZE = "This looks like a key ingredient for a slingshot.",
+		SLINGSHOTAMMO_POOP = "I suppose we must make do with what we have.",
+        PORTABLETENT = "It looks very cozy.",
+        PORTABLETENT_ITEM = "All rolled up like a crepe.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "I'm not sure about some of those ingredients, mademoiselle.",
 		GHOSTLYELIXIR_FASTREGEN = "I'm not sure about some of those ingredients, mademoiselle.",
 		GHOSTLYELIXIR_SHIELD = "I'm not sure about some of those ingredients, mademoiselle.",

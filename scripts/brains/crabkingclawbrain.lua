@@ -10,10 +10,12 @@ require "behaviours/leash"
 local WAMDER_DIST = 2
 local LEASH_DIST = 6
 
+local BOAT_TAGS = {"boat"}
+
 local function ShouldClamp(inst)
     if inst:IsValid() and not inst.sg:HasStateTag("busy") then
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 4.5,{"boat"})
+        local ents = TheSim:FindEntities(x,y,z, 4.5, BOAT_TAGS)
         if #ents > 0 then
             for i=#ents, 1, -1 do               
                 if not ents[i]:IsValid() or ents[i].components.health:IsDead() then                    
@@ -30,7 +32,7 @@ end
 
 local function findboattoclamp(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 10,{"boat"})
+    local ents = TheSim:FindEntities(x,y,z, 10, BOAT_TAGS)
     if #ents>0 then
         return Vector3(ents[1].Transform:GetWorldPosition())
     end

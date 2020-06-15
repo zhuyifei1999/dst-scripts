@@ -11,6 +11,9 @@ local function OnSaltlickPlaced(inst)
     inst:RemoveEventCallback("saltlick_placed", OnSaltlickPlaced)
 end
 
+local FINDSALTLICK_MUST_TAGS = { "saltlick" }
+local FINDSALTLICK_CANT_TAGS = { "INLIMBO", "fire", "burnt" }
+
 local function FindSaltlick(inst)
     if inst._brainsaltlick == nil or
         not inst._brainsaltlick:IsValid() or
@@ -19,7 +22,7 @@ local function FindSaltlick(inst)
         (inst._brainsaltlick.components.burnable ~= nil and inst._brainsaltlick.components.burnable:IsBurning()) or
         inst._brainsaltlick:HasTag("burnt") then
         local hadsaltlick = inst._brainsaltlick ~= nil
-        inst._brainsaltlick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
+        inst._brainsaltlick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, FINDSALTLICK_MUST_TAGS, FINDSALTLICK_CANT_TAGS)
         if inst._brainsaltlick ~= nil then
             if not hadsaltlick then
                 inst:ListenForEvent("saltlick_placed", OnSaltlickPlaced)

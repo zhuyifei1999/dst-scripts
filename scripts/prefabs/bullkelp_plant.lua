@@ -12,7 +12,6 @@ local prefabs =
 }
 
 local function onpickedfn(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
     inst.AnimState:PlayAnimation("picking")
     inst.AnimState:PushAnimation("picked", true)
     inst.underwater.AnimState:PlayAnimation("picking")
@@ -80,7 +79,7 @@ local function fn()
     inst.AnimState:SetMultColour(color, color, color, 1)
 
     inst:AddComponent("pickable")
-    inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
+    inst.components.pickable.picksound = "turnoftides/common/together/water/harvest_plant"
     inst.components.pickable:SetUp("kelp", TUNING.BULLKELP_REGROW_TIME)
     inst.components.pickable.onregenfn = onregenfn
     inst.components.pickable.onpickedfn = onpickedfn

@@ -40,16 +40,19 @@ local function onhit(inst)
     end
 end
 
+local PERD_TAG = { "perd" }
+local SPAWNBUSH_MUST_TAGS = { "bush", "pickable" }
+local SPAWNBUSH_CANT_TAGS = { "fire", "smolder", "diseased" }
 local function TrySpawnPerd(inst)
     if not (inst.components.burnable ~= nil and
             (inst.components.burnable:IsBurning() or inst.components.burnable:IsSmoldering()) or
             inst:HasTag("burnt")) and
         inst.components.prototyper ~= nil and
         TheWorld.state.isday and
-        FindEntity(inst, 16, nil, { "perd" }) == nil then
+        FindEntity(inst, 16, nil, PERD_TAG) == nil then
         --spawn a perd from a nearby bush if there isn't one already
         local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 8, { "bush", "pickable" }, { "fire", "smolder", "diseased" })
+        local ents = TheSim:FindEntities(x, y, z, 8, SPAWNBUSH_MUST_TAGS, SPAWNBUSH_CANT_TAGS)
         for i = #ents, 1, -1 do
             if string.sub(ents[i].prefab, 1, 9) ~= "berrybush" then
                 table.remove(ents, i)

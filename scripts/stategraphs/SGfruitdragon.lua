@@ -1,5 +1,8 @@
 require("stategraphs/commonstates")
 
+local ATTACK_FIRE_CANT_TAGS = {"fruitdragon", "INLIMBO"}
+local ATTACK_FIRE_ONEOF_TAGS = {"_health", "canlight"}
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.GOHOME, "gohome"),
@@ -163,7 +166,7 @@ local states=
                 inst.components.timer:StartTimer("fire_cd", TUNING.FRUITDRAGON.FIREATTACK_COOLDOWN)
 
 				local x, y, z = inst.Transform:GetWorldPosition()
-				local ents = TheSim:FindEntities(x, y, z, TUNING.FRUITDRAGON.FIREATTACK_HIT_RANGE + 6, nil, {"fruitdragon", "INLIMBO"}, {"_health", "canlight"})
+				local ents = TheSim:FindEntities(x, y, z, TUNING.FRUITDRAGON.FIREATTACK_HIT_RANGE + 6, nil, ATTACK_FIRE_CANT_TAGS, ATTACK_FIRE_ONEOF_TAGS)
 				for _, ent in ipairs(ents) do
 					if inst:IsNear(ent, ent:GetPhysicsRadius(0) + TUNING.FRUITDRAGON.FIREATTACK_HIT_RANGE) then
 						if ent.components.health ~= nil and not ent.components.health:IsDead() then

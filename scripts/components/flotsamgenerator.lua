@@ -65,6 +65,8 @@ local _guaranteed_spawn_tasks = {}
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local SPAWNPOINT_1_ONEOF_TAGS = {"player", "flotsam"}
+local SPAWNPOINT_2_ONEOF_TAGS = {"INLIMBO", "fx"}
 local function GetSpawnPoint(pt,platform)
     if TheWorld.has_ocean then
         local function TestSpawnPoint(offset)
@@ -73,8 +75,8 @@ local function GetSpawnPoint(pt,platform)
             local allow_water = true            
             return IsOceanTile(tile) and
                    tile ~= GROUND.OCEAN_COASTAL_SHORE and
-                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, RANGE-SHORTRANGE, nil, nil, {"player","flotsam"}) <= 0 and
-                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, SHORTRANGE, nil, {"INLIMBO","fx"}) <= 0 
+                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, RANGE-SHORTRANGE, nil, nil, SPAWNPOINT_1_ONEOF_TAGS) <= 0 and
+                   #TheSim:FindEntities(spawnpoint_x, spawnpoint_y, spawnpoint_z, SHORTRANGE, nil, SPAWNPOINT_2_ONEOF_TAGS) <= 0 
         end
 
         local theta = math.random() * 2 * PI

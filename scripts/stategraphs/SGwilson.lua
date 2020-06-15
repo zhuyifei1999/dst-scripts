@@ -1,5 +1,8 @@
 require("stategraphs/commonstates")
 
+local ATTACK_PROP_MUST_TAGS = { "_combat" }
+local ATTACK_PROP_CANT_TAGS = { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" }
+
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
         if v.foleysound ~= nil then
@@ -107,6 +110,8 @@ local function DoMountSound(inst, mount, sound, ispredicted)
     end
 end
 
+local DANGER_ONEOF_TAGS = { "monster", "pig", "_combat" }
+local DANGER_NOPIG_ONEOF_TAGS = { "monster", "_combat" }
 local function IsNearDanger(inst)
     local hounded = TheWorld.components.hounded
     if hounded ~= nil and (hounded:GetWarning() or hounded:GetAttacking()) then
@@ -131,7 +136,7 @@ local function IsNearDanger(inst)
                     not (nospiderdanger and target:HasTag("spider")) and
                     not (inst.components.sanity:IsSane() and target:HasTag("shadowcreature")))
         end,
-        nil, nil, nopigdanger and { "monster", "_combat" } or { "monster", "pig", "_combat" }) ~= nil
+        nil, nil, nopigdanger and DANGER_NOPIG_ONEOF_TAGS or DANGER_ONEOF_TAGS) ~= nil
 end
 
 --V2C: This is for cleaning up interrupted states with legacy stuff, like
@@ -301,6 +306,10 @@ local function ConfigureRunState(inst)
         inst.sg.statemem.riding = true
         inst.sg.statemem.groggy = inst:HasTag("groggy")
         inst.sg:AddStateTag("nodangle")
+
+        local mount = inst.components.rider:GetMount()
+        inst.sg.statemem.ridingwoby = mount and mount:HasTag("woby")
+
     elseif inst.components.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
     elseif inst:HasTag("wereplayer") then
@@ -338,6 +347,7 @@ local function GetRunStateAnim(inst)
         or (inst.sg.statemem.sandstorm and "sand_walk")
         or ((inst.sg.statemem.groggy or inst.sg.statemem.moosegroggy or inst.sg.statemem.goosegroggy) and "idle_walk")
         or (inst.sg.statemem.careful and "careful_walk")
+        or (inst.sg.statemem.ridingwoby and "run_woby")
         or "run"
 end
 
@@ -690,6 +700,7 @@ local actionhandlers =
                 local weapon = inst.components.combat ~= nil and inst.components.combat:GetWeapon() or nil
                 return (weapon == nil and "attack")
                     or (weapon:HasTag("blowdart") and "blowdart")
+					or (weapon:HasTag("slingshot") and "slingshot_shoot")
                     or (weapon:HasTag("thrown") and "throw")
                     or (weapon:HasTag("propweapon") and "attack_prop_pre")
                     or (weapon:HasTag("multithruster") and "multithrust_pre")
@@ -793,7 +804,7 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.WINTERSFEAST_FEAST, 
         function(inst, action) 
-            if not inst.sg:HasStateTag("feasting")then
+            if not inst.sg:HasStateTag("feasting") then
                 TheWorld:PushEvent("feasterstarted",{player=inst,target=action.target})
             end
             return "winters_feast_eat"
@@ -803,6 +814,8 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.BEGIN_QUEST, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_QUEST, "dolongaction"),
+
+    ActionHandler(ACTIONS.TELLSTORY, "dostorytelling"),
 }
 
 local events =
@@ -1228,6 +1241,12 @@ local events =
                 inst.sg:GoToState("idle")
             end
         end),
+
+    EventHandler("singsong", function(inst, data)
+        if (inst.components.health == nil or not inst.components.health:IsDead()) and not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("singsong", data)
+        end
+    end),
 
     CommonHandlers.OnHop(),
 }
@@ -2602,7 +2621,10 @@ local states =
             if royalty ~= nil then
                 inst.sg:GoToState("bow", royalty)
             elseif mount.components.hunger == nil then
-                inst.sg:GoToState(math.random() < .5 and "shake" or "bellow")
+                inst.sg:GoToState(math.random() < 0.5 and "shake" or "bellow")
+            elseif mount:HasTag("woby") then
+                local woby_idles = {"shake_woby", "alert_woby", "bark_woby"}
+                inst.sg:GoToState(woby_idles[math.random(1, #woby_idles)])
             else
                 local rand = math.random()
                 inst.sg:GoToState(
@@ -2680,6 +2702,97 @@ local states =
             end),
         },
     },
+
+    State{
+        name = "shake_woby",
+        tags = { "idle", "canrotate" },
+
+        onenter = function(inst)
+            local mount = inst.components.rider:GetMount()
+            if mount and mount:HasTag("woby") then
+                inst.AnimState:PlayAnimation("shake_woby")
+            else
+                inst.sg:GoToState("mounted_idle")
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("mounted_idle")
+                end
+            end),
+        },
+
+        timeline=
+        {
+            TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+        },
+    },
+
+    State{
+        name = "alert_woby",
+        tags = { "idle", "canrotate" },
+
+        onenter = function(inst)
+            local mount = inst.components.rider:GetMount()
+            if mount and mount:HasTag("woby") then
+                inst.AnimState:PlayAnimation("alert_woby_pre",  false)
+                inst.AnimState:PushAnimation("alert_woby_loop", false)
+                inst.AnimState:PushAnimation("alert_woby_pst",  false)
+            else
+                inst.sg:GoToState("mounted_idle")
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("mounted_idle")
+                end
+            end),
+        },
+
+        timeline=
+        {
+            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+            TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/chuff") end),
+        },
+    },
+
+    State{
+        name = "bark_woby",
+        tags = { "idle", "canrotate" },
+
+        onenter = function(inst)
+            local mount = inst.components.rider:GetMount()
+            if mount and mount:HasTag("woby") then
+                if math.random() < 0.5 then
+                    inst.AnimState:PlayAnimation("bark1_woby",  false)
+                end
+            else
+                inst.sg:GoToState("mounted_idle")
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("mounted_idle")
+                end
+            end),
+        },
+
+        timeline=
+        {
+            TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/bark") end),
+        },
+    },
+
 
     State{
         name = "chop_start",
@@ -4547,6 +4660,45 @@ local states =
         onexit = StopTalkSound,
     },
 
+    State{
+        name = "singsong",
+        tags = { "idle", "notalking" },
+
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation(
+                inst.components.inventory:IsHeavyLifting() and
+                not inst.components.rider:IsRiding() and
+                "heavy_dial_loop" or
+                "dial_loop",
+                true)
+
+			inst.SoundEmitter:PlaySound(data.sound, "singsong")
+			inst.components.talker:Say(data.lines, nil, true, true)
+        end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+				inst.sg.statemem.started = true -- to prevent the delayed "donetalking" event from a previous talk from cancelling the story
+			end),
+            EventHandler("donetalking", function(inst)
+				if inst.sg.statemem.started then
+					inst.sg:GoToState("idle", true)
+				end
+            end),
+        },
+
+        onexit = function(inst)
+			inst.SoundEmitter:KillSound("singsong")
+			if not inst.sg.statemem.not_interupted then
+				StopTalkSound(inst, true)
+				if inst.components.talker ~= nil then
+					inst.components.talker:ShutUp()
+				end
+			end
+        end,
+    },
+
     State
     {
         name = "unsaddle",
@@ -5090,18 +5242,32 @@ local states =
         end,
     },
 
-    State{
-        name = "makeballoon",
+    State
+    {
+        name = "dolongaction",
         tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst, timeout)
-            inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(timeout or 1)
+            if timeout == nil then
+                timeout = 1
+            elseif timeout > 1 then
+                inst.sg:AddStateTag("slowaction")
+            end
+            inst.sg:SetTimeout(timeout)
             inst.components.locomotor:Stop()
-            inst.SoundEmitter:PlaySound("dontstarve/common/balloon_make", "make")
-            inst.SoundEmitter:PlaySound("dontstarve/common/balloon_blowup")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
             inst.AnimState:PlayAnimation("build_pre")
             inst.AnimState:PushAnimation("build_loop", true)
+            if inst.bufferedaction ~= nil then
+                inst.sg.statemem.action = inst.bufferedaction
+                if inst.bufferedaction.action.actionmeter then
+                    inst.sg.statemem.actionmeter = true
+                    StartActionMeter(inst, timeout)
+                end
+                if inst.bufferedaction.target ~= nil and inst.bufferedaction.target:IsValid() then
+                    inst.bufferedaction.target:PushEvent("startlongaction")
+                end
+            end
         end,
 
         timeline =
@@ -5114,6 +5280,10 @@ local states =
         ontimeout = function(inst)
             inst.SoundEmitter:KillSound("make")
             inst.AnimState:PlayAnimation("build_pst")
+            if inst.sg.statemem.actionmeter then
+                inst.sg.statemem.actionmeter = nil
+                StopActionMeter(inst, true)
+            end
             inst:PerformBufferedAction()
         end,
 
@@ -5128,9 +5298,101 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
+            if inst.sg.statemem.actionmeter then
+                StopActionMeter(inst, false)
+            end
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
+        end,
+    },
+
+    State{
+        name = "dostorytelling",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst)
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.components.locomotor:Stop()
+	        if not inst:PerformBufferedAction() then
+				inst.sg.statemem.not_interupted = true
+				inst.sg:GoToState("idle")
+			else
+	            inst.AnimState:PlayAnimation("idle_walter_storytelling_pre")
+			end
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                DoTalkSound(inst)
+            end),
+        },      
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+				inst.sg.statemem.started = true -- to prevent the delayed "donetalking" event from a previous talk from cancelling the story
+			end),
+            EventHandler("donetalking", function(inst)
+				if inst.sg.statemem.started then
+					inst.AnimState:PlayAnimation("idle_walter_storytelling_pst")
+					inst.sg:GoToState("idle", true)
+				end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.sg.statemem.not_interupted = true
+                    inst.sg:GoToState("dostorytelling_loop")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+			if not inst.sg.statemem.not_interupted then
+				StopTalkSound(inst, true)
+				if inst.components.talker ~= nil then
+					inst.components.talker:ShutUp()
+				end
+			end
+        end,
+    },
+
+    State{
+        name = "dostorytelling_loop",
+        tags = { "doing", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PushAnimation(math.random() < 0.75 and "idle_walter_storytelling" or "idle_walter_storytelling_2")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.sg.statemem.not_interupted = true
+                    inst.sg:GoToState("dostorytelling_loop")
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+				inst.sg.statemem.not_interupted = true
+				StopTalkSound(inst)
+		        inst.AnimState:PlayAnimation("idle_walter_storytelling_pst")
+				inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        onexit = function(inst)
+			if not inst.sg.statemem.not_interupted then
+				StopTalkSound(inst, true)
+				if inst.components.talker ~= nil then
+					inst.components.talker:ShutUp()
+				end
+			end
         end,
     },
 
@@ -6464,7 +6726,6 @@ local states =
                 inst.components.playercontroller:RemotePausePrediction()
             end
         end,
-
         timeline =
         {
             TimeEvent(FRAMES, function(inst)
@@ -6478,7 +6739,7 @@ local states =
                 local cosangle = math.cos(angle)
                 local x = x0 + dist * sinangle
                 local z = z0 + dist * cosangle
-                for i, v in ipairs(TheSim:FindEntities(x, y0, z, radius + 3, { "_combat" }, { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" })) do
+                for i, v in ipairs(TheSim:FindEntities(x, y0, z, radius + 3, ATTACK_PROP_MUST_TAGS, ATTACK_PROP_CANT_TAGS)) do
                     if v:IsValid() and not v:IsInLimbo() and
                         not (v.components.health ~= nil and v.components.health:IsDead()) then
                         local range = radius + v:GetPhysicsRadius(.5)
@@ -6620,6 +6881,8 @@ local states =
             local anim = GetRunStateAnim(inst)
             if anim == "run" then
                 anim = "run_loop"
+            elseif anim == "run_woby" then
+                anim = "run_woby_loop"
             end
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
@@ -6736,11 +6999,39 @@ local states =
                     DoMountedFoleySounds(inst)
                 end
             end),
-            TimeEvent(5 * FRAMES, function(inst)
+            TimeEvent(1 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     DoRunSounds(inst)
+                    if inst.sg.statemem.ridingwoby then
+                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+                    end
                 end
             end),
+            TimeEvent(3 * FRAMES, function(inst)
+                if inst.sg.statemem.riding then
+                    DoRunSounds(inst)
+                    if inst.sg.statemem.ridingwoby then
+                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+                    end
+                end
+            end),
+            TimeEvent(8 * FRAMES, function(inst)
+                if inst.sg.statemem.riding then
+                    DoRunSounds(inst)
+                    if inst.sg.statemem.ridingwoby then
+                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+                    end
+                end
+            end),
+            TimeEvent(10 * FRAMES, function(inst)
+                if inst.sg.statemem.riding then
+                    DoRunSounds(inst)
+                    if inst.sg.statemem.ridingwoby then
+                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+                    end
+                end
+            end),
+
 
             --moose
             --Frame 11 shared with heavy lifting above
@@ -10805,6 +11096,63 @@ local states =
 
     State
     {
+        name = "slingshot_shoot",
+        tags = { "doing", "busy", "nointerrupt", "nomorph" },
+
+        onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            inst.components.locomotor:Stop()
+
+            local target = buffaction ~= nil and buffaction.target or nil
+            if target ~= nil and target:IsValid() then
+	            inst:ForceFacePoint(target.Transform:GetWorldPosition())
+			end
+
+            inst.AnimState:PlayAnimation("slingshot_pre")
+            inst.AnimState:PushAnimation("slingshot", false)
+            inst.sg:SetTimeout(27 * FRAMES)
+        end,
+
+        timeline =
+        {
+            TimeEvent(20 * FRAMES, function(inst) -- start of slingshot
+                inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
+            end),
+            
+            TimeEvent(25 * FRAMES, function(inst)
+
+	           local buffaction = inst:GetBufferedAction()
+                local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                if equip ~= nil and equip.components.weapon ~= nil and equip.components.weapon.projectile ~= nil then
+-- TODO play shoot sound
+                    inst:PerformBufferedAction()
+                    inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
+                else -- out of ammo
+-- TODO play out of ammo sound
+                    inst:ClearBufferedAction()
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_OUT_OF_AMMO"))
+                    inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+
+            inst.sg:GoToState("idle", true)
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State
+    {
         name = "throw_line",
         tags = { "doing", "busy", "nointerrupt", "nomorph" },
 
@@ -11561,6 +11909,8 @@ local states =
 
         onenter = function(inst)
             inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
+            inst.sg.statemem.ridingwoby = inst.components.rider.target_mount and inst.components.rider.target_mount:HasTag("woby")
+            
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_mount" or "mount")
 
@@ -11578,6 +11928,14 @@ local states =
                 if inst.sg.statemem.heavy then
                     inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
                 end
+            end),
+            TimeEvent(14 * FRAMES, function(inst)
+                if inst.sg.statemem.ridingwoby then
+                    inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/bark")
+                elseif not inst.sg.statemem.heavy then
+                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/grunt") 
+                end
+                    
             end),
             TimeEvent(35 * FRAMES, function(inst)
                 if inst.sg.statemem.heavy then
@@ -11617,12 +11975,17 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("dismount")
-            inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
+            
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
         end,
+
+        timeline=
+        {
+            TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount") end),
+        },
 
         events =
         {

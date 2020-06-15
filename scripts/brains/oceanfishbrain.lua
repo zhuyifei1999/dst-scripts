@@ -72,6 +72,8 @@ local function GetFoodTargetPos(inst)
 	return target ~= nil and target:GetPosition() or nil
 end
 
+local FINDFOOD_CANT_TAGS = {"planted", "INLIMBO"}
+local FINDFOOD_ONEOF_TAGS = {"fishinghook"}
 local function FindFoodAction(inst)
 	if GetFoodTarget(inst) == nil then
 		local target = FindEntity(inst, SEE_LURE_OR_FOOD_DIST, function(food)
@@ -84,8 +86,8 @@ local function FindFoodAction(inst)
 							return inst:IsNear(food, SEE_FOOD_DIST) and TheWorld.Map:IsOceanAtPoint(food.Transform:GetWorldPosition())
 						end,
 						nil,
-						{"planted", "INLIMBO"},
-						JoinArrays(inst.components.eater:GetEdibleTags(), {"fishinghook"}))
+						FINDFOOD_CANT_TAGS,
+						JoinArrays(inst.components.eater:GetEdibleTags(), FINDFOOD_ONEOF_TAGS))
 
 		inst.food_target = target
 		inst.num_nibbles = 1

@@ -28,6 +28,15 @@ self.inst = inst
 --Private
 local retrofit_part1 = false
 
+
+local STRUCTURE_TAGS = {"structure"} 
+local WALKABLEPLATFORM_TAGS = {"walkableplatform"}
+local LAVA_TAGS = {"lava"}
+local IMPORTANT_OBJECT_TAGS = {"irreplaceable", "playerghost", "ghost", "flying", "player", "character", "animal", "monster", "giant"}
+local WATERSOURCE_TAGS = {"watersource"}
+local THORNY_TAGS = {"thorny"}
+local SCULPTURE_TAGS = {"sculpture"}
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
@@ -53,7 +62,7 @@ local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_struc
 				local ents = TheSim:FindEntities(x, 0, z, min_space)
 				if #ents == 0 then
 					if dist_from_structures ~= nil then
-						ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
+						ents = TheSim:FindEntities(x, 0, z, dist_from_structures, STRUCTURE_TAGS )
 					end
 					
 					if #ents == 0 then
@@ -88,7 +97,7 @@ local function RetrofitNewOceanContentPrefab(inst, width, height, prefab, min_sp
 					local ents = TheSim:FindEntities(x, 0, z, min_space)
 					if #ents == 0 then
 						if dist_from_structures ~= nil then
-							ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
+							ents = TheSim:FindEntities(x, 0, z, dist_from_structures, STRUCTURE_TAGS )
 						end
 					
 						if #ents == 0 then
@@ -202,7 +211,7 @@ local function TurnOfTidesRetrofitting_CleanupOceanPoution(inst)
 	
 	BunchSpawnerInit(nil, width, height)
 	local function SpawnBoatingSafePrefab(prefab, x, z)
-		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, WALKABLEPLATFORM_TAGS) == 0 then
 			local obj = SpawnPrefab(prefab)
 			obj.Transform:SetPosition(x, 0, z)
 		end
@@ -297,7 +306,7 @@ local function SaltyRetrofitting_PopulateBrinePools()
 	BunchSpawnerInit(nil, width, height)
 
 	local function SpawnBoatingSafePrefab(prefab, x, z)
-		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, WALKABLEPLATFORM_TAGS) == 0 then
 			local obj = SpawnPrefab(prefab)
 			obj.Transform:SetPosition(x, 0, z)
 
@@ -336,7 +345,7 @@ local function SheSellsSeashellsRetrofitting_PopulateWobsterDens()
 
 	BunchSpawnerInit(nil, width, height)
 	local function SpawnBoatingSafePrefab(prefab, x, z)
-		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, {"walkableplatform"}) == 0 then
+		if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, WALKABLEPLATFORM_TAGS) == 0 then
 			local obj = SpawnPrefab(prefab)
 			obj.Transform:SetPosition(x, 0, z)
 			count = count + 1
@@ -423,7 +432,7 @@ local function RetrofitAgainstTheGrain(area)
 			local node = TheWorld.topology.nodes[k]
 			if string.find(v, "PondyGrass") then
 				lake_candidate = k
-			elseif not string.find(v, "HoundyBadlands") and (#(TheSim:FindEntities(node.cent[1], 0, node.cent[2], 30, {"lava"})) == 0) then
+			elseif not string.find(v, "HoundyBadlands") and (#(TheSim:FindEntities(node.cent[1], 0, node.cent[2], 30, LAVA_TAGS)) == 0) then
 				table.insert(candidtates, k)
 			end
 		end
@@ -442,7 +451,7 @@ local function RetrofitAgainstTheGrain(area)
 	local shortlist = {}
 	for k,v in ipairs(candidtates) do
 		local node = TheWorld.topology.nodes[v]
-		if #(TheSim:FindEntities(node.cent[1], 0, node.cent[2], 20, {"structure"})) < 3 then
+		if #(TheSim:FindEntities(node.cent[1], 0, node.cent[2], 20, STRUCTURE_TAGS)) < 3 then
 			table.insert(shortlist, v)
 		end
 	end
@@ -477,7 +486,7 @@ local function RetrofitAgainstTheGrain(area)
 	print "Retrofitting for Against the Grain: Sandstorm enabled."
 
 	-- Add the Antlion Spawner
-	local ents = TheSim:FindEntities(antlion_pt.x, 0, antlion_pt.z, 2, nil, {"irreplaceable", "playerghost", "ghost", "flying", "player", "character", "animal", "monster", "giant"})
+	local ents = TheSim:FindEntities(antlion_pt.x, 0, antlion_pt.z, 2, nil, IMPORTANT_OBJECT_TAGS)
 	for _,ent in ipairs(ents) do
 		if ent.brain == nil then
 			print ("Retrofitting for Against the Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the antlion.")
@@ -493,7 +502,7 @@ local function RetrofitAgainstTheGrain(area)
 	print "Retrofitting for Against the Grain: Added Antlion Spawner."
 
 	-- Add the Oasis Lake and clearout the area around it
-	local lake_ents = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 6, nil, {"irreplaceable", "playerghost", "ghost", "flying", "player", "character", "animal", "monster", "giant"})
+	local lake_ents = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 6, nil, IMPORTANT_OBJECT_TAGS)
 	for _,ent in ipairs(lake_ents) do
 		if ent.brain == nil then
 			print ("Retrofitting for Against the Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the oasis lake.")
@@ -505,7 +514,7 @@ local function RetrofitAgainstTheGrain(area)
 			end
 		end
 	end
-	local oasis_ponds = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 50, {"watersource"}, {})
+	local oasis_ponds = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 50, WATERSOURCE_TAGS)
 	for _,ent in ipairs(oasis_ponds) do
 		print ("Retrofitting for Against the Grain: Removing pond, " .. tostring(ent) .. " to make way for the oasis lake.")
 		ent:Remove()
@@ -518,7 +527,7 @@ local function RetrofitAgainstTheGrain(area)
 		local num_cactus = 0
 		for k,v in ipairs(node_indices) do
 			local node = TheWorld.topology.nodes[v]
-			local ents = TheSim:FindEntities(node.cent[1], 0, node.cent[2], 50, {"thorny"})
+			local ents = TheSim:FindEntities(node.cent[1], 0, node.cent[2], 50, THORNY_TAGS)
 			for _,ent in ipairs(ents) do
 				if ent.prefab == "cactus" then
 					local x,y,z = ent.Transform:GetWorldPosition()
@@ -738,7 +747,7 @@ function self:OnPostInit()
 			if obj:IsValid() then
 				if obj.prefab == "sculpture_knighthead" or obj.prefab == "sculpture_bishophead" or obj.prefab == "sculpture_rooknose" then
 					local x, y, z = obj.Transform:GetWorldPosition()
-					local bodies = TheSim:FindEntities(x, y, z, 1.6, {"sculpture"})
+					local bodies = TheSim:FindEntities(x, y, z, 1.6, SCULPTURE_TAGS)
 					for _, body in ipairs(bodies) do
 						local radius = body.prefab == "sculpture_knightbody" and 0.8
 									or body.prefab == "sculpture_bishopbody" and 0.8

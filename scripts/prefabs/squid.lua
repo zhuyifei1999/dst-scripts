@@ -309,6 +309,14 @@ local function squideyelightfn()
     inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
     inst.Light:Enable(true)
 
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     inst:AddComponent("fader")
 
     return inst

@@ -158,6 +158,7 @@ local function SpawnQueen(inst, should_duplicate)
     end
 end
 
+local DENCHECK_ONEOF_TAGS = { "spiderden", "spiderqueen" }
 local function AttemptMakeQueen(inst)
     if inst.components.growable == nil then
         --failsafe in case we still got here after we are burning
@@ -177,7 +178,7 @@ local function AttemptMakeQueen(inst)
     local check_range = 60
     local cap = 4
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, check_range, nil, nil, { "spiderden", "spiderqueen" })
+    local ents = TheSim:FindEntities(x, y, z, check_range, nil, nil, DENCHECK_ONEOF_TAGS)
     local num_dens = #ents
 
     inst.components.growable:SetStage(1)
@@ -383,14 +384,16 @@ local function CanTarget(guy)
     return not guy.components.health:IsDead()
 end
 
+local TARGET_MUST_TAGS = { "_combat", "_health", "character" }
+local TARGET_CANT_TAGS = { "player", "spider", "INLIMBO" }
 local function OnHaunt(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local target = FindEntity(
             inst,
             25,
             CanTarget,
-            { "_combat", "_health", "character" }, --see entityreplica.lua
-            { "player", "spider", "INLIMBO" }
+            TARGET_MUST_TAGS, --see entityreplica.lua
+            TARGET_CANT_TAGS
         )
         if target ~= nil then
             SpawnDefenders(inst, target)

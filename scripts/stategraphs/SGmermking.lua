@@ -70,7 +70,7 @@ local states=
             inst.AnimState:PlayAnimation("transform_pst")
             local fx = SpawnPrefab("merm_king_splash")
             inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/throne/spawn")
-            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())            
+            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
         end,
 
         events =

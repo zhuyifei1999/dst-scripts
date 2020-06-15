@@ -56,6 +56,9 @@ local function SetIconEnabled(inst, enable)
     end
 end
 
+local DISABLEICON_MUST_TAGS = { "caveindebris" }
+local DISABLEICON_CANT_TAGS = { "INLIMBO" }
+
 local function UpdateIcon(inst)
     if inst._inittask ~= nil then
         inst._inittask:Cancel()
@@ -69,7 +72,7 @@ local function UpdateIcon(inst)
         SetIconEnabled(inst, false)
     else
         local x, y, z = inst.Transform:GetWorldPosition()
-        for i, v in ipairs(TheSim:FindEntities(x, 0, z, MINIMAP_RADIUS, { "caveindebris" }, { "INLIMBO" })) do
+        for i, v in ipairs(TheSim:FindEntities(x, 0, z, MINIMAP_RADIUS, DISABLEICON_MUST_TAGS, DISABLEICON_CANT_TAGS)) do
             if v ~= inst and v._iconpos ~= nil and v.prefab == inst.prefab then
                 SetIconEnabled(inst, false)
                 return
@@ -81,7 +84,7 @@ end
 
 local function OnRemoveIcon(inst)
     if inst._iconpos ~= nil then
-        local ents = TheSim:FindEntities(inst._iconpos.x, 0, inst._iconpos.z, MINIMAP_RADIUS, { "caveindebris" }, { "INLIMBO" })
+        local ents = TheSim:FindEntities(inst._iconpos.x, 0, inst._iconpos.z, MINIMAP_RADIUS, DISABLEICON_MUST_TAGS, DISABLEICON_CANT_TAGS)
         SetIconEnabled(inst, false)
         for i, v in ipairs(ents) do
             if v ~= inst and v._iconpos == nil and v.prefab == inst.prefab then
@@ -382,6 +385,9 @@ local function MakeDuoFormation()
     }
 end
 ]]
+
+local FORMATION_MUST_TAGS = { "boulder", "heavy" }
+local FORMATION_CANT_TAGS = { "INLIMBO" }
 local function CreateFormation(boulders)
     local x, z = 0, 0
     for i, v in ipairs(boulders) do
@@ -421,7 +427,7 @@ local function CreateFormation(boulders)
     for i, v in ipairs(boulders) do
         if v.formed then
             local x1, y1, z1 = v.Transform:GetWorldPosition()
-            for i2, v2 in ipairs(TheSim:FindEntities(x1, 0, z1, OVERLAP_RADIUS, { "boulder", "heavy" }, { "INLIMBO" })) do
+            for i2, v2 in ipairs(TheSim:FindEntities(x1, 0, z1, OVERLAP_RADIUS, FORMATION_MUST_TAGS, FORMATION_CANT_TAGS)) do
                 if not (v2.formed or (v2.components.heavyobstaclephysics ~= nil and v2.components.heavyobstaclephysics:IsFalling())) then
                     v2:Remove()
                 end
@@ -432,7 +438,7 @@ end
 
 local function TryFormationAt(x, y, z)
     local boulders = {}
-    local ents = TheSim:FindEntities(x, 0, z, FORMATION_RADIUS, { "boulder", "heavy" }, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, 0, z, FORMATION_RADIUS, FORMATION_MUST_TAGS, FORMATION_CANT_TAGS)
     for i, v in ipairs(ents) do
         if v.prefab == "cavein_boulder" and
             not (v.formed or
@@ -484,7 +490,7 @@ local function OnStopFalling(inst)
             local fx = SpawnPrefab("cavein_dust_low")
             fx.Transform:SetPosition(x, 0, z)
             fx:PlaySoundFX()
-            for i, v in ipairs(TheSim:FindEntities(x, 0, z, OVERLAP_RADIUS, { "boulder", "heavy" }, { "INLIMBO" })) do
+            for i, v in ipairs(TheSim:FindEntities(x, 0, z, OVERLAP_RADIUS, FORMATION_MUST_TAGS, FORMATION_CANT_TAGS)) do
                 if v.formed then
                     inst:Remove()
                     return

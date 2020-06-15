@@ -133,9 +133,12 @@ local function OnEat(inst, food)
     end
 end
 
+local SUGGESTTARGET_MUST_TAGS = { "_combat", "_health", "pig" }
+local SUGGESTTARGET_CANT_TAGS = { "werepig", "guard", "INLIMBO" }
+
 local function OnAttackedByDecidRoot(inst, attacker)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(SHARE_TARGET_DIST) * .5, { "_combat", "_health", "pig" }, { "werepig", "guard", "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(SHARE_TARGET_DIST) * .5, SUGGESTTARGET_MUST_TAGS, SUGGESTTARGET_CANT_TAGS)
     local num_helpers = 0
     for i, v in ipairs(ents) do
         if v ~= inst and not v.components.health:IsDead() then
@@ -192,6 +195,7 @@ end
 
 local builds = { "pig_build", "pigspotted_build" }
 local guardbuilds = { "pig_guard_build" }
+local RETARGET_MUST_TAGS = { "_combat" }
 
 local function NormalRetargetFn(inst)
 	local exclude_tags = { "playerghost", "INLIMBO" }
@@ -215,7 +219,7 @@ local function NormalRetargetFn(inst)
                     return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight())
                         and inst.components.combat:CanTarget(guy)
                 end,
-                { "_combat" }, -- see entityreplica.lua
+                RETARGET_MUST_TAGS, -- see entityreplica.lua
                 exclude_tags,
                 oneof_tags
             )
@@ -229,10 +233,11 @@ local function NormalKeepTargetFn(inst, target)
         and not (target.sg ~= nil and target.sg:HasStateTag("transform"))
 end
 
+local CAMPFIRE_TAGS = { "campfire", "fire" }
 local function NormalShouldSleep(inst)
     return DefaultSleepTest(inst)
         and (inst.components.follower == nil or inst.components.follower.leader == nil
-            or (FindEntity(inst, 6, nil, { "campfire", "fire" }) ~= nil and
+            or (FindEntity(inst, 6, nil, CAMPFIRE_TAGS) ~= nil and
                 (inst.LightWatcher == nil or inst.LightWatcher:IsInLight())))
 end
 
@@ -312,17 +317,23 @@ local function SetNormalPig(inst)
     inst.components.talker:StopIgnoringAll("becamewerepig")
 end
 
+local KING_TAGS = { "king" }
+local RETARGET_GUARD_MUST_TAGS = { "character" }
+local RETARGET_GUARD_CANT_TAGS = { "guard", "INLIMBO" }
+local RETARGET_GUARD_PLAYER_MUST_TAGS = { "player" }
+local RETARGET_GUARD_LIMBO_CANT_TAGS = { "INLIMBO" }
+
 local function GuardRetargetFn(inst)
     --defend the king, then the torch, then myself
     local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
     local defendDist = SpringCombatMod(TUNING.PIG_GUARD_DEFEND_DIST)
     local defenseTarget =
-        FindEntity(inst, defendDist, nil, { "king" }) or
+        FindEntity(inst, defendDist, nil, KING_TAGS) or
         (home ~= nil and inst:IsNear(home, defendDist) and home) or
         inst
 
     if not defenseTarget.happy then
-        local invader = FindEntity(defenseTarget, SpringCombatMod(TUNING.PIG_GUARD_TARGET_DIST), nil, { "character" }, { "guard", "INLIMBO" })
+        local invader = FindEntity(defenseTarget, SpringCombatMod(TUNING.PIG_GUARD_TARGET_DIST), nil, RETARGET_GUARD_MUST_TAGS, RETARGET_GUARD_CANT_TAGS)
         if invader ~= nil and
             not (defenseTarget.components.trader ~= nil and defenseTarget.components.trader:IsTryingToTradeWithMe(invader)) and
             not (inst.components.trader ~= nil and inst.components.trader:IsTryingToTradeWithMe(invader)) then
@@ -338,7 +349,7 @@ local function GuardRetargetFn(inst)
                         and not (defenseTarget.components.trader ~= nil and defenseTarget.components.trader:IsTryingToTradeWithMe(guy))
                         and not (inst.components.trader ~= nil and inst.components.trader:IsTryingToTradeWithMe(guy))
                 end,
-                { "player" }
+                RETARGET_GUARD_PLAYER_MUST_TAGS
             )
             if lightThief ~= nil then
                 return lightThief
@@ -351,7 +362,7 @@ local function GuardRetargetFn(inst)
         table.insert(oneof_tags, "merm")
     end
 
-    return FindEntity(defenseTarget, defendDist, nil, {}, { "INLIMBO" }, oneof_tags)
+    return FindEntity(defenseTarget, defendDist, nil, {}, RETARGET_GUARD_LIMBO_CANT_TAGS, oneof_tags)
 end
 
 local function GuardKeepTargetFn(inst, target)
@@ -415,6 +426,8 @@ local function SetGuardPig(inst)
     inst.components.follower:SetLeader(nil)
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local WEREPIG_RETARGET_CANT_TAGS = { "werepig", "alwaysblock", "wereplayer" }
 local function WerepigRetargetFn(inst)
     return FindEntity(
         inst,
@@ -423,8 +436,8 @@ local function WerepigRetargetFn(inst)
             return inst.components.combat:CanTarget(guy)
                 and not (guy.sg ~= nil and guy.sg:HasStateTag("transform"))
         end,
-        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-        { "werepig", "alwaysblock", "wereplayer" }
+        RETARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+        WEREPIG_RETARGET_CANT_TAGS
     )
 end
 
@@ -440,6 +453,7 @@ local function IsNearMoonBase(inst, dist)
     return moonbase == nil or inst:IsNear(moonbase, dist)
 end
 
+local MOONPIG_RETARGET_CANT_TAGS = { "werepig", "alwaysblock", "wereplayer", "moonbeast" }
 local function MoonpigRetargetFn(inst)
     return IsNearMoonBase(inst, TUNING.MOONPIG_AGGRO_DIST)
         and FindEntity(
@@ -449,8 +463,8 @@ local function MoonpigRetargetFn(inst)
                     return inst.components.combat:CanTarget(guy)
                         and not (guy.sg ~= nil and guy.sg:HasStateTag("transform"))
                 end,
-                { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-                { "werepig", "alwaysblock", "wereplayer", "moonbeast" }
+                RETARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+                MOONPIG_RETARGET_CANT_TAGS
             )
         or nil
 end

@@ -531,13 +531,15 @@ local OnSetLightningDelay = _ismastersim and function(src, data)
     _maxlightningdelay = data.max
 end or nil
 
+local LIGHTNINGSTRIKE_CANT_TAGS = { "playerghost", "INLIMBO" }
+local LIGHTNINGSTRIKE_ONEOF_TAGS = { "lightningrod", "lightningtarget" }
 local OnSendLightningStrike = _ismastersim and function(src, pos)
     local target = nil
     local isrod = false
     local mindistsq = nil
     local pos0 = pos
 
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 40, nil, { "playerghost", "INLIMBO" }, { "lightningrod", "lightningtarget" })
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 40, nil, LIGHTNINGSTRIKE_CANT_TAGS, LIGHTNINGSTRIKE_ONEOF_TAGS)
     for k, v in pairs(ents) do
         local visrod = v:HasTag("lightningrod")
         local vpos = v:GetPosition()

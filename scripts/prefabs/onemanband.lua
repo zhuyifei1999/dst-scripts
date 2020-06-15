@@ -21,14 +21,17 @@ local function CalcDapperness(inst, owner)
 end
 
 local banddt = 1
+local FOLLOWER_ONEOF_TAGS = {"pig", "merm"}
+local FOLLOWER_CANT_TAGS = {"werepig", "player"}
+local HAUNTEDFOLLOWER_MUST_TAGS = {"pig"}
+
 local function band_update( inst )
     local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
     if owner and owner.components.leader then
         local x,y,z = owner.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, TUNING.ONEMANBAND_RANGE, nil, {"werepig", "player"}, {"pig", "merm"})
+        local ents = TheSim:FindEntities(x,y,z, TUNING.ONEMANBAND_RANGE, nil, FOLLOWER_CANT_TAGS, FOLLOWER_ONEOF_TAGS)
         for k,v in pairs(ents) do
             if v.components.follower and not v.components.follower.leader  and not owner.components.leader:IsFollower(v) and owner.components.leader.numfollowers < 10 then
-
                 if v:HasTag("merm") then
                     if v:HasTag("mermguard") then
                         if owner:HasTag("merm") and not owner:HasTag("mermdisguise") then
@@ -65,7 +68,7 @@ local function band_update( inst )
         end
     else -- This is for haunted one man band
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, TUNING.ONEMANBAND_RANGE, {"pig"}, {'werepig'})
+        local ents = TheSim:FindEntities(x,y,z, TUNING.ONEMANBAND_RANGE, HAUNTEDFOLLOWER_MUST_TAGS, FOLLOWER_CANT_TAGS)
         for k,v in pairs(ents) do
             if v.components.follower and not v.components.follower.leader  and not inst.components.leader:IsFollower(v) and inst.components.leader.numfollowers < 10 then
                 inst.components.leader:AddFollower(v)

@@ -59,6 +59,7 @@ local sounds =
     spit_hit = "dontstarve/creatures/spat/spit_hit",
 }
 
+local RETARGET_ONEOF_TAGS = {"player", "monster"}
 local function Retarget(inst)
     return FindEntity(
         inst,
@@ -68,7 +69,7 @@ local function Retarget(inst)
         end,
         nil,
         nil,
-        { "player", "monster" }
+        RETARGET_ONEOF_TAGS
     )
 end
 

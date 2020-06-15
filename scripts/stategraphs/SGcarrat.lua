@@ -5,11 +5,13 @@ local actionhandlers =
     ActionHandler(ACTIONS.EAT, "eat"),
     ActionHandler(ACTIONS.GOHOME, "gohome"),
 }
+local BEEFALOTEST_MUST_TAGS = {"beefalo"}
+local BEEFALOTEST_CANT_TAGS = {"baby"}
 
 local function beefalotest(inst)
     if inst.beefalo_carrat then
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 20, {"beefalo"},{"baby"})
+        local ents = TheSim:FindEntities(x,y,z, 20, BEEFALOTEST_MUST_TAGS, BEEFALOTEST_CANT_TAGS)
         if #ents > 0 then
             return true
         end

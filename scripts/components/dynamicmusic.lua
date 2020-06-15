@@ -308,6 +308,8 @@ local function StopDanger(inst, istimeout)
     end
 end
 
+local EPIC_TAGS = { "epic" }
+local NO_EPIC_TAGS = { "noepicmusic" }
 local function StartDanger(player)
     if _dangertask ~= nil then
         _extendtime = GetTime() + 10
@@ -315,7 +317,7 @@ local function StartDanger(player)
         StopBusy()
         local x, y, z = player.Transform:GetWorldPosition()
         _soundemitter:PlaySound(
-            #TheSim:FindEntities(x, y, z, 30, { "epic" }, { "noepicmusic" }) > 0
+            #TheSim:FindEntities(x, y, z, 30, EPIC_TAGS, NO_EPIC_TAGS) > 0
             and ((IsInRuins(player) and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
                 (SEASON_EPICFIGHT_MUSIC[inst.state.season]))

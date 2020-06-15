@@ -135,6 +135,9 @@ local _BreakDebris = _ismastersim and function(debris)
     debris:Remove()
 end or nil
 
+local QUAKEDEBRIS_CANT_TAGS = { "quakedebris" }
+local QUAKEDEBRIS_ONEOF_TAGS = { "INLIMBO" }
+
 local _GroundDetectionUpdate = _ismastersim and function(debris, override_density)
     local x, y, z = debris.Transform:GetWorldPosition()
     if y <= .2 then
@@ -228,7 +231,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris, override_densit
                 debris.prefab == "rabbit" or
                 not (math.random() < .75 or
                     --NOTE: There will always be at least one found within DENSITYRADIUS, ourself!
-                    #TheSim:FindEntities(x, 0, y, density, nil, { "quakedebris" }, { "INLIMBO" }) > 1
+                    #TheSim:FindEntities(x, 0, y, density, nil, QUAKEDEBRIS_CANT_TAGS, QUAKEDEBRIS_ONEOF_TAGS) > 1
                 ) then
                 --keep it
                 debris.persists = true

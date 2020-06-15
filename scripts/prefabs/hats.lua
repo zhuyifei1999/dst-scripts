@@ -1,3 +1,5 @@
+local SPIDER_TAGS = {"spider"}
+
 local function MakeHat(name)
     local fname = "hat_"..name
     local symname = name.."hat"
@@ -635,7 +637,7 @@ local function MakeHat(name)
         if owner and owner.components.leader then
             owner.components.leader:RemoveFollowersByTag("pig")
             local x,y,z = owner.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,y,z, TUNING.SPIDERHAT_RANGE, {"spider"})
+            local ents = TheSim:FindEntities(x,y,z, TUNING.SPIDERHAT_RANGE, SPIDER_TAGS)
             for k,v in pairs(ents) do
                 if v.components.follower and not v.components.follower.leader and not owner.components.leader:IsFollower(v) and owner.components.leader.numfollowers < 10 then
                     owner.components.leader:AddFollower(v)
@@ -1036,6 +1038,56 @@ local function MakeHat(name)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    local function walter_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+    end
+
+    local function walter_onunequip(inst, owner)
+        onunequip(inst, owner)
+		if owner._sanity_damage_protection ~= nil then
+			owner._sanity_damage_protection:RemoveModifier(inst)
+		end
+    end
+
+    local function walter_onequip(inst, owner)
+        if owner.prefab == "walter" then
+            onequip(inst, owner )
+        else
+            onequip(inst, owner, "swap_hat_large")
+        end
+        
+		if owner._sanity_damage_protection ~= nil then
+			owner._sanity_damage_protection:SetModifier(inst, TUNING.WALTERHAT_SANITY_DAMAGE_PROTECTION)
+		end
+    end
+
+    local function walter()
+        local inst = simple(walter_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetSummer()
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
+
+        inst.components.equippable:SetOnEquip(walter_onequip)
+        inst.components.equippable:SetOnUnequip(walter_onunequip)
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.WALTERHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(inst.Remove)
 
         return inst
     end
@@ -1693,6 +1745,8 @@ local function MakeHat(name)
         fn = mole
     elseif name == "wathgrithr" then
         fn = wathgrithr
+    elseif name == "walter" then
+        fn = walter
     elseif name == "ice" then
         fn = ice
     elseif name == "rain" then
@@ -1776,6 +1830,7 @@ return  MakeHat("straw"),
         MakeHat("ruins"),
         MakeHat("mole"),
         MakeHat("wathgrithr"),
+        MakeHat("walter"),
         MakeHat("ice"),
         MakeHat("rain"),
         MakeHat("catcoon"),

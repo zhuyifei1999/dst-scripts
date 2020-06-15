@@ -249,8 +249,9 @@ local function NobodySeesPoint(pt)
     return true
 end
 
+local INLIMBO_TAGS = { "INLIMBO" }
 local function NoOverlap(pt)
-    return NobodySeesPoint(pt) and #TheSim:FindEntities(pt.x, 0, pt.z, .75, nil, { "INLIMBO" }) <= 0
+    return NobodySeesPoint(pt) and #TheSim:FindEntities(pt.x, 0, pt.z, .75, nil, INLIMBO_TAGS) <= 0
 end
 
 local function dogifting(inst)

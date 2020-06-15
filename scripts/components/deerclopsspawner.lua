@@ -62,6 +62,7 @@ local function IsEligible(player)
 			and not area:CurrentlyInTag("nohasslers")
 end
 
+local ATTACK_MUST_TAGS = {"structure"}
 local function PickAttackTarget()
     _targetplayer = nil
     if #_activeplayers == 0 then
@@ -86,7 +87,7 @@ local function PickAttackTarget()
 		player = playerlist[1 + (loopCount % #playerlist)]
 
 		local x,y,z = player.Transform:GetWorldPosition()
-		local ents = TheSim:FindEntities(x,y,z, STRUCTURE_DIST, {"structure"}) 
+		local ents = TheSim:FindEntities(x,y,z, STRUCTURE_DIST, ATTACK_MUST_TAGS) 
 
 		--print("Deerclopsspawner loop", #ents, loopCount, player)
 		numStructures = #ents
@@ -158,6 +159,7 @@ local function GetSpawnPoint(pt)
     end
 end
 
+local STRUCTURE_TAGS = {"structure"}
 local function ReleaseHassler(targetPlayer)
     assert(targetPlayer)
 
@@ -177,7 +179,7 @@ local function ReleaseHassler(targetPlayer)
 
         if hassler ~= nil then
             hassler.Physics:Teleport(spawn_pt:Get())
-            local target = GetClosestInstWithTag("structure", targetPlayer, 40)
+            local target = GetClosestInstWithTag(STRUCTURE_TAGS, targetPlayer, 40)
             if target ~= nil then
                 hassler.components.knownlocations:RememberLocation("targetbase", target:GetPosition())
             end

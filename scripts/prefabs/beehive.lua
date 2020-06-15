@@ -108,6 +108,9 @@ local function SeasonalSpawnChanges(inst, season)
     end
 end
 
+local HAUNTTARGET_MUST_TAGS = { "_combat" }
+local HAUNTTARGET_CANT_TAGS = { "insect", "playerghost", "INLIMBO" }
+local HAUNTTARGET_ONEOF_TAGS = { "character", "animal", "monster" }
 local function OnHaunt(inst)
     if inst.components.childspawner == nil or
         not inst.components.childspawner:CanSpawn() or
@@ -121,9 +124,9 @@ local function OnHaunt(inst)
         function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
-        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-        { "insect", "playerghost", "INLIMBO" },
-        { "character", "animal", "monster" }
+        HAUNTTARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+        HAUNTTARGET_CANT_TAGS,
+        HAUNTTARGET_ONEOF_TAGS
     )
 
     if target ~= nil then

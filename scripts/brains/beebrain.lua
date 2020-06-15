@@ -27,10 +27,13 @@ local function IsHomeOnFire(inst)
         and inst.components.homeseeker.home.components.burnable:IsBurning()
 end
 
+local FINDBEEBEACON_MUST_TAGS = { "beebeacon" }
+local FINDBEEBEACON_CANT_TAGS = { "INLIMBO" }
+
 local function FindBeeBeacon(self)
     local t = GetTime()
     if t >= self.beebeacontime then
-        self.lastbeebeacon = FindEntity(self.inst, 30, nil, { "beebeacon" }, { "INLIMBO" })
+        self.lastbeebeacon = FindEntity(self.inst, 30, nil, FINDBEEBEACON_MUST_TAGS, FINDBEEBEACON_CANT_TAGS)
         self.beebeacontime = t + 2 + math.random()
     elseif self.lastbeebeacon ~= nil
         and not (self.lastbeebeacon:IsValid() and

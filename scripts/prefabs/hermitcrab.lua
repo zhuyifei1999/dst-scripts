@@ -245,9 +245,9 @@ local function OnRefuseItem(inst, giver, item)
     inst.sg:GoToState("refuse")
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "playerghost", "INLIMBO" }
 local function NormalRetargetFn(inst)
-    local exclude_tags = { "playerghost", "INLIMBO" }
-
     return not inst:IsInLimbo()
         and FindEntity(
                 inst,
@@ -256,8 +256,8 @@ local function NormalRetargetFn(inst)
                     return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight())
                         and inst.components.combat:CanTarget(guy)
                 end,
-                { "_combat" }, -- see entityreplica.lua
-                exclude_tags                
+                RETARGET_MUST_TAGS, -- see entityreplica.lua
+                RETARGET_CANT_TAGS                
             )
         or nil
 end
@@ -268,10 +268,11 @@ local function NormalKeepTargetFn(inst, target)
         and (target.LightWatcher == nil or target.LightWatcher:IsInLight())
 end
 
+local FIRE_TAGS = { "campfire", "fire" }
 local function NormalShouldSleep(inst)
     return DefaultSleepTest(inst)
         and (inst.components.follower == nil or inst.components.follower.leader == nil
-            or (FindEntity(inst, 6, nil, { "campfire", "fire" }) ~= nil and
+            or (FindEntity(inst, 6, nil, FIRE_TAGS) ~= nil and
                 (inst.LightWatcher == nil or inst.LightWatcher:IsInLight())))
 end
 
@@ -691,11 +692,19 @@ local friendlevelrewards = {
     friendlevel_10_reward, --10
 }
 
+
+local FIND_LUREPLANT_TAGS = {"lureplant"}
+local FIND_FLOWER_TAGS = {"flower"}
+local FIND_PLANT_TAGS = {"bush","plant"}
+local FIND_STRUCTURE_TAGS = {"structure"}
+local FIND_HEAVY_TAGS = {"heavy"}
+local FIND_HERMITCRAB_LURE_MARKER_TAGS = {"hermitcrab_lure_marker"}
+
 local function lureplantcomplainfn(inst)
     local source = inst.CHEVO_marker
     if source then
         local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"lureplant"})
+        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_LUREPLANT_TAGS)
         if #ents > 0 then
             return true
         end
@@ -705,7 +714,7 @@ local function plantflowerscomplainfn(inst)
     local source = inst.CHEVO_marker
     if source then
         local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"flower"})
+        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_FLOWER_TAGS)
         if #ents < 10 then
             return true
         end           
@@ -716,7 +725,7 @@ local function berriescomplainfn(inst)
     local source = inst.CHEVO_marker
     if source then
         local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"bush","plant"})
+        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_PLANT_TAGS)
         for i=#ents,1,-1 do
             if not ents[i].components.pickable or ents[i].components.pickable:IsBarren() then
                 table.remove(ents,i)
@@ -732,7 +741,7 @@ local function meatcomplainfn(inst)
     local source = inst.CHEVO_marker
     if source then
         local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"structure"})
+        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
         for i=#ents,1,-1 do
             if not ents[i].components.dryer or not ents[i].components.dryer.product then
                 table.remove(ents,i)
@@ -822,7 +831,7 @@ local function initfriendlevellisteners(inst)
         local source = inst.CHEVO_marker
         if source and data.target:GetDistanceSqToInst(source) < ISLAND_RADIUS * ISLAND_RADIUS then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"flower"})
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_FLOWER_TAGS)
 
             -- INVESTIGATE
             local gfl = inst.getgeneralfriendlevel(inst)
@@ -845,7 +854,7 @@ local function initfriendlevellisteners(inst)
         local source = inst.CHEVO_marker
         if source and data.target:GetDistanceSqToInst(source) < ISLAND_RADIUS * ISLAND_RADIUS then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"structure"})
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
             for i=#ents,1,-1 do
                 if not ents[i].components.dryer or not ents[i].components.dryer.product then
                     table.remove(ents,i)
@@ -873,7 +882,7 @@ local function initfriendlevellisteners(inst)
         local source = inst.CHEVO_marker
         if source and data.target:GetDistanceSqToInst(source) < ISLAND_RADIUS * ISLAND_RADIUS then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"bush","plant"})
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_PLANT_TAGS)
             for i=#ents,1,-1 do
                 if not ents[i].components.pickable or ents[i].components.pickable:IsBarren() then
                     table.remove(ents,i)
@@ -901,7 +910,7 @@ local function initfriendlevellisteners(inst)
         local range = ISLAND_RADIUS +10
         if source and data.target:GetDistanceSqToInst(source) < range * range then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range,{"heavy"})            
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range, FIND_HEAVY_TAGS)
             for i=#ents,1,-1 do
                 local testpos = Vector3(ents[i].Transform:GetWorldPosition())
                 if TheWorld.Map:IsVisualGroundAtPoint(testpos.x,testpos.y,testpos.z) or TheWorld.Map:GetPlatformAtPoint(testpos.x,testpos.z) then
@@ -927,7 +936,7 @@ local function initfriendlevellisteners(inst)
         local range = ISLAND_RADIUS +10
         if source and source:GetDistanceSqToPoint(data.pt) < range * range then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range,{"lureplant"}) 
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, range, FIND_LUREPLANT_TAGS) 
             for i=#ents,1,-1 do
                 if ents[i].components.health:IsDead() then
                     table.remove(ents,i)
@@ -1163,10 +1172,10 @@ local function OnSpringChange(inst)
         local source = inst.CHEVO_marker
         if source then
             local pos = Vector3(source.Transform:GetWorldPosition())
-            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"lureplant"})
+            local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_LUREPLANT_TAGS)
             if #ents <= 0 then
                 -- spawnlureplant
-                local markerents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS,{"hermitcrab_lure_marker"})
+                local markerents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_HERMITCRAB_LURE_MARKER_TAGS)
                 if #markerents > 0 then
                     local markerpos = Vector3(markerents[1].Transform:GetWorldPosition())
                     local plant = SpawnPrefab("lureplant")
@@ -1230,6 +1239,8 @@ local function teleport_override_fn(inst)
 
 	return pt 
 end
+
+local HERMITCRAB_MARKER_TAG = {"hermitcrab_marker"}
 
 local function fn()
     local inst = CreateEntity()
@@ -1441,7 +1452,7 @@ local function fn()
     inst:ListenForEvent("dancingplayer",  function(world,data) onplayerdance(inst,data) end, TheWorld)
     inst:ListenForEvent("moonfissurevent",  function(world,data) onmoonvent(inst,data) end, TheWorld)
     inst:DoTaskInTime(0,function()
-        inst.CHEVO_marker = FindEntity(inst, ISLAND_RADIUS, nil, {"hermitcrab_marker"})
+        inst.CHEVO_marker = FindEntity(inst, ISLAND_RADIUS, nil, HERMITCRAB_MARKER_TAG)
         if inst.CHEVO_marker then        
             inst:ListenForEvent("onremove",  function() inst.CHEVO_marker = nil end, inst.CHEVO_marker)
         end

@@ -56,6 +56,7 @@ local function AppendTimer(key, timer)
     _lists[key]:Append(timer)
 end
 
+local REGROWBLOCKER_ONEOF_TAGS = { "structure", "wall" }
 local function TestForRegrow(x, y, z, orig_tile)
     if _map:GetTileAtPoint(x, y, z) ~= orig_tile or
         not _map:CanPlantAtPoint(x, y, z) or
@@ -71,7 +72,7 @@ local function TestForRegrow(x, y, z, orig_tile)
         return false
     end
 
-    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, { "structure", "wall" })
+    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, REGROWBLOCKER_ONEOF_TAGS)
     if #ents > 0 then
         -- No regrowth around players and their bases
         return false

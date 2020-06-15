@@ -195,6 +195,9 @@ local function OnLeaveMood(inst)
     end
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "beefalo", "wall", "INLIMBO" }
+
 local function Retarget(inst)
     local herd = inst.components.herdmember ~= nil and inst.components.herdmember:GetHerd() or nil
     return herd ~= nil
@@ -209,8 +212,8 @@ local function Retarget(inst)
                             or guy.components.rider:GetMount() == nil
                             or not guy.components.rider:GetMount():HasTag("beefalo"))
                 end,
-                { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-                { "beefalo", "wall", "INLIMBO" }
+                RETARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+                RETARGET_CANT_TAGS
             )
         or nil
 end

@@ -111,6 +111,32 @@ end
 
 params.hutch = params.chester
 
+
+--------------------------------------------------------------------------
+--[[ Woby ]]
+--------------------------------------------------------------------------
+
+params.wobysmall =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_chester_shadow_3x4",
+        animbuild = "ui_woby_3x3",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 2, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.wobysmall.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75, 0))
+    end
+end
+
+params.wobybig = params.wobysmall
+
 --------------------------------------------------------------------------
 --[[ cookpot ]]
 --------------------------------------------------------------------------
@@ -670,6 +696,34 @@ function params.oceanfishingrod.itemtestfn(container, item, slot)
 	return (slot == nil and (item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")))
 		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
 		or (slot == 2 and item:HasTag("oceanfishing_lure"))
+end
+
+--------------------------------------------------------------------------
+--[[ slingshot ]]
+--------------------------------------------------------------------------
+
+params.slingshot =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(0,   32 + 4,  0),
+        },
+        slotbg =
+        {
+            { image = "slingshot_ammo_slot.tex" },
+        },
+        animbank = "ui_cookpot_1x2",
+        animbuild = "ui_cookpot_1x2",
+        pos = Vector3(0, 15, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+function params.slingshot.itemtestfn(container, item, slot)
+	return item:HasTag("slingshotammo")
 end
 
 

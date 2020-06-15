@@ -103,7 +103,7 @@ local function GetDataForLevelID(id, nolocation) -- nolocation should generally 
         local profilepresets = Profile:GetWorldCustomizationPresets()
         if profilepresets ~= nil then
             for i, level in pairs(profilepresets) do
-                if level.id:lower() == id then
+                if level.id ~= nil and level.id:lower() == id then
                     assert(level.location ~= nil, "Preset level missing a location! "..level.id)
                     if nolocation == nil or nolocation == false then
                         local ret = GetDataForLocation(level.location)

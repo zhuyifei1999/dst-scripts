@@ -125,6 +125,9 @@ local function fn()
     inst:AddTag("blueflame")
     inst:AddTag("NPC_workable")
 
+	-- for storytellingprop component
+	inst:AddTag("storytellingprop")
+
     MakeObstaclePhysics(inst, .3)
 
     inst.entity:SetPristine()
@@ -155,6 +158,9 @@ local function fn()
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.COLDFIRE_FUEL_START)
+
+    -----------------------------
+    inst:AddComponent("storytellingprop")
 
     -----------------------------
 

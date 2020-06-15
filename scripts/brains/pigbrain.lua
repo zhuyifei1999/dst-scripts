@@ -57,6 +57,7 @@ local function KeepTraderFn(inst, target)
     return inst.components.trader:IsTryingToTradeWithMe(target)
 end
 
+local FINDFOOD_CANT_TAGS = { "outofreach" }
 local function FindFoodAction(inst)
     if inst.sg:HasStateTag("busy") then
         return
@@ -91,7 +92,7 @@ local function FindFoodAction(inst)
                 and inst.components.eater:CanEat(item)
         end,
         nil,
-        { "outofreach" }
+        FINDFOOD_CANT_TAGS
     )
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.EAT)
@@ -109,7 +110,7 @@ local function FindFoodAction(inst)
                 and inst.components.eater:CanEat(item.components.shelf.itemonshelf)
         end,
         nil,
-        { "outofreach" }
+        FINDFOOD_CANT_TAGS
     )
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.TAKEITEM)
@@ -120,8 +121,9 @@ local function IsDeciduousTreeMonster(guy)
     return guy.monster and guy.prefab == "deciduoustree"
 end
 
+local CHOP_MUST_TAGS = { "CHOP_workable" }
 local function FindDeciduousTreeMonster(inst)
-    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, { "CHOP_workable" })
+    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, CHOP_MUST_TAGS)
 end
 
 local function KeepChoppingAction(inst)
@@ -140,7 +142,7 @@ local function StartChoppingCondition(inst)
 end
 
 local function FindTreeToChopAction(inst)
-    local target = FindEntity(inst, SEE_TREE_DIST, nil, { "CHOP_workable" })
+    local target = FindEntity(inst, SEE_TREE_DIST, nil, CHOP_MUST_TAGS)
     if target ~= nil then
         if inst.tree_target ~= nil then
             target = inst.tree_target
@@ -183,8 +185,9 @@ local function GetNoLeaderHomePos(inst)
     return GetHomePos(inst)
 end
 
+local LIGHTSOURCE_TAGS = {"lightsource"}
 local function GetNearestLightPos(inst)
-    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    local light = GetClosestInstWithTag(LIGHTSOURCE_TAGS, inst, SEE_LIGHT_DIST)
     if light then
         return Vector3(light.Transform:GetWorldPosition())
     end
@@ -192,7 +195,7 @@ local function GetNearestLightPos(inst)
 end
 
 local function GetNearestLightRadius(inst)
-    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    local light = GetClosestInstWithTag(LIGHTSOURCE_TAGS, inst, SEE_LIGHT_DIST)
     if light then
         return light.Light:GetCalculatedRadius()
     end

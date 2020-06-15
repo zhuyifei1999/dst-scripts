@@ -7,23 +7,6 @@ require "behaviours/panic"
 require "behaviours/minperiod"
 require "giantutils"
 
---[[
-local function ShouldSummonSeastacks(inst)
-    if not inst.components.timer:TimerExists("seastacksummon_cooldown") then
-        local MAX_STACKS = TUNING.CRABKING_STACKS
-
-        -- look for stacks
-        local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 25,{"seastack"})
-
-        if #ents < MAX_STACKS then
-            inst.wantstosummonseatacks = true
-        end
-    end
-    return nil
-end
-]]
-
 local function ShouldHaveClaws(inst)
     if inst.components.health:GetPercent() < TUNING.CRABKING_CLAW_THRESHOLD and not inst.arms then
         inst.wantstosummonclaws = true
@@ -39,12 +22,14 @@ local function ShouldHeal(inst)
     return nil
 end
 
+local BOAT_TAG = {"boat"}
+local TARGET_ONEOF_TAGS = {"character","animal","monster","smallcreature"}
 local function ShouldDoAttackSpell(inst)
     if not inst.components.timer:TimerExists("spell_cooldown") then
         local x,y,z = inst.Transform:GetWorldPosition()
-        local boatents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        local boatents = TheSim:FindEntities(x,y,z, 25, BOAT_TAG)
         local range = inst.getfreezerange(inst)
-        local ents = TheSim:FindEntities(x,y,z, range, nil,nil, {"character","animal","monster","smallcreature"})
+        local ents = TheSim:FindEntities(x,y,z, range, nil,nil, TARGET_ONEOF_TAGS)
         if #ents > 0 then
             for i=#ents,1,-1 do
                 local ent = ents[i]

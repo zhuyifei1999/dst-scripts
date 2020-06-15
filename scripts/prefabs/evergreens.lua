@@ -409,6 +409,7 @@ local function WakeUpLeif(ent)
     ent.components.sleeper:WakeUp()
 end
 
+local LEIF_TAGS = { "leif" }
 local function chop_tree(inst, chopper, chopsleft, numchops)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound(
@@ -426,7 +427,7 @@ local function chop_tree(inst, chopper, chopsleft, numchops)
         SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
 
         --tell any nearby leifs to wake up
-        local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, { "leif" })
+        local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, LEIF_TAGS)
         for i, v in ipairs(ents) do
             if v.components.sleeper ~= nil and v.components.sleeper:IsAsleep() then
                 v:DoTaskInTime(math.random(), WakeUpLeif)
@@ -502,6 +503,8 @@ local function make_stump(inst)
     end
 end
 
+local LEIFTARGET_MUST_TAGS = { "evergreens", "tree" }
+local LEIFTARGET_CANT_TAGS = { "leif", "stump", "burnt" }
 local function chop_down_tree(inst, chopper)
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
     local pt = inst:GetPosition()
@@ -551,7 +554,7 @@ local function chop_down_tree(inst, chopper)
             end
             if math.random() < chance then
                 for k = 1, (days_survived <= 30 and 1) or math.random(days_survived <= 80 and 2 or 3) do
-                    local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, { "evergreens", "tree" }, { "leif", "stump", "burnt" })
+                    local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, LEIFTARGET_MUST_TAGS, LEIFTARGET_CANT_TAGS)
                     if target ~= nil then
                         target.noleif = true
                         target.leifscale = GetGrowthStages(target)[target.components.growable.stage].leifscale or 1
@@ -713,6 +716,8 @@ local REMOVABLE =
     ["charcoal"] = true,
 }
 
+local DECAYREMOVE_MUST_TAGS = { "_inventoryitem" }
+local DECAYREMOVE_CANT_TAGS = { "INLIMBO", "fire" }
 local function OnTimerDone(inst, data)
     if data.name == "decay" then
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -720,7 +725,7 @@ local function OnTimerDone(inst, data)
             -- before we disappear, clean up any crap left on the ground
             -- too many objects is as bad for server health as too few!
             local leftone = false
-            for i, v in ipairs(TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "INLIMBO", "fire" })) do
+            for i, v in ipairs(TheSim:FindEntities(x, y, z, 6, DECAYREMOVE_MUST_TAGS, DECAYREMOVE_CANT_TAGS)) do
                 if REMOVABLE[v.prefab] then
                     if leftone then
                         v:Remove()

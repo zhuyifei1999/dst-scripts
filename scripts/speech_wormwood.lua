@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Nope",
 	ANNOUNCE_BOAT_LEAK = "Water! Water coming!",
@@ -463,6 +469,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Oops. Not good belly stuff",
@@ -784,6 +805,16 @@ return{
             REVIVER = "You good helper",
             GHOST = "Oh. Need heart?",
             FIRESTARTER = "Ah! Why start fires, %s?",
+        },
+
+        WALTER =
+        {
+            GENERIC = "%s is helpful friend",
+            ATTACKER = "Ah! Why you hurt friend?",
+            MURDERER = "%s do bad thing!",
+            REVIVER = "%s is very good",
+            GHOST = "Oh. %s having fun?",
+            FIRESTARTER = "No! Stop %s!",
         },
 
         MIGRATION_PORTAL =
@@ -3262,6 +3293,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Biiiiig woofer!",
+            "Biiiiig woofer!",
+        },
+        WOBYSMALL = 
+        {
+            "Pat pat!",
+            "Pat pat!",
+        },
+		WALTERHAT = "Look like friend!",
+		SLINGSHOT = "Pew pew!",
+		SLINGSHOTAMMO_ROCK = "Pew pew things",		
+		SLINGSHOTAMMO_MARBLE = "Pew pew things",		
+		SLINGSHOTAMMO_THULECITE = "Pew pew things",	
+        SLINGSHOTAMMO_GOLD = "Pew pew things",
+        SLINGSHOTAMMO_SLOW = "Pew pew things",
+        SLINGSHOTAMMO_FREEZE = "Pew pew things",
+		SLINGSHOTAMMO_POOP = "Poop things",
+        PORTABLETENT = "Soft house",
+        PORTABLETENT_ITEM = "Not done yet",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "For ghost friend",
 		GHOSTLYELIXIR_FASTREGEN = "For ghost friend",
 		GHOSTLYELIXIR_SHIELD = "For ghost friend",

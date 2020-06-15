@@ -62,6 +62,7 @@ STRINGS =
         wormwood = "Wormwood",
         warly = "Warly",
         wurt = "Wurt",
+        walter = "Walter",
         unknown = "The Unknown",
         random = "Random",
     },
@@ -85,6 +86,7 @@ STRINGS =
         wormwood = "\"Hello friend?\"",
         warly = "\"Nothing worthwhile is ever done on an empty stomach!\"",
         wurt = "\"Mermfolk known for hos-per-tality, florp.\"",
+        walter = "\"A Pinetree Pioneer is always prepared!\"",
         random = "Anybody could be under that hat.",
     },
 
@@ -106,7 +108,7 @@ STRINGS =
         wormwood = "The Lonesome",
         warly = "The Culinarian",
         wurt = "The Half-Pint",
-        random = "Random Character",
+        walter = "The Fearless",
     },
 
     -- Use GetCharacterDescription from stringutil -- it handles variants!
@@ -130,6 +132,7 @@ STRINGS =
         wormwood = "*Plants relate to him \n*Saddened when plants are killed \n*Has a Green Thumb \n*Food fills his stomach, but not his heart",
         warly = "*Has his own line of custom portable cookware \n*Can spice things up \n*Has an insatiable appetite \n*Only eats gourmet food",
         wurt = "*At home in the swamp \n*Has big plans for Merm-kind \n*Is a vegetarian",
+        walter = "*Not afraid of anything, except getting hurt \n*Good with a slingshot \n*Has a four-legged friend \n*Allergic to bees \n*Has no interest in fashion",
         random = "Anybody could be under that hat",
     },
 
@@ -153,6 +156,7 @@ STRINGS =
         wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         warly = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        walter = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -176,6 +180,7 @@ STRINGS =
         wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         warly = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        walter = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -197,6 +202,7 @@ STRINGS =
         wormwood = "An amalgam of vines given sentience by lunar magic, Wormwood searches for friends so he can finally belong.",
         warly = "To Warly, cooking is a language through which to express love and gratitude to those he holds dear.",
         wurt = "Wurt is a curious young Merm trying to expand her horizons... as long as those horizons don't extend into Pig territory.",
+        walter = "Walter is an odd but cheerful boy, whose ability to assess danger leaves something to be desired.",
     },
 
 	CHARACTER_BIOS =
@@ -298,6 +304,12 @@ STRINGS =
             { title = "Favorite Food", desc = "Durian" },
 			{ title = "A New Chapter", desc = "Wurt is a little Merm girl who wants to bring her people back to their former glory (if they did indeed ever have a former glory... the evidence is a bit shaky on that front). A bit more open-minded than other Merms, she has taken to following the Survivors around and learning more about them. She is particularly fascinated by books with pretty pictures inside and an amazing thing the humans call \"candy\". Though she enjoys living in the swamp and being around other Merms, being the smallest and the youngest often makes her feel quite isolated, and she is enjoying the novelty of having some friends closer to her own age amongst the Survivors." },
 		},
+        walter =
+		{
+			{ title = "Birthday", desc = "March 31" },
+            { title = "Favorite Food", desc = "Trail Mix" },
+            { title = "Constant Companion", desc = "The only thing that could ever rival Walter's love for the great outdoors was his fascination with monsters and mystery. Nothing captured his interest more than a spooky story heard over the radio or a local legend about an elusive cryptid.\nIt was that pursuit of the unknown that eventually led him to the Constant. While searching for a man who Walter believed would have answers to his questions about a mysterious creature rumored to live in the woods, he instead came upon an abandoned cabin. The owner seemed to have left hastily, leaving all their belongings behind... including an odd radio that miraculously still seemed to be working. With curiosity getting the better of him he investigated the radio further, springing a trap that had lain dormant for years...\nNow finding himself trapped in the Constant, Walter has befriended another lost soul - a scruffy dog named Woby. Though much about her remains a mystery, Walter has vowed to one day return her to her rightful home (after all, returning lost dogs is the Pinetree Pioneer thing to do)." },
+		},
 	},
 
 	CHARACTER_DETAILS =
@@ -329,6 +341,7 @@ STRINGS =
         wormwood = "Grim",
         warly = "Grim",
         wurt = "Slim",
+        walter = "Slim",
         random = "Unknown",
         default = "Unknown",
     },
@@ -695,7 +708,8 @@ STRINGS =
 		CHANGE_TACKLE = 
 		{
             GENERIC = "Attach Tackle",
-            REMOVE = "Remove Tackle",
+            AMMO = "Set Ammo",
+            REMOVE = "Remove",
 		},
 		COMPARE_WEIGHABLE = "Give",
 		WEIGH_ITEM = "Weigh",
@@ -710,6 +724,8 @@ STRINGS =
         },
         
         OCEAN_TOSS = "Toss",
+
+		TELLSTORY = "Tell Story",
 
 		USE_WINCH = "Drop",
 
@@ -1084,6 +1100,7 @@ STRINGS =
         WORMWOOD = "Wormwood",
         WARLY = "Warly",
         WURT = "Wurt",
+        walter = "Walter",
 
         PIGKING = "Pig King",
         STRAWHAT = "Straw Hat",
@@ -2527,6 +2544,21 @@ STRINGS =
         MERMKING = "King of the Merms",
         MERM_PRINCE = "Royal-In-Progress",
 
+		-- Walter
+        WOBYBIG = "Woby",
+        WOBYSMALL = "Woby",
+        WALTERHAT = "Pinetree Pioneer Hat",
+		SLINGSHOT = "Trusty Slingshot",
+		SLINGSHOTAMMO_ROCK = "Pebbles",		
+		SLINGSHOTAMMO_MARBLE = "Marbles",		
+		SLINGSHOTAMMO_THULECITE = "Cursed Rounds",	
+        SLINGSHOTAMMO_GOLD = "Gold Rounds",
+        SLINGSHOTAMMO_SLOW = "Slow-Down Rounds",
+        SLINGSHOTAMMO_FREEZE = "Freeze Rounds",
+		SLINGSHOTAMMO_POOP = "Poop Pellets",
+        PORTABLETENT_ITEM = "Tent Roll",
+        PORTABLETENT = "Camper's Tent",
+
 		COOKIECUTTER = "Cookie Cutter",
 		COOKIECUTTERSHELL = "Cookie Cutter Shell",
 		COOKIECUTTERHAT = "Cookie Cutter Cap",
@@ -3147,6 +3179,19 @@ STRINGS =
 		GHOSTLYELIXIR_SPEED = "Give your soul a little boo-st.",
 		GHOSTLYELIXIR_RETALIATION = "Give foes a taste of their own medicine.",
 		SISTURN = "A place to rest your weary soul.",
+
+		-- Walter
+        WALTERHAT = "Form and function over fashion.",
+		SLINGSHOT = "Never go adventuring without it!",
+		SLINGSHOTAMMO_ROCK = "Simple and ineffective.",
+		SLINGSHOTAMMO_MARBLE = "Don't lose them, now!",
+		SLINGSHOTAMMO_THULECITE = "What could go wrong?",
+        SLINGSHOTAMMO_GOLD = "Their fanciness makes them work better.",
+        SLINGSHOTAMMO_SLOW = "What \"laws of physics\"?",
+        SLINGSHOTAMMO_FREEZE = "Freeze foes in their tracks.",
+		SLINGSHOTAMMO_POOP = "Disgusting and distracting.",
+        PORTABLETENT = "Portable protection from the elements.",
+        PORTABLETENT_ITEM = "Portable protection from the elements.",
 
         TURF_MARSH = "Home is where the marsh is.",
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
@@ -4344,6 +4389,7 @@ STRINGS =
 		FISHING = "Fishing",
 		WINTERSFEASTCOOKING = "Feast",
         HERMITCRABSHOP = "Bottle Exchange",
+		SLINGSHOTAMMO = "Slingshot Ammo",
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -9485,6 +9531,7 @@ STRINGS.CHARACTERS =
     WORMWOOD = require "speech_wormwood",
     WARLY = require "speech_warly",
     WURT = require "speech_wurt",
+    WALTER = require "speech_walter",
 }
 
 STRINGS.LUCY =
@@ -9995,9 +10042,76 @@ STRINGS.SHARD =
     },
 }
 
+STRINGS.STORYTELLER =
+{
+	WALTER = 
+	{
+		CAMPFIRE =
+		{
+			BOG_MONSTER = {
+				lines = {	{duration = 2.5, line = "Ever heard of the bog monster?"},
+							{duration = 3.5, line = "Nobody knows what it really looks like..."},
+                            {duration = 3.5, line = "nobody who's seen it up close ever made it back."},
+							{duration = 2.5, line = "People say it can disguise itself,"},
+                            {duration = 2.5, line = "to look like a mossy rock,"},
+							{duration = 2.0, line = "or an old stump,"},
+							{duration = 3.0, line = "or even a patch of mud under your feet."},
+							{duration = 3.0, line = "The only way to really tell it's there"},
+							{duration = 3.5, line = "is if you look out of the corner of your eye..."},
+							{duration = 3.5, line = "it'll sometimes let its disguise slip,"},
+							{duration = 3.0, line = "and you'll see it start to smile..."},
+                            {duration = 3.0, line = "with it's six mouths full of RAZOR SHARP TEETH!"},
+				},	
+			},
+			CLOCKS = {
+				lines = {	{duration = 2.5, line = "Alright, so there's this guy..."},
+							{duration = 2.5, line = "and he has a hook for a hand!"},
+							{duration = 1.0, line = "But wait,"},
+                            {duration = 1.0, line = "shoot..."},
+                            {duration = 2.5, line = "you're not supposed to know that yet..."},
+							{duration = 2.0, line = "let me start over."},
+							{duration = 2.5, line = "So there's this guy,"},
+							{duration = 3.5, line = "and he lives way out deep in the woods,"},
+                            {duration = 2.0, line = "making clocks."},
+							{duration = 2.5, line = "They say that he has a clock"},
+                            {duration = 2.5, line = "for every one of his victims..."},
+							{duration = 3.5, line = "stopped at the exact time they take their last breath."},
+							{duration = 3.0, line = "You'll know he's coming when you hear the"},
+							{duration = 2.0, line = "click... click... click..."},
+							{duration = 3.0, line = "of his hook hand tapping on his watch..."},
+							{duration = 2.5, line = "to let you know your time is up!"},
+							{duration = 3.5, line = "...But don't worry, the hook man can't get you out here!"},
+							{duration = 3.0, line = "The only things in this forest are Beargers and Moosegoose"},
+							{duration = 2.5, line = "and Hounds and Dragonflies and Treeguards..."},
+				},	
+			},
+		},
+	},
+}
+
+STRINGS.SONGS = 
+{
+	WALTER_GLOMMER_GUTS = {
+		lines = {	{duration = 4.3, message = "Great pink gobs of greasy grimy Glommer guts,"},
+					{duration = 1.9, message = "Icky sticky spider legs,"},
+					{duration = 2.1, message = "Scrambled rotten Tallbird eggs,"},
+					{duration = 4.0, message = "French fried eyeplant floating in a pool of mud,"},
+					{duration = 3.3, message = "And me without my spoon."},
+		},
+	},
+}
+
+
 --Don't include this in pot generation as this file is already translated.
 if POT_GENERATION == false then
     require "strings_pretranslated"
+
+	for i, song in pairs(STRINGS.SONGS) do
+		for i, v in ipairs(song.lines) do
+			v.duration = v.duration ~= nil and tonumber(v.duration) or 2.5
+			v.noanim = true
+		end
+	end
 end
 
 ----------------------------------------------------------------------------

@@ -11,6 +11,7 @@ function Explosive:SetOnExplodeFn(fn)
     self.onexplodefn = fn
 end
 
+local BURNT_CANT_TAGS = { "INLIMBO" }
 function Explosive:OnBurnt()
 	if not self.skip_camera_flash then
 		for i, v in ipairs(AllPlayers) do
@@ -32,7 +33,7 @@ function Explosive:OnBurnt()
     local totaldamage = self.explosivedamage * stacksize
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.explosiverange, nil, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, self.explosiverange, nil, BURNT_CANT_TAGS)
 
     for i, v in ipairs(ents) do
         if v ~= self.inst and v:IsValid() and not v:IsInLimbo() then

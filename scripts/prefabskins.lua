@@ -638,6 +638,19 @@ PREFAB_SKINS = {
 	{
 		"walrushat_blue",
 	},
+	walter = 
+	{
+		"walter_detective",
+		"walter_formal",
+		"walter_none",
+		"walter_survivor",
+	},
+	walterhat = 
+	{
+		"walterhat_detective",
+		"walterhat_formal",
+		"walterhat_survivor",
+	},
 	wardrobe = 
 	{
 		"wardrobe_armoire",

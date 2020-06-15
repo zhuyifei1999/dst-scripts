@@ -295,6 +295,7 @@ local assets =
     Asset("ANIM", "anim/weremoose_basic.zip"),
     Asset("ANIM", "anim/weregoose_basic.zip"),
     Asset("ANIM", "anim/player_idles.zip"),
+    Asset("ANIM", "anim/player_idles_walter.zip"),
 
     Asset("DYNAMIC_ANIM", "anim/dynamic/body_default1.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/hand_default1.zip"),

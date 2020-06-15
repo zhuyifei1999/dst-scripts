@@ -28,6 +28,11 @@ self.inst = inst
 --Private
 local retrofit_warts = false
 
+local STRUCTURE_TAGS = {"structure"} 
+local ALTAR_TAGS = {"altar"}
+local LOCOMOTOR_TAGS = {"locomotor"}
+
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
@@ -73,7 +78,7 @@ local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_s
 				local ents = TheSim:FindEntities(x, 0, z, min_space)
 				if #ents == 0 then
 					if dist_from_structures ~= nil then
-						ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
+						ents = TheSim:FindEntities(x, 0, z, dist_from_structures, STRUCTURE_TAGS )
 					end
 					
 					if #ents == 0 then
@@ -380,7 +385,7 @@ local function HeartOfTheRuinsRuinsRetrofittingAltar(inst)
 			local node = TheWorld.topology.nodes[k]
 			
 			if TheWorld.Map:IsAboveGroundAtPoint(node.x, 0, node.y) then
-				local altars = TheSim:FindEntities(node.x, 0, node.y, 32, {"altar"})
+				local altars = TheSim:FindEntities(node.x, 0, node.y, 32, ALTAR_TAGS)
 				if #altars == 0 then
 					local respawner = SpawnPrefab("ancient_altar_broken_ruinsrespawner_inst")
 					respawner.Transform:SetPosition(node.x, 0, node.y)
@@ -601,7 +606,7 @@ function self:OnPostInit()
 			local x, y, z = sacredaltar.Transform:GetWorldPosition()
 			
 			local function TrySpawnAt(x, z)
-				if #(TheSim:FindEntities(x, 0, z, .5, nil, {"locomotor"})) == 0 then
+				if #(TheSim:FindEntities(x, 0, z, .5, nil, LOCOMOTOR_TAGS)) == 0 then
 					SpawnPrefab("sacred_chest").Transform:SetPosition(x, 0, z)
 					return true
 				end

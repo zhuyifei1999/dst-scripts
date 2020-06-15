@@ -105,6 +105,9 @@ local function onsafetospawn(inst)
     end
 end
 
+local TARGET_MUST_TAGS = { "_combat" }
+local TARGET_CANT_TAGS = { "playerghost", "INLIMBO" }
+local TARGET_ONEOF_TAGS = { "character", "monster" }
 local function OnHaunt(inst)
     if inst.components.childspawner == nil or
         not inst.components.childspawner:CanSpawn() or
@@ -116,9 +119,9 @@ local function OnHaunt(inst)
         FindEntity(inst,
             25,
             nil,
-            { "_combat" },
-            { "playerghost", "INLIMBO" },
-            { "character", "monster" }
+            TARGET_MUST_TAGS,
+            TARGET_CANT_TAGS,
+            TARGET_ONEOF_TAGS
         )
 
     if target ~= nil then

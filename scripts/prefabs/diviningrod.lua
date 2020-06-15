@@ -56,7 +56,7 @@ local function CheckTargetPiece(inst)
         local intensity = 0
         local closeness = nil
         local fxname = nil
-        local target = FindClosestPart(inst) --FindEntity(inst, TUNING.DIVINING_MAXDIST, function(guy) return (guy:HasTag("teleportato") or guy:HasTag("teleportato_part") ) and not guy:IsInLimbo() end)
+        local target = FindClosestPart(inst)
         local nextpingtime = TUNING.DIVINING_DEFAULTPING
         if target ~= nil then
             local distsq = inst.components.inventoryitem.owner:GetDistanceSqToInst(target)

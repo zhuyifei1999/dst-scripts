@@ -77,14 +77,17 @@ local function OnPickedUp(inst)
     inst.SoundEmitter:KillSound("buzz")
 end
 
+local RETARGET_MUST_TAGS = { "_combat", "_health" }
+local RETARGET_CANT_TAGS = { "insect", "INLIMBO" }
+local RETARGET_ONEOF_TAGS = { "character", "animal", "monster" }
 local function KillerRetarget(inst)
     return FindEntity(inst, SpringCombatMod(20),
         function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
-        { "_combat", "_health" },
-        { "insect", "INLIMBO" },
-        { "character", "animal", "monster" })
+        RETARGET_MUST_TAGS,
+        RETARGET_CANT_TAGS,
+        RETARGET_ONEOF_TAGS)
 end
 
 local function SwapBelly(inst, size)

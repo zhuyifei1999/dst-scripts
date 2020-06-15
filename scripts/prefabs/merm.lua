@@ -104,13 +104,15 @@ local function KeepTargetFn(inst, target)
     return inst.components.combat:CanTarget(target)
 end
 
-local function OnAttackedByDecidRoot(inst, attacker)
+local DECIDROOTTARGET_MUST_TAGS = { "_combat", "_health", "merm" }
+local DECIDROOTTARGET_CANT_TAGS = { "INLIMBO" }
 
+local function OnAttackedByDecidRoot(inst, attacker)
     local share_target_dist = inst:HasTag("mermguard") and TUNING.MERM_GUARD_SHARE_TARGET_DIST or TUNING.MERM_SHARE_TARGET_DIST
     local max_target_shares = inst:HasTag("mermguard") and TUNING.MERM_GUARD_MAX_TARGET_SHARES or TUNING.MERM_MAX_TARGET_SHARES
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(share_target_dist) * .5, { "_combat", "_health", "merm" }, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(share_target_dist) * .5, DECIDROOTTARGET_MUST_TAGS, DECIDROOTTARGET_CANT_TAGS)
     local num_helpers = 0
     
     for i, v in ipairs(ents) do

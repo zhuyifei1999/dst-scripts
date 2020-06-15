@@ -28,6 +28,9 @@ local function IsBetterHeatSource(heat_source, inst, cur_heat)
 	return heat > cur_heat
 end
 
+local HEATSOURCE_MUST_TAGS = {"HASHEATER"}
+local HEATSOURCE_CANT_TAGS = {"monster"}
+
 local function FindNewHome(inst)
 	if inst.components.timer:TimerExists("panicing") 
 		or inst.components.sleeper:IsAsleep()
@@ -40,7 +43,7 @@ local function FindNewHome(inst)
 
 	local cur_heat = new_home ~= nil and new_home.components.heater:GetHeat(inst) or 0
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local heat_sources = TheSim:FindEntities(x, y, z, inst:IsAsleep() and TUNING.FRUITDRAGON.ENTITY_SLEEP_FIND_HOME_RANGE or TUNING.FRUITDRAGON.FIND_HOME_RANGE, {"HASHEATER"}, {"monster"}) 
+	local heat_sources = TheSim:FindEntities(x, y, z, inst:IsAsleep() and TUNING.FRUITDRAGON.ENTITY_SLEEP_FIND_HOME_RANGE or TUNING.FRUITDRAGON.FIND_HOME_RANGE, HEATSOURCE_MUST_TAGS, HEATSOURCE_CANT_TAGS)
 	for i, v in ipairs(heat_sources) do
 		if v ~= inst and v ~= new_home and IsBetterHeatSource(v, inst, cur_heat) then
 			new_home = v
@@ -80,6 +83,7 @@ local function ShouldTarget(target)
 			and target.components.combat.target == nil
 end
 
+local FRUITDRAGON_TAGS = {"fruitdragon"}
 local function RetargetFn(inst)
 	if (inst.components.sleeper == nil or not inst.components.sleeper:IsAsleep())
 		and not inst.components.timer:TimerExists("panicing") then
@@ -87,8 +91,8 @@ local function RetargetFn(inst)
 		if inst.components.combat.target ~= nil and KeepTarget(inst, inst.components.combat.target) then
 			return inst.components.combat.target
 		elseif inst.components.entitytracker:GetEntity("home") ~= nil then
-			return FindEntity(inst, TUNING.FRUITDRAGON.CHALLENGE_DIST, function(guy) return ShouldTarget(guy) end, {"fruitdragon"})
-					or FindEntity(inst.components.entitytracker:GetEntity("home"), TUNING.FRUITDRAGON.CHALLENGE_DIST, function(guy) return guy ~= inst and ShouldTarget(guy) end, {"fruitdragon"})
+			return FindEntity(inst, TUNING.FRUITDRAGON.CHALLENGE_DIST, function(guy) return ShouldTarget(guy) end, FRUITDRAGON_TAGS)
+					or FindEntity(inst.components.entitytracker:GetEntity("home"), TUNING.FRUITDRAGON.CHALLENGE_DIST, function(guy) return guy ~= inst and ShouldTarget(guy) end, FRUITDRAGON_TAGS)
 		end
 	end
     return nil

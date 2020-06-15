@@ -35,9 +35,10 @@ local SpiderBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+local GETTRADER_MUST_TAGS = { "player" }
 local function GetTraderFn(inst)
     return inst.components.trader ~= nil
-        and FindEntity(inst, TRADE_DIST, function(target) return inst.components.trader:IsTryingToTradeWithMe(target) end, { "player" })
+        and FindEntity(inst, TRADE_DIST, function(target) return inst.components.trader:IsTryingToTradeWithMe(target) end, GETTRADER_MUST_TAGS)
         or nil
 end
 
@@ -46,6 +47,7 @@ local function KeepTraderFn(inst, target)
         and inst.components.trader:IsTryingToTradeWithMe(target)
 end
 
+local EATFOOD_CANT_TAGS = { "outofreach" }
 local function EatFoodAction(inst)
     local target = FindEntity(inst,
         SEE_FOOD_DIST,
@@ -55,7 +57,7 @@ local function EatFoodAction(inst)
                 and item:GetTimeAlive() > TUNING.SPIDER_EAT_DELAY
         end,
         nil,
-        { "outofreach" }
+        EATFOOD_CANT_TAGS
     )
     return target ~= nil and BufferedAction(inst, target, ACTIONS.EAT) or nil
 end

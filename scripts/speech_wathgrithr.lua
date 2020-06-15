@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
 	ANNOUNCE_BOAT_LEAK = "Our vessel hath sprung a leak!",
@@ -460,6 +466,21 @@ return{
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
 
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "T'were not meant to be a meal.",
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Alas! If I'd only grabbed it sooner.",
@@ -498,7 +519,7 @@ return{
 	},
 
 	ANNOUNCE_WEIGHT = "Weight: {weight}",
-	ANNOUNCE_WEIGHT_HEAVY  = "By the gods, I've netted a monster!",
+	ANNOUNCE_WEIGHT_HEAVY  = "Weight: {weight}\nBy the gods, I've netted a monster!",
 
 	-- these are just for testing for now, no need to write real strings yet
 	ANNOUNCE_WINCH_CLAW_MISS = "My aim wasn't true...",
@@ -780,6 +801,16 @@ return{
             REVIVER = "It seems you have a kind heart 'neath that scaly hide.",
             GHOST = "You've a warrior's spirit, but you're not ready for Valhalla yet!",
             FIRESTARTER = "%s toys with Hel's flames!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Good health to you, %s, and to your loyal beast!",
+            ATTACKER = "Consider your actions wisely, %s.",
+            MURDERER = "Have at thee, you and your wicked beast!",
+            REVIVER = "%s carries with him a true sense of honor.",
+            GHOST = "By my honor, I will bring you back to this world!",
+            FIRESTARTER = "%s, why do you break your cherished code?",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Hail, beastie!",
+            "Hail, beastie!",
+        },
+        WOBYSMALL = 
+        {
+            "Wouldst thou like a skritch behind thine ears?",
+            "Wouldst thou like a skritch behind thine ears?",
+        },
+		WALTERHAT = "The helm of the \"Pinetree Pioneer\" clan.",
+		SLINGSHOT = "I prefer weapons at close range.",
+		SLINGSHOTAMMO_ROCK = "What fun is a battle without hand to hand combat?",		
+		SLINGSHOTAMMO_MARBLE = "What fun is a battle without hand to hand combat?",		
+		SLINGSHOTAMMO_THULECITE = "What fun is a battle without hand to hand combat?",	
+        SLINGSHOTAMMO_GOLD = "What fun is a battle without hand to hand combat?",
+        SLINGSHOTAMMO_SLOW = "What fun is a battle without hand to hand combat?",
+        SLINGSHOTAMMO_FREEZE = "What fun is a battle without hand to hand combat?",
+		SLINGSHOTAMMO_POOP = "I could do without the stench...",
+        PORTABLETENT = "Tis a finely made shelter indeed!",
+        PORTABLETENT_ITEM = "My talent lies in battle, not in building.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Tis a powerful elixir!",
 		GHOSTLYELIXIR_FASTREGEN = "Tis a powerful elixir!",
 		GHOSTLYELIXIR_SHIELD = "Tis a powerful elixir!",

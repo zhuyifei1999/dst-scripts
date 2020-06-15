@@ -39,6 +39,7 @@ local _areadata = {}
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local TEST_ONEOF_TAGS = { "structure", "wall" }
 local function TestForRegrow(x, y, z, prefab, searchtags)
 
     local ents = TheSim:FindEntities(x,y,z, EXCLUDE_RADIUS)
@@ -47,7 +48,7 @@ local function TestForRegrow(x, y, z, prefab, searchtags)
         return false
     end
 
-    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, { "structure", "wall" })
+    local ents = TheSim:FindEntities(x,y,z, BASE_RADIUS, nil, nil, TEST_ONEOF_TAGS)
     if #ents > 0 then
         -- Don't spawn inside bases
         return false

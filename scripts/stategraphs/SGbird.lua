@@ -305,7 +305,7 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState(inst.components.burnable ~= nil and inst.components.burnable:IsBurning() and "distress_pre" or "idle")
+                inst.sg:GoToState(inst.components.burnable ~= nil and inst.components.burnable:IsBurning() and "distress_pre" or "flyaway")
             end),
         },
     },

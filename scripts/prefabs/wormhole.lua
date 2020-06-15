@@ -32,13 +32,13 @@ local function OnActivate(inst, doer)
 
         local other = inst.components.teleporter.targetTeleporter
         if other ~= nil then
-            DeleteCloseEntsWithTag("WORM_DANGER", other, 15)
+            DeleteCloseEntsWithTag({"WORM_DANGER"}, other, 15)
         end
 
         if doer.components.talker ~= nil then
             doer.components.talker:ShutUp()
         end
-        if doer.components.sanity ~= nil then
+        if doer.components.sanity ~= nil and not doer:HasTag("nowormholesanityloss") then
             doer.components.sanity:DoDelta(-TUNING.SANITY_MED)
         end
 

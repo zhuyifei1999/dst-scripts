@@ -55,11 +55,12 @@ local function StopTracking(ent)
 	_gestalts[ent] = nil
 end
 
+local SPAWN_ONEOF_TAGS = {"brightmare_gestalt", "player", "playerghost"}
 local function FindGestaltSpawnPtForPlayer(player, wantstomorph)
 	local x, y, z = player.Transform:GetWorldPosition()
 	local function IsValidGestaltSpawnPt(offset)
 		local x1, z1 = x + offset.x, z + offset.z
-		return #TheSim:FindEntities(x1, 0, z1, 6, nil, nil, {"brightmare_gestalt", "player", "playerghost"}) == 0 
+		return #TheSim:FindEntities(x1, 0, z1, 6, nil, nil, SPAWN_ONEOF_TAGS) == 0 
 	end
     local offset = FindValidPositionByFan(math.random() * 2 * PI, 
 											(wantstomorph and TUNING.GESTALT.SPAWN_MORPH_DIST or TUNING.GESTALT.SPAWN_DIST) + math.random() * 2 * TUNING.GESTALT.SPAWN_DIST_VAR - TUNING.GESTALT.SPAWN_DIST_VAR,
@@ -84,6 +85,7 @@ local function TrySpawnGestaltForPlayer(player, level, data)
 	end
 end
 
+local BRIGHTMARE_TAGS = {"brightmare"}
 local function UpdatePopulation()
 	local total_levels = 0
 	for player, _ in pairs(_players) do
@@ -93,7 +95,7 @@ local function UpdatePopulation()
 
 			if level > 0 then
 				local x, y, z = player.Transform:GetWorldPosition()
-				local gestalts = TheSim:FindEntities(x, y, z, TUNING.GESTALT.POPULATION_DIST, {"brightmare"})
+				local gestalts = TheSim:FindEntities(x, y, z, TUNING.GESTALT.POPULATION_DIST, BRIGHTMARE_TAGS)
 				local maxpop = data.MAX_SPAWNS
 				local inc_chance = 0
 				if level == 1 then
@@ -153,7 +155,7 @@ function self:FindBestPlayer(gestalt)
             local distsq = gestalt:GetDistanceSqToPoint(x, y, z)
             if distsq < closest_distsq then
 				local level, data = GetTuningLevelForPlayer(player)
-				if level > 0 and #TheSim:FindEntities(x, y, z, TUNING.GESTALT.POPULATION_DIST, {"brightmare"}) <= (data.MAX_SPAWNS + 1) then
+				if level > 0 and #TheSim:FindEntities(x, y, z, TUNING.GESTALT.POPULATION_DIST, BRIGHTMARE_TAGS) <= (data.MAX_SPAWNS + 1) then
 	                closest_distsq = distsq
 		            closest_player = player
 					closest_level = level

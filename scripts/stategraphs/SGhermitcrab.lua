@@ -1,5 +1,7 @@
 require("stategraphs/commonstates")
 
+local PLAYER_TAGS = {"player"}
+
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
         if v.foleysound ~= nil then
@@ -845,7 +847,7 @@ local states =
             local dancing = nil
             if inst.getgeneralfriendlevel(inst) == "HIGH" then
                 local x,y,z = inst.Transform:GetWorldPosition()
-                local players = TheSim:FindEntities(x,y,z, TUNING.HERMITCRAB.DANCE_RANGE, "player")
+                local players = TheSim:FindEntities(x,y,z, TUNING.HERMITCRAB.DANCE_RANGE, PLAYER_TAGS)
                
                 for i,player in pairs(players)do
                     print(player.prefab)

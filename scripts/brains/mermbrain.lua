@@ -61,13 +61,14 @@ end
 
 -----------------------------------------------------------------------------------------------
 -- Chop
+local CHOP_TAGS = { "CHOP_workable" }
 
 local function IsDeciduousTreeMonster(guy)
     return guy.monster and guy.prefab == "deciduoustree"
 end
 
 local function FindDeciduousTreeMonster(inst)
-    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, { "CHOP_workable" })
+    return FindEntity(inst, SEE_TREE_DIST / 3, IsDeciduousTreeMonster, CHOP_TAGS)
 end
 
 local function KeepChoppingAction(inst)
@@ -90,7 +91,7 @@ local function StartChoppingCondition(inst)
 end
 
 local function FindTreeToChopAction(inst)
-    local target = FindEntity(inst, SEE_TREE_DIST, nil, { "CHOP_workable" })
+    local target = FindEntity(inst, SEE_TREE_DIST, nil, CHOP_TAGS)
     if target ~= nil then
         if inst.tree_target ~= nil then
             target = inst.tree_target
@@ -122,8 +123,9 @@ local function StartMiningCondition(inst)
     return mine_condition
 end
 
+local MINE_TAGS = { "MINE_workable" }
 local function FindRockToMineAction(inst)
-    local target = FindEntity(inst, SEE_ROCK_DIST, nil, { "MINE_workable" })
+    local target = FindEntity(inst, SEE_ROCK_DIST, nil, MINE_TAGS)
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.MINE)
     end
@@ -150,8 +152,9 @@ local function StartHammeringCondition(inst)
     return hammer_condition
 end
 
+local HAMMER_TAGS = { "HAMMER_workable" }
 local function FindHammerTargetAction(inst)
-    local target = FindEntity(inst, SEE_HAMMER_DIST, nil, { "HAMMER_workable" })
+    local target = FindEntity(inst, SEE_HAMMER_DIST, nil, HAMMER_TAGS)
     if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.HAMMER)
     end
@@ -159,8 +162,10 @@ end
 
 ------------------------------------------------------------------------------
 
+local EATFOOD_MUST_TAGS = { "edible_VEGGIE" }
+local EATFOOD_CANOT_TAGS = { "INLIMBO" }
+local SCARY_TAGS = { "scarytoprey" }
 local function EatFoodAction(inst)
-
     if inst.sg:HasStateTag("waking") then
         return
     end
@@ -170,9 +175,9 @@ local function EatFoodAction(inst)
         target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
     end
     if target == nil then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) end, { "edible_VEGGIE" }, { "INLIMBO" })
+        target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) end, EATFOOD_MUST_TAGS, EATFOOD_CANOT_TAGS)
         --check for scary things near the food
-        if target ~= nil and (GetClosestInstWithTag("scarytoprey", target, SEE_PLAYER_DIST) ~= nil or not target:IsOnValidGround()) then  -- NOTE this ValidGround check should be removed if merms start swimming
+        if target ~= nil and (GetClosestInstWithTag(SCARY_TAGS, target, SEE_PLAYER_DIST) ~= nil or not target:IsOnValidGround()) then  -- NOTE this ValidGround check should be removed if merms start swimming
             target = nil
         end
     end
@@ -199,12 +204,12 @@ local function IsThroneValid(inst)
     return false
 end
 
+local GOTOTHRONE_TAGS = { "mermthrone" }
 local function ShouldGoToThrone(inst)
-    
     if TheWorld.components.mermkingmanager then
         local throne = TheWorld.components.mermkingmanager:GetThrone(inst)
         if throne == nil then
-            throne = FindEntity(inst, SEE_THRONE_DISTANCE, nil, { "mermthrone" })
+            throne = FindEntity(inst, SEE_THRONE_DISTANCE, nil, GOTOTHRONE_TAGS)
         end
 
         return throne and TheWorld.components.mermkingmanager:ShouldGoToThrone(inst, throne)

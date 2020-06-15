@@ -73,9 +73,10 @@ local function testfortransformonload(inst)
     return TheWorld.state.isfullmoon
 end
 
+local FINDLIGHT_MUST_TAGS = { "daylight", "lightsource" }
 local function DieInDarkness(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, { "daylight", "lightsource" })
+    local ents = TheSim:FindEntities(x,0,z, DAYLIGHT_SEARCH_RANGE, FINDLIGHT_MUST_TAGS)
     for i,v in ipairs(ents) do
         local lightrad = v.Light:GetCalculatedRadius() * .7
         if v:GetDistanceSqToPoint(x,y,z) < lightrad * lightrad then

@@ -122,6 +122,11 @@ function DeerHerding:IsActiveInHerd(deer)
 	return self.herdspawner ~= nil and self.herdspawner:GetDeer()[deer] and true or false
 end
 
+local STRUCTURES_CANT_TAGS = { "INLIMBO", "fire", "burnt" }
+local STRUCTURES_ONEOF_TAGS = { "wall", "structure" }
+local SALTLICK_MUST_TAGS = { "saltlick" }
+local SALTLICK_CANT_TAGS = { "INLIMBO", "fire", "burnt" }
+
 function DeerHerding:UpdateDeerHerdingStatus()
 	local herd_center = self:CalcHerdCenterPoint()
 	
@@ -133,8 +138,8 @@ function DeerHerding:UpdateDeerHerdingStatus()
 		else
 		    local x, y, z = deer.Transform:GetWorldPosition()
 			if (herd_center == nil or deer:GetDistanceSqToPoint(herd_center) > (INACTIVE_HERD_RADIUS * INACTIVE_HERD_RADIUS))
-				or #(TheSim:FindEntities(x, y, z, STRUCTURES_FOR_URBAN_RADIUS, nil, { "INLIMBO", "fire", "burnt" }, { "wall", "structure" })) > NUM_STRUCTURES_FOR_URBAN 
-				or #(TheSim:FindEntities(x, y, z, TUNING.SALTLICK_CHECK_DIST, { "saltlick" }, { "INLIMBO", "fire", "burnt" })) > 0
+				or #(TheSim:FindEntities(x, y, z, STRUCTURES_FOR_URBAN_RADIUS, nil, STRUCTURES_CANT_TAGS, STRUCTURES_ONEOF_TAGS)) > NUM_STRUCTURES_FOR_URBAN 
+				or #(TheSim:FindEntities(x, y, z, TUNING.SALTLICK_CHECK_DIST, SALTLICK_MUST_TAGS, SALTLICK_CANT_TAGS)) > 0
 				then
 				
 				isactive = false

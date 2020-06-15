@@ -25,11 +25,14 @@ local _maxbutterflies = 4
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local FLOWER_TAGS = { "flower" }
+local BUTTERFLY_TAGS = { "butterfly" }
+
 local function GetSpawnPoint(player)
     local rad = 25
     local mindistance = 36
     local x, y, z = player.Transform:GetWorldPosition()
-    local flowers = TheSim:FindEntities(x, y, z, rad, { "flower" })
+    local flowers = TheSim:FindEntities(x, y, z, rad, FLOWER_TAGS)
 
     for i, v in ipairs(flowers) do
         while v ~= nil and player:GetDistanceSqToInst(v) <= mindistance do
@@ -43,7 +46,7 @@ end
 
 local function SpawnButterflyForPlayer(player, reschedule)
     local pt = player:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, { "butterfly" })
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, BUTTERFLY_TAGS)
     if #ents < _maxbutterflies then
         local spawnflower = GetSpawnPoint(player)
         if spawnflower ~= nil then

@@ -114,12 +114,13 @@ function Crop:Fertilize(fertilizer, doer)
     end
 end
 
+local CANGROW_TAGS = { "daylight", "lightsource" }
 function Crop:DoGrow(dt, nowither)
     if not self.inst:HasTag("withered") then 
         local shouldgrow = nowither or not TheWorld.state.isnight
         if not shouldgrow then
             local x, y, z = self.inst.Transform:GetWorldPosition()
-            for i, v in ipairs(TheSim:FindEntities(x, 0, z, DAYLIGHT_SEARCH_RANGE, { "daylight", "lightsource" })) do
+            for i, v in ipairs(TheSim:FindEntities(x, 0, z, DAYLIGHT_SEARCH_RANGE, CANGROW_TAGS)) do
                 local lightrad = v.Light:GetCalculatedRadius() * .7
                 if v:GetDistanceSqToPoint(x, y, z) < lightrad * lightrad then
                     shouldgrow = true

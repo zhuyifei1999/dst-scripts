@@ -19,6 +19,8 @@ SetSharedLootTable( 'tentacle',
     {'tentaclespots', 0.2},
 })
 
+local RETARGET_MUST_TAGS = { "_combat", "_health" }
+local RETARGET_CANT_TAGS = { "prey" }
 local function retargetfn(inst)
     return FindEntity(
         inst,
@@ -32,8 +34,8 @@ local function retargetfn(inst)
                     guy:HasTag("monster") or
                     guy:HasTag("animal"))
         end,
-        { "_combat", "_health" },
-        { "prey" })
+        RETARGET_MUST_TAGS,
+        RETARGET_CANT_TAGS)
 end
 
 local function shouldKeepTarget(inst, target)

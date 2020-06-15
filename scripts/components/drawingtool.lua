@@ -1,7 +1,10 @@
+
+local TODRAW_MUST_TAGS = { "_inventoryitem" }
+local TODRAW_CANT_TAGS = { "INLIMBO", "notdrawable" }
 function FindEntityToDraw(target, tool)
     if target ~= nil then
         local x, y, z = target.Transform:GetWorldPosition()
-        for i, v in ipairs(TheSim:FindEntities(x, y, z, 1.5, { "_inventoryitem" }, { "INLIMBO", "notdrawable" })) do
+        for i, v in ipairs(TheSim:FindEntities(x, y, z, 1.5, TODRAW_MUST_TAGS, TODRAW_CANT_TAGS)) do
             if v ~= target and v ~= tool and v.entity:IsVisible() then
                 return v
             end

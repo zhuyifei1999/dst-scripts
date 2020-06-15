@@ -1,5 +1,11 @@
 require("stategraphs/commonstates")
 
+local ENTERWORLD_TARGET_CANT_TAGS = { "INLIMBO" }
+local ENTERWORLD_TARGET_ONEOF_TAGS = { "CHOP_workable", "DIG_workable", "HAMMER_workable", "MINE_workable" }
+local ENTERWORLD_TOSS_MUST_TAGS = { "_inventoryitem" }
+local ENTERWORLD_TOSS_CANT_TAGS = { "locomotor", "INLIMBO" }
+local ENTERWORLD_TOSSFLOWERS_MUST_TAGS = { "flower", "pickable" }
+
 local function ShakeIfClose(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, .5, .02, .15, inst, 30)
 end
@@ -348,17 +354,17 @@ local states =
             inst.AnimState:PlayAnimation("enter")
             inst.sg.statemem.spawnpos = inst:GetPosition()
 
-            for i, v in ipairs(TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 2, nil, { "INLIMBO" }, { "CHOP_workable", "DIG_workable", "HAMMER_workable", "MINE_workable" })) do
+            for i, v in ipairs(TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 2, nil, ENTERWORLD_TARGET_CANT_TAGS, ENTERWORLD_TARGET_ONEOF_TAGS )) do
                 v.components.workable:Destroy(inst)
                 if v:IsValid() and v:HasTag("stump") then
                     v:Remove()
                 end
             end
 
-            local totoss = TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 1.5, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+            local totoss = TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 1.5, ENTERWORLD_TOSS_MUST_TAGS, ENTERWORLD_TOSS_CANT_TAGS)
 
             --toss flowers out of the way
-            for i, v in ipairs(TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 1.5, { "flower", "pickable" })) do
+            for i, v in ipairs(TheSim:FindEntities(inst.sg.statemem.spawnpos.x, 0, inst.sg.statemem.spawnpos.z, 1.5, ENTERWORLD_TOSSFLOWERS_MUST_TAGS)) do
                 local loot = v.components.pickable.product ~= nil and SpawnPrefab(v.components.pickable.product) or nil
                 if loot ~= nil then
                     loot.Transform:SetPosition(v.Transform:GetWorldPosition())

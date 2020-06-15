@@ -131,6 +131,8 @@ function DestroyEntity(ent, destroyer, kill_all_creatures, remove_entity_as_fall
     end
 end
 
+local TOSS_MUST_TAGS = { "_inventoryitem" }
+local TOSS_CANT_TAGS = { "locomotor", "INLIMBO" }
 function LaunchAndClearArea(inst, radius, launch_basespeed, launch_speedmult, launch_startheight, launch_startradius)
     local x, y, z = inst.Transform:GetWorldPosition()
 
@@ -139,7 +141,7 @@ function LaunchAndClearArea(inst, radius, launch_basespeed, launch_speedmult, la
 		DestroyEntity(v, inst)
     end
 
-    local totoss = TheSim:FindEntities(x, 0, z, radius, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+    local totoss = TheSim:FindEntities(x, 0, z, radius, TOSS_MUST_TAGS, TOSS_CANT_TAGS)
     for i, v in ipairs(totoss) do
         if v.components.mine ~= nil then
             v.components.mine:Deactivate()

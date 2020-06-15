@@ -72,6 +72,7 @@ local function onhit(inst)
     inst:PushEvent("workinghit")
 end
 
+local CLAW_TARGET_MUST_TAGS = {"underwater_salvageable"}
 local function raise_claw(inst, delay)
 	delay = delay or 0
 
@@ -80,7 +81,7 @@ local function raise_claw(inst, delay)
 	end
 
 	inst._raise_claw_task = inst:DoTaskInTime(delay, function()
-		if GetHeldItem(inst) == nil and FindEntity(inst, CLAW_CATCHING_RADIUS + CLAW_CATCHING_ALMOST_SUCCESS_THRESHOLD, nil, {"underwater_salvageable"}) ~= nil then
+		if GetHeldItem(inst) == nil and FindEntity(inst, CLAW_CATCHING_RADIUS + CLAW_CATCHING_ALMOST_SUCCESS_THRESHOLD, nil, CLAW_TARGET_MUST_TAGS) ~= nil then
 			if inst._most_recent_interacting_player ~= nil and inst._most_recent_interacting_player:IsValid() and inst._most_recent_interacting_player.components.talker ~= nil and
 				TheWorld.Map:GetPlatformAtPoint(inst._most_recent_interacting_player.Transform:GetWorldPosition()) == TheWorld.Map:GetPlatformAtPoint(inst.Transform:GetWorldPosition()) then
 				
@@ -122,6 +123,7 @@ local function turn_on_boat_drag(inst, boat, duration)
 	end
 end
 
+local CLAW_CATCH_MUST_TAGS = {"winchtarget"}
 local function OnFullyLowered(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local boat = TheWorld.Map:GetPlatformAtPoint(x, z)
@@ -129,7 +131,7 @@ local function OnFullyLowered(inst)
 	local salvaged_item = nil
 	if GetHeldItem(inst) == nil then
 		if boat ~= nil then
-			local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, {"winchtarget"}, nil)
+			local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, CLAW_CATCH_MUST_TAGS, nil)
 			if salvageable ~= nil then
 				salvaged_item = salvageable.components.winchtarget:Salvage()
 
@@ -167,7 +169,7 @@ local function OnFullyLowered(inst)
 end
 
 local function OnLoweringUpdate(inst)
-	local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, {"winchtarget"}, nil)
+	local salvageable = FindEntity(inst, CLAW_CATCHING_RADIUS, nil, CLAW_CATCH_MUST_TAGS, nil)
 	if salvageable ~= nil then
 		local depth = salvageable.components.winchtarget.depth
 

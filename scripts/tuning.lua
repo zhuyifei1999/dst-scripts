@@ -57,6 +57,10 @@ function Tune(overrides)
         STACK_SIZE_LARGEITEM = 10,
         STACK_SIZE_MEDITEM = 20,
         STACK_SIZE_SMALLITEM = 40,
+		STACK_SIZE_TINYITEM = 60,
+
+		DEFAULT_TALKER_DURATION = 2.5,
+		MAX_TALKER_DURATION = 8.0,
 
         MAX_FIRE_DAMAGE_PER_SECOND = 120,
 
@@ -941,6 +945,7 @@ function Tune(overrides)
         BEE_ATTACK_RANGE = .6,
         BEE_ATTACK_PERIOD = 2,
         BEE_TARGET_DIST = 8,
+        BEE_ALLERGY_EXTRADAMAGE = 10,
 
         BEEMINE_BEES = 4,
         BEEMINE_RADIUS = 3,
@@ -1431,6 +1436,9 @@ function Tune(overrides)
         CATCOONHAT_PERISHTIME = total_day_time*10,
         GOGGLES_PERISHTIME = total_day_time*10,
 
+        WALTERHAT_PERISHTIME = total_day_time*10,
+
+
         GRASS_REGROW_TIME = total_day_time*3,
         SAPLING_REGROW_TIME = total_day_time*4,
         MARSHBUSH_REGROW_TIME = total_day_time*4,
@@ -1917,6 +1925,7 @@ function Tune(overrides)
 
         TENT_USES = 6,
         SIESTA_CANOPY_USES = 6,
+        PORTABLE_TENT_USES = 10,
 
         DAPPER_BEARDLING_SANITY = .3,
         BEARDLING_SANITY = .4,
@@ -2291,6 +2300,10 @@ function Tune(overrides)
         WICKERBOTTOM_STALE_FOOD_HEALTH = .25,
         WICKERBOTTOM_SPOILED_FOOD_HEALTH = 0,
 
+		WALTER_HEALTH = 130,
+		WALTER_HUNGER = 110,
+        WALTER_SANITY = wilson_sanity,
+
         FISSURE_CALMTIME_MIN = 600,
         FISSURE_CALMTIME_MAX = 1200,
         FISSURE_WARNTIME_MIN = 20,
@@ -2503,10 +2516,16 @@ function Tune(overrides)
         SLEEP_SANITY_PER_TICK = 1,
         SLEEP_HUNGER_PER_TICK = -1,
         SLEEP_HEALTH_PER_TICK = 1,
+        
+        EFFICIENT_SLEEP_SANITY_MULT = 1,
+        EFFICIENT_SLEEP_HUNGER_MULT = 0.5,
+        EFFICIENT_SLEEP_HEALTH_MULT = 1,
+
         SLEEP_TEMP_PER_TICK = 1,
         SLEEP_WETNESS_PER_TICK = -1,
         SLEEP_TARGET_TEMP_TENT = 40,
         SLEEP_TARGET_TEMP_BEDROLL_FURRY = 30,
+
 
         PVP_DAMAGE_MOD = .5,
 
@@ -2846,6 +2865,7 @@ function Tune(overrides)
             WORMWOOD = 200, --TODO
             WARLY = 200, --TODO
             WURT = 200, --TODO
+            WALTER = 200, --TODO
         },
 
 		GAMEMODE_STARTING_ITEMS =
@@ -2868,6 +2888,7 @@ function Tune(overrides)
                 WORMWOOD = {},
                 WARLY = {"portablecookpot_item", "potato", "potato", "garlic"},
                 WURT = {},
+                WALTER = {"walterhat", "slingshot", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock"},
 			},
 
 			LAVAARENA =
@@ -2888,6 +2909,7 @@ function Tune(overrides)
                 WORMWOOD = {}, --TODO
                 WARLY = {}, --TODO
                 WURT = {}, -- TODO
+                WALTER = {}, -- TODO
 			},
 			QUAGMIRE =
 			{
@@ -2907,6 +2929,7 @@ function Tune(overrides)
                 WORMWOOD = {}, --TODO
                 WARLY = {}, --TODO
                 WURT = {}, -- TODO
+                WALTER = {}, -- TODO
 			},
 		},
 
@@ -2933,6 +2956,7 @@ function Tune(overrides)
             WORMWOOD = 1, --TODO
             WARLY = 1, --TODO
             WURT = 1, -- TODO
+            WALTER = 1, -- TODO
         },
 
 	    LAVAARENA_BERNIE_SCALE = 1.2,
@@ -3450,6 +3474,14 @@ function Tune(overrides)
                 WETNESS = 50,  
             },
 
+            WALTER = 
+            {
+                HEALTH_PENALTY = 0.1,
+                HUNGER = 25,
+                SANITY = 12,
+                WETNESS = 100,
+            },
+
 			CREATURE =
 			{
 				WETNESS = 100,
@@ -3866,6 +3898,48 @@ function Tune(overrides)
 		GHOSTLYELIXIR_RETALIATION_DURATION = total_day_time,
 
 		GHOSTLYELIXIR_DRIP_FX_DELAY = seg_time / 2,
+
+        -- WALTER
+		SLINGSHOT_DISTANCE = 8,
+		SLINGSHOT_DISTANCE_MAX = 12,
+
+		SLINGSHOT_AMMO_MOVESPEED_MULT = 2/3,
+		SLINGSHOT_AMMO_FREEZE_COLDNESS = 2,
+		SLINGSHOT_AMMO_SHADOWTENTACLE_CHANCE = 0.5,
+
+		SLINGSHOT_AMMO_DAMAGE_ROCKS = wilson_attack * 0.5,		-- 17
+		SLINGSHOT_AMMO_DAMAGE_GOLD = wilson_attack,				-- 34
+		SLINGSHOT_AMMO_DAMAGE_MARBLE = wilson_attack * 1.5,		-- 51
+		SLINGSHOT_AMMO_DAMAGE_THULECITE = wilson_attack * 1.5,	-- 51
+		SLINGSHOT_AMMO_DAMAGE_SLOW = wilson_attack * 0.5,		-- 17
+		SLINGSHOT_AMMO_DAMAGE_TRINKET_1 = wilson_attack * 1.75,	-- 59.5
+
+        WALTER_TREE_SANITY_RADIUS = 10,
+        WALTER_TREE_SANITY_THRESHOLD = 5,
+        WALTER_TREE_SANITY_BONUS = 0.1, -- cancels out health drain while above 50% health
+		WALTER_TREE_SANITY_UPDATE_TIME = 1,
+
+        WALTER_SANITY_DAMAGE_RATE = 2,
+		WALTER_SANITY_DAMAGE_OVERTIME_RATE = 1,
+        WALTER_SANITY_HEALTH_DRAIN = .2,
+
+		WALTERHAT_SANITY_DAMAGE_PROTECTION = .5,
+
+		WALTER_STARTING_WOBY = "wobysmall",
+
+        WOBY_BIG_HUNGER = calories_per_day*4,
+        WOBY_BIG_HUNGER_RATE = (calories_per_day*4)/(total_day_time * 1.5), -- same hunger as beefalo, but a full stomach lasts for a day and a half
+        WOBY_BIG_SPEED =
+        {
+            FAST = 8,
+            MEDIUM = 7,
+            SLOW = 5.5
+        },
+
+        WOBY_BIG_WALK_SPEED = 1.5,
+
+        WOBY_SMALL_HUNGER = 50,
+        WOBY_SMALL_HUNGER_RATE = 50 / (total_day_time * 1.5),
 
         -- Salty dog
         FLOTSAM_SPAWN_MAX = 4,

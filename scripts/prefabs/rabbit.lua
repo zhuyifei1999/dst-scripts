@@ -182,9 +182,11 @@ local function LootSetupFunction(lootdropper)
     end
 end
 
+local RABBIT_MUST_TAGS = { "rabbit" }
+local RABBIT_CANT_TAGS = { "INLIMBO" }
 local function OnAttacked(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 30, { "rabbit" }, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, 30, RABBIT_MUST_TAGS, RABBIT_CANT_TAGS)
     local maxnum = 5
     for i, v in ipairs(ents) do
         v:PushEvent("gohome")

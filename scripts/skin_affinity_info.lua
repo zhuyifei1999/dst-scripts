@@ -2,6 +2,20 @@
 
 return 
 {
+	walter = 
+	{
+		"body_walter_detective",
+		"body_walter_formal",
+		"body_walter_survivor",
+		"feet_walter_detective",
+		"feet_walter_formal",
+		"feet_walter_survivor",
+		"legs_walter_detective",
+		"legs_walter_formal",
+		"walter_detective",
+		"walter_formal",
+		"walter_survivor",
+	},
 	warly = 
 	{
 		"body_warly_candyman",

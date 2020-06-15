@@ -197,7 +197,7 @@ function Projectile:Hit(target)
         weapon = attacker
         attacker = weapon.components.inventoryitem.owner
     end
-    if attacker ~= nil and attacker.components.combat ~= nil then
+    if attacker ~= nil and attacker.components.combat ~= nil and not self.hascustomattack then
 		if attacker.components.combat.ignorehitrange then
 	        attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
 		else

@@ -106,10 +106,12 @@ local function onlight(inst, target)
     end
 end
 
+local REDHAUNTTARGET_MUST_TAGS = { "canlight" }
+local REDHAUNTTARGET_CANT_TAGS = { "fire", "burnt", "INLIMBO" }
 local function onhauntred(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
         local x, y, z = inst.Transform:GetWorldPosition() 
-        local ents = TheSim:FindEntities(x, y, z, 6, { "canlight" }, { "fire", "burnt", "INLIMBO" })
+        local ents = TheSim:FindEntities(x, y, z, 6, REDHAUNTTARGET_MUST_TAGS, REDHAUNTTARGET_CANT_TAGS)
         if #ents > 0 then
             for i, v in ipairs(ents) do
                 if v:IsValid() and not v:IsInLimbo() then
@@ -161,10 +163,12 @@ local function onattack_blue(inst, attacker, target, skipsanity)
     end
 end
 
+local BLUEHAUNTTARGET_MUST_TAGS = { "freezable" }
+local BLUEHAUNTTARGET_CANT_TAGS = { "INLIMBO" }
 local function onhauntblue(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
         local x, y, z = inst.Transform:GetWorldPosition() 
-        local ents = TheSim:FindEntities(x, y, z, 6, { "freezable" }, { "INLIMBO" })
+        local ents = TheSim:FindEntities(x, y, z, 6, BLUEHAUNTTARGET_MUST_TAGS, BLUEHAUNTTARGET_CANT_TAGS)
         if #ents > 0 then
             for i, v in ipairs(ents) do
                 if v:IsValid() and not v:IsInLimbo() then
@@ -329,6 +333,8 @@ local function teleport_targets_sort_fn(a, b)
     return a.distance < b.distance
 end
 
+local TELEPORT_MUST_TAGS = { "locomotor" }
+local TELEPORT_CANT_TAGS = { "playerghost", "INLIMBO" }
 local function teleport_func(inst, target)
     local caster = inst.components.inventoryitem.owner or target
     if target == nil then
@@ -350,7 +356,7 @@ end
 
 local function onhauntpurple(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-        local target = FindEntity(inst, 20, nil, { "locomotor" }, { "playerghost", "INLIMBO" })
+        local target = FindEntity(inst, 20, nil, TELEPORT_MUST_TAGS, TELEPORT_CANT_TAGS)
         if target ~= nil then
             teleport_func(inst, target) 
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
@@ -389,9 +395,12 @@ local function blinkstaff_reticuletargetfn()
     end
 end
 
+local ORANGEHAUNT_MUST_TAGS = { "locomotor" }
+local ORANGEHAUNT_CANT_TAGS = { "playerghost", "INLIMBO" }
+
 local function onhauntorange(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-        local target = FindEntity(inst, 20, nil, { "locomotor" }, { "playerghost", "INLIMBO" })
+        local target = FindEntity(inst, 20, nil, ORANGEHAUNT_MUST_TAGS, ORANGEHAUNT_CANT_TAGS)
         if target ~= nil then
             local pos = target:GetPosition()
             local start_angle = math.random() * 2 * PI
@@ -495,7 +504,7 @@ end
 
 local function destroystructure(staff, target)
     local recipe = AllRecipes[target.prefab]
-    if recipe == nil then
+    if recipe == nil or recipe.no_deconstruction then
         --Action filters should prevent us from reaching here normally
         return
     end
@@ -584,9 +593,10 @@ local function HasRecipe(guy)
     return guy.prefab ~= nil and AllRecipes[guy.prefab] ~= nil
 end
 
+local GREENHAUNT_CANT_TAGS = { "INLIMBO" }
 local function onhauntgreen(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
-        local target = FindEntity(inst, 20, HasRecipe, nil, { "INLIMBO" })
+        local target = FindEntity(inst, 20, HasRecipe, nil, GREENHAUNT_CANT_TAGS)
         if target ~= nil then
             destroystructure(inst, target) 
             SpawnPrefab("collapse_small").Transform:SetPosition(target.Transform:GetWorldPosition())

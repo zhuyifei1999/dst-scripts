@@ -29,8 +29,9 @@ local GNARWAIL_TEST_RADIUS = 100
 local GNARWAIL_SPAWN_CHANCE = 0.075
 local GNARWAIL_SPAWN_RADIUS = 10
 local GNARWAIL_TIMING = {8, 10} -- min 8, max 10
+local GNARWAIL_TAGS = { "gnarwail" }
 local function testforgnarwail(comp, spawnpoint)
-    local ents = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, GNARWAIL_TEST_RADIUS, { "gnarwail" })
+    local ents = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, GNARWAIL_TEST_RADIUS, GNARWAIL_TAGS)
     if #ents < 2 and math.random() < GNARWAIL_SPAWN_CHANCE then
         local offset = FindSwimmableOffset(spawnpoint, math.random()*2*PI, GNARWAIL_SPAWN_RADIUS)
         if offset then
@@ -111,14 +112,16 @@ inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 
+local FISHSCHOOLSPAWNBLOCKER_TAGS = {"fishschoolspawnblocker"}
+local FISHABLE_MUST_TAGS = {"oceanfish", "oceanfishable"}
 function self:ShouldSpawnANewSchoolForPlayer(player)
 	local pt = player:GetPosition()
 	local percent_ocean = TheWorld.Map:CalcPercentOceanTilesAtPoint(pt.x, pt.y, pt.z, 25)
 
 	if percent_ocean > 0.1 then
-		local num_school_spawn_blockers = #TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, {"fishschoolspawnblocker"})
+		local num_school_spawn_blockers = #TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, FISHSCHOOLSPAWNBLOCKER_TAGS)
 		if math.random() < 1 - num_school_spawn_blockers * TUNING.SCHOOL_SPAWNER_BLOCKER_MOD then
-			local num_fish = #TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, {"oceanfish", "oceanfishable"})
+			local num_fish = #TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, FISHABLE_MUST_TAGS)
 			local r = math.random()
 			return num_fish == 0 and (r < percent_ocean)
 					or num_fish <= TUNING.SCHOOL_SPAWNER_MAX_FISH and (r < (1/(num_fish + 1))*percent_ocean)

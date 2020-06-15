@@ -181,6 +181,10 @@ local function KeepTargetFn(inst, target)
         and target:GetDistanceSqToPoint(inst.components.knownlocations:GetLocation("spawnpoint")) < TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
 end
 
+local function bonus_damage_via_allergy(inst, target, damage, weapon)
+    return (target:HasTag("allergictobees") and TUNING.BEE_ALLERGY_EXTRADAMAGE) or 0
+end
+
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         local target = inst.components.combat.target
@@ -424,6 +428,7 @@ local function fn()
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat.battlecryenabled = false
     inst.components.combat.hiteffectsymbol = "hive_body"
+    inst.components.combat.bonusdamagefn = bonus_damage_via_allergy
 
     inst:AddComponent("explosiveresist")
 

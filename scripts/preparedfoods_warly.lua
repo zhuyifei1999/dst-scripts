@@ -170,6 +170,7 @@ local foods =
         test = function(cooker, names, tags) return tags.monster and tags.monster >= 2 and not tags.inedible end,
         priority = 30,
         foodtype = FOODTYPE.MEAT,
+        secondaryfoodtype = FOODTYPE.MONSTER,
         health = -TUNING.HEALING_MED,
         hunger = TUNING.CALORIES_SMALL * 5,
         perishtime = TUNING.PERISH_MED,

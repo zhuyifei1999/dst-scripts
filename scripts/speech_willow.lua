@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
 	ANNOUNCE_BOAT_LEAK = "Gross, I hate water.",
@@ -466,6 +472,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Okay, so that didn't work.",
@@ -787,6 +808,16 @@ return{
             REVIVER = "Thanks for the hand, %s... or, uh, claw?",
             GHOST = "Yeesh, what happened to you?",
             FIRESTARTER = "Heh, attagirl!'",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Hi %s!",
+            ATTACKER = "That goody-goody finally snapped!",
+            MURDERER = "Hey %s, let's talk about this...",
+            REVIVER = "Alright, I'm sorry for calling you a goody-goody.",
+            GHOST = "I think he's actually having fun.",
+            FIRESTARTER = "Who \"doesn't know fire safety\" NOW, %s?",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3265,6 +3296,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "She's just a big pushover.",
+            "She's just a big pushover.",
+        },
+        WOBYSMALL = 
+        {
+            "She's a smelly, weird little dog. I like her!",
+            "She's a smelly, weird little dog. I like her!",
+        },
+		WALTERHAT = "Okay fine, so I wasn't \"in\" girl scouts so much as \"crashed\" girl scouts.",
+		SLINGSHOT = "Oooh, now this could do some damage.",
+		SLINGSHOTAMMO_ROCK = "Ever considered making your ammo a little more flammable?",		
+		SLINGSHOTAMMO_MARBLE = "Ever considered making your ammo a little more flammable?",		
+		SLINGSHOTAMMO_THULECITE = "Ever considered making your ammo a little more flammable?",	
+        SLINGSHOTAMMO_GOLD = "Ever considered making your ammo a little more flammable?",
+        SLINGSHOTAMMO_SLOW = "Ever considered making your ammo a little more flammable?",
+        SLINGSHOTAMMO_FREEZE = "Ever considered making your ammo a little more flammable?",
+		SLINGSHOTAMMO_POOP = "Flammable enough for me!",
+        PORTABLETENT = "I call dibs on the tent!",
+        PORTABLETENT_ITEM = "I was never any good at setting these things up.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Someone should probably check if it's flammable. I volunteer!",
 		GHOSTLYELIXIR_FASTREGEN = "Someone should probably check if it's flammable. I volunteer!",
 		GHOSTLYELIXIR_SHIELD = "Someone should probably check if it's flammable. I volunteer!",

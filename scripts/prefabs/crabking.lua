@@ -186,6 +186,9 @@ local function gemshine(inst,color)
     end
 end
 
+local RETARGET_MUST_TAGS = { "_combat","hostile" }
+local RETARGET_CANT_TAGS = { "wall","INLIMBO" }
+
 local function RetargetFn(inst)
     local range = inst:GetPhysicsRadius(0) + 8
     return FindEntity(
@@ -197,8 +200,8 @@ local function RetargetFn(inst)
                             guy:IsNear(inst, range)
                         )
             end,
-            { "_combat","hostile" },
-            { "wall","INLIMBO" }
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS
         )
 end
 
@@ -335,6 +338,11 @@ local function OnLoadPostPass(inst, newents, data)
     end
 end
 
+local BOAT_TAGS = {"boat"}
+local CRABKING_SPELLGENERATOR_TAGS = {"crabking_spellgenerator"}
+local SEASTACK_TAGS = {"seastack"}
+local REPAIRED_PATCH_TAGS = {"boat_repaired_patch"}
+
 local function startcastspell(inst, freeze) 
     if freeze then
         local x,y,z = inst.Transform:GetWorldPosition()
@@ -346,7 +354,7 @@ local function startcastspell(inst, freeze)
         fx.Transform:SetScale(scale,scale,scale)
     else
         local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        local ents = TheSim:FindEntities(x,y,z, 25, BOAT_TAGS)
         if #ents >0 then
             for i,boat in pairs(ents)do
                 -- find position around boat and spawn the attack prefab
@@ -381,7 +389,7 @@ local function endcastspell(inst, lastwasfreeze)
     end
     
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
+    local ents = TheSim:FindEntities(x, y, z, 25, nil, nil, CRABKING_SPELLGENERATOR_TAGS)
     if #ents > 0 then
         for i,ent in pairs(ents)do
             if not inst.components.freezable:IsFrozen() and not inst.components.health:IsDead() then
@@ -394,7 +402,7 @@ local function endcastspell(inst, lastwasfreeze)
     if lastwasfreeze then
         inst.dofreezecast = nil
         local x,y,z = inst.Transform:GetWorldPosition()
-        local boatents = TheSim:FindEntities(x,y,z, 25, {"boat"})
+        local boatents = TheSim:FindEntities(x,y,z, 25, BOAT_TAGS)
         if #boatents > 0 then    
             inst.wantstocast = true
         end
@@ -406,7 +414,7 @@ end
 
 local function oncrabfreeze(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 25, nil, nil,{"crabking_spellgenerator"})
+    local ents = TheSim:FindEntities(x, y, z, 25, nil, nil, CRABKING_SPELLGENERATOR_TAGS)
     if #ents > 0 then
         for i,ent in pairs(ents)do
             ent:Remove()
@@ -416,14 +424,14 @@ end
 
 local function spawnstacks(inst)
     local pos = Vector3(inst.Transform:GetWorldPosition())
-    local stacks =  math.max(0,TUNING.CRABKING_STACKS - #TheSim:FindEntities(pos.x,0,pos.z, 20,{"seastack"}))    
+    local stacks =  math.max(0,TUNING.CRABKING_STACKS - #TheSim:FindEntities(pos.x,0,pos.z, 20, SEASTACK_TAGS))
     local pos = Vector3(inst.Transform:GetWorldPosition())
     if stacks > 0 then
         for i=1,stacks do
             local theta = math.random()*2*PI
             local radius = 9+ (math.pow(math.random(),0.8)* (17-9) )
             local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
-            if not TheWorld.Map:GetPlatformAtPoint(pos.x+offset.x, pos.z+offset.z) and #TheSim:FindEntities(pos.x+offset.x,0,pos.z+offset.z, 3,{"seastack"}) <= 0 then
+            if not TheWorld.Map:GetPlatformAtPoint(pos.x+offset.x, pos.z+offset.z) and #TheSim:FindEntities(pos.x+offset.x,0,pos.z+offset.z, 3, SEASTACK_TAGS) <= 0 then
                 inst:DoTaskInTime(math.random()*0.5,function()
                     local stack = SpawnPrefab("seastack")
                     stack.Transform:SetPosition(pos.x+offset.x,0,pos.z+offset.z)
@@ -970,7 +978,7 @@ local function endgeyser(inst)
                     boat.components.health:DoDelta(-TUNING.CRABKING_GEYSER_BOATDAMAGE)
 
                     -- look for patches
-                    local nearpatch = TheSim:FindEntities(pt.x,0,pt.z, 2,{"boat_repaired_patch"})
+                    local nearpatch = TheSim:FindEntities(pt.x, 0, pt.z, 2, REPAIRED_PATCH_TAGS)
                     for i,patch in pairs(nearpatch)do
                         pt = Vector3(patch.Transform:GetWorldPosition())
                         patch:Remove()
@@ -1109,14 +1117,15 @@ local function freezefx(inst)
     dofreezefz(inst)
 end
 
+local FREEZE_CANT_TAGS = {"crabking_claw","crabking", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"}
+
 local function dofreeze(inst)
     local interval = 0.2
     local pos = Vector3(inst.Transform:GetWorldPosition())
     local range = inst.crab and inst.crab:IsValid() and getfreezerange(inst.crab) or (TUNING.CRABKING_FREEZE_RANGE * 0.75)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking","flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, FREEZE_CANT_TAGS)
     for i,v in pairs(ents)do
         if v.components.temperature then
-            
             local rate = (TUNING.CRABKING_BASE_FREEZE_AMOUNT + ((inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0) * TUNING.CRABKING_FREEZE_INCRAMENT)) /( (TUNING.CRABKING_CAST_TIME_FREEZE - (inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2) or 0) ) /interval)
             if v.components.moisture then
                 rate = rate * Remap(v.components.moisture:GetMoisture(),0,v.components.moisture.maxmoisture,1,3)
@@ -1147,7 +1156,7 @@ local function endfreeze(inst)
 
     local pos = Vector3(inst.Transform:GetWorldPosition())  
     local range = inst.crab and inst.crab:IsValid() and getfreezerange(inst.crab) or (TUNING.CRABKING_FREEZE_RANGE * 0.75)
-    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, {"crabking_claw","crabking", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO"})
+    local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, range, nil, FREEZE_CANT_TAGS)
     for i,v in pairs(ents)do
         onfreeze(inst, v)
     end    

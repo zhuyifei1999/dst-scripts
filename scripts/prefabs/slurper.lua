@@ -95,6 +95,9 @@ local function CanHatTarget(inst, target)
     return hat == nil or hat.prefab ~= inst.prefab
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "INLIMBO" }
+local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local function Retarget(inst)
     --Find us a tasty target with a hunger component and the ability to equip hats.
     --Otherwise just find a target that can equip hats.
@@ -109,9 +112,9 @@ local function Retarget(inst)
         FindEntity(inst, 15, function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
-        { "_combat" },
-        { "INLIMBO" },
-        { "character", "monster" })
+        RETARGET_MUST_TAGS,
+        RETARGET_CANT_TAGS,
+        RETARGET_ONEOF_TAGS)
 end
 
 local function KeepTarget(inst, target)

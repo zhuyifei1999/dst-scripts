@@ -54,6 +54,8 @@ local function fn()
     -- from walkingplank component
     inst:AddTag("walkingplank")
 
+    inst:AddTag("ignorewalkableplatforms") -- because it is a child of the boat
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

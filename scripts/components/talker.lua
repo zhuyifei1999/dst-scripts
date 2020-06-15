@@ -2,9 +2,10 @@ local FollowText = require "widgets/followtext"
 
 local DEFAULT_OFFSET = Vector3(0, -400, 0)
 
-Line = Class(function(self, message, noanim)
+Line = Class(function(self, message, noanim, duration)
     self.message = message
     self.noanim = noanim
+	self.duration = duration
 end)
 
 local Talker = Class(function(self, inst)
@@ -142,6 +143,7 @@ local function sayfn(self, script, nobroadcast, colour)
     end
 
     for i, line in ipairs(script) do
+		local duration = math.min(line.duration or self.lineduration or TUNING.DEFAULT_TALKER_DURATION, TUNING.MAX_TALKER_DURATION)
         if line.message ~= nil then
             local display_message = GetSpecialCharacterPostProcess(
                         self.inst.prefab,
@@ -149,7 +151,7 @@ local function sayfn(self, script, nobroadcast, colour)
                     )
 
             if not nobroadcast then
-                TheNet:Talker(line.message, self.inst.entity)
+                TheNet:Talker(line.message, self.inst.entity, duration ~= TUNING.DEFAULT_TALKER_DURATION and duration or nil)
             end
 
             if self.widget ~= nil then
@@ -164,7 +166,7 @@ local function sayfn(self, script, nobroadcast, colour)
         elseif self.widget ~= nil then
             self.widget:Hide()
         end
-        Sleep(self.lineduration or 2.5)
+        Sleep(duration)
         if not self.inst:IsValid() or (self.widget ~= nil and not self.widget.inst:IsValid()) then
             return
         end
@@ -224,8 +226,7 @@ function Talker:Say(script, time, noanim, force, nobroadcast, colour)
     end
 
     CancelSay(self)
-
-    local lines = type(script) == "string" and { Line(script, noanim) } or script
+    local lines = type(script) == "string" and { Line(script, noanim, time) } or script
     if lines ~= nil then
         self.task = self.inst:StartThread(function() sayfn(self, lines, nobroadcast, colour) end)
     end

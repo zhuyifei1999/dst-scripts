@@ -46,6 +46,8 @@ local SEE_STRUCTURE_DIST = 20
 local TARGET_DIST = 10
 local LOSE_TARGET_DIST = 20
 
+local RETARGET_CANT_TAGS = { "prey", "smallcreature", "mossling", "moose" }
+
 local function RetargetFn(inst)
     if inst.sg:HasStateTag("busy") then return end
 
@@ -56,7 +58,7 @@ local function RetargetFn(inst)
                 return inst.components.combat:CanTarget(guy)
             end,
             nil,
-            { "prey", "smallcreature", "mossling", "moose" })
+            RETARGET_CANT_TAGS)
     end
 
     if not target then
@@ -64,7 +66,7 @@ local function RetargetFn(inst)
                 return inst.components.combat:CanTarget(guy)
             end,
             nil,
-            { "prey", "smallcreature", "mossling", "moose" })
+            RETARGET_CANT_TAGS)
     end
 
     return target
