@@ -52,6 +52,7 @@ local function StartTrackingArm(inst, arm)
     inst:ListenForEvent("death", inst._onstoptrackingarm, arm)
 end
 
+local FINDARMS_MUST_TAGS = { "tentacle_pillar" }
 local function SpawnArms(inst, attacker)
     if inst.numArms >= TUNING.TENTACLE_PILLAR_ARMS_TOTAL - 3 then
         --despawn tentacles away from players
@@ -86,7 +87,7 @@ local function SpawnArms(inst, attacker)
             local radius = GetRandomWithVariance(ringdelta, ringdelta / 3) + minRadius
             local x = pt.x + radius * math.cos(theta)
             local z = pt.z - radius * math.sin(theta)
-            local pillars = TheSim:FindEntities(x, 0, z, 3.5, { "tentacle_pillar" })
+            local pillars = TheSim:FindEntities(x, 0, z, 3.5, FINDARMS_MUST_TAGS)
             if #pillars > 0 then
                 pillarLoc = pillars[1]:GetPosition()
             end

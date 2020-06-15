@@ -42,6 +42,10 @@ local Combat = Class(function(self, inst)
     --self.noimpactsound = false
     --
 
+	-- these are a temporary aggro system for the sling shot that may be replaced in the future. Modders: This variable may be removed one day
+	-- self.temp_disable_aggro 
+	self.lastwasattackedbytargettime = 0
+
 	self.externaldamagemultipliers = SourceModifierList(self.inst) -- damage dealt to others multiplier
 
 	self.externaldamagetakenmultipliers = SourceModifierList(self.inst) -- my damage taken multiplier (post armour reduction)
@@ -139,6 +143,7 @@ function Combat:BlankOutAttacks(fortime)
     self.blanktask = self.inst:DoTaskInTime(fortime, OnBlankOutOver, self)
 end
 
+local DEFAULT_SHARE_TARGET_MUST_TAGS = { "_combat" }
 function Combat:ShareTarget(target, range, fn, maxnum, musttags)
     if maxnum <= 0 then
         return
@@ -147,7 +152,7 @@ function Combat:ShareTarget(target, range, fn, maxnum, musttags)
     --print("Combat:ShareTarget", self.inst, target)
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(range), musttags or { "_combat" })
+    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(range), musttags or DEFAULT_SHARE_TARGET_MUST_TAGS)
 
     local num_helpers = 0
     for i, v in ipairs(ents) do
@@ -203,10 +208,14 @@ function Combat:TryRetarget()
 
             if forcechange then
                 self:SetTarget(newtarget)
+			    self.lastwasattackedbytargettime = GetTime()
             elseif self.target ~= nil and self.target:HasTag("structure") and not newtarget:HasTag("structure") then
                 self:SetTarget(newtarget)
+			    self.lastwasattackedbytargettime = GetTime()
             else
-                self:SuggestTarget(newtarget)
+                if self:SuggestTarget(newtarget) then
+					self.lastwasattackedbytargettime = GetTime()
+				end
             end
         end
     end
@@ -306,6 +315,7 @@ function Combat:DropTarget(hasnexttarget)
         if not hasnexttarget then
             self.inst:PushEvent("droppedtarget", {target=oldtarget})
         end
+		self.lastwasattackedbytargettime = 0
     end
 end
 
@@ -327,7 +337,7 @@ function Combat:EngageTarget(target)
 end
 
 function Combat:SetTarget(target)
-    if target ~= self.target and (not target or self:IsValidTarget(target)) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
+    if not self.temp_disable_aggro and target ~= self.target and (not target or self:IsValidTarget(target)) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
         self:DropTarget(target ~= nil)
         self:EngageTarget(target)
     end
@@ -360,8 +370,8 @@ function Combat:GetDebugString()
     if self.targetfn and self.retargetperiod then
         str = str.. " Retarget set"
     end
-    str = str..string.format(" can attack:%s", tostring(self:CanAttack(self.target)))
-    str = str..string.format(" can be attacked: %s", tostring(self:CanBeAttacked()))
+    str = str..string.format(", can attack:%s", tostring(self:CanAttack(self.target)))
+    str = str..string.format(", can be attacked: %s", tostring(self:CanBeAttacked()))
 
     return str
 end
@@ -495,6 +505,10 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
     else
         self.inst:PushEvent("blocked", { attacker = attacker })
     end
+
+	if self.target == nil or self.target == attacker then
+		self.lastwasattackedbytargettime = self.lastwasattackedtime
+	end
 
     return not blocked
 end
@@ -919,10 +933,11 @@ function Combat:GetDamageReflect(target, damage, weapon, stimuli)
 
 end
 
+local AREAATTACK_MUST_TAGS = { "_combat" }
 function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetags)
     local hitcount = 0
     local x, y, z = target.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range, { "_combat" }, excludetags)
+    local ents = TheSim:FindEntities(x, y, z, range, AREAATTACK_MUST_TAGS, excludetags)
     for i, ent in ipairs(ents) do
         if ent ~= target and
             ent ~= self.inst and

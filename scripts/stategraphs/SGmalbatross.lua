@@ -1,5 +1,8 @@
 require("stategraphs/commonstates")
 
+local SWOOP_LOOP_TARGET_CANT_TAGS = {"INLIMBO", "fx", "malbatross", "boat"}
+local SWOOP_LOOP_TARGET_ONEOF_TAGS = {"tree", "mast", "_health"}
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAMMER, "attack"),
@@ -517,7 +520,7 @@ local states =
         onupdate = function(inst, dt)
             if inst.sg.statemem.collisiontime <= 0 then
                 local x,y,z = inst.Transform:GetWorldPosition()
-                local ents = TheSim:FindEntities(x, y, z, 2, nil, {"INLIMBO", "fx", "malbatross", "boat"}, {"tree", "mast", "_health"})
+                local ents = TheSim:FindEntities(x, y, z, 2, nil, SWOOP_LOOP_TARGET_CANT_TAGS, SWOOP_LOOP_TARGET_ONEOF_TAGS)
                 for i,ent in ipairs(ents) do
                     inst.oncollide(inst,ent)
                 end

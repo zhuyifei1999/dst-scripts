@@ -77,8 +77,8 @@ local function OnBurnt(inst)
     if inst.components.workable ~= nil then
         inst:RemoveComponent("workable")
     end
-    if inst.components.portablecookware ~= nil then
-        inst:RemoveComponent("portablecookware")
+    if inst.components.portablestructure ~= nil then
+        inst:RemoveComponent("portablestructure")
     end
     inst.persists = false
     inst:AddTag("FX")
@@ -146,8 +146,8 @@ local function fn()
         return inst
     end
 
-    inst:AddComponent("portablecookware")
-    inst.components.portablecookware:SetOnDismantleFn(OnDismantle)
+    inst:AddComponent("portablestructure")
+    inst.components.portablestructure:SetOnDismantleFn(OnDismantle)
 
     inst:AddComponent("prototyper")
     inst.components.prototyper.restrictedtag = "professionalchef"

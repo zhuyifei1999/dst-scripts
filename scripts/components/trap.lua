@@ -161,9 +161,10 @@ local function CheckTrappable(guy)
     return guy.components.health == nil or not guy.components.health:IsDead()
 end
 
+local TRAP_NO_TAGS = { "INLIMBO", "untrappable" }
 function Trap:OnUpdate(dt)
     if self.isset then
-        local guy = FindEntity(self.inst, self.range, CheckTrappable, { self.targettag }, { "INLIMBO", "untrappable" })
+        local guy = FindEntity(self.inst, self.range, CheckTrappable, { self.targettag }, TRAP_NO_TAGS)
         if guy ~= nil then
             self.target = guy
             self:StopUpdating()
@@ -229,6 +230,7 @@ for k, v in pairs(FOODTYPE) do
     table.insert(BAIT_TAGS, "edible_"..v)
 end
 
+local INLIMBO_TAGS = { "INLIMBO" }
 function Trap:DoSpring()
     self:StopUpdating()
     if self.target ~= nil and not self.target:IsValid() then
@@ -277,7 +279,7 @@ function Trap:DoSpring()
     elseif self.target ~= nil then
         local ismole = self.target:HasTag("mole")
         local x, y, z = self.inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 2, nil, { "INLIMBO" }, BAIT_TAGS)
+        local ents = TheSim:FindEntities(x, y, z, 2, nil, INLIMBO_TAGS, BAIT_TAGS)
         for i, v in ipairs(ents) do
             if v.components.bait ~= nil
                 and (ismole and v:HasTag("molebait") or

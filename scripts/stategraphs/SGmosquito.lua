@@ -1,5 +1,6 @@
 require("stategraphs/commonstates")
 
+local SPLAT_TARGET_IGNORE_TAGS = {'insect'}
 local WALK_SPEED = 5
 
 local actionhandlers =
@@ -51,7 +52,7 @@ local states=
         {
             TimeEvent(11*FRAMES, function(inst) 
 				local pt = Vector3(inst.Transform:GetWorldPosition())
-				local ents = TheSim:FindEntities(pt.x,pt.y,pt.z, TUNING.MOSQUITO_BURST_RANGE, nil, {'insect'})
+				local ents = TheSim:FindEntities(pt.x,pt.y,pt.z, TUNING.MOSQUITO_BURST_RANGE, nil, SPLAT_TARGET_IGNORE_TAGS)
 				for i,ent in ipairs(ents) do
 					if ent.components.combat then
 						ent.components.combat:GetAttacked(inst, TUNING.MOSQUITO_BURST_DAMAGE, nil)

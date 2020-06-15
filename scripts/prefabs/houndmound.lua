@@ -82,6 +82,9 @@ local function OnIsSummer(inst, issummer)
     inst.components.childspawner:SetRareChild("firehound", issummer and 0.2 or 0)
 end
 
+local HAUNTTARGET_MUST_TAGS = { "_combat" }
+local HAUNTTARGET_CANT_TAGS = { "wall", "playerghost", "houndmound", "hound", "houndfriend", "INLIMBO" }
+
 local function OnHaunt(inst, haunter)
     if inst.components.childspawner == nil or
         not inst.components.childspawner:CanSpawn() or
@@ -95,8 +98,8 @@ local function OnHaunt(inst, haunter)
         function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
-        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-        { "wall", "playerghost", "houndmound", "hound", "houndfriend", "INLIMBO" }
+        HAUNTTARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+        HAUNTTARGET_CANT_TAGS
     )
 
     if target ~= nil then

@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Grrr... can't do it, florpt.",
 	ANNOUNCE_BOAT_LEAK = "Yay! Boat getting wetter!",
@@ -347,7 +353,7 @@ return{
 	ANNOUNCE_SHELTER = "Why not play in rain, florp?",
 	ANNOUNCE_THORNS = "Ouchie!",
 	ANNOUNCE_BURNT = "Glorpt!! Hot!!",
-	ANNOUNCE_TORCH_OUT = "Can still see, florp!",
+	ANNOUNCE_TORCH_OUT = "Hey, where fire go, florp?",
 	ANNOUNCE_THURIBLE_OUT = "Aw, no more.",
 	ANNOUNCE_FAN_OUT = "Glurp... me didn't break it!!",
     ANNOUNCE_COMPASS_OUT = "Spinny pointer broken. Didn't do it, florp!!",
@@ -365,10 +371,10 @@ return{
 	ANNOUNCE_TOADESCAPED = "Come back toad!!",
 
 
-	ANNOUNCE_DAMP = "Ahh... wetter feel better, florp!",
-	ANNOUNCE_WET = "Mermfolk love water, florp!",
-	ANNOUNCE_WETTER = "Feels good on scales!",
-	ANNOUNCE_SOAKED = "Aaah, splish-splash!",
+	ANNOUNCE_DAMP = "Bit soggy...",
+	ANNOUNCE_WET = "Feel too soggy now...",
+	ANNOUNCE_WETTER = "Too wet... even for Mermfolk, florp.",
+	ANNOUNCE_SOAKED = "Is too much water! Too much!",
 
 	ANNOUNCE_WASHED_ASHORE = "Had good swim!",
 
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Glurgh, that not gonna taste good together.",
@@ -782,6 +803,16 @@ return{
             FIRESTARTER = "Stop! You gonna get us in trouble!",
         },
 
+        WALTER =
+        {
+            GENERIC = "Hello pine boy!",
+            ATTACKER = "You not help, you mean!",
+            MURDERER = "Grrr, should never trust scale-less!",
+            REVIVER = "You is very nice and good, florp.",
+            GHOST = "Pine boy not having fun?",
+            FIRESTARTER = "You gonna burn everything, flort!",
+        },
+
         MIGRATION_PORTAL =
         {
             GENERIC = "Where this go to?",
@@ -964,7 +995,7 @@ return{
         BATCAVE = "Me not afraid, florp!",
         BEDROLL_FURRY = "Fluffy...",
         BUNNYMAN = "Don't like Bunnyman!",
-        FLOWER_CAVE = "Useless flower, florph.",
+        FLOWER_CAVE = "Glowy!",
         GUANO = "Bats poop too, florp.",
         LANTERN = "Glowy!",
         LIGHTBULB = "What you mean, \"don't put in your mouth\"?",
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Me want turn to ride!",
+            "Me want turn to ride!",
+        },
+        WOBYSMALL = 
+        {
+            "Aww, hey doggie!",
+            "Aww, hey doggie!",
+        },
+		WALTERHAT = "Is good color.",
+		SLINGSHOT = "Hee-hee, look fun!",
+		SLINGSHOTAMMO_ROCK = "Bits of stuff.",		
+		SLINGSHOTAMMO_MARBLE = "Bits of stuff.",		
+		SLINGSHOTAMMO_THULECITE = "Bits of stuff.",	
+        SLINGSHOTAMMO_GOLD = "Bits of stuff.",
+        SLINGSHOTAMMO_SLOW = "Bits of stuff.",
+        SLINGSHOTAMMO_FREEZE = "Bits of stuff.",
+		SLINGSHOTAMMO_POOP = "Tiny poops.",
+        PORTABLETENT = "Is sleeping place.",
+        PORTABLETENT_ITEM = "Building something, florp?",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Ooooh! Me wanna make some too, florp!",
 		GHOSTLYELIXIR_FASTREGEN = "Ooooh! Me wanna make some too, florp!",
 		GHOSTLYELIXIR_SHIELD = "Ooooh! Me wanna make some too, florp!",

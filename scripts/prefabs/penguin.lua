@@ -66,6 +66,7 @@ local function OnLoad(inst, data)
     end
 end
 
+local CHARACTER_TAGS = {"character"}
 local function ShouldSleep(inst)
     local homePos = inst.components.knownlocations:GetLocation("rookery")
     local myPos = Vector3(inst.Transform:GetWorldPosition())
@@ -75,7 +76,7 @@ local function ShouldSleep(inst)
        or (inst.components.freezable and inst.components.freezable:IsFrozen()) then
         return false
     end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
+    local nearestEnt = GetClosestInstWithTag(CHARACTER_TAGS, inst, SLEEP_DIST_FROMTHREAT)
     return nearestEnt == nil
 end
 
@@ -88,7 +89,7 @@ local function ShouldWake(inst)
        or (inst.components.freezable and inst.components.freezable:IsFrozen()) then
         return true
     end
-    local nearestEnt = GetClosestInstWithTag("character", inst, SLEEP_DIST_FROMTHREAT)
+    local nearestEnt = GetClosestInstWithTag(CHARACTER_TAGS, inst, SLEEP_DIST_FROMTHREAT)
     return nearestEnt
 end
 
@@ -132,6 +133,9 @@ local function MakeTeam(inst, attacker)
 --print("<<<<<<<>>>>>")
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "penguin" }
+local RETARGET_ONEOF_TAGS = { "character", "monster", "wall" }
 local function Retarget(inst)
 
     local ta = inst.components.teamattacker
@@ -143,9 +147,9 @@ local function Retarget(inst)
     local newtarget = FindEntity(inst, 3, function(guy)
             return inst.components.combat:CanTarget(guy)
             end,
-            nil,
-            {"penguin"},
-            {"character","monster","wall"}
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS,
+            RETARGET_ONEOF_TAGS
             )
 
     if newtarget and ta and not ta.inteam and not ta:SearchForTeam() then
@@ -159,13 +163,16 @@ local function Retarget(inst)
 
 end
 
+local RETARGET_MUTATED_MUST_TAGS = { "_combat" }
+local RETARGET_MUTATED_CANT_TAGS = { "penguin" }
+local RETARGET_MUTATED_ONEOF_TAGS = {"character","monster","smallcreature","animal","wall"}
 local function MutatedRetarget(inst)
     local newtarget = FindEntity(inst, 4, function(guy)
             return inst.components.combat:CanTarget(guy)
             end,
-            nil,
-            {"penguin"},
-            {"character","monster","smallcreature","animal","wall"}
+            RETARGET_MUTATED_MUST_TAGS,
+            RETARGET_MUTATED_CANT_TAGS,
+            RETARGET_MUTATED_ONEOF_TAGS
             )
 
     local ta = inst.components.teamattacker

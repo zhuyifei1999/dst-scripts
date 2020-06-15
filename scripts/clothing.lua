@@ -997,6 +997,36 @@ CLOTHING =
 		marketable = true,
 		release_group = 0,
 	},
+	body_walter_detective =
+	{
+		type = "body",
+		skin_tags = { "DETECTIVE", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", "arm_upper_skin", "arm_upper", "arm_lower", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 98,
+	},
+	body_walter_formal =
+	{
+		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", "arm_upper_skin", "arm_upper", "arm_lower", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 98,
+	},
+	body_walter_survivor =
+	{
+		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper_skin", "arm_upper", "arm_lower", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 98,
+	},
 	body_warly_candyman =
 	{
 		type = "body",
@@ -3232,6 +3262,35 @@ CLOTHING =
 		marketable = true,
 		release_group = 64,
 	},
+	feet_walter_detective =
+	{
+		type = "feet",
+		skin_tags = { "DETECTIVE", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 2,
+		release_group = 98,
+	},
+	feet_walter_formal =
+	{
+		type = "feet",
+		skin_tags = { "FORMAL", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 98,
+	},
+	feet_walter_survivor =
+	{
+		type = "feet",
+		skin_tags = { "SURVIVOR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 3,
+		release_group = 98,
+	},
 	feet_warly_candyman =
 	{
 		type = "feet",
@@ -5413,6 +5472,26 @@ CLOTHING =
 		rarity = "Classy",
 		marketable = true,
 		release_group = 7,
+	},
+	legs_walter_detective =
+	{
+		type = "legs",
+		skin_tags = { "DETECTIVE", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 98,
+	},
+	legs_walter_formal =
+	{
+		type = "legs",
+		skin_tags = { "FORMAL", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 98,
 	},
 	legs_warly_candyman =
 	{

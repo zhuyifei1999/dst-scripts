@@ -60,6 +60,10 @@ local function ConfigureRunState(inst)
     if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
         inst.sg.statemem.riding = true
         inst.sg.statemem.groggy = inst:HasTag("groggy")
+        
+        local mount = inst.replica.rider:GetMount()
+        inst.sg.statemem.ridingwoby = mount and mount:HasTag("woby")
+
     elseif inst.replica.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
     elseif inst:HasTag("wereplayer") then
@@ -97,6 +101,7 @@ local function GetRunStateAnim(inst)
         or (inst.sg.statemem.sandstorm and "sand_walk")
         or ((inst.sg.statemem.groggy or inst.sg.statemem.moosegroggy or inst.sg.statemem.goosegroggy) and "idle_walk")
         or (inst.sg.statemem.careful and "careful_walk")
+        or (inst.sg.statemem.ridingwoby and "run_woby")
         or "run"
 end
 
@@ -348,6 +353,7 @@ local actionhandlers =
                 local inventoryitem = equip.replica.inventoryitem
                 return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
                     or (equip:HasTag("blowdart") and "blowdart")
+					or (equip:HasTag("slingshot") and "slingshot_shoot")
                     or (equip:HasTag("thrown") and "throw")
                     or (equip:HasTag("propweapon") and "attack_prop_pre")
                     or "attack"
@@ -450,6 +456,7 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.BEGIN_QUEST, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_QUEST, "dolongaction"),
+    ActionHandler(ACTIONS.TELLSTORY, "dostorytelling"),
 }
 
 local events =
@@ -644,7 +651,10 @@ local states =
             local anim = GetRunStateAnim(inst)
             if anim == "run" then
                 anim = "run_loop"
+            elseif anim == "run_woby" then
+                anim = "run_woby_loop"
             end
+
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
@@ -1957,6 +1967,49 @@ local states =
 
     State
     {
+        name = "dostorytelling",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("idle_walter_storytelling_pre")
+            inst.AnimState:PushAnimation("idle_walter_storytelling", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("idle_walter_storytelling_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("build_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make_preview")
+        end,
+    },
+
+    State
+    {
         name = "makeballoon",
         tags = { "doing", "busy" },
 
@@ -2820,6 +2873,44 @@ local states =
                 if buffaction.pos ~= nil then
                     inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "slingshot_shoot",
+        tags = { "doing", "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("slingshot_pre")
+            inst.AnimState:PushAnimation("slingshot_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+				if buffaction.target ~= nil and buffaction.target:IsValid() then
+					inst:ForceFacePoint(buffaction.target:GetPosition())
+				end
+
+                inst:PerformPreviewBufferedAction()
             end
 
             inst.sg:SetTimeout(TIMEOUT)

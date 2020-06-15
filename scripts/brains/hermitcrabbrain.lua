@@ -161,8 +161,10 @@ local function GetHomePos(inst)
     return HasValidHome(inst) and inst.components.homeseeker:GetHomePos()
 end
 
+local LIGHTS_TAGS = {"lightsource"}
+
 local function GetNearestLightPos(inst)
-    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    local light = GetClosestInstWithTag(LIGHTS_TAGS, inst, SEE_LIGHT_DIST)
     if light then
         return Vector3(light.Transform:GetWorldPosition())
     end
@@ -170,7 +172,7 @@ local function GetNearestLightPos(inst)
 end
 
 local function GetNearestLightRadius(inst)
-    local light = GetClosestInstWithTag("lightsource", inst, SEE_LIGHT_DIST)
+    local light = GetClosestInstWithTag(LIGHTS_TAGS, inst, SEE_LIGHT_DIST)
     if light then
         return light.Light:GetCalculatedRadius()
     end
@@ -281,11 +283,12 @@ function DoCommentAction(inst)
     end
 end
 
+local HARVEST_TAGS = {"dried"}
 function DoHarvestMeat(inst)
     local source = inst.CHEVO_marker
     if source then
         local x,y,z = source.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, inst.island_radius, {"dried"})
+        local ents = TheSim:FindEntities(x,y,z, inst.island_radius, HARVEST_TAGS)
         local target = nil
         for i,ent in ipairs(ents)do
             if ent.components.dryer and ent.components.dryer:IsDone() then
@@ -298,11 +301,12 @@ function DoHarvestMeat(inst)
     end
 end
 
+local PICKABLE_TAGS = {"pickable","bush"}
 function DoHarvestBerries(inst)
     local source = inst.CHEVO_marker
     if source then 
         local x,y,z = source.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, inst.island_radius, {"pickable","bush"})
+        local ents = TheSim:FindEntities(x,y,z, inst.island_radius, PICKABLE_TAGS)
         local target = nil
         if #ents > 0 then        
             for i,ent in ipairs(ents)do    
@@ -316,17 +320,19 @@ function DoHarvestBerries(inst)
     end
 end
 
+local FISHING_MARKER_TAGS = {"hermitcrab_marker_fishing"}
+local FISH_TAGS = {"oceanfish"}
 function DoFishingAction(inst)
     if not using_umbrella(inst) then
         local source = inst.CHEVO_marker
         if source then
             local x,y,z = source.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,y,z, inst.island_radius, {"hermitcrab_marker_fishing"})
+            local ents = TheSim:FindEntities(x,y,z, inst.island_radius, FISHING_MARKER_TAGS)
             local mostfish = {total=0,idx=0}
             for i,ent in ipairs(ents)do
                 local x1,y1,z1 = ent.Transform:GetWorldPosition()
 
-                local fish = TheSim:FindEntities(x1,y1,z1, 8, {"oceanfish"})
+                local fish = TheSim:FindEntities(x1,y1,z1, 8, FISH_TAGS)
                 if #fish > mostfish.total then
                     mostfish = {total=#fish,idx=i}
                 end
@@ -369,7 +375,7 @@ function DoBottleToss(inst)
         local source = inst.CHEVO_marker
         if source then
             local x,y,z = source.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x,y,z, inst.island_radius, {"hermitcrab_marker_fishing"})       
+            local ents = TheSim:FindEntities(x,y,z, inst.island_radius, FISHING_MARKER_TAGS)
             if #ents > 0 then
                 local pos = Vector3(ents[math.random(1,#ents)].Transform:GetWorldPosition())        
 

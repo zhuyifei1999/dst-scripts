@@ -39,13 +39,15 @@ local function OnAttacked(inst, data)
     end, 5)
 end
 
+local FOLLOW_MUST_TAGS = {"beefalo", "herdmember"}
+local FOLLOW_CANT_TAGS = {"baby"}
 local function FollowGrownBeefalo(inst)
     local nearest = FindEntity(inst, 30, function(guy)
         return guy.components.leader
             and guy.components.leader:CountFollowers() < 1
     end,
-    {"beefalo", "herdmember"}, -- only follow herd beefalo (i.e. nondomesticated)
-    {"baby"}
+    FOLLOW_MUST_TAGS, -- only follow herd beefalo (i.e. nondomesticated)
+    FOLLOW_CANT_TAGS
     )
     if nearest and nearest.components.leader then
         nearest.components.leader:AddFollower(inst)

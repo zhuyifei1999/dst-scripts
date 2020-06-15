@@ -41,13 +41,16 @@ local function OnAttacked(inst, data)
     inst.components.combat:ShareTarget(data.attacker, 30, ShareTargetFn, 5)
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "hound", "walrus" }
+local RETARGET_ONEOF_TAGS = { "animal", "character", "monster" }
 local function Retarget(inst)
     return FindEntity(inst, TUNING.WALRUS_TARGET_DIST, function(guy) 
         return inst.components.combat:CanTarget(guy)
     end,
-    nil,
-    {"hound","walrus"},
-    {"animal","character","monster"}
+    RETARGET_MUST_TAGS,
+    RETARGET_CANT_TAGS,
+    RETARGET_ONEOF_TAGS
     )
 end
 

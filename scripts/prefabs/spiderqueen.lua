@@ -33,6 +33,8 @@ local loot =
 
 local SHARE_TARGET_DIST = 30
 
+local RETARGET_MUST_TAGS = { "character", "_combat" }
+local RETARGET_CANT_TAGS = { "spiderwhisperer", "spiderdisguise", "INLIMBO" }
 local function Retarget(inst)
     if not inst.components.health:IsDead() and not inst.components.sleeper:IsAsleep() then
         local oldtarget = inst.components.combat.target
@@ -41,8 +43,8 @@ local function Retarget(inst)
                 return (not guy:HasTag("monster") or guy:HasTag("player"))
                     and inst.components.combat:CanTarget(guy) 
             end,
-            { "character", "_combat" },
-            { "spiderwhisperer", "spiderdisguise", "INLIMBO" }
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS
         )
 
         if newtarget ~= nil and newtarget ~= oldtarget then
@@ -86,15 +88,18 @@ local function MakeBaby(inst)
     end
 end
 
+local PLAYER_TAGS = { "player" }
+local PLAYER_IGNORE_TAGS = { "playerghost" }
+
 local function MaxBabies(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, { "player" }, { "playerghost" })
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, PLAYER_TAGS, PLAYER_IGNORE_TAGS)
     return RoundBiasedDown(math.pow(#ents * 20, 1 / 1.4))
 end
 
 local function AdditionalBabies(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, { "player" }, { "playerghost" })
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, PLAYER_TAGS, PLAYER_IGNORE_TAGS)
     return RoundBiasedUp(#ents * .5)
 end
 

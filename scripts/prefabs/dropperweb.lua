@@ -23,12 +23,15 @@ local function SpawnInvestigators(inst, data)
     end
 end
 
+local WEBBED_TAGS = {"webbed"}
+local WEBBABLE_TAGS = {"webbable"}
+
 local function OnEntityWake(inst)
     if GetTime() > inst.lastwebtime + TUNING.TOTAL_DAY_TIME then
         local x,y,z = inst.Transform:GetWorldPosition()
-        local webbed = TheSim:FindEntities(x,y,z,TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS,{"webbed"})
+        local webbed = TheSim:FindEntities(x,y,z,TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS, WEBBED_TAGS)
         if #webbed < TUNING.MUSHTREE_WEBBED_MAX_PER_DEN then
-            local webbable = TheSim:FindEntities(x,y,z,TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS,{"webbable"})
+            local webbable = TheSim:FindEntities(x,y,z,TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS, WEBBABLE_TAGS)
             while GetTime() > inst.lastwebtime + TUNING.TOTAL_DAY_TIME
                 and #webbable > 0
                 and #webbed < TUNING.MUSHTREE_WEBBED_MAX_PER_DEN do

@@ -95,6 +95,7 @@ local function commonfn(bank, build, char_anim_build, data)
     inst.components.perishable:SetPerishTime(data.perish_time)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = data.perish_product
+	inst.components.perishable.ignorewentness = true
 
     inst:AddComponent("cookable")
     inst.components.cookable.product = data.cookable_product

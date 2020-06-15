@@ -32,6 +32,10 @@ SetSharedLootTable( 'chargedlightninggoat',
     {'lightninggoathorn', 0.25},
 })
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "lightninggoat", "wall" }
+local RETARGET_WALL_MUST_TAGS = { "_combat", "wall" }
+local RETARGET_WALL_CANT_TAGS = { "lightninggoat" }
 local function RetargetFn(inst)
     if inst.charged then
         local function CheckTarget(guy)
@@ -43,16 +47,16 @@ local function RetargetFn(inst)
                 inst,
                 TUNING.LIGHTNING_GOAT_TARGET_DIST,
                 CheckTarget,
-                { "_combat" },
-                { "lightninggoat", "wall" })
+                RETARGET_MUST_TAGS,
+                RETARGET_CANT_TAGS)
             or
             -- If none, look for walls
             FindEntity(
                 inst,
                 TUNING.LIGHTNING_GOAT_TARGET_DIST,
                 CheckTarget,
-                { "_combat", "wall" },
-                { "lightninggoat" })
+                RETARGET_WALL_MUST_TAGS,
+                RETARGET_WALL_CANT_TAGS)
             or
             nil
     end
@@ -68,8 +72,8 @@ local function KeepTargetFn(inst, target)
                 function(guy)
                     return inst.components.combat:CanTarget(guy)
                 end,
-                { "_combat" },
-                { "lightninggoat", "wall" }) == nil
+                RETARGET_MUST_TAGS,
+                RETARGET_CANT_TAGS) == nil
     end
     --Don't keep target if we chased too far from our herd
     local herd = inst.components.herdmember ~= nil and inst.components.herdmember:GetHerd() or nil

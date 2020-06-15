@@ -16,9 +16,11 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
 end
 
+local CRACK_MUST_TAGS = { "_combat" }
+local CRACK_CANT_TAGS = { "player", "epic", "shadow", "shadowminion", "shadowchesspiece" }
 local function supercrack(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, { "_combat" }, { "player", "epic", "shadow", "shadowminion", "shadowchesspiece" })
+    local ents = TheSim:FindEntities(x,y,z, TUNING.WHIP_SUPERCRACK_RANGE, CRACK_MUST_TAGS, CRACK_CANT_TAGS)
     for i,v in ipairs(ents) do
         if v.components.combat:HasTarget() then
             v.components.combat:DropTarget()

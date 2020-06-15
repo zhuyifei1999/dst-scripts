@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Oh no! That wasn't a recipe!",
@@ -780,6 +801,16 @@ return{
             REVIVER = "Whew, thanks %s!",
             GHOST = "Don't worry! I'm sure there's a heart around here somewhere!",
             FIRESTARTER = "I... don't think that's allowed...",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Hey %s! Can I pet Woby?",
+            ATTACKER = "That wasn't very nice, %s!",
+            MURDERER = "%s? We thought we were all friends!",
+            REVIVER = "%s is the best!",
+            GHOST = "Oh no! What should we do, %s?",
+            FIRESTARTER = "Oh... s-should we start making a fire too?",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Woby's so big and fuzzy and perfect for hugging!",
+            "Woby's so big and fuzzy and perfect for hugging!",
+        },
+        WOBYSMALL = 
+        {
+            "We have eight arms for petting!",
+            "We have eight arms for petting!",
+        },
+		WALTERHAT = "Can we be a Pioneer too?",
+		SLINGSHOT = "Can we play with it?",
+		SLINGSHOTAMMO_ROCK = "Do you want us to help clean up?",		
+		SLINGSHOTAMMO_MARBLE = "Do you want us to help clean up?",		
+		SLINGSHOTAMMO_THULECITE = "Do you want us to help clean up?",	
+        SLINGSHOTAMMO_GOLD = "Do you want us to help clean up?",
+        SLINGSHOTAMMO_SLOW = "Do you want us to help clean up?",
+        SLINGSHOTAMMO_FREEZE = "Do you want us to help clean up?",
+		SLINGSHOTAMMO_POOP = "Haha, ew!",
+        PORTABLETENT = "Yay, we're camping!",
+        PORTABLETENT_ITEM = "Let us help!",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Hey, you didn't tell me you were making crafts!",
 		GHOSTLYELIXIR_FASTREGEN = "Hey, you didn't tell me you were making crafts!",
 		GHOSTLYELIXIR_SHIELD = "Hey, you didn't tell me you were making crafts!",

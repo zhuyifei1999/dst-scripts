@@ -40,14 +40,17 @@ local function CalcSanityAura(inst)
     return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
 end
 
+local STRUCTURE_TAGS = {"structure"}
 local function FindBaseToAttack(inst, target)
-    local structure = GetClosestInstWithTag("structure", target, 40)
+    local structure = GetClosestInstWithTag(STRUCTURE_TAGS, target, 40)
     if structure ~= nil then
         inst.components.knownlocations:RememberLocation("targetbase", structure:GetPosition())
         inst.AnimState:ClearOverrideSymbol("deerclops_head")
     end
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO" }
 local function RetargetFn(inst)
     local range = inst:GetPhysicsRadius(0) + 8
     return FindEntity(
@@ -59,8 +62,8 @@ local function RetargetFn(inst)
                             guy:IsNear(inst, range)
                         )
             end,
-            { "_combat" },
-            { "prey", "smallcreature", "INLIMBO" }
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS
         )
 end
 

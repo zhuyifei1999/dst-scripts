@@ -56,13 +56,16 @@ local function SelectedTargetTimeout(target)
     target.selectedasmoletarget = nil
 end
 
+local TAKEBAIT_MUST_TAGS = { "molebait" }
+local TAKEBAIT_CANT_TAGS = { "outofreach", "INLIMBO", "fire" }
+
 local function TakeBaitAction(inst)
     -- Don't look for bait if just spawned, busy making a new home, or has full inventory
     if inst:GetTimeAlive() < 3 or inst.sg:HasStateTag("busy") or ShouldMakeHome(inst) or (inst.components.inventory and inst.components.inventory:IsFull()) then
         return
     end
 
-    local target = FindEntity(inst, SEE_BAIT_DIST, IsMoleBait, { "molebait" }, { "outofreach", "INLIMBO", "fire" })
+    local target = FindEntity(inst, SEE_BAIT_DIST, IsMoleBait, TAKEBAIT_MUST_TAGS, TAKEBAIT_CANT_TAGS)
     if target ~= nil and not target.selectedasmoletarget and target:IsOnValidGround() then
         target.selectedasmoletarget = true
         target:DoTaskInTime(5, SelectedTargetTimeout)

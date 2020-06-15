@@ -115,12 +115,14 @@ local function onunequip_green(inst, owner)
 end
 
 ---ORANGE
+local ORANGE_PICKUP_MUST_TAGS = { "_inventoryitem" }
+local ORANGE_PICKUP_CANT_TAGS = { "INLIMBO", "NOCLICK", "knockbackdelayinteraction", "catchable", "fire", "minesprung", "mineactive" }
 local function pickup(inst, owner)
     if owner == nil or owner.components.inventory == nil then
         return
     end
     local x, y, z = owner.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.ORANGEAMULET_RANGE, { "_inventoryitem" }, { "INLIMBO", "NOCLICK", "knockbackdelayinteraction", "catchable", "fire", "minesprung", "mineactive" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.ORANGEAMULET_RANGE, ORANGE_PICKUP_MUST_TAGS, ORANGE_PICKUP_CANT_TAGS)
     for i, v in ipairs(ents) do
         if v.components.inventoryitem ~= nil and
             v.components.inventoryitem.canbepickedup and
@@ -296,10 +298,12 @@ local function red()
     return inst
 end
 
+local BLUE_HAUNT_MUST_TAGS = { "freezable" }
+local BLUE_HAUNT_CANT_TAGS = { "FX", "NOCLICK", "DECOR","INLIMBO" }
 local function OnHauntBlue(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
         local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 10, { "freezable" }, { "FX", "NOCLICK", "DECOR","INLIMBO" }) 
+        local ents = TheSim:FindEntities(x, y, z, 10, BLUE_HAUNT_MUST_TAGS, BLUE_HAUNT_CANT_TAGS) 
         for i, v in ipairs(ents) do
             if v.components.freezable ~= nil then
                 v.components.freezable:AddColdness(.67)

@@ -55,9 +55,10 @@ local function CanTargetBoats(inst)
 	return not inst.is_fleeing and (inst.components.eater == nil or inst.components.eater:HasBeen(TUNING.COOKIECUTTER.EAT_DELAY))
 end
 
+local COOKIECUTTER_TAGS = {"cookiecutter"}
 local function ShareBoatTarget(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local other_cookiecutters = TheSim:FindEntities(x, y, z, TUNING.COOKIECUTTER.BOAT_DETECTION_SHARE_DIST, {"cookiecutter"})
+	local other_cookiecutters = TheSim:FindEntities(x, y, z, TUNING.COOKIECUTTER.BOAT_DETECTION_SHARE_DIST, COOKIECUTTER_TAGS)
 	for k, v in pairs(other_cookiecutters) do
 		if v.target_wood == nil and CanTargetBoats(v) then
 			v.target_wood = inst.target_wood
@@ -74,12 +75,14 @@ local function ValidateTargetWood(inst)
 			or nil
 end
 
+local FINDEDIBLE_CANT_TAGS = { "INLIMBO", "fire", "smolder" }
+local FINDEDIBLE_ONEOF_TAGS = { "boat", "edible_WOOD" }
 local function CheckForBoats(inst)
 	if inst.sg ~= nil and not (inst.sg:HasStateTag("drilling") or inst.sg:HasStateTag("jumping") or inst.sg:HasStateTag("busy")) then
 		if not CanTargetBoats(inst) then
 			inst.target_wood = nil
 		else
-			inst.target_wood = FindEntity(inst, TUNING.COOKIECUTTER.BOAT_DETECTION_DIST, findtargetcheck, nil, { "INLIMBO", "fire", "smolder" }, { "boat", "edible_WOOD" })
+			inst.target_wood = FindEntity(inst, TUNING.COOKIECUTTER.BOAT_DETECTION_DIST, findtargetcheck, nil, FINDEDIBLE_CANT_TAGS, FINDEDIBLE_ONEOF_TAGS)
 								or ValidateTargetWood(inst)
 
 			if inst.target_wood ~= nil then
@@ -117,13 +120,14 @@ local function OnEntityWake(inst)
 	inst.findtargetstask = inst:DoPeriodicTask(.25, CheckForBoats)
 end
 
+local BOAT_TAGS = { "boat" }
 local function OnLoadPostPass(inst)
 	if inst.onspawntask ~= nil then
 		inst.onspawntask:Cancel()
 		inst.onspawntask = nil
 	end
 	if ValidateSpawnPt(inst) then
-		if FindEntity(inst, TUNING.MAX_WALKABLE_PLATFORM_RADIUS, nil, { "boat" }) ~= nil then
+		if FindEntity(inst, TUNING.MAX_WALKABLE_PLATFORM_RADIUS, nil, BOAT_TAGS) ~= nil then
 			inst.sg:GoToState("resurface", true)
 		end
 	end

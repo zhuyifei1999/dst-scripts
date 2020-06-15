@@ -63,10 +63,19 @@ end
 
 mod_protect_Recipe = false
 
-Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn, product, build_mode, build_distance)
+Recipe = Class(function(self, name, ingredients, tab, level, placer_or_more_data, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn, product, build_mode, build_distance) -- do not add more params here, add them to "placer_or_more_data"
     if mod_protect_Recipe then
         print("Warning: Calling Recipe from a mod is now deprecated. Please call AddRecipe from your modmain.lua file.")
     end
+
+	local placer = nil
+	local more_data = {}
+	if type(placer_or_more_data) == "table" then
+		placer = placer_or_more_data.placer
+		more_data = placer_or_more_data
+	else
+		placer = placer_or_more_data
+	end
 
     self.name          = name
 
@@ -110,6 +119,8 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
 
     self.build_mode    = build_mode or BUILDMODE.LAND
     self.build_distance= build_distance or 1
+
+	self.no_deconstruction = more_data.no_deconstruction
 
     num                = num + 1
     AllRecipes[name]   = self

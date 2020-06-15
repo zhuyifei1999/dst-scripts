@@ -129,6 +129,9 @@ local function fn()
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
 
+	-- for storytellingprop component
+	inst:AddTag("storytellingprop")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -162,6 +165,9 @@ local function fn()
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_START)
+
+    -----------------------------
+    inst:AddComponent("storytellingprop")
 
     -----------------------------
 

@@ -77,3 +77,14 @@ function VecUtil_Slerp(p1_x, p1_z, p2_x, p2_z, percent)
 
 	return cos_lerped_angle, sin_lerped_angle
 end
+
+function VecUtil_RotateAroundPoint(a_x, a_z, b_x, b_z, theta) -- in radians
+	local dir_x, dir_z = b_x - a_x, b_z - a_z
+	local ct, st = math.cos(theta), math.sin(theta)
+	return a_x + dir_x * ct - dir_z * st, a_z + dir_x * st + dir_z * ct
+end
+
+function VecUtil_RotateDir(dir_x, dir_z, theta) -- in radians
+	local ct, st = math.cos(theta), math.sin(theta)
+	return dir_x * ct - dir_z * st, dir_x * st + dir_z * ct
+end

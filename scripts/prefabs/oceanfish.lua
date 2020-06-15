@@ -386,6 +386,7 @@ local function inv_common(fish_def)
     inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = fish_def.perish_product
+	inst.components.perishable.ignorewentness = true
 	
 	inst:AddComponent("murderable")
 

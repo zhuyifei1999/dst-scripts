@@ -54,7 +54,8 @@ VEGGIES =
                                         TUNING.CALORIES_MED,    TUNING.HEALING_MED,     TUNING.PERISH_FAST, 0),
     
     durian = MakeVegStats(RARE, TUNING.CALORIES_MED,    -TUNING.HEALING_SMALL,  TUNING.PERISH_MED, -TUNING.SANITY_TINY,
-                                TUNING.CALORIES_MED,    0,                      TUNING.PERISH_FAST, -TUNING.SANITY_TINY),
+                                TUNING.CALORIES_MED,    0,                      TUNING.PERISH_FAST, -TUNING.SANITY_TINY,
+                                nil, nil, nil, FOODTYPE.MONSTER),
     
     pomegranate = MakeVegStats(RARE,    TUNING.CALORIES_TINY,   TUNING.HEALING_SMALL,       TUNING.PERISH_FAST, 0,
                                         TUNING.CALORIES_SMALL,  TUNING.HEALING_MED, TUNING.PERISH_SUPERFAST, 0,

@@ -134,6 +134,8 @@ local function GetTrader(inst)
     return nil
 end
 
+local FINDFOOD_CANT_TAGS = {"outofreach"}
+
 local function FindFoodAction(inst)
     -- Don't go looking for random ocean food if we're busy.
     if inst.sg:HasStateTag("busy") then
@@ -152,7 +154,7 @@ local function FindFoodAction(inst)
                     not item:IsOnPassablePoint()
         end,
         nil,
-        {"outofreach"}
+        FINDFOOD_CANT_TAGS
     )
     if target ~= nil then
         local bact = BufferedAction(inst, target, ACTIONS.EAT)

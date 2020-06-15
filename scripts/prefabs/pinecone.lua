@@ -8,6 +8,7 @@ local function plant(inst, growtime)
     inst:Remove()
 end
 
+local LEIF_TAGS = { "leif" }
 local function ondeploy(inst, pt, deployer)
     inst = inst.components.stackable:Get()
     inst.Physics:Teleport(pt:Get())
@@ -15,7 +16,7 @@ local function ondeploy(inst, pt, deployer)
     plant(inst, timeToGrow)
 
     --tell any nearby leifs to chill out
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.LEIF_PINECONE_CHILL_RADIUS, { "leif" })
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.LEIF_PINECONE_CHILL_RADIUS, LEIF_TAGS)
 
     local played_sound = false
     for i, v in ipairs(ents) do

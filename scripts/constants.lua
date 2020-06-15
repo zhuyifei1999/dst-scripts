@@ -328,7 +328,8 @@ DST_CHARACTERLIST =
     --DLC chars:
     "wortox",
     "wormwood",
-    "wurt"
+    "wurt",
+    "walter"
 }
 
 CHARACTER_VIDEOS =
@@ -349,6 +350,7 @@ CHARACTER_VIDEOS =
     wormwood = {"https://www.youtube.com/watch?v=4hugrMLgDsQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     warly = {"https://www.youtube.com/watch?v=SH1VebvIOSk&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     wurt = {"https://www.youtube.com/watch?v=jG2euiPFkbg&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
+--	walter = {},
 }
 
 
@@ -445,6 +447,7 @@ CHARACTER_GENDERS =
         "warly",
         "wortox",
         "wormwood",
+        "walter",
     },
     ROBOT =
     {
@@ -1088,27 +1091,28 @@ RECIPETABS =
     DRESS =         { str = "DRESS",        sort = 10,  icon = "tab_dress.tex" },
 
     --Crafting stations
-    ANCIENT =       { str = "ANCIENT",      sort = 100,  icon = "tab_crafting_table.tex",    crafting_station = true },
-    CELESTIAL =     { str = "CELESTIAL",    sort = 100,  icon = "tab_celestial.tex",         crafting_station = true },
-    MOON_ALTAR =    { str = "MOON_ALTAR",   sort = 100,  icon = "tab_moonaltar.tex",         crafting_station = true },
-    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 100,  icon = "tab_cartography.tex",       crafting_station = true },
-    SCULPTING =     { str = "SCULPTING",    sort = 100,  icon = "tab_sculpt.tex",            crafting_station = true },
-    ORPHANAGE =     { str = "ORPHANAGE",    sort = 100,  icon = "tab_orphanage.tex",         crafting_station = true },
-    PERDOFFERING =  { str = "PERDOFFERING", sort = 100,  icon = "tab_perd_offering.tex",     crafting_station = true },
-    MADSCIENCE =    { str = "MADSCIENCE",   sort = 100,  icon = "tab_madscience_lab.tex",	 crafting_station = true, manufacturing_station = true },
-    FOODPROCESSING = { str = "FOODPROCESSING", sort = 100, icon = "tab_foodprocessing.tex",  crafting_station = true },
-	FISHING =		{ str = "FISHING",		sort = 100,  icon = "tab_fishing.tex",	 crafting_station = true },
-	WINTERSFEASTCOOKING = { str = "WINTERSFEASTCOOKING", sort = 100, icon = "tab_feast_oven.tex",	crafting_station = true },
-	HERMITCRABSHOP = { str = "HERMITCRABSHOP", sort = 100, icon = "tab_hermitcrab_shop.tex",		 crafting_station = true, shop = true},
+    ANCIENT =				{ str = "ANCIENT",				sort = 100, icon = "tab_crafting_table.tex",	crafting_station = true },
+    CELESTIAL =				{ str = "CELESTIAL",			sort = 100, icon = "tab_celestial.tex",			crafting_station = true },
+    MOON_ALTAR =			{ str = "MOON_ALTAR",			sort = 100, icon = "tab_moonaltar.tex",			crafting_station = true },
+    CARTOGRAPHY =			{ str = "CARTOGRAPHY",			sort = 100, icon = "tab_cartography.tex",		crafting_station = true },
+    SCULPTING =				{ str = "SCULPTING",			sort = 100, icon = "tab_sculpt.tex",			crafting_station = true },
+    ORPHANAGE =				{ str = "ORPHANAGE",			sort = 100, icon = "tab_orphanage.tex",			crafting_station = true },
+    PERDOFFERING =			{ str = "PERDOFFERING",			sort = 100, icon = "tab_perd_offering.tex",		crafting_station = true },
+    MADSCIENCE =			{ str = "MADSCIENCE",			sort = 100, icon = "tab_madscience_lab.tex",	crafting_station = true, manufacturing_station = true },
+    FOODPROCESSING =		{ str = "FOODPROCESSING",		sort = 100, icon = "tab_foodprocessing.tex",	crafting_station = true },
+	FISHING =				{ str = "FISHING",				sort = 100, icon = "tab_fishing.tex",			crafting_station = true },
+	WINTERSFEASTCOOKING =	{ str = "WINTERSFEASTCOOKING",	sort = 100, icon = "tab_feast_oven.tex",		crafting_station = true },
+	HERMITCRABSHOP =		{ str = "HERMITCRABSHOP",		sort = 100, icon = "tab_hermitcrab_shop.tex",	crafting_station = true, shop = true},
 }
 
 CUSTOM_RECIPETABS =
 {
-    BOOKS =         { str = "BOOKS",        sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder" },
-    SHADOW =        { str = "SHADOW",       sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic" },
-    ENGINEERING =   { str = "ENGINEERING",  sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson" },
-	ELIXIRBREWING = { str = "ELIXIRBREWING",sort = 999, icon = "tab_elixirbrewing.tex", owner_tag = "elixirbrewer" },
-    NATURE =        { str = "NATURE",       sort = 999, icon = "tab_nature.tex",        owner_tag = "plantkin" },
+    BOOKS =         { str = "BOOKS",			sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder" },
+    SHADOW =        { str = "SHADOW",			sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic" },
+    ENGINEERING =   { str = "ENGINEERING",		sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson" },
+	ELIXIRBREWING = { str = "ELIXIRBREWING",	sort = 999, icon = "tab_elixirbrewing.tex", owner_tag = "elixirbrewer" },
+    NATURE =        { str = "NATURE",			sort = 999, icon = "tab_nature.tex",        owner_tag = "plantkin" },
+	SLINGSHOTAMMO =	{ str = "SLINGSHOTAMMO",	sort = 999, icon = "tab_slingshot.tex",	owner_tag = "pebblemaker"},
 }
 
 QUAGMIRE_RECIPETABS =
@@ -1329,6 +1333,7 @@ CHARACTER_COLOURS =
     wortox       = WEBCOLOURS.RED, --VITO do something here
     wormwood     = WEBCOLOURS.RED, --VITO do something here
     wurt         = WEBCOLOURS.RED, --VITO do something here
+    walter       = WEBCOLOURS.RED, --VITO do something here
     --
     default      = WEBCOLOURS.THISTLE,
 }
@@ -1478,6 +1483,7 @@ FOODTYPE =
     ROUGHAGE = "ROUGHAGE",
 	WOOD = "WOOD",
     GOODIES = "GOODIES",
+    MONSTER = "MONSTER", -- Added in for woby, uses the secondary foodype originally added for the berries
 }
 
 FOODGROUP =

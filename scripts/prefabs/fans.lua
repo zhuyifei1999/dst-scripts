@@ -14,9 +14,11 @@ local prefabs_perd =
     "tornado",
 }
 
+local FANTARGET_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" }
+local FANTARGET_ONEOF_TAGS = { "smolder", "fire", "player" }
 local function OnUse(inst, target)
     local x, y, z = target.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.FEATHERFAN_RADIUS, nil, { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" }, { "smolder", "fire", "player" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.FEATHERFAN_RADIUS, nil, FANTARGET_CANT_TAGS, FANTARGET_ONEOF_TAGS)
     for i, v in pairs(ents) do
         if v.components.burnable ~= nil then
             -- Extinguish smoldering/fire and reset the propagator to a heat of .2

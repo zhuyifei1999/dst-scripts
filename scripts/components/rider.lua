@@ -20,6 +20,7 @@ end
 
 local Rider = Class(function(self, inst)
     self.inst = inst
+    self.target_mount = nil
     self.mount = nil
     self.saddle = nil
 
@@ -74,8 +75,13 @@ function Rider:Mount(target, instant)
         return
     end
 
+    self.target_mount = target
+
     local rideable = target.components.rideable
-    local saddler = rideable.saddle.components.saddler
+    local saddler = nil
+    if rideable.saddle then
+        saddler = rideable.saddle.components.saddler
+    end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local tx, ty, tz = target.Transform:GetWorldPosition()
@@ -86,7 +92,11 @@ function Rider:Mount(target, instant)
     if target.ApplyBuildOverrides ~= nil then
         target:ApplyBuildOverrides(self.inst.AnimState)
     end
-    self.inst.AnimState:OverrideSymbol("swap_saddle", saddler.swapbuild, saddler.swapsymbol)
+    
+    if saddler then
+        self.inst.AnimState:OverrideSymbol("swap_saddle", saddler.swapbuild, saddler.swapsymbol)
+    end
+    
     self.inst.Transform:SetSixFaced()
 
     self.inst.sg:GoToState(instant and "idle" or "mount")
@@ -125,6 +135,7 @@ function Rider:Mount(target, instant)
 
     self:StartTracking(target)
     self.mount = target
+    self.target_mount = nil
     target.components.rideable:SetRider(self.inst)
 
     self.inst.Physics:Teleport(tx, ty, tz)
@@ -187,7 +198,7 @@ function Rider:ActualDismount()
     if self.mount.components.brain ~= nil then
         BrainManager:Wake(self.mount)
     end
-    if not self.mount.components.health:IsDead() then
+    if not (self.mount.components.health ~= nil and self.mount.components.health:IsDead()) then
         self.mount.sg:GoToState("idle")
     end
 
@@ -211,7 +222,7 @@ end
 -- This needs to save because of autosave, but in the standard quit/load flow, players will be removed from their beefalo. ~gjans
 function Rider:OnSave()
     local data = {}
-    if self.mount ~= nil then
+    if self.mount ~= nil and self.mount.components.rideable:ShouldSave() then
         data.mount = self.mount:GetSaveRecord()
     end
     return data

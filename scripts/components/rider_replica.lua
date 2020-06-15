@@ -48,13 +48,13 @@ function Rider:DetachClassified()
 end
 
 --------------------------------------------------------------------------
-
+local TARGET_MUST_TAGS = { "catchable" }
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
 local function ActionButtonOverride(inst, force_target)
     --catching
     if inst:HasTag("cancatch") and not inst.components.playercontroller:IsDoingOrWorking() then
         if force_target == nil then
-            local target = FindEntity(inst, 10, nil, { "catchable" }, TARGET_EXCLUDE_TAGS)
+            local target = FindEntity(inst, 10, nil, TARGET_MUST_TAGS, TARGET_EXCLUDE_TAGS)
             if CanEntitySeeTarget(inst, target) then
                 return BufferedAction(inst, target, ACTIONS.CATCH)
             end

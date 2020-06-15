@@ -10,10 +10,12 @@ local function onnewobjectfn(inst, obj)
     end
 end
 
+local TRYSPAWN_CANT_TAGS = { "INLIMBO" }
+
 local function tryspawn(inst)
     if inst.resetruins and #inst.components.objectspawner.objects <= 0 then
         local x, y, z = inst.Transform:GetWorldPosition()
-        for i, v in ipairs(TheSim:FindEntities(x, y, z, 1, nil, { "INLIMBO" })) do
+        for i, v in ipairs(TheSim:FindEntities(x, y, z, 1, nil, TRYSPAWN_CANT_TAGS)) do
             if v.components.workable ~= nil and v.components.workable:GetWorkAction() ~= ACTIONS.NET then
                 v.components.workable:Destroy(v)
             end

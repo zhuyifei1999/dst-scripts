@@ -495,9 +495,12 @@ function ChildSpawner:SpawnEmergencyChild(target, prefab, radius)
     return child
 end
 
+local EMERGENCYCOMMIT_MUST_TAGS = { "player" }
+local EMERGENCYCOMMIT_CANT_TAGS = { "playerghost" }
+
 function ChildSpawner:UpdateMaxEmergencyCommit()
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.emergencydetectionradius, { "player" }, { "playerghost" })
+    local ents = TheSim:FindEntities(x, y, z, self.emergencydetectionradius, EMERGENCYCOMMIT_MUST_TAGS, EMERGENCYCOMMIT_CANT_TAGS)
     self.maxemergencycommit = RoundBiasedDown(#ents * self.emergencychildrenperplayer)
 end
 

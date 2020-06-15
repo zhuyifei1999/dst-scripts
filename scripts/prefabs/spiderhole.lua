@@ -129,14 +129,16 @@ local function CanTarget(guy)
     return not guy.components.health:IsDead()
 end
 
+local TARGET_MUST_TAGS = { "_combat", "_health" }
+local TARGET_CANT_TAGS = { "playerghost", "spider", "INLIMBO" }
 local function CustomOnHaunt(inst, haunter)
     if math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local target = FindEntity(
             inst,
             25,
             CanTarget,
-            { "_combat", "_health" }, --see entityreplica.lua
-            { "playerghost", "spider", "INLIMBO" }
+            TARGET_MUST_TAGS, --see entityreplica.lua
+            TARGET_CANT_TAGS
         )
         if target ~= nil then
             spawner_onworked(inst, target)

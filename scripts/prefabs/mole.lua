@@ -17,6 +17,7 @@ local prefabs =
 
 local brain = require("brains/molebrain")
 
+local MOLE_TAGS = {'mole'}
 local function OnAttacked(inst, data)
     -- Don't spread the word when whacked
     -- V2C: this doesn't work because weapon is an inst
@@ -25,7 +26,7 @@ local function OnAttacked(inst, data)
     --if data and data.weapon and data.weapon == "hammer" then return end
 
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 30, {'mole'})
+    local ents = TheSim:FindEntities(x,y,z, 30, MOLE_TAGS)
 
     local num_friends = 0
     local maxnum = 5

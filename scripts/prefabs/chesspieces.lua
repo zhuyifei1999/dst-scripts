@@ -76,6 +76,9 @@ local function SetMaterial(inst, materialid)
 	inst.components.symbolswapdata:SetData(build, "swap_body")
 end
 
+local MOONCHESS_MUST_TAGS = { "chess_moonevent" }
+local MOONCHESS_CANT_TAGS = { "INLIMBO" }
+
 local function DoStruggle(inst, count)
     if inst.forcebreak then
         if inst.components.workable ~= nil then
@@ -89,7 +92,7 @@ local function DoStruggle(inst, count)
         end
     else
         local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" }, { "INLIMBO" })
+        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, MOONCHESS_MUST_TAGS, MOONCHESS_CANT_TAGS)
         inst.AnimState:PlayAnimation("jiggle")
         inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
         inst._task =
@@ -152,7 +155,7 @@ local function onworkfinished(inst)
         end
 
         local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" })
+        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, MOONCHESS_MUST_TAGS)
         for i, v in ipairs(ents) do
             v.forcebreak = true
         end

@@ -45,6 +45,7 @@ local events=
     end),
 }
 
+local FROG_TAGS = {"frog"}
 local states=
 {
  
@@ -68,7 +69,7 @@ local states=
                 inst.sg:GoToState("hop")
             else
                 local x,y,z = inst.Transform:GetWorldPosition()
-                local ents = TheSim:FindEntities(x,y,z, 10, {"frog"})
+                local ents = TheSim:FindEntities(x,y,z, 10, FROG_TAGS)
                 
                 local volume = math.max(0.5, 1 - (#ents - 1)*0.1)
                 inst.SoundEmitter:PlaySound("dontstarve/frog/grunt", nil, volume)

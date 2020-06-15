@@ -284,6 +284,21 @@ function MakeInventoryPhysics(inst, mass, rad)
     return phys
 end
 
+function MakeProjectilePhysics(inst, mass, rad)
+    mass = mass or 1
+    rad = rad or .5
+	local phys = inst.entity:AddPhysics()
+	phys:SetMass(mass)
+	phys:SetFriction(.1)
+	phys:SetDamping(0)
+	phys:SetRestitution(.5)
+	phys:SetCollisionGroup(COLLISION.ITEMS)
+	phys:ClearCollisionMask()
+	phys:CollidesWith(COLLISION.GROUND)
+	phys:SetSphere(rad)
+    return phys
+end
+
 function MakeCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
@@ -1113,10 +1128,12 @@ end
 --NOTE: -prefab must call inst:SetPhysicsRadiusOverride(r) during construction
 --      -must set inst.sg.mem.radius = inst.physicsradiusoverride after adding stategraph
 
+local ONUPDATEPHYSICSRADIUS_MUST_TAGS = { "character", "locomotor" }
+local ONUPDATEPHYSICSRADIUS_CANT_TAGS = { "INLIMBO" }
 local function OnUpdatePhysicsRadius(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local mindist = math.huge
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, 2, { "character", "locomotor" }, { "INLIMBO" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, 2, ONUPDATEPHYSICSRADIUS_MUST_TAGS, ONUPDATEPHYSICSRADIUS_CANT_TAGS)) do
         if v ~= inst and v.entity:IsVisible() then
             local d = v:GetDistanceSqToPoint(x, y, z)
             d = d > 0 and (v.Physics ~= nil and math.sqrt(d) - v.Physics:GetRadius() or math.sqrt(d)) or 0
@@ -1204,11 +1221,10 @@ end
 
 --------------------------------------------------------------------------
 --V2C: new for DST, useful for preventing player collisions when placing large objects
-
 local function OnUpdatePlacedObjectPhysicsRadius(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
     local mindist = math.huge
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, 2, { "character", "locomotor" }, { "INLIMBO" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, 2, ONUPDATEPHYSICSRADIUS_MUST_TAGS, ONUPDATEPHYSICSRADIUS_CANT_TAGS)) do
         if v.entity:IsVisible() then
             local d = v:GetDistanceSqToPoint(x, y, z)
             d = d > 0 and (v.Physics ~= nil and math.sqrt(d) - v.Physics:GetRadius() or math.sqrt(d)) or 0

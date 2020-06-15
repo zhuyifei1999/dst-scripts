@@ -36,6 +36,9 @@ local function shouldhit(inst, target)
 	return not target:HasTag("spider_moon")
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" }
+
 local function DoAttack(inst)
 	local attacker = (inst.spider ~= nil and inst.spider:IsValid()) and inst.spider or inst
 	local old_damage = attacker.components.combat.defaultdamage
@@ -43,7 +46,7 @@ local function DoAttack(inst)
     attacker.components.combat.ignorehitrange = true
     attacker.components.combat:SetDefaultDamage(TUNING.SPIDER_MOON_SPIKE_DAMAGE)
     local x, y, z = inst.Transform:GetWorldPosition()
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, ATTACK_RADIUS + 3, { "_combat" }, { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, ATTACK_RADIUS + 3, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)) do
         if v:IsValid() and not v:IsInLimbo() and not (v.components.health ~= nil and v.components.health:IsDead()) and shouldhit(inst, v) then
             local range = ATTACK_RADIUS + v:GetPhysicsRadius(.5)
             if v:GetDistanceSqToPoint(x, y, z) < range * range and inst.components.combat:CanTarget(v) then

@@ -164,6 +164,7 @@ local function commonfn(anim, withsound, cookable)
     inst.AnimState:PlayAnimation("egg")
 
     inst:AddTag("cattoy")
+	inst:AddTag("tallbirdegg")
 
     if cookable then
         --cookable (from cookable component) added to pristine state for optimization

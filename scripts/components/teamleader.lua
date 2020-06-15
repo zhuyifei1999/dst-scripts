@@ -4,6 +4,11 @@ local function onteamtype(self, team, oldteam)
     end
     if team ~= nil then
         self.inst:AddTag("teamleader_"..team)
+		self.teamleadersearchtags = {"teamleader_"..team}
+		self.teamsearchtags = {"team_"..team}
+    else
+		self.teamleadersearchtags = nil
+		self.teamsearchtags = nil
     end
 end
 
@@ -57,7 +62,7 @@ end
 function TeamLeader:OrganizeTeams()
 	local teams = {}
 	local x,y,z = self.inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x,y,z, self.searchradius, {"teamleader_"..self.team_type})
+	local ents = TheSim:FindEntities(x,y,z, self.searchradius, self.teamleadersearchtags)
 	local oldestteam = 0
 	for k,v in pairs(ents) do
 		if v.components.teamleader and v.components.teamleader.threat == self.threat then
@@ -165,7 +170,7 @@ function TeamLeader:BroadcastDistress(member)
 
 	if member:IsValid() then
 		local x,y,z = member.Transform:GetWorldPosition()
-		local ents = TheSim:FindEntities(x,y,z, self.searchradius, { "team_"..self.team_type } )  -- filter by tag?  { self.team_type }
+		local ents = TheSim:FindEntities(x,y,z, self.searchradius, self.teamsearchtags )  -- filter by tag?  { self.team_type }
 		for k,v in pairs(ents) do
 			if v ~= member and self:ValidMember(v) then
 				self:NewTeammate(v)

@@ -73,6 +73,8 @@ function Map:IsValidTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
 end
 
+local TERRAFORMBLOCKER_TAGS = { "terraformblocker" }
+local TERRAFORMBLOCKER_IGNORE_TAGS = { "INLIMBO" }
 function Map:CanTerraformAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     if tile == GROUND.DIRT or
@@ -81,7 +83,7 @@ function Map:CanTerraformAtPoint(x, y, z)
         tile == GROUND.INVALID then
         return false
     elseif TERRAFORM_EXTRA_SPACING > 0 then
-        for i, v in ipairs(TheSim:FindEntities(x, 0, z, TERRAFORM_EXTRA_SPACING, { "terraformblocker" }, { "INLIMBO" })) do
+        for i, v in ipairs(TheSim:FindEntities(x, 0, z, TERRAFORM_EXTRA_SPACING, TERRAFORMBLOCKER_TAGS, TERRAFORMBLOCKER_IGNORE_TAGS)) do
             if v.entity:IsVisible() and
                 v:GetDistanceSqToPoint(x, 0, z) < v.terraform_extra_spacing * v.terraform_extra_spacing then
                 return false
@@ -107,10 +109,11 @@ function Map:CanPlantAtPoint(x, y, z)
 end
 
 local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR", "WALKABLEPLATFORM" }
-
+local HOLE_TAGS = { "groundhole" }
+local BLOCKED_ONEOF_TAGS = { "groundtargetblocker", "groundhole" }
 function Map:IsPointNearHole(pt, range)
     range = range or .5
-    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, DEPLOY_EXTRA_SPACING + range, { "groundhole" })) do
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, DEPLOY_EXTRA_SPACING + range, HOLE_TAGS)) do
         local radius = v:GetPhysicsRadius(0) + range
         if v:GetDistanceSqToPoint(pt) < radius * radius then
             return true
@@ -121,7 +124,7 @@ end
 
 function Map:IsGroundTargetBlocked(pt, range)
     range = range or .5
-    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, MAX_GROUND_TARGET_BLOCKER_RADIUS) + range, nil, nil, { "groundtargetblocker", "groundhole" })) do
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, MAX_GROUND_TARGET_BLOCKER_RADIUS) + range, nil, nil, BLOCKED_ONEOF_TAGS)) do
         local radius = (v.ground_target_blocker_radius or v:GetPhysicsRadius(0)) + range
         if v:GetDistanceSqToPoint(pt.x, 0, pt.z) < radius * radius then
             return true

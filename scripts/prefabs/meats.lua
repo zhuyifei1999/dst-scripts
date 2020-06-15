@@ -206,8 +206,6 @@ local function humanmeat()
         return inst
     end
 
-    inst.components.edible.ismeat = true    
-    inst.components.edible.foodtype = FOODTYPE.MEAT
     inst.components.edible.healthvalue = -TUNING.HEALING_MED
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_LARGE
@@ -265,8 +263,7 @@ local function monster()
         return inst
     end
 
-    inst.components.edible.ismeat = true    
-    inst.components.edible.foodtype = FOODTYPE.MEAT
+    inst.components.edible.secondaryfoodtype = FOODTYPE.MONSTER
     inst.components.edible.healthvalue = -TUNING.HEALING_MED
     inst.components.edible.hungervalue = TUNING.CALORIES_MEDSMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_MED
@@ -291,6 +288,7 @@ local function cookedmonster()
 
     inst.components.tradable.goldvalue = 0
 
+    inst.components.edible.secondaryfoodtype = FOODTYPE.MONSTER
     inst.components.edible.healthvalue = -TUNING.HEALING_SMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_MEDSMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_SMALL
@@ -308,6 +306,7 @@ local function driedmonster()
         return inst
     end
 
+    inst.components.edible.secondaryfoodtype = FOODTYPE.MONSTER
     inst.components.edible.healthvalue = -TUNING.HEALING_SMALL
     inst.components.edible.hungervalue = TUNING.CALORIES_MEDSMALL
     inst.components.edible.sanityvalue = -TUNING.SANITY_TINY

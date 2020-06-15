@@ -239,12 +239,13 @@ local function OnDeactivateMinigame(inst)
     OnBlockBuildingDirty(inst)
 end
 
+local SANITYROCKS_TAGS = {"sanityrock", "insanityrock"}
 local function OnActivateMinigame(inst)
     inst.components.trader:Disable()
 	TheWorld:PushEvent("pausehounded", { source = inst })
 
 	local x, y, z = inst.Transform:GetWorldPosition()
-	inst.locked_obelisks = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS, nil, nil, {"sanityrock", "insanityrock"}) -- musttags, canttags, mustoneoftags
+	inst.locked_obelisks = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS, nil, nil, SANITYROCKS_TAGS) -- musttags, canttags, mustoneoftags
 	for _, obelisk in ipairs(inst.locked_obelisks) do
 		obelisk:ConcealForMinigame(true)
 	end
@@ -253,10 +254,11 @@ local function OnActivateMinigame(inst)
     OnBlockBuildingDirty(inst)
 end
 
-local blocking_objects = {"fire", "structure", "minigameitem", "CHOP_workable", "HAMMER_workable", "MINE_workable"}
+local BLOCKING_ONEOF_OBJECTS = {"fire", "structure", "minigameitem", "CHOP_workable", "HAMMER_workable", "MINE_workable"}
+local BLOCKING_CANT_OBJECTS = {"INLIMBO"}
 local function IsAreaClearForMinigame(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS, nil, {"INLIMBO"}, blocking_objects) -- musttags, canttags, mustoneoftags
+	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS, nil, BLOCKING_CANT_OBJECTS, BLOCKING_ONEOF_OBJECTS) -- musttags, canttags, mustoneoftags
 	for _, ent in ipairs(ents) do
 		if ent.prefab ~= "pigking" and ent.prefab ~= "insanityrock" and ent.prefab ~= "sanityrock" then
 			return false
@@ -265,6 +267,9 @@ local function IsAreaClearForMinigame(inst)
 	return true
 end
 
+local AREACLEAR_IGNORE_PLAYERS = {"player"}
+local AREACLEAR_CHECK_FOR_HOSTILES = {"hostile", "monster"}
+local AREACLEAR_COMBAT = {"_combat"}
 local function IsAreaSafeForMinigame(inst, giver)
     local hounded = TheWorld.components.hounded
     if hounded ~= nil and (hounded:GetWarning() or hounded:GetAttacking()) then
@@ -276,12 +281,12 @@ local function IsAreaSafeForMinigame(inst, giver)
     end
 
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS * 2, nil, {"player"}, {"hostile", "monster"}) -- musttags, canttags, mustoneoftags
+	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS * 2, nil, AREACLEAR_IGNORE_PLAYERS, AREACLEAR_CHECK_FOR_HOSTILES) -- musttags, canttags, mustoneoftags
 	if #ents > 0 then
 		return false
 	end
 
-	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS * 2, nil, nil, {"_combat"}) -- musttags, canttags, mustoneoftags
+	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS * 2, nil, nil, AREACLEAR_COMBAT) -- musttags, canttags, mustoneoftags
 	for _, ent in ipairs(ents) do
 		if ent.components.combat:HasTarget() then
 			return false
@@ -316,6 +321,8 @@ local function LaunchGameItem(inst, item, angle, minorspeedvariance)
     end
 end
 
+local PROP_MUST_TAGS = { "minigameitem", "propweapon" }
+local PROP_CANT_TAGS = { "INLIMBO", "fire", "burnt" }
 local function OnTossGameItems(inst)
     local items = {}
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -323,7 +330,7 @@ local function OnTossGameItems(inst)
     local mingold = math.min(6, 2 + math.floor(numplayers / 2))
     local numgold = math.random(mingold, mingold + 2)
     local numprops = 0
-    if #TheSim:FindEntities(x, y, z, 12, { "minigameitem", "propweapon" }, { "INLIMBO", "fire", "burnt" }) < numplayers + 4 then
+    if #TheSim:FindEntities(x, y, z, 12, PROP_MUST_TAGS, PROP_CANT_TAGS) < numplayers + 4 then
         local maxprops = 2 + math.floor(numplayers / 2)
         numprops = math.max(numgold > 2 and 1 or 2, math.random(maxprops - (maxprops > 2 and numgold > mingold and 2 or 1), maxprops))
         for i = 1, numprops do

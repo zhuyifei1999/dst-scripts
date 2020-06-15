@@ -101,10 +101,12 @@ local function OnLoad(inst, data)
 	end
 end
 
+local TRIGGER_MUST_TAGS = { "singingshelltrigger" }
+local TRIGGER_CANT_TAGS = { "playerghost" }
 local function PreventImmediateActivate(inst)
 	if inst.entity:IsAwake() then
 		local x, y, z = inst.Transform:GetWorldPosition()
-		for _, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.SINGINGSHELL_TRIGGER_RANGE, { "singingshelltrigger" }, { "playerghost" })) do
+		for _, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.SINGINGSHELL_TRIGGER_RANGE, TRIGGER_MUST_TAGS, TRIGGER_CANT_TAGS)) do
 			v.components.singingshelltrigger.overlapping[inst] = true
 		end
 	end

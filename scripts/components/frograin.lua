@@ -59,9 +59,10 @@ local function SpawnFrog(spawn_point)
     return frog
 end
 
+local FROGS_MUST_TAGS = { "frog" }
 local function SpawnFrogForPlayer(player, reschedule)
     local pt = player:GetPosition()
-	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.FROG_RAIN_MAX_RADIUS, { "frog" })
+	local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.FROG_RAIN_MAX_RADIUS, FROGS_MUST_TAGS)
 	if GetTableSize(_frogs) < TUNING.FROG_RAIN_MAX and #ents < _frogcap then
 		local spawn_point = GetSpawnPoint(pt)
 		if spawn_point ~= nil then

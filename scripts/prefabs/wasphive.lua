@@ -55,6 +55,9 @@ local function OnEntitySleep(inst)
     inst.SoundEmitter:KillSound("loop")
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "insect", "playerghost", "INLIMBO" }
+local RETARGET_ONEOF_TAGS = { "character", "animal", "monster" }
 local function OnHaunt(inst)
     if inst.components.childspawner == nil or
         not inst.components.childspawner:CanSpawn() or
@@ -68,9 +71,9 @@ local function OnHaunt(inst)
         function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
-        { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-        { "insect", "playerghost", "INLIMBO" },
-        { "character", "animal", "monster" }
+        RETARGET_MUST_TAGS, --See entityreplica.lua (re: "_combat" tag)
+        RETARGET_CANT_TAGS,
+        RETARGET_ONEOF_TAGS
     )
 
     if target ~= nil then

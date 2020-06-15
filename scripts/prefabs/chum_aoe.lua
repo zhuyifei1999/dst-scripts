@@ -45,11 +45,12 @@ local function OnRemove(inst)
     end
 end
 
+local FISHABLE_TAGS = {"oceanfish", "oceanfishable"}
 local function SpawnFishSchool(inst)
     local retry = false
     local x, y, z = inst.Transform:GetWorldPosition()
     
-    local num_fish = #TheSim:FindEntities(x, y, z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, {"oceanfish", "oceanfishable"})
+    local num_fish = #TheSim:FindEntities(x, y, z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, FISHABLE_TAGS)
     if num_fish < TUNING.SCHOOL_SPAWNER_MAX_FISH + EXTRA_MAX_FISH_ALLOWED then
         local x, y, z = inst.Transform:GetWorldPosition()
 

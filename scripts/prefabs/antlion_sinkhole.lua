@@ -91,6 +91,9 @@ local function SmallLaunch(inst, launcher, basespeed)
     inst.Physics:SetVel(math.cos(angle) * speed, 3 * speed + math.random(), math.sin(angle) * speed)
 end
 
+local TOSS_MUST_TAGS = { "_inventoryitem" }
+local TOSS_CANT_TAGS = { "locomotor", "INLIMBO" }
+
 local function donextcollapse(inst)
     inst.collapsestage = inst.collapsestage + 1
 
@@ -162,7 +165,7 @@ local function donextcollapse(inst)
             end
         end
     end
-    local totoss = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+    local totoss = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS, TOSS_MUST_TAGS, TOSS_CANT_TAGS)
     for i, v in ipairs(totoss) do
         if v.components.mine ~= nil then
             v.components.mine:Deactivate()

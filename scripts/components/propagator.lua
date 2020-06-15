@@ -112,14 +112,17 @@ function Propagator:Flash()
     end
 end
 
+local TARGET_CANT_TAGS = { "INLIMBO" }
+local TARGET_MELT_MUST_TAGS = { "frozen", "firemelt" }
 function Propagator:OnUpdate(dt)
     self.currentheat = math.max(0, self.currentheat - dt * self.decayrate)
 
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+    local prop_range = TheWorld.state.isspring and self.propagaterange * TUNING.SPRING_FIRE_RANGE_MOD or self.propagaterange
+
     if self.spreading then
-        local pos = self.inst:GetPosition()
-        local prop_range = TheWorld.state.isspring and self.propagaterange * TUNING.SPRING_FIRE_RANGE_MOD or self.propagaterange
-        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, prop_range, nil, { "INLIMBO" })
-        if #ents > 0 then
+        local ents = TheSim:FindEntities(x, y, z, prop_range, nil, TARGET_CANT_TAGS)
+        if #ents > 0 and prop_range > 0 then
             local dmg_range = TheWorld.state.isspring and self.damagerange * TUNING.SPRING_FIRE_RANGE_MOD or self.damagerange
             local dmg_range_sq = dmg_range * dmg_range
             local prop_range_sq = prop_range * prop_range
@@ -127,8 +130,8 @@ function Propagator:OnUpdate(dt)
 
             for i, v in ipairs(ents) do
                 if v:IsValid() then
-                    --3D distance
-                    local dsq = distsq(pos, v:GetPosition())
+					local vx, vy, vz = v.Transform:GetWorldPosition()
+                    local dsq = VecUtil_LengthSq(x - vx, z - vz)
 
                     if v ~= self.inst then
                         if v.components.propagator ~= nil and
@@ -172,9 +175,7 @@ function Propagator:OnUpdate(dt)
         end
     else
         if not (self.inst.components.heater ~= nil and self.inst.components.heater:IsEndothermic()) then
-            local x, y, z = self.inst.Transform:GetWorldPosition()
-            local prop_range = TheWorld.state.isspring and self.propagaterange * TUNING.SPRING_FIRE_RANGE_MOD or self.propagaterange
-            local ents = TheSim:FindEntities(x, y, z, prop_range, { "frozen", "firemelt" })
+            local ents = TheSim:FindEntities(x, y, z, prop_range, TARGET_MELT_MUST_TAGS)
             for i, v in ipairs(ents) do
                 v:PushEvent("stopfiremelt")
                 v:RemoveTag("firemelt")
@@ -187,7 +188,7 @@ function Propagator:OnUpdate(dt)
 end
 
 function Propagator:GetDebugString()
-    return string.format("range: %.2f output: %.2f heatresist: %.2f flashpoint: %.2f delay: %s, spread: %s acceptheat: %s curheat: %s", self.propagaterange, self.heatoutput, self:GetHeatResistance(), self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat)..(self.pauseheating and " (paused)" or ""), tostring(self.currentheat))
+    return string.format("range: %.2f, output: %.2f, heatresist: %.2f, flashpoint: %.2f, delay: %s, spread: %s, acceptheat: %s, curheat: %s", self.propagaterange, self.heatoutput, self:GetHeatResistance(), self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat)..(self.pauseheating and " (paused)" or ""), tostring(self.currentheat))
 end
 
 return Propagator

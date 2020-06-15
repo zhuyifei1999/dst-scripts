@@ -33,11 +33,13 @@ local function canmorph(inst)
                 inst.components.diseaseable:IsDiseased())
 end
 
+local TRIGGERMORPH_MUST_TAGS = { "renewable" }
+local TRIGGERMORPH_CANT_TAGS = { "INLIMBO" }
 local function triggernearbymorph(inst, quick, range)
     range = range or 1
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range, { "renewable" }, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, range, TRIGGERMORPH_MUST_TAGS, TRIGGERMORPH_CANT_TAGS)
     local count = 0
 
     for i, v in ipairs(ents) do
@@ -190,12 +192,13 @@ local function makediseaseable(inst)
     end
 end
 
+local FINDGRASSGEKKO_MUST_TAGS = { "grassgekko" }
 local function onmorphtimer(inst, data)
     local morphing = data.name == "morphing"
     if morphing or data.name == "morphrelay" then
         if morphing and canmorph(inst) then
             local x, y, z = inst.Transform:GetWorldPosition()
-            if #TheSim:FindEntities(x, y, z, TUNING.GRASSGEKKO_DENSITY_RANGE, { "grassgekko" }) < TUNING.GRASSGEKKO_MAX_DENSITY then
+            if #TheSim:FindEntities(x, y, z, TUNING.GRASSGEKKO_DENSITY_RANGE, FINDGRASSGEKKO_MUST_TAGS) < TUNING.GRASSGEKKO_MAX_DENSITY then
                 local gekko = SpawnPrefab("grassgekko")
                 gekko.Transform:SetPosition(x, y, z)
                 gekko.sg:GoToState("emerge")

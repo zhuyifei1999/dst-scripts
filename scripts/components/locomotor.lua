@@ -416,7 +416,7 @@ end
 
 function LocoMotor:TempGroundSpeedMultiplier()
     if self.tempgroundspeedmultiplier ~= nil then
-        if self.tempgroundspeedmulttime + .034 > GetTime() then
+        if self.tempgroundspeedmulttime + 0.034 > GetTime() then
             return self.tempgroundspeedmultiplier
         end
         self.tempgroundspeedmultiplier = nil
@@ -427,7 +427,7 @@ end
 
 function LocoMotor:TempGroundTile()
     if self.tempgroundtile ~= nil then
-        if self.tempgroundspeedmulttime + .034 > GetTime() then
+        if self.tempgroundspeedmulttime + 0.034 > GetTime() then
             return self.tempgroundtile
         end
         self.tempgroundspeedmultiplier = nil

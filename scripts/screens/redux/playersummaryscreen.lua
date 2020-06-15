@@ -211,7 +211,7 @@ function PlayerSummaryScreen:_BuildPosse()
     
     local x_off = 114
     local y_off = -140
-    local num_in_row = 8
+    local num_in_row = 9
 
     local x = 0
     local y = 0
@@ -230,7 +230,7 @@ function PlayerSummaryScreen:_BuildPosse()
         table.insert( self.posse, puppet )
         
         x = x + 1
-        if k == 8 then
+        if k == 9 then
             x = 0
             y = y + 1
             offset = 1

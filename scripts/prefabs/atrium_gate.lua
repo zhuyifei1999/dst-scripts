@@ -76,9 +76,11 @@ end
 --------------------------------------------------------------------------
 
 local SUPPRESS_SHADOWS_RANGE = math.ceil(ATRIUM_ARENA_SIZE + 5)
+local SUPPRESS_SHADOWS_MUST_TAGS = { "_health" }
+local SUPPRESS_SHADOWS_ONEOF_TAGS = { "stalkerminion", "shadowcreature" }
 
 local function OnSuppressShadows(inst, x, z, range)
-    for i, v in ipairs(TheSim:FindEntities(x, 0, z, range, { "_health" }, nil, { "stalkerminion", "shadowcreature" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, range, SUPPRESS_SHADOWS_MUST_TAGS, nil, SUPPRESS_SHADOWS_ONEOF_TAGS)) do
         if not v.components.health:IsDead() then
             local x1, y1, z1 = v.Transform:GetWorldPosition()
             if math.abs(x1 - x) < SUPPRESS_SHADOWS_RANGE and

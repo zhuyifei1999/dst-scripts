@@ -492,6 +492,8 @@ local function make_stump(inst)
     end
 end
 
+local FINDTREETOTRANSFORM_MUST_TAGS = { "birchnut" }
+local FINDTREETOTRANSFORM_CANT_TAGS = { "fire", "stump", "burnt", "monster", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 local function chop_down_tree(inst, chopper)
     local days_survived = chopper.components.age ~= nil and chopper.components.age:GetAgeInDays() or TheWorld.state.cycles
     if not inst.monster and inst.leaf_state ~= "barren" and inst.components.growable ~= nil and inst.components.growable.stage == 3 and days_survived >= TUNING.DECID_MONSTER_MIN_DAY then
@@ -521,7 +523,7 @@ local function chop_down_tree(inst, chopper)
         if math.random() < chance * chance_mod then
             --print("Trying to spawn monster")
             local x, y, z = inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x, y, z, 30, { "birchnut" }, { "fire", "stump", "burnt", "monster", "FX", "NOCLICK", "DECOR", "INLIMBO" })
+            local ents = TheSim:FindEntities(x, y, z, 30, FINDTREETOTRANSFORM_MUST_TAGS, FINDTREETOTRANSFORM_CANT_TAGS)
             local max_monsters_to_spawn = math.random(3, 4)
             for i, v in ipairs(ents) do
                 if v.leaf_state ~= "barren" and
@@ -940,6 +942,8 @@ local REMOVABLE =
     ["charcoal"] = true,
 }
 
+local DECAYREMOVE_MUST_TAGS = { "_inventoryitem" }
+local DECAYREMOVE_CANT_TAGS = { "INLIMBO", "fire" }
 local function OnTimerDone(inst, data)
     if data.name == "decay" then
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -947,7 +951,7 @@ local function OnTimerDone(inst, data)
             -- before we disappear, clean up any crap left on the ground
             -- too many objects is as bad for server health as too few!
             local leftone = false
-            for i, v in ipairs(TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "INLIMBO", "fire" })) do
+            for i, v in ipairs(TheSim:FindEntities(x, y, z, 6, DECAYREMOVE_MUST_TAGS, DECAYREMOVE_CANT_TAGS)) do
                 if REMOVABLE[v.prefab] then
                     if leftone then
                         v:Remove()

@@ -169,6 +169,7 @@ local function SmallKeepTarget(inst, target)
 end
 ]]
 
+local RETARGET_ONEOF_TAGS = {"player", "monster"}
 local function TeenRetarget(inst)
     return FindEntity(inst, SpringCombatMod(TUNING.TEENBIRD_TARGET_DIST), function(guy)
         if inst.components.combat:CanTarget(guy)  and (not guy.LightWatcher or guy.LightWatcher:IsInLight()) then
@@ -181,7 +182,7 @@ local function TeenRetarget(inst)
     end,
     nil,
     nil,
-    {"player","monster"}
+    RETARGET_ONEOF_TAGS
     )
 end
 

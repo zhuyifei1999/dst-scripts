@@ -139,13 +139,14 @@ function SinkholeSpawner:DoTargetAttack(targetinfo)
     end
 end
 
+local SINKHOLD_BLOCKER_TAGS = { "antlion_sinkhole_blocker" }
 function SinkholeSpawner:SpawnSinkhole(spawnpt)
     local x = GetRandomWithVariance(spawnpt.x, TUNING.ANTLION_SINKHOLE.RADIUS)
     local z = GetRandomWithVariance(spawnpt.z, TUNING.ANTLION_SINKHOLE.RADIUS)
 
     local function IsValidSinkholePosition(offset)
         local x1, z1 = x + offset.x, z + offset.z
-        if #TheSim:FindEntities(x1, 0, z1, TUNING.ANTLION_SINKHOLE.RADIUS * 1.9, { "antlion_sinkhole_blocker" }) > 0 then
+        if #TheSim:FindEntities(x1, 0, z1, TUNING.ANTLION_SINKHOLE.RADIUS * 1.9, SINKHOLD_BLOCKER_TAGS) > 0 then
             return false
         end
         for dx = -1, 1 do

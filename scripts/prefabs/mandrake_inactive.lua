@@ -15,9 +15,12 @@ local function onpickup(inst)
     inst.AnimState:PlayAnimation("object")
 end
 
+local SLEEPTARGETS_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
+local SLEEPTARGETS_ONEOF_TAGS = { "sleeper", "player" }
+
 local function doareasleep(inst, range, time)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" })
+    local ents = TheSim:FindEntities(x, y, z, range, nil, SLEEPTARGETS_CANT_TAGS, SLEEPTARGETS_ONEOF_TAGS)
     local canpvp = not inst:HasTag("player") or TheNet:GetPVPEnabled()
     for i, v in ipairs(ents) do
         if (v == inst or canpvp or not v:HasTag("player")) and

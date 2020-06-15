@@ -13,6 +13,7 @@ local Weapon = Class(function(self, inst)
     self.hitrange = nil
     self.onattack = nil
     self.onprojectilelaunch = nil
+	self.onprojectilelaunched = nil
     self.projectile = nil
     self.stimuli = nil
     --self.overridestimulifn = nil
@@ -50,8 +51,16 @@ function Weapon:SetOnProjectileLaunch(fn)
     self.onprojectilelaunch = fn
 end
 
+function Weapon:SetOnProjectileLaunched(fn)
+    self.onprojectilelaunched = fn
+end
+
 function Weapon:SetProjectile(projectile)
     self.projectile = projectile
+end
+
+function Weapon:SetProjectileOffset(offset)
+    self.projectile_offset = offset
 end
 
 function Weapon:SetElectric()
@@ -96,7 +105,16 @@ function Weapon:LaunchProjectile(attacker, target)
         local proj = SpawnPrefab(self.projectile)
         if proj ~= nil then
             if proj.components.projectile ~= nil then
-                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
+				if self.projectile_offset ~= nil then
+					local x, y, z = attacker.Transform:GetWorldPosition()
+
+					local dir = (target:GetPosition() - Vector3(x, y, z)):Normalize()
+					dir = dir * self.projectile_offset
+
+	                proj.Transform:SetPosition(x + dir.x, y, z + dir.z)
+				else
+	                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
+				end
                 proj.components.projectile:Throw(self.inst, target, attacker)
                 if self.inst.projectiledelay ~= nil then
                     proj.components.projectile:DelayVisibility(self.inst.projectiledelay)
@@ -105,6 +123,10 @@ function Weapon:LaunchProjectile(attacker, target)
                 proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
                 proj.components.complexprojectile:Launch(target:GetPosition(), attacker, self.inst)
             end
+        end
+
+        if self.onprojectilelaunched ~= nil then
+            self.onprojectilelaunched(self.inst, attacker, target)
         end
     end
 end

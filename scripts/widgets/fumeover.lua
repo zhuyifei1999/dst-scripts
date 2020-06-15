@@ -13,6 +13,8 @@ local function SwitchUpdatePeriod(self, period, UpdateLayers)
     end
 end
 
+local FUME_MUST_TAGS = { "sporecloud" }
+
 local function UpdateLayers(inst, self)
     if next(self.corrosives) ~= nil then
         return
@@ -22,7 +24,7 @@ local function UpdateLayers(inst, self)
 
     if not self.owner:HasTag("playerghost") then
         local x, y, z = self.owner.Transform:GetWorldPosition()
-        local fumes = TheSim:FindEntities(x, y, z, 4, { "sporecloud" })
+        local fumes = TheSim:FindEntities(x, y, z, 4, FUME_MUST_TAGS)
         for i, v in ipairs(fumes) do
             --3.5 ^ 2 = 12.25
             --4 ^ 2 = 16

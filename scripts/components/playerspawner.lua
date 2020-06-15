@@ -238,7 +238,8 @@ function self:SpawnAtNextLocation(inst, player)
     local x, y, z = GetNextSpawnPosition()
     self:SpawnAtLocation(inst, player, x, y, z)
 end
- 
+
+local SPAWNLIGHT_TAGS = { "spawnlight" }
 function self:SpawnAtLocation(inst, player, x, y, z, isloading)
     -- if migrating, resolve map location
     if player.migration ~= nil then
@@ -267,7 +268,7 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
     end
 
     -- Spawn a light if it's dark
-    if not inst.state.isday and #TheSim:FindEntities(x, y, z, 4, { "spawnlight" }) <= 0 then
+    if not inst.state.isday and #TheSim:FindEntities(x, y, z, 4, SPAWNLIGHT_TAGS) <= 0 then
         SpawnPrefab("spawnlight_multiplayer").Transform:SetPosition(x, y, z)
     end
 

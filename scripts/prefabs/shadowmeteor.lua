@@ -40,6 +40,8 @@ local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "meteor_protection" }
 local DENSITY = 0.1 -- the approximate density of rock prefabs in the rocky biomes
 local FIVERADIUS = CalculateFiveRadius(DENSITY)
 local EXCLUDE_RADIUS = 3
+local BOULDER_TAGS = {"boulder"}
+local BOULDERSPAWNBLOCKER_TAGS = { "NOBLOCK", "FX" }
 
 local function onexplode(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_impact")
@@ -135,9 +137,9 @@ local function onexplode(inst)
                 local canspawn = true
                 --Check if there's space to deploy rocks
                 --Similar to CanDeployAtPoint check in map.lua
-                local ents = TheSim:FindEntities(x, y, z, FIVERADIUS, {"boulder"})
+                local ents = TheSim:FindEntities(x, y, z, FIVERADIUS, BOULDER_TAGS)
                 if #ents < 5 then
-                    ents = TheSim:FindEntities(x, y, z, EXCLUDE_RADIUS, nil, { "NOBLOCK", "FX" })
+                    ents = TheSim:FindEntities(x, y, z, EXCLUDE_RADIUS, nil, BOULDERSPAWNBLOCKER_TAGS)
                     for k, v in pairs(ents) do
                         if v ~= inst and
                             not launched[v] and

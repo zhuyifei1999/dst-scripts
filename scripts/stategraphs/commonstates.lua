@@ -15,7 +15,7 @@ end
 
 --------------------------------------------------------------------------
 local function onsleep(inst)
-    if inst.components.health ~= nil and not inst.components.health:IsDead() then
+    if inst.components.health == nil or (inst.components.health ~= nil and not inst.components.health:IsDead()) then
 		if inst.sg:HasStateTag("jumping") and inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown() then
 			inst.sg:GoToState("sink")			
 		else

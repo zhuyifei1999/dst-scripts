@@ -42,9 +42,11 @@ local function ShouldAcceptItem(inst, item, giver)
     return giver:HasTag("spiderwhisperer") and inst.components.eater:CanEat(item)
 end
 
+local SPIDER_MUST_TAGS = { "spider" }
+local SPIDER_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
 function GetOtherSpiders(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    return TheSim:FindEntities(x, y, z, 15,  { "spider" }, { "FX", "NOCLICK", "DECOR", "INLIMBO" })
+    return TheSim:FindEntities(x, y, z, 15, SPIDER_MUST_TAGS, SPIDER_CANT_TAGS)
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
@@ -171,8 +173,9 @@ local function OnEntitySleep(inst)
     end
 end
 
+local SPIDERDEN_TAGS = {"spiderden"}
 local function SummonFriends(inst, attacker)
-    local den = GetClosestInstWithTag("spiderden", inst, TUNING.SPIDER_SUMMON_WARRIORS_RADIUS)
+    local den = GetClosestInstWithTag(SPIDERDEN_TAGS, inst, TUNING.SPIDER_SUMMON_WARRIORS_RADIUS)
     if den ~= nil and den.components.combat ~= nil and den.components.combat.onhitfn ~= nil then
         den.components.combat.onhitfn(den, attacker)
     end

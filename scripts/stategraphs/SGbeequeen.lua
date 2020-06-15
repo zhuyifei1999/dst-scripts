@@ -1,6 +1,8 @@
 require("stategraphs/commonstates")
 
 --------------------------------------------------------------------------
+local FOCUSTARGET_MUST_TAGS = { "_combat", "_health" }
+local FOCUSTARGET_CANT_TAGS = { "INLIMBO", "player", "bee" }
 
 local function ShakeIfClose(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, .5, .02, .15, inst, 30)
@@ -590,7 +592,7 @@ local states =
                     end
                     if #targets < maxtargets then
                         local x, y, z = inst.Transform:GetWorldPosition()
-                        for i, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.BEEQUEEN_FOCUSTARGET_RANGE, { "_combat", "_health" }, { "INLIMBO", "player", "bee" })) do
+                        for i, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.BEEQUEEN_FOCUSTARGET_RANGE, FOCUSTARGET_MUST_TAGS, FOCUSTARGET_CANT_TAGS)) do
                             if v.components.combat.target == inst and not v.components.health:IsDead() then
                                 table.insert(targets, v)
                                 if #targets >= maxtargets then

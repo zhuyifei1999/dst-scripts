@@ -1180,6 +1180,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_pickaxe.zip"),
         Asset("ANIM", "anim/player_actions_shovel.zip"),
         Asset("ANIM", "anim/player_actions_blowdart.zip"),
+        Asset("ANIM", "anim/player_actions_slingshot.zip"),
         Asset("ANIM", "anim/player_actions_eat.zip"),
         Asset("ANIM", "anim/player_actions_item.zip"),
         Asset("ANIM", "anim/player_cave_enter.zip"),
@@ -1288,6 +1289,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_boat_jump.zip"),
         Asset("ANIM", "anim/player_mount_boat_sink.zip"),
         Asset("ANIM", "anim/player_mount_blowdart.zip"),
+        Asset("ANIM", "anim/player_mount_slingshot.zip"),
         Asset("ANIM", "anim/player_mount_shock.zip"),
         Asset("ANIM", "anim/player_mount_frozen.zip"),
         Asset("ANIM", "anim/player_mount_groggy.zip"),
@@ -1718,6 +1720,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("grogginess")
         inst.components.grogginess:SetResistance(3)
         inst.components.grogginess:SetKnockOutTest(ex_fns.ShouldKnockout)
+
+        inst:AddComponent("sleepingbaguser")
 
         inst:AddComponent("colourtweener")
         inst:AddComponent("touchstonetracker")

@@ -58,6 +58,9 @@ local function Retry(player, params)
     Reschedule(player, params, RETRY_INTERVAL + RETRY_VARIANCE * math.random())
 end
 
+local NEARFIRE_MUST_TAGS = { "fire" }
+local NEARFIRE_CANT_TAGS = { "_equippable" }
+
 local function SpawnHand(player, params)
     if #params.ents > 0 or player.components.age:GetAge() < INITIAL_SPAWN_THRESHOLD then
         --Already spawned, or player is too young, try again next time
@@ -70,7 +73,7 @@ local function SpawnHand(player, params)
         Retry(player, params)
         return
     end
-    local fire = FindEntity(player, 60, nil, { "fire" }, { "_equippable" }, _fueltags)
+    local fire = FindEntity(player, 60, nil, NEARFIRE_MUST_TAGS, NEARFIRE_CANT_TAGS, _fueltags)
     if fire == nil then
         --No fire nearby, retry with delay
         Retry(player, params)

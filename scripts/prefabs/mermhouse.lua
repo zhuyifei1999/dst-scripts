@@ -114,6 +114,8 @@ local function OnIsDay(inst, isday)
     end
 end
 
+local HAUNT_TARGET_MUST_TAGS = { "character" }
+local HAUNT_TARGET_CANT_TAGS = { "merm", "playerghost", "INLIMBO" }
 local function OnHaunt(inst)
     if inst.components.childspawner == nil or
         not inst.components.childspawner:CanSpawn() or
@@ -121,7 +123,7 @@ local function OnHaunt(inst)
         return false
     end
 
-    local target = FindEntity(inst, 25, nil, { "character" }, { "merm", "playerghost", "INLIMBO" })
+    local target = FindEntity(inst, 25, nil, HAUNT_TARGET_MUST_TAGS, HAUNT_TARGET_CANT_TAGS)
     if target == nil then
         return false
     end

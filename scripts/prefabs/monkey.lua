@@ -113,6 +113,7 @@ local function _ForgetTarget(inst)
     inst.components.combat:SetTarget(nil)
 end
 
+local MONKEY_TAGS = { "monkey" }
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     SetHarassPlayer(inst, nil)
@@ -122,7 +123,7 @@ local function OnAttacked(inst, data)
     inst.task = inst:DoTaskInTime(math.random(55, 65), _ForgetTarget) --Forget about target after a minute
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 30, { "monkey" })
+    local ents = TheSim:FindEntities(x, y, z, 30, MONKEY_TAGS)
     for i, v in ipairs(ents) do
         if v ~= inst then
             v.components.combat:SuggestTarget(data.attacker)
@@ -162,6 +163,9 @@ local function FindTargetOfInterest(inst)
     end
 end
 
+local RETARGET_MUST_TAGS = { "_combat" }
+local RETARGET_CANT_TAGS = { "playerghost" }
+local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local function retargetfn(inst)
     return inst:HasTag("nightmare")
         and FindEntity(
@@ -170,9 +174,9 @@ local function retargetfn(inst)
                 function(guy)
                     return inst.components.combat:CanTarget(guy)
                 end,
-                { "_combat" }, --see entityreplica.lua
-                { "playerghost" },
-                { "character", "monster" }
+                RETARGET_MUST_TAGS, --see entityreplica.lua
+                RETARGET_CANT_TAGS,
+                RETARGET_ONEOF_TAGS
             )
         or nil
 end

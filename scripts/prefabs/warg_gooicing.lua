@@ -28,10 +28,13 @@ local function DoSplatFx(inst)
 	SpawnPrefab("icing_splat_fx").Transform:SetPosition(x, 0, z)
 end
 
+local GOO_TARGET_MUST_TAGS = { "_combat" }
+local GOO_TARGET_CANT_TAGS = { "INLIMBO", "fire", "burnt", "gingerbread" }
+
 local function doprojectilehit(inst, other)
     local caster = (inst._caster ~= nil and inst._caster:IsValid()) and inst._caster or nil
 
-	local other = other or FindEntity(inst, TUNING.WARG_GOO_RADIUS, nil, { "_combat" }, { "INLIMBO", "fire", "burnt", "gingerbread" })
+	local other = other or FindEntity(inst, TUNING.WARG_GOO_RADIUS, nil, GOO_TARGET_MUST_TAGS, GOO_TARGET_CANT_TAGS)
 	if other ~= nil and other ~= caster and other.components.combat ~= nil  then
         if other.components.pinnable ~= nil and (other.components.health == nil or not other.components.health:IsDead()) then
 			DoSplatFx(other.components.pinnable.stuck and inst or other)

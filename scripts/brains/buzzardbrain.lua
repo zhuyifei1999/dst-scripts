@@ -31,6 +31,9 @@ for i, v in ipairs(FOODGROUP.OMNI.types) do
     table.insert(FOOD_TAGS, "edible_"..v)
 end
 
+local FINDTHREAT_MUST_TAGS = { "notarget" }
+local FINDTHREAT_CANT_TAGS = { "player", "monster", "scarytoprey" }
+
 local function FindThreat(inst, radius)
     return FindEntity(
             inst,
@@ -40,8 +43,8 @@ local function FindThreat(inst, radius)
                     or inst:IsNear(guy, inst.components.combat:GetAttackRange() + guy:GetPhysicsRadius(0))
             end,
             nil,
-            { "notarget" },
-            { "player", "monster", "scarytoprey" }
+            FINDTHREAT_MUST_TAGS,
+            FINDTHREAT_CANT_TAGS
         )
 end
 

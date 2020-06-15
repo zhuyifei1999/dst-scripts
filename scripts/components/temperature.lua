@@ -255,6 +255,8 @@ function Temperature:GetMoisturePenalty()
     return self.inst.components.moisture ~= nil and -Lerp(0, self.maxmoisturepenalty, self.inst.components.moisture:GetMoisturePercent()) or 0
 end
 
+local UPDATE_SPAWNLIGHT_ONEOF_TAGS = { "HASHEATER", "spawnlight" }
+local UPDATE_NOSPAWNLIGHT_MUST_TAGS = { "HASHEATER" }
 function Temperature:OnUpdate(dt, applyhealthdelta)
     self.externalheaterpower = 0
     self.delta = 0
@@ -281,8 +283,8 @@ function Temperature:OnUpdate(dt, applyhealthdelta)
         -- Prepare to figure out the temperature where we are standing
         local x, y, z = self.inst.Transform:GetWorldPosition()
         local ents = self.usespawnlight and
-            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, nil, self.ignoreheatertags, { "HASHEATER", "spawnlight" }) or
-            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, { "HASHEATER" }, self.ignoreheatertags)
+            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, nil, self.ignoreheatertags, UPDATE_SPAWNLIGHT_ONEOF_TAGS) or
+            TheSim:FindEntities(x, y, z, ZERO_DISTANCE, UPDATE_NOSPAWNLIGHT_MUST_TAGS, self.ignoreheatertags)
         if self.usespawnlight and #ents > 0 then
             for i, v in ipairs(ents) do
                 if v.components.heater == nil and v:HasTag("spawnlight") then

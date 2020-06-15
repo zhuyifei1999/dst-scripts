@@ -100,6 +100,7 @@ local function SerializeStage(inst, stageindex, source)
     OnStageDirty(inst)
 end
 
+local DRYUP_CANT_FLAGS = {"locomotor", "FX"}
 local function SetStage(inst, stage, source, snap_to_stage)
     if stage == inst.stage then
         return
@@ -126,7 +127,7 @@ local function SetStage(inst, stage, source, snap_to_stage)
         
 		if inst.stage == "dryup" then
 			local x, y, z = inst.Transform:GetWorldPosition()
-			if #(TheSim:FindEntities(x, y, z, 1.1, nil, {"locomotor", "FX"})) > 0 then
+			if #(TheSim:FindEntities(x, y, z, 1.1, nil, DRYUP_CANT_FLAGS)) > 0 then
 				return
 			end
 		end        

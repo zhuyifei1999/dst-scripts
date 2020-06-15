@@ -298,9 +298,11 @@ local function TryPerish(item)
     item.components.perishable:ReducePercent(TUNING.TOADSTOOL_SPORECLOUD_ROT)
 end
 
+local SPOIL_CANT_TAGS = { "small_livestock" }
+local SPOIL_ONEOF_TAGS = { "fresh", "stale", "spoiled" }
 local function DoAreaSpoil(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, nil, { "small_livestock" }, { "fresh", "stale", "spoiled" })
+    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, nil, SPOIL_CANT_TAGS, SPOIL_ONEOF_TAGS)
     for i, v in ipairs(ents) do
         TryPerish(v)
     end

@@ -42,6 +42,13 @@ local function trygrowth(inst)
     end
 end
 
+local TENTACLES_BLOCKED_CANT_TAGS = { "INLIMBO", "FX" }
+local BIRDSMAXCHECK_MUST_TAGS = { "magicalbird" }
+local SLEEPTARGET_PVP_ONEOF_TAGS = { "sleeper", "player" }
+local SLEEPTARGET_NOPVP_MUST_TAGS = { "sleeper" }
+local SLEEPTARGET_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
+local GARDENING_CANT_TAGS = { "pickable", "stump", "withered", "INLIMBO" }
+
 local book_defs =
 {
     {
@@ -61,7 +68,7 @@ local book_defs =
                     local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
                         local pos = pt + offset
                         --NOTE: The first search includes invisible entities
-                        return #TheSim:FindEntities(pos.x, 0, pos.z, 1, nil, { "INLIMBO", "FX" }) <= 0
+                        return #TheSim:FindEntities(pos.x, 0, pos.z, 1, nil, TENTACLES_BLOCKED_CANT_TAGS) <= 0
                             and TheWorld.Map:IsPassableAtPoint(pos:Get())
 							and TheWorld.Map:IsDeployPointClear(pos, nil, 1)
                     end)
@@ -105,7 +112,7 @@ local book_defs =
             reader.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
             
             --we can actually run out of command buffer memory if we allow for infinite birds
-            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 10, nil, nil, { "magicalbird" })
+            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 10, BIRDSMAXCHECK_MUST_TAGS)
             if #ents > 30 then
                 reader.components.talker:Say(GetString(reader, "ANNOUNCE_WAYTOOMANYBIRDS"))
             else
@@ -178,8 +185,8 @@ local book_defs =
             local x, y, z = reader.Transform:GetWorldPosition()
             local range = 30
             local ents = TheNet:GetPVPEnabled() and
-                        TheSim:FindEntities(x, y, z, range, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" }) or
-                        TheSim:FindEntities(x, y, z, range, { "sleeper" }, { "player", "FX", "DECOR", "INLIMBO" })
+                        TheSim:FindEntities(x, y, z, range, nil, SLEEPTARGET_CANT_TAGS, SLEEPTARGET_PVP_ONEOF_TAGS) or
+                        TheSim:FindEntities(x, y, z, range, SLEEPTARGET_NOPVP_MUST_TAGS, SLEEPTARGET_CANT_TAGS)
             for i, v in ipairs(ents) do
                 if v ~= reader and
                     not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
@@ -217,7 +224,7 @@ local book_defs =
 
             local x, y, z = reader.Transform:GetWorldPosition()
             local range = 30
-            local ents = TheSim:FindEntities(x, y, z, range, nil, { "pickable", "stump", "withered", "INLIMBO" })
+            local ents = TheSim:FindEntities(x, y, z, range, nil, GARDENING_CANT_TAGS)
             if #ents > 0 then
                 trygrowth(table.remove(ents, math.random(#ents)))
                 if #ents > 0 then

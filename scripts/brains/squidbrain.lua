@@ -63,6 +63,8 @@ local function getdirectionFn(inst)
 return (inst.Transform:GetRotation() + r*r*r * 60) * DEGREES
 end
 
+local OCEANFISH_TAGS = {"oceanfish"}
+
 local function GetFoodTarget(inst)
     if inst.foodtarget and not inst.foodtarget:IsValid() then
         inst.foodtarget = nil
@@ -70,7 +72,7 @@ local function GetFoodTarget(inst)
     local target = inst.foodtarget or FindEntity(inst, SEE_FOOD_DIST, function(food)
                 return TheWorld.Map:IsOceanAtPoint(inst.Transform:GetWorldPosition())
             end,
-            {"oceanfish"})
+            OCEANFISH_TAGS)
 
     return target
 end
@@ -91,14 +93,14 @@ local function EatFishAction(inst)
             end,
             nil,
             nil,
-            {"oceanfish"})
+            OCEANFISH_TAGS)
 
         if target then
             inst.foodtarget = target
             local targetpos = Vector3(target.Transform:GetWorldPosition())
             
             -- signal nearby squid to eat nearby fish
-            local fish = TheSim:FindEntities(targetpos.x, targetpos.y, targetpos.z, 10, {"oceanfish"} ) 
+            local fish = TheSim:FindEntities(targetpos.x, targetpos.y, targetpos.z, 10, OCEANFISH_TAGS) 
             if #fish >0 then
                 for i=#fish,1,-1 do
                     local item = fish[i]
@@ -148,9 +150,10 @@ local function gettiredoutdirectionFn(inst)
     return (angle + r*r*r * 120) * DEGREES
 end
 
+local FIND_WALL_TAGS = {"wall"}
 local function findwall(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local walls = TheSim:FindEntities(x,y,z, 1, {"wall"})
+    local walls = TheSim:FindEntities(x,y,z, 1, FIND_WALL_TAGS)
     return #walls > 0
 end
 

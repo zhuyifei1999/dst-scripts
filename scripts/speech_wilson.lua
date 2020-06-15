@@ -230,6 +230,12 @@ return {
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+			NOT_NIGHT = "only_used_by_walter",
+			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "We're taking on a lot of water.",
@@ -468,6 +474,21 @@ return {
     {
         "only_used_by_wortox",
     },
+
+    --walter specfic
+	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+	{
+		"only_used_by_walter",
+		"only_used_by_walter",
+	},
+	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+	{
+        "only_used_by_walter",
+	},
+	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+	{
+        "only_used_by_walter",
+	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Those ingredients didn't make anything.",
@@ -789,6 +810,16 @@ return {
             REVIVER = "Why thank you, %s!",
             GHOST = "%s is looking greener around the gills than usual.",
             FIRESTARTER = "Didn't anyone teach you not to play with fire?!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Good day, %s!",
+            ATTACKER = "Is that how a Pinetree Pioneer is meant to behave?",
+            MURDERER = "Did you run out of material for your stories, %s?",
+            REVIVER = "I can always count on %s.",
+            GHOST = "I know you're having fun, but we'd best find a heart.",
+            FIRESTARTER = "That doesn't look like a campfire, %s.",
         },
 
         MIGRATION_PORTAL =
@@ -3267,6 +3298,30 @@ return {
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "What in the name of science have you been feeding her?",
+            "What in the name of science have you been feeding her?",
+        },
+        WOBYSMALL = 
+        {
+            "It's a scientific fact that petting a good dog will improve your day.",
+            "It's a scientific fact that petting a good dog will improve your day.",
+        },
+		WALTERHAT = "I was never exactly \"outdoorsy\" in my youth.",
+		SLINGSHOT = "The bane of windows everywhere.",
+		SLINGSHOTAMMO_ROCK = "Shots to be slinged.",		
+		SLINGSHOTAMMO_MARBLE = "Shots to be slinged.",		
+		SLINGSHOTAMMO_THULECITE = "Shots to be slinged.",	
+        SLINGSHOTAMMO_GOLD = "Shots to be slinged.",
+        SLINGSHOTAMMO_SLOW = "Shots to be slinged.",
+        SLINGSHOTAMMO_FREEZE = "Shots to be slinged.",
+		SLINGSHOTAMMO_POOP = "Poop projectiles.",
+        PORTABLETENT = "I feel like I haven't had a proper night's sleep in ages!",
+        PORTABLETENT_ITEM = "This requires some a-tent-tion.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Ah yes. Very science-y.",
 		GHOSTLYELIXIR_FASTREGEN = "Ah yes. Very science-y.",
 		GHOSTLYELIXIR_SHIELD = "Ah yes. Very science-y.",

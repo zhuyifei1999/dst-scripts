@@ -181,8 +181,8 @@ local function SpawnFlock(colonyNum,loc,check_angle)
     end
 end
 
+local STRUCTURES_TAGS = {"structure"}
 local function EstablishColony(loc)
-
     local radius = SEARCH_RADIUS
     local pos
     local ignore_walls = false
@@ -216,7 +216,7 @@ local function EstablishColony(loc)
             return false
         end
 		
-        if #(TheSim:FindEntities(run_point.x, run_point.y, run_point.z, MIN_DIST_FROM_STRUCTURES, {"structure"})) > 0 then
+        if #(TheSim:FindEntities(run_point.x, run_point.y, run_point.z, MIN_DIST_FROM_STRUCTURES, STRUCTURES_TAGS)) > 0 then
             --print("colony too close to structures")
 			return false
         end

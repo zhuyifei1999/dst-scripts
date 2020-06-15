@@ -156,8 +156,9 @@ function MermKingManager:CreateMermKing(candidate, throne)
     TheWorld:PushEvent("onmermkingcreated", {king = self.king, throne = self:GetMainThrone()})
 end
 
+local MERMCANDIDATE_MUST_TAGS = {"merm"}
+local MERMCANDIDATE_CANT_TAGS = {"player", "mermking", "mermguard"}
 function MermKingManager:FindMermCandidate(throne)
-
 	-- Why are we finding a candidate if we already have a king?
 	if self:HasKing() then
 		print ("ERROR? Trying to find candidate when we already have a king")
@@ -169,7 +170,7 @@ function MermKingManager:FindMermCandidate(throne)
 			function(ent)
 				return ent:IsValid() and ent.components.health and not ent.components.health:IsDead() and not self:IsCandidate(ent)
 			end, 
-		{"merm"}, {"player", "mermking", "mermguard"})
+		MERMCANDIDATE_MUST_TAGS, MERMCANDIDATE_CANT_TAGS)
 
 	    if merm_candidate then
 	        self:ShouldGoToThrone(merm_candidate, throne)

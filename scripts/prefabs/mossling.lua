@@ -35,6 +35,8 @@ local function HasGuardian(inst)
         and inst.components.herdmember.herd.components.guardian:HasGuardian()
 end
 
+local RETARGET_CANT_TAGS = { "prey", "smallcreature", "mossling", "moose" }
+local RETARGET_ONEOF_TAGS = { "monster", "player" }
 local function RetargetFn(inst)
     return (inst.mother_dead or inst:HasGuardian())
         and FindEntity(
@@ -44,8 +46,8 @@ local function RetargetFn(inst)
                     return inst.components.combat:CanTarget(guy)
                 end,
                 nil,
-                { "prey", "smallcreature", "mossling", "moose" },
-                { "monster", "player" }
+                RETARGET_CANT_TAGS,
+                RETARGET_ONEOF_TAGS
             )
         or nil
 end

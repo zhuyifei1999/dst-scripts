@@ -14,9 +14,10 @@ local function ShouldSleep(inst)
     return DefaultSleepTest(inst) and not inst.sg:HasStateTag("flight")
 end
 
+local BIRD_TAGS = { "bird" }
 local function OnAttacked(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 30, { "bird" })
+    local ents = TheSim:FindEntities(x, y, z, 30, BIRD_TAGS)
     local num_friends = 0
     local maxnum = 5
     for k, v in pairs(ents) do

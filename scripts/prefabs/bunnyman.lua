@@ -144,6 +144,8 @@ local function is_meat(item)
     return item.components.edible ~= nil and item.components.edible.foodtype == FOODTYPE.MEAT and not item:HasTag("smallcreature")
 end
 
+local RETARGET_MUST_TAGS = { "_combat", "_health" }
+local RETARGET_ONEOF_TAGS = { "monster", "player" }
 local function NormalRetargetFn(inst)
     return not inst:IsInLimbo()
         and FindEntity(
@@ -156,9 +158,9 @@ local function NormalRetargetFn(inst)
                                 guy:IsNear(inst, TUNING.BUNNYMAN_SEE_MEAT_DIST) and
                                 guy.components.inventory:FindItem(is_meat) ~= nil))
                 end,
-                { "_combat", "_health" }, -- see entityreplica.lua
+                RETARGET_MUST_TAGS, -- see entityreplica.lua
                 nil,
-                { "monster", "player" }
+                RETARGET_ONEOF_TAGS
             )
         or nil
 end

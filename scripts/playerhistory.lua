@@ -52,10 +52,11 @@ function PlayerHistory:UpdateHistoryFromClientTable()
     if ClientObjs ~= nil and #ClientObjs > 0 then
         local my_userid = TheNet:GetUserID()
         local server_name = TheNet:GetServerName()
+		local is_client_hosted = TheNet:GetServerIsClientHosted()
         local current_time = os.time()
 
         for i, v in ipairs(ClientObjs) do
-            if v.userid ~= my_userid and v.performance == nil then -- Skip yourself and dedicated server host
+            if v.userid ~= my_userid and (is_client_hosted or v.performance == nil) then -- Skip yourself and dedicated server host
 				if self.seen_players[v.userid] == nil then
 					self.seen_players[v.userid] = 
 					{

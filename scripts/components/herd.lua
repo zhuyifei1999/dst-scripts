@@ -51,13 +51,18 @@ end
 
 function Herd:GetDebugString()
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, { "herdmember", self.membertag })
+    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, self.membersearchtags)
     local str = string.format("members:%d membercount:%d max:%d membertag:%s gatherrange:%.2f nearby_tagged:%d", GetTableSize(self.members), self.membercount, self.maxsize, self.membertag, self.gatherrange, ents and #ents or 0)
     return str
 end
 
 function Herd:SetMemberTag(tag)
     self.membertag = tag
+	if tag == nil then
+		self.membersearchtags = nil
+	else
+		self.membersearchtags = { "herdmember", tag }
+	end
 end
 
 function Herd:SetGatherRange(range)
@@ -149,7 +154,7 @@ function Herd:GatherNearbyMembers()
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, { "herdmember", self.membertag })
+    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, self.membersearchtags)
 
     for i, v in ipairs(ents) do 
         if self.members[v] == nil and
@@ -164,13 +169,14 @@ function Herd:GatherNearbyMembers()
     end
 end
 
+local HERD_TAGS = { "herd" }
 function Herd:MergeNearbyHerds()
     if self.nomerging or self.gatherrange == nil or self:IsFull() then
         return
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, { "herd" })
+    local ents = TheSim:FindEntities(x, y, z, self.gatherrange, HERD_TAGS)
 
     for i, v in ipairs(ents) do
         if v ~= self.inst and

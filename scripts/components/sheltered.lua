@@ -53,11 +53,13 @@ function Sheltered:SetSheltered(issheltered)
     end
 end
 
+local SHELTERED_MUST_TAGS = { "shelter" }
+local SHELTERED_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "stump", "burnt" }
 function Sheltered:OnUpdate(dt)
     self.announcecooldown = math.max(0, self.announcecooldown - dt)
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 2, { "shelter" }, { "FX", "NOCLICK", "DECOR", "INLIMBO", "stump", "burnt" })
+    local ents = TheSim:FindEntities(x, y, z, 2, SHELTERED_MUST_TAGS, SHELTERED_CANT_TAGS)
     self:SetSheltered(#ents > 0)
 end
 

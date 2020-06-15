@@ -55,9 +55,11 @@ local TARGET_TAGS = { "_combat" }
 for k, v in pairs(WORK_ACTIONS) do
     table.insert(TARGET_TAGS, k.."_workable")
 end
+local TARGET_IGNORE_TAGS = { "INLIMBO" }
+
 local function destroystuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO" }, TARGET_TAGS)
+    local ents = TheSim:FindEntities(x, y, z, 3, nil, TARGET_IGNORE_TAGS, TARGET_TAGS)
     for i, v in ipairs(ents) do
         --stuff might become invalid as we work or damage during iteration
         if v ~= inst.WINDSTAFF_CASTER and v:IsValid() then

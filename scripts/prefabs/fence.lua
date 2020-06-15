@@ -5,6 +5,10 @@ local wall_prefabs =
     "collapse_small",
 }
 
+local FINDDOOR_MUST_TAGS = {"door"}
+local FINDWALL_MUST_TAGS = {"wall"}
+local FINDWALL_CANT_TAGS = {"alignwall"}
+
 local ROT_SIDES = 8
 local function CalcRotationEnum(rot)
     return math.floor((math.floor(rot + 0.5) / 45) % ROT_SIDES)
@@ -104,7 +108,7 @@ local function FindPairedDoor(inst)
     search_x = x + (swingright and search_x or -search_x)
     search_y = z + (swingright and -search_y or search_y)
 
-    local other_door = TheSim:FindEntities(search_x,0,search_y, 0.25, {"door"})[1]
+    local other_door = TheSim:FindEntities(search_x,0,search_y, 0.25, FINDDOOR_MUST_TAGS)[1]
     if other_door then
         local opposite_swing = swingright ~= IsSwingRight(other_door)
         local opposite_rotation = inst.Transform:GetRotation() ~= other_door.Transform:GetRotation()
@@ -116,7 +120,7 @@ end
 
 local function GetNeighbors(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    return TheSim:FindEntities(x,0,z, 1.5, {"wall"})
+    return TheSim:FindEntities(x,0,z, 1.5, FINDWALL_MUST_TAGS)
 end
 
 local function SetOffset(inst, offset)
@@ -170,9 +174,9 @@ local function _calcdooroffset(inst, neighbors)
     local search_x = -math.sin(rot / RADIANS) * 1.2
     local search_y = math.cos(rot / RADIANS) * 1.2
 
-    local walls = TheSim:FindEntities(x + search_x,0, z - search_y, 0.25, {"wall"}, {"alignwall"})
+    local walls = TheSim:FindEntities(x + search_x,0, z - search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
     if #walls == 0 then
-        walls = TheSim:FindEntities(x - search_x,0, z + search_y, 0.25, {"wall"}, {"alignwall"})
+        walls = TheSim:FindEntities(x - search_x,0, z + search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
     end
     return #walls > 0
 end

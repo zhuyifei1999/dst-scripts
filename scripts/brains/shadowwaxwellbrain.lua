@@ -54,6 +54,7 @@ local function IsNearLeader(inst, dist)
     return leader ~= nil and inst:IsNear(leader, dist)
 end
 
+local TOWORK_CANT_TAGS = { "fire", "smolder", "event_trigger", "INLIMBO", "NOCLICK" }
 local function FindEntityToWorkAction(inst, action, addtltags)
     local leader = GetLeader(inst)
     if leader ~= nil then
@@ -86,7 +87,7 @@ local function FindEntityToWorkAction(inst, action, addtltags)
         end
 
         --Find new target
-        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "fire", "smolder", "event_trigger", "INLIMBO", "NOCLICK" }, addtltags)
+        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, TOWORK_CANT_TAGS, addtltags)
         return target ~= nil and BufferedAction(inst, target, action) or nil
     end
 end

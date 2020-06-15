@@ -134,6 +134,7 @@ Recipe("bedroll_straw", {Ingredient("cutgrass", 6), Ingredient("rope", 1)}, RECI
 Recipe("bedroll_furry", {Ingredient("bedroll_straw", 1), Ingredient("manrabbit_tail", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("tent", {Ingredient("silk", 6),Ingredient("twigs", 4),Ingredient("rope", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "tent_placer")
 Recipe("siestahut", {Ingredient("silk", 2),Ingredient("boards", 4),Ingredient("rope", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "siestahut_placer")
+Recipe("portabletent_item", {Ingredient("bedroll_straw", 1), Ingredient("twigs", 4), Ingredient("rope", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE, nil, nil, nil, nil, "pinetreepioneer")
 Recipe("minifan", {Ingredient("twigs", 3), Ingredient("petals",1)}, RECIPETABS.SURVIVAL, TECH.NONE)
 Recipe("featherfan", {Ingredient("goose_feather", 5), Ingredient("cutreeds", 2), Ingredient("rope", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 
@@ -236,6 +237,7 @@ Recipe("malbatross_feathered_weave", {Ingredient("malbatross_feather", 6), Ingre
 --WAR
 Recipe("spear_wathgrithr", {Ingredient("twigs", 2), Ingredient("flint", 2), Ingredient("goldnugget", 2)}, RECIPETABS.WAR, TECH.NONE, nil, nil, nil, nil, "valkyrie")
 Recipe("wathgrithrhat", {Ingredient("goldnugget", 2), Ingredient("rocks", 2)}, RECIPETABS.WAR, TECH.NONE, nil, nil, nil, nil, "valkyrie")
+Recipe("slingshot", {Ingredient("twigs", 1), Ingredient("mosquitosack", 2)}, RECIPETABS.WAR, TECH.NONE, nil, nil, nil, nil, "pebblemaker")
 Recipe("spear", {Ingredient("twigs", 2), Ingredient("rope", 1), Ingredient("flint", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("hambat", {Ingredient("pigskin", 1), Ingredient("twigs", 2), Ingredient("meat", 2)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("nightstick", {Ingredient("lightninggoathorn", 1), Ingredient("transistor", 2), Ingredient("nitre", 2)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
@@ -259,10 +261,10 @@ Recipe("trident", {Ingredient("gnarwail_horn", 3), Ingredient("kelp", 4), Ingred
 
 
 --DRESSUP
+Recipe("sewing_kit", {Ingredient("log", 1), Ingredient("silk", 8), Ingredient("houndstooth", 2)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 
 Recipe("mermhat", {Ingredient("pondfish", 1), Ingredient("cutreeds", 1), Ingredient("twigs", 2)}, RECIPETABS.DRESS, TECH.NONE, nil, nil, nil, nil, "merm_builder")
-
-Recipe("sewing_kit", {Ingredient("log", 1), Ingredient("silk", 8), Ingredient("houndstooth", 2)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
+Recipe("walterhat", {Ingredient("silk", 4)}, RECIPETABS.DRESS, TECH.NONE, nil, nil, nil, nil, "pinetreepioneer")
 
 Recipe("flowerhat", {Ingredient("petals", 12)}, RECIPETABS.DRESS, TECH.NONE)
 Recipe("strawhat", {Ingredient("cutgrass", 12)}, RECIPETABS.DRESS,  TECH.NONE)
@@ -364,6 +366,15 @@ Recipe("livinglog", 	{Ingredient(CHARACTER_INGREDIENT.HEALTH, 20)}, CUSTOM_RECIP
 Recipe("armor_bramble", {Ingredient("livinglog", 2), Ingredient("boneshard", 4)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")
 Recipe("trap_bramble",  {Ingredient("livinglog", 1), Ingredient("stinger", 1)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")
 Recipe("compostwrap",   {Ingredient("poop", 5), Ingredient("spoiled_food", 2), Ingredient("nitre", 1)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")
+
+-- SLINGSHOT AMMO --
+Recipe("slingshotammo_rock",		{Ingredient("rocks", 1)},												CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,				{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_gold",		{Ingredient("goldnugget", 1)},											CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.SCIENCE_ONE,		{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_marble",		{Ingredient("marble", 1)},												CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.SCIENCE_TWO,		{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_poop",		{Ingredient("poop", 1)},												CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.SCIENCE_ONE,		{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_freeze",		{Ingredient("moonrocknugget", 1), Ingredient("bluegem", 1)},			CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.MAGIC_TWO,		{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_slow",		{Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)},			CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.MAGIC_THREE,		{no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+Recipe("slingshotammo_thulecite",	{Ingredient("thulecite_pieces", 1), Ingredient("nightmarefuel", 1)},	CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.ANCIENT_TWO,		{no_deconstruction = true}, nil, true, 10, "pebblemaker")
 
 ----CARTOGRAPHY----
 Recipe("mapscroll", {Ingredient("featherpencil", 1), Ingredient("papyrus", 1)}, RECIPETABS.CARTOGRAPHY, TECH.CARTOGRAPHY_TWO, nil, nil, true, nil, nil, nil, function() return TheWorld.worldprefab == "forest" and "mapscroll.tex" or ("mapscroll_"..TheWorld.worldprefab..".tex") end)
@@ -531,7 +542,6 @@ Recipe("hermitshop_oceanfishingbobber_malbatross", {Ingredient("messagebottleemp
 Recipe("hermitshop_chum", {Ingredient("messagebottleempty", 3)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_SEVEN,          nil, nil, true, nil, nil, nil, "chum.tex", nil, "chum")
 
 Recipe("hermitshop_supertacklecontainer", {Ingredient("messagebottleempty", 8)}, RECIPETABS.HERMITCRABSHOP, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "supertacklecontainer")
-
 
 ----UNCRAFTABLE----
 --NOTE: These recipes are not supposed to be craftable!

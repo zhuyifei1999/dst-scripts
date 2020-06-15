@@ -562,6 +562,24 @@ function PlayerProfile:IsBoatCameraEnabled()
 	end
 end
 
+function PlayerProfile:SetCampfireStoryCameraEnabled(enabled)
+ 	if USE_SETTINGS_FILE then
+		TheSim:SetSetting("misc", "campfirestorycamera", tostring(enabled))
+	else
+		self:SetValue("campfirestorycamera", enabled)
+		self.dirty = true
+	end
+end
+
+function PlayerProfile:IsCampfireStoryCameraEnabled()
+	-- Default to true if this value hasn't been created yet
+
+ 	if USE_SETTINGS_FILE then
+ 		return TheSim:GetSetting("misc", "campfirestorycamera") ~= "false"
+	else
+		return self:GetValue("campfirestorycamera") ~= false 
+	end
+end
 
 function PlayerProfile:SetHaveWarnedDifficultyRoG()
 	if USE_SETTINGS_FILE then
@@ -651,7 +669,7 @@ function PlayerProfile:SetProfanityFilterServerNamesEanbled(enabled)
     end
 end
 
-function PlayerProfile:GetProfanityFilterServerNamesEanbled()
+function PlayerProfile:GetProfanityFilterServerNamesEnabled()
     -- an undefined setting is considered to be enabled
     if USE_SETTINGS_FILE then
         return TheSim:GetSetting("misc", "profanityfilterservernames") ~= "false"

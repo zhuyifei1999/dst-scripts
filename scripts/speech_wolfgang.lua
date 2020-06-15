@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_BOAT_LEAK = "Drippy drops is come through boat!",
@@ -460,6 +466,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "That was not good recipe!",
@@ -781,6 +802,16 @@ return{
             REVIVER = "%s is good. Even if she smell of old fish.",
             GHOST = "Thought fish had nine lives? Oh, Wolfgang think of cats.",
             FIRESTARTER = "That not look safe, fish girl!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Is boy who tell the scary stories... h-hello %s!",
+            ATTACKER = "Tiny %s think he can pick fight with Wolfgang?",
+            MURDERER = "Wolfgang will not be part of next camping fire story!",
+            REVIVER = "%s always help Wolfgang. Wolfgang remember this!",
+            GHOST = "Wolfgang help you now, %s.",
+            FIRESTARTER = "Silly %s forget where firepit is!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3259,6 +3290,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Tiny dog grow mighty too!",
+            "Tiny dog grow mighty too!",
+        },
+        WOBYSMALL = 
+        {
+            "Woby is good pup.",
+            "Woby is good pup.",
+        },
+		WALTERHAT = "Will tiny hat fit on Wolfgang's mighty head?",
+		SLINGSHOT = "Wolfgang prefer to fight with fists.",
+		SLINGSHOTAMMO_ROCK = "Is little bits of junk.",		
+		SLINGSHOTAMMO_MARBLE = "Is little bits of junk.",		
+		SLINGSHOTAMMO_THULECITE = "Is little bits of junk.",	
+        SLINGSHOTAMMO_GOLD = "Is little bits of junk.",
+        SLINGSHOTAMMO_SLOW = "Is little bits of junk.",
+        SLINGSHOTAMMO_FREEZE = "Is little bits of junk.",
+		SLINGSHOTAMMO_POOP = "Is little bits of poop.",
+        PORTABLETENT = "Is good, solid tent!",
+        PORTABLETENT_ITEM = "Wolfgang will set up tent. Make it strong!",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",
 		GHOSTLYELIXIR_FASTREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",
 		GHOSTLYELIXIR_SHIELD = "Wolfgang not trust tiny bottles made by creepy girl.",

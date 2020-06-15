@@ -18,6 +18,8 @@ local function OceanChaseWaryDistance(inst, target)
     return (CanProbablyReachTargetFromShore(inst, target, TUNING.DEERCLOPS_ATTACK_RANGE - 0.25) and 0) or OUTSIDE_CATAPULT_RANGE
 end
 
+local BASEDESTROY_CANT_TAGS = {"wall"}
+
 local function BaseDestroy(inst)
     if inst.components.knownlocations:GetLocation("targetbase") then
     	local target = FindEntity(inst, SEE_DIST, function(item) 
@@ -26,7 +28,7 @@ local function BaseDestroy(inst)
                         and item:IsOnValidGround() then
     				return true
     			end
-    		end, nil, {"wall"})
+    		end, nil, BASEDESTROY_CANT_TAGS)
     	if target then
     		return BufferedAction(inst, target, ACTIONS.HAMMER)
     	end

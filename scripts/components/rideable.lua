@@ -51,6 +51,10 @@ local Rideable = Class(function(self, inst)
 
     self.riddentask = nil
 
+    self.shouldsave = true
+
+    self.allowed_riders = {}
+
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("saddleable")
 
@@ -168,6 +172,14 @@ function Rideable:Buck(gentle)
     if self.rider ~= nil and self.rider.components.rider ~= nil then
         self.rider:PushEvent("bucked", { gentle = gentle })
     end
+end
+
+function Rideable:SetShouldSave(shouldsave)
+    self.shouldsave = shouldsave
+end
+
+function Rideable:ShouldSave()
+    return self.shouldsave
 end
 
 --V2C: domesticatable MUST load b4 rideable, see domesticatable.lua

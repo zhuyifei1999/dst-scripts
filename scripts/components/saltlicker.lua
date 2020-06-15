@@ -1,7 +1,9 @@
 local _StopSeeking --forward declare
 
+local SALTLICK_MUST_TAGS = { "saltlick" }
+local SALTLICK_CANT_TAGS = { "INLIMBO", "fire", "burnt" }
 local function _checkforsaltlick(inst, self, resalt)
-    local ent = FindEntity(inst, (resalt or inst:IsAsleep()) and TUNING.SALTLICK_CHECK_DIST * .75 or TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
+    local ent = FindEntity(inst, (resalt or inst:IsAsleep()) and TUNING.SALTLICK_CHECK_DIST * .75 or TUNING.SALTLICK_USE_DIST, nil, SALTLICK_MUST_TAGS, SALTLICK_CANT_TAGS)
     if ent ~= nil then
         if ent.components.finiteuses ~= nil then
             ent.components.finiteuses:Use(self.uses_per_lick)

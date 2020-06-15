@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "It seems I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat has fallen into dangerous disrepair.",
@@ -459,6 +465,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "That was not a viable recipe.",
@@ -780,6 +801,16 @@ return{
             REVIVER = "Why thank you, dear.",
             GHOST = "Oh that won't do at all, let's get you sorted out.",
             FIRESTARTER = "Do you remember what I said about fire? I should say not!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "Let's all use our words, dear.",
+            MURDERER = "Goodness, is that how they taught you to behave in the Pioneers?",
+            REVIVER = "My, how very kind of you %s.",
+            GHOST = "Oh my, you must be more careful dear!",
+            FIRESTARTER = "Not everything is a campfire, dear.",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3258,6 +3289,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "There must be a mutagen in monster meat that triggers her growth.",
+            "There must be a mutagen in monster meat that triggers her growth.",
+        },
+        WOBYSMALL = 
+        {
+            "I was always more of a cat person, but she is very sweet.",
+            "I was always more of a cat person, but she is very sweet.",
+        },
+		WALTERHAT = "I suppose one must try to stay young at heart.",
+		SLINGSHOT = "Do be careful with that, dear.",
+		SLINGSHOTAMMO_ROCK = "Remember to clean up after yourself, dear.",		
+		SLINGSHOTAMMO_MARBLE = "Remember to clean up after yourself, dear.",		
+		SLINGSHOTAMMO_THULECITE = "Remember to clean up after yourself, dear.",	
+        SLINGSHOTAMMO_GOLD = "Remember to clean up after yourself, dear.",
+        SLINGSHOTAMMO_SLOW = "Remember to clean up after yourself, dear.",
+        SLINGSHOTAMMO_FREEZE = "Remember to clean up after yourself, dear.",
+		SLINGSHOTAMMO_POOP = "Oh dear...",
+        PORTABLETENT = "It's a lovely tent, but I'm afraid I don't have much use for it.",
+        PORTABLETENT_ITEM = "How very practical.",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Color-coded and clearly labeled. Well done!",
 		GHOSTLYELIXIR_FASTREGEN = "Color-coded and clearly labeled. Well done!",
 		GHOSTLYELIXIR_SHIELD = "Color-coded and clearly labeled. Well done!",

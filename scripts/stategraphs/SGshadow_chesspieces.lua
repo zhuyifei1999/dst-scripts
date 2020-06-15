@@ -73,10 +73,11 @@ ShadowChess.Functions.DeathSoundTimelineEvent = DeathSoundTimelineEvent
 --------------------------------------------------------------------------
 local LEVELUP_RADIUS = 25
 local AWAKEN_NEARBY_STATUES_RADIUS = 15
+local NEARBYSTATUES_TAGS = { "chess_moonevent" }
 
 local function AwakenNearbyStatues(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, AWAKEN_NEARBY_STATUES_RADIUS, { "chess_moonevent" })
+    local ents = TheSim:FindEntities(x, y, z, AWAKEN_NEARBY_STATUES_RADIUS, NEARBYSTATUES_TAGS)
     for i, v in ipairs(ents) do
         v:PushEvent("shadowchessroar", true)
     end
@@ -298,11 +299,12 @@ ShadowChess.States.AddHit = function(states, anim, sound_frame, busyover_frame)
 end
 
 --------------------------------------------------------------------------
+local SHADOWCHESSPIECE_TARGET_TAGS = { "shadowchesspiece" }
 local function LevelUpAlliesTimelineEvent(frame)
     return TimeEvent(frame * FRAMES, function(inst)
         -- trigger all near by shadow chess pieces to level up
         local pos = inst:GetPosition()
-        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, LEVELUP_RADIUS, { "shadowchesspiece" })
+        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, LEVELUP_RADIUS, SHADOWCHESSPIECE_TARGET_TAGS)
         for i, v in ipairs(ents) do
             if v ~= inst and not v.components.health:IsDead() then
                 v:PushEvent("levelup", { source = inst })

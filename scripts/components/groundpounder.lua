@@ -46,6 +46,8 @@ function GroundPounder:GetPoints(pt)
     return points
 end
 
+local WALKABLEPLATFORM_TAGS = {"walkableplatform"}
+
 function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatforms)
     local getEnts = breakobjects or dodamage
     local map = TheWorld.Map
@@ -93,7 +95,7 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage, pushplatfor
         end
 
         if pushplatforms then
-            local platform_ents = TheSim:FindEntities(v.x, v.y, v.z, 3 + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, {"walkableplatform"}, self.noTags)
+            local platform_ents = TheSim:FindEntities(v.x, v.y, v.z, 3 + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, WALKABLEPLATFORM_TAGS, self.noTags)
             for i, p_ent in ipairs(platform_ents) do
                 if p_ent ~= self.inst and p_ent:IsValid() and p_ent.Transform ~= nil and p_ent.components.boatphysics ~= nil then
                     local v2x, v2y, v2z = p_ent.Transform:GetWorldPosition()
@@ -170,7 +172,7 @@ function GroundPounder:GroundPound_Offscreen(position)
 
     if self.platformPushingRings > 0 then
         local platformPushRadius = self.initialRadius + (self.platformPushingRings - 1) * self.radiusStepDistance
-        local platformEnts = TheSim:FindEntities(position.x, position.y, position.z, platformPushRadius + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, {"walkableplatform"}, self.noTags)
+        local platformEnts = TheSim:FindEntities(position.x, position.y, position.z, platformPushRadius + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, WALKABLEPLATFORM_TAGS, self.noTags)
         for i, p_ent in ipairs(platform_ents) do
             if p_ent ~= self.inst and p_ent:IsValid() and p_ent.Transform ~= nil and p_ent.components.boatphysics ~= nil then
                 local v2x, v2y, v2z = p_ent.Transform:GetWorldPosition()

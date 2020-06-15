@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_BOAT_LEAK = "We gotta repair this ol'girl!",
@@ -465,6 +471,21 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "The ingredients didn't assemble right.",
@@ -786,6 +807,16 @@ return{
             REVIVER = "Whew, not bad, kid!",
             GHOST = "Don't you worry, I'll fix ya right up.",
             FIRESTARTER = "Hey, who let you play with that?!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Hey, %s! Caught any interestin' bugs lately?",
+            ATTACKER = "You better simmer down, %s!",
+            MURDERER = "No murderer's gettin' away on my watch!",
+            REVIVER = "Thanks kid, you really got the helpfulness thing down pat!",
+            GHOST = "Hey %s, no slacking! We've got lots to do!",
+            FIRESTARTER = "That ain't safe, %s.",
         },
 
         MIGRATION_PORTAL =
@@ -3264,6 +3295,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Awful skittish for such a big gal.",
+            "Awful skittish for such a big gal.",
+        },
+        WOBYSMALL = 
+        {
+            "Well, ain't you sweet!",
+            "Well, ain't you sweet!",
+        },
+		WALTERHAT = "I'll stick to my hardhat.",
+		SLINGSHOT = "Looks kinda flimsy.",
+		SLINGSHOTAMMO_ROCK = "Hmph. Handmade. The shape's all irregular.",		
+		SLINGSHOTAMMO_MARBLE = "Hmph. Handmade. The shape's all irregular.",		
+		SLINGSHOTAMMO_THULECITE = "Hmph. Handmade. The shape's all irregular.",	
+        SLINGSHOTAMMO_GOLD = "Hmph. Handmade. The shape's all irregular.",
+        SLINGSHOTAMMO_SLOW = "Hmph. Handmade. The shape's all irregular.",
+        SLINGSHOTAMMO_FREEZE = "Hmph. Handmade. The shape's all irregular.",
+		SLINGSHOTAMMO_POOP = "I don't even wanna ask.",
+        PORTABLETENT = "Aw, this reminds me of campin' with Charlie when we were little...",
+        PORTABLETENT_ITEM = "Need any help settin' that up?",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "I don't think that's safe to drink...",
 		GHOSTLYELIXIR_FASTREGEN = "I don't think that's safe to drink...",
 		GHOSTLYELIXIR_SHIELD = "I don't think that's safe to drink...",

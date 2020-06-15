@@ -63,12 +63,13 @@ local REEL_SPEED_HIGH = 2.25
 local UNREEL_RATE = .5
 
 
-
+local HOOK_CANT_TAGS = { "INLIMBO" }
+local HOOK_ONEOF_TAGS = { "fishinghook" }
 local function OnUpdate(inst)
 	local rod = inst.components.oceanfishable:GetRod()
 
 	if rod == nil then
-		local hook = FindEntity(inst, MAX_CATCH_RADIUS, nil, nil, { "INLIMBO" }, { "fishinghook" })
+		local hook = FindEntity(inst, MAX_CATCH_RADIUS, nil, nil, HOOK_CANT_TAGS, HOOK_ONEOF_TAGS)
 
 		if hook ~= nil and hook.components.oceanfishable ~= nil then
 			inst.components.oceanfishable:SetRod(hook.components.oceanfishable:GetRod())

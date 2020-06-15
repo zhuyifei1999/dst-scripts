@@ -170,6 +170,8 @@ function YOTC_RaceCompetitor:SetRaceStartPoint(start_point_entity)
 	self:_SetCheckPoint(start_point_entity, true)
 end
 
+local CHECKPOINT_MUST_TAGS = {"yotc_racecheckpoint"}
+local CHECKPOINT_CANT_TAGS = {"fire", "burnt"}
 function YOTC_RaceCompetitor:_FindNextCheckPoint()
 	local cur_checkpoint = self.next_checkpoint
 
@@ -188,10 +190,10 @@ function YOTC_RaceCompetitor:_FindNextCheckPoint()
 		end
 
 		local x, y, z = (cur_checkpoint or self.inst).Transform:GetWorldPosition()
-		local nearby_checkpoints = TheSim:FindEntities(x, y, z, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1, {"yotc_racecheckpoint"}, {"fire", "burnt"})
+		local nearby_checkpoints = TheSim:FindEntities(x, y, z, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1, CHECKPOINT_MUST_TAGS, CHECKPOINT_CANT_TAGS)
 		if #nearby_checkpoints == 0 then
 			x, y, z = self.inst.Transform:GetWorldPosition()
-			nearby_checkpoints = TheSim:FindEntities(x, y, z, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1, {"yotc_racecheckpoint"}, {"fire", "burnt"})
+			nearby_checkpoints = TheSim:FindEntities(x, y, z, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1, CHECKPOINT_MUST_TAGS, CHECKPOINT_CANT_TAGS)
 		end
 		if self.race_start_point ~= nil and self.race_start_point:IsValid() and (self.inst:IsNear(self.race_start_point, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1) or (cur_checkpoint ~= nil and cur_checkpoint:IsNear(self.race_start_point, TUNING.YOTC_RACER_CHECKPOINT_FIND_DIST + 0.1))) then
 			table.insert(nearby_checkpoints, self.race_start_point)

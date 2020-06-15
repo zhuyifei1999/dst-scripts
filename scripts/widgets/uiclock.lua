@@ -157,6 +157,7 @@ local function CalculateLightRange(light, iscaveclockopen)
     return light:GetCalculatedRadius() * math.sqrt(1 - light:GetFalloff()) + (iscaveclockopen and 1 or -1)
 end
 
+local CAVE_LIGHT_MUST_TAGS = { "sinkhole", "lightsource" }
 function UIClock:UpdateCaveClock(owner)
     if self._lastsinkhole ~= nil and
         self._lastsinkhole:IsValid() and
@@ -167,7 +168,7 @@ function UIClock:UpdateCaveClock(owner)
         return
     end
 
-    self._lastsinkhole = FindEntity(owner, 20, function(guy) return guy:IsNear(owner, CalculateLightRange(guy.Light, self._caveopen)) end, { "sinkhole", "lightsource" })
+    self._lastsinkhole = FindEntity(owner, 20, function(guy) return guy:IsNear(owner, CalculateLightRange(guy.Light, self._caveopen)) end, CAVE_LIGHT_MUST_TAGS)
 
     if self._lastsinkhole ~= nil then
         self:OpenCaveClock()

@@ -314,9 +314,10 @@ local function moonrock_onsleep(inst)
     end
 end
 
+local MOONPORTALKEY_TAGS = { "moonportalkey" }
 local function moonrock_onupdate(inst, instant)
     local x, y, z = inst.Transform:GetWorldPosition()
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, 8, { "moonportalkey" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, 8, MOONPORTALKEY_TAGS)) do
         v:PushEvent("ms_moonportalproximity", { instant = instant })
     end
 end

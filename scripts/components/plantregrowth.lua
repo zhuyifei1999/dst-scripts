@@ -151,6 +151,7 @@ function PlantRegrowth:OnRemoveEntity()
     UnregisterUpdate(self)
 end
 
+local SPAWN_BLOCKER_TAGS = { "structure", "wall" }
 local function GetSpawnPoint(from_pt, radius, prefab)
     local map = TheWorld.Map
     if map == nil then
@@ -167,7 +168,7 @@ local function GetSpawnPoint(from_pt, radius, prefab)
             and map:CanPlacePrefabFilteredAtPoint(try_pos.x, try_pos.y, try_pos.z, prefab)
             and not (RoadManager ~= nil and RoadManager:IsOnRoad(try_pos.x, 0, try_pos.z))
             and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 3) <= 0 
-			and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, BASE_RADIUS, nil, nil, { "structure", "wall" }) <= 0 then
+			and #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, BASE_RADIUS, nil, nil, SPAWN_BLOCKER_TAGS) <= 0 then
             validpos = try_pos
             break
         end

@@ -239,12 +239,13 @@ end
 local PLANTS_RANGE = 1
 local MAX_PLANTS = 18
 
+local PLANTFX_TAGS = { "wormwood_plant_fx" }
 local function PlantTick(inst)
     if inst.sg:HasStateTag("ghostbuild") or inst.components.health:IsDead() or not inst.entity:IsVisible() then
         return
     end
     local x, y, z = inst.Transform:GetWorldPosition()
-    if #TheSim:FindEntities(x, y, z, PLANTS_RANGE, { "wormwood_plant_fx" }) < MAX_PLANTS then
+    if #TheSim:FindEntities(x, y, z, PLANTS_RANGE, PLANTFX_TAGS) < MAX_PLANTS then
         local map = TheWorld.Map
         local pt = Vector3(0, 0, 0)
         local offset = FindValidPositionByFan(
@@ -261,7 +262,7 @@ local function PlantTick(inst)
                     and tile ~= GROUND.CARPET
                     and tile ~= GROUND.IMPASSABLE
                     and tile ~= GROUND.INVALID
-                    and #TheSim:FindEntities(pt.x, 0, pt.z, .5, { "wormwood_plant_fx" }) < 3
+                    and #TheSim:FindEntities(pt.x, 0, pt.z, .5, PLANTFX_TAGS) < 3
                     and map:IsDeployPointClear(pt, nil, .5)
                     and not map:IsPointNearHole(pt, .4)
             end

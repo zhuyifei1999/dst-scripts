@@ -103,12 +103,13 @@ local function FindItems(inst, radius, fn, tags)
 end
 
 -- Go grab an egg if player gets too close to it
+local SCARY_TAGS = { "scarytoprey" }
 local function StealAction(inst)
     if not inst.components.inventory:IsFull() then
         -- Check that my egg exists and is not being held by someone else
         local target = CheckMyEgg(inst)
         local lst
-        local char = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE)
+        local char = GetClosestInstWithTag(SCARY_TAGS, inst, TOOCLOSE)
         if not target then
 		    lst = FindItems(inst, SEE_DIST/2, function(item) 
                                                     if  item.components.inventoryitem and 
@@ -188,7 +189,7 @@ local function LayEggAction(inst)
 
     local delay
     local egg = CheckMyEgg(inst)
-    local nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE) 
+    local nearest = GetClosestInstWithTag(SCARY_TAGS, inst, TOOCLOSE) 
     if nearest and nearest:IsNear(inst, TOOCLOSE) then
         --print("\rTOO CLOSE")
         return
@@ -209,7 +210,7 @@ local function LayEggAction(inst)
                             function()
                                 if not inst:IsValid() then return end
                                 inst.layingEgg = false
-                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE)
+                                nearest = GetClosestInstWithTag(SCARY_TAGS, inst, TOOCLOSE)
 
                                 if PrepareForNight(inst) or not AtRookery(inst) or
                                 (nearest and nearest:IsNear(inst, TOOCLOSE)) then
@@ -232,7 +233,7 @@ local function LayEggAction(inst)
                             function()
                                 if not inst:IsValid() then return end
                                 inst.layingEgg = false
-                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE) 
+                                nearest = GetClosestInstWithTag(SCARY_TAGS, inst, TOOCLOSE) 
 
                                 if PrepareForNight(inst) or not AtRookery(inst) or
                                    (TheWorld.state.iswinter and TheWorld.state.temperature <= -15) and

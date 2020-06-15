@@ -75,7 +75,8 @@ local function Relocate(inst)
 end
 
 local TARGET_DIST = 16
-
+local RETARGET_MUST_TAGS = { "_combat","hostile" }
+local RETARGET_CANT_TAGS = { "wall","INLIMBO" }
 local function RetargetFn(inst)
     local range = inst:GetPhysicsRadius(0) + 8
     return FindEntity(
@@ -87,8 +88,8 @@ local function RetargetFn(inst)
                             guy:IsNear(inst, range)
                         )
             end,
-            { "_combat","hostile" },
-            { "wall","INLIMBO" }
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS
         )
 end
 

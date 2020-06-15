@@ -221,6 +221,12 @@ return{
         {
             ONEGHOST = "only_used_by_wendy",
         },
+		TELLSTORY = 
+		{
+			GENERIC = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
+--fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
+		},
 	},
 	ACTIONFAIL_GENERIC = "No, no, no.",
 	ANNOUNCE_BOAT_LEAK = "Now this ride's getting fun!",
@@ -464,6 +470,21 @@ return{
         "I can't handle that much soul power!",
         "That was one soul too many!",
     },
+
+    --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_NOT_NIGHT =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua         "only_used_by_walter",
+--fallback to speech_wilson.lua 	},
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "That was nothing! Nothing!",
@@ -785,6 +806,16 @@ return{
             REVIVER = "You have a good soul, %s. I promise not to eat it.",
             GHOST = "Don't fret, I won't eat you!",
             FIRESTARTER = "Hyuyuyu, brilliant!",
+        },
+
+        WALTER =
+        {
+            GENERIC = "Helped anyone cross the street lately, %s?",
+            ATTACKER = "Making some mischief, are we %s?",
+            MURDERER = "Eep! I rather like this plane, I'd hate to leave it!",
+            REVIVER = "Hyuyu! Such a helpful soul!",
+            GHOST = "I'll just take a nibble... hyuyu I'm only joking!",
+            FIRESTARTER = "Rules are meant to be broken, hyuyuyu!",
         },
 
 --fallback to speech_wilson.lua         MIGRATION_PORTAL =
@@ -3264,6 +3295,30 @@ return{
 
 		----------------------- ROT STRINGS GO ABOVE HERE ------------------
 
+		-- Walter
+        WOBYBIG = 
+        {
+            "Hyuyu! I must say, she's growing on me!",
+            "Hyuyu! I must say, she's growing on me!",
+        },
+        WOBYSMALL = 
+        {
+            "Hello, my small furry friend!",
+            "Hello, my small furry friend!",
+        },
+		WALTERHAT = "Imps and uniforms rarely mix.",
+		SLINGSHOT = "Now this could cause some mischief!",
+		SLINGSHOTAMMO_ROCK = "Oooh, how fun!",		
+		SLINGSHOTAMMO_MARBLE = "Oooh, how fun!",		
+		SLINGSHOTAMMO_THULECITE = "Oooh, how fun!",	
+        SLINGSHOTAMMO_GOLD = "Oooh, how fun!",
+        SLINGSHOTAMMO_SLOW = "Oooh, how fun!",
+        SLINGSHOTAMMO_FREEZE = "Oooh, how fun!",
+		SLINGSHOTAMMO_POOP = "Oooh, how fun!",
+        PORTABLETENT = "So many pranks to pull! Do I push it in the lake? Toss in a snake?",
+        PORTABLETENT_ITEM = "Round and round, tent goes up and then comes down!",
+
+		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Hyuyu! Someone's getting crafty!",
 		GHOSTLYELIXIR_FASTREGEN = "Hyuyu! Someone's getting crafty!",
 		GHOSTLYELIXIR_SHIELD = "Hyuyu! Someone's getting crafty!",

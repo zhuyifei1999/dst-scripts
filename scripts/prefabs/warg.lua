@@ -102,6 +102,8 @@ SetSharedLootTable('gingerbreadwarg',
     {'houndstooth',             0.33},
 })
 
+local RETARGET_MUST_TAGS = { "character" }
+local RETARGET_CANT_TAGS = { "wall", "warg", "hound" }
 local function RetargetFn(inst)
     return not (inst.sg:HasStateTag("hidden") or inst.sg:HasStateTag("statue"))
         and FindEntity(
@@ -110,8 +112,8 @@ local function RetargetFn(inst)
                 function(guy)
                     return inst.components.combat:CanTarget(guy)
                 end,
-                inst.sg:HasStateTag("intro_state") and {"character"} or nil,
-                { "wall", "warg", "hound" }
+                inst.sg:HasStateTag("intro_state") and RETARGET_MUST_TAGS or nil,
+                RETARGET_CANT_TAGS
             )
         or nil
 end
@@ -134,11 +136,13 @@ local function OnAttacked(inst, data)
         end, TUNING.WARG_TARGETRANGE)
 end
 
+local TARGETS_MUST_TAGS = {"player"}
+local TARGETS_CANT_TAGS = {"playerghost"}
 local function NumHoundsToSpawn(inst)
     local numHounds = TUNING.WARG_BASE_HOUND_AMOUNT
 
     local pt = Vector3(inst.Transform:GetWorldPosition())
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.WARG_NEARBY_PLAYERS_DIST, {"player"}, {"playerghost"})
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.WARG_NEARBY_PLAYERS_DIST, TARGETS_MUST_TAGS, TARGETS_CANT_TAGS)
     for i,player in ipairs(ents) do
         local playerAge = player.components.age:GetAgeInDays()
         local addHounds = math.clamp(Lerp(1, 4, playerAge/100), 1, 4)
@@ -157,8 +161,10 @@ local function NoHoundsToSpawn(inst)
     return 0
 end
 
+local TOSSITEMS_MUST_TAGS = {"_inventoryitem"}
+local TOSSITEMS_CANT_TAGS ={ "locomotor", "INLIMBO" }
 local function TossItems(inst, x, z, minradius, maxradius)
-    for i, v in ipairs(TheSim:FindEntities(x, 0, z, maxradius + 3, { "_inventoryitem" }, { "locomotor", "INLIMBO" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, maxradius + 3, TOSSITEMS_MUST_TAGS, TOSSITEMS_CANT_TAGS)) do
         local x1, y1, z1 = v.Transform:GetWorldPosition()
         local dx, dz = x1 - x, z1 - z
         local dsq = dx * dx + dz * dz
@@ -185,9 +191,10 @@ local function TossItems(inst, x, z, minradius, maxradius)
     end
 end
 
+local SPAWNCLAYHOUND_CANT_TAGS = { "_inventoryitem", "NOBLOCK", "FX", "INLIMBO", "DECOR" }
 local function DoSpawnClayHound(inst, x, z, rot)
     if TheWorld.Map:IsPassableAtPoint(x, 0, z) then
-        for i, v in ipairs(TheSim:FindEntities(x, 0, z, 4, nil, { "_inventoryitem", "NOBLOCK", "FX", "INLIMBO", "DECOR" })) do
+        for i, v in ipairs(TheSim:FindEntities(x, 0, z, 4, nil, SPAWNCLAYHOUND_CANT_TAGS)) do
             if v.components.locomotor == nil or (v.sg ~= nil and v.sg:HasStateTag("statue")) then
                 local range = .5 + v:GetPhysicsRadius(.5)
                 if v:GetDistanceSqToPoint(x, 0, z) < range * range then

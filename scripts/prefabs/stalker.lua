@@ -159,9 +159,9 @@ local function SetMusicLevel(inst, level)
 end
 
 --------------------------------------------------------------------------
-
+local SHADOWLURE_TAGS = {"shadowlure"}
 local function IsNearShadowLure(target)
-    return GetClosestInstWithTag("shadowlure", target, TUNING.THURIBLE_AOE_RANGE) ~= nil
+    return GetClosestInstWithTag(SHADOWLURE_TAGS, target, TUNING.THURIBLE_AOE_RANGE) ~= nil
 end
 
 local function UpdatePlayerTargets(inst, ignorelure)
@@ -193,6 +193,8 @@ local function UpdatePlayerTargets(inst, ignorelure)
 end
 
 --Cave Stalker switches aggro off players easily
+local RETARGET_MUST_TAGS = { "_combat", "locomotor" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "prey", "companion", "player" }
 local function RetargetFn(inst)
     UpdatePlayerTargets(inst, false)
 
@@ -239,8 +241,8 @@ local function RetargetFn(inst)
                         guy:IsNear(inst, TUNING.STALKER_KEEP_AGGRO_DIST)
                     )
         end,
-        { "_combat", "locomotor" }, --see entityreplica.lua
-        { "INLIMBO", "prey", "companion", "player" }
+        RETARGET_MUST_TAGS, --see entityreplica.lua
+        RETARGET_CANT_TAGS
     )
 
     return creature ~= nil
@@ -461,8 +463,9 @@ end
 
 local SNARE_OVERLAP_MIN = 1
 local SNARE_OVERLAP_MAX = 3
+local SNAREOVERLAP_TAGS = { "fossilspike", "groundspike" }
 local function NoSnareOverlap(x, z, r)
-    return #TheSim:FindEntities(x, 0, z, r or SNARE_OVERLAP_MIN, { "fossilspike", "groundspike" }) <= 0
+    return #TheSim:FindEntities(x, 0, z, r or SNARE_OVERLAP_MIN, SNAREOVERLAP_TAGS) <= 0
 end
 
 --Hard limit target list size since casting does multiple passes it
@@ -739,9 +742,11 @@ local function SpawnMinions(inst, count)
     end
 end
 
+local FINDMINIONS_MUST_TAGS = { "stalkerminion" }
+local FINDMINIONS_CANT_TAGS = { "NOCLICK" }
 local function FindMinions(inst, proximity)
     local x, y, z = inst.Transform:GetWorldPosition()
-    return TheSim:FindEntities(x, y, z, MINION_RADIUS + inst:GetPhysicsRadius(0) + (proximity or .5), { "stalkerminion" }, { "NOCLICK" })
+    return TheSim:FindEntities(x, y, z, MINION_RADIUS + inst:GetPhysicsRadius(0) + (proximity or .5), FINDMINIONS_MUST_TAGS, FINDMINIONS_CANT_TAGS)
 end
 
 local function EatMinions(inst)
@@ -1103,6 +1108,7 @@ local BLOOM_CHOICES =
     ["stalker_fern"] = 8,
 }
 
+local STALKERBLOOM_TAGS = { "stalkerbloom" }
 local function DoPlantBloom(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local map = TheWorld.Map
@@ -1115,7 +1121,7 @@ local function DoPlantBloom(inst)
             local z1 = z + offset.z
             return map:IsPassableAtPoint(x1, 0, z1)
                 and map:IsDeployPointClear(Vector3(x1, 0, z1), nil, 1)
-                and #TheSim:FindEntities(x1, 0, z1, 2.5, { "stalkerbloom" }) < 4
+                and #TheSim:FindEntities(x1, 0, z1, 2.5, STALKERBLOOM_TAGS) < 4
         end
     )
 

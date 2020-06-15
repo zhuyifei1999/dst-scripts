@@ -64,9 +64,10 @@ local function CalcValue(player, basevalue, modifier)
 	return ret
 end
 
+local BIRD_MUST_TAGS = { "bird" }
 local function SpawnBirdForPlayer(player, reschedule)
     local pt = player:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, { "bird" })
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, BIRD_MUST_TAGS)
     if #ents < CalcValue(player, _maxbirds, "maxbirds") then
         local spawnpoint = self:GetSpawnPoint(pt)
         if spawnpoint ~= nil then
@@ -115,6 +116,7 @@ local function ToggleUpdate(force)
     end
 end
 
+local SCARECROW_TAGS = { "scarecrow" }
 local function PickBird(spawnpoint)
     local bird = "crow"
 	if TheNet:GetServerGameMode() == "quagmire" then
@@ -128,7 +130,7 @@ local function PickBird(spawnpoint)
 
     if bird == "crow" then
         local x, y, z = spawnpoint:Get()
-        local canarylure = TheSim:FindEntities(x, y, z, TUNING.BIRD_CANARY_LURE_DISTANCE, { "scarecrow" })
+        local canarylure = TheSim:FindEntities(x, y, z, TUNING.BIRD_CANARY_LURE_DISTANCE, SCARECROW_TAGS)
         if #canarylure ~= 0 then
             bird = "canary"
         end
@@ -137,8 +139,9 @@ local function PickBird(spawnpoint)
     return _worldstate.iswinter and bird == "robin" and "robin_winter" or bird
 end
 
+local SCARYTOPREY_TAGS = { "scarytoprey" }
 local function IsDangerNearby(x, y, z)
-    local ents = TheSim:FindEntities(x, y, z, 8, { "scarytoprey" })
+    local ents = TheSim:FindEntities(x, y, z, 8, SCARYTOPREY_TAGS)
     return next(ents) ~= nil
 end
 
@@ -242,6 +245,7 @@ function self:SpawnModeLight()
     self:SetMaxBirds(2)
 end
 
+local BIRDBLOCKER_TAGS = {"birdblocker"}
 function self:GetSpawnPoint(pt)
     --We have to use custom test function because birds can't land on creep
     local function TestSpawnPoint(offset)
@@ -250,7 +254,7 @@ function self:GetSpawnPoint(pt)
         return _map:IsPassableAtPoint(spawnpoint_x, spawnpoint_y, spawnpoint_z, allow_water) and
                _map:GetTileAtPoint(spawnpoint_x, spawnpoint_y, spawnpoint_z) ~= GROUND.OCEAN_COASTAL_SHORE and
                not _groundcreep:OnCreep(spawnpoint_x, spawnpoint_y, spawnpoint_z) and
-               #(TheSim:FindEntities(spawnpoint_x, 0, spawnpoint_z, 4, { "birdblocker" })) == 0
+               #(TheSim:FindEntities(spawnpoint_x, 0, spawnpoint_z, 4, BIRDBLOCKER_TAGS)) == 0
     end
 
     local theta = math.random() * 2 * PI

@@ -62,6 +62,7 @@ local function RoyalDowngrade(inst, silent)
     end
 end
 
+local WARNING_MUST_TAGS = {"tentacle", "invisible"}
 local function UpdateTentacleWarnings(inst)
 	local disable = (inst.replica.inventory ~= nil and not inst.replica.inventory:IsVisible())
 
@@ -73,7 +74,7 @@ local function UpdateTentacleWarnings(inst)
 
 		local x, y, z = inst.Transform:GetWorldPosition()
 		local warn_dist = 15
-		local tentacles = TheSim:FindEntities(x, y, z, warn_dist, {"tentacle", "invisible"})
+		local tentacles = TheSim:FindEntities(x, y, z, warn_dist, WARNING_MUST_TAGS)
 		for i, t in ipairs(tentacles) do
 			local p1x, p1y, p1z = inst.Transform:GetWorldPosition()
 			local p2x, p2y, p2z = t.Transform:GetWorldPosition()
@@ -224,8 +225,8 @@ local function master_postinit(inst)
     inst.components.foodaffinity:AddFoodtypeAffinity(FOODTYPE.VEGGIE, 1.33)
     inst.components.foodaffinity:AddPrefabAffinity  ("kelp",          1.33) -- prevents the negative stats, otherwise foodtypeaffinity would have suffice
     inst.components.foodaffinity:AddPrefabAffinity  ("kelp_cooked",   1.33) -- prevents the negative stats, otherwise foodtypeaffinity would have suffice
-    inst.components.foodaffinity:AddPrefabAffinity  ("durian",        TUNING.AFFINITY_15_CALORIES_MED)
-    inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", TUNING.AFFINITY_15_CALORIES_MED)
+    inst.components.foodaffinity:AddPrefabAffinity  ("durian",        1.93) -- veggi bonus + 15
+    inst.components.foodaffinity:AddPrefabAffinity  ("durian_cooked", 1.93) -- veggi bonus + 15
 
     inst:AddComponent("itemaffinity")
     inst.components.itemaffinity:AddAffinity("hutch_fishbowl", nil, TUNING.DAPPERNESS_MED, 1)
