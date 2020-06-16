@@ -60,6 +60,8 @@ local function OnAmmoChanged(inst, data)
 	end
 end
 
+local floater_swap_data = {sym_build = "swap_slingshot"}
+
 local function fn()
     local inst = CreateEntity()
 
@@ -82,7 +84,7 @@ local function fn()
 
     --inst.projectiledelay = PROJECTILE_DELAY
 
-    MakeInventoryFloatable(inst, "med", 0.05, {1.1, 0.5, 1.1}, true, -9)
+    MakeInventoryFloatable(inst, "med", 0.075, {0.5, 0.4, 0.5}, true, -7, floater_swap_data)
 
     inst.entity:SetPristine()
 

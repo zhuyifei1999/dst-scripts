@@ -30,7 +30,7 @@ local function DoHurtSound(inst)
     if inst.hurtsoundoverride ~= nil then
         inst.SoundEmitter:PlaySound(inst.hurtsoundoverride, nil, inst.hurtsoundvolume)
     else
-        inst.SoundEmitter:PlaySound("dontstarve/characters/wilson/hurt", nil, inst.hurtsoundvolume)
+        inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/hurt", nil, inst.hurtsoundvolume)
     end
 end
 
@@ -304,6 +304,9 @@ local actionhandlers =
 
 local events =
 {
+    EventHandler("freeze", function(inst)
+        inst.sg:GoToState("frozen")
+    end),    
     EventHandler("locomote", function(inst, data)
         if inst.sg:HasStateTag("busy") then
             return

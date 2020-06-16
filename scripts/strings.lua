@@ -1100,7 +1100,7 @@ STRINGS =
         WORMWOOD = "Wormwood",
         WARLY = "Warly",
         WURT = "Wurt",
-        walter = "Walter",
+        WALTER = "Walter",
 
         PIGKING = "Pig King",
         STRAWHAT = "Straw Hat",
@@ -10060,7 +10060,7 @@ STRINGS.STORYTELLER =
 							{duration = 3.5, line = "is if you look out of the corner of your eye..."},
 							{duration = 3.5, line = "it'll sometimes let its disguise slip,"},
 							{duration = 3.0, line = "and you'll see it start to smile..."},
-                            {duration = 3.0, line = "with it's six mouths full of RAZOR SHARP TEETH!"},
+                            {duration = 3.0, line = "with its six mouths full of RAZOR SHARP TEETH!"},
 				},	
 			},
 			CLOCKS = {

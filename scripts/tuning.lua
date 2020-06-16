@@ -3927,19 +3927,19 @@ function Tune(overrides)
 
 		WALTER_STARTING_WOBY = "wobysmall",
 
-        WOBY_BIG_HUNGER = calories_per_day*4,
-        WOBY_BIG_HUNGER_RATE = (calories_per_day*4)/(total_day_time * 1.5), -- same hunger as beefalo, but a full stomach lasts for a day and a half
+        WOBY_BIG_HUNGER = 50,
+        WOBY_BIG_HUNGER_RATE = 50/(total_day_time * 2.5),
         WOBY_BIG_SPEED =
         {
-            FAST = 8,
-            MEDIUM = 7,
-            SLOW = 5.5
+            FAST = 10,
+            MEDIUM = 9,
+            SLOW = 8
         },
 
         WOBY_BIG_WALK_SPEED = 1.5,
 
         WOBY_SMALL_HUNGER = 50,
-        WOBY_SMALL_HUNGER_RATE = 50 / (total_day_time * 1.5),
+        WOBY_SMALL_HUNGER_RATE = 50 / (total_day_time * 2.5),
 
         -- Salty dog
         FLOTSAM_SPAWN_MAX = 4,

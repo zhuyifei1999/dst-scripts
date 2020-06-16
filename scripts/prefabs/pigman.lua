@@ -172,19 +172,21 @@ local function OnAttacked(inst, data)
     local attacker = data.attacker
     inst:ClearBufferedAction()
 
-    if attacker.prefab == "deciduous_root" and attacker.owner ~= nil then 
-        OnAttackedByDecidRoot(inst, attacker.owner)
-    elseif attacker.prefab ~= "deciduous_root" and not attacker:HasTag("pigelite") then
-        inst.components.combat:SetTarget(attacker)
+	if attacker ~= nil then
+		if attacker.prefab == "deciduous_root" and attacker.owner ~= nil then 
+			OnAttackedByDecidRoot(inst, attacker.owner)
+		elseif attacker.prefab ~= "deciduous_root" and not attacker:HasTag("pigelite") then
+			inst.components.combat:SetTarget(attacker)
 
-        if inst:HasTag("werepig") then
-            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsWerePig, MAX_TARGET_SHARES)
-        elseif inst:HasTag("guard") then
-            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, attacker:HasTag("pig") and IsGuardPig or IsPig, MAX_TARGET_SHARES)
-        elseif not (attacker:HasTag("pig") and attacker:HasTag("guard")) then
-            inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsNonWerePig, MAX_TARGET_SHARES)
-        end
-    end
+			if inst:HasTag("werepig") then
+				inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsWerePig, MAX_TARGET_SHARES)
+			elseif inst:HasTag("guard") then
+				inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, attacker:HasTag("pig") and IsGuardPig or IsPig, MAX_TARGET_SHARES)
+			elseif not (attacker:HasTag("pig") and attacker:HasTag("guard")) then
+				inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, IsNonWerePig, MAX_TARGET_SHARES)
+			end
+		end
+	end
 end
 
 local function OnNewTarget(inst, data)

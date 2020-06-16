@@ -703,7 +703,7 @@ ACTIONS.CHANGE_TACKLE.strfn = function(act)
 	local item = (act.invobject ~= nil and act.invobject:IsValid()) and act.invobject or nil
     local equipped = (item ~= nil and act.doer.replica.inventory ~= nil) and act.doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 	return (equipped ~= nil and equipped.replica.container ~= nil and equipped.replica.container:IsHolding(item)) and "REMOVE"
-			or item:HasTag("reloaditem_ammo") and "AMMO"
+			or (item ~= nil and item:HasTag("reloaditem_ammo")) and "AMMO"
 			or nil
 end
 

@@ -70,12 +70,11 @@ local Sanity = Class(function(self, inst)
 
     self.custom_rate_fn = nil
 
-    self.sanity_aura_immune = false -- This makes it so the player is unaffected by ANY auras
+    --self.sanity_aura_immune = false -- This makes it so the player is unaffected by ANY auras
     self.sanity_aura_immunities = {} -- This protects against specific auras, like Wendy with the ghosts
-    self.player_ghost_immune = false
+    --self.player_ghost_immune = false
 
-    self.dapperness_immune = false
-    self.light_drain_immune = false
+    --self.light_drain_immune = false
 
     self._oldissane = self:IsSane()
     self._oldpercent = self:GetPercent()
@@ -193,10 +192,6 @@ end
 
 function Sanity:SetPlayerGhostImmunity(immunity)
     self.player_ghost_immune = immunity
-end
-
-function Sanity:SetDappernessImmunity(immunity)
-    self.dapperness_immune = immunity
 end
 
 function Sanity:SetLightDrainImmune(immunity)
@@ -388,19 +383,18 @@ local LIGHT_SANITY_DRAINS =
 local SANITYRECALC_MUST_TAGS = { "sanityaura" }
 local SANITYRECALC_CANT_TAGS = { "FX", "NOCLICK", "DECOR","INLIMBO" }
 function Sanity:Recalc(dt)
-    local total_dapperness = self.dapperness
-    for k, v in pairs(self.inst.components.inventory.equipslots) do
-        if v.components.equippable ~= nil then
-            total_dapperness = total_dapperness + v.components.equippable:GetDapperness(self.inst)
-        end
-    end
+	local dapper_delta = 0
+	if self.dapperness_mult ~= 0 then
+		local total_dapperness = self.dapperness
+		for k, v in pairs(self.inst.components.inventory.equipslots) do
+			if v.components.equippable ~= nil then
+				total_dapperness = total_dapperness + v.components.equippable:GetDapperness(self.inst)
+			end
+		end
 
-    total_dapperness = total_dapperness * self.dapperness_mult
-    local dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
-
-    if self.dapperness_immune then
-        dapper_delta = 0
-    end
+		total_dapperness = total_dapperness * self.dapperness_mult
+		dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
+	end
 
     local moisture_delta = easing.inSine(self.inst.components.moisture:GetMoisture(), 0, TUNING.MOISTURE_SANITY_PENALTY_MAX, self.inst.components.moisture:GetMaxMoisture())
 

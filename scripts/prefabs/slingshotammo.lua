@@ -13,7 +13,7 @@ local function no_aggro(attacker, target)
 end
 
 local function DealDamage(inst, attacker, target)
-    if target ~= nil and target:IsValid() and target.components.combat ~= nil and inst.ammo_def.damage ~= nil then
+    if attacker ~= nil and attacker:IsValid() and attacker.components.combat:CanTarget(target) then
 		target.components.combat.temp_disable_aggro = no_aggro(attacker, target)
         target.components.combat:GetAttacked(attacker, inst.ammo_def.damage, inst)
 		target.components.combat.temp_disable_aggro = false

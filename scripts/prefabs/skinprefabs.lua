@@ -721,7 +721,7 @@ table.insert(prefs, CreatePrefabSkin("beebox_crystal",
 	type = "item",
 	rarity = "Loyal",
 	init_fn = function(inst) beebox_init_fn(inst, "beebox_crystal") end,
-	skin_tags = { "BEEBOX", "CRAFTABLE", },
+	skin_tags = { "CRYSTAL", "BEEBOX", "CRAFTABLE", },
 	release_group = 94,
 }))
 

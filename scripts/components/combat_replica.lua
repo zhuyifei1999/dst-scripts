@@ -264,6 +264,7 @@ function Combat:IsValidTarget(target)
 end
 
 function Combat:CanTarget(target)
+
     return self:IsValidTarget(target)
         and not (self._ispanic:value()
                 or target:HasTag("INLIMBO")

@@ -21,11 +21,17 @@ local StoryTeller = Class(function(self, inst)
 	self.storytelling_dist = 10
 	self.storytelling_ticktime = 2.5
 
+	self.inst:AddTag("storyteller")
+
 	self.storyprop_onremove = function(prop) 
 		self:AbortStory()
 	end
 end)
 
+function StoryTeller:OnRemoveFromEntity()
+	self.inst:RemoveTag("storyteller")
+end
+  
 function StoryTeller:SetStoryToTellFn(fn)
     self.storytotellfn = fn
 end
