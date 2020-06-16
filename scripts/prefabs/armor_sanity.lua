@@ -55,6 +55,7 @@ local function fn()
     --inst.AnimState:SetMultColour(1, 1, 1, 0.6)
 
     inst:AddTag("sanity")
+    inst:AddTag("shadow")
 
     inst.foleysound = "dontstarve/movement/foley/nightarmour"
     

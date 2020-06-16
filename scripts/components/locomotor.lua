@@ -790,7 +790,7 @@ function LocoMotor:GetDebugString()
     end
 
     local state = self.wantstorun and "RUN" or "WALK"
-    return string.format("%s, (%0.2f) [%s] [%s] (%u, %u):(%u, %u) +/-%2.2f", state, self.wantstorun and self.runspeed or self.walkspeed, tostring(self.dest), tostring(self.bufferedaction), tile_x, tile_y, pathtile_x, pathtile_y, self.arrive_step_dist or 0) 
+    return string.format("%s, (%0.2f) [%s] [%s] (%u, %u):(%u, %u) +/-%2.2f", state, self.wantstorun and self:GetRunSpeed() or self:GetWalkSpeed(), tostring(self.dest), tostring(self.bufferedaction), tile_x, tile_y, pathtile_x, pathtile_y, self.arrive_step_dist or 0) 
 end
 
 function LocoMotor:HasDestination()

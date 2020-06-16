@@ -2543,7 +2543,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 end
 
 function PlayerController:UpdateControllerTargets(dt)
-    if self:IsAOETargeting() or self.inst:HasTag("weregoose") then
+    if self:IsAOETargeting() or (self.inst:HasTag("weregoose") and not self.inst:HasTag("playerghost")) then
         self.controller_target = nil
         self.controller_target_age = 0
         self.controller_attack_target = nil

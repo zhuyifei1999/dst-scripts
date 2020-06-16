@@ -5242,32 +5242,18 @@ local states =
         end,
     },
 
-    State
-    {
-        name = "dolongaction",
+    State{
+        name = "makeballoon",
         tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst, timeout)
-            if timeout == nil then
-                timeout = 1
-            elseif timeout > 1 then
-                inst.sg:AddStateTag("slowaction")
-            end
-            inst.sg:SetTimeout(timeout)
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(timeout or 1)
             inst.components.locomotor:Stop()
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            inst.SoundEmitter:PlaySound("dontstarve/common/balloon_make", "make")
+            inst.SoundEmitter:PlaySound("dontstarve/common/balloon_blowup")
             inst.AnimState:PlayAnimation("build_pre")
             inst.AnimState:PushAnimation("build_loop", true)
-            if inst.bufferedaction ~= nil then
-                inst.sg.statemem.action = inst.bufferedaction
-                if inst.bufferedaction.action.actionmeter then
-                    inst.sg.statemem.actionmeter = true
-                    StartActionMeter(inst, timeout)
-                end
-                if inst.bufferedaction.target ~= nil and inst.bufferedaction.target:IsValid() then
-                    inst.bufferedaction.target:PushEvent("startlongaction")
-                end
-            end
         end,
 
         timeline =
@@ -5280,10 +5266,6 @@ local states =
         ontimeout = function(inst)
             inst.SoundEmitter:KillSound("make")
             inst.AnimState:PlayAnimation("build_pst")
-            if inst.sg.statemem.actionmeter then
-                inst.sg.statemem.actionmeter = nil
-                StopActionMeter(inst, true)
-            end
             inst:PerformBufferedAction()
         end,
 
@@ -5298,9 +5280,6 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
-            if inst.sg.statemem.actionmeter then
-                StopActionMeter(inst, false)
-            end
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
@@ -11115,20 +11094,32 @@ local states =
 
         timeline =
         {
+            TimeEvent(18 * FRAMES, function(inst)
+				local buffaction = inst:GetBufferedAction()
+				local target = buffaction ~= nil and buffaction.target or nil
+				if not (target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target)) then
+	                inst:ClearBufferedAction()
+			        inst.sg:GoToState("idle")
+				end					
+            end),
+            
             TimeEvent(20 * FRAMES, function(inst) -- start of slingshot
                 inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
             end),
             
             TimeEvent(25 * FRAMES, function(inst)
-
 	           local buffaction = inst:GetBufferedAction()
                 local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                 if equip ~= nil and equip.components.weapon ~= nil and equip.components.weapon.projectile ~= nil then
--- TODO play shoot sound
-                    inst:PerformBufferedAction()
-                    inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
+					local target = buffaction ~= nil and buffaction.target or nil
+					if target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target) then
+						inst:PerformBufferedAction()
+						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
+					else
+	                    inst:ClearBufferedAction()
+			            inst.sg:GoToState("idle")
+					end
                 else -- out of ammo
--- TODO play out of ammo sound
                     inst:ClearBufferedAction()
                     inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_OUT_OF_AMMO"))
                     inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")

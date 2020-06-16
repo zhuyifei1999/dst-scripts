@@ -214,6 +214,7 @@ local function fn()
     inst:AddTag("handfed")
     inst:AddTag("fedbyall")
     inst:AddTag("dogrider_only")
+    inst:AddTag("peacefulmount")
 
     inst:AddTag("companion")
 

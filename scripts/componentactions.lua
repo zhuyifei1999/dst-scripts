@@ -394,7 +394,7 @@ local COMPONENT_ACTIONS =
         end,
 
 		storytellingprop = function(inst, doer, actions, right)
-            if right and inst:HasTag("storytellingprop") then
+            if right and inst:HasTag("storytellingprop") and doer:HasTag("storyteller") then
                 table.insert(actions, ACTIONS.TELLSTORY)
             end
         end,

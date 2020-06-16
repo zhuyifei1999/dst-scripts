@@ -2615,7 +2615,7 @@ return{
 		WORMHOLE =
 		{
 			GENERIC = "It kind of looks like a mouth.",
-			OPEN = "It is a mouth!! Come on Woby, let's get a closer look.",
+			OPEN = "It IS a mouth!! Come on Woby, let's get a closer look.",
 		},
 		WORMHOLE_LIMITED = "Is it sick?",
 		ACCOMPLISHMENT_SHRINE = "I love checking tasks off a list!",        

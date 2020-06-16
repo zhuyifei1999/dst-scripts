@@ -242,7 +242,9 @@ function PlayerActionPicker:GetLeftClickActions(position, target)
             (self.inst:HasTag("moving") or self.inst:HasTag("idle") or self.inst:HasTag("channeling")) then
             actions = self:SortActionList({ ACTIONS.LOOKAT }, target, nil)
         elseif self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_ATTACK) and target.replica.combat ~= nil and self.inst.replica.combat:CanTarget(target) then
-            actions = self:SortActionList({ ACTIONS.ATTACK }, target, nil)
+            if not self.inst.replica.rider:IsRiding() or not self.inst.replica.rider:GetMount():HasTag("peacefulmount") then
+                actions = self:SortActionList({ ACTIONS.ATTACK }, target, nil)
+            end
         elseif equipitem ~= nil and equipitem:IsValid() then
             actions = self:GetEquippedItemActions(target, equipitem)
         end

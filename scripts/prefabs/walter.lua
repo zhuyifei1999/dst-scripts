@@ -84,9 +84,20 @@ local function UpdateTreeSanityGain(inst)
 end
 
 local function CustomSanityFn(inst, dt)
+	local sanity = inst.components.sanity
+	local total_dapperness = sanity.dapperness
+	for k, v in pairs(inst.components.inventory.equipslots) do
+		if v.components.equippable ~= nil and v:HasTag("shadow") then
+			total_dapperness = total_dapperness + v.components.equippable:GetDapperness(inst)
+		end
+	end
+
+	total_dapperness = total_dapperness
+	local dapper_delta = total_dapperness * TUNING.SANITY_DAPPERNESS
+
     local health_drain = (1 - inst.components.health:GetPercentWithPenalty()) * TUNING.WALTER_SANITY_HEALTH_DRAIN * inst._sanity_damage_protection:Get()
 
-    return inst._tree_sanity_gain - health_drain
+    return inst._tree_sanity_gain - health_drain + dapper_delta
 end
 
 local function SpawnWoby(inst)
@@ -201,6 +212,7 @@ local function common_postinit(inst)
     inst:AddTag("efficient_sleeper")
     inst:AddTag("dogrider")
     inst:AddTag("nowormholesanityloss")
+	inst:AddTag("storyteller") -- for storyteller component
 
     inst.customidleanim = "idle_walter"
 
@@ -221,8 +233,8 @@ local function master_postinit(inst)
     inst.components.sanity.custom_rate_fn = CustomSanityFn
     inst.components.sanity:SetNegativeAuraImmunity(true)
     inst.components.sanity:SetPlayerGhostImmunity(true)
-    inst.components.sanity:SetDappernessImmunity(true)
     inst.components.sanity:SetLightDrainImmune(true)
+	inst.components.sanity.dapperness_mult = 0
 
     inst.components.foodaffinity:AddPrefabAffinity("trailmix", TUNING.AFFINITY_15_CALORIES_SMALL)
 

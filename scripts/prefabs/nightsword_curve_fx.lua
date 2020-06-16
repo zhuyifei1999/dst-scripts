@@ -291,9 +291,13 @@ local function fn()
                     elseif direction == 3 then
                         v = TheCamera:GetDownVec() * dir_scale
                     end
-                    while num_to_emit_ember > 0 do
-                        emit_ember_fn(effect, ember_sphere_emitter, adjust_vec, v)
-                        num_to_emit_ember = num_to_emit_ember - 1
+                    if v ~= nil then
+                        while num_to_emit_ember > 0 do
+                            emit_ember_fn(effect, ember_sphere_emitter, adjust_vec, v)
+                            num_to_emit_ember = num_to_emit_ember - 1
+                        end
+                    else
+                        print("Error: Unexpected facing angle for nightsword_curve_fx.", direction)
                     end
                 end
             end
