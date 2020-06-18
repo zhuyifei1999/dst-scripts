@@ -51,7 +51,7 @@ local ConnectingToGamePopup = Class(Screen, function(self)
     local spacing = 165
     local buttons =
     {
-		{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function() 
+		{text=STRINGS.UI.LOBBYSCREEN.CANCEL, cb = function() 
             self:OnCancel()
         end},
     }

@@ -194,10 +194,14 @@ function Projectile:Hit(target)
     self.inst.Physics:Stop()
 	
     if attacker.components.combat == nil and attacker.components.weapon ~= nil and attacker.components.inventoryitem ~= nil then
-        weapon = attacker
-        attacker = weapon.components.inventoryitem.owner
+        weapon = weapon.components.weapon ~= nil and weapon or attacker
+        attacker = attacker.components.inventoryitem.owner
     end
-    if attacker ~= nil and attacker.components.combat ~= nil and not self.hascustomattack then
+
+    if self.onprehit ~= nil then
+        self.onprehit(self.inst, attacker, target)
+    end
+    if attacker ~= nil and attacker.components.combat ~= nil then
 		if attacker.components.combat.ignorehitrange then
 	        attacker.components.combat:DoAttack(target, weapon, self.inst, self.stimuli)
 		else

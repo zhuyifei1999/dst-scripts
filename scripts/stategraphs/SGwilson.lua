@@ -6981,6 +6981,7 @@ local states =
             TimeEvent(1 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     DoRunSounds(inst)
+                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk",nil,.5)
                     if inst.sg.statemem.ridingwoby then
                         inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
                     end
@@ -6988,7 +6989,6 @@ local states =
             end),
             TimeEvent(3 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    DoRunSounds(inst)
                     if inst.sg.statemem.ridingwoby then
                         inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
                     end
@@ -6997,6 +6997,7 @@ local states =
             TimeEvent(8 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     DoRunSounds(inst)
+                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk",nil,.5)
                     if inst.sg.statemem.ridingwoby then
                         inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
                     end
@@ -7004,7 +7005,6 @@ local states =
             end),
             TimeEvent(10 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    DoRunSounds(inst)
                     if inst.sg.statemem.ridingwoby then
                         inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
                     end

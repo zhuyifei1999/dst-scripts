@@ -125,18 +125,20 @@ local function ghostlybond_onlevelchange(inst, ghost, level, prev_level, isloadi
 end
 
 local function ghostlybond_onsummon(inst, ghost)
-	if inst.components.sanity ~= nil then
+	if inst.components.sanity ~= nil and inst.migration == nil then
 		inst.components.sanity:DoDelta(TUNING.SANITY_MED)
 	end
 end
 
 local function ghostlybond_onrecall(inst, ghost, was_killed)
-	if inst.components.sanity ~= nil then
-		inst.components.sanity:DoDelta(was_killed and (-TUNING.SANITY_MED * 2) or -TUNING.SANITY_MED)
-	end
+	if inst.migration == nil then
+		if inst.components.sanity ~= nil then
+			inst.components.sanity:DoDelta(was_killed and (-TUNING.SANITY_MED * 2) or -TUNING.SANITY_MED)
+		end
 
-	if inst.components.talker ~= nil then
-	    inst.components.talker:Say(GetString(inst, was_killed and "ANNOUNCE_ABIGAIL_DEATH" or "ANNOUNCE_ABIGAIL_RETRIEVE"))
+		if inst.components.talker ~= nil then
+			inst.components.talker:Say(GetString(inst, was_killed and "ANNOUNCE_ABIGAIL_DEATH" or "ANNOUNCE_ABIGAIL_RETRIEVE"))
+		end
 	end
 
 	inst.components.ghostlybond.ghost.sg:GoToState("dissipate")

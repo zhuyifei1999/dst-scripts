@@ -265,6 +265,10 @@ end
 
 function Combat:CanTarget(target)
 
+    local rider = self.inst.replica.rider
+    local weapon = self:GetWeapon()
+    local is_ranged_weapon = weapon ~= nil and (weapon:HasTag("projectile") or weapon:HasTag("rangedweapon"))
+
     return self:IsValidTarget(target)
         and not (self._ispanic:value()
                 or target:HasTag("INLIMBO")
@@ -273,6 +277,7 @@ function Combat:CanTarget(target)
                 or target:HasTag("debugnoattack"))
         and (target.replica.combat == nil
             or target.replica.combat:CanBeAttacked(self.inst))
+        and (rider == nil or (not rider:IsRiding() or (not rider:GetMount():HasTag("peacefulmount") or is_ranged_weapon)))
 end
 
 function Combat:IsAlly(guy)

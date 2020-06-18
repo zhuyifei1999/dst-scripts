@@ -67,6 +67,7 @@ local function fn()
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+    inst.components.equippable.is_magic_dapperness = true
 
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)

@@ -63,7 +63,7 @@ local LaunchingServerPopup = Class(Screen, function(self, serverinfo, successCal
 		local spacing = 165
 		local buttons =
 		{
-			{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function()
+			{text=STRINGS.UI.LOBBYSCREEN.CANCEL, cb = function()
 				self:OnCancel()
 			end},
 		}

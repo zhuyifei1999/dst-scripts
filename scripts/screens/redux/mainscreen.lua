@@ -14,8 +14,6 @@ require "os"
 local PopupDialogScreen = require "screens/redux/popupdialog"
 local EmailSignupScreen = require "screens/emailsignupscreen"
 local MultiplayerMainScreen = require "screens/redux/multiplayermainscreen"
-
-local NoAuthenticationPopupDialogScreen = require "screens/redux/noauthenticationpopupdialogscreen"
 local NetworkLoginPopup = require "screens/redux/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
@@ -272,10 +270,6 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
             TheNet:NotifyAuthenticationFailure()
         elseif (not inventory_succeeded and has_auth_token) then
             print ( "[Warning] Failed to download local inventory" )
-        else -- We haven't created an account yet
-            TheFrontEnd:PopScreen()
-            TheFrontEnd:PushScreen(NoAuthenticationPopupDialogScreen())
-            TheNet:NotifyAuthenticationFailure()
         end
     end
 	
