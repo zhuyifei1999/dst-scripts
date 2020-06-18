@@ -16,7 +16,7 @@ local GenericWaitingPopup = Class(Screen, function(self, name, title_text, addit
     if not TheInput:ControllerAttached() then
 		if not self.forbid_cancel then
 			table.insert(buttons, {
-					text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON,
+					text=STRINGS.UI.LOBBYSCREEN.CANCEL,
 					cb = function() 
 						self:OnCancel()            
 					end

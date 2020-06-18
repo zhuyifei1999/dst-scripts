@@ -6875,15 +6875,6 @@ STRINGS.UI =
         RESTORE_SNAPSHOT = "Restore Snapshot",
     },
 
-    NOAUTHENTICATIONSCREEN =
-    {
-        TITLE = "Create an Account",
-        BODY = "It looks like this is your first time playing Don't Starve Together.\nPlease click below to create an account and start playing.",
-        BODY2 = "Account creation will temporarily minimize your game and open your web browser.",
-        CREATEBUTTON = "Create Account",
-        CANCELBUTTON = "Cancel",
-    },
-
     LOBBYSCREEN =
     {
         SELECT = "Select",

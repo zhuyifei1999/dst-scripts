@@ -78,8 +78,8 @@ end
 function WalkablePlatform:DestroyObjectsOnPlatform()
     if not TheWorld.ismastersim then return end
 
-    for k,v in pairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
-        if v:IsValid() and v.components.amphibiouscreature == nil and v.components.drownable == nil then
+    for _, v in pairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
+        if v.components.amphibiouscreature == nil and v.components.drownable == nil then
             if v.components.inventoryitem ~= nil then
                 v.components.inventoryitem:SetLanded(false, true)
             else
@@ -90,19 +90,18 @@ function WalkablePlatform:DestroyObjectsOnPlatform()
 end
 
 function WalkablePlatform:GetEntitiesOnPlatform(must_have_tags, ignore_tags)
-    ignore_tags = ignore_tags or IGNORE_WALKABLE_PLATFORM_TAGS
+	-- Note: This returns an unsorted array
+
     local world_position_x, world_position_y, world_position_z = self.inst.Transform:GetWorldPosition()
-    local entities = TheSim:FindEntities(world_position_x, world_position_y, world_position_z, self.platform_radius, must_have_tags, ignore_tags)
-
-    local filtered_entities = {}
-
-    for k, v in pairs(entities) do
-        if v ~= self.inst and v:IsValid() and v.entity:GetParent() == nil then
-            table.insert(filtered_entities, v)
-        end
-    end
-
-    return filtered_entities
+    local entities = TheSim:FindEntities(world_position_x, world_position_y, world_position_z, self.platform_radius, must_have_tags, ignore_tags or IGNORE_WALKABLE_PLATFORM_TAGS)
+	for i = #entities, 1, -1 do
+		local e = entities[i]
+		if e == self.inst or e.entity:GetParent() ~= nil then -- remove myself and any child objects from the list. This should actually never happen if objects have their tags set up correctly
+			entities[i] = entities[#entities]
+			entities[#entities] = nil
+		end
+	end
+	return entities
 end
 
 function WalkablePlatform:GetEmbarkPosition(embarker_x, embarker_z, embarker_min_dist)
@@ -153,20 +152,19 @@ function WalkablePlatform:UpdatePositions()
 end
 
 function WalkablePlatform:CollectEntitiesOnPlatform(check_previous_objects)
-    local entities = self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS)
-    for k, v in pairs(entities) do
-        self.new_objects_on_platform[v] = true
-    end
+    local ents = self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS)
+	for i = 1, #ents do
+		self.new_objects_on_platform[ents[i]] = true
+	end
 
     local platform_x, platform_z = self.previous_position_x, self.previous_position_z
-    local bias = 0.01
-    local platform_radius_sq = self.platform_radius * self.platform_radius + bias
+    local platform_radius_sq = self.platform_radius * self.platform_radius + 0.01 -- bias of 0.01
 
     -- check for objects that were on the boat at the previous boat position and move them forward as well
     if check_previous_objects then
         for entity, unused in pairs(self.previous_objects_on_platform) do
-            if entity:IsValid() and not entity.components.embarker then
-                if not self.new_objects_on_platform[entity] and not entity.entity:GetParent() == nil then
+            if entity:IsValid() then
+                if not entity.components.embarker and not self.new_objects_on_platform[entity] and not entity.entity:GetParent() == nil then
                     local entity_x, entity_y, entity_z = entity.Transform:GetWorldPosition()
                     local delta_x, delta_z = entity_x - platform_x, entity_z - platform_z
                     local dist_sq = delta_x * delta_x + delta_z * delta_z
@@ -174,6 +172,8 @@ function WalkablePlatform:CollectEntitiesOnPlatform(check_previous_objects)
                         self.new_objects_on_platform[entity] = true
                     end
                 end 
+			else
+				self.previous_objects_on_platform[entity] = nil
             end
         end
     end

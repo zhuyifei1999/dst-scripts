@@ -59,7 +59,7 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel, hideOf
 	end
 
 	buttons[#buttons+1] = 
-		{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function() 
+		{text=STRINGS.UI.LOBBYSCREEN.CANCEL, cb = function() 
             self:OnCancel()            
         end}
 

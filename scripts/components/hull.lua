@@ -11,14 +11,15 @@ end
 function Hull:AttachEntityToBoat(obj, offset_x, offset_z, parent_to_boat)
 	obj:ListenForEvent("onremove", function() self:FinishRemovingEntity(obj) end, self.inst)
 
-    self.inst:DoTaskInTime(0, function(boat)
-    	local boat_x, boat_y, boat_z = boat.Transform:GetWorldPosition()
-        obj.Transform:SetPosition(boat_x + offset_x, boat_y, boat_z + offset_z)
-        if parent_to_boat then
-    		obj.entity:SetParent(self.inst.entity)
-    		obj.Transform:SetPosition(offset_x, 0, offset_z)        	
-        end
-    end)    
+    if parent_to_boat then
+    	obj.entity:SetParent(self.inst.entity)
+    	obj.Transform:SetPosition(offset_x, 0, offset_z)        	
+	else
+		self.inst:DoTaskInTime(0, function(boat)
+    		local boat_x, boat_y, boat_z = boat.Transform:GetWorldPosition()
+			obj.Transform:SetPosition(boat_x + offset_x, boat_y, boat_z + offset_z)
+		end)
+	end
 end
 
 function Hull:SetPlank(obj)

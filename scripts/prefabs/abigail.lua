@@ -355,8 +355,6 @@ local function linktoplayer(inst, player)
     UpdateGhostlyBondLevel(inst, player.components.ghostlybond.bondlevel)
     inst:ListenForEvent("ghostlybond_level_change", inst._on_ghostlybond_level_change, player)
     inst:ListenForEvent("onremove", inst._onlostplayerlink, player)
-
-    player.components.sanity:DoDelta(TUNING.SANITY_MED)
 end
 
 local function OnExitLimbo(inst)

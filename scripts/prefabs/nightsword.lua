@@ -73,6 +73,7 @@ local function fn()
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
     inst.components.equippable.dapperness = TUNING.CRAZINESS_MED
+    inst.components.equippable.is_magic_dapperness = true
 
     MakeHauntableLaunch(inst)
 

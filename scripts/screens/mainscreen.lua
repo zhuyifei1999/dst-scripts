@@ -14,8 +14,6 @@ local PopupDialogScreen = require "screens/popupdialog"
 local EmailSignupScreen = require "screens/emailsignupscreen"
 local MovieDialog = require "screens/moviedialog"
 local MultiplayerMainScreen = require "screens/multiplayermainscreen"
-
-local NoAuthenticationPopupDialogScreen = require "screens/noauthenticationpopupdialogscreen"
 local NetworkLoginPopup = require "screens/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"
@@ -323,10 +321,6 @@ function MainScreen:OnLoginButton(push_mp_main_screen)
             TheNet:NotifyAuthenticationFailure()
         elseif (not inventory_succeeded and has_auth_token) then
             print ( "[Warning] Failed to download local inventory" )
-        else -- We haven't created an account yet
-            TheFrontEnd:PopScreen()
-            TheFrontEnd:PushScreen(NoAuthenticationPopupDialogScreen())
-            TheNet:NotifyAuthenticationFailure()
         end
     end
 	

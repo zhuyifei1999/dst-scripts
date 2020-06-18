@@ -264,6 +264,7 @@ local function commonfn(anim, tag, should_sink)
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
+    inst.components.equippable.is_magic_dapperness = true
 
     inst:AddComponent("inventoryitem")
     if should_sink then

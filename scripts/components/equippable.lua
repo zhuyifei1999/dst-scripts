@@ -34,6 +34,8 @@ local Equippable = Class(function(self, inst)
     self.insulated = false
     self.equippedmoisture = 0
     self.maxequippedmoisture = 0
+
+	-- self.is_magic_dapperness -- some survivors are only affected by magic sources
 end,
 nil,
 {
