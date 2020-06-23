@@ -1751,7 +1751,9 @@ for _, shot_type in ipairs(shot_types) do
         build = "slingshotammo",
         anim = "used",
         fn = function(inst)
-	        inst.AnimState:OverrideSymbol("rock", "slingshotammo", shot_type)
+			if shot_type ~= "rocks" then
+		        inst.AnimState:OverrideSymbol("rock", "slingshotammo", shot_type)
+			end
 		    inst.AnimState:SetFinalOffset(3)
 		end,
     })

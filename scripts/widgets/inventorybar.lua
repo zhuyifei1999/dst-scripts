@@ -522,11 +522,9 @@ function Inv:GetInventoryLists(same_container_only)
         return lists
     else
         local lists = {self.inv, self.equip, self.backpackinv}
-
-        local bp = self.owner.HUD:GetFirstOpenContainerWidget()
-        if bp then
-            table.insert(lists, bp.inv)
-        end
+		for _, v in pairs(self.owner.HUD.controls.containers) do
+            table.insert(lists, v.inv)
+		end
 
         return lists
     end
@@ -582,24 +580,25 @@ function Inv:GetClosestWidget(lists, pos, dir)
     local closest_score = nil
     local closest_list = nil
 
+	local x, y = pos.x, pos.y
+	local dir_x, dir_y = dir.x, dir.y
+
     for kk, vv in pairs(lists) do
         for k,v in pairs(vv) do
             if v ~= self.active_slot then
-                local world_pos = v:GetWorldPosition()
-                local dst = pos:DistSq(world_pos)
-                local local_dir = (world_pos - pos):GetNormalized()
-                local dot = local_dir:Dot(dir)
+				local vx, vy = v.inst.UITransform:GetWorldPosition()
+				local local_dir_x, local_dir_y = vx-x, vy-y
 
+				local dot = VecUtil_Dot(local_dir_x, local_dir_y, dir_x, dir_y)
                 if dot > 0 then
-                    local score = dot/dst
-
-                    if not closest or score > closest_score then
-                        closest = v
-                        closest_score = score
-                        closest_list = vv
-                    end
-                end
-            end
+					local score = local_dir_x * local_dir_x + local_dir_y * local_dir_y
+	                if not closest or score < closest_score then
+	                    closest = v
+	                    closest_score = score
+	                    closest_list = vv
+	                end
+				end
+	        end
         end
     end
 
@@ -685,10 +684,9 @@ function Inv:OpenControllerInventory()
         self:UpdateCursor()
         self:ScaleTo(self.base_scale,self.selected_scale,.2)
 
-        local bp = self.owner.HUD:GetFirstOpenContainerWidget()
-        if bp ~= nil then
-            bp:ScaleTo(self.base_scale,self.selected_scale,.2)
-        end
+		for _, v in pairs(self.owner.HUD.controls.containers) do
+            v:ScaleTo(self.base_scale,self.selected_scale,.2)
+		end
 
         TheFrontEnd:LockFocus(true)
         self:SetFocus()
@@ -721,10 +719,9 @@ function Inv:CloseControllerInventory()
 
         self:ScaleTo(self.selected_scale, self.base_scale, .1)
 
-        local bp = self.owner.HUD:GetFirstOpenContainerWidget()
-        if bp ~= nil then
-            bp:ScaleTo(self.selected_scale,self.base_scale, .1)
-        end
+		for _, w in pairs(self.owner.HUD.controls.containers) do
+            w:ScaleTo(self.selected_scale,self.base_scale, .1)
+		end
 
         TheFrontEnd:LockFocus(false)
     end

@@ -27,6 +27,8 @@ local Projectile = Class(function(self, inst)
 
     self.stimuli = nil
 
+	--self.has_damage_set = nil -- set to true if the projectile has its own damage set, instead of needed to get it from the launching weapon
+
     --self.delaytask = nil
     --self.delayowner = nil
     --self.delaypos = nil
@@ -194,7 +196,7 @@ function Projectile:Hit(target)
     self.inst.Physics:Stop()
 	
     if attacker.components.combat == nil and attacker.components.weapon ~= nil and attacker.components.inventoryitem ~= nil then
-        weapon = weapon.components.weapon ~= nil and weapon or attacker
+        weapon = (self.has_damage_set and weapon.components.weapon ~= nil) and weapon or attacker
         attacker = attacker.components.inventoryitem.owner
     end
 

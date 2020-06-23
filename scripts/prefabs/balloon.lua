@@ -116,8 +116,9 @@ end
 --    end
 --end
 
+local AREAATTACK_EXCLUDETAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
 local function DoAreaAttack(inst)
-    inst.components.combat:DoAreaAttack(inst, 2, nil, nil, nil, { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" })
+    inst.components.combat:DoAreaAttack(inst, 2, nil, nil, nil, AREAATTACK_EXCLUDETAGS)
 end
 
 local function OnDeath(inst)

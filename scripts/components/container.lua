@@ -273,7 +273,7 @@ function Container:RemoveItemBySlot(slot)
                 item.components.inventoryitem:OnRemoved()
             end
 
-            self.inst:PushEvent("itemlose", {slot = slot})
+            self.inst:PushEvent("itemlose", {slot = slot, prev_item = item})
         end
         item.prevcontainer = self
         item.prevslot = slot
@@ -577,7 +577,7 @@ function Container:RemoveItem(item, wholestack)
     for k, v in pairs(self.slots) do
         if v == item then
             self.slots[k] = nil
-            self.inst:PushEvent("itemlose", { slot = k })
+            self.inst:PushEvent("itemlose", { slot = k, prev_item = item })
             item.components.inventoryitem:OnRemoved()
             item.prevslot = prevslot
             item.prevcontainer = self

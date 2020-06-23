@@ -895,8 +895,8 @@ end
 
 local function DoLoadWorldFile(file)
 	local function onload(savedata)
-		assert(savedata, "DoLoadWorld: Savedata is NIL on load")
-		assert(GetTableSize(savedata)>0, "DoLoadWorld: Savedata is empty on load")
+		assert(savedata, "DoLoadWorldFile: Savedata is NIL on load")
+		assert(GetTableSize(savedata)>0, "DoLoadWorldFile: Savedata is empty on load")
 
         UpgradeSaveFile(savedata)
         LoadAssets("BACKEND", savedata)
