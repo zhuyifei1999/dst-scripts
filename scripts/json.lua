@@ -327,7 +327,7 @@ function decode_scanConstant(s, startPos)
     end
   end
   if not (nil) then
-    base.tracked_assert(nil, 'Failed to scan constant from string ' .. s .. ' at starting position ' .. startPos)
+    base.tracked_assert(nil, 'Failed to scan constant at starting position ' .. tostring(startPos) .. ' from string ' .. s)
   end
 end
 

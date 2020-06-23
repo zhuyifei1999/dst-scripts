@@ -44,6 +44,10 @@ local function StoryToTellFn(inst, story_prop)
 
 		local campfire_stories = STRINGS.STORYTELLER.WALTER["CAMPFIRE"]
 		if campfire_stories ~= nil then
+			if inst._story_proxy ~= nil then
+				inst._story_proxy:Remove()
+				inst._story_proxy = nil
+			end
 			inst._story_proxy = SpawnPrefab("walter_campfire_story_proxy")
 			inst._story_proxy:Setup(inst, story_prop)
 

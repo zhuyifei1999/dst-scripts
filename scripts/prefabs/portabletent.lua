@@ -17,7 +17,7 @@ local prefabs_item =
 }
 
 local function OnAnimOver(inst)
-    if inst.AnimState:IsCurrentAnimation("disassemble") then
+    if inst.AnimState:AnimDone() and inst.AnimState:IsCurrentAnimation("disassemble") then
         local current_uses = inst.components.finiteuses:GetUses()
         
         local item = ReplacePrefab(inst, "portabletent_item")
@@ -29,6 +29,10 @@ end
 local function ChangeToItem(inst)
     inst:RemoveComponent("sleepingbag")
     inst:RemoveComponent("portablestructure")
+    inst:RemoveComponent("workable")
+
+    inst:AddTag("NOCLICK")
+
     inst.AnimState:PlayAnimation("disassemble")
     inst.SoundEmitter:PlaySound("dontstarve/characters/walter/tent/close")
     inst:ListenForEvent("animover", OnAnimOver)

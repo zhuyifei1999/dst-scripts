@@ -6,14 +6,14 @@ local assets =
 
 -- temp aggro system for the slingshots
 local function no_aggro(attacker, target)
-	local targets_target = target.components.combat.target
+	local targets_target = target.components.combat ~= nil and target.components.combat.target or nil
 	return targets_target ~= nil and targets_target:IsValid() and targets_target ~= attacker and attacker:IsValid()
 			and (GetTime() - target.components.combat.lastwasattackedbytargettime) < 4
 			and (targets_target.components.health ~= nil and not targets_target.components.health:IsDead())
 end
 
 local function ImpactFx(inst, attacker, target)
-    if target ~= nil and target:IsValid() and target.components.combat.hiteffectsymbol ~= nil then
+    if target ~= nil and target:IsValid() then
 		local impactfx = SpawnPrefab(inst.ammo_def.impactfx)
 		impactfx.Transform:SetPosition(target.Transform:GetWorldPosition())
 				
@@ -80,8 +80,26 @@ local function OnHit_Thulecite(inst, attacker, target)
     inst:Remove() 
 end
 
+local function onloadammo_ice(inst, data)
+print("onloadammo_ice", inst, data ~= nil and data.slingshot)
+	if data ~= nil and data.slingshot then
+		data.slingshot:AddTag("extinguisher")
+	end
+end
+
+local function onunloadammo_ice(inst, data)
+print("onunloadammo_ice", inst, data ~= nil and data.slingshot)
+	if data ~= nil and data.slingshot then
+		data.slingshot:RemoveTag("extinguisher")
+	end
+end
+
 local function OnHit_Ice(inst, attacker, target)
     ImpactFx(inst, attacker, target)
+
+    if target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
+        target.components.sleeper:WakeUp()
+    end
 
     if target.components.burnable ~= nil then
         if target.components.burnable:IsBurning() then
@@ -100,7 +118,7 @@ local function OnHit_Ice(inst, attacker, target)
         fx.components.shatterfx:SetLevel(2)
     end
 
-    if not no_aggro(attacker, target) then
+    if not no_aggro(attacker, target) and target.components.combat ~= nil then
         target.components.combat:SuggestTarget(attacker)
     end
 
@@ -116,7 +134,7 @@ local function OnHit_Speed(inst, attacker, target)
 		if target._slingshot_speedmulttask ~= nil then
 			target._slingshot_speedmulttask:Cancel()
 		end
-		target._slingshot_speedmulttask = target:DoTaskInTime(10, function(i) i.components.locomotor:RemoveExternalSpeedMultiplier(i, debuffkey) i._slingshot_speedmulttask = nil end)
+		target._slingshot_speedmulttask = target:DoTaskInTime(TUNING.SLINGSHOT_AMMO_MOVESPEED_DURATION, function(i) i.components.locomotor:RemoveExternalSpeedMultiplier(i, debuffkey) i._slingshot_speedmulttask = nil end)
 
 		target.components.locomotor:SetExternalSpeedMultiplier(target, debuffkey, TUNING.SLINGSHOT_AMMO_MOVESPEED_MULT)
 	end
@@ -167,6 +185,12 @@ local function projectile_fn(ammo_def)
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
+	if ammo_def.tags then
+		for _, tag in pairs(ammo_def.tags) do
+			inst:AddTag(tag)
+		end
+	end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -190,11 +214,12 @@ local function projectile_fn(ammo_def)
     inst.components.projectile:SetOnHitFn(OnHit)
     inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile.range = 30
+	inst.components.projectile.has_damage_set = true
 
     return inst
 end
 
-local function inv_fn(symbol)
+local function inv_fn(ammo_def)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -208,8 +233,8 @@ local function inv_fn(symbol)
     inst.AnimState:SetBank("slingshotammo")
     inst.AnimState:SetBuild("slingshotammo")
     inst.AnimState:PlayAnimation("idle")
-	if symbol ~= nil then
-		inst.AnimState:OverrideSymbol("rock", "slingshotammo", symbol)
+	if ammo_def.symbol ~= nil then
+		inst.AnimState:OverrideSymbol("rock", "slingshotammo", ammo_def.symbol)
 	end
 
     inst:AddTag("molebait")
@@ -239,6 +264,12 @@ local function inv_fn(symbol)
 
     inst:AddComponent("bait")
     MakeHauntableLaunch(inst)
+
+	if ammo_def.onloadammo ~= nil and ammo_def.onunloadammo ~= nil then
+		inst:ListenForEvent("ammoloaded", ammo_def.onloadammo)
+		inst:ListenForEvent("ammounloaded", ammo_def.onunloadammo)
+		inst:ListenForEvent("onremove", ammo_def.onunloadammo)
+	end
 
     return inst
 end
@@ -273,6 +304,9 @@ local ammo =
         name = "slingshotammo_freeze",
 		symbol = "freeze",
         onhit = OnHit_Ice,
+		tags = { "extinguisher" },
+		onloadammo = onloadammo_ice,
+		onunloadammo = onunloadammo_ice,
         damage = nil,
         hit_sound = "dontstarve/characters/walter/slingshot/frozen",
     },
@@ -305,7 +339,7 @@ for _, v in ipairs(ammo) do
 
 	---
 	if not v.no_inv_item then
-		table.insert(ammo_prefabs, Prefab(v.name, function() return inv_fn(v.symbol) end, assets))
+		table.insert(ammo_prefabs, Prefab(v.name, function() return inv_fn(v) end, assets))
 	end
 
 	local prefabs =

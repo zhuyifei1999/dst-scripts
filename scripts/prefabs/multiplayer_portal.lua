@@ -343,6 +343,18 @@ local function moonrock_onaccept(inst, giver)--, item)
     if giver.components.inventory ~= nil then
         giver.components.inventory:DropEverything()
     end
+
+	if giver.components.leader ~= nil then
+		local followers = giver.components.leader.followers
+		for k, v in pairs(followers) do
+			if k.components.inventory ~= nil then
+				k.components.inventory:DropEverything()
+			elseif k.components.container ~= nil then
+				k.components.container:DropEverything()
+			end
+		end
+	end
+
     inst._savedata[giver.userid] = giver.SaveForReroll ~= nil and giver:SaveForReroll() or nil
     TheWorld:PushEvent("ms_playerdespawnanddelete", giver)
 end
