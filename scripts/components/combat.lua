@@ -231,7 +231,7 @@ function Combat:SetRetargetFunction(period, fn)
     end
 
     if period ~= nil and fn ~= nil then
-        self.retargettask = self.inst:DoPeriodicTask(period, dotryretarget, nil, self)
+        self.retargettask = self.inst:DoPeriodicTask(period, dotryretarget, period*math.random(), self)
     end
 end
 
@@ -249,7 +249,7 @@ function Combat:OnEntityWake()
     end
 
     if self.retargetperiod ~= nil then
-        self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, dotryretarget, nil, self)
+        self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, dotryretarget, self.retargetperiod*math.random(), self)
     end
 
     if self.target ~= nil and self.keeptargetfn ~= nil then

@@ -105,7 +105,7 @@ function Floater:OnLandedServer()
         -- update the inventory component to represent the associated wetness.
         -- Don't apply the wetness to something held by someone, though.
         if self.inst.components.inventoryitem ~= nil and not self.inst.components.inventoryitem:IsHeld() and not self.inst:HasTag("likewateroffducksback") then
-            self.inst.components.inventoryitem:AddMoisture(TUNING.OCEAN.WETNESS)
+            self.inst.components.inventoryitem:AddMoisture(TUNING.OCEAN_WETNESS)
         end
 
         if not self.inst.components.inventoryitem or not self.inst.components.inventoryitem:IsHeld() then

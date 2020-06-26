@@ -74,6 +74,9 @@ local function SetMaterial(inst, materialid)
 	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
 	
 	inst.components.symbolswapdata:SetData(build, "swap_body")
+
+    local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
+    inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix)
 end
 
 local MOONCHESS_MUST_TAGS = { "chess_moonevent" }
@@ -276,9 +279,6 @@ local function makepiece(pieceid, materialid)
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem.cangoincontainer = false
         inst.components.inventoryitem:SetSinks(true)
-
-        local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
-        inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[pieceid].name..inv_image_suffix)
 
         inst:AddComponent("equippable")
         inst.components.equippable.equipslot = EQUIPSLOTS.BODY

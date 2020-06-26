@@ -49,7 +49,7 @@ function HerdMember:GetHerd()
 end
 
 function HerdMember:CreateHerd()
-    if self.enabled and (self.herd == nil or not self.herd:IsValid()) then
+    if self.enabled and (self.herd == nil or not self.herd:IsValid()) and (self.inst.components.health == nil or not self.inst.components.health:IsDead()) then
         local herd = SpawnPrefab(self.herdprefab)
         if herd then
             herd.Transform:SetPosition(self.inst.Transform:GetWorldPosition() )

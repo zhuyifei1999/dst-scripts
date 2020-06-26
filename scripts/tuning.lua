@@ -59,6 +59,8 @@ function Tune(overrides)
         STACK_SIZE_SMALLITEM = 40,
 		STACK_SIZE_TINYITEM = 60,
 
+		OCEAN_WETNESS = 75, -- same as MAX_WETNESS in weather.lua
+
 		DEFAULT_TALKER_DURATION = 2.5,
 		MAX_TALKER_DURATION = 8.0,
 
@@ -3503,7 +3505,7 @@ function Tune(overrides)
 
 		OCEAN =
 		{
-			WETNESS = 75,
+			WETNESS = 75, -- DEPRECATED - use TUNING.OCEAN_WETNESS
 		},
 
         OCEAN_SILHOUETTE =

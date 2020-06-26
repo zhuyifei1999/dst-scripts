@@ -66,17 +66,17 @@ local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "INLIMBO", "player" }
 local function retargetfn(inst)
     local playertargets = {}
-    for i, v in ipairs(AllPlayers) do
+	for i = 1, #AllPlayers do
+		local v = AllPlayers[i]
         if v.components.combat.target ~= nil then
             playertargets[v.components.combat.target] = true
         end
     end
 
-    return FindEntity(inst, 20,
+    return FindEntity(inst, TUNING.EYETURRET_RANGE + 3,
         function(guy)
-            return inst.components.combat:CanTarget(guy)
-                and (playertargets[guy] or
-                    (guy.components.combat.target ~= nil and guy.components.combat.target:HasTag("player")))
+            return (playertargets[guy] or (guy.components.combat.target ~= nil and guy.components.combat.target:HasTag("player")))
+					and inst.components.combat:CanTarget(guy)
         end,
         RETARGET_MUST_TAGS, --see entityreplica.lua
         RETARGET_CANT_TAGS

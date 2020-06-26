@@ -92,7 +92,7 @@ local function OnHookedSomething(inst, target)
 			if TheWorld.Map:IsOceanAtPoint(target.Transform:GetWorldPosition()) then
 				for slot, item in pairs(inst.components.container.slots) do
 					if item ~= nil and item.components.inventoryitem ~= nil then
-						item.components.inventoryitem:AddMoisture(TUNING.OCEAN.WETNESS)
+						item.components.inventoryitem:AddMoisture(TUNING.OCEAN_WETNESS)
 					end
 				end
 			end
