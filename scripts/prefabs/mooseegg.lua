@@ -11,7 +11,6 @@ local prefabs =
 
 local function InitEgg(inst)
     inst.sg:GoToState("land")
-    inst.EggHatched = false
     inst.components.timer:StartTimer("HatchTimer", TUNING.MOOSE_EGG_HATCH_TIMER)
 end
 
@@ -37,15 +36,19 @@ local function OnDismissMoose(inst, guardian)
 end
 
 local function OnSave(inst, data)
-    data.EggHatched = inst.EggHatched
+	data.has_egg = inst.sg:HasStateTag("egg")
 end
 
-local function OnLoad(inst, data)
-    inst.EggHatched = data.EggHatched
-    if inst.EggHatched then
-        inst.sg:GoToState("idle_empty")
-    else
-        inst.sg:GoToState("idle_full")
+local function OnLoadPostPass(inst, ents, data)
+	-- data.EggHatched is for old save files
+	if data.has_egg and not data.EggHatched then
+		if inst.components.timer:TimerExists("HatchTimer") then
+	        inst.sg:GoToState("idle_full")
+		else
+	        inst.sg:GoToState("crack")
+		end
+	else
+		inst.sg:GoToState("idle_empty")
     end
 end
 
@@ -143,7 +146,7 @@ local function fn()
     inst:ListenForEvent("timerdone", OnTimerDone)
 
     inst.InitEgg = InitEgg
-    inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
     inst.OnSave = OnSave
 
     MakeHauntableWork(inst)

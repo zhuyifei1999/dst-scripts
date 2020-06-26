@@ -77,6 +77,18 @@ local function RemoveDeadPlayer(inst, spawnskeleton)
         -- Death FX
         SpawnPrefab("die_fx").Transform:SetPosition(x, y, z)
     end
+
+    if not GetGameModeProperty("ghost_enabled") and not GetGameModeProperty("revivable_corpse") then
+		local followers = inst.components.leader.followers
+		for k, v in pairs(followers) do
+			if k.components.inventory ~= nil then
+				k.components.inventory:DropEverything()
+			elseif k.components.container ~= nil then
+				k.components.container:DropEverything()
+			end
+		end
+	end
+
     inst:OnDespawn()
     DeleteUserSession(inst)
     inst:Remove()

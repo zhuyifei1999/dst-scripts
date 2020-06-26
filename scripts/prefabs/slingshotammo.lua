@@ -265,6 +265,11 @@ local function inv_fn(ammo_def)
     inst:AddComponent("bait")
     MakeHauntableLaunch(inst)
 
+	if ammo_def.fuelvalue ~= nil then
+		inst:AddComponent("fuel")
+		inst.components.fuel.fuelvalue = ammo_def.fuelvalue
+	end
+
 	if ammo_def.onloadammo ~= nil and ammo_def.onunloadammo ~= nil then
 		inst:ListenForEvent("ammoloaded", ammo_def.onloadammo)
 		inst:ListenForEvent("ammounloaded", ammo_def.onunloadammo)
@@ -323,6 +328,7 @@ local ammo =
         onhit = OnHit_Distraction,
         damage = nil,
         hit_sound = "dontstarve/characters/walter/slingshot/poop",
+		fuelvalue = TUNING.MED_FUEL / 10, -- 1/10th the value of using poop
     },
     {
         name = "trinket_1",

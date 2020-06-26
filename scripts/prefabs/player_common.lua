@@ -907,6 +907,15 @@ local function OnDespawn(inst)
     inst.components.constructionbuilder:StopConstruction()
     if GetGameModeProperty("drop_everything_on_despawn") then
         inst.components.inventory:DropEverything()
+
+		local followers = inst.components.leader.followers
+		for k, v in pairs(followers) do
+			if k.components.inventory ~= nil then
+				k.components.inventory:DropEverything()
+			elseif k.components.container ~= nil then
+				k.components.container:DropEverything()
+			end
+		end
     else
         inst.components.inventory:DropEverythingWithTag("irreplaceable")
     end
