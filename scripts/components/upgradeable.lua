@@ -53,7 +53,7 @@ function Upgradeable:CanUpgrade()
 	return self.stage and self.numstages and self.stage < self.numstages
 end
 
-function Upgradeable:Upgrade(obj)
+function Upgradeable:Upgrade(obj, upgrade_performer)
 	if not self:CanUpgrade() then return false end
 	self.numupgrades = self.numupgrades + obj.components.upgrader.upgradevalue
 
@@ -64,7 +64,7 @@ function Upgradeable:Upgrade(obj)
 	end
 
 	if self.onupgradefn then
-		self.onupgradefn(self.inst)
+		self.onupgradefn(self.inst, upgrade_performer)
 	end
 
 	if self:CanUpgrade() and self.numupgrades >= self.upgradesperstage then

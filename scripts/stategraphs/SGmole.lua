@@ -55,6 +55,10 @@ local events =
                 )
             end
         end),
+
+    EventHandler("stunbomb", function(inst)
+        inst.sg:GoToState("stunned", true)
+    end),
 }
 
 local function SpawnMoveFx(inst)

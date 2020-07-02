@@ -641,7 +641,7 @@ local foods =
     {
         test = function(cooker, names, tags)
             return names.wobster_sheller_land and names.butter
-                    and (tags.meat == 1.0) and (tags.fish == 1.0) and not tags.frozen
+                    and (tags.meat and tags.meat >= 1.0) and (tags.fish and tags.fish >= 1.0) and not tags.frozen
         end,
         priority = 25,
         foodtype = FOODTYPE.MEAT,
@@ -652,6 +652,144 @@ local foods =
         cooktime = 1,
         overridebuild = "cook_pot_food3",
         potlevel = "high",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    barnaclepita = 
+    {
+        test = function(cooker, names, tags)
+            return (names.barnacle or names.barnacle_cooked)
+                    and tags.veggie and tags.veggie >= 0.5
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_MED,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_SLOW,
+        sanity = TUNING.SANITY_TINY,
+        cooktime = 2,
+        overridebuild = "cook_pot_food5",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    barnaclesushi = 
+    {
+        test = function(cooker, names, tags)
+            return (names.barnacle or names.barnacle_cooked)
+            		and (names.kelp or names.kelp_cooked)
+                    and tags.egg and tags.egg >= 1
+        end,
+        priority = 30,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_LARGE,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_MED,
+        sanity = TUNING.SANITY_TINY,
+        cooktime = 0.5,
+        overridebuild = "cook_pot_food5",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    barnaclinguine = 
+    {
+        test = function(cooker, names, tags)
+            return ((names.barnacle or 0) + (names.barnacle_cooked or 0) >= 2 )
+                    and tags.veggie and tags.veggie >= 2
+        end,
+        priority = 30,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_MED/2,
+        hunger = TUNING.CALORIES_LARGE*2,
+        perishtime = TUNING.PERISH_FAST,
+        sanity = TUNING.HEALING_MED,
+        cooktime = 2,
+        overridebuild = "cook_pot_food5",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    barnaclestuffedfishhead = 
+    {
+        test = function(cooker, names, tags)
+            return (names.barnacle or names.barnacle_cooked)
+                    and tags.fish and tags.fish >= 1.25
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_MED,
+        hunger = TUNING.CALORIES_LARGE*2,
+        perishtime = TUNING.PERISH_SUPERFAST,
+        sanity = 0,
+        cooktime = 2,
+        overridebuild = "cook_pot_food5",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+
+    leafloaf = 
+    {
+        test = function(cooker, names, tags)
+            return ((names.plantmeat or 0) + (names.plantmeat_cooked or 0) >= 2 )
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_MEDSMALL,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_PRESERVED,
+        sanity = TUNING.SANITY_TINY,
+        cooktime = 2,
+        overridebuild = "cook_pot_food4",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    leafymeatburger = 
+    {
+        test = function(cooker, names, tags)
+            return (names.plantmeat or names.plantmeat_cooked)
+            		and (names.onion or names.onion_cooked)
+                    and tags.veggie and tags.veggie >= 2
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_MEDLARGE,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_FAST,
+        sanity = TUNING.SANITY_LARGE,
+        cooktime = 2,
+        overridebuild = "cook_pot_food4",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    leafymeatsouffle = 
+    {
+        test = function(cooker, names, tags)
+            return (names.plantmeat or names.plantmeat_cooked)
+                    and tags.sweetener and tags.sweetener >= 1
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = 0,
+        hunger = TUNING.CALORIES_LARGE,
+        perishtime = TUNING.PERISH_FAST,
+        sanity = TUNING.SANITY_HUGE,
+        cooktime = 2,
+        overridebuild = "cook_pot_food4",
+        floater = {"med", 0.05, {0.65, 0.6, 0.65}},
+    },
+
+    meatysalad = 
+    {
+        test = function(cooker, names, tags)
+            return (names.plantmeat or names.plantmeat_cooked)
+                    and tags.veggie and tags.veggie >= 3
+        end,
+        priority = 25,
+        foodtype = FOODTYPE.MEAT,
+        health = TUNING.HEALING_LARGE,
+        hunger = TUNING.CALORIES_LARGE*2,
+        perishtime = TUNING.PERISH_FAST,
+        sanity = TUNING.SANITY_TINY,
+        cooktime = 2,
+        overridebuild = "cook_pot_food4",
         floater = {"med", 0.05, {0.65, 0.6, 0.65}},
     },
 }

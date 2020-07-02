@@ -1373,7 +1373,7 @@ local fx =
     {
         name = "boat_mast_sink_fx",
         bank = "mast_01",
-        build = "boat_mast2",
+        build = "boat_mast2_wip",
         anim = "sink",
     },
     {
@@ -1706,7 +1706,55 @@ local fx =
         bank = "singingshell_creature_woodfx",
         build ="singingshell_creature_woodfx",
         anim = "idle",    
-    },        
+    },  
+    {
+        name = "shadowhand_fx",
+        bank = "shadowhand_fx",
+        build ="shadowhand_fx",
+        anim = "idle",
+    },
+    {
+        name = "waterstreak_burst",
+        bank = "waterstreak",
+        build = "waterstreak",
+        anim = "used",
+        sixfaced = true,
+        sound = "turnoftides/common/together/water/splash/small",
+    },
+    {
+        name = "waterplant_burr_burst",
+        bank = "barnacle_burr",
+        build = "barnacle_burr",
+        anim = "used",
+        sound = "dontstarve/common/deathpoof",
+    },
+    {
+        name = "waterplant_destroy",
+        bank = "collapse",
+        build = "structure_collapse_fx",
+        anim = "collapse_small",
+        sound = "dangerous_sea/creatures/water_plant/grow",
+    },
+    {
+        name = "mastupgrade_lightningrod_fx",
+        bank = "mastupgrade_lightningrod_fx",
+        build = "mastupgrade_lightningrod_fx",
+        anim = "idle",
+    },
+    {
+        name = "shadow_teleport_in",
+        bank = "shadow_teleport",
+        build = "shadow_teleport",
+        anim = "portal_in",
+        fn = GroundOrientation,        
+    },
+    {
+        name = "shadow_teleport_out",
+        bank = "shadow_teleport",
+        build = "shadow_teleport",
+        anim = "portal_out",
+        fn = GroundOrientation,        
+    }
 }
 
 for cratersteamindex = 1, 4 do

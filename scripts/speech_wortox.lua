@@ -3199,6 +3199,7 @@ return{
 		OCEANFISH_SMALL_6 = "I'm afraid it's time for you to leaf, hyuyu!",
 		OCEANFISH_SMALL_7 = "What might happen if I planted it in the garden?",
 		OCEANFISH_SMALL_8 = "It has such a sunny disposition! Hyuyu!",
+        OCEANFISH_SMALL_9 = "A fellow prankster, I see!",
 
 		OCEANFISH_MEDIUM_1 = "Your name is mud, fish!",
 		OCEANFISH_MEDIUM_2 = "If I hold it up, it becomes an upright bass!",
@@ -3471,6 +3472,32 @@ return{
 
         HERMIT_PEARL = "A treasured treasure.",
         HERMIT_CRACKED_PEARL = "A shattered hope.",
+
+        -- DSEAS
+        WATERPLANT = "I feel as though I've ended up in Wonderland, hyuyu!",
+        WATERPLANT_BOMB = "That plant is so selfish, it won't share its shellfish!",
+        WATERPLANT_BABY = "I surmise it's not yet at full size.",
+        WATERPLANT_PLANTER = "A bouncing baby bulb.",
+
+        SHARK = "Don't eat me, you'll get fur stuck in your teeth!",
+
+        MASTUPGRADE_LAMP_ITEM = "A light to lead us through the night.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Now mayhaps, we won't get zapped!",
+
+        WATERPUMP = "This will put a swift end to fiery pranks...",
+
+        BARNACLE = "A briny bunch of barnacles.",
+        BARNACLE_COOKED = "I'd rather not.",
+
+        BARNACLEPITA = "Unless this pocket is filled with souls, I'll pass.",
+        BARNACLESUSHI = "Perhaps one of the mortals will enjoy it.",
+        BARNACLINGUINE = "Oodles of fishy noodles.",
+        BARNACLESTUFFEDFISHHEAD = "Hyuyu, no talking with your mouth full!",
+
+        LEAFLOAF = "Even the mortals don't seem to care for it.",
+        LEAFYMEATBURGER = "Mortals seem to get quite irritated when you mess with their food.",
+        LEAFYMEATSOUFFLE = "I'll stick to souls, thank you.",
+        MEATYSALAD = "Hyuyuyu! What a deliciously deceptive prank!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

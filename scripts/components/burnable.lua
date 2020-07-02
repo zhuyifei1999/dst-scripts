@@ -28,6 +28,14 @@ local function onsmoldering(self, smoldering)
     end
 end
 
+local function onignorefuel(self, ignorefuel)
+    if ignorefuel then
+        self.inst:AddTag("burnableignorefuel")
+    else
+        self.inst:RemoveTag("burnableignorefuel")
+    end
+end
+
 local Burnable = Class(function(self, inst)
     self.inst = inst
 
@@ -63,6 +71,7 @@ nil,
     burning = onburning,
     canlight = oncanlight,
     smoldering = onsmoldering,
+    ignorefuel = onignorefuel,
 })
 
 --- Set the function that will be called when the object stops smoldering
@@ -516,6 +525,7 @@ function Burnable:OnRemoveFromEntity()
     end
     self.inst:RemoveTag("canlight")
     self.inst:RemoveTag("nolight")
+    self.inst:RemoveTag("burnableignorefuel")
 end
 
 return Burnable

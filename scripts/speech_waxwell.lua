@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "What an ugly thing.",
 		OCEANFISH_SMALL_7 = "It seems more plant than fish.",
 		OCEANFISH_SMALL_8 = "The sunfish! It burns!",
+        OCEANFISH_SMALL_9 = "How vulgar.",
 
 		OCEANFISH_MEDIUM_1 = "It looks positively revolting.",
 		OCEANFISH_MEDIUM_2 = "It has a rather unsettling stare.",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "It's... strange to be so trusted.",
         HERMIT_CRACKED_PEARL = "Ah. I thought I'd run out of people to disappoint.",
+
+        -- DSEAS
+        WATERPLANT = "I'm sure its delicate appearance is just a ruse for us to let our guard down.",
+        WATERPLANT_BOMB = "I was right.",
+        WATERPLANT_BABY = "I should pluck you like the weed you are.",
+        WATERPLANT_PLANTER = "Why would I want these to spread?",
+
+        SHARK = "What a nasty creature. I wish I'd thought of it.",
+
+        MASTUPGRADE_LAMP_ITEM = "Far more practical than setting a fire on our boat.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Very prudent.",
+
+        WATERPUMP = "Higgsbury, I think a bucket would have sufficed...",
+
+        BARNACLE = "I wish they were oysters.",
+        BARNACLE_COOKED = "It's an acquired taste.",
+
+        BARNACLEPITA = "I suppose I'll eat it if there's nothing else.",
+        BARNACLESUSHI = "At least it's an attempt at sophistication.",
+        BARNACLINGUINE = "It's surprisingly delicious.",
+        BARNACLESTUFFEDFISHHEAD = "I suppose anything is \"food\" now.",
+
+        LEAFLOAF = "Exceptionally mediocre.",
+        LEAFYMEATBURGER = "How pedestrian.",
+        LEAFYMEATSOUFFLE = "I appreciate the attempt at presentation.",
+        MEATYSALAD = "This seems suspect.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

@@ -115,7 +115,11 @@ local function GetTraderFn(inst)
         if inst.components.trader:IsTryingToTradeWithMe(v) then
 
             inst.components.npc_talker:Say(getstring(inst,STRINGS.HERMITCRAB_ATTEMPT_TRADE), nil, true)
-            inst.components.timer:StartTimer("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
+            if inst.components.timer:TimerExists("speak_time") then
+                inst.components.timer:SetTimeLeft("speak_time", TUNING.HERMITCRAB.SPEAKTIME)
+            else
+                inst.components.timer:StartTimer("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
+            end
 
             if inst.components.timer:TimerExists("complain_time") then
                 local time = inst.components.timer:GetTimeLeft("complain_time")
@@ -262,6 +266,12 @@ local function GetFaceTargetFn(inst)
     if shouldface and inst.sg:HasStateTag("npc_fishing") then
         inst.sg:RemoveStateTag("canrotate")
         inst:PushEvent("oceanfishing_stoppedfishing",{reason="bothered"})
+    end
+
+    if shouldface then
+        if ThePlayer:GetDistanceSqToInst(inst) < 20*20 then
+            ThePlayer:PushEvent("playhermitmusic")
+        end
     end
     return shouldface
 end

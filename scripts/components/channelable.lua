@@ -44,14 +44,16 @@ end
 
 function Channelable:StartChanneling(channeler)
     if self.enabled and
-        not self:IsChanneling() and
+        ( not self:IsChanneling() or self.ignore_prechannel) and
         channeler ~= nil and
         channeler:IsValid() and
         channeler.sg ~= nil and
-        channeler.sg:HasStateTag("prechanneling") then
+        (channeler.sg:HasStateTag("prechanneling") or self.skip_state_channeling ) then
 
         self.channeler = channeler
-        channeler.sg:GoToState("channeling", self.inst)
+        if not self.skip_state_channeling then
+            channeler.sg:GoToState("channeling", self.inst)
+        end
 
         if self.onchannelingfn ~= nil then
             self.onchannelingfn(self.inst, channeler)
@@ -66,7 +68,9 @@ end
 function Channelable:StopChanneling(aborted)
     if self:IsChanneling() then
         self.channeler.sg.statemem.stopchanneling = true
-        self.channeler.sg:GoToState("stopchanneling")
+        if not self.skip_state_stopchanneling then
+            self.channeler.sg:GoToState("stopchanneling")
+        end
     end
 
     if self.onstopchannelingfn ~= nil then

@@ -1,5 +1,7 @@
 local FISH_DATA = require("prefabs/oceanfishdef")
 
+local easing = require("easing")
+
 local SWIMMING_COLLISION_MASK   = COLLISION.GROUND
 								+ COLLISION.LAND_OCEAN_LIMITS
 								+ COLLISION.OBSTACLES
@@ -37,7 +39,7 @@ local function Flop(inst)
 	inst.flopsnd3 = inst:DoTaskInTime((5+9+26)*FRAMES, function() flopsoundcheck(inst) end)
 	inst.flopsnd4 = inst:DoTaskInTime((5+9+39)*FRAMES, function() flopsoundcheck(inst) end)
 
-	inst.flop_task = inst:DoTaskInTime(math.random() + 2 + 0.5*num, Flop)	
+	inst.flop_task = inst:DoTaskInTime(math.random() + 2 + 0.5*num, Flop)
 end
 
 local function OnInventoryLanded(inst)
@@ -188,6 +190,37 @@ local function toground(inst)
 	end
 end
 
+local function spread_protection_at_point(inst, fire_pos)
+    inst.components.wateryprotection:SpreadProtectionAtPoint(fire_pos:Get())
+end
+
+local function on_find_fire(inst, fire_pos)
+    if inst:IsAsleep() then
+        inst:DoTaskInTime(1 + math.random(), spread_protection_at_point, fire_pos)
+    else
+        inst:PushEvent("putoutfire", {firePos = fire_pos})
+    end
+end
+
+local MAX_SPIT_RANGE_SQ = TUNING.OCEANFISH.SPRINKLER_DETECT_RANGE * TUNING.OCEANFISH.SPRINKLER_DETECT_RANGE
+local SPIT_SPEED_BASE = 5
+local SPIT_SPEED_ADD = 7
+local function launch_water_projectile(inst, target_position)
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    local projectile = SpawnPrefab("waterstreak_projectile")
+    projectile.Transform:SetPosition(x, y, z)
+
+    local dx, dz = target_position.x - x, target_position.z - z
+    local range_sq = (dx * dx) + (dz * dz)
+    local speed = easing.linear(range_sq, SPIT_SPEED_BASE, SPIT_SPEED_ADD, MAX_SPIT_RANGE_SQ)
+
+    projectile.components.complexprojectile:SetHorizontalSpeed(speed)
+    projectile.components.complexprojectile:SetLaunchOffset(Vector3(1.0, 2.85, 0))
+    projectile.components.complexprojectile:SetGravity(-16)
+    projectile.components.complexprojectile:Launch(target_position, inst, inst)
+end
+
 local function OnEntityWake(inst)
 	if inst.remove_task ~= nil then
 		inst.remove_task:Cancel()
@@ -309,6 +342,25 @@ local function water_common(data)
 	--inst.components.weighable.type = TROPHYSCALE_TYPES.FISH -- No need to set a weighable type, this is just here for data and will be copied over to the inventory item	
 	inst.components.weighable:Initialize(inst.fish_def.weight_min, inst.fish_def.weight_max)
 	inst.components.weighable:SetWeight(Lerp(inst.fish_def.weight_min, inst.fish_def.weight_max, CalcNewSize()))
+
+    if inst.fish_def.firesuppressant then
+        inst:AddComponent("firedetector")
+        inst.components.firedetector:SetOnFindFireFn(on_find_fire)
+        inst.components.firedetector.range = TUNING.OCEANFISH.SPRINKLER_DETECT_RANGE
+        inst.components.firedetector.detectPeriod = TUNING.OCEANFISH.SPRINKLER_DETECT_PERIOD
+        inst.components.firedetector.fireOnly = true
+
+        inst:AddComponent("wateryprotection")
+        inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
+        inst.components.wateryprotection.temperaturereduction = TUNING.FIRESUPPRESSOR_TEMP_REDUCTION
+        inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
+        inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
+        inst.components.wateryprotection:AddIgnoreTag("player")
+
+        inst.LaunchProjectile = launch_water_projectile
+
+        inst.components.firedetector:Activate(true)
+    end
 
     inst:SetStateGraph("SGoceanfish")
     inst:SetBrain(brain)
@@ -449,8 +501,8 @@ local function inv_common(fish_def)
 	MakeHauntableLaunchAndPerish(inst)
 
 	inst:ListenForEvent("on_landed", OnInventoryLanded)
-	inst:ListenForEvent("animover", function() 		
-		if inst.AnimState:IsCurrentAnimation("flop_loop") then			
+	inst:ListenForEvent("animover", function()
+		if inst.AnimState:IsCurrentAnimation("flop_loop") then
 			inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishland")
 		end
 	end)
@@ -467,14 +519,19 @@ local function MakeFish(data)
 		table.insert(assets, Asset("ANIM", "anim/"..data.build..".zip"))
 	end
 
+    if data.extra_anim_assets ~= nil then
+        for _, v in ipairs(data.extra_anim_assets) do
+            table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
+        end
+    end
+
 	local prefabs = {
 		data.prefab.."_inv", 
 		"schoolherd_"..data.prefab,
 		"spoiled_fish", 
 		data.cooking_product,
 	}
-	ConcatArrays(prefabs, data.loot)
-	ConcatArrays(prefabs, data.loot)
+	ConcatArrays(prefabs, data.loot, data.extra_prefabs)
 
 	table.insert(fish_prefabs, Prefab(data.prefab, function() return water_common(data) end, assets, prefabs))
 	table.insert(fish_prefabs, Prefab(data.prefab.."_inv", function() return inv_common(data) end))

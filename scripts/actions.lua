@@ -323,6 +323,7 @@ ACTIONS =
     ROW_CONTROLLER = Action({priority=3, is_relative_to_platform=true, disable_platform_hopping=true, do_not_locomote=true}),    
     BOARDPLATFORM = Action({ customarrivecheck=CheckIsOnPlatform }),
     OCEAN_TOSS = Action({priority=3, rmb=true, customarrivecheck=CheckOceanFishingCastRange, is_relative_to_platform=true, disable_platform_hopping=true}),
+    UNPATCH = Action({ distance=0.5 }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -1534,10 +1535,14 @@ ACTIONS.SHAVE.strfn = function(act)
 end
 
 ACTIONS.SHAVE.fn = function(act)
-    if act.invobject ~= nil and act.invobject.components.shaver ~= nil then
+    if act.invobject ~= nil then
         local shavee = act.target or act.doer
-        if shavee ~= nil and shavee.components.beard ~= nil then
-            return shavee.components.beard:Shave(act.doer, act.invobject)
+        if shavee ~= nil and act.invobject.components.shaver ~= nil then
+            if shavee.components.beard ~= nil then
+                return shavee.components.beard:Shave(act.doer, act.invobject)
+            elseif shavee.components.shaveable ~= nil then
+                return shavee.components.shaveable:Shave(act.doer, act.invobject)
+            end
         end
     end
 end
@@ -1572,6 +1577,8 @@ ACTIONS.EXTINGUISH.fn = function(act)
             act.target.components.burnable:Extinguish()
         end
         return true
+    elseif act.target.components.fueled.canbespecialextinguished and act.target.components.fueled ~= nil and not act.target.components.fueled:IsEmpty() then
+        act.target.components.fueled:ChangeSection(-1)
     end
 end
 
@@ -2101,8 +2108,13 @@ ACTIONS.UPGRADE.fn = function(act)
     if act.invobject and act.target
         and act.invobject.components.upgrader
         and act.invobject.components.upgrader:CanUpgrade(act.target, act.doer) then
-        return act.target.components.upgradeable:Upgrade(act.invobject)
+        return act.target.components.upgradeable:Upgrade(act.invobject, act.doer)
     end
+end
+
+ACTIONS.UPGRADE.strfn = function(act)
+    return (act.target ~= nil and act.target:HasTag(UPGRADETYPES.WATERPLANT.."_upgradeable") and "WATERPLANT")
+            or nil
 end
 
 ACTIONS.NUZZLE.fn = function(act)
@@ -2249,7 +2261,7 @@ end
 require("components/drawingtool")
 ACTIONS.DRAW.stroverridefn = function(act)
     local item = FindEntityToDraw(act.target, act.invobject)
-    return item ~= nil
+return item ~= nil
         and subfmt(STRINGS.ACTIONS.DRAWITEM, { item = item.drawnameoverride or item:GetBasicDisplayName() })
         or nil
 end
@@ -2268,6 +2280,16 @@ ACTIONS.DRAW.fn = function(act)
         return true
     end
 end
+
+ACTIONS.STARTCHANNELING.stroverridefn = function(act)
+    if act.target and act.target.components.channelable and act.target.components.channelable.actionstring then
+        return act.target.components.channelable.actionstring
+    else
+        return nil
+    end
+       
+end
+
 
 ACTIONS.STARTCHANNELING.fn = function(act)
     return act.target ~= nil and act.target.components.channelable:StartChanneling(act.doer)
@@ -2985,6 +3007,33 @@ ACTIONS.SALT.fn = function(act)
         else
             --food plate on the ground
             act.target.components.quagmire_saltable:Salt(1)
+        end
+        return true
+    end
+end
+
+ACTIONS.UNPATCH.fn = function(act)
+    if act.target ~= nil and act.target.components.boatleak ~= nil then
+        
+        if act.target.components.lootdropper then
+            local build = act.target.AnimState:GetBuild()
+
+            local prefab = "boatpatch"
+            if build == "boat_repair_tape_build" then
+                prefab = "sewing_tape"
+            end
+            local patch = SpawnPrefab(prefab)
+
+            if patch.components.repairer and patch.components.repairer.healthrepairvalue then
+                local boat = act.target:GetCurrentPlatform()                
+                if boat.components.health ~= nil then                    
+                    boat.components.health:DoDelta(-patch.components.repairer.healthrepairvalue)                    
+                end
+            end
+
+            act.target.components.lootdropper:FlingItem(patch)
+
+            act.target.components.boatleak:SetState("small_leak")
         end
         return true
     end

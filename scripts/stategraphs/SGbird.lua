@@ -40,6 +40,9 @@ local events =
     EventHandler("trapped", function(inst)
         inst.sg:GoToState("trapped")
     end),
+    EventHandler("stunbomb", function(inst)
+        inst.sg:GoToState("stunned")
+    end),
 }
 
 local states =

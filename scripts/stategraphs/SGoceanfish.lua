@@ -28,6 +28,11 @@ local events=
 		end
 		inst.leaving = true
     end),
+    EventHandler("putoutfire", function(inst, data)
+        if not inst.sg:HasStateTag("jumping") and not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("shoot", { fire_pos = data.firePos })
+        end
+    end),
 }
 
 local function SpawnSplashFx(inst)
@@ -309,6 +314,48 @@ local states=
         end,
     },  
 
+    State
+    {
+        name = "shoot",
+        tags = {"busy", "shooting", "jumping"},
+
+        onenter = function(inst, data)
+            if IsUnderBoat(inst) then
+                inst.sg:GoToState("idle")
+                return
+            end
+
+            inst.AnimState:PlayAnimation("spit")
+            inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/jump_small", nil, .25)
+
+            inst.sg.statemem.fire_pos = data.fire_pos
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_shoot")
+                inst:LaunchProjectile(inst.sg.statemem.fire_pos)
+
+                SpawnSplashFx(inst)
+                SetBreaching(inst, true)
+            end),
+            TimeEvent(25 * FRAMES, function(inst)
+                inst.components.firedetector:DetectFire()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+
+        onexit = function(inst)
+            SetBreaching(inst, false)
+        end,
+    },
 }
 
 CommonStates.AddWalkStates(states)

@@ -3197,6 +3197,7 @@ return{
 		OCEANFISH_SMALL_6 = "It already reeks of decay.",
 		OCEANFISH_SMALL_7 = "Hmph. I see no resemblance.",
 		OCEANFISH_SMALL_8 = "The sun has set on your time in this world.",
+        OCEANFISH_SMALL_9 = "What a rude little creature.",
 
 		OCEANFISH_MEDIUM_1 = "What a horrendous looking creature.",
 		OCEANFISH_MEDIUM_2 = "I'm afraid your time is up.",
@@ -3469,6 +3470,32 @@ return{
 
         HERMIT_PEARL = "I will be its caretaker.",
         HERMIT_CRACKED_PEARL = "I seem to leave only misery in my wake...",
+
+        -- DSEAS
+        WATERPLANT = "How pretty.",
+        WATERPLANT_BOMB = "Nature rejects me...",
+        WATERPLANT_BABY = "I could cut it down now, before it grows...",
+        WATERPLANT_PLANTER = "Even if I plant it, the fickle thing may turn against me.",
+
+        SHARK = "Are you here to send me to a watery grave?",
+
+        MASTUPGRADE_LAMP_ITEM = "A meager light to combat the darkness.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Alas, being struck down by lightning is one less thing I can look forward too.",
+
+        WATERPUMP = "The fish is paying for its transgressions.",
+
+        BARNACLE = "We pried it from its home.",
+        BARNACLE_COOKED = "It's... chewy.",
+
+        BARNACLEPITA = "My pita is filled with disappointment.",
+        BARNACLESUSHI = "It's cold...",
+        BARNACLINGUINE = "I like my noodles plain, with butter.",
+        BARNACLESTUFFEDFISHHEAD = "They make starving seem almost appealing...",
+
+        LEAFLOAF = "It's nothing like any meatloaf I've tried.",
+        LEAFYMEATBURGER = "It's drab and flavorless...",
+        LEAFYMEATSOUFFLE = "Oh. I thought it was dessert...",
+        MEATYSALAD = "This salad tastes strange...",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

@@ -877,6 +877,9 @@ local function AddWinterTree(treetype)
         inst:AddComponent("container")
         inst.components.container:WidgetSetup(treetype.name)
         inst.components.container.canbeopened = false
+        -- inst.components.container.skipclosesnd = true
+        -- inst.components.container.skipopensnd = true
+
 
         inst:AddComponent("timer")
 

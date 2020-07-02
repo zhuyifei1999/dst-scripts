@@ -80,7 +80,10 @@ local MainSounds =
     "yotc_2020.fsb",
 
     "hookline_2.fev",
-    "hookline_2.fsb",    
+    "hookline_2.fsb",
+
+    "dangerous_sea.fev",
+    "dangerous_sea.fsb",
 
     "warly.fsb",
 	"wendy.fsb",

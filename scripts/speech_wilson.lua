@@ -3202,6 +3202,7 @@ return {
 		OCEANFISH_SMALL_6 = "You have to sea it to beleaf it.",
 		OCEANFISH_SMALL_7 = "I finally caught this bloomin' fish!",
 		OCEANFISH_SMALL_8 = "It's a scorcher!",
+        OCEANFISH_SMALL_9 = "Just spit-balling, but I might have a use for you...",
 
 		OCEANFISH_MEDIUM_1 = "I certainly hope it tastes better than it looks.",
 		OCEANFISH_MEDIUM_2 = "I went to a lot of treble to catch it.",
@@ -3474,6 +3475,32 @@ return {
 
         HERMIT_PEARL = "I'll take good care of it.",
         HERMIT_CRACKED_PEARL = "I... didn't take good care of it.",
+
+        -- DSEAS
+        WATERPLANT = "As long as we don't take their barnacles, they'll stay our buds.",
+        WATERPLANT_BOMB = "We're under seedge!",
+        WATERPLANT_BABY = "This one's just a sprout.",
+        WATERPLANT_PLANTER = "They seem to grow best on oceanic rocks.",
+
+        SHARK = "We may need a bigger boat...",
+
+        MASTUPGRADE_LAMP_ITEM = "I'm full of bright ideas.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "I've harnessed the power of electricity over land and sea!",
+
+        WATERPUMP = "It puts out fires very a-fish-iently.",
+
+        BARNACLE = "They don't look like knuckles to me.",
+        BARNACLE_COOKED = "I'm told it's quite a delicacy.",
+
+        BARNACLEPITA = "Barnacles taste better when you can't see them.",
+        BARNACLESUSHI = "I still seem to have misplaced my chopsticks.",
+        BARNACLINGUINE = "Pass the pasta!",
+        BARNACLESTUFFEDFISHHEAD = "I'm just hungry enough to consider it...",
+
+        LEAFLOAF = "Mystery leaf meat.",
+        LEAFYMEATBURGER = "Vegetarian, but not cruelty-free.",
+        LEAFYMEATSOUFFLE = "Has science gone too far?",
+        MEATYSALAD = "Strangely filling, for a salad.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

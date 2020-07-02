@@ -50,6 +50,8 @@ local function fn()
 	inst.components.boatleak.onsprungleak = onsprungleak
 	inst.components.boatleak.onrepairedleak = onrepairedleak
 
+    inst:AddComponent("lootdropper")   
+
     return inst
 end
 

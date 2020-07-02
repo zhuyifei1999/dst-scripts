@@ -40,9 +40,9 @@ AddRoom("OceanSwell", {
 						distributeprefabs =
 						{
 							seastack = 1.0,
-							seastack_spawner_swell = 0.1,
+							seastack_spawner_swell = 0.10,
 							oceanfish_shoalspawner = 0.07,
-						},
+                        },
 						countstaticlayouts =
 						{
 							["CrabKing"] = 1,
@@ -52,13 +52,17 @@ AddRoom("OceanSwell", {
 AddRoom("OceanRough", {
 					colour={r=.5,g=0.6,b=.080,a=.10},
 					value = GROUND.OCEAN_ROUGH,
-				    required_prefabs = {"hermithouse_construction1"},
+				    required_prefabs = {
+                        "hermithouse_construction1",
+                        "waterplant",
+                    },
 					contents =  {
 						distributepercent = 0.01 ,
 						distributeprefabs =
 						{
 							seastack = 1,
-							seastack_spawner_rough = 0.13,
+							seastack_spawner_rough = 0.09,
+                            waterplant_spawner_rough = 0.04,
 						},
 						countstaticlayouts =
 						{

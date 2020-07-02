@@ -139,7 +139,7 @@ end or nil
 
 --Register events
 if not _ismastershard then
-    inst:ListenForEvent("slave_sinkholesupdate", OnSinkholesUpdate)
+    inst:ListenForEvent("secondary_sinkholesupdate", OnSinkholesUpdate)
 end
 
 --------------------------------------------------------------------------

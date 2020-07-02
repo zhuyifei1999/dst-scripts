@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "It is suspiciously leafy.",
 		OCEANFISH_SMALL_7 = "Are ye fish or flower?",
 		OCEANFISH_SMALL_8 = "By Sól! It wields the power of the sun!",
+        OCEANFISH_SMALL_9 = "You dare spit at a Viking warrior?",
 
 		OCEANFISH_MEDIUM_1 = "Meat is meat.",
 		OCEANFISH_MEDIUM_2 = "You will make a fine meal!",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "I shall protect it with my life!",
         HERMIT_CRACKED_PEARL = "The battle is won, but at what cost?",
+
+        -- DSEAS
+        WATERPLANT = "Have we entered the realm of giants?",
+        WATERPLANT_BOMB = "Have at thee, plant!",
+        WATERPLANT_BABY = "Grow fast and strong, young one.",
+        WATERPLANT_PLANTER = "Fear not, I shall return you to the sea in time.",
+
+        SHARK = "Do you come to challenge me, sea beast?",
+
+        MASTUPGRADE_LAMP_ITEM = "We shall keep the flame burning bright!",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "You may do your worst, oh mighty Thor!",
+
+        WATERPUMP = "We hath safeguarded our vessel against a fiery end.",
+
+        BARNACLE = "Tis a paltry bit of sea meat.",
+        BARNACLE_COOKED = "You will find a new home in my belly.",
+
+        BARNACLEPITA = "Why hide the meat within this bready pocket?",
+        BARNACLESUSHI = "I hunger for more!",
+        BARNACLINGUINE = "It slays my hunger soundly!",
+        BARNACLESTUFFEDFISHHEAD = "For those who are strong of will, and strong of stomach.",
+
+        LEAFLOAF = "It has a suspiciously non-meat smell to it.",
+        LEAFYMEATBURGER = "This will suffice until I find real meat.",
+        LEAFYMEATSOUFFLE = "A nightmarish vision... but food nonetheless.",
+        MEATYSALAD = "My instincts scream against this.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

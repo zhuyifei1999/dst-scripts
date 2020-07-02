@@ -3197,6 +3197,7 @@ return{
 		OCEANFISH_SMALL_6 = "Friends?",
 		OCEANFISH_SMALL_7 = "Friend?",
 		OCEANFISH_SMALL_8 = "Hot!",
+        OCEANFISH_SMALL_9 = "Funny Glub Glub",
 
 		OCEANFISH_MEDIUM_1 = "Oooh, mud!",
 		OCEANFISH_MEDIUM_2 = "Big Glub Glub",
@@ -3469,6 +3470,32 @@ return{
 
         HERMIT_PEARL = "Shiny!",
         HERMIT_CRACKED_PEARL = "Broken...",
+
+        -- DSEAS
+        WATERPLANT = "Big friend!",
+        WATERPLANT_BOMB = "Stop, friend!",
+        WATERPLANT_BABY = "Baby friend",
+        WATERPLANT_PLANTER = "Find nice spot for friend",
+
+        SHARK = "Bad chomper!",
+
+        MASTUPGRADE_LAMP_ITEM = "Night light",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Zzzzt catcher",
+
+        WATERPUMP = "Sploosh!",
+
+        BARNACLE = "Hiding?",
+        BARNACLE_COOKED = "Chewy",
+
+        BARNACLEPITA = "Goes in belly now",
+        BARNACLESUSHI = "Belly stuff",
+        BARNACLINGUINE = "Strings of belly stuff",
+        BARNACLESTUFFEDFISHHEAD = "Glub glubs?",
+
+        LEAFLOAF = "Is friend? Or not friend?",
+        LEAFYMEATBURGER = "Hmmm",
+        LEAFYMEATSOUFFLE = "Wiggly",
+        MEATYSALAD = "Friends? No?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

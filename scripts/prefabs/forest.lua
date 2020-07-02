@@ -319,36 +319,40 @@ local prefabs =
 	"fish", -- the old fish, keeping this here for mod support
 
 	-- ocean
-    "boat",
-    "wave_shimmer",
-    "wave_shore",
-    "seastack",
-    "seastack_spawner_swell",
-    "seastack_spawner_rough",
-    "wobster_den_spawner_shore",
-    "splash_sink",
-	"bullkelp_plant",
-	"bullkelp_beachedroot",
-    "fishingnet",
     "antchovies_group",
+    "boat",
+	"bullkelp_beachedroot",
+	"bullkelp_plant",
+	"cookiecutter",
+	"cookiecutter_spawner",
+    "crabking",
+    "driftwood_log",
     "driftwood_small1",
     "driftwood_small2",
     "driftwood_tall",
-    "driftwood_log",
-	"saltstack",
-	"cookiecutter",
-	"cookiecutter_spawner",
+    "fishingnet",
     "gnarwail",
     "malbatross",
-    "squid",    
-    "crabking",
-    "wobster_den",
 	"messagebottle",
 	"messagebottletreasure_marker",
+	"saltstack",
+    "seastack",
+    "seastack_spawner_rough",
+    "seastack_spawner_swell",
+    "shell_cluster",
 	"singingshell_octave3",
 	"singingshell_octave4",
 	"singingshell_octave5",
-    "shell_cluster",
+    "splash_sink",
+    "squid",
+    "waterplant",
+    "wave_shimmer",
+    "wave_shore",
+    "wobster_den",
+    "wobster_den_spawner_shore",
+    "waveyjones",
+    "shark",
+    "oceanhorror",
 
     -- moon island
 	"gestalt",
@@ -367,8 +371,7 @@ local prefabs =
 	"moon_altar_rock_glass",
 	"moon_altar_rock_seed",
     "carrat_planted",
-    "hermitcrab",
-	
+    "hermitcrab",	
 	"hermithouse_construction1",
 
 	-- fish
@@ -455,9 +458,8 @@ local function common_postinit(inst)
         inst:AddComponent("ambientsound")
         inst:AddComponent("dsp")
         inst:AddComponent("colourcube")
-        inst:AddComponent("hallucinations")        
+        inst:AddComponent("hallucinations")
         inst:AddComponent("wavemanager")
-
         inst.Map:SetTransparentOcean(true)
     end
 end
@@ -511,8 +513,8 @@ local function master_postinit(inst)
     end
     
     inst:AddComponent("feasts")
-
     inst:AddComponent("yotc_raceprizemanager")
+    inst:AddComponent("sharklistener")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

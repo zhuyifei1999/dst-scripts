@@ -1011,7 +1011,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper_skin", "arm_upper", "arm_lower", },
+		symbol_overrides = { "torso", "arm_lower_cuff", "arm_upper", "arm_lower", },
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",

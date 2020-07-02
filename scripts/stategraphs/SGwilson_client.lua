@@ -408,7 +408,13 @@ local actionhandlers =
         function(inst, action)
             return (action.target == nil or not action.target:HasTag("constructionsite")) and "startconstruct" or "construct"
         end),
-    ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
+    ActionHandler(ACTIONS.STARTCHANNELING, function(inst,action)
+        if action.target and action.target.components.channelable and action.target.components.channelable.use_channel_longaction then
+                return "channel_longaction" 
+            else
+                return "startchanneling" 
+            end
+        end),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
     ActionHandler(ACTIONS.DISMANTLE, "dolongaction"),
     ActionHandler(ACTIONS.TACKLE, "tackle_pre"),
@@ -2208,6 +2214,31 @@ local states =
             inst:ClearBufferedAction()
             inst.sg:GoToState("idle")
         end,
+    },
+
+    State
+    {
+        name = "channel_longaction",
+        tags = { "doing", "canrotate", "channeling"},
+
+        onenter = function(inst)
+
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("give",false)
+            inst.AnimState:PushAnimation("give_pst",false)  
+
+            if inst:GetBufferedAction() then
+                inst:PerformPreviewBufferedAction()
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("channel_longaction")
+            end),
+        },
     },
 
     State

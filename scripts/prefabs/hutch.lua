@@ -392,6 +392,9 @@ local function create_hutch()
     inst.components.container:WidgetSetup("hutch")
     inst.components.container.onopenfn = OnOpen
     inst.components.container.onclosefn = OnClose
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)

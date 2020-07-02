@@ -264,6 +264,9 @@ local function fn()
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("teleportato_base")
     inst.components.container.canbeopened = false
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(3,5)

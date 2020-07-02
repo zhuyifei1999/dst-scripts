@@ -35,6 +35,10 @@ function Hull:SetRadius(radius)
 	self.radius = radius	
 end
 
+function Hull:GetRadius(radius)
+    return self.radius
+end
+
 function Hull:OnDeployed()
 	self.boat_lip.AnimState:PlayAnimation("place_lip")
 	self.boat_lip.AnimState:PushAnimation("lip", true)

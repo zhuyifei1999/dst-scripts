@@ -5,6 +5,12 @@ local actionhandlers =
     ActionHandler(ACTIONS.GOHOME, "action"),
 }
 
+local function canteleport(inst)
+    return not (inst.sg:HasStateTag("attack") or inst.sg:HasStateTag("hit")
+        or inst.sg:HasStateTag("teleporting") or inst.sg:HasStateTag("noattack")
+        or inst.components.health:IsDead())
+end
+
 local events =
 {
     EventHandler("attacked", function(inst)
@@ -18,6 +24,8 @@ local events =
             inst.sg:GoToState("attack", data.target)
         end
     end),
+    EventHandler("teleport_to_sea", function(inst) if canteleport(inst) then inst.sg:GoToState("teleport_to_sea") end end),
+
     CommonHandlers.OnLocomote(false, true),
 }
 
@@ -229,6 +237,40 @@ local states =
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
+
+    State{
+        name = "teleport_to_sea",
+        tags = { "busy", "noattack", "teleporting" },
+        onenter = function(inst, playanim)
+
+                local x,y,z = inst.Transform:GetWorldPosition() 
+                local fx = SpawnPrefab("shadow_teleport_out") 
+                fx.Transform:SetPosition(x,y,z) 
+
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("taunt", false)
+            inst.AnimState:PushAnimation("disappear", false)  
+        end,
+
+        timeline =
+        {
+            TimeEvent(40*FRAMES, function(inst)             
+                local x,y,z = inst.Transform:GetWorldPosition()
+                print("TELEPORT OUT TERRORBEAK")
+                local fx = SpawnPrefab("shadow_teleport_out") 
+                fx.Transform:SetPosition(x,y,z) 
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst) 
+                print("EXCHANGE TERROR BEAK")
+                inst:ExchangeWithOceanTerror()
+                inst:Remove()
+            end),
+        },
+    },      
 }
 CommonStates.AddWalkStates(states)
 

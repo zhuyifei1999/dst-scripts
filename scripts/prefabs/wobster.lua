@@ -342,6 +342,7 @@ local function base_land_wobster(build_name, nameoverride, fish_def, fadeout, co
     inst:AddTag("smallcreature")
     inst:AddTag("whackable")
 	inst:AddTag("smalloceancreature")
+    inst:AddTag("stunnedbybomb")
 
 
     if cook_product ~= nil then

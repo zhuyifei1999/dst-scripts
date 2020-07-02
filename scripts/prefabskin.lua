@@ -670,7 +670,7 @@ function mast_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
-    inst.AnimState:SetSkin(build_name, "boat_mast2")
+    inst.AnimState:SetSkin(build_name, "boat_mast2_wip")
     inst.components.inventoryitem:ChangeImageName()
 end
 function mast_item_clear_fn(inst, build_name)
@@ -681,10 +681,10 @@ function mast_init_fn(inst, build_name)
     if inst.components.placer == nil and not TheWorld.ismastersim then
         return
     end
-    inst.AnimState:SetSkin(build_name, "boat_mast2")
+    inst.AnimState:SetSkin(build_name, "boat_mast2_wip")
 end
 function mast_clear_fn(inst, build_name)
-    inst.AnimState:SetBuild("boat_mast2")
+    inst.AnimState:SetBuild("boat_mast2_wip")
 end
 
 

@@ -91,6 +91,9 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("spicepack")
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)

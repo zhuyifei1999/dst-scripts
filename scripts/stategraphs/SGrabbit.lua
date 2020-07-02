@@ -42,6 +42,9 @@ local events=
                 end
             end
         end),
+    EventHandler("stunbomb", function(inst)
+        inst.sg:GoToState("stunned")
+    end),
 }
 
 local states=

@@ -10,7 +10,8 @@ local assets =
     Asset("ANIM", "anim/meat_rack_food.zip"),
     Asset("ANIM", "anim/meat_rack_food_tot.zip"),
     Asset("ANIM", "anim/batwing.zip"),
-    Asset("ANIM", "anim/plant_meat.zip"),
+    Asset("ANIM", "anim/plant_meat.zip"),  
+    Asset("ANIM", "anim/barnacle.zip"),  
 }
 
 local quagmire_assets =
@@ -628,6 +629,48 @@ local function quagmire_cookedsmallmeat()
     return inst
 end
 
+local function barnacle()
+    local inst = common("barnacle", "barnacle", "raw", {"barnacle"}, nil, { product = "barnacle_cooked" })
+
+    if not TheWorld.ismastersim then
+        return inst
+    end    
+
+    inst.components.edible.ismeat = true    
+    inst.components.edible.foodtype = FOODTYPE.MEAT
+    inst.components.edible.healthvalue = 0
+    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+    inst.components.edible.sanityvalue = -TUNING.SANITY_TINY
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+
+    inst.components.tradable.goldvalue = 0
+
+    inst.components.floater:SetVerticalOffset(0.05)
+
+    inst:AddComponent("selfstacker")
+
+    return inst
+end
+
+
+local function barnacle_cooked()
+    local inst = common("barnacle", "barnacle", "cooked", {"barnacle"})
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.tradable.goldvalue = 0
+    inst.components.edible.healthvalue = TUNING.HEALING_TINY
+    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+    inst.components.edible.sanityvalue = 0
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
+
+    inst.components.floater:SetVerticalOffset(0.05)
+
+    return inst
+end
+
 return Prefab("meat", raw, assets, prefabs),
         Prefab("cookedmeat", cooked, assets),
         Prefab("meat_dried", driedmeat, assets),
@@ -651,4 +694,6 @@ return Prefab("meat", raw, assets, prefabs),
         Prefab("humanmeat_cooked", humanmeat_cooked, assets),
         Prefab("humanmeat_dried", humanmeat_dried, assets),
         Prefab("quagmire_smallmeat", quagmire_smallmeat, quagmire_assets, quagmire_prefabs),
-        Prefab("quagmire_cookedsmallmeat", quagmire_cookedsmallmeat, quagmire_assets)
+        Prefab("quagmire_cookedsmallmeat", quagmire_cookedsmallmeat, quagmire_assets),
+        Prefab("barnacle", barnacle, assets),
+        Prefab("barnacle_cooked", barnacle_cooked, assets)

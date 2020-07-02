@@ -3199,6 +3199,7 @@ return{
 		OCEANFISH_SMALL_6 = "Huh. Never heard a fish rustle before.",
 		OCEANFISH_SMALL_7 = "Aww, it's kinda cute!",
 		OCEANFISH_SMALL_8 = "That thing's a fire hazard!",
+        OCEANFISH_SMALL_9 = "That thing sure can spit!",
 
 		OCEANFISH_MEDIUM_1 = "Here's hoping it tastes better than it looks.",
 		OCEANFISH_MEDIUM_2 = "Now that's a nice fat fish!",
@@ -3471,6 +3472,32 @@ return{
 
         HERMIT_PEARL = "I know a bit about not givin' up on someone.",
         HERMIT_CRACKED_PEARL = "I'm so sorry, Pearl.",
+
+        -- DSEAS
+        WATERPLANT = "Look at the size of it!",
+        WATERPLANT_BOMB = "Seems determined to ruin the structural integrity of our boat.",
+        WATERPLANT_BABY = "The spittin' image of its parents.",
+        WATERPLANT_PLANTER = "Let's find a good rock to plant you on.",
+
+        SHARK = "Just give 'em a good bop on the nose!",
+
+        MASTUPGRADE_LAMP_ITEM = "One less thing cluttering up our deck.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Seems pretty practical.",
+
+        WATERPUMP = "Why do I get the feeling this is that funny-haired scientist's handiwork...",
+
+        BARNACLE = "Took a bit of elbow grease to harvest 'em.",
+        BARNACLE_COOKED = "They're kinda chewier than I expected.",
+
+        BARNACLEPITA = "That's good eatin!",
+        BARNACLESUSHI = "Can't say I've ever tasted somethin' quite like that before.",
+        BARNACLINGUINE = "Nothin' like a pot full of pasta.",
+        BARNACLESTUFFEDFISHHEAD = "I'm all for using the materials you've got.",
+
+        LEAFLOAF = "It's hard to pin down the flavor...",
+        LEAFYMEATBURGER = "It's not like any burger I've ever tried.",
+        LEAFYMEATSOUFFLE = "Well... I guess it's creative.",
+        MEATYSALAD = "Huh. Pretty hearty for some leafy greens.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

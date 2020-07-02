@@ -3200,6 +3200,7 @@ return{
 		OCEANFISH_SMALL_6 = "I get the feeling it would make great kindling.",
 		OCEANFISH_SMALL_7 = "You've uh... got something growing on your forehead.",
 		OCEANFISH_SMALL_8 = "It's so sad... a fellow firebug forced to live its life underwater!",
+        OCEANFISH_SMALL_9 = "Hey! Go spit at somebody else!",
 
 		OCEANFISH_MEDIUM_1 = "Ew, that thing looks nasty!",
 		OCEANFISH_MEDIUM_2 = "Quit looking at me like that!",
@@ -3472,6 +3473,32 @@ return{
 
         HERMIT_PEARL = "Don't worry grams, it's safe with me!",
         HERMIT_CRACKED_PEARL = "Oops...",
+
+        -- DSEAS
+        WATERPLANT = "Just a big dumb flower.",
+        WATERPLANT_BOMB = "Okay, I'm sorry I called you dumb!",
+        WATERPLANT_BABY = "It's small now, but it'll get bigger.",
+        WATERPLANT_PLANTER = "Do I really want to grow more of these things?",
+
+        SHARK = "Uhh... nice fishy?",
+
+        MASTUPGRADE_LAMP_ITEM = "Alternatively, I could just set the mast on fire.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "That's where the lightning goes.",
+
+        WATERPUMP = "This thing's broken, it spouts water instead of fire!",
+
+        BARNACLE = "Ew, it came from the water.",
+        BARNACLE_COOKED = "Fire made it better.",
+
+        BARNACLEPITA = "Pita pita, barnacle eater.",
+        BARNACLESUSHI = "I can still see the barnacle hiding under there.",
+        BARNACLINGUINE = "Don't mind if I do.",
+        BARNACLESTUFFEDFISHHEAD = "You know, I don't think I'm that hungry after all.",
+
+        LEAFLOAF = "Uh, is it supposed to be green?",
+        LEAFYMEATBURGER = "Does this burger taste weird to anyone else?",
+        LEAFYMEATSOUFFLE = "What kind of monster would combine dessert with vegetables?",
+        MEATYSALAD = "Wait... what ARE these leaves?",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

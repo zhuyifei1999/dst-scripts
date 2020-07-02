@@ -52,6 +52,10 @@ local events =
 			inst.sg:GoToState("exhausted") 
 		end
 	end),
+    
+    EventHandler("stunbomb", function(inst)
+        inst.sg:GoToState("stunned")
+    end),
 }
 
 local function play_carrat_scream(inst)

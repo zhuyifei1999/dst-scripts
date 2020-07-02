@@ -694,7 +694,7 @@ CommonStates.AddAmphibiousCreatureHopStates = function(states, config, anims, ti
 
         onenter = function(inst)
 			inst.sg.statemem.swimming = inst:HasTag("swimming")
-            inst.AnimState:PlayAnimation("jump")
+            inst.AnimState:PlayAnimation(anims.pre or "jump")
 			if not inst.sg.statemem.swimming then		      
 				inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 			end

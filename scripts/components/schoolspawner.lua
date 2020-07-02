@@ -50,6 +50,34 @@ local function testforgnarwail(comp, spawnpoint)
     end
 end
 
+local SHARK_TEST_RADIUS = 100
+local SHARK_SPAWN_CHANCE = 0.075
+local SHARK_SPAWN_RADIUS = 20
+local SHARK_TIMING = {8, 10} -- min 8, max 10
+local function testforshark(comp, spawnpoint)
+    local ents = TheSim:FindEntities(spawnpoint.x, spawnpoint.y, spawnpoint.z, SHARK_TEST_RADIUS, { "gnarwail" })
+    if #ents < 2 and math.random() < SHARK_SPAWN_CHANCE then
+        local offset = FindSwimmableOffset(spawnpoint, math.random()*2*PI, SHARK_SPAWN_RADIUS)
+        if offset then
+            comp.inst:DoTaskInTime(GetRandomMinMax(SHARK_TIMING[1], SHARK_TIMING[2]), function()
+                local spawn_x = spawnpoint.x + offset.x
+                local spawn_z = spawnpoint.z + offset.z
+
+                if TheWorld.Map:GetPlatformAtPoint(spawn_x, spawn_z) == nil then
+                    local shark = SpawnPrefab("shark")
+                    shark.Transform:SetPosition(spawn_x, 0, spawn_z)
+                    shark.sg:GoToState("eat_pre")
+
+                    local player = FindClosestPlayerInRangeSq(spawn_x, 0, spawn_z, 20*20, true)
+                    if player then
+                        self.inst:ForceFacePoint(player.Transform:GetWorldPosition())
+                    end
+                end
+            end)
+        end
+    end
+end
+
 local function SpawnSchoolForPlayer(player, reschedule)
     if self:ShouldSpawnANewSchoolForPlayer(player) then
         local spawnpoint = self:GetSpawnPoint(player:GetPosition())
@@ -204,6 +232,7 @@ function self:SpawnSchool(spawnpoint, target, override_spawn_offset)
         local tile_at_spawnpoint = TheWorld.Map:GetTileAtPoint(spawnpoint:Get())
         if tile_at_spawnpoint == GROUND.OCEAN_SWELL or tile_at_spawnpoint == GROUND.OCEAN_ROUGH then
             testforgnarwail(self, spawnpoint)
+            testforshark(self, spawnpoint)
         end
 	else
 		herd:Remove()

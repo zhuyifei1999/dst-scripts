@@ -475,10 +475,10 @@ if _ismastersim then
     else
         _squelched = nil
 
-        --Register slave shard events
-        inst:ListenForEvent("slave_worldvoterupdate", OnWorldVoterUpdate, _world)
-        inst:ListenForEvent("slave_worldvotersquelchedupdate", OnWorldVoterSquelchedUpdate, _world)
-        inst:ListenForEvent("slave_worldvoterenabled", OnWorldVoterEnabled, _world)
+        --Register secondary shard events
+        inst:ListenForEvent("secondary_worldvoterupdate", OnWorldVoterUpdate, _world)
+        inst:ListenForEvent("secondary_worldvotersquelchedupdate", OnWorldVoterSquelchedUpdate, _world)
+        inst:ListenForEvent("secondary_worldvoterenabled", OnWorldVoterEnabled, _world)
     end
 else
     inst:ListenForEvent("votecountsdirty", UpdateVoteCounts)

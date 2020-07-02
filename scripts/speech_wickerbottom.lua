@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "Curious, it seems to be camouflaged for the wrong environment.",
 		OCEANFISH_SMALL_7 = "Oh my, you'd look right at home in my old garden.",
 		OCEANFISH_SMALL_8 = "Careful not to look directly at it, dears.",
+        OCEANFISH_SMALL_9 = "It's not unlike the Toxotes jaculator, though the coloring is unusual.",
 
 		OCEANFISH_MEDIUM_1 = "Oh my... is it supposed to look like that?",
 		OCEANFISH_MEDIUM_2 = "This species usually prefers deeper waters.",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "Oh dear, I do hope I can find him.",
         HERMIT_CRACKED_PEARL = "I should tell her.",
+
+        -- DSEAS
+        WATERPLANT = "I'm unfamiliar with this variety of sea vegetation.",
+        WATERPLANT_BOMB = "We'd best avoid those.",
+        WATERPLANT_BABY = "This one must be a juvenile.",
+        WATERPLANT_PLANTER = "Perhaps I'll get back into gardening.",
+
+        SHARK = "Fascinating! The entire jaw seems to be comprised of living stone!",
+
+        MASTUPGRADE_LAMP_ITEM = "I'm always in need of a good reading light.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "A very sensible safety measure.",
+
+        WATERPUMP = "It's just common sense.",
+
+        BARNACLE = "People in ancient times believed geese grew from barnacles. Can you imagine?",
+        BARNACLE_COOKED = "As I suspected, it tastes nothing like goose.",
+
+        BARNACLEPITA = "A rather interesting combination.",
+        BARNACLESUSHI = "I think I'm developing a taste for it.",
+        BARNACLINGUINE = "Oh my, it's very rich.",
+        BARNACLESTUFFEDFISHHEAD = "I don't think I can stomach it.",
+
+        LEAFLOAF = "Such an unusual flavor!",
+        LEAFYMEATBURGER = "At least I shouldn't have to worry about it being undercooked.",
+        LEAFYMEATSOUFFLE = "It seems to be made from a plant-based gelatin of sorts.",
+        MEATYSALAD = "It contains quite a bit of protein for a salad.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

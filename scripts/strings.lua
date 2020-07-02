@@ -577,7 +577,11 @@ STRINGS =
         BURY = "Bury",
         FEED = "Feed",
         FAN = "Fan",
-        UPGRADE = "Upgrade",
+        UPGRADE = 
+        {
+            GENERIC = "Upgrade",
+            WATERPLANT = "Plant",
+        },
         HAUNT = "Haunt",
         UNPIN = "Unstick",
 
@@ -617,7 +621,10 @@ STRINGS =
             GENERIC_FMT = "Stop Building {name}",
         },
         APPLYCONSTRUCTION = "Build",
-        STARTCHANNELING = "Touch",
+        STARTCHANNELING = {
+            GENERIC = "Touch",
+            PUMP = "Pump",
+        },
         STOPCHANNELING = "Stop Channeling",
         CASTAOE =
         {
@@ -2474,6 +2481,7 @@ STRINGS =
 		OCEANFISH_SMALL_6 = "Fallounder",
 		OCEANFISH_SMALL_7 = "Bloomfin Tuna",
 		OCEANFISH_SMALL_8 = "Scorching Sunfish",
+		OCEANFISH_SMALL_9 = "Spittlefish",
 		OCEANFISH_MEDIUM_1 = "Mudfish",
 		OCEANFISH_MEDIUM_2 = "Deep Bass",
 		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
@@ -2617,6 +2625,7 @@ STRINGS =
 		GHOSTLYELIXIR_RETALIATION = "Distilled Vengeance",
 		SISTURN = "Sisturn",
 
+        -- SSSS
         CRABKING = "Crab King",
         CRABKING_CLAW = "Imposing Claw",
 
@@ -2664,6 +2673,33 @@ STRINGS =
         CHUM = "Fish Food",
 
         TURF_SHELLBEACH_BLUEPRINT = "Shell Turf Blueprint",
+ 
+        -- DSEAS
+        WATERPLANT = "Sea Weed",
+        WATERPLANT_BOMB = "Seedshell",
+        WATERPLANT_BABY = "Sea Sprout",
+        WATERPLANT_PLANTER = "Sea Sprout Starter",
+
+        SHARK = "Rockjaw",
+        OCEANHORROR = "Terrorclaw",
+
+        MASTUPGRADE_LAMP_ITEM = "Deck Illuminator",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Lightning Conductor",
+
+        WATERPUMP = "Fire Pump",
+
+        BARNACLE = "Barnacles",
+        BARNACLE_COOKED = "Cooked Barnacles",
+
+        BARNACLEPITA = "Barnacle Pita",
+        BARNACLESUSHI = "Barnacle Nigiri",
+        BARNACLINGUINE = "Barnacle Linguine",
+        BARNACLESTUFFEDFISHHEAD = "Stuffed Fish Heads",
+
+        LEAFLOAF = "Leafy Meatloaf",
+        LEAFYMEATBURGER = "Veggie Burger",
+        LEAFYMEATSOUFFLE = "Jelly Salad",
+        MEATYSALAD = "Beefy Greens",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -3225,9 +3261,13 @@ STRINGS =
 
         HERMIT_BUNDLE_SHELLS = "The shells she sells.",
         WINCH_BLUEPRINT = "For deep sea grabs.",
-        TURF_SHELLBEACH_BLUEPRINT = "A soft patch of sand, scattered with seashells.",
+        TURF_SHELLBEACH_BLUEPRINT = "A soft patch of sand scattered with shells.",
 
         CHUM = "Get chummy with the fish.",
+
+        MASTUPGRADE_LAMP_ITEM = "Keep the darkness at bay.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Protect your boat from lightning.",
+        WATERPUMP = "Water, water everywhere!",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -5228,7 +5268,7 @@ STRINGS.UI =
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
-		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nShe Sells Sea Shells",
+		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta\nTroubled Waters",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 

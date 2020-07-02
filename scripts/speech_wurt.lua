@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "Makes crunchy sounds!",
 		OCEANFISH_SMALL_7 = "Is ugly fish, but still like it!",
 		OCEANFISH_SMALL_8 = "Ow! Is hot!",
+        OCEANFISH_SMALL_9 = "Can spit far too! Watch! Pt-ooey!",
 
 		OCEANFISH_MEDIUM_1 = "Goopy!",
 		OCEANFISH_MEDIUM_2 = "Has such big pretty eyes!",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "Oooooh, so shiny!",
         HERMIT_CRACKED_PEARL = "D-didn't do it!",
+
+        -- DSEAS
+        WATERPLANT = "Big ugly flower.",
+        WATERPLANT_BOMB = "Glurph! Flower is mean!",
+        WATERPLANT_BABY = "Ugly baby flower.",
+        WATERPLANT_PLANTER = "Maybe we just throw it into the big pond, florp.",
+
+        SHARK = "Glurp... they not look very nice.",
+
+        MASTUPGRADE_LAMP_ITEM = "Tall boat light!",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Lightning catcher!",
+
+        WATERPUMP = "Splashy splashy!",
+
+        BARNACLE = "They hiding in shell.",
+        BARNACLE_COOKED = "Glurgh!",
+
+        BARNACLEPITA = "Don't like it!",
+        BARNACLESUSHI = "Glurph...",
+        BARNACLINGUINE = "Nuh-uh, not eating that.",
+        BARNACLESTUFFEDFISHHEAD = "Who make this terrible thing?!",
+
+        LEAFLOAF = "Nuh-uh.",
+        LEAFYMEATBURGER = "Glurph, not real veggie!",
+        LEAFYMEATSOUFFLE = "Smell funny... not gonna eat it.",
+        MEATYSALAD = "Don't think this real veggies!",
     },
 
     DESCRIBE_GENERIC = "What that?",

@@ -1,6 +1,8 @@
 local prefabs =
 {
     "nightmarefuel",
+    "shadow_teleport_out",
+    "shadow_teleport_in",
 }
 
 local brain = require("brains/shadowcreaturebrain")
@@ -79,6 +81,38 @@ local function OnDeath(inst, data)
         --max one nightmarefuel if killed by a crazy NPC (e.g. Bernie)
         inst.components.lootdropper:SetLoot({ "nightmarefuel" })
         inst.components.lootdropper:SetChanceLootTable(nil)
+    end
+end
+
+
+local function ExchangeWithOceanTerror(inst)
+    if inst.components.combat.target then
+        local target = inst.components.combat.target
+        local x,y,z = target.Transform:GetWorldPosition()
+        if not TheWorld.Map:IsVisualGroundAtPoint(x,y,z) then
+            local sx,sy,sz = inst.Transform:GetWorldPosition()
+            local radius = 0
+            local theta = inst:GetAngleToPoint(Vector3(x,y,z)) * DEGREES
+            while TheWorld.Map:IsVisualGroundAtPoint(sx,sy,sz) and radius < 30 do
+                radius = radius + 2
+                local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
+                sx = sx + offset.x
+                sy = sy + offset.y
+                sz = sz + offset.z
+            end
+
+            if radius >= 30 then
+                return nil
+            else
+                local shadow = SpawnPrefab("oceanhorror")
+                shadow.components.health:SetPercent(inst.components.health:GetPercent())
+                shadow.Transform:SetPosition(sx,sy,sz)
+                shadow.sg:GoToState("appear")
+                shadow.components.combat:SetTarget(target)
+                local fx = SpawnPrefab("shadow_teleport_in") 
+                fx.Transform:SetPosition(sx,sy,sz)                
+            end
+        end
     end
 end
 
@@ -169,6 +203,12 @@ local function MakeShadowCreature(data)
         inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
         inst:ListenForEvent("death", OnDeath)
 
+        if data.name == "terrorbeak" then
+            inst.followtosea = true
+            inst.ExchangeWithOceanTerror = ExchangeWithOceanTerror
+        end
+
+
         inst.persists = false
 
         return inst
@@ -199,7 +239,7 @@ local data =
         health = TUNING.TERRORBEAK_HEALTH,
         damage = TUNING.TERRORBEAK_DAMAGE,
         attackperiod = TUNING.TERRORBEAK_ATTACK_PERIOD,
-        sanityreward = TUNING.SANITY_LARGE,
+        sanityreward = TUNING.SANITY_LARGE,        
     },
 }
 local ret = {}

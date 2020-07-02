@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "It smells like dead leaves.",
 		OCEANFISH_SMALL_7 = "Hey little buddy! Get it, because it's got a bud on it's head?",
 		OCEANFISH_SMALL_8 = "Keep it away from anything flammable!",
+        OCEANFISH_SMALL_9 = "Hey! It's rude to spit at people!",
 
 		OCEANFISH_MEDIUM_1 = "SEA MONST-- oh wait, it's just a really ugly fish.",
 		OCEANFISH_MEDIUM_2 = "It's like it's staring into my soul...",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "I gave my Pinetree Pioneer's oath to protect it with my life!",
         HERMIT_CRACKED_PEARL = "Oh no, oh no no no no...",
+
+        -- DSEAS
+        WATERPLANT = "Woah! That flower is huge!",
+        WATERPLANT_BOMB = "Hey! Careful with those!",
+        WATERPLANT_BABY = "I think I'm getting better at gardening!",
+        WATERPLANT_PLANTER = "Don't worry, we'll find a nice rock to plant you on.",
+
+        SHARK = "Just look at the size of those teeth!",
+
+        MASTUPGRADE_LAMP_ITEM = "I guess it's safer than having a campfire on the deck...",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "The static makes Woby's fur all poofy.",
+
+        WATERPUMP = "It's always good to have proper safety precautions in place.",
+
+        BARNACLE = "Foraged from the sea!",
+        BARNACLE_COOKED = "Hmm, it's not bad!",
+
+        BARNACLEPITA = "Further proof that anything can be a sandwich.",
+        BARNACLESUSHI = "It's... interesting.",
+        BARNACLINGUINE = "Just about anything tastes good with pasta.",
+        BARNACLESTUFFEDFISHHEAD = "Uhh Woby? Do you want this one?",
+
+        LEAFLOAF = "I guess it's one way to eat your vegetables.",
+        LEAFYMEATBURGER = "It's not quite the same.",
+        LEAFYMEATSOUFFLE = "I don't think we needed to get that fancy with it...",
+        MEATYSALAD = "What are those chunks in it?",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",
