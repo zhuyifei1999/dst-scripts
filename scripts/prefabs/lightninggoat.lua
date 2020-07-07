@@ -139,6 +139,10 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function onspawnedforhunt(inst)
+	TheWorld:PushEvent("ms_sendlightningstrike", inst:GetPosition())
+end
+
 local function OnSave(inst, data)
     if inst.charged then
         data.charged = inst.charged
@@ -252,6 +256,8 @@ local function fn()
 
     MakeMediumBurnableCharacter(inst, "lightning_goat_body")
     MakeMediumFreezableCharacter(inst, "lightning_goat_body")
+
+	inst:ListenForEvent("spawnedforhunt", onspawnedforhunt)
 
     inst:ListenForEvent("lightningstrike", setcharged)
     inst.setcharged = setcharged

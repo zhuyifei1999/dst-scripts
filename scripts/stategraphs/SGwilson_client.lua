@@ -409,7 +409,7 @@ local actionhandlers =
             return (action.target == nil or not action.target:HasTag("constructionsite")) and "startconstruct" or "construct"
         end),
     ActionHandler(ACTIONS.STARTCHANNELING, function(inst,action)
-        if action.target and action.target.components.channelable and action.target.components.channelable.use_channel_longaction then
+        if action.target and action.target:HasTag("use_channel_longaction") then
                 return "channel_longaction" 
             else
                 return "startchanneling" 

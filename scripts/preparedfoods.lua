@@ -762,10 +762,10 @@ local foods =
     leafymeatsouffle = 
     {
         test = function(cooker, names, tags)
-            return (names.plantmeat or names.plantmeat_cooked)
-                    and tags.sweetener and tags.sweetener >= 1
+            return ((names.plantmeat or 0) + (names.plantmeat_cooked or 0) >= 2 )
+                    and tags.sweetener and tags.sweetener >= 2
         end,
-        priority = 25,
+        priority = 50,
         foodtype = FOODTYPE.MEAT,
         health = 0,
         hunger = TUNING.CALORIES_LARGE,

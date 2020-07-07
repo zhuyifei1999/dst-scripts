@@ -212,6 +212,16 @@ local function onburnt(inst)
 
 end
 
+local function ondeconstructstructure(inst, caster)
+    if inst._lamp ~= nil and inst._lamp:IsValid() then
+        inst._lamp:PushEvent("ondeconstructstructure", caster)
+    end
+
+    if inst._lightningrod ~= nil and inst._lightningrod:IsValid() then
+        inst._lightningrod:PushEvent("ondeconstructstructure", caster)
+    end
+end
+
 local function lootsetup(lootdropper)
     local inst = lootdropper.inst
     local recipe = inst._lamp ~= nil and AllRecipes["mastupgrade_lamp_item"] or inst._lightningrod ~= nil and AllRecipes["mastupgrade_lightningrod_item"] or nil
@@ -326,6 +336,7 @@ local function fn_pst(inst)
     inst.components.upgradeable.onupgradefn = OnUpgrade
     
     inst:ListenForEvent("onbuilt", onbuilt)
+    inst:ListenForEvent("ondeconstructstructure", ondeconstructstructure)
 
     inst.OnSave = onsave
     inst.OnLoad = onload

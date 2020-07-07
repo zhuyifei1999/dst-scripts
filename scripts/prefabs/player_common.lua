@@ -1175,6 +1175,12 @@ local function OnWintersFeastMusic(inst)
     end
 end
 
+local function OnHermitMusic(inst)
+    if ThePlayer ~= nil and  ThePlayer == inst then
+        ThePlayer:PushEvent("playhermitmusic")
+    end
+end
+
 local function OnSharkSound(inst)
     if ThePlayer ~= nil and  ThePlayer == inst then
         if inst._sharksoundparam:value() <= 1 then
@@ -1568,9 +1574,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst._sharksoundparam = net_float(inst.GUID, "localplayer._sharksoundparam","sharksounddirty")
         inst._winters_feast_music = net_event(inst.GUID, "localplayer._winters_feast_music")
+        inst._hermit_music = net_event(inst.GUID, "localplayer._hermit_music")
+
 
         if not TheNet:IsDedicated() then
             inst:ListenForEvent("localplayer._winters_feast_music", OnWintersFeastMusic)
+            inst:ListenForEvent("localplayer._hermit_music", OnHermitMusic)
         end
 
         inst.entity:SetPristine()

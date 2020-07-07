@@ -1,7 +1,3 @@
---@felix:
---  handle deconstruction staff
---  
-
 local assets =
 {
     Asset("ANIM", "anim/mastupgrade_lamp.zip"),
@@ -13,6 +9,16 @@ local prefabs =
 }
 
 local LAMP_LIGHT_OVERRIDE =1
+
+local function ondeconstructstructure(inst, caster)
+    local recipe = AllRecipes[inst.prefab]
+
+    for i, v in ipairs(recipe.ingredients) do
+        for n = 1, v.amount do
+            inst._mast.components.lootdropper:SpawnLootPrefab(v.type)
+        end
+    end
+end
 
 local function mast_burnt(inst)
     if inst._mast ~= nil and inst._mast:IsValid() then
@@ -79,6 +85,8 @@ local function fn()
 
     inst:ListenForEvent("mast_lamp_on", mast_lamp_on)
     inst:ListenForEvent("mast_lamp_off", mast_lamp_off)
+
+    inst:ListenForEvent("ondeconstructstructure", ondeconstructstructure)
 
     return inst
 end

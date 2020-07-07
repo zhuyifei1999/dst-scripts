@@ -269,8 +269,8 @@ local function GetFaceTargetFn(inst)
     end
 
     if shouldface then
-        if ThePlayer:GetDistanceSqToInst(inst) < 20*20 then
-            ThePlayer:PushEvent("playhermitmusic")
+        if target and target._hermit_music then
+            target._hermit_music:push()
         end
     end
     return shouldface

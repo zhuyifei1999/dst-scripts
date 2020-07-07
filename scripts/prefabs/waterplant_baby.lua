@@ -238,6 +238,8 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("lootdropper")
+
     MakeMediumBurnable(inst)
     MakeMediumPropagator(inst)
 

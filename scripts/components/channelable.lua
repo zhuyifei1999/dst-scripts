@@ -15,15 +15,26 @@ local function onsetenabled(self)
     end
 end
 
+local function onuse_channel_longaction(self)
+    if self.use_channel_longaction then
+        self.inst:AddTag("use_channel_longaction")
+    else
+        self.inst:RemoveTag("use_channel_longaction")
+    end
+end
+
 local Channelable = Class(function(self, inst)
     self.inst = inst
     self.enabled = true
     self.channeler = nil
+
+    --self.use_channel_longaction = nil
 end,
 nil,
 {
     enabled = onsetenabled,
     channeler = onsetchanneler,
+    use_channel_longaction = onuse_channel_longaction,
 })
 
 function Channelable:SetEnabled(enabled)

@@ -551,6 +551,8 @@ function Tune(overrides)
         LIGHTNING_GOAT_MATING_SEASON_BABYDELAY = total_day_time*1.5,
         LIGHTNING_GOAT_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
 
+		LIGHTNINGGOATHERD_MAX_SIZE = 6,
+
         DEER_DAMAGE = 25,
         DEER_HEALTH = 350 * 2, -- harder for multiplayer
         DEER_ATTACK_RANGE = 3,
@@ -4349,7 +4351,7 @@ function Tune(overrides)
             SPEED = 2,
             HEALTH = 400,
             DAMAGE = 50,
-            ATTACK_PERIOD = 2.2,
+            ATTACK_PERIOD = 3,
             BLOCK_TELEPORT_ON_HIT_DURATION = 3.5,
             BLOCK_TELEPORT_ON_HIT_DURATION_VARIANCE = 2,
         },

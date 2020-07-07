@@ -16,8 +16,6 @@ local prefabs =
     "firesuppressor_glow",
 }
 
-local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
-
 local RANDOM_OFFSET_MAX = TUNING.WATERPUMP.MAXRANGE
 
 local function onhammered(inst, worker)
@@ -67,13 +65,15 @@ local function onburnt(inst)
     end
 end
 
+local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
+local ONEOFTAGS = { "fire", "smolder" }
 local function LaunchProjectile(inst)
     CancelLaunchProjectileTask(inst)
 
     local x, y, z = inst.Transform:GetWorldPosition()
 
     if not TheWorld.Map:IsVisualGroundAtPoint(x,y,z) then
-        local ents = TheSim:FindEntities(x, y, z, TUNING.WATERPUMP.MAXRANGE, nil, NOTAGS, { "fire", "smolder" })
+        local ents = TheSim:FindEntities(x, y, z, TUNING.WATERPUMP.MAXRANGE, nil, NOTAGS, ONEOFTAGS)
         local targetpos
         if #ents > 0 then
             targetpos = ents[1]:GetPosition()

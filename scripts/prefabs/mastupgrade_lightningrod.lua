@@ -14,6 +14,16 @@ local prefabs =
 
 local CHARGED_LIGHT_OVERRIDE = 0.75
 
+local function ondeconstructstructure(inst, caster)
+    local recipe = AllRecipes[inst.prefab]
+
+    for i, v in ipairs(recipe.ingredients) do
+        for n = 1, v.amount do
+            inst._mast.components.lootdropper:SpawnLootPrefab(v.type)
+        end
+    end
+end
+
 local function mast_burnt(inst)
     if inst._mast ~= nil and inst._mast:IsValid() then
         inst.components.lootdropper:DropLoot(inst._mast:GetPosition())
@@ -149,6 +159,8 @@ local function basefn()
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("lightningstrike", onlightning)
     inst:ListenForEvent("onremove", onremove)
+
+    inst:ListenForEvent("ondeconstructstructure", ondeconstructstructure)
 
     -- inst.OnSave = OnSave
     -- inst.OnLoad = OnLoad

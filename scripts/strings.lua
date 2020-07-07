@@ -2481,7 +2481,7 @@ STRINGS =
 		OCEANFISH_SMALL_6 = "Fallounder",
 		OCEANFISH_SMALL_7 = "Bloomfin Tuna",
 		OCEANFISH_SMALL_8 = "Scorching Sunfish",
-		OCEANFISH_SMALL_9 = "Spittlefish",
+		OCEANFISH_SMALL_9 = "Spittlefish",        
 		OCEANFISH_MEDIUM_1 = "Mudfish",
 		OCEANFISH_MEDIUM_2 = "Deep Bass",
 		OCEANFISH_MEDIUM_3 = "Dandy Lionfish",
@@ -2489,7 +2489,9 @@ STRINGS =
 		OCEANFISH_MEDIUM_5 = "Corn Cod",
 		OCEANFISH_MEDIUM_6 = "Dappled Koi",
 		OCEANFISH_MEDIUM_7 = "Golden Koi",
-		OCEANFISH_MEDIUM_8 = "Ice Bream",
+		OCEANFISH_MEDIUM_8 = "Ice Bream",        
+
+        OCEANFISH_SMALL_9_INV = "Spittlefish",
 
 		PONDFISH = "Freshwater Fish",
 		PONDEEL = "Live Eel",
@@ -3265,8 +3267,8 @@ STRINGS =
 
         CHUM = "Get chummy with the fish.",
 
-        MASTUPGRADE_LAMP_ITEM = "Keep the darkness at bay.",
-        MASTUPGRADE_LIGHTNINGROD_ITEM = "Protect your boat from lightning.",
+        MASTUPGRADE_LAMP_ITEM = "An illuminating mast attachment.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "An electrifying addition to your mast.",
         WATERPUMP = "Water, water everywhere!",
 	},
 

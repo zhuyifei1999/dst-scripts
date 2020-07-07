@@ -25,6 +25,7 @@ local _dirt_prefab = "dirtpile"
 local _track_prefab = "animal_track"
 local _beast_prefab_summer = "koalefant_summer"
 local _beast_prefab_winter = "koalefant_winter"
+local _beast_prefab_spring = "lightninggoat"
 local _alternate_beasts = { "warg", "spat" }
 local _ambush_prefab = "bat"
 
@@ -369,16 +370,18 @@ local function SpawnHuntedBeast(hunt, pt)
 
     local spawn_pt = GetSpawnPoint(pt, TUNING.HUNT_SPAWN_DIST, hunt)
     if spawn_pt ~= nil then
+		local spawn_x, spawn_y, spawn_z = spawn_pt:Get()
         hunt.huntedbeast = SpawnPrefab(
             (self:IsWargShrineActive() and "claywarg") or
             (math.random() <= GetAlternateBeastChance() and GetRandomItem(_alternate_beasts)) or
             (TheWorld.state.iswinter and _beast_prefab_winter) or
+			(TheWorld.state.isspring and TheWorld.state.israining and TheWorld.Map:NodeAtPointHasTag(spawn_x, spawn_y, spawn_z, "sandstorm") and _beast_prefab_spring) or
             _beast_prefab_summer
         )
 
         if hunt.huntedbeast ~= nil then
             --print("Kill the Beast!")
-            hunt.huntedbeast.Physics:Teleport(spawn_pt:Get())
+            hunt.huntedbeast.Physics:Teleport(spawn_x, spawn_y, spawn_z)
 
             local function OnBeastDeath()
                 --print("Hunter:OnBeastDeath")

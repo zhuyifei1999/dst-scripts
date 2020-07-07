@@ -320,7 +320,7 @@ local function fn()
     inst.components.sanityaura.aurafn = CalcSanityAura
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.CRAWLINGHORROR_HEALTH)
+    inst.components.health:SetMaxHealth(TUNING.OCEANHORROR.HEALTH)
     inst.components.health.nofadeout = true
 
     inst.sanityreward = TUNING.SANITY_MED

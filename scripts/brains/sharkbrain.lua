@@ -65,7 +65,11 @@ local function Attack(inst)
     inst:PushEvent("dobite")
 end
 
-
+local function removefood(inst,target)
+    inst:removefood(target)
+    inst:RemoveEventCallback("onremoved", function() removefood(inst,target) end, target)
+    inst:RemoveEventCallback("onpickup", function()  removefood(inst,target) end, target)
+end
 
 local function isfoodnearby(inst)
     local target = FindEntity(inst, SEE_DIST, function(item) local x,y,z = item.Transform:GetWorldPosition() return inst.components.eater:CanEat(item) and not TheWorld.Map:IsVisualGroundAtPoint(x,y,z) and not TheWorld.Map:GetPlatformAtPoint(x,z) end)
@@ -77,8 +81,8 @@ local function isfoodnearby(inst)
 
     inst.foodtoeat = target
     if target then
-        inst:ListenForEvent("onremoved", function(inst) inst:removefood(target) end, target)
-        inst:ListenForEvent("onpickup", function(inst) inst:removefood(target) end, target)
+        inst:ListenForEvent("onremoved", function() removefood(inst,target) end, target)
+        inst:ListenForEvent("onpickup", function() removefood(inst,target) end, target)
 
         return BufferedAction(inst, target, ACTIONS.EAT)
     end

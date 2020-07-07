@@ -66,6 +66,11 @@ local function testforshark(comp, spawnpoint)
                 if TheWorld.Map:GetPlatformAtPoint(spawn_x, spawn_z) == nil then
                     local shark = SpawnPrefab("shark")
                     shark.Transform:SetPosition(spawn_x, 0, spawn_z)
+
+                    -- The shark is spawned in the ocean, but amphibiouscreature defaults to the land state.
+                    -- However, "eat_pre" prevents amphibiouscreature from updating properly, so we can just do the transition pre-emptively here,
+                    -- since we know it will be correct (our ocean testing is more rigorous than theirs).
+                    shark.components.amphibiouscreature:OnEnterOcean()
                     shark.sg:GoToState("eat_pre")
 
                     local player = FindClosestPlayerInRangeSq(spawn_x, 0, spawn_z, 20*20, true)

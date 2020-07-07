@@ -404,7 +404,7 @@ local function Barnacles_ReplaceSeastacks()
 
     for _, ent in pairs(Ents) do
         if ent:IsValid() and ent.prefab then
-            if ent.prefab == "seastack_spawner_swell" then
+            if ent.prefab == "seastack_spawner_rough" then
                 -- NOTE: assume we don't have to test the tile, because the spawner is named as it is.
                 table.insert(seastack_swell_spawners, ent)
             elseif hermithouse == nil and (ent.prefab:sub(1, 11) == "hermithouse") then

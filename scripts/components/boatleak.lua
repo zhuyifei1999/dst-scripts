@@ -10,15 +10,6 @@ end)
 function BoatLeak:Repair(doer, patch_item)
     if not self.inst:HasTag("boat_leak") then return false end
 
-    if patch_item.components.repairer and patch_item.components.repairer.healthrepairvalue then
-        local boat = self.inst:GetCurrentPlatform()
-        if boat.components.health ~= nil then
-            if boat.components.health:GetPercent() < 1 then
-                boat.components.health:DoDelta(patch_item.components.repairer.healthrepairvalue)
-            end
-        end
-    end
-
     if patch_item.components.repairer and self.inst:GetCurrentPlatform() and self.inst:GetCurrentPlatform().components.repairable then
         self.inst:GetCurrentPlatform().components.repairable:Repair(doer, patch_item)
         -- consumed in the repair
