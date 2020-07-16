@@ -541,6 +541,8 @@ function RedbirdGameScreen:FillEmptyTiles( allow_dupes )
 
 				local number = math.random(TILE_RAND_LIMIT)
 				
+				self.game_grid[index].number = number --this keeps it hidden but occupied until SetTileNumber is called below
+				
 				local filling_tile = self:GetMoverTile()
 				filling_tile.Move( number,
 									start_pos,
