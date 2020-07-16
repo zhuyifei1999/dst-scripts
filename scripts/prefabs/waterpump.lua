@@ -13,7 +13,6 @@ local prefabs =
 {
     "waterstreak_projectile",
     "collapse_small",
-    "firesuppressor_glow",
 }
 
 local RANDOM_OFFSET_MAX = TUNING.WATERPUMP.MAXRANGE
@@ -37,6 +36,12 @@ local function onhammered(inst, worker)
     inst:Remove()
 end
 
+local function cancel_channeling(inst)
+    if inst.channeler ~= nil and inst.channeler:IsValid() then
+        inst.channeler:PushEvent("cancel_channel_longaction")
+    end
+end
+
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") and not inst.channeler then
          inst.AnimState:PlayAnimation("use_pst")
@@ -58,11 +63,15 @@ local function CancelLaunchProjectileTask(inst)
 end
 
 local function onburnt(inst)
+    cancel_channeling(inst)
+
     CancelReadyTask(inst)
     CancelLaunchProjectileTask(inst)
     if inst.channeler then
         inst:OnStopChanneling()
     end
+
+    inst:RemoveComponent("channelable")
 end
 
 local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
@@ -102,6 +111,8 @@ local function testforland(inst)
 
     if TheWorld.Map:IsVisualGroundAtPoint(x,y,z) then
         inst.AnimState:Hide("fx")
+    else
+        inst.AnimState:Show("fx")
     end
 end
 
@@ -116,10 +127,6 @@ local function onload(inst, data)
         inst.components.burnable.onburnt(inst)
         inst:PushEvent("onburnt")
     end
-end
-
-local function OnLoadPostPass(inst)
-    testforland(inst)
 end
 
 local function onbuilt(inst)
@@ -176,26 +183,28 @@ local function startprojectilelaunch(inst)
     if TheWorld.Map:GetPlatformAtPoint(inst.Transform:GetWorldPosition()) ~= nil then
         inst._launch_projectile_task = inst:DoTaskInTime(7*FRAMES, LaunchProjectile)
     end
-
 end
 
 local function OnStartChanneling(inst, channeler)
     inst.channeler = channeler
     inst.AnimState:PlayAnimation("use_pre")
     inst:ListenForEvent("animover", startprojectilelaunch)
+
+    testforland(inst)
 end
 
-local function OnStopChanneling(inst) 
-
+local function OnStopChanneling(inst)
     inst:RemoveEventCallback("animover", startprojectilelaunch)
     inst.channeler = nil
     if inst._launch_projectile_task then
         inst._launch_projectile_task:Cancel()
         inst._launch_projectile_task = nil
     end
-    inst.AnimState:PlayAnimation("use_pst",false)
-    inst.SoundEmitter:KillSound("pump") 
-    inst.AnimState:PushAnimation("idle")
+    inst.SoundEmitter:KillSound("pump")
+    if not inst:HasTag("burnt") then
+        inst.AnimState:PlayAnimation("use_pst",false)
+        inst.AnimState:PushAnimation("idle")
+    end
 end
 
 local function fn()
@@ -212,7 +221,9 @@ local function fn()
     inst.AnimState:SetBank("boat_waterpump")
     inst.AnimState:SetBuild("boat_waterpump")
     inst.AnimState:PlayAnimation("idle")
+
     inst:AddTag("structure")
+    inst:AddTag("pump")
 
     --Dedicated server does not need deployhelper
     if not TheNet:IsDedicated() then
@@ -228,7 +239,7 @@ local function fn()
 
     MakeMediumBurnable(inst, nil, nil, true)
 	inst:ListenForEvent("onburnt", onburnt)
-	MakeMediumPropagator(inst)
+    MakeMediumPropagator(inst)
 
     inst:AddComponent("inspectable")
     
@@ -238,7 +249,6 @@ local function fn()
     inst.components.channelable.skip_state_channeling = true
     inst.components.channelable.skip_state_stopchanneling = true
     inst.components.channelable.ignore_prechannel = true
-    inst.components.channelable.actionstring = "PUMP" 
 
     inst:ListenForEvent("channel_finished", OnStopChanneling)
 
@@ -254,10 +264,10 @@ local function fn()
     MakeHauntableWork(inst)
 
     inst:ListenForEvent("onbuilt", onbuilt)
+    inst:ListenForEvent("onremove", cancel_channeling)
 
     inst.OnSave = onsave
     inst.OnLoad = onload
-    inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

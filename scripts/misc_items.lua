@@ -1555,6 +1555,20 @@ MISC_ITEMS =
 		output_items = {  "wolfgang_ice", "body_wolfgang_ice", "feet_wolfgang_ice", "hand_wolfgang_ice", "legs_wolfgang_ice", },
 		release_group = 37,
 	},
+	pack_lost_1 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_lost_1.xml",
+		display_tex = "lost_1.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wilson_nature", "wolfgang_nature", "wurt_rose", "wormwood_shadow", "warly_chef", "tophat_chef", },
+		output_items = {  "wilson_nature", "body_wilson_nature", "legs_wilson_nature", "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", "wurt_rose", "body_wurt_rose", "hand_wurt_rose", "legs_wurt_rose", "wormwood_shadow", "body_wormwood_shadow", "hand_wormwood_shadow", "legs_wormwood_shadow", "tophat_chef", "warly_chef", "body_warly_chef", "feet_warly_chef", },
+		release_group = 101,
+	},
 	pack_magma_all =
 	{
 		type = "purchase",
@@ -2173,6 +2187,19 @@ MISC_ITEMS =
 		output_items = {  "walter_survivor", "body_walter_survivor", "feet_walter_survivor", "walterhat_survivor", },
 		release_group = 99,
 	},
+	pack_warly_chef =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 115,
+		build_name_override = "warly_chef",
+		display_atlas = "bigportraits/warly_chef.xml",
+		display_tex = "warly_chef_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "tophat_chef", "warly_chef", "body_warly_chef", "feet_warly_chef", },
+		output_items = {  "tophat_chef", "warly_chef", "body_warly_chef", "feet_warly_chef", },
+		release_group = 101,
+	},
 	pack_warly_deluxe =
 	{
 		type = "purchase",
@@ -2449,6 +2476,19 @@ MISC_ITEMS =
 		output_items = {  "willow_survivorp", "body_willow_survivorp", },
 		release_group = 66,
 	},
+	pack_wilson_nature =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 101,
+		build_name_override = "wilson_nature",
+		display_atlas = "bigportraits/wilson_nature.xml",
+		display_tex = "wilson_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "wilson_nature", "body_wilson_nature", "legs_wilson_nature", },
+		output_items = {  "wilson_nature", "body_wilson_nature", "legs_wilson_nature", },
+		release_group = 101,
+	},
 	pack_winona_deluxe =
 	{
 		type = "purchase",
@@ -2527,6 +2567,19 @@ MISC_ITEMS =
 		display_items = {  "winona_survivorp", "body_winona_survivorp", },
 		output_items = {  "winona_survivorp", "body_winona_survivorp", },
 		release_group = 61,
+	},
+	pack_wolfgang_nature =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 103,
+		build_name_override = "wolfgang_nature",
+		display_atlas = "bigportraits/wolfgang_nature.xml",
+		display_tex = "wolfgang_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", },
+		output_items = {  "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", },
+		release_group = 101,
 	},
 	pack_woodie_deluxe =
 	{
@@ -2674,6 +2727,19 @@ MISC_ITEMS =
 		display_items = {  "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
 		output_items = {  "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
 		release_group = 68,
+	},
+	pack_wormwood_shadow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 114,
+		build_name_override = "wormwood_shadow",
+		display_atlas = "bigportraits/wormwood_shadow.xml",
+		display_tex = "wormwood_shadow_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_shadow", "body_wormwood_shadow", "hand_wormwood_shadow", "legs_wormwood_shadow", },
+		output_items = {  "wormwood_shadow", "body_wormwood_shadow", "hand_wormwood_shadow", "legs_wormwood_shadow", },
+		release_group = 101,
 	},
 	pack_wortox_deluxe =
 	{
@@ -2881,6 +2947,19 @@ MISC_ITEMS =
 		display_items = {  "wurt_formal", "body_wurt_formal", "hand_wurt_formal", "legs_wurt_formal", },
 		output_items = {  "wurt_formal", "body_wurt_formal", "hand_wurt_formal", "legs_wurt_formal", },
 		release_group = 78,
+	},
+	pack_wurt_rose =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 116,
+		build_name_override = "wurt_rose",
+		display_atlas = "bigportraits/wurt_rose.xml",
+		display_tex = "wurt_rose_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wurt_rose", "body_wurt_rose", "hand_wurt_rose", "legs_wurt_rose", },
+		output_items = {  "wurt_rose", "body_wurt_rose", "hand_wurt_rose", "legs_wurt_rose", },
+		release_group = 101,
 	},
 	pack_wurt_shadow =
 	{
@@ -3986,6 +4065,20 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	profileflair_egg =
+	{
+		type = "profileflair",
+		skin_tags = { "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 100,
+	},
+	profileflair_egg_rotten =
+	{
+		type = "profileflair",
+		skin_tags = { "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 100,
+	},
 	profileflair_eyebrellahat_crystal =
 	{
 		type = "profileflair",
@@ -4613,6 +4706,13 @@ MISC_ITEMS =
 		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 48,
+	},
+	profileflair_redbird =
+	{
+		type = "profileflair",
+		skin_tags = { "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 100,
 	},
 	profileflair_redhound =
 	{

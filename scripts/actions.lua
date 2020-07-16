@@ -2281,15 +2281,9 @@ ACTIONS.DRAW.fn = function(act)
     end
 end
 
-ACTIONS.STARTCHANNELING.stroverridefn = function(act)
-    if act.target and act.target.components.channelable and act.target.components.channelable.actionstring then
-        return act.target.components.channelable.actionstring
-    else
-        return nil
-    end
-       
+ACTIONS.STARTCHANNELING.strfn = function(act)
+    return act.target:HasTag("pump") and "PUMP" or nil
 end
-
 
 ACTIONS.STARTCHANNELING.fn = function(act)
     return act.target ~= nil and act.target.components.channelable:StartChanneling(act.doer)

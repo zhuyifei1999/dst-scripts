@@ -8401,6 +8401,9 @@ STRINGS.UI =
 
         RECIPE_TITLE = "Wanted: <rarity> Items",
         NO_RECIPES = "No offers",
+        
+        BIRDS = "Birds!",
+        BIRDS_TITLE_SUB = "(Curio Collector Games)",
 
         MAGICSKIN_COLLECTOR_SPEECH =
         {
@@ -8543,7 +8546,7 @@ STRINGS.UI =
             OPEN_GIFT = "Open Gift",
 
             HELP = "Help",
-            HELP_TITLE = "A feastin' pair of birds",
+            HELP_TITLE = "A Feastin' Pair of Birds",
             HELP_BODY = "Match pairs of food tiles from the feast. Clearing a pair will cause the tiles above to drop down, so be sure to remember what foods were there. Matching a pair of snowbirds will grant you an extra guess.\n\nGood luck!",
         },
         
@@ -8574,7 +8577,78 @@ STRINGS.UI =
             },
         },
 
-
+        REDBIRD_GAME =
+        {
+            HIGH_SCORE = "High Score: ",
+            GAME_SCORE = "Score: ",
+            REPORTING = "Reporting Eggy sums...",
+            THANKS = "Thanks for playing!",
+            GAME_OVER_POPUP_TITLE = "All done countin'",
+            GAME_OVER_POPUP_BODY_SINGULAR = "Great job countin'.\nYou completed 1 egg for a total of {score} points!",
+            GAME_OVER_POPUP_BODY = "Great job countin'.\nYou completed {eggs} eggs for a total of {score} points!",
+            OPEN_GIFT = "Open Gift",
+        
+            EGG_TIMER_OVER = "Game Over",
+            EGG_TIMER = "Egg Timer:",
+            EGG_TIMER_SPOILED = "The egg is rotten!",
+        
+            HELP = "Help",
+            HELP_TITLE = "An Eggy Tally",
+            HELP_BODY = "Combine tiles to add up to 100. Completing a tile with a value of 100 earns you a large amount of points. The faster you add, the more points you'll receive.\n\nGood luck!",
+        },
+        
+        SKIN_COLLECTOR_SPEECH_REDBIRD =
+        {
+            START =
+            {
+                "I've got a challenge for ya! Add tiles up to 100. Let's see how many points ya can score!",
+                "Can ya get me half-a-dozen eggs? A full dozen would be grand!",
+                "Better be quick getting those eggs for me. I can't use any rotten ones.",
+                "Use y'er noggin to add up numbers. Get to 100 exactly and a Redbird will lay an egg!",
+                "Countin' is my specialty. Let's see how good ya can do."
+            },
+            
+            EGG_COMPLETE =
+            {
+                "Eggcellent! That's worth {points} points!",
+                "Well done! Just the way I like my eggs. That's worth {points} points!",
+                "So many mouths to feed, another egg will help. {points} points earned!",
+                "Y'er brain is gettin' some eggsercise. I'll give ya {points} points.",
+                "That's worth {points} points! I need half-a-dozen eggs, think ya can get me more?",
+            },
+        
+            EGG_COMPLETE_ROTTEN =
+            {
+                "Yuck! No one is going to want to eat that egg.",
+                "What's that smell? My nose is tellin' me tha' egg is rotten.",
+                "It's startin' to smell like a hot spring.",
+                "Y'er gonna have to work faster than that!",
+                "Ya might be eggshausted, but keep going!",
+                "I like to eggsperiment with my cookin', but that's just gross."
+            },
+        
+            GAME_OVER_REDBIRD =
+            {
+                "Amazin' work! Ya deserve a special prize for that.",
+            },
+        
+            GAME_OVER_EGG =
+            {
+                "Thanks for the eggs! I certainly do appreciate y'er effort.",
+            },
+        
+            GAME_OVER_ROTTEN =
+            {
+                "Well, ya delivered some eggs. Though I'm not sure how useful they'll be.",
+            },
+        
+            GAME_OVER =
+            {
+                "Try again! Ya can do better, I know it!",
+                "Y'er all done!",
+            },
+        },
+        
         SKIN_COLLECTOR_SPEECH =
         {
             -- Old west fur trader.

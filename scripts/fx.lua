@@ -1726,7 +1726,7 @@ local fx =
         bank = "barnacle_burr",
         build = "barnacle_burr",
         anim = "used",
-        sound = "dontstarve/common/deathpoof",
+        sound = "dangerous_sea/creatures/water_plant/burr_burst",
     },
     {
         name = "waterplant_destroy",

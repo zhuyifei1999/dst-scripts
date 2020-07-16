@@ -37,6 +37,11 @@ nil,
     use_channel_longaction = onuse_channel_longaction,
 })
 
+function Channelable:OnRemoveFromEntity()
+    self.inst:StopUpdatingComponent(self)
+    self.inst:RemoveTag("use_channel_longaction")
+end
+
 function Channelable:SetEnabled(enabled)
     self.enabled = enabled
 end

@@ -181,14 +181,19 @@ function MakeBanner(self)
         anim:GetAnimState():Show(c1)
         anim:GetAnimState():Show(c2)
         anim:GetAnimState():Show(c3)
-	]]
+	
         local anim = baner_root:AddChild(UIAnim())
 		anim:GetAnimState():SetBuild("dst_menu_walter")
         anim:GetAnimState():SetBank("dst_menu_walter")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
-
+]]
+        anim:GetAnimState():SetBuild("dst_menu_dangerous_sea")
+        anim:GetAnimState():SetBank("dst_menu_dangerous_sea")
+        anim:SetScale(.667)
+        anim:GetAnimState():PlayAnimation("loop", true)
+        
         --[[
 		local cur_time = os.time() 
 		if cur_time <= 1585810740 and (not IsConsole() or cur_time >= 1585759200) then -- 9:40am to 11:59pm PDT

@@ -68,6 +68,11 @@ local states =
             inst:PlaySyncAnimation((inst._stage == 2 and "idle3") or "idle")
         end,
 
+        timeline=
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/breath") end),
+        },
+
         events =
         {
             EventHandler("animover", return_to_idle),
@@ -81,6 +86,7 @@ local states =
 
         onenter = function(inst)
             inst.base.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/grow")
             inst.sg:SetTimeout(12*FRAMES)
         end,
 
@@ -102,11 +108,12 @@ local states =
 
         timeline =
         {
+            TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/death") end),
             TimeEvent(17*FRAMES, function(inst)
                 local pos = inst:GetPosition()
                 inst.components.lootdropper:DropLoot(pos)
 
-                inst.SoundEmitter:PlaySound("dontstarve/common/balloon_pop")
+                inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/pop")
             end),
         },
 
@@ -121,7 +128,7 @@ local states =
                 end
                 inst.components.lootdropper:SpawnLootPrefab("waterplant_planter", pos)
 
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/eye_retract")
+                inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/pop_2")
 
                 inst:RevertToRock()
             end),
@@ -135,7 +142,7 @@ local states =
 
         onenter = function(inst)
             inst:PlaySyncAnimation("attack")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeballturret/charge")
+            inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/attack_pre")
             inst.components.combat:StartAttack()
         end,
 
@@ -143,7 +150,7 @@ local states =
         {
             TimeEvent(10*FRAMES, function(inst)
                 inst.components.combat:DoAttack()
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeballturret/shoot")
+                inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/attack")
             end),
         },
 
@@ -167,6 +174,7 @@ local states =
             TimeEvent(9 * FRAMES, function(inst)
                 inst:GoToStage(3)
             end),
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/grow") end),
         },
 
         events =
@@ -189,6 +197,7 @@ local states =
             TimeEvent(6 * FRAMES, function(inst)
                 inst:GoToStage(2)
             end),
+            TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/close") end),
         },
 
         events =
@@ -204,6 +213,7 @@ local states =
 
         onenter = function(inst)
             inst:PlaySyncAnimation("hit")
+            inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/hit")
         end,
 
         events =
@@ -252,6 +262,13 @@ local states =
         onenter = function(inst)
             inst:PlaySyncAnimation("sleep_loop")
         end,
+
+        timeline =
+        {
+            TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/sleep") end),
+            TimeEvent(44*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/sleep") end),
+        },
+
 
         events =
         {
@@ -311,6 +328,11 @@ local states =
         onenter = function(inst)
             inst:PlaySyncAnimation("taunt")
         end,
+
+        timeline =
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/taunt") end),
+        },
 
         events =
         {
@@ -411,7 +433,7 @@ local states =
                 inst:SpawnCloud()
 
                 -- TODO @stevenm temp sound effect for spraying the cloud gas
-                inst.SoundEmitter:PlaySound("dontstarve/common/destroy_smoke")
+                inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/cloud")
             end),
         },
 

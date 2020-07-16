@@ -11,7 +11,7 @@ local MiniGameTile = Class(Widget, function(self, screen, index, mover)
     self.screen = screen
     self.index = index
 	self.exploded = false
-
+	
     self.tile = self:AddChild(UIAnim())
     self.tile:GetAnimState():SetBuild("minigametile")
     self.tile:GetAnimState():SetBank("minigametile")
@@ -25,14 +25,41 @@ local MiniGameTile = Class(Widget, function(self, screen, index, mover)
 	
     self.tile:SetScale(image_scale)
     
+	self.tile_num = self:AddChild(Text(CHATFONT_OUTLINE, 35))
+	self.tile_num:SetPosition(2,-4)
+
     self:ClearTile()
 end)
+
+function MiniGameTile:IsClear()
+	return self.number == nil and self.tile_type == ""
+end
 
 function MiniGameTile:ClearTile()
 	self.tile_type = ""
 	self.tile:GetAnimState():ClearAllOverrideSymbols()
 	self.tile:GetAnimState():PlayAnimation("on", true)
 	self.view_state = "on"
+	self:SetTileNumber(nil)
+end
+
+function MiniGameTile:SetTileNumber(num)
+	self.number = num
+	if num == nil then
+		self.tile_num:SetString("")
+	else
+		self.tile_num:SetString(tostring(self.number))
+	end
+end
+
+function MiniGameTile:HighliteTileNum()
+	self.tile:GetAnimState():SetMultColour(0.6,0.9,0.6,1)
+	self.tile_num:SetColour(0,1,0,1)
+end
+
+function MiniGameTile:UnhighliteTileNum()
+	self.tile:GetAnimState():SetMultColour(1,1,1,1)
+	self.tile_num:SetColour(1,1,1,1)
 end
 
 function MiniGameTile:SetTileTypeUnHidden(tile_type)
@@ -73,6 +100,7 @@ function MiniGameTile:ShowTile()
 		self.view_state = "on"
 	end
 end
+
 
 function MiniGameTile:OnGainFocus()
 	self._base:OnGainFocus()

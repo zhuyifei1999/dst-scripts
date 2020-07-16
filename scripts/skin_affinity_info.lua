@@ -19,10 +19,12 @@ return
 	warly = 
 	{
 		"body_warly_candyman",
+		"body_warly_chef",
 		"body_warly_fisherman",
 		"body_warly_rose",
 		"body_warly_victorian",
 		"feet_warly_candyman",
+		"feet_warly_chef",
 		"feet_warly_fisherman",
 		"feet_warly_victorian",
 		"hand_warly_candyman",
@@ -32,12 +34,14 @@ return
 		"legs_warly_rose",
 		"legs_warly_victorian",
 		"warly_candyman",
+		"warly_chef",
 		"warly_fisherman",
 		"warly_rose",
 		"warly_victorian",
 	},
 	wathgrithr = 
 	{
+		"body_wathgrithr_cook",
 		"body_wathgrithr_deerclops",
 		"body_wathgrithr_formal",
 		"body_wathgrithr_gladiator",
@@ -84,6 +88,7 @@ return
 	},
 	waxwell = 
 	{
+		"body_waxwell_cook",
 		"body_waxwell_formal",
 		"body_waxwell_gladiator",
 		"body_waxwell_krampus",
@@ -129,6 +134,7 @@ return
 	webber = 
 	{
 		"body_webber_bat",
+		"body_webber_cook",
 		"body_webber_formal",
 		"body_webber_gladiator",
 		"body_webber_ice",
@@ -167,6 +173,7 @@ return
 	},
 	wendy = 
 	{
+		"body_wendy_cook",
 		"body_wendy_creepy",
 		"body_wendy_formal",
 		"body_wendy_formalp",
@@ -217,6 +224,7 @@ return
 	wes = 
 	{
 		"body_wes_clown",
+		"body_wes_cook",
 		"body_wes_formal",
 		"body_wes_gladiator",
 		"body_wes_magma",
@@ -259,6 +267,7 @@ return
 	},
 	wickerbottom = 
 	{
+		"body_wickerbottom_cook",
 		"body_wickerbottom_formal",
 		"body_wickerbottom_gladiator",
 		"body_wickerbottom_ice",
@@ -296,6 +305,7 @@ return
 	},
 	willow = 
 	{
+		"body_willow_cook",
 		"body_willow_dowdy",
 		"body_willow_dragonfly",
 		"body_willow_formal",
@@ -346,11 +356,13 @@ return
 	},
 	wilson = 
 	{
+		"body_wilson_cook",
 		"body_wilson_formal",
 		"body_wilson_gladiator",
 		"body_wilson_ice",
 		"body_wilson_madscientist",
 		"body_wilson_magma",
+		"body_wilson_nature",
 		"body_wilson_pigguard",
 		"body_wilson_rose",
 		"body_wilson_shadow",
@@ -369,6 +381,7 @@ return
 		"legs_wilson_gladiator",
 		"legs_wilson_ice",
 		"legs_wilson_magma",
+		"legs_wilson_nature",
 		"wilson_combatant",
 		"wilson_cook",
 		"wilson_formal",
@@ -376,6 +389,7 @@ return
 		"wilson_ice",
 		"wilson_madscience",
 		"wilson_magma",
+		"wilson_nature",
 		"wilson_pigguard",
 		"wilson_pigguard_d",
 		"wilson_rose",
@@ -385,6 +399,7 @@ return
 	},
 	winona = 
 	{
+		"body_winona_cook",
 		"body_winona_factory",
 		"body_winona_formal",
 		"body_winona_formalp",
@@ -443,10 +458,12 @@ return
 	},
 	wolfgang = 
 	{
+		"body_wolfgang_cook",
 		"body_wolfgang_formal",
 		"body_wolfgang_gladiator",
 		"body_wolfgang_ice",
 		"body_wolfgang_magma",
+		"body_wolfgang_nature",
 		"body_wolfgang_rose",
 		"body_wolfgang_shadow",
 		"body_wolfgang_survivor",
@@ -456,6 +473,7 @@ return
 		"feet_ridingboot_white_pure",
 		"feet_wolfgang_gladiator",
 		"feet_wolfgang_ice",
+		"feet_wolfgang_nature",
 		"hand_wolfgang_gladiator",
 		"hand_wolfgang_ice",
 		"hand_wolfgang_magma",
@@ -471,6 +489,7 @@ return
 		"wolfgang_gladiator",
 		"wolfgang_ice",
 		"wolfgang_magma",
+		"wolfgang_nature",
 		"wolfgang_rose",
 		"wolfgang_shadow",
 		"wolfgang_survivor",
@@ -481,6 +500,7 @@ return
 	},
 	woodie = 
 	{
+		"body_woodie_cook",
 		"body_woodie_formal",
 		"body_woodie_formalp",
 		"body_woodie_gladiator",
@@ -537,16 +557,20 @@ return
 		"body_wormwood_cactus",
 		"body_wormwood_mushroom",
 		"body_wormwood_rose",
+		"body_wormwood_shadow",
 		"hand_wormwood_cactus",
 		"hand_wormwood_mushroom",
 		"hand_wormwood_rose",
+		"hand_wormwood_shadow",
 		"legs_wormwood_cactus",
 		"legs_wormwood_mushroom",
 		"legs_wormwood_rose",
+		"legs_wormwood_shadow",
 		"wormwood_cactus",
 		"wormwood_mushroom",
 		"wormwood_none",
 		"wormwood_rose",
+		"wormwood_shadow",
 	},
 	wortox = 
 	{
@@ -571,20 +595,25 @@ return
 	{
 		"body_wurt_cave",
 		"body_wurt_formal",
+		"body_wurt_rose",
 		"body_wurt_shadow",
 		"hand_wurt_cave",
 		"hand_wurt_formal",
+		"hand_wurt_rose",
 		"hand_wurt_shadow",
 		"legs_wurt_cave",
 		"legs_wurt_formal",
+		"legs_wurt_rose",
 		"legs_wurt_shadow",
 		"wurt_cave",
 		"wurt_formal",
 		"wurt_none",
+		"wurt_rose",
 		"wurt_shadow",
 	},
 	wx78 = 
 	{
+		"body_wx78_cook",
 		"body_wx78_formal",
 		"body_wx78_gladiator",
 		"body_wx78_magma",

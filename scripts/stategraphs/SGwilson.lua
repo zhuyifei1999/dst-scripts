@@ -6041,6 +6041,9 @@ local states =
                 inst.sg.noexit = true
                 inst.sg:GoToState("channel_longaction")
             end),
+            EventHandler("cancel_channel_longaction", function(inst)
+                inst.sg:GoToState("idle")
+            end),
         },
 
     },
