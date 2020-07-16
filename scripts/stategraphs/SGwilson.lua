@@ -759,7 +759,13 @@ local actionhandlers =
         function(inst, action)
             return (action.target == nil or action.target.components.constructionsite == nil) and "startconstruct" or "construct"
         end),
-    ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
+    ActionHandler(ACTIONS.STARTCHANNELING, function(inst,action)
+        if action.target and action.target.components.channelable and action.target.components.channelable.use_channel_longaction then
+                return "channel_longaction" 
+            else
+                return "startchanneling" 
+            end
+        end),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "revivecorpse"),
     ActionHandler(ACTIONS.DISMANTLE, "dolongaction"),
     ActionHandler(ACTIONS.TACKLE, "tackle_pre"),
@@ -5389,8 +5395,12 @@ local states =
                 inst.bufferedaction.invobject ~= nil and
                 inst.bufferedaction.invobject.components.shaver ~= nil then
                 local shavee = inst.bufferedaction.target or inst.bufferedaction.doer
-                if shavee ~= nil and shavee.components.beard ~= nil then
-                    pass, reason = shavee.components.beard:ShouldTryToShave(inst.bufferedaction.doer, inst.bufferedaction.invobject)
+                if shavee ~= nil then
+                    if shavee.components.beard ~= nil then
+                        pass, reason = shavee.components.beard:ShouldTryToShave(inst.bufferedaction.doer, inst.bufferedaction.invobject)
+                    elseif shavee.components.shaveable ~= nil then
+                        pass, reason = shavee.components.shaveable:CanShave(inst.bufferedaction.doer, inst.bufferedaction.invobject)
+                    end
                 end
             end
 
@@ -5815,7 +5825,7 @@ local states =
                 inst:ClearBufferedAction()
             end
         end,
-    },
+    },    
 
     State
     {
@@ -5994,6 +6004,48 @@ local states =
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
+    },
+
+    State
+    {
+        name = "channel_longaction",
+        tags = { "doing", "canrotate", "channeling"},
+
+        onenter = function(inst)
+
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("give",false)
+            inst.AnimState:PushAnimation("give_pst",false)                    
+            
+            if inst:GetBufferedAction() then
+                local act = inst:GetBufferedAction()
+                inst.channelitem = act.target
+                inst:PerformBufferedAction()
+            end
+        end,
+
+        onexit = function(inst)
+            if not inst.sg.noexit then
+                if inst.channelitem then
+                    inst.channelitem:PushEvent("channel_finished")
+                    inst.channelitem = nil
+                end                
+            else
+                inst.sg.noexit = nil
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg.noexit = true
+                inst.sg:GoToState("channel_longaction")
+            end),
+            EventHandler("cancel_channel_longaction", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+
     },
 
     State{

@@ -271,10 +271,11 @@ function Combat:OnUpdate(dt)
                 return
             end
             self.keeptargettimeout = 1
+
             if not self.target:IsValid() or
                 self.target:IsInLimbo() or
                 not self.keeptargetfn(self.inst, self.target) or not 
-                (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then
+                (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then                    
                 self.inst:PushEvent("losttarget")
                 self:DropTarget()
             end

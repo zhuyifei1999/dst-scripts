@@ -222,7 +222,8 @@ local function fn()
         return inst
     end
 
-    inst:DoTaskInTime(0, function(inst)
+    local land_time = (POPULATING and math.random()*5*FRAMES) or 0
+    inst:DoTaskInTime(land_time, function(inst)
         inst.components.floater:OnLandedServer()
     end)
 

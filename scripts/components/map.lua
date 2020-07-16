@@ -354,3 +354,15 @@ function Map:FindNodeAtPoint(x, y, z)
 	end
 	return nil
 end
+
+function Map:NodeAtPointHasTag(x, y, z, tag)
+
+-- THIS IS VERY EXPENSIVE TO RUN!
+
+    for i, node in ipairs(TheWorld.topology.nodes) do
+        if TheSim:WorldPointInPoly(x, z, node.poly) then
+			return node.tags ~= nil and table.contains(node.tags, tag)
+		end
+	end
+	return false
+end

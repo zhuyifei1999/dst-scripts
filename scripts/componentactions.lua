@@ -798,7 +798,7 @@ local COMPONENT_ACTIONS =
         end,
 
         lighter = function(inst, doer, target, actions)
-            if target:HasTag("canlight") and not (target:HasTag("fueldepleted") or target:HasTag("INLIMBO")) then
+            if target:HasTag("canlight") and not ((target:HasTag("fueldepleted") and not target:HasTag("burnableignorefuel")) or target:HasTag("INLIMBO")) then
                 table.insert(actions, ACTIONS.LIGHT)
             end
         end,
@@ -1310,7 +1310,7 @@ local COMPONENT_ACTIONS =
         end,
 
         lighter = function(inst, doer, target, actions, right)
-            if right and target:HasTag("canlight") and not (target:HasTag("fueldepleted") or target:HasTag("INLIMBO")) then
+            if right and target:HasTag("canlight") and not ((target:HasTag("fueldepleted") and not target:HasTag("burnableignorefuel")) or target:HasTag("INLIMBO")) then
                 table.insert(actions, ACTIONS.LIGHT)
             end
         end,

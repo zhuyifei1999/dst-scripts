@@ -158,6 +158,7 @@ local function fn()
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("sisturn")
 
+
     MakeSmallBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)
     MakeHauntableWork(inst)

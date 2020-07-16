@@ -310,7 +310,9 @@ end
 local function BecomeDefensive(inst)
     inst.AnimState:ClearOverrideSymbol("ghost_eyes")
     inst.is_defensive = true
-    inst._playerlink:RemoveTag("has_aggressive_follower")
+	if inst._playerlink ~= nil then
+	    inst._playerlink:RemoveTag("has_aggressive_follower")
+	end
     inst.components.combat:SetRetargetFunction(0.5, DefensiveRetarget)
 end
 
@@ -450,8 +452,6 @@ local function fn()
     inst.components.aura.auratestfn = auratest
 
     inst.auratest = auratest
-
-    MakeHauntableGoToState(inst, "haunted", nil, 64 * FRAMES * 1.2)
 
     ------------------
     --Added so you can attempt to give hearts to trigger flavour text when the action fails

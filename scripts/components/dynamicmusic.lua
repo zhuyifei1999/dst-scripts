@@ -110,6 +110,7 @@ local BUSYTHEMES = {
     FEAST = 6,
     RACE = 7,
     TRAINING = 8,
+    HERMIT = 9,
 }
 
 --------------------------------------------------------------------------
@@ -261,6 +262,24 @@ local function StartRacing(player)
 
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(5, StopBusy, true)
+        _extendtime = 0
+    end
+end
+
+local function StartHermit(player)
+    if _dangertask == nil and (_extendtime == 0 or GetTime() >= _extendtime) and _isenabled then
+        if _busytask then
+            _busytask:Cancel()
+            _busytask = nil
+        end
+        if _busytheme ~= BUSYTHEMES.HERMIT then
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound("hookline_2/characters/hermit/music_work", "busy")
+        end
+        _busytheme = BUSYTHEMES.HERMIT
+
+        _soundemitter:SetParameter("busy", "intensity", 1)
+        _busytask = inst:DoTaskInTime(30, StopBusy, true)
         _extendtime = 0
     end
 end
@@ -442,6 +461,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("boatspedup", StartTriggeredWater, player)
     inst:ListenForEvent("isfeasting", StartTriggeredFeasting, player)
     inst:ListenForEvent("playracemusic", StartRacing, player)   
+    inst:ListenForEvent("playhermitmusic", StartHermit, player)   
     inst:ListenForEvent("playtrainingmusic", StartTraining, player)
 end
 
@@ -456,6 +476,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("boatspedup", StartTriggeredWater, player)
     inst:RemoveEventCallback("isfeasting", StartTriggeredFeasting, player)
     inst:RemoveEventCallback("playracemusic", StartRacing, player)
+    inst:RemoveEventCallback("playhermitmusic", StartHermit, player)
     inst:RemoveEventCallback("playtrainingmusic", StartTraining, player)
 end
 

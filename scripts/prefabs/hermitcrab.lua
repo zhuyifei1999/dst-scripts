@@ -156,7 +156,11 @@ local function displaynamefn(inst)
 end
 
 local function dotalkingtimers(inst)
-    inst.components.timer:StartTimer("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
+    if inst.components.timer:TimerExists("speak_time") then
+        inst.components.timer:SetTimeLeft("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
+    else
+        inst.components.timer:StartTimer("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
+    end
 
     if inst.components.timer:TimerExists("complain_time") then
         local time = inst.components.timer:GetTimeLeft("complain_time")

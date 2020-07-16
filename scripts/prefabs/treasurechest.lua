@@ -103,6 +103,9 @@ local function MakeChest(name, bank, build, indestructible, master_postinit, pre
         inst.components.container:WidgetSetup(name)
         inst.components.container.onopenfn = onopen
         inst.components.container.onclosefn = onclose
+        inst.components.container.skipclosesnd = true
+        inst.components.container.skipopensnd = true
+
 
         if not indestructible then
             inst:AddComponent("lootdropper")

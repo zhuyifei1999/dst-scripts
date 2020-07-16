@@ -297,6 +297,8 @@ local function create_chester()
     inst.components.container:WidgetSetup("chester")
     inst.components.container.onopenfn = OnOpen
     inst.components.container.onclosefn = OnClose
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)

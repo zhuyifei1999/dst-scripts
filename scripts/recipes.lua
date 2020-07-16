@@ -393,6 +393,9 @@ Recipe("fish_box",			   {Ingredient("cutstone", 1), 		Ingredient("rope", 3)}, RE
        return TheWorld.Map:GetPlatformAtPoint(pt.x, 0, pt.z, - 0.5) ~= nil
     end)
 Recipe("winch",				   {Ingredient("boards", 2), Ingredient("cutstone", 1), Ingredient("rope", 2)}, RECIPETABS.SEAFARING, TECH.LOST, "winch_placer", 1.5)
+Recipe("mastupgrade_lamp_item", {Ingredient("boards", 1), Ingredient("rope", 2), Ingredient("flint", 4)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
+Recipe("mastupgrade_lightningrod_item", {Ingredient("goldnugget", 5)},                                      RECIPETABS.SEAFARING, TECH.SEAFARING_TWO) 
+Recipe("waterpump",            {Ingredient("boards", 2),Ingredient("oceanfish_small_9_inv", 1)},               RECIPETABS.SEAFARING, TECH.SEAFARING_TWO, "waterpump_placer", 1.5, nil, nil, nil, nil, "waterpump_item.tex")
 
 --Recipe("fishingnet", {Ingredient("silk", 6)}, RECIPETABS.SEAFARING, TECH.SEAFARING_ONE, nil, nil, true)
 Recipe("chesspiece_anchor_sketch", {Ingredient("papyrus", 1)}, RECIPETABS.SEAFARING, TECH.SEAFARING_TWO)
@@ -547,7 +550,9 @@ Recipe("hermitshop_supertacklecontainer", {Ingredient("messagebottleempty", 8)},
 --NOTE: These recipes are not supposed to be craftable!
 Recipe("pighead",  {Ingredient("pigskin", 4), 	   Ingredient("twigs", 4)}, nil, TECH.LOST, nil, nil, true)
 Recipe("mermhead", {Ingredient("pondfish", 1), Ingredient("spoiled_food", 4), Ingredient("twigs", 4)}, nil, TECH.LOST, nil, nil, true)
-Recipe("sunkenchest",{Ingredient("slurtle_shellpieces", 5)}, nil, TECH.LOST, nil, nil, true)
+Recipe("sunkenchest", {Ingredient("slurtle_shellpieces", 5)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mastupgrade_lamp", {Ingredient("boards", 1), Ingredient("rope", 2), Ingredient("flint", 4)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mastupgrade_lightningrod", {Ingredient("goldnugget", 5)}, nil, TECH.LOST, nil, nil, true)
 
 --Hermit shop material recipes
 Recipe("tacklecontainer", {Ingredient("cookiecuttershell", 2), Ingredient("rope", 1)}, nil, TECH.LOST, nil, nil, true)

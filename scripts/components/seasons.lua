@@ -138,7 +138,7 @@ end or nil
 
 local PushSeasonClockSegs = _ismastersim and function()
     if not _ismastershard then
-        return -- mastershard pushes its seg data to the clock, which pushes it to the slaves
+        return -- mastershard pushes its seg data to the clock, which pushes it to the secondary shards
     end
 
     local p = 1 - (_totaldaysinseason:value() > 0 and _remainingdaysinseason:value() / _totaldaysinseason:value() or 0)
@@ -460,8 +460,8 @@ if _ismastersim then
     inst:ListenForEvent("ms_setseasonclocksegs", OnSetSeasonClockSegs, _world)
     inst:ListenForEvent("ms_setseasonsegmodifier", OnSetSeasonSegModifier, _world)
     if not _ismastershard then
-        --Register slave shard events
-        inst:ListenForEvent("slave_seasonsupdate", OnSeasonsUpdate, _world)
+        --Register secondary shard events
+        inst:ListenForEvent("secondary_seasonsupdate", OnSeasonsUpdate, _world)
     end
 end
 

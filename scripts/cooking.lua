@@ -115,6 +115,10 @@ AddIngredientValues({"boneshard"}, {inedible=1})
 
 AddIngredientValues({"wobster_sheller_land"}, {meat=1.0, fish=1.0})
 
+AddIngredientValues({"barnacle","barnacle_cooked"}, {meat=0.25, fish=0.25})
+
+AddIngredientValues({"plantmeat","plantmeat_cooked"}, {meat=1})
+
 
 --our naming conventions aren't completely consistent, sadly
 local aliases =

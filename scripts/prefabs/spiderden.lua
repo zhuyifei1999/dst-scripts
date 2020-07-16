@@ -367,7 +367,7 @@ local function OnStageAdvance(inst)
    return true
 end
 
-local function OnUpgrade(inst)
+local function OnUpgrade(inst, upgrade_doer)
    inst.AnimState:PlayAnimation(inst.anims.hit)
    inst.AnimState:PushAnimation(inst.anims.idle)
 end

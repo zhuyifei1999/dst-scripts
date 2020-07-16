@@ -179,30 +179,6 @@ local states =
     },
 
     State{
-        name = "haunted",
-        tags = { "busy" },
-
-        onenter = function(inst)
-            -- inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_girl_attack_LP", "haunted")
-            inst.AnimState:PlayAnimation("angry")
-            inst.Physics:Stop()
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("haunted")
-        end
-    },
-
-    State{
         name = "dissipate",
         tags = { "busy", "noattack", "nointerrupt", "dissipate" },
 

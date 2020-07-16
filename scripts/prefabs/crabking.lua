@@ -37,6 +37,7 @@ local prefabs =
     "singingshell_octave5",
     "singingshell_octave4",
     "singingshell_octave3",
+    "barnacle",
 }
 
 local geyserprefabs =
@@ -718,6 +719,13 @@ SetSharedLootTable( 'crabking',
     {"singingshell_octave3",                1.00},
     {"singingshell_octave3",                1.00},
     {"singingshell_octave3",                0.50},
+    {"barnacle",                            1.00},
+    {"barnacle",                            1.00},
+    {"barnacle",                            1.00},
+    {"barnacle",                            0.25},
+    {"barnacle",                            0.25},
+    {"barnacle",                            0.25},
+    {"barnacle",                            0.25},
 })
 
 local function PushMusic(inst)
@@ -753,7 +761,8 @@ local function fn()
     inst.AnimState:SetBank("king_crab")
     inst.AnimState:SetBuild("crab_king_build")    
 
-    inst:AddTag("ignorewalkableplatforms") -- added so the crab king will not get attached to a moving boat when it is past entity-sleep range    inst:AddTag("crabking") 
+    inst:AddTag("ignorewalkableplatforms") -- added so the crab king will not get attached to a moving boat when it is past entity-sleep range
+    inst:AddTag("crabking") 
     inst:AddTag("largecreature")
     inst:AddTag("gemsocket")
     inst:AddTag("birdblocker")
@@ -1105,6 +1114,7 @@ local function freezefx(inst)
     end
 
     local MAXFX = Remap(( inst.crab and inst.crab:IsValid() and inst.crab.countgems(inst.crab).blue or 0),0, 9,5,15)
+
 
     local fx = Remap(inst.components.age:GetAge(),0,TUNING.CRABKING_CAST_TIME_FREEZE - (math.min((inst.crab and inst.crab:IsValid() and math.floor(inst.crab.countgems(inst.crab).yellow/2) or 0),4)),1,MAXFX)
 

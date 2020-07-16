@@ -1441,6 +1441,8 @@ UPGRADETYPES =
 {
     DEFAULT = "default",
     SPIDER = "spider",
+    WATERPLANT = "waterplant",
+    MAST = "mast",
 }
 
 LOCKTYPE =

@@ -3194,6 +3194,7 @@ return{
 		OCEANFISH_SMALL_6 = "Has creepy flat face, Wolfgang not like.",
 		OCEANFISH_SMALL_7 = "Oh, is nice little flower fish.",
 		OCEANFISH_SMALL_8 = "Is strange burny fish.",
+        OCEANFISH_SMALL_9 = "Funny little spit fish.",
 
 		OCEANFISH_MEDIUM_1 = "Don't like way its buggy eyes stare.",
 		OCEANFISH_MEDIUM_2 = "Aha! Big fish for dinner!",
@@ -3466,6 +3467,32 @@ return{
 
         HERMIT_PEARL = "Will take good care of shiny stone!",
         HERMIT_CRACKED_PEARL = "Wolfgang did not take good care of shiny stone.",
+
+        -- DSEAS
+        WATERPLANT = "Tall plant makes Wolfgang nervous...",
+        WATERPLANT_BOMB = "Is bad plant! Very bad plant!",
+        WATERPLANT_BABY = "Ha! So small and weak!",
+        WATERPLANT_PLANTER = "It needs rock for the growing.",
+
+        SHARK = "Eep! Wolfgang's muscles too tough for eating!",
+
+        MASTUPGRADE_LAMP_ITEM = "Put fire up high. Is safer that way.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Is lightning trap.",
+
+        WATERPUMP = "Splishy splashy pump.",
+
+        BARNACLE = "Come out of shell, Wolfgang is hungry!",
+        BARNACLE_COOKED = "Is taste of sea.",
+
+        BARNACLEPITA = "Wolfgang like chewy food pocket.",
+        BARNACLESUSHI = "Is too tiny!",
+        BARNACLINGUINE = "Good food, fills belly!",
+        BARNACLESTUFFEDFISHHEAD = "Wolfgang stuff face with stuffed fish faces!",
+
+        LEAFLOAF = "This food confuses Wolfgang.",
+        LEAFYMEATBURGER = "Wolfgang want to eat cow, not eat LIKE cow.",
+        LEAFYMEATSOUFFLE = "Jiggly!",
+        MEATYSALAD = "Need more than weird leaves to fill Wolfgang's mighty belly!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

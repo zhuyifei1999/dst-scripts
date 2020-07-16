@@ -3194,6 +3194,7 @@ return{
 		OCEANFISH_SMALL_6 = "Eh, I could take it or leaf it.",
 		OCEANFISH_SMALL_7 = "Nice looking fish, eh bud?",
 		OCEANFISH_SMALL_8 = "Looks like the sun came out today after all.",
+        OCEANFISH_SMALL_9 = "Not very polite, eh?",
 
 		OCEANFISH_MEDIUM_1 = "Yeesh, if I weren't so hungry I'd throw it right back.",
 		OCEANFISH_MEDIUM_2 = "You'll make a good meal.",
@@ -3466,6 +3467,32 @@ return{
 
         HERMIT_PEARL = "C'mon Lucy, let's find that crab!",
         HERMIT_CRACKED_PEARL = "I was only trying to help...",
+
+        -- DSEAS
+        WATERPLANT = "That flower's tall as a pine tree!",
+        WATERPLANT_BOMB = "You're just asking to be chopped!",
+        WATERPLANT_BABY = "Just a sapling.",
+        WATERPLANT_PLANTER = "Where will you cause the least amount of damage...",
+
+        SHARK = "That's a big hoser!",
+
+        MASTUPGRADE_LAMP_ITEM = "That'll lighten things up around here.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "Pretty nifty, eh?",
+
+        WATERPUMP = "It's a shame wood has to be so flammable.",
+
+        BARNACLE = "Not my first choice in seafood.",
+        BARNACLE_COOKED = "They're not bad!",
+
+        BARNACLEPITA = "I'm not picky.",
+        BARNACLESUSHI = "Can't say I ever saw that on a menu back home.",
+        BARNACLINGUINE = "Sorry, I'm eatin' this whole thing myself.",
+        BARNACLESTUFFEDFISHHEAD = "I'm not one to turn down some grub.",
+
+        LEAFLOAF = "Not my cup of tea.",
+        LEAFYMEATBURGER = "It never tastes the same as actual meat...",
+        LEAFYMEATSOUFFLE = "I wouldn't touch that with a ten foot pike pole.",
+        MEATYSALAD = "Do I use salad dressing or gravy?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

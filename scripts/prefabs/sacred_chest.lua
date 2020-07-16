@@ -236,6 +236,8 @@ local function fn()
     inst.components.container:WidgetSetup("sacred_chest")
     inst.components.container.onopenfn = onopen
     inst.components.container.onclosefn = onclose
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
 		
     inst:AddComponent("hauntable")
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL

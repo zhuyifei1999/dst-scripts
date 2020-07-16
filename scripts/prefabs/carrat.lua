@@ -449,6 +449,7 @@ local function go_to_emerged(inst)
     inst:AddTag("cattoy")
     inst:AddTag("prey")
     inst:AddTag("smallcreature")
+    inst:AddTag("stunnedbybomb")
 
     -- Remove unused components --
     inst:RemoveComponent("pickable")
@@ -681,6 +682,7 @@ local function fn()
     inst:AddTag("cattoy")
     inst:AddTag("prey")
     inst:AddTag("smallcreature")
+    inst:AddTag("stunnedbybomb")
 
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")

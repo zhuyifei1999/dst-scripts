@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "What if we got a pile of these and jumped in it?",
 		OCEANFISH_SMALL_7 = "Wendy got mad when we said it reminded us of her...",
 		OCEANFISH_SMALL_8 = "Ow! Owie! Hot!!",
+        OCEANFISH_SMALL_9 = "Haha, it spits!",
 
 		OCEANFISH_MEDIUM_1 = "Eww, it'd covered in mud!",
 		OCEANFISH_MEDIUM_2 = "You'd be pretty tasty with some chips.",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "We'll take really good care of it!",
         HERMIT_CRACKED_PEARL = "We hope Ms. Pearl isn't too mad at us...",
+
+        -- DSEAS
+        WATERPLANT = "Did we shrink? Or is this flower really big?",
+        WATERPLANT_BOMB = "We're sorry! We didn't mean it!",
+        WATERPLANT_BABY = "Grow big and tall!",
+        WATERPLANT_PLANTER = "Where should we put you?",
+
+        SHARK = "Shark attack!",
+
+        MASTUPGRADE_LAMP_ITEM = "Now our boat has a light!",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "We feel safer already!",
+
+        WATERPUMP = "Hey... is that a fish inside?",
+
+        BARNACLE = "We found them in the sea!",
+        BARNACLE_COOKED = "We've never eaten barnacles before.",
+
+        BARNACLEPITA = "It's a little pocket of chewiness!",
+        BARNACLESUSHI = "Wow, fancy!",
+        BARNACLINGUINE = "Watch how fast we can slurp it up!",
+        BARNACLESTUFFEDFISHHEAD = "Yuck!",
+
+        LEAFLOAF = "Not quite how mother used to make it.",
+        LEAFYMEATBURGER = "This hamburger tastes kind of... grassy?",
+        LEAFYMEATSOUFFLE = "We're not sure about this one...",
+        MEATYSALAD = "Is it meat or salad?",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

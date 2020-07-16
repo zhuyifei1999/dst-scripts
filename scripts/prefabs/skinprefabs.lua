@@ -2841,6 +2841,17 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_catcoon_costume",
 	release_group = 26,
 }))
 
+table.insert(prefs, CreatePrefabSkin("researchlab4_chef",
+{
+	base_prefab = "researchlab4",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_chef") end,
+	skin_tags = { },
+	release_group = 100,
+}))
+
 table.insert(prefs, CreatePrefabSkin("researchlab4_chester_costume",
 {
 	base_prefab = "researchlab4",
@@ -3184,6 +3195,18 @@ table.insert(prefs, CreatePrefabSkin("tent_leaf",
 	init_fn = function(inst) tent_init_fn(inst, "tent_leaf") end,
 	skin_tags = { "TENT", "CRAFTABLE", },
 	release_group = 95,
+}))
+
+table.insert(prefs, CreatePrefabSkin("tophat_chef",
+{
+	base_prefab = "tophat",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) tophat_init_fn(inst, "tophat_chef") end,
+	skin_tags = { "CHEF", "TOPHAT", "CRAFTABLE", },
+	release_group = 100,
+	granted_items = { "researchlab4_chef", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("tophat_circus",
@@ -3599,6 +3622,18 @@ table.insert(prefs, CreatePrefabSkin("warly_candyman",
 	bigportrait = { build = "bigportraits/warly_candyman.xml", symbol = "warly_candyman_oval.tex"},
 	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_candyman", },
 	release_group = 77,
+}))
+
+table.insert(prefs, CreatePrefabSkin("warly_chef",
+{
+	base_prefab = "warly",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "CHEF", "BASE", "WARLY", },
+	bigportrait = { build = "bigportraits/warly_chef.xml", symbol = "warly_chef_oval.tex"},
+	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_chef", },
+	release_group = 100,
 }))
 
 table.insert(prefs, CreatePrefabSkin("warly_fisherman",
@@ -5185,6 +5220,18 @@ table.insert(prefs, CreatePrefabSkin("wilson_magma",
 	release_group = 51,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wilson_nature",
+{
+	base_prefab = "wilson",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "VARG", "BASE", "WILSON", },
+	bigportrait = { build = "bigportraits/wilson_nature.xml", symbol = "wilson_nature_oval.tex"},
+	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_nature", },
+	release_group = 100,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wilson_none",
 {
 	base_prefab = "wilson",
@@ -5651,6 +5698,18 @@ table.insert(prefs, CreatePrefabSkin("wolfgang_magma",
 	release_group = 51,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wolfgang_nature",
+{
+	base_prefab = "wolfgang",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "VARG", "BASE", "WOLFGANG", },
+	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_nature", normal_skin = "wolfgang_nature", wimpy_skin = "wolfgang_skinny_nature", },
+	torso_tuck_builds = { "wolfgang_nature", "wolfgang_skinny_nature", "wolfgang_mighty_nature", },
+	release_group = 100,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wolfgang_none",
 {
 	base_prefab = "wolfgang",
@@ -6022,6 +6081,19 @@ table.insert(prefs, CreatePrefabSkin("wormwood_rose",
 	release_group = 67,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wormwood_shadow",
+{
+	base_prefab = "wormwood",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "BASE", "WORMWOOD", "SHADOW", },
+	bigportrait = { build = "bigportraits/wormwood_shadow.xml", symbol = "wormwood_shadow_oval.tex"},
+	skins = { ghost_skin = "ghost_wormwood_shadow", normal_skin = "wormwood_shadow", stage_2 = "wormwood_shadow_stage2", stage_3 = "wormwood_shadow_stage3", stage_4 = "wormwood_shadow_stage4", },
+	has_alternate_for_body = { "wormwood_shadow", "wormwood_shadow_stage2", "wormwood_shadow_stage3", "wormwood_shadow_stage4", },
+	release_group = 100,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wortox_dragon",
 {
 	base_prefab = "wortox",
@@ -6141,6 +6213,20 @@ table.insert(prefs, CreatePrefabSkin("wurt_none",
 	has_alternate_for_body = { "wurt", },
 	feet_cuff_size = { wurt_powerup = -1, wurt = -1, },
 	release_group = 78,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wurt_rose",
+{
+	base_prefab = "wurt",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "ROSE", "BASE", "WURT", },
+	bigportrait = { build = "bigportraits/wurt_rose.xml", symbol = "wurt_rose_oval.tex"},
+	skins = { ghost_skin = "ghost_wurt_rose", normal_skin = "wurt_rose", powerup = "wurt_rose_powerup", },
+	has_alternate_for_body = { "wurt_rose", },
+	feet_cuff_size = { wurt_rose_powerup = -1, wurt_rose = -1, },
+	release_group = 100,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wurt_shadow",

@@ -3193,6 +3193,7 @@ return{
 		OCEANFISH_SMALL_6 = "The meat has a dry, oddly brittle texture.",
 		OCEANFISH_SMALL_7 = "It's almost too pretty to eat... almost.",
 		OCEANFISH_SMALL_8 = "Mon dieu! I'll be the one cooked if I stay too close!",
+        OCEANFISH_SMALL_9 = "I've never had food spit at me before.",
 
 		OCEANFISH_MEDIUM_1 = "I've worked with worse looking ingredients.",
 		OCEANFISH_MEDIUM_2 = "You will make a fine fish dinner!",
@@ -3465,6 +3466,32 @@ return{
 
         HERMIT_PEARL = "Madame Pearl entrusted it to me.",
         HERMIT_CRACKED_PEARL = "Oh... oh dear...",
+
+        -- DSEAS
+        WATERPLANT = "Oh my! It's lovely!",
+        WATERPLANT_BOMB = "Pardonnez-moi! I didn't realize those barnacles were yours!",
+        WATERPLANT_BABY = "It's growing nicely.",
+        WATERPLANT_PLANTER = "Where shall I start planting my sea garden?",
+
+        SHARK = "I'm sure you can find something much tastier to eat elsewhere!",
+
+        MASTUPGRADE_LAMP_ITEM = "It does lighten the mood considerably.",
+        MASTUPGRADE_LIGHTNINGROD_ITEM = "It will be sizzling with electricity in no time.",
+
+        WATERPUMP = "Fires on a ship are not to be taken lightly.",
+
+        BARNACLE = "Ah, I've rarely had an opportunity to cook with these!",
+        BARNACLE_COOKED = "I think we can do a bit better than that!",
+
+        BARNACLEPITA = "An unconventional combination of ingredients, but delicious nonetheless!",
+        BARNACLESUSHI = "Ah, bon! That turned out quite nicely!",
+        BARNACLINGUINE = "Delectable!",
+        BARNACLESTUFFEDFISHHEAD = "Some culinary experiments go better than others.",
+
+        LEAFLOAF = "A basic recipe, elevated though the use of this strange meat!",
+        LEAFYMEATBURGER = "Perhaps this is how we'll convince Mademoiselle Wigfrid to eat her vegetables?",
+        LEAFYMEATSOUFFLE = "It is certainly... food.",
+        MEATYSALAD = "I'm not sure whether we can truly call this vegetarian.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

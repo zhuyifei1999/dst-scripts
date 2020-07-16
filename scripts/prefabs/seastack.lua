@@ -6,6 +6,9 @@ local assets =
 
 local prefabs =
 {
+    "rock_break_fx",
+    "waterplant_baby",
+    "waterplant_destroy",
 }
 
 SetSharedLootTable( 'seastack',
@@ -40,6 +43,25 @@ local function OnWork(inst, worker, workleft)
     else
         updateart(inst)
     end
+end
+
+local function on_upgraded(inst, upgrade_doer)
+    local sx, sy, sz = inst.Transform:GetWorldPosition()
+
+    local baby = SpawnPrefab("waterplant_baby")
+    baby.Transform:SetPosition(sx, sy, sz)
+    if baby.WaitForRebirth ~= nil then
+        baby:WaitForRebirth()
+    end
+
+    local fx = SpawnPrefab("waterplant_destroy")
+    fx.Transform:SetPosition(sx, sy, sz)
+
+    if upgrade_doer ~= nil then
+        TheWorld:PushEvent("itemplanted", {doer = upgrade_doer, pos = Vector3(sx, sy, sz)})
+    end
+
+    inst:Remove()
 end
 
 local DAMAGE_SCALE = 0.5
@@ -86,7 +108,8 @@ local function fn()
     MakeInventoryFloatable(inst, "med", 0.1, {1.1, 0.9, 1.1})
     inst.components.floater.bob_percent = 0
 
-    inst:DoTaskInTime(0, function(inst)
+    local land_time = (POPULATING and math.random()*5*FRAMES) or 0
+    inst:DoTaskInTime(land_time, function(inst)
         inst.components.floater:OnLandedServer()
     end)
 
@@ -111,6 +134,10 @@ local function fn()
     inst.components.workable.savestate = true
 
     inst:AddComponent("inspectable")
+
+    inst:AddComponent("upgradeable")
+    inst.components.upgradeable.upgradetype = UPGRADETYPES.WATERPLANT
+    inst.components.upgradeable.onupgradefn = on_upgraded
 
     MakeHauntableWork(inst)
 

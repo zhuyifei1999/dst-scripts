@@ -32,6 +32,16 @@ local ink_prefabs =
     "ink_puddle_water",
 }
 
+local waterstreak_assets =
+{
+    Asset("ANIM", "anim/waterstreak.zip"),
+}
+
+local waterstreak_prefabs =
+{
+    "waterstreak_burst",
+}
+
 local function OnHitInk(inst, attacker, target)
     SpawnPrefab("ink_splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
     if inst:IsOnOcean() then
@@ -93,7 +103,22 @@ local function common_fn(bank, build, anim, tag, isinventoryitem)
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation(anim, true)
+
+    if type(anim) ~= "table" then
+        inst.AnimState:PlayAnimation(anim, true)
+    elseif #anim == 1 then
+        inst.AnimState:PlayAnimation(anim[1], true)
+    else
+        for i, a in ipairs(anim) do
+            if i == 1 then
+                inst.AnimState:PlayAnimation(a, false)
+            elseif i ~= #anim then
+                inst.AnimState:PushAnimation(a, false)
+            else
+                inst.AnimState:PushAnimation(a, true)
+            end
+        end
+    end
 
     inst.entity:SetPristine()
 
@@ -247,6 +272,41 @@ local function ink_fn()
     return inst
 end
 
+local function OnHitWaterstreak(inst, attacker, target)
+    local hpx, hpy, hpz = inst.Transform:GetWorldPosition()
+
+    SpawnPrefab("waterstreak_burst").Transform:SetPosition(hpx, hpy, hpz)
+
+    if not TheWorld.Map:IsPassableAtPoint(hpx, hpy, hpz) then
+        SpawnPrefab("ocean_splash_small2").Transform:SetPosition(hpx, hpy, hpz)
+    end
+
+    inst.components.wateryprotection:SpreadProtection(inst, TUNING.WATERSTREAK_AOE_DIST)
+    inst:Remove()
+end
+
+local WATERSTREAK_ANIMS = {"pre", "loop"}
+local function waterstreak_fn()
+    local inst = common_fn("waterstreak", "waterstreak", WATERSTREAK_ANIMS, "NOCLICK")
+
+    inst.Transform:SetSixFaced()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst.components.complexprojectile:SetOnHit(OnHitWaterstreak)
+
+    inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
+    inst.components.wateryprotection.addwetness = TUNING.WATERBALLOON_ADD_WETNESS
+    inst.components.wateryprotection:AddIgnoreTag("player")
+
+    return inst
+end
+
 return Prefab("snowball", snowball_fn, snowball_assets, snowball_prefabs),
     Prefab("waterballoon", waterballoon_fn, waterballoon_assets, waterballoon_prefabs),
-    Prefab("inksplat", ink_fn, ink_assets, ink_prefabs)
+    Prefab("inksplat", ink_fn, ink_assets, ink_prefabs),
+    Prefab("waterstreak_projectile", waterstreak_fn, waterstreak_assets, waterstreak_prefabs)

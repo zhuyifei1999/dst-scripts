@@ -16,7 +16,7 @@ end
 
 --Called from ShardManager whenever a shard is connected or
 --disconnected, to automatically update known portal states
---On master server, slave tags and worldgen options are also passed through here
+--On master server, secondary tags and worldgen options are also passed through here
 --NOTE: should never be called with for our own world_id
 function Shard_UpdateWorldState(world_id, state, tags, world_data)
     local ready = state == REMOTESHARDSTATE.READY

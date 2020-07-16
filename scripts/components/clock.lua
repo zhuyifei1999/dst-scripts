@@ -239,8 +239,8 @@ if _ismastersim then
     inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
 
     if not _ismastershard then
-        --Register slave shard events
-        inst:ListenForEvent("slave_clockupdate", OnClockUpdate, _world)
+        --Register secondary shard events
+        inst:ListenForEvent("secondary_clockupdate", OnClockUpdate, _world)
     end
 end
 
@@ -311,7 +311,7 @@ function self:OnUpdate(dt)
             return
         end
     else
-        --Clients and slaves must wait at end of phase for a server sync
+        --Clients and secondary shards must wait at end of phase for a server sync
         _remainingtimeinphase:set_local(math.min(.001, _remainingtimeinphase:value()))
     end
 

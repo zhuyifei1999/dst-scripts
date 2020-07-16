@@ -16,6 +16,8 @@ local RecipeList = require "widgets/recipelist"
 local easing = require "easing"
 local CrowGameScreen = require "screens/crowgamescreen"
 local SnowbirdGameScreen = require "screens/snowbirdgamescreen"
+local RedbirdGameScreen = require "screens/redbirdgamescreen"
+local BirdInteractScreen = require "screens/redux/birdinteractscreen"
 
 require("skinsfiltersutils")
 require("skinstradeutils")
@@ -113,7 +115,7 @@ function TradeScreen:DoInit()
     self.panel_bg = self.fixed_root:AddChild(TEMPLATES.NoPortalBackground())
     self.menu_bg = self.fixed_root:AddChild(TEMPLATES.LeftGradient())
 
-    if not TheInput:ControllerAttached() then 
+    if not TheInput:ControllerAttached() then
     	self.exit_button = self.fixed_root:AddChild(TEMPLATES.BackButton(function() self:Quit() end)) 
 
     	self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y )
@@ -160,6 +162,19 @@ function TradeScreen:DoInit()
 	self.crow_anim:SetOnClick( function()
 		TheFrontEnd:GetSound():PlaySound("dontstarve/birds/takeoff_crow")
 		TheFrontEnd:FadeToScreen( self, function() return CrowGameScreen(self.profile) end, nil )
+		self.innkeeper:Sleep()
+	end )
+	
+	self.redbird_anim = self.fixed_root:AddChild(UIAnimButton("crow", "robin_build", "idle", "caw" ))
+	self.redbird_anim:SetLoop("idle", true)
+	self.redbird_anim:SetLoop("caw", true)
+	self.redbird_anim.animstate:SetTime(math.random())
+	self.redbird_anim.animstate:SetDeltaTimeMultiplier(0.7 + 0.3*math.random())
+	self.redbird_anim:SetPosition(130, -220)
+	self.redbird_anim:SetScale(0.5)
+	self.redbird_anim:SetOnClick( function()
+		TheFrontEnd:GetSound():PlaySound("dontstarve/birds/takeoff_crow")
+		TheFrontEnd:FadeToScreen( self, function() return RedbirdGameScreen(self.profile) end, nil )
 		self.innkeeper:Sleep()
 	end )
 	
@@ -456,6 +471,7 @@ function TradeScreen:Reset()
 	
 	self.joystick:Stop()
 
+	
 	self.item_name_displayed = nil
 
 	if self.innkekeper then 
@@ -550,6 +566,11 @@ function TradeScreen:DisableMachineTiles()
 end
 
 function TradeScreen:OnBecomeActive()
+	if self.do_nothing_on_activate then
+		self.do_nothing_on_activate = false
+		return
+	end
+
 	--print("**** Activate TradeScreen ****", self.specials_mode)
 	Screen.OnBecomeActive(self)
 
@@ -1381,16 +1402,19 @@ function TradeScreen:OnControl(control, down)
             return true
        	elseif control == CONTROL_ACCEPT and self.accept_waiting then
        		self:Reset()
-       	-- DISABLE SPECIAL RECIPES
-       	--[[elseif control == CONTROL_OPEN_INVENTORY then -- right trigger 
-			   self:ToggleSpecialsMode()]]
 		elseif control == CONTROL_OPEN_INVENTORY then -- right trigger
-			self.crow_anim.onclick()
-		elseif control == CONTROL_OPEN_CRAFTING then -- left trigger
-			self.snowbird_anim.onclick()
-       	end
+			self.do_nothing_on_activate = true
+			local bird_interact = nil
+			bird_interact = BirdInteractScreen(
+				{
+					{ text=STRINGS.UI.TRADESCREEN.CROW_GAME.HELP_TITLE, cb = function() TheFrontEnd:PopScreen(bird_interact) self.crow_anim.onclick() end },
+					{ text=STRINGS.UI.TRADESCREEN.SNOW_GAME.HELP_TITLE, cb = function() TheFrontEnd:PopScreen(bird_interact) self.snowbird_anim.onclick() end },
+					{ text=STRINGS.UI.TRADESCREEN.REDBIRD_GAME.HELP_TITLE, cb = function() TheFrontEnd:PopScreen(bird_interact) self.redbird_anim.onclick() end }
+				}
+			)
+			TheFrontEnd:PushScreen(bird_interact)
+		end
 	end
-
 end
 
 function TradeScreen:ScrollBack(control)
@@ -1443,8 +1467,7 @@ function TradeScreen:GetHelpText()
 	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.SPECIALS )
 	    end]]
 
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.CROW )
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_CRAFTING) .. " " .. STRINGS.UI.TRADESCREEN.SNOWBIRD )
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.BIRDS )
 
 		if self.resetbtn:IsEnabled() then
 			table.insert(t,  TheInput:GetLocalizedControl(controller_id, reset_control) .. " " .. STRINGS.UI.TRADESCREEN.RESET)

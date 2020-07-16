@@ -772,6 +772,22 @@ t = {
                 end
             end,
         },
+
+        {
+            version = 5.050, -- Return of Them: Troubled Waters
+            fn = function(savedata)
+                if savedata ~= nil and savedata.map ~= nil
+                        and savedata.map.prefab == "forest" and savedata.map.has_ocean then
+                    if savedata.map.persistdata == nil then
+                        savedata.map.persistdata = {}
+                    end
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                        savedata.map.persistdata.retrofitforestmap_anr = {}
+                    end
+                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_barnacles = true
+                end
+            end,
+        },
     },
 }
 

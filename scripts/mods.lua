@@ -21,7 +21,7 @@ AddModReleaseID( "R08_ROT_TURNOFTIDES" )
 AddModReleaseID( "R09_ROT_SALTYDOG" )
 AddModReleaseID( "R09_ROT_HOOKLINEANDINKER" )
 AddModReleaseID( "R11_ROT_SHESELLSSEASHELLS" )
-
+AddModReleaseID( "R12_ROT_TROUBLEDWATERS" )
 -----------------------------------------------------------------------------------------------
 
 MOD_AVATAR_LOCATIONS = { Default = "images/avatars/" }
@@ -342,6 +342,19 @@ function ModWrangler:LoadServerModsFile()
 	local filename = MODS_ROOT
 	if DIST_PLATFORM == "Rail" then
 		filename = filename.."dedicated_server_mods_setup_rail.lua"
+
+		print("########################################################")
+		print("Loading of dedicated_server_mods_setup_rail.lua is currently disabled.")
+		print("To install mods, manually copy them")
+		print("from rail_apps\\Don't Starve Together(2000004)\\mods")
+		print("to rail_apps\\Don't Starve Together Dedicated Server(2000039)\\mods")
+		print("---")
+		print("目前已禁用加载dedicated_server_mods_setup_rail.lua。")
+		print("可以通过手动方式安装模组")
+		print("从下列文件夹 rail_apps\\Don't Starve Together(2000004)\\mods复制需要安装的模组")
+		print("到目标文件夹 rail_apps\\Don't Starve Together Dedicated Server(2000039)\\mods")
+		print("########################################################")
+		return
 	else
 		filename = filename.."dedicated_server_mods_setup.lua"
 	end

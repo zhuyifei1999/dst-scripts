@@ -10,15 +10,6 @@ end)
 function BoatLeak:Repair(doer, patch_item)
     if not self.inst:HasTag("boat_leak") then return false end
 
-    if patch_item.components.boatpatch.healthrepairvalue then
-        local boat = self.inst:GetCurrentPlatform()
-        if boat.components.health ~= nil then
-            if boat.components.health:GetPercent() < 1 then
-                boat.components.health:DoDelta(patch_item.components.boatpatch.healthrepairvalue)
-            end
-        end
-    end
-
     if patch_item.components.repairer and self.inst:GetCurrentPlatform() and self.inst:GetCurrentPlatform().components.repairable then
         self.inst:GetCurrentPlatform().components.repairable:Repair(doer, patch_item)
         -- consumed in the repair
@@ -72,6 +63,7 @@ function BoatLeak:SetState(state, skip_open)
     local anim_state = self.inst.AnimState
 
 	if state == "small_leak" then
+        self.inst:RemoveTag("boat_repaired_patch")
 	    self.inst:AddTag("boat_leak")
 
         anim_state:SetBuild(self.leak_build)
@@ -84,7 +76,7 @@ function BoatLeak:SetState(state, skip_open)
             anim_state:SetTime(11 * FRAMES)
         end
 
-        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_small_LP", "small_leak")
+        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/untain_small_LP", "small_leak")
 
         self.has_leaks = true
 
@@ -92,6 +84,7 @@ function BoatLeak:SetState(state, skip_open)
 			self.onsprungleak(self.inst, state)
 		end
 	elseif state == "med_leak" then
+        self.inst:RemoveTag("boat_repaired_patch")
 	    self.inst:AddTag("boat_leak")
 
         anim_state:SetBuild(self.leak_build)
@@ -130,7 +123,7 @@ end
 -- Note: Currently save and load is only used for dynamic leaks (e.g. caused by cookie cutter). Saving/loading
 -- for leaks caused by collision is handled from HullHealth.
 function BoatLeak:OnSave(data)
-	return (self.current_state ~= nil and self.isdynamic) and { leak_state = self.current_state } or nil
+	return (self.current_state ~= nil and self.isdynamic) and { leak_state = self.current_state } or nil 
 end
 
 function BoatLeak:OnLoad(data)
@@ -149,7 +142,7 @@ function BoatLeak:OnLoad(data)
 				self.inst:Remove()
 			end
 		end)
-	end
+    end
 end
 
 return BoatLeak

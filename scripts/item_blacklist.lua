@@ -68,6 +68,7 @@ ITEM_DISPLAY_BLACKLIST =
 	rainhat_cowboy = true,
 	rainhat_floppy = true,
 	researchlab4_catcoon_costume = true,
+	researchlab4_chef = true,
 	researchlab4_chester_costume = true,
 	researchlab4_derby = true,
 	researchlab4_festive_bell_red_firehound = true,

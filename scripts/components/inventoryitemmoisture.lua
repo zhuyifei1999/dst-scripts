@@ -18,23 +18,33 @@ end
 debug_print_moisture_updates = false
 local prev_tick = 0
 local moisture_updates = 0
+local function debugUpdate()
+	local tick = TheSim:GetTick()
+	if tick ~= prev_tick then
+		local total = 0
+		local active = 0
+		for _, v in pairs(Ents) do 
+			if v.components.inventoryitemmoisture ~= nil then
+				total = total + 1
+			end
+			if v.moistureupdatetask ~= nil then
+				active = active + 1
+			end
+		end 
+
+		print("Active InventoryItemMoisture: total: " .. total .. "  active: " .. active .. "  updated: " .. moisture_updates)
+		prev_tick = tick
+		moisture_updates = 0
+	end
+	moisture_updates = moisture_updates + 1
+end
 ]]
 local function DoUpdate(inst)
 	inst.components.inventoryitemmoisture:UpdateMoisture(UPDATE_TIME)
 
---[[
-	if debug_print_moisture_updates then
-		local tick = TheSim:GetTick()
-		if tick ~= prev_tick then
-			local total = 0 for _, v in pairs(Ents) do if v.moistureupdatetask ~= nil then total = total + 1 end end 
-
-			print("Active InventoryItemMoisture: total: " .. total .. "  updated: " .. moisture_updates)
-			prev_tick = tick
-			moisture_updates = 0
-		end
-		moisture_updates = moisture_updates + 1
-	end
-]]
+--	if debug_print_moisture_updates then
+--		debugUpdate()
+--	end
 end
 
 local function StartUpdateTask(inst)

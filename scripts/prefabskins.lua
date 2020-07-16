@@ -529,6 +529,7 @@ PREFAB_SKINS = {
 	researchlab4 = 
 	{
 		"researchlab4_catcoon_costume",
+		"researchlab4_chef",
 		"researchlab4_chester_costume",
 		"researchlab4_derby",
 		"researchlab4_festive_bell_red_firehound",
@@ -593,6 +594,7 @@ PREFAB_SKINS = {
 		"hat_chester_costume",
 		"hat_glommer_costume",
 		"hat_hutch_costume",
+		"tophat_chef",
 		"tophat_circus",
 		"tophat_derby",
 		"tophat_festive_bell_red_firehound",
@@ -660,6 +662,7 @@ PREFAB_SKINS = {
 	warly = 
 	{
 		"warly_candyman",
+		"warly_chef",
 		"warly_fisherman",
 		"warly_none",
 		"warly_rose",
@@ -817,6 +820,7 @@ PREFAB_SKINS = {
 		"wilson_ice",
 		"wilson_madscience",
 		"wilson_magma",
+		"wilson_nature",
 		"wilson_none",
 		"wilson_pigguard",
 		"wilson_pigguard_d",
@@ -879,6 +883,7 @@ PREFAB_SKINS = {
 		"wolfgang_gladiator",
 		"wolfgang_ice",
 		"wolfgang_magma",
+		"wolfgang_nature",
 		"wolfgang_none",
 		"wolfgang_rose",
 		"wolfgang_shadow",
@@ -916,6 +921,7 @@ PREFAB_SKINS = {
 		"wormwood_mushroom",
 		"wormwood_none",
 		"wormwood_rose",
+		"wormwood_shadow",
 	},
 	wortox = 
 	{
@@ -930,6 +936,7 @@ PREFAB_SKINS = {
 		"wurt_cave",
 		"wurt_formal",
 		"wurt_none",
+		"wurt_rose",
 		"wurt_shadow",
 	},
 	wx78 = 

@@ -51,10 +51,11 @@ function MakeBanner(self)
 	local anim = baner_root:AddChild(UIAnim())
 
 	if IS_BETA then
-        anim:GetAnimState():SetBuild("dst_menu_shesells")
-        anim:GetAnimState():SetBank("dst_menu_shesells")
-        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:GetAnimState():SetBuild("dst_menu_dangerous_sea")
+        anim:GetAnimState():SetBank("dst_menu_dangerous_sea")
         anim:SetScale(.667)
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:MoveToBack()
 		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	elseif IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		anim:GetAnimState():SetBuild("dst_menu_lavaarena_s2")
@@ -145,6 +146,7 @@ function MakeBanner(self)
 	else
 		--[[
 		-- default banner
+        
         local anim_bg = baner_root:AddChild(UIAnim())
 		anim_bg:GetAnimState():SetBuild("dst_menu_v2_bg")
 		anim_bg:GetAnimState():SetBank("dst_menu_v2_bg")
@@ -170,21 +172,28 @@ function MakeBanner(self)
         for _,v in pairs(creatures) do
             anim:GetAnimState():Hide(v)
         end
+      
         local c1 = creatures[math.random(1,#creatures)]
         local c2 = creatures[math.random(1,#creatures)]
         local c3 = creatures[math.random(1,#creatures)]
+      
         --could end up with dupes picked, that's okay, then we'll have only 1 or 2 chosen
         anim:GetAnimState():Show(c1)
         anim:GetAnimState():Show(c2)
         anim:GetAnimState():Show(c3)
-		]]
-
+	
+        local anim = baner_root:AddChild(UIAnim())
 		anim:GetAnimState():SetBuild("dst_menu_walter")
         anim:GetAnimState():SetBank("dst_menu_walter")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
-
+]]
+        anim:GetAnimState():SetBuild("dst_menu_dangerous_sea")
+        anim:GetAnimState():SetBank("dst_menu_dangerous_sea")
+        anim:SetScale(.667)
+        anim:GetAnimState():PlayAnimation("loop", true)
+        
         --[[
 		local cur_time = os.time() 
 		if cur_time <= 1585810740 and (not IsConsole() or cur_time >= 1585759200) then -- 9:40am to 11:59pm PDT

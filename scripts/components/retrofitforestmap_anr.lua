@@ -389,6 +389,125 @@ local function SheSellsSeashellsRetrofitting_PopulateWobsterDens()
 	print("Retrofitting for Return Of Them : She Sells Seashells - Added " .. tostring(count) .. " Wobster Dens.")
 end
 
+local function Barnacles_ReplaceSeastacks()
+    require "map/bunch_spawner"
+
+    local width, height = TheWorld.Map:GetSize()
+    BunchSpawnerInit(nil, width, height)
+
+    local seastack_swell_spawners = {}
+
+    -- We know that seastack spawners can't be in the hermit space.
+    -- However, we'd prefer not to spawn plants overlapping with the hermit island.
+    -- Just using the house as an easy way to ID them
+    local hermithouse = nil
+
+    for _, ent in pairs(Ents) do
+        if ent:IsValid() and ent.prefab then
+            if ent.prefab == "seastack_spawner_rough" then
+                -- NOTE: assume we don't have to test the tile, because the spawner is named as it is.
+                table.insert(seastack_swell_spawners, ent)
+            elseif hermithouse == nil and (ent.prefab:sub(1, 11) == "hermithouse") then
+                hermithouse = ent
+            end
+        end
+    end
+
+    local plant_spawn_count = 0
+    local function SpawnBoatingSafePrefab(prefab, x, z)
+        if #TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4, WALKABLEPLATFORM_TAGS) == 0 then
+            local obj = SpawnPrefab(prefab)
+            obj.Transform:SetPosition(x, 0, z)
+            plant_spawn_count = plant_spawn_count + 1
+        end
+    end
+
+    local function spawn_waterplant_spawner_at(spawn_x, spawn_z)
+        -- Spawn an actual spawner prefab here as well, because we may want to leverage it
+        -- in the future, as this retrofit leverages the seastack ones.
+        SpawnPrefab("waterplant_spawner_rough").Transform:SetPosition(spawn_x, 0, spawn_z)
+
+        BunchSpawnerRunSingleBatchSpawner(
+            TheWorld.Map,
+            "waterplant_spawner_rough",
+            spawn_x, spawn_z,
+            SpawnBoatingSafePrefab
+        )
+    end
+
+    -- IF #seastack_swell_spawners > 1 then
+    --      replace 30%
+    -- ELSE (can this actually happen?)
+    --      do a regular bunch spawn for the waterplant spawners
+    -- END
+
+    local num_stack_swell_spawners = #seastack_swell_spawners
+    if num_stack_swell_spawners > 1 then
+        -- shuffle the stack spawners so we don't always just replace the ones near each other
+        -- (since they're worldgenned, we expect their spawn to be ordered in some way)
+        seastack_swell_spawners = shuffleArray(seastack_swell_spawners)
+
+        -- Make a table to store the positions of stack spawners we're going to replace.
+        local removed_stack_positions = {}
+
+        -- Take the stack spawners we're going to replace, store their positions, and remove them.
+        local num_plant_spawners = math.ceil(num_stack_swell_spawners * 0.3)
+        for i=1,num_plant_spawners do
+            local ss_spawner = seastack_swell_spawners[i]
+            table.insert(removed_stack_positions, ss_spawner:GetPosition())
+            ss_spawner:Remove()
+        end
+
+        -- Look for and delete every sea stack that's within a certain distance of
+        -- our stored positions; this is an approximation for retrofitting, and precludes
+        -- seastack overlaps, but is close to the worldgen version.
+        for _, ent in pairs(Ents) do
+            if ent:IsValid() and ent.prefab == "seastack" then
+                local ex, ey, ez = ent.Transform:GetWorldPosition()
+                for _, p in ipairs(removed_stack_positions) do
+                    local xd, zd = p.x - ex, p.z - ez
+                    local dsq = (xd * xd) + (zd * zd)
+
+                    -- NOTE: 900 == 30 * 30; 30 is the range on the waterplant bunch spawner.
+                    if dsq <= 900 then
+                        ent:Remove()
+                    end
+                end
+            end
+        end
+
+        -- Now that we've cleaned up the seastacks in the areas we're replacing,
+        -- do the replacement!
+        for _, p in ipairs(removed_stack_positions) do
+            spawn_waterplant_spawner_at(p.x, p.z)
+        end
+    else
+        local cx, cy, cz = nil, nil, nil
+        if hermithouse ~= nil then
+            cx, cy, cz = hermithouse.Transform:GetWorldPosition()
+        end
+
+        -- There's not enough seastack spawners to reliably replace...
+        -- so let's just spawn new waterplant bunch spawners.
+        -- Referencing terrain_ocean.lua, the spawn chance of waterplant spawners alone
+        -- is 0.01 * (0.04 / (1.00 + 0.09 + 0.04)) ~= 0.000354.
+        for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+            for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+                if TheWorld.Map:GetTile(x, y) == GROUND.OCEAN_ROUGH and
+                        math.random() < 0.000354 then
+                    local spawn_x = (x - width/2.0)*TILE_SCALE + math.random()*2-1
+                    local spawn_z = (y - height/2.0)*TILE_SCALE + math.random()*2-1
+                    if hermithouse == nil or distsq(spawn_x, spawn_z, cx, cz) > 900 then
+                        spawn_waterplant_spawner_at(spawn_x, spawn_z)
+                    end
+                end
+            end
+        end
+    end
+
+    print("Retrofitting for Return Of Them: Troubled Waters - Added "..tostring(plant_spawn_count).." Barnacle Plants")
+end
+
 --------------------------------------------------------------------------
 --[[ Lightning Bluff Retrofit ]]
 --------------------------------------------------------------------------
@@ -788,6 +907,11 @@ function self:OnPostInit()
 		self.requiresreset = true -- for hermit island retofitting (retrofit_shesellsseashells_hermitisland)
     end
 
+    if self.retrofit_barnacles then
+        print("Retrofitting for Return Of Them: Troubled Waters - Replacing Seastacks With Barnacle Plants")
+        Barnacles_ReplaceSeastacks()
+    end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -829,6 +953,7 @@ function self:OnLoad(data)
 		self.retrofit_fix_sculpture_pieces = data.retrofit_fix_sculpture_pieces or false
 		self.retrofit_salty = data.retrofit_salty or false
         self.retrofit_shesellsseashells = data.retrofit_shesellsseashells or false
+        self.retrofit_barnacles = data.retrofit_barnacles or false
     end
 end
 

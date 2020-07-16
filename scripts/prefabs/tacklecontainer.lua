@@ -93,6 +93,9 @@ local function MakeTackleContainer(name, bank, build, assets)
         inst.components.container:WidgetSetup(name)
         inst.components.container.onopenfn = onopen
 		inst.components.container.onclosefn = onclose
+        inst.components.container.skipclosesnd = true
+        inst.components.container.skipopensnd = true
+
 		
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)

@@ -10,6 +10,7 @@
 6   fallounder			28.87, 44.44			++											SMALL_VEGGIE	
 7   bloomfin tuna       53.64, 63.36    ++													SMALL_VEGGIE	
 8   scourching sunfish  41.14, 56.78            ++											SMALL_MEAT		
+9   sprinkler			31.15, 49.20	   													SMALL_VEGGIE	slow, lots of short bursts
 
 --pond fish weight 
 fish	40.89, 55.28
@@ -42,6 +43,7 @@ num		walk	run		stam.drain	stam.recover	stam.struggle_time	stam.tired_time		tired
 6		1.5		2.0		0.5			0.5				1+1		3+1			5+1		1+1			80				120				
 7		0.8		2.5		0.2			0.1				2+1		8+1			5+1		1+1			45				120				
 8		1.5		3.0		0.05		0.5				3+1		3+2			1+2		1+1			80				120				
+9		1.0		2.0		0.1			0.5				2+1		3+1			1+3		1+1			80				120				
 
 
 -- medium fish
@@ -523,6 +525,54 @@ local FISH_DEFS =
 		heater = { carriedheat = 70, heat = 70, carriedheatmultiplier = 2 },
 		propagator = { propagaterange = 3, heatoutput = 2 },
 		light = {r = 0.6, i = 0.5, f = 1, c = {235 / 255, 165 / 255, 12 / 255} },
+	},
+
+	oceanfish_small_9 = { -- sprinkler
+		prefab = "oceanfish_small_9", 
+		bank = "oceanfish_small", 
+		build = "oceanfish_small_9",
+        extra_anim_assets = {"oceanfish_small_sprinkler"},
+        extra_prefabs = {"waterstreak_projectile"},
+
+	  	weight_min = 31.15,
+	  	weight_max = 49.20, 
+
+	  	walkspeed = 1.0,
+	  	runspeed = 2.0,
+		stamina =
+		{
+			drain_rate = 0.1,
+			recover_rate = 0.5,
+			struggle_times	= {low = 2, r_low = 1, high = 3, r_high = 1},
+			tired_times		= {low = 1, r_low = 3, high = 1, r_high = 1},
+			tiredout_angles = {has_tention = 80, low_tention = 120},
+		},
+
+	  	schoolmin = SCHOOL_SIZE.TINY.min,
+	  	schoolmax = SCHOOL_SIZE.TINY.max,
+	  	schoolrange = SCHOOL_AREA.TINY,
+	  	schoollifetimemin = SCHOOL_WORLD_TIME.SHORT.min,
+	  	schoollifetimemax = SCHOOL_WORLD_TIME.SHORT.max,
+
+	  	herdwandermin = WANDER_DIST.SHORT.min,
+	  	herdwandermax = WANDER_DIST.SHORT.max,
+	  	herdarrivedist = ARRIVE_DIST.CLOSE,
+	  	herdwanderdelaymin = WANDER_DELAY.SHORT.min,
+		herdwanderdelaymax = WANDER_DELAY.SHORT.max,
+
+		set_hook_time = SET_HOOK_TIME_SHORT,
+		breach_fx = BREACH_FX_SMALL,
+		loot = LOOT.SMALL,
+		cooking_product = COOKING_PRODUCT.SMALL,
+        perish_product = PERISH.SMALL,
+        fishtype = "meat",
+
+		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
+		diet = DIET.VEGGIE,
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
+		edible_values = EDIBLE_VALUES_SMALL_MEAT,
+
+        firesuppressant = true,
 	},
 
 	oceanfish_medium_1 = { 

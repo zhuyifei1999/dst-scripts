@@ -201,7 +201,7 @@ function SnapshotTab:OnClickSnapshot(snapshot_num)
                 if truncate_to_id ~= nil and truncate_to_id > 0 then
                     if self.multi_level or self.use_cluster_path then
                         TheNet:TruncateSnapshotsInClusterSlot(self.save_slot, "Master", self.session_id, truncate_to_id)
-                        --slaves will auto-truncate to synchornize at startup
+                        --secondary shards will auto-truncate to synchornize at startup
                     else
                         TheNet:TruncateSnapshots(self.session_id, truncate_to_id)
                     end

@@ -303,7 +303,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         inst.shard = nil
 
         inst.ismastersim = TheNet:GetIsMasterSimulation()
-        inst.ismastershard = inst.ismastersim and not TheShard:IsSlave()
+        inst.ismastershard = inst.ismastersim and not TheShard:IsSecondary()
         --V2C: Masters is hard
 
         inst:AddTag("NOCLICK")

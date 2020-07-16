@@ -148,6 +148,8 @@ local function fn()
     inst.components.container:WidgetSetup("fish_box")
     inst.components.container.onopenfn = onopen
     inst.components.container.onclosefn = onclose
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
 
 	inst:AddComponent("preserver")
 	inst.components.preserver:SetPerishRateMultiplier(TUNING.FISH_BOX_PRESERVER_RATE)

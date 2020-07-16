@@ -31,7 +31,7 @@ end
 
 --this is an update that always runs on wall time (not sim time)
 function WallUpdate(dt)
-    if AUTOSPAWN_MASTER_SLAVE then 
+    if AUTOSPAWN_MASTER_SECONDARY then 
         SpawnSecondInstance()
     end
 

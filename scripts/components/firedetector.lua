@@ -1,6 +1,7 @@
 local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
 local EMERGENCYTAGS = { "structure", "wall", "tree", "pickable", "witherable", "readyforharvest", "notreadyforharvest" }
 local NONEMERGENCYTAGS = {"witherable", "fire", "smolder"}
+local NONEMERGENCY_FIREONLY_TAGS = {"fire", "smolder"}
 local TURN_ON_DELAY = 13 * FRAMES
 
 local function onemergency(self, emergency)
@@ -26,6 +27,8 @@ local FireDetector = Class(function(self, inst)
 
     self.detectedItems = {}
     self.detectTask = nil
+
+    --self.fireOnly = nil
 
     self.emergencyResponsePeriod = TUNING.EMERGENCY_RESPONSE_TIME
     self.emergencyShutdownPeriod = TUNING.EMERGENCY_SHUT_OFF_TIME
@@ -138,7 +141,7 @@ local function LookForFiresAndFirestarters(inst, self, force)
         return
     end
 	local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.range, nil, NOTAGS, NONEMERGENCYTAGS)
+    local ents = TheSim:FindEntities(x, y, z, self.range, nil, NOTAGS, (self.fireOnly and NONEMERGENCY_FIREONLY_TAGS) or NONEMERGENCYTAGS)
 	local target = nil
 	local targetscore = 0
 	for i, v in ipairs(ents) do

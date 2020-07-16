@@ -52,8 +52,6 @@ local function SpawnFishSchool(inst)
     
     local num_fish = #TheSim:FindEntities(x, y, z, TUNING.SCHOOL_SPAWNER_FISH_CHECK_RADIUS, FISHABLE_TAGS)
     if num_fish < TUNING.SCHOOL_SPAWNER_MAX_FISH + EXTRA_MAX_FISH_ALLOWED then
-        local x, y, z = inst.Transform:GetWorldPosition()
-
         local theta = math.random() * 2 * PI
         local spawn_offset = Vector3(math.cos(theta) * FISH_SPAWN_MAX_OFFSET, 0, math.sin(theta) * FISH_SPAWN_MAX_OFFSET)
         

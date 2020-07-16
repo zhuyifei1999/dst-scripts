@@ -13,7 +13,7 @@ local function on_remove(inst)
 
 	local mast_sinking
 
-	if mast ~= nil and mast.boat ~= nil and mast.sink_fx ~= nil then        
+	if mast ~= nil and mast.boat ~= nil and mast.sink_fx ~= nil then
 		mast_sinking = SpawnPrefab(mast.sink_fx)
     else
         mast_sinking = SpawnPrefab("collapse_small")
@@ -104,36 +104,36 @@ function Mast:SetBoat(boat)
 
     self.boat = boat
 
-    if boat ~= nil then        
+    if boat ~= nil then
         boat.components.boatphysics:AddMast(self)
         boat:ListenForEvent("death", function() self:OnDeath() end)
     end
-
-    
 end
 
 function Mast:SetRudder(obj)
     self.rudder = obj;
-    obj.entity:SetParent(self.inst.entity)  
+    obj.entity:SetParent(self.inst.entity)
 end
 
 function Mast:OnDeath()
 	self.sinking = true
 
-    self.inst.SoundEmitter:KillSound("boat_movement")
+	if self.inst:IsValid() then
+	    self.inst.SoundEmitter:KillSound("boat_movement")
+	end
 end
 
-function Mast:AddSailFurler(doer, strength)    
+function Mast:AddSailFurler(doer, strength)
     self.is_sail_transitioning = true
     self.inst:AddTag("sail_transitioning")
     self.furlers[doer] = strength
-    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_open") 
+    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_open")
 end
 
 function Mast:RemoveSailFurler(doer)
-    if self.furlers[doer] then        
-        self.furlers[doer] = nil    
-        doer:PushEvent("stopfurling")    
+    if self.furlers[doer] then
+        self.furlers[doer] = nil
+        doer:PushEvent("stopfurling")
     end    
 end
 
@@ -151,9 +151,9 @@ end
 function Mast:UnfurlSail() -- lowering sail
     self.is_sail_transitioning = true
     self.inst:AddTag("sail_transitioning")
-    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_open")     
+    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/sail_open")
     self.inst.AnimState:PlayAnimation("knot_release")
-    self.inst.AnimState:PushAnimation("open_pre")        
+    self.inst.AnimState:PushAnimation("open_pre")
 end
 
 function Mast:SailFurled() -- sail is raised
@@ -172,7 +172,7 @@ function Mast:SailFurled() -- sail is raised
 		self.inst.AnimState:PlayAnimation("knot_tie", false)
 		self.inst.AnimState:PushAnimation("closed", false)
 	end
-	self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/top") 
+	self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/top")
 
     for furler,data in pairs(self.furlers)do
         self:RemoveSailFurler(furler)

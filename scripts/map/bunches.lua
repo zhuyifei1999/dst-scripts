@@ -67,6 +67,18 @@ local Bunches =
             GROUND.OCEAN_COASTAL,
         },
     },
+    waterplant_spawner_rough =
+    {
+        prefab = "waterplant",
+        range = 30,
+        min = 8,
+        max = 15,
+        min_spacing = 7,
+        valid_tile_types = {
+            GROUND.OCEAN_ROUGH,
+            GROUND.OCEAN_SWELL, -- Plants can "spill over" to swell waters.
+        },
+    },
 }
 
 return 

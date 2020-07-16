@@ -371,7 +371,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             for i,tab in ipairs(self.world_tabs) do
                 worldoptions[i] = tab:CollectOptions()
 
-                --V2C: copy special event override from master to slaves
+                --V2C: copy special event override from master to secondary shards
                 if worldoptions[i] ~= nil then
                     if i == 1 then
                         if worldoptions[1].overrides ~= nil then

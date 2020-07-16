@@ -1563,12 +1563,12 @@ end
 
 function BuildTagsStringCommon(tagsTable)
     -- Vote command tags (controlled by master server only)
-    if not TheShard:IsSlave() and TheNet:GetDefaultVoteEnabled() then
+    if not TheShard:IsSecondary() and TheNet:GetDefaultVoteEnabled() then
         table.insert(tagsTable, STRINGS.TAGS.VOTE)
     end
 
     if TheShard:IsMaster() then
-        -- Merge slave tags
+        -- Merge secondary shard tags
         for k, v in pairs(Shard_GetConnectedShards()) do
             if v.tags ~= nil then
                 for i, tag in ipairs(v.tags:split(",")) do
