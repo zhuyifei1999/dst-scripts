@@ -41,6 +41,7 @@ function MiniGameTile:ClearTile()
 	self.tile:GetAnimState():PlayAnimation("on", true)
 	self.view_state = "on"
 	self:SetTileNumber(nil)
+	self:UnhighlightTileNum()
 end
 
 function MiniGameTile:SetTileNumber(num)
@@ -52,12 +53,12 @@ function MiniGameTile:SetTileNumber(num)
 	end
 end
 
-function MiniGameTile:HighliteTileNum()
+function MiniGameTile:HighlightTileNum()
 	self.tile:GetAnimState():SetMultColour(0.6,0.9,0.6,1)
 	self.tile_num:SetColour(0,1,0,1)
 end
 
-function MiniGameTile:UnhighliteTileNum()
+function MiniGameTile:UnhighlightTileNum()
 	self.tile:GetAnimState():SetMultColour(1,1,1,1)
 	self.tile_num:SetColour(1,1,1,1)
 end

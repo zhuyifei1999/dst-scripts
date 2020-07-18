@@ -1561,6 +1561,7 @@ MISC_ITEMS =
 		skin_tags = { },
 		featured_pack = true,
 		display_order = 1,
+		warning_only_on_restricted = true,
 		build_name_override = "pack_common",
 		display_atlas = "images/iap_images_lost_1.xml",
 		display_tex = "lost_1.tex",

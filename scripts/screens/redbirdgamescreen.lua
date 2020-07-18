@@ -562,7 +562,7 @@ function RedbirdGameScreen:OnTileClick(x, y)
 			self.game_state = GS_TILE_SELECT_2
 			
 			self.selected_tile = self.game_grid[ XYtoIndex(x, y) ]
-			self.selected_tile:HighliteTileNum()
+			self.selected_tile:HighlightTileNum()
 		else
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 		end
@@ -599,7 +599,7 @@ function RedbirdGameScreen:OnTileClick(x, y)
 					end
 					self.score = self.score + points
 					
-					self.selected_tile:UnhighliteTileNum()
+					self.selected_tile:UnhighlightTileNum()
 					self:ExplodeTile(0, self.selected_tile)
 					second_tile:SetTileNumber(self.selected_tile.number + second_tile.number)
 					self.selected_tile = nil
@@ -611,7 +611,7 @@ function RedbirdGameScreen:OnTileClick(x, y)
 				elseif self.selected_tile.number + second_tile.number < TARGET_NUMBER then
 					self.score = self.score + self.selected_tile.number + second_tile.number
 
-					self.selected_tile:UnhighliteTileNum()
+					self.selected_tile:UnhighlightTileNum()
 					self:ExplodeTile(0, self.selected_tile)
 					second_tile:SetTileNumber(self.selected_tile.number + second_tile.number)
 					self.selected_tile = nil
@@ -621,7 +621,7 @@ function RedbirdGameScreen:OnTileClick(x, y)
 				else
 					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 					self.game_state = GS_TILE_SELECT_1
-					self.selected_tile:UnhighliteTileNum()
+					self.selected_tile:UnhighlightTileNum()
 					self.selected_tile = nil
 				end	
 				
@@ -631,13 +631,13 @@ function RedbirdGameScreen:OnTileClick(x, y)
 			else
 				--clicked self, unselect the first tile
 				self.game_state = GS_TILE_SELECT_1
-				self.selected_tile:UnhighliteTileNum()
+				self.selected_tile:UnhighlightTileNum()
 				self.selected_tile = nil
 			end
 		else
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 			self.game_state = GS_TILE_SELECT_1
-			self.selected_tile:UnhighliteTileNum()
+			self.selected_tile:UnhighlightTileNum()
 			self.selected_tile = nil
 		end
 	else
