@@ -9339,14 +9339,6 @@ STRINGS.UI =
         NO = "Not Yet",
     },
 
-    ENDGAME =
-    {
-        TITLE = "The End.",
-        BODY1 = "And so the cycle continues. Will ",
-        BODY2 = " ever escape?\n Perhaps %s, too, will tire of this wretched place, and use %s new powers to tempt the unsuspecting.\n\nThe mysterious beings that control this realm still lurk in the shadows, and new challenges will soon be revealed.\n\nUntil then,\n- The Don't Starve Team -",
-        YES = "For Science!",
-    },
-
     GENDERSTRINGS =
     {
         MALE =

@@ -44,9 +44,7 @@ local EndGameDialog = Class(Screen, function(self, buttons)
 	local character = GetPlayer().profile:GetValue("characterinthrone") or "wilson"
 
     self.text:SetPosition(0, -60, 0)
-    self.text:SetString(STRINGS.UI.ENDGAME.BODY1..
-    	STRINGS.CHARACTER_NAMES[character]..
-    	string.format(STRINGS.UI.ENDGAME.BODY2,STRINGS.UI.GENDERSTRINGS[GetGenderStrings(character)].ONE , STRINGS.UI.GENDERSTRINGS[GetGenderStrings(character)].TWO))
+    self.text:SetString("fix me...")
     self.text:EnableWordWrap(true)
     self.text:SetRegionSize(700, 350)
     

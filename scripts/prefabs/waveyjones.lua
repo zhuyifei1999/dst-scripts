@@ -414,6 +414,14 @@ local function spawnjones(inst,boat)
     inst:ListenForEvent("onremove", function()
             inst.jones = nil
             inst.components.timer:StartTimer("respawndelay", TUNING.WAVEYJONES.RESPAWN_TIMER)
+            if not inst.jonesremovedcount then
+                inst.jonesremovedcount = 0
+            end
+            inst.jonesremovedcount = inst.jonesremovedcount +1
+            if inst.jonesremovedcount >= 3 then
+                inst.SoundEmitter:KillSound("creeping")
+                inst:Remove()
+            end
         end,jones)
 end
 
@@ -451,10 +459,15 @@ local function markerfn()
     end)    
 
     inst:ListenForEvent("timerdone", function(inst, data) print("TIMER DONE")
-        if data.name == "respawndelay" then
+        if data.name == "respawndelay" then    
             if inst.components.entitytracker:GetEntity("boat") then
                 local boat = inst.components.entitytracker:GetEntity("boat")
-                spawnjones(inst,boat)
+                local player = FindClosestPlayerToInst(boat,boat.components.hull:GetRadius(),true)
+                if player then
+                    spawnjones(inst,boat)
+                else
+                    inst.components.timer:StartTimer("respawndelay", 1)
+                end
             end
         end
     end)
