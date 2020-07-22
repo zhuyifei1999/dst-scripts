@@ -2231,7 +2231,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "HALLOWED", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
+		symbol_overrides = { "arm_lower_cuff", "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
@@ -4976,10 +4976,10 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "SHADOW", "CLOTHING_HAND", "CLOTHING", },
-		symbol_overrides = { "hand", "hand_idle_wormwood", "arm_lower", "arm_upper_skin", },
-		symbol_overrides_stage2 = { arm_upper_skin = "arm_upper_skin_stage2", },
-		symbol_overrides_stage3 = { arm_upper_skin = "arm_upper_skin_stage3", },
-		symbol_overrides_stage4 = { arm_upper_skin = "arm_upper_skin_stage4", },
+		symbol_overrides = { "hand", "hand_idle_wormwood", "arm_lower", "arm_upper", "arm_upper_skin", },
+		symbol_overrides_stage2 = { arm_upper = "arm_upper_stage2", arm_upper_skin = "arm_upper_skin_stage2", },
+		symbol_overrides_stage3 = { arm_upper = "arm_upper_stage3", arm_upper_skin = "arm_upper_skin_stage3", },
+		symbol_overrides_stage4 = { arm_upper = "arm_upper_stage4", arm_upper_skin = "arm_upper_skin_stage4", },
 		symbol_hides = { "arm_lower_cuff", },
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",

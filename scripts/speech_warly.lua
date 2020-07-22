@@ -3488,7 +3488,7 @@ return{
         BARNACLINGUINE = "Delectable!",
         BARNACLESTUFFEDFISHHEAD = "Some culinary experiments go better than others.",
 
-        LEAFLOAF = "A basic recipe, elevated though the use of this strange meat!",
+        LEAFLOAF = "A basic recipe, elevated through the use of this strange meat!",
         LEAFYMEATBURGER = "Perhaps this is how we'll convince Mademoiselle Wigfrid to eat her vegetables?",
         LEAFYMEATSOUFFLE = "It is certainly... food.",
         MEATYSALAD = "I'm not sure whether we can truly call this vegetarian.",

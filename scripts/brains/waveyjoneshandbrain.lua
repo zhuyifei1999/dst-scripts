@@ -37,8 +37,19 @@ local function fuelcheck(ent)
     end
 end
 
-local DOTINKER_CAN_HAVE = {"boat_repaired_patch", "structure" }
+local function getboatsanity(boat)
+    local x,y,z = boat.Transform:GetWorldPosition()
+    local players = FindPlayersInRange(x,y,z,boat.components.hull:GetRadius(),true)
+    local sanity = 1
+    for i, player in ipairs(players)do
+        if player.components.sanity and player.components.sanity:GetPercent() < sanity then
+            sanity = player.components.sanity:GetPercent()
+        end
+    end
+    return sanity
+end
 
+local DOTINKER_CAN_HAVE = {"boat_repaired_patch", "structure" }
 local function Dotinker(inst)
     if  inst.components.timer and inst.components.timer:TimerExists("reactiondelay") then
         return nil
@@ -84,8 +95,9 @@ local function Dotinker(inst)
     if target then
         inst.waveyjonestarget = target
         TheWorld:reservewaveyjonestarget(inst.waveyjonestarget)
-       
-        if patchcheck(target) then
+        local sanity = getboatsanity(platform)
+
+        if patchcheck(target) and sanity <= 0.25 then
             return BufferedAction(inst, target, ACTIONS.UNPATCH)
         end  
         if anchorcheck(target) then
@@ -94,7 +106,7 @@ local function Dotinker(inst)
         if mastcheck(target) then
             return BufferedAction(inst, target, ACTIONS.RAISE_SAIL)
         end
-        if firecheck(target) or fuelcheck(target) then
+        if firecheck(target) or fuelcheck(target) and sanity <= 0.5 then
             return BufferedAction(inst, target, ACTIONS.EXTINGUISH)
         end              
     end

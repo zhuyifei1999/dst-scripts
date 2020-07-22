@@ -1669,7 +1669,7 @@ return{
         STALKER_ATRIUM = "Glurp, i-it real!",
         STALKER_MINION = "Little crawlers!",
         THURIBLE = "Weird smell, flort.",
-        ATRIUM_OVERGROWTH = "Wierd letters make head hurt, florp...",
+        ATRIUM_OVERGROWTH = "Weird letters make head hurt, florp...",
 		FROG =
 		{
 			DEAD = "He gone to big swamp in the sky.",
