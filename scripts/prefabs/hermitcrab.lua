@@ -1,106 +1,23 @@
 local assets =
 {
     Asset("ANIM", "anim/player_basic.zip"),
-    Asset("ANIM", "anim/player_idles_shiver.zip"),
-    Asset("ANIM", "anim/player_idles_lunacy.zip"),
     Asset("ANIM", "anim/player_actions.zip"),
-    Asset("ANIM", "anim/player_actions_axe.zip"),
-    Asset("ANIM", "anim/player_actions_pickaxe.zip"),
-    Asset("ANIM", "anim/player_actions_shovel.zip"),
-    Asset("ANIM", "anim/player_actions_blowdart.zip"),
     Asset("ANIM", "anim/player_actions_eat.zip"),
     Asset("ANIM", "anim/player_actions_item.zip"),
-    Asset("ANIM", "anim/player_cave_enter.zip"),
-    Asset("ANIM", "anim/player_actions_uniqueitem.zip"),
-    Asset("ANIM", "anim/player_actions_bugnet.zip"),
-    Asset("ANIM", "anim/player_actions_unsaddle.zip"),
     Asset("ANIM", "anim/player_actions_fishing.zip"),
     Asset("ANIM", "anim/player_actions_fishing_ocean.zip"),
     Asset("ANIM", "anim/player_actions_fishing_ocean_new.zip"),
     Asset("ANIM", "anim/player_actions_pocket_scale.zip"),
-    Asset("ANIM", "anim/player_actions_boomerang.zip"),
-    Asset("ANIM", "anim/player_actions_whip.zip"),
-    Asset("ANIM", "anim/player_actions_till.zip"),
-    Asset("ANIM", "anim/player_boat.zip"),
-    Asset("ANIM", "anim/player_boat_plank.zip"),
-    Asset("ANIM", "anim/player_oar.zip"),
-    Asset("ANIM", "anim/player_boat_hook.zip"),
-    Asset("ANIM", "anim/player_boat_net.zip"),
-    Asset("ANIM", "anim/player_boat_sink.zip"),
-    Asset("ANIM", "anim/player_boat_jump.zip"),
-    Asset("ANIM", "anim/player_boat_channel.zip"),
-    Asset("ANIM", "anim/player_bush_hat.zip"),
-    Asset("ANIM", "anim/player_attacks.zip"),
-
-    Asset("ANIM", "anim/player_rebirth.zip"),
-    Asset("ANIM", "anim/player_jump.zip"),
-    Asset("ANIM", "anim/player_amulet_resurrect.zip"),
-    Asset("ANIM", "anim/player_teleport.zip"),
     Asset("ANIM", "anim/wilson_fx.zip"),
-    Asset("ANIM", "anim/player_one_man_band.zip"),
-    Asset("ANIM", "anim/player_slurtle_armor.zip"),
-    Asset("ANIM", "anim/player_staff.zip"),
-    Asset("ANIM", "anim/player_cointoss.zip"),
-    Asset("ANIM", "anim/player_hit_darkness.zip"),
-    Asset("ANIM", "anim/player_hit_spike.zip"),
-    Asset("ANIM", "anim/player_lunge.zip"),
-    Asset("ANIM", "anim/player_multithrust.zip"),
-    Asset("ANIM", "anim/player_superjump.zip"),
-    Asset("ANIM", "anim/player_attack_leap.zip"),
-    Asset("ANIM", "anim/player_book_attack.zip"),
-    Asset("ANIM", "anim/player_parryblock.zip"),
-    Asset("ANIM", "anim/player_attack_prop.zip"),
-    Asset("ANIM", "anim/player_peruse.zip"),
-    Asset("ANIM", "anim/player_strum.zip"),
-
     Asset("ANIM", "anim/player_frozen.zip"),
     Asset("ANIM", "anim/player_shock.zip"),
-    Asset("ANIM", "anim/player_tornado.zip"),
-
     Asset("ANIM", "anim/player_wrap_bundle.zip"),
-    Asset("ANIM", "anim/player_wardrobe.zip"),
-    Asset("ANIM", "anim/player_skin_change.zip"),
-    Asset("ANIM", "anim/player_receive_gift.zip"),
-    Asset("ANIM", "anim/shadow_skinchangefx.zip"),
-    Asset("ANIM", "anim/player_townportal.zip"),
-    Asset("ANIM", "anim/player_channel.zip"),
-    Asset("ANIM", "anim/player_construct.zip"),
-
     Asset("SOUND", "sound/sfx.fsb"),
     Asset("SOUND", "sound/wilson.fsb"),
-
-    Asset("ANIM", "anim/player_revive_ghosthat.zip"),
-    Asset("ANIM", "anim/player_revive_to_character.zip"),
-    Asset("ANIM", "anim/player_revive_from_corpse.zip"),
-    Asset("ANIM", "anim/player_knockedout.zip"),
-    Asset("ANIM", "anim/player_emotesxl.zip"),
-    Asset("ANIM", "anim/player_emotes_dance0.zip"),
-    Asset("ANIM", "anim/player_emotes_sit.zip"),
-    Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
-    Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
-    Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
-    Asset("ANIM", "anim/player_mount_emotes_extra.zip"), -- item emotes
-    Asset("ANIM", "anim/player_mount_emotes_dance2.zip"), -- item emotes
-    Asset("ANIM", "anim/player_hatdance.zip"),
-    Asset("ANIM", "anim/player_bow.zip"),
-    Asset("ANIM", "anim/tears.zip"),
-    Asset("ANIM", "anim/puff_spawning.zip"),
-    Asset("ANIM", "anim/attune_fx.zip"),
-
-    Asset("ANIM", "anim/player_idles_groggy.zip"),
-    Asset("ANIM", "anim/player_groggy.zip"),
-
-    Asset("ANIM", "anim/player_encumbered.zip"),
-    Asset("ANIM", "anim/player_encumbered_jump.zip"),
-
-    Asset("ANIM", "anim/player_sandstorm.zip"),
-    Asset("ANIM", "anim/player_tiptoe.zip"),
-
     Asset("ANIM", "anim/player_hermitcrab_idle.zip"),
     Asset("ANIM", "anim/player_hermitcrab_walk.zip"),
     Asset("ANIM", "anim/player_hermitcrab_look.zip"),
     
-
     Asset("ANIM", "anim/hermitcrab_build.zip"),
 }
 
@@ -1280,23 +1197,8 @@ local function fn()
     inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
 
     --Additional effects symbols for hit_darkness animation
-    inst.AnimState:AddOverrideBuild("player_hit_darkness")
-    inst.AnimState:AddOverrideBuild("player_receive_gift")
-    inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
+    
     inst.AnimState:AddOverrideBuild("player_wrap_bundle")
-    inst.AnimState:AddOverrideBuild("player_lunge")
-    inst.AnimState:AddOverrideBuild("player_attack_leap")
-    inst.AnimState:AddOverrideBuild("player_superjump")
-    inst.AnimState:AddOverrideBuild("player_multithrust")
-    inst.AnimState:AddOverrideBuild("player_parryblock")
-    inst.AnimState:AddOverrideBuild("player_emote_extra")
-    inst.AnimState:AddOverrideBuild("player_boat")
-    inst.AnimState:AddOverrideBuild("player_boat_plank")
-    inst.AnimState:AddOverrideBuild("player_boat_net")        
-    inst.AnimState:AddOverrideBuild("player_boat_sink")
-    inst.AnimState:AddOverrideBuild("player_oar")
-    inst.AnimState:AddOverrideBuild("player_peruse")
-
     inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
 
     --Sneak these into pristine state for optimization

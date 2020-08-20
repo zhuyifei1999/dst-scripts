@@ -844,6 +844,26 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 97,
 	},
+	mysterybox_beards2 =
+	{
+		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
+		build_name_override = "mysterybox_classic_4",
+		box_build = "box_mystery_classic",
+		rarity = "Common",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	mysterybox_beards_silk =
+	{
+		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
+		build_name_override = "mysterybox_classic_4",
+		box_build = "box_mystery_classic",
+		rarity = "Common",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
 	mysterybox_classic_4 =
 	{
 		type = "mysterybox",
@@ -3717,6 +3737,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 40,
 	},
+	playerportrait_bg_telestaffcrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 102,
+	},
 	playerportrait_bg_tentcircus =
 	{
 		type = "playerportrait",
@@ -4822,6 +4849,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	profileflair_telestaff_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 102,
+	},
 	profileflair_tent_circus =
 	{
 		type = "profileflair",
@@ -5417,6 +5451,86 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 54,
 	},
+	webber_beard_bat =
+	{
+		type = "beard",
+		skin_tags = { "COSTUME", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_formal =
+	{
+		type = "beard",
+		skin_tags = { "FORMAL", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_gladiator =
+	{
+		type = "beard",
+		skin_tags = { "LAVA", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_ice =
+	{
+		type = "beard",
+		skin_tags = { "ICE", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_magma =
+	{
+		type = "beard",
+		skin_tags = { "LAVA", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_punk =
+	{
+		type = "beard",
+		skin_tags = { "HALLOWED", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_rose =
+	{
+		type = "beard",
+		skin_tags = { "ROSE", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_shadow =
+	{
+		type = "beard",
+		skin_tags = { "SHADOW", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_survivor =
+	{
+		type = "beard",
+		skin_tags = { "SURVIVOR", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	webber_beard_wrestler =
+	{
+		type = "beard",
+		skin_tags = { "YOTP", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
 	wilson_beard_formal =
 	{
 		type = "beard",
@@ -5425,6 +5539,14 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 97,
 	},
+	wilson_beard_gladiator =
+	{
+		type = "beard",
+		skin_tags = { "LAVA", "WILSON_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
 	wilson_beard_ice =
 	{
 		type = "beard",
@@ -5432,6 +5554,38 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 97,
+	},
+	wilson_beard_madscience =
+	{
+		type = "beard",
+		skin_tags = { "HALLOWED", "WILSON_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	wilson_beard_magma =
+	{
+		type = "beard",
+		skin_tags = { "LAVA", "WILSON_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	wilson_beard_nature =
+	{
+		type = "beard",
+		skin_tags = { "VARG", "WILSON_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
+	},
+	wilson_beard_pigguard =
+	{
+		type = "beard",
+		skin_tags = { "COSTUME", "WILSON_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 102,
 	},
 	wilson_beard_rose =
 	{

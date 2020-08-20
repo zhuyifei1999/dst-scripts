@@ -1391,6 +1391,7 @@ return{
             "Bust of Alces canadensis.",
         },
         CHESSPIECE_DRAGONFLY = "Artist's interpretation of mythical Diptera.",
+		CHESSPIECE_MINOTAUR = "A rather convincing likeness.",
         CHESSPIECE_BUTTERFLY = "Carved in the lunar moth's likeness.",
         CHESSPIECE_ANCHOR = "Artists tend to reference what they're familiar with.",
         CHESSPIECE_MOON = "The missing chunk is a recent development.",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
 		FEATHER_CANARY = "Feather of Canaria.",
 		FEATHERPENCIL = "Oh, how I missed proper writing implements!",
+        COOKBOOK = "A collection of culinary observations.",
 		FEM_PUPPET = "Poor girl.",
 		FIREFLIES =
 		{

@@ -649,7 +649,7 @@ return{
         PLAYER =
         {
             GENERIC = "Hello, %s!",
-            ATTACKER = "Bad! Bad &s!",
+            ATTACKER = "Bad! Bad %s!",
             MURDERER = "Killing bad!",
             REVIVER = "Good helper",
             GHOST = "Need help?",
@@ -1395,6 +1395,7 @@ return{
             "Oh. Tweeter can't tweet now",
         },
         CHESSPIECE_DRAGONFLY = "Only stone fire now",
+		CHESSPIECE_MINOTAUR = "Scary",
         CHESSPIECE_BUTTERFLY = "Can't fly like that",
         CHESSPIECE_ANCHOR = "Heavy",
         CHESSPIECE_MOON = "Night Ball broken",
@@ -1613,6 +1614,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Snow Tweeter clothes",
 		FEATHER_CANARY = "Tweeter clothes",
 		FEATHERPENCIL = "Draws pretty pictures",
+        COOKBOOK = "Belly things",
 		FEM_PUPPET = "Friend?",
 		FIREFLIES =
 		{

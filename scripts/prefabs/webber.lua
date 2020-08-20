@@ -45,18 +45,30 @@ local function OnResetBeard(inst)
     inst.AnimState:ClearOverrideSymbol("beard")
 end
 
-local function OnGrowShortBeard(inst)
-    inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_short")
+local function OnGrowShortBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_short")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_short" )
+    end
     inst.components.beard.bits = BEARD_BITS[1]
 end
 
-local function OnGrowMediumBeard(inst)
-    inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_medium")
+local function OnGrowMediumBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_medium")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_medium" )
+    end
     inst.components.beard.bits = BEARD_BITS[2]
 end
 
-local function OnGrowLongBeard(inst)
-    inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_long")
+local function OnGrowLongBeard(inst, skinname)
+    if skinname == nil then
+        inst.AnimState:OverrideSymbol("beard", "beard_silk", "beardsilk_long")
+    else
+        inst.AnimState:OverrideSkinSymbol("beard", skinname, "beardsilk_long" )
+    end
     inst.components.beard.bits = BEARD_BITS[3]
 end
 

@@ -7,7 +7,7 @@ local assets =
 local prefabs =
 {    
     "waveyjones_arm",
-    "wavyjones_marker"
+    "waveyjones_marker"
 }
 
 local assets_hand =

@@ -1391,6 +1391,7 @@ return{
             "I should whip up some roast goose with cranberry sauce.",
         },
         CHESSPIECE_DRAGONFLY = "I was afraid I was going to be broiled alive!",
+		CHESSPIECE_MINOTAUR = "Perhaps now you can keep watch over my crock pot.",
         CHESSPIECE_BUTTERFLY = "How lovely!",
         CHESSPIECE_ANCHOR = "I think Maman would like this.",
         CHESSPIECE_MOON = "Hits my eye like a big pizza pie.",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "A bird's feather, in tuna blue.",
 		FEATHER_CANARY = "A bird's feather, in lemon yellow.",
 		FEATHERPENCIL = "Lighter than my meringue.",
+        COOKBOOK = "I added a few of my own personal recipes.",
 		FEM_PUPPET = "She's trapped!",
 		FIREFLIES =
 		{

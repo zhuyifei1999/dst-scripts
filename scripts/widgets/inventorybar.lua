@@ -118,6 +118,7 @@ local Inv = Class(Widget, function(self, owner)
     self.hint_update_check = HINT_UPDATE_INTERVAL
 
     self.controller_build = nil
+    self.integrated_backpack = nil
     self.force_single_drop = false
 end)
 
@@ -259,11 +260,11 @@ local function RebuildLayout(self, inventory, overflow, do_integrated_backpack, 
         self.bg:SetScale(1.22, 1, 1)
         self.bgcover:SetScale(1.22, 1, 1)
 
-        self.inspectcontrol = self.root:AddChild(TEMPLATES.IconButton(atlas_name, image_name, STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, nil, "self_inspect_mod.tex"))
+        self.inspectcontrol = self.toprow:AddChild(TEMPLATES.IconButton(atlas_name, image_name, STRINGS.UI.HUD.INSPECT_SELF, false, false, function() self.owner.HUD:InspectSelf() end, nil, "self_inspect_mod.tex"))
         self.inspectcontrol.icon:SetScale(.7)
         self.inspectcontrol.icon:SetPosition(-4, 6)
         self.inspectcontrol:SetScale(1.25)
-        self.inspectcontrol:SetPosition((total_w - W) * .5 + 3, -6, 0)
+        self.inspectcontrol:SetPosition((total_w - W) * .5 + 3, -7, 0)
     else
         self.bg:SetScale(1.15, 1, 1)
         self.bgcover:SetScale(1.15, 1, 1)
@@ -334,6 +335,7 @@ local function RebuildLayout(self, inventory, overflow, do_integrated_backpack, 
         self.bottomrow:SetPosition(0, -.5 * (W + YSEP))
 
         if self.rebuild_snapping then
+			self.root:CancelMoveTo()
             self.root:SetPosition(self.in_pos)
             self:UpdatePosition()
         else
@@ -345,9 +347,10 @@ local function RebuildLayout(self, inventory, overflow, do_integrated_backpack, 
         self.toprow:SetPosition(0, 0)
         self.bottomrow:SetPosition(0, 0)
 
-        if self.controller_build and not self.rebuild_snapping then
+        if do_integrated_backpack and not self.rebuild_snapping then
             self.root:MoveTo(self.in_pos, self.out_pos, .2)
         else
+			self.root:CancelMoveTo()
             self.root:SetPosition(self.out_pos)
             self:UpdatePosition()
         end
@@ -362,6 +365,7 @@ function Inv:Rebuild()
 
     if self.toprow ~= nil then
         self.toprow:Kill()
+		self.inspectcontrol = nil
     end
 
     if self.bottomrow ~= nil then
@@ -375,11 +379,16 @@ function Inv:Rebuild()
     self.equip = {}
     self.backpackinv = {}
 
-    self.controller_build = TheInput:ControllerAttached()
+	local controller_attached = TheInput:ControllerAttached()
+    self.controller_build = controller_attached 
+	self.integrated_backpack = controller_attached or Profile:GetIntegratedBackpack()
 
     local inventory = self.owner.replica.inventory
-    local overflow = inventory:GetOverflowContainer()
-    local do_integrated_backpack = overflow ~= nil and self.controller_build
+    
+	local overflow = inventory:GetOverflowContainer()
+	overflow = (overflow ~= nil and overflow:IsOpenedBy(self.owner)) and overflow or nil
+
+	local do_integrated_backpack = overflow ~= nil and self.integrated_backpack
     local do_self_inspect = not (self.controller_build or GetGameModeProperty("no_avatar_popup"))
 
 	if TheNet:GetServerGameMode() == "quagmire" then

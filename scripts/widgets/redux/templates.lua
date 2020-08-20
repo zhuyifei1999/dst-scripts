@@ -718,7 +718,7 @@ function TEMPLATES.ListItemBackground_Static(row_width, row_height)
 end
 
 -- A widget that displays info about a mod. To be used in scroll lists etc.
-function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox)
+function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox, onclick_setfavorite)
     local opt = Widget("option")
 
     local item_width,item_height = 340, 90
@@ -740,13 +740,19 @@ function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox)
     opt.checkbox:SetOnClick(onclick_checkbox)
     opt.checkbox:SetHelpTextMessage("") -- button nested in a button doesn't need extra helptext
 
+    opt.setfavorite = opt.backing:AddChild(ImageButton())
+    opt.setfavorite:SetPosition(100, -22, 0)
+    opt.setfavorite:SetOnClick(onclick_setfavorite)
+    opt.setfavorite:SetHelpTextMessage("") -- button nested in a button doesn't need extra helptext
+    opt.setfavorite.scale_on_focus = false
+
     opt.image = opt.backing:AddChild(Image())
     opt.image:SetPosition(-120,0,0)
     opt.image:SetClickable(false)
 
     opt.out_of_date_image = opt.backing:AddChild(Image("images/frontend.xml", "circle_red.tex"))
     opt.out_of_date_image:SetScale(.65)
-    opt.out_of_date_image:SetPosition(65, -22)
+    opt.out_of_date_image:SetPosition(25, -22)
     opt.out_of_date_image:SetClickable(false)
     opt.out_of_date_image.icon = opt.out_of_date_image:AddChild(Image("images/button_icons.xml", "update.tex"))
     opt.out_of_date_image.icon:SetPosition(-1,0)
@@ -755,7 +761,7 @@ function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox)
 
     opt.configurable_image = opt.backing:AddChild(Image("images/button_icons.xml", "configure_mod.tex"))
     opt.configurable_image:SetScale(.1)
-    opt.configurable_image:SetPosition(100, -20)
+    opt.configurable_image:SetPosition(60, -20)
     opt.configurable_image:SetClickable(false)
     opt.configurable_image:Hide()
 
@@ -817,7 +823,15 @@ function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox)
         end
     end
 
-    opt.SetMod = function(_, modname, modinfo, modstatus, isenabled)
+    opt.SetModFavorited = function(_, should_favorite)
+        if should_favorite then
+            opt.setfavorite:SetTextures("images/global_redux.xml", "star_checked.tex", nil, "star_uncheck.tex", nil, nil, {0.75,0.75}, {0, 0})
+        else
+            opt.setfavorite:SetTextures("images/global_redux.xml", "star_uncheck.tex", nil, "star_checked.tex", nil, nil, {0.75,0.75}, {0, 0})
+        end
+    end
+
+    opt.SetMod = function(_, modname, modinfo, modstatus, isenabled, isfavorited)
         if modinfo and modinfo.icon_atlas and modinfo.icon then
             opt.image:SetTexture(modinfo.icon_atlas, modinfo.icon)
         else
@@ -835,6 +849,7 @@ function TEMPLATES.ModListItem(onclick_btn, onclick_checkbox)
 
         opt:SetModStatus(modstatus)
         opt:SetModEnabled(isenabled)
+        opt:SetModFavorited(isfavorited)
     end
 
     opt:SetModReadOnly(false) -- sets up some initial values
@@ -1721,7 +1736,7 @@ function TEMPLATES.ScrollingGrid(items, opts)
         -- Caller can force a peek height if they will add items to the list or
         -- have hidden empty widgets.
         peek_height = opts.widget_height * opts.peek_percent
-    elseif #items < math.floor(opts.num_visible_rows) * opts.num_columns then
+    elseif not opts.force_peek and #items < math.floor(opts.num_visible_rows) * opts.num_columns then
         -- No peek if we won't scroll.
         -- This won't work if we later update the items in the grid. Would be
         -- nice if TrueScrollList could handle this but I think we'd need to
@@ -1885,10 +1900,11 @@ function TEMPLATES.MakeStartingInventoryWidget(c, left_align)
 				local slot = root._invitems:AddChild(Image("images/hud.xml", "inv_slot.tex"))
 
 				local override_item_image = TUNING.STARTING_ITEM_IMAGE_OVERRIDE[item]
-				local atlas = override_item_image ~= nil and override_item_image.atlas or GetInventoryItemAtlas(item..".tex")
-				local image = override_item_image ~= nil and override_item_image.image or (item..".tex")
-
-				slot:AddChild(Image(atlas, image)):SetScale(0.9)
+                local atlas = override_item_image ~= nil and override_item_image.atlas or GetInventoryItemAtlas(item..".tex")
+                if atlas ~= nil then
+				    local image = override_item_image ~= nil and override_item_image.image or (item..".tex")
+                    slot:AddChild(Image(atlas, image)):SetScale(0.9)
+                end
 				slot:SetScale(scale)
 				if slot_width == nil then
 					slot_width = 68 * scale

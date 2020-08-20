@@ -3,6 +3,8 @@ local MakePlayerCharacter = require("prefabs/player_common")
 local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("ANIM", "anim/wurt_peruse.zip"),
+    Asset("ANIM", "anim/wurt_mount_peruse.zip"),
     Asset("SOUND", "sound/wurt.fsb"),
     Asset("ANIM", "anim/player_idles_wurt.zip"),
 }
@@ -204,6 +206,8 @@ local function common_postinit(inst)
     inst:AddTag("aspiring_bookworm")
 
     inst.customidleanim = "idle_wurt"
+
+    inst.AnimState:AddOverrideBuild("wurt_peruse")
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         --do nothing

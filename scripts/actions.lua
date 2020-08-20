@@ -529,7 +529,7 @@ ACTIONS.RUMMAGE.fn = function(act)
             return false, "INUSE"
         elseif targ.components.container.canbeopened then
             local owner = targ.components.inventoryitem ~= nil and targ.components.inventoryitem:GetGrandOwner() or nil
-            if owner ~= nil and targ.components.quagmire_stewer ~= nil then
+            if owner ~= nil and (targ.components.quagmire_stewer ~= nil or targ.components.container.droponopen) then
                 if owner == act.doer then
                     owner.components.inventory:DropItem(targ, true, true)
                 elseif owner.components.container ~= nil and owner.components.container:IsOpenedBy(act.doer) then
@@ -604,12 +604,14 @@ end
 
 ACTIONS.READ.fn = function(act)
     local targ = act.target or act.invobject
-    if targ ~= nil and
-        act.doer ~= nil and
-        targ.components.book ~= nil and
-        act.doer.components.reader ~= nil then
-        return act.doer.components.reader:Read(targ)
-    end
+    if targ ~= nil and act.doer ~= nil then
+		if targ.components.book ~= nil and act.doer.components.reader ~= nil then
+	        return act.doer.components.reader:Read(targ)
+		elseif targ.components.simplebook ~= nil then
+			targ.components.simplebook:Read(act.doer)
+			return true
+		end
+	end
 end
 
 ACTIONS.ROW_FAIL.fn = function(act)
@@ -1072,7 +1074,7 @@ ACTIONS.COOK.fn = function(act)
         elseif not act.target.components.stewer:CanCook() then
             return false
         end
-        act.target.components.stewer:StartCooking()
+        act.target.components.stewer:StartCooking(act.doer)
         return true
     elseif act.target.components.cookable ~= nil
         and act.invobject ~= nil

@@ -206,7 +206,7 @@ local prefabs =
     "float_fx_back",
     "groundshadow",
 
-    "puffin"
+    "puffin",
 }
 
 --------------------------------------------------------------------------

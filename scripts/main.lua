@@ -282,6 +282,8 @@ global("EventAchievements")
 EventAchievements = nil
 global("TheRecipeBook")
 TheRecipeBook = nil
+global("TheCookbook")
+TheCookbook = nil
 global("Lavaarena_CommunityProgression")
 Lavaarena_CommunityProgression = nil
 
@@ -325,6 +327,8 @@ local function ModSafeStartup()
     EventAchievements:LoadAchievementsForEvent(require("lavaarena_achievement_quest_defs"))
 	TheRecipeBook = require("quagmire_recipebook")()
 	TheRecipeBook:Load()
+	TheCookbook = require("cookbookdata")()
+	TheCookbook:Load()
 	Lavaarena_CommunityProgression = require("lavaarena_communityprogression")()
 	Lavaarena_CommunityProgression:Load()
 

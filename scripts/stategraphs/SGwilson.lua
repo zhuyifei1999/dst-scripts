@@ -503,8 +503,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
     ActionHandler(ACTIONS.READ, 
-        function(inst) 
-            return inst:HasTag("aspiring_bookworm") and "book_peruse" or "book"
+        function(inst, action) 
+            return	(action.invobject ~= nil and action.invobject.components.simplebook ~= nil) and "cookbook_open"
+					or inst:HasTag("aspiring_bookworm") and "book_peruse" 
+					or "book"
         end),
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
@@ -4608,6 +4610,66 @@ local states =
     },
 
     State{
+        name = "cookbook_open",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:OverrideSymbol("book_cook", "cookbook", "book_cook")
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("reading_in", false)
+            inst.AnimState:PushAnimation("reading_loop", true)
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+		onupdate = function(inst)
+			if not CanEntitySeeTarget(inst, inst) then
+                inst.sg:GoToState("cookbook_close")
+			end
+		end,
+
+        events =
+        {
+            EventHandler("ms_closecookbookscreen", function(inst)
+				inst.sg.statemem.closing = true
+                inst.sg:GoToState("cookbook_close")
+            end),
+        },
+
+        onexit = function(inst)
+		    inst:ShowCookbookPopUp(false)
+			if not inst.sg.statemem.closing then
+                inst:PushEvent("ms_closecookbookscreen")
+			end
+        end,
+    },
+
+    State{
+        name = "cookbook_close",
+        tags = { "idle", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("reading_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.sg:GoToState(inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) ~= nil and "item_out" or "idle")
+                end
+            end),
+        },
+    },
+
+    State{
         name = "talk",
         tags = { "idle", "talking" },
 
@@ -5705,7 +5767,6 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("hornblow_pre")
             inst.AnimState:PushAnimation("hornblow", false)
-            inst.AnimState:Show("ARM_normal")
         end,
 
         timeline =
@@ -5732,13 +5793,6 @@ local states =
                 end
             end),
         },
-
-        onexit = function(inst)
-            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry")
-                inst.AnimState:Hide("ARM_normal")
-            end
-        end,
     },
 
     State
@@ -5969,7 +6023,6 @@ local states =
             inst.AnimState:PushAnimation("strum", false)
 
             inst.AnimState:OverrideSymbol("swap_trident", "swap_trident", "swap_trident")
-            inst.AnimState:Show("ARM_normal")
         end,
 
         timeline =
@@ -5997,13 +6050,6 @@ local states =
                 end
             end),
         },
-
-        onexit = function(inst)
-            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry")
-                inst.AnimState:Hide("ARM_normal")
-            end
-        end,
     },
 
     State
@@ -6235,27 +6281,8 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("peruse", false)
-            --V2C: NOTE that these are now used in onexit to clear skinned symbols
-            --Moved to player_common because these symbols are never cleared
-            --inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
-            --inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
-            --inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
-            --inst.AnimState:Hide("ARM_carry")
-            inst.AnimState:Show("ARM_normal")
-
-            local book = inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil
-            if book ~= nil then
-                inst.components.inventory:ReturnActiveActionItem(book)
-                local skin_build = book:GetSkinBuild()
-                if skin_build ~= nil then
-                    inst.sg.statemem.skinned = true
-                    inst.AnimState:OverrideItemSkinSymbol("book_open", skin_build, "book_open", book.GUID, "player_actions_uniqueitem")
-                    inst.AnimState:OverrideItemSkinSymbol("book_closed", skin_build, "book_closed", book.GUID, "player_actions_uniqueitem")
-                    inst.AnimState:OverrideItemSkinSymbol("book_open_pages", skin_build, "book_open_pages", book.GUID, "player_actions_uniqueitem")
-                end               
-            end
-
-            --inst.sg.statemem.castsound = book ~= nil and book.castsound or "dontstarve/common/book_spell"
+			inst.AnimState:Show("ARM_normal")
+            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
 
         timeline =
@@ -6264,40 +6291,25 @@ local states =
             TimeEvent(25 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/use_book")
             end),
-            TimeEvent(73 * FRAMES, function(inst)
+            TimeEvent(68 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/characters/actions/page_turn")
             end),
-            TimeEvent(105 * FRAMES, function(inst)
-                --inst.SoundEmitter:PlaySound(inst.sg.statemem.castsound)
+            TimeEvent(98 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
-
             end),
         },
         events =
         {
             EventHandler("animqueueover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
+                    inst.sg:GoToState(inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) ~= nil and "item_out" or "idle")
                 end
             end),
         },
 
         onexit = function(inst)
-            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if item ~= nil and not item:HasTag("book") then
-                inst.AnimState:Show("ARM_carry")
+            if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
                 inst.AnimState:Hide("ARM_normal")
-            end
-            if inst.sg.statemem.skinned then
-                inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
-                inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
-                inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
-            end
-            if inst.sg.statemem.book_fx ~= nil and inst.sg.statemem.book_fx:IsValid() then
-                inst.sg.statemem.book_fx:Remove()
-            end
-            if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },

@@ -12,6 +12,7 @@ local Subscreener = require "screens/redux/subscreener"
 local TEMPLATES = require "widgets/redux/templates"
 local TextListPopup = require "screens/redux/textlistpopup"
 local Widget = require "widgets/widget"
+local Text = require "widgets/text"
 
 require("constants")
 require("tuning")
@@ -125,6 +126,7 @@ end
 
 function ServerCreationScreen:OnBecomeInactive()
     ServerCreationScreen._base.OnBecomeInactive(self)
+    self.mods_tab:OnBecomeInactive()
 end
 
 function ServerCreationScreen:OnDestroy()
@@ -583,7 +585,17 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                             })
         self.last_focus = TheFrontEnd:GetFocusWidget()
         TheFrontEnd:PushScreen(online_only_popup)
-
+    -- Can't start a game with mods whose dependencies aren't installed
+    elseif not KnownModIndex:GetModDependenciesEnabled() then
+        local dependent_mods_popup = PopupDialogScreen(STRINGS.UI.MODSSCREEN.REQUIRED_MODS_DOWNLOADING_TITLE,
+            STRINGS.UI.MODSSCREEN.REQUIRED_MODS_DOWNLOADING,
+            {
+                {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
+                    TheFrontEnd:PopScreen()
+                end}
+            })
+        self.last_focus = TheFrontEnd:GetFocusWidget()
+        TheFrontEnd:PushScreen(dependent_mods_popup)
     -- Warn if starting a server with mods disabled that were previously enabled on that server
     elseif warnedDisabledMods ~= true and #disabledmods > 0 then
         self.last_focus = TheFrontEnd:GetFocusWidget()
@@ -621,7 +633,6 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                                 controller_control=CONTROL_MENU_MISC_2},
                             })
         TheFrontEnd:PushScreen(warning)
-
     -- We passed all our checks, go ahead and create
     else
         onCreate()
@@ -720,8 +731,15 @@ end
 function ServerCreationScreen:BuildModsMenu(menu_items, subscreener)
     -- We don't have enough for the full menu outline, so shrink it down.
     for i,item in ipairs(menu_items) do
+        --Zachary: hover_overlay is much larger to account for the scale of its(ImageButton) parent
         item.widget.hover_overlay:SetSize(260,68)
         item.widget.hover_overlay:SetPosition(-90,0)
+        item.widget.bg:ScaleToSize(140,68)
+        item.widget.bg:SetPosition(-55,0)
+        item.widget.text:SetRegionSize(140,40)
+        item.widget.text:SetPosition(-55,0)
+        item.widget.text_shadow:SetRegionSize(140,40)
+        item.widget.text_shadow:SetPosition(-55,0)
     end
     -- Menu must share a parent with mods_tab (so menu is hidden along with
     -- tab), but passing ModsTab here doesn't work (nothing responds to
@@ -735,6 +753,30 @@ end
 function ServerCreationScreen:RepositionModsButtonMenu(allmodsmenu, selectedmodmenu)
     allmodsmenu:SetPosition(-570, -250)
     selectedmodmenu:SetPosition(120, -250)
+end
+
+function ServerCreationScreen:ShowWorkshopDownloadingNotification()
+	if self.workshop_indicator ~= nil then
+		return
+	end
+
+	self.workshop_indicator = self.mods_tab:AddChild(Widget("workshop_indicator"))
+    self.workshop_indicator:SetPosition(-520, -140)
+
+	local text = self.workshop_indicator:AddChild(Text(BODYTEXTFONT, 18, STRINGS.UI.MODSSCREEN.DOWNLOADING_MODS, UICOLOURS.GOLD_UNIMPORTANT))
+    text:SetPosition(0, -27)
+
+	local image = self.workshop_indicator:AddChild(Image("images/avatars.xml", "loading_indicator.tex"))
+	local function dorotate() image:RotateTo(0, -360, .75, dorotate) end
+	dorotate()
+	image:SetTint(unpack(UICOLOURS.GOLD_UNIMPORTANT))
+end
+
+function ServerCreationScreen:RemoveWorkshopDownloadingNotification()
+	if self.workshop_indicator ~= nil then
+		self.workshop_indicator:Kill()
+		self.workshop_indicator = nil
+	end
 end
 
 function ServerCreationScreen:DirtyFromMods(slotnum)

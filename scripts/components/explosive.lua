@@ -16,8 +16,8 @@ function Explosive:OnBurnt()
 	if not self.skip_camera_flash then
 		for i, v in ipairs(AllPlayers) do
 			local distSq = v:GetDistanceSqToInst(self.inst)
-			local k = math.max(0, math.min(1, distSq / 1600))
-			local intensity = k * (k - 2) + 1 --easing.outQuad(k, 1, -1, 1)
+			local k = math.max(0, math.min(1, distSq / 400))
+			local intensity = k * 0.75 * (k - 2) + 0.75 --easing.outQuad(k, 1, -1, 1)
 			if intensity > 0 then
 				v:ScreenFlash(intensity)
 				v:ShakeCamera(CAMERASHAKE.FULL, .7, .02, intensity / 2)

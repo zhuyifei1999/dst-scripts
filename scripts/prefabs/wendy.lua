@@ -87,6 +87,7 @@ local function common_postinit(inst)
     end
 
     inst.AnimState:AddOverrideBuild("wendy_channel")
+    inst.AnimState:AddOverrideBuild("player_idles_wendy")
 
 	inst._bondlevel = net_tinybyte(inst.GUID, "wendy._bondlevel", "_bondleveldirty")
     inst:ListenForEvent("playeractivated", OnPlayerActivated)
@@ -200,7 +201,6 @@ local function master_postinit(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
     inst.customidleanim = "idle_wendy"
-    inst.AnimState:AddOverrideBuild("player_idles_wendy")
 
     inst.components.health:SetMaxHealth(TUNING.WENDY_HEALTH)
     inst.components.hunger:SetMax(TUNING.WENDY_HUNGER)

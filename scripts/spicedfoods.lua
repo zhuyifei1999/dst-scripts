@@ -52,6 +52,8 @@ function GenerateSpicedFoods(foods)
             newdata.basename = foodname
             newdata.name = foodname.."_"..spicename
             newdata.floater = {"med", nil, {0.85, 0.7, 0.85}}
+			newdata.official = true
+			newdata.cookbook_category = fooddata.cookbook_category ~= nil and ("spiced_"..fooddata.cookbook_category) or nil
             spicedfoods[newdata.name] = newdata
 
             if spicename == "spice_chili" then

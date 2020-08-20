@@ -628,6 +628,27 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnLearnCookbookRecipe(inst, data)
+	local cookbookupdater = data ~= nil and inst.components.cookbookupdater
+	if cookbookupdater then
+		cookbookupdater:LearnRecipe(data.product, data.ingredients)
+	end
+end
+
+local function OnLearnCookbookStats(inst, product)
+	local cookbookupdater = product and inst.components.cookbookupdater
+	if cookbookupdater then
+		cookbookupdater:LearnFoodStats(product)
+	end
+end
+
+local function OnEat(inst, data)
+	local product = (data ~= nil and data.food ~= nil and data.food:HasTag("preparedfood")) and data.food.prefab or nil
+	if product ~= nil then
+		OnLearnCookbookStats(inst, product)
+	end
+end
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -642,4 +663,7 @@ return
     OnRespawnFromGhost          = OnRespawnFromGhost,
     OnRespawnFromPlayerCorpse   = OnRespawnFromPlayerCorpse,
     OnSpooked                   = OnSpooked,
+	OnLearnCookbookRecipe		= OnLearnCookbookRecipe,
+	OnLearnCookbookStats		= OnLearnCookbookStats,
+	OnEat						= OnEat,
 }

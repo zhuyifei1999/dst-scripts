@@ -57,7 +57,7 @@ function QuagmireRecipeBook:Load()
 		    if status and recipe_book then
 				self.recipes = recipe_book
 			else
-				print("Faild to load the recipe book!")
+				print("Failed to load the Gorge recipe book")
 			end
 
 			CleanupDupRecipes(self.recipes)

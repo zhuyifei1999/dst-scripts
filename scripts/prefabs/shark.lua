@@ -171,6 +171,19 @@ local function GetFormationOffsetNormal(inst,boat_velocity)
     return desired_position_offset + separation_steering
 end
 
+local function OnEntitySleep(inst)
+    if not inst.components.combat.target then
+        inst._sleep_remove_task = inst:DoTaskInTime(3, inst.Remove)
+    end
+end
+
+local function OnEntityWake(inst)
+    if inst._sleep_remove_task ~= nil then
+        inst._sleep_remove_task:Cancel()
+        inst._sleep_remove_task = nil
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -291,6 +304,8 @@ local function fn()
     inst.removefood = removefood
     inst.testfooddist = testfooddist
     inst.GetFormationOffsetNormal = GetFormationOffsetNormal
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     MakeHauntablePanic(inst)
 

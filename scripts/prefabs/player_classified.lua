@@ -1,6 +1,8 @@
 local TIMEOUT = 2
 local TechTree = require("techtree")
 
+local fns = {} -- a table to store local functions in so that we don't hit the 60 upvalues limit
+
 --------------------------------------------------------------------------
 --Server interface
 --------------------------------------------------------------------------
@@ -655,6 +657,38 @@ local function OnIsGiftItemPopUpVisibleDirty(inst)
     end
 end
 
+fns.OnIsCookbookPopUpVisibleDirty = function(inst)
+    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+        if not inst.iscookbookpopupvisible:value() then
+            inst._parent.HUD:CloseCookbookScreen()
+        elseif not inst._parent.HUD:OpenCookbookScreen() then
+            if not TheWorld.ismastersim then
+				SendRPCToServer(RPC.CloseCookbookScreen)
+            else
+                inst._parent:PushEvent("ms_closecookbookscreen")
+            end
+        end
+    end
+end
+
+fns.OnIsCookbookProductDirty = function(inst)
+	local cookbookupdater = inst._parent.components.cookbookupdater
+	if cookbookupdater then
+		local data = string.split(inst.cookbook_product:value(), ":")
+		local product = data[1]
+		local ingredients = data[2] ~= nil and string.split(data[2], ",") or nil
+		dumptable(ingredients)
+		cookbookupdater:LearnRecipe(product, ingredients)
+	end
+end
+
+fns.OnIsCookbookLearnStatsDirty = function(inst)
+	local cookbookupdater = inst._parent.components.cookbookupdater
+	if cookbookupdater then
+		cookbookupdater:LearnFoodStats(inst.cookbook_learnstats:value())
+	end
+end
+
 local function OnGiftsDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         inst._parent:PushEvent("giftreceiverupdate", {
@@ -771,35 +805,39 @@ end
 --otherwise server HUD events will be one wall-update late
 --and possibly show some flicker
 --------------------------------------------------------------------------
-
-local function SetGhostMode(inst, isghostmode)
+fns.SetGhostMode = function(inst, isghostmode)
     inst.isghostmode:set(isghostmode)
     OnGhostModeDirty(inst)
 end
 
-local function ShowActions(inst, show)
+fns.ShowActions = function(inst, show)
     inst.isactionsvisible:set(show)
 end
 
-local function ShowHUD(inst, show)
+fns.ShowHUD = function(inst, show)
     inst.ishudvisible:set(show)
     OnPlayerHUDDirty(inst)
 end
 
-local function EnableMapControls(inst, enable)
+fns.EnableMapControls = function(inst, enable)
     inst.ismapcontrolsvisible:set(enable)
     OnPlayerHUDDirty(inst)
 end
 
-local function ShowWardrobePopUp(inst, show, target)
+fns.ShowWardrobePopUp = function(inst, show, target)
     inst.iswardrobepopupvisible:set(show)
     inst.wardrobetarget:set(target)
     OnIsWardrobePopUpVisibleDirty(inst)
 end
 
-local function ShowGiftItemPopUp(inst, show)
+fns.ShowGiftItemPopUp = function(inst, show)
     inst.isgiftitempopupvisible:set(show)
     OnIsGiftItemPopUpVisibleDirty(inst)
+end
+
+fns.ShowCookbookPopUp = function(inst, show)
+    inst.iscookbookpopupvisible:set(show)
+    fns.OnIsCookbookPopUpVisibleDirty(inst)
 end
 
 --------------------------------------------------------------------------
@@ -858,6 +896,10 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("attunedresurrectordirty", OnAttunedResurrectorDirty)
         inst:ListenForEvent("iswardrobepopupvisibledirty", OnIsWardrobePopUpVisibleDirty)
         inst:ListenForEvent("isgiftitempopupvisibledirty", OnIsGiftItemPopUpVisibleDirty)
+        inst:ListenForEvent("iscookbookpopupvisibledirty", fns.OnIsCookbookPopUpVisibleDirty)
+		inst:ListenForEvent("iscookbookproductdirty", fns.OnIsCookbookProductDirty)
+		inst:ListenForEvent("iscookbooklearnstatsdirty", fns.OnIsCookbookLearnStatsDirty)
+		
 
         OnIsTakingFireDamageDirty(inst)
         OnTemperatureDirty(inst)
@@ -898,6 +940,7 @@ local function RegisterNetListeners(inst)
     OnPlayerCameraDirty(inst)
     OnIsWardrobePopUpVisibleDirty(inst)
     OnIsGiftItemPopUpVisibleDirty(inst)
+    fns.OnIsCookbookPopUpVisibleDirty(inst)
 
     --Fade is initialized by OnPlayerActivated in gamelogic.lua
 end
@@ -1054,6 +1097,11 @@ local function fn()
     inst.hasgiftmachine = net_bool(inst.GUID, "giftreceiver.hasgiftmachine", "giftsdirty")
     inst.isgiftitempopupvisible = net_bool(inst.GUID, "giftreceiver.isgiftitempopupvisible", "isgiftitempopupvisibledirty")
 
+    --Coobook variables
+    inst.iscookbookpopupvisible = net_bool(inst.GUID, "cookbook.iscookbookpopupvisible", "iscookbookpopupvisibledirty")
+    inst.cookbook_product = net_string(inst.GUID, "cookbook.product", "iscookbookproductdirty")
+    inst.cookbook_learnstats = net_string(inst.GUID, "cookbook.learnstats", "iscookbooklearnstatsdirty")
+
     --Combat variables
     inst.lastcombattarget = net_entity(inst.GUID, "combat.lasttarget")
     inst.canattack = net_bool(inst.GUID, "combat.canattack")
@@ -1122,12 +1170,13 @@ local function fn()
     inst.AddMorgueRecord = AddMorgueRecord
     inst.SetTemperature = SetTemperature
     inst.SetUsedTouchStones = SetUsedTouchStones
-    inst.SetGhostMode = SetGhostMode
-    inst.ShowActions = ShowActions
-    inst.ShowHUD = ShowHUD
-    inst.ShowWardrobePopUp = ShowWardrobePopUp
-    inst.ShowGiftItemPopUp = ShowGiftItemPopUp
-    inst.EnableMapControls = EnableMapControls
+    inst.SetGhostMode = fns.SetGhostMode
+    inst.ShowActions = fns.ShowActions
+    inst.ShowHUD = fns.ShowHUD
+    inst.EnableMapControls = fns.EnableMapControls
+    inst.ShowWardrobePopUp = fns.ShowWardrobePopUp
+    inst.ShowGiftItemPopUp = fns.ShowGiftItemPopUp
+    inst.ShowCookbookPopUp = fns.ShowCookbookPopUp
 
     inst.persists = false
 

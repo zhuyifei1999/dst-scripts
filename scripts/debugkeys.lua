@@ -970,7 +970,9 @@ AddGameDebugKey(KEY_H, function()
     if TheInput:IsKeyDown(KEY_LCTRL) then
         ThePlayer.HUD:Toggle()
     elseif TheInput:IsKeyDown(KEY_ALT) then
-        TheWorld.components.hounded:ForceNextWave()
+		if TheWorld.components.hounded ~= nil then
+	        TheWorld.components.hounded:ForceNextWave()
+		end
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         if c_sel() ~= nil and c_sel().components.herdmember ~= nil and c_sel().components.herdmember.herd ~= nil then
             frommember = c_sel()

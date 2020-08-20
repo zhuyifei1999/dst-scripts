@@ -1397,6 +1397,7 @@ return{
             "We've established a stone moose truce.",
         },
         CHESSPIECE_DRAGONFLY = "Bye bye, dear dragonfly.",
+		CHESSPIECE_MINOTAUR = "It's as though the Minotaur met Medusa.",
         CHESSPIECE_BUTTERFLY = "It does not float, nor does it sting.",
         CHESSPIECE_ANCHOR = "So heavy, heavy, dreary, dreary.",
         CHESSPIECE_MOON = "The mortals thought it was made of cheese! Hyuyu!",
@@ -1615,6 +1616,7 @@ return{
 		FEATHER_ROBIN_WINTER = "A keepsake of a gentle blue friend.",
 		FEATHER_CANARY = "A token, to remember its sweet song by.",
 		FEATHERPENCIL = "Use this quill, I will, I will.",
+        COOKBOOK = "Oh what shall I cook up next? Hyuyu!",
 		FEM_PUPPET = "Greetings and salutations, ma'am.",
 		FIREFLIES =
 		{

@@ -1236,6 +1236,7 @@ STRINGS =
         FEATHER_ROBIN_WINTER = "Azure Feather",
         FEATHER_CANARY = "Saffron Feather",
         FEATHERPENCIL = "Feather Pencil",
+        COOKBOOK = "Cookbook",
         BIRDTRAP = "Bird Trap",
         BLOWDART_SLEEP = "Sleep Dart",
         BLOWDART_FIRE = "Fire Dart",
@@ -1844,6 +1845,7 @@ STRINGS =
         CHESSPIECE_MOOSEGOOSE = "Moose Figure",
         CHESSPIECE_MOOSEGOOSE_ALT = "Goose Figure",
         CHESSPIECE_DRAGONFLY = "Dragonfly Figure",
+        CHESSPIECE_MINOTAUR = "Ancient Guardian Figure",
         CHESSPIECE_CLAYHOUND = "Hound Figure",
         CHESSPIECE_CLAYWARG = "Varg Figure",
         CHESSPIECE_BUTTERFLY = "Moon Moth Figure",
@@ -1870,6 +1872,7 @@ STRINGS =
         CHESSPIECE_BEARGER_BUILDER = "Bearger Figure",
         CHESSPIECE_MOOSEGOOSE_BUILDER = "Moose/Goose Figure",
         CHESSPIECE_DRAGONFLY_BUILDER = "Dragonfly Figure",
+        CHESSPIECE_MINOTAUR_BUILDER = "Ancient Guardian Figure",
         CHESSPIECE_CLAYHOUND_BUILDER = "Hound Figure",
         CHESSPIECE_CLAYWARG_BUILDER = "Varg Figure",
         CHESSPIECE_BUTTERFLY_BUILDER = "Moon Moth Figure",
@@ -2999,6 +3002,7 @@ STRINGS =
         DESERTHAT = "Keeps the sand out of your eyes.",
 
         FEATHERPENCIL = "Yes, the feather IS necessary.",
+        COOKBOOK = "Review your repertoire of recipes.",
         MAPSCROLL = "Show everyone what you've seen!",
 
         REVIVER = "Ghastly revival of a ghostly friend.",
@@ -3054,6 +3058,7 @@ STRINGS =
         CHESSPIECE_BEARGER_BUILDER = "A stone reminder of a grizzly autumn.",
         CHESSPIECE_MOOSEGOOSE_BUILDER = "Two for the price of one.",
         CHESSPIECE_DRAGONFLY_BUILDER = "The ultimate trophy for the ultimate kill.",
+        CHESSPIECE_MINOTAUR_BUILDER = "This guardian sits in stony silence.",
         CHESSPIECE_CLAYHOUND_BUILDER = "It ain't nothing but a clay hound dog.",
         CHESSPIECE_CLAYWARG_BUILDER = "Sculpt a fearsome Clay Varg.",
         CHESSPIECE_BUTTERFLY_BUILDER = "This sculpture's a moth-have.",
@@ -4880,6 +4885,7 @@ STRINGS.UI =
             "Steph Mahoney",
             "Anne-Marie Cyr",
             "Matthew Barry",
+            "Zachary Lockwood",
         },
 
         ALTGAMES =
@@ -5375,6 +5381,94 @@ STRINGS.UI =
 		PLAYER_2_PRESS_START_POSTFIX = "TO JOIN",
     },
 
+
+	COOKBOOK = {
+		TAB_TITLE_COOKPOT = "Crock Pot Recipes",
+		TAB_TITLE_PORTABLECOOKPOT = "Chef's Specials",
+		TAB_TITLE_MOD_RECIPES = "Mod Recipes",
+
+		DISCOVERED_RECIPES = "Recipes Discovered",
+
+		ONLINE_DATA_USER_OFFLINE = "Login to retrieve online cookbook data.",
+		ONLINE_DATA_DOWNLOAD_FAILED = "Failed to sync online cookbook data.",
+
+		UNKNOWN_INGREDIENT_NAME = "Unknown Ingredent '{ingredient}'",
+		UNKNOWN_FOOD_NAME = "Unknown '{food}'",
+
+		LOCKED_RECIPE = 
+		{
+			cookpot = "Experiment with ingredients in the Crock Pot to discover new recipes and expand your cookbook.",
+			portablecookpot = "Experiment with ingredients in Warly's Portable Crock Pot to discover new recipes and expand your cookbook.",
+		},
+
+		NO_RECIPES_TITLE = "Recipes",
+		NO_RECIPES_DESC = "Experiment with different ingredients to discover a recipe.",
+
+		LOCKED_STATS = "This food requires a taste test to learn more.",
+		STAT_UNKNOWN ="?",
+
+		FOOD_EFFECTS_TITLE = "Side Effects",
+		FOOD_EFFECTS_NONE = "None",
+		FOOD_EFFECTS_HEALTH_REGEN = "Restores health over time.",
+		FOOD_EFFECTS_HOT_FOOD = "Warms the body",
+		FOOD_EFFECTS_COLD_FOOD  = "Cools the body",
+		FOOD_EFFECTS_SWAP_HEALTH_AND_SANITY = "Swaps sanity and health",
+		FOOD_EFFECTS_ELECTRIC_ATTACK = "Attacks deal electric damage",
+		FOOD_EFFECTS_GLOW = "Gives off a healthy glow",
+		FOOD_EFFECTS_DRY = "Disappates moisture",
+
+		FOOD_TYPE_TITLE = "Type",
+		FOOD_TYPE_UNKNOWN = "?",
+
+		PERISH_RATE_TITLE = "Spoils",
+		PERISH_NEVER = "Never",
+		PERISH_QUICKLY = "Quickly",
+		PERISH_AVERAGE = "Average",
+		PERISH_SLOWLY = "Slowly",
+		PERISH_VERY_SLOWLY = "Very Slowly",
+
+		COOKINGTIME_TITLE = "Cooking Time",
+		COOKINGTIME_UNKNOWN = "Unknown",
+		COOKINGTIME_SHORT = "Short",
+		COOKINGTIME_AVERAGE = "Average",
+		COOKINGTIME_LONG = "Long",
+		COOKINGTIME_VERY_LONG = "Very Long",
+
+		SORT_SPINNERLABEL = "Sort",
+		SORT_DEFAULT = "Default",
+		SORT_ALPHABETICAL = "Alphabetical",
+		SORT_HEALTH = "Health",
+		SORT_HUNGER = "Hunger",
+		SORT_SANITY = "Sanity",
+		SORT_SIDE_EFFECTS = "Side Effects",
+
+		FILTER_SPINNERLABEL = "Filter",
+		FILTER_ALL = "All",
+		FILTER_MEAT = "Meats",
+		FILTER_VEGGIE = "Veggies",
+		FILTER_OTHER = "Others", 
+		FILTER_SIDE_EFFECTS = "Side Effects", 
+	},
+
+	FOOD_TYPES = 
+	{
+		GENERIC = "Edible",
+		MEAT = "Meat",
+		VEGGIE = "Veggie",
+		ELEMENTAL = "Elemental",
+		GEARS = "Gears",
+		HORRIBLE = "Horrible",
+		INSECT = "Insect",
+		SEEDS = "Seed",
+		BERRY = "Berry",
+		RAW = "Raw",
+		BURNT = "Burnt",
+		ROUGHAGE = "Roughage",
+		WOOD = "Wood",
+		GOODIES = "Goodies",
+		MONSTER = "Monstrous",
+	},
+
 	RECIPE_BOOK =
 	{
 		TITLE = "Recipe Book",
@@ -5678,7 +5772,10 @@ STRINGS.UI =
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",
+		DEFAULT = "Default",
         NO = "No",
+		DIM = "Dim",
+		DIMMEST = "Dimmest",
         BACKTITLE = "Lose Changes?",
         BACKBODY = "Do you want to throw out your changes?",
         BACKTITLE_PS4 = "Wait!",
@@ -5710,12 +5807,16 @@ STRINGS.UI =
         VIBRATION = "Vibration:",
         WATHGRITHRFONT = "Wigfrid's Umlauts:",
         BOATCAMERA = "Seafaring Camera:",
+        BACKPACKMODE = "Backpack Layout:",
+		INTEGRATEDBACKPACK_DISABLED = "Separated",
+		INTEGRATEDBACKPACK_ENABLED = "Integrated",
         DATACOLLECTION = "Data Collection:",
         MOVEMENTPREDICTION = "Lag Compensation:",
         MOVEMENTPREDICTION_ENABLED = "Predictive",
         MOVEMENTPREDICTION_DISABLED = "None",
 		TARGETLOCKING = "Target Locking:",
         TEXTURESTREAMING = "Texture Streaming",
+		SCREEN_FLASH_INTENSITY = "Screen Flashes:",
         RESTART_TEXTURE_STREAMING_TITLE = "Restart Required",
         RESTART_TEXTURE_STREAMING_BODY = "For Texture Streaming changes to take effect, you will have to exit and restart the game.", 
         OK = "Okay",
@@ -5749,12 +5850,14 @@ STRINGS.UI =
 	{
 		HISTORYOFTRAVELS = "History of Travels",
 		CHARACTERDETAILS = "Survivors",
+		COOKBOOKPANEL = "Cookbook",
         OBITUARIES = "Obituaries",
         ENCOUNTERS = "Encounters",
 		CINEMATICS = "Cinematics",
 
 		TOOLTIP_HISTORYOFTRAVELS = "A summary of your adventures",
 		TOOLTIP_CHARACTERDETAILS = "The survivors of the Constant",
+		TOOLTIP_COOKBOOKPANEL = "The Constant's guide to cookery",
         TOOLTIP_OBITUARIES = "Reminisce over past mistakes",
         TOOLTIP_ENCOUNTERS = "A history of those you've crossed paths with",
 		TOOLTIP_CINEMATICS = "Pretty movies!",
@@ -5790,6 +5893,7 @@ STRINGS.UI =
 		CHECK_SHOP = "Updating the shop",
 		CHECK_EVENT = "Catching up on current events",
 		CHECK_DAILY_GIFT = "Checking for daily gifts",
+		CHECK_COOKBOOK = "Updating cookbook",
 		CHECK_INVENTORY = "Updating inventory",
     },
     
@@ -6315,6 +6419,24 @@ STRINGS.UI =
         CANCEL_TITLE = "Lose Changes?",
         CANCEL_BODY = "Do you want to abandon your changes?",
         NOCONFIG = "No Configurations",
+        WORKSHOP_FILTER_FMT = "Mod Type Filter: {mode}",
+        WORKSHOP_FILTER = "Workshop",
+        WORKSHOP_FILTER_RAIL = "Warehouse",
+        LOCAL_FILTER = "Local",
+        ALL_FILTER = "All",
+        STATUS_FILTER_FMT = "Mod Status Filter: {mode}",
+        ENABLED_FILTER = "Enabled",
+        DISABLED_FILTER = "Disabled",
+        ENABLEDDISABLED_FILTER = "Both",
+        SEARCH = "Search",
+        MOD_DEPENDENCIES_TITLE = "Dependencies Required",
+        MOD_HAS_DEPENDENCIES_FMT = "{mod} requires other mods to run, it will subscribe and enable these if you enable this mod:",
+        MOD_DEPENDENTS_TITLE = "Required By Other Mods",
+        MOD_HAS_DEPENDENTS_FMT = "{mod} is required for other mods to run, if you disable this mod these mods will be disabled:",
+        DISABLE_ALL = "Disable All",
+        REQUIRED_MODS_DOWNLOADING_TITLE = "Required Mods Are Downloading",
+        REQUIRED_MODS_DOWNLOADING = "The game has not finished downloading required mods.\nEither wait until the mods have finished downloading, or disable mods which have dependencies.",
+        DOWNLOADING_MODS = "Downloading Mods...",
     },
 
     CUSTOMIZATIONSCREEN =

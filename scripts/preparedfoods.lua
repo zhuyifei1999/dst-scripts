@@ -452,6 +452,7 @@ local foods =
 		tags = {"honeyed"},
 		stacksize = 3,
         prefabs = { "healthregenbuff" },
+		oneat_desc = STRINGS.UI.COOKBOOK.FOOD_EFFECTS_HEALTH_REGEN,
         oneatenfn = function(inst, eater)
             if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
                 not (eater.components.health ~= nil and eater.components.health:IsDead()) and
@@ -798,6 +799,8 @@ for k, v in pairs(foods) do
     v.name = k
     v.weight = v.weight or 1
     v.priority = v.priority or 0
+
+	v.cookbook_category = "cookpot"
 end
 
 return foods

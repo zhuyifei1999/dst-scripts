@@ -559,6 +559,7 @@ PREFAB_SKINS = {
 	},
 	shovel = 
 	{
+		"shovel_feathered",
 		"shovel_northern",
 		"shovel_victorian",
 	},
@@ -582,6 +583,10 @@ PREFAB_SKINS = {
 		"strawhat_bonnet",
 		"strawhat_cowboy",
 		"strawhat_floppy",
+	},
+	telestaff = 
+	{
+		"telestaff_crystal",
 	},
 	tent = 
 	{
@@ -731,6 +736,19 @@ PREFAB_SKINS = {
 		"webber_victorian",
 		"webber_wrestler",
 	},
+	webber_beard = 
+	{
+		"webber_beard_bat",
+		"webber_beard_formal",
+		"webber_beard_gladiator",
+		"webber_beard_ice",
+		"webber_beard_magma",
+		"webber_beard_punk",
+		"webber_beard_rose",
+		"webber_beard_shadow",
+		"webber_beard_survivor",
+		"webber_beard_wrestler",
+	},
 	wendy = 
 	{
 		"wendy_combatant",
@@ -832,7 +850,12 @@ PREFAB_SKINS = {
 	wilson_beard = 
 	{
 		"wilson_beard_formal",
+		"wilson_beard_gladiator",
 		"wilson_beard_ice",
+		"wilson_beard_madscience",
+		"wilson_beard_magma",
+		"wilson_beard_nature",
+		"wilson_beard_pigguard",
 		"wilson_beard_rose",
 		"wilson_beard_shadow",
 		"wilson_beard_survivor",

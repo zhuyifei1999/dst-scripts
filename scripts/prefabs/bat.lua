@@ -15,7 +15,7 @@ local brain = require "brains/batbrain"
 
 SetSharedLootTable( 'bat',
 {
-    {'batwing',    0.15},
+    {'batwing',    0.75},
     {'guano',      0.15},
     {'monstermeat',0.10},
 })

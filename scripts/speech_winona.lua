@@ -1397,6 +1397,7 @@ return{
             "It looks like it's hollerin'.",
         },
         CHESSPIECE_DRAGONFLY = "My pals and I can't be beat.",
+		CHESSPIECE_MINOTAUR = "What a stone-faced brute.",
         CHESSPIECE_BUTTERFLY = "I feel like it's lookin' at me.",
         CHESSPIECE_ANCHOR = "I'm fond'a this one.",
         CHESSPIECE_MOON = "That statue's moonin' me! HA!",
@@ -1615,6 +1616,7 @@ return{
 		FEATHER_ROBIN_WINTER = "If only I had a cap to put it in.",
 		FEATHER_CANARY = "That's not a good sign.",
 		FEATHERPENCIL = "I've got ugly handwriting.",
+        COOKBOOK = "Havin' a blueprint sure makes cooking easier!",
 		FEM_PUPPET = "She doesn't look none too happy.",
 		FIREFLIES =
 		{

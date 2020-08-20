@@ -408,6 +408,10 @@ local function RegisterMasterEventListeners(inst)
     inst:ListenForEvent("onattackother", OnAttackOther)
     inst:ListenForEvent("onareaattackother", OnAreaAttackOther)
     inst:ListenForEvent("killed", OnKilled)
+
+	--Cookbook events
+    inst:ListenForEvent("learncookbookrecipe", ex_fns.OnLearnCookbookRecipe)
+    inst:ListenForEvent("oneat", ex_fns.OnEat)
 end
 
 --------------------------------------------------------------------------
@@ -1024,6 +1028,12 @@ local function ShowGiftItemPopUp(inst, show)
     end
 end
 
+local function ShowCookbookPopUp(inst, show)
+    if TheWorld.ismastersim then
+        inst.player_classified:ShowCookbookPopUp(show)
+    end
+end
+
 local function SetCameraDistance(inst, distance)
     if TheWorld.ismastersim then
         inst.player_classified.cameradistance:set(distance or 0)
@@ -1254,7 +1264,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_book_attack.zip"),
         Asset("ANIM", "anim/player_parryblock.zip"),
         Asset("ANIM", "anim/player_attack_prop.zip"),
-        Asset("ANIM", "anim/player_peruse.zip"),
+        Asset("ANIM", "anim/player_actions_reading.zip"),
         Asset("ANIM", "anim/player_strum.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
@@ -1313,6 +1323,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_travel.zip"),
         Asset("ANIM", "anim/player_mount_actions.zip"),
         Asset("ANIM", "anim/player_mount_actions_item.zip"),
+        Asset("ANIM", "anim/player_mount_actions_reading.zip"),
         Asset("ANIM", "anim/player_mount_unique_actions.zip"),
         Asset("ANIM", "anim/player_mount_one_man_band.zip"),
         Asset("ANIM", "anim/player_mount_boat_jump.zip"),
@@ -1474,7 +1485,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_boat_net")        
         inst.AnimState:AddOverrideBuild("player_boat_sink")
         inst.AnimState:AddOverrideBuild("player_oar")
-        inst.AnimState:AddOverrideBuild("player_peruse")
+        inst.AnimState:AddOverrideBuild("player_actions_reading")
 
         inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
 
@@ -1539,7 +1550,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         
         inst:AddComponent("inkable")
 
-        if TheNet:GetServerGameMode() == "lavaarena" then
+        inst:AddComponent("cookbookupdater")
+
+		if TheNet:GetServerGameMode() == "lavaarena" then
             inst:AddComponent("healthsyncer")
         end
 
@@ -1792,6 +1805,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.ShowActions = ShowActions
         inst.ShowHUD = ShowHUD
         inst.ShowWardrobePopUp = ShowWardrobePopUp
+        inst.ShowCookbookPopUp = ShowCookbookPopUp
         inst.ShowGiftItemPopUp = ShowGiftItemPopUp
         inst.SetCameraDistance = SetCameraDistance
         inst.SetCameraZoomed = SetCameraZoomed
