@@ -31,6 +31,7 @@ local SKETCHES =
     { item = "chesspiece_klaus",        recipe = "chesspiece_klaus_builder" },
     { item = "chesspiece_beequeen",     recipe = "chesspiece_beequeen_builder" },
     { item = "chesspiece_antlion",      recipe = "chesspiece_antlion_builder" },
+    { item = "chesspiece_minotaur",     recipe = "chesspiece_minotaur_builder" },
 -- Note: The index is saved, always add to the end of the list! and never reorder!
 
 }

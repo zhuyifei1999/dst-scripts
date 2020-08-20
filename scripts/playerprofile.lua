@@ -19,7 +19,8 @@ local PlayerProfile = Class(function(self)
         saw_new_user_popup = false,
         saw_new_host_picker = false,
         install_id = os.time(),
-        play_instance = 0,
+		play_instance = 0,
+		favorite_mods = {}
         --characterskins = {} --legacy variable, don't use it.
     }
 
@@ -30,6 +31,7 @@ local PlayerProfile = Class(function(self)
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
         self.persistdata.HUDSize = 5
+        self.persistdata.screenflash = 1
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
         self.persistdata.movementprediction = true
@@ -53,13 +55,15 @@ function PlayerProfile:Reset()
     self.persistdata.saw_new_user_popup = false
     self.persistdata.saw_new_host_picker = false
     self.persistdata.install_id = os.time()
-    self.persistdata.play_instance = 0
+	self.persistdata.play_instance = 0
+	self.persistdata.favorite_mods = {}
 
     if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
         self.persistdata.HUDSize = 5
+        self.persistdata.screenflash = 1
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
         self.persistdata.movementprediction = true
@@ -85,13 +89,15 @@ function PlayerProfile:SoftReset()
     self.persistdata.saw_new_user_popup = false
     self.persistdata.saw_new_host_picker = false
     self.persistdata.install_id = os.time()
-    self.persistdata.play_instance = 0
+	self.persistdata.play_instance = 0
+	self.persistdata.favorite_mods = {}
 
     if not USE_SETTINGS_FILE then
         self.persistdata.volume_ambient = 7
         self.persistdata.volume_sfx = 7
         self.persistdata.volume_music = 7
         self.persistdata.HUDSize = 5
+        self.persistdata.screenflash = 1
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
         self.persistdata.movementprediction = true
@@ -414,6 +420,14 @@ function PlayerProfile:GetCollectionName()
 	return nil
 end
 
+function PlayerProfile:SetModFavorited(modname, favorite)
+	self.persistdata.favorite_mods[modname] = favorite or nil
+end
+
+function PlayerProfile:IsModFavorited(modname)
+	return self.persistdata.favorite_mods[modname] or false
+end
+
 function PlayerProfile:SetValue(name, value)
     self.dirty = true
     self.persistdata[name] = value
@@ -433,6 +447,22 @@ function PlayerProfile:SetVolume(ambient, sfx, music)
 	    self:SetValue("volume_sfx", sfx)
 	    self:SetValue("volume_music", music)
 	    self.dirty = true
+	end
+end
+
+function PlayerProfile:SetScreenFlash(value)
+ 	if USE_SETTINGS_FILE then
+		TheSim:SetSetting("graphics", "screenflash", tostring(value))
+	else
+		self:SetValue("screenflash", value)
+		self.dirty = true
+	end
+end
+function PlayerProfile:GetScreenFlash()
+ 	if USE_SETTINGS_FILE then
+		return tonumber(TheSim:GetSetting("graphics", "screenflash") or 1)
+	else
+		return tonumber(self:GetValue("screenflash") or 1)
 	end
 end
 
@@ -733,6 +763,24 @@ function PlayerProfile:GetAutoCavesEnabled()
 	end
 end
 
+function PlayerProfile:SetIntegratedBackpack(enabled)
+ 	if USE_SETTINGS_FILE then
+		TheSim:SetSetting("misc", "integratedbackpack", tostring(enabled))
+	else
+		self:SetValue("integratedbackpack", enabled)
+		self.dirty = true
+	end
+end
+
+function PlayerProfile:GetIntegratedBackpack()
+ 	if USE_SETTINGS_FILE then
+		return TheSim:GetSetting("misc", "integratedbackpack") == "true"
+	else
+		return self:GetValue("integratedbackpack")
+	end
+end
+
+
 function PlayerProfile:GetTextureStreamingEnabled()
  	if USE_SETTINGS_FILE then
 		return TheSim:GetSetting("misc", "texture_streaming") == "true"
@@ -989,7 +1037,11 @@ function PlayerProfile:Set(str, callback, minimal_load)
 
         if self.persistdata.play_instance == nil then
             self.persistdata.play_instance = 0
-        end
+		end
+		
+		if self.persistdata.favorite_mods == nil then
+			self.persistdata.favorite_mods = {}
+		end
 
  	    if USE_SETTINGS_FILE then
 			-- Copy over old settings

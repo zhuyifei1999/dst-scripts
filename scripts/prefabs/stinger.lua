@@ -31,6 +31,7 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
 
+	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeHauntableLaunch(inst)
 
     return inst

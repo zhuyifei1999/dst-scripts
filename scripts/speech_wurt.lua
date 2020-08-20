@@ -1391,6 +1391,7 @@ return{
             "Ha ha! Her face!",
         },
         CHESSPIECE_DRAGONFLY = "It all buggy-eyed.",
+		CHESSPIECE_MINOTAUR = "It good for scratching scales against.",
         CHESSPIECE_BUTTERFLY = "It so ugly.",
         CHESSPIECE_ANCHOR = "Why made anchor for land, florpt?",
         CHESSPIECE_MOON = "It look just like real thing!",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Snowy bird feather.",
 		FEATHER_CANARY = "Yellow birdy feather.",
 		FEATHERPENCIL = "For fancy writing, florp.",
+        COOKBOOK = "Like this one, has pictures of food!",
 		FEM_PUPPET = "You stuck?",
 		FIREFLIES =
 		{

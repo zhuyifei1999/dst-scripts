@@ -192,8 +192,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.ADDWETFUEL, "doshortaction"),
     ActionHandler(ACTIONS.REPAIR, "dolongaction"),
     ActionHandler(ACTIONS.READ, 
-        function(inst) 
-            return inst:HasTag("aspiring_bookworm") and "book_peruse" or "book"
+        function(inst, action) 
+            return	(action.invobject ~= nil and action.invobject:HasTag("simplebook")) and "book_peruse"
+					or inst:HasTag("aspiring_bookworm") and "book_peruse" 
+					or "book"
         end),
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
@@ -2311,17 +2313,12 @@ local states =
     State
     {
         name = "book",
-        tags = { "doing" },
+        tags = { "doing", },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
-
-            local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if item ~= nil and item.components.aoetargeting ~= nil then
-                inst.sg:AddStateTag("busy")
-            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -2352,11 +2349,6 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
-
-            local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if item ~= nil and item.components.aoetargeting ~= nil then
-                inst.sg:AddStateTag("busy")
-            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

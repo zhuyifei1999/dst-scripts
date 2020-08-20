@@ -29,17 +29,7 @@ end
 
 local function OnPutInInventory(inst)
 	inst.components.container:Close()
-	inst.components.container.canbeopened = false
-end
-
-local function OnDropped(inst)
-    inst.components.container.canbeopened = true
 	inst.AnimState:PlayAnimation("closed", false)
-end
-
-local function OnLanded(inst)
-    inst.AnimState:PlayAnimation("hit")
-    inst.AnimState:PushAnimation("closed")
 end
 
 local function onburnt(inst)
@@ -95,11 +85,11 @@ local function MakeTackleContainer(name, bank, build, assets)
 		inst.components.container.onclosefn = onclose
         inst.components.container.skipclosesnd = true
         inst.components.container.skipopensnd = true
+		inst.components.container.droponopen = true
 
 		
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
-		inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
 		
 		inst:AddComponent("lootdropper")
 
@@ -112,8 +102,6 @@ local function MakeTackleContainer(name, bank, build, assets)
 
         if name == "supertacklecontainer" then
             inst._sounds = supertacklecontainer_sounds
-            
-            inst:ListenForEvent("on_landed", OnLanded)
         else
             inst._sounds = tacklecontainer_sounds
         end

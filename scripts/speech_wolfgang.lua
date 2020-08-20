@@ -1392,6 +1392,7 @@ return{
             "Bad monster made of stone.",
         },
         CHESSPIECE_DRAGONFLY = "Is fiery killbeast, but stone.",
+		CHESSPIECE_MINOTAUR = "Strong beast made from strong stone!",
         CHESSPIECE_BUTTERFLY = "Is look like little flutterby, but bigger!",
         CHESSPIECE_ANCHOR = "Is big. And heavy. Wolfgang would like to lift.",
         CHESSPIECE_MOON = "Is look just like sky cheese!",
@@ -1610,6 +1611,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Is feather of bird white.",
 		FEATHER_CANARY = "Is feather of bird yellow.",
 		FEATHERPENCIL = "Wolfgang must stick pinky out when holding it.",
+        COOKBOOK = "Is book of things to fill Wolfgang's mighty belly!",
 		FEM_PUPPET = "Scary chair scares her!",
 		FIREFLIES =
 		{

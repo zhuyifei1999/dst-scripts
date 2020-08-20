@@ -104,8 +104,8 @@ function MakeWallType(data)
 
     local function ondeploywall(inst, pt, deployer)
         --inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spider_egg_sack")
-        local wall = SpawnPrefab("wall_"..data.name) 
-        if wall ~= nil then 
+        local wall = SpawnPrefab("wall_"..data.name, inst.linked_skinname, inst.skin_id) 
+        if wall ~= nil then
             local x = math.floor(pt.x) + .5
             local z = math.floor(pt.z) + .5
             wall.Physics:SetCollides(false)

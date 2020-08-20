@@ -1398,6 +1398,7 @@ return{
             "Looks as dumb as the real thing.",
         },
         CHESSPIECE_DRAGONFLY = "I think... I think I understand art.",
+		CHESSPIECE_MINOTAUR = "Pfft, I never needed a guardian. And I turned out fine!",
         CHESSPIECE_BUTTERFLY = "Meh. I can't even burn it.",
         CHESSPIECE_ANCHOR = "It's hard to burn stuff at sea.",
         CHESSPIECE_MOON = "I guess it's nice.",
@@ -1616,6 +1617,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Snowbird feather. It probably smells terrible on fire.",
 		FEATHER_CANARY = "Canary feather. It probably smells terrible on fire.",
 		FEATHERPENCIL = "So what does the feather do again?",
+        COOKBOOK = "Uuugh, it's no fun cooking with instructions!",
 		FEM_PUPPET = "She looks scared half to death.",
 		FIREFLIES =
 		{

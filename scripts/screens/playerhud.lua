@@ -25,6 +25,7 @@ local PauseScreen = require "screens/redux/pausescreen"
 local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
 local InputDialogScreen = require "screens/inputdialog"
+local CookbookPopupScreen = require "screens/cookbookpopupscreen"
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -263,7 +264,7 @@ end
 function PlayerHud:CloseContainer(container, side)
     if container == nil then
         return
-    elseif side and TheInput:ControllerAttached() then
+    elseif side and (TheInput:ControllerAttached() or Profile:GetIntegratedBackpack()) then
         self.controls.inv.rebuild_pending = true
     else
         CloseContainerWidget(self, container, side)
@@ -290,7 +291,7 @@ end
 function PlayerHud:OpenContainer(container, side)
     if container == nil then
         return
-    elseif side and TheInput:ControllerAttached() then
+    elseif side and (TheInput:ControllerAttached() or Profile:GetIntegratedBackpack()) then
         self.controls.inv.rebuild_pending = true
     else
         OpenContainerWidget(self, container, side)
@@ -444,6 +445,21 @@ function PlayerHud:CloseWardrobeScreen()
     end
 end
 
+function PlayerHud:OpenCookbookScreen()
+    self.cookbookscreen = CookbookPopupScreen(self.owner)
+    self:OpenScreenUnderPause(self.cookbookscreen)
+    return true
+end
+
+function PlayerHud:CloseCookbookScreen()
+    if self.cookbookscreen ~= nil then
+        if self.cookbookscreen.inst:IsValid() then
+            TheFrontEnd:PopScreen(self.cookbookscreen)
+		end
+        self.cookbookscreen = nil
+    end
+end
+
 --Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup
 function PlayerHud:SetRecentGifts(item_types, item_ids)
     if self.recentgiftstask ~= nil then
@@ -464,14 +480,15 @@ end
 
 function PlayerHud:RefreshControllers()
     local controller_mode = TheInput:ControllerAttached()
-    if self.controls.inv.controller_build ~= controller_mode then
+	local integrated_backpack = controller_mode or Profile:GetIntegratedBackpack()
+    if self.controls.inv.controller_build ~= controller_mode or self.controls.inv.integrated_backpack ~= integrated_backpack then
         self.controls.inv.rebuild_pending = true
         local overflow = self.owner.replica.inventory:GetOverflowContainer()
         if overflow == nil then
             --switching to controller inv with no backpack
             --don't animate out from the backpack position
             self.controls.inv.rebuild_snapping = true
-        elseif controller_mode then
+        elseif controller_mode or integrated_backpack then
             --switching to controller with backpack
             --close mouse backpack container widget
             CloseContainerWidget(self, overflow.inst, overflow:IsSideWidget())
@@ -503,6 +520,7 @@ function PlayerHud:CloseWriteableWidget()
         self.writeablescreen = nil
     end
 end
+
 function PlayerHud:GoSane()
     self.vig:GetAnimState():PlayAnimation("basic", true)
 end

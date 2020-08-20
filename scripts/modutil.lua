@@ -450,7 +450,7 @@ local function InsertPostInitFunctions(env, isworldgen)
 	env.AddCookerRecipe = function(cooker, recipe)
 		require("cooking")
 		initprint("AddCookerRecipe", cooker, recipe.name)
-		AddCookerRecipe(cooker, recipe)
+		AddCookerRecipe(cooker, recipe, true) -- please do not try to bypass the true value. It will not work and result in server log spam and cause a worse cookbook experience for the mod users.
 		if env.cookerrecipes[cooker] == nil then
 	        env.cookerrecipes[cooker] = {}
 	    end
@@ -568,6 +568,11 @@ local function InsertPostInitFunctions(env, isworldgen)
 	    end
 	    table.insert( env.clothing_exclude[name], symbol )
     end
+	
+	env.RegisterInventoryItemAtlas = function(atlas, prefabname) -- for this to work properly (without having to spawn an item), you should be using the prefab name for the inventory image name
+		initprint("RegisterInventoryItemAtlas", atlas, prefabname)
+		RegisterInventoryItemAtlas(atlas, prefabname)
+	end
     
 end
 

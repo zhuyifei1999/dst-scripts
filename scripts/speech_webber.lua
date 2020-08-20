@@ -1391,6 +1391,7 @@ return{
             "She doesn't look so mean.",
         },
         CHESSPIECE_DRAGONFLY = "We can practically feel the fire!",
+		CHESSPIECE_MINOTAUR = "We feel a bit bad for stealing their treasure.",
         CHESSPIECE_BUTTERFLY = "It looks kinda yummy, doesn't it?",
         CHESSPIECE_ANCHOR = "Anchors away!",
         CHESSPIECE_MOON = "Almost as pretty as the real thing.",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Feather of white.",
 		FEATHER_CANARY = "Feather of yellow.",
 		FEATHERPENCIL = "Haha! It tickles!",
+        COOKBOOK = "Now we'll never forget a recipe!",
 		FEM_PUPPET = "She's locked up!",
 		FIREFLIES =
 		{

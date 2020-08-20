@@ -1391,6 +1391,7 @@ return{
             "Twas an honor to fight thee.",
         },
         CHESSPIECE_DRAGONFLY = "Tis the trophy of glorious battle!",
+		CHESSPIECE_MINOTAUR = "The beast guarded its treasure well, but not well enough.",
         CHESSPIECE_BUTTERFLY = "To celebrate the moon's messenger!",
         CHESSPIECE_ANCHOR = "'Twas made in honor of our stalwart vessel!",
         CHESSPIECE_MOON = "Offered in honor of our beauteous moon!",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Winter's feather.",
 		FEATHER_CANARY = "In remembrance of a songbird.",
 		FEATHERPENCIL = "Perhaps I'll pen a saga of my journeys!",
+        COOKBOOK = "'Tis filled with too many non-meat dishes if you ask me.",
 		FEM_PUPPET = "She looks unhappy upon her throne.",
 		FIREFLIES =
 		{

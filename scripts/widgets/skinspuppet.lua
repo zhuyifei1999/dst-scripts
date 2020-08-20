@@ -335,11 +335,28 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	self.last_skins.feet = clothing_names.feet
 end
 
-local beards = {
-	"beard_short",
-	"beard_medium",
-	"beard_long"
+local beards =
+{
+	wilson =
+	{
+		"beard_short",
+		"beard_medium",
+		"beard_long"
+	},
+	webber =
+	{
+		"beardsilk_short",
+		"beardsilk_medium",
+		"beardsilk_long"
+	}
 }
+
+local beard_file =
+{
+	wilson = "beard",
+	webber = "beard_silk"
+}
+
 function SkinsPuppet:SetBeardLength(length)
 	self.beard_length = length
 	self:SetBeard( self.beard )
@@ -349,9 +366,10 @@ function SkinsPuppet:SetBeard(beard)
 	self.beard = beard
 	if self.beard_length ~= nil then
 		if beard == nil or beard == "beard_default1" then
-			self.animstate:OverrideSymbol("beard", "beard", beards[self.beard_length])
+			self.animstate:OverrideSymbol("beard", beard_file[self.character or "wilson"], beards[self.character or "wilson"][self.beard_length])
 		else
-			self.animstate:OverrideSkinSymbol("beard", beard, beards[self.beard_length])
+			self.character = beard:sub(1,string.find(beard, "_")-1)
+			self.animstate:OverrideSkinSymbol("beard", beard, beards[self.character][self.beard_length])
 		end
 	end
 end

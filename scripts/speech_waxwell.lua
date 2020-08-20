@@ -1391,6 +1391,7 @@ return{
             "What an imbecilic expression.",
         },
         CHESSPIECE_DRAGONFLY = "It never stood a chance.",
+		CHESSPIECE_MINOTAUR = "Always keep things close to the chest, right pal?",
         CHESSPIECE_BUTTERFLY = "Rather elegant, I'd say.",
         CHESSPIECE_ANCHOR = "How kitsch.",
         CHESSPIECE_MOON = "I'm fairly partial to this one.",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Grey is the color of pain.",
 		FEATHER_CANARY = "Yellow is the color of naivety.",
 		FEATHERPENCIL = "Not as elegant as a quill and inkwell, but it'll do.",
+        COOKBOOK = "Very well. If I can master the dark arts, how hard could cooking be?",
 		FEM_PUPPET = "Better her than me.",
 		FIREFLIES =
 		{

@@ -156,6 +156,7 @@ PREFABFILES = {
   "constructionplans",
   "constructionsite_classified",
   "container_classified",
+  "cookbook",
   "cookiecutter",
   "cookiecutter_spawner",
   "cookiecuttershell",

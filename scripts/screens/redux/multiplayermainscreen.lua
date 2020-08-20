@@ -144,7 +144,6 @@ function MakeBanner(self)
         onanimover(anim.inst)
     ]]
 	else
-		--[[
 		-- default banner
         
         local anim_bg = baner_root:AddChild(UIAnim())
@@ -159,7 +158,7 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
-        
+	    
         local creatures = 
         {
             "creature_cookie",
@@ -181,7 +180,7 @@ function MakeBanner(self)
         anim:GetAnimState():Show(c1)
         anim:GetAnimState():Show(c2)
         anim:GetAnimState():Show(c3)
-	
+--[[	
         local anim = baner_root:AddChild(UIAnim())
 		anim:GetAnimState():SetBuild("dst_menu_walter")
         anim:GetAnimState():SetBank("dst_menu_walter")
@@ -189,10 +188,6 @@ function MakeBanner(self)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
 ]]
-        anim:GetAnimState():SetBuild("dst_menu_dangerous_sea")
-        anim:GetAnimState():SetBank("dst_menu_dangerous_sea")
-        anim:SetScale(.667)
-        anim:GetAnimState():PlayAnimation("loop", true)
         
         --[[
 		local cur_time = os.time() 

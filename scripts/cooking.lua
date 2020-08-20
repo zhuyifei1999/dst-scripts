@@ -1,11 +1,44 @@
 require "tuning"
 
+local official_foods = {} 
+
 local cookerrecipes = {}
-function AddCookerRecipe(cooker, recipe)
+
+local cookbook_recipes = {}
+local MOD_COOKBOOK_CATEGORY = "mod"
+local asdf = 0
+function AddCookerRecipe(cooker, recipe, is_mod_food)
+	if is_mod_food then
+	asdf = asdf + 1
+	print("AddCookerRecipe", asdf, recipe.name)
+	if recipe.name == "salad_carrot_spice_chili" then print(debugstack()) end
+		recipe.cookbook_category = MOD_COOKBOOK_CATEGORY
+	else
+		official_foods[recipe.name] = true
+		recipe.cookbook_atlas = "images/cookbook_"..recipe.name..".xml" -- use the high res images
+	end
+
 	if not cookerrecipes[cooker] then
 		cookerrecipes[cooker] = {}
 	end
 	cookerrecipes[cooker][recipe.name] = recipe
+
+	if cooker ~= "portablespicer" or recipe.no_cookbook then
+		if not cookbook_recipes[recipe.cookbook_category] then
+			cookbook_recipes[recipe.cookbook_category] = {}
+		end
+		if not cookbook_recipes[recipe.cookbook_category][recipe.name] then
+			cookbook_recipes[recipe.cookbook_category][recipe.name] = recipe
+		end
+	end
+end
+
+local function IsModCookerFood(prefab)
+	return not official_foods[prefab] -- note: we cannot test against cookbook_recipes[MOD_COOKBOOK_CATEGORY] because if the mod is unloaded, it would return true
+end
+
+local function HasModCookerFood()
+	return cookbook_recipes[MOD_COOKBOOK_CATEGORY] ~= nil
 end
 
 local ingredients = {}
@@ -70,7 +103,7 @@ AddIngredientValues(mushrooms, {veggie=.5}, true)
 
 AddIngredientValues({"meat"}, {meat=1}, true, true)
 AddIngredientValues({"monstermeat"}, {meat=1, monster=1}, true, true)
-AddIngredientValues({"froglegs", "drumstick"}, {meat=.5}, true)
+AddIngredientValues({"froglegs", "drumstick", "batwing"}, {meat=.5}, true)
 AddIngredientValues({"smallmeat"}, {meat=.5}, true, true)
 
 AddIngredientValues({"eel"}, {meat=.5,fish=1}, true)
@@ -255,4 +288,4 @@ end
 
 TestRecipes("cookpot", {"tallbirdegg","meat","carrot","meat"})]]
 
-return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients = ingredients, GetRecipe = GetRecipe}
+return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients = ingredients, GetRecipe = GetRecipe, cookbook_recipes = cookbook_recipes, HasModCookerFood = HasModCookerFood, IsModCookerFood = IsModCookerFood}

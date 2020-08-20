@@ -749,11 +749,14 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
     
     inst:SetPhysicsRadiusOverride(3.4) --2.5
     
     MakeWaterObstaclePhysics(inst, 1.7, 2, 0.1)
+
+    inst.MiniMapEntity:SetIcon("crabking.png")
 
     local s  = 0.7
     inst.Transform:SetScale(s, s, s)

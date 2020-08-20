@@ -26,7 +26,7 @@ local assets =
     Asset("FILE", "sound/woodrow.fsb"),        -- Legacy sound that can be used in mods
     Asset("FILE", "sound/stuff.fsb"),          -- Legacy sound that can be used in mods
 
-    Asset("FILE", "klump/unused.txt"),         -- Make the klump zip not empty.
+    Asset("FILE", "klump/strings/unused.txt"),         -- Make the klump zip not empty.
 
 
     -- Legacy for modders to view. These files are now dynamically loaded.
@@ -261,6 +261,7 @@ local assets =
     Asset("ANIM", "anim/generating_cave.zip"),
     Asset("ANIM", "anim/creepy_hands.zip"),    
     Asset("ANIM", "anim/saving_indicator.zip"),
+    Asset("ANIM", "anim/cookbook_newrecipe.zip"),
 
     Asset("ANIM", "anim/skingift_popup.zip"),
     Asset("ATLAS", "images/giftpopup.xml"),
@@ -273,8 +274,7 @@ local assets =
     Asset("IMAGE", "images/inventoryimages1.tex"),
     Asset("ATLAS", "images/inventoryimages2.xml"),
     Asset("IMAGE", "images/inventoryimages2.tex"),
-    Asset("ATLAS", "images/inventoryimages2.xml"),
-    Asset("IMAGE", "images/inventoryimages2.tex"),
+
     Asset("ATLAS", "images/hud.xml"),
     Asset("IMAGE", "images/hud.tex"),
 
@@ -284,6 +284,8 @@ local assets =
 
     Asset("ATLAS", "images/button_icons.xml"),
     Asset("IMAGE", "images/button_icons.tex"),
+    Asset("ATLAS", "images/button_icons2.xml"),
+    Asset("IMAGE", "images/button_icons2.tex"),
 
     Asset("ATLAS", "images/avatars.xml"),
     Asset("IMAGE", "images/avatars.tex"),
@@ -309,6 +311,7 @@ local assets =
     Asset("PKGREF", "anim/dynamic/feet_default1.dyn"),
 
     Asset("ANIM", "anim/beard.zip"),
+    Asset("ANIM", "anim/beard_silk.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/beard_default1.zip"),
     Asset("PKGREF", "anim/dynamic/beard_default1.dyn"),
 

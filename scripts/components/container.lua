@@ -21,6 +21,8 @@ local Container = Class(function(self, inst)
     self.itemtestfn = nil
     self.opener = nil
 
+	--self.droponopen = false
+
     --Hacky flags for altering behaviour when moving items between containers
     self.ignoresound = false
 end,

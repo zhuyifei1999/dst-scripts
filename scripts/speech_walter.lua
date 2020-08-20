@@ -1391,6 +1391,7 @@ return{
             "It's a shame things had to end the way they did.",
         },
         CHESSPIECE_DRAGONFLY = "If only we could've gotten along.",
+		CHESSPIECE_MINOTAUR = "This statue is... a-maze-ing! Get it?",
         CHESSPIECE_BUTTERFLY = "It's not quite as good as a real bug collection, but close!",
         CHESSPIECE_ANCHOR = "Technically this could still work as a real anchor.",
         CHESSPIECE_MOON = "It tells folks to be-were! Get it?",
@@ -1609,6 +1610,7 @@ return{
 		FEATHER_ROBIN_WINTER = "Looks like a snowbird feather.",
 		FEATHER_CANARY = "Looks like a canary feather.",
 		FEATHERPENCIL = "I feel like I should write something poetic with this...",
+        COOKBOOK = "Looks like I've got a new guide to memorize!",
 		FEM_PUPPET = "Don't worry, a Pinetree Pioneer always helps those in need!",
 		FIREFLIES =
 		{

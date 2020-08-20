@@ -1,6 +1,7 @@
 local ModsTab = require "widgets/redux/modstab"
 local Screen = require "widgets/screen"
 local Widget = require "widgets/widget"
+local Text = require "widgets/text"
 local PopupDialogScreen = require "screens/redux/popupdialog"
 local TEMPLATES = require "widgets/redux/templates"
 local OnlineStatus = require "widgets/onlinestatus"
@@ -86,6 +87,30 @@ function ModsScreen:RepositionModsButtonMenu(allmodsmenu, selectedmodmenu)
     end
 end
 
+function ModsScreen:ShowWorkshopDownloadingNotification()
+	if self.workshop_indicator ~= nil then
+		return
+	end
+
+	self.workshop_indicator = self.mods_page:AddChild(Widget("workshop_indicator"))
+    self.workshop_indicator:SetPosition(390, 250)
+
+	local text = self.workshop_indicator:AddChild(Text(BODYTEXTFONT, 18, STRINGS.UI.MODSSCREEN.DOWNLOADING_MODS, UICOLOURS.GOLD_UNIMPORTANT))
+    text:SetPosition(0, -27)
+
+	local image = self.workshop_indicator:AddChild(Image("images/avatars.xml", "loading_indicator.tex"))
+	local function dorotate() image:RotateTo(0, -360, .75, dorotate) end
+	dorotate()
+	image:SetTint(unpack(UICOLOURS.GOLD_UNIMPORTANT))
+end
+
+function ModsScreen:RemoveWorkshopDownloadingNotification()
+	if self.workshop_indicator ~= nil then
+		self.workshop_indicator:Kill()
+		self.workshop_indicator = nil
+	end
+end
+
 function ModsScreen:DirtyFromMods(_)
     self:MakeDirty()
 end
@@ -150,6 +175,12 @@ function ModsScreen:OnBecomeActive()
     ModsScreen._base.OnBecomeActive(self)
 
     self.mods_page:OnBecomeActive()
+end
+
+function ModsScreen:OnBecomeInactive()
+    ModsScreen._base.OnBecomeInactive(self)
+    
+    self.mods_page:OnBecomeInactive()
 end
 
 function ModsScreen:GetHelpText()

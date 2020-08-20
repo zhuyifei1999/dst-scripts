@@ -11,6 +11,7 @@ local foods =
         perishtime = TUNING.PERISH_MED,
         sanity = TUNING.SANITY_TINY,
         cooktime = 2,
+		oneat_desc = STRINGS.UI.COOKBOOK.FOOD_EFFECTS_SWAP_HEALTH_AND_SANITY,
         oneatenfn = function(inst, eater)
             if eater.components.sanity ~= nil and eater.components.health ~= nil then
                 local sanity_percent = eater.components.sanity:GetPercent()
@@ -37,9 +38,9 @@ local foods =
 		sanity = TUNING.SANITY_SMALL,
 		cooktime = 2,
         potlevel = "high",
-		oneatenfn = function(inst, eater) end,
 		tags = {"masterfood"},
 		prefabs = { "buff_electricattack" },
+		oneat_desc = STRINGS.UI.COOKBOOK.FOOD_EFFECTS_ELECTRIC_ATTACK,
         oneatenfn = function(inst, eater)
             if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
                 not (eater.components.health ~= nil and eater.components.health:IsDead()) and
@@ -63,6 +64,7 @@ local foods =
         cooktime = 1,
         potlevel = "low",
         prefabs = { "wormlight_light_greater" },
+		oneat_desc = STRINGS.UI.COOKBOOK.FOOD_EFFECTS_GLOW,
         oneatenfn = function(inst, eater)
             --see wormlight.lua for original code
             if eater.wormlight ~= nil then
@@ -102,6 +104,7 @@ local foods =
         potlevel = "low",
         tags = { "masterfood" },
         prefabs = { "buff_moistureimmunity" },
+		oneat_desc = STRINGS.UI.COOKBOOK.FOOD_EFFECTS_DRY,
         oneatenfn = function(inst, eater)
             if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
                 not (eater.components.health ~= nil and eater.components.health:IsDead()) and
@@ -232,6 +235,8 @@ for k, v in pairs(foods) do
     v.name = k
     v.weight = v.weight or 1
     v.priority = v.priority or 0
+
+	v.cookbook_category = "portablecookpot"
 end
 
 return foods

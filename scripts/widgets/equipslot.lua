@@ -23,6 +23,10 @@ function EquipSlot:Click()
 end
 
 function EquipSlot:OnControl(control, down)
+	if self.tile ~= nil then 
+		self.tile:UpdateTooltip()
+	end
+
     if down then
         local inventory = self.owner.replica.inventory
         if control == CONTROL_ACCEPT then

@@ -282,6 +282,12 @@ GESTURE_ROTATE_LEFT = 902
 GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
+SCREEN_FLASH_SCALING =
+{
+	0.9, -- default
+	0.6, -- dim
+	0.3, -- dimmest
+}
 
 BACKEND_PREFABS = { "forest", "cave", "lavaarena", "quagmire" }
 FRONTEND_PREFABS = { "frontend" }
@@ -1960,7 +1966,8 @@ INVENTORY_PROGRESS =
 	CHECK_EVENT = 2,
 	CHECK_DLC = 3,
 	CHECK_DAILY_GIFT = 4,
-	CHECK_INVENTORY = 5,
+	CHECK_COOKBOOK = 5,
+	CHECK_INVENTORY = 6,
 }
 
 CURRENT_BETA = 1 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care

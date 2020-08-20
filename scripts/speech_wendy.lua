@@ -1395,6 +1395,7 @@ return{
             "Such expression in her eyes.",
         },
         CHESSPIECE_DRAGONFLY = "She now lies, cold as stone.",
+		CHESSPIECE_MINOTAUR = "A testament to a lifetime spent alone in the dark.",
         CHESSPIECE_BUTTERFLY = "But a simulacrum of life. Sigh.",
         CHESSPIECE_ANCHOR = "Why did we sculpt an anchor.",
         CHESSPIECE_MOON = "I'd prefer to look at this over the real thing.",
@@ -1613,6 +1614,7 @@ return{
 		FEATHER_ROBIN_WINTER = "A snowbird feather, white as the light at the end of the tunnel.",
 		FEATHER_CANARY = "A canary feather, golden as the gilded cage.",
 		FEATHERPENCIL = "M...maybe I'll doodle something... When no one's looking.",
+        COOKBOOK = "What's the point of filling my stomach when my heart remains empty...",
 		FEM_PUPPET = "I wonder what she did.",
 		FIREFLIES =
 		{

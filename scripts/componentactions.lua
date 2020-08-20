@@ -1604,6 +1604,10 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        simplebook = function(inst, doer, actions)
+            table.insert(actions, ACTIONS.READ)
+        end,
+
         sleepingbag = function(inst, doer, actions)
             if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)

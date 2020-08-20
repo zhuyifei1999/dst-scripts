@@ -185,8 +185,12 @@ end
 function PlayerActionPicker:GetInventoryActions(useitem, right)
     local actions = {}
 
-    useitem:CollectActions("INVENTORY", self.inst, actions, right)
-
+	if not self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_TRADE) then
+		useitem:CollectActions("INVENTORY", self.inst, actions, right)
+	else
+		actions = {ACTIONS.DROP}
+	end
+	
     local sorted_acts = self:SortActionList(actions, nil, useitem)
 
     if not self.inst.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK) then

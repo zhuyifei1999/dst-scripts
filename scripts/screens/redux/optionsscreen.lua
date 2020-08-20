@@ -25,6 +25,16 @@ local controls_ui = {
 local show_graphics = PLATFORM ~= "NACL"
 
 local enableDisableOptions = { { text = STRINGS.UI.OPTIONS.DISABLED, data = false }, { text = STRINGS.UI.OPTIONS.ENABLED, data = true } }
+local integratedbackpackOptions = { { text = STRINGS.UI.OPTIONS.INTEGRATEDBACKPACK_DISABLED, data = false }, { text = STRINGS.UI.OPTIONS.INTEGRATEDBACKPACK_ENABLED, data = true } }
+local enableScreenFlashOptions = { { text = STRINGS.UI.OPTIONS.DEFAULT, data = 1 }, { text = STRINGS.UI.OPTIONS.DIM, data = 2 } , { text = STRINGS.UI.OPTIONS.DIMMEST, data = 3 } }
+local function FindEnableScreenFlashOptionsIndex(value) 
+    for i = 1, #enableScreenFlashOptions do
+		if enableScreenFlashOptions[i].data == value then
+			return i
+		end
+	end
+	return 1
+end
 
 local all_controls = 
 {
@@ -212,6 +222,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 		ambientvolume = TheMixer:GetLevel( "set_ambience" ) * 10,
 		bloom = graphicsOptions:IsBloomEnabled(),
 		smalltextures = graphicsOptions:IsSmallTexturesMode(),
+		screenflash = Profile:GetScreenFlash(),
 		distortion = graphicsOptions:IsDistortionEnabled(),
 		screenshake = Profile:IsScreenShakeEnabled(),
 		hudSize = Profile:GetHUDSize(),
@@ -224,6 +235,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 		autologin = Profile:GetAutoLoginEnabled(),
 		wathgrithrfont = Profile:IsWathgrithrFontEnabled(),
 		boatcamera = Profile:IsBoatCameraEnabled(),
+		integratedbackpack = Profile:GetIntegratedBackpack(),
         lang_id = Profile:GetLanguageID(),
 		texturestreaming = Profile:GetTextureStreamingEnabled(),
 	}
@@ -266,7 +278,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 	self:MakeBackButton()
     self:_RefreshScreenButtons()
 
-    self.dialog = self.root:AddChild(TEMPLATES.RectangleWindow(830, 500))
+    self.dialog = self.root:AddChild(TEMPLATES.RectangleWindow(830, 530))
     self.dialog:SetPosition(140, 5)
     self.panel_root = self.dialog:AddChild(Widget("panel_root"))
     self.panel_root:SetPosition(-90, 55)
@@ -498,6 +510,7 @@ function OptionsScreen:Save(cb)
 	Profile:SetWathgrithrFontEnabled( self.options.wathgrithrfont )
 	Profile:SetBoatCameraEnabled( self.options.boatcamera )
 	Profile:SetHUDSize( self.options.hudSize )
+	Profile:SetScreenFlash( self.options.screenflash )
 	Profile:SetVibrationEnabled( self.options.vibration )
 	Profile:SetShowPasswordEnabled( self.options.showpassword )
 	Profile:SetProfanityFilterServerNamesEanbled( self.options.profanityfilterservernames )
@@ -505,6 +518,10 @@ function OptionsScreen:Save(cb)
 	Profile:SetAutoSubscribeModsEnabled( self.options.automods )
 	Profile:SetAutoLoginEnabled( self.options.autologin )
 	Profile:SetTextureStreamingEnabled( self.options.texturestreaming )
+
+	if self.integratedbackpackSpinner:IsEnabled() then
+		Profile:SetIntegratedBackpack( self.options.integratedbackpack )
+	end
 
 	Profile:Save( function() if cb then cb() end end)
 end
@@ -609,6 +626,10 @@ function OptionsScreen:Apply()
 	Profile:SetWathgrithrFontEnabled( self.working.wathgrithrfont )
 	Profile:SetBoatCameraEnabled( self.working.boatcamera )
 	TheSim:SetNetbookMode(self.working.netbookmode)
+
+	if self.integratedbackpackSpinner:IsEnabled() then
+		Profile:SetIntegratedBackpack( self.working.integratedbackpack )
+	end
 
 	TheInputProxy:ApplyControlMapping()
     self._deviceSaved = 0 --Default if nothing else was enabled
@@ -793,9 +814,15 @@ function OptionsScreen:RefreshControls()
             local kbString = TheInput:GetLocalizedControl(0, v.control.keyboard)
             v.binding_btn:SetText(kbString)
 
+			self.integratedbackpackSpinner:Enable()
+			self.integratedbackpackSpinner:SetSelectedIndex(self.integratedbackpackSpinner.selectedIndex)
+
         elseif v.control.controller and self.deviceSpinner:GetSelectedData() and v.binding_btn then
             local controllerString = controllerDeviceId ~= nil and TheInput:GetLocalizedControl(controllerDeviceId, v.control.controller) or ""
             v.binding_btn:SetText(controllerString)
+
+			self.integratedbackpackSpinner:Disable()
+			self.integratedbackpackSpinner:UpdateText(STRINGS.UI.OPTIONS.INTEGRATEDBACKPACK_ENABLED)
         end
 	end
 
@@ -924,7 +951,7 @@ function OptionsScreen:_BuildSettings()
     -- NOTE: if we add more options, they should be made scrollable. Look
     -- at customization screen for an example.
     self.grid = settingsroot:AddChild(Grid())
-    self.grid:SetPosition(-90, 164, 0)
+    self.grid:SetPosition(-90, 184, 0)
 
 
 	--------------
@@ -1085,6 +1112,14 @@ function OptionsScreen:_BuildSettings()
 			self:UpdateMenu()
 		end
 
+	self.screenFlashSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.SCREEN_FLASH_INTENSITY, enableScreenFlashOptions)
+	self.screenFlashSpinner.OnChanged =
+		function( _, data )
+			this.working.screenflash = data
+			--this:Apply()
+			self:UpdateMenu()
+		end
+
 	self.vibrationSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.VIBRATION, enableDisableOptions)
 	self.vibrationSpinner.OnChanged =
 		function( _, data )
@@ -1121,6 +1156,14 @@ function OptionsScreen:_BuildSettings()
 	self.boatcameraSpinner.OnChanged =
 		function( _, data )
 			this.working.boatcamera = data
+			--this:Apply()
+			self:UpdateMenu()
+		end
+		
+	self.integratedbackpackSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.BACKPACKMODE, integratedbackpackOptions)
+	self.integratedbackpackSpinner.OnChanged =
+		function( _, data )
+			this.working.integratedbackpack = data
 			--this:Apply()
 			self:UpdateMenu()
 		end
@@ -1255,22 +1298,22 @@ function OptionsScreen:_BuildSettings()
     table.insert( self.left_spinners, self.wathgrithrfontSpinner)
     table.insert( self.left_spinners, self.hudSize)
     table.insert( self.left_spinners, self.boatcameraSpinner)
+    table.insert( self.left_spinners, self.integratedbackpackSpinner)
 
     table.insert( self.right_spinners, self.screenshakeSpinner )
     table.insert( self.right_spinners, self.distortionSpinner )
     table.insert( self.right_spinners, self.bloomSpinner )
+    table.insert( self.right_spinners, self.screenFlashSpinner )
 
-	if show_graphics then
-		table.insert( self.right_spinners, self.fullscreenSpinner )
-		table.insert( self.right_spinners, self.resolutionSpinner )
-		table.insert( self.right_spinners, self.displaySpinner )
-		table.insert( self.right_spinners, self.refreshRateSpinner )
-		table.insert( self.right_spinners, self.smallTexturesSpinner )
-		table.insert( self.right_spinners, self.netbookModeSpinner )
-        table.insert( self.right_spinners, self.movementpredictionSpinner )
-	end
+	table.insert( self.right_spinners, self.fullscreenSpinner )
+	table.insert( self.right_spinners, self.resolutionSpinner )
+	table.insert( self.right_spinners, self.displaySpinner )
+	table.insert( self.right_spinners, self.refreshRateSpinner )
+	table.insert( self.right_spinners, self.smallTexturesSpinner )
+	table.insert( self.right_spinners, self.netbookModeSpinner )
 
 	table.insert( self.right_spinners, self.texturestreamingSpinner )
+    table.insert( self.right_spinners, self.movementpredictionSpinner )
 	table.insert( self.right_spinners, self.autologinSpinner )
 
 	if self.show_datacollection then
@@ -1298,7 +1341,7 @@ end
 function OptionsScreen:_BuildControls()
     local controlsroot = Widget("ROOT")
 
-    controlsroot:SetPosition(290,-40)
+    controlsroot:SetPosition(290,-20)
 
 	self.controls_horizontal_line = controlsroot:AddChild(Image("images/global_redux.xml", "item_divider.tex"))
     self.controls_horizontal_line:SetScale(.9)
@@ -1459,12 +1502,12 @@ function OptionsScreen:_BuildControls()
 
     local function CreateScrollableList(items)
         local width = controls_ui.action_label_width + spacing + controls_ui.action_btn_width
-        return ScrollableList(items, width/2, 380, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, "GOLD")
+        return ScrollableList(items, width/2, 420, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, "GOLD")
     end
 	self.kb_controllist = controlsroot:AddChild(CreateScrollableList(self.kb_controlwidgets))
-	self.kb_controllist:SetPosition(0, -30)
+	self.kb_controllist:SetPosition(0, -50)
     self.controller_controllist = controlsroot:AddChild(CreateScrollableList(self.controller_controlwidgets))
-    self.controller_controllist:SetPosition(0, -30)
+    self.controller_controllist:SetPosition(0, -50)
 
     controlsroot.focus_forward = function()
         return self.active_list
@@ -1505,12 +1548,14 @@ function OptionsScreen:InitializeSpinners(first)
 	end
 	
 	self.hudSize:SetSelectedIndex( self.working.hudSize or 5)
+	self.screenFlashSpinner:SetSelectedIndex( FindEnableScreenFlashOptionsIndex( self.working.screenflash ) )
 	self.vibrationSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.vibration ) )
 	self.passwordSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.showpassword ) )
 	self.profanityfilterSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.profanityfilterservernames ) )
     self.movementpredictionSpinner:SetSelectedIndex(EnabledOptionsIndex(self.working.movementprediction))
 	self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) )
 	self.boatcameraSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.boatcamera ) )
+	self.integratedbackpackSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.integratedbackpack ) )
 	self.texturestreamingSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.texturestreaming ) )
 
 	if self.show_datacollection then

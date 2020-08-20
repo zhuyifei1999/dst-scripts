@@ -899,6 +899,10 @@ local RPC_HANDLERS =
             feet = feet_skin,
         })
     end,
+
+    CloseCookbookScreen = function(player)
+        player:PushEvent("ms_closecookbookscreen")
+    end,
 }
 
 RPC = {}

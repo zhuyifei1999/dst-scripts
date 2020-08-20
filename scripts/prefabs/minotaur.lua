@@ -18,6 +18,7 @@ local prefabs =
     "atrium_key",
     "collapse_small",
     "minotaur_ruinsrespawner_inst",
+    "chesspiece_minotaur_sketch",
 }
 
 local prefabs_chest =
@@ -39,6 +40,7 @@ SetSharedLootTable('minotaur',
     {"meat",        1.00},
     {"meat",        1.00},
     {"minotaurhorn",1.00},
+	{"chesspiece_minotaur_sketch", 1.00},
 })
 
 local chest_loot = 
