@@ -697,17 +697,18 @@ function ModsTab:UpdateModsOrder(force_refresh)
     --KnownModIndex:UpdateModInfo() --Note(Zachary): this is done in UpdateForWorkshop, so we don't reload modinfo every tick.
     local curr_modnames_client = KnownModIndex:GetClientModNamesTable()
     local curr_modnames_server = KnownModIndex:GetServerModNamesTable()
+    local curr_downloading_mods_count = #self.modnames_client_dl + #self.modnames_server_dl
     table.sort(curr_modnames_client, alphasort)
     table.sort(curr_modnames_server, alphasort)
 
     --update workshop version data into the curr list
-    self.has_local_client = false
+    local has_local_client = false
     for k,v in pairs( curr_modnames_client ) do
         local is_workshop = IsWorkshopMod(v.modname)
-        self.has_local_client = self.has_local_client or not is_workshop
+        has_local_client = has_local_client or not is_workshop
         v.version = is_workshop and TheSim:GetWorkshopVersion(v.modname) or ""
     end
-    self.has_local_server = false
+    local has_local_server = false
     for k,v in pairs( curr_modnames_server ) do
         --do this in here, since the UI won't explode, and we need to do this since mods can get downloaded from the steam workshop...
         if KnownModIndex:IsModDependedOn(v.modname) and not KnownModIndex:IsModEnabled(v.modname) then
@@ -716,20 +717,32 @@ function ModsTab:UpdateModsOrder(force_refresh)
             self:OnConfirmEnable(false, v.modname)
         end
         local is_workshop = IsWorkshopMod(v.modname)
-        self.has_local_server = self.has_local_server or not is_workshop
+        has_local_server = has_local_server or not is_workshop
         v.version = is_workshop and TheSim:GetWorkshopVersion(v.modname) or ""
+    end
+
+    local need_to_update = force_refresh
+    if not CompareModnamesTable( self.modnames_client, curr_modnames_client ) or
+        not CompareModnamesTable( self.modnames_server, curr_modnames_server ) or
+        ((self.downloading_mods_count or 0) > 0 and curr_downloading_mods_count == 0) then
+        need_to_update = true
+    end
+
+    --If nothing has changed bail out and leave the ui alone
+    if not need_to_update or (self.mods_scroll_list and self.mods_scroll_list.dragging) then
+        return
     end
 
     --hiding the filters also disables the filters, so we do this before sorting.
     if self.currentmodtype == "client" then
-        if self.has_local_client then
+        if has_local_client then
             self.modfilterbar:ShowFilter("workshopfilter")
         else
             self.modfilterbar:HideFilter("workshopfilter")
         end
         self.modfilterbar:ShowFilter("statusfilter")
     elseif self.currentmodtype == "server" then
-        if self.has_local_server then
+        if has_local_server then
             self.modfilterbar:ShowFilter("workshopfilter")
         else
             self.modfilterbar:HideFilter("workshopfilter")
@@ -741,17 +754,7 @@ function ModsTab:UpdateModsOrder(force_refresh)
         end
     end
 
-    local need_to_update = force_refresh
-    if not CompareModnamesTable( self.modnames_client, curr_modnames_client ) or
-        not CompareModnamesTable( self.modnames_server, curr_modnames_server ) then
-        need_to_update = true
-    end
-
-    --If nothing has changed bail out and leave the ui alone
-    if not need_to_update or (self.mods_scroll_list and self.mods_scroll_list.dragging) then
-        return
-    end
-
+    self.downloading_mods_count = curr_downloading_mods_count
     self.modnames_client = curr_modnames_client
     self.modnames_server = curr_modnames_server
 
@@ -759,10 +762,10 @@ function ModsTab:UpdateModsOrder(force_refresh)
     -- Now that we're up to date, build widgets for all the mods
     self.optionwidgets_client.normal = {}
     for i,v in ipairs(self.modnames_client) do
+        if IsModOutOfDate( v.modname, v.version ) then
+            out_of_date_mods = out_of_date_mods + 1
+        end
         if self.mods_filter_fn(v.modname) then
-            if IsModOutOfDate( v.modname, v.version ) then
-                out_of_date_mods = out_of_date_mods + 1
-            end
 
             local data = {
                 index = i,
@@ -777,10 +780,10 @@ function ModsTab:UpdateModsOrder(force_refresh)
 
     self.optionwidgets_server.normal = {}
     for i,v in ipairs(self.modnames_server) do
+        if IsModOutOfDate( v.modname, v.version ) then
+            out_of_date_mods = out_of_date_mods + 1
+        end
         if self.mods_filter_fn(v.modname) then
-            if IsModOutOfDate( v.modname, v.version ) then
-                out_of_date_mods = out_of_date_mods + 1
-            end
 
             local data = {
                 index = i,
@@ -795,12 +798,10 @@ function ModsTab:UpdateModsOrder(force_refresh)
 
     self:_SetModsList(self.currentmodtype)
 
-    --update the text on Update All button to indicate how many mods are out of date
-    local downloading_mods_count = #self.modnames_client_dl + #self.modnames_server_dl
-    if downloading_mods_count > 0 then
+    if self.downloading_mods_count > 0 then
         --updating
         self.updateallbutton:SetHoverText(STRINGS.UI.MODSSCREEN.UPDATINGMOD)
-        self.out_of_date_badge:SetCount(downloading_mods_count)
+        self.out_of_date_badge:SetCount(self.downloading_mods_count)
         self.updateallbutton:Select()
         self.updateallenabled = false
     elseif out_of_date_mods > 0 then
@@ -1374,6 +1375,7 @@ function ModsTab:Apply()
     self:_CancelTasks()
 
     KnownModIndex:Save()
+    Profile:Save()
     self.selectedmodmenu:Disable()
     self.allmodsmenu:Disable()
 

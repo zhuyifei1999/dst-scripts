@@ -417,7 +417,7 @@ function RegisterInventoryItemAtlas(atlas, imagename)
 	end
 end
 
-function GetInventoryItemAtlas(imagename)
+function GetInventoryItemAtlas(imagename, no_fallback)
 	local atlas = inventoryItemAtlasLookup[imagename]
 	if atlas then
 		return atlas
@@ -425,7 +425,7 @@ function GetInventoryItemAtlas(imagename)
 	local base_atlas = "images/inventoryimages1.xml"
 	local alt_atlas = "images/inventoryimages2.xml"
 	atlas = TheSim:AtlasContains(base_atlas, imagename) and base_atlas 
-			or TheSim:AtlasContains(alt_atlas, imagename) and alt_atlas
+			or (not no_fallback or TheSim:AtlasContains(alt_atlas, imagename)) and alt_atlas
 			or nil
 	if atlas ~= nil then
 		inventoryItemAtlasLookup[imagename] = atlas

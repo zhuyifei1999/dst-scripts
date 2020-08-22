@@ -308,6 +308,9 @@ function ItemTile:GetDescriptionString()
                 end
             end
 
+            --no RMB hint for quickdrop while holding an item, as that might be confusing since players would think its the item they are holding.
+            --the mod never had the hint, and people discovered it just fine, so this should also be fine -Zachary
+
             local actions = actionpicker:GetUseItemActions(self.item, active_item, true)
             if #actions > 0 then
                 str = str.."\n"..STRINGS.RMB..": "..actions[1]:GetActionString()

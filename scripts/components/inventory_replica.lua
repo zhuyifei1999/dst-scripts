@@ -290,6 +290,11 @@ function Inventory:GetOpenContainers()
                 containers[k] = true
             end
         end
+        --TheInput:ControllerAttached() or Profile:GetIntegratedBackpack()
+        local overflow = self:GetOverflowContainer()
+        if overflow and overflow.inst then
+            containers[overflow.inst] = true
+        end
         return containers
     end
 end
@@ -297,7 +302,8 @@ end
 --Returns backpack container component
 function Inventory:GetOverflowContainer()
     if self.inst.components.inventory ~= nil then
-        return self.inst.components.inventory:GetOverflowContainer()
+        local container = self.inst.components.inventory:GetOverflowContainer()
+        return container and container.inst.replica.container or nil
     else
         return self.classified ~= nil and self.classified:GetOverflowContainer() or nil
     end

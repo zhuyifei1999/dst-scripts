@@ -48,7 +48,11 @@ function EquipSlot:OnControl(control, down)
         elseif control == CONTROL_SECONDARY and
             self.tile ~= nil and
             self.tile.item ~= nil then
-            inventory:UseItemFromInvTile(self.tile.item)
+                if TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
+                    inventory:DropItemFromInvTile(self.tile.item, TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+                else
+                    inventory:UseItemFromInvTile(self.tile.item)
+                end
             return true
         end
     end

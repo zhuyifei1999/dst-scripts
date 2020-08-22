@@ -128,8 +128,8 @@ function CookbookPageCrockPot:CreateRecipeBook()
 end
 
 local ingredient_icon_remap = {}
---ingredient_icon_remap.quagmire_carrot = "carrot"
---ingredient_icon_remap.quagmire_foliage = "foliage"
+ingredient_icon_remap.onion = "quagmire_onion"
+ingredient_icon_remap.tomato = "quagmire_tomato"
 
 function CookbookPageCrockPot:_SetupRecipeIngredientDetails(recipes, parent, y)
 	local ingredient_size = 30
@@ -149,7 +149,7 @@ function CookbookPageCrockPot:_SetupRecipeIngredientDetails(recipes, parent, y)
 				backing:SetPosition(x + (i)*ingredient_size + (i-1)*x_spacing, y - ingredient_size/2 - (b-1)*(ingredient_size+5))
 
 				local img_name = (ingredient_icon_remap[items[i]] or items[i])..".tex"
-				local img_atlas = GetInventoryItemAtlas(img_name)
+				local img_atlas = GetInventoryItemAtlas(img_name, true)
 				local img = inv_item_root:AddChild(Image(img_atlas or "images/quagmire_recipebook.xml", img_atlas ~= nil and img_name or "cookbook_missing.tex"))
 
 				img:ScaleToSize(ingredient_size, ingredient_size)
@@ -170,7 +170,7 @@ function CookbookPageCrockPot:_SetupRecipeIngredientDetails(recipes, parent, y)
 				backing:SetPosition(x + (i)*ingredient_size + (i-1)*x_spacing, y - ingredient_size/2 - math.floor((b-1)/2)*(ingredient_size+5))
 
 				local img_name = (ingredient_icon_remap[items[i]] or items[i])..".tex"
-				local img_atlas = GetInventoryItemAtlas(img_name)
+				local img_atlas = GetInventoryItemAtlas(img_name, true)
 				local img = inv_item_root:AddChild(Image(img_atlas or "images/quagmire_recipebook.xml", img_atlas ~= nil and img_name or "cookbook_missing.tex"))
 				img:ScaleToSize(ingredient_size, ingredient_size)
 				img:SetPosition(backing:GetPosition())
@@ -503,7 +503,7 @@ function CookbookPageCrockPot:BuildRecipeBook()
 			data.recipes = (known_data.recipes ~= nil and next(known_data.recipes) ~= nil) and known_data.recipes or nil
 
 			local img_name = recipe_def.cookbook_tex or (prefab..".tex")
-			local atlas = recipe_def.cookbook_atlas or GetInventoryItemAtlas(img_name)
+			local atlas = recipe_def.cookbook_atlas or GetInventoryItemAtlas(img_name, true)
 			if atlas ~= nil then
 				data.food_atlas = atlas
 				data.food_tex = img_name

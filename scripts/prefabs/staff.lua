@@ -795,7 +795,7 @@ local function blue()
 end
 
 local function purple()
-    local inst = commonfn("purple", { "nopunch" })
+    local inst = commonfn("purple", { "nopunch" }, true)
 
     if not TheWorld.ismastersim then
         return inst

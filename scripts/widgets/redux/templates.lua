@@ -1900,7 +1900,7 @@ function TEMPLATES.MakeStartingInventoryWidget(c, left_align)
 				local slot = root._invitems:AddChild(Image("images/hud.xml", "inv_slot.tex"))
 
 				local override_item_image = TUNING.STARTING_ITEM_IMAGE_OVERRIDE[item]
-                local atlas = override_item_image ~= nil and override_item_image.atlas or GetInventoryItemAtlas(item..".tex")
+                local atlas = override_item_image ~= nil and override_item_image.atlas or GetInventoryItemAtlas(item..".tex", true)
                 if atlas ~= nil then
 				    local image = override_item_image ~= nil and override_item_image.image or (item..".tex")
                     slot:AddChild(Image(atlas, image)):SetScale(0.9)
