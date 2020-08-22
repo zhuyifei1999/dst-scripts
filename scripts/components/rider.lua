@@ -112,7 +112,11 @@ function Rider:Mount(target, instant)
             function(inst, attacker, damage, weapon, stimuli)
                 return target:IsValid()
                     and not (target.components.health ~= nil and target.components.health:IsDead())
-                    and not (weapon ~= nil and (weapon.components.projectile ~= nil or weapon.components.weapon:CanRangedAttack()))
+                    and not (weapon ~= nil and (
+                        weapon.components.projectile ~= nil or
+                        weapon.components.complexprojectile ~= nil or
+                        weapon.components.weapon:CanRangedAttack()
+                    ))
                     and stimuli ~= "electric"
                     and stimuli ~= "darkness"
                     and target

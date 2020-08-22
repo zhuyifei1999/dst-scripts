@@ -27,8 +27,12 @@ function InvSlot:OnControl(control, down)
         end
     elseif control == CONTROL_SECONDARY then
         --alt use (usually RMB)
-        self:UseItem()
-    --  the rest are explicit control presses for controllers
+        if TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
+            self:DropItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+        else
+            self:UseItem()
+        end
+        --the rest are explicit control presses for controllers
     elseif control == CONTROL_SPLITSTACK then
         self:Click(true)
     elseif control == CONTROL_TRADEITEM then
@@ -258,6 +262,12 @@ function InvSlot:TradeItem(stack_mod)
         else
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_negative")
         end
+    end
+end
+
+function InvSlot:DropItem(wholestack)
+    if self.owner and self.owner.replica.inventory and self.tile and self.tile.item then
+        self.owner.replica.inventory:DropItemFromInvTile(self.tile.item, wholestack)
     end
 end
 

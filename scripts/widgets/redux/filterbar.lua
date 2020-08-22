@@ -239,6 +239,7 @@ function FilterBar:HideFilter(id)
     for _,v in ipairs(self.filter_btns) do
         if v.btnid==id then
             v.widget:Hide()
+            break
         end
     end
 
@@ -249,6 +250,7 @@ function FilterBar:ShowFilter(id)
     for _,v in ipairs(self.filter_btns) do
         if v.btnid==id then
             v.widget:Show()
+            break
         end
     end
     self:_UpdatePositions()

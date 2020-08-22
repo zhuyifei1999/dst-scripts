@@ -8,8 +8,8 @@ package.preload["moddependencymanager"] = function() end
 package.preload["librarymanager"] = function()
 	return function(_dependencies)
 		local modenv = getfenv(2)
-		if not _dependencies or not modenv or not modenv.modname or (KnownModIndex.savedata.known_mods[modenv.modname] and
-			KnownModIndex.savedata.known_mods[modenv.modname].dependencies) then return end
+		if not rawget(_G, "TheFrontEnd") or (not _dependencies or not modenv or not modenv.modname or (KnownModIndex.savedata.known_mods[modenv.modname] and
+			KnownModIndex.savedata.known_mods[modenv.modname].dependencies)) then return end
 		local dependencies = {}
 		for i, v in ipairs(_dependencies) do
 			table.insert(dependencies, {v})
@@ -34,6 +34,7 @@ package.preload["librarymanager"] = function()
 	end
 end
 package.preload["tools/librarymanager"] = package.preload["librarymanager"]
+package.preload["libs/librarymanager"] = package.preload["librarymanager"]
 
 -- Note: This is a singleton (created at the bottom of this file) so the class is local
 local ModIndex = Class(function(self)

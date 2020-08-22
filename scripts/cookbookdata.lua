@@ -15,8 +15,8 @@ function CookbookData:GetKnownPreparedFoods()
 	return self.preparedfoods
 end
 
-function CookbookData:Save()
-	if self.save_enabled then
+function CookbookData:Save(force_save)
+	if force_save or (self.save_enabled and self.dirty) then
 		local str = json.encode({preparedfoods = self.preparedfoods, filters = self.filters})
 		TheSim:SetPersistentString("cookbook", str, false)
 	end
@@ -118,7 +118,7 @@ function CookbookData:LearnFoodStats(product)
 		if not cooking.IsModCookerFood(product) then
 			TheInventory:SetCookbookValue(product, EncodeCookbookEntry(preparedfood))
 		end
-		self:Save()
+		self:Save(true)
 	end
 
 	return updated
@@ -181,7 +181,7 @@ function CookbookData:AddRecipe(product, ingredients)
 		if not cooking.IsModCookerFood(product) then
 			TheInventory:SetCookbookValue(product, EncodeCookbookEntry(preparedfood))
 		end
-		self:Save()
+		self:Save(true)
 	end
 
 	return updated

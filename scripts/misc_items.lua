@@ -4852,7 +4852,7 @@ MISC_ITEMS =
 	profileflair_telestaff_crystal =
 	{
 		type = "profileflair",
-		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 102,
 	},

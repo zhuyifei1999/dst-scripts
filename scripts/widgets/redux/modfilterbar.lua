@@ -198,21 +198,25 @@ end
 function ModFilterBar:HideFilter(id)
     for _,v in ipairs(self.filter_btns) do
         if v.btnid==id then
-            v.widget:Hide()
+            if v.widget:IsVisible() then
+                v.widget:Hide()
+                self:_UpdatePositions()
+            end
+            return
         end
     end
-
-    self:_UpdatePositions()
 end
 
 function ModFilterBar:ShowFilter(id)
     for _,v in ipairs(self.filter_btns) do
         if v.btnid==id then
-            v.widget:Show()
+            if not v.widget:IsVisible() then
+                v.widget:Show()
+                self:_UpdatePositions()
+            end
+            return
         end
     end
-
-    self:_UpdatePositions()
 end
 
 function ModFilterBar:_UpdatePositions()
@@ -226,7 +230,8 @@ function ModFilterBar:_UpdatePositions()
     local prev_btn = nil
     local num_btns = 0
     for a,v in ipairs(self.filter_btns) do
-        if v.widget:IsVisible() then
+    	--we don't care about the parent's visibility for this.
+        if v.widget.shown then
             v.widget:SetPosition( x_offset + -width/2 + v.widget.size_x/2 + num_btns*v.widget.size_x - num_btns*squeeze, 3)
             num_btns = num_btns + 1
 

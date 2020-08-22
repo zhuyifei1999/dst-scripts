@@ -289,6 +289,9 @@ local function RebuildLayout(self, inventory, overflow, do_integrated_backpack, 
         --local offset = #self.inv >= num and 1 or 0 --math.ceil((#self.inv - num)/2)
         local offset = 1 + #self.inv - num
 
+		self.integrated_arrow = self.bottomrow:AddChild(Image(HUD_ATLAS, "inventory_bg_arrow.tex"))
+		self.integrated_arrow:SetPosition(self.inv[#self.inv]:GetPosition().x + W * 0.5 + INTERSEP + 61, 8)
+
         for k = 1, num do
             local slot = InvSlot(k, HUD_ATLAS, "inv_slot.tex", self.owner, overflow)
             self.backpackinv[k] = self.bottomrow:AddChild(slot)
