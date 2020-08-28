@@ -59,6 +59,7 @@ function Harvestable:OnSave()
     if self.targettime and self.targettime > time then
         data.time = self.targettime - time
     end
+    data.pausetime = self.pausetime
     data.produce = self.produce
     return data
 end
@@ -66,6 +67,7 @@ end
 function Harvestable:OnLoad(data)
     --print(self.inst, "Harvestable:OnLoad")
     self.produce = data.produce
+    self.pausetime = data.pausetime
     if data.time then
         self:StartGrowing(data.time)
     end
@@ -76,6 +78,9 @@ function Harvestable:GetDebugString()
     local str = string.format("%d "..tostring(self.product).." grown", self.produce)
     if self.targettime then
         str = str.." ("..tostring(self.targettime - GetTime())..")"
+    end
+    if self.pausetime then
+        str = str.." (paused: "..tostring(self.pausetime)..")"
     end
     return str
 end
@@ -97,9 +102,25 @@ end
 function Harvestable:StartGrowing(time)
     self:StopGrowing()
     local growtime = time or self.growtime
+    if self.pausetime then
+        growtime = math.min(growtime, self.pausetime)
+        self.pausetime = nil
+    end
     if growtime then
         self.task = self.inst:DoTaskInTime(growtime, function() self:Grow() end, "grow")
         self.targettime = GetTime() + growtime
+    end
+end
+
+function Harvestable:PauseGrowing()
+    if self.task then
+        self.task:Cancel()
+        self.task = nil
+        local time = GetTime()
+        if self.targettime and self.targettime > time then
+            self.pausetime = self.targettime - time
+        end
+        self.targettime = nil
     end
 end
 

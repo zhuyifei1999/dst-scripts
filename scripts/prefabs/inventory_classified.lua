@@ -1156,6 +1156,7 @@ local function fn()
         inst.GetOverflowContainer = GetOverflowContainer
         inst.IsFull = IsFull
         inst.Has = Has
+        inst.HasItemWithTag = HasItemWithTag
         inst.ReturnActiveItem = ReturnActiveItem
         inst.ReturnActiveItemToSlot = ReturnActiveItemToSlot
         inst.PutOneOfActiveItemInSlot = PutOneOfActiveItemInSlot

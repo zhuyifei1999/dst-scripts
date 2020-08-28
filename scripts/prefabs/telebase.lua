@@ -137,7 +137,7 @@ local function OnBuilt(inst)
     local sin_rot = math.sin(rot)
     local cos_rot = math.cos(rot)
     for i, v in ipairs(telebase_parts) do
-        local part = inst.components.objectspawner:SpawnObject(v.part)
+        local part = inst.components.objectspawner:SpawnObject(v.part, inst.linked_skinname, inst.skin_id)
         part.Transform:SetPosition(x + v.x * cos_rot - v.z * sin_rot, 0, z + v.z * cos_rot + v.x * sin_rot)
     end
 

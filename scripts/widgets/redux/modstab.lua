@@ -80,6 +80,7 @@ local ModsTab = Class(Widget, function(self, servercreationscreen, settings)
     self.modnames_client_dl = {}
     self.modnames_server = {}
     self.modnames_server_dl = {}
+    self.downloading_mods_count = 0
 
     self:CreateDetailPanel()
 
@@ -377,7 +378,7 @@ function ModsTab:CreateModsScrollList()
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
                 self:EnableCurrent(widget.data.widgetindex)
                 self.last_mod_click_time = nil
-            else
+            elseif widget.data.is_client_mod or not self.settings.are_servermods_readonly then
                 self.last_mod_click_time = GetTimeReal()
             end
         end
@@ -697,7 +698,6 @@ function ModsTab:UpdateModsOrder(force_refresh)
     --KnownModIndex:UpdateModInfo() --Note(Zachary): this is done in UpdateForWorkshop, so we don't reload modinfo every tick.
     local curr_modnames_client = KnownModIndex:GetClientModNamesTable()
     local curr_modnames_server = KnownModIndex:GetServerModNamesTable()
-    local curr_downloading_mods_count = #self.modnames_client_dl + #self.modnames_server_dl
     table.sort(curr_modnames_client, alphasort)
     table.sort(curr_modnames_server, alphasort)
 
@@ -724,9 +724,10 @@ function ModsTab:UpdateModsOrder(force_refresh)
     local need_to_update = force_refresh
     if not CompareModnamesTable( self.modnames_client, curr_modnames_client ) or
         not CompareModnamesTable( self.modnames_server, curr_modnames_server ) or
-        ((self.downloading_mods_count or 0) > 0 and curr_downloading_mods_count == 0) then
+        self.forceupdatemodsorder then
         need_to_update = true
     end
+    self.forceupdatemodsorder = nil
 
     --If nothing has changed bail out and leave the ui alone
     if not need_to_update or (self.mods_scroll_list and self.mods_scroll_list.dragging) then
@@ -754,7 +755,6 @@ function ModsTab:UpdateModsOrder(force_refresh)
         end
     end
 
-    self.downloading_mods_count = curr_downloading_mods_count
     self.modnames_client = curr_modnames_client
     self.modnames_server = curr_modnames_server
 
@@ -840,11 +840,13 @@ function ModsTab:UpdateForWorkshop( force_refresh )
             TheSim:UnlockModDir()
             return
         end
+        self.forceupdatemodsorder = true
 
         --print("### Do UpdateForWorkshop refresh")
-
+        
         self.modnames_client_dl = curr_modnames_client_dl
         self.modnames_server_dl = curr_modnames_server_dl
+        self.downloading_mods_count = #self.modnames_client_dl + #self.modnames_server_dl
 
         --If no mods, tell the user where to get them.
         --this one runs slower, so we put the no mods popup here

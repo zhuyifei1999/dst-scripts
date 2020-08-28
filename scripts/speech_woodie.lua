@@ -1081,7 +1081,6 @@ return{
         SPIDERHOLE_ROCK = "I should skedaddle before they come out of there.",
         STALAGMITE = "I'm not too interested in rocks.",
         STALAGMITE_TALL = "I'm not too interested in rocks.",
-        TREASURECHEST_TRAP = "Something is not quite right aboot that chest.",
 
         TURF_CARPETFLOOR = "Too classy for my tastes.",
         TURF_CHECKERFLOOR = "Looks like one of those city-people outhouses.",
@@ -2773,9 +2772,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Tastes like home.",
 		QUAGMIRE_CRABMEAT = "That'll cook up real good.",
 		QUAGMIRE_CRABMEAT_COOKED = "I wouldn't mind a taste of that.",
-        QUAGMIRE_POT = "What do ya wanna make, Lucy?",
-        QUAGMIRE_POT_SMALL = "I only know a handful of recipes, but I'm real good at them.",
-        QUAGMIRE_POT_HANGER_ITEM = "Gotta hang the pot on the fire somehow.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "It's beautiful!",

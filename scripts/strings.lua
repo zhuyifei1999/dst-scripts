@@ -837,7 +837,6 @@ STRINGS =
 
         ICEBOX = "Ice Box",
         CARROT_SEEDS = "Carrot Seeds",
-        CARTOGRAPHYDESK = "Cartography Desk",
         
         PUMPKIN_SEEDS = "Pumpkin Seeds",
         DRAGONFRUIT_SEEDS = "Dragon Fruit Seeds",
@@ -865,13 +864,11 @@ STRINGS =
 		PIGELITEFIGHTER2 = "Ignatius", --RED
 		PIGELITEFIGHTER3 = "Dmitri", --WHITE
 		PIGELITEFIGHTER4 = "Sawyer", --GREEN
-        NITRE = "Nitre",
         GUNPOWDER = "Gunpowder",
         BIRD_EGG = "Egg",
         BIRD_EGG_COOKED = "Cooked Egg",
         ROTTENEGG = "Rotten Egg",
 
-        WINTEROMETER = "Thermal Measurer",
         RAINOMETER = "Rainometer",
         SPOILED_FOOD = "Rot",
         BERRIES = "Berries",
@@ -916,7 +913,6 @@ STRINGS =
         CAVE_ENTRANCE_OPEN = "Sinkhole",
         CAVE_ENTRANCE_OPEN_CAVE = "Deeper",
         CAVE_ENTRANCE_RUINS = "Plugged Hole",
-        MIGRATION_PORTAL = "Migration Portal",
         RABBITHOUSE = "Rabbit Hutch",
         CAVE_EXIT = "Stairs",
         UMBRELLA = "Umbrella",
@@ -1020,7 +1016,6 @@ STRINGS =
         BERRYBUSH = "Berry Bush",
         BERRYBUSH2 = "Berry Bush",
         BERRYBUSH_JUICY = "Juicy Berry Bush",
-        SUNKBOAT = "Boat",
         BONFIRE = "Bonfire",
         CAMPFIRE = "Campfire",
         CANARY = "Canary",
@@ -1741,8 +1736,6 @@ STRINGS =
         FEATHERFAN = "Luxury Fan",
         MINIFAN = "Whirly Fan",
         WHIP = "Tail o' Three Cats",
-        SADDLE_BASIC = "Saddle",
-        SADDLE_WAR = "War Saddle",
 
         RESKIN_TOOL = "Clean Sweeper",
 
@@ -1909,7 +1902,6 @@ STRINGS =
 		GLASSCUTTER_BLUEPRINT = "Glass Cutter Blueprint",
 		TURF_METEOR_BLUEPRINT = "Crater Turf Blueprint",
 		BUTTERFLY_SKETCH = "Moon Moth Sketch",
-		ANCHOR_SKETCH = "Anchor Sketch",
         ANCHOR_SKETCH = "\"Moon\" Sketch",
 
         HALLOWEENCANDY_1 = "Candy Apple",
@@ -2629,7 +2621,6 @@ STRINGS =
 
         YOTC_CARRAT_SCALE = "Carrat Scale",
         YOTC_CARRAT_SCALE_ITEM = "Carrat Scale Kit",
-        YOTC_OWNED_CARRAT = "{trainer}'s Carrat",
         YOTC_OWNED_CARRAT = "{trainer}'s Carrat",
 		CARRAT_GHOSTRACER = "Charlie's Carrat",
 
@@ -7285,7 +7276,6 @@ STRINGS.UI =
 	WXP_DETAILS =
 	{
 		-- common
-		DAILY_FIRST_WIN = "Daily Win Bonus",
 		DURATION = "Time",
 		FRIENDS_BONUS = "Playing with Friends",
 		DAILY_FIRST_MATCH = "Daily Match Bonus",
@@ -8896,8 +8886,6 @@ STRINGS.UI =
         PLAYER_CHAR_PS4 = "Character",
         SERVER_NAME = "Server",
         DECEASED = "Deceased",
-        CAUSE = "Killed By",
-        MODE = "On Server",
         DECEASED_PS4 = "Character",
         CAUSE = "Cause of Death",
         MODE = "World",

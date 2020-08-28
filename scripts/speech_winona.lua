@@ -1086,7 +1086,6 @@ return{
         SPIDERHOLE_ROCK = "A rock filled with spiders. Great.",
         STALAGMITE = "Yep, yep. It's a rock.",
         STALAGMITE_TALL = "Ah! A rock.",
-        TREASURECHEST_TRAP = "I don't need to be concerned about that.",
 
         TURF_CARPETFLOOR = "That's a chunk of ground.",
         TURF_CHECKERFLOOR = "That's a chunk of ground.",
@@ -2778,9 +2777,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Fancy dining.",
 		QUAGMIRE_CRABMEAT = "I get crabby when I'm hungry. Ha!",
 		QUAGMIRE_CRABMEAT_COOKED = "It's a big lump of cooked crab.",
-        QUAGMIRE_POT = "Could make a real big stew in that pot.",
-        QUAGMIRE_POT_SMALL = "I only ever made stew before this.",
-        QUAGMIRE_POT_HANGER_ITEM = "Ready for assembly.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "It's a big, pink tree.",

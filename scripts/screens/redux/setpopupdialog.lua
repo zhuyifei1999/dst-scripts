@@ -87,7 +87,6 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
         self.input_item_imagetext[i]:SetPosition(IMAGE_X, item_y)
 		self.input_item_imagetext[i].check:SetPosition(-61, 0)
 		self.input_item_imagetext[i].check:SetScale(.15)
-    	i = i + 1
     	item_y = item_y - LINE_HEIGHT
     end
     self.current_set = 1

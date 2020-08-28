@@ -186,6 +186,9 @@ SGCritterStates.AddNuzzle = function(states, actionhandlers, timeline, fns)
 		onexit = function(inst)
 			inst:PerformBufferedAction()
 			inst:ClearBufferedAction()
+			if fns ~= nil and fns.onexit ~= nil then
+				fns.onexit(inst)
+			end
 		end,
 
 		timeline = timeline,
@@ -199,8 +202,6 @@ SGCritterStates.AddNuzzle = function(states, actionhandlers, timeline, fns)
 				end
 			end)
 		},
-
-        onexit = fns ~= nil and fns.onexit or nil,
     })
 end
 

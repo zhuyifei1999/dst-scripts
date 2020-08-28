@@ -1080,7 +1080,6 @@ return{
         SPIDERHOLE_ROCK = "How did that get down here?",
         STALAGMITE = "Rocks. How dull.",
         STALAGMITE_TALL = "Stalagmite. How dull.",
-        TREASURECHEST_TRAP = "Hmmm. Looks suspicious.",
 
         TURF_CARPETFLOOR = "That's a quality, high-pile carpet sample!",
         TURF_CHECKERFLOOR = "That's my natural habitat.",
@@ -2772,9 +2771,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "I do enjoy a good smoked salmon.",
 		QUAGMIRE_CRABMEAT = "Ah, how refined.",
 		QUAGMIRE_CRABMEAT_COOKED = "Perfect with a bit of butter.",
-        QUAGMIRE_POT = "Magic could bring it to a boil faster, you know.",
-        QUAGMIRE_POT_SMALL = "I shalln't let it speak with the kettle.",
-        QUAGMIRE_POT_HANGER_ITEM = "Well I'M not setting it up.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "A sickly sweet aroma wafts from its branches.",

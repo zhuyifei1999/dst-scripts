@@ -1081,7 +1081,6 @@ return{
         SPIDERHOLE_ROCK = "Spiders everywhere.",
         STALAGMITE = "Is pointy.",
         STALAGMITE_TALL = "Rock, reaching for the roof.",
-        TREASURECHEST_TRAP = "Raagh!",
 
         TURF_CARPETFLOOR = "Step stones.",
         TURF_CHECKERFLOOR = "Step stones.",
@@ -2773,9 +2772,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Fish is cooked now.",
 		QUAGMIRE_CRABMEAT = "Is meat of tiny pincher.",
 		QUAGMIRE_CRABMEAT_COOKED = "Yummy, yummy pincher.",
-        QUAGMIRE_POT = "Wolfgang put this over fire.",
-        QUAGMIRE_POT_SMALL = "Friends, do not look! Pot needs to boil.",
-        QUAGMIRE_POT_HANGER_ITEM = "Is make pot hang over fire.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "Is little tree of yummy goop.",

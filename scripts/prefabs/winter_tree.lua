@@ -17,7 +17,6 @@ local statedata =
         name        = "sapling",
         idleanim    = "idle_sapling",
         burntanim   = "burnt",
-        growsound   = "dontstarve/forest/treeGrow",
         workleft    = 1,
         workaction  = "HAMMER",
         growsound   = "dontstarve/wilson/plant_tree",

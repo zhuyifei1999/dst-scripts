@@ -1080,7 +1080,6 @@ return{
         SPIDERHOLE_ROCK = "All webby...",
         STALAGMITE = "Cave rock.",
         STALAGMITE_TALL = "Big cave rock",
-        TREASURECHEST_TRAP = "Treasure!",
 
         TURF_CARPETFLOOR = "Fuzzy ground.",
         TURF_CHECKERFLOOR = "Ground bit.",
@@ -2772,9 +2771,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Nooooooo!!",
 		QUAGMIRE_CRABMEAT = "(Sniff) poor crab...",
 		QUAGMIRE_CRABMEAT_COOKED = "Glurph... can't look.",
-        QUAGMIRE_POT = "Is just normal pot.",
-        QUAGMIRE_POT_SMALL = "Bitty pot.",
-        QUAGMIRE_POT_HANGER_ITEM = "It help for cooking.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "There sweet stuff inside!",

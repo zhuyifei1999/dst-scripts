@@ -162,7 +162,7 @@ local normal_anims = makeanims("normal")
 local monster_anims = makeanims("monster")
 
 local function GetBuild(inst)
-    return builds[inst.build] or build.normal
+    return builds[inst.build] or builds.normal
 end
 
 local function SpawnLeafFX(inst, waittime, chop)

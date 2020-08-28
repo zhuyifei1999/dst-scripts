@@ -1087,7 +1087,6 @@ return{
         SPIDERHOLE_ROCK = "It's full of spiders.",
         STALAGMITE = "Rocks are boring.",
         STALAGMITE_TALL = "More boring rocks.",
-        TREASURECHEST_TRAP = "Dirty trick!",
 
         TURF_CARPETFLOOR = "The ground is boring.",
         TURF_CHECKERFLOOR = "The ground is boring.",
@@ -2779,9 +2778,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "All it needed was some fire.",
 		QUAGMIRE_CRABMEAT = "Needs more fire.",
 		QUAGMIRE_CRABMEAT_COOKED = "I bet it's tasty.",
-        QUAGMIRE_POT = "I should light a fire under its butt.",
-        QUAGMIRE_POT_SMALL = "It goes with the fire.",
-        QUAGMIRE_POT_HANGER_ITEM = "It needs to be set up in a firepit.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "Aw! It's impervious to fire.",

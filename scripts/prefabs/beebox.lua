@@ -28,7 +28,7 @@ local levels =
 
 local function Stop(inst)
     if inst.components.harvestable ~= nil and inst.components.harvestable.growtime ~= nil then
-        inst.components.harvestable:StopGrowing()
+        inst.components.harvestable:PauseGrowing()
     end
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:StopSpawning()
@@ -151,7 +151,7 @@ end
 local function stopsleep(inst)
     if not inst:HasTag("burnt") and inst.components.harvestable ~= nil then
         inst.components.harvestable:SetGrowTime(nil)
-        inst.components.harvestable:StopGrowing()
+        inst.components.harvestable:PauseGrowing()
     end
 end
 
