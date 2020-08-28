@@ -1080,7 +1080,6 @@ return{
         SPIDERHOLE_ROCK = "We could stand to live there.",
         STALAGMITE = "Rocks, underground?! Shocking.",
         STALAGMITE_TALL = "Pointy rocks, underground?! Simply stunning.",
-        TREASURECHEST_TRAP = "It couldn't hurt to take a peek inside...",
 
         TURF_CARPETFLOOR = "Carpets! Just like in our old house.",
         TURF_CHECKERFLOOR = "Fancy.",
@@ -2772,9 +2771,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Smells good!",
 		QUAGMIRE_CRABMEAT = "Crabs kinda look like spiders.",
 		QUAGMIRE_CRABMEAT_COOKED = "We don't want to eat it.",
-        QUAGMIRE_POT = "This pot's a bit bigger than the other one.",
-        QUAGMIRE_POT_SMALL = "You cook stuff in it.",
-        QUAGMIRE_POT_HANGER_ITEM = "We should put it together.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "I wonder why the people left this nice place.",

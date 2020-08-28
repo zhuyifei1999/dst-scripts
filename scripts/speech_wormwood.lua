@@ -1084,7 +1084,6 @@ return{
         SPIDERHOLE_ROCK = "What's in there?",
         STALAGMITE = "Rocks",
         STALAGMITE_TALL = "Rock",
-        TREASURECHEST_TRAP = "Hmm...",
 
         TURF_CARPETFLOOR = "Not dirt",
         TURF_CHECKERFLOOR = "Not dirt",
@@ -2776,9 +2775,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Sky Belly will like it",
 		QUAGMIRE_CRABMEAT = "Branch from Ground Pinchy",
 		QUAGMIRE_CRABMEAT_COOKED = "Pinchy makes good belly stuff",
-        QUAGMIRE_POT = "BIG bubbly water place",
-        QUAGMIRE_POT_SMALL = "Hoo! Makes water bubbly!",
-        QUAGMIRE_POT_HANGER_ITEM = "Needs fire",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "Sweet Friend!",

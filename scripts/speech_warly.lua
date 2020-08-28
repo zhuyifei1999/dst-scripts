@@ -1080,7 +1080,6 @@ return{
         SPIDERHOLE_ROCK = "I'd prefer not to get closer.",
         STALAGMITE = "I always get you upside down with stalactites...",
         STALAGMITE_TALL = "Rocks to be had.",
-        TREASURECHEST_TRAP = "Hmmm, something does not feel right about this...",
 
         TURF_CARPETFLOOR = "Make fists with your toes...",
         TURF_CHECKERFLOOR = "It's like an ingredient for the ground.",

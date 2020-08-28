@@ -708,12 +708,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-		ghostlyelixir = function(inst, doer, target, actions)
-			if target:HasTag("ghostlyelixirable") then
-                table.insert(actions, ACTIONS.GIVE)
-			end
-		end,
-
 		halloweenpotionmoon = function(inst, doer, target, actions)
 			if not target:HasTag("DECOR") then
 				table.insert(actions, ACTIONS.HALLOWEENMOONMUTATE)

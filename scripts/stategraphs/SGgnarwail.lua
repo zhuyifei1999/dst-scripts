@@ -239,11 +239,6 @@ local states =
             inst.sg:SetTimeout(TUNING.GNARWAIL.BOAT_ATTACK_DELAY)
         end,
 
-        timeline=
-        {
-            TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/run") end),
-        },
-
         ontimeout = function(inst)
             local target = inst.sg.statemem.target
             if target and target:IsValid() then
@@ -275,6 +270,9 @@ local states =
 
         timeline =
         {
+            TimeEvent(15*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("hookline/creatures/gnarwail/run")
+            end),
             TimeEvent(43*FRAMES, function(inst)
                 inst.sg:AddStateTag("noattack")
             end),

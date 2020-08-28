@@ -1032,6 +1032,10 @@ local function MakeHat(name)
         if not TheWorld.ismastersim then
             return inst
         end
+        
+        --Saved so we can re-assign with skins
+        inst._opentop_onequip = opentop_onequip
+        inst._onequip = onequip
 
         inst:AddComponent("armor")
         inst.components.armor:InitCondition(TUNING.ARMOR_WATHGRITHRHAT, TUNING.ARMOR_WATHGRITHRHAT_ABSORPTION)

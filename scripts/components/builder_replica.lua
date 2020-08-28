@@ -201,10 +201,9 @@ function Builder:KnowsRecipe(recipename)
                     end
                 end
             end
-            return has_tech
-                and (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
-                or (self.classified.recipes[recipename] ~= nil and
-                    self.classified.recipes[recipename]:value())
+            return (has_tech or (self.classified.recipes[recipename] ~= nil and
+                    self.classified.recipes[recipename]:value())) and
+                    (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
         end
     end
     return false

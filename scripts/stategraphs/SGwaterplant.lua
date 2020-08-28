@@ -431,8 +431,6 @@ local states =
         {
             TimeEvent(15 * FRAMES, function(inst)
                 inst:SpawnCloud()
-
-                -- TODO @stevenm temp sound effect for spraying the cloud gas
                 inst.SoundEmitter:PlaySound("dangerous_sea/creatures/water_plant/cloud")
             end),
         },

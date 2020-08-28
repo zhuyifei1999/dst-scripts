@@ -1085,7 +1085,6 @@ return{
         SPIDERHOLE_ROCK = "All webbed up!",
         STALAGMITE = "It's just a rock.",
         STALAGMITE_TALL = "It's just a rock.",
-        TREASURECHEST_TRAP = "What have we here?",
 
         TURF_CARPETFLOOR = "Floor or ceiling, depending on your perspective.",
         TURF_CHECKERFLOOR = "Floor or ceiling, depending on your perspective.",
@@ -2778,9 +2777,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "So long, sweet fish soul.",
 		QUAGMIRE_CRABMEAT = "The humans like it, they do, they do!",
 		QUAGMIRE_CRABMEAT_COOKED = "They like it more like this, I hear!",
-        QUAGMIRE_POT = "Mortals don't like it when you burn the things inside.",
-        QUAGMIRE_POT_SMALL = "A little vessel for mortal food.",
-        QUAGMIRE_POT_HANGER_ITEM = "We need to build that, yes indeed.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "Fweehee, what a special tree!",

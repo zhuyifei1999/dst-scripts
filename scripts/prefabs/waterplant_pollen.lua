@@ -43,7 +43,6 @@ local function front_fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    --inst.entity:AddSoundEmitter() -- TODO @stevenm do we need to do sounds if the plant dies?
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("pollen_cloud")

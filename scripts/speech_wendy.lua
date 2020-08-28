@@ -1084,7 +1084,6 @@ return{
         SPIDERHOLE_ROCK = "It is infested.",
         STALAGMITE = "The earth gives up its bounty.",
         STALAGMITE_TALL = "The earth reaches up.",
-        TREASURECHEST_TRAP = "Every once in awhile, things go my way.",
 
         TURF_CARPETFLOOR = "Some ground.",
         TURF_CHECKERFLOOR = "Some ground.",
@@ -2776,9 +2775,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Not so lively now.",
 		QUAGMIRE_CRABMEAT = "Its insides are as horrid as its outsides.",
 		QUAGMIRE_CRABMEAT_COOKED = "It's ready now.",
-        QUAGMIRE_POT = "We cook to stave off death.",
-        QUAGMIRE_POT_SMALL = "We will cook, or we will die.",
-        QUAGMIRE_POT_HANGER_ITEM = "It's for hanging the pot over the fire.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "It has a sickly beauty.",

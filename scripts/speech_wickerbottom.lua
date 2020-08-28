@@ -1080,7 +1080,6 @@ return{
         SPIDERHOLE_ROCK = "This is the source of the spider infestation.",
         STALAGMITE = "A strange rock formation.",
         STALAGMITE_TALL = "Another stalagmite.",
-        TREASURECHEST_TRAP = "Looks suspicious...",
 
         TURF_CARPETFLOOR = "The ground. You step on it.",
         TURF_CHECKERFLOOR = "The ground. You step on it.",
@@ -2772,9 +2771,6 @@ return{
 		QUAGMIRE_SALMON_COOKED = "Seared oncorhynchus nerka.",
 		QUAGMIRE_CRABMEAT = "Raw Paralithodes meat.",
 		QUAGMIRE_CRABMEAT_COOKED = "It no longer presents a threat of salmonellosis.",
-        QUAGMIRE_POT = "A larger pot takes longer to boil.",
-        QUAGMIRE_POT_SMALL = "Hmmm, what shall we make next?",
-        QUAGMIRE_POT_HANGER_ITEM = "The old fashioned way to cook over a fire.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "What unique coloring. I should like to press its leaves in my books!",

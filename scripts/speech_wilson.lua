@@ -1089,7 +1089,6 @@ return {
         SPIDERHOLE_ROCK = "It's encrusted with old webbing.",
         STALAGMITE = "Looks like a rock to me.",
         STALAGMITE_TALL = "Rocks, rocks, rocks, rocks...",
-        TREASURECHEST_TRAP = "How convenient!",
 
         TURF_CARPETFLOOR = "It's surprisingly scratchy.",
         TURF_CHECKERFLOOR = "These are pretty snazzy.",
@@ -2781,9 +2780,6 @@ return {
 		QUAGMIRE_SALMON_COOKED = "Ready for the dinner table.",
 		QUAGMIRE_CRABMEAT = "No imitations here.",
 		QUAGMIRE_CRABMEAT_COOKED = "I can put a meal together in a pinch.",
-        QUAGMIRE_POT = "This one holds more ingredients.",
-        QUAGMIRE_POT_SMALL = "Let's get cooking!",
-        QUAGMIRE_POT_HANGER_ITEM = "For suspension-based cookery.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "It's full of delicious, delicious sap.",

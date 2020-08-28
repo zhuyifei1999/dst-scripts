@@ -163,9 +163,6 @@ beehat_clear_fn = function(inst) basic_clear_fn(inst, "hat_bee" ) end
 watermelonhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_watermelon" ) end
 watermelonhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_watermelon" ) end
 
-wathgrithrhat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_wathgrithr" ) end
-wathgrithrhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_wathgrithr" ) end
-
 beefalohat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_beefalo" ) end
 beefalohat_clear_fn = function(inst) basic_clear_fn(inst, "hat_beefalo" ) end
 
@@ -249,6 +246,30 @@ grass_umbrella_clear_fn = function(inst) basic_clear_fn(inst, "parasol" ) end
 
 saltbox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "saltbox" ) end
 saltbox_clear_fn = function(inst) basic_clear_fn(inst, "saltbox" ) end
+
+
+
+
+
+--------------------------------------------------------------------------
+--[[ Wigfrid helmet skin functions ]]
+--------------------------------------------------------------------------
+wathgrithrhat_init_fn = function(inst, build_name, opentop)
+    basic_init_fn(inst, build_name, "hat_wathgrithr" )
+    
+    if opentop then
+        inst:AddTag("open_top_hat")
+        inst.components.equippable:SetOnEquip(inst._opentop_onequip)
+    end
+end
+wathgrithrhat_clear_fn = function(inst)
+    basic_clear_fn(inst, "hat_wathgrithr" )
+    
+    inst:RemoveTag("open_top_hat")
+    inst.components.equippable:SetOnEquip(inst._onequip)
+end
+
+
 
 
 --------------------------------------------------------------------------
@@ -1396,6 +1417,41 @@ function icebox_clear_fn(inst)
     inst:RemoveEventCallback("onremove", icebox_closed)
     
     icebox_closed(inst)
+end
+
+--------------------------------------------------------------------------
+--[[ Tele focus skin functions ]]
+--------------------------------------------------------------------------
+function telebase_init_fn(inst, build_name)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:SetSkin(build_name, "staff_purple_base_ground")
+
+        for _,decor in pairs(inst.components.placer.linked ) do
+            decor.AnimState:SetSkin(build_name, "staff_purple_base_ground")
+        end
+        return
+    elseif not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "staff_purple_base_ground")
+
+    inst.linked_skinname = string.gsub(build_name, "telebase", "gemsocket")
+end
+function telebase_clear_fn(inst)
+    inst.AnimState:SetBuild("staff_purple_base_ground")
+    inst.linked_skinname = nil
+end
+
+function gemsocket_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "staff_purple_base")
+end
+function gemsocket_clear_fn(inst)
+    inst.AnimState:SetBuild("staff_purple_base")
 end
 
 

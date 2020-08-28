@@ -532,10 +532,8 @@ function Builder:KnowsRecipe(recname)
             end
         end
     end
-    return has_tech
-        and (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
-        or table.contains(self.recipes, recname)
-        or self.station_recipes[recname]
+    return (has_tech or table.contains(self.recipes, recname) or self.station_recipes[recname]) and
+        (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
 end
 
 function Builder:CanBuild(recname)
