@@ -152,7 +152,7 @@ local search_match = function( search, str )
     str = str:gsub(" ", "")
 
     --Simple find in strings for multi word search
-    if string.find( str, search ) ~= nil then
+    if string.find( str, search, 1, true ) ~= nil then
         return true
     end
     local sub_len = string.len(search)

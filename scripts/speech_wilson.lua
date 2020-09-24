@@ -236,6 +236,10 @@ return {
 			NOT_NIGHT = "only_used_by_walter",
 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+            SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "We're taking on a lot of water.",
@@ -581,6 +585,10 @@ return {
 		LEVEL2 = "only_used_by_wendy",
 		LEVEL3 = "only_used_by_wendy",
 	},
+
+    ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+    ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+    ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3290,6 +3298,9 @@ return {
             GENERIC = "The real treasure is the treasure we found along the way.",
             LOCKED = "It's clammed right up!",
         },
+        
+        HERMIT_BUNDLE = "She shore shells out a lot of these.",
+        HERMIT_BUNDLE_SHELLS = "She DOES sell sea shells!",
 
         RESKIN_TOOL = "I like the dust! It feels scholarly!",
         MOON_FISSURE_PLUGGED = "It's not very scientific... but pretty effective.",
@@ -3320,6 +3331,15 @@ return {
         PORTABLETENT = "I feel like I haven't had a proper night's sleep in ages!",
         PORTABLETENT_ITEM = "This requires some a-tent-tion.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Theater makes me fidgety.",
+        BATTLESONG_HEALTHGAIN = "Theater makes me fidgety.",
+        BATTLESONG_SANITYGAIN = "Theater makes me fidgety.",
+        BATTLESONG_SANITYAURA = "Theater makes me fidgety.",
+        BATTLESONG_FIRERESISTANCE = "I once burned my vest before seeing a play. I call that dramatic ironing.",
+        BATTLESONG_INSTANT_TAUNT = "I'm afraid I'm not a licensed poetic.",
+        BATTLESONG_INSTANT_PANIC = "I'm afraid I'm not a licensed poetic.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Ah yes. Very science-y.",
 		GHOSTLYELIXIR_FASTREGEN = "Ah yes. Very science-y.",

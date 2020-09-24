@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "All this water is making me very anxious.",
@@ -573,6 +577,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3282,6 +3290,9 @@ return{
             GENERIC = "I think I prefer cedar chests.",
             LOCKED = "Dangit, this lock won't budge!",
         },
+        
+        HERMIT_BUNDLE = "I think that old hardshell's going soft on us, eh Lucy?",
+        HERMIT_BUNDLE_SHELLS = "A shell full of shells, eh?",
 
         RESKIN_TOOL = "A change of scenery might be nice, eh?",
         MOON_FISSURE_PLUGGED = "Guess sometimes stubbornness pays off, eh Lucy?",
@@ -3312,6 +3323,15 @@ return{
         PORTABLETENT = "I always sleep better in a tent.",
         PORTABLETENT_ITEM = "A portable tent! Why didn't we think of that, Luce?",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Don't recognize the song. Maybe it wasn't released in Canada.",
+        BATTLESONG_HEALTHGAIN = "Don't recognize the song. Maybe it wasn't released in Canada.",
+        BATTLESONG_SANITYGAIN = "Don't recognize the song. Maybe it wasn't released in Canada.",
+        BATTLESONG_SANITYAURA = "Don't recognize the song. Maybe it wasn't released in Canada.",
+        BATTLESONG_FIRERESISTANCE = "Don't recognize the song. Maybe it wasn't released in Canada.",
+        BATTLESONG_INSTANT_TAUNT = "I can't sit and watch a play when there's wood to be chopped!",
+        BATTLESONG_INSTANT_PANIC = "I can't sit and watch a play when there's wood to be chopped!",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Whoof, smells like week-old sockeye!",
 		GHOSTLYELIXIR_FASTREGEN = "Whoof, smells like week-old sockeye!",

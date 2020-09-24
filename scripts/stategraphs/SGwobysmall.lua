@@ -56,7 +56,7 @@ local states =
         end,
 
         onexit = function(inst)
-			inst:ToDoTaskInTime(0, inst.Remove)
+			inst:DoTaskInTime(0, inst.Remove)
         end,
     },
 

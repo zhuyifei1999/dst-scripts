@@ -9,6 +9,7 @@ BASE_TORSO_TUCK = {}
 
 BASE_ALTERNATE_FOR_BODY = {}
 BASE_ALTERNATE_FOR_SKIRT = {}
+ONE_PIECE_SKIRT = {}
 
 BASE_LEGS_SIZE = {}
 BASE_FEET_SIZE = {}
@@ -1510,6 +1511,12 @@ function CreatePrefabSkin(name, info)
     if info.has_alternate_for_skirt ~= nil then
         for _,base_skin in pairs(info.has_alternate_for_skirt) do
             BASE_ALTERNATE_FOR_SKIRT[base_skin] = true
+        end
+    end 
+    
+    if info.one_piece_skirt_builds ~= nil then
+        for _,base_skin in pairs(info.one_piece_skirt_builds) do
+            ONE_PIECE_SKIRT[base_skin] = true
         end
     end
 

@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_BOAT_LEAK = "Our boat weeps salty tears.",
@@ -576,6 +580,10 @@ return{
 		LEVEL2 = "You seem to have brightened up a bit, Abigail.",
 		LEVEL3 = "Abigail has always been my guiding light in the darkness...",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3285,6 +3293,9 @@ return{
             GENERIC = "No treasure could replace what I've lost.",
             LOCKED = "Of course. It's locked.",
         },
+        
+        HERMIT_BUNDLE = "For once I'm rewarded for my efforts.",
+        HERMIT_BUNDLE_SHELLS = "Abigail likes the shells.",
 
         RESKIN_TOOL = "Change is... not always terrible.",
         MOON_FISSURE_PLUGGED = "They're trapped... for now.",
@@ -3315,6 +3326,15 @@ return{
         PORTABLETENT = "It makes no difference where I rest my head, my nights are filled with bad dreams.",
         PORTABLETENT_ITEM = "Abigail and I set up a tent in our backyard once. It was... fun.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "My heart has no desire to sing.",
+        BATTLESONG_HEALTHGAIN = "My heart has no desire to sing.",
+        BATTLESONG_SANITYGAIN = "My heart has no desire to sing.",
+        BATTLESONG_SANITYAURA = "My heart has no desire to sing.",
+        BATTLESONG_FIRERESISTANCE = "My heart has no desire to sing.",
+        BATTLESONG_INSTANT_TAUNT = "I only like tragedies.",
+        BATTLESONG_INSTANT_PANIC = "I only like tragedies.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "It's all I can do to help...",
 		GHOSTLYELIXIR_FASTREGEN = "You have to take your medicine, Abigail.",

@@ -110,6 +110,7 @@ local assets =
     Asset("ANIM", "anim/player_idles_wormwood.zip"),
     Asset("ANIM", "anim/player_idles_wortox.zip"),    
     Asset("ANIM", "anim/player_idles_wurt.zip"),
+    Asset("ANIM", "anim/player_idles_wathgrithr.zip"),
     Asset("ANIM", "anim/bernie_build.zip"),
     Asset("ANIM", "anim/swap_lucy_axe.zip"),
     

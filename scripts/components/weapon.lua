@@ -1,5 +1,6 @@
---Update inventoryitem_replica constructor if any more properties are added
+local SourceModifierList = require("util/sourcemodifierlist")
 
+--Update inventoryitem_replica constructor if any more properties are added
 local function onattackrange(self, attackrange)
     if self.inst.replica.inventoryitem ~= nil then
         self.inst.replica.inventoryitem:SetAttackRange(attackrange)
@@ -17,6 +18,8 @@ local Weapon = Class(function(self, inst)
     self.projectile = nil
     self.stimuli = nil
     --self.overridestimulifn = nil
+
+    self.attackwearmultipliers = SourceModifierList(self.inst)
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
     self.inst:AddTag("weapon")
@@ -92,7 +95,7 @@ function Weapon:OnAttack(attacker, target, projectile)
     end
 
     if self.inst.components.finiteuses ~= nil then
-        self.inst.components.finiteuses:Use(self.attackwear or 1)
+        self.inst.components.finiteuses:Use((self.attackwear or 1) * self.attackwearmultipliers:Get())
     end
 end
 

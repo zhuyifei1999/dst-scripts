@@ -362,6 +362,15 @@ Recipe("ghostlyelixir_retaliation",	{Ingredient("livinglog", 1),	Ingredient("gho
 Recipe("ghostlyelixir_attack",		{Ingredient("stinger", 1), 		Ingredient("ghostflower", 3)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
 Recipe("ghostlyelixir_speed",		{Ingredient("honey", 1), 		Ingredient("ghostflower", 1)}, CUSTOM_RECIPETABS.ELIXIRBREWING, TECH.NONE, nil, nil, nil, nil, "elixirbrewer")
 
+---- Battlesongs ----
+Recipe("battlesong_durability",			{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("sewing_kit", 1)},								CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_healthgain",			{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("amulet", 1)}, 									CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_sanitygain",			{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("moonbutterflywings", 1)}, 						CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_sanityaura",			{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("nightmare_timepiece", 1)}, 						CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_fireresistance",		{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("oceanfish_small_9_inv", 1)}, 					CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_instant_taunt",		{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("tomato", 1, nil, nil, "quagmire_tomato.tex")}, 	CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+Recipe("battlesong_instant_panic",		{Ingredient("papyrus", 1), 	Ingredient("featherpencil", 1), Ingredient("purplegem", 1)}, 								CUSTOM_RECIPETABS.BATTLESONGS, TECH.NONE, nil, nil, nil, nil, "battlesinger")
+
 ----NATURE----
 Recipe("livinglog", 	{Ingredient(CHARACTER_INGREDIENT.HEALTH, 20)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")
 Recipe("armor_bramble", {Ingredient("livinglog", 2), Ingredient("boneshard", 4)}, CUSTOM_RECIPETABS.NATURE, TECH.NONE, nil, nil, nil, nil, "plantkin")

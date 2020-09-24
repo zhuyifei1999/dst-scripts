@@ -1946,6 +1946,22 @@ MISC_ITEMS =
 		output_items = {  "wurt_none", "wilson_gladiator", "body_wilson_gladiator", "feet_wilson_gladiator", "hand_wilson_gladiator", "legs_wilson_gladiator", "willow_ice", "body_willow_ice", "feet_willow_ice", "hand_willow_ice", "wendy_victorian", "body_wendy_victorian", "hand_wendy_victorian", "feet_wendy_victorian", "wx78_nature", "body_wx78_nature", "feet_wx78_nature", "hand_wx78_nature", "spear_simple", "backpack_hound", "body_pj_green_hunters", "legs_pj_green_hunters", "bedroll_furry_quilt_green_hunters", },
 		release_group = 78,
 	},
+	pack_starter_2020 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 1272440,
+		rail_dlc_id = 2001395,
+		display_order = 0,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_starter_2020.xml",
+		display_tex = "starter_2020.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wortox_none", "wilson_victorian", "willow_formalp", "wathgrithr_nature", "webber_wrestler", "spear_ragged", "backpack_babybeef", "body_pj_red_redbird", "legs_pj_red_redbird", "bedroll_furry_quilt_red_redbird", },
+		output_items = {  "wortox_none", "wilson_victorian", "body_wilson_victorian", "feet_wilson_victorian", "hand_wilson_victorian", "willow_formalp", "body_willow_formalp", "feet_formal_stilettop_black_scribble", "wathgrithr_nature", "body_wathgrithr_nature", "hand_wathgrithr_nature", "legs_wathgrithr_nature", "feet_wathgrithr_nature", "webber_wrestler", "body_webber_wrestler", "hand_webber_wrestler", "spear_ragged", "backpack_babybeef", "body_pj_red_redbird", "legs_pj_red_redbird", "bedroll_furry_quilt_red_redbird", },
+		release_group = 103,
+	},
 	pack_sw_gift =
 	{
 		type = "purchase",
@@ -1956,6 +1972,20 @@ MISC_ITEMS =
 		output_items = {  "birdcage_pirate", },
 		legacy_popup_category = "SW",
 		release_group = 42,
+	},
+	pack_valkyrie_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_valkyrie_items.xml",
+		display_tex = "valkyrie_items.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", },
+		output_items = {  "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", },
+		release_group = 103,
 	},
 	pack_victorian_all =
 	{
@@ -2273,6 +2303,85 @@ MISC_ITEMS =
 		display_items = {  "warly_victorian", "body_warly_victorian", "feet_warly_victorian", "legs_warly_victorian", },
 		output_items = {  "warly_victorian", "body_warly_victorian", "feet_warly_victorian", "legs_warly_victorian", },
 		release_group = 71,
+	},
+	pack_wathgrithr_deluxe =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wathgrithr_deluxe.xml",
+		display_tex = "wathgrithr_deluxe.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_valkyrie", "wathgrithr_formalp", "wathgrithr_survivorp", "wathgrithr_shadowp", "wathgrithr_rosep", },
+		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", "wathgrithr_formalp", "body_wathgrithr_formalp", "wathgrithr_survivorp", "body_wathgrithr_survivorp", "wathgrithr_shadowp", "body_wathgrithr_shadowp", "wathgrithr_rosep", "body_wathgrithr_rosep", },
+		release_group = 103,
+	},
+	pack_wathgrithr_formal =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_formal",
+		display_atlas = "bigportraits/wathgrithr_formal.xml",
+		display_tex = "wathgrithr_formal_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_formalp", "body_wathgrithr_formalp", },
+		output_items = {  "wathgrithr_formalp", "body_wathgrithr_formalp", },
+		release_group = 103,
+	},
+	pack_wathgrithr_rose =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_rose",
+		display_atlas = "bigportraits/wathgrithr_rose.xml",
+		display_tex = "wathgrithr_rose_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_rosep", "body_wathgrithr_rosep", },
+		output_items = {  "wathgrithr_rosep", "body_wathgrithr_rosep", },
+		release_group = 103,
+	},
+	pack_wathgrithr_shadow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_shadow",
+		display_atlas = "bigportraits/wathgrithr_shadow.xml",
+		display_tex = "wathgrithr_shadow_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_shadowp", "body_wathgrithr_shadowp", },
+		output_items = {  "wathgrithr_shadowp", "body_wathgrithr_shadowp", },
+		release_group = 103,
+	},
+	pack_wathgrithr_survivor =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_survivor",
+		display_atlas = "bigportraits/wathgrithr_survivor.xml",
+		display_tex = "wathgrithr_survivor_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_survivorp", "body_wathgrithr_survivorp", },
+		output_items = {  "wathgrithr_survivorp", "body_wathgrithr_survivorp", },
+		release_group = 103,
+	},
+	pack_wathgrithr_valkyrie =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_valkyrie",
+		display_atlas = "bigportraits/wathgrithr_valkyrie.xml",
+		display_tex = "wathgrithr_valkyrie_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", },
+		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", },
+		release_group = 103,
 	},
 	pack_wb_0 =
 	{
@@ -3737,6 +3846,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 40,
 	},
+	playerportrait_bg_telebasecrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 103,
+	},
 	playerportrait_bg_telestaffcrystal =
 	{
 		type = "playerportrait",
@@ -4848,6 +4964,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_telebase_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 103,
 	},
 	profileflair_telestaff_crystal =
 	{

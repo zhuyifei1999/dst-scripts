@@ -907,6 +907,7 @@ end
 
 function MakeHauntablePanic(inst, panictime, chance, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
+	inst.components.hauntable.panicable = true
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         if inst.components.sleeper then -- Wake up, there's a ghost!
@@ -926,6 +927,7 @@ end
 
 function MakeHauntablePanicAndIgnite(inst, panictime, panicchance, ignitechance, cooldown, panic_haunt_value, ignite_haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
+	inst.components.hauntable.panicable = true
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_MEDIUM
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
         panicchance = panicchance or TUNING.HAUNT_CHANCE_ALWAYS

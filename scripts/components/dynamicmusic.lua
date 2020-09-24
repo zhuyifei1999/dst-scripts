@@ -133,6 +133,7 @@ local _busytheme = nil
 local _extendtime = nil
 local _soundemitter = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
+local _hasinspirationbuff = nil
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -347,6 +348,10 @@ local function StartDanger(player)
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
         _triggeredlevel = nil
         _extendtime = 0
+
+		if _hasinspirationbuff then
+			_soundemitter:SetParameter("danger", "wathgrithr_intensity", _hasinspirationbuff)
+		end
     end
 end
 
@@ -431,6 +436,11 @@ local function OnAttacked(player, data)
     end
 end
 
+local function OnHasInspirationBuff(player, data)
+	_hasinspirationbuff = (data ~= nil and data.on) and 1 or 0
+	_soundemitter:SetParameter("danger", "wathgrithr_intensity", _hasinspirationbuff)
+end
+
 local function OnInsane()
     if _dangertask == nil and _isenabled then
         _soundemitter:PlaySound("dontstarve/sanity/gonecrazy_stinger")
@@ -463,6 +473,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("playracemusic", StartRacing, player)   
     inst:ListenForEvent("playhermitmusic", StartHermit, player)   
     inst:ListenForEvent("playtrainingmusic", StartTraining, player)
+    inst:ListenForEvent("hasinspirationbuff", OnHasInspirationBuff, player)
 end
 
 local function StopPlayerListeners(player)
@@ -478,6 +489,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("playracemusic", StartRacing, player)
     inst:RemoveEventCallback("playhermitmusic", StartHermit, player)
     inst:RemoveEventCallback("playtrainingmusic", StartTraining, player)
+    inst:RemoveEventCallback("hasinspirationbuff", OnHasInspirationBuff, player)
 end
 
 local function OnPhase(inst, phase)
@@ -533,6 +545,7 @@ local function StopSoundEmitter()
         _isbusydirty = nil
         _extendtime = nil
         _soundemitter = nil
+		_hasinspirationbuff = nil
     end
 end
 

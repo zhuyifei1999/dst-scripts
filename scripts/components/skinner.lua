@@ -118,6 +118,10 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 				--wurt
 				elseif skintype == "powerup" and CLOTHING[name].symbol_overrides_powerup then
 					src_symbols = CLOTHING[name].symbol_overrides_powerup
+				
+				--just used by woodie's bare feet currently
+				elseif CLOTHING[name].symbol_overrides_by_character ~= nil then
+					src_symbols = CLOTHING[name].symbol_overrides_by_character[prefab] or CLOTHING[name].symbol_overrides_by_character["default"]
 				end
 
                 if type == "body" then
@@ -220,33 +224,34 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 		local pelvis_symbol = "torso_pelvis"
 		local wide = false
 		--Certain builds need to use the wide versions to fit clothing, nil build indicates it will use the base
-		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build == nil and pelvis_build ~= nil)
-			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and torso_build == nil and skirt_build ~= nil) then
+		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build == nil and (pelvis_build ~= nil or skirt_build ~= nil)) then
 			torso_symbol = "torso_wide"
 			--print("torso replaced with torso_wide")
 			wide = true
 			anim_state:OverrideSkinSymbol("torso", base_skin, torso_symbol )
 		end
-		
-		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and pelvis_build == nil) 
-			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and skirt_build ~= nil and pelvis_build == nil) then
+		if (BASE_ALTERNATE_FOR_BODY[base_skin] and pelvis_build == nil and (torso_build ~= nil or skirt_build ~= nil)) then
 			pelvis_symbol = "torso_pelvis_wide"
 			--print("torso_pelvis replaced with torso_pelvis_wide")
 			wide = true
 			anim_state:OverrideSkinSymbol("torso_pelvis", base_skin, pelvis_symbol )
 		end
-		
-		if BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and skirt_build == nil then
-			--print("skirt replaced with skirt_wide")
+		if BASE_ALTERNATE_FOR_SKIRT[base_skin] and torso_build ~= nil and skirt_build == nil then
 			wide = true
 			anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
 		end
 		
+		--one piece skirt fixes (willow skin bases)
+		if ONE_PIECE_SKIRT[base_skin] and (tuck_torso == "full" or tuck_torso == "skirt") and torso_build ~= nil and skirt_build == nil  then
+			anim_state:HideSymbol("skirt")
+		end
+
+		--deal with leg boots
 		local use_leg_boot = leg_build and CLOTHING[leg_build] and CLOTHING[leg_build].has_leg_boot
 		if leg_build == foot_build and use_leg_boot then
 			anim_state:OverrideSkinSymbol("leg", leg_build, "leg_boot" )
 		end
-		
+
 		--deal with foot nubs
 		local has_nub = BASE_FEET_SIZE[base_skin] == -1
 		local nub_build = base_skin

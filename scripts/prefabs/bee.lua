@@ -282,6 +282,7 @@ local function workerbee()
     inst.sounds = workersounds
 
     MakeHauntableChangePrefab(inst, "killerbee")
+	inst.components.hauntable.panicable = true
 
     return inst
 end

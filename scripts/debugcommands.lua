@@ -12,6 +12,17 @@ function d_decodedata(path)
     end)
 end
 
+function d_allsongs()
+    c_give("battlesong_durability")
+    c_give("battlesong_healthgain")
+    c_give("battlesong_sanitygain")
+    c_give("battlesong_sanityaura")
+    c_give("battlesong_fireresistance")
+    
+    c_give("battlesong_instant_taunt")
+    c_give("battlesong_instant_panic")
+end
+
 function d_domesticatedbeefalo(tendency, saddle)
     local beef = c_spawn('beefalo')
     beef.components.domesticatable:DeltaDomestication(1)

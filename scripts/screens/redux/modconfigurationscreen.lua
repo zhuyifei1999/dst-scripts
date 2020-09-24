@@ -14,15 +14,19 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 
 	self.client_config = client_config
 	
-	self.options = {}
+    self.options = {}
+    
+    local is_client_only = KnownModIndex:GetModInfo(modname) and KnownModIndex:GetModInfo(modname).client_only_mod
 	
 	if self.config and type(self.config) == "table" then
 		for i,v in ipairs(self.config) do
 			-- Only show the option if it matches our format exactly
-			if v.name and v.options and (v.saved ~= nil or v.default ~= nil) then
-				local _value = v.saved
-				if _value == nil then _value = v.default end
-				table.insert(self.options, {name = v.name, label = v.label, options = v.options, default = v.default, value = _value, hover = v.hover})
+            if v.name and v.options and (v.saved ~= nil or v.default ~= nil) then
+                if is_client_only or not v.client or self.client_config then
+                    local _value = v.saved
+                    if _value == nil then _value = v.default end
+                    table.insert(self.options, {name = v.name, label = v.label, options = v.options, default = v.default, value = _value, hover = v.hover})
+                end
 			end
 		end
 	end

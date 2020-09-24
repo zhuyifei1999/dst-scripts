@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Nope",
 	ANNOUNCE_BOAT_LEAK = "Water! Water coming!",
@@ -576,6 +580,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3285,6 +3293,9 @@ return{
             GENERIC = "Shell stuff",
             LOCKED = "Oh. Locked",
         },
+        
+        HERMIT_BUNDLE = "Thank you!",
+        HERMIT_BUNDLE_SHELLS = "Shells shell",
 
         RESKIN_TOOL = "Dusty changer",
         MOON_FISSURE_PLUGGED = "Can't hear them",
@@ -3315,6 +3326,15 @@ return{
         PORTABLETENT = "Soft house",
         PORTABLETENT_ITEM = "Not done yet",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Biiiig mouth sounds",
+        BATTLESONG_HEALTHGAIN = "Biiiig mouth sounds",
+        BATTLESONG_SANITYGAIN = "Biiiig mouth sounds",
+        BATTLESONG_SANITYAURA = "Biiiig mouth sounds",
+        BATTLESONG_FIRERESISTANCE = "Biiiig mouth sounds",
+        BATTLESONG_INSTANT_TAUNT = "Funny words",
+        BATTLESONG_INSTANT_PANIC = "Funny words",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "For ghost friend",
 		GHOSTLYELIXIR_FASTREGEN = "For ghost friend",

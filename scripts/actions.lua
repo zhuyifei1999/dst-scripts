@@ -287,6 +287,9 @@ ACTIONS =
     BEGIN_QUEST = Action(),
     ABANDON_QUEST = Action(),
 
+    SING = Action({ rmb=true, mount_valid=true }),
+    SING_FAIL = Action({ rmb=true, mount_valid=true }),
+
     --Quagmire
     TILL = Action({ distance=0.5 }),
     PLANTSOIL = Action(),
@@ -2902,6 +2905,36 @@ ACTIONS.ABANDON_QUEST.fn = function(act)
         local success, message = act.target.components.questowner:AbandonQuest(act.doer)
         return (success ~= false), message
     end
+end
+
+ACTIONS.SING.fn = function(act)
+    local singinginspiration = act.doer.components.singinginspiration
+    if act.invobject and singinginspiration ~= nil then
+        
+        local songdata = act.invobject.songdata
+        if songdata ~= nil then
+
+            if singinginspiration:IsSongActive(songdata) then --we need this test incase the client asks to do this action due to lag.
+                return true
+            end
+
+            if singinginspiration:CanAddSong(songdata) then
+                act.invobject.components.singable:Sing(act.doer)
+            end
+        end
+
+        return true
+    end
+
+    return false
+end
+
+ACTIONS.SING_FAIL.fn = function(act)
+    return true
+end
+
+ACTIONS.SING_FAIL.stroverridefn = function(act) 
+    return STRINGS.ACTIONS.SING
 end
 
 ACTIONS.REPLATE.fn = function(act)

@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "No, no, no.",
 	ANNOUNCE_BOAT_LEAK = "Now this ride's getting fun!",
@@ -577,6 +581,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3287,6 +3295,9 @@ return{
             GENERIC = "I fear it's only a shell of it's former self.",
             LOCKED = "We need a key for this gift from the sea!",
         },
+        
+        HERMIT_BUNDLE = "A bundle of goodies for our good deeds!",
+        HERMIT_BUNDLE_SHELLS = "Oh swell, a bundle of shells.",
 
         RESKIN_TOOL = "Oooh, the pranks I could pull with this!",
         MOON_FISSURE_PLUGGED = "Hyuyu! Can you not get out, little ones?",
@@ -3317,6 +3328,15 @@ return{
         PORTABLETENT = "So many pranks to pull! Do I push it in the lake? Toss in a snake?",
         PORTABLETENT_ITEM = "Round and round, tent goes up and then comes down!",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Singing is good for the soul.",
+        BATTLESONG_HEALTHGAIN = "Singing is good for the soul.",
+        BATTLESONG_SANITYGAIN = "Singing is good for the soul.",
+        BATTLESONG_SANITYAURA = "Singing is good for the soul.",
+        BATTLESONG_FIRERESISTANCE = "Singing is good for the soul.",
+        BATTLESONG_INSTANT_TAUNT = "Oooh, yay! Are we putting on a play?",
+        BATTLESONG_INSTANT_PANIC = "Oooh, yay! Are we putting on a play?",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Hyuyu! Someone's getting crafty!",
 		GHOSTLYELIXIR_FASTREGEN = "Hyuyu! Someone's getting crafty!",

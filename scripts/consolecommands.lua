@@ -328,6 +328,14 @@ function c_sel_health()
     end
 end
 
+function c_setinspiration(n)
+    local player = ConsoleCommandPlayer()
+    if player ~= nil and player.components.singinginspiration ~= nil and not player:HasTag("playerghost") then
+        SuUsed("c_setinspiration", true)
+        player.components.singinginspiration:SetPercent(math.min(n, 1))
+    end
+end
+
 function c_sethealth(n)
     local player = ConsoleCommandPlayer()
     if player ~= nil and player.components.health ~= nil and not player:HasTag("playerghost") then

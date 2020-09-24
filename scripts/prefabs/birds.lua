@@ -350,6 +350,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
 
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+		inst.components.hauntable.panicable = true
 
         if not GetGameModeProperty("disable_bird_mercy_items") then
             inst:AddComponent("periodicspawner")

@@ -227,6 +227,10 @@ return{
 			NOT_NIGHT = "I should wait until it's dark, for maximum spookiness.",
 			NO_FIRE = "I need a fire, it adds to the atmosphere!",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "It won't work.",
 	ANNOUNCE_BOAT_LEAK = "Um. That might be a problem.",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -1080,7 +1088,6 @@ return{
         SPIDERHOLE_ROCK = "Someone needs to dust more often, everything's covered in cobwebs!",
         STALAGMITE = "People get stalagmites and stalactites confused, but I know which is which!",
         STALAGMITE_TALL = "It's a really tall... one of these!",
-        TREASURECHEST_TRAP = "There might be cursed pirate gold inside!",
 
         TURF_CARPETFLOOR = "This reminds me of my living room back home.",
         TURF_CHECKERFLOOR = "A patch of ground.",
@@ -2255,6 +2262,7 @@ return{
 			GENERIC = "It isn't a toy chest, it's a very grownup SUPPLY chest.",
 			BURNT = "My stuff!!",
 		},
+		TREASURECHEST_TRAP = "There might be cursed pirate gold inside!",
 		SACRED_CHEST = 
 		{
 			GENERIC = "There HAS to be something good in there, just look at it!",
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "How did this clam get so big?",
             LOCKED = "I can't get it open.",
         },
+        
+        HERMIT_BUNDLE = "I think she's really warming up to us, Woby!",
+        HERMIT_BUNDLE_SHELLS = "More for the shell collection!",
 
         RESKIN_TOOL = "It changes how things look, but they're still the same deep down.",
         MOON_FISSURE_PLUGGED = "She trapped all the moon ghosts in their holes.",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "Nice and sturdy!",
         PORTABLETENT_ITEM = "I'll have this set up lickety-split!",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "This seems a bit more complicated than the songs I learned in the Pioneers.",
+        BATTLESONG_HEALTHGAIN = "This seems a bit more complicated than the songs I learned in the Pioneers.",
+        BATTLESONG_SANITYGAIN = "This seems a bit more complicated than the songs I learned in the Pioneers.",
+        BATTLESONG_SANITYAURA = "This seems a bit more complicated than the songs I learned in the Pioneers.",
+        BATTLESONG_FIRERESISTANCE = "This seems a bit more complicated than the songs I learned in the Pioneers.",
+        BATTLESONG_INSTANT_TAUNT = "This story could use a few more monsters.",
+        BATTLESONG_INSTANT_PANIC = "This story could use a few more monsters.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Ghosts can drink potions? Uh, of course I knew that!",
 		GHOSTLYELIXIR_FASTREGEN = "Ghosts can drink potions? Uh, of course I knew that!",

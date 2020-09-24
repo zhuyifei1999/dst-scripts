@@ -449,6 +449,9 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                 if self.inst.components.inventory ~= nil then
                     --self.inst.components.inventory:GiveItem(prod)
                     self.inst:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin, prototyper = self.current_prototyper })
+                    if self.current_prototyper ~= nil and self.current_prototyper:IsValid() then
+                        self.current_prototyper:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin }) -- added this back for the gorge. 
+                    end
                     ProfileStatsAdd("build_"..prod.prefab)
 
                     if prod.components.equippable ~= nil and

@@ -453,7 +453,15 @@ function ModWrangler:LoadMods(worldgen)
 
 			if self.worldgen == false then
 				-- Make sure we load the config data before the mod (but not during worldgen)
-				KnownModIndex:LoadModConfigurationOptions(modname, not TheNet:GetIsServer())
+				if TheNet:GetIsServer() and not TheNet:IsDedicated() then
+					local options = KnownModIndex:LoadModConfigurationOptions(modname, false)
+					
+					KnownModIndex:SetTempModConfigData({[modname] = options})
+
+					KnownModIndex:LoadModConfigurationOptions(modname, true)
+				else
+					KnownModIndex:LoadModConfigurationOptions(modname, not TheNet:GetIsServer())
+				end
 				KnownModIndex:ApplyConfigOptionOverrides(mod_overrides)
 			end
 

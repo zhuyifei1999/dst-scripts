@@ -343,6 +343,8 @@ local actionhandlers =
         function(inst, action)
             return action.invobject ~= nil and action.invobject:HasTag("abigail_flower") and "commune_with_abigail" or "dolongaction"
         end),
+    ActionHandler(ACTIONS.SING, "sing_pre"),
+    ActionHandler(ACTIONS.SING_FAIL, "sing_fail"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
@@ -3813,6 +3815,58 @@ local states =
             inst:ClearBufferedAction()
             inst.sg:GoToState("idle")
         end,
+    },
+
+    --------------------------------------------------------------------------
+    -- Wigfrid
+
+    State{
+        name = "sing_pre",
+        tags = {"busy", "nointerrupt"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            
+            inst.AnimState:PlayAnimation("sing_pre", false)
+            inst.AnimState:PushAnimation("sing_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+        
+        onupdate = function(inst)
+            if inst:HasTag("busy") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+    
+
+    State{
+
+        name = "sing_fail",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst:PerformPreviewBufferedAction()
+
+            inst.sg:GoToState("idle")
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,     
     },
 
     --------------------------------------------------------------------------

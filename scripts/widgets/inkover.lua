@@ -11,12 +11,14 @@ local InkOver =  Class(Widget, function(self, owner)
 
     local function _Flash() self:Flash() end
 
-    self.inst:ListenForEvent("inked", _Flash, owner)    
+    self.inst:ListenForEvent("inked", _Flash, owner)
 end)
 
 function InkOver:Flash()
+
+    TheFrontEnd:GetSound():PlaySound("hookline/creatures/squid/ink")
    
-    local time1 = GetTime() - self.InkOver.time 
+    local time1 = GetTime() - self.InkOver.time
     local time2 = GetTime() - self.InkOver2.time
     if time1 > 2 then
         time1 = nil
@@ -26,7 +28,7 @@ function InkOver:Flash()
     end        
 
     if time1 and time2 then
-        if time1 < time2 then            
+        if time1 < time2 then
             self.InkOver2:Flash("ink2")
         else
             self.InkOver:Flash("ink")

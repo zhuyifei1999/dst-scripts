@@ -733,6 +733,7 @@ local function fn()
         inst.IsEmpty = IsEmpty
         inst.IsFull = IsFull
         inst.Has = Has
+        inst.HasItemWithTag = HasItemWithTag
         inst.ReturnActiveItemToSlot = ReturnActiveItemToSlot
         inst.PutOneOfActiveItemInSlot = PutOneOfActiveItemInSlot
         inst.PutAllOfActiveItemInSlot = PutAllOfActiveItemInSlot

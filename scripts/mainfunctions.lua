@@ -941,6 +941,7 @@ function Start()
 
     known_assert(TheSim:CanWriteConfigurationDirectory(), "CONFIG_DIR_WRITE_PERMISSION")
     known_assert(TheSim:CanReadConfigurationDirectory(), "CONFIG_DIR_READ_PERMISSION")
+    known_assert(TheSim:HasEnoughFreeDiskSpace(), "CONFIG_DIR_DISK_SPACE")
 
     --load the user's custom commands into the game
     TheSim:GetPersistentString("../customcommands.lua",

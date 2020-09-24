@@ -429,7 +429,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
 		diet = DIET.VEGGIE,
-		cooker_ingredient_value = nil, -- plantmeat does not go in the crokpot
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_PLANTMEAT,
 
 		dynamic_shadow = SHADOW_SMALL,
@@ -474,7 +474,7 @@ local FISH_DEFS =
 
 		lures = TUNING.OCEANFISH_LURE_PREFERENCE.SMALL_VEGGIE,
 		diet = DIET.VEGGIE,
-		cooker_ingredient_value = nil, -- plantmeat does not go in the crokpot
+		cooker_ingredient_value = COOKER_INGREDIENT_SMALL, 
 		edible_values = EDIBLE_VALUES_PLANTMEAT,
 
 		dynamic_shadow = SHADOW_SMALL,

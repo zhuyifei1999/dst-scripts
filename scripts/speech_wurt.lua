@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Grrr... can't do it, florpt.",
 	ANNOUNCE_BOAT_LEAK = "Yay! Boat getting wetter!",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "Seashell is good for hiding things, florpt!",
             LOCKED = "Grrr, open up!",
         },
+        
+        HERMIT_BUNDLE = "Presents!",
+        HERMIT_BUNDLE_SHELLS = "Full of pretty shells!",
 
         RESKIN_TOOL = "Change things to... different things!",
         MOON_FISSURE_PLUGGED = "Bad moon things can't get out, florp!",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "Is sleeping place.",
         PORTABLETENT_ITEM = "Building something, florp?",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Someone drew bunch of flies stuck in Spiderfolk webs, florpt.",
+        BATTLESONG_HEALTHGAIN = "Someone drew bunch of flies stuck in Spiderfolk webs, florpt.",
+        BATTLESONG_SANITYGAIN = "Someone drew bunch of flies stuck in Spiderfolk webs, florpt.",
+        BATTLESONG_SANITYAURA = "Someone drew bunch of flies stuck in Spiderfolk webs, florpt.",
+        BATTLESONG_FIRERESISTANCE = "Someone drew bunch of flies stuck in Spiderfolk webs, florpt.",
+        BATTLESONG_INSTANT_TAUNT = "Glurgh... these words really hard...",
+        BATTLESONG_INSTANT_PANIC = "Glurgh... these words really hard...",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Ooooh! Me wanna make some too, florp!",
 		GHOSTLYELIXIR_FASTREGEN = "Ooooh! Me wanna make some too, florp!",
