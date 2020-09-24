@@ -348,7 +348,7 @@ local function fn()
 
     inst.components.health:SetMaxHealth(TUNING.BUNNYMAN_HEALTH)
 
-    MakeHauntablePanic(inst, 5, nil, 5)
+    MakeHauntablePanic(inst)
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGbunnyman")

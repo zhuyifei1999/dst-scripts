@@ -515,6 +515,7 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
 
         if morphlist ~= nil then
             MakeHauntableChangePrefab(inst, morphlist)
+			inst.components.hauntable.panicable = true
             inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
         else
             MakeHauntablePanic(inst)

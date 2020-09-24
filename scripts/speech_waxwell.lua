@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_BOAT_LEAK = "We've sprung a leak!",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "How whimsical.",
             LOCKED = "How annoying. It's locked.",
         },
+        
+        HERMIT_BUNDLE = "How... quaint.",
+        HERMIT_BUNDLE_SHELLS = "Nautical decor was never my style.",
 
         RESKIN_TOOL = "Presto change-o! Ahem... old habit.",
         MOON_FISSURE_PLUGGED = "It's almost genius in its simplicity... but it does smell.",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "Oh, how I miss sleeping indoors.",
         PORTABLETENT_ITEM = "Surely someone else can set it up.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "No. I do NOT sing.",
+        BATTLESONG_HEALTHGAIN = "No. I do NOT sing.",
+        BATTLESONG_SANITYGAIN = "No. I do NOT sing.",
+        BATTLESONG_SANITYAURA = "No. I do NOT sing.",
+        BATTLESONG_FIRERESISTANCE = "No. I do NOT sing.",
+        BATTLESONG_INSTANT_TAUNT = "My acts were always a bit more improvisational.",
+        BATTLESONG_INSTANT_PANIC = "My acts were always a bit more improvisational.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "It appears someone has been toying with the dark arts and crafts.",
 		GHOSTLYELIXIR_FASTREGEN = "It appears someone has been toying with the dark arts and crafts.",

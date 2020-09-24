@@ -62,6 +62,9 @@ local assets =
     Asset( "ATLAS", "images/hud.xml" ),
     Asset( "IMAGE", "images/hud.tex" ),
 
+    Asset(  "ATLAS", "images/hud2.xml" ),
+    Asset(  "IMAGE", "images/hud2.tex" ),
+
     Asset( "SHADER", shader_filename ),
     Asset( "SHADER", fs_shader ),
 

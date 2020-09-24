@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I cannot do that.",
 	ANNOUNCE_BOAT_LEAK = "Mon dieu! She is sinking!",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -2771,9 +2779,6 @@ return{
 --fallback to speech_wilson.lua 		QUAGMIRE_SALMON_COOKED = "Ready for the dinner table.",
 --fallback to speech_wilson.lua 		QUAGMIRE_CRABMEAT = "No imitations here.",
 --fallback to speech_wilson.lua 		QUAGMIRE_CRABMEAT_COOKED = "I can put a meal together in a pinch.",
---fallback to speech_wilson.lua         QUAGMIRE_POT = "This one holds more ingredients.",
---fallback to speech_wilson.lua         QUAGMIRE_POT_SMALL = "Let's get cooking!",
---fallback to speech_wilson.lua         QUAGMIRE_POT_HANGER_ITEM = "For suspension-based cookery.",
 --fallback to speech_wilson.lua 		QUAGMIRE_SUGARWOODTREE = 
 --fallback to speech_wilson.lua 		{
 --fallback to speech_wilson.lua 			GENERIC = "It's full of delicious, delicious sap.",
@@ -3284,6 +3289,9 @@ return{
             GENERIC = "I was hoping there would still be a fresh clam inside...",
             LOCKED = "Ah, zut! Locked.",
         },
+        
+        HERMIT_BUNDLE = "Not to complain, but I would have preferred a nice edible arrangement.",
+        HERMIT_BUNDLE_SHELLS = "A shell stuffed with shells.",
 
         RESKIN_TOOL = "Ah, this will help freshen up the place, non?",
         MOON_FISSURE_PLUGGED = "I wonder why she's so determined to stay here.",
@@ -3314,6 +3322,15 @@ return{
         PORTABLETENT = "It looks very cozy.",
         PORTABLETENT_ITEM = "All rolled up like a crepe.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "I didn't know she was such an accomplished singer!",
+        BATTLESONG_HEALTHGAIN = "I didn't know she was such an accomplished singer!",
+        BATTLESONG_SANITYGAIN = "I didn't know she was such an accomplished singer!",
+        BATTLESONG_SANITYAURA = "I didn't know she was such an accomplished singer!",
+        BATTLESONG_FIRERESISTANCE = "I didn't know she was such an accomplished singer!",
+        BATTLESONG_INSTANT_TAUNT = "Shakespeare? I wonder how a Viking came upon this...",
+        BATTLESONG_INSTANT_PANIC = "Shakespeare? I wonder how a Viking came upon this...",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "I'm not sure about some of those ingredients, mademoiselle.",
 		GHOSTLYELIXIR_FASTREGEN = "I'm not sure about some of those ingredients, mademoiselle.",

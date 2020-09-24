@@ -52,6 +52,7 @@ PREFABFILES = {
   "batbat",
   "batcave",
   "bathbomb",
+  "battlesongs",
   "battreefx",
   "beardhair",
   "bearger",

@@ -31,6 +31,7 @@ ITEM_DISPLAY_BLACKLIST =
 	firestaff_lance = true,
 	firestaff_northern = true,
 	firestaff_rose = true,
+	gemsocket_crystal = true,
 	glomling_beardeddragon_builder = true,
 	glomling_puft_builder = true,
 	glomling_winter_builder = true,

@@ -383,7 +383,7 @@ function ItemTile:SetChargePercent(percent)
         if not self.rechargeframe.shown then
             self.rechargeframe:Show()
         end
-        if percent >= .9999 then
+        if percent >= 0.9999 then
             self:StopUpdating()
         elseif self.rechargetime < math.huge then
             self:StartUpdating()

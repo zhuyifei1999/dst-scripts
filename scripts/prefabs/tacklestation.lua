@@ -112,7 +112,7 @@ local function onburntup(inst)
 end
 
 local function OnHaunt(inst, haunter)
-    if inst.components.prototyper.on then
+    if not inst:HasTag("burnt") and inst.components.prototyper.on then
         onuse(inst, false)
     else
         Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)

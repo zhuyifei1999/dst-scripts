@@ -16,6 +16,10 @@ ERRORS = {
         message = "Unable to write to the agreements file. Please make sure you have permissions for your Klei save folder.",
         url = "https://support.klei.com/hc/en-us/articles/360029881751",
     },
+    CONFIG_DIR_DISK_SPACE = {
+        message = "There is not enough available hard drive space to reliably save worlds. Please free up some hard drive space.",
+    },
+	
 }
 
 if DEBUG_MODE then

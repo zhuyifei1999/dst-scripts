@@ -3,7 +3,7 @@ local Text = require "widgets/text"
 local easing = require "easing"
 local Widget = require "widgets/widget"
 
-local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild)
+local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild, circular_meter, use_clear_bg)
     Widget._ctor(self, "Badge")
     self.owner = owner
 
@@ -30,10 +30,17 @@ local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild)
         self.anim:GetAnimState():PlayAnimation("anim")
     else
         --self.bg clashes with existing mods
-        self.backing = self:AddChild(UIAnim())
-        self.backing:GetAnimState():SetBank("status_meter")
-        self.backing:GetAnimState():SetBuild("status_meter")
-        self.backing:GetAnimState():PlayAnimation("bg")
+        if use_clear_bg then
+            self.backing = self:AddChild(UIAnim())
+            self.backing:GetAnimState():SetBank ("status_clear_bg")
+            self.backing:GetAnimState():SetBuild("status_clear_bg")
+            self.backing:GetAnimState():PlayAnimation("backing")
+        else
+            self.backing = self:AddChild(UIAnim())
+            self.backing:GetAnimState():SetBank("status_meter")
+            self.backing:GetAnimState():SetBuild("status_meter")
+            self.backing:GetAnimState():PlayAnimation("bg")
+        end
 
         self.anim = self:AddChild(UIAnim())
         self.anim:GetAnimState():SetBank("status_meter")
@@ -41,6 +48,20 @@ local Badge = Class(Widget, function(self, anim, owner, tint, iconbuild)
         self.anim:GetAnimState():PlayAnimation("anim")
         if tint ~= nil then
             self.anim:GetAnimState():SetMultColour(unpack(tint))
+        end
+
+        if circular_meter then
+            --self.circular_meter = self.underNumber:AddChild(UIAnim())
+            self.circular_meter = self:AddChild(UIAnim())
+            self.circular_meter:GetAnimState():SetBank( "status_meter_circle")
+            self.circular_meter:GetAnimState():SetBuild("status_meter_circle")
+            self.circular_meter:GetAnimState():PlayAnimation("meter")
+
+            if tint ~= nil then
+                self.circular_meter:GetAnimState():SetMultColour(unpack(tint))
+            end
+
+            self.anim:Hide()
         end
 
         --self.frame clashes with existing mods
@@ -87,13 +108,17 @@ function Badge:SetPercent(val, max)
     val = val or self.percent
     max = max or 100
 
-    self.anim:GetAnimState():SetPercent("anim", 1 - val)
-    if self.circleframe ~= nil then
-        self.circleframe:GetAnimState():SetPercent("frame", 1 - val)
+    if self.circular_meter ~= nil then
+        self.circular_meter:GetAnimState():SetPercent("meter", val)
+    else
+        self.anim:GetAnimState():SetPercent("anim", 1 - val)
+        if self.circleframe ~= nil then
+            self.circleframe:GetAnimState():SetPercent("frame", 1 - val)
+        end
     end
-    -- print(val, max, val * max)
-    self.num:SetString(tostring(math.ceil(val * max)))
 
+    --print(val, max, val * max)
+    self.num:SetString(tostring(math.ceil(val * max)))
     self.percent = val
 end
 

@@ -228,7 +228,7 @@ local ExampleLayout =
 								{
 								 	unknown_bird = { "crow", "robin"},
 								 	unknown_fruit = { "pumpkin", "eggplant", "durian", "pomegranate", "dragonfruit"},
-								 	unknown_bird = { "carrot_planted","flower", "grass"},
+								 	unknown_plant = { "carrot_planted","flower", "grass"},
 								},
 							layout = 
 								{

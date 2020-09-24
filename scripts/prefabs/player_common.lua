@@ -1556,6 +1556,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
             inst:AddComponent("healthsyncer")
         end
 
+		inst.isplayer = true
+
         if common_postinit ~= nil then
             common_postinit(inst)
         end

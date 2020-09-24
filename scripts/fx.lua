@@ -841,6 +841,75 @@ local fx =
         sound = "dontstarve_DLC001/characters/wathgrithr/valhalla",
         sounddelay = .2,
     },
+
+
+    {
+        name = "battlesong_attach",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "attach",
+    },
+    {
+        name = "battlesong_loop",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_trebleclef",
+    },
+    {
+        name = "battlesong_detach",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "detach",
+    },
+
+    {
+        name = "battlesong_durability_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_durability",
+    },
+    {
+        name = "battlesong_healthgain_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_healthgain",
+    },
+    {
+        name = "battlesong_sanitygain_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_sanitygain",
+    },
+    {
+        name = "battlesong_sanityaura_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_sanityaura",
+    },
+    {
+        name = "battlesong_fireresistance_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "fx_fireresistance",
+    },
+    {
+        name = "battlesong_instant_electric_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "quote_electric",
+    },
+    {
+        name = "battlesong_instant_taunt_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "quote_taunt",
+    },
+    {
+        name = "battlesong_instant_panic_fx",
+        bank = "fx_wathgrithr_buff",
+        build = "fx_wathgrithr_buff",
+        anim = "quote_panic",
+    },
     {
         name = "lucy_ground_transform_fx",
         bank = "lucy_axe_fx",

@@ -18,6 +18,6 @@ AddLevel(LEVELTYPE.QUAGMIRE, {
             petrification = "none",
 			wildfires = "never",
         },
-        background_node_range = {0,0},
+        background_node_range = {0,1},
     })
 

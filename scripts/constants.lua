@@ -840,7 +840,8 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE"
+    "dontstarve_DLC001/music/music_wigfrid_FE"
+    --"dontstarve/music/music_FE"
 
 
 ---------------------------------------------------------
@@ -1113,12 +1114,13 @@ RECIPETABS =
 
 CUSTOM_RECIPETABS =
 {
-    BOOKS =         { str = "BOOKS",			sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder" },
-    SHADOW =        { str = "SHADOW",			sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic" },
-    ENGINEERING =   { str = "ENGINEERING",		sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson" },
+    BOOKS         = { str = "BOOKS",			sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder"  },
+    SHADOW        = { str = "SHADOW",			sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic"  },
+    ENGINEERING   = { str = "ENGINEERING",		sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson"  },
 	ELIXIRBREWING = { str = "ELIXIRBREWING",	sort = 999, icon = "tab_elixirbrewing.tex", owner_tag = "elixirbrewer" },
-    NATURE =        { str = "NATURE",			sort = 999, icon = "tab_nature.tex",        owner_tag = "plantkin" },
-	SLINGSHOTAMMO =	{ str = "SLINGSHOTAMMO",	sort = 999, icon = "tab_slingshot.tex",	owner_tag = "pebblemaker"},
+    BATTLESONGS   = { str = "BATTLESONGS",      sort = 999, icon = "tab_battlesongs.tex",   owner_tag = "battlesinger", icon_atlas = "images/hud2.xml" },
+    NATURE        = { str = "NATURE",			sort = 999, icon = "tab_nature.tex",        owner_tag = "plantkin"     },
+	SLINGSHOTAMMO =	{ str = "SLINGSHOTAMMO",	sort = 999, icon = "tab_slingshot.tex",	    owner_tag = "pebblemaker"  },
 }
 
 QUAGMIRE_RECIPETABS =
@@ -1127,8 +1129,8 @@ QUAGMIRE_RECIPETABS =
     QUAGMIRE_TRADER_ELDER = { str = "QUAGMIRE_TRADER_ELDER", sort = 0, icon = "tab_quagmire_swampigelder.tex", icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
     QUAGMIRE_TRADER_MERM1 = { str = "QUAGMIRE_TRADER_MERM1", sort = 0, icon = "tab_quagmire_trader_merm1.tex", icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
     QUAGMIRE_TRADER_MERM2 = { str = "QUAGMIRE_TRADER_MERM2", sort = 0, icon = "tab_quagmire_trader_merm2.tex", icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
-    QUAGMIRE_TRADER_MUM =   { str = "QUAGMIRE_TRADER_MUM",   sort = 0, icon = "tab_quagmire_trader_mum.tex", icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
-    QUAGMIRE_TRADER_KID =   { str = "QUAGMIRE_TRADER_KID",   sort = 0, icon = "tab_quagmire_trader_kid.tex", icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
+    QUAGMIRE_TRADER_MUM =   { str = "QUAGMIRE_TRADER_MUM",   sort = 0, icon = "tab_quagmire_trader_mum.tex",   icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
+    QUAGMIRE_TRADER_KID =   { str = "QUAGMIRE_TRADER_KID",   sort = 0, icon = "tab_quagmire_trader_kid.tex",   icon_atlas = "images/quagmire_hud.xml", crafting_station = true, shop = true },
 }
 
 VERBOSITY =

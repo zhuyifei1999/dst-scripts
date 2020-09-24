@@ -118,10 +118,6 @@ local function FindPairedDoor(inst)
     return nil
 end
 
-local function GetNeighbors(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    return TheSim:FindEntities(x,0,z, 1.5, FINDWALL_MUST_TAGS)
-end
 
 local function SetOffset(inst, offset)
     if inst.dooranim ~= nil then
@@ -163,7 +159,7 @@ local function SetOrientation(inst, rotation)
     end
 end
 
-local function _calcdooroffset(inst, neighbors)
+local function _calcdooroffset(inst)
     if inst == nil or not inst.isdoor then
         return false
     end
@@ -174,14 +170,14 @@ local function _calcdooroffset(inst, neighbors)
     local search_x = -math.sin(rot / RADIANS) * 1.2
     local search_y = math.cos(rot / RADIANS) * 1.2
 
-    local walls = TheSim:FindEntities(x + search_x,0, z - search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
+    local walls = TheSim:FindEntities(x + search_x, 0, z - search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
     if #walls == 0 then
-        walls = TheSim:FindEntities(x - search_x,0, z + search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
+        walls = TheSim:FindEntities(x - search_x, 0, z + search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
     end
     return #walls > 0
 end
 
-local function RefreshDoorOffset(inst, neighbors)
+local function RefreshDoorOffset(inst)
     if inst == nil or (not inst.isdoor) then
         return
     end
@@ -192,7 +188,7 @@ local function RefreshDoorOffset(inst, neighbors)
         return
     end
 
-    local do_offset = _calcdooroffset(inst, neighbors)
+    local do_offset = _calcdooroffset(inst)
 
     local otherdoor = FindPairedDoor(inst)
     if otherdoor and do_offset == false then
@@ -206,8 +202,11 @@ local function RefreshDoorOffset(inst, neighbors)
 end
 
 
+
+
 local function FixUpFenceOrientation(inst, deployedrotation)
-    local neighbors = GetNeighbors(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local neighbors = TheSim:FindEntities(x,0,z, 1.5, FINDWALL_MUST_TAGS)
 
     local rot = inst.Transform:GetRotation()
     local neighbor_index = 1
@@ -222,23 +221,33 @@ local function FixUpFenceOrientation(inst, deployedrotation)
         SetIsSwingRight(inst, false) --set it to false and assume we'll recalculate each frame
     end
 
-    
-    --Only look for parallel neighbours when matching rotation and doing swing-side changes
+    --Only look for parallel fence/gate neighbours when matching rotation and doing swing-side changes
     local this_e = CalcRotationEnum(rot)
     local neighbor_e = nil
     while neighbor ~= nil do
         neighbor_e = CalcRotationEnum(neighbor.Transform:GetRotation())
-        if this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2) then
-            --print("Found parallel neighbor!", neighbor)
+
+        if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2)) then
+            --found a parallel fence/gate neighbour!
             break
         end
         neighbor_index = neighbor_index + 1
         neighbor = neighbors[neighbor_index]
     end
         
+    if neighbor == nil then
+        --no fence/gates, try the first item again it should be a wall
+        rot = inst.Transform:GetRotation()
+        neighbor = neighbors[1]
+        if deployedrotation ~= nil then --has a value for spawned items
+            neighbor = neighbors[2]
+            rot = deployedrotation
+        end
+    end
+
     if neighbor ~= nil then
-        --align with neighbor if we're placing from behind. This exists so that you can fix a hole in a wall from the back of wall. Needed for the case where the camera is obstructed from placing from the front of the wall
-        if (this_e + ROT_SIDES/2) % ROT_SIDES == neighbor_e then
+        --align with fence/gate neighbor if we're placing from behind. This exists so that you can fix a hole in a wall from the back of wall. Needed for the case where the camera is obstructed from placing from the front of the wall
+        if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e + ROT_SIDES/2) % ROT_SIDES == neighbor_e then
             rot = rot + 180
             this_e = CalcRotationEnum(rot)
         end
@@ -253,14 +262,15 @@ local function FixUpFenceOrientation(inst, deployedrotation)
                 local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
                 local rot_to_neighbor = math.atan2(x - x1, z - z1) * RADIANS
 
-                local swing_right = CalcRotationEnum(rot) ~= CalcRotationEnum(rot_to_neighbor)
+                local swing_right = (CalcRotationEnum(rot_to_neighbor) + 4) % ROT_SIDES == CalcRotationEnum(rot)
+
                 SetIsSwingRight(inst, swing_right)
             end
         end
     end
 
     SetOrientation(inst, rot)
-    RefreshDoorOffset(inst, neighbors)
+    RefreshDoorOffset(inst)
 
     GetAnimState(inst):PlayAnimation(GetAnimName(inst, "idle"))
 end

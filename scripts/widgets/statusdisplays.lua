@@ -1,13 +1,14 @@
-local Widget = require "widgets/widget"
-local SanityBadge = require "widgets/sanitybadge"
-local HealthBadge = require "widgets/healthbadge"
-local HungerBadge = require "widgets/hungerbadge"
-local WereBadge = require "widgets/werebadge"
-local MoistureMeter = require "widgets/moisturemeter"
-local BoatMeter = require "widgets/boatmeter"
-local PetHealthBadge = require "widgets/pethealthbadge"
-local ResurrectButton = require "widgets/resurrectbutton"
-local UIAnim = require "widgets/uianim"
+local Widget           = require "widgets/widget"
+local SanityBadge      = require "widgets/sanitybadge"
+local HealthBadge      = require "widgets/healthbadge"
+local HungerBadge      = require "widgets/hungerbadge"
+local WereBadge        = require "widgets/werebadge"
+local MoistureMeter    = require "widgets/moisturemeter"
+local BoatMeter        = require "widgets/boatmeter"
+local PetHealthBadge   = require "widgets/pethealthbadge"
+local InspirationBadge = require "widgets/inspirationbadge"
+local ResurrectButton  = require "widgets/resurrectbutton"
+local UIAnim           = require "widgets/uianim"
 
 local function OnSetPlayerMode(inst, self)
     self.modetask = nil
@@ -53,6 +54,19 @@ local function OnSetPlayerMode(inst, self)
         self.onwerenessdelta = function(owner, data) self:WerenessDelta(data) end
         self.inst:ListenForEvent("werenessdelta", self.onwerenessdelta, self.owner)
         self:SetWerenessPercent(self.owner:GetWereness())
+    end
+
+    if self.inspirationbadge ~= nil and self.oninspirationdelta == nil then
+        self.oninspirationdelta = function(owner, data) self:SetInspiration(data ~= nil and data.newpercent or 0, data ~= nil and data.slots_available or nil, data ~= nil and data.draining) end
+        self.inst:ListenForEvent("inspirationdelta", self.oninspirationdelta, self.owner)
+
+        self.oninspirationsongchanged = function(owner, data) self:OnInspirationSongChanged(data ~= nil and data.slotnum or 0, data ~= nil and data.songdata ~= nil and data.songdata.NAME or nil) end
+		self.inst:ListenForEvent("inspirationsongchanged", self.oninspirationsongchanged, self.owner)
+
+        self:SetInspiration(self.owner:GetInspiration(), nil, false)
+		self:OnInspirationSongChanged(1, (self.owner:GetInspirationSong(1) or {}).NAME)
+		self:OnInspirationSongChanged(2, (self.owner:GetInspirationSong(2) or {}).NAME)
+		self:OnInspirationSongChanged(3, (self.owner:GetInspirationSong(3) or {}).NAME)
     end
 
 	if self.pethealthbadge ~= nil and self.onpethealthdirty == nil then
@@ -110,6 +124,11 @@ local function OnSetGhostMode(inst, self)
         self.onwerenessdelta = nil
     end
 
+    if self.oninspirationdelta ~= nil then
+        self.inst:RemoveEventCallback("inspirationdelta", self.oninspirationdelta, self.owner)
+        self.oninspirationdelta = nil
+    end
+
     if self.onpethealthdirty ~= nil then
         self.inst:RemoveEventCallback("clientpethealthdirty", self.onpethealthdirty, self.owner)
         self.inst:RemoveEventCallback("clientpethealthsymboldirty", self.onpethealthdirty, self.owner)
@@ -147,6 +166,9 @@ local StatusDisplays = Class(Widget, function(self, owner)
 
     self.wereness = nil
     self.onwerenessdelta = nil
+
+	self.inspirationbadge = nil
+	self.oninspirationdelta = nil
 
     self.brain = self:AddChild(SanityBadge(owner))
     self.brain:SetPosition(0, -40, 0)
@@ -228,6 +250,10 @@ local StatusDisplays = Class(Widget, function(self, owner)
 		    self.moisturemeter:SetPosition(-40, -100, 0)
 		end
 	end
+
+    if owner:HasTag("battlesinger") then
+        self:AddInspiration()
+    end
 end)
 
 function StatusDisplays:ShowStatusNumbers()
@@ -319,6 +345,16 @@ function StatusDisplays:SetWereMode(weremode, nofx)
     end
 end
 
+function StatusDisplays:AddInspiration()
+    if self.inspirationbadge == nil then
+        self.inspirationbadge = self:AddChild(InspirationBadge(self.owner, { 151 / 255, 30 / 255, 180 / 255, 1 }))
+        self.inspirationbadge:SetPosition(0, -130, 0)
+		self:SetInspiration(self.owner:GetInspiration(), nil, false)
+
+        self.moisturemeter:SetPosition(-80, -130, 0)
+    end
+end
+
 function StatusDisplays:SetGhostMode(ghostmode)
     if not self.isghostmode == not ghostmode then --force boolean
         return
@@ -343,6 +379,11 @@ function StatusDisplays:SetGhostMode(ghostmode)
 		if self.pethealthbadge ~= nil then
 			self.pethealthbadge:Hide()
 		end
+
+        if self.inspirationbadge ~= nil then
+            self.inspirationbadge:Hide()
+        end
+
     else
         self.isghostmode = nil
 
@@ -359,6 +400,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
 		if self.pethealthbadge ~= nil then
 			self.pethealthbadge:Show()
 		end
+
+        if self.inspirationbadge ~= nil then
+            self.inspirationbadge:Show()
+        end
     end
 
     if self.rezbuttontask ~= nil then
@@ -471,6 +516,16 @@ function StatusDisplays:WerenessDelta(data)
             self.wereness:PulseRed()
         end
     end
+end
+
+function StatusDisplays:SetInspiration(pct, slots_available, draining)
+    self.inspirationbadge:SetPercent(pct)
+	self.inspirationbadge:OnUpdateSlots(slots_available or self.owner:CalcAvailableSlotsForInspiration(pct))
+	self.inspirationbadge:EnableClientPredictedDraining(pct > 0 and draining)
+end
+
+function StatusDisplays:OnInspirationSongChanged(slot_num, song_name)
+    self.inspirationbadge:OnBuffChanged(slot_num, song_name)
 end
 
 function StatusDisplays:SetMoisturePercent(pct)

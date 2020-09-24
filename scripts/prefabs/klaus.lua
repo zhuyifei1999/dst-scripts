@@ -591,8 +591,8 @@ local function fn()
 
     inst.DoFoleySounds = DoFoleySounds
 
-    inst:SetStateGraph("SGklaus")
     inst:SetBrain(brain)
+    inst:SetStateGraph("SGklaus")
 
     SetStatScale(inst, 1)
 

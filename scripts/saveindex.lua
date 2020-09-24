@@ -378,6 +378,8 @@ function SaveIndex:SaveCurrent(onsavedcb, isshutdown)
         return
     end
 
+    known_assert(TheSim:HasEnoughFreeDiskSpace(), "CONFIG_DIR_DISK_SPACE")
+
     assert(TheWorld ~= nil, "missing world?")
 
     local slotdata = self.data.slots[self.current_slot]

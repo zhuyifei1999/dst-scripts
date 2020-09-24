@@ -277,6 +277,8 @@ local assets =
 
     Asset("ATLAS", "images/hud.xml"),
     Asset("IMAGE", "images/hud.tex"),
+    Asset("ATLAS", "images/hud2.xml"),
+    Asset("IMAGE", "images/hud2.tex"),
 
     --oft-used panel bgs
     Asset("DYNAMIC_ATLAS", "images/globalpanels2.xml"),

@@ -133,6 +133,11 @@ return
 			"legs_pj_blue_agean",
 			"bedroll_furry_quilt_blue_frost",
 		},
+		{
+			"body_pj_red_redbird",
+			"legs_pj_red_redbird",
+			"bedroll_furry_quilt_red_redbird",
+		},
 	},
 	emote_yawn =
 	{

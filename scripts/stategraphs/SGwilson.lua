@@ -693,6 +693,8 @@ local actionhandlers =
         function(inst, action)
             return action.invobject ~= nil and action.invobject:HasTag("abigail_flower") and "commune_with_abigail" or "dolongaction"
         end),
+    ActionHandler(ACTIONS.SING, "sing_pre"),
+    ActionHandler(ACTIONS.SING_FAIL, "sing_fail"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
@@ -8410,6 +8412,7 @@ local states =
         {
             TimeEvent(13*FRAMES, function(inst) 
                 inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_cast")
+                inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_cast_ocean")
                 inst.sg:RemoveStateTag("prefish")
                 inst:PerformBufferedAction()
             end),
@@ -8450,22 +8453,40 @@ local states =
             rod = (rod ~= nil and rod.components.oceanfishingrod ~= nil) and rod or nil
             local target = rod ~= nil and rod.components.oceanfishingrod.target or nil
             if target ~= nil then
-                if target.components.oceanfishinghook ~= nil or rod.components.oceanfishingrod:IsLineTensionLow() then
-                    if not inst.AnimState:IsCurrentAnimation("hooked_loose_idle") then
-                        inst.SoundEmitter:KillSound("unreel_loop")
-                        inst.AnimState:PlayAnimation("hooked_loose_idle", true)
-                    end
-                elseif rod.components.oceanfishingrod:IsLineTensionGood() then
-                    if not inst.AnimState:IsCurrentAnimation("hooked_good_idle") then
-                        inst.SoundEmitter:KillSound("unreel_loop")
-                        inst.AnimState:PlayAnimation("hooked_good_idle", true)
-                    end
-                elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_idle") then
-                    inst.SoundEmitter:KillSound("unreel_loop")
-                    --inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in1_LP", "unreel_loop") -- SFX WIP
-                        inst.AnimState:PlayAnimation("hooked_tight_idle", true)
-                    end
-                end
+                if target.components.oceanfishinghook ~= nil then
+					inst.SoundEmitter:KillSound("unreel_loop")
+					if not inst.AnimState:IsCurrentAnimation("hooked_loose_idle") then
+						inst.AnimState:PlayAnimation("hooked_loose_idle", true)
+					end
+				else
+					if rod.components.oceanfishingrod:IsLineTensionLow() then
+						inst.SoundEmitter:KillSound("unreel_loop")
+						if not inst.AnimState:IsCurrentAnimation("hooked_loose_idle") then
+							inst.AnimState:PlayAnimation("hooked_loose_idle", true)
+						end
+					elseif rod.components.oceanfishingrod:IsLineTensionGood() then
+						if target.components.oceanfishable ~= nil and target.components.oceanfishable:IsStruggling() then
+							if not inst.SoundEmitter:PlayingSound("unreel_loop") then
+								inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_strain", "unreel_loop")
+							end
+			                inst.SoundEmitter:SetParameter("unreel_loop", "tension", 0.0)
+						else
+							inst.SoundEmitter:KillSound("unreel_loop")
+						end
+						if not inst.AnimState:IsCurrentAnimation("hooked_good_idle") then
+							inst.AnimState:PlayAnimation("hooked_good_idle", true)
+						end
+					else
+						if not inst.SoundEmitter:PlayingSound("unreel_loop") then
+							inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_strain", "unreel_loop")
+						end
+		                inst.SoundEmitter:SetParameter("unreel_loop", "tension", 1.0)
+						if not inst.AnimState:IsCurrentAnimation("hooked_tight_idle") then
+							inst.AnimState:PlayAnimation("hooked_tight_idle", true)
+						end
+					end
+				end
+			end
         end,
 
         ontimeout = function(inst)
@@ -8498,21 +8519,24 @@ local states =
             else
                 if inst:PerformBufferedAction() then
                     if target.components.oceanfishinghook ~= nil or rod.components.oceanfishingrod:IsLineTensionLow() then
+                        inst.SoundEmitter:KillSound("reel_loop")
+						inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in1_LP", "reel_loop")
                         if not inst.AnimState:IsCurrentAnimation("hooked_loose_reeling") then
-                            inst.SoundEmitter:KillSound("reel_loop")
                             inst.AnimState:PlayAnimation("hooked_loose_reeling", true)
                         end
                     elseif rod.components.oceanfishingrod:IsLineTensionGood() then
+                        inst.SoundEmitter:KillSound("reel_loop")
+						inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in2_LP", "reel_loop")
                         if not inst.AnimState:IsCurrentAnimation("hooked_good_reeling") then
-                            inst.SoundEmitter:KillSound("reel_loop")
-                            --inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in2", "reel_loop")
                             inst.AnimState:PlayAnimation("hooked_good_reeling", true)
                         end
-                    elseif not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
-                            inst.SoundEmitter:KillSound("reel_loop")
-                        --inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in3_LP", "reel_loop") -- SFX WIP
+                    else
+                        inst.SoundEmitter:KillSound("reel_loop")
+						inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in3_LP", "reel_loop")
+						if not inst.AnimState:IsCurrentAnimation("hooked_tight_reeling") then
                             inst.AnimState:PlayAnimation("hooked_tight_reeling", true)
                         end
+					end
 
                     inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
                 end
@@ -8544,7 +8568,7 @@ local states =
             inst:AddTag("fishing_idle")
             inst.components.locomotor:Stop()
 
-            --inst.SoundEmitter:PlaySound("dontstarve/common/fishpole_reel_in1_LP", "sethook_loop") -- SFX WIP
+            --inst.SoundEmitter:PlaySound("dontstarve/common/fishingpole_fishcaught_ocean")
             inst.AnimState:PlayAnimation("fishing_ocean_bite_heavy_pre")
             inst.AnimState:PushAnimation("fishing_ocean_bite_heavy_loop", false)
 
@@ -12817,7 +12841,7 @@ local states =
     },
 
     --------------------------------------------------------------------------
-    --Wormwood
+    -- Wormwood
 
     State{
         name = "form_log",
@@ -12940,7 +12964,127 @@ local states =
     },
 
     --------------------------------------------------------------------------
+    -- Wigfrid
 
+    State{
+        name = "sing_pre",
+        tags = { "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            
+            inst.AnimState:PlayAnimation("sing_pre", false) 
+        end,
+
+        events = {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+            
+                    local buffaction = inst:GetBufferedAction()
+                    local songdata = buffaction and buffaction.invobject.songdata or nil
+                    local singinginspiration = inst.components.singinginspiration
+
+                    if singinginspiration and songdata then
+                        if singinginspiration:IsSongActive(songdata) then
+                            inst:ClearBufferedAction()
+                            inst.components.talker:Say(GetActionFailString(inst, "SING_FAIL", "SAMESONG"))
+                            inst.sg:GoToState("idle")
+                        elseif singinginspiration:CanAddSong(songdata) then
+                            inst.sg:GoToState("sing")
+                        else
+                            inst.sg:GoToState("cantsing")
+                        end
+                    else
+                        inst.sg:GoToState("idle")
+                    end
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "sing_fail",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst:PerformBufferedAction()
+
+            inst.sg:GoToState("idle")
+            inst.components.talker:Say(GetActionFailString(inst, "SING_FAIL", "SAMESONG"))
+        end,     
+    },
+
+    State{
+        name = "sing",
+        tags = { "busy", "nointerrupt" },
+        
+        onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            local songdata = buffaction and buffaction.invobject.songdata or nil
+
+            if songdata ~= nil then
+                inst.AnimState:PushAnimation(songdata.INSTANT and "quote" or "sing", false)
+                if songdata.INSTANT then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_" .. string.upper(songdata.NAME)), nil, true)
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(3 * FRAMES, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                local songdata = buffaction and buffaction.invobject.songdata or nil
+                if songdata then
+                    inst.SoundEmitter:PlaySound(songdata.SOUND or ("dontstarve_DLC001/characters/wathgrithr/"..(songdata.INSTANT and "quote" or "sing")))
+                end
+            end),
+
+            TimeEvent(24 * FRAMES, function(inst)      
+                inst:PerformBufferedAction()
+            end),
+            TimeEvent(34 * FRAMES, function(inst)      
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nointerrupt")
+            end),
+        },
+
+        events = 
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "cantsing",
+        tags = {},
+        
+        onenter = function(inst)
+            inst:ClearBufferedAction()
+
+            inst.components.talker:Say(GetString(inst, "ANNOUNCE_NOINSPIRATION"), nil, true)
+
+            inst.AnimState:PlayAnimation("sing_fail", false)
+
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/characters/wathgrithr/fail")
+        end,
+
+        events = 
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        }
+    },
+
+
+    --------------------------------------------------------------------------
     -- sail anims
 
     State{

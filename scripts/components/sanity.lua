@@ -57,11 +57,13 @@ local Sanity = Class(function(self, inst)
     self.inducedinsanity = nil
     self.inducedinsanity_sources = nil
     self.night_drain_mult = 1
-    self.neg_aura_mult = 1
+    
+    self.neg_aura_mult = 1 -- Deprecated, use the SourceModifier below
+    self.neg_aura_modifiers = SourceModifierList(self.inst)
     self.neg_aura_absorb = 0
+
 	--self.neg_aura_immune = nil
     self.dapperness_mult = 1
-
     self.penalty = 0
 
     self.sanity_penalties = {}
@@ -371,6 +373,10 @@ local LIGHT_SANITY_DRAINS =
 	},
 }
 
+function Sanity:GetAuraMultipliers()
+    return self.neg_aura_mult * self.neg_aura_modifiers:Get()
+end
+
 local SANITYRECALC_MUST_TAGS = { "sanityaura" }
 local SANITYRECALC_CANT_TAGS = { "FX", "NOCLICK", "DECOR","INLIMBO" }
 function Sanity:Recalc(dt)
@@ -424,7 +430,7 @@ function Sanity:Recalc(dt)
 
                 if not is_aura_immune then
                     local aura_val = v.components.sanityaura:GetAura(self.inst)
-					aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+					aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self:GetAuraMultipliers() or aura_val)
                     aura_delta = aura_delta + ((aura_val < 0 and self.neg_aura_immune) and 0 or aura_val)
                 end
             end
@@ -434,7 +440,7 @@ function Sanity:Recalc(dt)
     local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
     if mount ~= nil and mount.components.sanityaura ~= nil then
         local aura_val = mount.components.sanityaura:GetAura(self.inst)
-		aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+		aura_val = (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self:GetAuraMultipliers() or aura_val)
         aura_delta = aura_delta + ((aura_val < 0 and self.neg_aura_immune) and 0 or aura_val)
     end
 

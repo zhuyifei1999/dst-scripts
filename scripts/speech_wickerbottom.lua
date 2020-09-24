@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "It seems I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat has fallen into dangerous disrepair.",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "A mollusk of exceptional size and functionality.",
             LOCKED = "Oh dear. I believe this will require a key.",
         },
+        
+        HERMIT_BUNDLE = "How very welcome!",
+        HERMIT_BUNDLE_SHELLS = "How very welcome!",
 
         RESKIN_TOOL = "We're well past due for a spring cleaning around here.",
         MOON_FISSURE_PLUGGED = "Goodness, that must have required some tenacity!",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "It's a lovely tent, but I'm afraid I don't have much use for it.",
         PORTABLETENT_ITEM = "How very practical.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Musical notation, if I'm not mistaken.",
+        BATTLESONG_HEALTHGAIN = "Musical notation, if I'm not mistaken.",
+        BATTLESONG_SANITYGAIN = "Musical notation, if I'm not mistaken.",
+        BATTLESONG_SANITYAURA = "Musical notation, if I'm not mistaken.",
+        BATTLESONG_FIRERESISTANCE = "Musical notation, if I'm not mistaken.",
+        BATTLESONG_INSTANT_TAUNT = "Oh my, those are some rather colorful turns of phrase.",
+        BATTLESONG_INSTANT_PANIC = "Ah, how I love the classics!",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Color-coded and clearly labeled. Well done!",
 		GHOSTLYELIXIR_FASTREGEN = "Color-coded and clearly labeled. Well done!",

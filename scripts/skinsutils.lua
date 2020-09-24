@@ -359,6 +359,38 @@ function GetPackSavings(iap_def, total_value, sale_active )
     end
 end
 
+function IsPackClothingOnly(item_key)
+	local output_items = GetPurchasePackOutputItems(item_key)
+	
+	for _,item in pairs(output_items) do
+		local item_data = GetSkinData(item)
+
+		if item_data.type ~= "base" and
+		item_data.type ~= "body" and
+		item_data.type ~= "hand" and
+		item_data.type ~= "legs" and
+		item_data.type ~= "feet" then
+			return false
+		end
+	end
+
+	return true
+end
+
+function IsPackBelongingsOnly(item_key)
+	local output_items = GetPurchasePackOutputItems(item_key)
+	
+	for _,item in pairs(output_items) do
+		local item_data = GetSkinData(item)
+
+		if item_data.type ~= "item" then
+			return false
+		end
+	end
+
+	return true
+end
+
 function IsPackFeatured(item_key)
     local pack_data = GetSkinData(item_key)
     return pack_data.featured_pack

@@ -125,7 +125,7 @@ STRINGS =
         woodie = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Is thankful for bountiful harvests",
         woodie_us = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Celebrates Thanksgiving too early",
         woodie_canada = "*Has a lovely axe... \n*And is at war with the forest \n*Suffers from the curse of the Werebeaver! \n*And the Weremoose and the Weregoose... \n*Celebrates Thanksgiving at the correct time",
-        wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
+        wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Performs well under pressure \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Invents her own gadgets",
         wortox = "*Is an imp \n*Can hop through time and space \n*Less nourished by physical food",
@@ -266,7 +266,7 @@ STRINGS =
 		{
             { title = "Birthday", desc = "July 23" },
             { title = "Favorite Food", desc = "Turkey Dinner" },
-			{ title = "Her Past...", desc = "Is yet to be revealed." },
+			{ title = "The Curtain Calls", desc = "Wigfrid always knew she was meant for the stage. Her debut performance was an instant sensation, launching her from obscurity to overnight stardom. Fans delighted in her portrayal of a noble and fearsome Valkyrie warrior, and she in turn took great pains to fully embody the role. She was perfect for it... perhaps too perfect. Every part she played afterward seemed to fall flat, never again achieving that magical quality that had once drawn audiences to her performances like bees to honey. As Wigfrid’s stardom slowly began to fade, she retreated to the memories of her glory days, losing herself in her fantasies...\nUntil one day, she was lost entirely." },
 		},
         webber =
 		{
@@ -745,6 +745,10 @@ STRINGS =
         -- Wendy
         BEGIN_QUEST = "Assist",
         ABANDON_QUEST = "Abandon",
+
+        -- Wigfrid
+        SING = "Sing",
+        QUOTE = "Recite",
 	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -2580,6 +2584,15 @@ STRINGS =
         PORTABLETENT_ITEM = "Tent Roll",
         PORTABLETENT = "Camper's Tent",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Weaponized Warble",
+        BATTLESONG_HEALTHGAIN = "Heartrending Ballad",
+        BATTLESONG_SANITYGAIN = "Clear Minded Cadenza",
+        BATTLESONG_SANITYAURA = "Bel Canto of Courage",
+        BATTLESONG_FIRERESISTANCE = "Fireproof Falsetto",
+        BATTLESONG_INSTANT_TAUNT = "Rude Interlude",
+        BATTLESONG_INSTANT_PANIC = "Startling Soliloquy",
+
 		COOKIECUTTER = "Cookie Cutter",
 		COOKIECUTTERSHELL = "Cookie Cutter Shell",
 		COOKIECUTTERHAT = "Cookie Cutter Cap",
@@ -3244,6 +3257,15 @@ STRINGS =
         PORTABLETENT = "Portable protection from the elements.",
         PORTABLETENT_ITEM = "Portable protection from the elements.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Give weapons more time in the spotlight.",
+        BATTLESONG_HEALTHGAIN = "An ode to stealing hearts.",
+        BATTLESONG_SANITYGAIN = "Give your mind a little choral support.",
+        BATTLESONG_SANITYAURA = "Show no fear!",
+        BATTLESONG_FIRERESISTANCE = "Defend against fiery critics.",
+        BATTLESONG_INSTANT_TAUNT = "Throw a verbal tomato.",
+        BATTLESONG_INSTANT_PANIC = "A performance so good, it's scary.",
+        
         TURF_MARSH = "Home is where the marsh is.",
 		COOKIECUTTERHAT = "One must always be sharply dressed.",
 		SALTBOX = "Salty storage for your foodstuffs.",
@@ -4427,6 +4449,7 @@ STRINGS =
         SHADOW = "Shadow",
         ENGINEERING = "Engineering",
 		ELIXIRBREWING = "Ectoherbology",
+        BATTLESONGS = "Stagecraft",
         NATURE = "Green Thumb",
         CARTOGRAPHY = "Cartography",
         SEAFARING = "Seafaring",
@@ -5442,7 +5465,7 @@ STRINGS.UI =
 		COOKINGTIME_LONG = "Long",
 		COOKINGTIME_VERY_LONG = "Very Long",
 
-		SORT_SPINNERLABEL = "Sort",
+		SORT_SPINNERLABEL = "Sort By",
 		SORT_DEFAULT = "Default",
 		SORT_ALPHABETICAL = "Alphabetical",
 		SORT_HEALTH = "Health",
@@ -5450,12 +5473,11 @@ STRINGS.UI =
 		SORT_SANITY = "Sanity",
 		SORT_SIDE_EFFECTS = "Side Effects",
 
-		FILTER_SPINNERLABEL = "Filter",
+		FILTER_SPINNERLABEL = "Filter By",
 		FILTER_ALL = "All",
 		FILTER_MEAT = "Meats",
 		FILTER_VEGGIE = "Veggies",
-		FILTER_OTHER = "Others", 
-		FILTER_SIDE_EFFECTS = "Side Effects", 
+		FILTER_OTHER = "Other", 
 	},
 
 	FOOD_TYPES = 
@@ -8367,8 +8389,10 @@ STRINGS.UI =
         EXPIRE_HOUR_TXT = "Offer expires in 1 hour!",
         EXPIRE_SOON_TXT = "Offer expires soon!",
 
-        PACK_SHORT_DESC = "Includes {total_items} skin items!",
-        MEGAPACK_SHORT_DESC = "Includes {total_sets} skin sets! {total_items} total skin items!",
+        PACK_SHORT_DESC_ITEMS = "Includes {total_items} Belongings skins!",
+        PACK_SHORT_DESC_CHAR = "Includes {total_items} Wardrobe skins!",
+        PACK_SHORT_DESC = "Includes {total_items} skins!",
+        MEGAPACK_SHORT_DESC = "Includes {total_sets} skin sets! {total_items} total skins!",
 
         INFO_BTN = "?",
         PURCHASE_BTN = "Buy Now",

@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "ERROR: ACTION UNAVAILABLE",
 	ANNOUNCE_BOAT_LEAK = "MY WORST NIGHTMARE IS REALIZED",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "IT SMELLS",
             LOCKED = "WHAT IF WE JUST THROW IT BACK INTO THE OCEAN",
         },
+        
+        HERMIT_BUNDLE = "PAYMENT FOR SERVICES RENDERED",
+        HERMIT_BUNDLE_SHELLS = "WHAT COULD HAVE POSSESSED ME TO BUY THIS",
 
         RESKIN_TOOL = "APPEARANCE RECALIBRATOR",
         MOON_FISSURE_PLUGGED = "CURRENTLY INACTIVE",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "RECHARGING STATION",
         PORTABLETENT_ITEM = "TENT LOADING... INCOMPLETE",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "FLESHSACKS MAKE SUCH ATROCIOUS FACE SOUNDS",
+        BATTLESONG_HEALTHGAIN = "FLESHSACKS MAKE SUCH ATROCIOUS FACE SOUNDS",
+        BATTLESONG_SANITYGAIN = "FLESHSACKS MAKE SUCH ATROCIOUS FACE SOUNDS",
+        BATTLESONG_SANITYAURA = "FLESHSACKS MAKE SUCH ATROCIOUS FACE SOUNDS",
+        BATTLESONG_FIRERESISTANCE = "FLESHSACKS MAKE SUCH ATROCIOUS FACE SOUNDS",
+        BATTLESONG_INSTANT_TAUNT = "I CARE FOR FICTIONAL HUMANS EVEN LESS THAN REAL ONES",
+        BATTLESONG_INSTANT_PANIC = "I CARE FOR FICTIONAL HUMANS EVEN LESS THAN REAL ONES",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",
 		GHOSTLYELIXIR_FASTREGEN = "INFERIOR CRAFTSMANSHIP. A CHILD COULD HAVE MADE THIS",

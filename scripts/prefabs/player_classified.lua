@@ -1,5 +1,6 @@
 local TIMEOUT = 2
 local TechTree = require("techtree")
+local INSPIRATION_BATTLESONG_DEFS = require("prefabs/battlesongdefs")
 
 local fns = {} -- a table to store local functions in so that we don't hit the 60 upvalues limit
 
@@ -340,6 +341,37 @@ local function OnWerenessDirty(inst)
         inst._oldwerenesspercent = 0
         inst.iswerenesspulseup:set_local(false)
         inst.iswerenesspulsedown:set_local(false)
+    end
+end
+
+fns.OnInspirationDirty = function(inst)
+    if inst._parent ~= nil then
+        local oldpercent = inst._oldinspirationpercent
+        local percent = inst.currentinspiration:value() * .01
+        local data =
+        {
+            newpercent = percent,
+			slots_available = nil,
+			draining = inst.inspirationdraining:value(),
+        }
+        inst._oldinspirationpercent = percent
+        inst._parent:PushEvent("inspirationdelta", data)
+    else
+        inst._oldinspirationpercent = 0
+    end
+end
+
+fns.OnHasInspirationBuffDirty = function(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("hasinspirationbuff", {on = inst.hasinspirationbuff:value()})
+	end
+end
+
+fns.OnInspirationSongsDirty = function(inst, slot)
+    if inst._parent ~= nil then
+		local song_def = INSPIRATION_BATTLESONG_DEFS.GetBattleSongDefFromNetID(inst.inspirationsongs[slot]:value())
+		inst._parent:PushEvent("inspirationsongchanged", {songdata = song_def, slotnum = slot})
+    else
     end
 end
 
@@ -880,6 +912,10 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("hungerdirty", OnHungerDirty)
         inst:ListenForEvent("sanitydirty", OnSanityDirty)
         inst:ListenForEvent("werenessdirty", OnWerenessDirty)
+        inst:ListenForEvent("inspirationdirty", fns.OnInspirationDirty)
+		inst:ListenForEvent("inspirationsong1dirty", function(_inst) fns.OnInspirationSongsDirty(_inst, 1) end)
+		inst:ListenForEvent("inspirationsong2dirty", function(_inst) fns.OnInspirationSongsDirty(_inst, 2) end)
+		inst:ListenForEvent("inspirationsong3dirty", function(_inst) fns.OnInspirationSongsDirty(_inst, 3) end)
         inst:ListenForEvent("temperaturedirty", OnTemperatureDirty)
         inst:ListenForEvent("moisturedirty", OnMoistureDirty)
         inst:ListenForEvent("techtreesdirty", OnTechTreesDirty)
@@ -909,12 +945,14 @@ local function RegisterNetListeners(inst)
             inst._oldhungerpercent = inst.maxhunger:value() > 0 and inst.currenthunger:value() / inst.maxhunger:value() or 0
             inst._oldsanitypercent = inst.maxsanity:value() > 0 and inst.currentsanity:value() / inst.maxsanity:value() or 0
             inst._oldwerenesspercent = inst.currentwereness:value() * .01
+            inst._oldinspirationpercent = inst.currentinspiration:value() * .01
             inst._oldmoisture = inst.moisture:value()
             UpdateAnimOverrideSanity(inst._parent)
         end
     end
 
     inst:ListenForEvent("sandstormleveldirty", OnSandstormLevelDirty)
+    inst:ListenForEvent("hasinspirationbuffdirty", fns.OnHasInspirationBuffDirty)
     inst:ListenForEvent("builder.build", OnBuildEvent)
     inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
     inst:ListenForEvent("inked", OnInkedEvent)
@@ -996,6 +1034,22 @@ local function fn()
     inst.iswerenesspulseup = net_bool(inst.GUID, "wereness.dodeltaovertime(up)", "werenessdirty")
     inst.iswerenesspulsedown = net_bool(inst.GUID, "wereness.dodeltaovertime(down)", "werenessdirty")
     inst.werenessdrainrate = net_smallbyte(inst.GUID, "wereness.drainrate")
+
+
+	--inspiration variables
+    inst._oldinspirationpercent = 0
+    inst.currentinspiration = net_byte(inst.GUID, "inspiration.current", "inspirationdirty")
+    inst.inspirationdraining = net_bool(inst.GUID, "inspiration.draining", "inspirationdirty")
+    inst.inspirationsongs =
+	{
+		net_tinybyte(inst.GUID, "inspiration.song1", "inspirationsong1dirty"),
+		net_tinybyte(inst.GUID, "inspiration.song2", "inspirationsong2dirty"),
+		net_tinybyte(inst.GUID, "inspiration.song3", "inspirationsong3dirty"),
+	}
+    inst.hasinspirationbuff = net_bool(inst.GUID, "inspiration.hasbuff", "hasinspirationbuffdirty")
+	
+	-- available_slots maybe?
+	
 
     --Temperature variables
     inst._oldtemperature = TUNING.STARTING_TEMP

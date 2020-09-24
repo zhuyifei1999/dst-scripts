@@ -328,7 +328,6 @@ function self:SpawnFlotsam(spawnpoint,prefab,notrealflotsam)
     -- notrealflotsam means the prefab won't get the flotsam tag, so it won't block other flotsam from spawning. 
     if not prefab then
         prefab = PickFlotsam(spawnpoint)
-        print("FLOTSAM PREFAB",prefab)
     end
 
     if prefab == nil then

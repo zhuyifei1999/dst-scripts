@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
 	ANNOUNCE_BOAT_LEAK = "Drippy drops is come through boat!",
@@ -573,6 +577,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3282,6 +3290,9 @@ return{
             GENERIC = "Is filled with treasure things, yes?",
             LOCKED = "Wolfgang... can't... pry... open!",
         },
+        
+        HERMIT_BUNDLE = "Mighty Wolfgang was happy to help frail old lady!",
+        HERMIT_BUNDLE_SHELLS = "Wolfgang like the plink-plonk shells.",
 
         RESKIN_TOOL = "Is like magic show!",
         MOON_FISSURE_PLUGGED = "Why is ground stuffed with stinky shells?",
@@ -3312,6 +3323,15 @@ return{
         PORTABLETENT = "Is good, solid tent!",
         PORTABLETENT_ITEM = "Wolfgang will set up tent. Make it strong!",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Stronglady have voice as powerful as her muscles!",
+        BATTLESONG_HEALTHGAIN = "Stronglady have voice as powerful as her muscles!",
+        BATTLESONG_SANITYGAIN = "Stronglady have voice as powerful as her muscles!",
+        BATTLESONG_SANITYAURA = "Stronglady have voice as powerful as her muscles!",
+        BATTLESONG_FIRERESISTANCE = "Stronglady have voice as powerful as her muscles!",
+        BATTLESONG_INSTANT_TAUNT = "Wolfgang will stick to lifting and punching.",
+        BATTLESONG_INSTANT_PANIC = "Wolfgang will stick to lifting and punching.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",
 		GHOSTLYELIXIR_FASTREGEN = "Wolfgang not trust tiny bottles made by creepy girl.",

@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
 	ANNOUNCE_BOAT_LEAK = "The boat is crying!",
@@ -572,6 +576,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3281,6 +3289,9 @@ return{
             GENERIC = "Whew... we thought there might be an angry clam inside.",
             LOCKED = "It won't let us in!",
         },
+        
+        HERMIT_BUNDLE = "It's always fun to unwrap a package!",
+        HERMIT_BUNDLE_SHELLS = "We have so many shells to play with!",
 
         RESKIN_TOOL = "Awww do we have to clean?",
         MOON_FISSURE_PLUGGED = "Woah! Why didn't we think of that?",
@@ -3311,6 +3322,15 @@ return{
         PORTABLETENT = "Yay, we're camping!",
         PORTABLETENT_ITEM = "Let us help!",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "We like singing songs!",
+        BATTLESONG_HEALTHGAIN = "We like singing songs!",
+        BATTLESONG_SANITYGAIN = "We like singing songs!",
+        BATTLESONG_SANITYAURA = "We like singing songs!",
+        BATTLESONG_FIRERESISTANCE = "We like singing songs!",
+        BATTLESONG_INSTANT_TAUNT = "We probably shouldn't repeat this one. It sounds rude.",
+        BATTLESONG_INSTANT_PANIC = "The characters talk just like Wigfrid!",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Hey, you didn't tell me you were making crafts!",
 		GHOSTLYELIXIR_FASTREGEN = "Hey, you didn't tell me you were making crafts!",

@@ -343,7 +343,15 @@ local set_data =
                 -- megapack!
                 self.text:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.MEGAPACK_SHORT_DESC, { total_items = total_items, total_sets = total_sets }) )
             else
-                self.text:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.PACK_SHORT_DESC, { total_items = total_items }) )
+                local is_clothing_pack = IsPackClothingOnly(self.iap_def.item_type)
+                local is_belongings_pack = IsPackBelongingsOnly(self.iap_def.item_type)
+                local src = STRINGS.UI.PURCHASEPACKSCREEN.PACK_SHORT_DESC
+                if is_clothing_pack then
+                    src = STRINGS.UI.PURCHASEPACKSCREEN.PACK_SHORT_DESC_CHAR
+                elseif is_belongings_pack then
+                    src = STRINGS.UI.PURCHASEPACKSCREEN.PACK_SHORT_DESC_ITEMS
+                end
+                self.text:SetString( subfmt( src, { total_items = total_items }) )
             end
         else
             self.text:SetString( subfmt( STRINGS.UI.PURCHASEPACKSCREEN.CURRENCY_SHORT_DESC, { currency = currency }) )

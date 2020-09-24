@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
 	ANNOUNCE_BOAT_LEAK = "Gross, I hate water.",
@@ -579,6 +583,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3288,6 +3296,9 @@ return{
             GENERIC = "Sooo... I can burn it now, right?",
             LOCKED = "Aw, c'mon!",
         },
+        
+        HERMIT_BUNDLE = "Nice, free stuff!",
+        HERMIT_BUNDLE_SHELLS = "Great, more shells I can't burn. Why did I buy these again?",
 
         RESKIN_TOOL = "Oh yeah, I'm gonna have fun with this.",
         MOON_FISSURE_PLUGGED = "Ohh, so that's how she keeps those creeps away.",
@@ -3318,6 +3329,15 @@ return{
         PORTABLETENT = "I call dibs on the tent!",
         PORTABLETENT_ITEM = "I was never any good at setting these things up.",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Hey look, fancy kindling!",
+        BATTLESONG_HEALTHGAIN = "Hey look, fancy kindling!",
+        BATTLESONG_SANITYGAIN = "Hey look, fancy kindling!",
+        BATTLESONG_SANITYAURA = "Hey look, fancy kindling!",
+        BATTLESONG_FIRERESISTANCE = "Hey look, fancy kindling!",
+        BATTLESONG_INSTANT_TAUNT = "Heh. Okay, I'm using that one.",
+        BATTLESONG_INSTANT_PANIC = "Boring words I don't care about.",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "Someone should probably check if it's flammable. I volunteer!",
 		GHOSTLYELIXIR_FASTREGEN = "Someone should probably check if it's flammable. I volunteer!",

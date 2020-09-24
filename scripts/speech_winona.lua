@@ -227,6 +227,10 @@ return{
 --fallback to speech_wilson.lua 			NOT_NIGHT = "only_used_by_walter",
 --fallback to speech_wilson.lua 			NO_FIRE = "only_used_by_walter",
 		},
+        SING_FAIL =
+        {
+--fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_BOAT_LEAK = "We gotta repair this ol'girl!",
@@ -578,6 +582,10 @@ return{
 --fallback to speech_wilson.lua 		LEVEL2 = "only_used_by_wendy",
 --fallback to speech_wilson.lua 		LEVEL3 = "only_used_by_wendy",
 	},
+
+--fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
+--fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
 
 	BATTLECRY =
 	{
@@ -3287,6 +3295,9 @@ return{
             GENERIC = "Here's hoping I never have to tussle with a live one.",
             LOCKED = "Can't seem to get it open.",
         },
+        
+        HERMIT_BUNDLE = "Aw, she didn't have to give me anything...",
+        HERMIT_BUNDLE_SHELLS = "Not sure what came over me to buy these knicknacks.",
 
         RESKIN_TOOL = "Is this one of Max's magic doo-hickeys?",
         MOON_FISSURE_PLUGGED = "That old lady's more resourceful than I gave her credit for.",
@@ -3317,6 +3328,15 @@ return{
         PORTABLETENT = "Aw, this reminds me of campin' with Charlie when we were little...",
         PORTABLETENT_ITEM = "Need any help settin' that up?",
 
+        -- Wigfrid
+        BATTLESONG_DURABILITY = "Opera's a bit hoity-toity for me.",
+        BATTLESONG_HEALTHGAIN = "Opera's a bit hoity-toity for me.",
+        BATTLESONG_SANITYGAIN = "Opera's a bit hoity-toity for me.",
+        BATTLESONG_SANITYAURA = "Opera's a bit hoity-toity for me.",
+        BATTLESONG_FIRERESISTANCE = "Opera's a bit hoity-toity for me.",
+        BATTLESONG_INSTANT_TAUNT = "This kind of stuff was more Charlie's thing...",
+        BATTLESONG_INSTANT_PANIC = "This kind of stuff was more Charlie's thing...",
+        
 		-- Wendy
 		GHOSTLYELIXIR_SLOWREGEN = "I don't think that's safe to drink...",
 		GHOSTLYELIXIR_FASTREGEN = "I don't think that's safe to drink...",
