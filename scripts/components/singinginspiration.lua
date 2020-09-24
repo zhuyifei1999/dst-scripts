@@ -109,7 +109,7 @@ end
 
 function SingingInspiration:OnAttack(data)
     local target = data.target
-    if target ~= nil and target:IsValid() and not target.components.health:IsDead() and 
+    if target ~= nil and target:IsValid() and target.components.health and not target.components.health:IsDead() and 
        (self.validvictimfn == nil or self.validvictimfn(target)) then
 
         self.is_draining = false
@@ -287,7 +287,7 @@ function SingingInspiration:FindFriendlyTargetsToInspire()
 		-- collect all creatures following an item the player has in their inventoryitem
 		local leader_items = player.components.inventory and player.components.inventory:FindItems(checkifitemisleader) or {}
 		for j = 1, #leader_items do
-			for follower, _ in pairs(leader_items[i].components.leader.followers) do
+			for follower, _ in pairs(leader_items[j].components.leader.followers) do
 				if not follower:HasTag("critter")
 					and (follower.components.health == nil or not follower.components.health:IsDead()) 
 					and (follower.components.combat == nil or follower.components.combat.target ~= self.inst)
