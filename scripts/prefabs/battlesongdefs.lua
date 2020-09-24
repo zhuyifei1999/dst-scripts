@@ -30,25 +30,29 @@ local song_defs =
     battlesong_durability =
     {
         ONAPPLY = function(inst, target)
-            local equip = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            AddDurabilityMult(inst, equip)
+            if target.components.inventory then
+                local equip = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                AddDurabilityMult(inst, equip)
 
-            inst:ListenForEvent("equip", function(inst, data)
-                if data.eslot == EQUIPSLOTS.HANDS then
-                    AddDurabilityMult(data.item)
-                end
-            end, target)
-            
-            inst:ListenForEvent("unequip", function(inst, data)
-                if data.eslot == EQUIPSLOTS.HANDS then
-                    RemoveDurabilityMult(data.item)
-                end
-            end, target)
+                inst:ListenForEvent("equip", function(target, data)
+                    if data.eslot == EQUIPSLOTS.HANDS then
+                        AddDurabilityMult(inst, data.item)
+                    end
+                end, target)
+                
+                inst:ListenForEvent("unequip", function(target, data)
+                    if data.eslot == EQUIPSLOTS.HANDS then
+                        RemoveDurabilityMult(inst, data.item)
+                    end
+                end, target)
+            end
         end,
         
         ONDETACH = function(inst, target)
-            local equip = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            RemoveDurabilityMult(inst, equip)
+            if target.components.inventory then
+                local equip = target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                RemoveDurabilityMult(inst, equip)
+            end
         end,
         
         ATTACH_FX = "battlesong_attach",
@@ -60,14 +64,15 @@ local song_defs =
     battlesong_healthgain =
     {
         ONAPPLY = function(inst, target)
-
-            inst:ListenForEvent("onattackother", function(attacker, data) 
-                if target:HasTag("battlesinger") then
-                    target.components.health:DoDelta(TUNING.BATTLESONG_HEALTHGAIN_DELTA_SINGER)
-                else
-                    target.components.health:DoDelta(TUNING.BATTLESONG_HEALTHGAIN_DELTA)
-                end
-            end, target)
+            if target.components.health then
+                inst:ListenForEvent("onattackother", function(attacker, data) 
+                    if target:HasTag("battlesinger") then
+                        target.components.health:DoDelta(TUNING.BATTLESONG_HEALTHGAIN_DELTA_SINGER)
+                    else
+                        target.components.health:DoDelta(TUNING.BATTLESONG_HEALTHGAIN_DELTA)
+                    end
+                end, target)
+            end
         end,
 
         ATTACH_FX = "battlesong_attach",
@@ -79,9 +84,11 @@ local song_defs =
     battlesong_sanitygain =
     {
         ONAPPLY = function(inst, target)
-            inst:ListenForEvent("onattackother", function(attacker, data) 
-                target.components.sanity:DoDelta(TUNING.BATTLESONG_SANITYGAIN_DELTA)
-            end, target)
+            if target.components.sanity then
+                inst:ListenForEvent("onattackother", function(attacker, data) 
+                    target.components.sanity:DoDelta(TUNING.BATTLESONG_SANITYGAIN_DELTA)
+                end, target)
+            end
         end,
 
         ATTACH_FX = "battlesong_attach",
@@ -137,7 +144,7 @@ local song_defs =
     battlesong_instant_taunt =
     {
         ONINSTANT = function(singer, target)
-			if not target:HasTag("bird") then
+			if not target:HasTag("bird") and target.components.combat then
 	            target.components.combat:SetTarget(singer)
 		        AddEnemyDebuffFx("battlesong_instant_taunt_fx", target)
 			end

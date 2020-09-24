@@ -681,7 +681,7 @@ function ModIndex:GetModConfigurationOptions_Internal(modname,force_local_option
 	if known_mod then
 		if known_mod.temp_enabled and not force_local_options then
 			return known_mod.temp_config_options, true
-		elseif (TheNet:GetIsServer() and not TheNet:IsDedicated()) and not force_local_options then
+		elseif not ModManager.worldgen and ((TheNet:GetIsServer() and not TheNet:IsDedicated()) and not force_local_options) then
 			return known_mod.temp_config_options, false
 		else
 			return known_mod.modinfo.configuration_options, false

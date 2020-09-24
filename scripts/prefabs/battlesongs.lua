@@ -115,6 +115,8 @@ local function song_fn(songdata, prefabname)
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    
     inst._oninspirationdelta = function(owner) oninspirationdelta(inst) end
     inst._onequipped = function(container, data) onequipped(inst, container, data.owner) end
     inst._onunequipped = function(container, data) onunequipped(inst, container) end
