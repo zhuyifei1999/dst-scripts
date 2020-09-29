@@ -2318,6 +2318,20 @@ MISC_ITEMS =
 		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", "wathgrithr_formalp", "body_wathgrithr_formalp", "wathgrithr_survivorp", "body_wathgrithr_survivorp", "wathgrithr_shadowp", "body_wathgrithr_shadowp", "wathgrithr_rosep", "body_wathgrithr_rosep", },
 		release_group = 103,
 	},
+	pack_wathgrithr_deluxe2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wathgrithr_deluxe.xml",
+		display_tex = "wathgrithr_deluxe.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_valkyrie", "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", "wathgrithr_formalp", "wathgrithr_survivorp", "wathgrithr_shadowp", "wathgrithr_rosep", },
+		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", "wathgrithr_formalp", "body_wathgrithr_formalp", "wathgrithr_survivorp", "body_wathgrithr_survivorp", "wathgrithr_shadowp", "body_wathgrithr_shadowp", "wathgrithr_rosep", "body_wathgrithr_rosep", "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", },
+		release_group = 103,
+	},
 	pack_wathgrithr_formal =
 	{
 		type = "purchase",
@@ -2381,6 +2395,19 @@ MISC_ITEMS =
 		box_build = "box_shop_plain",
 		display_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", },
 		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", },
+		release_group = 103,
+	},
+	pack_wathgrithr_valkyrie2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		build_name_override = "wathgrithr_valkyrie",
+		display_atlas = "bigportraits/wathgrithr_valkyrie.xml",
+		display_tex = "wathgrithr_valkyrie_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", },
+		output_items = {  "wathgrithr_valkyrie", "body_wathgrithr_valkyrie", "legs_wathgrithr_valkyrie", "spear_wathgrithr_valkyrie", "wathgrithrhat_valkyrie", "armor_marble_valkyrie", },
 		release_group = 103,
 	},
 	pack_wb_0 =

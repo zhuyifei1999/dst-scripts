@@ -63,13 +63,12 @@ return{
             NO_RACERS = "We need to find some Carrats!",
         },
         
-        --warly specific action
---fallback to speech_wilson.lua 		DISMANTLE =
---fallback to speech_wilson.lua 		{
---fallback to speech_wilson.lua 			COOKING = "only_used_by_warly",
---fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
---fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
---fallback to speech_wilson.lua         },
+		DISMANTLE =
+		{
+			COOKING = "TODO",
+			INUSE = "Oops. Someone else is using that.",
+			NOTEMPTY = "TODO",
+        },
         FISH_OCEAN =
 		{
 			TOODEEP = "We can't reach the fish with this rod!",
