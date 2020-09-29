@@ -72,12 +72,11 @@ return {
             NO_RACERS = "I think I'm missing something here.",
         },
         
-        --warly specific action
 		DISMANTLE =
 		{
-			COOKING = "only_used_by_warly",
-			INUSE = "only_used_by_warly",
-			NOTEMPTY = "only_used_by_warly",
+			COOKING = "TODO",
+			INUSE = "Science says I have to wait my turn.",
+			NOTEMPTY = "TODO",
         },
         FISH_OCEAN =
 		{

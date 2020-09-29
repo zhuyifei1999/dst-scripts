@@ -63,13 +63,12 @@ return{
             NO_RACERS = "Can't start yet! Need veggie rats!",
         },
         
-        --warly specific action
---fallback to speech_wilson.lua 		DISMANTLE =
---fallback to speech_wilson.lua 		{
---fallback to speech_wilson.lua 			COOKING = "only_used_by_warly",
---fallback to speech_wilson.lua 			INUSE = "only_used_by_warly",
---fallback to speech_wilson.lua 			NOTEMPTY = "only_used_by_warly",
---fallback to speech_wilson.lua         },
+		DISMANTLE =
+		{
+			COOKING = "TODO",
+			INUSE = "Gotta wait.",
+			NOTEMPTY = "TODO",
+        },
         FISH_OCEAN =
 		{
 			TOODEEP = "Come closer, fishes! Won't hurt you!",

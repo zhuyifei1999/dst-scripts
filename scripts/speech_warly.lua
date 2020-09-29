@@ -63,7 +63,6 @@ return{
             NO_RACERS = "Pardonnez-moi, I was so excited I forgot to find a racer!",
         },
         
-        --warly specific action
 		DISMANTLE =
 		{
 			COOKING = "Just a little longer... It's almost done.",
