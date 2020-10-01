@@ -807,7 +807,11 @@ function ModIndex:IsModForceEnabled(modname)
 end
 
 function ModIndex:IsModEnabledAny(modname)
-    return modname and (self:IsModEnabled(modname) or self:IsModForceEnabled(modname) or self:IsModTempEnabled(modname))
+	return modname and
+		((self:IsModEnabled(modname) or
+		self:IsModForceEnabled(modname) or
+		self:IsModTempEnabled(modname)) and
+		not self:IsModTempDisabled(modname))
 end
 
 function ModIndex:SetDisableSpecialEventModWarning()

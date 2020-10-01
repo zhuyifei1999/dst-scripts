@@ -349,14 +349,14 @@ CHARACTER_VIDEOS =
 	wes = {"https://www.youtube.com/watch?v=Nf2Stngxj0U&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
 	waxwell = {"https://youtu.be/8BUcTVIV5y0"},
 	woodie = {"https://www.youtube.com/watch?v=d0r0WfV2y5s&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
---	wathgrithr = {},
+	wathgrithr = {"https://www.youtube.com/watch?v=G16-w-hMKTU&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
 --	webber = {},
 	winona = {"https://www.youtube.com/watch?v=G-Kn9tgO0mQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     wortox = {"https://www.youtube.com/watch?v=tcYbA7ohJLM&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     wormwood = {"https://www.youtube.com/watch?v=4hugrMLgDsQ&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     warly = {"https://www.youtube.com/watch?v=SH1VebvIOSk&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
     wurt = {"https://www.youtube.com/watch?v=jG2euiPFkbg&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
-	walter = {"https://www.youtube.com/watch?v=14ou18F8bhw"},
+	walter = {"https://www.youtube.com/watch?v=14ou18F8bhw&list=PLXtRs5MEBxEiuAIG26uLmh3yR-ACXBfYW"},
 }
 
 

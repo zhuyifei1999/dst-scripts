@@ -75,7 +75,7 @@ local function testforshark(comp, spawnpoint)
 
                     local player = FindClosestPlayerInRangeSq(spawn_x, 0, spawn_z, 20*20, true)
                     if player then
-                        self.inst:ForceFacePoint(player.Transform:GetWorldPosition())
+                        shark:ForceFacePoint(player.Transform:GetWorldPosition())
                     end
                 end
             end)
