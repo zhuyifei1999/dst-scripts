@@ -3,6 +3,8 @@ require "playerhistory"
 require "serverpreferences"
 require "util/profanityfilter"
 require "saveindex"
+require "shardsaveindex"
+require "shardindex"
 require "map/extents"
 require "perfutil"
 require "maputil"
@@ -416,6 +418,7 @@ local function PopulateWorld(savedata, profile)
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         map:SetSize(savedata.map.width, savedata.map.height)
         map:SetFromString(savedata.map.tiles)
+		map:SetNodeIdTileMapFromString(savedata.map.nodeidtilemap)
         map:ResetVisited()
 
 		-- This happens after calling 'map:SetFromString' so that we can use the map API to read tile data instead of trying to read/write the save data tile stream
@@ -902,10 +905,10 @@ local function DoLoadWorldFile(file)
         LoadAssets("BACKEND", savedata)
 		DoInitGame(savedata, Profile)
 	end
-	SaveGameIndex:GetSaveDataFile(file, onload)
+	ShardGameIndex:GetSaveDataFile(file, onload)
 end
 
-local function DoLoadWorld(saveslot)
+local function DoLoadWorld()
 	local function onload(savedata)
 		assert(savedata, "DoLoadWorld: Savedata is NIL on load")
 		assert(GetTableSize(savedata)>0, "DoLoadWorld: Savedata is empty on load")
@@ -914,10 +917,10 @@ local function DoLoadWorld(saveslot)
         LoadAssets("BACKEND", savedata)
 		DoInitGame(savedata, Profile)
 	end
-	SaveGameIndex:GetSaveData(saveslot, onload)
+	ShardGameIndex:GetSaveData(onload)
 end
 
-local function DoGenerateWorld(saveslot)
+local function DoGenerateWorld()
 	local function onComplete(savedata)
 		assert(savedata, "DoGenerateWorld: Savedata is NIL on load")
 		assert(#savedata>0, "DoGenerateWorld: Savedata is empty on load")
@@ -935,15 +938,25 @@ local function DoGenerateWorld(saveslot)
 			print("Worldgen had an error, displaying...")
 			DisplayError(e)
 		else
-		    local success, world_table = RunInSandbox(savedata)
-			SaveGameIndex:OnGenerateNewWorld(saveslot, savedata, world_table.meta.session_identifier, onsaved)
+			local success, world_table = RunInSandbox(savedata)
+	
+			--todo, if we add more values to this, turn this into a function thats called both here and mainfunctions.lua@SaveGame
+			local metadata = {clock = {}, seasons = {}}
+			if savedata and savedata.world_network and savedata.world_network.persistdata then
+				metadata.clock = savedata.world_network.persistdata.clock
+				metadata.seasons = savedata.world_network.persistdata.seasons
+			end
+			local PRETTY_PRINT = BRANCH == "dev"
+			local metadataStr = DataDumper(metadata, nil, not PRETTY_PRINT)
+			
+			ShardGameIndex:OnGenerateNewWorld(savedata, metadataStr, world_table.meta.session_identifier, onsaved)
 		end
 	end
 
     local world_gen_data =
     {
-        level_type = GetLevelType(SaveGameIndex:GetGameMode(saveslot)),
-        level_data = SaveGameIndex:GetSlotGenOptions(saveslot),
+        level_type = GetLevelType(ShardGameIndex:GetGameMode()),
+        level_data = ShardGameIndex:GetGenOptions(),
         profile_data = Profile.persistdata,
     }
 
@@ -951,17 +964,17 @@ local function DoGenerateWorld(saveslot)
 	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data, hide_worldgen_screen))
 end
 
-local function LoadSlot(slot)
+local function LoadSlot()
     TheFrontEnd:ClearScreens()
-    if SaveGameIndex:CheckWorldFile(slot) then
+    if ShardGameIndex:CheckWorldFile() then
         --print("Load Slot: Has World")
         --LoadAssets("BACKEND")
         --V2C: Loading backend moved to after we know what world prefab we want
-        DoLoadWorld(slot)
+        DoLoadWorld()
     else
         --print("Load Slot: Has no World")
         print("Load Slot: ... generating new world")
-        DoGenerateWorld(slot)
+        DoGenerateWorld()
     end
 end
 
@@ -1006,27 +1019,31 @@ local function DoResetAction()
 
 	if Settings.reset_action then
 		if Settings.reset_action == RESET_ACTION.DO_DEMO then
-			SaveGameIndex:DeleteSlot(1, function()
-				SaveGameIndex:StartSurvivalMode(1, nil, GetDefaultServerData(), function() 
-					--print("Reset Action: DO_DEMO")
-					DoGenerateWorld(1)
-				end)
+			--print("Reset Action: DO_DEMO")
+			ShardGameIndex:NewShardInSlot(1, "Master")
+			ShardGameIndex:Delete(function()
+				ShardGameIndex:SetServerShardData(
+					nil,
+					GetDefaultServerData(),
+					function() 
+						DoGenerateWorld()
+					end)
 			end)
 		elseif Settings.reset_action == RESET_ACTION.LOAD_SLOT then
-			if SaveGameIndex:IsSlotEmpty(Settings.save_slot) then
+			--ShardGameIndex already contains the contextual slot from Settings.save_slot
+			if ShardGameIndex:IsEmpty() then
 				--print("Reset Action: LOAD_SLOT -- Re-generate world")
-                SaveGameIndex:DeleteSlot(Settings.save_slot, function()
-                    SaveGameIndex:StartSurvivalMode(
-                        Settings.save_slot,
-                        SaveGameIndex:GetSlotGenOptions(Settings.save_slot),
-                        SaveGameIndex:GetSlotServerData(Settings.save_slot),
+                ShardGameIndex:Delete(function()
+                    ShardGameIndex:SetServerShardData(
+                        ShardGameIndex:GetGenOptions(),
+                        ShardGameIndex:GetServerData(),
                         function()
-                            DoGenerateWorld(Settings.save_slot)
+                            DoGenerateWorld()
                         end)
                 end, true)
 			else
 				--print("Reset Action: LOAD_SLOT -- current save")
-				LoadSlot(Settings.save_slot)
+				LoadSlot()
 			end
 		elseif Settings.reset_action == RESET_ACTION.LOAD_FILE then
 			--LoadAssets("BACKEND")
@@ -1034,7 +1051,7 @@ local function DoResetAction()
 			DoLoadWorldFile(Settings.save_name)
 		elseif Settings.reset_action == "printtextureinfo" then
 			--print("Reset Action: printtextureinfo")
-			DoGenerateWorld(1)
+			DoGenerateWorld()
 		elseif Settings.reset_action == RESET_ACTION.LOAD_FRONTEND then
 			print("Reset Action: none, loading front end")
 			LoadAssets("FRONTEND")
@@ -1049,12 +1066,13 @@ local function DoResetAction()
         end
 	else
 		if PRINT_TEXTURE_INFO then
-			SaveGameIndex:DeleteSlot(1,
+			ShardGameIndex:NewShardInSlot(1, "Master")
+			ShardGameIndex:Delete(
 				function()
 					local function onsaved()
 						SimReset({reset_action="printtextureinfo",save_slot=1})
 					end
-					SaveGameIndex:StartSurvivalMode(1, nil, GetDefaultServerData(), onsaved)
+					ShardGameIndex:SetServerShardData(nil, GetDefaultServerData(), onsaved)
 				end)
 		else
 			LoadAssets("FRONTEND")
@@ -1083,8 +1101,8 @@ local function OnFilesLoaded()
     print("OnFilesLoaded()")
     if not (TheNet:IsDedicated() or TheNet:GetIsServer() or TheNet:GetIsClient()) then
         local host_sessions = {}
-        for i = 1, SaveGameIndex:GetNumSlots() do
-            local session = SaveGameIndex:GetSlotSession(i)
+        for i, slot in ipairs(ShardSaveGameIndex:GetValidSlots()) do
+            local session = ShardSaveGameIndex:GetSlotSession(slot, "Master")
             if session ~= nil then
                 table.insert(host_sessions, session)
             end
@@ -1104,6 +1122,8 @@ local function OnFilesLoaded()
 end
 
 SaveGameIndex = SaveIndex()
+ShardSaveGameIndex = ShardSaveIndex()
+ShardGameIndex = ShardIndex()
 Morgue = PlayerDeaths()
 PlayerHistory = PlayerHistory()
 ServerPreferences = ServerPreferences()
@@ -1124,8 +1144,12 @@ if DEBUGGER_ENABLED then
 end
 
 Print(VERBOSITY.DEBUG, "[Loading profile and save index]")
-Profile:Load( function() 
-	SaveGameIndex:Load( OnFilesLoaded )
+Profile:Load( function()
+	SaveGameIndex:Load(function()
+		ShardSaveGameIndex:Load(function()
+			ShardGameIndex:Load( OnFilesLoaded )
+		end)
+	end)
 end )
 
 require "platformpostload" --Note(Peter): The location of this require is currently only dependent on being after the built in usercommands being loaded

@@ -120,7 +120,7 @@ function GetBuildForItem(name)
 	local skin_data = GetSkinData(name)
 	if skin_data.build_name_override ~= nil then
 		return skin_data.build_name_override
-		end
+	end
 
 	return name
 end

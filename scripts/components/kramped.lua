@@ -33,6 +33,8 @@ local NAUGHTY_VALUE =
     ["penguin"] = 2,
     ["glommer"] = 50, -- You've been bad!
     ["catcoon"] = 5,
+    ["lightflier"] = 1,
+    ["dustmoth"] = 4,
 }
 
 --------------------------------------------------------------------------

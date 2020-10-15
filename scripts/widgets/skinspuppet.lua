@@ -8,6 +8,7 @@ require "components/skinner"
 local emotes_to_choose = { "emoteXL_waving1", "emoteXL_waving2", "emoteXL_waving3" }
 local player_emotes_to_choose = {
 	walter = "idle_walter",
+	wathgrithr = "idle_wathgrithr",
 	warly = "idle_warly",
 	wendy = "idle_wendy",
 	willow = "idle_willow",
@@ -125,6 +126,9 @@ function SkinsPuppet:DoIdleEmote()
 		if r > 0.3 then
 			if self.prefabname == "wendy" then
 				self.override_build = "player_idles_wendy"
+				self.animstate:AddOverrideBuild(self.override_build)
+			elseif self.prefabname == "wathgrithr" then
+				self.override_build = "player_idles_wathgrithr"
 				self.animstate:AddOverrideBuild(self.override_build)
 			elseif self.prefabname == "warly" then
 				self.override_build = "player_idles_warly"

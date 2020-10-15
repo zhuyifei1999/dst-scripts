@@ -61,6 +61,10 @@ local function StartTracking(player, params, ent)
         end
     end, ent)
 
+    inst:ListenForEvent("entitysleep", function()
+        inst:DoTaskInTime(0, function() ent:Remove() end)
+    end, ent)
+
     ent:ListenForEvent("onremove", function()
         ent.spawnedforplayer = nil
         ent.persists = false

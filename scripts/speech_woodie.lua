@@ -503,12 +503,13 @@ return{
     ANNOUNCE_ATTACH_BUFF_PLAYERABSORPTION  = "I'm feelin' a heckuva lot tougher now!",
     ANNOUNCE_ATTACH_BUFF_WORKEFFECTIVENESS = "Time to roll up our sleeves, eh Lucy?",
     ANNOUNCE_ATTACH_BUFF_MOISTUREIMMUNITY  = "I could stand under Niagara Falls and stay dry!",
+    ANNOUNCE_ATTACH_BUFF_SLEEPRESISTANCE   = "This stuff will wake you right up!",
     
     ANNOUNCE_DETACH_BUFF_ELECTRICATTACK    = "Power's out, eh?",
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Sorry, all the fight's gone out of me.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Anyone got a spare hockey helmet?",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "That's enough hustlin' around for now.",
-    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I can feel the dampness creepin' back in.",
+    ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm gettin' tired, I think it's wearing off.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Aw nuts! Sorry for the language, Luce.",
 	ANNOUNCE_OCEANFISHING_LINETOOLOOSE = "Thick I'd better tighten the slack.",
@@ -580,6 +581,9 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_NOINSPIRATION = "only_used_by_wathgrithr",
 --fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_TAUNT_BUFF = "only_used_by_wathgrithr",
 --fallback to speech_wilson.lua     ANNOUNCE_BATTLESONG_INSTANT_PANIC_BUFF = "only_used_by_wathgrithr",
+
+    ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "It's fillin' my head with ideas!",
+    ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Guess I knew that one already.",
 
 	BATTLECRY =
 	{
@@ -1104,6 +1108,8 @@ return{
 
 		TURF_CAVE="Some ground.",
 		TURF_FUNGUS="It's mushy, like peas.",
+		TURF_FUNGUS_MOON = "It's mushy, like peas.",
+		TURF_ARCHIVE = "That's some nice stonework!",
 		TURF_SINKHOLE="I found this underground.",
 		TURF_UNDERROCK="Rocks. Bleh.",
 		TURF_MUD="At least you don't have to clean it.",
@@ -1422,7 +1428,7 @@ return{
 		COOKEDMANDRAKE = "Was that a bad thing to do?",
 		COOKEDMEAT = "Just like my dear old ma used to make.",
 		COOKEDMONSTERMEAT = "I still don't want to eat it.",
-		COOKEDSMALLMEAT = "That'll just make me hungrier!",
+		COOKEDSMALLMEAT = "That'll just make me hungrier!",        
 		COOKPOT =
 		{
 			COOKING_LONG = "It'll be a bit longer, eh?",
@@ -3091,6 +3097,10 @@ return{
         MOON_ALTAR_CROWN = "I know the drill, let's get you back where you belong.",
         MOON_ALTAR_COSMIC = "I don't get it, why does it feel like we're not finished yet?",
 
+        MOON_ALTAR_ASTRAL = "All back in one piece.",
+        MOON_ALTAR_ICON = "You want me to get you home, eh?",
+        MOON_ALTAR_WARD = "Just how did you get underground?",        
+
         SEAFARING_PROTOTYPER =
         {
             GENERIC = "It's good to be ready for anything at sea.",
@@ -3510,6 +3520,88 @@ return{
         LEAFYMEATBURGER = "It never tastes the same as actual meat...",
         LEAFYMEATSOUFFLE = "I wouldn't touch that with a ten foot pike pole.",
         MEATYSALAD = "Do I use salad dressing or gravy?",
+
+        -- GROTTO
+
+		MOLEBAT = "Just keep your nose out of my business, eh?",
+
+        BATNOSE = "Who nose where the rest of it went.",
+        BATNOSE_COOKED = "Nothing worse than a cold nose.",
+        BATNOSEHAT = "Keeps my hands free for choppin'.",
+
+        MUSHGNOME = "Funny little guy, eh?",
+
+        SPORE_MOON = "Those spores pop like first of July fireworks!",
+
+        MOON_CAP = "Not sure if I should be eatin' that.",
+        MOON_CAP_COOKED = "The smell's enough to wake you up.",
+
+        MUSHTREE_MOON = "I think it's due for a choppin'.",
+
+        LIGHTFLIER = "Keep lighting my way and we'll get along just fine, bud!",
+
+        DUSTMOTH = "Let's compare moustaches later.",
+
+        DUSTMOTHDEN = "Resourceful little guys!",
+
+        ARCHIVE_LOCKBOX = "Huh. There's something sloshing around in there.",
+        ARCHIVE_CENTIPEDE = "I think we might be tresspassin'.",
+        ARCHIVE_CENTIPEDE_HUSK = "This whole place is littered with these things!",
+
+        ARCHIVE_COOKPOT =
+        {
+            COOKING_LONG = "It'll be a bit longer, eh?",
+            COOKING_SHORT = "Oh boy! Here it comes!",
+            DONE = "Time for supper!",
+            EMPTY = "I'm guessin' this hasn't been used in a while.",
+            BURNT = "Burned to a crisp.",
+        },
+
+        ARCHIVE_MOON_STATUE = "The ones carryin' the full moon sure got the short end of the stick, eh?",
+        ARCHIVE_RUNE_STATUE = 
+        {
+            LINE_1 = "Now that's a head scratcher.",
+            LINE_2 = "I never even got a handle on French, don't expect me to read that.",
+            LINE_3 = "Now that's a head scratcher.",
+            LINE_4 = "I never even got a handle on French, don't expect me to read that.",
+            LINE_5 = "Now that's a head scratcher.",
+        },        
+
+        ARCHIVE_RESONATOR = "Not sure where it's leading me, but might as well find out.",
+        ARCHIVE_RESONATOR_ITEM = "It's humming with some kinda energy.",
+
+        ARCHIVE_LOCKBOX_DISPENCER = {
+          POWEROFF = "Now that's a funny looking gadget. Too bad it doesn't work.",
+          GENERIC =  "Well whattaya know! It just needed a little juice.",
+        },
+
+        ARCHIVE_SECURITY_DESK = {
+            POWEROFF = "Not much happening with this thing.",
+            GENERIC = "I'm not sure I like the look of it.",
+        },
+
+        ARCHIVE_SECURITY_PULSE = "Hey Luce, should we be worried about that?",
+
+        ARCHIVE_SWITCH = {
+            VALID = "Looks like this one's already set.",
+            GEMS = "Anyone have a spare gem?",
+        },
+
+        ARCHIVE_PORTAL = {
+            POWEROFF = "Hey Lucy, maybe that's a way outta here!",
+            GENERIC = "Guess that door's closed for good.",
+        },
+
+        REFINED_DUST = "Looks kind of like maple sugar. Don't think I wanna eat it, though.",
+        DUSTMERINGUE = "Tastes terrible. And that's speakin' as someone who's eaten raw lumber.",
+
+        SHROOMCAKE = "Mushy in more ways than one, eh?",
+
+        NIGHTMAREGROWTH = "Somethin' tells me that's not part of the natural environment.",
+
+        TURFCRAFTINGSTATION = "I think I'd make a good groundskeeper, whatcha think Luce?",
+
+        MOON_ALTAR_LINK = "It's givn' me the heebie jeebies.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

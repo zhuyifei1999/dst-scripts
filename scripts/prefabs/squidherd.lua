@@ -4,13 +4,14 @@ local prefabs =
 }
 
 local function AddMember(inst, member)
-    inst:ListenForEvent("entitysleep", function() inst.checkforremoval(inst) end, member)
+    member._squidherd_entitysleep = function() inst.checkforremoval(inst) end
+    inst:ListenForEvent("entitysleep", member._squidherd_entitysleep, member)
 end
 
 local function RemoveMember(inst, member)
-    inst:RemoveEventCallback("entitysleep", function() inst.checkforremoval(inst) end, member)
+    inst:RemoveEventCallback("entitysleep", member._squidherd_entitysleep, member)
+    member._squidherd_entitysleep = nil
 end
-
 
 local function _OnUpdate(inst, self)
     inst.components.herd:OnUpdate()

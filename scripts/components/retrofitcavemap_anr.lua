@@ -49,6 +49,7 @@ local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_s
 	for k = 1, #topology.nodes do
 		if (nightmare == table.contains(topology.nodes[k].tags, "Nightmare")) 
 			and (not table.contains(topology.nodes[k].tags, "Atrium"))
+			and (not table.contains(topology.nodes[k].tags, "lunacyarea"))
 			and (not string.find(topology.ids[k], "RuinedGuarden")) then
 
 			table.insert(searchnodes, k)
@@ -206,7 +207,7 @@ local function HeartOfTheRuinsAtriumRetrofitting(inst)
 		
 		AddAtriumWorldTopolopy((left * 4) - (map_width * 0.5 * 4), (top* 4) - (map_height * 0.5 * 4))
 		
-		inst.components.retrofitcavemap_anr.requiresreset = true
+		self.requiresreset = true
 
 		print ("Retrofitting for A New Reign: Heart of the Ruins - Successfully added atruim into the world.")
 	else
@@ -577,7 +578,7 @@ function self:OnPostInit()
 	end
 	
 	if self.retrofit_sacred_chest then
-		self.retrofit_AnrArg = nil
+		self.retrofit_sacred_chest = nil
 		print ("Retrofitting for A New Reign: Sacred Chest")
 		
 		local altars = {}	
@@ -616,7 +617,7 @@ function self:OnPostInit()
 							TrySpawnAt(x + 8, z) or TrySpawnAt(x - 8, z) or TrySpawnAt(x, z + 8) or TrySpawnAt(x, z - 8)
 		
 			if success then
-				print ("Retrofitting for A New Reign: Sacred Chest: Added sacred_chest")
+				print ("Retrofitting for A New Reign: Sacred Chest: Added sacred_chest.")
 			else
 				print ("Retrofitting for A New Reign: Sacred Chest: FAILED to add sacred_chest, not enough room in the Sacred Altar to place it!")
 			end	
@@ -625,23 +626,39 @@ function self:OnPostInit()
 		end
 	end
 	
+	if self.retrofit_acientarchives then
+		local success = false
+		for _, v in pairs(Ents) do
+			if v.prefab == "retrofit_archiveteleporter" then
+				print("Retrofitting for Return of Them: Forgotten Knowledge - Found retrofit_archiveteleporter.")
+				success = v:DoRetrofitting()
+				break
+			end
+		end
 
+		if success then
+			print("Retrofitting for Return of Them: Forgotten Knowledge - Add a wormhole linking the blue mush forest to the retrofitted land.")
+		else
+			print("Retrofitting for Return of Them: Forgotten Knowledge - Failed to add a wormhole linking the blue mush forest to the retrofitted land!")
+			print('Retrofitting for Return of Them: Forgotten Knowledge - An admin can force the wormhole link by running the command: c_findnext("retrofit_archiveteleporter"):DoRetrofitting(ThePlayer:GetPosition())')
+			print("Retrofitting for Return of Them: Forgotten Knowledge - This will create a wormhole where the admin is currenlty standing, so make sure you are standing where you want it to be!")
+		end
+	end
 
 	---------------------------------------------------------------------------
-	if inst.components.retrofitcavemap_anr.requiresreset then
-		-- not quite working in all cases...
+	if self.requiresreset then
+		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
+		print ("Restarting server in 45 seconds...")
 
-		print ("Retrofitting for A New Reign. Savefile retrofitting requires the server to be restarted to fully take effect.")
-		print ("Retrofitting for A New Reign. Restarting caves in 40 seconds.")
-
-        inst:DoTaskInTime(5, function() TheNet:Announce("World will reload in 35 seconds to complete retrofitting.") end)
-        inst:DoTaskInTime(10, function() TheNet:Announce("World will reload in 30 seconds to complete retrofitting.") end)
-        inst:DoTaskInTime(15, function() TheNet:Announce("World will reload in 25 seconds to complete retrofitting.") end)
-        inst:DoTaskInTime(20, function() TheNet:Announce("World will reload in 20 seconds to complete retrofitting.") end)
-        inst:DoTaskInTime(25, function() TheNet:Announce("World will reload in 15 seconds to complete retrofitting.") end)
-		inst:DoTaskInTime(30, function() TheWorld:PushEvent("ms_save") TheNet:Announce("World will reload in 10 seconds to complete retrofitting.") end)
-		inst:DoTaskInTime(35, function() TheNet:Announce("World will reload in 5 seconds to complete retrofitting.") end)
-		inst:DoTaskInTime(40, function() TheNet:SendWorldRollbackRequestToServer(0) end)
+        inst:DoTaskInTime(5,  function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 40})) end)
+        inst:DoTaskInTime(10, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 35})) end)
+        inst:DoTaskInTime(15, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 30})) end)
+		inst:DoTaskInTime(25, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 20})) end)
+		inst:DoTaskInTime(35, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 10})) end)
+		inst:DoTaskInTime(37, function() TheWorld:PushEvent("ms_save") end)
+		inst:DoTaskInTime(40, function() TheNet:Announce(subfmt(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT, {time = 5})) end)
+		inst:DoTaskInTime(43, function() TheNet:Announce(STRINGS.UI.HUD.RETROFITTING_ANNOUNCEMENT_NOW) end)
+		inst:DoTaskInTime(45, function() TheNet:SendWorldRollbackRequestToServer(0) end)
 	end
 end
 
@@ -655,6 +672,7 @@ end
 
 function self:OnLoad(data)
     if data ~= nil then
+		self.requiresreset = data.requiresreset -- in case other retrofitting defined in savefileupgrades.lua needs a reset
 		retrofit_warts = data.retrofit_warts or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
 		self.retrofit_heartoftheruins = data.retrofit_heartoftheruins
@@ -664,6 +682,7 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins_oldatriumfixup = data.retrofit_heartoftheruins_oldatriumfixup
 		self.retrofit_heartoftheruins_statuechessrespawners = data.retrofit_heartoftheruins_statuechessrespawners
 		self.retrofit_sacred_chest = data.retrofit_sacred_chest
+		self.retrofit_acientarchives = data.retrofit_acientarchives
     end
 end
 
