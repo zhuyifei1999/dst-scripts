@@ -144,9 +144,6 @@ local function fn()
     
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('dustmothden')
-
-    MakeMediumBurnable(inst)
-    MakeSmallPropagator(inst)
     
     inst:AddComponent("inspectable")
 
@@ -154,10 +151,7 @@ local function fn()
 
     MakeSnowCovered(inst)
 
-    MakeHauntableIgnite(inst)
-
-    -- inst.OnSave = OnSave
-    -- inst.OnLoad = OnLoad
+    MakeHauntableWork(inst)
 
     inst.OnLoadPostPass = OnLoadPostPass
 

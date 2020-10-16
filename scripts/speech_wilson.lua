@@ -74,9 +74,9 @@ return {
         
 		DISMANTLE =
 		{
-			COOKING = "TODO",
+			COOKING = "I can't do that while something's cooking.",
 			INUSE = "Science says I have to wait my turn.",
-			NOTEMPTY = "TODO",
+			NOTEMPTY = "I'll have to clean it out first.",
         },
         FISH_OCEAN =
 		{
@@ -3606,7 +3606,7 @@ return {
         },
 
         REFINED_DUST = "Ah-CHOO!",
-        DUSTMERINGUE = "Disdusting!",
+        DUSTMERINGUE = "Who or what would eat this?",
 
         SHROOMCAKE = "It lives up to its name.",
 

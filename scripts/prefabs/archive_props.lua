@@ -445,8 +445,7 @@ local function securitypulsefn()
         end
     end)
 
-    inst.sfx_prefab = SpawnPrefab("archive_security_pulse_sfx")
-    inst:AddChild(inst.sfx_prefab)
+    inst.sfx_prefab = inst:SpawnChild("archive_security_pulse_sfx")
     inst:DoTaskInTime(0,function()       
         inst.sfx_prefab.Transform:SetPosition(SFXRANGE,0,0)
     end)    
@@ -879,7 +878,7 @@ local function CreateDropShadow(parent)
     inst:AddTag("DECOR")
     inst:AddTag("NOCLICK")
 
-    inst.presists = false
+    inst.persists = false
     inst.entity:SetParent(parent.entity)
 
     return inst

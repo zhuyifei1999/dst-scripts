@@ -194,7 +194,6 @@ local function onothercollide(inst, other)
     if not other:IsValid() or inst.recentlycharged[other] then
         return
     elseif other:HasTag("smashable") and other.components.health ~= nil then
-        --other.Physics:SetCollides(false)
         other.components.health:Kill()
     elseif other.components.workable ~= nil
         and other.components.workable:CanBeWorked()
@@ -210,7 +209,6 @@ local function onothercollide(inst, other)
         inst.recentlycharged[other] = true
         inst:DoTaskInTime(3, ClearRecentlyCharged, other)
         inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo")
-        --inst.components.combat:DoAttack(other, inst.weapon)
         inst.components.combat:DoAttack(other)
     end
 end
@@ -219,29 +217,13 @@ local function oncollide(inst, other)
 
     if not (other ~= nil and other:IsValid() and inst:IsValid())
         or inst.recentlycharged[other]
-        --or other:HasTag("player")
         or Vector3(inst.Physics:GetVelocity()):LengthSq() < 42 then
-            --print("== ABORT",Vector3(inst.Physics:GetVelocity()):LengthSq() )
+
         return
     end
     ShakeAllCameras(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
     inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
---[[
-local function CreateWeapon(inst)
-    local weapon = CreateEntity()  
-    weapon.entity:AddTransform()
-    weapon:AddComponent("weapon")
-    weapon.components.weapon:SetDamage(200)
-    weapon.components.weapon:SetRange(0)
-    weapon:AddComponent("inventoryitem")
-    weapon.persists = false
-    weapon.components.inventoryitem:SetOnDroppedFn(weapon.Remove)
-    weapon:AddComponent("equippable")
-    inst.components.inventory:GiveItem(weapon)
-    inst.weapon = weapon
-end
-]]
 
 local function fn_common(tag)
     local inst = CreateEntity()
@@ -365,6 +347,7 @@ local LOW_THRESHOLD_DOWN = 0.33
 
 local MED_THRESHOLD_UP = 0.66 -- 0.75
 local LOW_THRESHOLD_UP = 0.33 --0.50
+local BOTTOM_THRESHOLD = 0.2 --0.50
 
 local function OnHealthDelta(inst, oldpercent, newpercent)
     if newpercent < oldpercent then
@@ -390,18 +373,22 @@ local function OnHealthDelta(inst, oldpercent, newpercent)
             newpercent >= MED_THRESHOLD_UP then
                 inst.AnimState:PlayAnimation("low_to_med")
                 inst.AnimState:PushAnimation("med_to_full")
-                inst.AnimState:PushAnimation("idle_full")        
+                inst.AnimState:PushAnimation("idle_full")
                 inst:AddTag("gestalt_possessable")
         elseif oldpercent <  MED_THRESHOLD_UP and  oldpercent >= LOW_THRESHOLD_UP and
             newpercent >= MED_THRESHOLD_UP then
                 inst.AnimState:PlayAnimation("med_to_full")
-                inst.AnimState:PushAnimation("idle_full")                     
+                inst.AnimState:PushAnimation("idle_full")
                 inst:AddTag("gestalt_possessable")
         end        
     end
-    if newpercent < (LOW_THRESHOLD_DOWN -0.1) then
-        inst:RemoveComponent("combat")
-        --inst.components.health:SetPercent(LOW_THRESHOLD_DOWN -0.1)
+    if newpercent < (BOTTOM_THRESHOLD) then
+        if inst.components.combat then
+            inst:RemoveComponent("combat")
+        end      
+        if newpercent < BOTTOM_THRESHOLD - 0.05 then
+            inst.components.health:SetPercent(BOTTOM_THRESHOLD - 0.05)
+        end
     else
         if not inst.components.combat then
             inst:AddComponent("combat")
@@ -474,7 +461,7 @@ local function huskfn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 1)
+    --MakeObstaclePhysics(inst, 1)
 
     inst.AnimState:SetBank("archive_centipede")
     inst.AnimState:SetBuild("archive_centipede_build")
@@ -493,8 +480,11 @@ local function huskfn()
     inst.components.health:SetMaxHealth(TUNING.ARCHIVE_CENTIPEDE.HUSK_HEALTH)
     inst.components.health.ondelta = OnHealthDelta
     inst.components.health:StartRegen(1,1)
+    inst.components.health.nofadeout = true
 
     inst.possessable = true
+
+    inst.MED_THRESHOLD_DOWN = MED_THRESHOLD_DOWN
 
     inst:AddComponent("inspectable")
 

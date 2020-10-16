@@ -9,8 +9,10 @@ local function AddMember(inst, member)
 end
 
 local function RemoveMember(inst, member)
-    inst:RemoveEventCallback("entitysleep", member._squidherd_entitysleep, member)
-    member._squidherd_entitysleep = nil
+    if member._squidherd_entitysleep then
+        inst:RemoveEventCallback("entitysleep", member._squidherd_entitysleep, member)
+        member._squidherd_entitysleep = nil
+    end
 end
 
 local function _OnUpdate(inst, self)

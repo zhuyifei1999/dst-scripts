@@ -46,8 +46,8 @@ local function RepairDenAction(inst)
         return
     end
 
-    if inst._charged and inst.components.homeseeker.home ~= nil
-        and inst.components.homeseeker.home:IsValid()
+    if inst._charged and inst.components.homeseeker ~= nil
+        and inst.components.homeseeker.home ~= nil and inst.components.homeseeker.home:IsValid()
         and not inst.components.homeseeker.home.components.workable.workable then
 
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.REPAIR)

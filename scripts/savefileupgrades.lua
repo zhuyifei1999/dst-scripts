@@ -887,6 +887,33 @@ t = {
             end,
         },
 
+        {
+            version = 5.061, -- RoT: Acient Archives - tile node id and astral marker fixes
+            fn = function(savedata)
+                if savedata ~= nil and savedata.map ~= nil then
+
+					if savedata.map.prefab == "cave" then
+						if savedata.map.persistdata == nil then
+							savedata.map.persistdata = {}
+						end
+						if savedata.map.persistdata.retrofitcavemap_anr == nil then
+							savedata.map.persistdata.retrofitcavemap_anr = {}
+						end
+						savedata.map.persistdata.retrofitcavemap_anr.retrofit_acientarchives_fixes = true
+					end
+                    if savedata.map.prefab == "forest" then
+                        if savedata.map.persistdata == nil then
+                            savedata.map.persistdata = {}
+                        end
+                        if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                            savedata.map.persistdata.retrofitforestmap_anr = {}
+                        end
+                        savedata.map.persistdata.retrofitforestmap_anr.retrofit_astralmarkers = true
+                    end
+				end
+            end,
+		},
+
     },
 }
 

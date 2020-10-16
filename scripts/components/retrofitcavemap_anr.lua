@@ -36,6 +36,18 @@ local LOCOMOTOR_TAGS = {"locomotor"}
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
+local function RemovePrefabs(prefabs_to_remove, biomes_to_cleanup)
+	local count = 0
+	for _,ent in pairs(Ents) do
+		if ent:IsValid() and table.contains(prefabs_to_remove, ent.prefab) and (biomes_to_cleanup == nil or table.contains(biomes_to_cleanup, TheWorld.Map:GetTileAtPoint(ent.Transform:GetWorldPosition()))) then
+			count = count + 1
+			ent:Remove()
+		end
+	end
+
+	return count
+end
+
 
 local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_structures, nightmare)
 	local attempt = 1
@@ -645,6 +657,40 @@ function self:OnPostInit()
 		end
 	end
 
+	if self.retrofit_acientarchives_fixes then
+		local success = false
+
+		local topology = TheWorld.topology
+		local is_retrofitted_world = false
+		for k = 1, #topology.nodes do
+			if topology.ids[k] == "AncientArchivesRetrofit:2:MoonMush" then
+				if topology.nodes[k].tags == nil then
+					topology.nodes[k].tags = {}
+				end
+				table.insert(topology.nodes[k].tags, "MushGnomeSpawnArea")
+				print("Retrofitting for Return of Them: Forgotten Knowledge - Added MushGnomeSpawnArea tag to node " .. tostring(topology.ids[k]) .. " ("..tostring(k)..")")
+
+				is_retrofitted_world = true
+			end
+			if topology.ids[k] == "AncientArchivesRetrofit:0:Archives" then
+				if topology.nodes[k].tags == nil then
+					topology.nodes[k].tags = {}
+				end
+				table.insert(topology.nodes[k].tags, "nocavein")
+				print("Retrofitting for Return of Them: Forgotten Knowledge - Added nocavein tag to node " .. tostring(topology.ids[k]) .. " ("..tostring(k)..")")
+			end
+		end
+
+		if not is_retrofitted_world then
+			local num_removed = RemovePrefabs({"nightmaregrowth", "nightmaregrowth_spawner", "fissure_grottowar"})
+			print("Retrofitting for Return of Them: Forgotten Knowledge - Removed " .. tostring(num_removed) .. " nightmaregrowth_spawner and fissure_grottowar objects")
+		end
+		-- remove all nightmaregrowth_spawner and fissure_grottowar
+		-- add room MushGnomeSpawnArea to retrofitted blue mush forest
+		-- add room tag nocavein to retrofitted archives
+
+	end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -683,6 +729,8 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins_statuechessrespawners = data.retrofit_heartoftheruins_statuechessrespawners
 		self.retrofit_sacred_chest = data.retrofit_sacred_chest
 		self.retrofit_acientarchives = data.retrofit_acientarchives
+		self.retrofit_acientarchives_fixes = data.retrofit_acientarchives_fixes
+		
     end
 end
 

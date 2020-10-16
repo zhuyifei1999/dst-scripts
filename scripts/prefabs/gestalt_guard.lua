@@ -139,11 +139,11 @@ end
 local function onkilledtarget(inst, data)
 	local target = data ~= nil and data.victim or nil
 
-	local lootdropper = target:IsValid() and target.components.lootdropper or nil
-    if lootdropper ~= nil then
-        lootdropper:SetLoot({})
-        lootdropper:SetChanceLootTable(nil)
-    end
+	local lootdropper = target:IsValid() and target:HasTag("gesaltnoloot") and target.components.lootdropper or nil
+	if lootdropper ~= nil then
+		lootdropper:SetLoot({})
+		lootdropper:SetChanceLootTable(nil)
+	end
 end
 
 local function fn()

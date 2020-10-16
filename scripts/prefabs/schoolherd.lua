@@ -7,8 +7,10 @@ end
 
 
 local function RemoveMember(inst, member)
-    inst:RemoveEventCallback("entitysleep", member._schoolherd_entitysleep, member)
-    member._schoolherd_entitysleep = nil
+    if member._schoolherd_entitysleep then
+        inst:RemoveEventCallback("entitysleep", member._schoolherd_entitysleep, member)
+        member._schoolherd_entitysleep = nil
+    end
 end
 
 local function _OnUpdate(inst, self)

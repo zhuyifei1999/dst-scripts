@@ -2779,8 +2779,8 @@ STRINGS =
         ARCHIVE_SWITCH = "Ornate Pedestal",
         ARCHIVE_SECURITY_DESK = "Ancient Guard Post",
 
-        WALL_STONE_2 = "Ancient Stone Wall",
-        WALL_RUINS_2 = "Ancient Thulecite Wall",
+        WALL_STONE_2 = "Archival Stone Wall",
+        WALL_RUINS_2 = "Archival Thulecite Wall",
 
         NIGHTMAREGROWTH = "Nightmare Rampart",
 

@@ -119,13 +119,15 @@ local function LeaderValidateFormation(inst)
 end
 
 local function FollowerOnUpdate(inst, targetpos)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local dist = VecUtil_Length(targetpos.x - x, targetpos.z - z)
+    if not inst.brain.stopped then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local dist = VecUtil_Length(targetpos.x - x, targetpos.z - z)
 
-    inst.components.locomotor.walkspeed = math.min(dist * 8, FORMATION_MAX_SPEED)
-    inst:FacePoint(targetpos.x, 0, targetpos.z)
-    if inst.updatecomponents[inst.components.locomotor] == nil then
-        inst.components.locomotor:WalkForward(true)
+        inst.components.locomotor.walkspeed = math.min(dist * 8, FORMATION_MAX_SPEED)
+        inst:FacePoint(targetpos.x, 0, targetpos.z)
+        if inst.updatecomponents[inst.components.locomotor] == nil then
+            inst.components.locomotor:WalkForward(true)
+        end
     end
 end
 

@@ -414,6 +414,19 @@ local function PopulateWorld(savedata, profile)
 			map:SetMinimapOceanMaskBlurParameters(minimap_ocean_tuning.MASK_BLUR_SIZE, minimap_ocean_tuning.MASK_BLUR_PASS_COUNT)
         end
 
+		-- remove the LOOP_BLANK_SUB before we do anything else
+        for i=#savedata.map.topology.ids,1, -1 do
+            local name = savedata.map.topology.ids[i]
+            if string.find(name, "LOOP_BLANK_SUB") ~= nil then
+                table.remove(savedata.map.topology.ids, i)
+                table.remove(savedata.map.topology.nodes, i)
+                for eid=#savedata.map.topology.edges,1,-1 do
+                    if savedata.map.topology.edges[eid].n1 == i or savedata.map.topology.edges[eid].n2 == i then
+                        table.remove(savedata.map.topology.edges, eid)
+                    end
+                end
+            end
+        end
 
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         map:SetSize(savedata.map.width, savedata.map.height)
@@ -457,19 +470,6 @@ local function PopulateWorld(savedata, profile)
 		if savedata.meta ~= nil then
 			print("World generated on version " .. tostring(savedata.meta.build_version) .. ", using seed: " .. tostring(savedata.meta.seed))
 		end
-
-        for i=#savedata.map.topology.ids,1, -1 do
-            local name = savedata.map.topology.ids[i]
-            if string.find(name, "LOOP_BLANK_SUB") ~= nil then
-                table.remove(savedata.map.topology.ids, i)
-                table.remove(savedata.map.topology.nodes, i)
-                for eid=#savedata.map.topology.edges,1,-1 do
-                    if savedata.map.topology.edges[eid].n1 == i or savedata.map.topology.edges[eid].n2 == i then
-                        table.remove(savedata.map.topology.edges, eid)
-                    end
-                end
-            end
-        end
 
         for i,node in ipairs(world.topology.nodes) do
             local story = world.topology.ids[i]

@@ -65,9 +65,9 @@ return{
         
 		DISMANTLE =
 		{
-			COOKING = "TODO",
+			COOKING = "I'd rather not lay my hands on a hot stove, thank you very much.",
 			INUSE = "It's occupied.",
-			NOTEMPTY = "TODO",
+			NOTEMPTY = "First I must remove its contents.",
         },
         FISH_OCEAN =
 		{

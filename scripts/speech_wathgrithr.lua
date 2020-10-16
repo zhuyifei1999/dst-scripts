@@ -65,9 +65,9 @@ return{
         
 		DISMANTLE =
 		{
-			COOKING = "TODO",
+			COOKING = "I will let it finish its work.",
 			INUSE = "I shall valiantly wait my turn.",
-			NOTEMPTY = "TODO",
+			NOTEMPTY = "First, it must be emptied!",
         },
         FISH_OCEAN =
 		{
@@ -3541,8 +3541,8 @@ return{
 
         LIGHTFLIER = "Light the way, noble insect.",
 
-        GROTTO_POOL_BIG = "TODO",
-        GROTTO_POOL_SMALL = "TODO",
+        GROTTO_POOL_BIG = "The pools hath been enchanted.",
+        GROTTO_POOL_SMALL = "The pools hath been enchanted.",
 
         DUSTMOTH = "This creature has no fight in it.",
 

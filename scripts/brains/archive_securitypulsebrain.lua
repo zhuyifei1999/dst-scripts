@@ -79,8 +79,13 @@ end
 local CENTIPEDE_MUST_TAGS= {"security_powerpoint"}
 local function findcentipede(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,y,z, 15,CENTIPEDE_MUST_TAGS)
-    if #ents  > 0 then
+    local ents = TheSim:FindEntities(x,y,z, 20,CENTIPEDE_MUST_TAGS)
+    for i=#ents,1,-1 do
+        if not ents[i].MED_THRESHOLD_DOWN or ents[i].components.health:GetPercent() < ents[i].MED_THRESHOLD_DOWN then
+            table.remove(ents,i)
+        end
+    end
+    if #ents > 0 then
         return ents[1]
     end
 end

@@ -33,6 +33,9 @@ local function OnLoad(inst, data)
 
     if data ~= nil and data.product_orchestrina ~= nil then
         inst.product_orchestrina = data.product_orchestrina
+        if inst.product_orchestrina == "archive_resonator" then
+            inst.product_orchestrina = "archive_resonator_item"
+        end
     end
 end
 
@@ -193,7 +196,7 @@ local function OnSaveDispencer(inst, data)
 end
 
 local function updateart(inst)
-    if inst.product_orchestrina == "archive_resonator" then
+    if inst.product_orchestrina == "archive_resonator_item" then
         inst.AnimState:AddOverrideBuild("archive_knowledge_dispensary_b")
         inst.MiniMapEntity:SetIcon("archive_knowledge_dispensary_b.png")
     elseif inst.product_orchestrina == "refined_dust" then
@@ -205,6 +208,9 @@ end
 local function OnLoadDispencer(inst, data)
     if data ~= nil and data.product_orchestrina ~= nil then
         inst.product_orchestrina = data.product_orchestrina
+        if inst.product_orchestrina == "archive_resonator" then
+            inst.product_orchestrina = "archive_resonator_item"
+        end
     end
    -- updateart(inst)
 end

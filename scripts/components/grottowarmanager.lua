@@ -69,6 +69,7 @@ local function SpawnNightmareForPlayer(player, pt)
 
 	local offset = FindWalkableOffset(pt, theta, 28 - 5*math.random(), 22, true, true, IsValidSpawnPt)
 				or FindWalkableOffset(pt, theta, 23 - 5*math.random(), 16, true, true, IsValidSpawnPt)
+				or FindWalkableOffset(pt, theta, 15 - 5*math.random(), 16, false, true, IsValidSpawnPt)
 
 	if offset ~= nil then
 		SpawnMare("nightmarebeak", offset.x + pt.x, offset.z + pt.z, math.random() < TUNING.GROTTOWAR_NIGHTMARE_TARGET_PLAYER_CHANCE and player or nil)
@@ -81,6 +82,7 @@ local function SpawnBrightmareForPlayer(player, pt, target)
 
 	local offset = FindWalkableOffset(pt, theta, 15 - 8*math.random(), 16, true, true, IsValidSpawnPt)
 				or FindWalkableOffset(pt, theta, 10 - 5*math.random(), 16, true, true, IsValidSpawnPt)
+				or FindWalkableOffset(pt, theta, 10 - 5*math.random(), 16, false, true, IsValidSpawnPt)
 
 	if offset ~= nil then
 		SpawnMare("gestalt_guard", offset.x + pt.x, offset.z + pt.z, target)
@@ -94,7 +96,7 @@ local function UpdatePopulation()
 		local nightmares = TheSim:FindEntities(x, 0, z, TUNING.GROTTOWAR_POPULATION_DIST, NIGHTMARE_TAGS)
 		local num_nightmares = #nightmares
 
-		local nightmare_chance = (1 - (num_nightmares / TUNING.GROTTOWAR_MAX_NIGHTMARES)) * 0.2
+		local nightmare_chance = (1 - (num_nightmares / TUNING.GROTTOWAR_MAX_NIGHTMARES)) * 0.15
 		local brightmare_chance = num_brightmares < (num_nightmares * TUNING.GROTTOWAR_NUM_BRIGHTMARES_PRE_NIGHTMARE) and 1
 								or num_brightmares < TUNING.GROTTOWAR_NUM_AMBIENT_BRIGHTMARES and .8
 								or 0
@@ -281,7 +283,9 @@ local function StartTheWar()
 	end
 
     _enabled = true
-	TryStart()
+	if next(_players) ~= nil then
+		TryStart()
+	end
 end
 
 local function OnPlayerAreaChanced(player, data)
@@ -353,13 +357,13 @@ end
 function self:OnSave()
 	return
 	{
-		enabled = _enabled,
+		_enabled2 = _enabled,	-- enabled2: I had to rename this to reset the war due to a bug in the beta
 	}
 end
 
 function self:OnLoad(data)
-	if data.enabled then
-		-- todo: enable
+	if data._enabled2 then
+		_enabled = true
 	end
 end
 

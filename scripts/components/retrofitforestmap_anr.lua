@@ -582,6 +582,59 @@ local function MoonFissures()
 		print("Retrofitting: for Return of Them: Forgotten Knowledge: No Moon Fissures added")
 	end
 end
+		
+local function AstralMarkers()
+		
+	local potential = {}
+	for i, node in ipairs(TheWorld.topology.nodes) do
+		if table.contains(node.tags, "ExitPiece") and not table.contains(node.tags, "lunacyarea") then
+			table.insert(potential,node)
+		end
+	end
+
+    for k,v in pairs(Ents) do
+        if v.prefab == "moon_altar_astral_marker_1" or v.prefab == "moon_altar_astral_marker_2" then
+        	print("Retrofitting: for Return of Them: Forgotten Knowledge: Astral Markets Exist")
+    		return 
+        end
+    end
+
+	if #potential == 0 then
+		print("Retrofitting: for Return of Them: Forgotten Knowledge: No Astral Markers Added")
+	else
+		local moon_altar_astral_marker_1 = false
+		
+		while moon_altar_astral_marker_1 == false do
+			local rand = math.random(1,#potential) 
+			local testnode = potential[rand]
+
+			if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
+				local marker = SpawnPrefab("moon_altar_astral_marker_1")
+				marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
+				moon_altar_astral_marker_1 = true
+				print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
+			end
+
+			table.remove(potential,rand)
+		end
+
+		local  moon_altar_astral_marker_2 = false
+
+		while moon_altar_astral_marker_2 == false do
+			local rand = math.random(1,#potential) 
+			local testnode = potential[rand]
+
+			if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
+				local marker = SpawnPrefab("moon_altar_astral_marker_2")
+				marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
+				moon_altar_astral_marker_2 = true
+				print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
+			end
+
+			table.remove(potential,rand)
+		end
+	end
+end
 
 --------------------------------------------------------------------------
 --[[ Lightning Bluff Retrofit ]]
@@ -997,6 +1050,12 @@ function self:OnPostInit()
 		MoonFissures()
 	end
 
+	if self.retrofit_astralmarkers then
+		print("Retrofitting for Return of Them: Forgotten Knowledge - Placing Astral Markers.")
+		AstralMarkers()
+	end
+
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -1041,6 +1100,7 @@ function self:OnLoad(data)
 		self.retrofit_barnacles = data.retrofit_barnacles or false
 		self.retrofit_inaccessibleunderwaterobjects = data.retrofit_inaccessibleunderwaterobjects or false
 		self.retrofit_moonfissures = data.retrofit_moonfissures or false
+		self.retrofit_astralmarkers = data.retrofit_astralmarkers or false
     end
 end
 

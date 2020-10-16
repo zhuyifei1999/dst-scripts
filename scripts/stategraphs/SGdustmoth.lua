@@ -270,6 +270,10 @@ local states =
             inst.sg.statemem.sound_task1 = inst:DoTaskInTime(9*FRAMES, PlaySoundDustoff)
             inst.sg.statemem.sound_task2 = inst:DoTaskInTime(16*FRAMES, PlaySoundClean)
             inst.sg.statemem.sound_task3 = inst:DoTaskInTime(22*FRAMES, PlaySoundDustoff)
+
+            inst.sg.statemem.ondenremovedfn = function() inst.sg:GoToState("repair_den_pst") end
+
+            inst:ListenForEvent("onremove", inst.sg.statemem.ondenremovedfn, target)
         end,
 
         onupdate = function(inst)
@@ -285,6 +289,7 @@ local states =
             inst.AnimState:Show("dust")
             
             if inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() and inst.sg.statemem.target._pause_repairing_fn ~= nil then
+                inst:RemoveEventCallback("onremove", inst.sg.statemem.ondenremovedfn, inst.sg.statemem.target)
                 inst.sg.statemem.target:_pause_repairing_fn()
             end
 

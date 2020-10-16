@@ -65,9 +65,9 @@ return{
         
 		DISMANTLE =
 		{
-			COOKING = "TODO",
+			COOKING = "COOK.EXE IS STILL RUNNING",
 			INUSE = "INFERIORS ARE USING IT RIGHT NOW",
-			NOTEMPTY = "TODO",
+			NOTEMPTY = "I HAVE TO TAKE ITS INSIDES OUT",
         },
         FISH_OCEAN =
 		{
