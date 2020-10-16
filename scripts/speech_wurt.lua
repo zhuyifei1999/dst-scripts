@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "Don't look right.",
             MUSHROOMFARM_NEEDSSHROOM = "Need to find mushroom!",
             MUSHROOMFARM_NEEDSLOG = "Oooh, need creepy log for this.",
+            MUSHROOMFARM_NOMOONALLOWED = "Why mushrooms not grow?",
             SLOTFULL = "It already full.",
             FOODFULL = "Something cooking already.",
             NOTDISH = "Blegh!!",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Head filled with pictures!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Seen these pictures already.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Hey! It not do anything!",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "Mushrooms weird here.",
 
         LIGHTFLIER = "Follow me, glowy bug!",
+
+        GROTTO_POOL_BIG = "Spiky water!",
+        GROTTO_POOL_SMALL = "Spiky water!",
 
         DUSTMOTH = "Hee-hee, tickly!",
 

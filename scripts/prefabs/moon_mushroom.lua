@@ -62,6 +62,8 @@ local function capfn()
 
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
+
+    inst:AddTag("moonmushroom")
     inst:AddTag("mushroom")
 
     MakeInventoryFloatable(inst, "med", 0.0, 0.7)

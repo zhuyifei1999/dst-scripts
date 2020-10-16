@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "I need something long and thin, like a wooden spoon.",
             MUSHROOMFARM_NEEDSSHROOM = "It needs a dash of something else.",
             MUSHROOMFARM_NEEDSLOG = "It needs a dash of something else.",
+            MUSHROOMFARM_NOMOONALLOWED = "They don't seem to take well to planting.",
             SLOTFULL = "I'd have to take the other object out first.",
             FOODFULL = "Let them enjoy their meal first.",
             NOTDISH = "It would tarnish my reputation to serve that.",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Oh! It's teaching me a new recipe for a machine!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I believe I already knew that one.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "If only there was a way to get it working again...",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "How lovely!",
 
         LIGHTFLIER = "Light the way, mon ami!",
+
+        GROTTO_POOL_BIG = "My, how beautiful!",
+        GROTTO_POOL_SMALL = "My, how beautiful!",
 
         DUSTMOTH = "It seems like a gentle soul.",
 

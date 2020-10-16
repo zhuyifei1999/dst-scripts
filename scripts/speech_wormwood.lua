@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "Wrong one. Oops",
             MUSHROOMFARM_NEEDSSHROOM = "Needs Fun Guy Friends",
             MUSHROOMFARM_NEEDSLOG = "Needs friends",
+            MUSHROOMFARM_NOMOONALLOWED = "Friends won't live here",
             SLOTFULL = "Too full",
             FOODFULL = "Already has belly stuff",
             NOTDISH = "Not belly stuff",
@@ -587,6 +588,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Oooooh, pictures!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Know it",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Nope",
 
 	BATTLECRY =
 	{
@@ -3542,6 +3544,9 @@ return{
         MUSHTREE_MOON = "Friend looks different",
 
         LIGHTFLIER = "Buzzy",
+
+        GROTTO_POOL_BIG = "Clear rock water",
+        GROTTO_POOL_SMALL = "Clear rock water",
 
         DUSTMOTH = "Sweep Sweep",
 

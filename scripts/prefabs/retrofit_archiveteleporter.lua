@@ -59,10 +59,6 @@ local function DoRetrofitting(inst, force_pt)
 	if w2 ~= nil then 
 		local x, y, z = inst.Transform:GetWorldPosition()
 
-		local sign = SpawnPrefab("homesign")
-		sign.Transform:SetPosition(x - 3, y, z + 2)
-		sign.components.writeable:SetText(STRINGS.RETROFITTING_ARCHIVES_SIGN)
-
 		-- replace this marker with a wormhole
 		local w1 = SpawnPrefab("wormhole")
 		w1.Transform:SetPosition(x, y, z)

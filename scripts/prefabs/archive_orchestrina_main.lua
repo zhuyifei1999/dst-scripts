@@ -283,7 +283,7 @@ local function testforplayers(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
     local main = TheSim:FindEntities(x,y,z, 10, OCHESTRINA_MAIN_MUST)[1]
 
-    if not main.busy then
+    if main and not main.busy then
         local failed = main.failed
         local lockboxents = findlockbox( main )    
         local dist = inst:GetDistanceSqToClosestPlayer(true)

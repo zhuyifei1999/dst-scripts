@@ -4464,7 +4464,7 @@ function Tune(overrides)
 
         LIGHTFLIER =
         {
-            HEALTH = 100,
+            HEALTH = 25 * multiplayer_attack_modifier,
             WALK_SPEED = 3.5,
             ON_ATTACKED_ALERT_DURATION = 4,
             ON_ATTACKED_ALERT_DURATION_VARIANCE = 1,

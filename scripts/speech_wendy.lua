@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "That's not the right thing...",
             MUSHROOMFARM_NEEDSSHROOM = "It doesn't need that. It needs a mushroom.",
             MUSHROOMFARM_NEEDSLOG = "It doesn't need that. It needs a magic log.",
+            MUSHROOMFARM_NOMOONALLOWED = "They won't survive here.",
             SLOTFULL = "There's no room...",
             FOODFULL = "It hasn't yet eaten our last sacrifice...",
             NOTDISH = "That may not be best...",
@@ -587,6 +588,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "It's filling my head with plans...",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "You already showed me this one.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "I suppose it's long dead.",
 
 	BATTLECRY =
 	{
@@ -3542,6 +3544,9 @@ return{
         MUSHTREE_MOON = "Curiouser and curiouser.",
 
         LIGHTFLIER = "A small spot of light in the darkness... waiting to be snuffed out.",
+
+        GROTTO_POOL_BIG = "A rare bit of beauty in this dark, dreary place.",
+        GROTTO_POOL_SMALL = "A rare bit of beauty in this dark, dreary place.",
 
         DUSTMOTH = "They seem to live only to clean. What a tiresome life.",
 

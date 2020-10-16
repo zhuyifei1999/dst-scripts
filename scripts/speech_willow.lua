@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "I don't have to jam stuff into every hole I see!",
             MUSHROOMFARM_NEEDSSHROOM = "Ughh, it doesn't need this! It needs a mushroom!",
             MUSHROOMFARM_NEEDSLOG = "Ughh, it doesn't need this! It needs a living log!",
+            MUSHROOMFARM_NOMOONALLOWED = "These dumb mushrooms won't grow!",
             SLOTFULL = "Naw, can't make it fit.",
             FOODFULL = "I have to wait for it to eat this one first.",
             NOTDISH = "I wouldn't serve that to a dog!",
@@ -590,6 +591,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Ugh, it's filling my head with nerd junk!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Meh. Seen it before.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Well that was exciting.",
 
 	BATTLECRY =
 	{
@@ -3545,6 +3547,9 @@ return{
         MUSHTREE_MOON = "Bet this would look really nice if I set it on fire.",
 
         LIGHTFLIER = "I'd rather use fire to light my way.",
+
+        GROTTO_POOL_BIG = "Ugh, this whole place is damp and gross! I hate it!",
+        GROTTO_POOL_SMALL = "Ugh, this whole place is damp and gross! I hate it!",
 
         DUSTMOTH = "They just clean all day? What a boring life.",
 

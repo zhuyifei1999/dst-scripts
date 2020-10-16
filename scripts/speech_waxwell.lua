@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "Hm. No, that's not right.",
             MUSHROOMFARM_NEEDSSHROOM = "A mushroom would be more suited to this.",
             MUSHROOMFARM_NEEDSLOG = "A living log would be more suited to this.",
+            MUSHROOMFARM_NOMOONALLOWED = "The blasted thing refuses to grow!",
             SLOTFULL = "Occupied.",
             FOODFULL = "We've already placed something on the altar.",
             NOTDISH = "That wouldn't be a very good sacrifice, now would it?",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "This knowledge... it was hidden even from me.",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "A waste of my time. This knowledge is already mine.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "It doesn't respond to shadow magic. Perhaps another power source...",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "How garish.",
 
         LIGHTFLIER = "Finally, a mutation that's actually useful.",
+
+        GROTTO_POOL_BIG = "Don't expect me to wade in there for some wretched moon glass.",
+        GROTTO_POOL_SMALL = "I suppose it is quite picturesque.",
 
         DUSTMOTH = "Hmph. Just stay away from my suit, pal.",
 

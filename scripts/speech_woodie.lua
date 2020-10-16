@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "Nah. Something long and thin goes there, but not this.",
             MUSHROOMFARM_NEEDSSHROOM = "That needs a mushroom spore, eh?",
             MUSHROOMFARM_NEEDSLOG = "That needs a magic log, eh?",
+            MUSHROOMFARM_NOMOONALLOWED = "I don't think they're suited to this environment.",
             SLOTFULL = "I should probably use what's up there first.",
             FOODFULL = "There's already something there.",
             NOTDISH = "That doesn't seem smart.",
@@ -584,6 +585,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "It's fillin' my head with ideas!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Guess I knew that one already.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Well, that one's gonna stay a mystery for a while longer.",
 
 	BATTLECRY =
 	{
@@ -3539,6 +3541,9 @@ return{
         MUSHTREE_MOON = "I think it's due for a choppin'.",
 
         LIGHTFLIER = "Keep lighting my way and we'll get along just fine, bud!",
+
+        GROTTO_POOL_BIG = "Looks almost like icebergs.",
+        GROTTO_POOL_SMALL = "Looks almost like icebergs.",
 
         DUSTMOTH = "Let's compare moustaches later.",
 

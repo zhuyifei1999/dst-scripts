@@ -764,8 +764,8 @@ function UpdateServerWorldGenDataString()
     if TheShard:IsMaster() then
         -- Merge secondary shard worldgen data
         for k, v in pairs(Shard_GetConnectedShards()) do
-            if v.world then
-                table.insert(clusteroptions, v.world)
+            if v.world ~= nil and v.world[1] ~= nil then
+                table.insert(clusteroptions, v.world[1])
             end
         end
     end

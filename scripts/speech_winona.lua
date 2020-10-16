@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "It doesn't fit together like that.",
             MUSHROOMFARM_NEEDSSHROOM = "It doesn't need this.",
             MUSHROOMFARM_NEEDSLOG = "It needs something else.",
+            MUSHROOMFARM_NOMOONALLOWED = "No amount of elbow grease is gonna make these things grow.",
             SLOTFULL = "No sense wasting materials.",
             FOODFULL = "Ah, a wonderful bird, the peli-can.",
             NOTDISH = "I don't wanna go angering no demons.",
@@ -589,6 +590,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "It's showin' me how to build... a machine!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I've already got that one stored in my noggin'.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Maybe I should poke around, see if I can't get it workin' again.",
 
 	BATTLECRY =
 	{
@@ -3544,6 +3546,9 @@ return{
         MUSHTREE_MOON = "Now that's a weird looking mushroom.",
 
         LIGHTFLIER = "Doesn't even need a battery!",
+
+        GROTTO_POOL_BIG = "Fancy a swim? Ha! Didn't think so.",
+        GROTTO_POOL_SMALL = "Fancy a swim? Ha! Didn't think so.",
 
         DUSTMOTH = "Quite the tenacious little worker.",
 

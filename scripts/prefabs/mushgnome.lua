@@ -19,8 +19,7 @@ local prefabs =
 SetSharedLootTable("mushgnome",
 {
     {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
+    {"livinglog",   0.5},
     {"spore_moon",  1.0},
     {"spore_moon",  1.0},
     {"spore_moon",  1.0},

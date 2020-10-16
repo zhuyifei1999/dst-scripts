@@ -16,7 +16,7 @@ function AncientArchivePass(entities, map_width, map_height, world, add_entity_f
     
     AncientArchiveInit(entities, map_width, map_height)
 
-    local products = {"archive_resonator","refined_dust","turfcraftingstation"}
+    local products = {"archive_resonator_item","refined_dust","turfcraftingstation"}
     local index = 1
     if entities["archive_lockbox_dispencer"] then
         for i,prop in pairs(entities["archive_lockbox_dispencer"]) do

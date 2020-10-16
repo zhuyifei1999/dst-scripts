@@ -156,6 +156,9 @@ function self:RetrofittedSpawnFrontLines()
 			end
 		end
 
+		local pt3 = _retrofitted_homepoint:GetPosition()
+		SpawnPrefab("grotto_war_sfx").Transform:SetPosition(pt3.x,pt3.y,pt3.z)
+
 		_retrofitted_homepoint:Remove()
 		_retrofitted_homepoint = nil
 		_retrofitted_spawnpoints = nil

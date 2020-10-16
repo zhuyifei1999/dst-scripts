@@ -281,5 +281,5 @@ end
 
 return Make("fissure", "nightmare_crack_upper", upperLightColour, "upper_nightmarefissurefx"),
     Make("fissure_lower", "nightmare_crack_ruins", lowerLightColour, "nightmarefissurefx"),
-    Make("fissure_grottowar", "nightmare_crack_upper", upperLightColour, "upper_nightmarefissurefx", grottowar_masterinit)
+    Make("fissure_grottowar", "fissure_grottowar", upperLightColour, "fissure_grottowarfx", grottowar_masterinit)
 

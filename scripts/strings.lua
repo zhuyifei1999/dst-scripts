@@ -3370,7 +3370,7 @@ STRINGS =
 
         ARCHIVE_RESONATOR_ITEM = "What secrets will it unearth?",
     
-        REFINED_DUST = "An ancient treat enjoyed by only one creature.",
+        REFINED_DUST = "A key ingredient for an ancient treat.",
 
         TURFCRAFTINGSTATION = "Change the world one piece at a time.",
 
@@ -3386,6 +3386,11 @@ STRINGS =
 
         TURF_DECIDUOUS = "A chunk of deciduous forest floor.",
         TURF_DESERTDIRT = "A dry patch of sand.",
+
+        TURF_ROCKY = "A chunk of rocky ground.",
+        TURF_UNDERROCK = "The craggy stone floor of a cave.",
+        TURF_SINKHOLE = "A chunk of wet, muddy grass.",
+        TURF_MUD = "A patch of muddy ground.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

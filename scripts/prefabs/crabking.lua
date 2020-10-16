@@ -255,7 +255,8 @@ local function OnDead(inst)
 end
 
 local function OnEntitySleep(inst)
-    inst.components.health:DoDelta(inst.components.health.maxhealth - inst.components.health.currenthealth)
+    inst.components.health:SetMaxHealth(200000)
+    inst.components.health.currenthealth = inst.components.health.maxhealth
     if not inst.sg:HasStateTag("inert") then
         inst.spawnstacks(inst)
         inst.dropgems(inst)
@@ -797,7 +798,7 @@ local function fn()
     ------------------
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.CRABKING_HEALTH)
+    inst.components.health:SetMaxHealth(200000)--TUNING.CRABKING_HEALTH)
     inst.components.health.destroytime = 5
 
     ------------------

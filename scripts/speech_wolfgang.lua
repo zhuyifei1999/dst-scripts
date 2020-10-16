@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "I do not think little platform would like that.",
             MUSHROOMFARM_NEEDSSHROOM = "Is needing tiny mushy-room, I think.",
             MUSHROOMFARM_NEEDSLOG = "Is needing tiny log with face.",
+            MUSHROOMFARM_NOMOONALLOWED = "Why do the mushy-rooms not grow?",
             SLOTFULL = "Something is already put!",
             FOODFULL = "It must enjoy first yummy food from Wolfgang first!",
             NOTDISH = "Wolfgang serves only best dishes!",
@@ -584,6 +585,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Wolfgang's brain full of strange pictures!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Wolfgang has seen these brain pictures already.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Not sure what Wolfgang was expecting.",
 
 	BATTLECRY =
 	{
@@ -3539,6 +3541,9 @@ return{
         MUSHTREE_MOON = "Mushy tree.",
 
         LIGHTFLIER = "Please stay close to Wolfgang.",
+
+        GROTTO_POOL_BIG = "Wolfgang would like to swim, but too much glass in the way.",
+        GROTTO_POOL_SMALL = "Even tiny pond is full of glass.",
 
         DUSTMOTH = "Bushy beardy bug.",
 

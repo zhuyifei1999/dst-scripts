@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "I think that'd make it angry.",
             MUSHROOMFARM_NEEDSSHROOM = "It needs a mushroom!",
             MUSHROOMFARM_NEEDSLOG = "It needs a special kind of log!",
+            MUSHROOMFARM_NOMOONALLOWED = "I don't think they're going to grow.",
             SLOTFULL = "Mom said to always finish my plate before seconds.",
             FOODFULL = "It's still working on the first one.",
             NOTDISH = "I don't think we should offer that.",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Haha, it tickles our brain!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "We already learned that one.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Aww, nothing happened!",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "It's big and weird!",
 
         LIGHTFLIER = "We think it's probably too big to fit in a jar.",
+
+        GROTTO_POOL_BIG = "Isn't it dangerous to have glass in the pool?",
+        GROTTO_POOL_SMALL = "Isn't it dangerous to have glass in the pool?",
 
         DUSTMOTH = "Maybe it will help us tidy our things if we ask nicely.",
 

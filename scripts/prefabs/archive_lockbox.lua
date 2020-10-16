@@ -39,6 +39,9 @@ end
 local function teach(inst)
     inst.persists = false
     local recipe = inst.product_orchestrina
+    if recipe == "archive_resonator" then
+        recipe = "archive_resonator_item"
+    end
     local pos = Vector3(inst.Transform:GetWorldPosition())
     local players = FindPlayersInRange( pos.x, pos.y, pos.z, 20, true )
 
@@ -149,7 +152,7 @@ local function movesound(inst, baseangle, pos)
     inst.SoundEmitter:PlaySound("grotto/common/archive_lockbox/hit")
 end
 
-local function OnActivate(inst)  
+local function OnActivate(inst, doer)  
     local archive = TheWorld.components.archivemanager
     if (not archive or archive:GetPowerSetting() ) then
         if not inst.AnimState:IsCurrentAnimation("use_pre") and not inst.AnimState:IsCurrentAnimation("use_loop") and not inst.AnimState:IsCurrentAnimation("use_post") then
@@ -179,6 +182,9 @@ local function OnActivate(inst)
         -- power is off
         --revert to inactive
         inst.components.activatable.inactive = true
+        if doer and doer.components.talker then
+            doer.components.talker:Say(GetString(doer, "ANNOUNCE_ARCHIVE_NO_POWER"), nil, true)
+        end
     end
 end
 
@@ -252,7 +258,7 @@ local function dispencerfn()
                     if inst.sfx then
                         inst.sfx:Remove()
                     end
-                --    local loot =  inst.components.lootdropper:SpawnLootPrefab("archive_lockbox")
+                
                     if inst.pastloot and inst.pastloot.removewhenspawned then 
                         ErodeAway(inst.pastloot)
                     end                    
@@ -268,11 +274,6 @@ local function dispencerfn()
                 end)             
             end)  
         end
-
-    --    if inst.AnimState:IsCurrentAnimation("use_loop") then
-            --inst.AnimState:PushAnimation("use_post")
-           
-    --    end
 
         if inst.AnimState:IsCurrentAnimation("use_post") then
             inst.AnimState:PlayAnimation("idle")

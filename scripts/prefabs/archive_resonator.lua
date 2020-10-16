@@ -165,6 +165,11 @@ local function scanfordevice(inst)
             inst.Transform:SetRotation(angle+180)
             inst.AnimState:PlayAnimation("beam")
 		end
+    else
+        inst:DoTaskInTime(4, function()
+            inst.OnDismantle(inst)
+            inst.components.finiteuses:Use(1)
+        end)
 	end
 
 
@@ -259,6 +264,12 @@ local function mainfn()
     inst.AnimState:SetBank("archive_resonator")
     inst.AnimState:SetBuild("archive_resonator")
     inst.AnimState:PlayAnimation("idle_loop",true)
+
+    inst.candismantle = function()
+        if inst.AnimState:IsCurrentAnimation("idle_loop") then
+            return true
+        end
+    end
 
     inst.entity:SetPristine()
 

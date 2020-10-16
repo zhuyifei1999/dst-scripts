@@ -9,8 +9,6 @@ local items =
         test = function(cooker, names, tags)
             return names.batnose and names.kelp
                     and (tags.dairy and tags.dairy >= 1)
-                    and (tags.inedible and tags.inedible >= 1)
-                    and not (tags.magic and tags.magic >= 1)
         end,
         priority = 55,
         cooktime = 2,

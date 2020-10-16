@@ -106,6 +106,7 @@ return {
             NOTSTAFF = "It's not quite the right shape.",
             MUSHROOMFARM_NEEDSSHROOM = "A mushroom would probably be of more use.",
             MUSHROOMFARM_NEEDSLOG = "A living log would probably be of more use.",
+            MUSHROOMFARM_NOMOONALLOWED = "These mushrooms seem to resist being planted!",
             SLOTFULL = "We already put something there.",
             FOODFULL = "There's already a meal there.",
             NOTDISH = "It won't want to eat that.",
@@ -592,6 +593,7 @@ return {
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "My mind is expanding with new ancient knowledge!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I already knew that.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Maybe it needs more juice.",
 
 	BATTLECRY =
 	{
@@ -3547,6 +3549,9 @@ return {
         MUSHTREE_MOON = "This mushroom tree is clearly stranger than the rest.",
 
         LIGHTFLIER = "How strange, carrying one makes my pocket feel lighter!",
+
+        GROTTO_POOL_BIG = "The moon water makes the glass grow. That's just science.",
+        GROTTO_POOL_SMALL = "The moon water makes the glass grow. That's just science.",
 
         DUSTMOTH = "Tidy little guys, aren't they?",
 

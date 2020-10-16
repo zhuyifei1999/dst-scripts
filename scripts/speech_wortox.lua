@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "That's quite wrong, yes, yes!",
             MUSHROOMFARM_NEEDSSHROOM = "There is only room... for a 'shroom!",
             MUSHROOMFARM_NEEDSLOG = "Its tummy rumbles for the soul of a log.",
+            MUSHROOMFARM_NOMOONALLOWED = "It doesn't want to put down roots here.",
             SLOTFULL = "It is full already.",
             FOODFULL = "There's already a dish, and it looks delish!",
             NOTDISH = "It would be in our best interest to not.",
@@ -588,6 +589,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Oooh, now there's an interesting idea!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Oh drat, I already knew that.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "What great power could wake it from its slumber?",
 
 	BATTLECRY =
 	{
@@ -3544,6 +3546,9 @@ return{
         MUSHTREE_MOON = "Someone played a prank on it.",
 
         LIGHTFLIER = "Bloom and glow!",
+
+        GROTTO_POOL_BIG = "Perhaps it is home to a nymph.",
+        GROTTO_POOL_SMALL = "Perhaps it is home to a very tiny nymph.",
 
         DUSTMOTH = "That charming creature nearly swept me off my feet, hyuyu!",
 

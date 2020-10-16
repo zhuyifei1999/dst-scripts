@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "The gods may frown were I to do that.",
             MUSHROOMFARM_NEEDSSHROOM = "Forest sprites have no need of that.",
             MUSHROOMFARM_NEEDSLOG = "The sprite home requires sprucing up. With magical spruce!",
+            MUSHROOMFARM_NOMOONALLOWED = "It longs for its homeland. It will not grow here.",
             SLOTFULL = "One material at a time!",
             FOODFULL = "One sacrifice at a time!",
             NOTDISH = "That's not worthy to grace the mouth of the gods!",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "The gods have given me a vision... some kind of machine?",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I've already seen this vision.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "It hath not the energy to perform its task.",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "Strange magic indeed.",
 
         LIGHTFLIER = "Light the way, noble insect.",
+
+        GROTTO_POOL_BIG = "TODO",
+        GROTTO_POOL_SMALL = "TODO",
 
         DUSTMOTH = "This creature has no fight in it.",
 

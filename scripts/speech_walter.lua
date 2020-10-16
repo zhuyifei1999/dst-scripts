@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "That's not going to fit there.",
             MUSHROOMFARM_NEEDSSHROOM = "I need to forage for mushrooms! C'mon Woby!",
             MUSHROOMFARM_NEEDSLOG = "One of those haunted logs should do the trick.",
+            MUSHROOMFARM_NOMOONALLOWED = "I don't think they'll grow here.",
             SLOTFULL = "It's already packed.",
             FOODFULL = "There's some provisions in there already.",
             NOTDISH = "That... doesn't look like something anyone would eat.",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Huh? It's giving me instructions!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I knew that one already.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "Hm, it doesn't look like it's working.",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "It's actually kind of pretty!",
 
         LIGHTFLIER = "I think I have a new favourite kind of bug!",
+
+        GROTTO_POOL_BIG = "Sorry Woby, I don't think it'll be any good for swimming.",
+        GROTTO_POOL_SMALL = "Sorry Woby, I don't think it'll be any good for swimming.",
 
         DUSTMOTH = "Can I keep them? Pleeeaaaase?",
 

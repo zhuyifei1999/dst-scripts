@@ -291,7 +291,7 @@ function ShardSaveIndex:GetSlotCharacter(slot)
     if shardIndex then
         local session_id = shardIndex:GetSession()
         local online_mode = shardIndex.online_mode ~= false
-        local encode_user_path = shardIndex:GetServerData().encode_user_path
+        local encode_user_path = shardIndex:GetServerData().encode_user_path == true
 
         local character = nil
 

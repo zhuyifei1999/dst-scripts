@@ -270,6 +270,7 @@ local function fn()
     inst:AddTag("cavedweller")
     inst:AddTag("hostile")
     inst:AddTag("monster")
+    inst:AddTag("scarytoprey")
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

@@ -97,6 +97,7 @@ return{
             NOTSTAFF = "This is not the staff I seek.",
             MUSHROOMFARM_NEEDSSHROOM = "Goodness no, it needs a fresh mushroom.",
             MUSHROOMFARM_NEEDSLOG = "It needs a log, imbued with magical properties.",
+            MUSHROOMFARM_NOMOONALLOWED = "This species seems to only grow in the wild.",
             SLOTFULL = "Let's finish what's on our plate first, shall we?",
             FOODFULL = "I'll be around when you're ready for seconds, dear.",
             NOTDISH = "That food is simply not suitable.",
@@ -583,6 +584,7 @@ return{
 
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "What a peculiar sensation, it's transmitting a blueprint telepathically!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I'm already familiar with this particular piece of knowledge.",
+    ANNOUNCE_ARCHIVE_NO_POWER = "How very disappointing, I was curious to see what it would do.",
 
 	BATTLECRY =
 	{
@@ -3538,6 +3540,9 @@ return{
         MUSHTREE_MOON = "I suspect some property in the water caused it to change.",
 
         LIGHTFLIER = "If it could be convinced to stay still, it would make an excellent reading light.",
+
+        GROTTO_POOL_BIG = "How interesting, it seems to be forming moon glass stalagmites.",
+        GROTTO_POOL_SMALL = "How interesting, it seems to be forming moon glass stalagmites.",
 
         DUSTMOTH = "I would have been quite pleased to have one helping me in the library.",
 
