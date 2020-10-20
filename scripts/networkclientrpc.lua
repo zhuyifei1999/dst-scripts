@@ -1180,11 +1180,11 @@ function HandleModRPC(sender, tick, namespace, code, data)
     end
 end
 
-function HandleClientModRPC(sender, tick, namespace, code, data)
+function HandleClientModRPC(tick, namespace, code, data)
     if CLIENT_MOD_RPC_HANDLERS[namespace] ~= nil then
         local fn = CLIENT_MOD_RPC_HANDLERS[namespace][code]
         if fn ~= nil then
-            table.insert(RPC_Client_Queue, { fn, sender, data, tick })
+            table.insert(RPC_Client_Queue, { fn, data, tick })
         else
             print("Invalid RPC code: ", namespace, code)
         end

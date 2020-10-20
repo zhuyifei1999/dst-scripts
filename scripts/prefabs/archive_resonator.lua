@@ -167,8 +167,9 @@ local function scanfordevice(inst)
 		end
     else
         inst:DoTaskInTime(4, function()
-            inst.OnDismantle(inst)
-            inst.components.finiteuses:Use(1)
+            inst.AnimState:PlayAnimation("idle_loop",true)
+            --inst.OnDismantle(inst)
+            --inst.components.finiteuses:Use(1)
         end)
 	end
 

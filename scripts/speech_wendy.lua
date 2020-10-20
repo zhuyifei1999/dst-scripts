@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "My strength is fading.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Ah. It couldn't last.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "It seems my zeal was short-lived.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Once more I'm left defenseless against the elements.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm sorry... I'm getting so tired...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah. Predictable.",
@@ -3148,6 +3149,7 @@ return{
 		KELP_DRIED = "We took it out of the ocean, then took the ocean out of it.",
 
 		GESTALT = "I can feel their fear and loneliness.",
+        GESTALT_GUARD = "I don't think they want us here.",
 
 		COOKIECUTTER = "Their faces are twisted with hunger.",
 		COOKIECUTTERSHELL = "All that remains of its former occupant.",

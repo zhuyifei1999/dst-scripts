@@ -168,6 +168,10 @@ end
 
 function FormationLeader:OnLostFormationMember(member)
 	if member and member:IsValid() then
+		if member.components.formationfollower.onleaveformationfn ~= nil then
+			member.components.formationfollower.onleaveformationfn(member)
+		end
+
 		self.inst:RemoveEventCallback("death", member.deathfn, member)
 		
 		self.inst:RemoveEventCallback("onremove", member.deathfn, member)

@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "My strength has left me.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "I've been left vulnerable!",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "My enthusiasm for this has run dry.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I'm exposed to the elements!",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm growing tired.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Blast! That cad-fish got away with my tackle!",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "Sadly, I've eaten worse out here.",
 
 		GESTALT = "It communes with us through them.",
+        GESTALT_GUARD = "I think it would be best to keep my distance.",
 
 		COOKIECUTTER = "Stay back, you!",
 		COOKIECUTTERSHELL = "Hmph. I suppose this could be useful.",

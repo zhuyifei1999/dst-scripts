@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Don't feel like fighting anymore.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "G-glorp, don't hit!",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired...",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Yay!! Feel wetter already, flurp!",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Getting bit sleepy now, florp.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Glurph! Hey!",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "Salty crunchies.",
 
 		GESTALT = "They want to tell story.",
+        GESTALT_GUARD = "Not as strong as Mermfold guard, florp!",
 
 		COOKIECUTTER = "It look friendly.",
 		COOKIECUTTERSHELL = "Ha ha! Mine now!",

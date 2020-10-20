@@ -4473,7 +4473,7 @@ function Tune(overrides)
 
         LIGHTFLIER_FLOWER =
         {
-            REGROW_TIME = total_day_time*3, -- this refers to regrow after picked, not duration for regrowthmanager
+            REGROW_TIME = total_day_time*12, -- this refers to regrow after picked, not duration for regrowthmanager
             LIGHT_TIME = 140,
             LIGHT_TIME_VARIANCE = 50,
             RECHARGE_TIME = 110,

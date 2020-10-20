@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "We're tired of fighting!",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Aah! We need armor!",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "We're bored now.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Nooo! Spiders don't like the damp!",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Actually... we might feel a bit sleepy again.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah! Aww, our line snapped...",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "Mmm, salty and flaky!",
 
 		GESTALT = "They want to talk, but they don't know how!",
+        GESTALT_GUARD = "They don't seem very friendly.",
 
 		COOKIECUTTER = "Our boat's not a cookie!",
 		COOKIECUTTERSHELL = "Ouch! It's spiky!",

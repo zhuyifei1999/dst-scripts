@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Huh? My punches feel wimpier... not that I was wimpy before!",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Back to regular Walter.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Alright, time for a break.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Oh well. It's good to stay hydrated anyway.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm starting to get a bit tired...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Darnit!",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "Crunchy and salty. It's not bad.",
 
 		GESTALT = "Are you a ghost... from the moon?",
+        GESTALT_GUARD = "TODO",
 
 		COOKIECUTTER = "They're smiling! Wait, I think I was looking at them upside-down.",
 		COOKIECUTTERSHELL = "These guys have tough armor!",

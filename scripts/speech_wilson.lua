@@ -518,6 +518,7 @@ return {
     ANNOUNCE_DETACH_BUFF_ATTACK            = "It seems my brawniness was short-lived.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Well, that was nice while it lasted.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Desire to procrastinate... creeping back...",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Looks like my dry spell is over.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'll... (yawn) never get... tired...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "All my hard work, gone in a snap!",
@@ -3153,6 +3154,7 @@ return {
 		KELP_DRIED = "The sodium content's kinda high.",
 
 		GESTALT = "They're promising me... knowledge.",
+        GESTALT_GUARD = "They're promising me... a good smack if I get too close.",
 
 		COOKIECUTTER = "I don't like the way it's looking at my boat...",
 		COOKIECUTTERSHELL = "A shell of its former self.",

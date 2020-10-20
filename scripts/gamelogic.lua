@@ -528,22 +528,24 @@ local function PopulateWorld(savedata, profile)
         tuning_override.areaambientdefault(savedata.map.prefab)
 
         -- Check for map overrides
-        if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then
+		if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then
+            -- Clear out one time overrides
+            if TheNet:GetCurrentSnapshot() > 2 then
+				local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start", "rock_ice"}
+				for i,override in ipairs(onetime) do
+					if world.topology.overrides[override] ~= nil then
+						print("removing onetime override",override)
+						world.topology.overrides[override] = nil
+					end
+				end
+			end
+
             for override,value in pairs(world.topology.overrides) do
                 if tuning_override[override] ~= nil then
                     print("OVERRIDE: setting",override,"to",value)
                     tuning_override[override](value)
                 end
-            end
-
-            -- Clear out one time overrides
-            local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start", "rock_ice"}
-            for i,override in ipairs(onetime) do
-                if world.topology.overrides[override] ~= nil then
-                    print("removing onetime override",override)
-                    world.topology.overrides[override] = nil
-                end
-            end
+			end
         end
 
         --instantiate all the dudes

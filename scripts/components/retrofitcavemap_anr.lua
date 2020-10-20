@@ -466,6 +466,124 @@ local function HeartOfTheRuinsRuinsRetrofitting_StatueChessRespawners(inst)
 	AddRuinsRespawner("ruins_statue_mage_nogem")
 end
 
+local function ArchiveDispencerFixup()
+
+	local a = {}
+	local b = {}
+	local c = {}
+	local dispencers = {}
+	local lockboxes = {}
+
+	for k,v in pairs(Ents) do
+		if v.prefab == "archive_lockbox_dispencer" then
+			table.insert(dispencers,v)
+		end
+
+		if v.prefab == "archive_lockbox" then
+			table.insert(lockboxes,v)
+		end
+
+		if v.prefab == "archive_lockbox_dispencer" then
+			if v.product_orchestrina ~= nil and v.product_orchestrina ~= "" then
+				if v.product_orchestrina == "archive_resonator_item" then
+					table.insert(b,v)
+				elseif v.product_orchestrina == "refined_dust" then
+					table.insert(c,v)
+				elseif v.product_orchestrina == "turfcraftingstation" then
+					table.insert(a,v)
+				end
+			end			
+		end		
+	end
+
+	if #a < 1 or #b < 1 or #c < 1 then
+		if #a >= 1 then
+			for i,ent in ipairs(dispencers)	do
+				if ent == a[1] then
+					table.remove(dispencers,i)
+					break
+				end
+			end
+		else
+			print("Retrofitting for Return of Them: Forgotten Knowledge - NO dispencer type A.")
+		end	
+		if #b >= 1 then
+			for i,ent in ipairs(dispencers)	do
+				if ent == b[1] then
+					table.remove(dispencers,i)
+					break
+				end
+			end
+		else
+			print("Retrofitting for Return of Them: Forgotten Knowledge - NO dispencer type B.")
+		end	
+		if #c >= 1 then
+			for i,ent in ipairs(dispencers)	do
+				if ent == c[1] then
+					table.remove(dispencers,i)
+					break
+				end
+			end
+		else
+			print("Retrofitting for Return of Them: Forgotten Knowledge - NO dispencer type C.")
+		end					
+	end
+	if #a == 0 and #dispencers > 0 then
+		local rand = math.random(1,#dispencers)
+		local ent = dispencers[rand]
+		ent.product_orchestrina = "turfcraftingstation"
+		ent.updateart(ent)
+		table.remove(dispencers,rand)
+		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type A.")
+	end
+	if #b == 0 and #dispencers > 0 then
+		local rand = math.random(1,#dispencers)
+		local ent = dispencers[rand]
+		ent.product_orchestrina = "archive_resonator_item"
+		ent.updateart(ent)
+		table.remove(dispencers,rand)
+		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type B.")
+	end	
+	if #c == 0 and #dispencers > 0 then
+		local rand = math.random(1,#dispencers)
+		local ent = dispencers[rand]
+		ent.product_orchestrina = "refined_dust"
+		ent.updateart(ent)
+		table.remove(dispencers,rand)
+		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type C.")
+	end
+
+	if #dispencers > 0 then
+		local total  = 0
+		for i, ent in ipairs(dispencers) do
+			if ent.product_orchestrina == nil or ent.product_orchestrina == "" then
+				total = total +1
+				local list = {"turfcraftingstation","archive_resonator_item","refined_dust"}
+				ent.product_orchestrina = list[math.random(1,#list)]
+				ent.updateart(ent)
+			end
+		end		
+		if total > 0 then
+			print("Retrofitting for Return of Them: Forgotten Knowledge - "..total.." Dispencers fixed.")	
+		end
+	end	
+
+	if #lockboxes > 0 then
+		local total  = 0
+		for i, ent in ipairs(lockboxes) do
+			if ent.product_orchestrina == nil or ent.product_orchestrina == "" then
+				total = total +1
+				local list = {"turfcraftingstation","archive_resonator_item","refined_dust"}
+				ent.product_orchestrina = list[math.random(1,#list)]
+			end
+		end		
+		if total > 0 then
+			print("Retrofitting for Return of Them: Forgotten Knowledge - "..total.." Distilled Knowledge fixed.")	
+		end
+	end
+
+end
+
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
@@ -691,6 +809,11 @@ function self:OnPostInit()
 
 	end
 
+	if self.retrofit_dispencer_fixes then
+		print("Retrofitting for Return of Them: Forgotten Knowledge - Repairing Retrofitted Dispencers.")
+		ArchiveDispencerFixup()
+	end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -730,6 +853,7 @@ function self:OnLoad(data)
 		self.retrofit_sacred_chest = data.retrofit_sacred_chest
 		self.retrofit_acientarchives = data.retrofit_acientarchives
 		self.retrofit_acientarchives_fixes = data.retrofit_acientarchives_fixes
+		self.retrofit_dispencer_fixes = data.retrofit_dispencer_fixes
 		
     end
 end

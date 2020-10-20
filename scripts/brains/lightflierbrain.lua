@@ -113,8 +113,11 @@ function LightFlierBrain:OnStart()
                         WhileNode(function()
                             return ShouldGoHome(self.inst)
                         end, "ShouldGoHome", DoAction(self.inst, GoHomeAction, "GoHome")),
-
-                        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
+                        
+                        Wander(self.inst, function()
+                            local homepos = self.inst.components.homeseeker:GetHomePos() or self.inst.components.knownlocations:GetLocation("home")
+                            return homepos
+                        end, MAX_WANDER_DIST),
                     }),
                     
                 -- Else no need to do anything from here, movement is handled on update from formationfollower component
@@ -127,10 +130,6 @@ function LightFlierBrain:OnStart()
     }, .25)
 
     self.bt = BT(self.inst, root)
-end
-
-function LightFlierBrain:OnInitializationComplete()
-    self.inst.components.knownlocations:RememberLocation(Point(self.inst.Transform:GetWorldPosition()))
 end
 
 return LightFlierBrain

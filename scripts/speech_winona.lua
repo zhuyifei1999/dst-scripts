@@ -515,6 +515,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Y'know, fightin' ain't always the answer.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "I'd better take a step back.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I'm off the clock!",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I think I might be needin' an umbrella soon.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm beat!",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "You rascal!",
@@ -3150,6 +3151,7 @@ return{
 		KELP_DRIED = "I kinda like the stuff!",
 
 		GESTALT = "I feel like... they've seen my sister.",
+        GESTALT_GUARD = "Don't think I like the looks of that.",
 
 		COOKIECUTTER = "What's the matter lil guy?",
 		COOKIECUTTERSHELL = "That thing was well protected.",

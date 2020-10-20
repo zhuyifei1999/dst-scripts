@@ -516,6 +516,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Nooo I still had more hitting I wanted to do!",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Might not be the best time to pick a fight.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Welp. The motivation didn't last.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Ugh. Back to watching out for puddles.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "No! I don't wanna feel tired yet!",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Hey! That dumb fish stole my tackle!",
@@ -3151,6 +3152,7 @@ return{
 		KELP_DRIED = "It's not half bad.",
 
 		GESTALT = "It feels like they're speaking inside my head!",
+        GESTALT_GUARD = "They sure hate those shadow creeps.",
 
 		COOKIECUTTER = "Hey! What are you lookin' at?!",
 		COOKIECUTTERSHELL = "Ha, I stole its house.",

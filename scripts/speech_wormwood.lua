@@ -513,6 +513,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Feel less fighty now",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Back to normal",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Tired now",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Water back!",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Bit sleepy...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Oh!",
@@ -3148,6 +3149,7 @@ return{
 		KELP_DRIED = "Crunchy",
 
 		GESTALT = "Saying something?",
+        GESTALT_GUARD = "Protect",
 
 		COOKIECUTTER = "Oh. Hello!",
 		COOKIECUTTERSHELL = "Spiky home",

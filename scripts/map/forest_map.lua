@@ -527,9 +527,9 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 					choice = math.random(1,#ends)
 					local startidx = ends[choice]
 					obj_layout.Place({xs[startidx], ys[startidx]}, MAZE_CELL_EXITS_INV[math.abs(types[startidx])], add_fn, choices.special.start)
-
+					
 					local reservedindex = math.random(1,#xs)
-					while reservedindex == endidx do
+					while reservedindex == endidx or reservedindex == startidx do
 						reservedindex = math.random(1,#xs)
 					end
 

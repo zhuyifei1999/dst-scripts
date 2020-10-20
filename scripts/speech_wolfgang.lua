@@ -510,6 +510,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Wolfgang still strong! Just little less strong!",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Wolfgang will need new defensive strategy.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Time for little break.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Feels damp... Wolfgang hope not to catch cold.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Wolfgang feeling like he could use a little nap soon.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Fish was too mighty for weak little string.",
@@ -3145,6 +3146,7 @@ return{
 		KELP_DRIED = "Little sea flakes make Wolfgang grow strong!",
 
 		GESTALT = "Wolfgang's brainmeats have never been so mighty!",
+        GESTALT_GUARD = "As long as they fight scary shadow, Wolfgang is happy.",
 
 		COOKIECUTTER = "Fish has strangely punchable face...",
 		COOKIECUTTERSHELL = "Tough, but not as tough as Wolfgang!",

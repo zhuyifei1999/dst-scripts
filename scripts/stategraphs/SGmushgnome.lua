@@ -92,10 +92,13 @@ local states =
         
         onenter = function(inst)
             inst.AnimState:PlayAnimation("death")
+            inst.SoundEmitter:PlaySound("grotto/creatures/mushgnome/death")
+
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.SoundEmitter:PlaySound("grotto/creatures/mushgnome/death")
+
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
+            inst.components.periodicspawner:Stop()
         end,
 
         timeline =

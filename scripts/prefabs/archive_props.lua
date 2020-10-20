@@ -109,11 +109,12 @@ local function onsave(inst, data)
     data.anim = inst.anim
 end
 
-local function onload(inst, data)
+local function onloadpostpass(inst, newents, data)
     if data ~= nil and data.anim ~= nil then
         inst.anim = data.anim
     end
     setminimapiconstatue(inst)
+    ShowWorkState(inst, nil, inst.components.workable.workleft)
 end
 
 local function statuefn()
@@ -161,7 +162,7 @@ local function statuefn()
 
     setminimapiconstatue(inst)
 
-    inst.OnLoad = onload
+    inst.OnLoadPostPass = onloadpostpass
     inst.OnSave = onsave
 
     return inst
@@ -455,12 +456,16 @@ local function securitypulsefn()
 end
 
 local function OnUpdatePulseSFX(inst,dt)
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    local CIRCLE_TIME = 2
-    local rate = 2*PI/ CIRCLE_TIME
-    local theta = (inst.parent:GetAngleToPoint(pt)* DEGREES) + (rate * dt)
-    local offset = Vector3(SFXRANGE * math.cos( theta ), 0, -SFXRANGE * math.sin( theta ))
-    inst.Transform:SetPosition(offset.x,offset.y,offset.z)
+	if inst.parent == nil then
+		inst:Remove()
+	else
+		local pt = Vector3(inst.Transform:GetWorldPosition())
+		local CIRCLE_TIME = 2
+		local rate = 2*PI/ CIRCLE_TIME
+		local theta = (inst.parent:GetAngleToPoint(pt)* DEGREES) + (rate * dt)
+		local offset = Vector3(SFXRANGE * math.cos( theta ), 0, -SFXRANGE * math.sin( theta ))
+		inst.Transform:SetPosition(offset.x,offset.y,offset.z)
+	end
 end
 
 local function securitypulse_sfxfn()

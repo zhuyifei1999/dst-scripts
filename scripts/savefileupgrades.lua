@@ -914,6 +914,24 @@ t = {
             end,
 		},
 
+        {
+            version = 5.062, -- RoT: Acient Archives - retrofitted dispencer fixes
+            fn = function(savedata)
+                if savedata ~= nil and savedata.map ~= nil then
+
+                    if savedata.map.prefab == "cave" then
+                        if savedata.map.persistdata == nil then
+                            savedata.map.persistdata = {}
+                        end
+                        if savedata.map.persistdata.retrofitcavemap_anr == nil then
+                            savedata.map.persistdata.retrofitcavemap_anr = {}
+                        end
+                        savedata.map.persistdata.retrofitcavemap_anr.retrofit_dispencer_fixes = true
+                    end
+                end
+            end,
+        },
+
     },
 }
 

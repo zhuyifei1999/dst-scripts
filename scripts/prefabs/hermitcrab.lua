@@ -1048,8 +1048,10 @@ end
 
 local function stopfishing(inst)    
     inst.hookfish = nil
-    inst:RemoveEventCallback("timerdone", inst._fishingtimer)
-    inst._fishingtimer = nil
+	if inst._fishingtimer ~= nil then
+		inst:RemoveEventCallback("timerdone", inst._fishingtimer)
+		inst._fishingtimer = nil
+	end
     if inst.components.timer:TimerExists("fishingtime") then
         inst.components.timer:StopTimer("fishingtime")
     end

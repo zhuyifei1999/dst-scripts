@@ -514,6 +514,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "It was all just a prank!",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "That was fun, let's do it again!",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "All work and no play doesn't suit an imp. Hyuyu!",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Alas and alack, the dampness is back.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Maybe I could do with a wink or two...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Well drat, I guess that's that.",
@@ -3150,6 +3151,7 @@ return{
 		KELP_DRIED = "I do not want it, no siree.",
 
 		GESTALT = "Good evening, children!",
+        GESTALT_GUARD = "They grow up so fast!",
 
 		COOKIECUTTER = "Well, aren't you a funny fellow!",
 		COOKIECUTTERSHELL = "The creature fell, now I take its shell!",

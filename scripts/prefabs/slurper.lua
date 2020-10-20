@@ -269,6 +269,8 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("cavedweller")
+	inst:AddTag("monster")
+	inst:AddTag("hostile")
     inst:AddTag("mufflehat")
 
     inst.entity:SetPristine()

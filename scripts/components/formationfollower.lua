@@ -32,6 +32,7 @@ local FormationFollower = Class(function(self, inst)
 
 	self.active = false
 	--self.onupdatefn = nil
+	--self.onleaveformationfn = nil
 end,
 nil,
 {

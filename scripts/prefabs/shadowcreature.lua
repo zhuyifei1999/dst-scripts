@@ -150,7 +150,7 @@ local function MakeShadowCreature(data)
         inst.Transform:SetFourFaced()
 
         inst:AddTag("shadowcreature")
-        inst:AddTag("gesaltnoloot")
+        inst:AddTag("gestaltnoloot")
         inst:AddTag("monster")
         inst:AddTag("hostile")
         inst:AddTag("shadow")

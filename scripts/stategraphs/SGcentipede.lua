@@ -92,14 +92,9 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt")
-           -- inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/voice")
+            inst.SoundEmitter:PlaySound("grotto/creatures/centipede/taunt")
         end,
         
-        timeline = 
-        {
-		  --  TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/pawground") end ),
-		  --  TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/pawground") end ),
-        },
         
         events=
         {
@@ -113,7 +108,7 @@ local states=
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("spawn")
-           -- inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/voice")
+            inst.SoundEmitter:PlaySound("grotto/creatures/centipede/spawn")
         end,
         
         timeline = 
@@ -123,7 +118,6 @@ local states=
                 inst.copyparams( inst._endlight, inst.light_params.on)
                 inst.beginfade(inst)
             end ),
-          --  TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/pawground") end ),
         },
         
         events=
@@ -168,6 +162,7 @@ local states=
                 inst.components.locomotor:EnableGroundSpeedMultiplier(false)
                 inst.Physics:SetMotorVelOverride(15,0,0)
 --                inst.components.locomotor:RunForward()
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/rolling_atk_LP","roll")
                 
                 if not inst.AnimState:IsCurrentAnimation("atk_roll") then
                     inst.AnimState:PlayAnimation("atk_roll_loop", true)
@@ -185,6 +180,7 @@ local states=
                 inst.components.locomotor:Stop()
                 inst.components.locomotor:EnableGroundSpeedMultiplier(true)
                 inst.Physics:ClearMotorVelOverride()
+                inst.SoundEmitter:KillSound("roll")
             end,
 
             ontimeout = function(inst)
@@ -200,6 +196,11 @@ local states=
                 inst.components.locomotor:Stop()
                 inst.AnimState:PlayAnimation("atk_roll_pst")
             end,
+
+            timeline=
+            {
+                 TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/taunt") end),
+            },
             
             events=
             {   
@@ -212,6 +213,8 @@ local states=
             onenter = function(inst) 
                 inst.components.locomotor:Stop()
                 inst.AnimState:PlayAnimation("atk_aoe")
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/aoe")
+
             end,
 
             timeline=
@@ -269,24 +272,32 @@ CommonStates.AddSleepStates(states,
 {
     starttimeline = 
     {
-	--	TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/liedown") end ),
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/sleep") end ),
     },
     
-	sleeptimeline = {
-    --    TimeEvent(18*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/sleep") end),
+	sleeptimeline = 
+    {
+
 	},
+
+    waketimeline = 
+    {
+        TimeEvent(5*FRAMES, function(inst)
+            inst.SoundEmitter:PlaySound("grotto/creatures/centipede/sleep")
+        end),
+    },
 })
 
 CommonStates.AddCombatStates(states,
 {
     attacktimeline = 
     {
-   --     TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/attack") end),
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/attack") end),
         TimeEvent(9*FRAMES, function(inst) inst.components.combat:DoAttack() end),
     },
     hittimeline = 
     {
-    --    TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/knight"..inst.kind.."/hurt") end),
+       TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/hit_react") end),
     },
     deathtimeline = 
     {
@@ -295,6 +306,9 @@ CommonStates.AddCombatStates(states,
             inst.beginfade(inst)
         end),
 
+        TimeEvent(0*FRAMES, function (inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/death") 
+        end), 
+        
         TimeEvent(17*FRAMES, function(inst) 
             inst.SoundEmitter:KillSound("active")
         end),

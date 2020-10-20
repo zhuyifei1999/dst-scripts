@@ -66,6 +66,10 @@ local function DoRetrofitting(inst, force_pt)
 		w1.components.teleporter:Target(w2)
 		w2.components.teleporter:Target(w1)
 
+		-- this wormhole is being added because we cannot reliably retrofit the land masses being connected to the mainland, no need to have a sanity cost for using it
+		w1.disable_sanity_drain = true
+		w2.disable_sanity_drain = true
+
 		inst:Remove()
 
 		return true

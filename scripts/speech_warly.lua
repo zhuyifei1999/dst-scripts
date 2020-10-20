@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Erm... I think I'm more of a food lover than a fighter after all.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Ah... I've gone from tough to tender.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "Ah non, I think I'm losing steam.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Is it getting a bit soggy in here?",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "Oh dear, I seem to be getting a bit tired after all...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Ah, zut! I've lost my tackle.",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "Ah, crispy!",
 
 		GESTALT = "Can you... get me home to dear Maman?",
+        GESTALT_GUARD = "I think it would be wise to stay out of their way.",
 
 		COOKIECUTTER = "Could I interest you in something other than my boat?",
 		COOKIECUTTERSHELL = "Reminds me a bit of a durian... mostly the smell.",

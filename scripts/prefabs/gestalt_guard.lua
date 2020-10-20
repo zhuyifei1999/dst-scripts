@@ -139,7 +139,7 @@ end
 local function onkilledtarget(inst, data)
 	local target = data ~= nil and data.victim or nil
 
-	local lootdropper = target:IsValid() and target:HasTag("gesaltnoloot") and target.components.lootdropper or nil
+	local lootdropper = target:IsValid() and target:HasTag("gestaltnoloot") and target.components.lootdropper or nil
 	if lootdropper ~= nil then
 		lootdropper:SetLoot({})
 		lootdropper:SetChanceLootTable(nil)
@@ -170,6 +170,7 @@ local function fn()
 	inst:AddTag("crazy") -- so they can attack shadow creatures
 	inst:AddTag("NOBLOCK")
 	inst:AddTag("extinguisher") -- to put out nightlights
+	inst:AddTag("soulless") -- no wortox souls
 
     inst.Transform:SetFourFaced()
     inst.Transform:SetScale(0.8, 0.8, 0.8)

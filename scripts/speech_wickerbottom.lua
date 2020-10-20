@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Oh my, what came over me?",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "It appears my defense has weakened.",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I can only work tirelessly for so long.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "Did I just feel a raindrop?",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "How strange, I do in fact feel a bit tired...",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Oh dear, I must have put too much strain on my line.",
@@ -3144,6 +3145,7 @@ return{
 		KELP_DRIED = "It's slightly more palatable with this texture.",
 
 		GESTALT = "They are the projections of something stronger.",
+        GESTALT_GUARD = "They possess higher defensive capabilities than their smaller counterparts.",
 
 		COOKIECUTTER = "Its eyes seem fixed to my raft.",
 		COOKIECUTTERSHELL = "A thick casing of calcium carbonate.",

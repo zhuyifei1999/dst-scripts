@@ -260,7 +260,8 @@ local function fn_common(tag)
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
-    inst:AddTag("archive_centipede")    
+    inst:AddTag("soulless")
+    inst:AddTag("archive_centipede")
 
     inst.entity:SetPristine()
 
@@ -303,8 +304,8 @@ local function fn_common(tag)
 
     inst:AddComponent("follower")
 
-    MakeMediumBurnableCharacter(inst, "spring")
-    MakeMediumFreezableCharacter(inst, "spring")
+    MakeLargeBurnableCharacter(inst, "swap_fire")
+    MakeMediumFreezableCharacter(inst, "swap_fire")
 
     MakeHauntablePanic(inst)
 

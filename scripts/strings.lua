@@ -5568,6 +5568,7 @@ STRINGS.UI =
 		FILTER_MEAT = "Meats",
 		FILTER_VEGGIE = "Veggies",
 		FILTER_OTHER = "Other", 
+		FILTER_SIDE_EFFECTS = "Side Effects",
 	},
 
 	FOOD_TYPES = 

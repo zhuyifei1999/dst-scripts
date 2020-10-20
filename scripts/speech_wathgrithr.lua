@@ -509,6 +509,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Back to merely my usual level of fearsomeness.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "I've lost my defensive advantage!",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "I think I've done my share.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "The tides have turned for the wetter.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I fear my defense against sleep hath weakened.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "By Freya, the little fiend snapped my line!",
@@ -3143,7 +3144,8 @@ return{
 		KELP_COOKED = "Tis even worse than before.",
 		KELP_DRIED = "I despise it.",
 
-		GESTALT = "Goddess of the moon, shine thy smile upon me!",
+		GESTALT = "God of the moon, shine thy smile upon me!",
+        GESTALT_GUARD = "Aha, there are warriors among you!",
 
 		COOKIECUTTER = "It seeks to make a meal of my vessel!",
 		COOKIECUTTERSHELL = "Twas a spiky foe.",

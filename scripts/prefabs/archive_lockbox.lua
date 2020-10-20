@@ -60,8 +60,8 @@ local function teach(inst)
                     player.components.talker:Say(GetString(player, "ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE"), nil, true)
                 end
             else
-                player.components.builder:UnlockRecipe(recipe)       
-                player:PushEvent("learnrecipe", { teacher = inst, recipe = recipe })     
+                local blueprint = SpawnPrefab(recipe .. "_blueprint")
+                player.components.inventory:GiveItem(blueprint)
 
                 if player.components.talker then
                     player.components.talker:Say(GetString(player, "ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE"), nil, true)
@@ -309,6 +309,8 @@ local function dispencerfn()
 
     inst.OnSave = OnSaveDispencer
     inst.OnLoad = OnLoadDispencer
+
+    inst.updateart = updateart
 
     inst:DoTaskInTime(0,function() updateart(inst) end)
 

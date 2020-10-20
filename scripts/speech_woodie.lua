@@ -510,6 +510,7 @@ return{
     ANNOUNCE_DETACH_BUFF_ATTACK            = "Sorry, all the fight's gone out of me.",
     ANNOUNCE_DETACH_BUFF_PLAYERABSORPTION  = "Anyone got a spare hockey helmet?",
     ANNOUNCE_DETACH_BUFF_WORKEFFECTIVENESS = "That's enough hustlin' around for now.",
+    ANNOUNCE_DETACH_BUFF_MOISTUREIMMUNITY  = "I can feel the dampness creepin' back in.",
     ANNOUNCE_DETACH_BUFF_SLEEPRESISTANCE   = "I'm gettin' tired, I think it's wearing off.",
     
 	ANNOUNCE_OCEANFISHING_LINESNAP = "Aw nuts! Sorry for the language, Luce.",
@@ -3145,6 +3146,7 @@ return{
 		KELP_DRIED = "It's a nice light snack.",
 
 		GESTALT = "We're all connected, eh?",
+        GESTALT_GUARD = "Looks like these things are getting stronger.",
 
 		COOKIECUTTER = "That thing's hankering for a bite of my boat!",
 		COOKIECUTTERSHELL = "He was a tough nut to crack.",

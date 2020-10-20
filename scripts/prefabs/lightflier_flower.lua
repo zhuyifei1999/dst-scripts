@@ -235,8 +235,6 @@ local function onregenfn(inst)
 end
 
 local function onpickedfn(inst, picker, loot)
-    -- inst._last_picked_time = GetTime()------------------------------------------------------------------------
-
     SpawnLightflierFromStalk(inst)
 
     ForceOff(inst)
@@ -253,15 +251,9 @@ local function onpickedfn(inst, picker, loot)
     else
         inst.AnimState:PushAnimation("picked")
     end
-
-    -- if inst.components.childspawner.numchildrenoutside >= inst.components.childspawner.maxchildren - 1 then
-    --     inst.components.pickable:Pause() -- Do not re-grow until the population is lower than max
-    --     StartCallForLightflierTask(inst)
-    -- end
-    -- if inst.components.childspawner.numchildrenoutside >= inst.components.childspawner.maxchildren - 1 then
-        inst.components.pickable:Pause() -- Do not re-grow until the population is lower than max
-        StartCallForLightflierTask(inst)
-    -- end
+    
+    inst.components.pickable:Pause() -- Do not re-grow until the population is lower than max
+    StartCallForLightflierTask(inst)
 end
 
 local function makeemptyfn(inst)
@@ -319,7 +311,6 @@ end
 
 local function OnLoadPostPass(inst, ents, data)
     if not inst.components.pickable:CanBePicked()
-        -- and inst.components.childspawner.numchildrenoutside > TUNING.LIGHTFLIER_FLOWER.TARGET_NUM_CHILDREN_OUTSIDE then
         and inst.components.childspawner.numchildrenoutside >= TUNING.LIGHTFLIER_FLOWER.TARGET_NUM_CHILDREN_OUTSIDE then
 
         StartCallForLightflierTask(inst)

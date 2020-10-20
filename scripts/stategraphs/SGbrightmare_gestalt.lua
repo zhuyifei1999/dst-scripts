@@ -6,8 +6,11 @@ local actionhandlers =
 
 local events =
 {
-    CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(false, true),
+
+    EventHandler("death", function(inst)
+		inst.sg:GoToState("death", "death")
+	end),
 
     EventHandler("doattack", function(inst)
         if not (inst.sg:HasStateTag("busy")) then
@@ -90,7 +93,7 @@ local states=
     },
 
     State{
-        name = "disappear",
+        name = "death",
         tags = {"busy", "noattack"},
 		
         onenter = function(inst)
@@ -161,7 +164,7 @@ local states=
 
     State{
         name = "attack",
-        tags = { "busy", "attack", "jumping" },
+        tags = { "busy", "noattack", "attack", "jumping" },
 		
         onenter = function(inst)
             inst.AnimState:PlayAnimation("attack")
@@ -217,7 +220,7 @@ local states=
 
     State{
         name = "guardattack",
-        tags = { "busy", "attack", "jumping" },
+        tags = { "busy", "noattack", "attack", "jumping" },
 		
         onenter = function(inst)
             inst.AnimState:PlayAnimation("attack")
@@ -272,7 +275,7 @@ local states=
 
     State{
         name = "mutate_pre",
-        tags = {"busy", "jumping"},
+        tags = {"busy", "noattack", "jumping"},
 		
         onenter = function(inst, speed)
 			inst.Physics:SetMotorVelOverride(speed or 2, 0, 0)

@@ -25,6 +25,11 @@ local FORMATION_MAX_DELTA_SQ = 16*16
 
 local VALIDATE_FORMATION_FREQ = 1
 
+-- Used for testing distance to home when leaving formation.
+-- If not within the threshold the lightflier is detached
+-- from the childspawner.
+local RETURN_HOME_MAX_DIST_SQ = 28*28
+
 local FIND_TARGET_RADIUS = 9
 local FIND_TARGET_FREQUENCY = 1
 local FIND_TARGET_MUSTTAGS = { "player" }
@@ -127,6 +132,25 @@ local function FollowerOnUpdate(inst, targetpos)
         inst:FacePoint(targetpos.x, 0, targetpos.z)
         if inst.updatecomponents[inst.components.locomotor] == nil then
             inst.components.locomotor:WalkForward(true)
+        end
+    end
+end
+
+local function MakeCurrentPositionHome(inst)
+    inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
+end
+
+local function OnLeaveFormation(inst)
+    if inst.components.homeseeker ~= nil then
+        local homepos = inst.components.homeseeker:GetHomePos()
+
+        if homepos ~= nil then
+            local x, y, z = inst.Transform:GetWorldPosition()
+            if VecUtil_LengthSq(homepos.x - x, homepos.z - z) > RETURN_HOME_MAX_DIST_SQ then
+                inst:PushEvent("detachchild")
+                MakeCurrentPositionHome(inst)
+                inst:RemoveComponent("homeseeker")
+            end
         end
     end
 end
@@ -251,6 +275,9 @@ local function OnDropped(inst)
     StartLookingForTarget(inst)
     inst.components.formationfollower:StartUpdating()
     inst:EnableBuzz(true)
+    
+    -- Needs to wait one frame in order for dropped stacks of lightfliers to run this at the correct time
+    inst:DoTaskInTime(0, MakeCurrentPositionHome)
 end
 
 local function AlertFormation(inst)
@@ -459,6 +486,7 @@ local function fn()
     inst.components.formationfollower.searchradius = FORMATION_SEARCH_RADIUS
     inst.components.formationfollower.formation_type = "lightflier"
     inst.components.formationfollower.onupdatefn = FollowerOnUpdate
+    inst.components.formationfollower.onleaveformationfn = OnLeaveFormation
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("teleported", OnTeleported)

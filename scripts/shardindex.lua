@@ -465,15 +465,6 @@ function ShardIndex:SetServerShardData(customoptions, serverdata, onsavedcb)
                     self.world.options = MergeMapsDeep(self.world.options, overridedata)
                 end
             end
-            -- Clear out one time overrides
-            if TheNet:GetCurrentSnapshot() > 2 then
-                local onetime = {"season_start", "autumn", "winter", "spring", "summer", "frograin", "wildfires", "prefabswaps_start", "rock_ice"}
-                for i,override in ipairs(onetime) do
-                    if self.world.options.overrides[override] ~= nil then
-                        self.world.options.overrides[override] = nil
-                    end
-                end
-            end
 
             self:Save(onsavedcb)
         end)
