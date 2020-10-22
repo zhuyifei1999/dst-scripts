@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "I suspect the impressive snout must compensate for its poor eyesight.",
+        MOLEBATHILL = "The burrow appears to be mainly comprised of phlegm and mud.",
 
         BATNOSE = "Evolution truly is remarkable.",
         BATNOSE_COOKED = "It's moderately better.",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "The design is reminiscent of the Gateways we've traversed through before.",
             GENERIC = "A shame, it appears to no longer be operational.",
         },
+
+        WALL_STONE_2 = "That is quite secure.",
+        WALL_RUINS_2 = "A very secure wall.",
 
         REFINED_DUST = "Better here than on my bookshelves.",
         DUSTMERINGUE = "Perhaps there's a creature around here that could metabolize this.",

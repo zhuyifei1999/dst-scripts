@@ -3534,6 +3534,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Haha gross! I just saw it eat something through its nose!",
+        MOLEBATHILL = "Ew, is it sleeping in its own snot?",
 
         BATNOSE = "Ewww.",
         BATNOSE_COOKED = "Is that supposed to make it better?",
@@ -3604,6 +3605,9 @@ return{
             POWEROFF = "Another portal? You don't think...?",
             GENERIC = "Shoulda known it wouldn't be that easy.",
         },
+
+        WALL_STONE_2 = "Eh. I guess that's okay.",
+        WALL_RUINS_2 = "And they'll huff and they'll puff!",
 
         REFINED_DUST = "Great. What am I supposed to do with this stuff?",
         DUSTMERINGUE = "Yeah, I don't think I'm THAT hungry.",

@@ -3528,6 +3528,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Just keep your nose out of my business, eh?",
+        MOLEBATHILL = "Looks cozy enough.",
 
         BATNOSE = "Who nose where the rest of it went.",
         BATNOSE_COOKED = "Nothing worse than a cold nose.",
@@ -3599,6 +3600,9 @@ return{
             GENERIC = "Guess that door's closed for good.",
         },
 
+        WALL_STONE_2 = "Safe and secure, eh?",
+        WALL_RUINS_2 = "Crumbling, but still secure, eh?",
+        
         REFINED_DUST = "Looks kind of like maple sugar. Don't think I wanna eat it, though.",
         DUSTMERINGUE = "Tastes terrible. And that's speakin' as someone who's eaten raw lumber.",
 

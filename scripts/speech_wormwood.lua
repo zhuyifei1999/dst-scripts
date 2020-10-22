@@ -3531,6 +3531,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Big sniffer",
+        MOLEBATHILL = "Sleeping",
 
         BATNOSE = "Chewy",
         BATNOSE_COOKED = "Crispy",
@@ -3601,6 +3602,9 @@ return{
             POWEROFF = "Door?",
             GENERIC = "Stuck closed",
         },
+
+        WALL_STONE_2 = "Solid",
+        WALL_RUINS_2 = "Strong",
 
         REFINED_DUST = "Dusty",
         DUSTMERINGUE = "Sweep Sweep belly stuff",

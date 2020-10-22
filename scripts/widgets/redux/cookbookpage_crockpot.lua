@@ -614,6 +614,7 @@ function CookbookPageCrockPot:ApplyFilters()
 			or (filterby == FOODTYPE.VEGGIE		and foodtype == FOODTYPE.VEGGIE)
 			or (filterby == "OTHER"				and foodtype ~= FOODTYPE.MEAT and foodtype ~= FOODTYPE.VEGGIE)
 			or (filterby == "SIDEEFFECTS"		and (item.recipe_def.oneat_desc ~= nil or item.recipe_def.temperature ~= nil))
+			or (filterby == "INCOMPLETE"		and (item.recipes == nil or not item.has_eaten))
 			then
 
 			table.insert(self.filtered_recipes, item)
@@ -648,6 +649,7 @@ function CookbookPageCrockPot:BuildSpinners()
 		{text = STRINGS.UI.COOKBOOK.FILTER_VEGGIE,		data = FOODTYPE.VEGGIE},
 		{text = STRINGS.UI.COOKBOOK.FILTER_OTHER,		data = "OTHER"},
 		{text = STRINGS.UI.COOKBOOK.FILTER_SIDE_EFFECTS,data = "SIDEEFFECTS"},
+		{text = STRINGS.UI.COOKBOOK.FILTER_INCOMPLETE  ,data = "INCOMPLETE"},
 	}
 	local function on_filter_fn( data )
 		TheCookbook:SetFilter("filter", data)

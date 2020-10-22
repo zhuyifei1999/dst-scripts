@@ -3528,6 +3528,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Sniffer Rat has weak and puny wings! This makes Wolfgang laugh!",
+        MOLEBATHILL = "Is mushy, stinky home.",
 
         BATNOSE = "Is naked? Wolfgang will look away.",
         BATNOSE_COOKED = "Nose has been toasted.",
@@ -3598,6 +3599,9 @@ return{
             POWEROFF = "Is another door?",
             GENERIC = "Maybe is just pretty floor.",
         },
+
+        WALL_STONE_2 = "Wall is strong like me!",
+        WALL_RUINS_2 = "Old wall is strong!",
 
         REFINED_DUST = "Is strong dust! Very strong!",
         DUSTMERINGUE = "Wolfgang will leave that for someone else to eat.",

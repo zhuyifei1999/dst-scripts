@@ -3536,6 +3536,7 @@ return {
         -- GROTTO
 
 		MOLEBAT = "A regular Noseferatu.",
+        MOLEBATHILL = "I wonder what might be stuck in that rat's nest.",
 
         BATNOSE = "Who knows whose nose this is?",
         BATNOSE_COOKED = "It came out smelling like a nose.",
@@ -3606,6 +3607,9 @@ return {
             POWEROFF = "Dead as a dead doornail.",
             GENERIC = "Strange, the power is on but this isn't.",
         },
+
+        WALL_STONE_2 = "That's a nice wall.",
+        WALL_RUINS_2 = "An ancient piece of wall.",
 
         REFINED_DUST = "Ah-CHOO!",
         DUSTMERINGUE = "Who or what would eat this?",

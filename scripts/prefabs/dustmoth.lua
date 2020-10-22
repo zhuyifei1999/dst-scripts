@@ -104,12 +104,14 @@ local function OnEntityWake(inst)
     StartCheckStuckTask(inst)
 end
 
-local function OnSave(inst)
-    return { charged = inst._charged }
+local function OnSave(inst, data)
+    if inst._charged then
+        data.charged = true
+    end
 end
 
 local function OnLoad(inst, data)
-    if data ~= nil and data._charged ~= nil then
+    if data ~= nil and data.charged ~= nil then
         inst._charged = data.charged
     end
 end

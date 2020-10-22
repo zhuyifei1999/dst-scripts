@@ -32,7 +32,10 @@ local FormationFollower = Class(function(self, inst)
 
 	self.active = false
 	--self.onupdatefn = nil
+
+	-- These are called from formationleader
 	--self.onleaveformationfn = nil
+	--self.onenterformationfn = nil
 end,
 nil,
 {

@@ -273,17 +273,18 @@ CommonStates.AddSleepStates(states,
     starttimeline = 
     {
 		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/sleep") end ),
+        TimeEvent(0*FRAMES, function (inst) inst.SoundEmitter:SetParameter("alive", "active", .9) end), 
     },
     
 	sleeptimeline = 
     {
-
+        
 	},
 
     waketimeline = 
     {
-        TimeEvent(5*FRAMES, function(inst)
-            inst.SoundEmitter:PlaySound("grotto/creatures/centipede/sleep")
+        TimeEvent(0*FRAMES, function (inst) inst.SoundEmitter:SetParameter("alive", "active", 0) end),
+        TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/sleep")
         end),
     },
 })
@@ -308,11 +309,12 @@ CommonStates.AddCombatStates(states,
 
         TimeEvent(0*FRAMES, function (inst) inst.SoundEmitter:PlaySound("grotto/creatures/centipede/death") 
         end), 
-        
+
         TimeEvent(17*FRAMES, function(inst) 
-            inst.SoundEmitter:KillSound("active")
+            inst.SoundEmitter:KillSound("alive")
         end),
     },
+
 },nil,{attackexit= attackexit})
 
 CommonStates.AddFrozenStates(states)

@@ -72,6 +72,19 @@ local function StartTracking(player, params, ent)
     end, player)
 end
 
+local function OnExchangeShadowCreature(inst, data)
+    local origent = data.ent
+    local exchangedent = data.exchangedent
+
+    local player = origent.spawnedforplayer
+    if not player then return end
+
+    local params = _players[player]
+    if not table.contains(params.ents, origent) then return end
+
+    StartTracking(player, params, exchangedent)
+end
+
 local function SpawnLandShadowCreature(player)
     return SpawnPrefab(
         player.components.sanity:GetPercent() < .1 and
@@ -313,6 +326,7 @@ end
 --Register events
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft)
+inst:ListenForEvent("ms_exchangeshadowcreature", OnExchangeShadowCreature)
 
 --------------------------------------------------------------------------
 --[[ Debug ]]

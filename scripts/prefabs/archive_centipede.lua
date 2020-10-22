@@ -261,6 +261,7 @@ local function fn_common(tag)
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("soulless")
+    inst:AddTag("mech")
     inst:AddTag("archive_centipede")
 
     inst.entity:SetPristine()
@@ -323,7 +324,7 @@ local function fn_common(tag)
     end)    
 
     inst:DoTaskInTime(0,function()            
-        inst.SoundEmitter:PlaySound("grotto/creatures/centipede/active_LP","active")
+        inst.SoundEmitter:PlaySound("grotto/creatures/centipede/active_LP","alive")
     end)
 
     inst.light_params = light_params
@@ -370,16 +371,19 @@ local function OnHealthDelta(inst, oldpercent, newpercent)
             newpercent >= LOW_THRESHOLD_UP and newpercent < MED_THRESHOLD_UP then
                 inst.AnimState:PlayAnimation("low_to_med")
                 inst.AnimState:PushAnimation("idle_med")
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/low_to_med")
         elseif oldpercent <  LOW_THRESHOLD_UP and 
             newpercent >= MED_THRESHOLD_UP then
-                inst.AnimState:PlayAnimation("low_to_med")
+                inst.AnimState:PlayAnimation("low_to_med")                
                 inst.AnimState:PushAnimation("med_to_full")
                 inst.AnimState:PushAnimation("idle_full")
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/low_to_med")
                 inst:AddTag("gestalt_possessable")
         elseif oldpercent <  MED_THRESHOLD_UP and  oldpercent >= LOW_THRESHOLD_UP and
             newpercent >= MED_THRESHOLD_UP then
                 inst.AnimState:PlayAnimation("med_to_full")
                 inst.AnimState:PushAnimation("idle_full")
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/med_to_full")
                 inst:AddTag("gestalt_possessable")
         end        
     end
@@ -438,19 +442,21 @@ local function playidle2(inst)
     if inst.AnimState:IsCurrentAnimation("idle_full") or
        inst.AnimState:IsCurrentAnimation("idle_med") or
        inst.AnimState:IsCurrentAnimation("idle_low") then    
+
+        inst.SoundEmitter:PlaySound("grotto/creatures/centipede/electricity/idle2")
         if inst.components.health:GetPercent() < LOW_THRESHOLD_DOWN then
             inst.AnimState:PlayAnimation("idle2_low")
-            inst.AnimState:PushAnimation("idle_low")
+            inst.AnimState:PushAnimation("idle_low")        
         elseif inst.components.health:GetPercent() < MED_THRESHOLD_DOWN then
             inst.AnimState:PlayAnimation("idle2_med")
-            inst.AnimState:PushAnimation("idle_med")
+            inst.AnimState:PushAnimation("idle_med")            
         else
             inst.AnimState:PlayAnimation("idle2_full")
-            inst.AnimState:PushAnimation("idle_full")
+            inst.AnimState:PushAnimation("idle_full")            
         end
     end
 
-    inst.idle2task = inst:DoTaskInTime((math.random()*10)+3,function() playidle2(inst) end)
+    inst.idle2task = inst:DoTaskInTime((math.random()*10)+8,function() playidle2(inst) end)
 end
 
 local function huskfn()
@@ -469,6 +475,7 @@ local function huskfn()
     inst.AnimState:PlayAnimation("idle_full")
 
     inst:AddTag("security_powerpoint")
+    inst:AddTag("mech")
 
     inst.entity:SetPristine()
 

@@ -127,9 +127,6 @@ function SkinsPuppet:DoIdleEmote()
 			if self.prefabname == "wendy" then
 				self.override_build = "player_idles_wendy"
 				self.animstate:AddOverrideBuild(self.override_build)
-			elseif self.prefabname == "wathgrithr" then
-				self.override_build = "player_idles_wathgrithr"
-				self.animstate:AddOverrideBuild(self.override_build)
 			elseif self.prefabname == "warly" then
 				self.override_build = "player_idles_warly"
 				self.animstate:AddOverrideBuild(self.override_build)

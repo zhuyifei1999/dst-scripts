@@ -74,6 +74,7 @@ end
 local function ShouldGoHome(inst)
     FindHome(inst)
 
+    -- homeseeker is guaranteed to be valid after FindHome()
     local home = inst.components.homeseeker.home
     if home ~= nil and home:IsValid() and (home._lightflier_returning_home == inst
         or (inst:GetTimeAlive() > 60 and home.components.childspawner.numchildrenoutside > TUNING.LIGHTFLIER_FLOWER.TARGET_NUM_CHILDREN_OUTSIDE)) then
@@ -115,7 +116,8 @@ function LightFlierBrain:OnStart()
                         end, "ShouldGoHome", DoAction(self.inst, GoHomeAction, "GoHome")),
                         
                         Wander(self.inst, function()
-                            local homepos = self.inst.components.homeseeker:GetHomePos() or self.inst.components.knownlocations:GetLocation("home")
+                            local homepos = self.inst.components.homeseeker ~= nil and self.inst.components.homeseeker:GetHomePos() or nil
+                            homepos = homepos or self.inst.components.knownlocations:GetLocation("home")
                             return homepos
                         end, MAX_WANDER_DIST),
                     }),

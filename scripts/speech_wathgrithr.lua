@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Have at thee, rodent!",
+        MOLEBATHILL = "Your mucousy defenses will not deter me, morsel!",
 
         BATNOSE = "A trophy from the hunt.",
         BATNOSE_COOKED = "If it's meat, I shall eat it!",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "Another gate betwixt worlds?",
             GENERIC = "If it is a gate, it hath been firmly shut.",
         },
+
+        WALL_STONE_2 = "My enemies will dash themselves on these rocks.",
+        WALL_RUINS_2 = "Nigh impenetrable.",
 
         REFINED_DUST = "The dust hath been forged into a solid block.",
         DUSTMERINGUE = "This food is not fit for a warrior, it's fit for the floor!",

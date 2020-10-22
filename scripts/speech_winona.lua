@@ -3533,6 +3533,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "I think it nose a thing or two. Ha!",
+        MOLEBATHILL = "Might be some good materials stuck in that gunk.",
 
         BATNOSE = "Got yer nose!",
         BATNOSE_COOKED = "I ain't picky.",
@@ -3603,6 +3604,9 @@ return{
             POWEROFF = "Is that... a portal? Maybe we can get it up and running!",
             GENERIC = "Come on! Why won't you work?",
         },
+
+        WALL_STONE_2 = "The building part is over.",
+        WALL_RUINS_2 = "If I break it, I'll get to build it again.",
 
         REFINED_DUST = "It's gotta be useful for something.",
         DUSTMERINGUE = "Ugh. Maybe one of those little moth guys will clean this mess up.",

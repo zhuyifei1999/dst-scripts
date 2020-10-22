@@ -285,6 +285,12 @@ local function OnIgnite(inst)
     TurnOff(inst)
     if inst.components.pickable:CanBePicked() then
         inst.components.pickable:Pick()
+    else
+        if inst.AnimState:IsCurrentAnimation("picking") then
+            inst.AnimState:PushAnimation("picked")
+        else
+            inst.AnimState:PlayAnimation("picked")
+        end
     end
 end
 

@@ -179,6 +179,38 @@ function _IsPackInsideOther( pack_a, pack_b )
 	return true
 end
 
+function GetFeaturedPacks()
+
+	local iap_defs = TheItems:GetIAPDefs()
+	local highest_group = 0
+
+	local iaps = {}
+
+	for _,iap in ipairs(iap_defs) do
+		local item_type = iap.item_type
+		
+		if IsPackFeatured(item_type) then
+			if highest_group == 0 then
+				highest_group = GetReleaseGroup(item_type)
+				table.insert(iaps, item_type)
+			else
+				
+				local group = GetReleaseGroup(item_type)
+				if group >= highest_group then
+					if group > highest_group then
+						iaps = {}
+					end
+
+					highest_group = group
+					table.insert(iaps, item_type)
+				end
+			end
+		end
+	end
+
+	return iaps
+end
+
 function _GetSubPacks(item_key)
     local sub_packs = {}
 	local output_items = GetPurchasePackOutputItems(item_key)

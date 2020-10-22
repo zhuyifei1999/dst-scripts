@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Don't trust its big piggy nose.",
+        MOLEBATHILL = "Maybe there treasures inside!",
 
         BATNOSE = "Glurph... don't like it.",
         BATNOSE_COOKED = "Nuh-uh.",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "It look like pond, but not.",
             GENERIC = "Still not pond.",
         },
+
+        WALL_STONE_2 = "Look good, florp!",
+        WALL_RUINS_2 = "How look so old already, flort?",
 
         REFINED_DUST = "Made dusty block, florpt.",
         DUSTMERINGUE = "Throw it on floor, then don't have to eat it.",

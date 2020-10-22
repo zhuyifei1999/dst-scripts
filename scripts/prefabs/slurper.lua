@@ -96,7 +96,7 @@ local function CanHatTarget(inst, target)
 end
 
 local RETARGET_MUST_TAGS = { "_combat" }
-local RETARGET_CANT_TAGS = { "INLIMBO" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "slurper" }
 local RETARGET_ONEOF_TAGS = { "character", "monster" }
 local function Retarget(inst)
     --Find us a tasty target with a hunger component and the ability to equip hats.
@@ -271,6 +271,7 @@ local function fn()
     inst:AddTag("cavedweller")
 	inst:AddTag("monster")
 	inst:AddTag("hostile")
+	inst:AddTag("slurper")
     inst:AddTag("mufflehat")
 
     inst.entity:SetPristine()

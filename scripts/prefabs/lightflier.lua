@@ -140,7 +140,7 @@ local function MakeCurrentPositionHome(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
-local function OnLeaveFormation(inst)
+local function OnLeaveFormation(inst, leader)
     if inst.components.homeseeker ~= nil then
         local homepos = inst.components.homeseeker:GetHomePos()
 
@@ -153,6 +153,12 @@ local function OnLeaveFormation(inst)
             end
         end
     end
+
+    inst:RemoveTag("NOBLOCK")
+end
+
+local function OnEnterFormation(inst, leader)
+    inst:AddTag("NOBLOCK")
 end
 
 local function EnableBuzz(inst, enable)
@@ -482,11 +488,14 @@ local function fn()
     MakeSmallBurnableCharacter(inst, "lightbulb")
     MakeSmallFreezableCharacter(inst, "lightbulb")
 
+    inst:AddComponent("follower")
+
     inst:AddComponent("formationfollower")
     inst.components.formationfollower.searchradius = FORMATION_SEARCH_RADIUS
     inst.components.formationfollower.formation_type = "lightflier"
     inst.components.formationfollower.onupdatefn = FollowerOnUpdate
     inst.components.formationfollower.onleaveformationfn = OnLeaveFormation
+    inst.components.formationfollower.onenterformationfn = OnEnterFormation
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("teleported", OnTeleported)

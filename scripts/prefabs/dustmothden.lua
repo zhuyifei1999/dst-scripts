@@ -22,8 +22,14 @@ SetSharedLootTable('dustmothden',
 
 local function StartRepairing(inst, repairer)
     -- Usually called from SGdustmoth
-    
-    inst.components.timer:StartTimer("repair", TUNING.DUSTMOTHDEN.REPAIR_TIME)
+
+    if inst.components.timer:TimerExists("repair") then
+        if inst.components.timer:IsPaused("repair") then
+            inst.components.timer:ResumeTimer("repair")
+        end
+    else
+        inst.components.timer:StartTimer("repair", TUNING.DUSTMOTHDEN.REPAIR_TIME)
+    end
     
     inst.components.entitytracker:TrackEntity("repairer", repairer)
 
@@ -80,13 +86,8 @@ local function OnLoadPostPass(inst, ents, data)
     else
         MakeWhole(inst, false)
     end
-
-    local repairer = inst.components.entitytracker:GetEntity("repairer")
-    if repairer ~= nil and repairer:IsValid() and inst.components.timer:TimerExists("repair") and not inst.components.workable.workable then
-        StartRepairing(inst, repairer)
-        repairer.sg:GoToState("repair_den_loop", inst)
-    else
-        -- State is broken
+    
+    if inst.components.timer:TimerExists("repair") then
         PauseRepairing(inst)
     end
 end

@@ -75,8 +75,8 @@ function MakeBanner(self)
 		anim:GetAnimState():PlayAnimation("anim", true)
 		anim:SetScale(0.67)
 		anim:SetPosition(183, 40)]]
-		anim:GetAnimState():SetBuild("dst_menu_wurt")
-		anim:GetAnimState():SetBank("dst_menu_wurt")
+		anim:GetAnimState():SetBuild("dst_menu_grotto")
+		anim:GetAnimState():SetBank("dst_menu_grotto")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then

@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Don't look! It's not wearing any clothes!",
+        MOLEBATHILL = "Yuck, did that all come from its nose?",
 
         BATNOSE = "A rosy pink nosey",
         BATNOSE_COOKED = "It looks very chewy.",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "Maybe it used to go somewhere?",
             GENERIC = "Aw, this one didn't turn back on.",
         },
+
+        WALL_STONE_2 = "Bow to the base-building masters!",
+        WALL_RUINS_2 = "Looks sturdy.",
 
         REFINED_DUST = "It's a good thing neither of us are allergic.",
         DUSTMERINGUE = "It doesn't taste as good as it looks.",

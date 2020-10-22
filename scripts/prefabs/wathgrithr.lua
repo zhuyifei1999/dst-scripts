@@ -106,7 +106,6 @@ local function common_postinit(inst)
     inst:RemoveTag("usesvegetarianequipment")
 
     inst.AnimState:AddOverrideBuild("wathgrithr_sing")
-    inst.AnimState:AddOverrideBuild("player_idles_wathgrithr")
     inst.customidleanim = "idle_wathgrithr"
 
     if TheNet:GetServerGameMode() == "quagmire" then

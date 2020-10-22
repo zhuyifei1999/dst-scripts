@@ -441,6 +441,11 @@ local function securitypulsefn()
     inst:DoPeriodicTask(.25,function()
         local x,y,z = inst.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities(x,y,z, 1,CENTIPEDE_MUST_TAGS)
+        for i=#ents,1,-1 do
+            if ents[i].components.health:GetPercent() < ents[i].MED_THRESHOLD_DOWN then
+                table.remove(ents,i)
+            end
+        end
         if #ents > 0 then
             ents[1]:PushEvent("possess",{possesser = inst})
         end

@@ -3533,6 +3533,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Hyuyu, what a nosy creature!",
+        MOLEBATHILL = "This snotty collection needs further inspection.",
 
         BATNOSE = "Oh my, looks like somebody blew it.",
         BATNOSE_COOKED = "This smells! I think it's gone off!",
@@ -3603,6 +3604,9 @@ return{
             POWEROFF = "I won't tell the mortals it's here, it'll just get their poor hopes up.",
             GENERIC = "My my, someone didn't want this door opened.",
         },
+
+        WALL_STONE_2 = "To keep you out, or keep me in?",
+        WALL_RUINS_2 = "To keep you out, or keep me in?",
 
         REFINED_DUST = "Just a bit of faith, trust, and assorted dust.",
         DUSTMERINGUE = "Hyuyuyu! The pranks I could pull with these!",

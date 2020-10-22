@@ -29,6 +29,7 @@ local events =
 }
 
 local SNEEZE_CHANCE = .2
+local REPAIR_LOOP_CLEAN_SOUND_CHANCE = .33
 
 local function reset_dustable_fn(inst)
     if not inst:HasTag("dustable") then
@@ -251,29 +252,35 @@ local states =
         tags = { "busy" },
 
         onenter = function(inst, data)
-            inst.Physics:Stop()
+            if inst._charged then
+                inst.Physics:Stop()
             
-            inst.AnimState:Hide("dust")
-            inst.AnimState:PlayAnimation("clean_loop")
+                inst.AnimState:Hide("clean_dust")
+                inst.AnimState:PlayAnimation("clean_loop")
 
-            local target = data.target
+                local target = data.target
 
-            if target ~= nil and target:IsValid() and target._start_repairing_fn ~= nil then
-                target:_start_repairing_fn(inst)
+                if target ~= nil and target:IsValid() and target._start_repairing_fn ~= nil then
+                    target:_start_repairing_fn(inst)
+                end
+
+                inst.sg.statemem.startpos = data.startpos
+
+                inst.sg.statemem.target = target
+                inst.sg.statemem.dust_anim_loops = math.random(5, 9)
+
+                inst.sg.statemem.sound_task1 = inst:DoTaskInTime(9*FRAMES, PlaySoundDustoff)
+                if math.random() < REPAIR_LOOP_CLEAN_SOUND_CHANCE then
+                    inst.sg.statemem.sound_task2 = inst:DoTaskInTime(16*FRAMES, PlaySoundClean)
+                end
+                inst.sg.statemem.sound_task3 = inst:DoTaskInTime(22*FRAMES, PlaySoundDustoff)
+
+                inst.sg.statemem.ondenremovedfn = function() inst.sg:GoToState("repair_den_pst") end
+
+                inst:ListenForEvent("onremove", inst.sg.statemem.ondenremovedfn, target)
+            else
+                inst.sg:GoToState("idle")
             end
-
-            inst.sg.statemem.startpos = data.startpos
-
-            inst.sg.statemem.target = target
-            inst.sg.statemem.dust_anim_loops = math.random(5, 9)
-
-            inst.sg.statemem.sound_task1 = inst:DoTaskInTime(9*FRAMES, PlaySoundDustoff)
-            inst.sg.statemem.sound_task2 = inst:DoTaskInTime(16*FRAMES, PlaySoundClean)
-            inst.sg.statemem.sound_task3 = inst:DoTaskInTime(22*FRAMES, PlaySoundDustoff)
-
-            inst.sg.statemem.ondenremovedfn = function() inst.sg:GoToState("repair_den_pst") end
-
-            inst:ListenForEvent("onremove", inst.sg.statemem.ondenremovedfn, target)
         end,
 
         onupdate = function(inst)
@@ -286,7 +293,7 @@ local states =
         end,
 
         onexit = function(inst)
-            inst.AnimState:Show("dust")
+            inst.AnimState:Show("clean_dust")
             
             if inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() and inst.sg.statemem.target._pause_repairing_fn ~= nil then
                 inst:RemoveEventCallback("onremove", inst.sg.statemem.ondenremovedfn, inst.sg.statemem.target)
@@ -303,19 +310,6 @@ local states =
                 inst.sg.statemem.sound_task3:Cancel()
             end
         end,
-        
-        timeline =
-        {
-            TimeEvent(9*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound(inst._sounds.dustoff)
-            end),
-            TimeEvent(16*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound(inst._sounds.clean)
-            end),
-            TimeEvent(22*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound(inst._sounds.dustoff)
-            end),
-        },
 
         events = 
         {
@@ -325,7 +319,9 @@ local states =
                     inst.sg.statemem.dust_anim_loops = inst.sg.statemem.dust_anim_loops - 1
                     
                     inst.sg.statemem.sound_task1 = inst:DoTaskInTime(9*FRAMES, PlaySoundDustoff)
-                    inst.sg.statemem.sound_task2 = inst:DoTaskInTime(16*FRAMES, PlaySoundClean)
+                    if math.random() < REPAIR_LOOP_CLEAN_SOUND_CHANCE then
+                        inst.sg.statemem.sound_task2 = inst:DoTaskInTime(16*FRAMES, PlaySoundClean)
+                    end
                     inst.sg.statemem.sound_task3 = inst:DoTaskInTime(22*FRAMES, PlaySoundDustoff)
                 else
                     inst.AnimState:PlayAnimation("clean_pst")

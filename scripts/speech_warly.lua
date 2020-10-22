@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "I've never seen a creature that inhales its food so... literally.",
+        MOLEBATHILL = "Mon dieu, to think it can sleep in that mess!",
 
         BATNOSE = "This will be a challenging ingredient.",
         BATNOSE_COOKED = "It could use some marinade, perhaps.",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "Could this be a way home?",
             GENERIC = "Ah, I shouldn't have gotten my hopes up.",
         },
+
+        WALL_STONE_2 = "Good stone work.",
+        WALL_RUINS_2 = "Look at the carvings...",
 
         REFINED_DUST = "A most unusual ingredient.",
         DUSTMERINGUE = "I'm afraid even I can't make dust palatable.",

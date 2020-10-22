@@ -300,11 +300,27 @@ end
 --------------------------------------------------------------------------
 researchlab_init_fn = function(inst, build_name)
     basic_init_fn(inst, build_name, "researchlab" ) 
+    
+    inst.AnimState:OverrideSymbol("bolt_b", "researchlab", "bolt_b")
+    inst.AnimState:OverrideSymbol("bolt_c", "researchlab", "bolt_c")
+
+    inst.AnimState:OverrideSymbol("rayFX", "researchlab", "rayFX")
+    inst.AnimState:OverrideSymbol("glowFX", "researchlab", "glowFX")
+    inst.AnimState:OverrideSymbol("sparkleFX", "researchlab", "sparkleFX")
+
     inst.AnimState:OverrideSymbol("shadow_plume", "researchlab", "shadow_plume")
     inst.AnimState:OverrideSymbol("shadow_wisp", "researchlab", "shadow_wisp")
 end
 researchlab_clear_fn = function(inst)
     basic_clear_fn(inst, "researchlab" )
+    
+    inst.AnimState:ClearOverrideSymbol("bolt_b")
+    inst.AnimState:ClearOverrideSymbol("bolt_c")
+
+    inst.AnimState:ClearOverrideSymbol("rayFX")
+    inst.AnimState:ClearOverrideSymbol("glowFX")
+    inst.AnimState:ClearOverrideSymbol("sparkleFX")
+
     inst.AnimState:ClearOverrideSymbol("shadow_plume")
     inst.AnimState:ClearOverrideSymbol("shadow_wisp")
 end

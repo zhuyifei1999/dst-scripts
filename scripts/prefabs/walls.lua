@@ -288,6 +288,13 @@ function MakeWallType(data)
         inst.components.repairable.repairmaterial = data.name == "ruins" and MATERIALS.THULECITE or data.name
         inst.components.repairable.onrepaired = onrepaired
 
+        if data.name == "ruins_2" then
+            inst.components.repairable.repairmaterial = MATERIALS.THULECITE
+        end
+        if data.name == "stone_2" then
+            inst.components.repairable.repairmaterial = "stone"
+        end        
+
         inst:AddComponent("combat")
         inst.components.combat:SetKeepTargetFunction(keeptargetfn)
         inst.components.combat.onhitfn = onhit

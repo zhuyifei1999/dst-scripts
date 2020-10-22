@@ -92,7 +92,7 @@ return{
             BUSY = "I guess they're busy.",
             ABIGAILHEART = "If it makes you feel better, ghosts are way more interesting anyway.",
             GHOSTHEART = "They seem pretty committed to their lifestyle. Or lack of one?",
-            NOTGEM = "That's probably a not going to work.",
+            NOTGEM = "That's probably not going to work.",
             WRONGGEM = "That doesn't look right.",
             NOTSTAFF = "That's not going to fit there.",
             MUSHROOMFARM_NEEDSSHROOM = "I need to forage for mushrooms! C'mon Woby!",
@@ -3145,7 +3145,7 @@ return{
 		KELP_DRIED = "Crunchy and salty. It's not bad.",
 
 		GESTALT = "Are you a ghost... from the moon?",
-        GESTALT_GUARD = "TODO",
+        GESTALT_GUARD = "Wow, they reeaally don't like those shadow creatures.",
 
 		COOKIECUTTER = "They're smiling! Wait, I think I was looking at them upside-down.",
 		COOKIECUTTERSHELL = "These guys have tough armor!",
@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "They must have terrible allergies.",
+        MOLEBATHILL = "There might be something interesting in there.",
 
         BATNOSE = "Looks like someone got a bit nosy. Get it? Because it's a nose?",
         BATNOSE_COOKED = "It sure doesn't smell so good now...",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "I wonder what this did?",
             GENERIC = "Weird, this is the only thing that didn't turn back on.",
         },
+
+        WALL_STONE_2 = "Looks pretty sturdy.",
+        WALL_RUINS_2 = "I like the spooky atmosphere.",
 
         REFINED_DUST = "It took a long time to collect all that dust.",
         DUSTMERINGUE = "Uh... no thanks. Maybe the moths will like it?",

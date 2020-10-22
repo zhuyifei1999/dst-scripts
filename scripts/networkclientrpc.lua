@@ -1043,7 +1043,6 @@ function HandleRPCQueue()
     i = 1
     while i <= #RPC_Client_Queue do
         local fn, data, tick = unpack(RPC_Client_Queue[i])
-        print(RPC_Client_Timeline, fn, data, tick)
         if RPC_Client_Timeline == nil or RPC_Client_Timeline == tick then
             table.remove(RPC_Client_Queue, i)
             if TheNet:CallClientRPC(fn, data) then
@@ -1057,7 +1056,7 @@ function HandleRPCQueue()
     i = 1
     while i <= #RPC_Shard_Queue do
         local fn, sender, data, tick = unpack(RPC_Shard_Queue[i])
-        if not Shard_IsWorldAvailable(tostring(sender)) or tostring(sender) == TheShard:GetShardId() then
+        if not Shard_IsWorldAvailable(tostring(sender)) and tostring(sender) ~= TheShard:GetShardId() then
             table.remove(RPC_Shard_Queue, i)
         elseif RPC_Shard_Timeline[sender] == nil or RPC_Shard_Timeline[sender] == tick then
             table.remove(RPC_Shard_Queue, i)

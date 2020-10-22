@@ -2458,6 +2458,7 @@ STRINGS =
         MOON_ALTAR_COSMIC = "Celestial Tribute",
         MOON_ALTAR_CROWN = "Inactive Celestial Tribute",
 
+        MOON_ALTAR_ASTRAL_WIP = "Partially Assembled Sanctum",
         MOON_ALTAR_ASTRAL = "Celestial Sanctum",
         MOON_ALTAR_ICON = "Celestial Sanctum Icon",
         MOON_ALTAR_WARD = "Celestial Sanctum Ward",
@@ -5569,6 +5570,7 @@ STRINGS.UI =
 		FILTER_VEGGIE = "Veggies",
 		FILTER_OTHER = "Other", 
 		FILTER_SIDE_EFFECTS = "Side Effects",
+		FILTER_INCOMPLETE = "Incomplete",
 	},
 
 	FOOD_TYPES = 

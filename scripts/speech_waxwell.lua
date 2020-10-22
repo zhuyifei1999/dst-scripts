@@ -3527,6 +3527,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Indecent.",
+        MOLEBATHILL = "Do I even want anything I find in there, knowing its spent time in a rodent's nostrils?",
 
         BATNOSE = "It smells.",
         BATNOSE_COOKED = "The things I must do to survive...",
@@ -3597,6 +3598,9 @@ return{
             POWEROFF = "It couldn't be...",
             GENERIC = "Still inactive. Curious.",
         },
+
+        WALL_STONE_2 = "This will keep the riff-raff out.",
+        WALL_RUINS_2 = "An ancient wall.",
 
         REFINED_DUST = "It may have some alchemical uses.",
         DUSTMERINGUE = "I'll pass.",

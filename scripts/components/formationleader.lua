@@ -154,6 +154,10 @@ end
 
 function FormationLeader:NewFormationMember(member)
 	if self:ValidMember(member) then
+		if member.components.formationfollower.onenterformationfn ~= nil then
+			member.components.formationfollower.onenterformationfn(member, self.inst)
+		end
+
 		member.deathfn = function() self:OnLostFormationMember(member) end
 
 		self.formation[member] = member
@@ -163,13 +167,15 @@ function FormationLeader:NewFormationMember(member)
 		self.inst:ListenForEvent("onenterlimbo", member.deathfn, member)
 		member.components.formationfollower.formationleader = self
 		member.components.formationfollower.in_formation = true
+
+		member.components.follower:SetLeader(self.target)
 	end
 end
 
 function FormationLeader:OnLostFormationMember(member)
 	if member and member:IsValid() then
 		if member.components.formationfollower.onleaveformationfn ~= nil then
-			member.components.formationfollower.onleaveformationfn(member)
+			member.components.formationfollower.onleaveformationfn(member, self.inst)
 		end
 
 		self.inst:RemoveEventCallback("death", member.deathfn, member)
@@ -181,6 +187,8 @@ function FormationLeader:OnLostFormationMember(member)
 		
 		member.components.formationfollower.in_formation = false
 		member.components.combat.target = nil
+
+		member.components.follower:StopFollowing()
 	end
 end
 

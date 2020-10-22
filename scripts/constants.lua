@@ -622,7 +622,7 @@ SPECIAL_EVENTS =
     YOTP = "year_of_the_pig",
     YOTC = "year_of_the_carrat",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
 
 FESTIVAL_EVENTS =
 {
@@ -1659,6 +1659,31 @@ TROPHYSCALE_TYPES =
 	FISH = "fish",
 }
 
+NAUGHTY_VALUE =
+{
+    ["pigman"] = 3,
+    ["babybeefalo"] = 6,
+    ["teenbird"] = 2,
+    ["smallbird"] = 6,
+    ["beefalo"] = 4,
+    ["deer"] = 4,
+    ["crow"] = 1,
+    ["robin"] = 2,
+    ["robin_winter"] = 2,
+    ["canary"] = 2,
+    ["butterfly"] = 1,
+    ["moonbutterfly"] = 1,
+    ["rabbit"] = 1,
+    ["mole"] = 1,
+    ["tallbird"] = 2,
+    ["bunnyman"] = 3,
+    ["penguin"] = 2,
+    ["glommer"] = 50, -- You've been bad!
+    ["catcoon"] = 5,
+    ["lightflier"] = 1,
+    ["dustmoth"] = 4,
+}
+
 DONT_STARVE_TOGETHER_APPID = 322330
 DONT_STARVE_APPID = 219740
 REIGN_OF_GIANTS_APPID = 282470
@@ -1847,8 +1872,8 @@ LEVELTYPE = {
 
 SERVER_LEVEL_LOCATIONS =
 {
-    "forest",
     "cave",
+    "forest",
 }
 
 EVENTSERVER_LEVEL_LOCATIONS =

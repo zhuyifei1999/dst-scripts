@@ -167,6 +167,9 @@ local function set_stage(inst, stage)
             inst.AnimState:PlayAnimation("idle2")
         end
 
+        -- No longer needs to access shared _WIP line from MOON_ALTAR strings
+        inst.nameoverride = nil
+
         addprototyper(inst)
 
         inst.components.lootdropper:SetLoot({ "moon_altar_ward", "moon_altar_icon"})
@@ -308,8 +311,8 @@ local function display_name_fn(inst)
 end
 
 local function display_name_astral_fn(inst)
-    return (inst:HasTag("prototyper") and STRINGS.NAMES.MOON_ALTAR.MOON_ALTAR) or
-            STRINGS.NAMES.MOON_ALTAR.MOON_ALTAR_WIP
+    return (inst:HasTag("prototyper") and STRINGS.NAMES.MOON_ALTAR_ASTRAL) or
+            STRINGS.NAMES.MOON_ALTAR_ASTRAL_WIP
 end
 
 local function moon_altar_getstatus(inst)
@@ -317,7 +320,7 @@ local function moon_altar_getstatus(inst)
 end
 
 local function moon_altar_astral_getstatus(inst)
-    return inst._stage < 1 and "MOON_ALTAR_WIP" or nil
+    return inst._stage < 2 and "MOON_ALTAR_WIP" or nil
 end
 
 local function OnFissureSocket(inst)
@@ -441,6 +444,9 @@ end
 
 local function moon_altar_astral_master_postinit(inst)
     inst._stage = 1
+
+    -- Using this to grab WIP state string of moon_altar
+    inst.nameoverride = "moon_altar"
 
     inst.components.lootdropper:SetLoot({ "moon_altar_icon" })
 

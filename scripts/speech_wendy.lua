@@ -3531,6 +3531,7 @@ return{
         -- GROTTO
 
 		MOLEBAT = "Nature has played a cruel joke on this creature.",
+        MOLEBATHILL = "Abigail keeps daring me to touch it...",
 
         BATNOSE = "It won't be bothering us anymore.",
         BATNOSE_COOKED = "It doesn't look more appetizing now.",
@@ -3601,6 +3602,9 @@ return{
             POWEROFF = "It's long dead.",
             GENERIC = "Not everything can come back so easily.",
         },
+
+        WALL_STONE_2 = "What will protect me from what's inside?",
+        WALL_RUINS_2 = "These didn't protect the ancients, now did they!", 
 
         REFINED_DUST = "Dust to... somewhat denser dust.",
         DUSTMERINGUE = "A treat devoid of sweetness...",
