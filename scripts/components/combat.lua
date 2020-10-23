@@ -639,10 +639,6 @@ function Combat:LocomotorCanAttack(reached_dest, target)
         and (   self.laststartattacktime == nil or
                 GetTime() - self.laststartattacktime >= self.min_attack_period
             )
-        and (   self.inst.sg == nil or
-                not self.inst.sg:HasStateTag("busy") or
-                self.inst.sg:HasStateTag("hit")
-            )
         and not (   -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
                     -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
                     self.inst:HasTag("birchnutroot") and

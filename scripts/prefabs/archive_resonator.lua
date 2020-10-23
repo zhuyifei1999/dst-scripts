@@ -105,7 +105,7 @@ end
 local function ChangeToItem(inst)
     local item = SpawnPrefab("archive_resonator_item")
     item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    item.SoundEmitter:PlaySound("dontstarve/common/together/portable/cookpot/collapse")
+    -- 
     item.components.finiteuses:SetPercent(inst.components.finiteuses:GetPercent())
     return item
 end
@@ -193,7 +193,7 @@ local function ondeploy(inst, pt, deployer)
         at.Physics:SetCollides(true)
         at.AnimState:PlayAnimation("place")
         at.AnimState:PushAnimation("locating", true)
-        at.SoundEmitter:PlaySound("dontstarve/common/place_structure_stone")
+        at.SoundEmitter:PlaySound("grotto/common/archive_resonator/place")
         at:DoTaskInTime(83/30,function()    
                 copyparams( at._endlight, light_params.on)
                 beginfade(at)
@@ -211,6 +211,7 @@ local function OnDismantle(inst)--, doer)
     copyparams( inst._endlight, light_params.off)
     beginfade(inst)
     inst:ListenForEvent("animover", function()
+    -- inst.SoundEmitter:PlaySound("grotto/common/archive_resonator/pack") Jason (doesn't work)
         if inst.AnimState:IsCurrentAnimation("pack") then
             ChangeToItem(inst)
             inst:Remove()
