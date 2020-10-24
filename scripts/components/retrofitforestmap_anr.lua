@@ -600,46 +600,45 @@ local function AstralMarkers()
     end
 
 	local potential_count = #potential
-	if potential_count == 0 then
-		print("Retrofitting: for Return of Them: Forgotten Knowledge: No Astral Markers Added")
-	else
-		local moon_altar_astral_marker_1 = false
-		
-		while moon_altar_astral_marker_1 == false do
-			local rand = potential_count == 1 and 1 or math.random(1,potential_count) 
-			local testnode = potential[rand]
 
-			if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
-				local marker = SpawnPrefab("moon_altar_astral_marker_1")
-				marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
-				moon_altar_astral_marker_1 = true
-				print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
-			end
+	local moon_altar_astral_marker_1 = false
+	while moon_altar_astral_marker_1 == false do
+		if potential_count == 0 then
+			print("Retrofitting: for Return of Them: Forgotten Knowledge: No Astral Markers Added")
+			return
+		end
+		local rand = potential_count == 1 and 1 or math.random(1,potential_count) 
+		local testnode = potential[rand]
 
-			table.remove(potential,rand)
-			potential_count = potential_count - 1
+		if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
+			local marker = SpawnPrefab("moon_altar_astral_marker_1")
+			marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
+			moon_altar_astral_marker_1 = true
+			print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
 		end
 
+		table.remove(potential,rand)
+		potential_count = potential_count - 1
+	end
+
+	local moon_altar_astral_marker_2 = false
+	while moon_altar_astral_marker_2 == false do
 		if potential_count == 0 then
 			print("Retrofitting: for Return of Them: Forgotten Knowledge: Second Astral Marker Not Added")
-		else
-			local moon_altar_astral_marker_2 = false
-
-			while moon_altar_astral_marker_2 == false do
-				local rand = potential_count == 1 and 1 or math.random(1,potential_count) 
-				local testnode = potential[rand]
-
-				if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
-					local marker = SpawnPrefab("moon_altar_astral_marker_2")
-					marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
-					moon_altar_astral_marker_2 = true
-					print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
-				end
-
-				table.remove(potential,rand)
-				potential_count = potential_count - 1
-			end
+			return
 		end
+		local rand = potential_count == 1 and 1 or math.random(1,potential_count) 
+		local testnode = potential[rand]
+
+		if TheWorld.Map:IsVisualGroundAtPoint(testnode.cent[1], 0, testnode.cent[2]) then
+			local marker = SpawnPrefab("moon_altar_astral_marker_2")
+			marker.Transform:SetPosition(testnode.cent[1], 0, testnode.cent[2])
+			moon_altar_astral_marker_2 = true
+			print("Retrofitting: for Return of Them: Forgotten Knowledge - Astral Marker added ", testnode.cent[1], 0, testnode.cent[2])
+		end
+
+		table.remove(potential,rand)
+		potential_count = potential_count - 1
 	end
 end
 
