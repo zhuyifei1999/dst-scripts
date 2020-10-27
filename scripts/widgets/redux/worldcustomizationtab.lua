@@ -645,10 +645,11 @@ function WorldCustomizationTab:SetDataForSlot(slot)
             end
 
             -- Ruh roh! Bad data. Fill in with a default.
-            local location = self.current_level_locations[1]
+            local location = self.current_level_locations[self.tab_location_index]
             local level_type = GetLevelType( self.servercreationscreen:GetGameMode() )
             local presetdata = Levels.GetDefaultLevelData(level_type, location)
-            self.slotoptions[slot] = { presetdata }
+            self.slotoptions[slot] = self.slotoptions[slot] or {}
+            self.slotoptions[slot][self.tab_location_index] = presetdata
         else
             self.slotoptions[slot] = self.slotoptions[slot] or {}
             self.slotoptions[slot][self.tab_location_index] = options
@@ -657,7 +658,7 @@ function WorldCustomizationTab:SetDataForSlot(slot)
         local level = self.slotoptions[slot][self.tab_location_index]
         if level then
             self:LoadPreset(level.id)
-            for option, value in pairs(level.overrides) do
+            for option, value in pairs(level.overrides or {}) do
                 self:SetTweak(self.tab_location_index, option, value) -- SetTweak deduplicates.
             end
         end
