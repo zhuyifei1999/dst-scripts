@@ -131,7 +131,7 @@ local function OnLoad(self, callback, str)
     if success and string.len(str) > 0 and type(savedata) == "table" then
         
         local was_upgraded = false
-        if self.version ~= SHARDSAVEINDEX_VERSION then
+        if savedata.version ~= SHARDSAVEINDEX_VERSION then
             was_upgraded = UpgradeShardSaveIndexData(savedata)
         end
 

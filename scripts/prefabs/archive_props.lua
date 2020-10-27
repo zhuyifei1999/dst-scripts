@@ -376,6 +376,7 @@ local function securitywaypointfn()
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
 
+    inst:AddTag("NOBLOCK")
     inst:AddTag("archive_waypoint")
 
     inst.entity:SetPristine()

@@ -131,7 +131,7 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onworked)
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.MOONSPORE.PERISH_TIME)
+    inst.components.perishable:SetPerishTime(TUNING.MOONSPORE_PERISH_TIME)
     inst.components.perishable:StartPerishing()
     inst.components.perishable:SetOnPerishFn(depleted)
 

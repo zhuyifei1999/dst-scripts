@@ -35,6 +35,11 @@ function WallUpdate(dt)
         SpawnSecondInstance()
     end
 
+    if IsSimPaused() then
+        TickRPCQueue()
+    end
+
+
     --TheSim:ProfilerPush("LuaWallUpdate")
 
     TheSim:ProfilerPush("RPC queue")
@@ -161,6 +166,11 @@ function Update(dt)
     --TheSim:ProfilerPush("LuaUpdate")
     CheckDemoTimeout()
 
+    if IsSimPaused() then
+        --TheSim:ProfilerPop()
+        return
+    end
+
     local tick = TheSim:GetTick()
     if tick <= last_tick_seen then
         print("Saw this before")
@@ -169,11 +179,6 @@ function Update(dt)
     end
 
     TickRPCQueue()
-
-    if IsSimPaused() then
-        --TheSim:ProfilerPop()
-        return
-    end
 
     TheSim:ProfilerPush("scheduler")
     for i = last_tick_seen + 1, tick do
