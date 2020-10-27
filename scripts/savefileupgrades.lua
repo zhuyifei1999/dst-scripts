@@ -199,6 +199,52 @@ t = {
 			level.version = 4
 			return level
         end,
+        UpgradeShardIndexFromV1toV2 = function(shardindex)
+            if shardindex.version ~= nil and shardindex.version ~= 1 then
+                return
+            end
+
+            local level = shardindex:GetGenOptions()
+            if level == nil or not IsTableEmpty(level.overrides) then
+                return
+            end
+
+            local function onreadworldfile(success, str)
+                if success and str ~= nil and #str > 0 then
+                    local success, savedata = RunInSandbox(str)
+                    if success and savedata ~= nil and GetTableSize(savedata) > 0 then
+                        if savedata.map and savedata.map.topology and savedata.map.topology.overrides then
+                            print(string.format("Upgrading saved level data for '%s' from v1 to v2 (Return of Them: Forgotten Knowledge).", tostring(level.id)))
+                            level.overrides = deepcopy(savedata.map.topology.overrides.original)
+                        end
+                    end
+                end
+            end
+
+
+            local slot = shardindex:GetSlot()
+            local shard = shardindex:GetShard()
+            local session_id = shardindex:GetSession()
+
+            if slot and shard and not shardindex:GetServerData().use_legacy_session_path then
+                local file = TheNet:GetWorldSessionFileInClusterSlot(slot, shard, session_id)
+                if file ~= nil then
+                    TheSim:GetPersistentStringInClusterSlot(slot, shard, file, function(success, str)
+                        onreadworldfile(success, str)
+                    end)
+                end
+            else
+                local file = TheNet:GetWorldSessionFile(session_id)
+                if file ~= nil then
+                    TheSim:GetPersistentString(file, function(success, str)
+                        onreadworldfile(success, str)
+                    end)
+                end
+            end
+
+            shardindex.version = 2
+            shardindex:MarkDirty()
+        end,
         UpgradeWorldgenoverrideFromV1toV2 = function(wgo)
             local validfields = {
                 overrides = true,
