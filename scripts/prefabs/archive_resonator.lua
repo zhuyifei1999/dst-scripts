@@ -199,13 +199,13 @@ local function ondeploy(inst, pt, deployer)
         at.Physics:Teleport(pt.x, 0, pt.z)
         at.Physics:SetCollides(true)
         at.AnimState:PlayAnimation("place")
-        at.AnimState:PushAnimation("locating", true)
+    
         at.SoundEmitter:PlaySound("grotto/common/archive_resonator/place")
-
         at.SoundEmitter:PlaySound("grotto/common/archive_resonator/idle_LP", "idle_loop")
 
         at:ListenForEvent("animover", function()
             if at.AnimState:IsCurrentAnimation("place") then
+                at.AnimState:PlayAnimation("locating", true)
                 at.SoundEmitter:PlaySound("grotto/common/archive_resonator/locating_LP", "locating")
             end
         end)
