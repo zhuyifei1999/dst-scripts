@@ -215,7 +215,8 @@ return{
 		},
 		COMPARE_WEIGHABLE =
 		{
-			TOO_SMALL = "This little guy's too small!",
+            FISH_TOO_SMALL = "This little guy's too small!",
+            OVERSIZEDVEGGIES_TOO_SMALL = "We'll have to get a bigger veggie, or maybe a fruit!",
 		},
         BEGIN_QUEST =
         {
@@ -230,6 +231,22 @@ return{
         SING_FAIL =
         {
 --fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
+        PLANTREGISTRY_RESEARCH_FAIL =
+        {
+            GENERIC = "We already know everything about this plant!"
+        },
+        FILL_OCEAN =
+        {
+            UNSUITABLE_FOR_PLANTS = "Ms. Wickerbottom says that salt water is bad for plants.",
+        },
+        POUR_WATER =
+        {
+            OUT_OF_WATER = "Oops, out of water!",
+        },
+        POUR_WATER_GROUNDTILE =
+        {
+            OUT_OF_WATER = "Aw, we're all out of water.",
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
@@ -322,6 +339,7 @@ return{
 	},
     ANNOUNCE_RUINS_RESET = "Everything's back!",
     ANNOUNCE_SNARED = "Hey! Meanie!",
+    ANNOUNCE_SNARED_IVY = "Hey! Let go!",
     ANNOUNCE_REPELLED = "We can't hit it.",
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
@@ -586,6 +604,29 @@ return{
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Haha, it tickles our brain!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "We already learned that one.",
     ANNOUNCE_ARCHIVE_NO_POWER = "Aww, nothing happened!",
+
+    ANNOUNCE_PLANT_RESEARCHED =
+    {
+        "We're learning so much about this plant!",
+    },
+
+    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+
+	ANNOUNCE_FIRENETTLE_TOXIN = 
+	{
+		"Owie, that was not a nice plant!",
+		"Eek, we feel all burny inside!",
+	},
+	ANNOUNCE_FIRENETTLE_TOXIN_DONE = "Whew, we'll be more careful not to touch strange weeds.",
+
+	ANNOUNCE_TALK_TO_PLANTS = 
+	{
+        "Hi plants! How do you do today?",
+        "Aww, are you lonely? We'll keep you company!",
+		"One day you're going to grow up big and strong... and then we'll eat you!",
+        "You are a very good plant.",
+        "We're always here when you need somebody to talk to!",
+	},
 
 	BATTLECRY =
 	{
@@ -3616,11 +3657,113 @@ return{
         TURFCRAFTINGSTATION = "We always liked playing with dirt! Just remember to wash up before dinner.",
 
         MOON_ALTAR_LINK = "What could be in there?",
+
+        -- FARMING
+        COMPOSTINGBIN =
+        {
+            -- WIP, might not end up with these states so don't fill in for now
+            GENERIC = "Let's make food for the plants!",
+            WET = "It's all wet and goopy.",
+            DRY = "It's like sand!",
+            BALANCED = "We think it's ready!",
+            BURNT = "Uh oh...",
+        },
+        COMPOST = "Yucky muck!",
+        SOIL_AMENDER = 
+		{ 
+			GENERIC = "Wendy dared us to drink it...",
+			STALE = "Is it going bad? Is that good?",
+			SPOILED = "It's gotten really rotten looking... yay!",
+		},
+
+		SOIL_AMENDER_FERMENTED = "It smells done to us!",
+
+        WATERINGCAN = 
+        {
+            GENERIC = "We're going to go water the garden now!",
+            EMPTY = "Hey, there's no water in it!",
+        },
+        PREMIUMWATERINGCAN =
+        {
+            GENERIC = "Our watering can back home didn't look anything like that.",
+            EMPTY = "We'll have to fill it up somewhere.",
+        },
+
+		FARM_PLOW = "Yay! We're making a garden!",
+		FARM_PLOW_ITEM = "We'll find a good spot for the garden.",
+		FARM_HOE = "We need that to plant the seeds.",
+		NUTRIENTSGOGGLESHAT = "It shows us how good the dirt is, and lots of other stuff too!",
+		PLANTREGISTRYHAT = "It's teaching us so much about plants!",
+
+        FARM_SOIL_DEBRIS = "We should clean that up.",
+
+		FIRENETTLES = "A bad, stinging weed.",
+		FORGETMELOTS = "This one has pretty flowers.",
+		SWEETTEA = "Mother used to make tea for me... at least I think she did...",
+		TILLWEED = "It likes to make a mess of our garden.",
+		TILLWEEDSALVE = "It helps get rid of booboos.",
+
+		TROPHYSCALE_OVERSIZEDVEGGIES =
+		{
+			GENERIC = "We used to see these at the fair!",
+			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nThat's pretty good!",
+            HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nWow, we've never seen one so big!",
+            HAS_ITEM_LIGHT = "We guess it's a bit on the small side...",
+			BURNING = "Uh oh...",
+			BURNT = "All burnt up.",
+        },
+        
+        CARROT_OVERSIZED = "TODO",
+        CORN_OVERSIZED = "TODO",
+        PUMPKIN_OVERSIZED = "TODO",
+        EGGPLANT_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "TODO",
+        POMEGRANATE_OVERSIZED = "TODO",
+        DRAGONFRUIT_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "TODO",
+        TOMATO_OVERSIZED = "TODO",
+        POTATO_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "TODO",
+        ONION_OVERSIZED = "TODO",
+        GARLIC_OVERSIZED = "TODO",
+        PEPPER_OVERSIZED = "TODO",
+        
+        VEGGIE_OVERSIZED_ROTTEN = "Blech, no thank you.",
+
+		FARM_PLANT =
+		{
+			GENERIC = "It's a plant!",
+			SEED = "Grow seed, grow!",
+			GROWING = "It'll be big in no time!",
+			FULL = "Yay, it's ready to be picked!",
+			ROTTEN = "Uh oh... we probably should've picked it earlier.",
+			FULL_OVERSIZED = "Wow, look how big it got!",
+			ROTTEN_OVERSIZED = "Blech, no thank you.",
+			FULL_WEED = "Hey, you're not a fruit or a veggie!",
+
+			BURNING = "That probably isn't good for it.",
+        },
+        
+        FRUITFLY = "TODO",
+        LORDFRUITFLY = "TODO",
+        FRIENDLYFRUITFLY = "TODO",
+        FRUITFLYFRUIT = "TODO",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",
     DESCRIBE_TOODARK = "All our eyes stopped working!",
     DESCRIBE_SMOLDERING = "Uh-oh. I smell burning!",
+
+    DESCRIBE_PLANTHAPPY = "A happy plant.",
+    DESCRIBE_PLANTVERYSTRESSED = "This plant looks miserable!",
+    DESCRIBE_PLANTSTRESSED = "Aw, this plant doesn't look very happy...",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "We should do some weeding... even if we don't like to.",
+    DESCRIBE_PLANTSTRESSORFAMILY = "Maybe it would be happier if it wasn't alone?",
+    DESCRIBE_PLANTSTRESSORSEASON = "We don't think it likes this weather very much.",
+    DESCRIBE_PLANTSTRESSORMOISTURE = "We should give it some water.",
+    DESCRIBE_PLANTSTRESSORNUTRIENTS = "Maybe it needs some better dirt?",
+    DESCRIBE_PLANTSTRESSORHAPPINESS = "Aww, do you need someone to talk to?",
+
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "What if it hatches in our belly?",

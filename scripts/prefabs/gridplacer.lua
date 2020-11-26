@@ -29,6 +29,7 @@ local function fn()
     inst.AnimState:SetBuild("gridplacer")
     inst.AnimState:PlayAnimation("anim", true)
     inst.AnimState:SetLightOverride(1)
+	inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 
     inst:AddComponent("placer")
@@ -39,4 +40,27 @@ local function fn()
     return inst
 end
 
-return Prefab("gridplacer", fn, assets)
+local function tile_outline_fn()
+    local inst = CreateEntity()
+
+    inst:AddTag("CLASSIFIED")
+    inst:AddTag("NOCLICK")
+    inst:AddTag("placer")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("gridplacer")
+    inst.AnimState:SetBuild("gridplacer")
+    inst.AnimState:PlayAnimation("anim")
+    inst.AnimState:SetLightOverride(1)
+	inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+
+    return inst
+end
+
+return Prefab("gridplacer", fn, assets),
+	Prefab("tile_outline", tile_outline_fn, assets)

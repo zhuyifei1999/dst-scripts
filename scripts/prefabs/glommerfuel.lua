@@ -1,7 +1,18 @@
 local assets =
 {
     Asset("ANIM", "anim/glommer_fuel.zip"),
+	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
+
+local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
+
+local function GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -18,6 +29,8 @@ local function fn()
 
     MakeInventoryFloatable(inst)
 
+    inst.GetFertilizerKey = GetFertilizerKey
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -28,6 +41,9 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
 
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
+
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
@@ -37,6 +53,7 @@ local function fn()
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.GLOMMERFUEL_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.GLOMMERFUEL_SOILCYCLES
+    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.glommerfuel.nutrients)
 
     MakeHauntableLaunch(inst)
 

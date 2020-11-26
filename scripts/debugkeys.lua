@@ -1,7 +1,7 @@
 require "consolecommands"
 
 local function DebugKeyPlayer()
-    return (TheWorld.ismastersim and ConsoleCommandPlayer()) or nil
+    return (TheWorld and TheWorld.ismastersim and ConsoleCommandPlayer()) or nil
 end
 
 ----this gets called by the frontend code if a rawkey event has not been consumed by the current screen
@@ -665,6 +665,8 @@ AddGameDebugKey(KEY_G, function()
                 MouseCharacter.components.harvestable:Grow()
             elseif MouseCharacter.components.pickable then
                 MouseCharacter.components.pickable:Regen()
+            elseif MouseCharacter.components.perishable then
+                MouseCharacter.components.perishable:Perish()
             elseif MouseCharacter.components.setter then
                 MouseCharacter.components.setter:SetSetTime(0.01)
                 MouseCharacter.components.setter:StartSetting()
@@ -1068,6 +1070,79 @@ AddGameDebugKey(KEY_I, function()
 end)
 
 local GROUND_LOOKUP = table.invert(GROUND)
+
+AddGameDebugKey(KEY_5, function()
+    local pos = TheInput:GetWorldPosition()
+    local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+    local n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local _n1, _n2, _n3 = 1, 1, 1
+        if TheInput:IsKeyDown(KEY_ALT) then
+            _n1 = 4
+            _n2 = 4
+            _n3 = 4
+        end
+        if TheInput:IsKeyDown(KEY_CTRL) then
+            _n1 = _n1 * -1
+            _n2 = _n2 * -1
+            _n3 = _n3 * -1
+        end
+        TheWorld.components.farming_manager:AddTileNutrients(x, y, _n1, _n2, _n3)
+        n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    end
+    print(string.format("Tile nutrients: %u, %u, %u", n1, n2, n3))
+end)
+AddGameDebugKey(KEY_6, function()
+    local pos = TheInput:GetWorldPosition()
+    local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+    local n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local _n1 = 1
+        if TheInput:IsKeyDown(KEY_ALT) then
+            _n1 = 4
+        end
+        if TheInput:IsKeyDown(KEY_CTRL) then
+            _n1 = _n1 * -1
+        end
+        TheWorld.components.farming_manager:AddTileNutrients(x, y, _n1, 0, 0)
+        n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    end
+    print(string.format("Tile nutrients: %u, %u, %u", n1, n2, n3))
+end)
+AddGameDebugKey(KEY_7, function()
+    local pos = TheInput:GetWorldPosition()
+    local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+    local n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local _n2 = 1
+        if TheInput:IsKeyDown(KEY_ALT) then
+            _n2 = 4
+        end
+        if TheInput:IsKeyDown(KEY_CTRL) then
+            _n2 = _n2 * -1
+        end
+        TheWorld.components.farming_manager:AddTileNutrients(x, y, 0, _n2, 0)
+        n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    end
+    print(string.format("Tile nutrients: %u, %u, %u", n1, n2, n3))
+end)
+AddGameDebugKey(KEY_8, function()
+    local pos = TheInput:GetWorldPosition()
+    local x, y = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+    local n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        local _n3 = 1
+        if TheInput:IsKeyDown(KEY_ALT) then
+            _n3 = 4
+        end
+        if TheInput:IsKeyDown(KEY_CTRL) then
+            _n3 = _n3 * -1
+        end
+        TheWorld.components.farming_manager:AddTileNutrients(x, y, 0, 0, _n3)
+        n1, n2, n3 = TheWorld.components.farming_manager:GetTileNutrients(x,y)
+    end
+    print(string.format("Tile nutrients: %u, %u, %u", n1, n2, n3))
+end)
 
 AddGameDebugKey(KEY_0, function()
     if TheInput:IsKeyDown(KEY_SHIFT) then

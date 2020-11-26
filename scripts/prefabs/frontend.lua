@@ -1,3 +1,5 @@
+local prefabs = {}
+
 local assets =
 {
 	Asset("ATLAS", "images/quagmire_food_common_inv_images.xml"),
@@ -293,6 +295,13 @@ if not QUAGMIRE_USE_KLUMP then
     end
 end
 
+-- adding these here so they can be used in the FrontEnd
+for k, v in pairs(require("prefabs/farm_plant_defs").PLANT_DEFS) do
+	table.insert(prefabs, v.prefab)
+end
+for k, v in pairs(require("prefabs/weed_defs").WEED_DEFS) do
+	table.insert(prefabs, v.prefab)
+end
 
 
 --we don't actually instantiate this prefab. It's used for controlling asset loading
@@ -300,4 +309,4 @@ local function fn()
     return CreateEntity()
 end
 
-return Prefab("frontend", fn, assets)
+return Prefab("frontend", fn, assets, prefabs)

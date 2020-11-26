@@ -316,7 +316,7 @@ function Burnable:Ignite(immediate, source, doer)
 
         self.inst:PushEvent("onignite", {doer = doer})
         if self.onignite ~= nil then
-            self.onignite(self.inst)
+            self.onignite(self.inst, source, doer)
         end
 
         if self.inst.components.fueled ~= nil and not self.ignorefuel then

@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/bird_eggs.zip"),
+	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
 local prefabs =
@@ -13,6 +14,8 @@ local cooked_prefabs =
 {
     "spoiled_food",
 }
+
+local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function commonfn(anim, cookable)
     local inst = CreateEntity()
@@ -110,6 +113,14 @@ local function cookedfn()
     return inst
 end
 
+local function GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
+
 local function rottenfn()
     local inst = CreateEntity()
 
@@ -128,16 +139,22 @@ local function rottenfn()
 
     MakeInventoryFloatable(inst, "small", 0.25)
 
+    inst.GetFertilizerKey = GetFertilizerKey
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
+
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.SPOILEDFOOD_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.SPOILEDFOOD_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.SPOILEDFOOD_WITHEREDCYCLES
+    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.rottenegg.nutrients)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")

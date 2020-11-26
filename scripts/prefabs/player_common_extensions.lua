@@ -649,6 +649,20 @@ local function OnEat(inst, data)
 	end
 end
 
+local function OnLearnPlantStage(inst, data)
+    local plantregistryupdater = data ~= nil and inst.components.plantregistryupdater
+    if plantregistryupdater then
+        plantregistryupdater:LearnPlantStage(data.plant, data.stage)
+    end
+end
+
+local function OnLearnFertilizer(inst, data)
+    local plantregistryupdater = data ~= nil and inst.components.plantregistryupdater
+    if plantregistryupdater then
+        plantregistryupdater:LearnFertilizer(data.fertilizer)
+    end
+end
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -665,5 +679,7 @@ return
     OnSpooked                   = OnSpooked,
 	OnLearnCookbookRecipe		= OnLearnCookbookRecipe,
 	OnLearnCookbookStats		= OnLearnCookbookStats,
-	OnEat						= OnEat,
+    OnEat						= OnEat,
+    OnLearnPlantStage           = OnLearnPlantStage,
+    OnLearnFertilizer           = OnLearnFertilizer,
 }

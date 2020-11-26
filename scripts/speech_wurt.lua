@@ -215,7 +215,8 @@ return{
 		},
 		COMPARE_WEIGHABLE =
 		{
-			TOO_SMALL = "Glurph... this fish too small!",
+            FISH_TOO_SMALL = "Glurph... this fish too small!",
+            OVERSIZEDVEGGIES_TOO_SMALL = "What you mean is too little?!",
 		},
         BEGIN_QUEST =
         {
@@ -230,6 +231,22 @@ return{
         SING_FAIL =
         {
 --fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
+        PLANTREGISTRY_RESEARCH_FAIL =
+        {
+            GENERIC = "Know everything already!"
+        },
+        FILL_OCEAN =
+        {
+            UNSUITABLE_FOR_PLANTS = "Plants not like to drink from the big water.",
+        },
+        POUR_WATER =
+        {
+            OUT_OF_WATER = "Huh? Glurgh... no water...",
+        },
+        POUR_WATER_GROUNDTILE =
+        {
+            OUT_OF_WATER = "No water left!",
         },
 	},
 	ACTIONFAIL_GENERIC = "Grrr... can't do it, florpt.",
@@ -322,6 +339,7 @@ return{
 	},
     ANNOUNCE_RUINS_RESET = "D-don't like these monsters, florp!",
     ANNOUNCE_SNARED = "GLORP!",
+    ANNOUNCE_SNARED_IVY = "Bad plant!",
     ANNOUNCE_REPELLED = "Why not hit?!",
 	ANNOUNCE_ENTER_DARK = "It dark in here...",
 	ANNOUNCE_ENTER_LIGHT = "Light!!",
@@ -586,6 +604,29 @@ return{
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Head filled with pictures!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Seen these pictures already.",
     ANNOUNCE_ARCHIVE_NO_POWER = "Hey! It not do anything!",
+
+    ANNOUNCE_PLANT_RESEARCHED =
+    {
+        "Oooh, learn new plant thing!",
+    },
+
+    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+
+	ANNOUNCE_FIRENETTLE_TOXIN = 
+	{
+		"Ouchie! Is hot! Don't like it, florp!",
+		"Is a bad plant! Makes insides burny!",
+	},
+	ANNOUNCE_FIRENETTLE_TOXIN_DONE = "Glurgh... feel bit better now.",
+
+	ANNOUNCE_TALK_TO_PLANTS = 
+	{
+        "Hello, florp!",
+        "You green, makes you good.",
+		"Wanna hear fairy story?",
+        "You gonna grow up big and tasty!",
+        "Hey, you listening?",
+	},
 
 	BATTLECRY =
 	{
@@ -3560,7 +3601,7 @@ return{
             COOKING_LONG = "This take foreverrr...",
             COOKING_SHORT = "Will be done quick!",
             DONE = "Time for yums!",
-            EMPTY = "Is old and dusty.",
+            EMPTY = "It old and dusty.",
             BURNT = "Oops...",
         },
 
@@ -3587,7 +3628,7 @@ return{
         },
 
         ARCHIVE_SECURITY_DESK = {
-            POWEROFF = "Is fancy.",
+            POWEROFF = "It fancy.",
             GENERIC = "Ooooh, got more fancy!",
         },
 
@@ -3609,18 +3650,120 @@ return{
         REFINED_DUST = "Made dusty block, florpt.",
         DUSTMERINGUE = "Throw it on floor, then don't have to eat it.",
 
-        SHROOMCAKE = "Is best cake ever!",
+        SHROOMCAKE = "It best cake ever!",
 
         NIGHTMAREGROWTH = "Glurp... something bad happening!",
 
         TURFCRAFTINGSTATION = "Yay! Can make so much more swamp, florp!",
 
         MOON_ALTAR_LINK = "What inside? Wanna see!",
+
+        -- FARMING
+        COMPOSTINGBIN =
+        {
+            -- WIP, might not end up with these states so don't fill in for now
+            GENERIC = "Look like nice warm place to nap.",
+            WET = "Gooshy.",
+            DRY = "Glurgh, is too dry.",
+            BALANCED = "It good!",
+            BURNT = "Who did it?!",
+        },
+        COMPOST = "Plant snacks.",
+        SOIL_AMENDER = 
+		{ 
+			GENERIC = "Look kinda tasty, florp.",
+			STALE = "Good and stinky!",
+			SPOILED = "Ready for plants now?",
+		},
+
+		SOIL_AMENDER_FERMENTED = "It ready!",
+
+        WATERINGCAN = 
+        {
+            GENERIC = "Splishy splashy can.",
+            EMPTY = "Hey, no water in here!",
+        },
+        PREMIUMWATERINGCAN =
+        {
+            GENERIC = "Splishy birdy can.",
+            EMPTY = "Hey, where water go?",
+        },
+
+		FARM_PLOW = "It fighting the dirt!",
+		FARM_PLOW_ITEM = "Scaleless use it to make \"guard-in.\"",
+		FARM_HOE = "Make hole for baby plants.",
+		NUTRIENTSGOGGLESHAT = "Extra shiny plant learning hat!",
+		PLANTREGISTRYHAT = "Wear plant on head to learn about plant? Make sense, florp!",
+
+        FARM_SOIL_DEBRIS = "This spot not for you! Out!",
+
+		FIRENETTLES = "Don't like them...",
+		FORGETMELOTS = "Glurgh. Is another flower.",
+		SWEETTEA = "Mmm... is nice.",
+		TILLWEED = "What is difference between weeds and other plants?",
+		TILLWEEDSALVE = "See? Weeds more useful than flowers.",
+
+		TROPHYSCALE_OVERSIZEDVEGGIES =
+		{
+			GENERIC = "Mine gonna win!",
+			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nMaybe take teeny little bite...",
+            HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nWanna eat it... anyone looking, florp?",
+            HAS_ITEM_LIGHT = "TODO",
+			BURNING = "Aaah! Who did it?!",
+			BURNT = "Aww...",
+        },
+        
+        CARROT_OVERSIZED = "TODO",
+        CORN_OVERSIZED = "TODO",
+        PUMPKIN_OVERSIZED = "TODO",
+        EGGPLANT_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "TODO",
+        POMEGRANATE_OVERSIZED = "TODO",
+        DRAGONFRUIT_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "TODO",
+        TOMATO_OVERSIZED = "TODO",
+        POTATO_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "TODO",
+        ONION_OVERSIZED = "TODO",
+        GARLIC_OVERSIZED = "TODO",
+        PEPPER_OVERSIZED = "TODO",
+        
+        VEGGIE_OVERSIZED_ROTTEN = "Blegh! No good!",
+
+		FARM_PLANT =
+		{
+			GENERIC = "It just plant.",
+			SEED = "Grow fast!",
+			GROWING = "This taking too long. Hungry now!",
+			FULL = "Mine!",
+			ROTTEN = "Aww, was gonna eat that...",
+			FULL_OVERSIZED = "Big snack! All mine!",
+			ROTTEN_OVERSIZED = "Blegh! No good!",
+			FULL_WEED = "It a weed!",
+
+			BURNING = "Glurp! Fire!",
+        },
+        
+        FRUITFLY = "TODO",
+        LORDFRUITFLY = "TODO",
+        FRIENDLYFRUITFLY = "TODO",
+        FRUITFLYFRUIT = "TODO",
     },
 
     DESCRIBE_GENERIC = "What that?",
     DESCRIBE_TOODARK = "It really, really dark.",
     DESCRIBE_SMOLDERING = "Smell something...",
+
+    DESCRIBE_PLANTHAPPY = "Seem fine.",
+    DESCRIBE_PLANTVERYSTRESSED = "Look very bad...",
+    DESCRIBE_PLANTSTRESSED = "More than one thing wrong, florp.",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "Too much stuff in the way.",
+    DESCRIBE_PLANTSTRESSORFAMILY = "Wants other plant like it around.",
+    DESCRIBE_PLANTSTRESSORSEASON = "It don't like this seasontime.",
+    DESCRIBE_PLANTSTRESSORMOISTURE = "Need water!",
+    DESCRIBE_PLANTSTRESSORNUTRIENTS = "Need plant food.",
+    DESCRIBE_PLANTSTRESSORHAPPINESS = "Wicker-lady say plant like talking to...",
+
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Blegh, who wanna eat that?",

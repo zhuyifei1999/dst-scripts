@@ -903,6 +903,10 @@ local RPC_HANDLERS =
     CloseCookbookScreen = function(player)
         player:PushEvent("ms_closecookbookscreen")
     end,
+
+    ClosePlantRegistryScreen = function(player)
+        player:PushEvent("ms_closeplantregistryscreen")
+    end,
 }
 
 RPC = {}

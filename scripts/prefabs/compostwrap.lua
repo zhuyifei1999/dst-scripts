@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/healing_cream.zip"),
+	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
 local prefabs =
@@ -8,6 +9,8 @@ local prefabs =
     "flies",
     "poopcloud",
 }
+
+local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function OnBurn(inst)
     DefaultBurnFn(inst)
@@ -56,6 +59,14 @@ local function OnInit(inst)
     inst.flies = inst:SpawnChild("flies")
 end
 
+local function GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -76,6 +87,8 @@ local function fn()
 
     MakeInventoryFloatable(inst)
 
+    inst.GetFertilizerKey = GetFertilizerKey
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -91,12 +104,16 @@ local function fn()
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPickupFn(OnPickup)
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickup)
+    
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     inst:AddComponent("fertilizer")
     inst.components.fertilizer:SetHealingAmount(TUNING.HEALING_MEDLARGE)
     inst.components.fertilizer.fertilizervalue = TUNING.COMPOSTWRAP_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.COMPOSTWRAP_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.COMPOSTWRAP_WITHEREDCYCLES
+    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.compostwrap.nutrients)
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL

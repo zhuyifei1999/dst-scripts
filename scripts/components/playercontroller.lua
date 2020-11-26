@@ -1412,7 +1412,9 @@ local function GetPickupAction(self, target, tool)
         (target:HasTag("notreadyforharvest") and target:HasTag("withered")) then
         return ACTIONS.HARVEST
     elseif target:HasTag("tapped_harvestable") and not target:HasTag("fire") then
-		return ACTIONS.HARVEST
+        return ACTIONS.HARVEST
+    elseif target:HasTag("tendable_farmplant") and not target:HasTag("fire") then
+        return ACTIONS.INTERACT_WITH
     elseif target:HasTag("dried") and not target:HasTag("burnt") then
         return ACTIONS.HARVEST
     elseif target:HasTag("donecooking") and not target:HasTag("burnt") then
@@ -1566,7 +1568,8 @@ function PlayerController:GetActionButtonAction(force_target)
                 "smolder",
                 "saddled",
                 "brushable",
-				"tapped_harvestable",
+                "tapped_harvestable",
+                "tendable_farmplant",
             }
             if tool ~= nil then
                 for k, v in pairs(TOOLACTIONS) do
@@ -2000,10 +2003,12 @@ function PlayerController:OnUpdate(dt)
 
         local terraform = false
         local hidespecialactionreticule = false
+        local terraform_action = nil
         if controller_mode then
             local lmb, rmb = self:GetGroundUseAction()
             if rmb ~= nil then
-                terraform = rmb.action == ACTIONS.TERRAFORM
+                terraform = rmb.action.tile_placer ~= nil
+                terraform_action = rmb.action
                 hidespecialactionreticule = self.reticule ~= nil and self.reticule.inst == self.inst
             else
                 if self.controller_target ~= nil then
@@ -2017,16 +2022,19 @@ function PlayerController:OnUpdate(dt)
                 end
             end
         else
-            local rmb = self:GetRightMouseAction() 
-            terraform = rmb ~= nil and rmb.action == ACTIONS.TERRAFORM
+            local rmb = self:GetRightMouseAction()
+            if rmb ~= nil then
+                terraform = rmb.action.tile_placer ~= nil and (rmb.action.show_tile_placer_fn == nil or rmb.action.show_tile_placer_fn(self:GetRightMouseAction()))
+                terraform_action = rmb.action
+            end
         end
 
         --show right action reticule
         if self.placer == nil and self.deployplacer == nil then
             if terraform then
                 if self.terraformer == nil then
-                    self.terraformer = SpawnPrefab("gridplacer")
-                    if self.terraformer ~= nil then
+                    self.terraformer = SpawnPrefab(terraform_action.tile_placer)
+                    if self.terraformer ~= nil and self.terraformer.components.placer ~= nil then
                         self.terraformer.components.placer:SetBuilder(self.inst)
                         self.terraformer.components.placer:OnUpdate(0)
                     end
@@ -3252,13 +3260,17 @@ function PlayerController:OnLeftClick(down)
     self:DoAction(act)
 end
 
+FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
+
 function PlayerController:OnRemoteLeftClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_PRIMARY] = 0
         self:DecodeControlMods(controlmodscode)
+        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = actioncode == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL.code
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
+        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
         if isreleased then
             self.remote_controls[CONTROL_PRIMARY] = nil
         end

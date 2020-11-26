@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/guano.zip"),
+	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
 local prefabs =
@@ -8,6 +9,8 @@ local prefabs =
     "flies",
     "poopcloud",
 }
+
+local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function OnBurn(inst)
     DefaultBurnFn(inst)
@@ -67,6 +70,7 @@ local function fn()
     inst.components.fertilizer.fertilizervalue = TUNING.GUANO_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.GUANO_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.GUANO_WITHEREDCYCLES
+    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.guano.nutrients)
 
     inst:AddComponent("smotherer")
 

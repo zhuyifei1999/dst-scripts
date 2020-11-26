@@ -346,7 +346,7 @@ function Inventory:SelectActiveItemFromSlot(slot)
     local olditem = self.activeitem
     local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
-    self.inst:PushEvent("itemlose", { slot = slot })
+    self.inst:PushEvent("itemlose", { slot = slot, prev_item = newitem })
 
     self:SetActiveItem(newitem)
 
@@ -928,7 +928,7 @@ function Inventory:RemoveItem(item, wholestack)
     for k, v in pairs(self.itemslots) do
         if v == item then
             self.itemslots[k] = nil
-            self.inst:PushEvent("itemlose", { slot = k })
+            self.inst:PushEvent("itemlose", { slot = k, prev_item = item })
             item.components.inventoryitem:OnRemoved()
             item.prevslot = prevslot
             item.prevcontainer = nil
@@ -938,7 +938,7 @@ function Inventory:RemoveItem(item, wholestack)
 
     if item == self.activeitem then
         self:SetActiveItem()
-        self.inst:PushEvent("itemlose", { activeitem = true })
+        self.inst:PushEvent("itemlose", { activeitem = true, prev_item = item })
         item.components.inventoryitem:OnRemoved()
         item.prevslot = prevslot
         item.prevcontainer = nil

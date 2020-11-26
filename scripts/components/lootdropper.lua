@@ -264,6 +264,7 @@ function LootDropper:SpawnLootPrefab( lootprefab, pt, linked_skinname, skin_id, 
             self:FlingItem(loot, pt)
 
             loot:PushEvent("on_loot_dropped", {dropper = self.inst})
+            self.inst:PushEvent("loot_prefab_spawned", {loot = loot})
 
             return loot
         end

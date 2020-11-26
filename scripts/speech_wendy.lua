@@ -215,7 +215,8 @@ return{
 		},
 		COMPARE_WEIGHABLE =
 		{
-			TOO_SMALL = "It was taken too soon...",
+            FISH_TOO_SMALL = "It was taken too soon...",
+            OVERSIZEDVEGGIES_TOO_SMALL = "Mine is too small...",
 		},
         BEGIN_QUEST =
         {
@@ -230,6 +231,22 @@ return{
         SING_FAIL =
         {
 --fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
+        PLANTREGISTRY_RESEARCH_FAIL =
+        {
+            GENERIC = "I know all its secrets."
+        },
+        FILL_OCEAN =
+        {
+            UNSUITABLE_FOR_PLANTS = "Perhaps if I wanted my garden to die a slow, painful death...",
+        },
+        POUR_WATER =
+        {
+            OUT_OF_WATER = "There's nothing left.",
+        },
+        POUR_WATER_GROUNDTILE =
+        {
+            OUT_OF_WATER = "I have no water left to give.",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
@@ -322,6 +339,7 @@ return{
 	},
     ANNOUNCE_RUINS_RESET = "The dead are risen.",
     ANNOUNCE_SNARED = "I am caged!",
+    ANNOUNCE_SNARED_IVY = "I suppose this is how it ends...",
     ANNOUNCE_REPELLED = "It has spirits to protect it...",
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
@@ -590,6 +608,29 @@ return{
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "It's filling my head with plans...",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "You already showed me this one.",
     ANNOUNCE_ARCHIVE_NO_POWER = "I suppose it's long dead.",
+
+    ANNOUNCE_PLANT_RESEARCHED =
+    {
+        "Well, I've learned a little more. Even if it won't do me any good.",
+    },
+
+    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+
+	ANNOUNCE_FIRENETTLE_TOXIN = 
+	{
+		"Why should my life be anything other than pain...",
+		"What a terrible poison... I feel as though I might burn up.",
+	},
+	ANNOUNCE_FIRENETTLE_TOXIN_DONE = "Alas, I still live.",
+
+	ANNOUNCE_TALK_TO_PLANTS = 
+	{
+        "Abigail was the one who loved the garden. She would have been better at this than me.",
+        "Go on then, grow if you must.",
+		"I'll try to make your fleeting time in this world as comfortable as I can.",
+        "It must be so lonely, being stuck in the ground...",
+        "Shall I stay and talk with you for a while?",
+	},
 
 	BATTLECRY =
 	{
@@ -3620,11 +3661,113 @@ return{
         TURFCRAFTINGSTATION = "We can change the very earth beneath our feet, but not the past.",
 
         MOON_ALTAR_LINK = "Is something hiding in there?",
+
+        -- FARMING
+        COMPOSTINGBIN =
+        {
+            -- WIP, might not end up with these states so don't fill in for now
+            GENERIC = "Food for worms.",
+            WET = "It's far too watery, the poor plants might drown.",
+            DRY = "Dry and brittle.",
+            BALANCED = "I suppose this will do well enough.",
+            BURNT = "Ashes to ashes.",
+        },
+        COMPOST = "Rot and decay.",
+        SOIL_AMENDER = 
+		{ 
+			GENERIC = "We nourish the plants' soil with the decomposed husks of their ocean cousins.",
+			STALE = "It's decomposing nicely.",
+			SPOILED = "It has the stench of death... and yet it brings life.",
+		},
+
+		SOIL_AMENDER_FERMENTED = "It's finished now.",
+
+        WATERINGCAN = 
+        {
+            GENERIC = "I could water the ground well enough with my tears.",
+            EMPTY = "Dry as a bone...",
+        },
+        PREMIUMWATERINGCAN =
+        {
+            GENERIC = "What an odd looking watering can.",
+            EMPTY = "Dry as a bone...",
+        },
+
+		FARM_PLOW = "It's fighting against the ground.",
+		FARM_PLOW_ITEM = "I suppose I must find a place for the garden.",
+		FARM_HOE = "I must prepare the seeds for their burial.",
+		NUTRIENTSGOGGLESHAT = "I used to like reading about plants... I suppose this is similar in a way.",
+		PLANTREGISTRYHAT = "I don't like to play in the dirt...",
+
+        FARM_SOIL_DEBRIS = "You don't belong here.",
+
+		FIRENETTLES = "They sting terribly.",
+		FORGETMELOTS = "They are rather pretty for a weed.",
+		SWEETTEA = "Would you care for a tea party, Abigail?",
+		TILLWEED = "A most stubborn weed.",
+		TILLWEEDSALVE = "A balm to ease my suffering.",
+
+		TROPHYSCALE_OVERSIZEDVEGGIES =
+		{
+			GENERIC = "A fleeting distraction from our pitiable lives.",
+			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nI suppose that's good.",
+            HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nI'd certainly be crushed under its weight.",
+            HAS_ITEM_LIGHT = "I could weigh it against a feather.",
+			BURNING = "Nothing can ever last.",
+			BURNT = "Ashes to ashes.",
+        },
+        
+        CARROT_OVERSIZED = "TODO",
+        CORN_OVERSIZED = "TODO",
+        PUMPKIN_OVERSIZED = "TODO",
+        EGGPLANT_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "TODO",
+        POMEGRANATE_OVERSIZED = "TODO",
+        DRAGONFRUIT_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "TODO",
+        TOMATO_OVERSIZED = "TODO",
+        POTATO_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "TODO",
+        ONION_OVERSIZED = "TODO",
+        GARLIC_OVERSIZED = "TODO",
+        PEPPER_OVERSIZED = "TODO",
+        
+        VEGGIE_OVERSIZED_ROTTEN = "Dead and rotting.",
+
+		FARM_PLANT =
+		{
+			GENERIC = "A plant.",
+			SEED = "Is it cold down there, alone in the ground?",
+			GROWING = "Despite the horrors of the world, it seems intent on living.",
+			FULL = "How cruel, that I must now steal the fruits of your labor.",
+			ROTTEN = "There's nothing I can do for it.",
+			FULL_OVERSIZED = "However did it grow so big?",
+			ROTTEN_OVERSIZED = "Dead and rotting.",
+			FULL_WEED = "It is the tragic fate of all weeds to be spurned from the garden.",
+
+			BURNING = "All that work, destroyed...",
+        },
+        
+        FRUITFLY = "TODO",
+        LORDFRUITFLY = "TODO",
+        FRIENDLYFRUITFLY = "TODO",
+        FRUITFLYFRUIT = "TODO",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",
     DESCRIBE_TOODARK = "The darkness! It is too dark!",
     DESCRIBE_SMOLDERING = "It's about to be swallowed by flames.",
+
+    DESCRIBE_PLANTHAPPY = "The plant, at least, seems to be doing well.",
+    DESCRIBE_PLANTVERYSTRESSED = "It is positively miserable. A kindred spirit.",
+    DESCRIBE_PLANTSTRESSED = "Something around is making its life quite difficult.",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "The garden is a bit untidy...",
+    DESCRIBE_PLANTSTRESSORFAMILY = "It's lonely... it needs family...",
+    DESCRIBE_PLANTSTRESSORSEASON = "It was not made to withstand the harshness of this season.",
+    DESCRIBE_PLANTSTRESSORMOISTURE = "Perhaps it might need some water?",
+    DESCRIBE_PLANTSTRESSORNUTRIENTS = "It is starved for nutrients.",
+    DESCRIBE_PLANTSTRESSORHAPPINESS = "Perhaps it just needs some reassurance.",
+
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "I spared it the torment of living.",

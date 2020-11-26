@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/poop.zip"),
+	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
 local prefabs =
@@ -8,6 +9,8 @@ local prefabs =
     "flies",
     "poopcloud",
 }
+
+local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function OnBurn(inst)
     DefaultBurnFn(inst)
@@ -41,6 +44,14 @@ local function OnPickup(inst)
     end
 end
 
+local function GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -57,6 +68,8 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.73)
 
+    inst.GetFertilizerKey = GetFertilizerKey
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -70,11 +83,15 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
 
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
+
     inst:AddComponent("fertilizer")
     inst.components.fertilizer:SetHealingAmount(TUNING.POOP_FERTILIZE_HEALTH)
     inst.components.fertilizer.fertilizervalue = TUNING.POOP_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.POOP_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.POOP_WITHEREDCYCLES
+    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.poop.nutrients)
 
     inst:AddComponent("smotherer")
 

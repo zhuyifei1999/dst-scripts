@@ -215,7 +215,8 @@ return{
 		},
 		COMPARE_WEIGHABLE =
 		{
-			TOO_SMALL = "This thing's too small to even bother weighing.",
+            FISH_TOO_SMALL = "This thing's too small to even bother weighing.",
+            OVERSIZEDVEGGIES_TOO_SMALL = "Nope. Not even gonna bother.",
 		},
         BEGIN_QUEST =
         {
@@ -230,6 +231,22 @@ return{
         SING_FAIL =
         {
 --fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
+        PLANTREGISTRY_RESEARCH_FAIL =
+        {
+            GENERIC = "Pfft, I already know what I need to know."
+        },
+        FILL_OCEAN =
+        {
+            UNSUITABLE_FOR_PLANTS = "Aw, come on! A little seawater would toughen them up!",
+        },
+        POUR_WATER =
+        {
+            OUT_OF_WATER = "Oh nooo I'm out of water, how terrible.",
+        },
+        POUR_WATER_GROUNDTILE =
+        {
+            OUT_OF_WATER = "Welp, I'm out of water. Can I go back to burning stuff now?",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
@@ -324,6 +341,7 @@ return{
 	},
     ANNOUNCE_RUINS_RESET = "Aw, everything I killed is back!",
     ANNOUNCE_SNARED = "Gross, ew! Bones!",
+    ANNOUNCE_SNARED_IVY = "Hey, knock it off!",
     ANNOUNCE_REPELLED = "Hey! That's not fair!",
 	ANNOUNCE_ENTER_DARK = "Where'd I put my lighter!?",
 	ANNOUNCE_ENTER_LIGHT = "Oh, I can see! I thought I'd gone blind.",
@@ -593,6 +611,29 @@ return{
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "Ugh, it's filling my head with nerd junk!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "Meh. Seen it before.",
     ANNOUNCE_ARCHIVE_NO_POWER = "Well that was exciting.",
+
+    ANNOUNCE_PLANT_RESEARCHED =
+    {
+        "Greeaaat, more boring old plant facts.",
+    },
+
+    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+
+	ANNOUNCE_FIRENETTLE_TOXIN = 
+	{
+		"Argh, it burns!! But not in a fun way!",
+		"There's fire in my veins!",
+	},
+	ANNOUNCE_FIRENETTLE_TOXIN_DONE = "Huh. I was kind of getting used to it.",
+
+	ANNOUNCE_TALK_TO_PLANTS = 
+	{
+        "Hey plants! How's it going?",
+        "Feeling flammable today?",
+		"So... plant stuff... man, this is boring.",
+        "Anything interesting going on lately? Right, nope. Because you're a plant.",
+        "Hey, rustle twice if you want to take a closer look at my lighter!",
+	},
 
 	BATTLECRY =
 	{
@@ -3623,11 +3664,113 @@ return{
         TURFCRAFTINGSTATION = "I guess I could use a change in scenery.",
 
         MOON_ALTAR_LINK = "Aw c'mon! What is it?!",
+
+        -- FARMING
+        COMPOSTINGBIN =
+        {
+            -- WIP, might not end up with these states so don't fill in for now
+            GENERIC = "Ew, why do we have this?",
+            WET = "It's all wet and gross.",
+            DRY = "Is it supposed to be that dry?",
+            BALANCED = "I guess it looks okay? For a pile of rotten dirt?",
+            BURNT = "Nice.",
+        },
+        COMPOST = "Nah, I'm good.",
+        SOIL_AMENDER = 
+		{ 
+			GENERIC = "Gross.",
+			STALE = "Yup, stuff's happening in there alright.",
+			SPOILED = "Let's hope this works as well as it stinks.",
+		},
+
+		SOIL_AMENDER_FERMENTED = "Yeesh, plants actually like this stuff?",
+
+        WATERINGCAN = 
+        {
+            GENERIC = "Ugh, who put this water here?!",
+            EMPTY = "That's more like it.",
+        },
+        PREMIUMWATERINGCAN =
+        {
+            GENERIC = "Ha. It looks stupid.",
+            EMPTY = "Reassuringly dry.",
+        },
+
+		FARM_PLOW = "Yeah, fight that ground!",
+		FARM_PLOW_ITEM = "Guess I better find a dumb spot to plant some dumb plants.",
+		FARM_HOE = "Farming is so much work...",
+		NUTRIENTSGOGGLESHAT = "Wow, I always wanted dirt vision... said nobody ever.",
+		PLANTREGISTRYHAT = "Nooo I don't want my head full of plant nerd facts!",
+
+        FARM_SOIL_DEBRIS = "Get outta here!",
+
+		FIRENETTLES = "What do you mean it's a weed? Looks like an improvement to me!",
+		FORGETMELOTS = "Some more dumb flowers.",
+		SWEETTEA = "What's so great about it? It's just leaf juice.",
+		TILLWEED = "Stupid weed.",
+		TILLWEEDSALVE = "I guess that weed was good for something.",
+
+		TROPHYSCALE_OVERSIZEDVEGGIES =
+		{
+			GENERIC = "Oooh, that basket looks flammable!",
+			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nWow. Exciting.",
+            HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nMore to burn.",
+            HAS_ITEM_LIGHT = "Hey is this thing broken? It's not even showing the weight!",
+			BURNING = "Yeah, now we're talking!",
+			BURNT = "Aw, over already?",
+        },
+        
+        CARROT_OVERSIZED = "TODO",
+        CORN_OVERSIZED = "TODO",
+        PUMPKIN_OVERSIZED = "TODO",
+        EGGPLANT_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "TODO",
+        POMEGRANATE_OVERSIZED = "TODO",
+        DRAGONFRUIT_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "TODO",
+        TOMATO_OVERSIZED = "TODO",
+        POTATO_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "TODO",
+        ONION_OVERSIZED = "TODO",
+        GARLIC_OVERSIZED = "TODO",
+        PEPPER_OVERSIZED = "TODO",
+        
+        VEGGIE_OVERSIZED_ROTTEN = "A big pile of stinky mush.",
+
+		FARM_PLANT =
+		{
+			GENERIC = "A dumb plant.",
+			SEED = "Ugh, this is going to take ages.",
+			GROWING = "Grow faster already!",
+			FULL = "Took long enough.",
+			ROTTEN = "Yeah... I'm not eating that.",
+			FULL_OVERSIZED = "Well that looks kind of unnatural.",
+			ROTTEN_OVERSIZED = "A big pile of stinky mush.",
+			FULL_WEED = "Wait, what kind of vegetable is that supposed to be?",
+
+			BURNING = "Heh heh.",
+        },
+        
+        FRUITFLY = "TODO",
+        LORDFRUITFLY = "TODO",
+        FRIENDLYFRUITFLY = "TODO",
+        FRUITFLYFRUIT = "TODO",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",
     DESCRIBE_TOODARK = "I need more light!",
     DESCRIBE_SMOLDERING = "Hooray, it's about to light on fire!",
+
+    DESCRIBE_PLANTHAPPY = "It looks... fine?",
+    DESCRIBE_PLANTVERYSTRESSED = "Something's got it really upset.",
+    DESCRIBE_PLANTSTRESSED = "I'd guess there's more than one thing bothering it.",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "Ugh, do I really have to weed the garden again?",
+    DESCRIBE_PLANTSTRESSORFAMILY = "What's wrong? Don't tell me it's lonely?",
+    DESCRIBE_PLANTSTRESSORSEASON = "Guess it doesn't like the weather.",
+    DESCRIBE_PLANTSTRESSORMOISTURE = "Looking nice and crispy!",
+    DESCRIBE_PLANTSTRESSORNUTRIENTS = "Ms. Wickerbottom's always going on about nutrients in the soil. Maybe it needs that.",
+    DESCRIBE_PLANTSTRESSORHAPPINESS = "What do you want from me?!",
+
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Ugh. Crunchy.",

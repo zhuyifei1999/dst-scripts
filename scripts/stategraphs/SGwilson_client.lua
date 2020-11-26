@@ -171,6 +171,10 @@ local actionhandlers =
                 or (action.invobject ~= nil and action.invobject:HasTag("slowfertilize") and "fertilize")
                 or "fertilize_short"
         end),
+    ActionHandler(ACTIONS.FERTILIZE_GROUNDTILE,
+        function(inst, action)
+            return "doshortaction"
+        end),
     ActionHandler(ACTIONS.SMOTHER,
         function(inst)
             return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
@@ -252,6 +256,7 @@ local actionhandlers =
             return inst:HasTag("expertchef") and "domediumaction" or "dolongaction"
         end),
     ActionHandler(ACTIONS.FILL, "dolongaction"),
+    ActionHandler(ACTIONS.FILL_OCEAN, "dolongaction"),
     ActionHandler(ACTIONS.PICKUP, "doshortaction"),
     ActionHandler(ACTIONS.CHECKTRAP, "doshortaction"),
     ActionHandler(ACTIONS.RUMMAGE, "doshortaction"),
@@ -467,6 +472,14 @@ local actionhandlers =
     ActionHandler(ACTIONS.BEGIN_QUEST, "doshortaction"),
     ActionHandler(ACTIONS.ABANDON_QUEST, "dolongaction"),
     ActionHandler(ACTIONS.TELLSTORY, "dostorytelling"),
+    
+    ActionHandler(ACTIONS.POUR_WATER, "pour"),
+    ActionHandler(ACTIONS.POUR_WATER_GROUNDTILE, "pour"),
+    
+    ActionHandler(ACTIONS.INTERACT_WITH, "dolongaction"),
+    ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH_FAIL, "dolongaction"),
+    ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH, "dolongaction"),
+    ActionHandler(ACTIONS.VIEWPLANTHAPPINESS, "dolongaction"),
 }
 
 local events =
@@ -3633,6 +3646,44 @@ local states =
     },
 
     State{
+        name = "pour",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("water_pre")
+            inst.AnimState:PushAnimation("water_lag", false)
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("pickup_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("pickup_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
         name = "portal_jumpin_pre",
         tags = { "busy" },
 

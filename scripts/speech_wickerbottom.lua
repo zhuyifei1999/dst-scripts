@@ -215,7 +215,8 @@ return{
 		},
 		COMPARE_WEIGHABLE =
 		{
-			TOO_SMALL = "This specimen is far too insubstantial.",
+            FISH_TOO_SMALL = "This specimen is far too insubstantial.",
+            OVERSIZEDVEGGIES_TOO_SMALL = "I'm afriad this specimen simply doesn't have enough mass to compete.",
 		},
         BEGIN_QUEST =
         {
@@ -230,6 +231,22 @@ return{
         SING_FAIL =
         {
 --fallback to speech_wilson.lua             SAMESONG = "only_used_by_wathgrithr",
+        },
+        PLANTREGISTRY_RESEARCH_FAIL =
+        {
+            GENERIC = "I'm already quite knowledgeable about this particular species."
+        },
+        FILL_OCEAN =
+        {
+            UNSUITABLE_FOR_PLANTS = "I'm afraid only freshwater will do.",
+        },
+        POUR_WATER =
+        {
+            OUT_OF_WATER = "Oh dear, I'll have to replenish my water supply.",
+        },
+        POUR_WATER_GROUNDTILE =
+        {
+            OUT_OF_WATER = "I'll have to replenish my water supply at the earliest opportunity.",
         },
 	},
 	ACTIONFAIL_GENERIC = "It seems I can't do that.",
@@ -322,6 +339,7 @@ return{
 	},
     ANNOUNCE_RUINS_RESET = "Careful, the monsters are back.",
     ANNOUNCE_SNARED = "You can't hold me for long, dear.",
+    ANNOUNCE_SNARED_IVY = "Goodness, my garden seems to have quite an aggressive weed problem.",
     ANNOUNCE_REPELLED = "There's magic at work here.",
 	ANNOUNCE_ENTER_DARK = "I am in the dark.",
 	ANNOUNCE_ENTER_LIGHT = "It is bright enough to see.",
@@ -586,6 +604,29 @@ return{
     ANNOUNCE_ARCHIVE_NEW_KNOWLEDGE = "What a peculiar sensation, it's transmitting a blueprint telepathically!",
     ANNOUNCE_ARCHIVE_OLD_KNOWLEDGE = "I'm already familiar with this particular piece of knowledge.",
     ANNOUNCE_ARCHIVE_NO_POWER = "How very disappointing, I was curious to see what it would do.",
+
+    ANNOUNCE_PLANT_RESEARCHED =
+    {
+        "I've gained a bit more insight into the workings of this species.",
+    },
+
+    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+
+	ANNOUNCE_FIRENETTLE_TOXIN = 
+	{
+		"Oh dear... I seem to be afflicted by the plant's toxin.",
+		"The toxin from those nettles carries a rather unpleasant burning sensation.",
+	},
+	ANNOUNCE_FIRENETTLE_TOXIN_DONE = "Thankfully, the toxin's effects seem to be temporary.",
+
+	ANNOUNCE_TALK_TO_PLANTS = 
+	{
+        "Talking to my little garden always seemed to help it grow.",
+        "My, those leaves are coming in quite nicely dear!",
+		"All one needs to thrive is a bit of love and care, isn't that right?",
+        "No need to rush dear, you just take your time.",
+        "How are you doing today? Do you have enough water?",
+	},
 
 	BATTLECRY =
 	{
@@ -3616,11 +3657,113 @@ return{
         TURFCRAFTINGSTATION = "I surmise this was a crucial part of ancient farming methods.",
 
         MOON_ALTAR_LINK = "I'm afraid its purpose eludes me, for now.",
+
+        -- FARMING
+        COMPOSTINGBIN =
+        {
+            -- WIP, might not end up with these states so don't fill in for now
+            GENERIC = "Composting is an essential component to gardening.",
+            WET = "The moisture level of this mixture is too high.",
+            DRY = "It requires a bit more moisture.",
+            BALANCED = "A well balanced mix.",
+            BURNT = "Well... I suppose plants need carbon too.",
+        },
+        COMPOST = "The secret to any garden's success is nutrient-rich soil.",
+        SOIL_AMENDER = 
+		{ 
+			GENERIC = "Kelp makes for an excellent fertilizer if prepared correctly.",
+			STALE = "It should sit for a while longer yet, to reach full potency.",
+			SPOILED = "Quite acceptable, though it would be even better if I left it for just a bit longer.",
+		},
+
+		SOIL_AMENDER_FERMENTED = "Oh, the garden will enjoy this immensely!",
+
+        WATERINGCAN = 
+        {
+            GENERIC = "A standard watering can.",
+            EMPTY = "Perhaps there's a freshwater source nearby.",
+        },
+        PREMIUMWATERINGCAN =
+        {
+            GENERIC = "A bit unconventional, but an effective irrigation tool nevertheless.",
+            EMPTY = "I'll have to fill it with water before it's usable.",
+        },
+
+		FARM_PLOW = "How very efficient!",
+		FARM_PLOW_ITEM = "I'd best find a suitable spot for my garden.",
+		FARM_HOE = "Humans have cultivated crops since Neolithic times.",
+		NUTRIENTSGOGGLESHAT = "The prudent gardener ensures they are able to discern every detail about their crops.",
+		PLANTREGISTRYHAT = "It seems to be a wearable directory of sorts, detailing various plant strains.",
+
+        FARM_SOIL_DEBRIS = "Oh no you don't! Out of my garden!",
+
+		FIRENETTLES = "Dastardly things.",
+		FORGETMELOTS = "This strain can be used to brew a rather pleasant herbal tea.",
+		SWEETTEA = "It's as if all my worries and cares are fading away.",
+		TILLWEED = "What a nuisance!",
+		TILLWEEDSALVE = "The Tillweed's roots appear to have limited healing capabilities.",
+
+		TROPHYSCALE_OVERSIZEDVEGGIES =
+		{
+			GENERIC = "I suppose I must put my gardening prowess to the test!",
+			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nA very respectable harvest.",
+            HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nMy, quite the accomplishment!",
+            HAS_ITEM_LIGHT = "I'm afraid the weight of this bit of produce is too small to tabulate.",
+			BURNING = "Oh dear...",
+			BURNT = "I'm afraid that's that.",
+        },
+        
+        CARROT_OVERSIZED = "TODO",
+        CORN_OVERSIZED = "TODO",
+        PUMPKIN_OVERSIZED = "TODO",
+        EGGPLANT_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "TODO",
+        POMEGRANATE_OVERSIZED = "TODO",
+        DRAGONFRUIT_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "TODO",
+        TOMATO_OVERSIZED = "TODO",
+        POTATO_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "TODO",
+        ONION_OVERSIZED = "TODO",
+        GARLIC_OVERSIZED = "TODO",
+        PEPPER_OVERSIZED = "TODO",
+        
+        VEGGIE_OVERSIZED_ROTTEN = "How terrible to see it all go to waste!",
+
+		FARM_PLANT =
+		{
+			GENERIC = "Of the kingdom Plantae.",
+			SEED = "It takes patience to grow crops from seed.",
+			GROWING = "It's coming along.",
+			FULL = "I daresay that's ready to harvest.",
+			ROTTEN = "I detest the sight of spoiled food!",
+			FULL_OVERSIZED = "How splendid!",
+			ROTTEN_OVERSIZED = "How terrible to see it all go to waste!",
+			FULL_WEED = "Weeds have no place in the garden.",
+
+			BURNING = "What an unfortunate turn of events!",
+        },
+        
+        FRUITFLY = "TODO",
+        LORDFRUITFLY = "TODO",
+        FRIENDLYFRUITFLY = "TODO",
+        FRUITFLYFRUIT = "TODO",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",
     DESCRIBE_TOODARK = "I can't see in the dark.",
     DESCRIBE_SMOLDERING = "Seems it's about to ignite from the heat.",
+
+    DESCRIBE_PLANTHAPPY = "This crop appears to be in good health.",
+    DESCRIBE_PLANTVERYSTRESSED = "It appears to be suffering from quite a variety of stressors.",
+    DESCRIBE_PLANTSTRESSED = "It seems to be suffering from two different stressors at once.",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "I'll have to remove some of those troublesome weeds.",
+    DESCRIBE_PLANTSTRESSORFAMILY = "These grow best when surrounded by others of its particular species.",
+    DESCRIBE_PLANTSTRESSORSEASON = "I'm afraid this plant might not be in season.",
+    DESCRIBE_PLANTSTRESSORMOISTURE = "It could use a little hydration.",
+    DESCRIBE_PLANTSTRESSORNUTRIENTS = "It requires more nutrient-rich soil.",
+    DESCRIBE_PLANTSTRESSORHAPPINESS = "I should stimulate its growth with some conversation.",
+
     EAT_FOOD =
     {
         TALLBIRDEGG_CRACKED = "Al dente.",

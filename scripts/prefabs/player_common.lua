@@ -3,6 +3,8 @@ local PlayerHud = require("screens/playerhud")
 
 local ex_fns = require "prefabs/player_common_extensions"
 
+local fns = {} -- a table to store local functions in so that we don't hit the 60 upvalues limit
+
 local USE_MOVEMENT_PREDICTION = true
 
 local DEFAULT_PLAYER_COLOUR = { 1, 1, 1, 1 }
@@ -413,6 +415,9 @@ local function RegisterMasterEventListeners(inst)
     inst:ListenForEvent("learncookbookrecipe", ex_fns.OnLearnCookbookRecipe)
     inst:ListenForEvent("learncookbookstats", ex_fns.OnLearnCookbookStats)
     inst:ListenForEvent("oneat", ex_fns.OnEat)
+
+    inst:ListenForEvent("learnplantstage", ex_fns.OnLearnPlantStage)
+    inst:ListenForEvent("learnfertilizer", ex_fns.OnLearnFertilizer)
 end
 
 --------------------------------------------------------------------------
@@ -1029,9 +1034,15 @@ local function ShowGiftItemPopUp(inst, show)
     end
 end
 
-local function ShowCookbookPopUp(inst, show)
+function fns.ShowCookbookPopUp(inst, show)
     if TheWorld.ismastersim then
         inst.player_classified:ShowCookbookPopUp(show)
+    end
+end
+
+function fns.ShowPlantRegistryPopUp(inst, show)
+    if TheWorld.ismastersim then
+        inst.player_classified:ShowPlantRegistryPopUp(show)
     end
 end
 
@@ -1234,7 +1245,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),
-		Asset("ANIM", "anim/player_actions_feast_eat.zip"),
+        Asset("ANIM", "anim/player_actions_feast_eat.zip"),
+        Asset("ANIM", "anim/player_actions_farming.zip"),
         Asset("ANIM", "anim/player_boat.zip"),
         Asset("ANIM", "anim/player_boat_plank.zip"),
         Asset("ANIM", "anim/player_oar.zip"),
@@ -1489,6 +1501,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_actions_reading")
 
         inst.AnimState:AddOverrideBuild("player_actions_fishing_ocean_new")
+        inst.AnimState:AddOverrideBuild("player_actions_farming")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -1553,6 +1566,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("inkable")
 
         inst:AddComponent("cookbookupdater")
+        inst:AddComponent("plantregistryupdater")
 
 		if TheNet:GetServerGameMode() == "lavaarena" then
             inst:AddComponent("healthsyncer")
@@ -1807,7 +1821,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.ShowActions = ShowActions
         inst.ShowHUD = ShowHUD
         inst.ShowWardrobePopUp = ShowWardrobePopUp
-        inst.ShowCookbookPopUp = ShowCookbookPopUp
+        inst.ShowCookbookPopUp = fns.ShowCookbookPopUp
+        inst.ShowPlantRegistryPopUp = fns.ShowPlantRegistryPopUp
         inst.ShowGiftItemPopUp = ShowGiftItemPopUp
         inst.SetCameraDistance = SetCameraDistance
         inst.SetCameraZoomed = SetCameraZoomed
