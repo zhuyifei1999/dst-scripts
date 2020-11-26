@@ -138,7 +138,6 @@ local function DoDrilling(inst)
 end
 
 local function timerdone(inst, data)
-	print("SDFDSF")
 	if data ~= nil and data.name == "drilling" then
 		if inst.components.terraformer ~= nil then
 			if not inst.components.terraformer:Terraform(inst:GetPosition()) then

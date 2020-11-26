@@ -255,7 +255,7 @@ end
 
 local function ivy_defend_plant(inst, data)
     local target = data.target
-    if target ~= nil and target:IsValid() then
+    if target ~= nil and target:IsValid() and not target:HasTag("plantkin") then
 		if inst.snares ~= nil and #inst.snares > 0 then
 			for _, snare in ipairs(inst.snares) do
 				if snare:IsValid() and snare.components.health ~= nil and not snare.components.health:IsDead() then

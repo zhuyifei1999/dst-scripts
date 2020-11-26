@@ -52,6 +52,10 @@ local FertilizersPage = Class(Widget, function(self, parent_widget, ismodded)
 			return a_nutrient_type_total < b_nutrient_type_total
 		end
 
+		if a.uses ~= b.uses then
+			return a.uses < b.uses
+		end
+
 		for i = 1, 3 do
 			local nutrient_a = a.nutrients[i]
 			local nutrient_b = b.nutrients[i]
@@ -100,7 +104,7 @@ function FertilizersPage:BuildFertlizerScrollGrid()
 		end
 
 		function w.cell_root.OnLoseFocus()
-			if ThePlantRegistry:KnowsFertilizer(w.data.fertilizer) then
+			if w.data and ThePlantRegistry:KnowsFertilizer(w.data.fertilizer) then
 				w.cell_root:SetTexture("images/plantregistry.xml", "plant_entry_active.tex")
 				w.fertilizer_seperator:SetTexture("images/plantregistry.xml", "plant_entry_seperator_active.tex")
 				w.fertilizer_label:SetColour(PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN)

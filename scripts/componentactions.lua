@@ -246,7 +246,7 @@ local COMPONENT_ACTIONS =
         end,
 
         fertilizerresearchable = function(inst, doer, actions, right)
-            if not right then
+            if right then
                 PlantRegistryResearch(inst, doer, actions)
             end
         end,
@@ -1632,15 +1632,11 @@ local COMPONENT_ACTIONS =
         end,
 
         plantresearchable = function(inst, doer, actions, right)
-            if not right then
-                PlantRegistryResearch(inst, doer, actions)
-            end
+            PlantRegistryResearch(inst, doer, actions)
         end,
 
         fertilizerresearchable = function(inst, doer, actions, right)
-            if not right then
-                PlantRegistryResearch(inst, doer, actions)
-            end
+            PlantRegistryResearch(inst, doer, actions)
         end,
 
         inspectable = function(inst, doer, actions)

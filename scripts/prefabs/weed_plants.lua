@@ -294,7 +294,7 @@ local function OnTrySpread(inst)
 
 	local rnd = math.random
 	local spawn_x, spawn_y, spawn_z
-	local soil = false
+	local soil = nil
 	if #soils > 0 then
 		local offset = math.random(#soils)
 		local MAX_TRIES = 3

@@ -613,6 +613,8 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "TODO",
 
+    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
 		"Whew, I feel hotter than a forest fire.",

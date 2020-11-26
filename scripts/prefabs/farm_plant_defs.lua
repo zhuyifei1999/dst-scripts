@@ -124,6 +124,8 @@ local nutrient_M = TUNING.FARM_PLANT_CONSUME_NUTRIENT_MED
 local nutrient_L = TUNING.FARM_PLANT_CONSUME_NUTRIENT_HIGH
 
 -- Nutrients
+PLANT_DEFS.randomseed.nutrient_consumption,		PLANT_DEFS.randomseed.nutrient_restoration		= {0,			0,				0},				{nil,	nil,	nil}
+--
 PLANT_DEFS.carrot.nutrient_consumption,			PLANT_DEFS.carrot.nutrient_restoration			= {nutrient_M,	0,				0},				{nil,	true,	true}
 PLANT_DEFS.corn.nutrient_consumption,			PLANT_DEFS.corn.nutrient_restoration			= {0,			nutrient_M,		0},				{true,	nil,	true}
 PLANT_DEFS.potato.nutrient_consumption,			PLANT_DEFS.potato.nutrient_restoration			= {0,			0,				nutrient_M},	{true,	true,	nil}
@@ -142,6 +144,8 @@ PLANT_DEFS.pepper.nutrient_consumption,			PLANT_DEFS.pepper.nutrient_restoration
 PLANT_DEFS.pomegranate.nutrient_consumption,	PLANT_DEFS.pomegranate.nutrient_restoration		= {nutrient_L,	0,				0},				{nil,	true,	nil}
 
 -- Killjoys
+PLANT_DEFS.randomseed.max_killjoys_tolerance	= TUNING.FARM_PLANT_KILLJOY_TOLERANCE
+--
 PLANT_DEFS.carrot.max_killjoys_tolerance		= TUNING.FARM_PLANT_KILLJOY_TOLERANCE
 PLANT_DEFS.corn.max_killjoys_tolerance			= TUNING.FARM_PLANT_KILLJOY_TOLERANCE
 PLANT_DEFS.potato.max_killjoys_tolerance		= TUNING.FARM_PLANT_KILLJOY_TOLERANCE

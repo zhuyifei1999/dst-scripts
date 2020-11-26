@@ -196,6 +196,10 @@ local function getstatus(inst)
     end
 
     if inst.components.compostingbin:GetMaterialTotal() > 0 then
+        if inst.components.compostingbin.greens_ratio == nil then
+            return nil
+        end
+
         if inst.components.compostingbin.greens_ratio < 0.35 then
             return "DRY"
         elseif inst.components.compostingbin.greens_ratio > 0.65 then

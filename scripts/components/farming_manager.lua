@@ -74,7 +74,9 @@ local function StartFruitFlyTimer(time)
 end
 
 local function AdvanceFruitFlyTimer(time)
-	StartFruitFlyTimer(math.max(0, (lordfruitfly_spawntime.end_time - GetTime()) - time))
+	if lordfruitfly_spawntime then
+		StartFruitFlyTimer(math.max(0, (lordfruitfly_spawntime.end_time - GetTime()) - time))
+	end
 end
 
 StartFruitFlyTimer(TUNING.LORDFRUITFLY_INITIALSPAWN_TIME)

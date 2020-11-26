@@ -106,6 +106,7 @@ local function respawner_fn()
     inst.entity:AddTransform()
 
     --[[Non-networked entity]]
+	inst:AddTag("NOBLOCK")
     inst:AddTag("CLASSIFIED")
 	inst:AddTag("weed_forgetmelots_respawner")
 

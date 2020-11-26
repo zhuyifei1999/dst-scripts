@@ -45,10 +45,9 @@ local function band_update( inst )
                 else
                     owner.components.leader:AddFollower(v)
                 end
-			elseif v.components.farmplant ~= nil then
-				v.components.farmplant:OnInteractWith(owner)
-            end
-
+			elseif v.components.farmplanttendable ~= nil then
+				v.components.farmplanttendable:TendTo(owner)
+			end
         end
 
         for k,v in pairs(owner.components.leader.followers) do

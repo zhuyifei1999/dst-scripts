@@ -136,7 +136,7 @@ function CompostingBin:IsComposting()
 end
 
 function CompostingBin:OnSave()
-    if self:IsComposting() then
+    if self:IsComposting() or self:GetMaterialTotal() > 0 then
         return { greens = self.greens, browns = self.browns, fertilizer_count = self.fertilizer_count, current_composting_time = self.current_composting_time }
     end
 end

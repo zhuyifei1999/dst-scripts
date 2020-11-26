@@ -39,6 +39,7 @@ function FindFarmPlant:Visit()
             self.status = FAILED
         --we don't need to test for the component, since we won't ever set clostest plant to anything that lacks that component
         elseif self.inst.planttarget.components.farmplantstress.stressors.happiness ~= self.wantsstressed then
+            self.inst.planttarget = nil
             self.status = SUCCESS
         end
     end

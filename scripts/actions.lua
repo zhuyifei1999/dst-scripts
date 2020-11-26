@@ -358,8 +358,8 @@ ACTIONS =
     UNPATCH = Action({ distance=0.5 }),
     POUR_WATER = Action({ distance = 2, tile_placer="gridplacer", show_tile_placer_fn=ShowPourWaterTilePlacer }),
     POUR_WATER_GROUNDTILE = Action({ rmb=true, customarrivecheck=CheckFarmTileWithinRange, tile_placer="gridplacer" }),
-    PLANTREGISTRY_RESEARCH_FAIL = Action({ priority = 1 }),
-    PLANTREGISTRY_RESEARCH = Action({ priority = 1 }),
+    PLANTREGISTRY_RESEARCH_FAIL = Action(),
+    PLANTREGISTRY_RESEARCH = Action({ priority = HIGH_ACTION_PRIORITY }),
     VIEWPLANTHAPPINESS = Action({ priority = 1 }),
     ATTACKPLANT = Action(),
     PLANTWEED = Action(),
@@ -3278,8 +3278,9 @@ ACTIONS.PLANTREGISTRY_RESEARCH.fn = function(act)
 end
 
 ACTIONS.VIEWPLANTHAPPINESS.stroverridefn = function(act)
-    if act.invobject == nil and act.target ~= nil and act.target.components.plantresearchable then
-        local plant = act.target:GetDisplayName()
+    local targ = act.target or act.invobject
+    if targ ~= nil and targ.components.plantresearchable then
+        local plant = targ:GetDisplayName()
         return plant ~= nil and subfmt(STRINGS.ACTIONS.VIEWPLANTHAPPINESS.GENERIC_FMT, { plant = plant }) or nil
     end
 end

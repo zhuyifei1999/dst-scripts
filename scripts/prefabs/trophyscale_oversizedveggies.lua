@@ -215,8 +215,16 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") and not (inst.AnimState:IsCurrentAnimation("placeveg") or inst.AnimState:IsCurrentAnimation("replaceveg")) then
 		if IsHoldingItem(inst) then
-			inst.AnimState:PlayAnimation("veg_hit")
-			inst.AnimState:PushAnimation("veg_idle", true)
+			if inst.components.trophyscale.item_data == nil
+				or inst.components.trophyscale.item_data.weight == nil
+				or inst.components.trophyscale.item_data.weight <= 0 then
+			
+				inst.AnimState:PlayAnimation("veg_light_hit")
+				inst.AnimState:PushAnimation("veg_light_idle", true)
+			else
+				inst.AnimState:PlayAnimation("veg_hit")
+				inst.AnimState:PushAnimation("veg_idle", true)
+			end
 		else
 			inst.AnimState:PlayAnimation("noveg_hit")
 			inst.AnimState:PushAnimation("noveg_idle", false)

@@ -5694,7 +5694,7 @@ STRINGS.UI =
         FARMPLANTS = {
             SEASONS = "Seasons",
             WATER = "Water Consumption",
-            NUTRIENTS = "Nutrients",
+            NUTRIENTS = "Nutrients Cycling",
             DESCRIPTION = "Field Notes",
             SEED = "Seed",
             PRODUCT = "Product",
@@ -5702,7 +5702,7 @@ STRINGS.UI =
 
         WEEDPLANTS = {
             WATER = "Water Consumption",
-            NUTRIENTS = "Nutrients",
+            NUTRIENTS = "Nutrients Cycling",
             EFFECTS = "Effects",
             DESCRIPTION = "Description",
             PRODUCT = "Product",

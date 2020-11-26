@@ -619,7 +619,9 @@ return {
         "My knowledge about this plant is growing!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "I can't wait for this to grow to find out what it is! TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "I wonder what it will grow into.",
+
+    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3753,10 +3755,10 @@ return {
 			BURNING = "That can't be good for the plants...",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Buzz off!",
+        LORDFRUITFLY = "Hey, stop upsetting the plants!",
+        FRIENDLYFRUITFLY = "The garden seems happier with it around.",
+        FRUITFLYFRUIT = "Now I'm in charge!",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

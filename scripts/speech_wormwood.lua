@@ -616,6 +616,8 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "TODO",
 
+    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
 		"not_used_by_wormwood",

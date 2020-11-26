@@ -176,8 +176,11 @@ local KILLJOY_PLANT_MUST_TAGS = {"farm_plant_killjoy"}
 local POLLEN_SOURCE_NOT_TAGS = {"farm_plant_killjoy"}
 
 local function KillJoyStressTest(inst, currentstress, apply)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	return #TheSim:FindEntities(x, y, z, TUNING.FARM_PLANT_KILLJOY_RADIUS, KILLJOY_PLANT_MUST_TAGS) > inst.plant_def.max_killjoys_tolerance
+	if inst.plant_def.max_killjoys_tolerance then
+		local x, y, z = inst.Transform:GetWorldPosition()
+		return #TheSim:FindEntities(x, y, z, TUNING.FARM_PLANT_KILLJOY_RADIUS, KILLJOY_PLANT_MUST_TAGS) > inst.plant_def.max_killjoys_tolerance
+	end
+	return false
 end
 
 local function FamilyStressTest(inst, currentstress, apply)

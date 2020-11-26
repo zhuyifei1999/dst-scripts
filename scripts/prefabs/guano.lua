@@ -37,6 +37,14 @@ local function onpickup(inst)
     end
 end
 
+local function GetFertilizerKey(inst)
+    return inst.prefab
+end
+
+local function fertilizerresearchfn(inst)
+    return inst:GetFertilizerKey()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -54,6 +62,8 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.73)
 
+    inst.GetFertilizerKey = GetFertilizerKey
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -64,6 +74,9 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
+
+    inst:AddComponent("fertilizerresearchable")
+    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     inst:AddComponent("fertilizer")
     inst.components.fertilizer:SetHealingAmount(TUNING.POOP_FERTILIZE_HEALTH)

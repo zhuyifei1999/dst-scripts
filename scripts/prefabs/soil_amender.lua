@@ -80,7 +80,7 @@ local function update_fertilizer(inst)
 
 			percolate(inst, "fresh", 6)
 			inst.components.inventoryitem:ChangeImageName(nil)
-			inst.fertilizerkey = "soil_amender_low"
+			inst.fertilizer_index:set(1)
 		elseif perishable:IsStale() then
 			fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERTILIZE_HEALTH_MED)
 			fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_MED
@@ -90,7 +90,7 @@ local function update_fertilizer(inst)
 
 			percolate(inst, "stale", 3, "stale_pre")
 			inst.components.inventoryitem:ChangeImageName("soil_amender_stale")
-			inst.fertilizerkey = "soil_amender_med"
+			inst.fertilizer_index:set(2)
 		else
 			fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERTILIZE_HEALTH_HIGH)
 			fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_HIGH
@@ -100,7 +100,7 @@ local function update_fertilizer(inst)
 
 			percolate(inst, "spoiled", 1, "spoiled_pre")
 			inst.components.inventoryitem:ChangeImageName("soil_amender_spoiled")
-			inst.fertilizerkey = "soil_amender_high"
+			inst.fertilizer_index:set(3)
 		end
 	end 
 end
@@ -112,6 +112,13 @@ end
 local function fertilizerresearchfn(inst)
     return inst:GetFertilizerKey()
 end
+
+local soil_amender_index_to_key =
+{
+	"soil_amender_low",
+	"soil_amender_med",
+	"soil_amender_high",
+}
 
 local function fn()
     local inst = CreateEntity()
@@ -133,8 +140,14 @@ local function fn()
 	inst.displayadjectivefn = displayadjectivefn
 	inst:AddTag("show_spoilage")
 
-	inst.fertilizerkey = "soil_amender_low"
-    inst.GetFertilizerKey = GetFertilizerKey
+	inst.fertilizerkey = soil_amender_index_to_key[1]
+	inst.GetFertilizerKey = GetFertilizerKey
+
+	inst.fertilizer_index = net_tinybyte(inst.GUID, "fertilizer_index", "onfertilizerindexdirty")
+
+	inst:ListenForEvent("onfertilizerindexdirty", function()
+		inst.fertilizerkey = soil_amender_index_to_key[inst.fertilizer_index:value()]
+	end)
 
     inst.entity:SetPristine()
 

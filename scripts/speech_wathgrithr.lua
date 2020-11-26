@@ -610,7 +610,9 @@ return{
         "My head hath been filled with useless knowledge about non-meat!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "Whatever emerges, I shall not care for it.",
+
+    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3744,10 +3746,10 @@ return{
 			BURNING = "Good riddance.",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Intruder! Taste my blade!",
+        LORDFRUITFLY = "Thou art no lord!",
+        FRIENDLYFRUITFLY = "It seems this one is not an enemy.",
+        FRUITFLYFRUIT = "Now I am chieftain of the wee winged garden beasts!",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

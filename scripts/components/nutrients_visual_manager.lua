@@ -28,7 +28,6 @@ return Class(function(self, inst)
     --------------------------------------------------------------------------
     
     local function ToggleNutrientsVision(player, data)
-        print(nutrients_vision, data.enabled)
         if nutrients_vision ~= data.enabled then
             nutrients_vision = data.enabled
             for visual in pairs(nutrients_visuals) do

@@ -1,13 +1,13 @@
 local FERTILIZER_DEFS = {}
 
 FERTILIZER_DEFS.poop = {nutrients = TUNING.POOP_NUTRIENTS}
-FERTILIZER_DEFS.fertilizer = {nutrients = TUNING.FERTILIZER_NUTRIENTS}
+FERTILIZER_DEFS.fertilizer = {nutrients = TUNING.FERTILIZER_NUTRIENTS, uses = TUNING.FERTILIZER_USES}
 FERTILIZER_DEFS.guano = {nutrients = TUNING.GUANO_NUTRIENTS}
 FERTILIZER_DEFS.compost = {nutrients = TUNING.COMPOST_NUTRIENTS}
 FERTILIZER_DEFS.soil_amender_low = {nutrients = TUNING.SOILAMENDER_NUTRIENTS_LOW}
 FERTILIZER_DEFS.soil_amender_med = {nutrients = TUNING.SOILAMENDER_NUTRIENTS_MED}
 FERTILIZER_DEFS.soil_amender_high = {nutrients = TUNING.SOILAMENDER_NUTRIENTS_HIGH}
-FERTILIZER_DEFS.soil_amender_fermented = {nutrients = TUNING.SOILAMENDER_NUTRIENTS_HIGH}
+FERTILIZER_DEFS.soil_amender_fermented = {nutrients = TUNING.SOILAMENDER_NUTRIENTS_HIGH, uses = TUNING.SOILAMENDER_FERMENTED_USES}
 FERTILIZER_DEFS.spoiled_food = {nutrients = TUNING.SPOILED_FOOD_NUTRIENTS}
 FERTILIZER_DEFS.spoiled_fish = {nutrients = TUNING.SPOILED_FOOD_NUTRIENTS}
 FERTILIZER_DEFS.spoiled_fish_small = {nutrients = TUNING.SPOILED_FOOD_NUTRIENTS}
@@ -30,6 +30,10 @@ for fertilizer, data in pairs(FERTILIZER_DEFS) do
 
     if data.name == nil then
         data.name = string.upper(fertilizer)
+    end
+
+    if data.uses == nil then
+        data.uses  = 1
     end
 end
 

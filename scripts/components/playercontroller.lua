@@ -3379,8 +3379,10 @@ function PlayerController:OnRemoteRightClick(actioncode, position, target, rotat
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
         FORCE_ROW_FAIL_HACK = actioncode == ACTIONS.ROW_FAIL.code
+        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = actioncode == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL.code
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
         FORCE_ROW_FAIL_HACK = false
+        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
         if isreleased then
             self.remote_controls[CONTROL_SECONDARY] = nil
         end

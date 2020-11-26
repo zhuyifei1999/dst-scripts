@@ -612,6 +612,8 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "TODO",
 
+    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
 		"Ouchie! Is hot! Don't like it, florp!",
