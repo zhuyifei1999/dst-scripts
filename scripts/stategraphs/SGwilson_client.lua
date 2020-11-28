@@ -475,8 +475,11 @@ local actionhandlers =
     
     ActionHandler(ACTIONS.POUR_WATER, "pour"),
     ActionHandler(ACTIONS.POUR_WATER_GROUNDTILE, "pour"),
-    
-    ActionHandler(ACTIONS.INTERACT_WITH, "dolongaction"),
+
+    ActionHandler(ACTIONS.INTERACT_WITH,
+        function(inst, action)
+            return inst:HasTag("plantkin") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH_FAIL, "dolongaction"),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH, "dolongaction"),
     ActionHandler(ACTIONS.VIEWPLANTHAPPINESS, "dolongaction"),

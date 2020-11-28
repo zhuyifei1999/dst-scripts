@@ -615,9 +615,9 @@ return{
         "I'm learning a lot about this plant I've got!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "What will grow from this seed is a mystery, indeed!",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I've got the scoop on this gardening goop.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -632,7 +632,7 @@ return{
         "I'm so sorry, I'm afraid I'm not quite fluent in plant.",
 		"How dull to spend your life stuck in the ground! Luckily I'm here to make it more exciting!",
         "You like hearing the sound of my voice almost as much as I do, hyuyu!",
-        "Let's play a prank! What do you think the mortals would say if you sprouted into a sheep?",
+        "Let's pull a prank! What do you think the mortals would do if you sprouted into a sheep?",
 	},
 
 	BATTLECRY =
@@ -3700,6 +3700,7 @@ return{
 		FARM_PLOW = "Plowing a plot for picky plants.",
 		FARM_PLOW_ITEM = "All work and no play makes for one unhappy imp.",
 		FARM_HOE = "I've about had my fill of tilling and toiling.",
+		GOLDEN_FARM_HOE = "How splendidly excessive! Hyuyu!",
 		NUTRIENTSGOGGLESHAT = "The gardener's crown to set upon my furry brow.",
 		PLANTREGISTRYHAT = "I beg your pardon, is that a hat for the garden?",
 
@@ -3752,10 +3753,10 @@ return{
 			BURNING = "Hyuyuyu, whoopsie!",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Pulling pranks on the plants, I see!",
+        LORDFRUITFLY = "Hyuyu! I would expect more civility from the nobility!",
+        FRIENDLYFRUITFLY = "This fly has a much more tempered temper.",
+        FRUITFLYFRUIT = "I'll just put that in my pocket and see what happens!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

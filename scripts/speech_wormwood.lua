@@ -614,9 +614,9 @@ return{
         "Learning lots about friend",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "Who it going to be?",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Know all about it",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3698,6 +3698,7 @@ return{
 		FARM_PLOW = "Make ground soft and nice",
 		FARM_PLOW_ITEM = "Where will friends live?",
 		FARM_HOE = "Tuck in babies",
+		GOLDEN_FARM_HOE = "Pretty dirt mover",
 		NUTRIENTSGOGGLESHAT = "Friend looks cozy there",
 		PLANTREGISTRYHAT = "Wear friend on head!",
 
@@ -3750,10 +3751,10 @@ return{
 			BURNING = "Oh no oh no!",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Mean!",
+        LORDFRUITFLY = "No! Leave friends alone!",
+        FRIENDLYFRUITFLY = "Nice to friends",
+        FRUITFLYFRUIT = "Fruit bug friend maker",
     },
 
     DESCRIBE_GENERIC = "Friend?",

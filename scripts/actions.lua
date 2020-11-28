@@ -376,6 +376,8 @@ for k, v in orderedPairs(ACTIONS) do
     ACTIONS_BY_ACTION_CODE[v.code] = v
 end
 
+MOD_ACTIONS_BY_ACTION_CODE = {}
+
 ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction in modutil.lua
 
 ----set up the action functions!
@@ -3279,7 +3281,7 @@ end
 
 ACTIONS.VIEWPLANTHAPPINESS.stroverridefn = function(act)
     local targ = act.target or act.invobject
-    if targ ~= nil and targ.components.plantresearchable then
+    if targ ~= nil and targ:HasTag("plantresearchable") then
         local plant = targ:GetDisplayName()
         return plant ~= nil and subfmt(STRINGS.ACTIONS.VIEWPLANTHAPPINESS.GENERIC_FMT, { plant = plant }) or nil
     end

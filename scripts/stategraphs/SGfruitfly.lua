@@ -97,7 +97,7 @@ local states=
 	
 		timeline =
 		{ 
-			TimeEvent(62 * FRAMES, function(inst)
+			TimeEvent(77 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
 				inst.sg:GoToState("plant_dance_pst")
 			end),
@@ -134,7 +134,10 @@ local states=
 
 		timeline =
 		{
-			TimeEvent(26 * FRAMES, function(inst)
+			TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.spin) end),
+			TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(37 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
 				inst.sg:GoToState("plant_attack_pst")
 			end),
@@ -229,7 +232,7 @@ CommonStates.AddCombatStates(states,
     {
 		TimeEvent(0, function(inst) StartFlap(inst) end),
         TimeEvent(8*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
-		TimeEvent(10*FRAMES, function(inst)	inst.SoundEmitter:PlaySound(inst.sounds.attack) end), --fruitfly only.
+		TimeEvent(7*FRAMES, function(inst)	inst.SoundEmitter:PlaySound(inst.sounds.attack) end), --fruitfly only.
     },
 	deathtimeline = 
 	{

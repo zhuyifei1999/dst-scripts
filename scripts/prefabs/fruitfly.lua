@@ -9,6 +9,19 @@ local sounds = {
     die_ground = "farming/creatures/lord_fruitfly/hit",
     sleep = "farming/creatures/lord_fruitfly/sleep",
     buzz = "farming/creatures/lord_fruitfly/hit",
+    spin = "farming/creatures/lord_fruitfly/spin",
+    plant_attack = "farming/creatures/lord_fruitfly/plant_attack"
+}
+
+local minionsounds = {
+    flap = "farming/creatures/minion_fruitfly/LP",
+    hurt = "farming/creatures/minion_fruitfly/hit",
+    attack = "farming/creatures/minion_fruitfly/attack",
+    die = "farming/creatures/minion_fruitfly/die",
+    die_ground = "farming/creatures/minion_fruitfly/hit",
+    sleep = "farming/creatures/minion_fruitfly/sleep",
+    spin = "farming/creatures/minion_fruitfly/spin",
+    plant_attack = "farming/creatures/minion_fruitfly/plant_attack"
 }
 
 local friendlysounds = {
@@ -57,6 +70,7 @@ local function common_server(inst)
     inst.components.locomotor.pathcaps = {allowocean = true}
 
     MakeMediumFreezableCharacter(inst, "fruit")
+    MakeMediumBurnableCharacter(inst, "fruit")
 
     MakeHauntablePanic(inst)
 
@@ -157,6 +171,7 @@ local function fn()
     inst:AddTag("lordfruitfly")
     inst:AddTag("fruitfly")
     inst:AddTag("hostile")
+    inst:AddTag("epic")
 
     inst.entity:SetPristine()
 
@@ -191,7 +206,7 @@ local function fn()
     inst.components.sleeper:SetWakeTest(ShouldWake)
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
 
     inst.components.locomotor.walkspeed = 4
 
@@ -219,7 +234,7 @@ local miniassets =
 local function minifn()
     local inst = common()
 
-    inst.sounds = sounds
+    inst.sounds = minionsounds
     
     inst.AnimState:SetBuild("fruitfly_evil_minion")
     inst.AnimState:PlayAnimation("idle")
@@ -252,7 +267,7 @@ local function minifn()
     inst:AddComponent("lootdropper")
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = TUNING.SANITYAURA_TINY
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_TINY
 
     inst.components.locomotor.walkspeed = 16
 
@@ -334,6 +349,9 @@ local function friendlyfn()
     inst.components.sleeper:SetWakeTest(FriendlyShouldWakeUp)
 
     inst:AddComponent("lootdropper")
+
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = TUNING.SANITYAURA_TINY
     
     inst:SetBrain(friendlybrain)
     inst:SetStateGraph("SGfruitfly")

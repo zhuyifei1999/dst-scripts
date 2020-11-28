@@ -305,7 +305,7 @@ function GetMaxItemSlots(game_mode)
 end
 
 function GetFarmTillSpacing(game_mode)
-    return GetGameMode(game_mode or TheNet:GetServerGameMode()).override_farm_till_spacing or TUNING.FARM_TILL_SAPCING
+    return GetGameMode(game_mode or TheNet:GetServerGameMode()).override_farm_till_spacing or TUNING.FARM_TILL_SPACING
 end
 
 function GetGameModeMaxPlayers(game_mode)

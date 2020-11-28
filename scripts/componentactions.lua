@@ -29,7 +29,7 @@ local function Row(inst, doer, pos, actions)
         return
     end
 
-    if FORCE_ROW_FAIL_HACK then
+    if CLIENT_REQUESTED_ACTION == ACTIONS.ROW_FAIL then
         table.insert(actions, ACTIONS.ROW_FAIL)
     elseif doer ~= nil and not doer:HasTag("is_row_failing") then
         local animation_fail_time = (doer.AnimState:IsCurrentAnimation("row_pre") and (30/30)) or (4/30)
@@ -58,8 +58,11 @@ local function Row(inst, doer, pos, actions)
 end
 
 local function PlantRegistryResearch(inst, doer, actions)
-    if FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK then
+    if CLIENT_REQUESTED_ACTION == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL then
         table.insert(actions, ACTIONS.PLANTREGISTRY_RESEARCH_FAIL)
+    elseif CLIENT_REQUESTED_ACTION == ACTIONS.VIEWPLANTHAPPINESS and inst:HasTag("farmplantstress") and
+    ((doer.replica.inventory and doer.replica.inventory:EquipHasTag("plantinspector")) or doer:HasTag("plantkin")) then
+        table.insert(actions, ACTIONS.VIEWPLANTHAPPINESS)
     elseif inst ~= doer and (doer.CanExamine == nil or doer:CanExamine()) then
         if doer.replica.inventory and doer.replica.inventory:EquipHasTag("plantinspector") then
             if ((inst.GetPlantRegistryKey and inst.GetResearchStage) and
@@ -71,7 +74,7 @@ local function PlantRegistryResearch(inst, doer, actions)
             else
                 table.insert(actions, ACTIONS.PLANTREGISTRY_RESEARCH_FAIL)
             end
-        elseif doer:HasTag("plantkin") then
+        elseif doer:HasTag("plantkin") and inst:HasTag("farmplantstress") then
             table.insert(actions, ACTIONS.VIEWPLANTHAPPINESS)
         end
     end
@@ -710,7 +713,7 @@ local COMPONENT_ACTIONS =
         end,
 
         farmplantable = function(inst, doer, target, actions)
-            if target:HasTag("soil") then
+            if target:HasTag("soil") and not target:HasTag("NOCLICK") then
                 table.insert(actions, ACTIONS.PLANTSOIL)
             end
         end,

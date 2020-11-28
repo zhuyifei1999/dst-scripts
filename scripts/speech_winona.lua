@@ -618,7 +618,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "We'll see what happens!",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Yeah, I think I've got the gist.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3700,6 +3700,7 @@ return{
 		FARM_PLOW = "Now that's handy!",
 		FARM_PLOW_ITEM = "This gizmo will get us gardening in no time flat!",
 		FARM_HOE = "Let's get to planting, then!",
+		GOLDEN_FARM_HOE = "Awfully ritzy for yard work.",
 		NUTRIENTSGOGGLESHAT = "It's kinda fancy-shmancy for farming, but at least it's useful.",
 		PLANTREGISTRYHAT = "Better fill my noggin' with some planting know-how.",
 

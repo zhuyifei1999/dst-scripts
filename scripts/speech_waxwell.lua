@@ -612,7 +612,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "It had better grow into something worthwhile.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I'm growing more knowledgeable than I'd care to be about this stuff.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3694,6 +3694,7 @@ return{
 		FARM_PLOW = "Thankfully it seems capable of doing the work itself.",
 		FARM_PLOW_ITEM = "Some kind of farming implement? I've no interest in such things.",
 		FARM_HOE = "Am I to be reduced to a common farmhand?",
+		GOLDEN_FARM_HOE = "A bit extravagant, don't you think?",
 		NUTRIENTSGOGGLESHAT = "I suppose the Ancients were farmers once, before they turned to the fuel.",
 		PLANTREGISTRYHAT = "I'm really supposed to put that contraption on my head?",
 

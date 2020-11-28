@@ -612,7 +612,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "I wonder what it will turn out to be.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I think I know everything I need to, non?",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3694,6 +3694,7 @@ return{
 		FARM_PLOW = "What a handy machine!",
 		FARM_PLOW_ITEM = "Now, where to start the garden...",
 		FARM_HOE = "I'd better get planting if I want some fresh ingredients.",
+		GOLDEN_FARM_HOE = "Good tools do make a difference.",
 		NUTRIENTSGOGGLESHAT = "I'd best ensure our plants are well fed with the proper nutrients!",
 		PLANTREGISTRYHAT = "It never hurts to learn more about what goes into your food.",
 

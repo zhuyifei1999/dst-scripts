@@ -98,6 +98,7 @@ local function ShouldAcceptItem(inst, item)
     local can_accept = item.components.edible
         and (Prefabs[seed_name] 
         or item.prefab == "seeds"
+        or string.match(item.prefab, "_seeds")
         or item.components.edible.foodtype == FOODTYPE.MEAT)
 
     if table.contains(invalid_foods, item.prefab) then
@@ -116,6 +117,7 @@ local function OnGetItem(inst, giver, item)
     if item.components.edible ~= nil and
         (   item.components.edible.foodtype == FOODTYPE.MEAT
             or item.prefab == "seeds"
+            or string.match(item.prefab, "_seeds")
             or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
         ) then
         --If the item is edible...

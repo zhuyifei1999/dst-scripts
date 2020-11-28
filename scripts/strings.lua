@@ -424,7 +424,7 @@ STRINGS =
 		INTERACT_WITH =
 		{
             GENERIC = "Interact With",
-			FARM_PLANT = "Tend To",
+			FARM_PLANT = "Talk To",
 		},
         MINE = "Mine",
         ATTACK =
@@ -760,8 +760,8 @@ STRINGS =
         PLANTREGISTRY_RESEARCH_FAIL = "Research",
         PLANTREGISTRY_RESEARCH = "Research",
         VIEWPLANTHAPPINESS = {
-            GENERIC = "Inspect Happiness",
-            GENERIC_FMT = "Inspect {plant} Happiness",
+            GENERIC = "Assess Happiness",
+            GENERIC_FMT = "Assess {plant}'s Happiness",
         },
 
 		-- Winter's Feast 2019
@@ -881,6 +881,7 @@ STRINGS =
         GARLIC_OVERSIZED = "Giant Garlic",
         ASPARAGUS_OVERSIZED = "Giant Asparagus",
         PEPPER_OVERSIZED = "Giant Pepper",
+        WATERMELON_OVERSIZED = "Giant Watermelon",
 
         CARROT_OVERSIZED_ROTTEN = "Giant Rotting Carrots",
         PUMPKIN_OVERSIZED_ROTTEN = "Giant Rotting Pumpkin",
@@ -895,6 +896,7 @@ STRINGS =
         GARLIC_OVERSIZED_ROTTEN = "Giant Rotting Garlic",
         ASPARAGUS_OVERSIZED_ROTTEN = "Giant Rotting Asparagus",
         PEPPER_OVERSIZED_ROTTEN = "Giant Rotting Pepper",
+        WATERMELON_OVERSIZED_OVERSIZED = "Giant Rotting Watermelon",
 
 		FARM_PLANT_SEED = "Planted {seed}",
 		FARM_PLANT_RANDOMSEED = "Planted Seed",
@@ -2898,6 +2900,7 @@ STRINGS =
 		FARM_PLOW = "Garden Rigamajig",
 		FARM_PLOW_ITEM = "Garden Rigamajig",
 		FARM_HOE = "Garden Hoe",
+		GOLDEN_FARM_HOE = "Luxury Garden Hoe",
         NUTRIENTSGOGGLESHAT = "Premier Gardeneer Hat",
 		PLANTREGISTRYHAT = "Gardeneer Hat",
         
@@ -2905,7 +2908,7 @@ STRINGS =
         COMPOST = "Compost",
 
 		SOIL_AMENDER = "Growth Formula Starter",
-        SOIL_AMENDER_FRESH = "Weak Formula Starter",
+        SOIL_AMENDER_FRESH = "Growth Formula Starter",
         SOIL_AMENDER_STALE = "Fermenting Growth Formula",
         SOIL_AMENDER_SPOILED = "Fermented Growth Formula",
 		SOIL_AMENDER_FERMENTED = "Super Growth Formula",
@@ -3530,6 +3533,7 @@ STRINGS =
 		-- FARMING
 		FARM_PLOW_ITEM = "Plow a plot for your plants.",
 		FARM_HOE = "Till soil for crop seeds.",
+		GOLDEN_FARM_HOE = "Elegantly till soil for crop seeds.",
         NUTRIENTSGOGGLESHAT = "Visualize your garden's success.",
 		PLANTREGISTRYHAT = "Allow your gardening expertise to grow.",
 
@@ -5685,16 +5689,20 @@ STRINGS.UI =
             WEED_FIRENETTLE = "These nettles spread through a garden like wildfire, and carry a burning toxin. -W",
             WEED_IVY = "An aggressive, invasive species that will invade your own space when provoked. -W",
         },
+
         NUTRIENTS = {
-            NUTRIENT_1 = "Manure",
+            NUTRIENT_1 = "Growth Formula",
             NUTRIENT_2 = "Compost",
-            NUTRIENT_3 = "Growth Formula",
+            NUTRIENT_3 = "Manure",
+            RESTORE = "Restores ",
+            CONSUME = "Consumes ",
+            NEUTRAL = "Doesn't affect "
         },
 
         FARMPLANTS = {
             SEASONS = "Seasons",
             WATER = "Water Consumption",
-            NUTRIENTS = "Nutrients Cycling",
+            NUTRIENTS = "Nutrient Cycling",
             DESCRIPTION = "Field Notes",
             SEED = "Seed",
             PRODUCT = "Product",
@@ -5702,7 +5710,7 @@ STRINGS.UI =
 
         WEEDPLANTS = {
             WATER = "Water Consumption",
-            NUTRIENTS = "Nutrients Cycling",
+            NUTRIENTS = "Nutrient Cycling",
             EFFECTS = "Effects",
             DESCRIPTION = "Description",
             PRODUCT = "Product",

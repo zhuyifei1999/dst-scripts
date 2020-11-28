@@ -180,7 +180,7 @@ function FertilizersPage:BuildFertlizerScrollGrid()
 					if nutrient_count == 0 then
 						imagename = "nutrient_neutral.tex"
 					else
-						local nutrients_modifier_num = (nutrient_count < 4 and 1) or (nutrient_count >= 8 and 3) or 2
+						local nutrients_modifier_num = (nutrient_count < 4 and 1) or (nutrient_count >= 8 and 4) or 2
 						imagename = "nutrient_up_"..nutrients_modifier_num..".tex"
 					end
 					d.arrow_icon:SetTexture("images/plantregistry.xml", imagename)

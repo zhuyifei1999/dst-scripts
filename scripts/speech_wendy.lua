@@ -616,7 +616,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "It is buried. I wonder what will grow.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I suppose we will all be nourishment for plants one day.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1750,7 +1750,7 @@ return{
 		GOLDENAXE = "One might as well kill trees with style.",
 		GOLDENPICKAXE = "One might as well smash rocks with style.",
 		GOLDENPITCHFORK = "One might as well till fields with style.",
-		GOLDENSHOVEL = "One might as well can dig with style.",
+		GOLDENSHOVEL = "One might as well dig with style.",
 		GOLDNUGGET = "Even in purgatory it remains the most precious of metals.",
 		GRASS =
 		{
@@ -3698,6 +3698,7 @@ return{
 		FARM_PLOW = "It's fighting against the ground.",
 		FARM_PLOW_ITEM = "I suppose I must find a place for the garden.",
 		FARM_HOE = "I must prepare the seeds for their burial.",
+		GOLDEN_FARM_HOE = "One might as well garden in style.",
 		NUTRIENTSGOGGLESHAT = "I used to like reading about plants... I suppose this is similar in a way.",
 		PLANTREGISTRYHAT = "I don't like to play in the dirt...",
 

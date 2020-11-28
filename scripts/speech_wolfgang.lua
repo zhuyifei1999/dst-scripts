@@ -611,9 +611,9 @@ return{
         "Plant learning is easy! Just need right hat!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "Will see what tiny seed grows into.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "This is known to Wolfgang.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3695,6 +3695,7 @@ return{
 		FARM_PLOW = "It is doing a mighty job!",
 		FARM_PLOW_ITEM = "Will make garden full of fruits and veggies for Wolfgang!",
 		FARM_HOE = "Is to till soil for tiny seeds.",
+		GOLDEN_FARM_HOE = "Fancy garden hoe good for planting seeds!",
 		NUTRIENTSGOGGLESHAT = "Fills Wolfgang's head with the plant know-hows!",
 		PLANTREGISTRYHAT = "Is helmet for gardening?",
 
@@ -3747,10 +3748,10 @@ return{
 			BURNING = "No! Is burning!",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Wolfgang not like bugs!",
+        LORDFRUITFLY = "Ack! Is big and creepy!",
+        FRIENDLYFRUITFLY = "Is helpful bug, but still creepy.",
+        FRUITFLYFRUIT = "Weird thing attracts helpful, creepy flies.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

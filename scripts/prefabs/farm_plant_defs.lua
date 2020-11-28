@@ -131,17 +131,17 @@ PLANT_DEFS.corn.nutrient_consumption,			PLANT_DEFS.corn.nutrient_restoration			=
 PLANT_DEFS.potato.nutrient_consumption,			PLANT_DEFS.potato.nutrient_restoration			= {0,			0,				nutrient_M},	{true,	true,	nil}
 PLANT_DEFS.tomato.nutrient_consumption,			PLANT_DEFS.tomato.nutrient_restoration			= {nutrient_S,	nutrient_S,		0},				{nil,	nil,	true}
 --
-PLANT_DEFS.asparagus.nutrient_consumption,		PLANT_DEFS.asparagus.nutrient_restoration		= {0,			nutrient_M,		0},				{nil,	nil,	true}
-PLANT_DEFS.eggplant.nutrient_consumption,		PLANT_DEFS.eggplant.nutrient_restoration		= {0,			0,				nutrient_M},	{nil,	true,	nil}
-PLANT_DEFS.pumpkin.nutrient_consumption,		PLANT_DEFS.pumpkin.nutrient_restoration			= {nutrient_M,	0,				0},				{nil,	true,	nil}
+PLANT_DEFS.asparagus.nutrient_consumption,		PLANT_DEFS.asparagus.nutrient_restoration		= {0,			nutrient_M,		0},				{true,	nil,	true}
+PLANT_DEFS.eggplant.nutrient_consumption,		PLANT_DEFS.eggplant.nutrient_restoration		= {0,			0,				nutrient_M},	{true,	true,	nil}
+PLANT_DEFS.pumpkin.nutrient_consumption,		PLANT_DEFS.pumpkin.nutrient_restoration			= {nutrient_M,	0,				0},				{nil,	true,	true}
 PLANT_DEFS.watermelon.nutrient_consumption,		PLANT_DEFS.watermelon.nutrient_restoration		= {0,			nutrient_S,		nutrient_S},	{true,	nil,	nil}
 --
-PLANT_DEFS.dragonfruit.nutrient_consumption,	PLANT_DEFS.dragonfruit.nutrient_restoration		= {0,			0,				nutrient_L},	{nil,	true,	nil}
-PLANT_DEFS.durian.nutrient_consumption,			PLANT_DEFS.durian.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	nil,	nil}
-PLANT_DEFS.garlic.nutrient_consumption,			PLANT_DEFS.garlic.nutrient_restoration			= {0,			nutrient_L,		0},				{true,	nil,	nil}
-PLANT_DEFS.onion.nutrient_consumption,			PLANT_DEFS.onion.nutrient_restoration			= {nutrient_L,	0,				0},				{nil,	nil,	true}
-PLANT_DEFS.pepper.nutrient_consumption,			PLANT_DEFS.pepper.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	nil,	nil}
-PLANT_DEFS.pomegranate.nutrient_consumption,	PLANT_DEFS.pomegranate.nutrient_restoration		= {nutrient_L,	0,				0},				{nil,	true,	nil}
+PLANT_DEFS.dragonfruit.nutrient_consumption,	PLANT_DEFS.dragonfruit.nutrient_restoration		= {0,			0,				nutrient_L},	{true,	true,	nil}
+PLANT_DEFS.durian.nutrient_consumption,			PLANT_DEFS.durian.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	true,	nil}
+PLANT_DEFS.garlic.nutrient_consumption,			PLANT_DEFS.garlic.nutrient_restoration			= {0,			nutrient_L,		0},				{true,	nil,	true}
+PLANT_DEFS.onion.nutrient_consumption,			PLANT_DEFS.onion.nutrient_restoration			= {nutrient_L,	0,				0},				{nil,	true,	true}
+PLANT_DEFS.pepper.nutrient_consumption,			PLANT_DEFS.pepper.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	true,	nil}
+PLANT_DEFS.pomegranate.nutrient_consumption,	PLANT_DEFS.pomegranate.nutrient_restoration		= {nutrient_L,	0,				0},				{nil,	true,	true}
 
 -- Killjoys
 PLANT_DEFS.randomseed.max_killjoys_tolerance	= TUNING.FARM_PLANT_KILLJOY_TOLERANCE
@@ -195,6 +195,7 @@ for veggie, data in pairs(PLANT_DEFS) do
 	if data.is_randomseed then
 		data.seed = "seeds"
 		data.plant_type_tag = "farm_plant_randomseed"
+		data.family_min_count = 0
 	else
 		data.product = veggie
 		data.product_oversized = veggie.."_oversized"

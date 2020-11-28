@@ -16,7 +16,7 @@ local function GetFollowPos(inst)
     if inst.components.follower and inst.components.follower.leader then
         return inst.components.follower.leader:GetPosition()
     elseif inst.components.knownlocations then
-        return inst.components.knownlocations:GetLocation("home")
+        return inst.components.knownlocations:GetLocation("home") or inst:GetPosition()
     end
     return inst:GetPosition()
 end

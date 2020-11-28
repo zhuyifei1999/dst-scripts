@@ -21,9 +21,10 @@ local GARDENING_CANT_TAGS = { "pickable", "stump", "withered", "barren", "INLIMB
 
 --helper function for book_gardening
 local function trygrowth(inst)
-    if inst:IsInLimbo()
-        or (inst.components.witherable ~= nil and
-            inst.components.witherable:IsWithered()) then
+    if not inst:IsValid()
+		or inst:IsInLimbo()
+        or (inst.components.witherable ~= nil and inst.components.witherable:IsWithered()) then
+
         return false
     end
 

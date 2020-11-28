@@ -437,12 +437,14 @@ function Pickable:Pick(picker)
 							if item.components.inventoryitem ~= nil then
 								item.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
 							end
-							picker.components.inventory:GiveItem(item, nil, self.inst:GetPosition())
 						end
 					end
 					if next(loot) ~= nil then
 						picker:PushEvent("picksomething", { object = self.inst, loot = loot })
-					end
+                    end
+                    for i, item in ipairs(loot) do
+                        picker.components.inventory:GiveItem(item, nil, self.inst:GetPosition())
+                    end
 				else
 					loot = SpawnPrefab(self.product)
 					if loot ~= nil then

@@ -203,7 +203,7 @@ local WEIGHTED_SEED_TABLE = require("prefabs/weed_defs").weighted_seed_table
 
 local function TrySpawnWeed(x, y)
 	local data = tile_data[x] ~= nil and tile_data[x][y] or nil
-	if data ~= nil and data.nutrients_overlay ~= nil then
+	if data ~= nil and data.nutrients_overlay ~= nil and data.nutrients_overlay:IsValid() then
 		local half_tile = TILE_SCALE * 0.9 / 2
 
 		local soil, spawn_x, spawn_y, spawn_z
@@ -357,7 +357,7 @@ function self:AddTileNutrients(x, y, nutrient1, nutrient2, nutrient3)
 	return true
 end
 
-function self:CycleNutrientsAtPoint(_x, _y, _z, consume, restore)
+function self:CycleNutrientsAtPoint(_x, _y, _z, consume, restore, test_only)
 	--local data = GetTileDataAtPoint(true, _x, _y, _z)
 
     local x, y = TheWorld.Map:GetTileCoordsAtPoint(_x, _y, _z)
@@ -372,7 +372,11 @@ function self:CycleNutrientsAtPoint(_x, _y, _z, consume, restore)
             updatenutrients[n_type] = updatenutrients[n_type] + -consumptioncount
             total_restore_count = total_restore_count + consumptioncount
 			depleted = depleted or consumptioncount ~= count
-        end
+		end
+		
+		if test_only then
+			return depleted
+		end
 
         if restore then
             --amount of valid nutrient types to restore
@@ -493,7 +497,10 @@ function self:OnLoad(data)
 			end
 		end
         if data.lordfruitfly_spawntime then
-            StartFruitFlyTimer(data.lordfruitfly_spawntime)
+			StartFruitFlyTimer(data.lordfruitfly_spawntime)
+		else
+			lordfruitfly_spawntime.timer:Cancel()
+			lordfruitfly_spawntime = nil
         end
     end
 end
@@ -517,7 +524,9 @@ function self:GetDebugString()
     end
     if lordfruitfly_spawntime then
         s = s .. " lordfruitfly spawntime: "..(lordfruitfly_spawntime.end_time - GetTime())
-    else
+	elseif TheSim:FindFirstEntityWithTag("lordfruitfly") then
+		s = s .. " lordfruitfly spawned!"
+	else
         s = s .. " lordfruitfly spawntime: spawn pending!"
     end
 	return s

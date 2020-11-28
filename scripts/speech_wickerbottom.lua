@@ -612,7 +612,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "Once it grows I'll be able to identify the species.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Even with my considerable gardening experience, there's always something new to learn.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3694,6 +3694,7 @@ return{
 		FARM_PLOW = "How very efficient!",
 		FARM_PLOW_ITEM = "I'd best find a suitable spot for my garden.",
 		FARM_HOE = "Humans have cultivated crops since Neolithic times.",
+		GOLDEN_FARM_HOE = "The most malleable of metals, but let's see how it does in the garden.",
 		NUTRIENTSGOGGLESHAT = "The prudent gardener ensures they are able to discern every detail about their crops.",
 		PLANTREGISTRYHAT = "It seems to be a wearable directory of sorts, detailing various plant strains.",
 

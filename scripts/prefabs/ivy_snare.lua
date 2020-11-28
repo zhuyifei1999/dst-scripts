@@ -88,6 +88,7 @@ local function fn()
 
     inst:AddTag("groundspike")
     inst:AddTag("hostile")
+	inst:AddTag("soulless")
 
     inst.entity:SetPristine()
 

@@ -3260,7 +3260,7 @@ function PlayerController:OnLeftClick(down)
     self:DoAction(act)
 end
 
-FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
+CLIENT_REQUESTED_ACTION = nil
 
 function PlayerController:OnRemoteLeftClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
@@ -3268,9 +3268,13 @@ function PlayerController:OnRemoteLeftClick(actioncode, position, target, isrele
 
         self.remote_controls[CONTROL_PRIMARY] = 0
         self:DecodeControlMods(controlmodscode)
-        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = actioncode == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL.code
+        if mod_name then
+            CLIENT_REQUESTED_ACTION = MOD_ACTIONS_BY_ACTION_CODE[mod_name] and MOD_ACTIONS_BY_ACTION_CODE[mod_name][actioncode]
+        else
+            CLIENT_REQUESTED_ACTION = ACTIONS_BY_ACTION_CODE[actioncode]
+        end
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
-        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
+        CLIENT_REQUESTED_ACTION = nil
         if isreleased then
             self.remote_controls[CONTROL_PRIMARY] = nil
         end
@@ -3371,18 +3375,17 @@ function PlayerController:OnRightClick(down)
     end
 end
 
---TODO(YOG): Make a better way of forcing the server to play the expected client action
-FORCE_ROW_FAIL_HACK = false
-
 function PlayerController:OnRemoteRightClick(actioncode, position, target, rotation, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
-        FORCE_ROW_FAIL_HACK = actioncode == ACTIONS.ROW_FAIL.code
-        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = actioncode == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL.code
+        if mod_name then
+            CLIENT_REQUESTED_ACTION = MOD_ACTIONS_BY_ACTION_CODE[mod_name] and MOD_ACTIONS_BY_ACTION_CODE[mod_name][actioncode]
+        else
+            CLIENT_REQUESTED_ACTION = ACTIONS_BY_ACTION_CODE[actioncode]
+        end
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
-        FORCE_ROW_FAIL_HACK = false
-        FORCE_PLANTREGISTRY_RESEARCH_FAIL_HACK = false
+        CLIENT_REQUESTED_ACTION = nil
         if isreleased then
             self.remote_controls[CONTROL_SECONDARY] = nil
         end

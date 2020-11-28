@@ -610,9 +610,9 @@ return{
         "My head hath been filled with useless knowledge about non-meat!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "Whatever emerges, I shall not care for it.",
+    ANNOUNCE_PLANT_RANDOMSEED = "I care not what shall emerge.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "What need hath a warrior of this knowledge?",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3694,6 +3694,7 @@ return{
 		FARM_PLOW = "I claim this soil for the garden!",
 		FARM_PLOW_ITEM = "A ferocious weapon against untamed soil.",
 		FARM_HOE = "To bury those useless seeds deep in the ground.",
+		GOLDEN_FARM_HOE = "A tool far too magnificent for those worthless seeds.",
 		NUTRIENTSGOGGLESHAT = "I care not for learning about that which sprouts from the dirt.",
 		PLANTREGISTRYHAT = "This is no helm for a warrior!",
 

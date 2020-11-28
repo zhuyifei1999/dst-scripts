@@ -621,7 +621,7 @@ return {
 
     ANNOUNCE_PLANT_RANDOMSEED = "I wonder what it will grow into.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I'd rather not know anything further.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3703,6 +3703,7 @@ return {
 		FARM_PLOW = "A convenient plot device.",
 		FARM_PLOW_ITEM = "I'd better find a good spot for my garden before I use it.",
 		FARM_HOE = "I have to make the ground more comfortable for the seeds.",
+		GOLDEN_FARM_HOE = "Do I really need something this fancy to move dirt around?",
 		NUTRIENTSGOGGLESHAT = "This will help me see all the science hiding in the dirt.",
 		PLANTREGISTRYHAT = "To understand the plant, you must wear the plant.",
 

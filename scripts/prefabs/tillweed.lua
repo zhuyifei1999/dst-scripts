@@ -40,7 +40,7 @@ local function fn()
     inst:AddComponent("tradable")
 
     inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.SMALL_TINY
+    inst.components.fuel.fuelvalue = TUNING.TINY_FUEL
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)

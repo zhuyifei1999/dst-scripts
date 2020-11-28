@@ -176,11 +176,8 @@ local KILLJOY_PLANT_MUST_TAGS = {"farm_plant_killjoy"}
 local POLLEN_SOURCE_NOT_TAGS = {"farm_plant_killjoy"}
 
 local function KillJoyStressTest(inst, currentstress, apply)
-	if inst.plant_def.max_killjoys_tolerance then
-		local x, y, z = inst.Transform:GetWorldPosition()
-		return #TheSim:FindEntities(x, y, z, TUNING.FARM_PLANT_KILLJOY_RADIUS, KILLJOY_PLANT_MUST_TAGS) > inst.plant_def.max_killjoys_tolerance
-	end
-	return false
+	local x, y, z = inst.Transform:GetWorldPosition()
+	return #TheSim:FindEntities(x, y, z, TUNING.FARM_PLANT_KILLJOY_RADIUS, KILLJOY_PLANT_MUST_TAGS) > inst.plant_def.max_killjoys_tolerance
 end
 
 local function FamilyStressTest(inst, currentstress, apply)
@@ -290,8 +287,12 @@ local function MakePickable(inst, enable, product)
         end
 	    inst.components.pickable:SetUp(nil)
 		inst.components.pickable.use_lootdropper_for_product = true
-	    inst.components.pickable.picksound = product == "spoiled_food" and "dontstarve/wilson/harvest_berries" or "dontstarve/wilson/pickup_plants"
-		inst:AddTag("fruitflyspawner")
+		inst.components.pickable.picksound = product == "spoiled_food" and "dontstarve/wilson/harvest_berries" or "dontstarve/wilson/pickup_plants"
+		if not inst:HasTag("farm_plant_killjoy") then
+			inst:AddTag("fruitflyspawner")
+		else
+			inst:RemoveTag("fruitflyspawner")
+		end
     end
 end
 

@@ -611,9 +611,9 @@ return{
         "I sure am learnin' a lot about gardening!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "I'm hopin' it's a maple tree.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I think I know aboot as much as I wanna know.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3695,6 +3695,7 @@ return{
 		FARM_PLOW = "Looks like it's got things under control.",
 		FARM_PLOW_ITEM = "Where should we put the garden, Luce?",
 		FARM_HOE = "Better get planting.",
+		GOLDEN_FARM_HOE = "Now that I've made it, might as well put it to good use.",
 		NUTRIENTSGOGGLESHAT = "This thing sure helps take the guesswork out of gardening.",
 		PLANTREGISTRYHAT = "Looks like some organic headwear.",
 
@@ -3747,10 +3748,10 @@ return{
 			BURNING = "Who's the hoser that set my garden on fire?",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "What did the plants ever do to you, eh?",
+        LORDFRUITFLY = "You came to the wrong garden, bud.",
+        FRIENDLYFRUITFLY = "See? We can all get along.",
+        FRUITFLYFRUIT = "Those Fruit Flies seem to have a real liking for it.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

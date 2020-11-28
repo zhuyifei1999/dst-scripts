@@ -364,10 +364,13 @@ for _, skin_asset in pairs(require("skin_assets")) do
 end
 
 -- cookbook HD images
-for _, recipe_cat in pairs(require("cooking").cookbook_recipes) do
+local cooking = require("cooking")
+for _, recipe_cat in pairs(cooking.cookbook_recipes) do
 	for _, data in pairs(recipe_cat) do
-	    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/cookbook_"..data.name..".xml"))
-	    table.insert(assets, Asset("PKGREF", "images/cookbook_"..data.name..".tex"))
+        if not cooking.IsModCookerFood(data.name) then
+            table.insert(assets, Asset("DYNAMIC_ATLAS", "images/cookbook_"..data.name..".xml"))
+            table.insert(assets, Asset("PKGREF", "images/cookbook_"..data.name..".tex"))
+        end
 	end
 end
 

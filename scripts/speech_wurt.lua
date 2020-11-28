@@ -610,9 +610,9 @@ return{
         "Oooh, learn new plant thing!",
     },
 
-    ANNOUNCE_PLANT_RANDOMSEED = "TODO",
+    ANNOUNCE_PLANT_RANDOMSEED = "What it gonna be?",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "TODO",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Know lots about this stuff!",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -3694,6 +3694,7 @@ return{
 		FARM_PLOW = "It fighting the dirt!",
 		FARM_PLOW_ITEM = "Scaleless use it to make \"guard-in.\"",
 		FARM_HOE = "Make hole for baby plants.",
+		GOLDEN_FARM_HOE = "Fancy digger for baby plants, florp.",
 		NUTRIENTSGOGGLESHAT = "Extra shiny plant learning hat!",
 		PLANTREGISTRYHAT = "Wear plant on head to learn about plant? Make sense, florp!",
 
@@ -3710,7 +3711,7 @@ return{
 			GENERIC = "Mine gonna win!",
 			HAS_ITEM = "Weight: {weight}\nHarvested on day: {day}\nMaybe take teeny little bite...",
             HAS_ITEM_HEAVY = "Weight: {weight}\nHarvested on day: {day}\nWanna eat it... anyone looking, florp?",
-            HAS_ITEM_LIGHT = "TODO",
+            HAS_ITEM_LIGHT = "Hey! Why it not working, florp?",
 			BURNING = "Aaah! Who did it?!",
 			BURNT = "Aww...",
         },
@@ -3746,10 +3747,10 @@ return{
 			BURNING = "Glurp! Fire!",
         },
         
-        FRUITFLY = "TODO",
-        LORDFRUITFLY = "TODO",
-        FRIENDLYFRUITFLY = "TODO",
-        FRUITFLYFRUIT = "TODO",
+        FRUITFLY = "Nasty bug! Go away!",
+        LORDFRUITFLY = "Grrr, go away! Those plants mine!",
+        FRIENDLYFRUITFLY = "It seem ok. Will keep eye on it though, florpt.",
+        FRUITFLYFRUIT = "Come with me fruit bug!",
     },
 
     DESCRIBE_GENERIC = "What that?",

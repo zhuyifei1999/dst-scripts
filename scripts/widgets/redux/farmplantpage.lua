@@ -288,24 +288,29 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
             end
             local nutrients_icon = self.root:AddChild(Image("images/plantregistry.xml", "nutrient_"..nutrient_type..".tex"))
             nutrients_icon:ScaleToSize(nutrients_size,nutrients_size)
-            nutrients_icon:SetHoverText(STRINGS.UI.PLANTREGISTRY.NUTRIENTS[string.upper("nutrient_"..nutrient_type)], {offset_y = 32})
 
             nutrients_icon.nutrient_type = nutrient_type
             local neutral = consume_count == 0
             local positive = consume_count > 0
 
             local imagename
+            local prefix
             if neutral then
                 imagename = "nutrient_neutral.tex"
+                prefix = STRINGS.UI.PLANTREGISTRY.NUTRIENTS.NEUTRAL
             else
                 local abs_consume_count = math.abs(consume_count)
-                local nutrients_modifier_num = (abs_consume_count <= TUNING.FARM_PLANT_CONSUME_NUTRIENT_LOW and 1) or (abs_consume_count >= TUNING.FARM_PLANT_CONSUME_NUTRIENT_HIGH and 3) or 2
+                local nutrients_modifier_num = (abs_consume_count <= TUNING.FARM_PLANT_CONSUME_NUTRIENT_LOW and 1) or (abs_consume_count >= TUNING.FARM_PLANT_CONSUME_NUTRIENT_HIGH and 4) or 2
                 if positive then
                     imagename = "nutrient_up_"..nutrients_modifier_num..".tex"
+                    prefix = STRINGS.UI.PLANTREGISTRY.NUTRIENTS.RESTORE
                 else
                     imagename = "nutrient_down_"..nutrients_modifier_num..".tex"
+                    prefix = STRINGS.UI.PLANTREGISTRY.NUTRIENTS.CONSUME
                 end
             end
+
+            nutrients_icon:SetHoverText(prefix..STRINGS.UI.PLANTREGISTRY.NUTRIENTS[string.upper("nutrient_"..nutrient_type)], {offset_y = 32})
 
             nutrients_icon.modifier = self.root:AddChild(Image("images/plantregistry.xml", imagename))
             nutrients_icon.modifier:ScaleToSize(nutrients_size,nutrients_size)

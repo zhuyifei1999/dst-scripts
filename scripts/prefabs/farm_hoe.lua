@@ -1,6 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/quagmire_hoe.zip"),
+    Asset("ANIM", "anim/goldenhoe.zip"),
+    Asset("ANIM", "anim/swap_goldenhoe.zip"),
 }
 
 local prefabs =
@@ -19,7 +21,16 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
 end
 
-local function fn()
+local function onequipgold(inst, owner)local skin_build = inst:GetSkinBuild()
+    owner.AnimState:OverrideSymbol("swap_object", "swap_goldenhoe", "swap_goldenhoe")    
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
+    owner.AnimState:Show("ARM_carry")
+    owner.AnimState:Hide("ARM_normal")
+end
+
+
+
+local function common_fn(build)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -29,14 +40,16 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("quagmire_hoe")
-    inst.AnimState:SetBuild("quagmire_hoe")
+    inst.AnimState:SetBank(build)
+    inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
 
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
+
+    MakeInventoryFloatable(inst, "med", 0.05, {0.8, 0.4, 0.8})
 
     inst.entity:SetPristine()
 
@@ -70,4 +83,34 @@ local function fn()
     return inst
 end
 
-return Prefab("farm_hoe", fn, assets, prefabs)
+local function fn()
+    local inst = common_fn("quagmire_hoe")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_quagmire_hoe"})
+
+	return inst
+end
+
+local function golden()
+    local inst = common_fn("goldenhoe")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.finiteuses:SetConsumption(ACTIONS.TILL, 1 / TUNING.GOLDENTOOLFACTOR)
+    inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
+
+    inst.components.equippable:SetOnEquip(onequipgold)
+
+    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_goldenhoe"})
+
+    return inst
+end
+
+return Prefab("farm_hoe", fn, assets, prefabs),
+    Prefab("golden_farm_hoe", golden, assets, prefabs)

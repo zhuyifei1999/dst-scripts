@@ -235,7 +235,7 @@ local function item_ondeploy(inst, pt, deployer)
 	inst.components.finiteuses:Use(1)
 	if inst:IsValid() then
 		obj.deploy_item_save_record = inst:GetSaveRecord()
-		inst:RemoveFromScene()
+		inst:Remove()
 	end
 end
 
