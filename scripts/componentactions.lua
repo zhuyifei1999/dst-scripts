@@ -58,24 +58,27 @@ local function Row(inst, doer, pos, actions)
 end
 
 local function PlantRegistryResearch(inst, doer, actions)
-    if CLIENT_REQUESTED_ACTION == ACTIONS.PLANTREGISTRY_RESEARCH_FAIL then
-        table.insert(actions, ACTIONS.PLANTREGISTRY_RESEARCH_FAIL)
-    elseif CLIENT_REQUESTED_ACTION == ACTIONS.VIEWPLANTHAPPINESS and inst:HasTag("farmplantstress") and
-    ((doer.replica.inventory and doer.replica.inventory:EquipHasTag("plantinspector")) or doer:HasTag("plantkin")) then
-        table.insert(actions, ACTIONS.VIEWPLANTHAPPINESS)
-    elseif inst ~= doer and (doer.CanExamine == nil or doer:CanExamine()) then
-        if doer.replica.inventory and doer.replica.inventory:EquipHasTag("plantinspector") then
-            if ((inst.GetPlantRegistryKey and inst.GetResearchStage) and
-                not ThePlantRegistry:KnowsPlantStage(inst:GetPlantRegistryKey(), inst:GetResearchStage())) or
-                ((inst.GetFertilizerKey) and not ThePlantRegistry:KnowsFertilizer(inst:GetFertilizerKey())) then
-                table.insert(actions, ACTIONS.PLANTREGISTRY_RESEARCH)
-            elseif inst:HasTag("farmplantstress") then
-                table.insert(actions, ACTIONS.VIEWPLANTHAPPINESS)
+    if inst ~= doer and (doer.CanExamine == nil or doer:CanExamine()) then
+        local plantinspector = doer.replica.inventory and doer.replica.inventory:EquipHasTag("plantinspector") or false
+        local plantkin = doer:HasTag("plantkin")
+
+        if plantinspector and ((inst.GetPlantRegistryKey and inst.GetResearchStage) or inst.GetFertilizerKey) then
+            local act
+            if (inst:HasTag("plantresearchable") and not ThePlantRegistry:KnowsPlantStage(inst:GetPlantRegistryKey(), inst:GetResearchStage())) or
+            (inst:HasTag("fertilizerresearchable") and not ThePlantRegistry:KnowsFertilizer(inst:GetFertilizerKey())) then
+                act = ACTIONS.PLANTREGISTRY_RESEARCH
             else
-                table.insert(actions, ACTIONS.PLANTREGISTRY_RESEARCH_FAIL)
+                act = ACTIONS.PLANTREGISTRY_RESEARCH_FAIL
             end
-        elseif doer:HasTag("plantkin") and inst:HasTag("farmplantstress") then
-            table.insert(actions, ACTIONS.VIEWPLANTHAPPINESS)
+            --if local player or client told us to do the action
+            if (not TheNet:IsDedicated() and doer == ThePlayer) or
+            CLIENT_REQUESTED_ACTION == act then
+                table.insert(actions, act)
+            end
+        end
+
+        if (plantinspector or plantkin) and (inst:HasTag("farmplantstress") or inst:HasTag("weedplantstress")) then
+            table.insert(actions, ACTIONS.ASSESSPLANTHAPPINESS)
         end
     end
 end
@@ -225,7 +228,7 @@ local COMPONENT_ACTIONS =
         end,
 
         farmplanttendable = function(inst, doer, actions)
-            if inst:HasTag("tendable_farmplant") and not inst:HasTag("fire") and not inst:HasTag("smolder") then
+            if inst:HasTag("tendable_farmplant") and not inst:HasTag("fire") and not inst:HasTag("smolder") and not doer:HasTag("mime") then
                 table.insert(actions, ACTIONS.INTERACT_WITH)
             end
         end,

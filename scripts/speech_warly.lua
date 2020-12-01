@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I already know all there is to know about that one."
+            GENERIC = "I already know all there is to know about that one.",
+            FERTILIZER = "I think I know everything I need to, non?",
         },
         FILL_OCEAN =
         {
@@ -612,7 +613,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "I wonder what it will turn out to be.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "I think I know everything I need to, non?",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "If it goes into the food we eat, I suppose I should know everything about it.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1412,14 +1413,14 @@ return{
 		CARROT = "Fresh picked produce!",
 		CARROT_COOKED = "Could use a dash of olive oil and cilantro...",
 		CARROT_PLANTED = "Ah, a fresh carrot!",
-		CARROT_SEEDS = "Future carrots!",
+		CARROT_SEEDS = "Future ingredients, just waiting to be grown!",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "I hope my penmanship is legible.",
 			BURNING = "Oh dear!",
 			BURNT = "Well, that won't help our explorations much.",
 		},
-		WATERMELON_SEEDS = "More watermelon, anyone?",
+		WATERMELON_SEEDS = "Future ingredients, just waiting to be grown!",
 		CAVE_FERN = "How does anything grow down here?",
 		CHARCOAL = "This, a grill and some meat and I'd have dinner.",
         CHESSPIECE_PAWN = "It looks a bit like a pawn.",
@@ -1484,7 +1485,7 @@ return{
 		},
 		CORN = "Corn! Sweet, sweet corn!",
 		CORN_COOKED = "Could use miso and lardons...",
-		CORN_SEEDS = "The promise of so many more corn dishes!",
+		CORN_SEEDS = "Future ingredients, just waiting to be grown!",
         CANARY =
 		{
 			GENERIC = "Sing me your sweet song, mon amie.",
@@ -1590,7 +1591,7 @@ return{
 
 		DRAGONFRUIT = "So exotic!",
 		DRAGONFRUIT_COOKED = "Could use a spread of pudding and chia seeds...",
-		DRAGONFRUIT_SEEDS = "They hatch dragonfruits.",
+		DRAGONFRUIT_SEEDS = "Future ingredients, just waiting to be grown!",
 		DRAGONPIE = "Flaky crust, tart filling... heavenly!",
 		DRUMSTICK = "Dark meat!",
 		DRUMSTICK_COOKED = "Could use a light honey garlic glaze...",
@@ -1601,11 +1602,11 @@ return{
 		DUG_SAPLING = "Should I bring it back to life?",
 		DURIAN = "That odor...",
 		DURIAN_COOKED = "Could use onions and chili...",
-		DURIAN_SEEDS = "Even these smell...",
+		DURIAN_SEEDS = "Future ingredients, just waiting to be grown!",
 		EARMUFFSHAT = "Ahh, fuzzy!",
 		EGGPLANT = "Aubergine!",
 		EGGPLANT_COOKED = "Could use tomato sauce and Parmesan...",
-		EGGPLANT_SEEDS = "Hatches more eggplants!",
+		EGGPLANT_SEEDS = "Future ingredients, just waiting to be grown!",
 		
 		ENDTABLE = 
 		{
@@ -2015,7 +2016,7 @@ return{
         },
         POMEGRANATE = "Wonderful!",
         POMEGRANATE_COOKED = "Could use tahini and mint...",
-        POMEGRANATE_SEEDS = "Seedy seeds!",
+        POMEGRANATE_SEEDS = "Future ingredients, just waiting to be grown!",
         POND = "I can't see the bottom...",
         POOP = "The end result of a fine meal.",
         FERTILIZER = "Sauce for my garden!",
@@ -2023,7 +2024,7 @@ return{
         PUMPKINCOOKIE = "I've outdone myself this time.",
         PUMPKIN_COOKED = "Could use some pie crust and nutmeg...",
         PUMPKIN_LANTERN = "Trick 'r' neat!",
-        PUMPKIN_SEEDS = "Seed saver!",
+        PUMPKIN_SEEDS = "Future ingredients, just waiting to be grown!",
         PURPLEAMULET = "I must be crazy to fool around with this.",
         PURPLEGEM = "It holds deep secrets.",
         RABBIT =

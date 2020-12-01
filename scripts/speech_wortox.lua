@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I already know all its tricks, hyuyu!"
+            GENERIC = "I already know all its tricks, hyuyu!",
+            FERTILIZER = "That's all I need to know to make my garden grow.",
         },
         FILL_OCEAN =
         {
@@ -617,7 +618,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "What will grow from this seed is a mystery, indeed!",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "I've got the scoop on this gardening goop.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I'm getting the scoop on this gardening goop.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{

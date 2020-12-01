@@ -55,7 +55,7 @@ local function OnEquipChanged(inst)
     end
     if self.nutrientsvision == not inst.replica.inventory:EquipHasTag("nutrientsvision") then
         self.nutrientsvision = not self.nutrientsvision
-        if not self.forcenutrientsvision then
+        if not self.forcenutrientsvision and self.inst == ThePlayer then
             TheWorld:PushEvent("nutrientsvision", { enabled = self.nutrientsvision })
         end
     end
@@ -187,7 +187,7 @@ end
 function PlayerVision:ForceNutrientVision(force)
     if not self.forcenutrientsvision ~= not force then
         self.forcenutrientsvision = force == true
-        if not self.nutrientsvision then
+        if not self.nutrientsvision and self.inst == ThePlayer then
             TheWorld:PushEvent("nutrientsvision", { enabled = self.forcenutrientsvision })
         end
     end

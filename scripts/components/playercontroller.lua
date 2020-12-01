@@ -667,7 +667,9 @@ function PlayerController:OnRemoteControllerActionButton(actioncode, target, isr
 
         self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
         self:ClearControlMods()
+        SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self:GetSceneItemControllerAction(target)
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = nil
         end
@@ -703,7 +705,9 @@ function PlayerController:OnRemoteControllerActionButtonPoint(actioncode, positi
 
         self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
         self:ClearControlMods()
+        SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self:GetGroundUseAction(position)
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = nil
         end
@@ -825,7 +829,9 @@ function PlayerController:OnRemoteControllerAltActionButton(actioncode, target, 
 
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
         self:ClearControlMods()
+        SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self:GetSceneItemControllerAction(target)
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = nil
         end
@@ -863,11 +869,13 @@ function PlayerController:OnRemoteControllerAltActionButtonPoint(actioncode, pos
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
         self:ClearControlMods()
         local lmb, rmb
+        SetClientRequestedAction(actioncode, mod_name)
         if isspecial then
             rmb = self:GetGroundUseSpecialAction(position, true)
         else
             lmb, rmb = self:GetGroundUseAction(position)
         end
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = nil
         end
@@ -1641,7 +1649,9 @@ function PlayerController:OnRemoteActionButton(actioncode, target, isreleased, n
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_ACTION] = 0
         if actioncode ~= nil then
+            SetClientRequestedAction(actioncode, mod_name)
             local buffaction = self:GetActionButtonAction(target)
+            ClearClientRequestedAction()
             if buffaction ~= nil and buffaction.action.code == actioncode and buffaction.action.mod_name == mod_name then
                 if buffaction.action.canforce and not noforce then
                     buffaction:SetActionPoint(self:GetRemotePredictPosition() or self.inst:GetPosition())
@@ -3260,21 +3270,15 @@ function PlayerController:OnLeftClick(down)
     self:DoAction(act)
 end
 
-CLIENT_REQUESTED_ACTION = nil
-
 function PlayerController:OnRemoteLeftClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_PRIMARY] = 0
         self:DecodeControlMods(controlmodscode)
-        if mod_name then
-            CLIENT_REQUESTED_ACTION = MOD_ACTIONS_BY_ACTION_CODE[mod_name] and MOD_ACTIONS_BY_ACTION_CODE[mod_name][actioncode]
-        else
-            CLIENT_REQUESTED_ACTION = ACTIONS_BY_ACTION_CODE[actioncode]
-        end
+        SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
-        CLIENT_REQUESTED_ACTION = nil
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_PRIMARY] = nil
         end
@@ -3379,13 +3383,9 @@ function PlayerController:OnRemoteRightClick(actioncode, position, target, rotat
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
-        if mod_name then
-            CLIENT_REQUESTED_ACTION = MOD_ACTIONS_BY_ACTION_CODE[mod_name] and MOD_ACTIONS_BY_ACTION_CODE[mod_name][actioncode]
-        else
-            CLIENT_REQUESTED_ACTION = ACTIONS_BY_ACTION_CODE[actioncode]
-        end
+        SetClientRequestedAction(actioncode, mod_name)
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
-        CLIENT_REQUESTED_ACTION = nil
+        ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_SECONDARY] = nil
         end

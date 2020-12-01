@@ -243,7 +243,8 @@ return {
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I have nothing left to learn."
+            GENERIC = "I have nothing left to learn.",
+            FERTILIZER = "I'd rather not know anything further.",
         },
         FILL_OCEAN =
         {
@@ -571,6 +572,8 @@ return {
         BOOK_TENTACLES =  "only_used_by_wurt",
         BOOK_BRIMSTONE = "only_used_by_wurt",
         BOOK_GARDENING = "only_used_by_wurt",
+		BOOK_SILVICULTURE = "only_used_by_wurt",
+		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "This Carrat is in no shape to be training.",
 
@@ -621,7 +624,7 @@ return {
 
     ANNOUNCE_PLANT_RANDOMSEED = "I wonder what it will grow into.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "I'd rather not know anything further.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I never thought I'd be applying my scientific mind to... this.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -705,6 +708,8 @@ return {
         BOOK_BIRDS = "No point studying when I can just wing it.",
         BOOK_TENTACLES = "Someone'll get suckered into reading this.",
         BOOK_GARDENING = "I see no farm in reading that.",
+		BOOK_SILVICULTURE = "I'll stick to my own experiments.",
+		BOOK_HORTICULTURE = "I see no farm in reading that.",
         BOOK_SLEEP = "Strange, it's just 500 pages of telegraph codes.",
         BOOK_BRIMSTONE = "The beginning was dull, but got better near the end.",
 
@@ -1421,14 +1426,14 @@ return {
 		CARROT = "Yuck. This vegetable came out of the dirt.",
 		CARROT_COOKED = "Mushy.",
 		CARROT_PLANTED = "The earth is making plantbabies.",
-		CARROT_SEEDS = "It's a carrot seed.",
+		CARROT_SEEDS = "It's a seed.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Now I can show everyone what I found!",
 			BURNING = "So much for that.",
 			BURNT = "Nothing but ash now.",
 		},
-		WATERMELON_SEEDS = "It's a melon seed.",
+		WATERMELON_SEEDS = "It's a seed.",
 		CAVE_FERN = "It's a fern.",
 		CHARCOAL = "It's small, dark, and smells like burnt wood.",
         CHESSPIECE_PAWN = "I can relate.",
@@ -1493,7 +1498,7 @@ return {
 		},
 		CORN = "High in fructose!",
 		CORN_COOKED = "Cooked and high in fructose!",
-		CORN_SEEDS = "It's a corn seed.",
+		CORN_SEEDS = "It's a seed.",
         CANARY =
 		{
 			GENERIC = "Some sort of yellow creature made of science.",
@@ -1599,7 +1604,7 @@ return {
 
 		DRAGONFRUIT = "What a weird fruit.",
 		DRAGONFRUIT_COOKED = "The fruit's still weird.",
-		DRAGONFRUIT_SEEDS = "It's a weird fruit seed.",
+		DRAGONFRUIT_SEEDS = "It's a seed.",
 		DRAGONPIE = "The dragonfruit is very filling.",
 		DRUMSTICK = "Ready for gobbling.",
 		DRUMSTICK_COOKED = "Even better for gobbling!",
@@ -1610,11 +1615,11 @@ return {
 		DUG_SAPLING = "This needs to be planted.",
 		DURIAN = "Oh, it smells!",
 		DURIAN_COOKED = "Now it smells even worse!",
-		DURIAN_SEEDS = "It's a durian seed.",
+		DURIAN_SEEDS = "It's a seed.",
 		EARMUFFSHAT = "Makes you warm and fuzzy inside. Outside, too.",
 		EGGPLANT = "It doesn't look like an egg.",
 		EGGPLANT_COOKED = "It's even less eggy.",
-		EGGPLANT_SEEDS = "It's an eggplant seed.",
+		EGGPLANT_SEEDS = "It's a seed.",
 		
 		ENDTABLE = 
 		{
@@ -2024,7 +2029,7 @@ return {
         },
         POMEGRANATE = "It looks like the inside of an alien's brain.",
         POMEGRANATE_COOKED = "Haute Cuisine!",
-        POMEGRANATE_SEEDS = "It's a pome-whatsit seed.",
+        POMEGRANATE_SEEDS = "It's a seed.",
         POND = "I can't see the bottom!",
         POOP = "I should fill my pockets!",
         FERTILIZER = "That is definitely a bucket full of poop.",
@@ -2032,7 +2037,7 @@ return {
         PUMPKINCOOKIE = "That's a pretty gourd cookie!",
         PUMPKIN_COOKED = "How did it not turn into a pie?",
         PUMPKIN_LANTERN = "Spooky!",
-        PUMPKIN_SEEDS = "It's a pumpkin seed.",
+        PUMPKIN_SEEDS = "It's a seed.",
         PURPLEAMULET = "It's whispering to me.",
         PURPLEGEM = "It contains the mysteries of the universe.",
         RABBIT =
@@ -3476,7 +3481,7 @@ return {
 
         ASPARAGUS = "A vegetable.", 
         ASPARAGUS_COOKED = "Science says it's good for me.",
-        ASPARAGUS_SEEDS = "It's asparagus seeds.",
+        ASPARAGUS_SEEDS = "It's some seeds.",
 
         PEPPER = "Nice and spicy.",
         PEPPER_COOKED = "It was already hot to begin with.",

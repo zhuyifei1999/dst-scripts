@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "Know everything already!"
+            GENERIC = "Know everything already!",
+            FERTILIZER = "Know everything about it, florp!",
         },
         FILL_OCEAN =
         {
@@ -612,7 +613,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "What it gonna be?",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "Know lots about this stuff!",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Learning lots!",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1412,14 +1413,14 @@ return{
 		CARROT = "Tasty root!",
 		CARROT_COOKED = "It was fine way it was.",
 		CARROT_PLANTED = "Grow! Grow!",
-		CARROT_SEEDS = "Make more carrot!",
+		CARROT_SEEDS = "Make more tasty snacks!",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Mermfolk don't need map!",
 			BURNING = "Bye-bye!",
 			BURNT = "Gone now.",
 		},
-		WATERMELON_SEEDS = "Make more melon!",
+		WATERMELON_SEEDS = "Make more tasty snacks!",
 		CAVE_FERN = "Leafy cave plant.",
 		CHARCOAL = "Gets claws all smudgy.",
         CHESSPIECE_PAWN = "It littlest of its kin...",
@@ -1484,7 +1485,7 @@ return{
 		},
 		CORN = "Eat cob for extra crunchy snack, flort.",
 		CORN_COOKED = "They 'sploded!",
-		CORN_SEEDS = "Make more corns!",
+		CORN_SEEDS = "Make more tasty snacks!",
         CANARY =
 		{
 			GENERIC = "Yellow birdy.",
@@ -1590,7 +1591,7 @@ return{
 
 		DRAGONFRUIT = "Pretty fruit, florp.",
 		DRAGONFRUIT_COOKED = "Taste like medicine.",
-		DRAGONFRUIT_SEEDS = "Pretty fruit seeds.",
+		DRAGONFRUIT_SEEDS = "Make more tasty snacks!",
 		DRAGONPIE = "Mmmm this best pie!!",
 		DRUMSTICK = "Gluurph...",
 		DRUMSTICK_COOKED = "You put bird in fire??",
@@ -1601,11 +1602,11 @@ return{
 		DUG_SAPLING = "Will find good place for you.",
 		DURIAN = "Mmm... smell a bit like swamp!",
 		DURIAN_COOKED = "Has good stink to it!",
-		DURIAN_SEEDS = "Stinky seeds for stinky fruit, florp!",
+		DURIAN_SEEDS = "Make more tasty snacks!",
 		EARMUFFSHAT = "Keep cute webby ears warm.",
 		EGGPLANT = "Big purple yummy!",
 		EGGPLANT_COOKED = "Brings out purple flavor, flort.",
-		EGGPLANT_SEEDS = "Make more purple veggies!",
+		EGGPLANT_SEEDS = "Make more tasty snacks!",
 		
 		ENDTABLE = 
 		{
@@ -2015,7 +2016,7 @@ return{
         },
         POMEGRANATE = "Ohhh, you not supposed to just bite into it?",
         POMEGRANATE_COOKED = "Hmm... okay...",
-        POMEGRANATE_SEEDS = "Make more pommy-granites!",
+        POMEGRANATE_SEEDS = "Make more tasty snacks!",
         POND = "Splishy splashy!",
         POOP = "Ha ha, stinky!",
         FERTILIZER = "What? It just some poop.",
@@ -2023,7 +2024,7 @@ return{
         PUMPKINCOOKIE = "THIS THE BEST KIND OF PUM-KIN.",
         PUMPKIN_COOKED = "Squishy!",
         PUMPKIN_LANTERN = "Has a friendly face, flort.",
-        PUMPKIN_SEEDS = "Make more pum-kins!",
+        PUMPKIN_SEEDS = "Make more tasty snacks!",
         PURPLEAMULET = "Glurp... don't wanna play with this anymore.",
         PURPLEGEM = "It pretty...",
         RABBIT =
@@ -3447,23 +3448,23 @@ return{
 
         TURNIP = "Crunchy snack!",
         TURNIP_COOKED = "Roasty!",
-        TURNIP_SEEDS = "Make more turnip!",
+        TURNIP_SEEDS = "Make more tasty snacks!",
         
         GARLIC = "Make breath smell nice.",
         GARLIC_COOKED = "Mmm... hot smelly snack!",
-        GARLIC_SEEDS = "Make more garlic!",
+        GARLIC_SEEDS = "Make more tasty snacks!",
         
         ONION = "Mmm-mmmm, crunchy!",
         ONION_COOKED = "Smell so good, florp!",
-        ONION_SEEDS = "Baby onions.",
+        ONION_SEEDS = "Make more tasty snacks!",
         
         POTATO = "Good dirt veggie.",
         POTATO_COOKED = "Mmm, hot potato!",
-        POTATO_SEEDS = "Put in ground for more potato!",
+        POTATO_SEEDS = "Put in ground!",
         
         TOMATO = "Big juicy tomato!",
         TOMATO_COOKED = "Squishy.",
-        TOMATO_SEEDS = "Make more tomato!",
+        TOMATO_SEEDS = "Make more tasty snacks!",
 
         ASPARAGUS = "Snack sticks!", 
         ASPARAGUS_COOKED = "Hot snack sticks!",
@@ -3471,7 +3472,7 @@ return{
 
         PEPPER = "Glaaagh! Mouth on fire!",
         PEPPER_COOKED = "Why make pepper even hotter?",
-        PEPPER_SEEDS = "Make more peppers!",
+        PEPPER_SEEDS = "Make more tasty snacks!",
 
         WEREITEM_BEAVER = "There something spilling out its belly.",
         WEREITEM_GOOSE = "Wanna play with doll!",

@@ -66,6 +66,9 @@ function Fertilizer:Heal(target)
         else
             target.components.health:DoDelta(self.planthealth, false, self.inst.prefab)
         end
+		if self.onhealfn ~= nil then
+			self.onhealfn(self.inst, target)
+		end
         return true
     end
 end

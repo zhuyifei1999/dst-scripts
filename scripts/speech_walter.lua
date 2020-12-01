@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I've already learned everything I need to know about that one."
+            GENERIC = "I've already learned everything I need to know about that one.",
+            FERTILIZER = "I think I know everything I need to.",
         },
         FILL_OCEAN =
         {
@@ -612,7 +613,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "Let's see what grows, Woby!",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "I think I know everything I need to.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I didn't know there was so much to learn about this stuff.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1412,14 +1413,14 @@ return{
 		CARROT = "I get kind of disappointed when it doesn't turn out to be a rat.",
 		CARROT_COOKED = "Yup. It's a cooked carrot.",
 		CARROT_PLANTED = "Now we'll have more carrots. Yay.",
-		CARROT_SEEDS = "Those look like carrot seeds.",
+		CARROT_SEEDS = "Yep, those are seeds!",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "We're mapping out the wilderness!",
 			BURNING = "That's not a proper campfire!",
 			BURNT = "Someone wasn't practicing fire safety.",
 		},
-		WATERMELON_SEEDS = "Those look like melon seeds.",
+		WATERMELON_SEEDS = "Yep, those are seeds!",
 		CAVE_FERN = "There's some weird plants growing down here.",
 		CHARCOAL = "You find a lot of these in fire pits.",
         CHESSPIECE_PAWN = "Pawns don't seem like statue material.",
@@ -1601,7 +1602,7 @@ return{
 		DUG_SAPLING = "Hey Woby, do you see a good spot to plant this?",
 		DURIAN = "Yuck! What is that?",
 		DURIAN_COOKED = "No thank you.",
-		DURIAN_SEEDS = "Not sure if I want to grow more of those.",
+		DURIAN_SEEDS = "Yep, those are seeds!",
 		EARMUFFSHAT = "Some of us don't have ear fluff of our own, Woby.",
 		EGGPLANT = "Even in the wilderness you have to eat your vegetables.",
 		EGGPLANT_COOKED = "Oh, it's much better cooked!",
@@ -2015,7 +2016,7 @@ return{
         },
         POMEGRANATE = "Fruit guts!",
         POMEGRANATE_COOKED = "I thought it would taste better.",
-        POMEGRANATE_SEEDS = "Where's a good spot to plant a pomegranate?",
+        POMEGRANATE_SEEDS = "Where's a good spot to plant this?",
         POND = "That'll make a swell swimming hole!",
         POOP = "It's a natural part of nature!",
         FERTILIZER = "Plants love poop.",
@@ -2023,7 +2024,7 @@ return{
         PUMPKINCOOKIE = "It's made from a vegetable, so it's healthy.",
         PUMPKIN_COOKED = "Hot, mushy pumpkin guts.",
         PUMPKIN_LANTERN = "I heard a radio show once about a horseman with a pumpkin for a head!",
-        PUMPKIN_SEEDS = "Woby, do you see a good spot for a pumpkin patch?",
+        PUMPKIN_SEEDS = "Woby, do you see a good spot to plant these?",
         PURPLEAMULET = "Do you hear the whispering too, Woby?",
         PURPLEGEM = "Purple's usually a friendly colour.",
         RABBIT =

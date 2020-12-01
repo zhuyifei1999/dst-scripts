@@ -1802,6 +1802,10 @@ local function MakeHat(name)
         inst.components.equippable:SetOnEquip(plantregistry_onequip)
         inst.components.equippable:SetOnUnequip(plantregistry_onunequip)
 
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetSummer()
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
+
         inst:AddComponent("useableitem")
         inst.components.useableitem:SetOnUseFn(plantregistry_onuse)
 
@@ -1834,6 +1838,10 @@ local function MakeHat(name)
 
         inst.components.equippable:SetOnEquip(nutrients_onequip)
         inst.components.equippable:SetOnUnequip(nutrients_onunequip)
+
+        inst:AddComponent("insulator")
+        inst.components.insulator:SetSummer()
+        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
 
         inst:AddComponent("useableitem")
         inst.components.useableitem:SetOnUseFn(plantregistry_onuse)

@@ -374,7 +374,10 @@ local function MakeVeggie(name, has_seeds)
         inst.components.deployable.ondeploy = OnDeploy
 
 		inst:AddComponent("oceanfishingtackle")
-		inst.components.oceanfishingtackle:SetupLure({build = "oceanfishing_lure_mis", symbol = "hook_seeds", single_use = true, lure_data = TUNING.OCEANFISHING_LURE.SEED})
+        inst.components.oceanfishingtackle:SetupLure({build = "oceanfishing_lure_mis", symbol = "hook_seeds", single_use = true, lure_data = TUNING.OCEANFISHING_LURE.SEED})
+        
+        MakeSmallBurnable(inst)
+        MakeSmallPropagator(inst)
 
         MakeHauntableLaunchAndPerish(inst)
 

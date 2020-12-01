@@ -841,7 +841,7 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH_FAIL, "dolongaction"),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH, "dolongaction"),
-    ActionHandler(ACTIONS.VIEWPLANTHAPPINESS, "dolongaction"),
+    ActionHandler(ACTIONS.ASSESSPLANTHAPPINESS, "dolongaction"),
 }
 
 local events =

@@ -1275,15 +1275,15 @@ function DumpMem()
 end
 
 function checkbit(x, b)
-    return bit.band(x, 2^(b-1)) > 0
+    return bit.band(x, b) > 0
 end
 
 function setbit(x, b)
-    return bit.bor(x, 2^(b-1))
+    return bit.bor(x, b)
 end
 
-function clearbit(x, b, w) --w is the width specifier in CONSTANTS
-    return bit.band(x, bit.bnot(2^(b-1), w))
+function clearbit(x, b)
+    return bit.bxor(bit.bor(x, b), b)
 end
 
 -- Width is the total width of the region we are interested in, in radians.

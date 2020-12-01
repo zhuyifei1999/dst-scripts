@@ -199,6 +199,7 @@ local function grass(name, stage)
 
         inst:AddTag("plant")
         inst:AddTag("renewable")
+		inst:AddTag("silviculture") -- for silviculture book
 
         --witherable (from witherable component) added to pristine state for optimization
         inst:AddTag("witherable")

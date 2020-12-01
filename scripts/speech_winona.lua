@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I know about all there is to know about that one."
+            GENERIC = "I know about all there is to know about that one.",
+            FERTILIZER = "Yeah, I think I've got the gist.",
         },
         FILL_OCEAN =
         {
@@ -618,7 +619,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "We'll see what happens!",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "Yeah, I think I've got the gist.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I always say it's best to know what you're workin' with.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1418,14 +1419,14 @@ return{
 		CARROT = "Free food from the ground.",
 		CARROT_COOKED = "Easier on the gums. Not that that matters.",
 		CARROT_PLANTED = "Perfectly pluckable.",
-		CARROT_SEEDS = "Some carrot seeds.",
+		CARROT_SEEDS = "A handful of seeds.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Good place to kick your feet up, if nothin' else.",
 			BURNING = "Welp.",
 			BURNT = "It's okay. I'll assemble another.",
 		},
-		WATERMELON_SEEDS = "Some watermelon seeds.",
+		WATERMELON_SEEDS = "A handful of seeds.",
 		CAVE_FERN = "Take a gander at this tiny fern!",
 		CHARCOAL = "It gets everywhere.",
         CHESSPIECE_PAWN = "Nice hat.",
@@ -1490,7 +1491,7 @@ return{
 		},
 		CORN = "I talked its ear off. Ha!",
 		CORN_COOKED = "Tell me if I get'em stuck in my teeth.",
-		CORN_SEEDS = "Some corn seeds.",
+		CORN_SEEDS = "A handful of seeds.",
         CANARY =
 		{
 			GENERIC = "That brings back memories.",
@@ -1596,7 +1597,7 @@ return{
 
 		DRAGONFRUIT = "Snooty fruit.",
 		DRAGONFRUIT_COOKED = "Cooked the snoot right out of it.",
-		DRAGONFRUIT_SEEDS = "Some dragonfruit seeds.",
+		DRAGONFRUIT_SEEDS = "A handful of seeds.",
 		DRAGONPIE = "Where's the beef?",
 		DRUMSTICK = "Can't say a raw drumstick sounds too appealing.",
 		DRUMSTICK_COOKED = "Can't be beat.",
@@ -1607,11 +1608,11 @@ return{
 		DUG_SAPLING = "Needs replanting.",
 		DURIAN = "Powerful stench! I respect that.",
 		DURIAN_COOKED = "Whew! That'll put some hair on your hair.",
-		DURIAN_SEEDS = "Some durian seeds.",
+		DURIAN_SEEDS = "A handful of seeds.",
 		EARMUFFSHAT = "I hate cold weather.",
 		EGGPLANT = "Look how weird it is! Ha!",
 		EGGPLANT_COOKED = "Did that make it better? I don't know.",
-		EGGPLANT_SEEDS = "Some eggplant seeds.",
+		EGGPLANT_SEEDS = "A handful of seeds.",
 		
 		ENDTABLE = 
 		{
@@ -2021,7 +2022,7 @@ return{
         },
         POMEGRANATE = "Eat that and you're stuck here forever!",
         POMEGRANATE_COOKED = "It does look pretty tempting.",
-        POMEGRANATE_SEEDS = "Some pomegranate seeds.",
+        POMEGRANATE_SEEDS = "A handful of seeds.",
         POND = "I can't see the bottom.",
         POOP = "Nothing to be ashamed of.",
         FERTILIZER = "Plants can't get enough.",
@@ -2029,7 +2030,7 @@ return{
         PUMPKINCOOKIE = "Gotta indulge sometimes, hey?",
         PUMPKIN_COOKED = "Not bad! Kind of sweet.",
         PUMPKIN_LANTERN = "It's childish, but in a nice way.",
-        PUMPKIN_SEEDS = "Some pumpkin seeds.",
+        PUMPKIN_SEEDS = "A handful of seeds.",
         PURPLEAMULET = "It's, uh, a purple necklace.",
         PURPLEGEM = "A little snooty gem.",
         RABBIT =
@@ -3722,11 +3723,11 @@ return{
 			BURNT = "Alright everyone, back to it!",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "A big bunch of carrots.",
+        CORN_OVERSIZED = "Who wants some corn on the cob? There's plenty to go around!",
+        PUMPKIN_OVERSIZED = "Hey there, gourd lookin'! Ha!",
+        EGGPLANT_OVERSIZED = "It sure makes a big impression. Ha!",
+        DURIAN_OVERSIZED = "It sure is makin' a big stink.",
         POMEGRANATE_OVERSIZED = "TODO",
         DRAGONFRUIT_OVERSIZED = "TODO",
         WATERMELON_OVERSIZED = "TODO",

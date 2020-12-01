@@ -759,7 +759,7 @@ STRINGS =
 
         PLANTREGISTRY_RESEARCH_FAIL = "Research",
         PLANTREGISTRY_RESEARCH = "Research",
-        VIEWPLANTHAPPINESS = {
+        ASSESSPLANTHAPPINESS = {
             GENERIC = "Assess Happiness",
             GENERIC_FMT = "Assess {plant}'s Happiness",
         },
@@ -818,6 +818,8 @@ STRINGS =
         BOOK_BIRDS = "Birds of the World",
         BOOK_TENTACLES = "On Tentacles",
         BOOK_GARDENING = "Applied Horticulture",
+        BOOK_SILVICULTURE = "Applied Silviculture",
+		BOOK_HORTICULTURE = "Horticulture, Abridged",
         BOOK_SLEEP = "Sleepytime Stories",
         BOOK_BRIMSTONE = "The End is Nigh!",
 
@@ -2900,7 +2902,7 @@ STRINGS =
 		FARM_PLOW = "Garden Rigamajig",
 		FARM_PLOW_ITEM = "Garden Rigamajig",
 		FARM_HOE = "Garden Hoe",
-		GOLDEN_FARM_HOE = "Luxury Garden Hoe",
+		GOLDEN_FARM_HOE = "Splendid Garden Hoe",
         NUTRIENTSGOGGLESHAT = "Premier Gardeneer Hat",
 		PLANTREGISTRYHAT = "Gardeneer Hat",
         
@@ -2971,6 +2973,8 @@ STRINGS =
         BOOK_BIRDS = "1000 species: habits, habitats, and calls.",
         BOOK_TENTACLES = "Let's learn about our subterranean friends!",
         BOOK_GARDENING = "On the care and feeding of plants.",
+        BOOK_SILVICULTURE = "Learn how to be a competent branch manager.",
+		BOOK_HORTICULTURE = "On the care and feeding of domesticated crops.",
         BOOK_SLEEP = "Soothing tales to send you off to dreamland.",
         BOOK_BRIMSTONE = "The world will end in fire and tribulation!",
 

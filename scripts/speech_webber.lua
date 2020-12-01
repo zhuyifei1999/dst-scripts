@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "We already know everything about this plant!"
+            GENERIC = "We already know everything about this plant!",
+            FERTILIZER = "There's nothing else we need to know.",
         },
         FILL_OCEAN =
         {
@@ -3716,20 +3717,20 @@ return{
 			BURNT = "All burnt up.",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "It's so big!",
+        CORN_OVERSIZED = "Can we make giant popcorn?",
+        PUMPKIN_OVERSIZED = "Let's carve a big scary face into it!",
+        EGGPLANT_OVERSIZED = "It's either extra eggy or extra planty.",
+        DURIAN_OVERSIZED = "Eww... it has a bigger stink too.",
+        POMEGRANATE_OVERSIZED = "We can't even wrap all our arms around it!",
+        DRAGONFRUIT_OVERSIZED = "Extra big and extra tasty.",
+        WATERMELON_OVERSIZED = "We want giant watermelon slices!",
+        TOMATO_OVERSIZED = "Big and juicy.",
+        POTATO_OVERSIZED = "Mr. Wolfgang will be so happy!",
+        ASPARAGUS_OVERSIZED = "Oh... that's a lot of asparagus...",
+        ONION_OVERSIZED = "It's making all of our eyes tear up!",
+        GARLIC_OVERSIZED = "What do we do with all this garlic?",
+        PEPPER_OVERSIZED = "That looks pretty spicy.",
         
         VEGGIE_OVERSIZED_ROTTEN = "Blech, no thank you.",
 

@@ -122,6 +122,21 @@ local function ExtraDropDist(doer, dest, bufferedaction)
     return 0
 end
 
+global("CLIENT_REQUESTED_ACTION")
+CLIENT_REQUESTED_ACTION = nil
+
+function SetClientRequestedAction(actioncode, mod_name)
+    if mod_name then
+        CLIENT_REQUESTED_ACTION = MOD_ACTIONS_BY_ACTION_CODE[mod_name] and MOD_ACTIONS_BY_ACTION_CODE[mod_name][actioncode]
+    else
+        CLIENT_REQUESTED_ACTION = ACTIONS_BY_ACTION_CODE[actioncode]
+    end
+end
+
+function ClearClientRequestedAction()
+    CLIENT_REQUESTED_ACTION = nil
+end
+
 --Positional parameters have been deprecated, pass in a table instead.
 Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_exclusive, canforce, rangecheckfn)
     if data == nil then
@@ -358,9 +373,9 @@ ACTIONS =
     UNPATCH = Action({ distance=0.5 }),
     POUR_WATER = Action({ distance = 2, tile_placer="gridplacer", show_tile_placer_fn=ShowPourWaterTilePlacer }),
     POUR_WATER_GROUNDTILE = Action({ rmb=true, customarrivecheck=CheckFarmTileWithinRange, tile_placer="gridplacer" }),
-    PLANTREGISTRY_RESEARCH_FAIL = Action(),
+    PLANTREGISTRY_RESEARCH_FAIL = Action({ priority = -1 }),
     PLANTREGISTRY_RESEARCH = Action({ priority = HIGH_ACTION_PRIORITY }),
-    VIEWPLANTHAPPINESS = Action({ priority = 1 }),
+    ASSESSPLANTHAPPINESS = Action({ priority = 1 }),
     ATTACKPLANT = Action(),
     PLANTWEED = Action(),
 }
@@ -3249,6 +3264,12 @@ ACTIONS.POUR_WATER_GROUNDTILE.stroverridefn = function(act)
 end
 
 ACTIONS.PLANTREGISTRY_RESEARCH_FAIL.fn = function(act)
+    local targ = act.target or act.invobject
+
+    if targ and targ:HasTag("fertilizerresearchable") then
+        return false, "FERTILIZER"
+    end
+    
     return false
 end
 
@@ -3279,19 +3300,24 @@ ACTIONS.PLANTREGISTRY_RESEARCH.fn = function(act)
     end
 end
 
-ACTIONS.VIEWPLANTHAPPINESS.stroverridefn = function(act)
+ACTIONS.ASSESSPLANTHAPPINESS.stroverridefn = function(act)
     local targ = act.target or act.invobject
-    if targ ~= nil and targ:HasTag("plantresearchable") then
+    if targ then
         local plant = targ:GetDisplayName()
-        return plant ~= nil and subfmt(STRINGS.ACTIONS.VIEWPLANTHAPPINESS.GENERIC_FMT, { plant = plant }) or nil
+        return plant ~= nil and subfmt(STRINGS.ACTIONS.ASSESSPLANTHAPPINESS.GENERIC_FMT, { plant = plant }) or nil
     end
 end
 
-ACTIONS.VIEWPLANTHAPPINESS.fn = function(act)
+ACTIONS.ASSESSPLANTHAPPINESS.fn = function(act)
     local targ = act.target or act.invobject
 
     if targ ~= nil then
-        local desc = targ.components.farmplantstress:GetStressDescription(act.doer)
+        local desc
+        if targ.components.farmplantstress then
+            desc = targ.components.farmplantstress:GetStressDescription(act.doer)
+        else
+            desc = GetString(act.doer, "DESCRIBE_PLANTHAPPY")
+        end
         if desc and act.doer.components.talker then
             act.doer.components.talker:Say(desc, nil, targ.components.inspectable.noanim)
         end

@@ -13,6 +13,7 @@ local NutrientsOver =  Class(Widget, function(self, owner)
     self.bg:SetVAnchor(ANCHOR_MIDDLE)
     self.bg:SetHAnchor(ANCHOR_MIDDLE)
     self.bg:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.bg:SetTint(1,1,1,0.75)
 
     self:Hide()
 

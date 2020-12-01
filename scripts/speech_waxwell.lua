@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I have the information I need."
+            GENERIC = "I have the information I need.",
+            FERTILIZER = "I think I know quite enough.",
         },
         FILL_OCEAN =
         {
@@ -3719,17 +3720,17 @@ return{
         CARROT_OVERSIZED = "A ludicrously oversized carrot.",
         CORN_OVERSIZED = "That's far too much corn for any reasonable person.",
         PUMPKIN_OVERSIZED = "How very spooky.",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "Far more than I'd care to have, quite honestly.",
+        EGGPLANT_OVERSIZED = "An absurdly large eggplant.",
+        DURIAN_OVERSIZED = "Far more than I'd like to have, quite honestly.",
         POMEGRANATE_OVERSIZED = "I'd imagine it would take quite a while to eat.",
         DRAGONFRUIT_OVERSIZED = "Utterly enormous.",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
+        WATERMELON_OVERSIZED = "Entirely too much watermelon.",
+        TOMATO_OVERSIZED = "A preposterously sized tomato.",
         POTATO_OVERSIZED = "It has more starch than my best suit.",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        ASPARAGUS_OVERSIZED = "What am I supposed to do with all this asparagus?",
+        ONION_OVERSIZED = "An unnecessarily large onion.",
+        GARLIC_OVERSIZED = "An unreasonably enormous clump of garlic.",
+        PEPPER_OVERSIZED = "It looks horribly spicy.",
         
         VEGGIE_OVERSIZED_ROTTEN = "It's no good to anyone now.",
 

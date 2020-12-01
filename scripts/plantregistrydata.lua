@@ -119,7 +119,7 @@ local function DecodePlantRegistryStages(value)
 	local bitstages = tonumber(value, 16)
 	local stages = {}
 	for i = 1, 8 do
-		if checkbit(bitstages, i) then
+		if checkbit(bitstages, 2^(i-1)) then
 			stages[i] = true
 		end
 	end
@@ -129,7 +129,7 @@ end
 local function EncodePlantRegistryStages(stages)
 	local bitstages = 0
 	for i in pairs(stages) do
-		bitstages = setbit(bitstages, i)
+		bitstages = setbit(bitstages, 2^(i-1))
 	end
 	return string.format("%x", bitstages)
 end

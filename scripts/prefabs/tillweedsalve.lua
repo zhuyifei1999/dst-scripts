@@ -112,7 +112,7 @@ local function buff_fn()
     inst.components.debuff.keepondespawn = true
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("regenover", TUNING.SWEETTEA_DURATION)
+    inst.components.timer:StartTimer("regenover", TUNING.TILLWEEDSALVE_DURATION)
     inst:ListenForEvent("timerdone", OnTimerDone)
 
     return inst

@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I'm already quite knowledgeable about this particular species."
+            GENERIC = "I'm already quite knowledgeable about this particular species.",
+            FERTILIZER = "I've gleaned as much information as I can.",
         },
         FILL_OCEAN =
         {
@@ -1412,14 +1413,14 @@ return{
 		CARROT = "Daucus carota. Edible, and delicious.",
 		CARROT_COOKED = "Daucus carota, roasted to perfection.",
 		CARROT_PLANTED = "Daucus carota is a root vegetable.",
-		CARROT_SEEDS = "Seed of Daucus carota.",
+		CARROT_SEEDS = "It can't begin growing until it's been planted, dear.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Ah! A proper desk! Just look at the finish on that wood!",
 			BURNING = "Can we have nothing decent?",
 			BURNT = "The destruction of knowledge is such a difficult thing to stomach.",
 		},
-		WATERMELON_SEEDS = "Plant them to grow a lanatus.",
+		WATERMELON_SEEDS = "It can't begin growing until it's been planted, dear.",
 		CAVE_FERN = "A lovely ornamental plant.",
 		CHARCOAL = "It's mostly carbon and ash.",
         CHESSPIECE_PAWN = "Pawns that journey to the seat of power can be quite dangerous.",
@@ -1484,7 +1485,7 @@ return{
 		},
 		CORN = "Zea mays, a great staple food.",
 		CORN_COOKED = "Popped corn!",
-		CORN_SEEDS = "These maize seeds will grow in many climates.",
+		CORN_SEEDS = "It can't begin growing until it's been planted, dear.",
         CANARY =
 		{
 			GENERIC = "Serinus canaria. A historically useful sentinel species.",
@@ -1590,7 +1591,7 @@ return{
 
 		DRAGONFRUIT = "Hylocereus undatus, or pitahaya blanca.",
 		DRAGONFRUIT_COOKED = "Pleasantly prepared pitahaya blanca.",
-		DRAGONFRUIT_SEEDS = "A seed for the magnificently mild Hylocereus undatus.",
+		DRAGONFRUIT_SEEDS = "It can't begin growing until it's been planted, dear.",
 		DRAGONPIE = "I do love a nice fruit pie.",
 		DRUMSTICK = "A leg of poultry.",
 		DRUMSTICK_COOKED = "Not terribly healthy, but my is it delicious!",
@@ -1601,11 +1602,11 @@ return{
 		DUG_SAPLING = "It requires soil to grow.",
 		DURIAN = "Aha, the Durio zibethinus. It really does reek.",
 		DURIAN_COOKED = "Cooking this certainly did not improve its odor.",
-		DURIAN_SEEDS = "Even the seeds of the Durio zibethinus smell a bit.",
+		DURIAN_SEEDS = "It can't begin growing until it's been planted, dear.",
 		EARMUFFSHAT = "Poor Leporidae. At least it's warm.",
 		EGGPLANT = "A nightshade. Solanum melongena, specifically.",
 		EGGPLANT_COOKED = "For your enjoyment: Braised Solanum melongena.",
-		EGGPLANT_SEEDS = "Seed of aubergine.",
+		EGGPLANT_SEEDS = "It can't begin growing until it's been planted, dear.",
 		
 		ENDTABLE = 
 		{
@@ -2015,7 +2016,7 @@ return{
         },
         POMEGRANATE = "Punica granatum. Watery, sweet and a bit sour.",
         POMEGRANATE_COOKED = "Punica granatum is so nice when it's warmed up.",
-        POMEGRANATE_SEEDS = "Seeds of Punica granatum, separated from their arils.",
+        POMEGRANATE_SEEDS = "It can't begin growing until it's been planted, dear.",
         POND = "A small but deep freshwater pond.",
         POOP = "A quantity of animal feces. How fragrant.",
         FERTILIZER = "A bucket of animal feces. Pungent.",
@@ -2023,7 +2024,7 @@ return{
         PUMPKINCOOKIE = "Pumpkin biscuits, goody!",
         PUMPKIN_COOKED = "Cooked Cucurbita pepo. Gooey and delicious.",
         PUMPKIN_LANTERN = "Carving the Cucurbita pepo is such a nice pastime.",
-        PUMPKIN_SEEDS = "Pepitas.",
+        PUMPKIN_SEEDS = "It can't begin growing until it's been planted, dear.",
         PURPLEAMULET = "I can almost sense it beckoning to something.",
         PURPLEGEM = "It gives off a strange aura.",
         RABBIT =
@@ -3447,31 +3448,31 @@ return{
 
         TURNIP = "Edible root of Brassica rapa.",
         TURNIP_COOKED = "Roast Brassica rapa.",
-        TURNIP_SEEDS = "Mutated seed of Brassica rapa.",
+        TURNIP_SEEDS = "It can't begin growing until it's been planted, dear.",
         
         GARLIC = "Edible bulb of Allium cepa.",
         GARLIC_COOKED = "Roast Allium cepa.",
-        GARLIC_SEEDS = "Mutated seed of Allium cepa.",
+        GARLIC_SEEDS = "It can't begin growing until it's been planted, dear.",
         
         ONION = "Allium sativum, a close relative of Allium cepa.",
         ONION_COOKED = "Roast Allium sativum.",
-        ONION_SEEDS = "Mutated seed of Allium sativum.",
+        ONION_SEEDS = "It can't begin growing until it's been planted, dear.",
         
         POTATO = "Solanum tuberosum, a staple in some cultures.",
         POTATO_COOKED = "Roasted Solanum tuberosum.",
-        POTATO_SEEDS = "Mutated seed of Solanum tuberosum.",
+        POTATO_SEEDS = "It can't begin growing until it's been planted, dear.",
         
         TOMATO = "Fruit of Solanum lycopersicum.",
         TOMATO_COOKED = "Roasted Solanum lycopersicum.",
-        TOMATO_SEEDS = "Mutated seed of Solanum lycopersicum.",
+        TOMATO_SEEDS = "It can't begin growing until it's been planted, dear.",
 
         ASPARAGUS = "A great source of dietary fiber.", 
         ASPARAGUS_COOKED = "It releases sulfur compounds when it's digested.",
-        ASPARAGUS_SEEDS = "Ah. This will grow some fresh vegetables.",
+        ASPARAGUS_SEEDS = "It can't begin growing until it's been planted, dear.",
 
         PEPPER = "Of the genus Capsicum, if I'm not mistaken.",
         PEPPER_COOKED = "I must be careful not to rub my eyes.",
-        PEPPER_SEEDS = "A Capsicum seed.",
+        PEPPER_SEEDS = "It can't begin growing until it's been planted, dear.",
 
         WEREITEM_BEAVER = "It appears to induce a Castorthropic state.",
         WEREITEM_GOOSE = "An... artistic representation of the Branta canadensis.",
@@ -3716,20 +3717,20 @@ return{
 			BURNT = "I'm afraid that's that.",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "The result of proper research, planning and care.",
+        CORN_OVERSIZED = "Quite an impressive harvest.",
+        PUMPKIN_OVERSIZED = "A wonderfully plump squash.",
+        EGGPLANT_OVERSIZED = "A particularly respendent Solanum melongena.",
+        DURIAN_OVERSIZED = "Oh, our diminutive green friend will be thrilled!",
+        POMEGRANATE_OVERSIZED = "A rather large Punica granatum specimen.",
+        DRAGONFRUIT_OVERSIZED = "The result of proper research, planning and care.",
+        WATERMELON_OVERSIZED = "The result of proper research, planning and care.",
+        TOMATO_OVERSIZED = "I always was quite good at growing tomatoes.",
+        POTATO_OVERSIZED = "A rather impressive tuber!",
+        ASPARAGUS_OVERSIZED = "It's quite the source of fiber!",
+        ONION_OVERSIZED = "A rather large Allium sativum specimen.",
+        GARLIC_OVERSIZED = "How fascinating, it seems to have grown into a braided configuration all on its own!",
+        PEPPER_OVERSIZED = "The result of proper research, planning and care.",
         
         VEGGIE_OVERSIZED_ROTTEN = "How terrible to see it all go to waste!",
 

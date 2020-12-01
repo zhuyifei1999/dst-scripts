@@ -116,7 +116,7 @@ Recipe("portablespicer_item",  {Ingredient("goldnugget", 2), Ingredient("cutston
 --SURVIVAL
 Recipe("reviver", {Ingredient("cutgrass", 3), Ingredient("spidergland", 1), Ingredient(CHARACTER_INGREDIENT.HEALTH, 40)}, RECIPETABS.SURVIVAL,  TECH.NONE)
 Recipe("healingsalve", {Ingredient("ash", 2), Ingredient("rocks", 1), Ingredient("spidergland",1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_ONE)
-Recipe("tillweedsalve", {Ingredient("tillweed", 8), Ingredient("petals", 4), Ingredient("charcoal", 1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
+Recipe("tillweedsalve", {Ingredient("tillweed", 4), Ingredient("petals", 4), Ingredient("charcoal", 1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
 Recipe("bandage", {Ingredient("papyrus", 1), Ingredient("honey", 2)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
 Recipe("lifeinjector", {Ingredient("spoiled_food", 8), Ingredient("nitre", 2), Ingredient("stinger",1)}, RECIPETABS.SURVIVAL,  TECH.SCIENCE_TWO)
 Recipe("bernie_inactive", {Ingredient("beardhair", 2), Ingredient("beefalowool", 2), Ingredient("silk", 2)}, RECIPETABS.SURVIVAL,  TECH.NONE, nil, nil, nil, nil, "pyromaniac")
@@ -353,11 +353,12 @@ Recipe("chesspiece_butterfly_sketch", {Ingredient("papyrus", 1)}, RECIPETABS.MOO
 Recipe("chesspiece_moon_sketch", 	  {Ingredient("papyrus", 1)}, RECIPETABS.MOON_ALTAR, TECH.MOON_ALTAR_TWO, nil, nil, true)
 
 ----BOOK----
-Recipe("book_birds", 	 {Ingredient("papyrus", 2), Ingredient("bird_egg", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
-Recipe("book_gardening", {Ingredient("papyrus", 2), Ingredient("seeds", 5), Ingredient("poop", 5)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_ONE, nil, nil, nil, nil, "bookbuilder")
-Recipe("book_sleep", 	 {Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.MAGIC_TWO, nil, nil, nil, nil, "bookbuilder")
-Recipe("book_brimstone", {Ingredient("papyrus", 2), Ingredient("redgem", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.MAGIC_THREE, nil, nil, nil, nil, "bookbuilder")
-Recipe("book_tentacles", {Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_THREE, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_birds", 		{Ingredient("papyrus", 2), Ingredient("bird_egg", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_horticulture",	{Ingredient("papyrus", 2), Ingredient("seeds", 5), Ingredient("poop", 5)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_ONE, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_silviculture", {Ingredient("papyrus", 2), Ingredient("livinglog", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_THREE, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_sleep", 		{Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.MAGIC_TWO, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_brimstone",	{Ingredient("papyrus", 2), Ingredient("redgem", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.MAGIC_THREE, nil, nil, nil, nil, "bookbuilder")
+Recipe("book_tentacles",	{Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_THREE, nil, nil, nil, nil, "bookbuilder")
 
 ----SHADOW----
 Recipe("waxwelljournal", 		{Ingredient("papyrus", 2), 		 Ingredient("nightmarefuel", 2), Ingredient(CHARACTER_INGREDIENT.HEALTH, 50)}, CUSTOM_RECIPETABS.SHADOW, TECH.NONE, nil, nil, nil, nil, "shadowmagic")
@@ -641,6 +642,7 @@ Recipe("archive_resonator",              {Ingredient("moonrocknugget", 1), Ingre
 -- old deprecated structures
 Recipe("slow_farmplot",		{Ingredient("cutgrass", 8), Ingredient("poop", 4), Ingredient("log", 4)},	nil, TECH.LOST, nil, nil, true)
 Recipe("fast_farmplot",		{Ingredient("cutgrass", 10), Ingredient("poop", 6),Ingredient("rocks", 4)}, nil, TECH.LOST, nil, nil, true)
+Recipe("book_gardening",	{Ingredient("papyrus", 2), Ingredient("seeds", 1), Ingredient("poop", 1)},  nil, TECH.LOST, nil, nil, nil, nil, "bookbuilder")
 
 ----CONSTRUCTION PLANS----
 CONSTRUCTION_PLANS =

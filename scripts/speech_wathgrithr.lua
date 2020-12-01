@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "Its ways are already known to me."
+            GENERIC = "Its ways are already known to me.",
+            FERTILIZER = "I need not know more.",
         },
         FILL_OCEAN =
         {

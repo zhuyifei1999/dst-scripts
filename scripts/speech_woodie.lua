@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I'm familiar."
+            GENERIC = "I'm familiar.",
+            FERTILIZER = "I think I know aboot as much as I wanna know.",
         },
         FILL_OCEAN =
         {
@@ -613,7 +614,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "I'm hopin' it's a maple tree.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "I think I know aboot as much as I wanna know.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "I learned a bit more aboot it.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1413,7 +1414,7 @@ return{
 		CARROT = "That's rabbit food.",
 		CARROT_COOKED = "That's cooked rabbit food.",
 		CARROT_PLANTED = "I'm not one for vegetables, eh?",
-		CARROT_SEEDS = "Tiny carrots.",
+		CARROT_SEEDS = "Tiny seeds.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Heh. Has a little compass and everything.",
@@ -1591,7 +1592,7 @@ return{
 
 		DRAGONFRUIT = "I've never seen one of those before.",
 		DRAGONFRUIT_COOKED = "It tastes like maple syrup.",
-		DRAGONFRUIT_SEEDS = "Maybe I can grow more.",
+		DRAGONFRUIT_SEEDS = "Maybe I can grow them.",
 		DRAGONPIE = "Almost as good as butter tarts!",
 		DRUMSTICK = "October food.",
 		DRUMSTICK_COOKED = "Thanks, turkey.",
@@ -1602,11 +1603,11 @@ return{
 		DUG_SAPLING = "Mmmmm. It's all twiggy.",
 		DURIAN = "It smells bad.",
 		DURIAN_COOKED = "It smells even worse.",
-		DURIAN_SEEDS = "Why would I want to grow more of those things?",
+		DURIAN_SEEDS = "Maybe I could plant them?",
 		EARMUFFSHAT = "Where I'm from these'd only work in the fall.",
 		EGGPLANT = "I bet the birds have something to do with this.",
 		EGGPLANT_COOKED = "Suspiciously birdy.",
-		EGGPLANT_SEEDS = "Hmmm. I'm not sure.",
+		EGGPLANT_SEEDS = "Maybe I could plant them?",
 		
 		ENDTABLE = 
 		{

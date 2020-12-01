@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "I know all its secrets."
+            GENERIC = "I know all its secrets.",
+            FERTILIZER = "I've learned enough to last me a lifetime.",
         },
         FILL_OCEAN =
         {
@@ -1416,14 +1417,14 @@ return{
 		CARROT = "It's a carrot.",
 		CARROT_COOKED = "It's a carrot that's gone through a gauntlet of fire.",
 		CARROT_PLANTED = "It's a carrot that's in the ground.",
-		CARROT_SEEDS = "It's a carrot that's waiting to be.",
+		CARROT_SEEDS = "It's a plant that's waiting to be.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "Maps are best with monsters drawn on the borders.",
 			BURNING = "Well, old maps always do look burnt at the edges...",
 			BURNT = "No more mapmaking, then.",
 		},
-		WATERMELON_SEEDS = "Perfectly shaped for spitting.",
+		WATERMELON_SEEDS = "It's a plant that's waiting to be.",
 		CAVE_FERN = "A touch of color in the bleakness.",
 		CHARCOAL = "Cold, dead and black, just like my heart.",
         CHESSPIECE_PAWN = "We are all but pawns in this game called \"life\".",
@@ -1594,7 +1595,7 @@ return{
 
 		DRAGONFRUIT = "This isn't shaped like a dragon at all.",
 		DRAGONFRUIT_COOKED = "Still not a dragon. At least it's dead.",
-		DRAGONFRUIT_SEEDS = "It's a seed. It won't grow a dragon.",
+		DRAGONFRUIT_SEEDS = "It's a seed.",
 		DRAGONPIE = "Well, at least it's a pie now.",
 		DRUMSTICK = "Makes a good thud, and it's nutritious!",
 		DRUMSTICK_COOKED = "Less raw, more tasty.",
@@ -1605,11 +1606,11 @@ return{
 		DUG_SAPLING = "I like it dead, but it should probably be returned to the earth.",
 		DURIAN = "Spiky and smelly!",
 		DURIAN_COOKED = "Less spiky, but even smellier!",
-		DURIAN_SEEDS = "Miraculously, the seeds don't smell.",
+		DURIAN_SEEDS = "It's a plant that's waiting to be.",
 		EARMUFFSHAT = "Their bitter end offers protection from the bitter cold.",
 		EGGPLANT = "Almost a deadly nightshade. Almost.",
 		EGGPLANT_COOKED = "Cooking this nightshade made it even less deadly.",
-		EGGPLANT_SEEDS = "It's a nightshade seed.",
+		EGGPLANT_SEEDS = "It's a plant that's waiting to be.",
 		
 		ENDTABLE = 
 		{
@@ -2019,7 +2020,7 @@ return{
         },
         POMEGRANATE = "So many juicy red bits to chomp and squish!",
         POMEGRANATE_COOKED = "Warm, but no less messy.",
-        POMEGRANATE_SEEDS = "I was expecting more seeds than this from that thing.",
+        POMEGRANATE_SEEDS = "It's a plant that's waiting to be.",
         POND = "Ophelia? Are you down there?",
         POOP = "Life is blood and this.",
         FERTILIZER = "A bucket of grime.",
@@ -3720,20 +3721,20 @@ return{
 			BURNT = "Ashes to ashes.",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "A clump of giant, gnarled roots for eating.",
+        CORN_OVERSIZED = "I could pop enough corn for everyone.",
+        PUMPKIN_OVERSIZED = "If only it could become a carriage and carry me far away from here.",
+        EGGPLANT_OVERSIZED = "Unfortunately it's not poisonous, despite its sickly purple shade.",
+        DURIAN_OVERSIZED = "Why did this one have to grow so large?",
+        POMEGRANATE_OVERSIZED = "I wonder how long a single seed would keep one trapped in the underworld...",
+        DRAGONFRUIT_OVERSIZED = "It nearly became a dragon.",
+        WATERMELON_OVERSIZED = "One could drown in so much watermelon...",
+        TOMATO_OVERSIZED = "It looks like a giant heart. Shall I cut it open?",
+        POTATO_OVERSIZED = "I'm not sure if I could even carry it on my own...",
+        ASPARAGUS_OVERSIZED = "Sigh. I suppose all these vegetables will keep my strength up...",
+        ONION_OVERSIZED = "You won't draw any tears from me.",
+        GARLIC_OVERSIZED = "Oh. It's nicely braided.",
+        PEPPER_OVERSIZED = "That is a very significant amount of pepper.",
         
         VEGGIE_OVERSIZED_ROTTEN = "Dead and rotting.",
 

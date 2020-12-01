@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "This plant is known to Wolfgang."
+            GENERIC = "This plant is known to Wolfgang.",
+            FERTILIZER = "TODO",
         },
         FILL_OCEAN =
         {
@@ -613,7 +614,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "Will see what tiny seed grows into.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "This is known to Wolfgang.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Wolfgang is learning much about stinky plant food.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1485,7 +1486,7 @@ return{
 		},
 		CORN = "Is corn. What expect?",
 		CORN_COOKED = "Pop pop pop! Ha ha, funny corn.",
-		CORN_SEEDS = "Is seeds for grow corn.",
+		CORN_SEEDS = "Is seeds for growing.",
         CANARY =
 		{
 			GENERIC = "Is small yellow bird!",
@@ -1591,7 +1592,7 @@ return{
 
 		DRAGONFRUIT = "Is funny-looking fruit.",
 		DRAGONFRUIT_COOKED = "Is cooked but still look funny.",
-		DRAGONFRUIT_SEEDS = "Could use to grow funny fruit, maybe.",
+		DRAGONFRUIT_SEEDS = "Is seeds for growing.",
 		DRAGONPIE = "Pie made of funny red fruit.",
 		DRUMSTICK = "Leg meat for make legs more strong.",
 		DRUMSTICK_COOKED = "Eat off bone is good.",
@@ -1602,11 +1603,11 @@ return{
 		DUG_SAPLING = "He is cold and lonely.",
 		DURIAN = "Is spiky smelly fruit.",
 		DURIAN_COOKED = "Now is hot spiky smelly fruit.",
-		DURIAN_SEEDS = "Tiny baby spiky fruit plant.",
+		DURIAN_SEEDS = "Is seeds for growing.",
 		EARMUFFSHAT = "Is could make me look like little bunny!",
 		EGGPLANT = "Is not egg!",
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
-		EGGPLANT_SEEDS = "Teensy fake egg plant.",
+		EGGPLANT_SEEDS = "Is seeds for growing.",
 		
 		ENDTABLE = 
 		{
@@ -2016,7 +2017,7 @@ return{
         },
         POMEGRANATE = "Look like smartypants brain.",
         POMEGRANATE_COOKED = "Ha ha ha! Brain is cooked! Not so smart now.",
-        POMEGRANATE_SEEDS = "Is piece of brain?",
+        POMEGRANATE_SEEDS = "Is seeds for growing.",
         POND = "Is all wet.",
         POOP = "Smelly!",
         FERTILIZER = "Bucket full of smelly.",
@@ -2024,7 +2025,7 @@ return{
         PUMPKINCOOKIE = "Is tasty cookie.",
         PUMPKIN_COOKED = "Very gourd!",
         PUMPKIN_LANTERN = "Now is actual head! Wolfgang afraid!",
-        PUMPKIN_SEEDS = "This grow food size of wimpy head.",
+        PUMPKIN_SEEDS = "Is seeds for growing.",
         PURPLEAMULET = "This amulet... it frightens Wolfgang.",
         PURPLEGEM = "Prettier rock.",
         RABBIT =

@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "Know already"
+            GENERIC = "Know already",
+            FERTILIZER = "Know all about it",
         },
         FILL_OCEAN =
         {
@@ -616,7 +617,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "Who it going to be?",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "Know all about it",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Learning about bellystuff",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{

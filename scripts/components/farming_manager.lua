@@ -116,6 +116,11 @@ local function SetSoilMoisture(data, soil_moisture)
 				for obj, _ in pairs(data.soil_drinkers) do
 					--obj:PushEvent("onsoilmoisturestatechange", {is_soil_moist = new_moisture > 0, was_soil_moist = prev_moisture > 0})
 					obj.components.farmsoildrinker:OnSoilMoistureStateChange(new_moisture > 0, prev_moisture > 0)
+					if new_moisture == 0 then
+						inst:RemoveTag("wildfireprotected")
+					elseif prev_moisture == 0 then
+						inst:AddTag("wildfireprotected")
+					end
 				end
 			end
 		end
@@ -172,6 +177,10 @@ local function OnRegisterSoilDrinker(drinker)
 	data.soil_drinkers[drinker] = true
 	if data.soilmoisture == nil then
 		data.soilmoisture = TheWorld.state.wetness
+	end
+
+	if data.soilmoisture > 0 then
+		drinker:AddTag("wildfireprotected")
 	end
 
 	inst:ListenForEvent("onremove", OnRemoveSoilDrinker, drinker)
@@ -447,9 +456,6 @@ function self:OnSave()
             if entries.nutrients then
                 data.tile_data[x][y].nutrients = entries.nutrients
             end
-            if entries.nutrients_overlay then
-                data.tile_data[x][y].nutrients_overlay = true
-            end
             if entries.belowsoiltile then
                 data.tile_data[x][y].belowsoiltile = entries.belowsoiltile
             end
@@ -484,8 +490,9 @@ function self:OnLoad(data)
                         tile_data[x][y].soilmoisture = entries.soilmoisture
                     end
 
-                    if entries.nutrients_overlay then
-                        OnTerraform(_world, {x = x, y = y, original_tile = entries.belowsoiltile, tile = _map:GetTile(x, y)}, true)
+					local map_tile = _map:GetTile(x, y)
+                    if map_tile == GROUND.FARMING_SOIL then
+                        OnTerraform(_world, {x = x, y = y, original_tile = entries.belowsoiltile, tile = map_tile}, true)
                     end
                 end
             end

@@ -1460,6 +1460,7 @@ function Inventory:UseItemFromInvTile(item, actioncode, mod_name)
         self:CanAccessItem(item) and
         self.inst.components.playeractionpicker ~= nil then
         local actions
+        SetClientRequestedAction(actioncode, mod_name)
         if self:GetActiveItem() ~= nil then
             --use the active item on the inventory item
             actions = self.inst.components.playeractionpicker:GetUseItemActions(item, self:GetActiveItem(), true)
@@ -1467,6 +1468,7 @@ function Inventory:UseItemFromInvTile(item, actioncode, mod_name)
             --just use the inventory item
             actions = self.inst.components.playeractionpicker:GetInventoryActions(item)
         end
+        ClearClientRequestedAction()
 
         if #actions <= 0 then
             return
@@ -1485,7 +1487,9 @@ function Inventory:ControllerUseItemOnItemFromInvTile(item, active_item, actionc
         self:CanAccessItem(item) and
         self:CanAccessItem(active_item) and
         self.inst.components.playercontroller ~= nil then
+        SetClientRequestedAction(actioncode, mod_name)
         local act = self.inst.components.playercontroller:GetItemUseAction(active_item, item)
+        ClearClientRequestedAction()
 
         if act == nil then
             return
@@ -1510,11 +1514,14 @@ function Inventory:ControllerUseItemOnSelfFromInvTile(item, actioncode, mod_name
         self:CanAccessItem(item) and
         self.inst.components.playercontroller ~= nil then
         local act = nil
+        
+        SetClientRequestedAction(actioncode, mod_name)
         if not (item.components.equippable ~= nil and item.components.equippable:IsEquipped()) then
             act = self.inst.components.playercontroller:GetItemSelfAction(item)
         elseif self.maxslots > 0 and not (item:HasTag("heavy") or GetGameModeProperty("non_item_equips")) then
             act = BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item)
         end
+        ClearClientRequestedAction()
 
         if act == nil then
             return
@@ -1533,6 +1540,7 @@ function Inventory:ControllerUseItemOnSceneFromInvTile(item, target, actioncode,
         self:CanAccessItem(item) and
         self.inst.components.playercontroller ~= nil then
         local act = nil
+        SetClientRequestedAction(actioncode, mod_name)
         if item.components.equippable ~= nil and item.components.equippable:IsEquipped() then
             act = self.inst.components.playercontroller:GetItemSelfAction(item)
             if actioncode ~= nil and
@@ -1551,6 +1559,7 @@ function Inventory:ControllerUseItemOnSceneFromInvTile(item, target, actioncode,
         elseif actioncode == nil or target == nil or CanEntitySeeTarget(self.inst, target) then
             act = self.inst.components.playercontroller:GetItemUseAction(item, target)
         end
+        ClearClientRequestedAction()
 
         if act == nil or act.action == ACTIONS.UNEQUIP then
             return

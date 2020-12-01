@@ -234,7 +234,8 @@ return{
         },
         PLANTREGISTRY_RESEARCH_FAIL =
         {
-            GENERIC = "Pfft, I already know what I need to know."
+            GENERIC = "Pfft, I already know what I need to know.",
+            FERTILIZER = "Well, that's about all I ever want to know about this stuff.",
         },
         FILL_OCEAN =
         {
@@ -619,7 +620,7 @@ return{
 
     ANNOUNCE_PLANT_RANDOMSEED = "I guess we'll see what happens.",
 
-    ANNOUNCE_FERTILIZER_RESEARCHED = "Well, that's about all I ever want to know about this stuff.",
+    ANNOUNCE_FERTILIZER_RESEARCHED = "Wow, so interesting. Glad I spent my time learning that and not doing literally anything else.",
 
 	ANNOUNCE_FIRENETTLE_TOXIN = 
 	{
@@ -1419,7 +1420,7 @@ return{
 		CARROT = "Yuck. It's all vegetabley.",
 		CARROT_COOKED = "Still vegetabley, but better for having been in fire.",
 		CARROT_PLANTED = "Maybe its special carrot friend is in the ground.",
-		CARROT_SEEDS = "Seeds for a yucky orange vegetable.",
+		CARROT_SEEDS = "Some seeds.",
 		CARTOGRAPHYDESK =
 		{
 			GENERIC = "I guess I could show everyone where I've been.",
@@ -1491,7 +1492,7 @@ return{
 		},
 		CORN = "A sweet vegetable, yum!",
 		CORN_COOKED = "Ooh, this one explodes when it goes in fire!",
-		CORN_SEEDS = "Seeds for my favorite explosive vegetable.",
+		CORN_SEEDS = "Some seeds.",
         CANARY =
 		{
 			GENERIC = "If it kicks the bucket I'm outta here.",
@@ -1597,7 +1598,7 @@ return{
 
 		DRAGONFRUIT = "It looks sort of like a fire!",
 		DRAGONFRUIT_COOKED = "It looks more like a fruit that's been in a fire now.",
-		DRAGONFRUIT_SEEDS = "Seeds for that fire-looking fruit.",
+		DRAGONFRUIT_SEEDS = "Some seeds.",
 		DRAGONPIE = "Fire fruit in a pie? Oh boy!",
 		DRUMSTICK = "Bang on the drum all day!",
 		DRUMSTICK_COOKED = "Hmm... Satisfy hunger, or bang on the drum?",
@@ -1608,11 +1609,11 @@ return{
 		DUG_SAPLING = "What's the matter, got no dirt?",
 		DURIAN = "Ew, stinky!",
 		DURIAN_COOKED = "Yuck, it smells just as bad cooked!",
-		DURIAN_SEEDS = "Smelly seeds for a smelly fruit.",
+		DURIAN_SEEDS = "Some seeds.",
 		EARMUFFSHAT = "Smells like rabbit butt.",
 		EGGPLANT = "Definitely not a bird.",
 		EGGPLANT_COOKED = "Using fire on it made it a tastier eggplant.",
-		EGGPLANT_SEEDS = "Will these seeds make a plant or baby bird?",
+		EGGPLANT_SEEDS = "Some seeds.",
 		
 		ENDTABLE = 
 		{
@@ -2022,7 +2023,7 @@ return{
         },
         POMEGRANATE = "Is it supposed to have this many parts?",
         POMEGRANATE_COOKED = "Fire always makes things better.",
-        POMEGRANATE_SEEDS = "Looks like the part from inside the fruit.",
+        POMEGRANATE_SEEDS = "Some seeds.",
         POND = "This pond will definitely not ignite. How dull.",
         POOP = "Ew. Nasty. But useful.",
         FERTILIZER = "A bucket full of nasty.",
@@ -2030,7 +2031,7 @@ return{
         PUMPKINCOOKIE = "Cookies!!!",
         PUMPKIN_COOKED = "Fire on the outside turned out pretty well.",
         PUMPKIN_LANTERN = "Fire on the inside is amazing!",
-        PUMPKIN_SEEDS = "Seeds for fire's best vegetable-friend... the pumpkin.",
+        PUMPKIN_SEEDS = "Some seeds.",
         PURPLEAMULET = "Has science gone too far?",
         PURPLEGEM = "Weird!",
         RABBIT =
@@ -3723,20 +3724,20 @@ return{
 			BURNT = "Aw, over already?",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "A big old carrot.",
+        CORN_OVERSIZED = "Let's get this thing on the fire!",
+        PUMPKIN_OVERSIZED = "I could stick the biggest candle in there! It'll be great!",
+        EGGPLANT_OVERSIZED = "What am I supposed to do with all this eggplant?!",
+        DURIAN_OVERSIZED = "Of course THIS is the one that grows well...",
+        POMEGRANATE_OVERSIZED = "I bet it looks super gross inside!",
+        DRAGONFRUIT_OVERSIZED = "I wish it was a fire-breathing Dragonfruit.",
+        WATERMELON_OVERSIZED = "Ugh, way too much water!",
+        TOMATO_OVERSIZED = "Ugh, it's going to be even harder to cut now...",
+        POTATO_OVERSIZED = "Let's roast this thing!",
+        ASPARAGUS_OVERSIZED = "I have a feeling it'll be asparagus leftovers for a long time...",
+        ONION_OVERSIZED = "I've got to figure out what I'm gonna do with all this onion...",
+        GARLIC_OVERSIZED = "I bet my breath would smell great if I ate the whole thing.",
+        PEPPER_OVERSIZED = "That's a lot of hot stuff!",
         
         VEGGIE_OVERSIZED_ROTTEN = "A big pile of stinky mush.",
 

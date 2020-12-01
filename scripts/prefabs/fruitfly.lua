@@ -69,8 +69,8 @@ local function common_server(inst)
     inst.components.locomotor.walkspeed = 6
     inst.components.locomotor.pathcaps = {allowocean = true}
 
-    MakeMediumFreezableCharacter(inst, "fruit")
-    MakeMediumBurnableCharacter(inst, "fruit")
+    MakeMediumFreezableCharacter(inst, "fruit2")
+    MakeMediumBurnableCharacter(inst, "fruit2")
 
     MakeHauntablePanic(inst)
 
@@ -184,7 +184,7 @@ local function fn()
     inst:AddComponent("leader")
 
     inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "fruit"
+    inst.components.combat.hiteffectsymbol = "fruit2"
     inst.components.combat:SetAttackPeriod(TUNING.LORDFRUITFLY_ATTACK_PERIOD)
     inst.components.combat:SetDefaultDamage(TUNING.LORDFRUITFLY_DAMAGE)
     inst.components.combat:SetRange(TUNING.LORDFRUITFLY_ATTACK_DIST)
@@ -255,7 +255,7 @@ local function minifn()
     inst:AddComponent("follower")
 
     inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "fruit"
+    inst.components.combat.hiteffectsymbol = "fruit2"
     inst.components.combat:SetKeepTargetFunction(ShouldKeepTarget)
 
     inst:AddComponent("health")
@@ -341,7 +341,7 @@ local function friendlyfn()
 
     inst:AddComponent("health")
     inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "fruit"
+    inst.components.combat.hiteffectsymbol = "fruit2"
     inst.components.combat:SetKeepTargetFunction(ShouldKeepTarget)
 
     inst.components.sleeper.testperiod = GetRandomWithVariance(6, 2)
