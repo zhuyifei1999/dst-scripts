@@ -12777,6 +12777,8 @@ local states =
             TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
+            TimeEvent(5 * FRAMES, function(inst) 
+                inst.SoundEmitter:PlaySound("farming/common/watering_can/use") end),
             TimeEvent(24 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),

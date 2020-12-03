@@ -951,8 +951,8 @@ local function GetNextAvailableSlot(inst, item)
     local isstackable = item.replica.stackable ~= nil
 
     local inventory_replica = inst and inst._parent and inst._parent.replica.inventory
-    local overflow_replica = overflow and overflow._parent and overflow._parent.replica.container
     local overflow = GetOverflowContainer(inst)
+    local overflow_replica = overflow and overflow._parent and overflow._parent.replica.container
     local prioritize_container = (overflow and not overflow:IsBusy()) and overflow_replica and overflow_replica:ShouldPrioritizeContainer(item)
 
     local prefabname
