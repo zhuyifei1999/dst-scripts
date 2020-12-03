@@ -120,8 +120,7 @@ local states =
                 local pos = inst:GetPosition()
                 if inst.components.harvestable ~= nil and inst.components.harvestable.produce > 0 then
                     for p = 1, inst.components.harvestable.produce do
-                        local product = (inst.components.burnable:IsBurning() and "barnacle_cooked") or "barnacle"
-                        inst.components.lootdropper:SpawnLootPrefab(product, pos)
+                        inst.components.lootdropper:SpawnLootPrefab("barnacle", pos)
                     end
                 end
                 inst.components.lootdropper:SpawnLootPrefab("waterplant_planter", pos)

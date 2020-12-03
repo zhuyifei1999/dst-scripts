@@ -22,6 +22,7 @@ local prefabs =
 }
 
 local beardlordloot = { "beardhair", "beardhair", "monstermeat" }
+local regularloot = { "carrot", "carrot" }
 
 local brain = require("brains/bunnymanbrain")
 
@@ -193,9 +194,9 @@ local function LootSetupFunction(lootdropper)
         lootdropper:SetLoot(beardlordloot)
     else
         -- regular loot
-        lootdropper:AddRandomLoot("carrot", 3)
+        lootdropper:SetLoot(regularloot)
         lootdropper:AddRandomLoot("meat", 3)
-        lootdropper:AddRandomLoot("manrabbit_tail", 2)
+        lootdropper:AddRandomLoot("manrabbit_tail", 1)
         lootdropper.numrandomloot = 1
     end
 end

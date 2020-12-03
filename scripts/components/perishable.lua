@@ -1,13 +1,13 @@
 local function onpercent(self)
     local percent = self:GetPercent()
-    if percent >= TUNING.PERISH_FRESH then
+    if percent >= 0.5 then
         if not self.inst:HasTag("fresh") then
             self.inst:RemoveTag("stale")
             self.inst:RemoveTag("spoiled")
             self.inst:AddTag("fresh")
             self.inst:PushEvent("forceperishchange")
         end
-    elseif percent > TUNING.PERISH_STALE then
+    elseif percent > 0.2 then
         if not self.inst:HasTag("stale") then
             self.inst:RemoveTag("fresh")
             self.inst:RemoveTag("spoiled")
@@ -27,12 +27,12 @@ end
 local Perishable = Class(function(self, inst)
     self.inst = inst
     self.perishfn = nil
-    --self.perishtime = nil
+    self.perishtime = nil
 
     self.frozenfiremult = false
     
     self.targettime = nil
-    --self.perishremainingtime = nil
+    self.perishremainingtime = nil
     self.updatetask = nil
     self.dt = nil
     self.onperishreplacement = nil
@@ -266,9 +266,6 @@ function Perishable:Perish()
             if goop.components.stackable ~= nil and self.inst.components.stackable ~= nil then
                 goop.components.stackable:SetStackSize(self.inst.components.stackable.stacksize)
             end
-			if self.onreplacedfn ~= nil then
-				self.onreplacedfn(self.inst, goop)
-			end
             local owner = self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner or nil
             local holder = owner ~= nil and (owner.components.inventory or owner.components.container) or nil
             if holder ~= nil then

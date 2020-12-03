@@ -19,7 +19,6 @@ local Container = Class(function(self, inst)
     self.type = nil
     self.widget = nil
     self.itemtestfn = nil
-    self.priorityfn = nil
     self.opener = nil
 
 	--self.droponopen = false
@@ -42,7 +41,6 @@ local widgetprops =
     "type",
     "widget",
     "itemtestfn",
-    "priorityfn",
 }
 
 function Container:WidgetSetup(prefab, data)
@@ -159,18 +157,6 @@ function Container:GetSpecificSlotForItem(item)
             end
         end
     end
-end
-
-function Container:ShouldPrioritizeContainer(item)
-    if not self.priorityfn then
-        return false
-    end
-    return item ~= nil
-        and item.components.inventoryitem ~= nil
-        and item.components.inventoryitem.cangoincontainer
-        and not item.components.inventoryitem.canonlygoinpocket
-        and not (GetGameModeProperty("non_item_equips") and item.components.equippable ~= nil)
-        and (self:priorityfn(item))
 end
 
 function Container:AcceptsStacks()

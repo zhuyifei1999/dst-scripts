@@ -42,23 +42,14 @@ local NOTES =
 
 local TRIGGER_DIST_SQ = 3*3
 
-local PLANT_TAGS = {"tendable_farmplant"}
-
-local function PlaySound(inst, doer)
+local function PlaySound(inst)
 	inst.SoundEmitter:PlaySoundWithParams(inst._sound, {note = inst.components.cyclable.step - 1 + 0.1})
 
 	inst.AnimState:PlayAnimation("music")
-
-    local x,y,z = inst.Transform:GetWorldPosition()
-    for _, v in pairs(TheSim:FindEntities(x, y, z, TUNING.SINGINGSHELL_FARM_PLANT_INTERACT_RANGE, PLANT_TAGS)) do
-		if v.components.farmplanttendable ~= nil then
-			v.components.farmplanttendable:TendTo(doer)
-		end
-	end
 end
 
 local function OnCycle(inst, step, doer)
-	PlaySound(inst, doer)
+	PlaySound(inst)
 end
 
 local function OnActivate(inst)

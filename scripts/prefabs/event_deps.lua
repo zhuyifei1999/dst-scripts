@@ -89,10 +89,10 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("PKGREF", "anim/dst_menu_feast.zip"),
-                Asset("PKGREF", "anim/dst_menu_feast_bg.zip"),
+                Asset("ANIM", "anim/dst_menu_feast.zip"),
+                Asset("ANIM", "anim/dst_menu_feast_bg.zip"),
                 Asset("PKGREF", "sound/music_frontend_winters_feast.fsb"),
-                Asset("ANIM", "anim/dst_menu_inker_winter.zip"),  
+                Asset("PKGREF", "anim/dst_menu_inker_winter.zip"),  
             },
         },
     },
@@ -182,9 +182,7 @@ local SPECIAL_EVENT_DEPS =
                 Asset("PKGREF", "anim/dst_menu_wathgrithr.zip"),
                 Asset("PKGREF", "anim/dst_menu_dangerous_sea.zip"),
                 
-                Asset("PKGREF", "anim/dst_menu_grotto.zip"),
-
-                Asset("ANIM", "anim/dst_menu_farming.zip"),
+                Asset("ANIM", "anim/dst_menu_grotto.zip"),
 
                 
             },

@@ -130,7 +130,7 @@ local function OnMemberKilled(inst, member, data)
 end
 
 local OnMemberNewTarget -- forward declaration
-local DespawnedFromHaunt
+local DespaenedFromHaunt
 
 local function TrackMember(inst, member)
     --print("TrackMember", inst, member)

@@ -105,13 +105,18 @@ function Crop:Fertilize(fertilizer, doer)
                 self.task = nil
             end
         end
+        if fertilizer.components.finiteuses ~= nil then
+            fertilizer.components.finiteuses:Use()
+        else
+            fertilizer.components.stackable:Get():Remove()
+        end
         return true
     end
 end
 
 local CANGROW_TAGS = { "daylight", "lightsource" }
 function Crop:DoGrow(dt, nowither)
-    if not self.inst:HasTag("withered") and self.growthpercent < 1 then 
+    if not self.inst:HasTag("withered") then 
         local shouldgrow = nowither or not TheWorld.state.isnight
         if not shouldgrow then
             local x, y, z = self.inst.Transform:GetWorldPosition()
@@ -136,7 +141,7 @@ function Crop:DoGrow(dt, nowither)
             if self.cantgrowtime > TUNING.CROP_DARK_WITHER_TIME and self.inst.components.witherable ~= nil then
                 self.inst.components.witherable:ForceWither()
                 if self.inst:HasTag("withered") then
-                    return false
+                    return
                 end
             end
         end
@@ -151,11 +156,7 @@ function Crop:DoGrow(dt, nowither)
                 self.task = nil
             end
         end
-
-		return true
     end
-
-	return false
 end
 
 function Crop:GetDebugString()

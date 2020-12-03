@@ -15,7 +15,6 @@ local SandDustOver = require "widgets/sanddustover"
 local MindControlOver = require "widgets/mindcontrolover"
 local InkOver = require "widgets/inkover"
 local GogglesOver = require "widgets/gogglesover"
-local NutrientsOver = require "widgets/nutrientsover"
 local BatOver = require "widgets/batover"
 local FlareOver = require "widgets/flareover"
 local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
@@ -27,7 +26,6 @@ local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
 local InputDialogScreen = require "screens/inputdialog"
 local CookbookPopupScreen = require "screens/cookbookpopupscreen"
-local PlantRegistryPopupScreen = require "screens/plantregistrypopupscreen"
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -129,7 +127,6 @@ function PlayerHud:CreateOverlays(owner)
     end
     self.sandover = self.overlayroot:AddChild(SandOver(owner, self.sanddustover))
     self.gogglesover = self.overlayroot:AddChild(GogglesOver(owner, self.storm_overlays))
-    self.nutrientsover = self.overlayroot:AddChild(NutrientsOver(owner))
     self.bloodover = self.overlayroot:AddChild(BloodOver(owner))
     self.beefbloodover = self.overlayroot:AddChild(BeefBloodOver(owner))
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
@@ -460,21 +457,6 @@ function PlayerHud:CloseCookbookScreen()
             TheFrontEnd:PopScreen(self.cookbookscreen)
 		end
         self.cookbookscreen = nil
-    end
-end
-
-function PlayerHud:OpenPlantRegistryScreen()
-    self.plantregistryscreen = PlantRegistryPopupScreen(self.owner)
-    self:OpenScreenUnderPause(self.plantregistryscreen)
-    return true
-end
-
-function PlayerHud:ClosePlantRegistryScreen()
-    if self.plantregistryscreen ~= nil then
-        if self.plantregistryscreen.inst:IsValid() then
-            TheFrontEnd:PopScreen(self.plantregistryscreen)
-		end
-        self.plantregistryscreen = nil
     end
 end
 

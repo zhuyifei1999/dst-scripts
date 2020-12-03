@@ -198,7 +198,6 @@ local function basefn(build, loot_table_name, child_name)
     MakeWaterObstaclePhysics(inst, 0.80, 2, 1.25)
 
     inst:AddTag("ignorewalkableplatforms")
-    inst:AddTag("event_trigger")
 
     inst.AnimState:SetBank("lobster_den")
     inst.AnimState:SetBuild(build)

@@ -1598,9 +1598,7 @@ function EntityScript:SetPersistData(data, newents)
 end
 
 function EntityScript:GetAdjective()
-	if self.displayadjectivefn ~= nil then
-		return self:displayadjectivefn(self)
-	elseif self:HasTag("critter") then
+	if self:HasTag("critter") then
 		for k,_ in pairs(TUNING.CRITTER_TRAITS) do
 			if self:HasTag("trait_"..k) then
 				return STRINGS.UI.HUD.CRITTER_TRAITS[k]

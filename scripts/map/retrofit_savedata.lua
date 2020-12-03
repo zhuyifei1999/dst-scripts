@@ -163,6 +163,8 @@ end
 
 
 
+
+
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -205,7 +207,7 @@ local function DoRetrofitting(savedata, world_map)
 	end
 	
 	if dirty then
-		savedata.map.tiles = world_map:GetStringEncode()
+        savedata.map.tiles = world_map:GetStringEncode()
 		savedata.map.nodeidtilemap = world_map:GetNodeIdTileMapStringEncode()
 
 		-- if we could trigger a save here then we would not need to rest after

@@ -1,23 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/glommer_fuel.zip"),
-	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
-
-local prefabs =
-{
-    "gridplacer_farmablesoil",
-}
-
-local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
-
-local function GetFertilizerKey(inst)
-    return inst.prefab
-end
-
-local function fertilizerresearchfn(inst)
-    return inst:GetFertilizerKey()
-end
 
 local function fn()
     local inst = CreateEntity()
@@ -33,11 +17,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst)
-    MakeDeployableFertilizerPristine(inst)
-
-    inst:AddTag("fertilizerresearchable")
-
-    inst.GetFertilizerKey = GetFertilizerKey
 
     inst.entity:SetPristine()
 
@@ -49,9 +28,6 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst:AddComponent("stackable")
 
-    inst:AddComponent("fertilizerresearchable")
-    inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
-
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
@@ -61,9 +37,7 @@ local function fn()
     inst:AddComponent("fertilizer")
     inst.components.fertilizer.fertilizervalue = TUNING.GLOMMERFUEL_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.GLOMMERFUEL_SOILCYCLES
-    inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.glommerfuel.nutrients)
 
-    MakeDeployableFertilizer(inst)
     MakeHauntableLaunch(inst)
 
     inst:AddComponent("edible")
@@ -74,4 +48,4 @@ local function fn()
     return inst
 end
 
-return Prefab("glommerfuel", fn, assets, prefabs)
+return Prefab("glommerfuel", fn, assets)
