@@ -235,7 +235,7 @@ return{
         PLANTREGISTRY_RESEARCH_FAIL =
         {
             GENERIC = "This plant is known to Wolfgang.",
-            FERTILIZER = "TODO",
+            FERTILIZER = "This is known to Wolfgang.",
         },
         FILL_OCEAN =
         {
@@ -564,6 +564,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "Is too weak for race.",
 
@@ -698,6 +700,8 @@ return{
         BOOK_BIRDS = "Book is for the birds!",
         BOOK_TENTACLES = "Wolfgang wants many foes to fight!",
         BOOK_GARDENING = "Wolfgang rather grow muscle than flowers.",
+		BOOK_SILVICULTURE = "Wolfgang rather grow muscle than flowers.",
+		BOOK_HORTICULTURE = "Little book makes food grow for Wolfgang.",
         BOOK_SLEEP = "Wolfgang's eyes feel heavy like dumbbells.",
         BOOK_BRIMSTONE = "Tiny book scares Wolfgang!",
 
@@ -3718,20 +3722,20 @@ return{
 			BURNT = "Cooked.",
         },
         
-        CARROT_OVERSIZED = "TODO",
-        CORN_OVERSIZED = "TODO",
-        PUMPKIN_OVERSIZED = "TODO",
-        EGGPLANT_OVERSIZED = "TODO",
-        DURIAN_OVERSIZED = "TODO",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        CARROT_OVERSIZED = "At least is big. Wolfgang can use for weights.",
+        CORN_OVERSIZED = "Wolfgang's muscles will get even more mighty lifting giant corn!",
+        PUMPKIN_OVERSIZED = "Is even better than weakling science man's head!",
+        EGGPLANT_OVERSIZED = "Wolfgang is getting tired of being fooled by non-egg plant...",
+        DURIAN_OVERSIZED = "Is big and spiky fruit.",
+        POMEGRANATE_OVERSIZED = "Is big and good for lifting!",
+        DRAGONFRUIT_OVERSIZED = "Do not worry small weak friends, Wolfgang can carry giant fruit!",
+        WATERMELON_OVERSIZED = "Is extra big to hold more melon inside.",
+        TOMATO_OVERSIZED = "Is almost big enough to fill Wolfgang's mighty belly!",
+        POTATO_OVERSIZED = "Is... is most beautiful thing Wolfgang has ever seen...",
+        ASPARAGUS_OVERSIZED = "Big vegetables for growing even bigger and stronger!",
+        ONION_OVERSIZED = "Onion is good for you! Big ones even better!",
+        GARLIC_OVERSIZED = "Is never enough garlic!",
+        PEPPER_OVERSIZED = "Is filled with powerful spice.",
         
         VEGGIE_OVERSIZED_ROTTEN = "Wolfgang was going to eat that...",
 
@@ -3753,6 +3757,8 @@ return{
         LORDFRUITFLY = "Ack! Is big and creepy!",
         FRIENDLYFRUITFLY = "Is helpful bug, but still creepy.",
         FRUITFLYFRUIT = "Weird thing attracts helpful, creepy flies.",
+
+        SEEDPOUCH = "Is small pack for seeds.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

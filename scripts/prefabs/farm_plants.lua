@@ -162,6 +162,7 @@ local function ReplaceWithRandomPlant(inst)
 
 	if plant.plant_def ~= nil then
 		plant.no_oversized = true
+		plant.long_life = inst.long_life
 		plant.components.farmsoildrinker:CopyFrom(inst.components.farmsoildrinker)
 		plant.components.farmplantstress:CopyFrom(inst.components.farmplantstress)
 		plant.components.growable:DoGrowth()
@@ -253,12 +254,12 @@ local function PlaySowAnim(inst)
 	end
 end
 
-local function PlayStageAnim(inst, anim)
+local function PlayStageAnim(inst, anim, pre_override)
 	if POPULATING or inst:IsAsleep() then
 		inst.AnimState:PlayAnimation("crop_"..anim, true)
 		inst.AnimState:SetTime(10 + math.random() * 2)
 	else
-		inst.AnimState:PlayAnimation("grow_"..anim, false)
+		inst.AnimState:PlayAnimation(pre_override or ("grow_"..anim), false)
 		inst.AnimState:PushAnimation("crop_"..anim, true)
 	end
 
@@ -267,9 +268,17 @@ local function PlayStageAnim(inst, anim)
 end
 
 local function OnPicked(inst, doer)
-    local soil = SpawnPrefab("farm_soil")
-    soil.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    soil:PushEvent("breaksoil")
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:GetTileAtPoint(x, y, z) == GROUND.FARMING_SOIL then
+		local soil = SpawnPrefab("farm_soil")
+		soil.Transform:SetPosition(x, y, z)
+		soil:PushEvent("breaksoil")
+	end
+
+	if not inst.is_oversized and inst:HasTag("farm_plant_killjoy") and math.random() < 0.05 then
+		local fruitfly = SpawnPrefab("fruitfly")
+		fruitfly.Transform:SetPosition(x, y, z)
+	end
 
 	call_for_reinforcements(inst, doer)
 
@@ -359,7 +368,11 @@ local function GetGrowTime(inst, stage_num, stage_data)
 end
 
 local function GetSpoilTime(inst)
-	return inst.is_oversized and inst.plant_def.grow_time.oversized or inst.plant_def.grow_time.full
+	return (inst.is_oversized and inst.plant_def.grow_time.oversized or inst.plant_def.grow_time.full) * (inst.long_life and TUNING.FARM_PLANT_LONG_LIFE_MULT or 1)
+end
+
+local function GetSelfRegrowTime(inst)
+	return not inst.is_oversized and GetRandomMinMax(inst.plant_def.grow_time.regrow[1], inst.plant_def.grow_time.regrow[2]) or nil
 end
 
 local function UpdateResearchStage(inst, stage)
@@ -437,7 +450,7 @@ local GROWTH_STAGES =
 			inst.components.farmplanttendable:SetTendable(stage_data.tendable)
 
 			inst:UpdateResearchStage(stage)
-			PlayStageAnim(inst, "sprout")
+            PlayStageAnim(inst, "sprout", inst._grow_from_rotten and "grow_sprout" or nil) -- todo: change the grow_sprout animation once its ready
         end,
 		dig_fx = "dirt_puff",
 		inspect_str = "GROWING",
@@ -505,7 +518,11 @@ local GROWTH_STAGES =
     },
     {
         name = "rotten",
+        time = GetSelfRegrowTime,
 		pregrowfn = function(inst)
+			MakeStressCheckpoint(inst) 
+			inst.components.farmplantstress:Reset()
+
 			TheWorld:PushEvent("ms_oncroprotted", inst)
 	   	end,
         fn = function(inst, stage, stage_data)
@@ -513,7 +530,15 @@ local GROWTH_STAGES =
             MakePickable(inst, true)
             MakePlantedSeed(inst, false)
 			inst.components.farmplanttendable:SetTendable(stage_data.tendable)
-			inst.components.growable:StopGrowing()
+
+			if inst.is_oversized then
+				-- oversized plants will not self-sow after rotting
+				inst.components.growable:StopGrowing()
+			else
+				-- normal sized plants will self-sow after rotting, but the new plant will never be achieve oversized veggies
+				inst.no_oversized = true
+				inst._grow_from_rotten = true -- this is not saved so be careful if you want to use it
+			end
 
 			inst:UpdateResearchStage(stage)
             PlayStageAnim(inst, inst.is_oversized and "rot_oversized" or "rot")
@@ -609,9 +634,16 @@ local function OnLootPrefabSpawned(inst, data)
 	end
 end
 
+local function on_planted(inst, data)
+	if data ~= nil and data.doer ~= nil and data.doer:HasTag("plantkin") then
+		inst.long_life = true
+	end
+end
+
 local function OnSave(inst, data)
 	data.is_oversized = inst.is_oversized
 	data.no_oversized = inst.no_oversized
+	data.long_life = inst.long_life
 	data.scale = inst.scale
 end
 
@@ -620,6 +652,7 @@ local function OnPreLoad(inst, data)
 		inst.is_oversized = data.is_oversized
 		inst.no_oversized = data.no_oversized
 		inst.scale = data.scale
+		inst.long_life = data.long_life
 	end
 end
 
@@ -721,6 +754,8 @@ local function MakePlant(plant_def)
 		inst.components.growable.growoffscreen = true
 		inst.components.growable.stages = plant_def.is_randomseed and GROWTH_STAGES_RANDOMSEED or GROWTH_STAGES
 		inst.components.growable:SetStage(1)
+		inst.components.growable.loopstages = true
+		inst.components.growable.loopstages_start = 2
 		inst.components.growable:StartGrowing()
 		inst.components.growable.domagicgrowthfn = domagicgrowthfn
 		inst.components.growable.magicgrowable = true
@@ -745,6 +780,8 @@ local function MakePlant(plant_def)
 		inst:ListenForEvent("ms_fruitflytimerfinished", function() PushFruitFlySpawnerEvent(inst) end, TheWorld)
 		inst:ListenForEvent("entitywake", PushFruitFlySpawnerEvent)
 		inst:ListenForEvent("loot_prefab_spawned", OnLootPrefabSpawned)
+
+		inst:ListenForEvent("on_planted", on_planted)
 
 		inst.OnSave = OnSave
 		inst.OnPreLoad = OnPreLoad

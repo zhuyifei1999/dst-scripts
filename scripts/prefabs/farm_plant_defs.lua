@@ -53,6 +53,7 @@ local function MakeGrowTimes(germination_min, germination_max, full_grow_min, fu
 	-- harvestable perish time
 	grow_time.full		= 4 * TUNING.TOTAL_DAY_TIME
 	grow_time.oversized	= 6 * TUNING.TOTAL_DAY_TIME
+	grow_time.regrow	= {4 * TUNING.TOTAL_DAY_TIME, 5 * TUNING.TOTAL_DAY_TIME} -- min, max
 
 	return grow_time
 end
@@ -119,29 +120,35 @@ PLANT_DEFS.onion.good_seasons			= {autumn = true,					spring = true,	summer = tr
 PLANT_DEFS.pepper.good_seasons			= {autumn = true,									summer = true}
 PLANT_DEFS.pomegranate.good_seasons		= {									spring = true,	summer = true}
 
-local nutrient_S = TUNING.FARM_PLANT_CONSUME_NUTRIENT_LOW
-local nutrient_M = TUNING.FARM_PLANT_CONSUME_NUTRIENT_MED
-local nutrient_L = TUNING.FARM_PLANT_CONSUME_NUTRIENT_HIGH
+local m = TUNING.FARM_PLANT_CONSUME_NUTRIENT_MED
+local h = TUNING.FARM_PLANT_CONSUME_NUTRIENT_HIGH
 
 -- Nutrients
-PLANT_DEFS.randomseed.nutrient_consumption,		PLANT_DEFS.randomseed.nutrient_restoration		= {0,			0,				0},				{nil,	nil,	nil}
---
-PLANT_DEFS.carrot.nutrient_consumption,			PLANT_DEFS.carrot.nutrient_restoration			= {nutrient_M,	0,				0},				{nil,	true,	true}
-PLANT_DEFS.corn.nutrient_consumption,			PLANT_DEFS.corn.nutrient_restoration			= {0,			nutrient_M,		0},				{true,	nil,	true}
-PLANT_DEFS.potato.nutrient_consumption,			PLANT_DEFS.potato.nutrient_restoration			= {0,			0,				nutrient_M},	{true,	true,	nil}
-PLANT_DEFS.tomato.nutrient_consumption,			PLANT_DEFS.tomato.nutrient_restoration			= {nutrient_S,	nutrient_S,		0},				{nil,	nil,	true}
---
-PLANT_DEFS.asparagus.nutrient_consumption,		PLANT_DEFS.asparagus.nutrient_restoration		= {0,			nutrient_M,		0},				{true,	nil,	true}
-PLANT_DEFS.eggplant.nutrient_consumption,		PLANT_DEFS.eggplant.nutrient_restoration		= {0,			0,				nutrient_M},	{true,	true,	nil}
-PLANT_DEFS.pumpkin.nutrient_consumption,		PLANT_DEFS.pumpkin.nutrient_restoration			= {nutrient_M,	0,				0},				{nil,	true,	true}
-PLANT_DEFS.watermelon.nutrient_consumption,		PLANT_DEFS.watermelon.nutrient_restoration		= {0,			nutrient_S,		nutrient_S},	{true,	nil,	nil}
---
-PLANT_DEFS.dragonfruit.nutrient_consumption,	PLANT_DEFS.dragonfruit.nutrient_restoration		= {0,			0,				nutrient_L},	{true,	true,	nil}
-PLANT_DEFS.durian.nutrient_consumption,			PLANT_DEFS.durian.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	true,	nil}
-PLANT_DEFS.garlic.nutrient_consumption,			PLANT_DEFS.garlic.nutrient_restoration			= {0,			nutrient_L,		0},				{true,	nil,	true}
-PLANT_DEFS.onion.nutrient_consumption,			PLANT_DEFS.onion.nutrient_restoration			= {nutrient_L,	0,				0},				{nil,	true,	true}
-PLANT_DEFS.pepper.nutrient_consumption,			PLANT_DEFS.pepper.nutrient_restoration			= {0,			0,				nutrient_L},	{true,	true,	nil}
-PLANT_DEFS.pomegranate.nutrient_consumption,	PLANT_DEFS.pomegranate.nutrient_restoration		= {nutrient_L,	0,				0},				{nil,	true,	true}
+PLANT_DEFS.randomseed.nutrient_consumption		= {0, 0, 0}	
+--													  	 
+PLANT_DEFS.carrot.nutrient_consumption			= {m, 0, 0}	
+PLANT_DEFS.corn.nutrient_consumption			= {0, m, 0}	
+PLANT_DEFS.potato.nutrient_consumption			= {0, 0, m}	
+PLANT_DEFS.tomato.nutrient_consumption			= {0, m, 0}	
+--													  	 
+PLANT_DEFS.asparagus.nutrient_consumption		= {m, 0, 0}	
+PLANT_DEFS.eggplant.nutrient_consumption		= {0, 0, m}	
+PLANT_DEFS.pumpkin.nutrient_consumption			= {0, m, 0}	
+PLANT_DEFS.watermelon.nutrient_consumption		= {0, 0, m}	
+--													  	 
+PLANT_DEFS.dragonfruit.nutrient_consumption		= {h, 0, 0}	
+PLANT_DEFS.durian.nutrient_consumption			= {0, h, 0}	
+PLANT_DEFS.garlic.nutrient_consumption			= {0, h, 0}	
+PLANT_DEFS.onion.nutrient_consumption			= {0, 0, h}	
+PLANT_DEFS.pepper.nutrient_consumption			= {0, 0, h}	
+PLANT_DEFS.pomegranate.nutrient_consumption		= {h, 0, 0}	
+
+for _, data in pairs(PLANT_DEFS) do
+	data.nutrient_restoration = {}
+	for i = 1, #data.nutrient_consumption do
+		data.nutrient_restoration[i] = data.nutrient_consumption[i] == 0 or nil
+	end
+end
 
 -- Killjoys
 PLANT_DEFS.randomseed.max_killjoys_tolerance	= TUNING.FARM_PLANT_KILLJOY_TOLERANCE
@@ -202,7 +209,7 @@ for veggie, data in pairs(PLANT_DEFS) do
 		data.seed = veggie.."_seeds"
 		data.plant_type_tag = "farm_plant_"..veggie -- note: this is used for pollin_sources stress
 
-		data.loot_oversized_rot = {"spoiled_food", "spoiled_food", data.seed, data.seed, data.seed}
+		data.loot_oversized_rot = {"spoiled_food", "spoiled_food", "spoiled_food", data.seed, "fruitfly", "fruitfly"}
 
 		-- all plants are going to use the same settings for now, maybe some will have special cases
 		if data.family_min_count == nil then data.family_min_count = TUNING.FARM_PLANT_SAME_FAMILY_MIN end

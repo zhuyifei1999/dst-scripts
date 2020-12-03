@@ -1194,6 +1194,15 @@ AddGameDebugKey(KEY_9, function()
     end
 end)
 
+local invaliddebugspawnprefabs =
+{
+    ["forest"] = true,
+    ["caves"] = true,
+    ["quagmire"] = true,
+    ["lavaarena"] = true,
+    ["world"] = true,
+}
+
 -------------------------------------------MOUSE HANDLING
 local DEBUGRMB_IGNORE_TAGS = {"wall", "INLIMBO"}
 local function DebugRMB(x,y)
@@ -1202,7 +1211,7 @@ local function DebugRMB(x,y)
 
     if TheInput:IsKeyDown(KEY_CTRL) and
        TheInput:IsKeyDown(KEY_SHIFT) and
-       c_sel() and c_sel().prefab then
+       c_sel() and c_sel().prefab and not invaliddebugspawnprefabs[c_sel().prefab] then
         local spawn = c_spawn(c_sel().prefab)
         if spawn then
             spawn.Transform:SetPosition(pos:Get())

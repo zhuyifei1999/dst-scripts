@@ -103,6 +103,7 @@ Recipe("fertilizer", {Ingredient("poop", 3), Ingredient("boneshard", 2), Ingredi
 Recipe("soil_amender", {Ingredient("messagebottleempty", 1), Ingredient("kelp", 1), Ingredient("ash", 1)}, RECIPETABS.FARM, TECH.SCIENCE_ONE)
 Recipe("compostingbin", {Ingredient("boards", 3), Ingredient("spoiled_food", 1), Ingredient("cutgrass", 1)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "compostingbin_placer")
 Recipe("plantregistryhat", {Ingredient("fertilizer", 1), Ingredient("seeds", 3), Ingredient("transistor", 1)}, RECIPETABS.FARM, TECH.SCIENCE_ONE)
+Recipe("seedpouch", {Ingredient("slurtle_shellpieces", 2), Ingredient("cutgrass", 4), Ingredient("seeds", 2)}, RECIPETABS.FARM, TECH.SCIENCE_ONE)
 
 Recipe("mushroom_farm", {Ingredient("spoiled_food", 8),Ingredient("poop", 5),Ingredient("livinglog", 2)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "mushroom_farm_placer", 2.5)
 Recipe("beebox", {Ingredient("boards", 2),Ingredient("honeycomb", 1),Ingredient("bee", 4)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "beebox_placer")
@@ -154,14 +155,15 @@ Recipe("pickaxe", {Ingredient("twigs", 2),Ingredient("flint", 2)}, RECIPETABS.TO
 Recipe("goldenpickaxe", {Ingredient("twigs", 4),Ingredient("goldnugget", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_TWO)
 Recipe("shovel", {Ingredient("twigs", 2),Ingredient("flint", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)
 Recipe("goldenshovel", {Ingredient("twigs", 4),Ingredient("goldnugget", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_TWO)
-Recipe("hammer", {Ingredient("twigs", 3),Ingredient("rocks", 3), Ingredient("cutgrass", 6)}, RECIPETABS.TOOLS, TECH.NONE)
 
 Recipe("farm_hoe", {Ingredient("twigs", 2), Ingredient("flint", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)
 Recipe("golden_farm_hoe", {Ingredient("twigs", 4),Ingredient("goldnugget", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_TWO)
+
+Recipe("hammer", {Ingredient("twigs", 3),Ingredient("rocks", 3), Ingredient("cutgrass", 6)}, RECIPETABS.TOOLS, TECH.NONE)
+Recipe("pitchfork", {Ingredient("twigs", 2),Ingredient("flint", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)
+
 Recipe("wateringcan", {Ingredient("boards", 2), Ingredient("rope", 1)}, RECIPETABS.TOOLS, TECH.SCIENCE_ONE)
 Recipe("premiumwateringcan", {Ingredient("driftwood_log", 2), Ingredient("rope", 1), Ingredient("malbatross_beak", 1)}, RECIPETABS.TOOLS, TECH.LOST)
-
-Recipe("pitchfork", {Ingredient("twigs", 2),Ingredient("flint", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)
 
 Recipe("razor", {Ingredient("twigs", 2), Ingredient("flint", 2)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)
 Recipe("featherpencil", {Ingredient("twigs", 1), Ingredient("charcoal", 1), Ingredient("feather_crow", 1)}, RECIPETABS.TOOLS,  TECH.SCIENCE_ONE)

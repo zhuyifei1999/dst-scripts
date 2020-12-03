@@ -482,10 +482,6 @@ local actionhandlers =
                 or (action.invobject ~= nil and action.invobject:HasTag("slowfertilize") and "fertilize")
                 or "fertilize_short"
         end),
-    ActionHandler(ACTIONS.FERTILIZE_GROUNDTILE,
-        function(inst, action)
-            return "doshortaction"
-        end),
     ActionHandler(ACTIONS.SMOTHER,
         function(inst)
             return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
@@ -514,6 +510,7 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
+    ActionHandler(ACTIONS.DEPLOY_TILEARRIVE, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
     ActionHandler(ACTIONS.DROP,
         function(inst)

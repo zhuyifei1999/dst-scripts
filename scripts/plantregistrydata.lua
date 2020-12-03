@@ -100,7 +100,6 @@ function PlantRegistryData:Save(force_save)
 end
 
 function PlantRegistryData:Load()
-	self.preparedfoods = {}
 	TheSim:GetPersistentString("plantregistry", function(load_success, data) 
 		if load_success and data ~= nil then
             local success, plant_registry = RunInSandbox(data)

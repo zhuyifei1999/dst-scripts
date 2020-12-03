@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "I'm afraid it's in no condition to race.",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
         BOOK_TENTACLES = "Hard to put this one down. It's gripping, frankly.",
         BOOK_GARDENING = "Dead plants tied together to help me aid living plants.",
+		BOOK_SILVICULTURE = "Dead plants tied together to help me aid living plants.",
+		BOOK_HORTICULTURE = "Only my best tricks for bringing a garden to fruition.",
         BOOK_SLEEP = "Warm milk in book form.",
         BOOK_BRIMSTONE = "What could possibly go wrong?",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "I have no patience for garden pests!",
         FRIENDLYFRUITFLY = "This one appears to be of a different, more agreeable subspecies.",
         FRUITFLYFRUIT = "It seems that I can exert some level of control over these insects with this.",
+
+        SEEDPOUCH = "For the practical storage and transport of seeds.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

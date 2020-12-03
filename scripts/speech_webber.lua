@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "We don't think it can race anymore...",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "This one has pictures!",
         BOOK_TENTACLES = "Why are the pages all slimy?",
         BOOK_GARDENING = "Why should we read about flowers when we can pick them?",
+		BOOK_SILVICULTURE = "What else is there to know about trees?",
+		BOOK_HORTICULTURE = "Reading about veggies is almost as bad as eating them!",
         BOOK_SLEEP = "It's... beddy-bye time...",
         BOOK_BRIMSTONE = "We don't like how that one ends!",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "He's a big meanie!",
         FRIENDLYFRUITFLY = "This one's nice!",
         FRUITFLYFRUIT = "Now the Fruit Flies listen to us!",
+
+        SEEDPOUCH = "We're gonna fill it with seeds!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

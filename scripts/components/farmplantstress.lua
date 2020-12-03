@@ -76,6 +76,17 @@ function FarmPlantStress:CopyFrom(rhs)
 	self:OnLoad(rhs:OnSave())
 end
 
+function FarmPlantStress:Reset()
+	for stressor, stressed in pairs(self.stressors) do
+		self.stressors[stressor] = true -- reset to stressed
+	end
+
+	self.checkpoint_stress_points = 0
+	self.stress_points = 0
+	self.max_stress_points = 0
+	self.final_stress_state = nil
+end
+
 function FarmPlantStress:SetStressed(name, stressed, doer)
 	local prev = self.stressors[name]
 	if prev ~= nil then

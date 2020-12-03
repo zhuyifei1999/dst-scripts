@@ -5,6 +5,11 @@ local assets =
 	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
+local prefabs =
+{
+    "gridplacer_farmablesoil",
+}
+
 local fish_assets =
 {
     Asset("ANIM", "anim/spoiled_fish.zip"),
@@ -76,6 +81,9 @@ local function fn(common_init, mastersim_init, nutrients)
     inst:AddTag("show_spoiled")
 
     MakeInventoryFloatable(inst, "med", nil, 0.73)
+    MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
 	if common_init ~= nil then
 		common_init(inst)
@@ -126,6 +134,7 @@ local function fn(common_init, mastersim_init, nutrients)
         event_server_data("quagmire", "prefabs/spoiledfood").master_postinit(inst)
     end
 
+    MakeDeployableFertilizer(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
     return inst
@@ -186,6 +195,6 @@ local function fish_small_mastersim_init(inst)
 	inst:ListenForEvent("stacksizechange", fish_stack_size_changed)
 end
 
-return Prefab("spoiled_food", function() return fn(food_init, food_mastersim_init, FERTILIZER_DEFS.spoiled_food.nutrients) end, assets),
+return Prefab("spoiled_food", function() return fn(food_init, food_mastersim_init, FERTILIZER_DEFS.spoiled_food.nutrients) end, assets, prefabs),
 		Prefab("spoiled_fish", function() return fn(fish_init, fish_mastersim_init, FERTILIZER_DEFS.spoiled_fish.nutrients) end, fish_assets, fish_prefabs),
         Prefab("spoiled_fish_small", function() return fn(fish_small_init, fish_small_mastersim_init, FERTILIZER_DEFS.spoiled_fish_small.nutrients) end, fish_small_assets, fish_prefabs)

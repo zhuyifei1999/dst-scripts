@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "The wee beast is on death's door.",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "To rule the skies!",
         BOOK_TENTACLES = "Knowledge grants great power!",
         BOOK_GARDENING = "But can it tend the garden of mine soul?",
+		BOOK_SILVICULTURE = "A tome of the ways of the forest!",
+		BOOK_HORTICULTURE = "But can it tend the garden of mine soul?",
         BOOK_SLEEP = "Where's the drama? The suspense?",
         BOOK_BRIMSTONE = "This tome is brimming with Hel's fire!",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "Thou art no lord!",
         FRIENDLYFRUITFLY = "It seems this one is not an enemy.",
         FRUITFLYFRUIT = "Now I am chieftain of the wee winged garden beasts!",
+
+        SEEDPOUCH = "For carrying worthless seeds.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

@@ -3,8 +3,14 @@ require("stategraphs/commonstates")
 local actionhandlers = 
 {
     ActionHandler(ACTIONS.INTERACT_WITH, "plant_dance"),
-	ActionHandler(ACTIONS.ATTACKPLANT, "plant_attack"),
-	ActionHandler(ACTIONS.PLANTWEED, "plant_attack"),
+	ActionHandler(ACTIONS.ATTACKPLANT, 
+		function(inst)
+			return inst:HasTag("lordfruitfly") and "plant_attack" or "plant_attack_minion"
+		end),
+	ActionHandler(ACTIONS.PLANTWEED, 
+		function(inst)
+			return inst:HasTag("lordfruitfly") and "plant_attack" or "plant_attack_minion"
+		end),
 }
 
 local events=
@@ -138,7 +144,35 @@ local states=
 			TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
 			TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
 			TimeEvent(37 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
+				inst:PerformBufferedAction()
+				inst.hascausedhavoc = true
+				inst.sg:GoToState("plant_attack_pst")
+			end),
+		},
+
+	},
+    State{
+        name = "plant_attack_minion", --fruitfly minion only
+        tags = {"busy"},
+
+        onenter = function(inst)
+			inst.Physics:Stop()
+			inst.AnimState:PlayAnimation("plant_attack_pre", false)
+			inst.AnimState:PushAnimation("plant_attack_loop", true)
+			StartFlap(inst)
+        end,
+
+		timeline =
+		{
+			TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.spin) end),
+			TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(38*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.spin) end),
+			TimeEvent(42*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.plant_attack) end),
+			TimeEvent(63*FRAMES, function(inst)
+				inst:PerformBufferedAction()
+				inst.hascausedhavoc = true
 				inst.sg:GoToState("plant_attack_pst")
 			end),
 		},
@@ -196,27 +230,44 @@ local states=
 		name = "buzz",
         tags = { "busy" },
 
-        onenter = function(inst, count)
+        onenter = function(inst)
             inst.Physics:Stop()
-			inst.AnimState:PlayAnimation("spin") --TODO
-			StopFlap(inst)
+			inst.AnimState:PlayAnimation("plant_dance_pre", false)
+			inst.AnimState:PushAnimation("plant_dance_loop", false)
+			inst.AnimState:PushAnimation("plant_dance_pst", false)
+			StartFlap(inst)
             inst.SoundEmitter:PlaySound(inst.sounds.buzz)
         end,
 
         timeline =
         {
-            TimeEvent(10 * FRAMES, function(inst)
+            TimeEvent(32 * FRAMES, function(inst)
                 SpawnFruitFly(inst)
             end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
-            end),
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
         },
 
+	},
+	State{
+		name = "taunt",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			inst.Physics:Stop()
+			inst.AnimState:PlayAnimation("plant_dance_pre", false)
+			inst.AnimState:PushAnimation("plant_dance_loop", false)
+			inst.AnimState:PushAnimation("plant_dance_pst", false)
+            inst.SoundEmitter:PlaySound(inst.sounds.buzz)
+		end,
+        
+        events=
+        {
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
+        },
 	}
 }
 
@@ -266,4 +317,4 @@ CommonStates.AddSleepStates(states,
 })
 CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
   
-return StateGraph("fruitfly", states, events, "idle", actionhandlers)
+return StateGraph("fruitfly", states, events, "taunt", actionhandlers)

@@ -3,6 +3,7 @@ local Growable = Class(function(self, inst)
     self.stages = nil
     self.stage = 1
     --self.loopstages = false
+	--self.loopstages_start = 1 
     --self.growonly = false
     --self.springgrowth = false
     --self.growoffscreen = false
@@ -55,7 +56,7 @@ function Growable:GetNextStage()
     local stage = self.stage + 1
     if stage > #self.stages then
         if self.loopstages then
-            stage = 1
+            stage = self.loopstages_start or 1
         else
             stage = #self.stages
         end

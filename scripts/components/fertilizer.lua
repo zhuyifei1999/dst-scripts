@@ -17,6 +17,8 @@ local Fertilizer = Class(function(self, inst)
 
     --For healing plant characters (e.g. Wormwood)
     --self.planthealth = nil
+
+    self.inst:AddTag("fertilizer")
 end,
 nil,
 {

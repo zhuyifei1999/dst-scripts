@@ -227,6 +227,7 @@ ACTIONS =
     STORE = Action(),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
     DEPLOY = Action({distance=1.1, extra_arrive_dist=ExtraDeployDist}),
+    DEPLOY_TILEARRIVE = Action({customarrivecheck=CheckFarmTileWithinRange}),
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
@@ -243,7 +244,6 @@ ACTIONS =
     CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true, mount_valid=true}), -- this is now a generic "put item into the container of the equipped hand item"
     POLLINATE = Action(),
     FERTILIZE = Action({ mount_valid=true }),
-    FERTILIZE_GROUNDTILE = Action({ mount_valid=true, customarrivecheck = CheckFarmTileWithinRange, tile_placer="gridplacer" }),
     SMOTHER = Action({ priority=1 }),
     MANUALEXTINGUISH = Action({ priority=1 }),
     LAYEGG = Action(),
@@ -882,13 +882,17 @@ end
 ACTIONS.DEPLOY.fn = function(act)
 	local act_pos = act:GetActionPoint()
     if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act_pos, nil, act.doer) then
-        local container = act.doer.components.inventory or act.doer.components.container
-        local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
-        if obj ~= nil then
-            if obj.components.deployable:Deploy(act_pos, act.doer, act.rotation) then
-                return true
-            else
-                container:GiveItem(obj)
+        if act.invobject.components.deployable.keep_in_inventory_on_deploy then
+            return act.invobject.components.deployable:Deploy(act_pos, act.doer, act.rotation)
+        else
+            local container = act.doer.components.inventory or act.doer.components.container
+            local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
+            if obj ~= nil then
+                if obj.components.deployable:Deploy(act_pos, act.doer, act.rotation) then
+                    return true
+                else
+                    container:GiveItem(obj)
+                end
             end
         end
     end
@@ -904,8 +908,14 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("portableitem") and "PORTABLE") or
                 (act.invobject:HasTag("boatbuilder") and "WATER") or
                 (act.invobject:HasTag("deploykititem") and "TURRET") or
-                (act.invobject:HasTag("eyeturret") and "TURRET")    )
+                (act.invobject:HasTag("eyeturret") and "TURRET") or
+                (act.invobject:HasTag("fertilizer") and "FERTILIZE_GROUND")    )
         or nil
+end
+
+ACTIONS.DEPLOY_TILEARRIVE.fn = ACTIONS.DEPLOY.fn
+ACTIONS.DEPLOY_TILEARRIVE.stroverridefn = function(act)
+    return STRINGS.ACTIONS.DEPLOY[ACTIONS.DEPLOY.strfn(act) or "GENERIC"]
 end
 
 ACTIONS.TOGGLE_DEPLOY_MODE.strfn = ACTIONS.DEPLOY.strfn
@@ -978,13 +988,7 @@ ACTIONS.FERTILIZE.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.fertilizer ~= nil then
 		local applied = false
         if not (act.doer ~= nil and act.doer.components.rider ~= nil and act.doer.components.rider:IsRiding()) then
-            local soil_pos = act:GetActionPoint()
-
-            if soil_pos ~= nil and TheWorld.Map:GetTileAtPoint(soil_pos:Get()) == GROUND.FARMING_SOIL then
-                local tile_x, tile_z = TheWorld.Map:GetTileCoordsAtPoint(soil_pos:Get())
-                local nutrients = act.invobject.components.fertilizer.nutrients
-				applied = TheWorld.components.farming_manager:AddTileNutrients(tile_x, tile_z, nutrients[1], nutrients[2], nutrients[3])
-            elseif act.target ~= nil then
+            if act.target ~= nil then
                 if act.target.components.crop ~= nil and not (act.target.components.crop:IsReadyForHarvest() or act.target:HasTag("withered")) then
                     applied = act.target.components.crop:Fertilize(act.invobject, act.doer)
                 elseif act.target.components.grower ~= nil and act.target.components.grower:IsEmpty() then                
@@ -1007,11 +1011,6 @@ ACTIONS.FERTILIZE.fn = function(act)
 
 		return applied
     end
-end
-
-ACTIONS.FERTILIZE_GROUNDTILE.fn = ACTIONS.FERTILIZE.fn
-ACTIONS.FERTILIZE_GROUNDTILE.stroverridefn = function(act)
-    return STRINGS.ACTIONS.FERTILIZE
 end
 
 ACTIONS.SMOTHER.fn = function(act)
@@ -3338,7 +3337,7 @@ ACTIONS.PLANTWEED.fn = function(act)
             new_weed.SoundEmitter:PlaySound("dontstarve/common/plant")
         end
 
-        new_weed:PushEvent("on_planted", {soil = targ})
+        new_weed:PushEvent("on_planted", {in_soil = true, doer = act.doer})
 
         targ:Remove()
     end

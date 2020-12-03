@@ -5,6 +5,8 @@ require "behaviours/chaseandattack"
 local MAX_WANDER_DIST = 15
 local GO_HOME_DIST = 30
 local SEE_DIST = 20
+local RUN_AWAY_DIST = 2
+local STOP_RUN_AWAY_DIST = 4
 
 local function CanSpawnChild(inst)
     return inst:GetTimeAlive() > 5
@@ -76,8 +78,12 @@ function FruitFlyBrain:OnStart()
     local brain = 
     {
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
-        --MinPeriod
-        --ChaseAndAttack
+        --LordFruitFly:
+            --needs follower
+            --AttackMomentarily
+            --Dodge
+        --FruitFly:
+            --lacks leader
         WhileNode(function() return ShouldGoHome(self.inst) end, "ShouldGoHome",
             DoAction(self.inst, GoHomeAction, "Go Home", true )),
         FindFarmPlant(self.inst, ACTIONS.ATTACKPLANT, false, GetFollowPos, ShouldTargetPlant),
@@ -86,13 +92,21 @@ function FruitFlyBrain:OnStart()
         Wander(self.inst, GetFollowPos, MAX_WANDER_DIST),   
     }
     if self.inst:HasTag("lordfruitfly") then
-        table.insert(brain, 2, MinPeriod(self.inst, TUNING.LORDFRUITFLY_SUMMONPERIOD, true,
+        table.insert(brain, 2, MinPeriod(self.inst, TUNING.LORDFRUITFLY_SUMMONPERIOD, false,
                                 IfNode(function() return CanSpawnChild(self.inst) end, "needs follower",
                                     ActionNode(function()
                                         self.inst.sg:GoToState("buzz")
                                         return SUCCESS
                                     end, "Summon Mini Fruit Flies"))))
-        table.insert(brain, 3, ChaseAndAttack(self.inst))
+
+        table.insert(brain, 3, WhileNode(function()
+                return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown()
+            end, "AttackMomentarily", ChaseAndAttack(self.inst)))
+
+        table.insert(brain, 4, WhileNode(function() return self.inst.components.combat.target ~= nil and self.inst.components.combat:InCooldown() end, "Dodge",
+            RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)))
+    else
+        table.insert(brain, 2, WhileNode(function() return self.inst:CanTargetAndAttack() end, "lacks leader", ChaseAndAttack(self.inst)))
     end
     local root = PriorityNode(brain, .25)
     self.bt = BT(self.inst, root)

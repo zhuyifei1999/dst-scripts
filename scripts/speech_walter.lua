@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "This Carrat doesn't look healthy...",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "I don't want to brag... but I do have a badge in birdwatching.",
         BOOK_TENTACLES = "Oooh, this reminds me of a radio play where a ship gets eaten by a giant squid!",
         BOOK_GARDENING = "I already have my gardening badge.",
+		BOOK_SILVICULTURE = "There's so much to learn about the woods!",
+		BOOK_HORTICULTURE = "I already have my gardening badge.",
         BOOK_SLEEP = "My idea of a bedtime story has a lot more monsters in it...",
         BOOK_BRIMSTONE = "Wendy already spoiled the ending for me...",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "Neat! I mean, uh... I should probably get him out of the garden.",
         FRIENDLYFRUITFLY = "I'm going to call you Buzzy!",
         FRUITFLYFRUIT = "The Fruit Flies seem to like following it around.",
+
+        SEEDPOUCH = "You can never have too many pockets!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

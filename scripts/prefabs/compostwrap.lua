@@ -8,7 +8,8 @@ local prefabs =
 {
     "flies",
     "poopcloud",
-	"compostwrapheal_buff",
+    "compostwrapheal_buff",
+    "gridplacer_farmablesoil",
 }
 
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
@@ -93,6 +94,9 @@ local function fn()
     inst:AddTag("slowfertilize") -- for player self fertilize healing action
 
     MakeInventoryFloatable(inst)
+    MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -133,6 +137,7 @@ local function fn()
     inst.components.burnable:SetOnIgniteFn(OnBurn)
     MakeSmallPropagator(inst)
 
+    MakeDeployableFertilizer(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
     --V2C: delay spawning flies, since it's most likely being crafted into our pockets

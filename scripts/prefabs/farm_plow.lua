@@ -92,7 +92,7 @@ end
 
 local function dirt_anim(inst, quad, timer)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local padding = 0.5
+	local padding = TUNING.FARM_TILL_TILE_PADDING + 0.1
 	local offset_x = math.random()
 	local offset_z = math.random()
 	offset_x = (1 - offset_x*offset_x) * 2
@@ -307,22 +307,6 @@ local function placer_invalid_fn(player, placer)
     end
 end
 
-local function OnCanBuild(inst, mouse_blocked)
-    inst.AnimState:SetMultColour(1, 1, 1, 1)
-    inst:Show()
-
-    inst.outline.AnimState:SetMultColour(1, 1, 1, 1)
-    inst.outline:Show()
-end
-
-local function OnCannotBuild(inst, mouse_blocked)
-    inst.AnimState:SetMultColour(.75, .25, .25, 1)
-    inst:Show()
-
-    inst.outline.AnimState:SetMultColour(.75, .25, .25, 1)
-    inst.outline:Show()
-end
-
 local function placer_fn()
     local inst = CreateEntity()
 
@@ -343,11 +327,11 @@ local function placer_fn()
 
     inst:AddComponent("placer")
     inst.components.placer.snap_to_tile = true
-    inst.components.placer.oncanbuild = OnCanBuild
-    inst.components.placer.oncannotbuild = OnCannotBuild
 
 	inst.outline = SpawnPrefab("tile_outline")
 	inst.outline.entity:SetParent(inst.entity)
+
+	inst.components.placer:LinkEntity(inst.outline)
 
     return inst
 end

@@ -15,6 +15,11 @@ local cooked_prefabs =
     "spoiled_food",
 }
 
+local rotten_prefabs =
+{
+    "gridplacer_farmablesoil",
+}
+
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function commonfn(anim, cookable)
@@ -138,6 +143,9 @@ local function rottenfn()
     inst:AddTag("cattoy")
 
     MakeInventoryFloatable(inst, "small", 0.25)
+    MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -167,6 +175,7 @@ local function rottenfn()
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeSmallPropagator(inst)
 
+    MakeDeployableFertilizer(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
     inst:AddComponent("tradable")
@@ -180,4 +189,4 @@ end
 
 return Prefab("bird_egg", defaultfn, assets, prefabs),
     Prefab("bird_egg_cooked", cookedfn, assets, cooked_prefabs),
-    Prefab("rottenegg", rottenfn, assets)
+    Prefab("rottenegg", rottenfn, assets, rotten_prefabs)

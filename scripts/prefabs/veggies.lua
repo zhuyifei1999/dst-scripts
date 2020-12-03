@@ -154,9 +154,11 @@ local function can_plant_seed(inst, pt, mouseover, deployer)
 	return TheWorld.Map:CanTillSoilAtPoint(x, 0, z, true)
 end
 
-local function OnDeploy(inst, pt)--, deployer, rot)
+local function OnDeploy(inst, pt, deployer) --, rot)
     local plant = SpawnPrefab(inst.components.farmplantable.plant)
     plant.Transform:SetPosition(pt.x, 0, pt.z)
+	plant:PushEvent("on_planted", {in_soil = false, doer = deployer, seed = inst})
+    TheWorld.Map:CollapseSoilAtPoint(pt.x, 0, pt.z)
     --plant.SoundEmitter:PlaySound("dontstarve/wilson/plant_seeds")
     inst:Remove()
 

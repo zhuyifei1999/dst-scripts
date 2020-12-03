@@ -10,9 +10,11 @@ function FarmPlantable:Plant(target, planter)
 
 		local plant_prefab = type(self.plant) == "function" and self.plant(self.inst) or self.plant
 		if plant_prefab ~= nil then
+			target:Remove()
+
 			local plant = SpawnPrefab(plant_prefab)
 			plant.Transform:SetPosition(pt:Get())
-			plant:PushEvent("onplanted", { doer = planter, seed = self.inst })
+			plant:PushEvent("on_planted", { doer = planter, seed = self.inst, in_soil = true })
 
 			if plant.SoundEmitter ~= nil then
 				plant.SoundEmitter:PlaySound("dontstarve/common/plant")
@@ -20,7 +22,6 @@ function FarmPlantable:Plant(target, planter)
 
 			TheWorld:PushEvent("itemplanted", { doer = planter, pos = pt }) --this event is pushed in other places too
 
-			target:Remove()
 			self.inst:Remove()
 			return true
 		end

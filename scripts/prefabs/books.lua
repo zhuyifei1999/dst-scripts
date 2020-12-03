@@ -312,8 +312,8 @@ local book_defs =
             return true
 		end,
         perusefn = function(inst,reader)
-            if reader.peruse_gardening then
-                reader.peruse_gardening(reader)
+            if reader.peruse_horticulture then
+                reader.peruse_horticulture(reader)
             end
             reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_HORTICULTURE"))           
             return true
@@ -341,8 +341,8 @@ local book_defs =
             return true
         end,
         perusefn = function(inst,reader)
-            if reader.peruse_gardening then
-                reader.peruse_gardening(reader)
+            if reader.peruse_silviculture then
+                reader.peruse_silviculture(reader)
             end
             reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_SILVICULTURE"))           
             return true

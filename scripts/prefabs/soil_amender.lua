@@ -10,6 +10,7 @@ local prefabs =
 {
     "poopcloud",
 	"soil_amender_fermented",
+	"gridplacer_farmablesoil",
 }
 
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
@@ -134,7 +135,10 @@ local function fn()
     inst.AnimState:SetBuild("soil_amender")
     inst.AnimState:PlayAnimation("fresh_idle")
 
-    MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
 	inst.displaynamefn = getdisplayname
 	inst.displayadjectivefn = displayadjectivefn
@@ -175,6 +179,7 @@ local function fn()
 
 	percolate(inst, "fresh", 6, "fresh_idle")
 
+	MakeDeployableFertilizer(inst)
     MakeHauntableLaunch(inst)
 
     return inst
@@ -194,7 +199,10 @@ local function fermented_fn()
     inst.AnimState:SetBuild("soil_amender")
     inst.AnimState:PlayAnimation("fermented_idle", false)
 
-    MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
 	inst.fertilizerkey = "soil_amender_fermented"
     inst.GetFertilizerKey = GetFertilizerKey
@@ -225,6 +233,7 @@ local function fermented_fn()
     inst.components.finiteuses:SetUses(TUNING.SOILAMENDER_FERMENTED_USES)
     --inst.components.finiteuses:SetOnFinished(inst.Remove) -- handled by fertilizer.onappliedfn
 
+	MakeDeployableFertilizer(inst)
     MakeHauntableLaunch(inst)
 
     return inst

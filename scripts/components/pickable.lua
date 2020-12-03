@@ -443,7 +443,11 @@ function Pickable:Pick(picker)
 						picker:PushEvent("picksomething", { object = self.inst, loot = loot })
                     end
                     for i, item in ipairs(loot) do
-                        picker.components.inventory:GiveItem(item, nil, self.inst:GetPosition())
+						if item.components.inventoryitem ~= nil then
+	                        picker.components.inventory:GiveItem(item, nil, self.inst:GetPosition())
+						else
+							self.inst.components.lootdropper:FlingItem(item, self.inst:GetPosition())
+						end
                     end
 				else
 					loot = SpawnPrefab(self.product)

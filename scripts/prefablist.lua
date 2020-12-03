@@ -731,6 +731,7 @@ PREFABFILES = {
   "sculptures",
   "seafaring_prototyper",
   "seastack",
+  "seedpouch",
   "seeds",
   "sentryward",
   "sewing_tape",

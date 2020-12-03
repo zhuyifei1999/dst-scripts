@@ -3765,6 +3765,8 @@ return {
         LORDFRUITFLY = "Hey, stop upsetting the plants!",
         FRIENDLYFRUITFLY = "The garden seems happier with it around.",
         FRUITFLYFRUIT = "Now I'm in charge!",
+
+        SEEDPOUCH = "I was getting tired of carrying loose seeds in my pockets.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

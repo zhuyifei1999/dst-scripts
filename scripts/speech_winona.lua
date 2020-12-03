@@ -569,6 +569,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "It's too tuckered out.",
 
@@ -703,6 +705,8 @@ return{
         BOOK_BIRDS = "I was never much of a book learner.",
         BOOK_TENTACLES = "I'm not really a \"book smarts\" kind of gal.",
         BOOK_GARDENING = "I prefer to learn from experience.",
+		BOOK_SILVICULTURE = "I'd rather have building material than reading material.",
+		BOOK_HORTICULTURE = "I prefer to learn from experience.",
         BOOK_SLEEP = "I already know how to sleep, thanks.",
         BOOK_BRIMSTONE = "I prefer hands-on learning.",
 
@@ -3727,16 +3731,16 @@ return{
         CORN_OVERSIZED = "Who wants some corn on the cob? There's plenty to go around!",
         PUMPKIN_OVERSIZED = "Hey there, gourd lookin'! Ha!",
         EGGPLANT_OVERSIZED = "It sure makes a big impression. Ha!",
-        DURIAN_OVERSIZED = "It sure is makin' a big stink.",
-        POMEGRANATE_OVERSIZED = "TODO",
-        DRAGONFRUIT_OVERSIZED = "TODO",
-        WATERMELON_OVERSIZED = "TODO",
-        TOMATO_OVERSIZED = "TODO",
-        POTATO_OVERSIZED = "TODO",
-        ASPARAGUS_OVERSIZED = "TODO",
-        ONION_OVERSIZED = "TODO",
-        GARLIC_OVERSIZED = "TODO",
-        PEPPER_OVERSIZED = "TODO",
+        DURIAN_OVERSIZED = "It sure is making a big stink.",
+        POMEGRANATE_OVERSIZED = "That's one pumped up pomegranate.",
+        DRAGONFRUIT_OVERSIZED = "We'll be eating this stuff for days!",
+        WATERMELON_OVERSIZED = "There's enough here to feed a whole work crew!",
+        TOMATO_OVERSIZED = "You could make a lot of spaghetti with that.",
+        POTATO_OVERSIZED = "Can't have too much potato.",
+        ASPARAGUS_OVERSIZED = "I'll bet there's a ton of iron in that.",
+        ONION_OVERSIZED = "Who's gonna draw the short straw and have to cut that thing?",
+        GARLIC_OVERSIZED = "I'm not scared of a bit of garlic breath.",
+        PEPPER_OVERSIZED = "I'd bet that pepper packs a punch!",
         
         VEGGIE_OVERSIZED_ROTTEN = "Such a waste.",
 
@@ -3758,6 +3762,8 @@ return{
         LORDFRUITFLY = "You think you can just come in here and lord over my garden?",
         FRIENDLYFRUITFLY = "Now this one's a good little worker!",
         FRUITFLYFRUIT = "Now I'm the boss!",
+
+        SEEDPOUCH = "Gotta stay organized!",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

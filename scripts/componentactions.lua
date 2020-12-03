@@ -63,16 +63,16 @@ local function PlantRegistryResearch(inst, doer, actions)
         local plantkin = doer:HasTag("plantkin")
 
         if plantinspector and ((inst.GetPlantRegistryKey and inst.GetResearchStage) or inst.GetFertilizerKey) then
-            local act
-            if (inst:HasTag("plantresearchable") and not ThePlantRegistry:KnowsPlantStage(inst:GetPlantRegistryKey(), inst:GetResearchStage())) or
-            (inst:HasTag("fertilizerresearchable") and not ThePlantRegistry:KnowsFertilizer(inst:GetFertilizerKey())) then
-                act = ACTIONS.PLANTREGISTRY_RESEARCH
-            else
-                act = ACTIONS.PLANTREGISTRY_RESEARCH_FAIL
+            local act = CLIENT_REQUESTED_ACTION
+            if (not TheNet:IsDedicated() and doer == ThePlayer) then
+                if (inst:HasTag("plantresearchable") and not ThePlantRegistry:KnowsPlantStage(inst:GetPlantRegistryKey(), inst:GetResearchStage())) or
+                (inst:HasTag("fertilizerresearchable") and not ThePlantRegistry:KnowsFertilizer(inst:GetFertilizerKey())) then
+                    act = ACTIONS.PLANTREGISTRY_RESEARCH
+                else
+                    act = ACTIONS.PLANTREGISTRY_RESEARCH_FAIL
+                end
             end
-            --if local player or client told us to do the action
-            if (not TheNet:IsDedicated() and doer == ThePlayer) or
-            CLIENT_REQUESTED_ACTION == act then
+            if act then
                 table.insert(actions, act)
             end
         end
@@ -1218,7 +1218,11 @@ local COMPONENT_ACTIONS =
 
         deployable = function(inst, doer, pos, actions, right)
             if right and inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:CanDeploy(pos, nil, doer) then
-                table.insert(actions, ACTIONS.DEPLOY)
+                if inst:HasTag("fertilizer") then
+                    table.insert(actions, ACTIONS.DEPLOY_TILEARRIVE)
+                else
+                    table.insert(actions, ACTIONS.DEPLOY)
+                end
             end
         end,
 
@@ -1330,14 +1334,6 @@ local COMPONENT_ACTIONS =
         fillable = function(inst, doer, pos, actions, right)
             if inst:HasTag("fillable_showoceanaction") and TheWorld.Map:IsOceanAtPoint(pos.x, 0, pos.z) then
                 table.insert(actions, ACTIONS.FILL_OCEAN)
-            end
-        end,
-
-        fertilizer = function(inst, doer, pos, actions, right)
-            if right and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())
-                and TheWorld.Map:GetTileAtPoint(pos:Get()) == GROUND.FARMING_SOIL then
-                
-                table.insert(actions, ACTIONS.FERTILIZE_GROUNDTILE)
             end
         end,
     },

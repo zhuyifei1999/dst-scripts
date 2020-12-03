@@ -111,9 +111,11 @@ local function common(anim, cookable, oceanfishing_lure)
     return inst
 end
 
-local function OnDeploy(inst, pt)--, deployer, rot)
+local function OnDeploy(inst, pt, deployer) --, rot)
     local plant = SpawnPrefab("farm_plant_randomseed")
     plant.Transform:SetPosition(pt.x, 0, pt.z)
+    plant:PushEvent("on_planted", {in_soil = false, doer = deployer, seed = inst})
+    TheWorld.Map:CollapseSoilAtPoint(pt.x, 0, pt.z)
     --plant.SoundEmitter:PlaySound("dontstarve/wilson/plant_seeds")
     inst:Remove()
 end
@@ -172,6 +174,28 @@ local function cooked()
     return inst
 end
 
+local function update_seed_placer_outline(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:CanTillSoilAtPoint(x, y, z) then
+		local cx, cy, cz = TheWorld.Map:GetTileCenterPoint(x, y, z)
+		inst.outline.Transform:SetPosition(cx, cy, cz)
+		inst.outline:Show()
+	else
+		inst.outline:Hide()
+	end
+end
+
+local function seed_placer_postinit(inst)
+	inst.outline = SpawnPrefab("tile_outline")
+
+	inst.outline.Transform:SetPosition(2, 0, 0)
+	inst.outline:ListenForEvent("onremove", function() inst.outline:Remove() end, inst)
+	inst.outline.AnimState:SetAddColour(.25, .75, .25, 0)
+	inst.outline:Hide()
+
+	inst.components.placer.onupdatetransform = update_seed_placer_outline
+end
+
 return Prefab("seeds", raw, assets, prefabs),
     Prefab("seeds_cooked", cooked, assets),
-    MakePlacer("seeds_placer", "farm_soil", "farm_soil", "till_idle")
+    MakePlacer("seeds_placer", "farm_soil", "farm_soil", "till_idle", nil, nil, nil, nil, nil, nil, seed_placer_postinit)

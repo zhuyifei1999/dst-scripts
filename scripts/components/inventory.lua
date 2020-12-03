@@ -509,6 +509,9 @@ end
 
 --Returns the slot, and the container where the slot is (self.itemslots, self.equipslots or self:GetOverflowContainer())
 function Inventory:GetNextAvailableSlot(item)
+    local overflow = self:GetOverflowContainer()
+    local prioritize_container = overflow and overflow:ShouldPrioritizeContainer(item)
+
     local prefabname = nil
     local prefabskinname = nil
     if item.components.stackable ~= nil then
@@ -521,13 +524,20 @@ function Inventory:GetNextAvailableSlot(item)
                 return k, self.equipslots
             end
         end
+
+        local inv_slot, inv_pref
         for k, v in pairs(self.itemslots) do
             if v.prefab == prefabname and v.skinname == prefabskinname and v.components.stackable and not v.components.stackable:IsFull() then
-                return k, self.itemslots
+                if prioritize_container then
+                    inv_slot, inv_pref = k, self.itemslots
+                    break
+                else
+                    return k, self.itemslots
+                end
             end
         end
+
         if not (item.components.inventoryitem ~= nil and item.components.inventoryitem.canonlygoinpocket) then
-            local overflow = self:GetOverflowContainer()
             if overflow ~= nil then
                 for k, v in pairs(overflow.slots) do
                     if v.prefab == prefabname and v.skinname == prefabskinname and v.components.stackable and not v.components.stackable:IsFull() then
@@ -536,22 +546,27 @@ function Inventory:GetNextAvailableSlot(item)
                 end
             end
         end
+        
+        if prioritize_container and inv_slot and inv_pref then
+            return inv_slot, inv_pref
+        end
     end
 
-    --check for empty space in the container
-    local empty = nil
-    for k = 1, self.maxslots do
-        if self:CanTakeItemInSlot(item, k) and not self.itemslots[k] then
-            if prefabname ~= nil then
-                if empty == nil then
-                    empty = k
-                end
-            else
-                return k, self.itemslots
+    if prioritize_container then
+        for k = 1, overflow:GetNumSlots() do
+            if overflow:CanTakeItemInSlot(item, k) and not overflow.slots[k] then
+                return k, overflow
             end
         end
     end
-    return empty, self.itemslots
+
+    --check for empty space in the container
+    for k = 1, self.maxslots do
+        if self:CanTakeItemInSlot(item, k) and not self.itemslots[k] then
+            return k, self.itemslots
+        end
+    end
+    return nil, self.itemslots
 end
 
 --Check how many of an item we can accept from its stack
@@ -720,6 +735,9 @@ function Inventory:GiveItem(inst, slot, src_pos)
             local itemInSlot = overflow:GetItemInSlot(slot) 
             if itemInSlot then
                 leftovers = itemInSlot.components.stackable:Put(inst, src_pos)
+            else
+                overflow:GiveItem(inst, nil, src_pos)
+                return true
             end
         elseif container == self.equipslots then
             if self.equipslots[slot] then

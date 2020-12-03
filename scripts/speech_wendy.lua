@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "The poor creature is too far gone.",
 
@@ -701,6 +703,8 @@ return{
         BOOK_BIRDS = "Will it teach me to fly away from here?",
         BOOK_TENTACLES = "Does this world need more beasts?",
         BOOK_GARDENING = "Imagine, a rolling field of red flowers...",
+		BOOK_SILVICULTURE = "What secrets lie deep in the forest?",
+		BOOK_HORTICULTURE = "I'm not very good at keeping things alive.",
         BOOK_SLEEP = "Does it impart an eternal slumber?",
         BOOK_BRIMSTONE = "The tome to end it all...",
 
@@ -3756,6 +3760,8 @@ return{
         LORDFRUITFLY = "I would curtsy, but I've decided that I don't like you at all.",
         FRIENDLYFRUITFLY = "Oh. It seems to be friendly.",
         FRUITFLYFRUIT = "Now you may trade your lord for a queen.",
+
+        SEEDPOUCH = "Another burden for me to shoulder.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

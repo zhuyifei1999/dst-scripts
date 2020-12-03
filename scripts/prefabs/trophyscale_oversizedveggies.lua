@@ -13,8 +13,8 @@ local prefabs =
 
 local sounds =
 {
-	onbuilt = "hookline/common/trophyscale_fish/place",
-	newtrophy = "hookline/common/trophyscale_fish/place_fish",
+	onbuilt = "farming/common/farm/veggie_scale/place",
+	newtrophy = "farming/common/farm/veggie_scale/oversized",
 	spin = "hookline/common/trophyscale_fish/ticker_LP",
 	bell = "hookline/common/trophyscale_fish/bell",
 }
@@ -164,7 +164,7 @@ local function onnewtrophy(inst, data_old_and_new)
 	end
 
 	-- Turning off this sound for now
-	-- inst.SoundEmitter:PlaySound(sounds.newtrophy, "new_trophy")
+	inst.SoundEmitter:PlaySound(sounds.newtrophy, "new_trophy")
 	
 	inst.soundtask_playspin = inst:DoTaskInTime(sound_delay.spin*FRAMES, function() inst.SoundEmitter:PlaySound(sounds.spin, "spin_loop") end)
 	inst.soundtask_stopspin = inst:DoTaskInTime(sound_delay.spin_stop*FRAMES, function() inst.SoundEmitter:KillSound("spin_loop") end)

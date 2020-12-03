@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "The creature is past its prime.",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "What a wasteful misuse of magic.",
         BOOK_TENTACLES = "What horrors shall be summoned from the depths?",
         BOOK_GARDENING = "It's not wise to toy with forces beyond your comprehension.",
+		BOOK_SILVICULTURE = "It's not wise to toy with forces beyond your comprehension.",
+		BOOK_HORTICULTURE = "Hopefully this version is less wordy.",
         BOOK_SLEEP = "I haven't had a real sleep in... ages.",
         BOOK_BRIMSTONE = "I've had enough fire and brimstone for one eternity.",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "Hmph, they let just anyone be a lord these days.",
         FRIENDLYFRUITFLY = "As long as it tends to the garden I'll leave it be.",
         FRUITFLYFRUIT = "So this is all it takes to lead.",
+
+        SEEDPOUCH = "One more thing to lug from place to place.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

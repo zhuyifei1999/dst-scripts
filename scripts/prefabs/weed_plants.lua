@@ -65,16 +65,19 @@ local function dig_up(inst, worker)
 
 	call_for_reinforcements(inst, worker)
 
+	local x, y, z = inst.Transform:GetWorldPosition()
 	if inst.components.growable ~= nil then
 		local stage_data = inst.components.growable:GetCurrentStageData()
 		if stage_data ~= nil and stage_data.dig_fx ~= nil then
-			SpawnPrefab(stage_data.dig_fx).Transform:SetPosition(inst.Transform:GetWorldPosition())
+			SpawnPrefab(stage_data.dig_fx).Transform:SetPosition(x, y, z)
 		end
 	end
 
-    local soil = SpawnPrefab("farm_soil")
-    soil.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    soil:PushEvent("breaksoil")
+	if TheWorld.Map:GetTileAtPoint(x, y, z) == GROUND.FARMING_SOIL then
+		local soil = SpawnPrefab("farm_soil")
+		soil.Transform:SetPosition(x, y, z)
+		soil:PushEvent("breaksoil")
+	end
 
 	if inst.weed_def.ondigup ~= nil then
 		inst.weed_def.ondigup(inst, worker)
@@ -294,7 +297,7 @@ local function OnTrySpread(inst)
 
 	local rnd = math.random
 	local spawn_x, spawn_y, spawn_z
-	local soil = nil
+	local in_soil = false
 	if #soils > 0 then
 		local offset = math.random(#soils)
 		local MAX_TRIES = 3
@@ -304,7 +307,8 @@ local function OnTrySpread(inst)
 
 			if VecUtil_LengthSq(x - _x, z - _z) > spread.tooclose_dist*spread.tooclose_dist and #TheSim:FindEntities(_x, 0, _z, spread.tooclose_dist, inst.weed_def.sameweedtags) == 0 then
 				spawn_x, spawn_y, spawn_z = _x, 0, _z
-				soil = soils[_i]
+				soils[_i]:Remove()
+				in_soil = true
 				break
 			end
 		end
@@ -319,6 +323,7 @@ local function OnTrySpread(inst)
 
 			if TheWorld.Map:CanTillSoilAtPoint(_x, 0, _z) and #TheSim:FindEntities(_x, 0, _z, spread.tooclose_dist, inst.weed_def.sameweedtags) == 0 then
 				spawn_x, spawn_y, spawn_z = _x, 0, _z
+				TheWorld.Map:CollapseSoilAtPoint(spawn_x, spawn_y, spawn_z)
 				break
 			end
 		end
@@ -327,7 +332,7 @@ local function OnTrySpread(inst)
 	if spawn_x ~= nil then
 		local new_weed = SpawnPrefab(inst.prefab)
 		new_weed.Transform:SetPosition(spawn_x, spawn_y, spawn_z)
-		new_weed:PushEvent("on_planted", {soil = soil})
+		new_weed:PushEvent("on_planted", {in_soil = in_soil, doer = inst})
 
 		min_delay_mult = 2
 	end
@@ -350,13 +355,9 @@ local function timerdone(inst, data)
 end
 
 local function on_planted(inst, data)
-	if data ~= nil and data.soil ~= nil then
-		data.soil:Remove()
-	else
+	if data ~= nil and not data.in_soil then
 		PlayStageAnim(inst, "small", "seedless_to_small")
 	end
-
-	TheWorld.Map:CollapseSoilAtPoint(inst.Transform:GetWorldPosition())
 end
 
 local function domagicgrowthfn(inst)

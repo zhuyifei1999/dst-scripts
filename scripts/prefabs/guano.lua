@@ -8,6 +8,7 @@ local prefabs =
 {
     "flies",
     "poopcloud",
+    "gridplacer_farmablesoil",
 }
 
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
@@ -61,6 +62,9 @@ local function fn()
     inst.AnimState:PushAnimation("idle")
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+    MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -105,6 +109,7 @@ local function fn()
     inst.components.burnable:SetOnIgniteFn(OnBurn)
     MakeSmallPropagator(inst)
 
+    MakeDeployableFertilizer(inst)
     MakeHauntableLaunchAndIgnite(inst)
 
     inst:AddComponent("savedscale")

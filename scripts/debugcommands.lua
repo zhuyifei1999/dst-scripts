@@ -517,7 +517,7 @@ function d_ground(ground, pt)
 			type(ground) == "string" and GROUND[string.upper(ground)] 
 			or ground
 
-	pt = pt or TheInput:GetWorldPosition()
+	pt = pt or ConsoleWorldPosition()
 	
     local x, y = TheWorld.Map:GetTileCoordsAtPoint(pt:Get())
 

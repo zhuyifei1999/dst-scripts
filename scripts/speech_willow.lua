@@ -570,6 +570,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "That thing's looking kinda rough.",
 
@@ -704,6 +706,8 @@ return{
         BOOK_BIRDS = "Less reading, more burning!",
         BOOK_TENTACLES = "Looks like kindling to me!",
         BOOK_GARDENING = "Ughh, who cares?",
+		BOOK_SILVICULTURE = "Hey, it's a book about kindling!",
+		BOOK_HORTICULTURE = "Ughh, who cares?",
         BOOK_SLEEP = "Bo-oring!",
         BOOK_BRIMSTONE = "That's my favorite book!",
 
@@ -3759,6 +3763,8 @@ return{
         LORDFRUITFLY = "You think you can barge in here and mess up the garden? That's my job!",
         FRIENDLYFRUITFLY = "Hey, this one's actually helping!",
         FRUITFLYFRUIT = "Now I'm the the one giving the orders! To Fruit Flies, but still.",
+
+        SEEDPOUCH = "It would be even easier to just set all the seeds on fire.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

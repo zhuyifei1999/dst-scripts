@@ -20,6 +20,7 @@ local minionsounds = {
     die = "farming/creatures/minion_fruitfly/die",
     die_ground = "farming/creatures/minion_fruitfly/hit",
     sleep = "farming/creatures/minion_fruitfly/sleep",
+    buzz = "farming/creatures/minion_fruitfly/hit",
     spin = "farming/creatures/minion_fruitfly/spin",
     plant_attack = "farming/creatures/minion_fruitfly/plant_attack"
 }
@@ -30,7 +31,22 @@ local friendlysounds = {
     die = "farming/creatures/fruitfly/die",
     die_ground = "farming/creatures/fruitfly/die",
     sleep = "farming/creatures/fruitfly/sleep",
+    buzz = "farming/creatures/fruitfly/hit",
 }
+
+local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
+require "prefabs/veggies"
+local function pickseed()
+    local season = TheWorld.state.season
+    local weights = {}
+    local season_mod = TUNING.SEED_WEIGHT_SEASON_MOD
+
+    for k, v in pairs(VEGGIES) do
+        weights[k] = v.seed_weight * ((PLANT_DEFS[k] and PLANT_DEFS[k].good_seasons[season]) and season_mod or 1)
+    end
+
+    return weighted_random_choice(weights).."_seeds"
+end
 
 SetSharedLootTable("lordfruitfly",
 {
@@ -55,6 +71,8 @@ local function common()
 
     inst:AddTag("flying")
     inst:AddTag("ignorewalkableplatformdrowning")
+    inst:AddTag("insect")
+    inst:AddTag("small")
 
     return inst
 end
@@ -77,10 +95,27 @@ local function common_server(inst)
     return inst
 end
 
-local function LootSetupFunction(lootdropper)
+local function OnLoad(inst, data)
+    if data then
+        inst.hascausedhavoc = data.hascausedhavoc
+    end
+end
+
+local function OnSave(inst)
+    local data = {}
+    data.hascausedhavoc = inst.hascausedhavoc
+    return data
+end
+
+local function LordLootSetupFunction(lootdropper)
     lootdropper.chanceloot = nil
     if not TheSim:FindFirstEntityWithTag("friendlyfruitfly") then
         lootdropper:AddChanceLoot("fruitflyfruit", 1.0)
+    else
+        for i = 1, 4 do
+            lootdropper:AddChanceLoot(pickseed(), 1.0)
+            lootdropper:AddChanceLoot(pickseed(), 0.25)
+        end
     end
 end
 
@@ -103,6 +138,8 @@ local function OnAttacked(inst, data)
     if attacker == nil then
         return
     end
+    inst.planttarget = nil
+    inst.soiltarget = nil
     inst.components.combat:SetTarget(attacker)
 end
 
@@ -199,8 +236,8 @@ local function fn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("lordfruitfly")
-    inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
-    LootSetupFunction(inst.components.lootdropper)
+    inst.components.lootdropper:SetLootSetupFn(LordLootSetupFunction)
+    LordLootSetupFunction(inst.components.lootdropper)
     
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
@@ -208,21 +245,45 @@ local function fn()
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
 
-    inst.components.locomotor.walkspeed = 4
+    --divide by scale for accurate walkspeed
+    inst.components.locomotor.walkspeed = TUNING.LORDFRUITFLY_WALKSPEED/2
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGfruitfly")
 
+    inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("death", OnDead)
 
     inst.NumFruitFliesToSpawn = NumFruitFliesToSpawn
     inst.IsTargetedByOther = IsTargetedByOther
 
+    inst.OnLoad = OnLoad
+    inst.OnSave = OnSave
+
     return inst
 end
 
-local function ShouldKeepTarget()
-    return false
+local function CanTargetAndAttack(inst)
+    return inst.components.follower.leader == nil and inst.hascausedhavoc
+end
+
+local function ShouldKeepTarget(inst, target)
+    return inst:CanTargetAndAttack() and inst:IsNear(target, TUNING.FRUITFLY_DEAGGRO_DIST) or false
+end
+
+local function MiniRetargetFn(inst)
+    return inst:CanTargetAndAttack() and FindEntity(inst, TUNING.FRUITFLY_TARGETRANGE, function(guy) return inst.components.combat:CanTarget(guy) end, RETARGET_MUSTTAGS, RETARGET_CANTTAGS) or nil
+end
+
+local function MiniOnAttacked(inst, data)
+    if inst:CanTargetAndAttack() then
+        OnAttacked(inst, data)
+    end
+end
+
+local function LootSetupFunction(lootdropper)
+    lootdropper.chanceloot = nil
+    lootdropper:AddChanceLoot("seeds", 0.1)
 end
 
 local miniassets =
@@ -256,6 +317,11 @@ local function minifn()
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "fruit2"
+    inst.components.combat.battlecryenabled = false
+    inst.components.combat:SetAttackPeriod(TUNING.FRUITFLY_ATTACK_PERIOD)
+    inst.components.combat:SetDefaultDamage(TUNING.FRUITFLY_DAMAGE)
+    inst.components.combat:SetRange(TUNING.FRUITFLY_ATTACK_DIST)
+    inst.components.combat:SetRetargetFunction(3, MiniRetargetFn)
     inst.components.combat:SetKeepTargetFunction(ShouldKeepTarget)
 
     inst:AddComponent("health")
@@ -265,16 +331,24 @@ local function minifn()
     inst.components.sleeper:SetWakeTest(ShouldWake)
 
     inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLootSetupFn(LootSetupFunction)
+    LootSetupFunction(inst.components.lootdropper)
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_TINY
 
-    inst.components.locomotor.walkspeed = 16
+    --divide by scale for accurate walkspeed
+    inst.components.locomotor.walkspeed = TUNING.FRUITFLY_WALKSPEED/0.5
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGfruitfly")
 
-    inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("attacked", MiniOnAttacked)
+
+    inst.CanTargetAndAttack = CanTargetAndAttack
+
+    inst.OnLoad = OnLoad
+    inst.OnSave = OnSave
 
     return inst
 end

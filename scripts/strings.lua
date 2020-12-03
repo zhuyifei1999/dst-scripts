@@ -492,6 +492,8 @@ STRINGS =
             TURRET = "Place",
             WATER = "Launch",
             PORTABLE = "Place",
+            DEPLOY = "Deploy",
+            FERTILIZE_GROUND = "Fertilize Plot",
         },
         DEPLOY =
         {
@@ -504,6 +506,7 @@ STRINGS =
             WATER = "Launch",
             PORTABLE = "Place",
             DEPLOY = "Deploy",
+            FERTILIZE_GROUND = "Fertilize Plot",
         },
 
         PLAY = "Play",
@@ -2926,6 +2929,8 @@ STRINGS =
         FRUITFLY = "Fruit Fly",
         FRIENDLYFRUITFLY = "Friendly Fruit Fly",
         FRUITFLYFRUIT = "Friendly Fruit Fly Fruit",
+
+        SEEDPOUCH = "Seed Pack-It",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -2973,8 +2978,8 @@ STRINGS =
         BOOK_BIRDS = "1000 species: habits, habitats, and calls.",
         BOOK_TENTACLES = "Let's learn about our subterranean friends!",
         BOOK_GARDENING = "On the care and feeding of plants.",
-        BOOK_SILVICULTURE = "Learn how to be a competent branch manager.",
-		BOOK_HORTICULTURE = "On the care and feeding of domesticated crops.",
+        BOOK_SILVICULTURE = "A guide to branch management.",
+		BOOK_HORTICULTURE = "On the care and feeding of crops.",
         BOOK_SLEEP = "Soothing tales to send you off to dreamland.",
         BOOK_BRIMSTONE = "The world will end in fire and tribulation!",
 
@@ -3548,6 +3553,8 @@ STRINGS =
         PREMIUMWATERINGCAN = "An innovation in irrigation!",
 
         TROPHYSCALE_OVERSIZEDVEGGIES = "Weigh your prized fruits and veggies.",
+
+        SEEDPOUCH = "Stow your seeds for safekeeping.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

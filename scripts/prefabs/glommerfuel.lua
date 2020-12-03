@@ -4,6 +4,11 @@ local assets =
 	Asset("SCRIPT", "scripts/prefabs/fertilizer_nutrient_defs.lua"),
 }
 
+local prefabs =
+{
+    "gridplacer_farmablesoil",
+}
+
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function GetFertilizerKey(inst)
@@ -28,6 +33,9 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst)
+    MakeDeployableFertilizerPristine(inst)
+
+    inst:AddTag("fertilizerresearchable")
 
     inst.GetFertilizerKey = GetFertilizerKey
 
@@ -55,6 +63,7 @@ local function fn()
     inst.components.fertilizer.soil_cycles = TUNING.GLOMMERFUEL_SOILCYCLES
     inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.glommerfuel.nutrients)
 
+    MakeDeployableFertilizer(inst)
     MakeHauntableLaunch(inst)
 
     inst:AddComponent("edible")
@@ -65,4 +74,4 @@ local function fn()
     return inst
 end
 
-return Prefab("glommerfuel", fn, assets)
+return Prefab("glommerfuel", fn, assets, prefabs)

@@ -215,28 +215,30 @@ local function TrySpawnWeed(x, y)
 	if data ~= nil and data.nutrients_overlay ~= nil and data.nutrients_overlay:IsValid() then
 		local half_tile = TILE_SCALE * 0.9 / 2
 
-		local soil, spawn_x, spawn_y, spawn_z
+		local in_soil, spawn_x, spawn_y, spawn_z
 
 		local _x, _y, _z = data.nutrients_overlay.Transform:GetWorldPosition()
 		local soils = TheSim:FindEntities(_x, _y, _z, half_tile, FIND_SOIL_TAG)
 		if #soils > 0 then
-			soil = soils[#soils == 1 and 1 or math.random(#soils)]
+			local soil = soils[#soils == 1 and 1 or math.random(#soils)]
 			spawn_x, spawn_y, spawn_z = soil.Transform:GetWorldPosition()
+			soil:Remove()
+			in_soil = true
 		else
 			for i = 1, 4 do
 				local offset_x, offset_z = GetRandomMinMax(-half_tile, half_tile), GetRandomMinMax(-half_tile, half_tile)
 				if TheWorld.Map:CanTillSoilAtPoint(_x + offset_x, 0, _z + offset_z) then
 					spawn_x, spawn_y, spawn_z = _x + offset_x, 0, _z + offset_z
+					TheWorld.Map:CollapseSoilAtPoint(spawn_x, spawn_y, spawn_z)
 					break
 				end
 			end
 		end
 		
 		if spawn_x ~= nil then
-			TheWorld.Map:CollapseSoilAtPoint(spawn_x, spawn_y, spawn_z)
 			local new_weed = SpawnPrefab(weighted_random_choice(WEIGHTED_SEED_TABLE))
 			new_weed.Transform:SetPosition(spawn_x, spawn_y, spawn_z)
-			new_weed:PushEvent("on_planted", {soil = soil})
+			new_weed:PushEvent("on_planted", {in_soil = in_soil})
 		end
 	end
 end

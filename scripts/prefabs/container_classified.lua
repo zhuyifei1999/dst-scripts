@@ -205,6 +205,7 @@ local function Refresh(inst)
     inst._itemspreview = nil
     if inst._parent ~= nil then
         inst._parent:PushEvent("refresh")
+        ThePlayer:PushEvent("refresh_integrated_container")
         RefreshCrafting(inst)
     end
 end

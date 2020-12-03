@@ -563,6 +563,8 @@ return{
 --fallback to speech_wilson.lua         BOOK_TENTACLES =  "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_BRIMSTONE = "only_used_by_wurt",
 --fallback to speech_wilson.lua         BOOK_GARDENING = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_SILVICULTURE = "only_used_by_wurt",
+--fallback to speech_wilson.lua 		BOOK_HORTICULTURE = "only_used_by_wurt",
     },
     ANNOUNCE_WEAK_RAT = "Quel dommage, I think it's gone off.",
 
@@ -697,6 +699,8 @@ return{
         BOOK_BIRDS = "I had hoped it was a poultry cookbook.",
         BOOK_TENTACLES = "I don't see any recipes in this at all.",
         BOOK_GARDENING = "Maybe Mme. Wickerbottom would be interested in starting a herb garden.",
+		BOOK_SILVICULTURE = "Perhaps it will tell me the best places to find mushrooms.",
+		BOOK_HORTICULTURE = "Maybe Mme. Wickerbottom would be interested in starting a herb garden.",
         BOOK_SLEEP = "It's tradition to nap after a good meal.",
         BOOK_BRIMSTONE = "I don't think that's my forte.",
 
@@ -3752,6 +3756,8 @@ return{
         LORDFRUITFLY = "Mon dieu! It's killing the plants!",
         FRIENDLYFRUITFLY = "This one seems to be friendly.",
         FRUITFLYFRUIT = "They seem quite taken with whoever holds this.",
+
+        SEEDPOUCH = "A little organization never hurts.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

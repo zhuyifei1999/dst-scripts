@@ -14,6 +14,11 @@ local function makefertilizer(name, nutrients)
         Asset("ANIM", "anim/"..name..".zip"),
     }
 
+    local prefabs =
+    {
+        "gridplacer_farmablesoil",
+    }
+
     local function fn()
         local inst = CreateEntity()
 
@@ -29,10 +34,13 @@ local function makefertilizer(name, nutrients)
         inst.AnimState:PlayAnimation("idle")
 
         MakeInventoryFloatable(inst, "small", 0.2, 0.95)
+        MakeDeployableFertilizerPristine(inst)
 
-        inst.entity:SetPristine()
+        inst:AddTag("fertilizerresearchable")
 
         inst.GetFertilizerKey = GetFertilizerKey
+
+        inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
@@ -58,12 +66,13 @@ local function makefertilizer(name, nutrients)
 
         inst:AddComponent("smotherer")
 
+        MakeDeployableFertilizer(inst)
         MakeHauntableLaunch(inst)
 
         return inst
     end
 
-    return Prefab(name, fn, assets)
+    return Prefab(name, fn, assets, prefabs)
 end
 
 return makefertilizer("fertilizer", FERTILIZER_DEFS.fertilizer.nutrients)
