@@ -890,7 +890,7 @@ MISC_ITEMS =
 		box_build = "box_mystery_ice",
 		rarity = "Classy",
 		rarity_modifier = "Woven",
-		release_group = 108,
+		release_group = 109,
 	},
 	mysterybox_lava_4 =
 	{
