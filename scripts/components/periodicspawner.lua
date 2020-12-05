@@ -58,7 +58,6 @@ function PeriodicSpawner:SetSpawnTestFn(fn)
     self.spawntest = fn
 end
 
-local PERIODICSPAWNER_CANTTAGS = { "INLIMBO" }
 function PeriodicSpawner:TrySpawn(prefab)
     prefab = prefab or self.prefab
 
@@ -80,7 +79,7 @@ function PeriodicSpawner:TrySpawn(prefab)
             return false
         end
 
-        local ents = TheSim:FindEntities(x, y, z, self.range or self.spacing, nil, PERIODICSPAWNER_CANTTAGS)
+        local ents = TheSim:FindEntities(x, y, z, self.range or self.spacing)
         local count = 0
         for i, v in ipairs(ents) do
             if v.prefab == prefab then

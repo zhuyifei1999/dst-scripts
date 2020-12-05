@@ -37,7 +37,6 @@ local function fn()
     inst.MiniMapEntity:SetIcon("reeds.png")
 
     inst:AddTag("plant")
-	inst:AddTag("silviculture") -- for silviculture book
 
     inst.AnimState:SetBank("grass")
     inst.AnimState:SetBuild("reeds")

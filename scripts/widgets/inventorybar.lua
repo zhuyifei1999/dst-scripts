@@ -100,7 +100,6 @@ local Inv = Class(Widget, function(self, owner)
     self.inst:ListenForEvent("newactiveitem", function(inst, data) self:OnNewActiveItem(data.item) end, self.owner)
     self.inst:ListenForEvent("itemlose", function(inst, data) self:OnItemLose(self.inv[data.slot]) end, self.owner)
     self.inst:ListenForEvent("refreshinventory", function() self:Refresh() end, self.owner)
-    self.inst:ListenForEvent("refresh_integrated_container", function() self:RefreshIntegratedContainer() end, self.owner)
 
     self.root:SetPosition(self.in_pos)
     self:StartUpdating()
@@ -1055,14 +1054,6 @@ function Inv:Refresh()
         end
     end
 
-    self:RefreshIntegratedContainer()
-
-    self:OnNewActiveItem(activeitem)
-end
-
-function Inv:RefreshIntegratedContainer()
-    local inventory = self.owner.replica.inventory
-
     if #self.backpackinv > 0 then
         local overflow = inventory:GetOverflowContainer()
         if overflow ~= nil then
@@ -1080,6 +1071,8 @@ function Inv:RefreshIntegratedContainer()
             end
         end
     end
+
+    self:OnNewActiveItem(activeitem)
 end
 
 function Inv:Cancel()

@@ -2,7 +2,6 @@ require "util"
 local TechTree = require("techtree")
 
 PI = 3.14159
-PI2 = 3.14159
 DEGREES = PI/180
 RADIANS = 180/PI
 FRAMES = 1/30
@@ -28,14 +27,13 @@ FACING_NONE = 8
 LAYER_BACKDROP = 0
 LAYER_BELOW_OCEAN = 1
 LAYER_BELOW_GROUND = 2
-LAYER_GROUND = 3
-LAYER_BACKGROUND = 4
-LAYER_WORLD_BACKGROUND = 5
-LAYER_WORLD = 6
+LAYER_BACKGROUND = 3
+LAYER_WORLD_BACKGROUND = 4
+LAYER_WORLD = 5
 -- client-only layers go below here --
-LAYER_WORLD_DEBUG = 7
-LAYER_FRONTEND = 8
-LAYER_FRONTEND_DEBUG = 9
+LAYER_WORLD_DEBUG = 6
+LAYER_FRONTEND = 7
+LAYER_FRONTEND_DEBUG = 8
 
 LAYER_WIP_BELOW_OCEAN = 2 --1
 
@@ -554,8 +552,6 @@ GROUND =
     ARCHIVE = 45,
     FUNGUSMOON = 46,
 
-    FARMING_SOIL = 47,
-
 	-- PUBLIC USE SPACE FOR MODS is 70 to 89 --
 
     --NOISE -- from 110 to 127 -- TODO: move noise tile range to > 255
@@ -848,7 +844,7 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE"
+    "turnoftides/sanity/lunacy_FE"
    -- "dontstarve_DLC001/music/music_wigfrid_FE"
    -- "dontstarve/music/music_FE"
 
@@ -1055,14 +1051,6 @@ MAP_SAMPLE_STYLE =
 {
 	NINE_SAMPLE = 0,
 	MARCHING_SQUARES = 1, -- Note to modders: this approach is still a prototype
-}
-
---keep up to date with luabit.h
-LUABIT =
-{
-    WIDTH8BIT = 1,
-    WIDTH16BIT = 2,
-    --WIDTH32BIT = 3, --if 1 or 2 isn't passed, its assumed to be 32 bit width
 }
 
 
@@ -1575,13 +1563,6 @@ FOODGROUP =
     },
 }
 
-FARM_PLANT_STRESS = {
-	NONE = 1,
-	LOW = 2,
-	MODERATE = 3,
-	HIGH = 4,
-}
-
 CHARACTER_INGREDIENT =
 {
     --NOTE: Value is used as key for NAME string and inventory image
@@ -1676,8 +1657,7 @@ DEPLOYSPACING_RADIUS =
 
 TROPHYSCALE_TYPES =
 {
-    FISH = "fish",
-    OVERSIZEDVEGGIES = "oversizedveggies",
+	FISH = "fish",
 }
 
 NAUGHTY_VALUE =
@@ -1703,7 +1683,6 @@ NAUGHTY_VALUE =
     ["catcoon"] = 5,
     ["lightflier"] = 1,
     ["dustmoth"] = 4,
-    ["friendlyfruitfly"] = 20,
 }
 
 DONT_STARVE_TOGETHER_APPID = 322330
@@ -1751,11 +1730,6 @@ UICOLOURS = {
     RED = RGB(207, 61, 61, 1),
     SLATE = RGB(155, 170, 177, 1),
 	SILVER = RGB(192, 192, 192, 1),
-}
-
-PLANTREGISTRYUICOLOURS = {
-    LOCKEDBROWN = RGB(76, 50, 34, 1),
-    UNLOCKEDBROWN = UICOLOURS.EGGSHELL,
 }
 
 
@@ -2034,8 +2008,7 @@ INVENTORY_PROGRESS =
 	CHECK_DLC = 3,
 	CHECK_DAILY_GIFT = 4,
 	CHECK_COOKBOOK = 5,
-	CHECK_PLANTREGISTRY = 6,
-	CHECK_INVENTORY = 7,
+	CHECK_INVENTORY = 6,
 }
 
 CURRENT_BETA = 1 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care

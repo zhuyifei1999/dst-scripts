@@ -74,7 +74,6 @@ local function fn()
     inst:AddTag("icebox_valid")
     inst:AddTag("cattoy")
     inst:AddTag("show_spoilage")
-    inst:AddTag("treeseed")
 
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")

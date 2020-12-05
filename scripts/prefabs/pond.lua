@@ -81,7 +81,7 @@ local function OnSnowLevel(inst, snowlevel)
 
             DespawnPlants(inst)
 
-            inst.components.watersource.available = false
+            inst:RemoveTag("watersource")
         end
     elseif inst.frozen then
         inst.frozen = false
@@ -97,7 +97,7 @@ local function OnSnowLevel(inst, snowlevel)
 
         SpawnPlants(inst)
 
-        inst.components.watersource.available = true
+        inst:AddTag("watersource")
     elseif inst.frozen == nil then
         inst.frozen = false
         SpawnPlants(inst)
@@ -134,7 +134,6 @@ local function commonfn(pondtype)
 
     inst.MiniMapEntity:SetIcon("pond"..pondtype..".png")
 
-    -- From watersource component
     inst:AddTag("watersource")
     inst:AddTag("antlion_sinkhole_blocker")
     inst:AddTag("birdblocker")
@@ -169,8 +168,6 @@ local function commonfn(pondtype)
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
-
-    inst:AddComponent("watersource")
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

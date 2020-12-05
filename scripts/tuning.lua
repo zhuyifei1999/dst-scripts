@@ -68,14 +68,6 @@ function Tune(overrides)
 
         GOLDENTOOLFACTOR = 4*multiplayer_goldentool_modifier,
 
-		SEED_CHANCE_VERYCOMMON = 5,
-		SEED_CHANCE_COMMON = 2.5,
-		SEED_CHANCE_UNCOMMON = 1,
-		SEED_CHANCE_RARE = 0.5,
-
-		SEED_WEIGHT_SEASON_MOD = 2,
-		FARM_PLANT_RANDOMSEED_WEED_CHANCE = 0.20,
-
         DARK_CUTOFF = 0,
         DARK_SPAWNCUTOFF = 0.1,
         WILSON_HEALTH = wilson_health,
@@ -105,7 +97,6 @@ function Tune(overrides)
         HAMMER_USES = 75,
         SHOVEL_USES = 25,
         PITCHFORK_USES = 25,
-        FARM_HOE_USES = 25,
         PICKAXE_USES = 33,
         BUGNET_USES = 10,
         WHIP_USES = 175,
@@ -270,7 +261,7 @@ function Tune(overrides)
 		WEIGHABLE_HEAVY_WEIGHT_PERCENT = 0.8, -- anything >= to this is "heavy" for its type of fish
 
         STAGEHAND_HITS_TO_GIVEUP = 86,
-        ENDTABLE_FLOWER_WILTTIME = total_day_time * 10,
+        ENDTABLE_FLOWER_WILTTIME = total_day_time * 2.25,
         ENDTABLE_LIGHT_UPDATE = seg_time * 0.75,
 
         RESEARCH_MACHINE_DIST = 4,
@@ -294,7 +285,6 @@ function Tune(overrides)
         HAMMER_DAMAGE = wilson_attack*.5,
         SHOVEL_DAMAGE = wilson_attack*.5,
         PITCHFORK_DAMAGE = wilson_attack*.5,
-        FARM_HOE_DAMAGE = wilson_attack*.5,
         BUGNET_DAMAGE = wilson_attack*.125,
         WHIP_DAMAGE = wilson_attack*.8,
         BULLKELP_ROOT_DAMAGE = wilson_attack*.8,
@@ -1349,27 +1339,6 @@ function Tune(overrides)
         GUANO_SOILCYCLES = 12,
         GUANO_WITHEREDCYCLES = 1,
 
-		SOILAMENDER_FERTILIZE_HEALTH_LOW	= 1,
-		SOILAMENDER_FERTILIZE_LOW			= day_time/8,
-		SOILAMENDER_SOILCYCLES_LOW			= 1,
-		SOILAMENDER_WITHEREDCYCLES_LOW		= 0.25,
-
-		SOILAMENDER_FERTILIZE_HEALTH_MED	= 2,
-		SOILAMENDER_FERTILIZE_MED			= day_time/2,
-		SOILAMENDER_SOILCYCLES_MED			= 2,
-		SOILAMENDER_WITHEREDCYCLES_MED		= 0.5,
-
-		SOILAMENDER_FERTILIZE_HEALTH_HIGH	= 3,
-		SOILAMENDER_FERTILIZE_HIGH			= day_time*1.5,
-		SOILAMENDER_SOILCYCLES_HIGH			= 5,
-		SOILAMENDER_WITHEREDCYCLES_HIGH		= 1,
-
-		SOILAMENDER_FERMENTED_TOTAL_HEALTH = 30,
-		SOILAMENDER_FERMENTED_USES	= 5,
-
-		PERISH_FRESH = 0.5,
-		PERISH_STALE = 0.2,
-
         GLOMMERFUEL_FERTILIZE = day_time,
         GLOMMERFUEL_SOILCYCLES = 8,
 
@@ -1475,7 +1444,6 @@ function Tune(overrides)
         RAINHAT_PERISHTIME = total_day_time*10,
         CATCOONHAT_PERISHTIME = total_day_time*10,
         GOGGLES_PERISHTIME = total_day_time*10,
-        NUTRIENTSGOGGLESHAT_PERISHTIME = total_day_time*10,
 
         WALTERHAT_PERISHTIME = total_day_time*10,
 
@@ -3154,7 +3122,7 @@ function Tune(overrides)
         ROCK_FRUIT_REGROW =
         {
             EMPTY = { BASE = 2*day_time, VAR = 2*seg_time },
-            PREPICK = { BASE = 4*seg_time, VAR = 4*seg_time },
+            PREPICK = { BASE = 1*seg_time, VAR = 0 },
             PICK = { BASE = 3*day_time, VAR = 2*seg_time },
             CRUMBLE = { BASE = 1*day_time, VAR = 2*seg_time },
         },
@@ -3711,8 +3679,7 @@ function Tune(overrides)
         COMPOSTWRAP_SOILCYCLES = 20,
         COMPOSTWRAP_WITHEREDCYCLES = 2,
         COMPOSTWRAP_FERTILIZE = day_time * 6,
-        POOP_FERTILIZE_HEALTH = 2,   
-		FERTILIZER_TOTAL_HEALTH = 30,     
+        POOP_FERTILIZE_HEALTH = 2,        
 
         WATER_TURTLE_WALKSPEED = 0.5,
         WATER_TURTLE_RUNSPEED = 3,
@@ -4118,7 +4085,6 @@ function Tune(overrides)
         {
             USES = 10,
         },
-		GNARWAIL_HORN_FARM_PLANT_INTERACT_RANGE = 20, -- castspell action distance
 
         SQUID_RUNSPEED = 6,        
         SQUID_WALKSPEED = 3,        
@@ -4303,8 +4269,6 @@ function Tune(overrides)
                 MINES = 10,
             },
         },
-		TRIDENT_FARM_PLANT_INTERACT_RANGE = 20, -- castspell action distance
-
 
         WOBSTER_DEN =
         {
@@ -4374,7 +4338,6 @@ function Tune(overrides)
         MESSAGEBOTTLE_NOTE_CHANCE = 0.66,
 
         SINGINGSHELL_TRIGGER_RANGE = 4,
-        SINGINGSHELL_FARM_PLANT_INTERACT_RANGE = 2,
 
         WATERPLANT =
         {
@@ -4566,140 +4529,6 @@ function Tune(overrides)
             USES = 10,
         },
 
-		-- Farming
-		FARM_TILL_SPACING = 1.25,
-
-		FARM_PLANT_PHYSICS_RADIUS = 0.5,
-
-		STARTING_NUTRIENTS_MIN = 20,
-		STARTING_NUTRIENTS_MAX = 40,
-
-        FARM_PLOW_USES = 4,
-		FARM_PLOW_DRILLING_DURATION = seg_time * 0.5,
-		FARM_PLOW_DRILLING_DEBRIS_MIN = 2,
-		FARM_PLOW_DRILLING_DEBRIS_MAX = 4,
-
-		FARM_PLOW_DRILLING_DIRT_DELAY_BASE_START = 1.5,
-		FARM_PLOW_DRILLING_DIRT_DELAY_BASE_END = 0.2,
-		FARM_PLOW_DRILLING_DIRT_DELAY_VAR = 0.3,
-
-		SOIL_MOISTURE_UPDATE_TIME = 5,
-		SOIL_RAIN_MOD = 1.5,
-		SOIL_MIN_DRYING_TEMP = 0,
-		SOIL_MAX_DRYING_TEMP = 70, -- same as OVERHEAT_TEMP
-		SOIL_MIN_TEMP_DRY_RATE = 0,
-		SOIL_MAX_TEMP_DRY_RATE = -0.05,
-        SOIL_MAX_MOISTURE_VALUE = 100, --same as weather's max moisture
-        
-		FARM_SOIL_DEBRIS_LOOT_CHANCE = 0.25,
-
-        ICE_MELT_GROUND_MOISTURE_AMOUNT = 25,
-
-        WATERINGCAN_WATER_AMOUNT = 25,
-        WATERINGCAN_USES = 40,
-        PREMIUMWATERINGCAN_WATER_AMOUNT = 25,
-        PREMIUMWATERINGCAN_USES = 160,
-
-		FARM_PLANT_LONG_LIFE_MULT = 1.5,
-
-		FARM_PLANT_CONSUME_NUTRIENT_LOW = 2,
-		FARM_PLANT_CONSUME_NUTRIENT_MED = 4,
-		FARM_PLANT_CONSUME_NUTRIENT_HIGH = 8,
-
-		FARM_PLANT_DRINK_LOW =  -0.0075,
-		FARM_PLANT_DRINK_MED =  -0.0200,
-		FARM_PLANT_DRINK_HIGH = -0.0350,
-
-		FARM_PLANT_DROUGHT_TOLERANCE = 0.10,
-
-		FARM_PLANT_KILLJOY_RADIUS = 6,
-		FARM_PLANT_KILLJOY_TOLERANCE = 0,
-
-		FARM_PANT_OVERCROWDING_MAX_PLANTS = 10,
-
-		FARM_PLANT_SAME_FAMILY_MIN = 4,  -- includes the plant doing the test
-        FARM_PLANT_SAME_FAMILY_RADIUS = 4,
-
-		SEASONAL_WEED_SPAWN_CAHNCE =
-		{
-			autumn = 0.05,
-			spring = 0.15,
-		},
-        
-		FORGETMELOTS_RESPAWNER_MIN = total_day_time * 2,
-		FORGETMELOTS_RESPAWNER_VAR = total_day_time * 3,
-
-		FIRE_NETTLE_TOXIN_TEMP_MODIFIER = 60,
-		FIRE_NETTLE_TOXIN_DURATION = seg_time * 2,
-		WEED_FIRENETTLE_DAMAGE = 6,
-
-		WEED_TILLWEED_MAX_DEBRIS = 5,
-		WEED_TILLWEED_DEBRIS_TIME_MIN = total_day_time * 0.75,
-		WEED_TILLWEED_DEBRIS_TIME_VAR = total_day_time * 0.25,
-
-        TILLWEEDSALVE_HEALTH_DELTA = 1,
-        TILLWEEDSALVE_TICK_RATE = 3,
-        TILLWEEDSALVE_DURATION = seg_time * 2,
-
-		SWEETTEA_SANITY_DELTA = 1,
-		SWEETTEA_TICK_RATE = 2,
-		SWEETTEA_DURATION = seg_time * 2,
-
-		COMPOSTWRAP_HOT_HEALTH_DELTA = 1,
-		COMPOSTWRAP_HOT_TICK_RATE = 2,
-		COMPOSTWRAP_HOT_DURATION = seg_time,
-
-
-		FARM_PLANT_DEFENDER_SEARCH_DIST = 10,
-		WEED_IVY_SNARE_DAMAGE = 10,
-
-		BOOK_GARDENING_MAX_TARGETS = 10,
-
-        COMPOSTINGBIN_COMPOSTING_TIME_MIN = day_time*0.8,
-        COMPOSTINGBIN_COMPOSTING_TIME_MAX = day_time*1.6,
-        COMPOSTINGBIN_TURN_COMPOST_DURATION_MULTIPLIER = 0.7,
-
-        COMPOST_FERTILIZE = day_time,
-        COMPOST_SOILCYCLES = 10,
-        COMPOST_WITHEREDCYCLES = 1,
-
-        POOP_NUTRIENTS				= { 0, 0, 4 },
-		FERTILIZER_NUTRIENTS		= { 0, 0, 4 },
-        GUANO_NUTRIENTS				= { 0, 0, 4 },
-
-        COMPOST_NUTRIENTS			= { 0, 8, 0 },
-
-		SOILAMENDER_NUTRIENTS_LOW	= { 1, 0, 0 },
-		SOILAMENDER_NUTRIENTS_MED	= { 4, 0, 0 },
-		SOILAMENDER_NUTRIENTS_HIGH	= { 8, 0, 0 },
-
-        SPOILED_FOOD_NUTRIENTS		= { 1, 1, 1 },
-		ROTTENEGG_NUTRIENTS			= { 1, 1, 1 },
-        COMPOSTWRAP_NUTRIENTS		= { 4, 8, 4 },
-        GLOMMERFUEL_NUTRIENTS		= { 4, 4, 4 },
-
-        LORDFRUITFLY_DEAGGRO_DIST = 30,
-        LORDFRUITFLY_TARGETRANGE = 15,
-        LORDFRUITFLY_ATTACK_PERIOD = 2,
-        LORDFRUITFLY_DAMAGE = 25,
-        LORDFRUITFLY_ATTACK_DIST = 2,
-        LORDFRUITFLY_HEALTH = 1500,
-        LORDFRUITFLY_SUMMONPERIOD = 30,
-        LORDFRUITFLY_INITIALSPAWN_TIME = total_day_time * 35,
-        LORDFRUITFLY_RESPAWN_TIME = total_day_time * 20,
-        LORDFRUITFLY_CROP_ROTTED_ADVANCE_TIME = total_day_time * 0.5,
-        LORDFRUITFLY_SPAWNERRADIUS = 4,
-        LORDFRUITFLY_SPAWNERCOUNT = 15,
-        LORDFRUITFLY_FRUITFLY_AMOUNT = 4,
-        LORDFRUITFLY_WALKSPEED = 4,
-
-        FRUITFLY_DEAGGRO_DIST = 20,
-        FRUITFLY_HEALTH = 100,
-        FRUITFLY_DAMAGE = 5,
-        FRUITFLY_ATTACK_DIST = 1,
-        FRUITFLY_ATTACK_PERIOD = 2,
-        FRUITFLY_TARGETRANGE = 15,
-        FRUITFLY_WALKSPEED = 8,
     }
 end
 

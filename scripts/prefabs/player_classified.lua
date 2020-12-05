@@ -721,43 +721,6 @@ fns.OnIsCookbookLearnStatsDirty = function(inst)
 	end
 end
 
-fns.OnIsPlantRegistryPopUpVisibleDirty = function(inst)
-    if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        if not inst.isplantregistrypopupvisible:value() then
-            inst._parent.HUD:ClosePlantRegistryScreen()
-        elseif not inst._parent.HUD:OpenPlantRegistryScreen() then
-            if not TheWorld.ismastersim then
-				SendRPCToServer(RPC.ClosePlantRegistryScreen)
-            else
-                inst._parent:PushEvent("ms_closeplantregistryscreen")
-            end
-        end
-    end
-end
-
-fns.OnPlantRegistryLearnPlantStageDirty = function(inst)
-	local plantregistryupdater = inst._parent.components.plantregistryupdater
-	if plantregistryupdater then
-        local data = string.split(inst.plantregistry_learnplantstage:value(), ":")
-		local plant = data[1]
-        local stage = tonumber(data[2]) or nil
-        if plant and stage then
-            plantregistryupdater:LearnPlantStage(plant, stage)
-        end
-	end
-end
-
-fns.OnPlantRegistryLearnFertilizerDirty = function(inst)
-	local plantregistryupdater = inst._parent.components.plantregistryupdater
-	if plantregistryupdater then
-        local fertilizer = inst.plantregistry_learnfertilizer:value()
-        if fertilizer then
-            plantregistryupdater:LearnFertilizer(fertilizer)
-        end
-	end
-end
-
-
 local function OnGiftsDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         inst._parent:PushEvent("giftreceiverupdate", {
@@ -909,11 +872,6 @@ fns.ShowCookbookPopUp = function(inst, show)
     fns.OnIsCookbookPopUpVisibleDirty(inst)
 end
 
-fns.ShowPlantRegistryPopUp = function(inst, show)
-    inst.isplantregistrypopupvisible:set(show)
-    fns.OnIsPlantRegistryPopUpVisibleDirty(inst)
-end
-
 --------------------------------------------------------------------------
 
 local function RegisterNetListeners(inst)
@@ -977,9 +935,6 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("iscookbookpopupvisibledirty", fns.OnIsCookbookPopUpVisibleDirty)
 		inst:ListenForEvent("iscookbookproductdirty", fns.OnIsCookbookProductDirty)
 		inst:ListenForEvent("iscookbooklearnstatsdirty", fns.OnIsCookbookLearnStatsDirty)
-        inst:ListenForEvent("isplantregistrypopupvisibledirty", fns.OnIsPlantRegistryPopUpVisibleDirty)
-        inst:ListenForEvent("onplantregistrylearnplantstagedirty", fns.OnPlantRegistryLearnPlantStageDirty)
-        inst:ListenForEvent("onplantregistrylearnfertilizerdirty", fns.OnPlantRegistryLearnFertilizerDirty)
 		
 
         OnIsTakingFireDamageDirty(inst)
@@ -1024,7 +979,6 @@ local function RegisterNetListeners(inst)
     OnIsWardrobePopUpVisibleDirty(inst)
     OnIsGiftItemPopUpVisibleDirty(inst)
     fns.OnIsCookbookPopUpVisibleDirty(inst)
-    fns.OnIsPlantRegistryPopUpVisibleDirty(inst)
 
     --Fade is initialized by OnPlayerActivated in gamelogic.lua
 end
@@ -1197,15 +1151,10 @@ local function fn()
     inst.hasgiftmachine = net_bool(inst.GUID, "giftreceiver.hasgiftmachine", "giftsdirty")
     inst.isgiftitempopupvisible = net_bool(inst.GUID, "giftreceiver.isgiftitempopupvisible", "isgiftitempopupvisibledirty")
 
-    --Cookbook variables
+    --Coobook variables
     inst.iscookbookpopupvisible = net_bool(inst.GUID, "cookbook.iscookbookpopupvisible", "iscookbookpopupvisibledirty")
     inst.cookbook_product = net_string(inst.GUID, "cookbook.product", "iscookbookproductdirty")
     inst.cookbook_learnstats = net_string(inst.GUID, "cookbook.learnstats", "iscookbooklearnstatsdirty")
-
-    --PlantRegistry variables
-    inst.isplantregistrypopupvisible = net_bool(inst.GUID, "plantregistry.isplantregistrypopupvisible", "isplantregistrypopupvisibledirty")
-    inst.plantregistry_learnplantstage = net_string(inst.GUID, "plantregistry.learnplantstage", "onplantregistrylearnplantstagedirty")
-    inst.plantregistry_learnfertilizer = net_string(inst.GUID, "plantregistry.learnfertilizer", "onplantregistrylearnfertilizerdirty")
 
     --Combat variables
     inst.lastcombattarget = net_entity(inst.GUID, "combat.lasttarget")
@@ -1282,7 +1231,6 @@ local function fn()
     inst.ShowWardrobePopUp = fns.ShowWardrobePopUp
     inst.ShowGiftItemPopUp = fns.ShowGiftItemPopUp
     inst.ShowCookbookPopUp = fns.ShowCookbookPopUp
-    inst.ShowPlantRegistryPopUp = fns.ShowPlantRegistryPopUp
 
     inst.persists = false
 

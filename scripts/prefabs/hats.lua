@@ -1760,95 +1760,6 @@ local function MakeHat(name)
         return inst
     end
 
-    local function stopusingplantregistry(inst, data)
-        local hat = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) or nil
-        if hat ~= nil and data.statename ~= "plantregistry_open" then
-            hat.components.useableitem:StopUsingItem()
-        end
-    end
-
-    local function plantregistry_onequip(inst, owner)
-        onequip(inst, owner)
-        inst:ListenForEvent("newstate", stopusingplantregistry, owner)
-    end
-
-    local function plantregistry_onunequip(inst, owner)
-        onunequip(inst, owner)
-        inst:RemoveEventCallback("newstate", stopusingplantregistry, owner)
-    end
-
-    local function plantregistry_onuse(inst)
-        local owner = inst.components.inventoryitem.owner
-        if owner then
-            owner.sg:GoToState("plantregistry_open")
-            owner:ShowPlantRegistryPopUp(true)
-        end
-    end
-
-    local function plantregistry_custom_init(inst)
-        inst:AddTag("plantinspector")
-    end
-
-    local function plantregistry()
-        local inst = simple(plantregistry_custom_init)
-
-        inst.components.floater:SetSize("med")
-        inst.components.floater:SetScale(0.65)
-        
-        if not TheWorld.ismastersim then
-            return inst
-        end
-        
-        inst.components.equippable:SetOnEquip(plantregistry_onequip)
-        inst.components.equippable:SetOnUnequip(plantregistry_onunequip)
-
-        inst:AddComponent("insulator")
-        inst.components.insulator:SetSummer()
-        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
-
-        inst:AddComponent("useableitem")
-        inst.components.useableitem:SetOnUseFn(plantregistry_onuse)
-
-        return inst
-    end
-
-    local function nutrients_onequip(inst, owner)
-        plantregistry_onequip(inst, owner) --calls onequip
-    end
-
-    local function nutrients_onunequip(inst, owner)
-        plantregistry_onunequip(inst, owner) --calls onunequip
-    end
-
-    local function nutrients_custom_init(inst)
-        plantregistry_custom_init(inst)
-        inst:AddTag("detailedplanthappiness")
-        inst:AddTag("nutrientsvision")
-    end
-
-    local function nutrientsgoggles()
-        local inst = simple(nutrients_custom_init)
-
-        inst.components.floater:SetSize("med")
-        inst.components.floater:SetScale(0.72)
-        
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst.components.equippable:SetOnEquip(nutrients_onequip)
-        inst.components.equippable:SetOnUnequip(nutrients_onunequip)
-
-        inst:AddComponent("insulator")
-        inst.components.insulator:SetSummer()
-        inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
-
-        inst:AddComponent("useableitem")
-        inst.components.useableitem:SetOnUseFn(plantregistry_onuse)
-
-        return inst
-    end
-
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1930,10 +1841,6 @@ local function MakeHat(name)
     elseif name == "batnose" then
         fn = batnose
         prefabs = {"hungerregenbuff"}
-    elseif name == "nutrientsgoggles" then
-        fn = nutrientsgoggles
-    elseif name == "plantregistry" then
-        fn = plantregistry
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -2000,7 +1907,5 @@ return  MakeHat("straw"),
         MakeHat("kelp"),
         MakeHat("merm"),
         MakeHat("cookiecutter"),
-        MakeHat("batnose"),        MakeHat("cookiecutter"),
-        MakeHat("nutrientsgoggles"), 
-        MakeHat("plantregistry"), 
+        MakeHat("batnose"),
         Prefab("minerhatlight", minerhatlightfn)

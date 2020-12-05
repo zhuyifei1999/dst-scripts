@@ -35,7 +35,6 @@ local function fn()
 
     inst:AddTag("cattoy")
     inst:AddTag("molebait")
-    inst:AddTag("treeseed")
 
     inst.entity:SetPristine()
 

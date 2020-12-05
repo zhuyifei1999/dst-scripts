@@ -82,9 +82,6 @@ local MainSounds =
     "hookline_2.fev",
     "hookline_2.fsb",
 
-    "farming.fev",
-    "farming.fsb",
-
     "dangerous_sea.fev",
     "dangerous_sea.fsb",
 

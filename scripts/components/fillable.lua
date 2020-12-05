@@ -1,40 +1,10 @@
-local function onshowoceanaction(self)
-    if self.showoceanaction then
-        if not self.inst:HasTag("fillable_showoceanaction") then
-            self.inst:AddTag("fillable_showoceanaction")
-        end
-    else
-        if self.inst:HasTag("fillable_showoceanaction") then
-            self.inst:RemoveTag("fillable_showoceanaction")
-        end
-    end
-end
-
 local Fillable = Class(function(self, inst)
     self.inst = inst
 
     self.filledprefab = nil
-    --self.overrideonfillfn = nil
+end)
 
-    self.acceptsoceanwater = false
-    self.showoceanaction = false
-    --self.oceanwatererrorreason = nil
-
-    self.inst:AddTag("fillable")
-end, nil,
-{
-    showoceanaction = onshowoceanaction,
-})
-
-function Fillable:Fill(from_object)
-    if from_object ~= nil and from_object.components.watersource ~= nil then
-        from_object.components.watersource:Use()
-    end
-
-    if self.overrideonfillfn ~= nil then
-        return self.overrideonfillfn(self.inst, from_object)
-    end
-
+function Fillable:Fill()
     if self.filledprefab == nil then
         return false
     end

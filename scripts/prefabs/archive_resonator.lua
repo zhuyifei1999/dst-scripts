@@ -55,13 +55,14 @@ local function pushparams(inst, params)
     inst.Light:SetIntensity(params.intensity)
     inst.Light:SetFalloff(params.falloff)
     inst.Light:SetColour(unpack(params.colour))
-
-    if params.intensity > 0 then
-        inst.Light:Enable(true)
-    else
-        inst.Light:Enable(false)
+    
+    if TheWorld.ismastersim then
+        if params.intensity > 0 then
+            inst.Light:Enable(true)
+        else
+            inst.Light:Enable(false)
+        end
     end
-
 end
 
 -- Not using deepcopy because we want to copy in place
@@ -117,11 +118,10 @@ local function ChangeToItem(inst)
 end
 
 local MOON_ALTAR_ASTRAL_MARKER_MUST_TAG =  {"moon_altar_astral_marker"}
-local MOON_ALTAR_ASTRAL_MARKER_NOT_TAG =  {"marker_found"}
 local MOON_RELIC_MUST_TAG =  {"moon_relic"}
 local CRAB_KING_MUST_TAG =  {"crabking"}
 local function scanfordevice(inst)
-	local ent = FindEntity(inst, 9999, nil, MOON_ALTAR_ASTRAL_MARKER_MUST_TAG, MOON_ALTAR_ASTRAL_MARKER_NOT_TAG)
+	local ent = FindEntity(inst, 9999, nil, MOON_ALTAR_ASTRAL_MARKER_MUST_TAG)
 
     if not ent then
             
@@ -161,6 +161,7 @@ local function scanfordevice(inst)
         end
     end
 
+
 	if ent then
 		if ent:GetDistanceSqToInst(inst) < 4*4 and ent:HasTag("moon_altar_astral_marker") then
             inst.SoundEmitter:KillSound("locating")
@@ -174,8 +175,7 @@ local function scanfordevice(inst)
             
             inst.AnimState:OverrideSymbol("swap_body", swap, "swap_body")
             inst.product = ent.product
-            ent:AddTag("marker_found")
-            inst.target = ent
+            ent:Remove()
             inst:ListenForEvent("animover", function()
                 if inst.AnimState:IsCurrentAnimation("drill") then
                     local artifact = SpawnPrefab(inst.product)
@@ -186,8 +186,6 @@ local function scanfordevice(inst)
                     local pt = Vector3(inst.Transform:GetWorldPosition())
                     pt.y = pt.y + 3
                     inst.components.lootdropper:FlingItem(item,pt)
-                    inst.target:Remove()
-                    inst.target = nil
                     inst:Remove()
                 end
             end)
@@ -371,16 +369,17 @@ local function mainfn()
     inst.Light:SetIntensity(.4)
     inst.Light:SetRadius(2)
     inst.Light:SetColour(237/255, 237/255, 209/255)
-
-    inst.Light:EnableClientModulation(true)
+    inst.Light:Enable(false)
 
     inst.widthscale = 1
     inst._endlight = {}
+    copyparams(inst._endlight, light_params.idle)
+
     inst._startlight = {}
     inst._currentlight = {}
 
-    copyparams(inst._endlight, light_params.idle)
     copyparams(inst._startlight, inst._endlight)
+
     copyparams(inst._currentlight, inst._endlight)
 
     pushparams(inst, inst._currentlight)
@@ -432,12 +431,6 @@ local function mainfn()
             return true
         end
     end
-
-    inst:ListenForEvent("onremove", function()
-        if inst.target then
-            inst.target:RemoveTag("marker_found")
-        end
-    end)
 
     inst.OnSave = onsave_main
     inst.OnLoadPostPass = onloadpostpass_main

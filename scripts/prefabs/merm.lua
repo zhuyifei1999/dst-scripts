@@ -220,8 +220,7 @@ local function OnRefuseItem(inst, item)
 end
 
 local function SuggestTreeTarget(inst, data)
-    local ba = inst:GetBufferedAction()
-    if data ~= nil and data.tree ~= nil and (ba == nil or ba.action ~= ACTIONS.CHOP) then
+    if data ~= nil and data.tree ~= nil and inst:GetBufferedAction() ~= ACTIONS.CHOP then
         inst.tree_target = data.tree
     end
 end

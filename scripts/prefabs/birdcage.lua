@@ -23,9 +23,8 @@ local prefabs =
 local invalid_foods =
 {
     "bird_egg",
-    "bird_egg_cooked",
     "rottenegg",
-    -- "monstermeat",
+    "monstermeat",
     -- "cookedmonstermeat",
     -- "monstermeat_dried",
 }
@@ -74,7 +73,16 @@ local function DigestFood(inst, food)
     else
         local seed_name = string.lower(food.prefab .. "_seeds")
         if Prefabs[seed_name] ~= nil then
-			inst.components.lootdropper:SpawnLootPrefab(seed_name)
+            --If the food has a relavent seed type:
+                --Spawn 1 or 2 of those seeds.
+            local num_seeds = math.random(2)
+            for k = 1, num_seeds do
+                inst.components.lootdropper:SpawnLootPrefab(seed_name)
+            end
+                --Spawn regular seeds on a 50% chance.
+            if math.random() < 0.5 then
+                inst.components.lootdropper:SpawnLootPrefab("seeds")
+            end
         else
             --Otherwise...
                 --Spawn a poop 1/3 times.
@@ -95,11 +103,21 @@ end
 local function ShouldAcceptItem(inst, item)
     local seed_name = string.lower(item.prefab .. "_seeds")
 
+    --Item should be:
+    --Edible
+        --Seeds
+        --Meat
+
     local can_accept = item.components.edible
         and (Prefabs[seed_name] 
         or item.prefab == "seeds"
-        or string.match(item.prefab, "_seeds")
         or item.components.edible.foodtype == FOODTYPE.MEAT)
+
+    --Item should NOT be:
+        --Monster Meat
+        --Eggs
+        --Bird Eggs
+        --Rotton Eggs
 
     if table.contains(invalid_foods, item.prefab) then
         can_accept = false
@@ -117,7 +135,6 @@ local function OnGetItem(inst, giver, item)
     if item.components.edible ~= nil and
         (   item.components.edible.foodtype == FOODTYPE.MEAT
             or item.prefab == "seeds"
-            or string.match(item.prefab, "_seeds")
             or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
         ) then
         --If the item is edible...

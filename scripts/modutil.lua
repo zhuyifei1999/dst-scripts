@@ -339,11 +339,7 @@ local function InsertPostInitFunctions(env, isworldgen)
 			ACTION_MOD_IDS[action.mod_name] = {}
 		end
 		table.insert(ACTION_MOD_IDS[action.mod_name], action.id)
-		action.code = #ACTION_MOD_IDS[action.mod_name]
-		if MOD_ACTIONS_BY_ACTION_CODE[action.mod_name] == nil then
-			MOD_ACTIONS_BY_ACTION_CODE[action.mod_name] = {}
-		end
-		MOD_ACTIONS_BY_ACTION_CODE[action.mod_name][action.code] = action
+		ACTIONS[action.id].code = #ACTION_MOD_IDS[action.mod_name]
 
 		STRINGS.ACTIONS[action.id] = action.str
 		

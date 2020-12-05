@@ -121,9 +121,6 @@ local function fn()
     inst.components.equippable:SetOnUnequip(onunequip)
     inst.components.equippable.equipstack = true
 
-    inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(TUNING.UNARMED_DAMAGE)
-
     MakeHauntableLaunch(inst)
 
     return inst

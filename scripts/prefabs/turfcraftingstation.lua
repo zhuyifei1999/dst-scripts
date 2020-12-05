@@ -25,11 +25,10 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
-        inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/hit")
         if inst.components.prototyper.on then
             inst.AnimState:PushAnimation("proximity_loop", true)
             if not inst.SoundEmitter:PlayingSound("loop_sound") then
-                inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/prox_LP", "loop_sound")
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
             end
         else
             inst.AnimState:PushAnimation("idle", false)
@@ -65,12 +64,12 @@ local function onturnon(inst)
             --NOTE: push again even if already playing, in case an idle was also pushed
             inst.AnimState:PushAnimation("proximity_loop", true)
             if not inst.SoundEmitter:PlayingSound("loop_sound") then
-                inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/prox_LP", "loop_sound")
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
             end    
         else
             inst.AnimState:PlayAnimation("proximity_loop", true)
             if not inst.SoundEmitter:PlayingSound("loop_sound") then
-                inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/prox_LP", "loop_sound")
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
             end            
         end
     end
@@ -80,14 +79,14 @@ local function onactivate(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("use")
         inst.AnimState:PushAnimation("proximity_loop", true)
-        inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/use")
+        inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/use")
     end
 end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
-    inst.SoundEmitter:PlaySound("grotto/common/turf_crafting_station/place")
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/place")
 end
 
 local function fn()

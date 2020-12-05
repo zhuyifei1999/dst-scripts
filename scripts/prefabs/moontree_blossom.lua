@@ -27,7 +27,6 @@ local function fn()
     inst.AnimState:SetRayTestOnBB(true)
 
     inst:AddTag("cattoy")
-    inst:AddTag("vasedecoration")
     
     MakeInventoryFloatable(inst)
 
@@ -41,8 +40,6 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem:SetOnPickupFn(OnPickup)
-
-    inst:AddComponent("vasedecoration")
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

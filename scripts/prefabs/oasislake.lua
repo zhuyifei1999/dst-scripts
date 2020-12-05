@@ -136,7 +136,7 @@ local function TryFillLake(inst, skipanim, OnSandstormChanged)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
 
-    inst.components.watersource.available = true
+    inst:AddTag("watersource")
     inst:RemoveTag("NOCLICK")
 end
 
@@ -166,7 +166,7 @@ local function OnSandstormChanged(inst, active, skipanim)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.ITEMS)
 
-        inst.components.watersource.available = false
+        inst:RemoveTag("watersource")
         inst:AddTag("NOCLICK")
     end
 end
@@ -214,7 +214,6 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("oasis.png")
 
-    -- From watersource component
     inst:AddTag("watersource")
     inst:AddTag("birdblocker")
     inst:AddTag("antlion_sinkhole_blocker")
@@ -240,8 +239,6 @@ local function fn()
 
     inst:AddComponent("oasis")
     inst.components.oasis.radius = TUNING.SANDSTORM_OASIS_RADIUS
-
-    inst:AddComponent("watersource")
 
     inst.isdamp = false
     inst.driedup = false

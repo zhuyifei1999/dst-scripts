@@ -119,7 +119,6 @@ SetSharedLootTable('toadstool_dark',
 
     {"shroom_skin",   1.00},
     {"shroom_skin",   1.00},
-    {"chesspiece_toadstool_sketch", 1.00},
 
     {"red_cap",       1.00},
     {"red_cap",       0.33},

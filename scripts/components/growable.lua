@@ -2,12 +2,11 @@ local Growable = Class(function(self, inst)
     self.inst = inst
     self.stages = nil
     self.stage = 1
-    --self.loopstages = false
-	--self.loopstages_start = 1 
-    --self.growonly = false
-    --self.springgrowth = false
+    self.loopstages = false
+    self.growonly = false
+    self.springgrowth = false
     --self.growoffscreen = false
-    --self.magicgrowable = false
+    self.magicgrowable = false
 end)
 
 function Growable:GetDebugString()
@@ -33,7 +32,7 @@ function Growable:StartGrowing(time)
         if time ~= nil then
             timeToGrow = time
         elseif self.stages[self.stage].time ~= nil then
-            timeToGrow = self.stages[self.stage].time(self.inst, self.stage, self.stages[self.stage])
+            timeToGrow = self.stages[self.stage].time(self.inst, self.stage)
         end
 
         if timeToGrow ~= nil then
@@ -56,7 +55,7 @@ function Growable:GetNextStage()
     local stage = self.stage + 1
     if stage > #self.stages then
         if self.loopstages then
-            stage = self.loopstages_start or 1
+            stage = 1
         else
             stage = #self.stages
         end
@@ -64,41 +63,25 @@ function Growable:GetNextStage()
     return stage
 end
 
-function Growable:DoMagicGrowth(doer)
-	return self.domagicgrowthfn ~= nil and self.domagicgrowthfn(self.inst, doer)
-end
-
 function Growable:DoGrowth()
     if self.targettime == nil and self.pausedremaining == nil then
         --neither started nor paused, which means we're fully stopped
-        return false
+        return
     end
 
     local stage = self:GetNextStage()
-
-    if self.stages[stage] ~= nil and self.stages[stage].pregrowfn ~= nil then
-        self.stages[stage].pregrowfn(self.inst, stage)
-    end
 
     if not self.growonly then
         self:SetStage(stage)
     end
 
-	if self.inst:IsValid() then
-		if self.stages[stage] ~= nil and self.stages[stage].growfn ~= nil then
-			self.stages[stage].growfn(self.inst)
-		end
+    if self.stages[stage] ~= nil and self.stages[stage].growfn ~= nil then
+        self.stages[stage].growfn(self.inst)
+    end
 
-		if self.stage < #self.stages or self.loopstages then 
-			self:StartGrowing()
-		end
-	end
-
-	return true
-end
-
-function Growable:IsGrowing()
-    return self.targettime ~= nil
+    if self.stage < #self.stages or self.loopstages then 
+        self:StartGrowing()
+    end
 end
 
 function Growable:StopGrowing()
@@ -112,11 +95,9 @@ function Growable:StopGrowing()
 end
 
 function Growable:Pause()
-	if self.pausedremaining == nil then
-		local targettime = self.targettime
-		self:StopGrowing()
-		self.pausedremaining = targettime ~= nil and math.floor(targettime - GetTime()) or nil
-	end
+    local targettime = self.targettime
+    self:StopGrowing()
+    self.pausedremaining = targettime ~= nil and math.floor(targettime - GetTime()) or nil
 end
 
 function Growable:Resume()
@@ -154,7 +135,7 @@ function Growable:SetStage(stage)
     self.stage = stage
 
     if self.stages[stage] ~= nil and self.stages[stage].fn ~= nil then
-        self.stages[stage].fn(self.inst, stage, self.stages[stage])
+        self.stages[stage].fn(self.inst, stage)
     end
 end
 
@@ -165,7 +146,7 @@ end
 function Growable:OnSave()
     local data =
     {
-        stage = self.stage,
+        stage = self.stage ~= 1 and self.stage or nil, --1 is kind of by default
         time = (self.pausedremaining ~= nil and math.floor(self.pausedremaining))
             or (self.targettime ~= nil and math.floor(self.targettime - GetTime()))
             or nil,
@@ -175,7 +156,7 @@ end
 
 function Growable:OnLoad(data)
     if data ~= nil then
-        self:SetStage(data.stage or 1) --1 is kind of by default
+        self:SetStage(data.stage or self.stage)
         if data.time ~= nil then
             self:StartGrowing(math.max(0, data.time))
         end

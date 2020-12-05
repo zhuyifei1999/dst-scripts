@@ -26,9 +26,6 @@ local FLOWER_SWAPS =
     { lightsource = false, sanityboost = TUNING.SANITY_TINY },
     { lightsource = false, sanityboost = TUNING.SANITY_TINY },
     { lightsource = false, sanityboost = TUNING.SANITY_TINY },
-    { lightsource = false, sanityboost = TUNING.SANITY_TINY },
-    { lightsource = false, sanityboost = TUNING.SANITY_TINY },
-    { lightsource = false, sanityboost = TUNING.SANITY_TINY },
 }
 
 local FLOWER_MAP =
@@ -37,8 +34,6 @@ local FLOWER_MAP =
     lightbulb           = { flowerids = { 5, 7, 8 } },
     wormlight           = { flowerids = { 9 } },
     wormlight_lesser    = { flowerids = { 9 } },
-    forgetmelots        = { flowerids = { 13, 14 } },
-    moon_tree_blossom   = { flowerids = { 15 } },
 }
 
 local function HasFreshFlowers(inst)

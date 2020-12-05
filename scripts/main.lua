@@ -286,8 +286,6 @@ global("TheRecipeBook")
 TheRecipeBook = nil
 global("TheCookbook")
 TheCookbook = nil
-global("ThePlantRegistry")
-ThePlantRegistry = nil
 global("Lavaarena_CommunityProgression")
 Lavaarena_CommunityProgression = nil
 global("SaveGameIndex")
@@ -338,8 +336,6 @@ local function ModSafeStartup()
 	TheRecipeBook:Load()
 	TheCookbook = require("cookbookdata")()
 	TheCookbook:Load()
-	ThePlantRegistry = require("plantregistrydata")()
-	ThePlantRegistry:Load()
 	Lavaarena_CommunityProgression = require("lavaarena_communityprogression")()
 	Lavaarena_CommunityProgression:Load()
 

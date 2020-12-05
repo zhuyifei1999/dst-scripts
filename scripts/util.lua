@@ -1275,15 +1275,7 @@ function DumpMem()
 end
 
 function checkbit(x, b)
-    return bit.band(x, b) > 0
-end
-
-function setbit(x, b)
-    return bit.bor(x, b)
-end
-
-function clearbit(x, b)
-    return bit.bxor(bit.bor(x, b), b)
+    return x % (b + b) >= b
 end
 
 -- Width is the total width of the region we are interested in, in radians.
@@ -1513,19 +1505,4 @@ function MetaClass(entries, ctor, classtable)
     end
     mtclass:_ctor()
     return mtclass
-end
-
-function ZipAndEncodeSaveData(data)
-	return {str = TheSim:ZipAndEncodeString(DataDumper(data, nil, true))}
-end
-
-function DecodeAndUnzipSaveData(data)
-    if data and data.str and type(data.str) == "string" then
-        local success, savedata = RunInSandbox(TheSim:DecodeAndUnzipString(data.str))
-        if success then
-            return savedata
-        else
-            return {}
-        end
-    end
 end
