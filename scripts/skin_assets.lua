@@ -1299,6 +1299,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/ghost_wortox_build.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/ghost_wortox_dragon.zip"),
 	Asset("PKGREF", "anim/dynamic/ghost_wortox_dragon.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/ghost_wortox_ice.zip"),
+	Asset("PKGREF", "anim/dynamic/ghost_wortox_ice.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/ghost_wortox_minotaur.zip"),
 	Asset("PKGREF", "anim/dynamic/ghost_wortox_minotaur.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/ghost_wortox_original.zip"),
