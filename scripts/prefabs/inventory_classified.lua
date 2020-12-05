@@ -952,8 +952,8 @@ local function GetNextAvailableSlot(inst, item)
 
     local inventory_replica = inst and inst._parent and inst._parent.replica.inventory
     local overflow = GetOverflowContainer(inst)
-    local overflow_replica = overflow and overflow._parent and overflow._parent.replica.container
-    local prioritize_container = (overflow and not overflow:IsBusy()) and overflow_replica and overflow_replica:ShouldPrioritizeContainer(item)
+    overflow = (overflow and not overflow:IsBusy()) and overflow or nil
+    local prioritize_container = overflow and overflow:ShouldPrioritizeContainer(item) or false
 
     local prefabname
     local prefabskinname
@@ -979,12 +979,10 @@ local function GetNextAvailableSlot(inst, item)
             end
         end
 
-        if not (item.replica.inventoryitem and item.replica.inventoryitem:CanOnlyGoInPocket()) then
-            if overflow and not overflow:IsBusy() then
-                for k, v in pairs(overflow:GetItems()) do
-                    if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
-                        return k, "overflow"
-                    end
+        if not (item.replica.inventoryitem and item.replica.inventoryitem:CanOnlyGoInPocket()) and overflow then
+            for k, v in pairs(overflow:GetItems()) do
+                if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
+                    return k, "overflow"
                 end
             end
         end
@@ -995,8 +993,8 @@ local function GetNextAvailableSlot(inst, item)
     end
 
     if prioritize_container then
-        for k = 1, overflow_replica:GetNumSlots() do
-            if overflow_replica:CanTakeItemInSlot(item, k) and not overflow:GetItemInSlot(k) then
+        for k = 1, overflow:GetNumSlots() do
+            if overflow:CanTakeItemInSlot(item, k) and not overflow:GetItemInSlot(k) then
                 return k, "overflow"
             end
         end

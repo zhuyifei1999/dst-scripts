@@ -284,6 +284,9 @@ for veggie, data in pairs(PLANT_DEFS) do
 			--the path to the widget
 			data.plantregistrywidget = "widgets/redux/farmplantpage"
 		end
+		if data.plantregistrysummarywidget == nil then
+			data.plantregistrysummarywidget = "widgets/redux/farmplantsummarywidget"
+		end
 	end
 end
 

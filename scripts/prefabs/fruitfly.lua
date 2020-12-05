@@ -366,6 +366,10 @@ local function FriendlyShouldSleep(inst)
         and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE)
 end
 
+local function FriendlyShouldKeepTarget()
+    return false
+end
+
 local function OnStopFollowing(inst)
     inst:RemoveTag("companion")
 end
@@ -416,7 +420,7 @@ local function friendlyfn()
     inst:AddComponent("health")
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "fruit2"
-    inst.components.combat:SetKeepTargetFunction(ShouldKeepTarget)
+    inst.components.combat:SetKeepTargetFunction(FriendlyShouldKeepTarget)
 
     inst.components.sleeper.testperiod = GetRandomWithVariance(6, 2)
     inst.components.sleeper:SetSleepTest(FriendlyShouldSleep)

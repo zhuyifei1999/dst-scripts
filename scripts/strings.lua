@@ -5738,6 +5738,7 @@ STRINGS.UI =
             OVERSIZED_ROTTING = "Rotting",
             BOLTING = "Bolting",
             PICKED = "Picked",
+            SUMMARY = "Summary",
         },
     },
 

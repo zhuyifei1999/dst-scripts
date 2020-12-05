@@ -101,8 +101,8 @@ local WeedPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
 
     --water--
     local water_y = y_start - title_font_size/2 - 3
-    local water_size = 48
-    local water_gap = -10
+    local water_size = 32
+    local water_gap = 6
 
     self.water = self.root:AddChild(Text(HEADERFONT, title_font_size, STRINGS.UI.PLANTREGISTRY.WEEDPLANTS.WATER, PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN))
     self.water:SetPosition(x_start, y_start)
@@ -121,12 +121,13 @@ local WeedPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
         self.water_icons = {}
         for i = 1, water_icon_count[self.data.plant_def.moisture.drink_rate] do
             local water_icon = self.root:AddChild(Image("images/plantregistry.xml", "water.tex"))
+            water_icon:ScaleToSize(water_size, water_size)
             table.insert(self.water_icons, water_icon)
         end
 
         local water_count = #self.water_icons
         local water_x = x_start - ((water_count * water_size) + ((water_count - 1) * water_gap)) / 2
-        water_y = water_y - water_size / 2
+        water_y = water_y - water_size / 2 - water_gap
 
         for i, season_icon in ipairs(self.water_icons) do
             water_x = water_x + water_size / 2

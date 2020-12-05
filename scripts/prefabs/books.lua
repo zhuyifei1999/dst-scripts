@@ -18,10 +18,10 @@ local SLEEPTARGET_NOPVP_MUST_TAGS = { "sleeper" }
 local SLEEPTARGET_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
 local GARDENING_CANT_TAGS = { "pickable", "stump", "withered", "barren", "INLIMBO" }
 
-local SILVICULTURE_ONEOF_TAGS = { "silviculture", "tree" }
+local SILVICULTURE_ONEOF_TAGS = { "silviculture", "tree", "winter_tree" }
 local SILVICULTURE_CANT_TAGS = { "pickable", "stump", "withered", "barren", "INLIMBO" }
 
-local HORTICULTURE_CANT_TAGS = { "pickable", "stump", "withered", "barren", "INLIMBO", "silviculture", "tree" }
+local HORTICULTURE_CANT_TAGS = { "pickable", "stump", "withered", "barren", "INLIMBO", "silviculture", "tree", "winter_tree" }
 
 --helper function for book_gardening
 local function trygrowth(inst)

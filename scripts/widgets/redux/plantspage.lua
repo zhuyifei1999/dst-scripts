@@ -26,9 +26,13 @@ local PlantsPage = Class(Widget, function(self, parent_widget, ismodded)
 			--not operator used as a cast to boolean.
 			if v.plantregistryinfo and ((not self.ismodded) == (not v.modded)) then
 				local beststage
-				for stage in pairs(ThePlantRegistry:GetKnownPlantStages(k)) do
-					if v.plantregistryinfo[stage] and (not beststage or stage + (v.plantregistryinfo[stage].stagepriority or 0) > beststage) then
-						beststage = stage
+				if v.plantregistrysummarywidget and ThePlantRegistry:GetPlantPercent(k, v.plantregistryinfo) >= 1 then
+					beststage = "summary"
+				else
+					for stage in pairs(ThePlantRegistry:GetKnownPlantStages(k)) do
+						if v.plantregistryinfo[stage] and (not beststage or stage + (v.plantregistryinfo[stage].stagepriority or 0) > beststage) then
+							beststage = stage
+						end
 					end
 				end
 				table.insert(plant_grid_data, {plant = k, plant_def = v, info = v.plantregistryinfo, currentstage = beststage or 1})
@@ -101,19 +105,33 @@ function PlantsPage:BuildPlantScrollGrid()
 		w.plant_spinner:SetTextColour(PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN)
 
 		function w:SetPlantAndStage(plant, stage)
+			if w.plant_summary then
+				w.plant_summary:Kill()
+				w.plant_summary = nil
+			end
+
 			local data = w.data
 			if not data then return end
 			data.currentstage = stage
+			if data.currentstage == "summary" and data.plant_def.plantregistrysummarywidget then
+				w.plant_locked:Hide()
+				w.plant_anim:Hide()
+				local summarywidget = require(data.plant_def.plantregistrysummarywidget)
+				w.plant_summary = w.cell_root:AddChild(summarywidget(w, data))
+				return
+			end
+
 			if ThePlantRegistry:KnowsPlantStage(plant, data.currentstage) then
 				w.plant_locked:Hide()
 				w.plant_anim:Show()
 
 				local curinfo = data.info[data.currentstage]
 				w.plant_anim:GetAnimState():SetBankAndPlayAnimation(curinfo.bank or data.plant_def.bank, curinfo.anim, curinfo.loop ~= false)
-			else
-				w.plant_anim:Hide()
-				w.plant_locked:Show()
+				return
 			end
+
+			w.plant_anim:Hide()
+			w.plant_locked:Show()
 		end
 
 		w.plant_locked = w.cell_root:AddChild(Image("images/plantregistry.xml", "locked.tex"))
@@ -197,6 +215,9 @@ function PlantsPage:BuildPlantScrollGrid()
 				if not v.hidden or ThePlantRegistry:KnowsPlantStage(data.plant, i) then
 					table.insert(spinner_options, {text = STRINGS.UI.PLANTREGISTRY.PLANT_GROWTH_STAGES[string.upper(v.text)], data = i})
 				end
+			end
+			if ThePlantRegistry:GetPlantPercent(data.plant, data.info) >= 1 then
+				table.insert(spinner_options, {text = STRINGS.UI.PLANTREGISTRY.PLANT_GROWTH_STAGES.SUMMARY, data = "summary"})
 			end
 
 			if ThePlantRegistry:IsAnyPlantStageKnown(data.plant) then

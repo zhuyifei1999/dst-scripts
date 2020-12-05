@@ -146,8 +146,8 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
 
     --seasons--
     local season_y = y_start - title_font_size/2 - 3
-    local season_size = 48
-    local season_gap = -10
+    local season_size = 32
+    local season_gap = 6
 
     self.seasons = self.root:AddChild(Text(HEADERFONT, title_font_size, STRINGS.UI.PLANTREGISTRY.FARMPLANTS.SEASONS, PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN))
     self.seasons:SetPosition(x_start, y_start)
@@ -160,6 +160,7 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
         self.season_icons = {}
         for season in pairs(self.data.plant_def.good_seasons) do
             local season_icon = self.root:AddChild(Image("images/plantregistry.xml", "season_"..season..".tex"))
+            season_icon:ScaleToSize(season_size, season_size)
             season_icon.season = season
             season_icon:SetHoverText(STRINGS.UI.CUSTOMIZATIONSCREEN.ICON_TITLES[string.upper(season)], hovertext_params)
             local _OnGainFocus = season_icon.OnGainFocus
@@ -184,7 +185,7 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
 
         local season_count = #self.season_icons
         local season_x = x_start - ((season_count * season_size) + ((season_count - 1) * season_gap)) / 2
-        season_y = season_y - season_size / 2
+        season_y = season_y - season_size / 2 - season_gap
 
         local season_sort = {
             autumn = 4,
@@ -214,8 +215,8 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
 
     --water--
     local water_y = y_start - title_font_size/2 - 3
-    local water_size = 48
-    local water_gap = -10
+    local water_size = 32
+    local water_gap = 6
 
     self.water = self.root:AddChild(Text(HEADERFONT, title_font_size, STRINGS.UI.PLANTREGISTRY.FARMPLANTS.WATER, PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN))
     self.water:SetPosition(x_start, y_start)
@@ -234,12 +235,13 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
         self.water_icons = {}
         for i = 1, water_icon_count[self.data.plant_def.moisture.drink_rate] do
             local water_icon = self.root:AddChild(Image("images/plantregistry.xml", "water.tex"))
+            water_icon:ScaleToSize(water_size, water_size)
             table.insert(self.water_icons, water_icon)
         end
 
         local water_count = #self.water_icons
         local water_x = x_start - ((water_count * water_size) + ((water_count - 1) * water_gap)) / 2
-        water_y = water_y - water_size / 2
+        water_y = water_y - water_size / 2 - water_gap
 
         for i, season_icon in ipairs(self.water_icons) do
             water_x = water_x + water_size / 2

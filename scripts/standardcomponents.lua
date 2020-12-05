@@ -1328,14 +1328,8 @@ local function fertilizer_ondeploy(inst, pt, deployer)
     local tile_x, tile_z = TheWorld.Map:GetTileCoordsAtPoint(pt:Get())
     local nutrients = inst.components.fertilizer.nutrients
     TheWorld.components.farming_manager:AddTileNutrients(tile_x, tile_z, nutrients[1], nutrients[2], nutrients[3])
-    
-    if inst.components.finiteuses ~= nil then
-        inst.components.finiteuses:Use()
-    elseif inst.components.stackable ~= nil and inst.components.stackable:IsStack() then
-        inst.components.stackable:Get():Remove()
-    else
-        inst:Remove()
-    end
+
+    inst.components.fertilizer:OnApplied(deployer)
 end
 
 local function fertilizer_candeploy(inst, pt, mouseover, deployer)
