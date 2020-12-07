@@ -33,7 +33,7 @@ local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
-local IS_BETA = BRANCH == "staging"
+local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
 
 local function PlayBannerSound(inst, self, sound)
     if self.bannersoundsenabled then
@@ -51,18 +51,21 @@ function MakeBanner(self)
 	local anim = baner_root:AddChild(UIAnim())
 
 	if IS_BETA then
+		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
+
         --local anim = baner_root:AddChild(UIAnim())
-        anim:GetAnimState():SetBuild("dst_menu_grotto")
-        anim:GetAnimState():SetBank ("dst_menu_grotto")
+        anim:GetAnimState():SetBuild("dst_menu_farming")
+        anim:GetAnimState():SetBank ("dst_menu_farming")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
+
+  --       title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
   --       anim:GetAnimState():SetBuild("dst_menu_wathgrithr")
   --       anim:GetAnimState():SetBank("dst_menu_wathgrithr")
   --       anim:SetScale(.667)
   --       anim:GetAnimState():PlayAnimation("loop", true)
   --       anim:MoveToBack()
-		-- title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 	elseif IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		anim:GetAnimState():SetBuild("dst_menu_lavaarena_s2")
 		anim:GetAnimState():SetBank("dst_menu_lavaarena_s2")
@@ -80,12 +83,12 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
---        anim:GetAnimState():SetBuild("dst_menu_inker_winter")
---        anim:GetAnimState():SetBank("dst_menu_inker_winter")
---        anim:GetAnimState():PlayAnimation("loop", true)
---        anim:SetScale(.667)
+        --anim:GetAnimState():SetBuild("dst_menu_inker_winter")
+        --anim:GetAnimState():SetBank("dst_menu_inker_winter")
+        --anim:GetAnimState():PlayAnimation("loop", true)
+        --anim:SetScale(.667)
 
-	    local anim_bg = baner_root:AddChild(UIAnim())
+    	--[[local anim_bg = baner_root:AddChild(UIAnim())
 		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
 		anim_bg:GetAnimState():SetBank("dst_menu_bg")
 		anim_bg:SetScale(0.7)
@@ -96,7 +99,14 @@ function MakeBanner(self)
 		anim:GetAnimState():SetBuild("dst_menu_feast")
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:SetScale(0.7)
-		anim:GetAnimState():PlayAnimation("loop", true)
+		anim:GetAnimState():PlayAnimation("loop", true)]]
+
+        anim:GetAnimState():SetBuild("dst_menu_farming")
+        anim:GetAnimState():SetBank ("dst_menu_farming")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
+        anim:SetPosition(0, 0)
+
 
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
 		local anim_bg = baner_root:AddChild(UIAnim())
