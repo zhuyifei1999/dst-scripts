@@ -150,6 +150,14 @@ local function OnHoundWarning(parent, houndwarningtype)
     SetDirty(parent.player_classified.houndwarningevent, houndwarningtype)
 end
 
+fns.OnPlayThemeMusic = function(parent, data)
+	if data ~= nil then
+		if data.theme == "farming" then
+			parent.player_classified.start_farming_music:push()
+		end
+	end
+end
+
 local function OnMakeFriend(parent)
     parent.player_classified.makefriendevent:push()
 end
@@ -842,6 +850,10 @@ local function OnHoundWarningDirty(inst)
     end
 end
 
+fns.StartFarmingMusicEvent = function(inst)
+	inst._parent:PushEvent("playfarmingmusic")
+end
+
 local function OnMakeFriendEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
@@ -937,6 +949,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("makefriend", OnMakeFriend, inst._parent)
         inst:ListenForEvent("feedincontainer", OnFeedInContainer, inst._parent)
         inst:ListenForEvent("houndwarning", OnHoundWarning, inst._parent)       
+        inst:ListenForEvent("play_theme_music", fns.OnPlayThemeMusic, inst._parent)       
     else
         inst.ishealthpulseup:set_local(false)
         inst.ishealthpulsedown:set_local(false)
@@ -1014,7 +1027,8 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("leader.makefriend", OnMakeFriendEvent)
     inst:ListenForEvent("eater.feedincontainer", OnFeedInContainerEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
-    inst:ListenForEvent("houndwarningdirty", OnHoundWarningDirty)   
+    inst:ListenForEvent("houndwarningdirty", OnHoundWarningDirty)
+	inst:ListenForEvent("startfarmingmusicevent", fns.StartFarmingMusicEvent)
     OnSandstormLevelDirty(inst)
     OnGiftsDirty(inst)
     OnMountHurtDirty(inst)
@@ -1149,6 +1163,10 @@ local function fn()
     inst.screenflash = net_tinybyte(inst.GUID, "frontend.screenflash", "playerscreenflashdirty")
     inst.wormholetravelevent = net_tinybyte(inst.GUID, "frontend.wormholetravel", "wormholetraveldirty")
     inst.houndwarningevent = net_tinybyte(inst.GUID, "frontend.houndwarning", "houndwarningdirty")        
+
+	-- busy theme music
+    inst.start_farming_music = net_event(inst.GUID, "startfarmingmusicevent")
+
     inst.isfadein:set(true)
 
     --Builder variables

@@ -1330,8 +1330,8 @@ local function fertilizer_ondeploy(inst, pt, deployer)
     TheWorld.components.farming_manager:AddTileNutrients(tile_x, tile_z, nutrients[1], nutrients[2], nutrients[3])
 
     inst.components.fertilizer:OnApplied(deployer)
-    if inst.components.fertilizer.fertilize_sound ~= nil then
-        inst.SoundEmitter:PlaySound(inst.components.fertilizer.fertilize_sound)
+    if deployer ~= nil and deployer.SoundEmitter ~= nil and inst.components.fertilizer.fertilize_sound ~= nil then
+        deployer.SoundEmitter:PlaySound(inst.components.fertilizer.fertilize_sound)
     end
 end
 
@@ -1343,6 +1343,7 @@ function MakeDeployableFertilizerPristine(inst)
     inst._custom_candeploy_fn = fertilizer_candeploy
     inst.overridedeployplacername = "gridplacer_farmablesoil"
     inst:AddTag("deployable")
+    inst:AddTag("tile_deploy")
 end
 
 function MakeDeployableFertilizer(inst)

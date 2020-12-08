@@ -270,6 +270,7 @@ local function item_fn()
     inst.AnimState:PlayAnimation("idle_packed")
 
     inst:AddTag("usedeploystring")
+    inst:AddTag("tile_deploy")
 
 	MakeInventoryFloatable(inst, "small", 0.1, 0.8)
 

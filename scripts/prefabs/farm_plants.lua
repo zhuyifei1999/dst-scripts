@@ -2,6 +2,11 @@
 
 local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
 
+local grow_sounds = 
+{
+	grow_oversized = "dontstarve/common/farm_harvestable",
+}
+
 local function call_for_reinforcements(inst, target)
 	if not target:HasTag("plantkin") then
 		local x, y, z = inst.Transform:GetWorldPosition()
@@ -200,7 +205,7 @@ local function NutrientsStressTest(inst, currentstress, apply)
 	if TheWorld.components.farming_manager then
 		return TheWorld.components.farming_manager:CycleNutrientsAtPoint(x, y, z, inst.plant_def.nutrient_consumption, inst.plant_def.nutrient_restoration, not apply)
 	end
-	return false
+	return true
 end
 
 local function HappinessStressTest(inst, currentstress, apply)
@@ -250,6 +255,10 @@ local function PlaySowAnim(inst)
 	else
 		inst.AnimState:PlayAnimation("sow", false)
 		inst.AnimState:PushAnimation("sow_idle", true)
+
+		if grow_sounds.sow ~= nil then
+            inst.SoundEmitter:PlaySound(grow_sounds.sow)
+		end
 	end
 end
 
@@ -258,8 +267,13 @@ local function PlayStageAnim(inst, anim, pre_override)
 		inst.AnimState:PlayAnimation("crop_"..anim, true)
 		inst.AnimState:SetTime(10 + math.random() * 2)
 	else
-		inst.AnimState:PlayAnimation(pre_override or ("grow_"..anim), false)
+		local grow_anim = pre_override or ("grow_"..anim)
+		inst.AnimState:PlayAnimation(grow_anim, false)
 		inst.AnimState:PushAnimation("crop_"..anim, true)
+
+		if grow_sounds[grow_anim] ~= nil then
+            inst.SoundEmitter:PlaySound(grow_sounds[grow_anim])
+		end
 	end
 
 	local scale = inst.scale or 1

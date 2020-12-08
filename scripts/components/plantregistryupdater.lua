@@ -16,6 +16,10 @@ end)
 function PlantRegistryUpdater:LearnPlantStage(plant, stage)
     if plant and stage then
 		local updated = self.plantregistry:LearnPlantStage(plant, stage)
+
+		if updated and TheFocalPoint.entity:GetParent() == self.inst then
+			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/get_gold")
+		end
 		--print("PlantRegistryUpdater:LearnPlantStage", plant, stage)
 
 		-- Servers will only tell the clients if this is a new plant stage in this world
@@ -31,9 +35,13 @@ end
 function PlantRegistryUpdater:LearnFertilizer(fertilizer)
     if fertilizer then
 		local updated = self.plantregistry:LearnFertilizer(fertilizer)
+
+		if updated and TheFocalPoint.entity:GetParent() == self.inst then
+			TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/get_gold")
+		end
 		--print("PlantRegistryUpdater:LearnFertilizer", fertilizer)
 
-		-- Servers will only tell the clients if this is a fertilizer in this world
+		-- Servers will only tell the clients if this is a new fertilizer in this world
 		-- Since the servers do not know the client's actual plantregistry data, this is the best we can do for reducing the amount of data sent
 		if updated and (TheNet:IsDedicated() or (TheWorld.ismastersim and self.inst ~= ThePlayer)) then
 			if self.inst.player_classified ~= nil then
@@ -42,6 +50,5 @@ function PlantRegistryUpdater:LearnFertilizer(fertilizer)
 		end
 	end
 end
-
 
 return PlantRegistryUpdater

@@ -3682,8 +3682,7 @@ local states =
         end,
     },
 
-    State
-    {
+    State{
         name = "portal_jumpin_pre",
         tags = { "busy" },
 

@@ -62,7 +62,7 @@ local function CheckOceanFishingCastRange(doer, dest)
 	end
 end
 
-local function CheckFarmTileWithinRange(doer, dest)
+local function CheckTileWithinRange(doer, dest)
 	local doer_pos = doer:GetPosition()
 	local target_pos = Vector3(dest:GetPoint())
     
@@ -122,6 +122,10 @@ local function ExtraDropDist(doer, dest, bufferedaction)
     return 0
 end
 
+local function ExtraPourWaterDist(doer, dest, bufferedaction)
+    return 1.5
+end
+
 global("CLIENT_REQUESTED_ACTION")
 CLIENT_REQUESTED_ACTION = nil
 
@@ -176,6 +180,8 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.extra_arrive_dist = data.extra_arrive_dist
     self.tile_placer = data.tile_placer
     self.show_tile_placer_fn = data.show_tile_placer_fn
+	self.theme_music = data.theme_music
+	self.theme_music_fn = data.theme_music_fn -- client side function
 end)
 
 -- NOTE: High priority is intended to be a shortcut flag for actions that we expect to always dominate if they are available.
@@ -227,7 +233,7 @@ ACTIONS =
     STORE = Action(),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
     DEPLOY = Action({distance=1.1, extra_arrive_dist=ExtraDeployDist}),
-    DEPLOY_TILEARRIVE = Action({customarrivecheck=CheckFarmTileWithinRange}),
+    DEPLOY_TILEARRIVE = Action({customarrivecheck=CheckTileWithinRange, theme_music = "farming"}), -- Note: If this is used for non-farming in the future, this would need to be swapped to theme_music_fn
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
@@ -335,8 +341,8 @@ ACTIONS =
     SING_FAIL = Action({ rmb=true, mount_valid=true }),
 
     --Quagmire
-    TILL = Action({ distance=0.5 }),
-    PLANTSOIL = Action(),
+    TILL = Action({ distance=0.5, theme_music = "farming" }),
+    PLANTSOIL = Action({ theme_music = "farming" }),
     INSTALL = Action(),
     TAPTREE = Action({priority=1, rmb=true}),
     SLAUGHTER = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
@@ -371,8 +377,8 @@ ACTIONS =
     BOARDPLATFORM = Action({ customarrivecheck=CheckIsOnPlatform }),
     OCEAN_TOSS = Action({priority=3, rmb=true, customarrivecheck=CheckOceanFishingCastRange, is_relative_to_platform=true, disable_platform_hopping=true}),
     UNPATCH = Action({ distance=0.5 }),
-    POUR_WATER = Action({ distance = 2, tile_placer="gridplacer", show_tile_placer_fn=ShowPourWaterTilePlacer }),
-    POUR_WATER_GROUNDTILE = Action({ rmb=true, customarrivecheck=CheckFarmTileWithinRange, tile_placer="gridplacer" }),
+    POUR_WATER = Action({ tile_placer="gridplacer", show_tile_placer_fn=ShowPourWaterTilePlacer, extra_arrive_dist=ExtraPourWaterDist }),
+    POUR_WATER_GROUNDTILE = Action({ rmb=true, customarrivecheck=CheckTileWithinRange, tile_placer="gridplacer", theme_music = "farming" }),
     PLANTREGISTRY_RESEARCH_FAIL = Action({ priority = -1 }),
     PLANTREGISTRY_RESEARCH = Action({ priority = HIGH_ACTION_PRIORITY }),
     ASSESSPLANTHAPPINESS = Action({ priority = 1 }),
@@ -855,6 +861,12 @@ ACTIONS.INTERACT_WITH.fn = function(act)
     end
 end
 
+ACTIONS.INTERACT_WITH.theme_music_fn = function(act)
+    return act.target ~= nil
+        and act.target:HasTag("farm_plant") and "farming"
+		or nil
+end
+
 ACTIONS.ATTACKPLANT.fn = function(act)
     if act.target ~= nil and act.target.components.farmplantstress ~= nil then
         act.target.components.farmplantstress:SetStressed("happiness", true, act.doer)
@@ -911,6 +923,12 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("eyeturret") and "TURRET") or
                 (act.invobject:HasTag("fertilizer") and "FERTILIZE_GROUND")    )
         or nil
+end
+
+ACTIONS.DEPLOY.theme_music_fn = function(act)
+    return act.invobject ~= nil
+        and act.invobject:HasTag("deployedplant") and "farming"
+		or nil
 end
 
 ACTIONS.DEPLOY_TILEARRIVE.fn = ACTIONS.DEPLOY.fn
@@ -982,6 +1000,12 @@ end
 ACTIONS.DIG.fn = function(act)
     DoToolWork(act, ACTIONS.DIG)
     return true
+end
+
+ACTIONS.DIG.theme_music_fn = function(act)
+    return act.target ~= nil
+        and (act.target:HasTag("farm_debris") or act.target:HasTag("farm_plant")) and "farming"
+		or nil
 end
 
 ACTIONS.FERTILIZE.fn = function(act)
@@ -1092,6 +1116,12 @@ ACTIONS.PICK.fn = function(act)
         act.target.components.pickable:Pick(act.doer)
         return true
     end
+end
+
+ACTIONS.PICK.theme_music_fn = function(act)
+    return act.target ~= nil
+        and act.target:HasTag("farm_plant") and "farming"
+		or nil
 end
 
 ACTIONS.ATTACK.fn = function(act)

@@ -26,6 +26,8 @@ local fish_prefabs =
 	"spoiled_food",
 }
 
+local fish_loot = {"spoiled_food", "boneshard"}
+
 local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 
 local function fish_onhit(inst, worker, workleft, workdone)
@@ -159,8 +161,7 @@ end
 
 local function fish_mastersim_init(inst)
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:AddRandomLoot("spoiled_food", 1)
-	inst.components.lootdropper:AddRandomLoot("boneshard", 1)
+	inst.components.lootdropper:SetLoot(fish_loot)
 	inst.components.lootdropper.numrandomloot = 1
 
     inst:AddComponent("workable")
@@ -183,7 +184,7 @@ local function fish_small_mastersim_init(inst)
     inst.components.inspectable.nameoverride = "spoiled_fish"
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:AddRandomLoot("spoiled_food", 3)
+	inst.components.lootdropper:AddRandomLoot("spoiled_food", 1)
 	inst.components.lootdropper:AddRandomLoot("boneshard", 1)
 	inst.components.lootdropper.numrandomloot = 1
 

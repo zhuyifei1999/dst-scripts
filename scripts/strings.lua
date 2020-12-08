@@ -901,7 +901,7 @@ STRINGS =
         GARLIC_OVERSIZED_ROTTEN = "Giant Rotting Garlic",
         ASPARAGUS_OVERSIZED_ROTTEN = "Giant Rotting Asparagus",
         PEPPER_OVERSIZED_ROTTEN = "Giant Rotting Pepper",
-        WATERMELON_OVERSIZED_OVERSIZED = "Giant Rotting Watermelon",
+        WATERMELON_OVERSIZED_ROTTEN = "Giant Rotting Watermelon",
 
 		FARM_PLANT_SEED = "Planted {seed}",
 		FARM_PLANT_RANDOMSEED = "Planted Seed",
@@ -3543,7 +3543,7 @@ STRINGS =
 		FARM_PLOW_ITEM = "Plow a plot for your plants.",
 		FARM_HOE = "Till soil for crop seeds.",
 		GOLDEN_FARM_HOE = "Elegantly till soil for crop seeds.",
-        NUTRIENTSGOGGLESHAT = "Visualize your garden's success.",
+        NUTRIENTSGOGGLESHAT = "Enhanced with Ancient farming techniques.",
 		PLANTREGISTRYHAT = "Allow your gardening expertise to grow.",
 
         COMPOSTINGBIN = "Make stinky rich soil.",
@@ -5679,7 +5679,7 @@ STRINGS.UI =
         EFFECTS = {
             NONE = "None",
             WEED_FORGETMELOTS = "Has a tendency to come back when dug up.",
-			WEED_TILLWEED = "Its roots make a real mess of things but its flowers are said to have healing properties.",
+			WEED_TILLWEED = "Its roots make a real mess of things, but its flowers are said to have healing properties.",
             WEED_FIRENETTLE = "These nettles can cause quite the burning sensation.",
 			WEED_IVY = "Attacks survivors when they disturb a nearby plant",
         },

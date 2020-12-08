@@ -1310,6 +1310,11 @@ function EntityScript:PerformBufferedAction()
 
         self:PushEvent("performaction", { action = self.bufferedaction })
 
+		local action_theme_music = self:HasTag("player") and (self.bufferedaction.action.theme_music or (self.bufferedaction.action.theme_music_fn ~= nil and self.bufferedaction.action.theme_music_fn(self.bufferedaction)))
+		if action_theme_music then
+			self:PushEvent("play_theme_music", {theme = action_theme_music}) 
+		end
+
         local success, reason = self.bufferedaction:Do()
         if success then
             self.bufferedaction = nil

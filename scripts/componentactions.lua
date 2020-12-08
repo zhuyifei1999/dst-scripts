@@ -1218,7 +1218,7 @@ local COMPONENT_ACTIONS =
 
         deployable = function(inst, doer, pos, actions, right)
             if right and inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:CanDeploy(pos, nil, doer) then
-                if inst:HasTag("fertilizer") then
+                if inst:HasTag("tile_deploy") then
                     table.insert(actions, ACTIONS.DEPLOY_TILEARRIVE)
                 else
                     table.insert(actions, ACTIONS.DEPLOY)

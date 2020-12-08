@@ -115,8 +115,8 @@ function PlantsPage:BuildPlantScrollGrid()
 			local data = w.data
 			if not data then return end
 			data.currentstage = stage
-			ThePlantRegistry:SetLastSelectedCard(plant, data.currentstage)
 			if data.currentstage == "summary" and data.plant_def.plantregistrysummarywidget then
+				ThePlantRegistry:SetLastSelectedCard(plant, data.currentstage)
 				w.plant_locked:Hide()
 				w.plant_anim:Hide()
 				local summarywidget = require(data.plant_def.plantregistrysummarywidget)
@@ -125,6 +125,7 @@ function PlantsPage:BuildPlantScrollGrid()
 			end
 
 			if ThePlantRegistry:KnowsPlantStage(plant, data.currentstage) then
+				ThePlantRegistry:SetLastSelectedCard(plant, data.currentstage)
 				w.plant_locked:Hide()
 				w.plant_anim:Show()
 

@@ -265,14 +265,12 @@ local function ontimerdone(inst, data)
             else
                 inst.AnimState:PushAnimation("idle", false)
             end
-            inst:DoTaskInTime(27*FRAMES, updategroundcompostlayers)
+            inst:DoTaskInTime(22*FRAMES, updategroundcompostlayers)
         end
     end
 end
 
 local function onfinishcycle(inst)
-    -- inst:DoTaskInTime(27*FRAMES, updategroundcompostlayers)
-
     if inst.components.pickable.numtoharvest >= MAX_COMPOST_ON_GROUND then
         inst.components.lootdropper:FlingItem(SpawnPrefab(inst.components.pickable.product))
     else

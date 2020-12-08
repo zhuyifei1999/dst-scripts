@@ -12739,8 +12739,7 @@ local states =
         },
     },
 
-    State
-    {
+    State{
         name = "pour",
         tags = { "doing", "busy" },
 

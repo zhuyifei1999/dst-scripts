@@ -369,7 +369,10 @@ function self:AddTileNutrients(x, y, nutrient1, nutrient2, nutrient3)
 end
 
 function self:CycleNutrientsAtPoint(_x, _y, _z, consume, restore, test_only)
-	--local data = GetTileDataAtPoint(true, _x, _y, _z)
+	local data = GetTileDataAtPoint(false, _x, _y, _z)
+	if data == nil or data.nutrients_overlay == nil then
+		return false
+	end
 
     local x, y = TheWorld.Map:GetTileCoordsAtPoint(_x, _y, _z)
     local nutrients = {self:GetTileNutrients(x, y)}
