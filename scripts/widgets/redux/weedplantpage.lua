@@ -6,10 +6,9 @@ local TEMPLATES = require "widgets/redux/templates"
 local Image = require "widgets/image"
 
 local LEARN_PERCENTS = {
-    WATER = 0.25,
-    NUTRIENTS = 0.5,
-    EFFECTS = 0.75,
-    DESCRIPTION = 1.0,
+    WATER = 1/3,
+    NUTRIENTS = 2/3,
+    EFFECTS = 3/3,
 }
 
 local function MakeDetailsLine(root, x, y, scale, image_override)
@@ -59,7 +58,6 @@ local WeedPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
     self.known_percent = ThePlantRegistry:GetPlantPercent(data.plant, data.info)
 
     local name_font_size = 24
-    local modifier_font_size = 30
     local unknown_font_size = 16
     local title_font_size = 16
 
@@ -89,7 +87,7 @@ local WeedPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
     local large_line_width = line_width * 2 + line_gap
 
     local x_start = 0 - (line_width + line_gap)
-    local y_start = -20
+    local y_start = -70
 
     if not self.data.plant_def.product then
         x_start = x_start + (line_width + line_gap) * 0.5
@@ -297,39 +295,7 @@ local WeedPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
         self.effects:SetColour(PLANTREGISTRYUICOLOURS.LOCKEDBROWN)
     end
     --effects--
-    
-    x_start = 0
-    y_start = y_start - 75
 
-    --description--
-    local description_y = y_start - title_font_size/2 - 3
-
-    self.description = self.root:AddChild(Text(HEADERFONT, title_font_size, STRINGS.UI.PLANTREGISTRY.WEEDPLANTS.DESCRIPTION, PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN))
-    self.description:SetPosition(x_start, y_start)
-    self.description:SetHAlign(ANCHOR_MIDDLE)
-    self.description_line = MakeDetailsLine(self.root, x_start, description_y, 0.5, "details_line_wide.tex")
-    --display description
-
-    if self.known_percent >= LEARN_PERCENTS.DESCRIPTION then
-        self.description_text = self.root:AddChild(Text(HEADERFONT, title_font_size, nil, PLANTREGISTRYUICOLOURS.UNLOCKEDBROWN))
-        self.description_text:SetMultilineTruncatedString(
-            STRINGS.UI.PLANTREGISTRY.DESCRIPTIONS[string.upper(self.data.plant)] or
-            STRINGS.UI.PLANTREGISTRY.DESCRIPTIONS.MISSING, 3, large_line_width - 10, nil, nil, true)
-
-        local w, h = self.description_text:GetRegionSize()
-        description_y = description_y - 10 - h / 2
-
-        self.description_text:SetPosition(x_start, description_y)
-        self.description_text:SetHAlign(ANCHOR_MIDDLE)
-    else
-        description_y = description_y - 10 - unknown_font_size / 2
-        self.unknown_description_text = self.root:AddChild(Text(HEADERFONT, unknown_font_size, STRINGS.UI.PLANTREGISTRY.NEEDSMORERESEARCH, PLANTREGISTRYUICOLOURS.LOCKEDBROWN))
-        self.unknown_description_text:SetPosition(x_start, description_y)
-        self.unknown_description_text:SetHAlign(ANCHOR_MIDDLE)
-        self.description:SetColour(PLANTREGISTRYUICOLOURS.LOCKEDBROWN)
-    end
-    --description--
-    
     self:BuildPlantGrid()
 
     self.focus_forward = self.plant_grid[1]

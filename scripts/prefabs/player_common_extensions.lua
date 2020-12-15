@@ -663,6 +663,13 @@ local function OnLearnFertilizer(inst, data)
     end
 end
 
+local function OnTakeOversizedPicture(inst, data)
+    local plantregistryupdater = data ~= nil and inst.components.plantregistryupdater
+    if plantregistryupdater then
+        plantregistryupdater:TakeOversizedPicture(data.plant, data.weight, data.beardskin, data.beardlength)
+    end
+end
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -682,4 +689,5 @@ return
     OnEat						= OnEat,
     OnLearnPlantStage           = OnLearnPlantStage,
     OnLearnFertilizer           = OnLearnFertilizer,
+    OnTakeOversizedPicture      = OnTakeOversizedPicture,
 }

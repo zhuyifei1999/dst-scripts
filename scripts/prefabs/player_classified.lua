@@ -765,6 +765,24 @@ fns.OnPlantRegistryLearnFertilizerDirty = function(inst)
 	end
 end
 
+fns.OnPlantRegistryTakePlantPictureDirty = function(inst)
+    local plantregistryupdater = inst._parent.components.plantregistryupdater
+    if plantregistryupdater then
+        local data = string.split(inst.plantregistry_takeplantpicture:value(), ":")
+        local plant = data[1]
+        local weight = data[2]
+        local beardskin = data[3]
+        local beardlength = data[4]
+        if not beardlength then --if only 3 args, 3rd arg is length not skin.
+            beardlength = beardskin
+            beardskin = nil
+        end
+        if plant and weight then
+            plantregistryupdater:TakeOversizedPicture(plant, weight, beardskin, tonumber(beardlength))
+        end
+    end
+end
+
 
 local function OnGiftsDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
@@ -993,6 +1011,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("isplantregistrypopupvisibledirty", fns.OnIsPlantRegistryPopUpVisibleDirty)
         inst:ListenForEvent("onplantregistrylearnplantstagedirty", fns.OnPlantRegistryLearnPlantStageDirty)
         inst:ListenForEvent("onplantregistrylearnfertilizerdirty", fns.OnPlantRegistryLearnFertilizerDirty)
+        inst:ListenForEvent("onplantregistrytakeplantpicturedirty", fns.OnPlantRegistryTakePlantPictureDirty)
 		
 
         OnIsTakingFireDamageDirty(inst)
@@ -1224,6 +1243,7 @@ local function fn()
     inst.isplantregistrypopupvisible = net_bool(inst.GUID, "plantregistry.isplantregistrypopupvisible", "isplantregistrypopupvisibledirty")
     inst.plantregistry_learnplantstage = net_string(inst.GUID, "plantregistry.learnplantstage", "onplantregistrylearnplantstagedirty")
     inst.plantregistry_learnfertilizer = net_string(inst.GUID, "plantregistry.learnfertilizer", "onplantregistrylearnfertilizerdirty")
+    inst.plantregistry_takeplantpicture = net_string(inst.GUID, "plantregistry.takeplantpicture", "onplantregistrytakeplantpicturedirty")
 
     --Combat variables
     inst.lastcombattarget = net_entity(inst.GUID, "combat.lasttarget")

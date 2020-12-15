@@ -6,7 +6,7 @@ local assets =
 
 local prefabs =
 {
-    "small_puff"
+    "dirt_puff"
 }
 
 local anim_names = { "f1", "f2", "f3", "f4" }
@@ -27,7 +27,7 @@ end
 local function onfinishcallback(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+    SpawnPrefab("dirt_puff").Transform:SetPosition(x, y, z)
     inst:Remove()
 
 	if math.random() < TUNING.FARM_SOIL_DEBRIS_LOOT_CHANCE then

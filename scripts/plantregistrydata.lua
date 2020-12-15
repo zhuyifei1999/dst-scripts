@@ -7,6 +7,7 @@ local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_D
 local PlantRegistryData = Class(function(self)
 	self.plants = {}
 	self.fertilizers = {}
+	self.pictures = {}
 
 	self.filters = {}
 	self.last_selected_card = {}
@@ -65,7 +66,11 @@ function PlantRegistryData:KnowsFertilizer(fertilizer)
 end
 
 function PlantRegistryData:HasOversizedPicture(plant)
-	return false
+	return self.pictures[plant] ~= nil
+end
+
+function PlantRegistryData:GetOversizedPictureData(plant)
+	return self.pictures[plant]
 end
 
 function PlantRegistryData:GetPlantPercent(plant, plantregistryinfo)
@@ -95,7 +100,7 @@ end
 
 function PlantRegistryData:Save(force_save)
 	if force_save or (self.save_enabled and self.dirty) then
-		local str = DataDumper({plants = self.plants, fertilizers = self.fertilizers, filters = self.filters, last_selected_card = self.last_selected_card}, nil, true)
+		local str = DataDumper({plants = self.plants, fertilizers = self.fertilizers, pictures = self.pictures, filters = self.filters, last_selected_card = self.last_selected_card}, nil, true)
 		TheSim:SetPersistentString("plantregistry", str, false)
 	end
 end
@@ -107,6 +112,7 @@ function PlantRegistryData:Load()
 		    if success and plant_registry then
 				self.plants = plant_registry.plants or {}
 				self.fertilizers = plant_registry.fertilizers or {}
+				self.pictures = plant_registry.pictures or {}
 				self.filters = plant_registry.filters or {}
 				self.last_selected_card = plant_registry.last_selected_card or {}
 			else
@@ -139,11 +145,18 @@ function PlantRegistryData:ApplyOnlineProfileData()
 	if not self.synced and not (TheFrontEnd ~= nil and TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode()) and TheInventory:HasDownloadedInventory() then
 		self.plants = self.plants or {}
 		self.fertilizers = self.fertilizers or {}
+		self.pictures = self.pictures or {}
 		for k, v in pairs(TheInventory:GetLocalPlantRegistry()) do
 			if FERTILIZER_DEFS[k] then
 				self.fertilizers[k] = v == "true" or nil
 			elseif PLANT_DEFS[k] or WEED_DEFS[k] then
 				self.plants[k] = DecodePlantRegistryStages(v)
+			elseif string.sub(k, 1, 10) == "oversized_" then
+				local success, savedata
+				if v and type(v) == "string" then
+					success, savedata = RunInSandbox(TheSim:DecodeAndUnzipString(data.str))
+				end
+				self.pictures[string.sub(k, 11)] = success and savedata or nil
 			end
 		end
 		self.synced = true
@@ -233,6 +246,66 @@ function PlantRegistryData:LearnFertilizer(fertilizer)
 		local def = FERTILIZER_DEFS[fertilizer]
 		if def and not def.modded and not TheNet:IsDedicated() then
 			TheInventory:SetPlantRegistryValue(fertilizer, "true")
+		end
+		self:Save(true)
+	end
+
+	return updated
+end
+
+local function UnlockPicture(self, plant)
+	if self.pictures[plant] == nil then
+		self.pictures[plant] = {}
+	end
+	return self.pictures[plant]
+end
+
+function PlantRegistryData:TakeOversizedPicture(plant, weight, player, beardskin, beardlength)
+	if plant == nil or weight == nil or player == nil or player.userid == nil then
+		print("Invalid plant or weight or player", plant, weight, player)
+		return
+	end
+	
+	if not table.contains(GetOfficialCharacterList(), player.prefab) then
+		--modded characters pose too many complications, sorry.
+		return false
+	end
+
+	if (TheNet:IsDedicated() or player ~= ThePlayer) then
+		--because we can't know if the weight is greater than the clients.
+		--always send it if we are the server.
+		return true
+	end
+
+	local updated = self.pictures[plant] == nil
+	local picture = UnlockPicture(self, plant)
+
+	updated = updated or (tonumber(weight) > tonumber(picture.weight))
+
+	if updated and self.save_enabled then
+		local def = PLANT_DEFS[plant]
+
+		picture.weight = weight
+		picture.player = player.prefab
+		local clienttable = TheNet:GetClientTableForUser(player.userid)
+		picture.clothing = {
+			body = clienttable.body_skin,
+			hand = clienttable.hand_skin,
+			legs = clienttable.legs_skin,
+			feet = clienttable.feet_skin,
+		}
+		picture.base = clienttable.base_skin
+		picture.mode = GetSkinModeFromBuild(player)
+		if beardlength then
+			picture.beardskin = beardskin
+			picture.beardlength = beardlength
+		else
+			--clear out beard data if we overwrite due to larger weight
+			picture.beardskin = nil
+			picture.beardlength = nil
+		end
+		if def and not def.modded and not TheNet:IsDedicated() then
+			TheInventory:SetPlantRegistryValue("oversized_"..plant, TheSim:ZipAndEncodeString(DataDumper(picture, nil, true)))
 		end
 		self:Save(true)
 	end

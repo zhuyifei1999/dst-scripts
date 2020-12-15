@@ -835,6 +835,9 @@ local function MakeHat(name)
         inst.components.perishable:StartPerishing()
         inst.components.perishable:SetOnPerishFn(inst.Remove)
 
+        inst:AddComponent("forcecompostable")
+        inst.components.forcecompostable.green = true
+
         MakeHauntableLaunchAndPerish(inst)
 
         return inst
@@ -861,6 +864,9 @@ local function MakeHat(name)
         inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
         inst.components.perishable:StartPerishing()
         inst.components.perishable:SetOnPerishFn(inst.Remove)
+
+        inst:AddComponent("forcecompostable")
+        inst.components.forcecompostable.green = true
 
         MakeHauntableLaunchAndPerish(inst)
 

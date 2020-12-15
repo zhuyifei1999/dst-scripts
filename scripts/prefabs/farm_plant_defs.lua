@@ -172,6 +172,84 @@ PLANT_DEFS.onion.weight_data		= { 463.85,     518.73,     .32 }
 PLANT_DEFS.pepper.weight_data		= { 368.55,     486.32,     .11 }
 PLANT_DEFS.pomegranate.weight_data	= { 404.38,     547.80,     .48 }
 
+PLANT_DEFS.carrot.pictureframeanim = {anim = "emote_happycheer", time = 12*FRAMES}
+PLANT_DEFS.corn.pictureframeanim = {anim = "emoteXL_loop_dance6", time = 31*FRAMES}
+PLANT_DEFS.potato.pictureframeanim = {anim = "emoteXL_loop_dance7", time = 37*FRAMES}
+PLANT_DEFS.tomato.pictureframeanim = {anim = "emote_strikepose", time = 23*FRAMES}
+PLANT_DEFS.asparagus.pictureframeanim = {anim = "emote_flex", time = 21*FRAMES}
+PLANT_DEFS.eggplant.pictureframeanim = {anim = "emoteXL_loop_dance8", time = 93*FRAMES}
+PLANT_DEFS.pumpkin.pictureframeanim = {anim = "emote_strikepose", time = 47*FRAMES}
+PLANT_DEFS.watermelon.pictureframeanim = {anim = "emote_jumpcheer", time = 19*FRAMES}
+PLANT_DEFS.dragonfruit.pictureframeanim = {anim = "emoteXL_loop_dance0", time = 7*FRAMES}
+PLANT_DEFS.durian.pictureframeanim = {anim = "emoteXL_loop_dance6", time = 97*FRAMES}
+PLANT_DEFS.garlic.pictureframeanim = {anim = "emoteXL_waving3", time = 18*FRAMES}
+PLANT_DEFS.onion.pictureframeanim = {anim = "emote_waving", time = 13*FRAMES}
+PLANT_DEFS.pepper.pictureframeanim = {anim = "emote_swoon", time = 37*FRAMES}
+PLANT_DEFS.pomegranate.pictureframeanim = {anim = "emoteXL_loop_dance8", time = 27*FRAMES}
+
+-- Sounds
+PLANT_DEFS.randomseed.sounds = 
+{
+}
+
+PLANT_DEFS.asparagus.sounds = 
+{
+	grow_oversized = "farming/common/farm/asparagus/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+
+PLANT_DEFS.garlic.sounds = 
+{
+	grow_oversized = "farming/common/farm/garlic/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+
+PLANT_DEFS.pumpkin.sounds = 
+{
+	grow_oversized = "farming/common/farm/pumpkin/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+PLANT_DEFS.corn.sounds = PLANT_DEFS.pumpkin.sounds
+PLANT_DEFS.onion.sounds = PLANT_DEFS.pumpkin.sounds
+
+PLANT_DEFS.potato.sounds = 
+{
+	grow_oversized = "farming/common/farm/potato/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+PLANT_DEFS.dragonfruit.sounds = PLANT_DEFS.potato.sounds
+PLANT_DEFS.pomegranate.sounds = PLANT_DEFS.potato.sounds
+PLANT_DEFS.eggplant.sounds = PLANT_DEFS.potato.sounds
+
+PLANT_DEFS.tomato.sounds = 
+{
+	grow_oversized = "farming/common/farm/tomato/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+PLANT_DEFS.watermelon.sounds = PLANT_DEFS.tomato.sounds
+
+PLANT_DEFS.pepper.sounds = 
+{
+	grow_oversized = "farming/common/farm/pepper/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+PLANT_DEFS.durian.sounds = PLANT_DEFS.pepper.sounds
+
+PLANT_DEFS.carrot.sounds = 
+{
+	grow_oversized = "farming/common/farm/carrot/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
+}
+
+
+
 ------------------------------------------------
 for veggie, data in pairs(PLANT_DEFS) do
 	data.prefab = "farm_plant_"..veggie
@@ -265,6 +343,9 @@ for veggie, data in pairs(PLANT_DEFS) do
 		end
 		if data.plantregistrysummarywidget == nil then
 			data.plantregistrysummarywidget = "widgets/redux/farmplantsummarywidget"
+		end
+		if data.pictureframeanim == nil then
+			data.pictureframeanim = {anim = "emoteXL_happycheer", time = 0.5} --fallback data
 		end
 	end
 end

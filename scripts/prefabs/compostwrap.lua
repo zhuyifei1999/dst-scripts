@@ -8,7 +8,6 @@ local prefabs =
 {
     "flies",
     "poopcloud",
-    "compostwrapheal_buff",
     "gridplacer_farmablesoil",
 }
 
@@ -69,12 +68,6 @@ local function fertilizerresearchfn(inst)
     return inst:GetFertilizerKey()
 end
 
-local function on_heal(inst, target)
-	if target.components.debuffable ~= nil and target.components.health ~= nil and not target.components.health:IsDead() then
-		target.components.debuffable:AddDebuff("compostwrapheal_buff", "compostwrapheal_buff")
-	end
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -120,12 +113,10 @@ local function fn()
     inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     inst:AddComponent("fertilizer")
-    inst.components.fertilizer:SetHealingAmount(TUNING.HEALING_MEDLARGE)
     inst.components.fertilizer.fertilizervalue = TUNING.COMPOSTWRAP_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.COMPOSTWRAP_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.COMPOSTWRAP_WITHEREDCYCLES
     inst.components.fertilizer:SetNutrients(FERTILIZER_DEFS.compostwrap.nutrients)
-    inst.components.fertilizer.onhealfn = on_heal
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
@@ -151,16 +142,17 @@ local function OnTick(inst, target)
         and not target.components.health:IsDead()
 		and target.components.sanity ~= nil
         and not target:HasTag("playerghost") then
-        target.components.health:DoDelta(TUNING.COMPOSTWRAP_HOT_HEALTH_DELTA, nil, "tillweedsalve")
+        target.components.health:DoDelta(TUNING.WORMWOOD_COMPOST_HEALOVERTIME_HEALTH, nil, inst.prefab)
     else
         inst.components.debuff:Stop()
     end
 end
 
-local function OnAttached(inst, target)
+local function OnAttached(inst, target, followsymbol, followoffset, data)
     inst.entity:SetParent(target.entity)
     inst.Transform:SetPosition(0, 0, 0) --in case of loading
-    inst.task = inst:DoPeriodicTask(TUNING.COMPOSTWRAP_HOT_TICK_RATE, OnTick, nil, target)
+    inst.task = inst:DoPeriodicTask(TUNING.WORMWOOD_COMPOST_HEALOVERTIME_TICK, OnTick, nil, target)
+	inst.components.timer:StartTimer("regenover", data ~= nil and (data.duration + 0.1) or 1)
     inst:ListenForEvent("death", function()
         inst.components.debuff:Stop()
     end, target)
@@ -172,11 +164,17 @@ local function OnTimerDone(inst, data)
     end
 end
 
-local function OnExtended(inst, target)
-    inst.components.timer:StopTimer("regenover")
-    inst.components.timer:StartTimer("regenover", TUNING.COMPOSTWRAP_HOT_DURATION)
-    inst.task:Cancel()
-    inst.task = inst:DoPeriodicTask(TUNING.COMPOSTWRAP_HOT_TICK_RATE, OnTick, nil, target)
+local function OnExtended(inst, target, followsymbol, followoffset, data)
+	local duration = data ~= nil and data.duration or 1
+
+    local time_remaining = inst.components.timer:GetTimeLeft("regenover")
+	if time_remaining ~= nil then
+		if duration > time_remaining then
+			inst.components.timer:SetTimeLeft("regenover", duration)
+		end
+	else
+		inst.components.timer:StartTimer("regenover", duration)
+	end
 end
 
 local function buff_fn()
@@ -205,11 +203,10 @@ local function buff_fn()
     inst.components.debuff.keepondespawn = true
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("regenover", TUNING.COMPOSTWRAP_HOT_DURATION)
     inst:ListenForEvent("timerdone", OnTimerDone)
 
     return inst
 end
 
 return Prefab("compostwrap", fn, assets),
-	Prefab("compostwrapheal_buff", buff_fn, assets)
+	Prefab("compostheal_buff", buff_fn)

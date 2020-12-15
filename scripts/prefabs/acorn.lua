@@ -119,6 +119,9 @@ local function fn()
     inst:AddComponent("winter_treeseed")
     inst.components.winter_treeseed:SetTree("winter_deciduoustree")
 
+    inst:AddComponent("forcecompostable")
+    inst.components.forcecompostable.brown = true
+
     MakeHauntableLaunchAndIgnite(inst)
 
     inst.OnLoad = OnLoad
@@ -169,6 +172,9 @@ local function cooked()
     MakeSmallPropagator(inst)
 
     inst:AddComponent("inventoryitem")
+
+    inst:AddComponent("forcecompostable")
+    inst.components.forcecompostable.brown = true
 
     MakeHauntableLaunch(inst)
 

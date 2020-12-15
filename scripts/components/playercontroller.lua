@@ -3160,7 +3160,8 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.ADDFUEL and
         buffaction.action ~= ACTIONS.ADDWETFUEL and
         buffaction.action ~= ACTIONS.DEPLOY and
-        buffaction.action ~= ACTIONS.CONSTRUCT then
+        buffaction.action ~= ACTIONS.CONSTRUCT and
+        buffaction.action ~= ACTIONS.ADDCOMPOSTABLE then
         self.inst.replica.inventory:EquipActionItem(buffaction.invobject)
         buffaction.autoequipped = true
     end

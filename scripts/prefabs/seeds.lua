@@ -67,6 +67,7 @@ local function common(anim, cookable, oceanfishing_lure)
 
     if cookable then
         inst:AddTag("deployedplant")
+        inst:AddTag("deployedfarmplant")
 
         --cookable (from cookable component) added to pristine state for optimization
         inst:AddTag("cookable")

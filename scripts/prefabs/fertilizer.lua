@@ -58,7 +58,6 @@ local function makefertilizer(name, nutrients)
         inst.components.finiteuses:SetOnFinished(inst.Remove)
 
         inst:AddComponent("fertilizer")
-        inst.components.fertilizer:SetHealingAmount(TUNING.FERTILIZER_TOTAL_HEALTH / TUNING.FERTILIZER_USES)
         inst.components.fertilizer.fertilizervalue = TUNING.POOP_FERTILIZE
         inst.components.fertilizer.soil_cycles = TUNING.POOP_SOILCYCLES
         inst.components.fertilizer.withered_cycles = TUNING.POOP_WITHEREDCYCLES

@@ -156,6 +156,22 @@ local function onnewtrophy(inst, data_old_and_new)
 			inst.AnimState:PushAnimation("veg_idle", false)
 
 			play_bell_sound = true
+
+			local doer = data_old_and_new.doer
+			if doer and data_new.from_plant then
+				local string_weight = data_new.weight
+				if type(string_weight) == "number" then
+					local formatted = string.format("%06.2f", string_weight)
+					-- Decimal point at ind 4
+					string_weight = string.sub(formatted, 1, 3)..string.sub(formatted, 5)
+				end
+				local eventdata = {plant = data_new.base_name, weight = string_weight}
+				if doer.components.beard then
+					--pretty disgusting, but probably the best time to get this data.
+					eventdata.beardskin, eventdata.beardlength = doer.components.beard:GetBeardSkinAndLength()
+				end
+				doer:PushEvent("takeoversizedpicture", eventdata)
+			end
 		end
 
 		-- Delay makes sure digits aren't switched in the first few

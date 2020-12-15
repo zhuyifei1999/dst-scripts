@@ -3767,7 +3767,7 @@ return{
     DESCRIBE_PLANTHAPPY = "I think I'm doing a good job!",
     DESCRIBE_PLANTVERYSTRESSED = "It's not looking so good...",
     DESCRIBE_PLANTSTRESSED = "Something must be bothering it.",
-    DESCRIBE_PLANTSTRESSORKILLJOYS = "I should probable do some weeding.",
+    DESCRIBE_PLANTSTRESSORKILLJOYS = "I should probably do some weeding.",
     DESCRIBE_PLANTSTRESSORFAMILY = "Maybe it would be happier if it wasn't all alone?",
     DESCRIBE_PLANTSTRESSOROVERCROWDING = "I think we might've planted these too close together, Woby.",
     DESCRIBE_PLANTSTRESSORSEASON = "I don't think it likes this weather.",

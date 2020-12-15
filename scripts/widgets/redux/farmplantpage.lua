@@ -4,13 +4,32 @@ local Text = require "widgets/text"
 local UIAnim = require "widgets/uianim"
 local TEMPLATES = require "widgets/redux/templates"
 local Image = require "widgets/image"
+local Puppet = require "widgets/skinspuppet"
 
 local LEARN_PERCENTS = {
-    SEASON = 0.25,
-    WATER = 0.5,
-    NUTRIENTS = 0.75,
-    DESCRIPTION = 1.0,
+    SEASON = 1/4,
+    WATER = 2/4,
+    NUTRIENTS = 3/4,
+    DESCRIPTION = 4/4,
 }
+
+local DIGIT_COLORS =
+{
+	"_black",
+	"_black",
+	"_black",
+	"_white",
+	"_white",
+}
+local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
+
+local function GetSkinModeTable(player_prefab, mode)
+    for i, skinmode in ipairs(GetSkinModes(player_prefab)) do
+        if skinmode.type == mode then
+            return skinmode
+        end
+    end
+end
 
 local function MakeDetailsLine(root, x, y, scale, image_override)
 	local value_title_line = root:AddChild(Image("images/plantregistry.xml", image_override or "details_line.tex"))
@@ -61,7 +80,6 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
     self.known_percent = ThePlantRegistry:GetPlantPercent(data.plant, data.info)
 
     local name_font_size = 24
-    local modifier_font_size = 30
     local unknown_font_size = 16
     local title_font_size = 16
 
@@ -393,6 +411,59 @@ local FarmPlantPage = Class(PlantPageWidget, function(self, plantspage, data)
         self.description:SetColour(PLANTREGISTRYUICOLOURS.LOCKEDBROWN)
     end
     --description--
+
+    --oversized plant picture--
+    local picture = ThePlantRegistry:GetOversizedPictureData(data.plant)
+    if picture and table.contains(GetOfficialCharacterList(), picture.player) then
+        local anim_scale = 0.30
+
+        local x_pos = 210
+        local y_pos = -215
+
+        self.picturebg = self.root:AddChild(Image("images/plantregistry.xml", "oversizedpictureframe.tex"))
+        self.picturebg:SetPosition(x_pos + 60, y_pos + 85)
+
+        --scale--
+        self.scale = self.root:AddChild(UIAnim())
+        self.scale:GetAnimState():SetBuild("trophyscale_oversizedveggies")
+        self.scale:GetAnimState():SetBank("trophyscale_oversizedveggies")
+		for i=1, 5 do
+			self.scale:GetAnimState():OverrideSymbol("column"..i, "trophyscale_oversizedveggies", "number"..string.sub(picture.weight, i, i)..(DIGIT_COLORS[i] or "_black"))
+        end
+        local build = PLANT_DEFS[data.plant].build or ("farm_plant_"..data.plant)
+        if build ~= nil then
+            self.scale:GetAnimState():OverrideSymbol("swap_body", build, "swap_body")
+        end
+        self.scale:GetAnimState():PlayAnimation("veg_idle", true)
+        self.scale:SetScale(anim_scale, anim_scale)
+        --scale--
+
+        --player--
+        local skinmode = GetSkinModeTable(picture.player, picture.mode)
+        self.player = self.root:AddChild(Puppet())
+        self.player:SetClickable(false)
+        self.player:SetSkins(picture.player, picture.base, picture.clothing, true, skinmode)
+        if picture.beardlength then
+            self.player.beard = picture.beardskin
+            self.player:SetBeardLength(picture.beardlength)
+        end
+        self.player:AddShadow()
+
+        local skinmode_scale = skinmode and skinmode.scale or 1
+        self.player.anim:SetScale(anim_scale * skinmode_scale, anim_scale * skinmode_scale)
+        self.player.animstate:PlayAnimation(data.plant_def.pictureframeanim.anim)
+        self.player.animstate:SetTime(data.plant_def.pictureframeanim.time)
+        self.player.animstate:Pause()
+        --player--
+
+        self.picturefilter = self.root:AddChild(Image("images/plantregistry.xml", "oversizedpicturefilter.tex"))
+        self.picturefilter:SetPosition(x_pos + 60, y_pos + 85)
+
+        self.scale:SetPosition(x_pos + 100, y_pos - 5)
+        self.player:SetPosition(x_pos, y_pos - 10)
+
+    end
+    --oversized plant picture--
 
     self:BuildPlantGrid()
 

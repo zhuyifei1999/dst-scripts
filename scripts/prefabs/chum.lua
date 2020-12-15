@@ -124,6 +124,9 @@ local function fn()
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.UNARMED_DAMAGE)
 
+    inst:AddComponent("forcecompostable")
+    inst.components.forcecompostable.green = true
+
     MakeHauntableLaunch(inst)
 
     return inst

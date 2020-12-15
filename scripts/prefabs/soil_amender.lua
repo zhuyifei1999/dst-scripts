@@ -83,7 +83,6 @@ local function update_fertilizer(inst)
 	if perishable then
 		local fertilizer = inst.components.fertilizer
 		if perishable:IsFresh() then
-			fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERTILIZE_HEALTH_LOW)
 			fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_LOW
 			fertilizer.soil_cycles = TUNING.SOILAMENDER_SOILCYCLES_LOW
 			fertilizer.withered_cycles = TUNING.SOILAMENDER_WITHEREDCYCLES_LOW
@@ -93,7 +92,6 @@ local function update_fertilizer(inst)
 			inst.components.inventoryitem:ChangeImageName(nil)
 			inst.fertilizer_index:set(1)
 		elseif perishable:IsStale() then
-			fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERTILIZE_HEALTH_MED)
 			fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_MED
 			fertilizer.soil_cycles = TUNING.SOILAMENDER_SOILCYCLES_MED
 			fertilizer.withered_cycles = TUNING.SOILAMENDER_WITHEREDCYCLES_MED
@@ -103,7 +101,6 @@ local function update_fertilizer(inst)
 			inst.components.inventoryitem:ChangeImageName("soil_amender_stale")
 			inst.fertilizer_index:set(2)
 		else
-			fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERTILIZE_HEALTH_HIGH)
 			fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_HIGH
 			fertilizer.soil_cycles = TUNING.SOILAMENDER_SOILCYCLES_HIGH
 			fertilizer.withered_cycles = TUNING.SOILAMENDER_WITHEREDCYCLES_HIGH
@@ -145,7 +142,7 @@ local function fn()
     inst.AnimState:SetBuild("soil_amender")
     inst.AnimState:PlayAnimation("fresh_idle")
 
-	MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeInventoryFloatable(inst, "small", 0.15, 0.86)
 	MakeDeployableFertilizerPristine(inst)
 
     inst:AddTag("fertilizerresearchable")
@@ -208,7 +205,7 @@ local function fermented_fn()
     inst.AnimState:SetBuild("soil_amender")
     inst.AnimState:PlayAnimation("fermented_idle", false)
 
-	MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+	MakeInventoryFloatable(inst, "small", 0.12, 1)
 	MakeDeployableFertilizerPristine(inst)
 
     inst:AddTag("fertilizerresearchable")
@@ -230,7 +227,6 @@ local function fermented_fn()
     inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     inst:AddComponent("fertilizer")
-	inst.components.fertilizer:SetHealingAmount(TUNING.SOILAMENDER_FERMENTED_TOTAL_HEALTH / TUNING.SOILAMENDER_FERMENTED_USES)
 	inst.components.fertilizer.fertilizervalue = TUNING.SOILAMENDER_FERTILIZE_HIGH
 	inst.components.fertilizer.soil_cycles = TUNING.SOILAMENDER_SOILCYCLES_HIGH
 	inst.components.fertilizer.withered_cycles = TUNING.SOILAMENDER_WITHEREDCYCLES_HIGH

@@ -1,10 +1,3 @@
-local function onplanthealth(self, planthealth)
-    if planthealth ~= nil then
-        self.inst:AddTag("heal_fertilize")
-    else
-        self.inst:RemoveTag("heal_fertilize")
-    end
-end
 
 local Fertilizer = Class(function(self, inst)
     self.inst = inst
@@ -15,22 +8,14 @@ local Fertilizer = Class(function(self, inst)
 
     self.nutrients = { 0, 0, 0 }
 
-    --For healing plant characters (e.g. Wormwood)
-    --self.planthealth = nil
-
     self.inst:AddTag("fertilizer")
-end,
-nil,
-{
-    planthealth = onplanthealth,
-})
+end)
 
 function Fertilizer:OnRemoveFromEntity()
     self.inst:RemoveTag("heal_fertilize")
 end
 
-function Fertilizer:SetHealingAmount(health)
-    self.planthealth = health
+function Fertilizer:SetHealingAmount(health) -- deprecated
 end
 
 function Fertilizer:SetNutrients(nutrient1, nutrient2, nutrient3)
@@ -62,17 +47,7 @@ function Fertilizer:OnApplied(doer, target)
 end
 
 function Fertilizer:Heal(target)
-    if self.planthealth ~= nil and target.components.health ~= nil and target.components.health.canheal and target:HasTag("healonfertilize") then
-        if self.inst.components.finiteuses ~= nil then
-            target.components.health:DoDelta(self.planthealth, false, self.inst.prefab)
-        else
-            target.components.health:DoDelta(self.planthealth, false, self.inst.prefab)
-        end
-		if self.onhealfn ~= nil then
-			self.onhealfn(self.inst, target)
-		end
-        return true
-    end
+	return false -- deprecated
 end
 
 return Fertilizer

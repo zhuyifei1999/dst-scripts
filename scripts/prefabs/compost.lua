@@ -45,7 +45,7 @@ local function fn()
     inst.AnimState:SetBuild("compost")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med", 0.1, 0.73)
+    MakeInventoryFloatable(inst, "med", -0.08, 0.9)
     MakeDeployableFertilizerPristine(inst)
 
     inst:AddTag("fertilizerresearchable")
@@ -69,7 +69,6 @@ local function fn()
     inst.components.fertilizerresearchable:SetResearchFn(fertilizerresearchfn)
 
     inst:AddComponent("fertilizer")
-    inst.components.fertilizer:SetHealingAmount(TUNING.POOP_FERTILIZE_HEALTH)
     inst.components.fertilizer.fertilizervalue = TUNING.COMPOST_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.COMPOST_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.COMPOST_WITHEREDCYCLES

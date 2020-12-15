@@ -252,6 +252,44 @@ local function Oversized_OnPreLoad(inst, data)
 	end
 end
 
+local function displayadjectivefn(inst)
+    return STRINGS.UI.HUD.WAXED
+end
+
+local function dowaxfn(inst, doer, waxitem)
+    local waxedveggie = SpawnPrefab(inst.prefab.."_waxed")
+    if doer.components.inventory and doer.components.inventory:IsHeavyLifting() and doer.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) == inst then
+        doer.components.inventory:Unequip(EQUIPSLOTS.BODY)
+        doer.components.inventory:Equip(waxedveggie)
+    else       
+        waxedveggie.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        waxedveggie.AnimState:PlayAnimation("wax_oversized", false)
+        waxedveggie.AnimState:PushAnimation("idle_oversized")
+    end
+    inst:Remove()
+    return true
+end
+
+local PlayWaxAnimation
+
+local function CancelWaxTask(inst)
+	if inst._waxtask ~= nil then
+		inst._waxtask:Cancel()
+		inst._waxtask = nil
+	end
+end
+
+local function StartWaxTask(inst)
+	if not inst.inlimbo and inst._waxtask == nil then
+		inst._waxtask = inst:DoTaskInTime(GetRandomMinMax(20, 40), PlayWaxAnimation)
+	end
+end
+
+PlayWaxAnimation = function(inst)
+    inst.AnimState:PlayAnimation("wax_oversized", false)
+    inst.AnimState:PushAnimation("idle_oversized")
+end
+
 local function MakeVeggie(name, has_seeds)
     local assets =
     {
@@ -299,6 +337,8 @@ local function MakeVeggie(name, has_seeds)
     local assets_oversized = {}
     if has_seeds then
         table.insert(prefabs, name.."_oversized")
+        table.insert(prefabs, name.."_oversized_waxed")
+        table.insert(prefabs, name.."_oversized_rotten")
         table.insert(prefabs, "splash_green")
         
         table.insert(assets_oversized, Asset("ANIM", "anim/"..PLANT_DEFS[name].build..".zip"))
@@ -321,6 +361,7 @@ local function MakeVeggie(name, has_seeds)
         --cookable (from cookable component) added to pristine state for optimization
         inst:AddTag("cookable")
         inst:AddTag("deployedplant")
+        inst:AddTag("deployedfarmplant")
 		inst:AddTag("oceanfishing_lure")
 
         inst.overridedeployplacername = "seeds_placer"
@@ -636,7 +677,7 @@ local function MakeVeggie(name, has_seeds)
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
         inst.entity:AddNetwork()
-        
+
         local plant_def = PLANT_DEFS[name]
 
         inst.AnimState:SetBank(plant_def.bank)
@@ -644,6 +685,7 @@ local function MakeVeggie(name, has_seeds)
         inst.AnimState:PlayAnimation("idle_oversized")
 
         inst:AddTag("heavy")
+        inst:AddTag("waxable")
 	    inst:AddTag("show_spoilage")
 
         MakeHeavyObstaclePhysics(inst, OVERSIZED_PHYSICS_RADIUS)
@@ -679,11 +721,14 @@ local function MakeVeggie(name, has_seeds)
         inst.components.equippable:SetOnEquip(oversized_onequip)
         inst.components.equippable:SetOnUnequip(oversized_onunequip)
         inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
-    
+
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
         inst.components.workable:SetOnFinishCallback(oversized_onfinishwork)
         inst.components.workable:SetWorkLeft(OVERSIZED_MAXWORK)
+
+        inst:AddComponent("waxable")
+        inst.components.waxable:SetWaxfn(dowaxfn)
 
         inst:AddComponent("submersible")
         inst:AddComponent("symbolswapdata")
@@ -702,7 +747,7 @@ local function MakeVeggie(name, has_seeds)
         MakeMediumBurnable(inst)
         inst.components.burnable:SetOnBurntFn(oversized_onburnt)
         MakeMediumPropagator(inst)
-        
+
         MakeHauntableWork(inst)
 
 		inst.OnSave = Oversized_OnSave
@@ -710,7 +755,80 @@ local function MakeVeggie(name, has_seeds)
 
         return inst
     end
+
+    local function fn_oversized_waxed()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
+
+        local plant_def = PLANT_DEFS[name]
+
+        inst.AnimState:SetBank(plant_def.bank)
+        inst.AnimState:SetBuild(plant_def.build)
+        inst.AnimState:PlayAnimation("idle_oversized")
+
+        inst:AddTag("heavy")
+
+        inst.displayadjectivefn = displayadjectivefn
+        inst:SetPrefabNameOverride(name.."_oversized")
+
+        MakeHeavyObstaclePhysics(inst, OVERSIZED_PHYSICS_RADIUS)
+        inst:SetPhysicsRadiusOverride(OVERSIZED_PHYSICS_RADIUS)
+
+        inst._base_name = name
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("heavyobstaclephysics")
+        inst.components.heavyobstaclephysics:SetRadius(OVERSIZED_PHYSICS_RADIUS)
+        inst.components.heavyobstaclephysics:MakeSmallObstacle()
+
+        inst:AddComponent("inspectable")
+        inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.cangoincontainer = false
+        inst.components.inventoryitem:SetSinks(true)
+
+        inst:AddComponent("equippable")
+        inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+        inst.components.equippable:SetOnEquip(oversized_onequip)
+        inst.components.equippable:SetOnUnequip(oversized_onunequip)
+        inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
+
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+        inst.components.workable:SetOnFinishCallback(oversized_onfinishwork)
+        inst.components.workable:SetWorkLeft(OVERSIZED_MAXWORK)
+
+        inst:AddComponent("submersible")
+        inst:AddComponent("symbolswapdata")
+        inst.components.symbolswapdata:SetData(plant_def.build, "swap_body")
+
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SetLoot({"spoiled_food"})
+
+        MakeMediumBurnable(inst)
+        inst.components.burnable:SetOnBurntFn(oversized_onburnt)
+        MakeMediumPropagator(inst)
+
+        MakeHauntableWork(inst)
+
+        inst:ListenForEvent("onputininventory", CancelWaxTask)
+        inst:ListenForEvent("ondropped", StartWaxTask)
     
+        inst.OnEntitySleep = CancelWaxTask
+        inst.OnEntityWake = StartWaxTask
+
+        StartWaxTask(inst)
+
+        return inst
+    end
+
     local function fn_oversized_rotten()
         local inst = CreateEntity()
 
@@ -719,7 +837,7 @@ local function MakeVeggie(name, has_seeds)
         inst.entity:AddNetwork()
 
         MakeObstaclePhysics(inst, OVERSIZED_PHYSICS_RADIUS)
-        
+
         local plant_def = PLANT_DEFS[name]
 
         inst.AnimState:SetBank(plant_def.bank)
@@ -729,7 +847,7 @@ local function MakeVeggie(name, has_seeds)
         inst:AddTag("farm_plant_killjoy")
         inst:AddTag("pickable_harvest_str")
 		inst:AddTag("pickable")
-		
+
 		inst._base_name = name
 
         inst.entity:SetPristine()
@@ -740,7 +858,7 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("inspectable")
 		inst.components.inspectable.nameoverride = "VEGGIE_OVERSIZED_ROTTEN"
-    
+
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
         inst.components.workable:SetOnFinishCallback(oversized_onfinishwork)
@@ -763,7 +881,7 @@ local function MakeVeggie(name, has_seeds)
         MakeMediumBurnable(inst)
         inst.components.burnable:SetOnBurntFn(oversized_onburnt)
         MakeMediumPropagator(inst)
-        
+
         MakeHauntableWork(inst)
 
         return inst
@@ -774,12 +892,13 @@ local function MakeVeggie(name, has_seeds)
 	if has_seeds then
 		table.insert(exported_prefabs, Prefab(name.."_seeds", fn_seeds, assets_seeds, seeds_prefabs))
         table.insert(exported_prefabs, Prefab(name.."_oversized", fn_oversized, assets_oversized))
+        table.insert(exported_prefabs, Prefab(name.."_oversized_waxed", fn_oversized_waxed, assets_oversized))
         table.insert(exported_prefabs, Prefab(name.."_oversized_rotten", fn_oversized_rotten, assets_oversized))
 	end
 	if dryable ~= nil then
 		table.insert(exported_prefabs, Prefab(name.."_dried", fn_dried, assets_dried))
     end
-    
+
     table.insert(exported_prefabs, Prefab(name, fn, assets, prefabs))
     table.insert(exported_prefabs, Prefab(name.."_cooked", fn_cooked, assets_cooked))
 

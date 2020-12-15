@@ -1364,7 +1364,6 @@ function Tune(overrides)
 		SOILAMENDER_SOILCYCLES_HIGH			= 5,
 		SOILAMENDER_WITHEREDCYCLES_HIGH		= 1,
 
-		SOILAMENDER_FERMENTED_TOTAL_HEALTH = 30,
 		SOILAMENDER_FERMENTED_USES	= 5,
 
 		SOILAMENDER_PERCOLATE_ANIM_DELAY_FRESH = 15,
@@ -3033,10 +3032,10 @@ function Tune(overrides)
             DEERCLOPS        = {basic=0, special="winter_ornament_boss_deerclops"},
             BEARGER          = {basic=1, special="winter_ornament_boss_bearger"},
             DRAGONFLY        = {basic=2, special="winter_ornament_boss_dragonfly"},
-            MINOTAUR         = {basic=1, special=nil},
+            MINOTAUR         = {basic=1, special="winter_ornament_boss_minotaur"},
             BEEQUEEN         = {basic=2, special="winter_ornament_boss_beequeen"},
             TOADSTOOL        = {basic=2, special="winter_ornament_boss_toadstool"},
-            TOADSTOOL_DARK   = {basic=3, special="winter_ornament_boss_toadstool"},
+            TOADSTOOL_DARK   = {basic=3, special="winter_ornament_boss_toadstool_misery"},
             MOOSE            = {basic=1, special="winter_ornament_boss_moose"}, -- goose?
             ANTLION          = {basic=1, special="winter_ornament_boss_antlion"},
             MALBATROSS       = {basic=1, special="winter_ornament_boss_malbatross"},
@@ -3716,7 +3715,24 @@ function Tune(overrides)
         COMPOSTWRAP_WITHEREDCYCLES = 2,
         COMPOSTWRAP_FERTILIZE = day_time * 6,
         POOP_FERTILIZE_HEALTH = 2,   
-		FERTILIZER_TOTAL_HEALTH = 30,     
+		FERTILIZER_FERTILIZE_HEALTH = 3,     
+
+		WORMWOOD_BLOOM_FARM_PLANT_INTERACT_RANGE = 4,
+
+		WORMWOOD_FERTILIZER_RATE_MOD = 1/128,
+		WORMWOOD_FERTILIZER_BLOOM_TIME_MOD = seg_time / 4,
+
+		WORMWOOD_SPRING_BLOOM_MOD = 1.5,
+		WORMWOOD_SPRING_BLOOMDRAIN_RATE = 0,
+		WORMWOOD_WINTER_BLOOM_MOD = 0.75,
+		WORMWOOD_WINTER_BLOOMDRAIN_RATE = 2,
+
+		WORMWOOD_BLOOM_STAGE_DURATION = total_day_time,
+		WORMWOOD_BLOOM_FULL_DURATION = total_day_time * 3,
+		WORMWOOD_BLOOM_FULL_MAX_DURATION = total_day_time * 5,
+
+		WORMWOOD_BLOOM_PLANTS_WARNING_TIME_LOW = total_day_time * 0.5,
+		WORMWOOD_BLOOM_PLANTS_WARNING_TIME_MED = total_day_time * 1.0,
 
         WATER_TURTLE_WALKSPEED = 0.5,
         WATER_TURTLE_RUNSPEED = 3,
@@ -4650,11 +4666,6 @@ function Tune(overrides)
 		SWEETTEA_TICK_RATE = 2,
 		SWEETTEA_DURATION = seg_time * 2,
 
-		COMPOSTWRAP_HOT_HEALTH_DELTA = 1,
-		COMPOSTWRAP_HOT_TICK_RATE = 2,
-		COMPOSTWRAP_HOT_DURATION = seg_time,
-
-
 		FARM_PLANT_DEFENDER_SEARCH_DIST = 10,
 		WEED_IVY_SNARE_DAMAGE = 10,
 
@@ -4667,6 +4678,10 @@ function Tune(overrides)
         COMPOST_FERTILIZE = day_time,
         COMPOST_SOILCYCLES = 10,
         COMPOST_WITHEREDCYCLES = 1,
+
+		FORMULA_NUTRIENTS_INDEX = 1,
+		COMPOST_NUTRIENTS_INDEX = 2,
+		MANURE_NUTRIENTS_INDEX = 3,
 
         POOP_NUTRIENTS					= {  0,  0,  8 },
 		FERTILIZER_NUTRIENTS			= {  0,  0, 16 },
@@ -4684,6 +4699,23 @@ function Tune(overrides)
 
         COMPOSTWRAP_NUTRIENTS			= { 24, 32, 24 },
         GLOMMERFUEL_NUTRIENTS			= {  8,  8,  8 },
+
+		WORMWOOD_MANURE_HEAL_VALUES = { 2, 3, 8, 12 },
+
+		WORMWOOD_COMPOST_HEAL_VALUES = { 4, 6, 8, 32 },
+		WORMWOOD_COMPOST_HEALOVERTIME_HEALTH = 2,
+		WORMWOOD_COMPOST_HEALOVERTIME_TICK = 2,
+
+        SANITY_SUPERTINY = 1,
+        SANITY_TINY = 5,
+        SANITY_SMALL = 10,
+
+--[[
+		FERTILIZER_HEAL_1 = 2,
+		FERTILIZER_HEAL_2 = 4,
+		FERTILIZER_HEAL_3 = 8, -- medsmall
+		FERTILIZER_HEAL_4 = 30,
+]]
 
         LORDFRUITFLY_DEAGGRO_DIST = 30,
         LORDFRUITFLY_TARGETRANGE = 15,

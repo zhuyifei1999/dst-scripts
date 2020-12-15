@@ -1,3 +1,15 @@
+local function onaccepts_items(self, new_accepts_items, old_accepts_items)
+    if new_accepts_items then
+        if not old_accepts_items then
+            self.inst:AddTag("compostingbin_accepts_items")
+        end
+    else
+        if old_accepts_items then
+            self.inst:RemoveTag("compostingbin_accepts_items")
+        end
+    end
+end
+
 local function ontimerdone(inst, data)
     if data ~= nil then
         if data.name == "composting" then
@@ -53,7 +65,12 @@ local CompostingBin = Class(function(self, inst)
 
     self.current_composting_time = nil
 
+    self.accepts_items = true
+
     -- self.calcdurationmultfn = nil
+    -- self.calcmaterialvalue = nil
+
+    -- self.onaddcompostable = nil
 
     -- self.finishcyclefn = nil
 
@@ -62,7 +79,10 @@ local CompostingBin = Class(function(self, inst)
     -- self.onrefreshfn = nil
     
     self.inst:ListenForEvent("timerdone", ontimerdone)
-end)
+end, nil,
+{
+    accepts_items = onaccepts_items,
+})
 
 function CompostingBin:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("timerdone", ontimerdone)
@@ -107,6 +127,30 @@ function CompostingBin:Refresh(cycle_completed)
             self.onrefreshfn(self.inst, cycle_completed)
         end
     end
+end
+
+function CompostingBin:AddCompostable(item)
+    if self.calcmaterialvalue == nil then
+        return false
+    end
+
+    local materialvalue = self.calcmaterialvalue(self.inst, item)
+    if not materialvalue then
+        return false
+    end
+
+    if self.onaddcompostable ~= nil then
+        self.onaddcompostable(self.inst, item)
+    end
+
+    if item.components.stackable ~= nil then
+        item.components.stackable:Get():Remove()
+    else
+        item:Remove()
+    end
+
+    self:AddMaterials(materialvalue.greens, materialvalue.browns)
+    return true
 end
 
 function CompostingBin:AddMaterials(greens, browns)

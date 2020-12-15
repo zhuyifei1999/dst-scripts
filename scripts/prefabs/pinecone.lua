@@ -111,6 +111,9 @@ local function addcone(name, spawn_prefab, bank, build, anim, winter_tree)
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
         inst.components.deployable.ondeploy = ondeploy
 
+        inst:AddComponent("forcecompostable")
+        inst.components.forcecompostable.brown = true
+
         if winter_tree ~= nil then
             -- for winters feast event to plant in winter_treestand
             inst:AddComponent("winter_treeseed")

@@ -26,6 +26,8 @@ local sounds =
     place = "farming/common/farm/compost/place",
     loop = "farming/common/farm/compost/LP",
     spin = "farming/common/farm/compost/spin",
+    finish_compost = "farming/common/farm/compost/fertalizer",
+    door = "farming/common/farm/compost/use",
 }
 
 local WETDRYBALANCE_TO_INDEX =
@@ -48,6 +50,8 @@ local function dropharvestablecompost(inst)
     for i = 1, inst.components.pickable.numtoharvest do
         inst.components.lootdropper:FlingItem(SpawnPrefab(inst.components.pickable.product))
     end
+
+    inst.components.pickable.numtoharvest = 0
 end
 
 local function onhammered(inst, worker)
@@ -110,8 +114,7 @@ local function onburnt(inst)
     inst.components.timer:StopTimer("composting")
 
     dropharvestablecompost(inst)
-
-    inst.components.pickable.numtoharvest = 0
+    
     updategroundcompostlayers(inst)
 
     inst.components.pickable.canbepicked = false
@@ -120,7 +123,7 @@ local function onburnt(inst)
     inst.components.compostingbin.greens = 0
     inst.components.compostingbin.browns = 0
 
-    inst.components.trader.enabled = false
+    inst.components.compostingbin.accepts_items = false
     
     inst.SoundEmitter:KillSound("lp")
 end
@@ -183,51 +186,38 @@ local function OnPicked(inst)
 
     updatecompostlayers(inst)
     updategroundcompostlayers(inst)
-
-    inst.AnimState:PlayAnimation("use")
 end
 
-local function accepttest(inst, item, giver)
-    if inst.components.compostingbin:IsFull() or inst.AnimState:IsCurrentAnimation("spin") then
-        return false
+local function calcmaterialvalue(inst, item)
+    if inst.components.compostingbin:GetMaterialTotal() >= inst.components.compostingbin.max_materials then
+        return nil
     end
 
-    return item.components.forcecompostable ~= nil
-        or (item.components.edible ~= nil and not DONT_ACCEPT_FOODTYPES[item.components.edible.foodtype])
-end
-
-local function onaccept(inst, giver, item)
-    if item == nil or not item:IsValid() then
-        return
-    end
-
-    local greens, browns = 0, 0
-
-    if item.components.forcecompostable ~= nil then
-        if item.components.forcecompostable.green then
-            greens = 1
-        elseif item.components.forcecompostable.brown then
-            browns = 1
-        end
-    else
-        if item.components.edible ~= nil then
-            if item.components.edible.foodtype == FOODTYPE.ROUGHAGE or item.components.edible.foodtype == FOODTYPE.WOOD then
-                browns = 1
-            else
-                greens = 1
+    if item ~= nil then
+        if item.components.forcecompostable ~= nil then
+            return (item.components.forcecompostable.green and {greens = 1, browns = 0}) or
+                (item.components.forcecompostable.brown and {greens = 0, browns = 1})
+                or nil
+        else
+            if item.components.edible ~= nil and not DONT_ACCEPT_FOODTYPES[item.components.edible.foodtype] then
+                if item.components.edible.foodtype == FOODTYPE.ROUGHAGE or item.components.edible.foodtype == FOODTYPE.WOOD then
+                    return {greens = 0, browns = 1}
+                else
+                    return {greens = 1, browns = 0}
+                end
             end
         end
     end
 
-    item:Remove()
-
-    if greens > 0 or browns > 0 then
-        inst.components.compostingbin:AddMaterials(greens, browns)
-    end
+    return nil
 end
 
 local function onstartcomposting(inst)
-    inst.AnimState:PlayAnimation("working", false)
+    if inst.AnimState:IsCurrentAnimation("use") then
+        inst.AnimState:PushAnimation("working_nospin", false)
+    else
+        inst.AnimState:PlayAnimation("working_nospin", false)
+    end
     -- inst.SoundEmitter:PlaySound(sounds.spin)
     inst.SoundEmitter:PlaySound(sounds.loop, "lp")
 end
@@ -258,6 +248,7 @@ local function ontimerdone(inst, data)
         if inst.components.pickable.numtoharvest >= MAX_COMPOST_ON_GROUND then
             inst.AnimState:PlayAnimation("use")
             updategroundcompostlayers(inst)
+            inst.SoundEmitter:PlaySound(sounds.door)
         else
             inst.AnimState:PlayAnimation("drop")
             if inst.components.compostingbin:GetMaterialTotal() >= 2 then
@@ -277,6 +268,7 @@ local function onfinishcycle(inst)
         inst.components.pickable.numtoharvest = inst.components.pickable.numtoharvest + 1
         SetPickable(inst, true, inst.components.pickable.numtoharvest)
     end
+    inst.SoundEmitter:PlaySound(sounds.finish_compost)
 end
 
 local function calcdurationmult(inst)
@@ -286,10 +278,15 @@ local function calcdurationmult(inst)
         or DURATION_MULTIPLIER.SLOW
 end
 
+local function onaddcompostable(inst, item)
+    inst.AnimState:PlayAnimation("use")
+    inst.SoundEmitter:PlaySound(sounds.door)
+end
+
 local function animqueueover(inst)
     if inst.components.timer:TimerExists("composting") then
         inst.AnimState:PlayAnimation("working", false)
-        -- inst.SoundEmitter:PlaySound(sounds.spin)
+        inst.SoundEmitter:PlaySound(sounds.spin)
 
         local materialcount = inst.components.compostingbin:GetMaterialTotal()
         if materialcount < 5 then
@@ -314,8 +311,11 @@ local function OnEntityWake(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+    if inst:HasTag("burnt") then
         data.burnt = true
+    elseif inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
+        data.burnt = true
+        data.num_drop_products_on_load = inst.components.pickable.numtoharvest
     end
 
     if inst.components.pickable.numtoharvest > 0 then
@@ -326,6 +326,11 @@ end
 
 local function onload(inst, data)
     if data ~= nil and data.burnt then
+        if data.num_drop_products_on_load ~= nil and data.num_drop_products_on_load > 0 then
+            inst.components.pickable.numtoharvest = data.num_drop_products_on_load
+            dropharvestablecompost(inst)
+        end
+
         inst.components.burnable.onburnt(inst)
         onburnt(inst)
     else
@@ -382,14 +387,10 @@ local function fn()
     inst.components.compostingbin.onrefreshfn = onrefresh
     inst.components.compostingbin.finishcyclefn = onfinishcycle
     inst.components.compostingbin.calcdurationmultfn = calcdurationmult
+    inst.components.compostingbin.calcmaterialvalue = calcmaterialvalue
+    inst.components.compostingbin.onaddcompostable = onaddcompostable
     inst.components.compostingbin.composting_time_min = TUNING.COMPOSTINGBIN_COMPOSTING_TIME_MIN
     inst.components.compostingbin.composting_time_max = TUNING.COMPOSTINGBIN_COMPOSTING_TIME_MAX
-
-    inst:AddComponent("trader")
-    inst.components.trader:SetAbleToAcceptTest(accepttest)
-    inst.components.trader.onaccept = onaccept
-    -- Item is explicitly removed in onaccept instead, otherwise it is removed before the callback where composting values are checked
-    inst.components.trader.deleteitemonaccept = false
 
     inst:AddComponent("pickable")
     inst.components.pickable.caninteractwith = false
@@ -427,4 +428,4 @@ local function fn()
 end
 
 return Prefab("compostingbin", fn, assets, prefabs),
-    MakePlacer("compostingbin_placer", "compostingbin", "compostingbin", "idle")
+    MakePlacer("compostingbin_placer", "compostingbin", "compostingbin", "placer")

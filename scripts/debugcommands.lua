@@ -902,6 +902,10 @@ function d_seeds()
 	_spawn_list(items, 2)
 end
 
+function d_fertilizers()
+	_spawn_list(require("prefabs/fertilizer_nutrient_defs").SORTED_FERTILIZERS, 2)
+end
+
 function d_oversized()
 	local items = {}
 	for k, v in pairs(require("prefabs/farm_plant_defs").PLANT_DEFS) do

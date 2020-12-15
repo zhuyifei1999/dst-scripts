@@ -480,6 +480,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH_FAIL, "dolongaction"),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH, "dolongaction"),
     ActionHandler(ACTIONS.ASSESSPLANTHAPPINESS, "dolongaction"),
+    ActionHandler(ACTIONS.ADDCOMPOSTABLE, "give"),
+    ActionHandler(ACTIONS.WAX, "dolongaction"),
 }
 
 local events =

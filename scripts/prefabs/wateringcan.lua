@@ -112,7 +112,7 @@ local function MakeWateringCan(name, uses, water_amount)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle")
 
-        MakeInventoryFloatable(inst, "small", 0.1, 0.8)
+        MakeInventoryFloatable(inst, "small", 0.1, 1)
 
         inst.displaynamefn = displaynamefn
 

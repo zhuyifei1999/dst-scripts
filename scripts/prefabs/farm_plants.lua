@@ -4,8 +4,17 @@ local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
 
 local grow_sounds = 
 {
-	grow_oversized = "dontstarve/common/farm_harvestable",
+	grow_oversized = "farming/common/farm/grow_oversized",
+	grow_full = "farming/common/farm/grow_full",
+	grow_rot = "farming/common/farm/rot",
 }
+
+local function PlaySound(inst, sound)
+	local sounds = inst.plant_def.sounds
+	if sounds ~= nil and sounds[sound] ~= nil then
+        inst.SoundEmitter:PlaySound(sounds[sound])
+	end
+end
 
 local function call_for_reinforcements(inst, target)
 	if not target:HasTag("plantkin") then
@@ -256,9 +265,7 @@ local function PlaySowAnim(inst)
 		inst.AnimState:PlayAnimation("sow", false)
 		inst.AnimState:PushAnimation("sow_idle", true)
 
-		if grow_sounds.sow ~= nil then
-            inst.SoundEmitter:PlaySound(grow_sounds.sow)
-		end
+		PlaySound(inst, "sow")
 	end
 end
 
@@ -271,9 +278,7 @@ local function PlayStageAnim(inst, anim, pre_override)
 		inst.AnimState:PlayAnimation(grow_anim, false)
 		inst.AnimState:PushAnimation("crop_"..anim, true)
 
-		if grow_sounds[grow_anim] ~= nil then
-            inst.SoundEmitter:PlaySound(grow_sounds[grow_anim])
-		end
+		PlaySound(inst, grow_anim)
 	end
 
 	local scale = inst.scale or 1

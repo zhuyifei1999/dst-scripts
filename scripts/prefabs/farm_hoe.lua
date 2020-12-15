@@ -96,7 +96,7 @@ local function fn()
         return inst
     end
 
-    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_quagmire_hoe"})
+    inst.components.floater:SetBankSwapOnFloat(true, -7, {bank  = "quagmire_hoe", sym_build = "quagmire_hoe", sym_name = "swap_quagmire_hoe"})
 
 	return inst
 end
@@ -113,7 +113,7 @@ local function golden()
 
     inst.components.equippable:SetOnEquip(onequipgold)
 
-    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_goldenhoe"})
+    inst.components.floater:SetBankSwapOnFloat(true, -7, {bank = "goldenhoe", sym_build = "swap_goldenhoe"})
 
     return inst
 end

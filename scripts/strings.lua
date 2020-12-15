@@ -767,6 +767,10 @@ STRINGS =
             GENERIC_FMT = "Assess {plant}'s Happiness",
         },
 
+        ADDCOMPOSTABLE = "Give",
+
+        WAX = "Wax",
+
 		-- Winter's Feast 2019
 		WINTERSFEAST_FEAST = "Feast",
 
@@ -2054,6 +2058,10 @@ STRINGS =
         WINTER_ORNAMENTBOSS = "Magnificent Adornment",
 		WINTER_ORNAMENTFORGE = "Champion Adornment",
 		WINTER_ORNAMENTGORGE = "Appeasing Adornment",
+		WINTER_ORNAMENTPEARL = "Sentimental Adornment",
+
+		WINTER_ORNAMENT_BOSS_HERMITHOUSE = "Sentimental Adornment",
+		WINTER_ORNAMENT_BOSS_PEARL = "Sentimental Adornment",
 
         WINTER_FOOD1 = "Gingerbread Cookie",
         WINTER_FOOD2 = "Sugar Cookie",
@@ -3260,6 +3268,9 @@ STRINGS =
         MULTIPLAYER_PORTAL_MOONROCK_CONSTR_PLANS = "The best laid plans.",
         MOONROCKIDOL = "A key figure.",
 
+		WINTER_ORNAMENT_BOSS_HERMITHOUSE = "A keepsake for your Winter's Feast Tree.",
+		WINTER_ORNAMENT_BOSS_PEARL = "A keepsake for your Winter's Feast Tree.",
+
 		--MOON_ALTAR--
         BATHBOMB = "Flowers, for springs? Groundbreaking.",
         MOONGLASSAXE = "Fragile but effective.",
@@ -3543,7 +3554,7 @@ STRINGS =
 		FARM_PLOW_ITEM = "Plow a plot for your plants.",
 		FARM_HOE = "Till soil for crop seeds.",
 		GOLDEN_FARM_HOE = "Elegantly till soil for crop seeds.",
-        NUTRIENTSGOGGLESHAT = "Enhanced with Ancient farming techniques.",
+        NUTRIENTSGOGGLESHAT = "Visualize your garden's success.",
 		PLANTREGISTRYHAT = "Allow your gardening expertise to grow.",
 
         COMPOSTINGBIN = "Make stinky rich soil.",
@@ -5675,7 +5686,7 @@ STRINGS.UI =
         NEEDSPLANTRESEARCH = "Research this plant with the Gardeneer Hat to learn more about it.",
 
         MYSTERY_FERTILIZER = "Unknown Fertilizer",
-
+        
         EFFECTS = {
             NONE = "None",
             WEED_FORGETMELOTS = "Has a tendency to come back when dug up.",
@@ -5683,6 +5694,7 @@ STRINGS.UI =
             WEED_FIRENETTLE = "These nettles can cause quite the burning sensation.",
 			WEED_IVY = "Attacks survivors when they disturb a nearby plant",
         },
+
         DESCRIPTIONS = {
             MISSING = "Unknown",
             ONION = "A ripe onion plant is enough to bring tears of delight to any gardener. -W",
@@ -5699,10 +5711,6 @@ STRINGS.UI =
             PEPPER = "A hot pepper plant is the perfect thing to spice up your garden. -W",
             DURIAN = "A foul smelling fruit, favored by a certain green swamp dweller. -W",
             CARROT = "The perennial favorite of Bunnymen. -W",
-            WEED_FORGETMELOTS = "With their pleasant, relaxing scent, it's often difficult to remember they're weeds. -W",
-            WEED_TILLWEED = "An irritatingly stubborn weed that requires garden tools to remove entirely. -W",
-            WEED_FIRENETTLE = "These nettles spread through a garden like wildfire, and carry a burning toxin. -W",
-            WEED_IVY = "An aggressive, invasive species that will invade your own space when provoked. -W",
         },
 
         NUTRIENTS = {
@@ -5969,6 +5977,7 @@ STRINGS.UI =
         STALE_FROZEN = "Melting",
         SPOILED = "Spoiled",
         SPOILED_FROZEN = "Melted",
+        WAXED = "Waxed",
         ROTLEFT = "Rotate Left\n",
         ROTRIGHT = "Rotate Right\n",
         PAUSE = "Pause\n",

@@ -296,7 +296,7 @@ local function OnGotNewItem(inst, data)
     end
 end
 
-local function OnEquip()
+local function OnEquip(inst, data)
     TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/equip_item")
 end
 
@@ -418,6 +418,7 @@ local function RegisterMasterEventListeners(inst)
 
     inst:ListenForEvent("learnplantstage", ex_fns.OnLearnPlantStage)
     inst:ListenForEvent("learnfertilizer", ex_fns.OnLearnFertilizer)
+    inst:ListenForEvent("takeoversizedpicture", ex_fns.OnTakeOversizedPicture)
 end
 
 --------------------------------------------------------------------------

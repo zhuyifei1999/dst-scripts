@@ -839,6 +839,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH_FAIL, "dolongaction"),
     ActionHandler(ACTIONS.PLANTREGISTRY_RESEARCH, "dolongaction"),
     ActionHandler(ACTIONS.ASSESSPLANTHAPPINESS, "dolongaction"),
+    ActionHandler(ACTIONS.ADDCOMPOSTABLE, "give"),
+    ActionHandler(ACTIONS.WAX, "dolongaction"),
 }
 
 local events =
@@ -12780,7 +12782,7 @@ local states =
             TimeEvent(5 * FRAMES, function(inst)
                 if not inst.sg.statemem.nosound then
                     inst.SoundEmitter:PlaySound("farming/common/watering_can/use")
-                end
+				end
             end),
             TimeEvent(24 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
@@ -12950,7 +12952,7 @@ local states =
 
     State{
         name = "form_log",
-        tags = { "doing", "busy", "nocraftinginterrupt" },
+        tags = { "doing", "busy", "nocraftinginterrupt", "nomorph" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -12988,7 +12990,7 @@ local states =
 
     State{
         name = "fertilize",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nomorph", "self_fertilizing" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -13029,7 +13031,7 @@ local states =
 
     State{
         name = "fertilize_short",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nomorph", "self_fertilizing" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()

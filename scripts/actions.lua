@@ -249,7 +249,7 @@ ACTIONS =
     OCEAN_FISHING_CATCH = Action({priority=6, instant=true}),
     CHANGE_TACKLE = Action({priority=3, rmb=true, instant=true, mount_valid=true}), -- this is now a generic "put item into the container of the equipped hand item"
     POLLINATE = Action(),
-    FERTILIZE = Action({ mount_valid=true }),
+    FERTILIZE = Action({priority=1, mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
     MANUALEXTINGUISH = Action({ priority=1 }),
     LAYEGG = Action(),
@@ -384,6 +384,8 @@ ACTIONS =
     ASSESSPLANTHAPPINESS = Action({ priority = 1 }),
     ATTACKPLANT = Action(),
     PLANTWEED = Action(),
+    ADDCOMPOSTABLE = Action(),
+    WAX = Action({ encumbered_valid = true, }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -927,7 +929,7 @@ end
 
 ACTIONS.DEPLOY.theme_music_fn = function(act)
     return act.invobject ~= nil
-        and act.invobject:HasTag("deployedplant") and "farming"
+        and act.invobject:HasTag("deployedfarmplant") and "farming"
 		or nil
 end
 
@@ -1026,7 +1028,10 @@ ACTIONS.FERTILIZE.fn = function(act)
             end
         end
         if not applied and act.doer ~= nil and (act.target == nil or act.doer == act.target) then
-            applied = act.invobject.components.fertilizer:Heal(act.doer)
+			if act.doer.components.fertilizable ~= nil then
+				applied = act.doer.components.fertilizable:Fertilize(act.invobject)
+				--applied = act.invobject.components.fertilizer:Heal(act.doer)
+			end
         end
 
 		if applied then
@@ -3374,5 +3379,19 @@ ACTIONS.PLANTWEED.fn = function(act)
         new_weed:PushEvent("on_planted", {in_soil = true, doer = act.doer})
 
         targ:Remove()
+        return true
+    end
+end
+
+ACTIONS.ADDCOMPOSTABLE.fn = function(act)
+    if act.target ~= nil and act.target.components.compostingbin ~= nil then
+        return act.target.components.compostingbin:AddCompostable(act.invobject)
+    end
+end
+
+
+ACTIONS.WAX.fn = function(act)
+    if act.target.components.waxable then
+        return act.target.components.waxable:Wax(act.doer, act.invobject)
     end
 end

@@ -101,6 +101,7 @@ local assets =
     Asset("ANIM", "anim/skin_progressbar.zip"),
     Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
     Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
+    Asset("ANIM", "anim/player_emotes_dance0.zip"),
     Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
     Asset("ANIM", "anim/player_emotes_sit.zip"),
     Asset("ANIM", "anim/player_actions_item.zip"),
@@ -296,6 +297,7 @@ if not QUAGMIRE_USE_KLUMP then
 end
 
 -- adding these here so they can be used in the FrontEnd
+table.insert( assets, Asset("ANIM", "anim/trophyscale_oversizedveggies.zip") )
 for k, v in pairs(require("prefabs/farm_plant_defs").PLANT_DEFS) do
 	table.insert(prefabs, v.prefab)
 end

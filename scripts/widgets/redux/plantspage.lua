@@ -115,7 +115,7 @@ function PlantsPage:BuildPlantScrollGrid()
 			local data = w.data
 			if not data then return end
 			data.currentstage = stage
-			if data.currentstage == "summary" and data.plant_def.plantregistrysummarywidget then
+			if data.currentstage == "summary" and data.plant_def.plantregistrysummarywidget and ThePlantRegistry:GetPlantPercent(data.plant, data.info) >= 1 then
 				ThePlantRegistry:SetLastSelectedCard(plant, data.currentstage)
 				w.plant_locked:Hide()
 				w.plant_anim:Hide()
@@ -143,7 +143,7 @@ function PlantsPage:BuildPlantScrollGrid()
 
 		local _OnControl = w.cell_root.OnControl
 		w.cell_root.OnControl = function(_, control, down)
-			if w.plant_spinner.focus or (control == CONTROL_PREVVALUE or control == CONTROL_NEXTVALUE) then w.plant_spinner:OnControl(control, down) return true end
+			if w.plant_spinner.focus or (control == CONTROL_PREVVALUE or control == CONTROL_NEXTVALUE) then if w.plant_spinner:IsVisible() then w.plant_spinner:OnControl(control, down) end return true end
 			return _OnControl(_, control, down)
 		end
 		
@@ -171,7 +171,7 @@ function PlantsPage:BuildPlantScrollGrid()
 		end
 
 		function w.cell_root:GetHelpText()
-			if not w.plant_spinner.focus then
+			if not w.plant_spinner.focus and w.plant_spinner:IsVisible() then
 				return w.plant_spinner:GetHelpText()
 			end
 		end

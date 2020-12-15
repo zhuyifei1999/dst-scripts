@@ -556,8 +556,6 @@ Recipe("oceanfishinglure_hermit_drowsy",	{Ingredient("cookiecuttershell", 1), In
 Recipe("oceanfishinglure_hermit_heavy",		{Ingredient("cookiecuttershell", 1), Ingredient("beefalowool", 1)}, RECIPETABS.FISHING, TECH.LOST, nil, nil, true)
 
 ----HERMITCRABSHOP-----
-
-
 Recipe("hermitshop_hermit_bundle_shells", {Ingredient("messagebottleempty", 1)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_ONE, nil, nil, true, nil, nil, nil, "hermit_bundle.tex", nil, "hermit_bundle_shells")
 Recipe("hermitshop_winch_blueprint", {Ingredient("messagebottleempty", 1)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_ONE, nil, nil, true, nil, nil, nil, "blueprint.tex", nil, "winch_blueprint")
 Recipe("hermitshop_turf_shellbeach_blueprint", {Ingredient("messagebottleempty", 3)}, RECIPETABS.HERMITCRABSHOP, TECH.HERMITCRABSHOP_ONE, nil, nil, true, nil, nil, nil, "blueprint.tex", nil, "turf_shellbeach_blueprint")
@@ -579,9 +577,12 @@ Recipe("hermitshop_chum", {Ingredient("messagebottleempty", 3)}, RECIPETABS.HERM
 
 Recipe("hermitshop_supertacklecontainer", {Ingredient("messagebottleempty", 8)}, RECIPETABS.HERMITCRABSHOP, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "supertacklecontainer")
 
+if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+	Recipe("hermitshop_winter_ornament_boss_hermithouse", {Ingredient("messagebottleempty", 8)}, RECIPETABS.HERMITCRABSHOP, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "winter_ornament_boss_hermithouse")
+	Recipe("hermitshop_winter_ornament_boss_pearl", {Ingredient("messagebottleempty", 12)}, RECIPETABS.HERMITCRABSHOP, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "winter_ornament_boss_pearl")
+end
 
 ----TURFCRAFTING-----
-
 Recipe("turf_forest", {Ingredient("twigs", 1), Ingredient("pinecone", 1)}, RECIPETABS.TURFCRAFTING, TECH.TURFCRAFTING_ONE, nil, nil, true)
 Recipe("turf_grass", {Ingredient("cutgrass", 1), Ingredient("petals", 1)}, RECIPETABS.TURFCRAFTING, TECH.TURFCRAFTING_ONE, nil, nil, true)
 Recipe("turf_savanna", {Ingredient("cutgrass", 1), Ingredient("poop", 1)}, RECIPETABS.TURFCRAFTING, TECH.TURFCRAFTING_ONE, nil, nil, true)
