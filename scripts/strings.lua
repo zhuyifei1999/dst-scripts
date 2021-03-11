@@ -3597,6 +3597,7 @@ STRINGS =
         YOTB_BEEFALOSHRINE = "Make offerings to the steadfast beefalo.",
 
         BEEFALO_GROOMER_ITEM = "The original Beefdazzler.",
+        BEEFALO_GROOMER = "The original Beefdazzler.",
 
         TRIDENT = "Rock out in rocky waters.",
 
@@ -7525,7 +7526,7 @@ STRINGS.UI =
         MOON_SPIDER = "Shattered Spiders",
         SPIDER_DROPPER = "Dangling Depth Dwellers",
         SQUID = "Skittersquids",
-        WASPS = "Wasps",
+        WASPS = "Killer Bees",
         ATRIUMGATE = "Ancient Gateway",
         BRIGHTMARECREATURES = "Enlightenment Monsters",
         GNARWAIL = "Gnarwails",

@@ -106,6 +106,7 @@ function GetEnabledModNamesDetailed() --just used for callstack reporting
 end
 
 function GetModVersion(mod_name, mod_info_use)
+	KnownModIndex:TryLoadMod(mod_name)
 	if mod_info_use == "update_mod_info" then
 		KnownModIndex:UpdateSingleModInfo(mod_name)
 	end
@@ -404,7 +405,7 @@ function ModWrangler:FrontendLoadMod(modname)
     print(loadmsg)
 
     local oldpath = package.path
-    package.path = MODS_ROOT..modname.."\\scripts\\?.lua;"..package.path
+	package.path = MODS_ROOT..modname.."\\scripts\\?.lua;"..package.path
 	self.currentlyloadingmod = modname
 	
     -- Only worldgenmain, to populate the presets panel etc.

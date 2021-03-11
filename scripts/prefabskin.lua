@@ -249,6 +249,19 @@ saltbox_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "sa
 saltbox_clear_fn = function(inst) basic_clear_fn(inst, "saltbox" ) end
 
 
+--------------------------------------------------------------------------
+--[[ Wormhole skin functions ]]
+--------------------------------------------------------------------------
+wormhole_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "teleporter_worm_build" )
+    inst.MiniMapEntity:SetIcon(build_name .. ".png")
+end
+wormhole_clear_fn = function(inst)
+    basic_clear_fn(inst, "teleporter_worm_build" )
+    inst.MiniMapEntity:SetIcon("wormhole.png")
+end
+
+
 
 --------------------------------------------------------------------------
 --[[ Saddle basic skin functions ]]

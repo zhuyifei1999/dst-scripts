@@ -398,7 +398,7 @@ if not MODS_ENABLED then
 	-- so they break because Main returns before ModSafeStartup has run.
 	ModSafeStartup()
 else
-	KnownModIndex:Load(function() 
+	KnownModIndex:Load(function()
 		KnownModIndex:BeginStartupSequence(function()
 			ModSafeStartup()
 		end)

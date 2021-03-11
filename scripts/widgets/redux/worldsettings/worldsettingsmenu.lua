@@ -212,10 +212,7 @@ function WorldSettingsMenu:RevertChanges()
     if self.parent_widget:IsNewShard() then
         self:LoadPreset(self.settings.preset)
     else
-        local options = ShardSaveGameIndex:GetSlotGenOptions(self.parent_widget.slot, SERVER_LEVEL_SHARDS[self.parent_widget.location_index])
-        if not options or IsTableEmpty(options) then
-            options = nil
-        end
+        local options = self.parent_widget:GetSlotOptions()
         self:SetDataFromOptions(options)
     end
 

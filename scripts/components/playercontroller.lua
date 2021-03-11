@@ -766,9 +766,7 @@ function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, positi
 end
 
 function PlayerController:DoControllerAltActionButton()
-    self.actionholdtime = nil
-    self.lastheldaction = nil
-    self.actionrepeatfunction = nil
+    self:ClearActionHold()
 
     if self.placer_recipe ~= nil then
         self:CancelPlacement()
@@ -1827,6 +1825,9 @@ function PlayerController:ClearActionHold()
     self.lastheldaction = nil
     self.lastheldactiontime = nil
     self.actionrepeatfunction = nil
+    if not self.ismastersim then
+        SendRPCToServer(RPC.ClearActionHold)
+    end
 end
 
 local ACTIONHOLD_CONTROLS = {CONTROL_PRIMARY, CONTROL_SECONDARY, CONTROL_CONTROLLER_ALTACTION, CONTROL_INVENTORY_USEONSELF, CONTROL_INVENTORY_USEONSCENE}
@@ -3284,9 +3285,7 @@ function PlayerController:OnLeftClick(down)
         return
     end
 
-    self.actionholdtime = nil
-    self.lastheldaction = nil
-    self.actionrepeatfunction = nil
+    self:ClearActionHold()
 
     self.startdragtime = nil
 
@@ -3452,9 +3451,7 @@ function PlayerController:OnRightClick(down)
         return
     end
 
-    self.actionholdtime = nil
-    self.lastheldaction = nil
-    self.actionrepeatfunction = nil
+    self:ClearActionHold()
 
     self.startdragtime = nil
 

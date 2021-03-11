@@ -399,7 +399,6 @@ local function CheckForWaterImunityAllPlayers()
 end
 
 local function SetDifficulty(src, difficulty)
-	print(difficulty)
 	if difficulty == "never" then
 		self:SpawnModeNever()
 	elseif difficulty == "rare" then

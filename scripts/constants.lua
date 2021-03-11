@@ -668,9 +668,6 @@ SPECIAL_EVENTS =
 }
 WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
---WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTB
-
 FESTIVAL_EVENTS =
 {
     NONE = "none",
@@ -805,8 +802,7 @@ function IsSpecialEventActive(event)
 end
 
 function IsAnySpecialEventActive()
-    --return WORLD_SPECIAL_EVENT ~= SPECIAL_EVENTS.NONE
-    return WORLD_SPECIAL_EVENT ~= SPECIAL_EVENTS.YOTB
+    return WORLD_SPECIAL_EVENT ~= SPECIAL_EVENTS.NONE
 end
 
 ---------------------------------------------------------
