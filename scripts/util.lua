@@ -1501,13 +1501,18 @@ function MetaClass(entries, ctor, classtable)
         __ipairs = function(t)
             return ipairs(classtable._)
         end,
+        --called when garbage collecting this.
+        --__gc = function(t) end
     }
     --newproxy is the only way to use the __len and __gc(garbage collection) meta methods
     local mtclass = newproxy(true)
-    debug.setmetatable(mtclass, classtable)
+    local mt = getmetatable(mtclass)
+    for k, v in pairs(classtable) do
+        mt[k] = v
+    end
     for k, v in pairs(defaulttableops) do
-        if not classtable[k] then
-            classtable[k] = v
+        if not mt[k] then
+            mt[k] = v
         end
     end
     mtclass:_ctor()
