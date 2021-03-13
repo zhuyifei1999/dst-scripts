@@ -228,7 +228,7 @@ local TRANSLATE_TO_PREFABS = {
 	--Ocean stuff all prefixed with "ocean_"
 	["ocean_seastack"] =	{"seastack", "seastack_spawner_rough", "seastack_spawner_swell"},
 	["ocean_shoal"] =		{"oceanfish_shoalspawner"},
-	["ocean_waterplant"] =	{"waterplant_spawner_rough"},
+	["ocean_waterplant"] =	{"waterplant_spawner_rough", "waterplant"},
 	["ocean_wobsterden"] =	{"wobster_den_spawner_shore"},
 	["ocean_bullkelp"] =	{"bullkelp_plant"},
 }
@@ -853,6 +853,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     local double_check = {}
     for i, prefab in ipairs(level.required_prefabs or {}) do
+		print(translated_prefabs and translated_prefabs[prefab])
 		if not translated_prefabs or translated_prefabs[prefab] ~= 0 then
 			if double_check[prefab] == nil then
 				double_check[prefab] = 1
@@ -862,6 +863,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 		end
     end
     for prefab, count in pairs(topology_save.root:GetRequiredPrefabs()) do
+		print(translated_prefabs and translated_prefabs[prefab])
 		if not translated_prefabs or translated_prefabs[prefab] ~= 0 then
 			if double_check[prefab] == nil then
 				double_check[prefab] = count
@@ -874,6 +876,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
         for _, ocean_room in pairs(storygen.ocean_population) do
             if ocean_room.data ~= nil and ocean_room.data.required_prefabs ~= nil then
                 for _, prefab in ipairs(ocean_room.data.required_prefabs) do
+					print(translated_prefabs and translated_prefabs[prefab])
 					if not translated_prefabs or translated_prefabs[prefab] ~= 0 then
 						if double_check[prefab] == nil then
 							double_check[prefab] = 1
