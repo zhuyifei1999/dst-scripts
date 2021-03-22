@@ -7,7 +7,6 @@
 
 --ForceEnableMod("kioskmode_dst")
 
-
 -- Use "EnableModDebugPrint()" to show extra information during startup.
 
 --EnableModDebugPrint()
