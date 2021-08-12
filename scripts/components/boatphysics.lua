@@ -237,14 +237,8 @@ function BoatPhysics:GetVelocity()
     return math.sqrt(self.velocity_x * self.velocity_x + self.velocity_z * self.velocity_z)
 end
 
-
-function BoatPhysics:GetForceDampening(boat_dir_modifier)
+function BoatPhysics:GetForceDampening()
     local dampening = 1
-
-    boat_dir_modifier = boat_dir_modifier or 0
-
-    local max_velocity = TUNING.BOAT.MAX_FORCE_VELOCITY
-    dampening = dampening - easing.inCubic(math.min(VecUtil_Length(self.velocity_x, self.velocity_z), max_velocity) * boat_dir_modifier, TUNING.BOAT.BASE_DAMPENING, TUNING.BOAT.MAX_DAMPENING - TUNING.BOAT.BASE_DAMPENING, max_velocity)
 
     for k,v in pairs(self.boatdraginstances) do
 		dampening = dampening - v.forcedampening
@@ -253,22 +247,35 @@ function BoatPhysics:GetForceDampening(boat_dir_modifier)
     return math.max(0, dampening)
 end
 
-
-function BoatPhysics:ApplyForce(dir_x, dir_z, force)
-    local dir_normal_x, dir_normal_z = VecUtil_NormalizeNoNaN(dir_x, dir_z)
-    local velocity_normal_x, velocity_normal_z = VecUtil_NormalizeNoNaN(self.velocity_x, self.velocity_z)
-    local force_dir_modifier = math.max(0, VecUtil_Dot(velocity_normal_x, velocity_normal_z, dir_normal_x, dir_normal_z))
-
-    force = force * self:GetForceDampening(force_dir_modifier)
-
+function BoatPhysics:DoApplyForce(dir_x, dir_z, force)
     self.velocity_x, self.velocity_z = self.velocity_x + dir_x * force, self.velocity_z + dir_z * force
 
     local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)
 
     if velocity_length > TUNING.BOAT.MAX_ALLOWED_VELOCITY then
-        local maxx,maxz = VecUtil_Scale(dir_x, dir_z, TUNING.BOAT.MAX_ALLOWED_VELOCITY)
-        self.velocity_x, self.velocity_z = maxx,maxz
+        local velocity_normal_x, velocity_normal_z = VecUtil_Normalize(self.velocity_x, self.velocity_z)
+        self.velocity_x, self.velocity_z = VecUtil_Scale(velocity_normal_x, velocity_normal_z, TUNING.BOAT.MAX_ALLOWED_VELOCITY)
     end
+end
+
+function BoatPhysics:ApplyRowForce(dir_x, dir_z, force, max_velocity)
+    local dir_normal_x, dir_normal_z = VecUtil_NormalizeNoNaN(dir_x, dir_z)
+    local velocity_normal_x, velocity_normal_z = VecUtil_NormalizeNoNaN(self.velocity_x, self.velocity_z)
+    local force_dir_modifier = math.max(0, VecUtil_Dot(velocity_normal_x, velocity_normal_z, dir_normal_x, dir_normal_z))
+
+    local dampening = self:GetForceDampening()
+    dampening = dampening - easing.inExpo(
+        math.min(VecUtil_Length(self.velocity_x, self.velocity_z), max_velocity) * force_dir_modifier,
+        TUNING.BOAT.BASE_DAMPENING,
+        TUNING.BOAT.MAX_DAMPENING - TUNING.BOAT.BASE_DAMPENING,
+        max_velocity
+    )
+
+    self:DoApplyForce(dir_x, dir_z, force * math.max(0, dampening))
+end
+
+function BoatPhysics:ApplyForce(dir_x, dir_z, force)
+    self:DoApplyForce(dir_x, dir_z, force * self:GetForceDampening())
 end
 
 function BoatPhysics:GetMaxVelocity()

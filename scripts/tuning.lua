@@ -3643,6 +3643,7 @@ function Tune(overrides)
 					ROW_FAIL_WEAR = 25,
                     ATTACKWEAR = 25,
                     USES = 500,
+                    MAX_VELOCITY = 2,
                 },
 
                 DRIFTWOOD =
@@ -3651,7 +3652,8 @@ function Tune(overrides)
                     DAMAGE = wilson_attack*.5,
 					ROW_FAIL_WEAR = 25,
                     ATTACKWEAR = 25,
-                    USES = 400
+                    USES = 400,
+                    MAX_VELOCITY = 3.5,
                 },
 
                 MALBATROSS =
@@ -3661,6 +3663,7 @@ function Tune(overrides)
 					ROW_FAIL_WEAR = 6,
                     ATTACKWEAR = 6,
                     USES = 600,
+                    MAX_VELOCITY = 5,
                 },
             },
 

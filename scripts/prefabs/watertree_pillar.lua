@@ -404,6 +404,51 @@ end
 local function OnRemove(inst)
     removecanopy(inst)
 end
+local FIREFLY_MUST = {"flying"}
+local FIREFLY_MUST = {"flying"}
+local function OnPhaseChanged(inst, phase)
+   if phase == "day" then
+
+        local x, y, z = inst.Transform:GetWorldPosition()
+
+        local ents = TheSim:FindEntities(x,y,z, TUNING.SHADE_CANOPY_RANGE, FIREFLY_MUST)
+
+        if #ents > 0 then
+            for i=#ents,1,-1 do
+                local ent = ents[i]
+                if ent.prefab ~= "fireflies" then
+                    table.remove(ents,i)
+                end
+            end
+        end
+
+        if #ents < 10 then
+            if math.random()<0.7 then
+                local pos = nil
+                local offset = nil
+                local count = 0
+                while offset == nil and count < 10 do
+                    local angle = 2*PI*math.random()
+                    local radius = math.random() * (TUNING.SHADE_CANOPY_RANGE -4)
+                    offset = {x= math.cos(angle) * radius, y=0, z=math.sin(angle) * radius}   
+                    count = count + 1
+
+                    local pos = {x=x+offset.x,y=0,z=z+offset.z}
+
+                    local things = TheSim:FindEntities(pos.x,pos.y,pos.z, 5)
+                    if #things > 0 then
+                        offset = nil
+                    end
+                end
+
+                if offset then
+                    local firefly = SpawnPrefab("fireflies")
+                    firefly.Transform:SetPosition(x+offset.x,0,z+offset.z)                   
+                end
+            end
+        end
+   end
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -415,6 +460,8 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeWaterObstaclePhysics(inst, 4, 2, 0.75)
+
+    inst:SetDeployExtraSpacing(TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 4)
 
     -- HACK: this should really be in the c side checking the maximum size of the anim or the _current_ size of the anim instead
     -- of frame 0
@@ -481,8 +528,8 @@ local function fn()
     inst.components.childspawner:SetMaxChildren(TUNING.GRASSGATOR_MAXCHILDREN)
     inst.components.childspawner.overridespawnlocation = spawnoverride
 
-    WorldSettings_ChildSpawner_SpawnPeriod(inst, grassgator_release_time, TUNING.CATCOONDEN_ENABLED)
-    WorldSettings_ChildSpawner_RegenPeriod(inst, grassgator_regen_time, TUNING.CATCOONDEN_ENABLED)
+    WorldSettings_ChildSpawner_SpawnPeriod(inst, grassgator_release_time, TUNING.GRASSGATOR_ENABLED)
+    WorldSettings_ChildSpawner_RegenPeriod(inst, grassgator_regen_time, TUNING.GRASSGATOR_ENABLED)
 
     if not TUNING.GRASSGATOR_ENABLED then
         inst.components.childspawner.childreninside = 0
@@ -500,6 +547,7 @@ local function fn()
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("cocoon_destroyed", OnNearbyCocoonDestroyed)
     inst:ListenForEvent("onremove", OnRemove)
+    inst:ListenForEvent("phasechanged", function(src, phase) OnPhaseChanged(inst,phase) end, TheWorld)
 
     --inst.components.childspawner.canspawnfn = canspawn
     inst.components.childspawner:SetSpawnedFn(onspawnchild)

@@ -386,6 +386,14 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 43,
 	},
+	loading_axiomvisus_trailer =
+	{
+		type = "loading",
+		skin_tags = { "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 122,
+	},
 	loading_bearger_yule =
 	{
 		type = "loading",
@@ -457,6 +465,14 @@ MISC_ITEMS =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	loading_eyeofthestorm_trailer =
+	{
+		type = "loading",
+		skin_tags = { "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 122,
 	},
 	loading_farming =
 	{
@@ -658,6 +674,14 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 85,
 	},
+	loading_waterlogged_trailer =
+	{
+		type = "loading",
+		skin_tags = { "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 122,
+	},
 	loading_webber =
 	{
 		type = "loading",
@@ -673,6 +697,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 54,
+	},
+	loading_webber_trailer =
+	{
+		type = "loading",
+		skin_tags = { "SHORTS", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 122,
 	},
 	loading_wendy =
 	{
@@ -737,6 +769,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 111,
+	},
+	loading_wes_trailer3 =
+	{
+		type = "loading",
+		skin_tags = { "SHORTS", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 122,
 	},
 	loading_wes_victorian =
 	{
@@ -2383,7 +2423,62 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wathgrithr_nature", "waxwell_nature", "wes_nature", "winona_nature", "woodie_nature", "wx78_nature", },
 		output_items = {  "wathgrithr_nature", "waxwell_nature", "wes_nature", "winona_nature", "woodie_nature", "wx78_nature", "body_wathgrithr_nature", "body_waxwell_nature", "body_wes_nature", "body_winona_nature", "body_woodie_nature", "body_wx78_nature", "feet_wathgrithr_nature", "feet_waxwell_nature", "feet_wes_nature", "feet_winona_nature", "feet_woodie_nature", "feet_wx78_nature", "hand_wathgrithr_nature", "hand_waxwell_nature", "hand_wes_nature", "hand_winona_nature", "hand_woodie_nature", "hand_wx78_nature", "legs_wathgrithr_nature", "legs_waxwell_nature", "legs_winona_nature", "legs_woodie_nature", },
-		release_group = 122,
+		release_group = 121,
+	},
+	pack_nature_all2 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 1698560,
+		display_order = 1,
+		build_name_override = "pack_nature_all",
+		display_atlas = "images/iap_images_nature2.xml",
+		display_tex = "nature2.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "walter_nature", "warly_nature", "webber_nature", "wendy_nature", "wortox_nature", "wilson_nature", "wolfgang_nature", },
+		output_items = {  "walter_nature", "warly_nature", "webber_nature", "wendy_nature", "wortox_nature", "body_walter_nature", "body_warly_nature", "body_webber_nature", "body_wendy_nature", "body_wortox_nature", "hand_walter_nature", "hand_webber_nature", "hand_wortox_nature", "legs_walter_nature", "legs_wortox_nature", "feet_warly_nature", "feet_webber_nature", "feet_wendy_nature", "walterhat_nature", "abigail_nature", "webber_beard_nature", "wilson_nature", "wilson_beard_nature", "body_wilson_nature", "legs_wilson_nature", "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", },
+		release_group = 121,
+	},
+	pack_nature_bundle =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		build_name_override = "pack_nature_all",
+		display_atlas = "images/iap_images_nature_bundle.xml",
+		display_tex = "nature_bundle.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "walter_nature", "warly_nature", "webber_nature", "wendy_nature", "wortox_nature", "wilson_nature", "wolfgang_nature", "wathgrithr_nature", "waxwell_nature", "wes_nature", "winona_nature", "woodie_nature", "wx78_nature", },
+		output_items = {  "walter_nature", "warly_nature", "webber_nature", "wendy_nature", "wortox_nature", "body_walter_nature", "body_warly_nature", "body_webber_nature", "body_wendy_nature", "body_wortox_nature", "hand_walter_nature", "hand_webber_nature", "hand_wortox_nature", "legs_walter_nature", "legs_wortox_nature", "feet_warly_nature", "feet_webber_nature", "feet_wendy_nature", "walterhat_nature", "abigail_nature", "webber_beard_nature", "wilson_nature", "wilson_beard_nature", "body_wilson_nature", "legs_wilson_nature", "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", "wathgrithr_nature", "waxwell_nature", "wes_nature", "winona_nature", "woodie_nature", "wx78_nature", "body_wathgrithr_nature", "body_waxwell_nature", "body_wes_nature", "body_winona_nature", "body_woodie_nature", "body_wx78_nature", "feet_wathgrithr_nature", "feet_waxwell_nature", "feet_wes_nature", "feet_winona_nature", "feet_woodie_nature", "feet_wx78_nature", "hand_wathgrithr_nature", "hand_waxwell_nature", "hand_wes_nature", "hand_winona_nature", "hand_woodie_nature", "hand_wx78_nature", "legs_wathgrithr_nature", "legs_waxwell_nature", "legs_winona_nature", "legs_woodie_nature", },
+		release_group = 121,
+	},
+	pack_nature_walter =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 117,
+		build_name_override = "walter_nature",
+		display_atlas = "bigportraits/walter_nature.xml",
+		display_tex = "walter_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "walter_nature", "body_walter_nature", "hand_walter_nature", "legs_walter_nature", "walterhat_nature", },
+		output_items = {  "walter_nature", "body_walter_nature", "hand_walter_nature", "legs_walter_nature", "walterhat_nature", },
+		release_group = 121,
+	},
+	pack_nature_warly =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 115,
+		build_name_override = "warly_nature",
+		display_atlas = "bigportraits/warly_nature.xml",
+		display_tex = "warly_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "warly_nature", "body_warly_nature", "feet_warly_nature", },
+		output_items = {  "warly_nature", "body_warly_nature", "feet_warly_nature", },
+		release_group = 121,
 	},
 	pack_nature_wathgrithr =
 	{
@@ -2396,7 +2491,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wathgrithr_nature", "body_wathgrithr_nature", "feet_wathgrithr_nature", "hand_wathgrithr_nature", "legs_wathgrithr_nature", },
 		output_items = {  "wathgrithr_nature", "body_wathgrithr_nature", "feet_wathgrithr_nature", "hand_wathgrithr_nature", "legs_wathgrithr_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_nature_waxwell =
 	{
@@ -2409,7 +2504,33 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "waxwell_nature", "body_waxwell_nature", "feet_waxwell_nature", "hand_waxwell_nature", "legs_waxwell_nature", },
 		output_items = {  "waxwell_nature", "body_waxwell_nature", "feet_waxwell_nature", "hand_waxwell_nature", "legs_waxwell_nature", },
-		release_group = 122,
+		release_group = 121,
+	},
+	pack_nature_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 111,
+		build_name_override = "webber_nature",
+		display_atlas = "bigportraits/webber_nature.xml",
+		display_tex = "webber_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "webber_nature", "body_webber_nature", "feet_webber_nature", "hand_webber_nature", "webber_beard_nature", },
+		output_items = {  "webber_nature", "body_webber_nature", "feet_webber_nature", "hand_webber_nature", "webber_beard_nature", },
+		release_group = 121,
+	},
+	pack_nature_wendy =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 104,
+		build_name_override = "wendy_nature",
+		display_atlas = "bigportraits/wendy_nature.xml",
+		display_tex = "wendy_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "wendy_nature", "body_wendy_nature", "feet_wendy_nature", "abigail_nature", },
+		output_items = {  "wendy_nature", "body_wendy_nature", "feet_wendy_nature", "abigail_nature", },
+		release_group = 121,
 	},
 	pack_nature_wes =
 	{
@@ -2422,7 +2543,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wes_nature", "body_wes_nature", "feet_wes_nature", "hand_wes_nature", },
 		output_items = {  "wes_nature", "body_wes_nature", "feet_wes_nature", "hand_wes_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_nature_winona =
 	{
@@ -2435,7 +2556,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "winona_nature", "body_winona_nature", "feet_winona_nature", "hand_winona_nature", "legs_winona_nature", },
 		output_items = {  "winona_nature", "body_winona_nature", "feet_winona_nature", "hand_winona_nature", "legs_winona_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_nature_woodie =
 	{
@@ -2448,7 +2569,20 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "woodie_nature", "body_woodie_nature", "feet_woodie_nature", "hand_woodie_nature", "legs_woodie_nature", },
 		output_items = {  "woodie_nature", "body_woodie_nature", "feet_woodie_nature", "hand_woodie_nature", "legs_woodie_nature", },
-		release_group = 122,
+		release_group = 121,
+	},
+	pack_nature_wortox =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 113,
+		build_name_override = "wortox_nature",
+		display_atlas = "bigportraits/wortox_nature.xml",
+		display_tex = "wortox_nature_oval.tex",
+		box_build = "box_shop_nature",
+		display_items = {  "wortox_nature", "body_wortox_nature", "hand_wortox_nature", "legs_wortox_nature", },
+		output_items = {  "wortox_nature", "body_wortox_nature", "hand_wortox_nature", "legs_wortox_nature", },
+		release_group = 121,
 	},
 	pack_nature_wx78 =
 	{
@@ -2461,7 +2595,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wx78_nature", "body_wx78_nature", "feet_wx78_nature", "hand_wx78_nature", },
 		output_items = {  "wx78_nature", "body_wx78_nature", "feet_wx78_nature", "hand_wx78_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_oni_gift =
 	{
@@ -2484,6 +2618,21 @@ MISC_ITEMS =
 		output_items = {  "firepit_stonehenge", },
 		legacy_popup_category = "ROG",
 		release_group = 42,
+	},
+	pack_seaside_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 1694780,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_seaside_items.xml",
+		display_tex = "seaside_items.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "chester_walrus", "perdling_pelican", "perdling_puffin", "seafaring_prototyper_lighthouse", "supertacklecontainer_shell", "tacklecontainer_shell", "tent_beach", },
+		output_items = {  "chester_walrus", "perdling_pelican", "perdling_puffin", "seafaring_prototyper_lighthouse", "supertacklecontainer_shell", "tacklecontainer_shell", "tent_beach", },
+		release_group = 122,
 	},
 	pack_spring_bundle =
 	{
@@ -3510,7 +3659,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wilson_nature", "wilson_beard_nature", "body_wilson_nature", "legs_wilson_nature", },
 		output_items = {  "wilson_nature", "wilson_beard_nature", "body_wilson_nature", "legs_wilson_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_winona_deluxe =
 	{
@@ -3602,7 +3751,7 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		display_items = {  "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", },
 		output_items = {  "wolfgang_nature", "body_wolfgang_nature", "feet_wolfgang_nature", },
-		release_group = 122,
+		release_group = 121,
 	},
 	pack_woodie_deluxe =
 	{
@@ -4459,6 +4608,13 @@ MISC_ITEMS =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 49,
+	},
+	playerportrait_bg_hambatnautical =
+	{
+		type = "playerportrait",
+		skin_tags = { "NAUTICAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 121,
 	},
 	playerportrait_bg_heart1 =
 	{
@@ -5422,6 +5578,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_hambat_nautical =
+	{
+		type = "profileflair",
+		skin_tags = { "NAUTICAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 121,
 	},
 	profileflair_heatrock_fire =
 	{
@@ -6626,6 +6789,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 102,
+	},
+	webber_beard_nature =
+	{
+		type = "beard",
+		skin_tags = { "VARG", "WEBBER_BEARD", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 121,
 	},
 	webber_beard_punk =
 	{

@@ -122,10 +122,11 @@ local function findnewshallowlocation(inst, range)
     local finaloffset = FindValidPositionByFan(angle, range or 8, 8, function(offset)
         local x, z = pos.x + offset.x, pos.z + offset.z
 
-        local tile = TheWorld.Map:GetTileAtPoint(inst.Transform:GetWorldPosition())
+        local tile = TheWorld.Map:GetTileAtPoint(x,0,z)
         if tile then
             local tile_info = GetTileInfo(tile)
-            if tile_info ~= nil and tile_info.ocean_depth ~= nil then
+            local iswater = not TheWorld.Map:IsVisualGroundAtPoint(x,0,z)
+            if iswater and tile_info ~= nil and tile_info.ocean_depth ~= nil then
                 if tile_info.ocean_depth <= "SHALLOW" then                    
                     return true
                 end

@@ -10,8 +10,14 @@ local function oncurrent(self, current)
 end
 
 local function onsheltered(inst, data)
-    inst.components.temperature.sheltered = data.sheltered
-    inst.components.temperature.sheltered_level = data.level
+    if type(data) == "table" then
+        inst.components.temperature.sheltered = data.sheltered
+        if data.level then
+            inst.components.temperature.sheltered_level = data.level
+        end
+    else
+        inst.components.temperature.sheltered = data
+    end
 end
 
 local Temperature = Class(function(self, inst)

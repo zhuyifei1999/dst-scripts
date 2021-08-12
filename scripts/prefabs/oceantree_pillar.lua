@@ -520,6 +520,8 @@ local function fn()
     
     MakeWaterObstaclePhysics(inst, 1.5, 2, 0.75)
 
+    inst:SetDeployExtraSpacing(TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 1.5)
+
     -- HACK: this should really be in the c side checking the maximum size of the anim or the _current_ size of the anim instead
     -- of frame 0
     inst.entity:SetAABB(60, 20)

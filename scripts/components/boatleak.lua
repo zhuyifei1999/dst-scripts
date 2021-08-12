@@ -81,7 +81,7 @@ function BoatLeak:SetState(state, skip_open)
             anim_state:SetTime(11 * FRAMES)
         end
 
-        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/untain_small_LP", "small_leak")
+        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/fountain_small_LP", "small_leak")
 
         self.has_leaks = true
 
