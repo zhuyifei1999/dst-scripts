@@ -12,7 +12,6 @@ local BatOver = Class(UIAnim, function(self, owner)
 
     self:GetAnimState():SetBank("bat_tree_fx")
     self:GetAnimState():SetBuild("bat_tree_fx")
-    self:GetAnimState():AnimateWhilePaused(false)
     self:Hide()
 
     self.scrnw = nil
@@ -48,8 +47,6 @@ function BatOver:UpdateScale()
 end
 
 function BatOver:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
-
     self:UpdateScale()
 
     if self.sounddelay > dt then

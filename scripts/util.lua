@@ -787,7 +787,6 @@ function GetTimeForTick(target_tick)
 	return target_tick*GetTickTime()
 end
 
---only works for tasks created from scheduler, not from staticScheduler
 function GetTaskRemaining(task)
     return (task == nil and -1)
         or (task:NextTime() == nil and -1)
@@ -1520,27 +1519,19 @@ function metarawget(t, k)
     return mt._[k] or mt.c[k]
 end
 
-function ZipAndEncodeString(data)
-	return TheSim:ZipAndEncodeString(DataDumper(data, nil, true))
-end
-
 function ZipAndEncodeSaveData(data)
-	return {str = ZipAndEncodeString(data)}
+	return {str = TheSim:ZipAndEncodeString(DataDumper(data, nil, true))}
 end
 
-function DecodeAndUnzipString(str)
-    if type(str) == "string" then
-        local success, savedata = RunInSandbox(TheSim:DecodeAndUnzipString(str))
+function DecodeAndUnzipSaveData(data)
+    if data and data.str and type(data.str) == "string" then
+        local success, savedata = RunInSandbox(TheSim:DecodeAndUnzipString(data.str))
         if success then
             return savedata
         else
             return {}
         end
     end
-end
-
-function DecodeAndUnzipSaveData(data)
-    return DecodeAndUnzipString(data and data.str or nil)
 end
 
 function FunctionOrValue(func_or_val, ...)
@@ -1550,16 +1541,6 @@ function FunctionOrValue(func_or_val, ...)
     return func_or_val
 end
 
-function ApplyLocalWordFilter(text, text_filter_context, net_id)
-	if text_filter_context == TEXT_FILTER_CTX_CHAT											-- we are only filtering chat at the moment
-		and Profile:GetProfanityFilterChatEnabled() 
-		then
-
-		text = TheSim:ApplyLocalWordFilter(text, text_filter_context, net_id) or text
-	end
-
-	return text
-end
 
 --jcheng taken from griftlands
 --START--

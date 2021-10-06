@@ -130,7 +130,7 @@ local HiddenMoverGameTile = function(screen)
 		widg:Show()
 		widg:MoveTo(src_pos, dest_pos, drop_time,
 			function()
-				staticScheduler:ExecuteInTime(0, function()
+				scheduler:ExecuteInTime(0, function()
 					widg:Hide() --need to wait a frame before hiding, to ensure the call back can do it's work before we reveal
 				end)
 				if callbackfn then
@@ -435,7 +435,7 @@ function SnowbirdGameScreen:InitGameBoard()
 			tile:ShowTile()
 		end
 		self:FillEmptyTiles( true )
-		staticScheduler:ExecuteInTime(DROP_WAIT, function()
+		scheduler:ExecuteInTime(DROP_WAIT, function()
 			self.game_state = GS_REVIEWING
 		end)
 		self:UpdateInterface()
@@ -452,7 +452,7 @@ end
 
 function SnowbirdGameScreen:ExplodeTile( explode_delay, tile )
 	tile.exploded = true
-	staticScheduler:ExecuteInTime(explode_delay, function()
+	scheduler:ExecuteInTime(explode_delay, function()
 		if tile.tile_type == BIRD_TILE then
 			TheFrontEnd:GetSound():PlaySound("dontstarve/birds/takeoff_junco")
 
@@ -462,7 +462,7 @@ function SnowbirdGameScreen:ExplodeTile( explode_delay, tile )
 			local explode_widg = ExplodeFX( tile:GetWorldPosition(), self.fixed_root:GetScale().x )
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/creditpage_flip")
 
-			staticScheduler:ExecuteInTime(1, function() explode_widg:Kill() end)
+			scheduler:ExecuteInTime(1, function() explode_widg:Kill() end)
 		end
 		tile:ClearTile()
 		self:UpdateInterface()
@@ -473,13 +473,13 @@ end
 
 function SnowbirdGameScreen:WaitForClearingToFinish(t)
 	self:ClearExplodedFlags()
-	staticScheduler:ExecuteInTime(t, function()
+	scheduler:ExecuteInTime(t, function()
 		self:DropTiles()
 		self:FillEmptyTiles()
 
 		self:UpdateInterface()
 
-		staticScheduler:ExecuteInTime(DROP_WAIT, function()
+		scheduler:ExecuteInTime(DROP_WAIT, function()
 			self.game_state = GS_REVIEWING
 			if self.queued_click ~= nil then
 				self:OnTileClick( self.queued_click.x, self.queued_click.y )
@@ -582,7 +582,7 @@ function SnowbirdGameScreen:OnTileClick(x, y)
 		for _,tile in pairs(self.game_grid) do
 			tile:HideTile()
 		end
-		staticScheduler:ExecuteInTime(FLIP_TIME, function()
+		scheduler:ExecuteInTime(FLIP_TIME, function()
 			if self.game_state == GS_REVIEWING then --fixes reset triggering a click
 				self.game_state = GS_TILE_SELECT_1
 			end
@@ -595,7 +595,7 @@ function SnowbirdGameScreen:OnTileClick(x, y)
 		self.selected_tile:ShowTile()
 
 
-		staticScheduler:ExecuteInTime(FLIP_TIME, function() self.game_state = GS_TILE_SELECT_2 end)
+		scheduler:ExecuteInTime(FLIP_TIME, function() self.game_state = GS_TILE_SELECT_2 end)
 
 	elseif self.game_state == GS_TILE_SELECT_2 then
 		local second_tile = self.game_grid[ XYtoIndex(x, y) ]
@@ -623,7 +623,7 @@ function SnowbirdGameScreen:OnTileClick(x, y)
 			else
 				self.lives = self.lives - 1
 
-				staticScheduler:ExecuteInTime(FLIP_TIME, function()
+				scheduler:ExecuteInTime(FLIP_TIME, function()
 					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_negative")
 					self.game_state = GS_REVIEWING
 					self:UpdateInterface()

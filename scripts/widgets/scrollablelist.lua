@@ -79,8 +79,8 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     local handle_scale = bar_width_scale_factor * self.scrollbar_style.scale
     self.up_button:SetPosition(self.width/2, self.height/2-10, 0)
     self.up_button:SetWhileDown( function()
-        if not self.last_up_button_time or GetStaticTime() - self.last_up_button_time > button_repeat_time then
-            self.last_up_button_time = GetStaticTime()
+        if not self.last_up_button_time or GetTime() - self.last_up_button_time > button_repeat_time then
+            self.last_up_button_time = GetTime()
             self:Scroll(-scroll_per_click, true)
         end
     end)
@@ -94,8 +94,8 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self.down_button:SetScale(self.scrollbar_style.scale)
     self.down_button:SetPosition(self.width/2, -self.height/2+10, 0)
     self.down_button:SetWhileDown( function()
-        if not self.last_down_button_time or GetStaticTime() - self.last_down_button_time > button_repeat_time then
-            self.last_down_button_time = GetStaticTime()
+        if not self.last_down_button_time or GetTime() - self.last_down_button_time > button_repeat_time then
+            self.last_down_button_time = GetTime()
             self:Scroll(scroll_per_click, true)
         end
     end)
@@ -287,10 +287,9 @@ function ScrollableList:RefreshView(movemarker)
 
     local numShown = 0
     for i,v in ipairs(self.items) do
-        local item_offset = (self.view_offset+1) - i
-        if item_offset > 0 then
+        if i < self.view_offset+1 then
             showing = false
-        elseif item_offset == 0 then
+        elseif i == self.view_offset+1 then
             showing = true
         end
 
@@ -299,13 +298,15 @@ function ScrollableList:RefreshView(movemarker)
                 if self.static_widgets[i - self.view_offset] then
                     -- if i - self.view_offset > #self.static_widgets then break end -- just in case we get into a bad spot
                     self.updatefn(self.static_widgets[i - self.view_offset], v, i)
-                    self.static_widgets[i - self.view_offset]:SetPosition(-self.width/2 + self.x_offset, nextYPos + ((self.item_height + self.item_padding) * item_offset))
+                    self.static_widgets[i - self.view_offset]:SetPosition(-self.width/2 + self.x_offset, nextYPos)
                 end
             else
-                v:SetPosition(-self.width/2 + self.x_offset, nextYPos + ((self.item_height + self.item_padding) * item_offset))
+                v:SetPosition(-self.width/2 + self.x_offset, nextYPos)
                 v:Show()
             end
             numShown = numShown + 1
+
+            nextYPos = nextYPos - self.item_height - self.item_padding
 
             -- Make sure we can actually fit another widget below us
             if numShown >= self.widgets_per_view then
@@ -328,7 +329,6 @@ function ScrollableList:RefreshView(movemarker)
                     self.focused_index = self.view_offset+self.widgets_per_view
                 end
             end
-            v:SetPosition(-self.width/2 + self.x_offset, nextYPos + ((self.item_height + self.item_padding) * item_offset))
             v:Hide()
         end
     end
@@ -531,6 +531,7 @@ function ScrollableList:SetList(list, keepitems, scrollto, keeprelativefocusinde
     local rel_focus_index = self.focused_index - self.view_offset
     if not keepitems and self.updatefn == nil and self.static_widgets == nil then
         for i, v in ipairs(self.items) do
+            v:KillAllChildren()
             v:Kill()
         end
 
@@ -773,10 +774,6 @@ function ScrollableList:GetHelpText()
         table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false).."/"..TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false).. " " .. STRINGS.UI.HELP.SCROLL)
     end
     return table.concat(t, "  ")
-end
-
-function ScrollableList:IsAtEnd()
-    return self.view_offset == self.max_step
 end
 
 function ScrollableList:ScrollToEnd()

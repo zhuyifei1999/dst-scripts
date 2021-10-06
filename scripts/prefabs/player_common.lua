@@ -736,8 +736,6 @@ local function OnSetOwner(inst)
             inst:AddComponent("playervoter")
             inst:AddComponent("playermetrics")
             inst.components.playeractionpicker:PushActionFilter(PlayerActionFilter, -99)
-            TheWorld:ListenForEvent("serverpauseddirty", function() ex_fns.OnWorldPaused(inst) end)
-            ex_fns.OnWorldPaused(inst)
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
@@ -752,17 +750,7 @@ local function OnSetOwner(inst)
             ActivateHUD(inst)
             AddActivePlayerComponents(inst)
             RegisterActivePlayerEventListeners(inst)
-            inst.activatetask = inst:DoStaticTaskInTime(0, ActivatePlayer)
-
-            if not ChatHistory:HasHistory() then
-                ChatHistory:AddJoinMessageToHistory(
-                    ChatTypes.Announcement,
-                    nil,
-                    string.format(STRINGS.UI.NOTIFICATION.JOINEDGAME, Networking_Announcement_GetDisplayName(inst.name)),
-                    TheNet:GetClientTableForUser(inst.userid).colour or WHITE,
-                    "join_game"
-                )
-            end
+            inst.activatetask = inst:DoTaskInTime(0, ActivatePlayer)
         end
     elseif inst.HUD ~= nil then
         UnregisterActivePlayerEventListeners(inst)

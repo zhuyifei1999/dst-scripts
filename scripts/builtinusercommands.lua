@@ -63,7 +63,7 @@ AddUserCommand("help", {
             end
         end
 
-        ChatHistory:SendCommandResponse(s)
+        caller.HUD.controls.networkchatqueue:DisplaySystemMessage(s)
     end,
 })
 

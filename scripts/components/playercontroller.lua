@@ -129,7 +129,6 @@ local PlayerController = Class(function(self, inst)
         self.classified = inst.player_classified
         inst:ListenForEvent("bufferedcastaoe", OnBufferedCastAOE)
         inst:StartUpdatingComponent(self)
-        inst:StartWallUpdatingComponent(self)
     elseif self.classified == nil and inst.player_classified ~= nil then
         self:AttachClassified(inst.player_classified)
     end
@@ -276,7 +275,6 @@ function PlayerController:Activate()
             self.inst:ListenForEvent("onreachdestination", OnReachDestination)
             self.inst:ListenForEvent("bufferedcastaoe", OnBufferedCastAOE)
             self.inst:StartUpdatingComponent(self)
-            self.inst:StartWallUpdatingComponent(self)
 
             --Client only event, because when inventory is closed, we will stop
             --getting "equip" and "unequip" events, but we can also assume that
@@ -323,7 +321,6 @@ function PlayerController:Deactivate()
             self.bufferedcastaoe = nil
             self.inst:RemoveEventCallback("zoomcamera", OnZoom)
             self.inst:StopUpdatingComponent(self)
-            self.inst:StopWallUpdatingComponent(self)
         end
     end
 end
@@ -494,7 +491,7 @@ function PlayerController:OnControl(control, down)
         else
             self:DoControllerAttackButton()
         end
-    elseif self.controller_targeting_modifier_down then
+	elseif self.controller_targeting_modifier_down then
 		if control == CONTROL_TARGET_CYCLE_BACK then
 			self:CycleControllerAttackTargetBack()
 		elseif control == CONTROL_TARGET_CYCLE_FORWARD then
@@ -1886,20 +1883,6 @@ function PlayerController:RepeatHeldAction()
     end
 end
 
-function PlayerController:OnWallUpdate(dt)
-    if self.handler then
-        local isenabled, ishudblocking = self:IsEnabled()
-        if not isenabled then
-            if not ishudblocking and self.inst.HUD ~= nil and self.inst.HUD:IsVisible() and not self.inst.HUD:HasInputFocus() then
-                self:DoCameraControl()
-            end
-            return
-        else
-            self:DoCameraControl()
-        end
-    end
-end
-
 function PlayerController:OnUpdate(dt)
     self.predictionsent = false
 
@@ -1975,6 +1958,10 @@ function PlayerController:OnUpdate(dt)
                 self.highlight_guy.components.highlight:UnHighlight()
             end
             self.highlight_guy = nil
+
+            if not ishudblocking and self.inst.HUD ~= nil and self.inst.HUD:IsVisible() and not self.inst.HUD:HasInputFocus() then
+                self:DoCameraControl()
+            end
         end
 
         if self.ismastersim then
@@ -2081,6 +2068,8 @@ function PlayerController:OnUpdate(dt)
         else
             self.highlight_guy = nil
         end
+
+        self:DoCameraControl()
 
         if self.reticule ~= nil and not (controller_mode or self.reticule.mouseenabled) then
             self.reticule:DestroyReticule()
@@ -3175,7 +3164,7 @@ function PlayerController:DoCameraControl()
     local ROT_REPEAT = .25
     local ZOOM_REPEAT = .1
 
-    local time = GetStaticTime()
+    local time = GetTime()
 
     if not self:IsControllerTargetingModifierDown() and (self.lastrottime == nil or time - self.lastrottime > ROT_REPEAT) then
         if TheInput:IsControlPressed(CONTROL_ROTATE_LEFT) then

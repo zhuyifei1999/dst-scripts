@@ -9,7 +9,6 @@ local BOAT_TINT = { 21 / 255, 102 / 255, 117 / 255, 1 }
 
 local BoatMeter = Class(Widget, function(self)
     Widget._ctor(self, "BoatMeter")
-    self:UpdateWhilePaused(false)
 
     --self.bg clashes with existing mods
     self.backing = self:AddChild(UIAnim())
@@ -17,34 +16,29 @@ local BoatMeter = Class(Widget, function(self)
     self.backing:GetAnimState():SetBuild("status_meter")
     self.backing:GetAnimState():PlayAnimation("bg")
     self.backing:SetClickable(true)
-    self.backing:GetAnimState():AnimateWhilePaused(false)
 
     self.badge = self:AddChild(UIAnim())
     self.badge:GetAnimState():SetBank("status_meter")
     self.badge:GetAnimState():SetBuild("status_meter")
     self.badge:GetAnimState():SetMultColour(unpack(BOAT_TINT))
     self.badge:SetClickable(true)
-    self.badge:GetAnimState():AnimateWhilePaused(false)
 
     self.icon = self:AddChild(UIAnim())
     self.icon:GetAnimState():SetBank("status_meter")
     self.icon:GetAnimState():SetBuild("status_boat")
     self.icon:GetAnimState():Hide("frame")
     self.icon:SetClickable(true)
-    self.icon:GetAnimState():AnimateWhilePaused(false)
 
     self.leak_anim = self:AddChild(UIAnim())
     self.leak_anim:GetAnimState():SetBank("status_boat")
     self.leak_anim:GetAnimState():SetBuild("status_boat")
     self.leak_anim:SetClickable(false)
-    self.leak_anim:GetAnimState():AnimateWhilePaused(false)
 
     self.anim = self:AddChild(UIAnim())
     self.anim:GetAnimState():SetBank("status_boat")
     self.anim:GetAnimState():SetBuild("status_boat")
     self.anim:GetAnimState():OverrideSymbol("frame_circle", "status_meter", "frame_circle")
     self.anim:SetClickable(false)
-    self.anim:GetAnimState():AnimateWhilePaused(false)
 
     self.anim.inst:ListenForEvent("animover", function() self.inst:PushEvent("animover") end)
 
@@ -81,8 +75,8 @@ function BoatMeter:Enable(platform)
     self:StartUpdating()
 end
 
-function BoatMeter:Disable(instant)
-    self.inst:PushEvent("close_meter", {instant = instant})
+function BoatMeter:Disable(platform)
+    self.inst:PushEvent("close_meter")
 
     self.boat = nil
 
@@ -90,7 +84,6 @@ function BoatMeter:Disable(instant)
 end
 
 function BoatMeter:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
     self:RefreshHealth()
 end
 

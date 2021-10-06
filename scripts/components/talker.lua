@@ -124,7 +124,7 @@ function Talker:StopIgnoringAll(source)
     end
 end
 
-local function sayfn(self, script, nobroadcast, colour, text_filter_context, original_author_netid)
+local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
     if (not self.disablefollowtext) and self.widget == nil and player ~= nil and player.HUD ~= nil then
         self.widget = player.HUD:AddChild(FollowText(self.font or TALKINGFONT, self.fontsize or 35))
@@ -151,13 +151,11 @@ local function sayfn(self, script, nobroadcast, colour, text_filter_context, ori
                     )
 
             if not nobroadcast then
-                TheNet:Talker(line.message, self.inst.entity, duration ~= TUNING.DEFAULT_TALKER_DURATION and duration or nil, text_filter_context, original_author_netid)
+                TheNet:Talker(line.message, self.inst.entity, duration ~= TUNING.DEFAULT_TALKER_DURATION and duration or nil)
             end
 
             if self.widget ~= nil then
-				--print("talker sayfn:", original_author, text_filter_context, display_message)
-		        local filtered_message = display_message ~= nil and ApplyLocalWordFilter(display_message, text_filter_context, original_author_netid) or display_message
-                self.widget.text:SetString(filtered_message)
+                self.widget.text:SetString(display_message)
             end
 
             if self.ontalkfn ~= nil then
@@ -205,7 +203,7 @@ local function CancelSay(self)
     end
 end
 
-function Talker:Say(script, time, noanim, force, nobroadcast, colour, text_filter_context, original_author_netid)
+function Talker:Say(script, time, noanim, force, nobroadcast, colour)
     if TheWorld.speechdisabled then return nil end
     if TheWorld.ismastersim then
         if not force
@@ -230,7 +228,7 @@ function Talker:Say(script, time, noanim, force, nobroadcast, colour, text_filte
     CancelSay(self)
     local lines = type(script) == "string" and { Line(script, noanim, time) } or script
     if lines ~= nil then
-        self.task = self.inst:StartThread(function() sayfn(self, lines, nobroadcast, colour, text_filter_context, original_author_netid) end)
+        self.task = self.inst:StartThread(function() sayfn(self, lines, nobroadcast, colour) end)
     end
 end
 

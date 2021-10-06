@@ -16,7 +16,6 @@ local FireOver = Class(Widget, function(self, owner)
     self.anim:GetAnimState():SetBank("fire_over")
     self.anim:GetAnimState():SetBuild("fire_over")
     self.anim:GetAnimState():PlayAnimation("anim", true)
-    self.anim:GetAnimState():AnimateWhilePaused(false)
     self:SetHAnchor(ANCHOR_LEFT)
     self:SetVAnchor(ANCHOR_TOP)
     self.targetalpha = 0
@@ -77,8 +76,6 @@ function FireOver:OnChangeLevel(low)
 end
 
 function FireOver:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
-
     self.t = self.t + dt
     self.alpha = math.clamp(easing.outCubic(self.t, self.startalpha, self.targetalpha - self.startalpha, self.ease_time), 0, 1)
     if self.alphamultdir == 0 or self.alphamult >= 1 or self.alphamult <= ALPHAMULT_LOW then

@@ -1,17 +1,10 @@
 local writeables = require"writeables"
 
 local function gettext(inst, viewer)
-	if inst:HasTag("burnt") then
-		return GetDescription(viewer, inst, "BURNT")
-	end
-
-	local writeable = inst.components.writeable
-    local text = writeable:GetText()
-	if text ~= nil then
-		return text, writeable.text_filter_context or TEXT_FILTER_CTX_CHAT, writeable.writer_netid
-	end
-
-    return GetDescription(viewer, inst, "UNWRITTEN")
+    local text = inst.components.writeable:GetText()
+    return inst:HasTag("burnt") and GetDescription(viewer, inst, "BURNT") or
+            text and string.format('"%s"', text)
+            or GetDescription(viewer, inst, "UNWRITTEN")
 end
 
 local function onbuilt(inst, data)
@@ -82,10 +75,12 @@ function Writeable:OnSave()
     local data = {}
 
     data.text = self.text
-	data.netid = self.writer_netid
-	data.userid = self.writer_userid
+	if IsXB1() then
+		data.netid = self.netid
+	end
 
     return data
+
 end
 
 function Writeable:OnLoad(data)
@@ -94,8 +89,9 @@ function Writeable:OnLoad(data)
 	else
     	self.text = data.text
 	end
-	self.writer_netid = data.netid
-	self.writer_userid = data.userid
+	if IsXB1() then
+		self.netid = data.netid
+	end
 end
 
 function Writeable:SetOnWrittenFn(fn)
@@ -108,8 +104,8 @@ end
 
 function Writeable:GetText(viewer)
 	if IsXB1() then
-		if self.text and self.writer_netid then
-			return "\1"..self.text.."\1"..self.writer_netid
+		if self.text and self.netid then
+			return "\1"..self.text.."\1"..self.netid
 		end
 	end
     return self.text
@@ -195,9 +191,18 @@ function Writeable:EndWriting()
         self.inst:RemoveEventCallback("ms_closepopups", self.onclosepopups, self.writer)
         self.inst:RemoveEventCallback("onremove", self.onclosepopups, self.writer)
 
-		if self.writer:HasTag("player") then
-			self.writer_userid = self.writer.userid
-			self.writer_netid = TheNet:GetNetIdForUser(self.writer.userid)
+		if IsXB1() then
+			if self.writer:HasTag("player") and self.writer:GetDisplayName() then
+				local ClientObjs = TheNet:GetClientTable()
+				if ClientObjs ~= nil and #ClientObjs > 0 then
+					for i, v in ipairs(ClientObjs) do
+						if self.writer:GetDisplayName() == v.name then
+							self.netid = v.netid
+							break
+						end
+					end
+				end
+			end
 		end
 
         if self.onwritingended ~= nil then

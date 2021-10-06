@@ -40,7 +40,7 @@ function EmitterManagerClass:RemoveEmitter(inst)
 end
 
 function EmitterManagerClass:PostUpdate()
-	if TheNet:IsServerPaused() then
+	if IsSimPaused() then
 		return
 	end
 

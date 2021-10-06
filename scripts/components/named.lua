@@ -1,15 +1,13 @@
 local Named = Class(function(self, inst)
     self.inst = inst
-    --self.possiblenames = nil
-    --self.nameformat = nil
-    --self.name = nil
-	--self.name_author_netid = nil		-- NOTE: This is the user's platform id, not KU
+    self.possiblenames = nil
+    self.nameformat = nil
+    self.name = nil
 end)
 
 local function DoSetName(self)
     self.inst.name = self.nameformat ~= nil and string.format(self.nameformat, self.name) or self.name
-	self.inst.name_author_netid = self.name_author_netid
-    self.inst.replica.named:SetName(self.inst.name, self.inst.name_author_netid or "")
+    self.inst.replica.named:SetName(self.inst.name)
 end
 
 function Named:PickNewName()
@@ -19,12 +17,11 @@ function Named:PickNewName()
     end
 end
 
-function Named:SetName(name, author)
+function Named:SetName(name)
     self.name = name
-    self.name_author_netid = author ~= nil and TheNet:GetNetIdForUser(author) or nil
     if name == nil then
         self.inst.name = STRINGS.NAMES[string.upper(self.inst.prefab)]
-        self.inst.replica.named:SetName("", "")
+        self.inst.replica.named:SetName("")
     else
         DoSetName(self)
     end
@@ -35,8 +32,7 @@ function Named:OnSave()
         self.name ~= nil
         and {
                 name = self.name,
-                nameformat = self.nameformat,
-                name_author_netid = self.name_author_netid,
+                nameformat = self.nameformat
             }
         or nil
 end
@@ -45,7 +41,6 @@ function Named:OnLoad(data)
     if data ~= nil and data.name ~= nil then
         self.nameformat = data.nameformat
         self.name = data.name
-        self.name_author_netid = data.name_author_netid
         DoSetName(self)
     end
 end

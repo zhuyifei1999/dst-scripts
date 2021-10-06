@@ -28,13 +28,9 @@ local CookbookPopupScreen = Class(Screen, function(self, owner)
 	self.book = root:AddChild(CookbookWidget(owner))
 
 	self.default_focus = self.book
-
-    SetAutopaused(true)
 end)
 
 function CookbookPopupScreen:OnDestroy()
-    SetAutopaused(false)
-
     POPUPS.COOKBOOK:Close(self.owner)
 
 	TheCookbook:ClearNewFlags()

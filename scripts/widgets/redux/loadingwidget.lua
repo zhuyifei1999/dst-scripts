@@ -23,8 +23,6 @@ end
 
 local LoadingWidget = Class(Widget, function(self, session_random_index)
     Widget._ctor(self, "LoadingWidget")
-    
-    self.global_widget = true
 
     local image_keys = Settings.loading_screen_keys or {}
 
@@ -76,7 +74,7 @@ local LoadingWidget = Class(Widget, function(self, session_random_index)
     self.cached_string  = ""
     self.elipse_state = 0
     self.cached_fade_level = 0
-    self.step_time = GetStaticTime()
+    self.step_time = GetTime()
 end)
 
 function LoadingWidget:RepickImage()
@@ -135,7 +133,7 @@ function LoadingWidget:KeepAlive(auto_increment)
         end
         self.vig:SetTint(1, 1, 1, fade_sq)
 
-        local time = GetStaticTime()
+        local time = GetTime()
         local time_delta = time - self.step_time
         local NEXT_STATE = 1.0
         if time_delta > NEXT_STATE or auto_increment then
@@ -152,7 +150,7 @@ function LoadingWidget:KeepAlive(auto_increment)
             self.step_time = time
         end
 
-        if self.cached_fade_level < 0.01 then
+        if .01 > self.cached_fade_level then
             self:SetEnabled(false)
         end
     end

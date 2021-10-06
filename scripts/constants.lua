@@ -169,8 +169,6 @@ CONTROL_MENU_MISC_4 = 71  -- R
 
 CONTROL_INSPECT_SELF = 72 -- Keyboard self inspect [I]
 
-CONTROL_SERVER_PAUSE = 73
-
 CONTROL_CUSTOM_START = 100
 
 XBOX_CONTROLLER_ID = 17
@@ -616,7 +614,7 @@ GROUND =
 
     FARMING_SOIL = 47,
 
-	-- PUBLIC USE SPACE FOR MODS is 70 to 109 --
+	-- PUBLIC USE SPACE FOR MODS is 70 to 89 --
 
     --NOISE -- from 110 to 127 -- TODO: move noise tile range to > 255
 	FUNGUSMOON_NOISE = 120,
@@ -925,8 +923,8 @@ FE_MUSIC =
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
     --"dontstarve/music/music_moonstorm_FE"
     --"dontstarve/music/music_FE_webber"
-    "dontstarve/music/music_FE"
-    --"dontstarve/music/music_FE_wanda"
+    --"dontstarve/music/music_FE"
+    "dontstarve/music/music_FE_wanda"
 
 ---------------------------------------------------------
 NUM_HALLOWEENCANDY = 14
@@ -2233,7 +2231,6 @@ TEXT_FILTER_CTX_UNKNOWN = 0
 TEXT_FILTER_CTX_GAME = 1
 TEXT_FILTER_CTX_CHAT = 2
 TEXT_FILTER_CTX_NAME = 3
-TEXT_FILTER_CTX_SERVERNAME = 0 -- not sure how we want to handle this
 
 
 CHARACTER_BUTTON_OFFSET =

@@ -10,7 +10,6 @@ local ConsoleScreen = require "screens/consolescreen"
 local DebugMenuScreen = require "screens/DebugMenuScreen"
 local PopupDialogScreen = require "screens/popupdialog"
 local TEMPLATES = require "widgets/templates"
-local ServerPauseWidget = require "widgets/redux/serverpausewidget"
 
 require "constants"
 
@@ -27,11 +26,9 @@ FrontEnd = Class(function(self, name)
 	self.screenstack = {}
 
 	self.screenroot = Widget("screenroot")
-    self.screenroot.global_widget = true
     self.screenroot.is_screen = true
 
 	self.overlayroot = Widget("overlayroot")
-    self.overlayroot.global_widget = true
 
 	------ CONSOLE -----------
 	self.consoletext = Text(BODYTEXTFONT, 20, "CONSOLE TEXT")
@@ -44,12 +41,6 @@ FrontEnd = Class(function(self, name)
 	self.consoletext:SetRegionSize(900, 406)
 	self.consoletext:SetPosition(0,0,0)
 	self.consoletext:Hide()
-    -----------------
-
-	------ SERVERPAUSE -----------
-	self.serverpausewidget = ServerPauseWidget()
-	self.serverpausewidget:SetPosition(0,0,0)
-	self.serverpausewidget:Hide()
     -----------------
 
     self.blackoverlay = Image("images/global.xml", "square.tex")
@@ -153,8 +144,6 @@ FrontEnd = Class(function(self, name)
 	self.screenroot:AddChild(self.whiteoverlay)
 	self.screenroot:AddChild(self.vigoverlay)
 	self.screenroot:AddChild(self.swipeoverlay)
-	self.screenroot:AddChild(self.consoletext)
-    self.screenroot:AddChild(self.serverpausewidget)
 
     self.alpha = 0
 
@@ -839,22 +828,10 @@ function FrontEnd:StopUpdatingWidget(w)
 	self.updating_widgets[w] = nil
 end
 
-function FrontEnd:InsertScreenAtIndex(screen, idx)
-    self.screenroot:AddChild(screen)
-    table.insert(self.screenstack, idx, screen)
-    for i = idx, #self.screenstack do
-        self.screenstack[i]:MoveToFront()
-    end
-    self.consoletext:MoveToFront()
-    self.serverpausewidget:MoveToFront()
-end
-
 function FrontEnd:InsertScreenUnderTop(screen)
     self.screenroot:AddChild(screen)
     table.insert(self.screenstack, #self.screenstack, screen)
     self.screenstack[#self.screenstack]:MoveToFront()
-    self.consoletext:MoveToFront()
-    self.serverpausewidget:MoveToFront()
 end
 
 function FrontEnd:PushScreen(screen)
@@ -873,13 +850,6 @@ function FrontEnd:PushScreen(screen)
 
     self.screenroot:AddChild(screen)
     table.insert(self.screenstack, screen)
-    self.consoletext:MoveToFront()
-    self.serverpausewidget:MoveToFront()
-    self.serverpausewidget:SetOffset(0, 0)
-
-    if screen.OffsetServerPausedWidget then
-        screen:OffsetServerPausedWidget(self.serverpausewidget)
-    end
 
     -- screen:Show()
     if not self.tracking_mouse then
@@ -1011,16 +981,9 @@ function FrontEnd:PopScreen(screen)
 
 	end
 
-    local top_screen = self.screenstack[#self.screenstack]
-	if top_screen and old_head ~= top_screen then
-		top_screen:SetFocus()
-		top_screen:OnBecomeActive()
-
-        self.serverpausewidget:SetOffset(0, 0)
-
-        if top_screen.OffsetServerPausedWidget then
-            top_screen:OffsetServerPausedWidget(self.serverpausewidget)
-        end
+	if #self.screenstack > 0 and old_head ~= self.screenstack[#self.screenstack] then
+		self.screenstack[#self.screenstack]:SetFocus()
+		self.screenstack[#self.screenstack]:OnBecomeActive()
 
         TheInput:UpdateEntitiesUnderMouse()
 		self:Update(0)
@@ -1041,7 +1004,7 @@ function FrontEnd:GetActiveScreen()
 end
 
 function FrontEnd:GetOpenScreenOfType(screenname)
-	for _,v in ipairs_reverse(self.screenstack) do
+	for _,v in pairs(self.screenstack) do
 		if v.name == screenname then
 			return v
 		end
@@ -1335,8 +1298,4 @@ function FrontEnd:SetImguiFontSize( font_size )
     Profile:SetValue("imgui_font_size", self.imgui_font_size)
     Profile.dirty = true
     Profile:Save()
-end
-
-function FrontEnd:SetServerPauseText(source)
-    self.serverpausewidget:UpdateText(source)
 end

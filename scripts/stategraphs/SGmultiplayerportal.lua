@@ -4,11 +4,9 @@ local function PlaySound(inst, sound, id)
     end
 end
 
-local function PlayAnimation(inst, anim, loop, update_while_paused)
-    inst.AnimState:AnimateWhilePaused(update_while_paused)
+local function PlayAnimation(inst, anim, loop)
     inst.AnimState:PlayAnimation(anim, loop)
     if inst.fx ~= nil then
-        inst.fx.AnimState:AnimateWhilePaused(update_while_paused)
         inst.fx.AnimState:PlayAnimation(anim, loop)
     end
 end
@@ -88,9 +86,8 @@ local states =
     State{
         name = "spawn_pre",
         tags = { "idle", "open" },
-        onenter = function(inst, update_while_paused)
-            inst.sg.statemem.update_while_paused = update_while_paused
-            PlayAnimation(inst, "pre_fx", nil, update_while_paused)
+        onenter = function(inst)
+            PlayAnimation(inst, "pre_fx")
             inst.SoundEmitter:KillSound("portalidle")
             PlaySound(inst, "spawning_loop", "portalactivate")
             PlaySound(inst, "armswing")
@@ -101,7 +98,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 inst.sg.statemem.keepactivatesound = true
-                inst.sg:GoToState("spawn_loop", inst.sg.statemem.update_while_paused)
+                inst.sg:GoToState("spawn_loop")
             end),
         },
 
@@ -120,16 +117,15 @@ local states =
     State{
         name = "spawn_loop",
         tags = { "busy", "open" },
-        onenter = function(inst, update_while_paused)
-            inst.sg.statemem.update_while_paused = update_while_paused
-            PlayAnimation(inst, "fx", nil, update_while_paused)
+        onenter = function(inst)
+            PlayAnimation(inst, "fx")
             PlaySound(inst, "idle_loop", "portalidle")
         end,
 
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("spawn_pst", inst.sg.statemem.update_while_paused)
+                inst.sg:GoToState("spawn_pst")
             end),
         },
 
@@ -146,8 +142,8 @@ local states =
     State{
         name = "spawn_pst",
         tags = { "busy" },
-        onenter = function(inst, update_while_paused)
-            PlayAnimation(inst, "pst_fx", nil, update_while_paused)
+        onenter = function(inst)
+            PlayAnimation(inst, "pst_fx")
         end,
 
         events =

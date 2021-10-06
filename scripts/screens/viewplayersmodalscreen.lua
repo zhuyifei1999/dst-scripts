@@ -42,7 +42,11 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     local function listingConstructor(v, i)
         local playerListing =  Widget("playerListing")
 
-        local displayName = ApplyLocalWordFilter(v.name or "", TEXT_FILTER_CTX_NAME)
+        local displayName = v.name or ""
+        if TheSim:IsSteamChinaClient() then
+            displayName = TheSim:ApplyLocalWordFilter(displayName, TEXT_FILTER_CTX_NAME)
+        end
+
         playerListing.highlight = playerListing:AddChild(Image("images/scoreboard.xml", "row_short_goldoutline.tex"))
         playerListing.highlight:SetPosition(27, 0)
         playerListing.highlight:ScaleToSize(307,53)

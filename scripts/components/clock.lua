@@ -308,7 +308,7 @@ if _ismastersim then
     end
 end
 
-inst:StartUpdatingComponent(self, not TheNet:IsDedicated())
+inst:StartUpdatingComponent(self)
 
 --------------------------------------------------------------------------
 --[[ Update ]]
@@ -439,7 +439,6 @@ function self:OnUpdate(dt)
     end
 end
 
-self.OnStaticUpdate = self.OnUpdate
 self.LongUpdate = self.OnUpdate
 
 --------------------------------------------------------------------------

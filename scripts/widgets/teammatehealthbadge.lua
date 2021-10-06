@@ -5,7 +5,7 @@ local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 
 local TeammateHealthBadge = Class(Badge, function(self, owner)
-    Badge._ctor(self, "lavaarena_partyhealth", owner, nil, nil, nil, nil, true)
+    Badge._ctor(self, "lavaarena_partyhealth", owner)
 
     self:SetClickable(false)
 
@@ -17,7 +17,6 @@ local TeammateHealthBadge = Class(Badge, function(self, owner)
     self.arrow:GetAnimState():SetBank("sanity_arrow")
     self.arrow:GetAnimState():SetBuild("sanity_arrow")
     self.arrow:GetAnimState():PlayAnimation("neutral")
-	self.arrow:GetAnimState():AnimateWhilePaused(false)
 	self.arrow:SetScale(0.85)
 
     self.name_banner_center = self.name_root:AddChild(Image("images/lavaarena_hud.xml", "username_banner_filler.tex"))

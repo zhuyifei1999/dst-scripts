@@ -13,7 +13,6 @@ local SandDustOver = Class(UIAnim, function(self, owner)
     self:GetAnimState():SetBank("sand_over")
     self:GetAnimState():SetBuild("sand_over")
     self:GetAnimState():PlayAnimation("dust_loop", true)
-    self:GetAnimState():AnimateWhilePaused(false)
 end)
 
 return SandDustOver

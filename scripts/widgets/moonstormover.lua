@@ -156,7 +156,6 @@ end
 local MoonstormOver = Class(Widget, function(self, owner, dustlayer, dustlayer_goggles)
     self.owner = owner
     Widget._ctor(self, "MoonstormOver")
-    self:UpdateWhilePaused(false)
 
     self:SetClickable(false)
 
@@ -171,7 +170,6 @@ local MoonstormOver = Class(Widget, function(self, owner, dustlayer, dustlayer_g
     self.bg:GetAnimState():SetBank("moonstorm_over")
     self.bg:GetAnimState():SetBuild("moonstorm_over")
     self.bg:GetAnimState():PlayAnimation("blind_loop", true)
-    self.bg:GetAnimState():AnimateWhilePaused(false)
 
     self.letterbox = self:AddChild(CreateLetterbox())
 
@@ -343,8 +341,6 @@ function MoonstormOver:ApplyLevels()
 end
 
 function MoonstormOver:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
-
     if self.dust.shown then
         local stormlevel = ThePlayer:GetStormLevel()
         if self.intensity < stormlevel then

@@ -3,14 +3,6 @@ require("class")
 HIBERNATE = "hibernate"
 SLEEP = "sleep"
 
-local function GetSchedulerTick(isstatic)
-    return isstatic and GetStaticTick() or GetTick()
-end
-
-local function GetSchedulerTime(isstatic)
-    return isstatic and GetStaticTime() or GetTime()
-end
-
 ----------------------------------------------------------------------------------
 local coroutine = coroutine
 local debug = debug
@@ -113,14 +105,13 @@ local function GetNewList()
 end
 -------------------------------
 
-local Scheduler = Class( function(self, isstatic)
+local Scheduler = Class( function(self)
     self.tasks = {}
     self.running = {}
     self.waitingfortick = {}
     self.waking = {}
     self.hibernating = {}
     self.attime = {}
-    self.isstatic = isstatic or nil
 end)
 
 function Scheduler:__tostring()
@@ -278,16 +269,16 @@ function Scheduler:ExecuteInTime(timefromnow, fn, id, ...)
 end
 
 function Scheduler:GetListForTimeFromNow(dt)
-    local nowtick = GetSchedulerTick(self.isstatic)
-    local wakeuptick = math.floor( (GetSchedulerTime(self.isstatic)+dt)/GetTickTime() )
+    local nowtick = GetTick()
+    local wakeuptick = math.floor( (GetTime()+dt)/GetTickTime() )
     if wakeuptick <= nowtick then
         wakeuptick = nowtick+1
     end
 
-    local list = self.attime[wakeuptick]
+    local list = scheduler.attime[wakeuptick]
     if not list then
         list = {}
-        self.attime[wakeuptick] = list
+        scheduler.attime[wakeuptick] = list
     end
     return list, wakeuptick
 end
@@ -322,26 +313,15 @@ end
 ------------------------------------------------------------------------------------
 
 scheduler = Scheduler()
-staticScheduler = Scheduler(true)
 
 ------------------------------------------------------------------------------------
 
 --These are to be called from within a thread
 
-local function GetCurrentScheduler()
-    local co = coroutine.running()
-    if scheduler.tasks[co] then
-        return scheduler
-    elseif staticScheduler.tasks[co] then
-        return staticScheduler
-    end
-end
-
 function Wake()
-    local schedule = GetCurrentScheduler()
-    local task = schedule.tasks[coroutine.running()]
+    local task = scheduler:GetCurrentTask()
     if task then
-        task:SetList(schedule.running)
+        task:SetList(scheduler.running)
     end
 end
 
@@ -354,9 +334,8 @@ function Yield()
 end
 
 function Sleep(time)
-    local schedule = GetCurrentScheduler()
-    local desttick = math.ceil((GetSchedulerTime(schedule.isstatic) + time)/GetTickTime())
-    if GetSchedulerTick(schedule.isstatic) < desttick then
+    local desttick = math.ceil((GetTime() + time)/GetTickTime())
+    if GetTick() < desttick then
         coroutine.yield(SLEEP, desttick)
     else
         coroutine.yield()
@@ -364,27 +343,20 @@ function Sleep(time)
 end
 
 function KillThread(task)
-    if scheduler.tasks[task.co] then
-        scheduler:KillTask(task)
-    elseif staticScheduler.tasks[task.co] then
-        staticScheduler:KillTask(task)
-    end
+    scheduler:KillTask(task)
 end
 
 ------
 
 function WakeTask(task)
     if task then
-        if scheduler.tasks[task.co] then
-            task:SetList(scheduler.running)
-        elseif staticScheduler.tasks[task.co] then
-            task:SetList(staticScheduler.running)
-        end
+        task:SetList(scheduler.running)
     end
 end
 
 --This is to start a thread
 function StartThread(fn, id, param)
+
     if id == nil then
         local task = scheduler:GetCurrentTask()
         if task ~= nil then
@@ -392,16 +364,6 @@ function StartThread(fn, id, param)
         end
     end
     return scheduler:AddTask(fn, id, param)
-end
-
-function StartStaticThread(fn, id, param)
-    if id == nil then
-        local task = staticScheduler:GetCurrentTask()
-        if task ~= nil then
-            id = task.id
-        end
-    end
-    return staticScheduler:AddTask(fn, id, param)
 end
 
 function RunScheduler(tick)
@@ -414,22 +376,10 @@ function RunScheduler(tick)
     TheSim:ProfilerPop()
 end
 
-function RunStaticScheduler(tick)
-    TheSim:ProfilerPush("staticScheduler:OnTick")
-    staticScheduler:OnTick(tick)
-    TheSim:ProfilerPop()
-
-    TheSim:ProfilerPush("staticScheduler:Run")
-    staticScheduler:Run()
-    TheSim:ProfilerPop()
-end
-
 function KillThreadsWithID(id)
     scheduler:KillTasksWithID(id)
-    staticScheduler:KillTasksWithID(id)
 end
 
 function StopAllThreads()
     scheduler:KillAll()
-    staticScheduler:KillAll()
 end

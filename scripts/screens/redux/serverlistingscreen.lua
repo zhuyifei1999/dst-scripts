@@ -20,10 +20,10 @@ require("util")
 local column_offsets_x_pos = -100
 local column_offsets_y_pos = 303
 local column_offsets ={
-    INTENTION = -65,
-    NAME = -45,
-    DETAILS = 450, --435 is the minimum
-    PLAYERS = 615,
+    INTENTION = -60,
+    NAME = -24,
+    DETAILS = 456,
+    PLAYERS = 603,
     PING = 669,
 }
 local server_list_width = 800
@@ -345,7 +345,7 @@ local function tchelper(first, rest)
   return first:upper()..rest:lower()
 end
 
-function ServerListingScreen:Join(warnedOffline, warnedLanguage, warnedPaused)
+function ServerListingScreen:Join(warnedOffline, warnedLanguage)
     if self.selected_server ~= nil then
 		local beta = GetBetaInfoId(self.selected_server.tags)
         if BRANCH == "release" and beta > 0 then
@@ -390,20 +390,6 @@ function ServerListingScreen:Join(warnedOffline, warnedLanguage, warnedPaused)
                                 })
             self.last_focus = TheFrontEnd:GetFocusWidget()
             TheFrontEnd:PushScreen(confirm_language_popup)
-        elseif not warnedPaused and self.selected_server.serverpaused then
-            local confirm_paused_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.PAUSEDWARNING_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.PAUSEDWARNING_BODY,
-                                {
-                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
-                                        -- If player is okay with offline mode, go ahead
-                                        TheFrontEnd:PopScreen()
-                                        self:Join(true, true, true)
-                                    end},
-                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
-                                        TheFrontEnd:PopScreen()
-                                    end}
-                                })
-            self.last_focus = TheFrontEnd:GetFocusWidget()
-            TheFrontEnd:PushScreen(confirm_paused_popup)
         else
             local filters = {}
             for i, v in ipairs(self.filters) do
@@ -638,7 +624,10 @@ function ServerListingScreen:UpdateServerData(selected_index_actual)
 
 		self.details_hidden_name = hide_name
 
-        local filtered_name = ApplyLocalWordFilter(self.selected_server.name, TEXT_FILTER_CTX_SERVERNAME)
+        local filtered_name = self.selected_server.name
+        if TheSim:IsSteamChinaClient() then
+            filtered_name = TheSim:ApplyLocalWordFilter(filtered_name, TEXT_FILTER_CTX_UNKNOWN)
+        end
         self.details_servername:SetMultilineTruncatedString(
             hide_name and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME or filtered_name,
             self.details_servername._align.maxlines,
@@ -647,7 +636,10 @@ function ServerListingScreen:UpdateServerData(selected_index_actual)
             true
         )
 
-        local filtered_desc = ApplyLocalWordFilter(self.selected_server.description, TEXT_FILTER_CTX_SERVERNAME)
+        local filtered_desc = self.selected_server.description
+        if TheSim:IsSteamChinaClient() then
+            filtered_desc = TheSim:ApplyLocalWordFilter(filtered_desc, TEXT_FILTER_CTX_UNKNOWN)
+        end
         self.details_serverdesc:SetMultilineTruncatedString(
             hide_name and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_DESCRIPTION or self.selected_server.has_details and (filtered_desc ~= "" and filtered_desc or STRINGS.UI.SERVERLISTINGSCREEN.NO_DESC) or STRINGS.UI.SERVERLISTINGSCREEN.DESC_LOADING,
             self.details_serverdesc._align.maxlines,
@@ -857,12 +849,12 @@ function ServerListingScreen:OnFinishClickServerInList(unfiltered_index)
 		and self.last_server_click_time ~= nil
         then
         -- If we're clicking on the same server as the last click, check for double-click Join
-		if GetStaticTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
+		if GetTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
 			self:Join(false)
 			return
 		end
     end
-    self.last_server_click_time = GetStaticTime()
+    self.last_server_click_time = GetTime()
 end
 
 function ServerListingScreen:RefreshView(skipPoll, keepScrollFocusPos)
@@ -889,9 +881,12 @@ function ServerListingScreen:RefreshView(skipPoll, keepScrollFocusPos)
             return
         end
 
-        self.servers = TheNet:GetServerListings()
+        local servers = {}
+        servers = TheNet:GetServerListings()
 
-		ServerPreferences:UpdateProfanityFilteredServers(self.servers)
+        self.servers = servers
+
+		ServerPreferences:UpdateProfanityFilteredServers(servers)
 
         self:DoFiltering(false, keepScrollFocusPos) -- This also calls DoSorting
     end
@@ -953,7 +948,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row.NAME:SetString("")
         row.NAME._align =
         {
-            maxwidth = 435,--420,
+            maxwidth = 420,
             maxchars = 55,
             x = column_offsets.NAME,
             y = y_offset_top,
@@ -977,10 +972,6 @@ function ServerListingScreen:MakeServerListWidgets()
 		row.DEDICATED_ICON.overrides = {unofficial = {image = "dedicated.tex", hover = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED_ICON_HOVER}, official = {image = "kleiofficial.tex", hover = STRINGS.UI.SERVERLISTINGSCREEN.DEDICATED_KLEI_ICON_HOVER} }
         row.DEDICATED_ICON:Hide()
         table.insert(details_widgets, row.DEDICATED_ICON)
-
-		row.PAUSED_ICON = TEMPLATES.ServerDetailIcon("images/servericons.xml", "paused.tex", "plum", STRINGS.UI.SERVERLISTINGSCREEN.PAUSED, nil, nil, .08, .073)
-        row.PAUSED_ICON:Hide()
-        table.insert(details_widgets, row.PAUSED_ICON)
 
         row.MODS_ENABLED_ICON = TEMPLATES.ServerDetailIcon("images/servericons.xml", "mods.tex", "orange", STRINGS.UI.SERVERLISTINGSCREEN.MODS_ICON_HOVER, nil, nil, .077, .077)
         row.MODS_ENABLED_ICON:Hide()
@@ -1013,7 +1004,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row.CLAN_CLOSED_ICON:Hide()
         table.insert(details_widgets, clan_icon)
 
-        row.DETAILS:FillGrid(#details_widgets, detail_img_width, detail_img_width, details_widgets)
+        row.DETAILS:FillGrid(7, detail_img_width, detail_img_width, details_widgets)
 
         local function CreateTextWithIcon(icon_tex, offset_x, hovertext)
             local w = Widget("players")
@@ -1075,7 +1066,6 @@ function ServerListingScreen:MakeServerListWidgets()
             widget.CLAN_CLOSED_ICON:Hide()
             widget.HAS_PASSWORD_ICON:Hide()
             widget.DEDICATED_ICON:Hide()
-            widget.PAUSED_ICON:Hide()
             widget.PVP_ICON:Hide()
             widget.MODS_ENABLED_ICON:Hide()
             widget.cursor:Hide()
@@ -1093,7 +1083,6 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.version = serverdata.version
             widget.offline = serverdata.offline
-            widget.serverpaused = serverdata.serverpaused
             widget.beta = GetBetaInfoId(serverdata.tags)
 
             if serverdata.actualindex == self.selected_index_actual then
@@ -1114,7 +1103,10 @@ function ServerListingScreen:MakeServerListWidgets()
             end
 
 			local hide_name = ServerPreferences:IsNameAndDescriptionHidden(serverdata)
-            local filtered_text = ApplyLocalWordFilter(serverdata.name, TEXT_FILTER_CTX_SERVERNAME)
+            local filtered_text = serverdata.name
+            if TheSim:IsSteamChinaClient() then
+                filtered_text = TheSim:ApplyLocalWordFilter(filtered_text, TEXT_FILTER_CTX_UNKNOWN)
+            end
             widget.NAME:SetTruncatedString(hide_name and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME_LISTING or filtered_text, widget.NAME._align.maxwidth, widget.NAME._align.maxchars, true)
             local w, h = widget.NAME:GetRegionSize()
             widget.NAME:SetPosition(widget.NAME._align.x + w * .5, widget.NAME._align.y, 0)
@@ -1181,11 +1173,6 @@ function ServerListingScreen:MakeServerListWidgets()
 				widget.DEDICATED_ICON:SetHoverText(overrides.hover)
             else
                 widget.DEDICATED_ICON:Hide()
-            end
-            if serverdata.serverpaused then
-                widget.PAUSED_ICON:Show()
-            else
-                widget.PAUSED_ICON:Hide()
             end
             if serverdata.pvp then
                 widget.PVP_ICON:Show()
@@ -1474,7 +1461,6 @@ function ServerListingScreen:IsValidWithFilters(server)
             or (v.name == "MINOPENSLOTS" and v.spinner:GetSelectedData() ~= "ANY" and server.max_players - server.current_players < v.spinner:GetSelectedData())
             or (v.name == "ISFULL" and (server.current_players >= server.max_players and v.spinner:GetSelectedData() == false))
             or (v.name == "ISEMPTY" and (server.current_players <= 0 and v.spinner:GetSelectedData() == false))
-            or (v.name == "ISPAUSED" and v.spinner:GetSelectedData() and server.serverpaused)
             or (v.name == "FRIENDSONLY" and v.spinner:GetSelectedData() ~= "ANY" and v.spinner:GetSelectedData() ~= server.friend_playing )
             or (v.name == "CLANONLY" and v.spinner:GetSelectedData() ~= "ANY" and not server.belongs_to_clan )
             or (v.name == "CLANONLY" and v.spinner:GetSelectedData() == "PRIVATE" and not server.clan_only )
@@ -1617,7 +1603,6 @@ function ServerListingScreen:DoFiltering(doneSearching, keepScrollFocusPos)
                         intention = v.intention,
                         allow_new_players = v.allow_new_players,
 						kleiofficial = v.kleiofficial,
-                        serverpaused = v.serverpaused,
                         -- data = v.data,
                     })
             end
@@ -1825,7 +1810,6 @@ function ServerListingScreen:MakeFiltersPanel(filter_data, details_height)
     table.insert(self.filters, CreateSpinnerFilter( self, "ISFULL", STRINGS.UI.SERVERLISTINGSCREEN.ISFULL, yes_no, false ))
     table.insert(self.filters, CreateSpinnerFilter( self, "MINOPENSLOTS", STRINGS.UI.SERVERLISTINGSCREEN.MINOPENSLOTS, player_slots, false ))
     table.insert(self.filters, CreateSpinnerFilter( self, "ISEMPTY", STRINGS.UI.SERVERLISTINGSCREEN.ISEMPTY, yes_no, false ))
-    table.insert(self.filters, CreateSpinnerFilter( self, "ISPAUSED", STRINGS.UI.SERVERLISTINGSCREEN.ISPAUSED, no_yes, false ))
     -- table.insert(self.filters, CreateSpinnerFilter( "MAXSERVERSIZE", STRINGS.UI.SERVERLISTINGSCREEN.MAXSERVERSIZE, {min=2,max=4}, true ))
 
     if BRANCH == "dev" then

@@ -35,30 +35,19 @@ local function MakeFx(t)
 
         if t.sound ~= nil then
             inst.entity:AddSoundEmitter()
-            if t.update_while_paused then
-                inst:DoStaticTaskInTime(t.sounddelay or 0, PlaySound, t.sound)
-            else
-                inst:DoTaskInTime(t.sounddelay or 0, PlaySound, t.sound)
-            end
+            inst:DoTaskInTime(t.sounddelay or 0, PlaySound, t.sound)
         end
 
         if t.sound2 ~= nil then
             if inst.SoundEmitter == nil then
                 inst.entity:AddSoundEmitter()
             end
-            if t.update_while_paused then
-                inst:DoStaticTaskInTime(t.sounddelay2 or 0, PlaySound, t.sound2)
-            else
-                inst:DoTaskInTime(t.sounddelay2 or 0, PlaySound, t.sound2)
-            end
+            inst:DoTaskInTime(t.sounddelay2 or 0, PlaySound, t.sound2)
         end
 
         inst.AnimState:SetBank(t.bank)
         inst.AnimState:SetBuild(t.build)
         inst.AnimState:PlayAnimation(FunctionOrValue(t.anim)) -- THIS IS A CLIENT SIDE FUNCTION
-        if t.update_while_paused then
-            inst.AnimState:AnimateWhilePaused(true)
-        end
         if t.tint ~= nil then
             inst.AnimState:SetMultColour(t.tint.x, t.tint.y, t.tint.z, t.tintalpha or 1)
         elseif t.tintalpha ~= nil then
@@ -96,11 +85,7 @@ local function MakeFx(t)
 
         if t.fn ~= nil then
             if t.fntime ~= nil then
-                if t.update_while_paused then
-                    inst:DoStaticTaskInTime(t.fntime, t.fn)
-                else
-                    inst:DoTaskInTime(t.fntime, t.fn)
-                end
+                inst:DoTaskInTime(t.fntime, t.fn)
             else
                 t.fn(inst)
             end
@@ -117,11 +102,7 @@ local function MakeFx(t)
         if not TheNet:IsDedicated() then
             --Delay one frame so that we are positioned properly before starting the effect
             --or in case we are about to be removed
-            if t.update_while_paused then
-                inst:DoStaticTaskInTime(0, startfx, inst)
-            else
-                inst:DoTaskInTime(0, startfx, inst)
-            end
+            inst:DoTaskInTime(0, startfx, inst)
         end
 
         if t.twofaced then

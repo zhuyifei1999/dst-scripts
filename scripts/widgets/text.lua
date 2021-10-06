@@ -77,11 +77,6 @@ function Text:SetAlpha(a)
     self.inst.TextWidget:SetColour(1,1,1, a)
 end
 
-function Text:UpdateAlpha(a)
-    self.colour[4] = a
-    self.inst.TextWidget:SetColour(unpack(self.colour))
-end
-
 function Text:SetFont(font)
     self.inst.TextWidget:SetFont(font)
     self.font = font

@@ -142,27 +142,17 @@ local function SetStage(inst, stage, skip_anim)
         inst.MiniMapEntity:SetIcon("spiderden_" .. tostring(stage) .. ".png")
 
         if not skip_anim then
-            inst.AnimState:PlayAnimation(inst.anims.init)
-            inst.AnimState:PushAnimation(inst.anims.idle, true)
-        end
+        inst.AnimState:PlayAnimation(inst.anims.init)
+        inst.AnimState:PushAnimation(inst.anims.idle, true)
+    end
     end
 
     inst.components.upgradeable:SetStage(stage)
     inst.data.stage = stage -- track here, as growable component may go away
 
-    if POPULATING then
-        if not inst.loadtask then
-            inst.loadtask = inst:DoTaskInTime(0, function()
-                if inst:GetCurrentPlatform() == nil then
-                    inst.GroundCreepEntity:SetRadius(TUNING.SPIDERDEN_CREEP_RADIUS[inst.data.stage])
-                end
-                inst.loadtask = nil
-            end)
-        end
-    else
-        if inst:GetCurrentPlatform() == nil then
-            inst.GroundCreepEntity:SetRadius(TUNING.SPIDERDEN_CREEP_RADIUS[inst.data.stage])
-        end
+    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
+    if TheWorld.Map:GetPlatformAtPoint(my_x, my_z) == nil then
+        inst.GroundCreepEntity:SetRadius(TUNING.SPIDERDEN_CREEP_RADIUS[inst.data.stage])
     end
 end
 
@@ -180,6 +170,10 @@ local function SetSmall(inst)
         inst.components.freezable:SetShatterFXLevel(3)
         inst.components.freezable:SetResistance(2)
     end
+
+    if inst:GetCurrentPlatform() then
+        inst.GroundCreepEntity:SetRadius(5)
+    end
 end
 
 local function SetMedium(inst)
@@ -195,6 +189,10 @@ local function SetMedium(inst)
     if inst.components.freezable ~= nil then
         inst.components.freezable:SetShatterFXLevel(4)
         inst.components.freezable:SetResistance(3)
+    end
+
+    if inst:GetCurrentPlatform() then
+        inst.GroundCreepEntity:SetRadius(9)
     end
 end
 
@@ -214,6 +212,9 @@ local function SetLarge(inst)
     end
 
     AddSleepingBag(inst)
+    if inst:GetCurrentPlatform() then
+        inst.GroundCreepEntity:SetRadius(9)
+    end
 end
 
 local function PlayLegBurstSound(inst)

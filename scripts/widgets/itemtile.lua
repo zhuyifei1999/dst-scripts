@@ -36,7 +36,6 @@ local ItemTile = Class(Widget, function(self, invitem)
         self.spoilage = self:AddChild(UIAnim())
         self.spoilage:GetAnimState():SetBank("spoiled_meter")
         self.spoilage:GetAnimState():SetBuild("spoiled_meter")
-        self.spoilage:GetAnimState():AnimateWhilePaused(false)
         self.spoilage:SetClickable(false)
     end
 
@@ -44,7 +43,6 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.wetness:GetAnimState():SetBank("wet_meter")
     self.wetness:GetAnimState():SetBuild("wet_meter")
     self.wetness:GetAnimState():PlayAnimation("idle")
-    self.wetness:GetAnimState():AnimateWhilePaused(false)
     self.wetness:Hide()
     self.wetness:SetClickable(false)
 
@@ -55,7 +53,6 @@ local ItemTile = Class(Widget, function(self, invitem)
         self.rechargeframe:GetAnimState():SetBank("recharge_meter")
         self.rechargeframe:GetAnimState():SetBuild("recharge_meter")
         self.rechargeframe:GetAnimState():PlayAnimation("frame")
-        self.rechargeframe:GetAnimState():AnimateWhilePaused(false)
     end
 
     if self.item.inv_image_bg ~= nil then
@@ -76,7 +73,6 @@ local ItemTile = Class(Widget, function(self, invitem)
         self.recharge = self:AddChild(UIAnim())
         self.recharge:GetAnimState():SetBank("recharge_meter")
         self.recharge:GetAnimState():SetBuild("recharge_meter")
-        self.recharge:GetAnimState():AnimateWhilePaused(false)
         self.recharge:SetClickable(false)
     end
 
@@ -484,7 +480,6 @@ function ItemTile:HasSpoilage()
 end
 
 function ItemTile:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
     self:SetChargePercent(self.rechargetime > 0 and self.rechargepct + dt / self.rechargetime or .9999)
 end
 

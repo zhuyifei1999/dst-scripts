@@ -3,7 +3,6 @@ local Text = require "widgets/text"
 
 local CancelTipWidget = Class(Widget, function(self)
 	Widget._ctor(self, "CancelTipWidget")
-	self.global_widget = true
 	self.initialized = false
 	self.forceShowNextFrame = false
 	self.is_enabled = false

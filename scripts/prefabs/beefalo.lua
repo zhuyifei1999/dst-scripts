@@ -770,9 +770,9 @@ local function OnUnhitch(inst, data)
     inst:RemoveEventCallback("onremove", dobeefalounhitch)
 end
 
-fns.OnNamedByWriteable = function(inst, new_name, writer)
+fns.OnNamedByWriteable = function(inst, new_name)
     if inst.components.named ~= nil then
-        inst.components.named:SetName(new_name, writer ~= nil and writer.userid)
+        inst.components.named:SetName(new_name)
     end
 end
 

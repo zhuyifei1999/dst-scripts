@@ -59,7 +59,7 @@ local function fn()
     inst.PostInit = PostInit
     inst.OnRemoveEntity = OnRemoveEntity
 
-    inst:DoStaticTaskInTime(0, DoPostInit)
+    inst:DoTaskInTime(0, DoPostInit)
 
     return inst
 end

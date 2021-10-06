@@ -90,6 +90,12 @@ end
 -- PRIVATE FUNCTIONS
 -----------------------------------------------------------------------------------------------------------
 
+local function sendsystemmessage(msg)
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+        ThePlayer.HUD.controls.networkchatqueue:DisplaySystemMessage(msg)
+    end
+end
+
 local dealias = nil -- forward declare
 local function getcommandfromhash(hash)
     for mod,modcommands in pairs(modusercommands) do
@@ -127,7 +133,7 @@ local function parseinput(input)
                 break
             else
                 print("Didn't supply enough arguments to command!")
-                ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT, command.name))
+                sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT, command.name))
                 return
             end
         end
@@ -138,7 +144,7 @@ local function parseinput(input)
         local client = UserToClient(params.user)
         if client == nil then
             print("Unknown target user for command:",command.name, params.user)
-            ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.BADUSERFMT, params.user))
+            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADUSERFMT, params.user))
             return
         end
     end
@@ -263,17 +269,17 @@ end
 local function runcommand(command, params, caller, onserver, confirm)
     local userid = UserToClientID(params.user)
     if userid == nil and params.user ~= nil then
-        ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
         print(string.format("User %s failed to run command %s.", caller.name, command.name))
         return
     end
     local exec_type = getexectype(command, caller, userid) -- 'user' is the magical param name
     if exec_type == COMMAND_RESULT.DISABLED then
-        ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.DISABLEDFMT, prettyname(command)))
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.DISABLEDFMT, prettyname(command)))
         print(string.format("User %s tried to run command %s, but it is disabled.", caller.name, command.name))
         return
     elseif exec_type == COMMAND_RESULT.DENY then
-        ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT, prettyname(command)))
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT, prettyname(command)))
         print(string.format("User %s tried to run command %s, but is squelched.", caller.name, command.name))
         return
     elseif exec_type == COMMAND_RESULT.INVALID then
@@ -282,13 +288,13 @@ local function runcommand(command, params, caller, onserver, confirm)
         elseif params.user ~= nil then
             local username = UserToName(params.user)
             if username ~= nil then
-                ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), username))
+                sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), username))
             else
-                ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
+                sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
             end
             print(string.format("User %s tried to run command %s, but target was bad.", caller.name, command.name))
         else
-            ChatHistory:SendCommandResponse(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, prettyname(command)))
+            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, prettyname(command)))
             print(string.format("User %s tried to run command %s, but was not allowed.", caller.name, command.name))
         end
         return

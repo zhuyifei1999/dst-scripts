@@ -2,7 +2,7 @@ local Badge = require("widgets/badge")
 local UIAnim = require("widgets/uianim")
 
 local WereBadge = Class(Badge, function(self, owner)
-    Badge._ctor(self, nil, owner, { 70 / 255, 112 / 255, 29 / 255, 1 }, nil, nil, nil, true)
+    Badge._ctor(self, nil, owner, { 70 / 255, 112 / 255, 29 / 255, 1 })
 
     self.circleframe:GetAnimState():SetBank("status_were")
     self.circleframe:GetAnimState():SetBuild("status_were")
@@ -10,12 +10,10 @@ local WereBadge = Class(Badge, function(self, owner)
     self.circleframe2 = self.circleframe:AddChild(UIAnim())
     self.circleframe2:GetAnimState():SetBank("status_were")
     self.circleframe2:GetAnimState():SetBuild("status_were")
-    self.circleframe2:GetAnimState():AnimateWhilePaused(false)
 
     self.sanityarrow = self.underNumber:AddChild(UIAnim())
     self.sanityarrow:GetAnimState():SetBank("sanity_arrow")
     self.sanityarrow:GetAnimState():SetBuild("sanity_arrow")
-    self.sanityarrow:GetAnimState():AnimateWhilePaused(false)
     self.sanityarrow:SetClickable(false)
 
     self.val = 100
@@ -96,8 +94,6 @@ function WereBadge:SetPercent(val)
 end
 
 function WereBadge:OnUpdate(dt)
-    if TheNet:IsServerPaused() then return end
-
     if self.owner.GetWerenessDrainRate ~= nil then
         self:SetPercent(math.max(0, self.val + self.owner:GetWerenessDrainRate() * dt / 100))
     end

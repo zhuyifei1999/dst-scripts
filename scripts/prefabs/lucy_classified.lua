@@ -120,7 +120,7 @@ local function fn()
         inst.OnEntityReplicated = OnEntityReplicated
 
         --Delay net listeners until after initial values are deserialized
-        inst:DoStaticTaskInTime(0, RegisterNetListeners)
+        inst:DoTaskInTime(0, RegisterNetListeners)
 
         return inst
     end

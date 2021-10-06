@@ -15,8 +15,6 @@ local ColourTweener = Class(function(self, inst)
 	self.timepassed = 0
 
 	self.tweening = false
-
-	--self.usewallupdate = nil
 end)
 
 function ColourTweener:IsTweening()
@@ -36,12 +34,7 @@ function ColourTweener:EndTween()
 	end
 	self.tweening = false
 	self.inst:PushEvent("colourtweener_end")
-	if self.usewallupdate then
-		self.inst:StopWallUpdatingComponent(self)
-	else
-		self.inst:StopUpdatingComponent(self)
-	end
-	self.usewallupdate = nil
+	self.inst:StopUpdatingComponent(self)
 end
 
 local function UnpackColour(colour)
@@ -51,8 +44,7 @@ local function UnpackColour(colour)
 	return colour[1], colour[2], colour[3], colour[4]
 end
 
-function ColourTweener:StartTween(colour, time, callback, usewallupdate)
-	self.usewallupdate = usewallupdate
+function ColourTweener:StartTween(colour, time, callback)
 	self.callback = callback
 
 	local i_colour = {self.inst.AnimState:GetMultColour()}
@@ -69,17 +61,13 @@ function ColourTweener:StartTween(colour, time, callback, usewallupdate)
 	self.inst:PushEvent("colourtweener_start")
 	self.tweening = true
 	if self.time > 0 then
-		if self.usewallupdate then
-			self.inst:StartWallUpdatingComponent(self)
-		else
-			self.inst:StartUpdatingComponent(self)
-		end
+		self.inst:StartUpdatingComponent(self)
 	else
 		self:EndTween()
 	end
 end
 
-function ColourTweener:DoUpdate(dt)
+function ColourTweener:OnUpdate(dt)
 	self.timepassed = self.timepassed + dt
 	local t = self.timepassed/self.time
 	if t > 1 then
@@ -101,8 +89,5 @@ function ColourTweener:DoUpdate(dt)
 		self:EndTween()
 	end
 end
-
-ColourTweener.OnUpdate = ColourTweener.DoUpdate
-ColourTweener.OnWallUpdate = ColourTweener.DoUpdate
 
 return ColourTweener
