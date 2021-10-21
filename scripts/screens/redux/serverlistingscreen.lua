@@ -537,7 +537,7 @@ end
 
 function ServerListingScreen:ViewServerPlayers()
     local players = self:ProcessServerPlayersData()
-    if players ~= nil then
+    if type(players) =="table" then
         TheFrontEnd:PushScreen(ViewPlayersModalScreen(players, self.selected_server.max_players))
     end
 end
@@ -556,10 +556,16 @@ function ServerListingScreen:ProcessServerGameData()
     elseif self.selected_server._processed_game_data == nil
         and self.selected_server.game_data ~= nil
         and #self.selected_server.game_data > 0 then
-        local success, data = RunInSandboxSafe(self.selected_server.game_data)
+        local success, data = RunInSandboxSafeCatchInfiniteLoops(self.selected_server.game_data)
         if success and data ~= nil then
             self.selected_server._processed_game_data = data
+        else
+            self.selected_server._processed_game_data = false
         end
+    end
+
+    if self.selected_server._processed_game_data == false then
+        return
     end
     return self.selected_server._processed_game_data
 end
@@ -570,10 +576,16 @@ function ServerListingScreen:ProcessServerWorldGenData()
     elseif self.selected_server._processed_world_gen_data == nil
         and self.selected_server.world_gen_data ~= nil
         and #self.selected_server.world_gen_data > 0 then
-        local success, data = RunInSandboxSafe(self.selected_server.world_gen_data)
+        local success, data = RunInSandboxSafeCatchInfiniteLoops(self.selected_server.world_gen_data)
         if success and data ~= nil then
             self.selected_server._processed_world_gen_data = data
+        else
+            self.selected_server._processed_world_gen_data = false
         end
+    end
+
+    if self.selected_server._processed_world_gen_data == false then
+        return
     end
     return self.selected_server._processed_world_gen_data
 end
@@ -584,10 +596,10 @@ function ServerListingScreen:ProcessServerPlayersData()
     elseif self.selected_server._processed_players_data == nil
         and self.selected_server.players_data ~= nil
         and #self.selected_server.players_data > 0 then
-        local success, data = RunInSandboxSafe(self.selected_server.players_data)
+        local success, data = RunInSandboxSafeCatchInfiniteLoops(self.selected_server.players_data)
         if success and data ~= nil then
             for i, v in ipairs(data) do
-                if v.colour ~= nil then
+                if table.typecheckedgetfield(v, "string", "colour") then
                     local colourstr = "00000"..v.colour
                     local r = tonumber(colourstr:sub(-6, -5), 16) / 255
                     local g = tonumber(colourstr:sub(-4, -3), 16) / 255
@@ -596,7 +608,13 @@ function ServerListingScreen:ProcessServerPlayersData()
                 end
             end
             self.selected_server._processed_players_data = data
+        else
+            self.selected_server._processed_players_data = false
         end
+    end
+
+    if self.selected_server._processed_players_data == false then
+        return
     end
     return self.selected_server._processed_players_data
 end
@@ -727,14 +745,14 @@ function ServerListingScreen:UpdateServerData(selected_index_actual)
         end
 
         local gamedata = self:ProcessServerGameData()
-        local day = gamedata ~= nil and gamedata.day or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN
+        local day = gamedata ~= nil and type(gamedata.day) == "string" and gamedata.day or STRINGS.UI.SERVERLISTINGSCREEN.UNKNOWN
         self.day_description.text:SetString(STRINGS.UI.SERVERLISTINGSCREEN.DAYDESC..day)
 
         local seasondesc = self.selected_server.season ~= nil and STRINGS.UI.SERVERLISTINGSCREEN.SEASONS[string.upper(self.selected_server.season)] or nil
         if seasondesc ~= nil and
             gamedata ~= nil and
-            gamedata.daysleftinseason ~= nil and
-            gamedata.dayselapsedinseason ~= nil then
+            type(gamedata.daysleftinseason) == "number" and
+            type(gamedata.dayselapsedinseason) == "number" then
 
             if gamedata.daysleftinseason * 3 <= gamedata.dayselapsedinseason then
                 seasondesc = STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_1..seasondesc..STRINGS.UI.SERVERLISTINGSCREEN.LATE_SEASON_2
@@ -1349,7 +1367,7 @@ function ServerListingScreen:ProcessPlayerData(session)
             if type(data) == "table" and data.session_data_processed then
                 self.sessions[session] = data.data
             else
-                local success, playerdata = RunInSandboxSafe(data)
+                local success, playerdata = RunInSandboxSafeCatchInfiniteLoops(data)
                 self.sessions[session] = success and playerdata or false
                 self.session_mapping[session] =
                 {

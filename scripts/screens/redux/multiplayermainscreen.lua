@@ -177,6 +177,13 @@ local function MakeYOTCBanner(self, baner_root, anim)
     end
 end
 
+local function MakeHallowedNightsBanner(self, baner_root, anim)
+    anim:GetAnimState():SetBuild("dst_menu_halloween2")
+    anim:GetAnimState():SetBank ("dst_menu_halloween2")
+    anim:SetScale(.667)
+    anim:GetAnimState():PlayAnimation("loop", true)
+end
+
 local function MakeCawnivalBanner(self, baner_root, anim)
     anim:GetAnimState():SetBuild("dst_menu_carnival")
     anim:GetAnimState():SetBank ("dst_menu_carnival")
@@ -279,6 +286,8 @@ function MakeBanner(self)
         MakeDefaultBanner(self, baner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
         MakeYOTCBanner(self, baner_root, anim)
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+        MakeHallowedNightsBanner(self, baner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
         MakeWebberCawnivalBanner(self, baner_root, anim)
 	elseif false then

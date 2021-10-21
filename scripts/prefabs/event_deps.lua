@@ -64,10 +64,10 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
+                Asset("ANIM", "anim/dst_menu_halloween2.zip"),
                 Asset("PKGREF", "anim/dst_menu_halloween.zip"),
                 Asset("PKGREF", "anim/dst_menu_wurt.zip"),
-
-                Asset("ANIM", "anim/dst_menu_grotto.zip"),
+                Asset("PKGREF", "anim/dst_menu_grotto.zip"),
             },
         },
         backend =

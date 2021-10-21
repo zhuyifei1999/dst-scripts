@@ -779,6 +779,26 @@ function RunInSandboxSafe(untrusted_code, error_handler)
 	return xpcall(untrusted_function, error_handler or function() end)
 end
 
+--same as above, but catches infinite loops
+function RunInSandboxSafeCatchInfiniteLoops(untrusted_code, error_handler)
+	if untrusted_code:byte(1) == 27 then return nil, "binary bytecode prohibited" end
+	local untrusted_function, message = loadstring(untrusted_code)
+	if not untrusted_function then return nil, message end
+	setfenv(untrusted_function, {print = print} )
+
+    local co = coroutine.create(function()
+        coroutine.yield(xpcall(untrusted_function, error_handler or function() end))
+    end)
+    debug.sethook(co, function() error("infinite loop detected") end, "", 20000)
+    --clear out all entries to the metatable of string, since that can be accessed even by doing local string = "" string.whatever()
+    local string_backup = deepcopy(string)
+    cleartable(string)
+    local result = {coroutine.resume(co)}
+    shallowcopy(string_backup, string)
+    debug.sethook(co)
+    return unpack(result, 2)
+end
+
 function GetTickForTime(target_time)
 	return math.floor( target_time/GetTickTime() )
 end
@@ -871,6 +891,14 @@ function shallowcopy(orig, dest)
         copy = orig
     end
     return copy
+end
+
+function cleartable(object)
+    if type(object) == "table" then
+        for k, v in pairs(object) do
+            object[k] = nil
+        end
+    end
 end
 
 -- if next(table) == nil, then the table is empty
@@ -1253,6 +1281,27 @@ function table.getfield(Table,Name)
         end
     end
     return Table
+end
+
+function table.typecheckedgetfield(Table, Type, ...)
+    if type(Table) ~= "table" then return end
+
+    local Names = {...}
+    local Names_Count = #Names
+    for i, Name in ipairs(Names) do
+        if i == Names_Count then
+            if Type == nil or type(Table[Name]) == Type then
+                return Table[Name]
+            end
+            return
+        else
+            if type(Table[Name]) == "table" then
+                Table = Table[Name]
+            else
+                return
+            end
+        end
+    end
 end
 
 function table.findfield(Table,Name)

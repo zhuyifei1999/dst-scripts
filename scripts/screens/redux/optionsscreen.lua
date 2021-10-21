@@ -1558,6 +1558,9 @@ function OptionsScreen:_BuildControls()
             local group = Widget("control"..index)
             group.bg = group:AddChild(TEMPLATES.ListItemBackground(700, button_height))
             group.bg:SetPosition(-60,0)
+			if device_type == "keyboard" then
+	            group.bg:SetScale(1.025, 1)
+			end
             group:SetScale(1,1,0.75)
 
             group.device_type = device_type
@@ -1607,6 +1610,21 @@ function OptionsScreen:_BuildControls()
             if group.controlId then
                 group.binding_btn:SetText(initial_device_id and TheInput:GetLocalizedControl(initial_device_id, group.controlId) or "")
             end
+
+			if device_type == "keyboard" then
+				group.unbinding_btn = group:AddChild(ImageButton("images/global_redux.xml", "close.tex", "close.tex"))
+				group.unbinding_btn:SetOnClick(
+					function()
+						local device_id = self.deviceSpinner:GetSelectedData()
+						if is_valid_fn(device_id) then
+							self.is_mapping = true
+							TheInputProxy:UnMapControl(device_id, group.controlId)
+						end
+					end)
+				group.unbinding_btn:SetPosition(x - 5,0)
+				group.unbinding_btn:SetScale(0.4, 0.4)
+				group.unbinding_btn:SetHoverText(STRINGS.UI.CONTROLSSCREEN.UNBIND)
+			end
 
             group.focus_forward = group.binding_btn
 
