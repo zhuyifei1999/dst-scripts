@@ -14,7 +14,7 @@ local STATE_DATA =
         customidle = "idle_wolfgang_skinny",
         tag = "mightiness_wimpy",
 
-        scale = 0.95,
+        scale = 0.9,
         insulation = -TUNING.INSULATION_SMALL,
     },
     
@@ -49,7 +49,7 @@ local STATE_DATA =
         customidle = "idle_wolfgang_mighty",
         tag = "mightiness_mighty",
 
-        scale = 1.15,
+        scale = 1.2,
         insulation = TUNING.INSULATION_SMALL,
         work_effectiveness = TUNING.MIGHTY_WORK_EFFECTIVENESS,
     },
@@ -94,12 +94,21 @@ local Mightiness = Class(function(self, inst)
     self.inst:DoPeriodicTask(period, OnTaskTick, nil, self, period)
 
     self.inst:ListenForEvent("hungerdelta", function(_, data) self:OnHungerDelta(data) end)
+    self.inst:ListenForEvent("invincibletoggle", function(_, data) self:OnSetInvincible(data) end)
 end,
 nil,
 {
     current = oncurrent,
     ratescale = onratescale
 })
+
+function Mightiness:OnSetInvincible(data)
+    if data and data.invincible then
+        self:Pause()
+    else
+        self:Resume()
+    end
+end
 
 function Mightiness:OnSave()
     return self.current ~= self.max and { mightiness = self.current } or nil

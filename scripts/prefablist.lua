@@ -749,6 +749,7 @@ PREFABFILES = {
   "rabbit",
   "rabbithole",
   "rabbithouse",
+  "rabbithouse_yule_glow_fx",
   "rain",
   "raincoat",
   "raindrop",

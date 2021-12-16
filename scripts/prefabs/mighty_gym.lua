@@ -62,6 +62,12 @@ local function OnUseHeavy(inst, doer, heavy_item)
 	return true
 end
 
+
+local function onremoved(inst)
+    if inst.components.mightygym.strongman then
+        inst.components.mightygym:CharacterExitGym(inst.components.mightygym.strongman)
+    end
+end
 --------------------------------------------------
 
 local function fn()
@@ -87,6 +93,8 @@ local function fn()
     inst.AnimState:AddOverrideBuild("mighty_gym")
     inst.AnimState:OverrideSymbol("fx_star", "fx_wolfgang", "fx_star")
     inst.AnimState:OverrideSymbol("fx_star_part", "fx_wolfgang", "fx_star_part")
+
+    inst.AnimState:Hide("bell")
 
     inst.AnimState:PlayAnimation("idle_empty", true)
 
@@ -120,6 +128,7 @@ local function fn()
 
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("onburnt", onburnt)
+    inst:ListenForEvent("onremove", onremoved)    
 
     MakeLargeBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
@@ -164,4 +173,4 @@ end
 
 return Prefab("mighty_gym", fn, assets, prefabs),
        Prefab("mighty_gym_bell", bell_fn, assets),
-       MakePlacer("mighty_gym_placer", "mighty_gym", "mighty_gym", "idle_empty")
+       MakePlacer("mighty_gym_placer", "mighty_gym", "mighty_gym", "idle_empty", nil, nil, nil, nil, nil, nil, function(inst)  inst.AnimState:Hide("bell") end)

@@ -298,6 +298,7 @@ function MightyGym:CharacterEnterGym(player)
         self.inst.Physics:SetActive(false)
     end
     self.inst:AddTag("fireimmune")
+    self.inst.enterdirection = player.Transform:GetRotation()
     -- SWAP THE PLAYER
     player:ApplyScale("mightiness", 1)
 
@@ -337,7 +338,7 @@ function MightyGym:CharacterEnterGym(player)
 end
 
 function MightyGym:CharacterExitGym(player)
-
+    local pos = Vector3(player.Transform:GetWorldPosition())
     --BRING REAL GYM BACK
     self.inst:Show()
     if self.inst.Physics then
@@ -349,8 +350,7 @@ function MightyGym:CharacterExitGym(player)
 
     player:DoTaskInTime(FRAMES * 1, function()
 
-        local pos = Vector3(self.inst.Transform:GetWorldPosition())
-        local theta = math.random() * PI * 2
+        local theta = self.inst.enterdirection and (self.inst.enterdirection *DEGREES)-PI or math.random() * PI * 2
         local offset = FindWalkableOffset(pos, theta, 3, 16, nil, nil, nil, nil, true)
         local teleport = false
         
@@ -372,9 +372,10 @@ function MightyGym:CharacterExitGym(player)
             if player.DynamicShadow ~= nil then
                 player.DynamicShadow:Enable(true)
             end
-
+             
             local offset = FindWalkableOffset(pos, theta, 3, 16, nil, nil, nil, nil, true)
             player:FacePoint(pos.x+offset.x,0,pos.z+offset.z)
+
 
             if (player.components.freezable and player.components.freezable:IsFrozen()) or (player.components.sleeper and not player.components.sleeper:IsAsleep()) or (player.components.grogginess and player.components.grogginess.knockedout) then 
                 teleport = true
@@ -386,9 +387,7 @@ function MightyGym:CharacterExitGym(player)
                     local state = string.upper(player.components.mightiness:GetState())
                     player.components.talker:Say(GetString(player, "ANNOUNCE_EXITGYM", state))
                 end)                
-
-                local x,y,z = self.inst.Transform:GetWorldPosition()
-                player.Transform:SetPosition(x,y,z)        
+                player.Transform:SetPosition(pos.x,pos.y,pos.z)        
             end    
         end
 

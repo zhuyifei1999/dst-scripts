@@ -5616,6 +5616,7 @@ function Tune(overrides)
         DUMBBELL_GOLDEN_DAMAGE = 40,
         DUMBBELL_GEM_DAMAGE = 59,
 
+        MIGHTY_WORK_CHANCE = 0.99,
         MIGHTY_WORK_EFFECTIVENESS = 1.5,
         MIGHTY_ROWER_MULT = 1.33,
 

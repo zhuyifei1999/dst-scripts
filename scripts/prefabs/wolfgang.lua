@@ -31,7 +31,7 @@ local function GetThreatCount(inst)
     local epic_count = 0
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.WOLFGANG_SANITY_RANGE, nil, { "bedazzled" }, { "monster", "epic" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.WOLFGANG_SANITY_RANGE, nil, { "bedazzled", "INLIMBO", "FX", "NOCLICK", "DECOR" }, { "monster", "epic" })
 
     for k, v in pairs(ents) do
         if v:HasTag("epic") then
@@ -53,9 +53,15 @@ local function CheckForPlayers(inst)
     local player_count = #players
     player_count = player_count - 1 -- Subtract Wolfgang himself
     
-    local follower_count = 0
-    for k, v in pairs(players) do
-        follower_count = follower_count + v.components.leader:CountFollowers()
+    local PVP_enabled = TheNet:GetPVPEnabled()
+
+    local follower_count = inst.components.leader:CountFollowers()
+    if not PVP_enabled then
+        for k, v in pairs(players) do
+            if v ~= inst then
+                follower_count = follower_count + v.components.leader:CountFollowers()
+            end
+        end
     end
 
     local sanity_rate = math.min(2, math.max(TUNING.WOLFGANG_SANITY_DRAIN, TUNING.WOLFGANG_SANITY_DRAIN + ((epic_count * 3) + monster_count - player_count - follower_count) * TUNING.WOLFGANG_SANITY_PER_MONSTER))
@@ -124,7 +130,7 @@ end
 local function OnWorked(inst, data)
     if inst:HasTag("mightiness_mighty") and data and data.target then
         local workable = data.target.components.workable
-        if workable and workable.workleft > 0 and math.random() >= 0.99 then
+        if workable and workable.workleft > 0 and math.random() >= TUNING.MIGHTY_WORK_CHANCE then
             workable.workleft = 0
         end
     end

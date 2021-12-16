@@ -110,7 +110,7 @@ end
 
 local function OnHit(inst, attacker, target)
     local pt = Vector3(inst.Transform:GetWorldPosition())
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 2)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 2, nil, {"FX", "NOCLICK", "DECOR", "INLIMBO"})
     for i,ent in ipairs(ents) do
         if CanDamage(inst, ent) then
             ent.components.combat:GetAttacked(attacker, inst.components.weapon.damage)
