@@ -7016,10 +7016,6 @@ STRINGS.UI =
 			crabking = "The Crab King",
 		},
 		TROPHYSCALE_UNKNOWN_OWNER = "An Unnamed Donor",
-
-		CRAFTING_PIN = "Pin",
-		CRAFTING_UNPIN = "Unpin",
-
 	},
 
 	CRAFTING_FILTERS =
@@ -7082,6 +7078,13 @@ STRINGS.UI =
 		    FAVORITE = "Favorite",
 		},
 		SEARCH = "Search",
+
+		NAVIGATION = "Navigation",
+		PIN = "Pin",
+		UNPIN = "Unpin",
+
+		FAVORITE_ADD = "Add Favorite",
+		FAVORITE_REMOVE = "Remove Favorite",
 	},
 
     ACCOUNT =
@@ -7214,9 +7217,10 @@ STRINGS.UI =
         WALTERCAMERA = "Campfire Camera:",
         BOATCAMERA = "Seafaring Camera:",
         BACKPACKMODE = "Backpack Layout:",
-        AUTOPAUSE = "Auto-pause:",
-        CONSOLEAUTOPAUSE = "Console Auto-pause:",
-        CRAFTINGAUTOPAUSE = "Crafting Auto-pause:",
+        AUTOPAUSE = "Auto-Pause:",
+        CONSOLEAUTOPAUSE = "Console Auto-Pause:",
+        CRAFTINGAUTOPAUSE = "Crafting Auto-Pause:",
+		CRAFTINGMENUBUFFEREDBUILDAUTOCLOSE = "Crafting Auto-Close",
         DEFAULTCLOUDSAVES = "Default Save Type:",
 		INTEGRATEDBACKPACK_DISABLED = "Separated",
 		INTEGRATEDBACKPACK_ENABLED = "Integrated",
@@ -7294,6 +7298,7 @@ STRINGS.UI =
             SERVER_NAME_PROFANITY_FILTER = "Filter out the profanity when browsing the server list. Filtered servers will have their names displayed as \"This server name has been filtered\" and can still be joined.",
             AUTOPAUSE = "When you are the only player in the world, this will pause the game while you are in the ingame menus, crafting, or viewing the cookbook or plant registry. If there are other players in the world, only the server admin will have permissions to pause the game.",
             CRAFTINGAUTOPAUSE = "When you are the only player in the world, this will pause the game while the crafting menu is open.",
+			CRAFTINGMENUBUFFEREDBUILDAUTOCLOSE = "Closes the crafting menu when building a structure that is placed in the world.",
             DATACOLLECTION = "We collect metrics and telemetry on Don't Starve Together, including how long and how often you play. This information helps us troubleshoot the game, provide rewards, and improve your experience. Refer to https://www.klei.com/privacy-policy for more information.",
             LOADING_TIPS = "Learn more about the lore and the gameplay of Don't Starve while your world loads.",
 			TARGETLOCKING = "Focus on one target at a time.",
@@ -7375,7 +7380,7 @@ STRINGS.UI =
 		CHECK_SHOP = "Updating the shop",
 		CHECK_EVENT = "Catching up on current events",
 		CHECK_DAILY_GIFT = "Checking for daily gifts",
-		CHECK_COOKBOOK = "Updating cookbook",
+		CHECK_KEYVALUESTORES = "Grabbing profile details",
 		CHECK_INVENTORY = "Updating inventory",
     },
 

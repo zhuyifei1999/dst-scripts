@@ -477,8 +477,6 @@ CRAFTING_FILTERS.LIGHT.recipes =
 
 CRAFTING_FILTERS.PROTOTYPERS.recipes =
 {
-	"madscience_lab",
-	"wintersfeastoven",
 	"researchlab",
 	"researchlab2",
 	"seafaring_prototyper",
@@ -488,6 +486,15 @@ CRAFTING_FILTERS.PROTOTYPERS.recipes =
 	"researchlab3",
 	"sculptingtable",
 	"turfcraftingstation",
+
+	"madscience_lab",
+	"wintersfeastoven",
+	"perdshrine",			
+	"wargshrine",			
+	"pigshrine",			
+	"yotc_carratshrine",	
+	"yotb_beefaloshrine",	
+	"yot_catcoonshrine",	
 }
 
 CRAFTING_FILTERS.REFINE.recipes =
@@ -514,6 +521,7 @@ CRAFTING_FILTERS.WEAPONS.recipes =
 {
 	"pocketwatch_weapon",
 	"slingshot",
+	"winona_catapult",
 	"spear",
 	"spear_wathgrithr",
 	"boomerang",
@@ -640,6 +648,7 @@ CRAFTING_FILTERS.COOKING.recipes =
 	"firepit",
 	"icebox",
 	"saltbox",
+	"icepack",
 	"dragonflyfurnace",
 
 }
@@ -860,6 +869,7 @@ CRAFTING_FILTERS.RIDING.recipes =
 	"saddle_basic",
 	"saddle_war",
 	"saddle_race",
+	"beefalo_groomer",
 }
 
 CRAFTING_FILTERS.WINTER.recipes =
@@ -912,9 +922,13 @@ CRAFTING_FILTERS.SUMMER.recipes =
 	"eyebrellahat",
 
 	"firesuppressor",
+	"turf_dragonfly",
 
 	"siestahut",
+
 	"waterballoon",
+	"wateringcan",
+	"premiumwateringcan",
 
 	"winterometer",
 	"rainometer",

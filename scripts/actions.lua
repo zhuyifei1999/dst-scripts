@@ -1443,7 +1443,7 @@ ACTIONS.ADDFUEL.fn = function(act)
     if act.doer.components.inventory then
         local fuel = act.doer.components.inventory:RemoveItem(act.invobject)
         if fuel then
-            if act.target.components.fueled:TakeFuelItem(fuel, act.doer) then
+            if act.target.components.fueled and act.target.components.fueled:TakeFuelItem(fuel, act.doer) then
                 return true
             else
                 --print("False")
@@ -1452,20 +1452,7 @@ ACTIONS.ADDFUEL.fn = function(act)
         end
     end
 end
-
-ACTIONS.ADDWETFUEL.fn = function(act)
-    if act.doer.components.inventory then
-        local fuel = act.doer.components.inventory:RemoveItem(act.invobject)
-        if fuel then
-            if act.target.components.fueled:TakeFuelItem(fuel, act.doer) then
-                return true
-            else
-                -- print("False")
-                act.doer.components.inventory:GiveItem(fuel)
-            end
-        end
-    end
-end
+ACTIONS.ADDWETFUEL.fn = ACTIONS.ADDFUEL.fn
 
 ACTIONS.GIVE.strfn = function(act)
     return act.target ~= nil

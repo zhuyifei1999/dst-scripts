@@ -449,6 +449,7 @@ function Inv:OnUpdate(dt)
     end
 
 	if self.owner.HUD:IsCraftingOpen() then
+        self.actionstring:Hide()
 		return
 	end
 
