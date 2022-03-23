@@ -431,9 +431,9 @@ Recipe2("oceanfishingbobber_malbatross",	{Ingredient("malbatross_feather", 1)},	
 Recipe2("oceanfishinglure_spoon_red",		{Ingredient("flint", 2), Ingredient("red_cap", 1)},														TECH.FISHING_ONE)
 Recipe2("oceanfishinglure_spoon_green",		{Ingredient("flint", 2), Ingredient("green_cap", 1)},													TECH.FISHING_ONE)
 Recipe2("oceanfishinglure_spoon_blue",		{Ingredient("flint", 2), Ingredient("blue_cap", 1)},													TECH.FISHING_ONE)
-Recipe2("oceanfishinglure_spinner_red",		{Ingredient("flint", 2), Ingredient("red_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
-Recipe2("oceanfishinglure_spinner_green",	{Ingredient("flint", 2), Ingredient("green_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
-Recipe2("oceanfishinglure_spinner_blue",	{Ingredient("flint", 2), Ingredient("blue_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
+Recipe2("oceanfishinglure_spinner_red",		{Ingredient("flint", 1), Ingredient("red_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
+Recipe2("oceanfishinglure_spinner_green",	{Ingredient("flint", 1), Ingredient("green_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
+Recipe2("oceanfishinglure_spinner_blue",	{Ingredient("flint", 1), Ingredient("blue_cap", 1), Ingredient("beefalowool", 1)},						TECH.FISHING_ONE)
 																																									
 Recipe2("oceanfishinglure_hermit_rain",		{Ingredient("cookiecuttershell", 1), Ingredient("mosquitosack", 1)},									TECH.LOST)		
 Recipe2("oceanfishinglure_hermit_snow",		{Ingredient("cookiecuttershell", 1), Ingredient("ice", 1)},												TECH.LOST)		

@@ -7085,6 +7085,7 @@ STRINGS.UI =
 
 		FAVORITE_ADD = "Add Favorite",
 		FAVORITE_REMOVE = "Remove Favorite",
+		NO_ITEMS = "No items match the current filter.",
 	},
 
     ACCOUNT =
@@ -7394,7 +7395,7 @@ STRINGS.UI =
         TIP_CAVES = "\"I finally worked up the courage to explore the underground caverns. To my surprise, I found there was ample light provided by a most curious glowing plant that seems to grow naturally throughout the cave system. I've harvested some bulbs for further study.\" -W",
         TIP_PIG_AND_MONSTERS = "\"The Pig men seem to harbor a deep dislike for the Constant's more monstrous denizens, attacking them on sight. While I personally can't blame them, it does pose a bit of a problem for some of my compatriots...\" -W",
         TIP_TREEGUARD = "\"Could've sworn I saw one of the trees movin' when I was out choppin' firewood... must've been a trick of the light.\" -W",
-        TIP_RUN_AWAY = "\"It turns out that Koalephants are a bit hardier than I expected. I (quite sensibly) decided to take a... strategic retreat until I'm better prepared.\" -W",
+        TIP_RUN_AWAY = "\"It turns out that Koalefants are a bit hardier than I expected. I (quite sensibly) decided to take a... strategic retreat until I'm better prepared.\" -W",
         TIP_CHARCOAL = "\"You know what they say, you can't get charcoal without burning down a few trees!\" -W",
         TIP_HEAT = "\"Blast this heat! Where's a nice, chilled drink when you need it?\" -M",
         TIP_WETNESS = "\"The rain is proving to be a greater hindrance than I first anticipated. As if being soaked to the bone isn't dreadful enough, my tools keep slipping from my hands when I try to make use of them!\" -W",
@@ -10797,7 +10798,7 @@ STRINGS.UI =
             "Debug Log",
             "Debug Render",
             "Open Inventory",
-            "Open Crafting",
+            "Open Crafting Menu",
             "Inv Left",
             "Inv Right",
             "Inv Up",
@@ -10825,6 +10826,7 @@ STRINGS.UI =
             "Menu Misc 4", --controller
             "Inspect Self",
             "Pause Server",
+			"Search Crafting Menu",
         },
 
         DEVICE_TITLE = "Controls",

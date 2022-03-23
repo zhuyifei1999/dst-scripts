@@ -471,7 +471,7 @@ local function LoadSaveDataFromMissingSpawnInfo(player, missingspawninfo)
 		_targetableplayers[player.GUID] = missingspawninfo._targetstatus
 	end
 	if missingspawninfo._spawninfo then
-		local spawninforec = missingspawninfo._spawninfo[1]
+		local spawninforec = missingspawninfo._spawninfo
 		_delayedplayerspawninfo[player]._spawninfo =
 		{
 			{

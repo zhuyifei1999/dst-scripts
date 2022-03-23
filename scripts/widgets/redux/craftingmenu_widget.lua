@@ -65,6 +65,14 @@ function CraftingMenuWidget:Initialize()
 	self:Refresh() 
 end
 
+function CraftingMenuWidget:StartSearching(clear_text)
+	if clear_text then
+		self:SetSearchText("")
+		self.search_box.textbox:SetString("")
+	end
+	self.search_box.textbox:SetEditing(true)
+end
+
 function CraftingMenuWidget:OnControl(control, down)
 	if self.crafting_hud:IsCraftingOpen() then
 		if self.details_root.skins_spinner ~= nil and not self.details_root.skins_spinner.focus then
@@ -348,6 +356,12 @@ function CraftingMenuWidget:UpdateRecipeGrid(set_focus)
 	local prev_focus_data = self.details_root.data
 	local prev_focus_skin = self.details_root.skins_spinner ~= nil and self.details_root.skins_spinner:GetItem() or nil
 
+	if #self.filtered_recipes == 0 then
+		self.no_recipes_msg:Show()
+	else
+		self.no_recipes_msg:Hide()
+	end
+
 	self.recipe_grid:ResetScroll()
 	self.recipe_grid:SetItemsData(self.filtered_recipes)
 	self.recipe_grid.dirty = false
@@ -504,6 +518,11 @@ function CraftingMenuWidget:MakeFrame(width, height, fileters_height)
 	self.recipe_grid = w:AddChild(self:MakeRecipeList(width, height - fileters_height))
 	local grid_w, grid_h = self.recipe_grid:GetScrollRegionSize()
 	self.recipe_grid:SetPosition(-2, height/2 - fileters_height - grid_h/2)
+	
+	self.no_recipes_msg = w:AddChild(Text(UIFONT, 30, STRINGS.UI.CRAFTING_MENU.NO_ITEMS, UICOLOURS.GOLD_UNIMPORTANT))
+	self.no_recipes_msg:SetPosition(-2, height/2 - fileters_height - grid_h/2)
+	self.no_recipes_msg:Hide()
+
 	----------------
 
 	self.itemlist_split = w:AddChild(Image(atlas, "horizontal_bar.tex"))

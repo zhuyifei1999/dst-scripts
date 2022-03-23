@@ -119,7 +119,7 @@ function CraftingMenuHUD:IsCraftingOpen()
     return self.is_open
 end
 
-function CraftingMenuHUD:Open()
+function CraftingMenuHUD:Open(search)
 	if self:IsCraftingOpen() then
 		return 
 	end
@@ -133,10 +133,15 @@ function CraftingMenuHUD:Open()
 
 	self:RefreshCraftingHelpText()
 
-	self.open_focus = nil
-	if TheInput:ControllerAttached() then
-		if self.pinbar.focus then
-			self.open_focus = self.pinbar:GetFocusSlot()
+	if search then
+		self.open_focus = self.craftingmenu.search_box
+		self.craftingmenu:StartSearching(true)
+	else
+		self.open_focus = nil
+		if TheInput:ControllerAttached() then
+			if self.pinbar.focus then
+				self.open_focus = self.pinbar:GetFocusSlot()
+			end
 		end
 	end
 
