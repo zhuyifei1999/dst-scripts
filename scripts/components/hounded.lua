@@ -475,7 +475,7 @@ local function LoadSaveDataFromMissingSpawnInfo(player, missingspawninfo)
 		_delayedplayerspawninfo[player]._spawninfo =
 		{
 			{
-				players = {[player] = spawninforec.useridplayers[player.userid]},
+				players = {[player] = spawninforec.count},
 				timetonext = spawninforec.timetonext,
 				averageplayerage = spawninforec.averageplayerage,
 			}

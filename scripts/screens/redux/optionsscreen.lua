@@ -86,7 +86,9 @@ local all_controls =
 
     -- inventory
     {name=CONTROL_OPEN_CRAFTING, keyboard=CONTROL_OPEN_CRAFTING, controller=CONTROL_OPEN_CRAFTING},
-    {name=CONTROL_SEARCH_CRAFTING, keyboard=CONTROL_SEARCH_CRAFTING, controller=nil},
+    {name=CONTROL_CRAFTING_MODIFIER, keyboard=CONTROL_CRAFTING_MODIFIER, controller=nil},
+    --{name=CONTROL_CRAFTING_PINLEFT, keyboard=CONTROL_CRAFTING_PINLEFT, controller=nil},			-- WIP
+    --{name=CONTROL_CRAFTING_PINRIGHT, keyboard=CONTROL_CRAFTING_PINRIGHT, controller=nil},			-- WIP
     {name=CONTROL_OPEN_INVENTORY, keyboard=nil, controller=CONTROL_OPEN_INVENTORY},
     {name=CONTROL_INVENTORY_UP, keyboard=nil, controller=CONTROL_INVENTORY_UP},
     {name=CONTROL_INVENTORY_DOWN, keyboard=nil, controller=CONTROL_INVENTORY_DOWN},

@@ -602,7 +602,7 @@ function Inv:CursorLeft()
     if self:CursorNav(Vector3(-1,0,0), true) then
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 	elseif not self.open and not self.pin_nav and self.owner.HUD.controls.craftingmenu.is_left_aligned then
-		self:PinBarNav(self.owner.HUD.controls.craftingmenu:SelectPin())
+		self:PinBarNav(self.owner.HUD.controls.craftingmenu:InvNavToPin())
     end
 end
 
@@ -617,7 +617,7 @@ function Inv:CursorRight()
     if self:CursorNav(Vector3(1,0,0), true) then
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 	elseif not self.open and not self.pin_nav and not self.owner.HUD.controls.craftingmenu.is_left_aligned then
-		self:PinBarNav(self.owner.HUD.controls.craftingmenu:SelectPin())
+		self:PinBarNav(self.owner.HUD.controls.craftingmenu:InvNavToPin())
     end
 end
 
@@ -629,7 +629,7 @@ function Inv:CursorUp()
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 		elseif not self.open and (self.current_list == self.inv or self.current_list == self.equip) then
 			-- go into the pin bar if there are no other open containers above the inventory bar
-			self:PinBarNav(self.owner.HUD.controls.craftingmenu:SelectPin())
+			self:PinBarNav(self.owner.HUD.controls.craftingmenu:InvNavToPin())
 		end
     end
 end

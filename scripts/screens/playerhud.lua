@@ -974,27 +974,19 @@ function PlayerHud:OnControl(control, down)
         return true
     elseif control == CONTROL_OPEN_CRAFTING then
         if self:IsCraftingOpen() then
-            self:CloseCrafting()
+			if TheInput:IsControlPressed(CONTROL_CRAFTING_MODIFIER) then
+				self.controls.craftingmenu.craftingmenu:StartSearching(true)
+			else
+	            self:CloseCrafting()
+			end
             return true
         elseif not GetGameModeProperty("no_crafting") then
             local inventory = self.owner.replica.inventory
             if inventory ~= nil and inventory:IsVisible() then
-                self:OpenCrafting()
+                self:OpenCrafting(TheInput:IsControlPressed(CONTROL_CRAFTING_MODIFIER))
                 return true
             end
         end
-    elseif control == CONTROL_SEARCH_CRAFTING then
-		if not GetGameModeProperty("no_crafting") then
-            local inventory = self.owner.replica.inventory
-            if inventory ~= nil and inventory:IsVisible() then
-				if not self:IsCraftingOpen() then
-					self:OpenCrafting(true)
-				else
-					self.controls.craftingmenu.craftingmenu:StartSearching(true)
-				end
-				return true
-            end
-		end
     elseif control == CONTROL_OPEN_INVENTORY then
         if self:IsControllerInventoryOpen() then
             self:CloseControllerInventory()
@@ -1020,10 +1012,16 @@ function PlayerHud:OnControl(control, down)
         --inventory hotkeys
         local inventory = self.owner.replica.inventory
         if inventory ~= nil and inventory:IsVisible() then
-            local item = inventory:GetItemInSlot(control - CONTROL_INV_1 + 1)
-            if item ~= nil then
-                self.owner.replica.inventory:UseItemFromInvTile(item)
-            end
+			local hot_key_num = control - CONTROL_INV_1 + 1
+
+			if TheInput:IsControlPressed(CONTROL_CRAFTING_MODIFIER) then
+				self.controls.craftingmenu:SelectPin(hot_key_num)
+			else
+				local item = inventory:GetItemInSlot(hot_key_num)
+				if item ~= nil then
+					self.owner.replica.inventory:UseItemFromInvTile(item)
+				end
+			end
             return true
         end
     end

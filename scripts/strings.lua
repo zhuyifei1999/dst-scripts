@@ -10826,7 +10826,9 @@ STRINGS.UI =
             "Menu Misc 4", --controller
             "Inspect Self",
             "Pause Server",
-			"Search Crafting Menu",
+			"Crafting Menu (mod)",
+			"Pinned Recipes Page Left",
+			"Pinned Recipes Page Right",
         },
 
         DEVICE_TITLE = "Controls",

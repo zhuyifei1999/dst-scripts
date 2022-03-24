@@ -167,7 +167,6 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("ANIM", "anim/pig_king_elite_build.zip"),
             },
         },
     },

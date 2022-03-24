@@ -435,6 +435,7 @@ PREFABFILES = {
   "krampus_sack",
   "lantern_crystal_fx",
   "lantern_flower_fx",
+  "lantern_gothic_fx",
   "lantern_tesla_fx",
   "lantern_winter_fx",
   "lava_pond",

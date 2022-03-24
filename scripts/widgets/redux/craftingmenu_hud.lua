@@ -338,9 +338,18 @@ function CraftingMenuHUD:OnControl(control, down)
 	return false
 end
 
-function CraftingMenuHUD:SelectPin()
+function CraftingMenuHUD:InvNavToPin()
 	return self.pinbar:StartControllerNav()
+end
 
+function CraftingMenuHUD:SelectPin(pin_slot)
+	if pin_slot ~= nil and not self.is_open then
+		local pin_button = self.pinbar.pin_slots[pin_slot]
+		if pin_button ~= nil and pin_button:HasRecipe() then
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			pin_button.craft_button.onclick()
+		end
+	end
 end
 
 return CraftingMenuHUD

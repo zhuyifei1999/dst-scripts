@@ -1880,7 +1880,7 @@ function PlayerController:UsingMouse()
     return not TheInput:ControllerAttached()
 end
 
-function PlayerController:ClearActionHold()
+function PlayerController:ClearActionHold(down)
     self.actionholding = false
     self.actionholdtime = nil
     self.lastheldaction = nil
@@ -1888,6 +1888,11 @@ function PlayerController:ClearActionHold()
     self.actionrepeatfunction = nil
     if not self.ismastersim then
         SendRPCToServer(RPC.ClearActionHold)
+    end
+
+    -- Referenced in entityscript.lua
+    if not down then
+        self.heldactionfailed = nil
     end
 end
 
@@ -2430,7 +2435,7 @@ function PlayerController:OnUpdate(dt)
                             else
                                 self:DoAttackButton()
                             end
-                        elseif not TheInput:IsControlPressed(CONTROL_PRIMARY) then
+                        elseif not TheInput:IsControlPressed(CONTROL_PRIMARY) and (self.lastheldaction == nil or self.lastheldaction.action == ACTIONS.ATTACK) then
                             self:OnControl(attack_control, true)
                         end
                     end
@@ -3401,7 +3406,7 @@ function PlayerController:OnLeftClick(down)
         return
     end
 
-    self:ClearActionHold()
+    self:ClearActionHold(down)
 
     self.startdragtime = nil
 
@@ -3571,7 +3576,7 @@ function PlayerController:OnRightClick(down)
         return
     end
 
-    self:ClearActionHold()
+    self:ClearActionHold(down)
 
     self.startdragtime = nil
 

@@ -688,7 +688,7 @@ function Builder:HasIngredients(recipe)
 	return false
 end
 
-function Builder:CanBuild(recipe_name) -- deprecated
+function Builder:CanBuild(recipe_name) -- deprecated, use HasIngredients instead
 	return self:HasIngredients(GetValidRecipe(recipe_name))
 end
 

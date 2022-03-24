@@ -331,6 +331,9 @@ function ServerSettingsTab:SetCanEditSaveTypeWidgets(can_edit)
 end
 
 function ServerSettingsTab:UpdateSaveType(is_cloud_save)
+    if (is_cloud_save and self.slot > CLOUD_SAVES_SAVE_OFFSET) or (not is_cloud_save and self.slot <= CLOUD_SAVES_SAVE_OFFSET) then
+        return
+    end
     self.servercreationscreen:UpdateSaveSlot(ShardSaveGameIndex:GetNextNewSlot(is_cloud_save and "cloud" or "local"))
 end
 
