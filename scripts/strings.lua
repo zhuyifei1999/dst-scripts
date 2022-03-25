@@ -162,7 +162,7 @@ STRINGS =
         wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         walter = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wanda = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
-        random = "\nSelect a random character",
+        random = "\nSelect a random survivor",
     },
 
     QUAGMIRE_CHARACTER_DESCRIPTIONS =
@@ -187,7 +187,7 @@ STRINGS =
         wurt = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         walter = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         wanda = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
-        random = "\nSelect a random character",
+        random = "\nSelect a random survivor",
     },
 
     CHARACTER_ABOUTME =
@@ -6036,6 +6036,7 @@ STRINGS.UI =
         },
 		-- based on TUNING.PROTOTYPER_TREES
         NEEDSTUFF = "Find ingredients \nto craft!",
+        NEEDSTUFF_PROTOTYPE = "Find ingredients \nto prototype!",
         NEEDSCIENCEMACHINE = "Use a science machine to build a prototype!",
         NEEDALCHEMYENGINE = "Use an alchemy engine to build a prototype!",
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
@@ -7024,7 +7025,7 @@ STRINGS.UI =
 		CRAFTING_STATION = "All Crafting Stations",
 		SPECIAL_EVENT = "Special Event",
 		MODS = "Modded Items",
-		CHARACTER = "Character Items",
+		CHARACTER = "Survivor Items",
 		TOOLS = "Tools",
 		LIGHT = "Light Sources",
 		PROTOTYPERS = "Prototypers & Stations",
@@ -7146,7 +7147,7 @@ STRINGS.UI =
         AGE_DAYS = "Days",
         CLOSE = "Close",
         STEAM = "View Profile",
-        CHOOSING = "is choosing their character",
+        CHOOSING = "is choosing their survivor",
     },
 
     DRESSUP_AVATAR =
@@ -8839,14 +8840,14 @@ STRINGS.UI =
         SKINS_FEET = "FEET",
         SKINS_RANDOM = "Random Item",
         SKINS_PREVIOUS = "Previously Worn Item",
-        RANDOMCHAR_BUTTONHINT = "Random Character",
+        RANDOMCHAR_BUTTONHINT = "Random Survivor",
         INVITE_FRIEND = "Invite Friend",
         CUSTOMIZE = "Customize Your Character",
         CUSTOMIZE_SCARECROW = "Customize Your Scarecrow",
         COMING = "Coming Soon!",
         OFFLINE = "Not Available Offline",
         LOADOUT_TITLE = "{name}'s Loadout",
-        SELECTION_TITLE = "Character Select",
+        SELECTION_TITLE = "Survivor Select",
         WAITING_FOR_PLAYERS_TITLE = "Waiting For Other Players",
         EMPTY_SLOT = "Available Slot",
         READY = "Ready!",
@@ -9287,7 +9288,7 @@ STRINGS.UI =
 				nodeaths_uniqueteam =
 				{
 				   TITLE = "Survival of the Mis-Fittest",
-				   DESC  = "Play on a team with 6 unique characters and win without any teammates dying",
+				   DESC  = "Play on a team with 6 unique survivors and win without any teammates dying",
 				},
 				wintime_30 =
 				{
@@ -10723,10 +10724,10 @@ STRINGS.UI =
         OK = "OK",
         PLAYER_NAME = "Player",
         PLAYER_CHAR = "Face",
-        PLAYER_CHAR_PS4 = "Character",
+        PLAYER_CHAR_PS4 = "Survivor",
         SERVER_NAME = "Server",
         DECEASED = "Deceased",
-        DECEASED_PS4 = "Character",
+        DECEASED_PS4 = "Survivor",
         CAUSE = "Cause of Death",
         MODE = "World",
         MODE_PS4 = "Date",
@@ -11354,7 +11355,7 @@ STRINGS.UI =
 	DATACOLLECTION_LOGIN =
 	{
 		TITLE = "Offline Mode",
-		BODY = "We require the collection of user data to provide online services. Players who disable data collection will only have access to play in offline mode.\n\nCharacters and worlds from online games will be unavailable.\n\nData Collection settings can be modified in the Options menu.",
+		BODY = "We require the collection of user data to provide online services. Players who disable data collection will only have access to play in offline mode.\n\nSurvivors and worlds from online games will be unavailable.\n\nData Collection settings can be modified in the Options menu.",
 		CONTINUE = "Continue",
 	},
 

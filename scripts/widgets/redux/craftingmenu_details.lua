@@ -136,7 +136,7 @@ function CraftingMenuDetails:UpdateBuildButton(from_pin_slot)
             else
 				teaser:SetSize(20)
 				teaser:UpdateOriginalSize()
-				teaser:SetMultilineTruncatedString(STRINGS.UI.CRAFTING.NEEDSTUFF, 2, (self.panel_width / 2) * 0.8, nil, false, true)
+				teaser:SetMultilineTruncatedString(meta.build_state == "prototype" and STRINGS.UI.CRAFTING.NEEDSTUFF_PROTOTYPE or STRINGS.UI.CRAFTING.NEEDSTUFF, 2, (self.panel_width / 2) * 0.8, nil, false, true)
 				teaser:Show()
             end
 

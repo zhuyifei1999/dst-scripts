@@ -245,15 +245,13 @@ function CraftingMenuWidget:UpdateFilterButtons()
 			local num_can_build = 0
 			for _, recipe_name in pairs(FunctionOrValue(button.filter_def.recipes)) do
 				local data = self.crafting_hud.valid_recipes[recipe_name]
-				if data ~= nil then
+				if data ~= nil and data.meta.can_build then
+					num_can_build = num_can_build + 1
 					if data.meta.build_state == "prototype" then
 						state = "prototype"
 						can_prototype = true
-						num_can_build = num_can_build + 1
-						break
-					elseif data.meta.can_build then
+					else
 						state = "can_build"
-						num_can_build = num_can_build + 1
 					end
 				end
 			end
@@ -975,7 +973,7 @@ function CraftingMenuWidget:MakeRecipeList(width, height)
 			if meta.build_state == "buffered" then
 				widget.bg:SetTexture(atlas, "slot_bg_buffered.tex")
 				widget.fg:Hide()
-			elseif meta.build_state == "prototype" then
+			elseif meta.build_state == "prototype" and meta.can_build then
 				widget.bg:SetTexture(atlas, "slot_bg_prototype.tex")
 				widget.fg:SetTexture(atlas, "slot_fg_prototype.tex")
 				widget.fg:Show()
