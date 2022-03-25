@@ -437,7 +437,7 @@ end
 local function OnChangeToObstacle(inst)
 
     inst.Physics:SetMass(100)
-    inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+    inst.Physics:SetCollisionGroup(COLLISION.GIANTS)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
     inst.Physics:CollidesWith(COLLISION.OBSTACLES)
@@ -509,7 +509,7 @@ local function fn()
 
     inst.physicsradius = 2.2
 
-    MakeCharacterPhysics(inst, 100, inst.physicsradius)
+    MakeGiantCharacterPhysics(inst, 1000, inst.physicsradius)
     inst.Physics:SetCapsule(2, 4) --2.2
 
     inst.AnimState:SetBank("rook")
