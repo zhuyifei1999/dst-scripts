@@ -2435,7 +2435,7 @@ function PlayerController:OnUpdate(dt)
                             else
                                 self:DoAttackButton()
                             end
-                        elseif not TheInput:IsControlPressed(CONTROL_PRIMARY) then
+                        elseif attack_control ~= CONTROL_PRIMARY and (attack_control ~= CONTROL_ATTACK or buffaction == nil) then
                             self:OnControl(attack_control, true)
                         end
                     end

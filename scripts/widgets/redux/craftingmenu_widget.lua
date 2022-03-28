@@ -188,9 +188,11 @@ function CraftingMenuWidget:ApplyFilters()
 	local current_filter = self.current_filter_name
 	local filter_recipes = (current_filter ~= nil and CRAFTING_FILTERS[current_filter] ~= nil) and FunctionOrValue(CRAFTING_FILTERS[current_filter].default_sort_values) or nil
 
+	local show_hidden = current_filter == CRAFTING_FILTERS.EVERYTHING.name
+
 	for i, recipe_name in metaipairs(self.sort_class) do
 		local data = self.crafting_hud.valid_recipes[recipe_name]
-		if data and data.meta.build_state ~= "hide" and IsRecipeValidForFilter(self, recipe_name, filter_recipes) then
+		if data and (show_hidden or data.meta.build_state ~= "hide") and IsRecipeValidForFilter(self, recipe_name, filter_recipes) then
 			table.insert(self.filtered_recipes, data)
 		end
 	end
@@ -985,12 +987,15 @@ function CraftingMenuWidget:MakeRecipeList(width, height)
 				widget.item_img:SetTint(0.7, 0.7, 0.7, 1)
 				widget.fg:SetTexture(atlas, "slot_fg_lock.tex")
                 widget.fg:Show()
+			elseif meta.build_state == "no_ingredients" then
+				widget.bg:SetTexture(atlas, "slot_bg_missing_mats.tex")
+				widget.item_img:SetTint(0.7, 0.7, 0.7, 1)
+                widget.fg:Hide()
 			else
 				widget.bg:SetTexture(atlas, "slot_bg_missing_mats.tex")
 				widget.item_img:SetTint(0.7, 0.7, 0.7, 1)
-
-				--widget.fg:SetTexture(atlas, "slot_fg_missing_mats.tex")
-                widget.fg:Hide()
+				widget.fg:SetTexture(atlas, "slot_fg_lock.tex")
+                widget.fg:Show()
 			end
 
 			widget:Enable()
