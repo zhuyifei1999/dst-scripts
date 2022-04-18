@@ -1352,7 +1352,7 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
 
     local reach = self.inst:GetPhysicsRadius(0) + rad + .1
 
-    if force_target ~= nil then
+    if force_target ~= nil and not TheInput:IsControlPressed(CONTROL_PRIMARY) then
         return ValidateAttackTarget(combat, force_target, force_attack, x, z, has_weapon, reach) and force_target or nil
     end
 
@@ -1497,7 +1497,7 @@ local function GetPickupAction(self, target, tool)
         return ACTIONS.CHECKTRAP
     elseif target:HasTag("minesprung") and not target:HasTag("mine_not_reusable") then
         return ACTIONS.RESETMINE
-    elseif target:HasTag("inactive") and not target:HasTag("activatable_forcenopickup") and target.replica.inventoryitem == nil then
+    elseif target:HasTag("inactive") and target.replica.inventoryitem == nil then
         return (not target:HasTag("wall") or self.inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
     
     elseif target.replica.inventoryitem ~= nil and
@@ -1908,6 +1908,7 @@ function PlayerController:ClearActionHold(down)
     -- Referenced in entityscript.lua
     if not down then
         self.heldactionfailed = nil
+        self.lastclickedaction = nil
     end
 end
 
@@ -2375,7 +2376,7 @@ function PlayerController:OnUpdate(dt)
         if isidle then
             if TheInput:IsControlPressed(CONTROL_ACTION) then
                 -- Priortize attacking over actions if both are bound to the same button/pressed at the exact same time
-                if TheInput:IsControlPressed(CONTROL_ATTACK) and self.locomotor.bufferedaction and self.locomotor.bufferedaction.action == ACTIONS.ATTACK then
+                if TheInput:IsControlPressed(CONTROL_ATTACK) and self.locomotor ~= nil and self.locomotor.bufferedaction and self.locomotor.bufferedaction.action == ACTIONS.ATTACK then
                     self:OnControl(CONTROL_ATTACK, true)
                 else
                     self:OnControl(CONTROL_ACTION, true)

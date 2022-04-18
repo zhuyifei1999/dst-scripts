@@ -23,15 +23,6 @@ local events=
 
 }
 
-local function DoChewSound(inst)
-    inst.sg.statemem.chewsounds = (inst.sg.statemem.chewsounds or 0) - 1
-    if inst.sg.statemem.chewsounds <= 0 then
-        inst.sg.statemem.chewsounds = nil
-        return
-    end
-    inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew")
-end
-
 local states=
 {
     State{
@@ -47,32 +38,23 @@ local states=
         name = "eat",
         tags = { "busy" },
 
-        onenter = function(inst, data)
+        onenter = function(inst)
             inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("eat_pre")
-
-            local chews = data and data.chews or 2
-            for i = 1, chews do
-                inst.AnimState:PushAnimation("eat_loop_1", false) -- "eat_loop_1" does 2 chews per play.
-            end
-
-            inst.AnimState:PushAnimation("eat_pst", false)
-
-            inst.sg.statemem.chewsounds = math.max(chews * 2, 4) -- Just in case.
+            inst.AnimState:PlayAnimation("eat")
         end,
 
         timeline =
         {
             TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/wurt/merm/king/eat") end),
-            TimeEvent(27*FRAMES, DoChewSound),
-            TimeEvent(40*FRAMES, DoChewSound),
-            TimeEvent(51*FRAMES, DoChewSound),
-            TimeEvent(63*FRAMES, DoChewSound),
+            TimeEvent(27*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(51*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
+            TimeEvent(63*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew") end),
         },
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
+            EventHandler("animover", function(inst)
                 inst.sg:GoToState("idle")
             end),
         },

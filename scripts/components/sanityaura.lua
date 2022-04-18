@@ -1,10 +1,7 @@
 local SanityAura = Class(function(self, inst)
     self.inst = inst
     self.aura = 0
-    
-    --self.max_distsq = nil
-    --self.aurafn = nil
-    --self.fallofffn = nil
+    self.aurafn = nil
 
 	self.inst:AddTag("sanityaura")
 end)

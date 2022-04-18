@@ -4,7 +4,6 @@ local FrostyBreather = Class(function(self, inst)
     self.offset = Vector3(0, 0, 0)
     self.offset_fn = nil
     self.enabled = true
-    self.forced_breath = false
 
     self.breathevent = net_event(inst.GUID, "frostybreather.breathevent")
 
@@ -81,12 +80,10 @@ function FrostyBreather:Disable()
 end
 
 function FrostyBreather:OnTemperatureChanged(temperature)
-    if not self.forced_breath then
-        if temperature > TUNING.FROSTY_BREATH then
-            self:StopBreath()
-        else
-            self:StartBreath()
-        end
+    if temperature > TUNING.FROSTY_BREATH then
+        self:StopBreath()
+    else
+        self:StartBreath()
     end
 end
 
@@ -99,20 +96,6 @@ function FrostyBreather:EmitOnce()
             self.breath.Transform:SetPosition(self:GetOffset())
             self.breath:Emit()
         end
-    end
-end
-
-function FrostyBreather:ForceBreathOn()
-    if not self.forced_breath then
-        self.forced_breath = true
-        self:StartBreath()
-    end
-end
-
-function FrostyBreather:ForceBreathOff()
-    if self.forced_breath then
-        self.forced_breath = false
-        self:OnTemperatureChanged(TheWorld.state.temperature)
     end
 end
 

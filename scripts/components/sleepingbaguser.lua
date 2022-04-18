@@ -9,8 +9,6 @@ local SleepingBagUser = Class(function(self, inst)
     self.hunger_bonus_mult = 1
     self.health_bonus_mult = 1
     self.sanity_bonus_mult = 1
-
-    -- self.cansleepfn
 end)
 
 function SleepingBagUser:SetHungerBonusMult(bonus)
@@ -23,10 +21,6 @@ end
 
 function SleepingBagUser:SetSanityBonusMult(bonus)
     self.sanity_bonus_mult = bonus
-end
-
-function SleepingBagUser:SetCanSleepFn(cansleepfn)
-    self.cansleepfn = cansleepfn
 end
 
 local function WakeUpTest(inst, phase)
@@ -64,15 +58,6 @@ function SleepingBagUser:DoWakeUp(nostatechange)
             self.inst.sg.statemem.iswaking = true
         end
         self.inst.sg:GoToState("wakeup")
-    end
-end
-
-function SleepingBagUser:ShouldSleep()
-    if self.cansleepfn ~= nil then
-        local success, reason = self.cansleepfn(self.inst)
-        return success, reason
-    else
-        return true
     end
 end
 

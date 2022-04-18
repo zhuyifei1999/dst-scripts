@@ -843,7 +843,6 @@ local function MakeHat(name)
         end
 
         inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
-        inst.components.equippable.flipdapperonmerms = true
         inst.components.equippable:SetOnEquip(opentop_onequip)
 
         inst:AddComponent("perishable")
@@ -874,7 +873,6 @@ local function MakeHat(name)
         end
 
         inst.components.equippable.dapperness = -TUNING.DAPPERNESS_TINY
-        inst.components.equippable.flipdapperonmerms = true
         inst.components.equippable:SetOnEquip(opentop_onequip)
 
         inst:AddComponent("perishable")
@@ -1881,7 +1879,7 @@ local function MakeHat(name)
         inst.components.equippable:SetOnUnequip(merm_unequip)
 
         inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
+        inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
         inst.components.perishable:StartPerishing()
         inst.components.perishable:SetOnPerishFn(inst.Remove)
 
