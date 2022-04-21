@@ -433,14 +433,7 @@ ACTIONS =
     LEAVE_GYM = Action({ mount_valid=false, instant = true }),
     LIFT_GYM_SUCCEED_PERFECT = Action({ do_not_locomote=true, disable_platform_hopping=true, skip_locomotor_facing=true, invalid_hold_action = true }),
     LIFT_GYM_SUCCEED = Action({ do_not_locomote=true, disable_platform_hopping=true, skip_locomotor_facing=true, invalid_hold_action = true }),
-    LIFT_GYM_FAIL = Action({ do_not_locomote=true, disable_platform_hopping=true, skip_locomotor_facing=true, invalid_hold_action = true }),
-
-    -- WX78
-    APPLYMODULE = Action({ mount_valid=true }),
-    APPLYMODULE_FAIL = Action({ mount_valid=true }),
-    REMOVEMODULES = Action({ mount_valid=true }),
-    REMOVEMODULES_FAIL = Action({ mount_valid=true }),
-    CHARGE_FROM = Action({ mount_valid=false }),
+    LIFT_GYM_FAIL = Action({ do_not_locomote=true, disable_platform_hopping=true, skip_locomotor_facing=true, invalid_hold_action = true }),    
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -2058,7 +2051,7 @@ ACTIONS.RESETMINE.fn = function(act)
 end
 
 ACTIONS.ACTIVATE.fn = function(act)
-    if act.target.components.activatable ~= nil and act.target.components.activatable:CanActivate(act.doer) then
+    if act.target.components.activatable ~= nil and (act.target.components.burnable == nil or not (act.target.components.burnable:IsSmoldering() or act.target.components.burnable:IsBurning())) and act.target.components.activatable:CanActivate(act.doer) then
         local success, msg = act.target.components.activatable:DoActivate(act.doer)
         return (success ~= false), msg -- note: for legacy reasons, nil will be true
     end
@@ -2691,11 +2684,6 @@ ACTIONS.MOUNT.fn = function(act)
         return false, "INUSE"
     elseif act.target:HasTag("dogrider_only") and act.doer:HasTag("dogrider") and act.target._playerlink ~= act.doer then
         return false
-	elseif act.target.components.sleeper ~= nil and act.target.components.sleeper.isasleep then
-		act.target.components.sleeper:WakeUp()
-		return false, "SLEEPING"
-	elseif act.target:HasTag("busy") then
-		return false
     end
 
     act.doer.components.rider:Mount(act.target)
@@ -3970,68 +3958,5 @@ ACTIONS.UNLOAD_GYM.fn = function(act)
     if act.target then
         act.target.components.mightygym:UnloadWeight()
         return true
-    end
-end
-
-ACTIONS.APPLYMODULE.fn = function(act)
-    if (act.invobject ~= nil and act.invobject.components.upgrademodule ~= nil)
-            and (act.doer ~= nil and act.doer.components.upgrademoduleowner ~= nil) then
-
-        local can_upgrade, reason = act.doer.components.upgrademoduleowner:CanUpgrade(act.invobject)
-
-        if can_upgrade then
-            local individual_module = act.invobject.components.inventoryitem:RemoveFromOwner()
-            act.doer.components.upgrademoduleowner:PushModule(individual_module)
-            return true
-        else
-            return false, reason
-        end
-    end
-
-    return false
-end
-
-ACTIONS.APPLYMODULE_FAIL.fn = function(act)
-    return true
-end
-
-ACTIONS.APPLYMODULE_FAIL.stroverridefn = function(act)
-    return STRINGS.ACTIONS.APPLYMODULE
-end
-
-ACTIONS.REMOVEMODULES.fn = function(act)
-    if (act.invobject ~= nil and act.invobject.components.upgrademoduleremover ~= nil)
-            and (act.doer ~= nil and act.doer.components.upgrademoduleowner ~= nil) then
-        if act.doer.components.upgrademoduleowner:NumModules() > 0 then
-            local energy_cost = act.doer.components.upgrademoduleowner:ModuleEnergyCost()
-
-            -- Popping the modules first saves us some activate/deactivate updates.
-            act.doer.components.upgrademoduleowner:PopAllModules()
-
-            act.doer.components.upgrademoduleowner:AddCharge(-energy_cost)
-
-            return true
-        else
-            return false, "NO_MODULES"
-        end
-    end
-
-    return false
-end
-
-ACTIONS.REMOVEMODULES_FAIL.fn = function(act)
-    return true
-end
-
-ACTIONS.REMOVEMODULES_FAIL.stroverridefn = function(act)
-    return STRINGS.ACTIONS.REMOVEMODULES
-end
-
-ACTIONS.CHARGE_FROM.fn = function(act)
-    if (act.target ~= nil and act.target.components.battery ~= nil) and
-            (act.doer ~= nil and act.doer.components.batteryuser ~= nil) then
-        return act.doer.components.batteryuser:ChargeFrom(act.target)
-    else
-        return false
     end
 end

@@ -1497,7 +1497,7 @@ local function GetPickupAction(self, target, tool)
         return ACTIONS.CHECKTRAP
     elseif target:HasTag("minesprung") and not target:HasTag("mine_not_reusable") then
         return ACTIONS.RESETMINE
-    elseif target:HasTag("inactive") and not target:HasTag("activatable_forcenopickup") and target.replica.inventoryitem == nil then
+    elseif target:HasTag("inactive") and target.replica.inventoryitem == nil then
         return (not target:HasTag("wall") or self.inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
     
     elseif target.replica.inventoryitem ~= nil and
@@ -3364,16 +3364,6 @@ function PlayerController:DoAction(buffaction)
             self.inst.sg:HasStateTag("idle")) then
         --The "not" bit is in case we are stuck waiting for server
         --to act but it never does
-
-        -- We need to re-check the buffered action to see if it's still valid, e.g. a tree was cut down, so don't try and chop it
-        currentbuffaction.ispreviewing = false
-        if buffaction.target and not buffaction.target:IsActionValid(buffaction.action) then
-            if TheInput:IsControlPressed(CONTROL_PRIMARY) then
-                self.lastheldaction = self:GetLeftMouseAction()
-            elseif TheInput:IsControlPressed(CONTROL_SECONDARY) then
-                self.lastheldaction = self:GetRightMouseAction()
-            end
-        end
         return
     end
 

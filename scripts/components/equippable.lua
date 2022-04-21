@@ -112,10 +112,6 @@ end
 function Equippable:GetDapperness(owner, ignore_wetness)
     local dapperness = self.dapperness
 
-    if self.flipdapperonmerms and owner and owner:HasTag("merm") then
-        dapperness = -dapperness
-    end
-
     if self.dapperfn ~= nil then
         dapperness = self.dapperfn(self.inst, owner)
     end
