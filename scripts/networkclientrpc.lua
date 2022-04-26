@@ -1002,6 +1002,10 @@ local CLIENT_RPC_HANDLERS =
     RecieveChatHistory = function(chat_history)
         ChatHistory:RecieveChatHistory(chat_history)
     end,
+
+    LearnBuilderRecipe = function(product)
+        ThePlayer:PushEvent("LearnBuilderRecipe",{recipe=product})
+    end,
 }
 
 CLIENT_RPC = {}

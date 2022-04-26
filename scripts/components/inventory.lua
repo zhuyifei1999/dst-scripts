@@ -50,6 +50,8 @@ local Inventory = Class(function(self, inst)
     self.dropondeath = true
     inst:ListenForEvent("death", OnDeath)
 
+    self.isexternallyinsulated = SourceModifierList(inst, false, SourceModifierList.boolean)
+
 	-- self.noheavylifting = false
 
     inst:ListenForEvent("player_despawn", OnOwnerDespawned)
@@ -542,6 +544,8 @@ function Inventory:IsInsulated() -- from electricity, not temperature
             return true
         end
     end
+
+    return self.isexternallyinsulated:Get()
 end
 
 function Inventory:GetEquippedItem(eslot)
@@ -826,7 +830,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
         end
 
         return slot
-    elseif overflow ~= nil and overflow:GiveItem(inst, nil, src_pos) then
+    elseif overflow ~= nil and overflow:GiveItem(inst, nil, src_pos, false) then
         return true
     end
 
