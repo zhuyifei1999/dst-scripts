@@ -160,10 +160,10 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"mutator_water",  		
 
 	-- Wormwood
-	"compostwrap",
 	"livinglog",
 	"armor_bramble",
 	"trap_bramble",
+	"compostwrap",
 
 	-- Wanda
 	"pocketwatch_dismantler",	
@@ -183,24 +183,6 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"balloonvest",
 	"balloonhat",
 
-	-- WX78
-	"wx78module_maxhealth",
-    "wx78module_maxhealth2",
-    "wx78module_maxsanity1",
-	"wx78module_maxsanity",
-    "wx78module_bee",
-    "wx78module_music",
-    "wx78module_maxhunger1",
-    "wx78module_maxhunger",
-	"wx78module_movespeed",
-	"wx78module_movespeed2",
-	"wx78module_heat",
-    "wx78module_cold",
-    "wx78module_taser",
-    "wx78module_nightvision",
-    "wx78module_light",
-    "wx78_moduleremover",
-    "wx78_scanner_item",
 }
 
 CRAFTING_FILTERS.SPECIAL_EVENT.recipes =
@@ -481,11 +463,9 @@ CRAFTING_FILTERS.TOOLS.recipes =
 	"reskin_tool",
 
 	"balloons_empty",
-	"spiderden_bedazzler",
-	"spider_whistle",
-	"spider_repellent",
-    "wx78_moduleremover",
-    "wx78_scanner_item",
+	"spiderden_bedazzler",  
+	"spider_whistle",  		
+	"spider_repellent",  	
 }
 
 CRAFTING_FILTERS.LIGHT.recipes =
@@ -499,9 +479,7 @@ CRAFTING_FILTERS.LIGHT.recipes =
 	"pumpkin_lantern",
 	"minerhat",
 	"molehat",
-    "wx78module_nightvision",
 	"lantern",
-    "wx78module_light",
 	"nightstick",
 	"nightlight",
 	"winona_spotlight",
@@ -651,7 +629,6 @@ CRAFTING_FILTERS.RESTORATION.recipes =
 	"pocketwatch_heal",			
 	"pocketwatch_revive",
 	"spider_healer_item",
-    "wx78module_bee",
 
 	"healingsalve",
 	"bandage",
@@ -704,7 +681,6 @@ CRAFTING_FILTERS.GARDENING.recipes =
 	"compostingbin",
 	"plantregistryhat",
 	"onemanband",
-    "wx78module_music",
 	"seedpouch",
 	"mushroom_farm",
 	"beebox",
@@ -916,7 +892,6 @@ CRAFTING_FILTERS.WINTER.recipes =
 	"firepit",
 	"dragonflyfurnace",
 	"heatrock",
-    "wx78module_heat",
 
 	"sweatervest",
 	"raincoat",
@@ -939,7 +914,6 @@ CRAFTING_FILTERS.SUMMER.recipes =
 	"coldfire",
 	"coldfirepit",
 	"heatrock",
-    "wx78module_cold",
 
 	"blueamulet",
 

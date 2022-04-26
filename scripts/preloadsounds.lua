@@ -161,9 +161,6 @@ local MainSounds =
 
     "ancientguardian_rework.fev",
     "ancientguardian_rework.fsb",
-
-    "WX_rework.fev",
-    "WX_rework.fsb",
 }
 
 function PreloadSoundList(list)

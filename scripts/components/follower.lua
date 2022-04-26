@@ -161,15 +161,12 @@ end
 OnPlayerJoined = function(self, player)
     if self.cached_player_leader_userid == player.userid then
         local current_time = GetTime()
-        local cached_player_leader_timeleft = self.cached_player_leader_timeleft
         if self.inst:GetDistanceSqToInst(player) <= TUNING.FOLLOWER_REFOLLOW_DIST_SQ and
-        (not cached_player_leader_timeleft or cached_player_leader_timeleft > current_time) then
-            
-            if player.components.leader then
-                player.components.leader:AddFollower(self.inst)
-            else
-                self:SetLeader(player)
-            end
+        (not self.cached_player_leader_timeleft or self.cached_player_leader_timeleft > current_time) then
+
+            local cached_player_leader_timeleft = self.cached_player_leader_timeleft
+
+            self:SetLeader(player)
 
             self.targettime = nil
             if cached_player_leader_timeleft then

@@ -113,9 +113,6 @@ local assets =
     Asset("ANIM", "anim/ink_over.zip"),
 
     Asset("ANIM", "anim/leaves_canopy.zip"),
-
-    Asset("ANIM", "anim/status_wx.zip"),
-    Asset("ANIM", "anim/status_wet_wx.zip"),
 }
 
 local prefabs =
