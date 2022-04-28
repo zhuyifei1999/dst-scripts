@@ -29,7 +29,22 @@ local function ReturnToPlayerAfterFinishedScan(inst)
         return
     end
 
-    local act = BufferedAction(inst, nil, ACTIONS.WALKTO, nil, GetLeaderPosition(inst))
+    local flyto_position = nil
+    local offset = nil
+    if inst.components.follower ~= nil and inst.components.follower.leader ~= nil then
+        flyto_position = inst.components.follower.leader:GetPosition()
+        local angle_to_leader = inst:GetAngleToPoint(flyto_position:Get())
+        offset = FindWalkableOffset(flyto_position, angle_to_leader, 1.0)
+    else
+        flyto_position = inst:GetPosition()
+        offset = FindWalkableOffset(flyto_position, 2*PI*math.random(), math.random(0.5, 1.5))
+    end
+
+    if offset then
+        flyto_position = flyto_position + offset
+    end
+
+    local act = BufferedAction(inst, nil, ACTIONS.WALKTO, nil, flyto_position)
     if act then
         local on_finished = function()
             inst:OnReturnedAfterSuccessfulScan()

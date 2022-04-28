@@ -604,8 +604,15 @@ local function CanDoerActivate(inst, doer)
 end
 
 local function OnActivateFn(inst)
-    inst:StopAllScanning()
-    inst.sg:GoToState("turn_off",{changetoitem = true})
+    if inst._donescanning then
+        -- If we got stuck after finishing a scan, and the player turned us off,
+        -- go ahead and act like we succeeded as expected. Our data should be set up,
+        -- just stuck because of a quirk of how buffered actions are handled.
+        inst:OnReturnedAfterSuccessfulScan()
+    else
+        inst:StopAllScanning()
+        inst.sg:GoToState("turn_off",{changetoitem = true})
+    end
 end
 
 local function GetStatus(inst)

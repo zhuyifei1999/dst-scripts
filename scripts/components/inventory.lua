@@ -226,7 +226,7 @@ end
 function Inventory:DropActiveItem()
 	local active_item = nil
     if self.activeitem ~= nil then
-        active_item = self:DropItem(self.activeitem)
+        active_item = self:DropItem(self.activeitem, true)
         self:SetActiveItem(nil)
     end
 	return active_item

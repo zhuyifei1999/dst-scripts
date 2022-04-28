@@ -334,7 +334,8 @@ function MakeBanner(self)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
         MakeWebberCawnivalBanner(self, banner_root, anim)
 	else
-        MakeDefaultBanner(self, banner_root, anim)
+        --MakeDefaultBanner(self, banner_root, anim)
+        MakeWX78Banner(self, banner_root, anim)
         --[[
 		local cur_time = os.time()
 		if cur_time <= 1585810740 and (not IsConsole() or cur_time >= 1585759200) then -- 9:40am to 11:59pm PDT
@@ -396,7 +397,13 @@ local function MakeBannerFront(self)
     elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
         return nil
     else
-        return nil
+        local banner_front = Widget("banner_front")
+        banner_front:SetPosition(0, 0)
+        local anim = banner_front:AddChild(UIAnim())
+
+        MakeWX78BannerFront(self, banner_front, anim)
+        
+        return banner_front
     end
 end
 
