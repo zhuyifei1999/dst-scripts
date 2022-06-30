@@ -17,6 +17,9 @@ function SeamlessPlayerSwapper:_StartSwap(new_prefab)
     if new_prefab == nil then -- swapping back to the main character
         skin_base = self.main_data.skin_base
 		new_prefab = self.main_data.prefab or "wilson"
+		-- Clear used stored fields.
+		self.main_data.prefab = nil
+		self.main_data.skin_base = nil
 
 		self.swap_data[self.inst.prefab] = {skin_base = clothing.base}
     else
@@ -24,10 +27,6 @@ function SeamlessPlayerSwapper:_StartSwap(new_prefab)
 
 		self.main_data.skin_base = clothing.base
 		self.main_data.prefab = self.inst.prefab
-    end
-
-    if self.inst.components.inventory.activeitem then
-        self.inst.components.inventory:DropActiveItem()
     end
 
     TheNet:SpawnSeamlessPlayerReplacement(self.inst.userid, new_prefab, skin_base, clothing.body, clothing.hand, clothing.legs, clothing.feet)

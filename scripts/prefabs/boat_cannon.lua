@@ -11,7 +11,8 @@ local prefabs =
 {
     "cannonball_rock",
     "collapse_small",
-    "cannon_aim_range_fx",
+    "cannon_aoe_range_fx",
+    "cannon_reticule_fx",
 }
 
 local function onhammered(inst, worker)
@@ -247,6 +248,10 @@ local function reticule_target_function(inst)
     return Vector3(inst.entity:LocalToWorldSpace(RANGE, 0, 0))
 end
 
+local function reticule_update_position_function(inst, pos, reticule, ease, smoothing, dt)
+    reticule.Transform:SetPosition(pos:Get())
+    reticule.Transform:SetRotation(inst:GetAngleToPoint(pos))
+end
 
 local function onlit(inst)
     if inst:HasTag("ammoloaded") then
@@ -275,9 +280,11 @@ local function fn()
     inst.Transform:SetEightFaced()
 
     inst:AddComponent("reticule")
+    inst.components.reticule.reticuleprefab = "cannon_reticule_fx"
     inst.components.reticule.mouseenabled = true
     inst.components.reticule.mousetargetfn = reticule_mouse_target_function
     inst.components.reticule.targetfn = reticule_target_function
+    inst.components.reticule.updatepositionfn = reticule_update_position_function
     --inst.components.reticule.ease = true
     inst.components.reticule.ispassableatallpoints = true
 

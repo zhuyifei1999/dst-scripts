@@ -24,16 +24,6 @@ local function on_hammered(inst, hammerer)
     inst:Remove()
 end
 
-local function onignite(inst)
-	DefaultBurnFn(inst)
-end
-
-local function onburnt(inst)
-	DefaultBurntStructureFn(inst)
-
-	inst:RemoveComponent("boatmagnetbeacon")
-end
-
 local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/place")
     inst.sg:GoToState("place")
@@ -99,10 +89,7 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(on_hammered)
 
-    MakeSmallBurnable(inst, nil, nil, true)
-	inst.components.burnable:SetOnIgniteFn(onignite)
-    inst.components.burnable:SetOnBurntFn(onburnt)
-
+    MakeSmallBurnable(inst)
 
     MakeSmallPropagator(inst)
 

@@ -116,7 +116,7 @@ local Inv = Class(Widget, function(self, owner)
     self.inst:ListenForEvent("seamlessplayerswap", function() self:StopUpdating() end, self.owner)
 
     --NOTE: this is triggered on the swap TARGET.
-    self.inst:ListenForEvent("finishseamlessplayerswap", function () if self.rebuild_pending then self:Rebuild() self:Refresh() end end, self.owner)
+    self.inst:ListenForEvent("finishseamlessplayerswap", function () if self.rebuild_pending then self.rebuild_snapping = true self:Rebuild() self:Refresh() end end, self.owner)
 
     self.root:SetPosition(self.in_pos)
     self:StartUpdating()

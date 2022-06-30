@@ -173,7 +173,7 @@ local function OnSpawnNewBoatLeak_Grass(inst, data)
 		local leak_x, leak_y, leak_z = data.pt:Get()
 
         if inst.material == "grass" then
-            SpawnPrefab("fx_grass_boat_fluff").Transform:SetPosition(leak_x, 0, leak_z) 
+            SpawnPrefab("fx_grass_boat_fluff").Transform:SetPosition(leak_x, 0, leak_z)
 			SpawnPrefab("splash_green_small").Transform:SetPosition(leak_x, 0, leak_z)
         end
 
@@ -306,7 +306,7 @@ local function speed(inst)
         inst.speedtask = inst:DoPeriodicTask(FRAMES, function()
             local pt = Vector3(inst.Transform:GetWorldPosition())
             local dif = distsq(pt.x,pt.z,inst.startpos.x,inst.startpos.z)
-            print("DIST",dif,GetTime() - inst.starttime)
+            --print("DIST",dif,GetTime() - inst.starttime)
         end)
     else
         inst.startpos = nil
@@ -334,9 +334,13 @@ local function SpawnFragment(lp, prefix, offset_x, offset_y, offset_z, ignite)
     return fragment
 end
 
+local function OnEntityReplicated(inst)
+    --Use this setting because we can rotate, and we are not billboarded with discreet anim facings
+    --NOTE: this setting can only be applied after entity replicated
+    inst.Transform:SetInterpolateRotation(true)
+end
 
 local function create_common_pre(inst, bank, build, radius, max_health, item_collision_prefab, scale, boatlip)
-
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
@@ -399,6 +403,10 @@ local function create_common_pre(inst, bank, build, radius, max_health, item_col
     inst:AddComponent("boatringdata")
     inst.components.boatringdata:SetRadius(radius)
     inst.components.boatringdata:SetNumSegments(8)
+
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = OnEntityReplicated
+    end
 
     return inst
 end

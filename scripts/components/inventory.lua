@@ -116,6 +116,8 @@ function Inventory:TransferInventory(receiver)
 			inv:GiveItem(self:Unequip(k)) 
 		end
     end
+
+    receiver.components.inventory:GiveActiveItem(self:GetActiveItem())
 end
 
 function Inventory:OnSave()

@@ -39,6 +39,8 @@ local function fn()
     inst:AddTag("bird")
     inst:AddTag("smallcreature")
     inst:AddTag("untrappable")
+    inst:AddTag("companion")
+    inst:AddTag("noplayertarget")
     inst:AddTag("flying")
     inst:AddTag("ignorewalkableplatformdrowning")
 

@@ -124,7 +124,7 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
 
         ShakeAllCamerasOnPlatform(CAMERASHAKE.FULL, destroyed_other and 1.5 or 0.7, 0.02, (destroyed_other and 0.45 or 0.15) * shake_percent, inst)
 
-    	boat_physics.velocity_x, boat_physics.velocity_z = relative_velocity_x + push_back * hit_normal_x, relative_velocity_z + push_back * hit_normal_z
+    	boat_physics.velocity_x, boat_physics.velocity_z = boat_physics.velocity_x + push_back * hit_normal_x, boat_physics.velocity_z + push_back * hit_normal_z
     end
 end
 
@@ -133,6 +133,10 @@ local function on_boatdrag_removed(boatdraginst)
 	if boat ~= nil and boat.components.boatphysics ~= nil then
 		boat.components.boatphysics:RemoveBoatDrag(boatdraginst)
 	end
+end
+
+local function on_death(inst)
+    inst.components.boatphysics:OnDeath()
 end
 
 local BoatPhysics = Class(function(self, inst)
@@ -169,8 +173,9 @@ local BoatPhysics = Class(function(self, inst)
     self.inst.Physics:SetCollisionCallback(OnCollide)
     self._recent_collisions = {}
 
-    self.inst:ListenForEvent("onignite", function() self:OnIgnite() end)
-    self.inst:ListenForEvent("death", function() self:OnDeath() end)
+    --"onignite" doesn't work; boat does not have burnable component
+    --self.inst:ListenForEvent("onignite", function() self:OnIgnite() end)
+    self.inst:ListenForEvent("death", on_death)
 end)
 
 function BoatPhysics:OnSave()

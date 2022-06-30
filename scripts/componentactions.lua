@@ -2195,10 +2195,12 @@ local COMPONENT_ACTIONS =
         end,
 
         boatmagnetbeacon = function(inst, doer, actions)
-            if inst:HasTag("turnedoff") then
-                table.insert(actions, ACTIONS.BOAT_MAGNET_BEACON_TURN_ON)
-            else
-                table.insert(actions, ACTIONS.BOAT_MAGNET_BEACON_TURN_OFF)
+            if inst:HasTag("paired") then
+                if inst:HasTag("turnedoff") then
+                    table.insert(actions, ACTIONS.BOAT_MAGNET_BEACON_TURN_ON)
+                else
+                    table.insert(actions, ACTIONS.BOAT_MAGNET_BEACON_TURN_OFF)
+                end
             end
         end,
     },

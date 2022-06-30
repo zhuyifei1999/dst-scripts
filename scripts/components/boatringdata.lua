@@ -1,57 +1,42 @@
 local BoatRingData = Class(function(self, inst)
     self.inst = inst
 
-    self.rotationdirection = net_tinybyte(inst.GUID, "boatringdata._rotatedir") -- [0..7]
-    self:SetRotationDirection(0) -- Need to initialize this or else GetRotationDirection() will return -1 by default
+    self.radius = 4
+    self.segments = 8
 
-    self.radius = net_float(inst.GUID, "boatringdata._radius")
-    self.segments = net_smallbyte(inst.GUID, "boatringdata._segments") -- [0..63]
+    self._isrotating = net_bool(inst.GUID, "boatringdata._isrotating")
+    self._isrotating:set(false)
 end)
 
-function BoatRingData:OnSave()
-    local data =
-    {
-        rotationdirection = self:GetRotationDirection(),
-    }
-
-    return data
-end
-
-function BoatRingData:OnLoad(data)
-    if data ~= nil then
-        self:SetRotationDirection(data.rotationdirection or 0)
-    end
-end
-
-function BoatRingData:IsRotating()
-    return self.rotationdirection:value() - 1 ~= 0 -- offset by 1, since GetRotationDirection() will return 0
-end
-
-function BoatRingData:GetRotationDirection()
-    local value = self.rotationdirection:value()
-    -- Return as -1, 0, or 1
-    return value - 1
-end
-
-function BoatRingData:SetRotationDirection(dir)
-    -- Dir is -1, 0, or 1 and rotationdirection is a tinybyte. Offset to save it as 0, 1, or 2
-    self.rotationdirection:set(dir + 1)
-end
+--------------------------------------------------------------------------
+--Client & Server
 
 function BoatRingData:GetRadius()
-    return self.radius:value()
+    return self.radius
 end
 
 function BoatRingData:SetRadius(radius)
-    self.radius:set(radius)
+    self.radius = radius
 end
 
 function BoatRingData:GetNumSegments()
-    return self.segments:value()
+    return self.segments
 end
 
 function BoatRingData:SetNumSegments(segments)
-    self.segments:set(segments)
+    self.segments = segments
+end
+
+function BoatRingData:IsRotating()
+    return self._isrotating:value()
+end
+
+--------------------------------------------------------------------------
+--Master Sim
+
+function BoatRingData:SetIsRotating(isrotating)
+    assert(TheWorld.ismastersim)
+    self._isrotating:set(isrotating)
 end
 
 return BoatRingData

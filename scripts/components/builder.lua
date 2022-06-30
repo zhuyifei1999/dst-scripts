@@ -282,10 +282,10 @@ function Builder:UsePrototyper(prototyper)
 	if prototyper ~= nil then
 		if not prototyper:HasTags(PROTOTYPER_TAGS) 
 			or prototyper:HasOneOfTags(self.exclude_tags)
-			or (prototyper.components.prototyper.restrictedtag ~= nil and not self.inst:HasTag(prototyper.components.prototyper.restrictedtag))
+			or (prototyper.components.prototyper ~= nil and prototyper.components.prototyper.restrictedtag ~= nil and not self.inst:HasTag(prototyper.components.prototyper.restrictedtag))
 			then
 
-			local fail_str = prototyper.components.prototyper.restrictedtag
+			local fail_str = prototyper.components.prototyper and prototyper.components.prototyper.restrictedtag or nil
 			return false, fail_str ~= nil and string.upper(fail_str) or nil
 		end
 	end

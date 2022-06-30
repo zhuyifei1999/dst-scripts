@@ -6107,12 +6107,12 @@ function Tune(overrides)
             INNER = {
                 MAX = 300,
                 CHANCE = 0.2,
-                WEIGHT = 9,
+                WEIGHT = 4,
             },
             MID = {
                 MAX = 600,
-                CHANCE = 0.2,
-                WEIGHT = 3,
+                CHANCE = 0.1,
+                WEIGHT = 2,
             },
             OUTTER = {
                 MAX = 800,

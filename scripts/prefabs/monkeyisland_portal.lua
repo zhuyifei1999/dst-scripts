@@ -188,7 +188,7 @@ local function try_portal_spawn(inst)
         or spawn_fx_loot(inst)
 
     if loot_to_drop ~= nil then
-        inst.SoundEmitter:PlaySound("dontstarve/common/deathpoof")
+        inst.SoundEmitter:PlaySound("monkeyisland/portal/spit_item")
         attach_light_fx(loot_to_drop)
     end
 end
@@ -208,7 +208,7 @@ local function spawn_event_loot(inst, loot_prefab)
     if loot ~= nil then
         fling_portal_loot(inst, loot)
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/deathpoof")
+        inst.SoundEmitter:PlaySound("monkeyisland/portal/spit_item")
         attach_light_fx(loot)
     end
 end
@@ -269,7 +269,7 @@ local function start_portal_event(inst)
         inst.components.timer:StopTimer(STARTEVENT_TIMER_NAME)
     end
 
-    inst.SoundEmitter:PlaySound("grotto/creatures/centipede/spawn") -- TODO this is a placeholder sound
+    inst.SoundEmitter:PlaySound("monkeyisland/portal/buildup_burst")
     inst.components.timer:StartTimer(FIREEVENT_TIMER_NAME, FIREEVENT_TIME)
 end
 
@@ -419,7 +419,7 @@ local function fn()
 
     inst:WatchWorldState("cycles", on_cycles_changed)
 
-    inst.SoundEmitter:PlayingSound("monkeyisland/portal/idle_lp","loop")
+    inst.SoundEmitter:PlaySound("monkeyisland/portal/idle_lp","loop")
 
     ----------------------------------------------------------
     inst.OnSave = on_portal_save

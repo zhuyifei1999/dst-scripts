@@ -20,6 +20,7 @@ local OceanTrawler = Class(function(self, inst)
 
     self.range = 2.5 -- Check for fish range
     self.nearbytrawlerrange = 16 -- Nearby trawlers affect the chance to collect fish while sleeping
+    self.nearbyshoalrange = 16 -- Range to look for ocean fish shoals
     self.checkperiod = .75 -- How often to check for fish when not sleeping
     self.catchfishchance = 0.125 -- The chance to catch a fish when entity awake
     self.sleepcheckperiod = TUNING.SEG_TIME -- Check once every segment time
@@ -310,6 +311,7 @@ end
 
 local OCEANTRAWLER_MUST_TAGS = { "oceantrawler" }
 local OCEANTRAWLER_CANT_TAGS = { "burnt", "dead" }
+local SHOAL_MUST_TAGS = { "oceanshoalspawner" }
 function OceanTrawler:SimulateCatchFish()
     local container = self.inst.components.container
     if self.lowered and container then
@@ -344,6 +346,13 @@ function OceanTrawler:SimulateCatchFish()
 
                     if self.fishescaped then
                         break
+                    end
+
+                    -- An ocean shoal nearby? Send an event to notify listners
+                    local shoals = TheSim:FindEntities(pt.x, pt.y, pt.z, self.nearbyshoalrange, SHOAL_MUST_TAGS)
+                    if shoals ~= nil then
+                        local shoal = shoals[1]
+                        TheWorld:PushEvent("ms_shoalfishhooked", shoal)
                     end
                 end
             end
@@ -402,6 +411,15 @@ function OceanTrawler:OnUpdate(dt)
                 end
 
                 AddFish(self, fish.prefab)
+
+                -- An ocean shoal fish was caught, send an event to notify listners
+                if fish.components.homeseeker ~= nil
+                        and fish.components.homeseeker.home ~= nil
+                        and fish.components.homeseeker.home:IsValid()
+                        and fish.components.homeseeker.home.prefab == "oceanfish_shoalspawner" then
+                    TheWorld:PushEvent("ms_shoalfishhooked", fish.components.homeseeker.home)
+                end
+
                 fish:Remove()
 
                 UpdateFishNetAnim(self.inst)

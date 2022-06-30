@@ -1,7 +1,15 @@
+local function on_death(inst)
+    inst.components.boatring:OnDeath()
+end
+
 local BoatRing = Class(function(self, inst)
     self.inst = inst
+    self.rotationdirection = 0
     self.rotate_speed = 0.5
     self.max_rotate_speed = 2
+    self.updating = false
+
+    assert(inst.components.boatringdata ~= nil, "missing boatringdata component")
 
     self.boatbumpers = {}
 
@@ -21,19 +29,39 @@ local BoatRing = Class(function(self, inst)
         end
     end
 
-    self:StartUpdating()
-
-    self.inst:ListenForEvent("onignite", function() self:OnIgnite() end)
-    self.inst:ListenForEvent("death", function() self:OnDeath() end)
+    --"onignite" doesn't work; boat does not have burnable component
+    --self.inst:ListenForEvent("onignite", function() print("onignite") self:OnIgnite() end)
+    self.inst:ListenForEvent("death", on_death)
     self.inst:ListenForEvent("rotationdirchanged", self.onrotationchanged)
 end)
 
 function BoatRing:GetRadius()
-    return self.inst.components.boatringdata and self.inst.components.boatringdata:GetRadius() or 0
+    return self.inst.components.boatringdata:GetRadius()
 end
 
 function BoatRing:GetNumSegments()
-    return self.inst.components.boatringdata and self.inst.components.boatringdata:GetNumSegments() or 0
+    return self.inst.components.boatringdata:GetNumSegments()
+end
+
+function BoatRing:SetRotationDirection(dir)
+    self.rotationdirection = dir
+
+    local isrotating = dir ~= 0
+    self.inst.components.boatringdata:SetIsRotating(isrotating)
+
+    if isrotating then
+        if not self.updating then
+            self.updating = true
+            self.inst:StartUpdatingComponent(self)
+        end
+    elseif self.updating then
+        self.updating = false
+        self.inst:StopUpdatingComponent(self)
+    end
+end
+
+function BoatRing:GetRotationDirection()
+    return self.rotationdirection
 end
 
 function BoatRing:AddBumper(bumper)
@@ -55,7 +83,7 @@ end
 function BoatRing:GetBumperAtPoint(x, z)
     -- Search through all bumpers until we find one that's covering (x, z)
     local boatposition = self.inst:GetPosition()
-    local boatsegments = self.inst.components.boatringdata and self.inst.components.boatringdata:GetNumSegments() or 0
+    local boatsegments = self.inst.components.boatringdata:GetNumSegments()
 
     for i, bumper in ipairs(self.boatbumpers) do
         local forward = bumper:GetPosition() - boatposition
@@ -74,30 +102,24 @@ end
 
 function BoatRing:OnUpdate(dt)
     -- Rotate the actual boat
-    local isrotating = self.inst.components.boatringdata and self.inst.components.boatringdata:IsRotating() or false
-    if isrotating then
-        local angle = self.inst.Transform:GetRotation()
+    -- If no rotators but still rotating, set the num rotators to 1 to simulate a malfunctioning boat
+    local numrotators = math.max(1, #self.rotators)
+    local speed = math.min(numrotators * self.rotate_speed, self.max_rotate_speed)
+    local angle = ReduceAngle(self.inst.Transform:GetRotation() + speed * self.rotationdirection)
+    self.inst.Transform:SetRotation(angle)
+end
 
-        -- If no rotators but still rotating, set the num rotators to 1 to simulate a malfunctioning boat
-        local numrotators = #self.rotators == 0 and isrotating and 1 or #self.rotators
-        local speed = math.min(numrotators * self.rotate_speed, self.max_rotate_speed)
-        angle = (angle + speed * self.inst.components.boatringdata:GetRotationDirection() % 360)
-        if angle < 0 then
-            angle = angle + 360
-        end
-        self.inst.Transform:SetRotation(angle)
+function BoatRing:OnSave()
+    return
+    {
+        rotationdirection = self.rotationdirection,
+    }
+end
+
+function BoatRing:OnLoad(data)
+    if data ~= nil then
+        self:SetRotationDirection(data.rotationdirection or 0)
     end
 end
-
-function BoatRing:StartUpdating()
-    self.inst:StartUpdatingComponent(self)
-end
-
-function BoatRing:StopUpdating()
-    self.inst:StopUpdatingComponent(self)
-end
-
---[[function BoatRing:OnEntitySleep()
-end]]
 
 return BoatRing

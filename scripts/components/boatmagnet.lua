@@ -210,7 +210,7 @@ function BoatMagnet:CalcMaxVelocity()
         mindistance = mindistance + beaconboat.components.hull:GetRadius()
     end
 
-    -- If the beacon boat is turning, reduce max speed to prevent drifting while turning
+    -- If the beacon boat is turning, reduce max speed to prevent too much drifting while turning
     local magnetboatdirection = self.boat.components.boatphysics:GetMoveDirection()
     local beaconboatdirection = beaconboat == nil and followtarget.components.locomotor and Vector3(followtarget.Physics:GetVelocity())
                             or (beaconboat ~= nil and beaconboat.components.boatphysics:GetMoveDirection())
@@ -226,9 +226,11 @@ function BoatMagnet:CalcMaxVelocity()
     if not self.beacon.components.boatmagnetbeacon:IsTurnedOff() then
         if distance > mindistance then
             local base = math.pow(TUNING.BOAT.BOAT_MAGNET.MAX_VELOCITY + TUNING.BOAT.BOAT_MAGNET.CATCH_UP_SPEED, 1 / maxdistance)
-            return beaconspeed + (math.pow(base, distance - mindistance) - 1) * turnspeedmodifier
+            local maxspeed = beaconspeed + (math.pow(base, distance - mindistance) - 1) * turnspeedmodifier
+            return math.min(maxspeed, TUNING.BOAT.BOAT_MAGNET.MAX_VELOCITY + TUNING.BOAT.BOAT_MAGNET.CATCH_UP_SPEED)
         else
-            return beaconspeed * turnspeedmodifier
+            local maxspeed = beaconspeed * turnspeedmodifier
+            return math.min(maxspeed, TUNING.BOAT.BOAT_MAGNET.MAX_VELOCITY)
         end
     end
     return 0

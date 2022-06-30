@@ -220,7 +220,7 @@ local states=
                 inst.AnimState:PlayAnimation("caw", true)
             end
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            inst.SoundEmitter:PlaySound(inst.sounds.chirp)
+            inst.SoundEmitter:PlaySound("monkeyisland/pollyroger/caw")
         end,
 
         onexit = function(inst)
@@ -239,6 +239,7 @@ local states=
         onenter = function(inst)
             inst:RemoveTag("flying")
             inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("monkeyisland/pollyroger/hit")
         end,
 
         onexit = function(inst)
@@ -260,6 +261,7 @@ local states=
             inst:RemoveTag("flying")
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("death")
+            inst.SoundEmitter:PlaySound("monkeyisland/pollyroger/death")
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,

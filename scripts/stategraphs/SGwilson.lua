@@ -9053,6 +9053,9 @@ local states =
 
         timeline =
         {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.Transform:SetFourFaced()
+            end),
             TimeEvent(13 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
@@ -15504,7 +15507,7 @@ local states =
             ClearStatusAilments(inst)
             ForceStopHeavyLifting(inst)
             inst.Physics:Stop()
-            inst.components.inventory:Close()
+            --inst.components.inventory:Close() -- NOTES(JBK): This makes active item go back into the inventory but this is for seamlessswapping so inventory animations are not to be played!
             inst:PushEvent("ms_closepopups")
 
             if inst.components.playercontroller ~= nil then

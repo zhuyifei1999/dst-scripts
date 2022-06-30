@@ -56,7 +56,7 @@ local function DoStartAiming(inst, self, cannon)
 		cannon.components.reticule:CreateReticule()
 	end
 
-	self.aim_range_fx = SpawnPrefab("cannon_aim_range_fx")
+	self.aim_range_fx = SpawnPrefab("cannon_aoe_range_fx")
 	self.aim_range_fx.entity:SetParent(cannon.entity)
 end
 
@@ -117,7 +117,8 @@ end]]
 --Master Sim
 
 function BoatCannonUser:SetCannon(cannon)
-	if not TheWorld.ismastersim or self._cannon:value() == cannon then
+	assert(TheWorld.ismastersim)
+	if self._cannon:value() == cannon then
 		return
 	end
 
@@ -150,9 +151,8 @@ function BoatCannonUser:SetCannon(cannon)
 end
 
 function BoatCannonUser:CancelAimingStateInternal()
-	if not TheWorld.ismastersim then
-		return
-	elseif self.inst.sg:HasStateTag("is_using_cannon") then
+	assert(TheWorld.ismastersim)
+	if self.inst.sg:HasStateTag("is_using_cannon") then
 		self.inst.sg:GoToState("aim_cannon_pst")
 	end
 end

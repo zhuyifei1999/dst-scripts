@@ -22,8 +22,13 @@ local function processloot(inst,stash)
     if inst.components.perishable then
         inst.components.perishable:StopPerishing()
     end
+    if inst.onstashed then
+        inst:onstashed()
+    end
 end
 
+
+--DropEverything
 local function stashloot(inst)
 
     local ps = TheWorld.components.piratespawner
@@ -71,18 +76,29 @@ local function setpirateboat(boat)
         local x,y,z = inst.Transform:GetWorldPosition()
         -- STASH PASS
         local ents = TheSim:FindEntities(x,y,z, inst.components.walkableplatform.platform_radius)
-        for i=#ents,1,-1 do            
-            stashloot(ents[i])                    
+        for i=#ents,1,-1 do
+            if ents[i].components.container then
+                ents[i].components.container:DropEverything(Vector3(x,y,z))
+            end
+        end
+
+        local ents = TheSim:FindEntities(x,y,z, inst.components.walkableplatform.platform_radius)
+        for i=#ents,1,-1 do
+            stashloot(ents[i])
         end
 
         ents = nil
         -- REMOVE EVERYTHING
-        ents = TheSim:FindEntities(x,y,z, inst.components.walkableplatform.platform_radius)   
+        ents = TheSim:FindEntities(x,y,z, inst.components.walkableplatform.platform_radius)
         for i=#ents,1,-1 do
-            ents[i]:Remove()                    
+            if ents[i].health then 
+                ents[i].health:Kill()
+            else
+                ents[i]:Remove()
+            end
         end
     end
-    boat:ListenForEvent("spawnnewboatleak", hitbycannon)    
+    boat:ListenForEvent("spawnnewboatleak", hitbycannon)
 end
 
 local function forgetmonkey(monkey)
@@ -179,23 +195,23 @@ local function GetAveragePlayerAgeInDays()
     return sum > 0 and sum / #_activeplayers or 0
 end
 
-local function getnextmonkeytime()    
+local function getnextmonkeytime()
     local days = GetAveragePlayerAgeInDays()
     local mult = 1
     if days < 10 then
         mult = 0.6
     elseif days < 20 then
-        mult = 0.4
+        mult = 0.5
     elseif days < 40 then
-        mult = 0.2
+        mult = 0.4
     elseif days < 80 then
-        mult = 0.1
+        mult = 0.3
     else
-        mult = 0
+        mult = 0.2
     end
-    print("base",TUNING.PIRATESPAWNER_BASEPIRATECHANCE*mult)
-    print("add",(1-mult) * TUNING.PIRATESPAWNER_BASEPIRATECHANCE)
-    return (TUNING.PIRATESPAWNER_BASEPIRATECHANCE*mult) + (math.random() *  (1-mult) * TUNING.PIRATESPAWNER_BASEPIRATECHANCE )
+    local time = (TUNING.PIRATESPAWNER_BASEPIRATECHANCE*mult) + (math.random() *  (1-mult) * TUNING.PIRATESPAWNER_BASEPIRATECHANCE )
+
+    return time
 end
 
 local _nextpiratechance = getnextmonkeytime()
@@ -631,6 +647,7 @@ function self:OnUpdate(dt)
             v.piratesnear = nil
         end
     end
+
 end
 
 

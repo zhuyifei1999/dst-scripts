@@ -31,7 +31,7 @@ function BoatRotator:SetRotationDirection(dir)
 	end
 
 	dir = (dir > 0 and 1) or (dir < 0 and -1) or 0
-	boat.components.boatringdata:SetRotationDirection(dir)
+	boat.components.boatring:SetRotationDirection(dir)
 
     -- Tell all boat rotators on the boat that its rotation has changed
     boat:PushEvent("rotationdirchanged", dir)
@@ -51,7 +51,11 @@ function BoatRotator:SetBoat(boat)
     if boat ~= nil then
         self.inst.Transform:SetRotation(self.boat.Transform:GetRotation())
         boat.components.boatring:AddRotator(self)
-        self.inst.sg.mem.direction = boat.components.boatringdata and boat.components.boatringdata:GetRotationDirection() or 0
+        self.inst.sg.mem.direction = boat.components.boatring:GetRotationDirection()
+        if self.inst.sg:HasStateTag("idle") then
+            --refresh direction when loading back onto a boat
+            self.inst.sg:GoToState("idle")
+        end
         self.inst:ListenForEvent("onremove", self.OnBoatRemoved, boat)
         self.inst:ListenForEvent("death", self.OnBoatDeath, boat)
     end

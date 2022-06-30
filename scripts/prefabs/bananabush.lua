@@ -176,9 +176,9 @@ local function fn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
 
-    local variance_cycles = (TUNING.MONKEYTAIL_CYCLES_VAR <= 1 and TUNING.MONKEYTAIL_CYCLES_VAR)
-        or math.random(TUNING.MONKEYTAIL_CYCLES_VAR)
-    inst.components.pickable.max_cycles = TUNING.MONKEYTAIL_CYCLES + variance_cycles
+    local variance_cycles = (TUNING.BANANABUSH_CYCLES_VAR <= 1 and TUNING.BANANABUSH_CYCLES_VAR)
+        or math.random(TUNING.BANANABUSH_CYCLES_VAR)
+    inst.components.pickable.max_cycles = TUNING.BANANABUSH_CYCLES + variance_cycles
     inst.components.pickable.cycles_left = inst.components.pickable.max_cycles
 
     inst.components.pickable.onpickedfn = OnPicked

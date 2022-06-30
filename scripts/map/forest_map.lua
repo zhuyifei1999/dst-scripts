@@ -357,7 +357,7 @@ local function GetTileForNoiseTile(tile, noise)
 	return NoiseTileFunctions.default(noise)
 end
 
-function ValidateGroundTile(tile)
+local function ValidateGroundTile(tile)
 	if TileGroupManager:IsNoiseTile(tile) then
 		return WORLD_TILES.DIRT
 	end

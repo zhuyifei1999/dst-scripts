@@ -94,6 +94,17 @@ local function ontimerdone(inst, data)
 end
 
 local function ontalk(inst, script)
+    for i, text in ipairs(STRINGS.MONKEY_QUEEN_HAPPY) do
+        if text == script then 
+            return nil
+        end
+    end
+
+    for i, text in ipairs(STRINGS.MONKEY_QUEEN_BANANAS) do
+        if text == script then 
+            return nil
+        end
+    end    
     inst.SoundEmitter:PlaySound("monkeyisland/monkeyqueen/speak")
 end
 
@@ -154,6 +165,8 @@ local function fn()
     inst.components.updatelooper:AddOnUpdateFn(playerproxcheck)
 
     inst:AddComponent("timer")
+
+    inst.SoundEmitter:PlaySound("monkeyisland/amb/island_amb_monkeys","loop")
 
     inst:ListenForEvent("timerdone", ontimerdone)
 

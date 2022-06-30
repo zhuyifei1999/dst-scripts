@@ -1469,7 +1469,7 @@ local function SaveForReroll(inst)
     --NOTE: ignoring returned refs, should be ok
 
     local curses = {}
-    dumptable(inst.components.inventory.itemslots)
+    --dumptable(inst.components.inventory.itemslots)
     inst.components.inventory:ForEachItem(function(thing)
         --print("thing",thing.prefab)
         if thing.components.curseditem then
@@ -1831,11 +1831,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
             if component.TransferComponent then
                 component:TransferComponent(newinst)
             end
-        end
-
-		local activeitem = inst.components.inventory:GetActiveItem()
-        if activeitem then
-			newinst.components.inventory:GiveActiveItem(activeitem)
         end
 
         inst.Physics:SetActive(false)

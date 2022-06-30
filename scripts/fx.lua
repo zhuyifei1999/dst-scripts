@@ -2501,14 +2501,14 @@ local fx =
         sound = "turnoftides/common/together/boat/creak",
         fn = function(inst)
             inst.entity:AddSoundEmitter()
-            inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/creak")
-            inst:DoTaskInTime(2*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.1}) end)
-            inst:DoTaskInTime(14*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.1}) end)
-            inst:DoTaskInTime(25*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.1}) end)
-            inst:DoTaskInTime(29*FRAMES, function(i) i.SoundEmitter:PlaySound("turnoftides/common/together/boat/creak") end)
-            inst:DoTaskInTime(33*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.2}) end)
-            inst:DoTaskInTime(45*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.2}) end)
-            inst:DoTaskInTime(52*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity=0.3}) end)
+            inst.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage")
+            inst:DoTaskInTime(2*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.1}) end)
+            inst:DoTaskInTime(14*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.1}) end)
+            inst:DoTaskInTime(25*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.1}) end)
+            inst:DoTaskInTime(29*FRAMES, function(i) i.SoundEmitter:PlaySound("monkeyisland/dock/damage") end)
+            inst:DoTaskInTime(33*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.2}) end)
+            inst:DoTaskInTime(45*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.2}) end)
+            inst:DoTaskInTime(52*FRAMES, function(i) i.SoundEmitter:PlaySoundWithParams("monkeyisland/dock/damage", {intensity=0.3}) end)
         end,
     },
     {
@@ -2516,7 +2516,7 @@ local fx =
         bank = "fx_dock_crackleandpop",
         build = "fx_dock_crackleandpop",
         anim = "pop",
-        sound = "turnoftides/common/together/boat/sink",
+        sound = "monkeyisland/dock/break",
     },
 
     {
