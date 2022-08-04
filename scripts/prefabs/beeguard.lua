@@ -105,8 +105,12 @@ end
 local function OnEntitySleep(inst)
     if inst._sleeptask ~= nil then
         inst._sleeptask:Cancel()
+        inst._sleeptask = nil
     end
-    inst._sleeptask = not inst.components.health:IsDead() and inst:DoTaskInTime(10, inst.Remove) or nil
+
+    if not inst:IsFriendly() then
+        inst._sleeptask = not inst.components.health:IsDead() and inst:DoTaskInTime(10, inst.Remove) or nil
+    end
 
     inst.SoundEmitter:KillSound("buzz")
 end

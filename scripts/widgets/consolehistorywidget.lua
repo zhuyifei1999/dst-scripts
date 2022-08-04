@@ -191,7 +191,7 @@ function ConsoleHistoryWidget:RefreshHistory(history, remotehistory, index)
 		btn:SetOnClick(function()
 			if self.active_selection_btn ~= nil then
 				self.text_edit:SetString(self.selection_btns[self.active_selection_btn - self.start_offset].name)
-				--self.console_remote_execute:ToggleRemoteExecute(console_localremote_history[i])
+				self.inst:PushEvent("onconsolehistoryitemclicked", i)
 				self:Hide()
 				self:Disable()
 			end

@@ -304,6 +304,11 @@ function ConsoleScreen:DoInit()
 		local sx, sy = self.console_edit:GetRegionSize()
 		self.console_history:SetPosition(-sx * 0.5, sy * 0.5 + 5)
 		self.console_history:Hide()
+
+		local function onconsolehistoryitemclicked()
+			self:ToggleRemoteExecute( CONSOLE_LOCALREMOTE_HISTORY[ self.history_idx ] )
+		end
+		self.console_history.inst:ListenForEvent("onconsolehistoryitemclicked", onconsolehistoryitemclicked)
 	end
 
 	-- Load saved last entered console commands

@@ -6176,7 +6176,7 @@ function Tune(overrides)
         BOOKSTATION_BONUS_RANGE = 12,
         BOOKSTATION_WICKER_BONUS = 2,
 
-        BOOK_FIRE_RADIUS = 12,
+        BOOK_FIRE_RADIUS = 16,
         FIREPEN_MAXUSES = 10,
 
         BOOK_RESEARCH_STATION_RADIUS = 16,

@@ -136,7 +136,7 @@ Recipe2("dumbbell_marble",				{Ingredient("marble", 4), Ingredient("twigs", 1)},
 Recipe2("dumbbell_gem",					{Ingredient("thulecite", 2), Ingredient("purplegem", 1), Ingredient("twigs", 1)},				TECH.NONE,				{builder_tag="strongman"})
 
 -- Wickerbottom
-Recipe2("bookstation", {Ingredient("livinglog", 4), Ingredient("papyrus", 4), Ingredient("featherpencil", 1)}, TECH.NONE, {builder_tag="bookbuilder", placer="bookstation_placer"})
+Recipe2("bookstation", {Ingredient("livinglog", 2), Ingredient("papyrus", 4), Ingredient("featherpencil", 1)}, TECH.NONE, {builder_tag="bookbuilder", placer="bookstation_placer"})
 
 Recipe2("book_horticulture", 	 	  {Ingredient("papyrus", 2), Ingredient("seeds", 5), Ingredient("poop", 5)}, TECH.SCIENCE_ONE,   {builder_tag="bookbuilder"})
 Recipe2("book_horticulture_upgraded", {Ingredient("book_horticulture", 1), Ingredient("featherpencil", 1), Ingredient("papyrus", 2)}, TECH.BOOKCRAFT_ONE, {builder_tag="bookbuilder"})
