@@ -347,7 +347,7 @@ local function SproutLaunch(inst, launcher, basespeed)
     inst.Physics:SetVel(math.cos(angle) * speed, speed * 4 + math.random() * 2, math.sin(angle) * speed)
 end
 
-local MUSHROOMSPROUT_BLOCKER_TAGS = { "mushroomsprout", "INLIMBO" } -- NOTES(JBK): Any of these tags will stop Toadstool from breaking things do not add tags from MUSHROOMSPROUT_BREAK_ONEOF_TAGS here.
+local MUSHROOMSPROUT_BLOCKER_TAGS = { "mushroomsprout", "pond", "INLIMBO" } -- NOTES(JBK): Any of these tags will stop Toadstool from breaking things do not add tags from MUSHROOMSPROUT_BREAK_ONEOF_TAGS here.
 local MUSHROOMSPROUT_BREAK_ONEOF_TAGS = { "playerskeleton", "DIG_workable", "HAMMER_workable", "CHOP_WORKABLE", "soil" }
 local MUSHROOMSPROUT_TOSS_MUST_TAGS = { "_inventoryitem" }
 local MUSHROOMSPROUT_TOSS_CANT_TAGS = { "locomotor", "INLIMBO" }
