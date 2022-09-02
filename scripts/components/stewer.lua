@@ -286,6 +286,7 @@ function Stewer:Harvest(harvester)
 
 				if harvester ~= nil and
 					self.chef_id == harvester.userid and
+					recipe ~= nil and
 					recipe.cookbook_category ~= nil and
 					cooking.cookbook_recipes[recipe.cookbook_category] ~= nil and
 					cooking.cookbook_recipes[recipe.cookbook_category][self.product] ~= nil then
