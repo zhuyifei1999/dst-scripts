@@ -1432,7 +1432,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "VICTORIAN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
+		symbol_overrides = { "arm_lower_cuff", "arm_lower", "arm_upper", "torso", },
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
