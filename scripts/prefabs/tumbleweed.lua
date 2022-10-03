@@ -54,6 +54,7 @@ local prefabs =
     "bee",
     "mosquito",
     "boneshard",
+    "cookingrecipecard",
 }
 
 local CHESS_LOOT =
@@ -178,6 +179,7 @@ local function MakeLoot(inst)
         {chance = 1,    item = "stinger"},
         {chance = 1,    item = "gears"},
         {chance = 0.1,  item = "boneshard"},
+        {chance = 0.25, item = "cookingrecipecard"},
     }
 
     local chessunlocks = TheWorld.components.chessunlocks
