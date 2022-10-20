@@ -54,6 +54,9 @@ function Tune(overrides)
         MAX_SERVER_SIZE = 6,
         DEMO_TIME = total_day_time * 2 + day_time*.2,
         AUTOSAVE_INTERVAL = total_day_time,
+
+		HUD_CLOUD_CUTOFF = 0.75,
+
         SEG_TIME = seg_time,
         TOTAL_DAY_TIME = total_day_time,
         DAY_SEGS_DEFAULT = day_segs,

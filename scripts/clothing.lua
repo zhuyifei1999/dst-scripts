@@ -1244,6 +1244,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 109,
 	},
+	body_walter_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", "arm_upper_skin", "arm_upper", "arm_lower", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	body_walter_nature =
 	{
 		type = "body",
@@ -1320,6 +1330,18 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 123,
+	},
+	body_wanda_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		symbol_overrides_old = { skirt = "skirt_old", torso = "torso_old", torso_pelvis = "torso_pelvis_old", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	body_wanda_shadow =
 	{
@@ -1407,7 +1429,7 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "FISHERMAN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
-		symbol_overrides_by_character = { default = { arm_lower = "torso_wilson", },walter = { arm_lower = "torso_walter", },wanda = { arm_lower = "torso_wanda", },warly = { arm_lower = "torso_warly", },waxwell = { arm_lower = "torso_waxwell", },webber = { arm_lower = "torso_webber", },wormwood = { arm_lower = "torso_wormwood", },wortox = { arm_lower = "torso_wortox", },wurt = { arm_lower = "torso_wurt", },wx78 = { arm_lower = "torso_wx78", },},
+		symbol_overrides_by_character = { default = { arm_lower = "arm_lower_wilson", },walter = { arm_lower = "arm_lower_walter", },wanda = { arm_lower = "arm_lower_wanda", },warly = { arm_lower = "arm_lower_warly", },waxwell = { arm_lower = "arm_lower_waxwell", },webber = { arm_lower = "arm_lower_webber", },wormwood = { arm_lower = "arm_lower_wormwood", },wortox = { arm_lower = "arm_lower_wortox", },wurt = { arm_lower = "arm_lower_wurt", },wx78 = { arm_lower = "arm_lower_wx78", },},
 		symbol_hides = { "arm_upper_skin", },
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
@@ -1749,6 +1771,17 @@ CLOTHING =
 		legs_cuff_size = 3,
 		release_group = 105,
 	},
+	body_waxwell_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	body_waxwell_magma =
 	{
 		type = "body",
@@ -1923,6 +1956,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	body_webber_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	body_webber_magma =
 	{
@@ -2122,6 +2165,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	body_wendy_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	body_wendy_lureplant =
 	{
@@ -2562,6 +2615,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 105,
 	},
+	body_wickerbottom_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "skirt", "torso", "torso_pelvis", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	body_wickerbottom_magma =
 	{
 		type = "body",
@@ -2928,6 +2991,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	body_wilson_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	body_wilson_madscientist =
 	{
@@ -3795,6 +3868,19 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 67,
 	},
+	body_wormwood_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "arm_upper", "torso", },
+		symbol_overrides_stage2 = { arm_upper = "arm_upper_stage2", torso = "torso_stage2", },
+		symbol_overrides_stage3 = { arm_upper = "arm_upper_stage3", torso = "torso_stage3", },
+		symbol_overrides_stage4 = { arm_upper = "arm_upper_stage4", torso = "torso_stage4", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	body_wormwood_mushroom =
 	{
 		type = "body",
@@ -4187,6 +4273,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
 		release_group = 109,
+	},
+	body_wx78_lunar =
+	{
+		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	body_wx78_magma =
 	{
@@ -4883,6 +4979,16 @@ CLOTHING =
 		feet_cuff_size = 2,
 		release_group = 123,
 	},
+	feet_wanda_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 3,
+		release_group = 136,
+	},
 	feet_warly_candyman =
 	{
 		type = "feet",
@@ -5012,6 +5118,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	feet_waxwell_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 3,
+		release_group = 136,
+	},
 	feet_waxwell_nature =
 	{
 		type = "feet",
@@ -5041,6 +5157,15 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		feet_cuff_size = 3,
 		release_group = 36,
+	},
+	feet_webber_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	feet_webber_magma =
 	{
@@ -5121,6 +5246,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		feet_cuff_size = 5,
 		release_group = 36,
+	},
+	feet_wendy_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 3,
+		release_group = 136,
 	},
 	feet_wendy_magma =
 	{
@@ -5232,6 +5367,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		feet_cuff_size = 5,
 		release_group = 36,
+	},
+	feet_wickerbottom_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 4,
+		release_group = 136,
 	},
 	feet_wickerbottom_magma =
 	{
@@ -5575,6 +5720,16 @@ CLOTHING =
 		feet_cuff_size = 5,
 		release_group = 109,
 	},
+	feet_wx78_lunar =
+	{
+		type = "feet",
+		skin_tags = { "LUNAR", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		feet_cuff_size = 2,
+		release_group = 136,
+	},
 	feet_wx78_magma =
 	{
 		type = "feet",
@@ -5866,6 +6021,17 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 123,
 	},
+	hand_wanda_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		symbol_overrides_by_character = { default = { hand = "hand_wilson", },walter = { hand = "hand_walter", },wanda = { hand = "hand_wanda", },warly = { hand = "hand_warly", },waxwell = { hand = "hand_waxwell", },webber = { hand = "hand_webber", },wormwood = { hand = "hand_wormwood", },wortox = { hand = "hand_wortox", },wurt = { hand = "hand_wurt", },wx78 = { hand = "hand_wx78", },},
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Spiffy",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	hand_wanda_shadow =
 	{
 		type = "hand",
@@ -6012,6 +6178,15 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	hand_waxwell_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	hand_waxwell_magma =
 	{
 		type = "hand",
@@ -6071,6 +6246,16 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	hand_webber_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	hand_webber_magma =
 	{
@@ -6252,6 +6437,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 36,
 	},
+	hand_wickerbottom_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	hand_wickerbottom_magma =
 	{
 		type = "hand",
@@ -6394,6 +6589,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	hand_wilson_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", "arm_lower_cuff", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	hand_wilson_madscientist =
 	{
@@ -6721,6 +6925,16 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		release_group = 67,
 	},
+	hand_wormwood_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", "hand_idle_wormwood", },
+		symbol_in_base_hides = { "arm_lower_cuff", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	hand_wormwood_mushroom =
 	{
 		type = "hand",
@@ -6948,6 +7162,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 109,
+	},
+	hand_wx78_lunar =
+	{
+		type = "hand",
+		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
 	},
 	hand_wx78_magma =
 	{
@@ -7652,6 +7875,16 @@ CLOTHING =
 		has_leg_boot = true,
 		release_group = 109,
 	},
+	legs_walter_lunar =
+	{
+		type = "legs",
+		skin_tags = { "LUNAR", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		release_group = 136,
+	},
 	legs_walter_nature =
 	{
 		type = "legs",
@@ -7940,6 +8173,18 @@ CLOTHING =
 		legs_cuff_size = 3,
 		release_group = 36,
 	},
+	legs_webber_lunar =
+	{
+		type = "legs",
+		skin_tags = { "LUNAR", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		legs_cuff_size = 3,
+		has_leg_boot = true,
+		release_group = 136,
+	},
 	legs_wes_pirate =
 	{
 		type = "legs",
@@ -8022,6 +8267,18 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 36,
+	},
+	legs_wilson_lunar =
+	{
+		type = "legs",
+		skin_tags = { "LUNAR", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		legs_cuff_size = 1,
+		has_leg_boot = true,
+		release_group = 136,
 	},
 	legs_wilson_magma =
 	{
@@ -8322,6 +8579,21 @@ CLOTHING =
 		has_nub = true,
 		release_group = 67,
 	},
+	legs_wormwood_lunar =
+	{
+		type = "legs",
+		skin_tags = { "LUNAR", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", "foot", },
+		symbol_overrides_stage2 = { foot = "foot_stage2", },
+		symbol_overrides_stage3 = { foot = "foot_stage3", },
+		symbol_overrides_stage4 = { foot = "foot_stage4", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		legs_cuff_size = 3,
+		has_nub = true,
+		release_group = 136,
+	},
 	legs_wormwood_mushroom =
 	{
 		type = "legs",
@@ -8555,6 +8827,7 @@ CLOTHING =
 		symbol_hides = { "skirt", "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		feet_cuff_size = 1,
 		has_nub = true,
 		release_group = 127,
 	},
@@ -8579,6 +8852,17 @@ CLOTHING =
 		legs_cuff_size = 2,
 		has_leg_boot = true,
 		release_group = 109,
+	},
+	legs_wx78_lunar =
+	{
+		type = "legs",
+		skin_tags = { "LUNAR", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "Woven",
+		legs_cuff_size = 1,
+		release_group = 136,
 	},
 	legs_wx78_retro =
 	{

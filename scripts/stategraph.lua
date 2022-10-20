@@ -579,7 +579,7 @@ function StateGraphInstance:UpdateState(dt)
 
     if self.timeout then
         self.timeout = self.timeout - dt
-        if self.timeout <= (1/30) then
+        if self.timeout < 0.0001 then --epsilon for floating point error
             self.timeout = nil
             if self.currentstate.ontimeout then
                 self.currentstate.ontimeout(self.inst)

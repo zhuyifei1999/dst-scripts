@@ -858,6 +858,18 @@ local function IsActing(inst)
     return inst.sg:HasStateTag("acting") or (inst._is_onstage_task ~= nil)
 end
 
+local function StartStageActing(inst)
+    if inst.ShowActions then
+        inst:ShowActions(false)
+    end
+end
+
+local function StopStageActing(inst)
+    if inst.ShowActions then
+        inst:ShowActions(true)
+    end
+end
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -885,5 +897,7 @@ return
     MakeGenericCommander        = MakeGenericCommander,
     OnMurderCheckForFishRepel   = OnMurderCheckForFishRepel,
     OnOnStageEvent              = OnOnStageEvent,
-    IsActing                   = IsActing,
+    IsActing                    = IsActing,
+    StartStageActing            = StartStageActing,
+    StopStageActing             = StopStageActing,
 }

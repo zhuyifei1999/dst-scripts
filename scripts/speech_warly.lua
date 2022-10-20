@@ -469,7 +469,7 @@ return{
 		TASTY = "Tres magnifique!",
     },
 
-	ANNOUNCE_FOODMEMORY = "I'd rather not eat the same old thing again.",
+	ANNOUNCE_FOODMEMORY = "\nI'd rather not eat the same old thing again.",
 
     ANNOUNCE_ENCUMBERED =
     {

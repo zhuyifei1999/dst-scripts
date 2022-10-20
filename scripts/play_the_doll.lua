@@ -418,7 +418,7 @@ local MARIONETTE_TIME = 1.1
 			{roles = {"BIRD2"},				duration = 2.5,		line = STRINGS.STAGEACTOR.ACT2_SCENE4.LINE45, sgparam="excited",	treetest= true},
 
 			{roles = {"DOLL_BROKEN"},		duration = 1.5,		anim="corpse_revive"},
-
+			{actionfn = fn.findpositions,	duration = 1,		positions={["DOLL_BROKEN"] = 2}},
 
 			{actionfn = fn.actorsbow,		duration = 1, },
 			{actionfn = fn.stinger,			duration = 2.5,		sound = "stageplay_set/statue_lyre/stinger_outro" },

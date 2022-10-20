@@ -129,6 +129,11 @@ local function onacting(inst, data)
 end
 
 --------------------------------------------------------------------------------
+local function ontalk(inst, data)
+    inst.SoundEmitter:PlaySound("stageplay_set/mannequin/speaking")
+end
+
+--------------------------------------------------------------------------------
 local function onsave(inst, data)
     if (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
             or inst:HasTag("burnt") then
@@ -244,6 +249,7 @@ local function fn()
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("equip", onequipped)
     inst:ListenForEvent("acting", onacting)
+    inst:ListenForEvent("ontalk", ontalk)
 
     -------------------------------------------------------
     inst.OnSave = onsave

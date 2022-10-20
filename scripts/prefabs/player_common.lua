@@ -614,8 +614,10 @@ local function RegisterMasterEventListeners(inst)
     -- Merm murder event
     inst:ListenForEvent("murdered", ex_fns.OnMurderCheckForFishRepel)
 
-    -- Stageplay proximity tracking event
+    -- Stageplay events
     inst:ListenForEvent("onstage", ex_fns.OnOnStageEvent)
+    inst:ListenForEvent("startstageacting", ex_fns.StartStageActing)
+    inst:ListenForEvent("stopstageacting", ex_fns.StopStageActing)
 end
 
 --------------------------------------------------------------------------

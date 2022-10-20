@@ -10,7 +10,9 @@ local assets =
     Asset("ANIM", "anim/hound_ice_ocean.zip"),
     Asset("ANIM", "anim/hound_mutated.zip"),
     Asset("ANIM", "anim/hound_hedge.zip"),
+    Asset("ANIM", "anim/hound_hedge_ocean.zip"),
     Asset("ANIM", "anim/hound_hedge_action.zip"),
+    Asset("ANIM", "anim/hound_action_water.zip"),
     Asset("SOUND", "sound/hound.fsb"),
 }
 
@@ -770,13 +772,13 @@ end
 
 
 local function fnhedge()
-    local inst = fncommon("hound", "hound_hedge", nil, nil, nil, false)
+    local inst = fncommon("hound", "hound_hedge_ocean", nil, nil, nil, {amphibious = true})
 
     inst.death_shatter = true
 
     if not TheWorld.ismastersim then
         return inst
-    end
+    end 
 
     MakeMediumFreezableCharacter(inst, "hound_body")
     MakeMediumBurnableCharacter(inst, "hound_body")

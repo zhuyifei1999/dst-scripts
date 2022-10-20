@@ -2906,7 +2906,7 @@ local applyoverrides_pre = {
                 TERRORBEAK_SPAWN_CHANCE = 0.5,
             },
             --]]
-            many = {
+            often = {
                 SANITYMONSTERS_INDUCED_MAXPOP = 7,
                 SANITYMONSTERS_INDUCED_CHANCES = {
                     inc = 0.8,

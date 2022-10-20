@@ -235,6 +235,7 @@ function StageActingProp:EndPerformance(doer)
         if data.castmember.components.stageactor then
             data.castmember.components.stageactor:SetStage(nil)
             self.inst:RemoveEventCallback("newstate", abortplay, data.castmember)
+			data.castmember:PushEvent("stopstageacting")
 
 			if doer ~= nil and data.castmember ~= doer and data.castmember.components.talker ~= nil then
 				data.castmember:DoTaskInTime(math.random() * 0.3, do_endofperformance_talk)
@@ -273,11 +274,11 @@ function StageActingProp:DoPerformance(doer)
 
     if self.script then
         self.playtask = self.inst:StartThread(self._do_lines)
-        for role,data in pairs(self.cast)do
+        for role, data in pairs(self.cast) do
             data.castmember:AddTag("acting")
             data.castmember.components.stageactor:SetStage(self.inst)
+			data.castmember:PushEvent("startstageacting")
             if data.castmember.sg ~= nil then
-                data.castmember.sg:GoToState("acting_idle")
                 self.inst:ListenForEvent("newstate", abortplay, data.castmember)
             end
         end
