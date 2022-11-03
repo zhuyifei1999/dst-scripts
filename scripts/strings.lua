@@ -926,6 +926,12 @@ STRINGS =
         REMOVEMODULES = "Unplug",
         CHARGE_FROM = "Charge At",
 
+		-- Waxwell
+		USEMAGICTOOL = "Use",
+		STOPUSINGMAGICTOOL = "Stop",
+		USESPELLBOOK = "Read",
+		CLOSESPELLBOOK = "Close",
+
         -- Pirates
         ROTATE_BOAT_CLOCKWISE = "Rotate Starboard",
         ROTATE_BOAT_COUNTERCLOCKWISE = "Rotate Port",
@@ -1935,7 +1941,10 @@ STRINGS =
         LIVINGTREE_ROOT = "Totally Normal Root",
 		LIVINGTREE_SAPLING = "Totally Normal Sapling",
 
+		-- Waxwell
         WAXWELLJOURNAL = "Codex Umbra",
+		MAGICIAN_CHEST = "Magician's Chest",
+		TOPHAT_MAGICIAN = "Magician's Top Hat",
         SHADOWWAXWELL = "Shadow",
         SHADOWLUMBER_BUILDER = "Shadow Logger",
         SHADOWMINER_BUILDER = "Shadow Miner",
@@ -3564,7 +3573,6 @@ STRINGS =
 
         PLAYBILL_THE_DOLL = "The Enchanted Doll\nA Stage Play",
         STATUEHARP_HEDGESPAWNER = "Overgrown Statue",
-
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -3916,7 +3924,9 @@ STRINGS =
 
         WARDROBE = "Change your look to suit your mood.",
 
+		-- Waxwell
         WAXWELLJOURNAL = "It'll blow your mind.",
+		MAGICIAN_CHEST = "Imprison your belongings in a shadowy vortex.",
         SHADOWLUMBER_BUILDER = "Holds a grudge against trees.",
         SHADOWMINER_BUILDER = "Mine that rock!",
         SHADOWDIGGER_BUILDER = "Diggy diggy hole.",
@@ -6712,6 +6722,10 @@ STRINGS.UI =
             "Wortox's hooves...",
             "Wormwood's leaves...",
             "Warly's spices...",
+            "Walter's Pioneer badges...",
+            "Wanda's timeline...",
+            "Wurt's scales...",
+            "Woby's tail wag...",
 
             "a monarch's sorrow...",
             "an inescapable nostalgia...",
@@ -6733,6 +6747,13 @@ STRINGS.UI =
             "primal instincts...",
             "terrible darkness...",
             "a touch of magic...",
+            "unknowable machinations...",
+            "plot thickeners...",
+            "the \"moon\"...",
+            "a sliver of hope...",
+            "dramatic irony...",
+            "curious mechanisms...",
+            "unforeseen consequences...",
         },
     },
 
@@ -13521,7 +13542,7 @@ STRINGS.STAGEACTOR =
         LINE42  = "Mmmagic ske-daddle!",
 
         -- MAXWELL COMMENT
-        LINE43  = "Is that really how she remembers it?",
+        LINE43  = "I wonder just how much she really remembers.",
 
         -- BIRDS
         LINE44  = "I really felt for the tree.",
@@ -13754,6 +13775,14 @@ STRINGS.PLAYS = {
         "Act 3 - Scene 3",
         "- The Reunion -",
     },
+}
+
+STRINGS.SPELLS = {
+	SHADOW_WORKER = "Shadow Servant",
+	SHADOW_PROTECTOR = "Shadow Duelist",
+	SHADOW_TRAP = "Shadow Sneak",
+	SHADOW_PILLARS = "Shadow Prison",
+	SHADOW_TOPHAT = "Imbue Tophat",
 }
 
 --Don't include this in pot generation as this file is already translated.

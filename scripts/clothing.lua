@@ -6443,7 +6443,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "LUNAR", "CLOTHING_HAND", "CLOTHING", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "hand", "hand_wickerbottom", },
 		symbol_in_base_hides = { "arm_lower_cuff", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
