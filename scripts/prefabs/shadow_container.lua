@@ -36,7 +36,7 @@ local function fn()
 	inst.entity:SetCanSleep(false)
 	inst.entity:Hide()
 	inst:AddTag("CLASSIFIED")
-
+	inst:AddTag("pocketdimension_container")
 	inst:AddTag("spoiler")
 
 	inst.entity:SetPristine()
@@ -55,7 +55,7 @@ local function fn()
 	inst.components.container.onanyopenfn = OnAnyOpenStorage
 	inst.components.container.onanyclosefn = OnAnyCloseStorage
 
-	local count = 0
+	local count = 1 --not 0, whoever spawned us counts as 1 (they won't call ping again)
 	inst:ListenForEvent("ms_shadow_container_ping", function(world, proxy)
 		if proxy ~= nil and proxy.components.container_proxy ~= nil then
 			proxy.components.container_proxy:SetMaster(inst)

@@ -700,6 +700,7 @@ local function create_chester()
     inst.OnSave = OnSave
     inst.OnPreLoad = OnPreLoad
 	inst.OnLoadPostPass = OnLoadPostPass
+    inst.SetBuild = SetBuild -- NOTES(JBK): This is for skins.
 
     return inst
 end

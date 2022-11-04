@@ -330,7 +330,7 @@ local PICKUP_CANT_TAGS = {
     "fire", "spider", "cursed", "paired", "bundle"
 }
 -- This function looks for an item on the ground that could be ACTIONS.PICKUP (or ACTIONS.CHECKTRAP if a trap) by the owner and subsequently put into the owner's inventory.
-function FindPickupableItem(owner, radius, furthestfirst, positionoverride, ignorethese)
+function FindPickupableItem(owner, radius, furthestfirst, positionoverride, ignorethese, onlytheseprefabs)
     if owner == nil or owner.components.inventory == nil then
         return nil
     end
@@ -349,6 +349,7 @@ function FindPickupableItem(owner, radius, furthestfirst, positionoverride, igno
     for i = istart, iend, idiff do
         local v = ents[i]
         if (ignorethese == nil or ignorethese[v] == nil) and -- Ignore these!
+            (onlytheseprefabs == nil or onlytheseprefabs[v.prefab] ~= nil) and -- Must be one of these!
             v.components.container == nil and -- Containers are most likely sorted and placed by the player do not pick them up.
             v.components.bundlemaker == nil and -- Bundle creators are aesthetically placed do not pick them up.
             v.components.inventoryitem ~= nil and

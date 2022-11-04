@@ -387,9 +387,9 @@ local function fn()
 	inst.components.spellbook:SetItems(SPELLS)
 	inst.components.spellbook:SetOnOpenFn(OnOpenSpellBook)
 	inst.components.spellbook:SetOnCloseFn(OnCloseSpellBook)
-	inst.components.spellbook.opensound = "dontstarve/common/together/book_maxwell/open"
+	inst.components.spellbook.opensound = "dontstarve/common/together/book_maxwell/use"
 	inst.components.spellbook.closesound = "dontstarve/common/together/book_maxwell/close"
-	inst.components.spellbook.executesound = "dontstarve/common/together/book_maxwell/use"
+	--inst.components.spellbook.executesound = "dontstarve/common/together/book_maxwell/close"
 
 	inst:AddComponent("aoetargeting")
 	inst.components.aoetargeting:SetAllowWater(true)

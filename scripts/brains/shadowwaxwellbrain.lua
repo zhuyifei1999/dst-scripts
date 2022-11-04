@@ -40,6 +40,14 @@ local DIG_TAGS = { "stump", "grave", "farm_debris" }
 
 local WANDER_TIMING = {minwaittime = 6, randwaittime = 6}
 
+local function Unignore(inst, sometarget, ignorethese)
+    ignorethese[sometarget] = nil
+end
+local function IgnoreThis(sometarget, ignorethese)
+    ignorethese[sometarget] = true
+    sometarget:DoTaskInTime(5, Unignore, sometarget, ignorethese)
+end
+
 local function GetLeader(inst)
     return inst.components.follower.leader
 end
@@ -124,12 +132,15 @@ local function PickValidActionFrom(target)
     end
     return nil
 end
-local function FilterAnyWorkableTargets(targets)
+local function FilterAnyWorkableTargets(targets, ignorethese)
     for _, sometarget in ipairs(targets) do
         if sometarget:HasTag("DIG_workable") then
-            for _, tag in ipairs(DIG_TAGS) do
-                if sometarget:HasTag(tag) then
-                    return sometarget
+            if ignorethese[sometarget] == nil then
+                for _, tag in ipairs(DIG_TAGS) do
+                    if sometarget:HasTag(tag) then
+                        IgnoreThis(sometarget, ignorethese)
+                        return sometarget
+                    end
                 end
             end
         else -- CHOP_workable + MINE_workable have no special cases to handle.
@@ -143,7 +154,7 @@ local function GetSpawn(inst)
 	return inst.GetSpawnPoint ~= nil and inst:GetSpawnPoint() or nil
 end
 
-local function FindAnyEntityToWorkActionsOn(inst) -- This is similar to FindEntityToWorkAction, but to be very mod safe FindEntityToWorkAction has been deprecated.
+local function FindAnyEntityToWorkActionsOn(inst, ignorethese) -- This is similar to FindEntityToWorkAction, but to be very mod safe FindEntityToWorkAction has been deprecated.
 	if inst.sg:HasStateTag("busy") then
 		return nil
 	end
@@ -161,7 +172,10 @@ local function FindAnyEntityToWorkActionsOn(inst) -- This is similar to FindEnti
         -- Check if action is the one desired still.
         action = PickValidActionFrom(target)
 
-        if action ~= nil then
+        if action ~= nil and ignorethese[target] == nil then
+            if action == ACTIONS.DIG then
+                IgnoreThis(target, ignorethese)
+            end
             return BufferedAction(inst, target, action)
         end
     end
@@ -172,7 +186,7 @@ local function FindAnyEntityToWorkActionsOn(inst) -- This is similar to FindEnti
         return nil
     end
 
-    local target = FilterAnyWorkableTargets(TheSim:FindEntities(spawn.x, spawn.y, spawn.z, TUNING.SHADOWWAXWELL_WORKER_WORK_RADIUS, nil, TOWORK_CANT_TAGS, ANY_TOWORK_MUSTONE_TAGS))
+    local target = FilterAnyWorkableTargets(TheSim:FindEntities(spawn.x, spawn.y, spawn.z, TUNING.SHADOWWAXWELL_WORKER_WORK_RADIUS, nil, TOWORK_CANT_TAGS, ANY_TOWORK_MUSTONE_TAGS), ignorethese)
     action = target ~= nil and PickValidActionFrom(target) or nil
     return action ~= nil and BufferedAction(inst, target, action) or nil
 end
@@ -212,11 +226,6 @@ local function ShouldKiteProtector(target, inst)
             return false
         end
 
-        if target.sg:HasStateTag("attack") then
-            -- This thing is attacking keep distance it is dangerous.
-            return true
-        end
-
         local timetonextattack = inst.components.combat:GetCooldown()
         if timetonextattack > 0 then
             -- Unable to attack may as well run.
@@ -225,8 +234,8 @@ local function ShouldKiteProtector(target, inst)
 
         local hitrangesq = target.components.combat:CalcHitRangeSq(inst)
         local distsq = inst:GetDistanceSqToInst(target)
-        if distsq > hitrangesq then
-            -- Get closer.
+        if distsq > hitrangesq and not target.sg:HasStateTag("attack") then
+            -- Get closer if the target is not trying to hit already.
             return false
         end
 
@@ -339,6 +348,7 @@ function ShadowWaxwellBrain:OnStart()
             furthestfirst = false,
 			positionoverride = GetSpawn, --pass as function
             ignorethese = ignorethese,
+            wholestacks = true,
         }
         root = PriorityNode({ -- This worker is set to do work and then vanish.
             -- Fun stuff.
@@ -348,7 +358,7 @@ function ShadowWaxwellBrain:OnStart()
             avoid_explosions,
             avoid_danger,
             -- Do the work needed to be done.
-            DoAction(self.inst, function() return FindAnyEntityToWorkActionsOn(self.inst) end),
+            DoAction(self.inst, function() return FindAnyEntityToWorkActionsOn(self.inst, pickupparams.ignorethese) end),
 			-- This Leash is to stop chasing after leader with loot if they keep moving too far away.
 			Leash(self.inst, GetSpawn, pickupparams.range + 4, math.min(6, pickupparams.range)),
             BrainCommon.NodeAssistLeaderPickUps(self, pickupparams),
@@ -358,7 +368,7 @@ function ShadowWaxwellBrain:OnStart()
 			face_leader,
 			ParallelNode{
 				CreateWanderer(self, pickupparams.range),
-				CreateIdleOblivion(self, 6, pickupparams.range),
+				CreateIdleOblivion(self, TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, pickupparams.range),
 			},
         }, 0.25)
     elseif self.inst.prefab == "shadowprotector" then
@@ -380,7 +390,7 @@ function ShadowWaxwellBrain:OnStart()
 			face_leader,
 			ParallelNode{
 				CreateWanderer(self, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
-				CreateIdleOblivion(self, 6, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
+				CreateIdleOblivion(self, TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
 			},
         }, 0.25)
     else -- Fallback to DEPRECATED thinking.

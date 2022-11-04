@@ -260,8 +260,20 @@ local function Unignore(inst, item, ignorethese)
     ignorethese[item] = nil
 end
 
-local function PickUpAction(inst, pickup_range, furthestfirst, positionoverride, ignorethese)
-    if inst.components.inventory:IsFull() then
+local function PickUpAction(inst, pickup_range, furthestfirst, positionoverride, ignorethese, wholestacks)
+    if inst.components.inventory:GetActiveItem() ~= nil then
+        return nil
+    end
+    local onlytheseprefabs
+    if wholestacks then
+        local item = inst.components.inventory:GetFirstItemInAnySlot()
+        if item ~= nil then
+            if (item.components.stackable == nil or item.components.stackable:IsFull()) then
+                return nil
+            end
+            onlytheseprefabs = {[item.prefab] = true}
+        end
+    elseif inst.components.inventory:IsFull() then
         return nil
     end
 
@@ -274,7 +286,7 @@ local function PickUpAction(inst, pickup_range, furthestfirst, positionoverride,
         return nil
     end
 
-    local item = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese)
+    local item = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese, onlytheseprefabs)
     if item == nil then
         return nil
     end
@@ -290,7 +302,7 @@ end
 local function GiveAction(inst)
     local leader = inst.components.follower and inst.components.follower.leader or nil
     local leaderinv = leader and leader.components.inventory or nil
-    local item = inst.components.inventory:GetFirstItemInAnySlot()
+    local item = inst.components.inventory:GetFirstItemInAnySlot() or inst.components.inventory:GetActiveItem() -- This is intentionally backwards to give the bigger stacks first.
     if leader == nil or leaderinv == nil or item == nil then
         return nil
     end
@@ -320,9 +332,10 @@ local function NodeAssistLeaderPickUps(self, parameters)
 	local positionoverridefn = type(parameters.positionoverride) == "function" and parameters.positionoverride or nil
 	local positionoverride = positionoverridefn == nil and parameters.positionoverride or nil
     local ignorethese = parameters.ignorethese
+    local wholestacks = parameters.wholestacks
 
     local function CustomPickUpAction(inst)
-        return PickUpAction(inst, pickup_range, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese)
+        return PickUpAction(inst, pickup_range, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese, wholestacks)
     end
 
 	local give_cond_fn = give_range_sq ~= nil and

@@ -96,7 +96,7 @@ end
 
 local function OnEntitySleep(inst)
 	if inst._obliviatetask == nil then
-		inst._obliviatetask = inst:DoTaskInTime(3, inst.Remove)
+		inst._obliviatetask = inst:DoTaskInTime(TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, inst.Remove)
 	end
 end
 
@@ -306,7 +306,7 @@ end
 
 local function workerfn(inst)
     inst:AddComponent("inventory")
-    inst.components.inventory.maxslots = 1 -- Pickup logic does not account for more.
+    inst.components.inventory.maxslots = 1
 
     inst.components.combat:SetKeepTargetFunction(nokeeptargetfn)
 
