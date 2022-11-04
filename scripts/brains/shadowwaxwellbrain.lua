@@ -367,7 +367,7 @@ function ShadowWaxwellBrain:OnStart()
             -- Wander around and stare.
 			face_leader,
 			ParallelNode{
-				CreateWanderer(self, pickupparams.range),
+				CreateWanderer(self, math.min(6, pickupparams.range)),
 				CreateIdleOblivion(self, TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, pickupparams.range),
 			},
         }, 0.25)
@@ -385,11 +385,11 @@ function ShadowWaxwellBrain:OnStart()
             -- Keep watch out for passive danger.
             avoid_danger,
             -- Leashing is low priority.
-            Leash(self.inst, GetSpawn, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
+            Leash(self.inst, GetSpawn, math.min(8, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS), math.min(4, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS)),
             -- Wander around and stare.
 			face_leader,
 			ParallelNode{
-				CreateWanderer(self, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
+				CreateWanderer(self, math.min(6, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS)),
 				CreateIdleOblivion(self, TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS),
 			},
         }, 0.25)

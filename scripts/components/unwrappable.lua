@@ -54,7 +54,7 @@ function Unwrappable:Unwrap(doer)
     if self.itemdata ~= nil then
 		if doer ~= nil and self.inst.components.inventoryitem ~= nil then
 			local owner = self.inst.components.inventoryitem:GetGrandOwner()
-			if owner == doer or owner:HasTag("pocketdimension_container") then
+			if owner ~= nil and (owner == doer or owner:HasTag("pocketdimension_container")) then
 				local doerpos = doer:GetPosition()
 				local offset = FindWalkableOffset(doerpos, doer.Transform:GetRotation() * DEGREES, 1, 8, false, true, NoHoles)
 				if offset ~= nil then
