@@ -260,7 +260,7 @@ local function Unignore(inst, item, ignorethese)
     ignorethese[item] = nil
 end
 
-local function PickUpAction(inst, pickup_range, furthestfirst, positionoverride, ignorethese, wholestacks)
+local function PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverride, ignorethese, wholestacks, allowpickables)
     if inst.components.inventory:GetActiveItem() ~= nil then
         return nil
     end
@@ -286,17 +286,23 @@ local function PickUpAction(inst, pickup_range, furthestfirst, positionoverride,
         return nil
     end
 
-    local item = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese, onlytheseprefabs)
+    local item, pickable
+    if pickup_range_local ~= nil then
+        item, pickable = FindPickupableItem(leader, pickup_range_local, furthestfirst, inst:GetPosition(), ignorethese, onlytheseprefabs, allowpickables)
+    end
+    if item == nil then
+        item, pickable = FindPickupableItem(leader, pickup_range, furthestfirst, positionoverride, ignorethese, onlytheseprefabs, allowpickables)
+    end
     if item == nil then
         return nil
     end
 
     if ignorethese ~= nil then
         ignorethese[item] = true
-        inst:DoTaskInTime(5, Unignore, item, ignorethese)
+        item:DoTaskInTime(5, Unignore, item, ignorethese)
     end
 
-    return BufferedAction(inst, item, item.components.trap ~= nil and ACTIONS.CHECKTRAP or ACTIONS.PICKUP)
+    return BufferedAction(inst, item, item.components.trap ~= nil and ACTIONS.CHECKTRAP or pickable and ACTIONS.PICK or ACTIONS.PICKUP)
 end
 
 local function GiveAction(inst)
@@ -326,6 +332,7 @@ local function AlwaysTrue() return true end
 local function NodeAssistLeaderPickUps(self, parameters)
     local cond = parameters.cond or AlwaysTrue
     local pickup_range = parameters.range
+    local pickup_range_local = parameters.range_local
 	local give_cond = parameters.give_cond
 	local give_range_sq = parameters.give_range ~= nil and parameters.give_range * parameters.give_range or nil
     local furthestfirst = parameters.furthestfirst
@@ -333,9 +340,10 @@ local function NodeAssistLeaderPickUps(self, parameters)
 	local positionoverride = positionoverridefn == nil and parameters.positionoverride or nil
     local ignorethese = parameters.ignorethese
     local wholestacks = parameters.wholestacks
+    local allowpickables = parameters.allowpickables
 
     local function CustomPickUpAction(inst)
-        return PickUpAction(inst, pickup_range, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese, wholestacks)
+        return PickUpAction(inst, pickup_range, pickup_range_local, furthestfirst, positionoverridefn ~= nil and positionoverridefn(inst) or positionoverride, ignorethese, wholestacks, allowpickables)
     end
 
 	local give_cond_fn = give_range_sq ~= nil and

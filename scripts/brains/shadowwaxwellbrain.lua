@@ -217,43 +217,6 @@ local function ShouldKite(target, inst)
         and not target.components.health:IsDead()
 end
 
-local function ShouldKiteProtector(target, inst)
-    if inst.components.combat:TargetIs(target)
-        and target.components.health ~= nil
-        and not target.components.health:IsDead() then
-        if target.components.combat == nil or not target.components.combat:TargetIs(inst) then
-            -- Free hit!
-            return false
-        end
-
-        local timetonextattack = inst.components.combat:GetCooldown()
-        if timetonextattack > 0 then
-            -- Unable to attack may as well run.
-            return true
-        end
-
-        local hitrangesq = target.components.combat:CalcHitRangeSq(inst)
-        local distsq = inst:GetDistanceSqToInst(target)
-        if distsq > hitrangesq and not target.sg:HasStateTag("attack") then
-            -- Get closer if the target is not trying to hit already.
-            return false
-        end
-
-        local dist, hitrange = math.sqrt(distsq), math.sqrt(hitrangesq)
-        local fleedist = hitrange - dist -- How much distance is needed to be right at hit range.
-        local timetoflee = (fleedist / TUNING.SHADOWWAXWELL_PROTECTOR_SPEED) - 0.3 -- Time needed to escape being hit with a small fudge factor for slower brain ticks.
-        local timetogethit = target.components.combat:GetCooldown()
-        if timetoflee < timetogethit then -- This intentionally neglects the time it takes to swing since the target has the same consideration.
-            -- Theoretically able to get a hit in but may get hit back.
-            return false
-        end
-
-        -- Get out of here it is going to hurt!
-        return true
-    end
-    return false
-end
-
 local function ShouldWatchMinigame(inst)
 	if inst.components.follower.leader ~= nil and inst.components.follower.leader.components.minigame_participator ~= nil then
 		if inst.components.combat.target == nil or inst.components.combat.target.components.minigame_participator ~= nil then
@@ -343,12 +306,14 @@ function ShadowWaxwellBrain:OnStart()
         local pickupparams = {
 			cond = NotBusy,
             range = TUNING.SHADOWWAXWELL_WORKER_WORK_RADIUS,
+            range_local = TUNING.SHADOWWAXWELL_WORKER_PICKUP_RADIUS_LOCAL,
 			give_cond = NotBusy,
 			give_range = TUNING.SHADOWWAXWELL_WORKER_WORK_RADIUS,
             furthestfirst = false,
 			positionoverride = GetSpawn, --pass as function
             ignorethese = ignorethese,
             wholestacks = true,
+            allowpickables = true,
         }
         root = PriorityNode({ -- This worker is set to do work and then vanish.
             -- Fun stuff.
@@ -378,12 +343,8 @@ function ShadowWaxwellBrain:OnStart()
             watch_game,
             -- Keep watch out for immediate danger.
             avoid_explosions,
-            -- Defend and dodge.
-            WhileNode(function() return ShouldKiteProtector(self.inst.components.combat.target, self.inst) end, "Dodge",
-                RunAway(self.inst, { fn = ShouldKiteProtector, tags = { "_combat", "_health" }, notags = { "INLIMBO" } }, TUNING.SHADOWWAXWELL_PROTECTOR_KITE_DIST, TUNING.SHADOWWAXWELL_PROTECTOR_KITE_DIST)),
+            -- Attack.
             ChaseAndAttack(self.inst),
-            -- Keep watch out for passive danger.
-            avoid_danger,
             -- Leashing is low priority.
             Leash(self.inst, GetSpawn, math.min(8, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS), math.min(4, TUNING.SHADOWWAXWELL_PROTECTOR_DEFEND_RADIUS)),
             -- Wander around and stare.
