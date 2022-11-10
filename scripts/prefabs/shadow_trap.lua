@@ -292,7 +292,7 @@ local function fn()
 	inst.base.Transform:SetRotation(math.random() * 360)
 
 	inst:AddComponent("timer")
-	inst.components.timer:StartTimer("lifetime", TUNING.TOTAL_DAY_TIME)
+	inst.components.timer:StartTimer("lifetime", TUNING.SHADOW_TRAP_LIFETIME)
 
 	inst:ListenForEvent("timerdone", OnTimerDone)
 	inst:ListenForEvent("onsink", DispellTrap)

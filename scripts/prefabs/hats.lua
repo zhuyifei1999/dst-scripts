@@ -2159,8 +2159,10 @@ local function MakeHat(name)
         end
 
         if offset then
-            return pos.x+offset.x,15,pos.z+offset.z
+            pos.x = pos.x + offset.x
+            pos.z = pos.z + offset.z
         end
+        return pos.x, 15, pos.z
     end
 
 
