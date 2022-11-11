@@ -76,9 +76,17 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function DoRemove(inst)
+	if inst.components.inventory ~= nil then
+		inst.components.inventory:DropEverything(true)
+	end
+	inst:Remove()
+end
+
 local function OnSeekOblivion(inst)
 	if inst:IsAsleep() then
-		inst:Remove()
+		DoRemove(inst)
+		return
 	end
 	inst.components.timer:StopTimer("obliviate")
 	if inst.components.health == nil then
@@ -101,7 +109,7 @@ end
 
 local function OnEntitySleep(inst)
 	if inst._obliviatetask == nil then
-		inst._obliviatetask = inst:DoTaskInTime(TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, inst.Remove)
+		inst._obliviatetask = inst:DoTaskInTime(TUNING.SHADOWWAXWELL_MINION_IDLE_DESPAWN_TIME, DoRemove)
 	end
 end
 

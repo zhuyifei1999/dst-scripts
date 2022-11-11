@@ -482,8 +482,8 @@ ACTIONS =
     ROTATE_FENCE = Action({ rmb=true }),
 
 	-- MAXWELL
-	USEMAGICTOOL = Action({ priority = 1 }),
-	STOPUSINGMAGICTOOL = Action({ distance = math.huge, do_not_locomote = true }),
+	USEMAGICTOOL = Action({ mount_valid = true, priority = 1 }),
+	STOPUSINGMAGICTOOL = Action({ mount_valid = true, priority = 2, distance = math.huge, do_not_locomote = true }),
 	USESPELLBOOK = Action({ instant = true, mount_valid = true }),
 	CLOSESPELLBOOK = Action({ instant = true, mount_valid = true }),
 	CAST_SPELLBOOK = Action({ mount_valid = true }),

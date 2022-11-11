@@ -6,6 +6,7 @@ local assets =
     Asset("SOUND", "sound/maxwell.fsb"),
     Asset("ANIM", "anim/swap_books.zip"),
 	Asset("ANIM", "anim/waxwell_tophat.zip"),
+	Asset("ANIM", "anim/waxwell_tophat_mounted.zip"),
 	Asset("ANIM", "anim/player_idles_waxwell.zip"),
 }
 
@@ -214,7 +215,15 @@ local function OnEquip(inst, data)
 			params.task:Cancel()
 		end
 		local lastitem = params.slots[data.eslot]
-		params.task = lastitem ~= nil and inst:DoTaskInTime(.2, DoAnnounceShadowLevel, params, data.item, lastitem) or nil
+		local t = GetTime()
+		if t > inst.spawntime then
+			params.task = lastitem ~= nil and inst:DoTaskInTime(.2, DoAnnounceShadowLevel, params, data.item, lastitem) or nil
+		else
+			--Just spawned, suppress announcements
+			params.task = nil
+			lastitem.prefab = data.item.prefab
+			lastitem.time = t
+		end
 	end
 end
 
@@ -281,6 +290,8 @@ local function master_postinit(inst)
     inst:ListenForEvent("death", OnDeath)
 	inst:ListenForEvent("ms_becameghost", OnBecameGhost)
 	inst:ListenForEvent("ms_playerreroll", ForceDespawnShadowMinions)
+
+	--Shadow level announcements
 	inst:ListenForEvent("equip", OnEquip)
 	inst:ListenForEvent("unequip", OnUnequip)
 	inst._announceshadowlevel =
@@ -293,6 +304,7 @@ local function master_postinit(inst)
 	for _, v in pairs(EQUIPSLOTS) do
 		inst._announceshadowlevel.slots[v] = {}
 	end
+	--
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/waxwell").master_postinit(inst)
