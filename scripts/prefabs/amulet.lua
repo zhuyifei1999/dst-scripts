@@ -26,7 +26,7 @@ local function onequip_red(inst, owner)
         owner.AnimState:OverrideSymbol("swap_body", "torso_amulets", "redamulet")
     end
 
-    inst.task = inst:DoPeriodicTask(TUNING.REDAMULET_CONVERSION_TIME, healowner, nil, owner)
+    inst.task = inst:DoPeriodicTask(30, healowner, nil, owner)
 end
 
 local function onunequip_red(inst, owner)
@@ -317,9 +317,6 @@ local function commonfn(anim, tag, should_sink)
     inst.AnimState:SetBuild("amulets")
     inst.AnimState:PlayAnimation(anim)
 
-	--shadowlevel (from shadowlevel component) added to pristine state for optimization
-	inst:AddTag("shadowlevel")
-
     if tag ~= nil then
         inst:AddTag(tag)
     end
@@ -347,9 +344,6 @@ local function commonfn(anim, tag, should_sink)
     if should_sink then
         inst.components.inventoryitem:SetSinks(true)
     end
-
-	inst:AddComponent("shadowlevel")
-	inst.components.shadowlevel:SetDefaultLevel(TUNING.AMULET_SHADOW_LEVEL)
 
     return inst
 end
@@ -490,7 +484,6 @@ local function orange()
 
     inst:AddComponent("repairable")
     inst.components.repairable.repairmaterial = MATERIALS.NIGHTMARE
-    inst.components.repairable.noannounce = true
 
     MakeHauntableLaunch(inst)
 

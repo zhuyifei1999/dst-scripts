@@ -17,7 +17,9 @@ local RecipeTile = Class(Widget, function(self, recipe)
     end
     self:SetClickable(false)
     if recipe ~= nil then
-		self:SetRecipe(recipe)
+        self.recipe = recipe
+        local image = recipe.imagefn ~= nil and recipe.imagefn() or recipe.image
+        self.img:SetTexture(recipe:GetAtlas(), image, image ~= recipe.image and recipe.image or nil)
         --self:MakeNonClickable()
     end
 end)
@@ -26,21 +28,6 @@ function RecipeTile:SetRecipe(recipe)
     self.recipe = recipe
     local image = recipe.imagefn ~= nil and recipe.imagefn() or recipe.image
     self.img:SetTexture(recipe:GetAtlas(), image, image ~= recipe.image and recipe.image or nil)
-
-	if recipe.fxover ~= nil then
-		if self.fxover == nil then
-			self.fxover = self.img:AddChild(UIAnim())
-			self.fxover:SetClickable(false)
-			self.fxover:SetScale(.25)
-			self.fxover:GetAnimState():AnimateWhilePaused(false)
-		end
-		self.fxover:GetAnimState():SetBank(recipe.fxover.bank)
-		self.fxover:GetAnimState():SetBuild(recipe.fxover.build)
-		self.fxover:GetAnimState():PlayAnimation(recipe.fxover.anim, true)
-	elseif self.fxover ~= nil then
-		self.fxover:Kill()
-		self.fxover = nil
-	end
 end
 
 function RecipeTile:SetCanBuild(canbuild)

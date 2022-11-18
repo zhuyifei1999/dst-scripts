@@ -1348,9 +1348,7 @@ local function OnSpawnPet(inst, pet)
 end
 
 local function OnDespawnPet(inst, pet)
-	if not inst.is_snapshot_user_session then
-		DoEffects(pet)
-	end
+    DoEffects(pet)
     pet:Remove()
 end
 
@@ -1804,6 +1802,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 		"staff_castinglight_small",
         "staffcastfx",
         "staffcastfx_mount",
+        "book_fx",
+        "book_fx_mount",
         "emote_fx",
         "tears",
         "shock_fx",

@@ -59,8 +59,6 @@ local function buildeye(colour)
 
         MakeInventoryFloatable(inst, "small", 0.05, {0.8, 0.75, 0.8})
 
-        inst:AddTag("donotautopick")
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

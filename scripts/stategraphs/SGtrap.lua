@@ -1,7 +1,20 @@
 local events =
 {
     EventHandler("ondropped", function(inst)
-		inst.sg:GoToState("idle")
+        if inst.components.trap then
+            inst.components.trap:Set()
+            inst.sg:GoToState("idle")
+        end
+    end),
+    EventHandler("onpickup", function(inst)
+        if inst.components.trap ~= nil then
+            inst.components.trap:Disarm()
+        end
+    end),
+    EventHandler("harvesttrap", function(inst, data)
+        if inst.components.trap ~= nil then
+            inst.components.trap:Disarm(data ~= nil and data.sprung)
+        end
     end),
 }
 

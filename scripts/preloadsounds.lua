@@ -184,9 +184,6 @@ local MainSounds =
     "stageplay_set.fev",
     "stageplay_set.fsb",
     "stageplay_set_music.fsb",
-
-    "maxwell_rework.fev",
-    "maxwell_rework.fsb",
 }
 
 function PreloadSoundList(list)

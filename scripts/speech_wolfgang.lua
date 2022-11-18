@@ -384,16 +384,6 @@ return{
         {
             DOER_ISNT_MODULE_OWNER = "Wolfgang thinks it only speaks robot.",
         },
-
-		CAST_SPELLBOOK =
-		{
---fallback to speech_wilson.lua			NO_TOPHAT = "only_used_by_waxwell",
-		},
-
-		CASTAOE =
-		{
---fallback to speech_wilson.lua			NO_MAX_SANITY = "only_used_by_waxwell",
-		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -415,13 +405,6 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
-
-	--waxwell specific
---fallback to speech_wilson.lua		ANNOUNCE_SHADOWLEVEL_ITEM = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T1 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T2 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T3 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T4 = "only_used_by_waxwell",
 
     --wolfgang specific
     ANNOUNCE_NORMALTOMIGHTY = "I AM MIGHTY!",
@@ -485,8 +468,6 @@ return{
 --fallback to speech_wilson.lua         SAME_OLD_5 = "only_used_by_warly",
 --fallback to speech_wilson.lua 		TASTY = "only_used_by_warly",
     },
-
-	ANNOUNCE_FOODMEMORY = "only_used_by_warly",
 
     ANNOUNCE_ENCUMBERED =
     {
@@ -2937,11 +2918,7 @@ return{
 		WATERMELON = "So many seeds.",
 		WATERMELON_COOKED = "Seeds is cooked out of melon now.",
 		WATERMELONHAT = "Why not wear melon on head! Haha!",
-		WAXWELLJOURNAL =
-		{
-			GENERIC = "Wolfgang is glad he cannot read!",
---fallback to speech_wilson.lua			NEEDSFUEL = "only_used_by_waxwell",
-		},
+		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
 		WETGOOP = "Is not bad to eat, but is not good.",
         WHIP = "Good to floss teeth with.",
 		WINTERHAT = "It make ears happy in cold!",
@@ -4685,10 +4662,6 @@ return{
             GENERIC = "Cloth man does not have much to say.",
             BURNT = "Cloth man has even less to say now.",
         },
-
-		-- Waxwell
-		MAGICIAN_CHEST = "Is little disappearing box.",
-		TOPHAT_MAGICIAN = "Wolfgang would rather wear something else.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

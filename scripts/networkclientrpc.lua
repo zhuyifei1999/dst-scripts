@@ -43,18 +43,19 @@ end
 
 local function ConvertPlatformRelativePositionToAbsolutePosition(relative_x, relative_z, platform, platform_relative)
     if platform_relative then
-		if platform == nil then
-			return
+		if platform ~= nil and platform.Transform ~= nil then
+			local platform_x, platform_y, platform_z = platform.Transform:GetWorldPosition()
+			return relative_x + platform_x, relative_z + platform_z
+		else
+			return nil
 		end
-		local y
-		relative_x, y, relative_z = platform.entity:LocalToWorldSpace(relative_x, 0, relative_z)
 	end
     return relative_x, relative_z
 end
 
 local RPC_HANDLERS =
 {
-    LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name, platform, platform_relative, spellbook, spell_id)
+    LeftClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name, platform, platform_relative)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
@@ -64,9 +65,7 @@ local RPC_HANDLERS =
                 optbool(noforce) and
                 optstring(mod_name) and
 				optentity(platform) and
-				checkbool(platform_relative) and
-				optentity(spellbook) and
-				optuint(spell_id)) then
+				checkbool(platform_relative)) then
             printinvalid("LeftClick", player)
             return
         end
@@ -76,7 +75,7 @@ local RPC_HANDLERS =
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
 				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteLeftClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name, spellbook, spell_id)
+					playercontroller:OnRemoteLeftClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
 				else
 					print("Remote left click out of range")
 				end
@@ -174,7 +173,7 @@ local RPC_HANDLERS =
         end
     end,
 
-	ControllerActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name, platform, platform_relative, isspecial, spellbook, spell_id)
+    ControllerActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name, platform, platform_relative, isspecial)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
@@ -183,9 +182,7 @@ local RPC_HANDLERS =
                 optstring(mod_name) and
 				optentity(platform) and
 				checkbool(platform_relative) and
-				optbool(isspecial) and
-				optentity(spellbook) and
-				optuint(spell_id)) then
+				optbool(isspecial)) then
             printinvalid("ControllerActionButtonPoint", player)
             return
         end
@@ -195,7 +192,7 @@ local RPC_HANDLERS =
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
 				if IsPointInRange(player, x, z) then
-					playercontroller:OnRemoteControllerActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name, isspecial, spellbook, spell_id)
+					playercontroller:OnRemoteControllerActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name, isspecial)
 				else
 					print("Remote controller action button point out of range")
 				end
@@ -362,13 +359,6 @@ local RPC_HANDLERS =
 			end
         end
     end,
-
-	PredictOverrideLocomote = function(player)
-		local playercontroller = player.components.playercontroller
-		if playercontroller ~= nil then
-			playercontroller:OnRemotePredictOverrideLocomote()
-		end
-	end,
 
     StartHop = function(player, x, z, platform, has_platform)
         if not (checknumber(x) and
@@ -670,18 +660,6 @@ local RPC_HANDLERS =
             inventory:DropItemFromInvTile(item, single)
         end
     end,
-
-	CastSpellBookFromInv = function(player, item, spell_id)
-		if not (checkentity(item) and
-				checkuint(spell_id)) then
-			printinvalid("CastSpellBookFromInv", player)
-			return
-		end
-		local inventory = player.components.inventory
-		if inventory ~= nil then
-			inventory:CastSpellBookFromInv(item, spell_id)
-		end
-	end,
 
     EquipActiveItem = function(player)
         local inventory = player.components.inventory

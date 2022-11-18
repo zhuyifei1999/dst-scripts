@@ -14,9 +14,6 @@ local function FinalOffsetNegative1(inst)
     inst.AnimState:SetFinalOffset(-1)
 end
 
-local function UsePointFiltering(inst)
-	inst.AnimState:UsePointFiltering(true)
-end
 
 local function GroundOrientation(inst)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
@@ -457,7 +454,6 @@ local fx =
         build = "statue_ruins_fx",
         anim = "transform_nightmare",
         tintalpha = 0.6,
-		fn = UsePointFiltering,
     },
     {
         name = "statue_transition_2",
@@ -487,6 +483,14 @@ local fx =
         tintalpha = 0.6,
     },
     {
+        name = "shadow_despawn",
+        bank = "statue_ruins_fx",
+        build = "statue_ruins_fx",
+        anim = "transform_nightmare",
+        sound = "dontstarve/maxwell/shadowmax_despawn",
+        tintalpha = 0.6,
+    },
+    {
         name = "cavehole_flick_warn",
         bank = "attune_fx",
         build = "attune_fx",
@@ -501,7 +505,6 @@ local fx =
         anim = "transform_nightmare",
         sound = "dontstarve/maxwell/shadowmax_despawn",
         tintalpha = 0.8,
-		fn = UsePointFiltering,
     },
     {
         name = "mole_move_fx",

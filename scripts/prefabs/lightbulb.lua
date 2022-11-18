@@ -34,7 +34,6 @@ local function fn()
 
     inst:AddTag("lightbattery")
     inst:AddTag("vasedecoration")
-    inst:AddTag("light")
 
     MakeInventoryFloatable(inst, "small", 0.07, 0.73)
 

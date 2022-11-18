@@ -31,7 +31,7 @@ local PHASE3_HUNTERPARAMS =
 {
     tags = { "_combat" },
     notags = { "INLIMBO", "playerghost" },
-	oneoftags = { "character", "monster", "shadowminion" },
+    oneoftags = { "character", "monster" },
 }
 
 local ATTACK_TIMEOUT = 10

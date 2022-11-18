@@ -62,7 +62,6 @@ local function fn()
     inst.Transform:SetScale(0.75, 0.75, 0.75)
 
     MakeInventoryFloatable(inst, "small", 0.05)
-    inst:AddTag("donotautopick")
 
     inst.entity:SetPristine()
 

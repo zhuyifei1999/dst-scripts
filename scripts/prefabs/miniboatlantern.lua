@@ -248,8 +248,6 @@ local function fn()
 
     MakeInventoryFloatable(inst, "small", 0.165, 1)
 
-    inst:AddTag("light")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -260,21 +260,6 @@ local function ExchangeWithTerrorBeak(inst)
     end
 end
 
-local function CLIENT_ShadowSubmissive_HostileToPlayerTest(inst, player)
-	if player:HasTag("shadowdominance") then
-		return false
-	end
-	local combat = inst.replica.combat
-	if combat ~= nil and combat:GetTarget() == player then
-		return true
-	end
-	local sanity = player.replica.sanity
-	if sanity ~= nil and sanity:IsCrazy() then
-		return true
-	end
-	return false
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -297,9 +282,6 @@ local function fn()
     inst:AddTag("notraptrigger")
     inst:AddTag("ignorewalkableplatforms")
 
-	--shadowsubmissive (from shadowsubmissive component) added to pristine state for optimization
-	inst:AddTag("shadowsubmissive")
-
     inst.AnimState:SetBank("oceanhorror")
     inst.AnimState:SetBuild("shadow_oceanhorror")
     inst.AnimState:PlayAnimation("idle_loop", true)
@@ -309,8 +291,6 @@ local function fn()
         -- this is purely view related
         inst:AddComponent("transparentonsanity")
     end
-
-	inst.HostileToPlayerTest = CLIENT_ShadowSubmissive_HostileToPlayerTest
 
     inst.entity:SetPristine()
 

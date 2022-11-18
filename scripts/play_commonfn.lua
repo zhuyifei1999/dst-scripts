@@ -165,13 +165,14 @@ fns.maskflash = function(inst, line, cast)
 	end
 end
 
-local function cleanup_waxwell_dancer(inst, dancer)
-	if dancer ~= nil and dancer:IsValid() then
-		if dancer.sg ~= nil then
-			dancer.sg:GoToState("quickdespawn")
-		else
-			dancer:Remove()
-		end
+local function cleanup_waxwell_dancer(inst, caster, dancer)
+	if dancer == nil or not dancer:IsValid() then
+		return
+	end
+
+	if caster ~= nil and caster:IsValid() then
+		caster.petspawneffects(dancer)
+		dancer:Remove()
 	end
 end
 
@@ -186,13 +187,11 @@ fns.waxwelldancer = function(inst, line, cast)
 	local offset = Vector3FromTheta(line.theta, line.radius)
 	dancer.Transform:SetPosition(x + offset.x, 0, z + offset.z)
 
-	dancer.components.skinner:CopySkinsFromPlayer(caster_data.castmember)
-	if dancer.sg ~= nil then
-		dancer.sg:GoToState("quickspawn")
-	end
+    local caster = caster_data.castmember
+	caster.petspawneffects(dancer)
 	dancer:PushEvent("dance")
 
-	inst:DoTaskInTime(line.time, cleanup_waxwell_dancer, dancer)
+	inst:DoTaskInTime(line.time, cleanup_waxwell_dancer, caster, dancer)
 end
 
 local COMMENTER_MUST = {"player"}

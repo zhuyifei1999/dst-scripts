@@ -361,7 +361,6 @@ local function commonfn(name, sixfaced)
     inst.AnimState:PlayAnimation("idle_loop")
     inst.AnimState:SetMultColour(1, 1, 1, .5)
     inst.AnimState:SetFinalOffset(1)
-	inst.AnimState:UsePointFiltering(true)
 
     inst._music = net_bool(inst.GUID, "shadowchesspiece._music", "musicdirty")
 

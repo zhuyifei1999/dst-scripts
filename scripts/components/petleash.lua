@@ -121,9 +121,7 @@ function PetLeash:OnSave()
     if next(self.pets) ~= nil then
         local data = {}
         for k, v in pairs(self.pets) do
-			v.temp_save_platform_pos = true
             local saved--[[, refs]] = v:GetSaveRecord()
-			v.temp_save_platform_pos = nil
             table.insert(data, saved)
         end
         return { pets = data }
@@ -133,9 +131,7 @@ end
 function PetLeash:OnLoad(data)
     if data ~= nil and data.pets ~= nil then
         for i, v in ipairs(data.pets) do
-			v.is_snapshot_save_record = self.inst.is_snapshot_user_session
             local pet = SpawnSaveRecord(v)
-			v.is_snapshot_save_record = nil
             if pet ~= nil then
                 LinkPet(self, pet)
 

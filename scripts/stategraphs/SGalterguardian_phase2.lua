@@ -2,7 +2,6 @@ require("stategraphs/commonstates")
 
 local actionhandlers = nil
 
-local AOE_RANGE_PADDING = 3
 local CHOP_RANGE_DSQ = TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE * TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE
 local SPIN_RANGE_DSQ = TUNING.ALTERGUARDIAN_PHASE2_SPIN_RANGE * TUNING.ALTERGUARDIAN_PHASE2_SPIN_RANGE
 local events =
@@ -95,7 +94,7 @@ local function do_gestalt_summon(inst)
     end
 end
 
-local SPIN_CANT_TAGS = { "brightmareboss", "brightmare", "INLIMBO", "FX", "NOCLICK", "playerghost", "flight", "invisible", "notarget", "noattack" }
+local SPIN_CANT_TAGS = {"brightmareboss", "brightmare", "INLIMBO", "FX", "NOCLICK", "playerghost"}
 local SPIN_ONEOF_TAGS = {"_health", "CHOP_workable", "HAMMER_workable", "MINE_workable"}
 local SPIN_FX_RATE = 10*FRAMES
 local states =
@@ -302,7 +301,7 @@ local states =
             inst.sg.statemem.target = target
         end,
 
-		onupdate = function(inst, dt)
+        onupdate = function(inst)
             local target = inst.sg.statemem.target
             if target ~= nil and target:IsValid() then
                 inst:ForceFacePoint(target.Transform:GetWorldPosition())
@@ -314,43 +313,6 @@ local states =
                     spawn_spintrail(inst)
                 end
             end
-
-			-- Do a check for AOE damage & smashing occasionally.
-			if inst.sg.statemem.attack_time == nil then
-				--not yet
-			elseif inst.sg.statemem.attack_time > 0 then
-				inst.sg.statemem.attack_time = inst.sg.statemem.attack_time - dt
-			else
-				local ix, iy, iz = inst.Transform:GetWorldPosition()
-				local targets = TheSim:FindEntities(
-					ix, iy, iz, TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + AOE_RANGE_PADDING,
-					nil, SPIN_CANT_TAGS, SPIN_ONEOF_TAGS
-				)
-				for _, target in ipairs(targets) do
-					if target:IsValid() and not target:IsInLimbo() then
-						local range = TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + target:GetPhysicsRadius(0)
-						if target:GetDistanceSqToPoint(ix, iy, iz) < range * range then
-							local has_health = target.components.health ~= nil
-							if has_health and target:HasTag("smashable") then
-								target.components.health:Kill()
-							elseif target.components.workable ~= nil
-								and target.components.workable:CanBeWorked() then
-								if not target:HasTag("moonglass") then
-									local tx, ty, tz = target.Transform:GetWorldPosition()
-									local collapse_fx = SpawnPrefab("collapse_small")
-									collapse_fx.Transform:SetPosition(tx, ty, tz)
-								end
-
-								target.components.workable:Destroy(inst)
-							elseif has_health and not target.components.health:IsDead() then
-								inst.components.combat:DoAttack(target)
-							end
-						end
-					end
-				end
-
-				inst.sg.statemem.attack_time = 8*FRAMES
-			end
         end,
 
         timeline =
@@ -370,9 +332,6 @@ local states =
                 inst.sg.statemem.spin_speed = spin_speed
                 inst.Physics:SetMotorVelOverride(spin_speed, 0, 0)
             end),
-			TimeEvent(35 * FRAMES, function(inst)
-				inst.sg.statemem.attack_time = 0
-			end),
         },
 
         events =
@@ -383,7 +342,6 @@ local states =
                     spin_time_remaining = (inst.sg.timeinstate - 18*FRAMES) % SPIN_FX_RATE,
                     target = inst.sg.statemem.target,
                     speed = inst.sg.statemem.spin_speed,
-					attack_time = inst.sg.statemem.attack_time,
                 }
                 inst.sg:GoToState("spin_loop", loop_data)
             end),
@@ -410,7 +368,7 @@ local states =
             local num_loops = math.random(TUNING.ALTERGUARDIAN_PHASE2_SPINMIN, TUNING.ALTERGUARDIAN_PHASE2_SPINMAX)
             inst.sg:SetTimeout(inst.sg.statemem.loop_len * num_loops)
 
-			inst.sg.statemem.attack_time = data.attack_time or 0
+            inst.sg.statemem.attack_time = 0
             inst.sg.statemem.target = data.target
             inst.sg.statemem.speed = data.speed
             inst.sg.statemem.initial_spin_fx_time = data.spin_time_remaining
@@ -446,32 +404,29 @@ local states =
 
                 local ix, iy, iz = inst.Transform:GetWorldPosition()
                 local targets = TheSim:FindEntities(
-					ix, iy, iz, TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + AOE_RANGE_PADDING,
+                    ix, iy, iz, TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE,
                     nil, SPIN_CANT_TAGS, SPIN_ONEOF_TAGS
                 )
                 for _, target in ipairs(targets) do
-					if target:IsValid() and not target:IsInLimbo() then
-						local range = TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + target:GetPhysicsRadius(0)
-						if target:GetDistanceSqToPoint(ix, iy, iz) < range * range then
-							local has_health = target.components.health ~= nil
-							if has_health and target:HasTag("smashable") then
-								target.components.health:Kill()
-							elseif target.components.workable ~= nil
-								and target.components.workable:CanBeWorked() then
-								if not target:HasTag("moonglass") then
-									local tx, ty, tz = target.Transform:GetWorldPosition()
-									local collapse_fx = SpawnPrefab("collapse_small")
-									collapse_fx.Transform:SetPosition(tx, ty, tz)
-								end
+                    if target ~= inst and target:IsValid() and not target:IsInLimbo() then
+                        local has_health = target.components.health ~= nil
+                        if has_health and target:HasTag("smashable") then
+                            target.components.health:Kill()
+                        elseif target.components.workable ~= nil
+                                and target.components.workable:CanBeWorked() then
+                            if not target:HasTag("moonglass") then
+                                local tx, ty, tz = target.Transform:GetWorldPosition()
+                                local collapse_fx = SpawnPrefab("collapse_small")
+                                collapse_fx.Transform:SetPosition(tx, ty, tz)
+                            end
 
-								target.components.workable:Destroy(inst)
-							elseif has_health and not target.components.health:IsDead() then
-								inst.components.combat:DoAttack(target)
-								if target:HasTag("player") then
-									hit_player = true
-								end
-							end
-						end
+                            target.components.workable:Destroy(inst)
+                        elseif has_health and not target.components.health:IsDead() then
+                            inst.components.combat:DoAttack(target)
+                            if target:HasTag("player") then
+                                hit_player = true
+                            end
+                        end
                     end
                 end
 
@@ -513,7 +468,6 @@ local states =
 
             inst.AnimState:PlayAnimation("attk_spin_pst")
 
-			inst.components.timer:StopTimer("spin_cd")
             inst.components.timer:StartTimer("spin_cd", TUNING.ALTERGUARDIAN_PHASE2_SPINCD)
         end,
 
@@ -522,29 +476,26 @@ local states =
             TimeEvent(8*FRAMES, function(inst)
                 local ix, iy, iz = inst.Transform:GetWorldPosition()
                 local targets = TheSim:FindEntities(
-					ix, iy, iz, TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + AOE_RANGE_PADDING,
+                    ix, iy, iz, TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE,
                     nil, SPIN_CANT_TAGS, SPIN_ONEOF_TAGS
                 )
                 for _, target in ipairs(targets) do
-					if target:IsValid() and not target:IsInLimbo() then
-						local range = TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE + target:GetPhysicsRadius(0)
-						if target:GetDistanceSqToPoint(ix, iy, iz) < range * range then
-							local has_health = target.components.health ~= nil
-							if has_health and target:HasTag("smashable") then
-								target.components.health:Kill()
-							elseif target.components.workable ~= nil
-								and target.components.workable:CanBeWorked() then
-								if not target:HasTag("moonglass") then
-									local tx, ty, tz = target.Transform:GetWorldPosition()
-									local collapse_fx = SpawnPrefab("collapse_small")
-									collapse_fx.Transform:SetPosition(tx, ty, tz)
-								end
+                    if target ~= inst and target:IsValid() and not target:IsInLimbo() then
+                        local has_health = target.components.health ~= nil
+                        if has_health and target:HasTag("smashable") then
+                            target.components.health:Kill()
+                        elseif target.components.workable ~= nil
+                                and target.components.workable:CanBeWorked() then
+                            if not target:HasTag("moonglass") then
+                                local tx, ty, tz = target.Transform:GetWorldPosition()
+                                local collapse_fx = SpawnPrefab("collapse_small")
+                                collapse_fx.Transform:SetPosition(tx, ty, tz)
+                            end
 
-								target.components.workable:Destroy(inst)
-							elseif has_health and not target.components.health:IsDead() then
-								inst.components.combat:DoAttack(target)
-							end
-						end
+                            target.components.workable:Destroy(inst)
+                        elseif has_health and not target.components.health:IsDead() then
+                            inst.components.combat:DoAttack(target)
+                        end
                     end
                 end
             end),

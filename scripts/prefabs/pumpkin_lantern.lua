@@ -199,7 +199,6 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("veggie")
-    inst:AddTag("light")
 
     MakeInventoryPhysics(inst)
 

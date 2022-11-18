@@ -87,6 +87,7 @@ local function MorphSnowEyebone(inst)
     SetBuild(inst)
 end
 
+--[[
 local function MorphNormalEyebone(inst)
     inst.AnimState:SetBuild("chester_eyebone_build")
 
@@ -96,6 +97,7 @@ local function MorphNormalEyebone(inst)
 
     inst.EyeboneState = "NORMAL"
 end
+]]
 
 local function GetSpawnPoint(pt)
     local theta = math.random() * 2 * PI
@@ -261,7 +263,7 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    inst.MorphNormalEyebone = MorphNormalEyebone
+    --inst.MorphNormalEyebone = MorphNormalEyebone
     inst.MorphSnowEyebone = MorphSnowEyebone
     inst.MorphShadowEyebone = MorphShadowEyebone
     inst.StopRespawn = StopRespawn

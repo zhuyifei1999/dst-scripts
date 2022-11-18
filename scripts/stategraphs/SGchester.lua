@@ -27,22 +27,6 @@ local function SpawnMoveFx(inst, scale)
     end
 end
 
-local function SetContainerCanBeOpened(inst, canbeopened)
-	if canbeopened then
-		if inst.components.container ~= nil then
-			inst.components.container.canbeopened = true
-		elseif inst.components.container_proxy ~= nil and inst.components.container_proxy:GetMaster() ~= nil then
-			inst.components.container_proxy:SetCanBeOpened(true)
-		end
-	elseif inst.components.container ~= nil then
-		inst.components.container:Close()
-		inst.components.container.canbeopened = false
-	elseif inst.components.container_proxy ~= nil then
-		inst.components.container_proxy:Close()
-		inst.components.container_proxy:SetCanBeOpened(false)
-	end
-end
-
 local actionhandlers =
 {
 }
@@ -107,10 +91,9 @@ local states=
         tags = {"busy"},
 
         onenter = function(inst)
-			SetContainerCanBeOpened(inst, false)
-			if inst.components.container ~= nil then
-				inst.components.container:DropEverything()
-			end
+            inst.components.container:Close()
+            inst.components.container:DropEverything()
+            inst.components.container.canbeopened = false
 
             inst.SoundEmitter:PlaySound(inst.sounds.death)
 
@@ -119,6 +102,7 @@ local states=
             RemovePhysicsColliders(inst)
         end,
     },
+
 
     State{
         name = "open",
@@ -131,64 +115,41 @@ local states=
             if inst.SoundEmitter:PlayingSound("hutchMusic") then
                 inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 1)
             end
-			if inst.sg.mem.isshadow then
-				inst.sg.statemem.swirl = SpawnPrefab("shadow_chester_swirl_fx")
-				inst.sg.statemem.swirl.entity:SetParent(inst.entity)
-				inst.SoundEmitter:PlaySound("maxwell_rework/shadow_magic/storage_void_LP", "loop")
-			end
         end,
 
         events=
         {
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.open = true
-					inst.sg:GoToState("open_idle", inst.sg.statemem.swirl)
-				end
-			end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("open_idle") end ),
         },
 
         timeline=
         {
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound( inst.sounds.open ) end),
         },
-
-		onexit = function(inst)
-			if not inst.sg.statemem.open and inst.sg.statemem.swirl ~= nil then
-				inst.sg.statemem.swirl:ReleaseSwirl()
-				if not inst.sg.statemem.closing then
-					inst.SoundEmitter:KillSound("loop")
-				end
-			end
-		end,
     },
 
     State{
         name = "open_idle",
         tags = {"busy", "open"},
 
-        onenter = function(inst, swirl)
-			inst.AnimState:PlayAnimation("idle_loop_open")
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("idle_loop_open")
 
             if not inst.sg.mem.pant_ducking or inst.sg:InNewState() then
 				inst.sg.mem.pant_ducking = 1
 			end
 
-			inst.sg.statemem.swirl = swirl
         end,
 
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.open = true
-					inst.sg:GoToState("open_idle", inst.sg.statemem.swirl)
-				end
-			end),
-		},
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("open_idle") end ),
+        },
 
         timeline=
         {
+
+
             TimeEvent(3*FRAMES, function(inst)
 				inst.sg.mem.pant_ducking = inst.sg.mem.pant_ducking or 1
 				inst.SoundEmitter:PlaySound( inst.sounds.pant , nil, inst.sg.mem.pant_ducking)
@@ -197,15 +158,6 @@ local states=
 				end
 			end),
         },
-
-		onexit = function(inst)
-			if not inst.sg.statemem.open and inst.sg.statemem.swirl ~= nil then
-				inst.sg.statemem.swirl:ReleaseSwirl()
-				if not inst.sg.statemem.closing then
-					inst.SoundEmitter:KillSound("loop")
-				end
-			end
-		end,
     },
 
     State{
@@ -219,7 +171,6 @@ local states=
             if not inst.sg.statemem.muffled and inst.SoundEmitter:PlayingSound("hutchMusic") then
                 inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 0)
             end
-			inst.SoundEmitter:KillSound("loop")
         end,
 
         events=
@@ -235,8 +186,7 @@ local states=
                     inst.sg.statemem.muffled = true
                     inst.SoundEmitter:SetParameter("hutchMusic", "intensity", 0)
                 end
-				inst.SoundEmitter:KillSound("loop")
-			end),
+            end)
         },
     },
 
@@ -247,7 +197,8 @@ local states=
             inst.Physics:Stop()
 
             --Remove ability to open chester for short time.
-			SetContainerCanBeOpened(inst, false)
+            inst.components.container:Close()
+            inst.components.container.canbeopened = false
 
             --Create light shaft
             inst.sg.statemem.light = SpawnPrefab("chesterlight")
@@ -264,7 +215,7 @@ local states=
 
         onexit = function(inst)
             --Add ability to open chester again.
-			SetContainerCanBeOpened(inst, true)
+            inst.components.container.canbeopened = true
             --Remove light shaft
             if inst.sg.statemem.light then
                 inst.sg.statemem.light:TurnOff()
@@ -281,7 +232,6 @@ local states=
                 inst.SoundEmitter:PlaySound( inst.sounds.pop )
                 if inst.MorphChester ~= nil then
                     inst:MorphChester()
-					SetContainerCanBeOpened(inst, false)
                 end
             end),
         },
@@ -302,7 +252,8 @@ local states=
             inst.AnimState:PlayAnimation("transition", false)
 
             --Remove ability to open chester for short time.
-			SetContainerCanBeOpened(inst, false)
+            inst.components.container.canbeopened = false
+            inst.components.container:Close()
 
             inst.sg.statemem.morphfn = morphfn
         end,
@@ -334,7 +285,6 @@ local states=
                     local morphfn = inst.sg.statemem.morphfn
                     inst.sg.statemem.morphfn = nil
                     morphfn(inst)
-					SetContainerCanBeOpened(inst, false)
                 end
                 inst.SoundEmitter:PlaySound( inst.sounds.pop )
             end),
@@ -353,7 +303,7 @@ local states=
                 morphfn(inst)
             end
             --Add ability to open chester again.
-			SetContainerCanBeOpened(inst, true)
+            inst.components.container.canbeopened = true
         end,
 
     },

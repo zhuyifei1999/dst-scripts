@@ -5,9 +5,8 @@ local ShadowChess = require("stategraphs/SGshadow_chesspieces")
 local SWARM_PERIOD = .5
 local SWARM_START_DELAY = .25
 
-local AREAATTACK_EXCLUDETAGS = { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" }
 local function DoSwarmAttack(inst)
-    inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, AREAATTACK_EXCLUDETAGS)
+    inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature", "shadowminion" })
 end
 
 local function DoSwarmFX(inst)

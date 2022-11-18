@@ -45,9 +45,6 @@ local function fn()
     inst:AddTag("fur")
     inst:AddTag("ruins")
 
-	--shadowlevel (from shadowlevel component) added to pristine state for optimization
-	inst:AddTag("shadowlevel")
-
     inst.foleysound = "dontstarve/movement/foley/fur"
 
     MakeInventoryFloatable(inst, "small", 0.2, 0.80)
@@ -75,9 +72,6 @@ local function fn()
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
     inst.components.equippable:SetOnEquipToModel(onequiptomodel)
-
-	inst:AddComponent("shadowlevel")
-	inst.components.shadowlevel:SetDefaultLevel(TUNING.ARMORSLURPER_SHADOW_LEVEL)
 
     MakeHauntableLaunch(inst)
 

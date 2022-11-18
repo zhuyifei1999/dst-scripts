@@ -3,9 +3,8 @@ local TechTree = require("techtree")
 
 local IS_BETA = BRANCH == "staging" --or BRANCH == "dev"
 
-PI = math.pi
+PI = 3.14159
 PI2 = PI*2
-TWOPI = PI2
 DEGREES = PI/180
 RADIANS = 180/PI
 FRAMES = 1/30
@@ -1037,8 +1036,7 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_maxwell"
-    --"dontstarve/music/music_FE_charliestage"
+    "dontstarve/music/music_FE_charliestage"
     --"dontstarve/music/music_FE_wickerbottom"
     --"dontstarve/music/music_FE"
     --"dontstarve/music/music_FE_pirates"

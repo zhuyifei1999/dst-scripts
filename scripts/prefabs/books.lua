@@ -208,7 +208,7 @@ local book_defs =
         read_sanity = -TUNING.SANITY_HUGE,
         peruse_sanity = TUNING.SANITY_HUGE,
         fx_under = "tentacles",
-        layer_sound = { frame = 22, sound = "wickerbottom_rework/book_spells/tentacles" },
+        layer_sound = { frame = 30, sound = "wickerbottom_rework/book_spells/tentacles" },
         deps =
         {
             "tentacle",
@@ -407,9 +407,7 @@ local book_defs =
                 reader.peruse_sleep(reader)
             end
             reader.components.talker:Say(GetString(reader, "ANNOUNCE_READ_BOOK","BOOK_SLEEP"))
-            if reader.SoundEmitter ~= nil then
-                reader.SoundEmitter:PlaySound("wickerbottom_rework/book_spells/sleep")
-            end
+            inst.SoundEmitter:PlaySound("wickerbottom_rework/book_spells/sleep")
             return true
         end,
     },
@@ -471,7 +469,7 @@ local book_defs =
         read_sanity = -TUNING.SANITY_LARGE,
         peruse_sanity = -TUNING.SANITY_HUGE,
         fx_under = "plants_big",
-        layer_sound = { frame = 22, sound = "wickerbottom_rework/book_spells/upgraded_horticulture" },
+        layer_sound = { frame = 30, sound = "wickerbottom_rework/book_spells/upgraded_horticulture" },
         deps = { "book_horticulture_spell" },
         fn = function(inst, reader)
 			local x, y, z = reader.Transform:GetWorldPosition()
@@ -493,7 +491,7 @@ local book_defs =
         read_sanity = -TUNING.SANITY_LARGE,
         peruse_sanity = -TUNING.SANITY_LARGE,
         fx_under = "roots",
-        layer_sound = { frame = 17, sound = "wickerbottom_rework/book_spells/silviculture" },
+        layer_sound = { frame = 25, sound = "wickerbottom_rework/book_spells/silviculture" },
         fn = function(inst, reader)
 
             local x, y, z = reader.Transform:GetWorldPosition()
@@ -969,6 +967,7 @@ local function MakeBook(def)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         MakeInventoryPhysics(inst)

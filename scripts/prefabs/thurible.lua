@@ -155,7 +155,6 @@ local function onequiptomodel(inst, owner, from_ground)
 end
 
 local function nofuel(inst)
-	inst:RemoveTag("shadow_item")
     if inst.components.equippable:IsEquipped() and inst.components.inventoryitem.owner ~= nil then
         local data =
         {
@@ -171,7 +170,6 @@ local function nofuel(inst)
 end
 
 local function ontakefuel(inst)
-	inst:AddTag("shadow_item")
     if inst.components.equippable:IsEquipped() or not inst.components.inventoryitem:IsHeld() then
         (inst.components.inventoryitem.owner ~= nil and inst.components.inventoryitem.owner.SoundEmitter or inst.SoundEmitter):PlaySound("dontstarve/common/nightmareAddFuel")
         turnon(inst)
@@ -182,10 +180,6 @@ local function OnLoad(inst, data)
     if inst.components.fueled:IsEmpty() then
         nofuel(inst)
     end
-end
-
-local function GetShadowLevel(inst)
-	return not inst.components.fueled:IsEmpty() and TUNING.THURIBLE_SHADOW_LEVEL or 0
 end
 
 local function fn()
@@ -203,12 +197,8 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:SetFinalOffset(1)
 
-	inst:AddTag("shadow_item")
     inst:AddTag("shadowlure")
     inst:AddTag("nopunch")
-
-	--shadowlevel (from shadowlevel component) added to pristine state for optimization
-	inst:AddTag("shadowlevel")
 
     inst.entity:SetPristine()
 
@@ -237,10 +227,6 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(ontakefuel)
     inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
     inst.components.fueled.accepting = true
-
-	inst:AddComponent("shadowlevel")
-	inst.components.shadowlevel:SetDefaultLevel(TUNING.THURIBLE_SHADOW_LEVEL)
-	inst.components.shadowlevel:SetLevelFn(GetShadowLevel)
 
     MakeHauntableLaunch(inst)
 

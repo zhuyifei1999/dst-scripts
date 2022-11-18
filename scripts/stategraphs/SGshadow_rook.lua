@@ -2,8 +2,6 @@ local ShadowChess = require("stategraphs/SGshadow_chesspieces")
 
 --See SGshadow_chesspieces.lua for CommonEventList
 
-local AREAATTACK_EXCLUDETAGS = { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" }
-
 local states =
 {
     State{
@@ -65,7 +63,7 @@ local states =
             TimeEvent(17 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("noattack")
                 inst.components.health:SetInvincible(false)
-                inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, AREAATTACK_EXCLUDETAGS)
+                inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
             end),
             TimeEvent(34 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")

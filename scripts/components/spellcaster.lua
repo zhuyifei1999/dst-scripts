@@ -148,12 +148,12 @@ function SpellCaster:SetOnSpellCastFn(fn)
     self.onspellcast = fn
 end
 
-function SpellCaster:CastSpell(target, pos, doer)
+function SpellCaster:CastSpell(target, pos)
     if self.spell ~= nil then
-		self.spell(self.inst, target, pos, doer)
+        self.spell(self.inst, target, pos)
 
         if self.onspellcast ~= nil then
-			self.onspellcast(self.inst, target, pos, doer)
+            self.onspellcast(self.inst, target, pos)
         end
     end
 end

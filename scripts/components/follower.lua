@@ -21,7 +21,6 @@ local Follower = Class(function(self, inst)
     self.canaccepttarget = true
     --self.keepdeadleader = nil
     --self.keepleaderonattacked = nil
-	--self.noleashing = nil
 
     self.inst:ListenForEvent("attacked", onattacked)
     self.OnLeaderRemoved = function()
@@ -69,13 +68,6 @@ local function TryPorting(inst, self)
 
     if self.leader == nil or self.leader:IsAsleep() or not inst:IsAsleep() then
         return
-    end
-
-    if self.leader.components.inventoryitem ~= nil then
-        local owner = self.leader.components.inventoryitem:GetGrandOwner()
-        if owner ~= nil and owner:HasTag("pocketdimension_container") then
-            return
-        end
     end
 
     local init_pos = inst:GetPosition()
@@ -138,9 +130,7 @@ local function OnEntitySleep(inst)
 end
 
 function Follower:StartLeashing()
-	if self.noleashing then
-		return
-	elseif self._onleaderwake == nil and self.leader ~= nil then
+    if self._onleaderwake == nil and self.leader ~= nil then
         self._onleaderwake = function() OnEntitySleep(self.inst) end
         self.inst:ListenForEvent("entitywake", self._onleaderwake, self.leader)
         self.inst:ListenForEvent("entitysleep", OnEntitySleep)
@@ -160,9 +150,7 @@ function Follower:StopLeashing()
         end
     end
 
-	if not self.noleashing then
-		self.inst:PushEvent("stopleashing")
-	end
+    self.inst:PushEvent("stopleashing")
 end
 
 OnPlayerJoined = function(self, player)

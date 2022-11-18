@@ -22,14 +22,6 @@ local function OnTimerDone(inst, data)
     end
 end
 
-local function OnDropped(inst)
-	inst.components.trap:Set()
-end
-
-local function OnPickup(inst)
-	inst.components.trap:Reset()
-end
-
 local Trap = Class(function(self, inst)
     self.inst = inst
     self.bait = nil
@@ -44,12 +36,8 @@ local Trap = Class(function(self, inst)
     self.onspring = nil
     self.task = nil
 
-	if inst.components.timer == nil then
-		inst:AddComponent("timer")
-	end
-	inst:ListenForEvent("timerdone", OnTimerDone)
-	inst:ListenForEvent("ondropped", OnDropped)
-	inst:ListenForEvent("onpickup", OnPickup)
+    self.inst:AddComponent("timer")
+    self.inst:ListenForEvent("timerdone", OnTimerDone)
 end,
 nil,
 {
@@ -61,9 +49,7 @@ nil,
 function Trap:OnRemoveFromEntity()
     self:StopUpdating()
     self.inst:RemoveEventCallback("timerdone", OnTimerDone)
-	self.inst:RemoveEventCallback("ondropped", OnDropped)
-	self.inst:RemoveEventCallback("onpickup", OnPickup)
-    --self.inst:RemoveComponent("timer")
+    self.inst:RemoveComponent("timer")
     self.inst:RemoveTag("canbait")
     self.inst:RemoveTag("trapsprung")
 end
@@ -128,7 +114,6 @@ function Trap:Reset(sprung)
     self.isset = false
     self.issprung = sprung == true
     self.lootprefabs = nil
-	self.lootdata = nil
     self.numsouls = nil
     self.starvednumsouls = nil
     self:RemoveBait()
@@ -136,7 +121,6 @@ function Trap:Reset(sprung)
     self:StopStarvation()
 end
 
---Deprecated
 Trap.Disarm = Trap.Reset
 
 function Trap:Set()
@@ -265,19 +249,15 @@ function Trap:DoSpring()
 
         if self.target.components.inventoryitem ~= nil and self.target.components.inventoryitem.trappable then
             self.lootprefabs = { self.target.prefab }
-			self.lootdata = self.target.settrapdata ~= nil and self.target.settrapdata(self.target) or nil
+            if self.target.settrapdata then
+                self.lootdata = self.target.settrapdata(self.target)
+            end
             self.numsouls = nil
             self.starvednumsouls = wortox_soul_common.HasSoul(self.target) and wortox_soul_common.GetNumSouls(self.target) or nil
         elseif self.target.components.lootdropper ~= nil and self.target.components.lootdropper.trappable then
             self.lootprefabs = self.target.components.lootdropper:GenerateLoot() or nil
-			self.lootdata = nil
             self.numsouls = wortox_soul_common.HasSoul(self.target) and wortox_soul_common.GetNumSouls(self.target) or nil
             self.starvednumsouls = nil
-		else
-			self.lootprefabs = nil
-			self.lootdata = nil
-			self.numsouls = nil
-			self.starvednumsouls = nil
         end
 
         self:StartStarvation()
@@ -289,7 +269,6 @@ function Trap:DoSpring()
         end
     else
         self.lootprefabs = nil
-		self.lootdata = nil
         self.numsouls = nil
         self.starvednumsouls = nil
     end
@@ -348,9 +327,6 @@ function Trap:Harvest(doer)
             for i, v in ipairs(self.lootprefabs) do
                 local loot = SpawnPrefab(v)
                 if loot ~= nil then
-					if loot.restoredatafromtrap ~= nil then
-						loot:restoredatafromtrap(self.lootdata)
-					end
                     if inventory ~= nil then
                         inventory:GiveItem(loot, nil, pos)
                     else
@@ -358,6 +334,10 @@ function Trap:Harvest(doer)
                     end
                     if loot.components.perishable ~= nil then
                         loot.components.perishable:LongUpdate(timeintrap)
+                    end
+                    if loot.getcarratfromtrap then
+                        loot.getcarratfromtrap(loot,self.lootdata)
+                        self.lootdata = nil
                     end
                 end
             end
@@ -373,9 +353,7 @@ function Trap:Harvest(doer)
 
         if self.inst:IsValid() then
             if self.inst.components.finiteuses == nil or self.inst.components.finiteuses:GetUses() > 0 then
-				self:Set()
-			else
-				self:Reset()
+                self.inst:DoTaskInTime(0, function() self:Set() end)
             end
         end
     end

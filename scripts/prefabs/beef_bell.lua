@@ -171,7 +171,6 @@ local function fn()
     MakeInventoryFloatable(inst)
 
     inst:AddTag("bell")
-    inst:AddTag("donotautopick")
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

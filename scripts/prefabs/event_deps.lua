@@ -69,11 +69,9 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-				Asset("ANIM", "anim/dst_menu_waxwell.zip"),
-				Asset("ANIM", "anim/dst_menu_waxwell.zip"),
+                Asset("ANIM", "anim/dst_menu_charlie_halloween.zip"),
+                Asset("ANIM", "anim/dst_menu_charlie2.zip"),
 
-				Asset("PKGREF", "anim/dst_menu_charlie_halloween.zip"),
-				Asset("PKGREF", "anim/dst_menu_charlie2.zip"),
                 Asset("PKGREF", "anim/dst_menu_halloween2.zip"),
                 Asset("PKGREF", "anim/dst_menu_halloween.zip"),
                 Asset("PKGREF", "anim/dst_menu_wurt.zip"),
@@ -210,8 +208,10 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("ANIM", "anim/dst_menu_waxwell.zip"),
-                Asset("ANIM", "anim/dst_menu_waxwell.zip"),
+
+                Asset("ANIM", "anim/dst_menu_charlie.zip"),
+                Asset("ANIM", "anim/dst_menu_charlie2.zip"),
+
 
                 Asset("PKGREF", "anim/dst_menu_v2.zip"),
                 Asset("PKGREF", "anim/dst_menu_v2_bg.zip"),
@@ -248,8 +248,6 @@ local SPECIAL_EVENT_DEPS =
                 Asset("PKGREF", "anim/dst_menu_waterlogged.zip"),
                 Asset("PKGREF", "anim/dst_menu_wanda.zip"),
                 Asset("PKGREF", "anim/dst_menu_pirates.zip"),
-                Asset("PKGREF", "anim/dst_menu_charlie.zip"),
-                Asset("PKGREF", "anim/dst_menu_charlie2.zip"),
             },
         },
     },

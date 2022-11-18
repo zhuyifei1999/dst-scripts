@@ -384,16 +384,6 @@ return{
         {
             DOER_ISNT_MODULE_OWNER = "Not very talkative, eh?",
         },
-
-		CAST_SPELLBOOK =
-		{
---fallback to speech_wilson.lua			NO_TOPHAT = "only_used_by_waxwell",
-		},
-
-		CASTAOE =
-		{
---fallback to speech_wilson.lua			NO_MAX_SANITY = "only_used_by_waxwell",
-		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -415,13 +405,6 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
-
-	--waxwell specific
---fallback to speech_wilson.lua		ANNOUNCE_SHADOWLEVEL_ITEM = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T1 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T2 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T3 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T4 = "only_used_by_waxwell",
 
     --wolfgang specific
 --fallback to speech_wilson.lua     ANNOUNCE_NORMALTOMIGHTY = "only_used_by_wolfang",
@@ -485,8 +468,6 @@ return{
 --fallback to speech_wilson.lua         SAME_OLD_5 = "only_used_by_warly",
 --fallback to speech_wilson.lua 		TASTY = "only_used_by_warly",
     },
-
-	ANNOUNCE_FOODMEMORY = "only_used_by_warly",
 
     ANNOUNCE_ENCUMBERED =
     {
@@ -2937,11 +2918,7 @@ return{
 		WATERMELON = "How can it be both water and melon?",
 		WATERMELON_COOKED = "I'm not sure aboot grilled fruit...",
 		WATERMELONHAT = "Well, points for creativity.",
-		WAXWELLJOURNAL =
-		{
-			GENERIC = "Trees made into... paper? How unholy!",
---fallback to speech_wilson.lua			NEEDSFUEL = "only_used_by_waxwell",
-		},
+		WAXWELLJOURNAL = "Trees made into... paper? How unholy!",
 		WETGOOP = "Better than some of the things I've eaten!",
         WHIP = "I hope that doesn't end up hurtin' any lil critters.",
 		WINTERHAT = "It's a nice toque, eh?",
@@ -4685,10 +4662,6 @@ return{
             GENERIC = "Quiet type, eh?",
             BURNT = "I was just startin' to get used to having it around.",
         },
-
-		-- Waxwell
-		MAGICIAN_CHEST = "It sure beats international shipping.",
-		TOPHAT_MAGICIAN = "I'll stick to a nice cozy toque, thanks.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

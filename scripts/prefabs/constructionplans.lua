@@ -29,7 +29,6 @@ local function MakePlans(name, targets)
             --"XXXXX_plans" (from constructionplans component) added to pristine state for optimization
             inst:AddTag(v.."_plans")
         end
-        inst:AddTag("donotautopick")
 
         inst.constructionname = name
 

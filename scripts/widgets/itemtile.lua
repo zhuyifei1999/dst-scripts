@@ -18,7 +18,6 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.movinganim = nil
     self.ignore_stacksize_anim = nil
     self.onquantitychangedfn = nil
-	self.updatingflags = {}
 
     -- NOT SURE WAHT YOU WANT HERE
     if invitem.replica.inventoryitem == nil then
@@ -72,8 +71,6 @@ local ItemTile = Class(Widget, function(self, invitem)
     end
 
     --self.image:SetClickable(false)
-
-	self:ToggleShadowFX()
 
     if self.rechargeframe ~= nil then
         self.recharge = self:AddChild(UIAnim())
@@ -412,9 +409,9 @@ function ItemTile:SetChargePercent(percent)
 				self.rechargeframe:Show()
 			end
 			if percent >= 0.9999 then
-				self:StopUpdatingCharge()
+				self:StopUpdating()
 			elseif self.rechargetime < math.huge then
-				self:StartUpdatingCharge()
+				self:StartUpdating()
 			end
 		else
 			if prev_precent < 1 and not self.recharge:GetAnimState():IsCurrentAnimation("frame_pst") then
@@ -423,7 +420,7 @@ function ItemTile:SetChargePercent(percent)
 			if self.rechargeframe.shown then
 				self.rechargeframe:Hide()
 			end
-			self:StopUpdatingCharge()
+			self:StopUpdating()
 		end
 	end
 end
@@ -431,9 +428,9 @@ end
 function ItemTile:SetChargeTime(t)
     self.rechargetime = t
     if self.rechargetime >= math.huge then
-		self:StopUpdatingCharge()
+        self:StopUpdating()
     elseif self.rechargepct < .9999 then
-		self:StartUpdatingCharge()
+        self:StartUpdating()
     end
 end
 
@@ -491,91 +488,9 @@ function ItemTile:HasSpoilage()
     return self.hasspoilage
 end
 
-local function _StartUpdating(self, flag)
-	if next(self.updatingflags) == nil then
-		self:StartUpdating()
-	end
-	self.updatingflags[flag] = true
-end
-
-local function _StopUpdating(self, flag)
-	self.updatingflags[flag] = nil
-	if next(self.updatingflags) == nil then
-		self:StopUpdating()
-	end
-end
-
-function ItemTile:StartUpdatingCharge()
-	_StartUpdating(self, "charge")
-end
-
-function ItemTile:StopUpdatingCharge()
-	_StopUpdating(self, "charge")
-end
-
-function ItemTile:StartUpdatingShadowFuel()
-	self.updateshadowdelay = 0
-	_StartUpdating(self, "shadow")
-end
-
-function ItemTile:StopUpdatingShadowFuel()
-	_StopUpdating(self, "shadow")
-	self.updateshadowdelay = nil
-end
-
 function ItemTile:OnUpdate(dt)
     if TheNet:IsServerPaused() then return end
-	if self.updatingflags.charge then
-		self:SetChargePercent(self.rechargetime > 0 and self.rechargepct + dt / self.rechargetime or .9999)
-	end
-	if self.updatingflags.shadow then
-		self.updateshadowdelay = self.updateshadowdelay + dt
-		if self.updateshadowdelay > .2 then
-			self.updateshadowdelay = 0
-			self:CheckShadowFXFuel()
-		end
-	end
-end
-
-function ItemTile:CheckShadowFXFuel()
-	if self.item:HasTag("fueldepleted") then
-		self.shadowfx:Hide()
-	else
-		self.shadowfx:Show()
-	end
-end
-
-function ItemTile:ToggleShadowFX()
-	if self.showequipshadowfx or self.item:HasTag("magiciantool") then
-		if self.shadowfx == nil then
-			self.shadowfx = self.image:AddChild(UIAnim())
-			self.shadowfx:GetAnimState():SetBank("inventory_fx_shadow")
-			self.shadowfx:GetAnimState():SetBuild("inventory_fx_shadow")
-			self.shadowfx:GetAnimState():PlayAnimation("idle", true)
-			self.shadowfx:GetAnimState():SetTime(math.random() * self.shadowfx:GetAnimState():GetCurrentAnimationTime())
-			self.shadowfx:SetScale(.25)
-			self.shadowfx:GetAnimState():AnimateWhilePaused(false)
-			self.shadowfx:SetClickable(false)
-		end
-		if self.item:HasTag("NIGHTMARE_fueled") then
-			self:CheckShadowFXFuel()
-			self:StartUpdatingShadowFuel()
-		else
-			self:StopUpdatingShadowFuel()
-		end
-	elseif self.shadowfx ~= nil then
-		self.shadowfx:Kill()
-		self.shadowfx = nil
-		self:StopUpdatingShadowFuel()
-	end
-end
-
-function ItemTile:SetIsEquip(isequip)
-	local shadowfx = isequip and ThePlayer:HasTag("shadowmagic") and self.item:HasTag("shadowlevel")
-	if not self.showequipshadowfx == shadowfx then
-		self.showequipshadowfx = shadowfx or nil
-		self:ToggleShadowFX()
-	end
+    self:SetChargePercent(self.rechargetime > 0 and self.rechargepct + dt / self.rechargetime or .9999)
 end
 
 return ItemTile

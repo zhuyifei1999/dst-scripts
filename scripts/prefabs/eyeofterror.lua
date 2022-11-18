@@ -156,9 +156,7 @@ local function ClearRecentlyCharged(inst)
     inst._recentlycharged = nil
 end
 
-local function OnCollide(inst, other)
-	--other should be validated before reaching here now
-	--assert(other ~= nil and other:IsValid())
+local function on_other_collided(inst, other)
     if not other.components.health or other.components.health:IsDead() then
         return
     end
@@ -180,6 +178,12 @@ local function OnCollide(inst, other)
     inst._recentlycharged[other] = current_time
 
     inst.components.combat:DoAttack(other)
+end
+
+local function OnCollide(inst, other)
+    if other ~= nil and other:IsValid() then
+        on_other_collided(inst, other)
+    end
 end
 
 local function GetDesiredSoldiers(inst)

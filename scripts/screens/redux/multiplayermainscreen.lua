@@ -307,13 +307,7 @@ local function MakeDramaBanner(self, banner_root, anim)
 	end
     anim:GetAnimState():PlayAnimation("loop", true)
     anim:SetScale(0.667)
-end
 
-local function MakeWaxwellBanner(self, banner_root, anim)
-    anim:GetAnimState():SetBuild("dst_menu_waxwell")
-    anim:GetAnimState():SetBank("dst_menu_waxwell")
-    anim:GetAnimState():PlayAnimation("loop", true)
-    anim:SetScale(.667)
 end
 
 local function MakeDefaultBanner(self, banner_root, anim)
@@ -365,20 +359,18 @@ function MakeBanner(self)
 
 	if IS_BETA then
 		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
-        MakeWaxwellBanner(self, banner_root, anim)
+        MakeDramaBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
         MakeYOTCBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOT_CATCOON) then
         MakeYOTCatcoonBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		MakeWaxwellBanner(self, banner_root, anim)
-        --MakeDramaBanner(self, banner_root, anim)
+        MakeDramaBanner(self, banner_root, anim)
         --MakeHallowedNightsBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
         MakeCawnivalBanner(self, banner_root, anim)
 	else
-		MakeWaxwellBanner(self, banner_root, anim)
-        --MakeDramaBanner(self, banner_root, anim)
+        MakeDramaBanner(self, banner_root, anim)
         --MakeDefaultBanner(self, banner_root, anim)
         --MakePiratesBanner(self, banner_root, anim)
         --MakeWX78Banner(self, banner_root, anim)

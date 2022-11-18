@@ -482,11 +482,7 @@ function GenerateNew(debug, world_gen_data)
 	-- 	end
 	-- end
 
-	print("Generation complete, injecting world entities.")
-	
-	-- Inject world entities.
-	require("worldentities").AddWorldEntities(savedata)
-	print("Injected world entities.")
+	print("Generation complete")
 
     local PRETTY_PRINT = BRANCH == "dev"
 	local savedata_entities = savedata.ents

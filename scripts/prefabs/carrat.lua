@@ -800,8 +800,7 @@ local function fn()
     inst.GoToSubmerged = go_to_submerged
     inst.GoToEmerged = go_to_emerged
     inst.setbeefalocarratrat = setbeefalocarratrat
-    --inst.getcarratfromtrap = getcarratfromtrap --deprecated
-	inst.restoredatafromtrap = getcarratfromtrap
+    inst.getcarratfromtrap = getcarratfromtrap
     inst.settrapdata = settrapdata
 
 	inst.OnSave = common_onsave

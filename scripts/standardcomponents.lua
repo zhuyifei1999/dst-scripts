@@ -1232,7 +1232,11 @@ end
 function ToggleOffCharacterCollisions(inst)
     if not inst.sg.mem.ischaracterpassthrough then
         inst.sg.mem.ischaracterpassthrough = true
-		inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+        inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+        inst.Physics:CollidesWith(COLLISION.GIANTS)
     end
     if inst.sg.mem.physicstask ~= nil then
         inst.sg.mem.physicstask:Cancel()
@@ -1254,10 +1258,8 @@ function ToggleOffAllObjectCollisions(inst)
     if not (inst.sg.mem.isobstaclepassthrough and inst.sg.mem.ischaracterpassthrough) then
         inst.sg.mem.isobstaclepassthrough = true
         inst.sg.mem.ischaracterpassthrough = true
-		inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
-		inst.Physics:ClearCollidesWith(COLLISION.OBSTACLES)
-		inst.Physics:ClearCollidesWith(COLLISION.SMALLOBSTACLES)
-		inst.Physics:ClearCollidesWith(COLLISION.GIANTS)
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
     end
     if inst.sg.mem.physicstask ~= nil then
         inst.sg.mem.physicstask:Cancel()

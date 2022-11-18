@@ -2006,7 +2006,6 @@ local function lantern_off(inst)
             fx._lastpos = fx._lastpos or fx:GetPosition()
             fx.entity:SetParent(nil)
             if fx.Follower ~= nil then
-            	print("THIS ONE")
                 fx.Follower:StopFollowing()
             end
             fx.Transform:SetPosition(fx._lastpos:Get())

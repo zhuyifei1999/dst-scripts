@@ -236,8 +236,6 @@ end
 local function crackedfn()
     local inst = defaultfn("idle_happy")
 
-    inst:AddTag("donotautopick")
-
     if not TheWorld.ismastersim then
         return inst
     end

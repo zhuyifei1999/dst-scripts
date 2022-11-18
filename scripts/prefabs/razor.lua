@@ -18,7 +18,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst, "small", 0.08, {0.9, 0.7, 0.9}, true, -2, {sym_build = "swap_razor"})
-    inst:AddTag("donotautopick")
 
     inst.entity:SetPristine()
 

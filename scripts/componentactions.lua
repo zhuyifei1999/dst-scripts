@@ -235,15 +235,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        container_proxy = function(inst, doer, actions)
-            if inst.components.container_proxy:CanBeOpened() and
-                not inst:HasTag("burnt") and
-                doer.replica.inventory ~= nil
-                and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-                table.insert(actions, ACTIONS.RUMMAGE)
-            end
-        end,
-
         crittertraits = function(inst, doer, actions, right)
             if inst.replica.follower ~= nil and inst.replica.follower:GetLeader() == doer then
                 if right then
@@ -383,12 +374,6 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, inst:HasTag("turnedon") and ACTIONS.TURNOFF or ACTIONS.TURNON)
             end
         end,
-
-		magician = function(inst, doer, actions, right)
-			if inst == doer and inst:HasTag("usingmagiciantool") then
-				table.insert(actions, ACTIONS.STOPUSINGMAGICTOOL)
-			end
-		end,
 
         mast = function(inst, doer, actions, right)
 
@@ -1081,10 +1066,8 @@ local COMPONENT_ACTIONS =
             if inventoryitem ~= nil and inventoryitem:CanOnlyGoInPocket() then
                 --not tradable
             elseif inventoryitem ~= nil
-                and (   (target.replica.container ~= nil and target.replica.container:CanBeOpened()) or
-                        (target.components.container_proxy ~= nil and target.components.container_proxy:CanBeOpened())
-                        --container_proxy exists on clients too
-                    )
+                and target.replica.container ~= nil
+                and target.replica.container:CanBeOpened()
                 and inventoryitem:IsGrandOwner(doer) then
                 if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
@@ -1394,10 +1377,8 @@ local COMPONENT_ACTIONS =
         weapon = function(inst, doer, target, actions, right)
             local inventoryitem = inst.replica.inventoryitem
             if inventoryitem ~= nil and
-                (   (target.replica.container ~= nil and target.replica.container:CanBeOpened()) or
-                    (target.components.container_proxy ~= nil and target.components.container_proxy:CanBeOpened())
-                    --container_proxy exists on clients too
-                ) then
+                target.replica.container ~= nil and
+                target.replica.container:CanBeOpened() then
                 -- put weapons into chester, don't attack him unless forcing attack with key press
                 if not inventoryitem:CanOnlyGoInPocket() and
                     not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
@@ -1663,25 +1644,14 @@ local COMPONENT_ACTIONS =
         end,
 
         aoespell = function(inst, doer, pos, actions, right, target)
-			if right then
-				local inventory = doer.replica.inventory
-				if inventory ~= nil and inventory:GetActiveItem() ~= nil then
-					return
-				end
-				local alwayspassable, allowwater, deployradius
-				local aoetargeting = inst.components.aoetargeting
-				if aoetargeting ~= nil then
-					if not aoetargeting:IsEnabled() then
-						return
-					end
-					alwayspassable = aoetargeting.alwaysvalid
-					allowwater = aoetargeting.allowwater
-					deployradius = aoetargeting.deployradius
-				end
-				if TheWorld.Map:CanCastAtPoint(pos, alwayspassable, allowwater, deployradius) then
-					table.insert(actions, ACTIONS.CASTAOE)
-				end
-			end
+            if right and
+                (   inst.components.aoetargeting == nil or inst.components.aoetargeting:IsEnabled()
+                ) and
+                (   inst.components.aoetargeting ~= nil and inst.components.aoetargeting.alwaysvalid or
+                    (TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pos))
+                ) then
+                table.insert(actions, ACTIONS.CASTAOE)
+            end
         end,
 
         farmtiller = function(inst, doer, pos, actions, right, target)
@@ -2071,22 +2041,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-		magiciantool = function(inst, doer, actions, right)
-			if doer:HasTag("magician") then
-				if not doer.components.playercontroller.isclientcontrollerattached and
-					(	right or
-						doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_INSPECT)
-					) then
-					table.insert(actions, ACTIONS.USEMAGICTOOL)
-				else
-					local equippable = inst.replica.equippable
-					if equippable ~= nil and equippable:IsEquipped() then
-						table.insert(actions, ACTIONS.USEMAGICTOOL)
-					end
-				end
-			end
-		end,
-
         maprecorder = function(inst, doer, actions)
             if doer:HasTag("player") then
                 table.insert(actions, ACTIONS.TEACH)
@@ -2157,18 +2111,6 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.EAT)
             end
         end,
-
-		spellbook = function(inst, doer, actions)
-			--spellbook exists on clients too
-			if doer.HUD ~= nil and doer.HUD:GetCurrentOpenSpellBook() == inst then
-				table.insert(actions, ACTIONS.CLOSESPELLBOOK)
-			elseif inst.components.spellbook:CanBeUsedBy(doer) and doer.replica.inventory:GetActiveItem() == nil and not inst:HasTag("fueldepleted") then
-				local inventoryitem = inst.replica.inventoryitem
-				if inventoryitem:IsGrandOwner(doer) then
-					table.insert(actions, ACTIONS.USESPELLBOOK)
-				end
-			end
-		end,
 
         spellcaster = function(inst, doer, actions)
             if inst:HasTag("castfrominventory") then

@@ -372,11 +372,11 @@ function Container:IsFull()
     end
 end
 
-function Container:Has(prefab, amount, iscrafting)
+function Container:Has(prefab, amount)
     if self.inst.components.container ~= nil then
-		return self.inst.components.container:Has(prefab, amount, iscrafting)
+        return self.inst.components.container:Has(prefab, amount)
     elseif self.classified ~= nil and self.opener ~= nil then
-		return self.classified:Has(prefab, amount, iscrafting)
+        return self.classified:Has(prefab, amount)
     else
         return amount <= 0, 0
     end

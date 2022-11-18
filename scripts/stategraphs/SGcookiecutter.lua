@@ -82,8 +82,6 @@ end
 
 local WALKABLEPLATFORM_TAGS = {"walkableplatform"}
 
-local AREAATTACK_EXCLUDETAGS = { "cookiecutter", "INLIMBO", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" }
-
 local states =
 {
     State{
@@ -432,7 +430,7 @@ local states =
 			end),
 
 			TimeEvent(15*FRAMES, function(inst)
-                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.JUMP_ATTACK_RADIUS, nil, nil, nil, AREAATTACK_EXCLUDETAGS)
+                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.JUMP_ATTACK_RADIUS, nil, nil, nil, { "cookiecutter", "INLIMBO", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
 			end),
         },
 
@@ -624,7 +622,7 @@ local states =
 				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/attack")
 			end),
 			TimeEvent(25*FRAMES, function(inst)
-                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.ATTACK_RADIUS, nil, nil, nil, AREAATTACK_EXCLUDETAGS)
+                inst.components.combat:DoAreaAttack(inst, TUNING.COOKIECUTTER.ATTACK_RADIUS, nil, nil, nil, { "cookiecutter", "INLIMBO", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
 			end),
 			TimeEvent(27*FRAMES, function(inst)
 				inst.SoundEmitter:PlaySound("saltydog/creatures/cookiecutter/attack")

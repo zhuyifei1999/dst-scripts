@@ -384,16 +384,6 @@ return{
         {
             DOER_ISNT_MODULE_OWNER = "Glurph. You boring!",
         },
-
-		CAST_SPELLBOOK =
-		{
---fallback to speech_wilson.lua			NO_TOPHAT = "only_used_by_waxwell",
-		},
-
-		CASTAOE =
-		{
---fallback to speech_wilson.lua			NO_MAX_SANITY = "only_used_by_waxwell",
-		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -415,13 +405,6 @@ return{
 --fallback to speech_wilson.lua     ANNOUNCE_TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua     ANNOUNCE_NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
-
-	--waxwell specific
---fallback to speech_wilson.lua		ANNOUNCE_SHADOWLEVEL_ITEM = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T1 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T2 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T3 = "only_used_by_waxwell",
---fallback to speech_wilson.lua		ANNOUNCE_EQUIP_SHADOWLEVEL_T4 = "only_used_by_waxwell",
 
     --wolfgang specific
 --fallback to speech_wilson.lua     ANNOUNCE_NORMALTOMIGHTY = "only_used_by_wolfang",
@@ -485,8 +468,6 @@ return{
 --fallback to speech_wilson.lua         SAME_OLD_5 = "only_used_by_warly",
 --fallback to speech_wilson.lua 		TASTY = "only_used_by_warly",
     },
-
-	ANNOUNCE_FOODMEMORY = "only_used_by_warly",
 
     ANNOUNCE_ENCUMBERED =
     {
@@ -2938,11 +2919,7 @@ return{
 		WATERMELON = "Gimme!!",
 		WATERMELON_COOKED = "Roasty melon.",
 		WATERMELONHAT = "Think me like fa-shun, florp!",
-		WAXWELLJOURNAL =
-		{
-			GENERIC = "...Don't like stories in that book.",
---fallback to speech_wilson.lua			NEEDSFUEL = "only_used_by_waxwell",
-		},
+		WAXWELLJOURNAL = "...Don't like stories in that book.",
 		WETGOOP = "Usually like wet goopy things...",
         WHIP = "Whi-chaaa!!",
 		WINTERHAT = "It look cozy!",
@@ -4686,10 +4663,6 @@ return{
             GENERIC = "Quit staring, flort!",
             BURNT = "Good. Won't stare anymore, florp.",
         },
-
-		-- Waxwell
-		MAGICIAN_CHEST = "Magic hidey-place.",
-		TOPHAT_MAGICIAN = "Glurgh, fancy hat got all gloopy.",
     },
 
     DESCRIBE_GENERIC = "What that?",
