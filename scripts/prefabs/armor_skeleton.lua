@@ -153,6 +153,10 @@ local function onequiptomodel(inst, owner, from_ground)
     end
 end
 
+local function GetShadowLevel(inst)
+	return not inst.components.fueled:IsEmpty() and TUNING.ARMOR_SKELETON_SHADOW_LEVEL or 0
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -168,6 +172,9 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("fossil")
+
+	--shadowlevel (from shadowlevel component) added to pristine state for optimization
+	inst:AddTag("shadowlevel")
 
     inst.foleysound = "dontstarve/movement/foley/bone"
 
@@ -203,6 +210,10 @@ local function fn()
 
     inst:AddComponent("cooldown")
     inst.components.cooldown.cooldown_duration = TUNING.ARMOR_SKELETON_COOLDOWN
+
+	inst:AddComponent("shadowlevel")
+	inst.components.shadowlevel:SetDefaultLevel(TUNING.ARMOR_SKELETON_SHADOW_LEVEL)
+	inst.components.shadowlevel:SetLevelFn(GetShadowLevel)
 
     MakeHauntableLaunch(inst)
 
