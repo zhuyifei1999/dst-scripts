@@ -626,11 +626,11 @@ local actionhandlers =
     ActionHandler(ACTIONS.FILL_OCEAN, "dolongaction"),
     ActionHandler(ACTIONS.PICKUP,
         function(inst, action)
-            return (action.target ~= nil and action.target:HasTag("minigameitem") and "dosilentshortaction")
-                or (inst.components.rider ~= nil and inst.components.rider:IsRiding()
+			return (inst.components.rider ~= nil and inst.components.rider:IsRiding()
                     and (action.target ~= nil and action.target:HasTag("heavy") and "dodismountaction"
                         or "domediumaction")
                     )
+				or (action.target ~= nil and action.target:HasTag("minigameitem") and "dosilentshortaction")
                 or "doshortaction"
         end),
     ActionHandler(ACTIONS.CHECKTRAP,

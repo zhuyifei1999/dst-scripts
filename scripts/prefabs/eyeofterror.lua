@@ -105,8 +105,12 @@ local function update_targets(inst)
 end
 
 local TARGET_DIST = 20
-local function get_target_test_range(use_short_dist, target)
-    return (use_short_dist and 8 + target:GetPhysicsRadius(0)) or TARGET_DIST
+local function get_target_test_range(inst, use_short_dist, target)
+	return inst.sg:HasStateTag("charge")
+		and inst.components.stuckdetection:IsStuck()
+		and TUNING.EYEOFTERROR_CHARGE_AOERANGE + target:GetPhysicsRadius(0)
+		or (use_short_dist and 8 + target:GetPhysicsRadius(0))
+		or TARGET_DIST
 end
 
 local function RetargetFn(inst)
@@ -118,7 +122,7 @@ local function RetargetFn(inst)
     if current_target ~= nil and current_target:HasTag("player") then
         local new_target = inst.components.grouptargeter:TryGetNewTarget()
         return (new_target ~= nil
-            and new_target:IsNear(inst, get_target_test_range(target_in_range, new_target))
+			and new_target:IsNear(inst, get_target_test_range(inst, target_in_range, new_target))
             and new_target)
             or nil,
             true
@@ -126,7 +130,7 @@ local function RetargetFn(inst)
 
     local targets_in_range = {}
     for target, _ in pairs(inst.components.grouptargeter:GetTargets()) do
-        if inst:IsNear(target, get_target_test_range(target_in_range, target)) then
+		if inst:IsNear(target, get_target_test_range(inst, target_in_range, target)) then
             table.insert(targets_in_range, target)
         end
     end
@@ -146,6 +150,13 @@ local function OnAttacked(inst, data)
         if current_target == nil or not current_target:IsNear(inst, TARGET_DIST) then
             inst.components.combat:SetTarget(data.attacker)
             inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
+		elseif inst.sg:HasStateTag("charge")
+			and inst.components.stuckdetection:IsStuck()
+			and not current_target:IsNear(inst, TUNING.EYEOFTERROR_CHARGE_AOERANGE + current_target:GetPhysicsRadius(0))
+			then
+			inst.components.combat:SetTarget(data.attacker)
+			--inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
+			--soldiers stay on original target?
         end
     end
 end
@@ -333,6 +344,9 @@ local function common_fn(data)
     inst.components.combat:SetAttackPeriod(TUNING.EYEOFTERROR_ATTACKPERIOD)
     inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
+
+	inst:AddComponent("stuckdetection")
+	inst.components.stuckdetection:SetTimeToStuck(1)
 
     ------------------------------------------
     inst:AddComponent("explosiveresist")

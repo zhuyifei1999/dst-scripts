@@ -127,7 +127,7 @@ local function spawn_ground_fx(inst)
     end
 end
 
-local CHARGE_RANGE_OFFSET = 1
+local CHARGE_RANGE_OFFSET = 3 - TUNING.EYEOFTERROR_CHARGE_AOERANGE
 local CHARGE_LOOP_TARGET_ONEOF_TAGS = {"tree", "_health"}
 
 local AOE_RANGE_PADDING = 3
@@ -235,26 +235,36 @@ local states =
             inst.components.timer:StartTimer("charge_cd", get_rng_cooldown(cooldown))
 
             inst.sg.statemem.target = target
-            inst.sg.statemem.stopsteering = false
+			inst.sg.statemem.steering = true
 
             inst.AnimState:PlayAnimation("charge_pre")
 
             -- All users of this SG share this sound.
             inst.SoundEmitter:PlaySound("terraria1/eyeofterror/charge_pre_sfx")
+
+			inst.components.stuckdetection:Reset()
         end,
 
         onupdate = function(inst)
-            local target = inst.sg.statemem.target
-            if not inst.sg.statemem.stopsteering and target and target:IsValid() then
-                inst:ForceFacePoint(target.Transform:GetWorldPosition())
-            end
+			if inst.sg.statemem.steering and inst.sg.statemem.target ~= nil then
+				if inst.sg.statemem.target:IsValid() then
+					inst:ForceFacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
+				else
+					inst.sg.statemem.target = nil
+				end
+			end
         end,
 
         timeline =
         {
             TimeEvent(11 * FRAMES, function(inst)
-                inst.sg.statemem.stopsteering = true
+				--normal: stop tracking early
+				inst.sg.statemem.steering = inst.sg.mem.transformed
             end),
+			TimeEvent(25 * FRAMES, function(inst)
+				--transformed: stop tracking 8 frames b4 dash
+				inst.sg.statemem.steering = false
+			end),
         },
 
         events =
@@ -344,13 +354,38 @@ local states =
             -- All users of this SG share this sound.
             inst.SoundEmitter:PlaySound("terraria1/eyeofterror/charge_pst_sfx")
 
-            inst.sg.statemem.target = target
+			if inst.sg.mem.mouthcharge_count ~= nil and inst.sg.mem.mouthcharge_count > 0 then
+				inst.sg.statemem.mouthcharge = true
+				if target ~= nil and target:IsValid() then
+					inst.sg.statemem.target = inst.components.stuckdetection:IsStuck() and inst.components.combat.target or target
+				else
+					inst.components.combat:TryRetarget()
+					inst.sg.statemem.target = inst.components.combat.target
+				end
+			end
         end,
+
+		onupdate = function(inst)
+			if inst.sg.statemem.steering and inst.sg.statemem.target ~= nil then
+				if inst.sg.statemem.target:IsValid() then
+					inst:ForceFacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
+				else
+					inst.sg.statemem.target = nil
+				end
+			end
+		end,
 
         timeline =
         {
+			TimeEvent(3 * FRAMES, function(inst)
+				inst.sg.statemem.steering = inst.sg.statemem.mouthcharge
+			end),
+			TimeEvent(13 * FRAMES, function(inst)
+				--transformed: stop tracking 4 frames before dash
+				inst.sg.statemem.steering = false
+			end),
             TimeEvent(17*FRAMES, function(inst)
-                if inst.sg.mem.mouthcharge_count ~= nil and inst.sg.mem.mouthcharge_count > 0 then
+				if inst.sg.statemem.mouthcharge then
                     inst.sg:GoToState("mouthcharge_loop", inst.sg.statemem.target)
                 end
             end),
@@ -389,15 +424,6 @@ local states =
             inst.sg:SetTimeout(inst._chargedata.mouthchargetimeout)
             inst.sg.statemem.collisiontime = 0
             inst.sg.statemem.fxtime = 0
-
-            if target == nil or not target:IsValid() then
-                inst.components.combat:TryRetarget()
-                target = inst.components.combat.target
-            end
-            if target ~= nil and target:IsValid() then
-                inst:ForceFacePoint(target.Transform:GetWorldPosition())
-            end
-
             inst.sg.statemem.target = target
         end,
 
@@ -444,15 +470,7 @@ local states =
             inst.sg.mem.mouthcharge_count = (inst.sg.mem.mouthcharge_count == nil and 0)
                 or inst.sg.mem.mouthcharge_count - 1
 
-            local target = inst.sg.statemem.target
-            if target == nil or not target:IsValid() then
-                inst.components.combat:TryRetarget()
-                target = inst.components.combat.target
-            end
-            if target ~= nil and target:IsValid() then
-                inst:ForceFacePoint(target.Transform:GetWorldPosition())
-            end
-            inst.sg:GoToState("charge_pst", target)
+			inst.sg:GoToState("charge_pst", inst.sg.statemem.target)
         end,
     },
 
