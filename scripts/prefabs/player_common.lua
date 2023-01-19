@@ -1784,6 +1784,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         Asset("ANIM", "anim/player_acting.zip"),
 
+        Asset("ANIM", "anim/player_attack_pillows.zip"),
+
         Asset("INV_IMAGE", "skull_"..name),
 
         Asset("SCRIPT", "scripts/prefabs/player_common_extensions.lua"),

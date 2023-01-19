@@ -190,6 +190,10 @@ TimeEvent = Class(
         self.fn = fn
     end)
 
+function FrameEvent(frame, fn)
+	return TimeEvent(frame * FRAMES, fn)
+end
+
 local function Chronological(a, b)
 	return a.time < b.time
 end

@@ -795,6 +795,10 @@ ACTIONS.RUMMAGE.strfn = function(act)
 end
 
 ACTIONS.DROP.fn = function(act)
+    if act.invobject.components.equippable and act.invobject.components.equippable:IsEquipped() and act.invobject.components.inventoryitem.owner then
+        act.invobject.components.equippable:Unequip(act.invobject.components.inventoryitem.owner)
+    end
+
     return act.doer.components.inventory ~= nil
         and act.doer.components.inventory:DropItem(
                 act.invobject,

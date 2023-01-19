@@ -599,7 +599,7 @@ local function onloadpostpass(inst, ents, data)
         inst.components.burnable.onburnt(inst)
     else
         PlaySway(inst)
-        inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+		inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
         queuegifting(inst)
     end

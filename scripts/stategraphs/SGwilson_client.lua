@@ -123,31 +123,31 @@ local actionhandlers =
     ActionHandler(ACTIONS.CHOP,
         function(inst)
             if inst:HasTag("beaver") then
-                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
             end
-            return not inst.sg:HasStateTag("prechop") and "chop_start" or nil
+			return not (inst.sg:HasStateTag("prechop") or inst:HasTag("prechop")) and "chop_start" or nil
         end),
     ActionHandler(ACTIONS.MINE,
         function(inst)
             if inst:HasTag("beaver") then
-                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
             end
-            return not inst.sg:HasStateTag("premine") and "mine_start" or nil
+			return not (inst.sg:HasStateTag("premine") or inst:HasTag("premine")) and "mine_start" or nil
         end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
             if inst:HasTag("beaver") then
-                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
             end
-            return not inst.sg:HasStateTag("prehammer") and "hammer_start" or nil
+			return not (inst.sg:HasStateTag("prehammer") or inst:HasTag("prehammer")) and "hammer_start" or nil
         end),
     ActionHandler(ACTIONS.TERRAFORM, "terraform"),
     ActionHandler(ACTIONS.DIG,
         function(inst)
             if inst:HasTag("beaver") then
-                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+				return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
             end
-            return not inst.sg:HasStateTag("predig") and "dig_start" or nil
+			return not (inst.sg:HasStateTag("predig") or inst:HasTag("predig")) and "dig_start" or nil
         end),
     ActionHandler(ACTIONS.NET,
         function(inst)
@@ -411,6 +411,7 @@ local actionhandlers =
                     or (equip:HasTag("blowdart") and "blowdart")
 					or (equip:HasTag("slingshot") and "slingshot_shoot")
                     or (equip:HasTag("thrown") and "throw")
+                    or (equip:HasTag("pillow") and "attack_pillow_pre")
                     or (equip:HasTag("propweapon") and "attack_prop_pre")
                     or "attack"
             end
@@ -1760,7 +1761,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation(inst.sg.statemem.state == "mighty" and  "dumbbell_mighty_pst" or "dumbbell_normal_pst")
-				inst.AnimState:SetTime(2 * FRAMES)
+				inst.AnimState:SetFrame(2)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -1768,7 +1769,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation(inst.sg.statemem.state == "mighty" and  "dumbbell_mighty_pst" or "dumbbell_normal_pst")
-			inst.AnimState:SetTime(2 * FRAMES)
+			inst.AnimState:SetFrame(2)
             inst.sg:GoToState("idle", true)
         end,
     },
@@ -2599,7 +2600,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("pocket_scale_weigh")
-				inst.AnimState:SetTime(63 * FRAMES)
+				inst.AnimState:SetFrame(63)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -2607,7 +2608,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("pocket_scale_weigh")
-			inst.AnimState:SetTime(63 * FRAMES)
+			inst.AnimState:SetFrame(63)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -2639,7 +2640,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("fan")
-				inst.AnimState:SetTime(91 * FRAMES)
+				inst.AnimState:SetFrame(91)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -2647,7 +2648,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("fan")
-			inst.AnimState:SetTime(91 * FRAMES)
+			inst.AnimState:SetFrame(91)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -2685,7 +2686,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("book")
-				inst.AnimState:SetTime(72 * FRAMES)
+				inst.AnimState:SetFrame(72)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -2693,7 +2694,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("book")
-			inst.AnimState:SetTime(72 * FRAMES)
+			inst.AnimState:SetFrame(72)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -2719,7 +2720,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("book") --better exit than peruse
-				inst.AnimState:SetTime(72 * FRAMES)
+				inst.AnimState:SetFrame(72)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -2727,7 +2728,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("book") --better exit than peruse
-			inst.AnimState:SetTime(72 * FRAMES)
+			inst.AnimState:SetFrame(72)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -2990,14 +2991,14 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
             	inst.AnimState:PlayAnimation("wendy_channel_pst")
-				inst.AnimState:SetTime(45 * FRAMES)
+				inst.AnimState:SetFrame(45)
 				inst.sg:GoToState("idle", true)
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-			inst.AnimState:SetTime(45 * FRAMES)
+			inst.AnimState:SetFrame(45)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -3034,7 +3035,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("wendy_recall_pst")
-				inst.AnimState:SetTime(17 * FRAMES)
+				inst.AnimState:SetFrame(17)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -3042,7 +3043,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("wendy_recall_pst")
-			inst.AnimState:SetTime(17 * FRAMES)
+			inst.AnimState:SetFrame(17)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -3079,7 +3080,7 @@ local states =
                 end
             elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("wendy_commune_pst")
-				inst.AnimState:SetTime(33 * FRAMES)
+				inst.AnimState:SetFrame(33)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -3087,7 +3088,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("wendy_commune_pst")
-			inst.AnimState:SetTime(33 * FRAMES)
+			inst.AnimState:SetFrame(33)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -3278,7 +3279,7 @@ local states =
 
             if inst.sg.laststate == inst.sg.currentstate then
                 inst.sg.statemem.chained = true
-                inst.AnimState:SetTime(3 * FRAMES)
+				inst.AnimState:SetFrame(3)
             end
 
             local buffaction = inst:GetBufferedAction()
@@ -3494,7 +3495,7 @@ local states =
                     cooldown = math.max(cooldown, 19 * FRAMES)
                 end
             elseif equip ~= nil and equip:HasTag("chop_attack") and inst:HasTag("woodcutter") then
-                inst.AnimState:PlayAnimation(inst.AnimState:IsCurrentAnimation("woodie_chop_loop") and inst.AnimState:GetCurrentAnimationTime() < 7.1 * FRAMES and "woodie_chop_atk_pre" or "woodie_chop_pre")
+				inst.AnimState:PlayAnimation(inst.AnimState:IsCurrentAnimation("woodie_chop_loop") and inst.AnimState:GetCurrentAnimationFrame() <= 7 and "woodie_chop_atk_pre" or "woodie_chop_pre")
                 inst.AnimState:PushAnimation("woodie_chop_loop", false)
                 inst.sg.statemem.ischop = true
                 cooldown = math.max(cooldown, 11 * FRAMES)
@@ -3673,6 +3674,36 @@ local states =
     },
 
     State{
+        name = "attack_pillow_pre",
+		tags = { "doing", "busy" },
+		server_states = { "attack_pillow_pre", "attack_pillow" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_pillow_pre")
+            inst.AnimState:PushAnimation("atk_pillow_hold", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State{
         name = "attack_prop_pre",
         tags = { "propattack", "doing", "busy" },
 		server_states = { "attack_prop_pre", "attack_prop" },
@@ -3823,7 +3854,7 @@ local states =
             inst.AnimState:PlayAnimation("dart_pre")
             if inst.sg.laststate == inst.sg.currentstate then
                 inst.sg.statemem.chained = true
-                inst.AnimState:SetTime(5 * FRAMES)
+				inst.AnimState:SetFrame(5)
             end
             inst.AnimState:PushAnimation("dart", false)
 
@@ -4455,7 +4486,7 @@ local states =
                 end
 			elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("pull_big_pst")
-				inst.AnimState:SetTime(10 * FRAMES)
+				inst.AnimState:SetFrame(10)
 				inst.sg:GoToState("idle", true)
             end
         end,
@@ -4463,7 +4494,7 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("pull_big_pst")
-			inst.AnimState:SetTime(10 * FRAMES)
+			inst.AnimState:SetFrame(10)
 			inst.sg:GoToState("idle", true)
         end,
     },
@@ -4689,7 +4720,7 @@ local states =
 				end
 			elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation("flute")
-				inst.AnimState:SetTime(103 * FRAMES)
+				inst.AnimState:SetFrame(103)
 				inst.sg:GoToState("idle", true)
 			end
 		end,
@@ -4697,7 +4728,7 @@ local states =
 		ontimeout = function(inst)
 			inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation("flute")
-			inst.AnimState:SetTime(103 * FRAMES)
+			inst.AnimState:SetFrame(103)
 			inst.sg:GoToState("idle", true)
 		end,
 	},
@@ -4806,7 +4837,7 @@ local states =
 				end
 			elseif inst.bufferedaction == nil then
 				inst.AnimState:PlayAnimation(inst.sg.statemem.equipped and "tophat_equipped_pst" or "tophat_empty_pst")
-				inst.AnimState:SetTime(9 * FRAMES)
+				inst.AnimState:SetFrame(9)
 				inst.sg:GoToState("idle", true)
 			end
 		end,
@@ -4814,7 +4845,7 @@ local states =
 		ontimeout = function(inst)
 			inst:ClearBufferedAction()
 			inst.AnimState:PlayAnimation(inst.sg.statemem.equipped and "tophat_equipped_pst" or "tophat_empty_pst")
-			inst.AnimState:SetTime(9 * FRAMES)
+			inst.AnimState:SetFrame(9)
 			inst.sg:GoToState("idle", true)
 		end,
 	},
