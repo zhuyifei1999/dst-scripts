@@ -132,6 +132,6 @@ CommonStates.AddSleepExStates(states,
 	})
 
 CommonStates.AddHopStates(states, true)
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("SGcritter_puppy", states, events, "idle", actionhandlers)

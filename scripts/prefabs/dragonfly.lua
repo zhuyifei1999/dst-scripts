@@ -494,8 +494,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_damage = { TUNING.DRAGONFLY_DAMAGE, TUNING.DRAGONFLY_FIRE_DAMAGE }
-
     -- Component Definitions
 
     inst:AddComponent("health")

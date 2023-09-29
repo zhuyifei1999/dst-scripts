@@ -295,8 +295,6 @@ local function MakeCookPot(name, common_postinit, master_postinit, assets, prefa
 
         MakeSnowCoveredPristine(inst)
 
-        inst.scrapbook_specialinfo = "CROCKPOT"
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

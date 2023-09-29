@@ -40,8 +40,6 @@ local function fn()
     inst.AnimState:SetBank("moonrock_pieces")
     inst.AnimState:SetBuild("moonrock_pieces")
 
-    inst.scrapbook_anim = "s1"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

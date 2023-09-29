@@ -161,8 +161,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_specialinfo = "BERNIE"
-
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.BERNIE_BIG_HEALTH)
     inst.components.health.nofadeout = true

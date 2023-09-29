@@ -90,7 +90,6 @@ local function MakeRelic(inst)
 	if inst.chair and inst.components.sittable == nil then
 		inst:AddComponent("sittable")
 		inst:AddTag("structure")
-		inst:AddTag("limited_chair")
 	end
 	if inst.chair_shadeling_spawner then
 		inst.OnEntityWake = Chair_OnEntityWake
@@ -135,7 +134,6 @@ local function MakeRubble(inst)
 	if inst.components.sittable ~= nil then
 		inst:RemoveComponent("sittable")
 		inst:RemoveTag("structure")
-		inst:RemoveTag("limited_chair")
 	end
 	if inst.chair_shadeling_spawner then
 		inst.OnEntityWake = nil
@@ -209,9 +207,6 @@ local function makefn(name, asset, animated, smashsound, rubble, chair)
 		inst:AddTag("noauradamage")
 
         inst.displaynamefn = displaynamefn
-        if name ~= "ruins_chair" then
-            inst.scrapbook_proxy = "ruins_chair"
-        end
 
         inst.entity:SetPristine()
 

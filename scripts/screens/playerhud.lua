@@ -21,7 +21,6 @@ local RainDomeOver = require("widgets/raindomeover")
 local Leafcanopy = require "widgets/leafcanopy"
 local MindControlOver = require "widgets/mindcontrolover"
 local InkOver = require "widgets/inkover"
-local WagpunkUI = require "widgets/wagpunkui"
 local GogglesOver = require "widgets/gogglesover"
 local NutrientsOver = require "widgets/nutrientsover"
 local BatOver = require "widgets/batover"
@@ -180,7 +179,6 @@ function PlayerHud:CreateOverlays(owner)
     self.flareover = self.overlayroot:AddChild(FlareOver(owner))
 
     self.InkOver = self.overlayroot:AddChild(InkOver(owner))
-    self.Wagpunkui = self.overlayroot:AddChild(WagpunkUI(owner))    
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}

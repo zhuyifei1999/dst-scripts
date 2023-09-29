@@ -18,7 +18,6 @@ local hotspring_prefabs =
     "moonglass",
     "bluegem",
     "redgem",
-    "bathbomb",
 }
 
 local MINED_GLASS_LOOT_TABLE = {"moonglass", "moonglass", "moonglass", "moonglass", "moonglass"}

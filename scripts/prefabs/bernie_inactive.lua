@@ -257,8 +257,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_specialinfo = "BERNIE"
-
     inst._isdeadstate = nil
     inst._decaytask = nil
     inst._activatetask = nil

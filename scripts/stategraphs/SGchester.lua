@@ -485,7 +485,7 @@ CommonStates.AddSleepStates(states,
 })
 
 CommonStates.AddSimpleState(states, "hit", "hit", {"busy"})
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("chester", states, events, "idle", actionhandlers)
 

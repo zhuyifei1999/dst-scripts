@@ -587,9 +587,6 @@ local function fn()
         inst.components.deployhelper.onenablehelper = OnEnableHelper
     end
 
-    inst.scrapbook_anim = "idle_empty"
-    inst.scrapbook_specialinfo = "WINONABATTERYHIGH"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

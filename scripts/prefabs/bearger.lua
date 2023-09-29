@@ -1,4 +1,4 @@
-local normal_assets =
+local assets =
 {
     Asset("ANIM", "anim/bearger_build.zip"),
     Asset("ANIM", "anim/bearger_basic.zip"),
@@ -7,19 +7,8 @@ local normal_assets =
     Asset("SOUND", "sound/bearger.fsb"),
 }
 
-local mutated_assets =
+local prefabs =
 {
-    Asset("ANIM", "anim/bearger_build.zip"),
-    Asset("ANIM", "anim/bearger_basic.zip"),
-    Asset("ANIM", "anim/bearger_actions.zip"),
-    Asset("ANIM", "anim/bearger_mutated_actions.zip"),
-    Asset("ANIM", "anim/bearger_mutated.zip"),
-    Asset("SOUND", "sound/bearger.fsb"),
-}
-
-local normal_prefabs =
-{
-	"bearger_swipe_fx",
     "groundpound_fx",
     "groundpoundring_fx",
     "bearger_fur",
@@ -27,19 +16,6 @@ local normal_prefabs =
     "meat",
     "chesspiece_bearger_sketch",
     "collapse_small",
-    "beargercorpse",
-}
-
-local mutated_prefabs =
-{
-    "bearger",
-	"bearger_swipe_fx",
-	"groundpound_fx",
-	"groundpoundring_fx",
-	"furtuft",
-	"collapse_small",
-	"spoiled_food",
-	"purebrilliance",
 }
 
 local brain = require("brains/beargerbrain")
@@ -58,16 +34,6 @@ SetSharedLootTable( 'bearger',
     {'chesspiece_bearger_sketch', 1.00},
 })
 
-SetSharedLootTable( 'mutatedbearger',
-{
-	{ "spoiled_food",				1.0 },
-	{ "spoiled_food",				1.0 },
-	{ "spoiled_food",				1.0 },
-	{ "spoiled_food",				0.5 },
-	{ "purebrilliance",				1.0 },
-	{ "purebrilliance",				0.75 },
-})
-
 local TARGET_DIST = 7.5
 
 local function CalcSanityAura(inst, observer)
@@ -82,8 +48,8 @@ local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_INV_MUST_TAGS = { "_combat", "_inventory" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO" }
 
-local function RetargetFn_Normal(inst)
-	return not (inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep())
+local function RetargetFn(inst)
+    return not inst.components.sleeper:IsAsleep()
         and (   FindEntity(
                     inst,
                     TARGET_DIST,
@@ -111,36 +77,27 @@ local function RetargetFn_Normal(inst)
         or nil
 end
 
-local function RetargetFn_Mutated(inst)
-    return FindEntity(
-        inst,
-        TUNING.MUTATED_BEARGER_TARGET_RANGE,
-        function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end,
-        RETARGET_MUST_TAGS,
-        RETARGET_CANT_TAGS
-    )
-end
-
 local function KeepTargetFn(inst, target)
     return inst.components.combat:CanTarget(target)
 end
 
 local function OnSave(inst, data)
     data.seenbase = inst.seenbase or nil-- from brain
-	data.num_food_cherrypicked = inst.num_food_cherrypicked ~= 0 and inst.num_food_cherrypicked or nil
-	data.looted = inst.looted
+    data.cangroundpound = inst.cangroundpound
+    data.num_food_cherrypicked = inst.num_food_cherrypicked
+    data.num_good_food_eaten = inst.num_good_food_eaten
+    data.killedplayer = inst.killedplayer
+    data.shouldgoaway = inst.shouldgoaway
 end
 
 local function OnLoad(inst, data)
     if data ~= nil then
         inst.seenbase = data.seenbase or nil-- for brain
+        inst.cangroundpound = data.cangroundpound
         inst.num_food_cherrypicked = data.num_food_cherrypicked or 0
-		inst.looted = data.looted
-		if inst.looted and inst.components.health:IsDead() then
-			inst.sg:GoToState("corpse")
-		end
+        inst.num_good_food_eaten = data.num_good_food_eaten or 0
+        inst.killedplayer = data.killedplayer or false
+        inst.shouldgoaway = data.shouldgoaway or false
     end
 end
 
@@ -196,7 +153,7 @@ end
 
 local WORKABLES_CANT_TAGS = { "insect", "INLIMBO" }
 local WORKABLES_ONEOF_TAGS = { "CHOP_workable", "DIG_workable", "HAMMER_workable", "MINE_workable" }
-local function WorkEntities(inst) --deprecated
+local function WorkEntities(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local heading_angle = inst.Transform:GetRotation() * DEGREES
     local x1, z1 = math.cos(heading_angle), -math.sin(heading_angle)
@@ -231,12 +188,20 @@ local function OnGroundPound(inst)
 end
 
 local function OnHitOther(inst, data)
-	if inst.sg:HasStateTag("weapontoss") and data.target ~= nil and data.target.components.inventory ~= nil and not data.target:HasTag("stronggrip") then
+    if data.target ~= nil and data.target.components.inventory ~= nil and not data.target:HasTag("stronggrip") then
         local item = data.target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if item ~= nil then
             data.target.components.inventory:DropItem(item)
             LaunchItem(inst, data.target, item)
         end
+    end
+end
+
+local function ontimerdone(inst, data)
+    if data.name == "GroundPound" then
+        inst.cangroundpound = true
+    elseif data.name == "Yawn" and inst:HasTag("hibernation") then
+        inst.canyawn = true
     end
 end
 
@@ -271,6 +236,7 @@ local function OnDroppedTarget(inst, data)
     if data.target ~= nil then
         inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.target)
     end
+    inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
 end
 
 local function OnCombatTarget(inst, data)
@@ -280,7 +246,10 @@ local function OnCombatTarget(inst, data)
     end
     if data.target ~= nil then
         inst.num_food_cherrypicked = TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO - 1
+        inst.components.locomotor.walkspeed = TUNING.BEARGER_ANGRY_WALK_SPEED
         inst:ListenForEvent("dropitem", inst._OnTargetDropItem, data.target)
+    else
+        inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
     end
 end
 
@@ -304,7 +273,7 @@ local function OnRemove(inst)
 end
 
 local function OnPlayerAction(inst, player, data)
-	if data.action == nil or (inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep()) then
+    if data.action == nil or inst.components.sleeper:IsAsleep() then
         return -- don't react to things when asleep
     end
 
@@ -350,24 +319,23 @@ end
 --[[ END PLAYER TRACKING ]]
 
 local function OnWakeUp(inst)
-	inst.components.knownlocations:RememberLocation("spawnpoint", inst:GetPosition())
+    inst.homelocation = inst:GetPosition()
 end
 
 local function OnKilledOther(inst, data)
-	if data ~= nil and inst.components.combat:TargetIs(data.victim) then
-		inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.victim)
-		inst.components.combat:DropTarget()
+    if data ~= nil and data.victim ~= nil then
+        if data.victim:HasTag("player") then
+            inst.killedplayer = true
+        end
+        if data.victim == inst.components.combat.target then
+            inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.victim)
+			inst.components.combat:DropTarget()
+            inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
+        end
     end
 end
 
-local function Mutated_OnDead(inst)
-    inst.components.shedder:StopShedding()
-    if TheWorld ~= nil and TheWorld.components.lunarriftmutationsmanager ~= nil then
-        TheWorld.components.lunarriftmutationsmanager:SetMutationDefeated(inst)
-    end
-end
-
-local function commonfn(build, commonfn)
+local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -379,11 +347,10 @@ local function commonfn(build, commonfn)
     inst.Transform:SetFourFaced()
     inst.DynamicShadow:SetSize(6, 3.5)
 
-	inst:SetPhysicsRadiusOverride(1.5)
-	MakeGiantCharacterPhysics(inst, 1000, inst.physicsradiusoverride)
+    MakeGiantCharacterPhysics(inst, 1000, 1.5)
 
     inst.AnimState:SetBank("bearger")
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBuild(IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and "bearger_yule" or "bearger_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.scrapbook_anim = "idle_loop"
 
@@ -395,10 +362,6 @@ local function commonfn(build, commonfn)
     inst:AddTag("bearger")
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
-
-    if commonfn ~= nil then
-        commonfn(inst)
-    end
 
     inst.entity:SetPristine()
 
@@ -417,13 +380,19 @@ local function commonfn(build, commonfn)
     ------------------
 
     inst:AddComponent("health")
-	inst.components.health.nofadeout = true
+    inst.components.health:SetMaxHealth(TUNING.BEARGER_HEALTH)
+    inst.components.health.destroytime = 5
 
     ------------------
 
     inst:AddComponent("combat")
+    inst.components.combat:SetDefaultDamage(TUNING.BEARGER_DAMAGE)
     inst.components.combat.playerdamagepercent = .5
+    inst.components.combat:SetRange(TUNING.BEARGER_ATTACK_RANGE, TUNING.BEARGER_MELEE_RANGE)
+    inst.components.combat:SetAreaDamage(6, 0.8)
     inst.components.combat.hiteffectsymbol = "bearger_body"
+    inst.components.combat:SetAttackPeriod(TUNING.BEARGER_ATTACK_PERIOD)
+    inst.components.combat:SetRetargetFunction(3, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/bearger/hurt")
 
@@ -440,7 +409,17 @@ local function commonfn(build, commonfn)
 
     ------------------------------------------
 
+    inst.shouldgoaway = false
+    inst:AddComponent("sleeper")
+    inst.components.sleeper:SetResistance(4)
+    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetWakeTest(ShouldWake)
+    inst:ListenForEvent("onwakeup", OnWakeUp)
+
+    ------------------------------------------
+
     inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("bearger")
 
     ------------------------------------------
 
@@ -450,6 +429,8 @@ local function commonfn(build, commonfn)
     ------------------------------------------
 
     inst:AddComponent("knownlocations")
+    inst:AddComponent("thief")
+    inst:AddComponent("inventory")
     inst:AddComponent("groundpounder")
     inst.components.groundpounder.destroyer = true
     inst.components.groundpounder.damageRings = 2
@@ -458,6 +439,9 @@ local function commonfn(build, commonfn)
     inst.components.groundpounder.numRings = 3
     inst.components.groundpounder.groundpoundFn = OnGroundPound
     inst:AddComponent("timer")
+    inst:AddComponent("eater")
+    inst.components.eater:SetDiet({ FOODGROUP.BEARGER }, { FOODGROUP.BEARGER })
+    inst.components.eater.eatwholestack = true
 
     ------------------------------------------
 
@@ -465,8 +449,14 @@ local function commonfn(build, commonfn)
 
     ------------------------------------------
 
+    inst:WatchWorldState("season", OnSeasonChange)
+    OnSeasonChange(inst, TheWorld.state.season)
+
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onhitother", OnHitOther)
+    inst:ListenForEvent("timerdone", ontimerdone)
+    inst:ListenForEvent("death", OnDead)
+    inst:ListenForEvent("onremove", OnRemove)
 
     ------------------------------------------
 
@@ -476,7 +466,26 @@ local function commonfn(build, commonfn)
     SetStandState(inst, "quad")--SetStandState(inst, "BI")
     inst.SetStandState = SetStandState
     inst.IsStandState = IsStandState
-    inst.WorkEntities = WorkEntities --deprecated
+    inst.seenbase = false
+    inst.WorkEntities = WorkEntities
+    inst.cangroundpound = false
+    inst.killedplayer = false
+
+    inst.num_good_food_eaten = 0
+    inst.num_food_cherrypicked = 0
+
+    inst:DoTaskInTime(0, OnWakeUp)
+
+    inst._OnTargetDropItem = function(target, data)
+        if inst.components.eater:CanEat(data.item) then
+            --print("Bearger saw dropped food, losing target")
+            inst.components.combat:SetTarget(nil)
+        end
+    end
+
+    inst:ListenForEvent("killed", OnKilledOther)
+    inst:ListenForEvent("newcombattarget", OnCombatTarget)
+    inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 
     inst.seenbase = nil -- for brain
 
@@ -493,112 +502,20 @@ local function commonfn(build, commonfn)
     inst:SetStateGraph("SGbearger")
     inst:SetBrain(brain)
 
-    return inst
-end
+    --[[ PLAYER TRACKING ]]
 
-local function normalfn()
-    local yule = IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST)
+    inst._activeplayers = {}
+    inst._OnPlayerAction = function(player, data) OnPlayerAction(inst, player, data) end
+    inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(inst, player) end, TheWorld)
+    inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(inst, player) end, TheWorld)
 
-    local inst = commonfn(yule and "bearger_yule" or "bearger_build")
-
-    if not TheWorld.ismastersim then
-        return inst
+    for i, v in ipairs(AllPlayers) do
+        OnPlayerJoined(inst, v)
     end
 
-	inst:AddComponent("thief")
-	inst:AddComponent("inventory")
-	inst:AddComponent("eater")
-	inst.components.eater:SetDiet({ FOODGROUP.BEARGER }, { FOODGROUP.BEARGER })
-	inst.components.eater.eatwholestack = true
-
-    inst.components.health:SetMaxHealth(TUNING.BEARGER_HEALTH)
-
-    inst.components.combat:SetDefaultDamage(TUNING.BEARGER_DAMAGE)
-	inst.components.combat:SetRange(TUNING.BEARGER_ATTACK_RANGE)
-    inst.components.combat:SetAttackPeriod(TUNING.BEARGER_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(3, RetargetFn_Normal)
-
-    inst.components.lootdropper:SetChanceLootTable("bearger")
-
-	inst:AddComponent("sleeper")
-	inst.components.sleeper:SetResistance(4)
-	inst.components.sleeper:SetSleepTest(ShouldSleep)
-	inst.components.sleeper:SetWakeTest(ShouldWake)
-	inst:ListenForEvent("onwakeup", OnWakeUp)
-
-	inst._OnTargetDropItem = function(target, data)
-		if inst.components.eater:CanEat(data.item) then
-			--print("Bearger saw dropped food, losing target")
-			inst.components.combat:SetTarget(nil)
-		end
-	end
-
-    inst:WatchWorldState("season", OnSeasonChange)
-    OnSeasonChange(inst, TheWorld.state.season)
-
-	inst:ListenForEvent("killed", OnKilledOther)
-	inst:ListenForEvent("newcombattarget", OnCombatTarget)
-	inst:ListenForEvent("droppedtarget", OnDroppedTarget)
-    inst:ListenForEvent("death", OnDead)
-    inst:ListenForEvent("onremove", OnRemove)
-
-	--[[ PLAYER TRACKING ]]
-
-	inst.num_food_cherrypicked = 0
-	inst._activeplayers = {}
-	inst._OnPlayerAction = function(player, data) OnPlayerAction(inst, player, data) end
-	inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(inst, player) end, TheWorld)
-	inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(inst, player) end, TheWorld)
-
-	for i, v in ipairs(AllPlayers) do
-		OnPlayerJoined(inst, v)
-	end
-
-	--[[ END PLAYER TRACKING ]]
+    --[[ END PLAYER TRACKING ]]
 
     return inst
 end
 
-local function mutatedcommonfn(inst)
-    inst:AddTag("lunar_aligned")
-
-	inst.AnimState:SetSymbolMultColour("gestalt_ball", 1, 1, 1, 0.6)
-	inst.AnimState:SetSymbolLightOverride("gestalt_ball", 0.1)
-	inst.AnimState:SetSymbolBloom("gestalt_ball")
-
-	inst.AnimState:SetSymbolMultColour("gestalt_embers", 1, 1, 1, 0.6)
-	inst.AnimState:SetSymbolLightOverride("gestalt_embers", 0.1)
-	inst.AnimState:SetSymbolBloom("gestalt_embers")
-end
-
-local function mutatedfn()
-    local inst = commonfn("bearger_mutated", mutatedcommonfn)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-	inst.cancombo = true
-	inst.canbutt = true
-
-    inst.components.health:SetMaxHealth(TUNING.MUTATED_BEARGER_HEALTH)
-
-    inst.components.combat:SetDefaultDamage(TUNING.MUTATED_BEARGER_DAMAGE)
-	inst.components.combat:SetRange(TUNING.MUTATED_BEARGER_ATTACK_RANGE)
-    inst.components.combat:SetAttackPeriod(TUNING.MUTATED_BEARGER_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(3, RetargetFn_Mutated)
-
-	inst:AddComponent("planarentity")
-	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.MUTATED_BEARGER_PLANAR_DAMAGE)
-
-    inst.components.lootdropper:SetChanceLootTable("mutatedbearger")
-
-    inst:ListenForEvent("death", Mutated_OnDead)
-
-    return inst
-end
-
-return
-        Prefab("bearger",         normalfn,   normal_assets,   normal_prefabs),
-        Prefab("mutatedbearger",  mutatedfn,  mutated_assets,  mutated_prefabs )
+return Prefab("bearger", fn, assets, prefabs)

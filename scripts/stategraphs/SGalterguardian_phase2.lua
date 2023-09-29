@@ -844,6 +844,6 @@ CommonStates.AddWalkStates(states,
 
 CommonStates.AddHitState(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "hit"})
+CommonStates.AddSinkAndWashAsoreStates(states, {washashore = "hit"})
 
 return StateGraph("alterguardian_phase2", states, events, "idle", actionhandlers)

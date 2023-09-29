@@ -136,23 +136,9 @@ end)
 -- Public
 ------------------------------------------------------------
 
-function ScrapbookPartitions:RedirectThing(thing) -- NOTES(JBK): Use this wrapper function to redirect an object into a string if available.
-    if EntityScript.is_instance(thing) then
-        return thing.scrapbook_proxy or thing.prefab
-    end
-
-    return thing
-end
-
 
 function ScrapbookPartitions:WasSeenInGame(thing)
     -- If a thing has been seen but not necessarily inspected.
-
-    thing = self:RedirectThing(thing)
-
-    if type(thing) ~= "string" then
-        return false
-    end
 
     local hashed = hash(thing)
     local data = self.storage[hashed]
@@ -162,9 +148,7 @@ end
 function ScrapbookPartitions:SetSeenInGame(thing)
     -- When a thing has been seen but not necessarily inspected.
 
-    thing = self:RedirectThing(thing)
-
-    if not SCRAPBOOK_DATA_SET[thing] then -- This validates the strings only check.
+    if not SCRAPBOOK_DATA_SET[thing] then
         return -- No information on what the thing is.
     end
 
@@ -186,8 +170,6 @@ end
 function ScrapbookPartitions:WasViewedInScrapbook(thing)
     -- If a thing has been clicked on inside the Scrapbook.
 
-    thing = self:RedirectThing(thing)
-
     if type(thing) ~= "string" then
         return false
     end
@@ -202,8 +184,6 @@ function ScrapbookPartitions:WasViewedInScrapbook(thing)
 end
 function ScrapbookPartitions:SetViewedInScrapbook(thing, value)
     -- When a thing has been clicked on inside the Scrapbook.
-
-    thing = self:RedirectThing(thing)
 
     if type(thing) ~= "string" then
         return -- Strings only.
@@ -233,9 +213,7 @@ end
 --
 
 function ScrapbookPartitions:WasInspectedByCharacter(thing, character)
-    -- If a specific character has personally inspected a prefab.
-
-    thing = self:RedirectThing(thing)
+    -- If a specific character has personally inspected a thing.
 
     if type(thing) ~= "string" then
         return false -- Strings only.
@@ -258,11 +236,8 @@ function ScrapbookPartitions:WasInspectedByCharacter(thing, character)
 
     return band(data, charactermask) == charactermask
 end
-
 function ScrapbookPartitions:SetInspectedByCharacter(thing, character)
-    -- If a specific character has personally inspected a prefab.
-
-    thing = self:RedirectThing(thing)
+    -- If a specific character has personally inspected a thing.
 
     if type(thing) ~= "string" then
         return -- Strings only.
@@ -302,12 +277,6 @@ end
 
 
 function ScrapbookPartitions:GetLevelFor(thing)
-    thing = self:RedirectThing(thing)
-
-    if type(thing) ~= "string" then
-        return 0
-    end
-
     local hashed = hash(thing)
     local data = self.storage[hashed]
 
@@ -322,9 +291,7 @@ function ScrapbookPartitions:GetLevelFor(thing)
     return 2 -- If a thing has been seen and inspected once it is level 2.
 end
 
-function ScrapbookPartitions:TryToTeachScrapbookData_Random(numofentries)
-    local learned_something = false
-
+function ScrapbookPartitions:TryToTeachScrapbookData(is_server, inst)
     local unknown = {}
     for prefab, data in pairs(scrapbook_dataset) do
         if self:GetLevelFor(prefab) < 1 then
@@ -332,7 +299,9 @@ function ScrapbookPartitions:TryToTeachScrapbookData_Random(numofentries)
         end
     end
 
-    if #unknown then
+    local learned_something = false
+    if #unknown then 
+        local numofentries = math.random(3, 4)
         while #unknown > 0 and numofentries > 0 do
             local choice = math.random(1, #unknown)
 
@@ -350,51 +319,6 @@ function ScrapbookPartitions:TryToTeachScrapbookData_Random(numofentries)
             end
             table.remove(unknown, choice)
         end
-    end
-
-    return learned_something
-end
-
-function ScrapbookPartitions:TryToTeachScrapbookData_Special(index)
-    local learned_something = false
-
-    local page_data = SPECIAL_SCRAPBOOK_PAGES_LOOKUP[index]
-    if page_data ~= nil then
-        for i, entry in ipairs(page_data.entries) do
-            if self:GetLevelFor(entry) < 1 then
-                learned_something = true
-                self:SetSeenInGame(entry)
-            end
-        end
-    end
-
-    return learned_something
-end
-
-function ScrapbookPartitions:TryToTeachScrapbookData_Note(entry)
-    self:SetInspectedByCharacter(entry, ThePlayer.prefab)
-
-    if ThePlayer.HUD ~= nil then
-        ThePlayer.HUD:OpenScrapbookScreen()
-
-        if ThePlayer.HUD.scrapbookscreen ~= nil then
-            ThePlayer.HUD.scrapbookscreen:SelectEntry(entry)
-        end
-    end
-
-    return true
-end
-
-function ScrapbookPartitions:TryToTeachScrapbookData(is_server, inst)
-    local learned_something = false
-
-    local index = inst._id ~= nil and inst._id:value() or 0
-    if index > 0 then
-        learned_something = self:TryToTeachScrapbookData_Special(index)
-    elseif inst:HasTag("scrapbook_note") then
-        learned_something = self:TryToTeachScrapbookData_Note(inst.prefab)
-    else
-        learned_something = self:TryToTeachScrapbookData_Random(math.random(3, 4))
     end
 
     if not is_server then

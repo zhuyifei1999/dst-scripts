@@ -61,8 +61,6 @@ local function fn()
     inst.AnimState:SetBuild("saltbox")
     inst.AnimState:PlayAnimation("closed")
 
-    inst.scrapbook_anim = "closed"
-
     -- inst.SoundEmitter:PlaySound("dontstarve/common/ice_box_LP", "idlesound")
 
     MakeSnowCoveredPristine(inst)

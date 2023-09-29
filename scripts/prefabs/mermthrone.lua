@@ -108,8 +108,6 @@ local function construction_fn()
     inst.MiniMapEntity:SetIcon("merm_king_carpet_construction.png")
     inst:AddTag("constructionsite")
 
-    inst.scrapbook_specialinfo = "MERMTHRONE"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

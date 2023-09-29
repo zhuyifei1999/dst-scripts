@@ -44,8 +44,6 @@ local function fn()
     inst.AnimState:SetBuild("cave_ferns_potted")
     inst.AnimState:SetRayTestOnBB(true)
 
-    inst.scrapbook_anim = "f1"
-
     inst:AddTag("cavedweller")
 
     inst.entity:SetPristine()

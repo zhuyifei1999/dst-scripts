@@ -33,7 +33,6 @@ local AVAILABLE_TECH =
     "BOOKCRAFT",
 	"LUNARFORGING",
 	"SHADOWFORGING",
-    "CARPENTRY",
 }
 
 -- only these tech trees can have tech bonuses added to them

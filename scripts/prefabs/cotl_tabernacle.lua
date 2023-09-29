@@ -13,14 +13,6 @@ local prefabs =
 	"cotl_tabernacle_level3",
 }
 
-local scrapbook_adddeps =
-{
-    "rocks",
-    "log",
-    "cutstone",
-    "goldnugget",
-}
-
 local data = {
 	{
 		construction_product = "cotl_tabernacle_level2", 
@@ -37,7 +29,6 @@ local data = {
 		},
 		sanity_arua = TUNING.SANITYAURA_TINY,
         disable_charcoal = true,
-        scrapbook_proxy = "cotl_tabernacle_level3",
 	},
 	{
 		construction_product = "cotl_tabernacle_level3", 
@@ -54,7 +45,6 @@ local data = {
 		},
 		sanity_arua = TUNING.SANITYAURA_SMALL_TINY,
         disable_charcoal = true,
-        scrapbook_proxy = "cotl_tabernacle_level3",
 	},
 	{
 		construction_product = nil, 
@@ -71,7 +61,6 @@ local data = {
 		},
 		sanity_arua = TUNING.SANITYAURA_SMALL,
         disable_charcoal = false,
-        scrapbook_proxy = nil,
 	},
 }
 
@@ -231,16 +220,11 @@ local function fn(data)
     MakeObstaclePhysics(inst, 1)
     MakeSnowCoveredPristine(inst)
 
-    inst.scrapbook_proxy = data.scrapbook_proxy
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_anim    = "idle_3"
-    inst.scrapbook_adddeps = scrapbook_adddeps
 
 	inst.data = data
 

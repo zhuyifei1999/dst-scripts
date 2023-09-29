@@ -914,6 +914,8 @@ local function beefalo()
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("HEAT")
 
+    inst.scrapbook_specialinfo = "BEEFALO"
+
     inst.MiniMapEntity:SetIcon("beefalo_domesticated.png")
     inst.MiniMapEntity:SetEnabled(false)
 

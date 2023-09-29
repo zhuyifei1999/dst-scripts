@@ -244,9 +244,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "scrapbook"
-    inst.scrapbook_overridedata = {"horn", "eyeball_turret_base", "horn"}
-
     inst.base = SpawnPrefab("eyeturret_base")
     inst.base.entity:SetParent(inst.entity)
     inst.highlightchildren = { inst.base }

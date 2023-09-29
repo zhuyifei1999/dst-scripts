@@ -6,14 +6,6 @@ local function onison(self, ison)
     end
 end
 
-local function onenabled(self, enabled)
-    if enabled then
-        self.inst:AddTag("enabled")
-    else
-        self.inst:RemoveTag("enabled")
-    end
-end
-
 local function ononcooldown(self, oncooldown)
     if oncooldown then
         self.inst:AddTag("cooldown")
@@ -37,7 +29,6 @@ local Machine = Class(function(self, inst)
     self.ison = false
 	self.cooldowntime = 3
     self.oncooldown = false
-    self.enabled = true
 	--self.groundonly = false
 end,
 nil,
@@ -45,7 +36,6 @@ nil,
     ison = onison,
     oncooldown = ononcooldown,
 	groundonly = ongroundonly,
-	enabled = onenabled,
 })
 
 function Machine:OnRemoveFromEntity()
@@ -89,8 +79,7 @@ function Machine:CanInteract()
         not (self.inst.replica.equippable ~= nil and
             not self.inst.replica.equippable:IsEquipped() and
             self.inst.replica.inventoryitem ~= nil and
-            self.inst.replica.inventoryitem:IsHeld()) and
-        	self.enabled == true
+            self.inst.replica.inventoryitem:IsHeld())
 end
 
 function Machine:TurnOff()

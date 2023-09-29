@@ -123,10 +123,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "idle_flight_loop"
-    inst.scrapbook_animoffsety = 65
-    inst.scrapbook_animpercent = 0.36
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("workable")

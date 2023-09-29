@@ -1257,12 +1257,9 @@ local function makefn(build, stage, data)
             inst.AnimState:OverrideSymbol("swap_leaves", GetBuild(inst).leavesbuild, "swap_leaves")
         end
 
-        inst:SetPrefabName(GetBuild(inst).prefab_name)
-
-        inst.scrapbook_specialinfo = "TREE"
         inst.scrapbook_overridedata={"swap_leaves", "tree_leaf_green_build", "swap_leaves"}
-        inst.scrapbook_proxy = "deciduoustree_tall"
-        inst.scrapbook_speechname = inst.prefab
+
+        inst:SetPrefabName(GetBuild(inst).prefab_name)
 
         MakeSnowCoveredPristine(inst)
 

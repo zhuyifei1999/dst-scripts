@@ -184,8 +184,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_adddeps = { "canary" }
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("lootdropper")

@@ -304,7 +304,6 @@ local function fn()
 	inst.AnimState:SetBuild("scale_o_matic")
 	inst.AnimState:SetBank("scale_o_matic")
 	inst.AnimState:PlayAnimation("nofish_idle")
-	inst.scrapbook_anim = "nofish_idle"
 
 	SetDigits(inst, nil)
 
@@ -314,8 +313,6 @@ local function fn()
 	inst:AddTag("trophyscale_fish")
 
 	MakeSnowCoveredPristine(inst)
-
-	inst.scrapbook_specialinfo = "TROPHYSCALEFISH"
 
 	inst.entity:SetPristine()
 

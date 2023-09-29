@@ -6,7 +6,6 @@ local InventoryItem = Class(function(self, inst)
 
     self._cannotbepickedup = net_bool(inst.GUID, "inventoryitem._cannotbepickedup")
     self._iswet = net_bool(inst.GUID, "inventoryitem._iswet", "iswetdirty")
-    self._isacidsizzling = net_bool(inst.GUID, "inventoryitem._isacidsizzling", "isacidsizzlingdirty")
 
     if TheWorld.ismastersim then
         self.classified = SpawnPrefab("inventoryitem_classified")
@@ -395,17 +394,6 @@ end
 
 function InventoryItem:IsWet()
     return self._iswet:value()
-end
-
-function InventoryItem:SetIsAcidSizzling(isacidsizzling)
-    if isacidsizzling ~= self._isacidsizzling:value() then
-        self._isacidsizzling:set(isacidsizzling)
-        self.inst:PushEvent("acidsizzlingchange", isacidsizzling)
-    end
-end
-
-function InventoryItem:IsAcidSizzling()
-    return self._isacidsizzling:value()
 end
 
 return InventoryItem

@@ -123,13 +123,6 @@ local function OnIsWetDirty(parent)
     end
 end
 
-local function OnIsAcidSizzlingDirty(parent)
-    local inventoryitem = parent.replica.inventoryitem
-    if inventoryitem ~= nil then
-        parent:PushEvent("acidsizzlingchange", inventoryitem:IsAcidSizzling())
-    end
-end
-
 local function RegisterNetListeners(inst)
     inst:ListenForEvent("imagedirty", OnImageDirty)
     inst:ListenForEvent("percentuseddirty", DeserializePercentUsed)
@@ -138,7 +131,6 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("rechargetimedirty", DeserializeRechargeTime)
     inst:ListenForEvent("stacksizedirty", OnStackSizeDirty, inst._parent)
     inst:ListenForEvent("iswetdirty", OnIsWetDirty, inst._parent)
-    inst:ListenForEvent("isacidsizzlingdirty", OnIsAcidSizzlingDirty, inst._parent)
 end
 
 local function fn()

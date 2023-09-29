@@ -677,7 +677,6 @@ local function fn()
 	inst.restartvibrate = net_event(inst.GUID, "daywalker_pillar.restartvibrate")
 
 	inst.OnRemoveEntity = OnRemoveEntity
-	inst.scrapbook_specialinfo = "DAYWALKERPILLAR"
 
 	inst.entity:SetPristine()
 

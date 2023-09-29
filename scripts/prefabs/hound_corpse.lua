@@ -16,8 +16,6 @@ local function SpawnMutatedHound(inst)
 		hound.sg:GoToState("mutated_spawn")
 	end
 
-	inst.components.burnable.fastextinguish = true
-
 	inst.spawn_task = nil
 	inst:RemoveComponent("inspectable")
 	inst:RemoveComponent("burnable")
@@ -48,10 +46,6 @@ local function StartReviving(inst)
     inst:DoTaskInTime(73*FRAMES, play_body_fall)
 
 	inst.spawn_task = inst:DoTaskInTime(104*FRAMES, SpawnMutatedHound)
-
-	inst.components.burnable:SetOnIgniteFn(nil)
-	inst.components.burnable:SetOnExtinguishFn(nil)
-	inst.components.burnable:SetOnBurntFn(nil)
 end
 
 local function ontimerdone(inst, data)
@@ -71,8 +65,17 @@ local function onload(inst, data)
     end
 end
 
-local function onignite(inst)
+local function onignight(inst)
+	DefaultBurnFn(inst)
 	inst.components.timer:StopTimer("revive")
+end
+
+local function onextinguish(inst)
+	DefaultExtinguishFn(inst)
+	if inst.spawn_task == nil then
+		inst.persists = false
+		inst:DoTaskInTime(math.random()*0.5 + 0.5, ErodeAway)
+	end
 end
 
 local function getstatus(inst)
@@ -114,8 +117,12 @@ local function fn()
 	inst.components.timer:StartTimer("revive", TUNING.MUTATEDHOUND_SPAWN_DELAY + math.random())
     inst:ListenForEvent("timerdone", ontimerdone)
 
-	MakeMediumBurnableCorpse(inst, TUNING.MED_BURNTIME, "hound_body", Vector3(30, -70, 0))
-	inst.components.burnable:SetOnIgniteFn(onignite)
+    MakeMediumBurnable(inst, TUNING.MED_BURNTIME, nil, nil, "hound_body")
+    inst.components.burnable:SetOnIgniteFn(onignight)
+    inst.components.burnable:SetOnExtinguishFn(onextinguish)
+
+
+    MakeSmallPropagator(inst)
 
     MakeHauntableIgnite(inst)
 

@@ -267,7 +267,7 @@ CommonStates.AddWalkStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 
 return StateGraph("spiderqueen", states, events, "idle", actionhandlers)

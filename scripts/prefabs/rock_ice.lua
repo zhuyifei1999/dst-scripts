@@ -7,6 +7,8 @@ local rock_ice_assets =
 local prefabs =
 {
     "ice",
+    "rocks",
+    "flint",
     "ice_puddle",
     "ice_splash",
 }
@@ -301,8 +303,6 @@ local function rock_ice_fn()
 
     inst.AnimState:SetBank("ice_boulder")
     inst.AnimState:SetBuild("ice_boulder")
-
-    inst.scrapbook_anim = "full"
 
     MakeObstaclePhysics(inst, 1)
 

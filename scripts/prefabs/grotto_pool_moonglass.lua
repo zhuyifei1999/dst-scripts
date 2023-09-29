@@ -96,8 +96,6 @@ local function mineable_glass(name, anim)
 
         inst:SetPrefabNameOverride("moonglass_rock")
 
-        inst.scrapbook_proxy = "grotto_pool_big"
-
         inst.entity:SetPristine()
         if not TheWorld.ismastersim then
             return inst

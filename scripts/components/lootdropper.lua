@@ -212,12 +212,11 @@ function LootDropper:GenerateLoot()
     return loots
 end
 
-function LootDropper:GetAllPossibleLoot(setuploot)
+function LootDropper:GetAllPossibleLoot()
     local loots = {}
 
-    -- NOTES(DiogoW): We don't want to run lootsetupfn if this function is not called for debugging purposes or for creating scrapbook data.
-    if setuploot and self.lootsetupfn then
-        self:lootsetupfn()
+    if self.lootsetupfn then
+        self.lootsetupfn(self)
     end
 
     if self.randomhauntedloot then

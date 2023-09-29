@@ -1,71 +1,28 @@
-local normal_assets =
+local assets =
 {
     Asset("ANIM", "anim/frog.zip"),
     Asset("SOUND", "sound/frog.fsb"),
 }
 
-local lunar_assets =
-{
-    Asset("ANIM", "anim/froglunar.zip"),
-    Asset("ANIM", "anim/froglunar_build.zip"),
-    Asset("SOUND", "sound/frog.fsb"),
-}
-
-local normal_prefabs =
+local prefabs =
 {
     "froglegs",
     "frogsplash",
 }
 
-local lunar_prefabs =
-{
-    "froglegs",
-}
-
------------------------------------------------------------------------------------------------------------------
-
-local LUNARFROG_SCALE = 1.15
-
 local brain = require "brains/frogbrain"
 
-local NORMAL_SOUNDS = {
-    attack_spit  = "dontstarve/frog/attack_spit",
-    attack_voice = "dontstarve/frog/attack_voice",
-    die          = "dontstarve/frog/die",
-    grunt        = "dontstarve/frog/grunt",
-    walk         = "dontstarve/frog/walk",
-    splat        = "dontstarve/frog/splat",
-    wake         = "dontstarve/frog/wake",
-}
-
-local LUNAR_SOUNDS = {
-    attack_spit  = "rifts3/mutated_frog/attack_spit",
-    attack_voice = "rifts3/mutated_frog/attack_voice",
-    die          = "rifts3/mutated_frog/die",
-    grunt        = "rifts3/mutated_frog/grunt",
-    walk         = "rifts3/mutated_frog/walk",
-    splat        = "rifts3/mutated_frog/splat",
-    wake         = "rifts3/mutated_frog/wake",
-}
-
------------------------------------------------------------------------------------------------------------------
-
-local RETARGET_MUST_TAGS = { "_combat", "_health" }
-local RETARGET_CANT_TAGS = { "merm" }
-local LUNAR_RETARGET_CANT_TAGS = { "lunar_aligned" }
-
+local RESTARGET_MUST_TAGS = {"_combat","_health"}
+local RETARGET_CANT_TAGS = {"merm"}
 local function retargetfn(inst)
     if not inst.components.health:IsDead() and not inst.components.sleeper:IsAsleep() then
-        local target_dist = inst.islunar and TUNING.LUNARFROG_TARGET_DIST or TUNING.FROG_TARGET_DIST
-        local cant_tags   = inst.islunar and LUNAR_RETARGET_CANT_TAGS or RETARGET_CANT_TAGS
-
-        return FindEntity(inst, target_dist, function(guy)
+        return FindEntity(inst, TUNING.FROG_TARGET_DIST, function(guy)
             if not guy.components.health:IsDead() then
                 return guy.components.inventory ~= nil
             end
         end,
-        RETARGET_MUST_TAGS, -- see entityreplica.lua
-        cant_tags
+        RESTARGET_MUST_TAGS, -- see entityreplica.lua
+        RETARGET_CANT_TAGS
         )
     end
 end
@@ -74,9 +31,8 @@ local function ShouldSleep(inst)
     if inst.components.knownlocations:GetLocation("home") ~= nil then
         return false -- frogs either go to their home, or just sit on the ground.
     end
-
-    -- Homeless frogs will sleep at night. Lunar frogs won't sleep during a full moon.
-    return TheWorld.state.isnight and (not inst.islunar or not TheWorld.state.isfullmoon)
+    -- Homeless frogs will sleep at night.
+    return TheWorld.state.isnight
 end
 
 local function OnAttacked(inst, data)
@@ -89,28 +45,10 @@ local function OnGoingHome(inst)
 end
 
 local function OnHitOther(inst, other, damage)
-    if inst.islunar then
-        local n = GetRandomMinMax(TUNING.LUNARFROG_ITEMS_TO_STEAL_MIN, TUNING.LUNARFROG_ITEMS_TO_STEAL_MAX)
-
-        for i=1, n do
-            inst.components.thief:StealItem(other)
-        end
-
-        local grogginess = other.components.grogginess
-
-        -- We don't want to knock out the target.
-        if grogginess ~= nil and
-            (grogginess.grog_amount + TUNING.LUNARFROG_ONATTACK_GROGGINESS) < grogginess:GetResistance()
-        then
-            other.components.grogginess:AddGrogginess(TUNING.LUNARFROG_ONATTACK_GROGGINESS)
-        end
-
-    else
-        inst.components.thief:StealItem(other)
-    end
+    inst.components.thief:StealItem(other)
 end
 
-local function commonfn(build, commonfn)
+local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -125,7 +63,7 @@ local function commonfn(build, commonfn)
     inst.Transform:SetFourFaced()
 
     inst.AnimState:SetBank("frog")
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBuild("frog")
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("animal")
@@ -134,10 +72,6 @@ local function commonfn(build, commonfn)
     inst:AddTag("smallcreature")
     inst:AddTag("frog")
     inst:AddTag("canbetrapped")
-
-    if commonfn ~= nil then
-        commonfn(inst)
-    end
 
     inst.entity:SetPristine()
 
@@ -162,14 +96,20 @@ local function commonfn(build, commonfn)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
 
     inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(TUNING.FROG_HEALTH)
 
     inst:AddComponent("combat")
+    inst.components.combat:SetDefaultDamage(TUNING.FROG_DAMAGE)
+    inst.components.combat:SetAttackPeriod(TUNING.FROG_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(3, retargetfn)
+
     inst.components.combat.onhitotherfn = OnHitOther
 
     inst:AddComponent("thief")
 
     MakeTinyFreezableCharacter(inst, "frogsack")
+
+    MakeHauntablePanic(inst)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({"froglegs"})
@@ -180,60 +120,7 @@ local function commonfn(build, commonfn)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("goinghome", OnGoingHome)
 
-    MakeHauntablePanic(inst)
-
     return inst
 end
 
-local function lunarcommonfn(inst)
-    inst.Transform:SetScale(LUNARFROG_SCALE, LUNARFROG_SCALE, LUNARFROG_SCALE)
-
-    inst:AddTag("lunar_aligned")
-end
-
-local function normalfn()
-    local inst = commonfn("frog")
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.sounds = NORMAL_SOUNDS
-
-    inst.components.health:SetMaxHealth(TUNING.FROG_HEALTH)
-
-    inst.components.combat:SetDefaultDamage(TUNING.FROG_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.FROG_ATTACK_PERIOD)
-
-    return inst
-end
-
-local function lunarfn()
-    local inst = commonfn("froglunar_build", lunarcommonfn)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.sounds = LUNAR_SOUNDS
-
-    inst.islunar = true
-
-    inst:AddComponent("planarentity")
-
-    inst:AddComponent("planardamage")
-    inst.components.planardamage:SetBaseDamage(TUNING.LUNARFROG_PLANAR_DAMAGE)
-
-    inst.components.lootdropper:AddChanceLoot("froglegs", TUNING.LUNARFROG_ADDITIONAL_LOOT_CHANCE)
-
-    inst.components.health:SetMaxHealth(TUNING.LUNARFROG_HEALTH)
-
-    inst.components.combat:SetDefaultDamage(TUNING.LUNARFROG_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.LUNARFROG_ATTACK_PERIOD)
-
-    return inst
-end
-
-return
-        Prefab("frog",      normalfn, normal_assets, normal_prefabs),
-        Prefab("lunarfrog", lunarfn,  lunar_assets,  lunar_prefabs )
+return Prefab("frog", fn, assets, prefabs)

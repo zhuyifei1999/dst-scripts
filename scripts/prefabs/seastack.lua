@@ -119,8 +119,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "1_full"
-
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('seastack')
     inst.components.lootdropper.max_speed = 2

@@ -57,8 +57,6 @@ local function common_fn(anim)
         return inst
     end
 
-    inst.scrapbook_anim = anim
-
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({"rocks"})
     inst.components.lootdropper.numrandomloot = 1

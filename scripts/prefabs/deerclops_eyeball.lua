@@ -18,8 +18,6 @@ local function fn()
 
     MakeInventoryFloatable(inst, "small", 0.2, 0.95)
 
-    inst:AddTag("deerclops_eyeball")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -27,7 +25,7 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
-    inst:AddComponent("tradable")
+
     inst:AddComponent("inventoryitem")
 
     inst:AddComponent("edible")

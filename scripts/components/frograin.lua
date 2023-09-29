@@ -22,8 +22,6 @@ local _frogs = {}
 local _frogcap = 0
 local _spawntime = TUNING.FROG_RAIN_DELAY
 local _updating = false
-local _lunarfrogchance = TUNING.FROG_RAIN_LUNARFROG_CHANCE
-local _lunarriftopen = false
 
 local _chance = TUNING.FROG_RAIN_CHANCE
 local _localfrogs = {
@@ -50,12 +48,8 @@ local function GetSpawnPoint(pt)
     end
 end
 
-local function GetFrogPrefab(spawn_point)
-    return _lunarriftopen and math.random() <= _lunarfrogchance and "lunarfrog" or "frog"
-end
-
 local function SpawnFrog(spawn_point)
-    local frog = SpawnPrefab(GetFrogPrefab(spawn_point))
+    local frog = SpawnPrefab("frog")
     frog.persists = false
     if math.random() < .5 then
         frog.Transform:SetRotation(180)
@@ -100,18 +94,13 @@ local function ToggleUpdate(force)
     if _worldstate.isspring and -- frogs only come out in the spring!
         _worldstate.israining and
         _worldstate.precipitationrate > TUNING.FROG_RAIN_PRECIPITATION and
-        _worldstate.moistureceil > TUNING.FROG_RAIN_MOISTURE
-    then
+        _worldstate.moistureceil > TUNING.FROG_RAIN_MOISTURE then
         if not _updating then
             _updating = true
-            _lunarriftopen = TheWorld.components.riftspawner ~= nil and TheWorld.components.riftspawner:IsLunarPortalActive()
-
             for i, v in ipairs(_activeplayers) do
                 ScheduleSpawn(v, true)
             end
         elseif force then
-            _lunarriftopen = TheWorld.components.riftspawner ~= nil and TheWorld.components.riftspawner:IsLunarPortalActive()
-
             for i, v in ipairs(_activeplayers) do
                 CancelSpawn(v)
                 ScheduleSpawn(v, true)
@@ -252,7 +241,11 @@ end
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    return string.format("Frograin: %d/%d, updating:%s min: %2.2f max:%2.2f", GetTableSize(_frogs), _frogcap, tostring(_updating), _spawntime.min, _spawntime.max)
+    local frog_count = 0
+    for k, v in pairs(_frogs) do
+        frog_count = frog_count + 1
+    end
+    return string.format("Frograin: %d/%d, updating:%s min: %2.2f max:%2.2f", frog_count, _frogcap, tostring(_updating), _spawntime.min, _spawntime.max)
 end
 
 --------------------------------------------------------------------------

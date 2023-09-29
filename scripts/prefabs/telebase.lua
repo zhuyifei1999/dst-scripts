@@ -201,8 +201,6 @@ local function commonfn()
 
     --inst.Transform:SetRotation(45)
 
-    inst.scrapbook_anim = "scrapbook"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

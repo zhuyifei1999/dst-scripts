@@ -95,7 +95,6 @@ local function fn()
     inst.AnimState:SetBank("mole")
     inst.AnimState:SetBuild("mole_build")
     inst.AnimState:PlayAnimation("mound_idle", true)
-    inst.scrapbook_anim = "mound_idle"
     --inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)

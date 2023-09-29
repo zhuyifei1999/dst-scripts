@@ -1,35 +1,16 @@
 require("stategraphs/commonstates")
 
---------------------------------------------------------------------------------------------------------------
-
-local function GoToIdle(inst)
-    inst.sg:GoToState("idle")
-end
-
-local function Remove(inst)
-    inst:Remove()
-end
-
-local SimpleAnimoverHandler = {
-    EventHandler("animover", GoToIdle),
+local actionhandlers =
+{
 }
-
-local RemoveOnAnimoverHandler = {
-    EventHandler("animover", Remove),
-}
-
---------------------------------------------------------------------------------------------------------------
-
-local actionhandlers = {}
 
 local events =
 {
     CommonHandlers.OnLocomote(false, true),
 }
 
---------------------------------------------------------------------------------------------------------------
 
-local states =
+local states=
 {
     State{
         name = "idle",
@@ -40,7 +21,10 @@ local states =
             inst.AnimState:PlayAnimation("idle")
         end,
 
-        events = SimpleAnimoverHandler,
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
     },
 
     State{
@@ -54,12 +38,20 @@ local states =
             inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization")
         end,
 
+        timeline=
+        {
+            --TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/rabbit/hop") end ),
+        },
+
         onexit = function(inst)
             inst.Physics:ClearMotorVelOverride()
             inst.Physics:Stop()
         end,
 
-        events = SimpleAnimoverHandler,
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
     },
 
     State{
@@ -71,99 +63,53 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("infest")
             inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_infest")
-
-            inst.sg.statemem.corpse = inst.components.entitytracker ~= nil and inst.components.entitytracker:GetEntity("corpse") or nil
-			if inst.sg.statemem.corpse == nil then
-				inst.persists = false
-			end
+            inst.persists = false
         end,
 
-        timeline =
+        timeline=
         {
-			FrameEvent(25, function(inst)
-				inst.persists = false
-
-                -- lunarthrall_plant_gestalt handler.
+            TimeEvent(25*FRAMES, function(inst)
                 if inst.plant_target and inst.plant_target:IsValid() then
                     TheWorld.components.lunarthrall_plantspawner:SpawnPlant(inst.plant_target)
-
-                -- corpse_gestalt handler.
-                elseif inst.sg.statemem.corpse ~= nil and inst.sg.statemem.corpse:IsValid() then
-                    inst.sg.statemem.corpse:StartMutation()
-                end
-            end ),
-            FrameEvent(30, function(inst)
-                if inst.sg.statemem.corpse ~= nil and inst.sg.statemem.corpse:IsValid() then
-                    inst:Remove()
                 end
             end ),
         },
 
-		events = RemoveOnAnimoverHandler,
+        events =
+        {
+            EventHandler("animover", function(inst) inst:Remove() end),
+        },
+
+        onexit = function(inst)
+        end,
     },
 
-	State{
-		name = "infest_corpse",
-		tags = { "busy", "noattack" },
-
-		onenter = function(inst)
-			inst.AnimState:SetFinalOffset(3)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("infest_corpse")
-			inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_infest")
-
-			inst.sg.statemem.corpse = inst.components.entitytracker ~= nil and inst.components.entitytracker:GetEntity("corpse") or nil
-			if inst.sg.statemem.corpse == nil then
-				inst.persists = false
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(19, function(inst)
-				inst.persists = false
-
-				-- lunarthrall_plant_gestalt handler.
-				if inst.plant_target and inst.plant_target:IsValid() then
-					TheWorld.components.lunarthrall_plantspawner:SpawnPlant(inst.plant_target)
-
-				-- corpse_gestalt handler.
-				elseif inst.sg.statemem.corpse ~= nil and inst.sg.statemem.corpse:IsValid() then
-					inst.sg.statemem.corpse:StartMutation()
-				end
-			end),
-		},
-
-		events = RemoveOnAnimoverHandler,
-	},
+    
 }
 
---------------------------------------------------------------------------------------------------------------
-
 local function SpawnTrail(inst)
-    if not inst._notrail then
-        local trail = SpawnPrefab("gestalt_trail")
-        trail.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        trail.Transform:SetRotation(inst.Transform:GetRotation())
-    end
+	if not inst._notrail then
+		local trail = SpawnPrefab("gestalt_trail")
+		trail.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		trail.Transform:SetRotation(inst.Transform:GetRotation())
+	end
 end
 
 CommonStates.AddWalkStates(states,
+{
+    starttimeline =
     {
-        starttimeline =
-        {
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization") end),
-        },
-        walktimeline =
-        {
-            TimeEvent(0*FRAMES, SpawnTrail),
-        },
+        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("rifts/lunarthrall/gestalt_vocalization") end),
     },
-    nil,
-    nil,
-    true
-)
+    walktimeline =
+    {
+        TimeEvent(0*FRAMES, SpawnTrail),
+    },
+    endtimeline =
+    {
+    },
+}
+, nil, nil, true)
 
---------------------------------------------------------------------------------------------------------------
 
 return StateGraph("lunarthrall_plant_gestalt", states, events, "idle", actionhandlers)

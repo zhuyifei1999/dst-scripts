@@ -67,8 +67,6 @@ local function fn()
     inst.AnimState:SetBank("static_contained")
     inst.AnimState:PlayAnimation("idle", true)
 
-    inst.scrapbook_specialinfo = "MOONSTORMSTATIC"
-
     inst.DynamicShadow:Enable(true)
     inst.DynamicShadow:SetSize(1, .5)
 

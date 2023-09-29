@@ -7,7 +7,6 @@ local prefabs =
 {
     "moose_nest_fx_idle",
     "moose_nest_fx_hit",
-    "mossling",
 }
 
 local function InitEgg(inst)
@@ -110,15 +109,11 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
-    inst.scrapbook_workable = ACTIONS.HAMMER.id
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_anim = "idle"
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")

@@ -72,7 +72,6 @@ local function fn()
         return inst
     end
 
-	inst.scrapbook_tex = "balloon"
 	inst.balloon_build = "balloon_shapes2"
 
 	BALLOONS.MakeBalloonMasterInit(inst, BALLOONS.DoPop_Floating)

@@ -98,6 +98,6 @@ CommonStates.AddSleepExStates(states,
 		})
 
 CommonStates.AddHopStates(states, true)
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("SGcritter_lamb", states, events, "idle", actionhandlers)

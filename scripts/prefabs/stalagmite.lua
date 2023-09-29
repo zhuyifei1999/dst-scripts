@@ -84,8 +84,6 @@ local function commonfn(anim)
 
     inst:AddTag("boulder")
 
-    inst.scrapbook_anim = "full"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

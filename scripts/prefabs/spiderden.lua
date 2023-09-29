@@ -702,9 +702,6 @@ local function MakeSpiderDenFn(den_level)
 
         inst:SetPrefabName("spiderden")
 
-        inst.scrapbook_anim = "cocoon_large"        
-        inst.scrapbook_hidesymbol = {"bedazzled_flare"}
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
