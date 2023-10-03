@@ -338,8 +338,6 @@ end
 local function complete_fn()
     local inst = common_fn("idle_full")
 
-    inst.scrapbook_specialinfo = "CRAFTINGSTATION"
-
     if not TheWorld.ismastersim then
         return inst
     end

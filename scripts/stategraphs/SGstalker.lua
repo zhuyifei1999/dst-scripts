@@ -1533,6 +1533,6 @@ local states =
     },
 }
 
-CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "taunt2_pst"})
+CommonStates.AddSinkAndWashAsoreStates(states, {washashore = "taunt2_pst"})
 
 return StateGraph("SGstalker", states, events, "idle")

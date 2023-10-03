@@ -43,15 +43,21 @@ local function OnSpawnFor(inst, daywalker, delay)
 end
 
 local function OnFlungFrom(inst, daywalker, speedmult, randomdir)
-	inst.Follower:StopFollowing()
+	--V2C: network timing issues with a follower that just got released
+	--     so safest bet is to replace the entity
+	--inst.Follower:StopFollowing()
+	local replace = SpawnPrefab(inst.prefab)
+	replace.components.health:SetCurrentHealth(inst.components.health.currenthealth)
+	StartTrackingDaywalker(replace, daywalker)
+	inst:Remove()
 
 	local x, y, z = daywalker.Transform:GetWorldPosition()
 	local rot = randomdir and math.random() * 360 or daywalker.Transform:GetRotation() + math.random() * 10 - 5
-	inst.Transform:SetRotation(rot + 180) --flung backwards
+	replace.Transform:SetRotation(rot + 180) --flung backwards
 	rot = rot * DEGREES
 	speedmult = speedmult or 1
-	inst.Physics:Teleport(x + math.cos(rot) * speedmult, y, z - math.sin(rot) * speedmult)
-	inst.sg:GoToState("flung", speedmult)
+	replace.Physics:Teleport(x + math.cos(rot) * speedmult, y, z - math.sin(rot) * speedmult)
+	replace.sg:GoToState("flung", speedmult)
 end
 
 local function OnLoadPostPass(inst)--, ents, data)

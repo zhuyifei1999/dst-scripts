@@ -346,9 +346,6 @@ local function fn()
 	inst.AnimState:SetBank("trophyscale_oversizedveggies")
 	inst.AnimState:PlayAnimation("noveg_idle")
 
-	inst.scrapbook_anim = "noveg_idle"
-	inst.scrapbook_specialinfo = "TROPHYSCALEOVERSIZEDVEGGIES"
-
 	SetDigits(inst, "00000")
 
 	inst:AddTag("structure")

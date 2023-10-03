@@ -632,10 +632,6 @@ local function destroystructure(staff, target)
 		target.components.constructionsite:DropAllMaterials()
 	end
 
-    if target.components.inventoryitemholder ~= nil then
-		target.components.inventoryitemholder:TakeItem()
-	end
-
    	target:PushEvent("ondeconstructstructure", caster)
 
     if target.components.stackable ~= nil then
@@ -904,6 +900,8 @@ local function yellow()
     inst.components.reticule.ease = true
     inst.components.reticule.ispassableatallpoints = true
 
+    inst.scrapbook_specialinfo = "YELLOWSTAFF"
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -937,6 +935,8 @@ end
 local function green()
 	local inst = commonfn("green", { "nopunch" }, true, true)
 
+    inst.scrapbook_specialinfo = "GREENSTAFF"
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -963,6 +963,8 @@ local function orange()
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = blinkstaff_reticuletargetfn
     inst.components.reticule.ease = true
+
+    inst.scrapbook_specialinfo = "ORANGESTAFF"
 
     if not TheWorld.ismastersim then
         return inst
@@ -998,11 +1000,11 @@ local function opal()
     inst.components.reticule.ease = true
     inst.components.reticule.ispassableatallpoints = true
 
+    inst.scrapbook_specialinfo = "OPALSTAFF"
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_adddeps = {"moonbase"}
 
     inst.fxcolour = {64/255, 64/255, 208/255}
     inst.castsound = "dontstarve/common/staffteleport"

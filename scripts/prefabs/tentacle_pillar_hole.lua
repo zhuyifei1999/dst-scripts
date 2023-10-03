@@ -131,9 +131,6 @@ local function fn()
     inst.AnimState:SetBuild("tentacle_pillar")
     inst.AnimState:PlayAnimation("idle_hole")
 
-    inst.scrapbook_anim = "idle_hole"
-    inst.scrapbook_specialinfo = "TENTACLEPILLARHOLE"
-
     inst.no_wet_prefix = true
 
     inst.entity:SetPristine()

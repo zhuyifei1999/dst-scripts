@@ -147,8 +147,6 @@ local function basecrystal_fn(anim_prefix, physics_size)
     inst:AddTag("boulder")
     inst:AddTag("crystal")
 
-    inst.scrapbook_specialinfo = "LUNARRIFTCRYSTAL"
-
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()
@@ -222,7 +220,7 @@ end
 
 local function big_fn()
     local crystal = basecrystal_fn("full", 1.0)
-    crystal.scrapbook_anim = "full"
+
     if not TheWorld.ismastersim then
         return crystal
     end
@@ -256,7 +254,7 @@ end
 local SMALL_LOOT = {"purebrilliance"}
 local function small_fn()
     local crystal = basecrystal_fn("small", 0.25, SMALL_LOOT)
-    crystal.scrapbook_anim = "small"
+
     if not TheWorld.ismastersim then
         return crystal
     end

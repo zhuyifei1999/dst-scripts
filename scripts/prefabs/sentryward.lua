@@ -80,7 +80,6 @@ local function fn()
     inst.AnimState:SetBuild("sentryward")
     inst.AnimState:PlayAnimation("idle_full_loop", true)
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    inst.scrapbook_anim ="idle_full_loop"
 
     inst:AddTag("structure")
 

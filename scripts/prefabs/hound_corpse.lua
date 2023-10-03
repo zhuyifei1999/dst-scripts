@@ -15,14 +15,6 @@ local function SpawnMutatedHound(inst)
 	if not inst:IsAsleep() then
 		hound.sg:GoToState("mutated_spawn")
 	end
-	local warg = inst.components.entitytracker:GetEntity("warg")
-	if warg ~= nil then
-		hound.components.follower:SetLeader(warg)
-		warg:ForgetFollowerCorpse(inst)
-		inst.components.entitytracker:ForgetEntity("warg")
-	end
-
-	inst.components.burnable.fastextinguish = true
 
 	inst.spawn_task = nil
 	inst:RemoveComponent("inspectable")
@@ -54,10 +46,6 @@ local function StartReviving(inst)
     inst:DoTaskInTime(73*FRAMES, play_body_fall)
 
 	inst.spawn_task = inst:DoTaskInTime(104*FRAMES, SpawnMutatedHound)
-
-	inst.components.burnable:SetOnIgniteFn(nil)
-	inst.components.burnable:SetOnExtinguishFn(nil)
-	inst.components.burnable:SetOnBurntFn(nil)
 end
 
 local function ontimerdone(inst, data)
@@ -77,26 +65,23 @@ local function onload(inst, data)
     end
 end
 
-local function onignite(inst)
+local function onignight(inst)
+	DefaultBurnFn(inst)
 	inst.components.timer:StopTimer("revive")
+end
+
+local function onextinguish(inst)
+	DefaultExtinguishFn(inst)
+	if inst.spawn_task == nil then
+		inst.persists = false
+		inst:DoTaskInTime(math.random()*0.5 + 0.5, ErodeAway)
+	end
 end
 
 local function getstatus(inst)
     return inst.spawn_task ~= nil and "REVIVING"
 			or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) and "BURNING"
 			or nil
-end
-
-local function RememberWargLeader(inst, warg)
-	inst.components.entitytracker:TrackEntity("warg", warg)
-	warg:RememberFollowerCorpse(inst)
-end
-
-local function OnLoadPostPass(inst, ents, data)
-	local warg = inst.components.entitytracker:GetEntity("warg")
-	if warg ~= nil then
-		warg:RememberFollowerCorpse(inst)
-	end
 end
 
 local function fn()
@@ -128,19 +113,18 @@ local function fn()
     inst:AddComponent("inspectable")
 	inst.components.inspectable.getstatus = getstatus
 
-	inst:AddComponent("entitytracker")
-
 	inst:AddComponent("timer")
 	inst.components.timer:StartTimer("revive", TUNING.MUTATEDHOUND_SPAWN_DELAY + math.random())
     inst:ListenForEvent("timerdone", ontimerdone)
 
-	MakeMediumBurnableCorpse(inst, TUNING.MED_BURNTIME, "hound_body", Vector3(30, -70, 0))
-	inst.components.burnable:SetOnIgniteFn(onignite)
+    MakeMediumBurnable(inst, TUNING.MED_BURNTIME, nil, nil, "hound_body")
+    inst.components.burnable:SetOnIgniteFn(onignight)
+    inst.components.burnable:SetOnExtinguishFn(onextinguish)
+
+
+    MakeSmallPropagator(inst)
 
     MakeHauntableIgnite(inst)
-
-	inst.RememberWargLeader = RememberWargLeader
-	inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

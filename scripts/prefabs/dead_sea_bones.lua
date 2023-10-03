@@ -64,8 +64,6 @@ local function dead_sea_bones()
     inst.AnimState:SetBuild("fishbones")
     inst.AnimState:PlayAnimation("idle_1")
 
-    inst.scrapbook_anim = "idle_1"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

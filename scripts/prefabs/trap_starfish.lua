@@ -165,7 +165,6 @@ local function trap_starfish()
     inst.AnimState:SetBuild("star_trap")
     inst.AnimState:PlayAnimation("idle", true)
 
-    inst.scrapbook_damage = TUNING.STARFISH_TRAP_DAMAGE
 
     inst:AddTag("trap")
     inst:AddTag("trapdamage")

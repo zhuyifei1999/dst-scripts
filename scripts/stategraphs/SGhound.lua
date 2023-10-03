@@ -352,11 +352,7 @@ local states =
         {
             EventHandler("animover", function(inst)
 				if inst._CanMutateFromCorpse ~= nil and inst:_CanMutateFromCorpse() then
-					local corpse = SpawnPrefab("houndcorpse")
-					corpse.Transform:SetPosition(inst.Transform:GetWorldPosition())
-					if inst.wargleader ~= nil and not inst.wargleader.components.health:IsDead() and inst.wargleader:IsValid() then
-						corpse:RememberWargLeader(inst.wargleader)
-					end
+					SpawnPrefab("houndcorpse").Transform:SetPosition(inst.Transform:GetWorldPosition())
 					inst:Remove()
 				end
             end),

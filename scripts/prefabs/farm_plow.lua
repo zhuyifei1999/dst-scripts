@@ -203,8 +203,6 @@ local function main_fn()
     inst.AnimState:SetBank("farm_plow")
     inst.AnimState:SetBuild("farm_plow")
     inst.AnimState:OverrideSymbol("soil01", "farm_soil", "soil01")
-    inst.scrapbook_anim = "idle_place"
-    inst.scrapbook_specialinfo = "FARMPLOW"
 
     inst:AddTag("scarytoprey")
 

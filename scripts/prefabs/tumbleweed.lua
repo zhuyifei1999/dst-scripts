@@ -427,8 +427,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "idle"
-
     inst:AddComponent("locomotor")
     inst.components.locomotor:SetTriggersCreep(false)
 

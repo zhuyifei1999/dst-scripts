@@ -30,7 +30,6 @@ local prefabs =
     "crabking_chip_med",
     "crabking_chip_low",
     "moon_altar_cosmic",
-    "moon_altar_crown",
     "hermit_cracked_pearl",
     "chesspiece_crabking_sketch",
     "trident_blueprint",
@@ -812,8 +811,6 @@ local function fn()
 
     inst.entity:SetPristine()
 
-    inst.scrapbook_removedeps = { "moon_altar_cosmic" }
-
     inst.spawnchunk = spawnchunk
 
     if not TheNet:IsDedicated() then
@@ -824,9 +821,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_maxhealth = { TUNING.CRABKING_HEALTH, TUNING.CRABKING_HEALTH + (25 * TUNING.CRABKING_HEALTH_BONUS) }
-    inst.scrapbook_damage = 0
 
     ------------------------------------------
 

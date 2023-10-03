@@ -232,8 +232,6 @@ local function deadfn()
 
     MakeSnowCoveredPristine(inst)
 
-    inst.scrapbook_proxy = "alterguardian_phase1"
-
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then
         return inst

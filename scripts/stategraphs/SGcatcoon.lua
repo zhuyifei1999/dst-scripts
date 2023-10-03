@@ -561,6 +561,6 @@ CommonStates.AddSleepStates(states,
 })
 CommonStates.AddFrozenStates(states)
 CommonStates.AddHopStates(states, true, {pre = "walK_pre", loop = "jump_atk", pst = "walk_pst"})
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("catcoon", states, events, "idle", actionhandlers)

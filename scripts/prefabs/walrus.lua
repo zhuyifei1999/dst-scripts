@@ -216,7 +216,6 @@ local function create_little()
     end
 
     inst.soundgroup = "wee_mctusk"
-    inst.scrapbook_damage = 0
 
     inst.components.lootdropper:SetChanceLootTable('walrus_wee_loot')
 

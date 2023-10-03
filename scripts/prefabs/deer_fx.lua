@@ -120,7 +120,7 @@ end
 --------------------------------------------------------------------------
 
 local ICE_CIRCLE_RADIUS = 3
-local NOTAGS = { "playerghost", "INLIMBO", "flight", "invisible" }
+local NOTAGS = { "playerghost", "INLIMBO" }
 for k, v in pairs(FUELTYPE) do
     table.insert(NOTAGS, v.."_fueled")
 end

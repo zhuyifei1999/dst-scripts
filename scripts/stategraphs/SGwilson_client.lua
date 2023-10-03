@@ -413,7 +413,7 @@ local actionhandlers =
                 end
                 local inventoryitem = equip.replica.inventoryitem
                 return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
-                    or (equip:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
+                    or (equip:HasTag("blowdart") and "blowdart")
 					or (equip:HasTag("slingshot") and "slingshot_shoot")
                     or (equip:HasTag("thrown") and "throw")
                     or (equip:HasTag("pillow") and "attack_pillow_pre")
@@ -5215,9 +5215,6 @@ local states =
         end,
     },
 
-	--------------------------------------------------------------------------
-	--Sitting states
-
 	State{
 		name = "start_sitting",
 		tags = { "busy" },
@@ -5225,21 +5222,9 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			local buffaction = inst:GetBufferedAction()
-			local chair = buffaction ~= nil and buffaction.target or nil
-			local ltd
-			if chair ~= nil and chair:IsValid() then
-				inst.Transform:SetRotation(chair.Transform:GetRotation())
-				ltd = chair:HasTag("limited_chair")
-			end
-			if ltd then
-				inst.Transform:SetPredictedNoFaced()
-				inst.AnimState:PlayAnimation("sit_pre_nofaced")
-				inst.AnimState:PushAnimation("sit_lag_nofaced", false)
-			else
-				inst.AnimState:PlayAnimation("sit_pre")
-				inst.AnimState:PushAnimation("sit_lag", false)
-			end
+			inst.Transform:SetPredictedNoFaced()
+			inst.AnimState:PlayAnimation("sit_pre")
+			inst.AnimState:PushAnimation("sit_lag", false)
 			inst:PerformPreviewBufferedAction()
 			inst.sg:SetTimeout(TIMEOUT)
 		end,
@@ -5284,7 +5269,6 @@ local states =
 		onenter = function(inst)
 			inst.entity:SetIsPredictingMovement(false)
 			inst.sg:SetTimeout(TIMEOUT)
-			inst.sg.statemem.rot = inst.Transform:GetRotation()
 		end,
 
 		onupdate = function(inst)
@@ -5307,7 +5291,7 @@ local states =
 			end),
 			EventHandler("locomote", function(inst)
 				if inst.components.locomotor:WantsToMoveForward() then
-					inst.sg:GoToState("stop_sitting", inst.sg.statemem.rot)
+					inst.sg:GoToState("stop_sitting")
 				end
 				return true
 			end),
@@ -5323,13 +5307,10 @@ local states =
 		tags = { "busy" },
 		server_states = { "stop_sitting", "sit_jumpoff" },
 
-		onenter = function(inst, rot)
-			inst.components.playercontroller:RemotePredictOverrideLocomote()
-			if rot ~= nil then
-				inst.Transform:SetRotation(rot)
-			end
+		onenter = function(inst)
 			inst.AnimState:PlayAnimation("sit_off")
 			inst.AnimState:PushAnimation("sit_off_lag", false)
+			inst.components.playercontroller:RemotePredictOverrideLocomote()
 			inst.sg:SetTimeout(TIMEOUT)
 		end,
 
@@ -5352,7 +5333,6 @@ local states =
 			end
 		end,
 	},
-	--------------------------------------------------------------------------
 }
 
 local hop_timelines =

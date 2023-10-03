@@ -100,19 +100,6 @@ local function OnLoad(inst, data)
 	end
 end
 
-local scrapbook_adddeps = {
-	"palmcone_scale",
-	"cave_banana",
-	"treegrowthsolution",
-	"goldnugget",
-	"meat_dried",
-	"bananajuice",
-	"goldenshovel",
-	"shovel",
-	"bananajuice",
-	"blueprint",
-}
-
 local function fn()
     local inst = CreateEntity()
 
@@ -135,8 +122,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-	inst.scrapbook_adddeps = scrapbook_adddeps
 
 	inst:AddComponent("inspectable")
 

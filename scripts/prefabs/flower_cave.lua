@@ -371,10 +371,6 @@ local function single()
     inst.AnimState:SetBank("bulb_plant"..inst.plantname)
     inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
 
-    inst.scrapbook_bank  = "bulb_plant_double"
-    inst.scrapbook_build = "bulb_plant_double"
-    inst.scrapbook_anim  = "idle"
-
     inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
 
     inst.OnSave = onsave_single
@@ -393,8 +389,6 @@ local lightparams_double =
 local function double()
     local inst = commonfn("bulb_plant_double", "bulb_plant_double", lightparams_double)
 
-    inst.scrapbook_proxy = "flower_cave"
-    
     if not TheWorld.ismastersim then
         return inst
     end
@@ -413,8 +407,6 @@ local lightparams_triple =
 
 local function triple()
     local inst = commonfn("bulb_plant_triple", "bulb_plant_triple", lightparams_triple)
-
-    inst.scrapbook_proxy = "flower_cave"
 
     if not TheWorld.ismastersim then
         return inst

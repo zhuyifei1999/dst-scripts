@@ -616,9 +616,6 @@ local function common(moonbeast)
         return inst
     end
 
-    inst.scrapbook_removedeps = { "strawhat", "tophat" }
-    inst.scrapbook_adddeps = { "gargoyle_werepigdeath" }
-
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
@@ -724,11 +721,11 @@ end
 local function normal()
     local inst = common(false)
 
+    inst.scrapbook_removedeps = {"strawhat","tophat"}
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_build = "pig_build"
 
     -- boat hopping setup
     inst.components.locomotor:SetAllowPlatformHopping(true)

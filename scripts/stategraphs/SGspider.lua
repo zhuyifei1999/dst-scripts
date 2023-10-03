@@ -646,6 +646,6 @@ CommonStates.AddSleepStates(states,
 
 CommonStates.AddFrozenStates(states)
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump", pst = "boat_jump_pst"})
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("spider", states, events, "idle", actionhandlers)

@@ -133,6 +133,8 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"wereitem_moose",
 	"leif_idol",
 	"woodie_boards",
+	"woodie_rope",
+	"woodie_papyrus",
 	"woodcarvedhat",
 	"walking_stick",
 
@@ -344,10 +346,6 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"pickaxe_lunarplant",
 	"shovel_lunarplant",
 	"lunarplant_kit",
-
-	"beargerfur_sack",
-	"deerclopseyeball_sentryward_kit",
-	"houndstooth_blowpipe",
 
 	----SHADOW_FORGE----
 	"armor_voidcloth",
@@ -597,7 +595,6 @@ CRAFTING_FILTERS.TOOLS.recipes =
 	"cane",
 	"sewing_kit",
 	"sewing_tape",
-	"wagpunkbits_kit",
 	"miniflare",
 	"megaflare",
 	"wateringcan",
@@ -659,7 +656,6 @@ CRAFTING_FILTERS.PROTOTYPERS.recipes =
 	"researchlab3",
 	"sculptingtable",
 	"turfcraftingstation",
-	"carpentry_station",
 
 	"madscience_lab",
 	"wintersfeastoven",
@@ -740,8 +736,6 @@ CRAFTING_FILTERS.ARMOUR.recipes =
 	"beehat",
 	"armordreadstone",
 	"dreadstonehat",
-	"armorwagpunk",
-	"wagpunkhat",
 }
 
 CRAFTING_FILTERS.CLOTHING.recipes =
@@ -982,7 +976,6 @@ CRAFTING_FILTERS.STRUCTURES.recipes =
 	"researchlab3",
 	"sculptingtable",
 	"turfcraftingstation",
-	"carpentry_station",
 
 	"cookpot",
 	"meatrack",
@@ -1273,19 +1266,6 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"ruinsrelic_table",
 
 	"chesspiece_anchor_sketch",
-
-	"phonograph",
-	"record",
-
-	"wood_chair",
-	"wood_stool",
-	"wood_table_round",
-	"wood_table_square",
-    "decor_centerpiece",
-	"decor_lamp",
-	"decor_flowervase",
-	"decor_pictureframe",
-	"decor_portraitframe",
 }
 
 

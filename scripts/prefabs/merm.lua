@@ -168,12 +168,7 @@ end
 local MERM_TAGS = { "merm" }
 local MERM_IGNORE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "player" }
 local function MermSort(a, b) -- Better than bubble!
-    local ap = a.components.follower:GetLoyaltyPercent()
-    local bp = b.components.follower:GetLoyaltyPercent()
-    if ap == bp then
-        return a.GUID < b.GUID
-    end
-    return ap < bp
+    return a.components.follower:GetLoyaltyPercent() < b.components.follower:GetLoyaltyPercent()
 end
 local function GetOtherMerms(inst, radius, maxcount)
     local x, y, z = inst.Transform:GetWorldPosition()

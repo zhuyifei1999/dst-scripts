@@ -1104,6 +1104,6 @@ CommonStates.AddSleepExStates(states,
 })
 
 CommonStates.AddFrozenStates(states, nil, StopLaughing)
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 
 return StateGraph("SGklaus", states, events, "idle")

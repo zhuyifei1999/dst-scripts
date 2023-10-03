@@ -61,7 +61,6 @@ local function fn()
     inst.AnimState:SetBank("dragonfly_chest")
     inst.AnimState:SetBuild("dragonfly_chest")
     inst.AnimState:PlayAnimation("closed")
-    inst.scrapbook_anim = "closed"
 
     inst:AddTag("structure")
     inst:AddTag("chest")

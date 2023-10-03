@@ -60,17 +60,14 @@ end
 local function Update(inst, dt)
 	local self = inst.components.perishable
     if self ~= nil then
-		dt = self.start_dt or dt or (10 + math.random()*FRAMES*8)
+		dt = self.start_dt or dt
 		self.start_dt = nil
 
-        local additional_decay = 0
 		local modifier = 1
 		local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
         if not owner and inst.components.occupier then
             owner = inst.components.occupier:GetOwner()
         end
-
-        local pos = owner ~= nil and owner:GetPosition() or self.inst:GetPosition()
 
 		if owner then
 			if owner.components.preserver ~= nil then
@@ -92,20 +89,13 @@ local function Update(inst, dt)
 			end
 		else
 			modifier = TUNING.PERISH_GROUND_MULT
-            if TheWorld.state.isacidraining and not IsUnderRainDomeAtXZ(pos.x, pos.z) then
-                local rate = (inst.components.moisture and inst.components.moisture:_GetMoistureRateAssumingRain() or TheWorld.state.precipitationrate)
-                local percent_to_reduce = rate * TUNING.ACIDRAIN_PERISHABLE_ROT_PERCENT * dt
-
-                local perish_time = (self.perishtime and self.perishtime > 0 and self.perishtime or 0)
-                additional_decay = perish_time * percent_to_reduce
-            end
 		end
 
 		if inst:GetIsWet() and not self.ignorewentness then
 			modifier = modifier * TUNING.PERISH_WET_MULT
 		end
 
-		if GetTemperatureAtXZ(pos.x, pos.z) < 0 then
+		if TheWorld.state.temperature < 0 then
 			if inst:HasTag("frozen") and not self.frozenfiremult then
 				modifier = TUNING.PERISH_COLD_FROZEN_MULT
 			else
@@ -117,7 +107,7 @@ local function Update(inst, dt)
 			modifier = modifier * TUNING.PERISH_FROZEN_FIRE_MULT
 		end
 
-		if GetTemperatureAtXZ(pos.x, pos.z) > TUNING.OVERHEAT_TEMP then
+		if TheWorld.state.temperature > TUNING.OVERHEAT_TEMP then
 			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end
 
@@ -126,8 +116,9 @@ local function Update(inst, dt)
 		modifier = modifier * TUNING.PERISH_GLOBAL_MULT
 
 		local old_val = self.perishremainingtime
+		local delta = dt or (10 + math.random()*FRAMES*8)
 		if self.perishremainingtime then
-			self.perishremainingtime = math.min(self.perishtime, self.perishremainingtime - dt * modifier - additional_decay)
+			self.perishremainingtime = math.min(self.perishtime, self.perishremainingtime - delta*modifier)
 	        if math.floor(old_val*100) ~= math.floor(self.perishremainingtime*100) then
 		        inst:PushEvent("perishchange", {percent = self:GetPercent()})
 		    end
@@ -138,7 +129,7 @@ local function Update(inst, dt)
         if inst.components.edible ~= nil and inst.components.edible.temperaturedelta ~= nil and inst.components.edible.temperaturedelta > 0 and not (owner ~= nil and owner:HasTag("nocool")) then
             if owner ~= nil and owner:HasTag("fridge") then
                 inst.components.edible:AddChill(1)
-            elseif GetTemperatureAtXZ(pos.x, pos.z) < TUNING.OVERHEAT_TEMP - 5 then
+            elseif TheWorld.state.temperature < TUNING.OVERHEAT_TEMP - 5 then
                 inst.components.edible:AddChill(.25)
             end
         end

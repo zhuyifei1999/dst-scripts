@@ -337,8 +337,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_closed")
 	inst.AnimState:SetFinalOffset(1)
 
-    inst.scrapbook_anim = "idle_closed"
-
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()

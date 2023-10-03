@@ -128,8 +128,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "hi"
-
     -----------------------
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

@@ -226,8 +226,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_closed",false)
     inst.AnimState:SetFinalOffset(1) --on top of spawned .fx
 
-    inst.scrapbook_anim = "idle_closed"
-
     inst.Light:SetRadius(0)
     inst.Light:SetIntensity(.9)
     inst.Light:SetFalloff(.9)

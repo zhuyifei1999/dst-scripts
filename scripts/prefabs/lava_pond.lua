@@ -161,9 +161,6 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
-    inst.scrapbook_anim = "bubble_lava"
-    inst.scrapbook_specialinfo = "LAVAPOND"
-
     inst.MiniMapEntity:SetIcon("lava_pond.png")
 
     inst:AddTag("lava")
@@ -184,7 +181,6 @@ local function fn()
     inst._musictask = nil
 
     inst.no_wet_prefix = true
-    inst.scrapbook_proxy = "lava_pond_rock"
 
     inst:SetDeployExtraSpacing(2)
 

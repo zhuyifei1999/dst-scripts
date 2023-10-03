@@ -244,9 +244,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "scrapbook"
-    inst.scrapbook_overridedata = {"horn", "eyeball_turret_base", "horn"}
-
     inst.base = SpawnPrefab("eyeturret_base")
     inst.base.entity:SetParent(inst.entity)
     inst.highlightchildren = { inst.base }
@@ -324,11 +321,7 @@ local function basefn()
     return inst
 end
 
-local function PlacerPostInit(inst)
-    inst.AnimState:OverrideSymbol("horn", "eyeball_turret_base", "horn")
-end
-
 return Prefab("eyeturret", fn, assets, prefabs),
     Prefab("eyeturret_item", itemfn, assets, prefabs),
-    MakePlacer("eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place", nil, nil, nil, nil, nil, nil, PlacerPostInit),
+    MakePlacer("eyeturret_item_placer", "eyeball_turret", "eyeball_turret", "idle_place"),
     Prefab("eyeturret_base", basefn, baseassets)

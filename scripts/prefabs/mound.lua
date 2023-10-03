@@ -169,8 +169,6 @@ local function fn()
     inst:AddTag("grave")
 	inst:AddTag("buried")
 
-    inst.scrapbook_anim = "gravedirt"
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

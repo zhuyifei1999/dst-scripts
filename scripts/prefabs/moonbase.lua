@@ -7,7 +7,6 @@ local assets =
 local prefabs =
 {
     "moonrocknugget",
-    "moonrock_pieces",
     "moonhound",
     "moonpig",
     "positronbeam_front",
@@ -613,9 +612,6 @@ local function fn()
 
     inst._music = net_tinybyte(inst.GUID, "moonbase._music", "musicdirty")
 
-    inst:AddComponent("pointofinterest")
-    inst.components.pointofinterest:SetHeight(200)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -623,8 +619,6 @@ local function fn()
 
         return inst
     end
-
-    inst.scrapbook_anim = "full"
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus

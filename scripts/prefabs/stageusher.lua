@@ -204,8 +204,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_hidehealth = true
-
     ----------------------------------------------------------------------------
     inst:AddComponent("burnable")
     inst.components.burnable:SetFXLevel(2)

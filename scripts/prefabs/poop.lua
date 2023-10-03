@@ -80,8 +80,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "idle"
-
     inst.AnimState:PushAnimation("idle", false)
 
     inst:AddComponent("inspectable")

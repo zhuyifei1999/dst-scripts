@@ -330,13 +330,6 @@ local function hauntchancefn(inst)
     end
 end
 
-local scrapbook_adddeps = {
-    "moonglass",
-    "moonglass_charged",
-    "alterguardianhat",
-    "alterguardianhatshard",
-}
-
 local BURN_OFFSET = Vector3(0, 1.5, 0)
 local function fn()
     local inst = CreateEntity()
@@ -378,11 +371,6 @@ local function fn()
 
         return inst
     end
-
-    inst.scrapbook_adddeps = scrapbook_adddeps
-
-    inst.scrapbook_damage = { TUNING.ALTERGUARDIAN_PHASE1_ROLLDAMAGE, TUNING.ALTERGUARDIAN_PHASE3_DAMAGE }
-    inst.scrapbook_maxhealth = TUNING.ALTERGUARDIAN_PHASE1_HEALTH + TUNING.ALTERGUARDIAN_PHASE2_STARTHEALTH + TUNING.ALTERGUARDIAN_PHASE3_STARTHEALTH
 
     --inst._loot_dropped = nil      -- For handling save/loads during death; see SGalterguardian_phase1
 

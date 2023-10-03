@@ -425,8 +425,7 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_damage = { TUNING.ABIGAIL_DAMAGE.day, TUNING.ABIGAIL_DAMAGE.night }
-    inst.scrapbook_ignoreplayerdamagemod = true
+    inst.scrapbook_damage = "15-40"
 
     inst._playerlink = nil
 

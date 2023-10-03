@@ -373,7 +373,6 @@ local function mainfn()
     inst.Light:SetColour(237/255, 237/255, 209/255)
 
     inst.Light:EnableClientModulation(true)
-    inst.scrapbook_specialinfo = "ARCHIVERESONATOR"
 
     inst.widthscale = 1
     inst._endlight = {}
@@ -410,8 +409,6 @@ local function mainfn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.scrapbook_adddeps = { "moon_altar_ward", "moon_altar_icon" }
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus

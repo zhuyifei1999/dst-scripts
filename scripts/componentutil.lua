@@ -1,5 +1,4 @@
 require("components/raindome") --load some global functions defined for this component
-require("components/temperatureoverrider") --load some global functions defined for this component
 
 local GroundTiles = require("worldtiledefs")
 

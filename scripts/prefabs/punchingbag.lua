@@ -194,8 +194,6 @@ local function basefn(build, tags)
         return inst
     end
 
-    inst.scrapbook_hidehealth = true
-
     --
     inst:AddComponent("combat")
 

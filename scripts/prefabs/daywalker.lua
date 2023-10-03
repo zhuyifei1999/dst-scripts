@@ -12,7 +12,6 @@ local prefabs =
 {
 	"shadow_leech",
 	"daywalker_sinkhole",
-	"daywalker_pillar",
 
 	"nightmarefuel",
 	"horrorfuel",
@@ -360,6 +359,7 @@ local function DetachLeech(inst, attachpos, speedmult, randomdir)
 	todetach.Physics:Teleport(x + math.cos(rot) * speedmult, y, z - math.sin(rot) * speedmult)
 	todetach.sg:GoToState("flung", speedmult)]]
 	--V2C: moved to shadow_leech.OnFlungFrom
+	--NOTE: the leech gets replaced with a new spawn
 	todetach:OnFlungFrom(inst, speedmult, randomdir)
 	return true
 end

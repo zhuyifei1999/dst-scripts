@@ -47,9 +47,6 @@ local assets =
 	Asset("IMAGE", "levels/textures/waterfall_noise2.tex"),
 
     Asset("SCRIPT", "scripts/prefabs/rift_portal_defs.lua"),
-
-    Asset("ANIM", "anim/poi_marker.zip"),
-    Asset("ANIM", "anim/poi_stand.zip"),    
 }
 
 

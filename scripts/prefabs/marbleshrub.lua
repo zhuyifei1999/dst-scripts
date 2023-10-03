@@ -178,9 +178,6 @@ local function MakeShrub(name, growthstage)
 			return inst
 		end
 
-		inst.scrapbook_anim = "idle_tall"
-		inst.scrapbook_adddeps = { "marblebean_sapling" }
-
 		inst.shapenumber = 1
 		inst.statedata = statedata[growthstage]
 

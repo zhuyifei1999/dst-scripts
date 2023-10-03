@@ -872,7 +872,7 @@ CommonStates.AddWalkStates(
 
 CommonStates.AddSimpleState(states,"hit", "hit")
 CommonStates.AddFrozenStates(states)
-CommonStates.AddSinkAndWashAshoreStates(states)
+CommonStates.AddSinkAndWashAsoreStates(states)
 CommonStates.AddIpecacPoopState(states)
 
 CommonStates.AddSleepStates(states,

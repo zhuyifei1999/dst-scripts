@@ -297,8 +297,6 @@ local function moonspiderden_fn()
     inst.AnimState:SetBuild("spider_mound_mutated")
     inst.AnimState:PlayAnimation("full")
 
-    inst.scrapbook_anim = "full"
-
     inst.MiniMapEntity:SetIcon("spidermoonden.png")
 
     inst:AddTag("spiderden")

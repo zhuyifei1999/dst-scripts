@@ -25,6 +25,7 @@ local prefabs =
     "eyeofterror_sinkhole",
     "milkywhites",
     "slide_puff",
+    "shieldofterror",
 }
 
 local twinprefabs =
@@ -42,7 +43,6 @@ local twinprefabs =
     "yellowgem",
     "winter_ornament_boss_eyeofterror1",
     "winter_ornament_boss_eyeofterror2",
-    "shieldofterror",
 }
 
 local twinmanagerprefabs =
