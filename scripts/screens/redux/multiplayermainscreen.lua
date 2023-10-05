@@ -36,7 +36,7 @@ local KitcoonPuppet = require "widgets/kitcoonpuppet"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
-local IS_BETA = BRANCH == "staging" --or BRANCH == "dev"
+local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
 local IS_DEV_BUILD = BRANCH == "dev"
 
 local function PlayBannerSound(inst, self, sound)
@@ -344,7 +344,6 @@ local function MakeShadowRiftBanner(self, banner_root, anim)
     anim:SetScale(.667)
 end
 
-
 local function MakeMeta2Banner(self, banner_root, anim)
     anim:GetAnimState():SetBuild("dst_menu_meta2_cotl")
     anim:GetAnimState():SetBank("dst_menu_meta2")
@@ -352,7 +351,18 @@ local function MakeMeta2Banner(self, banner_root, anim)
     anim:SetScale(.667)
 end
 
+local function MakeLunarMutantsBanner(self, banner_root, anim)
+    anim:GetAnimState():SetBuild("dst_menu_rift3_BG")
+    anim:GetAnimState():SetBank("dst_menu_rift3_BG")
+    anim:GetAnimState():PlayAnimation("loop", true)
+    anim:SetScale(.667)
 
+    local anim_front = banner_root:AddChild(UIAnim())
+    anim_front:GetAnimState():SetBuild("dst_menu_rift3")
+    anim_front:GetAnimState():SetBank ("dst_menu_rift3")
+    anim_front:GetAnimState():PlayAnimation("loop", true)
+    anim_front:SetScale(.667)
+end
 
 
 local function MakeDefaultBanner(self, banner_root, anim)
@@ -404,9 +414,8 @@ function MakeBanner(self)
 
 	if IS_BETA then
 		title_str = STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
-        
-        MakeMeta2Banner(self, banner_root, anim)
 
+        MakeLunarMutantsBanner(self, banner_root, anim)
     elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTR) then
         MakeYOTRBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTC) then
@@ -417,8 +426,8 @@ function MakeBanner(self)
 		--MakeDramaBanner(self, banner_root, anim)
         MakeHallowedNightsBanner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
-        MakeMeta2Banner(self, banner_root, anim) -- FIXME(JBK): Comment this when the shadow rift update is done.
-        --MakeCawnivalBanner(self, banner_root, anim) -- FIXME(JBK): Uncomment this when the shadow rift update is done.
+        --MakeMeta2Banner(self, banner_root, anim)
+        MakeCawnivalBanner(self, banner_root, anim)
 	else
 		MakeMeta2Banner(self, banner_root, anim)
         --MakeDramaBanner(self, banner_root, anim)
@@ -642,6 +651,7 @@ function MultiplayerMainScreen:DoInit()
 			on_to_skins_cb = function( filter_info ) self:GotoShop( filter_info ) end,
 			})
 		if self.motd_panel == nil then
+            motd_panel:SetScale(0.84)
 			self.motd_panel = self.fixed_root:AddChild(motd_panel)
 		end
 	else

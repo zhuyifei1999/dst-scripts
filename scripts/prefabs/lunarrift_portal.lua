@@ -264,7 +264,7 @@ end
 
 --------------------------------------------------------------------------------
 local function setmaxminimapstatus(inst)
-    inst.MiniMapEntity:SetCanUseCache(true)
+    inst.MiniMapEntity:SetCanUseCache(false)
     inst.MiniMapEntity:SetDrawOverFogOfWar(true)
     inst.MiniMapEntity:SetPriority(22)
     inst.MiniMapEntity:SetIcon("lunarrift_portal_max.png")
@@ -568,6 +568,10 @@ local function portalfn()
     inst.AnimState:AddOverrideBuild("lunar_rift_portal_small")
     inst.AnimState:PlayAnimation("stage_1_appear")
     inst.AnimState:PushAnimation("stage_1_loop", true)
+
+    inst.scrapbook_anim = "stage_3_loop"
+    inst.scrapbook_nodamage = true
+    inst.scrapbook_specialinfo = "LUNARRIFTPORTAL"
 
     inst.AnimState:SetLightOverride(1)
 
