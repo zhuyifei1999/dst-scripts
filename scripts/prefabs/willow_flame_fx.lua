@@ -251,6 +251,9 @@ end
 local function onloopfrenzy(inst,dt)
     local rate = 10
     inst.Transform:SetRotation(inst.Transform:GetRotation()+(rate*dt))
+    if inst._frenzyparent:IsValid() then
+        inst.Transform:SetPosition(inst._frenzyparent.Transform:GetWorldPosition())
+    end
 end
 
 local function AddFrenzyFX(parent)
@@ -259,7 +262,6 @@ local function AddFrenzyFX(parent)
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
     --[[Non-networked entity]]
-    --inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()
@@ -283,6 +285,8 @@ local function AddFrenzyFX(parent)
 
     inst:AddComponent("updatelooper")
     inst.components.updatelooper:AddOnUpdateFn(onloopfrenzy)
+
+    inst._frenzyparent = parent
     return inst
 end
 
@@ -320,10 +324,10 @@ local function frenzyfn()
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
 
-    inst.entity:SetPristine()    
-
     inst._end = net_bool(inst.GUID, "frenzyfn._end", "enddirty")
     inst._end:set(false)
+
+    inst.entity:SetPristine()    
 
     --Dedicated server does not need the fx
     if not TheNet:IsDedicated() then

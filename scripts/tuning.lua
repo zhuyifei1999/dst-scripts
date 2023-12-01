@@ -7245,7 +7245,7 @@ function Tune(overrides)
         WILLOW_EMBER_LUNAR = 5,
         WILLOW_EMBER_SHADOW = 5,
 
-        WILLOW_FIREFRENZY_DURATION = 5, --seg_time*2,
+        WILLOW_FIREFRENZY_DURATION = seg_time*2,
         WILLOW_FIREFRENZY_MULT = 1.25,
 
         WILLOW_LUNAR_FIRE_TIME = 5,

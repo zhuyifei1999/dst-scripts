@@ -67,13 +67,19 @@ local function GetBurstTargets(player)
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z,  TUNING.FIRE_BURST_RANGE, CREATURES_MUST,CREATURES_CANT,CREATURES_CAN)
 
     for i=#ents,1,-1 do
-        if player.components.combat:IsAlly(ents[i]) or player.components.combat:TargetHasFriendlyLeader(ents[i]) then
+        if not ents[i]:HasTag("canlight") and not ents[i]:HasTag("nolight") and not ents[i]:HasTag("fire")  then
             table.remove(ents,i)
         end
     end
 
     for i=#ents,1,-1 do
-        if not ents[i]:HasTag("hostile") and (ents[i].components.combat.GetTarget and ents[i].components.combat:GetTarget() ~= player or ents[i].components.combat.target ~= player) then
+        if player.replica.combat:IsAlly(ents[i]) or player.replica.combat:TargetHasFriendlyLeader(ents[i]) then
+            table.remove(ents,i)
+        end
+    end
+
+    for i=#ents,1,-1 do
+        if not ents[i]:HasTag("hostile") and (ents[i].replica.combat.GetTarget and ents[i].replica.combat:GetTarget() ~= player or ents[i].components.combat.target ~= player) then
             table.remove(ents,i)
         end
     end 
