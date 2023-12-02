@@ -188,6 +188,10 @@ local function shadowfn()
     inst.components.planardamage:SetBaseDamage(TUNING.WILLOW_LUNAR_FIRE_PLANAR_DAMAGE * 2)
 
 
+    inst:AddComponent("damagetypebonus")
+    inst.components.damagetypebonus:AddBonus("lunar_aligned", inst, TUNING.WILLOW_SHADOW_FIRE_BONUS)        
+
+
     inst:ListenForEvent("animover", function()
         if inst.AnimState:IsCurrentAnimation("anim1") or inst.AnimState:IsCurrentAnimation("anim2") or inst.AnimState:IsCurrentAnimation("anim3") then
             inst:Remove()

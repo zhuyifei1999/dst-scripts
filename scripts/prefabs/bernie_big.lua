@@ -298,37 +298,35 @@ local function OnColourChanged(inst, r, g, b, a)
     end
 end
 
-local function CheckForAllegiances(inst,leader)
+local function CheckForAllegiances(inst, leader)
+    local shadow = leader.components.skilltreeupdater:IsActivated("willow_allegiance_shadow_bernie")
+    local lunar = leader.components.skilltreeupdater:IsActivated("willow_allegiance_lunar_bernie")
 
-    if leader.components.skilltreeupdater:IsActivated("willow_allegiance_shadow_bernie") then
-
-        inst:AddComponent("planarentity")
-        inst:AddComponent("planardamage")
-        inst.components.planardamage:SetBaseDamage(TUNING.BERNIE_PLANAR_DAMAGE)
-        
-        inst:AddComponent("planardefense")
-        inst.components.planardefense:SetBaseDefense(TUNING.BERNIE_PLANAR_DEFENCE)        
-
-        inst.AnimState:SetBuild("bernie_shadow_build")
-
-        inst:AddTag("shadow_aligned")
-        inst.current_allegiance:set(BERNIEALLEGIANCE.SHADOW)
-    elseif leader.components.skilltreeupdater:IsActivated("willow_allegiance_lunar_bernie") then
-        
-        inst:AddComponent("planarentity")
-        inst:AddComponent("planardamage")
-        inst.components.planardamage:SetBaseDamage(TUNING.BERNIE_PLANAR_DAMAGE)
-        
-        inst:AddComponent("planardefense")
-        inst.components.planardefense:SetBaseDefense(TUNING.BERNIE_PLANAR_DEFENCE)
-
-        inst.AnimState:SetBuild("bernie_lunar_build")
-
-        inst.AnimState:SetSymbolBloom("blob_body")
-
-        inst:AddTag("lunar_aligned")
-        inst.current_allegiance:set(BERNIEALLEGIANCE.LUNAR)
+    if not shadow and not lunar then
+        return
     end
+
+    inst.AnimState:SetBuild(shadow and "bernie_shadow_build" or "bernie_lunar_build")
+    inst.AnimState:SetSymbolBloom("blob_body")
+
+    inst:AddTag(shadow and "shadow_aligned" or "lunar_aligned")
+
+    inst.current_allegiance:set(shadow and BERNIEALLEGIANCE.SHADOW or BERNIEALLEGIANCE.LUNAR)
+
+    if inst.components.planarentity == nil then
+        inst:AddComponent("planarentity")
+    end
+
+    if inst.components.planardamage == nil then
+        inst:AddComponent("planardamage")
+    end
+
+    if inst.components.planardefense == nil then
+        inst:AddComponent("planardefense")
+    end
+
+    inst.components.planardamage:SetBaseDamage(TUNING.BERNIE_PLANAR_DAMAGE)
+    inst.components.planardefense:SetBaseDefense(TUNING.BERNIE_PLANAR_DEFENCE)
 end
 
 local function CreateFlameFx(bank,build,anim,override,bloomsymbols)
