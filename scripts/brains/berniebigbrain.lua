@@ -36,21 +36,9 @@ local function SetLeader(self, leader)
             else
                 leader.bigbernies[self.inst] = true
             end
-
-            self.inst:onLeaderChanged(leader)
         end
-        self._leader = leader      
+        self._leader = leader
     end
-end
-
-local function countbigbernies(leader)
-    local count = 0
-    if leader.bigbernies then
-        for bernie,i in pairs(leader.bigbernies)do
-            count = count + 1
-        end
-    end
-    return count
 end
 
 local function ShouldDeactivate(self)
@@ -59,6 +47,7 @@ local function ShouldDeactivate(self)
             return false
         end
 
+        SetLeader(self, nil) --V2C: not redundant, this will clear .bigbernies
     end
 
     local closestleader = nil
@@ -66,8 +55,8 @@ local function ShouldDeactivate(self)
     local rangesq = FIND_LEADER_DIST_SQ
     local x, y, z = self.inst.Transform:GetWorldPosition()
     for i, v in ipairs(AllPlayers) do
-        if v:HasTag("bernieowner") and (v.bigbernies == nil or v.bigbernies[self.inst]) and (v.entity:IsVisible() or (v.sg ~= nil and v.sg.currentstate.name == "quicktele")) then
-            if self.inst.isleadercrazy(self.inst,v) then
+        if v:HasTag("bernieowner") and v.bigbernies == nil and (v.entity:IsVisible() or (v.sg ~= nil and v.sg.currentstate.name == "quicktele")) then
+            if v.components.sanity:IsCrazy() then
                 local distsq = v:GetDistanceSqToPoint(x, y, z)
                 if distsq < (iscrazy and rangesq or FIND_LEADER_DIST_SQ) then
                     iscrazy = true
@@ -84,15 +73,7 @@ local function ShouldDeactivate(self)
         end
     end
 
-    if self._leader ~= closestleader then
-        SetLeader(self, closestleader)
-    end
-
-    if self._leader and
-       (( self._leader.components.skilltreeupdater:IsActivated("willow_allegiance_shadow_bernie") and self.inst.AnimState:GetBuild() ~= "bernie_shadow_build") or 
-       ( self._leader.components.skilltreeupdater:IsActivated("willow_allegiance_lunar_bernie") and self.inst.AnimState:GetBuild() ~= "bernie_lunar_build")) then
-        return true
-    end
+    SetLeader(self, closestleader)
 
     if iscrazy or self.inst.sg:HasStateTag("busy") then
         return false
@@ -103,7 +84,6 @@ local function ShouldDeactivate(self)
             return false
         end
     end
-
     return self.inst:GetTimeAlive() >= MIN_ACTIVE_TIME
 end
 
