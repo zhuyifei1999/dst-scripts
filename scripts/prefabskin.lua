@@ -2047,7 +2047,7 @@ local function cane_do_trail(inst)
     local mounted = owner.components.rider ~= nil and owner.components.rider:IsRiding()
     local map = TheWorld.Map
     local offset = FindValidPositionByFan(
-        math.random() * 2 * PI,
+        math.random() * TWOPI,
         (mounted and 1 or .5) + math.random() * .5,
         4,
         function(offset)
