@@ -253,8 +253,7 @@ end
 local function battlecry(combatcmp, target)
     local strtbl =
         target ~= nil and
-        target.components.inventory ~= nil and
-        target.components.inventory:FindItem(is_meat) ~= nil and
+        HasMeatInInventoryFor(target) and
         "RABBIT_MEAT_BATTLECRY" or
         "RABBIT_BATTLECRY"
     return strtbl, math.random(#STRINGS[strtbl])

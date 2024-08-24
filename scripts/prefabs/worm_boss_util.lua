@@ -43,6 +43,10 @@ local THORN_EASE_THRESHOLD = 0.5
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+local function ShouldDoSpikeDamage(chunk)
+    return chunk.ease == nil or chunk.ease >= THORN_EASE_THRESHOLD
+end
+
 local function Knockback(source, target)
     if target == nil or (target.components.health ~= nil and target.components.health:IsDead()) or target:HasTag("noattack") then
         return
@@ -650,7 +654,7 @@ local function MoveSegmentUnderGround(inst, chunk, test_segment, percent, instan
         end
     end
 
-    if not instant and test_segment.DoThornDamage and (not chunk.ease or chunk.ease < THORN_EASE_THRESHOLD) then
+    if not instant and test_segment.DoThornDamage and ShouldDoSpikeDamage(chunk) then
         test_segment:DoThornDamage()
     end
 
@@ -704,7 +708,7 @@ local function AddSegment(inst, chunk, tail, instant)
     segment.Transform:SetPosition(pf:Get())
     segment.Transform:SetRotation(segment:GetAngleToPoint(chunk.groundpoint_end:Get()))
 
-    if not chunk.ease or chunk.ease < THORN_EASE_THRESHOLD then
+    if ShouldDoSpikeDamage(chunk) then
         segment:DoThornDamage()
     end
 
@@ -1273,6 +1277,7 @@ return {
     Knockback = Knockback,
     MoveSegmentUnderGround = MoveSegmentUnderGround,
     SetCreateChunkTask = SetCreateChunkTask,
+    ShouldDoSpikeDamage = ShouldDoSpikeDamage,
     ShouldMove = ShouldMove,
     SpawnAboveGroundHeadCorpse = SpawnAboveGroundHeadCorpse,
     SpawnDirt = SpawnDirt,
