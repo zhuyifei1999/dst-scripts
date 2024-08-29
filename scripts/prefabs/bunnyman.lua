@@ -350,6 +350,7 @@ local function fn()
     inst:AddTag("pig")
     inst:AddTag("manrabbit")
     inst:AddTag("scarytoprey")
+    inst:AddTag("regular_bunnyman")
 
     inst.AnimState:SetBank("manrabbit")
     inst.AnimState:PlayAnimation("idle_loop", true)

@@ -506,6 +506,10 @@ local function fn() -- FIXME(DiogoW): Can this one be a CLASSIFIED/non-networked
         return inst
     end
 
+    inst.scrapbook_bank  = "worm_boss"
+    inst.scrapbook_build = "worm_boss"
+    inst.scrapbook_anim  = "head_idle_loop"
+
     inst.child_scale = 1
     inst.chunks = {}
     inst.segment_pool = {}
@@ -894,6 +898,9 @@ end
 local function Dirt_OnAttacked(inst)
     if inst.chunk ~= nil and inst.worm.state ~= WORMBOSS_UTILS.STATE.DEAD then
         inst.chunk.hit = 1
+        if inst.chunk.tail then
+            inst.chunk.tail:PushEvent("attacked")
+        end
     end
 end
 
@@ -952,6 +959,8 @@ local function dirtfn()
     inst:SetPrefabNameOverride("worm_boss")
 
     inst:AddComponent("highlightchild")
+
+    inst.scrapbook_proxy = "worm_boss"
 
     inst.entity:SetPristine()
 

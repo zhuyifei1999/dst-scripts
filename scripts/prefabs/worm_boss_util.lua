@@ -276,8 +276,15 @@ local function ShouldMove(inst)
 end
 
 local function TransferCreatureInventory(inst, target)
-    local inst_inv   = inst.components.inventory
+    local inst_inv = inst.components.inventory
+    if inst_inv == nil then
+        return
+    end
+
     local target_inv = target.components.inventory
+    if target_inv == nil then
+        return
+    end
 
     for k in pairs(target_inv.itemslots) do
         local item = target_inv:RemoveItemBySlot(k)
@@ -506,7 +513,10 @@ end
 local WORM_MOVEMENT_BLOCKING_TAGS = { "worm_boss_dirt" }
 
 local function IsPointValid(pt)
-    return TheSim:CountEntities(pt.x, 0, pt.z, 4, WORM_MOVEMENT_BLOCKING_TAGS) <= 0
+    local tile = TheWorld.Map:GetTileAtPoint(pt.x, 0, pt.z)
+
+    -- Bridges are not valid points.
+    return not GROUND_INVISIBLETILES[tile] and TheSim:CountEntities(pt.x, 0, pt.z, 4, WORM_MOVEMENT_BLOCKING_TAGS) <= 0
 end
 
 local function FindOffsetForNewChunk(inst, lastchunk)
