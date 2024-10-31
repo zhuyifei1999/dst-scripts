@@ -112768,12 +112768,12 @@ msgstr "On peut se faire passer pour quelqu'un d'autre !"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.MASK_SAGEHAT
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.MASK_SAGEHAT"
-msgid "Ooooh, they'll never guess it's me!"
+msgid "Ooooh, they'll never guess it's us!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.MASK_TOADYHAT
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.MASK_TOADYHAT"
-msgid "I wanna try this one."
+msgid "We wanna try this one."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.MASK_TREEHAT
@@ -114808,7 +114808,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYER_HOSTED.ME
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYER_HOSTED.ME"
-msgid "Gonna be my own best friend!"
+msgid "Gonna be our own best friend!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.POCKETWATCH_DISMANTLER
