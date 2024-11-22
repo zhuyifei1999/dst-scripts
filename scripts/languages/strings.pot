@@ -6213,6 +6213,16 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL"
 msgid "only_used_by_wendy"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL"
+msgid "only_used_by_walter"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL"
+msgid "only_used_by_walter"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_OUT_OF_AMMO.1
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_OUT_OF_AMMO.1"
 msgid "only_used_by_walter"
@@ -23378,6 +23388,16 @@ msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_SHELTER"
 msgid "What would we do without trees?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL"
+msgid "Uh... just kidding!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL"
+msgid "Uh... just kidding!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_OUT_OF_AMMO.1
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_SLINGHSOT_OUT_OF_AMMO.1"
 msgid "Uh oh... I'm all out of ammo."
@@ -34210,7 +34230,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_STINGER
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_STINGER"
-msgid "I better be careful with these."
+msgid "Better be careful with these."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_THULECITE
@@ -34235,17 +34255,17 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_TENTACLE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_TENTACLE"
-msgid "I think I saw it twitch."
+msgid "I think it twitched."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_BONE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_BONE"
-msgid "Bad to the bone! Hehe, cool."
+msgid "Bad to the bone! Hehe."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_GEMS
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_GEMS"
-msgid "Slingshotting has never been so fancy."
+msgid "Fancy."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_WAGPUNK
@@ -34255,7 +34275,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_SILK
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_SILK"
-msgid "I like the feel of this tape."
+msgid "It's good tape."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_STICKY
@@ -303553,6 +303573,11 @@ msgctxt "STRINGS.NAMES.DUG_GRASS"
 msgid "Grass Tuft"
 msgstr ""
 
+#. STRINGS.NAMES.DUG_GRAVESTONE
+msgctxt "STRINGS.NAMES.DUG_GRAVESTONE"
+msgid "Headstone"
+msgstr ""
+
 #. STRINGS.NAMES.DUG_MARSH_BUSH
 msgctxt "STRINGS.NAMES.DUG_MARSH_BUSH"
 msgid "Spiky Bush"
@@ -318783,6 +318808,11 @@ msgctxt "STRINGS.RECIPE_DESC.WAXWELLJOURNAL"
 msgid "It'll blow your mind."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.WENDY_RECIPE_GRAVESTONE
+msgctxt "STRINGS.RECIPE_DESC.WENDY_RECIPE_GRAVESTONE"
+msgid "No one deserves an unmarked grave."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.WEREITEM_BEAVER
 msgctxt "STRINGS.RECIPE_DESC.WEREITEM_BEAVER"
 msgid "Invokes the curse of the Werebeaver."
@@ -319055,7 +319085,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.WORTOX_NABBAG
 msgctxt "STRINGS.RECIPE_DESC.WORTOX_NABBAG"
-msgid "Takes items off the ground and swings them into your enemies."
+msgid "Stuff it and swing it!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.WORTOX_REVIVER
@@ -324783,11 +324813,6 @@ msgctxt "STRINGS.SKILLTREE.UNLOCKED"
 msgid "PATH UNLOCKED"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_ALLEGIANCE_LOCK_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_ALLEGIANCE_LOCK_1_DESC"
-msgid "Learn 12 skills to unlock."
-msgstr ""
-
 #. STRINGS.SKILLTREE.WALTER.WALTER_ALLEGIANCE_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_ALLEGIANCE_LUNAR_DESC"
 msgid "Learn to craft the Brightshade Husk Rounds. Just damage, for now... More coming soon!"
@@ -324840,7 +324865,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_LOCK_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_LOCK_DESC"
-msgid "Learn 5 Projectile Pro skills to unlock."
+msgid "Learn 4 Projectile Pro and/or Affinity skills to unlock."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_GUNPOWDER_DESC
@@ -324905,7 +324930,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BAND_TENTACLE_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BAND_TENTACLE_DESC"
-msgid "Unlocks a rubber band mod that improves your firing distance."
+msgid "Learn to craft a rubber band mod that improves your firing distance."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BAND_TENTACLE_TITLE
@@ -324915,7 +324940,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_GEMS_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_GEMS_DESC"
-msgid "Unlocks a frame mod that adds a special ammo slot used for an alternate special attack."
+msgid "Learn to craft a frame mod that adds a special ammo slot used for an alternate special attack."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_GEMS_TITLE
@@ -324925,7 +324950,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_WAGPUNK_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_WAGPUNK_DESC"
-msgid "Unlocks a frame mod that expands your ammo slot size and adds an alternate charged attack."
+msgid "Learn to craft a frame mod that expands your ammo slot size and adds an alternate charged attack."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAME_WAGPUNK_TITLE
@@ -324935,7 +324960,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_DESC"
-msgid "Unlocks a handle mod that prevents the Slingshot from slipping out of your hands."
+msgid "Learn to craft a handle mod that prevents the Slingshot from slipping out of your hands."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_TITLE
@@ -324945,7 +324970,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_DESC"
-msgid "Unlocks a handle mod that improves your firing rate."
+msgid "Learn to craft a handle mod that improves your firing rate."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_TITLE
@@ -324955,7 +324980,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_MODDING_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_MODDING_DESC"
-msgid "Unlocks the Slingshot Field Kit and some basic parts for customizing your Slingshot."
+msgid "Learn to craft the Slingshot Field Kit and some basic parts for customizing your Slingshot."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_MODDING_TITLE
@@ -324963,19 +324988,19 @@ msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_MODDING_TITLE"
 msgid "Slingshotsmith"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_1_DESC"
-msgid "Unlocks the first support badge at the Woby Training Station.\nThis badge considerably decreases the loss of sanity when taking damage while riding Woby. It improves based on badge progress."
+#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BASE_DESC
+msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BASE_DESC"
+msgid "Learn to craft the Woby Training Station and unlock the basic version of every training badge."
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_1_TITLE"
-msgid "Support Training I"
+#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BASE_TITLE
+msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BASE_TITLE"
+msgid "Woby Training"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_2_DESC"
-msgid "Unlocks the second support badge at the Woby Training Station.\nThis badge greatly decreases the loss of sanity when taking damage while riding Woby."
+msgid "Unlocks the second support badge at the Woby Training Station.\nThis badge greatly decreases the loss of sanity when taking damage while riding Woby. It gets improved based on badge progress."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_2_TITLE
@@ -324995,7 +325020,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_2_DESC"
-msgid "Unlocks the second digging badge at the Woby Training Station.\nHaving the second level of this badge decreases the time between excavations."
+msgid "Unlocks the second digging badge at the Woby Training Station.\nThis badge teaches Woby how to dig to find items.\nDecreases the time between excavations."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_2_TITLE
@@ -325003,19 +325028,9 @@ msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_2_TITLE"
 msgid "Digging Training II"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_1_DESC"
-msgid "Unlocks the first fetching badge at the Woby Training Station.\nThis badge teaches Woby how assist you in picking up items. The chance of a successful fetch increases with badge progress."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_1_TITLE"
-msgid "Fetching Training I"
-msgstr ""
-
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_2_DESC"
-msgid "Unlocks the second fetching badge at the Woby Training Station.\nHaving the second level of this badge decreases fetching cooldown and increases the range."
+msgid "Unlocks the second fetching badge at the Woby Training Station.\nThis badge teaches Woby how assist you in picking up items. Fetch success increases with badge progress."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_2_TITLE
@@ -325023,19 +325038,9 @@ msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_FETCHING_2_TITLE"
 msgid "Fetching Training II"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_1_DESC"
-msgid "Unlocks the first bravery badge at the Woby Training Station.\nThis badge considerably increases the damage you can take before Woby knocks you off. It improves based on badge progress."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_1_TITLE"
-msgid "Bravery Training I"
-msgstr ""
-
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_2_DESC"
-msgid "Unlocks the second bravery badge at the Woby Training Station.\nThis badge greatly increases the damage you can take before Woby knocks you off."
+msgid "Unlocks the second bravery badge at the Woby Training Station.\nThis badge greatly increases the damage you can take before Woby knocks you off. It gets improved based on badge progress."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_2_TITLE
@@ -325043,19 +325048,9 @@ msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_RESISTANCE_2_TITLE"
 msgid "Bravery Training II"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_1_DESC"
-msgid "Unlocks the first agility badge at the Woby Training Station.\nThis badge considerably increases Woby's speed. It improves based on badge progress."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_1_TITLE"
-msgid "Agility Training I"
-msgstr ""
-
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_2_DESC"
-msgid "Unlocks the second agility badge at the Woby Training Station.\nThis badge greatly increases Woby's speed."
+msgid "Unlocks the second agility badge at the Woby Training Station.\nThis badge greatly increases Woby's speed. It gets improved based on badge progress."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_SPEED_2_TITLE
@@ -325355,7 +325350,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_DESC"
-msgid "Wendy can adorn graves with flowers inviting the spirits living there to come out and visit."
+msgid "Wendy can adorn graves with flowers inviting the spirits living there to come out and visit.\nGraveyard spirits often promote dark gardens."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_TITLE
@@ -327260,7 +327255,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_SHADOW_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_SHADOW_DESC"
-msgid "The Queen will reward your loyalty by unlocking power from wielding a Shadow Reaper. Souls waiting to be freed in a Soul Echo will cause damage dealt to spread out to close enemies, and expire the timer."
+msgid "The Queen will reward your loyalty by unlocking power from wielding a Shadow Reaper. Souls waiting to be freed in a Soul Echo will cause damage dealt to spread out to close enemies or hit one target twice, and expire the timer."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_SHADOW_TITLE
@@ -327300,7 +327295,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_2_DESC"
-msgid "Your Sanity gains from reviving others is increased."
+msgid "Your ghostly friends will no longer suffer health penalties when you revive them with a Twintailed Heart."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_LIFEBRINGER_2_TITLE
@@ -331771,6 +331766,46 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder"
 msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy"
+msgid "The stone reads: \"RIP V. Winkle.\""
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy2
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy2"
+msgid "The stone reads: \"RIP V. Winkle.\""
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy3
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy3"
+msgid "The stone reads: \"RIP V. Winkle.\""
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy4
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy4"
+msgid "The stone reads: \"RIP V. Winkle.\""
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic"
+msgid "Add these stones to create a grave atmosphere."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic2
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic2"
+msgid "Add these stones to create a grave atmosphere."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic3
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic3"
+msgid "Add these stones to create a grave atmosphere."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic4
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_gothic4"
+msgid "Add these stones to create a grave atmosphere."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.earmuffshat_beeguard
@@ -348541,6 +348576,46 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.dragonling_wyvern_builder
 msgctxt "STRINGS.SKIN_NAMES.dragonling_wyvern_builder"
 msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_fantasy
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy"
+msgid "Sleepy Headstone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_fantasy2
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy2"
+msgid "Sleepy Headstone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_fantasy3
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy3"
+msgid "Sleepy Headstone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_fantasy4
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy4"
+msgid "Sleepy Headstone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_gothic
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_gothic"
+msgid "Gothic Gravestone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_gothic2
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_gothic2"
+msgid "Gothic Gravestone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_gothic3
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_gothic3"
+msgid "Gothic Gravestone"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_gravestone_gothic4
+msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_gothic4"
+msgid "Gothic Gravestone"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.earmuffshat_beeguard
