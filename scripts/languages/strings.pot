@@ -418,6 +418,11 @@ msgctxt "STRINGS.ACTIONS.CASTAOE.LAVAARENA_LUCY"
 msgid "Chuck Lucy"
 msgstr ""
 
+#. STRINGS.ACTIONS.CASTAOE.SLINGSHOT2EX
+msgctxt "STRINGS.ACTIONS.CASTAOE.SLINGSHOT2EX"
+msgid "Shoot"
+msgstr ""
+
 #. STRINGS.ACTIONS.CASTAOE.SPEAR_GUNGNIR
 msgctxt "STRINGS.ACTIONS.CASTAOE.SPEAR_GUNGNIR"
 msgid "Pyre Poker"
@@ -243630,12 +243635,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_EMPTY_NAUGHTY.2
 msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_EMPTY_NAUGHTY.2"
-msgid "I'm starved for some scrumptious souls."
+msgid "I'm starved for some delicious souls!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_EMPTY_NAUGHTY.3
 msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_EMPTY_NAUGHTY.3"
-msgid "MUST EAT TASTY SOULS!"
+msgid "I yearn for those tasty treats!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_EMPTY_NICE.1
@@ -243665,7 +243670,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_FEW_NAUGHTY.1
 msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_FEW_NAUGHTY.1"
-msgid "I've got a hankering for a few yummy souls."
+msgid "My collection is running low."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_SOUL_FEW_NAUGHTY.2
@@ -317288,6 +317293,11 @@ msgctxt "STRINGS.RECIPE_DESC.PETALS"
 msgid "Purify your petals."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.PETALS_EVIL
+msgctxt "STRINGS.RECIPE_DESC.PETALS_EVIL"
+msgid "Stain your petals."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.PHONOGRAPH
 msgctxt "STRINGS.RECIPE_DESC.PHONOGRAPH"
 msgid "Sit back, relax, and listen to the soundtrack of your nightmares."
@@ -325420,7 +325430,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_DESC"
-msgid "Evil flowers hold no fear for Wendy.\nShe can purify Dark Petals into regular petals."
+msgid "Evil flowers hold no fear for Wendy.\nShe can stain Petals into Dark Petals and purify Dark Petals."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_TITLE
@@ -325480,7 +325490,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_2_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_2_DESC"
-msgid "Wendy can craft an elixir infused with shadow magic that increases Abigail's Vex duration."
+msgid "Wendy can craft an elixir infused with shadow magic that increases Abigail's Vex damage."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_2_TITLE
@@ -325490,7 +325500,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_3_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_3_DESC"
-msgid "Dark Magic is released whenever Wendy uses the Murder action that creates a burst of Planar damage when it hits Abigail."
+msgid "Dark Magic is released whenever Wendy uses the Murder action filling Abigail with more power for a short time."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_3_TITLE
@@ -327245,7 +327255,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_LUNAR_DESC"
-msgid "The Cryptic Founder will reward your curiosity by showing you power from wearing a Brightshade Helm or Armor. Souls waiting to be freed in a Soul Echo will absorb the damage from Shadow Aligned enemies, and expire the timer."
+msgid "The Cryptic Founder will reward your curiosity by showing you power from wearing a Brightshade Helm or Brightshade Armor. Souls waiting to be freed in a Soul Echo will absorb incoming damage, and expire the timer."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_ALLEGIANCE_LUNAR_TITLE
@@ -327335,7 +327345,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_LIFTEDSPIRITS_3_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_LIFTEDSPIRITS_3_DESC"
-msgid "Soul Echo may happen a second time.\nThis does not decrease Soul Hop costs from the Map."
+msgid "Soul Echo will happen a second time.\nThis does not decrease Soul Hop costs from the Map."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_LIFTEDSPIRITS_3_TITLE
@@ -327355,7 +327365,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_NABBAG_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_NABBAG_DESC"
-msgid "You've hung around Krampus enough to create a Knabsack for your own item stealing desires. Packs a punch depending on how full your inventory is. Pure Brilliance and Horror add Planar Damage."
+msgid "You've hung around Krampus enough to create a Knabsack for your own item stealing desires. Packs a punch depending on how full your inventory is."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_NABBAG_TITLE
@@ -327425,7 +327435,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_3_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_3_DESC"
-msgid "Soul Decoys will now explode and inflict damage on things lured by it or attacking you upon expiration.\nA held Knabsack will lend part of its damage to the damage dealt."
+msgid "Soul Decoys will now explode and inflict damage on things lured by it or attacking you upon expiration."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_3_TITLE
@@ -327445,7 +327455,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_2_DESC"
-msgid "Holding filled Soul Jars increases your maximum Souls allowed to be held at once by 2 each, stopping you from overloading of Soul power.\nThis works up to 5 filled Soul Jars."
+msgid "Holding Soul Jars increases your maximum Souls allowed to be held at once by 5 each, stopping you from overloading of Soul power."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_2_TITLE
@@ -327455,7 +327465,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_3_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_3_DESC"
-msgid "Holding filled Soul Jars increases the damage of the Knabsack.\nThis works up to 5 filled Soul Jars."
+msgid "Held Souls and Souls inside of Soul Jars increases both the damage of the Knabsack and the damage of Souls, up to 100 total Souls collected."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULJAR_3_TITLE
@@ -327525,7 +327535,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_THIEF_3_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_THIEF_3_DESC"
-msgid "Souls attracted to you will hurt other creatures with Souls along its path.\nA held Knabsack will lend part of its damage to the damage dealt."
+msgid "Souls attracted to you will hurt other creatures with Souls along its path."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_THIEF_3_TITLE
