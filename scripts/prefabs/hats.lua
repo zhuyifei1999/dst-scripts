@@ -4761,7 +4761,7 @@ local function MakeHat(name)
             return inst
         end
 
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
         inst.components.equippable:SetOnEquip(fns.ghostflower_onequip)
         inst.components.equippable:SetOnUnequip(fns.ghostflower_onunequip)
 

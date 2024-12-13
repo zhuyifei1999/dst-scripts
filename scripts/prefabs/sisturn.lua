@@ -86,12 +86,42 @@ local function on_built(inst, data)
 	end
 end
 
+local function getsisturnfeel(inst)
+	local evil = inst.components.container:FindItems(
+	function(item)
+	if item.prefab == "petals_evil" then 
+			return true 
+		end 
+	end)
+
+
+	local blossom = inst.components.container:FindItems(
+	function(item)
+	if item.prefab == "moon_tree_blossom" then 
+			return true 
+		end 
+	end)	
+
+	if #evil > 3 then
+		return "EVIL"
+	elseif #blossom > 3 then
+		return "BLOSSOM"
+	else
+		return "NORMAL"
+	end
+end
+
 local function update_sanityaura(inst)
 	if IsFullOfFlowers(inst) then
 		if not inst.components.sanityaura then
 			inst:AddComponent("sanityaura")
 		end
-		inst.components.sanityaura.aura = inst._sanityaura_size or TUNING.SANITYAURA_SMALL
+		if getsisturnfeel(inst) == "EVIL" then
+			inst.components.sanityaura.aura = (inst._sanityaura_size or TUNING.SANITYAURA_SMALL) *-1			
+		else			
+			inst.components.sanityaura.aura = inst._sanityaura_size or TUNING.SANITYAURA_SMALL			
+		end
+
 	elseif inst.components.sanityaura ~= nil then
 		inst:RemoveComponent("sanityaura")
 	end
@@ -113,12 +143,24 @@ local function update_idle_anim(inst)
 	end
 end
 
+local function update_abigail_status(inst)
+   local is_full = IsFullOfFlowers(inst)
+   local blossoms = getsisturnfeel(inst) == "BLOSSOM"
+   if is_full and blossoms then
+   		TheWorld:PushEvent("moon_blossom_sisturn",{status=true})
+   else
+   		TheWorld:PushEvent("moon_blossom_sisturn",{status=nil})
+   end
+end
+
 local function remove_decor(inst, data)
     if data ~= nil and data.slot ~= nil and FLOWER_LAYERS[data.slot] then
 		inst.AnimState:Hide(FLOWER_LAYERS[data.slot])
     end
 	update_sanityaura(inst)
 	update_idle_anim(inst)
+	update_abigail_status(inst)
+
 	TheWorld:PushEvent("ms_updatesisturnstate", {inst = inst, is_active = IsFullOfFlowers(inst)})
 end
 
@@ -128,13 +170,21 @@ local function add_decor(inst, data)
     end
 	update_sanityaura(inst)
 	update_idle_anim(inst)
+	update_abigail_status(inst)
 
 	local is_full = IsFullOfFlowers(inst)
 	TheWorld:PushEvent("ms_updatesisturnstate", {inst = inst, is_active = is_full})
 
 	local doer = (is_full and inst.components.container ~= nil and inst.components.container.currentuser) or nil
 	if doer ~= nil and doer.components.talker ~= nil and doer:HasTag("ghostlyfriend") then
-		doer.components.talker:Say(GetString(doer, "ANNOUNCE_SISTURN_FULL"), nil, nil, true)
+
+		if getsisturnfeel(inst) == "EVIL" then
+			doer.components.talker:Say(GetString(doer, "ANNOUNCE_SISTURN_FULL_EVIL"), nil, nil, true)
+		elseif getsisturnfeel(inst) == "BLOSSOM" then
+			doer.components.talker:Say(GetString(doer, "ANNOUNCE_SISTURN_FULL_BLOSSOM"), nil, nil, true)
+		else
+			doer.components.talker:Say(GetString(doer, "ANNOUNCE_SISTURN_FULL"), nil, nil, true)
+		end
 	end
 end
 
@@ -142,7 +192,9 @@ local function getstatus(inst)
 	local container = inst.components.container
 	local num_decor = (container ~= nil and container:NumItems()) or 0
 	local num_slots = (container ~= nil and container.numslots) or 1
-	return num_decor >= num_slots and "LOTS_OF_FLOWERS"
+	return num_decor >= num_slots and  getsisturnfeel(inst) == "EVIL" and "LOTS_OF_FLOWERS_EVIL"
+			or num_decor >= num_slots and  getsisturnfeel(inst) == "BLOSSOM" and "LOTS_OF_FLOWERS_BLOSSOM"
+			or num_decor >= num_slots and "LOTS_OF_FLOWERS"	
 			or num_decor > 0 and "SOME_FLOWERS"
 			or nil
 end
@@ -172,7 +224,7 @@ local function OnLoad(inst, data)
 		end
 	end
 end
-
+--[[
 local function updatefn(inst, comp, dt)
 
 	if not inst.update_timer then
@@ -193,7 +245,7 @@ local function updatefn(inst, comp, dt)
 		end
 	end
 end
-
+]]
 local function fn()
     local inst = CreateEntity()
 
@@ -237,8 +289,8 @@ local function fn()
 
     --
 
-    inst:AddComponent("ghostbabysitter")
-    inst.components.ghostbabysitter.updatefn = updatefn
+    --inst:AddComponent("ghostbabysitter")
+    --inst.components.ghostbabysitter.updatefn = updatefn
 
 	--
 	inst:AddComponent("preserver")
@@ -262,6 +314,8 @@ local function fn()
     inst:ListenForEvent("itemget", add_decor)
     inst:ListenForEvent("itemlose", remove_decor)
     inst:ListenForEvent("onbuilt", on_built)
+
+	inst.getsisturnfeel = getsisturnfeel
 
 	--
 	if not TheWorld.components.sisturnregistry then

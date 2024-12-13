@@ -945,10 +945,10 @@ end
 
 local tails =
 {
-	["tail_5_2"] = .15,
-	["tail_5_3"] = .15,
-	["tail_5_4"] = .2,
-	["tail_5_5"] = .8,
+	["tail_5_2"] = 0.15,
+	["tail_5_3"] = 0.15,
+	["tail_5_4"] = 0.2,
+	["tail_5_5"] = 0.8,
 	["tail_5_6"] = 1,
 	["tail_5_7"] = 1,
 }
@@ -956,7 +956,7 @@ local tails =
 local thintails =
 {
 	["tail_5_8"] = 1,
-	["tail_5_9"] = .5,
+	["tail_5_9"] = 0.5,
 }
 
 local function CreateTail(thintail)
@@ -975,18 +975,48 @@ local function CreateTail(thintail)
 	inst.AnimState:SetBuild("slingshot_streaks")
 	inst.AnimState:PlayAnimation(weighted_random_choice(thintail and thintails or tails))
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-	if not thintail then
-		inst.AnimState:SetAddColour(1, 1, 0, 0)
+	if thintail then
+		inst.AnimState:SetMultColour(1, 1, 1, 0.6)
 	end
+
+	inst.AnimState:SetSaturation(0)
+	--[[if color then
+		inst.AnimState:SetHue(color.h or 0)
+		inst.AnimState:SetSaturation(color.s or 1)
+		inst.AnimState:SetBrightness(color.v or 1)
+		inst.AnimState:SetLightOverride(color.lo or 0)
+	end]]
 
 	inst:ListenForEvent("animover", inst.Remove)
 
 	return inst
 end
 
-local function OnUpdateSkillshot(inst)
+--runs on client as well
+local function OnUpdateProjectileTail(inst)
+	--can go invalid from projectile onupdate on server.
 	if not inst:IsValid() then
 		return
+	elseif inst.checkhightail then --mounted adjustment
+		inst.checkhightail = nil
+
+		if inst.AnimState:IsCurrentAnimation(inst.ammo_def.spinloopmounted or "spin_loop_mount") then
+			inst.thintailcount = inst.thintailcount - 1
+			inst.taildelay2 = inst.AnimState:GetCurrentAnimationNumFrames() - 2
+			inst.taildelay1 = math.min(4, inst.taildelay2)
+
+			local ff = math.max(0, inst.AnimState:GetCurrentAnimationFrame() - (TheWorld.ismastersim and 1 or 2))
+			if ff > 0 then
+				inst.taildelay2 = inst.taildelay2 > ff and inst.taildelay2 - ff or nil
+				if inst.taildelay1 > ff then
+					inst.taildelay1 = inst.taildelay1 - ff
+				else
+					--subtract remainder of fastforward frames off thintailcount
+					inst.thintailcount = math.max(0, inst.thintailcount - (ff - inst.taildelay1))
+					inst.taildelay1 = nil
+				end
+			end
+		end
 	end
 
 	if inst.taildelay1 == nil then
@@ -1010,8 +1040,17 @@ local function OnUpdateSkillshot(inst)
 		inst.taildelay1 = inst.taildelay1 > 1 and inst.taildelay1 - 1 or nil
 		inst.taildelay2 = inst.taildelay2 > 1 and inst.taildelay2 - 1 or nil
 	end
+end
 
-	if inst.components.projectile.owner == nil then
+local function OnHasTail(inst)
+	inst.thintailcount = math.random(2, 4)
+	inst.checkhightail = true
+	inst.components.updatelooper:AddOnUpdateFn(OnUpdateProjectileTail)
+end
+
+local function OnUpdateSkillshot(inst)
+	--can go invalid from projectile onupdate. (doesn't get immediately cancelled onremove like tasks do.)
+	if not (inst.components.projectile.owner and inst:IsValid()) then
         return
     end
 
@@ -1048,21 +1087,12 @@ local function OnThrown(inst, owner, target, attacker)
     end
 
     inst._attacker = attacker
-
     inst.components.projectile:SetHitDist(.7)
-
-	inst.thintailcount = math.random(2, 4)
-    inst:AddComponent("updatelooper")
     inst.components.updatelooper:AddOnUpdateFn(OnUpdateSkillshot)
 end
 
 local function SetHighProjectile(inst)
 	inst.AnimState:PlayAnimation(inst.ammo_def.spinloopmounted or "spin_loop_mount")
-	if inst.thintailcount then
-		inst.thintailcount = inst.thintailcount - 1
-		inst.taildelay2 = inst.AnimState:GetCurrentAnimationNumFrames() - 2
-		inst.taildelay1 = math.min(4, inst.taildelay2)
-	end
 	inst.AnimState:PushAnimation(inst.ammo_def.spinloop or "spin_loop")
 end
 
@@ -1079,10 +1109,21 @@ local function SetChargedMultiplier(inst, mult)
 	end
 
 	inst.components.projectile:SetSpeed(inst.components.projectile.speed * speedmult)
+
+	inst.hastail:set(true)
+	if not TheNet:IsDedicated() then
+		OnHasTail(inst)
+	end
 end
 
 local function SetMagicAmplified(inst)
-	inst.magicamplified = true
+	if inst.ammo_def.canmagicamp then
+		inst.magicamplified = true
+		inst.hastail:set(true)
+		if not TheNet:IsDedicated() then
+			OnHasTail(inst)
+		end
+	end
 end
 
 local function projectile_fn(ammo_def)
@@ -1122,9 +1163,17 @@ local function projectile_fn(ammo_def)
 		ammo_def.proj_common_postinit(inst)
 	end
 
+	inst.hastail = net_bool(inst.GUID, ammo_def.name.."_proj.hastail", "hastaildirty")
+
+	inst:AddComponent("updatelooper")
+
+	inst.ammo_def = ammo_def
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+		inst:ListenForEvent("hastaildirty", OnHasTail)
+
         return inst
     end
 
@@ -1134,8 +1183,6 @@ local function projectile_fn(ammo_def)
 	inst.SetVoidBonus = ammo_def.setvoidbonus
 
     inst.persists = false
-
-	inst.ammo_def = ammo_def
 
 	if ammo_def.planar then
 		inst:AddComponent("planardamage")
@@ -1273,18 +1320,21 @@ local ammo =
 		name = "slingshotammo_rock",
 		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_ROCKS,
 		elemental = true,
+		--tailcolor = { s = 0 },
 	},
     {
         name = "slingshotammo_gold",
 		symbol = "gold",
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_GOLD,
 		elemental = true,
+		--tailcolor = { h = 0.09 },
     },
 	{
 		name = "slingshotammo_marble",
 		symbol = "marble",
 		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_MARBLE,
 		elemental = true,
+		--tailcolor = { s = 0 },
 	},
 	{
 		name = "slingshotammo_thulecite", -- chance to spawn a Shadow Tentacle
@@ -1292,6 +1342,8 @@ local ammo =
 		onhit = OnHit_Thulecite,
 		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_THULECITE,
 		elemental = true,
+		--tailcolor = { h = 0.03, s = 0.8 },
+		canmagicamp = true,
 	},
 	{
 		name = "slingshotammo_honey",
@@ -1299,6 +1351,7 @@ local ammo =
 		onhit = OnHit_Honey,
 		damage = nil,
 		skill = "walter_slingshot_ammo_honey",
+		--tailcolor = { h = 0.07 },
 	},
     {
         name = "slingshotammo_freeze",
@@ -1310,6 +1363,8 @@ local ammo =
         damage = nil,
 		elemental = true,
 		prefabs = { "shatter", "slingshot_aoe_fx" },
+		--tailcolor = { h = 0.55, s = 0.4, v = 0.8 },
+		canmagicamp = true,
     },
     {
         name = "slingshotammo_slow",
@@ -1318,6 +1373,8 @@ local ammo =
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_SLOW,
 		elemental = true,
 		prefabs = { "slingshot_aoe_fx", "slingshotammo_slow_debuff_fx" },
+		--tailcolor = { h = -0.2, s = 0.6, v = 0.5 },
+		canmagicamp = true,
     },
     {
         name = "slingshotammo_poop", -- distraction (drop target, note: hostile creatures will probably retarget you very shortly after)
@@ -1325,6 +1382,7 @@ local ammo =
         onhit = OnHit_Distraction,
         damage = nil,
 		fuelvalue = TUNING.MED_FUEL / 10, -- 1/10th the value of using poop
+		--tailcolor = { h = 0.05, s = 0.8, v = 0.58 },
     },
     {
         name = "slingshotammo_moonglass",
@@ -1332,8 +1390,8 @@ local ammo =
         onhit = OnHit_MoonGlass,
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_MOONGLASS,
 		skill = "walter_slingshot_ammo_moonglass",
+		--tailcolor = { h = 0.2, s = 0.6 },
     },
-
     {
         name = "slingshotammo_dreadstone",
 		symbol = "dreadstone",
@@ -1347,6 +1405,7 @@ local ammo =
 		setvoidbonus = SetVoidBonus_Dreadstone,
 		skill = "walter_slingshot_ammo_dreadstone",
 		elemental = true,
+		--tailcolor = { s = 0, v = 0.1 },
     },
     {
         name = "slingshotammo_gunpowder",
@@ -1357,6 +1416,7 @@ local ammo =
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_GUNPOWDER,
 		skill = "walter_slingshot_ammo_gunpowder",
 		prefabs = { "slingshotammo_gunpowder_explode" },
+		--tailcolor = { s = 0, v = 0.8 },
     },
     {
         name = "slingshotammo_lunarplanthusk",
@@ -1367,6 +1427,7 @@ local ammo =
 		damagetypebonus = { ["shadow_aligned"] = TUNING.SLINGSHOT_AMMO_VS_SHADOW_BONUS },
 		skill = "walter_allegiance_lunar",
 		prefabs = { "lunarplanttentacle" },
+		--tailcolor = { h = 0.38, s = 0.3, v = 0.7 },
     },
     {
 		name = "slingshotammo_purebrilliance",
@@ -1381,6 +1442,8 @@ local ammo =
 		damagetypebonus = { ["shadow_aligned"] = TUNING.SLINGSHOT_AMMO_VS_SHADOW_BONUS },
 		skill = "walter_allegiance_lunar",
 		prefabs = { "slingshotammo_purebrilliance_debuff", "slingshot_aoe_fx" },
+		--tailcolor = { h = 0.53, s = 0.7, v = 1.1, lo = 0.5 },
+		canmagicamp = true,
     },
     {
         name = "slingshotammo_horrorfuel",
@@ -1388,13 +1451,15 @@ local ammo =
 		idleanim = "idle_horrorfuel_rock",
 		spinloop = "spin_loop_horrorfuel",
 		spinloopmounted = "spin_loop_mount_horrorfuel",
-		spinsymbol = "horrofuel_stone",
+		spinsymbol = "horrorfuel_stone",
 		inv_common_postinit = function(inst)
 			if not TheNet:IsDedicated() then
 				inst.fx = CreateFX_HorrorFuel()
 				inst.fx.entity:SetParent(inst.entity)
 				inst.highlightchildren = { inst.fx }
 			end
+
+			inst.scrapbook_anim = "scrapbook_horrorfuel"
 		end,
 		proj_common_postinit = function(inst)
 			inst.AnimState:SetSymbolLightOverride("horrorfuel", 1)
@@ -1406,6 +1471,8 @@ local ammo =
 		setvoidbonus = SetVoidBonus_HorrorFuel,
 		skill = "walter_allegiance_shadow",
 		prefabs = { "slingshotammo_horrorfuel_debuff_fx", "slingshot_aoe_fx" },
+		--tailcolor = { h = -0.1, s = 1.45, v = 0.35, lo = 1 },
+		canmagicamp = true,
     },
 	{
 		name = "slingshotammo_gelblob",
@@ -1414,6 +1481,7 @@ local ammo =
         inv_master_postinit = InvMasterPostInit_Gelblob,
 		damage = nil,
 		skill = "walter_allegiance_shadow",
+		--tailcolor = { v = 0 },
 	},
     {
         name = "slingshotammo_scrapfeather",
@@ -1429,6 +1497,7 @@ local ammo =
         proj_master_postinit = ProjMasterPostInit_Scrapfeather,
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_SCRAPFEATHER,
 		skill = "walter_slingshot_ammo_scrapfeather",
+		--tailcolor = { h = 0.1, s = 0.5, v = 2, lo = 0.2 },
     },
     {
         name = "slingshotammo_stinger",
@@ -1436,6 +1505,7 @@ local ammo =
         onhit = OnHit_Stinger,
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_STINGER,
 		skill = "walter_slingshot_ammo_stinger",
+		--tailcolor = { s = 0, v = 0.7 },
     },
     {
         name = "trinket_1",
@@ -1443,6 +1513,7 @@ local ammo =
 		symbol = "trinket_1",
 		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_TRINKET_1,
 		elemental = true,
+		--tailcolor = { h = -0.07, s = 0.23, v = 0.9 },
     },
 }
 

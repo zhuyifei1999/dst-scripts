@@ -260,6 +260,77 @@ end
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
+local PICKUP_MUST_TAGS =
+{
+    "_inventoryitem"
+}
+
+local PICKUP_CANT_TAGS =
+{
+    "INLIMBO", "NOCLICK", "irreplaceable", "knockbackdelayinteraction",
+    "event_trigger", "mineactive", "catchable", "fire", "spider", "cursed",
+    "heavy", "outofreach",
+}
+
+local function Woby_FindPickupableItem_filter(v, ba, onlytheseprefabs, worker)
+    if v.components.burnable ~= nil and (v.components.burnable:IsBurning() or v.components.burnable:IsSmoldering()) then
+        return false
+    end
+
+    if not (v.components.inventoryitem ~= nil and
+        v.components.inventoryitem.canbepickedup and
+        v.components.inventoryitem.cangoincontainer and
+        not v.components.inventoryitem:IsHeld())
+    then
+        return false
+    end
+
+    if onlytheseprefabs ~= nil and onlytheseprefabs[v.prefab] == nil then
+        return false
+    end
+
+    if v.components.bait ~= nil and v.components.bait.trap ~= nil then -- Do not steal baits.
+        return false
+    end
+
+    if worker.components.container:CanAcceptCount(v, 1) <= 0 then
+        return false
+    end
+
+    if ba ~= nil and ba.target == v and (ba.action == ACTIONS.PICKUP or ba.action == ACTIONS.CHECKTRAP) then
+        return false
+    end
+
+    return v
+end
+
+local function Woby_FindPickupableItem(owner, radius, positionoverride, onlytheseprefabs, worker)
+    if owner == nil then
+        return nil
+    end
+
+    local ba = owner:GetBufferedAction()
+
+    local x, y, z
+    if positionoverride then
+        x, y, z = positionoverride:Get()
+    else
+        x, y, z = owner.Transform:GetWorldPosition()
+    end
+
+    local ents = TheSim:FindEntities(x, y, z, radius, PICKUP_MUST_TAGS, PICKUP_CANT_TAGS)
+
+    for i = #ents, 1, -1 do
+        local v = ents[i]
+
+        if Woby_FindPickupableItem_filter(v, ba,  onlytheseprefabs, worker) then
+            return v
+        end
+    end
+
+    return nil
+end
+
 local function DoPickUpAction(inst)
     local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
 
@@ -284,15 +355,13 @@ local function DoPickUpAction(inst)
     local items = inst.components.container:GetAllItems()
 
     for i, item in ipairs(items) do
-        if not (item.components.stackable == nil or item.components.stackable:IsFull()) then
-            onlytheseprefabs[item.prefab] = true
-        end
+        onlytheseprefabs[item.prefab] = true
     end
 
-    local item, pickable = FindPickupableItem(inst._playerlink, distance, true, inst:GetPosition(), nil, onlytheseprefabs, false, inst)
+    local item = Woby_FindPickupableItem(inst._playerlink, distance, inst:GetPosition(), onlytheseprefabs, inst)
 
     if item == nil then
-        item, pickable = FindPickupableItem(inst._playerlink, distance, true, nil, nil, onlytheseprefabs, false, inst)
+        item = Woby_FindPickupableItem(inst._playerlink, distance, nil, onlytheseprefabs, inst)
     end
 
     if item == nil then

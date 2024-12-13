@@ -107,6 +107,8 @@ function Tune(overrides)
 
 		DEFAULT_ATTACK_RANGE = 2,
 		DEFAULT_HIT_RECOVERY = .75,
+		DEFAULT_PROJECTILE_HIT_RECOVERY_MULTIPLIER = 2,
+		DEFAULT_PROJECTILE_MAX_HITREACTS_MULTIPLIER = 0,
 
 		DEFAULT_CHARACTER_HEALTH = wilson_health,
 
@@ -589,6 +591,7 @@ function Tune(overrides)
         KNIGHT_ATTACK_PERIOD = 2,
         KNIGHT_WALK_SPEED = 5,
         KNIGHT_TARGET_DIST = 10,
+		KNIGHT_DODGE_HIT_RECOVERY = 2,
 
         BISHOP_DAMAGE = 40,
         BISHOP_HEALTH = 300 * 3, -- harder for multiplayer
@@ -603,6 +606,7 @@ function Tune(overrides)
         ROOK_WALK_SPEED = 5,
         ROOK_RUN_SPEED = 16,
         ROOK_TARGET_DIST = 12,
+		ROOK_RUN_HIT_RECOVERY = 2,
 
         MINOTAUR_DAMAGE = 100,
         MINOTAUR_HEALTH = 2500 * 4, -- harder for multiplayer
@@ -935,8 +939,6 @@ function Tune(overrides)
         KOALEFANT_TARGET_DIST = 5,
         KOALEFANT_CHASE_DIST = 30,
         KOALEFANT_FOLLOW_TIME = 30,
-		KOALEFANT_HIT_RECOVERY = 1,
-		KOALEFANT_MAX_STUN_LOCKS = 2,
 
         SPAT_HEALTH = 800,
         SPAT_PHLEGM_DAMAGE = 5,
@@ -6879,7 +6881,6 @@ function Tune(overrides)
 		SHARKBOI_ATTACK_RANGE = 8,
 		SHARKBOI_TORPEDO_CD = 20,
 		SHARKBOI_STANDING_DIVE_CD = 24,
-		SHARKBOI_HIT_RECOVERY = 1,
 
 		SHARKBOI_WATER_WALKSPEED = 2,
 		SHARKBOI_WATER_RUNSPEED = 7,
@@ -7218,7 +7219,7 @@ function Tune(overrides)
 
                 LUNARELIXIR_DURATION = 4 * seg_time,
                 LUNARELIXIR_DAMAGEBONUS = 10,
-                LUNARELIXIR_DAMAGEBONUS_GESTALT = 50,
+                LUNARELIXIR_DAMAGEBONUS_GESTALT = 100,
 
                 SHADOWELIXIR_DURATION = total_day_time,
                 ABIGAIL_GESTALT_VEX_MULT = 3,
@@ -7245,12 +7246,12 @@ function Tune(overrides)
                     RESISTANCE_2 = 15,
 
                     -- Sanity protection for Walter when riding Woby. Also does sanity regen.
-                    BRAVERY_1 = .2,
-                    BRAVERY_2 = .3,
+                    BRAVERY_1 = .25,
+                    BRAVERY_2 = .45,
 
                     -- Cooldown reduction and distance bonus.
                     FETCHING_1 = 2,
-                    FETCHING_2 = 3,
+                    FETCHING_2 = 4,
 
                     -- Cooldown reduction.
                     DIGGING_1 = total_day_time/2,
@@ -8266,10 +8267,18 @@ function Tune(overrides)
         -- Wendy Skill Tree
         ABIGAIL_GESTALT_DAMAGE =
         {
-            day = 75,
-            dusk = 125,
-            night = 200,
+            day = 100,
+            dusk = 150,
+            night = 250,
         },
+
+        ABIGAIL_SHADOW_PLANAR_DAMAGE =
+        {
+            day = 15,
+            dusk = 20,
+            night = 40,
+        },
+
         ABIGAIL_GESTALT_HIDE_THRESHOLD = 0.25,
 
         WENDYSKILL_COMMAND_COOLDOWN = 4,
@@ -8283,17 +8292,18 @@ function Tune(overrides)
         WENDYSKILL_GRAVESTONE_GHOSTCOUNT = 4,
         WENDYSKILL_GRAVESTONE_EVILFLOWERCOUNT = 3,
         WENDYSKILL_GRAVEGHOST_DEADTIME = total_day_time,
+        WENDYSKILL_GRAVEGHOST_AURARADIUS = 2.5,
 
         WENDYSKILL_SISTURN_SANITY_MODIFYER = 0.75,
         WENDY_SISTURN_PETAL_PRESRVE = 0.5,
 
         GHOSTLYELIXIR_PLAYER_SLOWREGEN_HEALING = 1,
         GHOSTLYELIXIR_PLAYER_SLOWREGEN_TICK_TIME = 1,
-        GHOSTLYELIXIR_PLAYER_SLOWREGEN_DURATION = 30, -- 30 hp
+        GHOSTLYELIXIR_PLAYER_SLOWREGEN_DURATION = 20, -- 20 hp
 
         GHOSTLYELIXIR_PLAYER_FASTREGEN_HEALING = 5,
         GHOSTLYELIXIR_PLAYER_FASTREGEN_TICK_TIME = 1,
-        GHOSTLYELIXIR_PLAYER_FASTREGEN_DURATION = 16, -- 80 hp
+        GHOSTLYELIXIR_PLAYER_FASTREGEN_DURATION = 20, -- 100 hp
 
         GHOSTLYELIXIR_PLAYER_DAMAGE_DURATION = total_day_time,
 

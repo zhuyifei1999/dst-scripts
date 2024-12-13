@@ -98,9 +98,10 @@ local function OnSetPlayerMode(inst, self)
         self:RefreshHealthBuff()
     end
 
-    if self.onavengetimedirty then
+    if self.onavengetimedirty ~= nil then
         inst:RemoveEventCallback("clientavengetimedirty", self.onavengetimedirty, self.owner)
         self.onavengetimedirty = nil
+        self:RefreshAvengingGhost()
     end
 
     if self.pethealthbadge ~= nil and self.onpetskindirty == nil then
@@ -168,14 +169,16 @@ local function OnSetGhostMode(inst, self)
     end
 
 
-    if self.onheartbuffdirty == nil then
+    if self.onheartbuffdirty ~= nil then
         self.inst:RemoveEventCallback("clienthealthbuffdirty", self.onheartbuffdirty, self.owner)
+        self.onheartbonusdirty = nil
         self:RefreshHealthBuff()
     end
 
-    if self.avengingghostbadge ~= nil then
+    if self.avengingghostbadge ~= nil and self.onavengetimedirty == nil then
         self.onavengetimedirty = function() self:RefreshAvengingGhost() end
-       self.onheartbonusdirty = nil
+        inst:ListenForEvent("clientavengetimedirty", self.onavengetimedirty, self.owner)
+        self:RefreshAvengingGhost()
     end
 
     if self.onpetskindirty ~= nil then

@@ -167,6 +167,7 @@ function SkillTreeWidget:RespecSkills()
     self.root.tree:RefreshTree(true)
 end
 
+
 function SkillTreeWidget:SpawnFavorOverlay(pre)
     if not self.fromfrontend and (self.midlay ~= nil and self.midlay.splash == nil) then
         local favor, activatedskills, characterprefab
@@ -225,6 +226,13 @@ function SkillTreeWidget:SpawnFavorOverlay(pre)
         end
     end
 end
+--[[
+function SkillTreeWidget:OnUpdate()
+    if self.root.infopanel.puck then
+
+    end
+end
+]]
 
 function SkillTreeWidget:Kill()
     --ThePlantRegistry:Save() -- for saving filter settings

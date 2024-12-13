@@ -147,8 +147,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:Hide("FIRE")
 
-    inst.scrapbook_specialinfo = "RESURECTIONSTATUE"
-
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then
         return inst

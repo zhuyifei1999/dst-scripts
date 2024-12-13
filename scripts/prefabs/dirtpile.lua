@@ -24,9 +24,9 @@ local function OnInvestigated(inst, doer)
 end
 
 local function OnHaunted(inst, haunter)
-    if haunter.isplayer then
+    --if haunter.isplayer then
         inst:OnInvestigated(haunter)
-    end
+   -- end
     return true
 end
 

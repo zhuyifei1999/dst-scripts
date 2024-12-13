@@ -296,6 +296,13 @@ local function UpdateDamage(inst)
 						or (phase == "dusk" and 2)
 						or 3
 
+    local murderbuff = inst:GetDebuff("abigail_murder_buff")
+    if murderbuff then
+        inst.components.planardamage:AddBonus(inst, TUNING.ABIGAIL_SHADOW_PLANAR_DAMAGE[phase], "shadow_murder_planar")
+    else
+        inst.components.planardamage:AddBonus(inst, 0, "shadow_murder_planar")
+    end
+
     -- If the animation fx was already playing we update its animation
     local level_str = tostring(inst.attack_level)
     if inst.attack_fx and not inst.attack_fx.AnimState:IsCurrentAnimation("attack" .. level_str .. "_loop") then
@@ -465,12 +472,6 @@ local function DoGhostEscape(inst)
             or (inst.components.health and inst.components.health:IsDead()) then
         return
     end
---[[
-    if inst:HasTag("gestalt_hide") then
-        if inst._playerlink then inst._playerlink.components.talker:Say(GetString(inst._playerlink, "ANNOUNCE_ABIGAIL_HIDING")) end
-        return
-    end
-    ]]
 
     if not inst:HasTag("gestalt_hide") then
         inst.components.fader:Fade(1.0, 0.3, 0.75, do_transparency)
@@ -551,7 +552,12 @@ local function DoGhostAttackAt(inst, pos)
 
 	inst.sg:GoToState("abigail_attack_start", pos)
 
-    inst.components.timer:StartTimer("block_retargets", 10)
+    local timer = inst.components.timer
+    if timer:TimerExists("block_retargets") then
+        timer:SetTimeLeft("block_retargets", 10)
+    else
+        timer:StartTimer("block_retargets", 10)
+    end
 end
 
 local HAUNT_CANT_TAGS = {"catchable", "DECOR", "FX", "haunted", "INLIMBO", "NOCLICK"}
@@ -616,7 +622,7 @@ local function DoShadowBurstBuff(inst, stack)
     local time = GetTaskRemaining(murder_buff.decaytimer)
     murder_buff:murder_buff_OnExtended(math.min( time + stack*TUNING.SKILLS.WENDY.MURDER_BUFF_DURATION,  20*TUNING.SKILLS.WENDY.MURDER_BUFF_DURATION )  )
 end
-
+--[[
 local function SetBabysitter(inst, sisturn)
     if inst.components.follower and inst.components.follower.leader and
             inst.components.follower.leader:HasTag("can_set_babysitter") and
@@ -625,13 +631,13 @@ local function SetBabysitter(inst, sisturn)
         if not inst.ghost_babysitter then
             sisturn.components.ghostbabysitter:AddGhost(inst)
             inst.ghost_babysitter = sisturn
-            
+
             inst.components.follower.leader:AddTag("ghost_is_babysat")
             inst:PushEvent("dance")
             return
         end
     end
-    
+
     if inst.ghost_babysitter then
         inst.ghost_babysitter.components.ghostbabysitter:RemoveGhost(inst)
         inst.ghost_babysitter = nil
@@ -640,7 +646,7 @@ local function SetBabysitter(inst, sisturn)
         end
     end
 end
-
+]]
 local function calcabigailmaxhealthbonus(inst)
     if inst.components.follower and inst.components.follower.leader and
         inst.components.follower.leader.components.skilltreeupdater and
@@ -732,10 +738,12 @@ local function SetToGestalt(inst)
     inst.AnimState:OverrideSymbol("v1_melt2",       "lunarthrall_plant_front",      "v1_melt2")
 
     inst.components.combat:SetAttackPeriod(3)
-    
+
     inst.components.health:SetMinHealth(1)
 
-    if inst:HasDebuff("super_elixir_buff") and inst.components.debuffable:GetDebuff("super_elixir_buff").prefab == "ghostlyelixir_lunar_buff" then
+    local buff = inst.components.debuffable:GetDebuff("super_elixir_buff")
+
+    if buff ~= nil and buff.prefab == "ghostlyelixir_lunar_buff" then
         inst.components.planardamage:RemoveBonus(inst, "ghostlyelixir_lunarbonus")
         inst.components.planardamage:AddBonus(inst, TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS_GESTALT, "ghostlyelixir_lunarbonus")
     end
@@ -756,7 +764,9 @@ local function SetToNormal(inst)
 
     inst.components.combat:SetAttackPeriod(4)
 
-    if inst:HasDebuff("super_elixir_buff") and inst.components.debuffable:GetDebuff("super+elixir_buff").prefab == "ghostlyelixir_lunar_buff" then
+    local buff = inst.components.debuffable:GetDebuff("super_elixir_buff")
+
+    if buff ~= nil and buff.prefab == "ghostlyelixir_lunar_buff" then
         inst.components.planardamage:RemoveBonus(inst, "ghostlyelixir_lunarbonus")
         inst.components.planardamage:AddBonus(inst, TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS, "ghostlyelixir_lunarbonus")
     end
@@ -827,6 +837,7 @@ local function fn()
     inst:AddTag("notraptrigger")
     inst:AddTag("scarytoprey")
 
+
     inst:AddTag("trader") --trader (from trader component) added to pristine state for optimization
 	inst:AddTag("ghostlyelixirable") -- for ghostlyelixirable component
 
@@ -841,7 +852,6 @@ local function fn()
     --It's a loop that's always on, so we can start this in our pristine state
     -- inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_girl_howl_LP", "howl")
 
---
     inst.point_filtered = net_bool(inst.GUID, "abigail.point_filtered", "point_filtereddirty")
     inst.point_filtered:set(false)
 
@@ -850,11 +860,9 @@ local function fn()
     end
 
     inst.entity:SetPristine()
-    if not TheWorld.ismastersim then       
+    if not TheWorld.ismastersim then
         return inst
     end
-
-
 
     --
     inst.scrapbook_damage = { TUNING.ABIGAIL_DAMAGE.day, TUNING.ABIGAIL_DAMAGE.night }
@@ -964,10 +972,9 @@ local function fn()
     inst:ListenForEvent("do_ghost_attackat", DoGhostAttackAt)
     inst:ListenForEvent("do_ghost_hauntat", DoGhostHauntAt)
     inst:ListenForEvent("timerdone", OnTimerDone)
-    inst:ListenForEvent("set_babysitter", SetBabysitter)
+    --inst:ListenForEvent("set_babysitter", SetBabysitter)
     inst:ListenForEvent("pre_health_setval", OnHealthChanged)
     inst:ListenForEvent("healthdelta", OnHealthDelta)
-    
 
     --
     inst:WatchWorldState("phase", UpdateDamage)
@@ -1201,36 +1208,11 @@ end
 
 local function murder_buff_OnAttached(inst, target)
     murder_buff_OnExtended(inst)
-    if target ~= nil and target:IsValid() and target.components.combat ~= nil then
-        target.components.combat.externaldamagemultipliers:SetModifier(inst, TUNING.SKILLS.WENDY.MURDER_BUFF_MULTIPLIER)
-    end
+    if target and target:IsValid() then
 
-    target.AnimState:SetBuild( "ghost_abigail_shadow_build" )
+        UpdateDamage(target)
 
-    if target.components.aura and target.components.aura.applying then
-        target:PushEvent("stopaura")
-        target:PushEvent("startaura")
-    end
-
-    local fx = SpawnPrefab("shadow_puff_large_front")
-    fx.Transform:SetScale(1.2,1.2,1.2)
-    fx.Transform:SetPosition(target.Transform:GetWorldPosition())
-
-    target.components.planardefense:AddBonus(inst, TUNING.SKILLS.WENDY.MURDER_DEFENSE_BUFF, "wendymurderbuff")
-
-    inst:ListenForEvent("death", function() inst.components.debuff:Stop() end, target)        
-end
-
-local function murder_buff_OnDetached(inst, target)
-    if inst.decaytimer ~= nil then
-        inst.decaytimer:Cancel()
-        inst.decaytimer = nil
-
-        if target ~= nil and target:IsValid() and target.components.combat ~= nil then
-            target.components.combat.externaldamagemultipliers:RemoveModifier(inst)
-        end
-
-        target.AnimState:SetBuild( "ghost_abigail_build" )
+        target.AnimState:SetBuild( "ghost_abigail_shadow_build" )
 
         if target.components.aura and target.components.aura.applying then
             target:PushEvent("stopaura")
@@ -1239,17 +1221,51 @@ local function murder_buff_OnDetached(inst, target)
 
         local fx = SpawnPrefab("shadow_puff_large_front")
         fx.Transform:SetScale(1.2,1.2,1.2)
-        fx.Transform:SetPosition(target.Transform:GetWorldPosition())        
+        fx.Transform:SetPosition(target.Transform:GetWorldPosition())
 
-        target.components.planardefense:RemoveBonus(inst, "wendymurderbuff")
-    end            
+        target.components.planardefense:AddBonus(inst, TUNING.SKILLS.WENDY.MURDER_DEFENSE_BUFF, "wendymurderbuff")
+
+        inst:ListenForEvent("death", function() inst.components.debuff:Stop() end, target)
+    end
+end
+
+local function murder_buff_OnDetached(inst, target)
+    if inst.decaytimer then
+        inst.decaytimer:Cancel()
+        inst.decaytimer = nil
+
+        if target and target:IsValid() then
+
+            UpdateDamage(target)
+
+            target.AnimState:SetBuild( "ghost_abigail_build" )
+
+            if target.components.aura and target.components.aura.applying then
+                target:PushEvent("stopaura")
+                target:PushEvent("startaura")
+            end
+
+            local fx = SpawnPrefab("shadow_puff_large_front")
+            fx.Transform:SetScale(1.2,1.2,1.2)
+            fx.Transform:SetPosition(target.Transform:GetWorldPosition())
+
+            target.components.planardefense:RemoveBonus(inst, "wendymurderbuff")
+        end
+    end
 end
 
 local function abigail_murder_buff_fn()
     local inst = CreateEntity()
 
-    inst:AddTag("CLASSIFIED")
-    --[[Non-networked entity]]
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     inst.persists = false
     inst:AddComponent("debuff")
@@ -1261,7 +1277,6 @@ local function abigail_murder_buff_fn()
 
     return inst
 end
-
 
 return Prefab("abigail", fn, assets, prefabs),
 	   Prefab("abigail_retaliation", retaliationattack_fn, {Asset("ANIM", "anim/abigail_shield.zip")} ),

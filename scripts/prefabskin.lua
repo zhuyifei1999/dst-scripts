@@ -1484,16 +1484,23 @@ end
 --------------------------------------------------------------------------
 gravestone_init_fn = function(inst, build_name)
     basic_init_fn( inst, build_name, "gravestones" )
+    if not TheWorld.ismastersim then
+        return
+    end
+    local number = tonumber(build_name:sub(-1)) or 1
+    inst.AnimState:PlayAnimation("grave" .. number)
 end
 gravestone_clear_fn = function(inst)
     basic_clear_fn(inst, "gravestones" )
+    local number = inst.random_stone_choice or 1
+    inst.AnimState:PlayAnimation("grave" .. number)
 end
 dug_gravestone_init_fn = function(inst, build_name)
     basic_init_fn( inst, build_name, "gravestones" )
 end
 dug_gravestone_clear_fn = function(inst)
     basic_clear_fn(inst, "gravestones" )
-    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (inst.random_stone_choice == "1" and "" or inst.random_stone_choice))
+    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (tostring(inst.random_stone_choice) == "1" and "" or inst.random_stone_choice))
 end
 
 --------------------------------------------------------------------------

@@ -604,10 +604,22 @@ params.sisturn =
     },
     acceptsstacks = false,
     type = "cooker",
+    openlimit = 1,
 }
 
 function params.sisturn.itemtestfn(container, item, slot)
-    return item.prefab == "petals"
+    local owner
+    if TheWorld.ismastersim then
+        owner = container.inst.components.container:GetOpeners()[1]
+    elseif ThePlayer and container:IsOpenedBy(ThePlayer) then
+        owner = ThePlayer
+    end
+    --NOTE: can have no owner when loading, or when replacing slingshots when swapping frames
+    if owner and (owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated("wendy_sisturn_3")) then
+        return item.prefab == "petals" or item.prefab == "moon_tree_blossom" or item.prefab == "petals_evil"
+    end
+
+    return item.prefab == "petals" 
 end
 
 --------------------------------------------------------------------------

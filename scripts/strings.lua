@@ -235,7 +235,7 @@ STRINGS =
 		{
             { title = "Birthday", desc = "May 7" },
             { title = "Favorite Food", desc = "Spicy Chili" },
-            { title = "From the Ashes", desc = "Willow always regarded being brought to The Constant as a new beginning. It allowed her to leave everything behind, after all. Orphaned at a young age and forced to live in a children's home with cruel caregivers, she found her nights plagued by shadowy visions of terrible creatures... creatures that could only be held at bay by her faithful teddy bear Bernie. But when Bernie was taken away as punishment for what her caregivers saw as unfit behavior, Willow was left to fend for herself when the shadows came for her. That's when she learned that nothing holds back the darkness like a roaring flame. Nothing is more comforting than watching your troubles light up and crumble to ash...\nIt wouldn't be the last time Willow burned it all down to start anew." },
+            { title = "From the Ashes", desc = "Willow always regarded being brought to the Constant as a new beginning. It allowed her to leave everything behind, after all. Orphaned at a young age and forced to live in a children's home with cruel caregivers, she found her nights plagued by shadowy visions of terrible creatures... creatures that could only be held at bay by her faithful teddy bear Bernie. But when Bernie was taken away as punishment for what her caregivers saw as unfit behavior, Willow was left to fend for herself when the shadows came for her. That's when she learned that nothing holds back the darkness like a roaring flame. Nothing is more comforting than watching your troubles light up and crumble to ash...\nIt wouldn't be the last time Willow burned it all down to start anew." },
 		},
         wendy =
 		{
@@ -4171,9 +4171,9 @@ STRINGS =
 
         GHOSTLYELIXIR_LUNAR = "Luminous Wrath",
         GHOSTLYELIXIR_SHADOW = "Cursed Vexation",
-        ARMOR_FLOWERDRESS = "Floral Shroud",
         GRAVEGUARD_GHOST = "Bigspook",
         DUG_GRAVESTONE = "Headstone",
+        WENDY_RECIPE_GRAVESTONE = "Headstone",
 
 		SLINGSHOTMODKIT = "Slingshot Field Kit",
 		SLINGSHOT_BAND_PIGSKIN = "Pig Skin Slingshot Band",
@@ -5280,7 +5280,6 @@ STRINGS =
         -- Meta 5
         GHOSTLYELIXIR_LUNAR = "Abigail will pack an outerplanar punch.",
         GHOSTLYELIXIR_SHADOW = "As if a ghost attack wasn't vexing enough.",
-        ARMOR_FLOWERDRESS = "Abigail wants to protect you.",
         WENDY_RECIPE_GRAVESTONE = "No one deserves an unmarked grave.",
 
         WOBY_BADGE_STATION = "Train your Pinetree Pooch!",
@@ -7798,6 +7797,8 @@ STRINGS.UI =
         NEEDSSHADOWFORGING_TWO = "Can only be crafted at a Shadowcraft Plinth.",
         NEEDSCARPENTRY_TWO = "Use a Sawhorse to build a prototype!",
         NEEDSCARPENTRY_THREE = "Use a Sawhorse with a strong blade to build a prototype!",
+        NEEDSCELESTIAL_ONE = "Find a small source of lunar energy to craft this at.", -- TODO
+        NEEDSCELESTIAL_THREE = "Find a big source of lunar energy to craft this at.", -- TODO
 
 		NEEDSYOTG = "Available during Year of the Gobbler!",
 		NEEDSYOTV = "Available during Year of the Varg!",
@@ -14004,7 +14005,7 @@ STRINGS.UI =
             BRAVERY_1 = "Significantly decreases the loss of sanity when taking damage while riding Woby, based on badge progress. It also slowly regenerates your sanity while riding Woby. Attacking and taking damage while riding Woby advance this progress.",
             BRAVERY_2 = "Greatly decreases the loss of sanity when taking damage while riding Woby, based on badge progress.",
 
-            GENERIC = "" -- TODO
+            GENERIC = "Practice makes paw-fect!"
         },
 
         SAVE = "Confirm Training",
@@ -15257,10 +15258,10 @@ STRINGS.SKILLTREE = {
         WALTER_SLINGSHOT_AMMO_ECONOMY_LOCK_DESC = "Learn 4 Ammo and/or Affinity skills to unlock.",
 
         WALTER_SLINGSHOT_AMMO_ECONOMY_1_TITLE = "Projectile Pro I",
-        WALTER_SLINGSHOT_AMMO_ECONOMY_1_DESC = "Learn how to craft ammo significantly more efficiently.",
+        WALTER_SLINGSHOT_AMMO_ECONOMY_1_DESC = "Learn how to craft ammo more efficiently.",
 
         WALTER_SLINGSHOT_AMMO_ECONOMY_2_TITLE = "Projectile Pro II",
-        WALTER_SLINGSHOT_AMMO_ECONOMY_2_DESC = "Learn how to craft ammo greatly more efficiently.",
+        WALTER_SLINGSHOT_AMMO_ECONOMY_2_DESC = "Learn how to craft ammo even more efficiently.",
 
         ---------------------------------------------------------------------------------
 
@@ -15276,9 +15277,6 @@ STRINGS.SKILLTREE = {
         WALTER_WOBY_BADGE_BRAVERY_2_TITLE = "Support II",
         WALTER_WOBY_BADGE_BRAVERY_2_DESC = "Unlocks the second Support Badge at the Woby Training Station.",
 
-        WALTER_WOBY_BADGE_DIGGING_1_TITLE = "Digging I",
-        WALTER_WOBY_BADGE_DIGGING_1_DESC = "Unlocks the first Digging Badge at the Woby Training Station.",
-
         WALTER_WOBY_BADGE_DIGGING_2_TITLE = "Digging II",
         WALTER_WOBY_BADGE_DIGGING_2_DESC = "Unlocks the second Digging Badge at the Woby Training Station.",
 
@@ -15291,7 +15289,7 @@ STRINGS.SKILLTREE = {
 		WALTER_SLINGSHOT_MODDING_DESC = "Learn to craft the Slingshot Field Kit and some basic parts for customizing your Slingshot.",
 
 		WALTER_SLINGSHOT_HANDLE_STICKY_TITLE = "Sticky Grips",
-		WALTER_SLINGSHOT_HANDLE_STICKY_DESC = "Learn to craft two sticky grips that improve firing rate and prevent Slingshots from slipping out of your hands.",
+		WALTER_SLINGSHOT_HANDLE_STICKY_DESC = "Learn to craft two sticky grips that improve firing rate and prevents your Slingshot from slipping out of your hands.",
 
 		WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_TITLE = "Void Wrap",
 		WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_DESC = "Learn to craft a grip wrap that continuously improves your firing rate when uninterrupted.",
@@ -15427,16 +15425,15 @@ STRINGS.SKILLTREE = {
         WENDY_SISTURN_2_TITLE = "Blessed Sisturn II",
         WENDY_SISTURN_2_DESC = "Wendy's resistance to scary things is increased, and she grants some of that confidence to others nearby.",
         WENDY_SISTURN_3_TITLE = "Blessed Sisturn III",
-        WENDY_SISTURN_3_DESC = "Abigail can be sent to rest at her urn, letting her health rise above normal levels.",
-        WENDY_SISTURN_4_TITLE = "Blessed Sisturn IV",
-        WENDY_SISTURN_4_DESC = "Resting Abigail's health will rise to even higher levels.",
+        WENDY_SISTURN_3_DESC = "Wendy learns a unique propety of Lune Tree Blossms, thining the veil between worlds.\nAbigail's presence becomes stronger, giving her more resistance to the Giants of the Constant like the rest of the surviors.",
+
 
         WENDY_GHOSTCOMMAND_1_TITLE = "Team Spirit I",
         WENDY_GHOSTCOMMAND_1_DESC = "Wendy can remind Abigail she's a ghost, able to be unseen by her enemies to escape bad situations.",
         WENDY_GHOSTCOMMAND_2_TITLE = "Team Spirit II",
         WENDY_GHOSTCOMMAND_2_DESC = "Abigail can dash to anywhere Wendy needs reinforcement.",
         WENDY_GHOSTCOMMAND_3_TITLE = "Team Spirit III",
-        WENDY_GHOSTCOMMAND_3_DESC = "Abigail can use her powers as a spooky ghost to scare things.",
+        WENDY_GHOSTCOMMAND_3_DESC = "Abigail can use her powers as a spooky ghost to scare and haunt things.",
         WENDY_GHOSTCOMMAND_HAUNT_TITLE = "Team Spirit IV",
         WENDY_GHOSTCOMMAND_HAUNT_DESC = "Wendy can suggest things for Abigail to haunt.",
 
@@ -15447,38 +15444,31 @@ STRINGS.SKILLTREE = {
         WENDY_SMALLGHOST_3_TITLE = "Pipspook Quest III",
         WENDY_SMALLGHOST_3_DESC = "Pipspooks produce more Mourning Glories.",
 
-        WENDY_GHOSTFLOWER_BUTTERFLY_TITLE = "Morning Glory I",
+        WENDY_GHOSTFLOWER_BUTTERFLY_TITLE = "Mourning Glory I",
         WENDY_GHOSTFLOWER_BUTTERFLY_DESC = "Begin the journey of revival with Butterflies.",
-        WENDY_GHOSTFLOWER_HAT_TITLE = "Morning Glory I",
-        WENDY_GHOSTFLOWER_HAT_DESC = "Surround yourself in ghotsly nature and taste the power of the elixirs even if not fully.",
-        WENDY_GHOSTFLOWER_GRAVE_TITLE = "Morning Glory I",
-        WENDY_GHOSTFLOWER_GRAVE_DESC = "You can bring back friends, but only if they've entered the constant it seems.",
+        WENDY_GHOSTFLOWER_HAT_TITLE = "Mourning Glory II",
+        WENDY_GHOSTFLOWER_HAT_DESC = "Surround yourself in ghostly nature and taste the power of the elixirs even if not fully.",
+        WENDY_GHOSTFLOWER_GRAVE_TITLE = "Mourning Glory III",
+        WENDY_GHOSTFLOWER_GRAVE_DESC = "You can bring back friends, but only if they've entered the Constant it seems.",
 
         WENDY_GRAVESTONE_1_TITLE = "Grave Beautification",
-        WENDY_GRAVESTONE_1_DESC = "Wendy can adorn graves with flowers inviting the spirits living there to come out and visit, often promoting dark gardens.\nEvil Flowers no longer hold fear for Wendy.",
-        WENDY_GRAVESTONE_2_TITLE = "Final Resting Place?",
-        WENDY_GRAVESTONE_2_DESC = "Wendy can dig up gravestones and relocate them.",
+        WENDY_GRAVESTONE_1_DESC = "Wendy can adorn graves with flowers to delight their resident spirits.\nWendy can relocate graves to bring lonely spirits together.\nEvil Flowers no longer hold fear for Wendy.",
         WENDY_MAKEGRAVEMOUNDS_TITLE = "Gravestones By Wendy",
-        WENDY_MAKEGRAVEMOUNDS_DESC = "Wendy can make her own gravestones.",
+        WENDY_MAKEGRAVEMOUNDS_DESC = "Wendy can put to rest the spirits of skeletons with a gravestone.",
 
         WENDY_POTION_CONTAINER_TITLE = "Picnic Casket",
-        WENDY_POTION_CONTAINER_DESC = "Wendy can craft a Basket to cary all of Abby's Elixirs.",
+        WENDY_POTION_CONTAINER_DESC = "Wendy can craft a Basket to carry all of Abigail's Elixirs.",
         WENDY_POTION_REVIVE_TITLE = "Ghastly Experience",
         WENDY_POTION_REVIVE_DESC = "Wendy learns to brew a new Ghostly Elixir which helps Abigail quickly remember her potential.",
         WENDY_POTION_DURATION_TITLE = "Strong Brew",
         WENDY_POTION_DURATION_DESC = "Elixirs with one day duration will now last two.",
         WENDY_POTION_YIELD_TITLE = "Extra Yield",
-        WENDY_POTION_YIELD_DESC = "Sometimes, Wendy is able to squeeze extra Elixers out of the same ingredients.",
-
-        WENDY_PETAL_1_TITLE = "Dark Petals I",
-        WENDY_PETAL_1_DESC = "Evil flowers hold no fear for Wendy.\nShe can stain Petals into Dark Petals and purify Dark Petals.",
-        WENDY_PETAL_2_TITLE = "Dark Petals II",
-        WENDY_PETAL_2_DESC = "Abigail teaches Wendy to make a shroud of flowers to wear.\nWhen worn, Wendy's wounds will be transferred to Abigail until she is unsummoned.",
+        WENDY_POTION_YIELD_DESC = "Sometimes, Wendy is able to squeeze extra Elixirs out of the same ingredients.",
 
         WENDY_AVENGING_GHOST_TITLE = "Vengeful Ghost",
         WENDY_AVENGING_GHOST_DESC = "When Wendy or her friends are killed, their spirit is vengeful and able to wreak havoc on the living world for a short time.",
 
-        WENDY_SHADOW_LOCK_1_DESC = "Defeat the Fuel Weaver",
+        WENDY_SHADOW_LOCK_1_DESC = "Defeat the Fuelweaver",
         WENDY_SHADOW_LOCK_2_DESC = "Have no other allegiance",
 
         WENDY_SHADOW_1_TITLE = "Shadow Sisterhood I",
@@ -16218,6 +16208,8 @@ STRINGS.SCRAPBOOK = {
         COSTUME = "Stage Costume",
         WINTERSFEASTFOOD = "Winter's Feast Dish",
         SMALLEPIC = "Mini Giant",
+        SLINGSHOTAMMO = "Slingshot Round",
+        SLINGSHOTPART = "Slingshot Part",
     },
 
     SANITYDESC ={
@@ -16792,6 +16784,43 @@ STRINGS.SCRAPBOOK = {
         -- HallowedNights2024
 
         PUMPKINCARVER = "Can be used to carve specific shapes on Giant Pumpkins.",
+
+        -- Meta 5
+
+        -- DUG_GRAVESTONE = "TODO",
+        -- ELIXIR_CONTAINER = "TODO",
+        -- GHOSTFLOWERHAT = "TODO",
+        -- GHOSTLYELIXIR_LUNAR = "TODO",
+        -- GHOSTLYELIXIR_REVIVE = "TODO",
+        -- GHOSTLYELIXIR_SHADOW = "TODO",
+        GRAVEGUARD_GHOST = "Where they may appear, Evil Flowers tend to grow near.",
+        -- SLINGSHOT_BAND_MIMIC = "TODO",
+        -- SLINGSHOT_BAND_PIGSKIN = "TODO",
+        -- SLINGSHOT_BAND_TENTACLE = "TODO",
+        -- SLINGSHOT_FRAME_BONE = "TODO",
+        -- SLINGSHOT_FRAME_GEMS = "TODO",
+        -- SLINGSHOT_FRAME_WAGPUNK = "TODO",
+        -- SLINGSHOT_FRAME_WAGPUNK_0 = "TODO",
+        -- SLINGSHOT_HANDLE_JELLY = "TODO",
+        -- SLINGSHOT_HANDLE_SILK = "TODO",
+        -- SLINGSHOT_HANDLE_STICKY = "TODO",
+        -- SLINGSHOT_HANDLE_VOIDCLOTH = "TODO",
+        -- SLINGSHOTAMMO_DREADSTONE = "TODO",
+        -- SLINGSHOTAMMO_GELBLOB = "TODO",
+        SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger a explosion, doing doubled damage in a large area.",
+        -- SLINGSHOTAMMO_HONEY = "TODO",
+        -- SLINGSHOTAMMO_HORRORFUEL = "TODO",
+        -- SLINGSHOTAMMO_LUNARPLANTHUSK = "TODO",
+        SLINGSHOTAMMO_MOONGLASS = "It does damage in a medium area around its target.",
+        SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 8 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage.",
+        SLINGSHOTAMMO_SCRAPFEATHER = "It does electrical damage, which does more damage to wet targets.",
+        SLINGSHOTAMMO_STINGER = "It does damage in a small area around its target.",
+        -- SLINGSHOTMODKIT = "TODO",
+        -- WENDY_RESURRECTIONGRAVE = "TODO",
+        WOBY_BADGE_STATION = "Allows you to select for which Woby badges you would like to train and get benefits from.",
+        -- WORTOX_NABBAG = "TODO",
+        -- WORTOX_REVIVER = "TODO",
+        -- WORTOX_SOULJAR = "TODO",
     },
 
     -- Full name: "{name} Scrapbook Page"

@@ -260,8 +260,10 @@ local function RecalculateInclination(inst) -- Server and Client ran.
         inst.wortox_inclination = new_inclination
         if new_inclination == "nice" then
             inst:RemoveTag("monster")
+            inst:RemoveTag("playermonster")
         else
             inst:AddTag("monster")
+            inst:AddTag("playermonster")
         end
         inst:PushEvent("wortox_inclination_changed", {old_inclination = old_inclination, new_inclination = new_inclination})
     end
@@ -363,7 +365,7 @@ end
 local function HandleLeftoversShouldDropFn(inst, item)
     if item and item.prefab == "wortox_soul" then
         local souls, count = inst:GetSouls()
-        inst:CheckForOverload(souls, count + 1) -- This item did not fit in the inventory so we will act like it did for overloading.
+        inst:CheckForOverload(souls, count)
     end
     return true
 end
@@ -1407,9 +1409,17 @@ local function DisplayNameFn_decoy(inst)
     return ownername ~= "" and subfmt(STRINGS.NAMES.WORTOX_DECOY_FMT, { name = ownername }) or nil
 end
 
-local function GetDescription_decoy(inst, viewer)
-    local descriptions = GetString(viewer.prefab, "DESCRIBE", "WORTOX")
-    return descriptions and descriptions.GENERIC or nil
+local function GetSpecialDescription_decoy(inst, viewer)
+    if not viewer:HasTag("playerghost") then
+        local ownername = inst._ownername:value()
+        if ownername ~= "" then
+            local descriptions = GetString(viewer.prefab, "DESCRIBE", "WORTOX")
+            local description = descriptions and descriptions.GENERIC or nil
+            if description then
+                return string.format(description, ownername) -- Bypass translations for player names.
+            end
+        end
+    end
 end
 
 local function wortox_decoy_fn()
@@ -1462,7 +1472,7 @@ local function wortox_decoy_fn()
     skinner:SetupNonPlayerData()
 
     local inspectable = inst:AddComponent("inspectable")
-    inspectable.descriptionfn = GetDescription_decoy
+    inspectable.getspecialdescription = GetSpecialDescription_decoy
 
     local health = inst:AddComponent("health")
     health:SetMaxHealth(1)

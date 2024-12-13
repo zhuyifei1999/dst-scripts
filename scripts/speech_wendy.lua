@@ -906,6 +906,8 @@ return{
         "Am I getting warmer?",
     },
 	ANNOUNCE_SISTURN_FULL = "Now Abigail can find her way back to me faster.",
+    ANNOUNCE_SISTURN_FULL_EVIL = "This gives me goosebumps. I hope it was worth it.", -- [[TODO]]
+    ANNOUNCE_SISTURN_FULL_BLOSSOM = "This might be as close as we've ever come, Abigail.", --[[TODO]]
     ANNOUNCE_ABIGAIL_DEATH = "No... don't leave me alone again!",
     ANNOUNCE_ABIGAIL_RETRIEVE = "I'm sorry... it's not safe for you out here.",
 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "Be careful, Abigail!",
@@ -4096,7 +4098,7 @@ return{
         SPIDER_REPELLENT = "Nothing I try seems to work well for me.",
         SPIDER_HEALER_ITEM = "Merely a temporary respite from the pain of the world.",
 
-		-- Wendy
+		-- Wendya
 		GHOSTLYELIXIR_SLOWREGEN = "It's all I can do to help...",
 		GHOSTLYELIXIR_FASTREGEN = "You have to take your medicine, Abigail.",
 		GHOSTLYELIXIR_SHIELD = "This time... I can protect you.",
@@ -4109,6 +4111,8 @@ return{
 			GENERIC = "It's a memorial to my sister... but it's so bare...",
 			SOME_FLOWERS = "Abigail always loved flowers...",
 			LOTS_OF_FLOWERS = "I won't let you fade away, Abigail. Never.",
+            LOTS_OF_FLOWERS_EVIL = "They keep Abigail here, but doesn't make me feel good.", --[[TODO]]
+            LOTS_OF_FLOWERS_BLOSSOM = "I can almost hear your voice sis.", --[[TODO]]
 		},
 
         --Wortox

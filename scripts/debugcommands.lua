@@ -2194,6 +2194,10 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "weapon"
     elseif t:HasTag("spidermutator") then
         subcat = "mutator"
+    elseif t:HasTag("slingshotammo") then
+        subcat = "slingshotammo"
+    elseif t.slingshot_slot ~= nil then
+        subcat = "slingshotpart"
     elseif foodtype ~= nil and
         foodtype ~= FOODTYPE.GENERIC and foodtype ~= FOODTYPE.GOODIES and foodtype ~= FOODTYPE.MEAT and
         foodtype ~= FOODTYPE.VEGGIE and foodtype ~= FOODTYPE.HORRIBLE and foodtype ~= FOODTYPE.INSECT and
@@ -2486,6 +2490,7 @@ local SKIP_SPECIALINFO_CHECK =
 local REPAIR_MATERIAL_DATA =
 {
     -- Repairers
+    carrot = { "carrot" },
     dreadstone = { "wall_dreadstone_item", "dreadstone" },
     fossil = { "fossil_piece" },
     gears = { "wall_scrap_item", "wagpunk_bits", "gears" },
@@ -2511,6 +2516,7 @@ local REPAIR_MATERIAL_DATA =
 
     -- Upgraders
     chest = { "chestupgrade_stacksize" },
+    gravestone = { "petals" },
     mast = { "mastupgrade_lamp_item", "mastupgrade_lightningrod_item" },
     spear_lightning = { "moonstorm_static_item" },
     spider = { "silk" },

@@ -107,7 +107,7 @@ local events =
 				inst.sg:GoToState("hit", { hits > 2 and "torpedo_pst" or "torpedo_dizzy", hits })
 			elseif inst.sg:HasStateTag("torpedoready") then
 				inst.sg:GoToState("hit", { "torpedo_pre", inst.sg.statemem.target })
-			elseif not CommonHandlers.HitRecoveryDelay(inst) then
+			elseif not CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) then --hit delay only for projectiles
 				inst.sg:GoToState("hit")
 			end
 		end

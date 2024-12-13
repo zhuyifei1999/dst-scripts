@@ -66,11 +66,15 @@ end
 --------------------------------------------------------------------------
 
 local function OnDecoratedGraveRemoved(grave)
-    if type(_decorated_graves[grave]) == "table" and _decorated_graves[grave].prefab then
-        _decorated_graves[grave]._despawn_queued = true
+    if _decorated_graves[grave] ~= nil then
+        if type(_decorated_graves[grave]) == "table" and _decorated_graves[grave].prefab then
+            _decorated_graves[grave]._despawn_queued = true
+        end
+
         _decorated_graves[grave] = nil
-        inst:RemoveEventCallback("onremove", OnDecoratedGraveRemoved, grave)
     end
+
+    inst:RemoveEventCallback("onremove", OnDecoratedGraveRemoved, grave)
 
     -- Want to == nil b/c we're using false as a meaningful value
     if next(_decorated_graves) == nil then

@@ -77,6 +77,8 @@ local SCRAPBOOK_DEPS =
 	"slingshotammo_gelblob",
     "slingshotammo_scrapfeather",
     "trinket_1",
+
+	"slingshotmodkit",
 }
 
 -----------------------------------------------------------------------------------------------------------------------------------------------

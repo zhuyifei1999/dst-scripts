@@ -864,7 +864,7 @@ local states =
 
     State {
         name = "gestalt_rest",
-        tags = { "busy", "nocommands" },
+        tags = { "busy", },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("idle", true)

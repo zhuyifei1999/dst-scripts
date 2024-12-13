@@ -104,8 +104,93 @@ local SkillTreeBuilder = Class(Widget, function(self, infopanel, fromfrontend, s
         local w, h = self.sync_status:GetRegionSize()
         self.sync_status:SetPosition(-w/2 - 2, -h/2 - 2) -- 2 Pixel padding, top right screen justification.
     end
+
+    
 end)
 
+local function _ScreenToLocal(x, y, xoffs, yoffs, centerjustifed)
+    local w, h = TheSim:GetScreenSize()
+    --print("MOUSE",x,y,w,h,RESOLUTION_X, RESOLUTION_Y)
+    if w > 0 and h > 0 then
+        local propscale = math.max(RESOLUTION_X / w, RESOLUTION_Y / h)
+
+        if centerjustifed then 
+        	return (x - w/2) * propscale - xoffs, (y - h / 2) * propscale - yoffs
+        else	-- THIS ONE IS RIGHT JUSTIFIED
+			return (x - w) * propscale - xoffs, (y - h / 2) * propscale - yoffs
+		end
+    end
+    return 0, 0
+end
+
+function SkillTreeBuilder:UpdatePosition(x, y)
+	local x1, y1 = 0, 0
+	local parent = self.root:GetParent()
+	while parent do
+		local x2, y2 = parent:GetPositionXYZ()
+		x1 = x1 + x2
+		y1 = y1 + y2
+		parent = parent:GetParent()
+	end
+	x1, y1 = _ScreenToLocal(x, y, x1, y1, self.fromfrontend)
+
+    local xnew = math.clamp(x1, -230,230 )
+    local ynew = math.clamp(y1, -12,213)  
+
+	--print(xnew, ynew)
+    if xnew > -230 and xnew < 230 and ynew > -12 and ynew < 213 then
+    	self.root.puck.pucktarget = {x=xnew,y=ynew} --root.puck:SetPosition(xnew,ynew,0)
+	end
+end
+
+function SkillTreeBuilder:PuckFollowMouse()
+    if self.followhandler == nil then
+        self.followhandler = TheInput:AddMoveHandler(function(x, y) self:UpdatePosition(x, y) end)
+        local pos = TheInput:GetScreenPosition()
+        self:UpdatePosition(pos.x, pos.y)
+    end
+end
+
+function SkillTreeBuilder:SpawnPuck()
+    self.root.puck = self:AddChild(Image("images/skilltree4.xml", "wendy_puck.tex"))
+    self.root.puck:SetClickable(false)
+
+  	if TheInput:ControllerAttached() then
+  		self.root.puck:SetPosition(0,0,0)  		
+  		self:StartUpdating()
+    else
+    	self:PuckFollowMouse()
+    	self:StartUpdating()
+    end
+end
+
+function SkillTreeBuilder:OnUpdate(dt)
+
+	if  TheInput:ControllerAttached() then
+		for i,item in pairs(self.skillgraphics)do
+			if item.button.focus == true then
+				
+				local pos = self.root.puck:GetPosition()
+				local post = item.button:GetPosition()
+
+				local newx = pos.x + ((post.x-pos.x) *(5*dt))
+				local newy = pos.y + ((post.y-pos.y) *(5*dt))
+
+				self.root.puck:SetPosition(newx,newy,0)
+				--self.root.puck:SetPosition(post.x,post.y,0)
+			end
+		end
+	else
+		if self.root.puck.pucktarget then
+			local pos = self.root.puck:GetPosition()
+			local post = Vector3(self.root.puck.pucktarget.x,self.root.puck.pucktarget.y,0)
+
+			local newx = pos.x + ((post.x-pos.x) *(15*dt))
+			local newy = pos.y + ((post.y-pos.y) *(15*dt))
+			self.root.puck:SetPosition(newx,newy,0)
+		end
+	end
+end
 
 function SkillTreeBuilder:countcols(cols, data)
 	for i,branch in pairs(data)do
@@ -334,6 +419,7 @@ function SkillTreeBuilder:CreatePanel(data, offset)
     end
 
 	panel.c_height = maxrows * TILESIZE + ((maxrows -1) * SPACE)
+
 
 	return panel
 end
@@ -709,6 +795,7 @@ end
 
 function SkillTreeBuilder:CreateTree(prefabname, targetdata, readonly)
 	self.skilltreedef = skilltreedefs.SKILLTREE_DEFS[prefabname]
+
 	self.target = prefabname
 	self.targetdata = targetdata
 	self.readonly = readonly
@@ -733,6 +820,10 @@ function SkillTreeBuilder:CreateTree(prefabname, targetdata, readonly)
         else
             print(string.format("FIXME: Skill tree order named %s has no skill data!", panelname))
         end
+	end
+
+	if prefabname == "wendy" then
+		self:SpawnPuck()
 	end
 
 	self:RefreshTree()

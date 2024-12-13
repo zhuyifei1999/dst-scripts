@@ -3,14 +3,14 @@
 local NO_TAGS_NO_PLAYERS =	{ "INLIMBO", "notarget", "noattack", "wall", "player", "companion", "playerghost" }
 local COMBAT_TARGET_TAGS = { "_combat" }
 
-local onattacked_sheild = function(inst)
+local onattacked_shield = function(inst)
 	local fx = SpawnPrefab("elixir_player_forcefield")
 	inst:AddChild(fx)
 	inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/abigail/shield/on")
 
 	local debuff = inst:GetDebuff("elixir_buff")
 	if not debuff then
-    	return
+		return
 	end
 
 	if debuff.potion_tunings.playerreatliate then
@@ -21,29 +21,29 @@ local onattacked_sheild = function(inst)
 
 	    local x, y, z = inst.Transform:GetWorldPosition()
 
-	    for i, v in ipairs(TheSim:FindEntities(x, y, z, hitrange, COMBAT_TARGET_TAGS, NO_TAGS_NO_PLAYERS)) do
-	        if not debuff.ignore[v] and
-	            v:IsValid() and
-	            v.entity:IsVisible() and
-	            v.components.combat ~= nil then
-	            local range = hitrange + v:GetPhysicsRadius(0)
-	            if v:GetDistanceSqToPoint(x, y, z) < range * range then
-	                if inst.owner ~= nil and not inst.owner:IsValid() then
-	                    inst.owner = nil
-	                end
-	                if inst.owner ~= nil then
+		for i, v in ipairs(TheSim:FindEntities(x, y, z, hitrange, COMBAT_TARGET_TAGS, NO_TAGS_NO_PLAYERS)) do
+			if not debuff.ignore[v] and
+				v:IsValid() and
+				v.entity:IsVisible() and
+				v.components.combat ~= nil then
+				local range = hitrange + v:GetPhysicsRadius(0)
+				if v:GetDistanceSqToPoint(x, y, z) < range * range then
+					if inst.owner ~= nil and not inst.owner:IsValid() then
+						inst.owner = nil
+					end
+					if inst.owner ~= nil then
 						if inst.owner.components.combat ~= nil and
 							inst.owner.components.combat:CanTarget(v) and
 							not inst.owner.components.combat:IsAlly(v)
 						then
-	                        debuff.ignore[v] = true
+							debuff.ignore[v] = true
 							local retaliation = SpawnPrefab("abigail_retaliation")
 							retaliation:SetRetaliationTarget(v)
-	                        --V2C: wisecracks make more sense for being pricked by picking
-	                        --v:PushEvent("thorns")
-	                    end
-	                elseif v.components.combat:CanBeAttacked() then
-	                    -- NOTES(JBK): inst.owner is nil here so this is for non worn things like the bramble trap.
+							--V2C: wisecracks make more sense for being pricked by picking
+							--v:PushEvent("thorns")
+						end
+					elseif v.components.combat:CanBeAttacked() then
+						-- NOTES(JBK): inst.owner is nil here so this is for non worn things like the bramble trap.
 						local isally = false
 						if not inst.canhitplayers then
 							--non-pvp, so don't hit any player followers (unless they are targeting a player!)
@@ -60,14 +60,12 @@ local onattacked_sheild = function(inst)
 							retaliation:SetRetaliationTarget(v)
 							--v:PushEvent("thorns")
 						end
-	                end
-	            end
-	        end
-	    end
-
+					end
+				end
+			end
+		end
 	end
-    debuff.components.debuff:Stop()
-
+	debuff.components.debuff:Stop()
 end
 
 local potion_tunings =
@@ -82,20 +80,18 @@ local potion_tunings =
 			target.components.health:DoDelta(TUNING.GHOSTLYELIXIR_SLOWREGEN_HEALING, true, inst.prefab)
 		end,
 		DURATION = TUNING.GHOSTLYELIXIR_SLOWREGEN_DURATION,
-        FLOATER = {"small", 0.15, 0.55},
+		FLOATER = {"small", 0.15, 0.55},
 		fx = "ghostlyelixir_slowregen_fx",
 		dripfx = "ghostlyelixir_slowregen_dripfx",
 		skill_modifier_long_duration = true,
 
 		-- PLAYER CONTENT
-		ONAPPLY_PLAYER = function(inst, farget)
-		end,
 		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_SLOWREGEN_DURATION,
 		TICK_FN_PLAYER = function(inst, target)
 			target.components.health:DoDelta(TUNING.GHOSTLYELIXIR_PLAYER_SLOWREGEN_HEALING, true, inst.prefab)
 		end,
 		fx_player = "ghostlyelixir_player_slowregen_fx",
-		dripfx_player = "ghostlyelixir_player_slowregen_dripfx",		
+		dripfx_player = "ghostlyelixir_player_slowregen_dripfx",
 	},
 	ghostlyelixir_fastregen =
 	{
@@ -107,7 +103,7 @@ local potion_tunings =
 			target.components.health:DoDelta(TUNING.GHOSTLYELIXIR_FASTREGEN_HEALING, true, inst.prefab)
 		end,
 		DURATION = TUNING.GHOSTLYELIXIR_FASTREGEN_DURATION,
-        FLOATER = {"small", 0.15, 0.55},
+		FLOATER = {"small", 0.15, 0.55},
 		fx = "ghostlyelixir_fastregen_fx",
 		dripfx = "ghostlyelixir_fastregen_dripfx",
 
@@ -118,9 +114,9 @@ local potion_tunings =
 		TICK_FN_PLAYER = function(inst, target)
 			target.components.health:DoDelta(TUNING.GHOSTLYELIXIR_PLAYER_FASTREGEN_HEALING, true, inst.prefab)
 		end,
-		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_FASTREGEN_DURATION,		
+		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_FASTREGEN_DURATION,
 		fx_player = "ghostlyelixir_player_fastregen_fx",
-		dripfx_player = "ghostlyelixir_player_fastregen_dripfx",		
+		dripfx_player = "ghostlyelixir_player_fastregen_dripfx",
 	},
 	ghostlyelixir_attack =
 	{
@@ -135,7 +131,7 @@ local potion_tunings =
 			end
 		end,
 		DURATION = TUNING.GHOSTLYELIXIR_DAMAGE_DURATION,
-        FLOATER = {"small", 0.1, 0.5},
+		FLOATER = {"small", 0.1, 0.5},
 		fx = "ghostlyelixir_attack_fx",
 		dripfx = "ghostlyelixir_attack_dripfx",
 		skill_modifier_long_duration = true,
@@ -174,7 +170,12 @@ local potion_tunings =
 		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_SPEED_DURATION,
 		ONAPPLY_PLAYER = function(inst, target)
 			target.components.talker:Say(GetString(target, "ANNOUNCE_ELIXIR_PLAYER_SPEED"))
-			inst.vigor_on = true
+			target:AddTag("vigorbuff")
+			target.components.locomotor:EnableGroundSpeedMultiplier(false)
+			target.components.locomotor:EnableGroundSpeedMultiplier(true)
+		end,
+		ONDETACH_PLAYER = function(inst, target)
+			target:RemoveTag("vigorbuff")
 		end,
 		fx_player = "ghostlyelixir_player_speed_fx",
 		dripfx_player = "ghostlyelixir_player_speed_dripfx",
@@ -192,18 +193,18 @@ local potion_tunings =
 		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_DURATION,
 		ONAPPLY_PLAYER = function(inst, target)
 			if target.components.health ~= nil then
-	    		target.components.health.externalreductionmodifiers:SetModifier(target, TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_REDUCTION, "forcefield")
+				target.components.health.externalreductionmodifiers:SetModifier(target, TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_REDUCTION, "forcefield")
 			end
-		    target:ListenForEvent("attacked", onattacked_sheild)
+		    target:ListenForEvent("attacked", onattacked_shield)
 		end,
 		ONDETACH_PLAYER = function(inst, target)
-			target:RemoveEventCallback("attacked", onattacked_sheild)
+			target:RemoveEventCallback("attacked", onattacked_shield)
 			if target.components.health ~= nil then
-	    		target.components.health.externalreductionmodifiers:RemoveModifier(target, "forcefield")
+				target.components.health.externalreductionmodifiers:RemoveModifier(target, "forcefield")
 			end
 		end,
 		fx_player = "ghostlyelixir_player_shield_fx",
-		dripfx_player = "ghostlyelixir_player_shield_dripfx",		
+		dripfx_player = "ghostlyelixir_player_shield_dripfx",
 	},
 	ghostlyelixir_retaliation =
 	{
@@ -218,20 +219,20 @@ local potion_tunings =
 		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_DURATION,
 		ONAPPLY_PLAYER = function(inst, target)
 			if target.components.health ~= nil then
-	    		target.components.health.externalreductionmodifiers:SetModifier(target, TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_REDUCTION, "forcefield")
+				target.components.health.externalreductionmodifiers:SetModifier(target, TUNING.GHOSTLYELIXIR_PLAYER_SHIELD_REDUCTION, "forcefield")
 			end
-		    target:ListenForEvent("attacked", onattacked_sheild)
+		    target:ListenForEvent("attacked", onattacked_shield)
 
 		end,
 		ONDETACH_PLAYER = function(inst, target)
-			target:RemoveEventCallback("attacked", onattacked_sheild)
+			target:RemoveEventCallback("attacked", onattacked_shield)
 			if target.components.health ~= nil then
-	    		target.components.health.externalreductionmodifiers:RemoveModifier(target, "forcefield")
+				target.components.health.externalreductionmodifiers:RemoveModifier(target, "forcefield")
 			end
 		end,
 		playerreatliate=true,
 		fx_player = "ghostlyelixir_player_retaliation_fx",
-		dripfx_player = "ghostlyelixir_player_retaliation_dripfx",		
+		dripfx_player = "ghostlyelixir_player_retaliation_dripfx",
 	},
 	ghostlyelixir_revive =
 	{
@@ -242,16 +243,13 @@ local potion_tunings =
 				target.components.follower.leader.components.ghostlybond:SetBondLevel(3)
 			end
 		end,
-		ONDETACH = function(inst, target)
-
-		end,        
 		fx = "ghostlyelixir_retaliation_fx",
 		dripfx = "ghostlyelixir_retaliation_dripfx",
 		skill_modifier_long_duration = true,
 
 		--PLAYER CONTENT
 		DURATION_PLAYER = TUNING.GHOSTLYELIXIR_PLAYER_REVIVE_DURATION,
-		ONAPPLY_PLAYER = function(inst, target)			
+		ONAPPLY_PLAYER = function(inst, target)
 			target.components.talker:Say(GetString(target, "ANNOUNCE_ELIXIR_BOOSTED"))
 
 			if target.components.sanity then
@@ -260,11 +258,11 @@ local potion_tunings =
 			if target.components.hunger then
 				target.components.hunger:DoDelta(TUNING.CALORIES_SMALL)
 			end
-			
-		 	if target.components.health ~= nil then
-		        target.components.health:DeltaPenalty(TUNING.MAX_HEALING_NORMAL)		       
-		    end
-		end,	
+
+			if target.components.health ~= nil then
+				target.components.health:DeltaPenalty(TUNING.MAX_HEALING_NORMAL)
+			end
+		end,
 		fx_player = "ghostlyelixir_player_retaliation_fx",
 		dripfx_player = "ghostlyelixir_player_retaliation_dripfx",
 	},
@@ -286,11 +284,9 @@ local potion_tunings =
 		dripfx = "ghostlyelixir_lunar_dripfx",
 		ONAPPLY = function(inst, target)
 			target.components.planardamage:RemoveBonus(inst, "ghostlyelixir_lunarbonus")
-			if target:HasTag("gestalt") then
-				target.components.planardamage:AddBonus(inst, TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS_GESTALT, "ghostlyelixir_lunarbonus")
-			else
-				target.components.planardamage:AddBonus(inst, TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS, "ghostlyelixir_lunarbonus")
-			end
+			local bonus_amount = (target:HasTag("gestalt") and TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS_GESTALT)
+				or TUNING.SKILLS.WENDY.LUNARELIXIR_DAMAGEBONUS
+			target.components.planardamage:AddBonus(inst, bonus_amount, "ghostlyelixir_lunarbonus")
 		end,
 		ONDETACH = function(inst, target)
 			target.components.planardamage:RemoveBonus(inst, "ghostlyelixir_lunarbonus")
@@ -407,9 +403,9 @@ end
 local function buff_OnTick(inst, target)
     if target.components.health ~= nil and
         not target.components.health:IsDead() then
-        	if target:HasTag("player") then
-        	inst.potion_tunings.TICK_FN_PLAYER(inst, target)
-        else		
+			if target:HasTag("player") then
+			inst.potion_tunings.TICK_FN_PLAYER(inst, target)
+		else
 			inst.potion_tunings.TICK_FN(inst, target)
 		end
     else
@@ -433,11 +429,11 @@ local function buff_OnAttached(inst, target)
 	inst.Transform:SetPosition(0, 0, 0) --in case of loading
 
 	if target:HasTag("player") then
-		if inst.potion_tunings.ONAPPLY_PLAYER ~= nil then			
+		if inst.potion_tunings.ONAPPLY_PLAYER ~= nil then
 			inst.potion_tunings.ONAPPLY_PLAYER(inst, target)
 		end
 	else
-		if inst.potion_tunings.ONAPPLY ~= nil then			
+		if inst.potion_tunings.ONAPPLY ~= nil then
 			inst.potion_tunings.ONAPPLY(inst, target)
 		end
 	end
@@ -447,7 +443,6 @@ local function buff_OnAttached(inst, target)
 	end
 
     inst.driptask = inst:DoPeriodicTask(TUNING.GHOSTLYELIXIR_DRIP_FX_DELAY, buff_DripFx, TUNING.GHOSTLYELIXIR_DRIP_FX_DELAY * 0.25, target)
-
 
     inst:ListenForEvent("death", function()
         inst.components.debuff:Stop()
@@ -516,7 +511,7 @@ end
 
 local function buff_skill_modifier_fn(inst,doer,target)
 	local duration_mult = 1
-	
+
 	if inst.potion_tunings.skill_modifier_long_duration and doer.components.skilltreeupdater:IsActivated("wendy_potion_duration") then
 		duration_mult = duration_mult + TUNING.SKILLS.WENDY.POTION_DURATION_MOD
 	end
@@ -573,7 +568,7 @@ local function AddPotion(potions, name, anim, extra_assets)
 		Asset("ANIM", "anim/ghostly_elixirs.zip"),
 		Asset("ANIM", "anim/abigail_buff_drip.zip"),
 		Asset("ANIM", "anim/player_elixir_buff_drip.zip"),
-		Asset("ANIM", "anim/player_vial_fx.zip"),		
+		Asset("ANIM", "anim/player_vial_fx.zip"),
 	}
 	if extra_assets then ConcatArrays(assets, extra_assets) end
 
@@ -582,7 +577,7 @@ local function AddPotion(potions, name, anim, extra_assets)
 		potion_tunings[potion_prefab].fx,
 		potion_tunings[potion_prefab].dripfx,
 		potion_tunings[potion_prefab].fx_player,
-		potion_tunings[potion_prefab].dripfx_player,		
+		potion_tunings[potion_prefab].dripfx_player,
 		"ghostvision_buff",
 	}
 	if potion_tunings[potion_prefab].shield_prefab ~= nil then
@@ -607,4 +602,4 @@ AddPotion(potions, "shadow", "shadow")
 AddPotion(potions, "lunar", "lunar")
 AddPotion(potions, "revive", "revive")
 
-return unpack(potions)		
+return unpack(potions)

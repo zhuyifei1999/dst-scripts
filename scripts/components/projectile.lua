@@ -68,7 +68,9 @@ local function StartTrackingDelayOwner(self, owner)
 end
 
 function Projectile:OnRemoveFromEntity()
-    self.inst:RemoveTag("projectile")
+	if self.inst.components.complexprojectile == nil then
+		self.inst:RemoveTag("projectile")
+	end
     self.inst:RemoveTag("catchable")
     if self.dozeOffTask ~= nil then
         self.dozeOffTask:Cancel()

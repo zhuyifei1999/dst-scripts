@@ -8,6 +8,7 @@ local assets = {
 
 local prefabs = {
     "collapse_small",
+    "wortox_soul",
 }
 
 local function IsSoul(item)

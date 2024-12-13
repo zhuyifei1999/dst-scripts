@@ -6253,6 +6253,16 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL"
 msgid "only_used_by_wendy"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL_BLOSSOM
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL_BLOSSOM"
+msgid "only_used_by_wendy"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL_EVIL
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SISTURN_FULL_EVIL"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL"
 msgid "only_used_by_walter"
@@ -17111,6 +17121,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS"
 msgid "What a brilliant boo-quet!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_BLOSSOM
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_BLOSSOM"
+msgid "What a lovely sound."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_EVIL
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_EVIL"
+msgid "Something seems off with this."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SISTURN.SOME_FLOWERS
@@ -125138,6 +125158,16 @@ msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_SISTURN_FULL"
 msgid "Now Abigail can find her way back to me faster."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_SISTURN_FULL_BLOSSOM
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_SISTURN_FULL_BLOSSOM"
+msgid "This might be as close as we've ever come, Abigail."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_SISTURN_FULL_EVIL
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_SISTURN_FULL_EVIL"
+msgid "This gives me goosebumps. I hope it was worth it."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.ANNOUNCE_SNARED
 msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_SNARED"
 msgid "I am caged!"
@@ -135781,6 +135811,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS"
 msgid "I won't let you fade away, Abigail. Never."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_BLOSSOM
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_BLOSSOM"
+msgid "I can almost hear your voice sis."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_EVIL
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.LOTS_OF_FLOWERS_EVIL"
+msgid "They keep Abigail here, but doesn't make me feel good."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SISTURN.SOME_FLOWERS
@@ -293950,7 +293990,7 @@ msgstr ""
 
 #. STRINGS.CHARACTER_BIOS.willow.3.desc
 msgctxt "STRINGS.CHARACTER_BIOS.willow.3.desc"
-msgid "Willow always regarded being brought to The Constant as a new beginning. It allowed her to leave everything behind, after all. Orphaned at a young age and forced to live in a children's home with cruel caregivers, she found her nights plagued by shadowy visions of terrible creatures... creatures that could only be held at bay by her faithful teddy bear Bernie. But when Bernie was taken away as punishment for what her caregivers saw as unfit behavior, Willow was left to fend for herself when the shadows came for her. That's when she learned that nothing holds back the darkness like a roaring flame. Nothing is more comforting than watching your troubles light up and crumble to ash...\nIt wouldn't be the last time Willow burned it all down to start anew."
+msgid "Willow always regarded being brought to the Constant as a new beginning. It allowed her to leave everything behind, after all. Orphaned at a young age and forced to live in a children's home with cruel caregivers, she found her nights plagued by shadowy visions of terrible creatures... creatures that could only be held at bay by her faithful teddy bear Bernie. But when Bernie was taken away as punishment for what her caregivers saw as unfit behavior, Willow was left to fend for herself when the shadows came for her. That's when she learned that nothing holds back the darkness like a roaring flame. Nothing is more comforting than watching your troubles light up and crumble to ash...\nIt wouldn't be the last time Willow burned it all down to start anew."
 msgstr ""
 
 #. STRINGS.CHARACTER_BIOS.willow.3.title
@@ -301446,11 +301486,6 @@ msgstr ""
 #. STRINGS.NAMES.ARMOR_CARROTLURE
 msgctxt "STRINGS.NAMES.ARMOR_CARROTLURE"
 msgid "Coat of Carrots"
-msgstr ""
-
-#. STRINGS.NAMES.ARMOR_FLOWERDRESS
-msgctxt "STRINGS.NAMES.ARMOR_FLOWERDRESS"
-msgid "Floral Shroud"
 msgstr ""
 
 #. STRINGS.NAMES.ARMOR_LUNARPLANT
@@ -313103,6 +313138,11 @@ msgctxt "STRINGS.NAMES.WENDY"
 msgid "Wendy"
 msgstr ""
 
+#. STRINGS.NAMES.WENDY_RECIPE_GRAVESTONE
+msgctxt "STRINGS.NAMES.WENDY_RECIPE_GRAVESTONE"
+msgid "Headstone"
+msgstr ""
+
 #. STRINGS.NAMES.WENDY_RESURRECTIONGRAVE
 msgctxt "STRINGS.NAMES.WENDY_RESURRECTIONGRAVE"
 msgid "Perennial Altar"
@@ -316051,11 +316091,6 @@ msgstr ""
 #. STRINGS.RECIPE_DESC.ARMOR_CARROTLURE
 msgctxt "STRINGS.RECIPE_DESC.ARMOR_CARROTLURE"
 msgid "Don this coat, and the Bunnymen shall hop to it."
-msgstr ""
-
-#. STRINGS.RECIPE_DESC.ARMOR_FLOWERDRESS
-msgctxt "STRINGS.RECIPE_DESC.ARMOR_FLOWERDRESS"
-msgid "Abigail wants to protect you."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.ARMOR_LUNARPLANT
@@ -321493,6 +321528,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSPEED"
 msgid "Abigail has a 75% speed boost for 1 day."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST"
+msgid "Where they may appear, Evil Flowers tend to grow near."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GREENAMULET
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GREENAMULET"
 msgid "Halves the cost of crafted items and raises sanity when worn."
@@ -322473,6 +322513,31 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLEEPBOMB"
 msgid "When thrown, creates a cloud that will put creatures to sleep."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER"
+msgid "It has an increasing chance to trigger a explosion, doing doubled damage in a large area."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS"
+msgid "It does damage in a medium area around its target."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE"
+msgid "It applies a Pure Brilliance mark to creatures it hits, lasting 8 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER"
+msgid "It does electrical damage, which does more damage to wet targets."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER"
+msgid "It does damage in a small area around its target."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLURTLESLIME
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLURTLESLIME"
 msgid "Will explode for 50 damage when lit. Also fuels Lanterns and Miner Hats."
@@ -322873,6 +322938,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WINTERTREE_ORNAMENT"
 msgid "Can be hung in special trees grown in a Festive Tree Planter."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_BADGE_STATION
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_BADGE_STATION"
+msgid "Allows you to select for which Woby badges you would like to train and get benefits from."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOLFGANG_WHISTLE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WOLFGANG_WHISTLE"
 msgid "Toggles Wolfgang's coaching skill on and off."
@@ -323141,6 +323211,16 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SUBCATS.SHELL
 msgctxt "STRINGS.SCRAPBOOK.SUBCATS.SHELL"
 msgid "Shell"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SUBCATS.SLINGSHOTAMMO
+msgctxt "STRINGS.SCRAPBOOK.SUBCATS.SLINGSHOTAMMO"
+msgid "Slingshot Round"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SUBCATS.SLINGSHOTPART
+msgctxt "STRINGS.SCRAPBOOK.SUBCATS.SLINGSHOTPART"
+msgid "Slingshot Part"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SUBCATS.SMALLEPIC
@@ -325765,7 +325845,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_1_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_1_DESC"
-msgid "Learn how to craft ammo significantly more efficiently."
+msgid "Learn how to craft ammo more efficiently."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_1_TITLE
@@ -325775,7 +325855,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_2_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_2_DESC"
-msgid "Learn how to craft ammo greatly more efficiently."
+msgid "Learn how to craft ammo even more efficiently."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_AMMO_ECONOMY_2_TITLE
@@ -325870,7 +325950,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_DESC"
-msgid "Learn to craft two sticky grips that improve firing rate and prevent Slingshots from slipping out of your hands."
+msgid "Learn to craft two sticky grips that improve firing rate and prevents your Slingshot from slipping out of your hands."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLE_STICKY_TITLE
@@ -325916,16 +325996,6 @@ msgstr ""
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_BRAVERY_2_TITLE"
 msgid "Support II"
-msgstr ""
-
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_1_DESC
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_1_DESC"
-msgid "Unlocks the first Digging Badge at the Woby Training Station."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_1_TITLE"
-msgid "Digging I"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_BADGE_DIGGING_2_DESC
@@ -326250,7 +326320,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTCOMMAND_3_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTCOMMAND_3_DESC"
-msgid "Abigail can use her powers as a spooky ghost to scare things."
+msgid "Abigail can use her powers as a spooky ghost to scare and haunt things."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTCOMMAND_3_TITLE
@@ -326275,47 +326345,37 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_BUTTERFLY_TITLE
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_BUTTERFLY_TITLE"
-msgid "Morning Glory I"
+msgid "Mourning Glory I"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_GRAVE_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_GRAVE_DESC"
-msgid "You can bring back friends, but only if they've entered the constant it seems."
+msgid "You can bring back friends, but only if they've entered the Constant it seems."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_GRAVE_TITLE
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_GRAVE_TITLE"
-msgid "Morning Glory I"
+msgid "Mourning Glory III"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_HAT_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_HAT_DESC"
-msgid "Surround yourself in ghotsly nature and taste the power of the elixirs even if not fully."
+msgid "Surround yourself in ghostly nature and taste the power of the elixirs even if not fully."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_HAT_TITLE
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GHOSTFLOWER_HAT_TITLE"
-msgid "Morning Glory I"
+msgid "Mourning Glory II"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_DESC"
-msgid "Wendy can adorn graves with flowers inviting the spirits living there to come out and visit, often promoting dark gardens.\nEvil Flowers no longer hold fear for Wendy."
+msgid "Wendy can adorn graves with flowers to delight their resident spirits.\nWendy can relocate graves to bring lonely spirits together.\nEvil Flowers no longer hold fear for Wendy."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_1_TITLE"
 msgid "Grave Beautification"
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_2_DESC
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_2_DESC"
-msgid "Wendy can dig up gravestones and relocate them."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_2_TITLE
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_GRAVESTONE_2_TITLE"
-msgid "Final Resting Place?"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_LUNAR_1_DESC
@@ -326360,7 +326420,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_MAKEGRAVEMOUNDS_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_MAKEGRAVEMOUNDS_DESC"
-msgid "Wendy can make her own gravestones."
+msgid "Wendy can put to rest the spirits of skeletons with a gravestone."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_MAKEGRAVEMOUNDS_TITLE
@@ -326368,29 +326428,9 @@ msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_MAKEGRAVEMOUNDS_TITLE"
 msgid "Gravestones By Wendy"
 msgstr ""
 
-#. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_DESC
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_DESC"
-msgid "Evil flowers hold no fear for Wendy.\nShe can stain Petals into Dark Petals and purify Dark Petals."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_TITLE
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_PETAL_1_TITLE"
-msgid "Dark Petals I"
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_2_DESC
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_PETAL_2_DESC"
-msgid "Abigail teaches Wendy to make a shroud of flowers to wear.\nWhen worn, Wendy's wounds will be transferred to Abigail until she is unsummoned."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_PETAL_2_TITLE
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_PETAL_2_TITLE"
-msgid "Dark Petals II"
-msgstr ""
-
 #. STRINGS.SKILLTREE.WENDY.WENDY_POTION_CONTAINER_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_POTION_CONTAINER_DESC"
-msgid "Wendy can craft a Basket to cary all of Abby's Elixirs."
+msgid "Wendy can craft a Basket to carry all of Abigail's Elixirs."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_POTION_CONTAINER_TITLE
@@ -326420,7 +326460,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_POTION_YIELD_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_POTION_YIELD_DESC"
-msgid "Sometimes, Wendy is able to squeeze extra Elixers out of the same ingredients."
+msgid "Sometimes, Wendy is able to squeeze extra Elixirs out of the same ingredients."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_POTION_YIELD_TITLE
@@ -326460,7 +326500,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_LOCK_1_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_LOCK_1_DESC"
-msgid "Defeat the Fuel Weaver"
+msgid "Defeat the Fuelweaver"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SHADOW_LOCK_2_DESC
@@ -326490,22 +326530,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_3_DESC
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_3_DESC"
-msgid "Abigail can be sent to rest at her urn, letting her health rise above normal levels."
+msgid "Wendy learns a unique propety of Lune Tree Blossms, thining the veil between worlds.\nAbigail's presence becomes stronger, giving her more resistance to the Giants of the Constant like the rest of the surviors."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_3_TITLE
 msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_3_TITLE"
 msgid "Blessed Sisturn III"
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_4_DESC
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_4_DESC"
-msgid "Resting Abigail's health will rise to even higher levels."
-msgstr ""
-
-#. STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_4_TITLE
-msgctxt "STRINGS.SKILLTREE.WENDY.WENDY_SISTURN_4_TITLE"
-msgid "Blessed Sisturn IV"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WENDY.WENDY_SMALLGHOST_1_DESC
@@ -374708,6 +374738,16 @@ msgctxt "STRINGS.UI.CRAFTING.NEEDSCATCOONSHRINE"
 msgid "Make an offering at the Catcoon Shrine!"
 msgstr ""
 
+#. STRINGS.UI.CRAFTING.NEEDSCELESTIAL_ONE
+msgctxt "STRINGS.UI.CRAFTING.NEEDSCELESTIAL_ONE"
+msgid "Find a small source of lunar energy to craft this at."
+msgstr ""
+
+#. STRINGS.UI.CRAFTING.NEEDSCELESTIAL_THREE
+msgctxt "STRINGS.UI.CRAFTING.NEEDSCELESTIAL_THREE"
+msgid "Find a big source of lunar energy to craft this at."
+msgstr ""
+
 #. STRINGS.UI.CRAFTING.NEEDSCHARACTER
 msgctxt "STRINGS.UI.CRAFTING.NEEDSCHARACTER"
 msgid "Another survivor knows how to craft this."
@@ -390570,7 +390610,7 @@ msgstr ""
 
 #. STRINGS.UI.WOBY_BADGES_POPUP.BADGE_DESC.GENERIC
 msgctxt "STRINGS.UI.WOBY_BADGES_POPUP.BADGE_DESC.GENERIC"
-msgid ""
+msgid "Practice makes paw-fect!"
 msgstr ""
 
 #. STRINGS.UI.WOBY_BADGES_POPUP.BADGE_DESC.RESISTANCE_1

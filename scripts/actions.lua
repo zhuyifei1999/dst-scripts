@@ -3087,7 +3087,12 @@ ACTIONS.BLINK.fn = function(act)
             return act.invobject.components.blinkstaff:Blink(act_pos, act.doer)
         end
     elseif TryToSoulhop(act, act_pos, act.doer.components.inventory and act.doer.components.inventory:IsHeavyLifting() or false) then
-        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos,})
+        local platform = TheWorld.Map:GetPlatformAtPoint(act_pos.x, act_pos.z)
+        local platformoffset
+        if platform then
+            platformoffset = platform:GetPosition() - act_pos
+        end
+        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos, platform = platform, platformoffset = platformoffset,})
         return true
     end
 end
@@ -3105,9 +3110,14 @@ end
 
 ACTIONS.BLINK_MAP.fn = function(act)
     -- NOTES(JBK): This only supports soul hopping for now due to the theoretical infinite range.
-	local act_pos = act:GetActionPoint()
+    local act_pos = act:GetActionPoint()
     if ActionCanMapSoulhop(act) and TryToSoulhop(act, act_pos, true) then
-        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos, from_map = true,})
+        local platform = TheWorld.Map:GetPlatformAtPoint(act_pos.x, act_pos.z)
+        local platformoffset
+        if platform then
+            platformoffset = platform:GetPosition() - act_pos
+        end
+        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos, platform = platform, platformoffset = platformoffset, from_map = true,})
         return true
     end
 end

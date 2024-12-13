@@ -14,7 +14,7 @@ local NABBAG_CANTTAGS = {"INLIMBO", "FX", "_container", "heavy"}
 function Nabbag:DoNabFromAct(act)
     local success, reason
     if act.target:HasAnyTag(NABBAG_CANTTAGS) then
-        success, reason = false
+        success, reason = false, nil
     else
         success, reason = ACTIONS.PICKUP.fn(act)
     end

@@ -33,7 +33,7 @@ local function OnWritingEnded(inst)
 
     local gravestone = SpawnPrefab("gravestone")
     gravestone.Transform:SetPosition(ix, iy, iz)
-    gravestone.random_stone_choice = math.random(4)
+    gravestone.random_stone_choice = tostring(math.random(4))
     gravestone.AnimState:PlayAnimation("grave"..gravestone.random_stone_choice.."_place")
     gravestone.AnimState:PushAnimation("grave"..gravestone.random_stone_choice)
 

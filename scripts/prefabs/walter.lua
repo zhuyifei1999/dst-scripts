@@ -215,13 +215,12 @@ local function OnMounted(inst, data)
 	end
 
 	local woby_sanity_protection = data.target:AddTrainingBonus(0, WOBY_TRAINING_ASPECTS.BRAVERY)
-	local woby_sanity_regen = woby_sanity_protection * 2 -- x2 because woby_sanity_protection max value is 0.5
 
 	if woby_sanity_protection > 0 then
-		inst._sanity_damage_protection:SetModifier(data.target, woby_sanity_protection)
+		inst._sanity_damage_protection:SetModifier(data.target, 1 - woby_sanity_protection)
 
-		if inst.components.sanity ~= nil then
-			inst.components.sanity.externalmodifiers:SetModifier(data.target, TUNING.DAPPERNESS_MED_LARGE * woby_sanity_regen)
+		if inst.components.sanity ~= nil and inst.components.dogtrainer ~= nil then
+			inst.components.sanity.externalmodifiers:SetModifier(data.target, TUNING.DAPPERNESS_MED_LARGE * inst.components.dogtrainer:GetAspectPercent(WOBY_TRAINING_ASPECTS.BRAVERY))
 		end
 	end
 

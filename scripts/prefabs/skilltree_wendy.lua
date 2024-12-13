@@ -56,7 +56,7 @@ local function BuildSkillsData(SkillTreeFns)
     local sisturn_skills =
     {
         wendy_sisturn_1 = {
-            pos = {-193-5,102-2},
+            pos = {103,173}, --{-193-5,102-2},
             tags = {"sisturn"},
             root = true,
             connects = {
@@ -65,7 +65,7 @@ local function BuildSkillsData(SkillTreeFns)
             defaultfocus = true,
         },
         wendy_sisturn_2 = {
-            pos = {COL2-2-8, CURV2+ TILEGAP -10},
+            pos = {140,154},-- {COL2-2-8, CURV2+ TILEGAP -10},
             tags = {"sisturn"},
             onactivate   = function(inst, fromload)
                inst.components.sanityauraadjuster:StartTask()
@@ -79,30 +79,30 @@ local function BuildSkillsData(SkillTreeFns)
         },
 
         wendy_sisturn_3 = {
-            pos = {COL3-4-10, CURV3+ TILEGAP-3},
+            pos = {176,133},-- {COL3-4-10, CURV3+ TILEGAP-3},
             tags = {"sisturn"},
-            onactivate   = function(inst, fromload)
-                inst:AddTag("can_set_babysitter")
+            onactivate   = function(inst, fromload)     
+                if TheWorld.components.sisturnregistry and TheWorld.components.sisturnregistry:IsBlossom() then
+                    if inst.components.ghostlybond and inst.components.ghostlybond.ghost then
+                        inst.components.ghostlybond.ghost:AddTag("player_damagescale")
+                    end
+                end
             end,
             ondeactivate = function(inst, fromload)
-                inst:RemoveTag("can_set_babysitter")
-                inst.components.ghostlybond.ghost:PushEven("set_babysitter",nil)
-            end,
-            connects = {
-                "wendy_sisturn_4",
-            },            
+                if TheWorld.components.sisturnregistry and TheWorld.components.sisturnregistry:IsBlossom() then
+                    if inst.components.ghostlybond and inst.components.ghostlybond.ghost then
+                        inst.components.ghostlybond.ghost:RemoveTag("player_damagescale")
+                    end
+                end
+            end,          
         },
-        wendy_sisturn_4 = {
-            pos = {COL4-6-11, CURV4 +TILEGAP+4-3},
-            tags = {"sisturn"},
-        },        
     }
     finalize_skill_group(sisturn_skills, "sisturn_upgrades")
 
     local potion_skills =
     {
         wendy_potion_container = {
-            pos = {COL1+35, CURV1-16},
+            pos =  {COL4+10+14,CURV5+TILEGAP}, -- {COL1+35, CURV1-16},
             tags = {"potion"},
             root = true,
             connects = {
@@ -111,7 +111,7 @@ local function BuildSkillsData(SkillTreeFns)
         },
 
         wendy_potion_revive = {
-            pos = {X+ 152,Y-192},
+            pos =  {COL4+10+13+TILEGAP,190}, --{X+ 152,Y-192},
             tags = {"potion"},
             connects = {
                 "wendy_potion_duration",
@@ -119,14 +119,14 @@ local function BuildSkillsData(SkillTreeFns)
         },
 
         wendy_potion_duration = {
-            pos =  {X+ 190, Y-170},
+            pos =  {COL4+10+12+TILEGAP+TILEGAP+1,190}, --{X+ 190, Y-170},
             tags = {"potion"},
             connects = {
                 "wendy_potion_yield",
             },
         },
-        wendy_potion_yield = {            
-            pos =  {COL4+11, Y-154},
+        wendy_potion_yield = {
+            pos =  {COL6+11+4, CURV5+TILEGAP}, -- {COL4+11, Y-154},
             tags = {"potion"},
         },
     }
@@ -135,7 +135,7 @@ local function BuildSkillsData(SkillTreeFns)
     local avenging_ghost_skills =
     {
         wendy_avenging_ghost = {
-            pos = {COL5 +(TILEGAP/2)+7, CURV5+20-20 },            
+            pos = {-47, CURV5+20-20-3-5 },
             tags = {},
             root = true,
         },
@@ -146,7 +146,7 @@ local function BuildSkillsData(SkillTreeFns)
     local smallghost_skills =
     {
         wendy_smallghost_1 = {
-            pos = {COL6+11+6, CURV5+TILEGAP},
+            pos = {-173,133},--{COL6+11+6, CURV5+TILEGAP},
             tags = {},
             root=true,
             connects = {
@@ -154,14 +154,14 @@ local function BuildSkillsData(SkillTreeFns)
             },
         },
         wendy_smallghost_2 = {
-            pos = {X+390+6,Y-115},
+            pos =  {-138, 154 },-- {X+390+6,Y-115},
             tags = {},
             connects = {
                 "wendy_smallghost_3",
             },
         },
         wendy_smallghost_3 = {
-            pos = {X+428+6,Y-137},
+            pos =  {-101, 173},-- {X+428+6,Y-137},
             tags = {},
         },
     }
@@ -170,7 +170,7 @@ local function BuildSkillsData(SkillTreeFns)
     local ghostflower_skills =
     {
         wendy_ghostflower_butterfly = {
-            pos = {COL4+10+14,CURV5+TILEGAP},
+            pos = {-168, 73}, --{COL4+10+14,CURV5+TILEGAP},
             tags = {},
             root=true,
             connects = {
@@ -178,14 +178,14 @@ local function BuildSkillsData(SkillTreeFns)
             },
         },
         wendy_ghostflower_hat = {
-            pos = {COL4+10+13+TILEGAP,CURV5+TILEGAP+5},
+            pos = {-132,100},-- {COL4+10+13+TILEGAP,CURV5+TILEGAP+5},
             tags = {},
             connects = {
                 "wendy_ghostflower_grave",
             },
         },
         wendy_ghostflower_grave = {
-            pos = {COL4+10+12+TILEGAP+TILEGAP,CURV5+TILEGAP+ 6},
+            pos =  {-96, 118},  --{COL4+10+12+TILEGAP+TILEGAP,CURV5+TILEGAP+ 6},
             tags = {},
         },
     }
@@ -194,31 +194,17 @@ local function BuildSkillsData(SkillTreeFns)
     local gravestone_skills =
     {
         wendy_gravestone_1 = {
-            pos = {COL6-5+3, CURV5-2-3},
+            pos = {COL6-5+3-20-10, CURV5-2-3+6-5},
             tags = {},
             root=true,
 
             onactivate = function(inst, fromload)
                 inst:AddTag(UPGRADETYPES.GRAVESTONE.."_upgradeuser")
-            end,
-
-            ondeactivate = function(inst, fromload)
-                inst:RemoveTag(UPGRADETYPES.GRAVESTONE.."_upgradeuser")
-            end,
-
-            connects = {
-                "wendy_gravestone_2",
-            },
-        },
-        wendy_gravestone_2 = {
-            pos = {X+372+5,Y-155-4},
-            tags = {},
-
-            onactivate = function(inst, fromload)
                 inst:AddTag("gravedigger_user")
             end,
 
             ondeactivate = function(inst, fromload)
+                inst:RemoveTag(UPGRADETYPES.GRAVESTONE.."_upgradeuser")
                 inst:RemoveTag("gravedigger_user")
             end,
 
@@ -226,8 +212,9 @@ local function BuildSkillsData(SkillTreeFns)
                 "wendy_makegravemounds",
             },
         },
+
         wendy_makegravemounds = {
-            pos = {X+410+5,Y-174-6},
+            pos = {X+372+5-20-10,Y-155-4+12-5},
             tags = {},
         },
     }
@@ -236,7 +223,7 @@ local function BuildSkillsData(SkillTreeFns)
     local ghost_command_skills =
     {
         wendy_ghostcommand_1 = {
-            pos = {X+482-5,Y-175+15},
+            pos = {98,118}, --{X+482-5,Y-175+15},
             tags = {},
             connects = {
                 "wendy_ghostcommand_2",
@@ -245,19 +232,14 @@ local function BuildSkillsData(SkillTreeFns)
             root = true,
         },
         wendy_ghostcommand_2 = {
-            pos = {X+495+8,Y-215+18},
+            pos = {135,100},
             tags = {},
             connects = {
                 "wendy_ghostcommand_3",
-                "wendy_ghostcommand_haunt",
             },
         },
         wendy_ghostcommand_3 = {
-            pos = {X+455,Y-237+30},
-            tags = {},
-        },
-        wendy_ghostcommand_haunt = {
-            pos = {X+505-10,Y-237-TILEGAP/2+18},
+            pos = {171,73},
             tags = {},
         },
     }
@@ -328,12 +310,6 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wendy_shadow_3",
             },
-            onactivate = function(inst, fromload)
-                inst:AddTag("wendy_shadow_craft")
-            end,
-            ondeactivate = function(inst, fromload)
-                inst:RemoveTag("wendy_shadow_craft")
-            end,
         },
         wendy_shadow_3 = {
             pos = {COL6+TILEGAP/2 +12, A_BASE_H},
@@ -402,12 +378,6 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wendy_lunar_3",
             },
-            onactivate = function(inst, fromload)
-                inst:AddTag("wendy_lunar_craft")
-            end,
-            ondeactivate = function(inst, fromload)
-                inst:RemoveTag("wendy_lunar_craft")
-            end,
         },
         wendy_lunar_3 = {
             pos = {COL6+TILEGAP/2 +12, A_BASE_H+TILEGAP},
@@ -429,6 +399,7 @@ local function BuildSkillsData(SkillTreeFns)
           --  {"potion_upgrades",     {POS_X_1 + TILEGAP * 5, POS_Y_1 + TILEGAP}  },
           --  {"allegiance",          {COL5+(width/11), (TILEGAP*2.8) }           },
         },
+        PUCK = true,
     }
 end
 

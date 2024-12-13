@@ -912,6 +912,8 @@ return {
         "only_used_by_wendy",
     },
 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
+    ANNOUNCE_SISTURN_FULL_EVIL = "only_used_by_wendy",
+    ANNOUNCE_SISTURN_FULL_BLOSSOM = "only_used_by_wendy",
     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
@@ -4115,6 +4117,8 @@ return {
 			GENERIC = "Some flowers would liven it up a bit.",
 			SOME_FLOWERS = "A few more flowers should do the trick.",
 			LOTS_OF_FLOWERS = "What a brilliant boo-quet!",
+            LOTS_OF_FLOWERS_EVIL = "Something seems off with this.", --[[TODO]]
+            LOTS_OF_FLOWERS_BLOSSOM = "What a lovely sound.", --[[TODO]]            
 		},
 
         --Wortox

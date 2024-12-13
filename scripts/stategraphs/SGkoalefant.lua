@@ -12,7 +12,7 @@ local events=
 	EventHandler("attacked", function(inst)
 		if not (inst.components.health:IsDead() or
 				inst.sg:HasStateTag("attack") or
-				CommonHandlers.HitRecoveryDelay(inst, TUNING.KOALEFANT_HIT_RECOVERY, TUNING.KOALEFANT_MAX_STUN_LOCKS))
+				CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
 		then
 			inst.sg:GoToState("hit")
 		end

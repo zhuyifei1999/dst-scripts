@@ -663,7 +663,7 @@ local function OnUpdateReturning(inst)
 			inst.Physics:SetMotorVel(0, 0, 0)
 			inst.Physics:Stop()
 		else
-			inst.speed = (inst.speed or -3 * CHUNK_RETURN_ACCEL) + CHUNK_RETURN_ACCEL
+			inst.speed = (inst.speed or (-3 * CHUNK_RETURN_ACCEL)) + CHUNK_RETURN_ACCEL
 			if inst.speed > 0 then
 				local mult = inst.speed / math.sqrt(dsq)
 				inst.Physics:SetMotorVel(dx * mult, 0, dz * mult)

@@ -172,8 +172,10 @@ local function onload(inst, data, newents)
         end
 
         if data.stone_index then
-            inst.AnimState:PlayAnimation("grave"..data.stone_index)
-            inst.random_stone_choice = data.stone_index
+            if not inst:GetSkinBuild() then
+                inst.AnimState:PlayAnimation("grave"..data.stone_index)
+            end
+            inst.random_stone_choice = tostring(data.stone_index)
         end
 
         if data.setepitaph then
@@ -218,7 +220,8 @@ local function onloadpostpass(inst, newents, savedata)
     end
 end
 
---
+local GRAVESTONE_SCRAPBOOK_HIDE = { "flower" }
+
 local function fn()
     local inst = CreateEntity()
 
@@ -236,12 +239,14 @@ local function fn()
     inst.AnimState:SetBuild("gravestones")
     inst.AnimState:Hide("flower")
 
-    inst.scrapbook_anim = "grave1"
-
     inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.scrapbook_anim = "grave1"
+    inst.scrapbook_hide = GRAVESTONE_SCRAPBOOK_HIDE
 
     inst.random_stone_choice = tostring(math.random(4))
     inst.AnimState:PlayAnimation("grave" .. inst.random_stone_choice)
@@ -292,7 +297,7 @@ end
 
 --
 local function SetStoneType(inst, stone_type)
-    inst.random_stone_choice = stone_type or tostring(math.random(4))
+    inst.random_stone_choice = tostring(stone_type or math.random(4))
     inst.AnimState:PlayAnimation("dug_grave" .. inst.random_stone_choice)
     if not inst:GetSkinBuild() then
         inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (inst.random_stone_choice == "1" and "" or inst.random_stone_choice))
@@ -321,7 +326,7 @@ local function OnDugDeployed(inst, pt, deployer)
     local gravestone = SpawnPrefab("gravestone", skin_build, inst.skin_id)
     gravestone.Transform:SetPosition(pt:Get())
 
-    gravestone.random_stone_choice = inst.random_stone_choice
+    gravestone.random_stone_choice = tostring(inst.random_stone_choice)
     gravestone.AnimState:PlayAnimation("grave"..gravestone.random_stone_choice.."_place")
     gravestone.AnimState:PushAnimation("grave"..gravestone.random_stone_choice)
 
@@ -363,10 +368,10 @@ local function OnDugLoad(inst, data, newents)
     if not data then return end
 
     if data.stone_index then
-        inst.random_stone_choice = data.stone_index
+        inst.random_stone_choice = tostring(data.stone_index)
         inst.AnimState:PlayAnimation("dug_grave"..data.stone_index)
         if not inst:GetSkinBuild() then
-            inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (inst.random_stone_choice == "1" and "" or inst.random_stone_choice))
+            inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (tostring(inst.random_stone_choice) == "1" and "" or inst.random_stone_choice))
         end
     end
 
@@ -396,12 +401,14 @@ local function dug_fn()
     inst.AnimState:SetBuild("gravestones")
     inst.AnimState:Hide("flower")
 
-    inst.scrapbook_anim = "dug_grave1"
-
     inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.scrapbook_anim = "dug_grave1"
+    inst.scrapbook_tex = "dug_gravestone"
 
     inst.random_stone_choice = tostring(math.random(4))
     inst.SetStoneType = SetStoneType
@@ -418,7 +425,7 @@ local function dug_fn()
     inventoryitem:SetSinks(true)
 
     inst.AnimState:PlayAnimation("dug_grave"..inst.random_stone_choice)
-    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (inst.random_stone_choice == "1" and "" or inst.random_stone_choice))
+    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (tostring(inst.random_stone_choice) == "1" and "" or inst.random_stone_choice))
 
     inst.OnSave = OnDugSave
     inst.OnLoad = OnDugLoad

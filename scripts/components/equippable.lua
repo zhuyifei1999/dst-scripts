@@ -126,7 +126,7 @@ function Equippable:GetWalkSpeedMult()
     local speed = self.walkspeedmult or 1.0
 
     local owner = self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner
-    if speed < 1 and self.isequipped and owner and owner:GetDebuff("elixir_buff") and owner:GetDebuff("elixir_buff").vigor_on then
+    if speed < 1 and self.isequipped and owner and owner:HasTag("vigorbuff") then
         speed = math.min(1, speed + 0.25)
     end
 

@@ -265,87 +265,88 @@ local SKILLTREE_COMMAND_DEFS =
 		end,
 		cooldowncolor = { 0.65, 0.65, 0.65, 0.75 },
     },
-	["wendy_ghostcommand_haunt"] =
-    {
-        label = STRINGS.GHOSTCOMMANDS.HAUNT_AT,
-        onselect = function(inst)
-			local spellbook = inst.components.spellbook
-			local aoetargeting = inst.components.aoetargeting
-
-            spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.HAUNT_AT)
-            aoetargeting:SetDeployRadius(0)
-			aoetargeting:SetRange(20)
-            aoetargeting.reticule.reticuleprefab = "reticuleaoeghosttarget"
-            aoetargeting.reticule.pingprefab = "reticuleaoeghosttarget_ping"
-
-            aoetargeting.reticule.mousetargetfn = nil
-            aoetargeting.reticule.targetfn = ReticuleGhostTargetFn
-            aoetargeting.reticule.updatepositionfn = nil
-			aoetargeting.reticule.twinstickrange = 15
-
-            if TheWorld.ismastersim then
-                aoetargeting:SetTargetFX("reticuleaoeghosttarget")
-                inst.components.aoespell:SetSpellFn(GhostHauntSpell)
-                spellbook:SetSpellFn(nil)
-            end
-        end,
-        execute = StartAOETargeting,
-		bank = "spell_icons_wendy",
-		build = "spell_icons_wendy",
-		anims =
-		{
-			idle = { anim = "haunt" },
-			focus = { anim = "haunt_focus", loop = true },
-			down = { anim = "haunt_pressed" },
-			cooldown = { anim = "haunt_cooldown" },
-		},
-        widget_scale = ICON_SCALE,
-		checkcooldown = function(doer)
-			--client safe
-			return (doer ~= nil
-				and doer.components.spellbookcooldowns
-				and doer.components.spellbookcooldowns:GetSpellCooldownPercent("ghostcommand"))
-				or nil
-		end,
-		cooldowncolor = { 0.65, 0.65, 0.65, 0.75 },
-    },
 	["wendy_ghostcommand_3"] =
-    {
-        label = STRINGS.GHOSTCOMMANDS.SCARE,
-		onselect = function(inst)
-			local spellbook = inst.components.spellbook
-			spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.SCARE)
-
-			if TheWorld.ismastersim then
-				inst.components.aoespell:SetSpellFn(nil)
-                spellbook:SetSpellFn(GhostScareSpell)
-			end
-		end,
-		execute = function(inst)
-			if ThePlayer.replica.inventory then
-				ThePlayer.replica.inventory:CastSpellBookFromInv(inst)
-			end
-		end,
-		bank = "spell_icons_wendy",
-		build = "spell_icons_wendy",
-		anims =
+	{
 		{
-			idle = { anim = "scare" },
-			focus = { anim = "scare_focus", loop = true },
-			down = { anim = "scare_pressed" },
-			disabled = { anim = "scare_disabled" },
-			cooldown = { anim = "scare_cooldown" },
+			label = STRINGS.GHOSTCOMMANDS.SCARE,
+			onselect = function(inst)
+				local spellbook = inst.components.spellbook
+				spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.SCARE)
+
+				if TheWorld.ismastersim then
+					inst.components.aoespell:SetSpellFn(nil)
+					spellbook:SetSpellFn(GhostScareSpell)
+				end
+			end,
+			execute = function(inst)
+				if ThePlayer.replica.inventory then
+					ThePlayer.replica.inventory:CastSpellBookFromInv(inst)
+				end
+			end,
+			bank = "spell_icons_wendy",
+			build = "spell_icons_wendy",
+			anims =
+			{
+				idle = { anim = "scare" },
+				focus = { anim = "scare_focus", loop = true },
+				down = { anim = "scare_pressed" },
+				disabled = { anim = "scare_disabled" },
+				cooldown = { anim = "scare_cooldown" },
+			},
+			widget_scale = ICON_SCALE,
+			checkcooldown = function(doer)
+				--client safe
+				return (doer ~= nil
+					and doer.components.spellbookcooldowns
+					and doer.components.spellbookcooldowns:GetSpellCooldownPercent("ghostcommand"))
+					or nil
+			end,
+			cooldowncolor = { 0.65, 0.65, 0.65, 0.75 },
 		},
-        widget_scale = ICON_SCALE,
-		checkcooldown = function(doer)
-			--client safe
-			return (doer ~= nil
-				and doer.components.spellbookcooldowns
-				and doer.components.spellbookcooldowns:GetSpellCooldownPercent("ghostcommand"))
-				or nil
-		end,
-		cooldowncolor = { 0.65, 0.65, 0.65, 0.75 },
-    },
+		{
+			label = STRINGS.GHOSTCOMMANDS.HAUNT_AT,
+			onselect = function(inst)
+				local spellbook = inst.components.spellbook
+				local aoetargeting = inst.components.aoetargeting
+
+				spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.HAUNT_AT)
+				aoetargeting:SetDeployRadius(0)
+				aoetargeting:SetRange(20)
+				aoetargeting.reticule.reticuleprefab = "reticuleaoeghosttarget"
+				aoetargeting.reticule.pingprefab = "reticuleaoeghosttarget_ping"
+
+				aoetargeting.reticule.mousetargetfn = nil
+				aoetargeting.reticule.targetfn = ReticuleGhostTargetFn
+				aoetargeting.reticule.updatepositionfn = nil
+				aoetargeting.reticule.twinstickrange = 15
+
+				if TheWorld.ismastersim then
+					aoetargeting:SetTargetFX("reticuleaoeghosttarget")
+					inst.components.aoespell:SetSpellFn(GhostHauntSpell)
+					spellbook:SetSpellFn(nil)
+				end
+			end,
+			execute = StartAOETargeting,
+			bank = "spell_icons_wendy",
+			build = "spell_icons_wendy",
+			anims =
+			{
+				idle = { anim = "haunt" },
+				focus = { anim = "haunt_focus", loop = true },
+				down = { anim = "haunt_pressed" },
+				cooldown = { anim = "haunt_cooldown" },
+			},
+			widget_scale = ICON_SCALE,
+			checkcooldown = function(doer)
+				--client safe
+				return (doer ~= nil
+					and doer.components.spellbookcooldowns
+					and doer.components.spellbookcooldowns:GetSpellCooldownPercent("ghostcommand"))
+					or nil
+			end,
+			cooldowncolor = { 0.65, 0.65, 0.65, 0.75 },
+		}
+	}
 }
 
 local function GetGhostCommandsFor(owner)
@@ -357,7 +358,13 @@ local function GetGhostCommandsFor(owner)
     if owner.components.skilltreeupdater then
         for skill, skill_command in pairs(SKILLTREE_COMMAND_DEFS) do
             if owner.components.skilltreeupdater:IsActivated(skill) then
-                table.insert(commands, skill_command)
+				if skill_command.label then
+					table.insert(commands, skill_command)
+				else
+					for _, skill_command2 in pairs(skill_command) do
+						table.insert(commands, skill_command2)
+					end
+				end
             end
         end
     end

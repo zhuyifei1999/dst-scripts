@@ -235,7 +235,7 @@ local function graveguard_fn()
 
     --
     local aura = inst:AddComponent("aura")
-    aura.radius = TUNING.GHOST_RADIUS
+    aura.radius = TUNING.WENDYSKILL_GRAVEGHOST_AURARADIUS
     aura.tickperiod = TUNING.GHOST_DMG_PERIOD
     aura.auratestfn = GuardAuraTest
 

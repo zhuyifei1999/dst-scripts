@@ -61,8 +61,6 @@ local function buff_OnExtended(inst)
         inst.task:Cancel()
         inst.task = nil
     end
-
-    inst.task = inst:DoTaskInTime(TUNING.ANCIENTTREE_NIGHTVISION_FRUIT_BUFF_DURATION, buff_Expire)
 end
 
 local function buff_OnSave(inst, data)

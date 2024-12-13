@@ -10,7 +10,7 @@ local events=
 		if not (inst.components.health:IsDead() or
 				inst.sg:HasStateTag("nointerrupt") or
 				inst.sg:HasStateTag("attack") or
-				CommonHandlers.HitRecoveryDelay(inst))
+				CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
 		then
 			inst.sg:GoToState("hit")
 		end

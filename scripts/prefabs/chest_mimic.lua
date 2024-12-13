@@ -306,6 +306,13 @@ local function loot_setup_fn(lootdropper)
 	end
 end
 
+local SCRAPBOOK_DEPS = {}
+
+for k, v in pairs(MORPHABLE_ITEMS) do
+    table.insert(SCRAPBOOK_DEPS, k)
+    table.insert(SCRAPBOOK_DEPS, v)
+end
+
 --
 local function revealed_fn()
     local inst = CreateEntity()
@@ -340,7 +347,7 @@ local function revealed_fn()
         return inst
     end
 
-    --
+    inst.scrapbook_adddeps = SCRAPBOOK_DEPS
     inst.sounds = REVEALED_SOUNDS
 
     --

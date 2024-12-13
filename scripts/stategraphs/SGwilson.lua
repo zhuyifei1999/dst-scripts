@@ -14347,7 +14347,15 @@ local states =
             if inst.sg.statemem.alldata.snapcamera then
                 inst:SnapCamera()
             end
-            local x, y, z = inst.sg.statemem.alldata.dest:Get()
+            local x, y, z
+            if inst.sg.statemem.alldata.platform and inst.sg.statemem.alldata.platform:IsValid() then
+                local platformoffset = inst.sg.statemem.alldata.platformoffset
+                local px, py, pz = inst.sg.statemem.alldata.platform.Transform:GetWorldPosition()
+                x, y, z = px - platformoffset.x, py - platformoffset.y, pz - platformoffset.z
+                inst:ForceFacePoint(px, py, pz) -- Always jump towards center of boat.
+            else
+                x, y, z = inst.sg.statemem.alldata.dest:Get()
+            end
             inst.Physics:Teleport(x, y, z)
             inst.DynamicShadow:Enable(false)
             inst.AnimState:PlayAnimation("jumpout") -- 28 frames
@@ -16088,7 +16096,6 @@ local states =
 
 		onenter = function(inst, data)
 			inst.AnimState:PlayAnimation("slingshot")
-			inst.AnimState:OverrideSymbol("slingshot_fx", "player_actions_slingshot", "slingshot_fx")
 			if inst.sg.lasttags and inst.sg.lasttags["aoecharging"] then
 				--one frame to accept the final RPC aiming direction
 				inst.sg:AddStateTag("aoecharging")
@@ -16183,10 +16190,6 @@ local states =
 				end
 			end),
 		},
-
-		onexit = function(inst)
-			inst.AnimState:ClearOverrideSymbol("slingshot_fx")
-		end,
 	},
 
 	State{
@@ -18280,11 +18283,11 @@ local states =
         tags = { "busy", "pausepredict", "nodangle", "nomorph" },
 
         onenter = function(inst, data)
+            inst.sg.statemem.alldata = data
             inst.components.locomotor:Stop()
             local dest
-            if data then
-                dest = data.dest
-                inst.sg.statemem.from_map = data.from_map
+            if inst.sg.statemem.alldata then
+                dest = inst.sg.statemem.alldata.dest
             end
             inst.AnimState:PlayAnimation("wortox_portal_jumpin")
             local x, y, z = inst.Transform:GetWorldPosition()
@@ -18348,7 +18351,7 @@ local states =
 
         ontimeout = function(inst)
             inst.sg.statemem.portaljumping = true
-            inst.sg:GoToState("portal_jumpout", {dest = inst.sg.statemem.dest, from_map = inst.sg.statemem.from_map})
+            inst.sg:GoToState("portal_jumpout", inst.sg.statemem.alldata)
         end,
 
         onexit = function(inst)
@@ -18365,25 +18368,30 @@ local states =
         tags = { "busy", "nopredict", "nomorph", "noattack", "nointerrupt" },
 
         onenter = function(inst, data)
+            inst.sg.statemem.alldata = data
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
-            local dest
-            if data then
-                dest = data.dest
-                inst.sg.statemem.from_map = data.from_map
-            end
             inst:ResetMinimapOffset()
-            if inst.sg.statemem.from_map then
+            if inst.sg.statemem.alldata and inst.sg.statemem.alldata.from_map then
                 inst:SnapCamera()
             end
-            if dest ~= nil then
-                inst.Physics:Teleport(dest:Get())
+            local x, y, z
+            if inst.sg.statemem.alldata then
+                if inst.sg.statemem.alldata.platform and inst.sg.statemem.alldata.platform:IsValid() then
+                    local platformoffset = inst.sg.statemem.alldata.platformoffset
+                    local px, py, pz = inst.sg.statemem.alldata.platform.Transform:GetWorldPosition()
+                    x, y, z = px - platformoffset.x, py - platformoffset.y, pz - platformoffset.z
+                    inst:ForceFacePoint(px, py, pz) -- Always jump towards center of boat.
+                else
+                    x, y, z = inst.sg.statemem.alldata.dest:Get()
+                end
             else
-                dest = inst:GetPosition()
+                x, y, z = inst.Transform:GetWorldPosition()
             end
+            inst.Physics:Teleport(x, y, z)
             inst.AnimState:PlayAnimation("wortox_portal_jumpout")
             local fx = SpawnPrefab("wortox_portal_jumpout_fx")
-            fx.Transform:SetPosition(dest:Get())
+            fx.Transform:SetPosition(x, y, z)
             if inst.components.skilltreeupdater then
                 if inst.components.skilltreeupdater:IsActivated("wortox_allegiance_shadow") then
                     fx.AnimState:SetMultColour(WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, 1)

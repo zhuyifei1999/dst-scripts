@@ -31,7 +31,7 @@ local function CacheWortoxReviverRecipeCost(default)
 end
 
 local function TryToAttachWortoxID(inst, owner)
-    if owner == nil then
+    if owner == nil or owner.is_snapshot_user_session then
         return
     end
     local linkeditem = inst.components.linkeditem
@@ -121,8 +121,13 @@ local function SpellFn(inst, target, pos, caster)
                 break
             end
         end
+        local platform = TheWorld.Map:GetPlatformAtPoint(owner_pos.x, owner_pos.z)
+        local platformoffset
+        if platform then
+            platformoffset = platform:GetPosition() - owner_pos
+        end
         local snapcamera = VecUtil_LengthSq(owner_pos.x - caster_pos.x, owner_pos.z - caster_pos.z) > PLAYER_CAMERA_SEE_DISTANCE_SQ
-        caster.sg:GoToState("wortox_teleport_reviver", { dest = owner_pos, snapcamera = snapcamera, item = inst, })
+        caster.sg:GoToState("wortox_teleport_reviver", { dest = owner_pos, platform = platform, platformoffset = platformoffset, snapcamera = snapcamera, item = inst, })
     end
 end
 
@@ -204,6 +209,7 @@ local function fn()
     inst:AddTag("show_spoilage")
     inst:AddTag("crushitemcast")
     inst.spelltype = "SQUEEZE"
+    inst:AddTag(SPELLTYPES.WORTOX_REVIVER_LOCK .. "_spellcaster") -- Network optimization from spellcaster:SetSpellType sneak into pristine state.
 
     local linkeditem = inst:AddComponent("linkeditem")
     inst.displaynamefn = DisplayNameFn
@@ -221,6 +227,10 @@ local function fn()
     inst.OnStartBody = OnStartBody
     inst.OnStopBody = OnStopBody
     inst.OnConsume = OnConsume
+    inst.OnBuiltFn = OnBuiltFn
+    inst.OnLoad = OnLoad
+    inst.SetAllowConsumption = SetAllowConsumption
+    inst.TryToAttachWortoxID = TryToAttachWortoxID
     inst.crushitemcast_sound = "meta5/wortox/ttheart_in_f18"
 
     local inventoryitem = inst:AddComponent("inventoryitem")
@@ -240,18 +250,12 @@ local function fn()
     spellcaster.canuseontargets = true
     spellcaster.canusefrominventory = true
     spellcaster.canonlyuseonlocomotorspvp = true
+    inst:SetAllowConsumption(false)
 
     MakeHauntableLaunch(inst)
 
     linkeditem:SetOnOwnerInstRemovedFn(OnOwnerInstRemovedFn)
     linkeditem:SetOnSkillTreeInitializedFn(OnSkillTreeInitializedFn)
-
-    inst.OnBuiltFn = OnBuiltFn
-    inst.OnLoad = OnLoad
-    inst.SetAllowConsumption = SetAllowConsumption
-    inst.TryToAttachWortoxID = TryToAttachWortoxID
-
-    inst:SetAllowConsumption(false)
 
     return inst
 end

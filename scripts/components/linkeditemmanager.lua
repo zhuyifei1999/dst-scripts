@@ -10,7 +10,7 @@ local LinkedItemManager = Class(function(self, inst)
     self.players = {}
 
     for _, player in ipairs(AllPlayers) do
-        self.players[player.userid] = player
+        self:OnPlayerJoined(player)
     end
     self.inst:ListenForEvent("ms_playerjoined", function(src, player) self:OnPlayerJoined(player) end, TheWorld)
     self.inst:ListenForEvent("ms_playerleft", function(src, player) self:OnPlayerLeft(player) end, TheWorld)
@@ -54,8 +54,16 @@ function LinkedItemManager:OnPlayerJoined(player)
         end
     end
 
-    self.waitingforinitialization[player] = true
-    self.inst:ListenForEvent("ms_skilltreeinitialized", self.OnSkillTreeInitialized, player)
+    if player._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY then
+        if items then
+            for item, _ in pairs(items) do
+                item.components.linkeditem:OnSkillTreeInitialized()
+            end
+        end
+    else
+        self.waitingforinitialization[player] = true
+        self.inst:ListenForEvent("ms_skilltreeinitialized", self.OnSkillTreeInitialized, player)
+    end
 end
 
 function LinkedItemManager:OnPlayerLeft(player)

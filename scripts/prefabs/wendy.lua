@@ -30,7 +30,6 @@ local prefabs =
 	"abigailunsummonfx",
 	"abigailunsummonfx_mount",
 
-	"shadow_ground_seeking_bolt",
 	"wendy_sanityaura_buff_on_fx",
 	"wendy_sanityaura_buff_off_fx",
 }
@@ -247,12 +246,22 @@ local function checkforshadowsacrifice(inst,data)
 	end
 end
 
-local function update_sisturn_state(inst, is_active)
+local function update_sisturn_state(inst, is_active, is_blossom)
 	if inst.components.ghostlybond ~= nil then
 		if is_active == nil then
 			is_active = TheWorld.components.sisturnregistry ~= nil and TheWorld.components.sisturnregistry:IsActive()
 		end
 		inst.components.ghostlybond:SetBondTimeMultiplier("sisturn", is_active and TUNING.ABIGAIL_BOND_LEVELUP_TIME_MULT or nil)
+
+		if is_blossom and inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wendy_sisturn_3") then
+			if inst.components.ghostlybond and inst.components.ghostlybond.ghost then
+				inst.components.ghostlybond.ghost:AddTag("player_damagescale")
+			end
+		else
+			if inst.components.ghostlybond and inst.components.ghostlybond.ghost then
+				inst.components.ghostlybond.ghost:RemoveTag("player_damagescale")
+			end
+		end
 	end
 end
 
@@ -261,6 +270,11 @@ local function CustomCombatDamage(inst, target)
 	return (vex_debuff ~= nil and vex_debuff.prefab == "abigail_vex_debuff" and TUNING.ABIGAIL_VEX_GHOSTLYFRIEND_DAMAGE_MOD)
 		or (vex_debuff ~= nil and vex_debuff.prefab == "abigail_vex_shadow_debuff" and TUNING.ABIGAIL_SHADOW_VEX_GHOSTLYFRIEND_DAMAGE_MOD)
 		or (target == inst.components.ghostlybond.ghost and target:HasTag("abigail") and 0)
+		or 1
+end
+
+local function CustomSPCombatDamage(inst, target)
+	return target == inst.components.ghostlybond.ghost and target:HasTag("abigail") and 0
 		or 1
 end
 
@@ -367,6 +381,8 @@ local function master_postinit(inst)
 		inst.components.ghostlybond:Init("abigail", TUNING.ABIGAIL_BOND_LEVELUP_TIME)
 
 		inst.components.combat.customdamagemultfn = CustomCombatDamage
+		inst.components.combat.customspdamagemultfn = CustomSPCombatDamage  -- Were using this here but shouldn't really be used.
+		
 
 		inst.components.health.redirect = redirect_to_abigail
 
@@ -383,7 +399,7 @@ local function master_postinit(inst)
 
 		inst:ListenForEvent("murdered", checkforshadowsacrifice)
 
-		inst:ListenForEvent("onsisturnstatechanged", function(world, data) update_sisturn_state(inst, data.is_active) end, TheWorld)
+		inst:ListenForEvent("onsisturnstatechanged", function(world, data) print("GOT HERE") update_sisturn_state(inst, data.is_active, data.is_blossom) end, TheWorld)
 		update_sisturn_state(inst)
 
         inst.components.combat.damagemultiplier = TUNING.WENDY_DAMAGE_MULT

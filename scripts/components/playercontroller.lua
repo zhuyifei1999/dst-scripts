@@ -1787,11 +1787,12 @@ local function GetPickupAction(self, target, tool)
 		not (target:HasTag("heavy") or (target:HasTag("fire") and not target:HasTag("lighter")) or target:HasTag("catchable")) and
         not target:HasTag("spider") then
         if self:HasItemSlots() or target.replica.equippable ~= nil then
-            if tool and tool:HasTag("nabbag") and not target:HasAnyTag("_container", "heavy") then
-                return ACTIONS.NABBAG
-            else
+            -- FIXME(JBK): Make this a toggle in options?
+            --if tool and tool:HasTag("nabbag") and not target:HasAnyTag("_container", "heavy") then
+            --    return ACTIONS.NABBAG
+            --else
                 return ACTIONS.PICKUP
-            end
+            --end
         end
         return nil
     elseif target:HasTag("pickable") and not target:HasTag("fire") then

@@ -10,9 +10,10 @@ local AvengingGhost = Class(function(self, inst)
     self.inst = inst
     self.ismastersim = TheWorld.ismastersim
 
-	self._symbol = net_hash(inst.GUID, "avengingghost._symbol", "avengingghostsymboldirty")
     self._avengetime = net_float(inst.GUID, "avengingghost._avengetime", "avengetimedirty")
     self._maxtime = net_float(inst.GUID, "avengingghost._maxtime", "avengetimemaxdirty")
+    self._symbol = net_hash(inst.GUID, "avengingghost._symbol", "avengingghostsymboldirty")
+
     self._maxtime:set(MAX_TIME)
 
     inst:ListenForEvent("avengetimedirty", OnAvengeTimeDirty)

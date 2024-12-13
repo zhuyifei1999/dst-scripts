@@ -23,6 +23,8 @@ local function ValidContainer(inst, containerinst)
 	return containerinst.prefab == "slingshotmodscontainer"
 end
 
+local SCRAPBOOK_DEPS = { "slingshot", "slingshotmodkit" }
+
 local function MakePart(name, def)
 	local function fn()
 		local inst = CreateEntity()
@@ -65,6 +67,8 @@ local function MakePart(name, def)
 		if not TheWorld.ismastersim then
 			return inst
 		end
+
+		inst.scrapbook_adddeps = SCRAPBOOK_DEPS
 
 		inst.slingshot_slot = def.slot
 		inst.swap_build = bankbuild
