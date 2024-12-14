@@ -253,7 +253,8 @@ local function RecalculateInclination(inst) -- Server and Client ran.
         local CUSTOM_FUNCTIONS = require("prefabs/skilltree_defs").CUSTOM_FUNCTIONS.wortox -- Keeping it here to only pull in skilltree_defs out of definition space.
         local nice = skilltreeupdater:CountSkillTag("nice")
         local naughty = skilltreeupdater:CountSkillTag("naughty")
-        new_inclination = CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty)
+        local affinitytype = skilltreeupdater:IsActivated("wortox_allegiance_lunar") and "lunar" or skilltreeupdater:IsActivated("wortox_allegiance_shadow") and "shadow" or nil
+        new_inclination = CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty, affinitytype)
     end
 
     if new_inclination ~= old_inclination then

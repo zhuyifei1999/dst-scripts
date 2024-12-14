@@ -16002,15 +16002,15 @@ STRINGS.SKILLTREE = {
     WORTOX = {
         -- GENERIC - Not skills but information boxes the player will be able to hover over for more information.
         WORTOX_INCLINATION_METER_TITLE = "The Scales",
-        WORTOX_INCLINATION_METER_DESC = "Based off of how many Nice or Naughty skills selected, you will find yourself leaning towards a certain inclination.",
+        WORTOX_INCLINATION_METER_DESC = "Based off of how many Nice or Naughty skills selected, you will find yourself leaning towards a certain inclination. Choosing an affinity skews the scales and you will find your inclination coming sooner.",
         WORTOX_INCLINATION_NICE_TITLE = "Nice Inclination",
         WORTOX_INCLINATION_NICE_DESC = "Your kindness has made your monster side no longer stir up trouble.\nEating or releasing Souls will change sanity at an increased amount.",
         WORTOX_INCLINATION_NAUGHTY_TITLE = "Naughty Inclination",
         WORTOX_INCLINATION_NAUGHTY_DESC = "Your greed stops you from overloading of Soul power, for a moment.\nEating or releasing Souls will no longer change sanity. Souls heal you for less.",
 
         -- LOCKS
-        WORTOX_NICE_LOCK_DESC = "Requires the skill below and 5 total Nice skills to unlock.",
-        WORTOX_NAUGHTY_LOCK_DESC = "Requires the skill below and 5 total Naughty skills to unlock.",
+        WORTOX_NICE_LOCK_DESC = "Requires the skill below and 5 total Nice and/or Neutral skills to unlock.",
+        WORTOX_NAUGHTY_LOCK_DESC = "Requires the skill below and 5 total Naughty and/or Neutral skills to unlock.",
 
         -- NICE
         WORTOX_LIFEBRINGER_1_TITLE = "Lifebringer I",

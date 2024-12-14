@@ -328265,7 +328265,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_INCLINATION_METER_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_INCLINATION_METER_DESC"
-msgid "Based off of how many Nice or Naughty skills selected, you will find yourself leaning towards a certain inclination."
+msgid "Based off of how many Nice or Naughty skills selected, you will find yourself leaning towards a certain inclination. Choosing an affinity skews the scales and you will find your inclination coming sooner."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_INCLINATION_METER_TITLE
@@ -328375,12 +328375,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_NAUGHTY_LOCK_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_NAUGHTY_LOCK_DESC"
-msgid "Requires the skill below and 5 total Naughty skills to unlock."
+msgid "Requires the skill below and 5 total Naughty and/or Neutral skills to unlock."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_NICE_LOCK_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_NICE_LOCK_DESC"
-msgid "Requires the skill below and 5 total Nice skills to unlock."
+msgid "Requires the skill below and 5 total Nice and/or Neutral skills to unlock."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_PANFLUTE_FORGET_DESC

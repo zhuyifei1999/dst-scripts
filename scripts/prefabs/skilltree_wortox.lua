@@ -98,8 +98,16 @@ local function UpdateNabBags(inst)
 end
 
 local CUSTOM_FUNCTIONS;CUSTOM_FUNCTIONS = {
-    CalculateInclination = function(nice, naughty)
-        if math.abs(nice - naughty) >= TUNING.SKILLS.WORTOX.TIPPED_BALANCE_THRESHOLD then
+    CalculateInclination = function(nice, naughty, affinitytype)
+        local diff = nice - naughty
+        if affinitytype then
+            if diff < 0 then
+                diff = diff - 1
+            elseif diff > 0 then
+                diff = diff + 1
+            end
+        end
+        if math.abs(diff) >= TUNING.SKILLS.WORTOX.TIPPED_BALANCE_THRESHOLD then
             if nice > naughty then
                 return "nice"
             else
@@ -187,19 +195,50 @@ local CUSTOM_FUNCTIONS;CUSTOM_FUNCTIONS = {
     end,
 }
 
-local function UpdateToken(token, diff, instant, nice, MAX_TOKENS)
+local function UpdateToken(token, diff, instant, nice, MAX_TOKENS, affinitytype)
     if not nice then
         diff = -diff
     end
 
     local tokenstate = diff > MAX_TOKENS and token.tokenindex == MAX_TOKENS and "overcharged" or diff >= token.tokenindex and "on" or "off"
+    if affinitytype and token.tokenindex == 1 then
+        tokenstate = affinitytype
+        if affinitytype == "lunar" then
+            local WORTOX_LUNAR_OFFSET = 0.1
+            token:GetAnimState():SetAddColour(WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, 0)
+            token:GetAnimState():SetMultColour(1, 1, 1, 1)
+        else -- "shadow"
+            local WORTOX_SHADOW_MULT = 0.6
+            token:GetAnimState():SetAddColour(0, 0, 0, 0)
+            token:GetAnimState():SetMultColour(WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, 1)
+        end
+        token.bar:Hide()
+    else
+        token:GetAnimState():SetAddColour(0, 0, 0, 0)
+        token:GetAnimState():SetMultColour(1, 1, 1, 1)
+        token.bar:Show()
+    end
 
     if instant then
         token.tokenstate = tokenstate
     end
 
     if token.tokenstate ~= tokenstate then
-        if tokenstate == "overcharged" then
+        if tokenstate == "lunar" then
+            if token:GetAnimState():IsCurrentAnimation("token_to_on") or token:GetAnimState():IsCurrentAnimation("token_on") then
+                token:GetAnimState():PlayAnimation("token_lunar")
+            else
+                token:GetAnimState():PlayAnimation("token_to_lunar")
+                token:GetAnimState():PushAnimation("token_lunar")
+            end
+        elseif tokenstate == "shadow" then
+            if token:GetAnimState():IsCurrentAnimation("token_to_on") or token:GetAnimState():IsCurrentAnimation("token_on") then
+                token:GetAnimState():PlayAnimation("token_shadow")
+            else
+                token:GetAnimState():PlayAnimation("token_to_shadow")
+                token:GetAnimState():PushAnimation("token_shadow")
+            end
+        elseif tokenstate == "overcharged" then
             token:GetAnimState():PlayAnimation("token_on_to_glow")
             token:GetAnimState():PushAnimation("token_glow")
         elseif tokenstate == "on" then
@@ -218,7 +257,11 @@ local function UpdateToken(token, diff, instant, nice, MAX_TOKENS)
         end
         token.tokenstate = tokenstate
     else
-        if tokenstate == "overcharged" then
+        if tokenstate == "lunar" then
+            token:GetAnimState():PlayAnimation("token_lunar")
+        elseif tokenstate == "shadow" then
+            token:GetAnimState():PlayAnimation("token_shadow")
+        elseif tokenstate == "overcharged" then
             token:GetAnimState():PlayAnimation("token_glow")
         elseif tokenstate == "on" then
             token:GetAnimState():PlayAnimation("token_on")
@@ -261,6 +304,14 @@ local function BuildSkillsData(SkillTreeFns)
                     local nice = SkillTreeFns.CountTags(prefabname, "nice", activatedskills)
                     local naughty = SkillTreeFns.CountTags(prefabname, "naughty", activatedskills)
                     local diff = nice - naughty
+                    local affinitytype = activatedskills and (activatedskills["wortox_allegiance_lunar"] and "lunar" or activatedskills["wortox_allegiance_shadow"] and "shadow") or nil
+                    if affinitytype then
+                        if diff < 0 then
+                            diff = diff - 1
+                        elseif diff > 0 then
+                            diff = diff + 1
+                        end
+                    end
 
                     local MAX_TOKENS = TUNING.SKILLS.WORTOX.TIPPED_BALANCE_THRESHOLD
                     local tokens_nice, tokens_naughty = {}, {}
@@ -287,7 +338,7 @@ local function BuildSkillsData(SkillTreeFns)
                         bar:SetPosition(nice and -baroffsetx or baroffsetx, baroffsety)
                         bar:SetRotation(nice and barrotation or -barrotation)
                         bar:SetClickable(false)
-                        UpdateToken(token, diff, true, nice, MAX_TOKENS)
+                        UpdateToken(token, diff, true, nice, MAX_TOKENS, affinitytype)
                         return token
                     end
                     for i = 1, MAX_TOKENS do
@@ -300,6 +351,14 @@ local function BuildSkillsData(SkillTreeFns)
                     local nice = SkillTreeFns.CountTags(prefabname, "nice", activatedskills)
                     local naughty = SkillTreeFns.CountTags(prefabname, "naughty", activatedskills)
                     local diff = nice - naughty
+                    local affinitytype = activatedskills and (activatedskills["wortox_allegiance_lunar"] and "lunar" or activatedskills["wortox_allegiance_shadow"] and "shadow") or nil
+                    if affinitytype then
+                        if diff < 0 then
+                            diff = diff - 1
+                        elseif diff > 0 then
+                            diff = diff + 1
+                        end
+                    end
 
                     local MAX_TOKENS = TUNING.SKILLS.WORTOX.TIPPED_BALANCE_THRESHOLD
                     local instant = activatedskills == nil
@@ -308,8 +367,8 @@ local function BuildSkillsData(SkillTreeFns)
                             button.tokens_nice[i].tokenstate = nil
                             button.tokens_naughty[i].tokenstate = nil
                         end
-                        UpdateToken(button.tokens_nice[i], diff, instant, true, MAX_TOKENS)
-                        UpdateToken(button.tokens_naughty[i], diff, instant, false, MAX_TOKENS)
+                        UpdateToken(button.tokens_nice[i], diff, instant, true, MAX_TOKENS, affinitytype)
+                        UpdateToken(button.tokens_naughty[i], diff, instant, false, MAX_TOKENS, affinitytype)
                     end
                 end,
             },
@@ -329,7 +388,8 @@ local function BuildSkillsData(SkillTreeFns)
             lock_open = function(prefabname, activatedskills, readonly)
                 local nice = SkillTreeFns.CountTags(prefabname, "nice", activatedskills)
                 local naughty = SkillTreeFns.CountTags(prefabname, "naughty", activatedskills)
-                return CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty) == "nice"
+                local affinitytype = activatedskills and (activatedskills["wortox_allegiance_lunar"] and "lunar" or activatedskills["wortox_allegiance_shadow"] and "shadow") or nil
+                return CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty, affinitytype) == "nice"
             end,
         },
         wortox_inclination_naughty = {
@@ -347,7 +407,8 @@ local function BuildSkillsData(SkillTreeFns)
             lock_open = function(prefabname, activatedskills, readonly)
                 local nice = SkillTreeFns.CountTags(prefabname, "nice", activatedskills)
                 local naughty = SkillTreeFns.CountTags(prefabname, "naughty", activatedskills)
-                return CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty) == "naughty"
+                local affinitytype = activatedskills and (activatedskills["wortox_allegiance_lunar"] and "lunar" or activatedskills["wortox_allegiance_shadow"] and "shadow") or nil
+                return CUSTOM_FUNCTIONS.CalculateInclination(nice, naughty, affinitytype) == "naughty"
             end,
         },
         ------------------------------------------------------------------------------------------------------------------------
@@ -541,7 +602,7 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wortox_panflute_playing",
             pos = {ORIGIN_NEUTRAL_X, ORIGIN_NEUTRAL_Y},
             group = "neutral",
-            tags = {"neutral"},
+            tags = {"neutral", "nice1", "naughty1"},
             root = true,
             connects = {
                 "wortox_panflute_soulcaller",
@@ -564,7 +625,7 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wortox_panflute_soulcaller",
             pos = {ORIGIN_NEUTRAL_X - SPACER * 1.25, ORIGIN_NEUTRAL_Y},
             group = "neutral",
-            tags = {"neutral"},
+            tags = {"neutral", "nice1", "naughty1"},
         },
         wortox_panflute_forget = {
             title = STRINGS.SKILLTREE.WORTOX.WORTOX_PANFLUTE_FORGET_TITLE,
@@ -572,7 +633,7 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wortox_panflute_forget",
             pos = {ORIGIN_NEUTRAL_X + SPACER * 1.25, ORIGIN_NEUTRAL_Y},
             group = "neutral",
-            tags = {"neutral"},
+            tags = {"neutral", "nice1", "naughty1"},
         },
         ------------------------------------------------------------------------------------------------------------------------
         -- NAUGHTY
@@ -737,7 +798,7 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wortox_favor_lunar",
             pos = {ORIGIN_ALLEGIANCE_X - SPACER * 0.5, ORIGIN_ALLEGIANCE_Y + LOCK_SPACER * 2},
             group = "allegiance",
-            tags = {"lunar_favor", "neutral"},
+            tags = {"lunar_favor", "neutral", "allegiance"},
             locks = {"wortox_allegiance_lunar_lock_1", "wortox_allegiance_lunar_lock_2"},
             onactivate = function(inst)
                 inst:AddTag("player_lunar_aligned")
@@ -775,7 +836,7 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wortox_favor_shadow",
             pos = {ORIGIN_ALLEGIANCE_X + SPACER * 0.5, ORIGIN_ALLEGIANCE_Y + LOCK_SPACER * 2},
             group = "allegiance",
-            tags = {"shadow_favor", "neutral"},
+            tags = {"shadow_favor", "neutral", "allegiance"},
             locks = {"wortox_allegiance_shadow_lock_1", "wortox_allegiance_shadow_lock_2"},
             onactivate = function(inst)
                 inst:AddTag("player_shadow_aligned")
