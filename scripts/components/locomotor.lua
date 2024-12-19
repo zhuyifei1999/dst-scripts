@@ -1,13 +1,13 @@
 local SourceModifierList = require("util/sourcemodifierlist")
 
-local DOZE_OFF_TIME = 2
+--local DOZE_OFF_TIME = 2
 
-local PATHFIND_PERIOD = 1
-local PATHFIND_MAX_RANGE = 40
+--local PATHFIND_PERIOD = 1
+--local PATHFIND_MAX_RANGE = 40
 
 local STATUS_CALCULATING = 0
 local STATUS_FOUNDPATH = 1
-local STATUS_NOPATH = 2
+--local STATUS_NOPATH = 2
 
 local ARRIVE_STEP = .15
 
@@ -533,7 +533,10 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
             self.inst:PushEvent("walkoncreep", eventdata)
             self.wasoncreep = true
         end
-        self.groundspeedmultiplier = self.slowmultiplier
+
+        if not self.inst:HasTag("vigorbuff") then
+            self.groundspeedmultiplier = self.slowmultiplier
+        end
     else
         if self.wasoncreep and self.triggerscreep then
             self.inst:PushEvent("walkoffcreep")
@@ -541,7 +544,7 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
         self.wasoncreep = false
 
         local current_ground_tile = TheWorld.Map:GetTileAtPoint(x, 0, z)
-        self.groundspeedmultiplier = (self:IsFasterOnGroundTile(current_ground_tile) or 
+        self.groundspeedmultiplier = (self:IsFasterOnGroundTile(current_ground_tile) or
                                      (self:FasterOnRoad() and ((RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or GROUND_ROADWAYS[current_ground_tile])) or
                                      (oncreep and self:FasterOnCreep()))
 									 and self.fastmultiplier
@@ -1231,7 +1234,7 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z, hop_distance
 
     local can_hop, px, pz, found_platform = self:ScanForPlatformInDir(my_platform, TheWorld.Map, my_x, my_z, dir_x, dir_z, step_count, PLATFORM_SCAN_STEP_SIZE)
     local blocked = false
-    if can_hop then
+    --[[if can_hop then
         -- If we found a place to hop to, we need to check that our path is clear of obstacles.
         local path_x, path_z = px - my_x, pz - my_z
 
@@ -1247,13 +1250,11 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z, hop_distance
             platform_dir_x, platform_dir_z = path_x / p_length, path_z / p_length
         end
 
-        --[[
-        if self:TestForBlocked(my_x, my_z, platform_dir_x, platform_dir_z, self.inst:GetPhysicsRadius(0), p_length) then
-            can_hop = false
-            blocked = true
-        end
-        ]]--
-    end
+        --if self:TestForBlocked(my_x, my_z, platform_dir_x, platform_dir_z, self.inst:GetPhysicsRadius(0), p_length) then
+        --    can_hop = false
+        --    blocked = true
+        --end
+    end]]--
 
     return can_hop, px, pz, found_platform, blocked
 end

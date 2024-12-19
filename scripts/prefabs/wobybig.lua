@@ -40,6 +40,12 @@ local function ApplyBuildOverrides(inst, animstate)
     else
         animstate:SetBuild(basebuild)
     end
+    local skin_build = inst:GetSkinBuild()
+    if skin_build then
+        for _, symbol in ipairs(WOBY_BIG_SYMBOLS) do
+            animstate:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, basebuild)
+        end
+    end
 end
 
 local function TriggerTransformation(inst)
@@ -69,8 +75,12 @@ local function SetRunSpeed(inst, speed)
         return
     end
 
+    speed = inst:AddTrainingBonus(speed, WOBY_TRAINING_ASPECTS.SPEED)
+
     inst.components.locomotor.runspeed = speed
+
     local rider = inst.components.rideable:GetRider()
+
     if rider and rider.player_classified ~= nil then
         rider.player_classified.riderrunspeed:set(speed)
     end
@@ -157,10 +167,18 @@ end
 local function FinishTransformation(inst)
     local items = inst.components.container:RemoveAllItems()
 	local player = inst._playerlink
-    local new_woby = ReplacePrefab(inst, "wobysmall")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build then
+        skin_build = skin_build:gsub("woby_big", "pupington_woby")
+    end
+    local new_woby = ReplacePrefab(inst, "wobysmall", skin_build, inst.skin_id)
 
     for i,v in ipairs(items) do
         new_woby.components.container:GiveItem(v)
+    end
+
+    if inst.components.timer ~= nil then
+        inst.components.timer:TransferComponent(new_woby)
     end
 
 	if player ~= nil then
@@ -189,6 +207,31 @@ local function ShouldSleep(inst)
     return (IsLeaderSleeping(inst) or IsLeaderTellingStory(inst)) and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE)
 end
 
+local function AddTrainingBonus(inst, value, aspect)
+    local badge_fmt = string.upper(aspect).."_%d"
+
+    local bonus = 0
+
+    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
+
+    if dogtrainer ~= nil then
+        local pct = dogtrainer:GetAspectPercent(aspect)
+        local tuning = TUNING.SKILLS.WALTER.WOBY_BADGES
+
+        local badge
+
+        for i=1, NUM_WOBY_TRAINING_ASPECTS_LEVELS do
+            badge = badge_fmt:format(i)
+
+            if tuning[badge] ~= nil and dogtrainer:HasBadge(badge) then
+                bonus = bonus + tuning[badge] * pct
+            end
+        end
+    end
+
+    return value + bonus
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -200,12 +243,12 @@ local function fn()
 
     MakeCharacterPhysics(inst, 100, .5)
 
-    inst.DynamicShadow:SetSize(6, 2)
+    inst.DynamicShadow:SetSize(5, 2)
     inst.Transform:SetSixFaced()
 
     inst.AnimState:SetBank("wobybig")
     inst.AnimState:SetBuild("woby_big_build")
-
+    inst.AnimState:AddOverrideBuild("pupington_woby_build")
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("HEAT")
 
@@ -227,11 +270,14 @@ local function fn()
         return inst
     end
 
+    inst.AddTrainingBonus = AddTrainingBonus
+
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.MONSTER }, { FOODTYPE.MONSTER })
     inst.components.eater:SetAbsorptionModifiers(4,1,1)
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("timer")
 
     inst:AddComponent("follower")
     inst.components.follower.keepdeadleader = true
@@ -283,7 +329,6 @@ local function fn()
     inst.LinkToPlayer = LinkToPlayer
 	inst.OnPlayerLinkDespawn = OnPlayerLinkDespawn
 	inst._onlostplayerlink = function(player) inst._playerlink = nil end
-
 
     inst.FinishTransformation = FinishTransformation
 
