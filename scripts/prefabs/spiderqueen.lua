@@ -218,8 +218,6 @@ local function fn()
 
     inst:SetBrain(brain)
 
-	inst.hit_recovery = TUNING.SPIDERQEEN_HIT_RECOVERY
-
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("death", OnDead)
 

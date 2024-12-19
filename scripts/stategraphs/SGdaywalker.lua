@@ -27,13 +27,6 @@ local function IsPlayerMelee(data) --"attacked" event data
 			))
 end
 
-local function hit_recovery_skip_cooldown_fn(inst, last_t, delay)
-	--no skipping when we're stalking or dodging (hit_recovery increased)
-	return inst.hit_recovery == TUNING.DAYWALKER_HIT_RECOVERY
-		and inst.components.combat:InCooldown()
-		and inst.sg:HasStateTag("idle")
-end
-
 local events =
 {
 	CommonHandlers.OnLocomote(true, true),
@@ -64,7 +57,7 @@ local events =
 				end
 			end
 			if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
-				not CommonHandlers.HitRecoveryDelay(inst, nil, nil, hit_recovery_skip_cooldown_fn) then
+				not CommonHandlers.HitRecoveryDelay(inst) then
 				inst.sg:GoToState("hit", playermelee or inst.sg.statemem.trytired)
 			end
 		end

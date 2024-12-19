@@ -74,8 +74,7 @@ end
 
 local function OnOpen(inst)
     inst.AnimState:PlayAnimation("open")
-    local skin_name = inst:GetSkinName() or "beargerfur_sack"
-    inst.components.inventoryitem:ChangeImageName(skin_name .. "_open")
+    inst.components.inventoryitem:ChangeImageName("beargerfur_sack_open")
 
     if inst._startsoundtask ~= nil then
         inst._startsoundtask:Cancel()
@@ -102,8 +101,7 @@ local function OnClose(inst)
 		inst._startsoundtask = nil
 	end
 	StopOpenSound(inst)
-    local skin_name = inst:GetSkinName()
-    inst.components.inventoryitem:ChangeImageName(skin_name)
+    inst.components.inventoryitem:ChangeImageName()
 
 	if not inst.components.inventoryitem:IsHeld() then
         inst.AnimState:PlayAnimation("close")

@@ -3,13 +3,10 @@ local Appraisable = Class(function(self, inst)
 end)
 
 function Appraisable:CanAppraise(target)
-    -- NOTE: don't chain these together in case
-    -- the canappraisefn returns a failure reason.
 	if self.canappraisefn then
 		return self.canappraisefn(self.inst, target)
-    else
-        return true
-    end
+	end
+	return true
 end
 
 function Appraisable:Appraise(target)

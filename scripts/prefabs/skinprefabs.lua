@@ -666,6 +666,16 @@ table.insert(prefs, CreatePrefabSkin("armor_skeleton_shadowscalemail",
 	release_group = 125,
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_trunkvest_winter_quilted",
+{
+	base_prefab = "trunkvest_winter",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) trunkvest_winter_init_fn(inst, "armor_trunkvest_winter_quilted") end,
+	skin_tags = { "TRUNKVEST_WINTER", "CRAFTABLE", },
+	release_group = 160,
+}))
+
 table.insert(prefs, CreatePrefabSkin("armor_wood_fangedcollar",
 {
 	base_prefab = "armorwood",
@@ -1107,6 +1117,16 @@ table.insert(prefs, CreatePrefabSkin("batbat_scythe",
 	release_group = 49,
 }))
 
+table.insert(prefs, CreatePrefabSkin("beargerfursack_rose",
+{
+	base_prefab = "beargerfur_sack",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) beargerfur_sack_init_fn(inst, "beargerfursack_rose") end,
+	skin_tags = { "BEARGERFUR_SACK", "ROSE", "CRAFTABLE", },
+	release_group = 160,
+}))
+
 table.insert(prefs, CreatePrefabSkin("beargervest_rose",
 {
 	base_prefab = "beargervest",
@@ -1168,6 +1188,17 @@ table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_green_hunters",
 	init_fn = function(inst) bedroll_furry_init_fn(inst, "bedroll_furry_quilt_green_hunters") end,
 	skin_tags = { "BEDROLL", "CRAFTABLE", "GREEN", },
 	release_group = 78,
+}))
+
+table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_grey",
+{
+	base_prefab = "bedroll_furry",
+	type = "item",
+	rarity = "Distinguished",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) bedroll_furry_init_fn(inst, "bedroll_furry_quilt_grey") end,
+	skin_tags = { "BEDROLL", "CRAFTABLE", "GREY", },
+	release_group = 160,
 }))
 
 table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_orange_honey",
@@ -10329,6 +10360,18 @@ table.insert(prefs, CreatePrefabSkin("warly_victorian",
 	release_group = 70,
 }))
 
+table.insert(prefs, CreatePrefabSkin("warly_yule",
+{
+	base_prefab = "warly",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "YULE", "BASE", "WARLY", },
+	bigportrait_anim = { build = "bigportraits/warly_yule.xml", symbol = "warly_yule_oval.tex"},
+	skins = { ghost_skin = "ghost_warly_build", normal_skin = "warly_yule", },
+	release_group = 160,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wateringcan_cactus",
 {
 	base_prefab = "wateringcan",
@@ -14008,6 +14051,18 @@ table.insert(prefs, CreatePrefabSkin("wolfgang_wrestler",
 	release_group = 56,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wolfgang_yule",
+{
+	base_prefab = "wolfgang",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "YULE", "BASE", "WOLFGANG", },
+	bigportrait_anim = { build = "bigportraits/wolfgang_yule.xml", symbol = "wolfgang_yule_oval.tex"},
+	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_yule", normal_skin = "wolfgang_yule", wimpy_skin = "wolfgang_skinny_yule", },
+	release_group = 160,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wonkey_none",
 {
 	base_prefab = "wonkey",
@@ -14917,6 +14972,21 @@ table.insert(prefs, CreatePrefabSkin("wortox_victorian",
 	skins = { ghost_skin = "ghost_wortox_victorian", normal_skin = "wortox_victorian", },
 	has_alternate_for_body = { "wortox_victorian", },
 	release_group = 115,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wortox_yule",
+{
+	base_prefab = "wortox",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "BASE", "WORTOX", "YULE", },
+	bigportrait_anim = { build = "bigportraits/wortox_yule.xml", symbol = "wortox_yule_oval.tex"},
+	skins = { ghost_skin = "ghost_wortox_yule", normal_skin = "wortox_yule", },
+	torso_tuck_builds = { "wortox_yule", },
+	torso_untuck_wide_builds = { "wortox_yule", },
+	has_alternate_for_body = { "wortox_yule", },
+	release_group = 160,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wurt_ancient",

@@ -30,7 +30,7 @@ POPUPS = {
     SCRAPBOOK = PopupManagerWidget(),
     INSPECTACLES = PopupManagerWidget(),
 	PUMPKINCARVING = PopupManagerWidget(),
-	WOBYBADGECUSTOMIZATION = PopupManagerWidget(),
+	SNOWMANDECORATING = PopupManagerWidget(),
 }
 
 POPUPS_BY_POPUP_CODE = {}
@@ -172,16 +172,16 @@ POPUPS.PUMPKINCARVING.fn = function(inst, show, target)
 	end
 end
 
-POPUPS.WOBYBADGECUSTOMIZATION.validaterpcfn = function(trainingdata)
-    return optstring(trainingdata)
+POPUPS.SNOWMANDECORATING.validaterpcfn = function(decordata, obj)
+	return optstring(decordata) and optentity(obj)
 end
 
-POPUPS.WOBYBADGECUSTOMIZATION.fn = function(inst, show, target)
+POPUPS.SNOWMANDECORATING.fn = function(inst, show, target, obj)
 	if inst.HUD then
 		if not show then
-			inst.HUD:CloseWobyBadgesScreen()
-		elseif not inst.HUD:OpenWobyBadgesScreen(target) then
-			POPUPS.WOBYBADGECUSTOMIZATION:Close(inst)
+			inst.HUD:CloseSnowmanDecoratingScreen()
+		elseif not inst.HUD:OpenSnowmanDecoratingScreen(target, obj) then
+			POPUPS.SNOWMANDECORATING.Close(inst)
 		end
 	end
 end

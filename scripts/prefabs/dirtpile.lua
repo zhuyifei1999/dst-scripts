@@ -12,21 +12,19 @@ local function GetVerb()
 end
 
 local function OnInvestigated(inst, doer)
-    local px, py, pz = inst.Transform:GetWorldPosition()
+    local pt = Vector3(inst.Transform:GetWorldPosition())
 
     local hunter = TheWorld.components.hunter
     if hunter ~= nil then
-        hunter:OnDirtInvestigated(Vector3(px, py, pz), doer)
+        hunter:OnDirtInvestigated(pt, doer)
     end
 
-    SpawnPrefab("small_puff").Transform:SetPosition(px, py, pz)
+    SpawnPrefab("small_puff").Transform:SetPosition(pt:Get())
     inst:Remove()
 end
 
 local function OnHaunted(inst, haunter)
-    --if haunter.isplayer then
-        inst:OnInvestigated(haunter)
-   -- end
+    inst:OnInvestigated(haunter)
     return true
 end
 

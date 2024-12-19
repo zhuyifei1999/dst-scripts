@@ -57,13 +57,8 @@ local assets =
 	Asset("DYNAMIC_ATLAS", "images/pumpkin_carving2.xml"),
 	Asset("PKGREF", "images/pumpkin_carving2.tex"),
 
-    Asset("ANIM", "anim/woby_badge_progressbar.zip"),
-    Asset("ANIM", "anim/woby_badge_pin.zip"),
-
-    Asset("DYNAMIC_ATLAS", "images/woby_badges.xml"),
-	Asset("PKGREF", "images/woby_badges.tex"),
-    Asset("DYNAMIC_ATLAS", "images/woby_badges2.xml"),
-	Asset("PKGREF", "images/woby_badges2.tex"),
+	Asset("DYNAMIC_ATLAS", "images/snowman.xml"),
+	Asset("PKGREF", "images/snowman.tex"),
 }
 
 for k, v in pairs(GroundTiles.assets) do
@@ -275,6 +270,8 @@ local prefabs =
 
 	-- vinebridgemanager
 	"vine_bridge_fx",
+
+    "snowball_item",
 }
 
 for _, v in pairs(require("prefabs/farm_plant_defs").PLANT_DEFS) do

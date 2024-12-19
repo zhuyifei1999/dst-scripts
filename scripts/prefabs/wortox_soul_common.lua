@@ -6,36 +6,27 @@ local function DoHeal(inst)
     local sanitytargets = {}
     local sanitytargetscount = 0
     local x, y, z = inst.Transform:GetWorldPosition()
-    local rangesq = TUNING.WORTOX_SOULHEAL_RANGE + (inst.soul_heal_range_modifier or 0)
-    rangesq = rangesq * rangesq
     for i, v in ipairs(AllPlayers) do
         if not (v.components.health:IsDead() or v:HasTag("playerghost")) and
             v.entity:IsVisible() and
-            v:GetDistanceSqToPoint(x, y, z) < rangesq then
+            v:GetDistanceSqToPoint(x, y, z) < TUNING.WORTOX_SOULHEAL_RANGE * TUNING.WORTOX_SOULHEAL_RANGE then
             -- NOTES(JBK): If the target is hurt put them on the list to do heals.
             if v.components.health:IsHurt() and not v:HasTag("health_as_oldage") then -- Wanda tag.
                 table.insert(healtargets, v)
                 healtargetscount = healtargetscount + 1
             end
             -- NOTES(JBK): If the target is another "soulstealer" give some sanity even when they did not drop the soul but not in overload state.
-            if not inst.soul_bursting and v._souloverloadtask == nil and v.components.sanity and v:HasTag("soulstealer") then
+            if v._souloverloadtask == nil and v.components.sanity and v:HasTag("soulstealer") then
                 table.insert(sanitytargets, v)
                 sanitytargetscount = sanitytargetscount + 1
             end
         end
     end
     if healtargetscount > 0 then
-        -- Healing adjustments are absolute from the releaser but can be debuffed by the receiver.
-        local loss_per_player = TUNING.WORTOX_SOULHEAL_LOSS_PER_PLAYER
-        if inst.soul_heal_player_efficient then
-            loss_per_player = loss_per_player * TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_4_LOSS_PER_PLAYER_MULT
-        end
-        local amt = math.max(TUNING.WORTOX_SOULHEAL_MINIMUM_HEAL, (TUNING.HEALING_MED * (inst.soul_heal_premult or 1) - loss_per_player * (healtargetscount - 1)) * (inst.soul_heal_mult or 1))
-        local amt_naughty = amt * TUNING.SKILLS.WORTOX.NAUGHTY_SOULHEAL_RECEIVED_MULT
+        local amt = math.max(TUNING.WORTOX_SOULHEAL_MINIMUM_HEAL, TUNING.HEALING_MED - TUNING.WORTOX_SOULHEAL_LOSS_PER_PLAYER * (healtargetscount - 1))
         for i = 1, healtargetscount do
             local v = healtargets[i]
-            local adjusted_amt = v.wortox_inclination == "naughty" and amt_naughty or amt
-            v.components.health:DoDelta(adjusted_amt, nil, inst.prefab)
+            v.components.health:DoDelta(amt, nil, inst.prefab)
             if v.components.combat then -- Always show fx now that the heals do special targeting to show the player that it stops working when everyone is full.
                 local fx = SpawnPrefab("wortox_soul_heal_fx")
                 fx.entity:AddFollower():FollowSymbol(v.GUID, v.components.combat.hiteffectsymbol, 0, -50, 0)
@@ -44,14 +35,10 @@ local function DoHeal(inst)
         end
     end
     if sanitytargetscount > 0 then
-        -- Sanity adjustments are relative to who sees it.
         local amt = TUNING.SANITY_TINY * 0.5
-        local amt_nice = amt * TUNING.SKILLS.WORTOX.NICE_SANITY_MULT
-        local amt_naughty = amt * TUNING.SKILLS.WORTOX.NAUGHTY_SANITY_MULT
         for i = 1, sanitytargetscount do
             local v = sanitytargets[i]
-            local adjusted_amt = v.wortox_inclination == "nice" and amt_nice or v.wortox_inclination == "naughty" and amt_naughty or amt
-            v.components.sanity:DoDelta(adjusted_amt)
+            v.components.sanity:DoDelta(amt)
         end
     end
 end
@@ -61,32 +48,6 @@ local function HasSoul(victim)
 				victim.components.murderable ~= nil
 			)
 		and not victim:HasAnyTag(SOULLESS_TARGET_TAGS)
-end
-
-local function SoulDamageTest(inst, ent, owner)
-    if ent == owner or owner.components.combat == nil then
-        return false
-    end
-
-    if ent.components.health and ent.components.health:IsDead() then
-        return false
-    end
-
-    if ent:HasTag("saddled") then
-        return false
-    end
-
-    if ent:HasTag("player") and not TheNet:GetPVPEnabled() then
-        return false
-    end
-
-    if owner.components.combat:TargetHasFriendlyLeader(ent) or not owner.components.combat:CanTarget(ent) then
-        return false
-    end
-
-    -- FIXME(JBK): Did I miss something? Bug report it!
-
-    return fns.HasSoul(ent)
 end
 
 local function GetNumSouls(victim)
@@ -145,7 +106,6 @@ fns = {
     SpawnSoulAt = SpawnSoulAt,
     SpawnSoulsAt = SpawnSoulsAt,
     GiveSouls = GiveSouls,
-    SoulDamageTest = SoulDamageTest,
 }
 
 return fns

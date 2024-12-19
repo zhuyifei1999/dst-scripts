@@ -57,7 +57,6 @@ local function fn()
     inst:AddTag("rechargeable")
 
     inst:AddComponent("aoetargeting")
-	inst.components.aoetargeting:SetAllowRiding(false)
     inst.components.aoetargeting:SetRange(16)
     inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoesmall"
     inst.components.aoetargeting.reticule.pingprefab = "reticuleaoesmallping"

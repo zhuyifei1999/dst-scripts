@@ -519,7 +519,6 @@ local SGTagsToEntTags =
     ["sleeping"] = true,
     ["working"] = true,
     ["boathopping"] = true,
-	["shouldautopausecontrollerinventory"] = true, --autopause even if "doing", see "openslingshotmods" state
 }
 
 function StateGraphInstance:HasState(statename)

@@ -94,9 +94,6 @@ local function onload(inst, data)
     end
 end
 
-local ChestsWithoutIcons = { -- These containers do not have minimap icons.
-    ["boat_ancient_container"] = true,
-}
 local function MakeChest(name, bank, build, indestructible, master_postinit, prefabs, assets, common_postinit, force_non_burnable)
     local default_assets =
     {
@@ -112,14 +109,10 @@ local function MakeChest(name, bank, build, indestructible, master_postinit, pre
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
-        if not ChestsWithoutIcons[name] then
-            inst.entity:AddMiniMapEntity()
-        end
+        inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
 
-        if not ChestsWithoutIcons[name] then
-            inst.MiniMapEntity:SetIcon(name..".png")
-        end
+        inst.MiniMapEntity:SetIcon(name..".png")
 
         inst:AddTag("structure")
         inst:AddTag("chest")

@@ -374,7 +374,6 @@ local actionhandlers =
                     )
                 or "doshortaction"
         end),
-    ActionHandler(ACTIONS.NABBAG, "nabbag"),
     ActionHandler(ACTIONS.CHECKTRAP,
         function(inst, action)
             return (inst.replica.rider ~= nil and inst.replica.rider:IsRiding() and "domediumaction")
@@ -454,7 +453,6 @@ local actionhandlers =
                 and ((action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn")
                     or (action.invobject:HasTag("guitar") and "play_strum")
                     or (action.invobject:HasTag("cointosscast") and "cointosscastspell")
-                    or (action.invobject:HasTag("crushitemcast") and "crushitemcast")
                     or (action.invobject:HasTag("quickcast") and "quickcastspell")
                     or (action.invobject:HasTag("veryquickcast") and "veryquickcastspell")
                     or (action.invobject:HasTag("mermbuffcast") and "mermbuffcastspell")
@@ -467,8 +465,6 @@ local actionhandlers =
 				and (	(action.invobject:HasTag("book") and "book") or
 						(action.invobject:HasTag("willow_ember") and "castspellmind") or
 						(action.invobject:HasTag("remotecontrol") and "remotecast") or
-						(action.invobject:HasTag("abigail_flower") and "commune_with_abigail") or
-						(action.invobject:HasTag("slingshot") and "slingshot_special") or
 						(action.invobject:HasTag("aoeweapon_lunge") and "combat_lunge_start") or
 						(action.invobject:HasTag("aoeweapon_leap") and (action.invobject:HasTag("superjump") and "combat_superjump_start" or "combat_leap_start")) or
 						(action.invobject:HasTag("parryweapon") and "parry_pre") or
@@ -523,8 +519,8 @@ local actionhandlers =
                 end
                 local inventoryitem = equip.replica.inventoryitem
                 return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
-					or (equip:HasTag("slingshot") and "slingshot_shoot")
                     or (equip:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
+					or (equip:HasTag("slingshot") and "slingshot_shoot")
                     or (equip:HasTag("thrown") and "throw")
                     or (equip:HasTag("pillow") and "attack_pillow_pre")
                     or (equip:HasTag("propweapon") and "attack_prop_pre")
@@ -697,10 +693,13 @@ local actionhandlers =
     ),
 
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
-		return (action.invobject == nil and "dolongaction")
-			or (action.invobject:HasTag("bell") and "use_beef_bell")
-			or (action.invobject:HasTag("slingshotmodkit") and "openslingshotmods")
-			or "dolongaction"
+        if action.invobject == nil then
+            return "dolongaction"
+        elseif action.invobject:HasTag("bell") then
+			return "use_beef_bell"
+        else
+            return "dolongaction"
+        end
     end),
 
     ActionHandler(ACTIONS.STOPUSINGITEM, "dolongaction"),
@@ -742,12 +741,7 @@ local actionhandlers =
 
 	ActionHandler(ACTIONS.USEMAGICTOOL, "start_using_tophat"),
 	ActionHandler(ACTIONS.STOPUSINGMAGICTOOL, "stop_using_tophat"),
-	ActionHandler(ACTIONS.CAST_SPELLBOOK, function(inst, action)
-        return action.invobject ~= nil
-            and (   (action.invobject:HasTag("abigail_flower") and ((action.invobject:HasTag("unsummoning_spell") and "unsummon_abigail") or "commune_with_abigail"))
-                )
-            or "book"
-    end),
+	ActionHandler(ACTIONS.CAST_SPELLBOOK, "book"),
 	ActionHandler(ACTIONS.SCYTHE, "scythe"),
 	ActionHandler(ACTIONS.SITON, "start_sitting"),
 
@@ -763,15 +757,24 @@ local actionhandlers =
     ActionHandler(ACTIONS.INCINERATE, "doshortaction"),
 	ActionHandler(ACTIONS.BOTTLE, "dolongaction"),
 	ActionHandler(ACTIONS.CARVEPUMPKIN, "pumpkincarving_pre"),
-
-    ActionHandler(ACTIONS.APPLYELIXIR, "pour"),
-
-    ActionHandler(ACTIONS.GRAVEDIG,
-        function(inst)
-            return not (inst.sg:HasStateTag("predig") or inst:HasTag("predig")) and "dig_start" or nil
-        end),
-
-    ActionHandler(ACTIONS.CUSTOMIZE_WOBY_BADGES, "usewardrobe"), --TODO(DiogoW): Proper state?
+	ActionHandler(ACTIONS.DECORATESNOWMAN, function(inst, action)
+		if action.invobject then
+			if action.invobject.components.snowmandecoratable then
+				return "dostandingaction" --stack small throwable snowball
+			end
+			local equippable = action.invobject.replica.equippable
+			if equippable and equippable:EquipSlot() == EQUIPSLOTS.HEAD then
+				return "dostandingaction" --equip hat
+			end
+		elseif action.doer then
+			local inventory = action.doer.replica.inventory
+			if inventory and inventory:IsHeavyLifting() then
+				return "dostandingaction" --stack large heavylifting snowball
+			end
+		end
+		return "snowmandecorating_pre" --decorate
+	end),
+	ActionHandler(ACTIONS.START_PUSHING, "pushing_walk_pre"),
 }
 
 local events =
@@ -3239,41 +3242,6 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
-
-    State{
-        name = "crushitemcast",
-        tags = { "doing", "busy", "canrotate" },
-        server_states = { "crushitemcast", "crushitemcast_fail" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.Transform:SetPredictedNoFaced()
-            inst.AnimState:PlayAnimation("useitem_pre")
-            inst.AnimState:PushAnimation("useitem_lag", false)
-
-            inst:PerformPreviewBufferedAction()
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst.sg:ServerStateMatches() then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,
-
-        onexit = function(inst)
-            inst.Transform:ClearPredictedFacingModel()
-        end,
-    },
     
     State{
         name = "castspellmind",
@@ -3726,23 +3694,27 @@ local states =
     State{
         name = "slingshot_shoot",
         tags = { "attack" },
-		server_states = { "slingshot_shoot", "slingshot_shoot2" },
+		server_states = { "slingshot_shoot" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("slingshot_pre")
+            inst.AnimState:PushAnimation("slingshot_lag", true)
 
-			inst.AnimState:PlayAnimation("slingshot_pre")
-			inst.AnimState:PushAnimation("slingshot_lag", false)
+            if inst.sg.laststate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+				inst.AnimState:SetFrame(3)
+            end
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
-				inst:PerformPreviewBufferedAction()
-
-				if buffaction.target and buffaction.target:IsValid() then
-					inst:FacePoint(buffaction.target:GetPosition())
-					inst.sg.statemem.attacktarget = buffaction.target
-					inst.sg.statemem.retarget = buffaction.target
+				if buffaction.target ~= nil and buffaction.target:IsValid() then
+					inst:ForceFacePoint(buffaction.target:GetPosition())
+	                inst.sg.statemem.attacktarget = buffaction.target
+                    inst.sg.statemem.retarget = buffaction.target
 				end
+
+                inst:PerformPreviewBufferedAction()
             end
 
             inst.sg:SetTimeout(TIMEOUT)
@@ -3750,7 +3722,7 @@ local states =
 
         onupdate = function(inst)
 			if inst.sg:HasStateTag("idle") then
-				if inst.sg:HasStateTag("attack") and not (inst:HasTag("attack") and inst.sg:ServerStateMatches()) then
+				if inst.sg:HasStateTag("attack") and not inst:HasTag("attack") then
 					local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 					if equip == nil or not equip:HasTag("ammoloaded") then
 						inst.sg:GoToState("idle", "noanim")
@@ -3763,7 +3735,7 @@ local states =
 					inst.sg:AddStateTag("idle")
 					inst.sg:AddStateTag("canrotate")
 					inst.entity:SetIsPredictingMovement(false) -- so the animation will come across
-					--ClearCachedServerState(inst) --don't clear, we polling this in the above "idle" code
+					ClearCachedServerState(inst)
 				end
 			elseif inst.bufferedaction == nil then
 				inst.sg:GoToState("idle")
@@ -3771,7 +3743,9 @@ local states =
         end,
 
         ontimeout = function(inst)
-			if not inst.sg:HasStateTag("idle") then
+			if inst.sg:HasStateTag("idle") then
+				inst.sg:GoToState("idle", "noanim")
+			else
 				inst:ClearBufferedAction()
 				inst.sg:GoToState("idle")
 			end
@@ -3781,80 +3755,6 @@ local states =
 			inst.entity:SetIsPredictingMovement(true)
 		end,
     },
-
-	State{
-		name = "slingshot_special",
-		tags = { "busy" },
-		server_states = { "slingshot_special", "slingshot_special2" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-
-			inst.AnimState:PlayAnimation("slingshot_alt_pre")
-			inst.AnimState:PushAnimation("slingshot_lag", false)
-
-			local buffaction = inst:GetBufferedAction()
-			if buffaction then
-				inst:PerformPreviewBufferedAction()
-
-				if buffaction.pos then
-					inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-				end
-			end
-
-			inst.sg:SetTimeout(TIMEOUT)
-		end,
-
-		onupdate = function(inst)
-			if inst.sg:ServerStateMatches() then
-				if inst.entity:FlattenMovementPrediction() then
-					inst.sg:GoToState("idle", "noanim")
-				end
-			elseif inst.bufferedaction == nil then
-				inst.sg:GoToState("idle")
-			end
-		end,
-
-		ontimeout = function(inst)
-			inst:ClearBufferedAction()
-			inst.sg:GoToState("idle")
-		end,
-	},
-
-	State{
-		name = "slingshot_charge",
-		tags = { "busy", "aoecharging" },
-		server_states = { "slingshot_charge" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-
-			inst.AnimState:PlayAnimation("slingshot_alt_pre")
-			inst.AnimState:PushAnimation("slingshot_lag", false)
-
-			local buffaction = inst:GetBufferedAction()
-			if buffaction then
-				if buffaction.pos then
-					inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-				end
-			end
-
-			inst.sg:SetTimeout(TIMEOUT)
-		end,
-
-		onupdate = function(inst)
-			if inst.sg:ServerStateMatches() then
-				if inst.entity:FlattenMovementPrediction() then
-					inst.sg:GoToState("idle", "noanim")
-				end
-			end
-		end,
-
-		ontimeout = function(inst)
-			inst:ClearBufferedAction()
-			inst.sg:GoToState("idle")
-		end,
-	},
 
     State{
         name = "throw_line",
@@ -6076,6 +5976,50 @@ local states =
 	},
 
 	State{
+		name = "snowmandecorating_pre",
+		tags = { "doing", "busy" },
+		server_states = { "snowmandecorating_pre", "snowmandecorating" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+			inst.AnimState:PlayAnimation("construct_pre")
+			inst.AnimState:PushAnimation("construct_loop")
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		timeline =
+		{
+			FrameEvent(7, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+		},
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.AnimState:PlayAnimation("construct_pst")
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("construct_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("make_preview")
+		end,
+	},
+
+	State{
 		name = "stop_pocket_rummage",
 		tags = { "doing" },
 		server_states = { "stop_pocket_rummage" },
@@ -6186,35 +6130,41 @@ local states =
 		end,
 	},
 
-    State{
-        name = "nabbag",
-        tags = { "busy" },
-        server_states = { "nabbag" },
+	State{
+		name = "pushing_walk_pre",
+		tags = { "busy" },
+		server_states = { "pushing_walk_pre", "pushing_walk" },
 
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("nabbag_pre")
-            inst.AnimState:PushAnimation("nabbag_lag", false)
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("pushing_idle_pre")
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
 
-            inst:PerformPreviewBufferedAction()
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
+		timeline =
+		{
+			FrameEvent(2, function(inst)
+				inst.AnimState:PlayAnimation("pushing_lag")
+			end),
+		},
 
-        onupdate = function(inst)
-            if inst.sg:ServerStateMatches() then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.sg:GoToState("idle")
+			end
+		end,
 
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,
-    },
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("pushing_idle_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+	},
 }
 
 local hop_timelines =

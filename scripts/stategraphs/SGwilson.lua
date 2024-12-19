@@ -10,9 +10,6 @@ local MOOSE_AOE_CANT_TAGS = { "INLIMBO", "wall", "companion", "flight", "invisib
 local FLOWERS_MUST_TAGS = {"flower"}
 local FLOWERS_CANT_TAGS = {"INLIMBO"}
 
-local WORTOX_SHADOW_MULT = 0.6
-local WORTOX_LUNAR_OFFSET = 0.1
-
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
         if v.foleysound ~= nil then
@@ -443,12 +440,8 @@ local function IsMinigameItem(inst)
 end
 
 local function DoWortoxPortalTint(inst, val)
-    if inst.sg.statemem.allegiance == "shadow" then
-        val = val * WORTOX_SHADOW_MULT
-    end
     if val > 0 then
-        local offset = inst.sg.statemem.allegiance == "lunar" and WORTOX_LUNAR_OFFSET or 0
-        inst.components.colouradder:PushColour("portaltint", 154 / 255 * val + offset, 23 / 255 * val + offset, 19 / 255 * val + offset, 0)
+        inst.components.colouradder:PushColour("portaltint", 154 / 255 * val, 23 / 255 * val, 19 / 255 * val, 0)
         val = 1 - val
         inst.AnimState:SetMultColour(val, val, val, 1)
     else
@@ -770,7 +763,6 @@ local actionhandlers =
 				or (action.target ~= nil and action.target:HasTag("minigameitem") and "dosilentshortaction")
                 or "doshortaction"
         end),
-    ActionHandler(ACTIONS.NABBAG, "nabbag"),
     ActionHandler(ACTIONS.CHECKTRAP,
         function(inst, action)
             return (inst.components.rider ~= nil and inst.components.rider:IsRiding() and "domediumaction")
@@ -862,7 +854,6 @@ local actionhandlers =
                 and ((action.invobject:HasTag("gnarwail_horn") and "play_gnarwail_horn")
                     or (action.invobject:HasTag("guitar") and "play_strum")
                     or (action.invobject:HasTag("cointosscast") and "cointosscastspell")
-                    or (action.invobject:HasTag("crushitemcast") and "crushitemcast")
                     or (action.invobject:HasTag("quickcast") and "quickcastspell")
                     or (action.invobject:HasTag("veryquickcast") and "veryquickcastspell")
                     or (action.invobject:HasTag("mermbuffcast") and "mermbuffcastspell")
@@ -875,8 +866,6 @@ local actionhandlers =
 				and (	(action.invobject:HasTag("book") and (inst:HasTag("canrepeatcast") and "book_repeatcast" or "book")) or
 						(action.invobject:HasTag("willow_ember") and (inst:HasTag("canrepeatcast") and "repeatcastspellmind" or "castspellmind")) or
 						(action.invobject:HasTag("remotecontrol") and (inst:HasTag("canrepeatcast") and "remotecast_trigger" or "remotecast_pre")) or
-						(action.invobject:HasTag("abigail_flower") and "commune_with_abigail") or
-						(action.invobject:HasTag("slingshot") and "slingshot_special") or
 						(action.invobject:HasTag("aoeweapon_lunge") and "combat_lunge_start") or
 						(action.invobject:HasTag("aoeweapon_leap") and (action.invobject:HasTag("superjump") and "combat_superjump_start" or "combat_leap_start")) or
 						(action.invobject:HasTag("parryweapon") and "parry_pre") or
@@ -934,13 +923,9 @@ local actionhandlers =
 				"attack"
 			if not (inst.sg:HasStateTag(attack_tag) and action.target == inst.sg.statemem.attacktarget or inst.components.health:IsDead()) then
                 local weapon = inst.components.combat ~= nil and inst.components.combat:GetWeapon() or nil
-				if weapon == nil then
-					return "attack"
-				elseif weapon:HasTag("slingshot") then
-					inst.sg.mem.localchainattack = true
-					return "slingshot_shoot"
-				end
-				return (weapon:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
+                return (weapon == nil and "attack")
+                    or (weapon:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
+					or (weapon:HasTag("slingshot") and "slingshot_shoot")
                     or (weapon:HasTag("thrown") and "throw")
                     or (weapon:HasTag("pillow") and "attack_pillow_pre")
                     or (weapon:HasTag("propweapon") and "attack_prop_pre")
@@ -1150,10 +1135,13 @@ local actionhandlers =
     ),
 
     ActionHandler(ACTIONS.USEITEMON, function(inst, action)
-		return (action.invobject == nil and "dolongaction")
-			or (action.invobject:HasTag("bell") and "use_beef_bell")
-			or (action.invobject:HasTag("slingshotmodkit") and "openslingshotmods")
-			or "dolongaction"
+        if action.invobject == nil then
+            return "dolongaction"
+        elseif action.invobject:HasTag("bell") then
+            return "use_beef_bell"
+        else
+            return "dolongaction"
+        end
     end),
 
     ActionHandler(ACTIONS.USEITEM, function(inst, action)        
@@ -1201,12 +1189,7 @@ local actionhandlers =
 		inst.sg.statemem.stopusingmagiciantool = true
 		return "stop_using_tophat"
 	end),
-	ActionHandler(ACTIONS.CAST_SPELLBOOK, function(inst, action)
-        return action.invobject ~= nil
-            and (   (action.invobject:HasTag("abigail_flower") and ((action.invobject:HasTag("unsummoning_spell") and "unsummon_abigail") or "commune_with_abigail"))
-                )
-            or "book"
-    end),
+	ActionHandler(ACTIONS.CAST_SPELLBOOK, "book"),
 	ActionHandler(ACTIONS.SCYTHE, "scythe"),
 	ActionHandler(ACTIONS.SITON, "start_sitting"),
 
@@ -1221,35 +1204,21 @@ local actionhandlers =
     ActionHandler(ACTIONS.INCINERATE, "doshortaction"),
 	ActionHandler(ACTIONS.BOTTLE, "dolongaction"),
 	ActionHandler(ACTIONS.CARVEPUMPKIN, "pumpkincarving_pre"),
-
-    ActionHandler(ACTIONS.APPLYELIXIR, 
-        function(inst, act)
-            if act.target and act.target:HasTag("elixir_drinker") then
-                if act.invobject.potion_tunings and act.invobject.potion_tunings.super_elixir then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_EXLIIR_TOO_SUPER"))
-                    return nil
-                end
-                return "drinkelixir"
-            end
-            if inst.components.inventory:FindItem(function(thing) return thing:HasTag("abigail_flower") end) then
-                return "applyelixir"
-            else
-                inst.components.talker:Say(GetString(inst, "ANNOUNCE_NO_ABIGAIL_FLOWER"))
-            end
-        end),
-
-    ActionHandler(ACTIONS.ATTACH_GHOST, "dolongaction"),
-    ActionHandler(ACTIONS.MUTATE, "dolongaction"),
-    ActionHandler(ACTIONS.GRAVEDIG,
-        function(inst)
-            return not inst.sg:HasStateTag("predig")
-                and (inst.sg:HasStateTag("digging") and
-                    "dig" or
-                    "dig_start")
-                or nil
-        end),
-
-    ActionHandler(ACTIONS.CUSTOMIZE_WOBY_BADGES, "usewardrobe"), --TODO(DiogoW): Proper state?
+	ActionHandler(ACTIONS.DECORATESNOWMAN, function(inst, action)
+		if action.invobject then
+			if action.invobject.components.snowmandecoratable then
+				return "dostandingaction" --stack small throwable snowball
+			end
+			local equippable = action.invobject.replica.equippable
+			if equippable and equippable:EquipSlot() == EQUIPSLOTS.HEAD then
+				return "dostandingaction" --equip hat
+			end
+		elseif action.doer and action.doer.components.inventory and action.doer.components.inventory:IsHeavyLifting() then
+			return "dostandingaction" --stack large heavylifting snowball
+		end
+		return "snowmandecorating_pre" --decorate
+	end),
+	ActionHandler(ACTIONS.START_PUSHING, "pushing_walk_pre"),
 }
 
 local events =
@@ -1440,13 +1409,7 @@ local events =
     EventHandler("souloverload",
         function(inst)
             if not (inst.components.health:IsDead() or inst.sg:HasStateTag("sleeping") or inst.sg:HasStateTag("drowning") or inst.sg:HasStateTag("falling")) then
-                if inst.wortox_inclination == "nice" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD_NICE"))
-                elseif inst.wortox_inclination == "naughty" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD_NAUGHTY"))
-                else
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD"))
-                end
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD"))
                 if inst.sg:HasStateTag("jumping") then
                     inst.sg.statemem.queued_post_land_state = "hit_souloverload"
                 else
@@ -2811,47 +2774,6 @@ local states =
                 inst.AnimState:ClearOverrideSymbol(v)
             end
 
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
-            end
-
-            inst.components.health:SetInvincible(false)
-            inst:ShowHUD(true)
-            inst:SetCameraDistance()
-
-            SerializeUserSession(inst)
-        end,
-    },
-
-    State{
-        name = "gravestone_rebirth",
-        tags = { "nopredict", "silentmorph" },
-
-        onenter = function(inst, source)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(false)
-            end
-
-            inst.AnimState:OverrideSymbol("wormmovefx", "mole_build", "wormmovefx")
-            inst.AnimState:PlayAnimation("grave_spawn")
-
-            inst.components.health:SetInvincible(true)
-            inst:ShowHUD(false)
-            inst:SetCameraDistance(12)
-
-            inst.SoundEmitter:PlaySound("meta5/wendy/revive_emerge")
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
             end
@@ -6123,46 +6045,32 @@ local states =
 	},
 
 	State{
-		name = "openslingshotmods",
+		name = "snowmandecorating_pre",
 		tags = { "doing", "busy", "nodangle" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
-			inst.AnimState:PlayAnimation("build_pre")
-			inst.AnimState:PushAnimation("build_pst", false)
+			inst.AnimState:PlayAnimation("construct_pre")
+			inst.AnimState:PushAnimation("construct_pst", false)
 		end,
 
 		timeline =
 		{
 			FrameEvent(7, function(inst)
+				inst.SoundEmitter:KillSound("make")
 				inst.sg:RemoveStateTag("busy")
 				if inst.bufferedaction then
 					if inst.bufferedaction.invobject then
 						inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction.invobject)
 					end
-					if inst:PerformBufferedAction() then
-						inst.AnimState:PlayAnimation("build_loop", true)
-						inst.sg:AddStateTag("moddingslingshot")
-						return
-					end
+					inst:PerformBufferedAction()
 				end
-				inst.SoundEmitter:KillSound("make")
-			end),
-			TimeEvent(0.6, function(inst)
-				inst.sg:AddStateTag("shouldautopausecontrollerinventory")
 			end),
 		},
 
 		events =
 		{
-			EventHandler("ms_slingshotmodsclosed", function(inst)
-				--Ignore old events; only valid after we performed the action
-				if inst.sg:HasStateTag("moddingslingshot") then
-					inst.AnimState:PlayAnimation("build_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
 			EventHandler("animqueueover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg:GoToState("idle")
@@ -6175,58 +6083,55 @@ local states =
 		end,
 	},
 
-    State{
-		name = "openwobybadgecustomization",
-		tags = { "doing", "busy", "nodangle", "pausepredict" },
+	State{
+		name = "snowmandecorating",
+		tags = { "snowmandecorating", "busy", "nodangle", "pausepredict" },
 
-		onenter = function(inst)
+		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
 			inst.components.locomotor:Clear()
 			inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("idle_wardrobe1_pre")
-            inst.AnimState:PushAnimation("idle_wardrobe1_loop", true)
+			inst.AnimState:PlayAnimation("construct_loop", true)
+			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
 
-			if inst.components.playercontroller ~= nil then
+			if inst.components.playercontroller then
 				inst.components.playercontroller:RemotePausePrediction()
 				inst.components.playercontroller:EnableMapControls(false)
 				inst.components.playercontroller:Enable(false)
 			end
-
 			inst.components.inventory:Hide()
 			inst:PushEvent("ms_closepopups")
 			inst:ShowActions(false)
-
-            local data = inst.components.dogtrainer ~= nil and inst.components.dogtrainer:ZipAndEncodeData() or ""
-
-			inst:ShowPopUp(POPUPS.WOBYBADGECUSTOMIZATION, true, data)
+			inst:ShowPopUp(POPUPS.SNOWMANDECORATING, true, data and data.target or nil, data and data.obj or nil)
 		end,
 
 		events =
 		{
-			EventHandler("ms_endwobybadgecustomization", function(inst)
-				if not inst.sg.statemem.isclosingwobybadgecustomization then
-					inst.sg.statemem.isclosingwobybadgecustomization = true
-					inst.AnimState:PlayAnimation("idle_wardrobe1_pst")
+			EventHandler("firedamage", function(inst)
+				inst.sg:GoToState("idle")
+			end),
+			EventHandler("ms_endsnowmandecorating", function(inst)
+				if not inst.sg.statemem.isclosingsnowman then
+					inst.sg.statemem.isclosingsnowman = true
+					inst.AnimState:PlayAnimation("construct_pst")
 					inst.sg:GoToState("idle", true)
 				end
 			end),
 		},
 
 		onexit = function(inst)
-			inst:ShowPopUp(POPUPS.WOBYBADGECUSTOMIZATION, false)
-
+			inst.SoundEmitter:KillSound("make")
+			inst:ShowPopUp(POPUPS.SNOWMANDECORATING, false)
 			if inst.components.playercontroller then
 				inst.components.playercontroller:EnableMapControls(true)
 				inst.components.playercontroller:Enable(true)
 			end
-
 			inst.components.inventory:Show()
 			inst:ShowActions(true)
-
-			if not inst.sg.statemem.isclosingwobybadgecustomization then
-				inst.sg.statemem.isclosingwobybadgecustomization = true
-				POPUPS.WOBYBADGECUSTOMIZATION:Close(inst)
+			if not inst.sg.statemem.isclosingsnowman then
+				inst.sg.statemem.isclosingsnowman = true
+				POPUPS.SNOWMANDECORATING:Close(inst)
 			end
 		end,
 	},
@@ -7810,7 +7715,7 @@ local states =
 					inst.sg:RemoveStateTag("busy")
 				end
 			end),
-			TimeEvent(52 * FRAMES, function(inst) -- NOTES(JBK): Keep FRAMES in sync with panflute. [PFSSTS]
+			TimeEvent(52 * FRAMES, function(inst)
 				if not inst.sg.statemem.action_failed then
 					inst.sg:RemoveStateTag("busy")
 				end
@@ -8315,7 +8220,6 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("wendy_commune_pre")
-            inst.SoundEmitter:PlaySound("dontstarve/characters/wendy/wisper","whisper")
             inst.AnimState:PushAnimation("wendy_commune_pst", false)
 
             if inst.bufferedaction ~= nil then
@@ -8335,19 +8239,25 @@ local states =
 
         timeline =
         {
-            TimeEvent(10 * FRAMES, function(inst)
+            TimeEvent(14 * FRAMES, function(inst)
 				if not inst:PerformBufferedAction() then
 					inst.sg.statemem.action_failed = true
 				end
             end),
-			TimeEvent(14 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
+			TimeEvent(18 * FRAMES, function(inst)
 				if inst.sg.statemem.action_failed then
-					inst.AnimState:SetFrame(17)
+					inst.AnimState:SetFrame(24)
 				end
 			end),
-            TimeEvent(32 * FRAMES, function(inst)
-                inst.SoundEmitter:KillSound("whisper")
+			TimeEvent(29 * FRAMES, function(inst)
+				if inst.sg.statemem.action_failed then
+					inst.sg:RemoveStateTag("busy")
+				end
+			end),
+            TimeEvent(35 * FRAMES, function(inst)
+				if not inst.sg.statemem.action_failed then
+					inst.sg:RemoveStateTag("busy")
+				end
             end),
         },
 
@@ -8361,7 +8271,6 @@ local states =
         },
 
         onexit = function(inst)
-            inst.SoundEmitter:KillSound("whisper")
             inst.AnimState:ClearOverrideSymbol("flower")
             if inst.bufferedaction == inst.sg.statemem.action and
             (inst.components.playercontroller == nil or inst.components.playercontroller.lastheldaction ~= inst.bufferedaction) then
@@ -14152,287 +14061,6 @@ local states =
     },
 
     State{
-        name = "crushitemcast",
-        tags = { "doing", "busy", "canrotate" },
-
-        onenter = function(inst)
-            inst.Transform:SetNoFaced()
-            inst.AnimState:PlayAnimation("useitem_pre") -- 8 frames
-            inst.AnimState:PushAnimation("remotecast_nodir_pre", false) -- 8 frames in 1 frame the item is shown
-            inst.AnimState:PushAnimation("remotecast_nodir_trigger", false) -- 12 frames
-            inst.components.locomotor:Stop()
-
-            local item = inst.bufferedaction and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil
-            inst.sg.statemem.item = item
-            if item then
-                if item.components.perishable then
-                    item.components.perishable:StopPerishing()
-                end
-                inst.components.inventory:ReturnActiveActionItem(item)
-                local swap_build = item.swap_build or item.AnimState:GetBuild() or "winona_remote"
-                local swap_symbol = item.swap_symbol or "swap_remote"
-                inst.AnimState:OverrideSymbol("swap_remote", swap_build, swap_symbol)
-            else
-                inst.AnimState:OverrideSymbol("swap_remote", "winona_remote", "swap_remote")
-            end
-        end,
-
-        timeline =
-        {
-            FrameEvent(9, function(inst)
-                if inst.sg.statemem.item and inst.sg.statemem.item:IsValid() then
-                    if inst.sg.statemem.item.OnStartBody then
-                        inst.sg.statemem.item:OnStartBody(inst)
-                    end
-                end
-            end),
-            FrameEvent(18, function(inst)
-                if inst.sg.statemem.item and inst.sg.statemem.item:IsValid() then
-                    if inst.sg.statemem.item.crushitemcast_sound then
-                        inst.SoundEmitter:PlaySound(inst.sg.statemem.item.crushitemcast_sound)
-                    end
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.crushcasting = true
-                    inst:PerformBufferedAction()
-                    if inst.sg.currentstate.name == "crushitemcast" then
-                        inst.sg:GoToState("crushitemcast_fail", {item = inst.sg.statemem.item})
-                    end
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            inst.Transform:SetFourFaced()
-            if not inst.sg.statemem.crushcasting then
-                inst.AnimState:ClearOverrideSymbol("swap_remote")
-                if inst.sg.statemem.item and inst.sg.statemem.item.OnStopBody and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item:OnStopBody(inst)
-                end
-            end
-        end,
-    },
-
-    State{
-        name = "crushitemcast_fail",
-        tags = { "doing" },
-
-        onenter = function(inst, data)
-            inst.sg.statemem.item = data and data.item
-            if inst.sg.statemem.item then
-                if inst.sg.statemem.item.components.perishable and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item.components.perishable:StartPerishing()
-                end
-            end
-            inst.Transform:SetNoFaced()
-            inst.AnimState:PlayAnimation("remotecast_nodir_pst")
-            inst.AnimState:PushAnimation("useitem_pst", false)
-        end,
-
-        timeline =
-        {
-            FrameEvent(12, function(inst)
-                inst.sg:GoToState("idle", true)
-            end),
-        },
-
-        onexit = function(inst)
-            inst.AnimState:ClearOverrideSymbol("swap_remote")
-            if inst.sg.statemem.item and inst.sg.statemem.item.OnStopBody and inst.sg.statemem.item:IsValid() then
-                inst.sg.statemem.item:OnStopBody(inst)
-            end
-            inst.Transform:SetFourFaced()
-        end,
-    },
-
-    State{
-        name = "wortox_teleport_reviver_selfuse",
-        tags = { "doing" },
-
-        onenter = function(inst, data)
-            inst.sg.statemem.item = data and data.item
-            if inst.sg.statemem.item then
-                if inst.sg.statemem.item.components.perishable and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item.components.perishable:StartPerishing()
-                end
-                if inst.sg.statemem.item.OnStopBody and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item:OnStopBody(inst)
-                end
-                if inst.sg.statemem.item.OnConsume and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item:OnConsume(inst)
-                end
-                inst.AnimState:ClearOverrideSymbol("swap_remote")
-            end
-            inst.Transform:SetNoFaced()
-            inst.AnimState:PlayAnimation("remotecast_nodir_pst")
-            inst.AnimState:PushAnimation("useitem_pst", false)
-        end,
-
-        timeline =
-        {
-            FrameEvent(12, function(inst)
-                inst.sg:GoToState("idle", true)
-            end),
-        },
-
-        onexit = function(inst)
-            inst.Transform:SetFourFaced()
-        end,
-    },
-
-    State{
-        name = "wortox_teleport_reviver",
-        tags = { "busy", "nomorph", "noattack", "nointerrupt" },
-
-        onenter = function(inst, data)
-            inst.sg.statemem.alldata = data
-            inst.sg.statemem.item = data and data.item
-
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(false)
-            end
-            inst.components.health:SetInvincible(true)
-            inst.Transform:SetNoFaced()
-            inst.AnimState:PlayAnimation("reviver_teleport")
-            local x, y, z = inst.Transform:GetWorldPosition()
-            SpawnPrefab("wortox_teleport_reviver_top").Transform:SetPosition(x, y, z)
-        end,
-
-        events = {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("wortox_teleport_reviver_pst", inst.sg.statemem.alldata)
-                end
-            end),
-        },
-
-        timeline = {
-            FrameEvent(15, function(inst)
-                inst.DynamicShadow:Enable(false)
-            end),
-        },
-
-        onexit = function(inst)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
-            end
-            inst.Transform:SetFourFaced()
-            inst.DynamicShadow:Enable(true)
-            inst.components.health:SetInvincible(false)
-            inst.AnimState:ClearOverrideSymbol("swap_remote")
-            if inst.sg.statemem.item and inst.sg.statemem.item.OnStopBody and inst.sg.statemem.item:IsValid() then
-                inst.sg.statemem.item:OnStopBody(inst)
-            end
-        end,
-    },
-
-    State{
-        name = "wortox_teleport_reviver_pst",
-        tags = { "busy", "nopredict", "nomorph", "noattack", "nointerrupt" },
-
-        onenter = function(inst, data)
-            inst.sg.statemem.alldata = data
-            inst.sg.statemem.item = data and data.item
-            
-            ToggleOffPhysics(inst)
-            inst.components.locomotor:Stop()
-            inst.Physics:SetMotorVel(4, 0, 0)
-            inst:ResetMinimapOffset()
-            if inst.sg.statemem.alldata.snapcamera then
-                inst:SnapCamera()
-            end
-            local x, y, z
-            if inst.sg.statemem.alldata.platform and inst.sg.statemem.alldata.platform:IsValid() then
-                local platformoffset = inst.sg.statemem.alldata.platformoffset
-                local px, py, pz = inst.sg.statemem.alldata.platform.Transform:GetWorldPosition()
-                x, y, z = px - platformoffset.x, py - platformoffset.y, pz - platformoffset.z
-                inst:ForceFacePoint(px, py, pz) -- Always jump towards center of boat.
-            else
-                x, y, z = inst.sg.statemem.alldata.dest:Get()
-            end
-            inst.Physics:Teleport(x, y, z)
-            inst.DynamicShadow:Enable(false)
-            inst.AnimState:PlayAnimation("jumpout") -- 28 frames
-            SpawnPrefab("wortox_teleport_reviver_bottom").Transform:SetPosition(x, y, z)
-            DoWortoxPortalTint(inst, 1)
-            inst.components.health:SetInvincible(true)
-
-            if inst.sg.statemem.item and inst.sg.statemem.item:IsValid() then
-                if inst.sg.statemem.item.components.perishable then
-                    inst.sg.statemem.item.components.perishable:StartPerishing()
-                end
-                if inst.sg.statemem.item.OnConsume and inst.sg.statemem.item:IsValid() then
-                    inst.sg.statemem.item:OnConsume(inst)
-                end
-            end
-        end,
-
-        onupdate = function(inst)
-            if inst.sg.statemem.tints ~= nil then
-                DoWortoxPortalTint(inst, table.remove(inst.sg.statemem.tints))
-                if #inst.sg.statemem.tints <= 0 then
-                    inst.sg.statemem.tints = nil
-                end
-            end
-        end,
-
-        timeline =
-        {
-            FrameEvent(1, function(inst)
-                inst.SoundEmitter:PlaySound("meta5/wortox/ttheart_out_f1")
-                inst.DynamicShadow:Enable(true)
-            end),
-            FrameEvent(5, function(inst)
-                inst.sg.statemem.tints = { 0, .4, .7, .9 }
-            end),
-            FrameEvent(10, function(inst)
-                inst.Physics:SetMotorVel(3, 0, 0)
-            end),
-            FrameEvent(15, function(inst)
-                inst.Physics:SetMotorVel(2, 0, 0)
-            end),
-            FrameEvent(15.2, function(inst)
-                if inst.sg.statemem.isphysicstoggle then
-                    ToggleOnPhysics(inst)
-                end
-                inst.components.health:SetInvincible(false)
-                inst.sg:RemoveStateTag("noattack")
-                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
-            end),
-            FrameEvent(17, function(inst)
-                inst.Physics:SetMotorVel(1, 0, 0)
-            end),
-            FrameEvent(18, function(inst)
-                inst.Physics:Stop()
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            inst.components.health:SetInvincible(false)
-            inst.DynamicShadow:Enable(true)
-            DoWortoxPortalTint(inst, 0)
-            if inst.sg.statemem.isphysicstoggle then
-                ToggleOnPhysics(inst)
-            end
-        end,
-    },
-
-    State{
         name = "mermbuffcastspell",
         tags = { "doing", "busy", "canrotate" },
 
@@ -15796,524 +15424,162 @@ local states =
         },
     },
 
-	State{
-		name = "slingshot_shoot",
+    State{
+        name = "slingshot_shoot",
 		tags = { "attack", "abouttoattack" },
 
-		onenter = function(inst)
-			if inst.components.combat:InCooldown() then
-				inst.sg:RemoveStateTag("abouttoattack")
-				inst:ClearBufferedAction()
-				inst.sg:GoToState("idle", true)
-				return
-			end
-			local buffaction = inst:GetBufferedAction()
-			local target = buffaction and buffaction.target or nil
+        onenter = function(inst)
+            if inst.components.combat:InCooldown() then
+                inst.sg:RemoveStateTag("abouttoattack")
+                inst:ClearBufferedAction()
+                inst.sg:GoToState("idle", true)
+                return
+            end
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
 			if target == nil then
-				if buffaction and inst.components.playercontroller and inst.components.playercontroller.isclientcontrollerattached then
+				if buffaction ~= nil and inst.components.playercontroller ~= nil and inst.components.playercontroller.isclientcontrollerattached then
 					inst.sg.statemem.air_attack = true
 				end
 			elseif target:IsValid() then
-				inst:ForceFacePoint(target.Transform:GetWorldPosition())
-				inst.sg.statemem.attacktarget = target
-				inst.sg.statemem.retarget = target
+	            inst:ForceFacePoint(target.Transform:GetWorldPosition())
+	            inst.sg.statemem.attacktarget = target
+                inst.sg.statemem.retarget = target
 			end
 
-			inst.sg.statemem.chained = inst.AnimState:IsCurrentAnimation("slingshot")
+            inst.AnimState:PlayAnimation("slingshot_pre")
+            inst.AnimState:PushAnimation("slingshot", false)
 
-			inst.AnimState:PlayAnimation("slingshot_pre") --11 frames
-			inst.AnimState:PushAnimation("slingshot_lag", false)
+            if inst.sg.laststate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+				inst.AnimState:SetFrame(3)
+            end
 
-			local timeout = 16
-			local rampingspeed = false
-			local weapon = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			if weapon and weapon.components.slingshotmods then
-				if weapon.components.slingshotmods:HasPartName("slingshot_handle_sticky") then
-					timeout = 11
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_jelly") then
-					timeout = 7
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_voidcloth") then
-					timeout = 11
-					rampingspeed = true
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_silk") then
-					rampingspeed = true
-				end
+            inst.components.combat:StartAttack()
+            inst.components.combat:SetTarget(target)
+            inst.components.locomotor:Stop()
+
+			local timeout = inst.sg.statemem.chained and 25 or 28
+			local playercontroller = inst.components.playercontroller
+			if playercontroller ~= nil and playercontroller.remote_authority and playercontroller.remote_predicting then
+				timeout = timeout - 1
 			end
-
-			if inst.sg.statemem.chained then
-				if inst.sg.laststate and inst.sg.laststate.name == "slingshot_shoot2" then
-					--No fast-forward when repeat initiated on server
-					inst.sg.statemem.no_predict_fastforward = true
-				end
-				if rampingspeed then
-					if (inst.sg.mem.slingshotchain or 0) < 1 then
-						inst.sg.statemem.chain = 1
-						timeout = timeout - 1
-					elseif inst.sg.mem.slingshotchain < 2 then
-						inst.sg.statemem.chain = 2
-						timeout = timeout - 2
-					elseif inst.sg.mem.slingshotchain < 3 then
-						inst.sg.statemem.chain = 3
-						timeout = timeout - 3
-						inst.sg.statemem.chainspeedfx = true
-					else
-						inst.sg.statemem.chain = 3
-						timeout = timeout - 6
-					end
-				else
-					inst.sg.mem.slingshotchain = nil
-				end
-			else
-				inst.sg.mem.slingshotchain = rampingspeed and 0 or nil
-			end
-
-			inst.components.combat:StartAttack()
-			inst.components.combat:SetTarget(target)
-			inst.components.locomotor:Stop()
-
 			inst.sg:SetTimeout(timeout * FRAMES)
-		end,
+        end,
 
-		timeline =
-		{
-			FrameEvent(5, function(inst)
-				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
-			end),
-		},
-
-		ontimeout = function(inst)
-			if not inst.sg.statemem.air_attack then
-				local buffaction = inst:GetBufferedAction()
-				local target = buffaction ~= nil and buffaction.target or nil
-				if not (target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target)) then
-					inst:ClearBufferedAction()
-					inst.sg:GoToState("idle")
-				end
-			end
-			inst.sg:GoToState("slingshot_shoot2", {
-				attacktarget = inst.sg.statemem.attacktarget,
-				retarget = inst.sg.statemem.retarget,
-				air_attack = inst.sg.statemem.air_attack,
-				chain = inst.sg.statemem.chain,
-				chainspeedfx = inst.sg.statemem.chainspeedfx,
-			})
-		end,
-
-		events =
-		{
-			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-		},
-
-		onexit = function(inst)
-			inst.components.combat:SetTarget(nil)
-			inst.components.combat:CancelAttack()
-		end,
-	},
-
-	State{
-		name = "slingshot_shoot2",
-		tags = { "attack", "abouttoattack" },
-
-		onenter = function(inst, data)
-			inst.AnimState:PlayAnimation("slingshot")
-			if data then
-				inst.sg.statemem.attacktarget = data.attacktarget
-				inst.sg.statemem.retarget = data.retarget
-				inst.sg.statemem.air_attack = data.air_attack
-				inst.sg.statemem.chain = data.chain
-				inst.sg.statemem.chainspeedfx = data.chainspeedfx
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(4, function(inst)
-				if inst.sg.statemem.air_attack then
-					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
-					inst:ClearBufferedAction()
-					inst.sg:GoToState("idle")
-				else
+        timeline =
+        {
+            TimeEvent(15 * FRAMES, function(inst)
+				if inst.sg.statemem.chained and not inst.sg.statemem.air_attack then
 					local buffaction = inst:GetBufferedAction()
-					local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					if equip then
-						if equip.components.slingshotmods and not equip.components.slingshotmods:CheckRequiredSkillsForPlayer(inst) then
-							inst.sg.mem.slingshotchain = nil
-							inst:ClearBufferedAction()
-							inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL"))
-							inst.sg:GoToState("idle")
-							return
-						end
-
-						if not (equip.components.weapon and equip.components.weapon.projectile) then
-							inst.sg.mem.slingshotchain = nil
+					local target = buffaction ~= nil and buffaction.target or nil
+					if not (target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target)) then
+						inst:ClearBufferedAction()
+						inst.sg:GoToState("idle")
+					end
+				end
+            end),
+            TimeEvent(16 * FRAMES, function(inst) -- start of slingshot
+				if inst.sg.statemem.chained then
+	                inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
+				end
+            end),
+            TimeEvent(22 * FRAMES, function(inst)
+				if inst.sg.statemem.chained then
+					if inst.sg.statemem.air_attack then
+						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
+						inst:ClearBufferedAction()
+						inst.sg:GoToState("idle")
+					else
+						local buffaction = inst:GetBufferedAction()
+						local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+						if equip ~= nil and equip.components.weapon ~= nil and equip.components.weapon.projectile ~= nil then
+							local target = buffaction ~= nil and buffaction.target or nil
+							if target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target) then
+								inst:PerformBufferedAction()
+								inst.sg:RemoveStateTag("abouttoattack")
+								inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
+							else
+								inst:ClearBufferedAction()
+								inst.sg:GoToState("idle")
+							end
+						else -- out of ammo
 							inst:ClearBufferedAction()
 							inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_OUT_OF_AMMO"))
 							inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
 							inst.sg:GoToState("idle")
-							return
-						end
-
-						local ammo = equip.components.container and equip.components.container:GetItemInSlot(1) or nil
-						if ammo and ammo.REQUIRED_SKILL and not (inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated(ammo.REQUIRED_SKILL)) then
-							inst.sg.mem.slingshotchain = nil
-							inst:ClearBufferedAction()
-							inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL"))
-							inst.sg:GoToState("idle")
-							return
-						end
-
-						local target = buffaction and buffaction.target or nil
-						if target and target:IsValid() and inst.components.combat:CanTarget(target) then
-							inst.sg.mem.slingshotchain = inst.sg.statemem.chain
-							if inst.sg.statemem.chainspeedfx then
-								if inst.components.rider and inst.components.rider:IsRiding() then
-									local fx = SpawnPrefab("slingshot_powerup_mounted_fx")
-									fx.entity:SetParent(inst.entity)
-									fx.AnimState:MakeFacingDirty() -- Not needed for clients.
-								else
-									SpawnPrefab("slingshot_powerup_fx").entity:SetParent(inst.entity)
-								end
-							end
-							inst:PerformBufferedAction()
-							inst.sg:RemoveStateTag("abouttoattack")
-							inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
-							return
 						end
 					end
-
-					--failed
-					inst.sg.mem.slingshotchain = nil
-					inst:ClearBufferedAction()
-					inst.sg:GoToState("idle")
 				end
-			end),
-			FrameEvent(8, function(inst)
-				inst.sg:RemoveStateTag("attack")
-				inst.sg:AddStateTag("idle")
-			end),
-		},
+            end),
 
-		events =
-		{
-			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
+            TimeEvent(18 * FRAMES, function(inst)
+				if not inst.sg.statemem.chained and not inst.sg.statemem.air_attack then
+					local buffaction = inst:GetBufferedAction()
+					local target = buffaction ~= nil and buffaction.target or nil
+					if not (target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target)) then
+						inst:ClearBufferedAction()
+						inst.sg:GoToState("idle")
+					end
 				end
-			end),
-		},
+            end),
+            TimeEvent(19 * FRAMES, function(inst) -- start of slingshot
+				if not inst.sg.statemem.chained then
+	                inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
+				end
+            end),
+            TimeEvent(25 * FRAMES, function(inst)
+				if not inst.sg.statemem.chained then
+					if inst.sg.statemem.air_attack then
+						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
+						inst:ClearBufferedAction()
+						inst.sg:GoToState("idle")
+					else
+						local buffaction = inst:GetBufferedAction()
+						local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+						if equip ~= nil and equip.components.weapon ~= nil and equip.components.weapon.projectile ~= nil then
+							local target = buffaction ~= nil and buffaction.target or nil
+							if target ~= nil and target:IsValid() and inst.components.combat:CanTarget(target) then
+								inst:PerformBufferedAction()
+								inst.sg:RemoveStateTag("abouttoattack")
+								inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
+							else
+								inst:ClearBufferedAction()
+								inst.sg:GoToState("idle")
+							end
+						else -- out of ammo
+							inst:ClearBufferedAction()
+							inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_OUT_OF_AMMO"))
+							inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
+							inst.sg:GoToState("idle")
+						end
+					end
+				end
+            end),
+        },
 
-		onexit = function(inst)
-			inst.components.combat:SetTarget(nil)
+		ontimeout = function(inst)
+			inst.sg:RemoveStateTag("attack")
+			inst.sg:AddStateTag("idle")
+		end,
+
+        events =
+        {
+            EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.combat:SetTarget(nil)
 			if inst.sg:HasStateTag("abouttoattack") then
 				inst.components.combat:CancelAttack()
-			end
-		end,
-	},
-
-	State{
-		name = "slingshot_special",
-		tags = { "busy" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-
-			local buffaction = inst:GetBufferedAction()
-			if buffaction and buffaction.pos then
-				inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-			end
-
-			inst.sg.statemem.chained =
-				inst.AnimState:IsCurrentAnimation("slingshot") or
-				inst.AnimState:IsCurrentAnimation("slingshot_pre") or
-				inst.AnimState:IsCurrentAnimation("slingshot_lag")
-
-			inst.AnimState:PlayAnimation("slingshot_alt_pre") --15 frames
-			inst.AnimState:PushAnimation("slingshot_lag", false)
-
-			local timeout = 20
-			local rampingspeed = false
-			local weapon = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			if weapon and weapon.components.slingshotmods then
-				if weapon.components.slingshotmods:HasPartName("slingshot_handle_sticky") then
-					timeout = 15
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_jelly") then
-					timeout = 11
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_voidcloth") then
-					timeout = 15
-					rampingspeed = true
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_silk") then
-					rampingspeed = true
-				end
-			end
-
-			if inst.sg.statemem.chained then
-				if rampingspeed then
-					if (inst.sg.mem.slingshotchain or 0) < 1 then
-						inst.sg.statemem.chain = 1
-						timeout = timeout - 1
-					elseif inst.sg.mem.slingshotchain < 2 then
-						inst.sg.statemem.chain = 2
-						timeout = timeout - 2
-					elseif inst.sg.mem.slingshotchain < 3 then
-						inst.sg.statemem.chain = 3
-						timeout = timeout - 3
-						inst.sg.statemem.chainspeedfx = true
-					else
-						inst.sg.statemem.chain = 3
-						timeout = timeout - 6
-					end
-				else
-					inst.sg.mem.slingshotchain = nil
-				end
-			else
-				inst.sg.mem.slingshotchain = rampingspeed and 0 or nil
-			end
-
-			inst.sg:SetTimeout(timeout * FRAMES)
-		end,
-
-		timeline =
-		{
-			FrameEvent(9, function(inst)
-				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
-			end),
-		},
-
-		ontimeout = function(inst)
-			inst.sg:GoToState("slingshot_special2", {
-				chain = inst.sg.statemem.chain,
-				chainspeedfx = inst.sg.statemem.chainspeedfx,
-			})
-		end,
-	},
-
-	State{
-		name = "slingshot_special2",
-		tags = { "busy" },
-
-		onenter = function(inst, data)
-			inst.AnimState:PlayAnimation("slingshot")
-			if inst.sg.lasttags and inst.sg.lasttags["aoecharging"] then
-				--one frame to accept the final RPC aiming direction
-				inst.sg:AddStateTag("aoecharging")
-				inst.sg.statemem.fastforwarded = data and data.fastforwarded
-				inst.sg.statemem.chargeticks = data and data.chargeticks or 0
-			end
-			if data then
-				inst.sg.statemem.chain = data.chain
-				inst.sg.statemem.chainspeedfx = data.chainspeedfx
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(1, function(inst)
-				if not inst.sg.statemem.fastforwarded then
-					inst.sg:RemoveStateTag("aoecharging")
-				end
-			end),
-			FrameEvent(2, function(inst)
-				if inst.sg.statemem.fastforwarded then
-					inst.sg:RemoveStateTag("aoecharging")
-				end
-			end),
-			FrameEvent(4, function(inst)
-				local buffaction = inst:GetBufferedAction()
-				local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-				if equip then
-					if equip.components.slingshotmods and not equip.components.slingshotmods:CheckRequiredSkillsForPlayer(inst) then
-						inst.sg.mem.slingshotchain = nil
-						inst:ClearBufferedAction()
-						inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL"))
-						inst.sg:GoToState("idle")
-						return
-					end
-
-					local ammo = equip.components.container and equip.components.container:GetItemInSlot(equip.components.container:GetNumSlots()) or nil
-					if ammo == nil then
-						inst.sg.mem.slingshotchain = nil
-						inst:ClearBufferedAction()
-						inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_OUT_OF_AMMO"))
-						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/no_ammo")
-						inst.sg:GoToState("idle")
-						return
-					end
-
-					if ammo.REQUIRED_SKILL and not (inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated(ammo.REQUIRED_SKILL)) then
-						inst.sg.mem.slingshotchain = nil
-						inst:ClearBufferedAction()
-						inst.components.talker:Say(GetString(inst, "ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL"))
-						inst.sg:GoToState("idle")
-						return
-					end
-
-					if inst.sg.statemem.chargeticks == nil then
-						inst.sg.mem.slingshotchain = inst.sg.statemem.chain
-						if inst.sg.statemem.chainspeedfx then
-							SpawnPrefab(inst.components.rider and inst.components.rider:IsRiding() and "slingshot_powerup_mounted_fx" or "slingshot_powerup_fx").entity:SetParent(inst.entity)
-						end
-						inst:PerformBufferedAction()
-						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
-						return
-					end
-
-					if equip.components.aoecharging and equip.components.aoecharging:IsEnabled() then
-						inst.sg.mem.slingshotchain = inst.sg.statemem.chain
-						if inst.sg.statemem.chainspeedfx then
-							SpawnPrefab(inst.components.rider and inst.components.rider:IsRiding() and "slingshot_powerup_mounted_fx" or "slingshot_powerup_fx").entity:SetParent(inst.entity)
-						end
-						equip.components.aoecharging:ReleaseChargedAttack(inst, inst.sg.statemem.chargeticks)
-						inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
-						return
-					end
-				end
-
-				--failed
-				inst.sg.mem.slingshotchain = nil
-				inst:ClearBufferedAction()
-				inst.sg:GoToState("idle")
-			end),
-			FrameEvent(8, function(inst)
-				inst.sg:RemoveStateTag("busy")
-				inst.sg:AddStateTag("idle")
-			end),
-		},
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-	},
-
-	State{
-		name = "slingshot_charge",
-		tags = { "busy", "aoecharging" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-
-			local buffaction = inst:GetBufferedAction()
-			if buffaction and buffaction.pos then
-				inst:ForceFacePoint(buffaction:GetActionPoint():Get())
-			end
-
-			inst.AnimState:PlayAnimation("slingshot_alt_pre") --15 frames
-			inst.AnimState:PushAnimation("slingshot_lag", false)
-
-			inst.sg.statemem.isreleased = not (inst.components.playercontroller and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_SECONDARY, CONTROL_CONTROLLER_ALTACTION))
-
-			inst.sg.statemem.speedup = 0
-			local rampingspeed = false
-			local weapon = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-			if weapon and weapon.components.slingshotmods then
-				if weapon.components.slingshotmods:HasPartName("slingshot_handle_sticky") then
-					inst.sg.statemem.speedup = 2
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_jelly") then
-					inst.sg.statemem.speedup = 3
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_voidcloth") then
-					inst.sg.statemem.speedup = 4
-					rampingspeed = true
-				elseif weapon.components.slingshotmods:HasPartName("slingshot_handle_silk") then
-					inst.sg.statemem.speedup = 1
-					rampingspeed = true
-				end
-			end
-
-			if rampingspeed then
-				inst.sg.statemem.chain = 3
-				inst.sg.statemem.chainspeedfx = true
-			end
-			inst.sg.mem.slingshotchain = nil
-
-			local timeout = (15 - inst.sg.statemem.speedup) * FRAMES
-			inst.sg:SetTimeout(timeout)
-		end,
-
-		onupdate = function(inst)
-			if inst.sg.statemem.weapon == nil then
-				inst.sg.statemem.isreleased = inst.sg.statemem.isreleased or not (inst.components.playercontroller and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_SECONDARY, CONTROL_CONTROLLER_ALTACTION))
-
-				if inst.sg.statemem.cancancel then
-					if inst.sg.statemem.isreleased then
-						inst.sg:GoToState("idle")
-					elseif inst.sg.statemem.weapon == nil then
-						local weapon = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-						if weapon and weapon.components.aoecharging and weapon.components.aoecharging:IsEnabled() then
-							inst.sg.statemem.weapon = weapon
-							weapon.components.aoecharging:SetChargingOwner(inst)
-							weapon.components.aoecharging:SetChargeTicks(inst.sg.statemem.speedup)
-						else
-							inst.sg:GoToState("idle")
-						end
-					end
-				end
-			elseif not (inst.sg.statemem.weapon.components.aoecharging and inst.sg.statemem.weapon.components.aoecharging:IsEnabled()) then
-				inst.sg:GoToState("idle")
-			end
-		end,
-
-		ontimeout = function(inst)
-			inst.sg.statemem.canshoot = true
-		end,
-
-		timeline =
-		{
-			FrameEvent(8, function(inst)
-				inst.sg.statemem.cancancel = true
-			end),
-			FrameEvent(9, function(inst)
-				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/stretch")
-			end),
-			FrameEvent(90, function(inst) --timeout
-				local weapon = inst.sg.statemem.weapon
-				if weapon and weapon.components.aoecharging and weapon.components.aoecharging:IsEnabled() then
-					inst.sg:GoToState("slingshot_special2", {
-						chargeticks = weapon.components.aoecharging:GetChargeTicks(),
-						chain = inst.sg.statemem.chain,
-						chainspeedfx = inst.sg.statemem.chainspeedfx,
-					})
-				else
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-
-		events =
-		{
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("chargingreticulecancelled", function(inst) inst.sg:GoToState("idle") end),
-			EventHandler("chargingreticulereleased", function(inst, data)
-				if inst.sg.statemem.canshoot then
-					inst.sg:GoToState("slingshot_special2", {
-						chargeticks = data.chargeticks,
-						fastforwarded = true,
-						chain = inst.sg.statemem.chain,
-						chainspeedfx = inst.sg.statemem.chainspeedfx,
-					})
-					local playercontroller = inst.components.playercontroller
-					if playercontroller and playercontroller.remote_predicting and playercontroller.remote_authority then
-						local dt = GetTickTime()
-						inst.AnimState:SetTime(inst.AnimState:GetCurrentAnimationTime() + dt)
-						inst.sg:FastForward(dt)
-					end
-				else
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			if inst.sg.statemem.weapon and inst.sg.statemem.weapon:IsValid() then
-				inst.sg.statemem.weapon.components.aoecharging:SetChargingOwner(nil)
-			end
-		end,
+            end
+        end,
 	},
 
     State{
@@ -18283,26 +17549,13 @@ local states =
         tags = { "busy", "pausepredict", "nodangle", "nomorph" },
 
         onenter = function(inst, data)
-            inst.sg.statemem.alldata = data
             inst.components.locomotor:Stop()
-            local dest
-            if inst.sg.statemem.alldata then
-                dest = inst.sg.statemem.alldata.dest
-            end
             inst.AnimState:PlayAnimation("wortox_portal_jumpin")
             local x, y, z = inst.Transform:GetWorldPosition()
-            local fx = SpawnPrefab("wortox_portal_jumpin_fx")
-            fx.Transform:SetPosition(x, y, z)
-            if inst.components.skilltreeupdater then
-                if inst.components.skilltreeupdater:IsActivated("wortox_allegiance_shadow") then
-                    fx.AnimState:SetMultColour(WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, 1)
-                    inst.sg.statemem.allegiance = "shadow"
-                elseif inst.components.skilltreeupdater:IsActivated("wortox_allegiance_lunar") then
-                    fx.AnimState:SetAddColour(WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, 0)
-                    inst.sg.statemem.allegiance = "lunar"
-                end
-            end
+            SpawnPrefab("wortox_portal_jumpin_fx").Transform:SetPosition(x, y, z)
             inst.sg:SetTimeout(11 * FRAMES)
+            inst.sg.statemem.from_map = data and data.from_map or nil
+            local dest = data and data.dest or nil
             if dest ~= nil then
                 inst.sg.statemem.dest = dest
                 inst:ForceFacePoint(dest:Get())
@@ -18338,20 +17591,12 @@ local states =
                 inst.sg:AddStateTag("noattack")
                 inst.components.health:SetInvincible(true)
                 inst.DynamicShadow:Enable(false)
-                if inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wortox_souldecoy_1") then
-                    if (inst._freesoulhop_counter or 0) == 1 then -- First hop only.
-                        local x, y, z = inst.Transform:GetWorldPosition()
-                        local decoy = SpawnPrefab("wortox_decoy")
-                        decoy.Transform:SetPosition(x, y, z)
-                        decoy:SetOwner(inst) -- The decoy can now be invalid after here.
-                    end
-                end
             end),
         },
 
         ontimeout = function(inst)
             inst.sg.statemem.portaljumping = true
-            inst.sg:GoToState("portal_jumpout", inst.sg.statemem.alldata)
+            inst.sg:GoToState("portal_jumpout", {dest = inst.sg.statemem.dest, from_map = inst.sg.statemem.from_map})
         end,
 
         onexit = function(inst)
@@ -18368,39 +17613,20 @@ local states =
         tags = { "busy", "nopredict", "nomorph", "noattack", "nointerrupt" },
 
         onenter = function(inst, data)
-            inst.sg.statemem.alldata = data
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wortox_portal_jumpout")
             inst:ResetMinimapOffset()
-            if inst.sg.statemem.alldata and inst.sg.statemem.alldata.from_map then
+            if data and data.from_map then
                 inst:SnapCamera()
             end
-            local x, y, z
-            if inst.sg.statemem.alldata then
-                if inst.sg.statemem.alldata.platform and inst.sg.statemem.alldata.platform:IsValid() then
-                    local platformoffset = inst.sg.statemem.alldata.platformoffset
-                    local px, py, pz = inst.sg.statemem.alldata.platform.Transform:GetWorldPosition()
-                    x, y, z = px - platformoffset.x, py - platformoffset.y, pz - platformoffset.z
-                    inst:ForceFacePoint(px, py, pz) -- Always jump towards center of boat.
-                else
-                    x, y, z = inst.sg.statemem.alldata.dest:Get()
-                end
+            local dest = data and data.dest or nil
+            if dest ~= nil then
+                inst.Physics:Teleport(dest:Get())
             else
-                x, y, z = inst.Transform:GetWorldPosition()
+                dest = inst:GetPosition()
             end
-            inst.Physics:Teleport(x, y, z)
-            inst.AnimState:PlayAnimation("wortox_portal_jumpout")
-            local fx = SpawnPrefab("wortox_portal_jumpout_fx")
-            fx.Transform:SetPosition(x, y, z)
-            if inst.components.skilltreeupdater then
-                if inst.components.skilltreeupdater:IsActivated("wortox_allegiance_shadow") then
-                    fx.AnimState:SetMultColour(WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, WORTOX_SHADOW_MULT, 1)
-                    inst.sg.statemem.allegiance = "shadow"
-                elseif inst.components.skilltreeupdater:IsActivated("wortox_allegiance_lunar") then
-                    fx.AnimState:SetAddColour(WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, WORTOX_LUNAR_OFFSET, 0)
-                    inst.sg.statemem.allegiance = "lunar"
-                end
-            end
+            SpawnPrefab("wortox_portal_jumpout_fx").Transform:SetPosition(dest:Get())
             inst.DynamicShadow:Enable(false)
             inst.sg:SetTimeout(14 * FRAMES)
             DoWortoxPortalTint(inst, 1)
@@ -21848,144 +21074,128 @@ local states =
 	},
 
 	State{
-		name = "nabbag",
-		tags = { "busy", "nodangle" },
+		name = "pushing_walk_pre",
+		tags = { "pushing_walk",  "busy" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("nabbag_pre") -- 13
-			inst.AnimState:PushAnimation("nabbag_loop", false) -- 25
+			inst.AnimState:PlayAnimation("pushing_idle_pre")
+			inst.sg:SetTimeout(2 * FRAMES)
+		end,
+
+		ontimeout = function(inst)
+			local bufferedaction = inst:GetBufferedAction()
+			if bufferedaction then
+				inst.sg.statemem.target = bufferedaction.target
+				--target can change during PerformBufferedAction() via "pushable_targetswap" event
+				if inst:PerformBufferedAction() then
+					inst.sg:GoToState("pushing_walk", inst.sg.statemem.target)
+					return
+				end
+			end
+			inst.AnimState:PlayAnimation("pushing_idle_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+
+		events =
+		{
+			EventHandler("pushable_targetswap", function (inst, data)
+				if inst.sg.statemem.target == data.old then
+					inst.sg.statemem.target = data.new
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "pushing_walk",
+		tags = { "pushing_walk", "busy", "jumping", "nopredict" },
+
+		onenter = function(inst, target)
+			if not (target and target.components.pushable and target:IsValid()) then
+				inst.AnimState:PlayAnimation("pushing_idle_pst")
+				inst.sg:GoToState("idle", true)
+				return
+			end
+			inst.AnimState:PlayAnimation("pushing_walk_pre")
+			inst.AnimState:PushAnimation("pushing_walk")
+			inst.sg.statemem.speedmult = 0.4
+			inst.Physics:SetMotorVel(target.components.pushable:GetPushingSpeed() * inst.sg.statemem.speedmult, 0, 0)
+			inst.sg.statemem.target = target
+			inst.sg:SetTimeout(0.3)
+			DoRunSounds(inst)
+			DoFoleySounds(inst)
+		end,
+
+		onupdate = function(inst, dt)
+			local target = inst.sg.statemem.target
+			if not (target and target.components.pushable and target.components.pushable.doer == inst and target:IsValid()) then
+				inst.sg.statemem.target = nil
+				inst.AnimState:PlayAnimation("pushing_walk_idle_pst")
+				inst.sg:GoToState("idle", true)
+				return --target became invalid, cancel immediately
+			elseif inst.sg.statemem.canstop then
+				if inst.sg.statemem.exitdelay then
+					if inst.sg.statemem.exitdelay > dt then
+						inst.sg.statemem.exitdelay = inst.sg.statemem.exitdelay - dt
+					else
+						inst.sg:GoToState("idle", true)
+					end
+					return
+				elseif not (inst.components.playercontroller and
+							inst.components.playercontroller:IsAnyOfControlsPressed(
+								CONTROL_SECONDARY,
+								CONTROL_CONTROLLER_ALTACTION))
+				then
+					inst.AnimState:PlayAnimation("pushing_walk_idle_pst")
+					inst.Physics:Stop()
+					inst.sg:RemoveStateTag("jumping")
+					DoRunSounds(inst)
+					DoFoleySounds(inst)
+					--delay leaving the state, so the pushable target also stops a bit later
+					inst.sg.statemem.exitdelay = 3 * FRAMES
+					return
+				end
+			end
+
+			if target.components.pushable:ShouldStopForwardMotion() then
+				inst.Physics:Stop()
+			else
+				inst.Physics:SetMotorVel(target.components.pushable:GetPushingSpeed() * inst.sg.statemem.speedmult, 0, 0)
+			end
+
+			for i = 11, 23, 12 do --basically just 11 and 23 XD
+				if inst.AnimState:GetCurrentAnimationFrame() == i then
+					if inst.sg.statemem.lastfootstepframe ~= i then
+						inst.sg.statemem.lastfootstepframe = i
+						DoRunSounds(inst)
+						DoFoleySounds(inst)
+					end
+					break
+				end
+			end
 		end,
 
 		timeline =
 		{
-			FrameEvent(14, function(inst) inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh") end),
-			FrameEvent(15, function(inst)
-				inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh")
-			end),
-			FrameEvent(16, function(inst)
-				inst:PerformBufferedAction()
-			end),
-			FrameEvent(18, function(inst)
-				inst.sg:RemoveStateTag("busy")
-			end),
-			FrameEvent(13+25, function(inst)
-				inst.sg:GoToState("idle", true)
-			end),
+			FrameEvent(1, function(inst) inst.sg.statemem.speedmult = 0.4 end),
+			FrameEvent(2, function(inst) inst.sg.statemem.speedmult = 0.7 end),
+			FrameEvent(3, function(inst) inst.sg.statemem.speedmult = 0.9 end),
+			FrameEvent(4, function(inst) inst.sg.statemem.speedmult = 1 end),
 		},
 
-		events =
-		{
-			EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-		},
+		ontimeout = function(inst)
+			inst.sg.statemem.canstop = true
+		end,
+
+		onexit = function(inst)
+			inst.Physics:Stop()
+			local target = inst.sg.statemem.target
+			if target and target.components.pushable and target:IsValid() then
+				target.components.pushable:StopPushing(inst)
+			end
+		end,
 	},
-
-    -- WENDY
-    State{
-        name = "applyelixir",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-
-            inst.AnimState:PlayAnimation("wendy_elixir")
-            inst.SoundEmitter:PlaySound("meta5/wendy/pour_elixir_f17") 
-
-            inst.sg.statemem.action = inst:GetBufferedAction()
-
-            if inst.sg.statemem.action ~= nil then
-                local invobject = inst.sg.statemem.action.invobject
-                local elixir_type = invobject.elixir_buff_type
-
-                inst.AnimState:OverrideSymbol("ghostly_elixirs_swap", "ghostly_elixirs", "ghostly_elixirs_".. elixir_type .."_swap")
-
-                local flower = inst.components.inventory:FindItem(function(item)
-                    return item:HasTag("abigail_flower")
-                end)
-                
-                if flower ~= nil then
-                    local skin_build = flower:GetSkinBuild()
-                    if skin_build ~= nil then
-                        inst.AnimState:OverrideItemSkinSymbol("flower", skin_build, "flower", flower.GUID, flower.AnimState:GetBuild() )
-                    else
-                        inst.AnimState:OverrideSymbol("flower", flower.AnimState:GetBuild(), "flower")
-                    end
-                end                
-            end
-
-            inst.sg:SetTimeout(26 * FRAMES)
-        end,
-
-        timeline =
-        {
-            TimeEvent(4 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-            TimeEvent(5 * FRAMES, function(inst)
-            end),
-            TimeEvent(24 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-            end),
-        },
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
-        end,
-
-        onexit = function(inst)
-            if inst.bufferedaction == inst.sg.statemem.action and
-            (inst.components.playercontroller == nil or inst.components.playercontroller.lastheldaction ~= inst.bufferedaction) then
-                inst:ClearBufferedAction()
-            end
-        end,
-    },
-
-
- -- WENDY
-    State{
-        name = "drinkelixir",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-
-            inst.AnimState:PlayAnimation("drink")
-            inst.SoundEmitter:PlaySound("meta5/wendy/player_drink") 
-
-            inst.sg.statemem.action = inst:GetBufferedAction()
-
-            if inst.sg.statemem.action ~= nil then
-                local invobject = inst.sg.statemem.action.invobject
-                local elixir_type = invobject.elixir_buff_type
-
-                inst.AnimState:OverrideSymbol("ghostly_elixirs_swap", "ghostly_elixirs", "ghostly_elixirs_".. elixir_type .."_swap")              
-            end
-
-            inst.sg:SetTimeout(33 * FRAMES)
-        end,
-
-        timeline =
-        {
-            TimeEvent(4 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-            TimeEvent(31 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-            end),
-        },
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
-        end,
-
-        onexit = function(inst)
-            if inst.bufferedaction == inst.sg.statemem.action and
-            (inst.components.playercontroller == nil or inst.components.playercontroller.lastheldaction ~= inst.bufferedaction) then
-                inst:ClearBufferedAction()
-            end
-        end,
-    },    
-    
 }
 
 local hop_timelines =

@@ -33,12 +33,6 @@ return{
         {
             NOTNOW = "I tried, but they're occupied.",
         },
-        ATTACH_GHOST = 
-        {
-            WRONG_SISTURN = "only_used_by_wendy",
-            SISTURN_OFF = "only_used_by_wendy",
-            ABIGAIL_NOT_NEAR = "only_used_by_wendy",
-        },        
         ATTUNE =
         {
             NOHEALTH = "My body would surely die.",
@@ -342,7 +336,6 @@ return{
 			INUSE = "It is making a pact with another.",
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
             NOTAMERM = "Not for me, I see.",
-            NOTSOULJARHANDLER = "These aren't my souls."
 		},
         SADDLE =
         {
@@ -374,7 +367,6 @@ return{
 			NOTALLOWED = "Oh I simply couldn't.",
 			INUSE = "Another soul has use of it right now.",
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
-            NOTSOULJARHANDLER = "These aren't my souls."
 		},
         TEACH =
         {
@@ -412,8 +404,6 @@ return{
             BEEF_BELL_INVALID_TARGET = "Nope, hyuyuyu!",
             BEEF_BELL_ALREADY_USED = "Turns out in the end, it already had a friend.",
             BEEF_BELL_HAS_BEEF_ALREADY = "Having more than one wouldn't be much fun.",
-
-			NOT_MINE = "I see it doesn't belong to me!",
         },
 		USEKLAUSSACKKEY =
         {
@@ -435,23 +425,22 @@ return{
             DOESNTWORK = "Oh ho! Something's gone awry!",
             ALREADYACTIVE = "Perhaps he too likes to travel between planes? Hyuyuyu!",
         },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
-        },
         YOTB_UNLOCKSKIN =
         {
             ALREADYKNOWN = "Oh what a bore, I've seen it before.",
         },
-        MUTATE = 
-        {
-            NOGHOST = "only_used_by_wendy",
-            NONEWMOON = "only_used_by_wendy",
-            NOFULLMOON = "only_used_by_wendy",
-            NOTNIGHT = "only_used_by_wendy",
-        },        
+		CARVEPUMPKIN =
+		{
+			INUSE = "Another soul is carving it.",
+			BURNING = "Fire! My fir!",
+		},
+		DECORATESNOWMAN =
+		{
+			INUSE = "Another soul is building it!",
+			HASHAT = "Drat! That hat!",
+			STACKEDTOOHIGH = "Sigh, too high.",
+			MELTING = "I felt it melt.",
+		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -728,93 +717,28 @@ return{
         "I don't want to suck anymore souls!",
         "What gruesome things I must do to live!",
     },
-    ANNOUNCE_SOUL_EMPTY_NICE =
-    {
-        "I'm afraid I must feed soon.",
-        "Curse my need to feed!",
-        "It is tragic that they must die so that I may have life.",
-    },
-    ANNOUNCE_SOUL_EMPTY_NAUGHTY =
-    {
-        "I am absolutely famished!",
-        "I'm starved for some delicious souls!",
-        "I yearn for those tasty treats!",
-    },
     ANNOUNCE_SOUL_FEW =
     {
         "I'll need more souls soon.",
         "I feel the soul hunger stirring.",
-    },
-    ANNOUNCE_SOUL_FEW_NICE =
-    {
-        "Oh dear. Running low on souls, I fear.",
-        "I have precious few souls left.",
-    },
-    ANNOUNCE_SOUL_FEW_NAUGHTY =
-    {
-        "My collection is running low.",
-        "I'll need a soul snack soon.",
     },
     ANNOUNCE_SOUL_MANY =
     {
         "I've enough souls to sustain me.",
         "I hope I was not too greedy.",
     },
-    ANNOUNCE_SOUL_MANY_NICE =
-    {
-        "Oh my, I've taken so many!",
-        "Such abundance. Many thanks!",
-    },
-    ANNOUNCE_SOUL_MANY_NAUGHTY =
-    {
-        "When is enough enough? Never! Hyuyu!",
-        "I love a feast of souls.",
-    },
     ANNOUNCE_SOUL_OVERLOAD =
     {
         "I can't handle that much soul power!",
         "That was one soul too many!",
     },
-    ANNOUNCE_SOUL_OVERLOAD_NICE =
-    {
-        "I was too greedy!",
-        "Those poor souls have gone to waste!",
-    },
-    ANNOUNCE_SOUL_OVERLOAD_NAUGHTY =
-    {
-        "My precious souls!",
-        "Those were mine! All mine!",
-    },
-    ANNOUNCE_SOUL_OVERLOAD_WARNING =
-    {
-        "The souls are going to burst my brim!",
-        "The burden of souls is certain to pop!",
-    },
-    ANNOUNCE_SOUL_OVERLOAD_AVOIDED =
-    {
-        "My brim is back from making a crack.",
-        "I had to stop before I popped.",
-    },
-    ANNOUNCE_PANFLUTE_BUFF_ACTIVE =
-    {
-        "I feel the call to toot my flute! Hyuyu!",
-        "My flute's my muse, I can't refuse!",
-    },
-    ANNOUNCE_PANFLUTE_BUFF_USED =
-    {
-        "What a hoot, to play my flute!",
-        "A treat that feeds the soul! Hyuyu!",
-    },
 
     --walter specfic
---fallback to speech_wilson.lua 	ANNOUNCE_AMMO_SLOT_OVERSTACKED = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL = "only_used_by_walter",
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua         "only_used_by_walter",
@@ -1091,21 +1015,9 @@ return{
 	-- Hallowed Nights 2024
 	ANNOUNCE_NOPUMPKINCARVINGONFIRE = "I weren't done, this burnt one!",
 
-    --rifts 5
-    ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
-    ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
-
-	ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT = "Oh dear, still here!",
-
-    ANNOUNCE_NO_ABIGAIL_FLOWER = "only_used_by_wendy",
-
-    ANNOUNCE_ELIXIR_BOOSTED = "I feel like a new imp!",
-    ANNOUNCE_ELIXIR_GHOSTVISION = "See like the dead, they said.",
-    ANNOUNCE_ELIXIR_PLAYER_SPEED = "I have the strength of ten imps!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
-
-    ANNOUNCE_EXLIIR_TOO_SUPER = "Don't think I can take that drink!",
+	-- Winter's Feast 2024
+	ANNOUNCE_SNOWBALL_TOO_BIG = "I tell no lies! It's at full size!",
+	ANNOUNCE_SNOWBALL_NO_SNOW = "It won't grow without more snow.",
 
 	BATTLECRY =
 	{
@@ -2032,10 +1944,12 @@ return{
         CHESSPIECE_EYEOFTERROR = "He's gone, no matter how you look at it, hyuyu!",
         CHESSPIECE_TWINSOFTERROR = "What an eye-catching statue, hyuyu!",
         CHESSPIECE_DAYWALKER = "A boorish boar's bust!",
+        CHESSPIECE_DAYWALKER2 = "The hog heaved through heaps of junk.",
         CHESSPIECE_DEERCLOPS_MUTATED = "She got quite the eyeful.",
         CHESSPIECE_WARG_MUTATED = "Must we memorialize the mutated mutt?",
         CHESSPIECE_BEARGER_MUTATED = "It bears a strong resemblance.",
         CHESSPIECE_SHARKBOI = "We avoided the maw of the rowdy Frostjaw.",
+        CHESSPIECE_WORMBOSS = "Its jaws were near, but I disappeared! Hyuyu!",
 
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
@@ -4065,28 +3979,14 @@ return{
             "Hello, my small furry friend!",
         },
 		WALTERHAT = "Imps and uniforms rarely mix.",
-		SLINGSHOT =
-		{
-			GENERIC = "Now this could cause some mischief!",
---fallback to speech_wilson.lua 			NOT_MINE = "only_used_by_walter",
-		},
+		SLINGSHOT = "Now this could cause some mischief!",
 		SLINGSHOTAMMO_ROCK = "Oooh, how fun!",
 		SLINGSHOTAMMO_MARBLE = "Oooh, how fun!",
 		SLINGSHOTAMMO_THULECITE = "Oooh, how fun!",
         SLINGSHOTAMMO_GOLD = "Oooh, how fun!",
-		SLINGSHOTAMMO_HONEY = "Oooh, how fun!",
         SLINGSHOTAMMO_SLOW = "Oooh, how fun!",
         SLINGSHOTAMMO_FREEZE = "Oooh, how fun!",
 		SLINGSHOTAMMO_POOP = "Oooh, how fun!",
-		SLINGSHOTAMMO_STINGER = "Oooh, how fun!",
-		SLINGSHOTAMMO_MOONGLASS = "Oooh, how fun!",
-		SLINGSHOTAMMO_GELBLOB = "Oooh, how fun!",
-		SLINGSHOTAMMO_SCRAPFEATHER = "Oooh, how fun!",
-        SLINGSHOTAMMO_DREADSTONE = "Oooh, how fun!",
-        SLINGSHOTAMMO_GUNPOWDER = "Oooh, how fun!",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "Oooh, how fun!",
-        SLINGSHOTAMMO_PUREBRILLIANCE = "Oooh, how fun!",
-        SLINGSHOTAMMO_HORRORFUEL = "Oooh, how fun!",
         PORTABLETENT = "So many pranks to pull! Do I push it in the lake? Toss in a snake?",
         PORTABLETENT_ITEM = "Round and round, tent goes up and then comes down!",
 
@@ -4119,7 +4019,6 @@ return{
 		GHOSTLYELIXIR_ATTACK = "Hyuyu! Someone's getting crafty!",
 		GHOSTLYELIXIR_SPEED = "Hyuyu! Someone's getting crafty!",
 		GHOSTLYELIXIR_RETALIATION = "Hyuyu! Someone's getting crafty!",
-        GHOSTLYELIXIR_REVIVE = "Hyuyu! Someone's getting crafty!",
 		SISTURN =
 		{
 			GENERIC = "A touching tribute to a treasured twin.",
@@ -4129,10 +4028,6 @@ return{
 
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
-        --WORTOX_DECOY is not needed because it uses the default WORTOX inspection.
-        WORTOX_NABBAG = "My clever clobbering collector! Hyuyu!",
-        WORTOX_REVIVER = "To die is not always goodbye.",
-        WORTOX_SOULJAR = "I'll need more souls to store.",
 
         PORTABLECOOKPOT_ITEM =
         {
@@ -5531,7 +5426,7 @@ return{
         GELBLOB_BOTTLE = "Bottled abomination.",
 
         PLAYER_HOSTED =
-        {
+        {        
             GENERIC = "Can't you see, you're dead to me?",
             ME = "As such, I've seen too much. Hyuyu...",
         },
@@ -5543,29 +5438,12 @@ return{
         SHADOWTHRALL_PARASITE = "That thingy looks clingy.",
 
         PUMPKINCARVER = "My turn to carve the lantern!",
-
-        -- Meta 5
-        GHOSTLYELIXIR_LUNAR = "Hyuyu! Someone's getting crafty!",
-        GHOSTLYELIXIR_SHADOW = "Hyuyu! Someone's getting crafty!",
-
-		SLINGSHOTMODKIT = "Hotshot! Is he not?",
-		SLINGSHOT_BAND_PIGSKIN = "Hotshot! Is he not?",
-		SLINGSHOT_BAND_TENTACLE = "Hotshot! Is he not?",
-		SLINGSHOT_BAND_MIMIC = "Hotshot! Is he not?",
-		SLINGSHOT_FRAME_BONE = "Hotshot! Is he not?",
-		SLINGSHOT_FRAME_GEMS = "Hotshot! Is he not?",
-		SLINGSHOT_FRAME_WAGPUNK_0 = "Hotshot! Is he not?",
-		SLINGSHOT_FRAME_WAGPUNK = "Hotshot! Is he not?",
-		SLINGSHOT_HANDLE_STICKY = "Hotshot! Is he not?",
-		SLINGSHOT_HANDLE_JELLY = "Hotshot! Is he not?",
-		SLINGSHOT_HANDLE_SILK = "Hotshot! Is he not?",
-		SLINGSHOT_HANDLE_VOIDCLOTH = "Hotshot! Is he not?",
-
-        WOBY_BADGE_STATION = "A proud pup leveling up!",
-
-        ELIXIR_CONTAINER = "Any mixers for those elixirs?",
-        GHOSTFLOWERHAT = "Ghostly flowers yield strange powers.",
-        WENDY_RESURRECTIONGRAVE = "A just-in-case vase!",
+		SNOWMAN =
+		{
+			GENERIC = "Whoa, man. Snowman!",
+			SNOWBALL = "Of all the snowballs...",
+		},
+        SNOWBALL_ITEM = "No greater delight than a snowball fight!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

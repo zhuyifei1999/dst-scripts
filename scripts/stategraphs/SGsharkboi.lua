@@ -107,7 +107,7 @@ local events =
 				inst.sg:GoToState("hit", { hits > 2 and "torpedo_pst" or "torpedo_dizzy", hits })
 			elseif inst.sg:HasStateTag("torpedoready") then
 				inst.sg:GoToState("hit", { "torpedo_pre", inst.sg.statemem.target })
-			elseif not CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) then --hit delay only for projectiles
+			elseif not CommonHandlers.HitRecoveryDelay(inst) then
 				inst.sg:GoToState("hit")
 			end
 		end
@@ -754,7 +754,6 @@ local states =
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("hit")
 			inst.SoundEmitter:PlaySound("meta3/sharkboi/hit")
-			CommonHandlers.UpdateHitRecoveryDelay(inst)
 			inst.sg.statemem.nextstateparams = nextstateparams
 			if inst.sg.lasttags and inst.sg.lasttags["dizzy"] then
 				inst.sg:AddStateTag("dizzy")

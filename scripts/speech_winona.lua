@@ -33,12 +33,6 @@ return{
         {
             NOTNOW = "Guess he ain't got the time right now.",
         },
-        ATTACH_GHOST = 
-        {
-            WRONG_SISTURN = "only_used_by_wendy",
-            SISTURN_OFF = "only_used_by_wendy",
-            ABIGAIL_NOT_NEAR = "only_used_by_wendy",
-        },        
         ATTUNE =
         {
             NOHEALTH = "I don't have it in me right now.",
@@ -342,7 +336,6 @@ return{
 			INUSE = "No rush.",
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
             NOTAMERM = "Nah. I know where I ain't welcome.",
-            NOTSOULJARHANDLER = "That there's imp business."
 		},
         SADDLE =
         {
@@ -374,7 +367,6 @@ return{
 			NOTALLOWED = "That's just impractical.",
 			INUSE = "No rush.",
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
-            NOTSOULJARHANDLER = "That there's imp business."
 		},
         TEACH =
         {
@@ -412,8 +404,6 @@ return{
             BEEF_BELL_INVALID_TARGET = "Nope, that's not gonna work.",
             BEEF_BELL_ALREADY_USED = "I'm pretty sure that's someone else's beefalo.",
             BEEF_BELL_HAS_BEEF_ALREADY = "I've already got a beefalo, thanks.",
-
-			NOT_MINE = "Ain't mine.",
         },
 		USEKLAUSSACKKEY =
         {
@@ -435,23 +425,22 @@ return{
             DOESNTWORK = "This judge is slackin' on the job!",
             ALREADYACTIVE = "There must be a contest already goin' on somewhere.",
         },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
-        },
         YOTB_UNLOCKSKIN =
         {
             ALREADYKNOWN = "I've already got this one down pat.",
         },
-        MUTATE = 
-        {
-            NOGHOST = "only_used_by_wendy",
-            NONEWMOON = "only_used_by_wendy",
-            NOFULLMOON = "only_used_by_wendy",
-            NOTNIGHT = "only_used_by_wendy",
-        },        
+		CARVEPUMPKIN =
+		{
+			INUSE = "I'll hafta find another one.",
+			BURNING = "I'm burnin' up!",
+		},
+		DECORATESNOWMAN =
+		{
+			INUSE = "It's gettin' built already.",
+			HASHAT = "I ain't gonna stack it on the hat.",
+			STACKEDTOOHIGH = "That's a tall drink of ice water.",
+			MELTING = "Ain't nothin' gonna stick to a melting snowman.",
+		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -732,23 +721,7 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NAUGHTY =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
@@ -756,52 +729,17 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_WARNING =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_AVOIDED =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_ACTIVE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_USED =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
 
     --walter specfic
---fallback to speech_wilson.lua 	ANNOUNCE_AMMO_SLOT_OVERSTACKED = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL = "only_used_by_walter",
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua         "only_used_by_walter",
@@ -1078,21 +1016,9 @@ return{
 	-- Hallowed Nights 2024
 	ANNOUNCE_NOPUMPKINCARVINGONFIRE = "You're supposed to light it after it's been carved.",
 
-    --rifts 5
-    ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
-    ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
-
-	ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT = "Nice try.",
-
-    ANNOUNCE_NO_ABIGAIL_FLOWER = "only_used_by_wendy",
-
-    ANNOUNCE_ELIXIR_BOOSTED = "That's pretty good.",
-    ANNOUNCE_ELIXIR_GHOSTVISION = "Sis? I can't see you here.",
-    ANNOUNCE_ELIXIR_PLAYER_SPEED = "I feel like a steam engine!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
-
-    ANNOUNCE_EXLIIR_TOO_SUPER = "Yikes, that's way too strong.",
+	-- Winter's Feast 2024
+	ANNOUNCE_SNOWBALL_TOO_BIG = "It ain't gonna get any bigger.",
+	ANNOUNCE_SNOWBALL_NO_SNOW = "Ain't no snow around.",
 
 	BATTLECRY =
 	{
@@ -2018,10 +1944,12 @@ return{
         CHESSPIECE_EYEOFTERROR = "An eye (statue) for an eye (monster)!",
         CHESSPIECE_TWINSOFTERROR = "A fresh pair of eyes is just what we needed around here!",
         CHESSPIECE_DAYWALKER = "It's so lifelike, I can almost smell the bad breath.",
+        CHESSPIECE_DAYWALKER2 = "This hog don't know how to quit.",
         CHESSPIECE_DEERCLOPS_MUTATED = "She's almost a looker.",
         CHESSPIECE_WARG_MUTATED = "Now this is a pooch I could play with.",
         CHESSPIECE_BEARGER_MUTATED = "That was one ornery son of a beast.",
         CHESSPIECE_SHARKBOI = "That shark was kind of a jerk.",
+        CHESSPIECE_WORMBOSS = "What a big nasty worm that was. Blegh.",
 
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
@@ -4051,28 +3979,14 @@ return{
             "Well, ain't you sweet!",
         },
 		WALTERHAT = "I'll stick to my hardhat.",
-		SLINGSHOT =
-		{
-			GENERIC = "Looks kinda flimsy.",
---fallback to speech_wilson.lua 			NOT_MINE = "only_used_by_walter",
-		},
+		SLINGSHOT = "Looks kinda flimsy.",
 		SLINGSHOTAMMO_ROCK = "Hmph. Handmade. The shape's all irregular.",
 		SLINGSHOTAMMO_MARBLE = "Hmph. Handmade. The shape's all irregular.",
 		SLINGSHOTAMMO_THULECITE = "Hmph. Handmade. The shape's all irregular.",
         SLINGSHOTAMMO_GOLD = "Hmph. Handmade. The shape's all irregular.",
-		SLINGSHOTAMMO_HONEY = "Hmph. Handmade. The shape's all irregular.",
         SLINGSHOTAMMO_SLOW = "Hmph. Handmade. The shape's all irregular.",
         SLINGSHOTAMMO_FREEZE = "Hmph. Handmade. The shape's all irregular.",
 		SLINGSHOTAMMO_POOP = "I don't even wanna ask.",
-		SLINGSHOTAMMO_STINGER = "Hmph. Handmade. The shape's all irregular.",
-		SLINGSHOTAMMO_MOONGLASS = "Hmph. Handmade. The shape's all irregular.",
-		SLINGSHOTAMMO_GELBLOB = "Hmph. Handmade. The shape's all irregular.",
-		SLINGSHOTAMMO_SCRAPFEATHER = "Hmph. Handmade. The shape's all irregular.",
-        SLINGSHOTAMMO_DREADSTONE = "Hmph. Handmade. The shape's all irregular.",
-        SLINGSHOTAMMO_GUNPOWDER = "Hmph. Handmade. The shape's all irregular.",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "Hmph. Handmade. The shape's all irregular.",
-        SLINGSHOTAMMO_PUREBRILLIANCE = "Hmph. Handmade. The shape's all irregular.",
-        SLINGSHOTAMMO_HORRORFUEL = "Hmph. Handmade. The shape's all irregular.",
         PORTABLETENT = "Aw, this reminds me of campin' with Charlie when we were little...",
         PORTABLETENT_ITEM = "Need any help settin' that up?",
 
@@ -4105,7 +4019,6 @@ return{
 		GHOSTLYELIXIR_ATTACK = "I don't think that's safe to drink...",
 		GHOSTLYELIXIR_SPEED = "I don't think that's safe to drink...",
 		GHOSTLYELIXIR_RETALIATION = "I don't think that's safe to drink...",
-        GHOSTLYELIXIR_REVIVE = "I don't think that's safe to drink...",
 		SISTURN =
 		{
 			GENERIC = "Nothin' stronger than the bond between sisters.",
@@ -4115,10 +4028,6 @@ return{
 
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
-        --WORTOX_DECOY is not needed because it uses the default WORTOX inspection.
-        WORTOX_NABBAG = "A lootin' he will go!",
-        WORTOX_REVIVER = "Suppose he can just bring you right back if you croak.",
-        WORTOX_SOULJAR = "Imagine gettin' your eternal soul stuffed into an imp's lunchbox. Yeesh.",
 
         PORTABLECOOKPOT_ITEM =
         {
@@ -5517,7 +5426,7 @@ return{
         GELBLOB_BOTTLE = "We can take it to go!",
 
         PLAYER_HOSTED =
-        {
+        {        
             GENERIC = "Ain't nothin' right about that.",
             ME = "No, thank you.",
         },
@@ -5529,29 +5438,12 @@ return{
         SHADOWTHRALL_PARASITE = "Looks like a real headache.",
 
         PUMPKINCARVER = "A pumpkin carver is only as good as their tools.",
-
-        -- Meta 5
-        GHOSTLYELIXIR_LUNAR = "I don't think that's safe to drink...",
-        GHOSTLYELIXIR_SHADOW = "I don't think that's safe to drink...",
-        
-		SLINGSHOTMODKIT = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_BAND_PIGSKIN = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_BAND_TENTACLE = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_BAND_MIMIC = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_FRAME_BONE = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_FRAME_GEMS = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_FRAME_WAGPUNK_0 = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_FRAME_WAGPUNK = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_HANDLE_STICKY = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_HANDLE_JELLY = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_HANDLE_SILK = "Aww, Walt's quite the lil' tinkerer.",
-		SLINGSHOT_HANDLE_VOIDCLOTH = "Aww, Walt's quite the lil' tinkerer.",
-
-        WOBY_BADGE_STATION = "Atta girl, Wobes!",
-
-        ELIXIR_CONTAINER = "Ain't no picnic for the livin' round here.",
-        GHOSTFLOWERHAT = "Ghost flowers? Pretty.",
-        WENDY_RESURRECTIONGRAVE = "Here lies... another crack at it.",
+		SNOWMAN =
+		{
+			GENERIC = "Not exactly a marvel of engineering.",
+			SNOWBALL = "It's a start.",
+		},
+        SNOWBALL_ITEM = "This could be fun.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
