@@ -192,6 +192,8 @@ local function MakeHat(name)
 
         inst:AddTag("hat")
 
+		inst:AddComponent("snowmandecor")
+
         if custom_init ~= nil then
             custom_init(inst)
         end
@@ -3436,6 +3438,8 @@ local function MakeHat(name)
 
 		--waterproofer (from waterproofer component) added to pristine state for optimization
 		inst:AddTag("waterproofer")
+
+		inst:RemoveComponent("snowmandecor")
 	end
 
 	fns.lunarplant = function()
@@ -3644,6 +3648,8 @@ local function MakeHat(name)
 
 		--shadowlevel (from shadowlevel component) added to pristine state for optimization
 		inst:AddTag("shadowlevel")
+
+		inst:RemoveComponent("snowmandecor")
 	end
 
     fns.voidcloth_onsetbonus_enabled = function(inst)
