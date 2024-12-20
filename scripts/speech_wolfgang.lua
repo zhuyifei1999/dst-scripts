@@ -33,6 +33,12 @@ return{
         {
             NOTNOW = "Judge man is busy.",
         },
+        ATTACH_GHOST = 
+        {
+            WRONG_SISTURN = "only_used_by_wendy",
+            SISTURN_OFF = "only_used_by_wendy",
+            ABIGAIL_NOT_NEAR = "only_used_by_wendy",
+        },        
         ATTUNE =
         {
             NOHEALTH = "Wolfgang is too woozy to do this.",
@@ -336,6 +342,7 @@ return{
 			INUSE = "Wolfgang would like to use after you, if okay.",
             NOTMASTERCHEF = "Warly is very nice to cook. Wolfgang will not get in way.",
             NOTAMERM = "Wolfgang not want upset fish man.",
+            NOTSOULJARHANDLER = "No thank you."
 		},
         SADDLE =
         {
@@ -367,6 +374,7 @@ return{
 			NOTALLOWED = "Bah! Useless.",
 			INUSE = "Wolfgang can share!",
             NOTMASTERCHEF = "Warly is very nice to cook. Wolfgang will not get in way.",
+            NOTSOULJARHANDLER = "No thank you."
 		},
         TEACH =
         {
@@ -404,6 +412,8 @@ return{
             BEEF_BELL_INVALID_TARGET = "Silly! Is not going to work!",
             BEEF_BELL_ALREADY_USED = "This hair-cow already has friend.",
             BEEF_BELL_HAS_BEEF_ALREADY = "Wolfgang already picked best hair-cow to befriend!",
+
+			NOT_MINE = "It is not belong to Wolfgang.",
         },
 		USEKLAUSSACKKEY =
         {
@@ -425,6 +435,12 @@ return{
             DOESNTWORK = "Where do you hide, strange little man?",
             ALREADYACTIVE = "Maybe contest is somewhere else.",
         },
+        CUSTOMIZE_WOBY_BADGES =
+        {
+            GENERIC = "only_used_by_walter",
+            BURNING = "only_used_by_walter",
+            INUSE = "only_used_by_walter",
+        },
         YOTB_UNLOCKSKIN =
         {
             ALREADYKNOWN = "Ha! Was already there in Wolfgang's big brain!",
@@ -441,6 +457,13 @@ return{
 			STACKEDTOOHIGH = "Too tall, even for Wolfgang.",
 			MELTING = "Noooo. It's melting. Wolfgang not crying.",
 		},
+        MUTATE = 
+        {
+            NOGHOST = "only_used_by_wendy",
+            NONEWMOON = "only_used_by_wendy",
+            NOFULLMOON = "only_used_by_wendy",
+            NOTNIGHT = "only_used_by_wendy",
+        },        
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -716,7 +739,23 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NICE =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NAUGHTY =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NICE =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NAUGHTY =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
@@ -724,17 +763,52 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NICE =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NAUGHTY =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NICE =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NAUGHTY =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_WARNING =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_AVOIDED =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_ACTIVE =
+--fallback to speech_wilson.lua     {
+--fallback to speech_wilson.lua         "only_used_by_wortox",
+--fallback to speech_wilson.lua     },
+--fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_USED =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
 
     --walter specfic
+--fallback to speech_wilson.lua 	ANNOUNCE_AMMO_SLOT_OVERSTACKED = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL = "only_used_by_walter",
+--fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua         "only_used_by_walter",
@@ -841,6 +915,8 @@ return{
 --fallback to speech_wilson.lua         "only_used_by_wendy",
 --fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
+    ANNOUNCE_SISTURN_FULL_EVIL = "only_used_by_wendy",
+    ANNOUNCE_SISTURN_FULL_BLOSSOM = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 --fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
@@ -1014,6 +1090,22 @@ return{
 	-- Winter's Feast 2024
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Snowball will not grow bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "Not enough snow here.",
+
+    --rifts 5
+    ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
+    ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
+
+	ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT = "Boooo. Why not working?",
+
+    ANNOUNCE_NO_ABIGAIL_FLOWER = "only_used_by_wendy",
+
+    ANNOUNCE_ELIXIR_BOOSTED = "Very nice!",
+    ANNOUNCE_ELIXIR_GHOSTVISION = "Wolfgang is brave. Wolfgang is brave.",
+    ANNOUNCE_ELIXIR_PLAYER_SPEED = "Super Wolfgang!",
+
+    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
+
+    ANNOUNCE_EXLIIR_TOO_SUPER = "Yuck! No, too much.",
 
 	BATTLECRY =
 	{
@@ -3974,14 +4066,28 @@ return{
             "Woby is good pup.",
         },
 		WALTERHAT = "Will tiny hat fit on Wolfgang's mighty head?",
-		SLINGSHOT = "Wolfgang prefer to fight with fists.",
+		SLINGSHOT =
+		{
+			GENERIC = "Wolfgang prefer to fight with fists.",
+--fallback to speech_wilson.lua 			NOT_MINE = "only_used_by_walter",
+		},
 		SLINGSHOTAMMO_ROCK = "Is little bits of junk.",
 		SLINGSHOTAMMO_MARBLE = "Is little bits of junk.",
 		SLINGSHOTAMMO_THULECITE = "Is little bits of junk.",
         SLINGSHOTAMMO_GOLD = "Is little bits of junk.",
+		SLINGSHOTAMMO_HONEY = "Is little bits of junk.",
         SLINGSHOTAMMO_SLOW = "Is little bits of junk.",
         SLINGSHOTAMMO_FREEZE = "Is little bits of junk.",
 		SLINGSHOTAMMO_POOP = "Is little bits of poop.",
+		SLINGSHOTAMMO_STINGER = "Is little bits of junk.",
+		SLINGSHOTAMMO_MOONGLASS = "Is little bits of moon.",
+		SLINGSHOTAMMO_GELBLOB = "Is little bits of junk.",
+		SLINGSHOTAMMO_SCRAPFEATHER = "Is little bits of junk.",
+        SLINGSHOTAMMO_DREADSTONE = "Is little bits of junk.",
+        SLINGSHOTAMMO_GUNPOWDER = "Is little bits of junk.",
+        SLINGSHOTAMMO_LUNARPLANTHUSK = "Is little bits of junk.",
+        SLINGSHOTAMMO_PUREBRILLIANCE = "Is little bits of junk.",
+        SLINGSHOTAMMO_HORRORFUEL = "Is little bits of scary.",
         PORTABLETENT = "Is good, solid tent!",
         PORTABLETENT_ITEM = "Wolfgang will set up tent. Make it strong!",
 
@@ -4014,15 +4120,22 @@ return{
 		GHOSTLYELIXIR_ATTACK = "Wolfgang not trust tiny bottles made by creepy girl.",
 		GHOSTLYELIXIR_SPEED = "Wolfgang not trust tiny bottles made by creepy girl.",
 		GHOSTLYELIXIR_RETALIATION = "Wolfgang not trust tiny bottles made by creepy girl.",
+        GHOSTLYELIXIR_REVIVE = "Wolfgang not trust tiny bottles made by creepy girl.",
 		SISTURN =
 		{
 			GENERIC = "Is like tiny house for bird! But why is little pot here?",
 			SOME_FLOWERS = "Wolfgang will find more flowers for tiny house!",
 			LOTS_OF_FLOWERS = "Wolfgang like the flowers, but why is little pot floating?",
+            LOTS_OF_FLOWERS_EVIL = "Little flowers make Wolfgang feel strange.",
+            LOTS_OF_FLOWERS_BLOSSOM = "What that spooky sound?",
 		},
 
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
+        --WORTOX_DECOY is not needed because it uses the default WORTOX inspection.
+        WORTOX_NABBAG = "Nice stealing bag.",
+        WORTOX_REVIVER = "Wolfang not need. Wolfgang never die.",
+        WORTOX_SOULJAR = "Hello little souls!",
 
         PORTABLECOOKPOT_ITEM =
         {
@@ -5421,7 +5534,7 @@ return{
         GELBLOB_BOTTLE = "This not edible.",
 
         PLAYER_HOSTED =
-        {        
+        {
             GENERIC = "Hello? Do you remember Wolfgang?",
             ME = "Poor Wolfgang!",
         },
@@ -5439,6 +5552,29 @@ return{
 			SNOWBALL = "What a cute snowball.",
 		},
         SNOWBALL_ITEM = "Wolfgang is snowball fight champion.",
+
+        -- Meta 5
+        GHOSTLYELIXIR_LUNAR = "Wolfgang not trust tiny bottles made by creepy girl.",
+        GHOSTLYELIXIR_SHADOW = "Wolfgang not trust tiny bottles made by creepy girl.",
+        
+		SLINGSHOTMODKIT = "Be careful, little scout boy!",
+		SLINGSHOT_BAND_PIGSKIN = "Be careful, little scout boy!",
+		SLINGSHOT_BAND_TENTACLE = "Be careful, little scout boy!",
+		SLINGSHOT_BAND_MIMIC = "Be careful, little scout boy!",
+		SLINGSHOT_FRAME_BONE = "Be careful, little scout boy!",
+		SLINGSHOT_FRAME_GEMS = "Be careful, little scout boy!",
+		SLINGSHOT_FRAME_WAGPUNK_0 = "Be careful, little scout boy!",
+		SLINGSHOT_FRAME_WAGPUNK = "Be careful, little scout boy!",
+		SLINGSHOT_HANDLE_STICKY = "Be careful, little scout boy!",
+		SLINGSHOT_HANDLE_JELLY = "Be careful, little scout boy!",
+		SLINGSHOT_HANDLE_SILK = "Be careful, little scout boy!",
+		SLINGSHOT_HANDLE_VOIDCLOTH = "Be careful, little scout boy!",
+
+        WOBY_BADGE_STATION = "Smart Woby!",
+
+        ELIXIR_CONTAINER = "Little ghost girl have many supplements.",
+        GHOSTFLOWERHAT = "Is pretty... and creepy.",
+        WENDY_RESURRECTIONGRAVE = "Wolfgang like this... for others.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",
