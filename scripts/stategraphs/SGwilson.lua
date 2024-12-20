@@ -5966,8 +5966,13 @@ local states =
 				inst.SoundEmitter:KillSound("make")
 				inst.sg:RemoveStateTag("busy")
 				if inst.bufferedaction then
-					if inst.bufferedaction.invobject then
-						inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction.invobject)
+					local obj = inst.bufferedaction.invobject
+					if obj then
+						if obj.prevcontainer and obj.prevcontainer ~= inst.components.inventory:GetOverflowContainer() then
+							obj.prevcontainer = nil
+							obj.prevslot = nil
+						end
+						inst.components.inventory:ReturnActiveActionItem(obj)
 					end
 					inst:PerformBufferedAction()
 				end
@@ -6060,12 +6065,7 @@ local states =
 			FrameEvent(7, function(inst)
 				inst.SoundEmitter:KillSound("make")
 				inst.sg:RemoveStateTag("busy")
-				if inst.bufferedaction then
-					if inst.bufferedaction.invobject then
-						inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction.invobject)
-					end
-					inst:PerformBufferedAction()
-				end
+				inst:PerformBufferedAction()
 			end),
 		},
 
@@ -6092,6 +6092,39 @@ local states =
 			inst.components.locomotor:Clear()
 			inst:ClearBufferedAction()
 
+			local target = data and data.target and data.target:IsValid() and data.target or nil
+			local obj = data and data.obj and data.obj:IsValid() and data.obj or nil
+
+			if obj and obj == inst.components.inventory:GetActiveItem() then
+				if obj.prevcontainer and obj.prevcontainer ~= inst.components.inventory:GetOverflowContainer() then
+					obj.prevcontainer = nil
+					obj.prevslot = nil
+				end
+				local prefab = obj.prefab
+				local prevcontainer = obj.prevcontainer
+				local prevslot = obj.prevslot
+				inst.components.inventory:ReturnActiveItem()
+				if not obj:IsValid() then --returned to a stack?
+					obj = nil
+					if prevslot then
+						local container = prevcontainer or inst.components.inventory
+						obj = container:GetItemInSlot(prevslot)
+						if obj.prefab ~= prefab then
+							obj = nil
+						end
+					end
+					if obj == nil then
+						obj = inst.components.inventory:FindItem(function(v) return v.prefab == prefab end)
+					end
+				end
+			end
+
+			if not (obj and obj.components.inventoryitem and obj.components.inventoryitem:GetGrandOwner() == inst) then
+				inst.AnimState:PlayAnimation("construct_pst")
+				inst.sg:GoToState("idle", true)
+				return
+			end
+
 			inst.AnimState:PlayAnimation("construct_loop", true)
 			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
 
@@ -6103,7 +6136,7 @@ local states =
 			inst.components.inventory:Hide()
 			inst:PushEvent("ms_closepopups")
 			inst:ShowActions(false)
-			inst:ShowPopUp(POPUPS.SNOWMANDECORATING, true, data and data.target or nil, data and data.obj or nil)
+			inst:ShowPopUp(POPUPS.SNOWMANDECORATING, true, target, obj)
 		end,
 
 		events =
@@ -21123,6 +21156,7 @@ local states =
 			inst.Physics:SetMotorVel(target.components.pushable:GetPushingSpeed() * inst.sg.statemem.speedmult, 0, 0)
 			inst.sg.statemem.target = target
 			inst.sg:SetTimeout(0.3)
+			inst.sg.mem.footsteps = 0
 			DoRunSounds(inst)
 			DoFoleySounds(inst)
 		end,

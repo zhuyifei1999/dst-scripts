@@ -151,12 +151,13 @@ local SnowmanDecoratingScreen = Class(Screen, function(self, owner, target, obj)
 
 	TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
 
-	SetAutopaused(true)
+	self.autopausedelay = 0.2
+	--SetAutopaused(true)
     TheFrontEnd:PushShowHelpTextForEverything()
 
 	if obj and obj:IsValid() then
 		local inventoryitem = obj.replica.inventoryitem
-		if inventoryitem and inventoryitem:IsHeldBy(ThePlayer) then
+		if inventoryitem and inventoryitem:IsGrandOwner(self.owner) then
 			self:StartDraggingItem(obj)
 		end
 	end
@@ -226,7 +227,9 @@ function SnowmanDecoratingScreen:ClampToSnowman(x, y)
 end
 
 function SnowmanDecoratingScreen:OnDestroy()
-	SetAutopaused(false)
+	if self.autopausedelay == nil then
+		SetAutopaused(false)
+	end
     TheFrontEnd:PopShowHelpTextForEverything()
 
 	self:StopDraggingItem()
@@ -494,6 +497,15 @@ function SnowmanDecoratingScreen:OnUpdate(dt)
 		else
 			self:SaveAndClose()
 			return
+		end
+	end
+
+	if self.autopausedelay then
+		if self.autopausedelay > dt then
+			self.autopausedelay = self.autopausedelay - dt
+		else
+			self.autopausedelay = nil
+			SetAutopaused(true)
 		end
 	end
 

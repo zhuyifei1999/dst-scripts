@@ -111,13 +111,13 @@ end
 
 local function _SnowballTooBigWarning(inst, doer)
 	if doer and doer.components.talker and doer:IsValid() then
-		doer.components.talker:Say(GetString(inst, "ANNOUNCE_SNOWBALL_TOO_BIG"))
+		doer.components.talker:Say(GetString(doer, "ANNOUNCE_SNOWBALL_TOO_BIG"))
 	end
 end
 
 local function _NoSnowWarning(inst, doer)
 	if doer and doer.components.talker and doer:IsValid() then
-		doer.components.talker:Say(GetString(inst, "ANNOUNCE_SNOWBALL_NO_SNOW"))
+		doer.components.talker:Say(GetString(doer, "ANNOUNCE_SNOWBALL_NO_SNOW"))
 	end
 end
 
@@ -371,6 +371,18 @@ local function _AddWaxableComponent(inst)
 	end
 end
 
+local function CheckWaxable(inst)
+	if (	inst.components.snowmandecoratable:IsStacked() or
+			inst.components.snowmandecoratable:GetSize() ~= "small"
+		) and
+		not inst:HasTag("waxedplant")
+	then
+		_AddWaxableComponent(inst)
+	else
+		inst:RemoveComponent("waxable")
+	end
+end
+
 local function CreateStack()
 	local inst = CreateEntity()
 
@@ -393,10 +405,7 @@ local function OnStacksChanged(inst, stacks, stackoffsets, reason)
 	local basesize = inst.components.snowmandecoratable:GetSize()
 	if TheWorld.ismastersim then
 		CheckLiftAndPushable(inst)
-		if #stacks > 0 and not inst:HasTag("waxedplant") then
-			--small sized aren't waxable until stacked
-			_AddWaxableComponent(inst)
-		end
+		CheckWaxable(inst)
 		if reason == "addstack" then
 			local laststackid = SnowmanDecoratable.STACK_IDS[basesize]
 			local laststackdata = SnowmanDecoratable.STACK_DATA[laststackid]
@@ -469,11 +478,7 @@ local function SetSize(inst, size, growanim)
 	--in case we tried to set an invalid size above
 	size = inst.components.snowmandecoratable:GetSize()
 
-	if size == "small" and not inst.components.snowmandecoratable:IsStacked() then
-		inst:RemoveComponent("waxable")
-	elseif not inst:HasTag("waxedplant") then
-		_AddWaxableComponent(inst)
-	end
+	CheckWaxable(inst)
 
 	local isrolling
 	if inst.components.pushable then
