@@ -1500,7 +1500,7 @@ dug_gravestone_init_fn = function(inst, build_name)
 end
 dug_gravestone_clear_fn = function(inst)
     basic_clear_fn(inst, "gravestones" )
-    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (tostring(inst.random_stone_choice) == "1" and "" or inst.random_stone_choice))
+    inst.components.inventoryitem:ChangeImageName("dug_gravestone" .. (inst.random_stone_choice == "1" and "" or inst.random_stone_choice))
 end
 
 --------------------------------------------------------------------------

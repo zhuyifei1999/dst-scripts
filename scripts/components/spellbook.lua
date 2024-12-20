@@ -105,11 +105,10 @@ function SpellBook:HasSpellFn()
 end
 
 function SpellBook:CastSpell(user)
-	if self.spellfn then
-		return self.spellfn(self.inst, user)
-	else
+	if self.spellfn == nil then
 		return false
 	end
+	return self.spellfn(self.inst, user)
 end
 
 return SpellBook

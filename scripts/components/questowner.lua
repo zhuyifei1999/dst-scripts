@@ -47,11 +47,7 @@ function QuestOwner:OnRemoveFromEntity()
 end
 
 function QuestOwner:CanBeginQuest(doer)
-    if not self.CanBeginFn then
-        return true
-    else
-        return self.CanBeginFn(self.inst, doer)
-    end
+    return self.CanBeginFn == nil or self.CanBeginFn(self.inst, doer)
 end
 
 function QuestOwner:BeginQuest(doer)

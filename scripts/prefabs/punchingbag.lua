@@ -199,7 +199,6 @@ local function basefn(build, tags)
 
     --
     inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "torso_comp"
 
     --
     inst:AddComponent("debuffable")

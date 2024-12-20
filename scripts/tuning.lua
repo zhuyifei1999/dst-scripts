@@ -82,7 +82,6 @@ function Tune(overrides)
         STACK_SIZE_MEDITEM = 20,
         STACK_SIZE_SMALLITEM = 40,
 		STACK_SIZE_TINYITEM = 60,
-		STACK_SIZE_PELLET = 120,
 
 		OCEAN_WETNESS = 75, --initial wetness level when things enter ocean
 		MAX_WETNESS = 100,
@@ -107,8 +106,6 @@ function Tune(overrides)
 
 		DEFAULT_ATTACK_RANGE = 2,
 		DEFAULT_HIT_RECOVERY = .75,
-		DEFAULT_PROJECTILE_HIT_RECOVERY_MULTIPLIER = 2,
-		DEFAULT_PROJECTILE_MAX_HITREACTS_MULTIPLIER = 0,
 
 		DEFAULT_CHARACTER_HEALTH = wilson_health,
 
@@ -121,7 +118,6 @@ function Tune(overrides)
         WILSON_SANITY = wilson_sanity,
 
 		PLAYER_DAMAGE_TAKEN_MOD = 1,
-        PLAYER_MAP_LANDSEEN_FUDGE_FACTOR = 1.05, -- How much of a map can be still unseen for the whole map to be considered entirely seen.
 
         -- Controller specific tuning values.
 		CONTROLLER_DEADZONE_RADIUS = 0.3,
@@ -591,7 +587,6 @@ function Tune(overrides)
         KNIGHT_ATTACK_PERIOD = 2,
         KNIGHT_WALK_SPEED = 5,
         KNIGHT_TARGET_DIST = 10,
-		KNIGHT_DODGE_HIT_RECOVERY = 2,
 
         BISHOP_DAMAGE = 40,
         BISHOP_HEALTH = 300 * 3, -- harder for multiplayer
@@ -606,7 +601,6 @@ function Tune(overrides)
         ROOK_WALK_SPEED = 5,
         ROOK_RUN_SPEED = 16,
         ROOK_TARGET_DIST = 12,
-		ROOK_RUN_HIT_RECOVERY = 2,
 
         MINOTAUR_DAMAGE = 100,
         MINOTAUR_HEALTH = 2500 * 4, -- harder for multiplayer
@@ -1956,7 +1950,6 @@ function Tune(overrides)
         SPIDERQUEEN_MINWANDERTIME = total_day_time * 1.5,
         SPIDERQUEEN_MINDENSPACING = 20,
         SPIDERQUEEN_NEARBYPLAYERSDIST = 20,
-		SPIDERQUEEN_HIT_RECOVERY = 1.5,
 
         SPAWN_SPIDERQUEEN = true,
 
@@ -3400,7 +3393,7 @@ function Tune(overrides)
                 WORMWOOD = {},
                 WARLY = {"portablecookpot_item", "potato", "potato", "garlic"},
                 WURT = {},
-				WALTER = {"walterhat", "slingshot", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock"},
+                WALTER = {"walterhat", "slingshot", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock", "slingshotammo_rock"},
                 WANDA = {"pocketwatch_heal", "pocketwatch_parts", "pocketwatch_parts", "pocketwatch_parts"},
                 WONKEY = {},
 			},
@@ -3879,7 +3872,7 @@ function Tune(overrides)
 
         GESTALT_AGGRESSIVE_RANGE = 6,
         GESTALT_ATTACK_RANGE = 2.5,
-        GESTALT_ATTACK_HIT_RANGE_SQ = 2,
+        GESTALT_ATTACK_HIT_RANGE_SQ = 1.5,
         GESTALT_ATTACK_COOLDOWN = 4,
         GESTALT_ATTACK_DAMAGE_SANITY = 10,
         GESTALT_ATTACK_DAMAGE_GROGGINESS = 2,
@@ -4456,15 +4449,12 @@ function Tune(overrides)
         WORTOX_FOOD_MULT = .5,
         WORTOX_SOULEXTRACT_RANGE = 20, --die within this range of wortox to spawn soul
         WORTOX_SOULSTEALER_RANGE = 8, --souls fly towards wortox when he walks within this range
-        WORTOX_SOUL_PROJECTILE_LIFETIME = 6, -- If the projectile does not meet a target make it fade after this many seconds.
-        WORTOX_SOUL_PROJECTILE_SPEED = 10,
         WORTOX_SOULHEAL_RANGE = 8,
         WORTOX_SOULHEAL_LOSS_PER_PLAYER = 2, -- Amount of health value lost per additional target being healed.
         WORTOX_SOULHEAL_MINIMUM_HEAL = 5, -- Each souls must heal at least this much.
         WORTOX_FREEHOP_HOPSPERSOUL = 2, -- Amount of hops per soul in a given time frame. Maximum value is clamped to freesoulhops in player_classified.
         WORTOX_FREEHOP_TIMELIMIT = 5, -- Amount of seconds to use up free hops per hop.
         WORTOX_MAPHOP_DISTANCE_SCALER = 0.9, -- Perfectly placed blink teleports on a linear path to every part on the map is not realistic.
-        WORTOX_SOULHOP_HEAVYLIFTING_EFFICIENCY = 0.5, -- Things are heavy!
 
         --Wormwood
 		WORMWOOD_HEALTH = wilson_health,
@@ -4672,12 +4662,10 @@ function Tune(overrides)
             {
                 MIN = 3,
                 MAX = 5,
-                WENDYSKILL_ADDITION = 3,
             },
             TOY_DIST =
             {
                 BASE = 125,
-                WENDY_UPGRADE_BASE = 75,
                 RADIUS = 20,
                 VARIANCE = 5,
             },
@@ -4711,8 +4699,6 @@ function Tune(overrides)
 		ABIGAIL_VEX_DAMAGE_MOD = 1.1,
 		ABIGAIL_VEX_GHOSTLYFRIEND_DAMAGE_MOD = 1.4,
 
-        ABIGAIL_SHADOW_VEX_DAMAGE_MOD = 1.3,
-        ABIGAIL_SHADOW_VEX_GHOSTLYFRIEND_DAMAGE_MOD = 1.6,
 
         ABIGAIL_DMG_PERIOD = 1.5,
         ABIGAIL_DMG_PLAYER_PERCENT = 0.25,
@@ -4735,8 +4721,6 @@ function Tune(overrides)
         ABIGAIL_DEFENSIVE_MIN_FOLLOW = 1,
         ABIGAIL_DEFENSIVE_MAX_FOLLOW = 5,
         ABIGAIL_DEFENSIVE_MED_FOLLOW = 3,
-
-        ABIGAIL_GESTALT_DEFENSIVE_MAX_FOLLOW = 15,
 
         ABIGAIL_AGGRESSIVE_MIN_FOLLOW = 3,
         ABIGAIL_AGGRESSIVE_MAX_FOLLOW = 10,
@@ -4764,25 +4748,16 @@ function Tune(overrides)
 		GHOSTLYELIXIR_RETALIATION_DAMAGE = 20,
 		GHOSTLYELIXIR_RETALIATION_DURATION = total_day_time,
 
-        GHOSTLYELIXIR_REVIVE_DURATION = 2,
-
 		GHOSTLYELIXIR_DRIP_FX_DELAY = seg_time / 2,
 
         -- WALTER
 		SLINGSHOT_DISTANCE = 10,
 		SLINGSHOT_DISTANCE_MAX = 14,
 
-		SLINGSHOT_AMMO_HONEY_DURATION = 8,
-		SLINGSHOT_AMMO_GELBLOB_DURATION = 60,
 		SLINGSHOT_AMMO_MOVESPEED_MULT = 2/3,
 		SLINGSHOT_AMMO_MOVESPEED_DURATION = 30,
-		SLINGSHOT_AMMO_MOVESPEED_MAX_STACKS = 3,
 		SLINGSHOT_AMMO_FREEZE_COLDNESS = 2,
 		SLINGSHOT_AMMO_SHADOWTENTACLE_CHANCE = 0.5,
-        SLINGSHOT_AMMO_SCRAPFEATHER_WET_DAMAGE_MULT = 0.75, -- It's actually 1.75.
-        SLINGSHOT_AMMO_GUNPOWDER_DUST_TIMEOUT = 5,
-        SLINGSHOT_AMMO_GUNPOWDER_DUST_TRIGGER_CHANCE_RATE = 0.05,
-        SLINGSHOT_AMMO_GUNPOWDER_DUST_DAMAGE_MULTIPLIER = 2,
 
 		SLINGSHOT_AMMO_DAMAGE_ROCKS = wilson_attack * 0.5,		-- 17
 		SLINGSHOT_AMMO_DAMAGE_GOLD = wilson_attack,				-- 34
@@ -4790,48 +4765,8 @@ function Tune(overrides)
 		SLINGSHOT_AMMO_DAMAGE_THULECITE = wilson_attack * 1.5,	-- 51
 		SLINGSHOT_AMMO_DAMAGE_SLOW = wilson_attack * 0.5,		-- 17
 		SLINGSHOT_AMMO_DAMAGE_TRINKET_1 = wilson_attack * 1.75,	-- 59.5
-		SLINGSHOT_AMMO_DAMAGE_MOONGLASS = wilson_attack * 1.5,	-- 51
-		SLINGSHOT_AMMO_DAMAGE_SCRAPFEATHER = wilson_attack * 1.25,	-- 42.5
-		SLINGSHOT_AMMO_DAMAGE_STINGER = wilson_attack * 0.75,	-- 25.5
-        SLINGSHOT_AMMO_DAMAGE_GUNPOWDER = wilson_attack * 1.75,	-- 59.5
-        
-		SLINGSHOT_AMMO_DAMAGE_DREADSTONE = wilson_attack * 2 - 10,
-		SLINGSHOT_AMMO_PLANAR_DREADSTONE = 10,
-		SLINGSHOT_AMMO_DREADSTONE_RECOVER_CHANCE = 0.5,
 
-		SLINGSHOT_AMMO_DAMAGE_HORRORFUEL = wilson_attack * 0.5,	-- 17
-		SLINGSHOT_AMMO_PLANAR_HORRORFUEL = 20,
-		SLINGSHOT_HORROR_PLANAR_DAMAGE = 10,
-		SLINGSHOT_HORROR_TICKS = 7,
-		SLINGSHOT_HORROR_SETBONUS_TICKS = 9,
-
-		SLINGSHOT_AMMO_DAMAGE_LUNARPLANTHUSK = wilson_attack * 2 - 30,
-		SLINGSHOT_AMMO_PLANAR_LUNARPLANTHUSK = 30,
-        
-        SLINGSHOT_AMMO_DAMAGE_PUREBLILLIANCE = wilson_attack,
-		SLINGSHOT_AMMO_PLANAR_PUREBLILLIANCE = 20,
-        SLINGSHOT_BRILLIANCE_MARK_PLANAR_DAMAGE = 5,
-        SLINGSHOT_BRILLIANCE_MARK_TIMEOUT = 8,
-
-		SLINGSHOT_AMMO_VS_SHADOW_BONUS = 1.1,
-		SLINGSHOT_AMMO_VS_LUNAR_BONUS = 1.1,
-
-        SLINGSHOT_AMMO_DAMAGE_MAX = wilson_attack * 2, -- NOTE(DiogoW): Please update this when adding more powerful ammo.
-
-		SLINGSHOT_AMMO_DAMAGE_MOONGLASS_AOE = wilson_attack,
-		SLINGSHOT_AMMO_RANGE_MOONGLASS_AOE = 2.75,
-		SLINGSHOT_AMMO_DAMAGE_STINGER_AOE = wilson_attack * 0.5,
-		SLINGSHOT_AMMO_RANGE_STINGER_AOE = 2,
-		SLINGSHOT_AMMO_RANGE_GUNPOWDER_DUST_AOE = 3,
-
-		SLINGSHOT_MAGIC_AMP_RANGE = 3.5,
-
-		SLINGSHOT_MAX_CHARGE_TIME = 0.5,
-		SLINGSHOT_MAX_CHARGE_DAMAGE_MULT = 2,
-		SLINGSHOT_MAX_CHARGE_SPEED_MULT = 1.25,
-		SLINGSHOT_MOD_BONUS_RANGE_1 = 1,
-		SLINGSHOT_MOD_BONUS_RANGE_2 = 2,
-		SLINGSHOT_MOD_FREE_AMMO_CHANCE = 0.3,
+        SLINGSHOT_AMMO_DAMAGE_MAX = wilson_attack * 1.75, -- NOTE(DiogoW): Please update this when adding more powerful ammo.
 
         WALTER_TREE_SANITY_RADIUS = 10,
         WALTER_TREE_SANITY_THRESHOLD = 5,
@@ -5301,7 +5236,7 @@ function Tune(overrides)
         CRABKING_ICEWALL_HEALTH_BONUS = 200,
         CRABKING_ICEWALL_HEALTH_BONUS_MAXGEM = 400,
 
-        CRABKING_MOB_HEALTH = 200,
+        CRABKING_MOB_HEALTH = 200,        
         CRABKING_MOB_HEALTH_BONUS_MAXGEM = 200,
         CRABKING_MOB_DAMAGE = 30,
         CRABKING_MOB_ATTACK_PERIOD = 4,
@@ -5778,7 +5713,7 @@ function Tune(overrides)
 
         COMPOSTWRAP_NUTRIENTS			= { 24, 32, 24 },
         GLOMMERFUEL_NUTRIENTS			= {  8,  8,  8 },
-        MOSQUITOFERTILIZER_NUTRIENTS    = { 12, 12, 12 },
+        MOSQUITOFERTILIZER_NUTRIENTS    = { 12, 12, 12 },        
 
         TREEGROWTH_NUTRIENTS            = {  8, 32,  8 },
 
@@ -6755,7 +6690,7 @@ function Tune(overrides)
         ANTLIONHAT_USES = 400,
         NIGHTMAREFUEL_FINITEUSESREPAIRVALUE = 50,
 
-		-- Cult of the Lamb
+		-- Cult of the Lamb        
         COTL_TABERNACLE_1 = {
 			RAIN_RATE = 2,
 			FUEL_SECTIONS = 1,
@@ -6823,8 +6758,6 @@ function Tune(overrides)
 		DAYWALKER_WALKSPEED = 2.7,
 		DAYWALKER_RUNSPEED = 9,
 		DAYWALKER_HIT_RECOVERY = 1,
-		DAYWALKER_STALK_HIT_RECOVERY = 1.5,
-		DAYWALKER_DODGE_HIT_RECOVERY = 2,
 		DAYWALKER_ATTACK_PERIOD = { min = 4, max = 6 },
 		DAYWALKER_ATTACK_RANGE = 6,
 		DAYWALKER_DAMAGE = 75,
@@ -7086,7 +7019,7 @@ function Tune(overrides)
             -- Lighter light radius.
             WILLOW_BRIGHTNESS_1 = 2.5,
             WILLOW_BRIGHTNESS_2 = 4,
-
+            
             WILLOW_ALLEGIANCE_SHADOW_RESIST = 0.9,
             WILLOW_ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
             WILLOW_ALLEGIANCE_LUNAR_RESIST = 0.9,
@@ -7202,158 +7135,6 @@ function Tune(overrides)
                 ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
                 ALLEGIANCE_LUNAR_RESIST = 0.9,
                 ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
-            },
-            ---
-            WENDY = {
-                ALLEGIANCE_SHADOW_RESIST = 0.9,
-                ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
-                ALLEGIANCE_LUNAR_RESIST = 0.9,
-                ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
-
-                POTION_DURATION_MOD = 1,
-
-                GHOST_PLANARDEFENSE = 15,
-
-                SISTURN_3_MAX_HEALTH_BOOST = 300,
-
-                MURDER_BUFF_DURATION = 8,
-                MURDER_BUFF_MULTIPLIER = 2,
-                MURDER_DEFENSE_BUFF = 15,
-
-                LUNARELIXIR_DURATION = 4 * seg_time,
-                LUNARELIXIR_DAMAGEBONUS = 10,
-                LUNARELIXIR_DAMAGEBONUS_GESTALT = 100,
-
-                SHADOWELIXIR_DURATION = total_day_time,
-                ABIGAIL_GESTALT_VEX_MULT = 3,
-            },
-            ---
-            WALTER = {
-                WOBY_DIGGING_COOLDOWN = total_day_time * 2.0,
-                WOBY_DIGGING_DISTANCE = { min=5, max=10 },
-                WOBY_DIGGING_LOOT_CHANCE = { min=0.5, max=0.9 },
-
-                WOBY_FETCHING_ASSIST_DISTANCE = 8,
-                WOBY_FETCHING_ASSIST_COOLDOWN = 7,
-                WOBY_FETCHING_ASSIST_SUCCESS_CHANCE = { min=.5, max=1 },
-
-                WOBY_MAX_BADGES_SLOTS = 4,
-
-                WOBY_BADGES = {
-                    -- Speed bonus.
-                    SPEED_1 = 1,
-                    SPEED_2 = 2,
-
-                    -- Resistance bonus.
-                    RESISTANCE_1 = 10,
-                    RESISTANCE_2 = 15,
-
-                    -- Sanity protection for Walter when riding Woby. Also does sanity regen.
-                    BRAVERY_1 = .25,
-                    BRAVERY_2 = .45,
-
-                    -- Cooldown reduction and distance bonus.
-                    FETCHING_1 = 2,
-                    FETCHING_2 = 4,
-
-                    -- Cooldown reduction.
-                    DIGGING_1 = total_day_time/2,
-                    DIGGING_2 = total_day_time,
-                },
-
-                WOBY_BADGES_ASPECT_GAIN_RATE =
-                {
-                    speed = 1/(total_day_time*12), -- per second riding.
-                    resistance_taken = 1/800,      -- per damage unit taken.
-                    bravery_taken = 1/950,         -- per damage unit taken.
-                    resistance_onatk = 1/650,      -- flat number on attack.
-                    bravery_onatk = 1/500,         -- flat number on attack.
-                    fetching = 1/150,              -- per try.
-                    digging = 1/30,                -- per try.
-                },
-
-                ALLEGIANCE_SHADOW_RESIST = 0.9,
-                ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
-                ALLEGIANCE_LUNAR_RESIST = 0.9,
-                ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
-            },
-            ---
-            WORTOX = {
-                -- general
-                TIPPED_BALANCE_THRESHOLD = 3,
-                NICE_SANITY_MULT = 2,
-                NAUGHTY_SANITY_MULT = 0.0,
-                NAUGHTY_OVERLOAD_STOP_TIME = 10,
-                NAUGHTY_SOULHEAL_RECEIVED_MULT = 0.75,
-                -- wortox_lifebringer_1
-                REVIVE_PERISH_TIME = 10 * total_day_time * perish_warp,
-                -- wortox_soulprotector_1
-                WORTOX_SOULPROTECTOR_1_RANGE = 3,
-                -- wortox_soulprotector_2
-                WORTOX_SOULPROTECTOR_2_SPEED = 4,
-                WORTOX_SOULPROTECTOR_2_RANGE = 3,
-                -- wortox_soulprotector_3
-                WORTOX_SOULPROTECTOR_3_MULT = 0.5,
-                WORTOX_SOULPROTECTOR_3_DELAY = 3.5,
-                -- wortox_soulprotector_4
-                WORTOX_SOULPROTECTOR_4_DELAY = -1.5,
-                WORTOX_SOULPROTECTOR_4_LOSS_PER_PLAYER_MULT = 0.5,
-                -- wortox_panflute_playing
-                WORTOX_PANFLUTE_INSPIRATION_WAIT = total_day_time, -- How long to wait before being able to get inspired after the last.
-                WORTOX_PANFLUTE_INSPIRATION_WAIT_VARIANCE = total_day_time * 0.1,
-                -- wortox_panflute_soulcaller
-                WORTOX_PANFLUTE_SOULCALLER_SOULCOUNT = 6,
-                -- wortox_panflute_forget
-                WORTOX_PANFLUTE_FORGET_DURATION = 5, -- How long to keep targets without an aggro target.
-                -- wortox_liftedspirits_1
-                WORTOX_SOULECHO_SPEEDMULT = 1.2, -- Bonus speed for the duration of Soul Echo.
-                -- wortox_liftedspirits_2
-                WORTOX_FREEHOP_TIMELIMIT_MULT = 1.5, -- How much to scale the original time limit for the cooldown by.
-                -- wortox_liftedspirits_3
-                WORTOX_FREEHOP_HOPSPERSOUL_ADD = 1, -- How many additional hops are added for the skill tree perk.
-                -- wortox_liftedspirits_4
-                -- Scales from TUNING.WORTOX_MAPHOP_DISTANCE_SCALER to TUNING.SKILLS.WORTOX.MAPHOP_DISTANCE_SCALER_MAX linearly as a function of Player:GetSeeableTilePercent().
-                MAPHOP_DISTANCE_SCALER_MAX = 1.8, -- 0.9 * 2 = 1.8
-                -- wortox_souldecoy_1
-                SOULDECOY_TAUNT_RADIUS = 12,
-                SOULDECOY_DURATION = 2,
-                -- wortox_souldecoy_2
-                SOULDECOY_DURATION_BONUS = 3,
-                -- wortox_souldecoy_3
-                SOULDECOY_EXPLODE_RADIUS = 4,
-                SOULDECOY_EXPLODE_DAMAGE = wilson_attack * 1.5,
-                -- wortox_nabbag
-                NABBAG_DAMAGE_MIN = wilson_attack * 0.4,
-                NABBAG_DAMAGE_MAX = wilson_attack,
-                NABBAG_USES = 200,
-                NABBAG_CONEANGLE = 150,
-                NABBAG_MAX_RADIUS = 3,
-                NABBAG_CIRCLE_RADIUS = 1.25,
-                -- wortox_souljar_1
-                SOULJAR_LEAK_TIME = 30,
-                -- wortox_souljar_2
-                FILLED_SOULJAR_SOULCAP_INCREASE_PER = 5,
-                -- wortox_souljar_3
-                SOUL_DAMAGE_NABBAG_BONUS_MULT = 2,
-                SOUL_DAMAGE_SOULS_BONUS_MULT = 1.25,
-                SOUL_DAMAGE_MAX_SOULS = 100, -- Number of Souls total for the above modifiers.
-                -- wortox_thief_1
-                SOULEXTRACT_RANGE_BONUS = 10,
-                SOULSTEALER_RANGE_BONUS = 4,
-                -- wortox_thief_2
-                SOUL_PROJECTILE_LIFETIME_BONUS = 2,
-                -- wortox_thief_3
-                SOUL_SPEAR_DAMAGE = wilson_attack * 0.75,
-                SOUL_SPEAR_HIT_COOLDOWN = 0.35,
-                -- wortox_thief_4
-                SOUL_PROJECTILE_REPEL_DURATION = 0.5,
-                -- wortox_allegiance_lunar
-                ALLEGIANCE_LUNAR_RESIST = 0.9,
-                ALLEGIANCE_VS_SHADOW_BONUS = 1.1,
-                -- wortox_allegiance_shadow
-                ALLEGIANCE_SHADOW_RESIST = 0.9,
-                ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
-                VOIDCLOTHSCYTHE_AOE_RANGE = 2.5,
             },
         },
 
@@ -7829,7 +7610,7 @@ function Tune(overrides)
         WILLOW_EMBER_SHADOW = 5,
 
         WILLOW_LUNAR_FIRE_BONUS = 1.1,
-        WILLOW_SHADOW_FIRE_BONUS = 1.1,
+        WILLOW_SHADOW_FIRE_BONUS = 1.1,        
 
         WILLOW_FIREFRENZY_DURATION = seg_time*2,
         WILLOW_FIREFRENZY_MULT = 1.25,
@@ -8287,65 +8068,6 @@ function Tune(overrides)
         SNOWBALLMANAGER_DENSITY = 2, -- Max number of weather created snow balls to create per partition.
         SNOWBALLMANAGER_SECONDS_PER_SPAWN = 5,
         SNOWBALLMANAGER_SECONDS_PER_DESPAWN = 0.5,
-
-        -- Wendy Skill Tree
-        ABIGAIL_GESTALT_DAMAGE =
-        {
-            day = 100,
-            dusk = 150,
-            night = 250,
-        },
-
-        ABIGAIL_SHADOW_PLANAR_DAMAGE =
-        {
-            day = 15,
-            dusk = 25,
-            night = 40,
-        },
-
-        ABIGAIL_GESTALT_HIDE_THRESHOLD = 0.25,
-
-        WENDYSKILL_COMMAND_COOLDOWN = 4,
-        WENDYSKILL_ESCAPE_TIME = 1.5,
-        WENDYSKILL_DASHATTACK_VELOCITY = 14.0,
-        WENDYSKILL_DASHATTACK_HITRATE = 0.5,
-
-        WENDYSKILL_SMALLGHOST_EXTRACHANCE = 0.10,
-        WENDYSKILL_GRAVESTONE_DECORATECOUNT = 3,
-        WENDYSKILL_GRAVESTONE_DECORATETIME = 6 * total_day_time,
-        WENDYSKILL_GRAVESTONE_GHOSTCOUNT = 4,
-        WENDYSKILL_GRAVESTONE_EVILFLOWERCOUNT = 3,
-        WENDYSKILL_GRAVEGHOST_DEADTIME = total_day_time,
-        WENDYSKILL_GRAVEGHOST_AURARADIUS = 2.5,
-
-        WENDYSKILL_SISTURN_SANITY_MODIFYER = 0.75,
-        WENDY_SISTURN_PETAL_PRESRVE = 0.5,
-
-        GHOSTLYELIXIR_PLAYER_SLOWREGEN_HEALING = 1,
-        GHOSTLYELIXIR_PLAYER_SLOWREGEN_TICK_TIME = 1,
-        GHOSTLYELIXIR_PLAYER_SLOWREGEN_DURATION = 20, -- 20 hp
-
-        GHOSTLYELIXIR_PLAYER_FASTREGEN_HEALING = 5,
-        GHOSTLYELIXIR_PLAYER_FASTREGEN_TICK_TIME = 1,
-        GHOSTLYELIXIR_PLAYER_FASTREGEN_DURATION = 20, -- 100 hp
-
-        GHOSTLYELIXIR_PLAYER_DAMAGE_DURATION = total_day_time*0.75,
-
-        GHOSTLYELIXIR_PLAYER_SPEED_LOCO_MULT = 1.75,
-        GHOSTLYELIXIR_PLAYER_SPEED_DURATION = total_day_time,
-        GHOSTLYELIXIR_PLAYER_SPEED_PLAYER_GHOST_DURATION = 3,
-
-        GHOSTLYELIXIR_PLAYER_SHIELD_DURATION = seg_time*4,
-        GHOSTLYELIXIR_PLAYER_SHIELD_REDUCTION = 50,        
-
-        GHOSTLYELIXIR_PLAYER_RETALIATION_DAMAGE = 20,
-        GHOSTLYELIXIR_PLAYER_RETALIATION_DURATION = total_day_time,
-
-        GHOSTLYELIXIR_PLAYER_REVIVE_DURATION = 0.3,
-
-        GHOSTLYELIXIR_PLAYER_DRIP_FX_DELAY = seg_time / 2,
-
-
     }
 
     TUNING_MODIFIERS = {}

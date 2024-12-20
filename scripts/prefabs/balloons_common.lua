@@ -1,3 +1,9 @@
+local assets =
+{
+    Asset("ANIM", "anim/balloon.zip"),
+    Asset("ANIM", "anim/balloon_shapes.zip"),
+}
+
 -- the index is saved and also used as a net var on balloon_held_child
 local colours =
 {

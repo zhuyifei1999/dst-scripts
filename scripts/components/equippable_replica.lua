@@ -31,19 +31,10 @@ end
 
 function Equippable:IsRestricted(target)
     --return true if restricted (can't equip)
-	if not target:HasTag("player") then
-		--restricted tags and links only apply to players
-		return false
-	end
-    local linkeditem = self.inst.components.linkeditem
-    if linkeditem and linkeditem:IsEquippableRestrictedToOwner() then
-        local owneruserid = linkeditem:GetOwnerUserID()
-        if owneruserid and owneruserid ~= target.userid then
-            return true
-        end
+    if self.inst.components.equippable ~= nil then
+        return self.inst.components.equippable:IsRestricted(target)
     end
-	local inventoryitem = self.inst.replica.inventoryitem
-	local restrictedtag = inventoryitem and inventoryitem:GetEquipRestrictedTag() or nil
+    local restrictedtag = self.inst.replica.inventoryitem ~= nil and self.inst.replica.inventoryitem:GetEquipRestrictedTag() or nil
     return restrictedtag ~= nil and not target:HasTag(restrictedtag)
 end
 

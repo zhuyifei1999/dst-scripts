@@ -63,10 +63,6 @@ end
 local function TryPorting(inst, self)
 	self.porttask = nil
 
-    if inst.ghost_babysitter then
-        return
-    end
-
     if inst.components.hitchable and not inst.components.hitchable.canbehitched then
         return
     end

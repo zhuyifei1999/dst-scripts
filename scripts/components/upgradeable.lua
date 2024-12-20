@@ -11,7 +11,11 @@ local function onupgradetype(self, newtype, oldtype)
 end
 
 local function onstage(self)
-	self.inst:AddOrRemoveTag(self.upgradetype.."_upgradeable", self:CanUpgrade())
+	if self:CanUpgrade() then
+		self.inst:AddTag(self.upgradetype.."_upgradeable")
+	else
+		self.inst:RemoveTag(self.upgradetype.."_upgradeable")
+	end
 end
 
 local Upgradeable = Class(function(self,inst)
@@ -92,7 +96,6 @@ function Upgradeable:Upgrade(obj, upgrade_performer)
 	return true
 end
 
--- Save/Load
 function Upgradeable:OnSave()
 	local data = {}
 	data.numupgrades = self.numupgrades
@@ -105,29 +108,4 @@ function Upgradeable:OnLoad(data)
 	self.stage = data.stage
 end
 
--- Debug
-function Upgradeable:GetDebugString()
-	local str = ""
-
-	if self.upgradetype then
-		str = str..string.format("Upgrade type: %s; ", self.upgradetype)
-	end
-
-	if self.stage then
-		str = str..string.format("Current stage: %d", self.stage)
-		if self.numstages then
-			str = str..string.format(" / %d; ", self.numstages)
-		else
-			str = str.."; "
-		end
-	end
-
-	if self.numupgrades and self.upgradesperstage then
-		str = str..string.format("Upgrade Count: %d / %d", self.numupgrades, self.upgradesperstage)
-	end
-
-	return str
-end
-
---
 return Upgradeable

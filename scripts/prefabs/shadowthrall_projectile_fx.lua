@@ -92,7 +92,6 @@ local function fn()
 
 	--projectile (from complexprojectile component) added to pristine state for optimization
 	inst:AddTag("projectile")
-	inst:AddTag("complexprojectile")
 
 	inst.entity:SetPristine()
 

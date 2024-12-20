@@ -1283,13 +1283,17 @@ local function MakeHat(name)
     local function eyebrella_onequip(inst, owner)
         fns.opentop_onequip(inst, owner)
 
-        owner.DynamicShadow:SetSize(2.2, 1.4)
+		if owner.DynamicShadow then
+			owner.DynamicShadow:SetSize(2.2, 1.4)
+		end
     end
 
     local function eyebrella_onunequip(inst, owner)
         _onunequip(inst, owner)
 
-        owner.DynamicShadow:SetSize(1.3, 0.6)
+		if owner.DynamicShadow then
+			owner.DynamicShadow:SetSize(1.3, 0.6)
+		end
     end
 
     local function eyebrella_perish(inst)
@@ -1297,7 +1301,9 @@ local function MakeHat(name)
         if equippable ~= nil and equippable:IsEquipped() then
             local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
             if owner ~= nil then
-                owner.DynamicShadow:SetSize(1.3, 0.6)
+				if owner.DynamicShadow then
+					owner.DynamicShadow:SetSize(1.3, 0.6)
+				end
                 local data =
                 {
                     prefab = inst.prefab,
@@ -1729,11 +1735,15 @@ local function MakeHat(name)
     end
 
     local function mole_turnon(owner)
-        owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_on")
+		if owner.SoundEmitter then
+			owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_on")
+		end
     end
 
     local function mole_turnoff(owner)
-        owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_off")
+		if owner.SoundEmitter then
+			owner.SoundEmitter:PlaySound("dontstarve_DLC001/common/moggles_off")
+		end
     end
 
     local function mole_onequip(inst, owner)
@@ -3473,8 +3483,6 @@ local function MakeHat(name)
         setbonus:SetOnEnabledFn(lunarplant_onsetbonus_enabled)
         setbonus:SetOnDisabledFn(lunarplant_onsetbonus_disabled)
 
-        require("prefabs/skilltree_defs").CUSTOM_FUNCTIONS.wortox.SetupLunarResists(inst)
-
 		MakeForgeRepairable(inst, FORGEMATERIALS.LUNARPLANT, lunarplant_onbroken, lunarplant_onrepaired)
 		MakeHauntableLaunch(inst)
 
@@ -4735,57 +4743,6 @@ local function MakeHat(name)
 
     -----------------------------------------------------------------------------
 
-    fns.ghostflower_custom_init = function(inst)
-        inst:AddTag("show_spoilage")
-        inst:AddTag("open_top_hat")
-    end
-
-    fns.ghostflower_onequip = function(inst, owner)
-        fns.opentop_onequip(inst, owner)
-        owner:AddTag("ghost_ally")
-        inst:AddTag("elixir_drinker")
-    end
-
-    fns.ghostflower_onunequip = function(inst, owner)
-        _onunequip(inst, owner)
-        owner:RemoveTag("ghost_ally")
-        inst:RemoveTag("elixir_drinker")
-
-        local debuff = owner:GetDebuff("elixir_buff")
-        if debuff then
-            debuff.components.debuff:Stop()
-        end
-    end    
-
-    fns.ghostflower = function()
-        local inst = simple(fns.ghostflower_custom_init)
-
-        inst.components.floater:SetSize("med")
-        inst.components.floater:SetScale(0.68)
-
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
-        inst.components.equippable:SetOnEquip(fns.ghostflower_onequip)
-        inst.components.equippable:SetOnUnequip(fns.ghostflower_onunequip)
-
-        inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-        inst.components.perishable:StartPerishing()
-        inst.components.perishable:SetOnPerishFn(inst.Remove)
-
-        inst:AddComponent("forcecompostable")
-        inst.components.forcecompostable.green = true
-
-        MakeHauntableLaunch(inst)
-
-        return inst
-    end
-
-    -----------------------------------------------------------------------------
-
     fns.rabbit_idleanims = function(inst)
         if inst.rabbithat_doidleanims then
             local r = math.random(9)
@@ -5187,10 +5144,6 @@ local function MakeHat(name)
             owner.components.trader:Disable()
         end
 
-        if owner.components.herdmember ~= nil then
-            owner.components.herdmember:Enable(false)
-        end
-
         if owner.components.planarentity == nil then
             owner.planarentity_added = true
 
@@ -5207,7 +5160,9 @@ local function MakeHat(name)
         local brain = require("brains/hostedbrain")
         owner:SetBrain(brain)
 
-        owner.SoundEmitter:PlaySound("hallowednights2024/thrall_parasite/thrall_idle_LP","parasite_LP")
+		if owner.SoundEmitter then
+			owner.SoundEmitter:PlaySound("hallowednights2024/thrall_parasite/thrall_idle_LP","parasite_LP")
+		end
 
         inst:ListenForEvent("death", fns.shadowthrall_parasite_ondeath, owner)
         inst:ListenForEvent("killed", fns.shadowthrall_parasite_onkilledsomething, owner)
@@ -5237,14 +5192,6 @@ local function MakeHat(name)
             owner.components.talker:StopIgnoringAll(inst)
         end
 
-        if owner.components.trader ~= nil then
-            owner.components.trader:Enable()
-        end
-
-        if owner.components.herdmember ~= nil then
-            owner.components.herdmember:Enable(true)
-        end
-
         if inst.fx ~= nil then
             inst.fx:Remove()
             inst.fx = nil
@@ -5270,7 +5217,9 @@ local function MakeHat(name)
             owner.components.lootdropper:FlingItem(SpawnPrefab("horrorfuel"))
         end
 
-        owner.SoundEmitter:KillSound("parasite_LP")
+		if owner.SoundEmitter then
+			owner.SoundEmitter:KillSound("parasite_LP")
+		end
 
         inst:DoTaskInTime(0, inst.Remove)
 
@@ -5310,8 +5259,8 @@ local function MakeHat(name)
         return inst
     end
 
-
     -----------------------------------------------------------------------------
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -5469,7 +5418,7 @@ local function MakeHat(name)
     elseif name == "dreadstone" then
     	fn = fns.dreadstone
     elseif name == "lunarplant" then
-    	prefabs = { "lunarplanthat_fx", "wortox_resist_fx" }
+    	prefabs = { "lunarplanthat_fx" }
     	fn = fns.lunarplant
     elseif name == "voidcloth" then
     	prefabs = { "voidclothhat_fx" }
@@ -5498,8 +5447,6 @@ local function MakeHat(name)
 		table.insert(assets, Asset("INV_IMAGE", "inspectacleshat_equip_signal"))
 	elseif name == "roseglasses" then
 		fn = fns.roseglasses
-    elseif name == "ghostflower" then
-        fn = fns.ghostflower    
     elseif name == "rabbit" then
         fn = fns.rabbit
 		prefabs = { "rabbithat_fx", "smallmeat" }
@@ -6111,7 +6058,6 @@ return  MakeHat("straw"),
 
         MakeHat("inspectacles"),
 		MakeHat("roseglasses"),
-        MakeHat("ghostflower"),        
 
         MakeHat("rabbit"),
 
@@ -6131,7 +6077,6 @@ return  MakeHat("straw"),
             frameend = 3,
             assets = { Asset("ANIM", "anim/hat_shadow_thrall_parasite.zip") },
         }),
-
 		MakeFollowFx("lunarplanthat_fx", {
 			createfn = lunarplanthat_CreateFxFollowFrame,
 			framebegin = 1,

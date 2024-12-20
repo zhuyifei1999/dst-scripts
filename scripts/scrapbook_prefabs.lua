@@ -1810,9 +1810,11 @@ local PREFABS =
     ["pumpkincarver1"] = true,
     ["pumpkincarver2"] = true,
     ["pumpkincarver3"] = true,
+
     ["mask_sagehat"] = true,
     ["mask_toadyhat"] = true,
     ["mask_halfwithat"] = true,
+
     ["shadowthrall_parasite"] = true,
 
     -- Winter's Feast 2024
@@ -1825,42 +1827,6 @@ local PREFABS =
 
     ["snowball_item"] = true,
     ["snowman"] = true,
-
-    -- Meta 5
-
-    ["dug_gravestone"] = true,
-    ["elixir_container"] = true,
-    ["ghostflowerhat"] = true,
-    ["ghostlyelixir_lunar"] = true,
-    ["ghostlyelixir_revive"] = true,
-    ["ghostlyelixir_shadow"] = true,
-    ["slingshot_band_mimic"] = true,
-    ["slingshot_band_pigskin"] = true,
-    ["slingshot_band_tentacle"] = true,
-    ["slingshot_frame_bone"] = true,
-    ["slingshot_frame_gems"] = true,
-    ["slingshot_frame_wagpunk_0"] = true,
-    ["slingshot_frame_wagpunk"] = true,
-    ["slingshot_handle_jelly"] = true,
-    ["slingshot_handle_silk"] = true,
-    ["slingshot_handle_sticky"] = true,
-    ["slingshot_handle_voidcloth"] = true,
-    ["slingshotammo_dreadstone"] = true,
-    ["slingshotammo_gelblob"] = true,
-    ["slingshotammo_gunpowder"] = true,
-    ["slingshotammo_honey"] = true,
-    ["slingshotammo_horrorfuel"] = true,
-    ["slingshotammo_lunarplanthusk"] = true,
-    ["slingshotammo_moonglass"] = true,
-    ["slingshotammo_purebrilliance"] = true,
-    ["slingshotammo_scrapfeather"] = true,
-    ["slingshotammo_stinger"] = true,
-    ["slingshotmodkit"] = true,
-    ["wendy_resurrectiongrave"] = true,
-    ["woby_badge_station"] = true,
-    ["wortox_nabbag"] = true,
-    ["wortox_reviver"] = true,
-    ["wortox_souljar"] = true,
 
     --[[POI]]
     ["charlie_stage_post"] = true,

@@ -371,23 +371,19 @@ end
 function Inventory:ApplyDamage(damage, attacker, weapon, spdamage)
     local absorbers = {}
 	local damagetypemult = 1
-    for slotid = 1, EquipSlot.Count() do
-        local slotname = EquipSlot.FromID(slotid)
-        local v = self.equipslots[slotname]
-        if v then
-            --check resistance
-            if v.components.resistance ~= nil and
-                v.components.resistance:HasResistance(attacker, weapon) and
-                v.components.resistance:ShouldResistDamage() then
-                v.components.resistance:ResistDamage(damage, attacker)
-                return 0, nil
-            elseif v.components.armor ~= nil then
-                absorbers[v.components.armor] = v.components.armor:GetAbsorption(attacker, weapon)
-            end
-            if v.components.damagetyperesist ~= nil then
-                damagetypemult = damagetypemult * v.components.damagetyperesist:GetResist(attacker, weapon)
-            end
-        end
+    for k, v in pairs(self.equipslots) do
+		--check resistance
+		if v.components.resistance ~= nil and
+			v.components.resistance:HasResistance(attacker, weapon) and
+			v.components.resistance:ShouldResistDamage() then
+			v.components.resistance:ResistDamage(damage)
+			return 0, nil
+		elseif v.components.armor ~= nil then
+			absorbers[v.components.armor] = v.components.armor:GetAbsorption(attacker, weapon)
+		end
+		if v.components.damagetyperesist ~= nil then
+			damagetypemult = damagetypemult * v.components.damagetyperesist:GetResist(attacker, weapon)
+		end
     end
 
 	damage = damage * damagetypemult
@@ -662,12 +658,6 @@ function Inventory:ForEachEquipment(fn, ...)
     end
 end
 
-function Inventory:ForEachItemSlot(fn, ...)
-    for k,v in pairs(self.itemslots) do
-        fn(v, ...)
-    end
-end
-
 function Inventory:RemoveItemBySlot(slot, keepoverstacked)
     if slot and self.itemslots[slot] then
         local item = self.itemslots[slot]
@@ -769,10 +759,8 @@ function Inventory:GetNextAvailableSlot(item)
             end
         end
 
-        if overflow ~= nil then
-            if item.components.inventoryitem == nil or
-            not item.components.inventoryitem.canonlygoinpocket and
-            (not item.components.inventoryitem.canonlygoinpocketorpocketcontainers or overflow.inst.components.inventoryitem and overflow.inst.components.inventoryitem.canonlygoinpocket) then
+        if not (item.components.inventoryitem ~= nil and item.components.inventoryitem.canonlygoinpocket) then
+            if overflow ~= nil then
                 for k, v in pairs(overflow.slots) do
                     if v.prefab == prefabname and v.skinname == prefabskinname and v.components.stackable and not v.components.stackable:IsFull() then
                         return k, overflow
@@ -833,12 +821,10 @@ function Inventory:CanAcceptCount(item, maxcount)
         end
     end
 
-    local overflow = self:GetOverflowContainer()
-    if overflow ~= nil then
-        if item.components.inventoryitem == nil or
-        not item.components.inventoryitem.canonlygoinpocket and
-        (not item.components.inventoryitem.canonlygoinpocketorpocketcontainers or overflow.inst.components.inventoryitem and overflow.inst.components.inventoryitem.canonlygoinpocket) then
-            --check for empty space in our backpack
+    if not (item.components.inventoryitem ~= nil and item.components.inventoryitem.canonlygoinpocket) then
+        --check for empty space in our backpack
+        local overflow = self:GetOverflowContainer()
+        if overflow ~= nil then
             for k = 1, overflow.numslots do
                 local v = overflow.slots[k]
                 if v ~= nil then
@@ -1021,7 +1007,6 @@ function Inventory:GiveItem(inst, slot, src_pos)
     if self.activeitem == nil and
         self.maxslots > 0 and
         not inst.components.inventoryitem.canonlygoinpocket and
-        (not inst.components.inventoryitem.canonlygoinpocketorpocketcontainers or self.inst.components.inventoryitem and self.inst.components.inventoryitem.canonlygoinpocket) and
         not (self.inst.components.playercontroller ~= nil and
             self.inst.components.playercontroller.isclientcontrollerattached) then
 
@@ -1050,9 +1035,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
             returnvalue = true
             shouldwisecrack = false
         else
-            if self.HandleLeftoversShouldDropFn == nil or self.HandleLeftoversShouldDropFn(self.inst, inst) then
-                self:DropItem(inst, true, true)
-            end
+            self:DropItem(inst, true, true)
         end
     end
     if shouldwisecrack and not (self.isloading or self.silentfull) and self.maxslots > 0 then
@@ -1916,23 +1899,6 @@ function Inventory:TakeActiveItemFromHalfOfSlot(slot)
     end
 end
 
-function Inventory:TakeActiveItemFromCountOfSlot(slot, count)
-    local item = self:GetItemInSlot(slot)
-    if item ~= nil and
-        self:GetActiveItem() == nil then
-
-        if item.components.stackable and item.components.stackable:StackSize() > count then
-            local countedstack = item.components.stackable:Get(count)
-            countedstack.prevslot = slot
-            countedstack.prevcontainer = nil
-            self:GiveActiveItem(countedstack)
-        else
-            self:RemoveItemBySlot(slot)
-            self:GiveActiveItem(item)
-        end
-    end
-end
-
 function Inventory:TakeActiveItemFromAllOfSlot(slot)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and
@@ -2277,50 +2243,6 @@ function Inventory:MoveItemFromHalfOfSlot(slot, container)
                     self.ignoresound = true
                     self:GiveItem(halfstack, slot)
                     self.ignoresound = false
-                end
-            end
-
-            container.currentuser = nil
-        end
-    end
-end
-
-function Inventory:MoveItemFromCountOfSlot(slot, container, count)
-    local item = self:GetItemInSlot(slot)
-    if item ~= nil and container ~= nil then
-        container = container.components.container
-        if container ~= nil and
-            container:IsOpenedBy(self.inst) and
-            item.components.stackable ~= nil and
-            item.components.stackable:IsStack() then
-
-            container.currentuser = self.inst
-
-            local targetslot =
-                self.inst.components.constructionbuilderuidata ~= nil and
-                self.inst.components.constructionbuilderuidata:GetContainer() == container.inst and
-                self.inst.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab) or
-                nil
-
-            if container:CanTakeItemInSlot(item, targetslot) then
-                if item.components.stackable and item.components.stackable:StackSize() > count then
-                    local countedstack = item.components.stackable:Get(count)
-                    countedstack.prevcontainer = nil
-                    countedstack.prevslot = nil
-                    if not container:GiveItem(countedstack, targetslot) then
-                        self.ignoresound = true
-                        self:GiveItem(countedstack, slot)
-                        self.ignoresound = false
-                    end
-                else
-                    item = self:RemoveItemBySlot(slot)
-                    item.prevcontainer = nil
-                    item.prevslot = nil
-                    if not container:GiveItem(item, targetslot, nil, false) then
-                        self.ignoresound = true
-                        self:GiveItem(item, slot)
-                        self.ignoresound = false
-                    end
                 end
             end
 

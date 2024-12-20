@@ -52,7 +52,7 @@ local function OnHit(inst)
     inst.AnimState:PushAnimation("idle")
 end
 
-local function OnBuiltFn(inst)
+local function OnBuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle")
 
@@ -87,8 +87,6 @@ local function OnFoodGiven(inst, item, giver)
 	item:AddTag("NOCLICK")
 	item:ReturnToScene()
 
-    item.components.inventoryitem.canbepickedup = false
-
     inst.takeitem:set(item)
 
 	if item.Follower == nil then
@@ -120,8 +118,6 @@ local function OnFoodTaken(inst, item, taker, wholestack)
     if item.components.perishable ~= nil then
         item.components.perishable:StartPerishing()
     end
-
-    item.components.inventoryitem.canbepickedup = true
 
 	item:RemoveTag("NOCLICK")
 	item.Follower:StopFollowing()
@@ -168,8 +164,8 @@ local function StorageFn()
         return inst
     end
 
-    inst.OnBuiltFn = OnBuiltFn
-    inst:ListenForEvent("onbuilt", inst.OnBuiltFn)
+    inst.OnBuilt = OnBuilt
+    inst:ListenForEvent("onbuilt", inst.OnBuilt)
 
     inst:AddComponent("lootdropper")
 
@@ -193,6 +189,58 @@ local function StorageFn()
     return inst
 end
 
+local function GiveOrDropItem(item, inventory, pos)
+    if inventory ~= nil then
+        inventory:GiveItem(item, nil, pos)
+    else
+        item.Transform:SetPosition(pos:Get())
+        item.components.inventoryitem:OnDropped(true)
+    end
+end
+
+
+local function Kit_OnPreBuilt(inst, builder, materials, recipe)
+    if materials == nil or materials.gelblob_bottle == nil then
+        return
+    end
+
+    local total = 0
+
+    for item, amount in pairs(materials.gelblob_bottle) do
+        total = total + amount
+    end
+
+    if total > 0 then
+        inst._used_bottles = total
+    end
+end
+
+local function Kit_OnBuilt(inst, builder) -- Give empty bottles after consuming ingredients for inventory organanization purposes.
+    if inst._used_bottles == nil then
+        return
+    end
+
+    local pos = builder:GetPosition()
+    local inventory = inst.components.inventoryitem:GetContainer() -- Also returns inventory component.
+
+    local bottle = SpawnPrefab("messagebottleempty")
+
+    if bottle.components.stackable ~= nil then
+        bottle.components.stackable:SetStackSize(inst._used_bottles)
+
+        GiveOrDropItem(bottle, inventory, pos)
+    else
+        GiveOrDropItem(bottle, inventory, pos)
+
+        for i = 2, inst._used_bottles do
+            local addt_bottle = SpawnPrefab("messagebottleempty")
+            GiveOrDropItem(addt_bottle, inventory, pos)
+        end
+    end
+
+    inst._used_bottles = nil
+end
+
 --------------------------------------------------------------------------------------------------------------------------
 
 return
@@ -214,7 +262,8 @@ return
         nil,                   -- burnable
         {                      -- deployable_data
         master_postinit = function(inst)
-            MakeCraftingMaterialRecycler(inst, { gelblob_bottle = "messagebottleempty" })
+            inst.onPreBuilt = Kit_OnPreBuilt
+            inst.OnBuilt    = Kit_OnBuilt
         end
         }
     )
