@@ -33,12 +33,6 @@ return{
         {
             NOTNOW = "Finish thine business with haste! I have glory to attain!",
         },
-        ATTACH_GHOST = 
-        {
-            WRONG_SISTURN = "only_used_by_wendy",
-            SISTURN_OFF = "only_used_by_wendy",
-            ABIGAIL_NOT_NEAR = "only_used_by_wendy",
-        },        
         ATTUNE =
         {
             NOHEALTH = "Alas, I am too stricken.",
@@ -342,7 +336,6 @@ return{
 			INUSE = "True warriors wait their turn.",
             NOTMASTERCHEF = "T'would not do to meddle with my ally's effects.",
             NOTAMERM = "T'would not be wise to anger the fish beasts.",
-            NOTSOULJARHANDLER = "I shall not meddle with that."
 		},
         SADDLE =
         {
@@ -374,7 +367,6 @@ return{
 			NOTALLOWED = "I fear that does not go there.",
 			INUSE = "My stalwart companion currently has use of that.",
             NOTMASTERCHEF = "T'would not do to meddle with my ally's effects.",
-            NOTSOULJARHANDLER = "I shall not meddle with that."
 		},
         TEACH =
         {
@@ -412,8 +404,6 @@ return{
             BEEF_BELL_INVALID_TARGET = "I cannot.",
             BEEF_BELL_ALREADY_USED = "That beast belongs to another.",
             BEEF_BELL_HAS_BEEF_ALREADY = "I've already chosen my beast.",
-
-			NOT_MINE = "'Tis not mine.'",
         },
 		USEKLAUSSACKKEY =
         {
@@ -435,12 +425,6 @@ return{
             DOESNTWORK = "Where is he hiding?",
             ALREADYACTIVE = "Mayhaps there is another competition elsewhere.",
         },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
-        },
         YOTB_UNLOCKSKIN =
         {
             ALREADYKNOWN = "This is known to me.",
@@ -457,13 +441,6 @@ return{
 			STACKEDTOOHIGH = "'Tis tall enough!'",
 			MELTING = "No further. 'Tis is returning to the earth.",
 		},
-        MUTATE = 
-        {
-            NOGHOST = "only_used_by_wendy",
-            NONEWMOON = "only_used_by_wendy",
-            NOFULLMOON = "only_used_by_wendy",
-            NOTNIGHT = "only_used_by_wendy",
-        },        
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -738,23 +715,7 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_EMPTY_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_FEW_NAUGHTY =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
@@ -762,52 +723,17 @@ return{
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_MANY_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NICE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_NAUGHTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_WARNING =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_SOUL_OVERLOAD_AVOIDED =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_ACTIVE =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "only_used_by_wortox",
---fallback to speech_wilson.lua     },
---fallback to speech_wilson.lua     ANNOUNCE_PANFLUTE_BUFF_USED =
 --fallback to speech_wilson.lua     {
 --fallback to speech_wilson.lua         "only_used_by_wortox",
 --fallback to speech_wilson.lua     },
 
     --walter specfic
---fallback to speech_wilson.lua 	ANNOUNCE_AMMO_SLOT_OVERSTACKED = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_OUT_OF_AMMO =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_AMMO_SKILL = "only_used_by_walter",
---fallback to speech_wilson.lua 	ANNOUNCE_SLINGHSOT_NO_PARTS_SKILL = "only_used_by_walter",
 --fallback to speech_wilson.lua 	ANNOUNCE_STORYTELLING_ABORT_FIREWENTOUT =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua         "only_used_by_walter",
@@ -914,8 +840,6 @@ return{
 --fallback to speech_wilson.lua         "only_used_by_wendy",
 --fallback to speech_wilson.lua     },
 --fallback to speech_wilson.lua 	ANNOUNCE_SISTURN_FULL = "only_used_by_wendy",
-    ANNOUNCE_SISTURN_FULL_EVIL = "only_used_by_wendy",
-    ANNOUNCE_SISTURN_FULL_BLOSSOM = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_DEATH = "only_used_by_wendy",
 --fallback to speech_wilson.lua     ANNOUNCE_ABIGAIL_RETRIEVE = "only_used_by_wendy",
 --fallback to speech_wilson.lua 	ANNOUNCE_ABIGAIL_LOW_HEALTH = "only_used_by_wendy",
@@ -1089,22 +1013,6 @@ return{
 	-- Winter's Feast 2024
 	ANNOUNCE_SNOWBALL_TOO_BIG = "'Tis futile to roll it further.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "A fruitless endeavor.",
-
-    --rifts 5
-    ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
-    ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
-
-	ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT = "Blasted imp magic!",
-
-    ANNOUNCE_NO_ABIGAIL_FLOWER = "only_used_by_wendy",
-
-    ANNOUNCE_ELIXIR_BOOSTED = "It doth soothe for but a fleeting moment.",
-    ANNOUNCE_ELIXIR_GHOSTVISION = "Visions from Helheim!",
-    ANNOUNCE_ELIXIR_PLAYER_SPEED = "I am the battalion.",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
-
-    ANNOUNCE_EXLIIR_TOO_SUPER = "'Tis excess!",
 
 	BATTLECRY =
 	{
@@ -2036,6 +1944,7 @@ return{
         CHESSPIECE_BEARGER_MUTATED = "May the beast now be at peace.",
         CHESSPIECE_SHARKBOI = "Until we meet again, bait-breathed warrior.",
         CHESSPIECE_WORMBOSS = "I shall never forget this hungry cave serpent.",
+        CHESSPIECE_YOTS = "I do relish thy slaying, worm.",
 
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
@@ -4065,28 +3974,14 @@ return{
             "Wouldst thou like a skritch behind thine ears?",
         },
 		WALTERHAT = "The helm of the \"Pinetree Pioneer\" clan.",
-		SLINGSHOT =
-		{
-			GENERIC = "I prefer weapons at close range.",
---fallback to speech_wilson.lua 			NOT_MINE = "only_used_by_walter",
-		},
+		SLINGSHOT = "I prefer weapons at close range.",
 		SLINGSHOTAMMO_ROCK = "What fun is a battle without hand to hand combat?",
 		SLINGSHOTAMMO_MARBLE = "What fun is a battle without hand to hand combat?",
 		SLINGSHOTAMMO_THULECITE = "What fun is a battle without hand to hand combat?",
         SLINGSHOTAMMO_GOLD = "What fun is a battle without hand to hand combat?",
-		SLINGSHOTAMMO_HONEY = "What fun is a battle without hand to hand combat?",
         SLINGSHOTAMMO_SLOW = "What fun is a battle without hand to hand combat?",
         SLINGSHOTAMMO_FREEZE = "What fun is a battle without hand to hand combat?",
 		SLINGSHOTAMMO_POOP = "I could do without the stench...",
-		SLINGSHOTAMMO_STINGER = "What fun is a battle without hand to hand combat?",
-		SLINGSHOTAMMO_MOONGLASS = "What fun is a battle without hand to hand combat?",
-		SLINGSHOTAMMO_GELBLOB = "What fun is a battle without hand to hand combat?",
-		SLINGSHOTAMMO_SCRAPFEATHER = "What fun is a battle without hand to hand combat?",
-        SLINGSHOTAMMO_DREADSTONE = "What fun is a battle without hand to hand combat?",
-        SLINGSHOTAMMO_GUNPOWDER = "What fun is a battle without hand to hand combat?",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "What fun is a battle without hand to hand combat?",
-        SLINGSHOTAMMO_PUREBRILLIANCE = "What fun is a battle without hand to hand combat?",
-        SLINGSHOTAMMO_HORRORFUEL = "What fun is a battle without hand to hand combat?",
         PORTABLETENT = "'Tis a finely made shelter indeed!",
         PORTABLETENT_ITEM = "My talent lies in battle, not in building.",
 
@@ -4119,22 +4014,15 @@ return{
 		GHOSTLYELIXIR_ATTACK = "'Tis a powerful elixir!",
 		GHOSTLYELIXIR_SPEED = "'Tis a powerful elixir!",
 		GHOSTLYELIXIR_RETALIATION = "'Tis a powerful elixir!",
-        GHOSTLYELIXIR_REVIVE = "'Tis a powerful elixir!",
 		SISTURN =
 		{
 			GENERIC = "A small langhús for the ghostly warrior to regain her strength.",
 			SOME_FLOWERS = "Flowers doth please this spirit.",
 			LOTS_OF_FLOWERS = "'Tis a fine monument indeed.",
-            LOTS_OF_FLOWERS_EVIL = "TODO", --[[TODO]]
-            LOTS_OF_FLOWERS_BLOSSOM = "TODO", --[[TODO]]            
 		},
 
         --Wortox
 --fallback to speech_wilson.lua         WORTOX_SOUL = "only_used_by_wortox", --only wortox can inspect souls
-        --WORTOX_DECOY is not needed because it uses the default WORTOX inspection.
-        WORTOX_NABBAG = "The tool of a plunderer.",
-        WORTOX_REVIVER = "Impish magic has power over death?",
-        WORTOX_SOULJAR = "He doth keep souls of the slain.",
 
         PORTABLECOOKPOT_ITEM =
         {
@@ -5533,7 +5421,7 @@ return{
         GELBLOB_BOTTLE = "The goo hath been contained.",
 
         PLAYER_HOSTED =
-        {
+        {        
             GENERIC = "I shall take no pleasure in destroying you, friend.",
             ME = "'Tis an abomination!",
         },
@@ -5552,28 +5440,21 @@ return{
 		},
         SNOWBALL_ITEM = "I do love a snow skirmish.",
 
-        -- Meta 5
-        GHOSTLYELIXIR_LUNAR = "'Tis a powerful elixir!",
-        GHOSTLYELIXIR_SHADOW = "'Tis a powerful elixir!",
-        
-		SLINGSHOTMODKIT = "The young scout doth come into his own.",
-		SLINGSHOT_BAND_PIGSKIN = "The young scout doth come into his own.",
-		SLINGSHOT_BAND_TENTACLE = "The young scout doth come into his own.",
-		SLINGSHOT_BAND_MIMIC = "The young scout doth come into his own.",
-		SLINGSHOT_FRAME_BONE = "The young scout doth come into his own.",
-		SLINGSHOT_FRAME_GEMS = "The young scout doth come into his own.",
-		SLINGSHOT_FRAME_WAGPUNK_0 = "The young scout doth come into his own.",
-		SLINGSHOT_FRAME_WAGPUNK = "The young scout doth come into his own.",
-		SLINGSHOT_HANDLE_STICKY = "The young scout doth come into his own.",
-		SLINGSHOT_HANDLE_JELLY = "The young scout doth come into his own.",
-		SLINGSHOT_HANDLE_SILK = "The young scout doth come into his own.",
-		SLINGSHOT_HANDLE_VOIDCLOTH = "The young scout doth come into his own.",
-
-        WOBY_BADGE_STATION = "The loyal cur showeth vast potential.",
-
-        ELIXIR_CONTAINER = "The elixirs dost soothe her spirit.",
-        GHOSTFLOWERHAT = "Cursed blossoms of the dead.",
-        WENDY_RESURRECTIONGRAVE = "A warrior doth run toward death, not from it!",
+        -- Year of the Snake
+        YOTS_SNAKESHRINE =
+        {
+            GENERIC = "The worm hath been appeased.",
+            EMPTY = "The worm doth demand a worthy sacrifice.",
+            BURNT = "The shrine itself offered to the implacable gods!",
+        },
+        YOTS_WORM = "I shall send thee back to the depths, worm!",
+        YOTS_LANTERN_POST = 
+        {
+            GENERIC = "I hope she'll hold.",
+            BURNT = "Must the gods taketh everything?",
+        },
+        YOTS_LANTERN_POST_ITEM = "Prepare thyself, for revelry doth await.",
+        CHESSPIECE_DEPTHWORM  = "I do relish thy slaying, worm.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

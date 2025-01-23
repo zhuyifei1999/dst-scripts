@@ -24,11 +24,7 @@ end
 
 local function onpickedfn(inst, picker)
     if picker and picker.components.sanity then
-        if  picker.components.skilltreeupdater and picker.components.skilltreeupdater:IsActivated("wendy_gravestone_1") then
-            picker.components.sanity:DoDelta(TUNING.SANITY_TINY)
-        else
-            picker.components.sanity:DoDelta(-TUNING.SANITY_TINY)
-        end
+        picker.components.sanity:DoDelta(-TUNING.SANITY_TINY)
     end
 end
 

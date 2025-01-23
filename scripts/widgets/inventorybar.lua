@@ -455,14 +455,7 @@ function Inv:OnUpdate(dt)
 	if self.open and not self.autopaused then
 		local playercontroller = self.owner.components.playercontroller
 		if playercontroller ~= nil then
-			local busy = playercontroller:IsBusy()
-			if not busy and playercontroller:IsDoingOrWorking() then
-				local shouldautopause = self.owner.sg ~= nil and self.owner.sg:HasStateTag("shouldautopausecontrollerinventory")
-				if not (shouldautopause or TheWorld.ismastersim) then
-					shouldautopause = self.owner:HasTag("shouldautopausecontrollerinventory")
-				end
-				busy = not shouldautopause
-			end
+			local busy = playercontroller:IsDoingOrWorking() or playercontroller:IsBusy()
 			if self.autopause_delay > 0 then
 				if busy then
 					--started doing the action
@@ -880,14 +873,6 @@ function Inv:OpenControllerInventory()
         TheFrontEnd:LockFocus(true)
         self:SetFocus()
     end
-end
-
-function Inv:OnNewContainerWidget(containerwidg)
-	if self.open then
-		--V2C: need to spawn at the larger scale if controller inventory is already open
-		--     (this can now happen with the slingshotmodkit for example)
-		containerwidg:SetScale(self.selected_scale)
-	end
 end
 
 function Inv:OnEnable()

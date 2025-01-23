@@ -28,14 +28,10 @@ local function ontextchange(self, text)
     if self.writeable_by_default then
         if text ~= nil then
             self.inst:RemoveTag("writeable")
-            if self.inst.AnimState then
-                self.inst.AnimState:Show("WRITING")
-            end
+            self.inst.AnimState:Show("WRITING")
         else
             self.inst:AddTag("writeable")
-            if self.inst.AnimState then
-                self.inst.AnimState:Hide("WRITING")
-            end
+            self.inst.AnimState:Hide("WRITING")
         end
     end
 end
@@ -45,12 +41,10 @@ local function onwriter(self, writer)
 end
 
 local function onautodescribechanged(self, new_ad, old_ad)
-    if self.inst.components.inspectable then
-        if new_ad then
-            self.inst.components.inspectable.getspecialdescription = gettext
-        else
-            self.inst.components.inspectable.getspecialdescription = nil
-        end
+    if new_ad then
+        self.inst.components.inspectable.getspecialdescription = gettext
+    else
+        self.inst.components.inspectable.getspecialdescription = nil
     end
 end
 
@@ -137,20 +131,14 @@ function Writeable:SetDefaultWriteable(writeable_by_default)
     if writeable_by_default and not self.writeable_by_default then
         if self.text ~= nil then
             self.inst:RemoveTag("writeable")
-            if self.inst.AnimState then
-                self.inst.AnimState:Show("WRITING")
-            end
+            self.inst.AnimState:Show("WRITING")
         else
             self.inst:AddTag("writeable")
-            if self.inst.AnimState then
-                self.inst.AnimState:Hide("WRITING")
-            end
+            self.inst.AnimState:Hide("WRITING")
         end
     elseif not writeable_by_default and self.writeable_by_default then
         self.inst:RemoveTag("writeable")
-        if self.inst.AnimState then
-            self.inst.AnimState:Hide("WRITING")
-        end
+        self.inst.AnimState:Hide("WRITING")
     end
     self.writeable_by_default = writeable_by_default
 end

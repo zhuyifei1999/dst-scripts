@@ -56,7 +56,7 @@ end
 local function OnHeard(inst, musician, instrument)
     if inst.components.farmplanttendable ~= nil then
         inst.components.farmplanttendable:TendTo(musician)
-        instrument.rabbitkinghorn_shouldfiniteuses_use = true
+        inst.rabbitkinghorn_shouldfiniteuses_use = true
     end
 end
 
@@ -81,7 +81,7 @@ local function UseModifier(uses, action, doer, target, item)
         end
         if item.rabbitkinghorn_shouldfiniteuses_use then
             item.rabbitkinghorn_shouldfiniteuses_use = nil
-            return uses
+            return 1
         end
     end
     return 0

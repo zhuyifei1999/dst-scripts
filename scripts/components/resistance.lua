@@ -39,11 +39,11 @@ function Resistance:ShouldResistDamage()
     return self.shouldresistfn == nil or self.shouldresistfn(self.inst)
 end
 
-function Resistance:ResistDamage(damage_amount, attacker)
+function Resistance:ResistDamage(damage_amount)
     if self.onresistdamage ~= nil then
-        self.onresistdamage(self.inst, damage_amount, attacker)
+        self.onresistdamage(self.inst, damage_amount)
     end
-    self.inst:PushEvent("damageresisted", {damage_amount = damage_amount, attacker = attacker})
+    self.inst:PushEvent("damageresisted", damage_amount)
 end
 
 function Resistance:GetDebugString()

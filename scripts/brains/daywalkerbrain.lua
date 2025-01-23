@@ -34,25 +34,14 @@ local function GetHomePos(inst)
 end
 
 local function ShouldStalk(inst)
-	if inst:IsStalking() and (inst.components.combat:InCooldown() or not inst.components.combat:HasTarget()) then
-		inst.hit_recovery = TUNING.DAYWALKER_STALK_HIT_RECOVERY
-		return true
-	end
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
-	return false
+	return inst:IsStalking() and (inst.components.combat:InCooldown() or not inst.components.combat:HasTarget())
 end
 
 local function ShouldDodge(inst)
-	if inst.components.combat:HasTarget() and inst.components.combat:InCooldown() and not inst:IsStalking() then
-		inst.hit_recovery = TUNING.DAYWALKER_DODGE_HIT_RECOVERY
-		return true
-	end
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
-	return false
+	return inst.components.combat:HasTarget() and inst.components.combat:InCooldown() and not inst:IsStalking()
 end
 
 local function ShouldChase(inst)
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
 	return inst.components.combat:HasTarget() and not inst.components.combat:InCooldown()
 end
 

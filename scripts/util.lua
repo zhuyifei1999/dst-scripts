@@ -57,7 +57,13 @@ function SpawnAt(prefab, loc, scale, offset)
     prefab = (prefab.GUID and prefab.prefab) or prefab
 
     local spawn = SpawnPrefab(prefab)
-    local pos = (loc.prefab and loc:GetPosition()) or loc
+    local pos = nil
+
+    if loc.prefab then
+        pos = loc:GetPosition()
+    else
+        pos = loc
+    end
 
     if spawn and pos then
         pos = pos + offset
@@ -1707,9 +1713,8 @@ end
 function FunctionOrValue(func_or_val, ...)
     if type(func_or_val) == "function" then
         return func_or_val(...)
-    else
-        return func_or_val
     end
+    return func_or_val
 end
 
 function ApplyLocalWordFilter(text, text_filter_context, net_id)

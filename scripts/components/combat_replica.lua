@@ -94,9 +94,7 @@ function Combat:GetWeapon()
     elseif self.inst.replica.inventory ~= nil then
         local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if item ~= nil and item:HasTag("weapon") then
-			if (item:HasTag("projectile") and not item:HasTag("complexprojectile")) or
-				item:HasTag("rangedweapon")
-			then
+            if item:HasTag("projectile") or item:HasTag("rangedweapon") then
                 return item
             end
             local rider = self.inst.replica.rider

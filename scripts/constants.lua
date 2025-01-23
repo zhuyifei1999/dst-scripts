@@ -783,8 +783,9 @@ SPECIAL_EVENTS =
     YOT_CATCOON = "year_of_the_catcoon",
     YOTR = "year_of_the_bunnyman",
     YOTD = "year_of_the_dragonfly",
+    YOTS = "year_of_the_snake",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTS
 --WORLD_SPECIAL_EVENT = IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.YOTR
 WORLD_EXTRA_EVENTS = {}
 
@@ -813,6 +814,7 @@ IS_YEAR_OF_THE_SPECIAL_EVENTS =
 	[SPECIAL_EVENTS.YOT_CATCOON] = true,
     [SPECIAL_EVENTS.YOTR] = true,
     [SPECIAL_EVENTS.YOTD] = true,
+    [SPECIAL_EVENTS.YOTS] = true,
 }
 
 
@@ -902,6 +904,13 @@ SPECIAL_EVENT_MUSIC =
         bank = "music_frontend.fsb",
         sound = "dontstarve/music/music_FE_summerevent",
     },
+    
+    --year of the depths worm
+    [SPECIAL_EVENTS.YOTS] =
+    {
+        bank = "music_frontend_yotg.fsb",
+        sound = "dontstarve/music/music_FE_yotg",
+    },    
 }
 
 FESTIVAL_EVENT_MUSIC =
@@ -1084,7 +1093,7 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_meta5"
+    "dontstarve/music/music_FE"
     --"dontstarve/music/music_FE_hallowednights2024"
     --"dontstarve/music/music_FE_rifts4"
     --"dontstarve/music/music_FE_winonawurt"
@@ -1172,6 +1181,7 @@ TECH =
     CATCOONOFFERING_THREE = { CATCOONOFFERING = 3 },
     RABBITOFFERING_THREE = { RABBITOFFERING = 3 },
     DRAGONOFFERING_THREE = { DRAGONOFFERING = 3 },
+    WORMOFFERING_THREE = { WORMOFFERING = 3 },
 
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
 	CARNIVAL_PRIZESHOP_ONE = { CARNIVAL_PRIZESHOP = 1 },
@@ -1205,6 +1215,7 @@ TECH =
     YOT_CATCOON = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTR = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTD = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    YOTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
 
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 
@@ -1851,7 +1862,6 @@ UPGRADETYPES = -- NOTES(JBK): Keep this table updated in export_accountitems.lua
     MAST = "mast",
     SPEAR_LIGHTNING = "spear_lightning",
     CHEST = "chest",
-    GRAVESTONE = "gravestone",
 }
 
 SPELLTYPES = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
@@ -1860,7 +1870,6 @@ SPELLTYPES = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [
     WURT_LUNAR = "wurt_lunar",
     SHADOW_SWAMP_BOMB = "shadow_swamp_bomb",
     LUNAR_SWAMP_BOMB = "lunar_swamp_bomb",
-    WORTOX_REVIVER_LOCK = "wortox_reviver_lock", -- Inverted and stops allowing to cast.
 }
 
 LOCKTYPE =
@@ -2021,7 +2030,6 @@ SKILLTREE_EQUIPPABLE_RESTRICTED_TAGS =
     ["inspectacleshatuser"]  = "winona",
     ["wathgrithrshielduser"] = "wathgrithr",
     [UPGRADETYPES.SPEAR_LIGHTNING.."_upgradeuser"] = "wathgrithr",
-    ["nabbaguser"] = "wortox",
 }
 
 -- IngredientMod must be one of the following values
@@ -2052,6 +2060,7 @@ TOOLACTIONS =
     NET = true,
     PLAY = true,
     UNSADDLE = true,
+	REACH_HIGH = true,
 	SCYTHE = true,
 }
 
@@ -2782,28 +2791,3 @@ NIGHTSWORD_FX_OFFSETS = {
     RIGHT = 0.75,-- -1,
     DOWN = 2.9,-- 2.6,
 }
-
-NUM_WOBY_TRAINING_ASPECTS_LEVELS = 2 -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
-
-WOBY_TRAINING_ASPECTS = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
-{
-    SPEED = "speed",
-    RESISTANCE = "resistance",
-    FETCHING = "fetching",
-    DIGGING = "digging",
-    BRAVERY = "bravery",
-}
-
-WOBY_TRAINING_ASPECTS_LIST = {}
-
--- Tag pairs in this list behave mutually exclusively,
--- when trying to attune to different objects.
-EQUIVALENT_ATTUNABLE_TAGS =
-{
-    ["remoteresurrector"] = "gravestoneresurrector",
-    ["gravestoneresurrector"] = "remoteresurrector",
-}
-
-for k, v in pairs(WOBY_TRAINING_ASPECTS) do
-    table.insert(WOBY_TRAINING_ASPECTS_LIST, v)
-end

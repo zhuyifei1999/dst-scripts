@@ -18,13 +18,7 @@ local Attunable = Class(function(self, inst)
     self.onunlinkfn = nil
 
     self.onplayerattuned = function(player, data)
-        local same_type = (data.prefab == inst.prefab)
-        if not same_type and data.tag ~= nil and self.attunable_tag ~= nil
-                and (data.tag == self.attunable_tag
-                or data.tag == EQUIVALENT_ATTUNABLE_TAGS[self.attunable_tag]) then
-            same_type = true
-        end
-        if same_type then
+        if data.prefab == inst.prefab then
             --Player has attuned to another of the same prefab
             self:UnlinkFromPlayer(player, data.isloading)
         end
@@ -49,10 +43,10 @@ function Attunable:OnRemoveEntity()
     self.inst:RemoveTag("ATTUNABLE_ID_"..tostring(self.inst.GUID))
     self.inst:RemoveEventCallback("ms_playerjoined", self.onplayerjoined, TheWorld)
     local toremove = {}
-    for k in pairs(self.attuned_players) do
+    for k, v in pairs(self.attuned_players) do
         table.insert(toremove, k)
     end
-    for _, v in ipairs(toremove) do
+    for i, v in ipairs(toremove) do
         self:UnlinkFromPlayer(v)
     end
 end
@@ -84,10 +78,7 @@ function Attunable:IsAttuned(player)
 end
 
 function Attunable:CanAttune(player)
-    return player.userid ~= nil
-        and string.len(player.userid) > 0
-        and player.components.attuner ~= nil
-        and not self:IsAttuned(player)
+    return player.userid ~= nil and string.len(player.userid) > 0 and player.components.attuner ~= nil and not self:IsAttuned(player)
 end
 
 function Attunable:LinkToPlayer(player, isloading)
@@ -108,7 +99,7 @@ function Attunable:LinkToPlayer(player, isloading)
     end
     self.attuned_players[player]:AttachToPlayer(player, self.inst)
 
-    player:PushEvent("attuned", { prefab = self.inst.prefab, tag = self.attunable_tag, isloading = isloading })
+    player:PushEvent("attuned", { prefab = self.inst.prefab, isloading = isloading })
     self.inst:ListenForEvent("onremove", self.onplayerremoved, player)
     self.inst:ListenForEvent("attuned", self.onplayerattuned, player)
 
@@ -136,10 +127,10 @@ end
 
 function Attunable:OnSave()
     local userids = {}
-    for k in pairs(self.attuned_players) do
+    for k, v in pairs(self.attuned_players) do
         table.insert(userids, k.userid)
     end
-    for k in pairs(self.attuned_userids) do
+    for k, v in pairs(self.attuned_userids) do
         table.insert(userids, k)
     end
     return #userids > 0 and { links = userids } or nil
@@ -148,12 +139,12 @@ end
 function Attunable:OnLoad(data)
     if data ~= nil and data.links ~= nil and #data.links > 0 then
         local available_players = {}
-        for _, v in ipairs(AllPlayers) do
+        for i, v in ipairs(AllPlayers) do
             if v.userid ~= nil and string.len(v.userid) > 0 then
                 available_players[v.userid] = v
             end
         end
-        for _, v in ipairs(data.links) do
+        for i, v in ipairs(data.links) do
             if available_players[v] ~= nil then
                 self:LinkToPlayer(available_players[v], true)
             else

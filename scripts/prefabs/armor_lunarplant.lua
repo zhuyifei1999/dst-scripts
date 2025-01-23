@@ -14,7 +14,6 @@ local prefabs =
 	"armor_lunarplant_glow_fx",
 	"hitsparks_reflect_fx",
     "wormwood_vined_debuff",
-    "wortox_resist_fx",
 }
 
 local huskprefabs =
@@ -231,8 +230,6 @@ end
 
 local function master_postinit(inst)
 	inst._onblocked = OnHit_Vines
-
-    require("prefabs/skilltree_defs").CUSTOM_FUNCTIONS.wortox.SetupLunarResists(inst)
 end
 
 local function fn()

@@ -192,7 +192,7 @@ local function on_submerged_dug_up(inst, digger)
     inst.sg:GoToState("dug_up")
 end
 
-local function on_submerged_haunt_fn(inst)
+local function on_submerged_haunt_fn(inst, haunter)
     return true
 end
 

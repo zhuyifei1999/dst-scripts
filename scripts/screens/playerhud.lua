@@ -46,7 +46,6 @@ local ScrapbookScreen = require "screens/redux/scrapbookscreen"
 local InspectaclesScreen = require("screens/redux/inspectaclesscreen")
 local PumpkinCarvingScreen = require("screens/redux/pumpkincarvingscreen")
 local SnowmanDecoratingScreen = require("screens/redux/snowmandecoratingscreen")
-local WobyBadgesScreen = require("screens/redux/wobybadgesscreen")
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -78,7 +77,6 @@ local PlayerHud = Class(Screen, function(self)
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
     self.inst:ListenForEvent("endofmatch", function(world, data) self:ShowEndOfMatchPopup(data) end, TheWorld)
-    self.inst:ListenForEvent("debug_rebuild_skilltreedata", function() self:OpenPlayerInfoScreen() end, TheGlobalInstance)
 
     if not TheWorld.ismastersim then
         self.inst:ListenForEvent("deactivateworld", function()
@@ -380,7 +378,6 @@ local function OpenContainerWidget(self, container, side)
 	containerwidget:MoveToBack()
     containerwidget:Open(container, self.owner)
     self.controls.containers[container] = containerwidget
-	self.controls.inv:OnNewContainerWidget(containerwidget)
 
 	if parent == self.controls.containerroot then
 		self:CloseSpellWheel()
@@ -706,23 +703,6 @@ function PlayerHud:CloseSnowmanDecoratingScreen()
 		end
 		self.snowmandecoratingscreen = nil
 	end
-end
-
-function PlayerHud:OpenWobyBadgesScreen(trainingdata)
-    self:CloseWobyBadgesScreen()
-    self.wobybadgesscreen = WobyBadgesScreen(self.owner, trainingdata)
-    self:OpenScreenUnderPause(self.wobybadgesscreen)
-
-    return true
-end
-
-function PlayerHud:CloseWobyBadgesScreen()
-    if self.wobybadgesscreen ~= nil then
-        if self.wobybadgesscreen.inst:IsValid() then
-            TheFrontEnd:PopScreen(self.wobybadgesscreen)
-        end
-        self.wobybadgesscreen = nil
-    end
 end
 
 --Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup
