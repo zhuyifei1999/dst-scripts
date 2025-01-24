@@ -47,7 +47,14 @@ local events=
             inst.sg:GoToState("death", data.cause == "file_load")
         end
     end),
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
+	EventHandler("attacked", function(inst)
+		if not (inst.components.health:IsDead() or
+				inst.sg:HasStateTag("attack") or
+				CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
+		then
+			inst.sg:GoToState("hit")
+		end
+	end),
     EventHandler("heardhorn", function(inst, data)
         if not inst.components.health:IsDead()
            and not inst.sg:HasStateTag("attack")
@@ -969,7 +976,7 @@ CommonStates.AddWalkStates(
         }
     })
 
-CommonStates.AddSimpleState(states,"hit", "hit")
+CommonStates.AddSimpleState(states, "hit", "hit", nil, nil, nil, { onenter = CommonHandlers.UpdateHitRecoveryDelay })
 CommonStates.AddFrozenStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

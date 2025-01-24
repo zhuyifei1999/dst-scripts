@@ -507,6 +507,9 @@ local prefabs =
 
     -- YOTS
     "yots_worm_lantern_spawner",
+
+    -- Meta 5
+    "graveguard_ghost",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")
@@ -606,6 +609,7 @@ local function master_postinit(inst)
     inst:AddComponent("retrofitforestmap_anr")
     inst:AddComponent("specialeventsetup")
     inst:AddComponent("townportalregistry")
+    inst:AddComponent("linkeditemmanager")
     inst:AddComponent("sandstorms")
     inst:AddComponent("worldmeteorshower")
     inst:AddComponent("mermkingmanager")
@@ -653,6 +657,9 @@ local function master_postinit(inst)
     -- We don't want to auto-spawn mimics, but they might be brought up from the caves,
     -- so we might need to spawn them from existing mimics re-hiding.
     inst:AddComponent("shadowthrall_mimics")
+
+    -- Meta 5
+    inst:AddComponent("decoratedgrave_ghostmanager")
 end
 
 return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit, {"forest"}, {

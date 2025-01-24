@@ -156,6 +156,7 @@ CLOTHING =
 		symbol_in_base_hides = { "arm_lower_cuff", },
 		torso_tuck = "untucked",
 		rarity = "HeirloomDistinguished",
+		spinnable_tail = true,
 		marketable = true,
 		release_group = 15,
 	},
@@ -170,6 +171,7 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
+		spinnable_tail = true,
 		release_group = 105,
 	},
 	body_chester_costume =
@@ -10375,6 +10377,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 77,
 	},
 	legs_wortox_formal =
@@ -10386,6 +10389,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		feet_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 148,
 	},
 	legs_wortox_ice =
@@ -10407,6 +10411,7 @@ CLOTHING =
 		symbol_hides = { "skirt", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		spinnable_tail = true,
 		release_group = 140,
 	},
 	legs_wortox_minotaur =
@@ -10417,6 +10422,7 @@ CLOTHING =
 		symbol_hides = { "skirt", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		spinnable_tail = true,
 		release_group = 62,
 	},
 	legs_wortox_nature =
@@ -10428,6 +10434,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 121,
 	},
 	legs_wortox_original =
@@ -10450,6 +10457,7 @@ CLOTHING =
 		rarity_modifier = "Woven",
 		legs_cuff_size = 3,
 		feet_cuff_size = 3,
+		spinnable_tail = true,
 		release_group = 133,
 	},
 	legs_wortox_rose =
@@ -10461,6 +10469,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 158,
 	},
 	legs_wortox_shadow =
@@ -10472,6 +10481,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 145,
 	},
 	legs_wortox_survivor =
@@ -10482,6 +10492,7 @@ CLOTHING =
 		symbol_hides = { "skirt", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		spinnable_tail = true,
 		release_group = 62,
 	},
 	legs_wortox_victorian =
@@ -10493,6 +10504,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 115,
 	},
 	legs_wortox_yule =
@@ -10504,6 +10516,7 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
+		spinnable_tail = true,
 		release_group = 160,
 	},
 	legs_wurt_ancient =
