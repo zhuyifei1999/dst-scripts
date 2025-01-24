@@ -30,13 +30,11 @@ function SkillTreeData:IsActivated(skill, characterprefab)
 end
 
 function SkillTreeData:IsValidSkill(skill, characterprefab)
-    local skilltree = SKILLTREE_DEFS[characterprefab]
-    if skilltree == nil then
+    if SKILLTREE_DEFS[characterprefab] == nil then
         --print("Invalid skilltree characterprefab to IsValidSkill:", characterprefab, skill)
         return false
     end
-    local skilldef = skilltree[skill]
-    return skilldef and skilldef.rpc_id ~= nil
+    return SKILLTREE_DEFS[characterprefab][skill] ~= nil
 end
 
 function SkillTreeData:GetSkillXP(characterprefab)

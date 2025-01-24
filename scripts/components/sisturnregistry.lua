@@ -16,7 +16,6 @@ self.inst = inst
 --Private
 local _sisturns = {}
 local _is_active = false
-local _is_blossom = false
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -29,23 +28,19 @@ local function UpdateSisturnState()
 		end
 		return
 	end
-	
+
 	local is_active = false
-	local is_blossom = false
 
 	for _, v in pairs(_sisturns) do
-		if v then			
-			if _:getsisturnfeel() == "BLOSSOM" then
-				is_blossom = true
-			end
+		if v then
 			is_active = true
+			break
 		end
 	end
 
-	if is_active ~= _is_active or is_blossom ~= _is_blossom then
+	if is_active ~= _is_active then
 		_is_active = is_active
-		_is_blossom = is_blossom
-		TheWorld:PushEvent("onsisturnstatechanged", {is_active = is_active, is_blossom=is_blossom}) -- Wendy will be listening for this event
+		TheWorld:PushEvent("onsisturnstatechanged", {is_active = is_active}) -- Wendy will be listening for this event
 	end
 end
 
@@ -101,16 +96,12 @@ function self:IsActive()
 	return _is_active
 end
 
-function self:IsBlossom()
-	return _is_blossom
-end
-
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-	return "Num: " .. tostring(GetTableSize(_sisturns)) .. ", is_active:" .. tostring(_is_active)..", is_blossom:" .. tostring(_is_blossom)
+	return "Num: " .. tostring(GetTableSize(_sisturns)) .. ", is_active:" .. tostring(_is_active)
 end
 
 --------------------------------------------------------------------------

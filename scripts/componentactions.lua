@@ -408,18 +408,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        incinerator = function(inst, doer, actions, right)
-            if not inst:HasTag("burnt") and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-                if right and 
-                    inst.replica.container ~= nil and
-                    not inst.replica.container:IsEmpty() and
-                    inst.replica.container:IsOpenedBy(doer)
-                then
-                    table.insert(actions, ACTIONS.INCINERATE)
-                end
-            end
-        end,
-
 		inspectable = function(inst, doer, actions, right)
             if inst ~= doer and
                 (doer.CanExamine == nil or doer:CanExamine()) and
@@ -445,30 +433,6 @@ local COMPONENT_ACTIONS =
 				(right or not inst:HasTag("heavy") or inst:HasTag("heavylift_lmb")) and
                 not (right and inst.replica.container ~= nil and inst.replica.equippable == nil) then
                 table.insert(actions, ACTIONS.PICKUP)
-            end
-        end,
-
-        inventoryitemholder = function(inst, doer, actions, right)
-            if inst:HasTag("inventoryitemholder_take") and not inst:HasTag("fire") then
-                local item = inst.takeitem ~= nil and inst.takeitem:value() or nil
-
-                if item == nil then
-                    table.insert(actions, ACTIONS.TAKEITEM)
-
-                    return
-                end
-
-                local act = 
-                    item.replica.stackable ~= nil and
-                    item.replica.stackable:IsStack() and
-                    (
-                        doer.components.playercontroller ~= nil and
-                        doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)
-                    ) and
-                    ACTIONS.TAKESINGLEITEM or
-                    ACTIONS.TAKEITEM
-
-                table.insert(actions, act)
             end
         end,
 
@@ -574,12 +538,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        ghostgestalter = function(inst, doer, actions, right)           
-            if doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("wendy_lunar_3") and  (inst:HasTag("activatable_forceright") or not right ) then
-                table.insert(actions, ACTIONS.MUTATE)
-            end
-        end,
-
         occupiable = function(inst, doer, actions)
             if inst:HasTag("occupied") then
                 table.insert(actions, ACTIONS.HARVEST)
@@ -663,7 +621,11 @@ local COMPONENT_ACTIONS =
 
         questowner = function(inst, doer, actions, right)
             if right and (inst.CanBeActivatedBy_Client == nil or inst:CanBeActivatedBy_Client(doer)) then
-                table.insert(actions, (inst:HasTag("questing") and ACTIONS.ABANDON_QUEST) or ACTIONS.BEGIN_QUEST)
+                if inst:HasTag("questing") then
+                    table.insert(actions, ACTIONS.ABANDON_QUEST)
+                else
+                    table.insert(actions, ACTIONS.BEGIN_QUEST)
+                end
             end
         end,
 
@@ -886,12 +848,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        wobybadgestation = function(inst, doer, actions, right)
-            if doer:HasTag("dogtrainer") and not inst:HasAnyTag("fire", "burnt") and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-                table.insert(actions, ACTIONS.CUSTOMIZE_WOBY_BADGES)
-            end
-        end,
-
         yotb_sewer = function(inst, doer, actions, right)
             if not inst:HasTag("burnt") and
                 not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
@@ -925,6 +881,42 @@ local COMPONENT_ACTIONS =
         yotc_racestart = function(inst, doer, actions, right)
             if right and not (inst:HasTag("burnt") or inst:HasTag("fire") or inst:HasTag("race_on")) then
                 table.insert(actions, ACTIONS.START_CARRAT_RACE)
+            end
+        end,
+
+        inventoryitemholder = function(inst, doer, actions, right)
+            if inst:HasTag("inventoryitemholder_take") and not inst:HasTag("fire") then
+                local item = inst.takeitem ~= nil and inst.takeitem:value() or nil
+
+                if item == nil then
+                    table.insert(actions, ACTIONS.TAKEITEM)
+
+                    return
+                end
+
+                local act = 
+                    item.replica.stackable ~= nil and
+                    item.replica.stackable:IsStack() and
+                    (
+                        doer.components.playercontroller ~= nil and
+                        doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)
+                    ) and
+                    ACTIONS.TAKESINGLEITEM or
+                    ACTIONS.TAKEITEM
+
+                table.insert(actions, act)
+            end
+        end,
+
+        incinerator = function(inst, doer, actions, right)
+            if not inst:HasTag("burnt") and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
+                if right and 
+                    inst.replica.container ~= nil and
+                    not inst.replica.container:IsEmpty() and
+                    inst.replica.container:IsOpenedBy(doer)
+                then
+                    table.insert(actions, ACTIONS.INCINERATE)
+                end
             end
         end,
     },
@@ -1204,14 +1196,8 @@ local COMPONENT_ACTIONS =
         end,
 
         ghostlyelixir = function(inst, doer, target, actions)
-            if target:HasTag("elixir_drinker") then
-                table.insert(actions, ACTIONS.APPLYELIXIR)
-            end
-        end,
-
-        gravedigger = function(inst, doer, target, actions)
-            if target:HasTag("gravediggable") and doer:HasTag("gravedigger_user") then
-                table.insert(actions, ACTIONS.GRAVEDIG)
+            if target:HasTag("ghostlyelixirable") then
+                table.insert(actions, ACTIONS.GIVE)
             end
         end,
 
@@ -1233,7 +1219,6 @@ local COMPONENT_ACTIONS =
             if inventoryitem ~= nil and inventoryitem:CanOnlyGoInPocket() then
                 --not tradable
             elseif inventoryitem ~= nil
-                and (not inventoryitem:CanOnlyGoInPocketOrPocketContainers() or target.replica.inventoryitem ~= nil and target.replica.inventoryitem:CanOnlyGoInPocket())
                 and (   (target.replica.container ~= nil and target.replica.container:CanBeOpened()) or
                         (target.components.container_proxy ~= nil and target.components.container_proxy:CanBeOpened())
                         --container_proxy exists on clients too
@@ -1245,15 +1230,13 @@ local COMPONENT_ACTIONS =
                     ) then
                     table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
                 end
-            elseif inventoryitem and inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
-                -- Not tradable.
 			elseif target.replica.constructionsite ~= nil and target.replica.constructionsite:IsEnabled() then
                 if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) then
                     table.insert(actions, target.replica.constructionsite:IsBuilder(doer) and ACTIONS.BUNDLESTORE or ACTIONS.CONSTRUCT)
                 end
             elseif target:HasTag("playerghost") then
-                if inst:HasTag("reviver") then
+                if inst.prefab == "reviver" then
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
                 end
             elseif target:HasTag("player") then
@@ -1271,7 +1254,7 @@ local COMPONENT_ACTIONS =
             elseif not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
                 if target:HasTag("alltrader") then
                     table.insert(actions, ACTIONS.GIVE)
-                elseif inst:HasTag("reviver") and target:HasTag("ghost") then
+                elseif inst.prefab == "reviver" and target:HasTag("ghost") then
                     table.insert(actions, ACTIONS.GIVE)
                 elseif target:HasTag("boatcannon") and not target:HasTag("burnt") and not target:HasTag("fire") and inst:HasTag("boatcannon_ammo") and not target:HasTag("ammoloaded") then
                     table.insert(actions, ACTIONS.BOAT_CANNON_LOAD_AMMO)
@@ -1362,7 +1345,7 @@ local COMPONENT_ACTIONS =
             if target:HasTag("playbill_lecturn") then
                 table.insert(actions, ACTIONS.GIVE)
             end
-        end,
+        end,        
 
         pocketwatch = function(inst, doer, target, actions)
             if inst:HasTag("pocketwatch_inactive") and doer:HasTag("pocketwatchcaster") and inst.pocketwatch_CanTarget ~= nil and inst:pocketwatch_CanTarget(doer, target) then
@@ -1602,15 +1585,16 @@ local COMPONENT_ACTIONS =
             if doer == target and target.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
             end
-        end,
+        end,        
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") and not (inst.replica.equippable ~= nil and inst.replica.equippable:IsRestricted(doer)) then
-                for k in pairs(TOOLACTIONS) do
-                    if inst:HasTag(k.."_tool")
-                            and target:IsActionValid(ACTIONS[k], right) then
-                        table.insert(actions, ACTIONS[k])
-                        return
+                for k, v in pairs(TOOLACTIONS) do
+                    if inst:HasTag(k.."_tool") then
+                        if target:IsActionValid(ACTIONS[k], right) then
+                            table.insert(actions, ACTIONS[k])
+                            return
+                        end
                     end
                 end
             end
@@ -1656,19 +1640,13 @@ local COMPONENT_ACTIONS =
         end,
 
         useabletargeteditem = function(inst, doer, target, actions)
-			if target and not inst:HasTag("inuse_targeted") and
-				(	(inst.UseableTargetedItem_ValidTarget and inst:UseableTargetedItem_ValidTarget(target, doer)) or
-					(target.prefab and inst:HasTag(target.prefab.."_targeter"))
-				)
-			then
-				if not inst:HasTag("useabletargeteditem_mounted") then
-					local rider = doer.replica.rider
-					if rider and rider:IsRiding() then
-						return --this item isn't allowed to be used while mounted
-					end
+            if target ~= nil then
+				if (target.prefab ~= nil and inst:HasTag(target.prefab.."_targeter") and not inst:HasTag("inuse_targeted"))
+					or (inst.UseableTargetedItem_ValidTarget ~= nil and inst.UseableTargetedItem_ValidTarget(inst, target, doer)) then
+
+					table.insert(actions, ACTIONS.USEITEMON)
 				end
-				table.insert(actions, ACTIONS.USEITEMON)
-			end
+            end
         end,
 
         vasedecoration = function(inst, doer, target, actions)
@@ -1702,7 +1680,6 @@ local COMPONENT_ACTIONS =
                 ) then
                 -- put weapons into chester, don't attack him unless forcing attack with key press
                 if not inventoryitem:CanOnlyGoInPocket() and
-                    (not inventoryitem:CanOnlyGoInPocketOrPocketContainers() or target.replica.inventoryitem ~= nil and target.replica.inventoryitem:CanOnlyGoInPocket()) and
                     not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
@@ -1710,10 +1687,7 @@ local COMPONENT_ACTIONS =
                     table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
                 end
 			elseif target.replica.constructionsite ~= nil and target.replica.constructionsite:IsEnabled() then
-                if (inventoryitem == nil or (
-                        not inventoryitem:CanOnlyGoInPocket() and
-                        (not inventoryitem:CanOnlyGoInPocketOrPocketContainers() or target.replica.inventoryitem ~= nil and target.replica.inventoryitem:CanOnlyGoInPocket())
-                    )) and
+                if not (inventoryitem ~= nil and inventoryitem:CanOnlyGoInPocket()) and
                     not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) then
                     table.insert(actions, target.replica.constructionsite:IsBuilder(doer) and ACTIONS.BUNDLESTORE or ACTIONS.CONSTRUCT)
@@ -1916,18 +1890,12 @@ local COMPONENT_ACTIONS =
             if inst:HasTag("castonpoint") then
                 local px, py, pz = pos:Get()
                 if TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, cast_on_water) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") and not doer:HasTag("rotatingboat") then
-                    local crushitemcast = inst:HasTag("crushitemcast")
-                    if not crushitemcast or crushitemcast and (doer.replica.rider == nil or not doer.replica.rider:IsRiding()) and (doer.replica.inventory == nil or not doer.replica.inventory:IsHeavyLifting()) then
-                        table.insert(actions, ACTIONS.CASTSPELL)
-                    end
+                    table.insert(actions, ACTIONS.CASTSPELL)
                 end
             elseif cast_on_water then
                 local px, py, pz = pos:Get()
                 if TheWorld.Map:IsOceanAtPoint(px, py, pz, false) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") and not doer:HasTag("rotatingboat") then
-                    local crushitemcast = inst:HasTag("crushitemcast")
-                    if not crushitemcast or crushitemcast and (doer.replica.rider == nil or not doer.replica.rider:IsRiding()) and (doer.replica.inventory == nil or not doer.replica.inventory:IsHeavyLifting()) then
-                        table.insert(actions, ACTIONS.CASTSPELL)
-                    end
+                    table.insert(actions, ACTIONS.CASTSPELL)
                 end
             end
         end,
@@ -2034,12 +2002,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        gravedigger = function(inst, doer, target, actions, right)
-            if right and target:HasTag("gravediggable") and doer:HasTag("gravedigger_user") then
-                table.insert(actions, ACTIONS.GRAVEDIG)
-            end
-        end,
-
         key = function(inst, doer, target, actions)
             for k, v in pairs(LOCKTYPE) do
                 if target:HasTag(v.."_lock") then
@@ -2064,12 +2026,6 @@ local COMPONENT_ACTIONS =
                 else
                     table.insert(actions, ACTIONS.LIFT_DUMBBELL)
                 end
-            end
-        end,
-
-        nabbag = function(inst, doer, target, actions, right)
-            if right and target.replica.inventoryitem and target.replica.inventoryitem:CanBePickedUp(doer) and not target:HasAnyTag("_container", "heavy") then
-                table.insert(actions, ACTIONS.NABBAG)
             end
         end,
 
@@ -2145,21 +2101,20 @@ local COMPONENT_ACTIONS =
                     (inst:HasTag("castonworkable") and (target:HasTag("CHOP_workable") or target:HasTag("DIG_workable") or target:HasTag("HAMMER_workable") or target:HasTag("MINE_workable"))) or
                     (inst:HasTag("castoncombat") and doer.replica.combat ~= nil and doer.replica.combat:CanTarget(target))
                 ) then
-                local crushitemcast = inst:HasTag("crushitemcast")
-                if not crushitemcast or crushitemcast and (doer.replica.rider == nil or not doer.replica.rider:IsRiding()) and (doer.replica.inventory == nil or not doer.replica.inventory:IsHeavyLifting()) then
-                    table.insert(actions, ACTIONS.CASTSPELL)
-                end
+                table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") then
-                for k in pairs(TOOLACTIONS) do
-                    if inst:HasTag(k.."_tool")
-                            and target:IsActionValid(ACTIONS[k], right)
-                            and (not right or ACTIONS[k].rmb or not target:HasTag("smolder")) then
-                        table.insert(actions, ACTIONS[k])
-                        return
+                for k, v in pairs(TOOLACTIONS) do
+                    if inst:HasTag(k.."_tool") then
+                        if target:IsActionValid(ACTIONS[k], right) then
+                            if not right or ACTIONS[k].rmb or not target:HasTag("smolder") then
+                                table.insert(actions, ACTIONS[k])
+                                return
+                            end
+                        end
                     end
                 end
             end
@@ -2265,14 +2220,6 @@ local COMPONENT_ACTIONS =
             end
 		end,
 
-		containerinstallableitem = function(inst, doer, actions)
-			--containerinstallableitem exists on clients too
-			if inst.components.containerinstallableitem:GetValidOpenContainer(doer) then
-				--This is for both installing and uninstalling
-				table.insert(actions, ACTIONS.CONTAINER_INSTALL_ITEM)
-			end
-		end,
-
         deployable = function(inst, doer, actions)
             if doer.components.playercontroller ~= nil and not doer.components.playercontroller.deploy_mode then
                 local inventoryitem = inst.replica.inventoryitem
@@ -2336,12 +2283,6 @@ local COMPONENT_ACTIONS =
         followerherder = function(inst, doer, actions, right)
             if doer:HasTag("spiderwhisperer") then
                 table.insert(actions, ACTIONS.HERD_FOLLOWERS)
-            end
-        end,
-
-        ghostlyelixir = function(inst, doer, actions, right)
-            if doer:HasTag("elixirbrewer") then
-                table.insert(actions, ACTIONS.APPLYELIXIR)
             end
         end,
 
@@ -2560,10 +2501,7 @@ local COMPONENT_ACTIONS =
             end
 
             if inst:HasTag("castfrominventory") then
-                local crushitemcast = inst:HasTag("crushitemcast")
-                if not crushitemcast or crushitemcast and (doer.replica.rider == nil or not doer.replica.rider:IsRiding()) and (doer.replica.inventory == nil or not doer.replica.inventory:IsHeavyLifting()) then
-                    table.insert(actions, ACTIONS.CASTSPELL)
-                end
+                table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
 
@@ -2808,22 +2746,22 @@ function EntityScript:IsActionValid(action, right)
     if action.rmb and action.rmb ~= right then
         return false
     end
-    local isvalid_list = COMPONENT_ACTIONS.ISVALID
-    for _, v in ipairs(self.actioncomponents) do
-        local validator = isvalid_list[ACTION_COMPONENT_NAMES[v]]
-        if validator ~= nil and validator(self, action, right) then
+    local t = COMPONENT_ACTIONS.ISVALID
+    for i, v in ipairs(self.actioncomponents) do
+        local vaildator = t[ACTION_COMPONENT_NAMES[v]]
+        if vaildator ~= nil and vaildator(self, action, right) then
             return true
         end
     end
-    if self.modactioncomponents then
+    if self.modactioncomponents ~= nil then
         for modname, cmplist in pairs(self.modactioncomponents) do
-            isvalid_list = CheckModComponentActions(self, modname)
-            isvalid_list = (isvalid_list and isvalid_list.ISVALID) or nil
-            if isvalid_list then
+            t = CheckModComponentActions(self, modname)
+            t = t and t.ISVALID or nil
+            if t ~= nil then
                 local namemap = CheckModComponentNames(self, modname)
-                for _, v in ipairs(cmplist) do
-                    local validator = isvalid_list[namemap[v]]
-                    if validator ~= nil and validator(self, action, right) then
+                for i, v in ipairs(cmplist) do
+                    local vaildator = t[namemap[v]]
+                    if vaildator ~= nil and vaildator(self, action, right) then
                         return true
                     end
                 end

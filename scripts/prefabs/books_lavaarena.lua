@@ -62,7 +62,6 @@ local function MakeBook(booktype, reticule, prefabs)
         inst:AddTag("rechargeable")
 
         inst:AddComponent("aoetargeting")
-		inst.components.aoetargeting:SetAllowRiding(false)
         inst.components.aoetargeting.reticule.reticuleprefab = reticule
         inst.components.aoetargeting.reticule.pingprefab = reticule.."ping"
         inst.components.aoetargeting.reticule.targetfn = ReticuleTargetFn

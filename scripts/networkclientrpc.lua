@@ -128,19 +128,16 @@ local RPC_HANDLERS =
         end
     end,
 
-	--V2C: isleftmouse & isreleased at the end because added a lot later
-	AttackButton = function(player, target, forceattack, noforce, isleftmouse, isreleased)
+    AttackButton = function(player, target, forceattack, noforce)
         if not (optentity(target) and
                 optbool(forceattack) and
-				optbool(noforce) and
-				optbool(isleftmouse) and
-				optbool(isreleased)) then
+                optbool(noforce)) then
             printinvalid("AttackButton", player)
             return
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-			playercontroller:OnRemoteAttackButton(target, forceattack, noforce, isleftmouse, isreleased)
+            playercontroller:OnRemoteAttackButton(target, forceattack, noforce)
         end
     end,
 
@@ -507,26 +504,6 @@ local RPC_HANDLERS =
         end
     end,
 
-    TakeActiveItemFromCountOfSlot = function(player, slot, container, count)
-        if not (checkuint(slot) and
-                optentity(container) and
-                checkuint(count)) then
-            printinvalid("TakeActiveItemFromCountOfSlot", player)
-            return
-        end
-        local inventory = player.components.inventory
-        if inventory ~= nil then
-            if container == nil then
-                inventory:TakeActiveItemFromCountOfSlot(slot, count)
-            else
-                container = container.components.container
-                if container ~= nil and container:IsOpenedBy(player) then
-                    container:TakeActiveItemFromCountOfSlot(slot, count, player)
-                end
-            end
-        end
-    end,
-
     TakeActiveItemFromAllOfSlot = function(player, slot, container)
         if not (checkuint(slot) and
                 optentity(container)) then
@@ -781,19 +758,6 @@ local RPC_HANDLERS =
         end
     end,
 
-    MoveInvItemFromCountOfSlot = function(player, slot, destcontainer, count)
-        if not (checkuint(slot) and
-                checkentity(destcontainer) and
-                checkuint(count)) then
-            printinvalid("MoveInvItemFromCountOfSlot", player)
-            return
-        end
-        local inventory = player.components.inventory
-        if inventory ~= nil then
-            inventory:MoveItemFromCountOfSlot(slot, destcontainer, count)
-        end
-    end,
-
     MoveItemFromAllOfSlot = function(player, slot, srccontainer, destcontainer)
         if not (checkuint(slot) and
                 checkentity(srccontainer) and
@@ -817,20 +781,6 @@ local RPC_HANDLERS =
         local container = srccontainer.components.container
         if container ~= nil and container:IsOpenedBy(player) then
             container:MoveItemFromHalfOfSlot(slot, destcontainer or player, player)
-        end
-    end,
-
-    MoveItemFromCountOfSlot = function(player, slot, srccontainer, destcontainer, count)
-        if not (checkuint(slot) and
-                checkentity(srccontainer) and
-                optentity(destcontainer) and
-                checkuint(count)) then
-            printinvalid("MoveItemFromCountOfSlot", player)
-            return
-        end
-        local container = srccontainer.components.container
-        if container ~= nil and container:IsOpenedBy(player) then
-            container:MoveItemFromCountOfSlot(slot, destcontainer or player, count, player)
         end
     end,
 
@@ -1090,18 +1040,6 @@ local RPC_HANDLERS =
         -- NOTES(JBK): Check passed in variables in the callback not in the RPC here.
         player:SetClientAuthoritativeSetting(variable, value)
     end,
-
-	AOECharging = function(player, rotation, startflag)
-		if not (checknumber(rotation) and
-				optuint(startflag)) then
-			printinvalid("AOECharging", player)
-			return
-		end
-		local playercontroller = player.components.playercontroller
-		if playercontroller then
-			playercontroller:OnRemoteAOECharging(rotation, startflag)
-		end
-	end,
 
     -- NOTES(JBK): RPC limit is at 128, with 1-127 usable.
 }

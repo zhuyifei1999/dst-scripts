@@ -45,7 +45,6 @@ AddModReleaseID( "R32_ST_WATHGRITHRWILLOW" )
 AddModReleaseID( "R33_QOL_SPRINGCLEANING" )
 AddModReleaseID( "R34_OCEANQOL_WINONAWURT" )
 AddModReleaseID( "R35_SANITYTROUBLES" )
-AddModReleaseID( "R36_ST_WENDWALTWORT" )
 
 -----------------------------------------------------------------------------------------------
 

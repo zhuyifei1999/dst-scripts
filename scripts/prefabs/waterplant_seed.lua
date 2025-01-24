@@ -160,7 +160,6 @@ local function fn()
 
     --projectile (from complexprojectile component) added to pristine state for optimization
     inst:AddTag("projectile")
-	inst:AddTag("complexprojectile")
 
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
@@ -253,9 +252,8 @@ local function projectile_fn()
     inst:AddTag("notarget")
     inst:AddTag("noattack")
 
-	--projectile (from complexprojectile component) added to pristine state for optimization
-	inst:AddTag("projectile")
-	inst:AddTag("complexprojectile")
+    -- Pristine state optimization tags
+    inst:AddTag("projectile")   -- complexprojectile
 
     inst.AnimState:SetBank("barnacle_burr")
     inst.AnimState:SetBuild("barnacle_burr")

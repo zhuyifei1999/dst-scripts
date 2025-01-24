@@ -56,16 +56,15 @@ function Activatable:CanActivate(doer)
 end
 
 function Activatable:DoActivate(doer)
-    if not self.OnActivate then
-        return nil
+    if self.OnActivate ~= nil then
+        self.inactive = false
+        local success, msg = self.OnActivate(self.inst, doer)
+		if success then
+			self.inst:PushEvent("onactivated", {doer = doer})
+		end
+		return success, msg
     end
-
-    self.inactive = false
-    local success, msg = self.OnActivate(self.inst, doer)
-    if success then
-        self.inst:PushEvent("onactivated", {doer = doer})
-    end
-    return success, msg
+	return nil
 end
 
 function Activatable:GetDebugString()

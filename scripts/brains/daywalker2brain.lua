@@ -113,13 +113,11 @@ end
 local function ShouldRummage(inst, self)
 	if not inst.components.combat:HasTarget() then
 		self.cachedrummage = false
-		inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
 		return false
 	end
 	local junk, loot = GetCurrentJunkLoot(inst, false)
 	if loot then
 		self.cachedrummage = loot == "ball" and not inst.sg:HasStateTag("busy")
-		inst.hit_recovery = TUNING.DAYWALKER_DODGE_HIT_RECOVERY
 		return true
 	end
 	if self.cachedrummage then
@@ -132,33 +130,22 @@ local function ShouldRummage(inst, self)
 			end
 		end
 	end
-	if self.cachedrummage then
-		inst.hit_recovery = TUNING.DAYWALKER_DODGE_HIT_RECOVERY
-		return true
-	end
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
-	return false
+	return self.cachedrummage
 end
 
 local function ShouldStalk(inst)
 	local target = inst.components.combat.target
 	if target then
 		if inst.canswing or inst.cancannon then
-			if inst.components.combat:InCooldown() then
-				inst.hit_recovery = TUNING.DAYWALKER_STALK_HIT_RECOVERY
-				return true
-			end
+			return inst.components.combat:InCooldown()
 		elseif inst.cantackle then
-			inst.hit_recovery = TUNING.DAYWALKER_STALK_HIT_RECOVERY
 			return true
 		end
 	end
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
 	return false
 end
 
 local function ShouldChase(inst)
-	inst.hit_recovery = TUNING.DAYWALKER_HIT_RECOVERY
 	return (inst.canswing or inst.cancannon) and not inst.components.combat:InCooldown()
 end
 
