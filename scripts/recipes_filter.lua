@@ -326,7 +326,6 @@ CRAFTING_FILTERS.SPECIAL_EVENT.recipes =
 	"yotr_rabbitshrine",
 	"yotd_dragonshrine",
 	"yots_snakeshrine",
-
 }
 
 CRAFTING_FILTERS.CRAFTING_STATION.recipes =
@@ -767,6 +766,7 @@ CRAFTING_FILTERS.PROTOTYPERS.recipes =
 	"yot_catcoonshrine",
 	"yotr_rabbitshrine",
 	"yotd_dragonshrine",
+	"yots_snakeshrine",
 }
 
 CRAFTING_FILTERS.REFINE.recipes =
@@ -1086,6 +1086,7 @@ CRAFTING_FILTERS.STRUCTURES.recipes =
 	"yot_catcoonshrine",
 	"yotr_rabbitshrine",
 	"yotd_dragonshrine",
+	"yots_snakeshrine",
 
 	"researchlab",
 	"researchlab2",

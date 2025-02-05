@@ -593,6 +593,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/body_polo_white_marble.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_polo_yellow_goldenrod.zip"),
 	Asset("PKGREF", "anim/dynamic/body_polo_yellow_goldenrod.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/body_redjacket.zip"),
+	Asset("PKGREF", "anim/dynamic/body_redjacket.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_silk_eveningrobe_blue_frost.zip"),
 	Asset("PKGREF", "anim/dynamic/body_silk_eveningrobe_blue_frost.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_silk_eveningrobe_pink_ewecus.zip"),
