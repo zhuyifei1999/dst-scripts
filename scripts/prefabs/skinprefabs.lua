@@ -696,7 +696,7 @@ table.insert(prefs, CreatePrefabSkin("armor_trunkvest_summer_quilted",
 	type = "item",
 	rarity = "Loyal",
 	init_fn = function(inst) trunkvest_summer_init_fn(inst, "armor_trunkvest_summer_quilted") end,
-	skin_tags = { "TRUNKVEST_SUMMER", "CRAFTABLE", },
+	skin_tags = { "TRUNKVEST_SUMMER", "WINTER", "CRAFTABLE", },
 	release_group = 161,
 }))
 

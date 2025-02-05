@@ -167,9 +167,12 @@ local function spawner_onsave(inst, data)
 
     if next(inst._spawned) ~= nil then
         data.lanterns = {}
+
         for lantern in pairs(inst._spawned) do
-            table.insert(data.lanterns, lantern.GUID)
-            table.insert(ents, lantern.GUID)
+            if lantern:IsValid() then
+                table.insert(data.lanterns, lantern.GUID)
+                table.insert(ents, lantern.GUID)
+            end
         end
     end
 
@@ -177,20 +180,22 @@ local function spawner_onsave(inst, data)
 end
 
 local function spawner_onload(inst, data)
-    if data.lanterns then
+    if data.lanterns ~= nil then
         inst._spawned = {}
     end
 end
 
 local function spawner_onloadpostpass(inst, newents, data)
-    if data.lanterns then
-        for _, lantern_GUID in pairs(data.lanterns) do
-            local lantern = newents[lantern_GUID].entity
-            if lantern then
-                -- The OnLoad should have initialized this table.
-                inst._spawned[lantern] = true
-                inst:ListenForEvent("onremove", inst._OnLanternRemoved, lantern)
-            end
+    if data.lanterns == nil then
+        return
+    end
+
+    for _, lantern_GUID in pairs(data.lanterns) do
+        local lantern = newents[lantern_GUID]
+
+        if lantern ~= nil then
+            inst._spawned[lantern.entity] = true -- The OnLoad should have initialized this table.
+            inst:ListenForEvent("onremove", inst._OnLanternRemoved, lantern.entity)
         end
     end
 end

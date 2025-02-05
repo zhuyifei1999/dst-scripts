@@ -615,6 +615,15 @@ CLOTHING =
 		marketable = true,
 		release_group = 0,
 	},
+	body_redjacket =
+	{
+		type = "body",
+		skin_tags = { "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", "arm_upper", },
+		torso_tuck = "untucked",
+		rarity = "Loyal",
+		release_group = 162,
+	},
 	body_silk_eveningrobe_blue_frost =
 	{
 		type = "body",
