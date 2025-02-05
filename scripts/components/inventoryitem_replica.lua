@@ -105,8 +105,16 @@ function InventoryItem:SetCanOnlyGoInPocket(canonlygoinpocket)
     self.classified.canonlygoinpocket:set(canonlygoinpocket)
 end
 
+function InventoryItem:SetCanOnlyGoInPocketOrPocketContainers(canonlygoinpocketorpocketcontainers)
+    self.classified.canonlygoinpocketorpocketcontainers:set(canonlygoinpocketorpocketcontainers)
+end
+
 function InventoryItem:CanOnlyGoInPocket()
     return self.classified ~= nil and self.classified.canonlygoinpocket:value()
+end
+
+function InventoryItem:CanOnlyGoInPocketOrPocketContainers()
+    return self.classified ~= nil and self.classified.canonlygoinpocketorpocketcontainers:value()
 end
 
 function InventoryItem:SetImage(imagename)
@@ -381,7 +389,8 @@ end
 
 function InventoryItem:GetEquipRestrictedTag()
     if self.inst.components.equippable ~= nil then
-        return self.inst.components.equippable:GetRestrictedTag()
+		local tag = self.inst.components.equippable.restrictedtag
+		return tag and tag:len() > 0 and tag or nil
     end
     return self.classified ~= nil
         and self.classified.equiprestrictedtag:value() ~= 0

@@ -262,6 +262,47 @@ function d_oceanarena()
     sharkboimanager:FindAndPlaceOceanArenaOverTime()
 end
 
+local function d_exploreX(filterfn, precision)
+    precision = math.floor(precision or 5)
+    local player = ConsoleCommandPlayer()
+    if not player then
+        c_announce("Not playing as a character.")
+        return
+    end
+    local map = TheWorld.Map
+    local TileGroupManager = TileGroupManager
+    local w, h = map:GetSize()
+    for tx = 0, w, precision do
+        for ty = 0, h, precision do
+            local tile = map:GetTile(tx, ty)
+            if filterfn(tile, tx, ty) then
+                local x, y, z = map:GetTileCenterPoint(tx, ty)
+                player.player_classified.MapExplorer:RevealArea(x, 0, z)
+            end
+        end
+    end
+end
+function d_exploreland()
+    d_exploreX(function(tile, tx, ty)
+        return TileGroupManager:IsLandTile(tile)
+    end)
+end
+function d_exploreocean()
+    d_exploreX(function(tile, tx, ty)
+        return TileGroupManager:IsOceanTile(tile)
+    end)
+end
+function d_explore_printunseentiles()
+    local player = ConsoleCommandPlayer()
+    d_exploreX(function(tile, tx, ty)
+        if not TileGroupManager:IsInvalidTile(tile) and not TileGroupManager:IsOceanTile(tile) and not player:CanSeeTileOnMiniMap(tx, ty) then -- Same logic from engine with search tag [STMSTCC]
+            local x, y, z = TheWorld.Map:GetTileCenterPoint(tx, ty)
+            print("Unseen tile at", x, z)
+        end
+        return false
+    end, 1)
+end
+
 local TELEPORTBOAT_ITEM_MUST_TAGS = {"_inventoryitem",}
 local TELEPORTBOAT_ITEM_CANT_TAGS = {"FX", "NOCLICK", "DECOR", "INLIMBO",}
 local TELEPORTBOAT_BLOCKER_CANT_TAGS = {"FX", "NOCLICK", "DECOR", "INLIMBO", "_inventoryitem",}
@@ -360,6 +401,23 @@ function d_rabbitking(kind)
     end
 end
 
+function d_fullmoon()
+    if TheWorld.ismastersim then
+        TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full", iswaxing = false})
+    end
+end
+
+function d_newmoon()
+    if TheWorld.ismastersim then
+        TheWorld:PushEvent("ms_setmoonphase", {moonphase = "new", iswaxing = true})
+    end
+end
+
+function d_unlockaffinities()
+    TheGenericKV:SetKV("fuelweaver_killed", "1")
+    TheGenericKV:SetKV("celestialchampion_killed", "1")
+end
+
 function d_resetskilltree()
     local player = ConsoleCommandPlayer()
 
@@ -370,8 +428,21 @@ function d_resetskilltree()
     local skilltreeupdater = player.components.skilltreeupdater
     local skilldefs = require("prefabs/skilltree_defs").SKILLTREE_DEFS[player.prefab]
     if skilldefs ~= nil then
-        for skill, data in pairs(skilldefs) do
-            skilltreeupdater:DeactivateSkill(skill)
+        local attempts = 50
+        while attempts > 0 do -- FIXME(JBK): This needs to be done in skilltreeupdater and carefully handled for server and client sync.
+            local keepgoing = false
+            for skill, data in pairs(skilldefs) do
+                if data.rpc_id then
+                    if skilltreeupdater:IsActivated(skill) then
+                        keepgoing = true
+                        skilltreeupdater:DeactivateSkill(skill)
+                    end
+                end
+            end
+            if not keepgoing then
+                break
+            end
+            attempts = attempts - 1
         end
     end
 
@@ -380,10 +451,6 @@ end
 
 function d_reloadskilltreedefs()
     require("prefabs/skilltree_defs").DEBUG_REBUILD()
-
-    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
-        ThePlayer.HUD:OpenPlayerInfoScreen()
-    end
 end
 
 function d_printskilltreestringsforcharacter(character)
@@ -2127,6 +2194,10 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "weapon"
     elseif t:HasTag("spidermutator") then
         subcat = "mutator"
+    elseif t:HasTag("slingshotammo") then
+        subcat = "slingshotammo"
+    elseif t.slingshot_slot ~= nil then
+        subcat = "slingshotpart"
     elseif foodtype ~= nil and
         foodtype ~= FOODTYPE.GENERIC and foodtype ~= FOODTYPE.GOODIES and foodtype ~= FOODTYPE.MEAT and
         foodtype ~= FOODTYPE.VEGGIE and foodtype ~= FOODTYPE.HORRIBLE and foodtype ~= FOODTYPE.INSECT and
@@ -2421,6 +2492,7 @@ local SKIP_SPECIALINFO_CHECK =
 local REPAIR_MATERIAL_DATA =
 {
     -- Repairers
+    carrot = { "carrot" },
     dreadstone = { "wall_dreadstone_item", "dreadstone" },
     fossil = { "fossil_piece" },
     gears = { "wall_scrap_item", "wagpunk_bits", "gears" },
@@ -2446,6 +2518,7 @@ local REPAIR_MATERIAL_DATA =
 
     -- Upgraders
     chest = { "chestupgrade_stacksize" },
+    gravestone = { "petals" },
     mast = { "mastupgrade_lamp_item", "mastupgrade_lightningrod_item" },
     spear_lightning = { "moonstorm_static_item" },
     spider = { "silk" },
@@ -3164,6 +3237,18 @@ function d_createscrapbookdata(print_missing_icons, noreset)
             end
         end
 
+        -----------------------------::   SLINGSHOT AMMO   ::--------------------------------
+
+        if t.ammo_def ~= nil then
+            if t.ammo_def.damage ~= nil and t.ammo_def.damage > 0 then
+                AddInfo( "weapondamage", t.ammo_def.damage )
+            end
+
+            if t.ammo_def.planar ~= nil and t.ammo_def.planar > 0 then
+                AddInfo( "planardamage", t.ammo_def.planar )
+            end
+        end
+
         ---------------------------------::   DEPENDENCIES   ::---------------------------------
 
         local _deps = t.scrapbook_deps or shallowcopy(Prefabs[entry].deps)
@@ -3769,5 +3854,16 @@ function d_shadowparasite(host_prefab)
 
     host.components.inventory:GiveItem(mask)
     host.components.inventory:Equip(mask)
+end
+
+function d_test_purebrilliance_ammo()
+    local slingshot = SpawnPrefab("slingshot")
+    local ammo = SpawnPrefab("slingshotammo_purebrilliance")
+    local player = ConsoleCommandPlayer()
+
+    ammo.components.stackable:SetStackSize(ammo.components.stackable.maxsize)
+    slingshot.components.container:GiveItem(ammo)
+
+    player.components.inventory:Equip(slingshot)
 end
 

@@ -39,6 +39,14 @@ local UIAnim = require "widgets/uianim"
 
 local dataset = require("screens/redux/scrapbookdata")
 
+--DO SOME FILTERING FOR PREFABS NOT PRESENT IN ALL VERSIONS
+--if rawget(_G, "TheSim") and not TheSim:HasPlayerSkeletons() then
+if TheSim and not TheSim:HasPlayerSkeletons() then
+	dataset["skeleton"] = nil
+else	
+	dataset["shallow_grave"] = nil
+end
+
 local PANEL_WIDTH = 1000
 local PANEL_HEIGHT = 530
 local SEARCH_BOX_HEIGHT = 40

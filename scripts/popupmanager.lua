@@ -31,6 +31,7 @@ POPUPS = {
     INSPECTACLES = PopupManagerWidget(),
 	PUMPKINCARVING = PopupManagerWidget(),
 	SNOWMANDECORATING = PopupManagerWidget(),
+	WOBYBADGECUSTOMIZATION = PopupManagerWidget(),
 }
 
 POPUPS_BY_POPUP_CODE = {}
@@ -182,6 +183,20 @@ POPUPS.SNOWMANDECORATING.fn = function(inst, show, target, obj)
 			inst.HUD:CloseSnowmanDecoratingScreen()
 		elseif not inst.HUD:OpenSnowmanDecoratingScreen(target, obj) then
 			POPUPS.SNOWMANDECORATING.Close(inst)
+		end
+	end
+end
+
+POPUPS.WOBYBADGECUSTOMIZATION.validaterpcfn = function(trainingdata)
+    return optstring(trainingdata)
+end
+
+POPUPS.WOBYBADGECUSTOMIZATION.fn = function(inst, show, target)
+	if inst.HUD then
+		if not show then
+			inst.HUD:CloseWobyBadgesScreen()
+		elseif not inst.HUD:OpenWobyBadgesScreen(target) then
+			POPUPS.WOBYBADGECUSTOMIZATION:Close(inst)
 		end
 	end
 end
