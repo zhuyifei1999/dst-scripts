@@ -207,6 +207,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+    inst.entity:AddSoundEmitter()
 
     inst.MiniMapEntity:SetIcon("gravestones.png")
 

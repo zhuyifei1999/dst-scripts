@@ -4765,6 +4765,10 @@ local function MakeHat(name)
         if debuff then
             debuff.components.debuff:Stop()
         end
+
+        if inst.components.rechargeable then 
+            inst.components.rechargeable:SetCharge(inst.components.rechargeable.total)
+        end
     end    
 
     fns.onghostflowerrecharge = function(inst)
@@ -4772,7 +4776,7 @@ local function MakeHat(name)
             local owner = inst.components.inventoryitem.owner 
             if owner then
                 local debuff = owner:GetDebuff("elixir_buff")
-                if debuff.recharge then
+                if debuff and debuff.recharge then
                     debuff:recharge()
                 end
             end
@@ -4803,7 +4807,6 @@ local function MakeHat(name)
 
         inst:AddComponent("rechargeable")        
         inst:ListenForEvent("rechargechange", fns.onghostflowerrecharge)
-        --inst.components.rechargeable:  rechargechange
 
         MakeHauntableLaunch(inst)
 

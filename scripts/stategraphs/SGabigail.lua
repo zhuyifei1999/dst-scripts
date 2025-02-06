@@ -73,6 +73,7 @@ end
 
 local DASHATTACK_MUST_TAGS = {"_combat"}
 local function dash_attack_onupdate(inst, dt)
+
     if not inst.sg.mem.aoe_attack_times then return end
     if inst:HasTag("gestalt") then return end
 
@@ -80,11 +81,18 @@ local function dash_attack_onupdate(inst, dt)
     local combat = inst.components.combat
     local current_attack_time
     local ix, iy, iz = inst.Transform:GetWorldPosition()
-    local hittable_entities = TheSim:FindEntities(ix, iy, iz, aura.radius, DASHATTACK_MUST_TAGS, aura.auraexcludetags)
+    local hittable_entities = TheSim:FindEntities(ix, iy, iz, aura.radius, DASHATTACK_MUST_TAGS, aura.auraexcludetags)    
+
     for _, hittable_entity in pairs(hittable_entities) do
+
+
+        local leader = inst._playerlink     
+
         if hittable_entity ~= inst and
                 combat:IsValidTarget(hittable_entity) and
-                inst:auratest(hittable_entity) then
+                not inst.components.combat:IsAlly(hittable_entity) and
+                (leader == nil or not leader.components.combat:IsAlly(hittable_entity)) and                
+                inst:auratest(hittable_entity, true) then
             current_attack_time = inst.sg.mem.aoe_attack_times[hittable_entity]
             if not current_attack_time or (current_attack_time - dt <= 0) then
                 inst.sg.mem.aoe_attack_times[hittable_entity] = TUNING.WENDYSKILL_DASHATTACK_HITRATE

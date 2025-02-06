@@ -7222,7 +7222,7 @@ function Tune(overrides)
 
                 MURDER_BUFF_DURATION = 8,
                 MURDER_BUFF_MULTIPLIER = 2,
-                MURDER_DEFENSE_BUFF = 15,
+                MURDER_DEFENSE_BUFF = 5,
 
                 LUNARELIXIR_DURATION = 4 * seg_time,
                 LUNARELIXIR_DAMAGEBONUS = 10,
@@ -8308,8 +8308,6 @@ function Tune(overrides)
         },
 
         ABIGAIL_SHADOW_PLANAR_DAMAGE = 25,
-
-        ABIGAIL_GESTALT_HIDE_THRESHOLD = 0.25,
 
         WENDYSKILL_COMMAND_COOLDOWN = 4,
         WENDYSKILL_ESCAPE_TIME = 1.5,

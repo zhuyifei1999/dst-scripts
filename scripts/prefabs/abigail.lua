@@ -343,7 +343,6 @@ end
 local function CustomCombatDamage(inst, target)
     local vex_debuff = target:GetDebuff("abigail_vex_debuff")
     return (vex_debuff ~= nil and (vex_debuff.prefab == "abigail_vex_debuff" or vex_debuff.prefab == "abigail_vex_shadow_debuff" ) and 1/TUNING.ABIGAIL_VEX_DAMAGE_MOD)
-    --    or (vex_debuff ~= nil and vex_debuff.prefab == "abigail_vex_shadow_debuff" and 1/TUNING.ABIGAIL_SHADOW_VEX_DAMAGE_MOD)
         or 1
 end
 
@@ -715,8 +714,6 @@ local function SetToGestalt(inst)
     inst.components.combat:SetAttackPeriod(3)
     inst.components.combat.attackrange = 6
 
-    inst.components.health:SetMinHealth(1)
-
     local buff = inst.components.debuffable:GetDebuff("super_elixir_buff")
 
     if buff ~= nil and buff.prefab == "ghostlyelixir_lunar_buff" then
@@ -736,7 +733,6 @@ local function SetToNormal(inst)
     inst.AnimState:ClearOverrideSymbol("v1_embers")
     inst.AnimState:ClearOverrideSymbol("v1_melt2")
 
-    inst.components.health:SetMinHealth(0)
 
     inst.components.combat:SetAttackPeriod(4)
     inst.components.combat.attackrange = 3
