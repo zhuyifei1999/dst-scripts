@@ -29,6 +29,7 @@ local BASECOMMANDS = {
 		onselect = function(inst)
 			local spellbook = inst.components.spellbook
 			spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.UNSUMMON)
+			spellbook:SetSpellAction(nil)
 
 			inst:AddTag("unsummoning_spell")
 			if TheWorld.ismastersim then
@@ -67,6 +68,7 @@ local RILE_UP_ACTION = {
 	onselect = function(inst)
 		local spellbook = inst.components.spellbook
 		spellbook:SetSpellName(STRINGS.ACTIONS.COMMUNEWITHSUMMONED.MAKE_AGGRESSIVE)
+		spellbook:SetSpellAction(nil)
 
 		if TheWorld.ismastersim then
 			inst.components.aoespell:SetSpellFn(nil)
@@ -94,6 +96,7 @@ local SOOTHE_ACTION = {
 	onselect = function(inst)
 		local spellbook = inst.components.spellbook
 		spellbook:SetSpellName(STRINGS.ACTIONS.COMMUNEWITHSUMMONED.MAKE_DEFENSIVE)
+		spellbook:SetSpellAction(nil)
 
 		if TheWorld.ismastersim then
 			inst.components.aoespell:SetSpellFn(nil)
@@ -168,6 +171,7 @@ local SKILLTREE_COMMAND_DEFS =
 		onselect = function(inst)
 			local spellbook = inst.components.spellbook
 			spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.ESCAPE)
+			spellbook:SetSpellAction(nil)
 
 			if TheWorld.ismastersim then
 				inst.components.aoespell:SetSpellFn(nil)
@@ -207,6 +211,7 @@ local SKILLTREE_COMMAND_DEFS =
 			local aoetargeting = inst.components.aoetargeting
 
             spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.ATTACK_AT)
+			spellbook:SetSpellAction(nil)
             aoetargeting:SetDeployRadius(0)
 			aoetargeting:SetRange(20)
             aoetargeting.reticule.reticuleprefab = "reticuleaoeghosttarget"
@@ -251,6 +256,7 @@ local SKILLTREE_COMMAND_DEFS =
 			onselect = function(inst)
 				local spellbook = inst.components.spellbook
 				spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.SCARE)
+				spellbook:SetSpellAction(nil)
 
 				if TheWorld.ismastersim then
 					inst.components.aoespell:SetSpellFn(nil)
@@ -289,6 +295,7 @@ local SKILLTREE_COMMAND_DEFS =
 				local aoetargeting = inst.components.aoetargeting
 
 				spellbook:SetSpellName(STRINGS.GHOSTCOMMANDS.HAUNT_AT)
+				spellbook:SetSpellAction(nil)
 				aoetargeting:SetDeployRadius(0)
 				aoetargeting:SetRange(20)
 				aoetargeting.reticule.reticuleprefab = "reticuleaoeghosttarget"

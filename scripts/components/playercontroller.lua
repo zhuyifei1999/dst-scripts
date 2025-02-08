@@ -8,6 +8,7 @@ local CONTROLLER_TARGETING_LOCK_TIME = 1.0
 local RUBBER_BAND_PING_TOLERANCE_IN_SECONDS = 0.7
 local RUBBER_BAND_DISTANCE = 4
 local RUBBER_BAND_DISTANCE_SQ = RUBBER_BAND_DISTANCE * RUBBER_BAND_DISTANCE
+local PREDICT_STOP_ERROR_DISTANCE_SQ = 0.25
 
 local function OnPlayerActivated(inst)
     inst.components.playercontroller:Activate()
@@ -118,6 +119,8 @@ local PlayerController = Class(function(self, inst)
     --remote control variables
     self.remote_vector = Vector3()
 	self.remote_predict_dir = nil
+	self.remote_predict_stop_tick = nil
+	self.client_last_predict_walk = { tick = nil, direct = false }
     self.remote_controls = {}
 	self.remote_predicting = false
 	self.remote_authority = IsConsole()
@@ -132,11 +135,14 @@ local PlayerController = Class(function(self, inst)
     self.dragwalking = false
     self.directwalking = false
     self.predictwalking = false
-    self.predictionsent = false
+	self.predictionsent = false --deprecated, see self.client_last_predict_walk
     self.draggingonground = false
     self.is_hopping = false
     self.startdragtestpos = nil
     self.startdragtime = nil
+	self.startdoubleclicktime = nil
+	self.startdoubleclickpos = nil
+	self.doubletapmem = { down = false }
     self.isclientcontrollerattached = false
 
     self.mousetimeout = 10
@@ -321,14 +327,6 @@ local function OnDeactivateWorld()
     ThePlayer.components.playercontroller:Deactivate()
 end
 
-local function OnReachDestination(inst)
-    if inst.sg:HasStateTag("moving") then
-        local self = inst.components.playercontroller
-        local x, y, z = inst.Transform:GetWorldPosition()
-        self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0)
-    end
-end
-
 function PlayerController:Activate()
     if self.handler ~= nil then
         if self.inst ~= ThePlayer then
@@ -351,7 +349,6 @@ function PlayerController:Activate()
         self.inst:ListenForEvent("newactiveitem", OnNewActiveItem)
         if not self.ismastersim then
             self.inst:ListenForEvent("deactivateworld", OnDeactivateWorld, TheWorld)
-            self.inst:ListenForEvent("onreachdestination", OnReachDestination)
             self.inst:StartUpdatingComponent(self)
             self.inst:StartWallUpdatingComponent(self)
 
@@ -398,7 +395,6 @@ function PlayerController:Deactivate()
         if not self.ismastersim then
             self.inst:RemoveEventCallback("inventoryclosed", OnInventoryClosed)
             self.inst:RemoveEventCallback("deactivateworld", OnDeactivateWorld, TheWorld)
-            self.inst:RemoveEventCallback("onreachdestination", OnReachDestination)
             self.inst:StopUpdatingComponent(self)
             self.inst:StopWallUpdatingComponent(self)
         end
@@ -811,6 +807,10 @@ function PlayerController:DoControllerActionButton()
     elseif self.deployplacer ~= nil then
         if self.locomotor == nil then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+			-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+			if act.action.pre_action_cb then
+				act.action.pre_action_cb(act)
+			end
             SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.local_pt.x, act.pos.local_pt.z, act.rotation ~= 0 and act.rotation or nil, nil, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
         elseif self:CanLocomote() then
             act.preview_cb = function()
@@ -822,6 +822,10 @@ function PlayerController:DoControllerActionButton()
     elseif obj == nil then
         if self.locomotor == nil then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+			-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+			if act.action.pre_action_cb then
+				act.action.pre_action_cb(act)
+			end
 			SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, nil, act.action.canforce, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil, isspecial, spellbook, spell_id)
         elseif self:CanLocomote() then
             act.preview_cb = function()
@@ -832,6 +836,10 @@ function PlayerController:DoControllerActionButton()
         end
     elseif self.locomotor == nil then
         self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+		-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+		if act.action.pre_action_cb then
+			act.action.pre_action_cb(act)
+		end
         SendRPCToServer(RPC.ControllerActionButton, act.action.code, obj, nil, act.action.canforce, act.action.mod_name)
     elseif self:CanLocomote() then
         act.preview_cb = function()
@@ -1000,7 +1008,15 @@ function PlayerController:DoControllerAltActionButton()
 				return
 			else
 				local rider = self.inst.replica.rider
-				if rider ~= nil and rider:IsRiding() then
+				local mount = rider and rider:GetMount() or nil
+				local container = mount and mount.replica.container or nil
+				if container and container:IsOpenedBy(self.inst) then
+					obj = self.inst
+					act = BufferedAction(obj, obj, ACTIONS.RUMMAGE)
+				elseif self.inst.components.spellbook and self.inst.components.spellbook:CanBeUsedBy(self.inst) then
+					obj = self.inst
+					act = BufferedAction(obj, obj, ACTIONS.USESPELLBOOK)
+				elseif mount then
 					obj = self.inst
 					act = BufferedAction(obj, obj, ACTIONS.DISMOUNT)
 				else
@@ -1025,6 +1041,10 @@ function PlayerController:DoControllerAltActionButton()
     elseif obj ~= nil then
         if self.locomotor == nil then
             self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+			-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+			if act.action.pre_action_cb then
+				act.action.pre_action_cb(act)
+			end
             SendRPCToServer(RPC.ControllerAltActionButton, act.action.code, obj, nil, act.action.canforce, act.action.mod_name)
         elseif self:CanLocomote() then
             act.preview_cb = function()
@@ -1035,6 +1055,10 @@ function PlayerController:DoControllerAltActionButton()
         end
     elseif self.locomotor == nil then
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
+		-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+		if act.action.pre_action_cb then
+			act.action.pre_action_cb(act)
+		end
         SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.local_pt.x, act.pos.local_pt.z, nil, act.action.canforce, isspecial, act.action.mod_name, act.pos.walkable_platform, act.pos.walkable_platform ~= nil)
     elseif self:CanLocomote() then
         act.preview_cb = function()
@@ -2646,6 +2670,7 @@ function PlayerController:OnUpdate(dt)
 		elseif self.ismastersim and self.inst:HasTag("nopredict") and self.remote_vector.y >= 3 then
 			self.remote_vector.y = 0
 			self.remote_predict_dir = nil
+			self.remote_predict_stop_tick = nil
 		end
 
 		self:CooldownHeldAction(dt)
@@ -2676,6 +2701,7 @@ function PlayerController:OnUpdate(dt)
 		isbusy = false
 	end
 
+	local allowdoubletapdiraction = false
 	if isbusy then
 		self:DoClientBusyOverrideLocomote()
 		self.recent_bufferedaction.act = nil
@@ -2683,6 +2709,7 @@ function PlayerController:OnUpdate(dt)
 		or self:DoDragWalking(dt)
 		then
 		self.recent_bufferedaction.act = nil
+		allowdoubletapdiraction = true
     else
         local aimingcannon = self.inst.components.boatcannonuser ~= nil and self.inst.components.boatcannonuser:GetCannon() ~= nil
         if not (aimingcannon or self.inst:HasTag("steeringboat") or self.inst:HasTag("rotatingboat")) then
@@ -2694,6 +2721,7 @@ function PlayerController:OnUpdate(dt)
                 end
                 self.wassteering = nil
             end
+			allowdoubletapdiraction = true
             self:DoDirectWalking(dt)
         elseif aimingcannon then
 
@@ -2710,12 +2738,14 @@ function PlayerController:OnUpdate(dt)
             if self.inst:HasTag("steeringboat") then
                 self:DoBoatSteering(dt)
             end
-
         end
     end
 
     --do automagic control repeats
 	if self.handler ~= nil then
+		--do double tap first =)
+		self:DoDoubleTapDir(allowdoubletapdiraction)
+
         local isidle = self.inst:HasTag("idle")
 
         if not self.ismastersim then
@@ -3292,6 +3322,16 @@ function PlayerController:ResetRemoteController()
         self.remote_controls = {}
     end
 	self.remote_predict_dir = nil
+	self.remote_predict_stop_tick = nil
+end
+
+local function ConvertPlatformRelativeToAbsoluteXZ(vec, platform)
+	if platform == nil then
+		return vec.x, vec.z
+	elseif platform:IsValid() then
+		local x, y, z = platform.entity:LocalToWorldSpace(vec.x, 0, vec.z)
+		return x, z
+	end
 end
 
 function PlayerController:GetRemoteDirectVector()
@@ -3302,8 +3342,34 @@ function PlayerController:GetRemoteDragPosition()
     return self.remote_vector.y == 2 and self.remote_vector or nil
 end
 
+--V2C: These aren't really meant for use outside of this component XD
 function PlayerController:GetRemotePredictPosition()
-    return self.remote_vector.y >= 3 and self.remote_vector or nil
+	if self.remote_vector.y >= 3 then
+		if self.remote_vector.platform == nil then
+			return self.remote_vector
+		elseif self.remote_vector.platform:IsValid() then
+			local x, y, z = self.remote_vector.platform.entity:LocalToWorldSpace(self.remote_vector.x, 0, self.remote_vector.z)
+			if x then
+				return Vector3(x, self.remote_vector.y, z)
+			end
+		end
+	end
+end
+
+--V2C; This one can be used externally XD
+function PlayerController:GetRemotePredictPositionExternal()
+	if self.remote_vector.y >= 3 then
+		local x, z = ConvertPlatformRelativeToAbsoluteXZ(self.remote_vector, self.remote_vector.platform)
+		if x then
+			return Vector3(x, 0, z)
+		end
+	end
+end
+
+function PlayerController:GetRemotePredictStopXZ()
+	if self.remote_predict_stop_tick + 1 == GetTick() and self.remote_vector.y == 0 then
+		return ConvertPlatformRelativeToAbsoluteXZ(self.remote_vector, self.remote_vector.platform)
+	end
 end
 
 function PlayerController:OnRemoteDirectWalking(x, z)
@@ -3311,7 +3377,9 @@ function PlayerController:OnRemoteDirectWalking(x, z)
         self.remote_vector.x = x
         self.remote_vector.y = 1
         self.remote_vector.z = z
+		self.remote_vector.platform = nil
 		self.remote_predict_dir = nil
+		self.remote_predict_stop_tick = nil
     end
 end
 
@@ -3320,18 +3388,24 @@ function PlayerController:OnRemoteDragWalking(x, z)
         self.remote_vector.x = x
         self.remote_vector.y = 2
         self.remote_vector.z = z
+		self.remote_vector.platform = nil
 		self.remote_predict_dir = nil
+		self.remote_predict_stop_tick = nil
     end
 end
 
-function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking, isstart)
+function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking, isstart, platform, overridemovetime)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.x = x
         self.remote_vector.y = isdirectwalking and 3 or 4
         self.remote_vector.z = z
+		self.remote_vector.platform = platform
 		self.remote_predict_dir = nil
+		self.remote_predict_stop_tick = nil
         if isstart then
             self.locomotor:RestartPredictMoveTimer()
+		elseif overridemovetime then
+			self.locomotor:OverridePredictTimer(GetTime() - overridemovetime)
         end
     end
 end
@@ -3388,8 +3462,7 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
         end
     end
 
-    local locomotor = self.inst.components.locomotor
-    local hop_rubber_band_distance = RUBBER_BAND_DISTANCE + target_velocity_rubber_band_distance + locomotor:GetHopDistance()
+	local hop_rubber_band_distance = RUBBER_BAND_DISTANCE + target_velocity_rubber_band_distance + self.locomotor:GetHopDistance()
     local hop_rubber_band_distance_sq = hop_rubber_band_distance * hop_rubber_band_distance
 
     if hop_distance_sq > hop_rubber_band_distance_sq then
@@ -3399,13 +3472,15 @@ function PlayerController:OnRemoteStartHop(x, z, platform)
 
     self.remote_vector.y = 6
 	self.remote_predict_dir = nil
-    self.inst.components.locomotor:StartHopping(x,z,platform)
+	self.remote_predict_stop_tick = nil
+	self.locomotor:StartHopping(x,z,platform)
 end
 
 function PlayerController:OnRemoteStopWalking()
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.y = 0
 		self.remote_predict_dir = nil
+		self.remote_predict_stop_tick = nil
     end
 end
 
@@ -3413,6 +3488,7 @@ function PlayerController:OnRemoteStopHopping()
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.y = 0
 		self.remote_predict_dir = nil
+		self.remote_predict_stop_tick = nil
     end
 end
 
@@ -3435,11 +3511,11 @@ function PlayerController:RemoteDragWalking(x, z)
     end
 end
 
-function PlayerController:RemotePredictWalking(x, z, isstart)
-    local y = self.directwalking and 3 or 4
+function PlayerController:RemotePredictWalking(x, z, isstart, overridemovetime, overridedirect)
+	local y = (overridedirect or self.directwalking) and 3 or 4
     if self.remote_vector.x ~= x or self.remote_vector.z ~= z or (self.remote_vector.y ~= y and self.remote_vector.y ~= 0) then
 		local platform, pos_x, pos_z = self:GetPlatformRelativePosition(x, z)
-        SendRPCToServer(RPC.PredictWalking, pos_x, pos_z, self.directwalking, isstart, platform, platform ~= nil)
+		SendRPCToServer(RPC.PredictWalking, pos_x, pos_z, self.directwalking, isstart, platform, platform ~= nil, overridemovetime)
         self.remote_vector.x = x
         self.remote_vector.y = y
         self.remote_vector.z = z
@@ -3460,15 +3536,14 @@ end
 
 function PlayerController:DoPredictHopping(dt)
     if ThePlayer == self.inst and not self.ismastersim then
-        local locomotor = self.inst.components.locomotor
-        if locomotor ~= nil then
-            if locomotor.hopping and not self.is_hopping then
-                local embarker = locomotor.inst.components.embarker
+		if self.locomotor then
+			if self.locomotor.hopping and not self.is_hopping then
+				local embarker = self.inst.components.embarker
                 local disembark_x, disembark_z = embarker:GetEmbarkPosition()
                 local target_platform = embarker.embarkable
                 SendRPCToServer(RPC.StartHop, disembark_x, disembark_z, target_platform, target_platform ~= nil)
             end
-            self.is_hopping = locomotor.hopping
+			self.is_hopping = self.locomotor.hopping
         else
             self.is_hopping = false
         end
@@ -3476,12 +3551,7 @@ function PlayerController:DoPredictHopping(dt)
 end
 
 function PlayerController:IsLocalOrRemoteHopping()
-    local pt = self:GetRemotePredictPosition()
-    if pt ~= nil and pt.y == 6 then return true end
-
-    local locomotor = self.inst.components.locomotor
-    if locomotor ~= nil then return locomotor.hopping end
-    return false
+	return self.remote_vector.y == 6 or (self.locomotor ~= nil and self.locomotor.hopping)
 end
 
 function PlayerController:DoClientBusyOverrideLocomote()
@@ -3501,8 +3571,11 @@ end
 
 function PlayerController:DoPredictWalking(dt)
     if self.ismastersim then
-        local pt = self:GetRemotePredictPosition()
-        if pt ~= nil and not self:IsLocalOrRemoteHopping() then
+		if self:IsLocalOrRemoteHopping() then
+			return
+		end
+		local pt = self:GetRemotePredictPosition()
+		if pt then
             local x0, y0, z0 = self.inst.Transform:GetWorldPosition()
             local distancetotargetsq = distsq(pt.x, pt.z, x0, z0)
             local stopdistancesq = .05
@@ -3519,6 +3592,7 @@ function PlayerController:DoPredictWalking(dt)
                 if distancetotargetsq <= stopdistancesq then
                     self.remote_vector.y = 0
 					self.remote_predict_dir = nil
+					self.remote_predict_stop_tick = nil
                 end
                 return true
             end
@@ -3532,8 +3606,10 @@ function PlayerController:DoPredictWalking(dt)
 				self.locomotor:RunInDirection(dir)
 				self.remote_predict_dir = dir
             else
-				if self.remote_authority and self.inst:GetCurrentPlatform() == nil and self.remote_predict_dir ~= nil and DiffAngle(dir, self.remote_predict_dir) >= 90 then -- FIXME(JBK): Boat handling.
+				if self.remote_authority and self.remote_predict_dir and DiffAngle(dir, self.remote_predict_dir) >= 90 then
 					--overshot?
+					--FIXME(JBK): Boat handling.
+					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
 					self.inst.Transform:SetPosition(pt.x, 0, pt.z)
 				else
 					self.locomotor:SetMoveDir(dir)
@@ -3572,25 +3648,46 @@ function PlayerController:DoPredictWalking(dt)
             --Cancel the cached prediction vector and force resync if necessary
             if distancetotargetsq <= stopdistancesq then
                 self.remote_vector.y = 0
+				self.remote_predict_stop_tick = GetTick()
             elseif distancetotargetsq > RUBBER_BAND_DISTANCE_SQ then
                 self.remote_vector.y = 0
-				if self.remote_authority and self.inst:GetCurrentPlatform() == nil then -- FIXME(JBK): Boat handling.
-					self.inst.Transform:SetPosition(pt.x, 0, pt.z)
-				else
+				--V2C: don't override rubberband, otherwise server teleports will also get stomped by client prediction
+				--if self.remote_authority then
+					--FIXME(JBK): Boat handling.
+					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
+				--	self.inst.Transform:SetPosition(pt.x, 0, pt.z)
+				--else
 					self.inst.Physics:Teleport(self.inst.Transform:GetWorldPosition())
-				end
+				--end
             end
 
             return true
+		elseif self.remote_predict_stop_tick then
+			if self.inst.sg:HasStateTag("idle") then
+				local x1, z1 = self:GetRemotePredictStopXZ()
+				if x1 and self.inst:GetDistanceSqToPoint(x1, 0, z1) <= PREDICT_STOP_ERROR_DISTANCE_SQ then
+					--FIXME(JBK): Boat handling.
+					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
+					self.inst.Transform:SetPosition(x1, 0, z1)
+				end
+			end
+			self.remote_predict_stop_tick = nil
         end
-    else
-        local x, y, z = self.inst.Transform:GetPredictionPosition()
-        if self:CanLocomote() then
-            if self.inst.sg:HasStateTag("moving") then
-                if x ~= nil and y ~= nil and z ~= nil then
-                    self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0)
-                end
-            end
+	elseif self:CanLocomote() then
+		if self.inst.sg:HasStateTag("moving") then
+			local x, y, z = self.inst.Transform:GetPredictionPosition()
+			self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving())
+			self.client_last_predict_walk.tick = GetTick()
+			self.client_last_predict_walk.direct = self.directwalking
+		elseif self.client_last_predict_walk.tick then
+			if self.inst.sg:HasStateTag("idle") and
+				not (self:IsBusy() or self.inst:HasTag("boathopping")) and
+				self.client_last_predict_walk.tick + 1 == GetTick()
+			then
+				local x, y, z = self.inst.Transform:GetPredictionPosition()
+				self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving(), self.client_last_predict_walk.direct)
+			end
+			self.client_last_predict_walk.tick = nil
         end
     end
 end
@@ -3647,6 +3744,132 @@ function PlayerController:DoBoatSteering(dt)
             SendRPCToServer(RPC.SteerBoat, dir.x, dir.z)
         end
     end
+end
+
+function PlayerController:DoDoubleTapDir(allowaction)
+	local mem = self.doubletapmem
+
+	local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
+	local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
+
+	--This is for the GetWorldControllerVector() deadzone
+	local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
+	local isoverdeadzone = math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone
+
+	--This is for double tap which uses different thresholds
+	local magsq = xdir * xdir + ydir * ydir
+	local isovermaxthreshold = magsq >= 0.8 * 0.8
+	local isoverminthreshold = magsq >= 0.6 * 0.6
+
+	--NOTE: Intentional overlap in the down vs released handling
+	--      below when isoverdeadzone but not isoverminthreshold
+
+	--Handle dir pressed down
+	if isoverdeadzone or isoverminthreshold then
+		local isnewtap = not mem.down and isovermaxthreshold
+
+		local dir
+		if mem.dir then
+			dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
+			--dir:Normalize() --don't need since we're only testing angle
+
+			local angle = math.atan2(dir.z, -dir.x)
+			local lastangle = math.atan2(mem.dir.z, -mem.dir.x)
+			local threshold = (isovermaxthreshold and PI / 3) or (isoverminthreshold and PI / 2) or PI
+			if DiffAngleRad(angle, lastangle) >= threshold then
+				--angle changed too much
+				if isnewtap then
+					--don't allowaction below, but still track the new tap
+					allowaction = false
+				else
+					--stop tracking until dir is released to start over
+					mem.down = true
+					mem.t = nil
+					mem.dir = nil
+				end
+			end
+		end
+
+		if isnewtap then
+			--successfully tapped
+			local last_t = mem.t
+			mem.down = true
+			mem.t = nil
+			mem.dir = nil
+
+			if CanEntitySeeTarget(self.inst, self.inst) then
+				if dir == nil then
+					dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
+				end
+				dir:Normalize()
+
+				local dblclickact = self.inst.components.playeractionpicker:GetDoubleClickActions(nil, dir, nil)[1]
+				if dblclickact then
+					local t = GetTime()
+					if allowaction and
+						(last_t and t < last_t + DOUBLE_CLICK_TIMEOUT)
+					then
+						if self.ismastersim then
+							self.inst.components.combat:SetTarget(nil)
+						else
+							local platform = dblclickact.pos.walkable_platform
+							local pos_x = dblclickact.pos.local_pt.x
+							local pos_z = dblclickact.pos.local_pt.z
+
+							if self.locomotor == nil then
+								-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
+								if dblclickact.action.pre_action_cb then
+									dblclickact.action.pre_action_cb(dblclickact)
+								end
+								SendRPCToServer(RPC.DoubleTapAction, dblclickact.action.code, pos_x, pos_z, dblclickact.action.canforce, dblclickact.action.mod_name, platform, platform ~= nil)
+							elseif self:CanLocomote() then
+								dblclickact.preview_cb = function()
+									SendRPCToServer(RPC.DoubleTapAction, dblclickact.action.code, pos_x, pos_z, nil, dblclickact.action.mod_name, platform, platform ~= nil)
+								end
+							end
+						end
+						self:DoAction(dblclickact)
+					else
+						mem.t = t
+						mem.dir = dir
+					end
+				end
+			end
+		end
+	end
+
+	--Handle dir released
+	if mem.down and not (isoverminthreshold and isoverdeadzone) then
+		mem.down = false
+	end
+end
+
+function PlayerController:OnRemoteDoubleTapAction(actioncode, position, noforce, mod_name)
+	if self.ismastersim and self:IsEnabled() and self.handler == nil then
+		self.inst.components.combat:SetTarget(nil)
+
+		SetClientRequestedAction(actioncode, mod_name)
+		local dblclickact = self.inst.components.playeractionpicker:GetDoubleClickActions(position, nil, nil)[1]
+		ClearClientRequestedAction()
+
+		dblclickact = (	dblclickact and
+						dblclickact.action.code == actioncode and
+						dblclickact.action.mod_name == mod_name and
+						dblclickact)
+					or nil
+
+		if dblclickact then
+			if dblclickact.action.canforce and not noforce then
+				dblclickact:SetActionPoint(self:GetRemotePredictPosition() or self.inst:GetPosition())
+				dblclickact.forced = true
+			end
+			self:DoAction(dblclickact)
+		--elseif mod_name then
+			--print("Remote double tap action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))
+		--else
+			--print("Remote double tap action failed: "..tostring(ACTION_IDS[actioncode]))
+		end
+	end
 end
 
 function PlayerController:DoDirectWalking(dt)
@@ -3961,6 +4184,11 @@ function PlayerController:OnLeftClick(down)
 
     self.startdragtime = nil
 
+	local laststartdoubleclicktime = self.startdoubleclicktime
+	local laststartdoubleclickpos = self.startdoubleclickpos
+	self.startdoubleclicktime = nil
+	self.startdoubleclickpos = nil
+
     if not self:IsEnabled() then
         return
     elseif TheInput:GetHUDEntityUnderMouse() ~= nil then
@@ -3985,9 +4213,10 @@ function PlayerController:OnLeftClick(down)
         return
     end
 
-    self.actionholdtime = GetTime()
+	local t = GetTime()
+	self.actionholdtime = t
 
-	local act, spellbook, spell_id
+	local act, spellbook, spell_id, dblclickact, trypreventdirflicker
     if self:IsAOETargeting() then
 		local canrepeatcast = self.reticule.inst.components.aoetargeting:CanRepeatCast()
 		if self:IsBusy() and not (canrepeatcast and self.inst:HasTag("canrepeatcast")) then
@@ -4007,8 +4236,47 @@ function PlayerController:OnLeftClick(down)
 		if not (canrepeatcast and self.reticule.inst.components.aoetargeting:ShouldRepeatCast(self.inst)) then
 			self:CancelAOETargeting()
 		end
-    elseif act == nil then
-        act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, TheInput:GetWorldPosition())
+	else
+		local scrnx, scrny = TheSim:GetPosition()
+		local x, y, z = TheSim:ProjectScreenPos(scrnx, scrny)
+		local position = x and y and z and Vector3(x, y, z) or nil --basically TheInput:GetWorldPosition()
+
+		--first see if we have double click actions
+		if position then
+			local target = TheInput:GetWorldEntityUnderMouse()
+			if target and not CanEntitySeeTarget(self.inst, target) then
+				target = nil
+			end
+			if target or CanEntitySeeTarget(self.inst, self.inst) then
+				local dir = GetWorldControllerVector()
+				dblclickact = self.inst.components.playeractionpicker:GetDoubleClickActions(position, dir, target)[1]
+				if dblclickact then
+					if (laststartdoubleclicktime and t < laststartdoubleclicktime + DOUBLE_CLICK_TIMEOUT) and
+						(laststartdoubleclickpos and math.abs(laststartdoubleclickpos.x - scrnx) <= DOUBLE_CLICK_POS_THRESHOLD and math.abs(laststartdoubleclickpos.y - scrny) <= DOUBLE_CLICK_POS_THRESHOLD)
+					then
+						act = dblclickact
+					elseif dir then
+						--If we're holding a direction key, direct walking will (after one frame) cancel
+						--whatever action we are about to buffer to the locomotor (unless it's instant).
+						--This flag prevents facing change flicker.
+						--Should really do this always, but to avoid bugs with legacy behaviour, we will
+						--just do it for players with double click actions for now.
+						trypreventdirflicker = true
+					end
+					if act == nil or self:IsBusy() then
+						self.startdoubleclickpos = Vector3(scrnx, scrny, 0)
+						self.startdoubleclicktime = t
+					end
+				end
+			end
+		end
+
+		if act == nil then
+			act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, position)
+			if act and act.action ~= ACTIONS.WALKTO then
+				self.startdoubleclicktime = nil
+			end
+		end
     end
 
     local maptarget = self:GetMapTarget(act)
@@ -4020,7 +4288,7 @@ function PlayerController:OnLeftClick(down)
     if act.action == ACTIONS.WALKTO then
         local entity_under_mouse = TheInput:GetWorldEntityUnderMouse()
         if act.target == nil and (entity_under_mouse == nil or entity_under_mouse:HasTag("walkableplatform")) then
-            self.startdragtime = GetTime()
+			self.startdragtime = t
         end
     elseif act.action == ACTIONS.ATTACK then
         if self.inst.sg ~= nil then
@@ -4056,8 +4324,11 @@ function PlayerController:OnLeftClick(down)
     else
         local mouseover, platform, pos_x, pos_z
         if act.action == ACTIONS.CASTAOE or
-            act.action == ACTIONS.BOAT_CANNON_SHOOT then
+			act.action == ACTIONS.BOAT_CANNON_SHOOT or
+			act == dblclickact
+		then
             --These actions use reticule position
+			--dblclickact also may have overridden the position
 			platform = act.pos.walkable_platform
 			pos_x = act.pos.local_pt.x
 			pos_z = act.pos.local_pt.z
@@ -4085,6 +4356,10 @@ function PlayerController:OnLeftClick(down)
     end
 
 	self:DoAction(act, spellbook)
+
+	if trypreventdirflicker and act ~= dblclickact and self.locomotor and self.locomotor.bufferedaction == act then
+		self.locomotor:Clear()
+	end
 end
 
 function PlayerController:OnRemoteLeftClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name, spellbook, spell_id)
@@ -4106,6 +4381,11 @@ function PlayerController:OnRemoteLeftClick(actioncode, position, target, isrele
 		elseif spell_id == nil then
 			lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
 		end
+		local dblclickact
+		if CanEntitySeeTarget(self.inst, self.inst) then
+			dblclickact = self.inst.components.playeractionpicker:GetDoubleClickActions(position)[1]
+		end
+
         ClearClientRequestedAction()
         if isreleased then
             self.remote_controls[CONTROL_PRIMARY] = nil
@@ -4131,6 +4411,10 @@ function PlayerController:OnRemoteLeftClick(actioncode, position, target, isrele
                 rmb.action.code == actioncode and
                 rmb.action.mod_name == mod_name and
                 rmb)
+			or (dblclickact and
+				dblclickact.action.code == actioncode and
+				dblclickact.action.mod_name == mod_name and
+				dblclickact)
             or nil
 
         if lmb ~= nil then
@@ -4139,6 +4423,10 @@ function PlayerController:OnRemoteLeftClick(actioncode, position, target, isrele
                 lmb.forced = true
             end
 			self:DoAction(lmb, spellbook)
+			--see trypreventdirflicker
+			if dblclickact and lmb ~= dblclickact and self.locomotor.bufferedaction == lmb and self:GetRemoteDirectVector() then
+				self.locomotor:Clear()
+			end
         --elseif mod_name ~= nil then
             --print("Remote left click action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))
         --else
@@ -4169,6 +4457,7 @@ function PlayerController:OnRightClick(down)
     self:ClearActionHold()
 
     self.startdragtime = nil
+	self.startdoubleclicktime = nil
 
     if self.placer_recipe ~= nil then
         self:CancelPlacement()
@@ -4267,7 +4556,13 @@ function PlayerController:RemapMapAction(act, position)
     local act_remap = nil
     if act and ACTIONS_MAP_REMAP[act.action.code] then
         local px, py, pz = position:Get()
-        if self.inst:CanSeePointOnMiniMap(px, py, pz) then
+        local can_interact
+        if act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then
+            can_interact = true
+        else
+            can_interact = self.inst:CanSeePointOnMiniMap(px, py, pz)
+        end
+        if can_interact then
             act_remap = ACTIONS_MAP_REMAP[act.action.code](act, Vector3(px, py, pz))
         end
     end
@@ -4524,6 +4819,18 @@ function PlayerController:GetItemUseAction(active_item, target)
 		self.inst.components.playeractionpicker:PopActionFilter(AllowMountedStoreActionFilter)
 	end
 
+	if act == nil and target == nil then
+		--V2C: We have no ItemUseAction, try taking another ItemSelfAction (see GetItemSelfAction).
+		local rmb = self.inst.components.playeractionpicker:GetInventoryActions(active_item, true)[1]
+		if rmb then
+			--GetItemSelfAction would've used the rmb one, so lets try the lmb one
+			local lmb = self.inst.components.playeractionpicker:GetInventoryActions(active_item, false)[1]
+			if lmb and lmb.action ~= rmb.action and lmb.action ~= ACTIONS.LOOKAT then
+				act = lmb
+			end
+		end
+	end
+
 	if act ~= nil then
 		if act.action == ACTIONS.STORE and act.target ~= nil and act.target:HasTag("pocketdimension_container") then
 			act.options.instant = true
@@ -4663,16 +4970,19 @@ function PlayerController:RemoteDropItemFromInvTile(item, single)
     end
 end
 
-function PlayerController:RemoteCastSpellBookFromInv(item, spell_id)
+function PlayerController:RemoteCastSpellBookFromInv(item, spell_id, spell_action)
 	if not self.ismastersim then
+		local target = item == self.inst and item or nil
+		local invobject = item ~= self.inst and item or nil
+		spell_action = spell_action or ACTIONS.CAST_SPELLBOOK
 		if self.locomotor == nil then
 			-- NOTES(JBK): Does not call locomotor component functions needed for pre_action_cb, manual call here.
-			if ACTIONS.CAST_SPELLBOOK.pre_action_cb ~= nil then
-				ACTIONS.CAST_SPELLBOOK.pre_action_cb(BufferedAction(self.inst, nil, ACTIONS.CAST_SPELLBOOK, item))
+			if spell_action.pre_action_cb then
+				spell_action.pre_action_cb(BufferedAction(self.inst, target, spell_action, invobject))
 			end
 			SendRPCToServer(RPC.CastSpellBookFromInv, item, spell_id)
 		elseif self:CanLocomote() then
-			local buffaction = BufferedAction(self.inst, nil, ACTIONS.CAST_SPELLBOOK, item)
+			local buffaction = BufferedAction(self.inst, target, spell_action, invobject)
 			buffaction.preview_cb = function()
 				SendRPCToServer(RPC.CastSpellBookFromInv, item, spell_id)
 			end
@@ -4722,40 +5032,43 @@ function PlayerController:RemoteMakeRecipeAtPoint(recipe, pt, rot, skin)
     end
 end
 
-local function DoRemoteBufferedAction(inst, self, buffaction)
-    if self.classified ~= nil and self.classified.iscontrollerenabled:value() then
-        buffaction.preview_cb()
-    end
-end
-
 function PlayerController:RemoteBufferedAction(buffaction)
-    if not self.ismastersim and buffaction.preview_cb ~= nil then
-        --Delay one frame if we just sent movement prediction so that
-        --this RPC arrives a frame after the movement prediction RPC
-        if self.predictionsent then
-            self.inst:DoTaskInTime(0, DoRemoteBufferedAction, self, buffaction)
-        else
-            DoRemoteBufferedAction(self.inst, self, buffaction)
-        end
-    end
+	if self.classified and self.classified.iscontrollerenabled:value() then
+		if self.client_last_predict_walk.tick then
+			local x, y, z = self.inst.Transform:GetWorldPosition() --V2C: not GetPredictionPosition()
+			--V2C: Physics:Stop() fixed to stop at last sim position; no need to correct local position anymore
+			--self.inst.Transform:SetPosition(x, 0, z) --V2C: correcting local position, no need to account for platform
+			self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving(), self.client_last_predict_walk.direct)
+			self.client_last_predict_walk.tick = nil
+		end
+		buffaction.preview_cb()
+	else
+		self.client_last_predict_walk.tick = nil
+	end
 end
 
 function PlayerController:OnRemoteBufferedAction()
     if self.ismastersim then
         --If we're starting a remote buffered action, prevent the last
         --movement prediction vector from cancelling us out right away
-        if self.remote_vector.y >= 3 then
-			if self.remote_authority and self.inst:GetCurrentPlatform() == nil and self.remote_vector.y < 5 and not self:IsBusy() then -- FIXME(JBK): Boat handling.
+		local pt = self:GetRemotePredictPosition()
+		if pt then
+			if pt.y < 5 and not self:IsBusy() then
 				--excludes self:IsLocalOrRemoteHopping() as well, ie. y ~= 6
 				local x, y, z = self.inst.Transform:GetWorldPosition()
-				if x ~= self.remote_vector.x or z ~= self.remote_vector.z then
-					local dir = math.atan2(z - self.remote_vector.z, self.remote_vector.x - x) * RADIANS
+				local dx = pt.x - x
+				local dz = pt.z - z
+				if (dx ~= 0 or dz ~= 0) and (self.remote_authority or dx * dx + dz * dz <= PREDICT_STOP_ERROR_DISTANCE_SQ) then
+					local dir = math.atan2(-dz, dx) * RADIANS
 					if self.inst.sg:HasStateTag("canrotate") then
 						self.locomotor:SetMoveDir(dir)
 					end
 					--Force us to interrupt and go to movement state immediately
 					self.inst.sg:HandleEvent("locomote", { dir = dir, force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
-					self.inst.Transform:SetPosition(self.remote_vector.x, 0, self.remote_vector.z)
+					--FIXME(JBK): Boat handling.
+					--FIXED(V2C): Remote predict position now resolves platform relative positions from client.
+					self.locomotor:Stop()
+					self.inst.Transform:SetPosition(pt.x, 0, pt.z)
 				end
 			end
             self.remote_vector.y = 5

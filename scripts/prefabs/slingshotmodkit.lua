@@ -28,6 +28,8 @@ local function UseableTargetedItem_ValidTarget(inst, target, doer)
 	return target.components.slingshotmods and target.components.slingshotmods:CanBeOpenedBy(doer)
 end
 
+local FLOATABLE_SCALE = { 1.1, 0.6, 1.1 }
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -45,7 +47,7 @@ local function fn()
 	inst:AddTag("useabletargeteditem_mounted")
 
 	MakeInventoryPhysics(inst)
-	MakeInventoryFloatable(inst, "med", nil, 0.65)
+	MakeInventoryFloatable(inst, "med", .05, FLOATABLE_SCALE)
 
 	inst.UseableTargetedItem_ValidTarget = UseableTargetedItem_ValidTarget
 

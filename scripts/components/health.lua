@@ -512,9 +512,9 @@ function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, i
         return 0
     elseif not ignore_invincible and (self:IsInvincible() or self.inst.is_teleporting) then
         return 0
-    elseif amount < 0 and not ignore_absorb then
+    elseif amount < 0 and not ignore_absorb then        
         amount = amount * math.clamp(1 - (self.playerabsorb ~= 0 and afflicter ~= nil and afflicter:HasTag("player") and self.playerabsorb + self.absorb or self.absorb), 0, 1) * math.max(1 - self.externalabsorbmodifiers:Get(), 0)
-        amount = math.min(0, amount + self.externalreductionmodifiers:Get())
+        amount = afflicter ~= nil and math.min(0, amount + self.externalreductionmodifiers:Get()) or amount
     end
 
     if self.deltamodifierfn ~= nil then

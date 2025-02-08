@@ -2141,7 +2141,7 @@ function Inventory:DropItemFromInvTile(item, single)
     if not self.inst.sg:HasStateTag("busy") and
         self:CanAccessItem(item) and
         self.inst.components.playercontroller ~= nil then
-        local buffaction = BufferedAction(self.inst, nil, ACTIONS.DROP, item, self.inst.components.playercontroller:GetRemotePredictPosition() or self.inst:GetPosition())
+		local buffaction = BufferedAction(self.inst, nil, ACTIONS.DROP, item, self.inst.components.playercontroller:GetRemotePredictPositionExternal() or self.inst:GetPosition())
         buffaction.options.wholestack = not (single and item.components.stackable ~= nil and item.components.stackable:IsStack())
 		buffaction.options.instant = self.inst.sg ~= nil and self.inst.sg:HasStateTag("overridelocomote")
         self.inst.components.locomotor:PushAction(buffaction, true)
@@ -2149,14 +2149,18 @@ function Inventory:DropItemFromInvTile(item, single)
 end
 
 function Inventory:CastSpellBookFromInv(item, spell_id)
-	if not self.inst.sg:HasStateTag("busy") and
-		self:CanAccessItem(item) and
-		item.components.spellbook ~= nil and
-		self.inst.components.playercontroller ~= nil then
+	if self.inst.components.playercontroller and
+		not self.inst.components.playercontroller:IsBusy() and
+		(item == self.inst or self:CanAccessItem(item)) and
+		item.components.spellbook
+	then
 		if spell_id ~= nil then
 			item.components.spellbook:SelectSpell(spell_id)
 		end
-		local buffaction = BufferedAction(self.inst, nil, ACTIONS.CAST_SPELLBOOK, item)
+		local spell_action = item.components.spellbook:GetSpellAction()
+		local target = item == self.inst and item or nil
+		local invobject = item ~= self.inst and item or nil
+		local buffaction = BufferedAction(self.inst, target, spell_action or ACTIONS.CAST_SPELLBOOK, invobject)
 		self.inst.components.locomotor:PushAction(buffaction, true)
 	end
 end

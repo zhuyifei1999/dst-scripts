@@ -44,7 +44,10 @@ local Container = Class(function(self, inst)
     self.openlist = {}
     self.opencount = 0
 
+	--self.isexposed = false --flag to disable protection from rain
+
 	--self.droponopen = false
+    --self.restrictedtag = nil -- Only entities with this tag can interact.
 
     inst:ListenForEvent("player_despawn", OnOwnerDespawned)
 
@@ -869,20 +872,26 @@ function Container:OnUpdate(dt)
         self.inst:StopUpdatingComponent(self)
     else
         --attempt to close the chest for all players who have the chest opened who meet the requirements for closing it.
+		local owner = self.inst.components.inventoryitem and self.inst.components.inventoryitem:GetGrandOwner() or nil
+		local nonownerparent = owner == nil and self.inst.entity:GetParent() or nil
         for opener, _ in pairs(self.openlist) do
-			if self.inst.components.inventoryitem and self.inst.components.inventoryitem:GetGrandOwner() == opener then
+			local mount = opener.components.rider and opener.components.rider:GetMount() or nil
+			local ismount = mount == self.inst
+			if owner and (owner == opener or owner == mount) or ismount then
 				--V2C: special case handling for players who can open "portablestorage" containers from inventory without dropping
-				if self.inst:HasTag("portablestorage") and not (opener.sg and opener.sg:HasStateTag("keep_pocket_rummage")) then
+				--     pocket_rummage is now used for:
+				--       "portablestorage" in your inventory
+				--       "portablestorage" in your mount's inventory while mounted
+				--       your mount's container (e.g. Woby)
+				if (ismount or self.inst:HasTag("portablestorage")) and not (opener.sg and opener.sg:HasStateTag("keep_pocket_rummage")) then
 					self:Close(opener)
 					if opener.sg then
 						opener.sg:HandleEvent("ms_closeportablestorage", { item = self.inst })
 					end
 				end
-			elseif (opener.components.rider and opener.components.rider:IsRiding())
-				or not (opener:IsValid() and opener:IsNear(self.inst, 3) and CanEntitySeeTarget(opener, self.inst))
-			then
+			elseif mount or not (opener:IsValid() and opener:IsNear(self.inst, 3) and CanEntitySeeTarget(opener, self.inst)) then
 				self:Close(opener)
-            end
+			end
         end
     end
 end
@@ -1301,6 +1310,17 @@ function Container:EnableInfiniteStackSize(enable)
 			self.inst.replica.container:EnableInfiniteStackSize(false)
 		end
 	end
+end
+
+function Container:IsRestricted(target)
+    if not target:HasTag("player") then
+        -- Restricted tags only apply to players.
+        return false
+    end
+
+    return self.restrictedtag ~= nil
+        and self.restrictedtag:len() > 0
+        and not target:HasTag(self.restrictedtag)
 end
 
 return Container

@@ -1828,12 +1828,16 @@ local PREFABS =
 
     -- Meta 5
 
-    ["dug_gravestone"] = true,
+    ["bandage_butterflywings"] = true,
     ["elixir_container"] = true,
     ["ghostflowerhat"] = true,
     ["ghostlyelixir_lunar"] = true,
     ["ghostlyelixir_revive"] = true,
     ["ghostlyelixir_shadow"] = true,
+    ["graveguard_ghost"] = true,
+    ["graveurn"] = true,
+    ["portablefirepit_item"] = true,
+    ["shallow_grave"] = true,
     ["slingshot_band_mimic"] = true,
     ["slingshot_band_pigskin"] = true,
     ["slingshot_band_tentacle"] = true,
@@ -1845,6 +1849,7 @@ local PREFABS =
     ["slingshot_handle_silk"] = true,
     ["slingshot_handle_sticky"] = true,
     ["slingshot_handle_voidcloth"] = true,
+    ["slingshotammo_container"] = true,
     ["slingshotammo_dreadstone"] = true,
     ["slingshotammo_gelblob"] = true,
     ["slingshotammo_gunpowder"] = true,
@@ -1857,11 +1862,10 @@ local PREFABS =
     ["slingshotammo_stinger"] = true,
     ["slingshotmodkit"] = true,
     ["wendy_resurrectiongrave"] = true,
-    ["woby_badge_station"] = true,
+    ["woby_treat"] = true,
     ["wortox_nabbag"] = true,
     ["wortox_reviver"] = true,
     ["wortox_souljar"] = true,
-    ["shallow_grave"] = true,
 
     --[[POI]]
     ["charlie_stage_post"] = true,

@@ -312,9 +312,10 @@ local COMPONENT_ACTIONS =
         crittertraits = function(inst, doer, actions, right)
             if inst.replica.follower ~= nil and inst.replica.follower:GetLeader() == doer then
                 if right then
-                    if inst.replica.container then -- Added for wobysmall
+                	--Removed for wobysmall -> moved into her command wheel
+                    --[[if inst.replica.container then -- Added for wobysmall
                         table.insert(actions, ACTIONS.PET)
-                    elseif doer.replica.builder ~= nil
+                    else]]if doer.replica.builder ~= nil
                        and doer.replica.builder:GetTechTrees().ORPHANAGE > 0
                        and not inst:HasTag("noabandon") then
                         table.insert(actions, ACTIONS.ABANDON)
@@ -619,7 +620,12 @@ local COMPONENT_ACTIONS =
         end,
 
         portablestructure = function(inst, doer, actions, right)
-            if right and not inst:HasTag("fire") and
+			if not right then
+				return
+			end
+			local iscampfire = inst:HasTag("campfire")
+			if not (iscampfire and inst:HasTag("portable_campfire") and not doer:HasTag("portable_campfire_user")) and
+				(iscampfire or not inst:HasTag("fire")) and --other structures can't be burning
 				(not inst:HasTag("mastercookware") or doer:HasTag("masterchef")) and
 				(not inst:HasTag("engineering") or doer:HasTag("portableengineer"))
 			then
@@ -702,8 +708,16 @@ local COMPONENT_ACTIONS =
         end,
 
         rider = function(inst, doer, actions)
-            if inst == doer and inst.replica.rider:IsRiding() then
-                table.insert(actions, ACTIONS.DISMOUNT)
+			if inst == doer then
+				local mount = inst.replica.rider:GetMount()
+				if mount then
+					local container = mount.replica.container
+					if container and container:IsOpenedBy(doer) then
+						table.insert(actions, ACTIONS.RUMMAGE)
+					else
+						table.insert(actions, ACTIONS.DISMOUNT)
+					end
+				end
             end
         end,
 
@@ -745,6 +759,23 @@ local COMPONENT_ACTIONS =
 			end
 		end,
 
+		--Keep in sync with AOESpell:CanCast
+		spellbook = function(inst, doer, actions, right)
+			--spellbook exists on clients too
+			if right and inst.replica.inventoryitem == nil then
+				if doer.HUD and doer.HUD:GetCurrentOpenSpellBook() == inst then
+					table.insert(actions, ACTIONS.CLOSESPELLBOOK)
+				elseif inst.components.spellbook:CanBeUsedBy(doer) and doer.replica.inventory:GetActiveItem() == nil then
+					local rider = doer.replica.rider
+					local mount = rider and rider:GetMount() or nil
+					local container = mount and mount.replica.container or nil
+					if not (container and container:IsOpenedBy(doer)) then
+						table.insert(actions, ACTIONS.USESPELLBOOK)
+					end
+				end
+			end
+		end,
+
         steeringwheel = function(inst, doer, actions, right)
             if not inst:HasTag("occupied") and not inst:HasTag("fire") then
                 table.insert(actions, ACTIONS.STEER_BOAT)
@@ -778,8 +809,11 @@ local COMPONENT_ACTIONS =
         end,
         
 		storytellingprop = function(inst, doer, actions, right)
-            if right and inst:HasTag("storytellingprop") and doer:HasTag("storyteller") then
-                table.insert(actions, ACTIONS.TELLSTORY)
+			if inst:HasTag("storytellingprop") and doer:HasTag("storyteller") then
+				local wantsleft = inst:HasTag("portable_campfire") and doer:HasTag("portable_campfire_user")
+				if wantsleft == not right then
+					table.insert(actions, ACTIONS.TELLSTORY)
+				end
             end
         end,
 
@@ -883,12 +917,6 @@ local COMPONENT_ACTIONS =
         worldmigrator = function(inst, doer, actions)
             if inst:HasTag("migrator") then
                 table.insert(actions, ACTIONS.MIGRATE)
-            end
-        end,
-
-        wobybadgestation = function(inst, doer, actions, right)
-            if doer:HasTag("dogtrainer") and not inst:HasAnyTag("fire", "burnt") and not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-                table.insert(actions, ACTIONS.CUSTOMIZE_WOBY_BADGES)
             end
         end,
 
@@ -1814,6 +1842,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        -- FIXME(JBK): Walter ST: Remove this component and pull into Woby wheel.
+        --courierdirector = function(inst, doer, pos, actions, right, target)
+        --    local x,y,z = pos:Get()
+        --    if right and
+        --        doer and doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
+        --        TheWorld.Map:GetPlatformAtPoint(x, z) == nil then
+        --        table.insert(actions, ACTIONS.DIRECTCOURIER)
+        --    end
+        --end,
+
         deployable = function(inst, doer, pos, actions, right, target)
             if right and inst.replica.inventoryitem ~= nil then
                 if CLIENT_REQUESTED_ACTION == ACTIONS.DEPLOY_TILEARRIVE or CLIENT_REQUESTED_ACTION == ACTIONS.DEPLOY then
@@ -2002,6 +2040,16 @@ local COMPONENT_ACTIONS =
                 end
             end
         end,
+
+        -- FIXME(JBK): Walter ST: Remove this component and pull into Woby wheel.
+        --courierdirector = function(inst, doer, target, actions, right)
+        --    if right and
+        --        doer and doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
+        --        target:HasTag("chest") and
+        --        target:GetCurrentPlatform() == nil then
+        --        table.insert(actions, ACTIONS.DIRECTCOURIER_SETCHEST)
+        --    end
+        --end,
 
         fencerotator = function(inst, doer, target, actions, right)
             if target:HasTag("rotatableobject") and not inst:HasTag("fire") and not inst:HasTag("burnt") and (not target:HasTag("faced_chair") or target:HasTag("cansit")) then
@@ -2283,10 +2331,31 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, actions, right)
-            if (right or inst.replica.equippable == nil) and
-                not (doer.replica.inventory:GetActiveItem() == inst and
-                    doer.replica.rider ~= nil and
-                    doer.replica.rider:IsRiding()) then
+			local rider = doer.replica.rider
+			local mount = rider and rider:GetMount() or nil
+			local isactiveitem = doer.replica.inventory:GetActiveItem() == inst
+
+			if not right and mount and (isactiveitem or doer.components.playercontroller.isclientcontrollerattached) then
+				--picked up on mouse, hovered over ourself
+				for k, v in pairs(FOODGROUP) do
+					if mount:HasTag(v.name.."_eater") then
+						for i, v2 in ipairs(v.types) do
+							if inst:HasTag("edible_"..v2) then
+								table.insert(actions, ACTIONS.FEED)
+								return
+							end
+						end
+					end
+				end
+				for k, v in pairs(FOODTYPE) do
+					if inst:HasTag("edible_"..v) and mount:HasTag(v.."_eater") then
+						table.insert(actions, ACTIONS.FEED)
+						return
+					end
+				end
+			end
+
+			if (right or inst.replica.equippable == nil) and not (mount and isactiveitem) then
                 for k, v in pairs(FOODGROUP) do
                     if doer:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do
@@ -2545,8 +2614,7 @@ local COMPONENT_ACTIONS =
 			if doer.HUD ~= nil and doer.HUD:GetCurrentOpenSpellBook() == inst then
 				table.insert(actions, ACTIONS.CLOSESPELLBOOK)
 			elseif inst.components.spellbook:CanBeUsedBy(doer) and doer.replica.inventory:GetActiveItem() == nil and not inst:HasTag("fueldepleted") then
-				local inventoryitem = inst.replica.inventoryitem
-				if inventoryitem:IsGrandOwner(doer) then
+				if inst.replica.inventoryitem:IsGrandOwner(doer) then
 					table.insert(actions, ACTIONS.USESPELLBOOK)
 				end
 			end

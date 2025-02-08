@@ -341,7 +341,8 @@ return{
 			INUSE = "Wolfgang would like to use after you, if okay.",
             NOTMASTERCHEF = "Warly is very nice to cook. Wolfgang will not get in way.",
             NOTAMERM = "Wolfgang not want upset fish man.",
-            NOTSOULJARHANDLER = "No thank you."
+            NOTSOULJARHANDLER = "No thank you.",
+            RESTRICTED = "Not for Wolfgang.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "Bah! Useless.",
 			INUSE = "Wolfgang can share!",
             NOTMASTERCHEF = "Warly is very nice to cook. Wolfgang will not get in way.",
-            NOTSOULJARHANDLER = "No thank you."
+            NOTSOULJARHANDLER = "No thank you.",
+            RESTRICTED = "Not for Wolfgang.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Where do you hide, strange little man?",
             ALREADYACTIVE = "Maybe contest is somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1101,8 +1097,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Very nice!",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Wolfgang is brave. Wolfgang is brave.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Super Wolfgang!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Yuck! No, too much.",
 
@@ -5586,7 +5580,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Be careful, little scout boy!",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Be careful, little scout boy!",
 
-        WOBY_BADGE_STATION = "Smart Woby!",
+		WOBY_TREAT = "Wolfgang know this for dog, but still…",
+		BANDAGE_BUTTERFLYWINGS = "Little butterfly died to heal our wound.",
+		PORTABLEFIREPIT_ITEM = "Never afraid of dark forest again. Not that Wolfgang ever afraid.",
+        SLINGSHOTAMMO_CONTAINER = "Walter is true marksboy!",
 
         ELIXIR_CONTAINER = "Little ghost girl have many supplements.",
         GHOSTFLOWERHAT = "Is pretty... and creepy.",
@@ -5598,6 +5595,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Wolfgang will remember you.",
+        THULECITEBUGNET = "Wolfgang wouldn't hurt fly.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

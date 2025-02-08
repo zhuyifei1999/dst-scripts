@@ -341,7 +341,8 @@ return{
 			INUSE = "Pardonnez-moi, I'll let you finish.",
             NOTMASTERCHEF = "unused_by_warly",
             NOTAMERM = "I shouldn't rummage through someone else's cupboard.",
-            NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know."
+            NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know.",
+            RESTRICTED = "This is not for me!",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "This is not the place for it.",
 			INUSE = "Pardonnez-moi, I'll let you finish.",
             NOTMASTERCHEF = "unused_by_warly",
-            NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know."
+            NOTSOULJARHANDLER = "How do souls taste? I guess I'll never know.",
+            RESTRICTED = "This is not for me!",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Nobody there? C'est la vie.",
             ALREADYACTIVE = "Perhaps there's another contest somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "It is no Maman's chicken soup.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "How terrible it must be when one no longer recognizes the world around them.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I could lift a cow!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Trop fort!",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Young Walter is an artist with his slingshot.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Young Walter is an artist with his slingshot.",
 
-        WOBY_BADGE_STATION = "She is a clever girl.",
+		WOBY_TREAT = "I heard they have unique mouthfeel.",
+		BANDAGE_BUTTERFLYWINGS = "I hope I don’t lose it in the soup.",
+		PORTABLEFIREPIT_ITEM = "Most convenient!",
+        SLINGSHOTAMMO_CONTAINER = "I hope Walter can hunt more protein for us.",
 
         ELIXIR_CONTAINER = "Maman loved... loves picnics.",
         GHOSTFLOWERHAT = "I wonder. Do the dead taste?",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "There was no effort here.",
+        THULECITEBUGNET = "I don't mind the taste of bug.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

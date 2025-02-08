@@ -341,7 +341,8 @@ return{
 			INUSE = "Be sure to sort by color and weight, dear.",
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
             NOTAMERM = "I don't believe the locals would take kindly to that.",
-            NOTSOULJARHANDLER = "Best not interfere."
+            NOTSOULJARHANDLER = "Best not interfere.",
+            RESTRICTED = "It’s not for me, I’m afraid.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "Nonsense.",
 			INUSE = "I do hope you're keeping organized, my dear.",
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
-            NOTSOULJARHANDLER = "Best not interfere."
+            NOTSOULJARHANDLER = "Best not interfere.",
+            RESTRICTED = "It’s not for me, I’m afraid.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "The contest will have to wait for the time being.",
             ALREADYACTIVE = "I imagine there must be a competition going on elsewhere.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "That will do nicely.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "My eyes have been adjusted to the darkness.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Strength is wasted on the young!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That is too strong.",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "What is that Walter up to now?",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "What is that Walter up to now?",
 
-        WOBY_BADGE_STATION = "Woby's penchant for learning is unprecedented.",
+		WOBY_TREAT = "These will make our dear Woby grow big and strong.",
+		BANDAGE_BUTTERFLYWINGS = "A delicate dressing made of butterfly wings.",
+		PORTABLEFIREPIT_ITEM = "A travelling heat source. Useful if handled with due caution.",
+        SLINGSHOTAMMO_CONTAINER = "I’m glad Walter is getting organized!",
 
         ELIXIR_CONTAINER = "What a pretty elixir organizer!",
         GHOSTFLOWERHAT = "It allows one to imbibe like the dead.",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "This is inadequate.",
+        THULECITEBUGNET = "Thulecite. An interesting choice.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

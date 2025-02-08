@@ -370,6 +370,28 @@ local Wisecracker = Class(function(self, inst)
 		end
 	end)
 
+	if inst:HasTag("dogrider") then
+		local lasttalktowobytime = 0
+		local lastwobymsg = nil
+		local function talktowoby(inst, woby, msgid, range, repeatcooldown, globalcooldown)
+			if inst:IsNear(woby, range) then
+				local t = GetTime()
+				local cooldown = msgid == lastwobymsg and repeatcooldown or globalcooldown
+				if lasttalktowobytime + cooldown < t then
+					lasttalktowobytime = t
+					lastwobymsg = msgid
+					inst.components.talker:Say(GetString(inst, msgid))
+				end
+			end
+		end
+		inst:ListenForEvent("treatwoby",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_PRAISE",	4,	6,	0) end)
+		inst:ListenForEvent("praisewoby",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_PRAISE",	8,	30,	8) end)
+		inst:ListenForEvent("tellwobysit",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_SIT",	12,	3,	0) end)
+		inst:ListenForEvent("tellwobyfollow",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FOLLOW",	12,	6,	0) end)
+		inst:ListenForEvent("tellwobyforage",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FORAGE",	8,	30,	4) end)
+		inst:ListenForEvent("tellwobywork",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_WORK",	8,	30,	4) end)
+	end
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)
     end

@@ -341,7 +341,8 @@ return{
 			INUSE = "True warriors wait their turn.",
             NOTMASTERCHEF = "T'would not do to meddle with my ally's effects.",
             NOTAMERM = "T'would not be wise to anger the fish beasts.",
-            NOTSOULJARHANDLER = "I shall not meddle with that."
+            NOTSOULJARHANDLER = "I shall not meddle with that.",
+            RESTRICTED = "‘Tis not for me.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "I fear that does not go there.",
 			INUSE = "My stalwart companion currently has use of that.",
             NOTMASTERCHEF = "T'would not do to meddle with my ally's effects.",
-            NOTSOULJARHANDLER = "I shall not meddle with that."
+            NOTSOULJARHANDLER = "I shall not meddle with that.",
+            RESTRICTED = "‘Tis not for me.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Where is he hiding?",
             ALREADYACTIVE = "Mayhaps there is another competition elsewhere.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "It doth soothe for but a fleeting moment.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Visions from Helheim!",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I am the battalion.",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "'Tis excess!",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "The young scout doth come into his own.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "The young scout doth come into his own.",
 
-        WOBY_BADGE_STATION = "The loyal cur showeth vast potential.",
+		WOBY_TREAT = "Woby doth deserve all manner of fine victuals and sweetmeats.",
+		BANDAGE_BUTTERFLYWINGS = "If I had a bandage for every mere flesh wound…",
+		PORTABLEFIREPIT_ITEM = "Prometheus himself would burn with envy!",
+        SLINGSHOTAMMO_CONTAINER = "Though I prefer a blade, the lad slings with honor.",
 
         ELIXIR_CONTAINER = "The elixirs dost soothe her spirit.",
         GHOSTFLOWERHAT = "Cursed blossoms of the dead.",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "They deserved better.",
+        THULECITEBUGNET = "Not even the smallest of prey shall escape.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

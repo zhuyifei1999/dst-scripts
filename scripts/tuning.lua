@@ -160,6 +160,7 @@ function Tune(overrides)
         FARM_HOE_USES = 25,
         PICKAXE_USES = 33,
         BUGNET_USES = 10,
+        THULECITEBUGNET_USES = 100,
         WHIP_USES = 175,
         SPEAR_USES = 150,
         CLAW_GLOVE_USES = 200,
@@ -362,6 +363,7 @@ function Tune(overrides)
         PITCHFORK_DAMAGE = wilson_attack*.5,
         FARM_HOE_DAMAGE = wilson_attack*.5,
         BUGNET_DAMAGE = wilson_attack*.125,
+        THULECITEBUGNET_DAMAGE = wilson_attack*.125,
         WHIP_DAMAGE = wilson_attack*.8,
         BULLKELP_ROOT_DAMAGE = wilson_attack*.8,
         FISHINGROD_DAMAGE = wilson_attack*.125,
@@ -4815,7 +4817,7 @@ function Tune(overrides)
         SLINGSHOT_AMMO_DAMAGE_PUREBLILLIANCE = wilson_attack,
 		SLINGSHOT_AMMO_PLANAR_PUREBLILLIANCE = 20,
         SLINGSHOT_BRILLIANCE_MARK_PLANAR_DAMAGE = 5,
-        SLINGSHOT_BRILLIANCE_MARK_TIMEOUT = 8,
+		SLINGSHOT_BRILLIANCE_MARK_TIMEOUT = 30,
 
 		SLINGSHOT_AMMO_VS_SHADOW_BONUS = 1.1,
 		SLINGSHOT_AMMO_VS_LUNAR_BONUS = 1.1,
@@ -4858,13 +4860,14 @@ function Tune(overrides)
         {
             FAST = 10,
             MEDIUM = 9,
-            SLOW = 8
+			SLOW = 8,
         },
 
         WOBY_BIG_WALK_SPEED = 1.5,
 
         WOBY_SMALL_HUNGER = 50,
         WOBY_SMALL_HUNGER_RATE = 50 / (total_day_time * 2.5),
+		WOBY_FORCE_TRANSFORM_HUNGER = 5,
 
         -- WIGFRID
         BATTLESONG_ATTACH_RADIUS = 12,
@@ -5642,6 +5645,7 @@ function Tune(overrides)
             DUSTOFF_COOLDOWN = 4,
             DUSTOFF_COOLDOWN_VARIANCE = 6,
             SEARCH_ANIM_COOLDOWN = 12,
+            BLUEPRINT_DROP_CHANCE_REPEAT = 0.25,
         },
         DUSTMOTHDEN_REPAIR_TIME = total_day_time * 0.75,
         DUSTMOTHDEN_REGEN_TIME = total_day_time * 10,
@@ -7233,48 +7237,50 @@ function Tune(overrides)
             },
             ---
             WALTER = {
-                WOBY_DIGGING_COOLDOWN = total_day_time * 2.0,
-                WOBY_DIGGING_DISTANCE = { min=5, max=10 },
-                WOBY_DIGGING_LOOT_CHANCE = { min=0.5, max=0.9 },
+                -- walter_slingshot_modding
+                -- walter_slingshot_handles
+                -- walter_slingshot_bands
+                -- walter_slingshot_frames
+                -- walter_ammo_shattershots
+                -- walter_ammo_utility
+                -- walter_ammo_lucky
+                -- walter_ammo_efficiency
+                -- walter_ammo_bag
+                -- walter_ammo_shadow
+                -- walter_ammo_lunar
+                -- walter_woby_shadow
+				WOBY_BIG_SHADOW_DASH_HUNGER = 4,
+                -- walter_woby_lunar
+                -- walter_woby_sprint
+				WOBY_BIG_SPRINT_SPEED = 12,
+				WOBY_BIG_TURBO_SPEED = 13,
+				WOBY_BIG_TIME_TO_SPRINT = 3,
+				WOBY_BIG_SPRINT_HUNGER_RATE_MOD = 1.5,
+                -- walter_woby_dash
+				WOBY_BIG_DASH_HUNGER = 2,
+                -- walter_woby_endurance
+				WOBY_BIG_ENDURANCE_SPEED_BONUS = 1,
+				WOBY_ENDURANCE_HUNGER_RATE_MOD = 0.8,
+                -- walter_camp_fire
+				PORTABLE_FIREPIT_RAIN_RATE = 2,
+				PORTABLE_FIREPIT_FUEL_MAX = (night_time + dusk_time) * 1.5,
+				PORTABLE_FIREPIT_FUEL_START = 1 / 3, --this one is a pct saved on the crafted item
+				PORTABLE_FIREPIT_BONUS_MULT = 2,
+                -- walter_camp_rope
+                -- walter_camp_wobytreat
+                -- walter_camp_wobyholder
+                -- walter_camp_wobycourier
+                COURIER_DETECTION_RADIUS = 20, -- Units away from a target position for valid action use.
+                COURIER_CHEST_DETECTION_RADIUS_SQ = 12 * 12, -- Units_sq away from a tile center that Woby will interact with chests from.
 
-                WOBY_FETCHING_ASSIST_DISTANCE = 8,
-                WOBY_FETCHING_ASSIST_COOLDOWN = 7,
-                WOBY_FETCHING_ASSIST_SUCCESS_CHANCE = { min=.5, max=1 },
+                HEALERS_EFFECTIVENESS_MODIFIER = 1.5,
+                WALTERHAT_IMPROVED_SANITY_DAMAGE_PROTECTION = 0.25,
 
-                WOBY_MAX_BADGES_SLOTS = 4,
+                PRIORIZE_AMMO_RETURN_ACTION_DIST = 4.5,
+                FETCH_PRIORITY_MAX_DISTANCE = 17.5,
+                FETCH_DEFAULT_MAX_DISTANCE = 12.5,
 
-                WOBY_BADGES = {
-                    -- Speed bonus.
-                    SPEED_1 = 1,
-                    SPEED_2 = 2,
-
-                    -- Resistance bonus.
-                    RESISTANCE_1 = 10,
-                    RESISTANCE_2 = 15,
-
-                    -- Sanity protection for Walter when riding Woby. Also does sanity regen.
-                    BRAVERY_1 = .25,
-                    BRAVERY_2 = .45,
-
-                    -- Cooldown reduction and distance bonus.
-                    FETCHING_1 = 2,
-                    FETCHING_2 = 4,
-
-                    -- Cooldown reduction.
-                    DIGGING_1 = total_day_time/2,
-                    DIGGING_2 = total_day_time,
-                },
-
-                WOBY_BADGES_ASPECT_GAIN_RATE =
-                {
-                    speed = 1/(total_day_time*12), -- per second riding.
-                    resistance_taken = 1/800,      -- per damage unit taken.
-                    bravery_taken = 1/950,         -- per damage unit taken.
-                    resistance_onatk = 1/650,      -- flat number on attack.
-                    bravery_onatk = 1/500,         -- flat number on attack.
-                    fetching = 1/150,              -- per try.
-                    digging = 1/30,                -- per try.
-                },
+                WOBY_TASK_AID_HUNGER = .5,
 
                 ALLEGIANCE_SHADOW_RESIST = 0.9,
                 ALLEGIANCE_VS_LUNAR_BONUS = 1.1,

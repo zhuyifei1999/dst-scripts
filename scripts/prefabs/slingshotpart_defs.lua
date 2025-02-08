@@ -31,7 +31,7 @@ defs["slingshot_band_tentacle"] =
 	slot = "band",
 	anim = "idle_tentacle",
 	swap_symbol = { "swap_band_top_tentacle", "swap_band_btm_tentacle" },
-	skill = "walter_slingshot_band_tentacle",
+	skill = "walter_slingshot_bands",
 }
 
 defs.slingshot_band_tentacle.oninstalledfn = function(inst, slingshot)
@@ -47,7 +47,7 @@ defs["slingshot_band_mimic"] =
 	slot = "band",
 	anim = "idle_mimic",
 	swap_symbol = { "swap_band_top_mimic", "swap_band_btm_mimic" },
-	skill = "walter_slingshot_band_tentacle",
+	skill = "walter_slingshot_bands",
 }
 
 defs.slingshot_band_mimic.oninstalledfn = defs.slingshot_band_tentacle.oninstalledfn
@@ -163,7 +163,7 @@ defs["slingshot_frame_gems"] =
 	swap_symbol = "swap_frame_gems",
 	usedeferreduninstall = true,
 	prefabs = { "slingshot", "slingshot2ex" },
-	skill = "walter_slingshot_frame_gems",
+	skill = "walter_slingshot_frames",
 }
 
 defs.slingshot_frame_gems.oninstalledfn = function(inst, slingshot)
@@ -187,7 +187,7 @@ defs["slingshot_frame_wagpunk_0"] =
 	swap_symbol = "swap_frame_wagpunk_0",
 	usedeferreduninstall = true,
 	prefabs = { "slingshot", "slingshotex" },
-	skill = "walter_slingshot_frame_wagpunk",
+	skill = "walter_slingshot_frames",
 }
 
 defs.slingshot_frame_wagpunk_0.oninstalledfn = function(inst, slingshot)
@@ -211,7 +211,7 @@ defs["slingshot_frame_wagpunk"] =
 	swap_symbol = "swap_frame_wagpunk",
 	usedeferreduninstall = true,
 	prefabs = { "slingshot", "slingshot999ex" },
-	skill = "walter_slingshot_frame_wagpunk",
+	skill = "walter_slingshot_frames",
 }
 
 defs.slingshot_frame_wagpunk.oninstalledfn = function(inst, slingshot)
@@ -236,7 +236,7 @@ defs["slingshot_handle_sticky"] =
 	anim = "idle_goop",
 	swap_symbol = "swap_handle_goop",
 	usedeferreduninstall = true,
-	skill = "walter_slingshot_handle_sticky",
+	skill = "walter_slingshot_handles",
 }
 
 local function handle_sticky_onequipped(slingshot, data)
@@ -297,7 +297,7 @@ defs["slingshot_handle_voidcloth"] =
 	anim = "idle_voidcloth",
 	swap_symbol = "swap_handle_voidcloth",
 	usedeferreduninstall = true,
-	skill = "walter_slingshot_handle_voidcloth",
+	skill = "walter_slingshot_handles",
 }
 
 local function handle_voidcloth_SetBuffEnabled(slingshot, enabled)

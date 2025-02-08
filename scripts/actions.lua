@@ -194,6 +194,10 @@ local function ArriveAnywhere()
     return true
 end
 
+local function ExtraWobyForagingDist(doer, dest, bufferedaction)
+    return .5 + (doer:HasTag("largecreature") and 1 or 0)
+end
+
 global("CLIENT_REQUESTED_ACTION")
 CLIENT_REQUESTED_ACTION = nil
 
@@ -377,7 +381,7 @@ ACTIONS =
     STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
     MAKEMOLEHILL = Action({ priority=4, rmb=false, distance=0 }),
     MOLEPEEK = Action({ rmb=false, distance=1 }),
-    FEED = Action({ rmb=true, mount_valid=true }),
+	FEED = Action({ priority=1, rmb=true, mount_valid=true }),
     UPGRADE = Action({ rmb=true, priority=1 }),
     HAIRBALL = Action({ rmb=false, distance=3 }),
     CATPLAYGROUND = Action({ rmb=false, distance=1 }),
@@ -561,8 +565,8 @@ ACTIONS =
 	-- MAXWELL
 	USEMAGICTOOL = Action({ mount_valid = true, priority = 1 }),
 	STOPUSINGMAGICTOOL = Action({ mount_valid = true, priority = 2, distance = math.huge, do_not_locomote = true }),
-	USESPELLBOOK = Action({ instant = true, mount_valid = true }),
-	CLOSESPELLBOOK = Action({ instant = true, mount_valid = true }),
+	USESPELLBOOK = Action({ instant = true, mount_valid = true, priority = 2 }),
+	CLOSESPELLBOOK = Action({ instant = true, mount_valid = true, priority = 2 }),
 	CAST_SPELLBOOK = Action({ mount_valid = true }),
 
     -- WOODIE
@@ -593,9 +597,13 @@ ACTIONS =
     NABBAG = Action({ rmb=true, distance=1.8, rangecheckfn=DefaultRangeCheck, invalid_hold_action=true }),
     GRAVEDIG = Action({ rmb=true, invalid_hold_action=true, distance = 1.8 }),
     MUTATE = Action({ priority=2, invalid_hold_action = true, mount_valid = true }),
-    CUSTOMIZE_WOBY_BADGES = Action({ distance=1.5, invalid_hold_action=true }),
-    WOBY_PICKUP = Action({arrivedist = 2}),
+    WOBY_PICKUP = Action({ arrivedist = 2 }),
+    WOBY_PICK = Action({ extra_arrive_dist=ExtraWobyForagingDist }),
 	CONTAINER_INSTALL_ITEM = Action({ priority = 3, rmb = true, instant = true, mount_valid = true }),
+	DASH = Action({ distance = math.huge, mount_valid = true, invalid_hold_action = true }),
+    DIRECTCOURIER_SETCHEST = Action({rmb=true, invalid_hold_action=true,}),
+    DIRECTCOURIER = Action({rmb=true, invalid_hold_action=true,}),
+    DIRECTCOURIER_MAP = Action({priority=HIGH_ACTION_PRIORITY, customarrivecheck=ArriveAnywhere, rmb=true, map_action=true, closes_map=true,}),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -860,6 +868,10 @@ ACTIONS.RUMMAGE.fn = function(act)
 		end
 	end
 
+	if targ and targ.components.container == nil and targ == act.doer then
+		targ = targ.components.rider and targ.components.rider:GetMount() or nil
+	end
+
     if targ ~= nil and targ.components.container ~= nil then
         if proxy ~= nil and proxy.components.container_proxy:IsOpenedBy(act.doer) then
             proxy.components.container_proxy:Close(act.doer)
@@ -869,21 +881,22 @@ ACTIONS.RUMMAGE.fn = function(act)
             targ.components.container:Close(act.doer)
             act.doer:PushEvent("closecontainer", { container = targ })
             return true
-        elseif targ:HasTag("mermonly") and not act.doer:HasTag("merm") then
-            return false, "NOTAMERM"
+        elseif targ.components.container:IsRestricted(act.doer) then
+            return false, "RESTRICTED"
         elseif targ:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
             return false, "NOTMASTERCHEF"
-        --elseif targ:HasTag("professionalcookware") and not act.doer:HasTag("professionalchef") then
-            --return false, "NOTPROCHEF"
+        elseif targ:HasTag("mermonly") and not act.doer:HasTag("merm") then
+            return false, "NOTAMERM"
         elseif targ:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
             return false, "NOTSOULJARHANDLER"
         elseif not targ.components.container:IsOpenedBy(act.doer) and not targ.components.container:CanOpen() then
             return false, "INUSE"
         elseif targ.components.container.canbeopened and (proxy == nil or proxy.components.container_proxy:CanBeOpened()) then
             local owner = targ.components.inventoryitem ~= nil and targ.components.inventoryitem:GetGrandOwner() or nil
+			local ismount = (owner and owner.components.rideable and owner.components.rideable:GetRider()) == act.doer
 			if owner and
 				(targ.components.container.droponopen or targ.components.quagmire_stewer) and
-				not (owner:HasTag("player") and targ:HasTag("portablestorage"))
+				not ((ismount and act.doer or owner):HasTag("player") and targ:HasTag("portablestorage"))
 			then
                 if owner == act.doer then
                     owner.components.inventory:DropItem(targ, true, true)
@@ -901,7 +914,7 @@ ACTIONS.RUMMAGE.fn = function(act)
                 end
             end
             --Silent fail for opening containers in the dark
-            if owner == act.doer or CanEntitySeeTarget(act.doer, proxy or targ) then
+			if ismount or owner == act.doer or CanEntitySeeTarget(act.doer, proxy or targ) then
                 act.doer:PushEvent("opencontainer", { container = targ })
                 if proxy ~= nil then
                     proxy.components.container_proxy:Open(act.doer)
@@ -922,10 +935,16 @@ ACTIONS.RUMMAGE.strfn = function(act)
         if targ.components.container_proxy:IsOpenedBy(act.doer) then
             return "CLOSE"
         end
-    elseif targ.replica.container ~= nil then
-        if targ.replica.container:IsOpenedBy(act.doer) then
-            return "CLOSE"
-        end
+	else
+		local container = targ.replica.container
+		if container == nil and targ == act.doer then
+			local rider = targ.replica.rider
+			local mount = rider and rider:GetMount() or nil
+			container = mount.replica.container
+		end
+		if container and container:IsOpenedBy(act.doer) then
+			return "CLOSE"
+		end
     end
     return act.target ~= nil and act.target:HasTag("decoratable") and "DECORATE" or nil
 end
@@ -1328,6 +1347,12 @@ ACTIONS.ATTACKPLANT.fn = function(act)
         end
         return true
     end
+end
+
+--V2C: We're just returning the same string, but because it's technically "overridden",
+--     it won't show the target: e.g. "Tell Story Portable Campfire"
+ACTIONS.TELLSTORY.stroverridefn = function(act)
+	return STRINGS.ACTIONS.TELLSTORY
 end
 
 ACTIONS.TELLSTORY.fn = function(act)
@@ -2122,7 +2147,10 @@ ACTIONS.FEEDPLAYER.fn = function(act)
                 food.components.inventoryitem:HibernateLivingItem()
                 food.persists = false
                 act.target.sg:GoToState(
-                    food.components.edible.foodtype == FOODTYPE.MEAT and "eat" or "quickeat",
+					(food:HasTag("quickeat") and "quickeat") or
+					(food:HasTag("sloweat") and "eat") or
+					(food.components.edible.foodtype == FOODTYPE.MEAT and "eat") or
+					"quickeat",
                     { feed = food, feeder = act.doer }
                 )
                 return true
@@ -2172,12 +2200,18 @@ ACTIONS.STORE.fn = function(act)
 	end
 
     if target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
-        if target:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
+        if target.components.container:IsRestricted(act.doer) then
+            return false, "RESTRICTED"
+
+        elseif target:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
             return false, "NOTMASTERCHEF"
+
         elseif target:HasTag("mermonly") and not act.doer:HasTag("merm") then
             return false, "NOTAMERM"
+
         elseif target:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
             return false, "NOTSOULJARHANDLER"
+
         elseif not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
             return false, "INUSE"
         end
@@ -3067,6 +3101,152 @@ ACTIONS.CASTSPELL.fn = function(act)
     end
 end
 
+ACTIONS.DIRECTCOURIER_SETCHEST.stroverridefn = function(act)
+    if act.target and act.target:HasTag("chest") then
+        if act.doer then
+            local x, z = GetWobyCourierChestPosition(act.doer)
+            if x and act.target:GetDistanceSqToPoint(x, 0, z) < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS_SQ then
+                return STRINGS.ACTIONS.DIRECTCOURIER_SETCHEST.FORGET
+            end
+        end
+    end
+    return STRINGS.ACTIONS.DIRECTCOURIER_SETCHEST.REMEMBER
+end
+ACTIONS.DIRECTCOURIER_SETCHEST.fn = function(act)
+    if act.target and act.target:HasTag("chest") then
+        if act.doer and act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") then
+            if act.doer.components.wobycourier then
+                local x, z = GetWobyCourierChestPosition(act.doer)
+                if x and act.target:GetDistanceSqToPoint(x, 0, z) < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS_SQ then
+                    return act.doer.components.wobycourier:ClearXZ()
+                else
+                    local cx, cy, cz = act.target.Transform:GetWorldPosition()
+                    return act.doer.components.wobycourier:StoreXZ(cx, cz)
+                end
+            end
+        end
+    end
+end
+
+ACTIONS.DIRECTCOURIER.stroverridefn = function(act)
+    return STRINGS.ACTIONS.DIRECTCOURIER.START
+end
+
+ACTIONS.DIRECTCOURIER.fn = function(act)
+    print("FIXME(JBK): Walter ST: DIRECTCOURIER.fn called this is a proxy action!")
+    print(_TRACEBACK())
+end
+
+ACTIONS.DIRECTCOURIER_MAP.stroverridefn = function(act)
+    local targetname = act.target and act.target.prefab == "globalmapiconnamed" and act.target._target_displayname:value() or nil
+    if targetname == "" then
+        targetname = nil
+    end
+    if targetname then
+        return subfmt(STRINGS.ACTIONS.DIRECTCOURIER.SEND, {target = targetname})
+    else
+        return STRINGS.ACTIONS.DIRECTCOURIER.CHEST
+    end
+end
+local DIRECTCOURIER_MAP_MUST = { "CLASSIFIED", "globalmapicon", "globalmapicon_player" }
+ACTIONS.DIRECTCOURIER_MAP.fn = function(act)
+    if act.doer == nil or not act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") then
+        return nil
+    end
+
+    local maxradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS * 1.1 -- Add a 10% fudge factor for it to cover latency on moving targets.
+    local maxradiussq = maxradius * maxradius
+    local act_pos = act:GetActionPoint()
+    local act_posx, act_posz = act_pos.x, act_pos.z
+    local mindsq = math.huge
+    local function TryToUpdateNearest(x, z)
+        local dx, dz = x - act_pos.x, z - act_pos.z
+        local dsq = dx * dx + dz * dz
+        if dsq < mindsq then
+            mindsq = dsq
+            act_posx, act_posz = x, z
+        end
+    end
+    -- Check for chest first.
+    local x, z = GetWobyCourierChestPosition(act.doer)
+    if x then
+        TryToUpdateNearest(x, z, -1)
+    end
+    -- Now players.
+    for _, v in ipairs(AllPlayers) do
+        if v ~= act.doer then
+            local x, y, z = v.Transform:GetWorldPosition()
+            TryToUpdateNearest(x, z)
+        end
+    end
+    -- Valid target checks.
+    if mindsq == math.huge then
+        return false, "NOTARGET"
+    end
+    --[[
+        local platform = TheWorld.Map:GetPlatformAtPoint(act_pos.x, act_pos.z)
+        local platformoffset
+        if platform then
+            platformoffset = platform:GetPosition() - act_pos
+        end
+        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos, platform = platform, platformoffset = platformoffset, from_map = true,})
+    ]]
+    local dist = math.sqrt(mindsq)
+    print("FIXME(JBK): Walter ST: DIRECTCOURIER_MAP code here for the woby brain logic", act_posx, act_posz, dist)
+end
+
+local MIN_DIST_SQ_COURIER_TO_PLAYER = 16 -- 4 * 4
+ACTIONS_MAP_REMAP[ACTIONS.DIRECTCOURIER.code] = function(act, targetpos)
+    local doer = act.doer
+    if doer == nil then
+        return nil
+    end
+
+    local maxradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS * 1.1 -- Add a 10% fudge factor for it to cover latency on moving targets.
+    local maxradiussq = maxradius * maxradius
+    local act_pos = targetpos -- Lazy me.
+    local act_posx, act_posz = act_pos.x, act_pos.z
+    local mindsq = math.huge
+    local function TryToUpdateNearest(x, z)
+        local dx, dz = x - act_pos.x, z - act_pos.z
+        local dsq = dx * dx + dz * dz
+        if dsq < mindsq and dsq < maxradiussq then
+            mindsq = dsq
+            act_posx, act_posz = x, z
+            return true
+        end
+        return false
+    end
+    local compassbearer
+    -- Check for chest first.
+    local x, z = GetWobyCourierChestPosition(doer)
+    if x and TryToUpdateNearest(x, z) then
+        compassbearer = "chest"
+    end
+    -- Now players.
+    local ents = TheSim:FindEntities(targetpos.x, targetpos.y, targetpos.z, TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS, DIRECTCOURIER_MAP_MUST)
+    for _, ent in ipairs(ents) do
+        if doer:GetDistanceSqToInst(ent) > MIN_DIST_SQ_COURIER_TO_PLAYER then
+            local x, y, z = ent.Transform:GetWorldPosition()
+            if TryToUpdateNearest(x, z) then
+                compassbearer = ent
+            end
+        end
+    end
+    if compassbearer == nil then
+        return nil
+    elseif compassbearer == "chest" then
+        targetpos.x, targetpos.y, targetpos.z = act_posx, 0, act_posz
+        compassbearer = nil --doer.wobycourier_chesticon_CLIENT
+    else
+        targetpos.x, targetpos.y, targetpos.z = compassbearer.Transform:GetWorldPosition()
+    end
+
+    local act_remap = BufferedAction(doer, compassbearer, ACTIONS.DIRECTCOURIER_MAP, act.invobject, targetpos)
+
+    return act_remap
+end
+
 local function TryToSoulhop(act, act_pos, consumeall)
     return act.doer ~= nil
     and act.doer.sg ~= nil
@@ -3268,6 +3448,10 @@ ACTIONS.MOLEPEEK.fn = function(act)
     end
 end
 
+ACTIONS.FEED.strfn = function(act)
+	return act.invobject and act.invobject:HasTag("pet_treat") and "TREAT" or nil
+end
+
 ACTIONS.FEED.fn = function(act)
     if act.invobject and
             act.invobject.components.itemmimic and
@@ -3275,22 +3459,30 @@ ACTIONS.FEED.fn = function(act)
         return false, "ITEMMIMIC"
     end
 
-    if act.target.components.trader then
-        local abletoaccept, reason = act.target.components.trader:AbleToAccept(act.invobject,act.doer)
+	local target = act.target
+	if target == nil then
+		target = act.doer.components.rider and act.doer.components.rider:GetMount() or nil
+		if target == nil then
+			return false
+		end
+	end
+
+	if target.components.trader then
+		local abletoaccept, reason = target.components.trader:AbleToAccept(act.invobject,act.doer)
         if abletoaccept then
-            act.target.components.trader:AcceptGift(act.doer, act.invobject, 1)
+			target.components.trader:AcceptGift(act.doer, act.invobject, 1)
             return true
         else
             return false, reason
         end
 
-    elseif act.doer ~= nil and act.target ~= nil and act.target.components.eater ~= nil and act.target.components.eater:CanEat(act.invobject) then
-        act.target.components.eater:Eat(act.invobject, act.doer)
+	elseif act.doer and target and target.components.eater and target.components.eater:CanEat(act.invobject) then
+		target.components.eater:Eat(act.invobject, act.doer)
         local murdered =
-            act.target:IsValid() and
-            act.target.components.health ~= nil and
-            act.target.components.health:IsDead() and
-            act.target or nil
+			target:IsValid() and
+			target.components.health and
+			target.components.health:IsDead() and
+			target or nil
 
         if murdered ~= nil then
             murdered.causeofdeath = act.doer
@@ -3739,9 +3931,7 @@ end
 ACTIONS.PET.fn = function(act)
     if act.target ~= nil then
 		if act.doer.components.petleash ~= nil and act.target.components.crittertraits ~= nil then
-			if act.target.components.crittertraits then
-				act.target.components.crittertraits:OnPet(act.doer)
-			end
+			act.target.components.crittertraits:OnPet(act.doer)
 		end
 
 		if act.target.components.kitcoon ~= nil then
@@ -4062,7 +4252,7 @@ end
 ACTIONS.DISMANTLE.fn = function(act)
     if act.target ~= nil and
         act.target.components.portablestructure ~= nil and
-        not (act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning()) then
+		(not (act.target.components.burnable and act.target.components.burnable:IsBurning()) or act.target:HasTag("campfire")) then
 
         if act.target.components.container ~= nil then
             if act.target.components.container:IsOpen() then
@@ -5367,20 +5557,35 @@ end
 ACTIONS.USESPELLBOOK.strfn = function(act)
 	return (act.doer:HasTag("pyromaniac") and "PYROKINESIS")
 		or (act.doer:HasTag("handyperson") and "REMOTE")
+		or (act.doer:HasTag("dogrider") and "WOBY")
         or (act.invobject and act.invobject:HasTag("abigail_flower") and "GHOSTTALK")
 		or nil
 end
 
 ACTIONS.USESPELLBOOK.pre_action_cb = function(act)
-	if act.doer.HUD ~= nil and act.invobject ~= nil and act.invobject.components.spellbook ~= nil then
-		local inventory = act.doer.replica.inventory
-		if inventory:GetActiveItem() ~= act.invobject then
-			inventory:ReturnActiveItem()
+	if act.doer.HUD then
+		local target, isvalid
+		if act.invobject then
+			target = act.invobject
+			isvalid = not target:HasTag("fueldepleted")
+		elseif act.target and act.target.inventoryitem == nil then
+			target = act.target
+			isvalid = true
 		end
-		if not act.invobject:HasTag("fueldepleted") and act.doer.components.playercontroller ~= nil and act.doer.components.playercontroller:IsEnabled() then
-			act.invobject.components.spellbook:OpenSpellBook(act.doer)
-			if act.doer.sg ~= nil and act.doer.sg:HasStateTag("overridelocomote") then
-				act.doer.sg.currentstate:HandleEvent(act.doer.sg, "locomote")
+		if target and target.components.spellbook then
+			local inventory = act.doer.replica.inventory
+			if inventory and inventory:GetActiveItem() ~= target then
+				inventory:ReturnActiveItem()
+			end
+			if isvalid and act.doer.components.playercontroller and act.doer.components.playercontroller:IsEnabled() then
+				--V2C: ShouldOpen is useful for silently blocking it
+				--     eg. when classified commands are in a busy preview state
+				if target.components.spellbook:ShouldOpen(act.doer) then
+					target.components.spellbook:OpenSpellBook(act.doer)
+				end
+				if act.doer.sg and act.doer.sg:HasStateTag("overridelocomote") then
+					act.doer.sg.currentstate:HandleEvent(act.doer.sg, "locomote")
+				end
 			end
 		end
 	end
@@ -5388,7 +5593,9 @@ end
 
 ACTIONS.USESPELLBOOK.fn = function(act)
 	if act.doer.components.inventory ~= nil then
-		act.doer.components.inventory:ReturnActiveActionItem(act.invobject, true)
+		if act.invobject then
+			act.doer.components.inventory:ReturnActiveActionItem(act.invobject, true)
+		end
 		if act.doer.sg:HasStateTag("overridelocomote") then
 			act.doer.sg.currentstate:HandleEvent(act.doer.sg, "locomote")
 		end
@@ -5400,7 +5607,11 @@ ACTIONS.USESPELLBOOK.fn = function(act)
 	if act.doer.components.boatcannonuser ~= nil then
 		act.doer.components.boatcannonuser:SetCannon(nil)
 	end
-	return not (act.invobject.components.fueled ~= nil and act.invobject.components.fueled:IsEmpty())
+	if act.invobject then
+		return not (act.invobject.components.fueled and act.invobject.components.fueled:IsEmpty())
+	else
+		return act.target ~= nil and act.target.components.inventoryitem == nil
+	end
 end
 
 ACTIONS.CLOSESPELLBOOK.strfn = function(act)
@@ -5411,7 +5622,7 @@ ACTIONS.CLOSESPELLBOOK.strfn = function(act)
 end
 
 ACTIONS.CLOSESPELLBOOK.pre_action_cb = function(act)
-	if act.doer.HUD ~= nil and act.doer.HUD:GetCurrentOpenSpellBook() == act.invobject then
+	if act.doer.HUD and act.doer.HUD:GetCurrentOpenSpellBook() == (act.invobject or act.target) then
 		act.doer.HUD:CloseSpellWheel()
 	end
 end
@@ -5421,14 +5632,18 @@ ACTIONS.CLOSESPELLBOOK.fn = function(act)
 end
 
 ACTIONS.CAST_SPELLBOOK.fn = function(act)
-	if act.doer.components.inventory ~= nil then
-		act.doer.components.inventory:ReturnActiveActionItem(act.invobject)
-	end
-	if act.invobject.components.inventoryitem ~= nil and
-		act.invobject.components.inventoryitem:GetGrandOwner() == act.doer and
-		act.invobject.components.spellbook ~= nil
+	if act.invobject then
+		if act.doer.components.inventory then
+			act.doer.components.inventory:ReturnActiveActionItem(act.invobject)
+		end
+		if act.invobject.components.inventoryitem and
+			act.invobject.components.inventoryitem:GetGrandOwner() == act.doer and
+			act.invobject.components.spellbook
 		then
-		return act.invobject.components.spellbook:CastSpell(act.doer)
+			return act.invobject.components.spellbook:CastSpell(act.doer)
+		end
+	elseif act.target == act.doer and act.target.components.spellbook then
+		return act.target.components.spellbook:CastSpell(act.doer)
 	end
 end
 
@@ -5667,27 +5882,6 @@ ACTIONS.MUTATE.fn = function(act)
     return success, reason
 end
 
-ACTIONS.CUSTOMIZE_WOBY_BADGES.fn = function(act)
-	if act.doer ~= nil and act.target ~= nil and act.target.components.wobybadgestation ~= nil then
-		local success, reason = act.target.components.wobybadgestation:CanBeginCustomization(act.doer)
-
-		if not success then
-			return false, reason
-		end
-
-		-- Silent fail for doing it in the dark.
-		if CanEntitySeeTarget(act.doer, act.target) then
-			act.target.components.wobybadgestation:BeginCustomization(act.doer)
-		end
-
-		return true
-	end
-end
-
-ACTIONS.CUSTOMIZE_WOBY_BADGES.stroverridefn = function(act)
-    return STRINGS.ACTIONS.CUSTOMIZE_WOBY_BADGES -- No scene thing name.
-end
-
 ACTIONS.WOBY_PICKUP.fn = function(act)
     if act.target == nil then
         return false
@@ -5725,6 +5919,40 @@ ACTIONS.WOBY_PICKUP.fn = function(act)
 
         return true
     end
+end
+
+ACTIONS.WOBY_PICK.validfn = function(act)
+    -- Walter is picking or has picked the target already.
+    return act.doer:GetForagerTarget() ~= nil or (act.target ~= nil and act.target.components.pickable ~= nil and not act.target.components.pickable:CanBePicked())
+end
+
+ACTIONS.WOBY_PICK.fn = function(act)
+	if act.target == nil then
+        return false
+    end
+
+    local pickable = act.target.components.pickable
+
+    if pickable ~= nil then
+        local _numtoharvest = pickable.numtoharvest
+        pickable.numtoharvest = 1 -- Just one, always.
+
+        local loot = pickable:SpawnProductLoot(act.doer)
+
+        pickable.numtoharvest = _numtoharvest
+
+        if loot ~= nil then
+            loot = EntityScript.is_instance(loot) and {loot} or loot
+
+            for i, item in ipairs(loot) do
+                LaunchAt(item, act.target, act.doer, nil, nil, act.target:GetPhysicsRadius(0) + .25)
+            end
+
+            return true
+        end
+    end
+
+    return false
 end
 
 ACTIONS.CONTAINER_INSTALL_ITEM.strfn = function(act)
@@ -5804,6 +6032,15 @@ ACTIONS.CONTAINER_INSTALL_ITEM.fn = function(act)
 			end
 			return true
 		end
+	end
+	return false
+end
+
+ACTIONS.DASH.fn = function(act)
+	local pt = act:GetActionPoint()
+	if pt then
+		act.doer:ForceFacePoint(pt)
+		return true
 	end
 	return false
 end

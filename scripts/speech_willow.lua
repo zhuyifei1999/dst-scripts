@@ -341,7 +341,8 @@ return{
 			INUSE = "There must be something good in there if you want it so bad!",
             NOTMASTERCHEF = "I'm not THAT good at cooking.",
             NOTAMERM = "It's not like there's anything in there I want.",
-            NOTSOULJARHANDLER = "What do I want with a bunch of souls anyway?"
+            NOTSOULJARHANDLER = "What do I want with a bunch of souls anyway?",
+            RESTRICTED = "Huh? Fine then.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "They won't let me.",
 			INUSE = "I'll use it after they're done.",
             NOTMASTERCHEF = "I'm not THAT good at cooking.",
-            NOTSOULJARHANDLER = "What do I want with a bunch of souls anyway?"
+            NOTSOULJARHANDLER = "What do I want with a bunch of souls anyway?",
+            RESTRICTED = "Huh? Fine then.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Hey weird guy! Helloooo?",
             ALREADYACTIVE = "Guess he's somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1107,8 +1103,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "That's the stuff!",
     ANNOUNCE_ELIXIR_GHOSTVISION = "But I see fine by firelight.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I could lift Wolfgang!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Phew! That's too strong.",
 
@@ -5592,7 +5586,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "That kid loves slinging almost as much as I love burning.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "That kid loves slinging almost as much as I love burning.",
 
-        WOBY_BADGE_STATION = "Big deal. Bernie doesn't care about badges.",
+		WOBY_TREAT = "Honestly, I’ve eaten worse.",
+		BANDAGE_BUTTERFLYWINGS = "Does it work on third-degree burns?",
+		PORTABLEFIREPIT_ITEM = "Or carry a lighter?",
+        SLINGSHOTAMMO_CONTAINER = "Walter’s packing some firepower!",
 
         ELIXIR_CONTAINER = "Wonder what she's got sloshing around in there.",
         GHOSTFLOWERHAT = "Pretty. I guess.",
@@ -5604,6 +5601,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Should have cremated them.",
+        THULECITEBUGNET = "I should try this one on Webber.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

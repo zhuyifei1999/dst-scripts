@@ -182,6 +182,7 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"wathgrithr_shield",
 
 	-- Walter
+	"woby_treat",
 	"slingshot",
 	"slingshotammo_rock",
 	"slingshotammo_gold",
@@ -200,6 +201,7 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"slingshotammo_horrorfuel",
 	"slingshotammo_scrapfeather",
 	"slingshotammo_gunpowder",
+	"slingshotammo_container",
 	"slingshotmodkit",
 	"slingshot_band_pigskin",
 	"slingshot_band_tentacle",
@@ -211,8 +213,9 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"slingshot_handle_sticky",
 	"slingshot_handle_jelly",
 	"slingshot_handle_voidcloth",
-	"woby_badge_station",
 	"portabletent_item",
+	"portablefirepit_item",
+	"bandage_butterflywings",
 	"walterhat",
 
 	-- Wolfgang
@@ -731,6 +734,7 @@ CRAFTING_FILTERS.TOOLS.recipes =
 	"trap",
 	"birdtrap",
 	"bugnet",
+    "thulecitebugnet",
 	"razor",
 	"compass",
 	"walking_stick",
@@ -772,6 +776,7 @@ CRAFTING_FILTERS.LIGHT.recipes =
 	"lighter",
 	"torch",
 	"campfire",
+	"portablefirepit_item",
 	"firepit",
 	"cotl_tabernacle_level1",
 	"coldfire",
@@ -821,6 +826,7 @@ CRAFTING_FILTERS.PROTOTYPERS.recipes =
 CRAFTING_FILTERS.REFINE.recipes =
 {
 	"rope",
+	"walter_rope",
 	"boards",
 	"cutstone",
 	"papyrus",
@@ -963,6 +969,7 @@ CRAFTING_FILTERS.RESTORATION.recipes =
 	"healingsalve",
 	"healingsalve_acid",
 	"bandage",
+	"bandage_butterflywings",
 	"tillweedsalve",
 	"compostwrap",
     "wortox_reviver",
@@ -991,6 +998,7 @@ CRAFTING_FILTERS.COOKING.recipes =
 	"cookpot",
 	"meatrack",
 	"campfire",
+	"portablefirepit_item",
 	"firepit",
 	"cotl_tabernacle_level1",
 	"icebox",
@@ -1122,6 +1130,7 @@ CRAFTING_FILTERS.CONTAINERS.recipes =
 	"fish_box",
 	"battlesong_container",
     "wortox_souljar",
+	"slingshotammo_container",
 }
 
 CRAFTING_FILTERS.STRUCTURES.recipes =
@@ -1290,6 +1299,7 @@ CRAFTING_FILTERS.RIDING.recipes =
 CRAFTING_FILTERS.WINTER.recipes =
 {
 	"campfire",
+	"portablefirepit_item",
 	"firepit",
 	"cotl_tabernacle_level1",
 	"dragonflyfurnace",

@@ -5,8 +5,14 @@ local RANDOM_IDLES = { "bark_idle", "shake", "sit", "scratch" }
 
 local actionhandlers =
 {
+    ActionHandler(ACTIONS.WOBY_PICKUP, "pickup"),
+    ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
+    ActionHandler(ACTIONS.WOBY_PICK, "dolongaction"),
+    ActionHandler(ACTIONS.CHOP, "bash_jump"),
+    ActionHandler(ACTIONS.MINE, "bash_jump"),
 }
 
+local LONGACTION_DEFAULT_TIMEOUT = 1.5
 
 local events=
 {
@@ -21,6 +27,12 @@ local events=
     EventHandler("transform", function(inst, data)
         if inst.sg.currentstate.name ~= "transform" then
             inst.sg:GoToState("transform")
+        end
+    end),
+
+    EventHandler("start_sitting", function(inst)
+        if not inst.sg:HasStateTag("sitting") and not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("sitting")
         end
     end),
 
@@ -237,18 +249,43 @@ local states=
 
         onenter = function(inst, data)
             inst.components.locomotor:StopMoving()
+			inst:ApplySmallBuildOverrides()
             inst.AnimState:PlayAnimation("transform_big_to_small")
+			inst:AddTag("transforming")
+			if inst.components.wobyrack then
+				inst.SoundEmitter:PlaySound("meta5/woby/small_dryingrack_collapse")
+			end
         end,
 
         timeline =
         {
             TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/transform_big_to_small") end),
             -- TimeEvent(39*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/transform_big_to_small") end),
-            TimeEvent(13*FRAMES, function(inst) inst.DynamicShadow:SetSize(4, 1.5)  end),
+			FrameEvent(4, function(inst) inst.DynamicShadow:SetSize(4, 1.5)  end),
             TimeEvent(13*FRAMES, function(inst) inst.DynamicShadow:SetSize(3, 1.0)  end),
+			FrameEvent(59, function(inst)
+				if inst.pet_hunger_classified then
+					inst.pet_hunger_classified:SetFlagBit(0, false) --small woby
+				end
+				--We can now force transform without starving
+				--Make sure we don't just transform right back due to >= 95% hunger though
+				local cost = TUNING.WOBY_FORCE_TRANSFORM_HUNGER
+				if inst:HasEndurance() then
+					cost = cost * TUNING.SKILLS.WALTER.WOBY_ENDURANCE_HUNGER_RATE_MOD
+				end
+				inst.components.hunger:DoDelta(-cost)
+			end),
             TimeEvent(60*FRAMES, function(inst) inst.DynamicShadow:SetSize(1.75, 1) end),
             TimeEvent(70*FRAMES, function(inst) inst:FinishTransformation() end),
         },
+
+		onexit = function(inst)
+			--Interrupted???
+			if inst.pet_hunger_classified then
+				inst.pet_hunger_classified:SetFlagBit(0, true) --big woby
+			end
+			inst:RemoveTag("transforming")
+		end,
     },
 
     -- Used when the player is about to mount
@@ -423,6 +460,374 @@ local states=
                 inst.sg:GoToState("idle")
             end),
         },
+    },
+
+    State{
+        name = "pickup",
+        tags = { "busy", "jumping" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+
+            inst.AnimState:PlayAnimation("fetch")
+            inst.AnimState:SetFrame(4)
+
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
+
+            if target ~= nil and target:IsValid() then
+                inst:ForceFacePoint(buffaction.target.Transform:GetWorldPosition())
+            end
+        end,
+
+        onupdate = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
+
+            if target == nil or not target:IsValid() then
+                inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+
+                inst:ClearBufferedAction()
+
+                return
+            end
+
+            local distance = math.sqrt(inst:GetDistanceSqToInst(target))
+
+            if distance > .2 then
+                inst.Physics:SetMotorVelOverride(math.max(distance, 4), 0, 0)
+            else
+                inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+            end
+        end,
+
+        timeline = {
+            TimeEvent((19-4)*FRAMES, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                local target = buffaction ~= nil and buffaction.target or nil
+    
+                if target == nil or not target:IsValid() then
+                    return -- Fail! No target.
+                end
+
+                local distance = math.sqrt(inst:GetDistanceSqToInst(target))
+
+                if distance > .5 then
+                    inst:ClearBufferedAction()
+                else
+                    inst:PerformBufferedAction()
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end)
+        },
+
+        onexit = function(inst)
+            inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+            inst.Physics:ClearMotorVelOverride()
+            inst.Physics:Stop()
+        end,
+    },
+
+    State {
+        name = "give",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("give")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+        
+        timeline =
+        {
+            FrameEvent(7, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+    },
+
+    State{
+        name = "dolongaction",
+		tags = {"busy"},
+
+        onenter = function(inst, timeout)
+            timeout = timeout or LONGACTION_DEFAULT_TIMEOUT
+
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("woby_forage_pre")
+            inst.AnimState:PushAnimation("woby_forage_loop", true)
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+
+            inst.sg.statemem.buffaction = inst:GetBufferedAction()
+
+            inst.sg:SetTimeout(timeout)
+        end,
+
+        ontimeout = function(inst)
+            inst.AnimState:PlayAnimation("woby_forage_pst")
+            inst.SoundEmitter:KillSound("make")
+
+            inst:PerformBufferedAction()
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+
+            EventHandler("playernewstate", function(inst)
+                if inst.sg.statemem.buffaction == inst.bufferedaction then
+                    local pickable = inst.bufferedaction.target ~= nil and inst.bufferedaction.target.components.pickable or nil
+
+                    if pickable ~= nil and pickable:CanBePicked() then -- If we can be picked, Walter didn't finish it!
+                        inst.AnimState:PlayAnimation("woby_forage_pst")
+                        inst.SoundEmitter:KillSound("make")
+
+                        inst:ClearBufferedAction()
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make")
+        end,
+    },
+
+	State{
+		name = "bash_jump",
+		tags = { "busy" },
+
+		onenter = function(inst, target)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("bash_jump")
+			if target == nil then
+				inst.sg.statemem.buffaction = inst:GetBufferedAction()
+				target = inst.sg.statemem.buffaction and inst.sg.statemem.buffaction.target or nil
+			end
+			if target and target:IsValid() then
+				inst.sg.statemem.target = target
+				inst:ForceFacePoint(target:GetPosition())
+			end
+		end,
+
+		onupdate = function(inst)
+			if inst.sg.statemem.cancollide then
+				local target = inst.sg.statemem.target
+				if target then
+					if not target:IsValid() then
+						inst.sg.statemem.target = nil
+					elseif inst:IsNear(target, 2 + target:GetPhysicsRadius(0)) and
+						target.components.workable and
+						target.components.workable:CanBeWorked()
+					then
+						local work_action = target.components.workable:GetWorkAction()
+						if work_action == ACTIONS.MINE or work_action == ACTIONS.CHOP then
+							if inst.sg.statemem.buffaction then
+								if inst.sg.statemem.buffaction.action == ACTIONS.MINE then
+									PlayMiningFX(inst, target)
+								end
+								inst:PerformBufferedAction()
+							else
+								if work_action == ACTIONS.MINE then
+									PlayMiningFX(inst, target)
+								end
+								target.components.workable:WorkedBy(inst, 1)
+							end
+							inst.sg:GoToState("bash_collide")
+						end
+					end
+				end
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(7, function(inst)
+				inst.sg:AddStateTag("jumping")
+				inst.Physics:SetMotorVelOverride(6, 0, 0)
+			end),
+			FrameEvent(9, function(inst)
+				inst.sg.statemem.cancollide = true
+			end),
+			FrameEvent(13, function(inst)
+				inst.sg.statemem.cancollide = false
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.jumping = true
+					inst.sg:GoToState("bash_miss")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.jumping then
+				inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+			end
+			if inst.sg.statemem.buffaction == inst.bufferedaction then
+				inst:ClearBufferedAction()
+			end
+		end,
+	},
+
+	State{
+		name = "bash_collide",
+		tags = { "busy", "jumping" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("bash_collide")
+
+            local cost = TUNING.SKILLS.WALTER.WOBY_TASK_AID_HUNGER * (inst:HasEndurance() and TUNING.SKILLS.WALTER.WOBY_ENDURANCE_HUNGER_RATE_MOD or 1)
+
+            if cost > 0 then
+                inst.components.hunger:DoDelta(-cost) -- NOTES(DiogoW): This might change the state to transform!
+            end
+		end,
+
+		timeline =
+		{
+			FrameEvent(2, function(inst) inst.Physics:SetMotorVelOverride(-2.4, 0, 0) end),
+			FrameEvent(8, function(inst) inst.Physics:SetMotorVelOverride(-1.2, 0, 0) end),
+			FrameEvent(9, function(inst) inst.Physics:SetMotorVelOverride(-0.6, 0, 0) end),
+			FrameEvent(10, function(inst)
+				inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+				inst.sg:RemoveStateTag("jumping")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.sg:HasStateTag("jumping") then
+				inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+			end
+		end,
+	},
+
+	State{
+		name = "bash_miss",
+		tags = { "busy", "jumping" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("bash_miss")
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, function(inst) inst.Physics:SetMotorVelOverride(4, 0, 0) end),
+			FrameEvent(1, function(inst) inst.Physics:SetMotorVelOverride(2, 0, 0) end),
+			FrameEvent(2, function(inst) inst.Physics:SetMotorVelOverride(1, 0, 0) end),
+			FrameEvent(3, function(inst) inst.Physics:SetMotorVelOverride(0.5, 0, 0) end),
+			FrameEvent(4, function(inst)
+				inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+				inst.sg:RemoveStateTag("jumping")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.sg:HasStateTag("jumping") then
+				inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
+			end
+		end,
+	},
+
+    State{
+        name = "sitting",
+		tags = {"busy", "canrotate", "sitting"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            if inst.sg.lasttags["moving"] then
+                inst.AnimState:PlayAnimation(inst.sg.lasttags["running"] and "run_woby_pst" or "walk_woby_pst")
+                inst.AnimState:PushAnimation("sit_woby")
+            else
+                inst.AnimState:PlayAnimation("sit_woby")
+            end
+
+            inst.AnimState:PushAnimation("sit_woby_loop", true)
+
+            inst.sg.statemem.noleashing = inst.components.follower.noleashing
+
+            inst.components.follower:DisableLeashing()
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+
+            EventHandler("stop_sitting", function(inst)
+                if inst:IsAsleep() then
+                    inst.sg:GoToState("idle")
+                else
+                    inst.AnimState:PlayAnimation("sit_woby_pst")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.noleashing then
+                inst.components.follower:EnableLeashing()
+            end
+        end
     },
 }
 

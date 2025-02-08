@@ -126,6 +126,7 @@ local function fn()
     inst.AnimState:SetScale(SCALE, SCALE)
 
     inst:AddTag("nosteal")
+	inst:AddTag("sloweat")
     inst:AddTag("NOCLICK")
 
     --souleater (from soul component) added to pristine state for optimization

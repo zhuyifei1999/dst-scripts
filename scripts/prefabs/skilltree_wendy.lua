@@ -115,6 +115,14 @@ local function BuildSkillsData(SkillTreeFns)
             connects = {
                 "wendy_potion_revive",
             },
+
+            onactivate = function(inst, fromload)
+                inst:AddTag("elixircontaineruser")
+            end,
+
+            ondeactivate = function(inst, fromload)
+                inst:RemoveTag("elixircontaineruser")
+            end,
         },
 
         wendy_potion_revive = {

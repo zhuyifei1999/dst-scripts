@@ -336,15 +336,25 @@ local function GetUnequipState(inst, data)
 end
 
 local function ConfigureRunState(inst)
-    if inst.components.rider:IsRiding() then
+	local mount = inst.components.rider:GetMount()
+	if mount then
         inst.sg.statemem.riding = true
-        inst.sg.statemem.groggy = inst:HasTag("groggy")
+		if inst:HasTag("groggy") then
+			inst.sg.statemem.groggy = true
+		else
+			inst.sg.statemem.normalriding = true
+		end
         inst.sg:AddStateTag("nodangle")
 		inst.sg:AddStateTag("noslip")
 
-        local mount = inst.components.rider:GetMount()
-        inst.sg.statemem.ridingwoby = mount and mount:HasTag("woby")
-
+		if mount:HasTag("woby") then
+			inst.sg.statemem.ridingwoby = true
+			--Assumes we can only ride our own woby!
+			inst.sg.statemem.canwobysprint =
+				inst.woby_commands_classified ~= nil and
+				inst.woby_commands_classified:ShouldSprint() and
+				inst.components.skilltreeupdater:IsActivated("walter_woby_sprint")
+		end
     elseif inst.components.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
 		inst.sg.statemem.heavy_fast = inst.components.mightiness ~= nil and inst.components.mightiness:IsMighty()
@@ -468,6 +478,15 @@ local function SetPocketRummageMem(inst, item)
 	inst.sg.mem.pocket_rummage_item = item
 end
 
+local function OwnsPocketRummageContainer(inst, item)
+	local owner = item.components.inventoryitem and item.components.inventoryitem:GetGrandOwner() or nil
+	if owner == inst then
+		return true
+	end
+	local mount = inst.components.rider and inst.components.rider:GetMount() or nil
+	return owner == mount or item == mount
+end
+
 local function ClosePocketRummageMem(inst, item)
 	if item == nil then
 		item = inst.sg.mem.pocket_rummage_item
@@ -477,10 +496,7 @@ local function ClosePocketRummageMem(inst, item)
 	if item then
 		inst.sg.mem.pocket_rummage_item = nil
 
-		if item.components.inventoryitem and
-			item.components.inventoryitem:GetGrandOwner() == inst and
-			item.components.container
-		then
+		if OwnsPocketRummageContainer(inst, item) and item.components.container then
 			item.components.container:Close(inst)
 		end
 	end
@@ -492,8 +508,7 @@ local function CheckPocketRummageMem(inst)
 	if item then
 		if not (item.components.container and
 				item.components.container:IsOpenedBy(inst) and
-				item.components.inventoryitem and
-				item.components.inventoryitem:GetGrandOwner() == inst)
+				OwnsPocketRummageContainer(inst, item))
 		then
 			SetPocketRummageMem(inst, nil)
 		else
@@ -523,8 +538,7 @@ local function TryResumePocketRummage(inst)
 	if item then
 		if item.components.container and
 			item.components.container:IsOpenedBy(inst) and
-			item.components.inventoryitem and
-			item.components.inventoryitem:GetGrandOwner() == inst
+			OwnsPocketRummageContainer(inst, item)
 		then
 			inst.sg.statemem.keep_pocket_rummage_mem_onexit = true
 			inst.sg:GoToState("start_pocket_rummage", item)
@@ -757,7 +771,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.BUILD,
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
-            return (rec ~= nil and rec.sg_state)
+			return (rec and FunctionOrValue(rec.sg_state, rec, inst))
                 or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or (inst:HasTag("slowbuilder") and "dolongestaction")
@@ -787,17 +801,22 @@ local actionhandlers =
         end),
 	ActionHandler(ACTIONS.RUMMAGE,
 		function(inst, action)
-			return action.invobject
-				and action.invobject:HasTag("portablestorage")
-				and action.invobject.components.container
-				and (	action.invobject.components.container:IsOpenedBy(inst) and
-						"stop_pocket_rummage" or
-						"start_pocket_rummage"
-					)
-				or "doshortaction"
+			if action.invobject then
+				if action.invobject:HasTag("portablestorage") and action.invobject.components.container then
+					return action.invobject.components.container:IsOpenedBy(inst) and "stop_pocket_rummage" or "start_pocket_rummage"
+				end
+			elseif action.target == inst then
+				local mount = inst.components.rider and inst.components.rider:GetMount()
+				if mount and mount.components.container then
+					return mount.components.container:IsOpenedBy(inst) and "stop_pocket_rummage" or "start_pocket_rummage"
+				end
+			end
+			return "doshortaction"
 		end),
     ActionHandler(ACTIONS.BAIT, "doshortaction"),
-    ActionHandler(ACTIONS.HEAL, "dolongaction"),
+    ActionHandler(ACTIONS.HEAL, function(inst, action)
+        return inst:HasTag("fasthealer") and "domediumaction" or "dolongaction"
+    end),
     ActionHandler(ACTIONS.SEW, "dolongaction"),
     ActionHandler(ACTIONS.TEACH, "dolongaction"),
     ActionHandler(ACTIONS.RESETMINE, "dolongaction"),
@@ -822,7 +841,8 @@ local actionhandlers =
             else
                 return
             end
-            return (obj.components.soul ~= nil and "eat")
+			return (obj:HasTag("quickeat") and "quickeat")
+				or (obj:HasTag("sloweat") and "eat")
                 or (obj.components.edible.foodtype == FOODTYPE.MEAT and "eat")
                 or "quickeat"
         end),
@@ -930,7 +950,20 @@ local actionhandlers =
     ActionHandler(ACTIONS.SING, "sing_pre"),
     ActionHandler(ACTIONS.SING_FAIL, "sing_fail"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
-    ActionHandler(ACTIONS.FEED, "dolongaction"),
+	ActionHandler(ACTIONS.FEED,
+		function(inst, action)
+			if action.invobject and action.invobject:HasTag("quickfeed") then
+				if action.target then
+					if not action.target:IsInLimbo() then
+						return "give"
+					end
+				elseif inst.components.rider:IsRiding() then
+					return "domediumaction"
+				end
+				return "doshortaction"
+			end
+			return "dolongaction"
+		end),
     ActionHandler(ACTIONS.ATTACK,
         function(inst, action)
             inst.sg.mem.localchainattack = not action.forced or nil
@@ -1255,7 +1288,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.MUTATE, "dolongaction"),
     ActionHandler(ACTIONS.GRAVEDIG, "graveurn_in"),
 
-    ActionHandler(ACTIONS.CUSTOMIZE_WOBY_BADGES, "usewardrobe"), --TODO(DiogoW): Proper state?
+	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
+    ActionHandler(ACTIONS.DIRECTCOURIER_SETCHEST, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+    ActionHandler(ACTIONS.DIRECTCOURIER, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+    ActionHandler(ACTIONS.DIRECTCOURIER_MAP, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
 }
 
 local events =
@@ -1803,6 +1839,14 @@ local events =
                 inst.sg:GoToState(data.gentle and "falloff" or "bucked")
             end
         end),
+	EventHandler("feedmount",
+		function(inst, data)
+			if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) and
+				data and data.eater and data.eater == inst.components.rider:GetMount()
+			then
+				inst.sg:GoToState("mount_eat")
+			end
+		end),
     EventHandler("oceanfishing_stoppedfishing",
         function(inst, data)
             if inst.sg:HasStateTag("fishing") and (inst.components.health == nil or not inst.components.health:IsDead()) then
@@ -4074,6 +4118,30 @@ local states =
             TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/bark") end),
         },
     },
+
+	State{
+		name = "mount_eat",
+		tags = { "busy", "pausepredict" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("graze_loop")
+			inst.SoundEmitter:PlaySound("dontstarve/beefalo/chew")
+
+			if inst.components.playercontroller then
+				inst.components.playercontroller:RemotePausePrediction()
+			end
+			inst.sg:SetTimeout(9 * FRAMES)
+		end,
+
+		ontimeout = function(inst)
+			local mount = inst.components.rider:GetMount()
+			if mount and mount:HasTag("woby") then
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/chuff")
+			end
+			inst.sg:GoToState("idle", true)
+		end,
+	},
 
     State{
         name = "chop_start",
@@ -6373,62 +6441,6 @@ local states =
 	},
 
     State{
-		name = "openwobybadgecustomization",
-		tags = { "doing", "busy", "nodangle", "pausepredict" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.components.locomotor:Clear()
-			inst:ClearBufferedAction()
-
-            inst.AnimState:PlayAnimation("idle_wardrobe1_pre")
-            inst.AnimState:PushAnimation("idle_wardrobe1_loop", true)
-
-			if inst.components.playercontroller ~= nil then
-				inst.components.playercontroller:RemotePausePrediction()
-				inst.components.playercontroller:EnableMapControls(false)
-				inst.components.playercontroller:Enable(false)
-			end
-
-			inst.components.inventory:Hide()
-			inst:PushEvent("ms_closepopups")
-			inst:ShowActions(false)
-
-            local data = inst.components.dogtrainer ~= nil and inst.components.dogtrainer:ZipAndEncodeData() or ""
-
-			inst:ShowPopUp(POPUPS.WOBYBADGECUSTOMIZATION, true, data)
-		end,
-
-		events =
-		{
-			EventHandler("ms_endwobybadgecustomization", function(inst)
-				if not inst.sg.statemem.isclosingwobybadgecustomization then
-					inst.sg.statemem.isclosingwobybadgecustomization = true
-					inst.AnimState:PlayAnimation("idle_wardrobe1_pst")
-					inst.sg:GoToState("idle", true)
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			inst:ShowPopUp(POPUPS.WOBYBADGECUSTOMIZATION, false)
-
-			if inst.components.playercontroller then
-				inst.components.playercontroller:EnableMapControls(true)
-				inst.components.playercontroller:Enable(true)
-			end
-
-			inst.components.inventory:Show()
-			inst:ShowActions(true)
-
-			if not inst.sg.statemem.isclosingwobybadgecustomization then
-				inst.sg.statemem.isclosingwobybadgecustomization = true
-				POPUPS.WOBYBADGECUSTOMIZATION:Close(inst)
-			end
-		end,
-	},
-
-    State{
         name = "inspectacles_open",
         tags = { "doing", "busy" },
 
@@ -7898,8 +7910,14 @@ local states =
 			if mime then
 				inst.sg.statemem.mime = mime
 				DoMimeAnimations(inst)
+			elseif inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("walter_camp_fire") then
+				if inst.AnimState:IsCurrentAnimation("idle_walter_storytelling_pre") then
+					inst.AnimState:PlayAnimation("idle_walter_storytelling_2")
+				else
+					inst.AnimState:PlayAnimation(math.random() < 0.7 and "idle_walter_storytelling_big" or "idle_walter_storytelling_2")
+				end
 			else
-				inst.AnimState:PushAnimation(math.random() < 0.75 and "idle_walter_storytelling" or "idle_walter_storytelling_2")
+				inst.AnimState:PlayAnimation(math.random() < 0.7 and "idle_walter_storytelling" or "idle_walter_storytelling_2")
 			end
         end,
 
@@ -10081,9 +10099,31 @@ local states =
 
         onenter = function(inst)
             ConfigureRunState(inst)
-            if inst.sg.statemem.normalwonkey and inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
-                inst.sg:GoToState("run_monkey") --resuming after brief stop from changing directions, or resuming prediction after running into obstacle
-                return
+			if inst.sg.statemem.normalwonkey then
+				if inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
+					inst.sg:GoToState("run_monkey") --resuming after brief stop from changing directions, or resuming prediction after running into obstacle
+					return
+				end
+			elseif inst.sg.statemem.ridingwoby then
+				if inst.sg.statemem.canwobysprint and inst.sg.statemem.normalriding then
+					if inst.sg.lasttags and inst.sg.lasttags["force_sprint_woby"] then
+						local playercontroller = inst.components.playercontroller
+						if not (playercontroller and playercontroller.remote_predicting) then
+							inst.components.locomotor:OverrideMoveTimer(TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT)
+							inst.sg.mem.turbowoby = true
+							inst.sg:GoToState("sprint_woby_start")
+							return
+						elseif inst.components.locomotor:GetTimeMoving() >= TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+							inst.sg.mem.turbowoby = true
+							inst.sg:GoToState("sprint_woby_start")
+							return
+						end
+					elseif inst.components.locomotor:GetTimeMoving() >= TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+						inst.sg:GoToState("sprint_woby") --resuming after brief stop from changing directions, or resuming prediction after running into obstacle
+						return
+					end
+				end
+				inst.sg.mem.turbowoby = false
             end
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pre")
@@ -10176,9 +10216,16 @@ local states =
         end,
 
         onupdate = function(inst)
-			if inst.sg.statemem.normalwonkey and not inst.sg.statemem.channelcast and inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
-                inst.sg:GoToState("run_monkey_start")
-                return
+			if inst.sg.statemem.normalwonkey then
+				if not inst.sg.statemem.channelcast and inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
+					inst.sg:GoToState("run_monkey_start")
+					return
+				end
+			elseif inst.sg.statemem.ridingwoby then
+				if inst.sg.statemem.canwobysprint and inst.sg.statemem.normalriding and inst.components.locomotor:GetTimeMoving() >= TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+					inst.sg:GoToState("sprint_woby_start")
+					return
+				end
             end
             inst.components.locomotor:RunForward()
         end,
@@ -10314,36 +10361,35 @@ local states =
             TimeEvent(1 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     DoRunSounds(inst)
-                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk",nil,.5)
+					inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
                     if inst.sg.statemem.ridingwoby then
-                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
                     end
                 end
             end),
             TimeEvent(3 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    if inst.sg.statemem.ridingwoby then
-                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+					if inst.sg.statemem.ridingwoby and not inst.sg.statemem.wobysprinting then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
                     end
                 end
             end),
             TimeEvent(8 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
                     DoRunSounds(inst)
-                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk",nil,.5)
+					inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
                     if inst.sg.statemem.ridingwoby then
-                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
                     end
                 end
             end),
             TimeEvent(10 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    if inst.sg.statemem.ridingwoby then
-                        inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", {intensity= 1})
+					if inst.sg.statemem.ridingwoby and not inst.sg.statemem.wobysprinting then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
                     end
                 end
             end),
-
 
             --moose
             --Frame 11 shared with heavy lifting above
@@ -10477,7 +10523,12 @@ local states =
         onenter = function(inst)
             ConfigureRunState(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pst")
+			local anim = GetRunStateAnim(inst)
+			if anim == "run_woby" and inst.sg.lasttags and inst.sg.lasttags["sprint_woby"] then
+				anim = "sprint_woby"
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/chuff", nil, nil, true)
+			end
+			inst.AnimState:PlayAnimation(anim.."_pst")
 
             if inst.sg.statemem.moose or inst.sg.statemem.moosegroggy then
                 PlayMooseFootstep(inst, .6, true)
@@ -10642,6 +10693,132 @@ local states =
             end
         end,
     },
+
+	State{
+		name = "sprint_woby_start",
+		tags = { "moving", "running", "canrotate", "sprint_woby", "autopredict" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			if not (inst.sg.statemem.normalriding and inst.sg.statemem.canwobysprint) then
+				inst.sg:GoToState("run")
+				return
+			end
+			local mount = inst.components.rider:GetMount()
+			if mount and mount.SetSprinting then
+				mount:SetSprinting(true, inst.sg.mem.turbowoby)
+			end
+			if inst.sg.mem.turbowoby and inst.EnableWobySprintTrail then
+				inst:EnableWobySprintTrail(true)
+			end
+			inst.components.locomotor:RunForward()
+			inst.AnimState:PlayAnimation("sprint_woby_loop", true)
+			local t = 6 * FRAMES
+			inst.AnimState:SetTime(t)
+			inst.sg.mem.footsteps = 0
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() - t)
+		end,
+
+		onupdate = function(inst)
+			if inst.components.locomotor:GetTimeMoving() < TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+				inst.sg:GoToState("run")
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, DoMountedFoleySounds),
+			FrameEvent(8 - 6, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+		},
+
+		ontimeout = function(inst)
+			inst.sg.statemem.wobysprinting = true
+			inst.sg:GoToState("sprint_woby")
+		end,
+
+		onexit = function(inst)
+			if not inst.sg.statemem.wobysprinting then
+				local mount = inst.components.rider:GetMount()
+				if mount and mount.SetSprinting then
+					mount:SetSprinting(false)
+				end
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "sprint_woby",
+		tags = { "moving", "running", "canrotate", "sprint_woby", "autopredict" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			if not (inst.sg.statemem.normalriding and inst.sg.statemem.canwobysprint) then
+				inst.sg:GoToState("run")
+				return
+			end
+			local mount = inst.components.rider:GetMount()
+			if mount and mount.SetSprinting then
+				mount:SetSprinting(true, inst.sg.mem.turbowoby)
+			end
+			if inst.sg.mem.turbowoby and inst.EnableWobySprintTrail then
+				inst:EnableWobySprintTrail(true)
+			end
+			inst.components.locomotor:RunForward()
+
+			if not inst.AnimState:IsCurrentAnimation("sprint_woby_loop") then
+				inst.AnimState:PlayAnimation("sprint_woby_loop", true)
+			end
+
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		onupdate = function(inst)
+			if inst.components.locomotor:GetTimeMoving() < TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+				inst.sg:GoToState("run")
+				return
+			end
+			inst.components.locomotor:RunForward()
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, DoMountedFoleySounds),
+			FrameEvent(1, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+			FrameEvent(8, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+		},
+
+		ontimeout = function(inst)
+			inst.sg.statemem.wobysprinting = true
+			inst.sg:GoToState("sprint_woby")
+		end,
+
+		onexit = function(inst)
+			if not inst.sg.statemem.wobysprinting then
+				local mount = inst.components.rider:GetMount()
+				if mount and mount.SetSprinting then
+					mount:SetSprinting(false)
+				end
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
 
     State{
         name = "item_hat",
@@ -21765,8 +21942,14 @@ local states =
 			else
 				ClosePocketRummageMem(inst)
 				inst.sg.statemem.action = inst:GetBufferedAction()
-				inst.sg.statemem.item = inst.sg.statemem.action and inst.sg.statemem.action.invobject or nil
-				inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.item)
+				if inst.sg.statemem.action then
+					if inst.sg.statemem.action.invobject then
+						inst.sg.statemem.item = inst.sg.statemem.action.invobject
+					elseif inst.sg.statemem.action.target == inst then
+						inst.sg.statemem.item = inst.components.rider:GetMount()
+					end
+					inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.item)
+				end
 			end
 		end,
 
@@ -21775,8 +21958,7 @@ local states =
 			if item and
 				not (item.components.container and
 					item.components.container:IsOpenedBy(inst) and
-					item.components.inventoryitem and
-					item.components.inventoryitem:GetGrandOwner() == inst)
+					OwnsPocketRummageContainer(inst, item))
 			then
 				SetPocketRummageMem(inst, nil)
 				inst.sg:GoToState("stop_pocket_rummage", true)
@@ -21793,8 +21975,7 @@ local states =
 				if item and
 					item.components.container and
 					item.components.container:IsOpenedBy(inst) and
-					item.components.inventoryitem and
-					item.components.inventoryitem:GetGrandOwner() == inst
+					OwnsPocketRummageContainer(inst, item)
 				then
 					SetPocketRummageMem(inst, item)
 				else
@@ -22420,8 +22601,332 @@ local states =
                 inst:ClearBufferedAction()
             end
         end,
-    },    
-    
+    },
+
+	State{
+		name = "dash_woby_pre",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("dash_woby_pre")
+			inst.AnimState:PushAnimation("dash_woby", false)
+			DoMountedFoleySounds(inst) --this plays predicted sounds
+		end,
+
+		timeline =
+		{
+			FrameEvent(2, function(inst)
+				PlayFootstep(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5)
+				if inst.sg.statemem.ridingwoby then
+					inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 })
+				end
+			end),
+			FrameEvent(3, function(inst)
+				if not inst:PerformBufferedAction() then
+					if inst.sg.statemem.ridingwoby then
+						inst.AnimState:PlayAnimation("run_woby_pst")
+						inst.sg:GoToState("idle", true)
+					else
+						inst.sg:GoToState("idle")
+					end
+					return
+				end
+				--@V2C:
+				--Start physics early; normally done in "dash" state with "nopredict".
+				--Prevents client from seeing slight snapback before dashing forward.
+				--Must manually update client's position (using Teleport) if interrupted.
+				inst.Physics:SetMotorVel(30, 0, 0)
+
+				--Assumes we can only ride our own woby!
+				if inst.sg.statemem.ridingwoby then
+					if inst.components.skilltreeupdater:IsActivated("walter_woby_shadow") then
+						if inst.woby_commands_classified and inst.woby_commands_classified:ShouldShadowDash() then
+							inst.sg.statemem.isshadow = true
+							inst.AnimState:SetMultColour(0.25, 0.25, 0.25, 1)
+							inst:AddTag("woby_dash_fade")
+						end
+					elseif inst.components.skilltreeupdater:IsActivated("walter_woby_lunar") then
+						if inst.EnableWobySprintTrail then
+							inst:EnableWobySprintTrail(true)
+						end
+					end
+				end
+			end),
+			FrameEvent(4, function(inst)
+				inst.sg.statemem.dashing = true
+				inst.sg:GoToState(inst.sg.statemem.isshadow and "dash_woby_shadow" or "dash_woby")
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.dashing then
+				local x, y, z = inst.Transform:GetWorldPosition()
+				inst.Physics:Stop()
+				inst.Physics:Teleport(x, 0, z)
+				if inst.sg.statemem.isshadow then
+					inst.AnimState:SetMultColour(1, 1, 1, 1)
+					inst:RemoveTag("woby_dash_fade")
+				end
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "dash_woby",
+		tags = { "busy", "jumping", "nopredict" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			inst.Physics:SetMotorVel(30, 0, 0)
+			local mount = inst.components.rider:GetMount()
+			if mount then
+				mount:PushEvent("ondash_woby")
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(3, function(inst)
+				PlayFootstep(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5)
+				if inst.sg.statemem.ridingwoby then
+					inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 })
+				end
+			end),
+			FrameEvent(4, function(inst)
+				inst.sg.statemem.dashing = true
+				inst.sg:GoToState("dash_woby_pst")
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.dashing then
+				inst.Physics:Stop()
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "dash_woby_shadow",
+		tags = { "busy", "jumping", "nopredict", "noattack" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			inst.Physics:SetMotorVel(30, 0, 0)
+
+			inst.components.health:SetInvincible(true)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:Enable(false)
+			end
+			inst.AnimState:SetMultColour(0, 0, 0, 0)
+			inst:AddTag("woby_dash_fade")
+			inst.DynamicShadow:Enable(false)
+			--ToggleOffPhysics(inst)
+			inst.sg.statemem.isphysicstoggle = true
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+
+			--player hidden via 0 alpha instead of Hide(), so that we can still see silhoutte child
+			inst.sg.statemem.silhoutte = SpawnPrefab("woby_dash_silhouette_fx")
+			inst.sg.statemem.silhoutte.entity:SetParent(inst.entity)
+
+			local fx = SpawnPrefab("woby_dash_shadow_fx")
+			fx.AnimState:SetFrame(3)
+			fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+			--fx:SetFxOwner(inst) --don't track owner, keep fx stationary
+			fx.SoundEmitter:PlaySound("meta5/woby/shadow_dash_out")
+
+			local mount = inst.components.rider:GetMount()
+			if mount then
+				mount:PushEvent("ondash_woby", { shadow = true })
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(2, function(inst)
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local fx = SpawnPrefab("woby_dash_shadow_fx")
+				fx.AnimState:PlayAnimation("woby_teleport_fx_small"..tostring(math.random(2)))
+				fx.Transform:SetPosition(x, y, z)
+				fx:SetFxOwner(inst)
+
+				local theta = inst.Transform:GetRotation() * DEGREES
+				local cos_theta = math.cos(theta)
+				local sin_theta = math.sin(theta)
+				local map = TheWorld.Map
+				local pt = Vector3(0, 0, 0)
+				local success = false
+				for i = 7, 12.5, 0.5 do
+					pt.x = x + cos_theta * (i - 0.5)
+					pt.z = z - sin_theta * (i - 0.5)
+					if map:IsPassableAtPoint(pt:Get()) then
+						pt.x = x + cos_theta * (i + 0.5)
+						pt.z = z - sin_theta * (i + 0.5)
+						if map:IsPassableAtPoint(pt:Get()) then
+							pt.x = x + cos_theta * i
+							pt.z = z - sin_theta * i
+							if not map:IsPointNearHole(pt) then
+								success = true
+								break
+							end
+						end
+					end
+				end
+				if not success then
+					for i = 6.5, 0.5, -0.5 do
+						pt.x = x + cos_theta * (i - 0.5)
+						pt.z = z - sin_theta * (i - 0.5)
+						if map:IsPassableAtPoint(pt:Get()) then
+							pt.x = x + cos_theta * (i + 0.5)
+							pt.z = z - sin_theta * (i + 0.5)
+							if map:IsPassableAtPoint(pt:Get()) then
+								pt.x = x + cos_theta * i
+								pt.z = z - sin_theta * i
+								if not map:IsPointNearHole(pt) then
+									success = true
+									break
+								end
+							end
+						end
+					end
+				end
+				inst.Physics:Stop()
+				if success then
+					x, y, z = pt:Get()
+					inst.Physics:Teleport(x, y, z)
+				end
+
+				fx = SpawnPrefab("woby_dash_shadow_fx")
+				fx.Transform:SetPosition(x, y, z)
+				--fx:SetFxOwner(inst) --don't track owner, keep fx stationary
+				fx.SoundEmitter:PlaySound("meta5/woby/shadow_dash_in")
+			end),
+			FrameEvent(4, function(inst)
+				inst.Physics:SetMotorVel(16, 0, 0)
+			end),
+			FrameEvent(5, function(inst)
+				PlayFootstep(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5)
+				if inst.sg.statemem.ridingwoby then
+					inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 })
+				end
+			end),
+			FrameEvent(6, function(inst)
+				inst.sg.statemem.dashing = true
+				inst.sg:GoToState("dash_woby_pst", true)
+				inst.sg.statemem.isphysicstoggle = true
+			end),
+		},
+
+		onexit = function(inst)
+			inst.components.health:SetInvincible(false)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:Enable(true)
+			end
+			inst.DynamicShadow:Enable(true)
+			ToggleOnPhysics(inst)
+			if not inst.sg.statemem.dashing then
+				inst.AnimState:SetMultColour(1, 1, 1, 1)
+				inst:RemoveTag("woby_dash_fade")
+				inst.Physics:Stop()
+			end
+			inst.sg.statemem.silhoutte:Remove()
+		end,
+	},
+
+	State{
+		name = "dash_woby_pst",
+		tags = { "busy", "jumping", "nopredict" },
+
+		onenter = function(inst, isshadow)
+			ConfigureRunState(inst)
+			if inst.sg.statemem.ridingwoby then
+				inst.AnimState:PlayAnimation("sprint_woby_pst")
+				--Assumes we can only ride our own woby!
+				if not isshadow and inst.sg.statemem.normalriding and inst.components.skilltreeupdater:IsActivated("walter_woby_lunar") then
+					--@V2C: #SPRINT_AFTER_DASH
+					inst.sg:AddStateTag("force_sprint_woby")
+					inst:AddTag("force_sprint_woby")
+				end
+			else
+				inst.AnimState:PlayAnimation("run_pst")
+			end
+			inst.sg.statemem.isshadow = isshadow
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, function(inst)
+				inst.Physics:SetMotorVel(16, 0, 0)
+				if inst.sg.statemem.isshadow then
+					inst.AnimState:SetMultColour(0.1, 0.1, 0.1, 1)
+				end
+			end),
+			FrameEvent(1, function(inst)
+				inst.Physics:SetMotorVel(12, 0, 0)
+				if inst.sg.statemem.isshadow then
+					inst.AnimState:SetMultColour(0.3, 0.3, 0.3, 1)
+				end
+			end),
+			FrameEvent(2, function(inst)
+				inst.Physics:SetMotorVel(8, 0, 0)
+				if inst.sg.statemem.isshadow then
+					inst.AnimState:SetMultColour(0.6, 0.6, 0.6, 1)
+				end
+			end),
+			FrameEvent(3, function(inst)
+				inst.Physics:SetMotorVel(4, 0, 0)
+				if inst.sg.statemem.isshadow then
+					inst.AnimState:SetMultColour(1, 1, 1, 1)
+				end
+			end),
+			FrameEvent(4, function(inst) inst.Physics:SetMotorVel(2, 0, 0) end),
+			FrameEvent(5, function(inst) inst.Physics:SetMotorVel(1, 0, 0) end),
+			FrameEvent(6, function(inst)
+				inst.sg:RemoveStateTag("busy")
+				inst.sg:RemoveStateTag("jumping")
+				inst.sg:RemoveStateTag("nopredict")
+				inst.sg:AddStateTag("idle")
+				inst.sg:AddStateTag("canrotate")
+				inst.Physics:Stop()
+			end),
+			FrameEvent(12, function(inst)
+				if inst.HUD then
+					--keep this longer for remote clients
+					inst.sg:RemoveStateTag("force_sprint_woby")
+				end
+				inst:RemoveTag("force_sprint_woby")
+				inst:EnableWobySprintTrail(false)
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			inst:RemoveTag("force_sprint_woby")
+			inst.Physics:Stop()
+			if inst.sg.statemem.isshadow then
+				inst.AnimState:SetMultColour(1, 1, 1, 1)
+			end
+			inst:EnableWobySprintTrail(false)
+		end,
+	},
 }
 
 local hop_timelines =

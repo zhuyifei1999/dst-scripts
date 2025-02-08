@@ -169,6 +169,29 @@ function Follower:StopLeashing()
 	end
 end
 
+function Follower:DisableLeashing()
+	if not self.noleashing then
+        self.noleashing = true
+        self:StopLeashing()
+    end
+end
+
+function Follower:EnableLeashing()
+    if not self.noleashing then
+        return
+    end
+
+    self.noleashing = nil
+
+    if self.leader ~= nil and (self.leader:HasTag("player") or self.leader.components.inventoryitem ~= nil) then
+        self:StartLeashing()
+
+        if self.inst:IsAsleep() then
+            OnEntitySleep(self.inst)
+        end
+    end
+end
+
 OnPlayerJoined = function(self, player)
     if self.cached_player_leader_userid == player.userid then
         local current_time = GetTime()

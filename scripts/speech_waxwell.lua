@@ -341,7 +341,8 @@ return{
 			INUSE = "I'm quite adept at waiting. I've had a lot of practice.",
             NOTMASTERCHEF = "I have more important things to do than that.",
             NOTAMERM = "Even I won't stoop so low as to steal from these wretches.",
-            NOTSOULJARHANDLER = "Souls are a different thing altogether."
+            NOTSOULJARHANDLER = "Souls are a different thing altogether.",
+            RESTRICTED = "I don’t have the magic word.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "Worry not, pal. I've the patience of a saint.",
             NOTMASTERCHEF = "I have more important things to do than that.",
-            NOTSOULJARHANDLER = "Souls are a different thing altogether."
+            NOTSOULJARHANDLER = "Souls are a different thing altogether.",
+            RESTRICTED = "I don’t have the magic word.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Where is that incompetent judge?",
             ALREADYACTIVE = "There must be a competition going on elsewhere...",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "That hit the spot.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "I'd rather sleep like the dead.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Respect my brawn!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too stiff a drink.",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "He'll shoot his eye out if he's not careful.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "He'll shoot his eye out if he's not careful.",
 
-        WOBY_BADGE_STATION = "Pfft. Dog acts.",
+		WOBY_TREAT = "I thought I saw Wilson munching on one.",
+		BANDAGE_BUTTERFLYWINGS = "Ew.",
+		PORTABLEFIREPIT_ITEM = "Fire on demand? I may have underestimated the young tree trooper.",
+        SLINGSHOTAMMO_CONTAINER = "Hope he'll pick up after himself more.",
 
         ELIXIR_CONTAINER = "Don't think I'm fooled by its innocent appearance.",
         GHOSTFLOWERHAT = "Talk about a near death experience.",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Fancy...",
+        THULECITEBUGNET = "I'm glad I'm not an insect.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

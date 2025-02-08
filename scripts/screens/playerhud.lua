@@ -46,7 +46,6 @@ local ScrapbookScreen = require "screens/redux/scrapbookscreen"
 local InspectaclesScreen = require("screens/redux/inspectaclesscreen")
 local PumpkinCarvingScreen = require("screens/redux/pumpkincarvingscreen")
 local SnowmanDecoratingScreen = require("screens/redux/snowmandecoratingscreen")
-local WobyBadgesScreen = require("screens/redux/wobybadgesscreen")
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -365,11 +364,19 @@ end
 
 local function OpenContainerWidget(self, container, side)
     local containerwidget = ContainerWidget(self.owner)
-	local parent = side and self.controls.containerroot_side
-					or (container.replica.container ~= nil and container.replica.container.type == "hand_inv") and self.controls.inv.hand_inv
-                    or (container.replica.container ~= nil and container.replica.container.type == "side_inv") and self.controls.secondary_status.side_inv
-                    or (container.replica.container ~= nil and container.replica.container.type == "side_inv_behind") and self.controls.containerroot_side_behind
-					or self.controls.containerroot
+	local parent
+	if side then
+		parent = self.controls.containerroot_side
+	else
+		local _container = container.replica.container
+		local _type = _container and _container.type or nil
+		parent =
+			(_type == "hand_inv" and self.controls.inv.hand_inv) or
+			(_type == "side_inv" and self.controls.secondary_status.side_inv) or
+			(_type == "side_inv_behind" and self.controls.containerroot_side_behind) or
+			(_type == "top_rack" and self.controls.containerroot_under) or
+			self.controls.containerroot
+	end
 
 	parent:AddChild(containerwidget)
 
@@ -708,23 +715,6 @@ function PlayerHud:CloseSnowmanDecoratingScreen()
 	end
 end
 
-function PlayerHud:OpenWobyBadgesScreen(trainingdata)
-    self:CloseWobyBadgesScreen()
-    self.wobybadgesscreen = WobyBadgesScreen(self.owner, trainingdata)
-    self:OpenScreenUnderPause(self.wobybadgesscreen)
-
-    return true
-end
-
-function PlayerHud:CloseWobyBadgesScreen()
-    if self.wobybadgesscreen ~= nil then
-        if self.wobybadgesscreen.inst:IsValid() then
-            TheFrontEnd:PopScreen(self.wobybadgesscreen)
-        end
-        self.wobybadgesscreen = nil
-    end
-end
-
 --Helper for transferring data between screens when transitioning from giftitempopup to wardrobepopup
 function PlayerHud:SetRecentGifts(item_types, item_ids)
     if self.recentgiftstask ~= nil then
@@ -921,11 +911,18 @@ function PlayerHud:OnUpdate(dt)
 	if self.owner ~= nil then
 		local spellbook = self:GetCurrentOpenSpellBook()
 		if spellbook ~= nil then
-			if not spellbook:IsValid() or spellbook:HasTag("fueldepleted") then
+			if not spellbook:IsValid() or
+				spellbook:HasTag("fueldepleted") or
+				not (spellbook.components.spellbook and spellbook.components.spellbook:CanBeUsedBy(self.owner))
+			then
 				self:CloseSpellWheel()
 			else
 				local inventoryitem = spellbook.replica.inventoryitem
-				if inventoryitem == nil or not inventoryitem:IsGrandOwner(self.owner) then
+				if inventoryitem then
+					if not inventoryitem:IsGrandOwner(self.owner) then
+						self:CloseSpellWheel()
+					end
+				elseif not CanEntitySeeTarget(self.owner, spellbook) then
 					self:CloseSpellWheel()
 				end
 			end
@@ -1189,6 +1186,9 @@ function PlayerHud:CloseSpellWheel(is_execute)
 				TheFocalPoint.SoundEmitter:PlaySound(sfx)
 			end
 		end
+		if is_execute and old == self.owner then
+			self.controls:DelayControllerSpellWheelHint()
+		end
 	end
 end
 
@@ -1313,7 +1313,11 @@ function PlayerHud:OnControl(control, down)
                 self:CloseCrafting()
                 return true
 			elseif self:IsSpellWheelOpen() then
-				self:CloseSpellWheel()
+				--V2C: Wheel widget closes itself on CONTROL_CANCEL down already.
+				--     Don't do this here because we can now open spell wheel via
+				--     (B) button, and this would've instantly closed it when the
+				--     button is released.
+				--self:CloseSpellWheel()
 				return true
             elseif self:IsControllerInventoryOpen() then
                 self:CloseControllerInventory()

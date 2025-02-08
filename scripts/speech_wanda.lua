@@ -341,7 +341,8 @@ return{
 			INUSE = "I'll have to check it later. Or earlier?",
             NOTMASTERCHEF = "It takes too long to cook a fancy meal.",
             NOTAMERM = "I don't expect there's anything in there I'd care to take.",
-            NOTSOULJARHANDLER = "The imp can do whatever he wants with these."
+            NOTSOULJARHANDLER = "The imp can do whatever he wants with these.",
+            RESTRICTED = "I’ll not waste time with that.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "I don't have time to fuss with this!",
 			INUSE = "Please hurry, I have so much to do!",
             NOTMASTERCHEF = "It takes too long to cook a fancy meal.",
-            NOTSOULJARHANDLER = "The imp can do whatever he wants with these."
+            NOTSOULJARHANDLER = "The imp can do whatever he wants with these.",
+            RESTRICTED = "I’ll not waste time with that.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Well, if he's not going to start the contest I'm not waiting around.",
             ALREADYACTIVE = "It doesn't look like anyone's here.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Like a good cup of tea.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Let's get on with it.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Strength is efficiency!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Ooph. That is far too strong.",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Rather innovative for a child.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Rather innovative for a child.",
 
-        WOBY_BADGE_STATION = "She's a fast learner.",
+		WOBY_TREAT = "I suppose with a really strong cup of tea… nah.",
+		BANDAGE_BUTTERFLYWINGS = "This will heal it up in no time at all.",
+		PORTABLEFIREPIT_ITEM = "That Walter is a clever little fellow.",
+        SLINGSHOTAMMO_CONTAINER = "Stockpiling for the future. Good boy!",
 
         ELIXIR_CONTAINER = "Pretty, practical.",
         GHOSTFLOWERHAT = "Who has time to pick flowers?",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Must have been in a hurry.",
+        THULECITEBUGNET = "I've seen this before.",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

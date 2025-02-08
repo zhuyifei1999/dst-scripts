@@ -59,14 +59,6 @@ local assets =
 
 	Asset("DYNAMIC_ATLAS", "images/snowman.xml"),
 	Asset("PKGREF", "images/snowman.tex"),
-
-    Asset("ANIM", "anim/woby_badge_progressbar.zip"),
-    Asset("ANIM", "anim/woby_badge_pin.zip"),
-
-    Asset("DYNAMIC_ATLAS", "images/woby_badges.xml"),
-	Asset("PKGREF", "images/woby_badges.tex"),
-    Asset("DYNAMIC_ATLAS", "images/woby_badges2.xml"),
-	Asset("PKGREF", "images/woby_badges2.tex"),
 }
 
 for k, v in pairs(GroundTiles.assets) do

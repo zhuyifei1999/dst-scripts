@@ -6,6 +6,7 @@ local WereBadge        = require "widgets/werebadge"
 local MoistureMeter    = require "widgets/moisturemeter"
 local BoatMeter        = require "widgets/boatmeter"
 local PetHealthBadge   = require "widgets/pethealthbadge"
+local PetHungerBadge   = require "widgets/pethungerbadge"
 local AvengingGhostBadge = require "widgets/avengingghostbadge"
 local InspirationBadge = require "widgets/inspirationbadge"
 local MightyBadge      = require "widgets/mightybadge"
@@ -109,6 +110,24 @@ local function OnSetPlayerMode(inst, self)
         inst:ListenForEvent("clientpetskindirty", self.onpetskindirty, self.owner)
         self:RefreshPetSkin()
     end
+
+	if self.pethungerbadge and self.onpethungerdelta == nil then
+		self.onpethungerdelta = function(owner, data) self:PetHungerDelta(data) end
+		self.onpethungerflags = function(owner, flags) self:SetPetHungerFlags(flags) end
+		self.onshowpethunger = function(owner, shown)
+			if shown and owner.pet_hunger_classified then
+				self:SetPetHungerPercent(owner.pet_hunger_classified:GetPercent(), owner.pet_hunger_classified:Max())
+				self:SetPetHungerFlags(owner.pet_hunger_classified:GetFlags(), true)
+				self.pethungerbadge:Show()
+			else
+				self.pethungerbadge:Hide()
+			end
+		end
+		self.inst:ListenForEvent("pet_hungerdelta", self.onpethungerdelta, self.owner)
+		self.inst:ListenForEvent("pet_hunger_flags", self.onpethungerflags, self.owner)
+		self.inst:ListenForEvent("show_pet_hunger", self.onshowpethunger, self.owner)
+		self.onshowpethunger(self.owner, self.owner.pet_hunger_classified ~= nil)
+	end
 end
 
 local function OnSetGhostMode(inst, self)
@@ -185,6 +204,16 @@ local function OnSetGhostMode(inst, self)
         self.inst:RemoveEventCallback("clientpetskindirty", self.onpetskindirty, self.owner)
         self.onpetskindirty = nil
     end
+
+	if self.onpethungerdelta then
+		self.inst:RemoveEventCallback("pet_hungerdelta", self.onpethungerdelta, self.owner)
+		self.inst:RemoveEventCallback("pet_hunger_flags", self.onpethungerflags, self.owner)
+		self.inst:RemoveEventCallback("show_pet_hunger", self.onshowpethunger, self.owner)
+		self.onpethungerdelta = nil
+		self.onpethungerflags = nil
+		self.onshowpethunger = nil
+		self.pethungerbadge:Hide()
+	end
 end
 
 local function UpdateRezButton_Enable(inst, self, proxy_is_gravestone)
@@ -259,6 +288,11 @@ local StatusDisplays = Class(Widget, function(self, owner)
     self.stomach = self:AddChild(owner.CreateHungerBadge ~= nil and owner.CreateHungerBadge(owner) or HungerBadge(owner))
     self.stomach:SetPosition(self.column2, 20, 0)
     self.onhungerdelta = nil
+
+	if owner:HasTag("dogrider") then
+		self:AddPetHunger()
+		self:SetupWobyPetHunger()
+	end
 
     self.heart = self:AddChild(owner.CreateHealthBadge ~= nil and owner.CreateHealthBadge(owner) or HealthBadge(owner, nil, "status_abigail"))
     self.heart:SetPosition(self.column4, 20, 0)
@@ -503,6 +537,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
         if self.mightybadge ~= nil then
             self.mightybadge:Hide()
         end
+
+		if self.pethungerbadge then
+			self.pethungerbadge:Hide()
+		end
     else
         self.isghostmode = nil
 
@@ -531,6 +569,10 @@ function StatusDisplays:SetGhostMode(ghostmode)
         if self.avengingghostbadge then
             self.avengingghostbadge:Hide()
         end
+
+		if self.pethungerbadge and self.owner.pet_hunger_classified then
+			self.pethungerbadge:Show()
+		end
     end
 
     if self.rezbutton_new_task ~= nil then
@@ -619,6 +661,130 @@ function StatusDisplays:HungerDelta(data)
             end
         end
     end
+end
+
+function StatusDisplays:AddPetHunger()
+	if self.pethungerbadge == nil then
+		self.pethungerbadge = self:AddChild(PetHungerBadge(self.owner, RGB(198, 198, 0), "status_woby"))
+		self.pethungerbadge:SetPosition(self.column5, 20, 0)
+		self.pethungerbadge:Hide()
+	end
+end
+
+function StatusDisplays:SetPetHungerPercent(pct, max)
+	self.pethungerbadge:SetPercent(pct, max)
+end
+
+function StatusDisplays:PetHungerDelta(data)
+	local max = self.owner.pet_hunger_classified and self.owner.pet_hunger_classified:Max() or nil
+	self:SetPetHungerPercent(data.newpercent, max)
+
+	if self.pethungerbadge.HungerDelta then
+		self.pethungerbadge:HungerDelta(data)
+	--[[elseif not data.overtime then
+		if data.newpercent > data.oldpercent then
+			self.pethungerbadge:PulseGreen()
+			--TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/hunger_up")
+		elseif data.newpercent < data.oldpercent then
+			--TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/hunger_down")
+			self.pethungerbadge:PulseRed()
+		end]]
+	end
+end
+
+function StatusDisplays:SetPetHungerFlags(flags, instant)
+	self.pethungerbadge:OnFlagsChanged(flags, instant)
+end
+
+function StatusDisplays:SetupWobyPetHunger()
+	local WobyCommon = require("prefabs/wobycommon")
+	local layers =
+	{
+		"big_woby",
+		"big_woby_lunar",
+		"big_woby_shadow",
+		"small_woby",
+		"small_woby_lunar",
+		"small_woby_shadow",
+	}
+
+	--Don't animate frame as meter level changes, otherwise it may interrupt transition anims.
+	self.pethungerbadge.dont_animate_circleframe = true
+
+	--Frames match Woby's build colours, so we'll want to apply colourcube
+	self.pethungerbadge.circleframe:GetAnimState():SetDefaultEffectHandle("shaders/ui_anim_cc.ksh")
+	self.pethungerbadge.circleframe:GetAnimState():UseColourCube(true)
+	self.pethungerbadge.circleframe:GetAnimState():SetUILightParams(2.0, 4.0, 4.0, 20.0)
+
+	--Switch frames for big vs small woby
+	local _OnFlagsChanged = self.pethungerbadge.OnFlagsChanged
+	self.pethungerbadge.OnFlagsChanged = function(self, flags, instant)
+		--self is pethungerbadge
+		_OnFlagsChanged(self, flags, instant)
+
+		local isbig = checkbit(flags, bit.lshift(1, WobyCommon.FLAGBITS.BIG))
+		local islunar = checkbit(flags, bit.lshift(1, WobyCommon.FLAGBITS.LUNAR))
+		local isshadow = checkbit(flags, bit.lshift(1, WobyCommon.FLAGBITS.SHADOW))
+
+		local layer = isbig and "big_woby" or "small_woby"
+		if islunar then
+			layer = layer.."_lunar"
+		elseif isshadow then
+			layer = layer.."_shadow"
+		end
+
+		if self.layer ~= layer then
+			self.layer = layer
+			for i, v in ipairs(layers) do
+				if v == layer then
+					self.circleframe:GetAnimState():Show(v)
+				else
+					self.circleframe:GetAnimState():Hide(v)
+				end
+			end
+			if not instant and self.shown then
+				self.circleframe:GetAnimState():PlayAnimation(self.isbig == isbig and "alignment_change" or "state_change")
+				self.circleframe:GetAnimState():PushAnimation("frame", false)
+			end
+			self.isbig = isbig
+		end
+	end
+
+	--Arrow for sprinting hunger drain
+	local iscave = TheWorld:HasTag("cave")
+	self.pethungerbadge:SetArrowAnimFn(function(self)
+		--self is pethungerbadge
+		if self.owner then
+			if self.owner.sg then
+				--Assumes we can only ride our own woby!
+				if self.owner.sg:HasStateTag("sprint_woby") then
+					if self.owner.components.skilltreeupdater then
+						if self.owner.components.skilltreeupdater:IsActivated("walter_woby_lunar") then
+							if not iscave and TheWorld.state.isnight and not TheWorld.state.isnewmoon then
+								return --lunar powered, no drain
+							end
+							local sanity = self.owner.replica.sanity
+							if sanity and sanity:IsLunacyMode() then
+								return --lunar powered, no drain
+							end
+						end
+						if self.owner.components.skilltreeupdater:IsActivated("walter_woby_endurance") then
+							return "arrow_loop_decrease"
+						end
+					end
+					return "arrow_loop_decrease_more"
+				end
+			elseif self.owner.pet_hunger_classified then
+				--non-predicting client, server will clear the sprint drain flag when lunar powered
+				if self.owner.pet_hunger_classified:GetFlagBit(1) then --sprint drain
+					if self.owner.pet_hunger_classified:GetFlagBit(2) then --endurance
+						return "arrow_loop_decrease"
+					end
+					return "arrow_loop_decrease_more"
+				end
+			end
+		end
+	end)
 end
 
 function StatusDisplays:SetSanityPercent(pct)

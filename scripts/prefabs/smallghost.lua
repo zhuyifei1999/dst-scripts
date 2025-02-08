@@ -131,11 +131,13 @@ local function link_to_home(inst, home)
 		if home:IsValid() then
 			home:RemoveEventCallback("onremove", inst.UnlinkFromGravestone, inst)
 			home.ghost = nil
+
+            inst.components.knownlocations:ForgetLocation("home")
 		end
         inst.UnlinkFromGravestone = nil
     end
 
-    home:ListenForEvent("onremove", inst.UnlinkFromGravestone, inst)
+    home:ListenForEvent("onremove", inst.UnlinkFromGravestone)
 
     if not inst.components.playerprox:IsPlayerClose() then
         inst:RemoveFromScene()

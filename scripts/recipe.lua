@@ -126,6 +126,9 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer_or_more_data
 
     self.builder_tag   = builder_tag or nil
     self.builder_skill = more_data.builder_skill or nil
+	self.no_builder_tag		= more_data.no_builder_tag
+	self.no_builder_skill	= more_data.no_builder_skill
+	self.forward_ingredients = more_data.forward_ingredients --skill trees may swap out some basic ingredient recipes; this will let crafting know which alternate recipes to forward to
 	self.sg_state      = more_data.sg_state or more_data.buildingstate or nil -- overrides the SG state to use when crafting the item (buildingstate is the old variable name)
 
     self.build_mode    = build_mode or BUILDMODE.LAND

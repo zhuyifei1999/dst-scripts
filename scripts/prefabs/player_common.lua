@@ -1708,7 +1708,6 @@ local function SaveForReroll(inst)
         petleash = inst.components.petleash ~= nil and inst.components.petleash:OnSave() or nil,
         maps = inst.player_classified ~= nil and inst.player_classified.MapExplorer ~= nil and inst.player_classified.MapExplorer:RecordAllMaps() or nil,
 		seamlessplayerswapper = inst.components.seamlessplayerswapper ~= nil and inst.components.seamlessplayerswapper:SaveForReroll() or nil,
-        dogtrainer = inst.components.dogtrainer ~= nil and inst.components.dogtrainer:SaveForReroll() or nil,
         curses = curses,
     }
     return next(data) ~= nil and data or nil
@@ -1731,9 +1730,6 @@ local function LoadForReroll(inst, data)
 	if data.seamlessplayerswapper ~= nil and inst.components.seamlessplayerswapper ~= nil then
         inst.components.seamlessplayerswapper:OnLoad(data.seamlessplayerswapper)
 	end
-    if data.dogtrainer ~= nil and inst.components.dogtrainer ~= nil then
-        inst.components.dogtrainer:OnLoad(data.dogtrainer)
-    end
 
     if data.curses then
         for curse,num in pairs(data.curses)do
@@ -2058,7 +2054,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "tears",
         "shock_fx",
         "splash",
-        "globalmapicon",
+        "globalmapiconnamed",
         "lavaarena_player_revive_from_corpse_fx",
         "superjump_fx",
 		"washashore_puddle_fx",
@@ -2535,7 +2531,10 @@ end
         inst:AddComponent("birdattractor")
 
         inst:AddComponent("maprevealable")
+        inst.components.maprevealable:SetIconPrefab("globalmapiconnamed")
+        inst.components.maprevealable:SetIconTag("globalmapicon_player")
         inst.components.maprevealable:SetIconPriority(10)
+        inst.components.maprevealable:SetOnIconCreatedFn(ex_fns.MapRevealable_OnIconCreatedFn)
 
 		inst:AddComponent("embarker")
 		inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED
@@ -2718,11 +2717,6 @@ end
 		inst.components.channelcaster:SetOnStopChannelingFn(fns.OnStopChannelCastingItem)
 
         inst:AddComponent("experiencecollector")
-
-        -- Used by Walter, but on every character for save-loading.
-        inst:AddComponent("dogtrainer")
-        inst.components.dogtrainer:SetAspects(WOBY_TRAINING_ASPECTS_LIST)
-
 
         -------------------------------------
 

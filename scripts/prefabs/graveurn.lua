@@ -108,7 +108,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
-    MakeInventoryFloatable(inst, "small", 0.05, 1)
+    MakeInventoryFloatable(inst, "small", 0.2, 0.75)
 
     inst.AnimState:SetBank("graveurn")
     inst.AnimState:SetBuild("graveurn")

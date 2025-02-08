@@ -341,7 +341,8 @@ return{
 			INUSE = "You find something good?",
             NOTMASTERCHEF = "Fancy cooking man can do it, florpt.",
             NOTAMERM = "Unused_by_wurt",
-            NOTSOULJARHANDLER = "Imp's."
+            NOTSOULJARHANDLER = "Imp's.",
+            RESTRICTED = "But why? Flort!",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "Can't, glorp.",
 			INUSE = "Gotta wait.",
             NOTMASTERCHEF = "Fancy cooking man can do it, florpt.",
-            NOTSOULJARHANDLER = "Imp's."
+            NOTSOULJARHANDLER = "Imp's.",
+            RESTRICTED = "But why? Flort!",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Huh? Where is contest??",
             ALREADYACTIVE = "Maybe he doing secret contest somewhere else...",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Florp! Nice.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "See like Deadfolk, florp!",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Mermfolk strong!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Glurph! Too strong.",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Pine boy shooty toy. Florp!",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Pine boy shooty toy. Florp!",
 
-        WOBY_BADGE_STATION = "Pine boy teach doggie.",
+		WOBY_TREAT = "Smell… familiar.",
+		BANDAGE_BUTTERFLYWINGS = "Stick me!",
+		PORTABLEFIREPIT_ITEM = "Florp! Can take cozy time anywhere!",
+        SLINGSHOTAMMO_CONTAINER = "Pine boy pockets.",
 
         ELIXIR_CONTAINER = "Abby-gill won't share treats. Glurgh.",
         GHOSTFLOWERHAT = "Now can share Abby-gill treats!",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Who that?",
+        THULECITEBUGNET = "Come out, bugs! Florp!",
     },
 
     DESCRIBE_GENERIC = "What that?",

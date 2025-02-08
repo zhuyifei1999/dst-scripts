@@ -341,7 +341,8 @@ return{
 			INUSE = "I can come back later...",
             NOTMASTERCHEF = "That belongs to Warly.",
             NOTAMERM = "There is nothing for me in there.",
-            NOTSOULJARHANDLER = "Not for me."
+            NOTSOULJARHANDLER = "Not for me.",
+            RESTRICTED = "Can’t always get what you want. Some never do.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "I must mind my manners.",
 			INUSE = "Can I use that after you?",
             NOTMASTERCHEF = "That belongs to Warly.",
-            NOTSOULJARHANDLER = "Not for me."
+            NOTSOULJARHANDLER = "Not for me.",
+            RESTRICTED = "Can’t always get what you want. Some never do.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Hello sir? He seems to be out.",
             ALREADYACTIVE = "He must be busy somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1104,8 +1100,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "All comfort is fleeting.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "My world is just as cold and dark without you, Abby.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "My heart is still heavy.",
-
-    ANNOUNCE_ABIGAIL_HIDING = "TODO",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "It's too much.",
 
@@ -5589,7 +5583,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Walter is getting serious with his slingshotting.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Walter is getting serious with his slingshotting.",
 
-        WOBY_BADGE_STATION = "What a good girl, that Woby.",
+		WOBY_TREAT = "Woby loves these.",
+		BANDAGE_BUTTERFLYWINGS = "An ephemeral remedy woven from vanitas itself.",
+		PORTABLEFIREPIT_ITEM = "I may carry warmth with me, yet I am ever cold.",
+        SLINGSHOTAMMO_CONTAINER = "Grief takes up no space, yet weighs far more.",
 
         ELIXIR_CONTAINER = "If only I could have helped you then.",
         GHOSTFLOWERHAT = "That I may walk a mile under your veil, Abby.",
@@ -5601,6 +5598,7 @@ return{
         },
 
         SHALLOW_GRAVE = "What difference does it make?",
+        THULECITEBUGNET = "The net comes for us all.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

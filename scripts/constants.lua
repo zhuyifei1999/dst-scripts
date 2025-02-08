@@ -18,6 +18,7 @@ RESOLUTION_X = 1280
 RESOLUTION_Y = 720
 
 PLAYER_REVEAL_RADIUS = 30.0 -- NOTES(JBK): Keep in sync with MiniMapRenderer.cpp!
+PLAYER_REVEAL_RADIUS_SQ = PLAYER_REVEAL_RADIUS * PLAYER_REVEAL_RADIUS
 PLAYER_CAMERA_SEE_DISTANCE = 40.0 -- NOTES(JBK): Based off of an approximation of the maximum default camera distance before seeing clouds and is the screen diagonal.
 PLAYER_CAMERA_SEE_DISTANCE_SQ = PLAYER_CAMERA_SEE_DISTANCE * PLAYER_CAMERA_SEE_DISTANCE -- Helper.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE = 20.0 -- NOTES(JBK): This is an approximate distance traveled where the camera should snap and fade out to not cause disorientations.
@@ -2112,6 +2113,8 @@ DEPLOYSPACING =
     NONE = 3,
 	PLACER_DEFAULT = 4,
     LARGE = 5,
+	--V2C: late additions
+	ONEPOINTFIVE = 6,
 }
 
 --V2C: Deploy spacing is a legacy system where this is actually the distance
@@ -2128,6 +2131,7 @@ DEPLOYSPACING_RADIUS =
     [DEPLOYSPACING.NONE] = 0,
 	[DEPLOYSPACING.PLACER_DEFAULT] = 3.2,
     [DEPLOYSPACING.LARGE] = 4.0,
+	[DEPLOYSPACING.ONEPOINTFIVE] = 1.5,
 }
 
 TROPHYSCALE_TYPES =
@@ -2176,6 +2180,7 @@ SCREEN_FADE_TIME = .2
 BACK_BUTTON_X = 60
 BACK_BUTTON_Y = 60
 DOUBLE_CLICK_TIMEOUT = .5
+DOUBLE_CLICK_POS_THRESHOLD = 3 --how far ur mouse can move and still count as dbl click
 
 GOLD = {202/255, 174/255, 118/255, 255/255}
 GREY = {.57, .57, .57, 1}
@@ -2787,6 +2792,10 @@ CHARLIERESIDUE_MAP_ACTIONS = {
     WORMHOLE = 1,
 }
 
+MINIMAP_DECORATION_PRIORITY = 50 -- NOTES(JBK): Nothing should go above this to maintain the minimap UI space.
+
+WOBYCOURIER_NO_CHEST_COORD = -32767 -- Lowest net_shortint.
+
 -- Constants to reduce network overhead.
 CLIENTAUTHORITATIVESETTINGS = {
     PLATFORMHOPDELAY = 0,
@@ -2797,19 +2806,6 @@ NIGHTSWORD_FX_OFFSETS = {
     DOWN = 2.9,-- 2.6,
 }
 
-NUM_WOBY_TRAINING_ASPECTS_LEVELS = 2 -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
-
-WOBY_TRAINING_ASPECTS = -- NOTES(JBK): Keep this table updated in export_accountitems.lua [EAITAB]
-{
-    SPEED = "speed",
-    RESISTANCE = "resistance",
-    FETCHING = "fetching",
-    DIGGING = "digging",
-    BRAVERY = "bravery",
-}
-
-WOBY_TRAINING_ASPECTS_LIST = {}
-
 -- Tag pairs in this list behave mutually exclusively,
 -- when trying to attune to different objects.
 EQUIVALENT_ATTUNABLE_TAGS =
@@ -2817,7 +2813,3 @@ EQUIVALENT_ATTUNABLE_TAGS =
     ["remoteresurrector"] = "gravestoneresurrector",
     ["gravestoneresurrector"] = "remoteresurrector",
 }
-
-for k, v in pairs(WOBY_TRAINING_ASPECTS) do
-    table.insert(WOBY_TRAINING_ASPECTS_LIST, v)
-end

@@ -43,10 +43,9 @@ local function do_transparency(transparency_level, inst)
 end
 
 local function UndoTransparency(inst)
-    if not inst:HasTag("gestalt_hide") then
-        inst.components.fader:Fade(0.3, 1.0, 0.75, do_transparency)
-        inst.point_filtered:set(false)
-    end
+
+    inst.components.fader:Fade(0.3, 1.0, 0.75, do_transparency)
+    inst.point_filtered:set(false)
 
     if not inst:HasTag("gestalt") then inst.components.aura:Enable(true) end
 
@@ -505,10 +504,9 @@ local function DoGhostEscape(inst)
         return
     end
 
-    if not inst:HasTag("gestalt_hide") then
-        inst.components.fader:Fade(1.0, 0.3, 0.75, do_transparency)
-        inst.components.aura:Enable(false)
-    end
+    inst.components.fader:Fade(1.0, 0.3, 0.75, do_transparency)
+    inst.components.aura:Enable(false)
+
     inst.components.locomotor:SetExternalSpeedMultiplier(inst, "transparency", 1.25)
     inst:AddTag("notarget")
     inst._is_transparent = true
@@ -538,11 +536,6 @@ local function DoGhostScare(inst)
         return
     end
 
-    if inst:HasTag("gestalt_hide") then
-        if inst._playerlink then inst._playerlink.components.talker:Say(GetString(inst._playerlink, "ANNOUNCE_ABIGAIL_HIDING")) end
-        return
-    end
-
     local PVP_enabled = TheNet:GetPVPEnabled()
     local doer = inst._playerlink
 
@@ -566,11 +559,6 @@ local ATTACK_NO_TAGS = {"DECOR", "FX", "INLIMBO", "NOCLICK"}
 local function DoGhostAttackAt(inst, pos)
     if (inst.sg and inst.sg:HasStateTag("nocommand"))
             or (inst.components.health and inst.components.health:IsDead()) then
-        return
-    end
-
-    if inst:HasTag("gestalt_hide") then
-        if inst._playerlink then inst._playerlink.components.talker:Say(GetString(inst._playerlink, "ANNOUNCE_ABIGAIL_HIDING")) end
         return
     end
 
@@ -600,12 +588,6 @@ local function DoGhostHauntAt(inst, pos)
             or (inst.components.health and inst.components.health:IsDead()) then
         return
     end
-
-    if inst:HasTag("gestalt_hide") then
-        if inst._playerlink then inst._playerlink.components.talker:Say(GetString(inst._playerlink, "ANNOUNCE_ABIGAIL_HIDING")) end
-        return
-    end
-
 
 	local px, py, pz = pos:Get()
 	local targets_near_position = TheSim:FindEntities(px, py, pz, 2, nil, HAUNT_CANT_TAGS)

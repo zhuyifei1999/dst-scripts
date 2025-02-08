@@ -126,6 +126,10 @@ return{
             INUSE = "Hey while you're here, wanna hear a scary story I heard on the radio?",
             TOOFAR = "My arms aren't that long.",
         },
+        DIRECTCOURIER_MAP =
+        {
+            NOTARGET = "Guess we should pick another spot, Woby.",
+        },
 		DISMANTLE =
 		{
 			COOKING = "That seems kind of dangerous.",
@@ -341,7 +345,8 @@ return{
 			INUSE = "Do you like radio shows? There was this great horror one I used to listen to-",
             NOTMASTERCHEF = "I'll go check on my own supplies.",
             NOTAMERM = "I don't want to make the bog monsters mad at me!",
-            NOTSOULJARHANDLER = "They're souls Woby, not treats."
+            NOTSOULJARHANDLER = "They're souls Woby, not treats.",
+            RESTRICTED = "Aww, I can't use that.",
 		},
         SADDLE =
         {
@@ -373,7 +378,8 @@ return{
 			NOTALLOWED = "That's against the rules.",
 			INUSE = "\"A Pinetree Pioneer is patient and polite.\" But uh, hurry up please?",
             NOTMASTERCHEF = "I'd rather cook over a campfire, honestly...",
-            NOTSOULJARHANDLER = "They're souls Woby, not treats."
+            NOTSOULJARHANDLER = "They're souls Woby, not treats.",
+            RESTRICTED = "Aww, I can't use that.",
 		},
         TEACH =
         {
@@ -433,12 +439,6 @@ return{
         {
             DOESNTWORK = "Maybe he took the day off?",
             ALREADYACTIVE = "There must be another contest going on somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "Hmm. I wonder why it's not working?",
-            BURNING = "It's too on fire to use.",
-            INUSE = "Someone's using it now.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -815,6 +815,30 @@ return{
 	{
         "To be continued...",
 	},
+	ANNOUNCE_WOBY_RETURN =
+	{
+		"Wooooooby!","Come back, girl!","Woby, back to me!"
+	},
+	ANNOUNCE_WOBY_SIT =
+	{
+		"Woby, stay!","Stay, girl!","Take a break, Wobes!"
+	},
+	ANNOUNCE_WOBY_FOLLOW =
+	{
+		"Woby, come!","Follow me, girl!","With me, Wobes!"
+	},
+	ANNOUNCE_WOBY_PRAISE =
+	{
+		"Good girl!","Thanks, Woby!","Atta girl, Wobes!","You're the best, Woby!","Yay, Woby!","Awww... sweet girl, Wobes.","Nice one, girl!"
+	},
+	ANNOUNCE_WOBY_FORAGE =
+	{
+		"Find more of these, Woby!","Help get us more, girl!","Woby, just like these ones.","Look for these, Woby."
+	},
+	ANNOUNCE_WOBY_WORK =
+	{
+		"Woby, come help me!","Lend a paw, girl! Hehe.","Wanna help, Wobes?","You gotta minute, Woby?","Who's my special helper?"
+	},
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",
@@ -1100,8 +1124,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Refreshing!",
     ANNOUNCE_ELIXIR_GHOSTVISION = "It's the best of both worlds!",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I bet I could carry you, Woby!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I don't think my tummy can handle that.",
 
@@ -5585,7 +5607,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "It's good tape.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Oh yeah. Here we go.",
 
-        WOBY_BADGE_STATION = "You're the smartest dog ever, Woby!",
+		WOBY_TREAT = "Woby's favourite!",
+		BANDAGE_BUTTERFLYWINGS = "It’s made from butterfly wings! Cute! And a little sad.",
+		PORTABLEFIREPIT_ITEM = "Woby, we’re geniuses!",
+        SLINGSHOTAMMO_CONTAINER = "A good Pinetree Pioneer always packs extra ammo!",
 
         ELIXIR_CONTAINER = "Contents not safe for human consumption!",
         GHOSTFLOWERHAT = "I guess it's kinda haunted.",
@@ -5597,6 +5622,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Don't sniff around there, Woby.",
+        THULECITEBUGNET = "Just minding my own buzzness, Woby. Hehe.",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

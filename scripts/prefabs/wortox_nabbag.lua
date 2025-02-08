@@ -176,7 +176,7 @@ local function fn()
     inst:AddTag("weapon")
 
     local swap_data = {sym_build = "swap_wortox_nabbag_empty"}
-    MakeInventoryFloatable(inst, "med", 0.09, {0.9, 0.4, 0.9}, false, -14.5, swap_data)
+    MakeInventoryFloatable(inst, "small", 0.1, 1, false, -14.5, swap_data)
 
     inst.entity:SetPristine()
 

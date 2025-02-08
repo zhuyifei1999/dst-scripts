@@ -281,7 +281,7 @@ local potion_tunings =
 	ghostlyelixir_revive =
 	{
 		DURATION = TUNING.GHOSTLYELIXIR_REVIVE_DURATION,
-        FLOATER = {"small", 0.2, 0.4},
+        FLOATER = {"small", 0.1, 0.7},
 		ONAPPLY = function(inst, target)
 			if target.components.follower.leader and target.components.follower.leader.components.ghostlybond then
 				target.components.follower.leader.components.ghostlybond:SetBondLevel(3)
@@ -314,7 +314,7 @@ local potion_tunings =
 	ghostlyelixir_shadow =
 	{
 		DURATION = TUNING.SKILLS.WENDY.SHADOWELIXIR_DURATION,
-        FLOATER = {"small", 0.2, 0.4},
+        FLOATER = {"small", 0.2, 0.7},
 		fx = "ghostlyelixir_shadow_fx",
 		dripfx = "ghostlyelixir_shadow_dripfx",
 		skill_modifier_long_duration = true,
@@ -323,7 +323,7 @@ local potion_tunings =
 	ghostlyelixir_lunar =
 	{
 		DURATION = TUNING.SKILLS.WENDY.LUNARELIXIR_DURATION,
-        FLOATER = {"small", 0.2, 0.4},
+        FLOATER = {"small", 0.3, 0.8},
 		fx = "ghostlyelixir_lunar_fx",
 		dripfx = "ghostlyelixir_lunar_dripfx",
 		ONAPPLY = function(inst, target)

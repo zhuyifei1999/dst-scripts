@@ -722,7 +722,11 @@ STRINGS =
         },
         COMBINESTACK = "Combine Stack",
         BURY = "Bury",
-        FEED = "Feed",
+		FEED =
+		{
+			GENERIC = "Feed",
+			TREAT = "Give Treat",
+		},
         FAN = "Fan",
         ERASE_PAPER = "Erase",
         UPGRADE =
@@ -1008,6 +1012,7 @@ STRINGS =
             PYROKINESIS = "Stoke Embers",
 			REMOTE = "Use",
             GHOSTTALK = "Whisper",
+			WOBY = "Woby Actions",
         },
 		CLOSESPELLBOOK = {
             GENERIC = "Close",
@@ -1085,8 +1090,30 @@ STRINGS =
             MUTATE_TARGET = "Mutate {target}",
         },
 
-        CUSTOMIZE_WOBY_BADGES = "Customize Woby Training",
+		DASH = "Dash",
+        DIRECTCOURIER_SETCHEST =
+        {
+            REMEMBER = "Remember Location",
+            FORGET = "Forget Location",
+        },
+        DIRECTCOURIER =
+        {
+            START = "Deliver Items",
+            SEND = "Deliver Items to {target}",
+            CHEST = "Deliver Items Off",
+        },
     },
+
+	WOBY_COMMANDS =
+	{
+		SIT = "Stay (on/off)",
+		SHRINK = "Transform",
+		PICKUP = "Retrieving (on/off)",
+		FORAGING = "Foraging (on/off)",
+		WORKING = "Hard-headed (on/off)",
+		SPRINTING = "Sprinting (on/off)",
+		SHADOWDASH = "Umbral Dash (on/off)",
+	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
     LMB = "\238\132\128",
@@ -1651,6 +1678,7 @@ STRINGS =
         MARSH_TREE = "Spiky Tree",
         PANFLUTE = "Pan Flute",
         BUGNET = "Bug Net",
+        THULECITEBUGNET = "Thulecite Bug Net",
         SADDLEHORN = "Saddlehorn",
         BRUSH = "Brush",
         SALTLICK = "Salt Lick",
@@ -4216,7 +4244,11 @@ STRINGS =
 		SLINGSHOT_HANDLE_SILK = "Slingshot Grip Tape",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Slingshot Void Wrap",
 
-        WOBY_BADGE_STATION = "Woby Training Station",
+		WOBY_TREAT = "Woby Snacks",
+        BANDAGE_BUTTERFLYWINGS = "Flutter Strip",
+		PORTABLEFIREPIT_ITEM = "Portable Campfire",
+        SLINGSHOTAMMO_CONTAINER = "Ammo Pouch",
+
         ELIXIR_CONTAINER = "Picnic Casket",
         GHOSTFLOWERHAT = "Wraith's Wreath",
         WENDY_RESURRECTIONGRAVE = "Perennial Altar",
@@ -4362,6 +4394,7 @@ STRINGS =
         PANFLUTE = "Music to soothe savage beasts.",
         COOKPOT = "Make better food.",
         BUGNET = "Catch bugs.",
+        THULECITEBUGNET = "Catch bugs the ancient way.",
         SADDLEHORN = "Pry that saddle off.",
         BRUSH = "Relieve beefalo of their hair buildup.",
         SALTLICK = "Keep your livestock content.",
@@ -5320,7 +5353,10 @@ STRINGS =
         GHOSTLYELIXIR_SHADOW = "As if a ghost attack wasn't vexing enough.",
         WENDY_RECIPE_GRAVESTONE = "No one deserves an unmarked grave.",
 
-        WOBY_BADGE_STATION = "Train your Pinetree Pooch!",
+		WOBY_TREAT = "Non-perishable Monster Meat biscuits made special for Woby.",
+        BANDAGE_BUTTERFLYWINGS = "A bandage made from the wings of Butterflies.",
+		PORTABLEFIREPIT_ITEM = "A campfire made for adventure--perfect for when you're on the go!",
+        SLINGSHOTAMMO_CONTAINER = "It's both practical and tactical.",
 
 		SLINGSHOTMODKIT = "Slingshotting is serious business.",
 		SLINGSHOT_BAND_PIGSKIN = "Sling farther!",
@@ -14026,42 +14062,6 @@ STRINGS.UI =
         OK     = "I'm ready!",
         CANCEL = "Let me think about it.",
     },
-
-    WOBY_BADGES_POPUP =
-    {
-        BADGES = {
-            SPEED_1 = "Agility I",
-            SPEED_2 = "Agility II",
-            RESISTANCE_1 = "Bravery I",
-            RESISTANCE_2 = "Bravery II",
-            FETCHING_1 = "Fetching I",
-            FETCHING_2 = "Fetching II",
-            DIGGING_1 = "Digging I",
-            DIGGING_2 = "Digging II",
-            BRAVERY_1 = "Support I",
-            BRAVERY_2 = "Support II",
-
-            EMPTY_SLOT = "Empty",
-        },
-
-        BADGE_DESC = {
-            SPEED_1 = "Significantly increases Woby's speed, based on badge progress. Riding Woby advances this progress.",
-            SPEED_2 = "Greatly increases Woby's speed, based on badge progress.",
-            RESISTANCE_1 = "Significantly increases the damage you can take before Woby knocks you off, based on badge progress. Attacking and being attacked while riding Woby advance this progress.",
-            RESISTANCE_2 = "Greatly increases the damage you can take before Woby knocks you off, based on badge progress.",
-            FETCHING_1 = "This badge teaches Woby how to pick up items. Woby will pickup items based on what she's currently holding in her bag. Fetch success increases with badge progress. Fetch attempts advance this progress.",
-            FETCHING_2 = "This badge increases the distance Woby can see items, and decreases the time between fetches.",
-            DIGGING_1 = "This badge teaches Woby how to dig to find items. The chance of a successful dig increases with badge progress. Dig attempts advance this progress.",
-            DIGGING_2 = "This badge decreases the time between digs.",
-            BRAVERY_1 = "Significantly decreases the loss of sanity when taking damage while riding Woby, based on badge progress. It also slowly regenerates your sanity while riding Woby. Attacking and taking damage while riding Woby advance this progress.",
-            BRAVERY_2 = "Greatly decreases the loss of sanity when taking damage while riding Woby, based on badge progress.",
-
-            GENERIC = "Practice makes paw-fect!"
-        },
-
-        SAVE = "Confirm Training",
-        CANCEL = "Cancel",
-    },
 }
 
 --these are broken out into their own files for ease of editing
@@ -15265,9 +15265,10 @@ STRINGS.SKILLTREE = {
         NEUTRAL = "NEUTRAL",
         NAUGHTY = "NAUGHTY",
 
-        WOBYBADGES = "WOBY TRAINING",
+        WOBY = "WOBY",
         SLINGSHOTAMMO = "AMMO",
         SLINGSHOTMODS = "CUSTOMIZER",
+        CAMPING = "SCOUTING",
     },
 
     ONLINE_DATA_USER_OFFLINE = "Login to use online skillset data.",
@@ -15286,81 +15287,105 @@ STRINGS.SKILLTREE = {
     -- CHARACTER SKILL NAMES AND DESCRIPTIONS
     WALTER =
     {
-        WALTER_SLINGSHOT_AMMO_STINGER_TITLE = "Stinger Rounds",
-        WALTER_SLINGSHOT_AMMO_STINGER_DESC = "Learn to craft Stinger Rounds: an ammo made of Stingers that does damage in a small area when hitting a creature.",
+        -- AMMO
 
-        WALTER_SLINGSHOT_AMMO_DREADSTONE_TITLE = "Dreadstone Rounds",
-        WALTER_SLINGSHOT_AMMO_DREADSTONE_DESC = "Learn to craft Dreadstone Rounds: an ammo made of Dreadstone that does a dreadful amount of damage.",
+        WALTER_AMMO_SHATTERSHOTS_TITLE = "Shattering Rounds",
+        WALTER_AMMO_SHATTERSHOTS_DESC = "Learn how to craft Stinger and Moon Glass Rounds. These ammo types shatter into an area of damage.",
 
-        WALTER_SLINGSHOT_AMMO_SCRAPFEATHER_TITLE = "Shockscrap Rounds",
-        WALTER_SLINGSHOT_AMMO_SCRAPFEATHER_DESC = "Learn to craft Shockscrap Rounds: an ammo made of Scrap and Saffron Feathers that does electric damage.",
+        WALTER_AMMO_LUCKY_TITLE = "Lucky Rounds",
+        WALTER_AMMO_LUCKY_DESC = "Learn how to craft Gunpowder and Dreadstone Rounds. These ammo types rely on lucky shots to do more damage or not break.",
 
-        WALTER_SLINGSHOT_AMMO_HONEY_TITLE = "Sticky Rounds",
-        WALTER_SLINGSHOT_AMMO_HONEY_DESC = "Learn to craft Sticky Rounds: an ammo made of Honey that slightly slows down creatures.",
+        WALTER_AMMO_UTILITY_TITLE = "Utility Rounds",
+        WALTER_AMMO_UTILITY_DESC = "Learn how to craft Sticky and Shockscrap Rounds. The Sticky ammo slows targets hit, and the Shockscrap ammo does electric damage.",
 
-        WALTER_SLINGSHOT_AMMO_MOONGLASS_TITLE = "Moon Glass Rounds",
-        WALTER_SLINGSHOT_AMMO_MOONGLASS_DESC = "Learn to craft Moon Glass Rounds: an ammo made of Moon Shards that does damage in a significant area when hitting a creature.",
+        WALTER_AMMO_LOCK_DESC = "Learn 2 Ammo skills to unlock.",
 
-        WALTER_SLINGSHOT_AMMO_GUNPOWDER_TITLE = "Gunpowder Rounds",
-        WALTER_SLINGSHOT_AMMO_GUNPOWDER_DESC = "Learn to craft Gunpowder Rounds: an ammo mostly made of Gunpowder that has an increasing chance to do a critical stike, and does increased damage in a large area.",
+        WALTER_AMMO_EFFICIENCY_TITLE = "Ammo Smith",
+        WALTER_AMMO_EFFICIENCY_DESC = "Learn how to craft ammo more efficiently for better yields, and craft ammo faster.",
 
-        ---------------------------------------------------------------------------------
+        WALTER_AMMO_BAG_TITLE = "Ammo Hoarder",
+        WALTER_AMMO_BAG_DESC = "Learn how to craft an Ammo Pouch for carrying your excess ammo.",
 
-        WALTER_SLINGSHOT_AMMO_ECONOMY_LOCK_DESC = "Learn 4 Ammo and/or Affinity skills to unlock.",
+        WALTER_AMMO_LUNAR_LOCK_DESC = "Find and defeat the Celestial Champion and have no Shadow Allegiance Skills to unlock.",
+        WALTER_AMMO_SHADOW_LOCK_DESC = "Find and defeat the Ancient Fuelweaver and have no Lunar Allegiance Skills to unlock.",
 
-        WALTER_SLINGSHOT_AMMO_ECONOMY_1_TITLE = "Projectile Pro I",
-        WALTER_SLINGSHOT_AMMO_ECONOMY_1_DESC = "Learn how to craft ammo more efficiently.",
+        WALTER_AMMO_LUNAR_TITLE = "Lunar Slinger",
+        WALTER_AMMO_LUNAR_DESC = "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Rounds: a debuff and damage focused ammo, respectively.",
 
-        WALTER_SLINGSHOT_AMMO_ECONOMY_2_TITLE = "Projectile Pro II",
-        WALTER_SLINGSHOT_AMMO_ECONOMY_2_DESC = "Learn how to craft ammo even more efficiently.",
+        WALTER_AMMO_SHADOW_TITLE = "Shadow Slinger",
+        WALTER_AMMO_SHADOW_DESC = "The Queen will reward your loyalty by teaching you how to craft the Icky and Pure Horror Rounds: a slow-down and damage focused ammo, respectively.",
 
-        ---------------------------------------------------------------------------------
+        -- CAMPING
 
-        WALTER_WOBY_BADGE_BASE_TITLE = "Basic Training",
-        WALTER_WOBY_BADGE_BASE_DESC = "Learn to craft the Woby Training Station and unlock the basic version of every training badge.",
+        WALTER_CAMP_ROPE_TITLE = "Twine Twirler",
+        WALTER_CAMP_ROPE_DESC = "Learn how to craft rope more efficiently.",
 
-        WALTER_WOBY_BADGE_SPEED_2_TITLE = "Agility II",
-        WALTER_WOBY_BADGE_SPEED_2_DESC = "Unlocks the second Agility Badge at the Woby Training Station.",
+        WALTER_CAMP_WALTERHAT_TITLE = "Pioneer's Panache",
+        WALTER_CAMP_WALTERHAT_DESC = "Improves Pinetree Pioneer Hat stats, including reduction to the sanity loss when getting hurt.",
 
-        WALTER_WOBY_BADGE_RESISTANCE_2_TITLE = "Bravery II",
-        WALTER_WOBY_BADGE_RESISTANCE_2_DESC = "Unlocks the second Bravery Badge at the Woby Training Station.",
+        WALTER_CAMP_WOBYTREAT_TITLE = "Special Treat",
+        WALTER_CAMP_WOBYTREAT_DESC = "Learn how to craft Woby Snacks, a non-perishable food for Woby.",
 
-        WALTER_WOBY_BADGE_BRAVERY_2_TITLE = "Support II",
-        WALTER_WOBY_BADGE_BRAVERY_2_DESC = "Unlocks the second Support Badge at the Woby Training Station.",
+        WALTER_CAMP_FIRSTAID_TITLE = "Field Medic",
+        WALTER_CAMP_FIRSTAID_DESC = "Learn how to use healing items more effectively, and learn how to craft the Flutter Strip.",
 
-        WALTER_WOBY_BADGE_DIGGING_2_TITLE = "Digging II",
-        WALTER_WOBY_BADGE_DIGGING_2_DESC = "Unlocks the second Digging Badge at the Woby Training Station.",
+        WALTER_CAMP_FIRE_TITLE = "Campfire Enthusiast",
+        WALTER_CAMP_FIRE_DESC = "Learn how to craft the Portable Campfire. Improve storytelling around any campfire.",
 
-        WALTER_WOBY_BADGE_FETCHING_2_TITLE = "Fetching II",
-        WALTER_WOBY_BADGE_FETCHING_2_DESC = "Unlocks the second Fetching Badge at the Woby Training Station.",
+        WALTER_CAMP_WOBYHOLDER_TITLE = "Let's Rack and Roll",
+        WALTER_CAMP_WOBYHOLDER_DESC = "Woby's backpack will get a drying rack attachment.",
 
-        ---------------------------------------------------------------------------------
+        WALTER_CAMP_LOCK_DESC = "Learn 3 Camping skills to unlock.",
+        WALTER_CAMP_LOCK_DESC_TEMP_DO_NOT_TRANSLATE = "This skill is a work in progress and is temporarily disabled.\nLearn 3 Camping skills to unlock.",
+
+        WALTER_CAMP_WOBYCOURIER_TITLE = "Woby Here, Woby There",
+        WALTER_CAMP_WOBYCOURIER_DESC = "Send Woby to another player, or to drop items off at a designated chest.",
+        WALTER_CAMP_WOBYCOURIER_DESC_TEMP_DO_NOT_TRANSLATE = "This skill is a work in progress and is temporarily disabled.\nSend Woby to another player, or to drop items off at a designated chest.",
+
+        -- SLINGSHOT
 
 		WALTER_SLINGSHOT_MODDING_TITLE = "Basic Customization",
 		WALTER_SLINGSHOT_MODDING_DESC = "Learn to craft the Slingshot Field Kit and some basic parts for customizing your Slingshot.",
 
-		WALTER_SLINGSHOT_HANDLE_STICKY_TITLE = "Sticky Grips",
-		WALTER_SLINGSHOT_HANDLE_STICKY_DESC = "Learn to craft two sticky grips that improve firing rate and prevents your Slingshot from slipping out of your hands.",
+		WALTER_SLINGSHOT_HANDLES_TITLE = "Advanced Grips",
+		WALTER_SLINGSHOT_HANDLES_DESC = "Learn to craft advanced grips that improves the firing rate of a Slingshot and may have additional bonus effects.",
 
-		WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_TITLE = "Void Wrap",
-		WALTER_SLINGSHOT_HANDLE_VOIDCLOTH_DESC = "Learn to craft a grip wrap that continuously improves your firing rate when uninterrupted.",
+		WALTER_SLINGSHOT_BANDS_TITLE = "Advanced Bands",
+		WALTER_SLINGSHOT_BANDS_DESC = "Learn to craft advanced bands that improves the firing distance of a Slingshot and may have additional bonus effects.",
 
-		WALTER_SLINGSHOT_BAND_TENTACLE_TITLE = "Flailing Band",
-		WALTER_SLINGSHOT_BAND_TENTACLE_DESC = "Learn to craft a slingshot band that improves your firing distance.",
+		WALTER_SLINGSHOT_FRAMES_TITLE = "Advanced Frames",
+		WALTER_SLINGSHOT_FRAMES_DESC = "Learn to craft advanced frames that improves the Slingshot with additional bonus effects.",
 
-		WALTER_SLINGSHOT_FRAME_GEMS_TITLE = "Thulecite Frame",
-		WALTER_SLINGSHOT_FRAME_GEMS_DESC = "Learn to craft a frame that adds a special ammo slot used for an alternate special attack.",
+        -- WOBY
 
-		WALTER_SLINGSHOT_FRAME_WAGPUNK_TITLE = "Scrappy Frame",
-		WALTER_SLINGSHOT_FRAME_WAGPUNK_DESC = "Learn to craft a frame that adds an alternate charged attack. This frame can be further upgraded to expand your ammo slot size.",
+        WALTER_WOBY_ENDURANCE_TITLE = "Endear-ance",
+        WALTER_WOBY_ENDURANCE_DESC = "All hunger costs are reduced by 20% for our beloved Woby, and she can run at higher speed (+1).",
 
-        ---------------------------------------------------------------------------------
+        WALTER_WOBY_TASKAID_TITLE = "Hard-headed",
+        WALTER_WOBY_TASKAID_DESC = "Woby will use her seriously sturdy skull to assist in chopping and mining.",
 
-        WALTER_ALLEGIANCE_LUNAR_TITLE = "Lunar Slinger",
-        WALTER_ALLEGIANCE_LUNAR_DESC = "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Rounds: a debuff and damage focused ammo, respectively.",
+        WALTER_WOBY_FORAGING_TITLE = "Furry Forager",
+        WALTER_WOBY_FORAGING_DESC = "Woby will assist in foraging for the same items that you are foraging.",
 
-        WALTER_ALLEGIANCE_SHADOW_TITLE = "Shadow Slinger",
-        WALTER_ALLEGIANCE_SHADOW_DESC = "The Queen will reward your loyalty by teaching you how to craft the Icky and Pure Horror Rounds: a slow-down and damage focused ammo, respectively.",
+        WALTER_WOBY_ITEMFETCHER_TITLE = "Roaming Retriever",
+        WALTER_WOBY_ITEMFETCHER_DESC = "Woby learns how to collect items for her pack, and retrieve ammo for you.",
+
+        WALTER_WOBY_LOCK_DESC = "Learn 2 Woby skills to unlock.",
+        
+        WALTER_WOBY_SPRINT_TITLE = "Scruffy Sprinter",
+        WALTER_WOBY_SPRINT_DESC = "After Woby is running for 3 seconds while mounted, she will start sprinting at a higher fixed speed until interrupted.",
+
+        WALTER_WOBY_DASH_TITLE = "Dashing Doggie",
+        WALTER_WOBY_DASH_DESC = "Woby dashes on command (double tap/click directional control or mouse).",
+
+        WALTER_WOBY_LUNAR_LOCK_DESC = "Find and defeat the Celestial Champion and have no Shadow Allegiance Skills to unlock.",
+        WALTER_WOBY_SHADOW_LOCK_DESC = "Find and defeat the Ancient Fuelweaver and have no Lunar Allegiance Skills to unlock.",
+
+        WALTER_WOBY_LUNAR_TITLE = "Lunar Woby",
+        WALTER_WOBY_LUNAR_DESC = "After dashing, Woby automatically sprints at higher speed (+1). When lunar powered and not in the caves, or if she's in a lunar powered area, there is no additional hunger drain for sprinting or dashing.",
+
+        WALTER_WOBY_SHADOW_TITLE = "Shadow Woby",
+        WALTER_WOBY_SHADOW_DESC = "Woby's dash becomes a short distance teleport.",
     },
 
     --[[WANDA = {
@@ -16574,6 +16599,7 @@ STRINGS.SCRAPBOOK = {
         BOOMERANG = "You have to catch it once you throw it.",
         BRUSH = "Can be used on Beefalo to collect Beefalo Wool.\n\nIncreases Beefalo Obedience 40% and increases Beefalo domestication by 1.6% once per day.",
         BUGNET = "Catch small flying things and put them or their loot in your inventory.",
+        THULECITEBUGNET = "Catch small flying things and put them or their loot in your inventory.",
         COMPASS = "Will reveal users location on the map to other survivors also holding a Compass.",
         CUTLESS = "Knocks items out of targets inventory.",
         WATERINGCAN = "Adds 25 points of wetness to Garden Soil per use.\n\nCan also put out fires and stop smouldering.",
@@ -16843,16 +16869,19 @@ STRINGS.SCRAPBOOK = {
 
         -- Meta 5
 
-        -- DUG_GRAVESTONE = "TODO",
-        -- ELIXIR_CONTAINER = "TODO",
-        -- GHOSTFLOWERHAT = "TODO",
-        -- GHOSTLYELIXIR_LUNAR = "TODO",
-        -- GHOSTLYELIXIR_REVIVE = "TODO",
-        -- GHOSTLYELIXIR_SHADOW = "TODO",
+        BANDAGE_BUTTERFLYWINGS = "Heals 30 Health.",
+        WOBY_TREAT = "Restores 3 times more hunger when eaten by Woby.",
+        ELIXIR_CONTAINER = "A carriable container with 9 slots that can hold Elixirs.",
+        GHOSTFLOWERHAT = "When equipped, alows Wendy to drink Elixirs herlself.",
+        -- GHOSTLYELIXERLUNAR = "TODO",
+        -- GHOSTLYELIXERREVIVE = "TODO",
+        -- GHOSTLYELIXERSHADOW = "TODO",
         GRAVEGUARD_GHOST = "Where they may appear, Evil Flowers tend to grow near.",
-        -- SLINGSHOT_BAND_MIMIC = "TODO",
-        -- SLINGSHOT_BAND_PIGSKIN = "TODO",
-        -- SLINGSHOT_BAND_TENTACLE = "TODO",
+        GRAVEURN = "It's used to move Headstones.",
+        PORTABLEFIREPIT_ITEM = "A portable campfire that stays lit even when packed!",
+        SLINGSHOT_BAND_MIMIC = "It greatly increases how far you can shoot. It sometimes saves ammo by launching a mimic version of it.",
+        SLINGSHOT_BAND_PIGSKIN = "It fairly increases how far you can shoot.",
+        SLINGSHOT_BAND_TENTACLE = "It greatly increases how far you can shoot. It can be possessed by a heartless monster...",
         -- SLINGSHOT_FRAME_BONE = "TODO",
         -- SLINGSHOT_FRAME_GEMS = "TODO",
         -- SLINGSHOT_FRAME_WAGPUNK = "TODO",
@@ -16861,22 +16890,18 @@ STRINGS.SCRAPBOOK = {
         -- SLINGSHOT_HANDLE_SILK = "TODO",
         -- SLINGSHOT_HANDLE_STICKY = "TODO",
         -- SLINGSHOT_HANDLE_VOIDCLOTH = "TODO",
-        -- SLINGSHOTAMMO_DREADSTONE = "TODO",
-        -- SLINGSHOTAMMO_GELBLOB = "TODO",
+        SLINGSHOTAMMO_CONTAINER = "A carriable container with 6 slots that can hold Slingshot Rounds.",
+        SLINGSHOTAMMO_DREADSTONE = "It has 50% chance to not break on impact.",
+        SLINGSHOTAMMO_GELBLOB = "It attaches an Icker blob to your target, greatly slowing it down.",
         SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger a explosion, doing doubled damage in a large area.",
-        -- SLINGSHOTAMMO_HONEY = "TODO",
-        -- SLINGSHOTAMMO_HORRORFUEL = "TODO",
-        -- SLINGSHOTAMMO_LUNARPLANTHUSK = "TODO",
+        SLINGSHOTAMMO_HONEY = "It slows down your target.",
+        SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage overtime, up to 7 times.",
+        SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a change to spawn a Brightshade Vine on impact, dealing damage to your target.",
         SLINGSHOTAMMO_MOONGLASS = "It does damage in a medium area around its target.",
-        SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 8 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage.",
+        SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage.",
         SLINGSHOTAMMO_SCRAPFEATHER = "It does electrical damage, which does more damage to wet targets.",
         SLINGSHOTAMMO_STINGER = "It does damage in a small area around its target.",
-        -- SLINGSHOTMODKIT = "TODO",
-        -- WENDY_RESURRECTIONGRAVE = "TODO",
-        WOBY_BADGE_STATION = "Allows you to select for which Woby badges you would like to train and get benefits from.",
-        -- WORTOX_NABBAG = "TODO",
-        -- WORTOX_REVIVER = "TODO",
-        -- WORTOX_SOULJAR = "TODO",
+        SLINGSHOTMODKIT = "Allows you to customize your Slingshot, making it personal.",
     },
 
     -- Full name: "{name} Scrapbook Page"

@@ -163,6 +163,41 @@ end
 params.wobybig = params.wobysmall
 
 --------------------------------------------------------------------------
+--[[ woby_rack_container ]]
+--------------------------------------------------------------------------
+
+params.woby_rack_container =
+{
+	widget =
+	{
+		slotpos = {},
+		slotbg = {},
+		animbank = "ui_meatrack_3x1",
+		animbuild = "ui_meatrack_3x1",
+		pos = Vector3(0, 330, 0),
+		side_align_tip = 100,
+	},
+	acceptsstacks = false,
+	type = "top_rack",
+	openlimit = 1,
+}
+
+local dryer_slotbg = { image = "inv_slot_morsel.tex" }
+for x = 0, 2 do
+	table.insert(params.woby_rack_container.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 0, 0))
+	table.insert(params.woby_rack_container.widget.slotbg, dryer_slotbg)
+end
+dryer_slotbg = nil
+
+function params.woby_rack_container.itemtestfn(container, item, slot)
+	return item:HasTag("dryable")
+		or (TheWorld.ismastersim and (
+				item:GetTimeAlive() == 0 or --items perishing replaced by spoiled_food/fish
+				container.inst:GetTimeAlive() == 0 --transferring items during woby transform
+			))
+end
+
+--------------------------------------------------------------------------
 --[[ sewingmachine ]]
 --------------------------------------------------------------------------
 
@@ -1817,6 +1852,37 @@ end
 
 function params.dragonflyfurnace.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
+end
+
+--------------------------------------------------------------------------
+--[[ slingshotammo_container ]]
+--------------------------------------------------------------------------
+
+params.slingshotammo_container =
+{
+    widget =
+    {
+        slotpos = {},
+        slotbg  = {},
+        animbank  = "ui_slingshotammo_container_3x2",
+        animbuild = "ui_slingshotammo_container_3x2",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+local slingshotammo_container_bg = { image = "slingshot_ammo_slot.tex" }
+
+for y = 1, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.slingshotammo_container.widget.slotpos, Vector3(90 * x - 90, 80 * y - 42.5, 0))
+        table.insert(params.slingshotammo_container.widget.slotbg, slingshotammo_container_bg)
+    end
+end
+
+function params.slingshotammo_container.itemtestfn(container, item, slot)
+    return item:HasTag("slingshotammo")
 end
 
 --------------------------------------------------------------------------

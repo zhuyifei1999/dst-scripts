@@ -918,12 +918,11 @@ end
 local function CastSpellBookFromInv(inst, item)
 	if not IsBusy(inst) and
 		inst._parent ~= nil and
-		not inst._parent:HasTag("busy") and
-		not (inst._parent.sg ~= nil and
-			inst._parent.sg:HasStateTag("busy")) and
-		item.components.spellbook ~= nil and
-		inst._parent.components.playercontroller ~= nil then
-		inst._parent.components.playercontroller:RemoteCastSpellBookFromInv(item, item.components.spellbook:GetSelectedSpell())
+		inst._parent.components.playercontroller and
+		not inst._parent.components.playercontroller:IsBusy() and
+		item.components.spellbook
+	then
+		inst._parent.components.playercontroller:RemoteCastSpellBookFromInv(item, item.components.spellbook:GetSelectedSpell(), item.components.spellbook:GetSpellAction())
 	end
 end
 

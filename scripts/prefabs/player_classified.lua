@@ -514,6 +514,15 @@ fns.OnRoseGlassesCooldownDirty = function(inst)
 end
 
 ------------------------------------------------------------------------------
+-- walter_camp_wobycourier
+
+fns.OnWobyCourierChestDirty = function(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("updatewobycourierchesticon")
+    end
+end
+
+------------------------------------------------------------------------------
 
 local function OnMoistureDirty(inst)
     if inst._parent ~= nil then
@@ -1126,6 +1135,8 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("playerscreenflashdirty", OnPlayerScreenFlashDirty)
     inst:ListenForEvent("attunedresurrectordirty", OnAttunedResurrectorDirty)
     inst:ListenForEvent("cannondirty", fns.OnCannonDirty)
+    inst:ListenForEvent("wobycourier_chest_posxdirty", fns.OnWobyCourierChestDirty)
+    inst:ListenForEvent("wobycourier_chest_poszdirty", fns.OnWobyCourierChestDirty)
 end
 
 local function RegisterNetListeners_common(inst)
@@ -1211,6 +1222,7 @@ function fns.OnInitialDirtyStates(inst)
             UpdateAnimOverrideSanity(inst._parent)
         end
 		fns.OnIsStrafingDirty(inst)
+        fns.OnWobyCourierChestDirty(inst)
     end
 
     OnStormLevelDirty(inst)
@@ -1344,6 +1356,12 @@ local function fn()
     inst.inspectacles_posz:set(0)
     -- Winona rose glasses
     inst.roseglasses_cooldown = net_bool(inst.GUID, "roseglasses_cooldown", "roseglasses_cooldowndirty")
+
+    -- walter_camp_wobycourier
+    inst.wobycourier_chest_posx = net_shortint(inst.GUID, "wobycourier_chest_posx", "wobycourier_chest_posxdirty")
+    inst.wobycourier_chest_posz = net_shortint(inst.GUID, "wobycourier_chest_posz", "wobycourier_chest_poszdirty")
+    inst.wobycourier_chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
+    inst.wobycourier_chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
 
     -- oldager
     inst.oldager_yearpercent = net_float(inst.GUID, "oldager.yearpercent")

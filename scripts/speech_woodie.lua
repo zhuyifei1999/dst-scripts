@@ -341,7 +341,8 @@ return{
 			INUSE = "Sorry! I'll wait til you're finished there.",
             NOTMASTERCHEF = "I wouldn't wanna muddle it up.",
             NOTAMERM = "I got no business in there.",
-            NOTSOULJARHANDLER = "I don't deal with souls."
+            NOTSOULJARHANDLER = "I don't deal with souls.",
+            RESTRICTED = "Can’t do it.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "I could probably find a better place to put that.",
 			INUSE = "Oh, sorry. I didn't mean to hover over your shoulder.",
             NOTMASTERCHEF = "I wouldn't wanna muddle it up.",
-            NOTSOULJARHANDLER = "I don't deal with souls."
+            NOTSOULJARHANDLER = "I don't deal with souls.",
+            RESTRICTED = "Can’t do it.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "What, is the contest not open to residents of Canada?",
             ALREADYACTIVE = "He must be out and aboot somewhere else.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1101,8 +1097,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "That's alright, eh.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Here's to seeing things in a different light.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "We are really movin', Luce!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I'll pass on that one.",
 
@@ -5586,7 +5580,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Kid is getting fancy with that slingshooter.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Kid is getting fancy with that slingshooter.",
 
-        WOBY_BADGE_STATION = "She's a good pup.",
+		WOBY_TREAT = "I guess if I were starving…",
+		BANDAGE_BUTTERFLYWINGS = "It’s pretty pretty, eh?",
+		PORTABLEFIREPIT_ITEM = "Sure, Lucy. We can feed it.",
+        SLINGSHOTAMMO_CONTAINER = "Hours of fun and destruction for the kiddo.",
 
         ELIXIR_CONTAINER = "Think there's a spooky six-pack in there.",
         GHOSTFLOWERHAT = "I'm not scared of wearin' it, Lucy. I just don't feel like it.",
@@ -5598,6 +5595,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Yup, they're dead.",
+        THULECITEBUGNET = "Another day, another skeeter.",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

@@ -341,7 +341,8 @@ return{
 			INUSE = "No rush.",
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
             NOTAMERM = "Nah. I know where I ain't welcome.",
-            NOTSOULJARHANDLER = "That there's imp business."
+            NOTSOULJARHANDLER = "That there's imp business.",
+            RESTRICTED = "Ain’t my business.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "That's just impractical.",
 			INUSE = "No rush.",
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
-            NOTSOULJARHANDLER = "That there's imp business."
+            NOTSOULJARHANDLER = "That there's imp business.",
+            RESTRICTED = "Ain’t my business.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "This judge is slackin' on the job!",
             ALREADYACTIVE = "There must be a contest already goin' on somewhere.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1106,8 +1102,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "That's pretty good.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Sis? I can't see you here.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I feel like a steam engine!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Yikes, that's way too strong.",
 
@@ -5591,7 +5585,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Aww, Walt's quite the lil' tinkerer.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Aww, Walt's quite the lil' tinkerer.",
 
-        WOBY_BADGE_STATION = "Atta girl, Wobes!",
+		WOBY_TREAT = "Aww, Miss Woby wanna biscuit?",
+		BANDAGE_BUTTERFLYWINGS = "Almost makes me wish I had a lil’ boo-boo.",
+		PORTABLEFIREPIT_ITEM = "Now that’s handy.",
+        SLINGSHOTAMMO_CONTAINER = "The kid is dependable.",
 
         ELIXIR_CONTAINER = "Ain't no picnic for the livin' round here.",
         GHOSTFLOWERHAT = "Ghost flowers? Pretty.",
@@ -5603,6 +5600,7 @@ return{
         },
 
         SHALLOW_GRAVE = "They will be missed.",
+        THULECITEBUGNET = "The old stuff was built to last.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

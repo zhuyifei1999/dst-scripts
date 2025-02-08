@@ -1531,6 +1531,38 @@ local function MakeHat(name)
         return inst
     end
 
+    fns.walter_refreshattunedskills = function(inst, owner)
+		if owner ~= nil and owner.components.skilltreeupdater ~= nil and owner.components.skilltreeupdater:IsActivated("walter_camp_walterhat") then
+            inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALLMED)
+            inst.components.insulator:SetInsulation(TUNING.INSULATION_MED)
+
+            if owner._sanity_damage_protection ~= nil then
+                owner._sanity_damage_protection:SetModifier(inst, TUNING.SKILLS.WALTER.WALTERHAT_IMPROVED_SANITY_DAMAGE_PROTECTION)
+            end
+		else
+            inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+            inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
+
+            if owner ~= nil and owner._sanity_damage_protection ~= nil then
+                owner._sanity_damage_protection:SetModifier(inst, TUNING.WALTERHAT_SANITY_DAMAGE_PROTECTION)
+            end
+		end
+	end
+
+	fns.walter_watchskillrefresh = function(inst, owner)
+		if inst._owner ~= nil then
+			inst:RemoveEventCallback("onactivateskill_server", inst._onskillrefresh, inst._owner)
+			inst:RemoveEventCallback("ondeactivateskill_server", inst._onskillrefresh, inst._owner)
+		end
+
+		inst._owner = owner
+
+		if owner ~= nil then
+			inst:ListenForEvent("onactivateskill_server", inst._onskillrefresh, owner)
+			inst:ListenForEvent("ondeactivateskill_server", inst._onskillrefresh, owner)
+		end
+	end
+
     local function walter_custom_init(inst)
         --waterproofer (from waterproofer component) added to pristine state for optimization
         inst:AddTag("waterproofer")
@@ -1538,9 +1570,13 @@ local function MakeHat(name)
 
     local function walter_onunequip(inst, owner)
         _onunequip(inst, owner)
+
 		if owner._sanity_damage_protection ~= nil then
 			owner._sanity_damage_protection:RemoveModifier(inst)
 		end
+
+        fns.walter_watchskillrefresh(inst, nil)
+		fns.walter_refreshattunedskills(inst, nil)
     end
 
     local function walter_onequip(inst, owner)
@@ -1579,6 +1615,9 @@ local function MakeHat(name)
 		if owner._sanity_damage_protection ~= nil then
 			owner._sanity_damage_protection:SetModifier(inst, TUNING.WALTERHAT_SANITY_DAMAGE_PROTECTION)
 		end
+
+        fns.walter_watchskillrefresh(inst, owner)
+		fns.walter_refreshattunedskills(inst, owner)
     end
 
     fns.walter = function()
@@ -1587,6 +1626,8 @@ local function MakeHat(name)
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst._onskillrefresh = function(owner) fns.walter_refreshattunedskills(inst, owner) end
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)

@@ -341,7 +341,8 @@ return{
 			INUSE = "Friends doing it",
             NOTMASTERCHEF = "Not mine",
             NOTAMERM = "Nope. Not mine",
-            NOTSOULJARHANDLER = "Don't touch soul friends"
+            NOTSOULJARHANDLER = "Don't touch soul friends",
+            RESTRICTED = "Nope",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "Why can't it go?",
 			INUSE = "Someone else's",
             NOTMASTERCHEF = "Not mine",
-            NOTSOULJARHANDLER = "Don't touch soul friends"
+            NOTSOULJARHANDLER = "Don't touch soul friends",
+            RESTRICTED = "Nope",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Hm...",
             ALREADYACTIVE = "Not here",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1104,8 +1100,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Feel good!",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Oooh, ghost see",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Plant power!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Too much strong",
 
@@ -5589,7 +5583,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Walter loves pew pew",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Walter loves pew pew",
 
-        WOBY_BADGE_STATION = "Smart woofer!",
+		WOBY_TREAT = "Woofer stuff",
+		BANDAGE_BUTTERFLYWINGS = "Thank you, butterfriend",
+		PORTABLEFIREPIT_ITEM = "Warm everywhere always",
+        SLINGSHOTAMMO_CONTAINER = "Walter’s pew pew bag",
 
         ELIXIR_CONTAINER = "Ghost friend's yummy juice",
         GHOSTFLOWERHAT = "Pretty ghost friends hat",
@@ -5601,6 +5598,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Quiet friend",
+        THULECITEBUGNET = "Bug friends, don't be scared!",
     },
 
     DESCRIBE_GENERIC = "Friend?",

@@ -9,7 +9,6 @@ end
 local function onremoved(inst)
     if inst.components.ghostbabysitter then
         for ghost, i in pairs(inst.components.ghostbabysitter.babysitting)do
-            print(ghost.GUID, ghost.components.ghostbabysitter)
             ghost.ghost_babysitter = nil
             if ghost.components.follower and ghost.components.follower.leader then
                 ghost.components.follower.leader:RemoveTag("ghost_is_babysat")

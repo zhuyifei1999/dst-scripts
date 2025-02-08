@@ -274,6 +274,8 @@ local function TryTransformBack(inst)
     chest.components.entitytracker:TrackEntity("ruinsspawn_tracker", ruinsspawn_tracker)
 
     inst.components.inventory:ForEachItem(transfer_item_to_chest_container, inst, chest)
+
+    inst:Remove()
 end
 
 local function OnRevealedDeath(inst, data)

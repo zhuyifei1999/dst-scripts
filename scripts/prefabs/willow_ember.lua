@@ -625,6 +625,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.FIRE_THROW,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.FIRE_THROW)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatFireThrow)
             inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoefiretarget_1"
@@ -657,6 +658,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.FIRE_BURST,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.FIRE_BURST)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatFireBurst)
             inst.components.aoetargeting.reticule.reticuleprefab = "reticulemultitarget"
@@ -689,6 +691,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.FIRE_BALL,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.FIRE_BALL)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatFireBall)
             
@@ -722,6 +725,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.FIRE_FRENZY,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.FIRE_FRENZY)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
             inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoefiretarget_1"
@@ -754,6 +758,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.LUNAR_FIRE,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.LUNAR_FIRE)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
             inst.components.aoetargeting.reticule.reticuleprefab = "reticuleline"
@@ -801,6 +806,7 @@ local SKILLTREE_SPELL_DEFS =
         label = STRINGS.PYROMANCY.SHADOW_FIRE,
         onselect = function(inst)
             inst.components.spellbook:SetSpellName(STRINGS.PYROMANCY.SHADOW_FIRE)
+			inst.components.spellbook:SetSpellAction(nil)
             inst.components.aoetargeting:SetDeployRadius(0)
             inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
             inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe5line"

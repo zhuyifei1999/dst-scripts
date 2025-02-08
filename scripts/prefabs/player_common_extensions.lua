@@ -1021,6 +1021,7 @@ local function OnPostActivateHandshake_Client(inst, state) -- NOTES(JBK): Use Po
         inst:PostActivateHandshake(POSTACTIVATEHANDSHAKE.READY)
     elseif state == POSTACTIVATEHANDSHAKE.READY then
         TheSkillTree:OPAH_Ready()
+		inst:PushEvent("skilltreeinitialized_client")
     else
         print("OnPostActivateHandshake_Client got a bad state:", inst, state)
     end
@@ -1081,6 +1082,12 @@ local function UpdateScrapbook(inst)
     end
 end
 
+local function MapRevealable_OnIconCreatedFn(inst)
+    if inst.components.maprevealable and inst.components.maprevealable.icon and inst.components.maprevealable.icon.prefab == "globalmapiconnamed" then
+        inst.components.maprevealable.icon._target_displayname:set(inst:GetDisplayName())
+    end
+end
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -1121,4 +1128,5 @@ return
     PostActivateHandshake       = PostActivateHandshake,
     OnClosePopups               = OnClosePopups,
     UpdateScrapbook             = UpdateScrapbook,
+    MapRevealable_OnIconCreatedFn = MapRevealable_OnIconCreatedFn,
 }

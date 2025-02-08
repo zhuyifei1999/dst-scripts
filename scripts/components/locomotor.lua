@@ -271,6 +271,7 @@ local LocoMotor = Class(function(self, inst)
     self.fastmultiplier = 1.3
     self.movestarttime = -1
     self.movestoptime = -1
+	--self.movetimeoverride = nil
     --self.predictmovestarttime = nil
 	--self.no_predict_fastforward = nil --see PlayerController:RepeatHeldAction()
 
@@ -367,6 +368,10 @@ function LocoMotor:StartMoveTimerInternal()
     if self.movestoptime ~= nil then
         local t = GetTime()
         if t - self.movestoptime >= MOVE_TIMER_STOP_THRESHOLD then
+			if self.movetimeoverride then
+				self.movetimeoverride:Cancel()
+				self.movetimeoverride = nil
+			end
             self.movestarttime = t
         end
         self.movestoptime = nil
@@ -379,12 +384,43 @@ function LocoMotor:StopMoveTimerInternal()
     end
 end
 
+local function ClearOverrideMoveTimer(inst, self)
+	self.movetimeoverride = nil
+end
+
+function LocoMotor:OverrideMoveTimer(movetime)
+	local t = GetTime()
+	self.movestoptime = nil
+	self.movestarttime = t - movetime
+	if not self.ismastersim then
+		if self.movetimeoverride then
+			self.movetimeoverride:Cancel()
+		end
+		self.movetimeoverride = self.inst:DoTaskInTime(2 * FRAMES, ClearOverrideMoveTimer, self)
+		self.movetimeoverride._movetime = movetime
+	end
+end
+
+--only used by clients for sending to server
+function LocoMotor:PopOverrideTimeMoving()
+	if self.movetimeoverride then
+		local movetime = self.movetimeoverride._movetime
+		self.movetimeoverride:Cancel()
+		self.movetimeoverride = nil
+		return movetime
+	end
+end
+
 function LocoMotor:RestartPredictMoveTimer()
     self.predictmovestarttime = GetTime()
 end
 
 function LocoMotor:CancelPredictMoveTimer()
     self.predictmovestarttime = nil
+end
+
+function LocoMotor:OverridePredictTimer(t)
+	self.predictmovestarttime = t
 end
 
 function LocoMotor:StopMoving()
@@ -836,7 +872,7 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
 			end
 		end
 		if not closeinspect then
-			local pos = self.inst.components.playercontroller:GetRemotePredictPosition()
+			local pos = self.inst.components.playercontroller:GetRemotePredictPositionExternal()
 			if pos and not self.inst.components.playercontroller.directwalking then
 				self:GoToPoint(pos, bufferedaction, run)
 			else
@@ -1362,6 +1398,7 @@ function LocoMotor:OnUpdate(dt, arrive_check_only)
         if invalid then
             self:Stop()
             self:Clear()
+			return
         elseif reached_dest then
         	--I think this is fine? we might need to make OnUpdateFinish() function that we can run to finish up the OnUpdate so we don't duplicate code
             if in_cooldown then return end
@@ -1388,6 +1425,7 @@ function LocoMotor:OnUpdate(dt, arrive_check_only)
             end
             self:Stop()
             self:Clear()
+			return
 		elseif not arrive_check_only then
             --Print(VERBOSITY.DEBUG, "LOCOMOTING")
             if self:WaitingForPathSearch() then

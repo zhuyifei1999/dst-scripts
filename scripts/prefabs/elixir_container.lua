@@ -73,7 +73,8 @@ end
 
 -----------------------------------------------------------------------------------------------
 
-local floatable_swap_data = { bank = "elixir_container", anim = "closed" }
+local FLOATABLE_SWAP_DATA = { bank = "elixir_container", anim = "closed" }
+local FLOATABLE_SCALE = { 1.35, 1, 1.35 }
 
 local function fn()
     local inst = CreateEntity()
@@ -92,7 +93,7 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    MakeInventoryFloatable(inst, "small", 0.3, {0.8, 1, 0.8}, nil, nil, floatable_swap_data)
+    MakeInventoryFloatable(inst, "small", 0.3, FLOATABLE_SCALE, nil, nil, FLOATABLE_SWAP_DATA)
 
     inst.entity:SetPristine()
 
@@ -109,6 +110,7 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("elixir_container")
+    inst.components.container.restrictedtag = "elixircontaineruser"
     inst.components.container.onopenfn = OnOpen
     inst.components.container.onclosefn = OnClose
     inst.components.container.skipclosesnd = true

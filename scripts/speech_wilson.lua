@@ -136,6 +136,10 @@ return {
             INUSE = "Looks like we had the same idea.",
             TOOFAR = "It's too far away!",
         },
+        DIRECTCOURIER_MAP =
+        {
+            NOTARGET = "only_used_by_walter",
+        },
 		DISMANTLE =
 		{
 			COOKING = "I can't do that while something's cooking.",
@@ -351,7 +355,8 @@ return {
 			INUSE = "They're elbow deep in junk right now.",
             NOTMASTERCHEF = "I'm not a fancy enough chef for that.",
             NOTAMERM = "I don't think the merms would be happy about that.",
-            NOTSOULJARHANDLER = "It's not my cup of tea.", -- "I better not use this."
+            NOTSOULJARHANDLER = "It's not my cup of tea.",
+            RESTRICTED = "Case closed... to me.",
 		},
         SADDLE =
         {
@@ -383,7 +388,8 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "I should wait my turn.",
             NOTMASTERCHEF = "I'm not a fancy enough chef for that.",
-            NOTSOULJARHANDLER = "I'm not soul'ed on it.", -- "I better not use this."
+            NOTSOULJARHANDLER = "I'm not soul'ed on it.",
+            RESTRICTED = "Case closed... to me.",
 		},
         TEACH =
         {
@@ -443,12 +449,6 @@ return {
         {
             DOESNTWORK = "I guess they don't support the arts here.",
             ALREADYACTIVE = "He must be busy with another contest somewhere.",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -825,6 +825,30 @@ return {
 	{
         "only_used_by_walter",
 	},
+	ANNOUNCE_WOBY_RETURN =
+	{
+		"only_used_by_walter",
+	},
+	ANNOUNCE_WOBY_SIT =
+	{
+		"only_used_by_walter",
+	},
+	ANNOUNCE_WOBY_FOLLOW =
+	{
+		"only_used_by_walter",
+	},
+	ANNOUNCE_WOBY_PRAISE =
+	{
+		"only_used_by_walter",
+	},
+	ANNOUNCE_WOBY_FORAGE =
+	{
+		"only_used_by_walter",
+	},
+	ANNOUNCE_WOBY_WORK =
+	{
+		"only_used_by_walter",
+	},
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",
@@ -1110,8 +1134,6 @@ return {
     ANNOUNCE_ELIXIR_BOOSTED = "It's like a BOO-ster Shot.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "I feel fright headed.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I think I could lift a horse.",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "This one seems a little strong.",
 
@@ -5595,7 +5617,10 @@ return {
 		SLINGSHOT_HANDLE_SILK = "Walter's really giving it his best shot.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Walter's really giving it his best shot.",
 
-        WOBY_BADGE_STATION = "I guess you can teach an old dog new tricks.",
+		WOBY_TREAT = "I think I'm barking up the wrong tree with this snack.",
+		BANDAGE_BUTTERFLYWINGS = "This bandage is really winging it.",
+		PORTABLEFIREPIT_ITEM = "Finally, fire on the go! Patent pending.",
+        SLINGSHOTAMMO_CONTAINER = "It’s full of potential... energy!",
 
         ELIXIR_CONTAINER = "That's more of a mortician's bag than a basket.",
         GHOSTFLOWERHAT = "This makes me thirsty.",
@@ -5607,6 +5632,7 @@ return {
         },
 
         SHALLOW_GRAVE = "Better you than me.",
+        THULECITEBUGNET = "Anyone catch the latest buzz?",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

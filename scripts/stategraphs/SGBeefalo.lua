@@ -709,8 +709,7 @@ local states=
             inst.components.beard:EnableGrowth(true)
             inst.components.hunger:Resume()
 
-            inst.components.follower.noleashing = false
-            inst.components.follower:StartLeashing()
+            inst.components.follower:EnableLeashing()
 
             inst:RemoveTag("deadcreature")
         end,

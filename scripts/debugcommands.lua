@@ -2458,7 +2458,7 @@ end
         scrapbook_planardamage: Planar damage, for creatures and weapons (number, string or array with 2 numbers (value range).
         scrapbook_prefab: Used by "prefab" and "name" entries (string).
         scrapbook_removedeps: Remove dependencies (string array).
-    scrapbook_sanityaura: Sanity Aura (number).
+        scrapbook_sanityaura: Sanity Aura (number).
         scrapbook_sanityvalue: Sanity food value (number).
         scrapbook_scale: Scale (number).
         scrapbook_specialinfo: Entry in STRINGS.SCRAPBOOK.SPECIALINFO (string).
@@ -2614,7 +2614,7 @@ local NOT_ALLOWED_RECIPE_TECH =
     [TechTree.Create(TECH.YOTS)] = true,
 }
 
-function d_createscrapbookdata(print_missing_icons, noreset)
+function d_createscrapbookdata(print_missing_icons)
     if not TheWorld.state.isautumn or TheWorld.state.israining then
         -- Force the season (many entities change the build/animation during certain seasons).
         TheWorld:PushEvent("ms_setseason", "autumn")
@@ -3498,12 +3498,13 @@ function d_createscrapbookdata(print_missing_icons, noreset)
     exporter_data_helper:write("}\n")
     exporter_data_helper:close()
 
-    print(prettyline)
+    d_unlockscrapbook()
 
-    if not print_missing_icons and not noreset then
-        d_unlockscrapbook()
-        c_reset()
-    end
+    ThePlayer.HUD:OpenScrapbookScreen()
+    ThePlayer.HUD.scrapbookscreen:DEBUG_REIMPORT_DATASET()
+    ThePlayer.HUD:OpenScrapbookScreen() -- Reopen to rebuild screen.
+
+    print(prettyline)
 end
 
 function d_unlockscrapbook()
@@ -3856,14 +3857,28 @@ function d_shadowparasite(host_prefab)
     host.components.inventory:Equip(mask)
 end
 
-function d_test_purebrilliance_ammo()
-    local slingshot = SpawnPrefab("slingshot")
-    local ammo = SpawnPrefab("slingshotammo_purebrilliance")
-    local player = ConsoleCommandPlayer()
+function d_tweak_floater(size, offset, scale, swap_bank, float_index, swap_data)
+    local floater = c_select().components.floater
 
-    ammo.components.stackable:SetStackSize(ammo.components.stackable.maxsize)
-    slingshot.components.container:GiveItem(ammo)
+    if size ~= nil then
+        floater:SetSize(size)
+    end
 
-    player.components.inventory:Equip(slingshot)
+    if offset then
+        floater:SetVerticalOffset(offset)
+    end
+
+    if scale then
+        floater:SetScale(scale)
+    end
+
+    if swap_bank then
+        floater:SetBankSwapOnFloat(swap_bank, float_index, swap_data)
+    elseif swap_data then
+        floater:SetSwapData(swap_data)
+    end
+
+    local scale = floater.xscale == floater.yscale and tostring(floater.xscale) or string.format('{ %s }', table.concat({floater.xscale, floater.yscale, floater.zscale}, ', '))
+
+    print(string.format('MakeInventoryFloatable(inst, "%s", %s, %s, %s, %s, swap_data)', floater.size, tostring(floater.vert_offset), scale, tostring(floater.do_bank_swap), tostring(floater.float_index ~= 1 and floater.float_index or nil)))
 end
-

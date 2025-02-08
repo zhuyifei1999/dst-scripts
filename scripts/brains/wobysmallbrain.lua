@@ -5,6 +5,7 @@ require "behaviours/panic"
 require "behaviours/leash"
 
 local BrainCommon = require "brains/braincommon"
+local WobyBrainCommon = require "brains/wobycommon"
 
 local TARGET_FOLLOW_DIST = 4
 local MAX_FOLLOW_DIST = 4.5
@@ -165,249 +166,6 @@ local function ValidateCombatAvoidance(self)
     return true
 end
 
---- Minigames
-local function WatchingMinigame(inst)
-	return (inst.components.follower.leader ~= nil and inst.components.follower.leader.components.minigame_participator ~= nil) and inst.components.follower.leader.components.minigame_participator:GetMinigame() or nil
-end
-local function WatchingMinigame_MinDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_min or 0
-end
-local function WatchingMinigame_TargetDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_target or 0
-end
-local function WatchingMinigame_MaxDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_max or 0
-end
-
--------------------------------------------------------------------------------
-
--- Skill tree skills
-
-local function AddTrainingBonus(inst, value, aspect)
-    local badge_fmt = string.upper(aspect).."_%d"
-
-    local bonus = 0
-
-    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
-
-    if dogtrainer ~= nil then
-        local pct = dogtrainer:GetAspectPercent(aspect)
-        local tuning = TUNING.SKILLS.WALTER.WOBY_BADGES
-
-        local badge
-
-        for i=1, NUM_WOBY_TRAINING_ASPECTS_LEVELS do
-            badge = badge_fmt:format(i)
-
-            if tuning[badge] ~= nil and dogtrainer:HasBadge(badge) then
-                bonus = bonus + tuning[badge] * pct
-            end
-        end
-    end
-
-    return value + bonus
-end
-
-local function ShouldDigGround(inst, brain)
-    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
-
-    if dogtrainer == nil or not dogtrainer:HasBadgeOfAspect(WOBY_TRAINING_ASPECTS.DIGGING) then
-        brain.digging_pos = nil
-
-        return false
-    end
-
-    if inst.components.timer:TimerExists("diggingcooldown") then
-        brain.digging_pos = nil
-
-        return false
-    end
-
-    if inst:GetCurrentPlatform() ~= nil then
-        brain.digging_pos = nil
-
-        return false
-    end
-
-    return brain.digging_pos ~= nil or OwnerIsClose(inst, 7)
-end
-
-local function CanDigPoint(pt)
-    return not TheWorld.Map:IsPointNearHole(pt) and TheWorld.Map:CanPlantAtPoint(pt:Get())
-end
-
-local function GetDiggingPosition(inst)
-    if inst.brain.digging_pos then
-        return inst.brain.digging_pos
-    end
-
-    local distance = TUNING.SKILLS.WALTER.WOBY_DIGGING_DISTANCE
-    local pos = inst:GetPosition()
-
-    local offset = FindWalkableOffset(pos, math.random() * TWOPI, GetRandomMinMax(distance.min, distance.max), 10, nil, nil, CanDigPoint)
-
-    inst.brain.digging_pos = offset ~= nil and (pos + offset) or pos
-
-    if not CanDigPoint(inst.brain.digging_pos) then
-        inst.brain.digging_pos = nil
-    end
-
-    return inst.brain.digging_pos
-end
-
------------------------------------------------------------------------------------------------------------------------------------
-
-local PICKUP_MUST_TAGS =
-{
-    "_inventoryitem"
-}
-
-local PICKUP_CANT_TAGS =
-{
-    "INLIMBO", "NOCLICK", "irreplaceable", "knockbackdelayinteraction",
-    "event_trigger", "mineactive", "catchable", "fire", "spider", "cursed",
-    "heavy", "outofreach",
-}
-
-local function Woby_FindPickupableItem_filter(v, ba, onlytheseprefabs, worker)
-    if v.components.burnable ~= nil and (v.components.burnable:IsBurning() or v.components.burnable:IsSmoldering()) then
-        return false
-    end
-
-    if not (v.components.inventoryitem ~= nil and
-        v.components.inventoryitem.canbepickedup and
-        v.components.inventoryitem.cangoincontainer and
-        not v.components.inventoryitem:IsHeld())
-    then
-        return false
-    end
-
-    if onlytheseprefabs ~= nil and onlytheseprefabs[v.prefab] == nil then
-        return false
-    end
-
-    if v.components.bait ~= nil and v.components.bait.trap ~= nil then -- Do not steal baits.
-        return false
-    end
-
-    if worker.components.container:CanAcceptCount(v, 1) <= 0 then
-        return false
-    end
-
-    if ba ~= nil and ba.target == v and (ba.action == ACTIONS.PICKUP or ba.action == ACTIONS.CHECKTRAP) then
-        return false
-    end
-
-    return v
-end
-
-local function Woby_FindPickupableItem(owner, radius, positionoverride, onlytheseprefabs, worker)
-    if owner == nil then
-        return nil
-    end
-
-    local ba = owner:GetBufferedAction()
-
-    local x, y, z
-    if positionoverride then
-        x, y, z = positionoverride:Get()
-    else
-        x, y, z = owner.Transform:GetWorldPosition()
-    end
-
-    local ents = TheSim:FindEntities(x, y, z, radius, PICKUP_MUST_TAGS, PICKUP_CANT_TAGS)
-
-    for i = #ents, 1, -1 do
-        local v = ents[i]
-
-        if Woby_FindPickupableItem_filter(v, ba,  onlytheseprefabs, worker) then
-            return v
-        end
-    end
-
-    return nil
-end
-
-local function DoPickUpAction(inst)
-    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
-
-    if dogtrainer == nil or not dogtrainer:HasBadgeOfAspect(WOBY_TRAINING_ASPECTS.FETCHING) then
-        return
-    end
-
-    if inst.components.timer:TimerExists("fetchingcooldown") then
-        return
-    end
-
-    if inst.components.container:IsEmpty() then
-        return
-    end
-
-    ------------------------------------------------------------------------
-
-    local distance = AddTrainingBonus(inst, TUNING.SKILLS.WALTER.WOBY_FETCHING_ASSIST_DISTANCE, WOBY_TRAINING_ASPECTS.FETCHING)
-
-
-    local onlytheseprefabs = {}
-    local items = inst.components.container:GetAllItems()
-
-    for i, item in ipairs(items) do
-        onlytheseprefabs[item.prefab] = true
-    end
-
-    local item = Woby_FindPickupableItem(inst._playerlink, distance, inst:GetPosition(), onlytheseprefabs, inst)
-
-    if item == nil then
-        item = Woby_FindPickupableItem(inst._playerlink, distance, nil, onlytheseprefabs, inst)
-    end
-
-    if item == nil then
-        return nil
-    end
-
-    if item ~= nil then
-        return BufferedAction(inst, item, ACTIONS.WOBY_PICKUP)
-    end
-end
-
--------------------------------------------------------------------------------
-
-local function IsTryingToPerformAction(inst, performer, action)
-    local act = performer.components.locomotor.bufferedaction--performer:GetBufferedAction()
-    return act ~= nil and act.target == inst and act.action == action
-end
-
-local function TryingToInteractWithWoby(inst, performer)
-    local interactions = { ACTIONS.FEED, ACTIONS.RUMMAGE, ACTIONS.STORE }
-    for _, action in ipairs(interactions) do
-        if IsTryingToPerformAction(inst, performer, action) then
-            return true
-        end
-    end
-
-    if inst.components.container:IsOpenedBy(performer) then
-        return true
-    end
-
-    return false
-end
-
-local function GetWalterInteractionFn(inst)
-   local leader = inst.components.follower ~= nil and inst.components.follower.leader
-    if leader ~= nil and TryingToInteractWithWoby(inst, leader) then
-        return leader
-    end
-
-    return nil
-end
-
-local function KeepGenericInteractionFn(inst, target)
-    return TryingToInteractWithWoby(inst, target)
-end
-
 -------------------------------------------------------------------------------
 
 --  Brain
@@ -417,36 +175,28 @@ local WobySmallBrain = Class(Brain, function(self, inst)
 end)
 
 function WobySmallBrain:OnStart()
-	local watch_game = WhileNode( function() return WatchingMinigame(self.inst) end, "Watching Game",
-        PriorityNode{
-				Follow(self.inst, WatchingMinigame, WatchingMinigame_MinDist, WatchingMinigame_TargetDist, WatchingMinigame_MaxDist),
-				RunAway(self.inst, "minigame_participator", 5, 7),
-				FaceEntity(self.inst, WatchingMinigame, WatchingMinigame ),
-        }, 0.1)
-
     local main_nodes = PriorityNode{
-        watch_game,
+        WobyBrainCommon.SitStillNode(self.inst),
+        WobyBrainCommon.WatchingMinigameNode(self.inst),
+
         -- Combat Avoidance
         PriorityNode{
             RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
+
             WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
-                FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
+                PriorityNode({
+                    WobyBrainCommon.PickUpAmmoNode(self.inst),
+                    FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)
+                },.25)
+            ),
         },
 
-        FaceEntity(self.inst, GetWalterInteractionFn, KeepGenericInteractionFn),
+        FaceEntity(self.inst, WobyBrainCommon.GetWalterInteractionFn, WobyBrainCommon.KeepGenericInteractionFn),
 
-        DoAction(self.inst, DoPickUpAction, "Do Pick Up act"),
+        WobyBrainCommon.ForagerNode(self.inst),
+        WobyBrainCommon.RetriaveAmmoNode(self.inst),
+        WobyBrainCommon.FetchingActionNode(self.inst),
 
-        WhileNode(function() return ShouldDigGround(self.inst, self) end, "Dig Ground",
-            PriorityNode({
-                FailIfSuccessDecorator(Leash(self.inst, GetDiggingPosition, 1.5, 1, true)),
-                ActionNode(function()
-                    if self.digging_pos ~= nil then
-                        self.inst:PushEvent("dig_ground")
-                    end
-                end),
-            }, 0.5)
-        ),
         WhileNode(function() return FindPlaymate(self) end, "Playful",
             SequenceNode{
                 WaitNode(6),
@@ -469,7 +219,7 @@ function WobySmallBrain:OnStart()
     local root = PriorityNode({
         WhileNode(
             function()
-                return not self.inst.sg:HasStateTag("jumping")
+                return not self.inst.sg:HasStateTag("jumping") and not self.inst:HasTag("transforming")
             end,
             "<busy state guard>",
             PriorityNode({

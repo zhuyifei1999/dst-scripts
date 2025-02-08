@@ -705,3 +705,40 @@ end
 --end
 
 --------------------------------------------------------------------------
+
+PICKABLE_FOOD_PRODUCTS =
+{
+    ancientfruit_nightvision = true,
+    berries = true,
+    berries_juicy = true,
+    blue_cap = true,
+    cactus_meat = true,
+    carrot = true,
+    cave_banana = true,
+    cutlichen = true,
+    green_cap = true,
+    red_cap = true,
+}
+
+function IsFoodSourcePickable(inst)
+    return inst.components.pickable ~= nil and PICKABLE_FOOD_PRODUCTS[inst.components.pickable.product]
+end
+
+--------------------------------------------------------------------------
+-- wobycourier
+
+function GetWobyCourierChestPosition(inst)
+    if inst.player_classified then
+        local x = inst.player_classified.wobycourier_chest_posx:value()
+        local z = inst.player_classified.wobycourier_chest_posz:value()
+        if x ~= WOBYCOURIER_NO_CHEST_COORD and z ~= WOBYCOURIER_NO_CHEST_COORD then
+            x = (x + 0.5) * TILE_SCALE
+            z = (z + 0.5) * TILE_SCALE
+            return x, z
+        end
+    end
+    return nil, nil
+end
+
+--------------------------------------------------------------------------
+

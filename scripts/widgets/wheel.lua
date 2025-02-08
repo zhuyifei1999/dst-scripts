@@ -108,8 +108,8 @@ function Wheel:SetItems( dataset, radius, focus_radius, dataset_name )
 					self:Close()
 					self:Open(v.nestedwheel.name)
 				elseif v.execute then
-					self:OnExecute()
 					v.execute()
+					self:OnExecute()
 				end
 			end
 		
@@ -156,6 +156,10 @@ function Wheel:SetItems( dataset, radius, focus_radius, dataset_name )
 				
 		v.widget = w
 		v.widget:Hide()
+
+		if v.postinit then
+			v.postinit(w)
+		end
 	end
 
 	self.selected_label:MoveToFront()

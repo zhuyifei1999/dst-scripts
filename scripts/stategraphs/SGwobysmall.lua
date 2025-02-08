@@ -3,8 +3,12 @@ require("stategraphs/SGcritter_common")
 
 local actionhandlers =
 {
-    ActionHandler(ACTIONS.WOBY_PICKUP, "pickup")
+    ActionHandler(ACTIONS.WOBY_PICKUP, "pickup"),
+    ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
+    ActionHandler(ACTIONS.WOBY_PICK, "dolongaction"),
 }
+
+local LONGACTION_DEFAULT_TIMEOUT = 1.5
 
 local events =
 {
@@ -25,55 +29,12 @@ local events =
         end
     end),
 
-    EventHandler("dig_ground", function(inst, data)
-        if not inst.sg:HasStateTag("busy") then
-            inst.sg:GoToState("dig_ground")
+    EventHandler("start_sitting", function(inst)
+        if not inst.sg:HasStateTag("sitting") and not inst.sg:HasStateTag("busy") then
+            inst.sg:GoToState("sitting")
         end
     end),
 }
-
------------------------------------------------------------------------------------------------------------------------
-
-local function StartActionCooldown(inst, name, cooldown, aspect)
-    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
-
-    if dogtrainer ~= nil then
-        local tuning = TUNING.SKILLS.WALTER.WOBY_BADGES
-        local badge_fmt = string.upper(aspect).."_%d"
-
-        local pct = dogtrainer:GetAspectPercent(aspect)
-
-        local badge
-
-        for i=1, NUM_WOBY_TRAINING_ASPECTS_LEVELS do
-            badge = badge_fmt:format(i)
-
-            if tuning[badge] ~= nil and dogtrainer:HasBadge(badge) then
-                cooldown = cooldown - tuning[badge] * pct
-            end
-        end
-
-        dogtrainer:DoAspectDelta(aspect, TUNING.SKILLS.WALTER.WOBY_BADGES_ASPECT_GAIN_RATE[aspect])
-    end
-
-    inst.components.timer:StartTimer(name, cooldown)
-
-end
-
-local function ShouldFailPickup(inst)
-    local dogtrainer = inst._playerlink ~= nil and inst._playerlink.components.dogtrainer or nil
-
-    if dogtrainer ~= nil then
-        local tuning = TUNING.SKILLS.WALTER.WOBY_FETCHING_ASSIST_SUCCESS_CHANCE
-
-        local pct = dogtrainer:GetAspectPercent(WOBY_TRAINING_ASPECTS.FETCHING)
-        local chance = tuning.min + (tuning.max - tuning.min) * pct
-
-        return math.random() > chance
-    end
-
-    return true
-end
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -85,12 +46,24 @@ local states =
 
         onenter = function(inst, data)
             inst.components.locomotor:StopMoving()
+			inst:ApplyBigBuildOverrides()
             inst.AnimState:PlayAnimation("transform_small_to_big")
+			inst:AddTag("transforming")
         end,
 
         timeline =
         {
             TimeEvent(1*FRAMES,  function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/transform_small_to_big") end),
+			FrameEvent(37, function(inst)
+				if inst.components.wobyrack then
+					inst.SoundEmitter:PlaySound("meta5/woby/big_dryingrack_deploy")
+				end
+			end),
+			FrameEvent(40, function(inst)
+				if inst.pet_hunger_classified then
+					inst.pet_hunger_classified:SetFlagBit(0, true) --big woby
+				end
+			end),
             TimeEvent(41*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/roar") end),
             TimeEvent(42*FRAMES, function(inst) inst.DynamicShadow:SetSize(3, 1.5) end),
             TimeEvent(53*FRAMES, function(inst) inst.DynamicShadow:SetSize(5, 2) end),
@@ -98,6 +71,14 @@ local states =
                 inst:FinishTransformation()
             end),
         },
+
+		onexit = function(inst)
+			--Interrupted???
+			if inst.pet_hunger_classified then
+				inst.pet_hunger_classified:SetFlagBit(0, false) --small woby
+			end
+			inst:RemoveTag("transforming")
+		end,
     },
 
     State{
@@ -115,108 +96,12 @@ local states =
     },
 
     State{
-        name = "dig_ground",
-        tags = {"busy"},
-
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-
-            local mass = inst.Physics:GetMass()
-
-            if mass > 0 then
-                inst.sg.statemem.restoremass = mass
-                inst.Physics:SetMass(99999)
-            end
-
-            inst.AnimState:PlayAnimation("dig_pre")
-            inst.AnimState:PushAnimation("dig_loop")
-
-            inst.sg:SetTimeout((22 + 16 * math.random(2, 3)) * FRAMES) -- dig_pre + 2/3 dig_loop
-
-            inst.SoundEmitter:PlaySound("meta5/woby/woby_dig_lp", "loop")
-        end,
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("dig_ground_pst")
-        end,
-
-        onexit = function(inst)
-            if inst.sg.statemem.restoremass ~= nil then
-                inst.Physics:SetMass(inst.sg.statemem.restoremass)
-            end
-
-            inst.SoundEmitter:KillSound("loop")
-        end,
-    },
-
-    State{
-        name = "dig_ground_pst",
-        tags = {"busy"},
-
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-
-            local mass = inst.Physics:GetMass()
-
-            if mass > 0 then
-                inst.sg.statemem.restoremass = mass
-                inst.Physics:SetMass(99999)
-            end
-
-            inst.sg.statemem.item = inst:SpawnDiggingReward()
-
-            inst.AnimState:PlayAnimation(inst.sg.statemem.item ~= nil and "dig_pst" or "dig_fail")
-
-            StartActionCooldown(inst, "diggingcooldown", TUNING.SKILLS.WALTER.WOBY_DIGGING_COOLDOWN, WOBY_TRAINING_ASPECTS.DIGGING)
-
-            if inst.brain ~= nil then
-                inst.brain.digging_pos = nil
-            end
-
-            inst.SoundEmitter:PlaySound("meta5/woby/woby_dig_pst")
-        end,
-
-        timeline =
-        {
-            TimeEvent(10*FRAMES, function(inst)
-                if inst.sg.statemem.item ~= nil then
-                    inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/small/bark")
-                end
-            end),
-            TimeEvent(15*FRAMES, function(inst)
-                if inst.sg.statemem.restoremass ~= nil then
-                    inst.Physics:SetMass(inst.sg.statemem.restoremass)
-
-                    inst.sg.statemem.restoremass = nil
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end)
-        },
-
-        onexit = function(inst)
-            if inst.sg.statemem.restoremass ~= nil then
-                inst.Physics:SetMass(inst.sg.statemem.restoremass)
-            end
-        end,
-    },
-
-    State{
         name = "pickup",
         tags = {"busy", "jumping"},
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.components.locomotor:EnableGroundSpeedMultiplier(false)
-
-            inst.sg.statemem.missed = ShouldFailPickup(inst)
 
             inst.AnimState:PlayAnimation("fetch")
             inst.AnimState:SetFrame(6)
@@ -233,14 +118,9 @@ local states =
             local buffaction = inst:GetBufferedAction()
             local target = buffaction ~= nil and buffaction.target or nil
 
-            if target ~= nil and inst.sg.statemem.missed then
-                inst.Physics:SetMotorVelOverride(5, 0, 0)
-
-                return
-            end
-
             if target == nil or not target:IsValid() then
                 inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
 
                 inst:ClearBufferedAction()
 
@@ -253,18 +133,30 @@ local states =
                 inst.Physics:SetMotorVelOverride(math.max(distance, 4), 0, 0)
             else
                 inst.Physics:ClearMotorVelOverride()
+				inst.Physics:Stop()
             end
         end,
 
         timeline = {
             TimeEvent((21-6)*FRAMES, function(inst)
-                if inst.sg.statemem.missed then
+                local buffaction = inst:GetBufferedAction()
+                local target = buffaction ~= nil and buffaction.target or nil
+    
+                if target == nil or not target:IsValid() then
+                    inst.sg.statemem.missed = true
+
+                    return -- Fail! No target.
+                end
+
+                local distance = math.sqrt(inst:GetDistanceSqToInst(target))
+
+                if distance > .5 then
                     inst:ClearBufferedAction()
+
+                    inst.sg.statemem.missed = true
                 else
                     inst:PerformBufferedAction()
                 end
-
-                StartActionCooldown(inst, "fetchingcooldown", TUNING.SKILLS.WALTER.WOBY_FETCHING_ASSIST_COOLDOWN, WOBY_TRAINING_ASPECTS.FETCHING)
             end),
         },
 
@@ -280,12 +172,13 @@ local states =
         onexit = function(inst)
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
             inst.Physics:ClearMotorVelOverride()
+            inst.Physics:Stop()
         end,
     },
 
     State{
         name = "pickup_pst",
-        tags = {"busy"},
+        tags = {"busy", "jumping"},
 
         onenter = function(inst, missed)
             inst.components.locomotor:StopMoving()
@@ -301,6 +194,132 @@ local states =
                 end
             end)
         },
+    },
+
+    State {
+        name = "give",
+        tags = {"busy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("give")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+        
+        timeline =
+        {
+            FrameEvent(10, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+    },
+
+    State{
+        name = "dolongaction",
+		tags = {"busy"},
+
+        onenter = function(inst, timeout)
+            timeout = timeout or LONGACTION_DEFAULT_TIMEOUT
+
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("woby_forage_pre")
+            inst.AnimState:PushAnimation("woby_forage_loop", true)
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+
+            inst.sg.statemem.buffaction = inst:GetBufferedAction()
+
+            inst.sg:SetTimeout(timeout)
+        end,
+
+        ontimeout = function(inst)
+            inst.AnimState:PlayAnimation("woby_forage_pst")
+            inst.SoundEmitter:KillSound("make")
+
+            inst:PerformBufferedAction()
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+
+            EventHandler("playernewstate", function(inst)
+                if inst.sg.statemem.buffaction == inst.bufferedaction then
+                    local pickable = inst.bufferedaction.target ~= nil and inst.bufferedaction.target.components.pickable or nil
+
+                    if pickable ~= nil and pickable:CanBePicked() then -- If we can be picked, Walter didn't finish it!
+                        inst.AnimState:PlayAnimation("woby_forage_pst")
+                        inst.SoundEmitter:KillSound("make")
+
+                        inst:ClearBufferedAction()
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make")
+        end,
+    },
+
+    State{
+        name = "sitting",
+		tags = {"busy", "canrotate", "sitting"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            if inst.sg.lasttags["moving"] then
+                inst.AnimState:PlayAnimation("walk_pst")
+                inst.AnimState:PushAnimation("sit_woby")
+            else
+                inst.AnimState:PlayAnimation("sit_woby")
+            end
+
+            inst.AnimState:PushAnimation("sit_woby_loop", true)
+
+            inst.sg.statemem.noleashing = inst.components.follower.noleashing
+
+            inst.components.follower:DisableLeashing()
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+
+            EventHandler("stop_sitting", function(inst)
+                if inst:IsAsleep() then
+                    inst.sg:GoToState("idle")
+                else
+                    inst.AnimState:PlayAnimation("sit_woby_pst")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.noleashing then
+                inst.components.follower:EnableLeashing()
+            end
+        end
     },
 }
 
@@ -327,9 +346,18 @@ local emotes =
 }
 
 SGCritterStates.AddIdle(states, #emotes,
-    {
+	--[[{
         --TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
-    })
+	}]]nil,
+	function(inst)
+		if inst.sg.mem.recentlytransformed then
+			if inst.sg.lasttags and inst.sg.lasttags["idle"] then
+				return "idle_loop_nodir"
+			end
+			inst.sg.mem.recentlytransformed = nil
+		end
+		return "idle_loop"
+	end)
 SGCritterStates.AddRandomEmotes(states, emotes)
 SGCritterStates.AddEmote(states, "cute",
     {

@@ -341,7 +341,8 @@ return{
 			INUSE = "It's okay, we can wait for you to finish!",
             NOTMASTERCHEF = "Warly gets upset when we play with his things.",
             NOTAMERM = "We don't think we're allowed.",
-            NOTSOULJARHANDLER = "We promised not to play with the souls."
+            NOTSOULJARHANDLER = "We promised not to play with the souls.",
+            RESTRICTED = "We’re not allowed.",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "That's against the rules.",
 			INUSE = "Are you finding everything okay in there?",
             NOTMASTERCHEF = "Warly gets upset when we play with his things.",
-            NOTSOULJARHANDLER = "We promised not to play with the souls."
+            NOTSOULJARHANDLER = "We promised not to play with the souls.",
+            RESTRICTED = "We’re not allowed.",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Anybody there? Guess not...",
             ALREADYACTIVE = "Maybe there's another contest going on somewhere else?",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1100,8 +1096,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "Mmmm, we feel better.",
     ANNOUNCE_ELIXIR_GHOSTVISION = "Like what Abby sees!",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "We can help carry heavy stuff!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too much for us.",
 
@@ -5585,7 +5579,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Walter has the best toys.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Walter has the best toys.",
 
-        WOBY_BADGE_STATION = "Good girl, Woby!",
+		WOBY_TREAT = "One for Woby, one for us!",
+		BANDAGE_BUTTERFLYWINGS = "Sticker!",
+		PORTABLEFIREPIT_ITEM = "We can stay warm and cozy on our adventures!",
+        SLINGSHOTAMMO_CONTAINER = "Walter is the best shot.",
 
         ELIXIR_CONTAINER = "Will Abigail mind if we try some?",
         GHOSTFLOWERHAT = "We wanna wear it!",
@@ -5597,6 +5594,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Aww. Did we know them?",
+        THULECITEBUGNET = "We can make that with our beard!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

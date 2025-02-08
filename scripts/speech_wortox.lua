@@ -341,7 +341,8 @@ return{
 			INUSE = "It is making a pact with another.",
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
             NOTAMERM = "Not for me, I see.",
-            NOTSOULJARHANDLER = "These aren't my souls."
+            NOTSOULJARHANDLER = "These aren't my souls.",
+            RESTRICTED = "I can’t! I shan’t!",
 		},
         SADDLE =
         {
@@ -373,7 +374,8 @@ return{
 			NOTALLOWED = "Oh I simply couldn't.",
 			INUSE = "Another soul has use of it right now.",
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
-            NOTSOULJARHANDLER = "These aren't my souls."
+            NOTSOULJARHANDLER = "These aren't my souls.",
+            RESTRICTED = "I can’t! I shan’t!",
 		},
         TEACH =
         {
@@ -433,12 +435,6 @@ return{
         {
             DOESNTWORK = "Oh ho! Something's gone awry!",
             ALREADYACTIVE = "Perhaps he too likes to travel between planes? Hyuyuyu!",
-        },
-        CUSTOMIZE_WOBY_BADGES =
-        {
-            GENERIC = "only_used_by_walter",
-            BURNING = "only_used_by_walter",
-            INUSE = "only_used_by_walter",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -1119,8 +1115,6 @@ return{
     ANNOUNCE_ELIXIR_BOOSTED = "I feel like a new imp!",
     ANNOUNCE_ELIXIR_GHOSTVISION = "See like the dead, they said.",
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I have the strength of ten imps!",
-
-    ANNOUNCE_ABIGAIL_HIDING = "only_used_by_wendy",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Don't think I can take that drink!",
 
@@ -5605,7 +5599,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Hotshot! Is he not?",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Hotshot! Is he not?",
 
-        WOBY_BADGE_STATION = "A proud pup leveling up!",
+		WOBY_TREAT = "Lookie, lookie! A doggie’s cookie!",
+		BANDAGE_BUTTERFLYWINGS = "Who? Who has a boo-boo?",
+		PORTABLEFIREPIT_ITEM = "Mobile combustible!",
+        SLINGSHOTAMMO_CONTAINER = "Pockets full of rockets.",
 
         ELIXIR_CONTAINER = "Any mixers for those elixirs?",
         GHOSTFLOWERHAT = "Ghostly flowers yield strange powers.",
@@ -5617,6 +5614,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Poor soul.",
+        THULECITEBUGNET = "Fly away? Not today!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

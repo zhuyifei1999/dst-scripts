@@ -131,13 +131,24 @@ end
 --------------------------------------------------------------------------
 
 local function ConfigureRunState(inst)
-    if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+	local rider = inst.replica.rider
+	local mount = rider and rider:GetMount() or nil
+	if mount then
         inst.sg.statemem.riding = true
-        inst.sg.statemem.groggy = inst:HasTag("groggy")
+		if inst:HasTag("groggy") then
+			inst.sg.statemem.groggy = true
+		else
+			inst.sg.statemem.normalriding = true
+		end
 
-        local mount = inst.replica.rider:GetMount()
-        inst.sg.statemem.ridingwoby = mount and mount:HasTag("woby")
-
+		if mount:HasTag("woby") then
+			inst.sg.statemem.ridingwoby = true
+			--Assumes we can only ride our own woby!
+			inst.sg.statemem.canwobysprint =
+				inst.woby_commands_classified ~= nil and
+				inst.woby_commands_classified:ShouldSprint() and
+				inst.components.skilltreeupdater:IsActivated("walter_woby_sprint")
+		end
     elseif inst.replica.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
 		inst.sg.statemem.heavy_fast = inst:HasTag("mightiness_mighty")
@@ -358,7 +369,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.BUILD,
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
-            return (rec ~= nil and rec.sg_state)
+			return (rec and FunctionOrValue(rec.sg_state, rec, inst))
                 or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or (inst:HasTag("slowbuilder") and "dolongestaction")
@@ -387,8 +398,17 @@ local actionhandlers =
         end),
 	ActionHandler(ACTIONS.RUMMAGE,
 		function(inst, action)
-			if action.invobject and action.invobject:HasTag("portablestorage") then
-				local container = action.invobject.replica.container
+			if action.invobject then
+				if action.invobject:HasTag("portablestorage") then
+					local container = action.invobject.replica.container
+					if container then
+						return container:IsOpenedBy(inst) and "stop_pocket_rummage" or "start_pocket_rummage"
+					end
+				end
+			elseif action.target == inst then
+				local rider = inst.replica.rider
+				local mount = rider and rider:GetMount() or nil
+				local container = mount and mount.replica.container or nil
 				if container then
 					return container:IsOpenedBy(inst) and "stop_pocket_rummage" or "start_pocket_rummage"
 				end
@@ -396,7 +416,9 @@ local actionhandlers =
 			return "doshortaction"
 		end),
     ActionHandler(ACTIONS.BAIT, "doshortaction"),
-    ActionHandler(ACTIONS.HEAL, "dolongaction"),
+    ActionHandler(ACTIONS.HEAL, function(inst, action)
+        return inst:HasTag("fasthealer") and "domediumaction" or "dolongaction"
+    end),
     ActionHandler(ACTIONS.SEW, "dolongaction"),
     ActionHandler(ACTIONS.TEACH, "dolongaction"),
     ActionHandler(ACTIONS.RESETMINE, "dolongaction"),
@@ -408,7 +430,9 @@ local actionhandlers =
             local obj = action.target or action.invobject
             if obj == nil then
                 return
-            elseif obj:HasTag("soul") then
+			elseif obj:HasTag("quickeat") then
+				return "quickeat"
+			elseif obj:HasTag("sloweat") then
                 return "eat"
             end
 
@@ -518,7 +542,23 @@ local actionhandlers =
     ActionHandler(ACTIONS.SING, "sing_pre"),
     ActionHandler(ACTIONS.SING_FAIL, "sing_fail"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
-    ActionHandler(ACTIONS.FEED, "dolongaction"),
+	ActionHandler(ACTIONS.FEED,
+		function(inst, action)
+			if action.invobject and action.invobject:HasTag("quickfeed") then
+				if action.target then
+					if not action.target:HasTag("INLIMBO") then
+						return "give"
+					end
+				else
+					local rider = inst.replica.rider
+					if rider:IsRiding() then
+						return "domediumaction"
+					end
+				end
+				return "doshortaction"
+			end
+			return "dolongaction"
+		end),
     ActionHandler(ACTIONS.ATTACK,
         function(inst, action)
             if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or IsEntityDead(inst)) then
@@ -607,6 +647,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.OCEAN_TRAWLER_LOWER, "doshortaction"),
     ActionHandler(ACTIONS.OCEAN_TRAWLER_RAISE, "doshortaction"),
     ActionHandler(ACTIONS.OCEAN_TRAWLER_FIX, "dolongaction"),
+    ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
 
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
@@ -794,7 +835,10 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.GRAVEDIG, "graveurn_in"),
 
-    ActionHandler(ACTIONS.CUSTOMIZE_WOBY_BADGES, "usewardrobe"), --TODO(DiogoW): Proper state?
+	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
+    ActionHandler(ACTIONS.DIRECTCOURIER_SETCHEST, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+    ActionHandler(ACTIONS.DIRECTCOURIER, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+    ActionHandler(ACTIONS.DIRECTCOURIER_MAP, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
 }
 
 local events =
@@ -949,9 +993,24 @@ local states =
 
         onenter = function(inst)
             ConfigureRunState(inst)
-            if inst.sg.statemem.normalwonkey and inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
-                inst.sg:GoToState("run_monkey") --resuming after brief stop from changing directions
-                return
+			if inst.sg.statemem.normalwonkey then
+				if inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
+					inst.sg:GoToState("run_monkey") --resuming after brief stop from changing directions
+					return
+				end
+			elseif inst.sg.statemem.ridingwoby then
+				if inst.sg.statemem.canwobysprint and inst.sg.statemem.normalriding then
+					if inst:HasTag("force_sprint_woby") then
+						inst.components.locomotor:OverrideMoveTimer(TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT)
+						inst.sg.mem.turbowoby = true
+						inst.sg:GoToState("sprint_woby_start")
+						return
+					elseif inst.components.locomotor:GetTimeMoving() >= TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+						inst.sg:GoToState("sprint_woby") --resuming after brief stop from changing directions
+						return
+					end
+				end
+				inst.sg.mem.turbowoby = false
             end
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pre")
@@ -1045,9 +1104,16 @@ local states =
         end,
 
         onupdate = function(inst)
-            if inst.sg.statemem.normalwonkey and inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
-                inst.sg:GoToState("run_monkey_start")
-                return
+			if inst.sg.statemem.normalwonkey then
+				if inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
+					inst.sg:GoToState("run_monkey_start")
+					return
+				end
+			elseif inst.sg.statemem.ridingwoby then
+				if inst.sg.statemem.canwobysprint and inst.sg.statemem.normalriding and inst.components.locomotor:GetTimeMoving() >= TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+					inst.sg:GoToState("sprint_woby_start")
+					return
+				end
             end
             inst.components.locomotor:RunForward()
         end,
@@ -1158,11 +1224,38 @@ local states =
                     DoMountedFoleySounds(inst)
                 end
             end),
-            TimeEvent(5 * FRAMES, function(inst)
-                if inst.sg.statemem.riding then
-                    DoRunSounds(inst)
-                end
-            end),
+			FrameEvent(1, function(inst)
+				if inst.sg.statemem.riding then
+					DoRunSounds(inst)
+					inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+					if inst.sg.statemem.ridingwoby then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+					end
+				end
+			end),
+			FrameEvent(3, function(inst)
+				if inst.sg.statemem.riding then
+					if inst.sg.statemem.ridingwoby and not inst.sg.statemem.wobysprinting then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+					end
+				end
+			end),
+			FrameEvent(8, function(inst)
+				if inst.sg.statemem.riding then
+					DoRunSounds(inst)
+					inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+					if inst.sg.statemem.ridingwoby then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+					end
+				end
+			end),
+			FrameEvent(10, function(inst)
+				if inst.sg.statemem.riding then
+					if inst.sg.statemem.ridingwoby and not inst.sg.statemem.wobysprinting then
+						inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+					end
+				end
+			end),
 
             --moose
             --Frame 11 shared with heavy lifting above
@@ -1292,7 +1385,12 @@ local states =
         onenter = function(inst)
             ConfigureRunState(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pst")
+			local anim = GetRunStateAnim(inst)
+			if anim == "run_woby" and inst.sg.lasttags and inst.sg.lasttags["sprint_woby"] then
+				anim = "sprint_woby"
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/chuff", nil, nil, true)
+			end
+			inst.AnimState:PlayAnimation(anim.."_pst")
 
             if inst.sg.statemem.moose or inst.sg.statemem.moosegroggy then
                 PlayMooseFootstep(inst, .6, true)
@@ -1450,6 +1548,174 @@ local states =
             end
         end,
     },
+
+	State{
+		name = "sprint_woby_start",
+		tags = { "moving", "running", "canrotate", "sprint_woby" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			if not inst.sg.statemem.normalriding and inst.sg.statemem.canwobysprint then
+				inst.sg:GoToState("run")
+				return
+			end
+			local speed = inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED
+			if inst.components.skilltreeupdater:IsActivated("walter_woby_endurance") then
+				speed = speed + TUNING.SKILLS.WALTER.WOBY_BIG_ENDURANCE_SPEED_BONUS
+			end
+			inst.replica.rider.predictriderrunspeed = speed
+			if inst.sg.mem.turbowoby and inst.EnableWobySprintTrail then
+				inst:EnableWobySprintTrail(true)
+			end
+			inst.components.locomotor:RunForward()
+			inst.AnimState:PlayAnimation("sprint_woby_loop", true)
+			local t = 6 * FRAMES
+			inst.AnimState:SetTime(t)
+			inst.sg.mem.footsteps = 0
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() - t)
+		end,
+
+		onupdate = function(inst)
+			if inst.components.locomotor:GetTimeMoving() < TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+				inst.sg:GoToState("run")
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, DoMountedFoleySounds),
+			FrameEvent(8 - 6, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+		},
+
+		ontimeout = function(inst)
+			inst.sg.statemem.wobysprinting = true
+			inst.sg:GoToState("sprint_woby")
+		end,
+
+		events =
+		{
+			EventHandler("onactivateskill_client", function(inst, data)
+				if data and data.skill == "walter_woby_endurance" then
+					local rider = inst.replica.rider
+					if rider then
+						rider.predictriderrunspeed = (inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED) + TUNING.SKILLS.WALTER.WOBY_BIG_ENDURANCE_SPEED_BONUS
+					end
+				end
+			end),
+			EventHandler("ondeactivateskill_client", function(inst, data)
+				if data and data.skill == "walter_woby_endurance" then
+					local rider = inst.replica.rider
+					if rider then
+						rider.predictriderrunspeed = inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED
+					end
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.wobysprinting then
+				local rider = inst.replica.rider
+				if rider then
+					rider.predictriderrunspeed = nil
+				end
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "sprint_woby",
+		tags = { "moving", "running", "canrotate", "sprint_woby" },
+
+		onenter = function(inst)
+			ConfigureRunState(inst)
+			if not (inst.sg.statemem.normalriding and inst.sg.statemem.canwobysprint) then
+				inst.sg:GoToState("run")
+				return
+			end
+			local speed = inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED
+			if inst.components.skilltreeupdater:IsActivated("walter_woby_endurance") then
+				speed = speed + TUNING.SKILLS.WALTER.WOBY_BIG_ENDURANCE_SPEED_BONUS
+			end
+			inst.replica.rider.predictriderrunspeed = speed
+			if inst.sg.mem.turbowoby and inst.EnableWobySprintTrail then
+				inst:EnableWobySprintTrail(true)
+			end
+			inst.components.locomotor:RunForward()
+
+			if not inst.AnimState:IsCurrentAnimation("sprint_woby_loop") then
+				inst.AnimState:PlayAnimation("sprint_woby_loop", true)
+			end
+
+			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+		end,
+
+		onupdate = function(inst)
+			if inst.components.locomotor:GetTimeMoving() < TUNING.SKILLS.WALTER.WOBY_BIG_TIME_TO_SPRINT then
+				inst.sg:GoToState("run")
+				return
+			end
+			inst.components.locomotor:RunForward()
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, DoMountedFoleySounds),
+			FrameEvent(1, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+			FrameEvent(8, function(inst)
+				DoRunSounds(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/beefalo/walk", nil, 0.5, true)
+				inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }, nil, true)
+			end),
+		},
+
+		ontimeout = function(inst)
+			inst.sg.statemem.wobysprinting = true
+			inst.sg:GoToState("sprint_woby")
+		end,
+
+		events =
+		{
+			EventHandler("onactivateskill_client", function(inst, data)
+				if data and data.skill == "walter_woby_endurance" then
+					local rider = inst.replica.rider
+					if rider then
+						rider.predictriderrunspeed = (inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED) + TUNING.SKILLS.WALTER.WOBY_BIG_ENDURANCE_SPEED_BONUS
+					end
+				end
+			end),
+			EventHandler("ondeactivateskill_client", function(inst, data)
+				if data and data.skill == "walter_woby_endurance" then
+					local rider = inst.replica.rider
+					if rider then
+						rider.predictriderrunspeed = inst.sg.mem.turbowoby and TUNING.SKILLS.WALTER.WOBY_BIG_TURBO_SPEED or TUNING.SKILLS.WALTER.WOBY_BIG_SPRINT_SPEED
+					end
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.wobysprinting then
+				local rider = inst.replica.rider
+				if rider then
+					rider.predictriderrunspeed = nil
+				end
+				if inst.EnableWobySprintTrail then
+					inst:EnableWobySprintTrail(false)
+				end
+			end
+		end,
+	},
 
     State{
         name = "previewaction",
@@ -6493,6 +6759,53 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
+
+	State{
+		name = "dash_woby_pre",
+		tags = { "busy" },
+		server_states = { "dash_woby_pre", "dash_woby", "dash_woby_shadow", "dash_woby_pst" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("dash_woby_pre")
+			inst.AnimState:PushAnimation("dash_woby_lag", false)
+			DoMountedFoleySounds(inst)
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					if inst.AnimState:IsCurrentAnimation("dash_woby_lag") then
+						--V2C: more aggressive prediction to make this feel as responsive as possible
+						inst.AnimState:PlayAnimation("dash_woby")
+					end
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				ConfigureRunState(inst)
+				if inst.sg.statemem.ridingwoby then
+					inst.AnimState:PlayAnimation("run_woby_pst")
+					inst.sg:GoToState("idle", true)
+				else
+					inst.sg:GoToState("idle")
+				end
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			ConfigureRunState(inst)
+			if inst.sg.statemem.ridingwoby then
+				inst.AnimState:PlayAnimation("run_woby_pst")
+				inst.sg:GoToState("idle", true)
+			else
+				inst.sg:GoToState("idle")
+			end
+		end,
+	},
 }
 
 local hop_timelines =

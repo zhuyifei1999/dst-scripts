@@ -2470,4 +2470,15 @@ function ScrapbookScreen:SelectEntry(entry)
 	end
 end
 
+function ScrapbookScreen:DEBUG_REIMPORT_DATASET()
+	package.loaded["screens/redux/scrapbookdata"] = nil
+	dataset = require("screens/redux/scrapbookdata")
+
+	if TheSim and not TheSim:HasPlayerSkeletons() then
+		dataset["skeleton"] = nil
+	else	
+		dataset["shallow_grave"] = nil
+	end
+end
+
 return ScrapbookScreen
