@@ -52,24 +52,6 @@ end
 local SPELLS =
 {
 	{
-		label = STRINGS.ACTIONS.RUMMAGE.GENERIC,
-		onselect = function(inst)
-			inst.components.spellbook:SetSpellName(STRINGS.ACTIONS.RUMMAGE.GENERIC)
-			inst.components.spellbook:SetSpellAction(ACTIONS.RUMMAGE)
-			inst.components.spellbook.closeonexecute = true
-		end,
-		execute = DoSpellAction,
-		bank = "spell_icons_woby",
-		build = "spell_icons_woby",
-		anims =
-		{
-			idle = { anim = "opencontainer" },
-			focus = { anim = "opencontainer_focus" },
-			down = { anim = "opencontainer_pressed" },
-		},
-		widget_scale = ICON_SCALE,
-	},
-	{
 		label = STRINGS.ACTIONS.DISMOUNT,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.ACTIONS.DISMOUNT)
@@ -102,6 +84,24 @@ local SPELLS =
 			idle = { anim = "forcetransform" },
 			focus = { anim = "forcetransform_focus" },
 			down = { anim = "forcetransform_pressed" },
+		},
+		widget_scale = ICON_SCALE,
+	},
+	{
+		label = STRINGS.ACTIONS.RUMMAGE.GENERIC,
+		onselect = function(inst)
+			inst.components.spellbook:SetSpellName(STRINGS.ACTIONS.RUMMAGE.GENERIC)
+			inst.components.spellbook:SetSpellAction(ACTIONS.RUMMAGE)
+			inst.components.spellbook.closeonexecute = true
+		end,
+		execute = DoSpellAction,
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			idle = { anim = "opencontainer" },
+			focus = { anim = "opencontainer_focus" },
+			down = { anim = "opencontainer_pressed" },
 		},
 		widget_scale = ICON_SCALE,
 	},

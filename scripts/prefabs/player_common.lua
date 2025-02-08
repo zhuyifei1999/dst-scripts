@@ -367,7 +367,7 @@ local function DropWetTool(inst, data)
     end
 
     local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, .15, inst.components.moisture:GetMaxMoisture()) then
+	if tool and tool:GetIsWet() and not tool:HasTag("stickygrip") and math.random() < easing.inSine(TheWorld.state.wetness, 0, 0.15, inst.components.moisture:GetMaxMoisture()) then
         local projectile =
             data.weapon ~= nil and
             data.projectile == nil and

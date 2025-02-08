@@ -155,6 +155,9 @@ local function EnableRack(inst, enable)
 				inst.components.wobyrack:SetShowItemFn(ShowRackItem)
 				inst.components.wobyrack:SetHideItemFn(HideRackItem)
 			end
+			if inst.components.container:IsOpenedBy(inst._playerlink) then
+				inst.components.wobyrack:GetContainer():Open(inst._playerlink)
+			end
 		end
 	elseif inst.components.wobyrack then
 		inst.components.container.onanyopenfn = nil

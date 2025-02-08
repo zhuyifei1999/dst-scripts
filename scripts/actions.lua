@@ -408,9 +408,9 @@ ACTIONS =
     COMPARE_WEIGHABLE = Action({ encumbered_valid=true, priority=HIGH_ACTION_PRIORITY }),
 	WEIGH_ITEM = Action(),
 	START_CARRAT_RACE = Action({ rmb = true }),
-    CASTSUMMON = Action({ rmb=true, mount_valid=true, priority=2 }),
-    CASTUNSUMMON = Action({ mount_valid=true, distance=math.huge, priority=2 }),
-	COMMUNEWITHSUMMONED = Action({ rmb=true, mount_valid=true }),
+	CASTSUMMON = Action({ rmb=true, mount_valid=true, priority=3 }),
+	CASTUNSUMMON = Action({ mount_valid=true, distance=math.huge, priority=3 }),
+	COMMUNEWITHSUMMONED = Action({ rmb=true, mount_valid=true, priority=2 }),
     TELLSTORY = Action({ rmb=true, distance=3 }),
     PERFORM = Action({ rmb=true, distance=1.5, invalid_hold_action=true }),
 

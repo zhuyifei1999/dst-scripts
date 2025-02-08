@@ -241,10 +241,12 @@ defs["slingshot_handle_sticky"] =
 
 local function handle_sticky_onequipped(slingshot, data)
 	slingshot:AddTag("nosteal")
+	slingshot:AddTag("stickygrip")
 end
 
 local function handle_stick_onunequipped(slingshot, data)
 	slingshot:RemoveTag("nosteal")
+	slingshot:RemoveTag("stickygrip")
 end
 
 defs.slingshot_handle_sticky.oninstalledfn = function(inst, slingshot)
@@ -254,6 +256,7 @@ defs.slingshot_handle_sticky.oninstalledfn = function(inst, slingshot)
 		slingshot:ListenForEvent("unequipped", handle_stick_onunequipped)
 		if slingshot.components.equippable:IsEquipped() then
 			slingshot:AddTag("nosteal")
+			slingshot:AddTag("stickygrip")
 		end
 	end
 end
@@ -269,6 +272,7 @@ defs.slingshot_handle_sticky.onuninstalledfn = function(inst, slingshot)
 		slingshot:RemoveEventCallback("unequipped", handle_stick_onunequipped)
 		if slingshot.components.equippable:IsEquipped() then
 			slingshot:RemoveTag("nosteal")
+			slingshot:RemoveTag("stickygrip")
 		end
 	end
 end

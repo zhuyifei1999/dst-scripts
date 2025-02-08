@@ -212,6 +212,9 @@ local function EnableRack(inst, enable)
 			if inst._hassmallbuild then
 				inst.AnimState:AddOverrideBuild("woby_rack")
 			end
+			if inst.components.container:IsOpenedBy(inst._playerlink) then
+				inst.components.wobyrack:GetContainer():Open(inst._playerlink)
+			end
 		end
 	elseif inst.components.wobyrack then
 		inst.components.container.onanyopenfn = nil

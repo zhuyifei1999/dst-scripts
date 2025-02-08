@@ -1,3 +1,5 @@
+local DEFAULT_MEAT_BUILD = "meat_rack_food"
+
 local WobyRack = Class(function(self, inst)
 	self.inst = inst
 	self.container = SpawnPrefab("woby_rack_container").components.container
@@ -51,7 +53,7 @@ function WobyRack:GetItemInSlot(slot)
 				build = info.build
 			end
 		end
-		return item, item.prefab, build or "meat_rack_food"
+		return item, item.prefab, build or DEFAULT_MEAT_BUILD
 	end
 end
 
@@ -150,7 +152,7 @@ local function OnDoneDrying(inst, self, item)
 	if slot and product then
 		product = SpawnPrefab(product)
 		if product then
-			local build = item.components.dryable:GetDriedBuildFile()
+			local build = item.components.dryable:GetDriedBuildFile() or DEFAULT_MEAT_BUILD
 			if product.components.inventoryitem then
 				product.components.inventoryitem:InheritMoisture(item.components.inventoryitem:GetMoisture(), item.components.inventoryitem:IsWet())
 			end
@@ -159,9 +161,11 @@ local function OnDoneDrying(inst, self, item)
 			self.container:GiveItem(product, slot)
 			local info = self.dryinginfo[product]
 			if info == nil then --just making sure it's not another dryable item
-				self.dryinginfo[product] = { build = build }
+				if build ~= DEFAULT_MEAT_BUILD then
+					self.dryinginfo[product] = { build = build }
+				end
 				if self.showitemfn then
-					self.showitemfn(self.inst, slot, product.prefab, build or "meat_rack_food")
+					self.showitemfn(self.inst, slot, product.prefab, build)
 				end
 			end
 			return product --returned for LongUpdate
@@ -187,10 +191,10 @@ function WobyRack:OnGetItem(item, slot)
 				end
 			end
 			if slot and self.showitemfn then
-				self.showitemfn(self.inst, slot, item.prefab, item.components.dryable:GetBuildFile() or "meat_rack_food")
+				self.showitemfn(self.inst, slot, item.prefab, item.components.dryable:GetBuildFile() or DEFAULT_MEAT_BUILD)
 			end
 		elseif slot and self.showitemfn then
-			self.showitemfn(self.inst, slot, item.prefab, "meat_rack_food")
+			self.showitemfn(self.inst, slot, item.prefab, DEFAULT_MEAT_BUILD)
 		end
 	end
 end
@@ -314,9 +318,9 @@ function WobyRack:OnLoad(data, newents)
 							end
 						end
 					elseif info == nil then
-						self.dryinginfo[ent.entity] = { build = v }
+						self.dryinginfo[item] = { build = v }
 						if self.showitemfn then
-							self.showitemfn(self.inst, k, ent.entity.prefab, v)
+							self.showitemfn(self.inst, k, item.prefab, v)
 						end
 					end
 				end
@@ -351,7 +355,7 @@ function WobyRack:ApplyDryingInfoSnapshot(snapshot)
 				end
 			end
 		elseif info == nil then
-			local slot = self.container:GetItemSlot(ent.entity)
+			local slot = self.container:GetItemSlot(k)
 			if slot then
 				self.dryinginfo[k] = { build = v }
 				if self.showitemfn then
