@@ -113,7 +113,20 @@ local function fn()
     --weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
 
+    -- FIXME(JBK): Walter ST: Remove this tag and pull into Woby wheel.
+    --courierdirector (from courierdirector component) added to pristine state for optimization
+    --inst:AddTag("courierdirector")
+
     MakeInventoryFloatable(inst, "med", 0.1, 0.6)
+
+    -- FIXME(JBK): Walter ST: Decouple this compass from action and pull into Woby wheel.
+    --inst:AddTag("allow_action_on_impassable") -- Allow on ocean.
+    --inst:AddTag("action_pulls_up_map") -- Make the non-map action pull up the map instead.
+    --inst:AddTag("mapaction_works_on_unexplored")
+    --inst.valid_map_actions = {
+    --    [ACTIONS.DIRECTCOURIER_SETCHEST] = true,
+    --    [ACTIONS.DIRECTCOURIER] = true,
+    --}
 
     inst.scrapbook_subcat = "tool"
 
@@ -122,6 +135,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    -- FIXME(JBK): Walter ST: Remove this component and pull into Woby wheel.
+    --inst:AddComponent("courierdirector")
 
     inst:AddComponent("inventoryitem")
 

@@ -148,8 +148,19 @@ function InventoryItemMoisture:GetTargetMoisture()
     --If owner is player, use player moisture
     --Otherwise (most likely a container), keep items dry
     local owner = self.inst.components.inventoryitem.owner
+	local isexposed = owner and owner.components.container and owner.components.container.isexposed or false
+	if isexposed then
+		local parent = owner
+		while parent do
+			parent = parent.components.inventoryitem and parent.components.inventoryitem.owner or nil
+			if parent and not (parent.components.container and parent.components.container.isexposed) then
+				isexposed = false
+				break
+			end
+		end
+	end
 	return (self.inst.components.floater ~= nil and self.inst.components.floater.showing_effect and TUNING.MAX_WETNESS)
-		or (owner == nil and (TheWorld.state.israining and self.inst.components.rainimmunity == nil and TheWorld.state.wetness or 0))
+		or ((owner == nil or isexposed) and (TheWorld.state.israining and self.inst.components.rainimmunity == nil and TheWorld.state.wetness or 0))
         or (owner.components.moisture ~= nil and owner.components.moisture:GetMoisture())
         or 0
 end
