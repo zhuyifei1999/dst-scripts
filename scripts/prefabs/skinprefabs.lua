@@ -1040,6 +1040,16 @@ table.insert(prefs, CreatePrefabSkin("backpack_glommer",
 	release_group = 11,
 }))
 
+table.insert(prefs, CreatePrefabSkin("backpack_heart",
+{
+	base_prefab = "backpack",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) backpack_init_fn(inst, "backpack_heart") end,
+	skin_tags = { "HEART", "BACKPACK", "CRAFTABLE", },
+	release_group = 163,
+}))
+
 table.insert(prefs, CreatePrefabSkin("backpack_hound",
 {
 	base_prefab = "backpack",
@@ -7408,6 +7418,17 @@ table.insert(prefs, CreatePrefabSkin("reskin_tool_toilet",
 	skin_tags = { "RESKIN", "CRAFTABLE", "SHADOW", },
 	fx_prefab = { "reskin_tool_toilet_explode_fx", },
 	release_group = 158,
+}))
+
+table.insert(prefs, CreatePrefabSkin("reskin_tool_wand",
+{
+	base_prefab = "reskin_tool",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) reskin_tool_init_fn(inst, "reskin_tool_wand") end,
+	skin_tags = { "RESKIN", "CRAFTABLE", },
+	fx_prefab = { "reskin_tool_wand_explode_fx", },
+	release_group = 163,
 }))
 
 table.insert(prefs, CreatePrefabSkin("resurrectionstatue_barber",

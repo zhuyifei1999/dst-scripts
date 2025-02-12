@@ -325058,6 +325058,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_glommer"
 msgid "This pack is shaped like a friend."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_heart
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_heart"
+msgid "Lug your beloved loot."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_hound
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_hound"
 msgid "Don't worry, it doesn't bite. Hard."
@@ -338178,6 +338183,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.reskin_tool_toilet"
 msgid "No need to flush everything, just splash on a new look!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.reskin_tool_wand
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.reskin_tool_wand"
+msgid "Put a wanderful twist on things."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.resurrectionstatue_barber
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.resurrectionstatue_barber"
 msgid "You wouldn't be caught dead with uncoiffed hair!"
@@ -342156,6 +342166,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.backpack_glommer
 msgctxt "STRINGS.SKIN_NAMES.backpack_glommer"
 msgid "Glommer Pack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_heart
+msgctxt "STRINGS.SKIN_NAMES.backpack_heart"
+msgid "Cupid's Carryall"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_hound
@@ -355276,6 +355291,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.reskin_tool_toilet
 msgctxt "STRINGS.SKIN_NAMES.reskin_tool_toilet"
 msgid "Brosse de Toilette"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.reskin_tool_wand
+msgctxt "STRINGS.SKIN_NAMES.reskin_tool_wand"
+msgid "Thorny Twizzle"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.resurrectionstatue_barber

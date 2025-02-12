@@ -142,6 +142,7 @@ PREFAB_SKINS = {
 		"backpack_deerclops",
 		"backpack_dragonfly_fire",
 		"backpack_glommer",
+		"backpack_heart",
 		"backpack_hound",
 		"backpack_koalefant",
 		"backpack_mandrake",
@@ -1196,6 +1197,7 @@ PREFAB_SKINS = {
 		"reskin_tool_bouquet",
 		"reskin_tool_brush",
 		"reskin_tool_toilet",
+		"reskin_tool_wand",
 	},
 	resurrectionstatue =
 	{

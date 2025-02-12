@@ -300673,8 +300673,8 @@ msgstr "镀金洞穴蠕虫雕塑"
 
 #. STRINGS.NAMES.CHESSPIECE_YOTS_BUILDER
 msgctxt "STRINGS.NAMES.CHESSPIECE_YOTS_BUILDER"
-msgid "Guilded Depths Worm Figure"
-msgstr "镀金洞穴蠕虫雕塑"
+msgid "Gilded Depths Worm Figure"
+msgstr ""
 
 #. STRINGS.NAMES.CHESSPIECE_YOTS_SKETCH
 msgctxt "STRINGS.NAMES.CHESSPIECE_YOTS_SKETCH"
@@ -325061,6 +325061,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_glommer"
 msgid "This pack is shaped like a friend."
 msgstr "这个背包形状像一位朋友。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_heart
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_heart"
+msgid "Lug your beloved loot."
+msgstr "背上你心爱的战利品。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_hound
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_hound"
 msgid "Don't worry, it doesn't bite. Hard."
@@ -325945,6 +325950,11 @@ msgstr "‘大理石白色’的保罗衫。不要让衣领在风中摆动。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_polo_yellow_goldenrod"
 msgid "A 'downright neighborly yellow' colored polo shirt. Don't let your collar flap in the wind."
 msgstr "‘十足邻居黄色’保罗衫。不要让衣领在风中摆动。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_redjacket
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_redjacket"
+msgid "Torn from a rift between measures, this will harmonize your overall appearance."
+msgstr "从小节之间的裂隙中撕裂而出，让你的整体造型变得和谐。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_eveningrobe_blue_frost"
@@ -338176,6 +338186,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.reskin_tool_toilet"
 msgid "No need to flush everything, just splash on a new look!"
 msgstr "无需冲洗所有东西，只需泼上新的面貌即可！"
 
+#. STRINGS.SKIN_DESCRIPTIONS.reskin_tool_wand
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.reskin_tool_wand"
+msgid "Put a wanderful twist on things."
+msgstr "魔杖轻轻绕，物件变样貌。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.resurrectionstatue_barber
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.resurrectionstatue_barber"
 msgid "You wouldn't be caught dead with uncoiffed hair!"
@@ -342156,6 +342171,11 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_glommer"
 msgid "Glommer Pack"
 msgstr "格罗姆背包"
 
+#. STRINGS.SKIN_NAMES.backpack_heart
+msgctxt "STRINGS.SKIN_NAMES.backpack_heart"
+msgid "Cupid's Carryall"
+msgstr "丘比特旅行包"
+
 #. STRINGS.SKIN_NAMES.backpack_hound
 msgctxt "STRINGS.SKIN_NAMES.backpack_hound"
 msgid "Hound Haversack"
@@ -343040,6 +343060,11 @@ msgstr "开领衬衫"
 msgctxt "STRINGS.SKIN_NAMES.body_polo_yellow_goldenrod"
 msgid "Collared Shirt"
 msgstr "开领衬衫"
+
+#. STRINGS.SKIN_NAMES.body_redjacket
+msgctxt "STRINGS.SKIN_NAMES.body_redjacket"
+msgid "Harmonic Riftwear"
+msgstr "和声裂隙装。"
 
 #. STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost
 msgctxt "STRINGS.SKIN_NAMES.body_silk_eveningrobe_blue_frost"
@@ -355270,6 +355295,11 @@ msgstr "幽灵漆刷"
 msgctxt "STRINGS.SKIN_NAMES.reskin_tool_toilet"
 msgid "Brosse de Toilette"
 msgstr "厕所刷"
+
+#. STRINGS.SKIN_NAMES.reskin_tool_wand
+msgctxt "STRINGS.SKIN_NAMES.reskin_tool_wand"
+msgid "Thorny Twizzle"
+msgstr "荆棘扭扭杖"
 
 #. STRINGS.SKIN_NAMES.resurrectionstatue_barber
 msgctxt "STRINGS.SKIN_NAMES.resurrectionstatue_barber"
