@@ -232,13 +232,7 @@ local Wisecracker = Class(function(self, inst)
 
     if inst:HasTag("soulstealer") then
         inst:ListenForEvent("soulempty", function(inst)
-            if inst.wortox_inclination == "nice" then
-                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_EMPTY_NICE"))
-            elseif inst.wortox_inclination == "naughty" then
-                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_EMPTY_NAUGHTY"))
-            else
-                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_EMPTY"))
-            end
+            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_EMPTY"))
         end)
 
         local soultoofew_time = 0
@@ -246,13 +240,7 @@ local Wisecracker = Class(function(self, inst)
             local t = GetTime()
             if t > soultoofew_time then
                 soultoofew_time = t + 30
-                if inst.wortox_inclination == "nice" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_FEW_NICE"))
-                elseif inst.wortox_inclination == "naughty" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_FEW_NAUGHTY"))
-                else
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_FEW"))
-                end
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_FEW"))
             end
         end)
 
@@ -261,35 +249,10 @@ local Wisecracker = Class(function(self, inst)
             local t = GetTime()
             if t > soultoomany_time then
                 soultoomany_time = t + 30
-                if inst.wortox_inclination == "nice" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_MANY_NICE"))
-                elseif inst.wortox_inclination == "naughty" then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_MANY_NAUGHTY"))
-                else
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_MANY"))
-                end
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_MANY"))
             end
         end)
-
-        inst:ListenForEvent("souloverloadwarning", function(inst)
-            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD_WARNING"))
-        end)
-        inst:ListenForEvent("souloverloadavoided", function(inst)
-            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD_AVOIDED"))
-        end)
-
-        inst:ListenForEvent("wortox_panflute_playing_active", function(inst)
-            inst.components.talker:Say(GetString(inst, "ANNOUNCE_PANFLUTE_BUFF_ACTIVE"))
-        end)
-
-        inst:ListenForEvent("wortox_panflute_playing_used", function(inst)
-            inst.components.talker:Say(GetString(inst, "ANNOUNCE_PANFLUTE_BUFF_USED"))
-        end)
     end
-
-    inst:ListenForEvent("wortox_reviver_failteleport", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_WORTOX_REVIVER_FAILTELEPORT"))
-    end)
 
 	inst:ListenForEvent("on_halloweenmoonpotion_failed", function(inst)
 		inst.components.talker:Say(GetString(inst, "ANNOUNCE_MOONPOTION_FAILED"))
@@ -369,28 +332,6 @@ local Wisecracker = Class(function(self, inst)
 			end
 		end
 	end)
-
-	if inst:HasTag("dogrider") then
-		local lasttalktowobytime = 0
-		local lastwobymsg = nil
-		local function talktowoby(inst, woby, msgid, range, repeatcooldown, globalcooldown)
-			if inst:IsNear(woby, range) then
-				local t = GetTime()
-				local cooldown = msgid == lastwobymsg and repeatcooldown or globalcooldown
-				if lasttalktowobytime + cooldown < t then
-					lasttalktowobytime = t
-					lastwobymsg = msgid
-					inst.components.talker:Say(GetString(inst, msgid))
-				end
-			end
-		end
-		inst:ListenForEvent("treatwoby",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_PRAISE",	4,	6,	0) end)
-		inst:ListenForEvent("praisewoby",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_PRAISE",	8,	30,	8) end)
-		inst:ListenForEvent("tellwobysit",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_SIT",	12,	3,	0) end)
-		inst:ListenForEvent("tellwobyfollow",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FOLLOW",	12,	6,	0) end)
-		inst:ListenForEvent("tellwobyforage",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FORAGE",	8,	30,	4) end)
-		inst:ListenForEvent("tellwobywork",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_WORK",	8,	30,	4) end)
-	end
 
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)

@@ -51,7 +51,7 @@ local function OnUsed(inst, data)
     inst:PlayIdle()
 end
 
-local function OnBuiltFn(inst)
+local function OnBuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_craft")
 
     inst.AnimState:PlayAnimation("place")
@@ -160,7 +160,7 @@ local function CommonFn(build, minimap)
     inst.GetImageNum = GetImageNum
     inst.AlertNearbyCritters = AlertNearbyCritters
 
-    inst.OnBuiltFn = OnBuiltFn
+    inst.OnBuilt = OnBuilt
 
     inst:AddComponent("inspectable")
     inst:AddComponent("lootdropper")

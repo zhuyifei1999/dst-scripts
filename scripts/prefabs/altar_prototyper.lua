@@ -240,7 +240,6 @@ local function common_fn(anim)
     inst:AddTag("altar")
     inst:AddTag("structure")
     inst:AddTag("stone")
-	inst:AddTag("ancient_station")
 
     --prototyper (from prototyper component) added to pristine state for optimization
     inst:AddTag("prototyper")

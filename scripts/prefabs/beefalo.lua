@@ -671,7 +671,8 @@ local function OnDeath(inst, data)
         inst.components.beard:EnableGrowth(false)
         inst.components.hunger:Pause()
 
-        inst.components.follower:DisableLeashing()
+        inst.components.follower.noleashing = true
+        inst.components.follower:StopLeashing()
 
         inst:AddTag("deadcreature")
         inst:AddTag("give_dolongaction")
@@ -712,7 +713,8 @@ function fns.OnRevived(inst, revive)
     -- inst.components.beard:EnableGrowth(true)
     -- inst.components.hunger:Resume()
 
-    -- inst.components.follower:EnableLeashing()
+    -- inst.components.follower.noleashing = false
+    -- inst.components.follower:StartLeashing()
 
     -- inst:RemoveTag("deadcreature")
 end

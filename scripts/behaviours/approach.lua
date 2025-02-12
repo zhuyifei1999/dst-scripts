@@ -25,7 +25,7 @@ function Approach:EvaluateDistances() -- this is run once per follow target
 	end
 end
 
-function Approach:DBString()
+function Follow:DBString()
     local dist =
         self.currenttarget ~= nil and
         self.currenttarget:IsValid() and

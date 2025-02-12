@@ -45,8 +45,7 @@ local events =
         if inst.components.health ~= nil and not inst.components.health:IsDead() then
             if inst.sg:HasStateTag("shield") then
                 inst.sg:GoToState("shield_hit")
-			elseif not CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) and --hit delay only for projectiles
-					(not inst.sg:HasStateTag("busy") or
+            elseif (not inst.sg:HasStateTag("busy") or
                     inst.sg:HasStateTag("caninterrupt") or
                     inst.sg:HasStateTag("frozen")) then
                 inst.sg:GoToState("hit")

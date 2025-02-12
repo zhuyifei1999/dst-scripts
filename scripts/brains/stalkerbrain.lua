@@ -213,11 +213,7 @@ function StalkerBrain:OnStart()
                     FaceEntity(self.inst, GetIdleStargate, KeepIdleStargate),
                     SequenceNode{
                         WaitNode(IDLE_GATE_TIME),
-                        FailIfSuccessDecorator(ActionNode(function()
-                            if (self.inst._lastplayerhittime or 0) + IDLE_GATE_TIME < GetTime() then
-                                self.inst:OnLostAtrium()
-                            end
-                        end)),
+                        ActionNode(function() self.inst:OnLostAtrium() end),
                     },
                 },
             },

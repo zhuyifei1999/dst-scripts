@@ -285,7 +285,6 @@ local SPELLS =
 		label = STRINGS.ENGINEER_REMOTE.VOLLEY,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.ENGINEER_REMOTE.VOLLEY)
-			inst.components.spellbook:SetSpellAction(nil)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCast)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoecatapultvolley"
@@ -319,7 +318,6 @@ local SPELLS =
 		label = STRINGS.ENGINEER_REMOTE.BOOST,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.ENGINEER_REMOTE.BOOST)
-			inst.components.spellbook:SetSpellAction(nil)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCast)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoecatapultwakeup"
@@ -353,7 +351,6 @@ local SPELLS =
 		label = STRINGS.ENGINEER_REMOTE.WAKEUP,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.ENGINEER_REMOTE.WAKEUP)
-			inst.components.spellbook:SetSpellAction(nil)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCast)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoecatapultwakeup"
@@ -382,7 +379,6 @@ local SPELLS =
 		label = STRINGS.ENGINEER_REMOTE.ELEMENTAL_VOLLEY,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.ENGINEER_REMOTE.ELEMENTAL_VOLLEY)
-			inst.components.spellbook:SetSpellAction(nil)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCast)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoecatapultelementalvolley"

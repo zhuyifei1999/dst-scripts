@@ -254,23 +254,11 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
         if recipe ~= nil then
 			if self.classified.isfreebuildmode:value() then
 				return true
-			end
-
-			--the following builder_tag/skill checks are require due to character swapping
-			if (recipe.builder_tag and not self.inst:HasTag(recipe.builder_tag)) or
-				(recipe.no_builder_tag and self.inst:HasTag(recipe.no_builder_tag))
-			then
+			elseif recipe.builder_tag ~= nil and not self.inst:HasTag(recipe.builder_tag) then -- builder_tag check is require due to character swapping
 				return false
-			end
-			local skilltreeupdater = self.inst.components.skilltreeupdater
-			if (recipe.builder_skill and not (skilltreeupdater and skilltreeupdater:IsActivated(recipe.builder_skill))) or
-				(recipe.no_builder_skill and skilltreeupdater and skilltreeupdater:IsActivated(recipe.no_builder_skill))
-			then
+            elseif recipe.builder_skill ~= nil and not self.inst.components.skilltreeupdater:IsActivated(recipe.builder_skill) then -- builder_skill check is require due to character swapping
 				return false
-			end
-			--
-
-			if self.classified.recipes[recipe.name] and self.classified.recipes[recipe.name]:value() then
+			elseif self.classified.recipes[recipe.name] ~= nil and self.classified.recipes[recipe.name]:value() then
 				return true
 			end
 
@@ -340,20 +328,9 @@ function Builder:CanLearn(recipename)
         return self.inst.components.builder:CanLearn(recipename)
     elseif self.classified ~= nil then
         local recipe = GetValidRecipe(recipename)
-		if recipe == nil then
-			return false
-		elseif (recipe.builder_tag and not self.inst:HasTag(recipe.builder_tag)) or
-			(recipe.no_builder_tag and self.inst:HasTag(recipe.no_builder_tag))
-		then
-			return false
-		end
-		local skilltreeupdater = self.inst.components.skilltreeupdater
-		if (recipe.builder_skill and not (skilltreeupdater and skilltreeupdater:IsActivated(recipe.builder_skill))) or
-			(recipe.no_builder_skill and skilltreeupdater and skilltreeupdater:IsActivated(recipe.no_builder_skill))
-		then
-			return false
-		end
-		return true
+        return recipe ~= nil
+            and (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
+            and (recipe.builder_skill == nil or self.inst.components.skilltreeupdater:IsActivated(recipe.builder_skill))
     else
         return false
     end

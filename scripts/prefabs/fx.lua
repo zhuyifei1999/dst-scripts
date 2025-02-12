@@ -3,17 +3,10 @@ local function PlaySound(inst, sound)
 end
 
 local function MakeFx(t)
-    local assets
-    if t.build_is_skin then
-        assets = {
-            Asset("DYNAMIC_ANIM", "anim/dynamic/"..t.build..".zip"),
-            Asset("PKGREF", "anim/dynamic/"..t.build..".dyn"),
-        }
-    else
-        assets = {
-            Asset("ANIM", "anim/"..t.build..".zip"),
-        }
-    end
+    local assets =
+    {
+        Asset("ANIM", "anim/"..t.build..".zip")
+    }
 
     local function startfx(proxy)
         --print ("SPAWN", debugstack())

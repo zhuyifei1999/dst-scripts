@@ -153,11 +153,6 @@ local function OnHoundWarning(parent, houndwarningtype)
     SetDirty(parent.player_classified.houndwarningevent, houndwarningtype)
 end
 
-local function OnCraftedExtraElixir(parent, items)
-    SetDirty(parent.player_classified.craftedextraelixirevent, items)
-end
-
-
 fns.OnPlayThemeMusic = function(parent, data)
     if data ~= nil then
         if data.theme == "farming" then
@@ -484,13 +479,6 @@ fns.OnFreeSoulhopsDirty = function(inst)
     end
 end
 
--- wortox_panflute_buff ------------------------------------------------------
-fns.OnWortoxPanfluteBuffDirty = function(inst)
-    if inst._parent ~= nil then
-        inst._parent:PushEvent("item_buff_changed")
-    end
-end
-
 ------------------------------------------------------------------------------
 -- Winona Inspectacles game
 
@@ -510,15 +498,6 @@ fns.OnRoseGlassesCooldownDirty = function(inst)
         inst._parent:PushEvent("roseglassescooldownchanged", {
             isincooldown = inst.roseglasses_cooldown:value(),
         })
-    end
-end
-
-------------------------------------------------------------------------------
--- walter_camp_wobycourier
-
-fns.OnWobyCourierChestDirty = function(inst)
-    if inst._parent ~= nil then
-        inst._parent:PushEvent("updatewobycourierchesticon")
     end
 end
 
@@ -1003,18 +982,6 @@ local function OnHoundWarningDirty(inst)
     end
 end
 
-fns.OnCraftedExtraElixirDirty = function(inst)
-
-    if inst._parent ~= nil and inst._parent.HUD ~= nil then
-        local items = inst._parent.player_classified.craftedextraelixirevent:value()
-        if items > 2 then
-            TheFocalPoint.SoundEmitter:PlaySound("meta5/wendy/elixir_bonus_2")
-        elseif items > 1 then
-            TheFocalPoint.SoundEmitter:PlaySound("meta5/wendy/elixir_bonus_1")
-        end
-    end
-end
-
 fns.StartFarmingMusicEvent = function(inst)
     inst._parent:PushEvent("playfarmingmusic")
 end
@@ -1099,7 +1066,6 @@ local function RegisterNetListeners_mastersim(inst)
     inst:ListenForEvent("houndwarning", OnHoundWarning, inst._parent)
     inst:ListenForEvent("idplantseed", OnIdPlantSeed, inst._parent)
     inst:ListenForEvent("play_theme_music", fns.OnPlayThemeMusic, inst._parent)
-    inst:ListenForEvent("craftedextraelixir", OnCraftedExtraElixir, inst._parent)
 end
 
 local function RegisterNetListeners_local(inst)
@@ -1135,8 +1101,6 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("playerscreenflashdirty", OnPlayerScreenFlashDirty)
     inst:ListenForEvent("attunedresurrectordirty", OnAttunedResurrectorDirty)
     inst:ListenForEvent("cannondirty", fns.OnCannonDirty)
-    inst:ListenForEvent("wobycourier_chest_posxdirty", fns.OnWobyCourierChestDirty)
-    inst:ListenForEvent("wobycourier_chest_poszdirty", fns.OnWobyCourierChestDirty)
 end
 
 local function RegisterNetListeners_common(inst)
@@ -1174,8 +1138,6 @@ local function RegisterNetListeners_common(inst)
     inst:ListenForEvent("ingredientmoddirty", fns.RefreshCrafting)
     inst:ListenForEvent("inspectacles_gamedirty", fns.OnInspectaclesGameDirty)
     inst:ListenForEvent("roseglasses_cooldowndirty", fns.OnRoseGlassesCooldownDirty)
-    inst:ListenForEvent("wortoxpanflutebuffdirty", fns.OnWortoxPanfluteBuffDirty)
-    inst:ListenForEvent("craftedextraelixirdirty",fns.OnCraftedExtraElixirDirty)
 end
 
 local function RegisterNetListeners(inst)
@@ -1222,7 +1184,6 @@ function fns.OnInitialDirtyStates(inst)
             UpdateAnimOverrideSanity(inst._parent)
         end
 		fns.OnIsStrafingDirty(inst)
-        fns.OnWobyCourierChestDirty(inst)
     end
 
     OnStormLevelDirty(inst)
@@ -1230,7 +1191,6 @@ function fns.OnInitialDirtyStates(inst)
     fns.OnIsAcidSizzlingDirty(inst)
     fns.OnInspectaclesGameDirty(inst)
     fns.OnRoseGlassesCooldownDirty(inst)
-    fns.OnWortoxPanfluteBuffDirty(inst)
     OnGiftsDirty(inst)
     fns.OnYotbSkinDirty(inst)
     OnMountHurtDirty(inst)
@@ -1343,9 +1303,6 @@ local function fn()
     -- Wortox Soulhop free counter
     inst.freesoulhops = net_tinybyte(inst.GUID, "freesoulhops", "freesoulhopsdirty")
     inst.freesoulhops:set(0)
-    -- Wortox buff
-    inst.wortox_panflute_buff = net_bool(inst.GUID, "wortox_panflute_buff", "wortoxpanflutebuffdirty")
-    inst.wortox_panflute_buff:set(false)
 
     -- Winona inspectacles
     inst.inspectacles_game = net_tinybyte(inst.GUID, "inspectacles_game", "inspectacles_gamedirty")
@@ -1356,12 +1313,6 @@ local function fn()
     inst.inspectacles_posz:set(0)
     -- Winona rose glasses
     inst.roseglasses_cooldown = net_bool(inst.GUID, "roseglasses_cooldown", "roseglasses_cooldowndirty")
-
-    -- walter_camp_wobycourier
-    inst.wobycourier_chest_posx = net_shortint(inst.GUID, "wobycourier_chest_posx", "wobycourier_chest_posxdirty")
-    inst.wobycourier_chest_posz = net_shortint(inst.GUID, "wobycourier_chest_posz", "wobycourier_chest_poszdirty")
-    inst.wobycourier_chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
-    inst.wobycourier_chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
 
     -- oldager
     inst.oldager_yearpercent = net_float(inst.GUID, "oldager.yearpercent")
@@ -1433,7 +1384,6 @@ local function fn()
     inst.wormholetravelevent = net_tinybyte(inst.GUID, "frontend.wormholetravel", "wormholetraveldirty")
     inst.houndwarningevent = net_smallbyte(inst.GUID, "frontend.houndwarning", "houndwarningdirty")
     inst.idplantseedevent = net_event(inst.GUID, "idplantseedevent")
-    inst.craftedextraelixirevent = net_smallbyte(inst.GUID, "frontend.craftedextraelixir", "craftedextraelixirdirty")
 
     -- busy theme music
     inst.start_farming_music = net_event(inst.GUID, "startfarmingmusicevent")

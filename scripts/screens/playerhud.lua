@@ -77,7 +77,6 @@ local PlayerHud = Class(Screen, function(self)
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
     self.inst:ListenForEvent("endofmatch", function(world, data) self:ShowEndOfMatchPopup(data) end, TheWorld)
-    self.inst:ListenForEvent("debug_rebuild_skilltreedata", function() self:OpenPlayerInfoScreen() end, TheGlobalInstance)
 
     if not TheWorld.ismastersim then
         self.inst:ListenForEvent("deactivateworld", function()
@@ -364,19 +363,11 @@ end
 
 local function OpenContainerWidget(self, container, side)
     local containerwidget = ContainerWidget(self.owner)
-	local parent
-	if side then
-		parent = self.controls.containerroot_side
-	else
-		local _container = container.replica.container
-		local _type = _container and _container.type or nil
-		parent =
-			(_type == "hand_inv" and self.controls.inv.hand_inv) or
-			(_type == "side_inv" and self.controls.secondary_status.side_inv) or
-			(_type == "side_inv_behind" and self.controls.containerroot_side_behind) or
-			(_type == "top_rack" and self.controls.containerroot_under) or
-			self.controls.containerroot
-	end
+	local parent = side and self.controls.containerroot_side
+					or (container.replica.container ~= nil and container.replica.container.type == "hand_inv") and self.controls.inv.hand_inv
+                    or (container.replica.container ~= nil and container.replica.container.type == "side_inv") and self.controls.secondary_status.side_inv
+                    or (container.replica.container ~= nil and container.replica.container.type == "side_inv_behind") and self.controls.containerroot_side_behind
+					or self.controls.containerroot
 
 	parent:AddChild(containerwidget)
 
@@ -387,7 +378,6 @@ local function OpenContainerWidget(self, container, side)
 	containerwidget:MoveToBack()
     containerwidget:Open(container, self.owner)
     self.controls.containers[container] = containerwidget
-	self.controls.inv:OnNewContainerWidget(containerwidget)
 
 	if parent == self.controls.containerroot then
 		self:CloseSpellWheel()
@@ -911,18 +901,11 @@ function PlayerHud:OnUpdate(dt)
 	if self.owner ~= nil then
 		local spellbook = self:GetCurrentOpenSpellBook()
 		if spellbook ~= nil then
-			if not spellbook:IsValid() or
-				spellbook:HasTag("fueldepleted") or
-				not (spellbook.components.spellbook and spellbook.components.spellbook:CanBeUsedBy(self.owner))
-			then
+			if not spellbook:IsValid() or spellbook:HasTag("fueldepleted") then
 				self:CloseSpellWheel()
 			else
 				local inventoryitem = spellbook.replica.inventoryitem
-				if inventoryitem then
-					if not inventoryitem:IsGrandOwner(self.owner) then
-						self:CloseSpellWheel()
-					end
-				elseif not CanEntitySeeTarget(self.owner, spellbook) then
+				if inventoryitem == nil or not inventoryitem:IsGrandOwner(self.owner) then
 					self:CloseSpellWheel()
 				end
 			end
@@ -1186,9 +1169,6 @@ function PlayerHud:CloseSpellWheel(is_execute)
 				TheFocalPoint.SoundEmitter:PlaySound(sfx)
 			end
 		end
-		if is_execute and old == self.owner then
-			self.controls:DelayControllerSpellWheelHint()
-		end
 	end
 end
 
@@ -1313,11 +1293,7 @@ function PlayerHud:OnControl(control, down)
                 self:CloseCrafting()
                 return true
 			elseif self:IsSpellWheelOpen() then
-				--V2C: Wheel widget closes itself on CONTROL_CANCEL down already.
-				--     Don't do this here because we can now open spell wheel via
-				--     (B) button, and this would've instantly closed it when the
-				--     button is released.
-				--self:CloseSpellWheel()
+				self:CloseSpellWheel()
 				return true
             elseif self:IsControllerInventoryOpen() then
                 self:CloseControllerInventory()

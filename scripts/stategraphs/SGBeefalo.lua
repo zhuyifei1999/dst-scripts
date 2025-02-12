@@ -47,14 +47,7 @@ local events=
             inst.sg:GoToState("death", data.cause == "file_load")
         end
     end),
-	EventHandler("attacked", function(inst)
-		if not (inst.components.health:IsDead() or
-				inst.sg:HasStateTag("attack") or
-				CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
-		then
-			inst.sg:GoToState("hit")
-		end
-	end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
     EventHandler("heardhorn", function(inst, data)
         if not inst.components.health:IsDead()
            and not inst.sg:HasStateTag("attack")
@@ -709,7 +702,8 @@ local states=
             inst.components.beard:EnableGrowth(true)
             inst.components.hunger:Resume()
 
-            inst.components.follower:EnableLeashing()
+            inst.components.follower.noleashing = false
+            inst.components.follower:StartLeashing()
 
             inst:RemoveTag("deadcreature")
         end,
@@ -975,7 +969,7 @@ CommonStates.AddWalkStates(
         }
     })
 
-CommonStates.AddSimpleState(states, "hit", "hit", nil, nil, nil, { onenter = CommonHandlers.UpdateHitRecoveryDelay })
+CommonStates.AddSimpleState(states,"hit", "hit")
 CommonStates.AddFrozenStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

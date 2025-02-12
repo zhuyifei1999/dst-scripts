@@ -53,8 +53,6 @@ local Combat = Class(function(self, inst)
     self.shouldavoidaggro = nil
     self.forbiddenaggrotags = nil
 	self.lastwasattackedbytargettime = 0
-	--self.lastattacker = nil
-	--self.lastattacktype = nil
 
 	self.externaldamagemultipliers = SourceModifierList(self.inst) -- damage dealt to others multiplier
 
@@ -546,19 +544,6 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 
     self.lastattacker = attacker
 
-	--can add more attacktypes as needed
-	--currently just "projectile" or nil, used for hit stun calculation
-	if (damage or 0) > 0 and
-		weapon and
-		(	weapon.components.projectile or
-			(weapon.components.weapon and weapon.components.weapon.projectile)
-		)
-	then
-		self.lastattacktype = "projectile"
-	else
-		self.lastattacktype = nil
-	end
-
     if self.inst.components.health ~= nil and damage ~= nil and damageredirecttarget == nil then
         if self.inst.components.attackdodger ~= nil and self.inst.components.attackdodger:CanDodge(attacker) then
             self.inst.components.attackdodger:Dodge(attacker)
@@ -870,7 +855,7 @@ function Combat:CalcDamage(target, weapon, multiplier)
     local externaldamagemultipliers = self.externaldamagemultipliers
 	local damagetypemult = 1
     local bonus = self.damagebonus --not affected by multipliers
-    local playermultiplier = target ~= nil and (target:HasTag("player") or target:HasTag("player_damagescale"))
+    local playermultiplier = target ~= nil and target:HasTag("player")
     local pvpmultiplier = playermultiplier and self.inst:HasTag("player") and self.pvp_damagemod or 1
 	local mount = nil
 	local spdamage
@@ -943,14 +928,9 @@ function Combat:CalcDamage(target, weapon, multiplier)
 			--playermultiplier * --@V2C excluded to avoid tuning nightmare
 			pvpmultiplier
 
-        if self.customspdamagemultfn then
-            spmult = spmult * (self.customspdamagemultfn(self.inst, target, weapon, multiplier, mount) or 1)
-        end
-
 		if spmult ~= 1 then
 			spdamage = SpDamageUtil.ApplyMult(spdamage, spmult)
 		end
-
 	end
 	return damage, spdamage
 end
@@ -1209,30 +1189,19 @@ function Combat:GetDamageReflect(target, damage, weapon, stimuli)
 end
 
 local AREAATTACK_MUST_TAGS = { "_combat" }
-function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetags, onlyontarget)
+function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetags)
     local hitcount = 0
     local x, y, z = target.Transform:GetWorldPosition()
-    if onlyontarget then
-        local ent = target
-        if self:IsValidTarget(ent) and
+    local ents = TheSim:FindEntities(x, y, z, range, AREAATTACK_MUST_TAGS, excludetags)
+    for i, ent in ipairs(ents) do
+        if ent ~= target and
+            ent ~= self.inst and
+            self:IsValidTarget(ent) and
             (validfn == nil or validfn(ent, self.inst)) then
             self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
-            local dmg, spdmg = self:CalcDamage(ent, weapon, self.areahitdamagepercent)
-            ent.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
+			local dmg, spdmg = self:CalcDamage(ent, weapon, self.areahitdamagepercent)
+			ent.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
             hitcount = hitcount + 1
-        end
-    else
-        local ents = TheSim:FindEntities(x, y, z, range, AREAATTACK_MUST_TAGS, excludetags)
-        for i, ent in ipairs(ents) do
-            if ent ~= target and
-                ent ~= self.inst and
-                self:IsValidTarget(ent) and
-                (validfn == nil or validfn(ent, self.inst)) then
-                self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
-                local dmg, spdmg = self:CalcDamage(ent, weapon, self.areahitdamagepercent)
-                ent.components.combat:GetAttacked(self.inst, dmg, weapon, stimuli, spdmg)
-                hitcount = hitcount + 1
-            end
         end
     end
 

@@ -283,14 +283,6 @@ local function waterfn(data)
     return inst
 end
 
-local function OnHaunt(inst)
-	if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-		OnPicked(inst, nil)
-		inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-	end
-	return true
-end
-
 local function OnSink(inst)
 	SpawnPrefab("oceanfishableflotsam_water").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	inst:Remove()
@@ -344,7 +336,13 @@ local function landfn(data)
 	inst.components.symbolswapdata:SetData("flotsam", "swap_body")
 
     inst:AddComponent("hauntable")
-    inst.components.hauntable:SetOnHauntFn(OnHaunt)
+    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
+        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+            OnPicked(inst, nil)
+            inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+        end
+        return true
+	end)
 
 	inst:ListenForEvent("onsink", OnSink)
 	inst:ListenForEvent("on_landed", OnLanded)

@@ -83,7 +83,7 @@ local function fn()
     inst.AnimState:PlayAnimation(inst.animname)
 
     inst:AddComponent("edible")
-    inst.components.edible.foodtype = FOODTYPE.GENERIC
+    inst.components.edible.foodtype = "GENERIC"
     inst.components.edible.healthvalue = TUNING.HEALING_TINY/2
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY/4
     inst.components.edible.degrades_with_spoilage = false

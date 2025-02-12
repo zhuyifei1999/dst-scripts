@@ -719,24 +719,6 @@ local function TakeActiveItemFromHalfOfSlot(inst, slot)
     end
 end
 
-local function TakeActiveItemFromCountOfSlot(inst, slot, count)
-    if not IsBusy(inst) and inst._activeitem == nil then
-        local item = inst:GetItemInSlot(slot)
-        if item ~= nil then
-            local takeitem = SlotItem(item, slot)
-            if item.replica.stackable and item.replica.stackable:StackSize() > count then
-                PushNewActiveItem(inst, takeitem, inst, slot)
-                local stacksize = item.replica.stackable:StackSize()
-                PushStackSize(inst, item, stacksize - count, true, count, false)
-            else
-                PushItemLose(inst, takeitem)
-                PushNewActiveItem(inst, takeitem, inst, slot)
-            end
-            SendRPCToServer(RPC.TakeActiveItemFromCountOfSlot, slot, count)
-        end
-    end
-end
-
 local function TakeActiveItemFromAllOfSlot(inst, slot)
     if not IsBusy(inst) and inst._activeitem == nil then
         local item = inst:GetItemInSlot(slot)
@@ -918,11 +900,12 @@ end
 local function CastSpellBookFromInv(inst, item)
 	if not IsBusy(inst) and
 		inst._parent ~= nil and
-		inst._parent.components.playercontroller and
-		not inst._parent.components.playercontroller:IsBusy() and
-		item.components.spellbook
-	then
-		inst._parent.components.playercontroller:RemoteCastSpellBookFromInv(item, item.components.spellbook:GetSelectedSpell(), item.components.spellbook:GetSpellAction())
+		not inst._parent:HasTag("busy") and
+		not (inst._parent.sg ~= nil and
+			inst._parent.sg:HasStateTag("busy")) and
+		item.components.spellbook ~= nil and
+		inst._parent.components.playercontroller ~= nil then
+		inst._parent.components.playercontroller:RemoteCastSpellBookFromInv(item, item.components.spellbook:GetSelectedSpell())
 	end
 end
 
@@ -1059,43 +1042,6 @@ local function MoveItemFromHalfOfSlot(inst, slot, container)
     end
 end
 
-local function MoveItemFromCountOfSlot(inst, slot, container)
-    if not IsBusy(inst) then
-        local container_classified = container ~= nil and container.replica.container ~= nil and container.replica.container.classified or nil
-        if container_classified ~= nil and not container_classified:IsBusy() then
-            local item = inst:GetItemInSlot(slot)
-            if item ~= nil then
-                local animateactivestacksize, receiveitemcount
-                if item.replica.stackable and item.replica.stackable:StackSize() > count then
-                    receiveitemcount = count
-                    animateactivestacksize = true
-                else
-                    receiveitemcount = nil
-                    animateactivestacksize = false
-                end
-                local remainder = nil
-                if inst._parent.components.constructionbuilderuidata ~= nil and inst._parent.components.constructionbuilderuidata:GetContainer() == container then
-                    local targetslot = inst._parent.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab)
-                    if targetslot ~= nil then
-                        remainder = container_classified:ReceiveItem(item, receiveitemcount, targetslot)
-                    end
-                else
-                    remainder = container_classified:ReceiveItem(item, receiveitemcount)
-                end
-                if remainder ~= nil then
-                    if remainder > 0 then
-                        PushStackSize(inst, item, nil, nil, remainder, animateactivestacksize, true)
-                    else
-                        local takeitem = SlotItem(item, slot)
-                        PushItemLose(inst, takeitem)
-                    end
-                    SendRPCToServer(RPC.MoveInvItemFromCountOfSlot, slot, container, count)
-                end
-            end
-        end
-    end
-end
-
 local function GetNextAvailableSlot(inst, item)
     local isstackable = item.replica.stackable ~= nil
 
@@ -1103,19 +1049,6 @@ local function GetNextAvailableSlot(inst, item)
     local overflow = GetOverflowContainer(inst)
     overflow = (overflow and not overflow:IsBusy()) and overflow or nil
     local prioritize_container = overflow and overflow:ShouldPrioritizeContainer(item) or false
-    
-    local useoverflow = true
-    if overflow then
-        if item.replica.inventoryitem then
-            if item.replica.inventoryitem:CanOnlyGoInPocket() then
-                useoverflow = false
-            elseif item.replica.inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
-                useoverflow = overflow.replica and overflow.replica.inventoryitem and overflow.replica.inventoryitem:CanOnlyGoInPocket() or false
-            end
-        end
-    else
-        useoverflow = false
-    end
 
     local prefabname
     local prefabskinname
@@ -1125,7 +1058,7 @@ local function GetNextAvailableSlot(inst, item)
 
         for k, v in pairs(inst:GetEquips()) do
 			if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
-                return k, "equips", useoverflow
+                return k, "equips"
             end
         end
 
@@ -1136,15 +1069,15 @@ local function GetNextAvailableSlot(inst, item)
                     inv_slot, inv_pref = k, "invslots"
                     break
                 else
-                    return k, "invslots", useoverflow
+                    return k, "invslots"
                 end
             end
         end
 
-        if useoverflow then
+        if not (item.replica.inventoryitem and item.replica.inventoryitem:CanOnlyGoInPocket()) and overflow then
             for k, v in pairs(overflow:GetItems()) do
-                if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
-                    return k, "overflow", useoverflow
+				if v.prefab == prefabname and v.AnimState:GetSkinBuild() == prefabskinname and v.replica.stackable and not v.replica.stackable:IsFull() then
+                    return k, "overflow"
                 end
             end
         end
@@ -1154,10 +1087,10 @@ local function GetNextAvailableSlot(inst, item)
         end
     end
 
-    if useoverflow and prioritize_container then
+    if prioritize_container then
         for k = 1, overflow:GetNumSlots() do
             if overflow:CanTakeItemInSlot(item, k) and not overflow:GetItemInSlot(k) then
-                return k, "overflow", useoverflow
+                return k, "overflow"
             end
         end
     end
@@ -1166,11 +1099,11 @@ local function GetNextAvailableSlot(inst, item)
     if inventory_replica then
         for k = 1, inventory_replica:GetNumSlots() do
             if inventory_replica:CanTakeItemInSlot(item, k) and not inst:GetItemInSlot(k) then
-                return k, "invslots", useoverflow
+                return k, "invslots"
             end
         end
     end
-    return nil, "invslots", useoverflow
+    return nil, "invslots"
 end
 
 --V2C: forceslot should never be used for inventory_classified,
@@ -1186,14 +1119,14 @@ local function ReceiveItem(inst, item, count)--, forceslot)
         return
     end
 
-    local slot, container_pref, useoverflow = GetNextAvailableSlot(inst, item)
+    local slot, container_pref = GetNextAvailableSlot(inst, item)
 	local stackable = item.replica.stackable
 	local originalstacksize = stackable and stackable:StackSize() or 1
     local originalcount = count and math.min(count, originalstacksize) or originalstacksize
     count = originalcount
 
     if slot then
-        if overflow ~= nil and container_pref == "overflow" and useoverflow then
+        if overflow ~= nil and container_pref == "overflow" then
             local remainder = overflow:ReceiveItem(item, count)
             if remainder ~= nil then
                 count = math.max(count - (originalstacksize - remainder), 0)
@@ -1249,7 +1182,7 @@ local function ReceiveItem(inst, item, count)--, forceslot)
 			end
 			--otherwise if nothing changed, return remainder below
         end
-    elseif overflow ~= nil and useoverflow then
+    elseif overflow ~= nil then
         local remainder = overflow:ReceiveItem(item, count)
         if remainder ~= nil then
             count = math.max(count - (originalstacksize - remainder), 0)
@@ -1404,7 +1337,6 @@ local function fn()
         inst.PutOneOfActiveItemInSlot = PutOneOfActiveItemInSlot
         inst.PutAllOfActiveItemInSlot = PutAllOfActiveItemInSlot
         inst.TakeActiveItemFromHalfOfSlot = TakeActiveItemFromHalfOfSlot
-        inst.TakeActiveItemFromCountOfSlot = TakeActiveItemFromCountOfSlot
         inst.TakeActiveItemFromAllOfSlot = TakeActiveItemFromAllOfSlot
         inst.AddOneOfActiveItemToSlot = AddOneOfActiveItemToSlot
         inst.AddAllOfActiveItemToSlot = AddAllOfActiveItemToSlot
@@ -1422,7 +1354,6 @@ local function fn()
         inst.TakeActiveItemFromEquipSlot = TakeActiveItemFromEquipSlot
         inst.MoveItemFromAllOfSlot = MoveItemFromAllOfSlot
         inst.MoveItemFromHalfOfSlot = MoveItemFromHalfOfSlot
-        inst.MoveItemFromCountOfSlot = MoveItemFromCountOfSlot
 
         --Exposed for container and builder
         inst.QueueRefresh = QueueRefresh

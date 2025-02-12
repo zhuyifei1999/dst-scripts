@@ -408,14 +408,6 @@ local function burntfxfn()
     return inst
 end
 
-local function OnHaunt(inst)
-    if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-        onpickup(inst, nil)
-        inst:Remove()
-    end
-    return true
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -497,7 +489,13 @@ local function fn()
     inst.OnLoad = OnLoad
 
     inst:AddComponent("hauntable")
-    inst.components.hauntable:SetOnHauntFn(OnHaunt)
+    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
+        if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+            onpickup(inst, nil)
+			inst:Remove()
+        end
+        return true
+    end)
 
     return inst
 end

@@ -450,12 +450,8 @@ function GetActionFailString(inst, action, reason)
 
     character = string.upper(character)
 
-	local character_tbl = STRINGS.CHARACTERS[character]
-	return character_tbl
-		and (	getcharacterstring(character_tbl.ACTIONFAIL, action, reason) or
-				getcharacterstring(character_tbl.ACTIONFAIL, "GENERIC", reason) or
-				character_tbl.ACTIONFAIL_GENERIC
-			)
+    return (STRINGS.CHARACTERS[character] ~= nil and getcharacterstring(STRINGS.CHARACTERS[character].ACTIONFAIL, action, reason))
+        or (STRINGS.CHARACTERS[character] ~= nil and getcharacterstring(STRINGS.CHARACTERS[character].ACTIONFAIL, "GENERIC", reason))
         or getcharacterstring(STRINGS.CHARACTERS.GENERIC.ACTIONFAIL, action, reason)
         or getcharacterstring(STRINGS.CHARACTERS.GENERIC.ACTIONFAIL, "GENERIC", reason)
         or STRINGS.CHARACTERS.GENERIC.ACTIONFAIL_GENERIC

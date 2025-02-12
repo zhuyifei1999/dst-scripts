@@ -33,13 +33,6 @@ local function ChooseAttack(inst)
 	end
 end
 
-local function hit_recovery_skip_cooldown_fn(inst, last_t, delay)
-	--no skipping when we're stalking or dodging (hit_recovery increased)
-	return inst.hit_recovery == TUNING.DAYWALKER_HIT_RECOVERY
-		and inst.components.combat:InCooldown()
-		and inst.sg:HasStateTag("idle")
-end
-
 local events =
 {
 	CommonHandlers.OnLocomote(true, true),
@@ -85,7 +78,7 @@ local events =
 		if not (inst.sg:HasStateTag("busy") or inst.defeated) or inst.sg:HasStateTag("caninterrupt") then
 			if inst.sg:HasStateTag("rummaging") then
 				inst.sg:GoToState("rummage_hit", inst.sg.statemem.data)
-			elseif not CommonHandlers.HitRecoveryDelay(inst, nil, nil, hit_recovery_skip_cooldown_fn) then
+			elseif not CommonHandlers.HitRecoveryDelay(inst) then
 				inst.sg:GoToState("hit")
 			end
 		end

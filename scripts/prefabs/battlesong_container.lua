@@ -109,7 +109,6 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("battlesong_container")
-    inst.components.container.restrictedtag = "battlesongcontaineruser"
     inst.components.container.onopenfn = OnOpen
     inst.components.container.onclosefn = OnClose
     inst.components.container.skipclosesnd = true

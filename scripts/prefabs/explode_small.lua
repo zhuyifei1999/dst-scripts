@@ -108,6 +108,16 @@ local extras =
         bloom = false,
         light_override = 0,
     },
+    reskin_wand =
+    {
+        bank = "fx_shadow_dust",
+        skin_build = "reskin_tool_wand",
+        skin_symbol = "shadow_dust",
+        anim = "puff",
+        sound = "dontstarve/common/together/reskin_tool",
+        bloom = false,
+        light_override = 0,
+    },
     reskin_toilet =
     {
         bank = "fx_shadow_dust",
@@ -146,6 +156,7 @@ return Prefab("explode_small", MakeExplosion(), assets),
     Prefab("explode_reskin", MakeExplosion(extras.reskin), assets),
     Prefab("reskin_tool_brush_explode_fx", MakeExplosion(extras.reskin_brush), assets),
     Prefab("reskin_tool_bouquet_explode_fx", MakeExplosion(extras.reskin_bouquet), assets),
+    Prefab("reskin_tool_wand_explode_fx", MakeExplosion(extras.reskin_wand), assets),
     Prefab("reskin_tool_toilet_explode_fx", MakeExplosion(extras.reskin_toilet), assets),
     Prefab("explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
     Prefab("explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets),

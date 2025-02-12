@@ -35,11 +35,6 @@ function Placer:SetBuilder(builder, recipe, invobject)
     self.builder = builder
     self.recipe = recipe
     self.invobject = invobject
-
-    if self.onbuilderset then
-        self.onbuilderset(self.inst)
-    end
-
     self.inst:StartWallUpdatingComponent(self)
 end
 

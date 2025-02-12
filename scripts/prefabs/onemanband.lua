@@ -120,23 +120,6 @@ local function onequiptomodel(inst, owner)
     band_disable(inst)
 end
 
--- Hauntable
-local function haunt_foley_delayed(inst)
-    inst.SoundEmitter:PlaySound(inst.foleysound)
-end
-local function OnHaunt(inst)
-    onequip(inst)
-    inst.hauntsfxtask = inst:DoPeriodicTask(.3, haunt_foley_delayed)
-    return true
-end
-
-local function OnUnHaunt(inst)
-    onunequip(inst)
-    inst.hauntsfxtask:Cancel()
-    inst.hauntsfxtask = nil
-end
-
---
 local function fn()
     local inst = CreateEntity()
 
@@ -193,8 +176,18 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(OnHaunt)
-    inst.components.hauntable:SetOnUnHauntFn(OnUnHaunt)
+    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
+        onequip(inst)
+        inst.hauntsfxtask = inst:DoPeriodicTask(.3, function(inst)
+            inst.SoundEmitter:PlaySound(inst.foleysound)
+        end)
+        return true
+    end)
+    inst.components.hauntable:SetOnUnHauntFn(function(inst)
+        onunequip(inst)
+        inst.hauntsfxtask:Cancel()
+        inst.hauntsfxtask = nil
+    end)
 
     --inst:ListenForEvent("onremove", function() print("Removed OneManBand!") end)
 
