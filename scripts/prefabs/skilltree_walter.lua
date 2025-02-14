@@ -437,16 +437,13 @@ local function BuildSkillsData(SkillTreeFns)
             root = true,
         },
 
-        walter_camp_lock = CreateSkillCountLock("camping", 300), -- FIXME(JBK): Walter ST: Once the walter_camp_wobycourier is enabled make this 3 and not 300.
+        walter_camp_lock = CreateSkillCountLock("camping", 3),
 
         walter_camp_wobycourier = {
             group = "camping",
-            desc = STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYCOURIER_DESC_TEMP_DO_NOT_TRANSLATE, -- FIXME(JBK): Walter ST: Once the walter_camp_wobycourier is enabled remove this.
             locks = { "walter_camp_lock" },
         },
     }
-
-    skills.walter_camp_lock.desc = STRINGS.SKILLTREE.WALTER.WALTER_CAMP_LOCK_DESC_TEMP_DO_NOT_TRANSLATE -- FIXME(JBK): Walter ST: Once the walter_camp_wobycourier is enabled remove this.
 
     for name, data in pairs(skills) do
         local uppercase_name = string.upper(name)

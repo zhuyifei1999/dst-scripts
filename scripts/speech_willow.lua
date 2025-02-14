@@ -5586,10 +5586,10 @@ return{
 		SLINGSHOT_HANDLE_SILK = "That kid loves slinging almost as much as I love burning.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "That kid loves slinging almost as much as I love burning.",
 
-		WOBY_TREAT = "Honestly, I’ve eaten worse.",
+		WOBY_TREAT = "Honestly, I've eaten worse.",
 		BANDAGE_BUTTERFLYWINGS = "Does it work on third-degree burns?",
 		PORTABLEFIREPIT_ITEM = "Or carry a lighter?",
-        SLINGSHOTAMMO_CONTAINER = "Walter’s packing some firepower!",
+        SLINGSHOTAMMO_CONTAINER = "Walter's packing some firepower!",
 
         ELIXIR_CONTAINER = "Wonder what she's got sloshing around in there.",
         GHOSTFLOWERHAT = "Pretty. I guess.",

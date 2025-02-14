@@ -176,25 +176,35 @@ end)
 
 function WobySmallBrain:OnStart()
     local main_nodes = PriorityNode{
+        WobyBrainCommon.CourierNode(self.inst),
         WobyBrainCommon.SitStillNode(self.inst),
         WobyBrainCommon.WatchingMinigameNode(self.inst),
 
         -- Combat Avoidance
-        PriorityNode{
-            RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
+		WhileNode(function() return not WobyBrainCommon.IsWheelOpen(self.inst) end, "combat avoidance",
+			PriorityNode({
+				RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
 
-            WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
-                PriorityNode({
-                    WobyBrainCommon.PickUpAmmoNode(self.inst),
-                    FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)
-                },.25)
-            ),
-        },
+				WhileNode(function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
+					PriorityNode({
+						WobyBrainCommon.PickUpAmmoNode(self.inst),
+						FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)
+					}, 0.25)),
+			}, 0.25)),
+
+		WhileNode(function() return WobyBrainCommon.IsWheelOpen(self.inst) and ValidateCombatAvoidance(self) end, "wheel open near combat",
+			FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
 
         FaceEntity(self.inst, WobyBrainCommon.GetWalterInteractionFn, WobyBrainCommon.KeepGenericInteractionFn),
+		WhileNode(function() return WobyBrainCommon.IsWheelOpen(self.inst) end, "wheel open",
+			FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
+
+		--When recalling Woby, temporarily block helper actions until she's fully returned to you.
+		WobyBrainCommon.RecallNode(self.inst,
+			Follow(self.inst, function() return self.inst.components.follower:GetLeader() end, 0, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST)),
 
         WobyBrainCommon.ForagerNode(self.inst),
-        WobyBrainCommon.RetriaveAmmoNode(self.inst),
+        WobyBrainCommon.RetrieveAmmoNode(self.inst),
         WobyBrainCommon.FetchingActionNode(self.inst),
 
         WhileNode(function() return FindPlaymate(self) end, "Playful",

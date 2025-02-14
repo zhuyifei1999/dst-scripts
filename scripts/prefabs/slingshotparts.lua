@@ -26,6 +26,15 @@ end
 local SCRAPBOOK_DEPS = { "slingshot", "slingshotmodkit" }
 
 local function MakePart(name, def)
+	local _assets = ConcatArrays(
+		def.slot == "band" and {
+			Asset("INV_IMAGE", name.."_front"),
+			Asset("INV_IMAGE", name.."_back"),
+		} or {
+			Asset("INV_IMAGE", name.."_ol"),
+		},
+		assets[def.slot])
+
 	local function fn()
 		local inst = CreateEntity()
 
@@ -84,7 +93,7 @@ local function MakePart(name, def)
 		return inst
 	end
 
-	return Prefab(name, fn, assets[def.slot], def.prefabs)
+	return Prefab(name, fn, _assets, def.prefabs)
 end
 
 local ret = {}

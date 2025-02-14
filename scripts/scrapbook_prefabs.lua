@@ -1861,6 +1861,7 @@ local PREFABS =
     ["slingshotammo_scrapfeather"] = true,
     ["slingshotammo_stinger"] = true,
     ["slingshotmodkit"] = true,
+    ["thulecitebugnet"] = true,
     ["wendy_resurrectiongrave"] = true,
     ["woby_treat"] = true,
     ["wortox_nabbag"] = true,

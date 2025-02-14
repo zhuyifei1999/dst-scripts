@@ -54,39 +54,6 @@ local function OnEquipChanged(inst)
     end
 end
 
-local function PullUpMap(inst, maptarget)
-    -- NOTES(JBK): This is assuming inst is the local client on call with a check to inst.HUD not being nil.
-    if inst.HUD:IsCraftingOpen() then
-        inst.HUD:CloseCrafting()
-    end
-    if inst.HUD:IsSpellWheelOpen() then
-        inst.HUD:CloseSpellWheel()
-    end
-    if inst.HUD:IsControllerInventoryOpen() then
-        inst.HUD:CloseControllerInventory()
-    end
-    -- Pull up map now.
-    if not inst.HUD:IsMapScreenOpen() then
-        inst.HUD.controls:ToggleMap()
-        if inst.HUD:IsMapScreenOpen() then -- Just in case.
-            local mapscreen = TheFrontEnd:GetActiveScreen()
-            mapscreen._hack_ignore_held_controls = 0.1
-            mapscreen._hack_ignore_ups_for = {}
-            mapscreen.maptarget = maptarget
-            local min_dist = maptarget.map_remap_min_dist
-            if min_dist then
-                min_dist = min_dist + 0.1 -- Padding for floating point precision.
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local rotation = inst.Transform:GetRotation() * DEGREES
-                local wx, wz = x + math.cos(rotation) * min_dist, z - math.sin(rotation) * min_dist -- Z offset is negative to desired from Transform coordinates.
-                inst.HUD.controls:FocusMapOnWorldPosition(mapscreen, wx, wz)
-            end
-            -- Do not have to take into account max_dist because the map automatically centers on the player when opened.
-            mapscreen:ProcessStaticDecorations()
-        end
-    end
-end
-
 local function OnInit(inst, self)
     inst:ListenForEvent("equip", OnEquipChanged)
     inst:ListenForEvent("unequip", OnEquipChanged)
@@ -458,6 +425,42 @@ function PlayerController:GetMapTarget(act)
     return maptarget
 end
 
+function PlayerController:PullUpMap(maptarget, forced_actiondef)
+	-- NOTES(JBK): This is assuming inst is the local client on call with a check to self.inst.HUD not being nil.
+	if self.inst.HUD:IsCraftingOpen() then
+		self.inst.HUD:CloseCrafting()
+	end
+	if self.inst.HUD:IsSpellWheelOpen() then
+		self.inst.HUD:CloseSpellWheel()
+	end
+	if self.inst.HUD:IsControllerInventoryOpen() then
+		self.inst.HUD:CloseControllerInventory()
+	end
+	-- Pull up map now.
+	if not self.inst.HUD:IsMapScreenOpen() then
+		self.inst.HUD.controls:ToggleMap()
+		if self.inst.HUD:IsMapScreenOpen() then -- Just in case.
+			local mapscreen = TheFrontEnd:GetActiveScreen()
+			mapscreen._hack_ignore_held_controls = 0.1
+			mapscreen._hack_ignore_ups_for = {}
+			mapscreen.maptarget = maptarget
+            if forced_actiondef and forced_actiondef.map_only then
+                mapscreen.forced_actiondef = forced_actiondef
+            end
+			local min_dist = maptarget.map_remap_min_dist
+			if min_dist then
+				min_dist = min_dist + 0.1 -- Padding for floating point precision.
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local rotation = inst.Transform:GetRotation() * DEGREES
+				local wx, wz = x + math.cos(rotation) * min_dist, z - math.sin(rotation) * min_dist -- Z offset is negative to desired from Transform coordinates.
+				self.inst.HUD.controls:FocusMapOnWorldPosition(mapscreen, wx, wz)
+			end
+			-- Do not have to take into account max_dist because the map automatically centers on the player when opened.
+			mapscreen:ProcessStaticDecorations()
+		end
+	end
+end
+
 -- returns: enable/disable, "a hud element is up, but still allow for limited gameplay to happen"
 function PlayerController:IsEnabled()
     if self.classified == nil or not self.classified.iscontrollerenabled:value() then
@@ -798,7 +801,7 @@ function PlayerController:DoControllerActionButton()
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-        PullUpMap(self.inst, maptarget)
+		self:PullUpMap(maptarget)
         return
     end
 
@@ -1032,7 +1035,7 @@ function PlayerController:DoControllerAltActionButton()
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-        PullUpMap(self.inst, maptarget)
+		self:PullUpMap(maptarget)
         return
     end
 
@@ -2252,7 +2255,11 @@ function PlayerController:RepeatHeldAction()
             SendRPCToServer(RPC.RepeatHeldAction)
         end
     else
-        if self.lastheldaction and self.lastheldaction:IsValid() and (self.lastheldactiontime == nil or GetTime() - self.lastheldactiontime < 1) then
+		if self.lastheldaction and
+			self.lastheldaction:IsValid() and
+			(self.lastheldactiontime == nil or GetTime() - self.lastheldactiontime < 1) and
+			not (self.lastheldaction.target and self.lastheldaction.target:HasTag("NOCLICK"))
+		then
             self.lastheldactiontime = GetTime()
             if self.heldactioncooldown == 0 then
                 self.heldactioncooldown = ACTION_REPEAT_COOLDOWN
@@ -2793,6 +2800,7 @@ function PlayerController:OnUpdate(dt)
             attack_control = not self.inst:HasTag("attack")
         end
         if attack_control then
+			--@V2C: #FIX_LEFT_CLICK_UI_TRIGGERS_AUTO_ATTACK (see frontend.lua)
             attack_control = (self.handler == nil or not IsPaused())
                 and ((self:IsControlPressed(CONTROL_ATTACK) and CONTROL_ATTACK) or
                     (self:IsControlPressed(CONTROL_PRIMARY) and CONTROL_PRIMARY) or
@@ -4273,7 +4281,7 @@ function PlayerController:OnLeftClick(down)
 
 		if act == nil then
 			act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, position)
-			if act and act.action ~= ACTIONS.WALKTO then
+			if act and act.action ~= ACTIONS.WALKTO and act.action ~= ACTIONS.LOOKAT then
 				self.startdoubleclicktime = nil
 			end
 		end
@@ -4281,7 +4289,7 @@ function PlayerController:OnLeftClick(down)
 
     local maptarget = self:GetMapTarget(act)
     if maptarget ~= nil then
-        PullUpMap(self.inst, maptarget)
+		self:PullUpMap(maptarget)
         return
     end
 
@@ -4290,6 +4298,8 @@ function PlayerController:OnLeftClick(down)
         if act.target == nil and (entity_under_mouse == nil or entity_under_mouse:HasTag("walkableplatform")) then
 			self.startdragtime = t
         end
+	elseif act.action == ACTIONS.DASH then
+		self.startdragtime = t
     elseif act.action == ACTIONS.ATTACK then
         if self.inst.sg ~= nil then
             self.inst.sg.statemem.retarget = act.target
@@ -4492,7 +4502,7 @@ function PlayerController:OnRightClick(down)
 			end
 		end
     elseif maptarget ~= nil then
-        PullUpMap(self.inst, maptarget)
+		self:PullUpMap(maptarget)
         return
     else
         if self.reticule ~= nil and self.reticule.reticule ~= nil then
@@ -4554,39 +4564,53 @@ end
 
 function PlayerController:RemapMapAction(act, position)
     local act_remap = nil
-    if act and ACTIONS_MAP_REMAP[act.action.code] then
+    if act then
         local px, py, pz = position:Get()
-        local can_interact
-        if act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then
-            can_interact = true
-        else
-            can_interact = self.inst:CanSeePointOnMiniMap(px, py, pz)
-        end
-        if can_interact then
-            act_remap = ACTIONS_MAP_REMAP[act.action.code](act, Vector3(px, py, pz))
+        if act.action.map_only then
+            if act.action.maponly_checkvalidpos_fn == nil or act.action.maponly_checkvalidpos_fn(act) then
+                if act.action.map_works_on_unexplored or self.inst:CanSeePointOnMiniMap(px, py, pz) then
+                    act_remap = act
+                end
+            end
+        elseif ACTIONS_MAP_REMAP[act.action.code] then
+            if act.action.map_works_on_unexplored or
+                self.inst:CanSeePointOnMiniMap(px, py, pz) or
+                act.invobject and act.invobject:HasTag("mapaction_works_on_unexplored") then
+                act_remap = ACTIONS_MAP_REMAP[act.action.code](act, Vector3(px, py, pz))
+            end
         end
     end
     return act_remap
 end
 
-function PlayerController:GetMapActions(position, maptarget)
+function PlayerController:GetMapActions(position, maptarget, actiondef)
     -- NOTES(JBK): In order to not interface with the playercontroller too harshly and keep that isolated from this system here
     --             it is better to get what the player could do at their location as a quick check to make sure the actions done
     --             here will not interfere with actions done without the map up.
     local LMBaction, RMBaction = nil, nil
+    local forced_lmbact, forced_rmbact
+    if actiondef and actiondef.map_only then
+        -- NOTES(JBK): Unless the action itself is a map_only action then let us say it is fine and force it as highest priority.
+        local ba = BufferedAction(self.inst, maptarget, actiondef, nil, position)
+        if actiondef.rmb then
+            forced_rmbact = ba
+        else
+            forced_lmbact = ba
+        end
+    end
 
     local pos = self.inst:GetPosition()
 
     self.inst.checkingmapactions = true -- NOTES(JBK): Workaround flag to not add function argument changes for this task and lets things opt-in to special handling.
     local action_maptarget = maptarget and maptarget:IsValid() and not maptarget:HasTag("INLIMBO") and maptarget or nil -- NOTES(JBK): Workaround passing the maptarget entity if it is out of scope for world actions.
 
-    local lmbact = self.inst.components.playeractionpicker:GetLeftClickActions(pos, action_maptarget)[1]
+    local lmbact = forced_lmbact or self.inst.components.playeractionpicker:GetLeftClickActions(pos, action_maptarget)[1]
     if lmbact then
         lmbact.maptarget = maptarget
         LMBaction = self:RemapMapAction(lmbact, position)
     end
 
-    local rmbact = self.inst.components.playeractionpicker:GetRightClickActions(pos, action_maptarget)[1]
+    local rmbact = forced_rmbact or self.inst.components.playeractionpicker:GetRightClickActions(pos, action_maptarget)[1]
     if rmbact then
         rmbact.maptarget = maptarget
         RMBaction = self:RemapMapAction(rmbact, position)
@@ -4601,10 +4625,10 @@ function PlayerController:GetMapActions(position, maptarget)
     return LMBaction, RMBaction
 end
 
-function PlayerController:UpdateActionsToMapActions(position, maptarget)
+function PlayerController:UpdateActionsToMapActions(position, maptarget, forced_actiondef)
     -- NOTES(JBK): This should be called from a map interface to update the player's current actions to the ones the map has.
     -- Currently used by mapscreen.
-    local LMBaction, RMBaction = self:GetMapActions(position, maptarget)
+    local LMBaction, RMBaction = self:GetMapActions(position, maptarget, forced_actiondef)
 
     self.LMBaction, self.RMBaction = LMBaction, RMBaction
 
@@ -4624,7 +4648,7 @@ function PlayerController:OnMapAction(actioncode, position, maptarget, mod_name)
     act.target = maptarget -- Optional.
 
     if self.ismastersim then
-        local LMBaction, RMBaction = self:GetMapActions(position, maptarget)
+        local LMBaction, RMBaction = self:GetMapActions(position, maptarget, act)
         if act.rmb then
             if RMBaction then
                 self.locomotor:PushAction(RMBaction, true)
@@ -4638,7 +4662,7 @@ function PlayerController:OnMapAction(actioncode, position, maptarget, mod_name)
         -- TODO(JBK): Hook up pre_action_cb here.
         SendRPCToServer(RPC.DoActionOnMap, actioncode, position.x, position.z, maptarget, mod_name)
     elseif self:CanLocomote() then
-        local LMBaction, RMBaction = self:GetMapActions(position, maptarget)
+        local LMBaction, RMBaction = self:GetMapActions(position, maptarget, act)
         if act.rmb then
             RMBaction.preview_cb = function()
                 SendRPCToServer(RPC.DoActionOnMap, actioncode, position.x, position.z, maptarget, mod_name)

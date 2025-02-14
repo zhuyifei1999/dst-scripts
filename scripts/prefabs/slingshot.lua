@@ -1,36 +1,34 @@
-local assets_basic =
+local SLINGSHOTPART_DEFS = require("prefabs/slingshotpart_defs")
+
+local assets_common =
 {
-    Asset("ANIM", "anim/slingshot.zip"),
+	Asset("ANIM", "anim/slingshot.zip"),
+	Asset("INV_IMAGE", "slingshot"),
+	Asset("INV_IMAGE", "slingshot_body"),
+	Asset("INV_IMAGE", "slingshot_band_back"),
+	Asset("INV_IMAGE", "slingshot_band_front"),
+	Asset("SCRIPT", "scripts/prefabs/slingshotpart_defs.lua"),
+}
+
+local assets_basic = ConcatArrays({
 	Asset("ANIM", "anim/ui_cookpot_1x2.zip"),
-}
+}, assets_common)
 
-local assets_ex =
-{
-	Asset("ANIM", "anim/slingshot.zip"),
+local assets_ex = ConcatArrays({
 	Asset("ANIM", "anim/ui_slingshot_wagpunk_0.zip"),
-	Asset("INV_IMAGE", "slingshot"),
-}
+}, assets_common)
 
-local assets_999ex =
-{
-	Asset("ANIM", "anim/slingshot.zip"),
+local assets_999ex = ConcatArrays({
 	Asset("ANIM", "anim/ui_slingshot_wagpunk.zip"),
-	Asset("INV_IMAGE", "slingshot"),
-}
+}, assets_common)
 
-local assets_2 =
-{
-	Asset("ANIM", "anim/slingshot.zip"),
+local assets_2 = ConcatArrays({
 	Asset("ANIM", "anim/ui_slingshot_bone.zip"),
-	Asset("INV_IMAGE", "slingshot"),
-}
+}, assets_common)
 
-local assets_2ex =
-{
-	Asset("ANIM", "anim/slingshot.zip"),
+local assets_2ex = ConcatArrays({
 	Asset("ANIM", "anim/ui_slingshot_gems.zip"),
-	Asset("INV_IMAGE", "slingshot"),
-}
+}, assets_common)
 
 local prefabs_basic =
 {
@@ -82,6 +80,90 @@ local SCRAPBOOK_DEPS =
 }
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
+--For layered inventory icons
+
+local PART_NAMES =
+{
+	band = {},
+	frame = {},
+	handle = {},
+}
+for k, v in pairs(SLINGSHOTPART_DEFS) do
+	table.insert(PART_NAMES[v.slot], k)
+end
+
+local PART_IDS = {}
+for k, v in pairs(PART_NAMES) do
+	PART_IDS[k] = table.invert(v)
+end
+
+local function _AddLayer(tbl, idx, name)
+	local row = tbl[idx]
+	if row then
+		row.image = name..".tex"
+	else
+		tbl[idx] = { image = name..".tex" }
+	end
+	return idx + 1
+end
+
+local function OnIconDirty(inst)
+	local band = PART_NAMES.band[inst.bandid:value()]
+	local frame = PART_NAMES.frame[inst.frameid]
+	local handle = PART_NAMES.handle[inst.handleid:value()]
+	if band or frame or handle then
+		if inst._iconlayers == nil then
+			inst._iconlayers = {}
+		end
+		local build = inst:GetSkinBuild() or "slingshot"
+		local j = 1
+		j = _AddLayer(inst._iconlayers, j, band and (band.."_back") or (build.."_band_back"))
+		j = _AddLayer(inst._iconlayers, j, build.."_body")
+		j = _AddLayer(inst._iconlayers, j, band and (band.."_front") or (build.."_band_front"))
+		if handle then
+			j = _AddLayer(inst._iconlayers, j, handle.."_ol")
+		end
+		if frame then
+			j = _AddLayer(inst._iconlayers, j, frame.."_ol")
+		end	
+		for i = j, #inst._iconlayers do
+			inst._iconlayers[i] = nil
+		end
+	else
+		inst._iconlayers = nil --use default inv img
+	end
+	inst:PushEvent("imagechange")
+end
+
+local function SetBandIcon(inst, name)
+	local id = PART_IDS.band[name] or 0
+	if inst.bandid:value() ~= id then
+		inst.bandid:set(id)
+		OnIconDirty(inst)
+	end
+end
+
+local function SetFrameIcon(inst, name)
+	local id = PART_IDS.frame[name] --or 0
+	if inst.frameid ~= id then
+		inst.frameid = id
+		OnIconDirty(inst)
+	end
+end
+
+local function SetHandleIcon(inst, name)
+	local id = PART_IDS.handle[name] or 0
+	if inst.handleid:value() ~= id then
+		inst.handleid:set(id)
+		OnIconDirty(inst)
+	end
+end
+
+local function LayeredInvImageFn(inst)
+	return inst._iconlayers
+end
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
 
 local function OnRemoveFx(fx)
 	local parent = fx._highlightparent
@@ -115,7 +197,8 @@ local function CreateFollowFx(inst, anim, owner, frame1, frame2)
 end
 
 local function RefreshBand(inst, owner)
-	local build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("band")
+	local name, build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("band")
+	SetBandIcon(inst, name)
 	if symbol then
 		if inst.fx then
 			for i, v in ipairs(inst.fx) do
@@ -156,7 +239,8 @@ local function RefreshBand(inst, owner)
 end
 
 local function RefreshFrame(inst)
-	local build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("frame")
+	local name, build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("frame")
+	--SetFrameIcon(inst, name) --frames shouldn't change after specific prefab is spawned
 	if symbol then
 		if inst.fx then
 			for i, v in ipairs(inst.fx) do
@@ -175,7 +259,8 @@ local function RefreshFrame(inst)
 end
 
 local function RefreshHandle(inst)
-	local build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("handle")
+	local name, build, symbol = inst.components.slingshotmods:GetPartBuildAndSymbol("handle")
+	SetHandleIcon(inst, name)
 	if symbol then
 		if inst.fx then
 			for i, v in ipairs(inst.fx) do
@@ -395,7 +480,14 @@ local function MakeSlingshot(name, assets, prefabs, common_postinit, master_post
         inst:AddComponent("linkeditem")
 		inst:AddComponent("clientpickupsoundsuppressor")
 
+		inst.bandid = net_tinybyte(inst.GUID, "slingshot.bandid", "icondirty")
+		inst.handleid = net_tinybyte(inst.GUID, "slingshot.handleid", "icondirty")
+		--inst.frameid --no need to network, slingshot prefab variant are specific to frame type
+
 		inst.displaynamefn = DisplayNameFn
+
+		--inst._iconlayers = nil
+		inst.layeredinvimagefn = LayeredInvImageFn
 
 		MakeInventoryFloatable(inst, "med", 0.07, { 0.53, 0.5, 0.5 })
 
@@ -406,6 +498,8 @@ local function MakeSlingshot(name, assets, prefabs, common_postinit, master_post
 		inst.entity:SetPristine()
 
 		if not TheWorld.ismastersim then
+			inst:ListenForEvent("icondirty", OnIconDirty)
+
 			return inst
 		end
 
@@ -521,6 +615,7 @@ end
 
 local function slingshotex_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	SetFrameIcon(inst, "slingshot_frame_wagpunk_0")
 
 	inst:AddComponent("aoecharging")
 	inst.components.aoecharging.reticuleprefab = "reticulecharging"
@@ -601,6 +696,11 @@ end
 
 --------------------------------------------------------------------------
 
+local function slingshot999ex_common_postinit(inst)
+	slingshotex_common_postinit(inst)
+	SetFrameIcon(inst, "slingshot_frame_wagpunk")
+end
+
 local function slingshot999ex_master_postinit(inst)
 	slingshotex_master_postinit(inst)
 	inst.components.container:EnableInfiniteStackSize(true)
@@ -610,6 +710,7 @@ end
 
 local function slingshot2_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	SetFrameIcon(inst, "slingshot_frame_bone")
 end
 
 local function slingshot2_OnProjectileLaunched(inst, attacker, target, proj)
@@ -632,6 +733,7 @@ end
 
 local function slingshot2ex_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	SetFrameIcon(inst, "slingshot_frame_gems")
 
 	inst:AddComponent("aoetargeting")
 	inst.components.aoetargeting:SetAlwaysValid(true)
@@ -774,7 +876,7 @@ end
 
 return MakeSlingshot("slingshot",	assets_basic,	prefabs_basic),
 	MakeSlingshot("slingshotex",	assets_ex,		prefabs_ex,		slingshotex_common_postinit,	slingshotex_master_postinit),
-	MakeSlingshot("slingshot999ex",	assets_999ex,	prefabs_ex,		slingshotex_common_postinit,	slingshot999ex_master_postinit),
+	MakeSlingshot("slingshot999ex",	assets_999ex,	prefabs_ex,		slingshot999ex_common_postinit,	slingshot999ex_master_postinit),
 	MakeSlingshot("slingshot2",		assets_2,		prefabs_basic,	slingshot2_common_postinit,		slingshot2_master_postinit),
 	MakeSlingshot("slingshot2ex",	assets_2ex,		prefabs_2ex,	slingshot2ex_common_postinit,	slingshot2ex_master_postinit),
 	Prefab("slingshotparts_fx", partsfxfn)

@@ -16,17 +16,19 @@ local AOE_RADIUS_PADDING = 3
 
 local function DoAOECallback(inst, x, z, radius, cb, attacker, target)
 	local combat = attacker and attacker.components.combat or nil
+
 	if combat == nil then
 		return
 	end
 
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + AOE_RADIUS_PADDING, AOE_TARGET_MUST_TAGS, TheNet:GetPVPEnabled() and AOE_TARGET_CANT_TAGS_PVP or AOE_TARGET_CANT_TAGS)) do
 		if v ~= target and
-			not v:IsInLimbo() and v:IsValid() and
-			not (v.components.health and v.components.health:IsDead()) and
+			combat:CanTarget(v) and
+			v.components.combat:CanBeAttacked(attacker) and
 			not combat:IsAlly(v)
 		then
 			local range = radius + v:GetPhysicsRadius(0)
+
 			if v:GetDistanceSqToPoint(x, 0, z) < range * range then
 				cb(inst, attacker, v)
 			end
@@ -390,9 +392,9 @@ local function DoAOEDamage(inst, attacker, target, damage, radius)
 
     for i, v in ipairs(TheSim:FindEntities(x, y, z, radius + AOE_RADIUS_PADDING, AOE_TARGET_MUST_TAGS, TheNet:GetPVPEnabled() and AOE_TARGET_CANT_TAGS_PVP or AOE_TARGET_CANT_TAGS)) do
         if v ~= target and
-            v:IsValid() and not v:IsInLimbo() and
-            not (v.components.health ~= nil and v.components.health:IsDead()) and
-            not attacker.components.combat:IsAlly(v)
+            combat:CanTarget(v) and
+            v.components.combat:CanBeAttacked(attacker) and
+            not combat:IsAlly(v)
         then
             local range = radius + v:GetPhysicsRadius(0)
 

@@ -323945,7 +323945,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BANDAGE_BUTTERFLYWINGS
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BANDAGE_BUTTERFLYWINGS"
-msgid "Heals 30 Health."
+msgid "Heals 24 health.\n\nIf used by Walter and he has learned the Field Medic skill, it will heal an additional 12 health, also restoring 10 sanity."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BATBAT
@@ -323965,7 +323965,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BATTLESONG_CONTAINER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BATTLESONG_CONTAINER"
-msgid "A carriable container with 8 slots that can hold Battle Songs and Battle Stingers."
+msgid "A carryable container with 8 slots that can hold Battle Songs and Battle Stingers."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BATTLESONG_DURABILITY
@@ -324020,7 +324020,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BEARGERFUR_SACK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BEARGERFUR_SACK"
-msgid "A carriable container with 6 slots that can hold prepared food.\n\nThe food stored in it will be preserved for a long time."
+msgid "A carryable container with 6 slots that can hold prepared food.\n\nThe food stored in it will be preserved for a long time."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BEARGERVEST
@@ -324465,7 +324465,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.ELIXIR_CONTAINER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.ELIXIR_CONTAINER"
-msgid "A carriable container with 9 slots that can hold Elixirs."
+msgid "A carryable container with 9 slots that can hold Elixirs."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.EMBERLIGHT
@@ -324560,7 +324560,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTFLOWERHAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTFLOWERHAT"
-msgid "When equipped, alows Wendy to drink Elixirs herlself."
+msgid "When equipped, allows Wendy to drink Elixirs herself."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERATTACK
@@ -324595,12 +324595,12 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST"
-msgid "Where they may appear, Evil Flowers tend to grow near."
+msgid "Where they appear, Evil Flowers tend to grow nearby."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEURN
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEURN"
-msgid "It's used to move Headstones."
+msgid "It is used to move Headstones."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GREENAMULET
@@ -325590,12 +325590,12 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_CONTAINER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_CONTAINER"
-msgid "A carriable container with 6 slots that can hold Slingshot Rounds."
+msgid "A carryable container with 6 slots that can hold Slingshot Rounds."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_DREADSTONE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_DREADSTONE"
-msgid "It has 50% chance to not break on impact."
+msgid "It has a 50% chance to not break on impact."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GELBLOB
@@ -325605,7 +325605,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER"
-msgid "It has an increasing chance to trigger a explosion, doing doubled damage in a large area."
+msgid "It has an increasing chance to trigger an explosion, dealing double damage in a large area."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY
@@ -325615,17 +325615,17 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL"
-msgid "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage overtime, up to 7 times."
+msgid "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage over time, up to 7 times."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK"
-msgid "It has a change to spawn a Brightshade Vine on impact, dealing damage to your target."
+msgid "It has a chance to spawn a Brightshade Vine on impact, dealing damage to your target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS"
-msgid "It does damage in a medium area around its target."
+msgid "It deals damage in a medium area around its target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE
@@ -325635,12 +325635,12 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER"
-msgid "It does electrical damage, which does more damage to wet targets."
+msgid "It deals electrical damage, which does more damage to wet targets."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER"
-msgid "It does damage in a small area around its target."
+msgid "It deals damage in a small area around its target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT
@@ -325655,7 +325655,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_PIGSKIN
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_PIGSKIN"
-msgid "It fairly increases how far you can shoot."
+msgid "It moderately increases how far you can shoot."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_TENTACLE
@@ -326075,7 +326075,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT"
-msgid "Restores 3 times more hunger when eaten by Woby."
+msgid "Restores three times more hunger when eaten by Woby."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOLFGANG_WHISTLE
@@ -328965,7 +328965,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_EFFICIENCY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_EFFICIENCY_DESC"
-msgid "Learn how to craft ammo more efficiently for better yields, and craft ammo faster."
+msgid "Learn how to craft ammo faster and more efficiently for better yields."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_EFFICIENCY_TITLE
@@ -329040,7 +329040,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRE_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRE_DESC"
-msgid "Learn how to craft the Portable Campfire. Improve storytelling around any campfire."
+msgid "Learn how to craft the Portable Campfire, and improve storytelling around any campfire."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRE_TITLE
@@ -329050,7 +329050,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRSTAID_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRSTAID_DESC"
-msgid "Learn how to use healing items more effectively, and learn how to craft the Flutter Strip."
+msgid "Learn how to use healing items faster and with a 50% bonus to their effects, and learn how to craft the Flutter Strip."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_FIRSTAID_TITLE
@@ -329060,12 +329060,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_LOCK_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_LOCK_DESC"
-msgid "Learn 3 Camping skills to unlock."
+msgid "Learn 3 Scouting skills to unlock."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_ROPE_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_ROPE_DESC"
-msgid "Learn how to craft rope more efficiently."
+msgid "Learn how to craft rope faster and more efficiently at a lower cost."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_ROPE_TITLE
@@ -329085,7 +329085,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYCOURIER_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYCOURIER_DESC"
-msgid "Send Woby to another player, or to drop items off at a designated chest."
+msgid "Send Woby to another player, or to drop off items at chests near a designated location."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYCOURIER_TITLE
@@ -329115,7 +329115,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_DESC"
-msgid "Learn to craft advanced bands that improves the firing distance of a Slingshot and may have additional bonus effects."
+msgid "Learn to craft advanced bands that improve the firing distance of a Slingshot, and may have additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_TITLE
@@ -329125,7 +329125,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_DESC"
-msgid "Learn to craft advanced frames that improves the Slingshot with additional bonus effects."
+msgid "Learn to craft advanced frames that add a secondary alternate Slingshot attack, and may have additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_TITLE
@@ -329135,7 +329135,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_DESC"
-msgid "Learn to craft advanced grips that improves the firing rate of a Slingshot and may have additional bonus effects."
+msgid "Learn to craft advanced grips that improve the firing rate of a Slingshot, and may have additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_TITLE
@@ -329155,7 +329155,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_DASH_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_DASH_DESC"
-msgid "Woby dashes on command (double tap/click directional control or mouse)."
+msgid "Woby dashes on command by double tapping any movement controls."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_DASH_TITLE
@@ -329165,17 +329165,17 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ENDURANCE_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ENDURANCE_DESC"
-msgid "All hunger costs are reduced by 20% for our beloved Woby, and she can run at higher speed (+1)."
+msgid "Woby gains +1 speed when running or sprinting, and all hunger costs are reduced by 20%."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ENDURANCE_TITLE
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ENDURANCE_TITLE"
-msgid "Endear-ance"
+msgid "Pep Pup"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_FORAGING_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_FORAGING_DESC"
-msgid "Woby will forage alongside you, and pick one extra food item from the same plant you are harvesting."
+msgid "Woby will forage alongside you, picking one extra food item from the same plant you are harvesting."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_FORAGING_TITLE
@@ -329185,7 +329185,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ITEMFETCHER_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ITEMFETCHER_DESC"
-msgid "Woby learns how to collect items for her pack, and retrieve ammo for you."
+msgid "Woby will collect items for her backpack and retrieve ammo for you."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_ITEMFETCHER_TITLE
@@ -329200,7 +329200,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC"
-msgid "After dashing, Woby automatically sprints at higher speed (+1). When lunar powered and not in the caves, or if she's in a lunar powered area, there is no additional hunger drain for sprinting or dashing."
+msgid "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightement, she has no additional hunger drain for sprinting or dashing."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_LOCK_DESC
@@ -329230,7 +329230,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_SPRINT_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_SPRINT_DESC"
-msgid "After Woby is running for 3 seconds while mounted, she will start sprinting at a higher fixed speed until interrupted."
+msgid "After Woby runs for 3 seconds while mounted, she will start sprinting at a higher fixed speed until interrupted."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_SPRINT_TITLE
@@ -329240,12 +329240,12 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_TASKAID_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_TASKAID_DESC"
-msgid "Woby will use her seriously sturdy skull to assist in chopping and mining."
+msgid "Woby will use her hardy horns to assist in chopping and mining."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_TASKAID_TITLE
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_TASKAID_TITLE"
-msgid "Hard-headed"
+msgid "Helping Horns"
 msgstr ""
 
 #. STRINGS.SKILLTREE.WATHGRITHR.WATHGRITHR_ALLEGIANCE_LOCK_1_DESC
@@ -396005,7 +396005,7 @@ msgstr ""
 
 #. STRINGS.WOBY_COMMANDS.WORKING
 msgctxt "STRINGS.WOBY_COMMANDS.WORKING"
-msgid "Hard-headed (on/off)"
+msgid "Helping Horns (on/off)"
 msgstr ""
 
 #. STRINGS.YOTB_ALREADY_GOT_YOURS

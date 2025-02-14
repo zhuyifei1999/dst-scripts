@@ -5580,7 +5580,7 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Young Walter is an artist with his slingshot.",
 
 		WOBY_TREAT = "I heard they have unique mouthfeel.",
-		BANDAGE_BUTTERFLYWINGS = "I hope I don’t lose it in the soup.",
+		BANDAGE_BUTTERFLYWINGS = "I hope I don't lose it in the soup.",
 		PORTABLEFIREPIT_ITEM = "Most convenient!",
         SLINGSHOTAMMO_CONTAINER = "I hope Walter can hunt more protein for us.",
 

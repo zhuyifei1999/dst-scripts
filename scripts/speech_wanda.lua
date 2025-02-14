@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "It takes too long to cook a fancy meal.",
             NOTAMERM = "I don't expect there's anything in there I'd care to take.",
             NOTSOULJARHANDLER = "The imp can do whatever he wants with these.",
-            RESTRICTED = "I’ll not waste time with that.",
+            RESTRICTED = "I'll not waste time with that.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Please hurry, I have so much to do!",
             NOTMASTERCHEF = "It takes too long to cook a fancy meal.",
             NOTSOULJARHANDLER = "The imp can do whatever he wants with these.",
-            RESTRICTED = "I’ll not waste time with that.",
+            RESTRICTED = "I'll not waste time with that.",
 		},
         TEACH =
         {
@@ -5465,8 +5465,8 @@ return{
         MERM_ARMORY_UPGRADED = "I doubt there's anything in there worth my time.",
         MERM_TOOLSHED = "I doubt there's anything in there worth my time.",
         MERM_TOOLSHED_UPGRADED = "I doubt there's anything in there worth my time.",
-        MERMARMORHAT = "It’s for a merm.",
-        MERMARMORUPGRADEDHAT = "It’s for a merm.",
+        MERMARMORHAT = "It's for a merm.",
+        MERMARMORUPGRADEDHAT = "It's for a merm.",
         MERM_TOOL = "I doubt it'll stand the test of time.",
         MERM_TOOL_UPGRADED = "I doubt it'll stand the test of time.",
 
@@ -5549,11 +5549,11 @@ return{
         -- Year of the Snake
         YOTS_SNAKESHRINE =
         {
-            GENERIC = "Offering made. Let’s get on with it, worm!",
+            GENERIC = "Offering made. Let's get on with it, worm!",
             EMPTY = "If I recall, it needs monster meat.",
             BURNT = "It was just a matter of time.",
         },
-        YOTS_WORM = "I don’t remember seeing you up here.",
+        YOTS_WORM = "I don't remember seeing you up here.",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "Who has time to celebrate? Okay, fine.",

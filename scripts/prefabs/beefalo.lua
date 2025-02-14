@@ -796,6 +796,9 @@ local function OnRiderChanged(inst, data)
         end
         inst._bucktask = inst:DoTaskInTime(CalculateBuckDelay(inst), OnBuckTime)
         inst.components.knownlocations:RememberLocation("loiteranchor", inst:GetPosition())
+        if inst.sg ~= nil then
+            inst.sg:GoToState("idle")
+        end
     elseif inst.components.health:IsDead() then
         if inst.sg.currentstate.name ~= "death" then
             inst.sg:GoToState("death")

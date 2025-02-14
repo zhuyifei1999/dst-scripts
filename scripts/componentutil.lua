@@ -728,12 +728,10 @@ end
 -- wobycourier
 
 function GetWobyCourierChestPosition(inst)
-    if inst.player_classified then
-        local x = inst.player_classified.wobycourier_chest_posx:value()
-        local z = inst.player_classified.wobycourier_chest_posz:value()
+    if inst.woby_commands_classified then
+        local x = inst.woby_commands_classified.chest_posx:value()
+        local z = inst.woby_commands_classified.chest_posz:value()
         if x ~= WOBYCOURIER_NO_CHEST_COORD and z ~= WOBYCOURIER_NO_CHEST_COORD then
-            x = (x + 0.5) * TILE_SCALE
-            z = (z + 0.5) * TILE_SCALE
             return x, z
         end
     end

@@ -5587,7 +5587,7 @@ return {
         -- Year of the Snake
         YOTS_SNAKESHRINE =
         {
-            GENERIC = "It’s bursting with promise!",
+            GENERIC = "It's bursting with promise!",
             EMPTY = "It has a monstrous appetite.",
             BURNT = "Willow!",
         },
@@ -5620,7 +5620,7 @@ return {
 		WOBY_TREAT = "I think I'm barking up the wrong tree with this snack.",
 		BANDAGE_BUTTERFLYWINGS = "This bandage is really winging it.",
 		PORTABLEFIREPIT_ITEM = "Finally, fire on the go! Patent pending.",
-        SLINGSHOTAMMO_CONTAINER = "It’s full of potential... energy!",
+        SLINGSHOTAMMO_CONTAINER = "It's full of potential... energy!",
 
         ELIXIR_CONTAINER = "That's more of a mortician's bag than a basket.",
         GHOSTFLOWERHAT = "This makes me thirsty.",

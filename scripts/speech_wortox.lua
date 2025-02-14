@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
             NOTAMERM = "Not for me, I see.",
             NOTSOULJARHANDLER = "These aren't my souls.",
-            RESTRICTED = "I can’t! I shan’t!",
+            RESTRICTED = "I can't! I shan't!",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Another soul has use of it right now.",
             NOTMASTERCHEF = "Warly won't let me peek inside. He's no fun.",
             NOTSOULJARHANDLER = "These aren't my souls.",
-            RESTRICTED = "I can’t! I shan’t!",
+            RESTRICTED = "I can't! I shan't!",
 		},
         TEACH =
         {
@@ -5485,8 +5485,8 @@ return{
         MERM_ARMORY_UPGRADED = "A Merm millinery.",
         MERM_TOOLSHED = "Does appear we're not welcome here.",
         MERM_TOOLSHED_UPGRADED = "Does appear we're not welcome here.",
-        MERMARMORHAT = "It will find its home on a merm’s fishy dome.",
-        MERMARMORUPGRADEDHAT = "It will find its home on a merm’s fishy dome.",
+        MERMARMORHAT = "It will find its home on a merm's fishy dome.",
+        MERMARMORUPGRADEDHAT = "It will find its home on a merm's fishy dome.",
         MERM_TOOL = "A Merm's multi-tool.",
         MERM_TOOL_UPGRADED = "Meticulously manufactured for Merms.",
 
@@ -5569,7 +5569,7 @@ return{
         -- Year of the Snake
         YOTS_SNAKESHRINE =
         {
-            GENERIC = "The worm’s terms are met!",
+            GENERIC = "The worm's terms are met!",
             EMPTY = "On what does the beast wish to feast?",
             BURNT = "My head was turned, and it was burned.",
         },
@@ -5599,7 +5599,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Hotshot! Is he not?",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Hotshot! Is he not?",
 
-		WOBY_TREAT = "Lookie, lookie! A doggie’s cookie!",
+		WOBY_TREAT = "Lookie, lookie! A doggie's cookie!",
 		BANDAGE_BUTTERFLYWINGS = "Who? Who has a boo-boo?",
 		PORTABLEFIREPIT_ITEM = "Mobile combustible!",
         SLINGSHOTAMMO_CONTAINER = "Pockets full of rockets.",

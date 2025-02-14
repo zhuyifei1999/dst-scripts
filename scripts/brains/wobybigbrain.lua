@@ -150,6 +150,19 @@ local function ValidateCombatAvoidance(self)
     return true
 end
 
+local COMBAT_AVOIDANCE_MUST_TAGS = { "_combat", "_health" }
+local COMBAT_AVOIDANCE_CANT_TAGS = { "wall", "INLIMBO" }
+
+local function HasAvoidCombatTarget(self)
+    local shouldavoid = ValidateCombatAvoidance(self)
+
+    if not shouldavoid then
+        self.runawayfrom = nil
+    end
+
+    return shouldavoid or FindEntity(self.inst, COMBAT_TOO_CLOSE_DIST, CombatAvoidanceFindEntityCheck(self), COMBAT_AVOIDANCE_MUST_TAGS, COMBAT_AVOIDANCE_CANT_TAGS) ~= nil
+end
+
 -------------------------------------------------------------------------------
 
 local function IsAllowedToWorkThings(inst)
@@ -167,6 +180,10 @@ local WORK_MIN_DISTANCE = 3
 -- Adding a min distance to work actions.
 
 local function FindNew_MINE(inst, leaderdist, finddist, ...)
+    if inst.sg ~= nil and inst.sg:HasStateTag("busy") then
+        return -- No actions during busy state...
+    end
+
     local act = BrainCommon.AssistLeaderDefaults.MINE.FindNew(inst, leaderdist, finddist, ...)
 
     if act == nil then
@@ -183,6 +200,10 @@ local function FindNew_MINE(inst, leaderdist, finddist, ...)
 end
 
 local function FindNew_CHOP(inst, leaderdist, finddist, ...)
+    if inst.sg ~= nil and inst.sg:HasStateTag("busy") then
+        return -- No actions during busy state...
+    end
+
     local act = BrainCommon.AssistLeaderDefaults.CHOP.FindNew(inst, leaderdist, finddist, ...)
 
     if act == nil then
@@ -202,33 +223,46 @@ end
 
 local WobyBigBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
+
+    self._hasavoidcombattarget = HasAvoidCombatTarget
 end)
 
 function WobyBigBrain:OnStart()
     local nodes = PriorityNode(
     {
+        WobyBrainCommon.CourierNode(self.inst),
         WobyBrainCommon.SitStillNode(self.inst),
-		BrainCommon.PanicTrigger(self.inst),
 
-        PriorityNode{
-            RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"},
-                    fn=CombatAvoidanceFindEntityCheck(self)},
-                    COMBAT_TOO_CLOSE_DIST,
-                    COMBAT_SAFE_TO_WATCH_FROM_DIST),
+		WhileNode(function() return not WobyBrainCommon.IsWheelOpen(self.inst) end, "combat avoidance",
+			PriorityNode({
+				BrainCommon.PanicTrigger(self.inst),
 
-            WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
-                PriorityNode({
-                    WobyBrainCommon.PickUpAmmoNode(self.inst),
-                    FaceEntity(self.inst, GetOwner, KeepFaceOwnerFn, nil, "cower")
-                }, .25)
-            ),
-        },
+				RunAway(self.inst, {tags=COMBAT_AVOIDANCE_MUST_TAGS, notags=COMBAT_AVOIDANCE_CANT_TAGS,
+					fn=CombatAvoidanceFindEntityCheck(self)},
+					COMBAT_TOO_CLOSE_DIST,
+					COMBAT_SAFE_TO_WATCH_FROM_DIST),
+
+				WhileNode(function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
+					PriorityNode({
+						WobyBrainCommon.PickUpAmmoNode(self.inst),
+						FaceEntity(self.inst, GetOwner, KeepFaceOwnerFn, nil, "cower"),
+					}, .25)),
+			}, 0.25)),
+
+		WhileNode(function() return WobyBrainCommon.IsWheelOpen(self.inst) and HasAvoidCombatTarget(self) end, "wheel open near combat",
+			FaceEntity(self.inst, GetOwner, KeepFaceOwnerFn, nil, "cower")),
 
 		WobyBrainCommon.WatchingMinigameNode(self.inst),
 
-        -- These two are kept separatly because we have different animations for mounting vs. opening and feeding
+		-- These are kept separatly because we have different animations for mounting vs. opening and feeding vs. paused for wheel open
         FaceEntity(self.inst, GetRiderFn, KeepRiderFn),
         FaceEntity(self.inst, WobyBrainCommon.GetWalterInteractionFn, WobyBrainCommon.KeepGenericInteractionFn, nil, "sit_alert_tailwag"),
+		WhileNode(function() return WobyBrainCommon.IsWheelOpen(self.inst) end, "wheel open",
+			FaceEntity(self.inst, GetOwner, KeepFaceOwnerFn)),
+
+		--When recalling Woby, temporarily block helper actions until she's fully returned to you.
+		WobyBrainCommon.RecallNode(self.inst,
+			Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST, true)),
 
         WhileNode(function() return HasTaskAidBehavior(self.inst) and IsAllowedToWorkThings(self.inst) end, "HasTaskAidBehavior",
             PriorityNode({
@@ -238,7 +272,7 @@ function WobyBigBrain:OnStart()
         ),
 
         WobyBrainCommon.ForagerNode(self.inst),
-        WobyBrainCommon.RetriaveAmmoNode(self.inst),
+        WobyBrainCommon.RetrieveAmmoNode(self.inst),
         WobyBrainCommon.FetchingActionNode(self.inst),
 
         Follow(self.inst, function() return self.inst.components.follower.leader end,

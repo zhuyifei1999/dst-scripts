@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
             NOTAMERM = "Nah. I know where I ain't welcome.",
             NOTSOULJARHANDLER = "That there's imp business.",
-            RESTRICTED = "Ain’t my business.",
+            RESTRICTED = "Ain't my business.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "No rush.",
             NOTMASTERCHEF = "I don't wanna ruin whatever Warly's working on.",
             NOTSOULJARHANDLER = "That there's imp business.",
-            RESTRICTED = "Ain’t my business.",
+            RESTRICTED = "Ain't my business.",
 		},
         TEACH =
         {
@@ -5471,8 +5471,8 @@ return{
         MERM_ARMORY_UPGRADED = "Get your merm hats here!",
         MERM_TOOLSHED = "I know a toolshed when I see one.",
         MERM_TOOLSHED_UPGRADED = "I know a toolshed when I see one.",
-        MERMARMORHAT = "Ain’t my style.",
-        MERMARMORUPGRADEDHAT = "Ain’t my style.",
+        MERMARMORHAT = "Ain't my style.",
+        MERMARMORUPGRADEDHAT = "Ain't my style.",
         MERM_TOOL = "Should get the job done... I hope.",
         MERM_TOOL_UPGRADED = "It's an improvement.",
 
@@ -5555,15 +5555,15 @@ return{
         -- Year of the Snake
         YOTS_SNAKESHRINE =
         {
-            GENERIC = "Alright, worm. Whatd’ya got for me?",
-            EMPTY = "This worm’s lookin’ famished.",
+            GENERIC = "Alright, worm. Whatd'ya got for me?",
+            EMPTY = "This worm's lookin' famished.",
             BURNT = "What a shame.",
         },
         YOTS_WORM = "Them worms came dressed to party.",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "Not bad.",
-            BURNT = "That’s not how it works.",
+            BURNT = "That's not how it works.",
         },
         YOTS_LANTERN_POST_ITEM = "Party lights? Hmm...",
         CHESSPIECE_DEPTHWORM  = "Ugh, still makes my skin crawl.",
@@ -5586,8 +5586,8 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Aww, Walt's quite the lil' tinkerer.",
 
 		WOBY_TREAT = "Aww, Miss Woby wanna biscuit?",
-		BANDAGE_BUTTERFLYWINGS = "Almost makes me wish I had a lil’ boo-boo.",
-		PORTABLEFIREPIT_ITEM = "Now that’s handy.",
+		BANDAGE_BUTTERFLYWINGS = "Almost makes me wish I had a lil' boo-boo.",
+		PORTABLEFIREPIT_ITEM = "Now that's handy.",
         SLINGSHOTAMMO_CONTAINER = "The kid is dependable.",
 
         ELIXIR_CONTAINER = "Ain't no picnic for the livin' round here.",

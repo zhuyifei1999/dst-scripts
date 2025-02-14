@@ -63,7 +63,7 @@ function SlingshotMods:GetPartBuildAndSymbol(slot)
 	if slot then
 		local part = self.containerinst.components.container:GetItemInSlot(slot)
 		if part then
-			return part.swap_build, part.swap_symbol
+			return part.prefab, part.swap_build, part.swap_symbol
 		end
 	end
 end

@@ -8,6 +8,7 @@ local assets =
 	Asset("ANIM", "anim/status_woby.zip"),
     Asset("ANIM", "anim/player_idles_walter.zip"),
 	Asset("ANIM", "anim/walter_storytelling.zip"),
+	Asset("ANIM", "anim/walter_whistle.zip"),
     Asset("SOUND", "sound/walter.fsb"),
 
     Asset("SCRIPT", "scripts/prefabs/skilltree_walter.lua"),
@@ -25,6 +26,7 @@ local prefabs =
 	"slingshot_powerup_fx",
 	"slingshot_powerup_mounted_fx",
     "wobycourier_marker",
+    "reticuleaoeping_1d2_12",
 }
 
 local start_inv = {}
@@ -39,7 +41,7 @@ prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local ICON_SCALE = 0.6
 local ICON_RADIUS = 50
-local SPELLBOOK_RADIUS = 100
+local SPELLBOOK_RADIUS = 120
 local SPELLBOOK_FOCUS_RADIUS = SPELLBOOK_RADIUS-- + 2
 
 local function DoSpellAction(inst)
@@ -49,7 +51,7 @@ local function DoSpellAction(inst)
 	end
 end
 
-local SPELLS =
+local SPELLS_RIGHT =
 {
 	{
 		label = STRINGS.ACTIONS.DISMOUNT,
@@ -66,24 +68,6 @@ local SPELLS =
 			idle = { anim = "dismount" },
 			focus = { anim = "dismount_focus" },
 			down = { anim = "dismount_pressed" },
-		},
-		widget_scale = ICON_SCALE,
-	},
-	{
-		label = STRINGS.WOBY_COMMANDS.SHRINK,
-		onselect = function(inst)
-			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.SHRINK)
-			inst.components.spellbook:SetSpellAction(nil)
-			inst.components.spellbook.closeonexecute = true
-		end,
-		execute = WobyCommon.MakeWobyCommand(WobyCommon.COMMANDS.SHRINK),
-		bank = "spell_icons_woby",
-		build = "spell_icons_woby",
-		anims =
-		{
-			idle = { anim = "forcetransform" },
-			focus = { anim = "forcetransform_focus" },
-			down = { anim = "forcetransform_pressed" },
 		},
 		widget_scale = ICON_SCALE,
 	},
@@ -105,6 +89,28 @@ local SPELLS =
 		},
 		widget_scale = ICON_SCALE,
 	},
+	{
+		label = STRINGS.WOBY_COMMANDS.SHRINK,
+		onselect = function(inst)
+			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.SHRINK)
+			inst.components.spellbook:SetSpellAction(nil)
+			inst.components.spellbook.closeonexecute = true
+		end,
+		execute = WobyCommon.MakeWobyCommand(WobyCommon.COMMANDS.SHRINK),
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			idle = { anim = "forcetransform" },
+			focus = { anim = "forcetransform_focus" },
+			down = { anim = "forcetransform_pressed" },
+		},
+		widget_scale = ICON_SCALE,
+	},
+}
+
+local SPELLS_LEFT =
+{
 	{
 		label = STRINGS.WOBY_COMMANDS.SPRINTING,
 		onselect = function(inst)
@@ -147,17 +153,61 @@ local SPELLS =
 	},
 }
 
+local EMPTYSPACE_SPELL =
+{
+	label = "",
+	bank = "spell_icons_woby",
+	build = "spell_icons_woby",
+	anims =
+	{
+		disabled = { anim = "empty" },
+	},
+	widget_scale = ICON_SCALE,
+	checkenabled = function() return false end,
+}
+
+local SPELLBOOK_BG =
+{
+	bank = "spell_icons_woby",
+	build = "spell_icons_woby",
+	anim = "bg",
+	widget_scale = ICON_SCALE,
+}
+
 local function RefreshSpells(inst)
 	local skilltreeupdater = inst.components.skilltreeupdater
 	local j = 1
-	for i, v in ipairs(SPELLS) do
+
+	inst._spells[1] = EMPTYSPACE_SPELL
+	j = j + 1
+
+	for i, v in ipairs(SPELLS_RIGHT) do
 		if v.skill == nil or skilltreeupdater:IsActivated(v.skill) then
 			inst._spells[j] = v
 			j = j + 1
 		end
 	end
-	for i = j, #inst._spells do
-		inst._spells[i] = nil
+
+	for i = j, 6 do
+		inst._spells[j] = EMPTYSPACE_SPELL
+		j = j + 1
+	end
+
+	for i, v in ipairs(SPELLS_LEFT) do
+		if v.skill == nil or skilltreeupdater:IsActivated(v.skill) then
+			inst._spells[j] = v
+			j = j + 1
+		end
+	end
+
+	if j <= 10 then
+		local shift = 11 - j
+		for i = j - 1, 7, -1 do
+			inst._spells[i + shift] = inst._spells[i]
+		end
+		for i = 7, 7 + shift - 1 do
+			inst._spells[i] = EMPTYSPACE_SPELL
+		end
 	end
 end
 
@@ -208,6 +258,7 @@ local function SetupMountedCommandWheel(inst)
 	inst.components.spellbook:SetRadius(SPELLBOOK_RADIUS)
 	inst.components.spellbook:SetFocusRadius(SPELLBOOK_FOCUS_RADIUS)
 	inst.components.spellbook:SetShouldOpenFn(ShouldOpenWobyCommands)
+	inst.components.spellbook:SetBgData(SPELLBOOK_BG)
 	inst.components.spellbook.opensound = "meta5/woby/bigwoby_actionwheel_UI"
 	inst.components.spellbook.closesound = "meta5/woby/bigwoby_actionwheel_UI"
 	--inst.components.spellbook.executesound = "meta4/winona_UI/select"	--use .clicksound for item buttons instead
@@ -263,9 +314,41 @@ local function GetDoubleClickActions(inst, pos, dir, target)
 	return EMPTY_TABLE
 end
 
+local function HasWhistleAction(inst)
+	if inst.woby_commands_classified then
+		if inst.woby_commands_classified:IsOutForDelivery() then
+			--Going to dest, or putting items into boxes
+			--Command wheel is blocked, so no range on recall action
+			return true
+		end
+		local woby = inst.woby_commands_classified:GetWoby()
+		if TheWorld.ismastersim then
+			if woby and not (inst.HUD and woby:IsNear(inst, 16)) then
+				return true
+			end
+		elseif inst.HUD and (woby == nil or not woby:IsNear(inst, 16)) then
+			return true
+		end
+	end
+	return false
+end
+
+local function GetPointSpecialActions(inst, pos, useitem, right, usereticulepos)
+	if right and
+		useitem == nil and
+		inst.components.playercontroller and
+		inst.components.playercontroller.isclientcontrollerattached and
+		HasWhistleAction(inst)
+	then
+		return { ACTIONS.WHISTLE }
+	end
+	return {}
+end
+
 local function OnSetOwner(inst)
 	if inst.components.playeractionpicker then
 		inst.components.playeractionpicker.doubleclickactionsfn = GetDoubleClickActions
+		inst.components.playeractionpicker.pointspecialactionsfn = GetPointSpecialActions
 	end
 end
 
@@ -285,10 +368,17 @@ local function OnUpdateWobyCourierChestIcon(inst)
 
     if inst.wobycourier_chesticon_CLIENT == nil or not inst.wobycourier_chesticon_CLIENT:IsValid() then
         inst.wobycourier_chesticon_CLIENT = SpawnPrefab("wobycourier_marker")
+        inst.wobycourier_chesticon_CLIENT:ListenForEvent("onremove", function()
+            inst.wobycourier_chesticon_CLIENT:Remove()
+            inst.wobycourier_chesticon_CLIENT = nil
+        end, inst)
     end
 
     -- Update the icon.
     inst.wobycourier_chesticon_CLIENT.Transform:SetPosition(x, 0, z)
+    -- Ping the location.
+    local ping = SpawnPrefab("reticuleaoeping_1d2_12")
+    ping.Transform:SetPosition(x, 0, z)
 end
 
 local function StoryTellingDone(inst, story)
@@ -938,6 +1028,8 @@ local function common_postinit(inst)
 	inst:ListenForEvent("setowner", OnSetOwner)
     inst:ListenForEvent("updatewobycourierchesticon", OnUpdateWobyCourierChestIcon)
 
+	inst.HasWhistleAction = HasWhistleAction
+
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("has_sprint_trail_dirty", OnHasSprintTrail)
 		inst:ListenForEvent("enablemovementprediction", OnEnableMovementPrediction_Client)
@@ -1118,6 +1210,7 @@ local function wobycourier_marker_fn()
     inst.MiniMapEntity:SetIcon("wobycourier_marker.png")
     inst.MiniMapEntity:SetIsProxy(true)
     inst.MiniMapEntity:SetDrawOverFogOfWar(true)
+    inst.MiniMapEntity:SetCanUseCache(false)
     inst.MiniMapEntity:SetPriority(MINIMAP_DECORATION_PRIORITY)
 
     inst:AddTag("globalmapicon") -- Map action logic.
@@ -1140,6 +1233,7 @@ local function wobycourier_marker_close_fn() -- Child for wobycourier_marker pre
     inst.MiniMapEntity:SetIcon("wobycourier_marker.png")
     inst.MiniMapEntity:SetIsProxy(false)
     inst.MiniMapEntity:SetDrawOverFogOfWar(true)
+    inst.MiniMapEntity:SetCanUseCache(false)
     inst.MiniMapEntity:SetPriority(MINIMAP_DECORATION_PRIORITY)
 
     return inst

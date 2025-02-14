@@ -137,7 +137,7 @@ local function fn()
 	inst:SetPhysicsRadiusOverride(0.25)
 	MakeObstaclePhysics(inst, inst.physicsradiusoverride)
 
-	inst.MiniMapEntity:SetIcon("portable_firepit.png")
+	inst.MiniMapEntity:SetIcon("portablefirepit.png")
 	inst.MiniMapEntity:SetPriority(1)
 
 	inst.AnimState:SetBank("portable_firepit")

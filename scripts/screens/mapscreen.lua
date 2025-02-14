@@ -190,7 +190,7 @@ end
 function MapScreen:UpdateMapActions(x, y, z)
     local playercontroller = ThePlayer and ThePlayer.components.playercontroller or nil
     if playercontroller and ThePlayer.components.playeractionpicker then
-        return playercontroller:UpdateActionsToMapActions(Vector3(x, y, z), self.maptarget)
+        return playercontroller:UpdateActionsToMapActions(Vector3(x, y, z), self.maptarget, self.forced_actiondef)
     end
     return nil, nil
 end
@@ -201,12 +201,12 @@ function MapScreen:ProcessStaticDecorations()
     local w, h = TheSim:GetScreenSize()
     w, h = w * 0.5, h * 0.5
 
-    local charlieresidue, couriercompass
+    local charlieresidue, courierdirector
     if self.maptarget then -- From local client map.
         if self.maptarget.prefab == "charlieresidue" then
             charlieresidue = self.maptarget
-        elseif self.maptarget.prefab == "compass" then
-            couriercompass = self.maptarget
+        elseif self.maptarget.prefab == "wobysmall" or self.maptarget.prefab == "wobybig" then
+            courierdirector = self.owner
         end
     end
     if charlieresidue and charlieresidue:IsValid() then
@@ -265,7 +265,7 @@ function MapScreen:ProcessStaticDecorations()
                 end
             end
         end
-    elseif couriercompass and couriercompass:IsValid() then
+    elseif courierdirector and courierdirector:IsValid() then
         local entdatas = {}
         local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconnamed"]
         if ents_bin then
@@ -273,7 +273,8 @@ function MapScreen:ProcessStaticDecorations()
                 if ent:HasTag("globalmapicon_player") then
                     table.insert(entdatas, {
                         ent = ent,
-                        dsq = couriercompass:GetDistanceSqToInst(ent),
+                        dsq = courierdirector:GetDistanceSqToInst(ent),
+                        isplayer = true,
                     })
                 end
             end
@@ -283,7 +284,7 @@ function MapScreen:ProcessStaticDecorations()
             for ent, _ in pairs(ents_bin) do
                 table.insert(entdatas, {
                     ent = ent,
-                    dsq = couriercompass:GetDistanceSqToInst(ent),
+                    dsq = courierdirector:GetDistanceSqToInst(ent),
                 })
             end
         end
@@ -291,7 +292,7 @@ function MapScreen:ProcessStaticDecorations()
             if entdatas[2] then
                 table.sort(entdatas, function(a, b) return a.dsq == b.dsq and a.ent.GUID < b.ent.GUID or a.dsq < b.dsq end)
             end
-            local rx, ry, rz = couriercompass.Transform:GetWorldPosition()
+            local rx, ry, rz = courierdirector.Transform:GetWorldPosition()
             local minzoomscale = 0.18
             local maxzoomscale = 0.55
             local overallzoomscaler = 3.6
@@ -303,8 +304,7 @@ function MapScreen:ProcessStaticDecorations()
                     local ex, ey, ez = ent.Transform:GetWorldPosition()
                     local decoration = self.decorationrootstatic:AddChild(UIAnim())
                     self.decorationdata.alwaysdirty = true
-                    local MIN_DIST_SQ = 16 -- 4 * 4
-                    staticdecorations[ent.GUID .. "_COURIER"] = {
+                    local decorationdata = {
                         ent = ent,
                         decoration = decoration,
                         minzoomscale = minzoomscale,
@@ -313,16 +313,25 @@ function MapScreen:ProcessStaticDecorations()
                         zoomradius = zoomradius,
                         animgainfocus = { "proximity_pre", "proximity_loop" },
                         animlosefocus = { "proximity_pst", "idle" },
-                        animhidedistsq = MIN_DIST_SQ,
+                        animhidedistsq = entdata.isplayer and WOBYCOURIER_MIN_DIST_TO_PLAYER_SQ or nil,
+                        donotautoaim = entdata.isplayer,
                     }
+                    staticdecorations[ent.GUID .. "_COURIER"] = decorationdata
                     local animstate = decoration:GetAnimState()
                     animstate:SetBank("courier_minimap_indicator")
                     animstate:SetBuild("courier_minimap_indicator")
                     animstate:PlayAnimation("idle", true)
+                    local shouldhide
                     if ThePlayer then
-                        if ThePlayer:GetDistanceSqToInst(ent) < MIN_DIST_SQ then
-                            decoration:Hide()
+                        if not ent.MiniMapEntity:EntityHasRestriction(ThePlayer.GUID) then
+                            shouldhide = true
+                        elseif decorationdata.animhidedistsq and ThePlayer:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
+                            shouldhide = true
                         end
+                    end
+                    if shouldhide then
+                        decoration:Hide()
+                        decorationdata.mapicon_hidden = true
                     end
                     local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
                     decoration:SetPosition(x * w, y * h)
@@ -342,17 +351,21 @@ function MapScreen:UpdateStaticDecorations()
     for _, decorationdata in pairs(staticdecorations) do
         local ent = decorationdata.ent
         local decoration = decorationdata.decoration
-        local shouldshow = ent:IsValid()
-        if shouldshow and decorationdata.animhidedistsq then
-            if ThePlayer then
-                if ThePlayer:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
-                    shouldshow = false
-                end
+        local shouldhide = not ent:IsValid()
+        if not shouldhide and ThePlayer then
+            if not ent.MiniMapEntity:EntityHasRestriction(ThePlayer.GUID) then
+                shouldhide = true
+            elseif decorationdata.animhidedistsq and ThePlayer:GetDistanceSqToInst(ent) < decorationdata.animhidedistsq then
+                shouldhide = true
             end
         end
-        if shouldshow then
-            local ex, ey, ez = ent.Transform:GetWorldPosition()
+        if shouldhide then
+            decoration:Hide()
+            decorationdata.mapicon_hidden = true
+        else
             decoration:Show()
+            decorationdata.mapicon_hidden = nil
+            local ex, ey, ez = ent.Transform:GetWorldPosition()
             local zoomscale_clamped = math.clamp(zoomscale, decorationdata.minzoomscale or zoomscale, decorationdata.maxzoomscale or zoomscale) * (decorationdata.overallzoomscaler or 1)
             local x, y = self.minimap:WorldPosToMapPos(ex, ez, 0)
             decoration:SetPosition(x * w, y * h)
@@ -364,8 +377,6 @@ function MapScreen:UpdateStaticDecorations()
                 end
                 decorationdata.mapfocus = nil
             end
-        else
-            decoration:Hide()
         end
     end
 end
@@ -574,13 +585,13 @@ end
 
 function MapScreen:ProcessRMBDecorations_DIRECTCOURIER_MAP(rmb, fresh)
     local rmb_pos = rmb:GetActionPoint()
-    local couriertarget
+    local courierdirector
     if self.maptarget then -- From local client map.
-        if self.maptarget.prefab == "compass" then
-            couriertarget = self.maptarget
+        if self.maptarget.prefab == "wobysmall" or self.maptarget.prefab == "wobybig" then
+            courierdirector = self.owner
         end
     end
-    if couriertarget and couriertarget:IsValid() then
+    if courierdirector and courierdirector:IsValid() then
         local entdatas = {}
         local ents_bin = GlobalMapIconsDB.prefabs["globalmapiconnamed"]
         if ents_bin then
@@ -613,7 +624,7 @@ function MapScreen:ProcessRMBDecorations_DIRECTCOURIER_MAP(rmb, fresh)
                 if dsq < maxdsq then
                     local ent = entdata.ent
                     local decorationdata = self.decorationdata.staticdecorations[ent.GUID .. "_COURIER"]
-                    if decorationdata then
+                    if decorationdata and not decorationdata.mapicon_hidden then
                         local decoration = decorationdata.decoration
                         if not decorationdata.mapfocus then
                             decoration:GetAnimState():PlayAnimation(decorationdata.animgainfocus[1], true)
@@ -681,15 +692,17 @@ function MapScreen:AutoAimToStaticDecorations(x, y, z)
         local closestdsq, rx, ry, rz
         local zoomscale = 0.75 / self.minimap:GetZoom()
         for _, decorationdata in pairs(staticdecorations) do
-            local ent = decorationdata.ent
-            if ent:IsValid() then
-                local ex, ey, ez = ent.Transform:GetWorldPosition()
-                local zoomscale_clamped = math.clamp(zoomscale, decorationdata.minzoomscale or zoomscale, decorationdata.maxzoomscale or zoomscale) * (decorationdata.overallzoomscaler or 1)
-                local radius = ((decorationdata.zoomradius or 1) * zoomscale_clamped) * self.minimap:GetZoom() * 0.5
-                local dsq = distsq(x, z, ex, ez)
-                if (closestdsq == nil or dsq < closestdsq) and dsq < radius * radius then
-                    closestdsq = dsq
-                    rx, ry, rz = ex, ey, ez
+            if not decorationdata.donotautoaim then
+                local ent = decorationdata.ent
+                if ent:IsValid() then
+                    local ex, ey, ez = ent.Transform:GetWorldPosition()
+                    local zoomscale_clamped = math.clamp(zoomscale, decorationdata.minzoomscale or zoomscale, decorationdata.maxzoomscale or zoomscale) * (decorationdata.overallzoomscaler or 1)
+                    local radius = ((decorationdata.zoomradius or 1) * zoomscale_clamped) * self.minimap:GetZoom() * 0.5
+                    local dsq = distsq(x, z, ex, ez)
+                    if (closestdsq == nil or dsq < closestdsq) and dsq < radius * radius then
+                        closestdsq = dsq
+                        rx, ry, rz = ex, ey, ez
+                    end
                 end
             end
         end

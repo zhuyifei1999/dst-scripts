@@ -443,7 +443,7 @@ local function OnStackItemDirty(inst, item)
         data.item = item
         inst._parent:PushEvent("stacksizechange", data)
         --V2C: commented out the "or not IsBusy(inst)" condition because it
-        --     was triggering UI sounds when eating from a stack of items.
+		--     was triggering UI sounds when decreasing stacksize from use.
         if data.src_pos ~= nil --[[or not IsBusy(inst)]] then
             for i, v in ipairs(inst._items) do
                 if item == v:value() then

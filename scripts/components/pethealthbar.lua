@@ -152,6 +152,8 @@ local PetHealthBar = Class(function(self, inst)
         inst:ListenForEvent("petbonusmaxdirty", OnBonusMaxDirty)
         inst:ListenForEvent("petbonuspctdirty", OnBonusPctDirty)
 
+        inst:ListenForEvent("pethealthsymbol2dirty", OnSymbolDirty2)        
+
         inst:DoTaskInTime(0, OnHealthPctDirty)
     end
 end,

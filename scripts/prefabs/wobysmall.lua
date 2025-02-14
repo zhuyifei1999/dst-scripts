@@ -268,11 +268,7 @@ local function RefreshAttunedSkills(inst, player, data)
 	end
 
 	if player and (data == nil or data.skill == "walter_woby_foraging") then
-		if skilltreeupdater and skilltreeupdater:IsActivated("walter_woby_foraging") then
-			inst:ListenForEvent("newstate", inst._onplayernewstate, player)
-		else
-			inst:RemoveEventCallback("newstate", inst._onplayernewstate, player)
-		end
+		inst:UpdateOwnerNewStateListener(player)
 	end
 
 	WobyCommon.RefreshCommands(inst, player)
@@ -377,7 +373,12 @@ local function FinishTransformation(inst)
 	local rot = inst.Transform:GetRotation()
     local new_woby = ReplacePrefab(inst, "wobybig", skin_build, inst.skin_id)
 	new_woby.Transform:SetRotation(rot)
-	new_woby.AnimState:MakeFacingDirty() -- Not needed for clients.
+	if new_woby.sg.currentstate.name == "idle" and new_woby.AnimState:IsCurrentAnimation("idle_loop") then
+		new_woby.sg.mem.recentlytransformed = true
+		new_woby.sg:GoToState("idle")
+	else
+		new_woby.AnimState:MakeFacingDirty() -- Not needed for clients.
+	end
 
 	--transfer pet_hunger_classified to the new prefab
 	if inst.pet_hunger_classified then
@@ -467,12 +468,22 @@ local function CustomFoodStatsMod(inst, health_delta, hunger_delta, sanity_delta
 	return health_delta, hunger_delta, sanity_delta
 end
 
+----------------------------------------------------------------------------------------------------------
+
+local function IsAllowedToQueueForaging(inst)
+	return inst.woby_commands_classified ~= nil and inst.woby_commands_classified:ShouldForage() and not (inst.woby_commands_classified:IsRecalled() or inst.woby_commands_classified:ShouldSit())
+end
+
 local function OnPlayerNewState(inst, player, data)
 	local buffaction = player.bufferedaction -- No locomotor action, server wouldn't know it.
 
 	if buffaction ~= nil and buffaction.target ~= nil and buffaction.action == ACTIONS.PICK then
 		if not IsFoodSourcePickable(buffaction.target) or buffaction.target.components.pickable.quickpick then
 			return -- Woby is not interested :P
+		end
+
+		if not IsAllowedToQueueForaging(inst) then
+			return
 		end
 
 		inst:QueueForagerTarget(buffaction.target)
@@ -483,9 +494,7 @@ local function OnPlayerNewState(inst, player, data)
 
 		if lasttarget ~= nil and lasttarget.components.pickable ~= nil and lasttarget.components.pickable:CanBePicked() then
 			-- If it can be picked, Walter didn't finish it!
-			table.removearrayvalue(inst._forager_targets, lasttarget)
-
-			inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, lasttarget)
+			inst:RemoveForagerTarget(lasttarget)
 		end
 	end
 
@@ -508,6 +517,12 @@ local function QueueForagerTarget(inst, target)
 	end
 end
 
+local function RemoveForagerTarget(inst, target)
+	table.removearrayvalue(inst._forager_targets, target)
+
+	inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, target)
+end
+
 local function RemoveCurrentForagerTarget(inst)
 	local removed = table.remove(inst._forager_targets, 1)
 
@@ -515,7 +530,37 @@ local function RemoveCurrentForagerTarget(inst)
 end
 
 local function GetForagerTarget(inst)
-	return inst._forager_targets[1]
+	local targets = shallowcopy(inst._forager_targets)
+
+	for i, target in ipairs(targets) do
+		if inst._playerlink ~= nil and not inst._playerlink:IsNear(target, TUNING.SKILLS.WALTER.FORAGER_MAX_DISTANCE) then
+			inst:RemoveForagerTarget(target) -- Drop far away targets.
+		else
+			return target
+		end
+	end
+end
+
+local function UpdateOwnerNewStateListener(inst, player)
+	local skilltreeupdater = player ~= nil and player.components.skilltreeupdater or nil
+
+	if skilltreeupdater ~= nil and skilltreeupdater:IsActivated("walter_woby_foraging") then
+		inst:ListenForEvent("newstate", inst._onplayernewstate, player)
+	else
+		if player ~= nil then
+			inst:RemoveEventCallback("newstate", inst._onplayernewstate, player)
+		end
+
+		inst:ClearForagerQueue()
+	end
+end
+
+local function ClearForagerQueue(inst)
+	for i, target in ipairs(inst._forager_targets) do
+		inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, target)
+	end
+
+	inst._forager_targets = {}
 end
 
 ----------------------------------------------------------------------------------------------------------------------
@@ -541,6 +586,10 @@ local function OnPet(inst, petter)
 end
 
 ----------------------------------------------------------------------------------------------------------------------
+
+local function RestoreCharacterCollisions(inst)
+	inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -584,6 +633,10 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+		--@V2C: #HACK during transformation, replacing prefab collides with itself, causing flicker
+		inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
+		inst:DoStaticTaskInTime(0, RestoreCharacterCollisions)
+
         return inst
     end
 
@@ -680,7 +733,10 @@ local function fn()
     inst.FinishTransformation = FinishTransformation
 	inst.GetForagerTarget = GetForagerTarget
 	inst.QueueForagerTarget = QueueForagerTarget
+	inst.ClearForagerQueue = ClearForagerQueue
+	inst.RemoveForagerTarget = RemoveForagerTarget
 	inst.RemoveCurrentForagerTarget = RemoveCurrentForagerTarget
+	inst.UpdateOwnerNewStateListener = UpdateOwnerNewStateListener
 
 	inst.ApplyBigBuildOverrides = ApplyBigBuildOverrides
 	inst.OnWobySkinChanged = OnWobySkinChanged

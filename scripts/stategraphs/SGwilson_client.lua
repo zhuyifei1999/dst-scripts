@@ -836,9 +836,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.GRAVEDIG, "graveurn_in"),
 
 	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
-    ActionHandler(ACTIONS.DIRECTCOURIER_SETCHEST, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
-    ActionHandler(ACTIONS.DIRECTCOURIER, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
-    ActionHandler(ACTIONS.DIRECTCOURIER_MAP, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+
+	ActionHandler(ACTIONS.WHISTLE, "fingerwhistle"),
 }
 
 local events =
@@ -4137,6 +4136,8 @@ local states =
 					inst.sg:AddStateTag("canrotate")
 					inst.entity:SetIsPredictingMovement(false) -- so the animation will come across
 					--ClearCachedServerState(inst) --don't clear, we polling this in the above "idle" code
+					inst.sg.statemem.attacktarget = nil
+					inst.sg.statemem.retarget = nil
 				end
 			elseif inst.bufferedaction == nil then
 				inst.sg:GoToState("idle")
@@ -6804,6 +6805,42 @@ local states =
 			else
 				inst.sg:GoToState("idle")
 			end
+		end,
+	},
+
+	State{
+		name = "fingerwhistle",
+		tags = { "doing", "busy" },
+		server_states = { "fingerwhistle" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("fingerwhistle_pre")
+			inst.AnimState:PushAnimation("fingerwhistle_lag", false)
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+		timeline =
+		{
+			FrameEvent(6, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+		},
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.sg:GoToState("idle")
 		end,
 	},
 }

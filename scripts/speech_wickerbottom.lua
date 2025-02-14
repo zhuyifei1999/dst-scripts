@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
             NOTAMERM = "I don't believe the locals would take kindly to that.",
             NOTSOULJARHANDLER = "Best not interfere.",
-            RESTRICTED = "It’s not for me, I’m afraid.",
+            RESTRICTED = "It's not for me, I'm afraid.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "I do hope you're keeping organized, my dear.",
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
             NOTSOULJARHANDLER = "Best not interfere.",
-            RESTRICTED = "It’s not for me, I’m afraid.",
+            RESTRICTED = "It's not for me, I'm afraid.",
 		},
         TEACH =
         {
@@ -5582,7 +5582,7 @@ return{
 		WOBY_TREAT = "These will make our dear Woby grow big and strong.",
 		BANDAGE_BUTTERFLYWINGS = "A delicate dressing made of butterfly wings.",
 		PORTABLEFIREPIT_ITEM = "A travelling heat source. Useful if handled with due caution.",
-        SLINGSHOTAMMO_CONTAINER = "I’m glad Walter is getting organized!",
+        SLINGSHOTAMMO_CONTAINER = "I'm glad Walter is getting organized!",
 
         ELIXIR_CONTAINER = "What a pretty elixir organizer!",
         GHOSTFLOWERHAT = "It allows one to imbibe like the dead.",

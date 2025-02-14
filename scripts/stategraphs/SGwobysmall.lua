@@ -1,11 +1,13 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
+local WobyCommon = require("prefabs/wobycommon")
 
 local actionhandlers =
 {
     ActionHandler(ACTIONS.WOBY_PICKUP, "pickup"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.WOBY_PICK, "dolongaction"),
+    ActionHandler(ACTIONS.STORE, "dolongaction"),
 }
 
 local LONGACTION_DEFAULT_TIMEOUT = 1.5
@@ -67,10 +69,16 @@ local states =
             TimeEvent(41*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/roar") end),
             TimeEvent(42*FRAMES, function(inst) inst.DynamicShadow:SetSize(3, 1.5) end),
             TimeEvent(53*FRAMES, function(inst) inst.DynamicShadow:SetSize(5, 2) end),
-            TimeEvent(80*FRAMES, function(inst)
-                inst:FinishTransformation()
-            end),
         },
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst:FinishTransformation()
+				end
+			end),
+		},
 
 		onexit = function(inst)
 			--Interrupted???
@@ -138,6 +146,8 @@ local states =
         end,
 
         timeline = {
+            TimeEvent((7-6)*FRAMES, function(inst) PlayFootstep(inst, 0.25) end),
+    
             TimeEvent((21-6)*FRAMES, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 local target = buffaction ~= nil and buffaction.target or nil
@@ -164,7 +174,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("pickup_pst", inst.sg.statemem.missed)
+                    inst.sg:GoToState(inst.sg.statemem.missed and "pickup_pst_fail" or "pickup_pst_success")
                 end
             end)
         },
@@ -177,14 +187,53 @@ local states =
     },
 
     State{
-        name = "pickup_pst",
+        name = "pickup_pst_success",
+        tags = {"busy", "jumping"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+
+            inst.AnimState:PlayAnimation("fetch_pst")
+        end,
+
+        timeline =
+        {
+            FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/bodyfall", nil, .25) end),
+            FrameEvent(8,  function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
+            FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
+            FrameEvent(16, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
+            FrameEvent(24, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end)
+        },
+    },
+
+    State{
+        name = "pickup_pst_fail",
         tags = {"busy", "jumping"},
 
         onenter = function(inst, missed)
             inst.components.locomotor:StopMoving()
 
-            inst.AnimState:PlayAnimation(missed and "fetch_fail_pst" or "fetch_pst")
+            inst.AnimState:PlayAnimation("fetch_fail_pst")
         end,
+
+        timeline =
+        {
+            FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/bodyfall", nil, .5) end),
+            FrameEvent(19, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
+            FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
+            FrameEvent(36, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+        },
 
         events =
         {
@@ -214,9 +263,11 @@ local states =
                 end
             end),
         },
-        
+
         timeline =
         {
+            FrameEvent(8, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+
             FrameEvent(10, function(inst)
                 inst:PerformBufferedAction()
             end),
@@ -238,6 +289,10 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
 
             inst.sg.statemem.buffaction = inst:GetBufferedAction()
+            if inst.sg.statemem.buffaction and inst.sg.statemem.buffaction.target and inst.sg.statemem.buffaction.target.components.container then
+                inst.sg.statemem.openedchest = inst.sg.statemem.buffaction.target
+                inst.sg.statemem.openedchest.components.container:Open(inst)
+            end
 
             inst.sg:SetTimeout(timeout)
         end,
@@ -273,6 +328,9 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
+            if inst.sg.statemem.openedchest and inst.sg.statemem.openedchest:IsValid() and inst.sg.statemem.openedchest.components.container then
+                inst.sg.statemem.openedchest.components.container:Close(inst)
+            end
         end,
     },
 
@@ -287,16 +345,29 @@ local states =
             if inst.sg.lasttags["moving"] then
                 inst.AnimState:PlayAnimation("walk_pst")
                 inst.AnimState:PushAnimation("sit_woby")
+
+                inst.sg.statemem.fromwalking = true
             else
                 inst.AnimState:PlayAnimation("sit_woby")
             end
 
             inst.AnimState:PushAnimation("sit_woby_loop", true)
-
-            inst.sg.statemem.noleashing = inst.components.follower.noleashing
-
-            inst.components.follower:DisableLeashing()
         end,
+
+        timeline =
+		{
+            FrameEvent(8, function(inst)
+				if not inst.sg.statemem.fromwalking then
+					PlayFootstep(inst, 0.25)
+				end
+			end),
+
+			FrameEvent(12, function(inst)
+				if inst.sg.statemem.fromwalking then
+					PlayFootstep(inst, 0.25)
+				end
+			end),
+        },
 
         events =
         {
@@ -311,15 +382,11 @@ local states =
                     inst.sg:GoToState("idle")
                 else
                     inst.AnimState:PlayAnimation("sit_woby_pst")
+
+                    PlayFootstep(inst, 0.25)
                 end
             end),
         },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.noleashing then
-                inst.components.follower:EnableLeashing()
-            end
-        end
     },
 }
 
@@ -351,10 +418,10 @@ SGCritterStates.AddIdle(states, #emotes,
 	}]]nil,
 	function(inst)
 		if inst.sg.mem.recentlytransformed then
+			inst.sg.mem.recentlytransformed = nil
 			if inst.sg.lasttags and inst.sg.lasttags["idle"] then
 				return "idle_loop_nodir"
 			end
-			inst.sg.mem.recentlytransformed = nil
 		end
 		return "idle_loop"
 	end)

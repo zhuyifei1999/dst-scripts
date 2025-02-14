@@ -1131,6 +1131,15 @@ function PlayerHud:OpenSpellWheel(invobject, items, radius, focus_radius, bgdata
 					TheFocalPoint.SoundEmitter:PlaySound(invobject.components.spellbook.focussound)
 				end
 			end
+			itemscpy[i].ondown = function()
+				if self.controls.spellwheel.iscontroller then
+					invobject.components.spellbook:SelectSpell(i)
+					if not invobject.components.spellbook.closeonexecute then
+						--return true to halt operation; Wheel's ondown for controllers usually hide's all other buttons
+						return true
+					end
+				end
+			end
 		end
 	end
 	self.controls.spellwheel:SetScale(TheFrontEnd:GetProportionalHUDScale()) --instead of GetHUDScale(), because parent already has SCALEMODE_PROPORTIONAL

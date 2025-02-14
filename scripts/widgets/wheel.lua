@@ -108,13 +108,17 @@ function Wheel:SetItems( dataset, radius, focus_radius, dataset_name )
 					self:Close()
 					self:Open(v.nestedwheel.name)
 				elseif v.execute then
-					v.execute()
+					if v.execute() then
+						return --callback returned true: halt operation
+					end
 					self:OnExecute()
 				end
 			end
 		
 		w.ondown = function()
-				if self.iscontroller then
+				if v.ondown and v.ondown() then
+					return --callback returned true: halt operation
+				elseif self.iscontroller then
 					self:StopUpdating()
 					for j, k in ipairs(dataset) do
 						if i ~= j then
@@ -126,6 +130,9 @@ function Wheel:SetItems( dataset, radius, focus_radius, dataset_name )
 		
 		w.ongainfocus = function()
 				if w:IsEnabled() and not (w:IsSelected() or w:IsDisabledState()) then
+					if v.onfocus and v.onfocus() then
+						return --callback returned true: halt operation
+					end
 					w:MoveTo(v.pos, v.focus_pos, 0.1)
 					self.selected_label:SetString(v.label)
 					self.selected_label._currentwidget = w
@@ -135,9 +142,6 @@ function Wheel:SetItems( dataset, radius, focus_radius, dataset_name )
 					local newfocuspos = v.focus_pos + offset
 
 					self.selected_label:MoveTo(newpos, newfocuspos, 0.1)
-					if v.onfocus ~= nil then
-						v.onfocus()
-					end
 				end
 			end
 			

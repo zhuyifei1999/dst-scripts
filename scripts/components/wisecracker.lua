@@ -373,8 +373,13 @@ local Wisecracker = Class(function(self, inst)
 	if inst:HasTag("dogrider") then
 		local lasttalktowobytime = 0
 		local lastwobymsg = nil
+		local callwobytask = nil
 		local function talktowoby(inst, woby, msgid, range, repeatcooldown, globalcooldown)
-			if inst:IsNear(woby, range) then
+			if callwobytask then
+				callwobytask:Cancel()
+				callwobytask = nil
+			end
+			if range == nil or inst:IsNear(woby, range) then
 				local t = GetTime()
 				local cooldown = msgid == lastwobymsg and repeatcooldown or globalcooldown
 				if lasttalktowobytime + cooldown < t then
@@ -390,6 +395,12 @@ local Wisecracker = Class(function(self, inst)
 		inst:ListenForEvent("tellwobyfollow",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FOLLOW",	12,	6,	0) end)
 		inst:ListenForEvent("tellwobyforage",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FORAGE",	8,	30,	4) end)
 		inst:ListenForEvent("tellwobywork",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_WORK",	8,	30,	4) end)
+		inst:ListenForEvent("callwoby", function(inst, woby)
+			if callwobytask then
+				callwobytask:Cancel()
+			end
+			callwobytask = inst:DoTaskInTime(0.7, talktowoby, woby, "ANNOUNCE_WOBY_RETURN", nil, 4, 0)
+		end)
 	end
 
     if TheNet:GetServerGameMode() == "quagmire" then

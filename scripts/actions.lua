@@ -269,6 +269,8 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
 
     self.map_action = data.map_action -- Should only be handled from the map and has action translations.
     self.closes_map = data.closes_map -- Should immediately close the minimap on action start.
+    self.map_only = data.map_only -- Action only exists from a map.
+    self.map_works_on_unexplored = data.map_works_on_unexplored -- Bypass seeable checks.
 end)
 
 -- NOTE: High priority is intended to be a shortcut flag for actions that we expect to always dominate if they are available.
@@ -601,9 +603,8 @@ ACTIONS =
     WOBY_PICK = Action({ extra_arrive_dist=ExtraWobyForagingDist }),
 	CONTAINER_INSTALL_ITEM = Action({ priority = 3, rmb = true, instant = true, mount_valid = true }),
 	DASH = Action({ distance = math.huge, mount_valid = true, invalid_hold_action = true }),
-    DIRECTCOURIER_SETCHEST = Action({rmb=true, invalid_hold_action=true,}),
-    DIRECTCOURIER = Action({rmb=true, invalid_hold_action=true,}),
-    DIRECTCOURIER_MAP = Action({priority=HIGH_ACTION_PRIORITY, customarrivecheck=ArriveAnywhere, rmb=true, map_action=true, closes_map=true,}),
+    DIRECTCOURIER_MAP = Action({priority=HIGH_ACTION_PRIORITY, customarrivecheck=ArriveAnywhere, rmb=true, instant=true, map_action=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
+	WHISTLE = Action({ rmb=true, distance=math.huge, invalid_hold_action=true }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -2199,78 +2200,100 @@ ACTIONS.STORE.fn = function(act)
 		end
 	end
 
-    if target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
-        if target.components.container:IsRestricted(act.doer) then
-            return false, "RESTRICTED"
-
-        elseif target:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
-            return false, "NOTMASTERCHEF"
-
-        elseif target:HasTag("mermonly") and not act.doer:HasTag("merm") then
-            return false, "NOTAMERM"
-
-        elseif target:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
-            return false, "NOTSOULJARHANDLER"
-
-        elseif not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
-            return false, "INUSE"
-        end
-
-        local targetslot = nil
-        if act.doer.components.constructionbuilderuidata ~= nil and act.doer.components.constructionbuilderuidata:GetContainer() == target then
-            targetslot = act.doer.components.constructionbuilderuidata:GetSlotForIngredient(act.invobject.prefab)
-            if targetslot == nil or not target.components.container:CanTakeItemInSlot(act.invobject, targetslot) then
-                --V2C: construction is a busy state, so we need to force the speech
-                act.doer.components.talker:Say(GetActionFailString(act.doer, "CONSTRUCT", "NOTALLOWED"))
-                return true
+    if target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil then
+        if act.doer.components.inventory == nil and act.doer.components.container ~= nil then
+            -- Container to container.
+            if not target.components.container:IsOpenedBy(act.doer) then
+                if not target.components.container:CanOpen() then
+                    return false, "INUSE"
+                end
+                target.components.container:Open(act.doer)
             end
-        elseif not target.components.container:CanTakeItemInSlot(act.invobject) then
-            if target:HasTag("bundle") then
-                --V2C: bundling is a busy state, so we need to force the speech
-                act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE", "NOTALLOWED"))
+            local stacksize = act.invobject.components.stackable and act.invobject.components.stackable.stacksize or 1
+            if target.components.container:CanAcceptCount(act.invobject) >= stacksize then
+                local pt = act.doer:GetPosition()
+                local item = act.doer.components.container:RemoveItem(act.invobject, true)
+                target.components.container:GiveItem(item, nil, pt, true)
                 return true
             end
             return false, "NOTALLOWED"
         end
+        if act.doer.components.inventory ~= nil then
+            if target.components.container:IsRestricted(act.doer) then
+                return false, "RESTRICTED"
 
-        local forceopen = target.components.quagmire_stewer ~= nil and target.components.inventoryitem ~= nil
-        local forcedrop = forceopen and target.components.inventoryitem:GetGrandOwner() or nil
-        if forcedrop ~= nil and forcedrop ~= act.doer then
-            --Silent fail, should not reach here
-            return true
-        end
+            elseif target:HasTag("mastercookware") and not act.doer:HasTag("masterchef") then
+                return false, "NOTMASTERCHEF"
 
-        local item = act.invobject.components.inventoryitem:RemoveFromOwner(target.components.container.acceptsstacks)
-        if item ~= nil then
-            if forcedrop ~= nil then
-                forcedrop.components.inventory:DropItem(target, true, true)
-            end
-            if forceopen or target.components.inventoryitem == nil then
-                if proxy ~= nil then
-                    proxy.components.container_proxy:Open(act.doer)
-                else
-                    target.components.container:Open(act.doer)
-                end
+            elseif target:HasTag("mermonly") and not act.doer:HasTag("merm") then
+                return false, "NOTAMERM"
+
+            elseif target:HasTag("souljar") and (act.doer.components.skilltreeupdater == nil or not act.doer.components.skilltreeupdater:IsActivated("wortox_souljar_1")) then
+                return false, "NOTSOULJARHANDLER"
+
+            elseif not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
+                return false, "INUSE"
             end
 
-            if not target.components.container:GiveItem(item, targetslot, nil, false) then
-                if act.doer.components.playercontroller ~= nil and
-                    act.doer.components.playercontroller.isclientcontrollerattached then
-                    act.doer.components.inventory:GiveItem(item)
-                else
-                    act.doer.components.inventory:GiveActiveItem(item)
+            local targetslot = nil
+            if act.doer.components.constructionbuilderuidata ~= nil and act.doer.components.constructionbuilderuidata:GetContainer() == target then
+                targetslot = act.doer.components.constructionbuilderuidata:GetSlotForIngredient(act.invobject.prefab)
+                if targetslot == nil or not target.components.container:CanTakeItemInSlot(act.invobject, targetslot) then
+                    --V2C: construction is a busy state, so we need to force the speech
+                    act.doer.components.talker:Say(GetActionFailString(act.doer, "CONSTRUCT", "NOTALLOWED"))
+                    return true
                 end
+            elseif not target.components.container:CanTakeItemInSlot(act.invobject) then
                 if target:HasTag("bundle") then
                     --V2C: bundling is a busy state, so we need to force the speech
-                    act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE"))
+                    act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE", "NOTALLOWED"))
                     return true
-                else
-                    return false
                 end
+                return false, "NOTALLOWED"
             end
-            return true
+
+            local forceopen = target.components.quagmire_stewer ~= nil and target.components.inventoryitem ~= nil
+            local forcedrop = forceopen and target.components.inventoryitem:GetGrandOwner() or nil
+            if forcedrop ~= nil and forcedrop ~= act.doer then
+                --Silent fail, should not reach here
+                return true
+            end
+
+            local item = act.invobject.components.inventoryitem:RemoveFromOwner(target.components.container.acceptsstacks)
+            if item ~= nil then
+                if forcedrop ~= nil then
+                    forcedrop.components.inventory:DropItem(target, true, true)
+                end
+                if forceopen or target.components.inventoryitem == nil then
+                    if proxy ~= nil then
+                        proxy.components.container_proxy:Open(act.doer)
+                    else
+                        target.components.container:Open(act.doer)
+                    end
+                end
+
+                if not target.components.container:GiveItem(item, targetslot, nil, false) then
+                    if act.doer.components.playercontroller ~= nil and
+                        act.doer.components.playercontroller.isclientcontrollerattached then
+                        act.doer.components.inventory:GiveItem(item)
+                    else
+                        act.doer.components.inventory:GiveActiveItem(item)
+                    end
+                    if target:HasTag("bundle") then
+                        --V2C: bundling is a busy state, so we need to force the speech
+                        act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE"))
+                        return true
+                    else
+                        return false
+                    end
+                end
+                return true
+            end
+            return false
         end
-    elseif act.invobject ~= nil and
+        -- Intentional fall through.
+    end
+    if act.invobject ~= nil and
         act.invobject.components.occupier ~= nil and
         target.components.occupiable ~= nil and
         target.components.occupiable:CanOccupy(act.invobject) then
@@ -3101,150 +3124,86 @@ ACTIONS.CASTSPELL.fn = function(act)
     end
 end
 
-ACTIONS.DIRECTCOURIER_SETCHEST.stroverridefn = function(act)
-    if act.target and act.target:HasTag("chest") then
-        if act.doer then
-            local x, z = GetWobyCourierChestPosition(act.doer)
-            if x and act.target:GetDistanceSqToPoint(x, 0, z) < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS_SQ then
-                return STRINGS.ACTIONS.DIRECTCOURIER_SETCHEST.FORGET
-            end
-        end
-    end
-    return STRINGS.ACTIONS.DIRECTCOURIER_SETCHEST.REMEMBER
-end
-ACTIONS.DIRECTCOURIER_SETCHEST.fn = function(act)
-    if act.target and act.target:HasTag("chest") then
-        if act.doer and act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") then
-            if act.doer.components.wobycourier then
-                local x, z = GetWobyCourierChestPosition(act.doer)
-                if x and act.target:GetDistanceSqToPoint(x, 0, z) < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS_SQ then
-                    return act.doer.components.wobycourier:ClearXZ()
-                else
-                    local cx, cy, cz = act.target.Transform:GetWorldPosition()
-                    return act.doer.components.wobycourier:StoreXZ(cx, cz)
-                end
-            end
-        end
-    end
-end
-
-ACTIONS.DIRECTCOURIER.stroverridefn = function(act)
-    return STRINGS.ACTIONS.DIRECTCOURIER.START
-end
-
-ACTIONS.DIRECTCOURIER.fn = function(act)
-    print("FIXME(JBK): Walter ST: DIRECTCOURIER.fn called this is a proxy action!")
-    print(_TRACEBACK())
-end
-
-ACTIONS.DIRECTCOURIER_MAP.stroverridefn = function(act)
-    local targetname = act.target and act.target.prefab == "globalmapiconnamed" and act.target._target_displayname:value() or nil
-    if targetname == "" then
-        targetname = nil
-    end
-    if targetname then
-        return subfmt(STRINGS.ACTIONS.DIRECTCOURIER.SEND, {target = targetname})
-    else
-        return STRINGS.ACTIONS.DIRECTCOURIER.CHEST
-    end
-end
 local DIRECTCOURIER_MAP_MUST = { "CLASSIFIED", "globalmapicon", "globalmapicon_player" }
-ACTIONS.DIRECTCOURIER_MAP.fn = function(act)
+ACTIONS.DIRECTCOURIER_MAP.maponly_checkvalidpos_fn = function(act)
     if act.doer == nil or not act.doer.components.skilltreeupdater and act.doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") then
-        return nil
+        return false
     end
 
-    local maxradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS * 1.1 -- Add a 10% fudge factor for it to cover latency on moving targets.
-    local maxradiussq = maxradius * maxradius
+    local within_radius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS
+    local within_radiussq = within_radius * within_radius
     local act_pos = act:GetActionPoint()
-    local act_posx, act_posz = act_pos.x, act_pos.z
+    local act_posx, act_posz
     local mindsq = math.huge
+    local mapent
     local function TryToUpdateNearest(x, z)
         local dx, dz = x - act_pos.x, z - act_pos.z
         local dsq = dx * dx + dz * dz
-        if dsq < mindsq then
-            mindsq = dsq
-            act_posx, act_posz = x, z
-        end
-    end
-    -- Check for chest first.
-    local x, z = GetWobyCourierChestPosition(act.doer)
-    if x then
-        TryToUpdateNearest(x, z, -1)
-    end
-    -- Now players.
-    for _, v in ipairs(AllPlayers) do
-        if v ~= act.doer then
-            local x, y, z = v.Transform:GetWorldPosition()
-            TryToUpdateNearest(x, z)
-        end
-    end
-    -- Valid target checks.
-    if mindsq == math.huge then
-        return false, "NOTARGET"
-    end
-    --[[
-        local platform = TheWorld.Map:GetPlatformAtPoint(act_pos.x, act_pos.z)
-        local platformoffset
-        if platform then
-            platformoffset = platform:GetPosition() - act_pos
-        end
-        act.doer.sg:GoToState("portal_jumpin", {dest = act_pos, platform = platform, platformoffset = platformoffset, from_map = true,})
-    ]]
-    local dist = math.sqrt(mindsq)
-    print("FIXME(JBK): Walter ST: DIRECTCOURIER_MAP code here for the woby brain logic", act_posx, act_posz, dist)
-end
-
-local MIN_DIST_SQ_COURIER_TO_PLAYER = 16 -- 4 * 4
-ACTIONS_MAP_REMAP[ACTIONS.DIRECTCOURIER.code] = function(act, targetpos)
-    local doer = act.doer
-    if doer == nil then
-        return nil
-    end
-
-    local maxradius = TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS * 1.1 -- Add a 10% fudge factor for it to cover latency on moving targets.
-    local maxradiussq = maxradius * maxradius
-    local act_pos = targetpos -- Lazy me.
-    local act_posx, act_posz = act_pos.x, act_pos.z
-    local mindsq = math.huge
-    local function TryToUpdateNearest(x, z)
-        local dx, dz = x - act_pos.x, z - act_pos.z
-        local dsq = dx * dx + dz * dz
-        if dsq < mindsq and dsq < maxradiussq then
+        if dsq < mindsq and dsq < within_radiussq then
             mindsq = dsq
             act_posx, act_posz = x, z
             return true
         end
         return false
     end
-    local compassbearer
     -- Check for chest first.
-    local x, z = GetWobyCourierChestPosition(doer)
-    if x and TryToUpdateNearest(x, z) then
-        compassbearer = "chest"
+    local x, z = GetWobyCourierChestPosition(act.doer)
+    if x then
+        TryToUpdateNearest(x, z)
     end
     -- Now players.
-    local ents = TheSim:FindEntities(targetpos.x, targetpos.y, targetpos.z, TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS, DIRECTCOURIER_MAP_MUST)
+    local ents = TheSim:FindEntities(act_pos.x, act_pos.y, act_pos.z, TUNING.SKILLS.WALTER.COURIER_DETECTION_RADIUS, DIRECTCOURIER_MAP_MUST)
     for _, ent in ipairs(ents) do
-        if doer:GetDistanceSqToInst(ent) > MIN_DIST_SQ_COURIER_TO_PLAYER then
+        if ent.MiniMapEntity:EntityHasRestriction(act.doer.GUID) and act.doer:GetDistanceSqToInst(ent) > WOBYCOURIER_MIN_DIST_TO_PLAYER_SQ then
             local x, y, z = ent.Transform:GetWorldPosition()
             if TryToUpdateNearest(x, z) then
-                compassbearer = ent
+                mapent = ent
             end
         end
     end
-    if compassbearer == nil then
-        return nil
-    elseif compassbearer == "chest" then
-        targetpos.x, targetpos.y, targetpos.z = act_posx, 0, act_posz
-        compassbearer = nil --doer.wobycourier_chesticon_CLIENT
-    else
-        targetpos.x, targetpos.y, targetpos.z = compassbearer.Transform:GetWorldPosition()
+    -- Valid target checks.
+    if mindsq == math.huge then
+        return false, "NOTARGET"
     end
 
-    local act_remap = BufferedAction(doer, compassbearer, ACTIONS.DIRECTCOURIER_MAP, act.invobject, targetpos)
+    return true, nil, act_posx, act_posz, mapent
+end
+ACTIONS.DIRECTCOURIER_MAP.stroverridefn = function(act)
+    local valid, reason, act_posx, act_posz, mapent = ACTIONS.DIRECTCOURIER_MAP.maponly_checkvalidpos_fn(act)
+    if not valid then
+        return nil
+    end
 
-    return act_remap
+    if mapent then
+        local targetname = mapent.prefab == "globalmapiconnamed" and mapent._target_displayname:value() or nil
+        if targetname and targetname ~= "" then
+            return subfmt(STRINGS.ACTIONS.DIRECTCOURIER_MAP.SEND, {target = targetname})
+        end
+    end
+
+    return STRINGS.ACTIONS.DIRECTCOURIER_MAP.CHEST
+end
+ACTIONS.DIRECTCOURIER_MAP.fn = function(act)
+    local valid, reason, act_posx, act_posz, mapent = ACTIONS.DIRECTCOURIER_MAP.maponly_checkvalidpos_fn(act)
+    local ischest = mapent == nil
+    if not valid then
+        return valid, reason
+    end
+
+    if not act.doer.components.playercontroller or not act.doer.woby_commands_classified then
+        return false
+    end
+
+    local act_pos = Vector3(act_posx, 0, act_posz)
+
+    local platform = TheWorld.Map:GetPlatformAtPoint(act_pos.x, act_pos.z)
+    local platformoffset
+    if platform then
+        platformoffset = platform:GetPosition() - act_pos
+    end
+
+    act.doer.woby_commands_classified:SendCourierWoby({destpos = act_pos, platform = platform, platformoffset = platformoffset, ischest = ischest,})
+    return valid
 end
 
 local function TryToSoulhop(act, act_pos, consumeall)
@@ -5572,7 +5531,7 @@ ACTIONS.USESPELLBOOK.pre_action_cb = function(act)
 			target = act.target
 			isvalid = true
 		end
-		if target and target.components.spellbook then
+		if target and target.components.spellbook and target.components.spellbook:CanBeUsedBy(act.doer) then
 			local inventory = act.doer.replica.inventory
 			if inventory and inventory:GetActiveItem() ~= target then
 				inventory:ReturnActiveItem()
@@ -6040,6 +5999,14 @@ ACTIONS.DASH.fn = function(act)
 	local pt = act:GetActionPoint()
 	if pt then
 		act.doer:ForceFacePoint(pt)
+		return true
+	end
+	return false
+end
+
+ACTIONS.WHISTLE.fn = function(act)
+	if act.doer and act.doer.woby_commands_classified then
+		act.doer.woby_commands_classified:RecallWoby()
 		return true
 	end
 	return false

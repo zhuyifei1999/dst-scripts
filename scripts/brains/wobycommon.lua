@@ -2,6 +2,7 @@ require "behaviours/doaction"
 require "behaviours/faceentity"
 require "behaviours/follow"
 require "behaviours/runaway"
+local WobyCommon = require("prefabs/wobycommon")
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -15,9 +16,21 @@ local function OwnerIsClose(inst, distance)
     return owner ~= nil and owner:IsNear(inst, distance)
 end
 
+local function IsWheelOpen(inst)
+	return inst.woby_commands_classified and inst.woby_commands_classified:IsClientWheelOpen()
+end
+
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 local function FindPickupableItem_ExtraFilter(inst, item, owner)
+    if item:HasTag("outofreach") then
+        return false -- Don't try to pick up cave_hole objects.
+    end
+
+    if item.components.trap ~= nil then
+        return false -- Don't interact with traps at all.
+    end
+
     if not item:IsOnPassablePoint() or item:GetCurrentPlatform() ~= inst:GetCurrentPlatform() then
         return false
     end
@@ -39,10 +52,10 @@ local function DoPickUpAction(inst)
         priorityprefabs[item.prefab] = true
     end
 
+    -- NOTES(DiogoW): furthestfirst on purpose, Woby likes to run a bit before fetching.
     local item =
-           FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_PRIORITY_MAX_DISTANCE, true, nil,                nil, priorityprefabs, false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
-        or FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_DEFAULT_MAX_DISTANCE,  true, nil,                nil, nil,             false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
-        or FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_DEFAULT_MAX_DISTANCE,  true, inst:GetPosition(), nil, nil,             false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
+           FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_PRIORITY_MAX_DISTANCE,   true, nil,                nil, priorityprefabs, false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
+        or FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_DEFAULT_MAX_DISTANCE,    true, nil,                nil, nil,             false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
 
     if item ~= nil then
         local action = BufferedAction(inst, item, ACTIONS.WOBY_PICKUP)
@@ -69,7 +82,7 @@ end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
-local function IsAllowedToRetriaveAmmo(inst)
+local function IsAllowedToRetrieveAmmo(inst)
     local equip = inst._playerlink.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
     return equip ~= nil and
@@ -88,6 +101,7 @@ local function GetRecoverableAmmoPickUpAction(inst)
         onlytheseprefabs[item.prefab] = true
     end
 
+    -- NOTES(DiogoW): furthestfirst on purpose, Woby likes to run a bit before fetching.
     local item = FindPickupableItem(inst._playerlink, TUNING.SKILLS.WALTER.FETCH_PRIORITY_MAX_DISTANCE, true, nil, nil, onlytheseprefabs, false, inst, FindPickupableItem_ExtraFilter, inst.components.container)
 
     if item == nil then
@@ -130,19 +144,19 @@ local function ReturnRecoverableAmmoAction(inst)
     return act
 end
 
-local function RetriaveAmmoNode(inst)
-    return WhileNode(function() return HasPickUpBehavior(inst) and IsAllowedToRetriaveAmmo(inst) end, "HasPickUpBehavior",
+local function RetrieveAmmoNode(inst)
+    return WhileNode(function() return HasPickUpBehavior(inst) and IsAllowedToRetrieveAmmo(inst) end, "HasPickUpBehavior",
         PriorityNode({
             WhileNode(function() return OwnerIsClose(inst, TUNING.SKILLS.WALTER.PRIORIZE_AMMO_RETURN_ACTION_DIST) end, "PriorizeReturningAmmo", DoAction(inst, ReturnRecoverableAmmoAction, "ReturnRecoverableAmmoAction", true)),
-            WhileNode(function() return IsAllowedToPickUp(inst) end, "IsAllowedToPickUp", DoAction(inst, GetRecoverableAmmoPickUpAction, "RetriaveAmmoNode", true)),
+            WhileNode(function() return IsAllowedToPickUp(inst) end, "IsAllowedToPickUp", DoAction(inst, GetRecoverableAmmoPickUpAction, "RetrieveAmmoNode", true)),
             DoAction(inst, ReturnRecoverableAmmoAction, "ReturnRecoverableAmmoAction", true),
         },.25)
     )
 end
 
--- Same as RetriaveAmmoNode, but won't give the ammo back.
+-- Same as RetrieveAmmoNode, but won't give the ammo back.
 local function PickUpAmmoNode(inst)
-    return WhileNode(function() return HasPickUpBehavior(inst) and IsAllowedToPickUp(inst) and IsAllowedToRetriaveAmmo(inst) end, "HasFetchSkill",
+    return WhileNode(function() return HasPickUpBehavior(inst) and IsAllowedToPickUp(inst) and IsAllowedToRetrieveAmmo(inst) end, "HasFetchSkill",
        DoAction(inst, GetRecoverableAmmoPickUpAction, "PickUpAmmoNode", true)
     )
 end
@@ -180,8 +194,28 @@ end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
+local COURIER_INTERACT_DISTANCE = TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS
+local COURIER_INTERACT_DISTANCE_SQ = COURIER_INTERACT_DISTANCE * COURIER_INTERACT_DISTANCE
+local COURIER_SIT_DISTANCE_MAX = COURIER_INTERACT_DISTANCE
+local COURIER_SIT_DISTANCE_MIN = 4
+
+local function GetCourierData(inst)
+    return inst.woby_commands_classified ~= nil and inst.woby_commands_classified:GetCourierData() or nil
+end
+
+local function ShouldSit(inst)
+    local shouldsit = false
+    if inst.woby_commands_classified ~= nil then
+        shouldsit = inst.woby_commands_classified:ShouldSit()
+        if inst.woby_commands_classified.outfordelivery:value() then
+            shouldsit = false
+        end
+    end
+    return shouldsit
+end
+
 local function StartSitting(inst)
-    local shouldsit = inst.woby_commands_classified ~= nil and inst.woby_commands_classified:ShouldSit()
+    local shouldsit = ShouldSit(inst)
 
     if shouldsit then
         inst:PushEvent("start_sitting")
@@ -191,14 +225,19 @@ local function StartSitting(inst)
 end
 
 local function KeepSitting(inst)
-    local keepsitting = inst.woby_commands_classified ~= nil and inst.woby_commands_classified:ShouldSit()
+    local keepsitting = ShouldSit(inst)
+    local iscower = inst.brain ~= nil and inst.brain._hasavoidcombattarget ~= nil and inst.brain:_hasavoidcombattarget()
 
     if not keepsitting then
         inst:PushEvent("stop_sitting")
 
+    elseif iscower ~= inst.sg:HasStateTag("cower") then
+        -- We need to switch states!
+        inst:PushEvent("start_sitting", { iscower=iscower })
+
     elseif not inst.sg:HasStateTag("sitting") then
         -- We left the sitting state somehow! Go back to it...
-        inst:PushEvent("start_sitting")
+        inst:PushEvent("start_sitting", { iscower=iscower })
 
     elseif inst._playerlink ~= nil and inst.sg:HasStateTag("canrotate") then
         inst:ForceFacePoint(inst._playerlink.Transform:GetWorldPosition())
@@ -209,6 +248,44 @@ end
 
 local function SitStillNode(inst)
     return StandStill(inst, StartSitting, KeepSitting)
+end
+
+local function GetCourierHome(inst)
+    local courierdata = GetCourierData(inst)
+    return courierdata and courierdata.destpos or nil
+end
+
+local function StoreItemAction(inst)
+    local distance = (inst:GetPosition() - GetCourierHome(inst)):Length()
+    local item, container
+    for i = 1, inst.components.container:GetNumSlots() do
+        item = inst.components.container:GetItemInSlot(i)
+        if item then
+            container = WobyCommon.WobyCourier_FindValidContainerForItem(inst, item)
+            if container then
+                break
+            end
+        end
+    end
+
+    if container == nil then
+        inst.woby_commands_classified.outfordelivery:set(false)
+        return nil
+    end
+
+    return BufferedAction(inst, container, ACTIONS.STORE, item)
+end
+
+local function CourierNode(inst)
+    return WhileNode(function() return GetCourierData(inst) ~= nil end, "HasCourierData",
+        PriorityNode({
+            Leash(inst, GetCourierHome, COURIER_SIT_DISTANCE_MAX, COURIER_SIT_DISTANCE_MIN, true),
+            SequenceNode({
+                DoAction(inst, StoreItemAction, "StoreItem", true, 3),
+                WaitNode(1),
+            }),
+        })
+    )
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -273,10 +350,45 @@ end
 local function WatchingMinigameNode(inst)
     return WhileNode(function() return WatchingMinigame(inst) end, "Watching Game",
         PriorityNode{
-                Follow(inst, WatchingMinigame, WatchingMinigame_MinDist, WatchingMinigame_TargetDist, WatchingMinigame_MaxDist),
-                RunAway(inst, "minigame_participator", 5, 7),
-                FaceEntity(inst, WatchingMinigame, WatchingMinigame ),
+			WhileNode(function() return IsWheelOpen(inst) end, "Wheel Open",
+				FaceEntity(inst, WatchingMinigame, WatchingMinigame)),
+			Follow(inst, WatchingMinigame, WatchingMinigame_MinDist, WatchingMinigame_TargetDist, WatchingMinigame_MaxDist),
+			RunAway(inst, "minigame_participator", 5, 7),
+			FaceEntity(inst, WatchingMinigame, WatchingMinigame),
         }, 0.1)
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+local function RecallNode(inst, follownode)
+	return WhileNode(function() return inst.woby_commands_classified and inst.woby_commands_classified:IsRecalled() end, "recalled",
+		PriorityNode({
+			SequenceNode{
+				ParallelNodeAny{
+					follownode,
+					SequenceNode{
+						ConditionWaitNode(function()
+							local leader = inst.components.follower:GetLeader()
+							return leader == nil or leader:IsNear(inst, 8)
+						end),
+						WaitNode(4),
+					},
+					WaitNode(10),
+				},
+				ConditionNode(function()
+					if inst.woby_commands_classified then
+						inst.woby_commands_classified:CancelRecall()
+					end
+					return false
+				end),
+			},
+			ConditionNode(function()
+				if inst.woby_commands_classified then
+					inst.woby_commands_classified:CancelRecall()
+				end
+				return false
+			end),
+		}, 0.25))
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -285,11 +397,12 @@ return {
     HasPickUpBehavior = HasPickUpBehavior,
     DoPickUpAction = DoPickUpAction,
 
-    RetriaveAmmoNode = RetriaveAmmoNode,
+    RetrieveAmmoNode = RetrieveAmmoNode,
     PickUpAmmoNode = PickUpAmmoNode,
     FetchingActionNode = FetchingActionNode,
     ForagerNode = ForagerNode,
     SitStillNode = SitStillNode,
+    CourierNode = CourierNode,
 
     IsTryingToPerformAction  = IsTryingToPerformAction,
     TryingToInteractWithWoby = TryingToInteractWithWoby,
@@ -297,4 +410,7 @@ return {
     KeepGenericInteractionFn = KeepGenericInteractionFn,
 
     WatchingMinigameNode = WatchingMinigameNode,
+	RecallNode = RecallNode,
+
+	IsWheelOpen = IsWheelOpen,
 }

@@ -133,6 +133,10 @@ local function DoGhostSpell(doer, event, state, ...)
 		return false
 	end
 
+	if ghostlybond.ghost.components.health:IsDead() then
+		return false
+	end
+
 	if event ~= nil then
 		ghostlybond.ghost:PushEvent(event, ...)
 

@@ -12,6 +12,48 @@ local function DoInspected(invitem, tried)
     end
 end
 
+local function SetImageFromItem(im, item)
+	if item.layeredinvimagefn then
+		local layers = item.layeredinvimagefn(item)
+		if layers and #layers > 0 then
+			local row = layers[1]
+			im:SetTexture(row.atlas or GetInventoryItemAtlas(row.image), row.image)
+			if #layers > 1 then
+				if im.layers == nil then
+					im.layers = {}
+				end
+				local j = 1
+				for i = 2, #layers do
+					row = layers[i]
+					local w = im.layers[j]
+					if w then
+						w:SetTexture(row.atlas or GetInventoryItemAtlas(row.image), row.image)
+					else
+						im.layers[j] = im:AddChild(Image(row.atlas or GetInventoryItemAtlas(row.image), row.image))
+					end
+					j = j + 1
+				end
+				for i = j, #im.layers do
+					im.layers[i]:Kill()
+					im.layers[i] = nil
+				end
+			end
+			return im
+		end
+	end
+	local inventoryitem = item.replica.inventoryitem
+	if inventoryitem then
+		if im.layers then
+			for i, v in ipairs(im.layers) do
+				v:Kill()
+			end
+			im.layers = nil
+		end
+		im:SetTexture(inventoryitem:GetAtlas(), inventoryitem:GetImage())
+	end
+	return im
+end
+
 local ItemTile = Class(Widget, function(self, invitem)
     Widget._ctor(self, "ItemTile")
     self.item = invitem
@@ -83,7 +125,7 @@ local ItemTile = Class(Widget, function(self, invitem)
             self.imagebg:SetEffect("shaders/ui_cc.ksh")
         end
     end
-    self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage(), "default.tex"))
+	self.image = self:AddChild(SetImageFromItem(Image(), invitem))
     if GetGameModeProperty("icons_use_cc") then
         self.image:SetEffect("shaders/ui_cc.ksh")
     end
@@ -122,13 +164,13 @@ local ItemTile = Class(Widget, function(self, invitem)
                     self.imagebg:Hide()
                 end
             end
-            self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
+			SetImageFromItem(self.image, invitem)
         end, invitem)
     if invitem:HasClientSideInventoryImageOverrides() then
         self.inst:ListenForEvent("clientsideinventoryflagschanged",
             function(player)
-                if invitem and invitem.replica.inventoryitem then
-                    self.image:SetTexture(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
+				if invitem then
+					SetImageFromItem(self.image, invitem)
                 end
             end, ThePlayer)
     end
@@ -177,7 +219,7 @@ local ItemTile = Class(Widget, function(self, invitem)
                         self.movinganim:Kill()
                     end
                     local dest_pos = self:GetWorldPosition()
-                    local im = Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
+					local im = SetImageFromItem(Image(), invitem)
                     if GetGameModeProperty("icons_use_cc") then
                         im:SetEffect("shaders/ui_cc.ksh")
                     end

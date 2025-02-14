@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "I have more important things to do than that.",
             NOTAMERM = "Even I won't stoop so low as to steal from these wretches.",
             NOTSOULJARHANDLER = "Souls are a different thing altogether.",
-            RESTRICTED = "I don’t have the magic word.",
+            RESTRICTED = "I don't have the magic word.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Worry not, pal. I've the patience of a saint.",
             NOTMASTERCHEF = "I have more important things to do than that.",
             NOTSOULJARHANDLER = "Souls are a different thing altogether.",
-            RESTRICTED = "I don’t have the magic word.",
+            RESTRICTED = "I don't have the magic word.",
 		},
         TEACH =
         {
@@ -5550,7 +5550,7 @@ return{
         YOTS_SNAKESHRINE =
         {
             GENERIC = " Happy now? What do I get?",
-            EMPTY = "Greedy little worm, aren’t you?",
+            EMPTY = "Greedy little worm, aren't you?",
             BURNT = "My money is on Little Miss Pyro.",
         },
         YOTS_WORM = "What are you doing up here?",

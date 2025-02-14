@@ -51,6 +51,12 @@ local COMMAND_NAMES =
 	"WORKING",
 	"SPRINTING",
 	"SHADOWDASH",
+	"REMEMBERCHEST",
+	"COURIER",
+
+	--These are just for RPC
+	"OPENWHEEL",
+	"CLOSEWHEEL",
 }
 local COMMANDS = table.invert(COMMAND_NAMES)
 
@@ -58,7 +64,7 @@ local COMMANDS = table.invert(COMMAND_NAMES)
 
 local ICON_SCALE = 0.6
 local ICON_RADIUS = 50
-local SPELLBOOK_RADIUS = 100
+local SPELLBOOK_RADIUS = 120
 local SPELLBOOK_FOCUS_RADIUS = SPELLBOOK_RADIUS-- + 2
 
 local function MakeWobyCommand(cmd)
@@ -168,7 +174,7 @@ local COMMAND_DEFS =
 		label = STRINGS.WOBY_COMMANDS.SIT,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.SIT)
-			inst.components.spellbook.closeonexecute = false
+			inst.components.spellbook.closeonexecute = true
 		end,
 		execute = MakeWobyCommand(COMMANDS.SIT),
 		bank = "spell_icons_woby",
@@ -245,25 +251,103 @@ local COMMAND_DEFS =
 		postinit = MakeAutocastToggle("working"),
 		skill = "walter_woby_taskaid",
 	},
+
+	REMEMBERCHEST =
+	{
+		label = STRINGS.WOBY_COMMANDS.REMEMBERCHEST,
+		onselect = function(inst)
+			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.REMEMBERCHEST)
+			inst.components.spellbook.closeonexecute = true
+		end,
+		execute = MakeWobyCommand(COMMANDS.REMEMBERCHEST),
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			idle = { anim = "rememberchest" },
+			focus = { anim = "rememberchest_focus" },
+			down = { anim = "rememberchest_pressed" },
+		},
+		widget_scale = ICON_SCALE,
+		skill = "walter_camp_wobycourier",
+	},
+
+	COURIER =
+	{
+		label = STRINGS.WOBY_COMMANDS.COURIER,
+		onselect = function(inst)
+			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.COURIER)
+			inst.components.spellbook.closeonexecute = true
+		end,
+		execute = function(inst)
+            local playercontroller = ThePlayer.components.playercontroller
+			if playercontroller then
+				playercontroller:PullUpMap(inst, ACTIONS.DIRECTCOURIER_MAP)
+			end
+		end,
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			idle = { anim = "courier" },
+			focus = { anim = "courier_focus" },
+			down = { anim = "courier_pressed" },
+		},
+		widget_scale = ICON_SCALE,
+		skill = "walter_camp_wobycourier",
+	},
+
+	EMPTYSPACE =
+	{
+		label = "",
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			disabled = { anim = "empty" },
+		},
+		widget_scale = ICON_SCALE,
+		checkenabled = function() return false end,
+	},
 }
 
-local BIG_SPELLS =
+local SPELLBOOK_BG =
+{
+	bank = "spell_icons_woby",
+	build = "spell_icons_woby",
+	anim = "bg",
+	widget_scale = ICON_SCALE,
+}
+
+local BIG_SPELLS_LEFT =
+{
+	COMMAND_DEFS.WORKING,
+	COMMAND_DEFS.FORAGING,
+	COMMAND_DEFS.PICKUP,
+	COMMAND_DEFS.SIT,
+}
+
+local BIG_SPELLS_RIGHT =
 {
 	COMMAND_DEFS.MOUNT,
+	COMMAND_DEFS.COURIER,
+	COMMAND_DEFS.REMEMBERCHEST,
 	COMMAND_DEFS.SHRINK,
-	COMMAND_DEFS.SIT,
-	COMMAND_DEFS.PICKUP,
-	COMMAND_DEFS.FORAGING,
-	COMMAND_DEFS.WORKING,
 }
 
-local SMALL_SPELLS =
+local SMALL_SPELLS_LEFT =
+{
+	COMMAND_DEFS.WORKING,
+	COMMAND_DEFS.FORAGING,
+	COMMAND_DEFS.PICKUP,
+	COMMAND_DEFS.SIT,
+}
+
+local SMALL_SPELLS_RIGHT =
 {
 	COMMAND_DEFS.PET,
-	COMMAND_DEFS.SIT,
-	COMMAND_DEFS.PICKUP,
-	COMMAND_DEFS.FORAGING,
-	COMMAND_DEFS.WORKING,
+	COMMAND_DEFS.COURIER,
+	COMMAND_DEFS.REMEMBERCHEST,
 }
 
 local function CanUseWobyCommands(inst, user)
@@ -286,23 +370,55 @@ end
 
 local function OnOpenSpellBook(inst)
 	TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, math.huge, math.huge, 10)
+	local player = ThePlayer
+	if player and player.woby_commands_classified then
+		player.woby_commands_classified:NotifyWheelIsOpen(true)
+	end
 end
 
 local function OnCloseSpellBook(inst)
 	TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	local player = ThePlayer
+	if player and player.woby_commands_classified then
+		player.woby_commands_classified:NotifyWheelIsOpen(false)
+	end
 end
 
 local function RefreshCommands(inst, player)
 	local skilltreeupdater = player and player.components.skilltreeupdater or nil
+	local isbig = inst:HasTag("largecreature")
 	local j = 1
-	for i, v in ipairs(inst:HasTag("largecreature") and BIG_SPELLS or SMALL_SPELLS) do
+
+	inst._spells[1] = COMMAND_DEFS.EMPTYSPACE
+	j = j + 1
+
+	for i, v in ipairs(isbig and BIG_SPELLS_RIGHT or SMALL_SPELLS_RIGHT) do
 		if v.skill == nil or (skilltreeupdater and skilltreeupdater:IsActivated(v.skill)) then
 			inst._spells[j] = v
 			j = j + 1
 		end
 	end
-	for i = j, #inst._spells do
-		inst._spells[i] = nil
+
+	for i = j, 6 do
+		inst._spells[j] = COMMAND_DEFS.EMPTYSPACE
+		j = j + 1
+	end
+
+	for i, v in ipairs(isbig and BIG_SPELLS_LEFT or SMALL_SPELLS_LEFT) do
+		if v.skill == nil or (skilltreeupdater and skilltreeupdater:IsActivated(v.skill)) then
+			inst._spells[j] = v
+			j = j + 1
+		end
+	end
+
+	if j <= 10 then
+		local shift = 11 - j
+		for i = j - 1, 7, -1 do
+			inst._spells[i + shift] = inst._spells[i]
+		end
+		for i = 7, 7 + shift - 1 do
+			inst._spells[i] = COMMAND_DEFS.EMPTYSPACE
+		end
 	end
 end
 
@@ -348,6 +464,7 @@ local function SetupCommandWheel(inst)
 	inst.components.spellbook:SetOnOpenFn(OnOpenSpellBook)
 	inst.components.spellbook:SetOnCloseFn(OnCloseSpellBook)
 	inst.components.spellbook:SetItems(inst._spells)
+	inst.components.spellbook:SetBgData(SPELLBOOK_BG)
 	inst.components.spellbook.opensound = sfxpath
 	inst.components.spellbook.closesound = sfxpath
 	--inst.components.spellbook.executesound = "meta4/winona_UI/select"	--use .clicksound for item buttons instead
@@ -358,6 +475,86 @@ local function SetupCommandWheel(inst)
 		--woby_commands_classified:GetWoby() won't be able to return it properly yet.
 		inst:DoStaticTaskInTime(0, DelayedSetupClientCommandWheelRefreshers)
 	end
+end
+
+--------------------------------------------------------------------------
+
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+local CONTAINER_MUST_TAGS = { "_container" }
+local CONTAINER_CANT_TAGS = { "companion", "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local ALLOWED_CONTAINER_TYPES = { "chest", "pack" }
+local function WobyCourier_ForceDelivery(_pet)
+    local courierdata = _pet.woby_commands_classified.courierdata
+    local platform = _pet:GetCurrentPlatform()
+    local pt = courierdata.destpos
+    local validchests = {}
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS, CONTAINER_MUST_TAGS, CONTAINER_CANT_TAGS)
+    for _, ent in ipairs(ents) do
+        if ent.components.container ~= nil and
+            table.contains(ALLOWED_CONTAINER_TYPES, ent.components.container.type) and
+            (ent.components.container.canbeopened or ent.components.container.canacceptgivenitems) and -- NOTES(JBK): canacceptgivenitems is a mod flag for now.
+            ent:IsOnPassablePoint() and
+            ent:GetCurrentPlatform() == platform
+        then
+            table.insert(validchests, ent)
+        end
+    end
+    -- First loop try to find chests that have items already in Woby to deliver.
+    for _, ent in ipairs(validchests) do
+        for slot, item in pairs(_pet.components.container.slots) do
+            local stacksize = item.components.stackable and item.components.stackable.stacksize or 1
+            if item and ent.components.container:Has(item.prefab, 1) and ent.components.container:CanAcceptCount(item) >= stacksize then
+                item = _pet.components.container:RemoveItemBySlot(slot)
+                ent.components.container:GiveItem(item, nil, pt, true)
+            end
+        end
+    end
+    -- Second loop try to find chests that have space for anything left.
+    for _, ent in ipairs(validchests) do
+        for slot, item in pairs(_pet.components.container.slots) do
+            local stacksize = item.components.stackable and item.components.stackable.stacksize or 1
+            if item and ent.components.container:CanAcceptCount(item) >= stacksize then
+                item = _pet.components.container:RemoveItemBySlot(slot)
+                ent.components.container:GiveItem(item, nil, pt, true)
+            end
+        end
+    end
+    -- Flag that we are done.
+    _pet.woby_commands_classified.outfordelivery:set(false)
+end
+
+local function WobyCourier_FindValidContainerForItem(_pet, item)
+    local courierdata = _pet.woby_commands_classified.courierdata
+    local platform = _pet:GetCurrentPlatform()
+    local pt = courierdata.destpos
+    local validchests = {}
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS, CONTAINER_MUST_TAGS, CONTAINER_CANT_TAGS)
+    for _, ent in ipairs(ents) do
+        if ent.components.container ~= nil and
+            table.contains(ALLOWED_CONTAINER_TYPES, ent.components.container.type) and
+            (ent.components.container.canbeopened or ent.components.container.canacceptgivenitems) and -- NOTES(JBK): canacceptgivenitems is a mod flag for now.
+            ent:IsOnPassablePoint() and
+            ent:GetCurrentPlatform() == platform
+        then
+            table.insert(validchests, ent)
+        end
+    end
+    -- First loop try to find chests that have items already in Woby to deliver.
+    for _, ent in ipairs(validchests) do
+        local stacksize = item.components.stackable and item.components.stackable.stacksize or 1
+        if item and ent.components.container:Has(item.prefab, 1) and ent.components.container:CanAcceptCount(item) >= stacksize then
+            return ent
+        end
+    end
+    -- Second loop try to find chests that have space for anything left.
+    for _, ent in ipairs(validchests) do
+        local stacksize = item.components.stackable and item.components.stackable.stacksize or 1
+        if item and ent.components.container:CanAcceptCount(item) >= stacksize then
+            return ent
+        end
+    end
 end
 
 --------------------------------------------------------------------------
@@ -374,4 +571,6 @@ return
 	RefreshCommands = RefreshCommands,
 	MakeWobyCommand = MakeWobyCommand,
 	MakeAutocastToggle = MakeAutocastToggle,
+    WobyCourier_ForceDelivery = WobyCourier_ForceDelivery,
+    WobyCourier_FindValidContainerForItem = WobyCourier_FindValidContainerForItem,
 }

@@ -67,22 +67,23 @@ end
 --
 local function timerdone(inst, data)
     if data.name == "idle" then
-        local anim_type = math.random(3)
-        if anim_type == 1 then
-            inst.AnimState:PlayAnimation("idle_pre")
-            inst.AnimState:PushAnimation("idle", false)
-            inst.AnimState:PushAnimation("idle_pst", false)
-            inst.AnimState:PushAnimation("idle_empty")
-        elseif anim_type == 2 then
-            inst.AnimState:PlayAnimation("idle_2_pre")
-            inst.AnimState:PushAnimation("idle_2", false)
-            inst.AnimState:PushAnimation("idle_2_pst", false)
-            inst.AnimState:PushAnimation("idle_empty")
-        elseif anim_type == 3 then
-            inst.AnimState:PlayAnimation("idle_3")
-            inst.AnimState:PushAnimation("idle_empty")
+        if inst.components.deployable then
+            local anim_type = math.random(3)
+            if anim_type == 1 then
+                inst.AnimState:PlayAnimation("idle_pre")
+                inst.AnimState:PushAnimation("idle", false)
+                inst.AnimState:PushAnimation("idle_pst", false)
+                inst.AnimState:PushAnimation("idle_empty")
+            elseif anim_type == 2 then
+                inst.AnimState:PlayAnimation("idle_2_pre")
+                inst.AnimState:PushAnimation("idle_2", false)
+                inst.AnimState:PushAnimation("idle_2_pst", false)
+                inst.AnimState:PushAnimation("idle_empty")
+            elseif anim_type == 3 then
+                inst.AnimState:PlayAnimation("idle_3")
+                inst.AnimState:PushAnimation("idle_empty")
+            end
         end
-
         inst.components.timer:StartTimer("idle", 7 + 5 * math.random())
     end
 end

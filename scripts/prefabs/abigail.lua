@@ -44,8 +44,8 @@ end
 
 local function UndoTransparency(inst)
 
-    inst.components.fader:Fade(0.3, 1.0, 0.75, do_transparency)
-    inst.point_filtered:set(false)
+   -- inst.components.fader:Fade(0.3, 1.0, 0.75, do_transparency)
+    inst.fade_toggle:set(false)
 
     if not inst:HasTag("gestalt") then inst.components.aura:Enable(true) end
 
@@ -504,7 +504,6 @@ local function DoGhostEscape(inst)
         return
     end
 
-    inst.components.fader:Fade(1.0, 0.3, 0.75, do_transparency)
     inst.components.aura:Enable(false)
 
     inst.components.locomotor:SetExternalSpeedMultiplier(inst, "transparency", 1.25)
@@ -512,7 +511,7 @@ local function DoGhostEscape(inst)
     inst._is_transparent = true
 
     inst._undo_transparency_task = inst:DoTaskInTime(TUNING.WENDYSKILL_ESCAPE_TIME, UndoTransparency)
-    inst.point_filtered:set(true)
+    inst.fade_toggle:set(true)
     -- Pushing a nil target should cause anybody targetting Abigail to drop her.
 	inst:PushEvent("transfercombattarget", nil)
     inst.components.combat:SetTarget(nil)
@@ -761,8 +760,13 @@ local function ChangeToGestalt(inst, togestalt)
         end
     end
 end
-local function OnPointFilterDirty(inst)
-    inst.AnimState:UsePointFiltering(inst.point_filtered:value())
+local function OnFadeToggleDirty(inst)
+    inst.AnimState:UsePointFiltering(inst.fade_toggle:value())
+    if inst.fade_toggle:value() then
+        inst.components.fader:Fade(1.0, 0.3, 0.75, do_transparency)
+    else
+        inst.components.fader:Fade(1.0, 1.0, 1.0, do_transparency)
+    end
 end
 
 local function updatehealingbuffs(inst)
@@ -844,11 +848,14 @@ local function fn()
     --It's a loop that's always on, so we can start this in our pristine state
     -- inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_girl_howl_LP", "howl")
 
-    inst.point_filtered = net_bool(inst.GUID, "abigail.point_filtered", "point_filtereddirty")
-    inst.point_filtered:set(false)
 
-    if not TheNet:IsDedicated() then
-        inst:ListenForEvent("point_filtereddirty", OnPointFilterDirty)
+
+    inst.fade_toggle = net_bool(inst.GUID, "abigail.fade_toggle", "fade_toggledirty")
+    inst.fade_toggle:set(false)
+
+    if not TheNet:IsDedicated() then    
+        inst:AddComponent("fader")    
+        inst:ListenForEvent("fade_toggledirty", OnFadeToggleDirty)
     end
 
     inst.entity:SetPristine()
@@ -898,9 +905,6 @@ local function fn()
     local debuffable = inst:AddComponent("debuffable")
     debuffable.ondebuffadded = OnDebuffAdded
     debuffable.ondebuffremoved = OnDebuffRemoved
-
-    --
-    inst:AddComponent("fader")
 
     --
     local follower = inst:AddComponent("follower")

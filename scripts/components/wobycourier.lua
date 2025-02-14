@@ -7,14 +7,14 @@ local WobyCourier = Class(function(self, inst)
 end)
 
 function WobyCourier:NetworkLocation()
-    if self.inst.player_classified then
+    if self.inst.woby_commands_classified then
         local xz = self.positions[self.shardid]
         if xz then
-            self.inst.player_classified.wobycourier_chest_posx:set(xz.x)
-            self.inst.player_classified.wobycourier_chest_posz:set(xz.z)
+            self.inst.woby_commands_classified.chest_posx:set(xz.x)
+            self.inst.woby_commands_classified.chest_posz:set(xz.z)
         else
-            self.inst.player_classified.wobycourier_chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
-            self.inst.player_classified.wobycourier_chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
+            self.inst.woby_commands_classified.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
+            self.inst.woby_commands_classified.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
         end
         if self.inst == ThePlayer then -- Server is client.
             self.inst:PushEvent("updatewobycourierchesticon")
@@ -22,12 +22,21 @@ function WobyCourier:NetworkLocation()
     end
 end
 
+function WobyCourier:CanStoreXZ(x, z)
+    local map = TheWorld.Map
+    local undertile = TheWorld.components.undertile
+    local tile_x, tile_y = map:GetTileCoordsAtPoint(x, 0, z)
+    local tileid_base = undertile and undertile:GetTileUnderneath(tile_x, tile_y) or map:GetTile(tile_x, tile_y)
+    return TileGroupManager:IsLandTile(tileid_base)
+end
+
 function WobyCourier:StoreXZ(x, z) -- World coordinates in.
+    if not self:CanStoreXZ(x, z) then
+        return false
+    end
     local xz = self.positions[self.shardid] or {}
-    local y
-    x, y, z = TheWorld.Map:GetTileCenterPoint(x, 0, z)
-    xz.x = math.floor(x / TILE_SCALE)
-    xz.z = math.floor(z / TILE_SCALE)
+    xz.x = x
+    xz.z = z
     self.positions[self.shardid] = xz
     self:NetworkLocation()
     return true
@@ -64,7 +73,7 @@ function WobyCourier:OnLoad(data)
 end
 
 function WobyCourier:GetDebugString()
-    local x, z = self:GetXZ()
+    local x, z = GetWobyCourierChestPosition(self.inst)
     if not x then
         return "NPOS"
     end

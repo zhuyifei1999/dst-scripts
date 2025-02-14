@@ -914,6 +914,18 @@ local COMPONENT_ACTIONS =
 			end
         end,
 
+		wobycourier = function(inst, doer, actions, right)
+			if right and
+				doer == inst and
+				inst.components.playercontroller and
+				not inst.components.playercontroller.isclientcontrollerattached and
+				inst.HasWhistleAction and
+				inst:HasWhistleAction()
+			then
+				table.insert(actions, ACTIONS.WHISTLE)
+			end
+		end,
+
         worldmigrator = function(inst, doer, actions)
             if inst:HasTag("migrator") then
                 table.insert(actions, ACTIONS.MIGRATE)
@@ -1054,7 +1066,7 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, target, actions, right)
-            local iscritter = target:HasTag("critter")
+            local iscritter = target:HasTag("critter") or target:HasTag("woby")
             local ishandfed = target:HasTag("handfed")
 
             if not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
@@ -1842,16 +1854,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        -- FIXME(JBK): Walter ST: Remove this component and pull into Woby wheel.
-        --courierdirector = function(inst, doer, pos, actions, right, target)
-        --    local x,y,z = pos:Get()
-        --    if right and
-        --        doer and doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
-        --        TheWorld.Map:GetPlatformAtPoint(x, z) == nil then
-        --        table.insert(actions, ACTIONS.DIRECTCOURIER)
-        --    end
-        --end,
-
         deployable = function(inst, doer, pos, actions, right, target)
             if right and inst.replica.inventoryitem ~= nil then
                 if CLIENT_REQUESTED_ACTION == ACTIONS.DEPLOY_TILEARRIVE or CLIENT_REQUESTED_ACTION == ACTIONS.DEPLOY then
@@ -2040,16 +2042,6 @@ local COMPONENT_ACTIONS =
                 end
             end
         end,
-
-        -- FIXME(JBK): Walter ST: Remove this component and pull into Woby wheel.
-        --courierdirector = function(inst, doer, target, actions, right)
-        --    if right and
-        --        doer and doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
-        --        target:HasTag("chest") and
-        --        target:GetCurrentPlatform() == nil then
-        --        table.insert(actions, ACTIONS.DIRECTCOURIER_SETCHEST)
-        --    end
-        --end,
 
         fencerotator = function(inst, doer, target, actions, right)
             if target:HasTag("rotatableobject") and not inst:HasTag("fire") and not inst:HasTag("burnt") and (not target:HasTag("faced_chair") or target:HasTag("cansit")) then
@@ -2335,7 +2327,7 @@ local COMPONENT_ACTIONS =
 			local mount = rider and rider:GetMount() or nil
 			local isactiveitem = doer.replica.inventory:GetActiveItem() == inst
 
-			if not right and mount and (isactiveitem or doer.components.playercontroller.isclientcontrollerattached) then
+			if mount and (isactiveitem or (not right and doer.components.playercontroller.isclientcontrollerattached)) then
 				--picked up on mouse, hovered over ourself
 				for k, v in pairs(FOODGROUP) do
 					if mount:HasTag(v.name.."_eater") then

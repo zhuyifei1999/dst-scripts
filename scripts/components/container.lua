@@ -889,7 +889,7 @@ function Container:OnUpdate(dt)
 						opener.sg:HandleEvent("ms_closeportablestorage", { item = self.inst })
 					end
 				end
-			elseif mount or not (opener:IsValid() and opener:IsNear(self.inst, 3) and CanEntitySeeTarget(opener, self.inst)) then
+			elseif mount or not (opener:IsValid() and opener:IsNear(self.inst, CONTAINER_AUTOCLOSE_DISTANCE) and CanEntitySeeTarget(opener, self.inst)) then
 				self:Close(opener)
 			end
         end

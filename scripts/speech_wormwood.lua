@@ -5586,7 +5586,7 @@ return{
 		WOBY_TREAT = "Woofer stuff",
 		BANDAGE_BUTTERFLYWINGS = "Thank you, butterfriend",
 		PORTABLEFIREPIT_ITEM = "Warm everywhere always",
-        SLINGSHOTAMMO_CONTAINER = "Walter’s pew pew bag",
+        SLINGSHOTAMMO_CONTAINER = "Walter's pew pew bag",
 
         ELIXIR_CONTAINER = "Ghost friend's yummy juice",
         GHOSTFLOWERHAT = "Pretty ghost friends hat",

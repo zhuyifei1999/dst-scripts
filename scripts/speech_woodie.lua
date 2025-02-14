@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "I wouldn't wanna muddle it up.",
             NOTAMERM = "I got no business in there.",
             NOTSOULJARHANDLER = "I don't deal with souls.",
-            RESTRICTED = "Can’t do it.",
+            RESTRICTED = "Can't do it.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Oh, sorry. I didn't mean to hover over your shoulder.",
             NOTMASTERCHEF = "I wouldn't wanna muddle it up.",
             NOTSOULJARHANDLER = "I don't deal with souls.",
-            RESTRICTED = "Can’t do it.",
+            RESTRICTED = "Can't do it.",
 		},
         TEACH =
         {
@@ -5550,15 +5550,15 @@ return{
         -- Year of the Snake
         YOTS_SNAKESHRINE =
         {
-            GENERIC = "I’m feeling lucky, Luce!",
+            GENERIC = "I'm feeling lucky, Luce!",
             EMPTY = "What do you feed a monster like that?",
-            BURNT = "So that’s why I smelled smoke.",
+            BURNT = "So that's why I smelled smoke.",
         },
         YOTS_WORM = "WOO..orm?",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "No, Lucy. You are not chopping it down.",
-            BURNT = "There’s nothing left to chop, Lucy.",
+            BURNT = "There's nothing left to chop, Lucy.",
         },
         YOTS_LANTERN_POST_ITEM = "These would look great around my cabin.",
         CHESSPIECE_DEPTHWORM  = "We had some close calls with this guy, eh Luce?",
@@ -5581,7 +5581,7 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Kid is getting fancy with that slingshooter.",
 
 		WOBY_TREAT = "I guess if I were starving…",
-		BANDAGE_BUTTERFLYWINGS = "It’s pretty pretty, eh?",
+		BANDAGE_BUTTERFLYWINGS = "It's pretty pretty, eh?",
 		PORTABLEFIREPIT_ITEM = "Sure, Lucy. We can feed it.",
         SLINGSHOTAMMO_CONTAINER = "Hours of fun and destruction for the kiddo.",
 

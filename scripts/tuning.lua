@@ -7271,14 +7271,17 @@ function Tune(overrides)
                 -- walter_camp_wobyholder
                 -- walter_camp_wobycourier
                 COURIER_DETECTION_RADIUS = 20, -- Units away from a target position for valid action use.
-                COURIER_CHEST_DETECTION_RADIUS_SQ = 12 * 12, -- Units_sq away from a tile center that Woby will interact with chests from.
+                COURIER_CHEST_DETECTION_RADIUS = 12, -- Units away from a tile center that Woby will interact with chests from.
+                COURIER_FADE_DIST = 20, -- Distance Woby should fade out and fade in from target points.
 
                 HEALERS_EFFECTIVENESS_MODIFIER = 1.5,
                 WALTERHAT_IMPROVED_SANITY_DAMAGE_PROTECTION = 0.25,
 
                 PRIORIZE_AMMO_RETURN_ACTION_DIST = 4.5,
-                FETCH_PRIORITY_MAX_DISTANCE = 17.5,
-                FETCH_DEFAULT_MAX_DISTANCE = 12.5,
+                FETCH_PRIORITY_MAX_DISTANCE = 18,
+                FETCH_DEFAULT_MAX_DISTANCE = 14,
+
+                FORAGER_MAX_DISTANCE = 15,
 
                 WOBY_TASK_AID_HUNGER = .5,
 

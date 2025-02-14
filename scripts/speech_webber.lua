@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "Warly gets upset when we play with his things.",
             NOTAMERM = "We don't think we're allowed.",
             NOTSOULJARHANDLER = "We promised not to play with the souls.",
-            RESTRICTED = "We’re not allowed.",
+            RESTRICTED = "We're not allowed.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Are you finding everything okay in there?",
             NOTMASTERCHEF = "Warly gets upset when we play with his things.",
             NOTSOULJARHANDLER = "We promised not to play with the souls.",
-            RESTRICTED = "We’re not allowed.",
+            RESTRICTED = "We're not allowed.",
 		},
         TEACH =
         {
@@ -5551,9 +5551,9 @@ return{
         {
             GENERIC = "A surprise for us!",
             EMPTY = "What do we give it?",
-            BURNT = "It wasn’t us.",
+            BURNT = "It wasn't us.",
         },
-        YOTS_WORM = "You’ll never catch us, worm!",
+        YOTS_WORM = "You'll never catch us, worm!",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "Fancy!",

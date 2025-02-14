@@ -1090,18 +1090,13 @@ STRINGS =
             MUTATE_TARGET = "Mutate {target}",
         },
 
-		DASH = "Dash",
-        DIRECTCOURIER_SETCHEST =
+        DIRECTCOURIER_MAP =
         {
-            REMEMBER = "Remember Location",
-            FORGET = "Forget Location",
-        },
-        DIRECTCOURIER =
-        {
-            START = "Deliver Items",
             SEND = "Deliver Items to {target}",
-            CHEST = "Deliver Items Off",
+            CHEST = "Drop Items Off",
         },
+
+		WHISTLE = "Call Woby", --can expand to table if other characters want to use whistle action
     },
 
 	WOBY_COMMANDS =
@@ -1110,9 +1105,11 @@ STRINGS =
 		SHRINK = "Transform",
 		PICKUP = "Retrieving (on/off)",
 		FORAGING = "Foraging (on/off)",
-		WORKING = "Hard-headed (on/off)",
+		WORKING = "Helping Horns (on/off)",
 		SPRINTING = "Sprinting (on/off)",
 		SHADOWDASH = "Umbral Dash (on/off)",
+		REMEMBERCHEST = "Mark Spot",
+		COURIER = "Deliver",
 	},
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -15301,7 +15298,7 @@ STRINGS.SKILLTREE = {
         WALTER_AMMO_LOCK_DESC = "Learn 2 Ammo skills to unlock.",
 
         WALTER_AMMO_EFFICIENCY_TITLE = "Ammo Smith",
-        WALTER_AMMO_EFFICIENCY_DESC = "Learn how to craft ammo more efficiently for better yields, and craft ammo faster.",
+        WALTER_AMMO_EFFICIENCY_DESC = "Learn how to craft ammo faster and more efficiently for better yields.",
 
         WALTER_AMMO_BAG_TITLE = "Ammo Hoarder",
         WALTER_AMMO_BAG_DESC = "Learn how to craft an Ammo Pouch for carrying your excess ammo.",
@@ -15318,7 +15315,7 @@ STRINGS.SKILLTREE = {
         -- CAMPING
 
         WALTER_CAMP_ROPE_TITLE = "Twine Twirler",
-        WALTER_CAMP_ROPE_DESC = "Learn how to craft rope more efficiently.",
+        WALTER_CAMP_ROPE_DESC = "Learn how to craft rope faster and more efficiently at a lower cost.",
 
         WALTER_CAMP_WALTERHAT_TITLE = "Pioneer's Panache",
         WALTER_CAMP_WALTERHAT_DESC = "Improves Pinetree Pioneer Hat stats, including reduction to the sanity loss when getting hurt.",
@@ -15327,20 +15324,18 @@ STRINGS.SKILLTREE = {
         WALTER_CAMP_WOBYTREAT_DESC = "Learn how to craft Woby Snacks, a non-perishable food for Woby.",
 
         WALTER_CAMP_FIRSTAID_TITLE = "Field Medic",
-        WALTER_CAMP_FIRSTAID_DESC = "Learn how to use healing items more effectively, and learn how to craft the Flutter Strip.",
+        WALTER_CAMP_FIRSTAID_DESC = "Learn how to use healing items faster and with a 50% bonus to their effects, and learn how to craft the Flutter Strip.",
 
         WALTER_CAMP_FIRE_TITLE = "Campfire Enthusiast",
-        WALTER_CAMP_FIRE_DESC = "Learn how to craft the Portable Campfire. Improve storytelling around any campfire.",
+        WALTER_CAMP_FIRE_DESC = "Learn how to craft the Portable Campfire, and improve storytelling around any campfire.",
 
-        WALTER_CAMP_WOBYHOLDER_TITLE = "Let's Rack and Roll",
+        WALTER_CAMP_WOBYHOLDER_TITLE = "Let's Rack 'n' Roll",
         WALTER_CAMP_WOBYHOLDER_DESC = "Woby's backpack will get a drying rack attachment.",
 
-        WALTER_CAMP_LOCK_DESC = "Learn 3 Camping skills to unlock.",
-        WALTER_CAMP_LOCK_DESC_TEMP_DO_NOT_TRANSLATE = "This skill is a work in progress and is temporarily disabled.\nLearn 3 Camping skills to unlock.",
+        WALTER_CAMP_LOCK_DESC = "Learn 3 Scouting skills to unlock.",
 
         WALTER_CAMP_WOBYCOURIER_TITLE = "Woby Here, Woby There",
-        WALTER_CAMP_WOBYCOURIER_DESC = "Send Woby to another player, or to drop items off at a designated chest.",
-        WALTER_CAMP_WOBYCOURIER_DESC_TEMP_DO_NOT_TRANSLATE = "This skill is a work in progress and is temporarily disabled.\nSend Woby to another player, or to drop items off at a designated chest.",
+        WALTER_CAMP_WOBYCOURIER_DESC = "Send Woby to another player, or to drop off items at chests near a designated location.",
 
         -- SLINGSHOT
 
@@ -15348,41 +15343,41 @@ STRINGS.SKILLTREE = {
 		WALTER_SLINGSHOT_MODDING_DESC = "Learn to craft the Slingshot Field Kit and some basic parts for customizing your Slingshot.",
 
 		WALTER_SLINGSHOT_HANDLES_TITLE = "Advanced Grips",
-		WALTER_SLINGSHOT_HANDLES_DESC = "Learn to craft advanced grips that improves the firing rate of a Slingshot and may have additional bonus effects.",
+		WALTER_SLINGSHOT_HANDLES_DESC = "Learn to craft advanced grips that improve the firing rate of a Slingshot, and may have additional bonus effects.",
 
 		WALTER_SLINGSHOT_BANDS_TITLE = "Advanced Bands",
-		WALTER_SLINGSHOT_BANDS_DESC = "Learn to craft advanced bands that improves the firing distance of a Slingshot and may have additional bonus effects.",
+		WALTER_SLINGSHOT_BANDS_DESC = "Learn to craft advanced bands that improve the firing distance of a Slingshot, and may have additional bonus effects.",
 
 		WALTER_SLINGSHOT_FRAMES_TITLE = "Advanced Frames",
-		WALTER_SLINGSHOT_FRAMES_DESC = "Learn to craft advanced frames that improves the Slingshot with additional bonus effects.",
+		WALTER_SLINGSHOT_FRAMES_DESC = "Learn to craft advanced frames that add a secondary alternate Slingshot attack, and may have additional bonus effects.",
 
         -- WOBY
 
-        WALTER_WOBY_ENDURANCE_TITLE = "Endear-ance",
-        WALTER_WOBY_ENDURANCE_DESC = "All hunger costs are reduced by 20% for our beloved Woby, and she can run at higher speed (+1).",
+        WALTER_WOBY_ENDURANCE_TITLE = "Pep Pup",
+        WALTER_WOBY_ENDURANCE_DESC = "Woby gains +1 speed when running or sprinting, and all hunger costs are reduced by 20%.",
 
-        WALTER_WOBY_TASKAID_TITLE = "Hard-headed",
-        WALTER_WOBY_TASKAID_DESC = "Woby will use her seriously sturdy skull to assist in chopping and mining.",
+        WALTER_WOBY_TASKAID_TITLE = "Helping Horns",
+        WALTER_WOBY_TASKAID_DESC = "Woby will use her hardy horns to assist in chopping and mining.",
 
         WALTER_WOBY_FORAGING_TITLE = "Furry Forager",
-        WALTER_WOBY_FORAGING_DESC = "Woby will assist in foraging for the same items that you are foraging.",
+        WALTER_WOBY_FORAGING_DESC = "Woby will forage alongside you, picking one extra food item from the same plant you are harvesting.",
 
         WALTER_WOBY_ITEMFETCHER_TITLE = "Roaming Retriever",
-        WALTER_WOBY_ITEMFETCHER_DESC = "Woby learns how to collect items for her pack, and retrieve ammo for you.",
+        WALTER_WOBY_ITEMFETCHER_DESC = "Woby will collect items for her backpack and retrieve ammo for you.",
 
         WALTER_WOBY_LOCK_DESC = "Learn 2 Woby skills to unlock.",
         
         WALTER_WOBY_SPRINT_TITLE = "Scruffy Sprinter",
-        WALTER_WOBY_SPRINT_DESC = "After Woby is running for 3 seconds while mounted, she will start sprinting at a higher fixed speed until interrupted.",
+        WALTER_WOBY_SPRINT_DESC = "After Woby runs for 3 seconds while mounted, she will start sprinting at a higher fixed speed until interrupted.",
 
         WALTER_WOBY_DASH_TITLE = "Dashing Doggie",
-        WALTER_WOBY_DASH_DESC = "Woby dashes on command (double tap/click directional control or mouse).",
+        WALTER_WOBY_DASH_DESC = "Woby dashes on command by double tapping any movement controls.",
 
         WALTER_WOBY_LUNAR_LOCK_DESC = "Find and defeat the Celestial Champion and have no Shadow Allegiance Skills to unlock.",
         WALTER_WOBY_SHADOW_LOCK_DESC = "Find and defeat the Ancient Fuelweaver and have no Lunar Allegiance Skills to unlock.",
 
         WALTER_WOBY_LUNAR_TITLE = "Lunar Woby",
-        WALTER_WOBY_LUNAR_DESC = "After dashing, Woby automatically sprints at higher speed (+1). When lunar powered and not in the caves, or if she's in a lunar powered area, there is no additional hunger drain for sprinting or dashing.",
+        WALTER_WOBY_LUNAR_DESC = "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightement, she has no additional hunger drain for sprinting or dashing.",
 
         WALTER_WOBY_SHADOW_TITLE = "Shadow Woby",
         WALTER_WOBY_SHADOW_DESC = "Woby's dash becomes a short distance teleport.",
@@ -15501,8 +15496,7 @@ STRINGS.SKILLTREE = {
         WENDY_SISTURN_2_TITLE = "Blessed Sisturn II",
         WENDY_SISTURN_2_DESC = "Wendy's resistance to scary things is increased, and she grants some of that confidence to others nearby.",
         WENDY_SISTURN_3_TITLE = "Blessed Sisturn III",
-        WENDY_SISTURN_3_DESC = "Wendy learns a unique property of Lune Tree Blossoms, thinning the veil between worlds.\nAbigail's presence becomes stronger, giving her more resistance to the Giants of the Constant like the rest of the survivors.",
-        WENDY_SISTURN_3_DESC = "Lune Tree Blossoms draw Abigail's humanity closer to the Constant.\nShe becomes more resistance to the Giants like the rest of the survivors, but her ghostly healing effects are slowed while she is summoned.",        
+        WENDY_SISTURN_3_DESC = "Lune Tree Blossoms draw Abigail's humanity closer to the Constant.\nShe becomes more resistant to the Giants like the rest of the survivors, but her ghostly healing effects are slowed while she is summoned.",        
 
         WENDY_GHOSTCOMMAND_1_TITLE = "Team Spirit I",
         WENDY_GHOSTCOMMAND_1_DESC = "Wendy can remind Abigail she's a ghost, able to be unseen by her enemies to escape bad situations.",
@@ -16779,7 +16773,7 @@ STRINGS.SCRAPBOOK = {
         MOONROCKSEED = "Standing near this device will provide the survivor with new items they can craft.",
         VOIDCLITHSCYTHE = "This tool will Reap harvestables in an area around it, not just a single item.",
         ANTLIONSINKHOLE = "Survivors will be slowed trying to walk across these.\n\nSomething must be making the ground weaker.",
-        BEARGERFUR_SACK = "A carriable container with 6 slots that can hold prepared food.\n\nThe food stored in it will be preserved for a long time.",
+        BEARGERFUR_SACK = "A carryable container with 6 slots that can hold prepared food.\n\nThe food stored in it will be preserved for a long time.",
         DEERCLOPSEYEBALL_SENTRYWARD = "Makes the surrounding environment cool, if holding a Deerclops Eyeball.\n\nWildfires will not occur nearby, also preventing plant withering. It affects how quickly things dry out, including soil moisture, and how quickly they perish.\n\nCreates Mini Glaciers around itself over time.",
         ARCHIVESWITCH = "How many Survivors does it take to change a lightbulb?",
         ORCHESTRINA = "Found deep in the long-forgotten archives of an ancient civilization, this noteworthy device is as melodious as it is mysterious. Solving its riddle might just be the key to unlocking a wellspring of ancient knowledge.",
@@ -16801,7 +16795,7 @@ STRINGS.SCRAPBOOK = {
         SPEAR_WATHGRITHR_LIGHTNING = "Does electrical damage which does more damage to wet targets.",
         SPEAR_WATHGRITHR_LIGHTNING_CHARGED = "Does electrical damage which does more damage to wet targets.\n\nIncreases movement speed by 20% when held.\n\nIt can only be equipped by Wigfrids who have the \"Elding Spear Enhancement II\" skill.",
         WATHGRITHR_SHIELD = "Can be used to block attacks. Successfully blocking an attack decreases the block cooldown.\n\nIt can only be equipped by Wigfrids who have the \"Battle Rönd\" skill.",
-        BATTLESONG_CONTAINER = "A carriable container with 8 slots that can hold Battle Songs and Battle Stingers.",
+        BATTLESONG_CONTAINER = "A carryable container with 8 slots that can hold Battle Songs and Battle Stingers.",
         EMBERLIGHT = "Works like a campfire for its duration, creating light and heat and will ignite things nearby. It can also be used to cook food.",
         BOOTLEG = "Can be thrown into the sea to create a pair of connected Whirlportals. Boats sailing close to them will be brought to the other entrance.",
         OCEANWHIRLPORTAL = "An ocean portal that allows boats to travel long distances.",
@@ -16869,18 +16863,18 @@ STRINGS.SCRAPBOOK = {
 
         -- Meta 5
 
-        BANDAGE_BUTTERFLYWINGS = "Heals 30 Health.",
-        WOBY_TREAT = "Restores 3 times more hunger when eaten by Woby.",
-        ELIXIR_CONTAINER = "A carriable container with 9 slots that can hold Elixirs.",
-        GHOSTFLOWERHAT = "When equipped, alows Wendy to drink Elixirs herlself.",
+        BANDAGE_BUTTERFLYWINGS = "Heals 24 health.\n\nIf used by Walter and he has learned the Field Medic skill, it will heal an additional 12 health, also restoring 10 sanity.",
+        WOBY_TREAT = "Restores three times more hunger when eaten by Woby.",
+        ELIXIR_CONTAINER = "A carryable container with 9 slots that can hold Elixirs.",
+        GHOSTFLOWERHAT = "When equipped, allows Wendy to drink Elixirs herself.",
         -- GHOSTLYELIXERLUNAR = "TODO",
         -- GHOSTLYELIXERREVIVE = "TODO",
         -- GHOSTLYELIXERSHADOW = "TODO",
-        GRAVEGUARD_GHOST = "Where they may appear, Evil Flowers tend to grow near.",
-        GRAVEURN = "It's used to move Headstones.",
+        GRAVEGUARD_GHOST = "Where they appear, Evil Flowers tend to grow nearby.",
+        GRAVEURN = "It is used to move Headstones.",
         PORTABLEFIREPIT_ITEM = "A portable campfire that stays lit even when packed!",
         SLINGSHOT_BAND_MIMIC = "It greatly increases how far you can shoot. It sometimes saves ammo by launching a mimic version of it.",
-        SLINGSHOT_BAND_PIGSKIN = "It fairly increases how far you can shoot.",
+        SLINGSHOT_BAND_PIGSKIN = "It moderately increases how far you can shoot.",
         SLINGSHOT_BAND_TENTACLE = "It greatly increases how far you can shoot. It can be possessed by a heartless monster...",
         -- SLINGSHOT_FRAME_BONE = "TODO",
         -- SLINGSHOT_FRAME_GEMS = "TODO",
@@ -16890,18 +16884,18 @@ STRINGS.SCRAPBOOK = {
         -- SLINGSHOT_HANDLE_SILK = "TODO",
         -- SLINGSHOT_HANDLE_STICKY = "TODO",
         -- SLINGSHOT_HANDLE_VOIDCLOTH = "TODO",
-        SLINGSHOTAMMO_CONTAINER = "A carriable container with 6 slots that can hold Slingshot Rounds.",
-        SLINGSHOTAMMO_DREADSTONE = "It has 50% chance to not break on impact.",
+        SLINGSHOTAMMO_CONTAINER = "A carryable container with 6 slots that can hold Slingshot Rounds.",
+        SLINGSHOTAMMO_DREADSTONE = "It has a 50% chance to not break on impact.",
         SLINGSHOTAMMO_GELBLOB = "It attaches an Icker blob to your target, greatly slowing it down.",
-        SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger a explosion, doing doubled damage in a large area.",
+        SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger an explosion, dealing double damage in a large area.",
         SLINGSHOTAMMO_HONEY = "It slows down your target.",
-        SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage overtime, up to 7 times.",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a change to spawn a Brightshade Vine on impact, dealing damage to your target.",
-        SLINGSHOTAMMO_MOONGLASS = "It does damage in a medium area around its target.",
+        SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage over time, up to 7 times.",
+        SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a chance to spawn a Brightshade Vine on impact, dealing damage to your target.",
+        SLINGSHOTAMMO_MOONGLASS = "It deals damage in a medium area around its target.",
         SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage.",
-        SLINGSHOTAMMO_SCRAPFEATHER = "It does electrical damage, which does more damage to wet targets.",
-        SLINGSHOTAMMO_STINGER = "It does damage in a small area around its target.",
-        SLINGSHOTMODKIT = "Allows you to customize your Slingshot, making it personal.",
+        SLINGSHOTAMMO_SCRAPFEATHER = "It deals electrical damage, which does more damage to wet targets.",
+        SLINGSHOTAMMO_STINGER = "It deals damage in a small area around its target.",
+        SLINGSHOTMODKIT = "Allows you to customize your Slingshot, making it personal.",  
     },
 
     -- Full name: "{name} Scrapbook Page"

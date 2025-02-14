@@ -342,7 +342,7 @@ return{
             NOTMASTERCHEF = "That belongs to Warly.",
             NOTAMERM = "There is nothing for me in there.",
             NOTSOULJARHANDLER = "Not for me.",
-            RESTRICTED = "Can’t always get what you want. Some never do.",
+            RESTRICTED = "Can't always get what you want. Some never do.",
 		},
         SADDLE =
         {
@@ -375,7 +375,7 @@ return{
 			INUSE = "Can I use that after you?",
             NOTMASTERCHEF = "That belongs to Warly.",
             NOTSOULJARHANDLER = "Not for me.",
-            RESTRICTED = "Can’t always get what you want. Some never do.",
+            RESTRICTED = "Can't always get what you want. Some never do.",
 		},
         TEACH =
         {
@@ -5469,8 +5469,8 @@ return{
         MERM_ARMORY_UPGRADED = "\"Mermfolk Ownlee\"... hmph. How childish.",
         MERM_TOOLSHED = "Father had a tool shed, though he hardly used it.",
         MERM_TOOLSHED_UPGRADED = "Father had a tool shed, though he hardly used it.",
-        MERMARMORHAT = "I’m not a merm.",
-        MERMARMORUPGRADEDHAT = "I’m not a merm.",
+        MERMARMORHAT = "I'm not a merm.",
+        MERMARMORUPGRADEDHAT = "I'm not a merm.",
         MERM_TOOL = "It's only slightly better than useless.",
         MERM_TOOL_UPGRADED = "It's only slightly better than useless.",
 
@@ -5557,7 +5557,7 @@ return{
             EMPTY = "Perhaps like consumes like.",
             BURNT = "Inevitable, really.",
         },
-        YOTS_WORM = "It’s actually quite beautiful.",
+        YOTS_WORM = "It's actually quite beautiful.",
         YOTS_LANTERN_POST = 
         {
             GENERIC = "It does seem to bring some cheer.",

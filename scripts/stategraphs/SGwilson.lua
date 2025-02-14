@@ -484,7 +484,18 @@ local function OwnsPocketRummageContainer(inst, item)
 		return true
 	end
 	local mount = inst.components.rider and inst.components.rider:GetMount() or nil
-	return owner == mount or item == mount
+	if owner == mount or item == mount then
+		return true
+	end
+end
+
+local function IsHoldingPocketRummageActionItem(holder, item)
+	local owner = item.components.inventoryitem and item.components.inventoryitem.owner or nil
+	return owner == holder
+		or (	--Allow linked containers like woby's rack	
+				owner.components.inventoryitem == nil and
+				owner.entity:GetParent() == holder
+			)
 end
 
 local function ClosePocketRummageMem(inst, item)
@@ -517,10 +528,8 @@ local function CheckPocketRummageMem(inst)
 				local buffaction = inst:GetBufferedAction()
 				if buffaction and
 					(	buffaction.action == ACTIONS.BUILD or
-						(	buffaction.invobject and
-							buffaction.invobject.components.inventoryitem and
-							buffaction.invobject.components.inventoryitem:IsHeldBy(item)
-						)
+						(buffaction.action == ACTIONS.DROP and buffaction.invobject ~= item) or
+						(buffaction.invobject and IsHoldingPocketRummageActionItem(item, buffaction.invobject))
 					)
 				then
 					stayopen = true
@@ -1289,9 +1298,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GRAVEDIG, "graveurn_in"),
 
 	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
-    ActionHandler(ACTIONS.DIRECTCOURIER_SETCHEST, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
-    ActionHandler(ACTIONS.DIRECTCOURIER, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
-    ActionHandler(ACTIONS.DIRECTCOURIER_MAP, "dolongaction"), -- FIXME(JBK): Walter ST: Placeholder.
+	ActionHandler(ACTIONS.WHISTLE, "fingerwhistle"),
 }
 
 local events =
@@ -6967,7 +6974,7 @@ local states =
 
     State{
         name = "doshortaction",
-		tags = { "doing", "busy", "keepchannelcasting" },
+		tags = { "doing", "busy", "keepchannelcasting", "keep_pocket_rummage" },
 
         onenter = function(inst, silent)
             inst.components.locomotor:Stop()
@@ -6996,6 +7003,7 @@ local states =
                     inst:PerformBufferedAction()
                 end
             end),
+			FrameEvent(8, TryResumePocketRummage),
         },
 
         ontimeout = function(inst)
@@ -7008,6 +7016,7 @@ local states =
             (inst.components.playercontroller == nil or inst.components.playercontroller.lastheldaction ~= inst.bufferedaction) then
                 inst:ClearBufferedAction()
             end
+			CheckPocketRummageMem(inst)
         end,
     },
 
@@ -22925,6 +22934,40 @@ local states =
 				inst.AnimState:SetMultColour(1, 1, 1, 1)
 			end
 			inst:EnableWobySprintTrail(false)
+		end,
+	},
+
+	State{
+		name = "fingerwhistle",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("fingerwhistle_pre")
+			inst.AnimState:PushAnimation("fingerwhistle", false)
+			inst.sg.statemem.action = inst:GetBufferedAction()
+		end,
+
+		timeline =
+		{
+			FrameEvent(6, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("meta5/walter/finger_whistle") end),
+			FrameEvent(17, function(inst)
+				inst:PerformBufferedAction()
+			end),
+			FrameEvent(37, function(inst)
+				inst.sg:GoToState("idle", true)
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.bufferedaction == inst.sg.statemem.action and
+				(inst.components.playercontroller == nil or inst.components.playercontroller.lastheldaction ~= inst.bufferedaction)
+			then
+				inst:ClearBufferedAction()
+			end
 		end,
 	},
 }

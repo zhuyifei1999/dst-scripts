@@ -817,19 +817,45 @@ return{
 	},
 	ANNOUNCE_WOBY_RETURN =
 	{
-		"Wooooooby!","Come back, girl!","Woby, back to me!"
+		"Wooooooby!",
+        "Come here, girl!",
+        "Woby, over here!",
+        "Get over here, silly girl!",
+        "Hurry up, Wobers!",
+        "Shake a leg, Wobes!",
 	},
 	ANNOUNCE_WOBY_SIT =
 	{
-		"Woby, stay!","Stay, girl!","Take a break, Wobes!"
+		"Woby, stay!",
+        "Stay, girl!",
+        "Take a break, Wobers!",
+        "Stay, Wobes! That's it.",
+        "Paws here Woby! Hehe.",
 	},
 	ANNOUNCE_WOBY_FOLLOW =
 	{
-		"Woby, come!","Follow me, girl!","With me, Wobes!"
+		"Woby, come!",
+        "Follow me, girl!",
+        "With me, Wobes!",
+        "Come on, Wobers! Let's go!",
+        "Keep up, Woby!",
 	},
 	ANNOUNCE_WOBY_PRAISE =
 	{
-		"Good girl!","Thanks, Woby!","Atta girl, Wobes!","You're the best, Woby!","Yay, Woby!","Awww... sweet girl, Wobes.","Nice one, girl!"
+		"Good girl!",
+        "Thanks, Woby!",
+        "Atta girl, Wobers!",
+        "You're the best, Woby!",
+        "Yay, Woby!",
+        "Awww... sweet girl, Wobes.",
+        "Nice one, girl!",
+        "Who's the smartest, Wobers? Yup, it's you!",
+        "I love you, silly girl!",
+        "You're the best best friend, Woby.",
+        "I'm so proud of you!",
+        "Alright, Wobes!",
+        "Woby the Wonderdog!",
+        "Woah, Woby! Hehe.",
 	},
 	ANNOUNCE_WOBY_FORAGE =
 	{
@@ -5608,8 +5634,8 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Oh yeah. Here we go.",
 
 		WOBY_TREAT = "Woby's favourite!",
-		BANDAGE_BUTTERFLYWINGS = "It’s made from butterfly wings! Cute! And a little sad.",
-		PORTABLEFIREPIT_ITEM = "Woby, we’re geniuses!",
+		BANDAGE_BUTTERFLYWINGS = "It's made from butterfly wings! Cute! And a little sad.",
+		PORTABLEFIREPIT_ITEM = "Woby, we're geniuses!",
         SLINGSHOTAMMO_CONTAINER = "A good Pinetree Pioneer always packs extra ammo!",
 
         ELIXIR_CONTAINER = "Contents not safe for human consumption!",

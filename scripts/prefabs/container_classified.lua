@@ -304,7 +304,9 @@ local function OnStackItemDirty(inst, item)
         src_pos = item.replica.inventoryitem:GetPickupPos(),
     }
     item:PushEvent("stacksizechange", data)
-    if (data.src_pos ~= nil or not IsBusy(inst)) and
+    --V2C: commented out the "or not IsBusy(inst)" condition because it
+	--     was triggering UI sounds when decreasing stacksize from use.
+	if (data.src_pos --[[or not IsBusy(inst)]]) and
         inst._parent ~= nil and
         inst._parent.replica.inventoryitem ~= nil and
         inst._parent.replica.inventoryitem:IsHeldBy(ThePlayer) then

@@ -218,7 +218,8 @@ local function swapfxfn()
 	inst.entity:AddFollower()
 	inst.entity:AddNetwork()
 
-	inst:AddTag("FX")
+	inst:AddTag("decor")
+	inst:AddTag("NOCLICK")
 
 	inst.AnimState:SetBank("woby_rack")
 	inst.AnimState:SetBuild("woby_rack")
@@ -242,13 +243,14 @@ local function swapfxfn()
 	end
 
 	if not TheNet:IsDedicated() then
-		_ResetRandomizer(_rnd1)
 		for i, v in ipairs(inst.slots) do
 			v.fx = CreateSlotFx()
 			v.fx.entity:SetParent(inst.entity)
 			v.fx.Follower:FollowSymbol(inst.GUID, "swap_slot"..tostring(i), 0, 0, 0, true)
-			v.fx.AnimState:PlayAnimation("idle_sway"..tostring(_GetNextRandomizer(_rnd1)), true)
-			v.fx.AnimState:SetFrame(math.random(v.fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+			v.fx.AnimState:PlayAnimation("idle_sway"..tostring(i), true)
+			if i == 2 then
+				v.fx.AnimState:SetFrame(31)
+			end
 		end
 		inst.components.highlightchild:SetOnChangeOwnerFn(OnOwnerChanged)
 		inst.components.colouraddersync:SetColourChangedFn(OnColourChanged)

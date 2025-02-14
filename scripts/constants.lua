@@ -2794,7 +2794,9 @@ CHARLIERESIDUE_MAP_ACTIONS = {
 
 MINIMAP_DECORATION_PRIORITY = 50 -- NOTES(JBK): Nothing should go above this to maintain the minimap UI space.
 
-WOBYCOURIER_NO_CHEST_COORD = -32767 -- Lowest net_shortint.
+WOBYCOURIER_NO_CHEST_COORD = -32767 -- Way off of any normal sized map.
+WOBYCOURIER_MIN_DIST_TO_PLAYER_SQ = 16 -- 4 * 4
+CONTAINER_AUTOCLOSE_DISTANCE = 3
 
 -- Constants to reduce network overhead.
 CLIENTAUTHORITATIVESETTINGS = {

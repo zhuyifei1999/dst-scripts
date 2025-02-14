@@ -56,6 +56,7 @@ local function IsBusy_Server(inst)
 	return inst._task ~= nil
 		or inst._parent == nil
 		or inst._parent._PostActivateHandshakeState_Server ~= POSTACTIVATEHANDSHAKE.READY
+		or inst:IsOutForDelivery()
 end
 
 local function OnActivateSkill(inst, skill)
@@ -109,6 +110,11 @@ local function OnRemovePet(inst, pet)
 	end
 end
 
+local function NetworkWobyCourier(player)
+    if player.components.wobycourier then
+        player.components.wobycourier:NetworkLocation()
+    end
+end
 local function AttachClassifiedToPetOwner(inst, player)
 	assert(inst._pet)
 	assert(inst._parent == nil)
@@ -125,6 +131,7 @@ local function AttachClassifiedToPetOwner(inst, player)
 	else
 		inst:ListenForEvent("ms_skilltreeinitialized", inst._onskilltreeinitialized, player)
 	end
+    player:DoTaskInTime(0, NetworkWobyCourier) -- Delay a frame for the classified to sync.
 end
 
 --This is for transfering to another prefab, ie. pets that switch prefabs when transforming
@@ -170,6 +177,41 @@ local function ToggleSkillCommand_Server(inst, name)
 	return false
 end
 
+local function NotifyWheelIsOpen_Server(inst, open)
+	if open then
+		if not inst.isclientwheelopen then
+			inst.isclientwheelopen = true
+			if inst._pet.brain then
+				inst._pet.brain:ForceUpdate()
+			end
+		end
+		inst.recall = false
+	elseif inst.isclientwheelopen then
+		inst.isclientwheelopen = false
+	end
+end
+
+local function IsClientWheelOpen(inst)
+	if inst.isclientwheelopen and not (inst._parent and inst._pet:IsNear(inst._parent, 30)) then
+		--In case we failed to receive client close wheel RPC
+		inst.isclientwheelopen = false
+	end
+	return inst.isclientwheelopen
+end
+
+local function ClearBrainActions(inst)
+	if inst._pet.components.locomotor and inst._pet.components.locomotor.bufferedaction then
+		inst._pet.components.locomotor:Stop()
+		inst._pet.components.locomotor:Clear()
+	end
+
+	inst._pet:ClearForagerQueue()
+
+	if inst._pet.brain then
+		inst._pet.brain:ForceUpdate()
+	end
+end
+
 local CmdFns_Server =
 {
 	[WobyCommon.COMMANDS.PET] =			function(inst) return DoAction_Server(inst, ACTIONS.PET) end,
@@ -183,11 +225,15 @@ local CmdFns_Server =
 	end,
 	[WobyCommon.COMMANDS.SIT] = function(inst)
 		if ToggleSkillCommand_Server(inst, "sit") then
+            inst:SendCourierWoby(nil)
 			if inst.sit:value() then
+                inst._pet.components.follower:DisableLeashing()
 				if inst._parent then
 					inst._parent:PushEvent("tellwobysit", inst._pet)
 				end
+				ClearBrainActions(inst)
 			else
+                inst._pet.components.follower:EnableLeashing()
 				if inst._parent then
 					inst._parent:PushEvent("tellwobyfollow", inst._pet)
 				end
@@ -212,6 +258,19 @@ local CmdFns_Server =
 		return false
 	end,
 	[WobyCommon.COMMANDS.SHADOWDASH] =	function(inst) return ToggleSkillCommand_Server(inst, "shadowdash") end,
+	[WobyCommon.COMMANDS.REMEMBERCHEST] = function(inst)
+        if inst._parent and inst._pet and
+            inst._parent.components.skilltreeupdater and inst._parent.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
+            inst._parent.components.wobycourier then
+            local cx, cy, cz = inst._pet.Transform:GetWorldPosition()
+            return inst._parent.components.wobycourier:StoreXZ(cx, cz)
+        end
+        return false
+	end,
+
+	--Notification that client has opened/closed spell wheel
+	[WobyCommon.COMMANDS.OPENWHEEL] =	function(inst) NotifyWheelIsOpen_Server(inst, true) end,
+	[WobyCommon.COMMANDS.CLOSEWHEEL] =	function(inst) NotifyWheelIsOpen_Server(inst, false) end,
 }
 
 local function ExecuteCommand_Server(inst, cmd)
@@ -223,6 +282,188 @@ local function ExecuteCommand_Server(inst, cmd)
 	return false
 end
 
+local function IsRecalled(inst)
+	return inst.recall
+end
+
+local function RecallWoby(inst, silent)
+	inst.recall = true
+    inst:SendCourierWoby(nil)
+	if inst.sit:value() then
+		inst.sit:set(false)
+        inst._pet.components.follower:EnableLeashing()
+		if inst._pet.sg and inst._pet.sg:HasStateTag("sitting") then
+			inst._pet.sg.currentstate:HandleEvent(inst._pet.sg, "stop_sitting")
+		end
+	else
+		ClearBrainActions(inst)
+	end
+	if not silent and inst._parent then
+		inst._parent:PushEvent("callwoby", inst._pet)
+	end
+end
+
+local function CancelRecall(inst)
+	inst.recall = false
+end
+
+local function GetCourierData(inst)
+    return inst.courierdata
+end
+
+local WOBYCOURIER_TICK_PERIOD = 1 -- For math.
+local function CourierWobyIsStuck(_pet, courierdata)
+    if not _pet.sg:HasStateTag("moving") then
+        courierdata.stuckcounter = nil -- Not moving so reset counter.
+        return false
+    end
+
+    local distance_from_last = (courierdata.currentpos - courierdata.lastpos):Length()
+    local speed = distance_from_last / WOBYCOURIER_TICK_PERIOD
+    if speed < 1 then
+        courierdata.stuckcounter = (courierdata.stuckcounter or 0) + 1
+        if courierdata.stuckcounter >= 3 then
+            courierdata.stuckcounter = nil
+            return true
+        end
+    end
+
+    return false
+end
+
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+local function CourierWobyDoTeleport(_pet, courierdata)
+    if courierdata.onspawnfaderout then
+        _pet:RemoveEventCallback("spawnfaderout", courierdata.onspawnfaderout)
+        courierdata.onspawnfaderout = nil
+        _pet.components.spawnfader:FadeIn()
+    end
+    local pt = courierdata.destpos
+    if IsAnyPlayerInRange(pt.x, pt.y, pt.z, 64) then
+        for radius = PLAYER_CAMERA_SEE_DISTANCE, 4, -4 do
+            local offset = FindWalkableOffset(pt, math.random() * TWOPI, radius, math.floor(radius * 0.25), false, true, NoHoles)
+            if offset ~= nil then
+                offset.x = offset.x + pt.x
+                offset.z = offset.z + pt.z
+                if IsAnyPlayerInRange(offset.x, pt.y, offset.z, 64) then
+                    pt = offset
+                    break
+                end
+            end
+        end
+    end
+    _pet.Transform:SetPosition(pt.x, pt.y, pt.z)
+end
+
+local function CourierWobyShouldTeleport(_pet, courierdata)
+    if _pet:IsAsleep() then
+        return true, true
+    end
+
+    if CourierWobyIsStuck(_pet, courierdata) then
+        return true, false
+    end
+
+    if courierdata.dofades then
+        local distance_from_start = (courierdata.currentpos - courierdata.startpos):Length()
+        if distance_from_start > TUNING.SKILLS.WALTER.COURIER_FADE_DIST then
+            return true, false
+        end
+    end
+
+    return false, false
+end
+
+local function CourierWobyTick(_pet, courierdata)
+    courierdata.currentpos = _pet:GetPosition()
+    local distance_from_dest = (courierdata.currentpos - courierdata.destpos):Length()
+    if distance_from_dest < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS then
+        -- We have arrived.
+        courierdata.teleported = true
+        if courierdata.ischest then
+            if _pet.woby_commands_classified.outfordelivery:value() and _pet:IsAsleep() then
+                WobyCommon.WobyCourier_ForceDelivery(_pet, courierdata)
+            end
+            if not _pet.woby_commands_classified.outfordelivery:value() then
+                courierdata.deliveredreturncounter = (courierdata.deliveredreturncounter or 0) + 1
+                if courierdata.deliveredreturncounter >= 5 then
+                    courierdata.deliveredreturncounter = nil
+                    -- Finished delivering and should return.
+					_pet.woby_commands_classified:RecallWoby(true) -- Clears courierdata link.
+                    return
+                end
+            end
+        else
+            -- Arrived at person do nothing and wait for Walter to call back.
+			_pet.woby_commands_classified.outfordelivery:set(false)
+        end
+    else
+        if not courierdata.teleported then
+            local shouldteleport, shouldteleportinstantly = CourierWobyShouldTeleport(_pet, courierdata)
+            if courierdata.doimmediatefadeteleport then
+                shouldteleport, shouldteleportinstantly = true, false
+                courierdata.doimmediatefadeteleport = nil
+            end
+            if shouldteleport then
+                courierdata.teleported = true
+                if shouldteleportinstantly then
+                    CourierWobyDoTeleport(_pet, courierdata)
+                else
+                    courierdata.onspawnfaderout = function()
+                        CourierWobyDoTeleport(_pet, courierdata)
+                    end
+                    _pet:ListenForEvent("spawnfaderout", courierdata.onspawnfaderout)
+                    _pet.components.spawnfader:FadeOut()
+                end
+            end
+        elseif courierdata.onspawnfaderout and _pet:IsAsleep() then
+            CourierWobyDoTeleport(_pet, courierdata)
+        end
+    end
+    courierdata.lastpos = courierdata.currentpos
+end
+
+local function SendCourierWoby(inst, data)
+    if inst.couriertask ~= nil then
+        inst.couriertask:Cancel()
+        inst.couriertask = nil
+    end
+    if inst.courierdata then
+        if inst.courierdata.onspawnfaderout then
+            inst._pet:RemoveEventCallback("spawnfaderout", inst.courierdata.onspawnfaderout)
+            inst.courierdata.onspawnfaderout = nil
+            _pet.components.spawnfader:FadeIn()
+        end
+    end
+    inst.courierdata = data
+    if inst.courierdata then
+        inst.courierdata.startpos = inst._pet:GetPosition()
+        inst.courierdata.currentpos = inst.courierdata.startpos
+        inst.courierdata.lastpos = inst.courierdata.startpos
+        local distance = (inst.courierdata.startpos - inst.courierdata.destpos):Length()
+        if distance > TUNING.SKILLS.WALTER.COURIER_FADE_DIST * 2 then
+            inst.courierdata.dofades = true
+        end
+        if inst._pet:GetCurrentPlatform() ~= nil then
+            inst.courierdata.doimmediatefadeteleport = true
+        end
+        inst.couriertask = inst._pet:DoPeriodicTask(WOBYCOURIER_TICK_PERIOD, inst.CourierWobyTick, nil, inst.courierdata)
+        inst.sit:set(true)
+        inst._pet.components.follower:DisableLeashing()
+        ClearBrainActions(inst)
+        if distance > TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS then
+            if inst._pet.sg and inst._pet.sg:HasStateTag("sitting") then
+                inst._pet.sg.currentstate:HandleEvent(inst._pet.sg, "stop_sitting")
+            end
+        end
+		inst.outfordelivery:set(true)
+	else
+		inst.outfordelivery:set(false)
+    end
+end
+
 --------------------------------------------------------------------------
 --Client interface
 --------------------------------------------------------------------------
@@ -231,6 +472,7 @@ local function IsBusy_Client(inst)
 	return inst._task ~= nil
 		or inst._parent == nil
 		or inst._parent._PostActivateHandshakeState_Client ~= POSTACTIVATEHANDSHAKE.READY
+		or inst:IsOutForDelivery()
 end
 
 local function ResetPreview(inst)
@@ -292,7 +534,11 @@ local CmdFns_Client =
 		end
 		return false
 	end,
-	[WobyCommon.COMMANDS.SHADOWDASH] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "shadowdash", cmd) end,
+	[WobyCommon.COMMANDS.SHADOWDASH] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "shadowdash", cmd) end,	
+	[WobyCommon.COMMANDS.REMEMBERCHEST] = function(inst, cmd)
+		SendRPCToServer(RPC.WobyCommand, cmd)
+		return true
+	end,
 }
 
 local function ExecuteCommand_Client(inst, cmd)
@@ -307,6 +553,10 @@ local function ExecuteCommand_Client(inst, cmd)
 	return false
 end
 
+local function NotifyWheelIsOpen_Client(inst, open)
+	SendRPCToServer(RPC.WobyCommand, open and WobyCommon.COMMANDS.OPENWHEEL or WobyCommon.COMMANDS.CLOSEWHEEL)
+end
+
 local function OnSprintingDirty(inst)
 	ResetPreview(inst)
 	if not inst:GetValue("sprinting")then
@@ -318,6 +568,12 @@ local function OnWobyDirty(inst)
 	if inst._parent and inst.woby:value() then
 		WobyCommon.SetupClientCommandWheelRefreshers(inst.woby:value(), inst._parent)
 	end
+end
+
+local function OnWobyCourierChestDirty(inst)
+    if inst._parent then
+        inst._parent:PushEvent("updatewobycourierchesticon")
+    end
 end
 
 local function OnEntityReplicated(inst)
@@ -353,6 +609,7 @@ local function ShouldForage(inst)		return GetValue(inst, "foraging")		end
 local function ShouldWork(inst)			return GetValue(inst, "working")		end
 local function ShouldSprint(inst)		return GetValue(inst, "sprinting")		end
 local function ShouldShadowDash(inst)	return GetValue(inst, "shadowdash")		end
+local function IsOutForDelivery(inst)	return inst.outfordelivery:value()		end
 
 --------------------------------------------------------------------------
 
@@ -363,6 +620,7 @@ local function RegisterNetListeners(inst)
 		inst:ListenForEvent("isdirty", ResetPreview)
 		inst:ListenForEvent("sprintingdirty", OnSprintingDirty)
 		inst:ListenForEvent("wobydirty", OnWobyDirty)
+        inst:ListenForEvent("chest_posdirty", OnWobyCourierChestDirty)
 
 		if inst.woby:value() then
 			OnWobyDirty(inst)
@@ -370,6 +628,9 @@ local function RegisterNetListeners(inst)
 		if not inst.sprinting:value() then
 			CancelTurboSprint(inst)
 		end
+        if inst.chest_posx:value() ~= WOBYCOURIER_NO_CHEST_COORD and inst.chest_posz:value() ~= WOBYCOURIER_NO_CHEST_COORD then
+            OnWobyCourierChestDirty(inst)
+        end
 	end
 end
 
@@ -409,6 +670,12 @@ local function fn()
 	inst.working = net_bool(inst.GUID, "woby_commands.working", "isdirty")
 	inst.sprinting = net_bool(inst.GUID, "woby_commands.sprinting", "sprintingdirty") -- attn: special handler!
 	inst.shadowdash = net_bool(inst.GUID, "woby_commands.shadowdash", "isdirty")
+	inst.outfordelivery = net_bool(inst.GUID, "woby_commands.outfordelivery")
+    -- NOTES(JBK): Put the chest position last since this does not change often.
+    inst.chest_posx = net_float(inst.GUID, "woby_commands.chest_posx", "chest_posdirty")
+    inst.chest_posz = net_float(inst.GUID, "woby_commands.chest_posz", "chest_posdirty")
+    inst.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
+    inst.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
 
 	--Delay net listeners until after initial values are deserialized
 	inst._task = inst:DoStaticTaskInTime(0, RegisterNetListeners)
@@ -422,6 +689,7 @@ local function fn()
 	inst.ShouldWork = ShouldWork
 	inst.ShouldSprint = ShouldSprint
 	inst.ShouldShadowDash = ShouldShadowDash
+	inst.IsOutForDelivery = IsOutForDelivery
 	--
 	inst.OnRemoveEntity = OnRemoveEntity
 
@@ -432,9 +700,14 @@ local function fn()
 		inst.OnEntityReplicated = OnEntityReplicated
 		inst.IsBusy = IsBusy_Client
 		inst.ExecuteCommand = ExecuteCommand_Client
+		inst.NotifyWheelIsOpen = NotifyWheelIsOpen_Client
 
 		return inst
 	end
+
+	inst.isclientwheelopen = false
+	inst.recall = false
+    --inst.courierdata = nil
 
 	--Server interface
 	inst.InitializePetInst = InitializePetInst
@@ -442,6 +715,14 @@ local function fn()
 	inst.DetachClassifiedFromPet = DetachClassifiedFromPet
 	inst.IsBusy = IsBusy_Server
 	inst.ExecuteCommand = ExecuteCommand_Server
+	inst.NotifyWheelIsOpen = NotifyWheelIsOpen_Server
+	inst.IsClientWheelOpen = IsClientWheelOpen
+	inst.IsRecalled = IsRecalled
+	inst.RecallWoby = RecallWoby
+	inst.CancelRecall = CancelRecall
+    inst.GetCourierData = GetCourierData
+    inst.SendCourierWoby = SendCourierWoby
+    inst.CourierWobyTick = CourierWobyTick
 
 	inst._onremovepet = function(pet) OnRemovePet(inst, pet) end
 	inst._onremoveplayer = function(player) OnRemovePlayer(inst, player) end

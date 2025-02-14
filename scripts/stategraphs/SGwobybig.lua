@@ -1,5 +1,6 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
+local WobyCommon = require("prefabs/wobycommon")
 
 local RANDOM_IDLES = { "bark_idle", "shake", "sit", "scratch" }
 
@@ -10,6 +11,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.WOBY_PICK, "dolongaction"),
     ActionHandler(ACTIONS.CHOP, "bash_jump"),
     ActionHandler(ACTIONS.MINE, "bash_jump"),
+    ActionHandler(ACTIONS.STORE, "dolongaction"),
 }
 
 local LONGACTION_DEFAULT_TIMEOUT = 1.5
@@ -30,8 +32,15 @@ local events=
         end
     end),
 
-    EventHandler("start_sitting", function(inst)
-        if not inst.sg:HasStateTag("sitting") and not inst.sg:HasStateTag("busy") then
+    EventHandler("start_sitting", function(inst, data)
+        if inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("sitting") then
+            return -- Busy and not in a sitting states.
+        end
+
+        if data.iscower and not inst.sg:HasStateTag("cower") then
+            inst.sg:GoToState("sitting_cower")
+
+        elseif not inst.sg:HasStateTag("sitting") or inst.sg:HasStateTag("cower") then
             inst.sg:GoToState("sitting")
         end
     end),
@@ -50,12 +59,14 @@ local states=
 
             if pushanim then
                 inst.AnimState:PushAnimation("idle_loop", true)
-            else
+			elseif inst.sg.mem.recentlytransformed and inst.sg.lasttags and inst.sg.lasttags["idle"] then
+				inst.AnimState:PlayAnimation("idle_loop_nodir", true)
+			else
                 inst.AnimState:PlayAnimation("idle_loop", true)
             end
 
+			inst.sg.mem.recentlytransformed = nil
             inst.sg:SetTimeout(2 + math.random())
-
         end,
 
         ontimeout=function(inst)
@@ -66,7 +77,6 @@ local states=
                 else
                     inst.sg:GoToState(RANDOM_IDLES[math.random(1, #RANDOM_IDLES)])
                 end
-
             end
         end,
     },
@@ -276,8 +286,16 @@ local states=
 				inst.components.hunger:DoDelta(-cost)
 			end),
             TimeEvent(60*FRAMES, function(inst) inst.DynamicShadow:SetSize(1.75, 1) end),
-            TimeEvent(70*FRAMES, function(inst) inst:FinishTransformation() end),
         },
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst:FinishTransformation()
+				end
+			end),
+		},
 
 		onexit = function(inst)
 			--Interrupted???
@@ -505,6 +523,14 @@ local states=
         end,
 
         timeline = {
+            FrameEvent(6-4, function(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/run_chuff")
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+			end),
+
+            FrameEvent(18-4, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+			FrameEvent(20-4, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+
             TimeEvent((19-4)*FRAMES, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 local target = buffaction ~= nil and buffaction.target or nil
@@ -560,6 +586,8 @@ local states=
         
         timeline =
         {
+            FrameEvent(6, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+
             FrameEvent(7, function(inst)
                 inst:PerformBufferedAction()
             end),
@@ -581,6 +609,10 @@ local states=
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
 
             inst.sg.statemem.buffaction = inst:GetBufferedAction()
+            if inst.sg.statemem.buffaction and inst.sg.statemem.buffaction.target and inst.sg.statemem.buffaction.target.components.container then
+                inst.sg.statemem.openedchest = inst.sg.statemem.buffaction.target
+                inst.sg.statemem.openedchest.components.container:Open(inst)
+            end
 
             inst.sg:SetTimeout(timeout)
         end,
@@ -616,6 +648,9 @@ local states=
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
+            if inst.sg.statemem.openedchest and inst.sg.statemem.openedchest:IsValid() and inst.sg.statemem.openedchest.components.container then
+                inst.sg.statemem.openedchest.components.container:Close(inst)
+            end
         end,
     },
 
@@ -668,6 +703,10 @@ local states=
 
 		timeline =
 		{
+			FrameEvent(6, function(inst)
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/run_chuff")
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+			end),
 			FrameEvent(7, function(inst)
 				inst.sg:AddStateTag("jumping")
 				inst.Physics:SetMotorVelOverride(6, 0, 0)
@@ -718,6 +757,9 @@ local states=
 
 		timeline =
 		{
+			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+			FrameEvent(9, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+
 			FrameEvent(2, function(inst) inst.Physics:SetMotorVelOverride(-2.4, 0, 0) end),
 			FrameEvent(8, function(inst) inst.Physics:SetMotorVelOverride(-1.2, 0, 0) end),
 			FrameEvent(9, function(inst) inst.Physics:SetMotorVelOverride(-0.6, 0, 0) end),
@@ -756,6 +798,9 @@ local states=
 
 		timeline =
 		{
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+			FrameEvent(2, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep") end),
+
 			FrameEvent(0, function(inst) inst.Physics:SetMotorVelOverride(4, 0, 0) end),
 			FrameEvent(1, function(inst) inst.Physics:SetMotorVelOverride(2, 0, 0) end),
 			FrameEvent(2, function(inst) inst.Physics:SetMotorVelOverride(1, 0, 0) end),
@@ -793,24 +838,44 @@ local states=
             inst:ClearBufferedAction()
 
             if inst.sg.lasttags["moving"] then
-                inst.AnimState:PlayAnimation(inst.sg.lasttags["running"] and "run_woby_pst" or "walk_woby_pst")
-                inst.AnimState:PushAnimation("sit_woby")
+				if inst.sg.lasttags["running"] then
+					inst.AnimState:PlayAnimation("run_woby_pst")
+					inst.sg.statemem.fromrunning = true
+				else
+					inst.AnimState:PlayAnimation("walk_woby_pst")
+				end
+            elseif inst.sg.lasttags["cower"] then
+                inst.AnimState:PlayAnimation("cower_woby_pst")
             else
-                inst.AnimState:PlayAnimation("sit_woby")
+				inst.sg.statemem.sitting = true
+				inst.sg:GoToState("actual_sitting")
             end
-
-            inst.AnimState:PushAnimation("sit_woby_loop", true)
-
-            inst.sg.statemem.noleashing = inst.components.follower.noleashing
-
-            inst.components.follower:DisableLeashing()
         end,
+
+		timeline =
+		{
+			FrameEvent(1, function(inst)
+				if inst.sg.statemem.fromrunning then
+					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+				end
+			end),
+			FrameEvent(3, function(inst)
+				if inst.sg.statemem.fromrunning then
+					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+				end
+			end),
+		},
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
+			EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
+					if inst.sg.statemem.stopped then
+						inst.sg:GoToState("idle")
+					else
+						inst.sg.statemem.sitting = true
+						inst.sg:GoToState("actual_sitting")
+					end
                 end
             end),
 
@@ -818,17 +883,176 @@ local states=
                 if inst:IsAsleep() then
                     inst.sg:GoToState("idle")
                 else
+					inst.sg.statemem.stopped = true
                     inst.AnimState:PlayAnimation("sit_woby_pst")
                 end
             end),
         },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.noleashing then
-                inst.components.follower:EnableLeashing()
-            end
-        end
     },
+
+	State{
+		name = "actual_sitting",
+		tags = { "busy", "canrotate", "sitting" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("sit_woby")
+			inst.AnimState:PushAnimation("sit_woby_loop")
+		end,
+
+		timeline =
+		{
+			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+			FrameEvent(18, function(inst) inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 0.8 }) end),
+			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySoundWithParams("dontstarve/characters/walter/woby/big/footstep", { intensity = 1 }) end),
+		},
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+			EventHandler("stop_sitting", function(inst)
+				if inst:IsAsleep() then
+					inst.sg:GoToState("idle")
+				else
+					inst.AnimState:PlayAnimation("sit_woby_pst")
+				end
+			end),
+		},
+	},
+
+    State{
+        name = "sitting_cower",
+        tags = {"busy", "canrotate", "sitting", "cower"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            if inst.sg.lasttags["moving"] then
+				if inst.sg.lasttags["running"] then
+					inst.AnimState:PlayAnimation("run_woby_pst")
+					inst.sg.statemem.fromrunning = true
+				else
+					inst.AnimState:PlayAnimation("walk_woby_pst")
+				end
+            elseif inst.sg.lasttags["sitting"] then
+				inst.AnimState:PlayAnimation("sit_to_cower_woby")
+				inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley")
+				inst.sg.statemem.fromsitting = true
+            else
+				inst.sg.statemem.cowering = true
+				inst.sg:GoToState("actual_sitting_cower_pre")
+            end
+        end,
+
+		timeline =
+		{
+			FrameEvent(1, function(inst)
+				if inst.sg.statemem.fromrunning then
+					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+				end
+			end),
+			FrameEvent(3, function(inst)
+				if inst.sg.statemem.fromrunning then
+					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/footstep")
+				end
+			end),
+		},
+
+        events =
+        {
+			EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					if inst.sg.statemem.stopped then
+						inst.sg:GoToState("idle")
+					else
+						inst.sg.statemem.cowering = true
+						inst.sg:GoToState(inst.sg.statemem.fromsitting and "actual_sitting_cower_loop" or "actual_sitting_cower_pre")
+					end
+                end
+            end),
+            EventHandler("stop_sitting", function(inst)
+				if inst:IsAsleep() or not inst.sg.statemem.fromsitting then
+					inst.sg:GoToState("idle")
+				else
+					inst.sg.statemem.stopped = true
+					inst.AnimState:PlayAnimation("cower_woby_pst")
+				end
+            end),
+        },
+    },
+
+	State{
+		name = "actual_sitting_cower_pre",
+		tags = {"busy", "canrotate", "sitting", "cower"},
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("cower_woby_pre")
+		end,
+
+		timeline =
+		{
+			FrameEvent(4, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/foley") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					if inst.sg.statemem.stopped then
+						inst.sg:GoToState("idle")
+					else
+						inst.sg.statemem.cowering = true
+						inst.sg:GoToState("actual_sitting_cower_loop")
+					end
+				end
+			end),
+			EventHandler("stop_sitting", function(inst)
+				if inst:IsAsleep() then
+					inst.sg:GoToState("idle")
+				else
+					inst.sg.statemem.stopped = true
+					inst.AnimState:PlayAnimation("cower_woby_pst")
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "actual_sitting_cower_loop",
+		tags = {"busy", "canrotate", "sitting", "cower"},
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("cower_woby_loop", true)
+			inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/big/wimper")
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+			EventHandler("stop_sitting", function(inst)
+				if inst:IsAsleep() then
+					inst.sg:GoToState("idle")
+				else
+					inst.AnimState:PlayAnimation("cower_woby_pst")
+				end
+			end),
+		},
+	},
 }
 
 CommonStates.AddWalkStates(
