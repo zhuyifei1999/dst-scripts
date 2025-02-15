@@ -818,52 +818,70 @@ return{
 	ANNOUNCE_WOBY_RETURN =
 	{
 		"Wooooooby!",
-        "Come here, girl!",
-        "Woby, over here!",
-        "Get over here, silly girl!",
-        "Hurry up, Wobers!",
-        "Shake a leg, Wobes!",
+		"Come here, girl!",
+		"Woby, over here!",
+		"Get over here, silly girl!",
+		"Hurry up, Wobers!",
+		"Shake a leg, Wobes!",
 	},
 	ANNOUNCE_WOBY_SIT =
 	{
 		"Woby, stay!",
-        "Stay, girl!",
-        "Take a break, Wobers!",
-        "Stay, Wobes! That's it.",
-        "Paws here Woby! Hehe.",
+		"Stay, girl!",
+		"Take a break, Wobers!",
+		"Stay, Wobes! That's it.",
+		"Paws here Woby! Hehe.",
 	},
 	ANNOUNCE_WOBY_FOLLOW =
 	{
 		"Woby, come!",
-        "Follow me, girl!",
-        "With me, Wobes!",
-        "Come on, Wobers! Let's go!",
-        "Keep up, Woby!",
+		"Follow me, girl!",
+		"With me, Wobes!",
+		"Come on, Wobers! Let's go!",
+		"Keep up, Woby!",
 	},
 	ANNOUNCE_WOBY_PRAISE =
 	{
 		"Good girl!",
-        "Thanks, Woby!",
-        "Atta girl, Wobers!",
-        "You're the best, Woby!",
-        "Yay, Woby!",
-        "Awww... sweet girl, Wobes.",
-        "Nice one, girl!",
-        "Who's the smartest, Wobers? Yup, it's you!",
-        "I love you, silly girl!",
-        "You're the best best friend, Woby.",
-        "I'm so proud of you!",
-        "Alright, Wobes!",
-        "Woby the Wonderdog!",
-        "Woah, Woby! Hehe.",
+		"Thanks, Woby!",
+		"Atta girl, Wobers!",
+		"You're the best, Woby!",
+		"Yay, Woby!",
+		"Awww... sweet girl, Wobes.",
+		"Nice one, girl!",
+		"Who's the smartest, Wobers? Yup, it's you!",
+		"I love you, silly girl!",
+		"You're the best best friend, Woby.",
+		"I'm so proud of you!",
+		"Alright, Wobes!",
+		"Woby the Wonderdog!",
+		"Woah, Woby! Hehe.",
 	},
 	ANNOUNCE_WOBY_FORAGE =
 	{
-		"Find more of these, Woby!","Help get us more, girl!","Woby, just like these ones.","Look for these, Woby."
+		"Find more of these, Woby!",
+		"Help get us more, girl!",
+		"Woby, just like these ones.",
+		"Look for these, Woby.",
 	},
 	ANNOUNCE_WOBY_WORK =
 	{
-		"Woby, come help me!","Lend a paw, girl! Hehe.","Wanna help, Wobes?","You gotta minute, Woby?","Who's my special helper?"
+		"Woby, come help me!",
+		"Lend a paw, girl! Hehe.",
+		"Wanna help, Wobes?",
+		"You gotta minute, Woby?",
+		"Who's my special helper?",
+	},
+	ANNOUNCE_WOBY_COURIER =
+	{
+		"Go, Woby! Go!",
+		"Off you go! And don't get distracted, silly girl!",
+		"Go on, Wobes!",
+		"Be careful out there, Woby!",
+		"Don't get lost, Wobers!",
+		"And away she goes!",
+		"On your way now, girl!",
+		"Woby, follow your nose! It knows! Hehe.",
 	},
 
     -- wx specific

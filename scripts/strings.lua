@@ -3032,6 +3032,9 @@ STRINGS =
         BRAMBLEFX = "Thorns", --for death announce if killed by thorns from armor_bramble, and owner is no longer available
 
         --v2 Warly
+        PORTABLECOOKPOT = "Portable Crock Pot",
+        PORTABLEBLENDER = "Portable Grinding Mill",
+        PORTABLESPICER = "Portable Seasoning Station",
         PORTABLECOOKPOT_ITEM = "Portable Crock Pot",
         PORTABLEBLENDER_ITEM = "Portable Grinding Mill",
         PORTABLESPICER_ITEM = "Portable Seasoning Station",

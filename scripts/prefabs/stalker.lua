@@ -305,6 +305,7 @@ end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
+		local shouldtrackplayerhit
         if data.attacker:HasTag("player") then
             if inst._recentattackers ~= nil then
                 if inst._recentattackers[data.attacker] ~= nil then
@@ -313,7 +314,8 @@ local function OnAttacked(inst, data)
                 inst._recentattackers[data.attacker] = inst:DoTaskInTime(6, ClearRecentAttacker, data.attacker)
             end
             if inst.atriumstalker then
-                inst._lastplayerhittime = GetTime()
+				shouldtrackplayerhit = true
+                --inst._lastplayerhittime = GetTime()
             end
         end
         local target = inst.components.combat.target
@@ -326,6 +328,9 @@ local function OnAttacked(inst, data)
                 inst:IsNearAtrium()) then
             inst.components.combat:SetTarget(data.attacker)
         end
+		if shouldtrackplayerhit and inst.components.combat:HasTarget() then
+			inst._lastplayerhittime = GetTime()
+		end
     end
 end
 

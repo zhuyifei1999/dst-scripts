@@ -4,6 +4,10 @@ local NO_TAGS_NO_PLAYERS =	{ "INLIMBO", "notarget", "noattack", "wall", "player"
 local COMBAT_TARGET_TAGS = { "_combat" }
 
 local onattacked_shield = function(inst, data)
+ 	if data.redirected then
+ 		return
+ 	end
+
 	local hat = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
 	if hat and hat.components.rechargeable and hat.components.rechargeable:IsCharged() then
 

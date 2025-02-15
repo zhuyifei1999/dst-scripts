@@ -66,13 +66,18 @@ local function OnIsRaining(self, israining)
 end
 
 local function OnRainImmunity(inst)
-	inst.components.wobyrack:ResumeDrying()
+	local self = inst.components.wobyrack
+	self:SetContainerRainImmunity(true)
+	self:ResumeDrying()
 end
 
 local function OnRainVulnerable(inst)
 	local self = inst.components.wobyrack
-	if self:IsExposedToRain() then
-		inst.components.wobyrack:PauseDrying()
+	if not self:HasRainImmunity() then
+		self:SetContainerRainImmunity(false)
+		if self:IsExposedToRain() then
+			self:PauseDrying()
+		end
 	end
 end
 
@@ -89,8 +94,10 @@ local function OnRiderChanged(inst, data)
 	end
 
 	if self:IsExposedToRain() then
+		self:SetContainerRainImmunity(false)
 		self:PauseDrying()
 	else
+		self:SetContainerRainImmunity(self:HasRainImmunity())
 		self:ResumeDrying()
 	end
 end
@@ -121,6 +128,9 @@ function WobyRack:EnableDrying()
 		end
 
 		if not self:IsExposedToRain() then
+			if self:HasRainImmunity() then
+				self:SetContainerRainImmunity(true)
+			end
 			self:ResumeDrying()
 		end
 	end
@@ -141,6 +151,7 @@ function WobyRack:DisableDrying()
 			self.inst:RemoveEventCallback("loserainimmunity", self._onriderrainvulnerable, self._rider)
 		end
 
+		self:SetContainerRainImmunity(false)
 		self:PauseDrying()
 	end
 end
@@ -173,12 +184,29 @@ local function OnDoneDrying(inst, self, item)
 	end
 end
 
+local function ForgetItem(item)
+	item:RemoveEventCallback("stacksizechange", ForgetItem)
+	item:RemoveEventCallback("ondropped", ForgetItem)
+	item.wobyrack_drytime = nil
+end
+
 function WobyRack:OnGetItem(item, slot)
+	local resumedrytime = item.wobyrack_drytime
+	if resumedrytime then
+		ForgetItem(item)
+	end
+	if item.wobyrack_lastinfo then
+		item.wobyrack_lastinfo:Cancel()
+		item.wobyrack_lastinfo = nil
+	end
 	local info = self.dryinginfo[item]
 	if info == nil then
 		if item.components.dryable then
 			local product = item.components.dryable:GetProduct()
 			local drytime = item.components.dryable:GetDryTime()
+			if resumedrytime then
+				drytime = math.min(math.max(10, resumedrytime), drytime)
+			end
 			if product and drytime then
 				info = {}
 				self.dryinginfo[item] = info
@@ -199,19 +227,42 @@ function WobyRack:OnGetItem(item, slot)
 	end
 end
 
+local function ClearWobyRackLastInfo(item)
+	item.wobyrack_lastinfo = nil
+end
+
 function WobyRack:OnLoseItem(item, slot)
 	local info = self.dryinginfo[item]
 	if info then
 		if info.task or info.drytime then
 			print("WobyRack: Stop drying", item)
-		end
-		if info.task then
-			info.task:Cancel()
+			if item:IsValid() and item.wobyrack_drytime == nil then
+				item.wobyrack_drytime = info.drytime or GetTaskRemaining(info.task)
+				item:ListenForEvent("stacksizechange", ForgetItem)
+				item:ListenForEvent("ondropped", ForgetItem)
+			end
+			if info.task then
+				info.task:Cancel()
+			end
 		end
 		self.dryinginfo[item] = nil
 	end
-	if slot and self.hideitemfn then
-		self.hideitemfn(self.inst, slot)
+	if slot then
+		if item:IsValid() then
+			--V2C: -allow failed "Move" between containers to put us back instead of dropping -for servers!
+			--     -see (containers.lua, itemtestfn)
+			--     -this matches client behaviour that would not even initiate the move at all if it wasn't
+			--      able to find a valid destination.
+			if item.wobyrack_lastinfo then
+				item.wobyrack_lastinfo:Cancel()
+			end
+			item.wobyrack_lastinfo = item:DoStaticTaskInTime(0, ClearWobyRackLastInfo)
+			item.wobyrack_lastinfo.container = self.container
+			item.wobyrack_lastinfo.slot = slot
+		end
+		if self.hideitemfn then
+			self.hideitemfn(self.inst, slot)
+		end
 	end
 end
 
@@ -221,6 +272,17 @@ end
 
 function WobyRack:HasRainImmunity()
 	return self.inst.components.rainimmunity ~= nil or (self._rider ~= nil and self._rider.components.rainimmunity ~= nil)
+end
+
+function WobyRack:SetContainerRainImmunity(isimmune)
+	if isimmune then
+		if not self.container.inst.components.rainimmunity then
+			self.container.inst:AddComponent("rainimmunity")
+		end
+		self.container.inst.components.rainimmunity:AddSource(self.inst)
+	elseif self.container.inst.components.rainimmunity then
+		self.container.inst.components.rainimmunity:RemoveSource(self.inst)
+	end
 end
 
 function WobyRack:PauseDrying()

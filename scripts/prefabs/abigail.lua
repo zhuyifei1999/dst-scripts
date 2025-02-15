@@ -1093,6 +1093,10 @@ local function CreateDebuff(name)
             return
         end
 
+        if data.attacker ~= nil and data.attacker:HasTag("attacktriggereddebuff") then
+            return -- Don't trigger from another attacktriggereddebuff entity.
+        end
+
         if data.attacker == inst or data.attacker:HasTag("abigail") then
             return -- Don't trigger itself!
         end
@@ -1118,6 +1122,8 @@ local function CreateDebuff(name)
                 inst.components.planardamage:SetBaseDamage(TUNING.ABIGAIL_SHADOW_VEX_PLANAR_DAMAGE)
                 inst._onattackedfn =function(owner, data)  addshadowvexplanardamge(inst, owner, data) end 
                 inst._owner = target
+
+                inst:AddTag("attacktriggereddebuff")
 
                 inst:AddComponent("damagetypebonus")
                 inst.components.damagetypebonus:AddBonus("shadow_aligned", inst, TUNING.SLINGSHOT_AMMO_VS_SHADOW_BONUS)
@@ -1150,6 +1156,8 @@ local function CreateDebuff(name)
             if target ~= nil and target:IsValid() and target.components.combat ~= nil then
                 target.components.combat.externaldamagetakenmultipliers:RemoveModifier(inst)
             end
+
+            inst:RemoveTag("attacktriggereddebuff")
 
             if inst._owner ~= nil and inst._owner:IsValid() then
                 inst:RemoveEventCallback("attacked", inst._onattackedfn, inst._owner)

@@ -10,9 +10,13 @@ function WobyCourier:NetworkLocation()
     if self.inst.woby_commands_classified then
         local xz = self.positions[self.shardid]
         if xz then
+            self.inst.woby_commands_classified.chest_posx:set_local(xz.x)
+            self.inst.woby_commands_classified.chest_posz:set_local(xz.z)
             self.inst.woby_commands_classified.chest_posx:set(xz.x)
             self.inst.woby_commands_classified.chest_posz:set(xz.z)
         else
+            self.inst.woby_commands_classified.chest_posx:set_local(WOBYCOURIER_NO_CHEST_COORD)
+            self.inst.woby_commands_classified.chest_posz:set_local(WOBYCOURIER_NO_CHEST_COORD)
             self.inst.woby_commands_classified.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
             self.inst.woby_commands_classified.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
         end

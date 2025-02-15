@@ -565,7 +565,7 @@ local function _horror_OnPlayerActivated(world, player)
 	if _horror_player ~= player then
 		_horror_StopWatchingPlayerSanity(world)
 		_horror_WatchPlayerSanity(world, player)
-		for k in pairs(AWAKELIST) do
+		for k in pairs(_horror_AWAKELIST) do
 			_horror_UpdateLightOverride(k, true)
 		end
 	end

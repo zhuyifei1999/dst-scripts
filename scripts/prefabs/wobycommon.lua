@@ -57,6 +57,7 @@ local COMMAND_NAMES =
 	--These are just for RPC
 	"OPENWHEEL",
 	"CLOSEWHEEL",
+	"AUTOBAGLOCK",
 }
 local COMMANDS = table.invert(COMMAND_NAMES)
 
@@ -559,6 +560,29 @@ end
 
 --------------------------------------------------------------------------
 
+local function RestrictContainer(inst, restrict)
+	if restrict then
+		if inst._playerlink and inst.components.container.restrictedtag == nil then
+			local tag = "wobybag"..tostring(inst._playerlink.GUID)
+			inst._playerlink:AddTag(tag)
+			inst.components.container.restrictedtag = tag
+			for k in pairs(inst.components.container.openlist) do
+				if not k:HasTag(tag) then
+					inst.components.container:Close(k)
+				end
+			end
+		end
+	elseif inst.components.container.restrictedtag then
+		--valid check because might be calling from player removal
+		if inst._playerlink and inst._playerlink:IsValid() then
+			inst._playerlink:RemoveTag(inst.components.container.restrictedtag)
+		end
+		inst.components.container.restrictedtag = nil
+	end
+end
+
+--------------------------------------------------------------------------
+
 return
 {
 	FLAGBITS = FLAGBITS,
@@ -573,4 +597,5 @@ return
 	MakeAutocastToggle = MakeAutocastToggle,
     WobyCourier_ForceDelivery = WobyCourier_ForceDelivery,
     WobyCourier_FindValidContainerForItem = WobyCourier_FindValidContainerForItem,
+	RestrictContainer = RestrictContainer,
 }

@@ -142,6 +142,10 @@ local function PureBrilliance_OnOwnerAttacked(inst, owner, data)
         return
     end
 
+    if data.attacker ~= nil and data.attacker:HasTag("attacktriggereddebuff") then
+        return -- Don't trigger from another attacktriggereddebuff entity.
+    end
+
     if data.attacker == inst then
         return -- Don't trigger itself!
     end
@@ -235,6 +239,7 @@ local function PureBrillianceMarkFn()
     inst.entity:AddTransform()
 
     inst:AddTag("CLASSIFIED")
+    inst:AddTag("attacktriggereddebuff")
 
     inst._onattackedfn = function(owner, data) PureBrilliance_OnOwnerAttacked(inst, owner, data) end
 

@@ -31,6 +31,10 @@ local function FindPickupableItem_ExtraFilter(inst, item, owner)
         return false -- Don't interact with traps at all.
     end
 
+    if item.Physics ~= nil and item.Physics:IsActive() and checkbit(item.Physics:GetCollisionMask(), inst.Physics:GetCollisionGroup()) then
+        return -- No items with physics and that we collide with, like pickable creatures, moles...
+    end
+
     if not item:IsOnPassablePoint() or item:GetCurrentPlatform() ~= inst:GetCurrentPlatform() then
         return false
     end
@@ -290,16 +294,29 @@ end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
+-- For searching these:
+-- ACTIONS.FEED
+-- ACTIONS.PET
+-- ACTIONS.RUMMAGE
+-- ACTIONS.STORE
+
+local INTERACT_ACTIONS_IDS =
+{
+    FEED    = true,
+    PET     = true,
+    RUMMAGE = true,
+    STORE   = true,
+}
+
 local function IsTryingToPerformAction(inst, performer, action)
-    local act = performer:GetBufferedAction()
+    local act = performer.bufferedaction -- No locomotor action, server wouldn't know it.
 
     return act ~= nil and act.target == inst and act.action == action
 end
 
 local function TryingToInteractWithWoby(inst, performer)
-    local interactions = { ACTIONS.FEED, ACTIONS.RUMMAGE, ACTIONS.STORE }
-    for _, action in ipairs(interactions) do
-        if IsTryingToPerformAction(inst, performer, action) then
+    for actionid, _ in pairs(INTERACT_ACTIONS_IDS) do
+        if IsTryingToPerformAction(inst, performer, ACTIONS[actionid]) then
             return true
         end
     end

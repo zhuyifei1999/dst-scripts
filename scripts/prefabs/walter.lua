@@ -1002,6 +1002,18 @@ end
 
 --------------------------------------------------------------------------
 
+local function LockWoby(inst)
+	if inst.woby_commands_classified and not inst.woby_commands_classified:ShouldLockBag() then
+		inst.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.AUTOBAGLOCK)
+	end
+end
+
+local function UnlockWoby(inst)
+	if inst.woby_commands_classified and inst.woby_commands_classified:ShouldLockBag() then
+		inst.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.AUTOBAGLOCK)
+	end
+end
+
 local function common_postinit(inst)
     inst:AddTag("expertchef")
     inst:AddTag("pebblemaker")
@@ -1035,6 +1047,9 @@ local function common_postinit(inst)
 		inst:ListenForEvent("enablemovementprediction", OnEnableMovementPrediction_Client)
 		inst.EnableWobySprintTrail = EnableWobySprintTrail_Client
 	end
+
+	inst.LockWoby = LockWoby
+	inst.UnlockWoby = UnlockWoby
 end
 
 local function master_postinit(inst)

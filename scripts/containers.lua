@@ -193,7 +193,11 @@ function params.woby_rack_container.itemtestfn(container, item, slot)
 	return item:HasTag("dryable")
 		or (TheWorld.ismastersim and (
 				item:GetTimeAlive() == 0 or --items perishing replaced by spoiled_food/fish
-				container.inst:GetTimeAlive() == 0 --transferring items during woby transform
+				container.inst:GetTimeAlive() == 0 or --transferring items during woby transform
+				(	item.wobyrack_lastinfo and --failing to move items; return to slot
+					item.wobyrack_lastinfo.container == container and
+					item.wobyrack_lastinfo.slot == slot
+				)
 			))
 end
 

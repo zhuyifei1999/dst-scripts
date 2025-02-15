@@ -181,6 +181,8 @@ local function NotifyWheelIsOpen_Server(inst, open)
 	if open then
 		if not inst.isclientwheelopen then
 			inst.isclientwheelopen = true
+			inst:SendCourierWoby(nil) --so she doens't auto-recall
+			--but don't restrict containers yet
 			if inst._pet.brain then
 				inst._pet.brain:ForceUpdate()
 			end
@@ -226,6 +228,7 @@ local CmdFns_Server =
 	[WobyCommon.COMMANDS.SIT] = function(inst)
 		if ToggleSkillCommand_Server(inst, "sit") then
             inst:SendCourierWoby(nil)
+			WobyCommon.RestrictContainer(inst._pet, inst:ShouldLockBag())
 			if inst.sit:value() then
                 inst._pet.components.follower:DisableLeashing()
 				if inst._parent then
@@ -271,6 +274,19 @@ local CmdFns_Server =
 	--Notification that client has opened/closed spell wheel
 	[WobyCommon.COMMANDS.OPENWHEEL] =	function(inst) NotifyWheelIsOpen_Server(inst, true) end,
 	[WobyCommon.COMMANDS.CLOSEWHEEL] =	function(inst) NotifyWheelIsOpen_Server(inst, false) end,
+
+	--Other
+	[WobyCommon.COMMANDS.AUTOBAGLOCK] = function(inst)
+		if ToggleSkillCommand_Server(inst, "baglock") then
+			if not inst.baglock:value() then
+				WobyCommon.RestrictContainer(inst._pet, false)
+			elseif inst.courierdata == nil then
+				WobyCommon.RestrictContainer(inst._pet, true)
+			end
+			return true
+		end
+		return false
+	end,
 }
 
 local function ExecuteCommand_Server(inst, cmd)
@@ -289,6 +305,7 @@ end
 local function RecallWoby(inst, silent)
 	inst.recall = true
     inst:SendCourierWoby(nil)
+	WobyCommon.RestrictContainer(inst._pet, inst:ShouldLockBag())
 	if inst.sit:value() then
 		inst.sit:set(false)
         inst._pet.components.follower:EnableLeashing()
@@ -337,6 +354,7 @@ end
 local function CourierWobyDoTeleport(_pet, courierdata)
     if courierdata.onspawnfaderout then
         _pet:RemoveEventCallback("spawnfaderout", courierdata.onspawnfaderout)
+        _pet:RemoveEventCallback("transform", courierdata.onspawnfaderout)
         courierdata.onspawnfaderout = nil
         _pet.components.spawnfader:FadeIn()
     end
@@ -376,7 +394,8 @@ local function CourierWobyShouldTeleport(_pet, courierdata)
     return false, false
 end
 
-local function CourierWobyTick(_pet, courierdata)
+local function CourierWobyTick(inst)
+    local _pet, courierdata = inst._pet, inst.courierdata
     courierdata.currentpos = _pet:GetPosition()
     local distance_from_dest = (courierdata.currentpos - courierdata.destpos):Length()
     if distance_from_dest < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS then
@@ -398,6 +417,9 @@ local function CourierWobyTick(_pet, courierdata)
         else
             -- Arrived at person do nothing and wait for Walter to call back.
 			_pet.woby_commands_classified.outfordelivery:set(false)
+
+			-- Make her container unrestricted
+			WobyCommon.RestrictContainer(_pet, false)
         end
     else
         if not courierdata.teleported then
@@ -415,6 +437,7 @@ local function CourierWobyTick(_pet, courierdata)
                         CourierWobyDoTeleport(_pet, courierdata)
                     end
                     _pet:ListenForEvent("spawnfaderout", courierdata.onspawnfaderout)
+                    _pet:ListenForEvent("transform", courierdata.onspawnfaderout)
                     _pet.components.spawnfader:FadeOut()
                 end
             end
@@ -433,8 +456,9 @@ local function SendCourierWoby(inst, data)
     if inst.courierdata then
         if inst.courierdata.onspawnfaderout then
             inst._pet:RemoveEventCallback("spawnfaderout", inst.courierdata.onspawnfaderout)
+            inst._pet:RemoveEventCallback("transform", courierdata.onspawnfaderout)
             inst.courierdata.onspawnfaderout = nil
-            _pet.components.spawnfader:FadeIn()
+            inst._pet.components.spawnfader:FadeIn()
         end
     end
     inst.courierdata = data
@@ -449,7 +473,7 @@ local function SendCourierWoby(inst, data)
         if inst._pet:GetCurrentPlatform() ~= nil then
             inst.courierdata.doimmediatefadeteleport = true
         end
-        inst.couriertask = inst._pet:DoPeriodicTask(WOBYCOURIER_TICK_PERIOD, inst.CourierWobyTick, nil, inst.courierdata)
+        inst.couriertask = inst:DoPeriodicTask(WOBYCOURIER_TICK_PERIOD, inst.CourierWobyTick)
         inst.sit:set(true)
         inst._pet.components.follower:DisableLeashing()
         ClearBrainActions(inst)
@@ -539,6 +563,7 @@ local CmdFns_Client =
 		SendRPCToServer(RPC.WobyCommand, cmd)
 		return true
 	end,
+	[WobyCommon.COMMANDS.AUTOBAGLOCK] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "baglock", cmd) end,
 }
 
 local function ExecuteCommand_Client(inst, cmd)
@@ -609,6 +634,7 @@ local function ShouldForage(inst)		return GetValue(inst, "foraging")		end
 local function ShouldWork(inst)			return GetValue(inst, "working")		end
 local function ShouldSprint(inst)		return GetValue(inst, "sprinting")		end
 local function ShouldShadowDash(inst)	return GetValue(inst, "shadowdash")		end
+local function ShouldLockBag(inst)		return GetValue(inst, "baglock")		end
 local function IsOutForDelivery(inst)	return inst.outfordelivery:value()		end
 
 --------------------------------------------------------------------------
@@ -670,12 +696,15 @@ local function fn()
 	inst.working = net_bool(inst.GUID, "woby_commands.working", "isdirty")
 	inst.sprinting = net_bool(inst.GUID, "woby_commands.sprinting", "sprintingdirty") -- attn: special handler!
 	inst.shadowdash = net_bool(inst.GUID, "woby_commands.shadowdash", "isdirty")
+	inst.baglock = net_bool(inst.GUID, "woby_commands.baglock", "isdirty")
 	inst.outfordelivery = net_bool(inst.GUID, "woby_commands.outfordelivery")
     -- NOTES(JBK): Put the chest position last since this does not change often.
     inst.chest_posx = net_float(inst.GUID, "woby_commands.chest_posx", "chest_posdirty")
     inst.chest_posz = net_float(inst.GUID, "woby_commands.chest_posz", "chest_posdirty")
     inst.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
     inst.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
+
+    inst.baglock:set(true)
 
 	--Delay net listeners until after initial values are deserialized
 	inst._task = inst:DoStaticTaskInTime(0, RegisterNetListeners)
@@ -689,6 +718,7 @@ local function fn()
 	inst.ShouldWork = ShouldWork
 	inst.ShouldSprint = ShouldSprint
 	inst.ShouldShadowDash = ShouldShadowDash
+	inst.ShouldLockBag = ShouldLockBag
 	inst.IsOutForDelivery = IsOutForDelivery
 	--
 	inst.OnRemoveEntity = OnRemoveEntity

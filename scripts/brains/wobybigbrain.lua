@@ -95,6 +95,10 @@ local function _avoidtargetfn(self, target)
         return true
     end
 
+    if target.components.health ~= nil and target.components.health:IsDead() then
+        return false
+    end
+
     local distsq = owner:GetDistanceSqToInst(target)
     if distsq >= COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST_SQ then
         -- Too far

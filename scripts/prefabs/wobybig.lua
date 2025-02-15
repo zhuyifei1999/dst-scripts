@@ -613,7 +613,7 @@ local function RefreshAttunedSkills(inst, player, data)
 	WobyCommon.RefreshCommands(inst, player)
 end
 
-local function LinkToPlayer(inst, player)
+local function LinkToPlayer(inst, player, containerrestrictedoverride)
     inst._playerlink = player
     inst.components.follower:SetLeader(player)
 
@@ -638,6 +638,12 @@ local function LinkToPlayer(inst, player)
 		assert(inst.woby_commands_classified._parent == player)
 	end
 
+	if containerrestrictedoverride ~= nil then --could be true or false
+		WobyCommon.RestrictContainer(inst, containerrestrictedoverride)
+	else
+		WobyCommon.RestrictContainer(inst, inst.woby_commands_classified:ShouldLockBag())
+	end
+
 	inst:ListenForEvent("onactivateskill_server", inst._onskillrefresh, player)
 	inst:ListenForEvent("ondeactivateskill_server", inst._onskillrefresh, player)
 
@@ -659,6 +665,14 @@ local function OnPlayerLinkDespawn(inst, forcedrop)
 			inst.components.container:DropEverything()
 		else
 			inst.components.container:DropEverythingWithTag("irreplaceable")
+		end
+	end
+
+	if inst.components.wobyrack then
+		if forcedrop or GetGameModeProperty("drop_everything_on_despawn") then
+			inst.components.wobyrack:GetContainer():DropEverything()
+		else
+			inst.components.wobyrack:GetContainer():DropEverythingWithTag("irreplaceable")
 		end
 	end
 
@@ -695,6 +709,8 @@ local function FinishTransformation(inst)
 			rackitems[i] = container:RemoveItemBySlot(i)
 		end
 	end
+
+	local wascontainerrestricted = inst.components.container.restrictedtag ~= nil
 
 	local player = inst._playerlink
     local skin_build = inst:GetSkinBuild()
@@ -753,7 +769,7 @@ local function FinishTransformation(inst)
     end
 
 	if player ~= nil then
-		new_woby:LinkToPlayer(player)
+		new_woby:LinkToPlayer(player, wascontainerrestricted)
 	    player:OnWobyTransformed(new_woby)
 	end
 
@@ -924,6 +940,7 @@ local function fn()
     inst.LinkToPlayer = LinkToPlayer
 	inst.OnPlayerLinkDespawn = OnPlayerLinkDespawn
 	inst._onlostplayerlink = function(player)
+		WobyCommon.RestrictContainer(inst, false)
 		inst._playerlink = nil
 		RefreshAttunedSkills(inst, nil, nil)
 	end

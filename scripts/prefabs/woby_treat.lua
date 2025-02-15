@@ -18,6 +18,7 @@ local function fn()
 
 	inst:AddTag("meat")
 	inst:AddTag("quickeat")
+	inst:AddTag("monstermeat")
 	inst:AddTag("quickfeed")
 	inst:AddTag("pet_treat")
 

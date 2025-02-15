@@ -86,7 +86,7 @@ end
 
 local function PlayAttuneSound(inst)
     if inst.AnimState:IsCurrentAnimation("place") or inst.AnimState:IsCurrentAnimation("attune_on") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/meat_effigy_attune/on")
+        inst.SoundEmitter:PlaySound("meta5/wendy/perennial_altar_on")
     end
 end
 
@@ -98,6 +98,7 @@ local function onbuilt(inst, data)
     attunable:SetOnLinkFn(nil)
     attunable:SetOnUnlinkFn(nil)
 
+    inst.SoundEmitter:PlaySound("meta5/wendy/perennial_altar_place")
     inst.AnimState:PlayAnimation("place")
     if attunable:LinkToPlayer(data.builder) then
         inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), PlayAttuneSound)
@@ -159,6 +160,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:Hide("FIRE")
     inst.AnimState:OverrideSymbol("wormmovefx", "mole_build", "wormmovefx")
+    inst.AnimState:SetFinalOffset(-1)
 
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then

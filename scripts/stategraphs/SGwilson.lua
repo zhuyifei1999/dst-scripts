@@ -2896,7 +2896,16 @@ local states =
             inst:ShowHUD(false)
             inst:SetCameraDistance(12)
 
-            inst.SoundEmitter:PlaySound("meta5/wendy/revive_emerge")
+            if inst:HasTag("weregoose") then
+                inst.SoundEmitter:PlaySound("meta5/grave_spawn/woody_goose")
+            elseif inst:HasTag("weremoose") then
+                inst.SoundEmitter:PlaySound("meta5/grave_spawn/woody_moose")
+            elseif inst:HasTag("beaver") then
+                inst.SoundEmitter:PlaySound("meta5/grave_spawn/woody_beaver")
+            else
+                inst.SoundEmitter:PlaySound("meta5/wendy/revive_emerge")
+            end
+            
         end,
 
         events =
