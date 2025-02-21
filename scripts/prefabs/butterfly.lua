@@ -177,7 +177,7 @@ local function fn()
 
     inst.butterflyspawner = TheWorld.components.butterflyspawner
     if inst.butterflyspawner ~= nil then
-        inst.components.inventoryitem:SetOnPickupFn(inst.butterflyspawner.StopTrackingFn)
+        inst.components.inventoryitem:SetOnPutInInventoryFn(inst.butterflyspawner.StopTrackingFn)
         inst:ListenForEvent("onremove", inst.butterflyspawner.StopTrackingFn)
         inst.butterflyspawner:StartTracking(inst)
     end

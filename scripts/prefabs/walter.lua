@@ -40,7 +40,7 @@ prefabs = FlattenTree({ prefabs, start_inv }, true)
 --Mounted command wheel
 
 local ICON_SCALE = 0.6
-local ICON_RADIUS = 50
+local ICON_RADIUS = 60
 local SPELLBOOK_RADIUS = 120
 local SPELLBOOK_FOCUS_RADIUS = SPELLBOOK_RADIUS-- + 2
 
@@ -50,6 +50,23 @@ local function DoSpellAction(inst)
 		inventory:CastSpellBookFromInv(inst)
 	end
 end
+
+local BLANK_SPELL =
+{
+	label = "",
+	bank = "spell_icons_woby",
+	build = "spell_icons_woby",
+	anims =
+	{
+		disabled = { anim = "empty" },
+	},
+	widget_scale = ICON_SCALE,
+	checkenabled = function() return false end,
+	noselect = true,
+}
+
+local SPACER_SPELL = shallowcopy(BLANK_SPELL)
+SPACER_SPELL.spacer = true
 
 local SPELLS_RIGHT =
 {
@@ -70,6 +87,8 @@ local SPELLS_RIGHT =
 			down = { anim = "dismount_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = WobyCommon.SetupMouseOver,
+		default_focus = true,
 	},
 	{
 		label = STRINGS.ACTIONS.RUMMAGE.GENERIC,
@@ -88,7 +107,9 @@ local SPELLS_RIGHT =
 			down = { anim = "opencontainer_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = WobyCommon.SetupMouseOver,
 	},
+	BLANK_SPELL,
 	{
 		label = STRINGS.WOBY_COMMANDS.SHRINK,
 		onselect = function(inst)
@@ -106,6 +127,7 @@ local SPELLS_RIGHT =
 			down = { anim = "forcetransform_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = WobyCommon.SetupMouseOver,
 	},
 }
 
@@ -153,19 +175,6 @@ local SPELLS_LEFT =
 	},
 }
 
-local EMPTYSPACE_SPELL =
-{
-	label = "",
-	bank = "spell_icons_woby",
-	build = "spell_icons_woby",
-	anims =
-	{
-		disabled = { anim = "empty" },
-	},
-	widget_scale = ICON_SCALE,
-	checkenabled = function() return false end,
-}
-
 local SPELLBOOK_BG =
 {
 	bank = "spell_icons_woby",
@@ -178,20 +187,25 @@ local function RefreshSpells(inst)
 	local skilltreeupdater = inst.components.skilltreeupdater
 	local j = 1
 
-	inst._spells[1] = EMPTYSPACE_SPELL
+	inst._spells[1] = SPACER_SPELL
 	j = j + 1
 
 	for i, v in ipairs(SPELLS_RIGHT) do
 		if v.skill == nil or skilltreeupdater:IsActivated(v.skill) then
 			inst._spells[j] = v
-			j = j + 1
+		else
+			inst._spells[j] = BLANK_SPELL
 		end
-	end
-
-	for i = j, 6 do
-		inst._spells[j] = EMPTYSPACE_SPELL
 		j = j + 1
 	end
+
+	for i = j, 5 do
+		inst._spells[j] = BLANK_SPELL
+		j = j + 1
+	end
+
+	inst._spells[j] = SPACER_SPELL
+	j = j + 1
 
 	for i, v in ipairs(SPELLS_LEFT) do
 		if v.skill == nil or skilltreeupdater:IsActivated(v.skill) then
@@ -206,7 +220,7 @@ local function RefreshSpells(inst)
 			inst._spells[i + shift] = inst._spells[i]
 		end
 		for i = 7, 7 + shift - 1 do
-			inst._spells[i] = EMPTYSPACE_SPELL
+			inst._spells[i] = BLANK_SPELL
 		end
 	end
 end
@@ -594,6 +608,7 @@ end
 local function OnSave(inst, data)
 	data.woby = inst.woby ~= nil and inst.woby:GetSaveRecord() or nil
 	data.buckdamage = inst._wobybuck_damage > 0 and inst._wobybuck_damage or nil
+	data.wobycmd = inst.woby_commands_classified and inst.woby_commands_classified:OnSave() or nil
 end
 
 local function OnLoad(inst, data)
@@ -607,8 +622,14 @@ local function OnLoad(inst, data)
 			if woby ~= nil then
 				if inst.migrationpets ~= nil then
 					table.insert(inst.migrationpets, woby)
+					if data.wobycmd then
+						data.wobycmd.sit = nil
+					end
 				end
 				woby:LinkToPlayer(inst)
+				if data.wobycmd and inst.woby_commands_classified then
+					inst.woby_commands_classified:OnLoad(data.wobycmd)
+				end
 
 				woby.AnimState:SetMultColour(0,0,0,1)
 				woby.components.colourtweener:StartTween({1,1,1,1}, 19*FRAMES)

@@ -188,19 +188,19 @@ CRAFTING_FILTERS.CHARACTER.recipes =
 	"slingshotammo_gold",
 	"slingshotammo_marble",
 	"slingshotammo_poop",
-	"slingshotammo_honey",
 	"slingshotammo_freeze",
 	"slingshotammo_slow",
 	"slingshotammo_thulecite",
 	"slingshotammo_stinger",
 	"slingshotammo_moonglass",
-	"slingshotammo_dreadstone",
-	"slingshotammo_lunarplanthusk",
-	"slingshotammo_purebrilliance",
-	"slingshotammo_gelblob",
-	"slingshotammo_horrorfuel",
+	"slingshotammo_honey",
 	"slingshotammo_scrapfeather",
 	"slingshotammo_gunpowder",
+	"slingshotammo_dreadstone",
+	"slingshotammo_horrorfuel",
+	"slingshotammo_gelblob",
+	"slingshotammo_lunarplanthusk",
+	"slingshotammo_purebrilliance",
 	"slingshotammo_container",
 	"slingshotmodkit",
 	"slingshot_band_pigskin",
@@ -850,6 +850,7 @@ CRAFTING_FILTERS.WEAPONS.recipes =
 	"slingshot",
 	"winona_catapult",
 	"winona_catapult_item",
+	"wortox_nabbag",
 	"spear",
 	"spear_wathgrithr",
 	"spear_wathgrithr_lightning",
@@ -878,7 +879,6 @@ CRAFTING_FILTERS.WEAPONS.recipes =
 	"boat_cannon_kit",
 	"cannonball_rock_item",
 	"fence_rotator",
-    "wortox_nabbag",
 }
 
 CRAFTING_FILTERS.ARMOUR.recipes =
@@ -966,10 +966,10 @@ CRAFTING_FILTERS.RESTORATION.recipes =
 	"spider_healer_item",
     "wx78module_bee",
 
+	"bandage_butterflywings",
 	"healingsalve",
 	"healingsalve_acid",
 	"bandage",
-	"bandage_butterflywings",
 	"tillweedsalve",
 	"compostwrap",
     "wortox_reviver",
@@ -1087,7 +1087,6 @@ CRAFTING_FILTERS.SEAFARING.recipes =
 
 	"boat_bumper_kelp_kit",
 	"boat_bumper_shell_kit",
-	"boat_bumper_yotd_kit",
 
 	"boat_cannon_kit",
 	"cannonball_rock_item",
@@ -1096,7 +1095,6 @@ CRAFTING_FILTERS.SEAFARING.recipes =
 
 	"mastupgrade_lamp_item",
 	"mastupgrade_lightningrod_item",
-    "mastupgrade_lamp_item_yotd",
 
 	"fish_box",
 	"winch",
@@ -1121,16 +1119,16 @@ CRAFTING_FILTERS.CONTAINERS.recipes =
 	"spicepack",
 	"seedpouch",
 	"candybag",
+	"battlesong_container",
+    "wortox_souljar",
+	"slingshotammo_container",
 	"treasurechest",
-    "chestupgrade_stacksize",
 	"dragonflychest",
+    "chestupgrade_stacksize",
 	"magician_chest",
 	"icebox",
 	"saltbox",
 	"fish_box",
-	"battlesong_container",
-    "wortox_souljar",
-	"slingshotammo_container",
 }
 
 CRAFTING_FILTERS.STRUCTURES.recipes =
@@ -1423,6 +1421,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"turf_checkerfloor",
 	"turf_carpetfloor",
 	"turf_carpetfloor2",
+	"turf_beard_rug",
 	"turf_mosaic_red",
 	"turf_mosaic_blue",
 	"turf_mosaic_grey",
@@ -1453,7 +1452,6 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"turf_fungus",
 	"turf_fungus_red",
 	"turf_fungus_green",
-	"turf_beard_rug",	
 
 	"ruinsrelic_plate",
 	"ruinsrelic_chipbowl",

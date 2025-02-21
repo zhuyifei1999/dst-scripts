@@ -16,12 +16,18 @@ local function SetRange(slingshot, bonus)
 	slingshot.components.weapon:SetRange(TUNING.SLINGSHOT_DISTANCE + bonus, TUNING.SLINGSHOT_DISTANCE_MAX + bonus)
 end
 
+local function SetProjectileSpeedMult(slingshot, mult)
+	slingshot.projectilespeedmult = mult
+end
+
 defs.slingshot_band_pigskin.oninstalledfn = function(inst, slingshot)
 	SetRange(slingshot, TUNING.SLINGSHOT_MOD_BONUS_RANGE_1)
+	SetProjectileSpeedMult(slingshot, TUNING.SLINGSHOT_MOD_SPEED_MULT_1)
 end
 
 defs.slingshot_band_pigskin.onuninstalledfn = function(inst, slingshot)
 	SetRange(slingshot, 0)
+	SetProjectileSpeedMult(slingshot, nil)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,6 +42,7 @@ defs["slingshot_band_tentacle"] =
 
 defs.slingshot_band_tentacle.oninstalledfn = function(inst, slingshot)
 	SetRange(slingshot, TUNING.SLINGSHOT_MOD_BONUS_RANGE_2)
+	SetProjectileSpeedMult(slingshot, TUNING.SLINGSHOT_MOD_SPEED_MULT_2)
 end
 
 defs.slingshot_band_tentacle.onuninstalledfn = defs.slingshot_band_pigskin.onuninstalledfn
@@ -60,6 +67,10 @@ defs.slingshot_band_mimic.onuninstalledfn = defs.slingshot_band_tentacle.onunins
 
 local function ReturnAmmoToOwner(slingshot, slot, owner)
 	if owner then
+		--Close slingshot container otherwise inventory:GiveItem will
+		--keep putting it back in there if it is equipped and opened.
+		slingshot.components.container:Close(owner)
+
 		local owner_container = owner.components.inventory or owner.components.container
 		local pos = owner:GetPosition()
 		while true do
@@ -110,6 +121,7 @@ local function ReplaceSlingshot(slingshot, newprefab)
 
 	local container = slingshot.components.inventoryitem:GetContainer()
 	if container then
+		local wasequipped = slingshot.components.equippable:IsEquipped()
 		local slot = slingshot.components.inventoryitem:GetSlotNum()
 		slingshot:Remove()
 
@@ -119,7 +131,11 @@ local function ReplaceSlingshot(slingshot, newprefab)
 
 		local temp = container.ignoresound
 		container.ignoresound = true
-		container:GiveItem(new, slot)
+		if wasequipped then
+			container:Equip(new)
+		else
+			container:GiveItem(new, slot)
+		end
 		container.ignoresound = temp
 	else
 		local x, y, z = slingshot.Transform:GetWorldPosition()
@@ -358,7 +374,7 @@ defs.slingshot_handle_voidcloth.oninstalledfn = function(inst, slingshot)
 		slingshot:ListenForEvent("equipped", handle_voidcloth_onequipped)
 		slingshot:ListenForEvent("unequipped", handle_voidcloth_onunequipped)
 		if slingshot.components.equippable:IsEquipped() then
-			handle_voidcloth_SetBuffOwner(slingshot, owner)
+			handle_voidcloth_SetBuffOwner(slingshot, slingshot.components.inventoryitem.owner)
 		end
 	end
 end

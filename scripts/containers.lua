@@ -148,17 +148,22 @@ params.wobysmall =
         slotpos = {},
         animbank = "ui_woby_3x3",
         animbuild = "ui_woby_3x3",
-        pos = Vector3(0, 200, 0),
+		pos = Vector3(0, 330, 0),
         side_align_tip = 160,
     },
     type = "chest",
 }
 
+--V2C: y pos used to be 200, moved to 330 to match woby_rack_container so that it scales
+--     together in controller inventory screen. Shift all y-coords to account for this.
+--     Art was also shifted accordingly.  0.6 is the base scale (in inventorybar).
+local yshift = (330 - 200) / 0.6
 for y = 2, 0, -1 do
     for x = 0, 2 do
-        table.insert(params.wobysmall.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75, 0))
+		table.insert(params.wobysmall.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75 - yshift, 0))
     end
 end
+yshift = nil
 
 params.wobybig = params.wobysmall
 
@@ -175,7 +180,7 @@ params.woby_rack_container =
 		animbank = "ui_meatrack_3x1",
 		animbuild = "ui_meatrack_3x1",
 		pos = Vector3(0, 330, 0),
-		side_align_tip = 100,
+		side_align_tip = 160,
 	},
 	acceptsstacks = false,
 	type = "top_rack",

@@ -712,9 +712,9 @@ function StatusDisplays:SetupWobyPetHunger()
 	self.pethungerbadge.dont_animate_circleframe = true
 
 	--Frames match Woby's build colours, so we'll want to apply colourcube
-	self.pethungerbadge.circleframe:GetAnimState():SetDefaultEffectHandle("shaders/ui_anim_cc.ksh")
+	--[[self.pethungerbadge.circleframe:GetAnimState():SetDefaultEffectHandle("shaders/ui_anim_cc.ksh")
 	self.pethungerbadge.circleframe:GetAnimState():UseColourCube(true)
-	self.pethungerbadge.circleframe:GetAnimState():SetUILightParams(2.0, 4.0, 4.0, 20.0)
+	self.pethungerbadge.circleframe:GetAnimState():SetUILightParams(2.0, 4.0, 4.0, 20.0)]]
 
 	--Switch frames for big vs small woby
 	local _OnFlagsChanged = self.pethungerbadge.OnFlagsChanged

@@ -602,6 +602,8 @@ ACTIONS =
     WOBY_PICKUP = Action({ arrivedist = 2 }),
     WOBY_PICK = Action({ extra_arrive_dist=ExtraWobyForagingDist }),
 	CONTAINER_INSTALL_ITEM = Action({ priority = 3, rmb = true, instant = true, mount_valid = true }),
+	MODSLINGSHOT = Action({ mount_valid=true }),
+	STOPMODSLINGSHOT = Action({ instant=true, mount_valid=true }),
 	DASH = Action({ distance = math.huge, mount_valid = true, invalid_hold_action = true }),
     DIRECTCOURIER_MAP = Action({priority=HIGH_ACTION_PRIORITY, customarrivecheck=ArriveAnywhere, rmb=true, instant=true, map_action=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
 	WHISTLE = Action({ rmb=true, distance=math.huge, invalid_hold_action=true }),
@@ -5874,7 +5876,7 @@ ACTIONS.WOBY_PICKUP.fn = function(act)
 
         act.doer:PushEvent("onpickupitem", { item = act.target })
 
-        act.doer.components.container:GiveItem(act.target)
+        act.doer.components.container:GiveItem(act.target, nil, act.target:GetPosition())
 
         return true
     end
@@ -5990,6 +5992,38 @@ ACTIONS.CONTAINER_INSTALL_ITEM.fn = function(act)
 				containerinst.components.container:GiveItem(item)
 			end
 			return true
+		end
+	end
+	return false
+end
+
+ACTIONS.MODSLINGSHOT.fn = function(act)
+	if act.doer and act.doer.components.inventory and act.invobject and act.invobject.components.slingshotmodder then
+		local target = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		if not (target and target.components.slingshotmods and target.components.slingshotmods:CanBeOpenedBy(act.doer)) then
+			target = nil
+			local activeitem = act.doer.components.inventory:GetActiveItem()
+			for i, v in ipairs(act.doer.components.inventory:GetItemsWithTag("slingshot")) do
+				if v ~= activeitem and v.components.slingshotmods and v.components.slingshotmods:CanBeOpenedBy(act.doer) then
+					target = v
+					break
+				end
+			end
+		end
+		if target == nil then
+			return false, "NOSLINGSHOT"
+		end
+		return act.invobject.components.slingshotmodder:StartModding(target, act.doer)
+	end
+	return false
+end
+
+ACTIONS.STOPMODSLINGSHOT.fn = function(act)
+	if act.doer and act.doer.components.inventory and act.invobject and act.invobject.components.slingshotmodder then
+		for k in pairs(act.doer.components.inventory.opencontainers) do
+			if k.prefab == "slingshotmodscontainer" and k.install_target then
+				return act.invobject.components.slingshotmodder:StopModding(k.install_target, act.doer)
+			end
 		end
 	end
 	return false

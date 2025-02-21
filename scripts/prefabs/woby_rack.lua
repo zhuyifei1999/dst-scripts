@@ -179,12 +179,14 @@ end
 local function _OnSlotDirty(inst, v)
 	if v.name:value() == 0 then
 		v.fx.AnimState:ClearOverrideSymbol("swap_dried")
+		v.fx.AnimState:OverrideSymbol("rope", "woby_rack", "rope_empty")
 	else
+		v.fx.AnimState:ClearOverrideSymbol("rope")
 		v.fx.AnimState:OverrideSymbol("swap_dried", v.build:value(), v.name:value())
-		if not inst.wasmoving and inst:GetTimeAlive() > 0 and not inst:IsAsleep() then
-			v.fx.AnimState:PlayAnimation("bounce_change"..tostring(math.random(3)))
-			v.fx.AnimState:PushAnimation("idle_sway"..tostring(math.random(3)))
-		end
+	end
+	if not inst.wasmoving and inst:GetTimeAlive() > 0 and not inst:IsAsleep() then
+		v.fx.AnimState:PlayAnimation("bounce_change"..tostring(math.random(3)))
+		v.fx.AnimState:PushAnimation("idle_sway"..tostring(math.random(3)))
 	end
 end
 
@@ -248,6 +250,7 @@ local function swapfxfn()
 			v.fx.entity:SetParent(inst.entity)
 			v.fx.Follower:FollowSymbol(inst.GUID, "swap_slot"..tostring(i), 0, 0, 0, true)
 			v.fx.AnimState:PlayAnimation("idle_sway"..tostring(i), true)
+			v.fx.AnimState:OverrideSymbol("rope", "woby_rack", "rope_empty")
 			if i == 2 then
 				v.fx.AnimState:SetFrame(31)
 			end

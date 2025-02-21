@@ -1116,6 +1116,7 @@ function PlayerHud:OpenSpellWheel(invobject, items, radius, focus_radius, bgdata
 	end
 	CloseAllChestContainerWidgets(self)
 	local itemscpy = {}
+	local default_focus = nil
 	for i, v in ipairs(items) do
 		itemscpy[i] = shallowcopy(v)
 		if v.execute ~= nil then
@@ -1140,6 +1141,15 @@ function PlayerHud:OpenSpellWheel(invobject, items, radius, focus_radius, bgdata
 					end
 				end
 			end
+		end
+		if v.default_focus then
+			default_focus = i
+		end
+	end
+	if default_focus then
+		for i, v in ipairs(items) do
+			v.selected = i == default_focus or nil
+			itemscpy[i].selected = v.selected
 		end
 	end
 	self.controls.spellwheel:SetScale(TheFrontEnd:GetProportionalHUDScale()) --instead of GetHUDScale(), because parent already has SCALEMODE_PROPORTIONAL

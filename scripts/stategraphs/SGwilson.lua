@@ -1299,6 +1299,7 @@ local actionhandlers =
 
 	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
 	ActionHandler(ACTIONS.WHISTLE, "fingerwhistle"),
+	ActionHandler(ACTIONS.MODSLINGSHOT, "openslingshotmods"),
 }
 
 local events =
@@ -22735,7 +22736,7 @@ local states =
 
 	State{
 		name = "dash_woby_shadow",
-		tags = { "busy", "jumping", "nopredict", "noattack" },
+		tags = { "busy", "jumping", "nopredict", "noattack", "iframeskeepaggro" },
 
 		onenter = function(inst)
 			ConfigureRunState(inst)

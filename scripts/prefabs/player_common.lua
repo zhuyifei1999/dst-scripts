@@ -969,7 +969,13 @@ end
 
 local function OnSetOwner(inst)
     inst.name = inst.Network:GetClientName()
+    if inst.userid and inst.userid ~= "" then
+        inst:RemoveTag("player_" .. inst.userid)
+    end
     inst.userid = inst.Network:GetUserID()
+    if inst.userid and inst.userid ~= "" then
+        inst:AddTag("player_" .. inst.userid)
+    end
     inst.playercolour = inst.Network:GetPlayerColour()
     if TheWorld.ismastersim then
         TheNet:SetIsClientInWorld(inst.userid, true)

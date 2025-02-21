@@ -78,7 +78,8 @@ end
 -- skip_cooldown_fn: return true if you want to allow hit reacts while the hit react is in cooldown (allowing stun locking)
 local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
 	local on_cooldown = false
-	local was_projectile = inst.components.combat.lastattacktype == "projectile"
+	local combat = inst.components.combat
+	local was_projectile = combat ~= nil and combat.lastattacktype == "projectile"
 
 	local delaytime = delay or inst.hit_recovery or TUNING.DEFAULT_HIT_RECOVERY
 	if was_projectile then
@@ -106,8 +107,8 @@ local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
 		skip_cooldown_fn = skip_cooldown_fn or inst._hitreact_skip_cooldown_fn
 		if skip_cooldown_fn ~= nil then
 			on_cooldown = not skip_cooldown_fn(inst, inst._last_hitreact_time, delay)
-		elseif inst.components.combat ~= nil then
-			on_cooldown = not (inst.components.combat:InCooldown() and inst.sg:HasStateTag("idle"))		-- skip the hit react cooldown if the creature is idle but not ready to attack
+		elseif combat then
+			on_cooldown = not (combat:InCooldown() and inst.sg:HasStateTag("idle")) -- skip the hit react cooldown if the creature is idle but not ready to attack
 		else
 			on_cooldown = true
 		end

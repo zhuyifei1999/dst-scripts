@@ -1090,7 +1090,7 @@ local function OnThrown(inst, owner, target, attacker)
 
     inst._attacker = attacker
     inst.components.projectile:SetHitDist(.7)
-    inst.components.updatelooper:AddOnUpdateFn(OnUpdateSkillshot)
+	inst.components.updatelooper:AddOnWallUpdateFn(OnUpdateSkillshot)
 end
 
 local function SetHighProjectile(inst)

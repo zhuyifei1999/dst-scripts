@@ -187,7 +187,7 @@ local function MakeShell(octave, common_postinit, master_postinit, prefabs)
 
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem:SetOnDroppedFn(RegisterActiveShell)
-		inst.components.inventoryitem:SetOnPickupFn(UnregisterActiveShell)
+		inst.components.inventoryitem:SetOnPutInInventoryFn(UnregisterActiveShell)
 		inst.components.inventoryitem:SetSinks(false)
 
 		inst.AnimState:OverrideSymbol("shell_placeholder", "singingshell", octave_str.."_"..inst._variation)

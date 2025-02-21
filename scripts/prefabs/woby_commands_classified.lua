@@ -1,3 +1,7 @@
+local prefabs = {
+    "globalmapicon",
+}
+
 --------------------------------------------------------------------------
 --[[ Dependencies ]]
 --------------------------------------------------------------------------
@@ -60,6 +64,9 @@ local function IsBusy_Server(inst)
 end
 
 local function OnActivateSkill(inst, skill)
+	if inst.load_data_pending then
+		return
+	end
 	local prop = SKILL_TO_PROP[skill]
 	if prop then
 		inst[prop]:set(true)
@@ -76,8 +83,17 @@ end
 local function RefreshAttunedSkills(inst, player)
 	assert(player == inst._parent)
 	local skilltreeupdater = player and player.components.skilltreeupdater or nil
-	for k, v in pairs(SKILL_TO_PROP) do
-		inst[v]:set(skilltreeupdater ~= nil and skilltreeupdater:IsActivated(k))
+	if inst.load_data_pending then
+		for k, v in pairs(SKILL_TO_PROP) do
+			if not (skilltreeupdater and skilltreeupdater:IsActivated(k)) then
+				inst[v]:set(false)
+			end
+		end
+		inst.load_data_pending = nil
+	else
+		for k, v in pairs(SKILL_TO_PROP) do
+			inst[v]:set(skilltreeupdater ~= nil and skilltreeupdater:IsActivated(k))
+		end
 	end
 end
 
@@ -86,11 +102,16 @@ local function InitializePetInst(inst, pet)
 	inst._pet = pet
 	inst.woby:set(pet)
 	inst:ListenForEvent("onremove", inst._onremovepet, pet)
+	inst:ListenForEvent("riderchanged", inst._onriderchanged, pet)
 	--Already has parent when transfering to another prefab, ie. pets that switch prefabs when transforming
 	if inst._parent == nil then
 		inst.entity:SetParent(pet.entity)
 		inst.Network:SetClassifiedTarget(inst)
 	end
+    if inst.sit:value() then
+        inst._pet.components.follower:DisableLeashing()
+        inst:MakeMinimapIcon()
+    end
 end
 
 local function OnRemovePet(inst, pet)
@@ -110,11 +131,16 @@ local function OnRemovePet(inst, pet)
 	end
 end
 
+local function OnRiderChanged(inst, pet, data)
+	inst:RecallWoby(true)
+end
+
 local function NetworkWobyCourier(player)
     if player.components.wobycourier then
         player.components.wobycourier:NetworkLocation()
     end
 end
+
 local function AttachClassifiedToPetOwner(inst, player)
 	assert(inst._pet)
 	assert(inst._parent == nil)
@@ -140,6 +166,7 @@ local function DetachClassifiedFromPet(inst, pet)
 	inst._pet = nil
 	inst.woby:set(nil)
 	inst:RemoveEventCallback("onremove", inst._onremovepet, pet)
+	inst:RemoveEventCallback("riderchanged", inst._onriderchanged, pet)
 	if inst._parent == nil then
 		inst.entity:SetParent(nil)
 	end
@@ -231,12 +258,14 @@ local CmdFns_Server =
 			WobyCommon.RestrictContainer(inst._pet, inst:ShouldLockBag())
 			if inst.sit:value() then
                 inst._pet.components.follower:DisableLeashing()
+                inst:MakeMinimapIcon()
 				if inst._parent then
 					inst._parent:PushEvent("tellwobysit", inst._pet)
 				end
 				ClearBrainActions(inst)
 			else
                 inst._pet.components.follower:EnableLeashing()
+                inst:ClearMinimapIcon()
 				if inst._parent then
 					inst._parent:PushEvent("tellwobyfollow", inst._pet)
 				end
@@ -278,11 +307,7 @@ local CmdFns_Server =
 	--Other
 	[WobyCommon.COMMANDS.AUTOBAGLOCK] = function(inst)
 		if ToggleSkillCommand_Server(inst, "baglock") then
-			if not inst.baglock:value() then
-				WobyCommon.RestrictContainer(inst._pet, false)
-			elseif inst.courierdata == nil then
-				WobyCommon.RestrictContainer(inst._pet, true)
-			end
+			WobyCommon.RestrictContainer(inst._pet, inst.baglock:value())
 			return true
 		end
 		return false
@@ -309,6 +334,7 @@ local function RecallWoby(inst, silent)
 	if inst.sit:value() then
 		inst.sit:set(false)
         inst._pet.components.follower:EnableLeashing()
+        inst:ClearMinimapIcon()
 		if inst._pet.sg and inst._pet.sg:HasStateTag("sitting") then
 			inst._pet.sg.currentstate:HandleEvent(inst._pet.sg, "stop_sitting")
 		end
@@ -351,21 +377,23 @@ end
 local function NoHoles(pt)
     return not TheWorld.Map:IsPointNearHole(pt)
 end
-local function CourierWobyDoTeleport(_pet, courierdata)
+local function CourierWobyDoTeleport(_pet, courierdata, distance_from_dest)
     if courierdata.onspawnfaderout then
         _pet:RemoveEventCallback("spawnfaderout", courierdata.onspawnfaderout)
         _pet:RemoveEventCallback("transform", courierdata.onspawnfaderout)
         courierdata.onspawnfaderout = nil
-        _pet.components.spawnfader:FadeIn()
     end
     local pt = courierdata.destpos
+    local distance_adjustment = 0
     if IsAnyPlayerInRange(pt.x, pt.y, pt.z, 64) then
-        for radius = PLAYER_CAMERA_SEE_DISTANCE, 4, -4 do
-            local offset = FindWalkableOffset(pt, math.random() * TWOPI, radius, math.floor(radius * 0.25), false, true, NoHoles)
+        local radians_from_point = (_pet:GetAngleToPoint(pt.x, pt.y, pt.z) + 180) * DEGREES
+        for radius = TUNING.SKILLS.WALTER.COURIER_FADE_DIST, 4, -4 do
+            local offset = FindWalkableOffset(pt, radians_from_point, radius, math.floor(radius * 0.25), false, true, NoHoles)
             if offset ~= nil then
                 offset.x = offset.x + pt.x
                 offset.z = offset.z + pt.z
                 if IsAnyPlayerInRange(offset.x, pt.y, offset.z, 64) then
+                    distance_adjustment = radius
                     pt = offset
                     break
                 end
@@ -373,6 +401,15 @@ local function CourierWobyDoTeleport(_pet, courierdata)
         end
     end
     _pet.Transform:SetPosition(pt.x, pt.y, pt.z)
+
+    local runspeed = math.max(_pet.components.locomotor:GetRunSpeed() or 1, 1)
+    local time_to_travel = (distance_from_dest - distance_adjustment) / runspeed
+    if time_to_travel > 0 then
+        courierdata.teleporttimetoarrive = time_to_travel
+        _pet:RemoveFromScene()
+    else
+        _pet.components.spawnfader:FadeIn()
+    end
 end
 
 local function CourierWobyShouldTeleport(_pet, courierdata)
@@ -396,6 +433,16 @@ end
 
 local function CourierWobyTick(inst)
     local _pet, courierdata = inst._pet, inst.courierdata
+    if courierdata.teleporttimetoarrive then
+        courierdata.teleporttimetoarrive = courierdata.teleporttimetoarrive - WOBYCOURIER_TICK_PERIOD
+        if courierdata.teleporttimetoarrive > 0 then
+            return -- Still traveling.
+        end
+        courierdata.teleporttimetoarrive = nil
+        _pet:ReturnToScene()
+        _pet.components.spawnfader:FadeIn()
+    end
+
     courierdata.currentpos = _pet:GetPosition()
     local distance_from_dest = (courierdata.currentpos - courierdata.destpos):Length()
     if distance_from_dest < TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS then
@@ -403,7 +450,18 @@ local function CourierWobyTick(inst)
         courierdata.teleported = true
         if courierdata.ischest then
             if _pet.woby_commands_classified.outfordelivery:value() and _pet:IsAsleep() then
-                WobyCommon.WobyCourier_ForceDelivery(_pet, courierdata)
+                if courierdata.deliverypausedtime then
+                    courierdata.deliverypausedtime = courierdata.deliverypausedtime - WOBYCOURIER_TICK_PERIOD
+                    if courierdata.deliverypausedtime < 0 then
+                        courierdata.deliverypausedtime = nil
+                    end
+                end
+                if not courierdata.deliverypausedtime then
+                    WobyCommon.WobyCourier_ForceDelivery(_pet, 1)
+                    if _pet.woby_commands_classified.outfordelivery:value() then
+                        courierdata.deliverypausedtime = 2
+                    end
+                end
             end
             if not _pet.woby_commands_classified.outfordelivery:value() then
                 courierdata.deliveredreturncounter = (courierdata.deliveredreturncounter or 0) + 1
@@ -431,10 +489,10 @@ local function CourierWobyTick(inst)
             if shouldteleport then
                 courierdata.teleported = true
                 if shouldteleportinstantly then
-                    CourierWobyDoTeleport(_pet, courierdata)
+                    CourierWobyDoTeleport(_pet, courierdata, distance_from_dest)
                 else
                     courierdata.onspawnfaderout = function()
-                        CourierWobyDoTeleport(_pet, courierdata)
+                        CourierWobyDoTeleport(_pet, courierdata, distance_from_dest)
                     end
                     _pet:ListenForEvent("spawnfaderout", courierdata.onspawnfaderout)
                     _pet:ListenForEvent("transform", courierdata.onspawnfaderout)
@@ -442,7 +500,7 @@ local function CourierWobyTick(inst)
                 end
             end
         elseif courierdata.onspawnfaderout and _pet:IsAsleep() then
-            CourierWobyDoTeleport(_pet, courierdata)
+            CourierWobyDoTeleport(_pet, courierdata, distance_from_dest)
         end
     end
     courierdata.lastpos = courierdata.currentpos
@@ -476,6 +534,7 @@ local function SendCourierWoby(inst, data)
         inst.couriertask = inst:DoPeriodicTask(WOBYCOURIER_TICK_PERIOD, inst.CourierWobyTick)
         inst.sit:set(true)
         inst._pet.components.follower:DisableLeashing()
+        inst:MakeMinimapIcon()
         ClearBrainActions(inst)
         if distance > TUNING.SKILLS.WALTER.COURIER_CHEST_DETECTION_RADIUS then
             if inst._pet.sg and inst._pet.sg:HasStateTag("sitting") then
@@ -483,9 +542,67 @@ local function SendCourierWoby(inst, data)
             end
         end
 		inst.outfordelivery:set(true)
+		if inst._parent then
+			inst._parent:PushEvent("tellwobycourier", inst._pet)
+		end
 	else
 		inst.outfordelivery:set(false)
     end
+end
+
+local function MakeMinimapIcon(inst)
+    if inst.wobyicon then
+        if inst.wobyicon:IsValid() then
+            inst.wobyicon:Remove()
+        end
+        inst.wobyicon = nil
+    end
+    if inst._parent and inst._parent.userid and inst._parent.userid ~= "" then
+        inst.wobyicon = SpawnPrefab("globalmapicon")
+        inst.wobyicon.MiniMapEntity:SetPriority(10)
+        inst.wobyicon.MiniMapEntity:SetRestriction("player_" .. inst._parent.userid)
+        inst.wobyicon:TrackEntity(inst._pet) -- Handles deleting wobyicon if inst._pet removes.
+    end
+end
+
+local function ClearMinimapIcon(inst)
+    if inst.wobyicon then
+        if inst.wobyicon:IsValid() then
+            inst.wobyicon:Remove()
+        end
+        inst.wobyicon = nil
+    end
+end
+
+local function OnSave(inst)
+	return
+	{
+		sit = inst.sit:value() or nil,
+		pickup = inst.pickup:value() or nil,
+		foraging = inst.foraging:value() or nil,
+		working = inst.working:value() or nil,
+		sprinting = inst.sprinting:value() or nil,
+		shadowdash = inst.shadowdash:value() or nil,
+		bagunlock = not inst.baglock:value() or nil,
+	}
+end
+
+local function OnLoad(inst, data)
+	if inst._parent == nil or inst._parent._PostActivateHandshakeState_Server ~= POSTACTIVATEHANDSHAKE.READY then
+		inst.load_data_pending = true
+	end
+	inst.baglock:set(not data.bagunlock)
+	inst.pickup:set(data.pickup or false)
+	inst.foraging:set(data.foraging or false)
+	inst.working:set(data.working or false)
+	inst.sprinting:set(data.sprinting or false)
+	inst.shadowdash:set(data.shadowdash or false)
+	if data.sit and inst.courierdata == nil and not inst.sit:value() then
+		inst.sit:set(true)
+		inst._pet.components.follower:DisableLeashing()
+        inst:MakeMinimapIcon()
+		ClearBrainActions(inst)
+	end
 end
 
 --------------------------------------------------------------------------
@@ -696,7 +813,6 @@ local function fn()
 	inst.working = net_bool(inst.GUID, "woby_commands.working", "isdirty")
 	inst.sprinting = net_bool(inst.GUID, "woby_commands.sprinting", "sprintingdirty") -- attn: special handler!
 	inst.shadowdash = net_bool(inst.GUID, "woby_commands.shadowdash", "isdirty")
-	inst.baglock = net_bool(inst.GUID, "woby_commands.baglock", "isdirty")
 	inst.outfordelivery = net_bool(inst.GUID, "woby_commands.outfordelivery")
     -- NOTES(JBK): Put the chest position last since this does not change often.
     inst.chest_posx = net_float(inst.GUID, "woby_commands.chest_posx", "chest_posdirty")
@@ -704,6 +820,7 @@ local function fn()
     inst.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
     inst.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
 
+	inst.baglock = net_bool(inst.GUID, "woby_commands.baglock", "isdirty")
     inst.baglock:set(true)
 
 	--Delay net listeners until after initial values are deserialized
@@ -753,8 +870,14 @@ local function fn()
     inst.GetCourierData = GetCourierData
     inst.SendCourierWoby = SendCourierWoby
     inst.CourierWobyTick = CourierWobyTick
+    inst.MakeMinimapIcon = MakeMinimapIcon
+    inst.ClearMinimapIcon = ClearMinimapIcon
+
+	inst.OnSave = OnSave
+	inst.OnLoad = OnLoad
 
 	inst._onremovepet = function(pet) OnRemovePet(inst, pet) end
+	inst._onriderchanged = function(pet, data) OnRiderChanged(inst, pet, data) end
 	inst._onremoveplayer = function(player) OnRemovePlayer(inst, player) end
 	inst._onactivateskill = function(player, data) OnActivateSkill(inst, data and data.skill or nil) end
 	inst._ondeactivateskill = function(player, data) OnDeactivateSkill(inst, data and data.skill or nil) end
@@ -768,4 +891,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("woby_commands_classified", fn)
+return Prefab("woby_commands_classified", fn, nil, prefabs)

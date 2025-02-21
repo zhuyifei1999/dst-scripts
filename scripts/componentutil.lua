@@ -718,6 +718,7 @@ PICKABLE_FOOD_PRODUCTS =
     cutlichen = true,
     green_cap = true,
     red_cap = true,
+    wormlight_lesser = true,
 }
 
 function IsFoodSourcePickable(inst)

@@ -1262,8 +1262,20 @@ local COMPONENT_ACTIONS =
 		end,
 
         healer = function(inst, doer, target, actions)
-            if target.replica.health ~= nil and (target.replica.health:CanHeal() or inst:HasTag("healerbuffs")) then
-                table.insert(actions, ACTIONS.HEAL)
+			local health = target.replica.health
+			if health and (health:CanHeal() or inst:HasTag("healerbuffs")) then
+				local rider = doer.replica.rider
+				if not (rider and rider:IsRiding()) then
+					rider = target.replica.rider
+					if not (rider and rider:IsRiding()) then
+						table.insert(actions, ACTIONS.HEAL)
+					end
+				else
+					local inventoryitem = target.replica.inventoryitem
+					if inventoryitem and inventoryitem:IsGrandOwner(doer) then
+						table.insert(actions, ACTIONS.HEAL)
+					end
+				end
             end
         end,
 
@@ -1297,27 +1309,35 @@ local COMPONENT_ACTIONS =
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
                 end
             elseif target:HasTag("player") then
-                if not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
-                    not target:HasTag("wereplayer") and
-                    not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) then
-                    table.insert(actions,
-                        not (doer.components.playercontroller ~= nil and
-                            doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)) and
-                        inst.replica.stackable ~= nil and
-                        inst.replica.stackable:IsStack() and
-                        ACTIONS.GIVEALLTOPLAYER or
-                        ACTIONS.GIVETOPLAYER)
-                end
-            elseif not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
-                if target:HasTag("alltrader") then
-                    table.insert(actions, ACTIONS.GIVE)
-                elseif inst:HasTag("reviver") and target:HasTag("ghost") then
-                    table.insert(actions, ACTIONS.GIVE)
-                elseif target:HasTag("boatcannon") and not target:HasTag("burnt") and not target:HasTag("fire") and inst:HasTag("boatcannon_ammo") and not target:HasTag("ammoloaded") then
-                    table.insert(actions, ACTIONS.BOAT_CANNON_LOAD_AMMO)
-                elseif target:HasTag("inventoryitemholder_give") and not target:HasTag("burnt") and not target:HasTag("fire") then
-                    table.insert(actions, ACTIONS.GIVE)
-                end
+				if not right then
+					local rider = target.replica.rider
+					if not (rider and rider:IsRiding()) and
+						not target:HasTag("wereplayer") and
+						not (GetGameModeProperty("non_item_equips") and inst.replica.equippable)
+					then
+						local giveall
+						if not (doer.components.playercontroller and doer.components.playercontroller:IsControlPressed(CONTROL_FORCE_STACK)) then
+							local stackable = inst.replica.stackable
+							giveall = stackable ~= nil and stackable:IsStack()
+						end
+						table.insert(actions, giveall and ACTIONS.GIVEALLTOPLAYER or ACTIONS.GIVETOPLAYER)
+					end
+				end
+			else
+				local rider = doer.replica.rider
+				if not (rider and rider:IsRiding()) then
+					if target:HasTag("alltrader") then
+						if not right then
+							table.insert(actions, ACTIONS.GIVE)
+						end
+					elseif inst:HasTag("reviver") and target:HasTag("ghost") then
+						table.insert(actions, ACTIONS.GIVE)
+					elseif inst:HasTag("boatcannon_ammo") and target:HasTag("boatcannon") and not target:HasAnyTag("burnt", "fire", "ammoloaded") then
+						table.insert(actions, ACTIONS.BOAT_CANNON_LOAD_AMMO)
+					elseif target:HasTag("inventoryitemholder_give") and not target:HasAnyTag("burnt", "fire") then
+						table.insert(actions, ACTIONS.GIVE)
+					end
+				end
             end
         end,
 
@@ -1364,8 +1384,20 @@ local COMPONENT_ACTIONS =
         end,
 
         maxhealer = function(inst, doer, target, actions)
-            if target.replica.health ~= nil and target.replica.health:CanHeal() then
-                table.insert(actions, ACTIONS.HEAL)
+			local health = target.replica.health
+			if health and health:CanHeal() then
+				local rider = doer.replica.rider
+				if not (rider and rider:IsRiding()) then
+					rider = target.replica.rider
+					if not (rider and rider:IsRiding()) then
+						table.insert(actions, ACTIONS.HEAL)
+					end
+				else
+					local inventoryitem = target.replica.inventoryitem
+					if inventoryitem and inventoryitem:IsGrandOwner(doer) then
+						table.insert(actions, ACTIONS.HEAL)
+					end
+				end
             end
         end,
 
@@ -2626,6 +2658,22 @@ local COMPONENT_ACTIONS =
                 end
             end
         end,
+
+		slingshotmodder = function(inst, doer, actions)
+			local inventory = doer.replica.inventory
+			local containers = inventory and inventory:GetOpenContainers() or nil
+			if containers then
+				for k in pairs(containers) do
+					if k.prefab == "slingshotmodscontainer" then
+						table.insert(actions, ACTIONS.STOPMODSLINGSHOT)
+						return
+					end
+				end
+			end
+			if doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_slingshot_modding") then
+				table.insert(actions, ACTIONS.MODSLINGSHOT)
+			end
+		end,
 
         summoningitem = function(inst, doer, actions)
 			if doer:HasTag("ghostfriend_notsummoned") then

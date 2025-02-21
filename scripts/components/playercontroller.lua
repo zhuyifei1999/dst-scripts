@@ -450,8 +450,8 @@ function PlayerController:PullUpMap(maptarget, forced_actiondef)
 			local min_dist = maptarget.map_remap_min_dist
 			if min_dist then
 				min_dist = min_dist + 0.1 -- Padding for floating point precision.
-				local x, y, z = inst.Transform:GetWorldPosition()
-				local rotation = inst.Transform:GetRotation() * DEGREES
+				local x, y, z = self.inst.Transform:GetWorldPosition()
+				local rotation = self.inst.Transform:GetRotation() * DEGREES
 				local wx, wz = x + math.cos(rotation) * min_dist, z - math.sin(rotation) * min_dist -- Z offset is negative to desired from Transform coordinates.
 				self.inst.HUD.controls:FocusMapOnWorldPosition(mapscreen, wx, wz)
 			end

@@ -11,10 +11,10 @@ function SlingshotMods:CanBeOpenedBy(doer)
 	if not (doer.components.skilltreeupdater and doer.components.skilltreeupdater:IsActivated("walter_slingshot_modding")) then
 		return false
 	end
-	local equippable = self.inst.replica.equippable
+	--[[local equippable = self.inst.replica.equippable
 	if equippable and equippable:IsEquipped() then
 		return false
-	end
+	end]]
 	local inventoryitem = self.inst.replica.inventoryitem
 	if not (inventoryitem and inventoryitem:IsGrandOwner(doer)) then
 		return false
@@ -97,7 +97,7 @@ function SlingshotMods:CreateContainer_Internal()
 		self.containerinst.Network:SetClassifiedTarget(self.containerinst)
 		self.containerinst.install_target = self.inst
 
-		self.inst:ListenForEvent("equipped", doclose)
+		--self.inst:ListenForEvent("equipped", doclose)
 		self.inst:ListenForEvent("ondropped", doclose)
 
 		self.opener = nil
@@ -112,7 +112,7 @@ function SlingshotMods:TransferPartsTo(other) --other is also a slingshotmod com
 	if not self.ismastersim then
 		return
 	elseif self.containerinst and other.containerinst == nil then
-		self.inst:RemoveEventCallback("equipped", doclose)
+		--self.inst:RemoveEventCallback("equipped", doclose)
 		self.inst:RemoveEventCallback("ondropped", doclose)
 
 		other.containerinst = self.containerinst
@@ -120,7 +120,7 @@ function SlingshotMods:TransferPartsTo(other) --other is also a slingshotmod com
 		other.containerinst.install_target = other.inst
 		self.containerinst = nil
 
-		other.inst:ListenForEvent("equipped", doclose)
+		--other.inst:ListenForEvent("equipped", doclose)
 		other.inst:ListenForEvent("ondropped", doclose)
 
 		other.containerinst.components.container:ForEachItem(transferinstall, other.inst)
@@ -146,9 +146,9 @@ function SlingshotMods:Open(opener)
 		end
 
 		if self.containerinst.components.container:CanOpen() and
-			not (	self.inst.components.equippable and
+			--[[not (	self.inst.components.equippable and
 					self.inst.components.equippable:IsEquipped()
-				) and
+				) and]]
 			self.inst.components.inventoryitem and
 			self.inst.components.inventoryitem:GetGrandOwner() == opener
 		then
@@ -164,18 +164,21 @@ function SlingshotMods:Open(opener)
 	return false
 end
 
-function SlingshotMods:Close()
-	if not self.ismastersim or self.containerinst == nil then
+function SlingshotMods:Close(opener)
+	if not self.ismastersim then
 		return
+	elseif self.containerinst == nil or (opener and opener ~= self.opener) then
+		return false
 	end
-	self.containerinst.components.container:Close()
+	self.containerinst.components.container:Close(opener)
 	self.containerinst.Network:SetClassifiedTarget(self.containerinst)
 	if self.opener then
 		self.inst:StopUpdatingComponent(self)
-		local opener = self.opener
+		opener = self.opener
 		self.opener = nil
 		opener:PushEvent("ms_slingshotmodsclosed")
 	end
+	return true
 end
 
 function SlingshotMods:OnUpdate(dt)

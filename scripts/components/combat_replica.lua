@@ -8,6 +8,7 @@ local Combat = Class(function(self, inst)
 
     if TheWorld.ismastersim then
         self.classified = inst.player_classified
+		--self.temp_iframes_keep_aggro = nil --for targets that have i-frames, but don't want to deaggro
     elseif self.classified == nil and inst.player_classified ~= nil then
         self:AttachClassified(inst.player_classified)
     end
@@ -327,8 +328,8 @@ function Combat:CanTarget(target)
         and not (self._ispanic:value()
                 or target:HasTag("INLIMBO")
                 or target:HasTag("notarget")
-                or target:HasTag("invisible")
                 or target:HasTag("debugnoattack"))
+		and (self.temp_iframes_keep_aggro or not target:HasTag("invisible"))
         and (target.replica.combat == nil
             or target.replica.combat:CanBeAttacked(self.inst))
         and (rider == nil or (not rider:IsRiding() or (not rider:GetMount():HasTag("peacefulmount") or is_ranged_weapon)))
@@ -386,9 +387,13 @@ end
 
 function Combat:CanBeAttacked(attacker)
     if self.inst:HasTag("playerghost") or
-        self.inst:HasTag("noattack") or
         self.inst:HasTag("flight") or
-        self.inst:HasTag("invisible") then
+		(	not self.temp_iframes_keep_aggro and
+			(	self.inst:HasTag("noattack") or
+				self.inst:HasTag("invisible")
+			)
+		)
+	then
         --Can't be attacked by anyone
         return false
 	end

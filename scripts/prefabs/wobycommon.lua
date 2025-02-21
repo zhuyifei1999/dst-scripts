@@ -64,7 +64,7 @@ local COMMANDS = table.invert(COMMAND_NAMES)
 --------------------------------------------------------------------------
 
 local ICON_SCALE = 0.6
-local ICON_RADIUS = 50
+local ICON_RADIUS = 60
 local SPELLBOOK_RADIUS = 120
 local SPELLBOOK_FOCUS_RADIUS = SPELLBOOK_RADIUS-- + 2
 
@@ -76,8 +76,17 @@ local function MakeWobyCommand(cmd)
 	end
 end
 
+local function SetupMouseOver(w)
+	--V2C: using Image widget for mouseover hitbox, since anim hitbox is not accurate
+	w.uianim:SetClickable(false)
+	w.mouseover = w:AddChild(Image())
+	w.mouseover:SetRadiusForRayTraces(ICON_RADIUS)
+	w.mouseover:MoveToBack()
+end
+
 local function MakeAutocastToggle(name)
 	return function(w)
+		SetupMouseOver(w)
 		w.ring = w:AddChild(UIAnim())
 		w.ring:GetAnimState():SetBank("spell_icons_woby")
 		w.ring:GetAnimState():SetBuild("spell_icons_woby")
@@ -130,6 +139,7 @@ local COMMAND_DEFS =
 			down = { anim = "pet_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = SetupMouseOver,
 	},
 
 	MOUNT =
@@ -149,6 +159,8 @@ local COMMAND_DEFS =
 			down = { anim = "mount_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = SetupMouseOver,
+		default_focus = true,
 	},
 
 	SHRINK =
@@ -168,6 +180,7 @@ local COMMAND_DEFS =
 			down = { anim = "forcetransform_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = SetupMouseOver,
 	},
 
 	SIT =
@@ -270,6 +283,7 @@ local COMMAND_DEFS =
 			down = { anim = "rememberchest_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = SetupMouseOver,
 		skill = "walter_camp_wobycourier",
 	},
 
@@ -295,10 +309,11 @@ local COMMAND_DEFS =
 			down = { anim = "courier_pressed" },
 		},
 		widget_scale = ICON_SCALE,
+		postinit = SetupMouseOver,
 		skill = "walter_camp_wobycourier",
 	},
 
-	EMPTYSPACE =
+	BLANK =
 	{
 		label = "",
 		bank = "spell_icons_woby",
@@ -309,6 +324,22 @@ local COMMAND_DEFS =
 		},
 		widget_scale = ICON_SCALE,
 		checkenabled = function() return false end,
+		noselect = true,
+	},
+
+	SPACER =
+	{
+		label = "",
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			disabled = { anim = "empty" },
+		},
+		widget_scale = ICON_SCALE,
+		checkenabled = function() return false end,
+		noselect = true,
+		spacer = true,
 	},
 }
 
@@ -390,20 +421,25 @@ local function RefreshCommands(inst, player)
 	local isbig = inst:HasTag("largecreature")
 	local j = 1
 
-	inst._spells[1] = COMMAND_DEFS.EMPTYSPACE
+	inst._spells[1] = COMMAND_DEFS.SPACER
 	j = j + 1
 
 	for i, v in ipairs(isbig and BIG_SPELLS_RIGHT or SMALL_SPELLS_RIGHT) do
 		if v.skill == nil or (skilltreeupdater and skilltreeupdater:IsActivated(v.skill)) then
 			inst._spells[j] = v
-			j = j + 1
+		else
+			inst._spells[j] = COMMAND_DEFS.BLANK
 		end
-	end
-
-	for i = j, 6 do
-		inst._spells[j] = COMMAND_DEFS.EMPTYSPACE
 		j = j + 1
 	end
+
+	for i = j, 5 do
+		inst._spells[j] = COMMAND_DEFS.BLANK
+		j = j + 1
+	end
+
+	inst._spells[j] = COMMAND_DEFS.SPACER
+	j = j + 1
 
 	for i, v in ipairs(isbig and BIG_SPELLS_LEFT or SMALL_SPELLS_LEFT) do
 		if v.skill == nil or (skilltreeupdater and skilltreeupdater:IsActivated(v.skill)) then
@@ -418,7 +454,7 @@ local function RefreshCommands(inst, player)
 			inst._spells[i + shift] = inst._spells[i]
 		end
 		for i = 7, 7 + shift - 1 do
-			inst._spells[i] = COMMAND_DEFS.EMPTYSPACE
+			inst._spells[i] = COMMAND_DEFS.BLANK
 		end
 	end
 end
@@ -486,7 +522,7 @@ end
 local CONTAINER_MUST_TAGS = { "_container" }
 local CONTAINER_CANT_TAGS = { "companion", "portablestorage", "mermonly", "mastercookware", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 local ALLOWED_CONTAINER_TYPES = { "chest", "pack" }
-local function WobyCourier_ForceDelivery(_pet)
+local function WobyCourier_ForceDelivery(_pet, itemcountmax)
     local courierdata = _pet.woby_commands_classified.courierdata
     local platform = _pet:GetCurrentPlatform()
     local pt = courierdata.destpos
@@ -502,6 +538,7 @@ local function WobyCourier_ForceDelivery(_pet)
             table.insert(validchests, ent)
         end
     end
+    local itemcount = 0
     -- First loop try to find chests that have items already in Woby to deliver.
     for _, ent in ipairs(validchests) do
         for slot, item in pairs(_pet.components.container.slots) do
@@ -509,6 +546,10 @@ local function WobyCourier_ForceDelivery(_pet)
             if item and ent.components.container:Has(item.prefab, 1) and ent.components.container:CanAcceptCount(item) >= stacksize then
                 item = _pet.components.container:RemoveItemBySlot(slot)
                 ent.components.container:GiveItem(item, nil, pt, true)
+                itemcount = itemcount + 1
+                if itemcountmax and itemcount >= itemcountmax then
+                    return
+                end
             end
         end
     end
@@ -519,6 +560,10 @@ local function WobyCourier_ForceDelivery(_pet)
             if item and ent.components.container:CanAcceptCount(item) >= stacksize then
                 item = _pet.components.container:RemoveItemBySlot(slot)
                 ent.components.container:GiveItem(item, nil, pt, true)
+                itemcount = itemcount + 1
+                if itemcountmax and itemcount >= itemcountmax then
+                    return
+                end
             end
         end
     end
@@ -583,6 +628,22 @@ end
 
 --------------------------------------------------------------------------
 
+local RESKIN_MUST_HAVE_LUNAR = {"_lunar",}
+local RESKIN_MUST_HAVE_SHADOW = {"_shadow",}
+local RESKIN_MUST_NOT_HAVE_LUNARSHADOW = {"_lunar", "_shadow",}
+local function ReskinToolFilterFn(inst)
+    local build = inst.AnimState:GetBuild()
+    local must_have, must_not_have
+    if build:find("_lunar") then
+        return RESKIN_MUST_HAVE_LUNAR, nil
+    elseif build:find("_shadow") then
+        return RESKIN_MUST_HAVE_SHADOW, nil
+    end
+    return nil, RESKIN_MUST_NOT_HAVE_LUNARSHADOW
+end
+
+--------------------------------------------------------------------------
+
 return
 {
 	FLAGBITS = FLAGBITS,
@@ -595,7 +656,9 @@ return
 	RefreshCommands = RefreshCommands,
 	MakeWobyCommand = MakeWobyCommand,
 	MakeAutocastToggle = MakeAutocastToggle,
+	SetupMouseOver = SetupMouseOver,
     WobyCourier_ForceDelivery = WobyCourier_ForceDelivery,
     WobyCourier_FindValidContainerForItem = WobyCourier_FindValidContainerForItem,
 	RestrictContainer = RestrictContainer,
+    ReskinToolFilterFn = ReskinToolFilterFn,
 }

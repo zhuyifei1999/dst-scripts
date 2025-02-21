@@ -8,19 +8,12 @@ local function ResetInUse(inst)
 end
 
 local function OnUsed(inst, target, user)
-	if target.components.linkeditem and target.components.linkeditem:IsEquippableRestrictedToOwner() then
-		local owneruserid = target.components.linkeditem:GetOwnerUserID()
-		if owneruserid and (user and user.userid) ~= owneruserid then
-			return false, "NOT_MINE"
-		end
-	end
-
-	if target.components.slingshotmods and target.components.slingshotmods:Open(user) then
+	local success, reason = inst.components.slingshotmodder:StartModding(target, user)
+	if success then
 		--We don't need to lock this item as "inuse"
 		inst:DoStaticTaskInTime(0, ResetInUse)
-		return true
 	end
-	return false
+	return success, reason
 end
 
 local function UseableTargetedItem_ValidTarget(inst, target, doer)
@@ -63,6 +56,8 @@ local function fn()
 	inst:AddComponent("useabletargeteditem")
 	inst.components.useabletargeteditem:SetOnUseFn(OnUsed)
 	inst.components.useabletargeteditem:SetUseableMounted(true)
+
+	inst:AddComponent("slingshotmodder")
 
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	MakeSmallPropagator(inst)

@@ -395,6 +395,7 @@ local Wisecracker = Class(function(self, inst)
 		inst:ListenForEvent("tellwobyfollow",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FOLLOW",	12,	6,	0) end)
 		inst:ListenForEvent("tellwobyforage",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_FORAGE",	8,	30,	4) end)
 		inst:ListenForEvent("tellwobywork",		function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_WORK",	8,	30,	4) end)
+		inst:ListenForEvent("tellwobycourier",	function(inst, woby) talktowoby(inst, woby, "ANNOUNCE_WOBY_COURIER",12,	3,	0) end)
 		inst:ListenForEvent("callwoby", function(inst, woby)
 			if callwobytask then
 				callwobytask:Cancel()

@@ -1078,7 +1078,8 @@ STRINGS =
 
         GRAVEDIG = "Beckon",
 
-		MODSLINGSHOT = "Apply",
+		MODSLINGSHOT = "Mod Slingshot", --see USEITEMON.SLINGSHOTMODKIT
+		STOPMODSLINGSHOT = "Stop Modding",
 		CONTAINER_INSTALL_ITEM =
 		{
 			GENERIC = "Install",
@@ -15346,13 +15347,13 @@ STRINGS.SKILLTREE = {
 		WALTER_SLINGSHOT_MODDING_DESC = "Learn to craft the Slingshot Field Kit and some basic parts for customizing your Slingshot.",
 
 		WALTER_SLINGSHOT_HANDLES_TITLE = "Advanced Grips",
-		WALTER_SLINGSHOT_HANDLES_DESC = "Learn to craft advanced grips that improve the firing rate of a Slingshot, and may have additional bonus effects.",
+		WALTER_SLINGSHOT_HANDLES_DESC = "Learn to craft advanced grips that enhance your Slingshot by increasing the firing rate, and providing additional bonus effects.",
 
 		WALTER_SLINGSHOT_BANDS_TITLE = "Advanced Bands",
-		WALTER_SLINGSHOT_BANDS_DESC = "Learn to craft advanced bands that improve the firing distance of a Slingshot, and may have additional bonus effects.",
+		WALTER_SLINGSHOT_BANDS_DESC = "Learn to craft advanced bands that enhance your Slingshot by increasing its firing distance, boosting projectile speed, and may have additional bonus effects.",
 
 		WALTER_SLINGSHOT_FRAMES_TITLE = "Advanced Frames",
-		WALTER_SLINGSHOT_FRAMES_DESC = "Learn to craft advanced frames that add a secondary alternate Slingshot attack, and may have additional bonus effects.",
+		WALTER_SLINGSHOT_FRAMES_DESC = "Learn to craft advanced frames that enable a secondary, alternate Slingshot attack, and may have additional bonus effects.",
 
         -- WOBY
 

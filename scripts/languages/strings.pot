@@ -1185,7 +1185,7 @@ msgstr ""
 
 #. STRINGS.ACTIONS.MODSLINGSHOT
 msgctxt "STRINGS.ACTIONS.MODSLINGSHOT"
-msgid "Apply"
+msgid "Mod Slingshot"
 msgstr ""
 
 #. STRINGS.ACTIONS.MOUNT
@@ -1761,6 +1761,11 @@ msgstr ""
 #. STRINGS.ACTIONS.STOPCONSTRUCTION.REPAIR
 msgctxt "STRINGS.ACTIONS.STOPCONSTRUCTION.REPAIR"
 msgid "Stop Repairing"
+msgstr ""
+
+#. STRINGS.ACTIONS.STOPMODSLINGSHOT
+msgctxt "STRINGS.ACTIONS.STOPMODSLINGSHOT"
+msgid "Stop Modding"
 msgstr ""
 
 #. STRINGS.ACTIONS.STOPUSINGITEM.BEEF_BELL
@@ -4366,6 +4371,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MARK.NOT_PARTICIPANT
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MARK.NOT_PARTICIPANT"
 msgid "I've got no steak in this contest."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MODSLINGSHOT.NOSLINGSHOT
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MODSLINGSHOT.NOSLINGSHOT"
+msgid "only_used_by_walter"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MOUNT.INUSE
@@ -22291,6 +22301,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MARK.NOT_PARTICIPANT
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MARK.NOT_PARTICIPANT"
 msgid "Woby and I will just watch for this round."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MODSLINGSHOT.NOSLINGSHOT
+msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MODSLINGSHOT.NOSLINGSHOT"
+msgid "I don't have a slingshot to mod!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MOUNT.INUSE
@@ -329175,7 +329190,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_DESC"
-msgid "Learn to craft advanced bands that improve the firing distance of a Slingshot, and may have additional bonus effects."
+msgid "Learn to craft advanced bands that enhance your Slingshot by increasing its firing distance, boosting projectile speed, and may have additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_BANDS_TITLE
@@ -329185,7 +329200,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_DESC"
-msgid "Learn to craft advanced frames that add a secondary alternate Slingshot attack, and may have additional bonus effects."
+msgid "Learn to craft advanced frames that enable a secondary, alternate Slingshot attack, and may have additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_FRAMES_TITLE
@@ -329195,7 +329210,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_DESC"
-msgid "Learn to craft advanced grips that improve the firing rate of a Slingshot, and may have additional bonus effects."
+msgid "Learn to craft advanced grips that enhance your Slingshot by increasing the firing rate, and providing additional bonus effects."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_SLINGSHOT_HANDLES_TITLE

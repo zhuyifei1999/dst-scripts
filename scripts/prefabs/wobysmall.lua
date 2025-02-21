@@ -47,7 +47,6 @@ local function _ApplyAlignmentOverrides_Internal(inst, alignment, skin_build)
 	local base_build = base_name.."_build"
 	if skin_build then
 		if alignment then
-			skin_build = skin_build:gsub("pupington_woby", base_name)
 			for _, symbol in ipairs(WobyCommon.SMALL_SYMBOLS) do
 				inst.AnimState:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, base_build)
 			end
@@ -56,6 +55,7 @@ local function _ApplyAlignmentOverrides_Internal(inst, alignment, skin_build)
 			inst.AnimState:ClearOverrideBuild(base_build)
 		end
 	else
+        inst.AnimState:ClearOverrideBuild(base_build)
 		inst.AnimState:SetBuild(base_build)
 	end
 end
@@ -68,7 +68,7 @@ local function _ApplyBigBuildOverrides_Internal(inst, alignment, skin_build)
 	end
 	local base_build = base_name.."_build"
 	if skin_build then
-		skin_build = skin_build:gsub("pupington_woby", base_name)
+		skin_build = skin_build:gsub("pupington_woby", "woby_big")
 		for _, symbol in ipairs(WobyCommon.BIG_SYMBOLS) do
 			inst.AnimState:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, base_build)
 		end
@@ -79,10 +79,12 @@ end
 
 local function ShowRackItem(inst, slot, name, build)
 	inst.AnimState:OverrideSymbol("swap_dried"..tostring(slot), build, name)
+	inst.AnimState:OverrideSymbol("rope"..tostring(slot), "woby_rack", "rope")
 end
 
 local function HideRackItem(inst, slot)
 	inst.AnimState:ClearOverrideSymbol("swap_dried"..tostring(slot))
+	inst.AnimState:OverrideSymbol("rope"..tostring(slot), "woby_rack", "rope_empty")
 end
 
 --Used by sg: this applies wobybig normal/alignment overrides during transform state
@@ -97,6 +99,9 @@ local function ApplyBigBuildOverrides(inst)
 				local item, name, build = inst.components.wobyrack:GetItemInSlot(i)
 				if item then
 					inst.AnimState:OverrideSymbol("swap_dried"..tostring(i), build, name)
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope")
+				else
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope_empty")
 				end
 			end
 		end
@@ -114,17 +119,20 @@ end
 
 local function SetAlignmentBuild(inst, alignment)
 	if inst.alignment ~= alignment then
-		local skin_build = inst:GetSkinBuild()
-		if inst._hasbigbuild then
-			_ApplyBigBuildOverrides_Internal(inst, alignment, skin_build)
-		end
-		_ApplyAlignmentOverrides_Internal(inst, alignment, skin_build)
-
 		if inst.pet_hunger_classified then
 			inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.LUNAR, alignment == "lunar")
 			inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.SHADOW, alignment == "shadow")
 		end
 		inst.alignment = alignment
+        local skin_build = inst:GetSkinBuild()
+        if skin_build then
+            skin_build = skin_build:gsub("_lunar", ""):gsub("_shadow", "")
+            if inst.alignment then
+                skin_build = skin_build .. "_" .. inst.alignment
+            end
+        end
+        TheSim:ReskinEntity(inst.GUID, inst.skinname, skin_build, nil, inst._playerlink.userid)
+        inst:OnWobySkinChanged(skin_build)
 	end
 end
 
@@ -152,6 +160,9 @@ local function EnableRack(inst, enable)
 			inst.AnimState:OverrideSymbol("swap_rack", "woby_rack", "swap_rack")
 			if inst._hasbigbuild then
 				inst.AnimState:AddOverrideBuild("woby_rack")
+				for i = 1, 3 do
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope_empty")
+				end
 				inst.components.wobyrack:SetShowItemFn(ShowRackItem)
 				inst.components.wobyrack:SetHideItemFn(HideRackItem)
 			end
@@ -167,6 +178,7 @@ local function EnableRack(inst, enable)
 		if inst._hasbigbuild then
 			inst.AnimState:ClearOverrideBuild("woby_rack")
 			for i = 1, 3 do
+				inst.AnimState:ClearOverrideSymbol("rope"..tostring(i))
 				inst.AnimState:ClearOverrideSymbol("swap_dried"..tostring(i))
 			end
 		end
@@ -614,7 +626,11 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+    inst.MiniMapEntity:SetIcon("wobysmall.png")
+    inst.MiniMapEntity:SetCanUseCache(false)
 
     inst.DynamicShadow:SetSize(1.75, 1)
     inst.Transform:SetFourFaced()
@@ -757,6 +773,7 @@ local function fn()
 
 	inst.ApplyBigBuildOverrides = ApplyBigBuildOverrides
 	inst.OnWobySkinChanged = OnWobySkinChanged
+    inst.ReskinToolFilterFn = WobyCommon.ReskinToolFilterFn
 
 	inst.OnPreLoad = OnPreLoad
     inst.persists = false

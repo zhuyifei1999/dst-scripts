@@ -399,12 +399,15 @@ local function RecallNode(inst, follownode)
 					return false
 				end),
 			},
-			ConditionNode(function()
-				if inst.woby_commands_classified then
-					inst.woby_commands_classified:CancelRecall()
-				end
-				return false
-			end),
+			SequenceNode{
+				WaitNode(1.25),
+				ConditionNode(function()
+					if inst.woby_commands_classified then
+						inst.woby_commands_classified:CancelRecall()
+					end
+					return false
+				end),
+			},
 		}, 0.25))
 end
 

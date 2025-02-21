@@ -53,19 +53,19 @@ local function _ApplyAlignmentOverrides_Internal(inst, animstate, alignment, ski
 	local base_build = base_name.."_build"
 	if skin_build then
 		if alignment then
-			skin_build = skin_build:gsub("woby_big", base_name)
 			for _, symbol in ipairs(WobyCommon.BIG_SYMBOLS) do
 				animstate:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, base_build)
 			end
 		else
 			--Lunar/shadow builds have the same symbols as the base build
-			inst.AnimState:ClearOverrideBuild(base_build)
+			animstate:ClearOverrideBuild(base_build)
 		end
-	elseif animstate == inst.AnimState then
-		animstate:SetBuild(base_build)
-	else
-		animstate:AddOverrideBuild(base_build)
-	end
+    elseif animstate == inst.AnimState then
+        animstate:ClearOverrideBuild(base_build)
+        animstate:SetBuild(base_build)
+    else
+        animstate:AddOverrideBuild(base_build)
+    end
 end
 
 --This applies wobysmall normal/alignment overrides
@@ -76,7 +76,7 @@ local function _ApplySmallBuildOverrides_Internal(inst, alignment, skin_build)
 	end
 	local base_build = base_name.."_build"
 	if skin_build then
-		skin_build = skin_build:gsub("woby_big", base_name)
+		skin_build = skin_build:gsub("woby_big", "pupington_woby")
 		for _, symbol in ipairs(WobyCommon.SMALL_SYMBOLS) do
 			inst.AnimState:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, base_build)
 		end
@@ -107,6 +107,9 @@ local function ApplySmallBuildOverrides(inst)
 				local item, name, build = inst.components.wobyrack:GetItemInSlot(i)
 				if item then
 					inst.AnimState:OverrideSymbol("swap_dried"..tostring(i), build, name)
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope")
+				else
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope_empty")
 				end
 			end
 		end
@@ -128,21 +131,20 @@ end
 
 local function SetAlignmentBuild(inst, alignment)
 	if inst.alignment ~= alignment then
-		local skin_build = inst:GetSkinBuild()
-		if inst._hassmallbuild then
-			_ApplySmallBuildOverrides_Internal(inst, alignment, skin_build)
-		end
-		local rider = inst.components.rideable:GetRider()
-		if rider then
-			_ApplyAlignmentOverrides_Internal(inst, rider.AnimState, alignment, skin_build)
-		end
-		_ApplyAlignmentOverrides_Internal(inst, inst.AnimState, alignment, skin_build)
-
 		if inst.pet_hunger_classified then
 			inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.LUNAR, alignment == "lunar")
 			inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.SHADOW, alignment == "shadow")
 		end
 		inst.alignment = alignment
+        local skin_build = inst:GetSkinBuild()
+        if skin_build then
+            skin_build = skin_build:gsub("_lunar", ""):gsub("_shadow", "")
+            if inst.alignment then
+                skin_build = skin_build .. "_" .. inst.alignment
+            end
+        end
+        TheSim:ReskinEntity(inst.GUID, inst.skinname, skin_build, nil, inst._playerlink.userid)
+        inst:OnWobySkinChanged(skin_build)
 	end
 end
 
@@ -185,6 +187,7 @@ local function ShowRackItem(inst, slot, name, build)
 	inst.rackfx2:ShowRackItem(slot, name, build)
 	if inst._hassmallbuild then
 		inst.AnimState:OverrideSymbol("swap_dried"..tostring(slot), build, name)
+		inst.AnimState:OverrideSymbol("rope"..tostring(slot), "woby_rack", "rope")
 	end
 end
 
@@ -193,6 +196,7 @@ local function HideRackItem(inst, slot)
 	inst.rackfx2:HideRackItem(slot)
 	if inst._hassmallbuild then
 		inst.AnimState:ClearOverrideSymbol("swap_dried"..tostring(slot))
+		inst.AnimState:OverrideSymbol("rope"..tostring(slot), "woby_rack", "rope_empty")
 	end
 end
 
@@ -211,6 +215,9 @@ local function EnableRack(inst, enable)
 			SetRackFxOwner(inst, inst.components.rideable:GetRider())
 			if inst._hassmallbuild then
 				inst.AnimState:AddOverrideBuild("woby_rack")
+				for i = 1, 3 do
+					inst.AnimState:OverrideSymbol("rope"..tostring(i), "woby_rack", "rope_empty")
+				end
 			end
 			if inst.components.container:IsOpenedBy(inst._playerlink) then
 				inst.components.wobyrack:GetContainer():Open(inst._playerlink)
@@ -227,6 +234,7 @@ local function EnableRack(inst, enable)
 		if inst._hassmallbuild then
 			inst.AnimState:ClearOverrideBuild("woby_rack")
 			for i = 1, 3 do
+				inst.AnimState:ClearOverrideSymbol("rope"..tostring(i))
 				inst.AnimState:ClearOverrideSymbol("swap_dried"..tostring(i))
 			end
 		end
@@ -832,7 +840,11 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+    inst.MiniMapEntity:SetIcon("wobybig.png")
+    inst.MiniMapEntity:SetCanUseCache(false)
 
     MakeCharacterPhysics(inst, 100, .5)
 
@@ -976,6 +988,7 @@ local function fn()
 
 	inst.ApplySmallBuildOverrides = ApplySmallBuildOverrides
 	inst.OnWobySkinChanged = OnWobySkinChanged
+    inst.ReskinToolFilterFn = WobyCommon.ReskinToolFilterFn
     inst.ApplyBuildOverrides = ApplyBuildOverrides
     inst.ClearBuildOverrides = ClearBuildOverrides
 

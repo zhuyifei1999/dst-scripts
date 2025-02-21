@@ -352,6 +352,9 @@ local function OnProjectileLaunched(inst, attacker, target, proj)
             proj:SetHighProjectile()
         end
     end
+	if inst.projectilespeedmult then
+		proj.components.projectile:SetSpeed(proj.components.projectile.speed * inst.projectilespeedmult)
+	end
 	if inst.voidbonusenabled and proj.SetVoidBonus then
 		proj:SetVoidBonus()
 	end
@@ -615,6 +618,7 @@ end
 
 local function slingshotex_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	inst.playerinspectable_override = "slingshot"
 	SetFrameIcon(inst, "slingshot_frame_wagpunk_0")
 
 	inst:AddComponent("aoecharging")
@@ -710,6 +714,7 @@ end
 
 local function slingshot2_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	inst.playerinspectable_override = "slingshot"
 	SetFrameIcon(inst, "slingshot_frame_bone")
 end
 
@@ -733,6 +738,7 @@ end
 
 local function slingshot2ex_common_postinit(inst)
 	inst:SetPrefabNameOverride("slingshot")
+	inst.playerinspectable_override = "slingshot"
 	SetFrameIcon(inst, "slingshot_frame_gems")
 
 	inst:AddComponent("aoetargeting")

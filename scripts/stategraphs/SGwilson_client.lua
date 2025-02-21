@@ -838,6 +838,7 @@ local actionhandlers =
 	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
 
 	ActionHandler(ACTIONS.WHISTLE, "fingerwhistle"),
+	ActionHandler(ACTIONS.MODSLINGSHOT, "openslingshotmods"),
 }
 
 local events =

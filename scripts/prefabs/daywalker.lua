@@ -1246,6 +1246,7 @@ local function fn()
 	inst.looted = false
 	inst.fatigue = 0
 	inst._fatiguetask = nil
+	inst._trampledelays = {}
 
 	--ability unlocks
 	inst.canfatigue = false

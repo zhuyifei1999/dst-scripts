@@ -304,10 +304,21 @@ function Combat:OnUpdate(dt)
             end
             self.keeptargettimeout = 1
 
-            if not self.target:IsValid() or
-                self.target:IsInLimbo() or
-                not self.keeptargetfn(self.inst, self.target) or not
-                (self.target and self.target.components.combat and self.target.components.combat:CanBeAttacked(self.inst)) then
+			local drop
+			if not self.target:IsValid() or self.target:IsInLimbo() then
+				drop = true
+			else
+				local iframeskeepaggro_combat = self.target.sg and self.target.sg:HasStateTag("iframeskeepaggro") and self.inst.replica.combat or nil
+				if iframeskeepaggro_combat then
+					iframeskeepaggro_combat.temp_iframes_keep_aggro = true
+				end
+				drop = not (self.target.components.combat and self.keeptargetfn(self.inst, self.target) and self.target.components.combat:CanBeAttacked(self.inst))
+				if iframeskeepaggro_combat then
+					iframeskeepaggro_combat.temp_iframes_keep_aggro = nil
+				end
+			end
+
+			if drop then
                 self.inst:PushEvent("losttarget")
                 self:DropTarget()
             end

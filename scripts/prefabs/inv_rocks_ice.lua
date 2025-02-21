@@ -109,7 +109,7 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.imagename = "ice"
-    inst.components.inventoryitem:SetOnPickupFn(onstopfiremelt)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(onstopfiremelt)
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.ICE
