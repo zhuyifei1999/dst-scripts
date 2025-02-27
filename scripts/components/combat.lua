@@ -55,6 +55,7 @@ local Combat = Class(function(self, inst)
 	self.lastwasattackedbytargettime = 0
 	--self.lastattacker = nil
 	--self.lastattacktype = nil
+	--self.laststimuli = nil
 
 	self.externaldamagemultipliers = SourceModifierList(self.inst) -- damage dealt to others multiplier
 
@@ -569,6 +570,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 	else
 		self.lastattacktype = nil
 	end
+	self.laststimuli = stimuli
 
     if self.inst.components.health ~= nil and damage ~= nil and damageredirecttarget == nil then
         if self.inst.components.attackdodger ~= nil and self.inst.components.attackdodger:CanDodge(attacker) then
@@ -1104,8 +1106,13 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
         weapon = self:GetWeapon()
     end
     if stimuli == nil then
-        if weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.overridestimulifn ~= nil then
-            stimuli = weapon.components.weapon.overridestimulifn(weapon, self.inst, targ)
+		if weapon and weapon.components.weapon then
+			if weapon.components.weapon.overridestimulifn then
+				stimuli = weapon.components.weapon.overridestimulifn(weapon, self.inst, targ)
+			end
+			if stimuli == nil and weapon.components.weapon.stimuli == "electric" then
+				stimuli = "electric"
+			end
         end
         if stimuli == nil and self.inst.components.electricattacks ~= nil then
             stimuli = "electric"

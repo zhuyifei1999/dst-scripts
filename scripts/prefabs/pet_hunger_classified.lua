@@ -242,8 +242,14 @@ local function RegisterNetListeners(inst)
 end
 
 local function OnRemoveEntity(inst)
-	if inst._parent then
-		inst._parent:PushEvent("show_pet_hunger", false)
+	local player = inst._parent
+	if player then
+		if not TheWorld.ismastersim then
+			assert(player.pet_hunger_classified == inst)
+			player.pet_hunger_classified = nil
+			inst._parent = nil
+		end
+		player:PushEvent("show_pet_hunger", false)
 	end
 end
 

@@ -9,6 +9,37 @@ function Nabbag:OnRemoveFromEntity()
     self.inst:RemoveTag("nabbag")
 end
 
+local NABBAG_CANTTAGS = {"INLIMBO", "FX", "_container", "heavy", "smolder"}
+function Nabbag:ReplicateNetFromAct(act)
+    if self.replicatingnet then
+        return
+    end
+    self.replicatingnet = true
+
+    -- Replicate this success to all entities in a forward cone.
+    local oldtarget = act.target
+    local wholearcangle_degrees = TUNING.SKILLS.WORTOX.NABBAG_CONEANGLE
+    local max_dist = TUNING.SKILLS.WORTOX.NABBAG_MAX_RADIUS
+    local circle_dist = TUNING.SKILLS.WORTOX.NABBAG_CIRCLE_RADIUS
+    local x, y, z = act.doer.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, max_dist, nil, NABBAG_CANTTAGS)
+    for _, ent in ipairs(ents) do
+        if ent:IsValid() and act.doer:IsEntityInFrontConeSlice(ent, wholearcangle_degrees, max_dist, circle_dist) then
+            if ent:IsActionValid(ACTIONS.NET, act.rmb) then
+                act.target = ent
+                ACTIONS.NET.fn(act)
+                act.invobject:OnUsedAsItem(ACTIONS.NET, act.doer, act.target)
+                if not act.invobject:IsValid() then -- We used it up!
+                    break
+                end
+            end
+        end
+    end
+    act.target = oldtarget
+
+    self.replicatingnet = nil
+end
+
 local NABBAG_MUSTTAGS = {"_inventoryitem"}
 local NABBAG_CANTTAGS = {"INLIMBO", "FX", "_container", "heavy"}
 function Nabbag:DoNabFromAct(act)
@@ -68,6 +99,11 @@ function Nabbag:DoNabFromAct(act)
         local wholearcangle_degrees = TUNING.SKILLS.WORTOX.NABBAG_CONEANGLE
         local max_dist = TUNING.SKILLS.WORTOX.NABBAG_MAX_RADIUS
         local circle_dist = TUNING.SKILLS.WORTOX.NABBAG_CIRCLE_RADIUS
+        local max_uses_per_nab = 0
+        if finiteuses then
+            max_uses_per_nab = finiteuses.total * TUNING.SKILLS.WORTOX.NABBAG_MAX_USES_PER_NAB_PERCENT
+        end
+        local max_items_per_nab = TUNING.SKILLS.WORTOX.NABBAG_MAX_ITEMS_PER_NAB - 1 -- - 1 for the first item picked up above.
         local x, y, z = act.doer.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities(x, y, z, max_dist, NABBAG_MUSTTAGS, NABBAG_CANTTAGS)
         for _, ent in ipairs(ents) do
@@ -75,10 +111,18 @@ function Nabbag:DoNabFromAct(act)
                 act.target = ent
                 ACTIONS.PICKUP.fn(act)
                 if finiteuses then
-                    finiteuses:Use(1)
-                    if not act.invobject:IsValid() then -- We used it up!
-                        break
+                    if max_uses_per_nab > 0 then
+                        max_uses_per_nab = max_uses_per_nab - 1
+                        finiteuses:Use(1)
+                        if not act.invobject:IsValid() then -- We used it up!
+                            break
+                        end
                     end
+                end
+                if max_items_per_nab > 1 then
+                    max_items_per_nab = max_items_per_nab - 1
+                else
+                    break -- Stop picking up more.
                 end
             end
         end

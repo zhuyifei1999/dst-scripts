@@ -1122,6 +1122,7 @@ CRAFTING_FILTERS.CONTAINERS.recipes =
 	"battlesong_container",
     "wortox_souljar",
 	"slingshotammo_container",
+	"elixir_container",
 	"treasurechest",
 	"dragonflychest",
     "chestupgrade_stacksize",

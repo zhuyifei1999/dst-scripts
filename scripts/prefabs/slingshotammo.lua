@@ -301,9 +301,22 @@ end
 
 --------------------------------------------------------------------------
 
+--NOTE: Slow & GelBlob don't stack with each other
+
 local function SetSpeed_Slow(target, fx, numstacks)
-	target.components.locomotor:SetExternalSpeedMultiplier(target, "slingshotammo_slow", TUNING.SLINGSHOT_AMMO_MOVESPEED_MULT ^ numstacks)
+	local mult = TUNING.SLINGSHOT_AMMO_MOVESPEED_MULT ^ numstacks
+	if target._slingshot_gelblob then
+		mult = math.min(1, mult / TUNING.CAREFUL_SPEED_MOD)
+	end
+	target.components.locomotor:SetExternalSpeedMultiplier(target, "slingshotammo_slow", mult)
 	fx:SetFXLevel(numstacks)
+end
+
+local function OnGelblobChanged_Slow(target)
+	local data = target._slingshot_slow
+	if data and #data.tasks > 0 then
+		SetSpeed_Slow(target, data.fx, #data.tasks)
+	end
 end
 
 local function Refresh_Slow(target, data)
@@ -676,6 +689,10 @@ local function OnUpdate_GelBlob(target)
 		target._slingshot_gelblob = nil
 		target:RemoveTag("gelblob_ammo_afflicted")
 		target:RemoveEventCallback("onremove", OnRemoveTarget_GelBlob)
+
+		--NOTE: no stacking with Slow ammo
+		OnGelblobChanged_Slow(target)
+
 		target:PushEvent("stop_gelblob_ammo_afflicted")
 	end
 end
@@ -699,7 +716,10 @@ local function OnHit_GelBlob(inst, attacker, target)
 			target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
 		end
 
-		if pushstartevent then
+		if pushstartevent and target:IsValid() then
+			--NOTE: no stacking with Slow ammo
+			OnGelblobChanged_Slow(target)
+
 			target:PushEvent("start_gelblob_ammo_afflicted")
 		end
 	end
@@ -712,17 +732,8 @@ end
 --------------------------------------------------------------------------
 
 local function OnHit_Scrapfeather(inst, attacker, target)
-    if not (target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid()) then
-        return
-    end
-
-    if not (
-        target:HasTag("electricdamageimmune") or
-        (target.components.inventory ~= nil and target.components.inventory:IsInsulated())
-    ) and
-        target:GetIsWet()
-    then
-        SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker, true)
+	if target and target:IsValid() then
+		SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker and attacker:IsValid() and attacker or inst, true)
     end
 end
 
@@ -1502,6 +1513,7 @@ local ammo =
         proj_master_postinit = ProjMasterPostInit_Scrapfeather,
         damage = TUNING.SLINGSHOT_AMMO_DAMAGE_SCRAPFEATHER,
 		skill = "walter_ammo_utility",
+		prefabs = { "electrichitsparks" },
 		--tailcolor = { h = 0.1, s = 0.5, v = 2, lo = 0.2 },
     },
     {

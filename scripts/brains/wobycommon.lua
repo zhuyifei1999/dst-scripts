@@ -27,6 +27,10 @@ local function FindPickupableItem_ExtraFilter(inst, item, owner)
         return false -- Don't try to pick up cave_hole objects.
     end
 
+    if not (item.components.inventoryitem ~= nil and item.components.inventoryitem.is_landed) then
+        return -- No non items or moving items.
+    end
+
     if item.components.trap ~= nil then
         return false -- Don't interact with traps at all.
     end

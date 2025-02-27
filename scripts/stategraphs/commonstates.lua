@@ -78,12 +78,24 @@ end
 -- skip_cooldown_fn: return true if you want to allow hit reacts while the hit react is in cooldown (allowing stun locking)
 local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
 	local on_cooldown = false
+	local was_projectile, was_electric
 	local combat = inst.components.combat
-	local was_projectile = combat ~= nil and combat.lastattacktype == "projectile"
+	if combat then
+		was_projectile = combat.lastattacktype == "projectile"
+		was_electric = combat.laststimuli == "electric"
+	end
 
 	local delaytime = delay or inst.hit_recovery or TUNING.DEFAULT_HIT_RECOVERY
 	if was_projectile then
-		delaytime = delaytime * TUNING.DEFAULT_PROJECTILE_HIT_RECOVERY_MULTIPLIER
+		if was_electric and
+			not (	inst:HasTag("electricdamageimmune") or
+					(inst.components.inventory and inst.components.inventory:IsInsulated())
+				)
+		then
+			--use melee hit recovery delay for electric projectiles
+		else
+			delaytime = delaytime * TUNING.DEFAULT_PROJECTILE_HIT_RECOVERY_MULTIPLIER
+		end
 	end
 
 	if (inst._last_hitreact_time ~= nil and inst._last_hitreact_time + delaytime >= GetTime()) then	-- is hit react is on cooldown?

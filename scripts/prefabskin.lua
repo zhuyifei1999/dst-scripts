@@ -999,9 +999,14 @@ portablespicer_item_clear_fn = portablespicer_clear_fn
 
 slingshot_init_fn = function(inst, build_name)
     basic_init_fn(inst, build_name, "slingshot")
+	if not TheWorld.ismastersim then
+		return
+	end
+	inst:OnSlingshotSkinChanged(build_name)
 end
 slingshot_clear_fn = function(inst)
     basic_clear_fn(inst, "slingshot")
+	inst:OnSlingshotSkinChanged(nil)
 end
 slingshotex_init_fn = slingshot_init_fn
 slingshot999ex_init_fn = slingshot_init_fn

@@ -7,6 +7,7 @@ local EquipSlot = require "widgets/equipslot"
 local ItemTile = require "widgets/itemtile"
 local Text = require "widgets/text"
 local HudCompass = require "widgets/hudcompass"
+local ItemTile = require("widgets/itemtile")
 
 local TEMPLATES = require "widgets/templates"
 
@@ -1381,7 +1382,7 @@ function Inv:OnItemGet(item, slot, source_pos, ignore_stacksize_anim)
 
         if source_pos ~= nil then
             local dest_pos = slot:GetWorldPosition()
-            local im = Image(item.replica.inventoryitem:GetAtlas(), item.replica.inventoryitem:GetImage())
+			local im = ItemTile.sSetImageFromItem(Image(), item)
             if GetGameModeProperty("icons_use_cc") then
                 im:SetEffect("shaders/ui_cc.ksh")
             end

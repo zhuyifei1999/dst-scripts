@@ -7305,12 +7305,13 @@ function Tune(overrides)
                 -- wortox_soulprotector_1
                 WORTOX_SOULPROTECTOR_1_RANGE = 3,
                 -- wortox_soulprotector_2
-                WORTOX_SOULPROTECTOR_2_SPEED = 4,
+                WORTOX_SOULPROTECTOR_2_SPEED = 2,
                 WORTOX_SOULPROTECTOR_2_RANGE = 3,
                 -- wortox_soulprotector_3
                 WORTOX_SOULPROTECTOR_3_MULT = 0.5,
                 WORTOX_SOULPROTECTOR_3_DELAY = 3.5,
                 -- wortox_soulprotector_4
+                WORTOX_SOULPROTECTOR_4_SPEED = 4,
                 WORTOX_SOULPROTECTOR_4_DELAY = -1.5,
                 WORTOX_SOULPROTECTOR_4_LOSS_PER_PLAYER_MULT = 0.5,
                 -- wortox_panflute_playing
@@ -7337,10 +7338,14 @@ function Tune(overrides)
                 -- wortox_souldecoy_3
                 SOULDECOY_EXPLODE_RADIUS = 4,
                 SOULDECOY_EXPLODE_DAMAGE = wilson_attack * 1.5,
+                SOULDECOY_THORNS_DAMAGE_MULT = 0.5,
                 -- wortox_nabbag
                 NABBAG_DAMAGE_MIN = wilson_attack * 0.4,
                 NABBAG_DAMAGE_MAX = wilson_attack,
                 NABBAG_USES = 200,
+                NABBAG_USES_AS_BUGNET = 20,
+                NABBAG_MAX_USES_PER_NAB_PERCENT = 0.25, -- If the items picked up will exceed this it will stop using more durability for it.
+                NABBAG_MAX_ITEMS_PER_NAB = 400, -- Maximum number of items the nab bag will interact with per use to limit server strain.
                 NABBAG_CONEANGLE = 150,
                 NABBAG_MAX_RADIUS = 3,
                 NABBAG_CIRCLE_RADIUS = 1.25,

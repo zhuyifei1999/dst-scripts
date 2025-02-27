@@ -1291,6 +1291,7 @@ DeconstructRecipe("book_gardening",					{Ingredient("papyrus", 2), Ingredient("s
 
 -- Modded slingshots need to deconstruct with the same recipe as regular slingshot
 DeconstructRecipe("slingshotex",					{Ingredient("twigs", 1), Ingredient("mosquitosack", 2)})
+DeconstructRecipe("slingshot999ex",					{Ingredient("twigs", 1), Ingredient("mosquitosack", 2)})
 DeconstructRecipe("slingshot2",						{Ingredient("twigs", 1), Ingredient("mosquitosack", 2)})
 DeconstructRecipe("slingshot2ex",					{Ingredient("twigs", 1), Ingredient("mosquitosack", 2)})
 

@@ -31,6 +31,22 @@ local events =
         end
     end),
 
+	EventHandler("showrack", function(inst)
+		if not (inst.sg:HasStateTag("jumping") or
+				inst.sg:HasStateTag("nointerrupt") or
+				inst.sg.currentstate.name == "transform")
+		then
+			inst.sg:GoToState("rack_appear")
+		end
+	end),
+
+	EventHandler("showalignmentchange", function(inst)
+		if not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("sitting") then
+			inst.sg:GoToState("emote_cute")
+			inst.components.locomotor:StopMoving()
+		end
+	end),
+
     EventHandler("start_sitting", function(inst)
         if not inst.sg:HasStateTag("sitting") and not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("sitting")
@@ -113,17 +129,20 @@ local states =
 
             inst.AnimState:PlayAnimation("fetch")
             inst.AnimState:SetFrame(6)
+			inst.SoundEmitter:PlaySound("meta5/woby/woby_pounce")
 
-            local buffaction = inst:GetBufferedAction()
-            local target = buffaction ~= nil and buffaction.target or nil
-
+			inst.sg.statemem.buffaction = inst:GetBufferedAction()
+            local target = inst.sg.statemem.buffaction and inst.sg.statemem.buffaction.target or nil
             if target ~= nil and target:IsValid() then
-                inst:ForceFacePoint(buffaction.target.Transform:GetWorldPosition())
+				inst:ForceFacePoint(target.Transform:GetWorldPosition())
             end
         end,
 
         onupdate = function(inst)
             local buffaction = inst:GetBufferedAction()
+			if buffaction ~= inst.sg.statemem.buffaction then
+				buffaction = nil
+			end
             local target = buffaction ~= nil and buffaction.target or nil
 
             if target == nil or not target:IsValid() then
@@ -160,7 +179,7 @@ local states =
 
                 local distance = math.sqrt(inst:GetDistanceSqToInst(target))
 
-                if distance > .5 then
+                if distance > .75 then
                     inst:ClearBufferedAction()
 
                     inst.sg.statemem.missed = true
@@ -183,6 +202,9 @@ local states =
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
             inst.Physics:ClearMotorVelOverride()
             inst.Physics:Stop()
+			if inst.sg.statemem.buffaction == inst.bufferedaction then
+				inst:ClearBufferedAction()
+			end
         end,
     },
 
@@ -253,6 +275,7 @@ local states =
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("give")
+			inst.sg.statemem.buffaction = inst:GetBufferedAction()
         end,
 
         events =
@@ -272,6 +295,12 @@ local states =
                 inst:PerformBufferedAction()
             end),
         },
+
+		onexit = function(inst)
+			if inst.sg.statemem.buffaction == inst.bufferedaction then
+				inst:ClearBufferedAction()
+			end
+		end,
     },
 
     State{
@@ -292,6 +321,9 @@ local states =
             if inst.sg.statemem.buffaction and inst.sg.statemem.buffaction.target and inst.sg.statemem.buffaction.target.components.container then
                 inst.sg.statemem.openedchest = inst.sg.statemem.buffaction.target
                 inst.sg.statemem.openedchest.components.container:Open(inst)
+			else
+				inst.sg.statemem.digging = true
+				inst.SoundEmitter:PlaySound("meta5/woby/woby_dig_lp", "dig")
             end
 
             inst.sg:SetTimeout(timeout)
@@ -300,8 +332,13 @@ local states =
         ontimeout = function(inst)
             inst.AnimState:PlayAnimation("woby_forage_pst")
             inst.SoundEmitter:KillSound("make")
+			inst.SoundEmitter:KillSound("dig")
 
-            inst:PerformBufferedAction()
+			if inst:PerformBufferedAction() then
+				if inst.sg.statemem.digging then
+					inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/small/bark")
+				end
+			end
         end,
 
         events =
@@ -319,6 +356,7 @@ local states =
                     if pickable ~= nil and pickable:CanBePicked() then -- If we can be picked, Walter didn't finish it!
                         inst.AnimState:PlayAnimation("woby_forage_pst")
                         inst.SoundEmitter:KillSound("make")
+						inst.SoundEmitter:KillSound("dig")
 
                         inst:ClearBufferedAction()
                     end
@@ -328,9 +366,13 @@ local states =
 
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make")
+			inst.SoundEmitter:KillSound("dig")
             if inst.sg.statemem.openedchest and inst.sg.statemem.openedchest:IsValid() and inst.sg.statemem.openedchest.components.container then
                 inst.sg.statemem.openedchest.components.container:Close(inst)
             end
+			if inst.sg.statemem.buffaction == inst.bufferedaction then
+				inst:ClearBufferedAction()
+			end
         end,
     },
 
@@ -388,6 +430,28 @@ local states =
             end),
         },
     },
+
+	State{
+		name = "rack_appear",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("woby_rack_appear")
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("meta5/woby/small_dryingrack_deploy") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				inst.sg:GoToState("idle")
+			end),
+		},
+	},
 }
 
 local emotes =
@@ -438,6 +502,7 @@ SGCritterStates.AddEmote(states, "cute",
     })
 SGCritterStates.AddPetEmote(states,
     {
+		TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/small/bark") end),
         TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
         TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
         TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),

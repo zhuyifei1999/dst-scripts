@@ -1295,7 +1295,20 @@ local COMPONENT_ACTIONS =
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
                     ) then
-                    table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
+					if target:HasTag("bundle") then
+						table.insert(actions, ACTIONS.BUNDLESTORE)
+					else
+						--STORE action is mount_valid, but only allow for portable containers in our bags when mounted
+						local rider = doer.replica.rider
+						if rider and rider:IsRiding() then
+							local target_inventoryitem = target.replica.inventoryitem
+							if target_inventoryitem and target_inventoryitem:IsGrandOwner(doer) then
+								table.insert(actions, ACTIONS.STORE)
+							end
+						else
+							table.insert(actions, ACTIONS.STORE)
+						end
+					end
                 end
             elseif inventoryitem and inventoryitem:CanOnlyGoInPocketOrPocketContainers() then
                 -- Not tradable.
@@ -1411,7 +1424,16 @@ local COMPONENT_ACTIONS =
             for k, v in pairs(OCCUPANTTYPE) do
                 if target:HasTag(v.."_occupiable") then
                     if inst:HasTag(v) then
-                        table.insert(actions, ACTIONS.STORE)
+						--STORE action is mount_valid, but only allow for portable containers in our bags when mounted
+						local rider = doer.replica.rider
+						if rider and rider:IsRiding() then
+							local target_inventoryitem = target.replica.inventoryitem
+							if target_inventoryitem and target_inventoryitem:IsGrandOwner(doer) then
+								table.insert(actions, ACTIONS.STORE)
+							end
+						else
+							table.insert(actions, ACTIONS.STORE)
+						end
                     end
                     return
                 end
@@ -1779,7 +1801,20 @@ local COMPONENT_ACTIONS =
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
                     ) then
-                    table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
+					if target:HasTag("bundle") then
+						table.insert(actions, ACTIONS.BUNDLESTORE)
+					else
+						--STORE action is mount_valid, but only allow for portable containers in our bags when mounted
+						local rider = doer.replica.rider
+						if rider and rider:IsRiding() then
+							local target_inventoryitem = target.replica.inventoryitem
+							if target_inventoryitem and target_inventoryitem:IsGrandOwner(doer) then
+								table.insert(actions, ACTIONS.STORE)
+							end
+						else
+							table.insert(actions, ACTIONS.STORE)
+						end
+					end
                 end
 			elseif target.replica.constructionsite ~= nil and target.replica.constructionsite:IsEnabled() then
                 if (inventoryitem == nil or (

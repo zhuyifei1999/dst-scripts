@@ -14,6 +14,7 @@ local assets =
     Asset("SCRIPT", "scripts/prefabs/skilltree_walter.lua"),
 	Asset("SCRIPT", "scripts/prefabs/wobycommon.lua"),
     Asset("ANIM", "anim/courier_minimap_indicator.zip"), -- Courier skill.
+	Asset("ANIM", "anim/wobycourier_marker.zip"),
 }
 
 local prefabs =
@@ -274,7 +275,7 @@ local function SetupMountedCommandWheel(inst)
 	inst.components.spellbook:SetShouldOpenFn(ShouldOpenWobyCommands)
 	inst.components.spellbook:SetBgData(SPELLBOOK_BG)
 	inst.components.spellbook.opensound = "meta5/woby/bigwoby_actionwheel_UI"
-	inst.components.spellbook.closesound = "meta5/woby/bigwoby_actionwheel_UI"
+	--inst.components.spellbook.closesound = "meta5/woby/bigwoby_actionwheel_UI"
 	--inst.components.spellbook.executesound = "meta4/winona_UI/select"	--use .clicksound for item buttons instead
 	--inst.components.spellbook.focussound = "meta4/winona_UI/hover"
 
@@ -337,10 +338,10 @@ local function HasWhistleAction(inst)
 		end
 		local woby = inst.woby_commands_classified:GetWoby()
 		if TheWorld.ismastersim then
-			if woby and not (inst.HUD and woby:IsNear(inst, 16)) then
+			if woby and not (inst.HUD and not woby:IsInLimbo() and woby:IsNear(inst, 16)) then
 				return true
 			end
-		elseif inst.HUD and (woby == nil or not woby:IsNear(inst, 16)) then
+		elseif inst.HUD and (woby == nil or woby:HasTag("INLIMBO") or not woby:IsNear(inst, 16)) then
 			return true
 		end
 	end
@@ -368,6 +369,47 @@ end
 
 --------------------------------------------------------------------------
 
+local function FadeOutBanner(inst, dt)
+	if inst.delay > dt then
+		inst.delay = inst.delay - dt
+	elseif inst.fadetime > dt then
+		if inst.delay >= 0 then
+			TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+			inst.delay = -1
+		end
+		inst.fadetime = inst.fadetime - dt
+		local k = 1 - inst.fadetime / 0.5
+		k = 1 - k * k
+		inst.AnimState:SetMultColour(1, 1, 1, k)
+	else
+		inst:Remove()
+	end
+end
+
+local function DoBannerSound(inst, sound)
+	inst.SoundEmitter:PlaySound(sound)
+end
+
+local function CreateWobyCourierBanner()
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	inst.entity:SetCanSleep(false)
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+
+	inst.AnimState:SetBank("wobycourier_marker")
+	inst.AnimState:SetBuild("wobycourier_marker")
+	inst.AnimState:PlayAnimation("place")
+
+	return inst
+end
+
 local function OnUpdateWobyCourierChestIcon(inst)
     local x, z = GetWobyCourierChestPosition(inst)
     if not x then
@@ -390,9 +432,67 @@ local function OnUpdateWobyCourierChestIcon(inst)
 
     -- Update the icon.
     inst.wobycourier_chesticon_CLIENT.Transform:SetPosition(x, 0, z)
-    -- Ping the location.
-    local ping = SpawnPrefab("reticuleaoeping_1d2_12")
-    ping.Transform:SetPosition(x, 0, z)
+
+	if inst.showchestbanner then
+		inst.showchestbanner = nil
+		if inst._tempfocus then
+			inst._tempfocus:Remove()
+			inst._tempfocus = nil
+		end
+
+		-- Ping the location.
+		local ping = SpawnPrefab("reticuleaoeping_1d2_12")
+		ping.Transform:SetPosition(x, 0, z)
+
+		local banner = CreateWobyCourierBanner()
+		banner.Transform:SetPosition(x, 0, z)
+		banner.AnimState:SetSortOrder(1)
+		banner.AnimState:Hide("shadow")
+
+		local bshadow = CreateWobyCourierBanner()
+		bshadow.entity:SetParent(banner.entity)
+		bshadow.AnimState:Hide("flag_parts")
+		bshadow.AnimState:Hide("smoke")
+
+		DoBannerSound(banner, "dontstarve/common/deathpoof")
+		TheFocalPoint.components.focalpoint:StartFocusSource(banner, nil, nil, math.huge, math.huge, 10)
+		banner:DoTaskInTime(26 * FRAMES, DoBannerSound, "dontstarve/common/plant")
+
+		banner:AddComponent("updatelooper")
+		banner.components.updatelooper:AddOnUpdateFn(FadeOutBanner)
+		banner.delay = banner.AnimState:GetCurrentAnimationLength() + 0.25
+		banner.fadetime = 0.5
+	end
+end
+
+local function CancelTempFocusRememberChest(inst)
+	inst.showchestbanner = nil
+	if inst._tempfocus then
+		inst._tempfocus.task:Cancel()
+		inst._tempfocus:Remove()
+		inst._tempfocus = nil
+	end
+end
+
+local function TempFocusRememberChest(inst, x, z)
+	inst.showchestbanner = true
+
+	if not TheWorld.ismastersim then
+		if inst._tempfocus == nil then
+			inst._tempfocus = CreateEntity()
+			inst._tempfocus:AddTag("CLASSIFIED")
+			--[[Non-networked entity]]
+			--inst._tempfocus.entity:SetCanSleep(false)
+			inst._tempfocus.persists = false
+			inst._tempfocus.entity:AddTransform()
+			TheFocalPoint.components.focalpoint:StartFocusSource(inst._tempfocus, nil, nil, math.huge, math.huge, 10)
+			inst._tempfocus:ListenForEvent("onremove", CancelTempFocusRememberChest, inst)
+		else
+			inst._tempfocus.task:Cancel()
+		end
+		inst._tempfocus.Transform:SetPosition(x, 0, z)
+		inst._tempfocus.task = inst:DoTaskInTime(2, CancelTempFocusRememberChest)
+	end
 end
 
 local function StoryTellingDone(inst, story)
@@ -606,7 +706,11 @@ local function OnReroll(inst)
 end
 
 local function OnSave(inst, data)
-	data.woby = inst.woby ~= nil and inst.woby:GetSaveRecord() or nil
+	if inst.woby then
+		data.woby = inst.woby:GetSaveRecord()
+	else
+		data.baglock = inst.baglock
+	end
 	data.buckdamage = inst._wobybuck_damage > 0 and inst._wobybuck_damage or nil
 	data.wobycmd = inst.woby_commands_classified and inst.woby_commands_classified:OnSave() or nil
 end
@@ -627,7 +731,7 @@ local function OnLoad(inst, data)
 					end
 				end
 				woby:LinkToPlayer(inst)
-				if data.wobycmd and inst.woby_commands_classified then
+				if inst.woby_commands_classified then
 					inst.woby_commands_classified:OnLoad(data.wobycmd)
 				end
 
@@ -638,6 +742,8 @@ local function OnLoad(inst, data)
 
 				inst:ListenForEvent("onremove", inst._woby_onremove, woby)
 			end
+		else
+			inst.baglock = data.baglock
 		end
 		inst._wobybuck_damage = data.buckdamage or 0
 	end
@@ -1023,18 +1129,6 @@ end
 
 --------------------------------------------------------------------------
 
-local function LockWoby(inst)
-	if inst.woby_commands_classified and not inst.woby_commands_classified:ShouldLockBag() then
-		inst.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.AUTOBAGLOCK)
-	end
-end
-
-local function UnlockWoby(inst)
-	if inst.woby_commands_classified and inst.woby_commands_classified:ShouldLockBag() then
-		inst.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.AUTOBAGLOCK)
-	end
-end
-
 local function common_postinit(inst)
     inst:AddTag("expertchef")
     inst:AddTag("pebblemaker")
@@ -1062,15 +1156,14 @@ local function common_postinit(inst)
     inst:ListenForEvent("updatewobycourierchesticon", OnUpdateWobyCourierChestIcon)
 
 	inst.HasWhistleAction = HasWhistleAction
+	inst.TempFocusRememberChest = TempFocusRememberChest
+	inst.CancelTempFocusRememberChest = CancelTempFocusRememberChest
 
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("has_sprint_trail_dirty", OnHasSprintTrail)
 		inst:ListenForEvent("enablemovementprediction", OnEnableMovementPrediction_Client)
 		inst.EnableWobySprintTrail = EnableWobySprintTrail_Client
 	end
-
-	inst.LockWoby = LockWoby
-	inst.UnlockWoby = UnlockWoby
 end
 
 local function master_postinit(inst)
@@ -1114,6 +1207,8 @@ local function master_postinit(inst)
 
 	inst._woby_spawntask = inst:DoTaskInTime(0, function(i) i._woby_spawntask = nil SpawnWoby(i) end)
 	inst._woby_onremove = function(woby) OnWobyRemoved(inst) end
+
+	inst.baglock = nil --V2C: for remembering woby's baglock setting in case she was despawned (e.g. Wonkey!)
 
 	inst.OnWobyTransformed = OnWobyTransformed
 	inst.EnableWobySprintTrail = EnableWobySprintTrail_Server
@@ -1250,6 +1345,7 @@ local function wobycourier_marker_fn()
     inst.MiniMapEntity:SetPriority(MINIMAP_DECORATION_PRIORITY)
 
     inst:AddTag("globalmapicon") -- Map action logic.
+    inst:AddTag("NOBLOCK")
 
     inst:DoTaskInTime(0, wobycourier_marker_init)
 
@@ -1271,6 +1367,8 @@ local function wobycourier_marker_close_fn() -- Child for wobycourier_marker pre
     inst.MiniMapEntity:SetDrawOverFogOfWar(true)
     inst.MiniMapEntity:SetCanUseCache(false)
     inst.MiniMapEntity:SetPriority(MINIMAP_DECORATION_PRIORITY)
+
+    inst:AddTag("NOBLOCK")
 
     return inst
 end

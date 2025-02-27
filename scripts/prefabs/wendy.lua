@@ -119,6 +119,7 @@ local function testForSanityAuraBuff(inst, oldlist)
 		if newplayer then
 			if player.components.sanity then
 				local fx = SpawnPrefab("wendy_sanityaura_buff_on_fx")
+				player.SoundEmitter:PlaySound("meta5/wendy/sisturn_sanity_buff")
 				player:AddChild(fx)
 				player.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.WENDYSKILL_SISTURN_SANITY_MODIFYER, "wendyskill"..inst.GUID)
 			end
@@ -137,6 +138,7 @@ local function testForSanityAuraBuff(inst, oldlist)
 			end
 			if quit then
 				local fx = SpawnPrefab("wendy_sanityaura_buff_off_fx")
+				player.SoundEmitter:PlaySound("meta5/wendy/sisturn_sanity_buff_pst")
 				player:AddChild(fx)
 				player.components.sanity.neg_aura_modifiers:RemoveModifier(inst, "wendyskill"..inst.GUID)
 			end

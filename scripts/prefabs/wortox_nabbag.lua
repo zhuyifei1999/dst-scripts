@@ -190,10 +190,15 @@ local function fn()
     weapon:SetDamage(TUNING.SKILLS.WORTOX.NABBAG_DAMAGE_MIN)
     weapon.attackwearmultipliers:SetModifier(inst, 0)
 
+    local tool = inst:AddComponent("tool")
+    tool:SetAction(ACTIONS.NET)
+
+    local maxuses = TUNING.SKILLS.WORTOX.NABBAG_USES
     local finiteuses = inst:AddComponent("finiteuses")
-    finiteuses:SetMaxUses(TUNING.SKILLS.WORTOX.NABBAG_USES)
-    finiteuses:SetUses(TUNING.SKILLS.WORTOX.NABBAG_USES)
+    finiteuses:SetMaxUses(maxuses)
+    finiteuses:SetUses(maxuses)
     finiteuses:SetOnFinished(OnUsesFinished)
+    finiteuses:SetConsumption(ACTIONS.NET, maxuses / TUNING.SKILLS.WORTOX.NABBAG_USES_AS_BUGNET)
 
     inst:AddComponent("inspectable")
 

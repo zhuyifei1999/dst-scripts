@@ -6698,6 +6698,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_PRAISE.1"
 msgid "only_used_by_walter"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL"
+msgid "only_used_by_walter"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_RETURN.1
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_RETURN.1"
 msgid "only_used_by_walter"
@@ -24045,7 +24050,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_COURIER.8
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_COURIER.8"
-msgid "Woby, follow your nose! It knows! Hehe."
+msgid "Woby, follow your nose! It knows! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_FOLLOW.1
@@ -24120,7 +24125,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.14
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.14"
-msgid "Woah, Woby! Hehe."
+msgid "Woah, Woby! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.2
@@ -24161,6 +24166,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.9
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.9"
 msgid "I love you, silly girl!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL"
+msgid "Let's find a better spot."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_RETURN.1
@@ -24215,7 +24225,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_SIT.5
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_SIT.5"
-msgid "Paws here Woby! Hehe."
+msgid "Paws here Woby! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_WORK.1
@@ -24225,7 +24235,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_WORK.2
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_WORK.2"
-msgid "Lend a paw, girl! Hehe."
+msgid "Lend a paw, girl! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_WORK.3
@@ -26695,7 +26705,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CARPENTRY_BLADE_MOONGLASS
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CARPENTRY_BLADE_MOONGLASS"
-msgid "Lookin' sharp! Hehe."
+msgid "Lookin' sharp! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CARPENTRY_STATION.BURNT
@@ -34850,7 +34860,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_DREADSTONE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_DREADSTONE"
-msgid "These will pack a real punch."
+msgid "These will pack a real punch-a-roo!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_FREEZE
@@ -34860,7 +34870,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_GELBLOB
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_GELBLOB"
-msgid "Icky. I like it."
+msgid "Icky. Just the way I like it!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_GOLD
@@ -34880,12 +34890,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_HORRORFUEL
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_HORRORFUEL"
-msgid "Spooktacular! Hehe."
+msgid "Spooktacular! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_LUNARPLANTHUSK
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_LUNARPLANTHUSK"
-msgid "Prickly-wickly."
+msgid "Prrrickly-wickly!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_MARBLE
@@ -34920,7 +34930,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_SLOW
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_SLOW"
-msgid "That should slow them down!"
+msgid "These should slow them down!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOTAMMO_STINGER
@@ -34940,32 +34950,32 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_MIMIC
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_MIMIC"
-msgid "Creepy!"
+msgid "Creepy! I love it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_PIGSKIN
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_PIGSKIN"
-msgid "Mmm. Smells like bacon."
+msgid "Mmm. Smells like bacon! But don't eat it Woby!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_TENTACLE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_BAND_TENTACLE"
-msgid "I think it twitched."
+msgid "It's a little twitchy!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_BONE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_BONE"
-msgid "Bad to the bone! Hehe."
+msgid "Bad to the bone!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_GEMS
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_GEMS"
-msgid "Fancy."
+msgid "Now we're getting fancy!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_WAGPUNK
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_WAGPUNK"
-msgid "I could slingshot forever."
+msgid "I could slingshot forever!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_FRAME_WAGPUNK_0
@@ -34975,22 +34985,22 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_JELLY
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_JELLY"
-msgid "Super sticky."
+msgid "Aww, super sticky!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_SILK
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_SILK"
-msgid "It's good tape."
+msgid "Kinda like hockey tape!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_STICKY
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_STICKY"
-msgid "It's gross but effective!"
+msgid "Gross but effective!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_VOIDCLOTH
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SLINGSHOT_HANDLE_VOIDCLOTH"
-msgid "Oh yeah. Here we go."
+msgid "Thank you, shadow monster!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SLURPER
@@ -35075,7 +35085,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SNOWBALL_ITEM
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SNOWBALL_ITEM"
-msgid "Hehe."
+msgid "Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SNOWMAN.GENERIC
@@ -35085,7 +35095,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SNOWMAN.SNOWBALL
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.SNOWMAN.SNOWBALL"
-msgid "I've seen you a round! Hehe."
+msgid "I've seen you a round! Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.SNURTLE
@@ -35890,7 +35900,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.THULECITEBUGNET
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.THULECITEBUGNET"
-msgid "Just minding my own buzzness, Woby. Hehe."
+msgid "Just minding my own buzzness, Woby. Heh."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.THULECITE_PIECES
@@ -314045,7 +314055,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_DREADSTONE
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_DREADSTONE"
-msgid "Dreadstone Rounds"
+msgid "Dreaded Pebbles"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_FREEZE
@@ -314055,7 +314065,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_GELBLOB
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_GELBLOB"
-msgid "Icky Rounds"
+msgid "Ickies"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_GOLD
@@ -314065,12 +314075,12 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_GUNPOWDER
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_GUNPOWDER"
-msgid "Gunpowder Rounds"
+msgid "Kablooies"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_HONEY
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_HONEY"
-msgid "Sticky Rounds"
+msgid "Stickies"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_HORRORFUEL
@@ -314095,7 +314105,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_MOONGLASS
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_MOONGLASS"
-msgid "Moon Glass Rounds"
+msgid "Moonshots"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_POOP
@@ -314120,7 +314130,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_SCRAPFEATHER
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_SCRAPFEATHER"
-msgid "Shockscrap Rounds"
+msgid "Shockscrap Shots"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_SLOW
@@ -314130,7 +314140,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_STINGER
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_STINGER"
-msgid "Stinger Rounds"
+msgid "Stinger Zingers"
 msgstr ""
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_THULECITE
@@ -321985,7 +321995,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.SLINGSHOTAMMO_LUNARPLANTHUSK
 msgctxt "STRINGS.RECIPE_DESC.SLINGSHOTAMMO_LUNARPLANTHUSK"
-msgid "Ensnare your enemies."
+msgid "Settle your vine-detta!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.SLINGSHOTAMMO_MARBLE
@@ -325675,7 +325685,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GELBLOB
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GELBLOB"
-msgid "It attaches an Icker blob to your target, greatly slowing it down."
+msgid "It attaches an Icker blob to your target for 60 seconds, greatly slowing it down."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER
@@ -325685,17 +325695,17 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY"
-msgid "It slows down your target."
+msgid "It slows down your target on the ground for 8 seconds."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL"
-msgid "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage over time, up to 7 times."
+msgid "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage periodically. Up to 4 Swarming Horrors can be stacked on each target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK"
-msgid "It has a chance to spawn a Brightshade Vine on impact, dealing damage to your target."
+msgid "It has a chance to spawn a Brightshade Vine on impact, which deals planar damage to your target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS
@@ -325703,19 +325713,34 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS"
 msgid "It deals damage in a medium area around its target."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_POOP
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_POOP"
+msgid "It causes some targets to lose interest in you."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE"
-msgid "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage."
+msgid "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage per hit."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER"
-msgid "It deals electrical damage, which does more damage to wet targets."
+msgid "It deals electrical damage, which does more damage to wet targets. It can also trigger hit stun more often than other projectiles."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SLOW
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SLOW"
+msgid "It slows down your target for 30 seconds, stacking up to 3 times."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER"
 msgid "It deals damage in a small area around its target."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_THULECITE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_THULECITE"
+msgid "It has a chance to spawn a Shadow Tentacle on impact, which deals damage to your target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT
@@ -325725,17 +325750,57 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_MIMIC
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_MIMIC"
-msgid "It greatly increases how far you can shoot. It sometimes saves ammo by launching a mimic version of it."
+msgid "It greatly increases how far you can shoot and how fast your ammo travels. It sometimes saves ammo by launching a mimic version of it."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_PIGSKIN
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_PIGSKIN"
-msgid "It moderately increases how far you can shoot."
+msgid "It moderately increases how far you can shoot and how fast your ammo travels."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_TENTACLE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_TENTACLE"
-msgid "It greatly increases how far you can shoot. It can be possessed by a heartless monster..."
+msgid "It greatly increases how far you can shoot and how fast your ammo travels. It can be possessed by a heartless monster..."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_BONE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_BONE"
+msgid "Adds a backup ammo slot to your Slingshot."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_GEMS
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_GEMS"
+msgid "Adds a special ammo slot to your Slingshot that is used for a secondary, alternate Slingshot attack, that extends any magic effects of your ammo to an area of effect."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_WAGPUNK
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_WAGPUNK"
+msgid "Expands the ammo slot to unlimited stack size, and adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_WAGPUNK_0
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_FRAME_WAGPUNK_0"
+msgid "Adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_JELLY
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_JELLY"
+msgid "It greatly increases your firing rate and prevents your Slingshot from slipping out of your hands."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK"
+msgid "It moderately increases your firing rate, which will ramp up if you shoot continously."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_STICKY
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_STICKY"
+msgid "It moderately increases your firing rate, and prevents your Slingshot from slipping out of your hands."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH"
+msgid "It greatly increases your firing rate, which will ramp up if you shoot continously."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLURTLESLIME
@@ -329055,7 +329120,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_DESC"
-msgid "Learn how to craft Gunpowder and Dreadstone Rounds. These ammo types rely on lucky shots to do more damage or not break."
+msgid "Learn how to craft Kablooies and Dreaded Pebbles. These ammo types rely on lucky shots to do more damage or not break."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_TITLE
@@ -329065,7 +329130,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUNAR_DESC"
-msgid "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Rounds: a debuff and damage focused ammo, respectively."
+msgid "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Husk Rounds: a debuff and damage focused ammo, respectively."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUNAR_LOCK_DESC
@@ -329080,7 +329145,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHADOW_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHADOW_DESC"
-msgid "The Queen will reward your loyalty by teaching you how to craft the Icky and Pure Horror Rounds: a slow-down and damage focused ammo, respectively."
+msgid "The Queen will reward your loyalty by teaching you how to craft Ickies and Pure Horror Rounds: a slow-down and damage focused ammo, respectively."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHADOW_LOCK_DESC
@@ -329095,7 +329160,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHATTERSHOTS_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHATTERSHOTS_DESC"
-msgid "Learn how to craft Stinger and Moon Glass Rounds. These ammo types shatter into an area of damage."
+msgid "Learn how to craft Stinger Zingers and Moonshots. These ammo types shatter into an area of damage."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_SHATTERSHOTS_TITLE
@@ -329105,7 +329170,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_UTILITY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_UTILITY_DESC"
-msgid "Learn how to craft Sticky and Shockscrap Rounds. The Sticky ammo slows targets hit, and the Shockscrap ammo does electric damage."
+msgid "Learn how to craft Stickies and Shockscrap Shots. Stickies slow targets hit, and Shockscrap Shots deal electric damage with a higher rate of stun."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_UTILITY_TITLE
@@ -329170,7 +329235,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYHOLDER_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYHOLDER_DESC"
-msgid "Woby's backpack will get a drying rack attachment."
+msgid "Woby's pack will get a drying rack attachment."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_CAMP_WOBYHOLDER_TITLE
@@ -376098,6 +376163,21 @@ msgctxt "STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT"
 msgid "Should we kick %s?"
 msgstr ""
 
+#. STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.DESC
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.DESC"
+msgid "Only you have access to items in Woby's pack, unless she is delivering to another player."
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.NOTIFY
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.NOTIFY"
+msgid "Woby's pack is now locked."
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.PRETTYNAME
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.PRETTYNAME"
+msgid "Lock Woby's Pack"
+msgstr ""
+
 #. STRINGS.UI.BUILTINCOMMANDS.REGENERATE.DESC
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.REGENERATE.DESC"
 msgid "Destroy this world and start with a brand new one!"
@@ -376186,6 +376266,21 @@ msgstr ""
 #. STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.PRETTYNAME
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.STOPVOTE.PRETTYNAME"
 msgid "Stop Vote"
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.DESC
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.DESC"
+msgid "Everyone will have access to items in Woby's pack."
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.NOTIFY
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.NOTIFY"
+msgid "Woby's pack is now unlocked."
+msgstr ""
+
+#. STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.PRETTYNAME
+msgctxt "STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.PRETTYNAME"
+msgid "Unlock Woby's Pack"
 msgstr ""
 
 #. STRINGS.UI.CHARACTERSELECT.APPLY

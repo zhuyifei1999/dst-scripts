@@ -184,10 +184,6 @@ local WORK_MIN_DISTANCE = 3
 -- Adding a min distance to work actions.
 
 local function FindNew_MINE(inst, leaderdist, finddist, ...)
-    if inst.sg ~= nil and inst.sg:HasStateTag("busy") then
-        return -- No actions during busy state...
-    end
-
     local act = BrainCommon.AssistLeaderDefaults.MINE.FindNew(inst, leaderdist, finddist, ...)
 
     if act == nil then
@@ -204,10 +200,6 @@ local function FindNew_MINE(inst, leaderdist, finddist, ...)
 end
 
 local function FindNew_CHOP(inst, leaderdist, finddist, ...)
-    if inst.sg ~= nil and inst.sg:HasStateTag("busy") then
-        return -- No actions during busy state...
-    end
-
     local act = BrainCommon.AssistLeaderDefaults.CHOP.FindNew(inst, leaderdist, finddist, ...)
 
     if act == nil then

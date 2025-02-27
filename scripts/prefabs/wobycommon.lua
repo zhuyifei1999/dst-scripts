@@ -57,7 +57,8 @@ local COMMAND_NAMES =
 	--These are just for RPC
 	"OPENWHEEL",
 	"CLOSEWHEEL",
-	"AUTOBAGLOCK",
+	"LOCKBAG",
+	"UNLOCKBAG",
 }
 local COMMANDS = table.invert(COMMAND_NAMES)
 
@@ -84,7 +85,7 @@ local function SetupMouseOver(w)
 	w.mouseover:MoveToBack()
 end
 
-local function MakeAutocastToggle(name)
+local function MakeAutocastToggle(name, noclicksound, overrideanimname)
 	return function(w)
 		SetupMouseOver(w)
 		w.ring = w:AddChild(UIAnim())
@@ -93,9 +94,10 @@ local function MakeAutocastToggle(name)
 		w.ring:GetAnimState():PlayAnimation("autocast_ring", true)
 		w.ring.OnUpdate = function(ring, dt)
 			if ThePlayer and ThePlayer.woby_commands_classified and ThePlayer.woby_commands_classified:GetValue(name) then
-				local anim =
-					(w.animstate:IsCurrentAnimation(name.."_focus") and "autocast_ring_focus") or
-					(w.animstate:IsCurrentAnimation(name.."_pressed") and "autocast_ring_pressed") or
+				local anim = overrideanimname or name
+				anim =
+					(w.animstate:IsCurrentAnimation(anim.."_focus") and "autocast_ring_focus") or
+					(w.animstate:IsCurrentAnimation(anim.."_pressed") and "autocast_ring_pressed") or
 					"autocast_ring"
 				if not ring:GetAnimState():IsCurrentAnimation(anim) then
 					local frame = ring:GetAnimState():GetCurrentAnimationFrame()
@@ -103,8 +105,14 @@ local function MakeAutocastToggle(name)
 					ring:GetAnimState():SetFrame(frame)
 				end
 				ring:Show()
+				if not noclicksound then
+					w.overrideclicksound = "dontstarve/HUD/toggle_off"
+				end
 			else
 				ring:Hide()
+				if not noclicksound then
+					w.overrideclicksound = "dontstarve/HUD/toggle_on"
+				end
 			end
 		end
 		w.OnShow = function(w)
@@ -200,7 +208,27 @@ local COMMAND_DEFS =
 			down = { anim = "sit_pressed" },
 		},
 		widget_scale = ICON_SCALE,
-		postinit = MakeAutocastToggle("sit"),
+		postinit = MakeAutocastToggle("sit", true),
+	},
+
+	SIT_SMALL =
+	{
+		label = STRINGS.WOBY_COMMANDS.SIT,
+		onselect = function(inst)
+			inst.components.spellbook:SetSpellName(STRINGS.WOBY_COMMANDS.SIT)
+			inst.components.spellbook.closeonexecute = true
+		end,
+		execute = MakeWobyCommand(COMMANDS.SIT),
+		bank = "spell_icons_woby",
+		build = "spell_icons_woby",
+		anims =
+		{
+			idle = { anim = "sit_small" },
+			focus = { anim = "sit_small_focus" },
+			down = { anim = "sit_small_pressed" },
+		},
+		widget_scale = ICON_SCALE,
+		postinit = MakeAutocastToggle("sit", true, "sit_small"),
 	},
 
 	PICKUP =
@@ -372,7 +400,7 @@ local SMALL_SPELLS_LEFT =
 	COMMAND_DEFS.WORKING,
 	COMMAND_DEFS.FORAGING,
 	COMMAND_DEFS.PICKUP,
-	COMMAND_DEFS.SIT,
+	COMMAND_DEFS.SIT_SMALL,
 }
 
 local SMALL_SPELLS_RIGHT =
@@ -503,7 +531,7 @@ local function SetupCommandWheel(inst)
 	inst.components.spellbook:SetItems(inst._spells)
 	inst.components.spellbook:SetBgData(SPELLBOOK_BG)
 	inst.components.spellbook.opensound = sfxpath
-	inst.components.spellbook.closesound = sfxpath
+	--inst.components.spellbook.closesound = sfxpath
 	--inst.components.spellbook.executesound = "meta4/winona_UI/select"	--use .clicksound for item buttons instead
 	--inst.components.spellbook.focussound = "meta4/winona_UI/hover"
 
@@ -644,6 +672,95 @@ end
 
 --------------------------------------------------------------------------
 
+local function DoAlignSfx(inst, sound)
+	local target = inst.components.rideable and inst.components.rideable:GetRider() or inst
+	if target.SoundEmitter then
+		target.SoundEmitter:PlaySound(sound)
+	end
+end
+
+local function ApplyLunarAlignAddColour(target, c)
+	if target.components.colouradder then
+		if c > 0 then
+			target.components.colouradder:PushColour("wobylunaralignfade", c, c, c, 0)
+		else
+			target.components.colouradder:PopColour("wobylunaralignfade")
+		end
+	else
+		target.AnimState:SetAddColour(c, c, c, 0)
+	end
+end
+
+local function UpdateLunarAlignFade(inst)
+	local target = inst.components.rideable and inst.components.rideable:GetRider() or inst
+	if target ~= inst._alignfadetask.target then
+		ApplyLunarAlignAddColour(inst._alignfadetask.target, 0)
+		inst._alignfadetask.target = target
+	end
+	local fade = inst._alignfadetask.fade + 1
+	if fade < 15 then
+		inst._alignfadetask.fade = fade
+		fade = fade / 15
+		ApplyLunarAlignAddColour(target, 1 - fade * fade)
+	else
+		ApplyLunarAlignAddColour(target, 0)
+		inst._alignfadetask:Cancel()
+		inst._alignfadetask = nil
+	end
+end
+
+local function DoLunarAlignFx(inst)
+	inst:DoTaskInTime(0, DoAlignSfx, "meta5/woby/woby_transform_lunar")
+	if inst._alignfadetask then
+		inst._alignfadetask:Cancel()
+		inst:RemoveTag("woby_align_fade")
+	end
+	inst._alignfadetask = inst:DoPeriodicTask(0, UpdateLunarAlignFade)
+	inst._alignfadetask.fade = 0
+	inst._alignfadetask.target = inst.components.rideable and inst.components.rideable:GetRider() or inst
+	ApplyLunarAlignAddColour(inst._alignfadetask.target, 1)
+end
+
+local function ApplyShadowAlignMultColour(target, c)
+	if c < 1 then
+		target:AddTag("woby_align_fade") --syncs multcolour to rack attachment
+	else
+		target:RemoveTag("woby_align_fade")
+	end
+	target.AnimState:SetMultColour(c, c, c, 1)
+end
+
+local function UpdateShadowAlignFade(inst)
+	local target = inst.components.rideable and inst.components.rideable:GetRider() or inst
+	if target ~= inst._alignfadetask.target then
+		ApplyShadowAlignMultColour(inst._alignfadetask.target, 1)
+		inst._alignfadetask.target = target
+	end
+	local fade = inst._alignfadetask.fade + 1
+	if fade < 15 then
+		inst._alignfadetask.fade = fade
+		fade = fade / 15
+		ApplyShadowAlignMultColour(target, fade * fade)
+	else
+		ApplyShadowAlignMultColour(target, 1)
+		inst._alignfadetask:Cancel()
+		inst._alignfadetask = nil
+	end
+end
+
+local function DoShadowAlignFx(inst)
+	inst:DoTaskInTime(0, DoAlignSfx, "meta5/woby/woby_transform_shadow")
+	if inst._alignfadetask then
+		inst._alignfadetask:Cancel()
+	end
+	inst._alignfadetask = inst:DoPeriodicTask(0, UpdateShadowAlignFade)
+	inst._alignfadetask.fade = 0
+	inst._alignfadetask.target = inst.components.rideable and inst.components.rideable:GetRider() or inst
+	ApplyShadowAlignMultColour(inst._alignfadetask.target, 0)
+end
+
+--------------------------------------------------------------------------
+
 return
 {
 	FLAGBITS = FLAGBITS,
@@ -661,4 +778,6 @@ return
     WobyCourier_FindValidContainerForItem = WobyCourier_FindValidContainerForItem,
 	RestrictContainer = RestrictContainer,
     ReskinToolFilterFn = ReskinToolFilterFn,
+	DoLunarAlignFx = DoLunarAlignFx,
+	DoShadowAlignFx = DoShadowAlignFx,
 }

@@ -58,9 +58,6 @@ local function OnUpdateProjectileTail(inst)--, dt)
         local voffset = math.sin(offsangle) * offsradius
         tail.Transform:SetPosition(x + math.sin(rot) * hoffset, y + voffset, z + math.cos(rot) * hoffset)
         local speed = TUNING.WORTOX_SOUL_PROJECTILE_SPEED
-        if inst._hasextraspeed:value() then
-            speed = speed + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_SPEED
-        end
         tail.Physics:SetMotorVel(speed * (.2 + math.random() * .3), 0, 0)
         inst._tails[tail] = true
         inst:ListenForEvent("onremove", function(tail) inst._tails[tail] = nil end, tail)
@@ -133,10 +130,6 @@ end
 
 local function RethrowProjectile(inst, speed, soulthiefreceiver)
     if soulthiefreceiver:IsValid() then
-        if inst.soul_speedy then
-            speed = speed + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_SPEED
-            inst._hasextraspeed:set(true)
-        end
         inst.components.projectile:SetSpeed(speed)
         inst.components.projectile:SetHoming(true)
 
@@ -234,9 +227,6 @@ local function SeekSoulStealer(inst)
         local speed = TUNING.WORTOX_SOUL_PROJECTILE_SPEED
         local skilltreeupdater = soulthiefreceiver.components.skilltreeupdater
         if skilltreeupdater then
-            if skilltreeupdater:IsActivated("wortox_soulprotector_2") then
-                inst.soul_speedy = true
-            end
             if skilltreeupdater:IsActivated("wortox_thief_4") then
                 inst.soul_control = true
             end
@@ -249,10 +239,6 @@ local function SeekSoulStealer(inst)
             inst.components.projectile:SetHoming(false)
             inst:DoTaskInTime(TUNING.SKILLS.WORTOX.SOUL_PROJECTILE_REPEL_DURATION, RethrowProjectile, speed, soulthiefreceiver)
         else
-            if inst.soul_speedy then
-                speed = speed + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_SPEED
-                inst._hasextraspeed:set(true)
-            end
             inst.components.projectile:SetSpeed(speed)
         end
         inst.components.projectile:Throw(inst, soulthiefreceiver, soulthiefreceiver)
@@ -356,9 +342,8 @@ local function fn()
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
-    inst._target = net_entity(inst.GUID, "wortox_soul._target", "targetdirty")
-    inst._hastail = net_bool(inst.GUID, "wortox_soul._hastail", "hastaildirty")
-    inst._hasextraspeed = net_bool(inst.GUID, "wortox_soul._hasextraspeed", "hasextraspeeddirty")
+    inst._target = net_entity(inst.GUID, "wortox_soul_spawn._target", "targetdirty")
+    inst._hastail = net_bool(inst.GUID, "wortox_soul_spawn._hastail", "hastaildirty")
 
     inst.entity:SetPristine()
 

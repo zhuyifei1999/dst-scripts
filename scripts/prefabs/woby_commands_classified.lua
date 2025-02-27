@@ -28,6 +28,44 @@ for k, v in pairs(SKILL_TO_PROP) do
 	PROP_TO_SKILL[v] = k
 end
 
+local LOCKWOBY_USERCMD =
+{
+	prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.PRETTYNAME
+	desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.DESC
+	permission = COMMAND_PERMISSION.USER,
+	slash = true,
+	usermenu = false,
+	servermenu = true,
+	menusort = 0,
+	params = {},
+	vote = false,
+	localfn = function(params, caller)
+		if caller.woby_commands_classified then
+			caller.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.LOCKBAG)
+			Profile:SetWobyIsLocked(true)
+		end
+	end,
+}
+
+local UNLOCKWOBY_USERCMD =
+{
+	prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.PRETTYNAME
+	desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.RESCUE.DESC
+	permission = COMMAND_PERMISSION.USER,
+	slash = true,
+	usermenu = false,
+	servermenu = true,
+	menusort = 0,
+	params = {},
+	vote = false,
+	localfn = function(params, caller)
+		if caller.woby_commands_classified then
+			caller.woby_commands_classified:ExecuteCommand(WobyCommon.COMMANDS.UNLOCKBAG)
+			Profile:SetWobyIsLocked(false)
+		end
+	end,
+}
+
 --------------------------------------------------------------------------
 --Common helpers
 --------------------------------------------------------------------------
@@ -43,6 +81,45 @@ end
 local function CancelTurboSprint(inst)
 	if inst._parent and inst._parent.sg then
 		inst._parent.sg.mem.turbowoby = nil
+	end
+end
+
+local function ClearBagLockUserCommand(inst)
+	if inst.hasbaglockusercmd then
+		RemoveUserCommand("lockwoby")
+		RemoveUserCommand("unlockwoby")
+	end
+end
+
+local function DebugPrintBagLock(inst, locked, msg)
+	print(string.format("%s %sWoby%s", locked and "Locking" or "Unlocking", msg and (msg.." ") or "", inst._parent and (" for "..tostring(inst._parent)) or "."))
+end
+
+local function SetupBagLockUserCommand(inst)
+	ClearBagLockUserCommand(inst)
+	if inst.baglock:value() then
+		AddUserCommand("unlockwoby", UNLOCKWOBY_USERCMD)
+	else
+		AddUserCommand("lockwoby", LOCKWOBY_USERCMD)
+	end
+	inst.hasbaglockusercmd = true
+end
+
+local function OnBagLockDirty(inst)
+	if inst._parent then
+		local locked = inst.baglock:value()
+		if not inst.skipnextbaglockmsg then
+			DebugPrintBagLock(inst, locked)
+		end
+		if inst._parent.HUD then
+			SetupBagLockUserCommand(inst)
+			Profile:SetWobyIsLocked(locked)
+			if inst.skipnextbaglockmsg then
+				inst.skipnextbaglockmsg = nil
+			else
+				ChatHistory:SendCommandResponse(locked and STRINGS.UI.BUILTINCOMMANDS.LOCKWOBY.NOTIFY or STRINGS.UI.BUILTINCOMMANDS.UNLOCKWOBY.NOTIFY)
+			end
+		end
 	end
 end
 
@@ -119,15 +196,13 @@ local function OnRemovePet(inst, pet)
 	local player = inst._parent
 	if player then
 		assert(player.woby_commands_classified == inst)
+		ClearBagLockUserCommand(inst)
 		inst:RemoveEventCallback("onremove", inst._onremoveplayer, player)
 		inst:RemoveEventCallback("onactivateskill_server", inst._onactivateskill, player)
 		inst:RemoveEventCallback("ondeactivateskill_server", inst._ondeactivateskill, player)
 		player.woby_commands_classified = nil
 		inst._parent = nil
 		inst:Remove()
-		if player:IsValid() then
-			--player:PushEvent("show_pet_hunger", false)
-		end
 	end
 end
 
@@ -157,6 +232,17 @@ local function AttachClassifiedToPetOwner(inst, player)
 	else
 		inst:ListenForEvent("ms_skilltreeinitialized", inst._onskilltreeinitialized, player)
 	end
+	if player.baglock ~= nil then --can be true or false if set
+		--This was already set, are we respawning Woby mid-game?
+		inst.isnewspawn:set(false)
+		inst.baglock:set(player.baglock)
+		DebugPrintBagLock(inst, player.baglock, "restored")
+	else
+		player.baglock = inst.baglock:value()
+	end
+	inst.skipnextbaglockmsg = true
+	OnBagLockDirty(inst)
+	inst.skipnextbaglockmsg = nil
     player:DoTaskInTime(0, NetworkWobyCourier) -- Delay a frame for the classified to sync.
 end
 
@@ -185,6 +271,7 @@ local function OnRemovePlayer(inst, player)
 	inst.entity:SetParent(inst._pet.entity)
 	inst.Network:SetClassifiedTarget(inst)
 	RefreshAttunedSkills(inst, nil)
+	ClearBagLockUserCommand(inst)
 end
 
 local function DoAction_Server(inst, action)
@@ -238,6 +325,14 @@ local function ClearBrainActions(inst)
 
 	if inst._pet.brain then
 		inst._pet.brain:ForceUpdate()
+	end
+end
+
+local function SetBagLock(inst, locked)
+	inst.baglock:set(locked)
+	OnBagLockDirty(inst)
+	if inst._parent then
+		inst._parent.baglock = locked or false
 	end
 end
 
@@ -295,7 +390,21 @@ local CmdFns_Server =
             inst._parent.components.skilltreeupdater and inst._parent.components.skilltreeupdater:IsActivated("walter_camp_wobycourier") and
             inst._parent.components.wobycourier then
             local cx, cy, cz = inst._pet.Transform:GetWorldPosition()
-            return inst._parent.components.wobycourier:StoreXZ(cx, cz)
+			if inst._parent and inst._parent.HUD and inst._parent.TempFocusRememberChest then
+				inst._parent:TempFocusRememberChest(cx, cz)
+			end
+			if not inst._parent.components.wobycourier:StoreXZ(cx, cz) then
+				inst.chest_pos_failed:push()
+				if inst._parent then
+					if inst._parent.HUD and inst._parent.CancelTempFocusRememberChest then
+						inst._parent:CancelTempFocusRememberChest()
+					end
+					if inst._parent.components.talker then
+						inst._parent.components.talker:Say(GetString(inst._parent, "ANNOUNCE_WOBY_REMEMBERCHEST_FAIL"))
+					end
+				end
+			end
+			return true --silent UI fail to match client; triggers fail speech instead
         end
         return false
 	end,
@@ -305,12 +414,19 @@ local CmdFns_Server =
 	[WobyCommon.COMMANDS.CLOSEWHEEL] =	function(inst) NotifyWheelIsOpen_Server(inst, false) end,
 
 	--Other
-	[WobyCommon.COMMANDS.AUTOBAGLOCK] = function(inst)
-		if ToggleSkillCommand_Server(inst, "baglock") then
-			WobyCommon.RestrictContainer(inst._pet, inst.baglock:value())
-			return true
+	[WobyCommon.COMMANDS.LOCKBAG] = function(inst)
+		if not inst.baglock:value() then
+			SetBagLock(inst, true)
+			WobyCommon.RestrictContainer(inst._pet, true)
 		end
-		return false
+		return true
+	end,
+	[WobyCommon.COMMANDS.UNLOCKBAG] = function(inst)
+		if inst.baglock:value() then
+			SetBagLock(inst, false)
+			WobyCommon.RestrictContainer(inst._pet, false)
+		end
+		return true
 	end,
 }
 
@@ -406,6 +522,7 @@ local function CourierWobyDoTeleport(_pet, courierdata, distance_from_dest)
     local time_to_travel = (distance_from_dest - distance_adjustment) / runspeed
     if time_to_travel > 0 then
         courierdata.teleporttimetoarrive = time_to_travel
+        courierdata.removed = true
         _pet:RemoveFromScene()
     else
         _pet.components.spawnfader:FadeIn()
@@ -439,6 +556,7 @@ local function CourierWobyTick(inst)
             return -- Still traveling.
         end
         courierdata.teleporttimetoarrive = nil
+        courierdata.removed = nil
         _pet:ReturnToScene()
         _pet.components.spawnfader:FadeIn()
     end
@@ -518,6 +636,11 @@ local function SendCourierWoby(inst, data)
             inst.courierdata.onspawnfaderout = nil
             inst._pet.components.spawnfader:FadeIn()
         end
+        if inst.courierdata.removed and data == nil then
+            inst.courierdata.removed = nil
+            inst._pet:ReturnToScene()
+            inst._pet.components.spawnfader:FadeIn()
+        end
     end
     inst.courierdata = data
     if inst.courierdata then
@@ -588,10 +711,14 @@ local function OnSave(inst)
 end
 
 local function OnLoad(inst, data)
+	inst.isnewspawn:set(false)
+	DebugPrintBagLock(inst, not (data and data.bagunlock), "loaded")
+	if data == nil then
+		return
+	end
 	if inst._parent == nil or inst._parent._PostActivateHandshakeState_Server ~= POSTACTIVATEHANDSHAKE.READY then
 		inst.load_data_pending = true
 	end
-	inst.baglock:set(not data.bagunlock)
 	inst.pickup:set(data.pickup or false)
 	inst.foraging:set(data.foraging or false)
 	inst.working:set(data.working or false)
@@ -602,6 +729,14 @@ local function OnLoad(inst, data)
 		inst._pet.components.follower:DisableLeashing()
         inst:MakeMinimapIcon()
 		ClearBrainActions(inst)
+	end
+	if data.bagunlock then
+		inst.skipnextbaglockmsg = true
+		SetBagLock(inst, false)
+		inst.skipnextbaglockmsg = nil
+	end
+	if inst.courierdata == nil or inst.courierdata.ischest then
+		WobyCommon.RestrictContainer(inst._pet, inst.baglock:value())
 	end
 end
 
@@ -654,14 +789,16 @@ local function ToggleSkillCommand_Client(inst, name, cmd)
 	return false
 end
 
+local function BasicCommand_Client(inst, cmd)
+	SendRPCToServer(RPC.WobyCommand, cmd)
+	return true
+end
+
 local CmdFns_Client =
 {
 	[WobyCommon.COMMANDS.PET] =			function(inst, cmd) return DoAction_Client(inst, ACTIONS.PET, cmd) end,
 	[WobyCommon.COMMANDS.MOUNT] =		function(inst, cmd) return DoAction_Client(inst, ACTIONS.MOUNT, cmd) end,
-	[WobyCommon.COMMANDS.SHRINK] = function(inst, cmd)
-		SendRPCToServer(RPC.WobyCommand, cmd)
-		return true
-	end,
+	[WobyCommon.COMMANDS.SHRINK] =		BasicCommand_Client,
 	[WobyCommon.COMMANDS.SIT] =			function(inst, cmd) return ToggleSkillCommand_Client(inst, "sit", cmd) end,
 	[WobyCommon.COMMANDS.PICKUP] =		function(inst, cmd) return ToggleSkillCommand_Client(inst, "pickup", cmd) end,
 	[WobyCommon.COMMANDS.FORAGING] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "foraging", cmd) end,
@@ -677,14 +814,25 @@ local CmdFns_Client =
 	end,
 	[WobyCommon.COMMANDS.SHADOWDASH] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "shadowdash", cmd) end,	
 	[WobyCommon.COMMANDS.REMEMBERCHEST] = function(inst, cmd)
+		if inst._parent and inst._parent.TempFocusRememberChest and inst.woby:value() then
+			local x, y, z = inst.woby:value().Transform:GetWorldPosition()
+			inst._parent:TempFocusRememberChest(x, z)
+		end
 		SendRPCToServer(RPC.WobyCommand, cmd)
 		return true
 	end,
-	[WobyCommon.COMMANDS.AUTOBAGLOCK] =	function(inst, cmd) return ToggleSkillCommand_Client(inst, "baglock", cmd) end,
+	[WobyCommon.COMMANDS.LOCKBAG] =			BasicCommand_Client,
+	[WobyCommon.COMMANDS.UNLOCKBAG] =		BasicCommand_Client,
+}
+
+local IgnoreBusy_Client =
+{
+	[WobyCommon.COMMANDS.LOCKBAG] = true,
+	[WobyCommon.COMMANDS.UNLOCKBAG] = true,
 }
 
 local function ExecuteCommand_Client(inst, cmd)
-	if IsBusy_Client(inst) then
+	if not IgnoreBusy_Client[cmd] and IsBusy_Client(inst) then
 		return false
 	end
 	local fn = CmdFns_Client[cmd]
@@ -718,6 +866,12 @@ local function OnWobyCourierChestDirty(inst)
     end
 end
 
+local function OnWobyCourierChestFailed(inst)
+	if inst._parent and inst._parent.CancelTempFocusRememberChest then
+		inst._parent:CancelTempFocusRememberChest()
+	end
+end
+
 local function OnEntityReplicated(inst)
 	--NOTE: parent is the player; pet inst may not actually be in view of client
 	inst._parent = inst.entity:GetParent()
@@ -726,6 +880,9 @@ local function OnEntityReplicated(inst)
 	else
 		assert(inst._parent.woby_commands_classified == nil)
 		inst._parent.woby_commands_classified = inst
+		if inst._parent.HUD then
+			SetupBagLockUserCommand(inst)
+		end
 	end
 end
 
@@ -762,8 +919,10 @@ local function RegisterNetListeners(inst)
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("isdirty", ResetPreview)
 		inst:ListenForEvent("sprintingdirty", OnSprintingDirty)
+		inst:ListenForEvent("baglockdirty", OnBagLockDirty)
 		inst:ListenForEvent("wobydirty", OnWobyDirty)
         inst:ListenForEvent("chest_posdirty", OnWobyCourierChestDirty)
+		inst:ListenForEvent("woby_commands.chest_pos_failed", OnWobyCourierChestFailed)
 
 		if inst.woby:value() then
 			OnWobyDirty(inst)
@@ -775,15 +934,38 @@ local function RegisterNetListeners(inst)
             OnWobyCourierChestDirty(inst)
         end
 	end
+
+	if inst._parent then
+		if inst._parent.HUD then
+			SetupBagLockUserCommand(inst)
+			if inst.isnewspawn:value() then
+				local lockedpref = Profile:GetWobyIsLocked()
+				DebugPrintBagLock(inst, lockedpref, "spawned")
+				if not lockedpref then
+					inst.skipnextbaglockmsg = true
+					inst:ExecuteCommand(WobyCommon.COMMANDS.UNLOCKBAG)
+				end
+			end
+		end
+	end
 end
 
 local function OnRemoveEntity(inst)
-	if inst._parent and
-		inst._parent.HUD and
-		inst._parent.HUD:GetCurrentOpenSpellBook() and
-		inst._parent.HUD:GetCurrentOpenSpellBook() == inst.woby:value()
-	then
-		inst._parent.HUD:CloseSpellWheel()
+	local player = inst._parent
+	if player then
+		if player.HUD then
+			if player.HUD:GetCurrentOpenSpellBook() and
+				player.HUD:GetCurrentOpenSpellBook() == inst.woby:value()
+			then
+				player.HUD:CloseSpellWheel()
+			end
+			ClearBagLockUserCommand(inst)
+		end
+		if not TheWorld.ismastersim then
+			assert(player.woby_commands_classified == inst)
+			player.woby_commands_classified = nil
+			inst._parent = nil
+		end
 	end
 end
 
@@ -819,9 +1001,14 @@ local function fn()
     inst.chest_posz = net_float(inst.GUID, "woby_commands.chest_posz", "chest_posdirty")
     inst.chest_posx:set(WOBYCOURIER_NO_CHEST_COORD)
     inst.chest_posz:set(WOBYCOURIER_NO_CHEST_COORD)
+	inst.chest_pos_failed = net_event(inst.GUID, "woby_commands.chest_pos_failed")
 
-	inst.baglock = net_bool(inst.GUID, "woby_commands.baglock", "isdirty")
+	inst.baglock = net_bool(inst.GUID, "woby_commands.baglock", "baglockdirty") -- attn: special handler!
     inst.baglock:set(true)
+	inst.hasbaglockusercmd = false
+
+	inst.isnewspawn = net_bool(inst.GUID, "woby_commands.isnewspawn")
+	inst.isnewspawn:set(true)
 
 	--Delay net listeners until after initial values are deserialized
 	inst._task = inst:DoStaticTaskInTime(0, RegisterNetListeners)

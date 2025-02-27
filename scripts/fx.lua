@@ -1093,6 +1093,7 @@ local fx =
         anim = "transform",
         --#TODO: this one
         sound = "dontstarve/ghost/ghost_haunt",
+        fn = FinalOffset1,
     },
     {
         name = "ghostflower_spirit1_fx",

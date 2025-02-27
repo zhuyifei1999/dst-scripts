@@ -1788,7 +1788,7 @@ end
 local function GetPickupAction(self, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
-    elseif tool ~= nil then
+    elseif tool ~= nil and not tool:HasTag("nabbag") then
         for k, v in pairs(TOOLACTIONS) do
             if target:HasTag(k.."_workable") then
                 if tool:HasTag(k.."_tool") then
@@ -1921,7 +1921,7 @@ function PlayerController:GetActionButtonAction(force_target)
         local tool = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
         --bug catching (has to go before combat)
-        if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") then
+        if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") and not tool:HasTag("nabbag") then
             if force_target == nil then
                 local target = FindEntity(self.inst, 5, ValidateBugNet, { "_health", ACTIONS.NET.id.."_workable" }, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then

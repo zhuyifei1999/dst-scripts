@@ -22,6 +22,7 @@ local function SetImageFromItem(im, item)
 				if im.layers == nil then
 					im.layers = {}
 				end
+				local usecc = GetGameModeProperty("icons_use_cc")
 				local j = 1
 				for i = 2, #layers do
 					row = layers[i]
@@ -30,6 +31,9 @@ local function SetImageFromItem(im, item)
 						w:SetTexture(row.atlas or GetInventoryItemAtlas(row.image), row.image)
 					else
 						im.layers[j] = im:AddChild(Image(row.atlas or GetInventoryItemAtlas(row.image), row.image))
+						if usecc then
+							im.layers[j]:SetEffect("shaders/ui_cc.ksh")
+						end
 					end
 					j = j + 1
 				end
@@ -327,6 +331,9 @@ local ItemTile = Class(Widget, function(self, invitem)
 
     self:Refresh()
 end)
+
+--static function so we can share it to other files without making it global
+ItemTile.sSetImageFromItem = SetImageFromItem
 
 function ItemTile:Refresh()
     self.ispreviewing = false

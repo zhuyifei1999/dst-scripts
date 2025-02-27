@@ -50,21 +50,11 @@ local function SetFadeColour(inst, r, g, b, a)
 end
 
 local function OnPostUpdateFading(inst)
-	if inst.owner:IsValid() then
+	if inst.owner:IsValid() and inst.owner:HasAnyTag("woby_dash_fade", "woby_align_fade") then
+		inst._fading = true
 		SetFadeColour(inst, inst.owner.AnimState:GetMultColour())
-	end
-end
-
-local function SetFading(inst, fading)
-	if fading then
-		if not inst._fading then
-			inst._fading = true
-			inst.components.updatelooper:AddPostUpdateFn(OnPostUpdateFading)
-			OnPostUpdateFading(inst)
-		end
 	elseif inst._fading then
 		inst._fading = false
-		inst.components.updatelooper:RemovePostUpdateFn(OnPostUpdateFading)
 		SetFadeColour(inst, 1, 1, 1, 1)
 	end
 end
@@ -110,8 +100,6 @@ local function OnUpdate(inst)--, dt)
 		end
 	end
 
-	SetFading(inst, inst.owner:HasTag("woby_dash_fade"))
-
 	inst.wasmoving = moving
 	inst.wasrunning = running
 	inst.wasnopredict = nopredict
@@ -121,7 +109,8 @@ local function OnEntitySleep(inst)
 	if inst._updating then
 		inst._updating = false
 		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdate)
-		SetFading(inst, false)
+		inst.components.updatelooper:RemovePostUpdateFn(OnPostUpdateFading)
+		SetFadeColour(inst, 1, 1, 1, 1)
 	end
 end
 
@@ -133,6 +122,7 @@ local function OnEntityWake(inst)
 		inst.wasrunning = false
 		inst.wasnopredict = false
 		inst.components.updatelooper:AddOnUpdateFn(OnUpdate)
+		inst.components.updatelooper:AddPostUpdateFn(OnPostUpdateFading)
 		OnUpdate(inst, 0)
 	end
 end

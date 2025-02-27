@@ -523,7 +523,6 @@ local function OnRefuseItem(inst, giver, item)
 end
 
 local function OnDomesticated(inst, data)
-    inst.components.rideable:Buck()
     inst.domesticationPending = true
 end
 

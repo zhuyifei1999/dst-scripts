@@ -1283,6 +1283,7 @@ local wortox_decoy_assets = {
 local wortox_decoy_prefabs = {
     "wortox_decoy_explode_fx",
     "wortox_decoy_fizzle_fx",
+    "wortox_soul_spawn_fx",
 }
 
 local COMBAT_MUSTHAVE_TAGS = { "_combat", "_health" }
@@ -1339,12 +1340,14 @@ local function SetOwner_decoy(inst, decoyowner)
     inst.Transform:SetRotation(inst.decoyowner.Transform:GetRotation())
 
     local duration = TUNING.SKILLS.WORTOX.SOULDECOY_DURATION
+    inst.decoythorns = nil
     inst.decoyexplodes = nil
     if inst.decoyowner:HasTag("player") then
         inst.components.skinner:CopySkinsFromPlayer(inst.decoyowner)
         if inst.decoyowner.components.skilltreeupdater then
             if inst.decoyowner.components.skilltreeupdater:IsActivated("wortox_souldecoy_2") then
                 duration = duration + TUNING.SKILLS.WORTOX.SOULDECOY_DURATION_BONUS
+                inst.decoythorns = true
             end
             if inst.decoyowner.components.skilltreeupdater:IsActivated("wortox_souldecoy_3") then
                 inst.decoyexplodes = true
@@ -1373,7 +1376,7 @@ local function OnDeath_decoy(inst)
     local ents = TheSim:FindEntities(x, y, z, TUNING.SKILLS.WORTOX.SOULDECOY_TAUNT_RADIUS, COMBAT_MUSTHAVE_TAGS, COMBAT_CANTHAVE_TAGS)
     for _, ent in ipairs(ents) do
         if ent.components.combat then
-            if ent.components.combat:TargetIs(inst) or decoyowner and ent.components.combat:TargetIs(decoyowner) then
+            if ent.components.combat:TargetIs(inst) or (decoyowner and ent.components.combat:TargetIs(decoyowner)) then
                 if wortox_soul_common.SoulDamageTest(inst, ent, decoyowner) then
                     inst.decoylured[ent] = true
                 end
@@ -1382,10 +1385,10 @@ local function OnDeath_decoy(inst)
     end
 
     -- Redirect focus back on the owner this inst is now dead and combat target will drop.
-    for ent, _ in pairs(inst.decoylured) do
-        if ent:IsValid() and ent.entity:IsVisible() then
-            if ent.components.combat then
-                if ent.components.combat:TargetIs(inst) or decoyowner and ent.components.combat:TargetIs(decoyowner) then
+    if decoyowner then
+        for ent, _ in pairs(inst.decoylured) do
+            if ent:IsValid() and ent.entity:IsVisible() then
+                if (ent.components.combat and ent.components.combat:TargetIs(inst)) or ent.components.combat:TargetIs(decoyowner) then
                     if ent:GetDistanceSqToInst(decoyowner) <= PLAYER_CAMERA_SEE_DISTANCE_SQ then
                         ent.components.combat:SetTarget(decoyowner)
                     end
@@ -1395,7 +1398,56 @@ local function OnDeath_decoy(inst)
     end
 end
 
+local function OnAttacked_decoy(inst, data)
+    local ent = data and data.attacker or nil
+    if ent and ent:IsValid() then
+        local decoyowner = inst.decoyowner and inst.decoyowner:IsValid() and inst.decoyowner or nil
+        if wortox_soul_common.SoulDamageTest(inst, ent, decoyowner) then
+            inst.decoythornstarget = ent
+        end
+    end
+end
+
+local function DoThorns_decoy(inst)
+    local ent = inst.decoythornstarget
+    if ent and ent:IsValid() and ent.entity:IsVisible() and
+        ent:HasAllTags(COMBAT_MUSTHAVE_TAGS) and not ent:HasAnyTag(COMBAT_CANTHAVE_TAGS) and
+        inst.components.combat:CanTarget(ent) then
+        local initial_damage = inst.components.combat.defaultdamage
+
+        local decoyowner = inst.decoyowner and inst.decoyowner:IsValid() and inst.decoyowner or nil
+        local damage = initial_damage * TUNING.SKILLS.WORTOX.SOULDECOY_THORNS_DAMAGE_MULT
+        if decoyowner and decoyowner.components.skilltreeupdater and decoyowner.components.skilltreeupdater:IsActivated("wortox_souljar_3") then
+            local souls_max = TUNING.SKILLS.WORTOX.SOUL_DAMAGE_MAX_SOULS
+            local damage_percent = math.min(decoyowner.soulcount or 0, souls_max) / souls_max
+            damage = damage * (1 + (TUNING.SKILLS.WORTOX.SOUL_DAMAGE_SOULS_BONUS_MULT - 1) * damage_percent)
+            inst.components.combat:SetDefaultDamage(damage)
+        end
+        if wortox_soul_common.SoulDamageTest(inst, ent, decoyowner) then
+            local x, y, z = ent.Transform:GetWorldPosition()
+            local fx = SpawnPrefab("wortox_soul_spawn_fx")
+            fx.Transform:SetPosition(x, y, z)
+            if decoyowner then
+                local damagetoent = damage
+                local explosiveresist = ent.components.explosiveresist
+                if explosiveresist then
+                    damagetoent = damagetoent * (1 - explosiveresist:GetResistance())
+                    explosiveresist:OnExplosiveDamage(damagetoent, decoyowner)
+                end
+                ent.components.combat:GetAttacked(decoyowner, damagetoent, nil, "soul")
+            else
+                inst.components.combat:DoAttack(ent)
+            end
+        end
+
+        inst.components.combat:SetDefaultDamage(initial_damage)
+    end
+end
+
 local function DoExplosion_decoy(inst)
+    if inst.decoythorns then
+        inst:DoThorns()
+    end
     local decoyowner = inst.decoyowner and inst.decoyowner:IsValid() and inst.decoyowner or nil
     local damage = inst.components.combat.defaultdamage
     if decoyowner and decoyowner.components.skilltreeupdater and decoyowner.components.skilltreeupdater:IsActivated("wortox_souljar_3") then
@@ -1438,7 +1490,9 @@ local function DoExplosion_decoy(inst)
 end
 
 local function DoFizzle_decoy(inst)
-    -- Leaving here as a function stub in case of changes in beta or leaving for mods.
+    if inst.decoythorns then
+        inst:DoThorns()
+    end
 end
 
 local function DisplayNameFn_decoy(inst)
@@ -1517,11 +1571,13 @@ local function wortox_decoy_fn()
 
     local combat = inst:AddComponent("combat")
     combat:SetDefaultDamage(TUNING.SKILLS.WORTOX.SOULDECOY_EXPLODE_DAMAGE)
+    inst:ListenForEvent("attacked", OnAttacked_decoy)
 
     inst.SetOwner = SetOwner_decoy
     inst.failedtoinittask = inst:DoTaskInTime(0, inst.Remove) -- Must use SetOwner for this or it will remove itself.
 
     inst.OnDeath = OnDeath_decoy
+    inst.DoThorns = DoThorns_decoy
     inst.DoExplosion = DoExplosion_decoy
     inst.DoFizzle = DoFizzle_decoy
 

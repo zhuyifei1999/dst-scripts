@@ -115,7 +115,10 @@ local function OnIconDirty(inst)
 		if inst._iconlayers == nil then
 			inst._iconlayers = {}
 		end
-		local build = inst:GetSkinBuild() or "slingshot"
+		local build = inst.buildname:value()
+		if string.len(build) <= 0 then
+			build = "slingshot"
+		end
 		local j = 1
 		j = _AddLayer(inst._iconlayers, j, band and (band.."_back") or (build.."_band_back"))
 		j = _AddLayer(inst._iconlayers, j, build.."_body")
@@ -161,6 +164,12 @@ end
 
 local function LayeredInvImageFn(inst)
 	return inst._iconlayers
+end
+
+local function OnSlingshotSkinChanged(inst, skin_build)
+	inst.buildname:set(skin_build or "")
+	inst.components.inventoryitem:ChangeImageName(skin_build or "slingshot")
+	OnIconDirty(inst)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -430,7 +439,16 @@ local function OnInstalledPartsChanged(inst, part)
 end
 
 local function OnDeconstruct(inst, caster)
+	--greenstaff only drops one stack by default (container:DropEverything(nil, true))
+	--drop the rest now
+	inst.components.container:DropEverything()
 	inst.components.slingshotmods:DropAllPartsWithoutUninstalling()
+end
+
+local function OnBurnt(inst)
+	inst.components.container:DropEverything()
+	inst.components.slingshotmods:DropAllPartsWithoutUninstalling()
+	DefaultBurntFn(inst)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -486,6 +504,7 @@ local function MakeSlingshot(name, assets, prefabs, common_postinit, master_post
 		inst.bandid = net_tinybyte(inst.GUID, "slingshot.bandid", "icondirty")
 		inst.handleid = net_tinybyte(inst.GUID, "slingshot.handleid", "icondirty")
 		--inst.frameid --no need to network, slingshot prefab variant are specific to frame type
+		inst.buildname = net_string(inst.GUID, "slingshot.buildname", "icondirty")
 
 		inst.displaynamefn = DisplayNameFn
 
@@ -543,10 +562,14 @@ local function MakeSlingshot(name, assets, prefabs, common_postinit, master_post
 
 		MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 		MakeSmallPropagator(inst)
+		inst.components.burnable:SetOnBurntFn(OnBurnt)
+
 		MakeHauntableLaunch(inst)
 
 		inst:ListenForEvent("floater_startfloating", OnStartFloating)
 		inst:ListenForEvent("floater_stopfloating", OnStopFloating)
+
+		inst.OnSlingshotSkinChanged = OnSlingshotSkinChanged
 
 		if master_postinit then
 			master_postinit(inst)

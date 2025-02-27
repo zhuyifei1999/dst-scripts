@@ -834,7 +834,7 @@ return{
 		"Stay, girl!",
 		"Take a break, Wobers!",
 		"Stay, Wobes! That's it.",
-		"Paws here Woby! Hehe.",
+		"Paws here Woby! Heh.",
 	},
 	ANNOUNCE_WOBY_FOLLOW =
 	{
@@ -859,7 +859,7 @@ return{
 		"I'm so proud of you!",
 		"Alright, Wobes!",
 		"Woby the Wonderdog!",
-		"Woah, Woby! Hehe.",
+		"Woah, Woby! Heh.",
 	},
 	ANNOUNCE_WOBY_FORAGE =
 	{
@@ -871,7 +871,7 @@ return{
 	ANNOUNCE_WOBY_WORK =
 	{
 		"Woby, come help me!",
-		"Lend a paw, girl! Hehe.",
+		"Lend a paw, girl! Heh.",
 		"Wanna help, Wobes?",
 		"You gotta minute, Woby?",
 		"Who's my special helper?",
@@ -885,8 +885,9 @@ return{
 		"Don't get lost, Wobers!",
 		"And away she goes!",
 		"On your way now, girl!",
-		"Woby, follow your nose! It knows! Hehe.",
+		"Woby, follow your nose! It knows! Heh.",
 	},
+	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL = "Let's find a better spot.",
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",
@@ -4145,18 +4146,18 @@ return{
 		SLINGSHOTAMMO_THULECITE = "Shadow magic is pretty handy, I see why the Ancients liked it!",
         SLINGSHOTAMMO_GOLD = "These rounds are golden! Literally!",
 		SLINGSHOTAMMO_HONEY = "Sweet!",
-        SLINGSHOTAMMO_SLOW = "That should slow them down!",
+        SLINGSHOTAMMO_SLOW = "These should slow them down!",
         SLINGSHOTAMMO_FREEZE = "Almost as chilling as my favourite radio shows!",
 		SLINGSHOTAMMO_POOP = "Gross... but a distraction is a distraction.",
 		SLINGSHOTAMMO_STINGER = "Better be careful with these.",
 		SLINGSHOTAMMO_MOONGLASS = "Now I can hit'em with the moon!",
-		SLINGSHOTAMMO_GELBLOB = "Icky. I like it.",
+		SLINGSHOTAMMO_GELBLOB = "Icky. Just the way I like it!",
 		SLINGSHOTAMMO_SCRAPFEATHER = "They're in for a shock!",
-        SLINGSHOTAMMO_DREADSTONE = "These will pack a real punch.",
+        SLINGSHOTAMMO_DREADSTONE = "These will pack a real punch-a-roo!",
         SLINGSHOTAMMO_GUNPOWDER = "Woby, we're going out with a BANG!",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "Prickly-wickly.",
+        SLINGSHOTAMMO_LUNARPLANTHUSK = "Prrrickly-wickly!",
         SLINGSHOTAMMO_PUREBRILLIANCE = "Yes, Woby. We are brilliant!",
-        SLINGSHOTAMMO_HORRORFUEL = "Spooktacular! Hehe.",
+        SLINGSHOTAMMO_HORRORFUEL = "Spooktacular! Heh.",
         PORTABLETENT = "Nice and sturdy!",
         PORTABLETENT_ITEM = "I'll have this set up lickety-split!",
 
@@ -5591,7 +5592,7 @@ return{
             OCCUPIED = "Sorry Woby, that's not for you.",
         },
 
-        CARPENTRY_BLADE_MOONGLASS = "Lookin' sharp! Hehe.",
+        CARPENTRY_BLADE_MOONGLASS = "Lookin' sharp! Heh.",
 
         CHEST_MIMIC_REVEALED = "And I was right! It's a box monster, Woby!",
 
@@ -5618,9 +5619,9 @@ return{
 		SNOWMAN =
 		{
 			GENERIC = "Ice to meet ya!",
-			SNOWBALL = "I've seen you a round! Hehe.",
+			SNOWBALL = "I've seen you a round! Heh.",
 		},
-        SNOWBALL_ITEM = "Hehe.",
+        SNOWBALL_ITEM = "Heh.",
 
         -- Year of the Snake
         YOTS_SNAKESHRINE =
@@ -5643,17 +5644,17 @@ return{
         GHOSTLYELIXIR_SHADOW = "Ghosts can drink potions? Uh, of course I knew that!",
 
 		SLINGSHOTMODKIT = "Time to mod my trusty slingshot?",
-		SLINGSHOT_BAND_PIGSKIN = "Mmm. Smells like bacon.",
-		SLINGSHOT_BAND_TENTACLE = "I think it twitched.",
-		SLINGSHOT_BAND_MIMIC = "Creepy!",
-		SLINGSHOT_FRAME_BONE = "Bad to the bone! Hehe.",
-		SLINGSHOT_FRAME_GEMS = "Fancy.",
+		SLINGSHOT_BAND_PIGSKIN = "Mmm. Smells like bacon! But don't eat it Woby!",
+		SLINGSHOT_BAND_TENTACLE = "It's a little twitchy!",
+		SLINGSHOT_BAND_MIMIC = "Creepy! I love it.",
+		SLINGSHOT_FRAME_BONE = "Bad to the bone!",
+		SLINGSHOT_FRAME_GEMS = "Now we're getting fancy!",
 		SLINGSHOT_FRAME_WAGPUNK_0 = "There's a real kick to it!",
-		SLINGSHOT_FRAME_WAGPUNK = "I could slingshot forever.",
-		SLINGSHOT_HANDLE_STICKY = "It's gross but effective!",
-		SLINGSHOT_HANDLE_JELLY = "Super sticky.",
-		SLINGSHOT_HANDLE_SILK = "It's good tape.",
-		SLINGSHOT_HANDLE_VOIDCLOTH = "Oh yeah. Here we go.",
+		SLINGSHOT_FRAME_WAGPUNK = "I could slingshot forever!",
+		SLINGSHOT_HANDLE_STICKY = "Gross but effective!",
+		SLINGSHOT_HANDLE_JELLY = "Aww, super sticky!",
+		SLINGSHOT_HANDLE_SILK = "Kinda like hockey tape!",
+		SLINGSHOT_HANDLE_VOIDCLOTH = "Thank you, shadow monster!",
 
 		WOBY_TREAT = "Woby's favourite!",
 		BANDAGE_BUTTERFLYWINGS = "It's made from butterfly wings! Cute! And a little sad.",
@@ -5670,7 +5671,7 @@ return{
         },
 
         SHALLOW_GRAVE = "Don't sniff around there, Woby.",
-        THULECITEBUGNET = "Just minding my own buzzness, Woby. Hehe.",
+        THULECITEBUGNET = "Just minding my own buzzness, Woby. Heh.",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

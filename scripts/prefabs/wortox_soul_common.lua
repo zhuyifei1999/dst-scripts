@@ -64,8 +64,17 @@ local function HasSoul(victim)
 end
 
 local function SoulDamageTest(inst, ent, owner)
-    if ent == owner or owner.components.combat == nil then
+    if ent == owner then
         return false
+    end
+
+    if owner then
+        if owner.components.combat == nil then
+            return false
+        end
+        if owner.components.combat:TargetHasFriendlyLeader(ent) or not owner.components.combat:CanTarget(ent) then
+            return false
+        end
     end
 
     if ent.components.health and ent.components.health:IsDead() then
@@ -77,10 +86,6 @@ local function SoulDamageTest(inst, ent, owner)
     end
 
     if ent:HasTag("player") and not TheNet:GetPVPEnabled() then
-        return false
-    end
-
-    if owner.components.combat:TargetHasFriendlyLeader(ent) or not owner.components.combat:CanTarget(ent) then
         return false
     end
 

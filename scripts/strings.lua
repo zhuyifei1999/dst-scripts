@@ -3305,16 +3305,16 @@ STRINGS =
 		SLINGSHOTAMMO_MARBLE = "Marbles",
 		SLINGSHOTAMMO_THULECITE = "Cursed Rounds",
         SLINGSHOTAMMO_GOLD = "Gold Rounds",
-		SLINGSHOTAMMO_HONEY = "Sticky Rounds",
+		SLINGSHOTAMMO_HONEY = "Stickies",
         SLINGSHOTAMMO_SLOW = "Slow-Down Rounds",
         SLINGSHOTAMMO_FREEZE = "Freeze Rounds",
 		SLINGSHOTAMMO_POOP = "Poop Pellets",
-        SLINGSHOTAMMO_STINGER = "Stinger Rounds",
-        SLINGSHOTAMMO_MOONGLASS = "Moon Glass Rounds",
-		SLINGSHOTAMMO_GELBLOB = "Icky Rounds",
-		SLINGSHOTAMMO_SCRAPFEATHER = "Shockscrap Rounds",
-        SLINGSHOTAMMO_DREADSTONE = "Dreadstone Rounds",
-        SLINGSHOTAMMO_GUNPOWDER = "Gunpowder Rounds",
+        SLINGSHOTAMMO_STINGER = "Stinger Zingers",
+        SLINGSHOTAMMO_MOONGLASS = "Moonshots",
+		SLINGSHOTAMMO_GELBLOB = "Ickies",
+		SLINGSHOTAMMO_SCRAPFEATHER = "Shockscrap Shots",
+        SLINGSHOTAMMO_DREADSTONE = "Dreaded Pebbles",
+        SLINGSHOTAMMO_GUNPOWDER = "Kablooies",
         SLINGSHOTAMMO_LUNARPLANTHUSK = "Brightshade Husk Rounds",
         SLINGSHOTAMMO_PUREBRILLIANCE = "Pure Brilliance Rounds",
         SLINGSHOTAMMO_HORRORFUEL = "Pure Horror Rounds",
@@ -4938,7 +4938,7 @@ STRINGS =
         SLINGSHOTAMMO_SCRAPFEATHER = "Shockingly shocking!",
         SLINGSHOTAMMO_DREADSTONE = "Dreadfully strong.",
         SLINGSHOTAMMO_GUNPOWDER = "Explode onto the scene!",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "Ensnare your enemies.",
+        SLINGSHOTAMMO_LUNARPLANTHUSK = "Settle your vine-detta!",
         SLINGSHOTAMMO_PUREBRILLIANCE = "You'll be over the Moon with these.",
         SLINGSHOTAMMO_HORRORFUEL = "Reinforcements against dark forces.",
         PORTABLETENT = "Portable protection from the elements.",
@@ -9975,6 +9975,18 @@ STRINGS.UI =
             VOTENAMEFMT = "vote to regenerate the world",
             VOTEPASSEDFMT = "Regenerating world in 5 seconds...",
         },
+		LOCKWOBY =
+		{
+			PRETTYNAME = "Lock Woby's Pack",
+			DESC = "Only you have access to items in Woby's pack, unless she is delivering to another player.",
+			NOTIFY = "Woby's pack is now locked.",
+		},
+		UNLOCKWOBY =
+		{
+			PRETTYNAME = "Unlock Woby's Pack",
+			DESC = "Everyone will have access to items in Woby's pack.",
+			NOTIFY = "Woby's pack is now unlocked.",
+		},
     },
 
     MODSSCREEN =
@@ -15291,13 +15303,13 @@ STRINGS.SKILLTREE = {
         -- AMMO
 
         WALTER_AMMO_SHATTERSHOTS_TITLE = "Shattering Rounds",
-        WALTER_AMMO_SHATTERSHOTS_DESC = "Learn how to craft Stinger and Moon Glass Rounds. These ammo types shatter into an area of damage.",
+        WALTER_AMMO_SHATTERSHOTS_DESC = "Learn how to craft Stinger Zingers and Moonshots. These ammo types shatter into an area of damage.",
 
         WALTER_AMMO_LUCKY_TITLE = "Lucky Rounds",
-        WALTER_AMMO_LUCKY_DESC = "Learn how to craft Gunpowder and Dreadstone Rounds. These ammo types rely on lucky shots to do more damage or not break.",
+        WALTER_AMMO_LUCKY_DESC = "Learn how to craft Kablooies and Dreaded Pebbles. These ammo types rely on lucky shots to do more damage or not break.",
 
         WALTER_AMMO_UTILITY_TITLE = "Utility Rounds",
-        WALTER_AMMO_UTILITY_DESC = "Learn how to craft Sticky and Shockscrap Rounds. The Sticky ammo slows targets hit, and the Shockscrap ammo does electric damage.",
+        WALTER_AMMO_UTILITY_DESC = "Learn how to craft Stickies and Shockscrap Shots. Stickies slow targets hit, and Shockscrap Shots deal electric damage with a higher rate of stun.",
 
         WALTER_AMMO_LOCK_DESC = "Learn 2 Ammo skills to unlock.",
 
@@ -15311,10 +15323,10 @@ STRINGS.SKILLTREE = {
         WALTER_AMMO_SHADOW_LOCK_DESC = "Find and defeat the Ancient Fuelweaver and have no Lunar Allegiance Skills to unlock.",
 
         WALTER_AMMO_LUNAR_TITLE = "Lunar Slinger",
-        WALTER_AMMO_LUNAR_DESC = "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Rounds: a debuff and damage focused ammo, respectively.",
+        WALTER_AMMO_LUNAR_DESC = "The Cryptic Founder will reward your curiosity by teaching you how to craft the Pure Brilliance and Brightshade Husk Rounds: a debuff and damage focused ammo, respectively.",
 
         WALTER_AMMO_SHADOW_TITLE = "Shadow Slinger",
-        WALTER_AMMO_SHADOW_DESC = "The Queen will reward your loyalty by teaching you how to craft the Icky and Pure Horror Rounds: a slow-down and damage focused ammo, respectively.",
+        WALTER_AMMO_SHADOW_DESC = "The Queen will reward your loyalty by teaching you how to craft Ickies and Pure Horror Rounds: a slow-down and damage focused ammo, respectively.",
 
         -- CAMPING
 
@@ -15334,7 +15346,7 @@ STRINGS.SKILLTREE = {
         WALTER_CAMP_FIRE_DESC = "Learn how to craft the Portable Campfire, and improve storytelling around any campfire.",
 
         WALTER_CAMP_WOBYHOLDER_TITLE = "Let's Rack 'n' Roll",
-        WALTER_CAMP_WOBYHOLDER_DESC = "Woby's backpack will get a drying rack attachment.",
+        WALTER_CAMP_WOBYHOLDER_DESC = "Woby's pack will get a drying rack attachment.",
 
         WALTER_CAMP_LOCK_DESC = "Learn 3 Scouting skills to unlock.",
 
@@ -16877,27 +16889,30 @@ STRINGS.SCRAPBOOK = {
         GRAVEGUARD_GHOST = "Where they appear, Evil Flowers tend to grow nearby.",
         GRAVEURN = "It is used to move Headstones.",
         PORTABLEFIREPIT_ITEM = "A portable campfire that stays lit even when packed!",
-        SLINGSHOT_BAND_MIMIC = "It greatly increases how far you can shoot. It sometimes saves ammo by launching a mimic version of it.",
-        SLINGSHOT_BAND_PIGSKIN = "It moderately increases how far you can shoot.",
-        SLINGSHOT_BAND_TENTACLE = "It greatly increases how far you can shoot. It can be possessed by a heartless monster...",
-        -- SLINGSHOT_FRAME_BONE = "TODO",
-        -- SLINGSHOT_FRAME_GEMS = "TODO",
-        -- SLINGSHOT_FRAME_WAGPUNK = "TODO",
-        -- SLINGSHOT_FRAME_WAGPUNK_0 = "TODO",
-        -- SLINGSHOT_HANDLE_JELLY = "TODO",
-        -- SLINGSHOT_HANDLE_SILK = "TODO",
-        -- SLINGSHOT_HANDLE_STICKY = "TODO",
-        -- SLINGSHOT_HANDLE_VOIDCLOTH = "TODO",
+		SLINGSHOT_BAND_MIMIC = "It greatly increases how far you can shoot and how fast your ammo travels. It sometimes saves ammo by launching a mimic version of it.",
+		SLINGSHOT_BAND_PIGSKIN = "It moderately increases how far you can shoot and how fast your ammo travels.",
+		SLINGSHOT_BAND_TENTACLE = "It greatly increases how far you can shoot and how fast your ammo travels. It can be possessed by a heartless monster...",
+		SLINGSHOT_FRAME_BONE = "Adds a backup ammo slot to your Slingshot.",
+		SLINGSHOT_FRAME_GEMS = "Adds a special ammo slot to your Slingshot that is used for a secondary, alternate Slingshot attack, that extends any magic effects of your ammo to an area of effect.",
+		SLINGSHOT_FRAME_WAGPUNK = "Expands the ammo slot to unlimited stack size, and adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage.",
+		SLINGSHOT_FRAME_WAGPUNK_0 = "Adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage.",
+		SLINGSHOT_HANDLE_JELLY = "It greatly increases your firing rate and prevents your Slingshot from slipping out of your hands.",
+		SLINGSHOT_HANDLE_SILK = "It moderately increases your firing rate, which will ramp up if you shoot continously.",
+		SLINGSHOT_HANDLE_STICKY = "It moderately increases your firing rate, and prevents your Slingshot from slipping out of your hands.",
+		SLINGSHOT_HANDLE_VOIDCLOTH = "It greatly increases your firing rate, which will ramp up if you shoot continously.",
         SLINGSHOTAMMO_CONTAINER = "A carryable container with 6 slots that can hold Slingshot Rounds.",
+		SLINGSHOTAMMO_THULECITE = "It has a chance to spawn a Shadow Tentacle on impact, which deals damage to your target.",
+		SLINGSHOTAMMO_SLOW = "It slows down your target for 30 seconds, stacking up to 3 times.",
+		SLINGSHOTAMMO_POOP = "It causes some targets to lose interest in you.",
         SLINGSHOTAMMO_DREADSTONE = "It has a 50% chance to not break on impact.",
-        SLINGSHOTAMMO_GELBLOB = "It attaches an Icker blob to your target, greatly slowing it down.",
+		SLINGSHOTAMMO_GELBLOB = "It attaches an Icker blob to your target for 60 seconds, greatly slowing it down.",
         SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger an explosion, dealing double damage in a large area.",
-        SLINGSHOTAMMO_HONEY = "It slows down your target.",
-        SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage over time, up to 7 times.",
-        SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a chance to spawn a Brightshade Vine on impact, dealing damage to your target.",
+		SLINGSHOTAMMO_HONEY = "It slows down your target on the ground for 8 seconds.",
+		SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage periodically. Up to 4 Swarming Horrors can be stacked on each target.",
+		SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a chance to spawn a Brightshade Vine on impact, which deals planar damage to your target.",
         SLINGSHOTAMMO_MOONGLASS = "It deals damage in a medium area around its target.",
-        SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage.",
-        SLINGSHOTAMMO_SCRAPFEATHER = "It deals electrical damage, which does more damage to wet targets.",
+		SLINGSHOTAMMO_PUREBRILLIANCE = "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage per hit.",
+		SLINGSHOTAMMO_SCRAPFEATHER = "It deals electrical damage, which does more damage to wet targets. It can also trigger hit stun more often than other projectiles.",
         SLINGSHOTAMMO_STINGER = "It deals damage in a small area around its target.",
         SLINGSHOTMODKIT = "Allows you to customize your Slingshot, making it personal.",  
     },

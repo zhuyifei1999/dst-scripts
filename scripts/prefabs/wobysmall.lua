@@ -117,7 +117,7 @@ local function OnWobySkinChanged(inst, skin_build)
 	_ApplyAlignmentOverrides_Internal(inst, inst.alignment, skin_build)
 end
 
-local function SetAlignmentBuild(inst, alignment)
+local function SetAlignmentBuild(inst, alignment, showfx)
 	if inst.alignment ~= alignment then
 		if inst.pet_hunger_classified then
 			inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.LUNAR, alignment == "lunar")
@@ -133,6 +133,14 @@ local function SetAlignmentBuild(inst, alignment)
         end
         TheSim:ReskinEntity(inst.GUID, inst.skinname, skin_build, nil, inst._playerlink.userid)
         inst:OnWobySkinChanged(skin_build)
+		if showfx and alignment then
+			if alignment == "lunar" then
+				WobyCommon.DoLunarAlignFx(inst)
+			elseif alignment == "shadow" then
+				WobyCommon.DoShadowAlignFx(inst)
+			end
+			inst.sg:HandleEvent("showalignmentchange")
+		end
 	end
 end
 
@@ -151,7 +159,7 @@ local function OnAnyClose(inst, data)
 	end
 end
 
-local function EnableRack(inst, enable)
+local function EnableRack(inst, enable, showanim)
 	if enable then
 		if inst.components.wobyrack == nil then
 			inst:AddComponent("wobyrack")
@@ -168,6 +176,9 @@ local function EnableRack(inst, enable)
 			end
 			if inst.components.container:IsOpenedBy(inst._playerlink) then
 				inst.components.wobyrack:GetContainer():Open(inst._playerlink)
+			end
+			if showanim then
+				inst.sg:HandleEvent("showrack")
 			end
 		end
 	elseif inst.components.wobyrack then
@@ -187,7 +198,7 @@ end
 
 local function OnPreLoad(inst, data, newents)
 	if data and data.wobyrack then
-		EnableRack(inst, true)
+		EnableRack(inst, true, false)
 	end
 end
 
@@ -268,15 +279,18 @@ local function RefreshAttunedSkills(inst, player, data)
 
 	if player and (data == nil or data.skill == "walter_woby_lunar" or data.skill == "walter_woby_shadow") then
 		--if player is nil (from _onlostplayerlink), don't update woby's alignment since she is likely being despawned as well
-		SetAlignmentBuild(inst, skilltreeupdater and (
-			(skilltreeupdater:IsActivated("walter_woby_lunar") and "lunar") or
-			(skilltreeupdater:IsActivated("walter_woby_shadow") and "shadow")
-		) or nil)
+		local alignment = skilltreeupdater and (
+				(skilltreeupdater:IsActivated("walter_woby_lunar") and "lunar") or
+				(skilltreeupdater:IsActivated("walter_woby_shadow") and "shadow")
+			) or nil
+		local showfx = data ~= nil and player._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY
+		SetAlignmentBuild(inst, alignment, showfx)
 	end
 
 	if player and (data == nil or data.skill == "walter_camp_wobyholder") then
 		--if player is nil (from _onlostplayerlink), don't update woby's rack since she is likely being despawned as well
-		EnableRack(inst, skilltreeupdater ~= nil and skilltreeupdater:IsActivated("walter_camp_wobyholder"))
+		local showanim = data ~= nil and player._PostActivateHandshakeState_Server == POSTACTIVATEHANDSHAKE.READY
+		EnableRack(inst, skilltreeupdater ~= nil and skilltreeupdater:IsActivated("walter_camp_wobyholder"), showanim)
 	end
 
 	if player and (data == nil or data.skill == "walter_woby_foraging") then
@@ -498,8 +512,22 @@ end
 
 ----------------------------------------------------------------------------------------------------------
 
-local function IsAllowedToQueueForaging(inst)
-	return inst.woby_commands_classified ~= nil and inst.woby_commands_classified:ShouldForage() and not (inst.woby_commands_classified:IsRecalled() or inst.woby_commands_classified:ShouldSit())
+-- Please note the forager queueing code is also at prefabs/wobybig.lua for now.
+
+local function IsAllowedToQueueForaging(inst, target)
+	if inst.woby_commands_classified == nil or not inst.woby_commands_classified:ShouldForage() then
+		return false
+	end
+
+	if inst.woby_commands_classified:ShouldSit() then
+		return false
+	end
+
+	if inst.woby_commands_classified:IsRecalled() then
+		return inst._playerlink ~= nil and inst._playerlink:IsNear(target, TUNING.SKILLS.WALTER.FORAGER_MAX_DISTANCE)
+	end
+
+	return true
 end
 
 local function OnPlayerNewState(inst, player, data)
@@ -510,7 +538,7 @@ local function OnPlayerNewState(inst, player, data)
 			return -- Woby is not interested :P
 		end
 
-		if not IsAllowedToQueueForaging(inst) then
+		if not IsAllowedToQueueForaging(inst, buffaction.target) then
 			return
 		end
 

@@ -324,7 +324,7 @@ ACTIONS =
     UNEQUIP = Action({ priority=-2,instant=true, mount_valid=true, encumbered_valid=true, paused_valid=true }),
     --OPEN_SHOP = Action(),
     SHAVE = Action({ mount_valid=true }),
-    STORE = Action(),
+	STORE = Action({ mount_valid=true }),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
 	DEPLOY = Action({distance=1.1, mount_valid=true, extra_arrive_dist=ExtraDeployDist }),
     DEPLOY_TILEARRIVE = Action({customarrivecheck=CheckTileWithinRange, theme_music = "farming"}), -- Note: If this is used for non-farming in the future, this would need to be swapped to theme_music_fn
@@ -1627,6 +1627,10 @@ ACTIONS.NET.fn = function(act)
         end
 
         act.target.components.workable:WorkedBy(act.doer)
+
+        if act.invobject and act.invobject:IsValid() and act.invobject.components.nabbag then
+            act.invobject.components.nabbag:ReplicateNetFromAct(act)
+        end
     end
 
     return true

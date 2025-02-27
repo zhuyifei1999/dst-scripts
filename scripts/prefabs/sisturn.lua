@@ -156,6 +156,8 @@ local function update_abigail_status(inst)
    		else
    			inst.lune_fx.done = nil
    			if inst.lune_fx.AnimState:IsCurrentAnimation("lunar_fx_pst") then
+   				inst.lune_fx.SoundEmitter:KillSound("loop")
+   				inst.lune_fx.SoundEmitter:PlaySound("meta5/wendy/sisturn_moonblossom_LP","loop")
    				inst.lune_fx.AnimState:PlayAnimation("lunar_fx_pre")
     			inst.lune_fx.AnimState:PushAnimation("lunar_fx_loop")
    			end
@@ -171,6 +173,7 @@ end
 local function remove_decor(inst, data)
     if data ~= nil and data.slot ~= nil and FLOWER_LAYERS[data.slot] then
 		inst.AnimState:Hide(FLOWER_LAYERS[data.slot])
+		inst.SoundEmitter:PlaySound("meta5/wendy/sisturn_petals_add_remove")
     end
 	update_sanityaura(inst)
 	update_idle_anim(inst)
@@ -182,8 +185,9 @@ end
 local function add_decor(inst, data)
     if data ~= nil and data.slot ~= nil and FLOWER_LAYERS[data.slot] and not inst:HasTag("burnt") then
 		inst.AnimState:Show(FLOWER_LAYERS[data.slot])
+		inst.SoundEmitter:PlaySound("meta5/wendy/sisturn_petals_add_remove")
 		local item = inst.components.container.slots[data.slot]
-		if item then
+		if item then	
 			if item.prefab == "petals_evil" then
 				inst.AnimState:OverrideSymbol("flowers_0"..data.slot, "sisturn", "flowers_evil")
 			elseif item.prefab == "moon_tree_blossom" then				
@@ -357,6 +361,8 @@ local function fxfn()
     inst.AnimState:PlayAnimation("lunar_fx_pre")
     inst.AnimState:PushAnimation("lunar_fx_loop")
 
+    inst.SoundEmitter:PlaySound("meta5/wendy/sisturn_moonblossom_LP","loop")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -365,7 +371,7 @@ local function fxfn()
 
     inst:ListenForEvent("animover", function() 
 		if inst.done and inst.AnimState:IsCurrentAnimation("lunar_fx_pst") then
-    		print(inst.parent)
+			
     		if inst.parent then
     			inst.parent.lune_fx = nil
     		end
@@ -373,6 +379,8 @@ local function fxfn()
     	elseif inst.AnimState:IsCurrentAnimation("lunar_fx_loop") then
     		if inst.done then
     			inst.AnimState:PlayAnimation("lunar_fx_pst")
+    			inst.SoundEmitter:KillSound("loop")
+				inst.SoundEmitter:PlaySound("meta5/wendy/sisturn_moonblossom_pst")
     		else
     			inst.AnimState:PlayAnimation("lunar_fx_loop")
     		end

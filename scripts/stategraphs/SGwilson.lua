@@ -578,6 +578,10 @@ local function find_abigail_flower(item)
     return item:HasTag("abigail_flower")
 end
 
+local function find_lucy(item)
+    return item.prefab == "lucy"
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -627,6 +631,9 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.NET,
         function(inst, action)
+            if action.invobject and action.invobject:HasTag("nabbag") then
+                return "nabbag"
+            end
             if action.invobject == nil or not action.invobject:HasTag(ACTIONS.NET.id.."_tool") then
                 return "doshortaction"
             end
@@ -1982,6 +1989,12 @@ local events =
 	EventHandler("ms_closeportablestorage", function(inst, data)
 		if data and data.item then
 			ClosePocketRummageMem(inst, data.item)
+		end
+	end),
+
+	EventHandler("woby_showrack", function(inst)
+		if inst.sg:HasStateTag("idle") and inst.components.rider:IsRiding() then
+			inst.sg:GoToState("woby_rack_appear")
 		end
 	end),
 
@@ -7504,8 +7517,17 @@ local states =
 			inst.AnimState:PlayAnimation("useitem_pre")
 			inst.AnimState:PushAnimation("carving_pre")
 			inst.AnimState:PushAnimation("carving_loop")
-			inst.AnimState:OverrideSymbol("swap_lucy_axe", "swap_lucy_axe", "swap_lucy_axe")
+
 			inst.sg.statemem.action = inst.bufferedaction
+
+            local item = inst.components.inventory:FindItem(find_lucy)
+            local skin_build = item ~= nil and item:GetSkinBuild() or nil
+
+            if skin_build ~= nil then
+                inst.AnimState:OverrideItemSkinSymbol("swap_lucy_axe", skin_build, "swap_lucy_axe", item.GUID, "swap_lucy_axe")
+            else
+                inst.AnimState:OverrideSymbol("swap_lucy_axe", "swap_lucy_axe", "swap_lucy_axe")
+            end
         end,
 
         timeline =
@@ -16365,8 +16387,8 @@ local states =
 				inst.sg.mem.slingshotchain = rampingspeed and 0 or nil
 			end
 
-			inst.components.combat:StartAttack()
 			inst.components.combat:SetTarget(target)
+			inst.components.combat:StartAttack()
 			inst.components.locomotor:Stop()
 
 			inst.sg:SetTimeout(timeout * FRAMES)
@@ -16388,6 +16410,7 @@ local states =
 					inst.sg:GoToState("idle")
 				end
 			end
+			inst.sg.statemem.shooting = true
 			inst.sg:GoToState("slingshot_shoot2", {
 				attacktarget = inst.sg.statemem.attacktarget,
 				retarget = inst.sg.statemem.retarget,
@@ -16404,8 +16427,10 @@ local states =
 		},
 
 		onexit = function(inst)
-			inst.components.combat:SetTarget(nil)
-			inst.components.combat:CancelAttack()
+			if not inst.sg.statemem.shooting then
+				inst.components.combat:SetTarget(nil)
+				inst.components.combat:CancelAttack()
+			end
 		end,
 	},
 
@@ -22979,6 +23004,28 @@ local states =
 				inst:ClearBufferedAction()
 			end
 		end,
+	},
+
+	State{
+		name = "woby_rack_appear",
+		tags = { "busy", "pausepredict" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("woby_big_rack_appear")
+
+			if inst.components.playercontroller then
+				inst.components.playercontroller:RemotePausePrediction()
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("meta5/woby/big_dryingrack_deploy") end),
+			FrameEvent(33, function(inst)
+				inst.sg:GoToState("idle", true)
+			end),
+		},
 	},
 }
 

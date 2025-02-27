@@ -1956,7 +1956,7 @@ function GetBoxPopupLayoutDetails( num_item_types )
 	elseif num_item_types == 38 or num_item_types == 30 then
 		columns = 10
 		resize_root_small = true
-	elseif num_item_types == 41 or num_item_types == 42 then
+	elseif num_item_types == 41 or num_item_types == 42 or num_item_types == 47 then
 		columns = 10
 		resize_root_small_higher = true
     elseif num_item_types == 64 or num_item_types == 50 then

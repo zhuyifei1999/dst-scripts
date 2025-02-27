@@ -129,7 +129,7 @@ end
 local function link_to_home(inst, home)
     inst.UnlinkFromGravestone = function()
 		if home:IsValid() then
-			home:RemoveEventCallback("onremove", inst.UnlinkFromGravestone, inst)
+			home:RemoveEventCallback("onremove", inst.UnlinkFromGravestone)
 			home.ghost = nil
 
             inst.components.knownlocations:ForgetLocation("home")

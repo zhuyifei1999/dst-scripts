@@ -723,13 +723,19 @@ local states=
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("transform")
             inst.SoundEmitter:PlaySound("dontstarve/beefalo/hairgrow_pop")
-            inst.domesticationPending = false
         end,
 
         timeline=
         {
-            TimeEvent(8*FRAMES, function(inst) SpawnPrefab("beefalo_transform_fx").Transform:SetPosition(inst.Transform:GetWorldPosition()) end),
-            TimeEvent(11*FRAMES, function(inst) inst:UpdateDomestication() end),
+            TimeEvent(8*FRAMES, function(inst)
+                inst:SpawnChild("beefalo_transform_fx")
+            end),
+
+            TimeEvent(11*FRAMES, function(inst)
+                inst:UpdateDomestication()
+
+                inst.domesticationPending = false
+            end),
         },
 
         events=
@@ -737,9 +743,21 @@ local states=
             EventHandler("animover", go_to_idle),
         },
 
-		onexit = function(inst)
+        onexit = function(inst)
+            local parent = inst.entity:GetParent()
+
+            if parent ~= nil then -- If mounted during this state...
+                parent:SpawnChild("beefalo_transform_fx")
+            end
+
+            if inst.domesticationPending then
+                inst:UpdateDomestication()
+
+                inst.domesticationPending = false
+            end
+
             AwardPlayerAchievement("domesticated_beefalo", inst.components.beefalometrics.lastdomesticator)
-		end,
+        end,
     },
 
     State{
