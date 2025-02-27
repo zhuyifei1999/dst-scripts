@@ -887,7 +887,12 @@ return{
 		"On your way now, girl!",
 		"Woby, follow your nose! It knows! Heh.",
 	},
-	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL = "Let's find a better spot.",
+	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL = 
+    {
+        "Let's find a better spot, Woby.",
+        "Not here, silly girl!",
+        "We should try somewhere else.",
+    },
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",

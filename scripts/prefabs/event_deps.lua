@@ -212,8 +212,7 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                --Asset("ANIM", "anim/dst_menu_yots.zip"),
-                Asset("ANIM", "anim/dst_menu_meta5.zip"),
+                Asset("ANIM", "anim/dst_menu_yots.zip"),
             },
         },
     },

@@ -632,7 +632,7 @@ local function SendCourierWoby(inst, data)
     if inst.courierdata then
         if inst.courierdata.onspawnfaderout then
             inst._pet:RemoveEventCallback("spawnfaderout", inst.courierdata.onspawnfaderout)
-            inst._pet:RemoveEventCallback("transform", courierdata.onspawnfaderout)
+            inst._pet:RemoveEventCallback("transform", inst.courierdata.onspawnfaderout)
             inst.courierdata.onspawnfaderout = nil
             inst._pet.components.spawnfader:FadeIn()
         end

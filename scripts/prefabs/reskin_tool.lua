@@ -99,8 +99,6 @@ if CAN_USE_DBUI then
     require("dbui_no_package/debug_skins_data/hooks").Hooks("fxinfo", reskin_fx_info)
 end
 
-
-
 local function spellCB(tool, target, pos, caster)
 	target = target or caster --if no target, then self target for beards
     if target == nil then -- Bail.
@@ -108,6 +106,11 @@ local function spellCB(tool, target, pos, caster)
     end
     if target.reskin_tool_target_redirect and target.reskin_tool_target_redirect:IsValid() then
         target = target.reskin_tool_target_redirect
+    end
+
+    -- NOTES(DiogoW): Expand this into a target function in case more cases are added.
+    if target._playerlink ~= nil and target._playerlink ~= caster then
+        return -- Only our owner is allowed to change our skin.
     end
 
     local fx_prefab = "explode_reskin"
@@ -216,6 +219,12 @@ local function can_cast_fn(doer, target, pos)
     if target.reskin_tool_target_redirect and target.reskin_tool_target_redirect:IsValid() then
         target = target.reskin_tool_target_redirect
     end
+
+    -- NOTES(DiogoW): Expand this into a target function in case more cases are added.
+    if target._playerlink ~= nil and target._playerlink ~= doer then
+        return false -- Only our owner is allowed to change our skin.
+    end
+
     local prefab_to_skin = target.prefab
     local is_beard = false
 

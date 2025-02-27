@@ -229,7 +229,7 @@ function WobySmallBrain:OnStart()
     local root = PriorityNode({
         WhileNode(
             function()
-                return not self.inst.sg:HasStateTag("jumping") and not self.inst:HasTag("transforming")
+                return not self.inst.sg:HasStateTag("jumping") and (self.inst.sg.currentstate == nil or self.inst.sg.currentstate.name ~= "transform")
             end,
             "<busy state guard>",
             PriorityNode({

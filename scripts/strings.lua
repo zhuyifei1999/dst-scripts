@@ -3313,7 +3313,7 @@ STRINGS =
         SLINGSHOTAMMO_MOONGLASS = "Moonshots",
 		SLINGSHOTAMMO_GELBLOB = "Ickies",
 		SLINGSHOTAMMO_SCRAPFEATHER = "Shockscrap Shots",
-        SLINGSHOTAMMO_DREADSTONE = "Dreaded Pebbles",
+        SLINGSHOTAMMO_DREADSTONE = "Dread Pebbles",
         SLINGSHOTAMMO_GUNPOWDER = "Kablooies",
         SLINGSHOTAMMO_LUNARPLANTHUSK = "Brightshade Husk Rounds",
         SLINGSHOTAMMO_PUREBRILLIANCE = "Pure Brilliance Rounds",
@@ -12397,6 +12397,7 @@ STRINGS.UI =
         Timeless        = "Timeless",
         Loyal           = "Loyal",
         ProofOfPurchase = "Proof Of Purchase",
+        Resurrected     = "Resurrected",
         Reward          = "Reward",
         Event           = "Event (Limited-Time Use)",
 
@@ -15306,7 +15307,7 @@ STRINGS.SKILLTREE = {
         WALTER_AMMO_SHATTERSHOTS_DESC = "Learn how to craft Stinger Zingers and Moonshots. These ammo types shatter into an area of damage.",
 
         WALTER_AMMO_LUCKY_TITLE = "Lucky Rounds",
-        WALTER_AMMO_LUCKY_DESC = "Learn how to craft Kablooies and Dreaded Pebbles. These ammo types rely on lucky shots to do more damage or not break.",
+        WALTER_AMMO_LUCKY_DESC = "Learn how to craft Kablooies and Dread Pebbles. These ammo types rely on lucky shots to do more damage or not break.",
 
         WALTER_AMMO_UTILITY_TITLE = "Utility Rounds",
         WALTER_AMMO_UTILITY_DESC = "Learn how to craft Stickies and Shockscrap Shots. Stickies slow targets hit, and Shockscrap Shots deal electric damage with a higher rate of stun.",

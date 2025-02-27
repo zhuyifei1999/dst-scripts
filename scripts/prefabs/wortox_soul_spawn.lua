@@ -368,7 +368,7 @@ local function fn()
     inst.components.projectile:SetOnMissFn(inst.Remove)
 
     inst._seektask = inst:DoPeriodicTask(.5, SeekSoulStealer, 1)
-    inst._timeouttask = inst:DoTaskInTime(10, OnTimeout)
+    inst._timeouttask = inst:DoTaskInTime(TUNING.WORTOX_SOUL_TIMEOUT, OnTimeout)
 
     inst.persists = false
     inst.Setup = Setup

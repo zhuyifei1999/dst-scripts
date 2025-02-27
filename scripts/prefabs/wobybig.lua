@@ -138,6 +138,10 @@ local function OnWobySkinChanged(inst, skin_build)
 		_ApplyAlignmentOverrides_Internal(inst, rider.AnimState, inst.alignment, skin_build)
 	end
 	_ApplyAlignmentOverrides_Internal(inst, inst.AnimState, inst.alignment, skin_build)
+
+	if inst.pet_hunger_classified then
+		inst.pet_hunger_classified:SetBuild(skin_build and skin_build:gsub("woby_big", "status_woby"):gsub("_shadow", ""):gsub("_lunar", "") or nil)
+	end
 end
 
 local function SetAlignmentBuild(inst, alignment, showfx)
@@ -489,6 +493,10 @@ end
 
 -- Please note the forager queueing code is also at prefabs/wobysmall.lua for now.
 
+local function TimeoutForageTarget(inst, target)
+	inst:RemoveForagerTarget(target)
+end
+
 local function IsAllowedToQueueForaging(inst, target)
 	if inst.woby_commands_classified == nil or not inst.woby_commands_classified:ShouldForage() then
 		return false
@@ -533,6 +541,7 @@ local function OnPlayerNewState(inst, player, data)
 end
 
 local MAX_FORAGING_TARGETS = 5
+local FORAGE_TARGET_TIMEOUT = 15
 
 local function QueueForagerTarget(inst, target)
 	if table.contains(inst._forager_targets, target) then
@@ -540,6 +549,8 @@ local function QueueForagerTarget(inst, target)
 	end
 
 	table.insert(inst._forager_targets, target)
+
+	inst._forager_timeout_tasks[target] = inst:DoTaskInTime(FORAGE_TARGET_TIMEOUT, TimeoutForageTarget, target)
 
 	inst:ListenForEvent("onremove", inst._onforagertargetremoved, target)
 
@@ -552,12 +563,15 @@ local function RemoveForagerTarget(inst, target)
 	table.removearrayvalue(inst._forager_targets, target)
 
 	inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, target)
+
+	if inst._forager_timeout_tasks[target] ~= nil then
+		inst._forager_timeout_tasks[target]:Cancel()
+		inst._forager_timeout_tasks[target] = nil
+	end
 end
 
 local function RemoveCurrentForagerTarget(inst)
-	local removed = table.remove(inst._forager_targets, 1)
-
-	inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, removed)
+	inst:RemoveForagerTarget(inst, inst._forager_targets[1])
 end
 
 local function GetForagerTarget(inst)
@@ -590,6 +604,11 @@ end
 local function ClearForagerQueue(inst)
 	for i, target in ipairs(inst._forager_targets) do
 		inst:RemoveEventCallback("onremove", inst._onforagertargetremoved, target)
+
+		if inst._forager_timeout_tasks[target] ~= nil then
+			inst._forager_timeout_tasks[target]:Cancel()
+			inst._forager_timeout_tasks[target] = nil
+		end
 	end
 
 	inst._forager_targets = {}
@@ -677,6 +696,10 @@ local function LinkToPlayer(inst, player, containerrestrictedoverride)
 		inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.ENDURANCE, HasEndurance(inst))
 		inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.LUNAR, inst.alignment == "lunar")
 		inst.pet_hunger_classified:SetFlagBit(WobyCommon.FLAGBITS.SHADOW, inst.alignment == "shadow")
+		local skin_build = inst:GetSkinBuild()
+		if skin_build then
+			inst.pet_hunger_classified:SetBuild(skin_build:gsub("woby_big", "status_woby"):gsub("_shadow", ""):gsub("_lunar", ""))
+		end
 		inst.pet_hunger_classified:AttachClassifiedToPetOwner(player)
 	else
 		assert(inst.pet_hunger_classified._parent == player)
@@ -1015,12 +1038,18 @@ local function fn()
 	end
 	inst._onforagertargetremoved = function(ent)
 		table.removearrayvalue(inst._forager_targets, ent)
+
+		if inst._forager_timeout_tasks[ent] ~= nil then
+			inst._forager_timeout_tasks[ent]:Cancel()
+			inst._forager_timeout_tasks[ent] = nil
+		end
 	end
 	inst._onsuccessfulpraisableaction = function()
 		OnSuccessfulPraisableAction(inst)
 	end
 
 	inst._forager_targets = {}
+	inst._forager_timeout_tasks = {}
 
 	inst.SetSprinting = SetSprinting
 	inst.TriggerTransformation = TriggerTransformation

@@ -107,7 +107,7 @@ function Nabbag:DoNabFromAct(act)
         local x, y, z = act.doer.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities(x, y, z, max_dist, NABBAG_MUSTTAGS, NABBAG_CANTTAGS)
         for _, ent in ipairs(ents) do
-            if ent:IsValid() and act.doer:IsEntityInFrontConeSlice(ent, wholearcangle_degrees, max_dist, circle_dist) then
+            if ent:IsValid() and act.doer:IsEntityInFrontConeSlice(ent, wholearcangle_degrees, max_dist, circle_dist) and ent.replica.inventoryitem and ent.replica.inventoryitem:CanBePickedUp(act.doer) then
                 act.target = ent
                 ACTIONS.PICKUP.fn(act)
                 if finiteuses then

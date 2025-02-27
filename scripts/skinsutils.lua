@@ -24,6 +24,7 @@ SKIN_RARITY_COLORS.Complimentary = SKIN_RARITY_COLORS.Common
 SKIN_RARITY_COLORS.HeirloomClassy = SKIN_RARITY_COLORS.HeirloomElegant
 SKIN_RARITY_COLORS.HeirloomSpiffy = SKIN_RARITY_COLORS.HeirloomElegant
 SKIN_RARITY_COLORS.HeirloomDistinguished = SKIN_RARITY_COLORS.HeirloomElegant
+SKIN_RARITY_COLORS.Resurrected = SKIN_RARITY_COLORS.ProofOfPurchase
 
 DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
 
@@ -62,6 +63,7 @@ end
 RARITY_ORDER =
 {
 	ProofOfPurchase = 1,
+    Resurrected = 1.5,
 	Timeless = 2,
 	Loyal = 3,
 	Reward = 4,
@@ -118,6 +120,9 @@ function GetFrameSymbolForRarity( rarity )
 	if rarity == "Complimentary" then
 		return "common"
 	end
+    if rarity == "Resurrected" then
+        return "proofofpurchase"
+    end
 	return string.lower( rarity )
 end
 
@@ -1342,7 +1347,7 @@ function ShouldDisplayItemInCollection(item_type)
         return false
     end
 	local rarity = GetRarityForItem(item_type)
-	if rarity == "Event" or rarity == "ProofOfPurchase" or rarity == "Loyal" or rarity == "Timeless" then
+	if rarity == "Event" or rarity == "ProofOfPurchase" or rarity == "Resurrected" or rarity == "Loyal" or rarity == "Timeless" then
 		return TheInventory:CheckOwnership(item_type)
 	end
     return true

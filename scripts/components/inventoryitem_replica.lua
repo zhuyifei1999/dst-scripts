@@ -90,6 +90,9 @@ function InventoryItem:CanBePickedUp(doer)
 	if restrictedtag and restrictedtag ~= 0 and doer and doer:HasTag(restrictedtag) then
 		return true
 	end
+    if self.inst:HasTag("spider") and not doer:HasTag("spiderwhisperer") then
+        return false
+    end
     return not self._cannotbepickedup:value()
 end
 

@@ -73,7 +73,7 @@ local function toground(inst)
     inst.persists = false
 
     if inst._task == nil then
-        inst._task = inst:DoTaskInTime(TUNING.WILLOW_EMBER_DURATION, KillEmber) -- NOTES(JBK): This is 1.1 max keep it in sync with "[WST]"
+        inst._task = inst:DoTaskInTime(TUNING.WILLOW_EMBER_DURATION, KillEmber)
     end
 
     if inst.AnimState:IsCurrentAnimation("idle_loop") then

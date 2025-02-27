@@ -335,7 +335,7 @@ local function CheckForOverload(inst, souls, count)
                 inst._souloverloadtask:Cancel()
                 inst._souloverloadtask = nil
             end
-            inst._souloverloadtask = inst:DoTaskInTime(1.2, ClearSoulOverloadTask) -- NOTES(JBK): This is >1.1 max keep it in sync with "[WST]"
+            inst._souloverloadtask = inst:DoTaskInTime(TUNING.WORTOX_SOUL_HEAL_DELAY + 0.1, ClearSoulOverloadTask) -- +pad to make it always bigger than the tuning value.
             local dropcount = count - math.floor(max_count / 2) + math.random(0, 2) - 1
             count = count - dropcount
             DropSouls(inst, souls, dropcount)

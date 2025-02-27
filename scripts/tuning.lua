@@ -4465,6 +4465,8 @@ function Tune(overrides)
         WORTOX_SOULSTEALER_RANGE = 8, --souls fly towards wortox when he walks within this range
         WORTOX_SOUL_PROJECTILE_LIFETIME = 6, -- If the projectile does not meet a target make it fade after this many seconds.
         WORTOX_SOUL_PROJECTILE_SPEED = 10,
+        WORTOX_SOUL_TIMEOUT = 10, -- Default time for a Soul to pop without an owner to claim it.
+        WORTOX_SOUL_HEAL_DELAY = 1, -- Fixed time from dropping a Soul to when it heals.
         WORTOX_SOULHEAL_RANGE = 8,
         WORTOX_SOULHEAL_LOSS_PER_PLAYER = 2, -- Amount of health value lost per additional target being healed.
         WORTOX_SOULHEAL_MINIMUM_HEAL = 5, -- Each souls must heal at least this much.
@@ -7305,7 +7307,7 @@ function Tune(overrides)
                 -- wortox_soulprotector_1
                 WORTOX_SOULPROTECTOR_1_RANGE = 3,
                 -- wortox_soulprotector_2
-                WORTOX_SOULPROTECTOR_2_SPEED = 2,
+                WORTOX_SOULPROTECTOR_2_SPEED = 4,
                 WORTOX_SOULPROTECTOR_2_RANGE = 3,
                 -- wortox_soulprotector_3
                 WORTOX_SOULPROTECTOR_3_MULT = 0.5,

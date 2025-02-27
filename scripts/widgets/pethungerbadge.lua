@@ -31,6 +31,10 @@ function PetHungerBadge:OnFlagsChanged(flags, instant)
 	--override me
 end
 
+function PetHungerBadge:OnBuildChanged(build, instant)
+	--override me
+end
+
 function PetHungerBadge:SetArrowAnimFn(fn)
 	self.arrowanimfn = fn
 

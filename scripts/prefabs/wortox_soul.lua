@@ -54,7 +54,7 @@ end
 local function toground(inst)
     inst.persists = false
     if inst._task == nil then
-        inst._task = inst:DoTaskInTime(.4 + math.random() * .7, KillSoul_FromPocket) -- NOTES(JBK): This is 1.1 max keep it in sync with "[WST]"
+        inst._task = inst:DoTaskInTime(TUNING.WORTOX_SOUL_HEAL_DELAY, KillSoul_FromPocket)
     end
     if inst.AnimState:IsCurrentAnimation("idle_loop") then
 		inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
@@ -206,16 +206,14 @@ local function SoulProtectorTick(inst)
         local mosthurtplayerpercent
         for _, v in ipairs(AllPlayers) do
             if v.entity:IsVisible() and not IsEntityDeadOrGhost(v) and v.components.health and not v:HasTag("health_as_oldage") then -- Wanda tag.
-                local percent = v.components.health:GetPercent()
-                if percent < 1 then
-                    if not mosthurtplayerpercent or percent <= mosthurtplayerpercent then
-                        local dsq = v:GetDistanceSqToPoint(x, y, z)
-                        if dsq <= distsqmaxrange then
-                            if not mosthurtplayerdistsq or dsq < mosthurtplayerdistsq then
-                                mosthurtplayerdistsq = dsq
-                                mosthurtplayerpercent = percent
-                                mosthurtplayer = v
-                            end
+                local dsq = v:GetDistanceSqToPoint(x, y, z)
+                if dsq <= distsqmaxrange then
+                    local percent = v.components.health:GetPercent()
+                    if percent < 1 then
+                        if not mosthurtplayerpercent or percent <= mosthurtplayerpercent then
+                            mosthurtplayerdistsq = dsq
+                            mosthurtplayerpercent = percent
+                            mosthurtplayer = v
                         end
                     end
                 end
@@ -250,7 +248,7 @@ local function ModifyStats(inst, owner)
         if skilltreeupdater:IsActivated("wortox_soulprotector_2") then
             inst.soul_heal_range_modifier = (inst.soul_heal_range_modifier or 0) + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_RANGE
             inst.soul_follow_speed = (inst.soul_follow_speed or 0) + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_SPEED
-            inst.soulprotector_task = inst:DoPeriodicTask(SOULPROTECTOR_TICK_TIME, inst.SoulProtectorTick, 0.4 + math.random() * 0.1)
+            inst.soulprotector_task = inst:DoPeriodicTask(SOULPROTECTOR_TICK_TIME, inst.SoulProtectorTick, 0.3)
         end
         if skilltreeupdater:IsActivated("wortox_soulprotector_3") then
             inst.soul_doburst = true

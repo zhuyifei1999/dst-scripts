@@ -1788,7 +1788,7 @@ end
 local function GetPickupAction(self, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
-    elseif tool ~= nil and not tool:HasTag("nabbag") then
+    elseif tool ~= nil then
         for k, v in pairs(TOOLACTIONS) do
             if target:HasTag(k.."_workable") then
                 if tool:HasTag(k.."_tool") then
@@ -1814,12 +1814,7 @@ local function GetPickupAction(self, target, tool)
 		not (target:HasTag("heavy") or (target:HasTag("fire") and not target:HasTag("lighter")) or target:HasTag("catchable")) and
         not target:HasTag("spider") then
         if self:HasItemSlots() or target.replica.equippable ~= nil then
-            -- FIXME(JBK): Make this a toggle in options?
-            --if tool and tool:HasTag("nabbag") and not target:HasAnyTag("_container", "heavy") then
-            --    return ACTIONS.NABBAG
-            --else
-                return ACTIONS.PICKUP
-            --end
+            return ACTIONS.PICKUP
         end
         return nil
     elseif target:HasTag("pickable") and not target:HasTag("fire") then
@@ -1921,7 +1916,7 @@ function PlayerController:GetActionButtonAction(force_target)
         local tool = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
         --bug catching (has to go before combat)
-        if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") and not tool:HasTag("nabbag") then
+        if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") then
             if force_target == nil then
                 local target = FindEntity(self.inst, 5, ValidateBugNet, { "_health", ACTIONS.NET.id.."_workable" }, TARGET_EXCLUDE_TAGS)
                 if CanEntitySeeTarget(self.inst, target) then

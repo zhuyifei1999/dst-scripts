@@ -26,6 +26,20 @@ local function SetFlagBit(inst, bitnum, value)
 	SetFlags(inst, value and setbit(inst.flags:value(), bit.lshift(1, bitnum)) or clearbit(inst.flags:value(), bit.lshift(1, bitnum)))
 end
 
+local function SetBuild(inst, build)
+	build = build or 0
+	if build ~= inst.build:value() then
+		inst.build:set(build)
+		if inst._parent then
+			--instant flag for newly spawned, since when replacing prefab during transformation,
+			--the new prefab may go through several build change calls before the skin is setup.
+			--NOTE: this problem does not occur on the client side since we will just be sending
+			--      the final build over network.
+			inst._parent:PushEvent("pet_hunger_build", { build = build, instant = inst._pet:GetTimeAlive() <= 0 })
+		end
+	end
+end
+
 local function OnHungerDelta(pet, data)
 	if data.overtime then
 		--V2C: Don't clear: it's redundant as pet_hunger_classified shouldn't
@@ -178,6 +192,12 @@ local function OnFlagsDirty(inst)
 	end
 end
 
+local function OnBuildDirty(inst)
+	if inst._parent then
+		inst._parent:PushEvent("pet_hunger_build", { build = inst.build:value() })
+	end
+end
+
 --------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
@@ -222,6 +242,10 @@ local function GetFlagBit(inst, bitnum)
 	return checkbit(inst.flags:value(), bit.lshift(1, bitnum))
 end
 
+local function GetBuild(inst)
+	return inst.build:value()
+end
+
 --------------------------------------------------------------------------
 
 local function RegisterNetListeners(inst)
@@ -230,6 +254,7 @@ local function RegisterNetListeners(inst)
 		inst.ishungerpulsedown:set_local(false)
 		inst:ListenForEvent("hungerdirty", OnHungerDirty)
 		inst:ListenForEvent("flagsdirty", OnFlagsDirty)
+		inst:ListenForEvent("builddirty", OnBuildDirty)
 
 		if inst._parent then
 			inst._oldhungerpercent = inst.maxhunger:value() > 0 and inst.currenthunger:value() / inst.maxhunger:value() or 0
@@ -277,6 +302,8 @@ local function fn()
 	--Custom pet specific data
 	inst.flags = net_smallbyte(inst.GUID, "pet_hunger_classified.flags", "flagsdirty")
 
+	inst.build = net_hash(inst.GUID, "pet_hunger_classified.build", "builddirty")
+
 	--Delay net listeners until after initial values are deserialized
 	inst:DoStaticTaskInTime(0, RegisterNetListeners)
 
@@ -286,6 +313,7 @@ local function fn()
 	inst.IsStarving = IsStarving
 	inst.GetFlags = GetFlags
 	inst.GetFlagBit = GetFlagBit
+	inst.GetBuild = GetBuild
 	inst.OnRemoveEntity = OnRemoveEntity
 
 	inst.entity:SetPristine()
@@ -304,6 +332,7 @@ local function fn()
 	inst.SetValue = SetValue
 	inst.SetFlags = SetFlags
 	inst.SetFlagBit = SetFlagBit
+	inst.SetBuild = SetBuild
 
 	inst._onremovepet = function(pet) OnRemovePet(inst, pet) end
 	inst._onremoveplayer = function(player) OnRemovePlayer(inst, player) end

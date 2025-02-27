@@ -114,10 +114,12 @@ local function OnSetPlayerMode(inst, self)
 	if self.pethungerbadge and self.onpethungerdelta == nil then
 		self.onpethungerdelta = function(owner, data) self:PetHungerDelta(data) end
 		self.onpethungerflags = function(owner, flags) self:SetPetHungerFlags(flags) end
+		self.onpethungerbuild = function(owner, data) self:SetPetHungerBuild(data and data.build, data and data.instant) end
 		self.onshowpethunger = function(owner, shown)
 			if shown and owner.pet_hunger_classified then
 				self:SetPetHungerPercent(owner.pet_hunger_classified:GetPercent(), owner.pet_hunger_classified:Max())
 				self:SetPetHungerFlags(owner.pet_hunger_classified:GetFlags(), true)
+				self:SetPetHungerBuild(owner.pet_hunger_classified:GetBuild(), true)
 				self.pethungerbadge:Show()
 			else
 				self.pethungerbadge:Hide()
@@ -125,6 +127,7 @@ local function OnSetPlayerMode(inst, self)
 		end
 		self.inst:ListenForEvent("pet_hungerdelta", self.onpethungerdelta, self.owner)
 		self.inst:ListenForEvent("pet_hunger_flags", self.onpethungerflags, self.owner)
+		self.inst:ListenForEvent("pet_hunger_build", self.onpethungerbuild, self.owner)
 		self.inst:ListenForEvent("show_pet_hunger", self.onshowpethunger, self.owner)
 		self.onshowpethunger(self.owner, self.owner.pet_hunger_classified ~= nil)
 	end
@@ -208,9 +211,11 @@ local function OnSetGhostMode(inst, self)
 	if self.onpethungerdelta then
 		self.inst:RemoveEventCallback("pet_hungerdelta", self.onpethungerdelta, self.owner)
 		self.inst:RemoveEventCallback("pet_hunger_flags", self.onpethungerflags, self.owner)
+		self.inst:RemoveEventCallback("pet_hunger_build", self.onpethungerbuild, self.owner)
 		self.inst:RemoveEventCallback("show_pet_hunger", self.onshowpethunger, self.owner)
 		self.onpethungerdelta = nil
 		self.onpethungerflags = nil
+		self.onpethungerbuild = nil
 		self.onshowpethunger = nil
 		self.pethungerbadge:Hide()
 	end
@@ -696,6 +701,10 @@ function StatusDisplays:SetPetHungerFlags(flags, instant)
 	self.pethungerbadge:OnFlagsChanged(flags, instant)
 end
 
+function StatusDisplays:SetPetHungerBuild(build, instant)
+	self.pethungerbadge:OnBuildChanged(build, instant)
+end
+
 function StatusDisplays:SetupWobyPetHunger()
 	local WobyCommon = require("prefabs/wobycommon")
 	local layers =
@@ -747,6 +756,28 @@ function StatusDisplays:SetupWobyPetHunger()
 				self.circleframe:GetAnimState():PushAnimation("frame", false)
 			end
 			self.isbig = isbig
+		end
+	end
+
+	self.pethungerbadge.build = "status_woby"
+
+	--Switch frame build for skins
+	local _OnBuildChanged = self.pethungerbadge.OnBuildChanged
+	self.pethungerbadge.OnBuildChanged = function(self, build, instant)
+		--self is pethungerbadge
+		_OnBuildChanged(self, build, instant)
+
+		if build == nil or build == 0 or build == "" then
+			build = "status_woby"
+		end
+		if self.build ~= build then
+			self.build = build
+			self.circleframe:GetAnimState():SetBank(build)
+			self.circleframe:GetAnimState():SetBuild(build)
+			if not instant and self.shown then
+				self.circleframe:GetAnimState():PlayAnimation("alignment_change")
+				self.circleframe:GetAnimState():PushAnimation("frame", false)
+			end
 		end
 	end
 

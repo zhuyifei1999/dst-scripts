@@ -857,7 +857,10 @@ return {
 	{
 		"only_used_by_walter",
 	},
-	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL = "only_used_by_walter",
+	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL =
+	{
+		"only_used_by_walter",
+	},
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",
