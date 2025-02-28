@@ -63,7 +63,7 @@ local function _ApplyAlignmentOverrides_Internal(inst, animstate, alignment, ski
 	end
 	local base_build = base_name.."_build"
 	if skin_build then
-		if alignment then
+		if alignment or animstate ~= inst.AnimState then
 			for _, symbol in ipairs(WobyCommon.BIG_SYMBOLS) do
 				animstate:OverrideItemSkinSymbol(symbol, skin_build, symbol, inst.GUID, base_build)
 			end
@@ -571,7 +571,7 @@ local function RemoveForagerTarget(inst, target)
 end
 
 local function RemoveCurrentForagerTarget(inst)
-	inst:RemoveForagerTarget(inst, inst._forager_targets[1])
+	inst:RemoveForagerTarget(inst._forager_targets[1])
 end
 
 local function GetForagerTarget(inst)

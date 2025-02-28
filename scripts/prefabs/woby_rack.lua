@@ -213,6 +213,8 @@ local function swapfxfn()
 	inst:AddTag("decor")
 	inst:AddTag("NOCLICK")
 
+	inst.Transform:SetSixFaced()
+
 	inst.AnimState:SetBank("woby_rack")
 	inst.AnimState:SetBuild("woby_rack")
 	inst.AnimState:PlayAnimation("swap_1")
