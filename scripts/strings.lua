@@ -16110,11 +16110,11 @@ STRINGS.SKILLTREE = {
         WORTOX_SOULPROTECTOR_1_TITLE = "Reaching Souls I",
         WORTOX_SOULPROTECTOR_1_DESC = "Dropped Souls will heal at an increased range.",
         WORTOX_SOULPROTECTOR_2_TITLE = "Reaching Souls II",
-        WORTOX_SOULPROTECTOR_2_DESC = "Souls will come to you faster.\nDropped Souls will heal at an increased range.",
+        WORTOX_SOULPROTECTOR_2_DESC = "Dropped Souls will move towards hurt players, and heal at an increased range.",
         WORTOX_SOULPROTECTOR_3_TITLE = "Soul Bastion I",
         WORTOX_SOULPROTECTOR_3_DESC = "Dropped Souls will do a second healing wave for a lower amount after a delay.",
         WORTOX_SOULPROTECTOR_4_TITLE = "Soul Bastion II",
-        WORTOX_SOULPROTECTOR_4_DESC = "Reduce the delay for the second healing wave to happen.\nSouls are more efficient at healing multiple players.",
+        WORTOX_SOULPROTECTOR_4_DESC = "Dropped Souls will move faster towards hurt players, the second healing wave will happen quicker, and Souls are more efficient at healing multiple players.",
 
         WORTOX_LIFTEDSPIRITS_1_TITLE = "Lifted Spirits I",
         WORTOX_LIFTEDSPIRITS_1_DESC = "Souls waiting to be freed in a Soul Echo will enhance your movement speed.",

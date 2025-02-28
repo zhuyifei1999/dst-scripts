@@ -600,7 +600,7 @@ local function RemoveForagerTarget(inst, target)
 end
 
 local function RemoveCurrentForagerTarget(inst)
-	inst:RemoveForagerTarget(inst, inst._forager_targets[1])
+	inst:RemoveForagerTarget(inst._forager_targets[1])
 end
 
 local function GetForagerTarget(inst)

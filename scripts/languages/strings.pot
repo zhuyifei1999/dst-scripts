@@ -331845,7 +331845,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_DESC"
-msgid "Souls will come to you faster.\nDropped Souls will heal at an increased range."
+msgid "Dropped Souls will move towards hurt players, and heal at an increased range."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_TITLE
@@ -331865,7 +331865,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_DESC"
-msgid "Reduce the delay for the second healing wave to happen.\nSouls are more efficient at healing multiple players."
+msgid "Dropped Souls will move faster towards hurt players, the second healing wave will happen quicker, and Souls are more efficient at healing multiple players."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_TITLE
