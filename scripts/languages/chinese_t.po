@@ -6701,8 +6701,8 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_PRAISE.1"
 msgid "only_used_by_walter"
 msgstr "only_used_by_walter"
 
-#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL
-msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL"
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.1
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.1"
 msgid "only_used_by_walter"
 msgstr "only_used_by_walter"
 
@@ -24171,10 +24171,20 @@ msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_PRAISE.9"
 msgid "I love you, silly girl!"
 msgstr "我愛你，傻姑娘！"
 
-#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL
-msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL"
-msgid "Let's find a better spot."
-msgstr "我們找個更好的地方吧。"
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.1
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.1"
+msgid "Let's find a better spot, Woby."
+msgstr "我們找個更好的地方吧，沃比。"
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.2
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.2"
+msgid "Not here, silly girl!"
+msgstr "不是這，傻姑娘！"
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.3
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_REMEMBERCHEST_FAIL.3"
+msgid "We should try somewhere else."
+msgstr "我們換個地方吧試試吧。"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_RETURN.1
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_WOBY_RETURN.1"
@@ -314058,7 +314068,7 @@ msgstr "彈藥袋"
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_DREADSTONE
 msgctxt "STRINGS.NAMES.SLINGSHOTAMMO_DREADSTONE"
-msgid "Dreaded Pebbles"
+msgid "Dread Pebbles"
 msgstr "絕望小石"
 
 #. STRINGS.NAMES.SLINGSHOTAMMO_FREEZE
@@ -329123,7 +329133,7 @@ msgstr "學習2項彈藥技能後解鎖。"
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_DESC"
-msgid "Learn how to craft Kablooies and Dreaded Pebbles. These ammo types rely on lucky shots to do more damage or not break."
+msgid "Learn how to craft Kablooies and Dread Pebbles. These ammo types rely on lucky shots to do more damage or not break."
 msgstr "學習製作轟轟彈和絕望小石。這些彈藥依賴幸運射擊造成額外傷害或不會破裂。"
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_AMMO_LUCKY_TITLE
@@ -331838,8 +331848,8 @@ msgstr "一級靈魂觸及"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_DESC"
-msgid "Souls will come to you faster.\nDropped Souls will heal at an increased range."
-msgstr "靈魂會更快地來到你身邊。\n掉落的靈魂會在更大的範圍進行治療。"
+msgid "Dropped Souls will move towards hurt players, and heal at an increased range."
+msgstr "掉落的靈魂會靠近受傷的玩家，並提高治療距離。"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_2_TITLE"
@@ -331858,8 +331868,8 @@ msgstr "一級靈魂堡壘"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_DESC"
-msgid "Reduce the delay for the second healing wave to happen.\nSouls are more efficient at healing multiple players."
-msgstr "減少第二次治療生效的延遲。\n靈魂治療多名玩家的效率更高。"
+msgid "Dropped Souls will move faster towards hurt players, the second healing wave will happen quicker, and Souls are more efficient at healing multiple players."
+msgstr "掉落的靈魂會更快靠近受傷的玩家，第二波治療會更快到來，靈魂治療多名玩家的效率也會提高。"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_TITLE
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULPROTECTOR_4_TITLE"

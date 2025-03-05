@@ -578,7 +578,15 @@ local function DoGhostAttackAt(inst, pos)
 
     inst.components.aura:Enable(false)
 
-	inst.sg:GoToState("abigail_attack_start", pos)
+    if inst:HasTag("gestalt") then
+        inst.sg:GoToState("gestalt_attack", pos)
+
+        if inst._playerlink ~= nil and inst._playerlink.components.spellbookcooldowns ~= nil then
+            inst._playerlink.components.spellbookcooldowns:RestartSpellCooldown("do_ghost_attackat", TUNING.WENDYSKILL_GESTALT_ATTACKAT_COMMAND_COOLDOWN)
+        end
+    else
+	    inst.sg:GoToState("abigail_attack_start", pos)
+    end
 end
 
 local HAUNT_CANT_TAGS = {"catchable", "DECOR", "FX", "haunted", "INLIMBO", "NOCLICK"}
@@ -682,7 +690,6 @@ local function OnHealthChanged(inst, data)
 end
 
 local function SetToGestalt(inst)
-    inst.SoundEmitter:PlaySound("meta5/abigail/abigail_gestalt_transform_stinger")
     inst:AddTag("gestalt")
     inst.components.aura:Enable(false)
     inst.AnimState:SetBuild( "ghost_abigail_gestalt_build" )
@@ -704,7 +711,6 @@ local function SetToGestalt(inst)
 
 end
 local function SetToNormal(inst)
-    inst.SoundEmitter:PlaySound("meta5/abigail/abigail_gestalt_transform_stinger")
     inst:RemoveTag("gestalt")
     inst.components.aura:Enable(true)
     inst.AnimState:SetBuild( "ghost_abigail_build" )

@@ -335,7 +335,7 @@ Recipe2("armor_lunarplant_husk",		{Ingredient("armor_lunarplant", 1), Ingredient
 
 -- Wortox
 Recipe2("wortox_reviver",				{Ingredient("wortox_soul", 10)},																				TECH.NONE,	{builder_skill="wortox_lifebringer_1"})
-Recipe2("wortox_souljar",				{Ingredient("messagebottleempty", 1), Ingredient("marble", 2), Ingredient("redgem", 1)},						TECH.NONE,	{builder_skill="wortox_souljar_1"})
+Recipe2("wortox_souljar",				{Ingredient("messagebottleempty", 1), Ingredient("marble", 2), Ingredient("redgem", 1)},						TECH.NONE,	{builder_skill="wortox_souljar_1", decon_ignores_finiteuses = true})
 Recipe2("wortox_nabbag",				{Ingredient("wortox_soul", 4), Ingredient("silk", 2)},															TECH.NONE,	{builder_skill="wortox_nabbag"})
 
 -- Wanda --

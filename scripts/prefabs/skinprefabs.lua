@@ -10279,7 +10279,7 @@ table.insert(prefs, CreatePrefabSkin("wall_dreadstone_relic",
 	rarity = "Elegant",
 	rarity_modifier = "Woven",
 	init_fn = function(inst) wall_dreadstone_init_fn(inst, "wall_dreadstone_relic") end,
-	skin_tags = { "WALL_STONE", "RELIC", "CRAFTABLE", },
+	skin_tags = { "WALL_DREADSTONE", "RELIC", "CRAFTABLE", },
 	release_group = 164,
 }))
 

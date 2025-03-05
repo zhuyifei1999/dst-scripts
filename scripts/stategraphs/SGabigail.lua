@@ -107,6 +107,75 @@ local function dash_attack_onupdate(inst, dt)
     end
 end
 
+---------------------------------------------------------------------------------------------------------------------------------------
+
+local GESTALT_ATTACKAT_RADIUS_PADDING = 2
+
+local GESTALT_DASH_ATTACK_MUST_TAGS = { "_combat", "_health" }
+
+local REGISTERED_GESTALT_DASH_ATTACK_TAGS     = TheSim:RegisterFindTags(GESTALT_DASH_ATTACK_MUST_TAGS, { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "companion", "player", "wall" })
+local REGISTERED_GESTALT_DASH_ATTACK_TAGS_PVP = TheSim:RegisterFindTags(GESTALT_DASH_ATTACK_MUST_TAGS, { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" })
+
+local function IsValidTarget(inst, target)
+    if inst.sg.statemem.ignoretargets ~= nil and inst.sg.statemem.ignoretargets[target] then
+        return false
+    end
+
+    local owner_combat = inst._playerlink ~= nil and inst._playerlink.components.combat or nil
+
+    return
+        target:IsValid() and
+        (target.components.health == nil or not target.components.health:IsDead()) and
+        owner_combat ~= nil and
+        owner_combat:CanTarget(target) and
+        target.components.combat:CanBeAttacked(inst) and
+        not owner_combat:IsAlly(target)
+end
+
+local function GetGestaltDashTarget(inst)
+    if inst._playerlink == nil or inst._playerlink.components.combat == nil then
+        return
+    end
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local find_tags = TheNet:GetPVPEnabled() and REGISTERED_GESTALT_DASH_ATTACK_TAGS_PVP or REGISTERED_GESTALT_DASH_ATTACK_TAGS
+
+    for i, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, TUNING.ABIGAIL_GESTALT_ATTACKAT_RADIUS + GESTALT_ATTACKAT_RADIUS_PADDING, find_tags)) do
+        if IsValidTarget(inst, v) then
+            local range = TUNING.ABIGAIL_GESTALT_ATTACKAT_RADIUS + v:GetPhysicsRadius(0)
+
+            if inst:IsEntityInFrontConeSlice(v, TUNING.ABIGAIL_GESTALT_ATTACKAT_VALID_ANGLE, range) then
+                return v
+            end
+        end
+    end
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+local function UpdateFlash(target, data, id, r, g, b)
+	if data.flashstep < 4 then
+		local value = (data.flashstep > 2 and 4 - data.flashstep or data.flashstep) * 0.05
+		if target.components.colouradder == nil then
+			target:AddComponent("colouradder")
+		end
+		target.components.colouradder:PushColour(id, value * r, value * g, value * b, 0)
+		data.flashstep = data.flashstep + 1
+	else
+		target.components.colouradder:PopColour(id)
+		data.task:Cancel()
+	end
+end
+
+local function StartFlash(inst, target, r, g, b)
+	local data = { flashstep = 1 }
+	local id = inst.prefab.."::"..tostring(inst.GUID)
+	data.task = target:DoPeriodicTask(0, UpdateFlash, nil, data, id, r, g, b)
+	UpdateFlash(target, data, id, r, g, b)
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.HAUNT, "haunt_pre"),
@@ -723,23 +792,19 @@ local states =
 
     State {
         name = "abigail_transform_pre",
-        tags = { "busy" },
+        tags = { "busy", "nointerrupt" },
 
         onenter = function(inst, data)
-            inst.sg.statemem.gestalt = data.gestalt
             inst.components.locomotor:Stop()
+
             inst.AnimState:PlayAnimation("abigail_transform_pre")
+            inst.SoundEmitter:PlaySound("meta5/abigail/abigail_gestalt_transform_stinger")
+
+            inst.sg.statemem.isgestalt = data.gestalt
         end,
 
-        timeline =
-        {
-            FrameEvent(15, function(inst)
-
-            end),
-        },
-
         onexit = function(inst, data)
-            if inst.sg.statemem.gestalt  then
+            if inst.sg.statemem.isgestalt then
                 inst:SetToGestalt()
             else
                 inst:SetToNormal()
@@ -758,9 +823,9 @@ local states =
 
     State {
         name = "abigail_transform",
-        tags = { "busy" },
+        tags = { "busy", "nointerrupt" },
 
-        onenter = function(inst, data)
+        onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("abigail_transform")
         end,
@@ -779,20 +844,24 @@ local states =
         name = "gestalt_attack",
         tags = { "busy", "nointerrupt"},
 
-        onenter = function(inst)
+        onenter = function(inst, pos)
             inst.components.locomotor:Stop()
             inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_pre")
 
             inst.Physics:Stop()
 
             inst.AnimState:PlayAnimation("gestalt_attack_pre")
+
+            if pos ~= nil then
+                inst.sg.statemem.final_pos = pos
+            end
         end,
 
         events =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("gestalt_loop_attack")
+                    inst.sg:GoToState(inst.sg.statemem.final_pos ~= nil and "gestalt_loop_homing_attack" or "gestalt_loop_attack", { pos = inst.sg.statemem.final_pos })
                 end
             end),
         },
@@ -815,13 +884,11 @@ local states =
 
             inst.sg.statemem.oldattackdamage = inst.components.combat.defaultdamage
 
-            if TheWorld.state.isnight or (inst:HasDebuff("elixir_buff") and inst.components.debuffable:GetDebuff("elixir_buff").prefab == "ghostlyelixir_attack_buff" )  then
-                inst.components.combat.defaultdamage = TUNING.ABIGAIL_GESTALT_DAMAGE.night
-            elseif TheWorld.state.isday then 
-                inst.components.combat.defaultdamage = TUNING.ABIGAIL_GESTALT_DAMAGE.day
-            else
-                inst.components.combat.defaultdamage = TUNING.ABIGAIL_GESTALT_DAMAGE.dusk
-            end
+            local buff = inst:GetDebuff("elixir_buff")
+            local phase = (buff ~= nil and buff.prefab == "ghostlyelixir_attack_buff") and "night" or TheWorld.state.phase
+            local damage = (TUNING.ABIGAIL_GESTALT_DAMAGE[phase] or TUNING.ABIGAIL_GESTALT_DAMAGE.day)
+
+            inst.components.combat:SetDefaultDamage(damage)
 
             inst.components.combat:StartAttack()
             inst.sg.statemem.enable_attack = true
@@ -852,6 +919,8 @@ local states =
                             fx.entity:SetParent(target.entity)
                             target:AddChild(fx)
                             inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_hit")
+
+                            StartFlash(inst, target, 1, 1, 1)
                         end
                     end
                 end
@@ -883,13 +952,117 @@ local states =
     },
 
     State {
+        name = "gestalt_loop_homing_attack",
+        tags = { "busy", "nointerrupt", "swoop"},
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            inst.Physics:Stop()
+            inst:SetTransparentPhysics(true)
+            inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+            inst.Physics:ClearMotorVelOverride()
+            inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY, 0, 0)
+
+            inst.AnimState:PlayAnimation("gestalt_attack_loop", true)
+            inst.sg:SetTimeout(10)
+
+            inst.sg.statemem.oldattackdamage = inst.components.combat.defaultdamage
+
+            local buff   = inst:GetDebuff("elixir_buff")
+            local phase  = (buff ~= nil and buff.prefab == "ghostlyelixir_attack_buff") and "night" or TheWorld.state.phase
+            local damage = (TUNING.ABIGAIL_GESTALT_DAMAGE[phase] or TUNING.ABIGAIL_GESTALT_DAMAGE.day)
+
+            inst.components.combat:SetDefaultDamage(damage * TUNING.ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE)
+
+            inst.sg.statemem.final_pos = data.pos
+
+            inst:ForceFacePoint(inst.sg.statemem.final_pos)
+
+            inst.sg.statemem.ignoretargets = {}
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("gestalt_pst_attack")
+        end,
+
+        onupdate = function(inst, dt)
+            if inst.sg.statemem.current_target == nil or not IsValidTarget(inst, inst.sg.statemem.current_target) then
+                inst.sg.statemem.current_target = GetGestaltDashTarget(inst)
+            end
+
+            local target = inst.sg.statemem.current_target
+
+            if target == nil then
+                inst:ForceFacePoint(inst.sg.statemem.final_pos)
+
+                local target_pos = inst.sg.statemem.final_pos
+                local current_pos = inst:GetPosition()
+            
+                if distsq(target_pos.x, target_pos.z, current_pos.x, current_pos.z) <= 2*2 then
+                    inst.sg:GoToState("gestalt_pst_attack")
+                end
+
+                return -- Try to find a target again next frame...
+            end
+
+            inst:ForceFacePoint(target.Transform:GetWorldPosition())
+
+            if inst.components.combat:CanTarget(target) and inst:GetDistanceSqToInst(target) <= TUNING.GESTALT_ATTACK_HIT_RANGE_SQ then
+                inst.components.combat:DoAttack(target)
+                inst.components.combat:RestartCooldown() -- For regular attack cooldown, since we aren't calling combat:StartAttack.
+
+                inst.components.combat:SetDefaultDamage(inst.components.combat.defaultdamage * TUNING.ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE)
+
+                inst:ApplyDebuff({target=target})
+
+                if target.components.combat.hiteffectsymbol ~= nil then
+                    target:SpawnChild("abigail_gestalt_hit_fx")
+
+                    StartFlash(inst, target, 1, 1, 1)
+
+                    inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_hit")
+                end
+
+                inst.sg.statemem.current_target = nil -- Let next frame handle having a new target.
+                inst.sg.statemem.ignoretargets[target] = true -- Used by IsValidTarget.
+            end
+        end,
+
+        onexit = function(inst)
+            inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+            inst.Physics:ClearMotorVelOverride()
+            inst.components.locomotor:Stop()
+
+            if inst.sg.statemem.oldattackdamage ~= nil then
+                inst.components.combat:SetDefaultDamage(inst.sg.statemem.oldattackdamage)
+            end
+
+            inst:SetTransparentPhysics(false)
+        end,
+    },
+
+    State {
         name = "gestalt_pst_attack",
-        tags = { "busy", "nointerrupt"},
+        tags = { "busy", "nointerrupt", "swoop" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("gestalt_attack_pst")
-            inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_pst")            
         end,
+
+        timeline =
+        {
+            FrameEvent(0,  function(inst) inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY * .100, 0, 0) end),
+            FrameEvent(8,  function(inst) inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY * .075, 0, 0) end),
+            FrameEvent(16, function(inst) inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY * .050, 0, 0) end),
+            FrameEvent(24, function(inst) inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY * .025, 0, 0) end),
+
+            FrameEvent(32, function(inst)
+                inst.Physics:ClearMotorVelOverride()
+                inst.components.locomotor:Stop()
+
+                inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_pst")
+            end),
+        },
 
         events =
         {

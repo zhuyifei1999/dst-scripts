@@ -1144,6 +1144,19 @@ local RPC_HANDLERS =
 		end
 	end,
 
+	InteractionTarget = function(player, action, target)
+		if not (optnumber(action) and
+				optentity(target))
+		then
+			printinvalid("InteractionTarget", player)
+			return
+		end
+		local playercontroller = player.components.playercontroller
+		if playercontroller then
+			playercontroller:OnRemoteInteractionTarget(action, target)
+		end
+	end,
+
     -- NOTES(JBK): RPC limit is at 128, with 1-127 usable.
 }
 
