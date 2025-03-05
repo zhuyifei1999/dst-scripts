@@ -565,18 +565,15 @@ local actionhandlers =
     ActionHandler(ACTIONS.ATTACK,
         function(inst, action)
             if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or IsEntityDead(inst)) then
-                local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                if equip == nil then
-                    return "attack"
-                end
-                local inventoryitem = equip.replica.inventoryitem
-                return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
-					or (equip:HasTag("slingshot") and "slingshot_shoot")
-                    or (equip:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart")
-                    or (equip:HasTag("thrown") and "throw")
-                    or (equip:HasTag("pillow") and "attack_pillow_pre")
-                    or (equip:HasTag("propweapon") and "attack_prop_pre")
-                    or "attack"
+				local combat = inst.replica.combat
+				local weapon = combat and combat:GetWeapon() or nil
+				return weapon and (
+					(weapon:HasTag("slingshot") and "slingshot_shoot") or
+					(weapon:HasOneOfTags({"blowdart", "blowpipe"}) and "blowdart") or
+					(weapon:HasTag("thrown") and "throw") or
+					(weapon:HasTag("pillow") and "attack_pillow_pre") or
+					(weapon:HasTag("propweapon") and "attack_prop_pre")
+				) or "attack"
             end
         end),
 	ActionHandler(ACTIONS.TOSS,
@@ -4323,7 +4320,13 @@ local states =
             local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             local rider = inst.replica.rider
             if rider ~= nil and rider:IsRiding() then
-                if equip ~= nil and (equip:HasTag("rangedweapon") or equip:HasTag("projectile")) then
+				if equip and
+					(	--We just want projectiles, but not complexprojectile
+						--Unfortunately due to legacy coding, complexprojectile component also adds projectile tag
+						(equip:HasTag("projectile") and not equip:HasTag("complexprojectile")) or
+						equip:HasTag("rangedweapon")
+					)
+				then
                     inst.AnimState:PlayAnimation("player_atk_pre")
                     inst.AnimState:PushAnimation("player_atk", false)
                     if (equip.projectiledelay or 0) > 0 then

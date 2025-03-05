@@ -2269,6 +2269,7 @@ end
         end
         inst.AnimState:PlayAnimation("idle")
 
+        -- NOTES(JBK): Keep these in sync with wortox_decoy. [WSDCSC]
         inst.AnimState:Hide("ARM_carry")
         inst.AnimState:Hide("HAT")
         inst.AnimState:Hide("HAIR_HAT")

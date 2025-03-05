@@ -325800,7 +325800,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK"
-msgid "It moderately increases your firing rate, which will ramp up if you shoot continously."
+msgid "It moderately increases your firing rate, which will ramp up if you shoot continuously."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_STICKY
@@ -325810,7 +325810,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH"
-msgid "It greatly increases your firing rate, which will ramp up if you shoot continously."
+msgid "It greatly increases your firing rate, which will ramp up if you shoot continuously."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLURTLESLIME
@@ -327165,7 +327165,7 @@ msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.1
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.1"
-msgid "You dare neglect me, mortal?"
+msgid "You dare neglect me, {mortal}?"
 msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.2
@@ -327285,7 +327285,7 @@ msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l3.8
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l3.8"
-msgid "Mortal, do you realize what we are capable of together?"
+msgid "Do you realize what we are capable of together, {mortal}?"
 msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l4.1
@@ -327390,12 +327390,12 @@ msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.2
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.2"
-msgid "Why do you starve me, cruel mortal?"
+msgid "Why do you starve me, cruel {mortal}?"
 msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.3
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.3"
-msgid "Are you trying to kill me, wretched mortal?"
+msgid "Are you trying to kill me, wretched {mortal}?"
 msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.4
@@ -327425,7 +327425,7 @@ msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.1
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.1"
-msgid "Cursed mortal."
+msgid "Cursed {mortal}."
 msgstr ""
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.2
@@ -331785,7 +331785,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_DESC"
-msgid "Soul Decoys will stay around for a bit longer if they are unharmed."
+msgid "Soul Decoys will stay around for a bit longer if they are unharmed, and damage the thing that hit the Decoy."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_TITLE
@@ -365015,7 +365015,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.walterhat_ancient
 msgctxt "STRINGS.SKIN_NAMES.walterhat_ancient"
-msgid "The Archaic"
+msgid "Peregrine Toque"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.walterhat_bee
@@ -370831,6 +370831,11 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK_GRASS
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK_GRASS"
 msgid "Plank"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE"
+msgid "Dreadstone Wall"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_HAY
@@ -387243,6 +387248,16 @@ msgctxt "STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS"
 msgid "?"
 msgstr ""
 
+#. STRINGS.UI.MORTALITYSTRINGS.DEFAULT
+msgctxt "STRINGS.UI.MORTALITYSTRINGS.DEFAULT"
+msgid "mortal"
+msgstr ""
+
+#. STRINGS.UI.MORTALITYSTRINGS.WORTOX
+msgctxt "STRINGS.UI.MORTALITYSTRINGS.WORTOX"
+msgid "imp"
+msgstr ""
+
 #. STRINGS.UI.MVP_LOADING_WIDGET.LAVAARENA.DESCRIPTIONS.aggroheld
 msgctxt "STRINGS.UI.MVP_LOADING_WIDGET.LAVAARENA.DESCRIPTIONS.aggroheld"
 msgid "seconds with creatures' attention"
@@ -396710,7 +396725,7 @@ msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.11
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.11"
-msgid "Enjoying yourssssself, mortal?"
+msgid "Enjoying yourssssself, {mortal}?"
 msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.2
@@ -396795,7 +396810,7 @@ msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.3
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.3"
-msgid "Your palms are sssssweating, mortal, you're losing your grip."
+msgid "Your palms are sssssweating, {mortal}, you're losing your grip."
 msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.4
@@ -396805,7 +396820,7 @@ msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.5
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.5"
-msgid "What'sssss wrong, mortal? Not cut out for this?"
+msgid "What'sssss wrong, {mortal}? Not cut out for this?"
 msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.6
@@ -396820,12 +396835,12 @@ msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.8
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.8"
-msgid "You can hear me, can't you, mortal? You're ssssstarting to understand."
+msgid "You can hear me, can't you, {mortal}? You're ssssstarting to understand."
 msgstr ""
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.9
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.9"
-msgid "I can sssssee all the dark corners of your mind, mortal."
+msgid "I can sssssee all the dark corners of your mind, {mortal}."
 msgstr ""
 
 #. STRINGS.WAGSTAFF_GOTTAGO1

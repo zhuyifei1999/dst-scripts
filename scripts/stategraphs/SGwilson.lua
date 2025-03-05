@@ -2904,7 +2904,7 @@ local states =
             end
 
             inst.AnimState:OverrideSymbol("wormmovefx", "mole_build", "wormmovefx")
-            inst.AnimState:PlayAnimation("grave_spawn")
+            inst.AnimState:PlayAnimatwereion("grave_spawn")
 
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)

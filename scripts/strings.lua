@@ -13751,6 +13751,13 @@ STRINGS.UI =
         },
     },
 
+    -- Used in quotes directed to players that would say mortal.
+    MORTALITYSTRINGS =
+    {
+        DEFAULT = "mortal",
+        WORTOX  = "imp",
+    },
+
     SANDBOXMENU =
     {
         TITLE = "World Customization",
@@ -14118,7 +14125,7 @@ STRINGS.SHADOW_BATTLEAXE_TALK =
         "What are you waiting for, wielder?",
         "We haven't murdered something in forever.",
         "We shall commit unspeakable acts of savagery!",
-        "Mortal, do you realize what we are capable of together?",
+        "Do you realize what we are capable of together, {mortal}?",
     },
     overtime_l4 =
     {
@@ -14215,7 +14222,7 @@ STRINGS.SHADOW_BATTLEAXE_TALK =
     },
     hungry_l4 =
     {
-        "You dare neglect me, mortal?",
+        "You dare neglect me, {mortal}?",
         "Death gives me life.",
         "Wielder, you've changed.",
     },
@@ -14230,8 +14237,8 @@ STRINGS.SHADOW_BATTLEAXE_TALK =
     starving_l3 =  -- And level 4 too!
     {
         "Feed me, NOW.",
-        "Why do you starve me, cruel mortal?",
-        "Are you trying to kill me, wretched mortal?",
+        "Why do you starve me, cruel {mortal}?",
+        "Are you trying to kill me, wretched {mortal}?",
         "Feed me before it's too late!",
         "We need to murder something, now!",
         "Getting... weaker.",
@@ -14240,7 +14247,7 @@ STRINGS.SHADOW_BATTLEAXE_TALK =
     },
     starving_l4 =
     {
-        "Cursed mortal.",
+        "Cursed {mortal}.",
         "Is this the end?",
         "It can't end like this.",
         "Come too far... tasted too much...",
@@ -14332,13 +14339,13 @@ STRINGS.VOIDCLOTH_SCYTHE_TALK =
     {
         "You want to cut and ssssslice, yes you do!",
         "The ssssseeds were planted long ago, now reap the rewards.",
-        "Your palms are sssssweating, mortal, you're losing your grip.",
+        "Your palms are sssssweating, {mortal}, you're losing your grip.",
         "You need a sssssharp wit for this job.",
-        "What'sssss wrong, mortal? Not cut out for this?",
+        "What'sssss wrong, {mortal}? Not cut out for this?",
         "You and I are going to do sssssuch great things together.",
         "I think I was a farmer once, before I ssssshed my skin.",
-        "You can hear me, can't you, mortal? You're ssssstarting to understand.",
-        "I can sssssee all the dark corners of your mind, mortal.",
+        "You can hear me, can't you, {mortal}? You're ssssstarting to understand.",
+        "I can sssssee all the dark corners of your mind, {mortal}.",
         "I've been accused of having a rather sssssharp tongue.",
         "We make a good team, no matter how you ssssslice it.",
         "I hunger for the sssssilent screams of vegetation...",
@@ -14359,7 +14366,7 @@ STRINGS.VOIDCLOTH_SCYTHE_TALK =
         "It's time for the harvessssst.",
         "Everything will fall before usssss!",
         "Let nothing be ssssspared!",
-        "Enjoying yourssssself, mortal?",
+        "Enjoying yourssssself, {mortal}?",
     },
 
     lucy =
@@ -16155,7 +16162,7 @@ STRINGS.SKILLTREE = {
         WORTOX_SOULDECOY_1_TITLE = "Soul Decoy I",
         WORTOX_SOULDECOY_1_DESC = "Soul Hopping for the first hop leaves behind a Soul Decoy to draw the attention of nearby creatures with Souls targeting you.",
         WORTOX_SOULDECOY_2_TITLE = "Soul Decoy II",
-        WORTOX_SOULDECOY_2_DESC = "Soul Decoys will stay around for a bit longer if they are unharmed.",
+        WORTOX_SOULDECOY_2_DESC = "Soul Decoys will stay around for a bit longer if they are unharmed, and damage the thing that hit the Decoy.",
         WORTOX_SOULDECOY_3_TITLE = "Soul Decoy III",
         WORTOX_SOULDECOY_3_DESC = "Soul Decoys will now explode and inflict damage on things lured by it or attacking you upon expiration.",
 
@@ -16881,7 +16888,7 @@ STRINGS.SCRAPBOOK = {
         -- Meta 5
 
         BANDAGE_BUTTERFLYWINGS = "Heals 24 health.\n\nIf used by Walter and he has learned the Field Medic skill, it will heal an additional 12 health, also restoring 10 sanity.",
-        WOBY_TREAT = "Restores three times more hunger when eaten by Woby.",
+        WOBY_TREAT = "Restores three times as much hunger when eaten by Woby.",
         ELIXIR_CONTAINER = "A carryable container with 9 slots that can hold Elixirs.",
         GHOSTFLOWERHAT = "When equipped, allows Wendy to drink Elixirs herself.",
         -- GHOSTLYELIXERLUNAR = "TODO",
@@ -16898,9 +16905,9 @@ STRINGS.SCRAPBOOK = {
 		SLINGSHOT_FRAME_WAGPUNK = "Expands the ammo slot to unlimited stack size, and adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage.",
 		SLINGSHOT_FRAME_WAGPUNK_0 = "Adds a secondary, alternate Slingshot attack, that can be charged by holding down to deal up to 200% damage.",
 		SLINGSHOT_HANDLE_JELLY = "It greatly increases your firing rate and prevents your Slingshot from slipping out of your hands.",
-		SLINGSHOT_HANDLE_SILK = "It moderately increases your firing rate, which will ramp up if you shoot continously.",
+		SLINGSHOT_HANDLE_SILK = "It moderately increases your firing rate, which will ramp up if you shoot continuously.",
 		SLINGSHOT_HANDLE_STICKY = "It moderately increases your firing rate, and prevents your Slingshot from slipping out of your hands.",
-		SLINGSHOT_HANDLE_VOIDCLOTH = "It greatly increases your firing rate, which will ramp up if you shoot continously.",
+		SLINGSHOT_HANDLE_VOIDCLOTH = "It greatly increases your firing rate, which will ramp up if you shoot continuously.",
         SLINGSHOTAMMO_CONTAINER = "A carryable container with 6 slots that can hold Slingshot Rounds.",
 		SLINGSHOTAMMO_THULECITE = "It has a chance to spawn a Shadow Tentacle on impact, which deals damage to your target.",
 		SLINGSHOTAMMO_SLOW = "It slows down your target for 30 seconds, stacking up to 3 times.",

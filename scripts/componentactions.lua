@@ -695,11 +695,9 @@ local COMPONENT_ACTIONS =
 
         rideable = function(inst, doer, actions, right)
             if right and inst:HasTag("rideable") and
-
-               not inst:HasTag("hitched") and
-               (not inst:HasTag("dogrider_only") or
-               (inst:HasTag("dogrider_only") and doer:HasTag("dogrider"))) then
-
+				not inst:HasAnyTag("hitched", "woby") and --no MOUNT action for woby, this is done through spell wheel now
+				(not inst:HasTag("dogrider_only") or doer:HasTag("dogrider"))
+			then
                 local rider = doer.replica.rider
                 if rider ~= nil and not rider:IsRiding() then
                     table.insert(actions, ACTIONS.MOUNT)

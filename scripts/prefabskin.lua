@@ -940,6 +940,9 @@ end
 wx78_scanner_init_fn = function(inst, build_name)
     inst.linked_skinname = build_name
     basic_init_fn(inst, build_name, "wx_scanner")
+    if inst.components.inventoryitem then
+        inst.components.inventoryitem:ChangeImageName(build_name .. "_item")
+    end
     if not TheWorld.ismastersim then
         return
     end
