@@ -695,9 +695,17 @@ local COMPONENT_ACTIONS =
 
         rideable = function(inst, doer, actions, right)
             if right and inst:HasTag("rideable") and
-				not inst:HasAnyTag("hitched", "woby") and --no MOUNT action for woby, this is done through spell wheel now
+				not inst:HasTag("hitched") and
 				(not inst:HasTag("dogrider_only") or doer:HasTag("dogrider"))
 			then
+				if inst:HasTag("woby") then
+					local inventory = doer.replica.inventory
+					if not (inventory and inventory:IsHeavyLifting()) then
+						--No MOUNT action for woby since this is done through command wheel now.
+						--Except when heavylifting, during which command wheel is disabled.
+						return
+					end
+				end
                 local rider = doer.replica.rider
                 if rider ~= nil and not rider:IsRiding() then
                     table.insert(actions, ACTIONS.MOUNT)

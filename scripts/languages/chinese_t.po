@@ -305344,7 +305344,7 @@ msgstr "自動航行儀套裝"
 #. STRINGS.NAMES.BOAT_OTTERDEN
 msgctxt "STRINGS.NAMES.BOAT_OTTERDEN"
 msgid "Marotter Raft"
-msgstr "水獺掠奪者木筏"
+msgstr "水獺掠奪者草筏"
 
 #. STRINGS.NAMES.BOAT_PIRATE
 msgctxt "STRINGS.NAMES.BOAT_PIRATE"
@@ -325803,7 +325803,7 @@ msgstr "大幅提高射速，防止彈弓從手中滑落。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_SILK"
-msgid "It moderately increases your firing rate, which will ramp up if you shoot continously."
+msgid "It moderately increases your firing rate, which will ramp up if you shoot continuously."
 msgstr "適度提高射速，連續射擊後，射擊速度就會加快。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_STICKY
@@ -325813,7 +325813,7 @@ msgstr "適度提高射速，防止彈弓從手中滑落。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_HANDLE_VOIDCLOTH"
-msgid "It greatly increases your firing rate, which will ramp up if you shoot continously."
+msgid "It greatly increases your firing rate, which will ramp up if you shoot continuously."
 msgstr "大幅提高射速，連續射擊後，射擊速度就會加快。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLURTLESLIME
@@ -327168,8 +327168,8 @@ msgstr "我需要肉。"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.1
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.1"
-msgid "You dare neglect me, mortal?"
-msgstr "你竟然敢忽視我，凡人？"
+msgid "You dare neglect me, {mortal}?"
+msgstr "你竟敢忽視我，{mortal}？"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.2
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.hungry_l4.2"
@@ -327288,8 +327288,8 @@ msgstr "我們將做出難以形容的野蠻行徑！"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l3.8
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l3.8"
-msgid "Mortal, do you realize what we are capable of together?"
-msgstr "凡人，你知道我們在一起能做什麼嗎？"
+msgid "Do you realize what we are capable of together, {mortal}?"
+msgstr "你意識到我們一起能做些什麼嗎，{mortal}？"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l4.1
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.overtime_l4.1"
@@ -327393,13 +327393,13 @@ msgstr "喂我，就現在。"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.2
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.2"
-msgid "Why do you starve me, cruel mortal?"
-msgstr "你為什麼要餓死我，殘忍的凡人？"
+msgid "Why do you starve me, cruel {mortal}?"
+msgstr "你為何讓我挨餓，殘忍的{mortal}？"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.3
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.3"
-msgid "Are you trying to kill me, wretched mortal?"
-msgstr "你想殺了我嗎，可憐的凡人？"
+msgid "Are you trying to kill me, wretched {mortal}?"
+msgstr "你是想殺了我嗎，可惡的{mortal}？"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.4
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l3.4"
@@ -327428,8 +327428,8 @@ msgstr "不是誇張，但是……我快餓死了！"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.1
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.1"
-msgid "Cursed mortal."
-msgstr "詛咒你這個凡人。"
+msgid "Cursed {mortal}."
+msgstr "糟糕的{mortal}。"
 
 #. STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.2
 msgctxt "STRINGS.SHADOW_BATTLEAXE_TALK.starving_l4.2"
@@ -331788,8 +331788,8 @@ msgstr "一級靈魂誘餌"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_DESC"
-msgid "Soul Decoys will stay around for a bit longer if they are unharmed."
-msgstr "如果靈魂誘餌沒有受到傷害，它們會存在更長時間。"
+msgid "Soul Decoys will stay around for a bit longer if they are unharmed, and damage the thing that hit the Decoy."
+msgstr "如果靈魂誘餌沒有受到傷害，它們會存在更長時間，並對攻擊誘餌的人造成傷害。"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_TITLE
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_2_TITLE"
@@ -342109,7 +342109,7 @@ msgstr "這個至愛物品箱子包含以下皮膚物品：奢華投石機，野
 #. STRINGS.SKIN_DESCRIPTIONS.pack_lostandfound_items2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_lostandfound_items2"
 msgid "The Favorite Things Chest includes the following belongings skins: Beach House Sisturn and Nested Sisturn; Axe n' Chain, Broad Axe, Lucille Alfresco, and Punk-Axe; Lavish Scanalyzer and Utility Scanalyzer; Armoire Nomade, Fine Chef Pouch, Kitchen Scraps Sack, and Twined Chef Pouch; Cast Iron, Porcelain, Silver, and Stoneware Grinding Mills; Cast Iron, Porcelain, Silver, and Stoneware Crock Pots; Cast Iron, Porcelain, Silver, and Stoneware Seasoning Stations; Thorny, Wasteland, Wicker, and Woodland Slingshots; and Bad Dog and Best in Show."
-msgstr "至愛物品箱子包含以下物品皮膚：海濱小屋骨灰罐、鳥巢骨灰罐；鏈斧、闊斧、花格子露西爾和朋克斧；浮誇掃描分析儀和實用掃描分析儀；諾曼第香料櫃、精緻廚師袋、廚餘垃圾袋、和編織廚師袋；鑄鐵、陶瓷、白銀和石制研磨器；鑄鐵、陶瓷、白銀和石制燉鍋；鑄鐵、陶瓷、白銀和石制香料站；荊棘、廢土、藤條和林地彈弓；以及惡犬和賽犬。"
+msgstr "至愛物品箱子包含以下物品皮膚：海濱小屋骨灰罐、鳥巢骨灰罐；鏈斧、闊斧、花格子露西爾和朋克斧；浮誇掃描分析儀和實用掃描分析儀；旅行櫥櫃、精緻廚師袋、廚餘垃圾袋、和編織廚師袋；鑄鐵、陶瓷、白銀和石制研磨器；鑄鐵、陶瓷、白銀和石制燉鍋；鑄鐵、陶瓷、白銀和石制香料站；荊棘、廢土、藤條和林地彈弓；以及惡犬和賽犬。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_lunar_2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_lunar_2"
@@ -364214,7 +364214,7 @@ msgstr "終極長矛"
 #. STRINGS.SKIN_NAMES.spicepack_porcelain
 msgctxt "STRINGS.SKIN_NAMES.spicepack_porcelain"
 msgid "Armoire Nomade"
-msgstr "諾曼第香料櫃"
+msgstr "旅行櫥櫃"
 
 #. STRINGS.SKIN_NAMES.spicepack_rustic
 msgctxt "STRINGS.SKIN_NAMES.spicepack_rustic"
@@ -365018,8 +365018,8 @@ msgstr "歡樂"
 
 #. STRINGS.SKIN_NAMES.walterhat_ancient
 msgctxt "STRINGS.SKIN_NAMES.walterhat_ancient"
-msgid "The Archaic"
-msgstr "古代"
+msgid "Peregrine Toque"
+msgstr "遊隼帽"
 
 #. STRINGS.SKIN_NAMES.walterhat_bee
 msgctxt "STRINGS.SKIN_NAMES.walterhat_bee"
@@ -366764,7 +366764,7 @@ msgstr "咯咯響的冬帽"
 #. STRINGS.SKIN_NAMES.winterhat_rooster_alt
 msgctxt "STRINGS.SKIN_NAMES.winterhat_rooster_alt"
 msgid "Clucky Winter Hat"
-msgstr "咯咯響的冬季帽"
+msgstr "咯咯響的冬帽"
 
 #. STRINGS.SKIN_NAMES.winterhat_stocking_cap_green_forest
 msgctxt "STRINGS.SKIN_NAMES.winterhat_stocking_cap_green_forest"
@@ -370835,6 +370835,11 @@ msgstr "木板"
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK_GRASS"
 msgid "Plank"
 msgstr "木板"
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE"
+msgid "Dreadstone Wall"
+msgstr "絕望石牆"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_HAY
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_HAY"
@@ -387246,6 +387251,16 @@ msgctxt "STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS"
 msgid "?"
 msgstr "?"
 
+#. STRINGS.UI.MORTALITYSTRINGS.DEFAULT
+msgctxt "STRINGS.UI.MORTALITYSTRINGS.DEFAULT"
+msgid "mortal"
+msgstr "凡人"
+
+#. STRINGS.UI.MORTALITYSTRINGS.WORTOX
+msgctxt "STRINGS.UI.MORTALITYSTRINGS.WORTOX"
+msgid "imp"
+msgstr "小惡魔"
+
 #. STRINGS.UI.MVP_LOADING_WIDGET.LAVAARENA.DESCRIPTIONS.aggroheld
 msgctxt "STRINGS.UI.MVP_LOADING_WIDGET.LAVAARENA.DESCRIPTIONS.aggroheld"
 msgid "seconds with creatures' attention"
@@ -396713,8 +396728,8 @@ msgstr "一個都不能留xxxx下！"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.11
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.11"
-msgid "Enjoying yourssssself, mortal?"
-msgstr "好玩麼，凡人？"
+msgid "Enjoying yourssssself, {mortal}?"
+msgstr "玩得開心嗎,{mortal}?"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.2
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.onharvest.2"
@@ -396798,8 +396813,8 @@ msgstr "種子早已種xxxx下，現在ssss是sssss收穫的時候了。"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.3
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.3"
-msgid "Your palms are sssssweating, mortal, you're losing your grip."
-msgstr "你的手xxxx心在出汗，凡人，你sssss失去了控制力。"
+msgid "Your palms are sssssweating, {mortal}, you're losing your grip."
+msgstr "你的手xxxx心在出汗，{mortal}，你sssss失去了控制力。"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.4
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.4"
@@ -396808,8 +396823,8 @@ msgstr "這份工作xxxx需要尖銳的機智。"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.5
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.5"
-msgid "What'sssss wrong, mortal? Not cut out for this?"
-msgstr "怎麼了，凡人？xxxx下不了ssss手嗎？"
+msgid "What'sssss wrong, {mortal}? Not cut out for this?"
+msgstr "怎麼了，{mortal}？不是這塊料嗎？"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.6
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.6"
@@ -396823,13 +396838,13 @@ msgstr "在我蛻皮之前，我xxxxx想我曾經sssss是個農民。"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.8
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.8"
-msgid "You can hear me, can't you, mortal? You're ssssstarting to understand."
-msgstr "你能聽見我ssss說話，sssss是嗎，凡人？你開始理解了。"
+msgid "You can hear me, can't you, {mortal}? You're ssssstarting to understand."
+msgstr "你能聽到我，對吧，{mortal}？你總算kkk開竅了。"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.9
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.overtime.9"
-msgid "I can sssssee all the dark corners of your mind, mortal."
-msgstr "我可以窺見你腦海中sssss所有黑暗的角落，凡人。"
+msgid "I can sssssee all the dark corners of your mind, {mortal}."
+msgstr "我可以窺見你腦海中sssss所有黑暗的角落，{mortal}。"
 
 #. STRINGS.WAGSTAFF_GOTTAGO1
 msgctxt "STRINGS.WAGSTAFF_GOTTAGO1"

@@ -833,6 +833,7 @@ local actionhandlers =
             or "applyelixir"
     end),
 
+    ActionHandler(ACTIONS.MUTATE, "dolongaction"),
     ActionHandler(ACTIONS.GRAVEDIG, "graveurn_in"),
 
 	ActionHandler(ACTIONS.DASH, "dash_woby_pre"),
