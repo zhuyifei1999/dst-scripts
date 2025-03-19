@@ -2240,6 +2240,18 @@ ACTIONS.STORE.fn = function(act)
             elseif not target.components.container:IsOpenedBy(act.doer) and not target.components.container:CanOpen() then
                 return false, "INUSE"
             end
+            if act.doer.finishportalhoptask ~= nil and target:HasTag("souljar") and act.invobject:HasTag("soul") then
+                -- NOTES(JBK): Hack to make the jar easier to use by replicating soul hop timer expiration for opening a jar here when trying to put items into the jar.
+                local souls = 0
+                act.doer.components.inventory:ForEachItem(function(item)
+                    if item.prefab == act.invobject.prefab then
+                        souls = souls + (item.components.stackable and item.components.stackable:StackSize() or 1)
+                    end
+                end)
+                if souls > 1 then
+                    act.doer:TryToPortalHop(1, true)
+                end
+            end
 
             local targetslot = nil
             if act.doer.components.constructionbuilderuidata ~= nil and act.doer.components.constructionbuilderuidata:GetContainer() == target then

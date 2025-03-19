@@ -462,7 +462,12 @@ return{
             NONEWMOON = "The moon is not waning.",
             NOFULLMOON = "The moon must be waxing.",
             NOTNIGHT = "It won't work in the sun.",
-        },        
+            CAVE = "It won't work without moonlight.",
+        },
+		MODSLINGSHOT =
+		{
+--fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -840,6 +845,10 @@ return{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
 --fallback to speech_wilson.lua 	ANNOUNCE_WOBY_COURIER =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},

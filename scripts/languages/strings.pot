@@ -4393,6 +4393,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I know better than to bother an angry beefalo!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -22328,6 +22333,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Hey, calm down! Let me on!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -27280,7 +27290,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.LOW
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.LOW"
-msgid "I might need to feed the fire a bit"
+msgid "I might need to feed the fire a bit."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.NORMAL
@@ -39821,6 +39831,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I will not meet my end trampled beneath the hooves of an angry beefalo!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -57138,6 +57153,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Mon dieu. It's busy just now."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -73576,6 +73596,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll only ride it if it's the victor."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -90741,6 +90766,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Perhaps I should take a step back."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -107978,6 +108008,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It's too angry!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -114325,12 +114360,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_ATTACK
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_ATTACK"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_FASTREGEN
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_FASTREGEN"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_LUNAR
@@ -114340,12 +114375,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_RETALIATION
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_RETALIATION"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_REVIVE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_REVIVE"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHADOW
@@ -114355,17 +114390,17 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHIELD
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHIELD"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SLOWREGEN
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SLOWREGEN"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SPEED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SPEED"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GIFT
@@ -125111,6 +125146,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll wait for it to calm down..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.CAVE"
+msgid "It won't work without moonlight."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -142303,6 +142343,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It would be ill-advised to approach that scuffle."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -159488,6 +159533,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll ride it when it settles down."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -176666,6 +176716,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It's a bit preoccupied."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -193918,6 +193973,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I cannot ride it now! Hair-cow is proving itself in battle!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -211073,6 +211133,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I should wait for the dust to settle, eh?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -228206,6 +228271,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Too much fighting!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -245386,6 +245456,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Its focus is elsewhere."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -262713,6 +262788,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "They look mad..."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -279996,6 +280076,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'LL RIDE IT LATER. RIGHT NOW IT FIGHTS FOR MY AMUSEMENT"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.NOFULLMOON
@@ -320153,6 +320238,16 @@ msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTD_SKETCH"
 msgid "A sculpture sketch of a Dragonfly boat race Start Tower."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_BUILDER
+msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_BUILDER"
+msgid "A reminder of a lucky worm encounter."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_SKETCH
+msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_SKETCH"
+msgid "A sculpture sketch of a Gilded Depths Worm."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.CHESTUPGRADE_STACKSIZE
 msgctxt "STRINGS.RECIPE_DESC.CHESTUPGRADE_STACKSIZE"
 msgid "It's a bit of a stretch for some storage space."
@@ -325690,72 +325785,72 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_DREADSTONE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_DREADSTONE"
-msgid "It has a 50% chance to not break on impact."
+msgid "These have a 50% chance to not break on impact."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GELBLOB
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GELBLOB"
-msgid "It attaches an Icker blob to your target for 60 seconds, greatly slowing it down."
+msgid "These attach an Icker blob to your target for 60 seconds, greatly slowing it down."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_GUNPOWDER"
-msgid "It has an increasing chance to trigger an explosion, dealing double damage in a large area."
+msgid "These have an increasing chance to trigger an explosion, dealing double damage in a large area."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY"
-msgid "It slows down your target on the ground for 8 seconds."
+msgid "These slow down ground targets 8 seconds."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL"
-msgid "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage periodically. Up to 4 Swarming Horrors can be stacked on each target."
+msgid "These apply the Swarming Horror debuff to creatures it hits, dealing 10 planar damage periodically. Up to 4 Swarming Horrors can be stacked on each target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_LUNARPLANTHUSK"
-msgid "It has a chance to spawn a Brightshade Vine on impact, which deals planar damage to your target."
+msgid "These have a chance to spawn a Brightshade Vine on impact, which deals planar damage to your target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_MOONGLASS"
-msgid "It deals damage in a medium area around its target."
+msgid "These deal damage in a medium area around the target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_POOP
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_POOP"
-msgid "It causes some targets to lose interest in you."
+msgid "These cause some targets to lose interest in you."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_PUREBRILLIANCE"
-msgid "It applies a Pure Brilliance mark to creatures it hits, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage per hit."
+msgid "These apply a Pure Brilliance mark to creatures they hit, lasting 30 seconds. This mark can be triggered by planar attacks for an additional 5 planar damage per hit."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SCRAPFEATHER"
-msgid "It deals electrical damage, which does more damage to wet targets. It can also trigger hit stun more often than other projectiles."
+msgid "These deal electrical damage, which does more damage to wet targets. They can also trigger hit stun more often than other projectiles."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SLOW
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_SLOW"
-msgid "It slows down your target for 30 seconds, stacking up to 3 times."
+msgid "These slow down your target for 30 seconds, stacking up to 3 times."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_STINGER"
-msgid "It deals damage in a small area around its target."
+msgid "These deal damage in a small area around the target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_THULECITE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_THULECITE"
-msgid "It has a chance to spawn a Shadow Tentacle on impact, which deals damage to your target."
+msgid "These have a chance to spawn a Shadow Tentacle on impact, which deals damage to your target."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT"
-msgid "Allows you to customize your Slingshot, making it personal."
+msgid "Allows you to customize your Slingshot."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_MIMIC
@@ -326225,7 +326320,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT"
-msgid "Restores three times more hunger when eaten by Woby."
+msgid "Restores three times as much hunger when eaten by Woby."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOLFGANG_WHISTLE
@@ -329350,7 +329445,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC"
-msgid "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightement, she has no additional hunger drain for sprinting or dashing."
+msgid "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightenment, she has no additional hunger drain for sprinting or dashing."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_LOCK_DESC
@@ -331775,7 +331870,7 @@ msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_DESC"
-msgid "Soul Hopping for the first hop leaves behind a Soul Decoy to draw the attention of nearby creatures with Souls targeting you."
+msgid "Soul Hopping creates a Soul Decoy to draw the attention of attacking creatures that possess Souls. It will not create one for a Soul Echo."
 msgstr ""
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_TITLE
@@ -368065,7 +368160,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.webber_masquerade"
-msgid "We'll be on our best behavior... probably."
+msgid "\"We'll be on our best behavior... probably.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_nature
@@ -368200,7 +368295,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wendy_masquerade"
-msgid "The night is young, but not for long."
+msgid "\"The night is young, but not for long.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_nature
@@ -368305,7 +368400,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_masquerade"
-msgid "I delight in an elegant soirée, provided it concludes at a sensible hour."
+msgid "\"I delight in an elegant soirée, provided it concludes at a sensible hour.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_nature
@@ -368680,7 +368775,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.winona_masquerade"
-msgid "Well, what d'ya know? I scrub up mighty fine when I feel like it."
+msgid "\"Well, what d'ya know? I scrub up mighty fine when I feel like it.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_nature
@@ -369260,7 +369355,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wx78_masquerade"
-msgid "I AM THE GOLD STANDARD"
+msgid "\"I AM THE GOLD STANDARD\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_nature

@@ -72,28 +72,36 @@ local function onattack(inst)
 end
 
 local DASHATTACK_MUST_TAGS = {"_combat"}
-local function dash_attack_onupdate(inst, dt)
 
-    if not inst.sg.mem.aoe_attack_times then return end
-    if inst:HasTag("gestalt") then return end
+local function dash_attack_onupdate(inst, dt)
+    if inst.sg.mem.aoe_attack_times == nil then
+        return
+    end
+
+    if inst:HasTag("gestalt") then
+        return
+    end
 
     local aura = inst.components.aura
     local combat = inst.components.combat
+    local leader = inst._playerlink
     local current_attack_time
     local ix, iy, iz = inst.Transform:GetWorldPosition()
     local hittable_entities = TheSim:FindEntities(ix, iy, iz, aura.radius, DASHATTACK_MUST_TAGS, aura.auraexcludetags)    
 
     for _, hittable_entity in pairs(hittable_entities) do
-
-
-        local leader = inst._playerlink     
+        if inst.sg.mem.aoe_attack_times == nil then
+            return -- Abigail might change state by attacking these, check for aoe_attack_times again.
+        end
 
         if hittable_entity ~= inst and
-                combat:IsValidTarget(hittable_entity) and
-                not inst.components.combat:IsAlly(hittable_entity) and
-                (leader == nil or not leader.components.combat:IsAlly(hittable_entity)) and                
-                inst:auratest(hittable_entity, true) then
+            combat:IsValidTarget(hittable_entity) and
+            not inst.components.combat:IsAlly(hittable_entity) and
+            (leader == nil or not leader.components.combat:IsAlly(hittable_entity)) and
+            inst:auratest(hittable_entity, true)
+        then
             current_attack_time = inst.sg.mem.aoe_attack_times[hittable_entity]
+
             if not current_attack_time or (current_attack_time - dt <= 0) then
                 inst.sg.mem.aoe_attack_times[hittable_entity] = TUNING.WENDYSKILL_DASHATTACK_HITRATE
 
@@ -137,17 +145,60 @@ local function GetGestaltDashTarget(inst)
         return
     end
 
-    local x, y, z = inst.Transform:GetWorldPosition()
+    local pos = inst:GetPosition()
     local find_tags = TheNet:GetPVPEnabled() and REGISTERED_GESTALT_DASH_ATTACK_TAGS_PVP or REGISTERED_GESTALT_DASH_ATTACK_TAGS
 
-    for i, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, TUNING.ABIGAIL_GESTALT_ATTACKAT_RADIUS + GESTALT_ATTACKAT_RADIUS_PADDING, find_tags)) do
+    for i, v in ipairs(TheSim:FindEntities_Registered(pos.x, 0, pos.z, TUNING.ABIGAIL_GESTALT_ATTACKAT_RADIUS + GESTALT_ATTACKAT_RADIUS_PADDING, find_tags)) do
         if IsValidTarget(inst, v) then
             local range = TUNING.ABIGAIL_GESTALT_ATTACKAT_RADIUS + v:GetPhysicsRadius(0)
 
-            if inst:IsEntityInFrontConeSlice(v, TUNING.ABIGAIL_GESTALT_ATTACKAT_VALID_ANGLE, range) then
+            local dist = inst:GetDistanceSqToInst(v)
+
+            if dist <= range * range and
+                IsWithinAngle(pos, inst.sg.statemem.fowardvector, TUNING.ABIGAIL_GESTALT_ATTACKAT_VALID_ANGLE / RADIANS, v:GetPosition()) 
+            then
                 return v
             end
         end
+    end
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+-- Keep track of the original value and multiply the current value by ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE,
+-- while watching for external changes to the value.
+
+local function ApplyGestaltAttackAtDamageMultRate(inst, tabula, key, value)
+    if inst.sg.statemem.originalattackvalue == nil then
+        inst.sg.statemem.originalattackvalue = {}
+        inst.sg.statemem.lastattackvalue = {}
+    end
+
+    if inst.sg.statemem.originalattackvalue[key] == nil then
+        inst.sg.statemem.originalattackvalue[key] = tabula[key]
+    end
+
+    if inst.sg.statemem.lastattackvalue[key] ~= nil and tabula[key] ~= inst.sg.statemem.lastattackvalue[key] then
+         -- Something else changed tabula[key], consider that as our originalattackvalue...
+        inst.sg.statemem.originalattackvalue[key] = tabula[key]
+    end
+
+    tabula[key] = (value or inst.sg.statemem.lastattackvalue[key] or tabula[key]) * TUNING.ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE
+
+    inst.sg.statemem.lastattackvalue[key] = tabula[key]
+end
+
+local function RemoveGestaltAttackAtDamageMultRate(inst, tabula, key)
+    if inst.sg.statemem.originalattackvalue == nil then
+        return
+    end
+
+    if inst.sg.statemem.lastattackvalue[key] ~= nil and tabula[key] ~= inst.sg.statemem.lastattackvalue[key] then
+        return -- Something else changed tabula[key], don't revert back the value.
+    end
+
+    if inst.sg.statemem.originalattackvalue[key] ~= nil then
+        tabula[key] = inst.sg.statemem.originalattackvalue[key]
     end
 end
 
@@ -327,7 +378,7 @@ local states =
 
     State{
         name = "dissipate",
-        tags = { "busy", "noattack", "nointerrupt", "dissipate" },
+        tags = { "busy", "noattack", "nointerrupt", "dissipate", "nocommand" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -358,7 +409,7 @@ local states =
 
     State{
         name = "dissipated",
-        tags = { "busy", "noattack", "nointerrupt", "dissipate" },
+        tags = { "busy", "noattack", "nointerrupt", "dissipate", "nocommand" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -964,19 +1015,22 @@ local states =
             inst.Physics:SetMotorVelOverride(TUNING.WENDYSKILL_DASHATTACK_VELOCITY, 0, 0)
 
             inst.AnimState:PlayAnimation("gestalt_attack_loop", true)
-            inst.sg:SetTimeout(10)
-
-            inst.sg.statemem.oldattackdamage = inst.components.combat.defaultdamage
+            inst.sg:SetTimeout(8)
 
             local buff   = inst:GetDebuff("elixir_buff")
             local phase  = (buff ~= nil and buff.prefab == "ghostlyelixir_attack_buff") and "night" or TheWorld.state.phase
             local damage = (TUNING.ABIGAIL_GESTALT_DAMAGE[phase] or TUNING.ABIGAIL_GESTALT_DAMAGE.day)
 
-            inst.components.combat:SetDefaultDamage(damage * TUNING.ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE)
+            ApplyGestaltAttackAtDamageMultRate(inst, inst.components.combat, "defaultdamage", damage)
+            ApplyGestaltAttackAtDamageMultRate(inst, inst.components.planardamage, "basedamage")
+            ApplyGestaltAttackAtDamageMultRate(inst, inst.components.planardamage.externalbonuses, "_modifier")
 
             inst.sg.statemem.final_pos = data.pos
 
             inst:ForceFacePoint(inst.sg.statemem.final_pos)
+
+            local rotation = inst.Transform:GetRotation() -- Keep this after ForceFacePoint!
+            inst.sg.statemem.fowardvector = Vector3(math.cos(-rotation / RADIANS), 0, math.sin(-rotation / RADIANS))
 
             inst.sg.statemem.ignoretargets = {}
         end,
@@ -986,6 +1040,15 @@ local states =
         end,
 
         onupdate = function(inst, dt)
+            local target_pos = inst.sg.statemem.final_pos
+            local current_pos = inst:GetPosition()
+
+            if distsq(target_pos.x, target_pos.z, current_pos.x, current_pos.z) <= 2*2 then
+                inst.sg:GoToState("gestalt_pst_attack")
+
+                return -- We've arrived!
+            end
+
             if inst.sg.statemem.current_target == nil or not IsValidTarget(inst, inst.sg.statemem.current_target) then
                 inst.sg.statemem.current_target = GetGestaltDashTarget(inst)
             end
@@ -995,33 +1058,28 @@ local states =
             if target == nil then
                 inst:ForceFacePoint(inst.sg.statemem.final_pos)
 
-                local target_pos = inst.sg.statemem.final_pos
-                local current_pos = inst:GetPosition()
-            
-                if distsq(target_pos.x, target_pos.z, current_pos.x, current_pos.z) <= 2*2 then
-                    inst.sg:GoToState("gestalt_pst_attack")
-                end
-
                 return -- Try to find a target again next frame...
             end
 
             inst:ForceFacePoint(target.Transform:GetWorldPosition())
 
             if inst.components.combat:CanTarget(target) and inst:GetDistanceSqToInst(target) <= TUNING.GESTALT_ATTACK_HIT_RANGE_SQ then
-                inst.components.combat:DoAttack(target)
-                inst.components.combat:RestartCooldown() -- For regular attack cooldown, since we aren't calling combat:StartAttack.
-
-                inst.components.combat:SetDefaultDamage(inst.components.combat.defaultdamage * TUNING.ABIGAIL_GESTALT_ATTACKAT_DAMAGE_MULT_RATE)
-
-                inst:ApplyDebuff({target=target})
-
-                if target.components.combat.hiteffectsymbol ~= nil then
+                if target.components.combat ~= nil and target.components.combat.hiteffectsymbol ~= nil then
                     target:SpawnChild("abigail_gestalt_hit_fx")
 
                     StartFlash(inst, target, 1, 1, 1)
 
                     inst.SoundEmitter:PlaySound("meta5/abigail/gestalt_abigail_dashattack_hit")
                 end
+                
+                inst.components.combat:DoAttack(target)
+                inst.components.combat:RestartCooldown() -- For regular attack cooldown, since we aren't calling combat:StartAttack.
+
+                ApplyGestaltAttackAtDamageMultRate(inst, inst.components.combat, "defaultdamage")
+                ApplyGestaltAttackAtDamageMultRate(inst, inst.components.planardamage, "basedamage")
+                ApplyGestaltAttackAtDamageMultRate(inst, inst.components.planardamage.externalbonuses, "_modifier")
+
+                inst:ApplyDebuff({target=target})
 
                 inst.sg.statemem.current_target = nil -- Let next frame handle having a new target.
                 inst.sg.statemem.ignoretargets[target] = true -- Used by IsValidTarget.
@@ -1033,9 +1091,9 @@ local states =
             inst.Physics:ClearMotorVelOverride()
             inst.components.locomotor:Stop()
 
-            if inst.sg.statemem.oldattackdamage ~= nil then
-                inst.components.combat:SetDefaultDamage(inst.sg.statemem.oldattackdamage)
-            end
+            RemoveGestaltAttackAtDamageMultRate(inst, inst.components.combat, "defaultdamage")
+            RemoveGestaltAttackAtDamageMultRate(inst, inst.components.planardamage, "basedamage")
+            RemoveGestaltAttackAtDamageMultRate(inst, inst.components.planardamage.externalbonuses, "_modifier")
 
             inst:SetTransparentPhysics(false)
         end,

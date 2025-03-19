@@ -462,7 +462,12 @@ return{
             NONEWMOON = "only_used_by_wendy",
             NOFULLMOON = "only_used_by_wendy",
             NOTNIGHT = "only_used_by_wendy",
-        },        
+            CAVE = "only_used_by_wendy",
+        },
+		MODSLINGSHOT =
+		{
+--fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -840,6 +845,10 @@ return{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
 --fallback to speech_wilson.lua 	ANNOUNCE_WOBY_COURIER =
+--fallback to speech_wilson.lua 	{
+--fallback to speech_wilson.lua 		"only_used_by_walter",
+--fallback to speech_wilson.lua 	},
+--fallback to speech_wilson.lua 	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL =
 --fallback to speech_wilson.lua 	{
 --fallback to speech_wilson.lua 		"only_used_by_walter",
 --fallback to speech_wilson.lua 	},
@@ -4139,13 +4148,13 @@ return{
         SPIDER_HEALER_ITEM = "It's good for fixing spider booboos.",
 
 		-- Wendy
-		GHOSTLYELIXIR_SLOWREGEN = "Hey, you didn't tell me you were making crafts!",
-		GHOSTLYELIXIR_FASTREGEN = "Hey, you didn't tell me you were making crafts!",
-		GHOSTLYELIXIR_SHIELD = "Hey, you didn't tell me you were making crafts!",
-		GHOSTLYELIXIR_ATTACK = "Hey, you didn't tell me you were making crafts!",
-		GHOSTLYELIXIR_SPEED = "Hey, you didn't tell me you were making crafts!",
-		GHOSTLYELIXIR_RETALIATION = "Hey, you didn't tell me you were making crafts!",
-        GHOSTLYELIXIR_REVIVE = "Hey, you didn't tell me you were making crafts!",
+		GHOSTLYELIXIR_SLOWREGEN = "Hey, you didn't tell us you were making crafts!",
+		GHOSTLYELIXIR_FASTREGEN = "Hey, you didn't tell us you were making crafts!",
+		GHOSTLYELIXIR_SHIELD = "Hey, you didn't tell us you were making crafts!",
+		GHOSTLYELIXIR_ATTACK = "Hey, you didn't tell us you were making crafts!",
+		GHOSTLYELIXIR_SPEED = "Hey, you didn't tell us you were making crafts!",
+		GHOSTLYELIXIR_RETALIATION = "Hey, you didn't tell us you were making crafts!",
+        GHOSTLYELIXIR_REVIVE = "Hey, you didn't tell us you were making crafts!",
 		SISTURN =
 		{
 			GENERIC = "It's a little Abigail house!",

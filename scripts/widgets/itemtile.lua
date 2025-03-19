@@ -18,12 +18,13 @@ local function SetImageFromItem(im, item)
 		if layers and #layers > 0 then
 			local row = layers[1]
 			im:SetTexture(row.atlas or GetInventoryItemAtlas(row.image), row.image)
+
+            local j = 1
+
 			if #layers > 1 then
-				if im.layers == nil then
-					im.layers = {}
-				end
+				im.layers = im.layers or {}
+
 				local usecc = GetGameModeProperty("icons_use_cc")
-				local j = 1
 				for i = 2, #layers do
 					row = layers[i]
 					local w = im.layers[j]
@@ -35,13 +36,20 @@ local function SetImageFromItem(im, item)
 							im.layers[j]:SetEffect("shaders/ui_cc.ksh")
 						end
 					end
+					if row.offset then
+						im.layers[j]:SetPosition(row.offset)
+					end
 					j = j + 1
 				end
+            end
+
+            if im.layers ~= nil then
 				for i = j, #im.layers do
 					im.layers[i]:Kill()
 					im.layers[i] = nil
 				end
 			end
+
 			return im
 		end
 	end

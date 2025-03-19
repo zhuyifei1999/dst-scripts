@@ -258,7 +258,7 @@ local function TargetFollowDistFn(inst)
 end
 
 local function TargetFollowTargetDistFn(inst)
-    local target = inst.components.target
+    local target = inst.components.combat.target
 
     if target == nil or target.components.combat == nil then
         return DEFAULT_FOLLOW_TARGET_DIST

@@ -329,6 +329,10 @@ function SpawnPrefabFromSim(name)
     local prefab = Prefabs[name]
     if prefab == nil then
         print( "Can't find prefab " .. tostring(name) )
+        if not AreAnyModsEnabled() and not TheNet:GetServerModsEnabled() then
+            print("This is bug reportable if found please send the following stack trace.")
+            print(_TRACEBACK())
+        end
         return -1
     end
 
