@@ -10461,7 +10461,6 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		legs_cuff_size = 1,
-		spinnable_tail = true,
 		release_group = 164,
 	},
 	legs_wortox_dragon =

@@ -472,6 +472,7 @@ return {
             NONEWMOON = "only_used_by_wendy",
             NOFULLMOON = "only_used_by_wendy",
             NOTNIGHT = "only_used_by_wendy",
+            CAVE = "only_used_by_wendy",
         },
 		MODSLINGSHOT =
 		{

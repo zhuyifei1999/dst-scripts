@@ -93,7 +93,7 @@ local PlayerController = Class(function(self, inst)
 	self.remote_authority = IsConsole()
 	if not self.remote_authority then
 		local client = TheNet:GetClientTableForUser(self.inst.userid)
-		self.remote_authority = client.admin or client.moderator or client.friend
+		self.remote_authority = client and (client.admin or client.moderator or client.friend)
 	end
 
 	--locomotor buffered action instant cancelling prevention

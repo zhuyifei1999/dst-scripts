@@ -3155,7 +3155,7 @@ local states =
                         inst.sg:GoToState("corpse")
                     elseif inst.ghostenabled then
                         inst.components.cursable:Died()
-                        if inst:HasTag("wonkey") then
+                        if inst:HasTag("wonkey") and inst.userid and inst.userid ~= "" then -- NOTES(JBK): The userid check is here for c_spawn("wonkey") that would be bad if it died.
                             inst:ChangeFromMonkey()
                         else
                             inst:PushEvent("makeplayerghost", { skeleton = skeleton }) -- if we are not on valid ground then don't drop a skeleton
@@ -7405,12 +7405,12 @@ local states =
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("useitem_pre")
-            inst.AnimState:PushAnimation("graveurn_in",false)        
+            inst.AnimState:PushAnimation("graveurn_in", false)
+            inst.AnimState:PushAnimation("useitem_pst", false)
         end,
 
         timeline =
-        {        
-
+        {
             TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
@@ -7424,7 +7424,6 @@ local states =
             end),
 
             TimeEvent(58 * FRAMES, function(inst)
-                inst.sg.statemem.done = true
                 inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("meta5/wendy/urn_close")
             end),
@@ -7458,11 +7457,12 @@ local states =
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("useitem_pre")
-            inst.AnimState:PushAnimation("graveurn_out",false)        
+            inst.AnimState:PushAnimation("graveurn_out", false)
+            inst.AnimState:PushAnimation("useitem_pst", false)
         end,
 
         timeline =
-        {        
+        {
             TimeEvent(4 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
@@ -7476,7 +7476,6 @@ local states =
             end),
 
             TimeEvent(33 * FRAMES, function(inst)
-                inst.sg.statemem.done = true
                 inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("meta5/wendy/urn_close")
             end),

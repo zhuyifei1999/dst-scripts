@@ -2777,9 +2777,6 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            --V2C: always use "dontstarve/wilson/make_trap" for preview
-            --     (even for things like makeballoon or shave)
-            --     switch to server sound when action actually executes on server
             inst.AnimState:PlayAnimation("useitem_pre")
             inst.AnimState:PushAnimation("useitem_lag", false)
 
@@ -2795,20 +2792,20 @@ local states =
         },
 
         onupdate = function(inst)
-            if inst.sg:ServerStateMatches() then
+			if inst.sg:ServerStateMatches() then
                 if inst.entity:FlattenMovementPrediction() then
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-                inst.AnimState:PlayAnimation("build_pst")
-                inst.sg:GoToState("idle", true)
+				inst.AnimState:PlayAnimation("useitem_pst")
+				inst.sg:GoToState("idle", true)
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-            inst.AnimState:PlayAnimation("build_pst")
-            inst.sg:GoToState("idle", true)
+			inst.AnimState:PlayAnimation("useitem_pst")
+			inst.sg:GoToState("idle", true)
         end,
     },
 
@@ -2819,9 +2816,6 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            --V2C: always use "dontstarve/wilson/make_trap" for preview
-            --     (even for things like makeballoon or shave)
-            --     switch to server sound when action actually executes on server
             inst.AnimState:PlayAnimation("useitem_pre")
             inst.AnimState:PushAnimation("useitem_lag", false)
 
@@ -2837,22 +2831,22 @@ local states =
         },
 
         onupdate = function(inst)
-            if inst.sg:ServerStateMatches() then
+			if inst.sg:ServerStateMatches() then
                 if inst.entity:FlattenMovementPrediction() then
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-                inst.AnimState:PlayAnimation("build_pst")
-                inst.sg:GoToState("idle", true)
+				inst.AnimState:PlayAnimation("useitem_pst")
+				inst.sg:GoToState("idle", true)
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-            inst.AnimState:PlayAnimation("build_pst")
-            inst.sg:GoToState("idle", true)
+			inst.AnimState:PlayAnimation("useitem_pst")
+			inst.sg:GoToState("idle", true)
         end,
-    },         
+    },
 
 	State{ name = "carvewood_boards", onenter = function(inst) inst.sg:GoToState("carvewood") end },
     State{

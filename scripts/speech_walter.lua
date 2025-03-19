@@ -462,6 +462,7 @@ return{
             NONEWMOON = "only_used_by_wendy",
             NOFULLMOON = "only_used_by_wendy",
             NOTNIGHT = "only_used_by_wendy",
+            CAVE = "only_used_by_wendy",
         },
 		MODSLINGSHOT =
 		{
@@ -887,12 +888,12 @@ return{
 		"On your way now, girl!",
 		"Woby, follow your nose! It knows! Heh.",
 	},
-	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL = 
-    {
-        "Let's find a better spot, Woby.",
-        "Not here, silly girl!",
-        "We should try somewhere else.",
-    },
+	ANNOUNCE_WOBY_REMEMBERCHEST_FAIL =
+	{
+		"Let's find a better spot, Woby.",
+		"Not here, silly girl!",
+		"We should try somewhere else.",
+	},
 
     -- wx specific
     ANNOUNCE_WX_SCANNER_NEW_FOUND = "only_used_by_wx78",
@@ -2347,7 +2348,7 @@ return{
 			EMBERS = "We need more fuel for the fire!",
 			GENERIC = "Anyone want to hear a scary story?",
 			HIGH = "Woah! I don't think that's safe...",
-			LOW = "I might need to feed the fire a bit",
+			LOW = "I might need to feed the fire a bit.",
 			NORMAL = "It's the perfect temperature for... cold marshmallows?",
 			OUT = "The fire pit's already built, all we need is more wood!",
 		},

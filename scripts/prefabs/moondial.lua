@@ -114,6 +114,10 @@ local function OnLoad(inst, data)
 end
 
 local function domutatefn(inst,doer)
+    if TheWorld:HasTag("cave") then
+        return false, "CAVE"
+    end
+
     local ghostlybond = doer.components.ghostlybond
 
     if ghostlybond == nil or ghostlybond.ghost == nil or not ghostlybond.summoned then
