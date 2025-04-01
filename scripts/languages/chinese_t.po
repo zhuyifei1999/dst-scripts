@@ -335836,6 +335836,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.cane_victorian"
 msgid "A cane to accompany you on your afternoon stroll."
 msgstr "一根拐杖，伴你午後漫步。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_clown
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_clown"
+msgid "Show'em how tuft you are!"
+msgstr "讓他們看看你有多絲滑"
+
 #. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster"
 msgid "This trapper hat is soft and cozy, but the ends don't seem to tie up anymore."
@@ -341060,6 +341065,11 @@ msgstr "單杠是強化食物的完美器械。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.meatrack_victorian"
 msgid "A distinguished display for fine dried meats."
 msgstr "與精美肉乾匹配的精美展示工具。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.mermhat_clown
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermhat_clown"
+msgid "So so incognito!"
+msgstr "非常非常隱秘！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.mermhouse_crafted_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermhouse_crafted_fantasy"
@@ -353506,6 +353516,11 @@ msgctxt "STRINGS.SKIN_NAMES.cane_victorian"
 msgid "Goatshead Cane"
 msgstr "山羊頭手杖"
 
+#. STRINGS.SKIN_NAMES.catcoonhat_clown
+msgctxt "STRINGS.SKIN_NAMES.catcoonhat_clown"
+msgid "Slick Tuft Cap"
+msgstr "絲滑帽"
+
 #. STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster
 msgctxt "STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster"
 msgid "Trapper Hat"
@@ -358730,6 +358745,11 @@ msgstr "吊環單杠"
 msgctxt "STRINGS.SKIN_NAMES.meatrack_victorian"
 msgid "Victorian Meat Rack"
 msgstr "維多利亞晾肉架"
+
+#. STRINGS.SKIN_NAMES.mermhat_clown
+msgctxt "STRINGS.SKIN_NAMES.mermhat_clown"
+msgid "Suspectacles"
+msgstr "愚夫帽"
 
 #. STRINGS.SKIN_NAMES.mermhouse_crafted_fantasy
 msgctxt "STRINGS.SKIN_NAMES.mermhouse_crafted_fantasy"
@@ -370426,6 +370446,11 @@ msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MEATRACK"
 msgid "Drying Rack"
 msgstr "晾肉架"
 
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHAT"
+msgid "Clever Disguise"
+msgstr "聰明的偽裝"
+
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHOUSE_CRAFTED
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHOUSE_CRAFTED"
 msgid "Craftsmerm House"
@@ -377549,7 +377574,7 @@ msgstr "公開說"
 #. STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER
 msgctxt "STRINGS.UI.CHATINPUTSCREEN.HELP_WHISPER"
 msgid "Whisper"
-msgstr "私聊"
+msgstr "悄悄話"
 
 #. STRINGS.UI.CHATINPUTSCREEN.SAY
 msgctxt "STRINGS.UI.CHATINPUTSCREEN.SAY"
@@ -377564,12 +377589,12 @@ msgstr "消息："
 #. STRINGS.UI.CHATINPUTSCREEN.WHISPER
 msgctxt "STRINGS.UI.CHATINPUTSCREEN.WHISPER"
 msgid "whisper:"
-msgstr "私聊："
+msgstr "悄悄話："
 
 #. STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR
 msgctxt "STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR"
 msgid "[W]"
-msgstr "[私聊]"
+msgstr "[悄悄話]"
 
 #. STRINGS.UI.CLOUDSERVERCREATIONSCREEN.CREATE
 msgctxt "STRINGS.UI.CLOUDSERVERCREATIONSCREEN.CREATE"
@@ -377844,7 +377869,7 @@ msgstr "其他"
 #. STRINGS.UI.COMMANDWHEEL.WHISPER
 msgctxt "STRINGS.UI.COMMANDWHEEL.WHISPER"
 msgid "Whisper"
-msgstr "私聊"
+msgstr "悄悄話"
 
 #. STRINGS.UI.COMPENDIUM.CAUSEOFDEATH_OTHER
 msgctxt "STRINGS.UI.COMPENDIUM.CAUSEOFDEATH_OTHER"
@@ -385029,7 +385054,7 @@ msgstr "在選項功能表中通過控制設置，調整你的操作輸入。"
 #. STRINGS.UI.LOADING_SCREEN_CONTROL_TIPS_NOT_CONSOLE.TIP_CHAT
 msgctxt "STRINGS.UI.LOADING_SCREEN_CONTROL_TIPS_NOT_CONSOLE.TIP_CHAT"
 msgid "Press {chat} to talk to other players. If you wish to speak privately, press {whisper} to whisper to someone."
-msgstr "按{chat}跟其他玩家聊天，按{whisper}私聊。"
+msgstr "按{chat}跟其他玩家聊天，按{whisper}悄悄話。"
 
 #. STRINGS.UI.LOADING_SCREEN_CONTROL_TIPS_NOT_CONSOLE.TIP_DROP_ITEMS
 msgctxt "STRINGS.UI.LOADING_SCREEN_CONTROL_TIPS_NOT_CONSOLE.TIP_DROP_ITEMS"

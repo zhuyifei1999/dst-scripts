@@ -335928,6 +335928,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.cane_victorian"
 msgid "A cane to accompany you on your afternoon stroll."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_clown
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_clown"
+msgid "Show'em how tuft you are!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster"
 msgid "This trapper hat is soft and cozy, but the ends don't seem to tie up anymore."
@@ -341151,6 +341156,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.meatrack_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.meatrack_victorian"
 msgid "A distinguished display for fine dried meats."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.mermhat_clown
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermhat_clown"
+msgid "So so incognito!"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.mermhouse_crafted_fantasy
@@ -353598,6 +353608,11 @@ msgctxt "STRINGS.SKIN_NAMES.cane_victorian"
 msgid "Goatshead Cane"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.catcoonhat_clown
+msgctxt "STRINGS.SKIN_NAMES.catcoonhat_clown"
+msgid "Slick Tuft Cap"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster
 msgctxt "STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster"
 msgid "Trapper Hat"
@@ -358821,6 +358836,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.meatrack_victorian
 msgctxt "STRINGS.SKIN_NAMES.meatrack_victorian"
 msgid "Victorian Meat Rack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.mermhat_clown
+msgctxt "STRINGS.SKIN_NAMES.mermhat_clown"
+msgid "Suspectacles"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.mermhouse_crafted_fantasy
@@ -370516,6 +370536,11 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MEATRACK
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MEATRACK"
 msgid "Drying Rack"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHAT"
+msgid "Clever Disguise"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MERMHOUSE_CRAFTED
