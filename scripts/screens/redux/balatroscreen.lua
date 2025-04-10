@@ -50,7 +50,11 @@ function BalatroScreen:OnDestroy()
 	TheMixer:PopMix("minigamescreen")
 	--SetAutopaused(false)
 
-    local score = self.game ~= nil and self.game:GetFinalScore() or nil
+	local score
+	if self.game then
+		score = self.game:GetFinalScore()
+		self.game:StopAllSounds()
+	end
 
     BALATRO_UTIL.ClientDebugPrint("Final score: ", nil, nil, score)
 

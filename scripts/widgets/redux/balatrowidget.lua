@@ -352,6 +352,12 @@ local BalatroWidget = Class(Widget, function(self, owner, parentscreen, target, 
     self.inst:ListenForEvent("client_popupmessage", self.onpopupmessage, self.owner)
 end)
 
+function BalatroWidget:StopAllSounds()
+	TheFrontEnd:GetSound():KillSound("mult")
+	TheFrontEnd:GetSound():KillSound("LP")
+	TheFrontEnd:GetSound():KillSound("talking")
+end
+
 function BalatroWidget:OnPopupMessage(doer, data)
     if data.popup ~= POPUPS.BALATRO then
         return
@@ -678,6 +684,7 @@ function BalatroWidget:OpenWithAnimations()
 end
 
 function BalatroWidget:CloseWithAnimations()
+    self:StopUpdating()
     self:KillSounds()
 
     self.root.bg:GetAnimState():PlayAnimation("close")
@@ -1960,7 +1967,7 @@ function BalatroWidget:OnUpdate(dt)
     BALATRO_UTIL.UpdateLoop(self.root.machine.frame.inst, dt)
 end
 
-local ROYAL_FLUSH = {1, 10, 11, 12, 13} -- Already sorted.
+local HIGH_STRAIGHT = {1, 10, 11, 12, 13} -- Already sorted.
 
 function BalatroWidget:Calchand()
     local suit_counts = {}
@@ -2009,16 +2016,13 @@ function BalatroWidget:Calchand()
             break
         end
     end
-    -- Ace-low straight
-    if not is_straight and nums[1] == 1 and nums[2] == 2 and nums[3] == 3 and nums[4] == 4 and nums[5] == 5 then
-        is_straight = true
-    end
 
-    -- Check royal flush
+	-- Check high straight
     local is_royal = true
     for i = 1, NUM_CARDS do
-        if nums[i] ~= ROYAL_FLUSH[i] then
+		if nums[i] ~= HIGH_STRAIGHT[i] then
             is_royal = false
+			is_straight = true
             break
         end
     end
