@@ -865,9 +865,15 @@ return{
 
     ANNOUNCE_ROYALTY =
     {
-        "Mon empereur!",
-        "Your grace.",
-        "Your excellency.",
+        "Mon Empereur!",
+        "Your Grace.",
+        "Your Excellency.",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "Mon \"Empereur\"!",
+        "Your \"Grace\".",
+        "Your \"Excellency\".",
     },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I'll zap you to a nice, even crisp!",
@@ -5350,6 +5356,7 @@ return{
         RECORD_MAIN = "What a sweet sound it makes.", -- Unused.
         RECORD_WORKTOBEDONE = "What a sweet sound it makes.", -- Unused.
         RECORD_HALLOWEDNIGHTS = "It really sets the mood.",
+        RECORD_BALATRO = "Reminds me of fun times.",
 
         ARCHIVE_ORCHESTRINA_MAIN = "It's a mystery to me.",
 
@@ -5636,6 +5643,11 @@ return{
 
         SHALLOW_GRAVE = "There was no effort here.",
         THULECITEBUGNET = "I don't mind the taste of bug.",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "Maman loved her cards.",
+        PLAYING_CARD = "A lonely little card.",
+        BALATRO_MACHINE = "What have I to lose?",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

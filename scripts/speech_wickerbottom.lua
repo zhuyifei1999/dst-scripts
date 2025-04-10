@@ -863,12 +863,18 @@ return{
     QUAGMIRE_ANNOUNCE_LOSE = "We've failed.",
     QUAGMIRE_ANNOUNCE_WIN = "We best be on our way. Ta!",
 
---fallback to speech_wilson.lua     ANNOUNCE_ROYALTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "Your majesty.",
---fallback to speech_wilson.lua         "Your highness.",
---fallback to speech_wilson.lua         "My liege!",
---fallback to speech_wilson.lua     },
+    ANNOUNCE_ROYALTY =
+    {
+        "Your Highness.",
+        "Your Grace.",
+        "You wear her crown well.",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "Your \"Highness\".",
+        "Your \"Grace\".",
+        "You wear that \"crown\" well.",
+    },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I seem to have been rendered conductive!",
     ANNOUNCE_ATTACH_BUFF_ATTACK            = "My, I feel full of vim and vigor!",
@@ -5350,6 +5356,7 @@ return{
         RECORD_MAIN = "I can't imagine where one would find a record press out here.", -- Unused.
         RECORD_WORKTOBEDONE = "I can't imagine where one would find a record press out here.", -- Unused.
         RECORD_HALLOWEDNIGHTS = "Tsk. This type of music inspires all manner of mischief.",
+        RECORD_BALATRO = "The music was better back in my day... but let's hear it again.",
 
         ARCHIVE_ORCHESTRINA_MAIN = "There must be a manual somewhere.",
 
@@ -5636,6 +5643,11 @@ return{
 
         SHALLOW_GRAVE = "This is inadequate.",
         THULECITEBUGNET = "Thulecite. An interesting choice.",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "Do we have enough players for Bridge?",
+        PLAYING_CARD = "Who's missing a card?",
+        BALATRO_MACHINE = "One must know when the time for games has passed. Now is not that time.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

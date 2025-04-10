@@ -975,7 +975,9 @@ local function OnSetOwner(inst)
     inst.userid = inst.Network:GetUserID()
     if inst.userid and inst.userid ~= "" then
         inst:AddTag("player_" .. inst.userid)
-        print("User ID", inst.userid, "assigned ownership to entity", inst) -- NOTES(JBK): This is not just a debug print leave it here.
+        if TheWorld.ismastersim then
+            print("User ID", inst.userid, "assigned ownership to entity", inst) -- NOTES(JBK): This is not just a debug print leave it here.
+        end
     end
     inst.playercolour = inst.Network:GetPlayerColour()
     if TheWorld.ismastersim then

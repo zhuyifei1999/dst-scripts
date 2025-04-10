@@ -338,6 +338,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        deckcontainer = function(inst, doer, actions, right)
+            if right then
+                table.insert(actions, ACTIONS.DRAW_FROM_DECK)
+            end
+        end,
+
         dryer = function(inst, doer, actions)
             if inst:HasTag("dried") and not inst:HasTag("burnt") then
                 table.insert(actions, ACTIONS.HARVEST)
@@ -1059,6 +1065,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        deckcontainer = function(inst, doer, target, actions)
+            if target:HasAnyTag("playingcard", "deckcontainer") then
+                table.insert(actions, ACTIONS.ADD_CARD_TO_DECK)
+            end
+        end,
+
         drawingtool = function(inst, doer, target, actions)
             if target:HasTag("drawable") then
                 table.insert(actions, ACTIONS.DRAW)
@@ -1461,6 +1473,12 @@ local COMPONENT_ACTIONS =
         playbill = function(inst, doer, target, actions)
             if target:HasTag("playbill_lecturn") then
                 table.insert(actions, ACTIONS.GIVE)
+            end
+        end,
+
+        playingcard = function(inst, doer, target, actions)
+            if target:HasAnyTag("playingcard", "deckcontainer") then
+                table.insert(actions, ACTIONS.ADD_CARD_TO_DECK)
             end
         end,
 
@@ -2386,6 +2404,10 @@ local COMPONENT_ACTIONS =
 			end
 		end,
 
+        deckcontainer = function(inst, doer, actions)
+            table.insert(actions, ACTIONS.FLIP_DECK)
+        end,
+
         deployable = function(inst, doer, actions)
             if doer.components.playercontroller ~= nil and not doer.components.playercontroller.deploy_mode then
                 local inventoryitem = inst.replica.inventoryitem
@@ -2577,6 +2599,10 @@ local COMPONENT_ACTIONS =
 
         plantresearchable = function(inst, doer, actions, right)
             PlantRegistryResearch(inst, doer, actions)
+        end,
+
+        playingcard = function(inst, doer, actions)
+            table.insert(actions, ACTIONS.FLIP_DECK)
         end,
 
         pocketwatch = function(inst, doer, actions)

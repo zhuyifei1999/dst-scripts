@@ -264,7 +264,7 @@ local function TargetFollowTargetDistFn(inst)
         return DEFAULT_FOLLOW_TARGET_DIST
     end
 
-    return math.max(math.sqrt(target.components.combat:CalcAttackRangeSq()) + MIN_FOLLOW_TARGET_DIST, DEFAULT_FOLLOW_TARGET_DIST)
+    return math.max(math.sqrt(target.components.combat:CalcAttackRangeSq(inst)) + MIN_FOLLOW_TARGET_DIST, DEFAULT_FOLLOW_TARGET_DIST)
 end
 
 

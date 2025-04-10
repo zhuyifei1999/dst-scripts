@@ -863,12 +863,18 @@ return{
     QUAGMIRE_ANNOUNCE_LOSE = "What a horrible place to have a curse.",
     QUAGMIRE_ANNOUNCE_WIN = "Let us depart this terrible place.",
 
---fallback to speech_wilson.lua     ANNOUNCE_ROYALTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "Your majesty.",
---fallback to speech_wilson.lua         "Your highness.",
---fallback to speech_wilson.lua         "My liege!",
---fallback to speech_wilson.lua     },
+    ANNOUNCE_ROYALTY =
+    {
+        "Your Majesty.",
+        "Your Highness.",
+        "My kingdom for another day with her.",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "I'm not in the mood for jokes.",
+        "Thanks for trying.",
+        "I only laugh to be polite.",
+    },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I feel the thrill of power!",
     ANNOUNCE_ATTACH_BUFF_ATTACK            = "It must be my imagination, but I feel a little stronger...",
@@ -5354,6 +5360,7 @@ return{
         RECORD_MAIN = "I wonder if father still listens to his record collection.", -- Unused.
         RECORD_WORKTOBEDONE = "I wonder if father still listens to his record collection.", -- Unused.
         RECORD_HALLOWEDNIGHTS = "Love it.",
+        RECORD_BALATRO = "It brightens my mood, if only for a while.",
 
         ARCHIVE_ORCHESTRINA_MAIN = "Abigail was better at these things.",
 
@@ -5640,6 +5647,11 @@ return{
 
         SHALLOW_GRAVE = "What difference does it make?",
         THULECITEBUGNET = "The net comes for us all.",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "Suppose I can play Solitaire.",
+        PLAYING_CARD = "A single playing card. Great.",
+        BALATRO_MACHINE = "What more can I lose?",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

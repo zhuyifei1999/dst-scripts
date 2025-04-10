@@ -2692,6 +2692,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/hivehat_an.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hivehat_cawnival.zip"),
 	Asset("PKGREF", "anim/dynamic/hivehat_cawnival.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/hivehat_joker.zip"),
+	Asset("PKGREF", "anim/dynamic/hivehat_joker.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hutch_fantasy.zip"),
 	Asset("PKGREF", "anim/dynamic/hutch_fantasy.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/icebox_coffin.zip"),

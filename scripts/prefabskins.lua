@@ -813,6 +813,7 @@ PREFAB_SKINS = {
 	{
 		"hivehat_an",
 		"hivehat_cawnival",
+		"hivehat_joker",
 	},
 	hutch =
 	{

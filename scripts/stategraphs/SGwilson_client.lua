@@ -840,6 +840,10 @@ local actionhandlers =
 
 	ActionHandler(ACTIONS.WHISTLE, "fingerwhistle"),
 	ActionHandler(ACTIONS.MODSLINGSHOT, "openslingshotmods"),
+
+    ActionHandler(ACTIONS.DRAW_FROM_DECK, "doshortaction"),
+    ActionHandler(ACTIONS.FLIP_DECK, "doshortaction"),
+    ActionHandler(ACTIONS.ADD_CARD_TO_DECK, "dostandingaction"),
 }
 
 local events =

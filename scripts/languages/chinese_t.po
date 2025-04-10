@@ -96,6 +96,11 @@ msgctxt "STRINGS.ACTIONS.ACTIVATE.PICK_FLOWER"
 msgid "Pick Flower From"
 msgstr "摘花"
 
+#. STRINGS.ACTIONS.ACTIVATE.PLAY_WITH
+msgctxt "STRINGS.ACTIONS.ACTIVATE.PLAY_WITH"
+msgid "Play with"
+msgstr "玩"
+
 #. STRINGS.ACTIONS.ACTIVATE.RANSACK
 msgctxt "STRINGS.ACTIONS.ACTIVATE.RANSACK"
 msgid "Ransack"
@@ -145,6 +150,11 @@ msgstr "添加燃料"
 msgctxt "STRINGS.ACTIONS.ADDWETFUEL"
 msgid "Add Wet Fuel"
 msgstr "添加受潮的燃料"
+
+#. STRINGS.ACTIONS.ADD_CARD_TO_DECK
+msgctxt "STRINGS.ACTIONS.ADD_CARD_TO_DECK"
+msgid "Add"
+msgstr "添加"
 
 #. STRINGS.ACTIONS.ADVANCE_TREE_GROWTH
 msgctxt "STRINGS.ACTIONS.ADVANCE_TREE_GROWTH"
@@ -781,6 +791,11 @@ msgctxt "STRINGS.ACTIONS.DRAWITEM"
 msgid "Draw {item}"
 msgstr "畫{item}"
 
+#. STRINGS.ACTIONS.DRAW_FROM_DECK
+msgctxt "STRINGS.ACTIONS.DRAW_FROM_DECK"
+msgid "Draw"
+msgstr "抽牌"
+
 #. STRINGS.ACTIONS.DROP.FREESOUL
 msgctxt "STRINGS.ACTIONS.DROP.FREESOUL"
 msgid "Release Soul"
@@ -890,6 +905,11 @@ msgstr "釣魚"
 msgctxt "STRINGS.ACTIONS.FISH_OCEAN"
 msgid "Fish"
 msgstr "釣魚"
+
+#. STRINGS.ACTIONS.FLIP_DECK
+msgctxt "STRINGS.ACTIONS.FLIP_DECK"
+msgid "Flip"
+msgstr ""
 
 #. STRINGS.ACTIONS.GIVE.APPLY
 msgctxt "STRINGS.ACTIONS.GIVE.APPLY"
@@ -2265,6 +2285,406 @@ msgstr "你已經玩了五個小時。"
 msgctxt "STRINGS.ANTIADDICTION.HOUR_X"
 msgid "You've played for several hours."
 msgstr "你已經玩了好幾個小時。"
+
+#. STRINGS.BALATRO.BUTTON_CHOOSE
+msgctxt "STRINGS.BALATRO.BUTTON_CHOOSE"
+msgid "CHOOSE"
+msgstr "選擇"
+
+#. STRINGS.BALATRO.BUTTON_CLOSE
+msgctxt "STRINGS.BALATRO.BUTTON_CLOSE"
+msgid "BACK"
+msgstr "返回"
+
+#. STRINGS.BALATRO.BUTTON_DEAL
+msgctxt "STRINGS.BALATRO.BUTTON_DEAL"
+msgid "DEAL"
+msgstr "發牌"
+
+#. STRINGS.BALATRO.BUTTON_DISCARD
+msgctxt "STRINGS.BALATRO.BUTTON_DISCARD"
+msgid "DISCARD"
+msgstr "棄牌"
+
+#. STRINGS.BALATRO.BUTTON_NOTES
+msgctxt "STRINGS.BALATRO.BUTTON_NOTES"
+msgid "NOTES"
+msgstr "小抄"
+
+#. STRINGS.BALATRO.BUTTON_SKIP
+msgctxt "STRINGS.BALATRO.BUTTON_SKIP"
+msgid "SKIP"
+msgstr "跳過"
+
+#. STRINGS.BALATRO.BUTTON_UNDISCARD
+msgctxt "STRINGS.BALATRO.BUTTON_UNDISCARD"
+msgid "UNDO DISCARD"
+msgstr "撤銷棄牌"
+
+#. STRINGS.BALATRO.CHIPS
+msgctxt "STRINGS.BALATRO.CHIPS"
+msgid "CHIPS"
+msgstr "籌碼"
+
+#. STRINGS.BALATRO.CHOOSE_JOKER
+msgctxt "STRINGS.BALATRO.CHOOSE_JOKER"
+msgid "CHOOSE {joker}"
+msgstr "選擇{joker}"
+
+#. STRINGS.BALATRO.HANDS.FLUSH
+msgctxt "STRINGS.BALATRO.HANDS.FLUSH"
+msgid "Flush"
+msgstr "同花"
+
+#. STRINGS.BALATRO.HANDS.FOUROFAKIND
+msgctxt "STRINGS.BALATRO.HANDS.FOUROFAKIND"
+msgid "Four of a Kind"
+msgstr "四條"
+
+#. STRINGS.BALATRO.HANDS.FULLHOUSE
+msgctxt "STRINGS.BALATRO.HANDS.FULLHOUSE"
+msgid "Full House"
+msgstr "葫蘆"
+
+#. STRINGS.BALATRO.HANDS.HIGHCARD
+msgctxt "STRINGS.BALATRO.HANDS.HIGHCARD"
+msgid "High Card"
+msgstr "高牌"
+
+#. STRINGS.BALATRO.HANDS.PAIR
+msgctxt "STRINGS.BALATRO.HANDS.PAIR"
+msgid "Pair"
+msgstr "配對"
+
+#. STRINGS.BALATRO.HANDS.ROYALFLUSH
+msgctxt "STRINGS.BALATRO.HANDS.ROYALFLUSH"
+msgid "Royal Flush"
+msgstr "皇家同花順"
+
+#. STRINGS.BALATRO.HANDS.STRAIT
+msgctxt "STRINGS.BALATRO.HANDS.STRAIT"
+msgid "Straight"
+msgstr "順子"
+
+#. STRINGS.BALATRO.HANDS.STRAITFLUSH
+msgctxt "STRINGS.BALATRO.HANDS.STRAITFLUSH"
+msgid "Straight Flush"
+msgstr "同花順"
+
+#. STRINGS.BALATRO.HANDS.THREEOFKIND
+msgctxt "STRINGS.BALATRO.HANDS.THREEOFKIND"
+msgid "Three of a Kind"
+msgstr "三條"
+
+#. STRINGS.BALATRO.HANDS.TWOPAIR
+msgctxt "STRINGS.BALATRO.HANDS.TWOPAIR"
+msgid "Two Pair"
+msgstr "兩對"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.1
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.1"
+msgid "YOU'D BE A FOOL TO MISS THIS GAME!"
+msgstr "錯過這個遊戲你就是個小丑！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.10
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.10"
+msgid "COME ON, LIVE A LITTLE!"
+msgstr "來吧，活得精彩一點！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.11
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.11"
+msgid "WHAT COULD GO WRONG?"
+msgstr "會出什麼問題呢？"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.12
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.12"
+msgid "IT'S JUST A GAME!"
+msgstr "這只是個遊戲！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.2
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.2"
+msgid "YOU KNOW WHAT THEY SAY, THE HOUSE ALWAYS WINS!"
+msgstr "老話說得好，莊家總是贏！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.3
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.3"
+msgid "I'M LITERALLY A FOOL, WHAT'S YOUR EXCUSE?"
+msgstr "我本來就是小丑，你的藉口是什麼？"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.4
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.4"
+msgid "PLAY A FEW HANDS, LIVE A LITTLE!"
+msgstr "玩幾手，活得精彩一點！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.5
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.5"
+msgid "WHAT HARM COULD A LITTLE GAME DO?"
+msgstr "小遊戲能有什麼害處？"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.6
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.6"
+msgid "A FEW ROUNDS NEVER HURT ANYBODY!"
+msgstr "幾把遊戲不會傷害任何人！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.7
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.7"
+msgid "YOU FEELING LUCKY?"
+msgstr "你覺得自己幸運嗎？"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.8
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.8"
+msgid "YOU LOOK LIKE A REAL WINNER!"
+msgstr "你看起來像個真正的贏家！"
+
+#. STRINGS.BALATRO.JIMBO_BECKON.9
+msgctxt "STRINGS.BALATRO.JIMBO_BECKON.9"
+msgid "GIVE IT A TRY, IT'S EASY!"
+msgstr "試試看，很簡單！"
+
+#. STRINGS.BALATRO.JIMBO_CARDS
+msgctxt "STRINGS.BALATRO.JIMBO_CARDS"
+msgid "ALSO, HAVE THESE.."
+msgstr "還有，拿著這些……"
+
+#. STRINGS.BALATRO.JIMBO_CHIPCOUNT
+msgctxt "STRINGS.BALATRO.JIMBO_CHIPCOUNT"
+msgid "{chips} CHIPS"
+msgstr "{chips}籌碼"
+
+#. STRINGS.BALATRO.JIMBO_CHOOSE_JOKER
+msgctxt "STRINGS.BALATRO.JIMBO_CHOOSE_JOKER"
+msgid "HI, CHOOSE YOUR JOKER."
+msgstr "嗨，選擇你的小丑牌。"
+
+#. STRINGS.BALATRO.JIMBO_CLOSED
+msgctxt "STRINGS.BALATRO.JIMBO_CLOSED"
+msgid "OK, BYE."
+msgstr "好的，再見。"
+
+#. STRINGS.BALATRO.JIMBO_DISCARD1
+msgctxt "STRINGS.BALATRO.JIMBO_DISCARD1"
+msgid "ANY FINAL DISCARDS?"
+msgstr "還要棄牌嗎？"
+
+#. STRINGS.BALATRO.JIMBO_DISCARD2
+msgctxt "STRINGS.BALATRO.JIMBO_DISCARD2"
+msgid "LETS SEE HOW YOU DID"
+msgstr "來看看你打得怎麼樣吧"
+
+#. STRINGS.BALATRO.JIMBO_FINALSCORE
+msgctxt "STRINGS.BALATRO.JIMBO_FINALSCORE"
+msgid "FOR A FINAL SCORE OF.."
+msgstr "最終得分是……"
+
+#. STRINGS.BALATRO.JIMBO_HANDMULT
+msgctxt "STRINGS.BALATRO.JIMBO_HANDMULT"
+msgid "{hand} IS {mult} MULT"
+msgstr "{hand}是{mult}倍率"
+
+#. STRINGS.BALATRO.JIMBO_NO_REWARD
+msgctxt "STRINGS.BALATRO.JIMBO_NO_REWARD"
+msgid "MAYBE GO FISH IS MORE YOUR SPEED..."
+msgstr "也許釣魚才更適合你……"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_1
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_1"
+msgid "FOR THAT PERFORMANCE, YOU GET {reward}!"
+msgstr "就那個表現，給你個{reward}吧！"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_2
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_2"
+msgid "YOU DID OK. HAVE THIS {reward}."
+msgstr "你做得不錯。拿著這個{reward}。"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_3
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_3"
+msgid "PRETTY GOOD, YOU GET {reward}"
+msgstr "相當不錯，你獲得了{reward}。"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_4
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_4"
+msgid "GREAT! ENJOY {reward}"
+msgstr "太棒了！送你{reward}"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_5
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_5"
+msgid "WOW! HERE'S SOME {reward}"
+msgstr "哇！這是給你的{reward}！"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_6
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_6"
+msgid "FANTASTIC! SOME {reward} FOR YOU!"
+msgstr "太棒了！給你一些{reward}！"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_7
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_7"
+msgid "AMAZING! ENJOY YOUR {reward}!"
+msgstr "太神奇了！享受你的{reward}吧！"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_8
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_8"
+msgid "TRUE ROYALTY! YOU REALLY EARNED THIS {reward}"
+msgstr "太皇家了！你實至名歸地贏得了 {reward}！"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_9
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_9"
+msgid "TSK TSK, TRYING TO SNEAK AWAY?"
+msgstr "嘖嘖，想偷偷溜走嗎？"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.BANANAS
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.BANANAS"
+msgid "BANANAS"
+msgstr "香蕉"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.BEES
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.BEES"
+msgid "BEES"
+msgstr "蜜蜂"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.GOLD
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.GOLD"
+msgid "GOLD"
+msgstr ""
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.HOUNDS
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.HOUNDS"
+msgid "HOUNDS"
+msgstr "獵犬"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.RESOURCES
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.RESOURCES"
+msgid "SUPPLIES"
+msgstr "補給品"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.SPIDERS
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.SPIDERS"
+msgid "SPIDERS"
+msgstr "蜘蛛"
+
+#. STRINGS.BALATRO.JIMBO_REWARD_TYPES.TREASURE
+msgctxt "STRINGS.BALATRO.JIMBO_REWARD_TYPES.TREASURE"
+msgid "TREASURE"
+msgstr "寶藏"
+
+#. STRINGS.BALATRO.JIMBO_SCORE
+msgctxt "STRINGS.BALATRO.JIMBO_SCORE"
+msgid "{score}!"
+msgstr "{score}！"
+
+#. STRINGS.BALATRO.JIMBO_START
+msgctxt "STRINGS.BALATRO.JIMBO_START"
+msgid "CHOOSE CARDS TO DISCARD."
+msgstr "選擇要棄掉的牌。"
+
+#. STRINGS.BALATRO.JOKER_MAXWELL
+msgctxt "STRINGS.BALATRO.JOKER_MAXWELL"
+msgid "Each heart discarded\n+1 mult"
+msgstr "每棄掉一張紅桃\n+1倍率"
+
+#. STRINGS.BALATRO.JOKER_WALTER
+msgctxt "STRINGS.BALATRO.JOKER_WALTER"
+msgid "For each different suit\nin discard +15 chips"
+msgstr "棄牌區中每有一種不同花色\n+15籌碼"
+
+#. STRINGS.BALATRO.JOKER_WANDA
+msgctxt "STRINGS.BALATRO.JOKER_WANDA"
+msgid "Start with 80 chips\nEach discard -15 chips"
+msgstr "起始擁有80籌碼\n每棄一次牌-15籌碼"
+
+#. STRINGS.BALATRO.JOKER_WARLY
+msgctxt "STRINGS.BALATRO.JOKER_WARLY"
+msgid "Hand contains a heart, a club\na diamond and a spade +4 mult"
+msgstr "手牌紅桃、梅花、方片和黑桃齊全時\n+4倍率"
+
+#. STRINGS.BALATRO.JOKER_WEBBER
+msgctxt "STRINGS.BALATRO.JOKER_WEBBER"
+msgid "Each Heart or Diamond replaced\nby a club or spade +2 mult"
+msgstr "每將一張紅桃或方片替換為梅花或黑桃\n+2倍率"
+
+#. STRINGS.BALATRO.JOKER_WENDY
+msgctxt "STRINGS.BALATRO.JOKER_WENDY"
+msgid "Each discard that becomes\nthe same suit +5 chips +2 mult"
+msgstr "每棄掉一張同花色的牌\n+5籌碼、+2倍率"
+
+#. STRINGS.BALATRO.JOKER_WES
+msgctxt "STRINGS.BALATRO.JOKER_WES"
+msgid "Hand is worse after discard\n+30 chips"
+msgstr "棄牌後手牌變差\n+30籌碼"
+
+#. STRINGS.BALATRO.JOKER_WICKERBOTTOM
+msgctxt "STRINGS.BALATRO.JOKER_WICKERBOTTOM"
+msgid "Each Queen in hand\n+1 mult"
+msgstr "手牌中每有一張Q\n+1倍率"
+
+#. STRINGS.BALATRO.JOKER_WIGFRID
+msgctxt "STRINGS.BALATRO.JOKER_WIGFRID"
+msgid "Each Spade in hand\n+25 chips"
+msgstr "手牌中每有一張黑桃\n+25籌碼"
+
+#. STRINGS.BALATRO.JOKER_WILLOW
+msgctxt "STRINGS.BALATRO.JOKER_WILLOW"
+msgid "Each face card discarded\n+20 chips"
+msgstr "每棄掉一張人頭牌\n+20籌碼"
+
+#. STRINGS.BALATRO.JOKER_WILSON
+msgctxt "STRINGS.BALATRO.JOKER_WILSON"
+msgid "Each pair in hand\n+3 mult"
+msgstr "手牌中每副對子\n+3倍率"
+
+#. STRINGS.BALATRO.JOKER_WINONA
+msgctxt "STRINGS.BALATRO.JOKER_WINONA"
+msgid "Each heart kept\n+1 mult"
+msgstr "每保留一張紅桃\n+1倍率"
+
+#. STRINGS.BALATRO.JOKER_WOLFGANG
+msgctxt "STRINGS.BALATRO.JOKER_WOLFGANG"
+msgid "Each King in hand\n+25 chips"
+msgstr "手牌中每有一張K\n+25籌碼"
+
+#. STRINGS.BALATRO.JOKER_WOODIE
+msgctxt "STRINGS.BALATRO.JOKER_WOODIE"
+msgid "Each card discarded\n+7 chips"
+msgstr "每棄掉一張牌\n+7籌碼"
+
+#. STRINGS.BALATRO.JOKER_WORMWOOD
+msgctxt "STRINGS.BALATRO.JOKER_WORMWOOD"
+msgid "Each club kept\n+15 chips"
+msgstr "每保留一張梅花\n+15籌碼"
+
+#. STRINGS.BALATRO.JOKER_WORTOX
+msgctxt "STRINGS.BALATRO.JOKER_WORTOX"
+msgid "Each heart discarded +15 chips\nEach heart in hand -11 chips +1 mult"
+msgstr "每棄掉一張紅桃+15籌碼\n手牌中每有一張紅桃-11籌碼但+1倍率"
+
+#. STRINGS.BALATRO.JOKER_WURT
+msgctxt "STRINGS.BALATRO.JOKER_WURT"
+msgid "Each face card kept\n+10 chips per face card"
+msgstr "每保留一張人頭牌\n+10籌碼"
+
+#. STRINGS.BALATRO.JOKER_WX78
+msgctxt "STRINGS.BALATRO.JOKER_WX78"
+msgid "Each heart kept once\nthen discarded +2 mult"
+msgstr "每保留一張紅桃然後棄掉\n+2倍率"
+
+#. STRINGS.BALATRO.MULT
+msgctxt "STRINGS.BALATRO.MULT"
+msgid "MULT"
+msgstr "倍率"
+
+#. STRINGS.BALATRO.NOTES_HANDS
+msgctxt "STRINGS.BALATRO.NOTES_HANDS"
+msgid "HANDS"
+msgstr "手"
+
+#. STRINGS.BALATRO.NOTES_MULT
+msgctxt "STRINGS.BALATRO.NOTES_MULT"
+msgid "MULT"
+msgstr "倍率"
+
+#. STRINGS.BALATRO.NOTES_RANKS
+msgctxt "STRINGS.BALATRO.NOTES_RANKS"
+msgid "RANKS"
+msgstr "排名"
 
 #. STRINGS.BEEFALONAMING.BEEFNAMES.1
 msgctxt "STRINGS.BEEFALONAMING.BEEFNAMES.1"
@@ -4396,6 +4816,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I know better than to bother an angry beefalo!"
 msgstr "我還沒笨到去惹一頭狂牛！"
 
+#. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -6273,18 +6698,33 @@ msgstr "only_used_by_winona"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.1
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.1"
-msgid "Your majesty."
+msgid "Your Majesty."
 msgstr "陛下。"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.2
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.2"
-msgid "Your highness."
+msgid "Your Highness."
 msgstr "殿下。"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.3
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY.3"
-msgid "My liege!"
+msgid "My Liege!"
 msgstr "我的君主！"
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Your \"Majesty\"."
+msgstr "“陛下”。"
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your \"Highness\"."
+msgstr "“殿下”。"
+
+#. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "My \"Liege\"!"
+msgstr "“大王”！"
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_RUINS_RESET"
@@ -7540,6 +7980,11 @@ msgstr "你可以在那裡面裝進許多科學。"
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BACONEGGS"
 msgid "The perfect breakfast for a man of science."
 msgstr "適合科學家的完美早餐。"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BALATRO_MACHINE"
+msgid "I'm game for a game."
+msgstr "我來玩一局吧。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BALLOON"
@@ -10216,6 +10661,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "It looks unhappy about me stealing those birchnuts!"
 msgstr "看來偷樺栗果惹火了它！"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DECK_OF_CARDS"
+msgid "Are we playing with a full deck?"
+msgstr "我們要玩全套嗎？"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DECOR_CENTERPIECE"
 msgid "How sophisticated."
@@ -12028,8 +12478,8 @@ msgstr "我會照顧好它。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HIVEHAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HIVEHAT"
-msgid "The world seems less a little crazy when I wear it."
-msgstr "當我穿上它時，這世界看起來不那麼瘋狂了。"
+msgid "The world seems a little less crazy when I wear it."
+msgstr "當我戴上它時，這世界似乎少一點瘋狂了。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOME
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOME"
@@ -15241,6 +15691,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "I'm beside myself."
 msgstr "我已經在瘋狂的邊上了。"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYING_CARD"
+msgid "It's fifty-one short of a deck."
+msgstr "還差51張就夠湊齊一副牌了。"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "I wonder if she got them second hand."
@@ -16395,6 +16850,11 @@ msgstr "綁在棍子上的磨利的石頭。為了個人衛生！"
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RECORD"
 msgid "Drat, I just got that song out of my head!"
 msgstr "該死，我剛把那首歌從腦袋裡趕走！"
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RECORD_BALATRO"
+msgid "Irresistible! It's like it touches my mind!"
+msgstr "無法抗拒！它仿佛觸動了我的心靈！"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RECORD_CREEPYFOREST"
@@ -22331,6 +22791,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Hey, calm down! Let me on!"
 msgstr "冷靜一點！讓我騎上去！"
 
+#. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -23728,13 +24193,28 @@ msgstr "嘿！這個皇冠真漂亮！"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY.2
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY.2"
-msgid "Your royal crowned-ness."
-msgstr "皇室閣下，您好。"
+msgid "How bee-fitting!"
+msgstr "真是蜂度翩翩！"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY.3
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY.3"
-msgid "Your majesty."
+msgid "Your Majesty."
 msgstr "陛下。"
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Wow! Nice \"crown\"."
+msgstr "哇！好一個“皇冠”。"
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "It's jest perfect!"
+msgstr "簡直完美！"
+
+#. STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Your \"Majesty\"."
+msgstr "“陛下”。"
 
 #. STRINGS.CHARACTERS.WALTER.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WALTER.ANNOUNCE_RUINS_RESET"
@@ -25075,6 +25555,11 @@ msgstr "非常適合攜帶補給品！還有蟲子！"
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.BACONEGGS"
 msgid "A good camping breakfast."
 msgstr "豐盛的露營早餐。"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.BALATRO_MACHINE"
+msgid "Woby, let's take paws and play a few hands. Oh, Walter!"
+msgstr "沃比，爪子收一收，咱們來打幾手牌吧。哎呀，沃爾特！"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.BALLOON"
@@ -27283,8 +27768,8 @@ msgstr "哇！那個看起來好像不安全啊……"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.LOW
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.LOW"
-msgid "I might need to feed the fire a bit"
-msgstr "我得加點火"
+msgid "I might need to feed the fire a bit."
+msgstr "我可能需要添一些柴火。"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.NORMAL
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.COLDFIREPIT.NORMAL"
@@ -27750,6 +28235,11 @@ msgstr "你知道“落葉”這個詞的意思嗎？"
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Woah! I've never seen a tree with teeth before!"
 msgstr "哇！我從來沒見過有牙齒的樹！"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.DECK_OF_CARDS"
+msgid "Woby! Pick a card, any card!"
+msgstr "沃比！選一張牌，隨便選！"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.DECOR_CENTERPIECE"
@@ -32771,6 +33261,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Dead me walking! Ha... ha?"
 msgstr "死掉的我還在走路！哈……哈？"
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYING_CARD"
+msgid "Is THIS your card, Wobes?"
+msgstr "這是你的牌嗎，沃比？"
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Making clocks looks pretty complicated."
@@ -33890,6 +34385,11 @@ msgstr "我在下巴上發現了一根鬍鬚，我相信我的鬍鬚隨時會出
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.RECORD"
 msgid "I could listen to this forever!"
 msgstr "我可以一直聽下去！"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.RECORD_BALATRO"
+msgid "That's right, Woby! It's a real doozy!"
+msgstr "沒錯，沃比！這真是棒極了！"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.RECORD_CREEPYFOREST"
@@ -39826,6 +40326,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I will not meet my end trampled beneath the hooves of an angry beefalo!"
 msgstr "我的結局不是被憤怒的皮弗婁牛用蹄子踩死。"
 
+#. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -41336,6 +41841,36 @@ msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_REVIVING_CORPSE"
 msgid "Not on my watch!!"
 msgstr "有我在，絕不允許這種情況發生！！"
 
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.1"
+msgid "There's a regal air about you."
+msgstr "你身上有帝王之氣。"
+
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.2"
+msgid "The crown suits you."
+msgstr "這皇冠跟你太搭了。"
+
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY.3"
+msgid "I'm in the presence of royalty."
+msgstr "皇室人員，近在眼前。"
+
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "There's a \"regal\" air about you."
+msgstr "你身上有股“王霸”之氣。"
+
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "The \"crown\" suits you."
+msgstr "這“皇冠”跟你太搭了。"
+
+#. STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "I'm in the presence of \"royalty\"."
+msgstr "“皇室”人員，近在眼前"
+
 #. STRINGS.CHARACTERS.WANDA.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WANDA.ANNOUNCE_RUINS_RESET"
 msgid "I felt a temporal wobble... a part of this timeline just reset itself!"
@@ -42420,6 +42955,11 @@ msgstr "能多裝點東西總是好的。"
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.BACONEGGS"
 msgid "Who has time to sit and eat breakfast?"
 msgstr "誰有時間坐下來吃早餐？"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.BALATRO_MACHINE"
+msgid "Perhaps I have time for a round or two."
+msgstr "或許玩上一兩把的時間我還是有的。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.BALLOON"
@@ -45095,6 +45635,11 @@ msgstr "這肯定是一棵樹。"
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Mind your own business, you pesky tree!"
 msgstr "管好你自己的事，你這棵討厭的樹！"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.DECK_OF_CARDS"
+msgid "Certainly a way to kill time."
+msgstr "確實是個消磨時間的好方法。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.DECOR_CENTERPIECE"
@@ -50091,6 +50636,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Better luck this time."
 msgstr "祝自己本次好運。"
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYING_CARD"
+msgid "What does one do with a single card?"
+msgstr "單張牌能做什麼用呢？"
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Everything I need for building and dismantling my lovely clocks."
@@ -51240,6 +51790,11 @@ msgstr "這東西好像很危險。"
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.RECORD"
 msgid "Is this that newfangled ragtime music the youth are raving about?"
 msgstr "這是年輕一輩讚不絕口的最新潮的拉格泰姆音樂嗎？"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.RECORD_BALATRO"
+msgid "I've heard it before and I'll hear it again."
+msgstr "我聽過這曲子，以後還會再聽。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.RECORD_CREEPYFOREST"
@@ -57141,6 +57696,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Mon dieu. It's busy just now."
 msgstr "我的天啊。現在它忙著呢。"
 
+#. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -58568,18 +59128,33 @@ msgstr "等等，我的朋友。"
 
 #. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.1
 msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.1"
-msgid "Mon empereur!"
+msgid "Mon Empereur!"
 msgstr "吾皇萬歲！"
 
 #. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.2
 msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.2"
-msgid "Your grace."
+msgid "Your Grace."
 msgstr "向陛下致敬。"
 
 #. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.3
 msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY.3"
-msgid "Your excellency."
+msgid "Your Excellency."
 msgstr "閣下好。"
+
+#. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Mon \"Empereur\"!"
+msgstr "我的“皇帝”！"
+
+#. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your \"Grace\"."
+msgstr "尊敬的“陛下”。"
+
+#. STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Your \"Excellency\"."
+msgstr "“閣下”好。"
 
 #. STRINGS.CHARACTERS.WARLY.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WARLY.ANNOUNCE_RUINS_RESET"
@@ -59640,6 +60215,11 @@ msgstr "它在背後支持我。"
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.BACONEGGS"
 msgid "Runny eggs... crisp bacon... I could die happy now..."
 msgstr "溏心蛋...香脆的培根...我現在幸福死了..."
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.BALATRO_MACHINE"
+msgid "What have I to lose?"
+msgstr "我有什麼可失去的呢？"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.BALLOON"
@@ -62315,6 +62895,11 @@ msgstr "一大束葉子。"
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "No thank you!"
 msgstr "不，謝謝！"
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.DECK_OF_CARDS"
+msgid "Maman loved her cards."
+msgstr "媽媽以前很喜歡玩牌。"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.DECOR_CENTERPIECE"
@@ -67236,6 +67821,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "My mind is scrambled!"
 msgstr "我的腦子被爆炒了！"
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYING_CARD"
+msgid "A lonely little card."
+msgstr "一張孤獨的小牌。"
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Oh, Mme. Wanda left her tools!"
@@ -67685,6 +68275,11 @@ msgstr "如果我有須後水就好了。"
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.RECORD"
 msgid "Now where have I heard that before?"
 msgstr "我以前在哪聽過呢？"
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.RECORD_BALATRO"
+msgid "Reminds me of fun times."
+msgstr "讓我想起了那些歡樂時光。"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.RECORD_CREEPYFOREST"
@@ -73581,6 +74176,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll only ride it if it's the victor."
 msgstr "只有它是優勝者，我才會騎。"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -74986,6 +75586,36 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_REVIVING_CORPSE"
 msgid "Rise, my ally!"
 msgstr "沖啊，我的盟友！"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.1"
+msgid "Heavy is the head that weareth the crown."
+msgstr "欲戴王冠，必承其重。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.2"
+msgid "Fate hath set the crown upon thy head."
+msgstr "命運已將王冠置於汝首。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY.3"
+msgid "Mine Liege!"
+msgstr "君主！"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Empty is the head that weareth the \"crown\"."
+msgstr "欲戴“王冠”，必承其重。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Fate hath set the \"crown\" upon thy head."
+msgstr "命運已將“王冠”置於汝首。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Mine \"Liege\"!"
+msgstr "“君主”！"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_RUINS_RESET"
 msgid "I will fight my way out!"
@@ -76045,6 +76675,11 @@ msgstr "可擕式軍械庫。"
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BACONEGGS"
 msgid "Pig and eggs!"
 msgstr "豬和蛋！"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BALATRO_MACHINE"
+msgid "So be it! Yet one more round, thou knavish deceiver!"
+msgstr "要戰便戰！再來一局，你這狡猾的騙子！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.BALLOON"
@@ -78720,6 +79355,11 @@ msgstr "未來的柴火！"
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "This firewood will take a bit of extra work."
 msgstr "這柴火得多花一點功夫才能點燃。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DECK_OF_CARDS"
+msgid "Dost these cards bear a fell curse?"
+msgstr "這遝牌是否帶著可怕的詛咒？"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.DECOR_CENTERPIECE"
@@ -83726,6 +84366,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "'Tis an abomination!"
 msgstr "這簡直就是罪惡！"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYING_CARD"
+msgid "A wayward card."
+msgstr "一張任性的牌。"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "The tools of a craftswoman."
@@ -84840,6 +85485,11 @@ msgstr "小刀片，但也算是把刀。"
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.RECORD"
 msgid "T'would be a kindness to keep it from reaching the ears of my ally."
 msgstr "行善舉，別讓它傳到我盟友的耳朵裡。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.RECORD_BALATRO"
+msgid "'Tis a ballad of good hap!"
+msgstr "唱響好運之歌！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.RECORD_CREEPYFOREST"
@@ -90746,6 +91396,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Perhaps I should take a step back."
 msgstr "或許我該退一步。"
 
+#. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -92211,6 +92866,36 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_REVIVING_CORPSE"
 msgid "Allow me to assist."
 msgstr "請允許我來輔助。"
 
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.1"
+msgid "Someone thinks highly of themselves."
+msgstr "某人自視甚高啊。"
+
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.2"
+msgid "Your \"Majesty\"."
+msgstr "“陛下”。"
+
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY.3"
+msgid "Your \"Royal Highness\""
+msgstr "“殿下”"
+
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "It's a perfect fit."
+msgstr "完美匹配。"
+
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your \"Majesty\"."
+msgstr "“陛下”。"
+
+#. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Your \"Royal Highness\""
+msgstr "“殿下”"
+
 #. STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_RUINS_RESET"
 msgid "The cycle begins again."
@@ -93275,6 +93960,11 @@ msgstr "我希望這附近有搬運工。"
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BACONEGGS"
 msgid "Now that is a proper breakfast."
 msgstr "這才是像樣的早餐。"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BALATRO_MACHINE"
+msgid "The game is rigged! But I'll play again to be sure."
+msgstr "這遊戲有詐！但我要再玩一次確認下。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.BALLOON"
@@ -95950,6 +96640,11 @@ msgstr "我的一個熟人說它們“滿是闊葉”。"
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Shut your maw!"
 msgstr "閉上你的血盆大口！"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DECK_OF_CARDS"
+msgid "If only I stuck with these."
+msgstr "我當初一直玩這個就好了。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.DECOR_CENTERPIECE"
@@ -100946,6 +101641,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Jack? Wait, no."
 msgstr "傑克？等等，不對。"
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYING_CARD"
+msgid "It is none other than the four of clubs!"
+msgstr "必出梅花4！"
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Little hand tools, how quaint."
@@ -102060,6 +102760,11 @@ msgstr "要是整個世界只有一個脖子該多好。"
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.RECORD"
 msgid "Destroy it!"
 msgstr "毀了它！"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.RECORD_BALATRO"
+msgid "The jovial sound invades my mind. Keep it off."
+msgstr "歡快的聲音侵入我的大腦了。快關掉它。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.RECORD_CREEPYFOREST"
@@ -107981,6 +108686,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It's too angry!"
 msgstr "它氣壞了！"
 
+#. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -109366,6 +110076,36 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_REVIVING_CORPSE"
 msgid "Hold on, we'll help!"
 msgstr "堅持住，我們來幫忙！"
 
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.1"
+msgid "Our Liege!"
+msgstr "我們的君主！"
+
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.2"
+msgid "Nice crown!"
+msgstr "這皇冠真漂亮！"
+
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY.3"
+msgid "Your wish is our command!"
+msgstr "您的願望就是我們的命令！"
+
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Our \"Liege\"!"
+msgstr "我們的“君主”！"
+
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Nice \"crown\"!"
+msgstr "這“皇冠”真漂亮！"
+
+#. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Tell us a joke!"
+msgstr "給我們講個笑話吧！"
+
 #. STRINGS.CHARACTERS.WEBBER.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WEBBER.ANNOUNCE_RUINS_RESET"
 msgid "Everything's back!"
@@ -110425,6 +111165,11 @@ msgstr "它就像我們的第二個肚子，裡面可以裝東西。"
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.BACONEGGS"
 msgid "I'd rather have sugary cereal. Oh well."
 msgstr "我寧願吃含糖的麥片。噢好吧。"
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.BALATRO_MACHINE"
+msgid "Prizes!"
+msgstr "有獎品！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.BALLOON"
@@ -113101,6 +113846,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "What're you so mad about?"
 msgstr "什麼事情讓你這麼火大？"
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DECK_OF_CARDS"
+msgid "We know many games!"
+msgstr "我們會玩很多種遊戲！"
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.DECOR_CENTERPIECE"
 msgid "Is it a toy for us?"
@@ -114328,12 +115078,12 @@ msgstr "我們想戴上它！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_ATTACK
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_ATTACK"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_FASTREGEN
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_FASTREGEN"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_LUNAR
@@ -114343,12 +115093,12 @@ msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_RETALIATION
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_RETALIATION"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_REVIVE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_REVIVE"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHADOW
@@ -114358,17 +115108,17 @@ msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHIELD
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SHIELD"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SLOWREGEN
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SLOWREGEN"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SPEED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GHOSTLYELIXIR_SPEED"
-msgid "Hey, you didn't tell me you were making crafts!"
+msgid "Hey, you didn't tell us you were making crafts!"
 msgstr "嘿，你沒告訴我你還會做東西呢！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GIFT
@@ -118106,6 +118856,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Gonna be our own best friend!"
 msgstr "我們就是自己最好的朋友！"
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYING_CARD"
+msgid "Is this the one we lost?"
+msgstr "這是我們丟的那張牌嗎？"
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Can we play with your tools, Ms. Wanda? We'll be careful!"
@@ -119220,6 +119975,11 @@ msgstr "我曾經看到過我父親用這個東西。"
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.RECORD"
 msgid "It's a real earworm!"
 msgstr "真是一條耳朵蟲啊！"
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.RECORD_BALATRO"
+msgid "It makes us happy!"
+msgstr "我們聽得很歡樂！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.RECORD_CREEPYFOREST"
@@ -125116,6 +125876,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll wait for it to calm down..."
 msgstr "我會等到它冷靜下來。"
 
+#. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.CAVE"
+msgid "It won't work without moonlight."
+msgstr "沒有月光就無行。"
+
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "The moon must be waxing."
@@ -126561,6 +127326,36 @@ msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_REVIVING_CORPSE"
 msgid "You'll not glimpse death today..."
 msgstr "你今天不會看見死神了..."
 
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.1"
+msgid "Your Majesty."
+msgstr "陛下。"
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.2"
+msgid "Your Highness."
+msgstr "殿下。"
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY.3"
+msgid "My kingdom for another day with her."
+msgstr "我願用我的王國換與她再多待一天。"
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "I'm not in the mood for jokes."
+msgstr "我沒心情開玩笑。"
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Thanks for trying."
+msgstr "謝謝你做出的嘗試。"
+
+#. STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "I only laugh to be polite."
+msgstr "我笑是出於禮貌。"
+
 #. STRINGS.CHARACTERS.WENDY.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WENDY.ANNOUNCE_RUINS_RESET"
 msgid "The dead are risen."
@@ -127625,6 +128420,11 @@ msgstr "增加更多負擔的背包。"
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.BACONEGGS"
 msgid "A balanced breakfast to start another miserable day."
 msgstr "吃了這份營養均衡的早餐，新的悲慘一天又開始了。"
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.BALATRO_MACHINE"
+msgid "What more can I lose?"
+msgstr "我還有什麼能輸掉呢？"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.BALLOON"
@@ -130300,6 +131100,11 @@ msgstr "這棵樹很陰森。我打賭它喜歡萬聖節。"
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Extra-spooky!"
 msgstr "超級陰森可怖！"
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.DECK_OF_CARDS"
+msgid "Suppose I can play Solitaire."
+msgstr "玩個單人接龍吧。"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.DECOR_CENTERPIECE"
@@ -135296,6 +136101,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "I don't need another dead twin."
 msgstr "我不需要再多死去的雙胞胎了。"
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYING_CARD"
+msgid "A single playing card. Great."
+msgstr "一張孤零零的紙牌。好極了。"
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Tools for watch surgery."
@@ -136410,6 +137220,11 @@ msgstr "僅用於剃毛。"
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.RECORD"
 msgid "I wondered if I'd ever hear that song again."
 msgstr "不知是否還會再聽到那首歌。"
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.RECORD_BALATRO"
+msgid "It brightens my mood, if only for a while."
+msgstr "它讓我的心情好了點，雖然只有一會兒。"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.RECORD_CREEPYFOREST"
@@ -142306,6 +143121,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It would be ill-advised to approach that scuffle."
 msgstr "靠近那場混戰可不是個好主意。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -143751,6 +144571,36 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_REVIVING_CORPSE"
 msgid "Hold on a moment, dear."
 msgstr "稍等片刻，親愛的。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.1"
+msgid "Your Highness."
+msgstr "殿下。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.2"
+msgid "Your Grace."
+msgstr "向陛下致敬。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY.3"
+msgid "You wear her crown well."
+msgstr "你戴她的王冠很合適。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Your \"Highness\"."
+msgstr "“殿下”。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your \"Grace\"."
+msgstr "“陛下”"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "You wear that \"crown\" well."
+msgstr "你戴那頂“王冠”很合適。"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_RUINS_RESET"
 msgid "Careful, the monsters are back."
@@ -144810,6 +145660,11 @@ msgstr "那個可以帶這麼多書。"
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BACONEGGS"
 msgid "Blue eggs and bacon!"
 msgstr "藍蛋和培根！"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BALATRO_MACHINE"
+msgid "One must know when the time for games has passed. Now is not that time."
+msgstr "人必須知道什麼時候該停止遊戲。現在還不是時候。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.BALLOON"
@@ -147485,6 +148340,11 @@ msgstr "某種殼鬥目植物。長大後會結出果實。"
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "That is no tree I've seen before!"
 msgstr "我以前從沒見過這種樹！"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DECK_OF_CARDS"
+msgid "Do we have enough players for Bridge?"
+msgstr "我們夠人手玩橋牌嗎？"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.DECOR_CENTERPIECE"
@@ -152481,6 +153341,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "How undignified."
 msgstr "多麼不體面啊。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYING_CARD"
+msgid "Who's missing a card?"
+msgstr "誰缺了一張牌？"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "These tools are specialized for clockmaking."
@@ -153595,6 +154460,11 @@ msgstr "個人衛生用品。"
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.RECORD"
 msgid "I could see it getting a tad repetitive."
 msgstr "我可以聽出它變得有點重複。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.RECORD_BALATRO"
+msgid "The music was better back in my day... but let's hear it again."
+msgstr "我那個年代的音樂更好……不過讓我們再聽一次吧。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.RECORD_CREEPYFOREST"
@@ -159491,6 +160361,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'll ride it when it settles down."
 msgstr "當它平靜下來我才會騎。"
 
+#. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -160906,6 +161781,36 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_REVIVING_CORPSE"
 msgid "Hey! Get back up!"
 msgstr "嘿！醒過來吧！"
 
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.1"
+msgid "Nice hat."
+msgstr "帽子不錯。"
+
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.2"
+msgid "You're not the boss of me."
+msgstr "你可不是我的老闆。"
+
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY.3"
+msgid "You expecting me to bow or something?"
+msgstr "所以還指望我鞠個躬嗎？"
+
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Great hat!"
+msgstr "好帽子！"
+
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "It really brings out your eyes!"
+msgstr "真的很襯你的眼睛！"
+
+#. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "It makes so much sense."
+msgstr "太有道理了。"
+
 #. STRINGS.CHARACTERS.WILLOW.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WILLOW.ANNOUNCE_RUINS_RESET"
 msgid "Aw, everything I killed is back!"
@@ -161965,6 +162870,11 @@ msgstr "你可以往裡面裝比如說一百萬個打火機。"
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.BACONEGGS"
 msgid "The yellow mucus-y part is gross, but the bacon is great!"
 msgstr "溏心蛋黃部分有點噁心，但是培根非常美味！"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.BALATRO_MACHINE"
+msgid "Let me win or I'll set you on fire."
+msgstr "讓我贏，不然我就把你燒了。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.BALLOON"
@@ -164640,6 +165550,11 @@ msgstr "看起來它會燒得很旺。"
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "A fire would set'em straight."
 msgstr "一把火就能讓它們老實。"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.DECK_OF_CARDS"
+msgid "If it's not a full deck, at least we have kindling."
+msgstr "不怕這副牌不齊，拿來燒火也是可以的。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.DECOR_CENTERPIECE"
@@ -169636,6 +170551,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Definitely cremation."
 msgstr "必須火化。"
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYING_CARD"
+msgid "Must be the burn card."
+msgstr "這牌燒了算了。"
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "A bunch of little tools."
@@ -170750,6 +171670,11 @@ msgstr "那是為了什麼？"
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.RECORD"
 msgid "Hey Max, it's your favorite!"
 msgstr "嘿，麥斯，它是你的最愛！"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.RECORD_BALATRO"
+msgid "This song is kind of mesmerizing."
+msgstr "這首歌有點抓人。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.RECORD_CREEPYFOREST"
@@ -176671,6 +177596,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "It's a bit preoccupied."
 msgstr "它正忙著其他事呢。"
 
+#. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -178111,6 +179041,36 @@ msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROSEGLASSES.3"
 msgid "I'm pickin' up traces of her magic."
 msgstr "我發現了她魔法的痕跡。"
 
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.1"
+msgid "Your Royal Highness!"
+msgstr "殿下！"
+
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.2"
+msgid "You wear it well!"
+msgstr "您戴起來真合適！"
+
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY.3"
+msgid "I like the confidence!"
+msgstr "我喜歡這種自信！"
+
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "A royal idiot! Just jokin', love."
+msgstr "皇家白癡！開個玩笑啦，親愛的。"
+
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "You wear it too well!"
+msgstr "你戴得太秒了！"
+
+#. STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "I love the confidence!"
+msgstr "我就愛這種自信！"
+
 #. STRINGS.CHARACTERS.WINONA.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WINONA.ANNOUNCE_RUINS_RESET"
 msgid "Huh? Where'd all these monsters come from?"
@@ -179175,6 +180135,11 @@ msgstr "我不介意當送貨的騾子。"
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.BACONEGGS"
 msgid "A hearty breakfast for a full day's work."
 msgstr "一天勞作之前的豐盛早餐。"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.BALATRO_MACHINE"
+msgid "What could go wrong?"
+msgstr "會出什麼問題？"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.BALLOON"
@@ -181850,6 +182815,11 @@ msgstr "又一棵樹。"
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Why does a tree need a mouth?!"
 msgstr "樹為什麼有嘴巴？"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.DECK_OF_CARDS"
+msgid "Remember when you'd always knock down my house of cards?"
+msgstr "還記得你以前總愛推倒我的紙牌屋嗎？"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.DECOR_CENTERPIECE"
@@ -186871,6 +187841,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "No, thank you."
 msgstr "不用了，謝謝你。"
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYING_CARD"
+msgid "Somebody's not playin' with a full deck."
+msgstr "我向來按常理出牌。"
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Wish I'd had the chance to grab some of my tools before I got here."
@@ -187985,6 +188960,11 @@ msgstr "工具多總不是壞事。"
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.RECORD"
 msgid "Just plain unsettlin'."
 msgstr "只是純粹的不安。"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.RECORD_BALATRO"
+msgid "That's just plain fun!"
+msgstr "太有意思了！"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.RECORD_CREEPYFOREST"
@@ -193921,6 +194901,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I cannot ride it now! Hair-cow is proving itself in battle!"
 msgstr "我現在還不能騎它！長毛奶牛正在戰鬥中證明自己的價值！"
 
+#. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -195331,6 +196316,36 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_REVIVING_CORPSE"
 msgid "Up now, friend!"
 msgstr "蘇醒吧，朋友！"
 
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.1"
+msgid "Wolfgang in presence of royalty!"
+msgstr "沃爾夫岡碰上皇親國戚了！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.2"
+msgid "Your Mightiness!"
+msgstr "您太強了！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY.3"
+msgid "Your Grace!"
+msgstr "陛下！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Wolfgang in presence of \"royalty\"!,"
+msgstr "沃爾夫岡碰上“皇親國戚”了！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your Mirthfulness!"
+msgstr "太可樂了！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Your \"Grace\"!"
+msgstr "“陛下”！"
+
 #. STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_RUINS_RESET"
 msgid "Monsters is back!"
@@ -196395,6 +197410,11 @@ msgstr "為了帶更多的東西。"
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BACONEGGS"
 msgid "Food has yolk! And meat! More strong!"
 msgstr "食物裡有蛋黃！還有肉！更強壯！"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BALATRO_MACHINE"
+msgid "Is clown real? Wolfgang not afraid, just uncomfortable."
+msgstr "小丑是真的嗎？沃爾夫岡不害怕，只是不舒服。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.BALLOON"
@@ -199070,6 +200090,11 @@ msgstr "你好，樹！"
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Is big and angry tree."
 msgstr "憤怒的大樹。"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DECK_OF_CARDS"
+msgid "Rip deck of cards in half is one of Wolfgang famous feat of strength!"
+msgstr "把一副牌撕成兩半是沃爾夫岡著名的秀肌肉的手法之一！"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.DECOR_CENTERPIECE"
@@ -204066,6 +205091,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Poor Wolfgang!"
 msgstr "可憐的沃爾夫岡！"
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYING_CARD"
+msgid "Don't worry little card, Wolfgang only rip in half full deck."
+msgstr "別擔心，小牌牌，沃爾夫岡只撕完整的一副牌。"
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "These tools too tiny for Wolfgang's mighty hands!"
@@ -205180,6 +206210,11 @@ msgstr "我的皮膚硬的連毛都長不出來！"
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.RECORD"
 msgid "This give Wolfgang bad feelings."
 msgstr "它給了沃爾夫岡不好的感覺。"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.RECORD_BALATRO"
+msgid "Song make Wolfgang shoulders bounce."
+msgstr "這歌讓沃爾夫岡的肩膀跟著跳。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.RECORD_CREEPYFOREST"
@@ -211076,6 +212111,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I should wait for the dust to settle, eh?"
 msgstr "我應該等到一切塵埃落定，嗯？"
 
+#. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -212461,6 +213501,36 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_REVIVING_CORPSE"
 msgid "You fell like a tree, eh?"
 msgstr "你像樹一樣倒下了呀？"
 
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.1"
+msgid "Your Highness!"
+msgstr "殿下！"
+
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.2"
+msgid "Your Majesty!"
+msgstr "國王陛下！"
+
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY.3"
+msgid "My Liege!"
+msgstr "我的君主！"
+
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Your \"Highness\", eh?"
+msgstr "“閣下”，誒？"
+
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Your \"Majesty\", eh?"
+msgstr "“陛下”，誒？"
+
+#. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "My \"Liege\", eh?"
+msgstr "“大王”，誒？"
+
 #. STRINGS.CHARACTERS.WOODIE.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WOODIE.ANNOUNCE_RUINS_RESET"
 msgid "All that hard work gone to waste."
@@ -213520,6 +214590,11 @@ msgstr "那是個好看的帆布背包。"
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.BACONEGGS"
 msgid "Awww. It's just front bacon."
 msgstr "嗚嗚嗚。只有五花培根。"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.BALATRO_MACHINE"
+msgid "I know I promised, Luce. Just one more."
+msgstr "我知道我保證過，露西。我這回就再多玩一把。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.BALLOON"
@@ -216195,6 +217270,11 @@ msgstr "它在召喚我！"
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "You're due for a chopping."
 msgstr "是時候把你給砍了。"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.DECK_OF_CARDS"
+msgid "No Lucy, you may not cut the deck. I know what you mean."
+msgstr "露西別鬧，你不能切牌。我知道你是什麼意思。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.DECOR_CENTERPIECE"
@@ -221201,6 +222281,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "That is throwin' me for a loop, Luce."
 msgstr "給我有點整的不會了，露西。"
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYING_CARD"
+msgid "Can't do much with that."
+msgstr "這牌沒啥用。"
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "I'll stick to my axe, thanks."
@@ -222315,6 +223400,11 @@ msgstr "真正的伐木工永遠不會剃鬍子。"
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.RECORD"
 msgid "Classic."
 msgstr "經典。"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.RECORD_BALATRO"
+msgid "It's a good little number."
+msgstr "這首小曲不錯。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.RECORD_CREEPYFOREST"
@@ -228211,6 +229301,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Too much fighting!"
 msgstr "太多打鬥了！"
 
+#. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -229626,6 +230721,36 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_REVIVING_CORPSE"
 msgid "Helping..."
 msgstr "幫助中..."
 
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.1"
+msgid "Big Mommy Buzz hat"
+msgstr "大母蜂的帽子"
+
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.2"
+msgid "Your Buzz-Buzz"
+msgstr "你的嗡嗡"
+
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY.3"
+msgid "Where Big Mommy Buzz?"
+msgstr "大母蜂嗡嗡去哪了？"
+
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Funny hat"
+msgstr "好玩的帽子"
+
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Make laugh"
+msgstr "讓我笑"
+
+#. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "Silly friend!"
+msgstr "傻朋友！"
+
 #. STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_RUINS_RESET"
 msgid "Oh. Everything back"
@@ -230685,6 +231810,11 @@ msgstr "為了攜帶更多東西"
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.BACONEGGS"
 msgid "Belly filler"
 msgstr "用來填飽肚子"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.BALATRO_MACHINE"
+msgid "Hello clown face"
+msgstr "你好小丑臉"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.BALLOON"
@@ -233360,6 +234490,11 @@ msgstr "在休眠嗎？"
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "Hello! Friend?"
 msgstr "你好，朋友。"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.DECK_OF_CARDS"
+msgid "For play with friends"
+msgstr "和朋友一起玩"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.DECOR_CENTERPIECE"
@@ -238381,6 +239516,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Dead me!"
 msgstr "死掉的我！"
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYING_CARD"
+msgid "Lost"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Full of funny little sticks"
@@ -239495,6 +240635,11 @@ msgstr "很鋒利"
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.RECORD"
 msgid "Forever song"
 msgstr "永遠的歌"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.RECORD_BALATRO"
+msgid "Happy game song"
+msgstr "開心的遊戲歌"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.RECORD_CREEPYFOREST"
@@ -245391,6 +246536,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "Its focus is elsewhere."
 msgstr "它注意的焦點在別的地方。"
 
+#. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -246791,6 +247941,36 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_REVIVING_CORPSE"
 msgid "C'mon back, silly goose."
 msgstr "回來，你這只蠢鵝。"
 
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.1"
+msgid "You humble me, royal bumble bee!"
+msgstr "大黃蜂之王在上！"
+
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.2"
+msgid "Pardon my shyness, your Highness!"
+msgstr "殿下別斥責，請原諒我的羞澀！"
+
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY.3"
+msgid "A crown of great renown!"
+msgstr "大名鼎鼎的王冠！"
+
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "A hat for a prat! Hyuyu!"
+msgstr "傻瓜配傻帽！哼哼！"
+
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "The joke's on you! Hyuyu!"
+msgstr "你頭上頂著一個笑話！哼哼！"
+
+#. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "A clown of great renown!"
+msgstr "大名鼎鼎的小丑！"
+
 #. STRINGS.CHARACTERS.WORTOX.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WORTOX.ANNOUNCE_RUINS_RESET"
 msgid "Oh good. The monsters have returned."
@@ -248005,6 +249185,11 @@ msgstr "瞧瞧我背上的負擔！"
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.BACONEGGS"
 msgid "A mortal favorite."
 msgstr "凡人們的最愛。"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.BALATRO_MACHINE"
+msgid "Hey joker, let's play some poker!"
+msgstr "嘿小丑，玩把撲克練練手！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.BALLOON"
@@ -250685,6 +251870,11 @@ msgstr "花哨的樹，長著紙一樣的樹皮。"
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "It is no longer bound to the earth!"
 msgstr "它已不受土地的束縛！"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.DECK_OF_CARDS"
+msgid "One sec, who shuffled this deck?"
+msgstr "等等唉，誰洗牌？"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.DECOR_CENTERPIECE"
@@ -255691,6 +256881,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "As such, I've seen too much. Hyuyu..."
 msgstr "這種把戲，我見過太多次。哼……"
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYING_CARD"
+msgid "Is it so hard to not lose a card?"
+msgstr "不丟牌有這麼難嗎？"
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "The tools of a time tinkerer."
@@ -256805,6 +258000,11 @@ msgstr "我不剃毛。"
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.RECORD"
 msgid "Encore!"
 msgstr "安可！"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.RECORD_BALATRO"
+msgid "A game is always good for the soul!"
+msgstr "遊戲對靈魂有益！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.RECORD_CREEPYFOREST"
@@ -262716,6 +263916,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "They look mad..."
 msgstr "它們看起來很火大……"
 
+#. STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -264221,6 +265426,21 @@ msgctxt "STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY.3"
 msgid "Any fairy stories about you, florp?"
 msgstr "你是童話裡的人嗎，浮浪噗？"
 
+#. STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "Big \"important\"!"
+msgstr "大“要人”！"
+
+#. STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "Jokey head!"
+msgstr "搞笑腦袋！"
+
+#. STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WURT.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "No fairy stories about you, florp!"
+msgstr "童話裡沒有你，浮浪噗！"
+
 #. STRINGS.CHARACTERS.WURT.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WURT.ANNOUNCE_RUINS_RESET"
 msgid "D-don't like these monsters, florp!"
@@ -265280,6 +266500,11 @@ msgstr "什麼東西都能裝！"
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.BACONEGGS"
 msgid "Blegh!!"
 msgstr "啵！！"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.BALATRO_MACHINE"
+msgid "So easy game!"
+msgstr "好簡單的遊戲！"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.BALLOON"
@@ -267955,6 +269180,11 @@ msgstr "是一棵樹。"
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "What you looking at, florp?"
 msgstr "你在看什麼，浮浪噗？"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.DECK_OF_CARDS"
+msgid "Go fish! Go fish! Florp!"
+msgstr "釣魚！釣魚！浮浪噗！"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.DECOR_CENTERPIECE"
@@ -272976,6 +274206,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "Look familiar."
 msgstr "看著眼熟。"
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYING_CARD"
+msgid "Glurgh, who cheated?"
+msgstr "格勒格，誰出千了？"
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "Won't break them, florp! Promise!"
@@ -274095,6 +275330,11 @@ msgstr "切割用的？"
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.RECORD"
 msgid "Again."
 msgstr "再來。"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.RECORD_BALATRO"
+msgid "Again!"
+msgstr "再播一遍！"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.RECORD_CREEPYFOREST"
@@ -278578,7 +279818,7 @@ msgstr "看上去很好玩，浮浪噗的！"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WORTOX_REVIVER
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WORTOX_REVIVER"
-msgid "Imp made it"
+msgid "Imp made it."
 msgstr "小惡魔做的"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.WORTOX_SOULJAR
@@ -280001,6 +281241,11 @@ msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
 msgid "I'LL RIDE IT LATER. RIGHT NOW IT FIGHTS FOR MY AMUSEMENT"
 msgstr "我稍後會騎它。現在它正在打架，逗我開心呢"
 
+#. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.CAVE
+msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.CAVE"
+msgid "only_used_by_wendy"
+msgstr "only_used_by_wendy"
+
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.NOFULLMOON
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.MUTATE.NOFULLMOON"
 msgid "only_used_by_wendy"
@@ -281406,6 +282651,36 @@ msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_REVIVING_CORPSE"
 msgid "YOU ARE STILL USEFUL, FLESHLING"
 msgstr "你依然有用，肉體生物"
 
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.1
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.1"
+msgid "I BOW TO NO ONE"
+msgstr "我絕不向任何人低頭"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.2
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.2"
+msgid "WHO DO YOU THINK YOU ARE?"
+msgstr "你以為你是誰？"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.3
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY.3"
+msgid "HAT DOES NOT MAKE YOU SUPERIOR TO ME"
+msgstr "帽子不會讓你比我優越"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.1
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.1"
+msgid "YOU SHOULD WEAR IT ALL THE TIME"
+msgstr "你就應該一直戴著它"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.2
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.2"
+msgid "PERFECT FIT"
+msgstr "完美合頭"
+
+#. STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.3
+msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_ROYALTY_JOKER.3"
+msgid "YES, YOU ARE A JOKE"
+msgstr "對，你就是個笑話"
+
 #. STRINGS.CHARACTERS.WX78.ANNOUNCE_RUINS_RESET
 msgctxt "STRINGS.CHARACTERS.WX78.ANNOUNCE_RUINS_RESET"
 msgid "RESET COMPLETE"
@@ -282475,6 +283750,11 @@ msgstr "升級的存儲模組"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.BACONEGGS"
 msgid "DESIGNATING: MOST IMPORTANT MEAL OF THE DAY"
 msgstr "標明：一天中最重要的一餐"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.BALATRO_MACHINE
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.BALATRO_MACHINE"
+msgid "CALCULATING ODDS OF VICTORY..."
+msgstr "正在計算勝率……"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.BALLOON
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.BALLOON"
@@ -285150,6 +286430,11 @@ msgstr "目標已獲得"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.DECIDUOUSTREE.POISON"
 msgid "THE MONSTER WITHIN REARS ITS HEAD"
 msgstr "裡面的怪物出現了"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.DECK_OF_CARDS
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.DECK_OF_CARDS"
+msgid "PRIMITIVE PASTIME"
+msgstr "原始的消遣手段"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.DECOR_CENTERPIECE
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.DECOR_CENTERPIECE"
@@ -290146,6 +291431,11 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYER_HOSTED.ME"
 msgid "NO, YOU ARE THE COPY!"
 msgstr "不，你是副本！"
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYING_CARD
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYING_CARD"
+msgid "SOMEONE MISSING A CARD. I SHOULD DESTROY IT"
+msgstr "有人弄丟一張牌。我應該銷毀它"
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.POCKETWATCH_DISMANTLER"
 msgid "YOU KEEP THOSE AWAY FROM ME, FLESHSACK"
@@ -291260,6 +292550,11 @@ msgstr "脫毛！"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.RECORD"
 msgid "I FEEL NOTHING"
 msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.RECORD_BALATRO
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.RECORD_BALATRO"
+msgid "I HATE IT. PLAY IT AGAIN"
+msgstr "我討厭它。再放一遍"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.RECORD_CREEPYFOREST
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.RECORD_CREEPYFOREST"
@@ -304566,6 +305861,11 @@ msgctxt "STRINGS.NAMES.BACONEGGS"
 msgid "Bacon and Eggs"
 msgstr "培根煎蛋"
 
+#. STRINGS.NAMES.BALATRO_MACHINE
+msgctxt "STRINGS.NAMES.BALATRO_MACHINE"
+msgid "JIMBO"
+msgstr "小丑"
+
 #. STRINGS.NAMES.BALLOON
 msgctxt "STRINGS.NAMES.BALLOON"
 msgid "Balloon"
@@ -307160,6 +308460,11 @@ msgstr "樺栗樹"
 msgctxt "STRINGS.NAMES.DECIDUOUS_ROOT"
 msgid "Birchnut Tree"
 msgstr "樺栗樹"
+
+#. STRINGS.NAMES.DECK_OF_CARDS
+msgctxt "STRINGS.NAMES.DECK_OF_CARDS"
+msgid "Deck Of Cards"
+msgstr "牌堆"
 
 #. STRINGS.NAMES.DECOR_CENTERPIECE
 msgctxt "STRINGS.NAMES.DECOR_CENTERPIECE"
@@ -311750,6 +313055,11 @@ msgstr "被附身的屍體"
 msgctxt "STRINGS.NAMES.PLAYER_HOSTED_ME"
 msgid "Deadelgänger"
 msgstr "亡者分身"
+
+#. STRINGS.NAMES.PLAYING_CARD
+msgctxt "STRINGS.NAMES.PLAYING_CARD"
+msgid "Playing Card"
+msgstr "撲克牌"
 
 #. STRINGS.NAMES.POCKETWATCH_DISMANTLER
 msgctxt "STRINGS.NAMES.POCKETWATCH_DISMANTLER"
@@ -318631,6 +319941,271 @@ msgctxt "STRINGS.PIG_TALK_RUN_FROM_SPIDER.3"
 msgid "SCARY SPIDER!"
 msgstr "可怕的蜘蛛！"
 
+#. STRINGS.PLAYING_CARD_NAMES.CARD0
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD0"
+msgid "Playing Card"
+msgstr "撲克牌"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD101
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD101"
+msgid "Ace of Spades"
+msgstr "黑桃A"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD102
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD102"
+msgid "Two of Spades"
+msgstr "黑桃2"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD103
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD103"
+msgid "Three of Spades"
+msgstr "黑桃3"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD104
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD104"
+msgid "Four of Spades"
+msgstr "黑桃4"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD105
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD105"
+msgid "Five of Spades"
+msgstr "黑桃5"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD106
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD106"
+msgid "Six of Spades"
+msgstr "黑桃6"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD107
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD107"
+msgid "Seven of Spades"
+msgstr "黑桃7"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD108
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD108"
+msgid "Eight of Spades"
+msgstr "黑桃8"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD109
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD109"
+msgid "Nine of Spades"
+msgstr "黑桃9"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD110
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD110"
+msgid "Ten of Spades"
+msgstr "黑桃10"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD111
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD111"
+msgid "Jack of Spades"
+msgstr "黑桃J"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD112
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD112"
+msgid "Queen of Spades"
+msgstr "黑桃Q"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD113
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD113"
+msgid "King of Spades"
+msgstr "黑桃K"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD201
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD201"
+msgid "Ace of Diamonds"
+msgstr "方塊A"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD202
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD202"
+msgid "Two of Diamonds"
+msgstr "方塊2"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD203
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD203"
+msgid "Three of Diamonds"
+msgstr "方塊3"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD204
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD204"
+msgid "Four of Diamonds"
+msgstr "方塊4"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD205
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD205"
+msgid "Five of Diamonds"
+msgstr "方塊5"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD206
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD206"
+msgid "Six of Diamonds"
+msgstr "方塊6"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD207
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD207"
+msgid "Seven of Diamonds"
+msgstr "方塊7"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD208
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD208"
+msgid "Eight of Diamonds"
+msgstr "方塊8"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD209
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD209"
+msgid "Nine of Diamonds"
+msgstr "方塊9"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD210
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD210"
+msgid "Ten of Diamonds"
+msgstr "方塊10"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD211
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD211"
+msgid "Jack of Diamonds"
+msgstr "方塊J"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD212
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD212"
+msgid "Queen of Diamonds"
+msgstr "方塊Q"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD213
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD213"
+msgid "King of Diamonds"
+msgstr "方塊K"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD301
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD301"
+msgid "Ace of Clubs"
+msgstr "梅花A"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD302
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD302"
+msgid "Two of Clubs"
+msgstr "梅花2"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD303
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD303"
+msgid "Three of Clubs"
+msgstr "梅花3"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD304
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD304"
+msgid "Four of Clubs"
+msgstr "梅花4"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD305
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD305"
+msgid "Five of Clubs"
+msgstr "梅花5"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD306
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD306"
+msgid "Six of Clubs"
+msgstr "梅花6"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD307
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD307"
+msgid "Seven of Clubs"
+msgstr "梅花7"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD308
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD308"
+msgid "Eight of Clubs"
+msgstr "梅花8"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD309
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD309"
+msgid "Nine of Clubs"
+msgstr "梅花9"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD310
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD310"
+msgid "Ten of Clubs"
+msgstr "梅花10"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD311
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD311"
+msgid "Jack of Clubs"
+msgstr "梅花J"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD312
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD312"
+msgid "Queen of Clubs"
+msgstr "梅花Q"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD313
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD313"
+msgid "King of Clubs"
+msgstr "梅花K"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD401
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD401"
+msgid "Ace of Hearts"
+msgstr "紅桃A"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD402
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD402"
+msgid "Two of Hearts"
+msgstr "紅桃2"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD403
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD403"
+msgid "Three of Hearts"
+msgstr "紅桃3"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD404
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD404"
+msgid "Four of Hearts"
+msgstr "紅桃4"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD405
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD405"
+msgid "Five of Hearts"
+msgstr "紅桃5"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD406
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD406"
+msgid "Six of Hearts"
+msgstr "紅桃6"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD407
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD407"
+msgid "Seven of Hearts"
+msgstr "紅桃7"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD408
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD408"
+msgid "Eight of Hearts"
+msgstr "紅桃8"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD409
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD409"
+msgid "Nine of Hearts"
+msgstr "紅桃9"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD410
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD410"
+msgid "Ten of Hearts"
+msgstr "紅桃10"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD411
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD411"
+msgid "Jack of Hearts"
+msgstr "紅桃J"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD412
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD412"
+msgid "Queen of Hearts"
+msgstr "紅桃Q"
+
+#. STRINGS.PLAYING_CARD_NAMES.CARD413
+msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD413"
+msgid "King of Hearts"
+msgstr "紅桃K"
+
 #. STRINGS.PLAYS.THEVEIL
 msgctxt "STRINGS.PLAYS.THEVEIL"
 msgid "The Pall"
@@ -320155,6 +321730,16 @@ msgstr "向火熱的開端致敬。"
 msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTD_SKETCH"
 msgid "A sculpture sketch of a Dragonfly boat race Start Tower."
 msgstr "龍蠅船比賽起點塔雕塑的草圖。"
+
+#. STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_BUILDER
+msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_BUILDER"
+msgid "A reminder of a lucky worm encounter."
+msgstr "紀念一次跟蠕蟲的幸運邂逅。"
+
+#. STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_SKETCH
+msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_YOTS_SKETCH"
+msgid "A sculpture sketch of a Gilded Depths Worm."
+msgstr "鍍金洞穴蠕蟲的雕塑草圖。"
 
 #. STRINGS.RECIPE_DESC.CHESTUPGRADE_STACKSIZE
 msgctxt "STRINGS.RECIPE_DESC.CHESTUPGRADE_STACKSIZE"
@@ -324026,6 +325611,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.ATRIUMRUBBLE"
 msgid "A crumbling object with writing that can be inspected."
 msgstr "有文字的碎裂物品，可以檢查。"
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.BALATRO_MACHINE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BALATRO_MACHINE"
+msgid "Some character named Jimbo wants you to play a card game with him.\n\nTo start, you should choose one of three Jokers. Each has a different way to give you a little edge in the game.\n\nSecond, play Poker. You can choose cards to discard and replace with new cards. You can do that twice.\n\nThen your hand will be evaluated. You will get chips based on the value of your cards. You will get a multiplyer based on the quality of your hand. Your Chips times your Multiplier is your points. Get as many points as you can. Jimbo might give you something for your time."
+msgstr "一個叫小丑的角色想和你玩紙牌遊戲。\n\n開始時，你需要從三張小丑牌中選擇一張。每張都能在遊戲中給你不同的優勢。\n\n然後就是打撲克。你可以選擇要棄掉的牌並替換成新牌，共有兩次機會。\n\n然後對你的手牌進行記分。根據牌面價值獲得籌碼，根據牌型品質獲得倍率。籌碼乘以倍率就是得分。要贏就要盡可能獲得高分。小丑可能會給你獎勵。"
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.BALLOONHAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.BALLOONHAT"
 msgid "Protects from lightning strikes."
@@ -324501,6 +326091,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.DAYWALKERPILLAR"
 msgid "Can be mined down to reveal a darker core made of harder material."
 msgstr "開採後，可以看到由堅硬材料製成的深色內核。"
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.DECK_OF_CARDS
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.DECK_OF_CARDS"
+msgid "Play a game of cards, however you like. Hit it to shuffle, but be careful!"
+msgstr "隨心所欲地玩紙牌遊戲。打擊它可以洗牌，但要小心！"
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.DEERCLOPSEYEBALL_SENTRYWARD
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.DEERCLOPSEYEBALL_SENTRYWARD"
 msgid "Makes the surrounding environment cool, if holding a Deerclops Eyeball.\n\nWildfires will not occur nearby, also preventing plant withering. It affects how quickly things dry out, including soil moisture, and how quickly they perish.\n\nCreates Mini Glaciers around itself over time."
@@ -324663,33 +326258,48 @@ msgstr "裝備後，溫蒂可以自己飲用藥劑。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERATTACK
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERATTACK"
-msgid "Abigail will deal her nighttime damage during the day and dusk. Lasts 1 day."
-msgstr "阿比蓋爾會在白天和黃昏期間造成夜間傷害。持續1天。"
+msgid "Abigail will deal her nighttime damage during the day and dusk. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nThe drinker can see in the dark as if they were a ghost."
+msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERHEALING
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERHEALING"
-msgid "Raises Abigail's health regeneration from 1 to 20 health per second. Lasts 30 seconds."
-msgstr "將阿比蓋爾的生命恢復速度從每秒 1 點提高到 20 點。持續30秒。"
+msgid "Raises Abigail's health regeneration from 1 to 20 health per second. Lasts 30 seconds.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals 5 health per second for 20 seconds."
+msgstr "將阿比蓋爾的生命恢復速度從每秒1點提高到20點。持續30秒。\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n20秒內每秒恢復5點生命。"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERLUNAR
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERLUNAR"
+msgid "Abigail inflicts an extra 10 planar damage when attacking and increases to 100 when Abigail is in gestalt form."
+msgstr "阿比蓋爾攻擊時額外造成10點位面傷害，在虛影形態下該傷害提升至100點。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERREGENERATION
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERREGENERATION"
-msgid "Raises Abigail's health regeneration from 1 to 3 health per second. Lasts 1 day."
-msgstr "將阿比蓋爾的生命恢復速度從每秒 1 點提高到 3 點。持續1天。"
+msgid "Raises Abigail's health regeneration from 1 to 3 health per second. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals 1 health per second for 20 seconds."
+msgstr "將阿比蓋爾的生命恢復速度從每秒1點提高到3點。持續1天。\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n20秒內每秒恢復1點生命。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERRETALIATION
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERRETALIATION"
-msgid "Doubles Abigail's shield duration from 0.5 seconds to 1 second.\n\nAttacking creatures also take 20 damage.\n\nLasts 1 day."
-msgstr "將阿比蓋爾的護盾持續時間從0.5秒加倍至1秒。\n\n攻擊阿比蓋爾的生物也會受到20點傷害。\n\n持續1天。"
+msgid "Doubles Abigail's shield duration from 0.5 seconds to 1 second.\n\nAttacking creatures also take 20 damage.\n\nLasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorm a lot of damage from one hit and then goes on cool down for 10 seconds. It also inflicts 20 damage to enemy close by."
+msgstr "將阿比蓋爾的護盾持續時間從0.5秒加倍至1秒。\n\n\n攻擊阿比蓋爾的生物也會受到20點傷害。\n\n\n持續1天。\n\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n為飲用者提供一個護盾，可吸收單次攻擊的大量傷害，隨後進入10秒冷卻。同時會對附近敵人造成20點傷害。"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERREVIVE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERREVIVE"
+msgid "Returns Abigail's level up to 3.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals the drinker for a little bit of sanity, fills a small amount of hunger and removes the health penalty of revival."
+msgstr "將阿比蓋爾等級恢復至3級。\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n可為飲用者恢復少量理智值、補充些許饑餓值，並消除復活後的生命值懲罰。"
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSHADOW
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSHADOW"
+msgid "Boosts the curse Abigail inflicts on targets, so that now they recieve an extra 10 Planar Damage when attacked."
+msgstr "強化阿比蓋爾施加的詛咒效果，使被詛咒目標受到攻擊時額外承受10點位面傷害。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSHIELD
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSHIELD"
-msgid "Doubles Abigail's shield duration from 0.5 seconds to 1 second. Lasts 1 day."
-msgstr "將阿比蓋爾的護盾持續時間從 0.5 秒加倍至 1 秒。持續1天。"
+msgid "Doubles Abigail's shield duration from 0.5 seconds to 1 second. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorm a lot of damage from one hit and then goes on cool down for 10 seconds."
+msgstr "將阿比蓋爾的護盾持續時間從0.5秒翻倍至1秒。持續1天。\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n為飲用者提供一個護盾，可吸收單次攻擊的大量傷害，隨後進入10秒冷卻。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSPEED
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GHOSTLYELIXERSPEED"
-msgid "Abigail has a 75% speed boost for 1 day."
-msgstr "阿比蓋爾的速度提升 75%，持續 1 天。"
+msgid "Abigail has a 75% speed boost for 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeavy objects won't slow the drinker down as much."
+msgstr "阿比蓋爾獲得75%速度加成，持續1天。\n\n戴著幽魂花冠的非鬼魂角色飲用時：\n\n重物造成的減速大幅降低。\n"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.GRAVEGUARD_GHOST"
@@ -325316,6 +326926,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.PLANTREGISTRYHAT"
 msgid "Researching garden plants at different stages of growth adds to the Plant Registery."
 msgstr "研究不同生長階段的花園植物，將其添加到植物登記表中。"
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.PLAYING_CARD
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.PLAYING_CARD"
+msgid "A single card for playing games! Combine these together to make a deck."
+msgstr "遊戲用單張卡牌！收集多張可組成牌堆。"
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.POCKETSCALE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.POCKETSCALE"
 msgid "Used to measure the weight of Ocean Fish."
@@ -325708,8 +327323,8 @@ msgstr "觸發爆炸的幾率逐漸增加，在大範圍內造成雙倍傷害。
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HONEY"
-msgid "It slows down your target on the ground for 8 seconds."
-msgstr "它會使目標在地面上減速8秒。"
+msgid "It slows down ground targets 8 seconds."
+msgstr "可使地面目標減速8秒。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTAMMO_HORRORFUEL"
@@ -325758,8 +327373,8 @@ msgstr "擊中時有幾率生成一根暗影觸手，對目標造成傷害。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOTMODKIT"
-msgid "Allows you to customize your Slingshot, making it personal."
-msgstr "允許你自訂彈弓，使其更加個性化。"
+msgid "Allows you to customize your Slingshot."
+msgstr "允許你自訂彈弓屬性。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_MIMIC
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.SLINGSHOT_BAND_MIMIC"
@@ -326228,7 +327843,7 @@ msgstr "可以懸掛在盛宴樹盆中生長的特殊樹木上。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WOBY_TREAT"
-msgid "Restores three times more hunger when eaten by Woby."
+msgid "Restores three times as much hunger when eaten by Woby."
 msgstr "沃比食用時恢復3倍饑餓值。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WOLFGANG_WHISTLE
@@ -329353,7 +330968,7 @@ msgstr "學習2項沃比技能後解鎖。"
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC
 msgctxt "STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_DESC"
-msgid "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightement, she has no additional hunger drain for sprinting or dashing."
+msgid "After dashing, Woby can immediately start sprinting at +1 speed. When Woby is under moonlight on the surface, or in any area of Enlightenment, she has no additional hunger drain for sprinting or dashing."
 msgstr "衝刺後，沃比可以立即以+1速度開始疾跑。當沃比在地表月光下或任何啟迪區域時，她的疾跑或衝刺不會消耗額外饑餓值。"
 
 #. STRINGS.SKILLTREE.WALTER.WALTER_WOBY_LUNAR_LOCK_DESC
@@ -331778,8 +333393,8 @@ msgstr "悅耳牧歌"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_DESC
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_DESC"
-msgid "Soul Hopping for the first hop leaves behind a Soul Decoy to draw the attention of nearby creatures with Souls targeting you."
-msgstr "靈魂跳躍的第一跳會留下一個靈魂誘餌，引起附近有靈魂生物的注意。"
+msgid "Soul Hopping creates a Soul Decoy to draw the attention of attacking creatures that possess Souls. It will not create one for a Soul Echo."
+msgstr "靈魂跳躍會製造一個靈魂誘餌，吸引擁有靈魂的生物攻擊。靈魂迴響不會製造誘餌。"
 
 #. STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WORTOX.WORTOX_SOULDECOY_1_TITLE"
@@ -339096,6 +340711,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hivehat_cawnival"
 msgid "Dress like Cawnival royalty."
 msgstr "打扮得像鴉年華的皇室一樣。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.hivehat_joker
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hivehat_joker"
+msgid "What a flop!"
+msgstr "下墜的厲害呀！"
+
 #. STRINGS.SKIN_DESCRIPTIONS.hutch_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hutch_fantasy"
 msgid "The most charming amphibian you'll ever meet."
@@ -341280,6 +342900,11 @@ msgstr "萬聖夜裡，聰明人會待在光亮處，遠離黑暗。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mushroom_light_tiffany"
 msgid "This mushlamp isn't any brighter than a regular lamp, but it'll make guests think you're extremely cultured."
 msgstr "這盞蘑菇燈並不比別的燈亮，但是會讓客人覺得你很有文化。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.mysterybox_balatro
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_balatro"
+msgid "This chest contains a gift to make a fool out of you!"
+msgstr "箱子中的禮物會讓你變成小丑！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_beards"
@@ -356776,6 +358401,11 @@ msgctxt "STRINGS.SKIN_NAMES.hivehat_cawnival"
 msgid "Cawnival Crown"
 msgstr "鴉年華王冠"
 
+#. STRINGS.SKIN_NAMES.hivehat_joker
+msgctxt "STRINGS.SKIN_NAMES.hivehat_joker"
+msgid "Fool's Crown"
+msgstr "小丑王冠"
+
 #. STRINGS.SKIN_NAMES.hutch_fantasy
 msgctxt "STRINGS.SKIN_NAMES.hutch_fantasy"
 msgid "Frog Prince Hutch"
@@ -358960,6 +360590,11 @@ msgstr "南瓜燈籠"
 msgctxt "STRINGS.SKIN_NAMES.mushroom_light_tiffany"
 msgid "Nouveau Mushlamp"
 msgstr "現代藝術蘑菇燈"
+
+#. STRINGS.SKIN_NAMES.mysterybox_balatro
+msgctxt "STRINGS.SKIN_NAMES.mysterybox_balatro"
+msgid "Jovial Chest"
+msgstr "歡快箱子"
 
 #. STRINGS.SKIN_NAMES.mysterybox_beards
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_beards"
@@ -368088,7 +369723,7 @@ msgstr "\"我們就像行走的火山。\""
 
 #. STRINGS.SKIN_QUOTES.webber_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.webber_masquerade"
-msgid "We'll be on our best behavior... probably."
+msgid "\"We'll be on our best behavior... probably.\""
 msgstr "我們會乖的……大概。"
 
 #. STRINGS.SKIN_QUOTES.webber_nature
@@ -368223,7 +369858,7 @@ msgstr "\"我的火山灰會讓這 世界籠罩在黑暗之中。\""
 
 #. STRINGS.SKIN_QUOTES.wendy_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wendy_masquerade"
-msgid "The night is young, but not for long."
+msgid "\"The night is young, but not for long.\""
 msgstr "夜晚才剛剛開始，但不會持續太久。"
 
 #. STRINGS.SKIN_QUOTES.wendy_nature
@@ -368328,7 +369963,7 @@ msgstr "\"小心我的噴出岩，親愛的。\""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_masquerade"
-msgid "I delight in an elegant soirée, provided it concludes at a sensible hour."
+msgid "\"I delight in an elegant soirée, provided it concludes at a sensible hour.\""
 msgstr "我喜歡優雅的晚會，但前提是能在合理的時間結束。"
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_nature
@@ -368703,7 +370338,7 @@ msgstr "\"如黑曜石般堅硬。\""
 
 #. STRINGS.SKIN_QUOTES.winona_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.winona_masquerade"
-msgid "Well, what d'ya know? I scrub up mighty fine when I feel like it."
+msgid "\"Well, what d'ya know? I scrub up mighty fine when I feel like it.\""
 msgstr "哎呀，你瞧瞧？我認真打扮一下還是挺好看的。"
 
 #. STRINGS.SKIN_QUOTES.winona_nature
@@ -369283,7 +370918,7 @@ msgstr "\"用熔岩指令碼語言編寫而成\""
 
 #. STRINGS.SKIN_QUOTES.wx78_masquerade
 msgctxt "STRINGS.SKIN_QUOTES.wx78_masquerade"
-msgid "I AM THE GOLD STANDARD"
+msgid "\"I AM THE GOLD STANDARD\""
 msgstr "我就是黃金標準"
 
 #. STRINGS.SKIN_QUOTES.wx78_nature
@@ -369525,6 +371160,11 @@ msgstr "農工系列"
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.BUILDERS"
 msgid "Decorator's Collection"
 msgstr "裝飾家系列"
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.B_UPDATE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.B_UPDATE"
+msgid "Joker's Collection"
+msgstr "小丑系列"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.CACTUS
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.CACTUS"

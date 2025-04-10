@@ -8374,6 +8374,10 @@ function Tune(overrides)
 
         GHOSTGUARD_PLAYFUL_DELAY = seg_time * 0.5,
         ABIGAIL_PLAYFUL_DELAY = seg_time,
+
+        -- Playing Cards
+        PLAYINGCARDS_NUM_SUITS = 4,
+        PLAYINGCARDS_NUM_PIPS = 13,
     }
 
     TUNING_MODIFIERS = {}

@@ -444,8 +444,8 @@ function ItemTile:GetDescriptionString()
                 end
             end
 
-            local actions = actionpicker:GetInventoryActions(self.item)
-            if #actions > 0 then
+            local actions = actionpicker and actionpicker:GetInventoryActions(self.item) or nil
+            if actions and actions[1] ~= nil then
                 str = str.."\n"..TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY)..": "..actions[1]:GetActionString()
             end
         elseif active_item:IsValid() then
@@ -460,8 +460,8 @@ function ItemTile:GetDescriptionString()
             --no RMB hint for quickdrop while holding an item, as that might be confusing since players would think its the item they are holding.
             --the mod never had the hint, and people discovered it just fine, so this should also be fine -Zachary
 
-            local actions = actionpicker:GetUseItemActions(self.item, active_item, true)
-            if #actions > 0 then
+            local actions = actionpicker and actionpicker:GetUseItemActions(self.item, active_item, true) or nil
+            if actions and actions[1] ~= nil then
                 str = str.."\n"..TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY)..": "..actions[1]:GetActionString()
             end
         end
