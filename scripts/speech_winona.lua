@@ -869,12 +869,18 @@ return{
     QUAGMIRE_ANNOUNCE_LOSE = "N-nice sky wyrm... Uh-oh.",
     QUAGMIRE_ANNOUNCE_WIN = "Better leave while we can!",
 
---fallback to speech_wilson.lua     ANNOUNCE_ROYALTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "Your majesty.",
---fallback to speech_wilson.lua         "Your highness.",
---fallback to speech_wilson.lua         "My liege!",
---fallback to speech_wilson.lua     },
+    ANNOUNCE_ROYALTY =
+    {
+        "Your Royal Highness!",
+        "You wear it well!",
+        "I like the confidence!",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "A royal idiot! Just jokin', love.",
+        "You wear it too well!",
+        "I love the confidence!",
+    },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "I ain't no electrician, but what the heck!",
     ANNOUNCE_ATTACH_BUFF_ATTACK            = "Time to give 'em the old one-two!",
@@ -5356,6 +5362,7 @@ return{
         RECORD_MAIN = "Here we go.", -- Unused.
         RECORD_WORKTOBEDONE = "Work up a sweat with this one.", -- Unused.
         RECORD_HALLOWEDNIGHTS = "Gives me the heebie jeebies.",
+        RECORD_BALATRO = "That's just plain fun!",
 
         ARCHIVE_ORCHESTRINA_MAIN = "Some mighty complicated engineering went into this.",
 
@@ -5642,6 +5649,11 @@ return{
 
         SHALLOW_GRAVE = "They will be missed.",
         THULECITEBUGNET = "The old stuff was built to last.",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "Remember when you'd always knock down my house of cards?",
+        PLAYING_CARD = "Somebody's not playin' with a full deck.",
+        BALATRO_MACHINE = "What could go wrong?",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

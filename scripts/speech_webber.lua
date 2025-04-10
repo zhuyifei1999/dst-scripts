@@ -863,12 +863,18 @@ return{
     QUAGMIRE_ANNOUNCE_LOSE = "Don't eat us!",
     QUAGMIRE_ANNOUNCE_WIN = "I'm ready to go home now!",
 
---fallback to speech_wilson.lua     ANNOUNCE_ROYALTY =
---fallback to speech_wilson.lua     {
---fallback to speech_wilson.lua         "Your majesty.",
---fallback to speech_wilson.lua         "Your highness.",
---fallback to speech_wilson.lua         "My liege!",
---fallback to speech_wilson.lua     },
+    ANNOUNCE_ROYALTY =
+    {
+        "Our Liege!",
+        "Nice crown!",
+        "Your wish is our command!",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "Our \"Liege\"!",
+        "Nice \"crown\"!",
+        "Tell us a joke!",
+    },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "With great lightning powers comes great responsibility!",
     ANNOUNCE_ATTACH_BUFF_ATTACK            = "We feel so strong!",
@@ -5350,6 +5356,7 @@ return{
         RECORD_MAIN = "It makes us want to do a little dance!", -- Unused.
         RECORD_WORKTOBEDONE = "It makes us want to do a little dance!", -- Unused.
         RECORD_HALLOWEDNIGHTS = "We want candy.",
+        RECORD_BALATRO = "It makes us happy!",
 
         ARCHIVE_ORCHESTRINA_MAIN = "We love puzzles!",
 
@@ -5636,6 +5643,11 @@ return{
 
         SHALLOW_GRAVE = "Aww. Did we know them?",
         THULECITEBUGNET = "We can make that with our beard!",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "We know many games!",
+        PLAYING_CARD = "Is this the one we lost?",
+        BALATRO_MACHINE = "Prizes!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

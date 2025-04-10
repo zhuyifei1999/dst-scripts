@@ -117,8 +117,32 @@ function basic_clear_fn(inst, def_build)
     end
 end
 
-backpack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "swap_backpack" ) end
-backpack_clear_fn = function(inst) basic_clear_fn(inst, "swap_backpack" ) end
+backpack_init_fn = function(inst, build_name, fns)
+    basic_init_fn(inst, build_name, "swap_backpack")
+
+	if not TheWorld.ismastersim then
+		return
+	end
+
+	if inst.backpack_skin_fns and inst.backpack_skin_fns.uninitialize then
+		inst.backpack_skin_fns.uninitialize(inst)
+	end
+	inst.backpack_skin_fns = fns
+	if fns and fns.initialize then
+		fns.initialize(inst)
+	end
+	inst:OnBackpackSkinChanged(build_name)
+end
+backpack_clear_fn = function(inst)
+    basic_clear_fn(inst, "swap_backpack")
+	if inst.backpack_skin_fns then
+		if inst.backpack_skin_fns.uninitialize then
+			inst.backpack_skin_fns.uninitialize(inst)
+		end
+		inst.backpack_skin_fns = nil
+	end
+	inst:OnBackpackSkinChanged(nil)
+end
 
 spicepack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "swap_chefpack" ) end
 spicepack_clear_fn = function(inst) basic_clear_fn(inst, "swap_chefpack" ) end
@@ -1106,8 +1130,14 @@ monkey_mediumhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_monkey_medi
 monkey_smallhat_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "hat_monkey_small" ) end
 monkey_smallhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_monkey_small" ) end
 
-hivehat_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "hat_hive" ) end
-hivehat_clear_fn = function(inst) basic_clear_fn(inst, "hat_hive" ) end
+hivehat_init_fn = function(inst, build_name)
+    basic_init_fn( inst, build_name, "hat_hive" )
+    inst:AddOrRemoveTag("regaljoker", build_name == "hivehat_joker")
+end
+hivehat_clear_fn = function(inst)
+    basic_clear_fn(inst, "hat_hive" )
+    inst:RemoveTag("regaljoker")
+end
 
 tophat_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "hat_top" ) end
 tophat_clear_fn = function(inst) basic_clear_fn(inst, "hat_top" ) end
@@ -2511,7 +2541,10 @@ end
 record_init_fn = function(inst, build_name, trackname)
     basic_init_fn(inst, build_name, "records")
 
-    inst.nameoverride = build_name
+    inst.record_displayname:set(build_name)
+    if inst.components.inspectable then
+        inst.components.inspectable:SetNameOverride(build_name)
+    end
 
     if not TheWorld.ismastersim then
         return
@@ -2525,9 +2558,15 @@ record_init_fn = function(inst, build_name, trackname)
     AddSkinSounds(inst)
 end
 record_clear_fn = function(inst)
-    basic_clear_fn(inst, "records")
+    basic_clear_fn(inst, inst.recorddata and inst.recorddata.build or "records")
 
-    inst.nameoverride = nil
+    inst.record_displayname:set(inst.recorddata and inst.recorddata.displayname or "")
+    if inst.components.inspectable then
+        inst.components.inspectable:SetNameOverride(inst.recorddata and inst.recorddata.displayname or nil)
+    end
+    if inst.components.inventoryitem then
+        inst.components.inventoryitem:ChangeImageName(inst.recorddata and inst.recorddata.imageicon or nil)
+    end
 
     inst.songToPlay_skin = nil
 

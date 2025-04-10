@@ -4986,6 +4986,17 @@ table.insert(prefs, CreatePrefabSkin("hivehat_cawnival",
 	release_group = 132,
 }))
 
+table.insert(prefs, CreatePrefabSkin("hivehat_joker",
+{
+	base_prefab = "hivehat",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) hivehat_init_fn(inst, "hivehat_joker") end,
+	skin_tags = { "HIVEHAT", "B_UPDATE", "CRAFTABLE", },
+	release_group = 166,
+}))
+
 table.insert(prefs, CreatePrefabSkin("hutch_fantasy",
 {
 	base_prefab = "hutch",

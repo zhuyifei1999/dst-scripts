@@ -607,6 +607,12 @@ ACTIONS =
 	DASH = Action({ distance = math.huge, mount_valid = true, invalid_hold_action = true }),
     DIRECTCOURIER_MAP = Action({priority=HIGH_ACTION_PRIORITY, customarrivecheck=ArriveAnywhere, rmb=true, instant=true, map_action=true, map_only=true, map_works_on_unexplored=true, closes_map=true,}),
 	WHISTLE = Action({ rmb=true, distance=math.huge, invalid_hold_action=true }),
+    ACTIVATE_CONTAINER = Action({ priority=1, mount_valid=true }),
+
+    -- Deck O' Cards
+    DRAW_FROM_DECK = Action({priority=2, distance=1.8, mount_valid=true}),
+    FLIP_DECK = Action({mount_valid=true}),
+    ADD_CARD_TO_DECK = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -1861,6 +1867,18 @@ ACTIONS.COOK.fn = function(act)
             end
         end
         return false
+    end
+end
+
+ACTIONS.ACTIVATE_CONTAINER.fn = function(act)
+    if act.target.cookbuttonfn then
+        local container = act.target.components.container
+        if container ~= nil and container:IsOpenedByOthers(act.doer) then
+            return false, "INUSE"
+        else        
+            act.target.cookbuttonfn(act.target)
+            return true
+        end
     end
 end
 
@@ -6060,4 +6078,101 @@ ACTIONS.WHISTLE.fn = function(act)
 		return true
 	end
 	return false
+end
+
+ACTIONS.DRAW_FROM_DECK.fn = function(act)
+    if act.target.components.deckcontainer then
+        local top_card_id = act.target.components.deckcontainer:RemoveCard()
+        if not top_card_id then return false end
+
+        local target_position = act.target:GetPosition()
+
+        local card = TheWorld.components.playingcardsmanager:MakePlayingCard(top_card_id)
+        card.Transform:SetPosition(target_position:Get())
+
+        if not act.doer.components.inventory:GiveItem(card, nil, target_position) then
+            local current_active_item = act.doer.components.inventory:GetActiveItem()
+            act.doer.components.inventory:RemoveItem(current_active_item, true)
+            current_active_item.Transform:SetPosition(target_position:Get())
+            Launch(current_active_item, act.target, 1.5)
+            act.doer.components.inventory:GiveActiveItem(card)
+        end
+
+        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+
+        return true
+    end
+end
+
+ACTIONS.FLIP_DECK.fn = function(act)
+    if act.invobject.components.deckcontainer or act.invobject.components.playingcard then
+        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        act.invobject:PushEvent("flipdeck")
+        return true
+    end
+end
+
+ACTIONS.ADD_CARD_TO_DECK.fn = function(act)
+    if act.doer.components.inventory and act.invobject then
+        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        if act.invobject.components.playingcard then
+            if act.target.components.deckcontainer then
+                local invobject = act.doer.components.inventory:RemoveItem(act.invobject)
+                act.target.components.deckcontainer:AddCard(invobject.components.playingcard:GetID())
+                invobject:Remove()
+
+                return true
+            elseif act.target.components.playingcard then
+                local is_held = act.target.components.inventoryitem:IsHeld()
+                local target_card = (act.target.components.inventoryitem:IsHeld() and act.doer.components.inventory:RemoveItem(act.target))
+                    or act.target
+
+                local invobject = act.doer.components.inventory:RemoveItem(act.invobject)
+
+                -- We're trying to merge two cards... we need to make a deck.
+                local deck = SpawnPrefab("deck_of_cards")
+                deck.Transform:SetPosition(target_card.Transform:GetWorldPosition())
+                deck.components.deckcontainer:AddCard(target_card.components.playingcard:GetID())
+                if target_card._faceup then
+                    -- Flip the deck before we add the second card,
+                    -- so that the add order still "makes sense".
+                    deck:FlipDeck()
+                end
+                deck.components.deckcontainer:AddCard(invobject.components.playingcard:GetID())
+
+                invobject:Remove()
+                target_card:Remove()
+
+                act.doer.components.inventory:GiveActiveItem(deck)
+
+                return true
+            end
+        elseif act.invobject.components.deckcontainer then
+            if act.target.components.deckcontainer then
+                if not act.target.components.inventoryitem:IsHeld() then
+                    -- If we're adding to a deck on the ground, just add ourselves to it.
+                    local invobject = act.doer.components.inventory:RemoveItem(act.invobject)
+                    act.target.components.deckcontainer:MergeDecks(act.invobject.components.deckcontainer)
+                    return true
+                else
+                    -- If we're adding to a deck in our inventory, let's slurp that deck up into our active slot,
+                    -- so we can keep doing add operations if we want.
+                    local target = act.doer.components.inventory:RemoveItem(act.target)
+                    act.invobject.components.deckcontainer:MergeDecks(target.components.deckcontainer)
+                    return true
+                end
+            elseif act.target.components.playingcard then
+                local is_held = act.target.components.inventoryitem:IsHeld()
+                local target_card = (is_held and act.doer.components.inventory:RemoveItem(act.target))
+                    or act.target
+
+                -- We're a deck and our target isn't, so we want to add the target to us, but in our "bottom" position,
+                -- like we were just stacked on top of it.
+                act.invobject.components.deckcontainer:AddCard(target_card.components.playingcard:GetID(), 1)
+
+                target_card:Remove()
+                return true
+            end
+        end
+    end
 end

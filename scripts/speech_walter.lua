@@ -908,8 +908,14 @@ return{
     ANNOUNCE_ROYALTY =
     {
         "Hey! Nice crown!",
-        "Your royal crowned-ness.",
-        "Your majesty.",
+        "How bee-fitting!",
+        "Your Majesty.",
+    },
+    ANNOUNCE_ROYALTY_JOKER =
+    {
+        "Wow! Nice \"crown\".",
+        "It's jest perfect!",
+        "Your \"Majesty\".",
     },
 
     ANNOUNCE_ATTACH_BUFF_ELECTRICATTACK    = "This reminds me of a radio program I heard where a guy was hit by lightning and turned into pure electricity and-",
@@ -5392,6 +5398,7 @@ return{
         RECORD_MAIN = "Woby likes to howl along, don't you girl?", -- Unused.
         RECORD_WORKTOBEDONE = "It's no Midnight Broadcast, but it's still pretty good.", -- Unused.
         RECORD_HALLOWEDNIGHTS = "Instant classic!",
+        RECORD_BALATRO = "That's right, Woby! It's a real doozy!",
 
         ARCHIVE_ORCHESTRINA_MAIN = "Wanna solve a puzzle, Woby?",
 
@@ -5678,6 +5685,11 @@ return{
 
         SHALLOW_GRAVE = "Don't sniff around there, Woby.",
         THULECITEBUGNET = "Just minding my own buzzness, Woby. Heh.",
+
+        -- Deck of Cards
+        DECK_OF_CARDS = "Woby! Pick a card, any card!",
+        PLAYING_CARD = "Is THIS your card, Wobes?",
+        BALATRO_MACHINE = "Woby, let's take paws and play a few hands. Oh, Walter!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

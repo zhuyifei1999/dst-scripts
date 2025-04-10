@@ -986,6 +986,17 @@ local RPC_HANDLERS =
         popup:Close(player, ...)
     end,
 
+    RecievePopupMessage = function(player, popupcode, mod_name, ...)
+        if not (checkuint(popupcode) and
+                optstring(mod_name) and
+                GetPopupFromPopupCode(popupcode, mod_name)) then
+            printinvalid("RecievePopupMessage", player)
+            return
+        end
+
+        GetPopupFromPopupCode(popupcode, mod_name):SendMessageToServer(player, ...)
+    end,
+
     RepeatHeldAction = function(player)
         local playercontroller = player.components.playercontroller
         if playercontroller then
@@ -1186,6 +1197,14 @@ local CLIENT_RPC_HANDLERS =
 
         if popup then
             popup.fn(ThePlayer, show, ...)
+        end
+    end,
+
+    RecievePopupMessage = function(popupcode, mod_name, ...)
+        local popup = GetPopupFromPopupCode(popupcode, mod_name)
+
+        if popup then
+            popup:SendMessageToClient(ThePlayer, ...)
         end
     end,
 
