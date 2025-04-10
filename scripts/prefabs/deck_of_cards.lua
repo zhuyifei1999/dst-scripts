@@ -196,6 +196,14 @@ local function OnPunched(inst, data)
     end
 end
 
+local function Deck_GenerateInitialID(inst)
+    inst.generatecardtask = nil
+    if inst.components.deckcontainer:Count() <= 0 then
+        -- NOTES(JBK): This deck was spawned in we should populate it with one random card.
+        inst.components.deckcontainer:AddRandomCard()
+    end
+end
+
 -- Save/Load
 local function OnSave(inst, data)
     data.revealed = inst._revealed
@@ -281,6 +289,8 @@ local function deck_fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    inst.generatecardtask = inst:DoTaskInTime(0, Deck_GenerateInitialID)
 
     return inst
 end
