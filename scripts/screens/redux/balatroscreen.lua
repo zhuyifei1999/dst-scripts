@@ -53,7 +53,7 @@ function BalatroScreen:OnDestroy()
 	local score
 	if self.game then
 		score = self.game:GetFinalScore()
-		self.game:StopAllSounds()
+		self.game:KillSounds()
 	end
 
     BALATRO_UTIL.ClientDebugPrint("Final score: ", nil, nil, score)

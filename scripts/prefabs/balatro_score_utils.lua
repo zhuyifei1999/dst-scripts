@@ -82,10 +82,12 @@ function BaseJoker:EvaluateHand()
     for i = 1, NUM_CARDS do
 		if nums[i] ~= HIGH_STRAIGHT[i] then
             is_royal = false
-			is_straight = true
             break
         end
     end
+	if is_royal then
+		is_straight = true
+	end
 
     -- Assign score
     local score
