@@ -352,12 +352,6 @@ local BalatroWidget = Class(Widget, function(self, owner, parentscreen, target, 
     self.inst:ListenForEvent("client_popupmessage", self.onpopupmessage, self.owner)
 end)
 
-function BalatroWidget:StopAllSounds()
-	TheFrontEnd:GetSound():KillSound("mult")
-	TheFrontEnd:GetSound():KillSound("LP")
-	TheFrontEnd:GetSound():KillSound("talking")
-end
-
 function BalatroWidget:OnPopupMessage(doer, data)
     if data.popup ~= POPUPS.BALATRO then
         return
@@ -2022,10 +2016,12 @@ function BalatroWidget:Calchand()
     for i = 1, NUM_CARDS do
 		if nums[i] ~= HIGH_STRAIGHT[i] then
             is_royal = false
-			is_straight = true
             break
         end
     end
+	if is_royal then
+		is_straight = true
+	end
 
     -- Assign score
     local score
