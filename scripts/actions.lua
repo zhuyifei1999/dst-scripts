@@ -6087,15 +6087,24 @@ ACTIONS.DRAW_FROM_DECK.fn = function(act)
 
         local target_position = act.target:GetPosition()
 
-        local card = TheWorld.components.playingcardsmanager:MakePlayingCard(top_card_id)
+        local card
+        if TheWorld.components.playingcardsmanager then
+            card = TheWorld.components.playingcardsmanager:MakePlayingCard(top_card_id)
+        else
+            -- NOTES(JBK): This is a workaround if the component does not exist to do what the component is doing move into a component util?
+            card = SpawnPrefab("playing_card")
+            card.components.playingcard:SetID(top_card_id)
+        end
         card.Transform:SetPosition(target_position:Get())
 
         if not act.doer.components.inventory:GiveItem(card, nil, target_position) then
             local current_active_item = act.doer.components.inventory:GetActiveItem()
-            act.doer.components.inventory:RemoveItem(current_active_item, true)
-            current_active_item.Transform:SetPosition(target_position:Get())
-            Launch(current_active_item, act.target, 1.5)
-            act.doer.components.inventory:GiveActiveItem(card)
+			if current_active_item then
+				act.doer.components.inventory:DropItem(current_active_item, true, true, target_position)
+				act.doer.components.inventory:GiveActiveItem(card)
+			else
+				card.components.inventoryitem:DoDropPhysics(target_position.x, target_position.y, target_position.z, true)
+			end
         end
 
         act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
