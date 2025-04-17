@@ -334338,6 +334338,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant"
 msgid "It's an adorable portable item trunk."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_labrat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_labrat"
+msgid "Wearable storage unit."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_mandrake
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mandrake"
 msgid "Keep this lil guy quiet by shoving some delicious loot in his mouth!"
@@ -352026,6 +352031,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.backpack_koalefant
 msgctxt "STRINGS.SKIN_NAMES.backpack_koalefant"
 msgid "Koalefant Knapsack"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.backpack_labrat
+msgctxt "STRINGS.SKIN_NAMES.backpack_labrat"
+msgid "Spectraflux Pack"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.backpack_mandrake
@@ -392790,7 +392800,7 @@ msgstr ""
 
 #. STRINGS.UI.RARITY.Resurrected
 msgctxt "STRINGS.UI.RARITY.Resurrected"
-msgid "Resurrected"
+msgid "Resurrected (Merch Skin)"
 msgstr ""
 
 #. STRINGS.UI.RARITY.Reward

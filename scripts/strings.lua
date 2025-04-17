@@ -12471,7 +12471,7 @@ STRINGS.UI =
         Timeless        = "Timeless",
         Loyal           = "Loyal",
         ProofOfPurchase = "Proof Of Purchase",
-        Resurrected     = "Resurrected",
+        Resurrected     = "Resurrected (Merch Skin)",
         Reward          = "Reward",
         Event           = "Event (Limited-Time Use)",
 
