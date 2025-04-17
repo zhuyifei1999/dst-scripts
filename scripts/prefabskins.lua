@@ -150,6 +150,7 @@ PREFAB_SKINS = {
 		"backpack_heart",
 		"backpack_hound",
 		"backpack_koalefant",
+		"backpack_labrat",
 		"backpack_mandrake",
 		"backpack_mushy",
 		"backpack_poop",

@@ -334341,6 +334341,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_koalefant"
 msgid "It's an adorable portable item trunk."
 msgstr "可愛的便攜背包。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.backpack_labrat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_labrat"
+msgid "Wearable storage unit."
+msgstr "可穿戴儲物單元。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.backpack_mandrake
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_mandrake"
 msgid "Keep this lil guy quiet by shoving some delicious loot in his mouth!"
@@ -352030,6 +352035,11 @@ msgstr "獵犬背包"
 msgctxt "STRINGS.SKIN_NAMES.backpack_koalefant"
 msgid "Koalefant Knapsack"
 msgstr "考拉象方便小包"
+
+#. STRINGS.SKIN_NAMES.backpack_labrat
+msgctxt "STRINGS.SKIN_NAMES.backpack_labrat"
+msgid "Spectraflux Pack"
+msgstr "可變光譜背包"
 
 #. STRINGS.SKIN_NAMES.backpack_mandrake
 msgctxt "STRINGS.SKIN_NAMES.backpack_mandrake"
@@ -392793,8 +392803,8 @@ msgstr "購買憑證"
 
 #. STRINGS.UI.RARITY.Resurrected
 msgctxt "STRINGS.UI.RARITY.Resurrected"
-msgid "Resurrected"
-msgstr "重生"
+msgid "Resurrected (Merch Skin)"
+msgstr "重生（周邊皮膚）"
 
 #. STRINGS.UI.RARITY.Reward
 msgctxt "STRINGS.UI.RARITY.Reward"
