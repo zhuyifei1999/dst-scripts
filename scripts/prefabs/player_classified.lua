@@ -98,16 +98,13 @@ local function OnWerenessDelta(parent, data)
     end
 end
 
+local NON_DANGER_TAGS = {"noepicmusic", "shadow", "shadowchesspiece", "smolder", "thorny"}
 local function OnAttacked(parent, data)
     parent.player_classified.attackedpulseevent:push()
     parent.player_classified.isattackedbydanger:set(
         data ~= nil and
         data.attacker ~= nil and
-        not (data.attacker:HasTag("shadow") or
-            data.attacker:HasTag("shadowchesspiece") or
-            data.attacker:HasTag("noepicmusic") or
-            data.attacker:HasTag("thorny") or
-            data.attacker:HasTag("smolder"))
+        not data.attacker:HasAnyTag(NON_DANGER_TAGS)
     )
     parent.player_classified.isattackredirected:set(data ~= nil and data.redirected ~= nil)
 end
@@ -285,6 +282,12 @@ local function OnIsTakingFireDamageLowDirty(inst)
     if inst._parent ~= nil then
         inst._parent:PushEvent("changefiredamage", { low = inst.istakingfiredamagelow:value() })
     end
+end
+
+local function OnIsTakingLunarBeamDamageDirty(inst)
+	if inst._parent then
+		inst._parent:PushEvent(inst.istakinglunarbeamdamage:value() and "startlunarbeamdamage" or "stoplunarbeamdamage")
+	end
 end
 
 local function OnAttackedPulseEvent(inst)
@@ -1097,6 +1100,7 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("healthdirty", OnHealthDirty)
     inst:ListenForEvent("istakingfiredamagedirty", OnIsTakingFireDamageDirty)
     inst:ListenForEvent("istakingfiredamagelowdirty", OnIsTakingFireDamageLowDirty)
+	inst:ListenForEvent("istakinglunarbeamdamagedirty", OnIsTakingLunarBeamDamageDirty)
     inst:ListenForEvent("combat.attackedpulse", OnAttackedPulseEvent)
     inst:ListenForEvent("hungerdirty", OnHungerDirty)
     inst:ListenForEvent("sanitydirty", OnSanityDirty)
@@ -1198,6 +1202,7 @@ end
 function fns.OnInitialDirtyStates(inst)
     if not TheWorld.ismastersim then
         OnIsTakingFireDamageDirty(inst)
+		OnIsTakingLunarBeamDamageDirty(inst)
         OnTemperatureDirty(inst)
         OnTechTreesDirty(inst)
         if inst._parent ~= nil then
@@ -1252,6 +1257,7 @@ local function fn()
     inst.healthpenalty = net_byte(inst.GUID, "health.penalty", "healthdirty")
     inst.istakingfiredamage = net_bool(inst.GUID, "health.takingfiredamage", "istakingfiredamagedirty")
     inst.istakingfiredamagelow = net_bool(inst.GUID, "health.takingfiredamagelow", "istakingfiredamagelowdirty")
+	inst.istakinglunarbeamdamage = net_bool(inst.GUID, "health.takinglunarbeamdamage", "istakinglunarbeamdamagedirty")
     inst.issleephealing = net_bool(inst.GUID, "health.healthsleep")
     inst.ishealthpulseup = net_bool(inst.GUID, "health.dodeltaovertime(up)", "healthdirty")
     inst.ishealthpulsedown = net_bool(inst.GUID, "health.dodeltaovertime(down)", "healthdirty")
@@ -1450,6 +1456,13 @@ local function fn()
             inst.recipes[k] = net_bool(inst.GUID, "builder.recipes["..k.."]", "recipesdirty")
             inst.bufferedbuilds[k] = net_bool(inst.GUID, "builder.buffered_builds["..k.."]", "bufferedbuildsdirty")
         end
+    end
+    inst.craftinglimit_recipe = {}
+    inst.craftinglimit_amount = {}
+    local craftinglimit_net_enum = GetIdealUnsignedNetVarForCount(CRAFTINGSTATION_LIMITED_RECIPES_COUNT)
+    for i = 1, CRAFTINGSTATION_LIMITED_RECIPES_COUNT do
+        inst.craftinglimit_recipe[i] = craftinglimit_net_enum(inst.GUID, "builder.craftinglimit_recipe[" .. i .. "]", "recipesdirty")
+        inst.craftinglimit_amount[i] = net_byte(inst.GUID, "builder.craftinglimit_amount[" .. i .. "]", "recipesdirty") -- 255 max.
     end
     inst.ingredientmod:set(INGREDIENT_MOD[1])
 

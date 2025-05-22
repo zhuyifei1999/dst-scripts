@@ -36,12 +36,13 @@ local pst_prefabs =
 local mutations_prefabs =
 {
 	"security_pulse_cage",
+	"gestalt_cage",
 }
 
 local WAGSTAFF_CHATTER_COLOUR = Vector3(231/256, 165/256, 75/256)
 
 --------------------------------------------------------------------------
-
+-- Networked Music
 local function PushMusic(inst)
     if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
         ThePlayer:PushEvent("triggeredevent", { name = "wagstaff_experiment" })
@@ -54,7 +55,8 @@ local function OnMusicDirty(inst)
         if inst._musictask ~= nil then
             inst._musictask:Cancel()
         end
-        inst._musictask = inst._music:value() and inst:DoPeriodicTask(1, PushMusic, 0) or nil
+        inst._musictask = (inst._music:value() and inst:DoPeriodicTask(1, PushMusic, 0))
+            or nil
     end
 end
 
@@ -141,12 +143,12 @@ local function LaunchGameItem(inst, item, angle, minorspeedvariance, target)
     local pos = (inst_pos * 0.8) + (target_pos * 0.2)
 
     local spd = 2.5 + math.random() * (minorspeedvariance and 1 or 3.5)
-    item.Physics:ClearCollisionMask()
-    item.Physics:CollidesWith(COLLISION.WORLD)
-    item.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+	if bit.band(item.Physics:GetCollisionMask(), COLLISION.OBSTACLES) ~= 0 then
+		item.Physics:ClearCollidesWith(COLLISION.OBSTACLES)
+		item:DoTaskInTime(.6, OnRestoreItemPhysics)
+	end
     item.Physics:Teleport(pos.x, 0.75, pos.z)
     item.Physics:SetVel(math.cos(angle) * spd, 5, math.sin(angle) * spd)
-    item:DoTaskInTime(.6, OnRestoreItemPhysics)
     item:PushEvent("knockbackdropped", { owner = inst, knocker = inst, delayinteraction = .75, delayplayerinteraction = .5 })
     item:ListenForEvent("onland")
 end
@@ -193,9 +195,10 @@ local function waypointadvance(inst, txt)
 end
 
 local function doblueprintcheck(inst)
-    for _, player in ipairs(AllPlayers) do
+    local dsq = 144 --12*12
+    for _, player in pairs(AllPlayers) do
         --print("FOUND PLAYER", player.prefab)
-        if inst:GetDistanceSqToInst(player) < 12*12 then
+        if inst:GetDistanceSqToInst(player) < dsq then
             giveblueprints(inst,player,"moonstorm_goggleshat")
             giveblueprints(inst,player,"moon_device_construction1")
             if not player.components.timer:TimerExists("wagstaff_npc_blueprints") then
@@ -205,70 +208,75 @@ local function doblueprintcheck(inst)
     end
 end
 
+local function new_met_player_chatter_3()
+    inst:PushEvent("talk")
+    inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_4", 0, nil, nil, CHATPRIORITIES.LOW)
+
+    inst:DoTaskInTime(3, waypointadvance, "WAGSTAFF_NPC_MEETING_5")
+end
+
+local function new_met_player_chatter_2()
+    inst:PushEvent("talk")
+    inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_3", 0, nil, nil, CHATPRIORITIES.LOW)
+
+    inst:DoTaskInTime(3, new_met_player_chatter_3)
+end
+
+local function new_met_player_chatter_1(inst)
+    doblueprintcheck(inst)
+
+    inst:PushEvent("talk")
+    inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_2", 0, nil, nil, CHATPRIORITIES.LOW)
+
+    inst:DoTaskInTime(3, new_met_player_chatter_2)
+end
+
 local function onplayernear(inst,player)
-    if inst.components.knownlocations:GetLocation("machine") then
+    if inst.components.knownlocations:GetLocation("machine")
+            or (inst.busy and inst.busy > 0) then
         return
     end
 
-    if inst.busy and inst.busy > 0 then
-        return
-    end
-    if not TheWorld.components.moonstormmanager then
+    local moonstormmanager = TheWorld.components.moonstormmanager
+    if not moonstormmanager then
         return
     end
 
-    if inst.sg:HasStateTag("moving") and inst.hunt and inst.hunt_count == 0 then
+    if inst.sg:HasStateTag("moving")
+            and inst.hunt and inst.hunt_count == 0 then
         inst.components.locomotor:Stop()
         inst:ClearBufferedAction()
         inst.sg:GoToState("idle")
     end
 
     inst.playerwasnear = true
-    inst.busy = inst.busy and inst.busy + 1 or 1
+    inst.busy = (inst.busy or 0) + 1
     if inst.hunt_stage == "experiment" then
         inst:StartMusic()
-        if TheWorld.components.moonstormmanager and not TheWorld.components.moonstormmanager.tools_task then
+        if not moonstormmanager.tools_task then
             inst.components.talker:Chatter("WAGSTAFF_NPC_START", math.random(#STRINGS.WAGSTAFF_NPC_START), nil, nil, CHATPRIORITIES.LOW)
-            TheWorld.components.moonstormmanager:beginWagstaffDefence(inst)
+            moonstormmanager:beginWagstaffDefence(inst)
         end
+    elseif not moonstormmanager.metplayers[player.userid] then
+        moonstormmanager:AddMetplayer(player.userid)
+
+        inst:PushEvent("talk")
+        inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING", 0, nil, nil, CHATPRIORITIES.LOW)
+
+        inst:DoTaskInTime(3, new_met_player_chatter_1)
     else
-        if not TheWorld.components.moonstormmanager.metplayers[player.userid] then
-
-            TheWorld.components.moonstormmanager:AddMetplayer(player.userid)
-
-            inst:PushEvent("talk")
-            inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING", 0, nil, nil, CHATPRIORITIES.LOW)
-
-            inst:DoTaskInTime(3,function()
-                doblueprintcheck(inst)
-
-                inst:PushEvent("talk")
-                inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_2", 0, nil, nil, CHATPRIORITIES.LOW)
-
-                inst:DoTaskInTime(3,function()
-                    inst:PushEvent("talk")
-                    inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_3", 0, nil, nil, CHATPRIORITIES.LOW)
-
-                    inst:DoTaskInTime(3,function()
-                        inst:PushEvent("talk")
-                        inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_4", 0, nil, nil, CHATPRIORITIES.LOW)
-
-                        inst:DoTaskInTime(3, waypointadvance, "WAGSTAFF_NPC_MEETING_5")
-                    end)
-                end)
-            end)
-        else
-            doblueprintcheck(inst)
-            waypointadvance(inst)
-        end
+        doblueprintcheck(inst)
+        waypointadvance(inst)
     end
-
 end
 
 local wagstaff_npcbrain = require "brains/wagstaff_npcbrain"
 
 local function ontimerdone(inst, data)
     if data.name == "expiretime" then
+        if inst.dropsinventoryonexpire then
+            inst.components.inventory:DropEverything()
+        end
         inst:Remove()
     end
     if data.name == "wagstaff_movetime" then
@@ -283,9 +291,8 @@ local function ontimerdone(inst, data)
     end
 end
 
-local function erode(inst,time, erodein, removewhendone)
-
-    local time_to_erode  = time or 1
+local function erode(inst, time, erodein, removewhendone)
+    local time_to_erode = time or 1
     local tick_time = TheSim:GetTickTime()
 
     inst:StartThread(function()
@@ -360,7 +367,6 @@ local function OnEntitySleep(inst)
     end
 end
 
-
 local function ontalk(inst)
     inst.SoundEmitter:PlaySound("moonstorm/characters/wagstaff/talk_single")
 end
@@ -376,7 +382,6 @@ local function ShouldTrackfn(inst, viewer)
 end
 
 local function teleport_override_fn(inst)
-
     local pt = inst:GetPosition()
     local offset = FindWalkableOffset(pt, math.random() * TWOPI, 4, 8, true, false) or
                     FindWalkableOffset(pt, math.random() * TWOPI, 8, 8, true, false)
@@ -390,14 +395,11 @@ end
 local function OnTeleported(inst)
     if inst.static then
         local pos = inst:GetPosition()
-        local radius = 1
         local theta = (inst.Transform:GetRotation() + 90)*DEGREES
-        local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
-        inst.static.Transform:SetPosition(pos.x+ offset.x, pos.y, pos.z+ offset.z)
-      --  inst:FacePoint(static:GetPosition())
-        inst:DoTaskInTime(0,function()
-            inst:ForceFacePoint(pos.x+ offset.x, pos.y, pos.z+ offset.z)
-        end)
+        local offset = Vector3(math.cos( theta ), 0, -math.sin( theta ))
+
+        inst.static.Transform:SetPosition(pos.x + offset.x, pos.y, pos.z + offset.z)
+        inst:DoTaskInTime(0, inst.ForceFacePoint, pos.x + offset.x, pos.y, pos.z + offset.z)
     end
 end
 
@@ -428,7 +430,6 @@ local function fn()
     inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
-    --inst.AnimState:AddOverrideBuild("hat_gogglesnormal")
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
     inst.AnimState:Show("HAT")
@@ -449,7 +450,6 @@ local function fn()
     talker.name_colour = WAGSTAFF_CHATTER_COLOUR
     talker.chaticon = "npcchatflair_wagstaff"
     talker:MakeChatter()
-    --inst.talksoundoverride = "moonboss/characters/wagstaff/talk_LP"
 
     if not TheNet:IsDedicated() then
         inst:AddComponent("hudindicatable")
@@ -474,10 +474,6 @@ local function fn()
     inst.components.locomotor.walkspeed = 3
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = false }
-
-    --inst:AddComponent("health")
-    --inst:AddComponent("combat")
-    --inst.components.combat.hiteffectsymbol = "torso"
 
     inst:AddComponent("inventory")
 
@@ -509,7 +505,6 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("inspectable")
-    -- inst.components.inspectable.getstatus = GetStatus
     ------------------------------------------
 
     inst.WaitForTool = WaitForTool
@@ -528,13 +523,13 @@ local function fn()
             inst.busy = inst.busy and inst.busy + 1 or 1
             inst:PushEvent("talk")
             inst.components.talker:Chatter("WAGSTAFF_GOTTAGO1", nil, nil, nil, CHATPRIORITIES.LOW)
-            local msm = TheWorld.components.moonstormmanager
-            if inst.hunt_stage == "experiment" and msm then
+            local moonstormmanager = TheWorld.components.moonstormmanager
+            if inst.hunt_stage == "experiment" and moonstormmanager then
                 inst.failtasks = true
-                msm:StopExperimentTasks()
-                if msm.spawn_wagstaff_test_task then
-                    msm.spawn_wagstaff_test_task:Cancel()
-                    msm.spawn_wagstaff_test_task = nil
+                moonstormmanager:StopExperimentTasks()
+                if moonstormmanager.spawn_wagstaff_test_task then
+                    moonstormmanager.spawn_wagstaff_test_task:Cancel()
+                    moonstormmanager.spawn_wagstaff_test_task = nil
                 end
                 inst.static:DoTaskInTime(5, function(st) st.components.health:Kill() end)
             end
@@ -563,12 +558,12 @@ local function fn()
     end, TheWorld)
     inst:ListenForEvent("teleported", OnTeleported)
 
-
     inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     return inst
 end
 
+----------------------------------------------------------------------------------------------------------------------------------------
 local function donpcerode(inst, data)
     if not data.erodein then
         inst.erodingout = true
@@ -697,7 +692,6 @@ local function relocate_wagstaff(inst)
 end
 
 local function pstbossontimerdone(inst,data)
-    
     if data and data.name == "relocate_wagstaff" then
         if TUNING.SPAWN_RIFTS == 1 and TheWorld.components.riftspawner and not TheWorld.components.riftspawner:GetEnabled()  then
             relocate_wagstaff(inst)
@@ -871,7 +865,6 @@ local function Mutations_GiveSecurityPulseCage(inst)
 
     if player ~= nil and player:IsValid() then
         local cage = SpawnPrefab("security_pulse_cage")
-        
         local angle = 180 - player:GetAngleToPoint(x, 0, z) + (math.random() * 10) - 5
 
         LaunchGameItem(inst, cage, GetRandomWithVariance(angle, 5) * DEGREES, true, player)
@@ -939,21 +932,16 @@ local function _Mutations_TalkAboutMutatedCreature_Internal(inst)
 end
 
 local function Mutations_TalkAboutMutatedCreature(inst, existing)
-    if not inst:IsValid() then
+    if not inst:IsValid() or not inst._lunarriftmutationsmanager then
         return -- We might have been removed by OnEntitySleep already!
     end
 
-    if inst._lunarriftmutationsmanager == nil then
-        return
-    end
-
-    local quest_done = inst._lunarriftmutationsmanager:ShouldGiveReward()
-
-    if quest_done then
+    if inst._lunarriftmutationsmanager:ShouldGiveReward() then
         inst.persists = true
     end
 
-    local talktask_time = inst._lunarriftmutationsmanager:IsTaskCompleted() and MUTATIONS_TASK_DELAYS.START_TALKING_TASKCOMPLETED or MUTATIONS_TASK_DELAYS.START_TALKING
+    local talktask_time = (inst._lunarriftmutationsmanager:IsTaskCompleted() and MUTATIONS_TASK_DELAYS.START_TALKING_TASKCOMPLETED)
+        or MUTATIONS_TASK_DELAYS.START_TALKING
 
     if not existing then
         inst:DoTaskInTime(MUTATIONS_TASK_DELAYS.SHOW_UP, ShowUp)
@@ -1056,7 +1044,7 @@ local function MutationsQuestFn()
     inst:ListenForEvent("doerode", donpcerode)
 
     inst:SetStateGraph("SGwagstaff_npc")
-    
+
     inst.erode = erode
     inst.GiveSecurityPulseCage = Mutations_GiveSecurityPulseCage
     inst.TalkAboutMutatedCreature = Mutations_TalkAboutMutatedCreature
@@ -1152,10 +1140,214 @@ local function WagpunkFn()
 
     inst:SetStateGraph("SGwagstaff_npc")
     inst:SetBrain(wagstaff_npcbrain)
-    
+
     inst.erode = erode
 
     inst:DoTaskInTime(0,wagpunk_ShowUp)
+
+    return inst
+end
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+local wagpunk_arena_prefabs = {
+    "mapscroll_tricker",
+    "wagdrone_rolling",
+    "wagdrone_flying",
+}
+local function OnInit_Arena(inst)
+    inst.SoundEmitter:PlaySound("moonstorm/common/alterguardian_contained/static_LP", "wagstaffnpc_static_loop")
+    inst:erode(TUNING.WAGPUNK_ARENA_WAGSTAFF_FADEIN_TIME, true)
+end
+local function ShouldAcceptItem_Arena(inst, item, giver, count)
+    local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+    if not wagpunk_arena_manager then
+        return false
+    end
+
+    return wagpunk_arena_manager:ShouldWagstaffAcceptItem(inst, item, giver, count)
+end
+
+local function DoExperiment_Arena(inst, callback, ...)
+    inst.wagstaff_experimenttime = 2.5 + math.random() * 0.5
+    if callback then
+        inst.wagstaff_experimentcallback = {callback = callback, arguments = {...},}
+    else
+        inst.wagstaff_experimentcallback = nil
+    end
+end
+local function DoFadeOut_Arena(inst)
+    if not inst.erodingout then
+        inst.erodingout = true
+        inst.components.npc_talker:resetqueue()
+        inst.components.talker:ShutUp()
+        inst:erode(TUNING.WAGPUNK_ARENA_WAGSTAFF_FADEOUT_TIME)
+        inst.components.timer:StartTimer("expiretime", TUNING.WAGPUNK_ARENA_WAGSTAFF_FADEOUT_TIME)
+    end
+end
+local function DoFadeOutIn_Arena(inst, duration)
+    inst:DoTaskInTime(duration, inst.DoFadeOut)
+end
+local function OnGetItemFromPlayer_Arena(inst, giver, item)
+    if item:HasTag("mapscroll") then
+        local chatter = inst.trader_chatterreason
+        inst.trader_chatterreason = nil
+        if chatter and not inst.erodingout then
+            inst.components.talker:Chatter(chatter, math.random(#STRINGS[chatter]), nil, nil, CHATPRIORITIES.LOW)
+        end
+        inst:DoExperiment()
+        local mapscroll_tricker = SpawnPrefab("mapscroll_tricker")
+        item.components.maprecorder:TransferComponent(mapscroll_tricker)
+        item:Remove()
+        inst.components.inventory:GiveItem(mapscroll_tricker)
+        if not inst.itemstotoss then
+            inst.itemstotoss = {}
+        end
+        table.insert(inst.itemstotoss, mapscroll_tricker)
+    elseif item.prefab == "gestalt_cage_filled1" or item.prefab == "gestalt_cage_filled2" or item.prefab == "gestalt_cage_filled3" then
+        -- Let the brain handle it.
+        inst.components.npc_talker:resetqueue()
+        inst.components.talker:ShutUp()
+    end
+end
+
+local function OnRefuseItem_Arena(inst, giver, item)
+    local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+    if not wagpunk_arena_manager then
+        return
+    end
+
+    local chatter = inst.trader_chatterreason
+    inst.trader_chatterreason = nil
+    if chatter and not inst.erodingout then
+        inst.components.talker:Chatter(chatter, math.random(#STRINGS[chatter]), nil, nil, CHATPRIORITIES.LOW)
+    end
+end
+
+local function AddTrader_Arena(inst)
+    if inst.components.trader then
+        return
+    end
+
+    local trader = inst:AddComponent("trader")
+    trader:SetAcceptTest(ShouldAcceptItem_Arena)
+    trader.onaccept = OnGetItemFromPlayer_Arena
+    trader.onrefuse = OnRefuseItem_Arena
+    trader.deleteitemonaccept = false
+end
+
+local function OnEntitySleep_Arena(inst)
+    inst.avoid_erodeout = nil
+    inst.wagstaff_experimenttime = nil
+    if inst.wagstaff_experimentcallback then
+        local callbackdata = inst.wagstaff_experimentcallback
+        inst.wagstaff_experimentcallback = nil
+        callbackdata.callback(inst, unpack(callbackdata.arguments))
+    end
+end
+
+local function lunar_guardian_incoming_Arena(inst)
+    inst:PushEvent("talk")
+    inst.components.talker:Chatter("WAGSTAFF_NPC_LUNARGUARDIANINCOMING", 0, nil, nil, CHATPRIORITIES.LOW)
+end
+
+local function wagpunk_arena_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst, 50, .5)
+
+    inst.DynamicShadow:SetSize(1.5, .75)
+    inst.DynamicShadow:Enable(false)
+    inst.shadow = true
+    inst.Transform:SetFourFaced()
+
+    inst:AddTag("nomagic")
+    inst:AddTag("character")
+    inst:AddTag("wagstaff_npc")
+    inst:AddTag("moistureimmunity")
+
+    inst.AnimState:SetBank("wilson")
+    inst.AnimState:SetBuild("wagstaff")
+    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:Hide("hat")
+    inst.AnimState:Hide("ARM_carry")
+
+    inst.AnimState:AddOverrideBuild("player_notes")
+
+    inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
+    inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
+    inst.AnimState:Show("HAT")
+
+    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
+
+    inst.Light:SetFalloff(0.5)
+    inst.Light:SetIntensity(.8)
+    inst.Light:SetRadius(1)
+    inst.Light:SetColour(255/255, 200/255, 200/255)
+    inst.Light:Enable(false)
+
+    local talker = inst:AddComponent("talker")
+    talker.fontsize = 35
+    talker.font = TALKINGFONT
+    talker.offset = Vector3(0, -400, 0)
+    talker.name_colour = WAGSTAFF_CHATTER_COLOUR
+    talker.chaticon = "npcchatflair_wagstaff"
+    talker:MakeChatter()
+    talker.lineduration = TUNING.WAGPUNK_ARENA_WAGSTAFF_TALK_TIME
+
+    inst.forcedtalktime = talker.lineduration - 0.5 -- Small padding for better visuals.
+
+    local npc_talker = inst:AddComponent("npc_talker")
+    npc_talker.default_chatpriority = CHATPRIORITIES.HIGH
+    npc_talker.speaktime = talker.lineduration
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.DoExperiment = DoExperiment_Arena
+    inst.DoFadeOut = DoFadeOut_Arena
+    inst.DoFadeOutIn = DoFadeOutIn_Arena
+    inst.AddTrader = AddTrader_Arena
+    inst.OnEntitySleep = OnEntitySleep_Arena
+
+    inst.defaultidlestate = "idle_wagpunk_arena"
+
+    ------------------------------------------
+    inst:AddComponent("timer")
+    inst:ListenForEvent("timerdone", ontimerdone)
+
+    ------------------------------------------
+    inst:AddComponent("knownlocations")
+    ------------------------------------------
+    inst:AddComponent("inventory")
+    inst.dropsinventoryonexpire = true
+
+    inst:AddComponent("lootdropper")
+
+    inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+    inst.components.locomotor.walkspeed = 3
+
+    local inspectable = inst:AddComponent("inspectable")
+    inspectable.nameoverride = "WAGSTAFF_NPC"
+
+    inst:ListenForEvent("lunarguardianincoming", lunar_guardian_incoming_Arena)
+
+    inst:AddTrader()
+
+    inst:SetStateGraph("SGwagstaff_npc")
+    inst:SetBrain(wagstaff_npcbrain)
+
+    inst.erode = erode
+    inst:DoTaskInTime(0, OnInit_Arena)
 
     return inst
 end
@@ -1261,5 +1453,6 @@ return Prefab("wagstaff_npc", fn, assets, prefabs),
         Prefab("wagstaff_npc_pstboss", pstbossfn, assets, pst_prefabs),
         Prefab("wagstaff_npc_mutations", MutationsQuestFn, assets, mutations_prefabs),
         Prefab("wagstaff_npc_wagpunk", WagpunkFn, assets),
+        Prefab("wagstaff_npc_wagpunk_arena", wagpunk_arena_fn, assets, wagpunk_arena_prefabs),
         Prefab("alterguardian_contained", alterguardian_containedfn, contained_assets),
-		Prefab("enable_lunar_rift_construction_container",  EnableRiftContainerFn)
+		Prefab("enable_lunar_rift_construction_container", EnableRiftContainerFn)

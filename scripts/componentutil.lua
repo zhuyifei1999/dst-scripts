@@ -740,4 +740,106 @@ function GetWobyCourierChestPosition(inst)
 end
 
 --------------------------------------------------------------------------
+-- Placer
 
+HAS_AXISALIGNED_MOD_ENABLED = nil
+KNOWN_AXISALIGNED_MODS = {
+    "workshop-351325790",
+}
+
+function UpdateAxisAlignmentValues(intervals)
+    TUNING.AXISALIGNEDPLACEMENT_INTERVALS = intervals
+    TUNING.AXISALIGNEDPLACEMENT_CIRCLESIZE = math.min(8 / intervals, 4)
+    if ThePlayer then
+        ThePlayer:PushEvent("refreshaxisalignedplacementintervals")
+    end
+end
+
+local DEFAULT_AXISALIGNMENT_VALUE = 1
+AXISALIGNMENT_VALUES = {
+    {text = STRINGS.UI.OPTIONS.AXISALIGNEDPLACEMENT_SIZE_HALFWALL, data = 2},
+    {text = STRINGS.UI.OPTIONS.AXISALIGNEDPLACEMENT_SIZE_WALL, data = DEFAULT_AXISALIGNMENT_VALUE},
+    {text = STRINGS.UI.OPTIONS.AXISALIGNEDPLACEMENT_SIZE_HALFTILE, data = 0.5},
+    {text = STRINGS.UI.OPTIONS.AXISALIGNEDPLACEMENT_SIZE_TILE, data = 0.25},
+}
+function CycleAxisAlignmentValues() -- Do not save with Profile.
+    local closestdiff
+    local closestindex
+    local intervals = TUNING.AXISALIGNEDPLACEMENT_INTERVALS
+    local defaultindex
+    for i, v in ipairs(AXISALIGNMENT_VALUES) do
+        local diff = math.abs(v.data - intervals)
+        if closestdiff == nil or diff < closestdiff then
+            closestdiff = diff
+            closestindex = i
+        end
+        if v.data == DEFAULT_AXISALIGNMENT_VALUE then
+            defaultindex = i
+        end
+    end
+    if not closestindex then
+        closestindex = defaultindex or 1 -- Default got eliminated somewhere.
+    end
+
+    closestindex = closestindex + 1
+    if closestindex > #AXISALIGNMENT_VALUES then
+        closestindex = 1
+    end
+
+    UpdateAxisAlignmentValues(AXISALIGNMENT_VALUES[closestindex].data)
+end
+
+--------------------------------------------------------------------------
+-- wagpunk_arena_manager
+WAGPUNK_ARENA_COLLISION_DATA = { -- x, z, rotation
+    {-42, -42, 315},
+    {-42, -32, 0},
+    {-42, -22, 0},
+    {-42, -12, 0},
+    {-42, -2, 45},
+    {-38, -2, 45},
+    {-38, 2, 45},
+    {-34, 2, 45},
+    {-34, 6, 45},
+    {-24, 6, 90},
+    {-14, 6, 90},
+    {-4, 6, 90},
+    {6, 6, 135},
+    {6, 2, 135},
+    {10, 2, 135},
+    {10, -2, 135},
+    {14, -2, 135},
+    {14, -12, 180},
+    {14, -22, 180},
+    {14, -32, 180},
+    {14, -42, 225},
+    {10, -42, 225},
+    {10, -46, 225},
+    {6, -46, 225},
+    {6, -50, 225},
+    {-4, -50, 270},
+    {-14, -50, 270},
+    {-24, -50, 270},
+    {-34, -50, 315},
+    {-34, -46, 315},
+    {-38, -46, 315},
+    {-38, -42, 315},
+}
+
+--------------------------------------------------------------------------
+
+local CLEARSPOT_CANT_TAGS = {"INLIMBO", "NOCLICK", "FX", "irreplaceable"}
+function ClearSpotForRequiredPrefabAtXZ(x, z, r)
+    local _world = TheWorld
+    local ents = TheSim:FindEntities(x, 0, z, MAX_PHYSICS_RADIUS, nil, CLEARSPOT_CANT_TAGS)
+    for _, ent in ipairs(ents) do
+        if ent:IsValid() then
+            local radius = ent:GetPhysicsRadius(0) + r
+            if ent:GetDistanceSqToPoint(x, 0, z) < radius * radius then
+                DestroyEntity(ent, _world)
+            end
+        end
+    end
+end
+
+--------------------------------------------------------------------------

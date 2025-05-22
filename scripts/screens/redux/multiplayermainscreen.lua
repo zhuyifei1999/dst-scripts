@@ -1359,8 +1359,39 @@ function MultiplayerMainScreen:FinishedFadeIn()
 	end
 end
 
+function MultiplayerMainScreen:HandleNewControlSchemePopup()
+    if TheInput:ControllerAttached() and not self.profile:SawControlSchemePopup() then
+        local function PopupClose()
+            self.profile:ShowedControlSchemePopup()
+            self.profile:Save()
+            TheFrontEnd:PopScreen()
+        end
+        TheFrontEnd:PushScreen(
+            PopupDialogScreen(
+                STRINGS.UI.NEW_CONTROLSCHEME_POPUP.TITLE,
+                STRINGS.UI.NEW_CONTROLSCHEME_POPUP.BODY,
+                { 
+                    {
+                        text=STRINGS.UI.NEW_CONTROLSCHEME_POPUP.YES, 
+                        cb = function() 
+                                 self:Settings("CONTROLSCHEME")
+                                 PopupClose()
+                             end 
+                    },
+                    {
+                        text=STRINGS.UI.NEW_CONTROLSCHEME_POPUP.NO, 
+                        cb = function() 
+                                 PopupClose()
+                             end
+                    }  
+                }
+           )
+        )
+    end
+end
 
 function MultiplayerMainScreen:OnUpdate(dt)
+    self:HandleNewControlSchemePopup()
 end
 
 function MultiplayerMainScreen:CheckNewUser(onnofn, no_button_text)

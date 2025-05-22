@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "What, is the contest not open to residents of Canada?",
             ALREADYACTIVE = "He must be out and aboot somewhere else.",
+            NORESPONSE = "Off wandering, I bet.",
+            RIGHTTHERE = "Hm. Busy.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Missed it!",
 		},
     },
 
@@ -1133,7 +1140,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "She won't get any bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "We need to find more snow.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1146,6 +1153,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "We are really movin', Luce!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I'll pass on that one.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "TODO", -- TODO
 
 	BATTLECRY =
 	{
@@ -5649,6 +5658,34 @@ return{
         DECK_OF_CARDS = "No Lucy, you may not cut the deck. I know what you mean.",
         PLAYING_CARD = "Can't do much with that.",
         BALATRO_MACHINE = "I know I promised, Luce. Just one more.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Looks empty.",
+			FILLED = "There's one in there, eh?",
+		},
+		WAGBOSS_ROBOT = "Aw, Luce. I don't think it chops trees.",
+        WAGBOSS_ROBOT_POSSESSED = "Hey, quit tryin' to kill us!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Look who came rollin' back, eh?",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "What in the Aurora Borealis is that?!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "They just come crawling back!",
+            FRIENDLY = "Let's keep an eye on it, Luce.",
+        },
+		WAGDRONE_FLYING = "They're all around us, Lucy!",
+
+        WAGPUNK_WORKSTATION = "That's a fancy workbench.",
+        WAGPUNK_LEVER = "Lever, Lucy. I said it's a great lever. Sheesh.",
+        WAGPUNK_FLOOR_KIT = "I prefer wood flooring.",
+        WAGPUNK_CAGEWALL = "Whatever happened to good ol' fashioned wooden fence posts?",
+
+        WANDERINGTRADER = "Don't worry, Luce. I'd never trade you.",
+
+        GESTALT_GUARD_EVOLVED = "It's coming down right on top of us, Luce!",
+        FLOTATIONCUSHION = "There's room for both of us, Luce.",
+        LUNAR_SEED = "We sure topped'em, eh Luce?",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

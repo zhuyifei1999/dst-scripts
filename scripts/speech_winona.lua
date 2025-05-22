@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "This judge is slackin' on the job!",
             ALREADYACTIVE = "There must be a contest already goin' on somewhere.",
+            NORESPONSE = "Probably wandered off.",
+            RIGHTTHERE = "He's workin'.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Dang, missed!",
 		},
     },
 
@@ -1138,7 +1145,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "It ain't gonna get any bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "Ain't no snow around.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1151,6 +1158,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I feel like a steam engine!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Yikes, that's way too strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "That thing fallin' from the sky sure don't look friendly.",
 
 	BATTLECRY =
 	{
@@ -5654,6 +5663,34 @@ return{
         DECK_OF_CARDS = "Remember when you'd always knock down my house of cards?",
         PLAYING_CARD = "Somebody's not playin' with a full deck.",
         BALATRO_MACHINE = "What could go wrong?",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Ain't nothin' in there.",
+			FILLED = "We got a live one!",
+		},
+		WAGBOSS_ROBOT = "That is one fancy forklift.",
+        WAGBOSS_ROBOT_POSSESSED = "Where's the dang OFF switch?!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Aw man, not that thing again!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "It don't make no sense!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Hey, stay away from my kneecaps!",
+            FRIENDLY = "I'll never fully trust it.",
+        },
+		WAGDRONE_FLYING = "Heads up!",
+
+        WAGPUNK_WORKSTATION = "That's a fine tinkerin' table.",
+        WAGPUNK_LEVER = "What could go wrong?",
+        WAGPUNK_FLOOR_KIT = "Real estate is at a premium these days.",
+        WAGPUNK_CAGEWALL = "So, a fence post?",
+
+        WANDERINGTRADER = "Good day for a trade.",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Sure beats drownin'.",
+        LUNAR_SEED = "We busted'em down to the baubles.",
     },
 
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",

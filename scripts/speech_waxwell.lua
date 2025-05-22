@@ -306,6 +306,7 @@ return{
             NOWATERNEARBY = "I can't just conjure up fish without water.",
             TOOMANYBIRDS = "There are plenty of birds here already.",
             WAYTOOMANYBIRDS = "I must wait before I summon the birds again.",
+            BIRDSBLOCKED = "He even stops the birds from coming and going?",
             NOFIRES =       "For once, nothing is on fire.",
             NOSILVICULTURE = "Making invisible trees grow? Now that'd be a trick.",
             NOHORTICULTURE = "There's nothing worth growing here.",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Where is that incompetent judge?",
             ALREADYACTIVE = "There must be a competition going on elsewhere...",
+            NORESPONSE = "Where did he wander off to now?",
+            RIGHTTHERE = "How rude!",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Don't move, blasted specter!",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Useless! It won't get any bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "There's no snow here.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Respect my brawn!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too stiff a drink.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "What's that falling from the sky? Retribution, no doubt.",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "If only I stuck with these.",
         PLAYING_CARD = "It is none other than the four of clubs!",
         BALATRO_MACHINE = "The game is rigged! But I'll play again to be sure.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Ugh. Empty.",
+			FILLED = "Not so tough now, are you?",
+		},
+		WAGBOSS_ROBOT = "I don't trust it.",
+        WAGBOSS_ROBOT_POSSESSED = "I told you so!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "What have we done now?",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Such grotesquerie.",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Truly loathsome!",
+            FRIENDLY = "I don't like it.",
+        },
+		WAGDRONE_FLYING = "Ugh, go away!",
+
+        WAGPUNK_WORKSTATION = "What infernal devices are conjured here?",
+        WAGPUNK_LEVER = "No good will come of this!",
+        WAGPUNK_FLOOR_KIT = "Just how much more space does he need?",
+        WAGPUNK_CAGEWALL = "The blasted tinkerer wants to trap us like rats.",
+
+        WANDERINGTRADER = "I thought I smelled something in the air. What are you peddling today?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Where does it say, \"women and children first\"?",
+        LUNAR_SEED = "I told you it was no match for my abilities.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

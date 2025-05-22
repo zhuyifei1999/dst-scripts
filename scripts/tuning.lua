@@ -364,6 +364,7 @@ function Tune(overrides)
         FARM_HOE_DAMAGE = wilson_attack*.5,
         BUGNET_DAMAGE = wilson_attack*.125,
         THULECITEBUGNET_DAMAGE = wilson_attack*.125,
+		GESTALT_CAGE_DAMAGE = wilson_attack * 0.5,
         WHIP_DAMAGE = wilson_attack*.8,
         BULLKELP_ROOT_DAMAGE = wilson_attack*.8,
         FISHINGROD_DAMAGE = wilson_attack*.125,
@@ -1394,6 +1395,14 @@ function Tune(overrides)
 
             RABBITKINGSHOP = TechTree.Create({
                 RABBITKINGSHOP = 2,
+            }),
+
+            WANDERINGTRADERSHOP = TechTree.Create({
+                WANDERINGTRADERSHOP = 2,
+            }),
+
+            WAGPUNK_WORKSTATION = TechTree.Create({
+                WAGPUNK_WORKSTATION = 1,
             }),
 
             TURFCRAFTING = TechTree.Create({
@@ -4242,7 +4251,7 @@ function Tune(overrides)
 		{
 			DEFAULT =
 			{
-				HEALTH_PENALTY = 0.25,
+				HEALTH = 25,
 				HUNGER = 25,
 				SANITY = 25,
 				WETNESS = 100,
@@ -4250,7 +4259,7 @@ function Tune(overrides)
 
 			WX78 =
 			{
-				HEALTH_PENALTY = 0.4,
+				HEALTH_PENALTY = 0.1,
 				HUNGER = 25,
 				SANITY = 50,
 				WETNESS = 100,
@@ -4258,7 +4267,7 @@ function Tune(overrides)
 
 			WOODIE =
 			{
-				HEALTH_PENALTY = 0.25,
+				HEALTH = 25,
 				HUNGER = 50,
 				SANITY = 25,
 				WETNESS = 100,
@@ -4272,9 +4281,9 @@ function Tune(overrides)
 
             WURT =
             {
-                HEALTH_PENALTY = 0,
-                HUNGER = 0,
-                SANITY = 0,
+                --HEALTH = 0,
+                --HUNGER = 0,
+                --SANITY = 0,
                 WETNESS = 50,
             },
 
@@ -7510,7 +7519,7 @@ function Tune(overrides)
         MIASMA_DEBUFF_TICK_RATE = 2,
         MIASMA_DEBUFF_TICK_VALUE = -2,
 
-        ACIDRAIN_ENALBED = true, -- Managed by world settings.
+        ACIDRAIN_ENABLED = true, -- Managed by world settings.
         -- Damage over times.
         ACIDRAIN_DAMAGE_TIME = 1.5, -- How quickly the game polls to deal acidrain damage.
         ACIDRAIN_DAMAGE_PER_SECOND = 2.0,
@@ -8378,6 +8387,93 @@ function Tune(overrides)
         -- Playing Cards
         PLAYINGCARDS_NUM_SUITS = 4,
         PLAYINGCARDS_NUM_PIPS = 13,
+
+        -- Rifts 5
+        DROWNING_SHALLOW_SCALE = 0.33,
+        DROWNING_ITEMDROP_SHALLOWS = 7,
+        DROWNING_ITEMDROP_NORMAL = 5,
+
+		WAGDRONE_ROLLING_RUNSPEED = 9,
+		WAGDRONE_ROLLING_HEALTH = 70 * 4,
+		WAGDRONE_ROLLING_REGEN_AMOUNT = 5,
+		WAGDRONE_ROLLING_REGEN_PERIOD = 1,
+		WAGDRONE_ROLLING_DAMAGE = 50,
+		WAGDRONE_ROLLING_HARDARMOR_BOUNCE_CHANCE = 0.5,
+		WAGDRONE_LASERWIRE_DAMAGE = 30,
+		WAGDRONE_LASERWIRE_INSULATED_DAMAGE_MULT = 0.5,
+
+		WAGDRONE_FLYING_RUNSPEED = 7,
+		WAGDRONE_FLYING_DAMAGE = 30,
+		WAGDRONE_FLYING_INSULATED_DAMAGE_MULT = 0.5,
+
+		WAGBOSS_ROBOT_HEALTH = 18000,
+		WAGBOSS_ROBOT_WALKSPEED = 2,
+		--WAGBOSS_ROBOT_HIT_RECOVERY = 1,
+		WAGBOSS_ROBOT_ATTACK_PERIOD = 4,
+		WAGBOSS_ROBOT_ATTACK_RANGE = 3,
+		WAGBOSS_ROBOT_DAMAGE = 200,
+		WAGBOSS_ROBOT_PLANAR_DAMAGE = 30,
+		WAGBOSS_ROBOT_KICK_DAMAGE = 50,
+		WAGBOSS_ROBOT_KICK_PLANAR_DAMAGE = 10,
+		WAGBOSS_ROBOT_PLAYERDAMAGEPERCENT = 0.75,
+
+		WAGBOSS_MISSILE_DAMAGE = 75,
+		WAGBOSS_MISSILE_PLANAR_DAMAGE = 10,
+		--WAGBOSS_MISSILE_HEATROCK_DRAIN = 10,
+
+		WAGBOSS_BEAM_PLANAR_DAMAGE = 50, --initial hit
+		WAGBOSS_BEAM_PLANAR_BURN = 1, --DOT
+		WAGBOSS_BEAM_BRIGHTMARE_HEAL = 5, --Heal over time
+
+		WAGBOSS_ROBOT_TANTRUM_CD = 15,
+		WAGBOSS_ROBOT_LEAP_CD = { 7, 11 },
+		WAGBOSS_ROBOT_MISSILES_CD = { 16, 20 },
+		WAGBOSS_ROBOT_MISSILE_BARRAGE_PERIOD = 1.5,
+		WAGBOSS_ROBOT_HACK_DRONES_CD = 60,
+		WAGBOSS_ROBOT_ORBITAL_STRIKE_CD = { 24, 30 },
+
+		WAGBOSS_ROBOT_AGGRO_DIST = 15,
+		WAGBOSS_ROBOT_KEEP_AGGRO_DIST = 12,
+		WAGBOSS_ROBOT_DEAGGRO_DIST = 24,
+
+		ALTERGUARDIAN_PHASE4_LUNARRIFT_WALKSPEED = 2,
+
+        WAGPUNK_ARENA_WAGSTAFF_FADEIN_TIME = 1.0,
+        WAGPUNK_ARENA_WAGSTAFF_FADEOUT_TIME = 2.2,
+        WAGPUNK_ARENA_WAGSTAFF_TALK_TIME = 4.0,
+        WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME = 5 * 60, -- If a player disconnects or a save is loaded.
+        WAGPUNK_ARENA_WAGBOSS_ROBOT_COOLDOWN_DEFEATED_TIME = total_day_time * 20, -- If the boss is defeated.
+
+        AXISALIGNEDPLACEMENT_INTERVALS = 1, -- Units of division for 1 game unit.
+        AXISALIGNEDPLACEMENT_CIRCLESIZE = 4, -- Units for how big the circle radius ground decals are going to draw out to.
+        AXISALIGNEDPLACEMENT_HELPERS_TIMETOSHOW = 0.15,
+        AXISALIGNEDPLACEMENT_HELPERS_TIMETOHIDE = 0.2,
+        AXISALIGNEDPLACEMENT_HELPERS_UPDATEPERIOD = FRAMES,
+        AXISALIGNEDPLACEMENT_HELPERS_UPDATEAMOUNT = 15,
+
+        WANDERINGTRADER_ENABLED = true, -- Managed by world settings.
+        WANDERINGTRADER_SHOP_REFRESH_INTERVAL = total_day_time * 2,
+        WANDERINGTRADER_SHOP_RANDOM_UNCOMMON_ODDS = 0.5,
+        WANDERINGTRADER_SHOP_RANDOM_RARE_ODDS = 0.25,
+        WANDERINGTRADER_WANDERING_PERIOD = 14,
+        WANDERINGTRADER_WANDERING_PERIOD_VARIANCE = 4,
+        WANDERINGTRADER_VIRTUALWALKING_SPEEDMULT = 4,
+
+        GESTALT_EVOLVED_ATTACK_DAMAGE_GROGGINESS = 0.5,
+        GESTALT_EVOLVED_ATTACK_DAMAGE_KO_TIME = 1,
+        GESTALT_EVOLVED_REAL_DAMAGE = 20,
+        GESTALT_EVOLVED_RELOCATE_TIME_RAND = 2,
+        GESTALT_EVOLVED_RELOCATE_TIME_BASE = 1,
+		GESTALT_EVOLVED_HEALTH = 2000,
+
+        ARMOR_LUNACYHAT = wilson_health * 9 * multiplayer_armor_durability_modifier,
+        ARMOR_LUNACYHAT_ABSORPTION = .7 * multiplayer_armor_absorption_modifier,
+
+		ALTERGUARDIAN_PHASE1_RIFT_PLANAR_DAMAGE = 10,
+		ALTERGUARDIAN_PHASE1_RIFT_REGENTIME = 16,
+        ALTERGUARDIAN_PHASE1_NAUGHTINESS_DECAY_PERIOD = 60,
+        ALTERGUARDIAN_PHASE1_THRESHOLD = 20,
+        ALTERGUARDIAN_PHASE1_THRESHOLD_VARIANCE = 20,
     }
 
     TUNING_MODIFIERS = {}

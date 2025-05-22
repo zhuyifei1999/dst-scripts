@@ -51,12 +51,10 @@ local function getlightningtime()
 end
 
 local function onremovewagstaff()
-
 	if self.wagstaff then
 		self.wagstaff = nil
 	end
 end
-
 
 local SPAWNDIST = 40
 local SCREENDIST = 30
@@ -70,8 +68,9 @@ end
 
 local function screencheckfn(pt)
 	if customcheckfn(pt) then
-		for i,player in pairs(_activeplayers)do
-			if player:GetDistanceSqToPoint(pt.x, pt.y, pt.z) < SCREENDIST*SCREENDIST then
+		local TEST_DSQ = SCREENDIST*SCREENDIST
+		for _, player in pairs(_activeplayers) do
+			if player:GetDistanceSqToPoint(pt.x, pt.y, pt.z) < TEST_DSQ then
 				return false
 			end
 		end
@@ -119,15 +118,6 @@ local function findnewcluelocation(currentpos, finalhunt, spawndist)
 	return pos
 end
 
---[[
-local function OnPlayerChangeStorm(player, data)
-	if data.level < TUNING.SANDSTORM_FULL_LEVEL then
-		-- player left storm
-	else
-		-- player enter storm
-	end
-end
-]]
 local function NodeCanHaveMoonstorm(node)
 	return (not self.lastnodes or not table.contains(self.lastnodes, node.area))
 		and not table.contains(node.tags, "lunacyarea")
@@ -171,10 +161,8 @@ local function OnPlayerLeft(src, player)
 end
 
 local function setmoonphasestyle()
-
 	TheWorld:PushEvent("ms_setmoonphasestyle", {style = _alterguardian_defeated_count == 0 and "alter_active" or "glassed_alter_active"})
     TheWorld:PushEvent("ms_lockmoonphase", {lock = true})
-
 end
 
 local function StartTheMoonstorms()
@@ -240,8 +228,8 @@ end
 --------------------------------------------------------------------------
 
 --Initialize variables
-for i, v in ipairs(AllPlayers) do
-    table.insert(_activeplayers, v)
+for _, player in pairs(AllPlayers) do
+    table.insert(_activeplayers, player)
 end
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined)
 --Register events
@@ -252,7 +240,9 @@ inst:ListenForEvent("ms_stopthemoonstorms", StopTheMoonstorms)
 inst:WatchWorldState("cycles", on_day_change)
 
 
-inst.moonstormwindowovertask = inst:DoTaskInTime(0,function()  TheWorld:PushEvent("ms_moonstormwindowover") end)
+inst.moonstormwindowovertask = inst:DoTaskInTime(0, function()
+	TheWorld:PushEvent("ms_moonstormwindowover")
+end)
 --------------------------------------------------------------------------
 --[[ Public getters and setters ]]
 --------------------------------------------------------------------------
@@ -322,9 +312,7 @@ function self:StartMoonstorm(set_first_node_index,nodes)
 			table.insert(nodelist, node)
 
 			local node_edges = TheWorld.topology.nodes[node].validedges
-			-- print("		adding node:", node, "		steps remaining:", steps)
 
-			-- print("iterating", #node_edges, "node edges")
 			for _, edge_index in ipairs(node_edges) do
 				local edge_nodes = TheWorld.topology.edgeToNodes[edge_index]
 				local other_node_index = edge_nodes[1] ~= node and edge_nodes[1] or edge_nodes[2]
@@ -337,6 +325,7 @@ function self:StartMoonstorm(set_first_node_index,nodes)
 			return
 		end
 	end
+
 	local trial = 0
 	if not new_storm_nodes or #new_storm_nodes < MIN_NODES then
 		while #new_storm_nodes < MIN_NODES do
@@ -397,7 +386,6 @@ function self:StopCurrentMoonstorm()
 end
 
 function self:StopExperimentTasks()
-
 	self.inst.components.timer:StopTimer("moonstorm_experiment_complete")
 
 	if self.tools_task then
@@ -486,9 +474,28 @@ function self:EndExperiment()
 	self:StopExperiment()
 end
 
+--
+local function onremoveexperimentstatic(static)
+	if self.experiment_static == static then
+		self.experiment_static = nil
+		self:FailExperiment()
+	end
+end
+
+function self:beginNoWagstaffExperiment(player)
+	local pos = findnewcluelocation(player:GetPosition())
+	if pos then
+		self.experiment_static = SpawnPrefab("moonstorm_static")
+		self.experiment_static.Transform:SetPosition(pos:Get())
+
+		self.experiment_static:ListenForEvent("onremove", onremoveexperimentstatic)
+		self.experiment_static:ListenForEvent("death", onremoveexperimentstatic)
+	end
+end
+
+--
 function self:beginWagstaffHunt(player)
-	local playerpos = Vector3(player.Transform:GetWorldPosition())
-	local pos = findnewcluelocation(playerpos)
+	local pos = findnewcluelocation(player:GetPosition())
 	if pos then
 		local wagstaff = SpawnPrefab("wagstaff_npc")
 		wagstaff.hunt_stage = "hunt"
@@ -559,7 +566,6 @@ function self:AddMetplayer(id)
 end
 
 function self:beginWagstaffDefence()
-
 	self.wagstaff.components.timer:StopTimer("expiretime")
 
 	if not self.wagstaff_tools then
@@ -581,20 +587,25 @@ function self:beginWagstaffDefence()
 	end
 end
 
-
 function self:SpawnGestalt(angle, prefab)
+	local pos, static
 	if self.wagstaff and self.wagstaff:IsValid() then
-		local pos = Vector3(self.wagstaff.Transform:GetWorldPosition())
+		pos = self.wagstaff:GetPosition()
+		static = self.wagstaff.static
+	elseif self.experiment_static and self.experiment_static:IsValid() then
+		pos = self.experiment_static:GetPosition()
+		static = self.experiment_static
+	end
+
+	if pos then
 		local gestalt = SpawnPrefab(prefab)
-
 		local newpos = FindWalkableOffset(pos, angle + (math.random()*PI/4), 16 + math.random()*8 , 16, nil, nil, customcheckfn, nil, nil)
-
 		if newpos then
 			pos = pos + newpos
 			pos.y = 15
 			gestalt.Transform:SetPosition(pos.x,pos.y,pos.z)
-			if self.wagstaff.static then
-				gestalt.components.entitytracker:TrackEntity("swarmTarget", self.wagstaff.static)
+			if static then
+				gestalt.components.entitytracker:TrackEntity("swarmTarget", static)
 			end
 			gestalt:PushEvent("arrive")
 		end
@@ -664,40 +675,45 @@ function self:spawnTool()
 end
 
 function self:DoTestForWagstaff()
-	if not self.wagstaff  then
-
+	local moonstorms = TheWorld.net.components.moonstorms
+	if not self.wagstaff and moonstorms ~= nil then
 		local eligible_players = {}
-		for i, v in ipairs(_activeplayers) do
-			local valid = v:IsValid() and v.components.health ~= nil and not v.components.health:IsDead()
+		for _, player in pairs(_activeplayers) do
+			local valid = player:IsValid() and player.components.health ~= nil and not player.components.health:IsDead()
 			if valid then
-				local pt = Vector3(v.Transform:GetWorldPosition())
-				if TheWorld.net.components.moonstorms and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt) then
-					table.insert(eligible_players,v)
+				local pt = player:GetPosition()
+				if moonstorms:IsPointInMoonstorm(pt) then
+					table.insert(eligible_players, player)
 				end
 			end
 		end
+
 		if #eligible_players > 0 then
-			self:beginWagstaffHunt(eligible_players[math.random(1,#eligible_players)])
+			if TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated() then
+				self:beginNoWagstaffExperiment(eligible_players[math.random(#eligible_players)])
+			else
+				self:beginWagstaffHunt(eligible_players[math.random(#eligible_players)])
+			end
 		end
 	end
 end
 
-local MOONSTORM_SPARKS_MUST_HAVE= {"moonstorm_spark"}
-local MOONSTORM_SPARKS_CANT_HAVE= {"INLIMBO"}
+local MOONSTORM_SPARKS_MUST_HAVE = {"moonstorm_spark"}
+local MOONSTORM_SPARKS_CANT_HAVE = {"INLIMBO"}
 
 function self:DoTestForSparks()
-
-	for i, v in ipairs(_activeplayers) do
-		local pt = v:GetPosition()
-		if TheWorld.net.components.moonstorms and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt) then
-			local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 30, MOONSTORM_SPARKS_MUST_HAVE,MOONSTORM_SPARKS_CANT_HAVE)
-
-			if #ents < SPARKLIMIT then
-				local pos = FindWalkableOffset(pt, math.random()*TWOPI, 5 + math.random()* 20, 16, nil, nil, customcheckfn, nil, nil)
-
-				if pos then
-					local spark = SpawnPrefab("moonstorm_spark")
-					spark.Transform:SetPosition(pt.x + pos.x,0,pt.z + pos.z)
+	local moonstorms = TheWorld.net.components.moonstorms
+	if not moonstorms then
+		for _, player in pairs(_activeplayers) do
+			local pt = player:GetPosition()
+			if moonstorms:IsPointInMoonstorm(pt) then
+				local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 30, MOONSTORM_SPARKS_MUST_HAVE,MOONSTORM_SPARKS_CANT_HAVE)
+				if #ents < SPARKLIMIT then
+					local pos = FindWalkableOffset(pt, math.random()*TWOPI, 5 + math.random()* 20, 16, nil, nil, customcheckfn, nil, nil)
+					if pos then
+						local spark = SpawnPrefab("moonstorm_spark")
+						spark.Transform:SetPosition(pt.x + pos.x, 0, pt.z + pos.z)
+					end
 				end
 			end
 		end
@@ -705,21 +721,23 @@ function self:DoTestForSparks()
 end
 
 function self:DoTestForLightning()
-	local candidates = {}
-	for i, v in ipairs(_activeplayers) do
-		local pt = v:GetPosition()
-		if TheWorld.net.components.moonstorms and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt) then
-			table.insert(candidates,v)
+	local moonstorms = TheWorld.net.components.moonstorms
+	if not moonstorms then
+		local candidates = {}
+		for _, player in pairs(_activeplayers) do
+			local pt = player:GetPosition()
+			if moonstorms:IsPointInMoonstorm(pt) then
+				candidates[player] = pt
+			end
 		end
-	end
 
-	if #candidates > 0 then
-		local candidate = candidates[math.random(1,#candidates)]
-		local pt = Vector3(candidate.Transform:GetWorldPosition())
-		local pos = FindWalkableOffset(pt, math.random()*TWOPI, 5 + math.random()* 10, 16, nil, nil, customcheckfn, nil, nil)
-		if pos then
-			local spark = SpawnPrefab("moonstorm_lightning")
-			spark.Transform:SetPosition(pt.x + pos.x,0,pt.z + pos.z)
+		if #candidates > 0 then
+			local candidate, candidate_pt = GetRandomItemWithIndex(candidates)
+			local pos = FindWalkableOffset(candidate_pt, math.random()*TWOPI, 5 + math.random()* 10, 16, nil, nil, customcheckfn, nil, nil)
+			if pos then
+				local spark = SpawnPrefab("moonstorm_lightning")
+				spark.Transform:SetPosition(candidate_pt.x + pos.x, 0, candidate_pt.z + pos.z)
+			end
 		end
 	end
 	self.moonstorm_lightning_task = self.inst:DoTaskInTime(getlightningtime(),function() self:DoTestForLightning() end)
@@ -775,11 +793,7 @@ function self:TestAltarTriangleValid(altar0, altar1, altar2, center_pt)
 		center_x, center_z = (altar0_x + altar1_x + altar2_x) / 3, (altar0_z + altar1_z + altar2_z) / 3
 	end
 
-	if not self:TestMoonAltarLinkPositionValid(Point(center_x, 0, center_z)) then
-		return false
-	end
-
-	return true
+	return self:TestMoonAltarLinkPositionValid(Point(center_x, 0, center_z))
 end
 
 self.LongUpdate = self.OnUpdate
@@ -822,6 +836,7 @@ function self:OnLoad(data)
 		if data.metplayers then
 			self.metplayers = data.metplayers
 		end
+
 		if data.stormdays then
 			self.stormdays = data.stormdays
 		end

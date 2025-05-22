@@ -31,7 +31,9 @@ local _poptask = nil
 --------------------------------------------------------------------------
 
 local function GetTuningLevelForPlayer(player)
-    local sanity = player.components.sanity:IsLunacyMode() and player.components.sanity:GetPercentWithPenalty() or 0
+	local wagboss_tracker = TheWorld.components.wagboss_tracker
+    local sanity = ((player.components.sanity:IsLunacyMode() or (wagboss_tracker and wagboss_tracker:IsWagbossDefeated())) and player.components.sanity:GetPercentWithPenalty())
+		or 0
 	if sanity >= TUNING.GESTALT_MIN_SANITY_TO_SPAWN then
 		for k, v in ipairs(TUNING.GESTALT_POPULATION_LEVEL) do
 			if sanity <= v.MAX_SANITY then
@@ -44,11 +46,19 @@ local function GetTuningLevelForPlayer(player)
 end
 
 local function IsValidTrackingTarget(target)
-	return target.components.health ~= nil and not target.components.health:IsDead() and not target:HasTag("playerghost") and target.entity:IsVisible()
+	return (target.components.health ~= nil and not target.components.health:IsDead())
+		and not target:HasTag("playerghost")
+		and target.entity:IsVisible()
 end
 
 local function StopTracking(ent)
 	_gestalts[ent] = nil
+end
+
+local function GetGestaltSpawnType(player, pt)
+	local wagboss_tracker = TheWorld.components.wagboss_tracker
+	return (wagboss_tracker and wagboss_tracker:IsWagbossDefeated() and "gestalt_guard_evolved")
+		or "gestalt"
 end
 
 local SPAWN_ONEOF_TAGS = {"brightmare_gestalt", "player", "playerghost"}
@@ -58,10 +68,13 @@ local function FindGestaltSpawnPtForPlayer(player, wantstomorph)
 		local x1, z1 = x + offset.x, z + offset.z
 		return #TheSim:FindEntities(x1, 0, z1, 6, nil, nil, SPAWN_ONEOF_TAGS) == 0
 	end
-    local offset = FindValidPositionByFan(math.random() * TWOPI,
-											(wantstomorph and TUNING.GESTALT_SPAWN_MORPH_DIST or TUNING.GESTALT_SPAWN_DIST) + math.random() * 2 * TUNING.GESTALT_SPAWN_DIST_VAR - TUNING.GESTALT_SPAWN_DIST_VAR,
-											8,
-											IsValidGestaltSpawnPt)
+
+    local offset = FindValidPositionByFan(
+		math.random() * TWOPI,
+		(wantstomorph and TUNING.GESTALT_SPAWN_MORPH_DIST or TUNING.GESTALT_SPAWN_DIST) + math.random() * 2 * TUNING.GESTALT_SPAWN_DIST_VAR - TUNING.GESTALT_SPAWN_DIST_VAR,
+		8,
+		IsValidGestaltSpawnPt
+	)
 	if offset ~= nil then
 		offset.x = offset.x + x
 		offset.z = offset.z + z
@@ -73,7 +86,7 @@ end
 local function TrySpawnGestaltForPlayer(player, level, data)
 	local pt = FindGestaltSpawnPtForPlayer(player, false)
 	if pt ~= nil then
-        local ent = SpawnPrefab("gestalt")
+        local ent = SpawnPrefab(GetGestaltSpawnType(player, pt))
 		_gestalts[ent] = {}
 		inst:ListenForEvent("onremove", StopTracking, ent)
         ent.Transform:SetPosition(pt.x, 0, pt.z)
@@ -84,7 +97,7 @@ end
 local BRIGHTMARE_TAGS = {"brightmare"}
 local function UpdatePopulation()
 	local total_levels = 0
-	for player, _ in pairs(_players) do
+	for player in pairs(_players) do
 		if IsValidTrackingTarget(player) then
 			local level, data = GetTuningLevelForPlayer(player)
 			total_levels = total_levels + level
@@ -93,36 +106,26 @@ local function UpdatePopulation()
 				local x, y, z = player.Transform:GetWorldPosition()
 				local gestalts = TheSim:FindEntities(x, y, z, TUNING.GESTALT_POPULATION_DIST, BRIGHTMARE_TAGS)
 				local maxpop = data.MAX_SPAWNS
-				local inc_chance = 0
-				if level == 1 then
-					if #gestalts < maxpop then
-						inc_chance = .2
-					end
-				elseif level == 2 then
-					if #gestalts < maxpop then
-						inc_chance = .3
-					end
-				else -- level == 3
-					if #gestalts < maxpop then
-						inc_chance = .4
-					end
-				end
+				local inc_chance = (#gestalts >= maxpop and 0)
+								or (level == 1 and 0.2)
+								or (level == 2 and 0.3)
+								or 0.4
 
 				if math.random() < inc_chance then
 					TrySpawnGestaltForPlayer(player, level, data)
 				end
 			end
-
 		end
 	end
 
-    _poptask = inst:DoTaskInTime(TUNING.GESTALT_POP_CHANGE_INTERVAL - math.min(total_levels, TUNING.GESTALT_POP_CHANGE_INTERVAL / 2) + TUNING.GESTALT_POP_CHANGE_VARIANCE * math.random(), UpdatePopulation)
+	local min_change = math.min(total_levels, TUNING.GESTALT_POP_CHANGE_INTERVAL / 2)
+	local random_change = TUNING.GESTALT_POP_CHANGE_VARIANCE * math.random()
+
+    _poptask = inst:DoTaskInTime(TUNING.GESTALT_POP_CHANGE_INTERVAL - min_change + random_change, UpdatePopulation)
 end
 
 local function Start()
-    if _poptask == nil then
-        _poptask = inst:DoTaskInTime(0, UpdatePopulation)
-    end
+	_poptask = _poptask or inst:DoTaskInTime(0, UpdatePopulation)
 end
 
 local function Stop()
@@ -141,7 +144,7 @@ function self:FindBestPlayer(gestalt)
 	local closest_distsq = TUNING.GESTALT_POPULATION_DIST * TUNING.GESTALT_POPULATION_DIST
 	local closest_level = 0
 
-	for player, _ in pairs(_players) do
+	for player in pairs(_players) do
         if IsValidTrackingTarget(player) then
 			local x, y, z = player.Transform:GetWorldPosition()
             local distsq = gestalt:GetDistanceSqToPoint(x, y, z)
@@ -181,15 +184,15 @@ local function OnSanityModeChanged(player, data)
 	end
 end
 
-local function OnPlayerJoined(inst, player)
-    inst:ListenForEvent("sanitymodechanged", OnSanityModeChanged, player)
+local function OnPlayerJoined(i, player)
+    i:ListenForEvent("sanitymodechanged", OnSanityModeChanged, player)
 	if player.components.sanity:IsLunacyMode() then
 		OnSanityModeChanged(player, {mode = player.components.sanity:GetSanityMode()})
 	end
 end
 
-local function OnPlayerLeft(inst, player)
-    inst:RemoveEventCallback("sanitymodechanged", OnSanityModeChanged, player)
+local function OnPlayerLeft(i, player)
+    i:RemoveEventCallback("sanitymodechanged", OnSanityModeChanged, player)
 	OnSanityModeChanged(player, nil)
 end
 
@@ -198,7 +201,7 @@ end
 --------------------------------------------------------------------------
 
 --Initialize variables
-for i, v in ipairs(AllPlayers) do
+for i, v in pairs(AllPlayers) do
     OnPlayerJoined(inst, v)
 end
 

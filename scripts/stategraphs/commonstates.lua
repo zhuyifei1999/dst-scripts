@@ -73,6 +73,21 @@ CommonHandlers.OnFossilize = function()
 end
 
 --------------------------------------------------------------------------
+local function onelectrocute(inst)
+	if not ((inst.components.inventory and inst.components.inventory:IsInsulated()) or
+			(inst.components.health and inst.components.health:IsDead()) or
+			inst.sg:HasStateTag("dead") or
+			inst.sg:HasStateTag("nointerrupt"))
+	then
+		inst.sg:GoToState("electrocute")
+	end
+end
+
+CommonHandlers.OnElectrocute = function()
+	return EventHandler("electrocute", onelectrocute)
+end
+
+--------------------------------------------------------------------------
 -- delay: how long before we can play another hit reaction animation, 
 -- max_hitreacts: the number of hit reacts before we enter the react cooldown. The creature's AI may still early out of this.
 -- skip_cooldown_fn: return true if you want to allow hit reacts while the hit react is in cooldown (allowing stun locking)

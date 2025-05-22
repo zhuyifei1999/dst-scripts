@@ -6,7 +6,11 @@ local function onmax(self, max)
 end
 
 local function oncurrent(self, current)
-    self.inst.replica.sanity:SetCurrent(self.inducedinsanity and 0 or current)
+    self.inst.replica.sanity:SetCurrent(
+        (self.inducedinsanity and 0)
+        or (self.inducedlunacy and self.max)
+        or current
+    )
 end
 
 local function onratescale(self, ratescale)
@@ -19,12 +23,18 @@ local function onmode(self, mode)
 end
 
 local function onsane(self, sane)
-    self.inst.replica.sanity:SetIsSane(not self.inducedinsanity and sane)
+    self.inst.replica.sanity:SetIsSane(not self.inducedlunacy and not self.inducedinsanity and sane)
+    self.inst.replica.sanity:SetIsSane((not self.inducedinsanity and sane))
 end
 
 local function oninducedinsanity(self, inducedinsanity)
     self.inst.replica.sanity:SetIsSane(not inducedinsanity and self.sane)
-    self.inst.replica.sanity:SetCurrent(inducedinsanity and 0 or self.current)
+    self.inst.replica.sanity:SetCurrent((inducedinsanity and 0) or self.current)
+end
+
+local function oninducedlunacy(self, inducedlunacy)
+    self.inst.replica.sanity:SetIsSane(not inducedlunacy and self.sane)
+    self.inst.replica.sanity:SetCurrent((inducedlunacy and self.max) or self.current)
 end
 
 local function onpenalty(self, penalty)
@@ -52,6 +62,8 @@ local Sanity = Class(function(self, inst)
 	self.externalmodifiers = SourceModifierList(self.inst, 0, SourceModifierList.additive)
     self.inducedinsanity = nil
     self.inducedinsanity_sources = nil
+    self.inducedlunacy = nil
+    self.inducedlunacy_sources = nil
     self.night_drain_mult = 1
 
     self.neg_aura_mult = 1 -- Deprecated, use the SourceModifier below
@@ -88,21 +100,22 @@ nil,
 	mode = onmode,
     sane = onsane,
     inducedinsanity = oninducedinsanity,
+    inducedlunacy = oninducedlunacy,
     penalty = onpenalty,
     ghost_drain_mult = onghostdrainmult,
 })
 
 function Sanity:IsSane()
-    return (self.mode == SANITY_MODE_INSANITY and (not self.inducedinsanity and self.sane))
-			or (self.mode == SANITY_MODE_LUNACY and (self.inducedinsanity or self.sane))
+    return (self.mode == SANITY_MODE_INSANITY and (self.inducedlunacy or (not self.inducedinsanity and self.sane)))
+			or (self.mode == SANITY_MODE_LUNACY and (not self.inducedlunacy and (self.inducedinsanity or self.sane)))
 end
 
 function Sanity:IsInsane()
-    return self.mode == SANITY_MODE_INSANITY and (self.inducedinsanity or not self.sane)
+    return self.mode == SANITY_MODE_INSANITY and (not self.inducedlunacy and (self.inducedinsanity or not self.sane))
 end
 
 function Sanity:IsEnlightened()
-	return self.mode == SANITY_MODE_LUNACY and (not self.inducedinsanity and not self.sane)
+	return self.mode == SANITY_MODE_LUNACY and (self.inducedlunacy or (not self.inducedinsanity and not self.sane))
 end
 
 function Sanity:IsCrazy()
@@ -154,9 +167,9 @@ function Sanity:RecalculatePenalty()
         penalty = penalty + v
     end
 
-    penalty = math.min(penalty, 1-(5/self.max)) -- players cannot go lower than 5 max sanity. The sanity_penalties penalty will actually go beyond, so they will still have to remove enough sanity_penalties to get back above the 5 max sanity cap
-
-    self.penalty = penalty
+    -- players cannot go lower than 5 max sanity. The sanity_penalties penalty will actually go beyond,
+    -- so they will still have to remove enough sanity_penalties to get back above the 5 max sanity cap
+    self.penalty = math.min(penalty, 1-(5/self.max))
 
     self:DoDelta(0)
 end
@@ -222,11 +235,15 @@ function Sanity:GetRealPercent()
 end
 
 function Sanity:GetPercent()
-    return self.inducedinsanity and 0 or self:GetRealPercent()
+    return (self.inducedinsanity and 0)
+        or (self.inducedlunacy and 1)
+        or self:GetRealPercent()
 end
 
 function Sanity:GetPercentWithPenalty()
-    return self.inducedinsanity and 0 or self.current / (self.max - (self.max * self.penalty))
+    return (self.inducedinsanity and 0)
+        or (self.inducedlunacy and 1)
+        or self.current / (self.max - (self.max * self.penalty))
 end
 
 function Sanity:SetPercent(per, overtime)
@@ -273,6 +290,29 @@ function Sanity:SetInducedInsanity(src, val)
         self.inducedinsanity = val
         self:DoDelta(0)
         self.inst:PushEvent("inducedinsanity", val)
+    end
+end
+
+function Sanity:SetInducedLunacy(src, val)
+    if val then
+        if self.inducedlunacy_sources == nil then
+            self.inducedlunacy_sources = { [src] = true }
+        else
+            self.inducedlunacy_sources[src] = true
+        end
+    elseif self.inducedlunacy_sources ~= nil then
+        self.inducedlunacy_sources[src] = nil
+        if next(self.inducedlunacy_sources) == nil then
+            self.inducedlunacy_sources = nil
+            val = nil
+        else
+            val = true
+        end
+    end
+    if self.inducedlunacy ~= val then
+        self.inducedlunacy = val
+        self:DoDelta(0)
+        self.inst:PushEvent("inducedlunacy", val)
     end
 end
 
@@ -392,7 +432,6 @@ function Sanity:Recalc(dt)
 		local total_dapperness = self.dapperness
 		for k, v in pairs(self.inst.components.inventory.equipslots) do
             local equippable = v.components.equippable
-            
             if equippable ~= nil then
                 local item_dapperness = self.get_equippable_dappernessfn ~= nil and self.get_equippable_dappernessfn(self.inst, equippable) or equippable:GetDapperness(self.inst, self.no_moisture_penalty)
                 total_dapperness = total_dapperness + item_dapperness

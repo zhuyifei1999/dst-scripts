@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Where is he hiding?",
             ALREADYACTIVE = "Mayhaps there is another competition elsewhere.",
+            NORESPONSE = "He doth wander 'cross the lands.",
+            RIGHTTHERE = "He is full set upon his duties.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Cursed wraith!",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "'Tis futile to roll it further.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "A fruitless endeavor.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I am the battalion.",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "'Tis excess!",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Lo, Ymir's skull falleth from the heavens.",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "Dost these cards bear a fell curse?",
         PLAYING_CARD = "A wayward card.",
         BALATRO_MACHINE = "So be it! Yet one more round, thou knavish deceiver!",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "An empty vessel.",
+			FILLED = "'Tis spirited.",
+		},
+		WAGBOSS_ROBOT = "Behold, an iron golem.",
+        WAGBOSS_ROBOT_POSSESSED = "The forged beast is cursed!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Thou art a glutton for punishment.",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Unhallowed giant! Odin would pierce his lone eye at the sight of thee!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "I shall sunder thee, O metal menace!",
+            FRIENDLY = "'Tis friend, no longer foe.",
+        },
+		WAGDRONE_FLYING = "Cursed iron harpies!",
+
+        WAGPUNK_WORKSTATION = "What maketh the gear-wright now?",
+        WAGPUNK_LEVER = "A warrior trusts not cursed toggles.",
+        WAGPUNK_FLOOR_KIT = "Njord will not be pleased.",
+        WAGPUNK_CAGEWALL = "Let no soul flee the arena!",
+
+        WANDERINGTRADER = "The pelt-bearer cometh to ply his wares.",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Not this day, Njord!",
+        LUNAR_SEED = "Sprung from the shining coronal of a mighty deity.",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

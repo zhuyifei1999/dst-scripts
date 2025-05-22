@@ -306,6 +306,7 @@ return{
             NOWATERNEARBY = "Fish may only be summoned in close proximity to a body of water.",
             TOOMANYBIRDS = "It doesn't work as well with this many birds around.",
             WAYTOOMANYBIRDS = "The sky is out of birds for now.",
+            BIRDSBLOCKED = "Of course, the force field applies to the birds too.",
             NOFIRES =       "Thankfully, there are no fires to put out.",
             NOSILVICULTURE = "There are no arboreal subjects to focus on.",
             NOHORTICULTURE = "There are no crops to cultivate.",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "The contest will have to wait for the time being.",
             ALREADYACTIVE = "I imagine there must be a competition going on elsewhere.",
+            NORESPONSE = "It appears he has gone for a constitutional.",
+            RIGHTTHERE = "He is currently engaged.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Oh dear, I've missed!",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "It has reached its full size.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "There's no snow here to roll it in.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Strength is wasted on the young!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That is too strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "A destructive heavenly body descends upon us. This is rather unfavorable.",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "Do we have enough players for Bridge?",
         PLAYING_CARD = "Who's missing a card?",
         BALATRO_MACHINE = "One must know when the time for games has passed. Now is not that time.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "It is quite empty.",
+			FILLED = "It contains an entity.",
+		},
+		WAGBOSS_ROBOT = "It only poses a threat if he fails to control it.",
+        WAGBOSS_ROBOT_POSSESSED = "The entity does not enjoy being trapped and enslaved.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It seems intent on retribution.",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "A curious amalgamation of machine parts and sentient lunar energy.",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "They cannot be destroyed.",
+            FRIENDLY = "This version is rather useful.",
+        },
+		WAGDRONE_FLYING = "We need protection from their air assault.",
+
+        WAGPUNK_WORKSTATION = "The Researcher's workstation.",
+        WAGPUNK_LEVER = "A standard two-position activation switch.",
+        WAGPUNK_FLOOR_KIT = "It's obviously a method of coastal extension.",
+        WAGPUNK_CAGEWALL = "It projects a force field tuned to repel physical matter and absorb kinetic impact. Simple.",
+
+        WANDERINGTRADER = "Oh dear, the roaming vendor sure could use a bath.",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "A passive deployment flotation device. I approve.",
+        LUNAR_SEED = "A piece of its crown, no doubt.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

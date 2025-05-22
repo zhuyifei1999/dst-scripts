@@ -175,6 +175,20 @@ function Health:IsTakingFireDamageFull()
     end
 end
 
+function Health:SetIsTakingLunarBeamDamage(istakinglunarbeamdamage)
+	if self.classified then
+		self.classified.istakinglunarbeamdamage:set(istakinglunarbeamdamage)
+	end
+end
+
+function Health:IsTakingLunarBeamDamage()
+	if self.inst.components.health then
+		return self.inst.components.health:IsTakingLunarBeamDamage()
+	else
+		return self.classified and self.classified.istakinglunarbeamdamage:value()
+	end
+end
+
 function Health:SetCanHeal(canheal)
     if not canheal then
         self.inst:AddTag("cannotheal")

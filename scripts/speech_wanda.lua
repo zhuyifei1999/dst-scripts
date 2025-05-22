@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Well, if he's not going to start the contest I'm not waiting around.",
             ALREADYACTIVE = "It doesn't look like anyone's here.",
+            NORESPONSE = "There's no one here.",
+            RIGHTTHERE = "He's busy.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Missed! Bad timing...",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Let's not waste time. It's as big as it'll get.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "There's no snow.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Strength is efficiency!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Ooph. That is far too strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "I knew this would happen. It's falling from the sky!",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "Certainly a way to kill time.",
         PLAYING_CARD = "What does one do with a single card?",
         BALATRO_MACHINE = "Perhaps I have time for a round or two.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Empty.",
+			FILLED = "Hello there.",
+		},
+		WAGBOSS_ROBOT = "This never ends well.",
+        WAGBOSS_ROBOT_POSSESSED = "We never learn!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "We keep meeting like this.",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "I'll never get used to that!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Always in the way!",
+            FRIENDLY = "I wonder if it remembers.",
+        },
+		WAGDRONE_FLYING = "They're giving me a headache!",
+
+        WAGPUNK_WORKSTATION = "Ahead of his time.",
+        WAGPUNK_LEVER = "I know what this does...",
+        WAGPUNK_FLOOR_KIT = "Hmm, a shortcut to terraformation?",
+        WAGPUNK_CAGEWALL = "I don't like being stuck.",
+
+        WANDERINGTRADER = "I've seen him roaming around before.",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "How convenient!",
+        LUNAR_SEED = "I forget if this is the end or the beginning.",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

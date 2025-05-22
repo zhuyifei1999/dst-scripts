@@ -1192,3 +1192,35 @@ function Map:IsPointInSharkBoiArena(x, y, z)
 
     return world.net.components.sharkboimanagerhelper:IsPointInArena(x, y, z)
 end
+
+function Map:IsPointInWagPunkArena(x, y, z)
+    local world = TheWorld
+    if world.net == nil or world.net.components.wagpunk_floor_helper == nil then
+        return false
+    end
+
+    return world.net.components.wagpunk_floor_helper:IsPointInArena(x, y, z)
+end
+
+function Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
+    local world = TheWorld
+    if world.net == nil or world.net.components.wagpunk_floor_helper == nil then
+        return false
+    end
+
+    if not world.net.components.wagpunk_floor_helper:IsBarrierUp() then
+        return false
+    end
+
+    return world.net.components.wagpunk_floor_helper:IsPointInArena(x, y, z)
+end
+
+function Map:GetWagPunkArenaCenterXZ()
+    local world = TheWorld
+    if world.net == nil or world.net.components.wagpunk_floor_helper == nil then
+        return nil, nil
+    end
+
+    return world.net.components.wagpunk_floor_helper:GetArenaOrigin()
+end
+

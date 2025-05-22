@@ -1,0 +1,411 @@
+local assets =
+{
+	Asset("ANIM", "anim/gestalt_cage.zip"),
+}
+
+local assets_filled =
+{
+	Asset("ANIM", "anim/gestalt_cage.zip"),
+	Asset("INV_IMAGE", "gestalt_cage_filled2"),
+	Asset("INV_IMAGE", "gestalt_cage_filled3"),
+}
+
+local prefabs =
+{
+	"gestalt_cage_filled1",
+	"gestalt_cage_filled2",
+	"gestalt_cage_filled3",
+	"gestalt_cage_swap_fx",
+}
+
+local function OnEquip(inst, owner)
+	owner.AnimState:OverrideSymbol("swap_object", "gestalt_cage", "swap_object")
+	owner.AnimState:Show("ARM_carry")
+	owner.AnimState:Hide("ARM_normal")
+
+	if inst.fx then
+		inst.fx:Remove()
+	end
+	inst.fx = SpawnPrefab("gestalt_cage_swap_fx")
+	inst.fx:AttachToOwner(owner)
+end
+
+local function OnUnequip(inst, owner)
+	owner.AnimState:Hide("ARM_carry")
+	owner.AnimState:Show("ARM_normal")
+
+	if inst.fx then
+		inst.fx:Remove()
+		inst.fx = nil
+	end
+end
+
+local function fn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank("gestalt_cage")
+	inst.AnimState:SetBuild("gestalt_cage")
+	inst.AnimState:PlayAnimation("idle")
+
+	--weapon (from weapon component) added to pristine state for optimization
+	inst:AddTag("weapon")
+
+	local swap_data = { sym_build = "gestalt_cage", sym_name = "swap_object" }
+	MakeInventoryFloatable(inst, "med", 0.1, { 1.2, 0.7, 1.2 }, true, -18, swap_data)
+
+    inst:AddTag("gestalt_cage")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+    inst:AddComponent("tradable")
+
+	inst:AddComponent("inventoryitem")
+
+	inst:AddComponent("equippable")
+	inst.components.equippable:SetOnEquip(OnEquip)
+	inst.components.equippable:SetOnUnequip(OnUnequip)
+
+	inst:AddComponent("weapon")
+	inst.components.weapon:SetDamage(TUNING.GESTALT_CAGE_DAMAGE)
+
+	inst:AddComponent("gestaltcage")
+
+	MakeHauntableLaunch(inst)
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local function fx_OnRemoveEntity(inst)
+	table.removearrayvalue(inst.owner.highlightchildren, inst)
+end
+
+local function fx_SetHighlightOwner(inst, owner)
+	if owner.highlightchildren then
+		table.insert(owner.highlightchildren, inst)
+	else
+		owner.highlightchildren = { inst }
+	end
+
+	inst.owner = owner
+	inst.OnRemoveEntity = fx_OnRemoveEntity
+end
+
+local function fx_OnEntityReplicated(inst)
+	local owner = inst.entity:GetParent()
+	if owner then
+		fx_SetHighlightOwner(inst, owner)
+	end
+end
+
+local function fx_AttachToOwner(inst, owner)
+	inst.entity:SetParent(owner.entity)
+	inst.Follower:FollowSymbol(owner.GUID, "swap_object", nil, nil, nil, true, nil, 0, 2)
+	if owner.components.colouradder then
+		owner.components.colouradder:AttachChild(inst)
+	end
+	if owner.components.bloomer then
+		owner.components.bloomer:AttachChild(inst)
+	end
+	if not TheNet:IsDedicated() then
+		fx_SetHighlightOwner(inst, owner)
+	end
+end
+
+local function fxfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddFollower()
+	inst.entity:AddNetwork()
+
+	inst:AddTag("FX")
+
+	--player can be 4-faced or 6-faced(mounted)
+	--we use 8-faced model to cover all facings
+	inst.Transform:SetEightFaced()
+
+	inst.AnimState:SetBank("gestalt_cage")
+	inst.AnimState:SetBuild("gestalt_cage")
+	inst.AnimState:PlayAnimation("swap1")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		inst.OnEntityReplicated = fx_OnEntityReplicated
+
+		return inst
+	end
+
+	inst.AttachToOwner = fx_AttachToOwner
+	inst.persists = false
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+local FLICKER_LOW1 = 0.3
+local FLICKER_HIGH1 = 0.45
+local FLICKER_LOW2 = 0.45
+local FLICKER_HIGH2 = 0.6
+
+local function DoFlicker(inst, i)
+	if bit.band(i, 1) == 1 then
+		inst.AnimState:SetSymbolMultColour("light_on", 1, 1, 1, inst.level == 2 and FLICKER_LOW2 or FLICKER_HIGH1)
+		inst._flickertask = inst:DoTaskInTime(math.random(2) * FRAMES, DoFlicker, i + 1)
+	else
+		inst.AnimState:SetSymbolMultColour("light_on", 1, 1, 1, inst.level == 2 and FLICKER_HIGH2 or FLICKER_LOW1)
+		if i < 10 then
+			inst._flickertask = inst:DoTaskInTime(math.random(3) * FRAMES, DoFlicker, i + 1)
+		else
+			inst._flickertask = inst:DoTaskInTime(1 + math.random() * 2, DoFlicker, 1)
+		end
+	end
+end
+
+local function SetLedStatusFlicker(inst)
+	if inst._flickertask == nil then
+		DoFlicker(inst, 10)
+	end
+end
+
+local function Filled_StopFlicker(inst)
+	if inst._flickertask then
+		inst._flickertask:Cancel()
+		inst._flickertask = nil
+	end
+end
+
+local function Filled_OnEntityWake(inst)
+	if not inst.components.inventoryitem:IsHeld() then
+		SetLedStatusFlicker(inst)
+	end
+end
+
+local function Filled_toground(inst)
+	if not inst:IsAsleep() then
+		SetLedStatusFlicker(inst)
+	end
+end
+
+--------------------------------------------------------------------------
+
+local function Level3JiggleLoop(inst, loops)
+	inst.AnimState:SetFrame(8)
+	if loops > 1 then
+		inst:DoTaskInTime(7 * FRAMES, Level3JiggleLoop, loops - 1)
+	end
+end
+
+local function OnCaptureLevel3AnimQueueOver(inst)
+	inst.AnimState:PlayAnimation("success_3_jiggle")
+	for i = 1, math.random(2, 4) do
+		inst.AnimState:PushAnimation("success_3_loop", false)
+	end
+end
+
+local function StartCapture(inst)
+	local level = inst.level
+
+	local anim = "success_"..tostring(level)
+	inst.Transform:SetFourFaced()
+	inst.AnimState:PlayAnimation("catch")
+	inst.AnimState:PushAnimation(anim)
+	if level == 3 then
+		for i = 1, math.random(1, 2) do
+			inst.AnimState:PushAnimation(anim.."_loop", false)
+		end
+	else
+		inst.AnimState:PushAnimation(anim.."_loop")
+	end
+end
+
+local function Filled_GetStatus(inst, viewer)
+	return "FILLED"
+end
+
+local function filledfn1()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank("gestalt_cage")
+	inst.AnimState:SetBuild("gestalt_cage")
+	inst.AnimState:PlayAnimation("success_1_loop", true)
+	inst.AnimState:SetSymbolLightOverride("head_fx", 0.3)
+	inst.AnimState:SetSymbolLightOverride("backglowart", 0.3)
+	inst.AnimState:SetSymbolLightOverride("light_on", 0.5)
+	inst.AnimState:SetSymbolBloom("light_on")
+
+	MakeInventoryFloatable(inst, "med", 0.3, 0.8)
+
+	inst:SetPrefabNameOverride("gestalt_cage")
+
+    inst:AddTag("gestalt_cage_filled")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+    inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+
+	inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = Filled_GetStatus
+
+    inst:AddComponent("tradable")
+
+	inst:AddComponent("inventoryitem")
+	inst:ListenForEvent("onputininventory", Filled_StopFlicker)
+	inst:ListenForEvent("ondropped", Filled_toground)
+
+	MakeHauntableLaunch(inst)
+
+	inst.level = 1
+	SetLedStatusFlicker(inst)
+	inst.StartCapture = StartCapture
+
+	inst.OnEntitySleep = Filled_StopFlicker
+	inst.OnEntityWake = Filled_OnEntityWake
+
+	return inst
+end
+
+local function filledfn2()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank("gestalt_cage")
+	inst.AnimState:SetBuild("gestalt_cage")
+	inst.AnimState:PlayAnimation("success_2_loop", true)
+	inst.AnimState:SetSymbolLightOverride("head_fx", 0.5)
+	inst.AnimState:SetSymbolLightOverride("backglowart", 0.3)
+	inst.AnimState:SetSymbolLightOverride("light_on", 0.5)
+	inst.AnimState:SetSymbolBloom("backglowart")
+	inst.AnimState:SetSymbolBloom("light_on")
+	inst.AnimState:SetSymbolMultColour("backglowart", 1, 1, 1, 0.6)
+    inst.AnimState:SetLightOverride(0.13)
+
+	MakeInventoryFloatable(inst, "med", 0.3, 0.8)
+
+	inst:SetPrefabNameOverride("gestalt_cage")
+
+    inst:AddTag("gestalt_cage_filled")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+    inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+
+	inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = Filled_GetStatus
+
+    inst:AddComponent("tradable")
+
+	inst:AddComponent("inventoryitem")
+	inst:ListenForEvent("onputininventory", Filled_StopFlicker)
+	inst:ListenForEvent("ondropped", Filled_toground)
+
+	MakeHauntableLaunch(inst)
+
+	inst.level = 2
+	SetLedStatusFlicker(inst)
+	inst.StartCapture = StartCapture
+
+	inst.OnEntitySleep = Filled_StopFlicker
+	inst.OnEntityWake = Filled_OnEntityWake
+
+	return inst
+end
+
+local function filledfn3()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank("gestalt_cage")
+	inst.AnimState:SetBuild("gestalt_cage")
+	inst.AnimState:PlayAnimation("success_3_loop", false)
+	inst.AnimState:SetSymbolLightOverride("head_fx", 1)
+	inst.AnimState:SetSymbolLightOverride("backglowart", 0.3)
+	inst.AnimState:SetSymbolLightOverride("light_on", 0.5)
+    inst.AnimState:SetSymbolLightOverride("SparkleBit", 0.5)
+    inst.AnimState:SetSymbolLightOverride("pb_ray", 0.5)
+    inst.AnimState:SetSymbolLightOverride("pb_energy_loop", 0.5)
+    inst.AnimState:SetLightOverride(0.13)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetSymbolMultColour("light_on", 1, 1, 1, 1)
+
+	MakeInventoryFloatable(inst, "med", 0.3, 0.8)
+
+	inst:SetPrefabNameOverride("gestalt_cage")
+
+    inst:AddTag("gestalt_cage_filled")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+    inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+
+	inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = Filled_GetStatus
+
+    inst:AddComponent("tradable")
+
+	inst:AddComponent("inventoryitem")
+    inst:ListenForEvent("animqueueover", OnCaptureLevel3AnimQueueOver)
+
+	MakeHauntableLaunch(inst)
+
+	inst.level = 3
+	inst.StartCapture = StartCapture
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
+return Prefab("gestalt_cage", fn, assets, prefabs),
+	Prefab("gestalt_cage_swap_fx", fxfn, assets),
+	Prefab("gestalt_cage_filled1", filledfn1, assets_filled),
+	Prefab("gestalt_cage_filled2", filledfn2, assets_filled),
+	Prefab("gestalt_cage_filled3", filledfn3, assets_filled)

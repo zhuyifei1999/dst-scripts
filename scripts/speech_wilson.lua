@@ -316,6 +316,7 @@ return {
             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+            BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
             NOFIRES =       "only_used_by_waxwell_and_wicker",
             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -449,6 +450,8 @@ return {
         {
             DOESNTWORK = "I guess they don't support the arts here.",
             ALREADYACTIVE = "He must be busy with another contest somewhere.",
+            NORESPONSE = "He must have wandered off.",
+            RIGHTTHERE = "He's busy.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -477,6 +480,10 @@ return {
 		MODSLINGSHOT =
 		{
 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Drat, I missed.",
 		},
     },
 
@@ -1142,7 +1149,7 @@ return {
 	ANNOUNCE_SNOWBALL_TOO_BIG = "It won't get any bigger than that.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "There's not enough snow on the ground.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1155,6 +1162,8 @@ return {
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I think I could lift a horse.",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "This one seems a little strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Something's falling from the sky!",
 
 	BATTLECRY =
 	{
@@ -5658,6 +5667,34 @@ return {
         DECK_OF_CARDS = "Are we playing with a full deck?",
         PLAYING_CARD = "It's fifty-one short of a deck.",
         BALATRO_MACHINE = "I'm game for a game.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Drat, empty.",
+			FILLED = "It's occupied.",
+		},
+		WAGBOSS_ROBOT = "Fascinating!",
+        WAGBOSS_ROBOT_POSSESSED = "Has anyone tried resetting it?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's back!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Haven't you broken enough science?!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "They just drone on and on.",
+            FRIENDLY = "Spin it to win it!",
+        },
+		WAGDRONE_FLYING = "Like a bot out of hell.",
+
+        WAGPUNK_WORKSTATION = "Let's get to work!",
+        WAGPUNK_LEVER = "It's a good time to switch things up.",
+        WAGPUNK_FLOOR_KIT = "What is this floor?",
+        WAGPUNK_CAGEWALL = "Wall or nothing!",
+
+        WANDERINGTRADER = "If we make a trade, will we beef friends!",
+
+        GESTALT_GUARD_EVOLVED = "They're promising me... that they're coming to get me.", -- TODO
+        FLOTATIONCUSHION = "Oh, buoyancy!",
+        LUNAR_SEED = "This formed part of its crown.",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

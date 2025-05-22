@@ -295,18 +295,23 @@ end
 
 local function ToggleOffPhysics(inst)
     inst.sg.statemem.isphysicstoggle = true
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.GROUND)
+	inst.Physics:SetCollisionMask(COLLISION.GROUND)
+end
+
+local function ToggleOffPhysicsExceptWorld(inst)
+	inst.sg.statemem.isphysicstoggle = true
+	inst.Physics:SetCollisionMask(COLLISION.WORLD)
 end
 
 local function ToggleOnPhysics(inst)
     inst.sg.statemem.isphysicstoggle = nil
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.WORLD)
-    inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-    inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-    inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-    inst.Physics:CollidesWith(COLLISION.GIANTS)
+	inst.Physics:SetCollisionMask(
+		COLLISION.WORLD,
+		COLLISION.OBSTACLES,
+		COLLISION.SMALLOBSTACLES,
+		COLLISION.CHARACTERS,
+		COLLISION.GIANTS
+	)
 end
 
 local function StartTeleporting(inst)
@@ -1080,6 +1085,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
+    ActionHandler(ACTIONS.PEEKBUNDLE, "bundle"),
     ActionHandler(ACTIONS.RAISE_SAIL, "dostandingaction" ),
     ActionHandler(ACTIONS.LOWER_SAIL_BOOST,
         function(inst, action)
@@ -1342,6 +1348,9 @@ local actionhandlers =
     ActionHandler(ACTIONS.DRAW_FROM_DECK, "doshortaction"),
     ActionHandler(ACTIONS.FLIP_DECK, "doshortaction"),
     ActionHandler(ACTIONS.ADD_CARD_TO_DECK, "dostandingaction"),
+
+	-- Rifts 5
+	ActionHandler(ACTIONS.POUNCECAPTURE, "pouncecapture_pre"),
 }
 
 local events =
@@ -2034,6 +2043,7 @@ local events =
 	end),
 
     CommonHandlers.OnHop(),
+	CommonHandlers.OnElectrocute(),
 }
 
 local statue_symbols =
@@ -2794,6 +2804,9 @@ local states =
 
         onenter = function(inst)
             ClearStatusAilments(inst)
+			if inst.components.grogginess then
+				inst.components.grogginess:ResetGrogginess()
+			end
             ForceStopHeavyLifting(inst)
 
             inst.components.locomotor:Stop()
@@ -12934,8 +12947,7 @@ local states =
 
             if data ~= nil then
                 if data.disablecollision then
-                    ToggleOffPhysics(inst)
-                    inst.Physics:CollidesWith(COLLISION.WORLD)
+					ToggleOffPhysicsExceptWorld(inst)
                 end
                 if data.propsmashed then
                     local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -14085,12 +14097,13 @@ local states =
             end),
             TimeEvent(86 * FRAMES, function(inst)
                 inst.sg.statemem.physicsrestored = true
-                inst.Physics:ClearCollisionMask()
-                inst.Physics:CollidesWith(COLLISION.WORLD)
-                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-                inst.Physics:CollidesWith(COLLISION.GIANTS)
+				inst.Physics:SetCollisionMask(
+					COLLISION.WORLD,
+					COLLISION.OBSTACLES,
+					COLLISION.SMALLOBSTACLES,
+					COLLISION.CHARACTERS,
+					COLLISION.GIANTS
+				)
 
                 inst.AnimState:PlayAnimation("corpse_revive")
                 if inst.sg.statemem.fade ~= nil then
@@ -14143,12 +14156,13 @@ local states =
             inst.components.colouradder:PopColour("corpse_rebirth")
 
             if not inst.sg.statemem.physicsrestored then
-                inst.Physics:ClearCollisionMask()
-                inst.Physics:CollidesWith(COLLISION.WORLD)
-                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-                inst.Physics:CollidesWith(COLLISION.GIANTS)
+				inst.Physics:SetCollisionMask(
+					COLLISION.WORLD,
+					COLLISION.OBSTACLES,
+					COLLISION.SMALLOBSTACLES,
+					COLLISION.CHARACTERS,
+					COLLISION.GIANTS
+				)
             end
 
             SerializeUserSession(inst)
@@ -17983,7 +17997,21 @@ local states =
         end,
 
         onupdate = function(inst)
-            if not CanEntitySeeTarget(inst, inst) then
+            local shouldstop = not CanEntitySeeTarget(inst, inst)
+            if not shouldstop and inst.sg.statemem.peeksourceinst then
+                local peeksourceinst = inst.sg.statemem.peeksourceinst
+                if not peeksourceinst:IsValid() then
+                    shouldstop = true
+                else
+                    local peeksourceinst_owner = peeksourceinst.components.inventoryitem and peeksourceinst.components.inventoryitem:GetGrandOwner() or nil
+                    if (peeksourceinst_owner and peeksourceinst_owner ~= inst) or
+                        inst.sg.statemem.peeksourceinst:HasAnyTag("smolder", "fire") or
+                        not inst:IsNear(inst.sg.statemem.peeksourceinst, inst:GetPhysicsRadius(0) + 1.5) then
+                        shouldstop = true
+                    end
+                end
+            end
+            if shouldstop then
                 inst.AnimState:PlayAnimation("wrap_pst")
                 inst.sg:GoToState("idle", true)
             end
@@ -17993,6 +18021,10 @@ local states =
             if not inst.sg.statemem.bundling then
                 inst.SoundEmitter:KillSound("make")
                 inst.components.bundler:StopBundling()
+            end
+            if inst.sg.statemem.peekcontainer and inst.sg.statemem.peekcontainer:IsValid() then
+                inst.sg.statemem.peekcontainer:Remove()
+                inst.sg.statemem.peekcontainer = nil
             end
         end,
     },
@@ -19730,11 +19762,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("charge_pre")
             inst.Physics:SetMotorVel(12, 0, 0)
-            inst.Physics:ClearCollisionMask()
-            inst.Physics:CollidesWith(COLLISION.WORLD)
-            inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-            inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-            inst.Physics:CollidesWith(COLLISION.GIANTS)
+			inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
             inst.sg.statemem.targets = {}
             inst.sg.statemem.edgecount = 0
             inst.sg.statemem.trailtask = inst:DoPeriodicTask(0, function(inst, data)
@@ -22918,9 +22946,7 @@ local states =
 			inst.AnimState:SetMultColour(0, 0, 0, 0)
 			inst:AddTag("woby_dash_fade")
 			inst.DynamicShadow:Enable(false)
-			--ToggleOffPhysics(inst)
-			inst.sg.statemem.isphysicstoggle = true
-			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+			ToggleOffPhysicsExceptWorld(inst)
 
 			--player hidden via 0 alpha instead of Hide(), so that we can still see silhoutte child
 			inst.sg.statemem.silhoutte = SpawnPrefab("woby_dash_silhouette_fx")
@@ -23170,6 +23196,201 @@ local states =
 				inst.sg:GoToState("idle", true)
 			end),
 		},
+	},
+
+	-- Rifts 5
+
+	State{
+		name = "pouncecapture_pre",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("pouncecapture_pre")
+			inst.AnimState:PushAnimation("pouncecapture", false)
+			local buffaction = inst:GetBufferedAction()
+			if buffaction then
+				local target = buffaction.target
+				if target and target:IsValid() then
+					inst.sg.statemem.target = target
+					inst:ForceFacePoint(target:GetPosition())
+
+					local tool = buffaction.invobject
+					if tool and tool.components.gestaltcage then
+						inst.sg.statemem.tool = tool
+						tool.components.gestaltcage:OnTarget(target)
+					end
+				end
+			end
+		end,
+
+		onupdate = function(inst)
+			local target = inst.sg.statemem.target
+			if target then
+				if target:IsValid() then
+					inst:ForceFacePoint(target:GetPosition())
+				else
+					inst.sg.statemem.target = nil
+				end
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(3, function(inst)
+				--@V2C:
+				--Start physics early; normally done in "capture" state with "nopredict".
+				--Prevents client from seeing slight snapback before jumping forward.
+				--Must manually update client's position (using Teleport) if interrupted.
+				local target = inst.sg.statemem.target
+				if target and target:IsValid() then
+					local x, y, z = inst.Transform:GetWorldPosition()
+					local x1, y1, z1 = target.Transform:GetWorldPosition()
+					local dx = x1 - x
+					local dz = z1 - z
+					local dist
+					if dx ~= 0 or dz ~= 0 then
+						inst.Transform:SetRotation(math.atan2(-dz, dx) * RADIANS)
+						dist = math.min(6, math.sqrt(dx * dx + dz * dz))
+					else
+						dist = 0
+					end
+					--12 + 1/4 frames of jumping to reach target
+					inst.sg.statemem.speed = dist * 30 / (12 + 1/4)
+				else
+					inst.sg.statemem.speed = 4
+				end
+				inst.sg.statemem.target = nil
+				inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+			end),
+			FrameEvent(4, function(inst)
+				inst.sg.statemem.capturing = true
+				inst.sg:GoToState("pouncecapture",
+				{
+					speed = inst.sg.statemem.speed,
+					tool = inst.sg.statemem.tool,
+				})
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.capturing then
+				local x, y, z = inst.Transform:GetWorldPosition()
+				inst.Physics:Stop()
+				inst.Physics:Teleport(x, 0, z)
+
+				local tool = inst.sg.statemem.tool
+				if tool and tool.components.gestaltcage and tool:IsValid() then
+					tool.components.gestaltcage:OnUntarget()
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "pouncecapture",
+		tags = { "busy", "nopredict", "jumping" },
+
+		onenter = function(inst, data)
+			--should have reached here on frame 1 (0-based!) of "pouncecapture"
+			if data then
+				if data.speed then
+					inst.sg.statemem.speed = data.speed
+					inst.Physics:SetMotorVel(data.speed, 0, 0)
+					ToggleOffPhysicsExceptWorld(inst)
+				end
+				if data.tool then
+					inst.sg.statemem.tool = data.tool
+				end
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(10, function(inst)
+				local target = inst.bufferedaction and inst.bufferedaction.target or nil
+				if target and target:IsValid() and target.sg and inst:IsNear(target, 1 + inst.sg.statemem.speed * (1 + 1/4) * FRAMES) then
+					target.sg:HandleEvent("captured")
+				end
+			end),
+			FrameEvent(11, function(inst)
+				if inst.sg.statemem.speed then
+					inst.Physics:SetMotorVel(inst.sg.statemem.speed / 4, 0, 0)
+				end
+			end),
+			FrameEvent(12, function(inst)
+				inst.Physics:Stop()
+			end),
+			FrameEvent(13, function(inst)
+				ToggleOnPhysics(inst)
+				if not inst:PerformBufferedAction() then
+					inst.sg.statemem.missed = true
+				else
+					inst.Physics:SetMotorVel(-2, 0, 0)
+				end
+				local tool = inst.sg.statemem.tool
+				inst.sg.statemem.tool = nil
+				if tool and tool:IsValid() and tool.components.gestaltcage then
+					tool.components.gestaltcage:OnUntarget()
+				end
+			end),
+			FrameEvent(14, function(inst)
+				inst.sg.statemem.capturing = true
+				inst.sg:GoToState("pouncecapture_pst", inst.sg.statemem.missed)
+			end),
+		},
+
+		onexit = function(inst)
+			local tool = inst.sg.statemem.tool
+			if tool and tool.components.getstaltcage and tool:IsValid() then
+				tool.components.gestaltcage:OnUntarget()
+			end
+			if not inst.sg.statemem.capturing then
+				inst.Physics:Stop()
+			end
+			if inst.sg.statemem.isphysicstoggle then
+				ToggleOnPhysics(inst)
+			end
+		end,
+	},
+
+	State{
+		name = "pouncecapture_pst",
+		tags = { "busy", "nopredict", "jumping" },
+
+		onenter = function(inst, missed)
+			inst.AnimState:PlayAnimation("pouncecapture_pst")
+			if missed then
+				inst.sg.statemem.missed = true
+			else
+				inst.Physics:SetMotorVel(-4, 0, 0)
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(10, function(inst)
+				PlayFootstep(inst)
+				if not inst.sg.statemem.missed then
+					inst.Physics:SetMotorVel(-1, 0, 0)
+				end
+			end),
+			FrameEvent(11, function(inst)
+				if not inst.sg.statemem.missed then
+					inst.Physics:Stop()
+				end
+				inst.sg:RemoveStateTag("jumping")
+			end),
+			FrameEvent(14, function(inst)
+				inst.sg:GoToState("idle", true)
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.missed then
+				inst.Physics:Stop()
+			end
+		end,
 	},
 }
 

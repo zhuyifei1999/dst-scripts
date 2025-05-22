@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Where do you hide, strange little man?",
             ALREADYACTIVE = "Maybe contest is somewhere else.",
+            NORESPONSE = "Maybe he has gone for jogging.",
+            RIGHTTHERE = "Sorry, Wolfgang not know you busy.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Wolfgang miss on purpose.",
 		},
     },
 
@@ -1133,7 +1140,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Snowball will not grow bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "Not enough snow here.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1146,6 +1153,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Super Wolfgang!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Yuck! No, too much.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "What's that coming in sky? Wolfgang fight you!",
 
 	BATTLECRY =
 	{
@@ -5649,6 +5658,34 @@ return{
         DECK_OF_CARDS = "Rip deck of cards in half is one of Wolfgang famous feat of strength!",
         PLAYING_CARD = "Don't worry little card, Wolfgang only rip in half full deck.",
         BALATRO_MACHINE = "Is clown real? Wolfgang not afraid, just uncomfortable.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Aww. Empty.",
+			FILLED = "There is one inside!",
+		},
+		WAGBOSS_ROBOT = "Big machine guy look strong, but Wolfgang stronger.",
+        WAGBOSS_ROBOT_POSSESSED = "No fair! Wolfgang no have rockets!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Big tough ball back for more Wolfgang punches?",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "It is lot for Wolfgang to process!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Spin over here so Wolfgang can crush you!",
+            FRIENDLY = "We are friends now.",
+        },
+		WAGDRONE_FLYING = "Is making Wolfgang crazy!",
+
+        WAGPUNK_WORKSTATION = "Wolfgang not afraid of technology.",
+        WAGPUNK_LEVER = "What does it do? Wolfgang just curious.",
+        WAGPUNK_FLOOR_KIT = "Wolfgang have more place to do pushup.",
+        WAGPUNK_CAGEWALL = "Nothing can contain mighty Wolfgang! Unless he allow it.",
+
+        WANDERINGTRADER = "Hello, hair-cow man! You wish to trade, yes?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Wolfgang exceptional swimmer, but keep just in case.",
+        LUNAR_SEED = "Another trophy for Wolfgang!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

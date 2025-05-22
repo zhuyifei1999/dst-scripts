@@ -153,10 +153,10 @@ function LandFlyingCreature(creature)
     creature:RemoveTag("flying")
     creature:PushEvent("on_landed")
     if creature.Physics ~= nil then
-        if TheWorld:CanFlyingCrossBarriers() then
-            creature.Physics:CollidesWith(COLLISION.LIMITS)
-        end
-        creature.Physics:ClearCollidesWith(COLLISION.FLYERS)
+		CollisionMaskBatcher(creature)
+			:CollidesWith(TheWorld:CanFlyingCrossBarriers() and COLLISION.LIMITS or 0)
+			:ClearCollidesWith(COLLISION.FLYERS)
+			:CommitTo(creature)
     end
 end
 
@@ -164,10 +164,10 @@ function RaiseFlyingCreature(creature)
     creature:AddTag("flying")
     creature:PushEvent("on_no_longer_landed")
     if creature.Physics ~= nil then
-        if TheWorld:CanFlyingCrossBarriers() then
-            creature.Physics:ClearCollidesWith(COLLISION.LIMITS)
-        end
-        creature.Physics:CollidesWith(COLLISION.FLYERS)
+		CollisionMaskBatcher(creature)
+			:ClearCollidesWith(TheWorld:CanFlyingCrossBarriers() and COLLISION.LIMITS or 0)
+			:CollidesWith(COLLISION.FLYERS)
+			:CommitTo(creature)
     end
 end
 

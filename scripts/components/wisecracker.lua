@@ -404,6 +404,10 @@ local Wisecracker = Class(function(self, inst)
 		end)
 	end
 
+    inst:ListenForEvent("lunarguardianincoming", function(i)
+		i.components.talker:Say(GetString(inst, "ANNOUNCE_LUNARGUARDIAN_INCOMING"))
+    end)
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)
     end

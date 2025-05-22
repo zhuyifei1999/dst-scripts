@@ -216,7 +216,10 @@ function HealthBadge:OnUpdate(dt)
 
     local down
     if (self.owner.IsFreezing ~= nil and self.owner:IsFreezing()) or
-        (self.owner.replica.health ~= nil and self.owner.replica.health:IsTakingFireDamageFull()) or
+		(self.owner.replica.health and (
+			self.owner.replica.health:IsTakingFireDamageFull() or
+			self.owner.replica.health:IsTakingLunarBeamDamage()
+		)) or
         (self.owner.replica.hunger ~= nil and self.owner.replica.hunger:IsStarving()) or
         self.acidsizzling ~= nil or
         next(self.corrosives) ~= nil then

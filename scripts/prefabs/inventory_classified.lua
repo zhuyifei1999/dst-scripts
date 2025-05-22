@@ -271,7 +271,7 @@ local function Has(inst, prefab, amount, checkallcontainers)
         if containers then
             for container_inst in pairs(containers) do
                 local container = container_inst.replica.container or container_inst.replica.inventory
-                if container and container ~= overflow and not container.excludefromcrafting then
+                if container and container ~= overflow and not container.excludefromcrafting and (container.IsReadOnlyContainer == nil or not container:IsReadOnlyContainer()) then
 					local containerhas, containercount = container:Has(prefab, amount, iscrafting)
                     count = count + containercount
                 end
@@ -311,6 +311,30 @@ local function HasItemWithTag(inst, tag, amount)
     end
 
     return count >= amount, count
+end
+
+local function FindItem(inst, fn)
+	if inst._itemspreview then
+		for k, v in pairs(inst._itemspreview) do
+			if fn(v) then
+				return v
+			end
+		end
+	else
+		for i, v in ipairs(inst._items) do
+			v = v:value()
+			if v and fn(v) then
+				return v
+			end
+		end
+	end
+
+	if inst._activeitem and fn(inst._activeitem) then
+		return inst._activeitem
+	end
+
+	local overflow = GetOverflowContainer(inst)
+	return overflow and overflow:FindItem(fn) or nil
 end
 
 --------------------------------------------------------------------------
@@ -796,6 +820,8 @@ local function SwapActiveItemWithSlot(inst, slot)
 end
 
 local function TryNonNetworkedAction(inst, act, item)
+    print("TryNonNetworkedAction", inst, item)
+    dumptable(act, 1, 1)
 	if act == ACTIONS.RUMMAGE then
 		local overflow = GetOverflowContainer(inst)
 		if overflow ~= nil and overflow.inst == item then
@@ -1332,7 +1358,7 @@ local function RemoveIngredients(inst, recipe, ingredientmod)
 		containers = {}
 		for k in pairs(container_insts) do
 			local container = k.replica.container or k.replica.inventory
-			if container and container.classifed and container.classifed ~= overflow and not container.excludefromcrafting then
+			if container and container.classifed and container.classifed ~= overflow and not container.excludefromcrafting and (container.IsReadOnlyContainer == nil or not container:IsReadOnlyContainer()) then
 				if container:IsBusy() then
 					return false
 				end
@@ -1405,6 +1431,7 @@ local function fn()
         inst.IsFull = IsFull
         inst.Has = Has
         inst.HasItemWithTag = HasItemWithTag
+		inst.FindItem = FindItem
         inst.ReturnActiveItem = ReturnActiveItem
         inst.ReturnActiveItemToSlot = ReturnActiveItemToSlot
         inst.PutOneOfActiveItemInSlot = PutOneOfActiveItemInSlot

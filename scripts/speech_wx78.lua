@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "YOU CAN NEVER RELY ON FLESHLINGS TO DO THEIR JOB",
             ALREADYACTIVE = "WHERE IS HE HIDING",
+            NORESPONSE = "BOOTH UNATTENDED. UNACCEPTABLE",
+            RIGHTTHERE = "YOU DARE IGNORE ME?",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "TARGET EVADED, RECALIBRATING",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "MAXIMUM SIZE REACHED",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "INSUFFICIENT MATERIAL",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "SYSTEMS POWERED UP",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "DENIED. CONTENTS OVERLOADED",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "FALLING OBJECT BALLISTIC TRAJECTORY CALCULATED. ARRIVING NOW",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "PRIMITIVE PASTIME",
         PLAYING_CARD = "SOMEONE MISSING A CARD. I SHOULD DESTROY IT",
         BALATRO_MACHINE = "CALCULATING ODDS OF VICTORY...",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "INPUT MISSING",
+			FILLED = "ENTITY DETECTED",
+		},
+		WAGBOSS_ROBOT = "MOST IMPRESSIVE",
+        WAGBOSS_ROBOT_POSSESSED = "I THOUGHT WE HAD SOMETHING!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "I TOLD YOU IT WASN'T OVER BETWEEN US!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "GLORIOUS!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "BEHAVE!",
+            FRIENDLY = "CUTIE PIE",
+        },
+		WAGDRONE_FLYING = "WHY ARE YOU TARGETTING ME?",
+
+        WAGPUNK_WORKSTATION = "I AM IN MY ELEMENT",
+        WAGPUNK_LEVER = "ACTIVATE!",
+        WAGPUNK_FLOOR_KIT = "MORE LAND EQUALS LESS OCEAN. GOOD",
+        WAGPUNK_CAGEWALL = "PHYSICAL FIREWALL",
+
+        WANDERINGTRADER = "YOU DISGUST ME... WHAT DO YOU HAVE?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "MINE",
+        LUNAR_SEED = "THEY DON'T UNDERSTAND YOU LIKE I DO",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

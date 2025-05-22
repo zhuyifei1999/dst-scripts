@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Oh ho! Something's gone awry!",
             ALREADYACTIVE = "Perhaps he too likes to travel between planes? Hyuyuyu!",
+            NORESPONSE = "I wonder where he's wandered.",
+            RIGHTTHERE = "Busy, I see.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Miss! Boo and hiss!",
 		},
     },
 
@@ -1151,7 +1158,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "I tell no lies! It's at full size!",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "It won't grow without more snow.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1164,6 +1171,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I have the strength of ten imps!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Don't think I can take that drink!",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "It comes from the sky, to make us all die!",
 
 	BATTLECRY =
 	{
@@ -5668,6 +5677,34 @@ return{
         DECK_OF_CARDS = "One sec, who shuffled this deck?",
         PLAYING_CARD = "Is it so hard to not lose a card?",
         BALATRO_MACHINE = "Hey joker, let's play some poker!",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Nothing worth noting.",
+			FILLED = "It hides insides!",
+		},
+		WAGBOSS_ROBOT = "No need for alarm, it means us no harm...",
+        WAGBOSS_ROBOT_POSSESSED = "It's got a few screws loose, I do deduce.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Ack! Here for payback!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "You atrocity of a monstrosity!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Deranged dervish on the skirmish!",
+            FRIENDLY = "A friendly model that doesn't dawdle.",
+        },
+		WAGDRONE_FLYING = "Buzzing blight from yonder height!",
+
+        WAGPUNK_WORKSTATION = "What have we here? His intentions are never clear!",
+        WAGPUNK_LEVER = "Is it polite to pull it?",
+        WAGPUNK_FLOOR_KIT = "Score! More floor!",
+        WAGPUNK_CAGEWALL = "Save the sass! None shall pass! Hyuyu!",
+
+        WANDERINGTRADER = "This guy's disguise! Hyuyu!",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Because there's no time to think, when you're plunged in the drink!",
+        LUNAR_SEED = "You went down, and left your crown!",
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

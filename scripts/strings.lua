@@ -763,6 +763,7 @@ STRINGS =
         },
         WRAPBUNDLE = "Wrap",
         UNWRAP = "Unwrap",
+        PEEKBUNDLE = "Peek",
         CONSTRUCT =
         {
             GENERIC = "Build",
@@ -1103,6 +1104,9 @@ STRINGS =
         DRAW_FROM_DECK = "Draw",
         FLIP_DECK = "Flip",
         ADD_CARD_TO_DECK = "Add",
+
+		-- Rifts 5
+		POUNCECAPTURE = "Encapsulate",
     },
 
 	WOBY_COMMANDS =
@@ -1671,6 +1675,7 @@ STRINGS =
         COOKEDMANDRAKE = "Cooked Mandrake",
         REEDS = "Reeds",
         MAPSCROLL = "Map Scroll",
+        MAPSCROLL_TRICKER = "Map of Totally Uninhabited Island",
         CUTREEDS = "Cut Reeds",
         MARSH_PLANT = "Plant",
         TUMBLEWEED = "Tumbleweed",
@@ -3630,6 +3635,7 @@ STRINGS =
         WAGSTAFF_NPC_MUTATIONS = "Grainy Transmission",
         ALTERGUARDIAN_CONTAINED = "Lunar Essence Extractor",
         WAGSTAFF_NPC_WAGPUNK = "Grainy Transmission",
+        WAGSTAFF_NPC_WAGPUNK_ARENA = "Grainy Transmission",
 
         ALTERGUARDIAN_PHASE1 = "Celestial Champion",
         ALTERGUARDIAN_PHASE2 = "Celestial Champion",
@@ -4273,6 +4279,28 @@ STRINGS =
         PLAYING_CARD = "Playing Card",
 
         BALATRO_MACHINE = "JIMBO",
+
+		-- Rifts 5
+		GESTALT_CAGE = "Phasmo-Encapsulator",
+		WAGBOSS_ROBOT = "W.A.R.B.O.T.",
+        WAGBOSS_ROBOT_POSSESSED = "Enlightened W.A.R.B.O.T.",
+		WAGBOSS_MISSILE = "Thermalock Missile",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Celestial Revenant",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Celestial Abomination",
+		WAGDRONE_ROLLING = "Terramite",
+		WAGDRONE_FLYING = "Warbler",
+
+        WAGPUNK_CAGEWALL = "Kinetoclasmic Field Expandinator",
+        WAGPUNK_FLOOR_KIT = "Substrate Extrapolator",
+        WAGPUNK_LEVER = "Fulcronial Selector",
+        WAGPUNK_WORKSTATION = "Notional Fabricator",
+
+        WANDERINGTRADER = "Wandering Trader",
+
+        FLOTATIONCUSHION = "Personal Floater",
+        GESTALT_GUARD_EVOLVED = "Greaterer Gestalt", -- TODO
+        LUNAR_SEED = "Celestial Jewel",
+		TEMP_BETA_MSG = "Beta Report",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5393,6 +5421,22 @@ STRINGS =
         MOONBUTTERFLY = "Help them relive their glory.",
         WENDY_RESURRECTIONGRAVE = "Death is but an inconvenience.",
         GRAVEURN = "Transport a soul to a new location.",
+
+        -- Rifts 5
+        GEARS = "Cogs for your contraptions.",
+        TWIGS = "A single twig can make all the difference.",
+        CUTGRASS = "The fiberous strands bind together.",
+        FLINT = "Naturally sharp and dressed for the occasion.",
+        CUTREEDS = "Tubular.",
+        PIGSKIN = "Thick and stretchable hide.",
+        REDGEM = "Retains the color of red.",
+        BLUEGEM = "Bears the color of blue.",
+        MOONGLASS = "A fragment from the Moon.",
+
+        GESTALT_CAGE = "Combined pseudo and science for catching certain entities.",
+        WAGPUNK_FLOOR_KIT = "Make the Ocean smaller! Permanently. Restrictions apply.",
+
+        FLOTATIONCUSHION = "Become unsinkable. Take that, Ocean!",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -5868,6 +5912,7 @@ STRINGS =
     HERMITCRAB_REFUSE_COAT = {"You keep it, I'm not chilly."},
     HERMITCRAB_REFUSE_COAT_HASONE = {"I like the coat I have, thank you very much."},
     HERMITCRAB_REFUSE_VEST = {"I'd boil if I wore that in this heat!"},
+    HERMITCRAB_REFUSE_MAPSCROLL = {"I don't need that, my house is here!"},
 
     HERMITCRAB_ANNOUNCE_ROYALTY = {
         "Well, don't you look all high and mighty.",
@@ -5926,6 +5971,8 @@ STRINGS =
     HERMITCRAB_GOT_PEARL = {"Oh...","...I think I understand now.","Thank you for bringing this back to me.","I'm so glad you kept coming back.","My friend."},
     HERMITCRAB_WANT_HOUSE = {"I could really use some help fixing up my house..."},
     HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
+    HERMITCRAB_GOT_MAPSCROLL_BAD = {"I don't see what good this map is it doesn't go anywhere special."},
+    HERMITCRAB_GOT_MAPSCROLL_GOOD = {"This map shows an island...", "and it's away from this junk collector.", "Thank you, I'll be heading there."},
 
     HERMITCRAB_ANNOUNCE_SPOOKED = "Did you see that?!",
     HERMITCRAB_ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",
@@ -6722,6 +6769,8 @@ STRINGS =
 		WINTERSFEASTCOOKING = "Feast",
         HERMITCRABSHOP = "Bottle Exchange",
         RABBITKINGSHOP = "Trading Hutch",
+        WANDERINGTRADERSHOP = "Trading",
+        WAGPUNK_WORKSTATION = "Fabrication",
         CARPENTRY = "Carpentry",
 		SLINGSHOTAMMO = "Slingshot Ammo",
 		CLOCKMAKER = "Clocksmithy",
@@ -7105,6 +7154,8 @@ STRINGS =
     WAGSTAFF_GOTTAGO1 = "Aha! This selenological anomaly can only mean one thing!",
     WAGSTAFF_GOTTAGO2 = "Now is my chance!",
 
+    WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hmm, what's that falling from the sky?",
+
     -- Script.
     WAGSTAFF_NPC_DEFEAT_TWO_MORE_MUTATIONS =
     {
@@ -7167,6 +7218,73 @@ STRINGS =
 
     WAGSTAFF_JUNK_YARD_OCCUPIED = {
         "Too crowded here for my work. I'll come back later",
+    },
+    WAGSTAFF_TOOMANYITEMS = {
+        "Your haste is good but I'm busy!",
+        "I'm too busy to deal with you right now.",
+    },
+    WAGSTAFF_GOT_NOT_MAPSCROLL = {
+        "No... no. We need a map to move that crab.",
+        "What is this? We need a map for that crab!",
+    },
+    WAGSTAFF_GOT_MAPSCROLL_BAD = {
+        "This is no good. It has to have my... an island on it.",
+        "This map is useless. That crab will only move to another island.",
+        "Try again. Bring me a map to the primate island.",
+    },
+    WAGSTAFF_MAPSCROLL_TRICKER = {
+        "No, not me! The crab! Give it to that crab!",
+        "Why are you giving me this? It's for that crab.",
+    },
+    WAGSTAFF_GOT_MAPSCROLL_GOOD = {
+        "Excellent, yes. Now, hurry and give it to that crab.",
+        "This will do. Run along and give it to that crab."
+    },
+    WAGSTAFF_GOT_MAPSCROLL_NOLONGERNEEDED = {
+        "We don't need anymore maps! That crab is gone!",
+        "Stop bringing me maps. We've already evicted that crab.",
+    },
+    WAGSTAFF_GOT_EMPTY_GESTALTCAGE = {
+        "There's nothing inside here. It needs to contain an entity.",
+        "It's empty!",
+    },
+    WAGSTAFF_GOT_NOT_GESTALTCAGE = {
+        "I don't need this. Use my Phasmo-Encapsulator and capture me an appropriate entity.",
+    },
+    WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED = {
+        "Hm. We have enough of these...",
+        "Bring me another variety.",
+    },
+    WAGSTAFF_GOT_GESTALTCAGE_GOOD = {
+        "About time. This is needed over here...",
+        "This will do well over here...",
+    },
+    -- Desire for crabby crab to get off of the island.
+    WAGSTAFF_WAGPUNK_ARENA_PEARLMAP = {
+        "Creatures like that crab are always looking for a bigger home. Let's give her one... sort of.",
+        "Perhaps if the crab had a more \"substantial\" island to relocate to, she would leave me alone.",
+        "Give me a map with an island and we'll see if we can't make it more appealing.",
+    },
+
+    -- Desire to place out flooring to make the island bigger.
+    WAGSTAFF_WAGPUNK_ARENA_TURF = {
+        "We need to expand the arena of my experimentation.",
+        "The surface of this island must be increased with my special flooring.",
+        "Use my Substrate Extrapolator and extrapolate this substrate!",
+    },
+
+    -- Desire to place robots at set locations.
+    WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT = {
+        "Good, now give me your filled Phasmo-Encapsulators.",
+        "Where are the encapsulated entities? I need them now.",
+        "Hand me your Phasmo-Encapsulators. They must contain the appropriate entities.",
+    },
+
+    -- Desire to have the lever switched.
+    WAGSTAFF_WAGPUNK_ARENA_LEVER = {
+        "Fine work! Now pull the Fulcronial Selector to start the ultimate experiment!",
+        "Let us bring my creation to life! Engage the Fulcronial Selector! Yes, yes- the stick-thing.",
+        "This is it! Pull the Fulc- the lever.",
     },
 
     -- Terraria
@@ -7424,6 +7542,39 @@ STRINGS =
         CARD411 = "Jack of Hearts",
         CARD412 = "Queen of Hearts",
         CARD413 = "King of Hearts",
+    },
+
+    -- wanderingtrader
+    -- FIXME(JBK): WT: Strings.
+    WANDERINGTRADER_OUTOFSTOCK_PROXIMITY = {
+        "Appreciate ya comin' round here, but I got nothin'. Try me again later.",
+        "Hey buddy, I'm tapped out. Come back later.",
+        "Good to see ya, but I've nothin' to trade. Circle back later.",
+    },
+    WANDERINGTRADER_OUTOFSTOCK_FROMTRADES = {
+        "Ya cleaned me out! Gimme some time to restock.",
+        "That's all I got! Need to go find me some more wares.",
+        "Well, that's all she wrote! I'll go find more items to offer.",
+    },
+    WANDERINGTRADER_STARTTRADING = {
+        "Come'on over! I got goods galore for ya!",
+        "Buddy, whatcha need?",
+        "Saunter this way, let's trade!",
+    },
+    WANDERINGTRADER_ENDTRADING_NOTRADES = {
+        "Can't please everyone!",
+        "Maybe next time.",
+        "Nothin' interests you? Come see what I got later.",
+    },
+    WANDERINGTRADER_ENDTRADING_MADETRADE = {
+        "I'll be seein' ya.",
+        "Pleasure doin' business with ya.",
+        "Thanks for the trade! Seeya later.",
+    },
+    WANDERINGTRADER_DOTRADE = {
+        "Great choice! Anythin' else tickle yer fancy?",
+        "Good deal! What else you need?",
+        "Nice trade! Let's keep it goin'!",
     },
 }
 
@@ -7890,6 +8041,8 @@ STRINGS.UI =
 			QUAGMIRE_TRADER_MUM = "Purchase",
 			QUAGMIRE_TRADER_KID = "Purchase",
 			MADSCIENCE = "Mix",
+			RABBITKINGSHOP = "Trade",
+			WANDERINGTRADERSHOP = "Trade",
         },
 		RECIPEACTION =
 		{
@@ -7904,6 +8057,8 @@ STRINGS.UI =
 			COOK = "Cook",
 			GROW = "Grow",
 			TRANSFORM = "Transform",
+			RABBITKINGSHOP = "Trade",
+			WANDERINGTRADERSHOP = "Trade",
 		},
         TABNEEDSTUFF =
         {
@@ -7941,6 +8096,8 @@ STRINGS.UI =
         NEEDSHERMITCRABSHOP_L3 = "Find someone friendly enough to make this trade!",
         NEEDSHERMITCRABSHOP_L4 = "Find someone friendly enough to make this trade!",
         NEEDSRABBITKINGSHOP = "Seek out the Rabbit King to make this trade!",
+        NEEDSWANDERINGTRADERSHOP = "Seek out the Wandering Trader to make this trade!",
+        NEEDSWAGPUNK_WORKSTATION = "Can only be crafted at a Notional Fabricator.",
         NEEDSCREATURESCANNING = "Scan living creatures to collect data!",
         NEEDSSKILL = "Learn new skills.",
         NEEDSBOOKSTATION = "Build a bookcase to craft your books.",
@@ -7975,7 +8132,16 @@ STRINGS.UI =
         NEEDSCARNIVAL_HOSTSHOP_PLAZA = "Decorate a Cawnival Tree during the Cawnival!",
 
         CANTRESEARCH = "Some things must be discovered on your own.",
+        LIMITEDAMOUNTFMT = "{name} ({number} available)",
         DEFAULT = "Classic",
+    },
+
+    NEW_CONTROLSCHEME_POPUP = 
+    {
+        TITLE = "Playing with controller?",
+        BODY = "The game supports multiple control schemes for playing with controller. Would you like to see them and select one?",
+        YES = "Show me!",
+        NO = "No thanks",
     },
 
     CREDITS =
@@ -8931,6 +9097,7 @@ STRINGS.UI =
         GETHALF = "Get Half",
         SELECT = "Select",
         PUT = "Put",
+		--ITEM_ACTIONS = "Item Actions",
         DEPLOY = "Deploy",
         BUILD = "Build",
         CANCEL = "Cancel",
@@ -8968,6 +9135,8 @@ STRINGS.UI =
         },
         LOCK_TARGET = "Lock Target",
 		UNLOCK_TARGET = "Unlock Target",
+		NEXT_TARGET = "Next Target",
+        CYCLE_AXIS_ALIGNED_PLACEMENT = "Cycle Grid Size",
 
         LAVAARENA_WIN_TITLE = "Victory!",
         LAVAARENA_WIN_BODY = "You have bested Battlemaster Pugna's champions in battle.",
@@ -9042,6 +9211,8 @@ STRINGS.UI =
 		SHADOWFORGING = "Shadowcraft",
         HERMITCRABSHOP = "Bottle Exchange",
         RABBITKINGSHOP = "Trading Hutch",
+        WANDERINGTRADERSHOP = "Trading",
+        WAGPUNK_WORKSTATION = "Fabrication",
         CARPENTRY = "Carpentry",
 
         SHADOW = "Codex Umbra",
@@ -9069,6 +9240,9 @@ STRINGS.UI =
 		NAVIGATION = "Navigation",
 		PIN = "Pin",
 		UNPIN = "Unpin",
+		MORE = "More Actions",
+		PINBAR_PAGE = "Select Page",
+		SKIN_SELECT = "Select Skin",
 
 		FAVORITE_ADD = "Add Favorite",
 		FAVORITE_REMOVE = "Remove Favorite",
@@ -9314,6 +9488,13 @@ STRINGS.UI =
         INV_ADJUST_STACK_SIZE = "Adjust stack size",
         INV_USE_ITEM_ON_ITEM = "Use on item",
 
+        AXISALIGNEDPLACEMENT = "Structure Alignment:",
+        AXISALIGNEDPLACEMENT_SIZE_HALFWALL = "Half-Wall",
+        AXISALIGNEDPLACEMENT_SIZE_WALL = "Wall",
+        AXISALIGNEDPLACEMENT_SIZE_HALFTILE = "Half-Tile",
+        AXISALIGNEDPLACEMENT_SIZE_TILE = "Tile",
+        AXISALIGNEDPLACEMENTINTERVALS = "Alignment Intervals:",
+
         TOOLTIPS =
         {
             GRAPHICS = "Modify the graphics settings",
@@ -9357,6 +9538,8 @@ STRINGS.UI =
             LOADING_TIPS = "Learn more about the lore and the gameplay of Don't Starve while your world loads.",
 			TARGETLOCKING = "Focus on one target at a time.",
 			PROMOTIONS = "Display store promotions in the main menus.",
+            AXISALIGNEDPLACEMENT = "Structures and other deployables will automatically lock onto to a grid for making buildings look structured.",
+            AXISALIGNEDPLACEMENTINTERVALS = "This sets how big the grid is between each, measured in common units such as Wall width or Tile width.",
 
             -- Graphics
             FULLSCREEN = "Fill your screen with Don't Starve Together.",
@@ -10416,6 +10599,7 @@ STRINGS.UI =
         RIFTS_ENABLED_CAVE = "Wild Rifts",
         LUNARHAIL_FREQUENCY = "Lunar Hail",
         ACIDRAIN_ENABLED = "Acid Rain",
+        WANDERINGTRADER_ENABLED = "Wandering Trader",
         HOUNDMOUND = "Hound Mounds",
         MERMS = "Merms",
         TENTACLES = "Tentacles",
@@ -10559,6 +10743,7 @@ STRINGS.UI =
 		LESSDAMAGETAKEN = "Damage Taken",
         STAGEPLAYS = "Stage Plays",
         JUNKYARD = "Junk Yard",
+        BALATRO = "JIMBO",
 
         DAYWALKER = "Nightmare Werepig",
         DAYWALKER2 = "Scrappy Werepig",
@@ -10790,6 +10975,53 @@ STRINGS.UI =
         PLAYSTYLE_TITLE = "What's your playstyle?",
         PLAYSTYLE_BUTTON = "Choose Playstyle",
 		PLAYSTYLE_ANY_DESC = "You're, like, laidback and flexible, man. Any world is good with you.",
+        PLAYSTYLE_TITLE = "Playstyle Selection",
+
+        WORLDPROGRESSION_TITLE = "World Progression Filters",
+        WORLDPROGRESSION_BUTTON_LABEL = "World Progression:",
+        WORLDPROGRESSION_BUTTON_CHOOSING = "Choosing...",
+        WORLDPROGRESSION_BUTTON_CUSTOM = "Custom",
+        WORLDPROGRESSION_BUTTON_ANY = "Any",
+        WORLDPROGRESSION_TAGS = { -- NOTES(JBK): These must match up with WORLDSTATETAGS.DeclareTag(tagname) use and namespace!
+            WS = { -- Namespace without the colon.
+                MUST = { -- Key word is "is" or "are" or other very short affirmatives.
+                    -- Forest.
+                    CELESTIAL_ORB_FOUND = "The Celestial Orb is found.",
+                    CELESTIAL_PORTAL_BUILT = "The Celestial Portal is constructed.",
+                    CRABBY_HERMIT_HAPPY = "The Crabby Hermit gave a shiny gift.",
+                    LUNAR_RIFTS_ACTIVE = "Lunar Rifts are forming in the Constant.",
+                    -- Caves.
+                    ATRIUM_KEY_FOUND = "The Atrium Key is found.",
+                    --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
+                    ARCHIVES_ENERGIZED = "The Ancient Archives are energized.",
+                    SHADOW_RIFTS_ACTIVE = "Shadow Rifts are forming in the Constant.",
+                },
+                CANT = { -- Key word is "has yet" or "is still" or other two word negatives.
+                    -- Forest.
+                    CELESTIAL_ORB_FOUND = "The Celestial Orb has yet to be obtained.",
+                    CELESTIAL_PORTAL_BUILT = "The Celestial Portal is still a Florid Postern.",
+                    CRABBY_HERMIT_HAPPY = "The Crabby Hermit has yet to give her shiny gift.",
+                    LUNAR_RIFTS_ACTIVE = "Lunar Rifts are no where to be found.",
+                    -- Caves.
+                    ATRIUM_KEY_FOUND = "The Atrium Key has yet to be obtained.",
+                    --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
+                    ARCHIVES_ENERGIZED = "The Ancient Archives are powered down.",
+                    SHADOW_RIFTS_ACTIVE = "Shadow Rifts are no where to be found.",
+                },
+                ANY = { -- Key word is "may have" or "may be" or other two word ambiguities.
+                    -- Forest.
+                    CELESTIAL_ORB_FOUND = "The Celestial Orb may have been found.",
+                    CELESTIAL_PORTAL_BUILT = "The Celestial Portal may have been constructed.",
+                    CRABBY_HERMIT_HAPPY = "The Crabby Hermit may have given a shiny gift.",
+                    LUNAR_RIFTS_ACTIVE = "Lunar Rifts may be forming in the Constant.",
+                    -- Caves.
+                    ATRIUM_KEY_FOUND = "The Atrium Key may have been found.",
+                    --  FIXME(JBK): It would be nice for a CELESTIALPORTAL thing here for caves.
+                    ARCHIVES_ENERGIZED = "The Ancient Archives may be energized.",
+                    SHADOW_RIFTS_ACTIVE = "Shadow Rifts may be forming in the Constant.",
+                },
+            },
+        },
         MISSINGDATATITLE = "Out-of-Date Server",
         MISSINGDATABODY = "This server is not up to date. We cannot display its world settings.",
         SERVER_LANGUAGE_WARNING_TITLE = "Server Language Mismatch",
@@ -13085,7 +13317,43 @@ STRINGS.UI =
             "Social Menu",
             "Toggle Target locking",
             "Next Target",
+			"Modifier 1", --CONTROL_CAM_AND_INV_MODIFIER
+			"Character Command Wheel",
+			"", --CONTROL_PRESET_RSTICK_UP
+			"", --CONTROL_PRESET_RSTICK_DOWN
+			"", --CONTROL_PRESET_RSTICK_LEFT
+			"", --CONTROL_PRESET_RSTICK_RIGHT
+			"", --CONTROL_PRESET_DPAD_UP
+			"", --CONTROL_PRESET_DPAD_DOWN
+			"", --CONTROL_PRESET_DPAD_LEFT
+			"", --CONTROL_PRESET_DPAD_RIGHT
+            "Toggle Alignment (mod)",
+            "Cycle Alignment Grid",
         },
+		OVERRIDE_CONTROL_NAMES =
+		{
+			MAP_ROTATE_LEFT = "Map Rotate Left",
+			MAP_ROTATE_RIGHT = "Map Rotate Right",
+			CAMERA = "Camera Control",
+			AIMING = "Aiming Reticule",
+			INV_NAVI = "Inventory Navigation",
+			INV_ACTIONS = "Inventory Actions",
+		},
+		-- Must match constants.lua CONTROL_SCHEMES_*
+		SCHEMES =
+		{
+			"Camera and Inventory",
+		},
+		SCHEME_OPTIONS =
+		{
+			TYPE1 = "Type 1",
+			TYPE2 = "Type 2",
+			TYPE3 = "Type 3",
+			TYPE4 = "Type 4",
+			TYPE5 = "Type 5",
+			TYPE6 = "Type 6",
+			TYPE7 = "Type 7",
+		},
 
         DEVICE_TITLE = "Controls",
         APPLY = "Apply",
@@ -13291,6 +13559,9 @@ STRINGS.UI =
             [2] =
             {
                 [0] = "Unknown",
+				rstick = "\238\128\152",
+				dpad = "\238\128\153",
+
                 -- Digital
                 "\238\128\143",--"DPad Up"
                 "\238\128\140",--"DPad Down"
@@ -13325,6 +13596,9 @@ STRINGS.UI =
             [3] =
             {
                 [0] = "Unknown",
+				rstick = "(X/Y Rotation)",
+				dpad = "(DPad 0)",
+
                 -- Digital
                 "(Button %d)",
 
@@ -13356,6 +13630,8 @@ STRINGS.UI =
             [4] =
             {
                 [0] = "Unknown",
+				rstick = "\238\136\160",
+				dpad = "\238\136\161",
 
                 -- Digital
                 "\238\136\143",-- 1 "DPad Up",
@@ -13391,6 +13667,9 @@ STRINGS.UI =
             [5] =
             {
                 [0] = "Unknown",
+				rstick = "\238\136\160",
+				dpad = "\238\136\161",
+
                 "", -- unused but needed to get the index to 2
 
                 -- Digital
@@ -13448,35 +13727,37 @@ STRINGS.UI =
             [8] =
             {
                 [0] = "Unknown",
+				rstick = "\238\148\154",
+				dpad = "\238\148\155",
 
-                "\238\136\143",-- 1 "DPad Up"
-                "\238\136\140",-- 2 "DPad Down"
-                "\238\136\141",-- 3 "DPad Left",
-                "\238\136\142",-- 4 "DPad Right"
-                "\238\136\132",-- 5 "Options (Start)",
-                "\238\136\133",-- 6 "Share (Select, Back)",
-                "\238\136\134",-- 7 "L3",
-                "\238\136\137",-- 8 "R3",
-                "\238\136\135",-- 9 "Left Bumper",
-                "\238\136\138",--10 "Right Bumper"
-                "\238\136\128",--11 "Cross",
-                "\238\136\129",--12 "Circle",
-                "\238\136\130",--13 "Square",
-                "\238\136\131",--14 "Triangle",
+				"\238\148\143",-- 1 "DPad Up"
+				"\238\148\140",-- 2 "DPad Down"
+				"\238\148\141",-- 3 "DPad Left",
+				"\238\148\142",-- 4 "DPad Right"
+				"\238\148\152",-- 5 "Options (Start)",
+				"\238\148\153",-- 6 "Share (Select, Back)",
+				"\238\148\134",-- 7 "L3",
+				"\238\148\137",-- 8 "R3",
+				"\238\148\135",-- 9 "Left Bumper",
+				"\238\148\138",--10 "Right Bumper"
+				"\238\148\128",--11 "Cross",
+				"\238\148\129",--12 "Circle",
+				"\238\148\130",--13 "Square",
+				"\238\148\131",--14 "Triangle",
 
                 -- Analog
-                "\238\136\146",--15 "Left Thumb Left",
-                "\238\136\147",--16 "Left Thumb Right",
-                "\238\136\144",--17 "Left Thumb Up",
-                "\238\136\145",--18 "Left Thumb Down",
-                "\238\136\150",--19 "Right Thumb Left",
-                "\238\136\151",--20 "Right Thumb Right",
-                "\238\136\136",--21 "Left Trigger",
-                "\238\136\136",--22 "Left Trigger",
-                "\238\136\139",--23 "Right Trigger",
-                "\238\136\139",--24 "Right Trigger",
-                "\238\136\148",--25 "Right Thumb Up",
-                "\238\136\149",--26 "Right Thumb Down",
+				"\238\148\146",--15 "Left Thumb Left",
+				"\238\148\147",--16 "Left Thumb Right",
+				"\238\148\144",--17 "Left Thumb Up",
+				"\238\148\145",--18 "Left Thumb Down",
+				"\238\148\150",--19 "Right Thumb Left",
+				"\238\148\151",--20 "Right Thumb Right",
+				"\238\148\136",--21 "Left Trigger",
+				"\238\148\136",--22 "Left Trigger",
+				"\238\148\139",--23 "Right Trigger",
+				"\238\148\139",--24 "Right Trigger",
+				"\238\148\148",--25 "Right Thumb Up",
+				"\238\148\149",--26 "Right Thumb Down",
             },
             --Unknown
             [9] =
@@ -13490,6 +13771,8 @@ STRINGS.UI =
             [10] =
             {
                 [0] = "Unknown",
+				rstick = "\238\144\154",
+				dpad = "\238\144\155",
 
                 -- Digital
                 "\238\144\143",--"DPad Up"
@@ -13527,59 +13810,63 @@ STRINGS.UI =
             [11] =
             {
                 [0] = "Unknown",
+				rstick = "\238\130\156",
+				dpad = "\238\130\157",
 
                 -- Digital
-                "\238\136\173", --"DPad Up"
-                "\238\136\170", --"DPad Down"
-                "\238\136\171", --"DPad Left",
-                "\238\136\172", --"DPad Right"
-                "\238\136\162",--"Start",
-                "\238\136\163",--"Back",
-                "\238\136\164", --"Left Stick"
-                "\238\136\167", --"Right Stick"
-                "\238\136\165", --"Left Bumper",
-                "\238\136\168", --"Right Bumper"
-                "\238\136\158", --"Button A",
-                "\238\136\159", --"Button B",
-                "\238\136\160", --"Button X",
-                "\238\136\161", --"Button Y",
+				"\238\130\136", --"DPad Up"
+				"\238\130\137", --"DPad Down"
+				"\238\130\138", --"DPad Left",
+				"\238\130\139", --"DPad Right"
+				"\238\130\132",--"Start",
+				"\238\130\133",--"Back",
+				"\238\130\134", --"Left Stick"
+				"\238\130\135", --"Right Stick"
+				"\238\130\148", --"Left Bumper",
+				"\238\130\152", --"Right Bumper"
+				"\238\130\128", --"Button A",
+				"\238\130\129", --"Button B",
+				"\238\130\130", --"Button X",
+				"\238\130\131", --"Button Y",
 
                 -- Analog
-                "\238\136\176", --"Left Thumb Left",
-                "\238\136\177", --"Left Thumb Right",
-                "\238\136\175", --"Left Thumb Down",
-                "\238\136\174", --"Left Thumb Up",
-                "\238\136\180", --"Right Thumb Left",
-                "\238\136\181", --"Right Thumb Right",
-                "\238\136\179", --"Right Thumb Down",
-                "\238\136\178", --"Right Thumb Up",
-                "\238\136\166", --"Left Trigger",
-                "\238\136\166", --"Left Trigger",
-                "\238\136\169", --"Right Trigger",
-                "\238\136\169", --"Right Trigger",
+				"\238\130\142", --"Left Thumb Left",
+				"\238\130\143", --"Left Thumb Right",
+				"\238\130\141", --"Left Thumb Down",
+				"\238\130\140", --"Left Thumb Up",
+				"\238\130\146", --"Right Thumb Left",
+				"\238\130\147", --"Right Thumb Right",
+				"\238\130\145", --"Right Thumb Down",
+				"\238\130\144", --"Right Thumb Up",
+				"\238\130\149", --"Left Trigger",
+				"\238\130\149", --"Left Trigger",
+				"\238\130\153", --"Right Trigger",
+				"\238\130\153", --"Right Trigger",
 
                 --[1000] = "",	-- "Left Mouse Button"
-                --[1003] = "\238\136\182",	-- "Right Mouse Button" = L4
-                --[1004] = "\238\136\183",	-- "Middle Mouse Button" = L5
-                --[1005] = "\238\136\184",	-- "Mouse Button 4" = R4
-                --[1006] = "\238\136\185",	-- "Mouse Button 5" = R5
+				--[1003] = "\238\130\150",	-- "Right Mouse Button" = L4
+				--[1004] = "\238\130\151",	-- "Middle Mouse Button" = L5
+				--[1005] = "\238\130\154",	-- "Mouse Button 4" = R4
+				--[1006] = "\238\130\155",	-- "Mouse Button 5" = R5
 
-                [282] = "\238\136\182",	-- "F1" = L4
-                [283] = "\238\136\183",	-- "F2" = L5
-                [284] = "\238\136\184",	-- "Mouse Button 4" = R4
-                [285] = "\238\136\185",	-- "Mouse Button 5" = R5
-
+				[282] = "\238\130\150",	-- "F1" = L4
+				[283] = "\238\130\151",	-- "F2" = L5
+				[284] = "\238\130\154",	-- "Mouse Button 4" = R4
+				[285] = "\238\130\155",	-- "Mouse Button 5" = R5
             },
             -- DualShock 4 on PS4/PS5 (CharlesB: PC is above in index 4, this one has the same icons but they've been reordered)
             [12] =
             {
                 [0] = "Unknown",
+				rstick = "\238\136\160",
+				dpad = "\238\136\161",
+
                 "", -- unused but needed to get the index to 2
 
                 -- Digital
                 "\238\136\134",-- 2 "L3",
                 "\238\136\137",-- 3 "R3",
-                "\238\135\190",-- 4 "Options (Start)",
+				"\238\136\158",-- 4 "Options (Start)",
                 "\238\136\143",-- 5 "DPad Up",
                 "\238\136\142",-- 6 "DPad Right"
                 "\238\136\140",-- 7 "DPad Down",
@@ -13596,7 +13883,7 @@ STRINGS.UI =
                 "",
                 "",
                 "",
-                "\238\135\191",--21 "Touchpad",
+				"\238\136\159",--21 "Touchpad",
 
                 -- Analog
                 "\238\136\146",--22 "Left Thumb Left",
@@ -13616,6 +13903,9 @@ STRINGS.UI =
             [13] =
             {
                 [0] = "Unknown",
+				rstick = "\238\129\152",
+				dpad = "\238\129\153",
+
                 -- Digital
 
                 "\238\129\136",--"Left Trigger",
@@ -13653,12 +13943,16 @@ STRINGS.UI =
 			[14] =
             {
                 [0] = "Unknown",
+				rstick = "\238\148\154",
+				dpad = "\238\148\155",
+
                 "", -- unused but needed to get the index to 2
 
                 -- Digital
                 "\238\148\134",-- "L3",
                 "\238\148\137",-- "R3",
-                "\238\148\132",-- "Options (Start)",
+                --"\238\148\132",-- "Options (Start)",
+				"\238\148\152",-- "Options (Start)", --use the one with the 3 bars above
                 "\238\148\143",-- "DPad Up",
                 "\238\148\142",-- "DPad Right"
                 "\238\148\140",-- "DPad Down",
@@ -14131,7 +14425,7 @@ STRINGS.UI =
         STEP = "Step Dance",
 		TOAST = "Toast",
 		PET = "Pet",
-		BIGPET = "Pet",
+		BIGPET = "Big Pet",
     },
 
     PRESENCE =
@@ -15325,9 +15619,9 @@ STRINGS.BALATRO = {
     JIMBO_CHOOSE_JOKER = "HI, CHOOSE YOUR JOKER.",
     JIMBO_START = "CHOOSE CARDS TO DISCARD.",
     JIMBO_DISCARD1 = "ANY FINAL DISCARDS?",
-    JIMBO_DISCARD2 = "LETS SEE HOW YOU DID",
+    JIMBO_DISCARD2 = "LET'S SEE HOW YOU DID.",
     JIMBO_CHIPCOUNT = "{chips} CHIPS",
-    JIMBO_HANDMULT = "{hand} IS {mult} MULT",
+    JIMBO_HANDMULT = "{hand} IS {mult} MULT.",
     JIMBO_FINALSCORE = "FOR A FINAL SCORE OF..",
     JIMBO_SCORE = "{score}!",
 
@@ -15347,12 +15641,12 @@ STRINGS.BALATRO = {
 
     JIMBO_REWARD_1 = "FOR THAT PERFORMANCE, YOU GET {reward}!",
     JIMBO_REWARD_2 = "YOU DID OK. HAVE THIS {reward}.",
-    JIMBO_REWARD_3 = "PRETTY GOOD, YOU GET {reward}",
-    JIMBO_REWARD_4 = "GREAT! ENJOY {reward}",
-    JIMBO_REWARD_5 = "WOW! HERE'S SOME {reward}",
+    JIMBO_REWARD_3 = "PRETTY GOOD, YOU GET {reward}.",
+    JIMBO_REWARD_4 = "GREAT! ENJOY {reward}!",
+    JIMBO_REWARD_5 = "WOW! HERE'S SOME {reward}!",
     JIMBO_REWARD_6 = "FANTASTIC! SOME {reward} FOR YOU!",
     JIMBO_REWARD_7 = "AMAZING! ENJOY YOUR {reward}!",
-    JIMBO_REWARD_8 = "TRUE ROYALTY! YOU REALLY EARNED THIS {reward}",
+    JIMBO_REWARD_8 = "TRUE ROYALTY! YOU REALLY EARNED THIS {reward}!",
     JIMBO_REWARD_9 = "TSK TSK, TRYING TO SNEAK AWAY?",
 
     JIMBO_NO_REWARD = "MAYBE GO FISH IS MORE YOUR SPEED...",
@@ -16413,7 +16707,7 @@ STRINGS.SKILLTREE = {
         WURT_SHADOW_ALLEGIANCE_1_DESC = "Your merm followers may die, but their shadows live on.\nInfuse fallen merms' shadows with Planar power using Pure Horror.",
         WURT_SHADOW_ALLEGIANCE_2_DESC = "No land shall be safe from the dark and beautiful corruption of the Marsh.",
     },
-    
+
     --[[WX78 = {
     },]]
 }
@@ -16670,12 +16964,12 @@ STRINGS.SCRAPBOOK = {
         BEEFALOFEED = "Snacks for Beefalo.",
         GHOSTLYELIXERREGENERATION = "Raises Abigail's health regeneration from 1 to 3 health per second. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals 1 health per second for 20 seconds.",
         GHOSTLYELIXERHEALING = "Raises Abigail's health regeneration from 1 to 20 health per second. Lasts 30 seconds.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals 5 health per second for 20 seconds.",
-        GHOSTLYELIXERSHIELD = "Doubles Abigail's shield duration from 0.5 seconds to 1 second. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorm a lot of damage from one hit and then goes on cool down for 10 seconds.",
+        GHOSTLYELIXERSHIELD = "Doubles Abigail's shield duration from 0.5 seconds to 1 second. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorb a lot of damage from one hit and then goes on cool down for 10 seconds.",
         GHOSTLYELIXERATTACK = "Abigail will deal her nighttime damage during the day and dusk. Lasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nThe drinker can see in the dark as if they were a ghost.",
         GHOSTLYELIXERSPEED = "Abigail has a 75% speed boost for 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeavy objects won't slow the drinker down as much.",
-        GHOSTLYELIXERRETALIATION = "Doubles Abigail's shield duration from 0.5 seconds to 1 second.\n\nAttacking creatures also take 20 damage.\n\nLasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorm a lot of damage from one hit and then goes on cool down for 10 seconds. It also inflicts 20 damage to enemy close by.",
-        GHOSTLYELIXERREVIVE = "Returns Abigail's level up to 3.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals the drinker for a little bit of sanity, fills a small amount of hunger and removes the health penalty of revival.",
-        GHOSTLYELIXERSHADOW = "Boosts the curse Abigail inflicts on targets, so that now they recieve an extra 10 Planar Damage when attacked.",
+        GHOSTLYELIXERRETALIATION = "Doubles Abigail's shield duration from 0.5 seconds to 1 second.\n\nAttacking creatures also take 20 damage.\n\nLasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorb a lot of damage from one hit and then goes on cool down for 10 seconds. It also inflicts 20 damage to all nearby enemies.",
+        GHOSTLYELIXERREVIVE = "Returns Abigail's level to 3.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals the drinker for a little bit of sanity, fills a small amount of hunger and removes the health penalty of revival.",
+        GHOSTLYELIXERSHADOW = "Boosts the curse Abigail inflicts on targets, so that now they receive an extra 10 Planar Damage when attacked.",
         GHOSTLYELIXERLUNAR = "Abigail inflicts an extra 10 planar damage when attacking and increases to 100 when Abigail is in gestalt form.",
         FEATHERPENCIL = "Draws the closest item nearby onto a Mini Sign.",
         MINIFLARE = "Creates a flash in the sky that can be seen by all survivors on the minimap.",
@@ -17088,7 +17382,7 @@ STRINGS.SCRAPBOOK = {
         SLINGSHOTAMMO_DREADSTONE = "It has a 50% chance to not break on impact.",
 		SLINGSHOTAMMO_GELBLOB = "It attaches an Icker blob to your target for 60 seconds, greatly slowing it down.",
         SLINGSHOTAMMO_GUNPOWDER = "It has an increasing chance to trigger an explosion, dealing double damage in a large area.",
-		SLINGSHOTAMMO_HONEY = "It slows down ground targets 8 seconds.",
+		SLINGSHOTAMMO_HONEY = "It slows down ground targets for 8 seconds.",
 		SLINGSHOTAMMO_HORRORFUEL = "It applies the Swarming Horror debuff to creatures it hits, dealing 10 planar damage periodically. Up to 4 Swarming Horrors can be stacked on each target.",
 		SLINGSHOTAMMO_LUNARPLANTHUSK = "It has a chance to spawn a Brightshade Vine on impact, which deals planar damage to your target.",
         SLINGSHOTAMMO_MOONGLASS = "It deals damage in a medium area around its target.",

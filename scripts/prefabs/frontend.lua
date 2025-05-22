@@ -57,6 +57,9 @@ local assets =
     Asset("ATLAS", "images/serverplaystyles.xml"),
     Asset("IMAGE", "images/serverplaystyles.tex"),
 
+    Asset("ATLAS", "images/worldprogressionfilters.xml"),
+    Asset("IMAGE", "images/worldprogressionfilters.tex"),
+
     Asset("DYNAMIC_ATLAS", "images/new_host_picker.xml"),
     Asset("PKGREF", "images/new_host_picker.tex"),
 

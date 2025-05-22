@@ -65,6 +65,10 @@ function Deployable:SetDeployMode(mode)
     self.mode = mode
 end
 
+function Deployable:GetDeployMode()
+    return self.mode
+end
+
 function Deployable:SetDeploySpacing(spacing)
     self.spacing = spacing
 end

@@ -117,10 +117,11 @@ local function ResetPhysics(inst)
 	inst.Physics:SetFriction(0.1)
 	inst.Physics:SetRestitution(0.5)
 	inst.Physics:SetCollisionGroup(COLLISION.ITEMS)
-	inst.Physics:ClearCollisionMask()
-	inst.Physics:CollidesWith(COLLISION.WORLD)
-	inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-	inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+	inst.Physics:SetCollisionMask(
+		COLLISION.WORLD,
+		COLLISION.OBSTACLES,
+		COLLISION.SMALLOBSTACLES
+	)
 end
 
 local function onthrown(inst)
@@ -139,10 +140,11 @@ local function onthrown(inst)
     inst.Physics:SetFriction(0)
     inst.Physics:SetDamping(0)
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.GROUND)
-    inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-    inst.Physics:CollidesWith(COLLISION.ITEMS)
+	inst.Physics:SetCollisionMask(
+		COLLISION.GROUND,
+		COLLISION.OBSTACLES,
+		COLLISION.ITEMS
+	)
 end
 
 local AOE_ATTACK_MUST_TAGS = {"_combat", "_health"}

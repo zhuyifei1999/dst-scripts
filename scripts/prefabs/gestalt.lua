@@ -60,21 +60,17 @@ local function UpdateBestTrackingTarget(inst)
 	SetTrackingTarget(inst, target, behaviour_level)
 end
 
+local SLEEPING_TAGS = {"bedroll", "knockout", "sleeping", "tent", "waking"}
 local function Retarget(inst)
     -- If we don't have a tracking target, are in combat cooldown, or are too far away, no target.
-    if inst.tracking_target == nil
+    if not inst.tracking_target
             or inst.components.combat:InCooldown()
             or not inst:IsNear(inst.tracking_target, TUNING.GESTALT_AGGRESSIVE_RANGE) then
         return nil
     end
 
     -- If our potential target is sleeping, don't target them.
-    local sleeping = inst.tracking_target.sg:HasStateTag("knockout")
-        or inst.tracking_target.sg:HasStateTag("sleeping")
-        or inst.tracking_target.sg:HasStateTag("bedroll")
-        or inst.tracking_target.sg:HasStateTag("tent")
-        or inst.tracking_target.sg:HasStateTag("waking")
-    if sleeping then
+    if inst.tracking_target.sg:HasAnyStateTag(SLEEPING_TAGS) then
         return nil
     end
 
@@ -100,6 +96,10 @@ local function OnNoCombatTarget(inst)
 	inst:RemoveTag("scarytoprey")
 end
 
+local function OnCaptured(inst, obj, doer)
+	inst:Remove()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -115,8 +115,7 @@ local function fn()
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.FLYERS)
-    phys:ClearCollisionMask()
-    phys:CollidesWith(COLLISION.GROUND)
+	phys:SetCollisionMask(COLLISION.GROUND)
     phys:SetCapsule(0.5, 1)
 
 	inst:AddTag("brightmare")
@@ -129,6 +128,7 @@ local function fn()
     inst.AnimState:SetBuild("brightmare_gestalt")
     inst.AnimState:SetBank("brightmare_gestalt")
     inst.AnimState:PlayAnimation("idle", true)
+	inst.AnimState:Hide("mouseover")
 
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
@@ -186,6 +186,10 @@ local function fn()
 	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 	inst:ListenForEvent("droppedtarget", OnNoCombatTarget)
 	inst:ListenForEvent("losttarget", OnNoCombatTarget)
+
+	inst:AddComponent("gestaltcapturable")
+	inst.components.gestaltcapturable:SetLevel(1)
+	inst.components.gestaltcapturable:SetOnCapturedFn(OnCaptured)
 
     inst:SetStateGraph("SGbrightmare_gestalt")
     inst:SetBrain(brain)

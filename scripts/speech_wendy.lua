@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Hello sir? He seems to be out.",
             ALREADYACTIVE = "He must be busy somewhere else.",
+            NORESPONSE = "It seems he's wandered away.",
+            RIGHTTHERE = "Does he not see us?",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Failure.",
 		},
     },
 
@@ -1136,7 +1143,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "There's no use rolling it more.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "The ground lies barren, stripped of its winter coat.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "I'll come back for you, Abby.", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "Abby, let's go!",
 
@@ -1149,6 +1156,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "My heart is still heavy.",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "It's too much.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "We've angered a higher power, and now death falls upon us.",
 
 	BATTLECRY =
 	{
@@ -5652,6 +5661,34 @@ return{
         DECK_OF_CARDS = "Suppose I can play Solitaire.",
         PLAYING_CARD = "A single playing card. Great.",
         BALATRO_MACHINE = "What more can I lose?",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Empty.",
+			FILLED = "It's trapped inside.",
+		},
+		WAGBOSS_ROBOT = "I have a bad feeling about this.",
+        WAGBOSS_ROBOT_POSSESSED = "I would be angry too.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It remembers.",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "So much pain.",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "They are compelled by a greater entity.",
+            FRIENDLY = "It kind of lost its spark.",
+        },
+		WAGDRONE_FLYING = "They're starting to irritate me.",
+
+        WAGPUNK_WORKSTATION = "Still so much we don't understand.",
+        WAGPUNK_LEVER = "Let's pull it come what may.",
+        WAGPUNK_FLOOR_KIT = "I wonder how the ocean feels about this.",
+        WAGPUNK_CAGEWALL = "I guess we're not going anywhere.",
+
+        WANDERINGTRADER = "I wonder how long he's been here.",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "One does not need water to drown.",
+        LUNAR_SEED = "All that remains is its crown.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

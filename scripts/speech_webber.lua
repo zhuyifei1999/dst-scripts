@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Anybody there? Guess not...",
             ALREADYACTIVE = "Maybe there's another contest going on somewhere else?",
+            NORESPONSE = "We can't find him.",
+            RIGHTTHERE = "He's ignoring us.",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Aww, we missed!",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "We can't roll it any bigger!",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "Where's more snow?",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "We can help carry heavy stuff!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too much for us.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "There's a giant ball falling from the sky!",
 
 	BATTLECRY =
 	{
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "We know many games!",
         PLAYING_CARD = "Is this the one we lost?",
         BALATRO_MACHINE = "Prizes!",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Nobody home.",
+			FILLED = "We got one!",
+		},
+		WAGBOSS_ROBOT = "Does it give rides?",
+        WAGBOSS_ROBOT_POSSESSED = "We just wanted to play!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's the cranky rock ball!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Three-legged space spider?",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Nasty little robots.",
+            FRIENDLY = "We love how it spins and spins and spins.",
+        },
+		WAGDRONE_FLYING = "No fair! We can't fly!",
+
+        WAGPUNK_WORKSTATION = "Can we building something fun?",
+        WAGPUNK_LEVER = "It's our turn to pull it!",
+        WAGPUNK_FLOOR_KIT = "We'll have more room to play.",
+        WAGPUNK_CAGEWALL = "Now we can't cross the line?",
+
+        WANDERINGTRADER = "What does he have for us?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "But we're not afraid of the water!",
+        LUNAR_SEED = "So pretty! Can we keep it?",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

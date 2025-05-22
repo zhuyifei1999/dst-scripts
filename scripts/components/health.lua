@@ -33,6 +33,10 @@ local function ontakingfiredamagelow(self, takingfiredamagelow)
     self.inst.replica.health:SetIsTakingFireDamageLow(takingfiredamagelow == true)
 end
 
+local function onlunarbeams(self, lunarbeams)
+	self.inst.replica.health:SetIsTakingLunarBeamDamage(lunarbeams ~= nil)
+end
+
 local function onpenalty(self, penalty)
     self.inst.replica.health:SetPenalty(penalty)
 end
@@ -70,6 +74,8 @@ local Health = Class(function(self, inst)
     self.takingfiredamage = false
     self.takingfiredamagetime = 0
     --self.takingfiredamagelow = nil
+	--self.lunarbeams = nil
+	--self.lastluanrbeampulsetick = nil
     self.fire_damage_scale = 1
     self.externalfiredamagemultipliers = SourceModifierList(inst)
     self.fire_timestart = 1
@@ -99,6 +105,7 @@ nil,
     currenthealth = oncurrenthealth,
     takingfiredamage = ontakingfiredamage,
     takingfiredamagelow = ontakingfiredamagelow,
+	lunarbeams = onlunarbeams,
     penalty = onpenalty,
     canmurder = oncanmurder,
     canheal = oncanheal,
@@ -229,6 +236,35 @@ function Health:OnUpdate(dt)
         self.inst:PushEvent("stopfiredamage")
         ProfileStatsAdd("fireout")
     end
+end
+
+function Health:IsTakingLunarBeamDamage()
+	return self.lunarbeams ~= nil
+end
+
+function Health:RegisterLunarBeamDamageSource(source)
+	if self.lunarbeams == nil then
+		self._onremovelunarbeam = function(beam) self:UnregisterLunarBeamDamageSource(source) end
+		self.lunarbeams = { [source] = true }
+		self.inst:ListenForEvent("onremove", self._onremovelunarbeam, source)
+		self.inst:PushEvent("startlunarbeamdamage")
+	elseif self.lunarbeams[source] == nil then
+		self.lunarbeams[source] = true
+		self.inst:ListenForEvent("onremove", self._onremovelunarbeam, source)
+	end
+end
+
+function Health:UnregisterLunarBeamDamageSource(source)
+	if self.lunarbeams[source] then
+		self.inst:RemoveEventCallback("onremove", self._onremovelunarbeam, source)
+		self.lunarbeams[source] = nil
+		if next(self.lunarbeams) == nil then
+			self.lunarbeams = nil
+			self.lastluanrbeampulsetick = nil
+			self._onremovelunarbeam = nil
+			self.inst:PushEvent("stoplunarbeamdamage")
+		end
+	end
 end
 
 local function DoRegen(inst, self)

@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Maybe he took the day off?",
             ALREADYACTIVE = "There must be another contest going on somewhere else.",
+            NORESPONSE = "He must be wandering around somewhere.",
+            RIGHTTHERE = "Busy as a bee—f!",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 			NOSLINGSHOT = "I don't have a slingshot to mod!",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Don't give up, Walter!",
 		},
     },
 
@@ -1174,7 +1181,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "It won't get any bigger!",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "We've run out of snow, Woby!",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1187,6 +1194,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I bet I could carry you, Woby!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I don't think my tummy can handle that.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Heads up! Incoming from above!",
 
 	BATTLECRY =
 	{
@@ -5690,6 +5699,34 @@ return{
         DECK_OF_CARDS = "Woby! Pick a card, any card!",
         PLAYING_CARD = "Is THIS your card, Wobes?",
         BALATRO_MACHINE = "Woby, let's take paws and play a few hands. Oh, Walter!",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "It's empty, Wobes.",
+			FILLED = "Yup, we got one, Woby!",
+		},
+		WAGBOSS_ROBOT = "Oooh, neat robot!",
+        WAGBOSS_ROBOT_POSSESSED = "It's a bot unstable! Get it, Woby?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's still mad at us!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Has anyone asked why it's so upset?",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Hard to put a positive spin on it!",
+            FRIENDLY = "Looks safe enough.",
+        },
+		WAGDRONE_FLYING = "Whoa! Death from above! Watch out, Woby!",
+
+        WAGPUNK_WORKSTATION = "Check it out, Woby! What can we make here?",
+        WAGPUNK_LEVER = "Maybe we'll skip the instructions just this once.",
+        WAGPUNK_FLOOR_KIT = "I bet we'll be floored by this!",
+        WAGPUNK_CAGEWALL = "This will keep things contained. Yup, and us too, Woby!",
+
+        WANDERINGTRADER = "He's hiding in plain sight!",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",
+        LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

@@ -26,29 +26,29 @@ local function ondeath(inst)
     inst.AnimState:PlayAnimation("explode", false)
     inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/explode")
 
-    inst:ListenForEvent("animover", function()
-        inst:Remove()
-    end)
+    inst:ListenForEvent("animover", inst.Remove)
 end
 
+local function finished_callback(inst)
+    local item = SpawnPrefab("moonstorm_static_item")
+    item.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
 local function finished(inst)
     inst.SoundEmitter:KillSound("loop")
     inst.AnimState:PlayAnimation("finish", false)
     inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/finish")
     inst.experimentcomplete = true
-    inst:ListenForEvent("animover", function()
-        local item = SpawnPrefab("moonstorm_static_item")
-        item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        inst:Remove()
-    end)
+    inst:ListenForEvent("animover", finished_callback)
 end
 
+local function stormstopped_callback(inst)
+    if TheWorld.net.components.moonstorms and not TheWorld.net.components.moonstorms:IsInMoonstorm(inst) then
+        inst.components.health:Kill()
+    end
+end
 local function stormstopped(inst)
-    inst:DoTaskInTime(1,function()
-        if TheWorld.net.components.moonstorms and not TheWorld.net.components.moonstorms:IsInMoonstorm(inst) then
-            inst.components.health:Kill()
-        end
-    end)
+    inst:DoTaskInTime(1, stormstopped_callback)
 end
 
 local function fn()
@@ -109,6 +109,7 @@ local function fn()
     return inst
 end
 
+--
 local IDLE_SOUND_LOOP_NAME = "loop"
 
 local function OnEntityWake(inst)

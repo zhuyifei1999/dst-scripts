@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Huh? Where is contest??",
             ALREADYACTIVE = "Maybe he doing secret contest somewhere else...",
+            NORESPONSE = "He away.",
+            RIGHTTHERE = "Why you ignore me? Florp!",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Florp! Missed!",
 		},
     },
 
@@ -1132,7 +1139,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Won't go bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "No snow. Glurph.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1145,6 +1152,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Mermfolk strong!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Glurph! Too strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It coming from moon!",
 
 	BATTLECRY =
 	{
@@ -5413,7 +5422,7 @@ return{
         YOTD_STEERINGWHEEL = "Me steer, me steer!",
         YOTD_STEERINGWHEEL_ITEM = "This go on boat?",
         YOTD_OAR = "Gonna have claws just as big one day, you gonna see!",
-        YOTD_ANCHOR = "Carful not to hurt any fishies on way down, florp!",
+        YOTD_ANCHOR = "Careful not to hurt any fishies on way down, florp!",
         YOTD_ANCHOR_ITEM = "Can make boat-stopper!",
         MAST_YOTD = "Everything better with scales.",
         MAST_YOTD_ITEM = "Pieces for boat thing.",
@@ -5648,6 +5657,34 @@ return{
         DECK_OF_CARDS = "Go fish! Go fish! Florp!",
         PLAYING_CARD = "Glurgh, who cheated?",
         BALATRO_MACHINE = "So easy game!",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "None. Glurgh.",
+			FILLED = "Got you!",
+		},
+		WAGBOSS_ROBOT = "Big Ironfolk! Florp!",
+        WAGBOSS_ROBOT_POSSESSED = "Flort! Flort! Flort! Bad Ironfolk!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Florpt. It baaack...",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Why bits of stuff in bright moon stuff want kill me?! Flort, why?!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Making me dizzy! Flort!",
+            FRIENDLY = "Be nice! Glurgh.",
+        },
+		WAGDRONE_FLYING = "Flort! Fly away!",
+
+        WAGPUNK_WORKSTATION = "Me make! Florp!",
+        WAGPUNK_LEVER = "Florp! I pull!",
+        WAGPUNK_FLOOR_KIT = "Floor...p?",
+        WAGPUNK_CAGEWALL = "Me go wherever me want. Glurgh.",
+
+        WANDERINGTRADER = "Hi, fuzzy guy! Florp!",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Me best floater, florp!",
+        LUNAR_SEED = "Glorp, me keep!",
     },
 
     DESCRIBE_GENERIC = "What that?",

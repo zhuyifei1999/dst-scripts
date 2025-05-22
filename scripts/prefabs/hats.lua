@@ -488,6 +488,7 @@ local function MakeHat(name)
     local function ruins_custom_init(inst)
         inst:AddTag("open_top_hat")
         inst:AddTag("metal")
+		inst:AddTag("hardarmor")
 
 		--shadowlevel (from shadowlevel component) added to pristine state for optimization
 		inst:AddTag("shadowlevel")
@@ -3047,12 +3048,8 @@ local function MakeHat(name)
         inst:AddTag("gestaltprotection")
     end
 
-    local function alterguardianhat_IsRed(inst) return inst.prefab == MUSHTREE_SPORE_RED end
-    local function alterguardianhat_IsGreen(inst) return inst.prefab == MUSHTREE_SPORE_GREEN end
-    local function alterguardianhat_IsBlue(inst) return inst.prefab == MUSHTREE_SPORE_BLUE end
     local alterguardianhat_colourtint = { 0.4, 0.3, 0.25, 0.2, 0.15, 0.1 }
     local alterguardianhat_multtint = { 0.7, 0.6, 0.55, 0.5, 0.45, 0.4 }
-
     local function alterguardianhat_animstatemult(animstate, r, g, b)
         animstate:SetMultColour(
             alterguardianhat_multtint[1+g+b],
@@ -3061,14 +3058,35 @@ local function MakeHat(name)
             1
         )
     end
+    fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
+    fns.alterguardianhat_wagbosstest = function(item) return item:HasTag("lunarseed") end
     local function alterguardianhat_updatelight(inst)
-        local num_sources = #inst.components.container:FindItems(function(item)
-            return item:HasTag("spore")
-        end)
+        local lunar_seeds = inst.components.container:FindItems(fns.alterguardianhat_wagbosstest)
+        local is_wagboss = (#lunar_seeds == 5)
+        local owner = inst.components.inventoryitem.owner
+        if owner and owner.components.sanity then
+            if is_wagboss then
+                owner.components.sanity:SetInducedLunacy(inst, true)
+                owner.components.sanity:EnableLunacy(true, "lunacyhat")
+            else
+                owner.components.sanity:SetInducedLunacy(inst, false)
+                owner.components.sanity:EnableLunacy(false, "lunacyhat")
+            end
+        end
 
-        local r = #inst.components.container:FindItems(alterguardianhat_IsRed)
-        local g = #inst.components.container:FindItems(alterguardianhat_IsGreen)
-        local b = #inst.components.container:FindItems(alterguardianhat_IsBlue)
+        local spores = inst.components.container:FindItems(fns.alterguardianhat_sporetest)
+        local r, g, b = 0, 0, 0
+        local spore_prefab
+        for _, spore in pairs(spores) do
+            spore_prefab = spore.prefab
+            if spore_prefab == MUSHTREE_SPORE_RED then
+                r = r + 1
+            elseif spore_prefab == MUSHTREE_SPORE_GREEN then
+                g = g + 1
+            elseif spore_prefab == MUSHTREE_SPORE_BLUE then
+                b = b + 1
+            end
+        end
 
         if inst._light ~= nil and inst._light:IsValid() then
             if r > 0 or g > 0 or b > 0 then
@@ -3087,10 +3105,24 @@ local function MakeHat(name)
 
         if inst._front and inst._front:IsValid() then
             alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
+            if is_wagboss then
+                inst._front.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
+                inst._front.AnimState:SetBank("hat_alterguardianupgraded_equipped")
+            elseif not is_wagboss and inst._front.AnimState:GetBuild() == "hat_alterguardianupgraded_equipped" then
+                inst._front.AnimState:SetBuild("hat_alterguardian_equipped")
+                inst._front.AnimState:SetBank("hat_alterguardian_equipped")
+            end
         end
 
         if inst._back and inst._back:IsValid() then
             alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
+            if is_wagboss then
+                inst._back.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
+                inst._back.AnimState:SetBank("hat_alterguardianupgraded_equipped")
+            elseif not is_wagboss and inst._back.AnimState:GetBuild() == "hat_alterguardianupgraded_equipped" then
+                inst._back.AnimState:SetBuild("hat_alterguardian_equipped")
+                inst._back.AnimState:SetBank("hat_alterguardian_equipped")
+            end
         end
     end
 
@@ -3375,6 +3407,7 @@ local function MakeHat(name)
 
 	local function dreadstone_custom_init(inst)
 		inst:AddTag("dreadstone")
+		inst:AddTag("hardarmor")
 		inst:AddTag("shadow_item")
 
 		--waterproofer (from waterproofer component) added to pristine state for optimization
@@ -3809,6 +3842,7 @@ local function MakeHat(name)
     end
 
     fns.wagpunk_custom_init = function(inst)
+		inst:AddTag("hardarmor")
         inst:AddTag("show_broken_ui")
 
         inst:AddComponent("talker")
@@ -5410,7 +5444,6 @@ local function MakeHat(name)
         return inst
     end
 
-
     -----------------------------------------------------------------------------
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
@@ -5522,6 +5555,7 @@ local function MakeHat(name)
             "alterguardianhatshard",
         }
         table.insert(assets, Asset("ANIM", "anim/ui_alterguardianhat_1x6.zip"))
+        table.insert(assets, Asset("ANIM", "anim/hat_alterguardianupgraded.zip"))
         fn = fns.alterguardian
     elseif name == "monkey_medium" then
         fn = fns.monkey_medium
@@ -6188,11 +6222,11 @@ return  MakeHat("straw"),
         MakeHat("mask_king"),
         MakeHat("mask_tree"),
         MakeHat("mask_fool"),
-        
+
         MakeHat("mask_sage"),
         MakeHat("mask_halfwit"),
-        MakeHat("mask_toady"),        
-        
+        MakeHat("mask_toady"),
+
         MakeHat("monkey_medium"),
         MakeHat("monkey_small"),
         MakeHat("polly_rogers"),
@@ -6207,11 +6241,11 @@ return  MakeHat("straw"),
         MakeHat("scrap_monocle"),
         MakeHat("scrap"),
         MakeHat("mermarmor"),
-        MakeHat("mermarmorupgraded"),        
+        MakeHat("mermarmorupgraded"),
 
         MakeHat("inspectacles"),
 		MakeHat("roseglasses"),
-        MakeHat("ghostflower"),        
+        MakeHat("ghostflower"),
 
         MakeHat("rabbit"),
 
@@ -6251,11 +6285,11 @@ return  MakeHat("straw"),
             createfn = wagpunkhat_CreateFxFollowFrame,
             common_postinit = wagpunkhat_fx_common_postinit,
             framebegin = 1,
-            frameend = 3,            
-            assets = { Asset("ANIM", "anim/hat_wagpunk.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_02.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_03.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_04.zip"),  
+            frameend = 3,
+            assets = { Asset("ANIM", "anim/hat_wagpunk.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_02.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_03.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_04.zip"),
                        Asset("ANIM", "anim/hat_wagpunk_05.zip") },
         }),
 		MakeFollowFx("inspectacleshat_fx", {

@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Hey weird guy! Helloooo?",
             ALREADYACTIVE = "Guess he's somewhere else.",
+            NORESPONSE = "I dunno where he is.",
+            RIGHTTHERE = "What's this guy's problem?",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Crap! Let me catch you!",
 		},
     },
 
@@ -1139,7 +1146,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "It's useless to try and roll it any bigger.",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "There's no snow here.",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1152,6 +1159,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "I could lift Wolfgang!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Phew! That's too strong.",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "We've done it now! Something's falling from the sky!",
 
 	BATTLECRY =
 	{
@@ -5655,6 +5664,34 @@ return{
         DECK_OF_CARDS = "If it's not a full deck, at least we have kindling.",
         PLAYING_CARD = "Must be the burn card.",
         BALATRO_MACHINE = "Let me win or I'll set you on fire.",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Empty!",
+			FILLED = "Ha! Gotcha!",
+		},
+		WAGBOSS_ROBOT = "Looks shifty.",
+        WAGBOSS_ROBOT_POSSESSED = "I knew it was a killer robot!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Ugh! Not again!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "What do we do? There's nothing to burn!",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "You guys are so annoying!",
+            FRIENDLY = "Remember when these guys tried to kill us?",
+        },
+		WAGDRONE_FLYING = "Get outta here, flying trashcans!",
+
+        WAGPUNK_WORKSTATION = "Electrical fires just aren't as fun.",
+        WAGPUNK_LEVER = "Let's flip it already.",
+        WAGPUNK_FLOOR_KIT = "Why didn't he just find a bigger island?",
+        WAGPUNK_CAGEWALL = "Gives me claustrophobia.",
+
+        WANDERINGTRADER = "Heard you take ashes?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "Oh good, because I hate drowning.",
+        LUNAR_SEED = "It's kinda nice to stare into.",
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

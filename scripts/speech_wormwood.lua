@@ -306,6 +306,7 @@ return{
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             BIRDSBLOCKED = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOFIRES =       "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOSILVICULTURE = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOHORTICULTURE = "only_used_by_waxwell_and_wicker",
@@ -439,6 +440,8 @@ return{
         {
             DOESNTWORK = "Hm...",
             ALREADYACTIVE = "Not here",
+            NORESPONSE = "Not here",
+            RIGHTTHERE = "Friend busy",
         },
         YOTB_UNLOCKSKIN =
         {
@@ -467,6 +470,10 @@ return{
 		MODSLINGSHOT =
 		{
 --fallback to speech_wilson.lua 			NOSLINGSHOT = "only_used_by_walter",
+		},
+		POUNCECAPTURE =
+		{
+			MISSED = "Stay, friend!",
 		},
     },
 
@@ -1136,7 +1143,7 @@ return{
 	ANNOUNCE_SNOWBALL_TOO_BIG = "Big no more",
 	ANNOUNCE_SNOWBALL_NO_SNOW = "No snow",
 
-    --rifts 5
+    -- Meta 5
     ANNOUNCE_WENDY_BABYSITTER_SET = "only_used_by_wendy", 
     ANNOUNCE_WENDY_BABYSITTER_STOP = "only_used_by_wendy",
 
@@ -1149,6 +1156,8 @@ return{
     ANNOUNCE_ELIXIR_PLAYER_SPEED = "Plant power!",
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Too much strong",
+
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Night Ball ball fall down!",
 
 	BATTLECRY =
 	{
@@ -5652,6 +5661,34 @@ return{
         DECK_OF_CARDS = "For play with friends",
         PLAYING_CARD = "Lost",
         BALATRO_MACHINE = "Hello clown face",
+
+		-- Rifts 5
+		GESTALT_CAGE =
+		{
+			GENERIC = "Where friend?",
+			FILLED = "Friend inside",
+		},
+		WAGBOSS_ROBOT = "Big-big robot friend?",
+        WAGBOSS_ROBOT_POSSESSED = "Bad friend! Bad friend!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Don't be mad, Night Ball ball!",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Friend hurting because friend hurting",
+		WAGDRONE_ROLLING =
+        {
+            GENERIC = "Why, spinning friends, why?",
+            FRIENDLY = "Nice spinning friend",
+        },
+		WAGDRONE_FLYING = "Bad flying robot friends!",
+
+        WAGPUNK_WORKSTATION = "Building table build shiny things?",
+        WAGPUNK_LEVER = "Safe? No afraid, me pull",
+        WAGPUNK_FLOOR_KIT = "More big land",
+        WAGPUNK_CAGEWALL = "No go!",
+
+        WANDERINGTRADER = "Shaggy Buddy Man?",
+
+        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        FLOTATIONCUSHION = "No more scared biiig water",
+        LUNAR_SEED = "Small Night Ball! Me here, me here",
     },
 
     DESCRIBE_GENERIC = "Friend?",

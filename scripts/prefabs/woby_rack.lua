@@ -160,7 +160,9 @@ local function OnOwnerChanged(inst, owner)
 end
 
 local function OnColourChanged(inst, r, g, b, a)
-	inst.AnimState:SetAddColour(r, g, b, a)
+	if TheWorld.ismastersim then
+		inst.AnimState:SetAddColour(r, g, b, a)
+	end
 	for i, v in ipairs(inst.slots) do
 		v.fx.AnimState:SetAddColour(r, g, b, a)
 	end
