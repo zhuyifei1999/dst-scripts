@@ -644,7 +644,7 @@ function Input:GetLocalizedVirtualControl(deviceId, controlId, use_default_mappi
 		--Classic mapping for 2 and 3, DPad for 4 to 7, modifier button for 6 and 7
 		needsmodifier = scheme == 6 or scheme == 7
 		if scheme <= 3 then
-			controlId = RemapTo_CONTROL_INVENTORY_ACTIONS[control - VIRTUAL_CONTROL_INV_ACTION_UP]
+			controlId = RemapTo_CONTROL_INVENTORY_ACTIONS[controlId - VIRTUAL_CONTROL_INV_ACTION_UP]
 		else
 			controlId = controlId - VIRTUAL_CONTROL_INV_ACTION_UP + CONTROL_PRESET_DPAD_UP
 		end

@@ -313,21 +313,8 @@ function CraftingMenuHUD:RebuildRecipes()
 							meta.build_state = meta.can_build and "has_ingredients" or "no_ingredients"
 						end
 					elseif CanPrototypeRecipe(recipe.level, tech_trees) then
-                        local missing_station_with_tag = false
-                        if recipe.nounlock and recipe.station_tag then
-                            local current_prototyper = builder:GetCurrentPrototyper()
-                            if not (current_prototyper and current_prototyper:IsValid() and current_prototyper:HasTag(recipe.station_tag)) then
-                                -- nounlock recipes must be crafted at a station and this tag is enforced.
-                                missing_station_with_tag = true
-                            end
-                        end
-                        if not missing_station_with_tag then
-                            meta.can_build = builder:HasIngredients(recipe)
-                            meta.build_state = recipe.nounlock and (meta.can_build and "has_ingredients" or "no_ingredients") or "prototype"
-                        else
-                            meta.can_build = false
-                            meta.build_state = "hint"
-                        end
+						meta.can_build = builder:HasIngredients(recipe)
+						meta.build_state = recipe.nounlock and (meta.can_build and "has_ingredients" or "no_ingredients") or "prototype"
 					elseif recipe.force_hint then
 						meta.can_build = false
 						meta.build_state = "hint"

@@ -119,15 +119,7 @@ function DoRecipeClick(owner, recipe, skin)
 			end
 		else
             local tech_level = owner.replica.builder:GetTechTrees()
-            local missing_station_with_tag = false
-            if recipe.nounlock and recipe.station_tag then
-                local current_prototyper = owner.replica.builder:GetCurrentPrototyper()
-                if not (current_prototyper and current_prototyper:IsValid() and current_prototyper:HasTag(recipe.station_tag)) then
-                    -- nounlock recipes must be crafted at a station and this tag is enforced.
-                    missing_station_with_tag = true
-                end
-            end
-            if not missing_station_with_tag and CanPrototypeRecipe(recipe.level, tech_level) then
+            if CanPrototypeRecipe(recipe.level, tech_level) then
 				if has_ingredients then
 					SetCraftingAutopaused(false)
 					Profile:SetLastUsedSkinForItem(recipe.name, skin)

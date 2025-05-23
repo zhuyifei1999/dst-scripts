@@ -893,19 +893,19 @@ Recipe2("rabbitkingshop_rabbitkinghorn",				{Ingredient("carrot", 4), Ingredient
 Recipe2("rabbitkingshop_hat_rabbit",					{Ingredient("rabbit", 1), Ingredient("cutgrass", 6)},										TECH.RABBITKINGSHOP_TWO,	{nounlock = true, sg_state="give", actionstr="RABBITKINGSHOP", product="rabbithat"})
 
 -- Wandering Trader
-Recipe2("wanderingtradershop_gears",		{Ingredient("pigskin", 3)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="gears"})
-Recipe2("wanderingtradershop_cutgrass",		{Ingredient("ash", 2)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="cutgrass"})
-Recipe2("wanderingtradershop_twigs",		{Ingredient("ash", 2)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="twigs"})
-Recipe2("wanderingtradershop_flint",		{Ingredient("ash", 1)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="flint"})
-Recipe2("wanderingtradershop_cutreeds",		{Ingredient("ash", 4)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="cutreeds"})
+Recipe2("wanderingtradershop_gears",		{Ingredient("pigskin", 3)},			TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="gears"})
+Recipe2("wanderingtradershop_cutgrass",		{Ingredient("ash", 2)},				TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="cutgrass"})
+Recipe2("wanderingtradershop_twigs",		{Ingredient("ash", 2)},				TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="twigs"})
+Recipe2("wanderingtradershop_flint",		{Ingredient("ash", 1)},				TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="flint"})
+Recipe2("wanderingtradershop_cutreeds",		{Ingredient("ash", 4)},				TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="cutreeds"})
 --  Uncommon
-Recipe2("wanderingtradershop_pigskin",		{Ingredient("beefalowool", 3)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="pigskin"})
-Recipe2("wanderingtradershop_livinglog",	{Ingredient("beefalowool", 3)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="livinglog"})
+Recipe2("wanderingtradershop_pigskin",		{Ingredient("beefalowool", 3)},		TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="pigskin"})
+Recipe2("wanderingtradershop_livinglog",	{Ingredient("beefalowool", 3)},		TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="livinglog"})
 --  Rare
-Recipe2("wanderingtradershop_redgem",		{Ingredient("pigskin", 3)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="redgem"})
-Recipe2("wanderingtradershop_bluegem",		{Ingredient("pigskin", 3)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="bluegem"})
+Recipe2("wanderingtradershop_redgem",		{Ingredient("pigskin", 3)},			TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="redgem"})
+Recipe2("wanderingtradershop_bluegem",		{Ingredient("pigskin", 3)},			TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="bluegem"})
 --  Special
-Recipe2("wanderingtradershop_moonglass",	{Ingredient("ash", 4)},	TECH.WANDERINGTRADERSHOP_TWO,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="moonglass"})
+Recipe2("wanderingtradershop_moonglass",	{Ingredient("ash", 4)},				TECH.LOST,	{limitedamount = true, nounlock = true, actionstr="WANDERINGTRADERSHOP", sg_state="give", product="moonglass"})
 
 -- wagpunk_workstation
 Recipe2("wagpunk_floor_kit",				{Ingredient("cutstone", 1), Ingredient("wagpunk_bits", 1)},	TECH.WAGPUNK_WORKSTATION_TWO,	{numtogive = 4, nounlock = true,})

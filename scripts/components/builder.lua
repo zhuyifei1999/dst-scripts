@@ -591,10 +591,6 @@ end
 
 function Builder:MakeRecipe(recipe, pt, rot, skin, onsuccess)
     if recipe ~= nil and not self.inst.sg:HasStateTag("drowning") and not self.inst.sg:HasStateTag("falling") then -- TODO(JBK): Check if "drowning" can be replaced with "busy" instead with no side effects.
-        if recipe.nounlock and recipe.station_tag and not (self.current_prototyper and self.current_prototyper:IsValid() and self.current_prototyper:HasTag(recipe.station_tag)) then
-            -- nounlock recipes must be crafted at a station and this tag is enforced.
-            return false
-        end
         self.inst:PushEvent("makerecipe", { recipe = recipe })
         if self:IsBuildBuffered(recipe.name) or self:HasIngredients(recipe) then
             self.inst.components.locomotor:Stop()
@@ -641,10 +637,6 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                 not CanPrototypeRecipe(recipe.level, self.current_prototyper.components.prototyper.trees)
             ) then
             -- manufacturing stations requires the current active protyper in order to work
-            return false
-        end
-        if recipe.nounlock and recipe.station_tag and not (self.current_prototyper and self.current_prototyper:IsValid() and self.current_prototyper:HasTag(recipe.station_tag)) then
-            -- nounlock recipes must be crafted at a station and this tag is enforced.
             return false
         end
 

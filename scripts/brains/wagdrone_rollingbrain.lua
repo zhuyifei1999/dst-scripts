@@ -43,8 +43,8 @@ function WagdroneRollingBrain:UpdateTargetDest()
 		local dz = z1 - z
 		if dx ~= 0 or dz ~= 0 then
 			local dsq = dx * dx + dz * dz
-			local range = target.isplayer and 8 or 16
-			if dsq < range * range then
+			local range = target:is_a(EntityScript) and (target.isplayer and 8 or 16) or nil
+			if range == nil or dsq < range * range then
 				local isvalid
 				if EntityScript.is_instance(self.target) then --existing target, check facing
 					local rot = self.inst.Transform:GetRotation()

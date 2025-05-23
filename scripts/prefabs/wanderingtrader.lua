@@ -403,8 +403,8 @@ end
 
 local function PreTeleportFn(inst, destx, desty, destz)
     if not inst:IsAsleep() then
-        inst.sg:GoToState("teleport")
         inst.OnEntitySleep = TeleportDelay
+        inst.sg:GoToState("teleport")
         return true -- We handle teleporting.
     end
     return false -- Let callee handle teleporting.

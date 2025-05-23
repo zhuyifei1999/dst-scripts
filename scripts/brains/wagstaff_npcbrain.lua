@@ -63,7 +63,7 @@ local function initiate_experiment(inst, pos)
         local offset = Vector3(math.cos( theta ), 0, -math.sin( theta )) -- Radius is 1, so we've excised the multiplication.
         local final = pos + offset
         static.Transform:SetPosition(final:Get())
-        inst:DoTaskInTime(0, face_final_position)
+        inst:DoTaskInTime(0, face_final_position, final)
 
         inst.static = static
         inst:ListenForEvent("onremove", failexperiment, static)
@@ -123,10 +123,10 @@ local function OnFinishExperiment_gestaltcage(inst, item, socketable)
         local didsocket = false
         if socketable.prefab == "wagdrone_spot_marker" then
             if item.prefab == "gestalt_cage_filled1" then
-                ReplacePrefab(socketable, "wagdrone_rolling")
+                ReplacePrefab(socketable, "wagdrone_flying")
                 didsocket = true
             elseif item.prefab == "gestalt_cage_filled2" then
-                ReplacePrefab(socketable, "wagdrone_flying")
+                ReplacePrefab(socketable, "wagdrone_rolling")
                 didsocket = true
             end
         elseif socketable.prefab == "wagboss_robot" then

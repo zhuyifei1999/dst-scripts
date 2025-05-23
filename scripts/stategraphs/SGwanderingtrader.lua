@@ -267,7 +267,9 @@ local states = {
 
         events = {
             EventHandler("animover", function(inst)
-                inst:OnEntitySleep()
+                if inst.OnEntitySleep then
+                    inst:OnEntitySleep()
+                end
                 inst.sg:GoToState("idle")
             end),
         },
@@ -318,7 +320,9 @@ local states = {
 
         events = {
             EventHandler("animover", function(inst)
-                inst:OnEntitySleep()
+                if inst.OnEntitySleep then
+                    inst:OnEntitySleep()
+                end
             end),
         },
     },
