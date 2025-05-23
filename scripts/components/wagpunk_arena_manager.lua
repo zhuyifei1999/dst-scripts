@@ -611,9 +611,13 @@ function self:TeleportWagstaffToWorkstation()
     self.wagstaff:ForceFacePoint(x, y, z)
 end
 local function WorkstationToggled_Bridge(workstation, state)
-    self:WorkstationToggled(state)
+    self:WorkstationToggled(workstation, state)
 end
-function self:WorkstationToggled(on) -- Caller assumed to be from self.workstation only.
+function self:WorkstationToggled(workstation, on) -- Caller assumed to be from self.workstation only.
+    if workstation ~= self.workstation then
+        return -- Someone spawned this in!
+    end
+
     if self.workstationtoggledtask then
         self.workstationtoggledtask:Cancel()
         self.workstationtoggledtask = nil

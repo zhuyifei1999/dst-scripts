@@ -208,14 +208,14 @@ local function doblueprintcheck(inst)
     end
 end
 
-local function new_met_player_chatter_3()
+local function new_met_player_chatter_3(inst)
     inst:PushEvent("talk")
     inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_4", 0, nil, nil, CHATPRIORITIES.LOW)
 
     inst:DoTaskInTime(3, waypointadvance, "WAGSTAFF_NPC_MEETING_5")
 end
 
-local function new_met_player_chatter_2()
+local function new_met_player_chatter_2(inst)
     inst:PushEvent("talk")
     inst.components.talker:Chatter("WAGSTAFF_NPC_MEETING_3", 0, nil, nil, CHATPRIORITIES.LOW)
 

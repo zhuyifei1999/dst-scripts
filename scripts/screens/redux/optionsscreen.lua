@@ -1877,7 +1877,7 @@ function OptionsScreen:_BuildSettings()
     self.targetlockingSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.TARGETLOCKING, enableDisableOptions, STRINGS.UI.OPTIONS.TOOLTIPS.TARGETLOCKING)
     self.targetlockingSpinner.OnChanged =
         function(_, data)
-            this.working.targetlocking = data
+			self.working.targetlocking = data
             self:UpdateMenu()
         end
 

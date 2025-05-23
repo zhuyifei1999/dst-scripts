@@ -122,7 +122,7 @@ local function start_wag_sequence(inst)
         ipos = ipos + offset
     end
 
-    if (self.inst.components.wagboss_tracker and self.inst.components.wagboss_tracker:IsWagbossDefeated()) then
+    if (TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()) then
         inst:DoTaskInTime(3, function(d) d:PushEvent("orbtaken") end)
     else
         local wagstaff = SpawnPrefab("wagstaff_npc_pstboss")

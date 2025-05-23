@@ -3776,6 +3776,7 @@ local fx =
 		bank = "missile_fx",
 		build = "missile_fx",
 		anim = "impact",
+		sound = "rifts5/wagstaff_boss/missile_eplode",
 	},
 }
 

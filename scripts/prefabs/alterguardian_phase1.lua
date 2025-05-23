@@ -485,8 +485,6 @@ end
 
 --------------------------------------------------------------------------
 
-local TRANSPARENCY = 0.2
-
 local function rift_AddFollowFx(inst, anim, symbol)
 	local fx = CreateEntity()
 

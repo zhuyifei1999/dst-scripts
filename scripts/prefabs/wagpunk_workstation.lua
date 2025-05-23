@@ -19,7 +19,7 @@ local function OnTurnOn(inst)
     end
 
     if TheWorld.components.wagpunk_arena_manager then
-        TheWorld.components.wagpunk_arena_manager:WorkstationToggled(true)
+        TheWorld.components.wagpunk_arena_manager:WorkstationToggled(inst, true)
     end
 end
 
@@ -32,7 +32,7 @@ local function OnTurnOff(inst)
     inst.SoundEmitter:KillSound("idlesound")
 
     if TheWorld.components.wagpunk_arena_manager then
-        TheWorld.components.wagpunk_arena_manager:WorkstationToggled(false)
+        TheWorld.components.wagpunk_arena_manager:WorkstationToggled(inst, false)
     end
 end
 
