@@ -284,9 +284,14 @@ local function OnIsTakingFireDamageLowDirty(inst)
     end
 end
 
-local function OnIsTakingLunarBeamDamageDirty(inst)
+local function OnLunarBurnFlagsDirty(inst)
 	if inst._parent then
-		inst._parent:PushEvent(inst.istakinglunarbeamdamage:value() and "startlunarbeamdamage" or "stoplunarbeamdamage")
+		local flags = inst.lunarburnflags:value()
+		if flags ~= 0 then
+			inst._parent:PushEvent("startlunarburn", flags)
+		else
+			inst._parent:PushEvent("stoplunarburn")
+		end
 	end
 end
 
@@ -1100,7 +1105,7 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("healthdirty", OnHealthDirty)
     inst:ListenForEvent("istakingfiredamagedirty", OnIsTakingFireDamageDirty)
     inst:ListenForEvent("istakingfiredamagelowdirty", OnIsTakingFireDamageLowDirty)
-	inst:ListenForEvent("istakinglunarbeamdamagedirty", OnIsTakingLunarBeamDamageDirty)
+	inst:ListenForEvent("lunarburnflagsdirty", OnLunarBurnFlagsDirty)
     inst:ListenForEvent("combat.attackedpulse", OnAttackedPulseEvent)
     inst:ListenForEvent("hungerdirty", OnHungerDirty)
     inst:ListenForEvent("sanitydirty", OnSanityDirty)
@@ -1202,7 +1207,7 @@ end
 function fns.OnInitialDirtyStates(inst)
     if not TheWorld.ismastersim then
         OnIsTakingFireDamageDirty(inst)
-		OnIsTakingLunarBeamDamageDirty(inst)
+		OnLunarBurnFlagsDirty(inst)
         OnTemperatureDirty(inst)
         OnTechTreesDirty(inst)
         if inst._parent ~= nil then
@@ -1257,10 +1262,10 @@ local function fn()
     inst.healthpenalty = net_byte(inst.GUID, "health.penalty", "healthdirty")
     inst.istakingfiredamage = net_bool(inst.GUID, "health.takingfiredamage", "istakingfiredamagedirty")
     inst.istakingfiredamagelow = net_bool(inst.GUID, "health.takingfiredamagelow", "istakingfiredamagelowdirty")
-	inst.istakinglunarbeamdamage = net_bool(inst.GUID, "health.takinglunarbeamdamage", "istakinglunarbeamdamagedirty")
     inst.issleephealing = net_bool(inst.GUID, "health.healthsleep")
     inst.ishealthpulseup = net_bool(inst.GUID, "health.dodeltaovertime(up)", "healthdirty")
     inst.ishealthpulsedown = net_bool(inst.GUID, "health.dodeltaovertime(down)", "healthdirty")
+	inst.lunarburnflags = net_tinybyte(inst.GUID, "health.lunarburnflags", "lunarburnflagsdirty")
     inst.currenthealth:set(100)
     inst.maxhealth:set(100)
 

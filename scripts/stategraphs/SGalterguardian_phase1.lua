@@ -86,6 +86,11 @@ local function lunarspawn_set_lightvalues(inst, frame)
     end
 end
 
+local function IsntDead(inst)
+    local health = inst.components.health
+    return health ~= nil and health.currenthealth > health.minhealth
+end
+
 local events =
 {
     CommonHandlers.OnFreeze(),
@@ -106,14 +111,13 @@ local events =
     end),
 
     EventHandler("doattack", function(inst)
-        if inst.components.health ~= nil and not inst.components.health:IsDead()
-                and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+        if IsntDead(inst) and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
             ChooseAttack(inst, inst.components.combat.target)
         end
     end),
 
     EventHandler("attacked", function(inst)
-        if inst.components.health ~= nil and not inst.components.health:IsDead() then
+        if IsntDead(inst) then
             if inst.sg:HasStateTag("shield") then
                 inst.sg:GoToState("shield_hit")
 			elseif not CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) and --hit delay only for projectiles
@@ -126,19 +130,20 @@ local events =
     end),
 
     EventHandler("entershield", function(inst)
-        if inst.components.health ~= nil and not inst.components.health:IsDead() then
+        if IsntDead(inst) then
             inst.sg:GoToState("shield_pre")
         end
     end),
     EventHandler("exitshield", function(inst)
-        if inst.components.health ~= nil and not inst.components.health:IsDead() then
+        if IsntDead(inst) then
             inst.sg:GoToState("shield_end")
         end
     end),
-
-    EventHandler("captured_despawn", function(inst)
-        inst.sg:GoToState("captured")
-    end),
+	EventHandler("minhealth", function(inst)
+		if inst.components.health.minhealth > 0 and not inst.sg:HasStateTag("dead") then
+			inst.sg:GoToState("death_lunar")
+		end
+	end),
 }
 
 local AOE_RANGE_PADDING = 3
@@ -780,14 +785,18 @@ local states =
 
     State {
         name = "death_lunar",
-		tags = {"busy", "noattack", "nointerrupt", "temp_invincible"},
+		tags = { "dead", "busy", "noattack", "nointerrupt", "temp_invincible" },
 
         onenter = function(inst)
-            inst.components.locomotor:StopMoving()
+			inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("collapse_pre")
 
             inst:SetNoMusic(true)
+
+			inst.sg.statemem.gestalt = SpawnPrefab("alterguardian_phase1_lunarrift_gestalt")
+			inst.sg.statemem.gestalt.entity:SetParent(inst.entity)
+			inst.sg.statemem.gestalt.PARENT = inst
         end,
 
         timeline =
@@ -798,9 +807,18 @@ local states =
             end),
             FrameEvent(38, function(inst)
                 ShakeAllCameras(CAMERASHAKE.FULL, 0.5, 0.1, 0.6, inst, 60)
+				inst:AddTag("NOCLICK")
+				inst.Physics:Stop()
+				inst.Physics:SetActive(false)
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local gestalt = inst.sg.statemem.gestalt
+				gestalt.entity:SetParent(nil)
+				gestalt.Transform:SetPosition(x, y, z)
+				gestalt.Transform:SetRotation(inst.Transform:GetRotation())
+				gestalt:RemoveTag("NOCLICK")
             end),
             FrameEvent(42, function(inst)
-                inst.components.gestaltcapturable:SetEnabled(true)
+				inst.sg.statemem.gestalt.components.gestaltcapturable:SetEnabled(true)
             end),
         },
 
@@ -808,35 +826,83 @@ local states =
         {
             EventHandler("animover", function(inst)
                 inst.sg.statemem.exited_correct = true
-                inst.sg:GoToState("death_lunar_loop")
+				inst.sg:GoToState("death_lunar_loop", inst.sg.statemem.gestalt)
             end),
         },
 
         onexit = function(inst)
             if not inst.sg.statemem.exited_correct then
-			    inst.components.gestaltcapturable:SetEnabled(false)
+				inst.sg.statemem.gestalt:Remove()
+				inst:RemoveTag("NOCLICK")
+				inst.Physics:SetActive(true)
+				inst:SetNoMusic(false)
+				if not inst.SoundEmitter:PlayingSound("idle_LP") then
+					inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
+				end
             end
         end,
     },
 
     State {
 		name = "death_lunar_loop",
-		tags = {"busy", "noattack", "nointerrupt", "temp_invincible"},
+		tags = { "dead", "busy", "noattack", "nointerrupt", "temp_invincible" },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("collapse_loop", true)
+		onenter = function(inst, gestalt)
+			if gestalt == nil then
+				inst:SetNoMusic(true)
+
+				gestalt = SpawnPrefab("alterguardian_phase1_lunarrift_gestalt")
+				gestalt.PARENT = inst
+				gestalt.Transform:SetPosition(inst.Transform:GetWorldPosition())
+				gestalt.Transform:SetRotation(inst.Transform:GetRotation())
+				gestalt:RemoveTag("NOCLICK")
+				gestalt.components.gestaltcapturable:SetEnabled(true)
+			end
+
+			inst.components.locomotor:Stop()
+			inst.Physics:Stop()
 			inst.Physics:SetActive(false)
+			inst:AddTag("NOCLICK")
 
-            inst.sg:SetTimeout(TUNING.ALTERGUARDIAN_PHASE1_RIFT_REGENTIME)
+			inst.AnimState:PlayAnimation("collapse_loop", true)
+
+			inst.sg.statemem.gestalt = gestalt
+			gestalt.AnimState:PlayAnimation("collapse_loop", true)
+
+			inst.SoundEmitter:KillSound("idle_LP")
+
+			inst.sg.mem.numrevives = (inst.sg.mem.numrevives or 0) + 1
+			inst.sg:SetTimeout(TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[inst.sg.mem.numrevives] or TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[#TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME])
 		end,
 
+		timeline =
+		{
+			FrameEvent(1, function(inst)
+				--delayed a frame in case we came from load
+				TheWorld:PushEvent("ms_alterguardian_phase1_lunarrift_capturable", inst)
+			end),
+		},
+
         ontimeout = function(inst)
-            inst.sg:GoToState("regenerate_lunar")
+			inst.sg.statemem.exited_correct = true
+			inst.sg:GoToState("regenerate_lunar", inst.sg.statemem.gestalt)
         end,
 
         onexit = function(inst)
-            inst.components.gestaltcapturable:SetEnabled(false)
+			local gestalt = inst.sg.statemem.gestalt
+			if inst.sg.statemem.exited_correct then
+				gestalt.components.gestaltcapturable:SetEnabled(false)
+				gestalt:AddTag("NOCLICK")
+				gestalt.Transform:SetPosition(0, 0, 0)
+				gestalt.Transform:SetRotation(0)
+				gestalt.entity:SetParent(inst.entity)
+			else
+				gestalt:Remove()
+				inst:SetNoMusic(false)
+				inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
+			end
 			inst.Physics:SetActive(true)
+			inst:RemoveTag("NOCLICK")
         end,
     },
 
@@ -844,10 +910,16 @@ local states =
         name = "regenerate_lunar",
 		tags = {"busy", "noattack", "nointerrupt", "temp_invincible"},
 
-        onenter = function(inst)
-            inst.components.health:SetMaxHealth(TUNING.ALTERGUARDIAN_PHASE1_HEALTH)
+		onenter = function(inst, gestalt)
+			inst.components.health:SetPercent(math.max(inst.components.health:GetPercent(), TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_HP))
+			inst.components.health:AddRegenSource(inst, TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REGEN_AMOUNT, TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REGEN_PERIOD, "lunarriftregen")
 			inst.AnimState:PlayAnimation("rebuild")
             inst:SetNoMusic(false)
+            if not inst.SoundEmitter:PlayingSound("idle_LP") then
+				inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
+			end
+			inst.sg.statemem.gestalt = gestalt
+			gestalt.AnimState:PlayAnimation("rebuild")
         end,
 
         events =
@@ -856,6 +928,10 @@ local states =
                 inst.sg:GoToState("tantrum_pre")
             end),
         },
+
+		onexit = function(inst)
+			inst.sg.statemem.gestalt:Remove()
+		end,
     },
 
 	State {
@@ -864,24 +940,14 @@ local states =
 
 		onenter = function(inst)
 			inst:AddTag("NOCLICK")
+			inst.persists = false--should already be set, but just in case
 			inst.Physics:SetActive(false)
-            inst.AnimState:PlayAnimation("collapse_empty_hit", false)
-			inst.AnimState:PushAnimation("collapse_empty", true)
-
-			inst.components.gestaltcapturable:SetEnabled(false)
-			inst.sg:SetTimeout(7)
+			inst.AnimState:PlayAnimation("collapse_empty_hit")
+			inst.AnimState:PushAnimation("collapse_empty", false)
+			inst.sg:SetTimeout(0.25)
 		end,
 
-        timeline =
-        {
-            TimeEvent(3, function(inst)
-                ErodeAway(inst, 3.8)
-            end),
-        },
-
-		ontimeout = function(inst)
-            inst:Remove()
-		end,
+		ontimeout = ErodeAway,
 	},
 
     State {

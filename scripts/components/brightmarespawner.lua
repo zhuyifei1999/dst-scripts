@@ -51,14 +51,39 @@ local function IsValidTrackingTarget(target)
 		and target.entity:IsVisible()
 end
 
+local function cooldown_task()
+	self.inst._evolved_gestalt_spawn_cooldown_task = nil
+end
 local function StopTracking(ent)
+	if ent.prefab == "gestalt_guard_evolved" then
+		if self.inst._evolved_gestalt_spawn_cooldown_task then
+			self.inst._evolved_gestalt_spawn_cooldown_task:Cancel()
+		end
+		self.inst._evolved_gestalt_spawn_cooldown_task = self.inst:DoTaskInTime(TUNING.GESTALT_EVOLVED_SPAWN_COOLDOWN, cooldown_task)
+	end
 	_gestalts[ent] = nil
 end
 
 local function GetGestaltSpawnType(player, pt)
-	local wagboss_tracker = TheWorld.components.wagboss_tracker
-	return (wagboss_tracker and wagboss_tracker:IsWagbossDefeated() and "gestalt_guard_evolved")
-		or "gestalt"
+	local type = "gestalt"
+
+	if not self.inst._evolved_gestalt_spawn_cooldown_task then
+		local wagboss_tracker = TheWorld.components.wagboss_tracker
+		if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
+			local num_evolved = 0
+			for ent in pairs(_gestalts) do
+				if ent.prefab == "gestalt_guard_evolved" then
+					num_evolved = num_evolved + 1
+				end
+			end
+
+			if num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN then
+				type = "gestalt_guard_evolved"
+			end
+		end
+	end
+
+	return type
 end
 
 local SPAWN_ONEOF_TAGS = {"brightmare_gestalt", "player", "playerghost"}
@@ -91,6 +116,7 @@ local function TrySpawnGestaltForPlayer(player, level, data)
 		inst:ListenForEvent("onremove", StopTracking, ent)
         ent.Transform:SetPosition(pt.x, 0, pt.z)
 		ent:SetTrackingTarget(player, GetTuningLevelForPlayer(player))
+		ent:PushEvent("spawned")
 	end
 end
 

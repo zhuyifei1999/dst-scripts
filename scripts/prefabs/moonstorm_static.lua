@@ -102,14 +102,130 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/idle_LP","loop")
 
-    inst:ListenForEvent("ms_stormchanged", function(w, data) print("static:",  data ~= nil and data.stormtype == STORM_TYPES.MOONSTORM) if data ~= nil and data.stormtype == STORM_TYPES.MOONSTORM then stormstopped(inst) end end, TheWorld)
+    inst:ListenForEvent("ms_stormchanged", function(w, data)
+        if data ~= nil and data.stormtype == STORM_TYPES.MOONSTORM then
+            stormstopped(inst)
+        end
+    end, TheWorld)
 
     inst:AddComponent("inspectable")
 
     return inst
 end
 
---
+-- NOWAG
+local WAG_TOOLS = {}
+for i = 1, 5 do
+    table.insert(WAG_TOOLS, "wagstaff_tool_"..i)
+end
+local function should_accept_item(inst, item)
+    local item_prefab = item.prefab
+    for _, tool_prefab in pairs(WAG_TOOLS) do
+        if item_prefab == tool_prefab then
+            return true
+        end
+    end
+    return false
+end
+
+local function on_get_item_from_player(inst, giver, item)
+    if TheWorld.components.moonstormmanager then
+        TheWorld.components.moonstormmanager:foundWaglessTool()
+    end
+end
+
+local function on_nowag_need_tool(inst)
+    inst.AnimState:PlayAnimation("needtool_idle", true)
+end
+local function on_nowag_need_tool_over(inst)
+    inst.AnimState:PlayAnimation("idle", true)
+end
+
+local function on_nowag_activated(inst)
+    if TheWorld.components.moonstormmanager then
+        TheWorld.components.moonstormmanager:beginNoWagstaffDefence()
+        inst.AnimState:PlayAnimation("idle", true)
+        return true
+    else
+        ErodeAway(inst)
+        return false
+    end
+end
+
+local function nowag_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+	inst.entity:AddDynamicShadow()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
+    MakeObstaclePhysics(inst, .2)
+
+    inst.AnimState:SetBuild("static_ball_contained")
+    inst.AnimState:SetBank("static_contained")
+    inst.AnimState:PlayAnimation("pregame_idle", true)
+
+    inst.scrapbook_specialinfo = "MOONSTORMSTATIC"
+
+    inst.DynamicShadow:Enable(true)
+    inst.DynamicShadow:SetSize(1, .5)
+
+    inst.Light:SetColour(111/255, 111/255, 227/255)
+    inst.Light:SetIntensity(0.75)
+    inst.Light:SetFalloff(0.5)
+    inst.Light:SetRadius(2)
+    inst.Light:Enable(false)
+
+    inst:AddTag("moonstorm_static")
+    inst:AddTag("soulless")
+
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        return inst
+    end
+    inst.finished = finished
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(TUNING.MOONSTORM_SPARK_HEALTH)
+    inst.components.health.nofadeout = true
+
+    inst:AddComponent("combat")
+    inst:ListenForEvent("attacked", onattackedfn)
+    inst:ListenForEvent("death", ondeath)
+
+    inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/idle_LP","loop")
+
+    inst:ListenForEvent("ms_stormchanged", function(w, data)
+        if data ~= nil and data.stormtype == STORM_TYPES.MOONSTORM then
+            stormstopped(inst)
+        end
+    end, TheWorld)
+
+    inst:AddComponent("inspectable")
+    inst.components.inspectable.nameoverride = "MOONSTORM_STATIC"
+
+    inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(should_accept_item)
+    inst.components.trader.onaccept = on_get_item_from_player
+
+	inst:AddComponent("activatable")
+    inst.components.activatable.OnActivate = on_nowag_activated
+    inst.components.activatable.inactive = true
+
+    inst:ListenForEvent("need_tool", on_nowag_need_tool)
+    inst:ListenForEvent("need_tool_over", on_nowag_need_tool_over)
+
+    inst.persists = false
+
+    return inst
+end
+
+-- ITEM
 local IDLE_SOUND_LOOP_NAME = "loop"
 
 local function OnEntityWake(inst)
@@ -169,4 +285,5 @@ local function itemfn()
 end
 
 return Prefab("moonstorm_static", fn, assets, prefabs),
+    Prefab("moonstorm_static_nowag", nowag_fn, assets, prefabs),
     Prefab("moonstorm_static_item", itemfn, item_assets)

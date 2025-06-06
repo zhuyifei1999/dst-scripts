@@ -3061,16 +3061,21 @@ local function MakeHat(name)
     fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
     fns.alterguardianhat_wagbosstest = function(item) return item:HasTag("lunarseed") end
     local function alterguardianhat_updatelight(inst)
-        local lunar_seeds = inst.components.container:FindItems(fns.alterguardianhat_wagbosstest)
-        local is_wagboss = (#lunar_seeds == 5)
-        local owner = inst.components.inventoryitem.owner
-        if owner and owner.components.sanity then
-            if is_wagboss then
-                owner.components.sanity:SetInducedLunacy(inst, true)
-                owner.components.sanity:EnableLunacy(true, "lunacyhat")
-            else
-                owner.components.sanity:SetInducedLunacy(inst, false)
-                owner.components.sanity:EnableLunacy(false, "lunacyhat")
+        inst.lunarseedscount = #inst.components.container:FindItems(fns.alterguardianhat_wagbosstest)
+        inst.lunarseedsmaxed = inst.lunarseedscount == inst.components.container:GetNumSlots()
+        local conversioncount = TUNING.ALTERGUARDIANHAT_SEEDCOUNT_FOR_FULL_PLANAR_CONVERSION
+        inst.lunarseedplanarconversionmult = (math.min(inst.lunarseedscount, conversioncount) / conversioncount) * TUNING.ALTERGUARDIANHAT_MAX_PLANAR_CONVERSION
+        inst.lunarseedbonusbasephysicaldamage = (math.max(inst.lunarseedscount - conversioncount, 0) / (inst.components.container:GetNumSlots() - conversioncount)) * TUNING.ALTERGUARDIANHAT_SEEDCOUNT_EXTRA_DAMAGE_MAX
+        if inst.components.equippable:IsEquipped() then -- If we're not equipped, this will get resolved at equip time.
+            local owner = inst.components.inventoryitem.owner
+            if owner and owner.components.sanity then
+                if inst.lunarseedsmaxed then
+                    owner.components.sanity:SetInducedLunacy(inst, true)
+                    owner.components.sanity:EnableLunacy(true, "lunacyhat")
+                else
+                    owner.components.sanity:SetInducedLunacy(inst, false)
+                    owner.components.sanity:EnableLunacy(false, "lunacyhat")
+                end
             end
         end
 
@@ -3105,10 +3110,10 @@ local function MakeHat(name)
 
         if inst._front and inst._front:IsValid() then
             alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
-            if is_wagboss then
+            if inst.lunarseedsmaxed then
                 inst._front.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
                 inst._front.AnimState:SetBank("hat_alterguardianupgraded_equipped")
-            elseif not is_wagboss and inst._front.AnimState:GetBuild() == "hat_alterguardianupgraded_equipped" then
+            else
                 inst._front.AnimState:SetBuild("hat_alterguardian_equipped")
                 inst._front.AnimState:SetBank("hat_alterguardian_equipped")
             end
@@ -3116,10 +3121,10 @@ local function MakeHat(name)
 
         if inst._back and inst._back:IsValid() then
             alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
-            if is_wagboss then
+            if inst.lunarseedsmaxed then
                 inst._back.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
                 inst._back.AnimState:SetBank("hat_alterguardianupgraded_equipped")
-            elseif not is_wagboss and inst._back.AnimState:GetBuild() == "hat_alterguardianupgraded_equipped" then
+            else
                 inst._back.AnimState:SetBuild("hat_alterguardian_equipped")
                 inst._back.AnimState:SetBank("hat_alterguardian_equipped")
             end
@@ -3218,6 +3223,17 @@ local function MakeHat(name)
 				local x, y, z = target.Transform:GetWorldPosition()
 
 				local gestalt = SpawnPrefab("alterguardianhat_projectile")
+                if inst.lunarseedscount and inst.lunarseedscount > 0 then
+                    -- We should have the other numbers calculated to change the gestalt's damage.
+                    local physicaldamage = gestalt.components.combat.defaultdamage + inst.lunarseedbonusbasephysicaldamage
+                    local planardamage = physicaldamage * inst.lunarseedplanarconversionmult
+                    physicaldamage = physicaldamage * (1 - inst.lunarseedplanarconversionmult)
+                    gestalt.components.combat:SetDefaultDamage(physicaldamage)
+                    if planardamage > 0 then
+                        gestalt:AddComponent("planardamage")
+                        gestalt.components.planardamage:SetBaseDamage(planardamage)
+                    end
+                end
 				local r = GetRandomMinMax(3, 5)
 				local delta_angle = GetRandomMinMax(-90, 90)
 				local angle = (owner:GetAngleToPoint(x, y, z) + delta_angle) * DEGREES
@@ -3250,6 +3266,13 @@ local function MakeHat(name)
         if inst.components.container ~= nil and inst.keep_closed ~= owner.userid then
             inst.components.container:Open(owner)
         end
+
+        if owner and owner.components.sanity then
+            if inst.lunarseedsmaxed then
+                owner.components.sanity:SetInducedLunacy(inst, true)
+                owner.components.sanity:EnableLunacy(true, "lunacyhat")
+            end
+        end
     end
 
     local function alterguardian_onunequip(inst, owner)
@@ -3257,6 +3280,13 @@ local function MakeHat(name)
 
 		inst:RemoveEventCallback("sanitydelta", inst._onsanitydelta, owner)
 		inst:RemoveEventCallback("onattackother", inst.alterguardian_spawngestalt_fn, owner)
+
+        if owner and owner.components.sanity then
+            if inst.lunarseedsmaxed then
+                owner.components.sanity:SetInducedLunacy(inst, false)
+                owner.components.sanity:EnableLunacy(false, "lunacyhat")
+            end
+        end
 
 		if inst._task then
 			inst._task:Cancel()
@@ -5239,6 +5269,7 @@ local function MakeHat(name)
     end
 
     fns.shadowthrall_parasite_ondeath = function(owner, data)
+        owner.was_shadowthrall_parasited = true
         owner.components.inventory:Unequip(EQUIPSLOTS.HEAD)
     end
 

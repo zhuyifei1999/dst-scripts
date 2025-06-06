@@ -126,6 +126,9 @@ return{
             INUSE = "Careful now, don't burn it.",
             TOOFAR = "I gotta get closer, eh?",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Empty, eh? I'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1154,7 +1157,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I'll pass on that one.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "TODO", -- TODO
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Aw heck. Not again.",
 
 	BATTLECRY =
 	{
@@ -5665,25 +5668,40 @@ return{
 			GENERIC = "Looks empty.",
 			FILLED = "There's one in there, eh?",
 		},
-		WAGBOSS_ROBOT = "Aw, Luce. I don't think it chops trees.",
+		WAGBOSS_ROBOT_SECRET = "Are you as curious as I am, Luce?",
+        WAGBOSS_ROBOT = "Aw, Luce. I don't think it chops trees.",
         WAGBOSS_ROBOT_POSSESSED = "Hey, quit tryin' to kill us!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Look who came rollin' back, eh?",
+		WAGBOSS_ROBOT_LEG = "No you can't chop it in half, Lucy. It's too tough even for you.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Looks meaner this time eh, Luce?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "That must be what he's looking for.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "What in the Aurora Borealis is that?!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They just come crawling back!",
+            DAMAGE = "We can fix her up or just take the spare parts.",
             FRIENDLY = "Let's keep an eye on it, Luce.",
         },
-		WAGDRONE_FLYING = "They're all around us, Lucy!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "They're all around us, Lucy",
+            DAMAGED = "We might as well just take the parts from this one.",
+        },
+		WAGDRONE_PARTS = "Those will come in handy.",
+		WAGDRONE_BEACON = "No, we can't make a cabin out of these walls, Lucy.",
 
         WAGPUNK_WORKSTATION = "That's a fancy workbench.",
         WAGPUNK_LEVER = "Lever, Lucy. I said it's a great lever. Sheesh.",
         WAGPUNK_FLOOR_KIT = "I prefer wood flooring.",
         WAGPUNK_CAGEWALL = "Whatever happened to good ol' fashioned wooden fence posts?",
 
+		WAGSTAFF_ITEM_1 = "Yeah, Luce. The glove is as real as you or me.",
+		WAGSTAFF_ITEM_2 = "That is an actual real live clipboard.",
+
+        HERMITCRAB_RELOCATION_KIT = "Wonder where to move that crab to.",
+
         WANDERINGTRADER = "Don't worry, Luce. I'd never trade you.",
 
-        GESTALT_GUARD_EVOLVED = "It's coming down right on top of us, Luce!",
+        GESTALT_GUARD_EVOLVED = "They are not happy with us, Lucy.",
         FLOTATIONCUSHION = "There's room for both of us, Luce.",
         LUNAR_SEED = "We sure topped'em, eh Luce?",
     },

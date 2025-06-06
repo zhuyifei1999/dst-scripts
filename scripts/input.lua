@@ -335,7 +335,9 @@ local function IsStrafing(player)
 end
 
 function Input:ResolveVirtualControls(control)
-	if control < VIRTUAL_CONTROL_START then
+	if control == nil then
+		return
+	elseif control < VIRTUAL_CONTROL_START then
 		if control == CONTROL_CAM_AND_INV_MODIFIER then
 			--Modifier button is not used in control scheme 1
 			local scheme = self:GetActiveControlScheme(CONTROL_SCHEME_CAM_AND_INV)

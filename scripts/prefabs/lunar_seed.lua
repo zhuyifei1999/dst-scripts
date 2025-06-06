@@ -30,6 +30,8 @@ local function seedfn()
     inst.Light:SetRadius(2)
     inst.Light:Enable(false)
 
+    MakeInventoryFloatable(inst, nil, 0.13, 0.9)
+
     inst:AddTag("lunarseed")
 
     inst.entity:SetPristine()

@@ -34,8 +34,8 @@ local function KeepTraderFn(inst, target)
     return (inst.components.trader ~= nil and inst.components.trader:IsTryingToTradeWithMe(target))
 end
 
-local function failexperiment(inst,item)
-    if TheWorld.components.moonstormmanager and not item.experimentcomplete then
+local function failexperiment(static)
+    if TheWorld.components.moonstormmanager and not static.experimentcomplete then
         TheWorld.components.moonstormmanager:FailExperiment()
     end
 end
@@ -120,29 +120,51 @@ end
 
 local function OnFinishExperiment_gestaltcage(inst, item, socketable)
     if item and item:IsValid() and socketable and socketable:IsValid() and item.components.inventoryitem:IsHeldBy(inst) then
+        local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
         local didsocket = false
         if socketable.prefab == "wagdrone_spot_marker" then
             if item.prefab == "gestalt_cage_filled1" then
-                ReplacePrefab(socketable, "wagdrone_flying")
+                local replacementinst = ReplacePrefab(socketable, "wagdrone_flying")
+                if wagpunk_arena_manager then
+                    wagpunk_arena_manager:TrackWagdrone(replacementinst)
+                end
                 didsocket = true
             elseif item.prefab == "gestalt_cage_filled2" then
-                ReplacePrefab(socketable, "wagdrone_rolling")
+                local replacementinst = ReplacePrefab(socketable, "wagdrone_rolling")
+                if wagpunk_arena_manager then
+                    wagpunk_arena_manager:TrackWagdrone(replacementinst)
+                end
                 didsocket = true
             end
         elseif socketable.prefab == "wagboss_robot" then
             if item.prefab == "gestalt_cage_filled3" then
-                socketable:SocketCage()
-                didsocket = true
+                if socketable.AnimState:IsCurrentAnimation("concealed_idle") then
+                    socketable:PushEvent("reveal")
+                    inst.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_REVEALBOSS")
+                else
+                    socketable:SocketCage()
+                    didsocket = true
+                end
             end
         end
         if didsocket then
             item:Remove()
             TheWorld:PushEvent("ms_wagpunk_constructrobot")
+            if wagpunk_arena_manager and wagpunk_arena_manager:NeedsMoreWagdrones() then
+                inst.components.npc_talker:Chatter("WAGSTAFF_GET_MORE_GESTALTCAGES", math.random(#STRINGS.WAGSTAFF_GET_MORE_GESTALTCAGES))
+            end
         end
     end
 end
 
 local function DoArenaActions(inst)
+    if inst.desiredlocation then
+        local location = inst.desiredlocation
+        local distance = inst.desiredlocationdistance
+        inst.desiredlocation = nil
+        inst.desiredlocationdistance = nil
+        return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, location, nil, distance)
+    end
     if inst.components.npc_talker:haslines() then
         if not inst.sg:HasStateTag("talking") and not inst.sg:HasStateTag("busy") and not inst.components.timer:TimerExists("speak_time") then
             inst:PushEvent("talk")
@@ -169,7 +191,7 @@ local function DoArenaActions(inst)
                 local distance = inst:GetPhysicsRadius(0) + socketable:GetPhysicsRadius(0) + 1
                 inst.avoid_erodeout = true
                 if inst:GetDistanceSqToInst(socketable) <= distance * distance then
-                    inst:DoExperiment(OnFinishExperiment_gestaltcage, item, socketable)
+                    inst:DoExperiment(nil, OnFinishExperiment_gestaltcage, item, socketable)
                     return
                 else
                     return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, socketable:GetPosition(), nil, distance)
@@ -180,6 +202,33 @@ local function DoArenaActions(inst)
 
     if inst.itemstotoss then
         inst:PushEvent("tossitem")
+        return
+    end
+
+    if inst.tiedtolever then
+        local t = GetTime()
+        if inst.levernagcooldowntime == nil or inst.levernagcooldowntime < t then
+            inst.levernagcooldowntime = t + TUNING.WAGPUNK_ARENA_WAGSTAFF_NAG_COOLDOWN_TIME
+            inst.components.npc_talker:resetqueue()
+            inst.components.talker:ShutUp()
+            if not inst.erodingout then
+                inst.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_LEVER", math.random(#STRINGS.WAGSTAFF_WAGPUNK_ARENA_LEVER))
+                inst:PushEvent("talk")
+                inst.components.npc_talker:donextline()
+            end
+        end
+        local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+        if wagpunk_arena_manager and wagpunk_arena_manager.lever then
+            local distance = inst:GetPhysicsRadius(0) + wagpunk_arena_manager.lever:GetPhysicsRadius(0) + 1
+            if inst:GetDistanceSqToInst(wagpunk_arena_manager.lever) > distance * distance then
+                return BufferedAction(inst, nil, ACTIONS.WALKTO, nil, wagpunk_arena_manager.lever:GetPosition(), nil, distance)
+            end
+        end
+        return
+    end
+
+    if inst.oneshot and inst.sg:HasStateTag("idle") then
+        inst:DoFadeOutIn(TUNING.WAGPUNK_ARENA_WAGSTAFF_TALK_TIME)
     end
 end
 

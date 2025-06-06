@@ -63,7 +63,10 @@ local MAX_NODES = 10
 
 local BIRDBLOCKER_TAGS = {"birdblocker"}
 local function customcheckfn(pt)
-	return #(TheSim:FindEntities(pt.x, 0, pt.z, 4, BIRDBLOCKER_TAGS)) == 0 and TheWorld.net.components.moonstorms ~= nil and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt) or false
+	return (#(TheSim:FindEntities(pt.x, 0, pt.z, 4, BIRDBLOCKER_TAGS)) == 0
+        and TheWorld.net.components.moonstorms ~= nil
+        and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt))
+        or false
 end
 
 local function screencheckfn(pt)
@@ -469,6 +472,10 @@ function self:EndExperiment()
 		end
 
 		self:StartMoonstorm()
+
+    elseif self.experiment_static then
+        self.experiment_static:finished()
+        self:StartMoonstorm()
 	end
 
 	self:StopExperiment()
@@ -482,15 +489,41 @@ local function onremoveexperimentstatic(static)
 	end
 end
 
-function self:beginNoWagstaffExperiment(player)
-	local pos = findnewcluelocation(player:GetPosition())
-	if pos then
-		self.experiment_static = SpawnPrefab("moonstorm_static")
-		self.experiment_static.Transform:SetPosition(pos:Get())
+local function fire_spawnWaglessTool()
+    self:spawnWaglessTool()
+end
+local function fire_startWaglessNeedTool()
+    self:startWaglessNeedTool()
+end
 
-		self.experiment_static:ListenForEvent("onremove", onremoveexperimentstatic)
-		self.experiment_static:ListenForEvent("death", onremoveexperimentstatic)
-	end
+function self:beginNoWagstaffExperiment(player)
+    local pos = findnewcluelocation(player:GetPosition())
+    if pos then
+        self.experiment_static = SpawnPrefab("moonstorm_static_nowag")
+        self.experiment_static.Transform:SetPosition(pos:Get())
+
+        self.experiment_static:ListenForEvent("onremove", onremoveexperimentstatic)
+        self.experiment_static:ListenForEvent("death", onremoveexperimentstatic)
+    end
+end
+
+function self:beginNoWagstaffDefence()
+    if self.experiment_static then
+        self.wagstaff_tools_original = {
+            "wagstaff_tool_1",
+            "wagstaff_tool_2",
+            "wagstaff_tool_3",
+            "wagstaff_tool_4",
+            "wagstaff_tool_5",
+        }
+        self.tools_task = self.tools_task or inst:DoTaskInTime(10, fire_spawnWaglessTool)
+        self.inst.components.timer:StartTimer("moonstorm_experiment_complete", TUNING.WAGSTAFF_EXPERIMENT_TIME)
+        self.tools_need = inst:DoTaskInTime(10 + (math.random()*5), fire_startWaglessNeedTool)
+
+        self.defence_task = self.defence_task or inst:DoTaskInTime(1, function()
+            self:spawnWaglessGestaltWave()
+        end)
+    end
 end
 
 --
@@ -539,7 +572,7 @@ function self:FindUnmetCharacter()
 end
 
 function self:GetNewWagstaffLocation(wagstaff)
-	local newpos = Vector3(wagstaff.Transform:GetWorldPosition())
+	local newpos = wagstaff:GetPosition()
 	return findnewcluelocation(newpos, wagstaff.hunt_count and wagstaff.hunt_count >= TUNING.WAGSTAFF_NPC_HUNTS)
 end
 
@@ -561,6 +594,21 @@ function self:foundTool()
 	end
 end
 
+function self:startWaglessNeedTool()
+    if self.experiment_static then
+        self.inst.components.timer:PauseTimer("moonstorm_experiment_complete")
+        self.experiment_static:PushEvent("need_tool")
+    end
+end
+
+function self:foundWaglessTool()
+	self.inst.components.timer:ResumeTimer("moonstorm_experiment_complete")
+    self.tools_need = inst:DoTaskInTime(10 + (math.random()*5), fire_startWaglessNeedTool)
+    if self.experiment_static then
+        self.experiment_static:PushEvent("need_tool_over")
+    end
+end
+
 function self:AddMetplayer(id)
 	self.metplayers[id] = true
 end
@@ -578,7 +626,7 @@ function self:beginWagstaffDefence()
 		}
 		self.wagstaff_tools = {}
 		self.tools_task = inst:DoTaskInTime(10,function() self:spawnTool() end)
-		self.inst.components.timer:StartTimer("moonstorm_experiment_complete", TUNING.WAGSTAFF_EXPERIMENT_TIME )
+		self.inst.components.timer:StartTimer("moonstorm_experiment_complete", TUNING.WAGSTAFF_EXPERIMENT_TIME)
 		self.tools_need = inst:DoTaskInTime(10 + (math.random()*5), function() self:startNeedTool() end)
 		self.wagstaff:PushEvent("doexperiment")
 	end
@@ -642,6 +690,32 @@ function self:spawnGestaltWave()
 	end
 end
 
+function self:spawnWaglessGestaltWave()
+	if self.experiment_static then
+		local x,y,z = self.experiment_static.Transform:GetWorldPosition()
+		local ents = TheSim:FindEntities(x, y, z, 30, MUTANT_BIRD_MUST_HAVE,MUTANT_BIRD_MUST_NOT_HAVE)
+
+		if #ents < 16 then
+			local currentpos = self.experiment_static:GetPosition()
+			local angle = math.random()*TWOPI
+
+			for i=1,math.random(3,5) do
+				inst:DoTaskInTime(math.random()*0.5,function() self:SpawnGestalt(angle, "bird_mutant") end)
+			end
+			for i=1,math.random(1,3) do
+				inst:DoTaskInTime(math.random()*0.5,function() self:SpawnGestalt(angle, "bird_mutant_spitter") end)
+			end
+		end
+		local timeleft = self.inst.components.timer:GetTimeLeft("moonstorm_experiment_complete")
+		local time = Remap(timeleft,TUNING.WAGSTAFF_EXPERIMENT_TIME,0,15,7)
+		if self.defence_task then
+			self.defence_task:Cancel()
+			self.defence_task = nil
+		end
+		self.defence_task = inst:DoTaskInTime(time, function() self:spawnWaglessGestaltWave() end)
+	end
+end
+
 function self:spawnTool()
 	if not self.wagstaff then
 		return
@@ -674,9 +748,34 @@ function self:spawnTool()
 	self.tools_task = inst:DoTaskInTime(8,function() self:spawnTool() end)
 end
 
+local function return_tool_to_pool(tool)
+    table.insert(self.wagstaff_tools_original, tool.prefab)
+end
+function self:spawnWaglessTool()
+	if not self.experiment_static then
+		return
+	end
+
+	if #self.wagstaff_tools_original > 0 then
+        local idx = math.random(#self.wagstaff_tools_original)
+        local toolname = self.wagstaff_tools_original[idx]
+        table.remove(self.wagstaff_tools_original,idx)
+
+        local tool = SpawnPrefab(toolname)
+        tool:ListenForEvent("onremove", return_tool_to_pool)
+
+		local currentpos = self.experiment_static:GetPosition()
+		local offset = FindWalkableOffset(currentpos, math.random()*TWOPI, 6+ (math.random()* 4), 16, nil, nil, customcheckfn, nil, nil)
+            or Vector3(0,0,0)
+		local newpos = currentpos + offset
+		tool.Transform:SetPosition(newpos.x,0,newpos.z)
+	end
+	self.tools_task = inst:DoTaskInTime(8, fire_spawnWaglessTool)
+end
+
 function self:DoTestForWagstaff()
 	local moonstorms = TheWorld.net.components.moonstorms
-	if not self.wagstaff and moonstorms ~= nil then
+	if (not self.wagstaff and not self.experiment_static) and moonstorms ~= nil then
 		local eligible_players = {}
 		for _, player in pairs(_activeplayers) do
 			local valid = player:IsValid() and player.components.health ~= nil and not player.components.health:IsDead()

@@ -29,7 +29,7 @@ local function fn()
     inst.AnimState:SetBuild("flotationcushion")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst)
+	MakeInventoryFloatable(inst, "small", 0.1, { 1.1, 1, 1.1 })
 
 	inst:AddTag("cattoy")
 

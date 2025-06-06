@@ -52,7 +52,7 @@ end
 local emitted_temperatures = { -10, 10, 25, 40, 60 }
 
 local function HeatFn(inst, observer)
-    local range = GetRangeForTemperature(inst.components.temperature:GetCurrent(), TheWorld.state.temperature)
+	local range = GetRangeForTemperature(inst.components.temperature:GetCurrent(), GetLocalTemperature(inst))
     if range <= 2 then
         inst.components.heater:SetThermics(false, true)
     elseif range >= 4 then

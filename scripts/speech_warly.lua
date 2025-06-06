@@ -126,6 +126,9 @@ return{
             INUSE = "Pardonnez-moi! I shouldn't backseat cook.",
             TOOFAR = "I'll need to get a little closer to cook with that.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "It is not the time. I will try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Trop fort!",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "We have an unwelcome visitor coming from above!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Déjà vu.",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "It is empty.",
 			FILLED = "Something inside!",
 		},
-		WAGBOSS_ROBOT = "But can it cook a soufflé?",
+		WAGBOSS_ROBOT_SECRET = "Some sort of centerpiece?",
+        WAGBOSS_ROBOT = "But can it cook a soufflé?",
         WAGBOSS_ROBOT_POSSESSED = "Sorry! I'm sure you make great soufflés!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "No one asked for an encore!",
+		WAGBOSS_ROBOT_LEG = "The legs are very tough!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "New and improved! C'est terrible!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "It is the most brilliant one I have ever seen!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "C'est horrible!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They are running amok!",
+            DAMAGE = "I can repair it or use the parts to repair another.",
             FRIENDLY = "A portable chopper.",
         },
-		WAGDRONE_FLYING = "This is overwhelming!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "This is overwhelming!",
+            DAMAGED = "These leftovers can only be used to fix another!",
+        },
+		WAGDRONE_PARTS = "It looks like part of a cake mixer.",
+		WAGDRONE_BEACON = "So the petit blender will not spin out of control.",
 
         WAGPUNK_WORKSTATION = "But does it blend?",
         WAGPUNK_LEVER = "What appliance is this for?",
         WAGPUNK_FLOOR_KIT = "We are expanding this location!",
         WAGPUNK_CAGEWALL = "This will be a private party.",
 
+		WAGSTAFF_ITEM_1 = "The glove is... solid?",
+		WAGSTAFF_ITEM_2 = "Why can I touch this?",
+
+        HERMITCRAB_RELOCATION_KIT = "I hope Madame Pearl will like her new home.",
+
         WANDERINGTRADER = "Bonjour, monsieur boeuf! What do you have?",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "I assure you it wasn't personal.",
         FLOTATIONCUSHION = "It will save me from the brine!",
         LUNAR_SEED = "This is its essence.",
     },

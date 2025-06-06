@@ -136,6 +136,9 @@ return {
             INUSE = "Looks like we had the same idea.",
             TOOFAR = "It's too far away!",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "It's empty, I shell try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
             NOTARGET = "only_used_by_walter",
@@ -1163,7 +1166,7 @@ return {
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "This one seems a little strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Something's falling from the sky!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "It's back!",
 
 	BATTLECRY =
 	{
@@ -5674,25 +5677,40 @@ return {
 			GENERIC = "Drat, empty.",
 			FILLED = "It's occupied.",
 		},
-		WAGBOSS_ROBOT = "Fascinating!",
+		WAGBOSS_ROBOT_SECRET = "How intriguing!",
+        WAGBOSS_ROBOT = "Fascinating!",
         WAGBOSS_ROBOT_POSSESSED = "Has anyone tried resetting it?",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's back!",
+		WAGBOSS_ROBOT_LEG = "It withstood for a while!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "You look the same but different.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "This must be the one he wants.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Haven't you broken enough science?!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They just drone on and on.",
+            DAMAGE = "I could repair it or harvest for parts.",
             FRIENDLY = "Spin it to win it!",
         },
-		WAGDRONE_FLYING = "Like a bot out of hell.",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Like a bot out of hell.",
+            DAMAGED = "It's too damaged to fix but I can salvage the parts.",
+        },
+		WAGDRONE_PARTS = "Now I can put a positive spin on things.",
+		WAGDRONE_BEACON = "This will help keep things contained.",
 
         WAGPUNK_WORKSTATION = "Let's get to work!",
         WAGPUNK_LEVER = "It's a good time to switch things up.",
         WAGPUNK_FLOOR_KIT = "What is this floor?",
         WAGPUNK_CAGEWALL = "Wall or nothing!",
 
+		WAGSTAFF_ITEM_1 = "Strange, this glove is not a projection.",
+		WAGSTAFF_ITEM_2 = "This clipboard is... real.",
+
+        HERMITCRAB_RELOCATION_KIT = "The crab's new home will be pitcher perfect.",
+
         WANDERINGTRADER = "If we make a trade, will we beef friends!",
 
-        GESTALT_GUARD_EVOLVED = "They're promising me... that they're coming to get me.", -- TODO
+        GESTALT_GUARD_EVOLVED = "These ones have an explosive personality.",
         FLOTATIONCUSHION = "Oh, buoyancy!",
         LUNAR_SEED = "This formed part of its crown.",
     },

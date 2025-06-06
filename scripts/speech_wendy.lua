@@ -126,6 +126,9 @@ return{
             INUSE = "What are you making...? Smells good...",
             TOOFAR = "It's so... far away...",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "It's empty. I'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1157,7 +1160,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "It's too much.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "We've angered a higher power, and now death falls upon us.",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "It remembers.",
 
 	BATTLECRY =
 	{
@@ -5668,25 +5671,40 @@ return{
 			GENERIC = "Empty.",
 			FILLED = "It's trapped inside.",
 		},
-		WAGBOSS_ROBOT = "I have a bad feeling about this.",
+		WAGBOSS_ROBOT_SECRET = "Is it better not to know?",
+        WAGBOSS_ROBOT = "I have a bad feeling about this.",
         WAGBOSS_ROBOT_POSSESSED = "I would be angry too.",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It remembers.",
+		WAGBOSS_ROBOT_LEG = "A piece of its physical body discarded and forgotten.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "The ball of death burns brighter than ever.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "It was so beautiful at its core.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "So much pain.",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They are compelled by a greater entity.",
+            DAMAGE = "It can live again or sacrifice its parts for another.",
             FRIENDLY = "It kind of lost its spark.",
         },
-		WAGDRONE_FLYING = "They're starting to irritate me.",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "They're starting to irritate me.",
+            DAMAGED = "It cannot be brought back but its parts may be gifted to another.",
+        },
+		WAGDRONE_PARTS = "A shame we don't come with spare parts.",
+		WAGDRONE_BEACON = "It prevents the little machine from crossing over.",
 
         WAGPUNK_WORKSTATION = "Still so much we don't understand.",
         WAGPUNK_LEVER = "Let's pull it come what may.",
         WAGPUNK_FLOOR_KIT = "I wonder how the ocean feels about this.",
         WAGPUNK_CAGEWALL = "I guess we're not going anywhere.",
 
+		WAGSTAFF_ITEM_1 = "A single glove left behind... Sigh.",
+		WAGSTAFF_ITEM_2 = "How can it be real?",
+
+        HERMITCRAB_RELOCATION_KIT = "She deserves to live in a nicer place.",
+
         WANDERINGTRADER = "I wonder how long he's been here.",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "I would be angry too.",
         FLOTATIONCUSHION = "One does not need water to drown.",
         LUNAR_SEED = "All that remains is its crown.",
     },

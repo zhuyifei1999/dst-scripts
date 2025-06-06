@@ -1,5 +1,6 @@
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
+local WagBossUtil = require("prefabs/wagboss_util")
 
 local BloodOver =  Class(Widget, function(self, owner)
     self.owner = owner
@@ -39,8 +40,8 @@ local BloodOver =  Class(Widget, function(self, owner)
     self.inst:ListenForEvent("stopfreezing", _UpdateState, owner)
     self.inst:ListenForEvent("startoverheating", _UpdateState, owner)
     self.inst:ListenForEvent("stopoverheating", _UpdateState, owner)
-	self.inst:ListenForEvent("startlunarbeamdamage", _UpdateState, owner)
-	self.inst:ListenForEvent("stoplunarbeamdamage", _UpdateState, owner)
+	self.inst:ListenForEvent("startlunarburn", _UpdateState, owner)
+	self.inst:ListenForEvent("stoplunarburn", _UpdateState, owner)
     self.inst:DoTaskInTime(0, _UpdateState)
 end)
 
@@ -59,7 +60,7 @@ function BloodOver:UpdateState()
 	end
 
 	local health = self.owner.replica.health
-	if health and health:IsTakingLunarBeamDamage() then
+	if health and WagBossUtil.HasLunarBurnDamage(health:GetLunarBurnFlags()) then
 		self:TurnOn()
 		return
 	end
@@ -68,7 +69,6 @@ function BloodOver:UpdateState()
 end
 
 function BloodOver:TurnOn()
-    --TheInputProxy:AddVibration(VIBRATION_BLOOD_FLASH, .2, .7, true)
     self:StartUpdating()
     self.base_level = .5
     self.k = 5
@@ -101,10 +101,6 @@ function BloodOver:OnUpdate(dt)
         self.time_since_pulse = self.time_since_pulse + dt
         if self.time_since_pulse > self.pulse_period then
             self.time_since_pulse = 0
-
-            --if not IsEntityDead(self.owner) then
-            --    TheInputProxy:AddVibration(VIBRATION_BLOOD_OVER, .2, .3, false)
-            --end
         end
     end
 
@@ -118,7 +114,6 @@ function BloodOver:OnUpdate(dt)
 end
 
 function BloodOver:Flash()
-    --TheInputProxy:AddVibration(VIBRATION_BLOOD_FLASH, .2, .7, false)
     self:StartUpdating()
     self.level = 1
     self.k = 1.33

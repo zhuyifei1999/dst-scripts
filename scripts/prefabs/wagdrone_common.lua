@@ -78,10 +78,25 @@ end
 
 --------------------------------------------------------------------------
 
+local function teleport_override_fn(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:IsPointInWagPunkArena(x, y, z) then
+		return Vector3(x, y, z)
+	end
+end
+
+local function PreventTeleportFromArena(inst)
+	inst:AddComponent("teleportedoverride")
+	inst.components.teleportedoverride:SetDestPositionFn(teleport_override_fn)
+end
+
+--------------------------------------------------------------------------
+
 return
 {
 	FindShockTargets = FindShockTargets,
 	SetLedEnabled = SetLedEnabled,
 	MakeHackable = MakeHackable,
 	HackableLoadPostPass = HackableLoadPostPass,
+	PreventTeleportFromArena = PreventTeleportFromArena,
 }

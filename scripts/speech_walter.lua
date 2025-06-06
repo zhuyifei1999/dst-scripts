@@ -126,6 +126,9 @@ return{
             INUSE = "Hey while you're here, wanna hear a scary story I heard on the radio?",
             TOOFAR = "My arms aren't that long.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Aww, it's dry. Let's try again later!",
+        },
         DIRECTCOURIER_MAP =
         {
             NOTARGET = "Guess we should pick another spot, Woby.",
@@ -1195,7 +1198,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "I don't think my tummy can handle that.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Heads up! Incoming from above!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Incoming... again?",
 
 	BATTLECRY =
 	{
@@ -5706,25 +5709,40 @@ return{
 			GENERIC = "It's empty, Wobes.",
 			FILLED = "Yup, we got one, Woby!",
 		},
-		WAGBOSS_ROBOT = "Oooh, neat robot!",
+		WAGBOSS_ROBOT_SECRET = "He's keeping it under wraps!",
+        WAGBOSS_ROBOT = "Oooh, neat robot!",
         WAGBOSS_ROBOT_POSSESSED = "It's a bot unstable! Get it, Woby?",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's still mad at us!",
+		WAGBOSS_ROBOT_LEG = "How does it still have a leg to stand on? Right, Wobes?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's extra glowy isn't it, Woby?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "That must be it, Wobes!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Has anyone asked why it's so upset?",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Hard to put a positive spin on it!",
+            DAMAGE = "Looks like we can repair it or use the spare parts, Woby!",
             FRIENDLY = "Looks safe enough.",
         },
-		WAGDRONE_FLYING = "Whoa! Death from above! Watch out, Woby!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Whoa! Death from above! Watch out, Woby!",
+            DAMAGED = "Aww, it can't be fixed, but at least the parts won't be wasted.",
+        },
+		WAGDRONE_PARTS = "Looks useful.",
+		WAGDRONE_BEACON = "This'll keep the lil spinning robot from going out of bounds!",
 
         WAGPUNK_WORKSTATION = "Check it out, Woby! What can we make here?",
         WAGPUNK_LEVER = "Maybe we'll skip the instructions just this once.",
         WAGPUNK_FLOOR_KIT = "I bet we'll be floored by this!",
         WAGPUNK_CAGEWALL = "This will keep things contained. Yup, and us too, Woby!",
 
+		WAGSTAFF_ITEM_1 = "This glove is real, Woby! Can you believe it?",
+		WAGSTAFF_ITEM_2 = "Just because it's not a projection doesn't mean you have permission to chew on it, Wobes!",
+
+        HERMITCRAB_RELOCATION_KIT = "I think there's a badge for helping the elderly move. But we'll do it just 'cuz, right Wobers?",
+
         WANDERINGTRADER = "He's hiding in plain sight!",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "Wobes! I think we're the unfinished business for these ghosts!",
         FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",
         LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
     },

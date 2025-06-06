@@ -3665,6 +3665,7 @@ STRINGS =
         MOONSTORM_SPARK = "Moongleam",
         MOONSTORM_STATIC = "Energetic Static",
         MOONSTORM_STATIC_ITEM = "Restrained Static",
+        MOONSTORM_STATIC_NOWAG = "Energetic Static",
 
         ALTERGUARDIANHAT = "Enlightened Crown",
         ALTERGUARDIANHATSHARD = "Enlightened Shard",
@@ -4282,23 +4283,33 @@ STRINGS =
 
 		-- Rifts 5
 		GESTALT_CAGE = "Phasmo-Encapsulator",
+        WAGBOSS_ROBOT_SECRET = "Undisclosed Construct",
 		WAGBOSS_ROBOT = "W.A.R.B.O.T.",
         WAGBOSS_ROBOT_POSSESSED = "Enlightened W.A.R.B.O.T.",
+		WAGBOSS_ROBOT_LEG = "W.A.R.B.O.T. Leg",
 		WAGBOSS_MISSILE = "Thermalock Missile",
 		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Celestial Revenant",
-        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Celestial Abomination",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "Pure Gestalt",
+        ALTERGUARDIAN_PHASE4_LUNARRIFT = "Celestial Scion",
 		WAGDRONE_ROLLING = "Terramite",
 		WAGDRONE_FLYING = "Warbler",
+		WAGDRONE_PARTS = "Gyroscopic Transduction Core",
+		WAGDRONE_BEACON = "Terramite Barrier Post",
 
         WAGPUNK_CAGEWALL = "Kinetoclasmic Field Expandinator",
         WAGPUNK_FLOOR_KIT = "Substrate Extrapolator",
         WAGPUNK_LEVER = "Fulcronial Selector",
         WAGPUNK_WORKSTATION = "Notional Fabricator",
 
+		WAGSTAFF_ITEM_1 = "Glove",
+		WAGSTAFF_ITEM_2 = "Clipboard",
+
+        HERMITCRAB_RELOCATION_KIT = "Hermit Rehomer",
+
         WANDERINGTRADER = "Wandering Trader",
 
         FLOTATIONCUSHION = "Personal Floater",
-        GESTALT_GUARD_EVOLVED = "Greaterer Gestalt", -- TODO
+        GESTALT_GUARD_EVOLVED = "Inimical Gestalt",
         LUNAR_SEED = "Celestial Jewel",
 		TEMP_BETA_MSG = "Beta Report",
 	},
@@ -5436,6 +5447,8 @@ STRINGS =
         GESTALT_CAGE = "Combined pseudo and science for catching certain entities.",
         WAGPUNK_FLOOR_KIT = "Make the Ocean smaller! Permanently. Restrictions apply.",
 
+        HERMITCRAB_RELOCATION_KIT = "Home is where the hermit is... relocated.",
+
         FLOTATIONCUSHION = "Become unsinkable. Take that, Ocean!",
     },
 
@@ -5938,6 +5951,12 @@ STRINGS =
         LOW = {"Ack! You made me lose my fish!"},
         MED = {"You couldn't wait for a better time?"},
         HIGH = {"I can always make time for you, dearie."},
+    },
+
+    HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT = {
+        LOW = {"Hmph! You tricked me! This island is the worst!", "You'd better find me a better place to live!", "Use my new recipe to help me move."},
+        MED = {"That map must be outdated.", "I need a better place to live.", "I'll show you a new recipe to help me move."},
+        HIGH = {"Ack! That junk collector left his mess here!", "Please help me find a better home?", "Would you use my new recipe to help me move?"},
     },
 
     HERMITCRAB_LEVEL10_PLAYERGOOD = {
@@ -7154,7 +7173,7 @@ STRINGS =
     WAGSTAFF_GOTTAGO1 = "Aha! This selenological anomaly can only mean one thing!",
     WAGSTAFF_GOTTAGO2 = "Now is my chance!",
 
-    WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hmm, what's that falling from the sky?",
+    WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hm, we've collected too many. Regrettable.",
 
     -- Script.
     WAGSTAFF_NPC_DEFEAT_TWO_MORE_MUTATIONS =
@@ -7237,27 +7256,34 @@ STRINGS =
         "Why are you giving me this? It's for that crab.",
     },
     WAGSTAFF_GOT_MAPSCROLL_GOOD = {
-        "Excellent, yes. Now, hurry and give it to that crab.",
-        "This will do. Run along and give it to that crab."
+        "This will do. Just few minor edits... Perfect.",
+    },
+    WAGSTAFF_GOT_MAPSCROLL_GOOD_FINISH = {
+        "Run along and give it to that crab.",
     },
     WAGSTAFF_GOT_MAPSCROLL_NOLONGERNEEDED = {
-        "We don't need anymore maps! That crab is gone!",
-        "Stop bringing me maps. We've already evicted that crab.",
+        "Stop bringing me maps! That crab is gone!",
     },
     WAGSTAFF_GOT_EMPTY_GESTALTCAGE = {
-        "There's nothing inside here. It needs to contain an entity.",
-        "It's empty!",
+        "It's empty.",
     },
     WAGSTAFF_GOT_NOT_GESTALTCAGE = {
-        "I don't need this. Use my Phasmo-Encapsulator and capture me an appropriate entity.",
+        "This is not what I need. Use a Phasmo-Encapsulator and capture an appropriate entity.",
     },
-    WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED = {
-        "Hm. We have enough of these...",
-        "Bring me another variety.",
+    WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED = {--he wants something different.
+        "Hm, see if you can capture me another variety.",
     },
-    WAGSTAFF_GOT_GESTALTCAGE_GOOD = {
-        "About time. This is needed over here...",
-        "This will do well over here...",
+    WAGSTAFF_GET_MORE_GESTALTCAGES = {--try again,
+        "Do you have another sample?",
+        "Take another Phasmo-Encapsulator!",
+        "I need a suitable entity!",
+        "Find me a power source!",
+    },
+    WAGSTAFF_GOT_GESTALTCAGE_GOOD = {-- wants the big one.  not these.
+        "Hm, not quite powerful enough, but I can use it.",
+    },
+    WAGSTAFF_GOT_GESTALTCAGE_GOOD_BIGONE = {-- Got the big one.
+        "Yes! A very good one! Finally!",--todo
     },
     -- Desire for crabby crab to get off of the island.
     WAGSTAFF_WAGPUNK_ARENA_PEARLMAP = {
@@ -7273,18 +7299,43 @@ STRINGS =
         "Use my Substrate Extrapolator and extrapolate this substrate!",
     },
 
-    -- Desire to place robots at set locations.
+    -- Desire to find a powerful energy source for the secret project.say it in multi strings. piece it out 1) phamso can capture entiteis for power source, 2) how to build 3) do it
     WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT = {
-        "Good, now give me your filled Phasmo-Encapsulators.",
-        "Where are the encapsulated entities? I need them now.",
-        "Hand me your Phasmo-Encapsulators. They must contain the appropriate entities.",
+        "Now you need to construct a Phasmo-Encapsulator!",
+        "Excellent! I need a suitable power source for my creation!",
+        "Good. Use a Phasmo-Encapsulator to capture an entity to power my creation!",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_GIVE_GESTALT_CAGE = {
+        "Yes! Use this and capture that entity before it escapes!",--todo
+        "That's the entity I want! Use this. Quickly!",--todo
+    },
+
+    -- Desire for the filled3 cage. -- why this still here?
+    WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE = {
+        "Finally! Hand over the entity at once!",
+        "This is the one I've been waiting for! Give it to me now!",
     },
 
     -- Desire to have the lever switched.
     WAGSTAFF_WAGPUNK_ARENA_LEVER = {
         "Fine work! Now pull the Fulcronial Selector to start the ultimate experiment!",
         "Let us bring my creation to life! Engage the Fulcronial Selector! Yes, yes- the stick-thing.",
-        "This is it! Pull the Fulc- the lever.",
+        "This is it! Pull the Ful- the lever.",
+    },
+
+    -- Monologue on lever pulled. --robot comes to life, and it's working. im a genius
+    WAGSTAFF_WAGPUNK_ARENA_LEVERPULLED = {
+        "It's perfect! Everything is going according to plan.",
+        "Eureka! I've done it!",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_REVEALBOSS = "Behold, my preeminent creation - W.A.R.B.O.T.!",
+
+    WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL = {
+        "Blast! It's taken over W.A.R.B.O.T.!",
+        "Egad! We've lost control of the entity!",
+        "The entity is too powerful!",
     },
 
     -- Terraria
@@ -16970,7 +17021,7 @@ STRINGS.SCRAPBOOK = {
         GHOSTLYELIXERRETALIATION = "Doubles Abigail's shield duration from 0.5 seconds to 1 second.\n\nAttacking creatures also take 20 damage.\n\nLasts 1 day.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nGives the drinker a shield that will absorb a lot of damage from one hit and then goes on cool down for 10 seconds. It also inflicts 20 damage to all nearby enemies.",
         GHOSTLYELIXERREVIVE = "Returns Abigail's level to 3.\n\nWhen drunk by a non ghost wearing the Wraith's Wreath:\n\nHeals the drinker for a little bit of sanity, fills a small amount of hunger and removes the health penalty of revival.",
         GHOSTLYELIXERSHADOW = "Boosts the curse Abigail inflicts on targets, so that now they receive an extra 10 Planar Damage when attacked.",
-        GHOSTLYELIXERLUNAR = "Abigail inflicts an extra 10 planar damage when attacking and increases to 100 when Abigail is in gestalt form.",
+        GHOSTLYELIXERLUNAR = "Abigail inflicts an extra 10 planar damage when attacking and increases to 100 when Abigail is in Gestalt form.",
         FEATHERPENCIL = "Draws the closest item nearby onto a Mini Sign.",
         MINIFLARE = "Creates a flash in the sky that can be seen by all survivors on the minimap.",
         MEGAFLARE = "Creates a flash in the sky that can be seen by all survivors on the minimap.\n\nThis large flash will also draw the attention of some hostile creatures.",

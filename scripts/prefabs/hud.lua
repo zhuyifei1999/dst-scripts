@@ -24,6 +24,7 @@ local assets =
     Asset("ANIM", "anim/screenlightning.zip"),
     Asset("ANIM", "anim/thrall_parasite_overlay.zip"),
 	Asset("ANIM", "anim/wagboss_beam_over.zip"),
+	Asset("SCRIPT", "scripts/prefabs/wagboss_util.lua"),
 
     Asset("ANIM", "anim/clock_transitions.zip"),
     Asset("ANIM", "anim/moon_phases_clock.zip"),
@@ -188,6 +189,8 @@ local assets =
     Asset("IMAGE", "images/emotes_wurt.tex"),
     Asset("ATLAS", "images/emotes_wx78.xml"),
     Asset("IMAGE", "images/emotes_wx78.tex"),
+    Asset("ATLAS", "images/emotes_generic.xml"), -- TODO(JBK): This would be best done as SkinsPuppet and to do this when time permits. [SPCEWI]
+    Asset("IMAGE", "images/emotes_generic.tex"),
 }
 
 local prefabs =

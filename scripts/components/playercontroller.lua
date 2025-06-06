@@ -1925,6 +1925,7 @@ end
 local CATCHABLE_TAGS = { "catchable" }
 local PINNED_TAGS = { "pinned" }
 local CORPSE_TAGS = { "corpse" }
+local GESTALTCAPTURABLE_TAGS = { "gestaltcapturable" }
 function PlayerController:GetActionButtonAction(force_target)
     local isenabled, ishudblocking = self:IsEnabled()
 
@@ -1983,6 +1984,18 @@ function PlayerController:GetActionButtonAction(force_target)
                 return BufferedAction(self.inst, force_target, ACTIONS.NET, tool)
             end
         end
+
+		--catch gestalts
+		if tool and tool:HasTag("gestalt_cage") then
+			if force_target == nil then
+				local target = FindEntity(self.inst, 8, nil, GESTALTCAPTURABLE_TAGS, TARGET_EXCLUDE_TAGS)
+				if CanEntitySeeTarget(self.inst, target) then
+					return BufferedAction(self.inst, target, ACTIONS.POUNCECAPTURE, tool)
+				end
+			elseif force_target_distsq <= 64 and force_target:HasTag("gestaltcapturable") then
+				return BufferedAction(self.inst, force_target, ACTIONS.POUNCECAPTURE, tool)
+			end
+		end
 
         --catching
         if self.inst:HasTag("cancatch") then
@@ -2275,7 +2288,14 @@ function PlayerController:DoCharacterCommandWheelButton()
 
 	--First, try find a spellbook in our inventory
 	local invobject = self.inst.replica.inventory:FindItem(function(item)
-		return item.components.spellbook ~= nil and item.components.spellbook:CanBeUsedBy(self.inst)
+		if item.components.spellbook and item.components.spellbook:CanBeUsedBy(self.inst) then
+			--special case for wendy, just hardcoded here for now
+			if item.prefab == "abigail_flower" and self.inst:HasTag("ghostfriend_notsummoned") then
+				return false
+			end
+			return true
+		end
+		return false
 	end)
 
 	local target
@@ -4683,7 +4703,9 @@ function PlayerController:OnRightClick(down)
         end
         local goingtodeploy = self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY
         if goingtodeploy then
-            act:SetActionPoint(self.deployplacer:GetPosition())
+            if self.deployplacer.components.placer:IsAxisAlignedPlacement() then
+                act:SetActionPoint(self.deployplacer:GetPosition())
+            end
             act.rotation = self.deployplacer.Transform:GetRotation()
         end
         if not self.ismastersim then

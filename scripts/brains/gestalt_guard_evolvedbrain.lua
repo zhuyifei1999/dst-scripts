@@ -13,22 +13,15 @@ local ATTACK_CHASE_TIME = 5
 
 local WANDER_TIMES = { minwalktime = 2, randwalktime = 2, minwaittime = 3, randwaittime = 3 }
 
-local RELOCATED_DISTSQ = 3*3
+local RUN_AWAY_DIST = 4
+local RUN_AWAY_DSQ = RUN_AWAY_DIST * RUN_AWAY_DIST
+local STOP_RUN_AWAY_DIST = 8
 
 local GETFACINGTARGET_DISTSQ = TUNING.GESTALTGUARD_WATCHING_RANGE*TUNING.GESTALTGUARD_WATCHING_RANGE
 
 local GestaltGuardEvolvedBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
-
-local function IsPlayerTooClose(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    return IsAnyPlayerInRangeSq(x, y, z, RELOCATED_DISTSQ, true)
-end
-
-local function Relocate(inst)
-	inst.sg:GoToState("relocate")
-end
 
 local function GetFacingTarget(inst)
 	local target = (inst.behaviour_level or 0) > 1 and inst.components.combat.target or nil
@@ -44,16 +37,26 @@ local function KeepFacingTarget(inst, target)
 end
 
 function GestaltGuardEvolvedBrain:OnStart()
+	local function should_dodge()
+		if not self.inst.components.combat:InCooldown() then
+			return false
+		end
+
+		local ix, iy, iz = self.inst.Transform:GetWorldPosition()
+		return IsAnyPlayerInRangeSq(ix, iy, iz, RUN_AWAY_DSQ, true)
+	end
+
     local root = PriorityNode({
 		WhileNode(function() return not self.inst.sg:HasStateTag("attack") end, "Not Attacking",
 			PriorityNode({
-				WhileNode( function() return self.inst.behaviour_level == 3 end, "Aggressive",
+				WhileNode( function() return self.inst.behaviour_level == 3 and not self.inst.components.combat:InCooldown() end, "Aggressive",
 					ChaseAndAttack(self.inst, ATTACK_CHASE_TIME, nil, nil, nil, true)
 				),
 
-				WhileNode( function() return IsPlayerTooClose(self.inst) end, "Relocate",
+				WhileNode(should_dodge, "Relocate",
 					SequenceNode{
-						ActionNode(function() Relocate(self.inst) end),
+						WaitNode(3),
+						ActionNode(function() self.inst:PushEvent("relocate") end),
 						StandStill(self.inst),
 					}
 				),

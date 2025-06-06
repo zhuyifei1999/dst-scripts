@@ -1,8 +1,10 @@
 local easing = require("easing")
+local WagBossUtil = require("prefabs/wagboss_util")
 
 local assets =
 {
 	Asset("ANIM", "anim/wagboss_beam.zip"),
+	Asset("SCRIPT", "scripts/prefabs/wagboss_util.lua"),
 }
 
 local function CreateRing()
@@ -215,21 +217,27 @@ local function UpdateBeamAOE(inst, dt)
 							if v:HasAnyTag("brightmare", "brightmareboss") then
 								if v.components.health and not v.components.health:IsDead() then
 									v.components.health:DoDelta(TUNING.WAGBOSS_BEAM_BRIGHTMARE_HEAL, true, inst.nameoverride, true, inst, true)
-									v.components.health.lastluanrbeampulsetick = tick
-									v.components.health:RegisterLunarBeamDamageSource(inst)
+									v.components.health.lastlunarburnpulsetick = tick
+									v.components.health:RegisterLunarBurnSource(inst, WagBossUtil.LunarBurnFlags.GENERIC)
 									inst.targets[v] = tick
 								end
 							elseif v.components.health then
 								if inst.firsthit then
 									inst.components.combat:DoAttack(v)
 								else
-									v.components.health:DoDelta(-TUNING.WAGBOSS_BEAM_PLANAR_BURN, false, inst.nameoverride, nil, inst)
+									local mount = v.components.rider and v.components.rider:GetMount() or nil
+									if mount and mount.components.health and not mount.components.health:IsDead() then
+										local dmg = WagBossUtil.CalcLunarBurnTickDamage(mount, TUNING.WAGBOSS_BEAM_LUNAR_BURN_DPS)
+										mount.components.health:DoDelta(-dmg, false, inst.nameoverride, nil, inst)
+									end
+									local dmg = WagBossUtil.CalcLunarBurnTickDamage(v, TUNING.WAGBOSS_BEAM_LUNAR_BURN_DPS)
+									v.components.health:DoDelta(-dmg, false, inst.nameoverride, nil, inst)
 								end
 								if v.components.grogginess and not v.components.health:IsDead() then
 									v.components.grogginess:MaximizeGrogginess()
 								end
-								v.components.health.lastluanrbeampulsetick = tick
-								v.components.health:RegisterLunarBeamDamageSource(inst)
+								v.components.health.lastlunarburnpulsetick = tick
+								v.components.health:RegisterLunarBurnSource(inst, WagBossUtil.LunarBurnFlags.GENERIC)
 								inst.targets[v] = tick
 							else
 								inst.components.combat:DoAttack(v)
@@ -249,17 +257,23 @@ local function UpdateBeamAOE(inst, dt)
 							v.components.health:DoDelta(TUNING.WAGBOSS_BEAM_BRIGHTMARE_HEAL, true, inst.nameoverride, true, inst, true)
 							inst.targets[v] = tick
 						elseif v.components.combat and inst.components.combat:CanTarget(v) then
-							local pulse = tick >= v.components.health.lastluanrbeampulsetick + 12
+							local pulse = tick >= v.components.health.lastlunarburnpulsetick + 12
 							if pulse then
-								v.components.health.lastluanrbeampulsetick = tick
+								v.components.health.lastlunarburnpulsetick = tick
 							end
-							v.components.health:DoDelta(-TUNING.WAGBOSS_BEAM_PLANAR_BURN, not pulse, inst.nameoverride, nil, inst)
+							local mount = v.components.rider and v.components.rider:GetMount() or nil
+							if mount and mount.components.health and not mount.components.health:IsDead() then
+								local dmg = WagBossUtil.CalcLunarBurnTickDamage(mount, TUNING.WAGBOSS_BEAM_LUNAR_BURN_DPS)
+								mount.components.health:DoDelta(-dmg, not pulse, inst.nameoverride, nil, inst)
+							end
+							local dmg = WagBossUtil.CalcLunarBurnTickDamage(v, TUNING.WAGBOSS_BEAM_LUNAR_BURN_DPS)
+							v.components.health:DoDelta(-dmg, not pulse, inst.nameoverride, nil, inst)
 							if v.components.grogginess and not v.components.health:IsDead() then
 								v.components.grogginess:MaximizeGrogginess()
 							end
 							inst.targets[v] = tick
 						else
-							v.components.health:UnregisterLunarBeamDamageSource(inst)
+							v.components.health:UnregisterLunarBurnSource(inst)
 							inst.targets[v] = nil
 						end
 					end
@@ -291,7 +305,7 @@ local function UpdateBeamAOE(inst, dt)
 	for k, v in pairs(inst.targets) do
 		if k:IsValid() then
 			if k.components.health and v < tick then
-				k.components.health:UnregisterLunarBeamDamageSource(inst)
+				k.components.health:UnregisterLunarBurnSource(inst)
 				inst.targets[k] = nil
 			end
 		else
@@ -353,6 +367,42 @@ local function StartBeamAOE(inst)
 	inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/beam_down_LP", "loop")
 end
 
+local function UpdateBeamLightPre(inst)--, dt)
+	if inst.AnimState:IsCurrentAnimation("beam_pre") then
+		local frame = inst.AnimState:GetCurrentAnimationFrame()
+		if frame > 28 then
+			local len = inst.AnimState:GetCurrentAnimationNumFrames()
+			local r = easing.outQuad(frame - 28, 0, 3, len - 28)
+			inst.Light:SetRadius(r)
+			inst.Light:Enable(true)
+		end
+	else
+		inst.Light:SetRadius(3)
+		inst.Light:Enable(true)
+		inst.components.updatelooper:RemoveOnUpdateFn(UpdateBeamLightPre)
+	end
+end
+
+local function UpdateBeamLightPst(inst)--, dt)
+	if inst.AnimState:IsCurrentAnimation("beam_pst") then
+		local frame = inst.AnimState:GetCurrentAnimationFrame()
+		if frame < 5 then
+			inst.Light:SetRadius(3)
+			inst.Light:Enable(true)
+		elseif frame < 10 then
+			local r = easing.inQuad(frame - 4, 3, -3, 10 - 4)
+			inst.Light:SetRadius(r)
+			inst.Light:Enable(true)
+		else
+			inst.Light:Enable(false)
+			inst.components.updatelooper:RemoveOnUpdateFn(UpdateBeamLightPst)
+		end
+	else
+		inst.Light:Enable(false)
+		inst.components.updatelooper:RemoveOnUpdateFn(UpdateBeamLightPst)
+	end
+end
+
 local function KillFx(inst)
 	if inst:IsAsleep() then
 		inst:Remove()
@@ -366,13 +416,14 @@ local function KillFx(inst)
 	inst.animsync:set_local(true)
 	inst.animsync:set(true)
 	inst.components.updatelooper:RemoveOnUpdateFn(UpdateBeamAOE)
+	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamLightPst)
 	if next(inst.coloured2) then
 		inst.components.updatelooper:AddOnUpdateFn(UpdateColouredFade)
 		inst.fadet = 0
 	end
 	for k in pairs(inst.targets) do
 		if k:IsValid() and k.components.health then
-			k.components.health:UnregisterLunarBeamDamageSource(inst)
+			k.components.health:UnregisterLunarBurnSource(inst)
 		end
 	end
 
@@ -388,10 +439,16 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
+	inst.entity:AddLight()
 	inst.entity:AddNetwork()
 
 	inst:AddTag("FX")
 	inst:AddTag("NOCLICK")
+
+	inst.Light:SetIntensity(0.5)
+	inst.Light:SetFalloff(0.95)
+	inst.Light:SetColour(0.01, 0.35, 1)
+	inst.Light:Enable(false)
 
 	inst.AnimState:SetBank("wagboss_beam")
 	inst.AnimState:SetBuild("wagboss_beam")
@@ -420,6 +477,8 @@ local function fn()
 
 		return inst
 	end
+
+	inst.components.updatelooper:AddOnUpdateFn(UpdateBeamLightPre)
 
 	inst.AnimState:PushAnimation("beam_loop")
 

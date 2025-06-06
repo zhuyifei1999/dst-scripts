@@ -3,6 +3,10 @@ local assets = {
     Asset("INV_IMAGE", "wagpunk_floor_kit"),
 }
 
+local function IsPermanentOrDockFilterFn(tileid)
+    return IsLandTile(tileid) and not (TileGroupManager:IsTemporaryTile(tileid) and tileid ~= WORLD_TILES.FARMING_SOIL and tileid ~= WORLD_TILES.MONKEY_DOCK)
+end
+
 local function CLIENT_CanDeployKit(inst, pt, mouseover, deployer, rotation)
     local x, y, z = pt:Get()
     if not TheWorld.Map:IsPointInWagPunkArena(x, y, z) then
@@ -15,7 +19,7 @@ local function CLIENT_CanDeployKit(inst, pt, mouseover, deployer, rotation)
     end
 
     local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(x, 0, z)
-    if not TheWorld.Map:HasAdjacentLandTile(tx, ty) then
+    if not TheWorld.Map:HasAdjacentTileFiltered(tx, ty, IsPermanentOrDockFilterFn) then
         return false
     end
 
@@ -29,26 +33,44 @@ local function on_deploy(inst, pt, deployer)
         deployer.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", { intensity = 0.8 })
     end
 
-    local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(pt.x, pt.y, pt.z)
-    local tile_x, tile_y = TheWorld.Map:GetTileCoordsAtPoint(pt.x, pt.y, pt.z)
-
-    local current_tile = nil
-    local undertile = TheWorld.components.undertile
-    if undertile ~= nil then
-        current_tile = TheWorld.Map:GetTile(tile_x, tile_y)
-    end
-
-    TheWorld.Map:SetTile(tile_x, tile_y, WORLD_TILES.WAGSTAFF_FLOOR)
-    -- Because of a terraforming callback in farming_manager.lua, the undertile gets cleared during SetTile.
-    -- We can circumvent this for now by setting the undertile after SetTile.
-    if undertile ~= nil and current_tile ~= nil then
-        undertile:SetTileUnderneath(tile_x, tile_y, current_tile)
-    end
+    local map = TheWorld.Map
+    local TILE_SCALE = TILE_SCALE
+    local tile_x, tile_y = map:GetTileCoordsAtPoint(pt.x, pt.y, pt.z)
+    map:SetTile(tile_x, tile_y, WORLD_TILES.WAGSTAFF_FLOOR)
 
     inst.components.stackable:Get():Remove()
+
+    local tx, ty, tz = map:GetTileCenterPoint(pt.x, pt.y, pt.z)
     local ents = TheSim:FindEntities(tx, ty, tz, 1, INDICATOR_MUST_TAGS)
-    for _, v in ipairs(ents) do
-        v:Remove()
+    for _, ent in ipairs(ents) do
+        ent:Remove()
+    end
+
+    ents = map:GetEntitiesOnTileAtPoint(pt.x, 0, pt.z)
+    for _, ent in ipairs(ents) do
+        if ent:HasTag("winchtarget") then
+            local x, y, z = ent.Transform:GetWorldPosition()
+            local failed = false
+            local ox, oz = map:GetNearbyOceanPointFromXZ(x, z, 10)
+            if ox then
+                ent.Transform:SetPosition(ox, y, oz)
+                ent:PushEvent("teleported")
+                local fx = SpawnPrefab("splash_sink")
+                fx.Transform:SetPosition(ox, y, oz)
+            else -- If the scan fails we will just uproot the salvage this tile is permanent so having things under it would be unobtainable.
+                local salvaged_item = ent.components.winchtarget:Salvage()
+                if salvaged_item then
+                    if salvaged_item.components.inventoryitem and salvaged_item.components.inventoryitem:IsHeld() then
+                        salvaged_item = salvaged_item.components.inventoryitem:RemoveFromOwner(true)
+                    end
+                    if salvaged_item then
+                        salvaged_item.Transform:SetPosition(x, y, z)
+                        salvaged_item:PushEvent("on_salvaged")
+                    end
+                end
+                ent:Remove()
+            end
+        end
     end
 
     TheWorld:PushEvent("ms_wagpunk_floor_kit_deployed")

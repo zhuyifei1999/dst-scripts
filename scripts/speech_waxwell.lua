@@ -126,6 +126,9 @@ return{
             INUSE = "Hmph. You're adding too much salt.",
             TOOFAR = "I must get closer.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Ugh, empty! I'll do it later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too stiff a drink.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "What's that falling from the sky? Retribution, no doubt.",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Again? What now?",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "Ugh. Empty.",
 			FILLED = "Not so tough now, are you?",
 		},
-		WAGBOSS_ROBOT = "I don't trust it.",
+		WAGBOSS_ROBOT_SECRET = "Nothing but trouble under there if you ask me.",
+        WAGBOSS_ROBOT = "I don't trust it.",
         WAGBOSS_ROBOT_POSSESSED = "I told you so!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "What have we done now?",
+		WAGBOSS_ROBOT_LEG = "It's surprisingly intact. Still broke off though.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It looks nastier than before.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "This had better be the one he wants.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Such grotesquerie.",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Truly loathsome!",
+            DAMAGE = "Apparently it may be repaired, or salvaged for parts.",
             FRIENDLY = "I don't like it.",
         },
-		WAGDRONE_FLYING = "Ugh, go away!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Ugh, go away!",
+            DAMAGED = "Nothing but spare parts here.",
+        },
+		WAGDRONE_PARTS = "A trophy for besting a machine.",
+		WAGDRONE_BEACON = "An invisible wall? There must be a magical explanation for this.",
 
         WAGPUNK_WORKSTATION = "What infernal devices are conjured here?",
         WAGPUNK_LEVER = "No good will come of this!",
         WAGPUNK_FLOOR_KIT = "Just how much more space does he need?",
         WAGPUNK_CAGEWALL = "The blasted tinkerer wants to trap us like rats.",
 
+		WAGSTAFF_ITEM_1 = "So the glove is no longer an illusion.",
+		WAGSTAFF_ITEM_2 = "His clipboard is here. Odd.",
+
+        HERMITCRAB_RELOCATION_KIT = "Picky crab wants the perfect spot.",
+
         WANDERINGTRADER = "I thought I smelled something in the air. What are you peddling today?",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "Oh, bygones be bygones and such.",
         FLOTATIONCUSHION = "Where does it say, \"women and children first\"?",
         LUNAR_SEED = "I told you it was no match for my abilities.",
     },

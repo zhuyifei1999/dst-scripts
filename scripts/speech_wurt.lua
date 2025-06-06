@@ -126,6 +126,9 @@ return{
             INUSE = "Mmm... what that smell?",
             TOOFAR = "It way over there!",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Why not work now? Flort! I try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Glurph! Too strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It coming from moon!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It baaack!",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "None. Glurgh.",
 			FILLED = "Got you!",
 		},
-		WAGBOSS_ROBOT = "Big Ironfolk! Florp!",
+		WAGBOSS_ROBOT_SECRET = "Florp! What that? Show me!",
+        WAGBOSS_ROBOT = "Big Ironfolk! Florp!",
         WAGBOSS_ROBOT_POSSESSED = "Flort! Flort! Flort! Bad Ironfolk!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Florpt. It baaack...",
+		WAGBOSS_ROBOT_LEG = "Florp! Me did that!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Florpt. What that new stuff?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "Me catch it! Florp!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Why bits of stuff in bright moon stuff want kill me?! Flort, why?!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Making me dizzy! Flort!",
+            DAMAGE = "Can fix or take parts! Me choose.",
             FRIENDLY = "Be nice! Glurgh.",
         },
-		WAGDRONE_FLYING = "Flort! Fly away!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Flort! Fly away!",
+            DAMAGED = "What mean can't fix? Fine, take parts! Florp.",
+        },
+		WAGDRONE_PARTS = "Extra bits. Florp.",
+		WAGDRONE_BEACON = "Not clown man's wall?",
 
         WAGPUNK_WORKSTATION = "Me make! Florp!",
-        WAGPUNK_LEVER = "Florp! I pull!",
+        WAGPUNK_LEVER = "Florp! Me pull!",
         WAGPUNK_FLOOR_KIT = "Floor...p?",
         WAGPUNK_CAGEWALL = "Me go wherever me want. Glurgh.",
 
+		WAGSTAFF_ITEM_1 = "So what? Me real too! Glurgh.",
+		WAGSTAFF_ITEM_2 = "Board real? Me real bored! Flort.",
+
+        HERMITCRAB_RELOCATION_KIT = "Can crabby lady live in swamp!? Florp!",
+
         WANDERINGTRADER = "Hi, fuzzy guy! Florp!",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "You not nice! Flort!",
         FLOTATIONCUSHION = "Me best floater, florp!",
         LUNAR_SEED = "Glorp, me keep!",
     },

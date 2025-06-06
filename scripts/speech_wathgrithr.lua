@@ -126,6 +126,9 @@ return{
             INUSE = "I shall wait whilst my allies plan their feast.",
             TOOFAR = "I must close the gap between us!",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "'Tis dry. I shall see to it later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "'Tis excess!",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Lo, Ymir's skull falleth from the heavens.",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Thou return'st!",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "An empty vessel.",
 			FILLED = "'Tis spirited.",
 		},
-		WAGBOSS_ROBOT = "Behold, an iron golem.",
+		WAGBOSS_ROBOT_SECRET = "What doth he veil from us?",
+        WAGBOSS_ROBOT = "'Tis an iron golem.",
         WAGBOSS_ROBOT_POSSESSED = "The forged beast is cursed!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Thou art a glutton for punishment.",
+		WAGBOSS_ROBOT_LEG = "We have severed the iron golem's limbs and yet it still stands.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Be thy strength fit for the vengeance thou seek'st?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "It striketh mine eyes with unparalleled radiance.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Unhallowed giant! Odin would pierce his lone eye at the sight of thee!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "I shall sunder thee, O metal menace!",
+            DAMAGE = "Shall it be resurrected, or its steel organs claimed to renew another?",
             FRIENDLY = "'Tis friend, no longer foe.",
         },
-		WAGDRONE_FLYING = "Cursed iron harpies!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Cursed iron harpies!",
+            DAMAGED = "It is dead but its parts may bring new life to another.",
+        },
+		WAGDRONE_PARTS = "Clockwork from a cursed contrivance.",
+		WAGDRONE_BEACON = "It doth form a wall unseen? Witchcraft!",
 
         WAGPUNK_WORKSTATION = "What maketh the gear-wright now?",
         WAGPUNK_LEVER = "A warrior trusts not cursed toggles.",
         WAGPUNK_FLOOR_KIT = "Njord will not be pleased.",
         WAGPUNK_CAGEWALL = "Let no soul flee the arena!",
 
+		WAGSTAFF_ITEM_1 = "He hath left his gauntlet in our realm.",
+		WAGSTAFF_ITEM_2 = "These runes hath taken physical form.",
+
+        HERMITCRAB_RELOCATION_KIT = "The crab shall dwell where I see fit.",
+
         WANDERINGTRADER = "The pelt-bearer cometh to ply his wares.",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "Revenge is thine inheritance.",
         FLOTATIONCUSHION = "Not this day, Njord!",
         LUNAR_SEED = "Sprung from the shining coronal of a mighty deity.",
     },

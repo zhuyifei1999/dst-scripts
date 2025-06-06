@@ -1413,7 +1413,11 @@ end
 
 ACTIONS.DEPLOY.fn = function(act)
 	local act_pos = act:GetActionPoint()
-    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act_pos, nil, act.doer, act.rotation) then
+    if act.invobject ~= nil and act.invobject.components.deployable ~= nil then
+        local candeploy, reason = act.invobject.components.deployable:CanDeploy(act_pos, nil, act.doer, act.rotation)
+        if not candeploy then
+            return false, reason
+        end
 		if act.invobject.components.complexprojectile then
 			if act.doer.components.inventory then
 				local projectile = act.doer.components.inventory:DropItem(act.invobject, false)
@@ -1428,10 +1432,12 @@ ACTIONS.DEPLOY.fn = function(act)
             local container = act.doer.components.inventory or act.doer.components.container
             local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
             if obj ~= nil then
-                if obj.components.deployable:Deploy(act_pos, act.doer, act.rotation) then
+                local success, reason = obj.components.deployable:Deploy(act_pos, act.doer, act.rotation)
+                if success then
                     return true
                 else
                     container:GiveItem(obj)
+                    return false, reason
                 end
             end
         end

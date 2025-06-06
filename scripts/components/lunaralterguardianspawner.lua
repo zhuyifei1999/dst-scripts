@@ -47,24 +47,37 @@ end
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 
+function self:GetGuardian()
+    return _activeguardian
+end
+
+function self:HasGuardianOrIsPending()
+    return self.guardiancomingpt or _activeguardian ~= nil
+end
+
+function self:KickOffSpawn()
+    self.inst:DoTaskInTime(4.5, function(i)
+        _activeguardian = SpawnPrefab("alterguardian_phase1_lunarrift")
+        _activeguardian.Physics:Teleport(self.guardiancomingpt:Get())
+
+        _activeguardian:ListenForEvent("onremove", function()
+            _activeguardian = nil
+        end)
+
+        _activeguardian.sg:GoToState("spawn_lunar")
+        self.guardiancomingpt = nil
+    end)
+end
+
 function self:TrySpawnLunarGuardian(spawner)
-    if not spawner or _activeguardian then return end
+    if not spawner or _activeguardian or self.guardiancomingpt then return end
 
     local pt = spawner:GetPosition()
     local spawn_pt = GetSpawnPoint(pt)
     if spawn_pt then
         spawner:PushEvent("lunarguardianincoming")
-        self.inst:DoTaskInTime(4.5, function(i)
-            _activeguardian = SpawnPrefab("alterguardian_phase1_lunarrift")
-            _activeguardian.Physics:Teleport(spawn_pt:Get())
-            _activeguardian:FacePoint(pt)
-
-            _activeguardian:ListenForEvent("onremove", function()
-                _activeguardian = nil
-            end)
-
-            _activeguardian.sg:GoToState("spawn_lunar")
-        end)
+        self.guardiancomingpt = spawn_pt
+        self:KickOffSpawn()
     end
 end
 
@@ -73,8 +86,26 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
+    local data, ents = {}, {}
     if _activeguardian ~= nil then
-        return { activeguid = _activeguardian.GUID }, { _activeguardian.GUID }
+        data.activeguid = _activeguardian.GUID
+        table.insert(ents, _activeguardian.GUID)
+    end
+    if self.guardiancomingpt then
+        data.guardiancomingpt_x = self.guardiancomingpt.x
+        data.guardiancomingpt_z = self.guardiancomingpt.z
+    end
+    return data, ents
+end
+
+function self:OnLoad(data)
+    if not data then
+        return
+    end
+
+    if data.guardiancomingpt_x and data.guardiancomingpt_z then
+        self.guardiancomingpt = Vector3(data.guardiancomingpt_x, 0, data.guardiancomingpt_z)
+        self:KickOffSpawn()
     end
 end
 

@@ -126,6 +126,9 @@ return{
             INUSE = "Someone else using it",
             TOOFAR = "Get closer. Not too close",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Can't now, try later",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1157,7 +1160,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Too much strong",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Night Ball ball fall down!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Night Ball ball back!",
 
 	BATTLECRY =
 	{
@@ -5668,25 +5671,40 @@ return{
 			GENERIC = "Where friend?",
 			FILLED = "Friend inside",
 		},
-		WAGBOSS_ROBOT = "Big-big robot friend?",
+		WAGBOSS_ROBOT_SECRET = "What hiding?",
+        WAGBOSS_ROBOT = "Big-big robot friend?",
         WAGBOSS_ROBOT_POSSESSED = "Bad friend! Bad friend!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Don't be mad, Night Ball ball!",
+		WAGBOSS_ROBOT_LEG = "Poor bad robot friend lose leg!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Night Ball ball more light?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "Bright bright friend!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Friend hurting because friend hurting",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Why, spinning friends, why?",
+            DAMAGE = "Fix spinning friend, or take spinning friend parts",
             FRIENDLY = "Nice spinning friend",
         },
-		WAGDRONE_FLYING = "Bad flying robot friends!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Bad flying robot friends!",
+            DAMAGED = "Bye flying robot friend, thank you for parts",
+        },
+		WAGDRONE_PARTS = "Friend parts?",
+		WAGDRONE_BEACON = "Friend can't cross",
 
         WAGPUNK_WORKSTATION = "Building table build shiny things?",
         WAGPUNK_LEVER = "Safe? No afraid, me pull",
         WAGPUNK_FLOOR_KIT = "More big land",
         WAGPUNK_CAGEWALL = "No go!",
 
+		WAGSTAFF_ITEM_1 = "Can touch hand shirt!",
+		WAGSTAFF_ITEM_2 = "Board friend real",
+
+        HERMITCRAB_RELOCATION_KIT = "Find crabby friend new home",
+
         WANDERINGTRADER = "Shaggy Buddy Man?",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "No mad! Be me friend!",
         FLOTATIONCUSHION = "No more scared biiig water",
         LUNAR_SEED = "Small Night Ball! Me here, me here",
     },

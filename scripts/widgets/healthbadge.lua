@@ -1,5 +1,6 @@
 local Badge = require "widgets/badge"
 local UIAnim = require "widgets/uianim"
+local WagBossUtil = require("prefabs/wagboss_util")
 
 local function OnEffigyDeactivated(inst)
     if inst.AnimState:IsCurrentAnimation("effigy_deactivate") then
@@ -218,7 +219,7 @@ function HealthBadge:OnUpdate(dt)
     if (self.owner.IsFreezing ~= nil and self.owner:IsFreezing()) or
 		(self.owner.replica.health and (
 			self.owner.replica.health:IsTakingFireDamageFull() or
-			self.owner.replica.health:IsTakingLunarBeamDamage()
+			WagBossUtil.HasLunarBurnDamage(self.owner.replica.health:GetLunarBurnFlags())
 		)) or
         (self.owner.replica.hunger ~= nil and self.owner.replica.hunger:IsStarving()) or
         self.acidsizzling ~= nil or

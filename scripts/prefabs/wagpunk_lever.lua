@@ -3,9 +3,21 @@ local assets = {
 }
 
 local function OnActivate(inst, doer)
+    TheWorld:PushEvent("ms_wagpunk_lever_activated") -- In front of RetractLever for ordering on lever toggled state.
     inst:RetractLever()
-    TheWorld:PushEvent("ms_wagpunk_lever_activated")
     return true
+end
+
+local function OnPlayerNear(inst, player)
+    if TheWorld.components.wagpunk_arena_manager then
+        TheWorld.components.wagpunk_arena_manager:LeverToggled(inst, true)
+    end
+end
+
+local function OnPlayerFar(inst, player)
+    if TheWorld.components.wagpunk_arena_manager then
+        TheWorld.components.wagpunk_arena_manager:LeverToggled(inst, false)
+    end
 end
 
 local function ExtendLever(inst)
@@ -14,6 +26,11 @@ local function ExtendLever(inst)
     end
     inst.extended = true
     inst:RemoveTag("NOCLICK")
+    local playerprox = inst:AddComponent("playerprox")
+    playerprox:SetDist(TUNING.RESEARCH_MACHINE_DIST, TUNING.RESEARCH_MACHINE_DIST)
+    playerprox:SetOnPlayerNear(inst.OnPlayerNear)
+    playerprox:SetOnPlayerFar(inst.OnPlayerFar)
+    playerprox:SetPlayerAliveMode(playerprox.AliveModes.AliveOnly)
 
     inst.components.activatable.inactive = true
     ChangeToObstaclePhysics(inst)
@@ -22,6 +39,7 @@ local function ExtendLever(inst)
     else
         inst.AnimState:PlayAnimation("deactivated")
         inst.AnimState:PushAnimation("idle", true)
+        inst.SoundEmitter:PlaySound("rifts5/wagpunk_fence/lever_activate")
     end
 end
 
@@ -31,6 +49,10 @@ local function RetractLever(inst)
     end
     inst.extended = false
     inst:AddTag("NOCLICK")
+    inst:RemoveComponent("playerprox")
+    if TheWorld.components.wagpunk_arena_manager then
+        TheWorld.components.wagpunk_arena_manager:LeverToggled(inst, false)
+    end
 
     inst.components.activatable.inactive = false
     RemovePhysicsColliders(inst)
@@ -39,6 +61,7 @@ local function RetractLever(inst)
     else
         inst.AnimState:PlayAnimation("activate")
         inst.AnimState:PushAnimation("idle_close", true)
+        inst.SoundEmitter:PlaySound("rifts5/wagpunk_fence/lever_deactivate")
     end
 end
 
@@ -47,6 +70,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 0.4)
@@ -73,6 +97,8 @@ local function fn()
     inst.extended = false
     inst.ExtendLever = ExtendLever
     inst.RetractLever = RetractLever
+    inst.OnPlayerNear = OnPlayerNear
+    inst.OnPlayerFar = OnPlayerFar
 
     return inst
 end

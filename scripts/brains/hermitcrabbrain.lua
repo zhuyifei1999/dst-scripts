@@ -516,7 +516,12 @@ function HermitBrain:OnStart()
     local root =
         PriorityNode(
         {
-            WhileNode(function() return self.inst.sg.mem.teleporting end, "Teleporting", WaitNode(1)),
+            WhileNode(function() return self.inst.sg.mem.teleporting end, "Teleporting",
+                PriorityNode({
+                    DoAction(self.inst, DoTalkQueue, "finish talking", true),
+                    WaitNode(1),
+                })
+            ),
             WhileNode( function() return BrainCommon.ShouldTriggerPanic(self.inst) end, "PanicHaunted",
                 ChattyNode(self.inst, { name = "HERMITCRAB_PANICHAUNT", chatterparams = CHATTERPARAMS_LOW },
                     Panic(self.inst))),

@@ -123,6 +123,9 @@ local function fn()
 	inst:AddTag("NOBLOCK")
 	inst:AddTag("lunar_aligned")
 
+	--gestaltcapturable (from gestaltcapturable component) added to pristine state for optimization
+	inst:AddTag("gestaltcapturable")
+
     inst.Transform:SetFourFaced()
 
     inst.AnimState:SetBuild("brightmare_gestalt")

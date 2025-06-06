@@ -126,6 +126,9 @@ return{
             INUSE = "How's the grub coming?",
             TOOFAR = "I gotta get closer. Or grow longer arms.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Empty. I'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1159,7 +1162,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Yikes, that's way too strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "That thing fallin' from the sky sure don't look friendly.",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Again!?",
 
 	BATTLECRY =
 	{
@@ -5670,25 +5673,40 @@ return{
 			GENERIC = "Ain't nothin' in there.",
 			FILLED = "We got a live one!",
 		},
-		WAGBOSS_ROBOT = "That is one fancy forklift.",
+		WAGBOSS_ROBOT_SECRET = "Bossman's up to somethin' alright.",
+        WAGBOSS_ROBOT = "That is one fancy forklift.",
         WAGBOSS_ROBOT_POSSESSED = "Where's the dang OFF switch?!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Aw man, not that thing again!",
+		WAGBOSS_ROBOT_LEG = "Now that is one solidly built robo-leg.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Looks like it's gonna burst.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "Whoa. I ain't seen one like that before.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "It don't make no sense!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Hey, stay away from my kneecaps!",
+            DAMAGE = "I can definitely fix it, or salvage it for parts.",
             FRIENDLY = "I'll never fully trust it.",
         },
-		WAGDRONE_FLYING = "Heads up!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Dang mechanical buzzards!",
+            DAMAGED = "Ain't nothin' but spare parts here.",
+        },
+		WAGDRONE_PARTS = "Love me some spare parts!",
+		WAGDRONE_BEACON = "The bossman thought of everything. Well, almost.",
 
         WAGPUNK_WORKSTATION = "That's a fine tinkerin' table.",
         WAGPUNK_LEVER = "What could go wrong?",
         WAGPUNK_FLOOR_KIT = "Real estate is at a premium these days.",
         WAGPUNK_CAGEWALL = "So, a fence post?",
 
+		WAGSTAFF_ITEM_1 = "Hm, bossman's glove... it's real.",
+		WAGSTAFF_ITEM_2 = "I can't believe those are his actual notes.",
+
+        HERMITCRAB_RELOCATION_KIT = "A whole movin' truck in a pitcher.",
+
         WANDERINGTRADER = "Good day for a trade.",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "I know, I know. Y'all got a bone to pick.",
         FLOTATIONCUSHION = "Sure beats drownin'.",
         LUNAR_SEED = "We busted'em down to the baubles.",
     },

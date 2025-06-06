@@ -8,6 +8,7 @@ local assets =
 local prefabs =
 {
 	"wagdrone_projectile_fx",
+	"wagdrone_parts",
 }
 
 local easing = require("easing")
@@ -37,6 +38,7 @@ local function CreateTargetingFx()
 
 	fx.entity:AddTransform()
 	fx.entity:AddAnimState()
+	fx.entity:AddSoundEmitter()
 
 	fx.AnimState:SetBuild("wagdrone_projectile")
 	fx.AnimState:SetBank("wagdrone_projectile")
@@ -111,6 +113,7 @@ local function OnTargetingDirty(inst)
 			fx.syncanim = not (TheWorld.ismastersim or Target_SyncMarkerAnim(inst, fx))
 			fx.components.updatelooper:AddPostUpdateFn(Target_OnPostUpdate)
 			Target_OnPostUpdate(fx)
+			fx.SoundEmitter:PlaySound("rifts5/wagdrone_flying/electro_ball_aim_LP", "loop")
 		end
 	elseif fx then
 		inst.targetingfx = nil
@@ -203,6 +206,7 @@ local function fn()
 	MakeFlyingCharacterPhysics(inst, 50, 0.4)
 
 	inst:AddTag("mech")
+	inst:AddTag("electricdamageimmune")
 	inst:AddTag("soulless")
 	inst:AddTag("lunar_aligned")
 	inst:AddTag("wagdrone")
@@ -232,6 +236,7 @@ local function fn()
 	inst.components.locomotor:SetExternalSpeedMultiplier(inst, "run_start", 0)
 
 	WagdroneCommon.MakeHackable(inst)
+	WagdroneCommon.PreventTeleportFromArena(inst)
 
 	inst:SetStateGraph("SGwagdrone_flying")
 

@@ -75,6 +75,8 @@ local function GetNearestAnimationAndFactorForScale(scale) -- NOTES(JBK): This i
 end
 local function CreateFloorDecal(anim, animscale)
     local inst = SpawnPrefab("axisalignedplacement_outline")
+    inst.floordecalanim = anim
+    inst.floordecalanim_bad = anim .. "_x"
     inst.AnimState:PlayAnimation(anim)
     inst.AnimState:SetScale(animscale, animscale)
     inst.AnimState:SetMultColour(0, 0, 0, 0)
@@ -260,14 +262,22 @@ end
 local function UpdateAxisAlignedHelper(self, v, newvisibility)
     local intensity = newvisibility >= v.percenttoradius and 1 or 0
     local r, g
+    local addr, addg
     if v.canbuild then
         r, g = 0, 1
+        addr, addg = 0.25, 0.75
+        v.ent.AnimState:PlayAnimation(v.ent.floordecalanim)
     elseif v.canbuild == nil then
         r, g = 0, 0
+        addr, addg = 0.25, 0.25
+        v.ent.AnimState:PlayAnimation(v.ent.floordecalanim_bad)
     else
         r, g = 1, 0
-    end 
+        addr, addg = 0.75, 0.25
+        v.ent.AnimState:PlayAnimation(v.ent.floordecalanim_bad)
+    end
     v.ent.AnimState:SetMultColour(r, g, 0, intensity)
+    v.ent.AnimState:SetAddColour(addr, addg, 0, 0)
 end
 local function UpdateCanBuild(self, v, x, y, z)
     self.inst.Transform:SetPosition(x + v.dx, y, z + v.dz)

@@ -1170,13 +1170,12 @@ TileManager.AddTile(
     {
         name="blocky",
         noise_texture="ground_noise_wagstaff_floor",
-        runsound="monkeyisland/dock/run_dock",
-        walksound="monkeyisland/dock/walk_dock",
-        snowsound="monkeyisland/dock/walk_dock",
-        mudsound="monkeyisland/dock/walk_dock",
+        runsound="dontstarve/movement/run_wagdock",
+        walksound="dontstarve/movement/walk_wagdock",
+        snowsound="dontstarve/movement/walk_wagdock",
+        mudsound="dontstarve/movement/walk_wagdock",
         cannotbedug = true,
         hard = true,
-        istemptile = true,
     },
     {
         name="map_edge",

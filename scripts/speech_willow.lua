@@ -126,6 +126,9 @@ return{
             INUSE = "Hey! What're you making? Can I have it?",
             TOOFAR = "It's all the way over thereeeee!",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Oh well, empty. Guess I'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1160,7 +1163,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Phew! That's too strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "We've done it now! Something's falling from the sky!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Ugh, not again!",
 
 	BATTLECRY =
 	{
@@ -5671,25 +5674,40 @@ return{
 			GENERIC = "Empty!",
 			FILLED = "Ha! Gotcha!",
 		},
-		WAGBOSS_ROBOT = "Looks shifty.",
+		WAGBOSS_ROBOT_SECRET = "What's that pile of junk under there?",
+        WAGBOSS_ROBOT = "Looks shifty.",
         WAGBOSS_ROBOT_POSSESSED = "I knew it was a killer robot!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Ugh! Not again!",
+		WAGBOSS_ROBOT_LEG = "Stupid killer robot leg.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's burning white hot!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "I bet that's the one.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "What do we do? There's nothing to burn!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "You guys are so annoying!",
+            DAMAGE = "So I could fix it or take its parts, but can I just incinerate it?",
             FRIENDLY = "Remember when these guys tried to kill us?",
         },
-		WAGDRONE_FLYING = "Get outta here, flying trashcans!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Get outta here, flying trashcans!",
+            DAMAGED = "Blah, it's just spare parts at this point.",
+        },
+		WAGDRONE_PARTS = "Spare junk.",
+		WAGDRONE_BEACON = "Big deal, it can't stop me.",
 
         WAGPUNK_WORKSTATION = "Electrical fires just aren't as fun.",
         WAGPUNK_LEVER = "Let's flip it already.",
         WAGPUNK_FLOOR_KIT = "Why didn't he just find a bigger island?",
         WAGPUNK_CAGEWALL = "Gives me claustrophobia.",
 
+		WAGSTAFF_ITEM_1 = "Why does a glove give me the creeps? Burn it!",
+		WAGSTAFF_ITEM_2 = "It doesn't make sense! Burn it!",
+
+        HERMITCRAB_RELOCATION_KIT = "What's the big deal where she lives?",
+
         WANDERINGTRADER = "Heard you take ashes?",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "What did I ever do to you?",
         FLOTATIONCUSHION = "Oh good, because I hate drowning.",
         LUNAR_SEED = "It's kinda nice to stare into.",
     },

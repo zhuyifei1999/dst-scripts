@@ -1154,6 +1154,7 @@ local wagpunk_arena_prefabs = {
     "mapscroll_tricker",
     "wagdrone_rolling",
     "wagdrone_flying",
+    "gestalt_cage",
 }
 local function OnInit_Arena(inst)
     inst.SoundEmitter:PlaySound("moonstorm/common/alterguardian_contained/static_LP", "wagstaffnpc_static_loop")
@@ -1168,8 +1169,13 @@ local function ShouldAcceptItem_Arena(inst, item, giver, count)
     return wagpunk_arena_manager:ShouldWagstaffAcceptItem(inst, item, giver, count)
 end
 
-local function DoExperiment_Arena(inst, callback, ...)
-    inst.wagstaff_experimenttime = 2.5 + math.random() * 0.5
+local function OnFinishExperiment_maptamper(inst)
+    if not inst.erodingout then
+        inst.components.npc_talker:Chatter("WAGSTAFF_GOT_MAPSCROLL_GOOD_FINISH", math.random(#STRINGS.WAGSTAFF_GOT_MAPSCROLL_GOOD_FINISH))
+    end
+end
+local function DoExperiment_Arena(inst, duration, callback, ...)
+    inst.wagstaff_experimenttime = duration or (1.75 + math.random() * 0.25)
     if callback then
         inst.wagstaff_experimentcallback = {callback = callback, arguments = {...},}
     else
@@ -1186,16 +1192,21 @@ local function DoFadeOut_Arena(inst)
     end
 end
 local function DoFadeOutIn_Arena(inst, duration)
-    inst:DoTaskInTime(duration, inst.DoFadeOut)
+    if inst.dofadeoutintask then
+        return
+    end
+    inst.dofadeoutintask = inst:DoTaskInTime(duration, inst.DoFadeOut)
 end
 local function OnGetItemFromPlayer_Arena(inst, giver, item)
+    local chatter = inst.trader_chatterreason
     if item:HasTag("mapscroll") then
-        local chatter = inst.trader_chatterreason
         inst.trader_chatterreason = nil
+        inst.components.npc_talker:resetqueue()
+        inst.components.talker:ShutUp()
         if chatter and not inst.erodingout then
             inst.components.talker:Chatter(chatter, math.random(#STRINGS[chatter]), nil, nil, CHATPRIORITIES.LOW)
         end
-        inst:DoExperiment()
+        inst:DoExperiment(2.5, OnFinishExperiment_maptamper)
         local mapscroll_tricker = SpawnPrefab("mapscroll_tricker")
         item.components.maprecorder:TransferComponent(mapscroll_tricker)
         item:Remove()
@@ -1208,6 +1219,9 @@ local function OnGetItemFromPlayer_Arena(inst, giver, item)
         -- Let the brain handle it.
         inst.components.npc_talker:resetqueue()
         inst.components.talker:ShutUp()
+        if chatter and not inst.erodingout then
+            inst.components.talker:Chatter(chatter, math.random(#STRINGS[chatter]), nil, nil, CHATPRIORITIES.LOW)
+        end
     end
 end
 
@@ -1246,9 +1260,38 @@ local function OnEntitySleep_Arena(inst)
     end
 end
 
+local function GiveGestaltCageToToss_Arena(inst)
+    local cage = SpawnPrefab("gestalt_cage")
+    inst.components.inventory:GiveItem(cage)
+    if not inst.itemstotoss then
+        inst.itemstotoss = {}
+    end
+    table.insert(inst.itemstotoss, cage)
+end
+
 local function lunar_guardian_incoming_Arena(inst)
-    inst:PushEvent("talk")
-    inst.components.talker:Chatter("WAGSTAFF_NPC_LUNARGUARDIANINCOMING", 0, nil, nil, CHATPRIORITIES.LOW)
+    inst.tiedtoworkstation = nil
+    inst.tiedtolever = nil
+    inst.oneshot = true
+    inst.components.npc_talker:Chatter("WAGSTAFF_NPC_LUNARGUARDIANINCOMING")
+end
+
+local function OnSave_Arena(inst, data)
+    data.oneshot = inst.oneshot
+end
+
+local function OnLoad_Arena(inst, data)
+    if not data then return end
+    inst.oneshot = data.oneshot
+end
+
+local function OnLoadPostPass_Arena(inst)--, newents, savedata)
+    inst.components.inventory:ForEachItem(function(item) -- Empty out inventory on spawn since we cannot save entity references for items in an inventory they have no entity reference.
+        if not inst.itemstotoss then
+            inst.itemstotoss = {}
+        end
+        table.insert(inst.itemstotoss, item)
+    end)
 end
 
 local function wagpunk_arena_fn()
@@ -1261,7 +1304,16 @@ local function wagpunk_arena_fn()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst, 50, .5)
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(50)
+    phys:SetFriction(.1)
+    phys:SetDamping(0)
+    phys:SetRestitution(.5)
+    phys:SetCollisionGroup(COLLISION.ITEMS)
+    phys:SetCollisionMask(
+        COLLISION.WORLD
+    )
+    phys:SetSphere(.5)
 
     inst.DynamicShadow:SetSize(1.5, .75)
     inst.DynamicShadow:Enable(false)
@@ -1318,6 +1370,10 @@ local function wagpunk_arena_fn()
     inst.DoFadeOutIn = DoFadeOutIn_Arena
     inst.AddTrader = AddTrader_Arena
     inst.OnEntitySleep = OnEntitySleep_Arena
+    inst.GiveGestaltCageToToss = GiveGestaltCageToToss_Arena
+    inst.OnSave = OnSave_Arena
+    inst.OnLoad = OnLoad_Arena
+    inst.OnLoadPostPass = OnLoadPostPass_Arena
 
     inst.defaultidlestate = "idle_wagpunk_arena"
 

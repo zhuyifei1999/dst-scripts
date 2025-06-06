@@ -126,6 +126,9 @@ return{
             INUSE = "Mortals need physical food more than I do.",
             TOOFAR = "I could hop over, I suppose.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Oh my, it's dry! Later, I'll try.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1172,7 +1175,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Don't think I can take that drink!",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "It comes from the sky, to make us all die!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Ack! It's back!",
 
 	BATTLECRY =
 	{
@@ -5684,25 +5687,40 @@ return{
 			GENERIC = "Nothing worth noting.",
 			FILLED = "It hides insides!",
 		},
-		WAGBOSS_ROBOT = "No need for alarm, it means us no harm...",
+		WAGBOSS_ROBOT_SECRET = "If we know history, better to leave it a mystery.",
+        WAGBOSS_ROBOT = "No need for alarm, it means us no harm...",
         WAGBOSS_ROBOT_POSSESSED = "It's got a few screws loose, I do deduce.",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "Ack! Here for payback!",
+		WAGBOSS_ROBOT_LEG = "A robust robot leg!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "What's it growing? Why's it glowing?",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "We fought it, and we got it!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "You atrocity of a monstrosity!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Deranged dervish on the skirmish!",
+            DAMAGE = "Shall I repair or take the spare... parts?",
             FRIENDLY = "A friendly model that doesn't dawdle.",
         },
-		WAGDRONE_FLYING = "Buzzing blight from yonder height!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Buzzing blight from yonder height!",
+            DAMAGED = "It's had its day, let's salvage away!",
+        },
+		WAGDRONE_PARTS = "Spares for repairs.",
+		WAGDRONE_BEACON = "I've seen it all! An invisible wall!",
 
         WAGPUNK_WORKSTATION = "What have we here? His intentions are never clear!",
         WAGPUNK_LEVER = "Is it polite to pull it?",
         WAGPUNK_FLOOR_KIT = "Score! More floor!",
         WAGPUNK_CAGEWALL = "Save the sass! None shall pass! Hyuyu!",
 
+		WAGSTAFF_ITEM_1 = "The glove is on the physical plane? I must have truly gone insane!",
+		WAGSTAFF_ITEM_2 = "The clipboard is real, I said with a squeal! Hyuyu!",
+
+        HERMITCRAB_RELOCATION_KIT = "It'll permit to move the hermit!",
+
         WANDERINGTRADER = "This guy's disguise! Hyuyu!",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "Well whad'ya know, we reap what we sow!",
         FLOTATIONCUSHION = "Because there's no time to think, when you're plunged in the drink!",
         LUNAR_SEED = "You went down, and left your crown!",
     },

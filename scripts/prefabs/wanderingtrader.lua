@@ -2,7 +2,6 @@ local brain = require("brains/wanderingtraderbrain")
 
 local assets = {
     Asset("ANIM", "anim/wanderingtrader.zip"),
-    Asset("SOUND", "sound/rifts5.fsb"),
 }
 
 local prefabs = {}
@@ -323,6 +322,9 @@ local function CreateRouteFromRandomWalk(inst, route) -- This cannot fail.
             end
             table.insert(route, Vector3(pt.x, 0, pt.z))
         end
+    end
+    if not route[1] then
+        table.insert(route, Vector3(start_pt.x, 0, start_pt.z))
     end
     TheWorld.components.worldroutes:SetRoute("wanderingtrader", route)
 end

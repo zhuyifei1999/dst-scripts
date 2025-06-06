@@ -9,6 +9,7 @@ local prefabs =
 {
 	"missile_explosion_fx",
 	"wagboss_missile_target_fx",
+	"ash",
 }
 
 local CIRCLING_PERIOD = 2
@@ -482,7 +483,7 @@ local AOE_WORK_ACTIONS =
 	MINE = true,
 	DIG = true,
 }
-local AOE_TAGS = { "_combat", "_inventoryitem", "pickable", "NPC_workable", "fire", "heatrock", "heatstar" }
+local AOE_TAGS = { "_combat", "_inventoryitem", "pickable", "NPC_workable", "fire", "heatstar" }
 for k, v in pairs(AOE_WORK_ACTIONS) do
 	table.insert(AOE_TAGS, k.."_workable")
 end
@@ -529,13 +530,27 @@ local function Detonate(inst)
 					end
 					shouldtoss = false
 				elseif v:HasTag("heatrock") then
-					--[[if v.components.temperature then
-						local temp = v.components.temperature:GetCurrent()
-						local ambient_temp = TheWorld.state.temperature
-						if temp > ambient_temp then
-							v.components.temperature:DoDelta(-math.min(temp - ambient_temp, TUNING.WAGBOSS_MISSILE_HEATROCK_DRAIN))
+					if v.components.fueled then
+						local pct = v.components.fueled:GetPercent()
+						local deltapct = 2 / TUNING.HEATROCK_NUMUSES
+						if pct < deltapct * 1.1 then
+							local x1, y1, z1 = v.Transform:GetWorldPosition()
+							v:Remove()
+							v = SpawnPrefab("ash")
+							v.Transform:SetPosition(x1, y1, z1)
+						else
+							v.components.fueled:SetPercent(pct - deltapct)
 						end
-					end]]
+					end
+				elseif v.components.heater and v.components.perishable then
+					if v.components.perishable:GetPercent() < 0.35 then
+						local x1, y1, z1 = v.Transform:GetWorldPosition()
+						v:Remove()
+						v = SpawnPrefab("ash")
+						v.Transform:SetPosition(x1, y1, z1)
+					else
+						v.components.perishable:ReducePercent(1 / 3)
+					end
 				else
 					local isworkable = false
 					if v.components.workable then

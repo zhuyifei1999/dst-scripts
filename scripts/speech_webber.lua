@@ -126,6 +126,9 @@ return{
             INUSE = "Ooo, make something tasty!",
             TOOFAR = "Let's scurry closer!",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "Oh no, it's dry! We'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That's too much for us.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "There's a giant ball falling from the sky!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "The giant ball is back.",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "Nobody home.",
 			FILLED = "We got one!",
 		},
-		WAGBOSS_ROBOT = "Does it give rides?",
+		WAGBOSS_ROBOT_SECRET = "We love surprises!",
+        WAGBOSS_ROBOT = "Does it give rides?",
         WAGBOSS_ROBOT_POSSESSED = "We just wanted to play!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It's the cranky rock ball!",
+		WAGBOSS_ROBOT_LEG = "Luckily we have more than three legs!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It seems crankier than before!",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "So bright!",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "Three-legged space spider?",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Nasty little robots.",
+            DAMAGE = "We can fix it, or take its insides!",
             FRIENDLY = "We love how it spins and spins and spins.",
         },
-		WAGDRONE_FLYING = "No fair! We can't fly!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "No fair! We can't fly!",
+            DAMAGED = "We can't fix it, but we can take its insides.",
+        },
+		WAGDRONE_PARTS = "Can we use that to fix a broken one?",
+		WAGDRONE_BEACON = "It makes a make-believe wall!",
 
         WAGPUNK_WORKSTATION = "Can we building something fun?",
         WAGPUNK_LEVER = "It's our turn to pull it!",
         WAGPUNK_FLOOR_KIT = "We'll have more room to play.",
         WAGPUNK_CAGEWALL = "Now we can't cross the line?",
 
+		WAGSTAFF_ITEM_1 = "We can touch the glove!",
+		WAGSTAFF_ITEM_2 = "Why isn't it a projection anymore? We don't undertand.",
+
+        HERMITCRAB_RELOCATION_KIT = "We get to help Ms. Pearl find a new home!",
+
         WANDERINGTRADER = "What does he have for us?",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "Why are they mad at us?",
         FLOTATIONCUSHION = "But we're not afraid of the water!",
         LUNAR_SEED = "So pretty! Can we keep it?",
     },

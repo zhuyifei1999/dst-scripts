@@ -886,6 +886,7 @@ Recipe2("hermitshop_chum_blueprint",					{Ingredient("messagebottleempty", 5)},	
 Recipe2("hermitshop_supertacklecontainer",				{Ingredient("messagebottleempty", 6)},														TECH.LOST,					{nounlock = true, sg_state="give", product="supertacklecontainer"})
 Recipe2("hermitshop_winter_ornament_boss_hermithouse",	{Ingredient("messagebottleempty", 4)},														TECH.LOST,					{nounlock = true, sg_state="give", product="winter_ornament_boss_hermithouse"})
 Recipe2("hermitshop_winter_ornament_boss_pearl",		{Ingredient("messagebottleempty", 8)}, 														TECH.LOST,					{nounlock = true, sg_state="give", product="winter_ornament_boss_pearl"})
+Recipe2("hermitshop_hermitcrab_relocation_kit",			{Ingredient("cookiecuttershell", 4), Ingredient("moonrocknugget", 4)},TECH.LOST,				{nounlock = true, sg_state="dolongaction", product="hermitcrab_relocation_kit"})
 
 -- Rabbit King
 Recipe2("rabbitkingshop_armor_carrotlure",				{Ingredient("carrot", 8), Ingredient("rope", 3)},											TECH.RABBITKINGSHOP_TWO,	{nounlock = true, sg_state="give", actionstr="RABBITKINGSHOP", product="armor_carrotlure"})
@@ -909,9 +910,7 @@ Recipe2("wanderingtradershop_moonglass",	{Ingredient("ash", 4)},				TECH.LOST,	{
 
 -- wagpunk_workstation
 Recipe2("wagpunk_floor_kit",				{Ingredient("cutstone", 1), Ingredient("wagpunk_bits", 1)},	TECH.WAGPUNK_WORKSTATION_TWO,	{numtogive = 4, nounlock = true,})
-Recipe2("gestalt_cage",						{Ingredient("thulecitebugnet", 1), Ingredient("wagpunk_bits", 4), Ingredient("alterguardianhatshard", 1)},	TECH.WAGPUNK_WORKSTATION_TWO,	{nounlock = true,})
--- FIXME(JBK): WA: Kit.
---Recipe2("wagdrone_rolling_kit",				{Ingredient("rocks", 1)},	TECH.WAGPUNK_WORKSTATION_TWO,	{nounlock = true,})
+Recipe2("gestalt_cage",						{Ingredient("thulecitebugnet", 1), Ingredient("wagpunk_bits", 2)},	TECH.WAGPUNK_WORKSTATION_TWO,	{nounlock = true,})
 
 -- Cult of the Lamb
 Recipe2("turf_cotl_gold",								{Ingredient("rocks", 1), Ingredient("goldnugget", 1)},										TECH.LOST,					{numtogive=4})

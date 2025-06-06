@@ -182,6 +182,9 @@ local function fn()
 	inst:AddTag("soulless") -- no wortox souls
 	inst:AddTag("lunar_aligned")
 
+	--gestaltcapturable (from gestaltcapturable component) added to pristine state for optimization
+	inst:AddTag("gestaltcapturable")
+
     inst.Transform:SetFourFaced()
     inst.Transform:SetScale(0.8, 0.8, 0.8)
 

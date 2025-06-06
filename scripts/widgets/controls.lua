@@ -322,12 +322,16 @@ local Controls = Class(Widget, function(self, owner)
 	self.commandwheel.OnExecute = self.commandwheel.OnCancel
 
 	local character_name = self.owner.prefab
+    if not kleifileexists("images/emotes_"..character_name..".xml") then -- TODO(JBK): This would be best done as SkinsPuppet and to do this when time permits. [SPCEWI]
+        character_name = "generic"
+    end
+    self.character_name = character_name
     
     local emote_groups_template = {}	
 	emote_groups_template[EMOTE_TYPE.EMOTION] = 
 	{
         label= STRINGS.UI.EMOTES.EMOTIONS,
-        image = "gesture_"..character_name.."_wave.tex",
+        image = "gesture_"..self.character_name.."_wave.tex",
         emotes = 
         {
         },
@@ -335,7 +339,7 @@ local Controls = Class(Widget, function(self, owner)
 	emote_groups_template[EMOTE_TYPE.ACTION] = 
     {
         label= STRINGS.UI.EMOTES.ACTIONS,
-        image = "gesture_"..character_name.."_pose.tex",
+        image = "gesture_"..self.character_name.."_pose.tex",
         emotes = 
         {
         },
@@ -343,7 +347,7 @@ local Controls = Class(Widget, function(self, owner)
 	emote_groups_template[EMOTE_TYPE.UNLOCKABLE] = 
     {
         label= STRINGS.UI.EMOTES.UNLOCKABLES,
-        image = "gesture_"..character_name.."_cheer.tex",
+        image = "gesture_"..self.character_name.."_cheer.tex",
         emotes = 
         {
         },
@@ -383,8 +387,8 @@ local Controls = Class(Widget, function(self, owner)
 		end
     end
     
-	self.emote_wheel_standing = self:BuildEmoteWheel(character_name, emote_groups_standing)
-	self.emote_wheel_mounted = self:BuildEmoteWheel(character_name, emote_groups_mounted)
+	self.emote_wheel_standing = self:BuildEmoteWheel(self.character_name, emote_groups_standing)
+	self.emote_wheel_mounted = self:BuildEmoteWheel(self.character_name, emote_groups_mounted)
 
 	self:BuildCommandWheel()     
 
@@ -1071,7 +1075,7 @@ function Controls:BuildCommandWheel(is_splitscreen)
 
 	local emote_wheel = self.is_mounted and self.emote_wheel_mounted or self.emote_wheel_standing
 	local base_wheel = {}
-    table.insert(base_wheel, {label=STRINGS.UI.COMMANDWHEEL.EMOTES,	checkenabled=function() return not self.owner:HasTag("playerghost") end, nestedwheel={name="emotes", items=emote_wheel, r=WHEEL_RADIUS, f=WHEEL_FOCUS_RADIUS}, atlas="images/emotes_" ..self.owner.prefab.. ".xml", normal="gesture_"..self.owner.prefab.."_kiss.tex"})
+    table.insert(base_wheel, {label=STRINGS.UI.COMMANDWHEEL.EMOTES,	checkenabled=function() return not self.owner:HasTag("playerghost") end, nestedwheel={name="emotes", items=emote_wheel, r=WHEEL_RADIUS, f=WHEEL_FOCUS_RADIUS}, atlas="images/emotes_"..self.character_name..".xml", normal="gesture_"..self.character_name.."_kiss.tex"})
 	if PLATFORM ~= "SWITCH" and IsConsole() then
 		table.insert(base_wheel, WheelItem.TextChatItem( true, "command_whisper.tex" ))		
 	end

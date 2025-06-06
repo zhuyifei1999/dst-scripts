@@ -1,6 +1,7 @@
 local assets =
 {
 	Asset("ANIM", "anim/wagboss_robot.zip"),
+	Asset("ANIM", "anim/wagboss_lunar_spawn.zip"),
 }
 
 local prefabs =
@@ -8,6 +9,7 @@ local prefabs =
 	"alterguardian_phase4_lunarrift",
 	"wagboss_missile",
 	"wagboss_beam_fx",
+	"wagboss_robot_leg",
 	"temp_beta_msg", --#TEMP_BETA
 }
 
@@ -217,6 +219,25 @@ local function HackDrones(inst)
 	inst.components.commander:PushEventToAllSoldiers("activate")
 end
 
+local function DespawnDrones(inst)
+	local map = TheWorld.Map
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local inarena = map:IsPointInWagPunkArena(x, 0, z)
+	if inarena then
+		x, z = TheWorld.Map:GetWagPunkArenaCenterXZ()
+		--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
+	end
+
+	for i, v in ipairs(TheSim:FindEntities(x, 0, z, 40, DRONE_TAGS, DRONE_NOTAGS)) do
+		if not inst.components.commander:IsSoldier(v) and
+			(not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()))
+		then
+			v:PushEvent("despawn")
+		end
+	end
+	inst.components.commander:PushEventToAllSoldiers("despawn")
+end
+
 --------------------------------------------------------------------------
 
 local function UpdatePlayerTargets(inst)
@@ -319,7 +340,7 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnAttacked(inst, data)
-	if data.attacker then
+	if data and data.attacker then
 		local target = inst.components.combat.target
 		if not (target and
 				target.isplayer and
@@ -469,12 +490,143 @@ end
 
 --------------------------------------------------------------------------
 
+local ALTER_SYMBOLS =
+{
+	"splat_cast",
+	"splat_fx",
+	"splat_ground",
+}
+
+local function AddAlterSymbols(ent)
+	for i, v in ipairs(ALTER_SYMBOLS) do
+		ent.AnimState:OverrideSymbol(v, "wagboss_lunar_spawn", v)
+		ent.AnimState:SetSymbolBloom(v)
+		ent.AnimState:SetSymbolMultColour(v, 1, 1, 1, 0.2)
+		ent.AnimState:SetSymbolLightOverride(v, 0.5)
+	end
+end
+
+local function ClearAlterSymbols(ent)
+	for i, v in ipairs(ALTER_SYMBOLS) do
+		ent.AnimState:ClearOverrideSymbol(v)
+		ent.AnimState:ClearSymbolBloom(v)
+		ent.AnimState:SetSymbolMultColour(v, 1, 1, 1, 1)
+		ent.AnimState:SetSymbolLightOverride(v, 0)
+	end
+end
+
+local function CreateBackFx()
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	--fx.entity:SetCanSleep(false)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_robot")
+	fx.AnimState:PlayAnimation("lunar_spawn_1")
+	fx.AnimState:SetSymbolBloom("fx_white")
+	fx.AnimState:SetSymbolLightOverride("fx_white", 0.3)
+	fx.AnimState:Hide("robot_front")
+	fx.AnimState:Hide("lunar_comp")
+	fx.AnimState:SetFinalOffset(-3)
+
+	AddAlterSymbols(fx)
+
+	return fx
+end
+
+local CancelBackFxPostUpdate_Client --forward declare
+
+local function BackFxPostUpdate_Client(inst)
+	if inst._cancelbackfxpostupdate then
+		return
+	end
+
+	if inst.AnimState:IsCurrentAnimation("lunar_spawn_1") then
+		if inst._backfx == nil then
+			inst._backfx = CreateBackFx()
+			inst._backfx.entity:SetParent(inst.entity)
+			table.insert(inst.highlightchildren, inst._backfx)
+			inst.components.colouraddersync:ForceRefresh()
+		end
+		inst._backfx.AnimState:SetFrame(inst.AnimState:GetCurrentAnimationFrame())
+	elseif inst._backfx then
+		inst._backfx:Remove()
+		inst._backfx = nil
+		table.removearrayvalue(inst.highlightchildren, inst._backfx)
+	end
+
+	inst._cancelbackfxpostupdate = inst:DoStaticTaskInTime(0, CancelBackFxPostUpdate_Client)
+end
+
+CancelBackFxPostUpdate_Client = function(inst)
+	inst._cancelbackfxpostupdate = nil
+	inst._backfxpostupdating = false
+	inst.components.updatelooper:RemovePostUpdateFn(BackFxPostUpdate_Client)
+end
+
+local function OnShowBackFx_Client(inst)
+	if inst.showbackfx:value() then
+		if inst._backfx then
+			inst._backfx.AnimState:SetFrame(0)
+		end
+		if not inst._backfxpostupdating then
+			inst._backfxpostupdating = true
+			inst.components.updatelooper:AddPostUpdateFn(BackFxPostUpdate_Client)
+		elseif inst._cancelbackfxpostupdate then
+			inst._cancelbackfxpostupdate:Cancel()
+			inst._cancelbackfxpostupdate = nil
+		end
+	else
+		if inst._backfx then
+			inst._backfx:Remove()
+			inst._backfx = nil
+			table.removearrayvalue(inst.highlightchildren, inst._backfx)
+		end
+		if inst._backfxpostupdating then
+			if inst._cancelbackfxpostupdate then
+				inst._cancelbackfxpostupdate:Cancel()
+			end
+			CancelBackFxPostUpdate_Client(inst)
+		end
+	end
+end
+
+local function StartBackFx(inst)
+	inst.showbackfx:set(true)
+
+	if inst._backfx then
+		inst._backfx.AnimState:SetTime(0)
+	elseif not TheNet:IsDedicated() then
+		inst._backfx = CreateBackFx()
+		inst._backfx.entity:SetParent(inst.entity)
+		table.insert(inst.highlightchildren, inst._backfx)
+		inst.components.colouraddersync:ForceRefresh()
+	end
+end
+
+local function StopBackFx(inst)
+	inst.showbackfx:set(false)
+
+	if inst._backfx then
+		inst._backfx:Remove()
+		inst._backfx = nil
+	end
+end
+
+--------------------------------------------------------------------------
+
 local function AddFollowFx(inst, anim, symbol)
 	local fx = CreateEntity()
 
 	fx:AddTag("FX")
 	--[[Non-networked entity]]
-	fx.entity:SetCanSleep(false)
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
 	fx.persists = false
 
 	fx.entity:AddTransform()
@@ -494,7 +646,8 @@ end
 local function CreateStompFx()
 	local fx = CreateEntity()
 
-	fx:AddTag("FX")
+	fx:AddTag("DECOR")
+	fx:AddTag("NOCLICK")
 	--[[Non-networked entity]]
 	fx.entity:SetCanSleep(false)
 	fx.persists = false
@@ -571,7 +724,7 @@ end
 local function OnShowStompFx_Client(inst)
 	if inst.showstompfx:value() then
 		if inst._stompfx then
-			inst._stompfx.AnimState:SetFrame(0)
+			inst._stompfx.AnimState:SetTime(0)
 		end
 		if not inst._stompfxpostupdating then
 			inst._stompfxpostupdating = true
@@ -581,7 +734,7 @@ local function OnShowStompFx_Client(inst)
 			inst._cancelstompfxpostupdate = nil
 		end
 	else
-		ClearStompFx_Client(inst, StompFxPostUpdate_Client)
+		ClearStompFx_Client(inst)
 	end
 end
 
@@ -702,6 +855,88 @@ local PHASES =
 	},
 }
 
+local DEESCALATE_TIME = 30
+
+local function SetThreatLevel(inst, level)
+	if inst._threattask then
+		inst._threattask:Cancel()
+	end
+	inst._threattask = level > 1 and inst:DoTaskInTime(DEESCALATE_TIME, SetThreatLevel, level - 1) or nil
+	if inst.threatlevel and level ~= inst.threatlevel then
+		print(inst, "threat level "..(level > inst.threatlevel and "raised" or "lowered").." to "..tostring(level))
+	end
+	inst.threatlevel = level
+	inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD[level])
+end
+
+local MAX_DPS_SIZE = 100
+local MAX_DPS_WINDOW = 2--seconds
+
+local function OnHealthDelta(inst, data)
+	local tbl = inst._dpstbl
+	local i0 = inst._dpsi0
+	local i1
+	local sz = inst._dpssz
+	local entry
+	local t = GetTime()
+
+	if sz > 0 then
+		i1 = i0 + sz - 1
+		if i1 > MAX_DPS_SIZE then
+			i1 = i1 - MAX_DPS_SIZE
+		end
+		entry = tbl[i1]
+		--if time matches, we can overwrite it, otherwise clear
+		if entry.t ~= t then
+			i1 = nil
+			entry = nil
+		end
+	end
+
+	if i1 == nil then
+		if sz < MAX_DPS_SIZE then
+			i1 = i0 + sz
+			if i1 > MAX_DPS_SIZE then
+				i1 = i1 - MAX_DPS_SIZE
+			end
+			sz = sz + 1
+			entry = tbl[i1]
+			if entry == nil then
+				entry = {}
+				tbl[i1] = entry
+			end
+		else
+			i1 = i0
+			i0 = i0 == MAX_DPS_SIZE and 1 or i0 + 1
+			entry = tbl[i1]
+		end
+	end
+
+	entry.hp = inst.components.health.currenthealth
+	entry.t = t
+
+	while sz > 1 do
+		if entry.t - tbl[i0].t > MAX_DPS_WINDOW then
+			i0 = i0 == MAX_DPS_SIZE and 1 or i0 + 1
+			sz = sz - 1
+		else
+			break
+		end
+	end
+
+	local entry0 = tbl[i0]
+	local dt = entry.t - entry0.t
+	local dps = (entry0.hp - entry.hp) / (dt > 0 and dt or MAX_DPS_WINDOW)
+	local numthreatlevels = #TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD
+	local threatlevel = math.clamp(math.floor(Remap(dps, 150, 375, 1, numthreatlevels)), 1, numthreatlevels)
+	if threatlevel > inst.threatlevel then
+		SetThreatLevel(inst, threatlevel)
+	end
+
+	inst._dpsi0 = i0
+	inst._dpssz = sz
+end
+
 --------------------------------------------------------------------------
 
 local function SetActiveTags(inst, active, hostile)
@@ -747,7 +982,8 @@ local function SetCombatEnabled(inst, enabled)
 
 			inst:AddComponent("combat")
 			inst.components.combat:SetDefaultDamage(TUNING.WAGBOSS_ROBOT_DAMAGE)
-			inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD)
+			SetThreatLevel(inst, 1)
+			--inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD[1])
 			inst.components.combat:SetRange(TUNING.WAGBOSS_ROBOT_ATTACK_RANGE)
 			inst.components.combat:SetRetargetFunction(1, RetargetFn)
 			inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
@@ -774,7 +1010,9 @@ local function SetCombatEnabled(inst, enabled)
 			inst:ListenForEvent("newcombattarget", OnNewTarget)
 			inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 			inst:ListenForEvent("soldierschanged", OnSoldiersChanged)
+			inst:ListenForEvent("healthdelta", OnHealthDelta)
 
+			--inst.threatlevel = 1
 			inst._engagetask = nil
 			inst.engaged = false
 		end
@@ -785,6 +1023,14 @@ local function SetCombatEnabled(inst, enabled)
 		end
 		inst.engaged = nil
 
+		if inst._threattask then
+			inst._threattask:Cancel()
+			inst._threattask = nil
+		end
+		inst.threatlevel = nil
+		inst._dpsi0 = 1
+		inst._dpssz = 0
+
 		SetFlyersActive(inst, false)
 		SetRollersActive(inst, false)
 		inst.components.commander:PushEventToAllSoldiers("deactivate")
@@ -793,6 +1039,7 @@ local function SetCombatEnabled(inst, enabled)
 		inst:RemoveEventCallback("newcombattarget", OnNewTarget)
 		inst:RemoveEventCallback("droppedtarget", OnDroppedTarget)
 		inst:RemoveEventCallback("soldierschanged", OnSoldiersChanged)
+		inst:RemoveEventCallback("healthdelta", OnHealthDelta)
 
 		inst:RemoveComponent("healthtrigger")
 		inst:RemoveComponent("health")
@@ -824,7 +1071,11 @@ local function ConfigureOff(inst)
 	SetLocomotorEnabled(inst, false)
 	SetCombatEnabled(inst, false)
 	SetBrainEnabled(inst, false)
-	inst.components.inspectable:SetNameOverride(nil)
+	if inst.shattered then
+		inst.AnimState:Show("rb_wires")
+	else
+		inst.AnimState:Hide("rb_wires")
+	end
 end
 
 local function ConfigureFriendly(inst)
@@ -835,7 +1086,11 @@ local function ConfigureFriendly(inst)
 	SetCombatEnabled(inst, false)
 	SetBrainEnabled(inst, true)
 	inst:SocketCage()
-	inst.components.inspectable:SetNameOverride(nil)
+	if inst.sg.currentstate.name == "losecontrol" then
+		inst.AnimState:Show("rb_wires")
+	else
+		inst.AnimState:Hide("rb_wires")
+	end
 end
 
 local function ConfigureHostile(inst)
@@ -846,7 +1101,6 @@ local function ConfigureHostile(inst)
 	SetCombatEnabled(inst, true)
 	SetBrainEnabled(inst, true)
 	inst:BreakGlass()
-	inst.components.inspectable:SetNameOverride("wagboss_robot_possessed")
 end
 
 local function SocketCage(inst)
@@ -856,6 +1110,10 @@ local function SocketCage(inst)
 		inst.AnimState:SetSymbolBloom("glass1")
 		inst.AnimState:SetSymbolLightOverride("glass1", 0.25)
 		inst.AnimState:SetSymbolLightOverride("rb_head_parts", 0.08)
+		if not POPULATING then
+			inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gestalt_placed_activate")
+		end
+		inst.sg:HandleEvent("reveal")
 	end
 end
 
@@ -869,12 +1127,14 @@ local function BreakGlass(inst)
 		if inst.socketed then
 			inst.AnimState:OverrideSymbol("glass1", "wagboss_robot", "glass3")
 		end
+		inst.AnimState:Show("rb_wires")
 	end
 end
 
 local function OnSave(inst, data)
 	if inst.hostile then
 		data.hostile = true
+		data.threat = inst.threatlevel > 1 and inst.threatlevel or nil
 	elseif inst.active then
 		data.active = true
 	end
@@ -887,6 +1147,9 @@ local function OnPreLoad(inst, data, ents)
 	if data then
 		if data.hostile then
 			inst.sg:GoToState("idle")
+			if data.threat then
+				SetThreatLevel(inst, data.threat)
+			end
 		elseif data.active then
 			inst.sg:HandleEvent("activate")
 		end
@@ -922,11 +1185,11 @@ local function OnLoad(inst, data, ents)
 end
 
 local function OnColourChanged(inst, r, g, b, a)
-	if TheWorld.ismastersim then
-		inst.AnimState:SetAddColour(r, g, b, a)
-	end
 	for i, v in ipairs(inst.followfx) do
 		v.AnimState:SetAddColour(r, g, b, a)
+	end
+	if inst._backfx then
+		inst._backfx.AnimState:SetAddColour(r, g, b, a)
 	end
 end
 
@@ -1012,7 +1275,17 @@ end
 local OnRemoveEntity = UnregisterPathfinding
 
 local function DisplayNameFn(inst)
-	return inst:HasTag("hostile") and STRINGS.NAMES.WAGBOSS_ROBOT_POSSESSED or nil
+	return (inst.AnimState:IsCurrentAnimation("concealed_idle") and STRINGS.NAMES.WAGBOSS_ROBOT_SECRET)
+		or (inst:HasTag("hostile") and STRINGS.NAMES.WAGBOSS_ROBOT_POSSESSED)
+		or nil
+end
+
+local function DescriptionFn(inst, viewer) --inpsect string (server)
+	inst.components.inspectable:SetNameOverride(
+		(inst.AnimState:IsCurrentAnimation("concealed_idle") and "wagboss_robot_secret") or
+		(inst.hostile and "wagboss_robot_possessed") or
+		nil
+	)
 end
 
 local function fn()
@@ -1030,7 +1303,7 @@ local function fn()
 
 	inst.AnimState:SetBuild("wagboss_robot")
 	inst.AnimState:SetBank("wagboss_robot")
-	inst.AnimState:PlayAnimation("idle_off")
+	inst.AnimState:PlayAnimation("concealed_idle", true)
 	inst.AnimState:SetFinalOffset(-1)
 	inst.AnimState:SetSymbolBloom("fx_white")
 	inst.AnimState:SetSymbolLightOverride("fx_white", 0.3)
@@ -1038,6 +1311,7 @@ local function fn()
 	MakeObstaclePhysics(inst, OBSTACLE_RADIUS)
 
 	inst:AddTag("mech")
+	inst:AddTag("electricdamageimmune")
 	inst:AddTag("soulless")
 	inst:AddTag("wagboss")
 	inst:AddTag("epic")
@@ -1048,6 +1322,7 @@ local function fn()
 	inst:AddTag("__combat")
 
 	inst.showstompfx = net_bool(inst.GUID, "wagboss_robot.showstompfx", "showstompfxdirty")
+	inst.showbackfx = net_bool(inst.GUID, "wagboss_robot.showbackfx", "showbackfxdirty")
 	inst.isobstacle = net_bool(inst.GUID, "wagboss_robot.isobstacle", "isobstacledirty")
 	inst.isobstacle:set(true)
 	OnIsObstacleDirty(inst)
@@ -1075,6 +1350,7 @@ local function fn()
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("isobstacledirty", OnIsObstacleDirty)
 		inst:ListenForEvent("showstompfxdirty", OnShowStompFx_Client)
+		inst:ListenForEvent("showbackfxdirty", OnShowBackFx_Client)
 
 		return inst
 	end
@@ -1087,6 +1363,7 @@ local function fn()
 	inst:PrereplicateComponent("combat")
 
 	inst:AddComponent("inspectable")
+	inst.components.inspectable.getspecialdescription = DescriptionFn
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper.min_speed = 4
@@ -1103,14 +1380,21 @@ local function fn()
 	inst._temptbl1 = {}
 	inst._temptbl2 = {}
 
+	inst._dpstbl = {}
+	inst._dpsi0 = 1
+	inst._dpssz = 0
+
 	inst.active = false
 	inst.hostile = false
     inst.socketed = false
     inst.shattered = false
 
 	inst.HackDrones = HackDrones
+	inst.DespawnDrones = DespawnDrones
 	inst.StartStompFx = StartStompFx
 	inst.StopStompFx = StopStompFx
+	inst.StartBackFx = StartBackFx
+	inst.StopBackFx = StopBackFx
 	inst.ConfigureOff = ConfigureOff
 	inst.ConfigureFriendly = ConfigureFriendly
 	inst.ConfigureHostile = ConfigureHostile
@@ -1118,6 +1402,8 @@ local function fn()
     inst.IsSocketed = IsSocketed
 	inst.BreakGlass = BreakGlass
 	inst.MakeObstacle = MakeObstacle
+	inst.AddAlterSymbols = AddAlterSymbols
+	inst.ClearAlterSymbols = ClearAlterSymbols
 
 	inst:SetStateGraph("SGwagboss_robot")
 

@@ -127,8 +127,9 @@ function Deployable:CanDeploy(pt, mouseover, deployer, rot)
 end
 
 function Deployable:Deploy(pt, deployer, rot)
-    if not self:CanDeploy(pt, nil, deployer, rot) then
-        return
+    local success, reason = self:CanDeploy(pt, nil, deployer, rot)
+    if not success then
+        return false, reason
     end
     local isplant = self.inst:HasTag("deployedplant")
     if self.ondeploy ~= nil then

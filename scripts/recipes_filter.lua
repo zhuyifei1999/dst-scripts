@@ -469,6 +469,7 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"hermitshop_supertacklecontainer",
 	"hermitshop_winter_ornament_boss_hermithouse",
 	"hermitshop_winter_ornament_boss_pearl",
+    "hermitshop_hermitcrab_relocation_kit",
 
     -- Rabbit King
     "rabbitkingshop_armor_carrotlure",

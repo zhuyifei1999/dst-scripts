@@ -606,6 +606,11 @@ local states =
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
 
+            if inst.sg.mem.teleporting and not inst.components.npc_talker:haslines() then
+                inst.sg:GoToState("dancebusy")
+                return
+            end
+
             if inst.components.drownable ~= nil and inst.components.drownable:ShouldDrown() then
                 inst.sg:GoToState("sink_fast")
                 return
@@ -998,6 +1003,12 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("idle_clack_pre")
+            if inst.sg.mem.teleporting then
+                local hermitcrab_relocation_manager = TheWorld.components.hermitcrab_relocation_manager
+                if hermitcrab_relocation_manager then
+                    hermitcrab_relocation_manager:InitiatePearlTeleport()
+                end
+            end
         end,
 
         events =

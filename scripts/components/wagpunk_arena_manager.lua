@@ -1,65 +1,5 @@
 local TILE_SCALE = TILE_SCALE
 
-local MONKEYISLAND_CENTER_X = 3 * TILE_SCALE
-local MONKEYISLAND_CENTER_Z = 0 * TILE_SCALE
-
-local PEARLSETPIECE_CENTER_X = 2 * TILE_SCALE + MONKEYISLAND_CENTER_X
-local PEARLSETPIECE_CENTER_Z = -4 * TILE_SCALE + MONKEYISLAND_CENTER_Z
-
--- NOTES(JBK): This is heavily reliant on monkeyisland_01 static layout for position and hermitcrab_01 for entities.
-local PEARLSETPIECE_MONKEYISLAND = { -- x, z, rot
-    ["hermitcrab_marker"] = { -- 1
-        {MONKEYISLAND_CENTER_X, MONKEYISLAND_CENTER_Z, 0}, -- Place at island center this is an achievement marker for island center point.
-    },
-    ["hermitcrab_lure_marker"] = { -- 1
-        {PEARLSETPIECE_CENTER_X - 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 1 * TILE_SCALE, 0}, -- Place where lureplant bulbs are created.
-    },
-    ["hermitcrab_marker_fishing"] = { -- 16 in coastal tiles knight's move away max from land
-        {PEARLSETPIECE_CENTER_X + 2 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 3 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 3 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 2 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 4 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 1 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z, 0},
-        {PEARLSETPIECE_CENTER_X + 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 1 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 2 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 3 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X + 5 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 4 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 6 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 3 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 7 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 2 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 8 * TILE_SCALE, PEARLSETPIECE_CENTER_Z - 1 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 9 * TILE_SCALE, PEARLSETPIECE_CENTER_Z, 0},
-        {PEARLSETPIECE_CENTER_X - 9 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 1 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 9 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 2 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 9 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 3 * TILE_SCALE, 0},
-        {PEARLSETPIECE_CENTER_X - 9 * TILE_SCALE, PEARLSETPIECE_CENTER_Z + 4 * TILE_SCALE, 0},
-    },
-    ["hermithouse"] = { -- 1
-        {PEARLSETPIECE_CENTER_X, PEARLSETPIECE_CENTER_Z, 0}, -- Center of arena is on a tile corner.
-    },
-    ["hermithouse_construction1"] = { -- 1
-        {PEARLSETPIECE_CENTER_X, PEARLSETPIECE_CENTER_Z, 0}, -- Center of arena is on a tile corner.
-    },
-    ["hermithouse_construction2"] = { -- 1
-        {PEARLSETPIECE_CENTER_X, PEARLSETPIECE_CENTER_Z, 0}, -- Center of arena is on a tile corner.
-    },
-    ["hermithouse_construction3"] = { -- 1
-        {PEARLSETPIECE_CENTER_X, PEARLSETPIECE_CENTER_Z, 0}, -- Center of arena is on a tile corner.
-    },
-    ["hermitcrab"] = { -- 1 or 0
-        {PEARLSETPIECE_CENTER_X + 2.5, PEARLSETPIECE_CENTER_Z, 0},
-    },
-    ["meatrack_hermit"] = { -- 6
-        {PEARLSETPIECE_CENTER_X + 4.4, PEARLSETPIECE_CENTER_Z + 7.3, 0},
-        {PEARLSETPIECE_CENTER_X + 7.6, PEARLSETPIECE_CENTER_Z + 4.1, 0},
-        {PEARLSETPIECE_CENTER_X + 8.4, PEARLSETPIECE_CENTER_Z + 0.3, 0},
-        {PEARLSETPIECE_CENTER_X + 9.3, PEARLSETPIECE_CENTER_Z + 7.7, 0},
-        {PEARLSETPIECE_CENTER_X + 11.9, PEARLSETPIECE_CENTER_Z + 2.6, 0},
-        {PEARLSETPIECE_CENTER_X + 13.1, PEARLSETPIECE_CENTER_Z + 6.8, 0},
-    },
-    ["beebox_hermit"] = { -- 1
-        {PEARLSETPIECE_CENTER_X - 4 * TILE_SCALE - 2.3, PEARLSETPIECE_CENTER_Z + 2.3, 0},
-    },
-}
-
 -- NOTES(JBK): This is heavily reliant on hermitcrab_01 static layout.
 local TILESPOTS = { -- x, z, rot
     {-10,  -1, 0  },
@@ -161,6 +101,12 @@ local ARENA_ENTITIES = {
     ["wagpunk_floor_marker"] = { -- Only one.
         {ARENA_CENTER_X, ARENA_CENTER_Z, 0}, -- Center of arena is on a tile corner.
     },
+    ["wagpunk_arena_collision"] = { -- Only one.
+        {ARENA_CENTER_X, ARENA_CENTER_Z, 0}, -- Center of arena is on a tile corner.
+    },
+    ["wagpunk_arena_collision_oneway"] = { -- Only one.
+        {ARENA_CENTER_X, ARENA_CENTER_Z, 0}, -- Center of arena is on a tile corner.
+    },
     ["wagpunk_lever"] = { -- Only one.
         {ARENA_CENTER_X, -1.5 * TILE_SCALE + ARENA_CENTER_Z, 0},
     },
@@ -225,14 +171,18 @@ local WAGSTAFF_FLOOR = WORLD_TILES.WAGSTAFF_FLOOR
 
 self.inst = inst
 self.TILESPOTS = TILESPOTS
-self.WALLSPOTS = WAGPUNK_ARENA_COLLISION_DATA
+self.WALLSPOTS = deepcopy(WAGPUNK_ARENA_COLLISION_DATA)
+for _, v in ipairs(self.WALLSPOTS) do -- Move from center to arena origin.
+    v[1], v[2] = v[1] - 14, v[2] - 22 -- Hardcoded offsets.
+end
 self.ARENA_ENTITIES = ARENA_ENTITIES
-self.PEARLSETPIECE_MONKEYISLAND = PEARLSETPIECE_MONKEYISLAND
 self.STATES = STATES
 
 self.pearlsentities = {}
 self.arenaentities = {}
 self.arenaprefabcounts = {}
+self.wagdrones = {}
+self.lunacycreators = {}
 
 local function CheckStateForChanges_Bridge(inst)
     self.checktask = nil
@@ -385,9 +335,6 @@ function self:ApplyAllRotationTransformations()
     for prefab, transformdata in pairs(self.ARENA_ENTITIES) do
         self:ApplyRotationTransformation_Pearl(transformdata)
     end
-    for prefab, transformdata in pairs(self.PEARLSETPIECE_MONKEYISLAND) do
-        self:ApplyRotationTransformation_Monkey(transformdata)
-    end
     self:ClearReferencesForRotationTransformation()
 end
 function self:TryToApplyRotationTransformation()
@@ -426,7 +373,7 @@ function self:TryToApplyRotationTransformation()
     if not self.storedangle_pearl then
         local x1, y1, z1 = self.hermitcrab_marker.Transform:GetWorldPosition()
         local x2, y2, z2 = self.beebox_hermit.Transform:GetWorldPosition()
-        local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(x2, y2, z2) -- Must use beebox origin because its spawn is not on a tile boundary.
+        local tx, ty, tz = _map:GetTileCenterPoint(x2, y2, z2) -- Must use beebox origin because its spawn is not on a tile boundary.
         self.storedx_pearl, self.storedz_pearl = tx, tz
         self.storedangle_pearl = math.atan2(z2 - z1, x2 - x1) * RADIANS
     end
@@ -434,7 +381,7 @@ function self:TryToApplyRotationTransformation()
     if not self.storedangle_monkey then
         local x1, y1, z1 = self.monkeyqueen.Transform:GetWorldPosition()
         local x2, y2, z2 = self.monkeyportal.Transform:GetWorldPosition() -- Is in a good spot away from tile boundaries.
-        local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(x2, y2, z2)
+        local tx, ty, tz = _map:GetTileCenterPoint(x2, y2, z2)
         self.storedx_monkey, self.storedz_monkey = tx, tz
         self.storedangle_monkey = math.atan2(z2 - z1, x2 - x1) * RADIANS
     end
@@ -457,10 +404,13 @@ function self:SpawnCageWalls()
 
     self.cagewalls = {}
     for _, v in ipairs(self.WALLSPOTS) do
-        local x, z, rot = self.storedx_pearl + v[1], self.storedz_pearl + v[2], math.floor(v[3] / 90) * 90
+        local x, z, rot, sfxlooper = self.storedx_pearl + v[1], self.storedz_pearl + v[2], math.floor(v[3] / 90) * 90, v[4]
         local cagewall = SpawnPrefab("wagpunk_cagewall")
         cagewall.Transform:SetPosition(x, 0, z)
         cagewall.Transform:SetRotation(rot)
+        if sfxlooper then
+            cagewall.sfxlooper = true
+        end
         self:TrackCageWall(cagewall)
     end
 end
@@ -482,16 +432,27 @@ function self:TrackWorkstation(workstation)
     workstation:ListenForEvent("onremove", self.OnRemove_Workstation)
 end
 
-self.OnDeath_Wagboss = function(wagboss, data)
-    self:BossCompleted()
+self.OnRemove_Wagdrone = function(wagdrone, data)
+    self.wagdrones[wagdrone] = nil
 end
+function self:TrackWagdrone(wagdrone)
+    self.wagdrones[wagdrone] = true
+    wagdrone:ListenForEvent("onremove", self.OnRemove_Wagdrone)
+end
+
 self.OnRemove_Wagboss = function(wagboss, data)
     self.wagboss = nil
 end
+function self:UntrackWagboss()
+    if self.wagboss then
+        self.wagboss:RemoveEventCallback("onremove", self.OnRemove_Wagboss)
+        self.wagboss = nil
+    end
+end
 function self:TrackWagboss(wagboss)
+    self:UntrackWagboss()
     self.wagboss = wagboss
     wagboss:ListenForEvent("onremove", self.OnRemove_Wagboss)
-    wagboss:ListenForEvent("death", self.OnDeath_Wagboss)
 end
 
 self.validspotfn_clearthisarea = function(x, z, r)
@@ -610,8 +571,18 @@ function self:TeleportWagstaffToWorkstation()
     self.wagstaff.Transform:SetPosition(x2, y, z2)
     self.wagstaff:ForceFacePoint(x, y, z)
 end
-local function WorkstationToggled_Bridge(workstation, state)
-    self:WorkstationToggled(workstation, state)
+
+function self:TeleportWagstaffToLever()
+    local x, y, z = self.lever.Transform:GetWorldPosition()
+    local theta = math.random() * TWOPI
+    local radius = self.lever:GetPhysicsRadius(0) + self.wagstaff:GetPhysicsRadius(0) + 0.5
+    local x2, z2 = x + math.cos(theta) * radius, z + math.sin(theta) * radius
+    self.wagstaff.Transform:SetPosition(x2, y, z2)
+    self.wagstaff:ForceFacePoint(x, y, z)
+end
+
+local function WorkstationToggled_Bridge(workstation, on)
+    self:WorkstationToggled(workstation, on)
 end
 function self:WorkstationToggled(workstation, on) -- Caller assumed to be from self.workstation only.
     if workstation ~= self.workstation then
@@ -623,7 +594,7 @@ function self:WorkstationToggled(workstation, on) -- Caller assumed to be from s
         self.workstationtoggledtask = nil
     end
 
-    local wagboss_tracker = TheWorld.components.wagboss_tracker
+    local wagboss_tracker = _world.components.wagboss_tracker
     if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
         return -- No need to do anything here.
     end
@@ -671,35 +642,42 @@ function self:WorkstationToggled(workstation, on) -- Caller assumed to be from s
             end
         elseif self.state == self.STATES.CONSTRUCT then
             -- Wagstaff wants robots to be placed at set locations in the arena.
-            wagstaff = self:TryToSpawnWagstaff()
-            if wagstaff then
-                wagstaff.arena_state = self.state
-                self:TeleportWagstaffToWorkstation()
-                wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT")
-            elseif self.wagstaff and not self.wagstaff.erodingout and self.wagstaff.arena_state ~= self.STATES.CONSTRUCT then
-                self.wagstaff.tiedtoworkstation = nil
-                self.wagstaff.arena_state = self.state
-                self.wagstaff.components.npc_talker:resetqueue()
-                self.wagstaff.components.talker:ShutUp()
-                self.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT")
+            if _world.components.lunaralterguardianspawner == nil or not _world.components.lunaralterguardianspawner:HasGuardianOrIsPending() then
+                wagstaff = self:TryToSpawnWagstaff()
+                if wagstaff then
+                    wagstaff.arena_state = self.state
+                    self:TeleportWagstaffToWorkstation()
+                    if self:NeedsMoreWagdrones() then
+                        wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT", math.random(#STRINGS.WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT))
+                    else
+                        wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE", math.random(#STRINGS.WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE))
+                    end
+                elseif self.wagstaff and not self.wagstaff.erodingout and self.wagstaff.arena_state ~= self.STATES.CONSTRUCT then
+                    self.wagstaff.tiedtoworkstation = nil
+                    self.wagstaff.arena_state = self.state
+                    self.wagstaff.components.npc_talker:resetqueue()
+                    self.wagstaff.components.talker:ShutUp()
+                    if self:NeedsMoreWagdrones() then
+                        self.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT", math.random(#STRINGS.WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT))
+                    else
+                        self.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE", math.random(#STRINGS.WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE))
+                    end
+                end
             end
         elseif self.state == self.STATES.LEVER then
             -- Wagstaff wants the lever to be thrown.
             wagstaff = self:TryToSpawnWagstaff()
             if wagstaff then
                 wagstaff.arena_state = self.state
-                wagstaff.tiedtoworkstation = true
+                wagstaff.tiedtolever = true
                 self:TeleportWagstaffToWorkstation()
-                wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_LEVER")
-            elseif self.wagstaff and not self.wagstaff.erodingout and self.wagstaff.arena_state ~= self.STATES.LEVER then
-                if self.workstation and not self.wagstaff:IsNear(self.workstation, 8) then
-                    self:TeleportWagstaffToWorkstation()
-                end
-                self.wagstaff.tiedtoworkstation = true
+            elseif self.wagstaff then
                 self.wagstaff.arena_state = self.state
-                self.wagstaff.components.npc_talker:resetqueue()
-                self.wagstaff.components.talker:ShutUp()
-                self.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_LEVER")
+                self.wagstaff.tiedtoworkstation = nil
+                self.wagstaff.tiedtolever = true
+            end
+            if self.lever and self.lever.components.playerprox and not self.lever.components.playerprox:IsPlayerClose() then
+                self:LeverToggled(self.lever, false)
             end
         elseif self.state == self.STATES.BOSS then
             if self.wagstaff then
@@ -714,21 +692,73 @@ function self:WorkstationToggled(workstation, on) -- Caller assumed to be from s
         if self.wagstaff then
             if self.wagstaff.tiedtoworkstation then
                 self.wagstaff:DoFadeOutIn(0)
-            elseif self.wagstaff.arena_state ~= self.STATES.LEVER and self.state == self.STATES.LEVER then
-                self.wagstaff:DoFadeOutIn(0)
             end
         end
     end
 
-    if self.wagstaff and not self.wagstaff.tiedtoworkstation then
+    if self.wagstaff and not self.wagstaff.oneshot and not self.wagstaff.tiedtoworkstation and not self.wagstaff.tiedtolever then
         if not self.wagstaff.avoid_erodeout then
             local distsq = self.wagstaff:GetDistanceSqToClosestPlayer(true)
-            if distsq > 256 then -- (4 * TILE_SCALE) ^ 2
+            if distsq > 64 then -- (2 * TILE_SCALE) ^ 2
                 self.wagstaff:DoFadeOutIn(0)
             end
         end
         if self.wagstaff and not self.wagstaff.erodingout and not self.workstationtoggledtask then
             self.workstationtoggledtask = self.workstation:DoTaskInTime(0.1, WorkstationToggled_Bridge, on)
+        end
+    end
+end
+
+local function LeverToggled_Bridge(lever, on)
+    self:LeverToggled(lever, on)
+end
+function self:LeverToggled(lever, on) -- Caller assumed to be from self.lever only.
+    if lever ~= self.lever then
+        return -- Someone spawned this in!
+    end
+
+    if self.levertoggledtask then
+        self.levertoggledtask:Cancel()
+        self.levertoggledtask = nil
+    end
+
+    local wagboss_tracker = _world.components.wagboss_tracker
+    if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
+        return -- No need to do anything here.
+    end
+    
+    if on then
+        self.levertoggledtask = self.lever:DoTaskInTime(0.1, LeverToggled_Bridge, on) -- Always reschedule to handle Wagstaff state changes when next to the station.
+        local wagstaff
+        if self.state == self.STATES.LEVER then
+            -- Wagstaff wants the lever to be thrown.
+            wagstaff = self:TryToSpawnWagstaff()
+            if wagstaff then
+                wagstaff.arena_state = self.state
+                wagstaff.tiedtolever = true
+                self:TeleportWagstaffToLever()
+            elseif self.wagstaff then
+                self.wagstaff.arena_state = self.state
+                self.wagstaff.tiedtoworkstation = nil
+                self.wagstaff.tiedtolever = true
+            end
+        elseif self.state == self.STATES.BOSS then
+            -- Lever thrown monologue handled out of here.
+        elseif self.state == self.STATES.BOSSCOOLDOWN then
+            if self.wagstaff then
+                self.wagstaff:DoFadeOutIn(0)
+            end
+        end
+    else
+        if self.wagstaff then
+            if self.wagstaff.tiedtolever then
+                local distance = self.wagstaff:GetPhysicsRadius(0) + self.lever:GetPhysicsRadius(0) + 1
+                if self.wagstaff:GetDistanceSqToInst(self.lever) < distance * distance then
+                    self.wagstaff:DoFadeOutIn(0)
+                else
+                    self.levertoggledtask = self.lever:DoTaskInTime(0.1, LeverToggled_Bridge, on)
+                end
+            end
         end
     end
 end
@@ -745,7 +775,7 @@ function self:TryToSpawnWagstaff()
         return nil -- One already is around, reschedule.
     end
 
-    local wagboss_tracker = TheWorld.components.wagboss_tracker
+    local wagboss_tracker = _world.components.wagboss_tracker
     if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
         return nil -- Nope!
     end
@@ -754,116 +784,6 @@ function self:TryToSpawnWagstaff()
     self:TrackWagstaff(wagstaff)
     wagstaff.sg:GoToState("idle", "idle_loop")
     return wagstaff
-end
-
-local TELEPORT_TIME_FX_SYNC = 12 * FRAMES
-function self:OnFinishedTeleportPearlEntity(ent, deleted)
-    if not deleted then
-        ent:RemoveEventCallback("onremove", self.OnRemove_TeleportingPearlEntity)
-        if ent.prefab == "hermitcrab" then
-            ent.sg.mem.teleporting = nil
-        end
-        ent:PushEvent("teleported")
-    end
-    self.pearlmovingcount = self.pearlmovingcount - 1
-    if self.pearlmovingcount <= 0 then
-        self:PearlMoveCompleted()
-    end
-end
-self.OnRemove_TeleportingPearlEntity = function(ent, data)
-    self:OnFinishedTeleportPearlEntity(ent, true)
-end
-self.TeleportPearlEntityToMonkeyIsland_Arrive = function(ent)
-    ent:ReturnToScene()
-    self:OnFinishedTeleportPearlEntity(ent)
-end
-self.TeleportPearlEntityToMonkeyIsland_Appear = function(ent, x, z, rot, fxprefab, delay)
-    if fxprefab and not ent:IsAsleep() then
-        local fx = SpawnPrefab(fxprefab)
-        fx.Transform:SetPosition(x, 0, z)
-        ent:DoTaskInTime(TELEPORT_TIME_FX_SYNC, self.TeleportPearlEntityToMonkeyIsland_Arrive)
-    else
-        self.TeleportPearlEntityToMonkeyIsland_Arrive(ent)
-    end
-end
-self.TeleportPearlEntityToMonkeyIsland_Teleport = function(ent, x, z, rot, fxprefab, delay)
-    local radius = ent:GetPhysicsRadius(0)
-    ent:RemoveFromScene()
-    if fxprefab then -- We have visuals for everything that is mandatory to move.
-        self.validspotfn_clearthisarea(x, z, radius)
-    end
-    ent.Transform:SetPosition(x, 0, z)
-    ent.Transform:SetRotation(rot)
-    if fxprefab and not ent:IsAsleep() then
-        ent:DoTaskInTime(delay, self.TeleportPearlEntityToMonkeyIsland_Appear, x, z, rot, fxprefab, delay)
-    else
-        self.TeleportPearlEntityToMonkeyIsland_Arrive(ent)
-    end
-end
-self.TeleportPearlEntityToMonkeyIsland_Disappear = function(ent, x, z, rot, fxprefab, delay)
-    if fxprefab and not ent:IsAsleep() then
-        local ex, ey, ez = ent.Transform:GetWorldPosition()
-        local fx = SpawnPrefab(fxprefab)
-        fx.Transform:SetPosition(ex, ey, ez)
-        ent:DoTaskInTime(TELEPORT_TIME_FX_SYNC, self.TeleportPearlEntityToMonkeyIsland_Teleport, x, z, rot, fxprefab, delay)
-    else
-        self.TeleportPearlEntityToMonkeyIsland_Teleport(ent, x, z, rot, fxprefab, delay)
-    end
-end
-function self:TeleportPearlEntityToMonkeyIsland(prefab, fxprefab)
-    local index = 1
-    for ent, _ in pairs(self.pearlsentities) do
-        if ent.prefab == prefab then
-            if ent.prefab == "hermitcrab" then
-                ent.sg.mem.teleporting = true
-                ent.sg:GoToState("dancebusy")
-            end
-            local v = self.PEARLSETPIECE_MONKEYISLAND[prefab][index]
-            if v then
-                self.pearlmovingcount = self.pearlmovingcount + 1
-                ent:ListenForEvent("onremove", self.OnRemove_TeleportingPearlEntity)
-                local x, z, rot = self.storedx_monkey + v[1], self.storedz_monkey + v[2], v[3]
-                local delay = self.pearlmovingcount * 0.25 + math.random() * 0.25
-                if fxprefab and not ent:IsAsleep() then
-                    ent:DoTaskInTime(delay, self.TeleportPearlEntityToMonkeyIsland_Disappear, x, z, rot, fxprefab, delay)
-                else
-                    self.TeleportPearlEntityToMonkeyIsland_Teleport(ent, x, z, rot, fxprefab, delay)
-                end
-                index = index + 1
-            elseif BRANCH == "staging" then
-                c_announce("This world has too many hermitcrab entities for wagpunk_arena_manager default teleporting please upload the world to the bug tracker.")
-            end
-        end
-    end
-end
-local function WaitForPearl_Bridge()
-    self:WaitForPearl()
-end
-function self:WaitForPearl()
-    if self.waitingforpearltask ~= nil then
-        self.waitingforpearltask:Cancel()
-        self.waitingforpearltask = nil
-    end
-
-    if self.hermitcrab and not self.hermitcrab:IsAsleep() and self.hermitcrab.components.npc_talker:haslines() then
-        self.waitingforpearltask = self.inst:DoTaskInTime(0.1, WaitForPearl_Bridge)
-        return
-    end
-
-    self:MovePearlToMonkeyIsland()
-end
-function self:MovePearlToMonkeyIsland()
-    self.pearlmovingcount = 0
-    self:TeleportPearlEntityToMonkeyIsland("hermithouse", "hermitcrab_fx_tall")
-    self:TeleportPearlEntityToMonkeyIsland("hermithouse_construction1", "hermitcrab_fx_tall")
-    self:TeleportPearlEntityToMonkeyIsland("hermithouse_construction2", "hermitcrab_fx_tall")
-    self:TeleportPearlEntityToMonkeyIsland("hermithouse_construction3", "hermitcrab_fx_tall")
-    self:TeleportPearlEntityToMonkeyIsland("beebox_hermit", "hermitcrab_fx_small")
-    self:TeleportPearlEntityToMonkeyIsland("meatrack_hermit", "hermitcrab_fx_med")
-    self:TeleportPearlEntityToMonkeyIsland("hermitcrab", "hermitcrab_fx_small")
-    self:TeleportPearlEntityToMonkeyIsland("hermitcrab_marker")
-    self:TeleportPearlEntityToMonkeyIsland("hermitcrab_lure_marker")
-    self:TeleportPearlEntityToMonkeyIsland("hermitcrab_marker_fishing")
 end
 
 function self:CheckTurfCompletion()
@@ -886,8 +806,11 @@ function self:CheckConstructCompleted()
     end
 
     if self.wagboss and not self.wagboss:IsSocketed() then
-        if self.inst.components.lunaralterguardianspawner then
-            self.inst.components.lunaralterguardianspawner:TrySpawnLunarGuardian(self.wagstaff)
+        if not self.spawnedguardian then
+            self.spawnedguardian = true
+            if self.inst.components.lunaralterguardianspawner then
+                self.inst.components.lunaralterguardianspawner:TrySpawnLunarGuardian(self.wagstaff)
+            end
         end
         return false
     end
@@ -937,6 +860,9 @@ function self:IsPearlMapValidToWagstaff(giver, item)
 end
 function self:HasPearlAcceptedAGoodMap()
     return self.pearlmap
+end
+function self:CanPearlShowRelocationItem()
+    return self:HasPearlAcceptedAGoodMap() and self.state > self.STATES.PEARLMOVE
 end
 function self:ShouldPearlAcceptMaps()
     return self.state == self.STATES.PEARLMAP and not self:HasPearlAcceptedAGoodMap()
@@ -991,9 +917,36 @@ function self:ShouldWagstaffAcceptItem(inst, item, giver, count)
             return false
         end
 
-
-        if (item.prefab == "gestalt_cage_filled1" or item.prefab == "gestalt_cage_filled2") and not self:HasArenaEntity("wagdrone_spot_marker") then
-            inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
+        local hasrolling, hasflying = false, false
+        local spotsneeded = 0
+        for ent, _ in pairs(self.wagdrones) do
+            if ent.prefab == "wagdrone_rolling" then
+                hasrolling = true
+            elseif ent.prefab == "wagdrone_flying" then
+                hasflying = true
+            end
+        end
+        for ent, _ in pairs(self.arenaentities) do
+            if ent.prefab == "wagdrone_spot_marker" then
+                spotsneeded = spotsneeded + 1
+            end
+        end
+        if hasrolling ~= hasflying and spotsneeded == 1 then
+            if hasflying and item.prefab == "gestalt_cage_filled1" then
+                inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
+                return false
+            end
+            if hasrolling and item.prefab == "gestalt_cage_filled2" then
+                inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
+                return false
+            end
+        end
+        if (item.prefab == "gestalt_cage_filled1" or item.prefab == "gestalt_cage_filled2") and (spotsneeded == 0) then
+            if self.wagboss and not self.wagboss:IsSocketed() then
+                inst.trader_chatterreason = "WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT_BIGONE"
+            else
+                inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
+            end
             return false
         end
         if item.prefab == "gestalt_cage_filled3" and self.wagboss and self.wagboss:IsSocketed() then
@@ -1001,16 +954,28 @@ function self:ShouldWagstaffAcceptItem(inst, item, giver, count)
             return false
         end
 
-        inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_GOOD"
+        if item.prefab == "gestalt_cage_filled3" then
+            inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_GOOD_BIGONE"
+        else
+            inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_GOOD"
+        end
         return true
     end
 
     return false
 end
+function self:NeedsMoreWagdrones()
+    return self:HasArenaEntity("wagdrone_spot_marker")
+end
 function self:PearlMapCompleted()
     if not self.pearlmap then
         self.pearlmap = true
         self:QueueCheck()
+
+        local hermitcrab_relocation_manager = _world.components.hermitcrab_relocation_manager
+        if hermitcrab_relocation_manager then
+            hermitcrab_relocation_manager:SetupMovingPearlToMonkeyIsland()
+        end
     end
 end
 function self:PearlMoveCompleted()
@@ -1031,12 +996,51 @@ function self:ConstructCompleted()
         self:QueueCheck()
     end
 end
+function self:IsWagbossRobot()
+    return self.wagboss and self.wagboss.prefab == "wagboss_robot"
+end
 function self:LeverCompleted()
     if not self.levered then
         self.levered = true
         self:QueueCheck()
     end
+    
+    if not self.lever then
+        return
+    end
+
+    if self:IsWagbossRobot() then
+        local x, y, z = self.lever.Transform:GetWorldPosition()
+        local radius = self.lever:GetPhysicsRadius(0) + 1
+        if not self.wagstaff then
+            local theta = math.random() * PI2
+            x, z = x + math.cos(theta) * radius, z + math.sin(theta) * radius
+        end
+        self:DoWagstaffOneshotAtXZ(x, z, radius, "WAGSTAFF_WAGPUNK_ARENA_LEVERPULLED", true, nil)
+    end
 end
+
+function self:OnRobotLoseControl()
+    if not self.wagboss then
+        return
+    end
+
+    local focusent = self.wagboss:GetNearestPlayer(true)
+    if focusent then
+        local x, y, z = focusent.Transform:GetWorldPosition()
+        if not _map:IsPointInWagPunkArena(x, y, z) then
+            focusent = self.wagboss
+        end
+    end
+    local x, y, z = focusent.Transform:GetWorldPosition()
+    local radius = focusent:GetPhysicsRadius(0) + 3
+    if not self.wagstaff then
+        local theta = math.random() * PI2
+        x, z = x + math.cos(theta) * radius, z + math.sin(theta) * radius
+    end
+    self:DoWagstaffOneshotAtXZ(x, z, radius, "WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL", true, nil)
+end
+
 local function BossCompleted_Bridge()
     self:BossCompleted()
 end
@@ -1044,6 +1048,9 @@ function self:BossCompleted()
     if self.despawngraceperiodtask then
         self.despawngraceperiodtask:Cancel()
         self.despawngraceperiodtask = nil
+    end
+    for wagdrone, _ in pairs(self.wagdrones) do
+        self.wagdrones[wagdrone] = nil
     end
     if not self.bossed then
         self.bossed = true
@@ -1082,8 +1089,7 @@ function self:CheckStateForChanges_Internal()
             return true
         end
         -- Pearl has been given a map to get off of the island and will move there over time.
-        -- Wait for Pearl to finish moving.
-        self:WaitForPearl()
+        -- Wait for Pearl to finish moving through the event listener.
     elseif self.state == self.STATES.TURF then
         if self.turfed then
             self:SetState(self.STATES.CONSTRUCT)
@@ -1104,9 +1110,11 @@ function self:CheckStateForChanges_Internal()
             return true
         end
         self:RemoveArenaEntities("wagpunk_floor_placerindicator") -- Just in case.
-        local wagboss_tracker = TheWorld.components.wagboss_tracker
+        local wagboss_tracker = _world.components.wagboss_tracker
         if wagboss_tracker == nil or not wagboss_tracker:IsWagbossDefeated() then
-            self:TryToSpawnArenaEntities("wagdrone_spot_marker", self.validspotfn_clearthisarea)
+            if next(self.wagdrones) == nil then
+                self:TryToSpawnArenaEntities("wagdrone_spot_marker", self.validspotfn_clearthisarea)
+            end
         end
         local wagboss_robots = self:TryToSpawnArenaEntities("wagboss_robot", self.validspotfn_clearthisarea)
         if wagboss_robots then
@@ -1138,12 +1146,15 @@ function self:CheckStateForChanges_Internal()
                 self.levered = nil
                 self.bossed = nil
                 self.constructed = nil
+                self.spawnedguardian = nil
+                self.givencage = nil
                 self:SetState(self.STATES.BOSSCOOLDOWN)
                 if self.bosscooldowntask ~= nil then
                     self.bosscooldowntask:Cancel()
                     self.bosscooldowntask = nil
                 end
                 self.bosscooldowntask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_COOLDOWN_DEFEATED_TIME, BossCooldownFinished_Bridge)
+                -- FIXME(JBK): Wagstaff oneshot here?
             else
                 -- The boss won make it go back to the center and reset the arena.
                 self.levered = nil
@@ -1161,13 +1172,10 @@ function self:CheckStateForChanges_Internal()
                 self.collision:Remove()
             end
             self.collision = nil
-            local wagboss_tracker = TheWorld.components.wagboss_tracker
-            if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
-                if self.workstation then
-                    -- FIXME(JBK): WA: Kit.
-                    --self.workstation.components.craftingstation:LearnItem("wagdrone_rolling_kit", "wagdrone_rolling_kit")
-                end
+            if self.collision_oneway and self.collision_oneway:IsValid() then
+                self.collision_oneway:Remove()
             end
+            self.collision_oneway = nil
             self:UnlockPlayers()
             return true
         end
@@ -1178,8 +1186,16 @@ function self:CheckStateForChanges_Internal()
             end
         end
         if not self.collision then
-            self.collision = SpawnPrefab("wagpunk_arena_collision")
-            self.collision.Transform:SetPosition(self.storedx_pearl, 0, self.storedz_pearl)
+            local collisions = self:TryToSpawnArenaEntities("wagpunk_arena_collision")
+            if collisions then
+                self.collision = collisions[1]
+                self.collision.Transform:SetRotation(0) -- Collision meshes do not get rotation.
+            end
+            local collision_oneways = self:TryToSpawnArenaEntities("wagpunk_arena_collision_oneway")
+            if collision_oneways then
+                self.collision_oneway = collision_oneways[1]
+                self.collision_oneway.Transform:SetRotation(0) -- Collision meshes do not get rotation.
+            end
         end
         if self.lever then
             self.lever:RetractLever()
@@ -1194,6 +1210,44 @@ function self:CheckStateForChanges_Internal()
     return false
 end
 
+local function DoWagstaffOneshotAtXZ_Bridge(inst, x, z, radiusopt, lines, oneline, postinitfn)
+    self:DoWagstaffOneshotAtXZ(x, z, radiusopt, lines, oneline, postinitfn)
+end
+function self:DoWagstaffOneshotAtXZ(x, z, radiusopt, lines, oneline, postinitfn)
+    local linesindex
+    if oneline then
+        linesindex = math.random(#STRINGS[lines])
+    end
+    if self.wagstaff then
+        if not self.wagstaff.erodingout then
+            self.wagstaff.tiedtoworkstation = nil
+            self.wagstaff.tiedtolever = nil
+            self.wagstaff.oneshot = true
+            self.wagstaff.desiredlocation = Vector3(x, 0, z)
+            self.wagstaff.desiredlocationdistance = radiusopt
+            self.wagstaff.components.npc_talker:resetqueue()
+            self.wagstaff.components.talker:ShutUp()
+            self.wagstaff.components.npc_talker:Chatter(lines, linesindex)
+            if postinitfn then
+                postinitfn(self.wagstaff)
+            end
+        else
+            self.inst:DoTaskInTime(0.1, DoWagstaffOneshotAtXZ_Bridge, x, z, radiusopt, lines, oneline, postinitfn) -- Reschedule until Wagstaff is done fading away.
+        end
+    else
+        local wagstaff = self:TryToSpawnWagstaff()
+        if wagstaff then
+            wagstaff.oneshot = true
+            wagstaff.Transform:SetPosition(x, 0, z)
+            wagstaff.components.npc_talker:Chatter(lines, linesindex)
+            if postinitfn then
+                postinitfn(self.wagstaff)
+            end
+            -- Do not reschedule here this means Wagstaff cannot be spawned.
+        end
+    end
+end
+
 function self:DecrementAliveCount()
     local count = self.playersdata.alivecount - 1
     self.playersdata.alivecount = count
@@ -1202,10 +1256,12 @@ function self:DecrementAliveCount()
             self.despawngraceperiodtask:Cancel()
             self.despawngraceperiodtask = nil
         end
-        if next(self.playersdata.disconnected) and not next(self.playersdata.players) then
-            self.despawngraceperiodtask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME, BossCompleted_Bridge)
-        else
-            self:BossCompleted()
+        if self:IsWagbossRobot() then
+            if next(self.playersdata.disconnected) and not next(self.playersdata.players) then
+                self.despawngraceperiodtask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME, BossCompleted_Bridge)
+            else
+                self:BossCompleted()
+            end
         end
     end
 end
@@ -1250,6 +1306,9 @@ function self:StopTrackingPlayer(player)
     if isalive then
         self:DecrementAliveCount()
     end
+    if player:IsValid() and player.components.sanity then
+        player.components.sanity:EnableLunacy(false, "wagpunk_arena")
+    end
 end
 function self:TrackPlayer(player)
     local isalive = not IsEntityDeadOrGhost(player)
@@ -1260,8 +1319,39 @@ function self:TrackPlayer(player)
     if isalive then
         self:IncrementAliveCount()
     end
+    if self.lunacymode and player.components.sanity then
+        player.components.sanity:EnableLunacy(true, "wagpunk_arena")
+    end
 end
 
+function self:StartLunacy()
+    if self.lunacymode then
+        return
+    end
+
+    self.lunacymode = true
+    if self.playersdata then
+        for player, _ in pairs(self.playersdata.players) do
+            if player.components.sanity then
+                player.components.sanity:EnableLunacy(true, "wagpunk_arena")
+            end
+        end
+    end
+end
+function self:StopLunacy()
+    if not self.lunacymode then
+        return
+    end
+
+    self.lunacymode = nil
+    if self.playersdata then
+        for player, _ in pairs(self.playersdata.players) do
+            if player.components.sanity then
+                player.components.sanity:EnableLunacy(false, "wagpunk_arena")
+            end
+        end
+    end
+end
 function self:LockPlayersIn()
     if not self.playersdata then
         self.playersdata = {
@@ -1288,7 +1378,11 @@ function self:UnlockPlayers()
 
         self.inst:RemoveEventCallback("ms_playerjoined", self.OnPlayerJoined)
 
+        self:StopLunacy()
         for player, _ in pairs(self.playersdata.players) do
+            if player.components.sanity then
+                player.components.sanity:EnableLunacy(false, "wagpunk_arena")
+            end
             player:RemoveEventCallback("onremove", self.OnPlayerRemove)
             player:RemoveEventCallback("ms_becameghost", self.OnPlayerBecameGhost)
             player:RemoveEventCallback("ms_respawnedfromghost", self.OnPlayerRespawnedFromGhost)
@@ -1367,6 +1461,8 @@ function self:OnSave()
     data.pearlmap = self.pearlmap
     data.pearlmove = self.pearlmove
     data.turfed = self.turfed
+    data.spawnedguardian = self.spawnedguardian
+    data.givencage = self.givencage
     data.constructed = self.constructed
     data.levered = self.levered
     data.bossed = self.bossed
@@ -1398,11 +1494,25 @@ function self:OnSave()
         data.wagstaff = self.wagstaff.GUID
         table.insert(ents, self.wagstaff.GUID)
         data.w_tiedtoworkstation = self.wagstaff.tiedtoworkstation
+        data.w_tiedtolever = self.wagstaff.tiedtolever
+        data.w_state = self.wagstaff.arena_state
     end
     if next(self.arenaentities) then
         data.arenaentities = {}
         for ent, _ in pairs(self.arenaentities) do
-            table.insert(data.arenaentities, ent.GUID)
+            if ent.persists then -- For temporary entities like collision.
+                table.insert(data.arenaentities, ent.GUID)
+                table.insert(ents, ent.GUID)
+            end
+        end
+        if not next(data.arenaentities) then
+            data.arenaentities = nil
+        end
+    end
+    if next(self.wagdrones) then
+        data.wagdrones = {}
+        for ent, _ in pairs(self.wagdrones) do
+            table.insert(data.wagdrones, ent.GUID)
             table.insert(ents, ent.GUID)
         end
     end
@@ -1441,6 +1551,8 @@ function self:OnLoad(data)
     self.pearlmap = data.pearlmap
     self.pearlmove = data.pearlmove
     self.turfed = data.turfed
+    self.spawnedguardian = data.spawnedguardian
+    self.givencage = data.givencage
     self.constructed = data.constructed
     self.levered = data.levered
     self.bossed = data.bossed
@@ -1456,9 +1568,6 @@ function self:OnLoad(data)
                 alivecount = 0,
                 disconnected = disconnected,
             }
-            self.inst:ListenForEvent("ms_playerjoined", self.OnPlayerJoined)
-
-            self.inst:StartUpdatingComponent(self)
         end
     end
     if data.bosscooldownremaining then
@@ -1503,6 +1612,8 @@ function self:LoadPostPass(newents, savedata)
         if newents[savedata.wagstaff] then
             local wagstaff = newents[savedata.wagstaff].entity
             wagstaff.tiedtoworkstation = savedata.w_tiedtoworkstation
+            wagstaff.tiedtolever = savedata.w_tiedtolever
+            wagstaff.arena_state = savedata.w_state
             self:TrackWagstaff(wagstaff)
         end
     end
@@ -1513,6 +1624,22 @@ function self:LoadPostPass(newents, savedata)
                 self:TrackArenaEntity(ent)
             end
         end
+    end
+    if savedata.wagdrones then
+        for _, entguid in ipairs(savedata.wagdrones) do
+            if newents[entguid] then
+                local wagdrone = newents[entguid].entity
+                self:TrackWagdrone(wagdrone)
+            end
+        end
+    end
+
+    if self.state == self.STATES.CONSTRUCT then
+        self:CheckConstructCompleted()
+    end
+    if self.playersdata then
+        self.inst:ListenForEvent("ms_playerjoined", self.OnPlayerJoined)
+        self.inst:StartUpdatingComponent(self)
     end
 end
 
@@ -1601,6 +1728,52 @@ function self:RegisterMonkeyQueen(ent)
     ent:ListenForEvent("onremove", self.OnRemove_MonkeyQueen)
 end
 
+self.OnRemove_LunacyCreator = function(ent, data)
+    self.lunacycreators[ent] = nil
+    if next(self.lunacycreators) == nil then
+        self:StopLunacy()
+    end
+end
+function self:RegisterLunacyCreator(ent)
+    self.lunacycreators[ent] = true
+    ent:ListenForEvent("onremove", self.OnRemove_LunacyCreator)
+    self:StartLunacy()
+end
+
+self.OnWagstaffSpawned_GiveGestaltCage = function(wagstaff)
+    self.tryingtogivecage = nil
+    self.givencage = true
+    wagstaff:GiveGestaltCageToToss()
+end
+function self:DoWagstaffGiveGestaltCage(ent)
+    local x, z
+    if ent then
+        local y
+        x, y, z = ent.Transform:GetWorldPosition()
+    else
+        x, z = _map:GetWagPunkArenaCenterXZ()
+    end
+    local player = FindClosestPlayer(x, 0, z, true)
+    if player then
+        local px, py, pz = player.Transform:GetWorldPosition()
+        if _map:IsPointInWagPunkArena(px, 0, pz) then
+            x, z = px, pz
+        end
+    end
+
+    local theta = math.random() * TWOPI
+    local radius = 3
+    local x2, z2 = x + math.cos(theta) * radius, z + math.sin(theta) * radius
+    self:DoWagstaffOneshotAtXZ(x2, z2, radius, "WAGSTAFF_WAGPUNK_ARENA_GIVE_GESTALT_CAGE", true, self.OnWagstaffSpawned_GiveGestaltCage)
+end
+function self:TryWagstaffGiveGestaltCage(ent)
+    if self.givencage or self.tryingtogivecage then
+        return
+    end
+    self.tryingtogivecage = true
+    self:DoWagstaffGiveGestaltCage(ent)
+end
+
 
 self.inst:ListenForEvent("ms_register_hermitcrab_marker", function(inst, ent) self:RegisterHermitCrabMarker(ent) end, _world)
 self.inst:ListenForEvent("ms_register_beebox_hermit", function(inst, ent) self:RegisterBeeBoxHermit(ent) end, _world)
@@ -1610,17 +1783,23 @@ self.inst:ListenForEvent("ms_register_pearl_entity", function(inst, ent) self:Re
 self.inst:ListenForEvent("ms_register_monkeyisland_portal", function(inst, ent) self:RegisterMonkeyPortal(ent) end, _world)
 self.inst:ListenForEvent("ms_register_monkeyqueen", function(inst, ent) self:RegisterMonkeyQueen(ent) end, _world)
 
+self.inst:ListenForEvent("ms_register_wagpunk_arena_lunacycreator", function(inst, ent) self:RegisterLunacyCreator(ent) end, _world)
+
 self.inst:ListenForEvent("ms_lunarriftmutationsmanager_taskcompleted", function(inst) self:SparkArkCompleted() end, _world)
+self.inst:ListenForEvent("ms_hermitcrab_relocated", function(inst) self:PearlMoveCompleted() end, _world)
 self.inst:ListenForEvent("ms_wagpunk_floor_kit_deployed", function(inst) self:CheckTurfCompletion() end, _world)
 self.inst:ListenForEvent("ms_wagpunk_constructrobot", function(inst) self:CheckConstructCompleted() end, _world)
 self.inst:ListenForEvent("ms_wagpunk_lever_activated", function(inst) self:LeverCompleted() end, _world)
+self.inst:ListenForEvent("ms_wagboss_robot_losecontrol", function(inst) self:OnRobotLoseControl() end, _world)
+self.inst:ListenForEvent("ms_wagboss_alter_defeated", function(inst, ent) if ent == self.wagboss then self:UntrackWagboss() self:BossCompleted() end end, _world)
+self.inst:ListenForEvent("ms_alterguardian_phase1_lunarrift_capturable", function(inst, ent) self:TryWagstaffGiveGestaltCage(ent) end, _world)
 
 self.inst:DoTaskInTime(0, function() self:OnInit() end)
 
 
 function self:DebugForcePearl()
     -- Pearl's Pearl is needed for CC questline and that means at least 10 tasks and her home has been upgraded.
-    local doer = ThePlayer or TheWorld
+    local doer = ThePlayer or _world
     local hermithouse
     repeat
         hermithouse = nil
@@ -1644,7 +1823,7 @@ function self:DebugForceTurf()
         local tile_x, tile_y = _map:GetTileCoordsAtPoint(x, 0, z)
 
         local current_tile = nil
-        local undertile = TheWorld.components.undertile
+        local undertile = _world.components.undertile
         if undertile ~= nil then
             current_tile = _map:GetTile(tile_x, tile_y)
         end
@@ -1681,11 +1860,7 @@ function self:DebugSkipState()
     elseif self.state == self.STATES.PEARLMAP then
         self:PearlMapCompleted()
     elseif self.state == self.STATES.PEARLMOVE then
-        if self.pearlmovingcount == 0 then
-            self:PearlMoveCompleted()
-        else
-            print("  Not so fast wait for Pearl to finish.")
-        end
+        self:PearlMoveCompleted()
     elseif self.state == self.STATES.TURF then
         self:DebugForceTurf()
         self:TurfCompleted()
@@ -1696,13 +1871,17 @@ function self:DebugSkipState()
         self:LeverCompleted()
     elseif self.state == self.STATES.BOSS then
         if self.wagboss then
+            if self.wagboss.prefab == "wagboss_robot" and not self.wagboss.hostile then
+                self.wagboss:ConfigureHostile()
+            end
             if self.wagboss.components.health then
+                print("  By killing the boss.", self.wagboss)
                 self.wagboss.components.health:Kill()
             else
-                self.OnDeath_Wagboss(self.wagboss)
-                self.wagboss:Remove()
+                print("  CANNOT PROCEED boss has no health component yet.", self.wagboss)
             end
         else
+            print("  By advancing the state with no boss tracked.")
             self:BossCompleted()
         end
     elseif self.state == self.STATES.BOSSCOOLDOWN then

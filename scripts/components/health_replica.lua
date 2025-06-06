@@ -175,17 +175,17 @@ function Health:IsTakingFireDamageFull()
     end
 end
 
-function Health:SetIsTakingLunarBeamDamage(istakinglunarbeamdamage)
+function Health:SetLunarBurnFlags(flags)
 	if self.classified then
-		self.classified.istakinglunarbeamdamage:set(istakinglunarbeamdamage)
+		self.classified.lunarburnflags:set(flags)
 	end
 end
 
-function Health:IsTakingLunarBeamDamage()
+function Health:GetLunarBurnFlags()
 	if self.inst.components.health then
-		return self.inst.components.health:IsTakingLunarBeamDamage()
+		return self.inst.components.health:GetLunarBurnFlags()
 	else
-		return self.classified and self.classified.istakinglunarbeamdamage:value()
+		return self.classified and self.classified.lunarburnflags:value() or 0
 	end
 end
 

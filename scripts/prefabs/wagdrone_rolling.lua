@@ -9,6 +9,7 @@ local prefabs =
 	"wagdrone_laserwire_fx",
 	"wagdrone_rolling_collide_small_fx",
 	"wagdrone_rolling_collide_med_fx",
+	"wagdrone_parts",
 }
 
 local brain = require("brains/wagdrone_rollingbrain")
@@ -149,6 +150,7 @@ local function fn()
 
 	inst:AddTag("scarytoprey")
 	inst:AddTag("mech")
+	inst:AddTag("electricdamageimmune")
 	inst:AddTag("soulless")
 	inst:AddTag("lunar_aligned")
 	inst:AddTag("wagdrone")
@@ -183,6 +185,7 @@ local function fn()
 	inst.components.combat:SetRange(1)
 
 	WagdroneCommon.MakeHackable(inst)
+	WagdroneCommon.PreventTeleportFromArena(inst)
 
 	inst.beams = {}
 	inst.ConnectBeams = ConnectBeams

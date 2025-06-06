@@ -58,6 +58,8 @@ local function attack_behaviour(inst, target)
         else
             return false
         end
+	elseif target.components.combat and not target.components.combat:CanBeAttacked() then
+		return false
     else
         if target.components.sanity ~= nil then
             target.components.sanity:DoDelta(TUNING.GESTALT_ATTACK_DAMAGE_SANITY)

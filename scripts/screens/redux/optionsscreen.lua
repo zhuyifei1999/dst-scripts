@@ -2570,7 +2570,7 @@ function OptionsScreen:_BuildSchemeGroup(is_valid_fn, device_type, initial_devic
 		group.changed_image:SetPosition(x, 0)
 		group.changed_image:Hide()
 
-		group.spinner = group:AddChild(CreateTextSpinner(STRINGS.UI.CONTROLSSCREEN.SCHEMES[group.schemeName], scheme.scheme_options))
+		group.spinner = group:AddChild(TEMPLATES.StandardSpinner(scheme.scheme_options, spinner_width, spinner_height))
 		group.spinner.OnChanged = function(_, data)
 			self:ChangeControlScheme(group.schemeId, data)
 		end

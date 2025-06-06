@@ -191,7 +191,6 @@ function FollowCamera:Shake(type, duration, speed, scale)
     if Profile:IsScreenShakeEnabled() then
         self.shake = CameraShake(type, duration, speed, scale)
     end
-    --TheInputProxy:AddVibration(VIBRATION_CAMERA_SHAKE, duration, math.max(0, math.min(scale * .25, 1)), false)
 end
 
 function FollowCamera:SetTarget(inst)

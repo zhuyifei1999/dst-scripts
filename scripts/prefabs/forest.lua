@@ -540,6 +540,7 @@ local prefabs =
     "hermitcrab_fx_tall",
 
     "alterguardian_phase1_lunarrift",
+    "moonstorm_static_nowag",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")
@@ -677,6 +678,7 @@ local function master_postinit(inst)
     inst:AddComponent("lunarriftmutationsmanager")
 
     inst:AddComponent("wagpunk_manager")
+    inst:AddComponent("hermitcrab_relocation_manager")
     inst:AddComponent("wagpunk_arena_manager")
 
     inst:AddComponent("forestdaywalkerspawner")

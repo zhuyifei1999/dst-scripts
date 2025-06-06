@@ -52,13 +52,34 @@ function WagbossRobotBrain:OnStart()
 						end, "TryRangedAttack"),
 						FailIfSuccessDecorator(ChaseAndAttack(self.inst)),
 					},
-					Wander(self.inst),
+					Wander(self.inst, GetHome, 6, {
+						minwalktime = 3,
+						randwalktime = 0,
+						minwaittime = 2.5,
+						randwaittime = 0,
+					}),
 				}, 0.5)),
 		}, 0.5)
 	else
 		--friendly brain
 		root = PriorityNode({
-			Wander(self.inst),
+			ParallelNode{
+				SequenceNode{
+					ConditionWaitNode(function()
+						return not self.inst.sg:HasStateTag("busy")
+					end),
+					WaitNode(14),
+					ActionNode(function()
+						self.inst:PushEvent("losecontrol")
+					end),
+				},
+				Wander(self.inst, GetHome, 6, {
+					minwalktime = 3,
+					randwalktime = 0,
+					minwaittime = 2.5,
+					randwaittime = 0,
+				}),
+			},
 		})
 	end
 

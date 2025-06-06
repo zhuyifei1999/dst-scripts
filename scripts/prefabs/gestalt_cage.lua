@@ -192,19 +192,74 @@ local function Filled_StopFlicker(inst)
 	end
 end
 
+local function Filled_StartSoundLoop(inst)
+	inst._soundtask = nil
+
+	local sound = "rifts5/gestalt_cage/caught"
+	if inst.level > 1 then
+		sound = sound.."_"..tostring(inst.level)
+	end
+	sound = sound.."_LP"
+	inst.SoundEmitter:PlaySound(sound, "loop")
+end
+
+local function Filled_StopSound(inst)
+	if inst._soundtask then
+		inst._soundtask:Cancel()
+		inst._soundtask = nil
+	elseif inst.SoundEmitter:PlayingSound("loop") then
+		inst.SoundEmitter:KillSound("loop")
+	end
+end
+
+local function Filled_RestoreSound(inst)
+	if inst._soundtask == nil and not inst.SoundEmitter:PlayingSound("loop") then
+		if inst.AnimState:IsCurrentAnimation("catch") then
+			inst._soundtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime(), Filled_StartSoundLoop)
+		else
+			Filled_StartSoundLoop(inst)
+		end
+	end
+end
+
+local function Filled_OnEntitySleep(inst)
+	if inst.level < 3 then
+		Filled_StopFlicker(inst)
+	end
+	Filled_StopSound(inst)
+end
+
 local function Filled_OnEntityWake(inst)
 	if not inst.components.inventoryitem:IsHeld() then
-		SetLedStatusFlicker(inst)
+		if inst.level < 3 then
+			SetLedStatusFlicker(inst)
+		end
+		Filled_RestoreSound(inst)
 	end
+end
+
+local function Filled_topocket(inst, owner)
+	if inst.level < 3 then
+		Filled_StopFlicker(inst)
+	end
+	Filled_StopSound(inst)
 end
 
 local function Filled_toground(inst)
 	if not inst:IsAsleep() then
-		SetLedStatusFlicker(inst)
+		if inst.level < 3 then
+			SetLedStatusFlicker(inst)
+		end
+		Filled_RestoreSound(inst)
 	end
 end
 
 --------------------------------------------------------------------------
+
+local function Filled_ClearFacingModel(inst)
+	inst.Transform:SetNoFaced()
+	inst:RemoveEventCallback("onputininventory", Filled_ClearFacingModel)
+end
 
 local function Level3JiggleLoop(inst, loops)
 	inst.AnimState:SetFrame(8)
@@ -218,6 +273,7 @@ local function OnCaptureLevel3AnimQueueOver(inst)
 	for i = 1, math.random(2, 4) do
 		inst.AnimState:PushAnimation("success_3_loop", false)
 	end
+	inst.SoundEmitter:PlaySound("rifts5/gestalt_cage/catch_3_wiggle")
 end
 
 local function StartCapture(inst)
@@ -234,6 +290,23 @@ local function StartCapture(inst)
 	else
 		inst.AnimState:PushAnimation(anim.."_loop")
 	end
+
+	if not (inst.components.inventoryitem:IsHeld() or inst:IsAsleep()) then
+		local sound = "rifts5/gestalt_cage/catch"
+		if level > 1 then
+			sound = sound.."_"..tostring(level)
+		end
+		inst.SoundEmitter:PlaySound(sound)
+
+		if inst._soundtask then
+			inst._soundtask:Cancel()
+		elseif inst.SoundEmitter:PlayingSound("loop") then
+			inst.SoundEmitter:KillSound("loop")
+		end
+		inst._soundtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), Filled_StartSoundLoop)
+	end
+
+	inst:ListenForEvent("onputininventory", Filled_ClearFacingModel)
 end
 
 local function Filled_GetStatus(inst, viewer)
@@ -270,6 +343,8 @@ local function filledfn1()
 		return inst
 	end
 
+	inst._soundtask = inst:DoTaskInTime(0, Filled_StartSoundLoop)
+
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
 	inst:AddComponent("inspectable")
@@ -278,7 +353,7 @@ local function filledfn1()
     inst:AddComponent("tradable")
 
 	inst:AddComponent("inventoryitem")
-	inst:ListenForEvent("onputininventory", Filled_StopFlicker)
+	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
 
 	MakeHauntableLaunch(inst)
@@ -287,7 +362,7 @@ local function filledfn1()
 	SetLedStatusFlicker(inst)
 	inst.StartCapture = StartCapture
 
-	inst.OnEntitySleep = Filled_StopFlicker
+	inst.OnEntitySleep = Filled_OnEntitySleep
 	inst.OnEntityWake = Filled_OnEntityWake
 
 	return inst
@@ -326,6 +401,8 @@ local function filledfn2()
 		return inst
 	end
 
+	inst._soundtask = inst:DoTaskInTime(0, Filled_StartSoundLoop)
+
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
 	inst:AddComponent("inspectable")
@@ -334,7 +411,7 @@ local function filledfn2()
     inst:AddComponent("tradable")
 
 	inst:AddComponent("inventoryitem")
-	inst:ListenForEvent("onputininventory", Filled_StopFlicker)
+	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
 
 	MakeHauntableLaunch(inst)
@@ -343,7 +420,7 @@ local function filledfn2()
 	SetLedStatusFlicker(inst)
 	inst.StartCapture = StartCapture
 
-	inst.OnEntitySleep = Filled_StopFlicker
+	inst.OnEntitySleep = Filled_OnEntitySleep
 	inst.OnEntityWake = Filled_OnEntityWake
 
 	return inst
@@ -377,12 +454,15 @@ local function filledfn3()
 	inst:SetPrefabNameOverride("gestalt_cage")
 
     inst:AddTag("gestalt_cage_filled")
+    inst:AddTag("irreplaceable")
 
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst._soundtask = inst:DoTaskInTime(0, Filled_StartSoundLoop)
 
     inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
@@ -392,12 +472,16 @@ local function filledfn3()
     inst:AddComponent("tradable")
 
 	inst:AddComponent("inventoryitem")
+	inst:ListenForEvent("onputininventory", Filled_topocket)
+	inst:ListenForEvent("ondropped", Filled_toground)
     inst:ListenForEvent("animqueueover", OnCaptureLevel3AnimQueueOver)
 
 	MakeHauntableLaunch(inst)
 
 	inst.level = 3
 	inst.StartCapture = StartCapture
+	inst.OnEntitySleep = Filled_OnEntitySleep
+	inst.OnEntityWake = Filled_OnEntityWake
 
 	return inst
 end

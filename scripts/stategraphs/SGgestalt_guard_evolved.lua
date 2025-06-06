@@ -14,12 +14,7 @@ local events =
 
     EventHandler("doattack", function(inst)
         if not (inst.sg:HasStateTag("busy")) then
-            if (inst.sg.mem.missed_dashes or 0) > 3 then
-                inst.sg.mem.missed_dashes = nil
-                inst.sg:GoToState("attack_explode")
-            else
-                inst.sg:GoToState("attack")
-            end
+            inst.sg:GoToState("attack")
         end
     end),
 
@@ -27,6 +22,27 @@ local events =
 		--can interrupt ANY state
 		inst.sg:GoToState("captured")
 	end),
+
+    EventHandler("spawned", function(inst)
+        if not (inst.sg:HasStateTag("busy")) then
+            inst.sg:GoToState("spawned")
+        end
+    end),
+
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() and inst.sg:HasStateTag("idle") then
+            inst.sg:GoToState("hit")
+        end
+    end),
+
+    EventHandler("relocate", function(inst)
+        if (inst.sg.mem.missed_dashes or 0) > 3 or math.random() < TUNING.GESTALT_EVOLVED_EXPLODE_CHANCE then
+            inst.sg.mem.missed_dashes = nil
+            inst.sg:GoToState("attack_explode")
+        else
+            inst.sg:GoToState("relocate")
+        end
+    end),
 }
 
 local INVALID_ATTACK_STATE_TAGS = {"bedroll", "knockout", "sleeping", "tent", "waking"}
@@ -92,6 +108,23 @@ local states =
         onexit = function(inst)
             inst.SoundEmitter:KillSound("idle_lp")
         end,
+    },
+
+    State{
+        name = "spawned",
+        tags = {"busy", "noattack", "canrotate"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("emerge2")
+
+            inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/emerge_vocals")
+        end,
+
+        events =
+        {
+            EventHandler("animover", go_to_idle),
+        },
     },
 
     State{
@@ -256,20 +289,37 @@ local states =
 
         timeline =
         {
-            FrameEvent(11, function(inst)
+            FrameEvent(28, function(inst)
                 inst.components.combat:DoAreaAttack(inst, 4, nil, TargetTestFn)
             end),
         },
 
         events =
         {
-            EventHandler("animover", go_to_idle),
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("relocate")
+            end),
         },
 
         onexit = function(inst)
 			inst.Physics:ClearMotorVelOverride()
 			inst.components.locomotor:Stop()
 		end,
+    },
+
+    State{
+        name = "hit",
+        tags = { "busy", "hit" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("hit")
+        end,
+
+        events =
+        {
+            EventHandler("animover", go_to_idle),
+        },
     },
 
     --

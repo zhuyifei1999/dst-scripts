@@ -392,6 +392,9 @@ local function fn()
 	inst:AddTag("lunar_aligned")
 	inst:AddTag("brightmare")
 
+	--gestaltcapturable (from gestaltcapturable component) added to pristine state for optimization
+	inst:AddTag("gestaltcapturable")
+
 	MakeCharacterPhysics(inst, 10, .5)
 
 	inst.Transform:SetFourFaced()

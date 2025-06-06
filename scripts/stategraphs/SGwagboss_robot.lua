@@ -10,11 +10,10 @@ local function _FindMissileTargets(inst, x, z, maxtargets, targets)
 	if REGISTERED_HEAT_TAGS == nil then
 		REGISTERED_HEAT_TAGS = TheSim:RegisterFindTags(
 			nil,
-			{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "brightmare", "brightmareboss", "ghost", "playerghost", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece" },
-			{ "fire", "heatrock", "heatstar", "_combat" }
+			{ "INLIMBO", "FX", "flight", "invisible", "notarget", "noattack", "brightmare", "brightmareboss", "ghost", "playerghost", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece" },
+			{ "fire", "smolder", "HASHEATER", "engineeringbattery", "spotlight", "_combat" }
 		)
 	end
-	local ambient_temp = TheWorld.state.temperature
 	local map = TheWorld.Map
 	local inarena = map:IsPointInWagPunkArena(x, 0, z)
 	for i, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, MISSILE_TARGET_RANGE, REGISTERED_HEAT_TAGS)) do
@@ -23,13 +22,29 @@ local function _FindMissileTargets(inst, x, z, maxtargets, targets)
 			not (v.components.freezable and v.components.freezable:IsFrozen()) and
 			(not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()))
 		then
+			local ambient_temp = GetLocalTemperature(v)
 			local temperature = ambient_temp
+			local endo
 
-			if v.components.heater then
-				if v.components.heater:IsExothermic() then
-					temperature = math.max(temperature, v.components.heater:GetHeat(v))
+			-- ._lightinst ==> winona_spotlight
+			-- .currentTempRange ==> heatrock
+			local heater = v._lightinst and v._lightinst.components.heater or v.components.heater
+			if heater then
+				if heater:IsExothermic() then
+					temperature = math.max(temperature, heater:GetHeat(v))
+				elseif heater:IsEndothermic() then
+					endo = true
+					temperature = math.min(temperature, heater:GetHeat(v))
+				elseif v.currentTempRange then
+					--heatrock special case because thermics setup isn't reliable
+					endo = v.currentTempRange < 3
+					if v.currentTempRange ~= 3 and v.components.temperature then
+						temperature = v.components.temperature:GetCurrent()
+					end
 				else
-					temperature = math.min(temperature, v.components.heater:GetHeat(v))
+					--for other things that don't setup thermics
+					temperature = heater:GetHeat(v) or temperature
+					endo = temperature < ambient_temp
 				end
 			elseif v.components.temperature then
 				temperature = v.components.temperature:GetCurrent()
@@ -54,10 +69,15 @@ local function _FindMissileTargets(inst, x, z, maxtargets, targets)
 				end
 			end
 
-			if temperature > ambient_temp or
+			if endo then
+				--skip heaters completely if marked as endothermic
+			elseif temperature > ambient_temp or
 				(	v.components.combat and
 					v:HasAnyTag("animal", "largecreature", "monster", "character") and
-					not v:HasAnyTag("smallcreature", "veggie", "mech", "companion", "fish")
+					not v:HasAnyTag("smallcreature", "veggie", "fish") and
+					(	v.components.combat:IsRecentTarget(inst) or
+						not v:HasTag("companion")
+					)
 				)
 			then
 				if targets == nil then
@@ -188,7 +208,7 @@ end
 
 --------------------------------------------------------------------------
 
-local ORBITAL_STRIKE_TARGET_RANGE_SQ = 18 * 18
+local ORBITAL_STRIKE_TARGET_RANGE_SQ = 18 * 18 --only used when not in arena
 
 local function GenerateSelections(targets, numtoselect, _out, _seq, _i0, _n)
 	_out = _out or {}
@@ -213,8 +233,8 @@ local function _FindOrbitalStrikeTargets(inst, targets)
 	local inarena = map:IsPointInWagPunkArena(x, 0, z)
 	for k in pairs(inst.components.grouptargeter:GetTargets()) do
 		local x1, y1, z1 = k.Transform:GetWorldPosition()
-		if (not inarena or map:IsPointInWagPunkArena(x1, y1, z1)) and
-			distsq(x, z, x1, z1) < ORBITAL_STRIKE_TARGET_RANGE_SQ
+		if (inarena and map:IsPointInWagPunkArena(x1, y1, z1)) or
+			(not inarena and distsq(x, z, x1, z1) < ORBITAL_STRIKE_TARGET_RANGE_SQ)
 		then
 			if targets == nil then
 				return true --just want to know if we have any target at all
@@ -223,7 +243,21 @@ local function _FindOrbitalStrikeTargets(inst, targets)
 		end
 	end
 	if targets == nil or #targets <= 0 then
-		return false
+		local target = inst.components.combat.target
+		if target and not (target.components.health and target.components.health:IsDead()) then
+			local x1, y1, z1 = target.Transform:GetWorldPosition()
+			if (inarena and map:IsPointInWagPunkArena(x1, y1, z)) or
+				(not inarena and distsq(x, z, x1, z1) < ORBITAL_STRIKE_TARGET_RANGE_SQ)
+			then
+				if targets == nil then
+					return true --just want to know if we have any target at all
+				end
+				table.insert(targets, target)
+			end
+		end
+		if targets == nil or #targets <= 0 then
+			return false
+		end
 	end
 	local maxtargets = math.min(6, math.floor(#targets / 2) + 1)
 	if maxtargets == 1 then
@@ -347,6 +381,9 @@ local function ChooseAttack(inst, target)
 	elseif inrange then
 		inst.sg:GoToState("stomp")
 		return true
+	elseif inst.canleap then
+		inst.sg:GoToState("leap_pre", target)
+		return true
 	end
 	return false
 end
@@ -379,6 +416,13 @@ local events =
 			else
 				inst.sg.mem.toturnon = true
 			end
+		end
+	end),
+	EventHandler("losecontrol", function(inst)
+		if not inst.sg:HasStateTag("busy") then
+			inst.sg:GoToState("losecontrol")
+		else
+			inst.sg.mem.losecontrol = true
 		end
 	end),
 	EventHandler("deactivate", function(inst)
@@ -488,7 +532,7 @@ local function _AOEWork(inst, radius, targets)
 		then
 			local work_action = v.components.workable:GetWorkAction()
 			--V2C: nil action for NPC_workable (e.g. campfires)
-			--     allow digging spawners (e.g. rabbithole)
+			--     no digging, so don't need to check for spawners (e.g. rabbithole)
 			if (work_action == nil and v:HasTag("NPC_workable")) or
 				(v.components.workable:CanBeWorked() and work_action and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
 			then
@@ -502,8 +546,7 @@ end
 local TOSSITEM_MUST_TAGS = { "_inventoryitem" }
 local TOSSITEM_CANT_TAGS = { "locomotor", "INLIMBO" }
 
-local function _TossLaunch(inst, launcher, basespeed, startheight)
-	local x0, y0, z0 = launcher.Transform:GetWorldPosition()
+local function _TossLaunch(inst, x0, z0, basespeed, startheight)
 	local x1, y1, z1 = inst.Transform:GetWorldPosition()
 	local dx, dz = x1 - x0, z1 - z0
 	local dsq = dx * dx + dz * dz
@@ -527,7 +570,7 @@ local function _TossItems(inst, radius)
 			v.components.mine:Deactivate()
 		end
 		if not v.components.inventoryitem.nobounce and v.Physics and v.Physics:IsActive() then
-			_TossLaunch(v, inst, 1.2, 0.1)
+			_TossLaunch(v, x, z, 1.2, 0.1)
 		end
 	end
 end
@@ -600,11 +643,14 @@ local states =
 		tags = { "idle", "canrotate" },
 
 		onenter = function(inst)
-			if inst.components.health:IsDead() then
+			if inst.hostile and inst.components.health:IsDead() then
 				inst.sg:GoToState("death")
 				return
 			elseif inst.sg.mem.toturnoff then
 				inst.sg:GoToState("turnoff")
+				return
+			elseif inst.sg.mem.losecontrol then
+				inst.sg:GoToState("losecontrol")
 				return
 			end
 			inst.components.locomotor:StopMoving()
@@ -645,13 +691,24 @@ local states =
 				local x, y, z = inst.Transform:GetWorldPosition()
                 ClearSpotForRequiredPrefabAtXZ(x, z, inst.physicsradiusoverride)
 			end
-			inst.AnimState:PlayAnimation("idle_off")
+			if inst.socketed then
+				inst.AnimState:PlayAnimation("idle_off")
+			else
+				inst.AnimState:PlayAnimation("concealed_idle", true)
+			end
 			inst.SoundEmitter:KillSound("loop")
 			inst.sg.statemem.fixphysics = inst.sg.mem.physicstask ~= nil or nil
 		end,
 
 		events =
 		{
+			EventHandler("reveal", function(inst)
+				if inst.AnimState:IsCurrentAnimation("concealed_idle") then
+					inst.AnimState:PlayAnimation("revealed")
+					inst.AnimState:PushAnimation("idle_off", false)
+					inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/revealed")
+				end
+			end),
 			EventHandler("entitywake", function(inst)
 				if inst.sg.statemem.fixphysics and inst.sg.mem.physicstask == nil then
 					inst.sg.statemem.fixphysics = nil
@@ -685,6 +742,12 @@ local states =
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("activate1")
 			inst.SoundEmitter:KillSound("loop")
+			if inst.hostile then
+				TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
+			end
+			if POPULATING then
+				inst.sg:GoToState("idle")
+			end
 		end,
 
 		timeline =
@@ -715,8 +778,18 @@ local states =
 
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/antennae_raise") end),
+			FrameEvent(4, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(9, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(14, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
 			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 			FrameEvent(84, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(108, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(114, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
+			FrameEvent(120, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/activate_light_on") end),
 			FrameEvent(130, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
 			FrameEvent(128, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
 
@@ -728,16 +801,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					if inst.sg.mem.toturnoff then
-						inst.sg.statemem.off = true
-						inst.sg:GoToState("turnoff")
-						return
-					elseif inst.hostile then
-						inst.sg:GoToState("idle")
-						return
-					end
-					inst.sg.statemem.losingcontrol = true
-					inst.sg:GoToState("losecontrol")
+					inst.sg:GoToState("idle")
 				end
 			end),
 		},
@@ -745,9 +809,6 @@ local states =
 		onexit = function(inst)
 			if not inst.SoundEmitter:PlayingSound("loop") then
 				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
-			end
-			if not (inst.sg.statemem.losingcontrol or inst.sg.statemem.off) then
-				inst:ConfigureHostile()
 			end
 		end,
 	},
@@ -757,9 +818,11 @@ local states =
 		tags = { "busy", "nointerrupt", "noattack" },
 
 		onenter = function(inst)
+			inst.sg.mem.losecontrol = nil
 			inst:ConfigureFriendly()
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("activate2")
+			TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
 		end,
 
 		timeline =
@@ -881,10 +944,9 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_taunt") end),
 			FrameEvent(21, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/steam_burst") end),
-			--FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_front") end),
 			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_stomp") end),
+			FrameEvent(26, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_taunt") end),
 			FrameEvent(58, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 			FrameEvent(58, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
 		},
@@ -1232,6 +1294,7 @@ local states =
 			FrameEvent(42, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
 				SetShadowScale(inst, 0.93)
+				inst.Physics:SetCollisionMask(COLLISION.WORLD)
 			end),
 			FrameEvent(43, function(inst)
 				SetShadowScale(inst, 0.88)
@@ -1245,8 +1308,8 @@ local states =
 			end),
 
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
-			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short", nil, 0.7) end),
+			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short", nil, 0.8) end),
 			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/steam_burst") end),
 			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst_front") end),
 			FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/spin_jump") end),
@@ -1269,6 +1332,7 @@ local states =
 
 		onexit = function(inst)
 			if not inst.sg.statemem.leaping then
+				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				SetShadowScale(inst, 1)
@@ -1290,6 +1354,7 @@ local states =
 				inst.components.locomotor:Stop()
 			end
 			SetShadowScale(inst, 0.84)
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
 		end,
 
 		onupdate = OnUpdateLeap,
@@ -1319,6 +1384,7 @@ local states =
 
 		onexit = function(inst)
 			if not inst.sg.statemem.leaping then
+				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				SetShadowScale(inst, 1)
@@ -1333,6 +1399,7 @@ local states =
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("atk_leap_pst")
 			SetShadowScale(inst, 0.84)
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
 		end,
 
 		onupdate = OnUpdateLeap,
@@ -1344,6 +1411,7 @@ local states =
 			FrameEvent(3, function(inst) SetShadowScale(inst, 0.93) end),
 			FrameEvent(4, function(inst)
 				SetShadowScale(inst, 1)
+				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
 				inst.sg.statemem.landed = true
 				inst.sg.statemem.shakeonexit = true
 				inst:StartStompFx()
@@ -1387,6 +1455,9 @@ local states =
 		},
 
 		onexit = function(inst)
+			if not inst.sg.statemem.landed then
+				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+			end
 			if inst.sg.statemem.speed then
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
@@ -1408,7 +1479,7 @@ local states =
 			if inst.sg.lasttags and inst.sg.lasttags["moving"] then
 				DoFootstepMedShake(inst)
 			end
-			inst.components.combat:StartAttack()
+			--inst.components.combat:StartAttack()
 		end,
 
 		timeline =
@@ -1417,9 +1488,9 @@ local states =
 
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_missile_1") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
 			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),
 			FrameEvent(10, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
+			FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 		},
 
 		events =
@@ -1448,8 +1519,9 @@ local states =
 			FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
 			FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk") end),
 			FrameEvent(19, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_med") end),
-			FrameEvent(20, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_missile_2") end),
-			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_launch") end),
+			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_missile_2") end),
+			FrameEvent(24, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_launch") end),
+			FrameEvent(25, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_launch") end),
 		},
 
 		events =
@@ -1504,7 +1576,7 @@ local states =
 			local taskdata = { x = x, z = z, missiles = inst.sg.statemem.missiles, grouptargets = grouptargets }
 			taskdata.task = inst:DoPeriodicTask(1, TryRetargetMissiles, nil, taskdata)
 
-			inst.components.combat:RestartCooldown()
+			--inst.components.combat:RestartCooldown()
 			inst.components.timer:StopTimer("missiles_cd")
 			inst.components.timer:StartTimer("missiles_cd", GetRandomMinMax(unpack(TUNING.WAGBOSS_ROBOT_MISSILES_CD)))
 		end,
@@ -1546,7 +1618,7 @@ local states =
 
 		onenter = function(inst, missiles_time)
 			local t = GetTime()
-			inst.sg.statemem.t = missiles_time or t + TUNING.WAGBOSS_ROBOT_MISSILE_BARRAGE_PERIOD
+			inst.sg.statemem.t = missiles_time or t + TUNING.WAGBOSS_ROBOT_MISSILE_BARRAGE_PERIOD[inst.threatlevel or 1]
 			local timeout = inst.sg.statemem.t - t
 			if timeout > 0 then
 				inst.sg:SetTimeout(timeout)
@@ -1668,9 +1740,9 @@ local states =
 			FrameEvent(24, GetUpShake2),
 
 			--#SFX
-			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short", nil, 0.6) end),
 			FrameEvent(11, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
-			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short", nil, 0.7) end),
 			FrameEvent(15, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pre_13tohit") end),
 			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
 			FrameEvent(17, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/steam_burst") end),
@@ -1725,7 +1797,7 @@ local states =
 				inst.components.timer:StartTimer("orbitalstrike_cd", GetRandomMinMax(unpack(TUNING.WAGBOSS_ROBOT_ORBITAL_STRIKE_CD)))
 			elseif inst.canhackdrones then
 				local cd = inst.components.timer:GetTimeLeft("orbitalstrike_cd")
-				local mincd = TUNING.WAGBOSS_ROBOT_ORBITAL_STRIKE_CD[1] / 2
+				local mincd = TUNING.WAGBOSS_ROBOT_ORBITAL_STRIKE_CD[1] / 3
 				if cd == nil then
 					inst.components.timer:StartTimer("orbitalstrike_cd", mincd)
 				elseif cd < mincd then
@@ -1778,7 +1850,7 @@ local states =
 			FrameEvent(7, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_med") end),
 			FrameEvent(13, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
 			FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk_big_single") end),
-			FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short", nil, 0.8) end),
 		},
 
 		events =
@@ -1792,7 +1864,7 @@ local states =
 	},
 
 	State{
-		name = "death",
+		name = "death_beta",
 		tags = { "dead", "busy", "nointerrupt" },
 
 		onenter = function(inst)
@@ -1814,12 +1886,12 @@ local states =
 			FrameEvent(84, function(inst)
 				--do loot
 				inst.persists = false
-				inst.components.commander:PushEventToAllSoldiers("despawn")
+				inst:DespawnDrones()
 
 				--#TEMP_BETA
 				if inst.battlestarttime then
 					local report = inst.components.lootdropper:SpawnLootPrefab("temp_beta_msg")
-					report:SetKillTime(GetTime() - inst.battlestarttime)
+					report:SetKillTime(GetTime() - inst.battlestarttime, "wagboss_robot_possessed")
 				end
 			end),
 			TimeEvent(6, function(inst)
@@ -1831,18 +1903,19 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_death_1") end),
 			FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gears_drop") end),
 			FrameEvent(24, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),
 			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 			FrameEvent(55, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_front") end),
+			FrameEvent(61, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
 			FrameEvent(75, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
 			FrameEvent(86, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_stomp") end),
 			FrameEvent(86, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst_front") end),
-			FrameEvent(86, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/glass_break") end),
-			FrameEvent(61, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
-			FrameEvent(99, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
+			FrameEvent(88, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/glass_break") end),
+			FrameEvent(98, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
 			FrameEvent(110, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
 			FrameEvent(111, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/steam_burst") end),
-			FrameEvent(133, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk_big_single") end),
+			FrameEvent(129, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk_big_single") end),
 		},
 
 		onexit = function(inst)
@@ -1851,6 +1924,111 @@ local states =
 			if not inst.SoundEmitter:PlayingSound("loop") then
 				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
 			end
+		end,
+	},
+
+	State{
+		name = "death",
+		tags = { "dead", "busy", "nointerrupt" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:SetBankAndPlayAnimation("wagboss_lunar", "lunar_spawn_1")
+			inst.AnimState:PushAnimation("lunar_spawn_2", false)
+			inst.AnimState:Hide("lunar_comp")
+			inst.AnimState:Hide("robot_back")
+			inst.Physics:SetMass(0)
+
+			inst:StartBackFx()
+			inst:AddAlterSymbols()
+
+			inst.sg.statemem.alter = SpawnPrefab("alterguardian_phase4_lunarrift")
+			inst.sg.statemem.alter.Transform:SetPosition(inst.Transform:GetWorldPosition())
+			inst.sg.statemem.alter.sg:GoToState("spawn")
+			inst.sg.statemem.alter.persists = false
+			inst.sg.statemem.alter:AddTag("NOCLICK")
+			inst.sg.statemem.alter.Physics:SetActive(false)
+
+			if inst.sg.lasttags and inst.sg.lasttags["moving"] then
+				DoFootstepMedShake(inst)
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(40, function(inst)
+				inst.sg:AddStateTag("noattack")
+				DoJumpShake(inst)
+			end),
+			FrameEvent(54, function(inst) inst.SoundEmitter:KillSound("loop") end),
+			FrameEvent(72, GetUpShake1),
+			FrameEvent(96, GetUpShake2),
+			FrameEvent(130, GetUpShake1),
+			FrameEvent(147, function(inst)
+				inst.AnimState:ClearSymbolBloom("glass1")
+			end),
+			FrameEvent(159, DoFootstepHeavyShake),
+			FrameEvent(159, function(inst)
+				inst.persists = false
+				inst:AddTag("NOCLICK")
+				inst.DynamicShadow:Enable(false)
+				inst.Physics:SetActive(false)
+				inst:StopBackFx()
+				inst.AnimState:SetFinalOffset(-3) --move to back layer
+
+				inst:DespawnDrones()
+
+				--do loot
+				--TODO: should remove them even if they're not my soldiers
+				local dir = math.random() * 360
+				for i = 1, 3 do
+					local dir1 = dir + math.random() * 360 / 6
+					local leg = SpawnPrefab("wagboss_robot_leg")
+					leg:StartTrackingBoss(inst.sg.statemem.alter)
+					Launch2(leg, inst, 7, 4, 3, 2, 15 + math.random() * 4, dir1)
+					dir = dir + 360 / 3
+				end
+
+				--#TEMP_BETA
+				if inst.battlestarttime then
+					local report = inst.components.lootdropper:SpawnLootPrefab("temp_beta_msg")
+					report:SetKillTime(GetTime() - inst.battlestarttime, "wagboss_robot_possessed")
+				end
+
+                local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+                if wagpunk_arena_manager then
+                    -- FIXME(JBK): Refactor this so the manager is not listening for the ondeath event for the wagboss_robot.
+                    -- The robot or alter should fire an event to drive the manager's state when it dies.
+                    wagpunk_arena_manager:TrackWagboss(inst.sg.statemem.alter)
+                end
+				inst.sg.statemem.alter.persists = true
+				inst.sg.statemem.alter:RemoveTag("NOCLICK")
+				inst.sg.statemem.alter.Physics:SetActive(true)
+				inst.sg.statemem.alter.AnimState:SetFinalOffset(-1)
+			end),
+			FrameEvent(171, DoFootstepMedShake),
+			FrameEvent(220, ErodeAway),
+
+			--#SFX
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_death_1") end),
+		},
+
+		onexit = function(inst)
+			--V2C: should not reach here
+			inst:StopBackFx()
+			inst.DynamicShadow:Enable(true)
+			inst.AnimState:SetFinalOffset(-1)
+			inst.AnimState:SetSymbolBloom("rb_head_glass")
+			inst:ClearAlterSymbols()
+			if not inst.SoundEmitter:PlayingSound("loop") then
+				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
+			end
+			inst.AnimState:SetBank("wagboss_robot")
+			inst.AnimState:Show("lunar_comp")
+			inst.AnimState:Show("robot_back")
+			inst.Physics:SetMass(1000)
+			inst.Physics:SetActive(true)
+			inst.sg.statemem.alter:Remove()
 		end,
 	},
 
@@ -1935,7 +2113,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("soundbank/soundpath/eventname") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 		},
 
 		events =
@@ -1977,7 +2155,7 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_front") end),
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long", nil, 0.8) end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long", nil, 0.5) end),
 			FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pre_13tohit") end),
 			FrameEvent(39, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
 			FrameEvent(42, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
@@ -2012,7 +2190,8 @@ local states =
 			FrameEvent(2, DoFootstepHeavyShake),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_front") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst") end),
 		},
 
 		events =

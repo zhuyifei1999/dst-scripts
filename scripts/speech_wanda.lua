@@ -126,6 +126,9 @@ return{
             INUSE = "I should've gotten here sooner.",
             TOOFAR = "It's out of my reach.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "That's right, it's dry. I'll try again later.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "Ooph. That is far too strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "I knew this would happen. It's falling from the sky!",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Right on cue.",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "Empty.",
 			FILLED = "Hello there.",
 		},
-		WAGBOSS_ROBOT = "This never ends well.",
+		WAGBOSS_ROBOT_SECRET = "I've seen what's under there.",
+        WAGBOSS_ROBOT = "This never ends well.",
         WAGBOSS_ROBOT_POSSESSED = "We never learn!",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "We keep meeting like this.",
+		WAGBOSS_ROBOT_LEG = "I remember these being useful somehow.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "There's something different about you.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "He's waiting for it.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "I'll never get used to that!",
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Always in the way!",
+            DAMAGE = "It can have a second chance or its parts can give one.",
             FRIENDLY = "I wonder if it remembers.",
         },
-		WAGDRONE_FLYING = "They're giving me a headache!",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "They're driving me mad!",
+            DAMAGED = "It's beyond repair but the parts are still good.",
+        },
+		WAGDRONE_PARTS = "These can be recycled.",
+		WAGDRONE_BEACON = "Some lines should not be crossed.",
 
         WAGPUNK_WORKSTATION = "Ahead of his time.",
         WAGPUNK_LEVER = "I know what this does...",
         WAGPUNK_FLOOR_KIT = "Hmm, a shortcut to terraformation?",
         WAGPUNK_CAGEWALL = "I don't like being stuck.",
 
+		WAGSTAFF_ITEM_1 = "How did this glove come to be?",
+		WAGSTAFF_ITEM_2 = "It's no longer a projection.",
+
+        HERMITCRAB_RELOCATION_KIT = "Where did I move her to again?",
+
         WANDERINGTRADER = "I've seen him roaming around before.",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "They know what we've done.",
         FLOTATIONCUSHION = "How convenient!",
         LUNAR_SEED = "I forget if this is the end or the beginning.",
     },

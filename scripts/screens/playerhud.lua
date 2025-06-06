@@ -31,7 +31,7 @@ local InspectaclesOver = require("widgets/inspectaclesover")
 local RoseGlassesOver = require("widgets/roseglassesover")
 local BatOver = require "widgets/batover"
 local FlareOver = require "widgets/flareover"
-local LunarBeamOver = require("widgets/lunarbeamover")
+local LunarBurnOver = require("widgets/lunarburnover")
 local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
 local PopupNumber = require "widgets/popupnumber"
 local RingMeter = require "widgets/ringmeter"
@@ -193,7 +193,7 @@ function PlayerHud:CreateOverlays(owner)
     self.beefbloodover = self.overlayroot:AddChild(BeefBloodOver(owner))
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
     self.fireover = self.overlayroot:AddChild(FireOver(owner))
-	self.lunarbeamover = self.overlayroot:AddChild(LunarBeamOver(owner))
+	self.lunarburnover = self.overlayroot:AddChild(LunarBurnOver(owner))
     self.heatover = self.overlayroot:AddChild(HeatOver(owner))
     self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
     self.flareover = self.overlayroot:AddChild(FlareOver(owner))

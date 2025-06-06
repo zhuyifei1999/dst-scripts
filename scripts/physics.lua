@@ -71,11 +71,11 @@ end
 function Launch2(inst, launcher, basespeed, speedmult, startheight, startradius, vertical_speed, force_angle)
     if inst ~= nil and inst.Physics ~= nil and inst.Physics:IsActive() and launcher ~= nil then
 	    local x, y, z = launcher.Transform:GetWorldPosition()
-		local x1, y1, z1 = inst.Transform:GetWorldPosition()
-		local dx, dz = x1 - x, z1 - z
-		local dsq = dx * dx + dz * dz
 		local angle = force_angle ~= nil and (force_angle*DEGREES) or nil
 		if not angle then
+			local x1, y1, z1 = inst.Transform:GetWorldPosition()
+			local dx, dz = x1 - x, z1 - z
+			local dsq = dx * dx + dz * dz
 			if dsq > 0 then
 				local dist = math.sqrt(dsq)
 				angle = math.atan2(dz / dist, dx / dist) + (math.random() * 20 - 10) * DEGREES

@@ -10,6 +10,11 @@ local assets_rift =
 	Asset("ANIM", "anim/alterguardian_spawn_death.zip"),
 	Asset("ANIM", "anim/alterguardian_phase1_lunar.zip"), -- New death anims
 	Asset("ANIM", "anim/alterguardian_phase1_lunarrift.zip"), -- New build w/ lunar crystals
+}
+
+local assets_riftgestalt =
+{
+	Asset("ANIM", "anim/alterguardian_phase1_lunar.zip"), -- New death anims
 	Asset("ANIM", "anim/wagboss_lunar.zip"),
 }
 
@@ -26,6 +31,7 @@ local prefabs_rift =
 {
 	"mining_moonglass_fx",
 	"moonrocknugget",
+	"alterguardian_phase1_lunarrift_gestalt",
 }
 
 SetSharedLootTable("alterguardian_phase1",
@@ -125,6 +131,7 @@ local function teleport_override_fn(inst)
 end
 
 local function OnAttacked(inst, data)
+	inst.components.health:RemoveRegenSource(inst, "lunarriftregen")
     inst.components.combat:SuggestTarget(data.attacker)
     play_custom_hit(inst)
 end
@@ -278,7 +285,6 @@ local function OnSave(inst, data)
     data.loot_dropped = inst._loot_dropped
     local current_state_name = inst.sg.currentstate.name
     data.prespawn_idling = (current_state_name == "prespawn_idle")
-    data.captured = (current_state_name == "captured")
 end
 
 local function OnLoad(inst, data)
@@ -286,8 +292,6 @@ local function OnLoad(inst, data)
         inst._loot_dropped = data.loot_dropped
         if data.prespawn_idling then
             inst.sg:GoToState("prespawn_idle")
-        elseif data.captured then
-            inst.sg:GoToState("captured")
         end
     end
 end
@@ -459,8 +463,6 @@ local function commonfn(common_postinit, server_postinit)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("phasetransition", OnPhaseTransition)
 
-    inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_LP", "idle_LP")
-
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
     inst.OnEntitySleep = OnEntitySleep
@@ -475,41 +477,19 @@ end
 
 --------------------------------------------------------------------------
 
-local function common_postinit(inst)
+local function common_postinit_basic(inst)
 	inst.AnimState:SetBuild("alterguardian_phase1")
 end
 
+local function server_postinit_basic(inst)
+	inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_LP", "idle_LP")
+end
+
 local function fn()
-	return commonfn(common_postinit)
+	return commonfn(common_postinit_basic, server_postinit_basic)
 end
 
 --------------------------------------------------------------------------
-
-local function rift_AddFollowFx(inst, anim, symbol)
-	local fx = CreateEntity()
-
-	fx:AddTag("FX")
-	--[[Non-networked entity]]
-	--inst.entity:SetCanSleep(false)
-	fx.persists = false
-
-	fx.entity:AddTransform()
-	fx.entity:AddAnimState()
-	fx.entity:AddFollower()
-
-	fx.AnimState:SetBank("wagboss_lunar")
-	fx.AnimState:SetBuild("wagboss_lunar")
-	fx.AnimState:PlayAnimation(anim, true)
-	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-	--fx.AnimState:SetMultColour(1, 1, 1, 0.2)
-	fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
-
-	fx.entity:SetParent(inst.entity)
-	fx.Follower:FollowSymbol(inst.GUID, symbol, nil, nil, nil, true)
-
-	table.insert(inst.followfx, fx)
-	table.insert(inst.highlightchildren, fx)
-end
 
 local function CreatePlanarFx()
 	local inst = CreateEntity()
@@ -533,9 +513,7 @@ local function CreatePlanarFx()
 end
 
 local function rift_OnAddColourChanged(inst, r, g, b, a)
-	for i, v in ipairs(inst.followfx) do
-		v.AnimState:SetAddColour(r, g, b, a)
-	end
+	inst.fx.AnimState:SetAddColour(r, g, b, a)
 end
 
 local function common_postinit_rift(inst)
@@ -560,43 +538,40 @@ local function common_postinit_rift(inst)
 		inst.fx.entity:SetParent(inst.entity)
 		inst.fx.Follower:FollowSymbol(inst.GUID, "fx_planar_follow", nil, nil, nil, true)
 
-		inst.followfx = { inst.fx }
 		inst.highlightchildren = { inst.fx }
-
-		--from alterguardian_phase4_lunarrift
-		rift_AddFollowFx(inst, "flame_loop", "lb_eye_comp_crown")
-		rift_AddFollowFx(inst, "flame_loop", "lb_flame_loop_follow_1")
-		rift_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_2")
-		rift_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_3")
 
 		inst.components.colouraddersync:SetColourChangedFn(rift_OnAddColourChanged)
 	end
 end
 
-local function on_lunar_minhealth(inst)
-    inst.sg:GoToState("death_lunar")
+local function rift_OnLoad(inst, data)
+	OnLoad(inst, data)
+	if inst.components.health.currenthealth <= inst.components.health.minhealth and not inst.sg:HasStateTag("dead") then
+		inst.sg:GoToState("death_lunar_loop")
+	end
 end
 
-local function on_lunar_captured(inst, obj, doer)
-    inst.persists = false
-    inst.sg:HandleEvent("captured_despawn")
+local function rift_OnRemoveEntity(inst)
+	if inst.sg.statemem.gestalt then
+		inst.sg.statemem.gestalt:Remove()
+	end
 end
 
 local function server_postinit_rift(inst)
 	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
-	inst.components.planardamage:SetBaseDamage(TUNING.ALTERGUARDIAN_PHASE1_RIFT_PLANAR_DAMAGE)
+	inst.components.planardamage:SetBaseDamage(TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_PLANAR_DAMAGE)
 
+	inst.components.health:SetMaxHealth(TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_HEALTH)
     -- We regenerate from death, so...
 	inst.components.health:SetMinHealth(1)
-    inst:ListenForEvent("minhealth", on_lunar_minhealth)
-
-	inst:AddComponent("gestaltcapturable")
-	inst.components.gestaltcapturable:SetLevel(3)
-	inst.components.gestaltcapturable:SetOnCapturedFn(on_lunar_captured)
-    inst.components.gestaltcapturable:SetEnabled(false)
 
 	inst:AddComponent("colouradder")
+
+	inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
+
+	inst.OnLoad = rift_OnLoad
+	inst.OnRemoveEntity = rift_OnRemoveEntity
 end
 
 local function riftfn()
@@ -605,5 +580,92 @@ end
 
 --------------------------------------------------------------------------
 
+local function riftgestalt_OnCaptured(inst)
+	if inst.PARENT then
+		inst.PARENT.perists = false
+		inst.PARENT.sg:GoToState("captured")
+	end
+end
+
+local function riftgestalt_AddFollowFx(inst, anim, symbol)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_lunar")
+	fx.AnimState:PlayAnimation(anim, true)
+	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	fx.AnimState:SetMultColour(1, 1, 1, 0.5)
+	fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+	fx.AnimState:SetLightOverride(0.5)
+
+	fx.entity:SetParent(inst.entity)
+	fx.Follower:FollowSymbol(inst.GUID, symbol, nil, nil, nil, true)
+
+	table.insert(inst.highlightchildren, fx)
+end
+
+local function riftgestaltfn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	inst.Transform:SetFourFaced()
+	inst.AnimState:SetBank("alterguardian_phase1")
+	inst.AnimState:SetBuild("wagboss_lunar")
+	inst.AnimState:PlayAnimation("collapse_pre")
+	inst.AnimState:SetMultColour(1, 1, 1, 0.5)
+	inst.AnimState:UsePointFiltering(true)
+
+	inst:AddTag("brightmare")
+	inst:AddTag("lunar_aligned")
+	inst:AddTag("NOCLICK")
+	inst:AddTag("nointerpolate")
+
+	inst.no_wet_prefix = true
+
+	--Dedicated server does not need to spawn the local fx
+	if not TheNet:IsDedicated() then
+		inst.highlightchildren = {}
+
+		--from alterguardian_phase4_lunarrift
+		riftgestalt_AddFollowFx(inst, "flame_loop", "lb_eye_comp_crown")
+		riftgestalt_AddFollowFx(inst, "flame_loop", "lb_flame_loop_follow_1")
+		riftgestalt_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_2")
+		riftgestalt_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_3")
+	end
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("gestaltcapturable")
+	inst.components.gestaltcapturable:SetLevel(3)
+	inst.components.gestaltcapturable:SetOnCapturedFn(riftgestalt_OnCaptured)
+	inst.components.gestaltcapturable:SetEnabled(false)
+
+	--inst.PARENT --set by SGalterguardian_phase1.lua
+	inst.persists = false
+
+	return inst
+end
+
+--------------------------------------------------------------------------
+
 return Prefab("alterguardian_phase1", fn, assets, prefabs),
-	Prefab("alterguardian_phase1_lunarrift", riftfn, assets_rift, prefabs_rift)
+	Prefab("alterguardian_phase1_lunarrift", riftfn, assets_rift, prefabs_rift),
+	Prefab("alterguardian_phase1_lunarrift_gestalt", riftgestaltfn, assets_riftgestalt)

@@ -126,6 +126,9 @@ return{
             INUSE = "Mmm, smells lovely, dear.",
             TOOFAR = "It is not within my reach.",
         },
+        DEPLOY = {
+            HERMITCRAB_RELOCATE = "A convenient way for the hermit crab to relocate her home.",
+        },
         DIRECTCOURIER_MAP =
         {
 --fallback to speech_wilson.lua             NOTARGET = "only_used_by_walter",
@@ -1153,7 +1156,7 @@ return{
 
     ANNOUNCE_ELIXIR_TOO_SUPER = "That is too strong.",
 
-    ANNOUNCE_LUNARGUARDIAN_INCOMING = "A destructive heavenly body descends upon us. This is rather unfavorable.",
+    ANNOUNCE_LUNARGUARDIAN_INCOMING = "Not you again!",
 
 	BATTLECRY =
 	{
@@ -5664,25 +5667,40 @@ return{
 			GENERIC = "It is quite empty.",
 			FILLED = "It contains an entity.",
 		},
-		WAGBOSS_ROBOT = "It only poses a threat if he fails to control it.",
+		WAGBOSS_ROBOT_SECRET = "Looks like a machine of sorts.",
+        WAGBOSS_ROBOT = "It only poses a threat if he fails to control it.",
         WAGBOSS_ROBOT_POSSESSED = "The entity does not enjoy being trapped and enslaved.",
-		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It seems intent on retribution.",
+		WAGBOSS_ROBOT_LEG = "The material seemed able to contain the being's power for a time.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT = "It has returned bursting with lunar energy.",
+		ALTERGUARDIAN_PHASE1_LUNARRIFT_GESTALT = "This one is most definitely unique.",
         ALTERGUARDIAN_PHASE4_LUNARRIFT = "A curious amalgamation of machine parts and sentient lunar energy.",
 		WAGDRONE_ROLLING =
         {
-            GENERIC = "They cannot be destroyed.",
+            GENERIC = "Self-propelling automatons with coordinated attacks. An invention of no small ingenuity.",
+            DAMAGE = "I deem it repairable, or harvestable for parts.",
             FRIENDLY = "This version is rather useful.",
         },
-		WAGDRONE_FLYING = "We need protection from their air assault.",
+        WAGDRONE_FLYING =
+        {
+            GENERIC = "Such devices rely on gyroscopic stabilization and propulsive lift. Fascinating and irritating.",
+            DAMAGED = "This one is only the sum of its parts.",
+        },
+		WAGDRONE_PARTS = "Harvested parts useful for repairs.",
+		WAGDRONE_BEACON = "It forms a sort of implied wall.",
 
         WAGPUNK_WORKSTATION = "The Researcher's workstation.",
         WAGPUNK_LEVER = "A standard two-position activation switch.",
         WAGPUNK_FLOOR_KIT = "It's obviously a method of coastal extension.",
         WAGPUNK_CAGEWALL = "It projects a force field tuned to repel physical matter and absorb kinetic impact. Simple.",
 
+		WAGSTAFF_ITEM_1 = "This glove should not be real and yet it is.",
+		WAGSTAFF_ITEM_2 = "It is no longer a projection.",
+
+        HERMITCRAB_RELOCATION_KIT = "Oh dear, it's empty. I'll try again later.",
+
         WANDERINGTRADER = "Oh dear, the roaming vendor sure could use a bath.",
 
-        GESTALT_GUARD_EVOLVED = "TODO", -- TODO
+        GESTALT_GUARD_EVOLVED = "They have evolved into a more hostile form.",
         FLOTATIONCUSHION = "A passive deployment flotation device. I approve.",
         LUNAR_SEED = "A piece of its crown, no doubt.",
     },

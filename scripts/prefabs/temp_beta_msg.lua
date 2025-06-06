@@ -5,20 +5,29 @@ local assets =
 }
 
 local MSG_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon..."
-local MSG_KILLTIME = "\nYou defeated %s in %ds."
+local MSG_BASIC_NEW = "Thanks for playing the beta!"
+local MSG_KILLTIME = "%s\nYou defeated %s in %ds."
 
-local function SetKillTime(inst, killtime)
+local function SetKillTime(inst, killtime, prefabname)
 	inst.killtime = killtime
-	inst.components.inspectable:SetDescription(MSG_BASIC..string.format(MSG_KILLTIME, STRINGS.NAMES.WAGBOSS_ROBOT_POSSESSED, killtime))
+	inst.boss = prefabname
+	inst.components.inspectable:SetDescription(
+		string.format(MSG_KILLTIME,
+			prefabname and MSG_BASIC_NEW or MSG_BASIC,
+			STRINGS.NAMES[string.upper(prefabname or "wagboss_robot_possessed")],
+			killtime
+		)
+	)
 end
 
 local function OnSave(inst, data)
 	data.killtime = inst.killtime
+	data.boss = inst.boss
 end
 
 local function OnLoad(inst, data)--, ents)
 	if data and data.killtime then
-		SetKillTime(inst, data.killtime)
+		SetKillTime(inst, data.killtime, data.boss)
 	end
 end
 
@@ -45,7 +54,7 @@ local function fn()
 	inst.components.inventoryitem:ChangeImageName("mapscroll")
 
 	inst:AddComponent("inspectable")
-	inst.components.inspectable:SetDescription(MSG_BASIC)
+	inst.components.inspectable:SetDescription(MSG_BASIC_NEW)
 
 	inst:AddComponent("erasablepaper")
 

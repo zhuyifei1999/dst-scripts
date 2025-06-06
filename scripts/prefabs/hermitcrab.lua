@@ -315,10 +315,21 @@ local function OnActivatePrototyper(inst, doer, recipe)
     inst.components.npc_talker:Chatter("HERMITCRAB_TALK_ONPURCHASE."..gfl, 1)
 end
 
+local function OnTurnOnPrototyper(inst)
+    local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+    if wagpunk_arena_manager and wagpunk_arena_manager:CanPearlShowRelocationItem() and not inst.components.craftingstation:KnowsItem("hermitcrab_relocation_kit") then
+        local gfl = inst.getgeneralfriendlevel(inst)
+        inst.components.craftingstation:LearnItem("hermitcrab_relocation_kit", "hermitshop_hermitcrab_relocation_kit")
+        inst.components.npc_talker:Chatter("HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT."..gfl)
+        return
+    end
+end
+
 local function EnableShop(inst, shop_level)
     if inst.components.prototyper == nil then
         inst:AddComponent("prototyper")
         inst.components.prototyper.onactivate = OnActivatePrototyper
+        inst.components.prototyper.onturnon = OnTurnOnPrototyper
     end
 
     inst._shop_level = math.min(shop_level or inst._shop_level or 1, 5)

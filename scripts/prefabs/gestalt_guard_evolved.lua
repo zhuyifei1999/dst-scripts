@@ -16,6 +16,7 @@ local brain = require "brains/gestalt_guard_evolvedbrain"
 local shadow_tags = {"nightmarecreature", "shadowcreature", "shadow", "shadowminion", "stalker", "stalkerminion", "nightmare", "shadow_fire"}
 
 local attack_any_tags = ConcatArrays({"player","gestalt_possessable"}, shadow_tags)
+local attack_cant_tags = {"playerghost", "INLIMBO", "FX", "DECOR"}
 local watch_must_tags = {"player"}
 local SLEEPING_TAGS = {"bedroll", "knockout", "sleeping", "tent", "waking"}
 
@@ -31,7 +32,7 @@ local function FindRelocatePoint(inst)
 	local home_pt = inst.components.knownlocations:GetLocation("spawnpoint")
 	if home_pt ~= nil then
         pt = inst:GetPosition()
-        if distsq(pt.x, pt.z, home_pt.x, home_pt.z) >= TUNING.GESTALTGUARD_MAX_DISTSQ_FROM_SPAWN_PT then
+        if distsq(pt.x, pt.z, home_pt.x, home_pt.z) >= TUNING.GESTALT_EVOLVED_MAX_DISTSQ_RELOCATE then
 		    pt = home_pt
         end
 	end
@@ -115,7 +116,7 @@ local function Retarget(inst)
 			end
 		end
 
-		local target = FindEntity(inst, TUNING.GESTALTGUARD_AGGRESSIVE_RANGE, attacktargetcheck, nil, nil, attack_any_tags)
+		local target = FindEntity(inst, TUNING.GESTALTGUARD_AGGRESSIVE_RANGE, attacktargetcheck, nil, attack_cant_tags, attack_any_tags)
 
 		if target == nil and inst.components.combat.target ~= nil then
 			inst.components.combat:DropTarget()
@@ -246,7 +247,7 @@ local function fn()
     end
 
     --
-	--inst.isguard = true
+	inst.persists = false
 	inst._notrail = true
 	inst.FindRelocatePoint = FindRelocatePoint
 
@@ -254,7 +255,7 @@ local function fn()
 	local combat = inst:AddComponent("combat")
 	combat:SetDefaultDamage(TUNING.GESTALTGUARD_DAMAGE)
 	combat:SetRange(TUNING.GESTALTGUARD_ATTACK_RANGE)
-	combat:SetAttackPeriod(3)
+	combat:SetAttackPeriod(6)
     combat:SetRetargetFunction(1, Retarget)
 	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 	inst:ListenForEvent("droppedtarget", OnNoCombatTarget)
