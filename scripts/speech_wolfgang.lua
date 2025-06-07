@@ -5678,12 +5678,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Spin over here so Wolfgang can crush you!",
+            INACTIVE = "Little machine sleeping.",
             DAMAGE = "Aww, little guy can be fixed, or harvest for parts... sniff.",
             FRIENDLY = "We are friends now.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Is giving Wolfgang headache!",
+            INACTIVE = "Little machine sleeping.",
             DAMAGED = "It parts can only give life to another now... sigh.",
         },
 		WAGDRONE_PARTS = "We can use to fix little spinny guy.",

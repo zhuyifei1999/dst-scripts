@@ -58,7 +58,7 @@ local function GetLevelForTarget(target)
 
 		local sanity_rep = target.replica.sanity
 		if sanity_rep ~= nil then
-			local sanity = sanity_rep:GetPercentWithPenalty() or 0
+			local sanity = sanity_rep:IsLunacyMode() and sanity_rep:GetPercentWithPenalty() or 0
 			local level = sanity > 0.33 and 1
 					or 2
 			return level, sanity

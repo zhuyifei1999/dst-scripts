@@ -12934,7 +12934,7 @@ local states =
 
     State{
         name = "knockback",
-		tags = { "busy", "nopredict", "nomorph", "nodangle", "nointerrupt", "jumping" },
+		tags = { "knockback", "busy", "nopredict", "nomorph", "nodangle", "nointerrupt", "jumping" },
 
         onenter = function(inst, data)
             ClearStatusAilments(inst)

@@ -7173,7 +7173,12 @@ STRINGS =
     WAGSTAFF_GOTTAGO1 = "Aha! This selenological anomaly can only mean one thing!",
     WAGSTAFF_GOTTAGO2 = "Now is my chance!",
 
-    WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hm, we've collected too many. Regrettable.",
+    WAGSTAFF_NPC_GOT_ENOUGH_GESTALTCAGE =  {
+        "Enough of these.",
+        "We need something far more powerful.",
+        "I wonder where we can find one..."},
+
+    WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hm, seems we've angered the lunar being in collecting too many of its little friends.",
 
     -- Script.
     WAGSTAFF_NPC_DEFEAT_TWO_MORE_MUTATIONS =
@@ -7272,18 +7277,22 @@ STRINGS =
     },
     WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED = {--he wants something different.
         "Hm, see if you can capture me another variety.",
+        "I have enough of these. I need something special, something more... powerful.",
     },
     WAGSTAFF_GET_MORE_GESTALTCAGES = {--try again,
         "Do you have another sample?",
-        "Take another Phasmo-Encapsulator!",
-        "I need a suitable entity!",
+        "Hm, try getting me another.",
+        "I need a more suitable entity!",
         "Find me a power source!",
     },
     WAGSTAFF_GOT_GESTALTCAGE_GOOD = {-- wants the big one.  not these.
         "Hm, not quite powerful enough, but I can use it.",
+        "I'll take it, but there's a special one I'm looking for.",
     },
     WAGSTAFF_GOT_GESTALTCAGE_GOOD_BIGONE = {-- Got the big one.
-        "Yes! A very good one! Finally!",--todo
+        "Yes! A very good one! Finally!",
+        "You've got it! This will do nicely!",
+        "Excellent, this is the one I've been waiting for!",
     },
     -- Desire for crabby crab to get off of the island.
     WAGSTAFF_WAGPUNK_ARENA_PEARLMAP = {
@@ -7301,14 +7310,15 @@ STRINGS =
 
     -- Desire to find a powerful energy source for the secret project.say it in multi strings. piece it out 1) phamso can capture entiteis for power source, 2) how to build 3) do it
     WAGSTAFF_WAGPUNK_ARENA_CONSTRUCT = {
-        "Now you need to construct a Phasmo-Encapsulator!",
+        "You'll need to construct a Phasmo-Encapsulator to capture an energy being.",
         "Excellent! I need a suitable power source for my creation!",
         "Good. Use a Phasmo-Encapsulator to capture an entity to power my creation!",
     },
 
     WAGSTAFF_WAGPUNK_ARENA_GIVE_GESTALT_CAGE = {
-        "Yes! Use this and capture that entity before it escapes!",--todo
-        "That's the entity I want! Use this. Quickly!",--todo
+        "Yes! Use this and capture that entity before it escapes!",
+        "That's the entity I want! Use this to capture it. Quickly!",
+        "There it is! Take this and capture that entity now!",
     },
 
     -- Desire for the filled3 cage. -- why this still here?
@@ -7333,9 +7343,9 @@ STRINGS =
     WAGSTAFF_WAGPUNK_ARENA_REVEALBOSS = "Behold, my preeminent creation - W.A.R.B.O.T.!",
 
     WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL = {
-        "Blast! It's taken over W.A.R.B.O.T.!",
-        "Egad! We've lost control of the entity!",
-        "The entity is too powerful!",
+        "The entity has taken control of W.A.R.B.O.T..",
+        "Seems I underestimated its strength, a shame.",
+        "Ah well. Deal with it, would you?",
     },
 
     -- Terraria

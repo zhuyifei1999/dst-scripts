@@ -5684,12 +5684,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "You guys are so annoying!",
+            INACTIVE = "Do something!",
             DAMAGE = "So I could fix it or take its parts, but can I just incinerate it?",
             FRIENDLY = "Remember when these guys tried to kill us?",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Get outta here, flying trashcans!",
+            INACTIVE = "Do something!",
             DAMAGED = "Blah, it's just spare parts at this point.",
         },
 		WAGDRONE_PARTS = "Spare junk.",

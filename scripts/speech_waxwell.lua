@@ -5677,12 +5677,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Truly loathsome!",
+            INACTIVE = "More wired junk.",
             DAMAGE = "Apparently it may be repaired, or salvaged for parts.",
             FRIENDLY = "I don't like it.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Ugh, go away!",
+            INACTIVE = "More wired junk.",
             DAMAGED = "Nothing but spare parts here.",
         },
 		WAGDRONE_PARTS = "A trophy for besting a machine.",

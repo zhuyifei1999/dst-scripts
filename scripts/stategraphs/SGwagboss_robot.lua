@@ -2010,8 +2010,20 @@ local states =
 			FrameEvent(220, ErodeAway),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_death_1") end),
-		},
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_1") end),
+			FrameEvent(4, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
+			FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(37, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gears_drop") end),
+			FrameEvent(37, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),
+			FrameEvent(80, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
+			FrameEvent(93, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_2") end),
+			FrameEvent(97, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(127, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(90, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_2") end),
+			FrameEvent(109, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(129, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(196, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_3") end),
+			FrameEvent(235, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_4") end),	},
 
 		onexit = function(inst)
 			--V2C: should not reach here

@@ -5681,12 +5681,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Why, spinning friends, why?",
+            INACTIVE = "Sleeping friend",
             DAMAGE = "Fix spinning friend, or take spinning friend parts",
             FRIENDLY = "Nice spinning friend",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Bad flying robot friends!",
+            INACTIVE = "Sleeping friend",
             DAMAGED = "Bye flying robot friend, thank you for parts",
         },
 		WAGDRONE_PARTS = "Friend parts?",

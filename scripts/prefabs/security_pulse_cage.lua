@@ -21,36 +21,6 @@ local FULL_FUNNYIDLE_ANIMNAME = "idle_full"
 local FULL_FUNNYIDLE_TIME_MIN = 7
 local FULL_FUNNYIDLE_TIME_MAX = 12
 
---
-local function finish_erode(inst)
-    inst.AnimState:SetErosionParams(0, 0, 0)
-    if inst._erode_thread then
-        scheduler:KillTask(inst._erode_thread)
-        inst._erode_thread = nil
-    end
-end
-
-local SHADER_CUTOFF_HEIGHT = -0.125
-local function erode(inst, data)
-    if not inst._erode_thread then
-        local time_to_erode = (data and data.time) or 1
-        local tick_time = TheSim:GetTickTime()
-
-        inst._erode_thread = inst:StartThread(function()
-            local ticks = 0
-            while ticks * tick_time < time_to_erode do
-                local erode_amount = 1 - (ticks * tick_time / time_to_erode)
-                inst.AnimState:SetErosionParams(erode_amount, SHADER_CUTOFF_HEIGHT, -1.0)
-                ticks = ticks + 1
-
-                Yield()
-            end
-        end)
-
-        inst:DoTaskInTime(1.1 * time_to_erode, finish_erode)
-    end
-end
-
 ------------------------------------------------------------------------------------------------------------------
 
 -- security_pulse_cage_full fns
@@ -139,8 +109,6 @@ local function CommonFn(commonfn, anim)
     end
 
     inst.scrapbook_anim = anim
-
-    inst:ListenForEvent("doerode", erode)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")

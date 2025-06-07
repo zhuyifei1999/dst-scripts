@@ -857,84 +857,31 @@ local PHASES =
 
 local DEESCALATE_TIME = 30
 
+local function CalcThreatLevel(dps)
+	local numthreatlevels = #TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD
+	return math.clamp(math.floor(Remap(dps, 150, 375, 1, numthreatlevels)), 1, numthreatlevels)
+end
+
 local function SetThreatLevel(inst, level)
 	if inst._threattask then
 		inst._threattask:Cancel()
 	end
 	inst._threattask = level > 1 and inst:DoTaskInTime(DEESCALATE_TIME, SetThreatLevel, level - 1) or nil
-	if inst.threatlevel and level ~= inst.threatlevel then
-		print(inst, "threat level "..(level > inst.threatlevel and "raised" or "lowered").." to "..tostring(level))
+
+	if level ~= inst.threatlevel then
+		if inst.threatlevel then
+			print(inst, "threat level "..(level > inst.threatlevel and "raised" or "lowered").." to "..tostring(level))
+		end
+		inst.threatlevel = level
+		inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD[level])
 	end
-	inst.threatlevel = level
-	inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD[level])
 end
 
-local MAX_DPS_SIZE = 100
-local MAX_DPS_WINDOW = 2--seconds
-
-local function OnHealthDelta(inst, data)
-	local tbl = inst._dpstbl
-	local i0 = inst._dpsi0
-	local i1
-	local sz = inst._dpssz
-	local entry
-	local t = GetTime()
-
-	if sz > 0 then
-		i1 = i0 + sz - 1
-		if i1 > MAX_DPS_SIZE then
-			i1 = i1 - MAX_DPS_SIZE
-		end
-		entry = tbl[i1]
-		--if time matches, we can overwrite it, otherwise clear
-		if entry.t ~= t then
-			i1 = nil
-			entry = nil
-		end
-	end
-
-	if i1 == nil then
-		if sz < MAX_DPS_SIZE then
-			i1 = i0 + sz
-			if i1 > MAX_DPS_SIZE then
-				i1 = i1 - MAX_DPS_SIZE
-			end
-			sz = sz + 1
-			entry = tbl[i1]
-			if entry == nil then
-				entry = {}
-				tbl[i1] = entry
-			end
-		else
-			i1 = i0
-			i0 = i0 == MAX_DPS_SIZE and 1 or i0 + 1
-			entry = tbl[i1]
-		end
-	end
-
-	entry.hp = inst.components.health.currenthealth
-	entry.t = t
-
-	while sz > 1 do
-		if entry.t - tbl[i0].t > MAX_DPS_WINDOW then
-			i0 = i0 == MAX_DPS_SIZE and 1 or i0 + 1
-			sz = sz - 1
-		else
-			break
-		end
-	end
-
-	local entry0 = tbl[i0]
-	local dt = entry.t - entry0.t
-	local dps = (entry0.hp - entry.hp) / (dt > 0 and dt or MAX_DPS_WINDOW)
-	local numthreatlevels = #TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD
-	local threatlevel = math.clamp(math.floor(Remap(dps, 150, 375, 1, numthreatlevels)), 1, numthreatlevels)
-	if threatlevel > inst.threatlevel then
+local function OnDpsUpdate(inst, dps)
+	local threatlevel = CalcThreatLevel(dps)
+	if threatlevel >= inst.threatlevel then
 		SetThreatLevel(inst, threatlevel)
 	end
-
-	inst._dpsi0 = i0
-	inst._dpssz = sz
 end
 
 --------------------------------------------------------------------------
@@ -982,7 +929,6 @@ local function SetCombatEnabled(inst, enabled)
 
 			inst:AddComponent("combat")
 			inst.components.combat:SetDefaultDamage(TUNING.WAGBOSS_ROBOT_DAMAGE)
-			SetThreatLevel(inst, 1)
 			--inst.components.combat:SetAttackPeriod(TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD[1])
 			inst.components.combat:SetRange(TUNING.WAGBOSS_ROBOT_ATTACK_RANGE)
 			inst.components.combat:SetRetargetFunction(1, RetargetFn)
@@ -998,6 +944,9 @@ local function SetCombatEnabled(inst, enabled)
 			end
 			PHASES[1].fn(inst)
 
+			inst:AddComponent("dpstracker")
+			inst.components.dpstracker:SetOnDpsUpdateFn(OnDpsUpdate)
+
 			inst:AddComponent("planarentity")
 			inst:AddComponent("planardamage")
 			inst.components.planardamage:SetBaseDamage(TUNING.WAGBOSS_ROBOT_PLANAR_DAMAGE)
@@ -1010,9 +959,10 @@ local function SetCombatEnabled(inst, enabled)
 			inst:ListenForEvent("newcombattarget", OnNewTarget)
 			inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 			inst:ListenForEvent("soldierschanged", OnSoldiersChanged)
-			inst:ListenForEvent("healthdelta", OnHealthDelta)
 
 			--inst.threatlevel = 1
+			SetThreatLevel(inst, 1)
+
 			inst._engagetask = nil
 			inst.engaged = false
 		end
@@ -1028,8 +978,6 @@ local function SetCombatEnabled(inst, enabled)
 			inst._threattask = nil
 		end
 		inst.threatlevel = nil
-		inst._dpsi0 = 1
-		inst._dpssz = 0
 
 		SetFlyersActive(inst, false)
 		SetRollersActive(inst, false)
@@ -1039,8 +987,8 @@ local function SetCombatEnabled(inst, enabled)
 		inst:RemoveEventCallback("newcombattarget", OnNewTarget)
 		inst:RemoveEventCallback("droppedtarget", OnDroppedTarget)
 		inst:RemoveEventCallback("soldierschanged", OnSoldiersChanged)
-		inst:RemoveEventCallback("healthdelta", OnHealthDelta)
 
+		inst:RemoveComponent("dpstracker")
 		inst:RemoveComponent("healthtrigger")
 		inst:RemoveComponent("health")
 		inst:RemoveComponent("combat")
@@ -1379,10 +1327,6 @@ local function fn()
 
 	inst._temptbl1 = {}
 	inst._temptbl2 = {}
-
-	inst._dpstbl = {}
-	inst._dpsi0 = 1
-	inst._dpssz = 0
 
 	inst.active = false
 	inst.hostile = false

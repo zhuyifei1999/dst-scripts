@@ -5677,12 +5677,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "BEHAVE!",
+            INACTIVE = "SLEEP MODE",
             DAMAGE = "I CAN REPAIR IT OR HARVEST FOR PARTS IF I MUST",
             FRIENDLY = "CUTIE PIE",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "WHY ARE YOU TARGETTING ME?",
+            INACTIVE = "SLEEP MODE",
             DAMAGED = "ANOTHER WILL LIVE BECAUSE OF YOU",
         },
 		WAGDRONE_PARTS = "SUCH CARNAGE",

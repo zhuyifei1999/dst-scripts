@@ -802,7 +802,7 @@ local MOONSTORM_SPARKS_CANT_HAVE = {"INLIMBO"}
 
 function self:DoTestForSparks()
 	local moonstorms = TheWorld.net.components.moonstorms
-	if not moonstorms then
+	if moonstorms then
 		for _, player in pairs(_activeplayers) do
 			local pt = player:GetPosition()
 			if moonstorms:IsPointInMoonstorm(pt) then
@@ -821,7 +821,7 @@ end
 
 function self:DoTestForLightning()
 	local moonstorms = TheWorld.net.components.moonstorms
-	if not moonstorms then
+	if moonstorms then
 		local candidates = {}
 		for _, player in pairs(_activeplayers) do
 			local pt = player:GetPosition()
@@ -830,7 +830,7 @@ function self:DoTestForLightning()
 			end
 		end
 
-		if #candidates > 0 then
+		if GetTableSize(candidates) > 0 then
 			local candidate, candidate_pt = GetRandomItemWithIndex(candidates)
 			local pos = FindWalkableOffset(candidate_pt, math.random()*TWOPI, 5 + math.random()* 10, 16, nil, nil, customcheckfn, nil, nil)
 			if pos then

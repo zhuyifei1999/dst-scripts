@@ -82,8 +82,7 @@ function LunarRiftMutationsManager:SetMutationDefeated(ent)
             if self:ShouldGiveReward() then
                 local lootdropper = ent.components.lootdropper
                 if lootdropper then
-                    local loot = lootdropper:SpawnLootPrefab("security_pulse_cage")
-                    loot:PushEvent("doerode", {time = 1.5})
+                    lootdropper:SpawnLootPrefab("security_pulse_cage")
                 end
                 self:OnRewardGiven()
             end

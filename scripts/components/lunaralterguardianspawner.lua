@@ -56,7 +56,7 @@ function self:HasGuardianOrIsPending()
 end
 
 function self:KickOffSpawn()
-    self.inst:DoTaskInTime(4.5, function(i)
+    self.inst:DoTaskInTime(15, function(i)
         _activeguardian = SpawnPrefab("alterguardian_phase1_lunarrift")
         _activeguardian.Physics:Teleport(self.guardiancomingpt:Get())
 

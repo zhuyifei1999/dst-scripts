@@ -290,7 +290,7 @@ function Health:RegisterLunarBurnSource(source, flags)
 end
 
 function Health:UnregisterLunarBurnSource(source)
-	if self.lunarburns[source] then
+	if self.lunarburns and self.lunarburns[source] then
 		if EntityScript.is_instance(source) then
 			self.inst:RemoveEventCallback("onremove", self._onremovelunarburn, source)
 		end

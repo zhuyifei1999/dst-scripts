@@ -126,11 +126,11 @@ end
 --currently player_classified.lunarburnflags is net_tinybyte => 3 bits
 local LunarBurnFlags =
 {
-	GENERIC =			0x001,
-	NEAR_SUPERNOVA =	0x010,
-	SUPERNOVA =			0x100,
+	GENERIC =			0x1,
+	NEAR_SUPERNOVA =	0x2,
+	SUPERNOVA =			0x4,
 
-	ALL =				0x111,
+	ALL =				0x7,
 }
 
 --bit not available outside of sim

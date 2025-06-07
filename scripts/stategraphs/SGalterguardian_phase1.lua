@@ -91,6 +91,12 @@ local function IsntDead(inst)
     return health ~= nil and health.currenthealth > health.minhealth
 end
 
+local function player_push_arrive_speech(player)
+    if player.components.talker then
+        player.components.talker:Say(GetString(player, "ANNOUNCE_LUNARGUARDIAN_INCOMING"))
+    end
+end
+
 local events =
 {
     CommonHandlers.OnFreeze(),
@@ -221,6 +227,10 @@ local ROLL_SS_SPEED = 0.1
 local ROLL_SS_SCALE = 0.1
 local function roll_screenshake(inst)
     ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, ROLL_SS_SPEED, ROLL_SS_SCALE, inst, 40)
+end
+
+local function spawn_land_screenshake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.8, 0.03, 0.6, inst, 40)
 end
 
 local function spawn_landfx(inst)
@@ -973,8 +983,14 @@ local states =
         {
             FrameEvent(10, function(inst)
                 inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/tantrum")
-                roll_screenshake(inst)
+				spawn_land_screenshake(inst)
                 spawn_landfx(inst)
+
+                local ix, iy, iz = inst.Transform:GetWorldPosition()
+                local players_in_speech_range = FindPlayersInRangeSq(ix, iy, iz, 625, true)
+                for i, player in pairs(players_in_speech_range) do
+                    player:DoTaskInTime(i * 8 * FRAMES, player_push_arrive_speech)
+                end
             end),
             SoundFrameEvent(41, "moonstorm/creatures/boss/alterguardian1/spawn"),
         },

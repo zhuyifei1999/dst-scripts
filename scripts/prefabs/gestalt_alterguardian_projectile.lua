@@ -23,10 +23,9 @@ local function SetTargetPosition(inst, target_pos)
 end
 
 local function Client_CalcSanityForTransparency(inst, observer)
-    if observer ~= nil and observer.replica.sanity ~= nil then
-        local observer_sanity = observer.replica.sanity:GetPercentWithPenalty()
-        local x = (observer_sanity - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT_MIN_SANITY_TO_SPAWN)
-
+	local sanity = observer and observer.replica.sanity
+	if sanity then
+		local x = math.max(0, sanity:GetPercentWithPenalty() - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT_MIN_SANITY_TO_SPAWN)
         return math.min(0.4*x*x*x + 0.3, 0.75)
     else
         return 0.3

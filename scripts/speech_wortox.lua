@@ -5697,12 +5697,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Deranged dervish on the skirmish!",
+            INACTIVE = "A mean little machine!",
             DAMAGE = "Shall I repair or take the spare... parts?",
             FRIENDLY = "A friendly model that doesn't dawdle.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Buzzing blight from yonder height!",
+            INACTIVE = "A mean little machine!",
             DAMAGED = "It's had its day, let's salvage away!",
         },
 		WAGDRONE_PARTS = "Spares for repairs.",

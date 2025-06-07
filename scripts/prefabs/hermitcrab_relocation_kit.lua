@@ -77,6 +77,9 @@ local PLACER_RADIUS = {
     ["beebox_hermit"] = 1.5,
 }
 
+local function IsPermanentFilterFn(tileid)
+    return IsLandTile(tileid) and not (TileGroupManager:IsTemporaryTile(tileid) and tileid ~= WORLD_TILES.FARMING_SOIL)
+end
 local CHECK_CANT_TAGS = {"FX", "NOCLICK", "DECOR", "INLIMBO", "NOBLOCK", "player"}
 local function CLIENT_CanDeployKit(inst, pt, mouseover, deployer, rotation)
     if not TheWorld:HasTag("forest") then
@@ -116,7 +119,7 @@ local function CLIENT_CanDeployKit(inst, pt, mouseover, deployer, rotation)
                     return false
                 end
             else
-                if not clear or not map:IsLandTileAtPoint(x, 0, z) then
+                if not clear or not IsPermanentFilterFn(map:GetTileAtPoint(x, 0, z)) then
                     return false
                 end
             end
@@ -226,7 +229,7 @@ local function OnUpdateTransform(inst)
                         visuals[i].AnimState:SetAddColour(.25, .75, .25, 0)
                     end
                 else
-                    if not clear or not map:IsLandTileAtPoint(x, 0, z) then
+                    if not clear or not IsPermanentFilterFn(map:GetTileAtPoint(x, 0, z)) then
                         if prefab == "hermitcrab_lure_marker" then
                             visuals[i].AnimState:PlayAnimation("idle_small_target")
                         end

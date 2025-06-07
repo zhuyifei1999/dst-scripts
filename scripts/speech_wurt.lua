@@ -5677,12 +5677,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Making me dizzy! Flort!",
+            INACTIVE = "Make on! Florp!",
             DAMAGE = "Can fix or take parts! Me choose.",
             FRIENDLY = "Be nice! Glurgh.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Flort! Fly away!",
+            INACTIVE = "Make on! Florp!",
             DAMAGED = "What mean can't fix? Fine, take parts! Florp.",
         },
 		WAGDRONE_PARTS = "Extra bits. Florp.",

@@ -5681,12 +5681,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They are compelled by a greater entity.",
+            INACTIVE = "Does it dream?",
             DAMAGE = "It can live again or sacrifice its parts for another.",
             FRIENDLY = "It kind of lost its spark.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "They're starting to irritate me.",
+            INACTIVE = "Does it dream?",
             DAMAGED = "It cannot be brought back but its parts may be gifted to another.",
         },
 		WAGDRONE_PARTS = "A shame we don't come with spare parts.",

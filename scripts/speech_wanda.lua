@@ -5677,12 +5677,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "Always in the way!",
+            INACTIVE = "I remember you.",
             DAMAGE = "It can have a second chance or its parts can give one.",
             FRIENDLY = "I wonder if it remembers.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "They're driving me mad!",
+            INACTIVE = "I remember you.",
             DAMAGED = "It's beyond repair but the parts are still good.",
         },
 		WAGDRONE_PARTS = "These can be recycled.",

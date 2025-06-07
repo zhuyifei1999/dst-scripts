@@ -29,7 +29,8 @@ local function Client_CalcSanityForTransparency(inst, observer)
 		return TUNING.GESTALT_COMBAT_TRANSPERENCY
 	end
 
-	local x = (observer ~= nil and observer.replica.sanity ~= nil) and (observer.replica.sanity:GetPercentWithPenalty() - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) or 0
+	local sanity = observer and observer.replica.sanity
+	local x = sanity and sanity:IsLunacyMode() and math.max(0, observer.replica.sanity:GetPercentWithPenalty() - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT_MIN_SANITY_TO_SPAWN) or 0
 	return math.min(0.5, 0.4*x*x*x + 0.3)
 end
 

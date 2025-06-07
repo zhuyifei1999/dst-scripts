@@ -5677,12 +5677,14 @@ return{
 		WAGDRONE_ROLLING =
         {
             GENERIC = "They are running amok!",
+            INACTIVE = "Maybe it can mix batter?",
             DAMAGE = "I can repair it or use the parts to repair another.",
             FRIENDLY = "A portable chopper.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "This is overwhelming!",
+            INACTIVE = "Maybe it can chop veggies?",
             DAMAGED = "These leftovers can only be used to fix another!",
         },
 		WAGDRONE_PARTS = "It looks like part of a cake mixer.",

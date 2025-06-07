@@ -60,6 +60,7 @@ local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "no
 
 local function _AOEAttack(inst, x, z, radius, heavymult, mult, forcelanded, targets)
 	inst.components.combat.ignorehitrange = true
+	local t = GetTime()
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + AOE_RANGE_PADDING, AOE_TARGET_MUSTHAVE_TAGS, AOE_TARGET_CANT_TAGS)) do
 		if v ~= inst and targets[v] == nil and
 			v:IsValid() and not v:IsInLimbo() and
@@ -72,7 +73,7 @@ local function _AOEAttack(inst, x, z, radius, heavymult, mult, forcelanded, targ
 					local strengthmult = (v.components.inventory and v.components.inventory:ArmorHasTag("heavyarmor") or v:HasTag("heavybody")) and heavymult or mult
 					v:PushEvent("knockback", { knocker = inst, radius = radius, strengthmult = strengthmult, forcelanded = forcelanded })
 				end
-				targets[v] = true
+				targets[v] = t
 			end
 		end
 	end
@@ -93,6 +94,7 @@ end
 local NON_COLLAPSIBLE_TAGS = { "FX", --[["NOCLICK",]] "DECOR", "INLIMBO" }
 
 local function _AOEWork(inst, x, z, radius, targets)
+	local t = GetTime()
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, radius + WORK_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)) do
 		if targets[v] == nil and
 			v:IsValid() and not v:IsInLimbo() and
@@ -105,7 +107,7 @@ local function _AOEWork(inst, x, z, radius, targets)
 				(v.components.workable:CanBeWorked() and work_action and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
 			then
 				v.components.workable:Destroy(inst)
-				targets[v] = true
+				targets[v] = t
 			end
 		end
 	end
@@ -217,7 +219,9 @@ local function SnapTo45s(angle)
 	return math.floor(angle / 45 + 0.5) * 45
 end
 
-local function DoFissures(inst)
+local function DoFissures(inst, offset)
+	offset = offset or 1
+
 	local map = TheWorld.Map
 	local x, _, z = inst.Transform:GetWorldPosition()
 	if map:IsPointInWagPunkArena(x, 0, z) then
@@ -225,6 +229,8 @@ local function DoFissures(inst)
 
 		assert(next(inst._temptbl1) == nil)
 		local tospawn = inst._temptbl1
+		local numtospawn = 0
+		local numvalidrows = 0
 		local rot = SnapTo45s(inst.Transform:GetRotation())
 		local theta = rot * DEGREES
 		if bit.band(math.floor(rot / 45 + 0.5), 1) == 0 then
@@ -232,35 +238,33 @@ local function DoFissures(inst)
 			local dx = TILE_SIZE * math.cos(theta)
 			local dz = -TILE_SIZE * math.sin(theta)
 
-			--start one tile behind
-			x = x + dx
-			z = z + dz
+			--start row offset
+			x = x + offset * dx
+			z = z + offset * dz
 
 			local w = 1
-			local inarena = true
-			while inarena do
+			while true do
 				local x1, z1 = x, z
 				x = x + w * dz
 				z = z - w * dx
-				inarena = false
+				local inarena = false
 				for i = -w, w do
 					if map:IsPointInWagPunkArena(x, 0, z) then
 						local id = WagBossUtil.TileCoordsToId(map:GetTileCoordsAtPoint(x, 0, z))
 						if not WagBossUtil.HasFissure(id) then
 							tospawn[id] = true
 						end
+						numtospawn = numtospawn + 1
 						inarena = true
 					end
 					x = x - dz
 					z = z + dx
 				end
-				if w == 1 then
-					w = 3
-				elseif inarena then
-					w = w + 1
-				else
+				if not inarena then
 					break
 				end
+				numvalidrows = numvalidrows + 1
+				w = w == 1 and 3 or w + 1
 				x = x1 + dx
 				z = z1 + dz
 			end
@@ -268,38 +272,44 @@ local function DoFissures(inst)
 			local dx = DIAG_TILE_SIZE * math.cos(theta)
 			local dz = -DIAG_TILE_SIZE * math.sin(theta)
 
-			--start half a tile diagonally in front
-			x = x + dx / 2
-			z = z + dz / 2
+			--start row offset
+			x = x + dx * offset / 2
+			z = z + dz * offset / 2
 
-			local w = 0.5
-			local inarena = true
-			while inarena do
+			local w = bit.band(offset, 1) == 0 and 1 or 0.5
+			while true do
 				local x1, z1 = x, z
 				x = x + w * dz
 				z = z - w * dx
-				inarena = false
+				local inarena = false
 				for i = -w, w do
 					if map:IsPointInWagPunkArena(x, 0, z) then
 						local id = WagBossUtil.TileCoordsToId(map:GetTileCoordsAtPoint(x, 0, z))
 						if not WagBossUtil.HasFissure(id) then
 							tospawn[id] = true
 						end
+						numtospawn = numtospawn + 1
 						inarena = true
 					end
 					x = x - dz
 					z = z + dx
 				end
-				if w == 0.5 then
-					w = 2
-				elseif inarena then
-					w = w + 0.5
-				else
+				if not inarena then
 					break
 				end
+				numvalidrows = numvalidrows + 1
+				w = w == 0.5 and 2 or w + 0.5
 				x = x1 + dx / 2
 				z = z1 + dz / 2
 			end
+		end
+
+		if numtospawn < 1 and numvalidrows < 3 and offset >= 0 then
+			for k in pairs(tospawn) do
+				tospawn[k] = nil
+			end
+			--assert(next(tospawn) == nil)
+			return DoFissures(inst, -1)
 		end
 
 		local fissures = {}
@@ -489,7 +499,8 @@ local states =
 			end),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hit") end),
+			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
 		},
 
 		events =
@@ -559,7 +570,7 @@ local states =
 			end),
 
 			--#SFX
-			FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/taunt_emerge") end),
+			FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound(inst.sg.statemem.triggerlunacy == false and "rifts5/lunar_boss/taunt_emerge" or "rifts5/lunar_boss/taunt") end),
 		},
 
 		events =
@@ -724,7 +735,9 @@ local states =
 			end),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/slam") end),
+			FrameEvent(106, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(123, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
 		},
 
 		events =
@@ -763,10 +776,41 @@ local states =
 			inst.components.combat:StartAttack()
 			inst:SwitchToEightFaced()
 			inst.AnimState:PlayAnimation("dash_pre")
+			inst.SoundEmitter:PlaySound("rifts5/lunar_boss/dash_lp", "dashloop")
 			if target and target:IsValid() then
 				inst.sg.statemem.target = target
 				inst.sg.statemem.targetpos = target:GetPosition()
-				inst:ForceFacePoint(inst.sg.statemem.targetpos:Get())
+				local x, _, z = inst.Transform:GetWorldPosition()
+				local dx = inst.sg.statemem.targetpos.x - x
+				local dz = inst.sg.statemem.targetpos.z - z
+				local dir, theta
+				if dx ~= 0 or dz ~= 0 then
+					theta = math.atan2(-dz, dx)
+				else
+					dir = inst.Transform:GetRotation()
+				end
+				if inst.dashcombo and inst.dashcount >= inst.dashcombo and inst.slamcombo then
+					local map = TheWorld.Map
+					if map:IsPointInWagPunkArena(x, 0, z) then
+						local cx, cz = map:GetWagPunkArenaCenterXZ()
+						if x ~= cx or z ~= cz then
+							theta = theta or dir * RADIANS
+							local dist = 22.7
+							local x1 = x + math.cos(theta) * dist
+							local z1 = z - math.sin(theta) * dist
+							--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
+							if distsq(x1, z1, cx, cz) >= 256 then
+								--ends up too far at edge of arena, aim back toward center
+								theta = math.atan2(z - cz, cx - x)
+								theta = theta + (math.random() - 0.5) * math.pi / 4
+								dir = theta * RADIANS
+								inst.sg.statemem.target = nil
+								inst.sg.statemem.targetpos = nil
+							end
+						end
+					end
+				end
+				inst.Transform:SetRotation(dir or theta * RADIANS)
 			end
 		end,
 
@@ -853,6 +897,7 @@ local states =
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				SetPreventDeath(inst, false)
+				inst.SoundEmitter:KillSound("dashloop")
 			end
 		end,
 	},
@@ -866,13 +911,18 @@ local states =
 			if not inst.AnimState:IsCurrentAnimation("dash_loop") then
 				inst.AnimState:PlayAnimation("dash_loop", true)
 			end
+			if not inst.SoundEmitter:PlayingSound("dashloop") then
+				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/dash_lp", "dashloop")
+			end
 			inst.Physics:SetMotorVelOverride(DASH_SPEED, 0, 0)
 			SetPreventDeath(inst, true)
 			inst:StartDashFx()
-			inst.sg.statemem.data = data or {}
-			if data.targets == nil then
+			if data == nil then
+				data = { targets = {} }
+			elseif data.targets == nil then
 				data.targets = {}
 			end
+			inst.sg.statemem.data = data
 			inst.components.combat:RestartCooldown()
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 		end,
@@ -934,6 +984,7 @@ local states =
 				SetPreventDeath(inst, false)
 			end
 			if not inst.sg.statemem.dashlooping then
+				inst.SoundEmitter:KillSound("dashloop")
 				inst:StopDashFx()
 			end
 		end,
@@ -947,7 +998,15 @@ local states =
 			inst:SwitchToEightFaced()
 			inst.AnimState:PlayAnimation("dash_pst")
 			SetPreventDeath(inst, true)
-			inst.sg.statemem.targets = targets
+			if targets then
+				inst.sg.statemem.targets = targets
+				local t = GetTime() - 0.5
+				for k, v in pairs(targets) do
+					if v < t then
+						targets[k] = nil
+					end
+				end
+			end
 			inst.sg.statemem.decelt = 0
 		end,
 
@@ -987,7 +1046,9 @@ local states =
 			end),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/dash_pst") end),
+			FrameEvent(46, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(46, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
 		},
 
 		events =
@@ -1119,9 +1180,9 @@ local states =
 			inst:SwitchToNoFaced()
 			inst.AnimState:PlayAnimation("atk_burst_charge_to_shoot")
 			SetPreventDeath(inst, true)
-			if not inst.SoundEmitter:PlayingSound("bursting") then
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
-			end
+			inst.SoundEmitter:KillSound("idlea")
+			inst.SoundEmitter:KillSound("idleb")
+			inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
 		end,
 
 		timeline =
@@ -1148,6 +1209,8 @@ local states =
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
 				inst.SoundEmitter:KillSound("bursting")
+				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
+				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 			end
 		end,
 	},
@@ -1165,6 +1228,8 @@ local states =
 			if not inst.AnimState:IsCurrentAnimation("atk_burst_shoot_loop") then
 				inst.AnimState:PlayAnimation("atk_burst_shoot_loop", true)
 			end
+			inst.SoundEmitter:KillSound("idlea")
+			inst.SoundEmitter:KillSound("idleb")
 			if not inst.SoundEmitter:PlayingSound("bursting") then
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
 			end
@@ -1214,6 +1279,8 @@ local states =
 			end
 			if not inst.sg.statemem.bursting then
 				inst.SoundEmitter:KillSound("bursting")
+				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
+				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 			end
 		end,
 	},

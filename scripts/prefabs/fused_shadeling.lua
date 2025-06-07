@@ -117,7 +117,7 @@ end
 local MIN_TRANSPARENCY = 0.4
 local function CLIENT_CalculateSanityTransparencyForPlayer(inst, player)
     local player_sanity_replica = player.replica.sanity
-    return (not player_sanity_replica and MIN_TRANSPARENCY) or
+	return (not (player_sanity_replica and player_sanity_replica:IsInsanityMode()) and MIN_TRANSPARENCY) or
         math.clamp(1 - player_sanity_replica:GetPercent(), MIN_TRANSPARENCY, 1.0)
 end
 

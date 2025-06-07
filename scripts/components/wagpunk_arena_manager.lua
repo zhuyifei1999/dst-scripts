@@ -811,6 +811,11 @@ function self:CheckConstructCompleted()
             if self.inst.components.lunaralterguardianspawner then
                 self.inst.components.lunaralterguardianspawner:TrySpawnLunarGuardian(self.wagstaff)
             end
+            if self.wagstaff and not self.wagstaff.erodingout then
+                self.wagstaff.components.npc_talker:resetqueue()
+                self.wagstaff.components.talker:ShutUp()
+                self.wagstaff.components.npc_talker:Chatter("WAGSTAFF_NPC_GOT_ENOUGH_GESTALTCAGE")
+            end
         end
         return false
     end
@@ -1038,7 +1043,7 @@ function self:OnRobotLoseControl()
         local theta = math.random() * PI2
         x, z = x + math.cos(theta) * radius, z + math.sin(theta) * radius
     end
-    self:DoWagstaffOneshotAtXZ(x, z, radius, "WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL", true, nil)
+    self:DoWagstaffOneshotAtXZ(x, z, radius, "WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL", false, nil)
 end
 
 local function BossCompleted_Bridge()
