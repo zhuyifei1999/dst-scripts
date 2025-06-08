@@ -162,7 +162,7 @@ local function CalcLunarBurnTickDamage(target, dps)
 	if target.components.damagetyperesist then
 		mult = mult * target.components.damagetyperesist:GetResistForTag("lunar_aligned")
 	end
-	return math.max(0, (dps * mult - def) * FRAMES)
+	return math.max(0, (dps * mult - def) * 0.5 * FRAMES)
 end
 
 --------------------------------------------------------------------------

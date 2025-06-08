@@ -820,8 +820,6 @@ local function SwapActiveItemWithSlot(inst, slot)
 end
 
 local function TryNonNetworkedAction(inst, act, item)
-    print("TryNonNetworkedAction", inst, item)
-    dumptable(act, 1, 1)
 	if act == ACTIONS.RUMMAGE then
 		local overflow = GetOverflowContainer(inst)
 		if overflow ~= nil and overflow.inst == item then

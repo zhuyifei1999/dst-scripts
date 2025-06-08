@@ -24,9 +24,8 @@ local function ChooseAttack(inst, target)
 		inst.sg:GoToState("dash_pre", target)
 		return true
 	elseif inst.slamcombo and inst.slamcount < inst.slamcombo then
-		local first = inst.slamcount == 0
 		inst.slamcount = inst.slamcount + (inst.slamrnd and math.random(2) or 1)
-		if first and inst.dashcombo then
+		if inst.dashcombo then
 			inst.sg:GoToState("taunt", target)
 		else
 			inst.sg:GoToState("slam", target)
@@ -780,26 +779,25 @@ local states =
 			if target and target:IsValid() then
 				inst.sg.statemem.target = target
 				inst.sg.statemem.targetpos = target:GetPosition()
-				local x, _, z = inst.Transform:GetWorldPosition()
-				local dx = inst.sg.statemem.targetpos.x - x
-				local dz = inst.sg.statemem.targetpos.z - z
+				inst:ForceFacePoint(inst.sg.statemem.targetpos)
+				--[[local x, _, z = inst.Transform:GetWorldPosition()
 				local dir, theta
-				if dx ~= 0 or dz ~= 0 then
-					theta = math.atan2(-dz, dx)
+				if x ~= inst.sg.statemem.targetpos.x or z ~= inst.sg.statemem.targetpos.z then
+					theta = math.atan2(z - inst.sg.statemem.targetpos.z, inst.sg.statemem.targetpos.x - x)
 				else
 					dir = inst.Transform:GetRotation()
 				end
-				if inst.dashcombo and inst.dashcount >= inst.dashcombo and inst.slamcombo then
+				if inst:IsSlamNext() then
 					local map = TheWorld.Map
 					if map:IsPointInWagPunkArena(x, 0, z) then
 						local cx, cz = map:GetWagPunkArenaCenterXZ()
 						if x ~= cx or z ~= cz then
 							theta = theta or dir * RADIANS
-							local dist = 22.7
+							local dist = 22.7 + TILE_SIZE
 							local x1 = x + math.cos(theta) * dist
 							local z1 = z - math.sin(theta) * dist
 							--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
-							if distsq(x1, z1, cx, cz) >= 256 then
+							if not map:IsPointInWagPunkArena(x1, 0, z1) then
 								--ends up too far at edge of arena, aim back toward center
 								theta = math.atan2(z - cz, cx - x)
 								theta = theta + (math.random() - 0.5) * math.pi / 4
@@ -810,7 +808,7 @@ local states =
 						end
 					end
 				end
-				inst.Transform:SetRotation(dir or theta * RADIANS)
+				inst.Transform:SetRotation(dir or theta * RADIANS)]]
 			end
 		end,
 

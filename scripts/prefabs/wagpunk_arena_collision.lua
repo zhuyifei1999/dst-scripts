@@ -86,7 +86,7 @@ local function fn()
 
     inst.entity:AddPhysics()
     inst.Physics:SetMass(0)
-    inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
+    inst.Physics:SetCollisionGroup(COLLISION.LAND_OCEAN_LIMITS)
     inst.Physics:SetCollisionMask(
         COLLISION.ITEMS,
         COLLISION.CHARACTERS,
@@ -201,7 +201,7 @@ local function fn_oneway()
 
     inst.entity:AddPhysics()
     inst.Physics:SetMass(0)
-    inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
+    inst.Physics:SetCollisionGroup(COLLISION.LAND_OCEAN_LIMITS)
     inst.Physics:SetCollisionMask(
         COLLISION.ITEMS,
         COLLISION.CHARACTERS,

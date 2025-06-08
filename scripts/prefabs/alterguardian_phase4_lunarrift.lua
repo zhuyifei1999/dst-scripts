@@ -379,9 +379,13 @@ local function RetargetFn(inst)
 	local inrange
 	if target then
 		local range = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0)
-		inrange = target:GetDistanceSqToPoint(x, y, z) < range * range
+		local dsq = target:GetDistanceSqToPoint(x, y, z)
+		inrange = dsq < range * range
 
 		if target.isplayer then
+			if inst:IsSlamNext() and (inrange or dsq < TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST * TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST) then
+				return --don't switch player targets when we're about to slam
+			end
 			local newplayer = inst.components.grouptargeter:TryGetNewTarget()
 			if newplayer then
 				range = inrange and TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST
@@ -430,7 +434,11 @@ local function OnAttacked(inst, data)
 		local target = inst.components.combat.target
 		if not (target and
 				target.isplayer and
-				target:IsNear(inst, TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0)))
+				target:IsNear(inst,
+					inst:IsSlamNext() and
+					TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST or
+					TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0))
+				)
 		then
 			inst.components.combat:SetTarget(data.attacker)
 		end
@@ -440,6 +448,11 @@ end
 local function ResetCombo(inst)
 	inst.dashcount = inst.dashcount and 0 or nil
 	inst.slamcount = inst.slamcount and 0 or nil
+end
+
+local function IsSlamNext(inst)
+	return inst.dashcombo and inst.dashcount >= inst.dashcombo
+		and inst.slamcombo and inst.slamcount < inst.slamcombo
 end
 
 local function SetEngaged(inst, engaged, delay)
@@ -667,6 +680,7 @@ local function fn()
 	inst.StartDashFx = StartDashFx
 	inst.StopDashFx = StopDashFx
 	inst.ResetCombo = ResetCombo
+	inst.IsSlamNext = IsSlamNext
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 

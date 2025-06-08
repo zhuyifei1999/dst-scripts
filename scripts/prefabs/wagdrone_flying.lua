@@ -169,6 +169,10 @@ local function PostUpdate(inst)
 	inst.AnimState:SetSortWorldOffset(0, -y, 0)
 end
 
+local function GetStatus(inst, viewer)
+	return inst.sg:HasStateTag("off") and "INACTIVE" or nil
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -227,6 +231,7 @@ local function fn()
 	end
 
 	inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = GetStatus
 
 	inst:AddComponent("locomotor")
 	inst.components.locomotor.runspeed = TUNING.WAGDRONE_FLYING_RUNSPEED

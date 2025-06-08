@@ -1,44 +1,69 @@
 local easing = require("easing")
 local SourceModifierList = require("util/sourcemodifierlist")
 
+local function _replica_setcurrent(self, replica_sanity, current, max, penalty, inducedinsanity, inducedlunacy)
+	replica_sanity:SetCurrent(
+		--(inducedunacy and inducedinsanity and 0) or --redundant
+		(inducedinsanity and 0) or
+		(inducedlunacy and max * (1 - penalty)) or
+		current
+	)
+end
+
+local function _replica_setissane(self, replica_sanity, sane, mode, inducedinsanity, inducedlunacy)
+	if mode == SANITY_MODE_INSANITY then
+		replica_sanity:SetIsSane(sane and not inducedinsanity or inducedlunacy or false)
+	else--if mode == SANITY_MODE_LUNACY then
+		replica_sanity:SetIsSane(sane and not inducedlunacy or inducedinsanity or false)
+	end
+end
+
 local function onmax(self, max)
-    self.inst.replica.sanity:SetMax(max)
+	local replica_sanity = self.inst.replica.sanity
+	replica_sanity:SetMax(max)
+	if self.inducedlunacy and not self.inducedinsanity then
+		--see _replica_setcurrent
+		replica_sanity:SetCurrent(max * (1 - self.penalty))
+	end
 end
 
 local function oncurrent(self, current)
-    self.inst.replica.sanity:SetCurrent(
-        (self.inducedinsanity and 0)
-        or (self.inducedlunacy and self.max)
-        or current
-    )
+	_replica_setcurrent(self, self.inst.replica.sanity, current, self.max, self.penalty, self.inducedinsanity, self.inducedlunacy)
 end
 
 local function onratescale(self, ratescale)
     self.inst.replica.sanity:SetRateScale(ratescale)
 end
 
-
 local function onmode(self, mode)
-    self.inst.replica.sanity:SetSanityMode(mode)
+	local replica_sanity = self.inst.replica.sanity
+	replica_sanity:SetSanityMode(mode)
+	_replica_setissane(self, replica_sanity, self.sane, mode, self.inducedinsanity, self.inducedlunacy)
 end
 
 local function onsane(self, sane)
-    self.inst.replica.sanity:SetIsSane(not self.inducedlunacy and not self.inducedinsanity and sane)
-    self.inst.replica.sanity:SetIsSane((not self.inducedinsanity and sane))
+	_replica_setissane(self, self.inst.replica.sanity, sane, self.mode, self.inducedinsanity, self.inducedlunacy)
 end
 
 local function oninducedinsanity(self, inducedinsanity)
-    self.inst.replica.sanity:SetIsSane(not inducedinsanity and self.sane)
-    self.inst.replica.sanity:SetCurrent((inducedinsanity and 0) or self.current)
+	local replica_sanity = self.inst.replica.sanity
+	_replica_setissane(self, replica_sanity, self.sane, self.mode, inducedinsanity, self.inducedlunacy)
+	_replica_setcurrent(self, replica_sanity, self.current, self.max, self.penalty, inducedinsanity, self.inducedlunacy)
 end
 
 local function oninducedlunacy(self, inducedlunacy)
-    self.inst.replica.sanity:SetIsSane(not inducedlunacy and self.sane)
-    self.inst.replica.sanity:SetCurrent((inducedlunacy and self.max) or self.current)
+	local replica_sanity = self.inst.replica.sanity
+	_replica_setissane(self, replica_sanity, self.sane, self.mode, self.inducedinsanity, inducedlunacy)
+	_replica_setcurrent(self, replica_sanity, self.current, self.max, self.penalty, self.inducedinsanity, inducedlunacy)
 end
 
 local function onpenalty(self, penalty)
-    self.inst.replica.sanity:SetPenalty(penalty)
+	local replica_sanity = self.inst.replica.sanity
+	replica_sanity:SetPenalty(penalty)
+	if self.inducedlunacy and not self.inducedinsanity then
+		--see _replica_setcurrent
+		replica_sanity:SetCurrent(self.max * (1 - penalty))
+	end
 end
 
 local function onghostdrainmult(self, ghostdrainmult)
@@ -88,6 +113,7 @@ local Sanity = Class(function(self, inst)
 
     self._oldissane = self:IsSane()
     self._oldpercent = self:GetPercent()
+	self._oldmode = self.mode
 
     self.inst:StartUpdatingComponent(self)
     self:RecalcGhostDrain()
@@ -106,16 +132,19 @@ nil,
 })
 
 function Sanity:IsSane()
-    return (self.mode == SANITY_MODE_INSANITY and (self.inducedlunacy or (not self.inducedinsanity and self.sane)))
-			or (self.mode == SANITY_MODE_LUNACY and (not self.inducedlunacy and (self.inducedinsanity or self.sane)))
+	if self.mode == SANITY_MODE_INSANITY then
+		return self.sane and not self.inducedinsanity or self.inducedlunacy or false
+	else--if self.mode == SANITY_MODE_LUNACY then
+		return self.sane and not self.inducedlunacy or self.inducedinsanity or false
+	end
 end
 
 function Sanity:IsInsane()
-    return self.mode == SANITY_MODE_INSANITY and (not self.inducedlunacy and (self.inducedinsanity or not self.sane))
+	return self.mode == SANITY_MODE_INSANITY and (not self.sane or self.inducedinsanity) and not self.inducedlunacy
 end
 
 function Sanity:IsEnlightened()
-	return self.mode == SANITY_MODE_LUNACY and (self.inducedlunacy or (not self.inducedinsanity and not self.sane))
+	return self.mode == SANITY_MODE_LUNACY and (not self.sane or self.inducedlunacy) and not self.inducedinsanity
 end
 
 function Sanity:IsCrazy()
@@ -235,12 +264,14 @@ function Sanity:GetRealPercent()
 end
 
 function Sanity:GetPercent()
+	--NOTE: (self.inducedlunacy and self.inducedinsanity) ==> 0
     return (self.inducedinsanity and 0)
-        or (self.inducedlunacy and 1)
+		or (self.inducedlunacy and 1 - self.penalty)
         or self:GetRealPercent()
 end
 
 function Sanity:GetPercentWithPenalty()
+	--NOTE: (self.inducedlunacy and self.inducedinsanity) ==> 0
     return (self.inducedinsanity and 0)
         or (self.inducedlunacy and 1)
         or self.current / (self.max - (self.max * self.penalty))
@@ -349,7 +380,7 @@ function Sanity:DoDelta(delta, overtime)
     -- Re-call GetPercent on the slight chance that "sanitydelta" changed it.
     self._oldpercent = self:GetPercent()
 
-    if self:IsSane() ~= self._oldissane then
+	if self:IsSane() ~= self._oldissane or (not self._oldissane and self.mode ~= self._oldmode) then
         self._oldissane = self:IsSane()
         if self._oldissane then
             if self.onSane ~= nil then
@@ -373,6 +404,7 @@ function Sanity:DoDelta(delta, overtime)
 			end
         end
     end
+	self._oldmode = self.mode
 end
 
 function Sanity:OnUpdate(dt)
