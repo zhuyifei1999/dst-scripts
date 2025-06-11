@@ -1374,6 +1374,9 @@ supertacklecontainer_clear_fn = function(inst) basic_clear_fn(inst, "supertackle
 mermhouse_crafted_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "mermhouse_crafted" ) end
 mermhouse_crafted_clear_fn = function(inst) basic_clear_fn(inst, "mermhouse_crafted" ) end
 
+mermwatchtower_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "merm_guard_tower" ) end
+mermwatchtower_clear_fn = function(inst) basic_clear_fn(inst, "merm_guard_tower" ) end
+
 mermhat_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "hat_merm" ) end
 mermhat_clear_fn = function(inst) basic_clear_fn(inst, "hat_merm" ) end
 
@@ -1385,6 +1388,18 @@ sanityrock_clear_fn = function(inst) basic_clear_fn(inst, "blocker_sanity" ) end
 
 insanityrock_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "blocker_sanity" ) end
 insanityrock_clear_fn = function(inst) basic_clear_fn(inst, "blocker_sanity" ) end
+
+lunarplanthat_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "hat_lunarplant") end
+lunarplanthat_clear_fn = function(inst) basic_clear_fn(inst, "hat_lunarplant") end
+
+armor_lunarplant_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "armor_lunarplant") end
+armor_lunarplant_clear_fn = function(inst) basic_clear_fn(inst, "armor_lunarplant") end
+
+armor_lunarplant_husk_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "armor_lunarplant_husk") end
+armor_lunarplant_husk_clear_fn = function(inst) basic_clear_fn(inst, "armor_lunarplant_husk") end
+
+wagdrone_rolling_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "wagdrone_rolling") end
+wagdrone_rolling_clear_fn = function(inst) basic_clear_fn(inst, "wagdrone_rolling") end
 
 --------------------------------------------------------------------------
 --[[ rabbithouse skin functions ]]

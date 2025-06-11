@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "Truly loathsome!",
             INACTIVE = "More wired junk.",
-            DAMAGE = "Apparently it may be repaired, or salvaged for parts.",
+            DAMAGED = "Apparently it may be repaired, or salvaged for parts.",
             FRIENDLY = "I don't like it.",
         },
         WAGDRONE_FLYING =

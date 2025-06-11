@@ -72,7 +72,7 @@ function LunarBurnOver:TurnOn(flags)
 			if bit.band(flags, WagBossUtil.LunarBurnFlags.NEAR_SUPERNOVA) ~= 0 then
 				self.anim:GetAnimState():Show("supernova_miss")
 				if not TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_miss") then
-					TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_blocked", "lunarburn_miss")
+					TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_blocked_LP", "lunarburn_miss")
 				end
 			else
 				self.anim:GetAnimState():Hide("supernova_miss")

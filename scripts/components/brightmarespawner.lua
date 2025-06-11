@@ -25,6 +25,10 @@ local _map = TheWorld.Map
 local _players = {}
 local _gestalts = {}
 local _poptask = nil
+local _evolved_spawn_pool = 0
+
+local _worldsettingstimer = TheWorld.components.worldsettingstimer
+local ADDEVOLVED_TIMERNAME = "add_evolved_gestalt_to_pool"
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -51,35 +55,32 @@ local function IsValidTrackingTarget(target)
 		and target.entity:IsVisible()
 end
 
-local function cooldown_task()
-	self.inst._evolved_gestalt_spawn_cooldown_task = nil
-end
 local function StopTracking(ent)
-	if ent.prefab == "gestalt_guard_evolved" then
-		if self.inst._evolved_gestalt_spawn_cooldown_task then
-			self.inst._evolved_gestalt_spawn_cooldown_task:Cancel()
-		end
-		self.inst._evolved_gestalt_spawn_cooldown_task = self.inst:DoTaskInTime(TUNING.GESTALT_EVOLVED_SPAWN_COOLDOWN, cooldown_task)
-	end
 	_gestalts[ent] = nil
 end
 
 local function GetGestaltSpawnType(player, pt)
 	local type = "gestalt"
 
-	if not self.inst._evolved_gestalt_spawn_cooldown_task then
-		local wagboss_tracker = TheWorld.components.wagboss_tracker
-		if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
-			local num_evolved = 0
-			for ent in pairs(_gestalts) do
-				if ent.prefab == "gestalt_guard_evolved" then
-					num_evolved = num_evolved + 1
-				end
-			end
+	local player_hat = (player and
+		player.components.inventory and
+		player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+	) or nil
+	local do_extra_spawns = (player_hat and player_hat:HasTag("lunarseedmaxed"))
 
-			if num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN then
-				type = "gestalt_guard_evolved"
+	local wagboss_tracker = TheWorld.components.wagboss_tracker
+	if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
+		local num_evolved = 0
+		for ent in pairs(_gestalts) do
+			if ent.prefab == "gestalt_guard_evolved" then
+				num_evolved = num_evolved + 1
 			end
+		end
+
+		if (num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN or (do_extra_spawns and num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN_HAT))
+				and _evolved_spawn_pool > 0 then
+			type = "gestalt_guard_evolved"
+			_evolved_spawn_pool = _evolved_spawn_pool - 1
 		end
 	end
 
@@ -89,6 +90,10 @@ end
 local SPAWN_ONEOF_TAGS = {"brightmare_gestalt", "player", "playerghost"}
 local function FindGestaltSpawnPtForPlayer(player, wantstomorph)
 	local x, y, z = player.Transform:GetWorldPosition()
+	if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
+		return nil
+	end
+
 	local function IsValidGestaltSpawnPt(offset)
 		local x1, z1 = x + offset.x, z + offset.z
 		return #TheSim:FindEntities(x1, 0, z1, 6, nil, nil, SPAWN_ONEOF_TAGS) == 0
@@ -147,7 +152,8 @@ local function UpdatePopulation()
 	local min_change = math.min(total_levels, TUNING.GESTALT_POP_CHANGE_INTERVAL / 2)
 	local random_change = TUNING.GESTALT_POP_CHANGE_VARIANCE * math.random()
 
-    _poptask = inst:DoTaskInTime(TUNING.GESTALT_POP_CHANGE_INTERVAL - min_change + random_change, UpdatePopulation)
+	local next_task_time = TUNING.GESTALT_POP_CHANGE_INTERVAL - min_change + random_change
+    _poptask = inst:DoTaskInTime(next_task_time, UpdatePopulation)
 end
 
 local function Start()
@@ -222,6 +228,35 @@ local function OnPlayerLeft(i, player)
 	OnSanityModeChanged(player, nil)
 end
 
+local function OnWagbossDefeated()
+	_evolved_spawn_pool = math.max(1, _evolved_spawn_pool or 0)
+	_worldsettingstimer:StartTimer(ADDEVOLVED_TIMERNAME, TUNING.GESTALT_EVOLVED_ADDTOPOOLTIME)
+end
+
+local function OnEvolvedAddedToPool(_, data)
+	if _evolved_spawn_pool < TUNING.GESTALT_EVOLVED_MAXPOOL then
+		_evolved_spawn_pool = _evolved_spawn_pool + 1
+	end
+	_worldsettingstimer:StartTimer(ADDEVOLVED_TIMERNAME, TUNING.GESTALT_EVOLVED_ADDTOPOOLTIME)
+end
+_worldsettingstimer:AddTimer(ADDEVOLVED_TIMERNAME, TUNING.GESTALT_EVOLVED_ADDTOPOOLTIME, TUNING.GESTALT_EVOLVED_MAXPOOL > 0, OnEvolvedAddedToPool)
+
+--------------------------------------------------------------------------
+--[[ Save/Load ]]
+--------------------------------------------------------------------------
+
+function self:OnSave()
+	return (_evolved_spawn_pool > 0 and {
+		evolved_spawn_pool = _evolved_spawn_pool,
+	}) or nil
+end
+
+function self:OnLoad(data)
+	if data and data.evolved_spawn_pool then
+		_evolved_spawn_pool = data.evolved_spawn_pool or 0
+	end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -234,13 +269,19 @@ end
 --Register events
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft)
+inst:ListenForEvent("wagboss_defeated", OnWagbossDefeated)
 
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    return tostring(GetTableSize(_gestalts)) .. " Gestalts"
+    return tostring(GetTableSize(_gestalts)) .. " Gestalts; Evolved Pool size is:" .. tostring(_evolved_spawn_pool)
+end
+
+function self:Debug_SetSpawnPoolSize(size)
+	-- Don't nuke it out if we accidentally debug with nil
+	_evolved_spawn_pool = size or _evolved_spawn_pool
 end
 
 --------------------------------------------------------------------------

@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "Self-propelling automatons with coordinated attacks. An invention of no small ingenuity.",
             INACTIVE = "It is not active.",
-            DAMAGE = "I deem it repairable, or harvestable for parts.",
+            DAMAGED = "I deem it repairable, or harvestable for parts.",
             FRIENDLY = "This version is rather useful.",
         },
         WAGDRONE_FLYING =

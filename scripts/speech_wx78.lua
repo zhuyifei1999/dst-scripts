@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "BEHAVE!",
             INACTIVE = "SLEEP MODE",
-            DAMAGE = "I CAN REPAIR IT OR HARVEST FOR PARTS IF I MUST",
+            DAMAGED = "I CAN REPAIR IT OR HARVEST FOR PARTS IF I MUST",
             FRIENDLY = "CUTIE PIE",
         },
         WAGDRONE_FLYING =

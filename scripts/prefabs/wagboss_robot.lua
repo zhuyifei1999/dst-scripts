@@ -17,6 +17,12 @@ local brain = require("brains/wagboss_robotbrain")
 
 --------------------------------------------------------------------------
 
+local function OnRemoveHighlightChild(child)
+	table.removearrayvalue(child.highlightparent.highlightchildren, child)
+end
+
+--------------------------------------------------------------------------
+
 local function UpdateFlyers(inst, dt)
 	assert(next(inst._temptbl1) == nil)
 	local flyers = inst._temptbl1
@@ -251,7 +257,7 @@ local function UpdatePlayerTargets(inst)
 	end
 
 	local map = TheWorld.Map
-	if map:IsPointInWagPunkArena(x, y, z) then
+	if map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
 		for i, v in ipairs(AllPlayers) do
 			if not (v.components.health:IsDead() or v:HasTag("playerghost")) and
 				v.entity:IsVisible() and
@@ -289,13 +295,17 @@ local function RetargetFn(inst)
 	UpdatePlayerTargets(inst)
 
 	local x, y, z = inst.Transform:GetWorldPosition()
+	local map = TheWorld.Map
+	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
 	local target = inst.components.combat.target
 	local inrange
 	if target then
 		local range = TUNING.WAGBOSS_ROBOT_ATTACK_RANGE + target:GetPhysicsRadius(0)
-		inrange = target:GetDistanceSqToPoint(x, y, z) < range * range
+		local x1, y1, z1 = target.Transform:GetWorldPosition()
+		inrange = distsq(x1, z1, x, z) < range * range and (not inarena or map:IsPointInWagPunkArena(x1, y1, z1))
 
 		if target.isplayer then
+			--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 			local newplayer = inst.components.grouptargeter:TryGetNewTarget()
 			if newplayer then
 				range = inrange and TUNING.WAGBOSS_ROBOT_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.WAGBOSS_ROBOT_KEEP_AGGRO_DIST
@@ -307,6 +317,7 @@ local function RetargetFn(inst)
 		end
 	end
 
+	--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 	assert(next(inst._temptbl1) == nil)
 	local nearplayers = inst._temptbl1
 	for k in pairs(inst.components.grouptargeter:GetTargets()) do
@@ -333,19 +344,24 @@ local function KeepTargetFn(inst, target)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local x1, y1, z1 = target.Transform:GetWorldPosition()
 	local map = TheWorld.Map
-	if map:IsPointInWagPunkArena(x, y, z) then
+	if map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
 		return map:IsPointInWagPunkArena(x1, y1, z1)
 	end
 	return distsq(x, z, x1, z1) < TUNING.WAGBOSS_ROBOT_DEAGGRO_DIST * TUNING.WAGBOSS_ROBOT_DEAGGRO_DIST
 end
 
 local function OnAttacked(inst, data)
-	if data and data.attacker then
+	if data and data.attacker and data.attacker:IsValid() then
+		local x, y, z = inst.Transform:GetWorldPosition()
 		local target = inst.components.combat.target
-		if not (target and
-				target.isplayer and
-				target:IsNear(inst, TUNING.WAGBOSS_ROBOT_ATTACK_RANGE + target:GetPhysicsRadius(0)))
-		then
+		if target and target.isplayer then
+			local range = TUNING.WAGBOSS_ROBOT_ATTACK_RANGE + target:GetPhysicsRadius(0)
+			if target:GetDistanceSqToPoint(x, y, z) < range * range then
+				return --don't switch targets
+			end
+		end
+		local map = TheWorld.Map
+		if not map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) or map:IsPointInWagPunkArena(data.attacker.Transform:GetWorldPosition()) then
 			inst.components.combat:SetTarget(data.attacker)
 		end
 	end
@@ -460,6 +476,9 @@ local function OnEntitySleep(inst)
 	if inst.shouldreset and inst._resettask == nil then
 		inst._resettask = inst:DoTaskInTime(6, DoOffScreenReset)
 	end
+	if inst.sg:HasStateTag("jumping") then
+		inst.sg:GoToState("idle")
+	end
 end
 
 local function OnEntityWake(inst)
@@ -537,6 +556,8 @@ local function CreateBackFx()
 
 	AddAlterSymbols(fx)
 
+	fx.OnRemoveEntity = OnRemoveHighlightChild
+
 	return fx
 end
 
@@ -551,6 +572,7 @@ local function BackFxPostUpdate_Client(inst)
 		if inst._backfx == nil then
 			inst._backfx = CreateBackFx()
 			inst._backfx.entity:SetParent(inst.entity)
+			inst._backfx.highlightparent = inst
 			table.insert(inst.highlightchildren, inst._backfx)
 			inst.components.colouraddersync:ForceRefresh()
 		end
@@ -558,7 +580,6 @@ local function BackFxPostUpdate_Client(inst)
 	elseif inst._backfx then
 		inst._backfx:Remove()
 		inst._backfx = nil
-		table.removearrayvalue(inst.highlightchildren, inst._backfx)
 	end
 
 	inst._cancelbackfxpostupdate = inst:DoStaticTaskInTime(0, CancelBackFxPostUpdate_Client)
@@ -586,7 +607,6 @@ local function OnShowBackFx_Client(inst)
 		if inst._backfx then
 			inst._backfx:Remove()
 			inst._backfx = nil
-			table.removearrayvalue(inst.highlightchildren, inst._backfx)
 		end
 		if inst._backfxpostupdating then
 			if inst._cancelbackfxpostupdate then
@@ -605,6 +625,7 @@ local function StartBackFx(inst)
 	elseif not TheNet:IsDedicated() then
 		inst._backfx = CreateBackFx()
 		inst._backfx.entity:SetParent(inst.entity)
+		inst._backfx.highlightparent = inst
 		table.insert(inst.highlightchildren, inst._backfx)
 		inst.components.colouraddersync:ForceRefresh()
 	end
@@ -639,6 +660,11 @@ local function AddFollowFx(inst, anim, symbol)
 
 	fx.entity:SetParent(inst.entity)
 	fx.Follower:FollowSymbol(inst.GUID, symbol, 0, 0, 0, true)
+
+	table.insert(inst.followfx, fx)
+	table.insert(inst.highlightchildren, fx)
+	fx.highlightparent = inst
+	fx.OnRemoveEntity = OnRemoveHighlightChild
 
 	return fx
 end
@@ -1098,6 +1124,7 @@ local function OnPreLoad(inst, data, ents)
 			if data.threat then
 				SetThreatLevel(inst, data.threat)
 			end
+			inst:SetMusicLevel(1)
 		elseif data.active then
 			inst.sg:HandleEvent("activate")
 		end
@@ -1222,6 +1249,58 @@ end
 
 local OnRemoveEntity = UnregisterPathfinding
 
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+	if ThePlayer == nil then
+		inst._playingmusic = false
+	else
+		local map = TheWorld.Map
+		local x, _, z = inst.Transform:GetWorldPosition()
+		if map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z) then
+			if map:IsPointInWagPunkArena(ThePlayer.Transform:GetWorldPosition()) then
+				inst._playingmusic = true
+				ThePlayer:PushEvent("triggeredevent", { name = "wagboss", level = inst.music:value() })
+			else
+				inst._playingmusic = false
+			end
+		else
+			local dsq = ThePlayer:GetDistanceSqToPoint(x, 0, z)
+			local range = inst._playingmusic and 30 or 20
+			if dsq < range * range then
+				inst._playingmusic = true
+				ThePlayer:PushEvent("triggeredevent", { name = "wagboss", level = inst.music:value() })
+			elseif inst._playingmusic and dsq >= 40 * 40 then
+				inst._playingmusic = false
+			end
+		end
+	end
+end
+
+local function OnMusicDirty(inst)
+	if inst.music:value() > 0 then
+		if inst._musictask == nil then
+			inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+			PushMusic(inst)
+		end
+	elseif inst._musictask then
+		inst._musictask:Cancel()
+		inst._musictask = nil
+		inst._playingmusic = false
+	end
+end
+
+local function SetMusicLevel(inst, level)
+	if level ~= inst.music:value() then
+		inst.music:set(level)
+
+		--Dedicated server does not need to trigger music
+		if not TheNet:IsDedicated() then
+			OnMusicDirty(inst)
+		end
+	end
+end
+
 local function DisplayNameFn(inst)
 	return (inst.AnimState:IsCurrentAnimation("concealed_idle") and STRINGS.NAMES.WAGBOSS_ROBOT_SECRET)
 		or (inst:HasTag("hostile") and STRINGS.NAMES.WAGBOSS_ROBOT_POSSESSED)
@@ -1234,6 +1313,40 @@ local function DescriptionFn(inst, viewer) --inpsect string (server)
 		(inst.hostile and "wagboss_robot_possessed") or
 		nil
 	)
+end
+
+local function AbleToAcceptTest(inst, item)
+    if inst.socketed then
+        return false
+    end
+
+    return item.prefab == "gestalt_cage_filled3"
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+    inst:SocketCage()
+    inst:RemoveTrader()
+    item:Remove()
+    TheWorld:PushEvent("ms_wagpunk_constructrobot")
+end
+
+local function AddTrader(inst)
+    if inst.components.trader then
+        return
+    end
+
+    local trader = inst:AddComponent("trader")
+    trader:SetAbleToAcceptTest(AbleToAcceptTest)
+    trader.onaccept = OnGetItemFromPlayer
+    trader.deleteitemonaccept = false
+end
+
+local function RemoveTrader(inst)
+    if not inst.components.trader then
+        return
+    end
+
+    inst:RemoveComponent("trader")
 end
 
 local function fn()
@@ -1263,7 +1376,7 @@ local function fn()
 	inst:AddTag("soulless")
 	inst:AddTag("wagboss")
 	inst:AddTag("epic")
-	--inst:AddTag("noepicmusic")
+	inst:AddTag("noepicmusic")
 
 	--Sneak these into pristine state for optimization
 	inst:AddTag("__health")
@@ -1271,6 +1384,7 @@ local function fn()
 
 	inst.showstompfx = net_bool(inst.GUID, "wagboss_robot.showstompfx", "showstompfxdirty")
 	inst.showbackfx = net_bool(inst.GUID, "wagboss_robot.showbackfx", "showbackfxdirty")
+	inst.music = net_tinybyte(inst.GUID, "wagboss_robot.music", "musicdirty")
 	inst.isobstacle = net_bool(inst.GUID, "wagboss_robot.isobstacle", "isobstacledirty")
 	inst.isobstacle:set(true)
 	OnIsObstacleDirty(inst)
@@ -1278,15 +1392,16 @@ local function fn()
 	inst:AddComponent("colouraddersync")
 	inst:AddComponent("updatelooper")
 
+	--Dedicated server does not need to trigger music
 	--Dedicated server does not need to spawn the local fx
 	if not TheNet:IsDedicated() then
-		inst.highlightchildren =
-		{
-			AddFollowFx(inst, "gear_large_loop_front", "rb_gear_front_follow"),
-			AddFollowFx(inst, "gear_large_loop_edge", "rb_gear_side_follow"),
-			AddFollowFx(inst, "gear_small_loop_front", "rb_gear2_front_follow"),
-		}
-		inst.followfx = shallowcopy(inst.highlightchildren)
+		inst.followfx = {}
+		inst.highlightchildren = {}
+
+		AddFollowFx(inst, "gear_large_loop_front", "rb_gear_front_follow")
+		AddFollowFx(inst, "gear_large_loop_edge", "rb_gear_side_follow")
+		AddFollowFx(inst, "gear_small_loop_front", "rb_gear2_front_follow")
+
 		inst.components.colouraddersync:SetColourChangedFn(OnColourChanged)
 	end
 
@@ -1299,6 +1414,7 @@ local function fn()
 		inst:ListenForEvent("isobstacledirty", OnIsObstacleDirty)
 		inst:ListenForEvent("showstompfxdirty", OnShowStompFx_Client)
 		inst:ListenForEvent("showbackfxdirty", OnShowBackFx_Client)
+		inst:ListenForEvent("musicdirty", OnMusicDirty)
 
 		return inst
 	end
@@ -1346,8 +1462,11 @@ local function fn()
     inst.IsSocketed = IsSocketed
 	inst.BreakGlass = BreakGlass
 	inst.MakeObstacle = MakeObstacle
+	inst.SetMusicLevel = SetMusicLevel
 	inst.AddAlterSymbols = AddAlterSymbols
 	inst.ClearAlterSymbols = ClearAlterSymbols
+    inst.AddTrader = AddTrader
+    inst.RemoveTrader = RemoveTrader
 
 	inst:SetStateGraph("SGwagboss_robot")
 

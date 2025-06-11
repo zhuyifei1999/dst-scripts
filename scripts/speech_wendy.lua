@@ -5682,7 +5682,7 @@ return{
         {
             GENERIC = "They are compelled by a greater entity.",
             INACTIVE = "Does it dream?",
-            DAMAGE = "It can live again or sacrifice its parts for another.",
+            DAMAGED = "It can live again or sacrifice its parts for another.",
             FRIENDLY = "It kind of lost its spark.",
         },
         WAGDRONE_FLYING =

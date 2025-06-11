@@ -618,6 +618,28 @@ local function find_lucy(item)
     return item.prefab == "lucy"
 end
 
+--------------------------------------------------------------------------
+
+local function _ispassable(x, y, z, allow_water, exclude_boats)
+	return TheWorld.Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
+end
+
+local function _ispassable_inarena(x, y, z)--, allow_water, exclude_boats)
+	return TheWorld.Map:IsPointInWagPunkArena(x, y, z)
+end
+
+local function GetPassableTestFnAt(x, y, z)
+	return TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
+		and _ispassable_inarena
+		or _ispassable
+end
+
+local function GetPassableTestFn(inst)
+	return GetPassableTestFnAt(inst.Transform:GetWorldPosition())
+end
+
+--------------------------------------------------------------------------
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -12996,19 +13018,20 @@ local states =
                 end
             end
 			if not inst.sg.statemem.isphysicstoggle then
-				if inst:IsOnPassablePoint(true) then
-					inst.sg.statemem.safepos = inst:GetPosition()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+				if inst.sg.statemem.ispassableatpt(x, y, z, true) then
+					inst.sg.statemem.safepos = Vector3(x, y, z)
 				elseif data ~= nil and data.knocker ~= nil and data.knocker:IsValid() and data.knocker:IsOnPassablePoint(true) then
 					local x1, y1, z1 = data.knocker.Transform:GetWorldPosition()
 					local radius = data.knocker:GetPhysicsRadius(0) - inst:GetPhysicsRadius(0)
 					if radius > 0 then
-						local x, y, z = inst.Transform:GetWorldPosition()
 						local dx = x - x1
 						local dz = z - z1
 						local dist = radius / math.sqrt(dx * dx + dz * dz)
 						x = x1 + dx * dist
 						z = z1 + dz * dist
-						if TheWorld.Map:IsPassableAtPoint(x, 0, z, true) then
+						if inst.sg.statemem.ispassableatpt(x, 0, z, true) then
 							x1, z1 = x, z
 						end
 					end
@@ -13031,8 +13054,9 @@ local states =
             end
 			local safepos = inst.sg.statemem.safepos
 			if safepos ~= nil then
-				if inst:IsOnPassablePoint(true) then
-					safepos.x, safepos.y, safepos.z = inst.Transform:GetWorldPosition()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				if inst.sg.statemem.ispassableatpt(x, y, z, true) then
+					safepos.x, safepos.y, safepos.z = x, y, z
 				elseif inst.sg.statemem.landed then
 					local mass = inst.Physics:GetMass()
 					if mass > 0 then
@@ -13169,19 +13193,20 @@ local states =
                 end
             end
 
-			if inst:IsOnPassablePoint(true) then
-				inst.sg.statemem.safepos = inst:GetPosition()
+			local x, y, z = inst.Transform:GetWorldPosition()
+			inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+			if inst.sg.statemem.ispassableatpt(x, y, z, true) then
+				inst.sg.statemem.safepos = Vector3(x, y, z)
 			elseif data ~= nil and data.knocker ~= nil and data.knocker:IsValid() and data.knocker:IsOnPassablePoint(true) then
 				local x1, y1, z1 = data.knocker.Transform:GetWorldPosition()
 				local radius = data.knocker:GetPhysicsRadius(0) - inst:GetPhysicsRadius(0)
 				if radius > 0 then
-					local x, y, z = inst.Transform:GetWorldPosition()
 					local dx = x - x1
 					local dz = z - z1
 					local dist = radius / math.sqrt(dx * dx + dz * dz)
 					x = x1 + dx * dist
 					z = z1 + dz * dist
-					if TheWorld.Map:IsPassableAtPoint(x, 0, z, true) then
+					if inst.sg.statemem.ispassableatpt(x, y, z, true) then
 						x1, z1 = x, z
 					end
 				end
@@ -13205,8 +13230,9 @@ local states =
             end
 			local safepos = inst.sg.statemem.safepos
 			if safepos ~= nil then
-				if inst:IsOnPassablePoint(true) then
-					safepos.x, safepos.y, safepos.z = inst.Transform:GetWorldPosition()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				if inst.sg.statemem.ispassableatpt(x, y, z, true) then
+					safepos.x, safepos.y, safepos.z = x, y, z
 				elseif inst.sg.statemem.landed then
 					local mass = inst.Physics:GetMass()
 					if mass > 0 then
@@ -15640,30 +15666,42 @@ local states =
 						local cos_theta = math.cos(theta)
 						local sin_theta = math.sin(theta)
 						local x1, z1
-						local map = TheWorld.Map
-						if not map:IsPassableAtPoint(x, 0, z) then
+						local _ispassableatpoint = GetPassableTestFnAt(pos:Get())
+						if not _ispassableatpoint(x, 0, z) then
 							--scan for nearby land in case we were slightly off
 							--adjust position slightly toward valid ground
-							if map:IsPassableAtPoint(x + 0.1 * cos_theta, 0, z - 0.1 * sin_theta) then
+							if _ispassableatpoint(x + 0.1 * cos_theta, 0, z - 0.1 * sin_theta) then
 								x1 = x + 0.5 * cos_theta
 								z1 = z - 0.5 * sin_theta
-							elseif map:IsPassableAtPoint(x - 0.1 * cos_theta, 0, z + 0.1 * sin_theta) then
+							elseif _ispassableatpoint(x - 0.1 * cos_theta, 0, z + 0.1 * sin_theta) then
 								x1 = x - 0.5 * cos_theta
 								z1 = z + 0.5 * sin_theta
+							elseif _ispassableatpoint == _ispassable_inarena then
+								--for arena, we need to be more aggressive in placing us back inside the barrier
+								x1, z1 = pos.x, pos.z
+								local dist = math.sqrt(distsq(pos.x, pos.z, x, z))
+								while dist > 0.5 do
+									dist = dist - 0.5
+									if _ispassableatpoint(pos.x + (dist + 0.1) * cos_theta, 0, pos.z - (dist + 0.1) * sin_theta) then
+										x1 = pos.x + dist * cos_theta
+										z1 = pos.z - dist * sin_theta
+										break
+									end
+								end
 							end
 						else
 							--scan to make sure we're not just on the edge of land, could result in popping to the wrong side
 							--adjust position slightly away from invalid ground
-							if not map:IsPassableAtPoint(x + 0.1 * cos_theta, 0, z - 0.1 * sin_theta) then
+							if not _ispassableatpoint(x + 0.1 * cos_theta, 0, z - 0.1 * sin_theta) then
 								x1 = x - 0.4 * cos_theta
 								z1 = z + 0.4 * sin_theta
-							elseif not map:IsPassableAtPoint(x - 0.1 * cos_theta, 0, z + 0.1 * sin_theta) then
+							elseif not _ispassableatpoint(x - 0.1 * cos_theta, 0, z + 0.1 * sin_theta) then
 								x1 = x + 0.4 * cos_theta
 								z1 = z - 0.4 * sin_theta
 							end
 						end
 
-						if x1 and map:IsPassableAtPoint(x1, 0, z1) then
+						if x1 and _ispassableatpoint(x1, 0, z1) then
 							x, z = x1, z1
 						end
 					end
@@ -21650,10 +21688,11 @@ local states =
 						local x, y, z = inst.Transform:GetWorldPosition()
 						local x1, y1, z1 = chair.Transform:GetWorldPosition()
 						if x == x1 and z == z1 then
+							local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
 							x = x1 + radius * math.cos(rot)
 							z = z1 - radius * math.sin(rot)
-							if TheWorld.Map:IsPassableAtPoint(x, 0, z, true) then
+							if _ispassableatpoint(x, 0, z, true) then
 								inst.Physics:Teleport(x, 0, z)
 							end
 						end
@@ -21751,10 +21790,11 @@ local states =
 						local x, y, z = inst.Transform:GetWorldPosition()
 						local x1, y1, z1 = chair.Transform:GetWorldPosition()
 						if x == x1 and z == z1 then
+							local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
 							x = x1 + radius * math.cos(rot)
 							z = z1 - radius * math.sin(rot)
-							if TheWorld.Map:IsPassableAtPoint(x, 0, z, true) then
+							if _ispassableatpoint(x, 0, z, true) then
 								inst.Physics:Teleport(x, 0, z)
 							end
 						end
@@ -21790,16 +21830,21 @@ local states =
 			local radius = inst:GetPhysicsRadius(0) + chair:GetPhysicsRadius(0)
 			if radius > 0 then
 				inst.Physics:SetMotorVel(radius * 30 / inst.AnimState:GetCurrentAnimationNumFrames(), 0, 0)
-				if inst:IsOnPassablePoint() then
-					inst.sg.statemem.safepos = inst:GetPosition()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+				if inst.sg.statemem.ispassableatpt(x, y, z) then
+					inst.sg.statemem.safepos = Vector3(x, y, z)
 				end
 			end
 		end,
 
 		onupdate = function(inst)
 			local safepos = inst.sg.statemem.safepos
-			if safepos ~= nil and inst:IsOnPassablePoint() then
-				safepos.x, safepos.y, safepos.z = inst.Transform:GetWorldPosition()
+			if safepos then
+				local x, y, z = inst.Transform:GetWorldPosition()
+				if inst.sg.statemem.ispassableatpt(x, y, z) then
+					safepos.x, safepos.y, safepos.z = x, y, z
+				end
 			end
 		end,
 
@@ -21812,7 +21857,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
-					if inst.sg.statemem.safepos ~= nil and not inst:IsOnPassablePoint() then
+					if inst.sg.statemem.safepos and not inst.sg.statemem.ispassableatpt(inst.Transform:GetWorldPosition()) then
 						inst.Physics:Teleport(inst.sg.statemem.safepos.x, 0, inst.sg.statemem.safepos.z)
 					end
 					inst.sg.statemem.stop = true
@@ -22979,13 +23024,14 @@ local states =
 				local map = TheWorld.Map
 				local pt = Vector3(0, 0, 0)
 				local success = false
+				local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
 				for i = 7, 12.5, 0.5 do
 					pt.x = x + cos_theta * (i - 0.5)
 					pt.z = z - sin_theta * (i - 0.5)
-					if map:IsPassableAtPoint(pt:Get()) then
+					if _ispassableatpoint(pt:Get()) then
 						pt.x = x + cos_theta * (i + 0.5)
 						pt.z = z - sin_theta * (i + 0.5)
-						if map:IsPassableAtPoint(pt:Get()) then
+						if _ispassableatpoint(pt:Get()) then
 							pt.x = x + cos_theta * i
 							pt.z = z - sin_theta * i
 							if not map:IsPointNearHole(pt) then
@@ -22999,10 +23045,10 @@ local states =
 					for i = 6.5, 0.5, -0.5 do
 						pt.x = x + cos_theta * (i - 0.5)
 						pt.z = z - sin_theta * (i - 0.5)
-						if map:IsPassableAtPoint(pt:Get()) then
+						if _ispassableatpoint(pt:Get()) then
 							pt.x = x + cos_theta * (i + 0.5)
 							pt.z = z - sin_theta * (i + 0.5)
-							if map:IsPassableAtPoint(pt:Get()) then
+							if _ispassableatpoint(pt:Get()) then
 								pt.x = x + cos_theta * i
 								pt.z = z - sin_theta * i
 								if not map:IsPointNearHole(pt) then

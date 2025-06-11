@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "Always in the way!",
             INACTIVE = "I remember you.",
-            DAMAGE = "It can have a second chance or its parts can give one.",
+            DAMAGED = "It can have a second chance or its parts can give one.",
             FRIENDLY = "I wonder if it remembers.",
         },
         WAGDRONE_FLYING =

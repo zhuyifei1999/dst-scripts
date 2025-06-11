@@ -20,6 +20,12 @@ local attack_cant_tags = {"playerghost", "INLIMBO", "FX", "DECOR"}
 local watch_must_tags = {"player"}
 local SLEEPING_TAGS = {"bedroll", "knockout", "sleeping", "tent", "waking"}
 
+SetSharedLootTable("gestalt_guard_evolved",
+{
+    {"purebrilliance", 1.0},
+    {"purebrilliance", 0.2},
+})
+
 local function SetHeadAlpha(inst, a)
 	if inst.blobhead then
 		inst.blobhead.AnimState:OverrideMultColour(1, 1, 1, a)
@@ -90,6 +96,36 @@ local function Client_CalcTransparencyRating(inst, observer)
     end
 end
 
+local function KeepTarget(inst, target)
+    if target.components.sanity == nil then
+        --not player; could be bernie or other creature
+        return true
+    elseif target.components.sanity:IsEnlightened() then
+        inst._deaggrotime = nil
+        return true
+    end
+
+    --start deaggro timer when target is becomes unenlightened
+    local t = GetTime()
+    if inst._deaggrotime == nil then
+        inst._deaggrotime = t
+        return true
+    end
+
+    --Deaggro if target has been unenlightened for 2.5s, hasn't hit us in 6s, and hasn't tried to attack us for 5s
+	if inst._deaggrotime + 2.5 >= t or
+    inst.components.combat.lastwasattackedbytargettime + 6 >= t or
+    (	target.components.combat and
+        target.components.combat:IsRecentTarget(inst) and
+        (target.components.combat.laststartattacktime or 0) + 5 >= t
+    )
+    then
+        return true
+    end
+
+    return false
+end
+
 local function Retarget(inst)
 	if inst.tracking_target then
 		if inst.components.combat:InCooldown()
@@ -101,7 +137,7 @@ local function Retarget(inst)
 		-- If our potential target has a gestalt item, don't target them.
 		local target_inventory = inst.tracking_target.components.inventory
 		if target_inventory ~= nil and target_inventory:EquipHasTag("gestaltprotection") then
-			return nil
+            return nil
 		end
 
 		return inst.tracking_target
@@ -153,14 +189,13 @@ local function onattackother(inst, data)
     end
 end
 
-local function onkilledtarget(inst, data)
-	local target = data ~= nil and data.victim or nil
+local function ShareTargetFn(dude)
+    return dude:HasTag("brightmare_guard") and dude.components.health and not dude.components.health:IsDead()
+end
 
-	local lootdropper = target:IsValid() and target:HasTag("gestaltnoloot") and target.components.lootdropper or nil
-	if lootdropper ~= nil then
-		lootdropper:SetLoot({})
-		lootdropper:SetChanceLootTable(nil)
-	end
+local function OnAttacked(inst, data)
+    inst.components.combat:SetTarget(data.attacker)
+    inst.components.combat:ShareTarget(data.attacker, 30, ShareTargetFn, 1)
 end
 
 -- World component target tracking
@@ -257,11 +292,11 @@ local function fn()
 	combat:SetRange(TUNING.GESTALTGUARD_ATTACK_RANGE)
 	combat:SetAttackPeriod(6)
     combat:SetRetargetFunction(1, Retarget)
+    combat:SetKeepTargetFunction(KeepTarget)
 	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 	inst:ListenForEvent("droppedtarget", OnNoCombatTarget)
 	inst:ListenForEvent("losttarget", OnNoCombatTarget)
 	inst:ListenForEvent("onattackother", onattackother)
-	inst:ListenForEvent("killed", onkilledtarget)
 
     --
 	local health = inst:AddComponent("health")
@@ -278,6 +313,10 @@ local function fn()
     locomotor:SetTriggersCreep(false)
     locomotor.pathcaps = { ignorecreep = true }
 
+	--
+	inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("gestalt_guard_evolved")
+
     --
     inst:AddComponent("sanityaura")
 	inst.components.sanityaura.aura = TUNING.SANITYAURA_MED
@@ -288,6 +327,9 @@ local function fn()
 	--
     inst:SetStateGraph("SGgestalt_guard_evolved")
     inst:SetBrain(brain)
+
+	--
+	inst:ListenForEvent("attacked", OnAttacked)
 
     return inst
 end

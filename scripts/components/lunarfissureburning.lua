@@ -70,7 +70,7 @@ function LunarFissureBurning:OnUpdate(dt)
 			self.cleartime = nil
 			if self.inst.components.health then
 				local mount = self.inst.components.rider and self.inst.components.rider:GetMount() or nil
-				if mount and mount.components.health and not moutn.components.health:IsDead() then
+				if mount and mount.components.health and not mount.components.health:IsDead() then
 					local dmg = WagBossUtil.CalcLunarBurnTickDamage(mount, TUNING.ALTERGUARDIAN_LUNAR_FISSURE_LUNAR_BURN_DPS)
 					mount.components.health:DoDelta(-dmg, false, "alterguardian_phase4_lunarrift")
 				end
@@ -86,7 +86,7 @@ function LunarFissureBurning:OnUpdate(dt)
 				self.inst.components.health.lastlunarburnpulsetick = tick
 			end
 			local mount = self.inst.components.rider and self.inst.components.rider:GetMount() or nil
-			if mount and mount.components.health and not moutn.components.health:IsDead() then
+			if mount and mount.components.health and not mount.components.health:IsDead() then
 				local dmg = WagBossUtil.CalcLunarBurnTickDamage(mount, TUNING.ALTERGUARDIAN_LUNAR_FISSURE_LUNAR_BURN_DPS)
 				mount.components.health:DoDelta(-dmg, not pulse, "alterguardian_phase4_lunarrift")
 			end

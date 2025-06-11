@@ -5679,7 +5679,7 @@ return{
         {
             GENERIC = "They just come crawling back!",
             INACTIVE = "No, you can't smash it Lucy.",
-            DAMAGE = "We can fix her up or just take the spare parts.",
+            DAMAGED = "We can fix her up or just take the spare parts.",
             FRIENDLY = "Let's keep an eye on it, Luce.",
         },
         WAGDRONE_FLYING =

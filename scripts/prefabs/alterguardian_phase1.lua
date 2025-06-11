@@ -544,10 +544,16 @@ local function common_postinit_rift(inst)
 	end
 end
 
+local function rift_OnSave(inst, data)
+    data.is_spawning = inst.sg:HasStateTag("spawn_lunar")
+end
+
 local function rift_OnLoad(inst, data)
 	OnLoad(inst, data)
 	if inst.components.health.currenthealth <= inst.components.health.minhealth and not inst.sg:HasStateTag("dead") then
 		inst.sg:GoToState("death_lunar_loop")
+    elseif data.is_spawning then
+        inst.sg:GoToState("spawn_lunar")
 	end
 end
 
@@ -570,6 +576,7 @@ local function server_postinit_rift(inst)
 
 	inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
 
+    inst.OnSave = rift_OnSave
 	inst.OnLoad = rift_OnLoad
 	inst.OnRemoveEntity = rift_OnRemoveEntity
 end

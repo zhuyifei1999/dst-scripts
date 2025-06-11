@@ -5688,7 +5688,7 @@ return {
         {
             GENERIC = "They just drone on and on.",
             INACTIVE = "We should take it for a whirl.",
-            DAMAGE = "I could repair it or harvest for parts.",
+            DAMAGED = "I could repair it or harvest for parts.",
             FRIENDLY = "Spin it to win it!",
         },
         WAGDRONE_FLYING =

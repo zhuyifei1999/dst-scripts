@@ -154,6 +154,7 @@ local ARENA_ENTITIES = {
         {ARENA_CENTER_X, ARENA_CENTER_Z, 0},
     },
 }
+ARENA_ENTITIES["gestalt_cage_filled_placerindicator"] = deepcopy(ARENA_ENTITIES["wagdrone_spot_marker"])
 for i, v in ipairs(TILESPOTS) do
     ARENA_ENTITIES["wagpunk_floor_placerindicator"][i] = {v[1] * TILE_SCALE, v[2] * TILE_SCALE, v[3]}
 end
@@ -801,7 +802,7 @@ function self:CheckTurfCompletion()
 end
 
 function self:CheckConstructCompleted()
-    if self:HasArenaEntity("wagdrone_spot_marker") then
+    if self:HasArenaEntity("wagdrone_spot_marker") or self:HasArenaEntity("gestalt_cage_filled_placerindicator") then
         return false
     end
 
@@ -809,7 +810,7 @@ function self:CheckConstructCompleted()
         if not self.spawnedguardian then
             self.spawnedguardian = true
             if self.inst.components.lunaralterguardianspawner then
-                self.inst.components.lunaralterguardianspawner:TrySpawnLunarGuardian(self.wagstaff)
+                self.inst.components.lunaralterguardianspawner:TrySpawnLunarGuardian(self.wagstaff or self.wagboss)
             end
             if self.wagstaff and not self.wagstaff.erodingout then
                 self.wagstaff.components.npc_talker:resetqueue()
@@ -932,7 +933,7 @@ function self:ShouldWagstaffAcceptItem(inst, item, giver, count)
             end
         end
         for ent, _ in pairs(self.arenaentities) do
-            if ent.prefab == "wagdrone_spot_marker" then
+            if ent.prefab == "wagdrone_spot_marker" or ent.prefab == "gestalt_cage_filled_placerindicator" then
                 spotsneeded = spotsneeded + 1
             end
         end
@@ -970,7 +971,7 @@ function self:ShouldWagstaffAcceptItem(inst, item, giver, count)
     return false
 end
 function self:NeedsMoreWagdrones()
-    return self:HasArenaEntity("wagdrone_spot_marker")
+    return self:HasArenaEntity("wagdrone_spot_marker") or self:HasArenaEntity("gestalt_cage_filled_placerindicator")
 end
 function self:PearlMapCompleted()
     if not self.pearlmap then
@@ -1054,8 +1055,10 @@ function self:BossCompleted()
         self.despawngraceperiodtask:Cancel()
         self.despawngraceperiodtask = nil
     end
-    for wagdrone, _ in pairs(self.wagdrones) do
-        self.wagdrones[wagdrone] = nil
+    if not self:IsWagbossRobot() then
+        for wagdrone, _ in pairs(self.wagdrones) do
+            self.wagdrones[wagdrone] = nil
+        end
     end
     if not self.bossed then
         self.bossed = true
@@ -1116,10 +1119,10 @@ function self:CheckStateForChanges_Internal()
         end
         self:RemoveArenaEntities("wagpunk_floor_placerindicator") -- Just in case.
         local wagboss_tracker = _world.components.wagboss_tracker
-        if wagboss_tracker == nil or not wagboss_tracker:IsWagbossDefeated() then
-            if next(self.wagdrones) == nil then
-                self:TryToSpawnArenaEntities("wagdrone_spot_marker", self.validspotfn_clearthisarea)
-            end
+        local wagboss_defeated = wagboss_tracker and wagboss_tracker:IsWagbossDefeated()
+        if next(self.wagdrones) == nil then
+            local marker_to_spawn = wagboss_defeated and "gestalt_cage_filled_placerindicator" or "wagdrone_spot_marker"
+            self:TryToSpawnArenaEntities(marker_to_spawn, self.validspotfn_clearthisarea)
         end
         local wagboss_robots = self:TryToSpawnArenaEntities("wagboss_robot", self.validspotfn_clearthisarea)
         if wagboss_robots then
@@ -1137,6 +1140,7 @@ function self:CheckStateForChanges_Internal()
             return true
         end
         self:RemoveArenaEntities("wagdrone_spot_marker") -- Just in case.
+        self:RemoveArenaEntities("gestalt_cage_filled_placerindicator") -- Just in case.
         self:SpawnCageWalls()
         if self.lever then
             self.lever:ExtendLever()
@@ -1264,8 +1268,6 @@ function self:DecrementAliveCount()
         if self:IsWagbossRobot() then
             if next(self.playersdata.disconnected) and not next(self.playersdata.players) then
                 self.despawngraceperiodtask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME, BossCompleted_Bridge)
-            else
-                self:BossCompleted()
             end
         end
     end
@@ -1796,8 +1798,9 @@ self.inst:ListenForEvent("ms_wagpunk_floor_kit_deployed", function(inst) self:Ch
 self.inst:ListenForEvent("ms_wagpunk_constructrobot", function(inst) self:CheckConstructCompleted() end, _world)
 self.inst:ListenForEvent("ms_wagpunk_lever_activated", function(inst) self:LeverCompleted() end, _world)
 self.inst:ListenForEvent("ms_wagboss_robot_losecontrol", function(inst) self:OnRobotLoseControl() end, _world)
-self.inst:ListenForEvent("ms_wagboss_alter_defeated", function(inst, ent) if ent == self.wagboss then self:UntrackWagboss() self:BossCompleted() end end, _world)
+self.inst:ListenForEvent("ms_wagboss_alter_defeated", function(inst, ent) self:UntrackWagboss() self:BossCompleted() end, _world)
 self.inst:ListenForEvent("ms_alterguardian_phase1_lunarrift_capturable", function(inst, ent) self:TryWagstaffGiveGestaltCage(ent) end, _world)
+self.inst:ListenForEvent("ms_wagboss_robot_turnoff", function(inst) if self.state == self.STATES.BOSS then self:BossCompleted() end end, _world)
 
 self.inst:DoTaskInTime(0, function() self:OnInit() end)
 
@@ -1845,9 +1848,9 @@ function self:DebugForceConstruct()
     if self.wagboss then
         self.wagboss:SocketCage()
     end
-    if self:HasArenaEntity("wagdrone_spot_marker") then
+    if self:HasArenaEntity("wagdrone_spot_marker") or self:HasArenaEntity("gestalt_cage_filled_placerindicator") then
         for ent, _ in pairs(self.arenaentities) do
-            if ent.prefab == "wagdrone_spot_marker" then
+            if ent.prefab == "wagdrone_spot_marker" or ent.prefab == "gestalt_cage_filled_placerindicator" then
                 if math.random() < 0.5 then
                     ReplacePrefab(ent, "wagdrone_rolling")
                 else

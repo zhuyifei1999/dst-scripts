@@ -3,11 +3,6 @@ local assets =
     Asset("ANIM", "anim/lunar_seed.zip"),
 }
 
-local function onload(inst)
-    -- If we loaded, then just turn the light on
-    inst.Light:Enable(true)
-end
-
 local function seedfn()
     local inst = CreateEntity()
 
@@ -22,40 +17,34 @@ local function seedfn()
 
     inst.AnimState:SetBuild("lunar_seed")
     inst.AnimState:SetBank("lunar_seed")
-    inst.AnimState:PlayAnimation("idle")
-
-    inst.Light:SetColour(111/255, 111/255, 227/255)
-    inst.Light:SetIntensity(0.75)
-    inst.Light:SetFalloff(0.5)
-    inst.Light:SetRadius(2)
-    inst.Light:Enable(false)
+    inst.AnimState:PlayAnimation("idle", true)
+	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	inst.AnimState:SetSymbolLightOverride("pb_energy_loop", 0.5)
+	inst.AnimState:SetSymbolLightOverride("pb_ray", 0.5)
+	inst.AnimState:SetSymbolLightOverride("SparkleBit", 0.5)
+	inst.AnimState:SetSymbolLightOverride("lunar_seed_loop", 0.15)
 
     MakeInventoryFloatable(inst, nil, 0.13, 0.9)
 
     inst:AddTag("lunarseed")
 
     inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    --
+    inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+
     inst:AddComponent("inspectable")
 
-    --
     inst:AddComponent("inventoryitem")
 
-    --
     inst:AddComponent("tradable")
 
-    --
     inst:AddComponent("stackable")
 
-    --
-    MakeHauntable(inst)
-
-    --
-    inst.OnLoad = onload
+	MakeHauntableLaunch(inst)
 
     return inst
 end

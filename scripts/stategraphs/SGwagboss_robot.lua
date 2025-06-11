@@ -687,17 +687,25 @@ local states =
 			end
 			inst:ConfigureOff()
 			inst:MakeObstacle(true)
+			inst:SetMusicLevel(0)
 			if cleararea then
 				local x, y, z = inst.Transform:GetWorldPosition()
                 ClearSpotForRequiredPrefabAtXZ(x, z, inst.physicsradiusoverride)
 			end
-			if inst.socketed then
+            local iswagbossdefeated = TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()
+			if inst.socketed or iswagbossdefeated then
 				inst.AnimState:PlayAnimation("idle_off")
+                if iswagbossdefeated and not inst.socketed then
+                    inst:AddTrader()
+                end
 			else
 				inst.AnimState:PlayAnimation("concealed_idle", true)
 			end
 			inst.SoundEmitter:KillSound("loop")
 			inst.sg.statemem.fixphysics = inst.sg.mem.physicstask ~= nil or nil
+			if cleararea then
+				TheWorld:PushEvent("ms_wagboss_robot_turnoff")
+			end
 		end,
 
 		events =
@@ -725,6 +733,7 @@ local states =
 			end
 			inst:MakeObstacle(false)
 			inst:SocketCage()
+            inst:RemoveTrader()
 		end,
 	},
 
@@ -768,11 +777,7 @@ local states =
 					inst.sg:RemoveStateTag("noattack")
 					inst.sg:RemoveStateTag("nointerrupt")
 					inst.sg:AddStateTag("caninterrupt")
-
-					--#TEMP_BETA
-					if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
-						inst.battlestarttime = GetTime()
-					end
+					inst:SetMusicLevel(1)
 				end
 			end),
 
@@ -809,6 +814,9 @@ local states =
 		onexit = function(inst)
 			if not inst.SoundEmitter:PlayingSound("loop") then
 				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
+			end
+			if inst.hostile and not (inst.sg.statemem.off or inst.components.health:IsDead()) then
+				inst:SetMusicLevel(1)
 			end
 		end,
 	},
@@ -849,11 +857,7 @@ local states =
 				inst.sg:RemoveStateTag("noattack")
 				inst.sg:RemoveStateTag("nointerrupt")
 				inst.sg:AddStateTag("caninterrupt")
-
-				--#TEMP_BETA
-				if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
-					inst.battlestarttime = GetTime()
-				end
+				inst:SetMusicLevel(1)
 			end),
 
 			--#SFX
@@ -886,6 +890,9 @@ local states =
 		onexit = function(inst)
 			if not inst.sg.statemem.off then
 				inst:ConfigureHostile()
+			end
+			if inst.hostile and not (inst.sg.statemem.off or inst.components.health:IsDead()) then
+				inst:SetMusicLevel(1)
 			end
 		end,
 	},
@@ -1864,70 +1871,6 @@ local states =
 	},
 
 	State{
-		name = "death_beta",
-		tags = { "dead", "busy", "nointerrupt" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("death1")
-		end,
-
-		timeline =
-		{
-			FrameEvent(15, GetUpShake2),
-			FrameEvent(54, DoFootstepMedShake),
-			FrameEvent(71, DoFootstepMedShake),
-			FrameEvent(84, DoJumpShake),
-
-			FrameEvent(37, function(inst) inst.SoundEmitter:KillSound("loop") end),
-			FrameEvent(54, function(inst)
-				inst:AddTag("NOCLICK")
-			end),
-			FrameEvent(84, function(inst)
-				--do loot
-				inst.persists = false
-				inst:DespawnDrones()
-
-				--#TEMP_BETA
-				if inst.battlestarttime then
-					local report = inst.components.lootdropper:SpawnLootPrefab("temp_beta_msg")
-					report:SetKillTime(GetTime() - inst.battlestarttime, "wagboss_robot_possessed")
-				end
-			end),
-			TimeEvent(6, function(inst)
-				inst.AnimState:ClearSymbolBloom("glass1")
-				inst.DynamicShadow:Enable(false)
-				ErodeAway(inst)
-			end),
-
-			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/telemetry_death_1") end),
-			FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
-			FrameEvent(23, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gears_drop") end),
-			FrameEvent(24, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/click_mult_high") end),
-			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
-			FrameEvent(55, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_front") end),
-			FrameEvent(61, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_long") end),
-			FrameEvent(75, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
-			FrameEvent(86, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_stomp") end),
-			FrameEvent(86, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hydraulic_pst_front") end),
-			FrameEvent(88, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/glass_break") end),
-			FrameEvent(98, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/footstep_back") end),
-			FrameEvent(110, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/ratchet") end),
-			FrameEvent(111, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/steam_burst") end),
-			FrameEvent(129, function(inst) inst.SoundEmitter:PlaySound("rifts5/generic_metal/clunk_big_single") end),
-		},
-
-		onexit = function(inst)
-			--V2C: should not reach here
-			inst.AnimState:SetSymbolBloom("rb_head_glass")
-			if not inst.SoundEmitter:PlayingSound("loop") then
-				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
-			end
-		end,
-	},
-
-	State{
 		name = "death",
 		tags = { "dead", "busy", "nointerrupt" },
 
@@ -1956,9 +1899,15 @@ local states =
 
 		timeline =
 		{
+			FrameEvent(15, function(inst)
+				--NOTE: not the same as inst:DespawnDrones()
+				inst.components.commander:PushEventToAllSoldiers("deactivate")
+			end),
 			FrameEvent(40, function(inst)
 				inst.sg:AddStateTag("noattack")
 				DoJumpShake(inst)
+				inst:SetMusicLevel(2) --silence
+				TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { "WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL", monologue = true, focusentity = inst })
 			end),
 			FrameEvent(54, function(inst) inst.SoundEmitter:KillSound("loop") end),
 			FrameEvent(72, GetUpShake1),
@@ -1979,7 +1928,6 @@ local states =
 				inst:DespawnDrones()
 
 				--do loot
-				--TODO: should remove them even if they're not my soldiers
 				local dir = math.random() * 360
 				for i = 1, 3 do
 					local dir1 = dir + math.random() * 360 / 6
@@ -1987,12 +1935,6 @@ local states =
 					leg:StartTrackingBoss(inst.sg.statemem.alter)
 					Launch2(leg, inst, 7, 4, 3, 2, 15 + math.random() * 4, dir1)
 					dir = dir + 360 / 3
-				end
-
-				--#TEMP_BETA
-				if inst.battlestarttime then
-					local report = inst.components.lootdropper:SpawnLootPrefab("temp_beta_msg")
-					report:SetKillTime(GetTime() - inst.battlestarttime, "wagboss_robot_possessed")
 				end
 
                 local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
@@ -2041,6 +1983,7 @@ local states =
 			inst.Physics:SetMass(1000)
 			inst.Physics:SetActive(true)
 			inst.sg.statemem.alter:Remove()
+			inst:SetMusicLevel(1)
 		end,
 	},
 
@@ -2051,6 +1994,7 @@ local states =
 		onenter = function(inst)
 			inst.sg.mem.toturnoff = nil
 			inst:ConfigureOff()
+			inst:SetMusicLevel(0)
 			inst.AnimState:PlayAnimation("deactivate")
 		end,
 
@@ -2106,7 +2050,12 @@ local states =
 				if not inst.SoundEmitter:PlayingSound("loop") then
 					inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
 				end
-				inst:ConfigureHostile()
+				if inst.shattered then
+					inst:ConfigureHostile()
+					inst:SetMusicLevel(1)
+				else
+					inst:ConfigureFriendly()
+				end
 				inst:MakeObstacle(false)
 			end
 		end,

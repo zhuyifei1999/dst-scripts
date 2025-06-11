@@ -5720,7 +5720,7 @@ return{
         {
             GENERIC = "Hard to put a positive spin on it!",
             INACTIVE = "No treats inside, Woby.",
-            DAMAGE = "Looks like we can repair it or use the spare parts, Woby!",
+            DAMAGED = "Looks like we can repair it or use the spare parts, Woby!",
             FRIENDLY = "Looks safe enough.",
         },
         WAGDRONE_FLYING =

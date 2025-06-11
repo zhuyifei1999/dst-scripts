@@ -5678,14 +5678,14 @@ return{
         {
             GENERIC = "I shall sunder thee, O metal menace!",
             INACTIVE = "It slumbers.",
-            DAMAGE = "Shall it be resurrected, or its steel organs claimed to renew another?",
+            DAMAGED = "Shall it be resurrected, or its steel organs claimed to renew another?",
             FRIENDLY = "'Tis friend, no longer foe.",
         },
         WAGDRONE_FLYING =
         {
             GENERIC = "Cursed iron harpies!",
             INACTIVE = "It slumbers.",
-            DAMAGED = "It is dead but its parts may bring new life to another.",
+            DAMAGED = "'Tis dead but its parts may bring new life to another.",
         },
 		WAGDRONE_PARTS = "Clockwork from a cursed contrivance.",
 		WAGDRONE_BEACON = "It doth form a wall unseen? Witchcraft!",

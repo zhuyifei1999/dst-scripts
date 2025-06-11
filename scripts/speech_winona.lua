@@ -5684,7 +5684,7 @@ return{
         {
             GENERIC = "Hey, stay away from my kneecaps!",
             INACTIVE = "Think it's turned off.",
-            DAMAGE = "I can definitely fix it, or salvage it for parts.",
+            DAMAGED = "I can definitely fix it, or salvage it for parts.",
             FRIENDLY = "I'll never fully trust it.",
         },
         WAGDRONE_FLYING =

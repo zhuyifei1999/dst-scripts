@@ -528,6 +528,7 @@ local prefabs =
     -- wagpunk_arena_manager
     "wagboss_robot",
     "wagdrone_spot_marker",
+    "gestalt_cage_filled_placerindicator",
     "wagpunk_floor_marker",
     "wagpunk_floor_placerindicator",
     "wagpunk_lever",

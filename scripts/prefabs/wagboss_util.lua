@@ -60,15 +60,15 @@ local function SpawnFissureAtXZ(x, z, size, id, tx, ty)
 	return fissure
 end
 
-local function DespawnFissure(fissure)
+local function DespawnFissure(fissure, anim)
 	fissure.persists = false
 	if not fissure:IsAsleep() then
 		if fissure._wagpunkarena_fissure_id then
 			fissure:RemoveEventCallback("onremove", OnRemoveFissure)
 			OnRemoveFissure(fissure)
 		end
-		fissure.AnimState:ClearBloomEffectHandle()
-		ErodeAway(fissure)
+		fissure.AnimState:PlayAnimation(anim.."_pst")
+		fissure:ListenForEvent("animover", fissure.Remove)
 	elseif POPULATING then
 		fissure:DoStaticTaskInTime(0, fissure.Remove)
 	else
@@ -142,27 +142,28 @@ local function HasLunarBurnDamage(flags)
 	return bit.band(flags, _lunarburn_dmg_mask) ~= 0
 end
 
+local function _acc_def_mult(ent, def, mult)
+	def = def + SpDamageUtil.GetSpDefenseForType(ent, "planar")
+	if ent.components.damagetyperesist then
+		mult = mult * ent.components.damagetyperesist:GetResistForTag("lunar_aligned")
+	end
+	return def, mult
+end
+
 local function CalcLunarBurnTickDamage(target, dps)
-	local def = 0
-	local mult = 1
+	local def, mult = _acc_def_mult(target, 0, 1)
 	if target.components.inventory then
 		for eslot, equip in pairs(target.components.inventory.equipslots) do
-			def = def + SpDamageUtil.GetSpDefenseForType(equip, "planar")
-			if equip.components.damagetyperesist then
-				mult = mult * equip.components.damagetyperesist:GetResistForTag("lunar_aligned")
-			end
+			def, mult = _acc_def_mult(equip, def, mult)
 		end
 	end
 	if target.components.rideable then
 		local saddle = target.components.rideable.saddle
-		if saddle and saddle.components.damagetyperesist then
-			mult = mult * saddle.components.damagetyperesist:GetResistForTag("lunar_aligned")
+		if saddle then
+			def, mult = _acc_def_mult(saddle, def, mult)
 		end
 	end
-	if target.components.damagetyperesist then
-		mult = mult * target.components.damagetyperesist:GetResistForTag("lunar_aligned")
-	end
-	return math.max(0, (dps * mult - def) * 0.5 * FRAMES)
+	return math.max(0, (dps * mult - def / 4) * FRAMES)
 end
 
 --------------------------------------------------------------------------

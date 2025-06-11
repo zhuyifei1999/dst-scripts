@@ -425,13 +425,15 @@ function WagpunkManager:TryHinting(debug)
     local pos
     local machinepos
 
-    local playerpos = player:GetPosition()
+    local px, py, pz = player.Transform:GetWorldPosition()
 
-    local is_valid_pos = TheSim:CountEntities(playerpos.x, playerpos.y, playerpos.z, 50, nil, nil, WAGSTAFF_MAY) <= 0
+    local is_valid_pos = (not TheWorld.Map:IsPointInWagPunkArena(px, py, pz))
+        and (TheSim:CountEntities(px, py, pz, 50, nil, nil, WAGSTAFF_MAY) <= 0)
 
     local machine = Ents[next(self.machineGUIDS)]
 
     if is_valid_pos and machine ~= nil and machine:IsValid() then
+        local playerpos = Vector3(px, py, pz)
         machinepos = machine:GetPosition()
 
         local angle = ((player:GetAngleToPoint(machinepos:Get()) - 180) + ( (math.random() * 60) -30 )) * DEGREES

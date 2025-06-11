@@ -148,6 +148,13 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_worm",
     },
 
+	wagboss =
+	{
+		"dontstarve/music/music_epicfight_wagboss_1",
+		"", --silence
+		"dontstarve/music/music_epicfight_wagboss_2",
+	},
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",

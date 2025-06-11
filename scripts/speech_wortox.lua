@@ -5698,7 +5698,7 @@ return{
         {
             GENERIC = "Deranged dervish on the skirmish!",
             INACTIVE = "A mean little machine!",
-            DAMAGE = "Shall I repair or take the spare... parts?",
+            DAMAGED = "Shall I repair or take the spare... parts?",
             FRIENDLY = "A friendly model that doesn't dawdle.",
         },
         WAGDRONE_FLYING =

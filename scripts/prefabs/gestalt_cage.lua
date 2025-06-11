@@ -313,6 +313,26 @@ local function Filled_GetStatus(inst, viewer)
 	return "FILLED"
 end
 
+local INDICATOR_MUST_TAGS = {"CLASSIFIED", "gestalt_cage_filled_placerindicator"}
+local function on_deploy(inst, pt, deployer)
+    local replacementinst = SpawnPrefab(inst.replacementprefab)
+    replacementinst.Transform:SetPosition(pt:Get())
+    local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
+    if wagpunk_arena_manager then
+        wagpunk_arena_manager:TrackWagdrone(replacementinst)
+    end
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.GESTALT_CAGE_FILLED_PLACEMENT_RADIUS, INDICATOR_MUST_TAGS)
+    if ents[1] then
+        ents[1]:Remove()
+    end
+    inst:Remove()
+    TheWorld:PushEvent("ms_wagpunk_constructrobot")
+end
+
+local function CLIENT_CanDeployGestaltCage(inst, pt, mouseover, deployer, rotation)
+    return TheSim:CountEntities(pt.x, pt.y, pt.z, TUNING.GESTALT_CAGE_FILLED_PLACEMENT_RADIUS, INDICATOR_MUST_TAGS) > 0
+end
+
 local function filledfn1()
 	local inst = CreateEntity()
 
@@ -337,6 +357,9 @@ local function filledfn1()
 
     inst:AddTag("gestalt_cage_filled")
 
+    inst.replacementprefab = "wagdrone_flying"
+    inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -355,6 +378,10 @@ local function filledfn1()
 	inst:AddComponent("inventoryitem")
 	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
+
+    inst:AddComponent("deployable")
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+    inst.components.deployable.ondeploy = on_deploy
 
 	MakeHauntableLaunch(inst)
 
@@ -395,6 +422,9 @@ local function filledfn2()
 
     inst:AddTag("gestalt_cage_filled")
 
+    inst.replacementprefab = "wagdrone_rolling"
+    inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -413,6 +443,10 @@ local function filledfn2()
 	inst:AddComponent("inventoryitem")
 	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
+
+    inst:AddComponent("deployable")
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+    inst.components.deployable.ondeploy = on_deploy
 
 	MakeHauntableLaunch(inst)
 
@@ -486,10 +520,135 @@ local function filledfn3()
 	return inst
 end
 
---------------------------------------------------------------------------
+
+-------------------------------------------
+-- gestalt_cage_placer
+
+local function PlacerPostinit_1(inst)
+    inst.deployhelper_key = "gestalt_cage_filled_placerindicator"
+    inst.replacementprefab = "wagdrone_flying"
+end
+local function PlacerPostinit_2(inst)
+    inst.deployhelper_key = "gestalt_cage_filled_placerindicator"
+    inst.replacementprefab = "wagdrone_rolling"
+end
+
+
+-----------------------------------------------------------
+-- gestalt_cage_filled_placerindicator
+
+local assets_placerindicator = {
+	Asset("ANIM", "anim/wagdrone_rolling.zip"),
+	Asset("ANIM", "anim/wagdrone_flying.zip"),
+}
+
+local function SetupRollingDecal(inst)
+    inst.AnimState:SetBuild("wagdrone_rolling")
+    inst.AnimState:SetBank("wagdrone_rolling")
+    inst.AnimState:PlayAnimation("off_idle")
+    inst.AnimState:SetSymbolLightOverride("light_yellow_on", 0.5)
+    inst.AnimState:SetSymbolBloom("light_yellow_on")
+    inst.AnimState:Hide("LIGHT_ON")
+end
+
+local function SetupFlyingDecal(inst)
+    inst.AnimState:SetBuild("wagdrone_flying")
+    inst.AnimState:SetBank("wagdrone_flying")
+    inst.AnimState:PlayAnimation("off_idle")
+    inst.AnimState:OverrideSymbol("bolt_c", "wagdrone_projectile", "bolt_c")
+    inst.AnimState:SetSymbolBloom("bolt_c")
+    inst.AnimState:SetSymbolLightOverride("bolt_c", 1)
+    inst.AnimState:SetSymbolLightOverride("fx_ray", 1)
+    inst.AnimState:SetSymbolLightOverride("light_yellow_on", 0.5)
+    inst.AnimState:SetSymbolBloom("light_yellow_on")
+    inst.AnimState:Hide("LIGHT_ON")
+end
+
+local function CreateFloorDecal(kind)
+    local inst = CreateEntity()
+
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    --[[Non-networked entity]]
+
+    inst:AddTag("CLASSIFIED")
+    inst:AddTag("NOCLICK")
+    inst:AddTag("placer")
+
+    if kind == "wagdrone_rolling" then
+        SetupRollingDecal(inst)
+    else
+        SetupFlyingDecal(inst)
+    end
+    inst.AnimState:SetLightOverride(1)
+    inst.AnimState:SetMultColour(0.5, 0.5, 0.5, 0.75)
+
+    return inst
+end
+
+local function OnEnableHelper(inst, enabled, recipename, placerinst)
+    if enabled then
+        inst.helper = CreateFloorDecal(placerinst and placerinst.replacementprefab or nil)
+        inst.helper.entity:SetParent(inst.entity)
+
+        inst.helper.placerinst = placerinst
+    elseif inst.helper ~= nil then
+        inst.helper:Remove()
+        inst.helper = nil
+    end
+end
+
+local function OnSave_placerindicator(inst, data)
+    local rotation = inst.Transform:GetRotation()
+    if rotation ~= 0 then
+        data.rotation = rotation
+    end
+end
+local function OnLoad_placerindicator(inst, data)
+    if not data then
+        return
+    end
+
+    if data.rotation then
+        inst.Transform:SetRotation(data.rotation)
+    end
+end
+
+local function fn_placerindicator()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("CLASSIFIED")
+    inst:AddTag("gestalt_cage_filled_placerindicator")
+
+    --Dedicated server does not need deployhelper
+    if not TheNet:IsDedicated() then
+        local deployhelper = inst:AddComponent("deployhelper")
+        deployhelper:AddKeyFilter("gestalt_cage_filled_placerindicator")
+        deployhelper.onenablehelper = OnEnableHelper
+    end
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.OnSave = OnSave_placerindicator
+    inst.OnLoad = OnLoad_placerindicator
+
+    return inst
+end
 
 return Prefab("gestalt_cage", fn, assets, prefabs),
 	Prefab("gestalt_cage_swap_fx", fxfn, assets),
 	Prefab("gestalt_cage_filled1", filledfn1, assets_filled),
 	Prefab("gestalt_cage_filled2", filledfn2, assets_filled),
-	Prefab("gestalt_cage_filled3", filledfn3, assets_filled)
+	Prefab("gestalt_cage_filled3", filledfn3, assets_filled),
+	MakePlacer("gestalt_cage_filled1_placer", "gestalt_cage", "gestalt_cage", "success_1_loop", nil, nil, nil, nil, nil, nil, PlacerPostinit_1),
+	MakePlacer("gestalt_cage_filled2_placer", "gestalt_cage", "gestalt_cage", "success_2_loop", nil, nil, nil, nil, nil, nil, PlacerPostinit_2),
+    Prefab("gestalt_cage_filled_placerindicator", fn_placerindicator, assets_placerindicator)

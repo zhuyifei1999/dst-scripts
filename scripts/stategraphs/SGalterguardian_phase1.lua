@@ -962,7 +962,7 @@ local states =
 
     State {
         name = "spawn_lunar",
-        tags = {"busy", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
+        tags = {"busy", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun", "spawn_lunar"},
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("spawn_lunar")
@@ -981,6 +981,11 @@ local states =
 
         timeline =
         {
+            FrameEvent(6, function(inst)
+                if TheWorld.components.wagpunk_arena_manager and TheWorld.components.wagpunk_arena_manager.wagstaff then
+                    TheWorld.components.wagpunk_arena_manager.wagstaff:PushEvent("lunarguardianincoming")
+                end
+            end),
             FrameEvent(10, function(inst)
                 inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/tantrum")
 				spawn_land_screenshake(inst)

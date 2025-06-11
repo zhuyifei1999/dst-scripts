@@ -5954,9 +5954,9 @@ STRINGS =
     },
 
     HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT = {
-        LOW = {"Hmph! You tricked me! This island is the worst!", "You'd better find me a better place to live!", "Use my new recipe to help me move."},
-        MED = {"That map must be outdated.", "I need a better place to live.", "I'll show you a new recipe to help me move."},
-        HIGH = {"Ack! That junk collector left his mess here!", "Please help me find a better home?", "Would you use my new recipe to help me move?"},
+        LOW = {"Hmph! You tricked me! This island is the worst!", "You'd better fix this...", "...or you're no better than that junk collector!", "I’ve got something you can use - if you actually plan on helping me."},
+        MED = {"Ack! That map was no good.", "Maybe that junk collector tricked you too.", "I need a better place to live.", "I have something you can use to help me."},
+        HIGH = {"Oh dear, that junk collector tricked us with a bad map.", "Please help me find a better home?", "I’ve got a little something that might help you help me!"},
     },
 
     HERMITCRAB_LEVEL10_PLAYERGOOD = {
@@ -5990,8 +5990,8 @@ STRINGS =
     HERMITCRAB_GOT_PEARL = {"Oh...","...I think I understand now.","Thank you for bringing this back to me.","I'm so glad you kept coming back.","My friend."},
     HERMITCRAB_WANT_HOUSE = {"I could really use some help fixing up my house..."},
     HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
-    HERMITCRAB_GOT_MAPSCROLL_BAD = {"I don't see what good this map is it doesn't go anywhere special."},
-    HERMITCRAB_GOT_MAPSCROLL_GOOD = {"This map shows an island...", "and it's away from this junk collector.", "Thank you, I'll be heading there."},
+    HERMITCRAB_GOT_MAPSCROLL_BAD = {"This map is no good to me.", "It doesn't take me anywhere special."},
+    HERMITCRAB_GOT_MAPSCROLL_GOOD = {"The island on this map seems nice...", "and it will take me away from the junk collector.", "Thank you, I think I'll go.", "Perhaps it will even bring me closer to my sweetie...", "if he's still out there."},
 
     HERMITCRAB_ANNOUNCE_SPOOKED = "Did you see that?!",
     HERMITCRAB_ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",
@@ -7176,7 +7176,8 @@ STRINGS =
     WAGSTAFF_NPC_GOT_ENOUGH_GESTALTCAGE =  {
         "Enough of these.",
         "We need something far more powerful.",
-        "I wonder where we can find one..."},
+        "I wonder where we can find one...",
+    },
 
     WAGSTAFF_NPC_LUNARGUARDIANINCOMING = "Hm, seems we've angered the lunar being in collecting too many of its little friends.",
 
@@ -7346,6 +7347,31 @@ STRINGS =
         "The entity has taken control of W.A.R.B.O.T..",
         "Seems I underestimated its strength, a shame.",
         "Ah well. Deal with it, would you?",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL = {
+        "What a waste of my W.A.R.B.O.T.,",
+        "but the entity has taken on a fascinating new hybrid form.",
+        "You may need to modify your approach.",
+        "Carry on.",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_SCIONUNSTABLE = {
+        "Hmm, uncontained exposure is accelerating entropy.",
+        "It is not ideal.",
+        "Maintain pressure and subdue the entity immediately before it...",
+        "Nevermind, I'll think of something...",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN = {
+        "Very good! Now you just need to...",
+    },
+
+    WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF = {
+        "...Gaaah!",
+        "What's happening to me?",
+        "Impossible!",
+        "I don't under...",
     },
 
     -- Terraria

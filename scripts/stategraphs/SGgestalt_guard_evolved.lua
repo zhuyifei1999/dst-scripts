@@ -154,6 +154,8 @@ local states =
             inst.persists = false
 
             inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/melt")
+
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
 
         events =
@@ -246,7 +248,6 @@ local states =
                 end
                 inst.Physics:ClearMotorVelOverride()
                 inst.components.locomotor:Stop()
-                inst.components.combat:DropTarget()
             end),
         },
 

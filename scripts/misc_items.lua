@@ -3272,7 +3272,7 @@ MISC_ITEMS =
 		display_atlas = "images/iap_images_lunar.xml",
 		display_tex = "lunar.tex",
 		box_build = "box_shop_plain",
-		display_items = {  "walter_lunar", "wanda_lunar", "waxwell_lunar", "webber_lunar", "wendy_lunar", "wickerbottom_lunar", "wilson_lunar", "wormwood_lunar", "wx78_lunar", },
+		display_items = {  "walter_lunar", "walterhat_lunar", "wanda_lunar", "waxwell_lunar", "webber_lunar", "wendy_lunar", "abigail_lunar", "wickerbottom_lunar", "wilson_lunar", "wormwood_lunar", "wx78_lunar", },
 		output_items = {  "walter_lunar", "walterhat_lunar", "body_walter_lunar", "legs_walter_lunar", "wanda_lunar", "body_wanda_lunar", "feet_wanda_lunar", "hand_wanda_lunar", "waxwell_lunar", "body_waxwell_lunar", "feet_waxwell_lunar", "hand_waxwell_lunar", "webber_lunar", "webber_beard_lunar", "body_webber_lunar", "feet_webber_lunar", "hand_webber_lunar", "legs_webber_lunar", "wendy_lunar", "body_wendy_lunar", "feet_wendy_lunar", "abigail_lunar", "wickerbottom_lunar", "body_wickerbottom_lunar", "feet_wickerbottom_lunar", "hand_wickerbottom_lunar", "wilson_lunar", "wilson_beard_lunar", "body_wilson_lunar", "hand_wilson_lunar", "legs_wilson_lunar", "wormwood_lunar", "body_wormwood_lunar", "hand_wormwood_lunar", "legs_wormwood_lunar", "wx78_lunar", "body_wx78_lunar", "hand_wx78_lunar", "legs_wx78_lunar", "feet_wx78_lunar", },
 		release_group = 136,
 	},

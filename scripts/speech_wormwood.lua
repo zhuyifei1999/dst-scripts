@@ -2091,7 +2091,7 @@ return{
         CHESSPIECE_WARG_MUTATED = "Woofer, stay",
         CHESSPIECE_BEARGER_MUTATED = "Fuzzy hungry?",
         CHESSPIECE_SHARKBOI = "Toothy Fish Friend",
-        CHESSPIECE_WORMBOSS = "Don't eat me!",
+        CHESSPIECE_WORMBOSS = "Don't eat!",
         CHESSPIECE_YOTS = "Little wiggly",
 
         CHESSJUNK1 = "Machine stuff",
@@ -5593,7 +5593,7 @@ return{
         PLAYER_HOSTED =
         {
             GENERIC = "Dead friend",
-            ME = "Dead me!",
+            ME = "Dead self!",
         },
 
         MASK_SAGEHAT = "Smarty face",
@@ -5682,7 +5682,7 @@ return{
         {
             GENERIC = "Why, spinning friends, why?",
             INACTIVE = "Sleeping friend",
-            DAMAGE = "Fix spinning friend, or take spinning friend parts",
+            DAMAGED = "Fix spinning friend, or take spinning friend parts",
             FRIENDLY = "Nice spinning friend",
         },
         WAGDRONE_FLYING =
@@ -5695,7 +5695,7 @@ return{
 		WAGDRONE_BEACON = "Friend can't cross",
 
         WAGPUNK_WORKSTATION = "Building table build shiny things?",
-        WAGPUNK_LEVER = "Safe? No afraid, me pull",
+        WAGPUNK_LEVER = "Danger?",
         WAGPUNK_FLOOR_KIT = "More big land",
         WAGPUNK_CAGEWALL = "No go!",
 
@@ -5706,9 +5706,9 @@ return{
 
         WANDERINGTRADER = "Shaggy Buddy Man?",
 
-        GESTALT_GUARD_EVOLVED = "No mad! Be me friend!",
+        GESTALT_GUARD_EVOLVED = "Why friend mad? Why friend not friend?",
         FLOTATIONCUSHION = "No more scared biiig water",
-        LUNAR_SEED = "Small Night Ball! Me here, me here",
+        LUNAR_SEED = "Love Baby Night Ball! Love!",
     },
 
     DESCRIBE_GENERIC = "Friend?",

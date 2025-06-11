@@ -4,6 +4,11 @@ local assets =
 	Asset("ANIM", "anim/wagboss_lunar_actions.zip"),
 	Asset("ANIM", "anim/wagboss_lunar_spawn.zip"),
 	Asset("SCRIPT", "scripts/prefabs/wagboss_util.lua"),
+
+	--finale
+	Asset("ANIM", "anim/wagboss_robot.zip"),
+	Asset("ANIM", "anim/wagboss_lunar_blast.zip"),
+	Asset("ANIM", "anim/static_ball_contained.zip"),
 }
 
 local assets_slamfx =
@@ -25,6 +30,7 @@ local prefabs =
 	"alterguardian_lunar_fissures",
 	"alterguardian_lunar_supernova_burn_fx",
 
+	"wagstaff_npc_finale_fx",
 	"wagstaff_item_1",
 	"wagstaff_item_2",
 
@@ -57,6 +63,12 @@ SetSharedLootTable("alterguardian_phase4_lunarrift",
 	{ "gears",				1.0 },
 	{ "gears",				0.5 },
 })
+
+local WAGSTAFF_LOOT =
+{
+	"wagstaff_item_1",
+	"wagstaff_item_2",
+}
 
 local brain = require("brains/alterguardian_phase4_lunarriftbrain")
 
@@ -122,6 +134,84 @@ end
 
 --------------------------------------------------------------------------
 
+local ENTER_DOMAIN_RANGE_SQ = 24 * 24
+local EXIT_DOMAIN_RANGE_SQ = 32 * 32
+
+local function DomainExpansionUpdate(inst)
+	local indomain = inst._playersindomain
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local map = TheWorld.Map
+	if map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z) then
+		for i, v in ipairs(AllPlayers) do
+			if v.components.sanity == nil then
+				indomain = nil
+			elseif map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()) then
+				if indomain[v] == nil then
+					v.components.sanity:EnableLunacy(true, inst)
+				end
+				indomain[v] = false --pending enter or stay in domain
+			elseif indomain[v] then
+				v.components.sanity:EnableLunacy(false, inst)
+				indomain[v] = nil
+			end
+		end
+	else
+		for i, v in ipairs(AllPlayers) do
+			if v.components.sanity == nil then
+				indomain[v] = nil
+			elseif indomain[v] then
+				if v:GetDistanceSqToPoint(x, 0, z) < EXIT_DOMAIN_RANGE_SQ then
+					indomain[v] = false --pending stay in domain
+				else
+					v.components.sanity:EnableLunacy(false, inst)
+					indomain[v] = nil
+				end
+			elseif v:GetDistanceSqToPoint(x, 0, z) < ENTER_DOMAIN_RANGE_SQ then
+				v.components.sanity:EnableLunacy(true, inst)
+				indomain[v] = false --pending enter domain
+			end
+		end
+	end
+	for k, v in pairs(indomain) do
+		if v then
+			if v:IsValid() and v.components.sanity then
+				v.components.sanity:EnableLunacy(false, inst)
+			end
+			indomain[k] = nil
+		else
+			indomain[k] = true
+		end
+	end
+end
+
+local function StartDomainExpansion(inst)
+	if inst._domainexpansiontask == nil then
+		inst._domainexpansiontask = inst:DoPeriodicTask(0.5, DomainExpansionUpdate)
+		if inst._playersindomain == nil then
+			inst._playersindomain = {}
+		end
+		DomainExpansionUpdate(inst)
+	end
+end
+
+local function StopDomainExpansion(inst, istempstop)
+	if inst._domainexpansiontask then
+		inst._domainexpansiontask:Cancel()
+		inst._domainexpansiontask = nil
+		for k in pairs(inst._playersindomain) do
+			if k:IsValid() and k.components.sanity then
+				k.components.sanity:EnableLunacy(false, inst)
+			end
+			inst._playersindomain[k] = nil
+		end
+	end
+	if not istempstop then
+		inst._playersindomain = nil
+	end
+end
+
+--------------------------------------------------------------------------
+
 local function teleport_override_fn(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	if TheWorld.Map:IsPointInWagPunkArena(x, y, z) then
@@ -131,6 +221,10 @@ end
 
 --------------------------------------------------------------------------
 --Client follow symbol functions
+
+local function OnRemoveHighlightChild(child)
+	table.removearrayvalue(child.highlightparent.highlightchildren, child)
+end
 
 local function AddFollowFx(inst, anim, symbol, frame, alpha, usefacings)
 	local fx = CreateEntity()
@@ -176,6 +270,8 @@ local function AddFollowFx(inst, anim, symbol, frame, alpha, usefacings)
 
 	table.insert(inst.followfx, fx)
 	table.insert(inst.highlightchildren, fx)
+	fx.highlightparent = inst
+	fx.OnRemoveEntity = OnRemoveHighlightChild
 
 	return fx
 end
@@ -201,11 +297,14 @@ local function OnFacings(inst)
 	if facings == 1 then
 		fxfr.Transform:SetEightFaced()
 		fxbk.Transform:SetEightFaced()
+	elseif facings == 3 then
+		fxfr.Transform:SetSixFaced()
+		fxbk.Transform:SetSixFaced()
 	else
 		fxfr.Transform:SetFourFaced()
 		fxbk.Transform:SetFourFaced()
 	end
-	if facings == 2 then
+	if facings >= 2 then
 		SwapAnim(fxfr, "float_fr_loop", "float_fr_loop_nofaced")
 		SwapAnim(fxbk, "float_bk_loop", "float_bk_loop_nofaced")
 	else
@@ -231,22 +330,34 @@ local function SwitchToFourFaced(inst)
 		if inst.followfx then
 			OnFacings(inst)
 		end
-		if old == 1 then
+		if old ~= 2 then --2 is already FourFaced
 			inst.Transform:SetFourFaced()
 		end
 	end
 end
 
 local function SwitchToNoFaced(inst)
+	--no-faced anim, flips should match FourFaced model.
 	local old = inst.facings:value()
 	if old ~= 2 then
 		inst.facings:set(2)
 		if inst.followfx then
 			OnFacings(inst)
 		end
-		if old == 1 then
+		if old ~= 0 then --0 is already FourFaced
 			inst.Transform:SetFourFaced()
 		end
+	end
+end
+
+local function SwitchToTwoFaced(inst)
+	--no-faced but flippable. Works best with no-faced anim & SixFaced model.
+	if inst.facings:value() ~= 3 then
+		inst.facings:set(3)
+		if inst.followfx then
+			OnFacings(inst)
+		end
+		inst.Transform:SetSixFaced()
 	end
 end
 
@@ -263,12 +374,8 @@ local function InitCheckSpawnBuild(inst)
 		inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
 		inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 
-		TheWorld:PushEvent("ms_register_wagpunk_arena_lunacycreator", inst)
+		inst:StartDomainExpansion()
 	end
-end
-
-local function OnDeath(inst)
-    TheWorld:PushEvent("ms_wagboss_alter_defeated", inst)
 end
 
 --------------------------------------------------------------------------
@@ -281,6 +388,7 @@ local PHASES =
 			inst.dashcombo = 1
 			inst.dashcount = inst.dashcount or 0
 			inst.dashrnd = false
+			inst.dashcenter = false
 			inst.slamcombo = nil
 			inst.slamrnd = false
 			inst.cansupernova = false
@@ -292,6 +400,7 @@ local PHASES =
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
 			inst.dashrnd = false
+			inst.dashcenter = false
 			inst.slamcombo = 1
 			inst.slamcount = inst.slamcount or 0
 			inst.slamrnd = false
@@ -304,6 +413,7 @@ local PHASES =
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
 			inst.dashrnd = true
+			inst.dashcenter = false
 			inst.slamcombo = 1
 			inst.slamcount = inst.slamcount or 0
 			inst.slamrnd = false
@@ -316,6 +426,7 @@ local PHASES =
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
 			inst.dashrnd = true
+			inst.dashcenter = true
 			inst.slamcombo = 2
 			inst.slamcount = inst.slamcount or 0
 			inst.slamrnd = true
@@ -337,7 +448,7 @@ local function UpdatePlayerTargets(inst)
 	end
 
 	local map = TheWorld.Map
-	if map:IsPointInWagPunkArena(x, y, z) then
+	if map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
 		for i, v in ipairs(AllPlayers) do
 			if not (v.components.health:IsDead() or v:HasTag("playerghost")) and
 				v.entity:IsVisible() and
@@ -375,17 +486,22 @@ local function RetargetFn(inst)
 	UpdatePlayerTargets(inst)
 
 	local x, y, z = inst.Transform:GetWorldPosition()
+	local map = TheWorld.Map
+	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
 	local target = inst.components.combat.target
 	local inrange
 	if target then
 		local range = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0)
-		local dsq = target:GetDistanceSqToPoint(x, y, z)
-		inrange = dsq < range * range
+		local x1, y1, z1 = target.Transform:GetWorldPosition()
+		local dsq = distsq(x1, z1, x, z)
+		local arenacheck = not inarena or map:IsPointInWagPunkArena(x1, y1, z1)
+		inrange = arenacheck and dsq < range * range
 
 		if target.isplayer then
-			if inst:IsSlamNext() and (inrange or dsq < TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST * TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST) then
+			if inst:IsSlamNext() and (inrange or (arenacheck and dsq < TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST * TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST)) then
 				return --don't switch player targets when we're about to slam
 			end
+			--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 			local newplayer = inst.components.grouptargeter:TryGetNewTarget()
 			if newplayer then
 				range = inrange and TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST
@@ -397,6 +513,7 @@ local function RetargetFn(inst)
 		end
 	end
 
+	--NOTE: grouptargets aleady have checked for inarena conditions during UpdatePlayerTargets
 	assert(next(inst._temptbl1) == nil)
 	local nearplayers = inst._temptbl1
 	for k in pairs(inst.components.grouptargeter:GetTargets()) do
@@ -423,23 +540,27 @@ local function KeepTargetFn(inst, target)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local x1, y1, z1 = target.Transform:GetWorldPosition()
 	local map = TheWorld.Map
-	if map:IsPointInWagPunkArena(x, y, z) then
+	if map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
 		return map:IsPointInWagPunkArena(x1, y1, z1)
 	end
 	return distsq(x, z, x1, z1) < TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_DEAGGRO_DIST * TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_DEAGGRO_DIST
 end
 
 local function OnAttacked(inst, data)
-	if data and data.attacker then
+	if data and data.attacker and data.attacker:IsValid() then
+		local x, y, z = inst.Transform:GetWorldPosition()
 		local target = inst.components.combat.target
-		if not (target and
-				target.isplayer and
-				target:IsNear(inst,
-					inst:IsSlamNext() and
-					TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST or
-					TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0))
-				)
-		then
+		if target and target.isplayer then
+			local range =
+				inst:IsSlamNext() and
+				TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_KEEP_AGGRO_DIST or
+				TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + target:GetPhysicsRadius(0)
+			if target:GetDistanceSqToPoint(x, y, z) < range * range then
+				return --don't switch targets
+			end
+		end
+		local map = TheWorld.Map
+		if not map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) or map:IsPointInWagPunkArena(data.attacker.Transform:GetWorldPosition()) then
 			inst.components.combat:SetTarget(data.attacker)
 		end
 	end
@@ -477,13 +598,6 @@ local function SetEngaged(inst, engaged, delay)
 				inst:PushEvent("resetboss")
 				inst.components.health:SetPercent(1)
 			end
-
-			--#TEMP_BETA
-			if engaged and not POPULATING and TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
-				inst.battlestarttime = GetTime()
-			else
-				inst.battlestarttime = nil
-			end
 		end
 	end
 end
@@ -518,6 +632,85 @@ local function OnLoad(inst, data)--, ents)
 	if data and data.engaged and not inst.engaged then
 		SetEngaged(inst, true)
 		SetEngaged(inst, false, 10)
+	end
+	if not inst.components.health:IsDead() then
+		inst:SetMusicLevel(3)
+	end
+end
+
+local function OnEntitySleep(inst)
+	inst:StopDomainExpansion(true)
+	if inst.sg:HasStateTag("jumping") then
+		inst.sg:GoToState("idle")
+	end
+end
+
+local function OnEntityWake(inst)
+	if inst._playersindomain then
+		inst:StartDomainExpansion()
+	end
+end
+
+local function OnRemoveEntity(inst)
+	inst:StopDomainExpansion()
+	if inst.persists and TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
+		TheWorld:PushEvent("ms_wagboss_alter_defeated", inst)
+	end
+end
+
+local function LootSetupFn(lootdropper)
+	lootdropper:SetLoot(lootdropper.inst.sg.statemem.wagstaff and WAGSTAFF_LOOT or nil)
+	lootdropper:SetChanceLootTable("alterguardian_phase4_lunarrift")
+end
+
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+	if ThePlayer == nil then
+		inst._playingmusic = false
+	else
+		local map = TheWorld.Map
+		local x, _, z = inst.Transform:GetWorldPosition()
+		if map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z) then
+			if map:IsPointInWagPunkArena(ThePlayer.Transform:GetWorldPosition()) then
+				inst._playingmusic = true
+				ThePlayer:PushEvent("triggeredevent", { name = "wagboss", level = inst.music:value() })
+			else
+				inst._playingmusic = false
+			end
+		else
+			local dsq = ThePlayer:GetDistanceSqToPoint(x, 0, z)
+			if dsq < (inst._playingmusic and EXIT_DOMAIN_RANGE_SQ or ENTER_DOMAIN_RANGE_SQ) then
+				inst._playingmusic = true
+				ThePlayer:PushEvent("triggeredevent", { name = "wagboss", level = inst.music:value() })
+			elseif inst._playingmusic and dsq >= 40 * 40 then
+				inst._playingmusic = false
+			end
+		end
+	end
+end
+
+local function OnMusicDirty(inst)
+	if inst.music:value() > 0 then
+		if inst._musictask == nil then
+			inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+		end
+		PushMusic(inst)
+	elseif inst._musictask then
+		inst._musictask:Cancel()
+		inst._musictask = nil
+		inst._playingmusic = false
+	end
+end
+
+local function SetMusicLevel(inst, level)
+	if level ~= inst.music:value() then
+		inst.music:set(level)
+
+		--Dedicated server does not need to trigger music
+		if not TheNet:IsDedicated() then
+			OnMusicDirty(inst)
+		end
 	end
 end
 
@@ -566,6 +759,7 @@ local function fn()
 
 	inst.showdashfx = net_bool(inst.GUID, "alterguardian_phase4_lunarrift.showdashfx", "showdashfxdirty")
 	inst.facings = net_tinybyte(inst.GUID, "alterguardian_phase4_lunarrift.facings", "facingsdirty")
+	inst.music = net_tinybyte(inst.GUID, "alterguardian_phase4_lunarrift.music", "musicdirty")
 
 	--Dedicated server does not need to spawn the local fx
 	if not TheNet:IsDedicated() then
@@ -606,6 +800,7 @@ local function fn()
 	if not TheWorld.ismastersim then
 		inst:ListenForEvent("facingsdirty", OnFacings)
 		inst:ListenForEvent("showdashfxdirty", OnShowDashFx)
+		inst:ListenForEvent("musicdirty", OnMusicDirty)
 
 		return inst
 	end
@@ -648,7 +843,7 @@ local function fn()
 	inst:AddComponent("colouradder")
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetChanceLootTable("alterguardian_phase4_lunarrift")
+	inst.components.lootdropper:SetLootSetupFn(LootSetupFn)
 	inst.components.lootdropper.min_speed = 1
 	inst.components.lootdropper.max_speed = 3
 	inst.components.lootdropper.y_speed = 14
@@ -670,6 +865,8 @@ local function fn()
 
 	inst._temptbl1 = {}
 	inst._temptbl2 = {}
+	inst._domainexpansiontask = nil
+	inst._playersindomain = nil
 
 	inst.sg.mem.hasspawnbuild = true
 	inst.inittask = inst:DoTaskInTime(0, InitCheckSpawnBuild)
@@ -677,14 +874,19 @@ local function fn()
 	inst.SwitchToEightFaced = SwitchToEightFaced
 	inst.SwitchToFourFaced = SwitchToFourFaced
 	inst.SwitchToNoFaced = SwitchToNoFaced
+	inst.SwitchToTwoFaced = SwitchToTwoFaced
 	inst.StartDashFx = StartDashFx
 	inst.StopDashFx = StopDashFx
+	inst.StartDomainExpansion = StartDomainExpansion
+	inst.StopDomainExpansion = StopDomainExpansion
 	inst.ResetCombo = ResetCombo
 	inst.IsSlamNext = IsSlamNext
+	inst.SetMusicLevel = SetMusicLevel
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
-
-    inst:ListenForEvent("death", OnDeath)
+	inst.OnEntitySleep = OnEntitySleep
+	inst.OnEntityWake = OnEntityWake
+	inst.OnRemoveEntity = OnRemoveEntity
 
 	return inst
 end

@@ -3070,9 +3070,11 @@ local function MakeHat(name)
             local owner = inst.components.inventoryitem.owner
             if owner and owner.components.sanity then
                 if inst.lunarseedsmaxed then
+                    inst:AddTag("lunarseedmaxed")
                     owner.components.sanity:SetInducedLunacy(inst, true)
                     owner.components.sanity:EnableLunacy(true, "lunacyhat")
                 else
+                    inst:RemoveTag("lunarseedmaxed")
                     owner.components.sanity:SetInducedLunacy(inst, false)
                     owner.components.sanity:EnableLunacy(false, "lunacyhat")
                 end
@@ -3490,6 +3492,7 @@ local function MakeHat(name)
 			inst.fx:Remove()
 		end
 		inst.fx = SpawnPrefab("lunarplanthat_fx")
+        inst.fx.owningitem = inst
 		inst.fx:AttachToOwner(owner)
 		owner.AnimState:SetSymbolLightOverride("swap_hat", .1)
 		if owner.components.grue ~= nil then
@@ -5879,6 +5882,28 @@ local function lunarplanthat_CreateFxFollowFrame(i)
 	return inst
 end
 
+local function lunarplanthat_fx_skinhashdirty(inst)
+    if inst.fx ~= nil then
+        local skinbuildhash = inst.skinbuildhash:value()
+        if skinbuildhash ~= 0 then
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetSkin(skinbuildhash, "hat_lunarplant")
+            end
+        else
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetBuild("hat_lunarplant")
+            end
+        end
+    end
+end
+
+local function lunarplanthat_fx_common_postinit(inst)
+    inst.skinbuildhash = net_hash(inst.GUID, "lunarplanthat_fx.skinbuildhash", "skinhashdirty")
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("skinhashdirty", lunarplanthat_fx_skinhashdirty)
+    end
+end
+
 local function voidclothhat_CreateFxFollowFrame(i)
 	local inst = CreateEntity()
 
@@ -6133,6 +6158,12 @@ local function MakeFollowFx(name, data)
 		if owner.components.colouradder ~= nil then
 			owner.components.colouradder:AttachChild(inst)
 		end
+        if inst.owningitem and inst.skinbuildhash then
+            local skinbuild = inst.owningitem.AnimState:GetSkinBuild()
+            if skinbuild then
+                inst.skinbuildhash:set(skinbuild)
+            end
+        end
 		--Dedicated server does not need to spawn the local fx
 		if not TheNet:IsDedicated() then            
 			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm)
@@ -6299,6 +6330,7 @@ return  MakeHat("straw"),
 
 		MakeFollowFx("lunarplanthat_fx", {
 			createfn = lunarplanthat_CreateFxFollowFrame,
+            common_postinit =  lunarplanthat_fx_common_postinit,
 			framebegin = 1,
 			frameend = 3,
 			isfullhelm = true,

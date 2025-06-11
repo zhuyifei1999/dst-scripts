@@ -168,15 +168,18 @@ function Sanity:GetSanityMode()
 	return self.mode
 end
 
-function Sanity:EnableLunacy(enable, source)
-	self._lunacy_sources:SetModifier(self.inst, enable, source)
-
+function Sanity:UpdateMode_Internal()
 	local mode = self._lunacy_sources:Get() and SANITY_MODE_LUNACY or SANITY_MODE_INSANITY
 	if self.mode ~= mode then
 		self.mode = mode
-        self.inst:PushEvent("sanitymodechanged", {mode = self.mode})
+		self.inst:PushEvent("sanitymodechanged", { mode = self.mode })
 		self:DoDelta(0)
 	end
+end
+
+function Sanity:EnableLunacy(enable, source)
+	self._lunacy_sources:SetModifier(self.inst, enable, source)
+	self:UpdateMode_Internal()
 end
 
 function Sanity:AddSanityPenalty(key, mod)
@@ -408,6 +411,8 @@ function Sanity:DoDelta(delta, overtime)
 end
 
 function Sanity:OnUpdate(dt)
+	self:UpdateMode_Internal() --since we may not know when lunacy sources are removed
+
     if not (self.inst.components.health:IsInvincible() or
             self.inst:HasTag("spawnprotection") or
             self.inst.sg:HasStateTag("sleeping") or --need this now because you are no longer invincible during sleep

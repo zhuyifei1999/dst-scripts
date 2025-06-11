@@ -128,7 +128,7 @@ local function KillMe(inst)
 	end
 	inst.OnEntityWake = nil
 	inst.OnEntitySleep = inst.Remove
-	WagBossUtil.DespawnFissure(inst)
+	WagBossUtil.DespawnFissure(inst, GetBaseAnim(inst.size))
 end
 
 local function SetGridSize(inst, size)
@@ -229,6 +229,7 @@ local function fn()
 	inst.size = 1
 	inst.SetGridSize = SetGridSize
 	inst.StartTrackingBoss = StartTrackingBoss
+	inst.KillFx = KillMe
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	inst.OnLoadPostPass = OnLoadPostPass

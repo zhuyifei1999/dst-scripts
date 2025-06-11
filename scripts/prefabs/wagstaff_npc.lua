@@ -1,4 +1,5 @@
 local PopupDialogScreen = require "screens/redux/popupdialog"
+local easing = require("easing")
 
 local assets =
 {
@@ -9,6 +10,14 @@ local assets =
     Asset("ANIM", "anim/hat_gogglesnormal.zip"),
     Asset("ANIM", "anim/wagstaff.zip"),
     Asset("ANIM", "anim/player_notes.zip"),
+}
+
+local assets_finale =
+{
+	Asset("ANIM", "anim/wagstaff_finale.zip"),
+	Asset("ANIM", "anim/wagstaff_face_swap.zip"),
+	Asset("ANIM", "anim/hat_gogglesnormal.zip"),
+	Asset("ANIM", "anim/wagstaff.zip"),
 }
 
 local contained_assets =
@@ -427,12 +436,14 @@ local function fn()
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wagstaff")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("hat")
+	--inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
-    inst.AnimState:Show("HAT")
+	--inst.AnimState:Show("HAT")
+
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(.8)
@@ -557,8 +568,6 @@ local function fn()
         end
     end, TheWorld)
     inst:ListenForEvent("teleported", OnTeleported)
-
-    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     return inst
 end
@@ -752,12 +761,14 @@ local function pstbossfn()
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wagstaff")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("hat")
+	--inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
-    inst.AnimState:Show("HAT")
+	--inst.AnimState:Show("HAT")
+
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(.8)
@@ -805,7 +816,6 @@ local function pstbossfn()
     inst:SetStateGraph("SGwagstaff_npc")
 
     inst.erode = erode
-    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst:ListenForEvent("ontalk", ontalk)
     inst:ListenForEvent("spawndevice", spawn_device)
@@ -998,14 +1008,16 @@ local function MutationsQuestFn()
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wagstaff")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("hat")
+	--inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
     inst.AnimState:AddOverrideBuild("player_notes")
 
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
-    inst.AnimState:Show("HAT")
+	--inst.AnimState:Show("HAT")
+
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(.8)
@@ -1039,7 +1051,6 @@ local function MutationsQuestFn()
 
     inst:AddComponent("inspectable")
 
-    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst:ListenForEvent("doerode", donpcerode)
 
@@ -1090,12 +1101,14 @@ local function WagpunkFn()
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wagstaff")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("hat")
+	--inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
-    inst.AnimState:Show("HAT")
+	--inst.AnimState:Show("HAT")
+
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(.8)
@@ -1133,8 +1146,6 @@ local function WagpunkFn()
     inst.components.locomotor.walkspeed = 3
 
     inst:AddComponent("inspectable")
-
-    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst:ListenForEvent("doerode", donpcerode)
 
@@ -1328,14 +1339,14 @@ local function wagpunk_arena_fn()
     inst.AnimState:SetBank("wilson")
     inst.AnimState:SetBuild("wagstaff")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:Hide("hat")
+	--inst.AnimState:Hide("hat")
     inst.AnimState:Hide("ARM_carry")
 
     inst.AnimState:AddOverrideBuild("player_notes")
 
     inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
     inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
-    inst.AnimState:Show("HAT")
+	--inst.AnimState:Show("HAT")
 
     inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
@@ -1408,6 +1419,141 @@ local function wagpunk_arena_fn()
     return inst
 end
 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+local function finale_UpdateMaterialize(inst, dt)
+	if dt > 0 then
+		local val = inst.materialize_t + dt
+		if val < 2 then
+			inst.materialize_t = val
+			inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, val / 2 - 1)
+		else
+			inst.AnimState:SetErosionParams(0, 0, 0)
+			inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateMaterialize)
+			inst.materialize_t = nil
+		end
+	end
+end
+
+local function finale_Materialize(inst)
+	if inst.materialize_t == nil then
+		inst.materialize_t = 0
+		inst.components.updatelooper:AddOnUpdateFn(finale_UpdateMaterialize)
+	end
+end
+
+local function finale_UpdateBrighten(inst, dt)
+	if dt > 0 then
+		local val = inst.brighten_t + dt
+		if val < 2 then
+			inst.brighten_t = val
+			val = easing.outQuad(val, 0, 1, 2)
+			inst.AnimState:SetAddColour(val, val, val, 0)
+		else
+			inst.AnimState:SetAddColour(1, 1, 1, 0)
+			inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateBrighten)
+			inst.brighten_t = nil
+		end
+	end
+end
+
+local function finale_Brighten(inst)
+	if inst.brighten_t == nil then
+		inst.brighten_t = 0
+		inst.components.updatelooper:AddOnUpdateFn(finale_UpdateBrighten)
+	end
+end
+
+local function finale_OnAnimOver(inst)
+	inst:RemoveEventCallback("animover", finale_OnAnimOver)
+	inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateMaterialize)
+	inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateBrighten)
+	inst.materialize_t = nil
+	inst.brighten_t = nil
+	inst.AnimState:PlayAnimation("wagstaff_finale_2")
+	inst.AnimState:SetAddColour(0, 0, 0, 0) --reset, the anim changes to a white silhoutte with black fx lines
+end
+
+local function finale_OnEntityRemoved(inst)
+	table.removearrayvalue(inst.highlightparent.highlightchildren, inst)
+end
+
+local function finale_OnEntityReplicated(inst)
+	local parent = inst.entity:GetParent()
+	if parent and parent.prefab == "alterguardian_phase4_lunarrift" and parent.highlightchildren then
+		table.insert(parent.highlightchildren, inst)
+		inst.highlightparent = parent
+		inst.OnEntityRemoved = finale_OnEntityRemoved
+	end
+end
+
+local function AttachToAlter(inst, alter)
+	inst.entity:SetParent(alter.entity)
+	inst.Follower:FollowSymbol(alter.GUID, "player_follow")
+	if alter.highlightchildren then
+		table.insert(alter.highlightchildren, inst)
+		inst.highlightparent = alter
+		inst.OnEntityRemoved = finale_OnEntityRemoved
+	end
+end
+
+local function finale_fn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddFollower()
+	inst.entity:AddNetwork()
+
+	inst.Transform:SetFourFaced()
+
+	inst:AddTag("FX")
+
+	inst.AnimState:SetBank("wilson")
+	inst.AnimState:SetBuild("wagstaff")
+	inst.AnimState:PlayAnimation("wagstaff_finale")
+	inst.AnimState:Hide("ARM_carry")
+	inst.AnimState:AddOverrideBuild("wagstaff_finale")
+	inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
+	inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
+
+	local talker = inst:AddComponent("talker")
+	talker.fontsize = 35
+	talker.font = TALKINGFONT
+	talker.offset = Vector3(0, -400, 0)
+	talker.name_colour = WAGSTAFF_CHATTER_COLOUR
+	talker.chaticon = "npcchatflair_wagstaff"
+	talker:MakeChatter()
+	talker.lineduration = TUNING.WAGPUNK_ARENA_WAGSTAFF_TALK_TIME
+
+	inst.forcedtalktime = talker.lineduration - 0.5 -- Small padding for better visuals.
+
+	local npc_talker = inst:AddComponent("npc_talker")
+	npc_talker.default_chatpriority = CHATPRIORITIES.HIGH
+	npc_talker.speaktime = talker.lineduration
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		inst.OnEntityReplicated = finale_OnEntityReplicated
+
+		return inst
+	end
+
+	inst:AddComponent("updatelooper")
+
+	inst:ListenForEvent("animover", finale_OnAnimOver)
+
+	inst.AttachToAlter = AttachToAlter
+	inst.Materialize = finale_Materialize
+	inst.Brighten = finale_Brighten
+
+	inst.persists = false
+
+	return inst
+end
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1444,6 +1590,7 @@ local function alterguardian_containedfn()
     inst.AnimState:SetBank("alterguardian_contained")
     inst.AnimState:SetBuild("alterguardian_contained")
     inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(.8)
@@ -1465,7 +1612,6 @@ local function alterguardian_containedfn()
     inst:AddComponent("inspectable")
 
     inst.erode = erode
-    inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 
     inst:ListenForEvent("docollect", docollect)
 
@@ -1510,5 +1656,6 @@ return Prefab("wagstaff_npc", fn, assets, prefabs),
         Prefab("wagstaff_npc_mutations", MutationsQuestFn, assets, mutations_prefabs),
         Prefab("wagstaff_npc_wagpunk", WagpunkFn, assets),
         Prefab("wagstaff_npc_wagpunk_arena", wagpunk_arena_fn, assets, wagpunk_arena_prefabs),
+		Prefab("wagstaff_npc_finale_fx", finale_fn, assets_finale),
         Prefab("alterguardian_contained", alterguardian_containedfn, contained_assets),
 		Prefab("enable_lunar_rift_construction_container", EnableRiftContainerFn)

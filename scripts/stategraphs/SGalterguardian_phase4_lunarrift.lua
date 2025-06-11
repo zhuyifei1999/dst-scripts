@@ -25,11 +25,12 @@ local function ChooseAttack(inst, target)
 		return true
 	elseif inst.slamcombo and inst.slamcount < inst.slamcombo then
 		inst.slamcount = inst.slamcount + (inst.slamrnd and math.random(2) or 1)
-		if inst.dashcombo then
+		--V2C: if we ever have a phase where it can only slam, then we should not taunt
+		--if inst.dashcombo then
 			inst.sg:GoToState("taunt", target)
-		else
-			inst.sg:GoToState("slam", target)
-		end
+		--else
+		--	inst.sg:GoToState("slam", target)
+		--end
 		return true
 	end
 	return false
@@ -46,6 +47,38 @@ local events =
 		end
 	end),
 }
+
+--------------------------------------------------------------------------
+
+local function DoTauntShake(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 1.6, 0.05, 0.2, inst, 40)
+end
+
+local function DoSlamShake(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 1.3, 0.04, 0.2, inst, 40)
+end
+
+local function DoSlamShake2(inst)
+	ShakeAllCameras(CAMERASHAKE.VERTICAL, 0.7, 0.03, 0.35, inst, 40)
+end
+
+local function DoChargingShake(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 3, 0.03, 0.1, inst, 40)
+end
+
+local function DoChargingShakeMild(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 3, 0.04, 0.06, inst, 40)
+end
+
+local function DoSupernovaShake(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 1.55, 0.04, 0.4, inst, 40)
+end
+
+local function DoSelfDestructShake(inst)
+	ShakeAllCameras(CAMERASHAKE.FULL, 1.2, 0.04, 0.75, inst, 40)
+end
+
+--------------------------------------------------------------------------
 
 local DASH_SPEED = 14
 local DASH_TRACKING = 0.25
@@ -252,8 +285,8 @@ local function DoFissures(inst, offset)
 						local id = WagBossUtil.TileCoordsToId(map:GetTileCoordsAtPoint(x, 0, z))
 						if not WagBossUtil.HasFissure(id) then
 							tospawn[id] = true
+							numtospawn = numtospawn + 1
 						end
-						numtospawn = numtospawn + 1
 						inarena = true
 					end
 					x = x - dz
@@ -286,8 +319,8 @@ local function DoFissures(inst, offset)
 						local id = WagBossUtil.TileCoordsToId(map:GetTileCoordsAtPoint(x, 0, z))
 						if not WagBossUtil.HasFissure(id) then
 							tospawn[id] = true
+							numtospawn = numtospawn + 1
 						end
-						numtospawn = numtospawn + 1
 						inarena = true
 					end
 					x = x - dz
@@ -303,12 +336,12 @@ local function DoFissures(inst, offset)
 			end
 		end
 
-		if numtospawn < 1 and numvalidrows < 3 and offset >= 0 then
+		if (numvalidrows < 2 or (numvalidrows < 3 and numtospawn < numvalidrows)) and offset >= 0 then
 			for k in pairs(tospawn) do
 				tospawn[k] = nil
 			end
 			--assert(next(tospawn) == nil)
-			return DoFissures(inst, -1)
+			return DoFissures(inst, offset - 1)
 		end
 
 		local fissures = {}
@@ -465,7 +498,8 @@ local states =
 			inst.AnimState:ClearOverrideSymbol("splat_liquid")
 			inst.AnimState:SetFinalOffset(-1)
 			if not inst.sg.statemem.taunt then
-				TheWorld:PushEvent("ms_register_wagpunk_arena_lunacycreator", inst)
+				inst:StartDomainExpansion()
+				inst:SetMusicLevel(3)
 			end
 			if not inst.SoundEmitter:PlayingSound("idlea") then
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
@@ -498,7 +532,7 @@ local states =
 			end),
 
 			--#SFX
-			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/hit") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/hit") end),
 			FrameEvent(12, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
 		},
 
@@ -544,12 +578,10 @@ local states =
 			FrameEvent(23, function(inst)
 				if inst.sg.statemem.triggerlunacy then
 					inst.sg.statemem.triggerlunacy = false
-					TheWorld:PushEvent("ms_register_wagpunk_arena_lunacycreator", inst)
+					inst:StartDomainExpansion()
 				end
 			end),
-			FrameEvent(28, function(inst)
-				ShakeAllCameras(CAMERASHAKE.FULL, 1.6, 0.05, 0.2, inst, 40)
-			end),
+			FrameEvent(28, DoTauntShake),
 			FrameEvent(60, function(inst)
 				inst.sg:RemoveStateTag("noattack")
 			end),
@@ -595,8 +627,11 @@ local states =
 			if not inst.sg.statemem.keepnofaced then
 				inst:SwitchToFourFaced()
 			end
-			if inst.sg.statemem.triggerlunacy then
-				TheWorld:PushEvent("ms_register_wagpunk_arena_lunacycreator", inst)
+			if inst.sg.statemem.triggerlunacy ~= nil then
+				if inst.sg.statemem.triggerlunacy then
+					inst:StartDomainExpansion()
+				end
+				inst:SetMusicLevel(3)
 			end
 		end,
 	},
@@ -665,6 +700,8 @@ local states =
 			end),
 			FrameEvent(43, function(inst)
 				--hit ground
+				DoSlamShake(inst)
+
 				--clear fx refs since they shouldn't be cancellable anymore once we've hit
 				inst.sg.statemem.fx[1] = nil
 				inst.sg.statemem.fx[2] = nil
@@ -713,6 +750,8 @@ local states =
 				table.insert(inst.sg.statemem.fx, fx2)
 			end),
 			FrameEvent(76, function(inst)
+				DoSlamShake2(inst)
+
 				--clear refs since they shouldn't be cancellable anymore once we've hit
 				inst.sg.statemem.fx = nil
 				inst.sg.statemem.fissures = nil
@@ -779,26 +818,29 @@ local states =
 			if target and target:IsValid() then
 				inst.sg.statemem.target = target
 				inst.sg.statemem.targetpos = target:GetPosition()
-				inst:ForceFacePoint(inst.sg.statemem.targetpos)
-				--[[local x, _, z = inst.Transform:GetWorldPosition()
+
+				local x, _, z = inst.Transform:GetWorldPosition()
+				local dx = inst.sg.statemem.targetpos.x - x
+				local dz = inst.sg.statemem.targetpos.z - z
 				local dir, theta
-				if x ~= inst.sg.statemem.targetpos.x or z ~= inst.sg.statemem.targetpos.z then
-					theta = math.atan2(z - inst.sg.statemem.targetpos.z, inst.sg.statemem.targetpos.x - x)
+				if dx ~= 0 or dz ~= 0 then
+					theta = math.atan2(-dz, dx)
 				else
 					dir = inst.Transform:GetRotation()
 				end
-				if inst:IsSlamNext() then
+				if inst.dashcenter and inst:IsSlamNext() then
 					local map = TheWorld.Map
 					if map:IsPointInWagPunkArena(x, 0, z) then
 						local cx, cz = map:GetWagPunkArenaCenterXZ()
+						--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
 						if x ~= cx or z ~= cz then
 							theta = theta or dir * RADIANS
-							local dist = 22.7 + TILE_SIZE
+							local dist = 22.7
 							local x1 = x + math.cos(theta) * dist
 							local z1 = z - math.sin(theta) * dist
-							--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
-							if not map:IsPointInWagPunkArena(x1, 0, z1) then
+							if distsq(x1, z1, cx, cz) >= 256 then
 								--ends up too far at edge of arena, aim back toward center
+								--dist = 13.4
 								theta = math.atan2(z - cz, cx - x)
 								theta = theta + (math.random() - 0.5) * math.pi / 4
 								dir = theta * RADIANS
@@ -808,7 +850,7 @@ local states =
 						end
 					end
 				end
-				inst.Transform:SetRotation(dir or theta * RADIANS)]]
+				inst.Transform:SetRotation(dir or theta * RADIANS)
 			end
 		end,
 
@@ -866,7 +908,7 @@ local states =
 			end),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/wagstaff_boss/???") end),
 		},
 
 		events =
@@ -954,7 +996,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/wagstaff_boss/???") end),
 		},
 
 		ontimeout = function(inst)
@@ -1045,8 +1087,8 @@ local states =
 
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/dash_pst") end),
-			FrameEvent(46, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
-			FrameEvent(46, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
 		},
 
 		events =
@@ -1126,6 +1168,9 @@ local states =
 			inst:SwitchToNoFaced()
 			if not inst.AnimState:IsCurrentAnimation("atk_burst_charge_loop") then
 				inst.AnimState:PlayAnimation("atk_burst_charge_loop", true)
+				DoChargingShakeMild(inst)
+			else
+				DoChargingShake(inst)
 			end
 			if not inst.SoundEmitter:PlayingSound("charging") then
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_buildup_LP", "charging")
@@ -1186,7 +1231,7 @@ local states =
 		timeline =
 		{
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/wagstaff_boss/???") end),
 		},
 
 		events =
@@ -1225,6 +1270,8 @@ local states =
 			inst:SwitchToNoFaced()
 			if not inst.AnimState:IsCurrentAnimation("atk_burst_shoot_loop") then
 				inst.AnimState:PlayAnimation("atk_burst_shoot_loop", true)
+				DoSupernovaShake(inst)
+				inst.sg.statemem.skipshake = true
 			end
 			inst.SoundEmitter:KillSound("idlea")
 			inst.SoundEmitter:KillSound("idleb")
@@ -1237,6 +1284,7 @@ local states =
 			inst.sg.statemem.updatedelay = 0
 			if loops then
 				inst.sg.statemem.loops = loops
+				inst.sg.statemem.skipshake = loops <= 1 or nil
 			else
 				inst.sg.statemem.loops = 4
 				inst.components.combat:SetDefaultDamage(0)
@@ -1245,14 +1293,23 @@ local states =
 				inst.components.combat:SetDefaultDamage(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_DAMAGE)
 				inst.components.planardamage:SetBaseDamage(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_PLANAR_DAMAGE)
 			end
+			if not inst.sg.statemem.skipshake then
+				DoChargingShake(inst)
+			end
 		end,
 
 		onupdate = UpdateSupernovaAOE,
 
 		timeline =
 		{
+			FrameEvent(20, function(inst)
+				if not inst.sg.statemem.skipshake then
+					DoChargingShake(inst)
+				end
+			end),
+
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/wagstaff_boss/???") end),
 		},
 
 		ontimeout = function(inst)
@@ -1311,7 +1368,7 @@ local states =
 			end),
 
 			--#SFX
-			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/wagstaff_boss/???") end),
 		},
 
 		events =
@@ -1333,59 +1390,263 @@ local states =
 	},
 
 	State{
-		name = "death",--_beta",
+		name = "death",
+		tags = { "dead", "busy", "nointerrupt" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			if (TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()) or
+				not TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition())
+			then
+				inst.sg.statemem.nowagstaff = true
+				inst:SwitchToNoFaced()
+			else
+				inst:SwitchToTwoFaced()
+			end
+			inst.AnimState:PlayAnimation("defeated_pre")
+		end,
+
+		timeline =
+		{
+			FrameEvent(13, DoTauntShake),
+
+			--#SFX
+			--FrameEvent(50, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					if inst.sg.statemem.nowagstaff then
+						inst.sg.statemem.keepnofaced = true
+						inst.sg:GoToState("quickdefeated")
+					else
+						inst.sg.statemem.keeptwofaced = true
+						inst.sg:GoToState("defeated")
+					end
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.sg.statemem.nowagstaff then
+				if not inst.sg.statemem.keepnofaced then
+					inst:SwitchToFourFaced()
+				end
+			elseif not inst.sg.statemem.keeptwofaced then
+				inst:SwitchToFourFaced()
+			end
+		end,
+	},
+
+	State{
+		name = "quickdefeated",
 		tags = { "dead", "busy", "nointerrupt", "noattack" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst:SwitchToNoFaced()
-			inst.AnimState:PlayAnimation("taunt")
+			inst.AnimState:PlayAnimation("defeated_pst")
+			inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
+			inst.AnimState:OverrideSymbol("wb_lunar_blast_base", "wagboss_lunar_blast", "wb_lunar_blast_base")
+			inst.AnimState:OverrideSymbol("lunar_ring", "static_ball_contained", "lunar_ring")
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale2") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.keepnofaced = true
+					inst.sg.statemem.selfdestruct = true
+					inst.sg:GoToState("selfdestruct", false)
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.selfdestruct then
+				inst.AnimState:ClearOverrideSymbol("wb_steam_parts")
+				inst.AnimState:ClearOverrideSymbol("wb_lunar_blast_base")
+				inst.AnimState:ClearOverrideSymbol("lunar_ring")
+			end
+			if not inst.sg.statemem.keepnofaced then
+				inst:SwitchToFourFaced()
+			end
+		end,
+	},
+
+	State{
+		name = "defeated",
+		tags = { "dead", "busy", "nointerrupt" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst:SwitchToTwoFaced()
+			inst.AnimState:PlayAnimation("defeated_loop")
+			TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { "WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN", focusentity = inst })
+		end,
+
+		timeline =
+		{
+			--#SFX
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.keeptwofaced = true
+					inst.sg:GoToState("finale")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.keeptwofaced then
+				inst:SwitchToFourFaced()
+			end
+		end,
+	},
+
+	State{
+		name = "finale",
+		tags = { "dead", "busy", "nointerrupt", "noattack" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst:SwitchToTwoFaced()
+			inst.AnimState:PlayAnimation("finale")
+			inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
+			inst.AnimState:OverrideSymbol("wb_lunar_blast_base", "wagboss_lunar_blast", "wb_lunar_blast_base")
+			inst.AnimState:OverrideSymbol("lunar_ring", "static_ball_contained", "lunar_ring")
+
+			inst.sg.statemem.wagstaff = SpawnPrefab("wagstaff_npc_finale_fx")
+			inst.sg.statemem.wagstaff:AttachToAlter(inst)
+
+			inst:SetMusicLevel(2) --silence
+		end,
+
+		timeline =
+		{
+			FrameEvent(61, function(inst)
+				--inst.sg.statemem.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF", 1)
+			end),
+			FrameEvent(224, function(inst)
+				inst.sg.statemem.wagstaff:Materialize()
+			end),
+			FrameEvent(366, function(inst)
+				inst.sg.statemem.wagstaff:Brighten()
+				DoChargingShake(inst)
+			end),
+			FrameEvent(392, DoChargingShake),
+			FrameEvent(428, DoChargingShake),
+
+			--#SFX
+			FrameEvent(50, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.keeptwofaced = true
+					inst.sg.statemem.selfdestruct = true
+					inst.sg:GoToState("selfdestruct", inst.sg.statemem.wagstaff)
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.selfdestruct then
+				inst.sg.statemem.wagstaff:Remove()
+				inst:RemoveTag("NOCLICK")
+				inst.AnimState:ClearOverrideSymbol("wb_steam_parts")
+				inst.AnimState:ClearOverrideSymbol("wb_lunar_blast_base")
+				inst.AnimState:ClearOverrideSymbol("lunar_ring")
+				inst:SetMusicLevel(3)
+			end
+			if not inst.sg.statemem.keeptwofaced then
+				inst:SwitchToFourFaced()
+			end
+		end,
+	},
+
+	State{
+		name = "selfdestruct",
+		tags = { "dead", "busy", "nointerrupt", "noattack" },
+
+		onenter = function(inst, wagstaff)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("finale2")
+			inst.AnimState:OverrideSymbol("fx_bits", "wagboss_robot", "fx_bits")
+
+			if wagstaff then
+				inst.sg.statemem.wagstaff = wagstaff
+				inst:SwitchToTwoFaced()
+			else
+				if wagstaff == nil then --false if it came from "quickdefeated"
+					inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
+					inst.AnimState:OverrideSymbol("wb_lunar_blast_base", "wagboss_lunar_blast", "wb_lunar_blast_base")
+					inst.AnimState:OverrideSymbol("lunar_ring", "static_ball_contained", "lunar_ring")
+				end
+				inst:SwitchToNoFaced()
+			end
+
+			inst:SetMusicLevel(2) --silence
 		end,
 
 		timeline =
 		{
 			FrameEvent(16, function(inst)
-				inst.AnimState:SetDeltaTimeMultiplier(0.5)
-			end),
-			FrameEvent(24, function(inst)
-				ShakeAllCameras(CAMERASHAKE.FULL, 0.7, 0.04, 0.2, inst, 40)
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/taunt_emerge")
-
-				inst.AnimState:SetFrame(29)
-				inst.AnimState:SetDeltaTimeMultiplier(0.2)
-
-				local x, _, z = inst.Transform:GetWorldPosition()
-				local dir0 = math.random() * 360
-				for i = 0, 359, 90 do
-					local theta = (dir0 + i) * DEGREES
-					local offsx = 2 * math.cos(theta)
-					local offsz = -2 * math.sin(theta)
-					local fx = SpawnPrefab("alterguardian_phase4_lunarrift_erupt_fx")
-					fx.Transform:SetPosition(x + offsx, 0, z + offsz)
-				end
-				local fx = SpawnPrefab("alterguardian_phase4_lunarrift_erupt_fx")
-				fx.Transform:SetPosition(x, 0, z)
-
-				inst.components.lootdropper:DropLoot(inst:GetPosition())
-				--#TEMP_BETA
-				if inst.battlestarttime then
-					local report = inst.components.lootdropper:SpawnLootPrefab("temp_beta_msg")
-					report:SetKillTime(GetTime() - inst.battlestarttime, "alterguardian_phase4_lunarrift")
-				end
-
-				inst.persists = false
 				inst:AddTag("NOCLICK")
-				ErodeAway(inst, 0.5)
+			end),
+			FrameEvent(18, DoSelfDestructShake),
+			FrameEvent(23, function(inst)
+				local pt = inst:GetPosition()
+				inst.components.lootdropper:DropLoot(pt)
+				inst.persists = false
+				inst:StopDomainExpansion()
+				if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(pt:Get()) then
+					TheWorld:PushEvent("ms_wagboss_alter_defeated", inst)
+				end
+				if inst.sg.statemem.wagstaff then
+					TheWorld:PushEvent("wagboss_defeated")
+				end
+			end),
+
+			--#SFX
+			--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale") end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst:Remove()
+				end
 			end),
 		},
 
 		onexit = function(inst)
 			--should not reach here
-			inst.AnimState:SetDeltaTimeMultiplier(1)
-			inst:RemoveTag("NOCLICK")
-			if not inst.sg.statemem.keepnofaced then
-				inst:SwitchToFourFaced()
+			if inst.sg.statemem.wagstaff then
+				inst.sg.statemem.wagstaff:Remove()
 			end
+			inst:RemoveTag("NOCLICK")
+			inst.AnimState:ClearOverrideSymbol("fx_bits")
+			inst.AnimState:ClearOverrideSymbol("wb_steam_parts")
+			inst.AnimState:ClearOverrideSymbol("wb_lunar_blast_base")
+			inst.AnimState:ClearOverrideSymbol("lunar_ring")
+			inst:SwitchToFourFaced()
+			inst:SetMusicLevel(3)
 		end,
 	},
 }
@@ -1400,7 +1661,7 @@ CommonStates.AddWalkStates(states,
 	walktimeline = --walk_loop
 	{
 		--#SFX
-		--FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/???") end),
+		FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
 	},
 	endtimeline = --walk_pst
 	{

@@ -32,7 +32,7 @@ function AlterGuardian_Phase4_LunarRiftBrain:OnStart()
 					end, "TryRangedAttack"),
 					FailIfSuccessDecorator(ChaseAndAttack(self.inst)),
 				},
-				Wander(self.inst, GetHome, 8),
+				Wander(self.inst, GetHome, 4),
 			}, 0.5)),
 	}, 0.5)
 

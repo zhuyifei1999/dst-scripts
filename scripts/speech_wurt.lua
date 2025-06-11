@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "Making me dizzy! Flort!",
             INACTIVE = "Make on! Florp!",
-            DAMAGE = "Can fix or take parts! Me choose.",
+            DAMAGED = "Can fix or take parts! Me choose.",
             FRIENDLY = "Be nice! Glurgh.",
         },
         WAGDRONE_FLYING =

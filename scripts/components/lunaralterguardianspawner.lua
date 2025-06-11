@@ -55,8 +55,8 @@ function self:HasGuardianOrIsPending()
     return self.guardiancomingpt or _activeguardian ~= nil
 end
 
-function self:KickOffSpawn()
-    self.inst:DoTaskInTime(15, function(i)
+function self:KickOffSpawn(delay)
+    self.inst:DoTaskInTime(delay, function(i)
         _activeguardian = SpawnPrefab("alterguardian_phase1_lunarrift")
         _activeguardian.Physics:Teleport(self.guardiancomingpt:Get())
 
@@ -77,7 +77,7 @@ function self:TrySpawnLunarGuardian(spawner)
     if spawn_pt then
         spawner:PushEvent("lunarguardianincoming")
         self.guardiancomingpt = spawn_pt
-        self:KickOffSpawn()
+        self:KickOffSpawn(spawner.prefab == "wagstaff_npc_wagpunk_arena" and 15 or 4)
     end
 end
 

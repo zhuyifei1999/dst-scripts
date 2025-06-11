@@ -150,8 +150,12 @@ local function OnFinishExperiment_gestaltcage(inst, item, socketable)
         if didsocket then
             item:Remove()
             TheWorld:PushEvent("ms_wagpunk_constructrobot")
-            if wagpunk_arena_manager and wagpunk_arena_manager:NeedsMoreWagdrones() then
-                inst.components.npc_talker:Chatter("WAGSTAFF_GET_MORE_GESTALTCAGES", math.random(#STRINGS.WAGSTAFF_GET_MORE_GESTALTCAGES))
+            if wagpunk_arena_manager then
+                if wagpunk_arena_manager:NeedsMoreWagdrones() then
+                    inst.components.npc_talker:Chatter("WAGSTAFF_GET_MORE_GESTALTCAGES", math.random(#STRINGS.WAGSTAFF_GET_MORE_GESTALTCAGES))
+                else
+                    inst.oneshot = false
+                end
             end
         end
     end

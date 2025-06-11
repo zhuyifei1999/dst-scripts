@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "They are running amok!",
             INACTIVE = "Maybe it can mix batter?",
-            DAMAGE = "I can repair it or use the parts to repair another.",
+            DAMAGED = "I can repair it or use the parts to repair another.",
             FRIENDLY = "A portable chopper.",
         },
         WAGDRONE_FLYING =

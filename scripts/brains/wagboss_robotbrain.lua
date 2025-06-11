@@ -52,7 +52,7 @@ function WagbossRobotBrain:OnStart()
 						end, "TryRangedAttack"),
 						FailIfSuccessDecorator(ChaseAndAttack(self.inst)),
 					},
-					Wander(self.inst, GetHome, 6, {
+					Wander(self.inst, GetHome, 4, {
 						minwalktime = 3,
 						randwalktime = 0,
 						minwaittime = 2.5,
@@ -68,7 +68,10 @@ function WagbossRobotBrain:OnStart()
 					ConditionWaitNode(function()
 						return not self.inst.sg:HasStateTag("busy")
 					end),
-					WaitNode(14),
+					ParallelNodeAny{
+						ConditionWaitNode(function() return TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated() end),
+						WaitNode(14),
+					},
 					ActionNode(function()
 						self.inst:PushEvent("losecontrol")
 					end),

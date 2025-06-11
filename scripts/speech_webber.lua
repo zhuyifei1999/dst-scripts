@@ -5678,7 +5678,7 @@ return{
         {
             GENERIC = "Nasty little robots.",
             INACTIVE = "Can we play with it?",
-            DAMAGE = "We can fix it, or take its insides!",
+            DAMAGED = "We can fix it, or take its insides!",
             FRIENDLY = "We love how it spins and spins and spins.",
         },
         WAGDRONE_FLYING =
