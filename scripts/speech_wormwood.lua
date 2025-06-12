@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "Have Buddy already",
 
 			NOT_MINE = "Not mine",
+
+			CANNOT_FIX_DRONE = "Bye robot friend",
         },
 		USEKLAUSSACKKEY =
         {

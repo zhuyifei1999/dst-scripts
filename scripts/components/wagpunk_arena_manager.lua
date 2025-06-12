@@ -440,6 +440,9 @@ function self:TrackWagdrone(wagdrone)
     self.wagdrones[wagdrone] = true
     wagdrone:ListenForEvent("onremove", self.OnRemove_Wagdrone)
 end
+function self:IsTrackingWagdrone(wagdrone)
+    return self.wagdrones[wagdrone] ~= nil
+end
 
 self.OnRemove_Wagboss = function(wagboss, data)
     self.wagboss = nil
@@ -1047,9 +1050,6 @@ function self:OnRobotLoseControl()
     self:DoWagstaffOneshotAtXZ(x, z, radius, "WAGSTAFF_WAGPUNK_ARENA_ROBOTLOSTCONTROL", false, nil)
 end
 
-local function BossCompleted_Bridge()
-    self:BossCompleted()
-end
 function self:BossCompleted()
     if self.despawngraceperiodtask then
         self.despawngraceperiodtask:Cancel()
@@ -1169,7 +1169,6 @@ function self:CheckStateForChanges_Internal()
                 self.levered = nil
                 self.bossed = nil
                 self:SetState(self.STATES.LEVER)
-                self.wagboss:PushEvent("doreset")
             end
 
             if self.cagewalls then
@@ -1257,19 +1256,34 @@ function self:DoWagstaffOneshotAtXZ(x, z, radiusopt, lines, oneline, postinitfn)
     end
 end
 
+local function SendResetRobotBossEvent_Bridge()
+    self:SendResetRobotBossEvent()
+end
+function self:SendResetRobotBossEvent()
+    if self.wagboss then
+        self.wagboss:PushEvent("doreset")
+    end
+end
+
+function self:ResetRobotBoss()
+    if self.despawngraceperiodtask then
+        self.despawngraceperiodtask:Cancel()
+        self.despawngraceperiodtask = nil
+    end
+    if self:IsWagbossRobot() then
+        if next(self.playersdata.disconnected) and not next(self.playersdata.players) then
+            self.despawngraceperiodtask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME, SendResetRobotBossEvent_Bridge)
+        else
+            self:SendResetRobotBossEvent()
+        end
+    end
+end
+
 function self:DecrementAliveCount()
     local count = self.playersdata.alivecount - 1
     self.playersdata.alivecount = count
     if count <= 0 then
-        if self.despawngraceperiodtask then
-            self.despawngraceperiodtask:Cancel()
-            self.despawngraceperiodtask = nil
-        end
-        if self:IsWagbossRobot() then
-            if next(self.playersdata.disconnected) and not next(self.playersdata.players) then
-                self.despawngraceperiodtask = self.inst:DoTaskInTime(TUNING.WAGPUNK_ARENA_WAGBOSS_ROBOT_DESPAWN_GRACE_TIME, BossCompleted_Bridge)
-            end
-        end
+        self:ResetRobotBoss()
     end
 end
 function self:IncrementAliveCount()
@@ -1316,6 +1330,7 @@ function self:StopTrackingPlayer(player)
     if player:IsValid() and player.components.sanity then
         player.components.sanity:EnableLunacy(false, "wagpunk_arena")
     end
+    _world:PushEvent("ms_wagpunk_barrier_playerleft", player)
 end
 function self:TrackPlayer(player)
     local isalive = not IsEntityDeadOrGhost(player)
@@ -1329,6 +1344,7 @@ function self:TrackPlayer(player)
     if self.lunacymode and player.components.sanity then
         player.components.sanity:EnableLunacy(true, "wagpunk_arena")
     end
+    _world:PushEvent("ms_wagpunk_barrier_playerentered", player)
 end
 
 function self:StartLunacy()
@@ -1442,7 +1458,11 @@ function self:UpdateNetvars()
         return
     end
 
-    wagpunk_floor_helper.barrier_active:set(self.state == self.STATES.BOSS)
+    local isactive = self.state == self.STATES.BOSS
+    if wagpunk_floor_helper.barrier_active:value() ~= isactive then
+        wagpunk_floor_helper.barrier_active:set(isactive)
+        _world:PushEvent("ms_wagpunk_barrier_isactive", isactive)
+    end
 end
 function self:OnInit()
     self:TryToApplyRotationTransformation()
@@ -1801,6 +1821,44 @@ self.inst:ListenForEvent("ms_wagboss_robot_losecontrol", function(inst) self:OnR
 self.inst:ListenForEvent("ms_wagboss_alter_defeated", function(inst, ent) self:UntrackWagboss() self:BossCompleted() end, _world)
 self.inst:ListenForEvent("ms_alterguardian_phase1_lunarrift_capturable", function(inst, ent) self:TryWagstaffGiveGestaltCage(ent) end, _world)
 self.inst:ListenForEvent("ms_wagboss_robot_turnoff", function(inst) if self.state == self.STATES.BOSS then self:BossCompleted() end end, _world)
+self.inst:ListenForEvent("ms_wagstaff_arena_oneshot", function(inst, data)
+    if data then
+        local strname, monologue, focusentity = data.strname, data.monologue, data.focusentity
+        local xoverride, zoverride = data.x, data.z
+        local callback = data.cb
+
+        if not strname then
+            return
+        end
+
+        local x, y, z
+        if xoverride then
+            x, z = xoverride, zoverride
+        elseif focusentity then
+            x, y, z = focusentity.Transform:GetWorldPosition()
+        else
+            x, z = _map:GetWagPunkArenaCenterXZ()
+        end
+        if not x then
+            return
+        end
+
+        local radius = 2.5
+        if focusentity then
+            radius = radius + focusentity:GetPhysicsRadius(0)
+        end
+
+        local x2, z2
+        if not xoverride then
+            local theta = math.random() * TWOPI
+            x2, z2 = x + math.cos(theta) * radius, z + math.sin(theta) * radius
+        else
+            x2, z2 = x, z
+        end
+        self:DoWagstaffOneshotAtXZ(x2, z2, radius, strname, not monologue, callback)
+    end
+end, _world)
+self.inst:ListenForEvent("ms_wagboss_snatched_wagstaff", function(inst) if self.wagstaff then self.wagstaff:Remove() end end, _world)
 
 self.inst:DoTaskInTime(0, function() self:OnInit() end)
 

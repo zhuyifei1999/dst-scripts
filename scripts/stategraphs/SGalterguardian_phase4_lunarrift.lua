@@ -1411,7 +1411,7 @@ local states =
 			FrameEvent(13, DoTauntShake),
 
 			--#SFX
-			--FrameEvent(50, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/finale") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/defeated_pre") end),
 		},
 
 		events =
@@ -1490,7 +1490,21 @@ local states =
 			inst.components.locomotor:Stop()
 			inst:SwitchToTwoFaced()
 			inst.AnimState:PlayAnimation("defeated_loop")
-			TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { "WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN", focusentity = inst })
+
+			local function cb(wagstaff)
+				if inst.sg.statemem.cb == cb then
+					--anim was made facing left so we have to reverse it XD
+					inst:FaceAwayFromPoint(wagstaff:GetPosition(), true)
+				end
+			end
+			inst.sg.statemem.cb = cb
+
+			TheWorld:PushEvent("ms_wagstaff_arena_oneshot", {
+				strname = "WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN",
+				monologue = true,
+				focusentity = inst,
+				cb = cb,
+			})
 		end,
 
 		timeline =
@@ -1504,7 +1518,7 @@ local states =
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg.statemem.keeptwofaced = true
-					inst.sg:GoToState("finale")
+					inst.sg:GoToState("finale", inst.sg.statemem.cb)
 				end
 			end),
 		},
@@ -1520,13 +1534,16 @@ local states =
 		name = "finale",
 		tags = { "dead", "busy", "nointerrupt", "noattack" },
 
-		onenter = function(inst)
+		onenter = function(inst, cb)
 			inst.components.locomotor:Stop()
 			inst:SwitchToTwoFaced()
 			inst.AnimState:PlayAnimation("finale")
+			inst.AnimState:PushAnimation("finale2", false)
 			inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
 			inst.AnimState:OverrideSymbol("wb_lunar_blast_base", "wagboss_lunar_blast", "wb_lunar_blast_base")
 			inst.AnimState:OverrideSymbol("lunar_ring", "static_ball_contained", "lunar_ring")
+
+			inst.sg.statemem.cb = cb
 
 			inst.sg.statemem.wagstaff = SpawnPrefab("wagstaff_npc_finale_fx")
 			inst.sg.statemem.wagstaff:AttachToAlter(inst)
@@ -1537,10 +1554,24 @@ local states =
 		timeline =
 		{
 			FrameEvent(61, function(inst)
-				--inst.sg.statemem.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF", 1)
+				inst.sg.statemem.wagstaff.components.npc_talker:Chatter("WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF")
+				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff:DoTalkSound(1)
+			end),
+			FrameEvent(135, function(inst)
+				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff:DoTalkSound(2)
 			end),
 			FrameEvent(224, function(inst)
 				inst.sg.statemem.wagstaff:Materialize()
+			end),
+			FrameEvent(244, function(inst)
+				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff:DoTalkSound(1.5)
+			end),
+			FrameEvent(325, function(inst)
+				inst.sg.statemem.wagstaff.components.npc_talker:donextline()
+				inst.sg.statemem.wagstaff:DoTalkSound(1.5)
 			end),
 			FrameEvent(366, function(inst)
 				inst.sg.statemem.wagstaff:Brighten()
@@ -1555,7 +1586,7 @@ local states =
 
 		events =
 		{
-			EventHandler("animover", function(inst)
+			EventHandler("animqueueover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg.statemem.keeptwofaced = true
 					inst.sg.statemem.selfdestruct = true
@@ -1585,7 +1616,7 @@ local states =
 
 		onenter = function(inst, wagstaff)
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("finale2")
+			inst.AnimState:PlayAnimation("finale_pst")
 			inst.AnimState:OverrideSymbol("fx_bits", "wagboss_robot", "fx_bits")
 
 			if wagstaff then
@@ -1661,7 +1692,9 @@ CommonStates.AddWalkStates(states,
 	walktimeline = --walk_loop
 	{
 		--#SFX
-		FrameEvent(29, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
+		FrameEvent(28, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
+		FrameEvent(55, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+		FrameEvent(79, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/footstep") end),
 	},
 	endtimeline = --walk_pst
 	{

@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "I don't have time to take care of all these beefalo!",
 
 			NOT_MINE = "None of my business.",
+
+			CANNOT_FIX_DRONE = "It's beyond repair now.",
         },
 		USEKLAUSSACKKEY =
         {

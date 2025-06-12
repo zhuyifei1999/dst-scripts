@@ -9,6 +9,8 @@ local prefabs =
 {
 	"wagdrone_projectile_fx",
 	"wagdrone_parts",
+	"gears",
+	"transistor",
 }
 
 local easing = require("easing")
@@ -151,6 +153,7 @@ end
 
 local function OnSave(inst, data)
 	data.on = not inst.sg.mem.turnoff and (inst.sg.mem.turnon or not inst.sg:HasStateTag("off")) or nil
+	data.isloot = inst.components.workable ~= nil or nil
 end
 
 local function OnLoad(inst, data, ents)
@@ -162,6 +165,9 @@ local function OnLoad(inst, data, ents)
 			inst.Physics:Teleport(x, 0, z)
 		end
 	end
+	if data and data.isloot then
+		WagdroneCommon.ChangeToLoot(inst)
+	end
 end
 
 local function PostUpdate(inst)
@@ -170,7 +176,9 @@ local function PostUpdate(inst)
 end
 
 local function GetStatus(inst, viewer)
-	return inst.sg:HasStateTag("off") and "INACTIVE" or nil
+	return (inst.components.workable and "DAMAGED")
+		or (inst.sg:HasStateTag("off") and "INACTIVE")
+		or nil
 end
 
 local function fn()

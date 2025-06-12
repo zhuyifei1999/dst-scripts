@@ -433,6 +433,8 @@ return {
             BEEF_BELL_HAS_BEEF_ALREADY = "I don't need a whole herd.",
 
 			NOT_MINE = "This belongs to someone else.",
+
+			CANNOT_FIX_DRONE = "It's too damaged to fix.",
         },
 		USEKLAUSSACKKEY =
         {

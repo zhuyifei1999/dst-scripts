@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "I will not replace my dear beefalo.",
 
 			NOT_MINE = "I can't do anything with that.",
+
+			CANNOT_FIX_DRONE = "It cannot be brought back.",
         },
 		USEKLAUSSACKKEY =
         {

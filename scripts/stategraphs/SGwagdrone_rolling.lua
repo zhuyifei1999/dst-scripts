@@ -148,6 +148,7 @@ local SPIN_RADIUS = 1
 local SPIN_RANGE_PADDING = 3
 local SPIN_TAGS = { "_combat", "pickable", "CHOP_workable", "MINE_workable", "HAMMER_workable" }
 local SPIN_NO_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "NOCLICK", "wagboss" }
+local SPIN_NO_TAGS_FRIENDLY = { "INLIMBO", "flight", "invisible", "noattack", "NOCLICK", "wagboss", "player", "companion" }
 
 local function DoSpinningAOE(inst, targets)
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -156,7 +157,9 @@ local function DoSpinningAOE(inst, targets)
 	local speedmult = 1
 	local recoilangle
 	local bbladecollide
-	for i, v in ipairs(TheSim:FindEntities(x, y, z, SPIN_RADIUS + SPIN_RANGE_PADDING, nil, SPIN_NO_TAGS, SPIN_TAGS)) do
+	local friendly = WagdroneCommon.IsFriendly(inst)
+	local numuses = 0
+	for i, v in ipairs(TheSim:FindEntities(x, y, z, SPIN_RADIUS + SPIN_RANGE_PADDING, nil, friendly and SPIN_NO_TAGS_FRIENDLY or SPIN_NO_TAGS, SPIN_TAGS)) do
 		if v ~= inst and (targets[v] or 0) <= t and v:IsValid() and not v:IsInLimbo() then
 			local isbblade = v.prefab == inst.prefab
 			local range = SPIN_RADIUS + (isbblade and SPIN_RADIUS or v:GetPhysicsRadius(0))
@@ -164,7 +167,9 @@ local function DoSpinningAOE(inst, targets)
 			local dx = x1 - x
 			local dz = z1 - z
 			local dsq = dx * dx + dz * dz
-			if dsq < range * range then
+			--NOTE: friendly doesn't exclude "notarget" in FindEntities because we still want
+			--      to hit other bblades, which might have "notarget" tag when friendly.
+			if dsq < range * range or (friendly and not isbblade and v:HasTag("notarget")) then
 				local worked, recoil
 				if v.components.workable then
 					if v.components.workable:CanBeWorked() and not (v.sg and v.sg:HasStateTag("busy")) then
@@ -172,6 +177,7 @@ local function DoSpinningAOE(inst, targets)
 						local slowdown, spark
 						if work_action == ACTIONS.CHOP then
 							v.components.workable:WorkedBy(inst, 1.5)
+							numuses = numuses + 1
 							targets[v] = t + 0.2
 							worked = true
 							if v:IsValid() and
@@ -185,6 +191,7 @@ local function DoSpinningAOE(inst, targets)
 							if v:HasTag("frozen") then
 								PlayMiningFX(inst, v)
 								v.components.workable:WorkedBy(inst, 0.5)
+								numuses = numuses + 1
 								if v:IsValid() and v.components.workable:CanBeWorked() then
 									slowdown = true
 								end
@@ -192,6 +199,7 @@ local function DoSpinningAOE(inst, targets)
 							elseif math.random() < 0.5 then
 								PlayMiningFX(inst, v)
 								v.components.workable:WorkedBy(inst, 0.5)
+								numuses = numuses + 1
 								if v:IsValid() and v.components.workable:CanBeWorked() then
 									recoil = true
 								end
@@ -211,6 +219,7 @@ local function DoSpinningAOE(inst, targets)
 								0.5
 
 							v.components.workable:WorkedBy(inst, mult)
+							numuses = numuses + 1
 							if v:IsValid() and v.components.workable:CanBeWorked() then
 								if mult > 1 then
 									slowdown = true
@@ -270,6 +279,17 @@ local function DoSpinningAOE(inst, targets)
 								targets[v] = t + 0.3
 							end
 						end
+					elseif friendly and not v:HasTag("hostile") and
+						not (	v.components.combat and v.components.combat.target and
+								(	v.components.combat.target.isplayer or
+									(	v.components.combat.target.components.follower and
+										v.components.combat.target.components.follower:GetLeader() and
+										v.components.combat.target.components.follower:GetLeader().isplayer
+									)
+								)
+							)
+					then
+						--skip these non hostile targets
 					elseif v.components.inventory and v.components.inventory:EquipHasTag("hardarmor") then
 						local fx = SpawnPrefab("wagdrone_rolling_collide_small_fx")
 						if dsq == 0 then
@@ -285,8 +305,10 @@ local function DoSpinningAOE(inst, targets)
 								math.random() < TUNING.WAGDRONE_ROLLING_HARDARMOR_BOUNCE_CHANCE
 							then
 								inst.components.combat:DoAttack(v)
+								numuses = numuses + 1
 							elseif v.components.freezable and v.components.freezable:IsFrozen() then
 								v:PushEvent("attacked", { attacker = inst, damage = 0 })
+								numuses = numuses + 1
 							end
 						end
 						recoil = true
@@ -294,6 +316,7 @@ local function DoSpinningAOE(inst, targets)
 					elseif v.components.combat then
 						if not (v.components.health and v.components.health:IsDead()) and inst.components.combat:CanTarget(v) then
 							inst.components.combat:DoAttack(v)
+							numuses = numuses + 1
 							targets[v] = t + 0.5
 						end
 					end
@@ -339,6 +362,10 @@ local function DoSpinningAOE(inst, targets)
 		end
 	else
 		inst.sg.mem.lastx, inst.sg.mem.lastz = x, z
+	end
+
+	if numuses > 0 and inst.components.finiteuses then
+		inst.components.finiteuses:Use(numuses)
 	end
 end
 
@@ -688,6 +715,8 @@ local states =
 			if inst.sg.mem.todespawn then
 				inst:AddTag("NOCLICK")
 				ErodeAway(inst)
+			elseif inst.components.workable then
+				inst.components.workable:SetWorkable(true)
 			end
 		end,
 
@@ -708,6 +737,9 @@ local states =
 			ToggleOnAllObjectCollisionsAt(inst, x, z)
 			inst:SetBrainEnabled(true)
 			WagdroneCommon.SetLedEnabled(inst, true)
+			if inst.components.workable then
+				inst.components.workable:SetWorkable(false)
+			end
 		end,
 	},
 

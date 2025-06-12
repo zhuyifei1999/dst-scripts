@@ -509,6 +509,7 @@ end
 
 function self:beginNoWagstaffDefence()
     if self.experiment_static then
+		self.wagstaff_tools = {} -- We use this table to make sure the tools get deleted when the game ends.
         self.wagstaff_tools_original = {
             "wagstaff_tool_1",
             "wagstaff_tool_2",
@@ -554,7 +555,6 @@ end
 
 function self:FindUnmetCharacter()
 	local players = {}
-	local player = nil
 	for i, v in ipairs(_activeplayers) do
 		local pt = Vector3(v.Transform:GetWorldPosition())
 		if TheWorld.net.components.moonstorms and TheWorld.net.components.moonstorms:IsPointInMoonstorm(pt) then
@@ -563,9 +563,8 @@ function self:FindUnmetCharacter()
 			end
 		end
 	end
-	if #players > 0 then
-		player = players[math.random(1,#players)]
-	end
+
+	local player = (#players > 0 and players[math.random(#players)]) or nil
  	if player then
 		return Vector3(player.Transform:GetWorldPosition())
 	end
@@ -750,6 +749,13 @@ end
 
 local function return_tool_to_pool(tool)
     table.insert(self.wagstaff_tools_original, tool.prefab)
+	if self.wagstaff_tools then
+		for i, t in pairs(self.wagstaff_tools) do
+			if t == tool then
+				table.remove(self.wagstaff_tools, i)
+			end
+		end
+	end
 end
 function self:spawnWaglessTool()
 	if not self.experiment_static then
@@ -769,6 +775,8 @@ function self:spawnWaglessTool()
             or Vector3(0,0,0)
 		local newpos = currentpos + offset
 		tool.Transform:SetPosition(newpos.x,0,newpos.z)
+
+		table.insert(self.wagstaff_tools, tool)
 	end
 	self.tools_task = inst:DoTaskInTime(8, fire_spawnWaglessTool)
 end

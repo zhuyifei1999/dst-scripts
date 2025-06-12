@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "I don't require any more beefalo.",
 
 			NOT_MINE = "It does not belong to me.",
+
+			CANNOT_FIX_DRONE = "It is simply irreparable.",
         },
 		USEKLAUSSACKKEY =
         {

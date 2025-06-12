@@ -12,7 +12,9 @@ function LunarSupernovaBurning:OnRemoveFromEntity()
 	if self.inst.components.health then
 		self.inst.components.health:UnregisterLunarBurnSource("lunarsupernovaburning")
 	end
-	self.inst.components.colouradder:PopColour("lunarsupernovaburning")
+	if self.inst.components.colouradder then
+		self.inst.components.colouradder:PopColour("lunarsupernovaburning")
+	end
 	for k, v in pairs(self.sources) do
 		v:Remove()
 	end

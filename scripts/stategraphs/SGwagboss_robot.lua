@@ -30,11 +30,12 @@ local function _FindMissileTargets(inst, x, z, maxtargets, targets)
 			-- .currentTempRange ==> heatrock
 			local heater = v._lightinst and v._lightinst.components.heater or v.components.heater
 			if heater then
+				--NOTE: GetHeat() can be nil!
 				if heater:IsExothermic() then
-					temperature = math.max(temperature, heater:GetHeat(v))
+					temperature = math.max(temperature, heater:GetHeat(v) or temperature)
 				elseif heater:IsEndothermic() then
 					endo = true
-					temperature = math.min(temperature, heater:GetHeat(v))
+					temperature = math.min(temperature, heater:GetHeat(v) or temperature)
 				elseif v.currentTempRange then
 					--heatrock special case because thermics setup isn't reliable
 					endo = v.currentTempRange < 3
@@ -58,10 +59,11 @@ local function _FindMissileTargets(inst, x, z, maxtargets, targets)
 			if v.components.burnable and v.components.burnable:IsBurning() then
 				local fire = v.components.burnable.fxchildren[1]
 				if fire and fire.components.heater then
+					--NOTE: GetHeat() can be nil!
 					if fire.components.heater:IsExothermic() then
-						temperature = math.max(temperature, fire.components.heater:GetHeat(v))
+						temperature = math.max(temperature, fire.components.heater:GetHeat(v) or temperature)
 					else
-						temperature = math.min(temperature, fire.components.heater:GetHeat(v))
+						temperature = math.min(temperature, fire.components.heater:GetHeat(v) or temperature)
 					end
 				else
 					print("Fire missing heat signature on", v)
@@ -1900,14 +1902,13 @@ local states =
 		timeline =
 		{
 			FrameEvent(15, function(inst)
-				--NOTE: not the same as inst:DespawnDrones()
-				inst.components.commander:PushEventToAllSoldiers("deactivate")
+				inst:ReleaseDrones(false) --only soldiers
 			end),
 			FrameEvent(40, function(inst)
 				inst.sg:AddStateTag("noattack")
 				DoJumpShake(inst)
 				inst:SetMusicLevel(2) --silence
-				TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { "WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL", monologue = true, focusentity = inst })
+				TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { strname = "WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL", monologue = true, focusentity = inst })
 			end),
 			FrameEvent(54, function(inst) inst.SoundEmitter:KillSound("loop") end),
 			FrameEvent(72, GetUpShake1),
@@ -1925,7 +1926,7 @@ local states =
 				inst:StopBackFx()
 				inst.AnimState:SetFinalOffset(-3) --move to back layer
 
-				inst:DespawnDrones()
+				inst:ReleaseDrones(true) --include ones that didn't get hacked yet
 
 				--do loot
 				local dir = math.random() * 360

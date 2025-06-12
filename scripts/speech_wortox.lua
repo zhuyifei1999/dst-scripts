@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "Having more than one wouldn't be much fun.",
 
 			NOT_MINE = "I see it doesn't belong to me!",
+
+			CANNOT_FIX_DRONE = "It's had its fun, and now it's done.",
         },
 		USEKLAUSSACKKEY =
         {

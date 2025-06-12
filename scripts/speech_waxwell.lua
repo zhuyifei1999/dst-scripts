@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "One smelly beast following me around is more than enough.",
 
 			NOT_MINE = "Someone's rubbish.",
+
+			CANNOT_FIX_DRONE = "There's no fixing it.",
         },
 		USEKLAUSSACKKEY =
         {

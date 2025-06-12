@@ -50,6 +50,7 @@ local function MakeLandedAtXZ(inst, x, z)
 	end
 	inst:RemoveComponent("updatelooper")
 	inst.landedt = nil
+	inst.landsfx = nil
 	ChangeToObstaclePhysics(inst, 0.9)
 	inst:AddTag("blocker")
 	if not POPULATING then
@@ -66,6 +67,13 @@ local function MakeLandedAtXZ(inst, x, z)
 	inst.components.lunarsupernovablocker:SetOnStopBlockingFn(OnStopBlocking)
 end
 
+local function DoLandingSfx(inst)
+	if inst.landsfx then
+		inst.landsfx = false --false so we won't play again
+		inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/foot_land")
+	end
+end
+
 local function UpdateLanding(inst, dt)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	if y then
@@ -74,10 +82,12 @@ local function UpdateLanding(inst, dt)
 		if vy == 0 and (vx or 0) == 0 and (vz or 0) == 0 then
 			inst.Physics:Stop()
 			inst.Physics:Teleport(x, 0, z)
+			DoLandingSfx(inst)
 			MakeLandedAtXZ(inst, x, z)
 		elseif (vy <= 0 and y + vy * dt * 1.5 < 0.01) and ShouldEntitySink(inst, true) then
 			SinkEntity(inst)
 		elseif y < 0.01 then
+			DoLandingSfx(inst)
 			inst.landedt = inst.landedt + dt
 			if inst.landedt > FRAMES * 2 then
 				inst.Physics:Stop()
@@ -85,6 +95,9 @@ local function UpdateLanding(inst, dt)
 			end
 		else
 			inst.landedt = 0
+			if inst.landsfx == nil then
+				inst.landsfx = true
+			end
 		end
 	else
 		inst.Physics:Stop()
@@ -132,6 +145,7 @@ local function fn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddPhysics()
 	inst.entity:AddDynamicShadow()
 	inst.entity:AddNetwork()
@@ -172,6 +186,7 @@ local function fn()
 	inst:AddComponent("updatelooper")
 	inst.components.updatelooper:AddOnUpdateFn(UpdateLanding)
 	inst.landedt = FRAMES * 2
+	--inst.landsfx = nil
 
 	inst:AddComponent("colouradder")
 

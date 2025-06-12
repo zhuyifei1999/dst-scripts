@@ -594,6 +594,10 @@ local function riftgestalt_OnCaptured(inst)
 	end
 end
 
+local function riftgestalt_OnRemoveEntity(fx)
+	table.removearrayvalue(fx.highlightparent.highlightchildren, fx)
+end
+
 local function riftgestalt_AddFollowFx(inst, anim, symbol)
 	local fx = CreateEntity()
 
@@ -618,6 +622,8 @@ local function riftgestalt_AddFollowFx(inst, anim, symbol)
 	fx.Follower:FollowSymbol(inst.GUID, symbol, nil, nil, nil, true)
 
 	table.insert(inst.highlightchildren, fx)
+	fx.highlightparent = inst
+	fx.OnRemoveEntity = riftgestalt_OnRemoveEntity
 end
 
 local function riftgestaltfn()
@@ -631,7 +637,9 @@ local function riftgestaltfn()
 	inst.AnimState:SetBank("alterguardian_phase1")
 	inst.AnimState:SetBuild("wagboss_lunar")
 	inst.AnimState:PlayAnimation("collapse_pre")
+	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 	inst.AnimState:SetMultColour(1, 1, 1, 0.5)
+	inst.AnimState:SetLightOverride(0.5)
 	inst.AnimState:UsePointFiltering(true)
 
 	inst:AddTag("brightmare")
@@ -646,7 +654,6 @@ local function riftgestaltfn()
 		inst.highlightchildren = {}
 
 		--from alterguardian_phase4_lunarrift
-		riftgestalt_AddFollowFx(inst, "flame_loop", "lb_eye_comp_crown")
 		riftgestalt_AddFollowFx(inst, "flame_loop", "lb_flame_loop_follow_1")
 		riftgestalt_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_2")
 		riftgestalt_AddFollowFx(inst, "body_loop", "lb_head_loop_follow_3")

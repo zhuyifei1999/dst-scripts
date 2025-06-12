@@ -3050,12 +3050,12 @@ local function MakeHat(name)
 
     local alterguardianhat_colourtint = { 0.4, 0.3, 0.25, 0.2, 0.15, 0.1 }
     local alterguardianhat_multtint = { 0.7, 0.6, 0.55, 0.5, 0.45, 0.4 }
-    local function alterguardianhat_animstatemult(animstate, r, g, b)
+	local function alterguardianhat_animstatemult(animstate, r, g, b, a)
         animstate:SetMultColour(
             alterguardianhat_multtint[1+g+b],
             alterguardianhat_multtint[r+1+b],
             alterguardianhat_multtint[r+g+1],
-            1
+			a
         )
     end
     fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
@@ -3108,10 +3108,11 @@ local function MakeHat(name)
             end
         end
 
-        alterguardianhat_animstatemult(inst.AnimState, r, g, b)
+		local a = inst.lunarseedsmaxed and 0.2 or 1
+		alterguardianhat_animstatemult(inst.AnimState, r, g, b, a)
 
         if inst._front and inst._front:IsValid() then
-            alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
+			alterguardianhat_animstatemult(inst._front.AnimState, r, g, b, a)
             if inst.lunarseedsmaxed then
                 inst._front.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
                 inst._front.AnimState:SetBank("hat_alterguardianupgraded_equipped")
@@ -3122,7 +3123,7 @@ local function MakeHat(name)
         end
 
         if inst._back and inst._back:IsValid() then
-            alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
+			alterguardianhat_animstatemult(inst._back.AnimState, r, g, b, a)
             if inst.lunarseedsmaxed then
                 inst._back.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
                 inst._back.AnimState:SetBank("hat_alterguardianupgraded_equipped")

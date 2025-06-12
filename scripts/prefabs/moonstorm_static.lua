@@ -119,6 +119,9 @@ for i = 1, 5 do
     table.insert(WAG_TOOLS, "wagstaff_tool_"..i)
 end
 local function should_accept_item(inst, item)
+    if not inst._needs_tool then
+        return false
+    end
     local item_prefab = item.prefab
     for _, tool_prefab in pairs(WAG_TOOLS) do
         if item_prefab == tool_prefab then
@@ -126,6 +129,12 @@ local function should_accept_item(inst, item)
         end
     end
     return false
+end
+
+local function on_refuse_item(inst, giver, item)
+    if giver.components.talker then
+        giver.components.talker:Say(GetActionFailString(giver, "GIVE", "BUSY"))
+    end
 end
 
 local function on_get_item_from_player(inst, giver, item)
@@ -136,9 +145,11 @@ end
 
 local function on_nowag_need_tool(inst)
     inst.AnimState:PlayAnimation("needtool_idle", true)
+    inst._needs_tool = true
 end
 local function on_nowag_need_tool_over(inst)
     inst.AnimState:PlayAnimation("idle", true)
+    inst._needs_tool = nil
 end
 
 local function on_nowag_activated(inst)
@@ -211,6 +222,7 @@ local function nowag_fn()
 
     inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(should_accept_item)
+    inst.components.trader:SetOnRefuse(on_refuse_item)
     inst.components.trader.onaccept = on_get_item_from_player
 
 	inst:AddComponent("activatable")

@@ -10,6 +10,8 @@ local prefabs =
 	"wagdrone_rolling_collide_small_fx",
 	"wagdrone_rolling_collide_med_fx",
 	"wagdrone_parts",
+	"gears",
+	"transistor",
 }
 
 local brain = require("brains/wagdrone_rollingbrain")
@@ -110,6 +112,8 @@ end
 local function OnSave(inst, data)
 	data.on = not inst.sg.mem.turnoff and (inst.sg.mem.turnon or not inst.sg:HasStateTag("off")) or nil
 	data.stationary = data.on and not inst.sg.mem.tomobile and (inst.sg.mem.tostationary or inst.sg:HasStateTag("stationary")) or nil
+	data.isloot = inst.components.workable ~= nil or nil
+	WagdroneCommon.FriendlySave(inst, data)
 end
 
 local function OnLoad(inst, data, ents)
@@ -121,11 +125,17 @@ local function OnLoad(inst, data, ents)
 		elseif data.on then
 			inst.sg:GoToState("idle")
 		end
+		if data.isloot then
+			WagdroneCommon.ChangeToLoot(inst)
+		end
 	end
 end
 
 local function GetStatus(inst, viewer)
-	return inst.sg:HasStateTag("off") and "INACTIVE" or nil
+	return (WagdroneCommon.IsFriendly(inst) and "FRIENDLY")
+		or (inst.components.workable and "DAMAGED")
+		or (inst.sg:HasStateTag("off") and "INACTIVE")
+		or nil
 end
 
 local function fn()
@@ -162,6 +172,8 @@ local function fn()
 
 	inst.flicker = net_bool(inst.GUID, "wagdrone_rolling.flicker", "flickerdirty")
 
+	WagdroneCommon.MakeFriendablePristine(inst)
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -183,12 +195,14 @@ local function fn()
 	inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(TUNING.WAGDRONE_ROLLING_HEALTH)
 	inst.components.health:SetMinHealth(1)
+	inst.components.health.canmurder = false
 	inst.components.health.nofadeout = true
 
 	inst:AddComponent("combat")
 	inst.components.combat:SetDefaultDamage(TUNING.WAGDRONE_ROLLING_DAMAGE)
 	inst.components.combat:SetRange(1)
 
+	WagdroneCommon.MakeFriendable(inst)
 	WagdroneCommon.MakeHackable(inst)
 	WagdroneCommon.PreventTeleportFromArena(inst)
 
@@ -199,7 +213,10 @@ local function fn()
 	inst.OnRemoveEntity = DisconnectBeams
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
+	inst.OnPreLoad = WagdroneCommon.FriendlyPreLoad
 	inst.OnLoadPostPass = WagdroneCommon.HackableLoadPostPass
+
+	inst.MakeFriendly = WagdroneCommon.ChangeToFriendly
 
 	inst:SetStateGraph("SGwagdrone_rolling")
 

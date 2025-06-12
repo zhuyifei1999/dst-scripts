@@ -1,7 +1,9 @@
 local assets =
 {
 	Asset("ANIM", "anim/wagboss_robot.zip"),
+	Asset("ANIM", "anim/wagboss_lunar.zip"),
 	Asset("ANIM", "anim/wagboss_lunar_spawn.zip"),
+	Asset("SCRIPT", "scripts/prefabs/wagdrone_common.lua"),
 }
 
 local prefabs =
@@ -14,6 +16,7 @@ local prefabs =
 }
 
 local brain = require("brains/wagboss_robotbrain")
+local WagdroneCommon = require("prefabs/wagdrone_common")
 
 --------------------------------------------------------------------------
 
@@ -206,7 +209,7 @@ local function OnSoldiersChanged(inst)
 end
 
 local DRONE_TAGS = { "wagdrone" }
-local DRONE_NOTAGS = { "INLIMBO" }
+local DRONE_NOTAGS = { "INLIMBO", "HAMMER_workable", "usesdepleted", "NOCLICK" }
 
 local function HackDrones(inst)
 	local map = TheWorld.Map
@@ -219,29 +222,45 @@ local function HackDrones(inst)
 
 	for i, v in ipairs(TheSim:FindEntities(x, 0, z, 40, DRONE_TAGS, DRONE_NOTAGS)) do
 		if not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()) then
+			local hp = v.components.finiteuses and v.components.finiteuses:GetPercent() or nil
 			inst.components.commander:AddSoldier(v)
+			if hp then
+				v.components.health:SetPercent(hp)
+			end
 		end
 	end
 	inst.components.commander:PushEventToAllSoldiers("activate")
 end
 
-local function DespawnDrones(inst)
-	local map = TheWorld.Map
-	local x, _, z = inst.Transform:GetWorldPosition()
-	local inarena = map:IsPointInWagPunkArena(x, 0, z)
-	if inarena then
-		x, z = TheWorld.Map:GetWagPunkArenaCenterXZ()
-		--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
-	end
+local function ReleaseDrones(inst, include_non_soldiers)
+	if include_non_soldiers then
+		local map = TheWorld.Map
+		local x, _, z = inst.Transform:GetWorldPosition()
+		local inarena = map:IsPointInWagPunkArena(x, 0, z)
+		if inarena then
+			x, z = TheWorld.Map:GetWagPunkArenaCenterXZ()
+			--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
+		end
 
-	for i, v in ipairs(TheSim:FindEntities(x, 0, z, 40, DRONE_TAGS, DRONE_NOTAGS)) do
-		if not inst.components.commander:IsSoldier(v) and
-			(not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()))
-		then
-			v:PushEvent("despawn")
+		for i, v in ipairs(TheSim:FindEntities(x, 0, z, 40, DRONE_TAGS, DRONE_NOTAGS)) do
+			if not inst.components.commander:IsSoldier(v) and
+				(not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()))
+			then
+				WagdroneCommon.ChangeToLoot(v)
+			end
 		end
 	end
-	inst.components.commander:PushEventToAllSoldiers("despawn")
+
+	assert(next(inst._temptbl1) == nil)
+	local drones = inst._temptbl1
+	inst.components.commander:CollectSoldiers(drones)
+	for i = 1, #drones do
+		local v = drones[i]
+		inst.components.commander:RemoveSoldier(v)
+		WagdroneCommon.ChangeToLoot(v)
+		drones[i] = nil
+	end
+	--assert(next(drones) == nil)
 end
 
 --------------------------------------------------------------------------
@@ -641,6 +660,108 @@ local function StopBackFx(inst)
 end
 
 --------------------------------------------------------------------------
+
+local TRANSPARENCY = 0.2
+local LIGHTOVERRIDE = 0.5
+
+local function AddCrownFlameFx(inst, crown, idx)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_lunar")
+
+	fx.AnimState:PlayAnimation("flame_loop", true)
+	fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+	fx.Follower:FollowSymbol(crown.GUID, "lb_flame_loop_follow_"..tostring(idx), nil, nil, nil, true)
+
+	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	fx.AnimState:SetMultColour(1, 1, 1, TRANSPARENCY)
+	fx.AnimState:SetLightOverride(LIGHTOVERRIDE)
+
+	fx.entity:SetParent(crown.entity)
+
+	table.insert(crown.flames, fx)
+	table.insert(inst.followfx, fx)
+	table.insert(inst.highlightchildren, fx)
+	fx.highlightparent = inst
+	fx.OnRemoveEntity = OnRemoveHighlightChild
+
+	return fx
+end
+
+local function AddCrownLayer(inst, layer, numflames)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_lunar")
+	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	fx.AnimState:SetMultColour(1, 1, 1, TRANSPARENCY)
+	fx.AnimState:SetLightOverride(LIGHTOVERRIDE)
+
+	local baseanim = "crown_"..layer
+	fx.AnimState:PlayAnimation(baseanim.."_loop")
+
+	fx.entity:SetParent(inst.entity)
+	fx.Follower:FollowSymbol(inst.GUID, baseanim.."_follow", nil, nil, nil, true, true)
+
+	fx.flames = {}
+	for i = 1, numflames do
+		AddCrownFlameFx(inst, fx, i)
+	end
+
+	return fx
+end
+
+local function OnShowCrownDirty(inst)
+	if inst.showcrown:value() then
+		if inst.crownlayers == nil then
+			local fr = AddCrownLayer(inst, "fr", 2)
+			local bk = AddCrownLayer(inst, "bk", 3)
+			fr:ListenForEvent("animover", function()
+				fr.AnimState:PlayAnimation("crown_fr_loop")
+				bk.AnimState:PlayAnimation("crown_bk_loop")
+				local t = bk.flames[#bk.flames].AnimState:GetCurrentAnimationTime()
+				for i, v in ipairs(fr.flames) do
+					local t1 = v.AnimState:GetCurrentAnimationTime()
+					v.AnimState:SetTime(t)
+					t = t1
+				end
+				for i, v in pairs(bk.flames) do
+					local t1 = v.AnimState:GetCurrentAnimationTime()
+					v.AnimState:SetTime(t)
+					t = t1
+				end
+			end)
+			inst.crownlayers = { fr, bk }
+		end
+	elseif inst.crownlayers then
+		for i, v in ipairs(inst.crownlayers) do
+			for j, w in ipairs(v.flames) do
+				table.removearrayvalue(inst.followfx, w)
+			end
+			v:Remove()
+		end
+		inst.crownlayers = nil
+	end
+end
 
 local function AddFollowFx(inst, anim, symbol)
 	local fx = CreateEntity()
@@ -1080,7 +1201,17 @@ end
 local function SocketCage(inst)
 	if not inst.socketed then
 		inst.socketed = true
-		inst.AnimState:OverrideSymbol("glass1", "wagboss_robot", inst.shattered and "glass3" or "glass2")
+		if inst.shattered then
+			inst.AnimState:OverrideSymbol("glass1", "wagboss_robot", "glass3")
+			if not inst.showcrown:value() then
+				inst.showcrown:set(true)
+				if not TheNet:IsDedicated() then
+					OnShowCrownDirty(inst)
+				end
+			end
+		else
+			inst.AnimState:OverrideSymbol("glass1", "wagboss_robot", "glass2")
+		end
 		inst.AnimState:SetSymbolBloom("glass1")
 		inst.AnimState:SetSymbolLightOverride("glass1", 0.25)
 		inst.AnimState:SetSymbolLightOverride("rb_head_parts", 0.08)
@@ -1100,6 +1231,12 @@ local function BreakGlass(inst)
 		inst.shattered = true
 		if inst.socketed then
 			inst.AnimState:OverrideSymbol("glass1", "wagboss_robot", "glass3")
+			if not inst.showcrown:value() then
+				inst.showcrown:set(true)
+				if not TheNet:IsDedicated() then
+					OnShowCrownDirty(inst)
+				end
+			end
 		end
 		inst.AnimState:Show("rb_wires")
 	end
@@ -1386,6 +1523,7 @@ local function fn()
 	inst.showbackfx = net_bool(inst.GUID, "wagboss_robot.showbackfx", "showbackfxdirty")
 	inst.music = net_tinybyte(inst.GUID, "wagboss_robot.music", "musicdirty")
 	inst.isobstacle = net_bool(inst.GUID, "wagboss_robot.isobstacle", "isobstacledirty")
+	inst.showcrown = net_bool(inst.GUID, "wagboss_robot.showcrown", "showcrowndirty")
 	inst.isobstacle:set(true)
 	OnIsObstacleDirty(inst)
 
@@ -1414,6 +1552,7 @@ local function fn()
 		inst:ListenForEvent("isobstacledirty", OnIsObstacleDirty)
 		inst:ListenForEvent("showstompfxdirty", OnShowStompFx_Client)
 		inst:ListenForEvent("showbackfxdirty", OnShowBackFx_Client)
+		inst:ListenForEvent("showcrowndirty", OnShowCrownDirty)
 		inst:ListenForEvent("musicdirty", OnMusicDirty)
 
 		return inst
@@ -1450,7 +1589,7 @@ local function fn()
     inst.shattered = false
 
 	inst.HackDrones = HackDrones
-	inst.DespawnDrones = DespawnDrones
+	inst.ReleaseDrones = ReleaseDrones
 	inst.StartStompFx = StartStompFx
 	inst.StopStompFx = StopStompFx
 	inst.StartBackFx = StartBackFx

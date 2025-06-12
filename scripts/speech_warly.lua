@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "I've already found my perfect cut of beef.",
 
 			NOT_MINE = "That is not mine.",
+
+			CANNOT_FIX_DRONE = "It is not salvageable.",
         },
 		USEKLAUSSACKKEY =
         {

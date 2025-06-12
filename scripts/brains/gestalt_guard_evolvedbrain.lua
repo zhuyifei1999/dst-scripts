@@ -42,20 +42,23 @@ function GestaltGuardEvolvedBrain:OnStart()
 			return false
 		end
 
+		-- Relocate away from our combat target, but also players, because we're angry at them/scared of them.
 		local ix, iy, iz = self.inst.Transform:GetWorldPosition()
-		return IsAnyPlayerInRangeSq(ix, iy, iz, RUN_AWAY_DSQ, true)
+		return (self.inst.components.combat.target
+			and self.inst.components.combat.target:GetDistanceSqToPoint(ix, iy, iz) <= RUN_AWAY_DSQ)
+			or IsAnyPlayerInRangeSq(ix, iy, iz, RUN_AWAY_DSQ, true)
 	end
 
     local root = PriorityNode({
 		WhileNode(function() return not self.inst.sg:HasStateTag("attack") end, "Not Attacking",
 			PriorityNode({
-				WhileNode( function() return self.inst.behaviour_level == 3 and not self.inst.components.combat:InCooldown() end, "Aggressive",
+				WhileNode( function() return not self.inst.components.combat:InCooldown() end, "Aggressive",
 					ChaseAndAttack(self.inst, ATTACK_CHASE_TIME, nil, nil, nil, true)
 				),
 
 				WhileNode(should_dodge, "Relocate",
 					SequenceNode{
-						WaitNode(3),
+						WaitNode(1.75),
 						ActionNode(function() self.inst:PushEvent("relocate") end),
 						StandStill(self.inst),
 					}

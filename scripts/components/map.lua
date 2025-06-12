@@ -1276,3 +1276,12 @@ function Map:GetWagPunkArenaCenterXZ()
     return world.net.components.wagpunk_floor_helper:GetArenaOrigin()
 end
 
+function Map:IsWagPunkArenaBarrierUp()
+    local world = TheWorld
+    if world.net == nil or world.net.components.wagpunk_floor_helper == nil then
+        return false
+    end
+
+    return world.net.components.wagpunk_floor_helper:IsBarrierUp()
+end
+

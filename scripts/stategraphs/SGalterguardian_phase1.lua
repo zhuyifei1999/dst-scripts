@@ -882,7 +882,11 @@ local states =
 			inst.SoundEmitter:KillSound("idle_LP")
 
 			inst.sg.mem.numrevives = (inst.sg.mem.numrevives or 0) + 1
-			inst.sg:SetTimeout(TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[inst.sg.mem.numrevives] or TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[#TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME])
+			local timeout = TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[inst.sg.mem.numrevives] or TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME[#TUNING.ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_TIME]
+			local len = inst.AnimState:GetCurrentAnimationLength()
+			local loops = math.floor(timeout / len + 0.5)
+			timeout = loops * len
+			inst.sg:SetTimeout(timeout)
 		end,
 
 		timeline =

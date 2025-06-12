@@ -356,8 +356,9 @@ local function filledfn1()
 	inst:SetPrefabNameOverride("gestalt_cage")
 
     inst:AddTag("gestalt_cage_filled")
+    inst:AddTag("usedeploystring")
 
-    inst.replacementprefab = "wagdrone_flying"
+    inst.replacementprefab = "wagdrone_rolling"
     inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
 
 	inst.entity:SetPristine()
@@ -421,8 +422,9 @@ local function filledfn2()
 	inst:SetPrefabNameOverride("gestalt_cage")
 
     inst:AddTag("gestalt_cage_filled")
+    inst:AddTag("usedeploystring")
 
-    inst.replacementprefab = "wagdrone_rolling"
+    inst.replacementprefab = "wagdrone_flying"
     inst._custom_candeploy_fn = CLIENT_CanDeployGestaltCage -- for DEPLOYMODE.CUSTOM
 
 	inst.entity:SetPristine()
@@ -526,11 +528,11 @@ end
 
 local function PlacerPostinit_1(inst)
     inst.deployhelper_key = "gestalt_cage_filled_placerindicator"
-    inst.replacementprefab = "wagdrone_flying"
+    inst.replacementprefab = "wagdrone_rolling"
 end
 local function PlacerPostinit_2(inst)
     inst.deployhelper_key = "gestalt_cage_filled_placerindicator"
-    inst.replacementprefab = "wagdrone_rolling"
+    inst.replacementprefab = "wagdrone_flying"
 end
 
 

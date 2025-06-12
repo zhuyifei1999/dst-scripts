@@ -401,6 +401,9 @@ local states =
 			SetShadowScale(inst, 1.1)
 			inst.DynamicShadow:Enable(true)
 			WagdroneCommon.SetLedEnabled(inst, false)
+			if inst.components.workable and not inst.sg.mem.todespawn then
+				inst.components.workable:SetWorkable(true)
+			end
 		end,
 
 		events =
@@ -419,6 +422,9 @@ local states =
 			inst.DynamicShadow:Enable(false)
 			inst.Physics:CollidesWith(COLLISION.FLYERS)
 			WagdroneCommon.SetLedEnabled(inst, true)
+			if inst.components.workable then
+				inst.components.workable:SetWorkable(false)
+			end
 		end,
 	},
 

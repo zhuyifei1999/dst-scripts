@@ -35,9 +35,11 @@ local ADDEVOLVED_TIMERNAME = "add_evolved_gestalt_to_pool"
 --------------------------------------------------------------------------
 
 local function GetTuningLevelForPlayer(player)
-	local wagboss_tracker = TheWorld.components.wagboss_tracker
-    local sanity = ((player.components.sanity:IsLunacyMode() or (wagboss_tracker and wagboss_tracker:IsWagbossDefeated())) and player.components.sanity:GetPercentWithPenalty())
-		or 0
+	local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
+    local sanity = (
+			(player.components.sanity:IsLunacyMode() or (shard_wagbossinfo and shard_wagbossinfo:IsWagbossDefeated()))
+			and player.components.sanity:GetPercentWithPenalty()
+		) or 0
 	if sanity >= TUNING.GESTALT_MIN_SANITY_TO_SPAWN then
 		for k, v in ipairs(TUNING.GESTALT_POPULATION_LEVEL) do
 			if sanity <= v.MAX_SANITY then
@@ -68,8 +70,8 @@ local function GetGestaltSpawnType(player, pt)
 	) or nil
 	local do_extra_spawns = (player_hat and player_hat:HasTag("lunarseedmaxed"))
 
-	local wagboss_tracker = TheWorld.components.wagboss_tracker
-	if wagboss_tracker and wagboss_tracker:IsWagbossDefeated() then
+	local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
+	if shard_wagbossinfo and shard_wagbossinfo:IsWagbossDefeated() then
 		local num_evolved = 0
 		for ent in pairs(_gestalts) do
 			if ent.prefab == "gestalt_guard_evolved" then

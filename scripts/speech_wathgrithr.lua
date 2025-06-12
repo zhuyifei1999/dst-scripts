@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "I've already chosen my beast.",
 
 			NOT_MINE = "'Tis not mine.'",
+
+			CANNOT_FIX_DRONE = "'Tis dead.",
         },
 		USEKLAUSSACKKEY =
         {

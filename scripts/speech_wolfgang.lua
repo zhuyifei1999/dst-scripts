@@ -423,6 +423,8 @@ return{
             BEEF_BELL_HAS_BEEF_ALREADY = "Wolfgang already picked best hair-cow to befriend!",
 
 			NOT_MINE = "It is not belong to Wolfgang.",
+
+			CANNOT_FIX_DRONE = "It cannot be repaired... sigh.",
         },
 		USEKLAUSSACKKEY =
         {

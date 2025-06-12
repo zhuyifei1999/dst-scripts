@@ -682,6 +682,7 @@ STRINGS =
             KITCOON_NAMETAG = "Name",
             SHADOW_BEEF_BELL = "Bind",
 			SLINGSHOTMODKIT = "Mod",
+			WAGDRONE_PARTS = "Repair",
         },
         STOPUSINGITEM =
         {
@@ -7352,19 +7353,14 @@ STRINGS =
     WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL = {
         "What a waste of my W.A.R.B.O.T.,",
         "but the entity has taken on a fascinating new hybrid form.",
-        "You may need to modify your approach.",
-        "Carry on.",
-    },
-
-    WAGSTAFF_WAGPUNK_ARENA_SCIONUNSTABLE = {
-        "Hmm, uncontained exposure is accelerating entropy.",
+        "I suspect uncontained exposure will accelerate entropy.",
         "It is not ideal.",
-        "Maintain pressure and subdue the entity immediately before it...",
-        "Nevermind, I'll think of something...",
+        "Subdue the entity posthaste.",
     },
 
     WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN = {
-        "Very good! Now you just need to...",
+        "Very good! The entity is in a weakened state.",
+        "Now you just need to...",
     },
 
     WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF = {
@@ -17488,6 +17484,13 @@ STRINGS.SCRAPBOOK = {
     {
         UNKNOWN = "Lost",
     },
+}
+
+STRINGS.TEMP_BETA_MSG =
+{
+	RIFTS5_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon...",
+	RIFTS5_BASIC_NEW = "Thanks for playing the beta!",
+	RIFTS5_KILLTIME_FMT = "You defeated {name} in {time}s.",
 }
 
 --Don't include this in pot generation as this file is already translated.

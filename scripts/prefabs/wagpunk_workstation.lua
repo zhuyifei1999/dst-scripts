@@ -4,8 +4,8 @@ local assets = {
 }
 
 local sounds = { -- FIXME(JBK): WA: Sounds.
-    idle = "hookline/common/tackle_station/proximity_LP",
-    use = "hookline/common/tackle_station/use",
+    idle = "rifts5/wagpunk_station/proximity_LP",
+    use = "rifts5/wagpunk_station/use",
 }
 
 local function OnTurnOn(inst)

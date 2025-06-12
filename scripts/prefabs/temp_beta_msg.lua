@@ -4,20 +4,13 @@ local assets =
 	Asset("INV_IMAGE", "mapscroll"),
 }
 
-local MSG_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon..."
-local MSG_BASIC_NEW = "Thanks for playing the beta!"
-local MSG_KILLTIME = "%s\nYou defeated %s in %ds."
-
 local function SetKillTime(inst, killtime, prefabname)
-	inst.killtime = killtime
+	inst.killtime = math.floor(killtime + 0.5)
 	inst.boss = prefabname
-	inst.components.inspectable:SetDescription(
-		string.format(MSG_KILLTIME,
-			prefabname and MSG_BASIC_NEW or MSG_BASIC,
-			STRINGS.NAMES[string.upper(prefabname or "wagboss_robot_possessed")],
-			killtime
-		)
-	)
+
+	local msg = prefabname and STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC_NEW or STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC
+	msg = msg.."\n"..subfmt(STRINGS.TEMP_BETA_MSG.RIFTS5_KILLTIME_FMT, { name = STRINGS.NAMES[string.upper(prefabname or "wagboss_robot_possessed")], time = tostring(inst.killtime) })
+	inst.components.inspectable:SetDescription(msg)
 end
 
 local function OnSave(inst, data)
@@ -54,7 +47,7 @@ local function fn()
 	inst.components.inventoryitem:ChangeImageName("mapscroll")
 
 	inst:AddComponent("inspectable")
-	inst.components.inspectable:SetDescription(MSG_BASIC_NEW)
+	inst.components.inspectable:SetDescription(STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC_NEW)
 
 	inst:AddComponent("erasablepaper")
 

@@ -53,8 +53,16 @@ local function TargetTestFn(target, inst)
 end
 local function FindBestAttackTarget(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-    local closestPlayer = nil
 	local rangesq = TUNING.GESTALT_ATTACK_HIT_RANGE_SQ
+
+    local combat_target = inst.components.combat.target
+    if combat_target
+            and TargetTestFn(combat_target, inst)
+            and combat_target:GetDistanceSqToPoint(x, y, z) <= rangesq then
+        return combat_target
+    end
+
+    local closestPlayer = nil
     for _, player in pairs(AllPlayers) do
         if TargetTestFn(player, inst) then
             local distsq = player:GetDistanceSqToPoint(x, y, z)
@@ -72,17 +80,13 @@ local function DoSpecialAttack(inst, target)
 		target.components.sanity:DoDelta(TUNING.GESTALT_ATTACK_DAMAGE_SANITY)
 	end
 
-	local grogginess = target.components.grogginess
-	if grogginess ~= nil then
-		grogginess:AddGrogginess(TUNING.GESTALT_EVOLVED_ATTACK_DAMAGE_GROGGINESS, TUNING.GESTALT_EVOLVED_ATTACK_DAMAGE_KO_TIME)
-		if grogginess.knockoutduration == 0 then
-			--target:PushEvent("attacked", {attacker = inst, damage = TUNING.GESTALT_EVOLVED_REAL_DAMAGE})
-            inst.components.combat:DoAttack(target)
-		end
-	else
-		--target:PushEvent("attacked", {attacker = inst, damage = TUNING.GESTALT_EVOLVED_REAL_DAMAGE})
-        inst.components.combat:DoAttack(target)
-	end
+    inst.components.combat:DoAttack(target)
+    if not (target.components.health ~= nil and target.components.health:IsDead()) then
+        local grogginess = target.components.grogginess
+        if grogginess ~= nil then
+            grogginess:AddGrogginess(TUNING.GESTALT_EVOLVED_ATTACK_DAMAGE_GROGGINESS, TUNING.GESTALT_EVOLVED_ATTACK_DAMAGE_KO_TIME)
+        end
+    end
 end
 
 local function go_to_idle(inst) inst.sg:GoToState("idle") end
@@ -248,6 +252,9 @@ local states =
                 end
                 inst.Physics:ClearMotorVelOverride()
                 inst.components.locomotor:Stop()
+            end),
+            FrameEvent(30, function(inst)
+                inst.sg:RemoveStateTag("noattack")
             end),
         },
 

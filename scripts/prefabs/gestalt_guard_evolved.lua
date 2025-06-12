@@ -45,9 +45,7 @@ local function FindRelocatePoint(inst)
     pt = pt or inst:GetPosition()
 
     local theta = math.random() * TWOPI
-	local offset = FindWalkableOffset(pt, theta, 10+math.random()*3, 16, true, true)
-				or FindWalkableOffset(pt, theta, 6+math.random()*3, 12, true, true)
-				or FindWalkableOffset(pt, theta, 3+math.random()*3, 12, true, true)
+	local offset = FindWalkableOffset(pt, theta, 2+math.random()*1, 16, true, true)
 
 	return offset ~= nil and (offset + pt) or pt
 end
@@ -105,7 +103,7 @@ local function KeepTarget(inst, target)
         return true
     end
 
-    --start deaggro timer when target is becomes unenlightened
+    -- Start a deaggro timer when the target becomes unenlightened
     local t = GetTime()
     if inst._deaggrotime == nil then
         inst._deaggrotime = t
@@ -114,10 +112,10 @@ local function KeepTarget(inst, target)
 
     --Deaggro if target has been unenlightened for 2.5s, hasn't hit us in 6s, and hasn't tried to attack us for 5s
 	if inst._deaggrotime + 2.5 >= t or
-    inst.components.combat.lastwasattackedbytargettime + 6 >= t or
+    inst.components.combat.lastwasattackedbytargettime + 16 >= t or
     (	target.components.combat and
         target.components.combat:IsRecentTarget(inst) and
-        (target.components.combat.laststartattacktime or 0) + 5 >= t
+        (target.components.combat.laststartattacktime or 0) + 15 >= t
     )
     then
         return true
@@ -154,9 +152,7 @@ local function Retarget(inst)
 
 		local target = FindEntity(inst, TUNING.GESTALTGUARD_AGGRESSIVE_RANGE, attacktargetcheck, nil, attack_cant_tags, attack_any_tags)
 
-		if target == nil and inst.components.combat.target ~= nil then
-			inst.components.combat:DropTarget()
-		elseif target == inst.components.combat.target then
+		if target == inst.components.combat.target then
 			inst.behaviour_level = (target ~= nil and targets_level) or 1
 		end
 
@@ -196,6 +192,12 @@ end
 local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, 30, ShareTargetFn, 1)
+
+    if inst._deaggrotime ~= nil then
+        inst._deaggrotime = GetTime()
+        return true
+    end
+
 end
 
 -- World component target tracking
@@ -288,9 +290,9 @@ local function fn()
 
     --
 	local combat = inst:AddComponent("combat")
-	combat:SetDefaultDamage(TUNING.GESTALTGUARD_DAMAGE)
+	combat:SetDefaultDamage(TUNING.GESTALT_EVOLVED_REAL_DAMAGE)
 	combat:SetRange(TUNING.GESTALTGUARD_ATTACK_RANGE)
-	combat:SetAttackPeriod(6)
+	combat:SetAttackPeriod(4)
     combat:SetRetargetFunction(1, Retarget)
     combat:SetKeepTargetFunction(KeepTarget)
 	inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
@@ -316,6 +318,11 @@ local function fn()
 	--
 	inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("gestalt_guard_evolved")
+
+	--
+	inst:AddComponent("planarentity")
+	inst:AddComponent("planardamage")
+	inst.components.planardamage:SetBaseDamage(TUNING.GESTALT_EVOLVED_PLANAR_DAMAGE)
 
     --
     inst:AddComponent("sanityaura")

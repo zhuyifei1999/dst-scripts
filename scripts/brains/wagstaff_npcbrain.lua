@@ -124,13 +124,13 @@ local function OnFinishExperiment_gestaltcage(inst, item, socketable)
         local didsocket = false
         if socketable.prefab == "wagdrone_spot_marker" then
             if item.prefab == "gestalt_cage_filled1" then
-                local replacementinst = ReplacePrefab(socketable, "wagdrone_flying")
+                local replacementinst = ReplacePrefab(socketable, "wagdrone_rolling")
                 if wagpunk_arena_manager then
                     wagpunk_arena_manager:TrackWagdrone(replacementinst)
                 end
                 didsocket = true
             elseif item.prefab == "gestalt_cage_filled2" then
-                local replacementinst = ReplacePrefab(socketable, "wagdrone_rolling")
+                local replacementinst = ReplacePrefab(socketable, "wagdrone_flying")
                 if wagpunk_arena_manager then
                     wagpunk_arena_manager:TrackWagdrone(replacementinst)
                 end

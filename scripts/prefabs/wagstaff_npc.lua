@@ -1464,24 +1464,16 @@ local function finale_Brighten(inst)
 	end
 end
 
-local function finale_OnAnimOver(inst)
-	inst:RemoveEventCallback("animover", finale_OnAnimOver)
-	inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateMaterialize)
-	inst.components.updatelooper:RemoveOnUpdateFn(finale_UpdateBrighten)
-	inst.materialize_t = nil
-	inst.brighten_t = nil
-	inst.AnimState:PlayAnimation("wagstaff_finale_2")
-	inst.AnimState:SetAddColour(0, 0, 0, 0) --reset, the anim changes to a white silhoutte with black fx lines
-end
-
 local function finale_OnEntityRemoved(inst)
 	table.removearrayvalue(inst.highlightparent.highlightchildren, inst)
+	table.removearrayvalue(inst.highlightparent.highlightchildren, inst.fx)
 end
 
 local function finale_OnEntityReplicated(inst)
 	local parent = inst.entity:GetParent()
 	if parent and parent.prefab == "alterguardian_phase4_lunarrift" and parent.highlightchildren then
 		table.insert(parent.highlightchildren, inst)
+		table.insert(parent.highlightchildren, inst.fx)
 		inst.highlightparent = parent
 		inst.OnEntityRemoved = finale_OnEntityRemoved
 	end
@@ -1492,8 +1484,68 @@ local function AttachToAlter(inst, alter)
 	inst.Follower:FollowSymbol(alter.GUID, "player_follow")
 	if alter.highlightchildren then
 		table.insert(alter.highlightchildren, inst)
+		table.insert(alter.highlightchildren, inst.fx)
 		inst.highlightparent = alter
 		inst.OnEntityRemoved = finale_OnEntityRemoved
+	end
+end
+
+local function finale_StopTalkSound(inst)
+	inst._talktask = nil
+	inst.SoundEmitter:KillSound("talk")
+end
+
+local function finale_DoTalkSound(inst, len)
+	if inst._talktask then
+		inst._talktask:Cancel()
+		finale_StopTalkSound(inst)
+	end
+	inst.SoundEmitter:PlaySound("moonstorm/characters/wagstaff/talk_LP", "talk")
+	inst._talktask = inst:DoTaskInTime(len, finale_StopTalkSound)
+end
+
+local function finale_CancelPostUpdate(inst, finale_PostUpdate)
+	inst._cancelpostupdate = nil
+	inst.components.updatelooper:RemovePostUpdateFn(finale_PostUpdate)
+end
+
+local function finale_PostUpdate(inst)
+	if inst._cancelpostupdate == nil and inst.AnimState:IsCurrentAnimation("wagstaff_finale2") then
+		inst.fx.AnimState:PlayAnimation("wagstaff_finale2")
+		inst.fx.AnimState:SetTime(inst.AnimState:GetCurrentAnimationTime())
+		inst._cancelpostupdate = inst:DoStaticTaskInTime(0, finale_CancelPostUpdate, finale_PostUpdate)
+	end
+end
+
+local function finale_CreateSilhouette()
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+
+	fx.Transform:SetFourFaced()
+
+	fx.AnimState:SetBank("wilson")
+	fx.AnimState:SetBuild("wagstaff_finale")
+	fx.AnimState:SetLightOverride(0.5)
+	fx.AnimState:SetFinalOffset(1)
+
+	return fx
+end
+
+
+local function finale_OnAnimOver(inst)
+	inst:RemoveEventCallback("animover", finale_OnAnimOver)
+
+	local alter = inst.entity:GetParent()
+	if alter and alter.sg.statemem.wagstaff == inst then
+		alter.sg.statemem.cb = nil
+		TheWorld:PushEvent("ms_wagboss_snatched_wagstaff")
 	end
 end
 
@@ -1514,10 +1566,10 @@ local function finale_fn()
 	inst.AnimState:SetBuild("wagstaff")
 	inst.AnimState:PlayAnimation("wagstaff_finale")
 	inst.AnimState:Hide("ARM_carry")
-	inst.AnimState:AddOverrideBuild("wagstaff_finale")
 	inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
 	inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
 	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
+	inst.AnimState:SetLightOverride(0.5)
 
 	local talker = inst:AddComponent("talker")
 	talker.fontsize = 35
@@ -1526,29 +1578,43 @@ local function finale_fn()
 	talker.name_colour = WAGSTAFF_CHATTER_COLOUR
 	talker.chaticon = "npcchatflair_wagstaff"
 	talker:MakeChatter()
-	talker.lineduration = TUNING.WAGPUNK_ARENA_WAGSTAFF_TALK_TIME
-
-	inst.forcedtalktime = talker.lineduration - 0.5 -- Small padding for better visuals.
+	talker.lineduration = 2.5 --cutscene: see SGalterguardian_phase4_lunarrift::finale
 
 	local npc_talker = inst:AddComponent("npc_talker")
 	npc_talker.default_chatpriority = CHATPRIORITIES.HIGH
 	npc_talker.speaktime = talker.lineduration
+
+	inst:SetPrefabNameOverride("wagstaff_npc")
+
+	--Dedicated server does not need to spawn the local fx
+	if not TheNet:IsDedicated() then
+		inst.fx = finale_CreateSilhouette()
+		inst.fx.entity:SetParent(inst.entity)
+	end
+
+	inst:AddComponent("updatelooper")
 
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		inst.OnEntityReplicated = finale_OnEntityReplicated
 
+		inst.components.updatelooper:AddPostUpdateFn(finale_PostUpdate)
+
 		return inst
 	end
 
-	inst:AddComponent("updatelooper")
-
 	inst:ListenForEvent("animover", finale_OnAnimOver)
+	inst.AnimState:PushAnimation("wagstaff_finale2", false)
+	if inst.fx then
+		inst.fx.AnimState:PlayAnimation("wagstaff_finale")
+		inst.fx.AnimState:PushAnimation("wagstaff_finale2", false)
+	end
 
 	inst.AttachToAlter = AttachToAlter
 	inst.Materialize = finale_Materialize
 	inst.Brighten = finale_Brighten
+	inst.DoTalkSound = finale_DoTalkSound
 
 	inst.persists = false
 

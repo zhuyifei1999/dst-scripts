@@ -174,8 +174,8 @@ local function DomainExpansionUpdate(inst)
 	end
 	for k, v in pairs(indomain) do
 		if v then
-			if v:IsValid() and v.components.sanity then
-				v.components.sanity:EnableLunacy(false, inst)
+			if k:IsValid() and k.components.sanity then
+				k.components.sanity:EnableLunacy(false, inst)
 			end
 			indomain[k] = nil
 		else
@@ -224,6 +224,92 @@ end
 
 local function OnRemoveHighlightChild(child)
 	table.removearrayvalue(child.highlightparent.highlightchildren, child)
+end
+
+local function AddCrownFlameFx(inst, crown, idx)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_lunar")
+
+	fx.AnimState:PlayAnimation("flame_loop", true)
+	fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
+	fx.Follower:FollowSymbol(crown.GUID, "lb_flame_loop_follow_"..tostring(idx), nil, nil, nil, true)
+
+	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	fx.AnimState:SetMultColour(1, 1, 1, TRANSPARENCY)
+	fx.AnimState:SetLightOverride(LIGHTOVERRIDE)
+
+	fx.entity:SetParent(crown.entity)
+
+	table.insert(crown.flames, fx)
+	table.insert(inst.followfx, fx)
+	table.insert(inst.highlightchildren, fx)
+	fx.highlightparent = inst
+	fx.OnRemoveEntity = OnRemoveHighlightChild
+
+	return fx
+end
+
+local function AddCrownLayer(inst, layer, numflames)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
+
+	fx.AnimState:SetBank("wagboss_lunar")
+	fx.AnimState:SetBuild("wagboss_lunar")
+	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	fx.AnimState:SetMultColour(1, 1, 1, TRANSPARENCY)
+	fx.AnimState:SetLightOverride(LIGHTOVERRIDE)
+
+	local baseanim = "crown_"..layer
+	fx.AnimState:PlayAnimation(baseanim.."_loop")
+
+	fx.entity:SetParent(inst.entity)
+	fx.Follower:FollowSymbol(inst.GUID, baseanim.."_follow", nil, nil, nil, true, true)
+
+	fx.flames = {}
+	for i = 1, numflames do
+		AddCrownFlameFx(inst, fx, i)
+	end
+
+	return fx
+end
+
+local function AddCrownFx(inst)
+	local fr = AddCrownLayer(inst, "fr", 2)
+	local bk = AddCrownLayer(inst, "bk", 3)
+	fr:ListenForEvent("animover", function()
+		fr.AnimState:PlayAnimation("crown_fr_loop")
+		bk.AnimState:PlayAnimation("crown_bk_loop")
+		local t = bk.flames[#bk.flames].AnimState:GetCurrentAnimationTime()
+		for i, v in ipairs(fr.flames) do
+			local t1 = v.AnimState:GetCurrentAnimationTime()
+			v.AnimState:SetTime(t)
+			t = t1
+		end
+		for i, v in pairs(bk.flames) do
+			local t1 = v.AnimState:GetCurrentAnimationTime()
+			v.AnimState:SetTime(t)
+			t = t1
+		end
+	end)
 end
 
 local function AddFollowFx(inst, anim, symbol, frame, alpha, usefacings)
@@ -292,8 +378,8 @@ end
 
 local function OnFacings(inst)
 	local facings = inst.facings:value()
-	local fxfr = inst.followfx[2]
-	local fxbk = inst.followfx[3]
+	local fxfr = inst.followfx[1]
+	local fxbk = inst.followfx[2]
 	if facings == 1 then
 		fxfr.Transform:SetEightFaced()
 		fxbk.Transform:SetEightFaced()
@@ -395,7 +481,7 @@ local PHASES =
 		end,
 	},
 	{
-		hp = 0.9,
+		hp = 0.95,
 		fn = function(inst)
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
@@ -408,7 +494,7 @@ local PHASES =
 		end,
 	},
 	{
-		hp = 0.7,
+		hp = 0.75,
 		fn = function(inst)
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
@@ -421,7 +507,7 @@ local PHASES =
 		end,
 	},
 	{
-		hp = 0.5,
+		hp = 0.65,
 		fn = function(inst)
 			inst.dashcombo = 2
 			inst.dashcount = inst.dashcount or 0
@@ -434,6 +520,35 @@ local PHASES =
 		end,
 	},
 }
+
+local DEESCALATE_TIME = 30
+
+local function CalcThreatLevel(dps)
+	local numthreatlevels = #TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_PERIOD
+	return math.clamp(math.floor(Remap(dps, 150, 375, 1, numthreatlevels)), 1, numthreatlevels)
+end
+
+local function SetThreatLevel(inst, level)
+	if inst._threattask then
+		inst._threattask:Cancel()
+	end
+	inst._threattask = level > 1 and inst:DoTaskInTime(DEESCALATE_TIME, SetThreatLevel, level - 1) or nil
+
+	if level ~= inst.threatlevel then
+		if inst.threatlevel then
+			print(inst, "threat level "..(level > inst.threatlevel and "raised" or "lowered").." to "..tostring(level))
+		end
+		inst.threatlevel = level
+		inst.components.combat:SetAttackPeriod(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_PERIOD[level])
+	end
+end
+
+local function OnDpsUpdate(inst, dps)
+	local threatlevel = CalcThreatLevel(dps)
+	if threatlevel >= inst.threatlevel then
+		SetThreatLevel(inst, threatlevel)
+	end
+end
 
 --------------------------------------------------------------------------
 
@@ -766,10 +881,11 @@ local function fn()
 		inst.followfx = {}
 		inst.highlightchildren = {}
 
+		--NOTE: float_fr/bk MUST be first! See OnFacings()
 		--body wires and floating bits (solid)
-		AddFollowFx(inst, "wire_loop", "lb_wire_follow", nil, nil, false)
 		AddFollowFx(inst, "float_fr_loop", "lb_float_fr_follow", nil, nil, true)
 		AddFollowFx(inst, "float_bk_loop", "lb_float_bk_follow", nil, nil, true)
+		AddFollowFx(inst, "wire_loop", "lb_wire_follow", nil, nil, false)
 
 		--leg wires (solid)
 		for i = 1, 2 do
@@ -791,6 +907,9 @@ local function fn()
 		for i = 1, 3 do
 			AddFollowFx(inst, "flame_loop", "lb_flame_loop_follow_"..tostring(i), nil, TRANSPARENCY, false)
 		end
+
+		--crown
+		AddCrownFx(inst)
 
 		inst.components.colouraddersync:SetColourChangedFn(OnAddColourChanged)
 	end
@@ -816,7 +935,7 @@ local function fn()
 
 	inst:AddComponent("combat")
 	inst.components.combat:SetDefaultDamage(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_DAMAGE)
-	inst.components.combat:SetAttackPeriod(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_PERIOD)
+	--inst.components.combat:SetAttackPeriod(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_PERIOD[1])
 	inst.components.combat:SetRange(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE)
 	inst.components.combat:SetRetargetFunction(1, RetargetFn)
 	inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
@@ -833,6 +952,9 @@ local function fn()
 	inst:AddComponent("planarentity")
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_PLANAR_DAMAGE)
+
+	inst:AddComponent("dpstracker")
+	inst.components.dpstracker:SetOnDpsUpdateFn(OnDpsUpdate)
 
 	inst:AddComponent("timer")
 	inst:AddComponent("grouptargeter")
@@ -856,6 +978,9 @@ local function fn()
 	inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("newcombattarget", OnNewTarget)
 	inst:ListenForEvent("droppedtarget", OnDroppedTarget)
+
+	--inst.threatlevel = 1
+	SetThreatLevel(inst, 1)
 
 	inst._engagetask = nil
 	inst.engaged = false
