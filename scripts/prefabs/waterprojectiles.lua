@@ -120,8 +120,7 @@ local function common_fn(bank, build, anim, tag, isinventoryitem)
         inst.Physics:SetFriction(0)
         inst.Physics:SetDamping(0)
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-        inst.Physics:ClearCollisionMask()
-        inst.Physics:CollidesWith(COLLISION.GROUND)
+		inst.Physics:SetCollisionMask(COLLISION.GROUND)
         inst.Physics:SetCapsule(0.2, 0.2)
         inst.Physics:SetDontRemoveOnSleep(true) -- so the object can land and put out the fire, also an optimization due to how this moves through the world
     end
@@ -213,10 +212,11 @@ local function onthrown(inst)
     inst.Physics:SetFriction(0)
     inst.Physics:SetDamping(0)
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.GROUND)
-    inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-    inst.Physics:CollidesWith(COLLISION.ITEMS)
+	inst.Physics:SetCollisionMask(
+		COLLISION.GROUND,
+		COLLISION.OBSTACLES,
+		COLLISION.ITEMS
+	)
 end
 
 local function ReticuleTargetFn()

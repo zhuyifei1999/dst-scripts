@@ -488,6 +488,7 @@ local function MakeHat(name)
     local function ruins_custom_init(inst)
         inst:AddTag("open_top_hat")
         inst:AddTag("metal")
+		inst:AddTag("hardarmor")
 
 		--shadowlevel (from shadowlevel component) added to pristine state for optimization
 		inst:AddTag("shadowlevel")
@@ -3047,28 +3048,52 @@ local function MakeHat(name)
         inst:AddTag("gestaltprotection")
     end
 
-    local function alterguardianhat_IsRed(inst) return inst.prefab == MUSHTREE_SPORE_RED end
-    local function alterguardianhat_IsGreen(inst) return inst.prefab == MUSHTREE_SPORE_GREEN end
-    local function alterguardianhat_IsBlue(inst) return inst.prefab == MUSHTREE_SPORE_BLUE end
     local alterguardianhat_colourtint = { 0.4, 0.3, 0.25, 0.2, 0.15, 0.1 }
     local alterguardianhat_multtint = { 0.7, 0.6, 0.55, 0.5, 0.45, 0.4 }
-
-    local function alterguardianhat_animstatemult(animstate, r, g, b)
+	local function alterguardianhat_animstatemult(animstate, r, g, b, a)
         animstate:SetMultColour(
             alterguardianhat_multtint[1+g+b],
             alterguardianhat_multtint[r+1+b],
             alterguardianhat_multtint[r+g+1],
-            1
+			a
         )
     end
+    fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
+    fns.alterguardianhat_wagbosstest = function(item) return item:HasTag("lunarseed") end
     local function alterguardianhat_updatelight(inst)
-        local num_sources = #inst.components.container:FindItems(function(item)
-            return item:HasTag("spore")
-        end)
+        inst.lunarseedscount = #inst.components.container:FindItems(fns.alterguardianhat_wagbosstest)
+        inst.lunarseedsmaxed = inst.lunarseedscount == inst.components.container:GetNumSlots()
+        local conversioncount = TUNING.ALTERGUARDIANHAT_SEEDCOUNT_FOR_FULL_PLANAR_CONVERSION
+        inst.lunarseedplanarconversionmult = (math.min(inst.lunarseedscount, conversioncount) / conversioncount) * TUNING.ALTERGUARDIANHAT_MAX_PLANAR_CONVERSION
+        inst.lunarseedbonusbasephysicaldamage = (math.max(inst.lunarseedscount - conversioncount, 0) / (inst.components.container:GetNumSlots() - conversioncount)) * TUNING.ALTERGUARDIANHAT_SEEDCOUNT_EXTRA_DAMAGE_MAX
+        if inst.components.equippable:IsEquipped() then -- If we're not equipped, this will get resolved at equip time.
+            local owner = inst.components.inventoryitem.owner
+            if owner and owner.components.sanity then
+                if inst.lunarseedsmaxed then
+                    inst:AddTag("lunarseedmaxed")
+                    owner.components.sanity:SetInducedLunacy(inst, true)
+                    owner.components.sanity:EnableLunacy(true, "lunacyhat")
+                else
+                    inst:RemoveTag("lunarseedmaxed")
+                    owner.components.sanity:SetInducedLunacy(inst, false)
+                    owner.components.sanity:EnableLunacy(false, "lunacyhat")
+                end
+            end
+        end
 
-        local r = #inst.components.container:FindItems(alterguardianhat_IsRed)
-        local g = #inst.components.container:FindItems(alterguardianhat_IsGreen)
-        local b = #inst.components.container:FindItems(alterguardianhat_IsBlue)
+        local spores = inst.components.container:FindItems(fns.alterguardianhat_sporetest)
+        local r, g, b = 0, 0, 0
+        local spore_prefab
+        for _, spore in pairs(spores) do
+            spore_prefab = spore.prefab
+            if spore_prefab == MUSHTREE_SPORE_RED then
+                r = r + 1
+            elseif spore_prefab == MUSHTREE_SPORE_GREEN then
+                g = g + 1
+            elseif spore_prefab == MUSHTREE_SPORE_BLUE then
+                b = b + 1
+            end
+        end
 
         if inst._light ~= nil and inst._light:IsValid() then
             if r > 0 or g > 0 or b > 0 then
@@ -3083,14 +3108,29 @@ local function MakeHat(name)
             end
         end
 
-        alterguardianhat_animstatemult(inst.AnimState, r, g, b)
+		local a = inst.lunarseedsmaxed and 0.2 or 1
+		alterguardianhat_animstatemult(inst.AnimState, r, g, b, a)
 
         if inst._front and inst._front:IsValid() then
-            alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
+			alterguardianhat_animstatemult(inst._front.AnimState, r, g, b, a)
+            if inst.lunarseedsmaxed then
+                inst._front.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
+                inst._front.AnimState:SetBank("hat_alterguardianupgraded_equipped")
+            else
+                inst._front.AnimState:SetBuild("hat_alterguardian_equipped")
+                inst._front.AnimState:SetBank("hat_alterguardian_equipped")
+            end
         end
 
         if inst._back and inst._back:IsValid() then
-            alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
+			alterguardianhat_animstatemult(inst._back.AnimState, r, g, b, a)
+            if inst.lunarseedsmaxed then
+                inst._back.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
+                inst._back.AnimState:SetBank("hat_alterguardianupgraded_equipped")
+            else
+                inst._back.AnimState:SetBuild("hat_alterguardian_equipped")
+                inst._back.AnimState:SetBank("hat_alterguardian_equipped")
+            end
         end
     end
 
@@ -3186,6 +3226,17 @@ local function MakeHat(name)
 				local x, y, z = target.Transform:GetWorldPosition()
 
 				local gestalt = SpawnPrefab("alterguardianhat_projectile")
+                if inst.lunarseedscount and inst.lunarseedscount > 0 then
+                    -- We should have the other numbers calculated to change the gestalt's damage.
+                    local physicaldamage = gestalt.components.combat.defaultdamage + inst.lunarseedbonusbasephysicaldamage
+                    local planardamage = physicaldamage * inst.lunarseedplanarconversionmult
+                    physicaldamage = physicaldamage * (1 - inst.lunarseedplanarconversionmult)
+                    gestalt.components.combat:SetDefaultDamage(physicaldamage)
+                    if planardamage > 0 then
+                        gestalt:AddComponent("planardamage")
+                        gestalt.components.planardamage:SetBaseDamage(planardamage)
+                    end
+                end
 				local r = GetRandomMinMax(3, 5)
 				local delta_angle = GetRandomMinMax(-90, 90)
 				local angle = (owner:GetAngleToPoint(x, y, z) + delta_angle) * DEGREES
@@ -3218,6 +3269,13 @@ local function MakeHat(name)
         if inst.components.container ~= nil and inst.keep_closed ~= owner.userid then
             inst.components.container:Open(owner)
         end
+
+        if owner and owner.components.sanity then
+            if inst.lunarseedsmaxed then
+                owner.components.sanity:SetInducedLunacy(inst, true)
+                owner.components.sanity:EnableLunacy(true, "lunacyhat")
+            end
+        end
     end
 
     local function alterguardian_onunequip(inst, owner)
@@ -3225,6 +3283,13 @@ local function MakeHat(name)
 
 		inst:RemoveEventCallback("sanitydelta", inst._onsanitydelta, owner)
 		inst:RemoveEventCallback("onattackother", inst.alterguardian_spawngestalt_fn, owner)
+
+        if owner and owner.components.sanity then
+            if inst.lunarseedsmaxed then
+                owner.components.sanity:SetInducedLunacy(inst, false)
+                owner.components.sanity:EnableLunacy(false, "lunacyhat")
+            end
+        end
 
 		if inst._task then
 			inst._task:Cancel()
@@ -3375,6 +3440,7 @@ local function MakeHat(name)
 
 	local function dreadstone_custom_init(inst)
 		inst:AddTag("dreadstone")
+		inst:AddTag("hardarmor")
 		inst:AddTag("shadow_item")
 
 		--waterproofer (from waterproofer component) added to pristine state for optimization
@@ -3427,6 +3493,7 @@ local function MakeHat(name)
 			inst.fx:Remove()
 		end
 		inst.fx = SpawnPrefab("lunarplanthat_fx")
+        inst.fx.owningitem = inst
 		inst.fx:AttachToOwner(owner)
 		owner.AnimState:SetSymbolLightOverride("swap_hat", .1)
 		if owner.components.grue ~= nil then
@@ -3809,6 +3876,7 @@ local function MakeHat(name)
     end
 
     fns.wagpunk_custom_init = function(inst)
+		inst:AddTag("hardarmor")
         inst:AddTag("show_broken_ui")
 
         inst:AddComponent("talker")
@@ -5205,6 +5273,7 @@ local function MakeHat(name)
     end
 
     fns.shadowthrall_parasite_ondeath = function(owner, data)
+        owner.was_shadowthrall_parasited = true
         owner.components.inventory:Unequip(EQUIPSLOTS.HEAD)
     end
 
@@ -5410,7 +5479,6 @@ local function MakeHat(name)
         return inst
     end
 
-
     -----------------------------------------------------------------------------
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
@@ -5522,6 +5590,7 @@ local function MakeHat(name)
             "alterguardianhatshard",
         }
         table.insert(assets, Asset("ANIM", "anim/ui_alterguardianhat_1x6.zip"))
+        table.insert(assets, Asset("ANIM", "anim/hat_alterguardianupgraded.zip"))
         fn = fns.alterguardian
     elseif name == "monkey_medium" then
         fn = fns.monkey_medium
@@ -5814,6 +5883,28 @@ local function lunarplanthat_CreateFxFollowFrame(i)
 	return inst
 end
 
+local function lunarplanthat_fx_skinhashdirty(inst)
+    if inst.fx ~= nil then
+        local skinbuildhash = inst.skinbuildhash:value()
+        if skinbuildhash ~= 0 then
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetSkin(skinbuildhash, "hat_lunarplant")
+            end
+        else
+            for _, fx in ipairs(inst.fx) do
+                fx.AnimState:SetBuild("hat_lunarplant")
+            end
+        end
+    end
+end
+
+local function lunarplanthat_fx_common_postinit(inst)
+    inst.skinbuildhash = net_hash(inst.GUID, "lunarplanthat_fx.skinbuildhash", "skinhashdirty")
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("skinhashdirty", lunarplanthat_fx_skinhashdirty)
+    end
+end
+
 local function voidclothhat_CreateFxFollowFrame(i)
 	local inst = CreateEntity()
 
@@ -6068,6 +6159,12 @@ local function MakeFollowFx(name, data)
 		if owner.components.colouradder ~= nil then
 			owner.components.colouradder:AttachChild(inst)
 		end
+        if inst.owningitem and inst.skinbuildhash then
+            local skinbuild = inst.owningitem.AnimState:GetSkinBuild()
+            if skinbuild then
+                inst.skinbuildhash:set(skinbuild)
+            end
+        end
 		--Dedicated server does not need to spawn the local fx
 		if not TheNet:IsDedicated() then            
 			SpawnFollowFxForOwner(inst, owner, data.createfn, data.framebegin, data.frameend, data.isfullhelm)
@@ -6188,11 +6285,11 @@ return  MakeHat("straw"),
         MakeHat("mask_king"),
         MakeHat("mask_tree"),
         MakeHat("mask_fool"),
-        
+
         MakeHat("mask_sage"),
         MakeHat("mask_halfwit"),
-        MakeHat("mask_toady"),        
-        
+        MakeHat("mask_toady"),
+
         MakeHat("monkey_medium"),
         MakeHat("monkey_small"),
         MakeHat("polly_rogers"),
@@ -6207,11 +6304,11 @@ return  MakeHat("straw"),
         MakeHat("scrap_monocle"),
         MakeHat("scrap"),
         MakeHat("mermarmor"),
-        MakeHat("mermarmorupgraded"),        
+        MakeHat("mermarmorupgraded"),
 
         MakeHat("inspectacles"),
 		MakeHat("roseglasses"),
-        MakeHat("ghostflower"),        
+        MakeHat("ghostflower"),
 
         MakeHat("rabbit"),
 
@@ -6234,6 +6331,7 @@ return  MakeHat("straw"),
 
 		MakeFollowFx("lunarplanthat_fx", {
 			createfn = lunarplanthat_CreateFxFollowFrame,
+            common_postinit =  lunarplanthat_fx_common_postinit,
 			framebegin = 1,
 			frameend = 3,
 			isfullhelm = true,
@@ -6251,11 +6349,11 @@ return  MakeHat("straw"),
             createfn = wagpunkhat_CreateFxFollowFrame,
             common_postinit = wagpunkhat_fx_common_postinit,
             framebegin = 1,
-            frameend = 3,            
-            assets = { Asset("ANIM", "anim/hat_wagpunk.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_02.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_03.zip"),  
-                       Asset("ANIM", "anim/hat_wagpunk_04.zip"),  
+            frameend = 3,
+            assets = { Asset("ANIM", "anim/hat_wagpunk.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_02.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_03.zip"),
+                       Asset("ANIM", "anim/hat_wagpunk_04.zip"),
                        Asset("ANIM", "anim/hat_wagpunk_05.zip") },
         }),
 		MakeFollowFx("inspectacleshat_fx", {

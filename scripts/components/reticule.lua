@@ -228,9 +228,16 @@ function Reticule:OnCameraUpdate(dt)
 	end
 end
 
+function Reticule:IsTwinStickAiming()
+	return self.twinstickmode ~= nil
+		and self.followhandler == nil
+		and self.targetfn ~= nil
+		and self.reticule ~= nil
+end
+
 function Reticule:UpdateTwinStickMode1()
-	local xdir = TheInput:GetAnalogControlValue(CONTROL_INVENTORY_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_INVENTORY_LEFT)
-	local ydir = TheInput:GetAnalogControlValue(CONTROL_INVENTORY_UP) - TheInput:GetAnalogControlValue(CONTROL_INVENTORY_DOWN)
+	local xdir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_RIGHT) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_LEFT)
+	local ydir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_UP) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_DOWN)
 	local xmag = xdir * xdir + ydir * ydir
 
 	if self.twinstickoverride then
@@ -293,8 +300,8 @@ end
 function Reticule:UpdateTwinStickMode2()
 	self.targetpos = self.targetfn(self.inst)
 
-	local xdir = TheInput:GetAnalogControlValue(CONTROL_INVENTORY_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_INVENTORY_LEFT)
-	local ydir = TheInput:GetAnalogControlValue(CONTROL_INVENTORY_UP) - TheInput:GetAnalogControlValue(CONTROL_INVENTORY_DOWN)
+	local xdir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_RIGHT) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_LEFT)
+	local ydir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_UP) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_AIM_DOWN)
 	local xmag = xdir * xdir + ydir * ydir
 	local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
 	if not self.twinstickoverride then

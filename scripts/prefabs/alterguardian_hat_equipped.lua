@@ -1,12 +1,12 @@
 
 local prefabs =
 {
-	"alterguardian_hat_equipped_client",
 }
 
 local assets =
 {
 	Asset("ANIM", "anim/hat_alterguardian_equipped.zip"),
+    Asset("ANIM", "anim/hat_alterguardianupgraded_equipped.zip"),
 }
 
 local function OnActivated(inst, owner, is_front)
@@ -64,11 +64,4 @@ local function fn()
     return inst
 end
 
-local function client_fn()
-    local inst = CreateEntity()
-
-    return inst
-end
-
-return Prefab("alterguardian_hat_equipped", fn, nil, prefabs),
-	 Prefab("alterguardian_hat_equipped_client", client_fn, assets)
+return Prefab("alterguardian_hat_equipped", fn, assets, prefabs)
