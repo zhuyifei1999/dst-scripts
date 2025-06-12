@@ -12,6 +12,7 @@ local prefabs =
 	"wagdrone_parts",
 	"gears",
 	"transistor",
+	"wagpunk_bits",
 }
 
 local brain = require("brains/wagdrone_rollingbrain")
@@ -108,6 +109,14 @@ local function SetBrainEnabled(inst, enable)
 		inst:SetBrain(nil)
 	end
 end
+
+local function topocket(inst)
+	if inst.sg:HasStateTag("moving") or inst.sg.currentstate.name == "run_stop" then
+		inst.sg:GoToState("idle")
+	end
+end
+
+local OnEntitySleep = topocket
 
 local function OnSave(inst, data)
 	data.on = not inst.sg.mem.turnoff and (inst.sg.mem.turnon or not inst.sg:HasStateTag("off")) or nil
@@ -206,11 +215,14 @@ local function fn()
 	WagdroneCommon.MakeHackable(inst)
 	WagdroneCommon.PreventTeleportFromArena(inst)
 
+	inst:ListenForEvent("onputininventory", topocket)
+
 	inst.beams = {}
 	inst.ConnectBeams = ConnectBeams
 	inst.DisconnectBeams = DisconnectBeams
 	inst.SetBrainEnabled = SetBrainEnabled
 	inst.OnRemoveEntity = DisconnectBeams
+	inst.OnEntitySleep = OnEntitySleep
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	inst.OnPreLoad = WagdroneCommon.FriendlyPreLoad

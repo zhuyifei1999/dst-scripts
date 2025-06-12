@@ -14497,6 +14497,7 @@ STRINGS.UI =
         SWOON = "Swoon",
         CAROL = "Carol",
         FISTSHAKE = "Fist Shake",
+        TIPHAT = "Tip Hat",
         CHEER = "Cheer",
         CHICKEN = "Chicken Dance",
         FLEX = "Flex",

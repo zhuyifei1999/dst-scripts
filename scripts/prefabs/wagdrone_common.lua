@@ -75,6 +75,10 @@ local function OnGotCommander(inst, data)
 	inst.AnimState:OverrideSymbol("light_yellow_off", inst.prefab, "light_red_off")
 	inst.AnimState:OverrideSymbol("light_yellow_on", inst.prefab, "light_red_on")
 	inst:ListenForEvent("onremove", inst._onremovecommander, data.commander)
+
+	if inst.sg:HasStateTag("off") and inst.sg:HasStateTag("idle") then
+		inst.AnimState:PlayAnimation("off_idle")
+	end
 end
 
 local function _DoClearCommander(inst, commander)
@@ -121,6 +125,9 @@ SetSharedLootTable("wagdrone_common",
 	{ "gears",				1.0 },
 	{ "gears",				0.333 },
 	{ "transistor",			0.667 },
+	{ "wagpunk_bits",		1.0	},
+	{ "wagpunk_bits",		1.0	},
+	{ "wagpunk_bits",		0.5	},
 })
 
 local function OnWorked(inst, worker)
@@ -150,7 +157,9 @@ local function ChangeToLoot(inst)
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
 		inst.components.workable:SetWorkLeft(1)
 		inst.components.workable:SetOnFinishCallback(OnWorked)
-		if not (inst.sg:HasStateTag("off") and inst.sg:HasStateTag("idle")) then
+		if inst.sg:HasStateTag("off") and inst.sg:HasStateTag("idle") then
+			inst.AnimState:PlayAnimation("damaged_idle_loop", true)
+		else
 			inst.components.workable:SetWorkable(false)
 		end
 	end
@@ -200,6 +209,10 @@ local function ChangeToFriendly(inst)
 		if not POPULATING then
 			toground(inst)
 			inst:PushEvent("activate")
+		end
+
+		if inst.sg:HasStateTag("off") and inst.sg:HasStateTag("idle") then
+			inst.AnimState:PlayAnimation("off_idle")
 		end
 	end
 end

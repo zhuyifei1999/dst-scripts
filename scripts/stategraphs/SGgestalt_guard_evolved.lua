@@ -49,7 +49,7 @@ local INVALID_ATTACK_STATE_TAGS = {"bedroll", "knockout", "sleeping", "tent", "w
 local function TargetTestFn(target, inst)
     return not IsEntityDeadOrGhost(target)
         and (target.sg == nil or not target.sg:HasAnyStateTag(INVALID_ATTACK_STATE_TAGS))
-        and target.entity:IsVisible()
+		and inst.components.combat:CanTarget(target)
 end
 local function FindBestAttackTarget(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()

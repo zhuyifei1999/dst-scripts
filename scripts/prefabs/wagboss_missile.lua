@@ -641,6 +641,11 @@ local function fn()
 		return inst
 	end
 
+    inst.scrapbook_bank = "missile_fx"
+    inst.scrapbook_build = "missile_fx"
+    inst.scrapbook_anim = "missile_loop"
+    inst.scrapbook_inspectonseen = true
+
 	inst:AddComponent("combat")
 	inst.components.combat:SetDefaultDamage(TUNING.WAGBOSS_MISSILE_DAMAGE)
 	inst.components.combat.ignorehitrange = true

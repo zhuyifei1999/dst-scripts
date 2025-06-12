@@ -61,7 +61,15 @@ local events =
 
 --------------------------------------------------------------------------
 
+local function IsPaused(inst)
+	return inst:IsAsleep()-- or inst:IsInLimbo()
+end
+
 local function UpdateIdleHover(inst, dt)
+	if IsPaused(inst) then
+		return
+	end
+
 	local period = 1.2
 	local amp = 0.4
 	local ht0 = 5
@@ -102,6 +110,10 @@ local function UpdateIdleHover(inst, dt)
 end
 
 local function UpdateRunHover(inst, dt)
+	if IsPaused(inst) then
+		return
+	end
+
 	local period = 18 * FRAMES
 	local amp = 0.2
 	local ht0 = 5
@@ -141,6 +153,10 @@ local function UpdateRunHover(inst, dt)
 end
 
 local function UpdateRunStopHover(inst, dt)
+	if IsPaused(inst) then
+		return
+	end
+
 	local period = 1.2
 	local amp = 0.4
 	local ht0 = 5
@@ -179,6 +195,10 @@ local function UpdateRunStopHover(inst, dt)
 end
 
 local function UpdateLanding(inst, dt)
+	if IsPaused(inst) then
+		return
+	end
+
 	local len = 26 * FRAMES
 	local t = inst.sg.statemem.t
 	if t ~= math.huge then
@@ -223,6 +243,10 @@ local function SetFlicker(inst, c)
 end
 
 local function UpdateAttackHover(inst, dt)
+	if IsPaused(inst) then
+		return
+	end
+
 	local charge_len = 12 * FRAMES
 	local charge_period = charge_len * 4
 	local charge_amp = 0.6
@@ -387,7 +411,11 @@ local states =
 				return
 			end
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("off_idle")
+			if inst.components.workable then
+				inst.AnimState:PlayAnimation("damaged_idle_loop", true)
+			else
+				inst.AnimState:PlayAnimation("off_idle")
+			end
 			inst.Physics:ClearCollidesWith(COLLISION.FLYERS)
 			if not POPULATING then
 				local x, y, z = inst.Transform:GetWorldPosition()

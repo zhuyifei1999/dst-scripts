@@ -770,6 +770,7 @@ local function fn()
 
 	inst:AddComponent("timer")
 	inst:AddComponent("grouptargeter")
+	inst:AddComponent("explosiveresist")
 
 	local teleportedoverride = inst:AddComponent("teleportedoverride")
     teleportedoverride:SetDestPositionFn(teleport_override_fn)

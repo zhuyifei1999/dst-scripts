@@ -1881,24 +1881,47 @@ function self:DebugForcePearl()
         self.hermitcrab.components.friendlevels:CompleteAllTasks(doer)
     end
 end
+local INDICATOR_MUST_TAGS = {"CLASSIFIED", "wagpunk_floor_placerindicator"}
 function self:DebugForceTurf()
     for _, v in ipairs(self.TILESPOTS) do
         local dtx, dtz = v[1], v[2]
-        local x, z = self.storedx_pearl + dtx * TILE_SCALE, self.storedz_pearl + dtz * TILE_SCALE
+        local pt = Vector3(self.storedx_pearl + dtx * TILE_SCALE, 0, self.storedz_pearl + dtz * TILE_SCALE)
 
-        local tile_x, tile_y = _map:GetTileCoordsAtPoint(x, 0, z)
+        local tile_x, tile_y = _map:GetTileCoordsAtPoint(pt.x, 0, pt.z)
 
-        local current_tile = nil
-        local undertile = _world.components.undertile
-        if undertile ~= nil then
-            current_tile = _map:GetTile(tile_x, tile_y)
+        _map:SetTile(tile_x, tile_y, WORLD_TILES.WAGSTAFF_FLOOR)
+    
+        local tx, ty, tz = _map:GetTileCenterPoint(pt.x, pt.y, pt.z)
+        local ents = TheSim:FindEntities(tx, ty, tz, 1, INDICATOR_MUST_TAGS)
+        for _, ent in ipairs(ents) do
+            ent:Remove()
         end
     
-        _map:SetTile(tile_x, tile_y, WAGSTAFF_FLOOR)
-        -- Because of a terraforming callback in farming_manager.lua, the undertile gets cleared during SetTile.
-        -- We can circumvent this for now by setting the undertile after SetTile.
-        if undertile ~= nil and current_tile ~= nil then
-            undertile:SetTileUnderneath(tile_x, tile_y, current_tile)
+        ents = _map:GetEntitiesOnTileAtPoint(pt.x, 0, pt.z)
+        for _, ent in ipairs(ents) do
+            if ent:HasTag("winchtarget") then
+                local x, y, z = ent.Transform:GetWorldPosition()
+                local failed = false
+                local ox, oz = _map:GetNearbyOceanPointFromXZ(x, z, 10)
+                if ox then
+                    ent.Transform:SetPosition(ox, y, oz)
+                    ent:PushEvent("teleported")
+                    local fx = SpawnPrefab("splash_sink")
+                    fx.Transform:SetPosition(ox, y, oz)
+                else -- If the scan fails we will just uproot the salvage this tile is permanent so having things under it would be unobtainable.
+                    local salvaged_item = ent.components.winchtarget:Salvage()
+                    if salvaged_item then
+                        if salvaged_item.components.inventoryitem and salvaged_item.components.inventoryitem:IsHeld() then
+                            salvaged_item = salvaged_item.components.inventoryitem:RemoveFromOwner(true)
+                        end
+                        if salvaged_item then
+                            salvaged_item.Transform:SetPosition(x, y, z)
+                            salvaged_item:PushEvent("on_salvaged")
+                        end
+                    end
+                    ent:Remove()
+                end
+            end
         end
     end
 end

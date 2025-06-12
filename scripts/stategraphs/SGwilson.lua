@@ -23339,6 +23339,9 @@ local states =
 
 		onenter = function(inst, data)
 			--should have reached here on frame 1 (0-based!) of "pouncecapture"
+			--V2C: force sync anims again for nopredict on clients
+			inst.AnimState:PlayAnimation("pouncecapture")
+			inst.AnimState:SetFrame(1)
 			if data then
 				if data.speed then
 					inst.sg.statemem.speed = data.speed

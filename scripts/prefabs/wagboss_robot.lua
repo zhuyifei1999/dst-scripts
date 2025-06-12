@@ -13,7 +13,19 @@ local prefabs =
 	"wagboss_beam_fx",
 	"wagboss_robot_leg",
 	"temp_beta_msg", --#TEMP_BETA
+
+	"gears",
+	"transistor",
+	"wagpunk_bits",
 }
+
+SetSharedLootTable("wagboss_robot",
+{
+	{ "gears",				0.5 },
+	{ "transistor",			0.5 },
+	{ "wagpunk_bits",		1.0 },
+	{ "wagpunk_bits",		0.5 },
+})
 
 local brain = require("brains/wagboss_robotbrain")
 local WagdroneCommon = require("prefabs/wagdrone_common")
@@ -1098,6 +1110,8 @@ local function SetCombatEnabled(inst, enabled)
 			inst:AddComponent("planardamage")
 			inst.components.planardamage:SetBaseDamage(TUNING.WAGBOSS_ROBOT_PLANAR_DAMAGE)
 
+			inst:AddComponent("explosiveresist")
+
 			inst:AddComponent("timer")
 			inst:AddComponent("grouptargeter")
 			inst:AddComponent("commander")
@@ -1141,6 +1155,7 @@ local function SetCombatEnabled(inst, enabled)
 		inst:RemoveComponent("combat")
 		inst:RemoveComponent("planarentity")
 		inst:RemoveComponent("planardamage")
+		inst:RemoveComponent("explosiveresist")
 		inst:RemoveComponent("timer")
 		inst:RemoveComponent("grouptargeter")
 		inst:RemoveComponent("commander")
@@ -1569,6 +1584,7 @@ local function fn()
 	inst.components.inspectable.getspecialdescription = DescriptionFn
 
 	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:SetChanceLootTable("wagboss_robot")
 	inst.components.lootdropper.min_speed = 4
 	inst.components.lootdropper.max_speed = 6
 	inst.components.lootdropper.y_speed = 14

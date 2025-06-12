@@ -11,6 +11,7 @@ local prefabs =
 	"wagdrone_parts",
 	"gears",
 	"transistor",
+	"wagpunk_bits",
 }
 
 local easing = require("easing")

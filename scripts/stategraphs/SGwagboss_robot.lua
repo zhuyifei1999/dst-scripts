@@ -1929,6 +1929,7 @@ local states =
 				inst:ReleaseDrones(true) --include ones that didn't get hacked yet
 
 				--do loot
+				inst.components.lootdropper:DropLoot()
 				local dir = math.random() * 360
 				for i = 1, 3 do
 					local dir1 = dir + math.random() * 360 / 6

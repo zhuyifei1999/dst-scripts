@@ -1970,9 +1970,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
         Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
         Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
+        Asset("ANIM", "anim/player_emotes_hat_tip.zip"), -- item emotes
         Asset("ANIM", "anim/player_mount_emotes_extra.zip"), -- item emotes
 
         Asset("ANIM", "anim/player_mount_emotes_dance2.zip"), -- item emotes
+        Asset("ANIM", "anim/player_mount_emotes_hat_tip.zip"), -- item emotes
         Asset("ANIM", "anim/player_mount_pet.zip"),
         Asset("ANIM", "anim/player_hatdance.zip"),
         Asset("ANIM", "anim/player_bow.zip"),

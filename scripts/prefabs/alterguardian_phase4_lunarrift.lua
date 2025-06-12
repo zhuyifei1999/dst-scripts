@@ -778,6 +778,19 @@ local function LootSetupFn(lootdropper)
 	lootdropper:SetChanceLootTable("alterguardian_phase4_lunarrift")
 end
 
+local function CalcSanityAura(inst, observer)
+	local map = TheWorld.Map
+	inst._sanityaura_inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition())
+	if inst._sanityaura_inarena then
+		return map:IsPointInWagPunkArena(observer.Transform:GetWorldPosition()) and TUNING.SANITYAURA_HUGE or 0
+	end
+	return inst.components.combat:HasTarget() and TUNING.SANITYAURA_HUGE or TUNING.SANITYAURA_LARGE
+end
+
+local function SanityAuraFalloff(inst, observer, distsq)
+	return not inst._sanityaura_inarena and distsq > ENTER_DOMAIN_RANGE_SQ and math.huge or nil
+end
+
 --------------------------------------------------------------------------
 
 local function PushMusic(inst)
@@ -953,11 +966,18 @@ local function fn()
 	inst:AddComponent("planardamage")
 	inst.components.planardamage:SetBaseDamage(TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_PLANAR_DAMAGE)
 
+	inst:AddComponent("explosiveresist")
+
 	inst:AddComponent("dpstracker")
 	inst.components.dpstracker:SetOnDpsUpdateFn(OnDpsUpdate)
 
 	inst:AddComponent("timer")
 	inst:AddComponent("grouptargeter")
+
+	inst:AddComponent("sanityaura")
+	inst.components.sanityaura.aurafn = CalcSanityAura
+	inst.components.sanityaura.fallofffn = SanityAuraFalloff
+	inst.components.sanityaura.max_distsq = 40 * 40
 
 	inst:AddComponent("locomotor")
 	inst.components.locomotor.walkspeed = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_WALKSPEED

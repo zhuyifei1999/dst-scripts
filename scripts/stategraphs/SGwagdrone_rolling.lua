@@ -708,7 +708,11 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("off_idle")
+			if inst.components.workable then
+				inst.AnimState:PlayAnimation("damaged_idle_loop", true)
+			else
+				inst.AnimState:PlayAnimation("off_idle")
+			end
 			ToggleOffAllObjectCollisions(inst)
 			inst:SetBrainEnabled(false)
 			WagdroneCommon.SetLedEnabled(inst, false)

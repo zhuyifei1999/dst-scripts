@@ -157,11 +157,17 @@ for item_type, v in pairs(EMOTE_ITEMS) do
     cmd_data.hasaccessfn = function(command, caller)
         if caller == nil or TheWorld == nil then
             return false
-        elseif TheWorld.ismastersim then
-            return TheInventory:CheckClientOwnership(caller.userid, item_type)
-        else
-            return caller.userid == TheNet:GetUserID() and TheInventory:CheckOwnership(item_type)
         end
+        if v.data and v.data.needshat then
+            local player = UserToPlayer(caller.userid)
+            if player == nil or player.replica.inventory == nil or player.replica.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) == nil then
+                return false
+            end
+        end
+        if TheWorld.ismastersim then
+            return TheInventory:CheckClientOwnership(caller.userid, item_type)
+        end
+        return caller.userid == TheNet:GetUserID() and TheInventory:CheckOwnership(item_type)
     end
     AddUserCommand(v.cmd_name, cmd_data)
 end

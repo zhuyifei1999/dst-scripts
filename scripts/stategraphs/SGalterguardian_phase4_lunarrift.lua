@@ -123,7 +123,7 @@ local COLLAPSIBLE_TAGS = { "NPC_workable" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
 	table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
-local NON_COLLAPSIBLE_TAGS = { "FX", --[["NOCLICK",]] "DECOR", "INLIMBO" }
+local NON_COLLAPSIBLE_TAGS = { "FX", --[["NOCLICK",]] "DECOR", "INLIMBO", "wagdrone" }
 
 local function _AOEWork(inst, x, z, radius, targets)
 	local t = GetTime()
