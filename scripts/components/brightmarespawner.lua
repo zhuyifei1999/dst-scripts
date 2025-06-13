@@ -64,25 +64,27 @@ end
 local function GetGestaltSpawnType(player, pt)
 	local type = "gestalt"
 
-	local player_hat = (player and
-		player.components.inventory and
-		player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-	) or nil
-	local do_extra_spawns = (player_hat and player_hat:HasTag("lunarseedmaxed"))
+	if not TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(pt:Get()) then
+		local player_hat = (player and
+			player.components.inventory and
+			player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+		) or nil
+		local do_extra_spawns = (player_hat and player_hat:HasTag("lunarseedmaxed"))
 
-	local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
-	if shard_wagbossinfo and shard_wagbossinfo:IsWagbossDefeated() then
-		local num_evolved = 0
-		for ent in pairs(_gestalts) do
-			if ent.prefab == "gestalt_guard_evolved" then
-				num_evolved = num_evolved + 1
+		local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
+		if shard_wagbossinfo and shard_wagbossinfo:IsWagbossDefeated() then
+			local num_evolved = 0
+			for ent in pairs(_gestalts) do
+				if ent.prefab == "gestalt_guard_evolved" then
+					num_evolved = num_evolved + 1
+				end
 			end
-		end
 
-		if (num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN or (do_extra_spawns and num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN_HAT))
-				and _evolved_spawn_pool > 0 then
-			type = "gestalt_guard_evolved"
-			_evolved_spawn_pool = _evolved_spawn_pool - 1
+			if (num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN or (do_extra_spawns and num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN_HAT))
+					and _evolved_spawn_pool > 0 then
+				type = "gestalt_guard_evolved"
+				_evolved_spawn_pool = _evolved_spawn_pool - 1
+			end
 		end
 	end
 
@@ -92,9 +94,6 @@ end
 local SPAWN_ONEOF_TAGS = {"brightmare_gestalt", "player", "playerghost"}
 local function FindGestaltSpawnPtForPlayer(player, wantstomorph)
 	local x, y, z = player.Transform:GetWorldPosition()
-	if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
-		return nil
-	end
 
 	local function IsValidGestaltSpawnPt(offset)
 		local x1, z1 = x + offset.x, z + offset.z
@@ -129,6 +128,12 @@ end
 
 local BRIGHTMARE_TAGS = {"brightmare"}
 local function UpdatePopulation()
+	local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
+	local increased_spawn_factor = (shard_wagbossinfo
+		and shard_wagbossinfo:IsWagbossDefeated()
+		and TUNING.WAGBOSS_DEFEATED_GESTALT_SPAWN_FACTOR)
+		or 1
+
 	local total_levels = 0
 	for player in pairs(_players) do
 		if IsValidTrackingTarget(player) then
@@ -144,6 +149,7 @@ local function UpdatePopulation()
 								or (level == 2 and 0.3)
 								or 0.4
 
+				inc_chance = inc_chance * increased_spawn_factor
 				if math.random() < inc_chance then
 					TrySpawnGestaltForPlayer(player, level, data)
 				end

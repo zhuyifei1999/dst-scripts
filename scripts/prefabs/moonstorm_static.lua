@@ -22,11 +22,13 @@ local function onattackedfn(inst)
 end
 
 local function ondeath(inst)
-    inst.SoundEmitter:KillSound("loop")
-    inst.AnimState:PlayAnimation("explode", false)
-    inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/explode")
+    if not inst.experimentcomplete then
+        inst.SoundEmitter:KillSound("loop")
+        inst.AnimState:PlayAnimation("explode", false)
+        inst.SoundEmitter:PlaySound("moonstorm/common/static_ball_contained/explode")
 
-    inst:ListenForEvent("animover", inst.Remove)
+        inst:ListenForEvent("animover", inst.Remove)
+    end
 end
 
 local function finished_callback(inst)
@@ -155,7 +157,8 @@ end
 local function on_nowag_activated(inst)
     if TheWorld.components.moonstormmanager then
         TheWorld.components.moonstormmanager:beginNoWagstaffDefence()
-        inst.AnimState:PlayAnimation("idle", true)
+        inst.AnimState:PlayAnimation("pregame_pst", false)
+        inst.AnimState:PushAnimation("idle", true)
         return true
     else
         ErodeAway(inst)

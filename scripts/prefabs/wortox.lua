@@ -709,7 +709,9 @@ local function common_postinit(inst)
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = ReticuleTargetFn
     inst.components.reticule.ease = true
+	inst.components.reticule.twinstickcheckscheme = true
 	inst.components.reticule.twinstickmode = 1
+	inst.components.reticule.twinstickrange = 15
 
     inst.HostileTest = CLIENT_Wortox_HostileTest
     if not TheWorld.ismastersim then

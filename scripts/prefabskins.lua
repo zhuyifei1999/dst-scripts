@@ -245,6 +245,11 @@ PREFAB_SKINS = {
 		"bernie_cat",
 		"bernie_dog",
 	},
+	berrybush =
+	{
+		"berrybush_cawnival",
+		"berrybush_mystical",
+	},
 	birdcage =
 	{
 		"birdcage_adventure",
@@ -583,6 +588,11 @@ PREFAB_SKINS = {
 	dreadstonehat =
 	{
 		"hat_dreadstone_horn",
+	},
+	dug_berrybush =
+	{
+		"dug_berrybush_cawnival",
+		"dug_berrybush_mystical",
 	},
 	dug_gravestone =
 	{

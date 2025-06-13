@@ -23,6 +23,7 @@ local Reticule = Class(function(self, inst)
     --self.reticule = nil
 	--self.twinstickmode = nil
 	--self.twinstickrange = nil
+	--self.twinstickcheckscheme = nil --If not in aoetargeting mode, only use twinstick if we have dedicated aiming controls (scheme 4+)
     --self.followhandler = nil
     --self.pingprefab = nil
 	--self.ispassableatallpoints = nil
@@ -213,7 +214,11 @@ function Reticule:OnCameraUpdate(dt)
         self:UpdatePosition(nil)
 	elseif self.targetfn then
 		if self.twinstickmode ~= nil and TheInput:ControllerAttached() then
-			if self.twinstickmode == 1 then
+			if self.twinstickcheckscheme and not TheInput:SupportsControllerFreeAiming() then
+				--If not in aoetargeting mode, only use twinstick if we have dedicated aiming controls (scheme 4+)
+				self:ClearTwinStickOverrides()
+				self.targetpos = self.targetfn(self.inst)
+			elseif self.twinstickmode == 1 then
 				self:UpdateTwinStickMode1()
 			elseif self.twinstickmode == 2 then
 				self:UpdateTwinStickMode2()

@@ -338188,6 +338188,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.bernie_dog_shadow_build"
 msgid "This fiery little pup just melts Willow's heart."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.berrybush_cawnival
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_cawnival"
+msgid "Sparkling shrubbery is the best choice for growing berries."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.berrybush_mystical
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_mystical"
+msgid "An enchanting bush for growing berries on a moonlit night."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure"
 msgid "This cage's bold design will impress even the bird it imprisons."
@@ -341326,6 +341336,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder"
 msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_cawnival
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_cawnival"
+msgid "Sparkling shrubbery is the best choice for growing berries."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_mystical
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_mystical"
+msgid "An enchanting bush for growing berries on a moonlit night."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy
@@ -356288,6 +356308,16 @@ msgctxt "STRINGS.SKIN_NAMES.bernie_dog_shadow_build"
 msgid "SPARKY"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.berrybush_cawnival
+msgctxt "STRINGS.SKIN_NAMES.berrybush_cawnival"
+msgid "Cawnival Shrub"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.berrybush_mystical
+msgctxt "STRINGS.SKIN_NAMES.berrybush_mystical"
+msgid "Moonshrub"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.birdcage_adventure
 msgctxt "STRINGS.SKIN_NAMES.birdcage_adventure"
 msgid "Gilded Birdcage"
@@ -359426,6 +359456,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.dragonling_wyvern_builder
 msgctxt "STRINGS.SKIN_NAMES.dragonling_wyvern_builder"
 msgid "n/a"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_berrybush_cawnival
+msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_cawnival"
+msgid "Cawnival Shrub"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dug_berrybush_mystical
+msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_mystical"
+msgid "Moonshrub"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.dug_gravestone_fantasy

@@ -538,6 +538,9 @@ local function MakeDumbbell(name, consumption, efficiency, damage, impact_sound,
         inst:AddComponent("reticule")
         inst.components.reticule.targetfn = ReticuleTargetFn
 		inst.components.reticule.shouldhidefn = ReticuleShouldHideFn
+		inst.components.reticule.twinstickcheckscheme = true
+		inst.components.reticule.twinstickmode = 1
+		inst.components.reticule.twinstickrange = 8
         inst.components.reticule.ease = true
 
         inst.entity:SetPristine()

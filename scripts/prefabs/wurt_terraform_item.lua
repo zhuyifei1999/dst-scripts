@@ -180,6 +180,9 @@ local function wurt_terraformer_fn(anim)
 
     local reticule = inst:AddComponent("reticule")
     reticule.targetfn = CLIENT_BombReticuleTargetFn
+	reticule.twinstickcheckscheme = true
+	reticule.twinstickmode = 1
+	reticule.twinstickrange = 8
     reticule.ease = true
 
     inst.spelltype = "TERRAFORM"

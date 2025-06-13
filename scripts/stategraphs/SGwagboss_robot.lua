@@ -755,6 +755,8 @@ local states =
 			inst.SoundEmitter:KillSound("loop")
 			if inst.hostile then
 				TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
+			else
+				inst.AnimState:Hide("fx_activation")
 			end
 			if POPULATING then
 				inst.sg:GoToState("idle")
@@ -814,6 +816,7 @@ local states =
 		},
 
 		onexit = function(inst)
+			inst.AnimState:Show("fx_activation")
 			if not inst.SoundEmitter:PlayingSound("loop") then
 				inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/active_lp", "loop")
 			end
@@ -1966,6 +1969,8 @@ local states =
 			FrameEvent(90, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_2") end),
 			FrameEvent(109, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
 			FrameEvent(129, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/metal_wronk_short") end),
+			FrameEvent(174, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/mech_fall") end),
+			FrameEvent(176, function(inst) inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gears_drop") end),
 			FrameEvent(196, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_3") end),
 			FrameEvent(235, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/spawn_4") end),	},
 

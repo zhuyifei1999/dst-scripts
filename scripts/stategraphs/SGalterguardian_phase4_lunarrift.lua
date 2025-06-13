@@ -601,7 +601,7 @@ local states =
 			end),
 
 			--#SFX
-			FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound(inst.sg.statemem.triggerlunacy == false and "rifts5/lunar_boss/taunt_emerge" or "rifts5/lunar_boss/taunt") end),
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound((inst.sg.statemem.triggerlunacy == false) and "rifts5/lunar_boss/taunt_emerge" or "rifts5/lunar_boss/taunt") end),
 		},
 
 		events =
@@ -1088,7 +1088,7 @@ local states =
 			--#SFX
 			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/dash_pst") end),
 			FrameEvent(43, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
-			FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
+			--FrameEvent(45, function(inst) inst.SoundEmitter:PlaySound("rifts5/lunar_boss/fsbig") end),
 		},
 
 		events =

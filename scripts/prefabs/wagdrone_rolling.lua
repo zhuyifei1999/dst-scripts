@@ -36,7 +36,7 @@ local function OnFlickerDirty(inst)
 			inst:AddComponent("updatelooper")
 		end
 		inst.components.updatelooper:AddOnUpdateFn(OnUpdateFlicker)
-	else
+	elseif inst.components.updatelooper then
 		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdateFlicker)
 		inst.AnimState:SetHighlightColour() --clear override add colour
 	end

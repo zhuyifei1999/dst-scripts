@@ -189,6 +189,9 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddComponent("reticule")
+	inst.components.reticule.twinstickcheckscheme = true
+	inst.components.reticule.twinstickmode = 1
+	inst.components.reticule.twinstickrange = 8
 	inst.components.reticule.targetfn = ReticuleTargetFn
 	inst.components.reticule.ease = true
 

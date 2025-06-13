@@ -892,6 +892,9 @@ local function yellow()
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
+	inst.components.reticule.twinstickcheckscheme = true
+	inst.components.reticule.twinstickmode = 1
+	inst.components.reticule.twinstickrange = 15
     inst.components.reticule.ease = true
     inst.components.reticule.ispassableatallpoints = true
 
@@ -953,6 +956,9 @@ local function orange()
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = blinkstaff_reticuletargetfn
+	inst.components.reticule.twinstickcheckscheme = true
+	inst.components.reticule.twinstickmode = 1
+	inst.components.reticule.twinstickrange = 15
     inst.components.reticule.ease = true
 
     if not TheWorld.ismastersim then
@@ -986,6 +992,9 @@ local function opal()
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
+	inst.components.reticule.twinstickcheckscheme = true
+	inst.components.reticule.twinstickmode = 1
+	inst.components.reticule.twinstickrange = 15
     inst.components.reticule.ease = true
     inst.components.reticule.ispassableatallpoints = true
 

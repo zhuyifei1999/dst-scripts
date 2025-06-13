@@ -326,6 +326,8 @@ local function EnableReticule(inst, enable)
             inst.components.reticule.reticuleprefab = "reticuleline2"
             inst.components.reticule.targetfn = ReticuleTargetFn
             inst.components.reticule.updatepositionfn = ReticuleUpdatePositionFn
+            inst.components.reticule.twinstickcheckscheme = true
+            inst.components.reticule.twinstickmode = 1
             inst.components.reticule.ease = true
             if inst.components.playercontroller ~= nil and inst == ThePlayer then
                 inst.components.playercontroller:RefreshReticule()

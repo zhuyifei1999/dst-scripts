@@ -36,6 +36,18 @@ local function KeepFacingTarget(inst, target)
 	return GetFacingTarget(inst) == target
 end
 
+local AGMAXHAT_TAGS = {"_equippable", "lunarseedmaxed"}
+local AGMAXHAT_RADIUS = 30
+local function GetWanderHome(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, y, z, AGMAXHAT_RADIUS, AGMAXHAT_TAGS)
+	for _, e in ipairs(ents) do
+		return e:GetPosition()
+	end
+
+	return inst.components.knownlocations:GetLocation("spawnpoint")
+end
+
 function GestaltGuardEvolvedBrain:OnStart()
 	local function should_dodge()
 		if not self.inst.components.combat:InCooldown() then
@@ -65,7 +77,7 @@ function GestaltGuardEvolvedBrain:OnStart()
 				),
 
 				FaceEntity(self.inst, GetFacingTarget, KeepFacingTarget),
-				Wander(self.inst, nil, nil, WANDER_TIMES),
+				Wander(self.inst, GetWanderHome, 0.33 * AGMAXHAT_RADIUS, WANDER_TIMES),
 			}, 0.1)),
 		}, 0.1)
 
