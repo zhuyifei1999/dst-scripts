@@ -490,6 +490,16 @@ function Input:GetActiveControlScheme(schemeId)
 	return self:ControllerAttached() and Profile:GetControlScheme(schemeId) or 1
 end
 
+function Input:SupportsControllerFreeAiming()
+	local scheme = self:GetActiveControlScheme(CONTROL_SCHEME_CAM_AND_INV)
+	return scheme >= 4 and scheme <= 7
+end
+
+function Input:SupportsControllerFreeCamera()
+	local scheme = self:GetActiveControlScheme(CONTROL_SCHEME_CAM_AND_INV)
+	return scheme >= 2 and scheme <= 7
+end
+
 function Input:IsPasteKey(key)
     if key == KEY_V then
         if PLATFORM == "OSX_STEAM" then

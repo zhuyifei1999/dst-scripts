@@ -722,6 +722,39 @@ spear_wathgrithr_lightning_charged_clear_fn = function(inst)
     inst:SetFxOwner(inst._fxowner)
 end
 
+berrybush_init_fn = function(inst, build_name)
+    basic_init_fn( inst, build_name, "berrybush" )
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    inst.vfx_fx = skin_fx and skin_fx[1] ~= nil and skin_fx[1]:len() > 0 and skin_fx[1] or nil
+    if inst.vfx_fx ~= nil then
+        if inst._vfx_fx_inst == nil then
+            inst._vfx_fx_inst = SpawnPrefab(inst.vfx_fx)
+            inst._vfx_fx_inst.entity:AddFollower()
+            inst._vfx_fx_inst.entity:SetParent(inst.entity)
+            inst._vfx_fx_inst.Follower:FollowSymbol(inst.GUID, "bush_berry_build", 0, 0, 0)
+        end
+    end
+end
+berrybush_clear_fn = function(inst)
+    basic_clear_fn(inst, "berrybush")
+    if inst._vfx_fx_inst ~= nil then
+        if inst._vfx_fx_inst:IsValid() then
+            inst._vfx_fx_inst:Remove()
+        end
+        inst._vfx_fx_inst = nil
+    end
+end
+
+dug_berrybush_init_fn = function(inst, build_name)
+    basic_init_fn( inst, build_name, "dug_berrybush" )
+    inst.linked_skinname = build_name
+end
+dug_berrybush_clear_fn = function(inst)
+    basic_clear_fn(inst, "dug_berrybush" )
+    inst.linked_skinname = nil
+end
+
 reskin_tool_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "reskin_tool" ) end
 reskin_tool_clear_fn = function(inst) basic_clear_fn(inst, "reskin_tool" ) end
 

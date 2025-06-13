@@ -101,6 +101,10 @@ local function OnCaptured(inst, obj, doer)
 	inst:Remove()
 end
 
+local function enable_despawn(inst)
+	inst._can_despawn = true
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -197,6 +201,8 @@ local function fn()
 
     inst:SetStateGraph("SGbrightmare_gestalt")
     inst:SetBrain(brain)
+
+	inst:DoTaskInTime(TUNING.GESTALT_TIMEOUT, enable_despawn)
 
     return inst
 end

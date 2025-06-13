@@ -1035,11 +1035,8 @@ function self:OnRobotLoseControl()
     end
 
     local focusent = self.wagboss:GetNearestPlayer(true)
-    if focusent then
-        local x, y, z = focusent.Transform:GetWorldPosition()
-        if not _map:IsPointInWagPunkArena(x, y, z) then
-            focusent = self.wagboss
-        end
+    if focusent == nil or not _map:IsPointInWagPunkArena(focusent.Transform:GetWorldPosition()) then
+        focusent = self.wagboss
     end
     local x, y, z = focusent.Transform:GetWorldPosition()
     local radius = focusent:GetPhysicsRadius(0) + 3

@@ -3315,6 +3315,10 @@ local function MakeHat(name)
 			inst.keep_closed = inst.components.container.opencount == 0 and owner.userid or nil
             inst.components.container:Close()
         end
+
+		--restore alpha because upgraded crown is transparent fx when worn
+		local r, g, b = inst.AnimState:GetMultColour()
+		inst.AnimState:SetMultColour(r, g, b, 1)
     end
 
     local function alterguardianhat_onremove(inst)

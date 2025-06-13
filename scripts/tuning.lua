@@ -4289,7 +4289,7 @@ function Tune(overrides)
 
             WALTER =
             {
-				HEALTH_PENALTY = 12,
+				HEALTH = 12,
                 HUNGER = 25,
                 SANITY = 12,
                 WETNESS = 100,
@@ -8498,6 +8498,9 @@ function Tune(overrides)
         GESTALT_EVOLVED_MAXSPAWN_HAT = 4,
         GESTALT_EVOLVED_MAXPOOL = 15,
         GESTALT_EVOLVED_ADDTOPOOLTIME = total_day_time,
+        GESTALT_TIMEOUT = 30,
+
+        WAGBOSS_DEFEATED_GESTALT_SPAWN_FACTOR = 2,
 
         ARMOR_LUNACYHAT = wilson_health * 9 * multiplayer_armor_durability_modifier,
         ARMOR_LUNACYHAT_ABSORPTION = .7 * multiplayer_armor_absorption_modifier,

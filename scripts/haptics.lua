@@ -735,6 +735,20 @@ HapticEffects =
 	--{ event="dontstarve/sanity/lunacy_stinger", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
 	--{ event="dontstarve/sanity/gonecrazy_stinger", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
 	
+	-- rifts5
+	{ event="rifts5/wagstaff_boss/footstep_front", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/wagstaff_boss/footstep_stomp", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/wagstaff_boss/missile_explode", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/wagstaff_boss/foot_land", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/footstep", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/fsbig", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/spawn_3", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/spawn_4", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/taunt_emerge", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/supernova_burst_LP", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/finale2", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/finale", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
+	{ event="rifts5/lunar_boss/slam", vibration=true, audio=true, vibration_intensity=1.0, audio_intensity=1.0 },	
 }
 
 return HapticEffects

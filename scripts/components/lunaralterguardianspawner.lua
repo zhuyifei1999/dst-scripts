@@ -105,7 +105,7 @@ function self:OnLoad(data)
 
     if data.guardiancomingpt_x and data.guardiancomingpt_z then
         self.guardiancomingpt = Vector3(data.guardiancomingpt_x, 0, data.guardiancomingpt_z)
-        self:KickOffSpawn()
+        self:KickOffSpawn(4)
     end
 end
 

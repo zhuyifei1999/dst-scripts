@@ -2149,7 +2149,7 @@ msgstr "改装"
 #. STRINGS.ACTIONS.USEITEMON.WAGDRONE_PARTS
 msgctxt "STRINGS.ACTIONS.USEITEMON.WAGDRONE_PARTS"
 msgid "Repair"
-msgstr ""
+msgstr "修理"
 
 #. STRINGS.ACTIONS.USEKLAUSSACKKEY
 msgctxt "STRINGS.ACTIONS.USEKLAUSSACKKEY"
@@ -5229,7 +5229,7 @@ msgstr "我不可能做到！"
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It's too damaged to fix."
-msgstr ""
+msgstr "损坏太严重，无法修复。"
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -23289,7 +23289,7 @@ msgstr "应该不行。"
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "Aww, it can't be fixed."
-msgstr ""
+msgstr "嗷，修不好了。"
 
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -41024,7 +41024,7 @@ msgstr "啊，那个不是……这下尴尬了。"
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It's beyond repair now."
-msgstr ""
+msgstr "现在修复无望了。"
 
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -58529,7 +58529,7 @@ msgstr "那样不行。"
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It is not salvageable."
-msgstr ""
+msgstr "神仙难救啊。"
 
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -75189,7 +75189,7 @@ msgstr "做不到。"
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "'Tis dead."
-msgstr ""
+msgstr "阵亡。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -92649,7 +92649,7 @@ msgstr "看来不行。"
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "There's no fixing it."
-msgstr ""
+msgstr "没法修了。"
 
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -110059,7 +110059,7 @@ msgstr "我们很确定它不是用来做这个的。"
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "We can't fix it."
-msgstr ""
+msgstr "我们修不好它。"
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -127414,7 +127414,7 @@ msgstr "不行。"
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It cannot be brought back."
-msgstr ""
+msgstr "它再也回不去了。"
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -144904,7 +144904,7 @@ msgstr "那样不行。"
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It is simply irreparable."
-msgstr ""
+msgstr "根本无法修复。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -162254,7 +162254,7 @@ msgstr "好吧……那样行不通的。"
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "Can't fix trash."
-msgstr ""
+msgstr "垃圾有什么好修。"
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -179669,7 +179669,7 @@ msgstr "不行，应该不能那样。"
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "Ain't fixable."
-msgstr ""
+msgstr "没法修。"
 
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -197144,7 +197144,7 @@ msgstr "真笨！不管用的！"
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It cannot be repaired... sigh."
-msgstr ""
+msgstr "修不好了……唉。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -214534,7 +214534,7 @@ msgstr "去找别的动物试试，诶？"
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It's beyond repair."
-msgstr ""
+msgstr "别指望能修好。"
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -231899,7 +231899,7 @@ msgstr "坏了"
 #. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "Bye robot friend"
-msgstr ""
+msgstr "再见，机器人朋友"
 
 #. STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -239639,7 +239639,7 @@ msgstr "噗噜，噗噜，噗噜"
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.LUNAR_SEED
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.LUNAR_SEED"
 msgid "Love Baby Night Ball! Love!"
-msgstr ""
+msgstr "夜晚的球的宝宝真可爱！"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.LUREPLANT
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.LUREPLANT"
@@ -246054,7 +246054,7 @@ msgstr "更大的地"
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WAGPUNK_LEVER
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WAGPUNK_LEVER"
 msgid "Danger?"
-msgstr ""
+msgstr "有危险？"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WAGPUNK_WORKSTATION
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WAGPUNK_WORKSTATION"
@@ -249309,7 +249309,7 @@ msgstr "不行，哼！"
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "It's had its fun, and now it's done."
-msgstr ""
+msgstr "它玩够了，现在该结束了。"
 
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -266859,7 +266859,7 @@ msgstr "不行！"
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "Can't fix? Fine, florpt."
-msgstr ""
+msgstr "修不好？行吧，浮浪噗的。"
 
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -284359,7 +284359,7 @@ msgstr "错误：无效目标"
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.CANNOT_FIX_DRONE"
 msgid "REST IN PIECES"
-msgstr ""
+msgstr "就在碎片中安息吧"
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.NOT_MINE
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.USEITEMON.NOT_MINE"
@@ -303799,7 +303799,7 @@ msgstr "全都错了！"
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.1
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.1"
 msgid "Oh dear, that junk collector tricked us with a bad map."
-msgstr ""
+msgstr "哎呀，那个收垃圾的用假地图骗了我们。"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.2
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.2"
@@ -303809,7 +303809,7 @@ msgstr "能帮我找个更好的住处吗？"
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.3
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.HIGH.3"
 msgid "I’ve got a little something that might help you help me!"
-msgstr ""
+msgstr "我这儿有点东西，或许能帮到你也帮到我！"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.1
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.1"
@@ -303819,7 +303819,7 @@ msgstr "呣！你骗我！这个岛糟透了！"
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.2
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.2"
 msgid "You'd better fix this..."
-msgstr ""
+msgstr "你最好解决一下这个问题……"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.3
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.3"
@@ -303829,17 +303829,17 @@ msgstr "……不然你和那个收垃圾的没什么两样！"
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.4
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.LOW.4"
 msgid "I’ve got something you can use - if you actually plan on helping me."
-msgstr ""
+msgstr "我这儿有你能用的东西——前提是你真打算帮我。"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.1
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.1"
 msgid "Ack! That map was no good."
-msgstr ""
+msgstr "啊！那张地图没用。"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.2
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.2"
 msgid "Maybe that junk collector tricked you too."
-msgstr ""
+msgstr "也许那个收垃圾的也骗了你。"
 
 #. STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.3
 msgctxt "STRINGS.HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT.MED.3"
@@ -304284,37 +304284,37 @@ msgstr "他一看便知。"
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_BAD.1
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_BAD.1"
 msgid "This map is no good to me."
-msgstr ""
+msgstr "这地图对我没用。"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_BAD.2
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_BAD.2"
 msgid "It doesn't take me anywhere special."
-msgstr ""
+msgstr "我靠这个去不了什么好地方。"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.1
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.1"
 msgid "The island on this map seems nice..."
-msgstr ""
+msgstr "这张地图上的岛屿看起来不错……"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.2
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.2"
 msgid "and it will take me away from the junk collector."
-msgstr ""
+msgstr "而且能让我远离那个收垃圾的。"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.3
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.3"
 msgid "Thank you, I think I'll go."
-msgstr ""
+msgstr "谢谢你，我会去的。"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.4
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.4"
 msgid "Perhaps it will even bring me closer to my sweetie..."
-msgstr ""
+msgstr "也许它还能让我离我的心上人更近……"
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.5
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.5"
 msgid "if he's still out there."
-msgstr ""
+msgstr "如果他还在外面的话。"
 
 #. STRINGS.HERMITCRAB_GOT_PEARL.1
 msgctxt "STRINGS.HERMITCRAB_GOT_PEARL.1"
@@ -331534,7 +331534,7 @@ msgstr "你从头到尾看起来都很安逸。做个美梦，昏昏欲睡的冒
 #. STRINGS.SET_DESCRIPTIONS.emote_tiphat
 msgctxt "STRINGS.SET_DESCRIPTIONS.emote_tiphat"
 msgid "Much obliged."
-msgstr ""
+msgstr "非常感激。"
 
 #. STRINGS.SET_DESCRIPTIONS.emote_yawn
 msgctxt "STRINGS.SET_DESCRIPTIONS.emote_yawn"
@@ -331569,7 +331569,7 @@ msgstr "昏昏欲睡套装"
 #. STRINGS.SET_NAMES.emote_tiphat
 msgctxt "STRINGS.SET_NAMES.emote_tiphat"
 msgid "Appreciative Nodding Ensemble"
-msgstr ""
+msgstr "致谢点头套装"
 
 #. STRINGS.SET_NAMES.emote_yawn
 msgctxt "STRINGS.SET_NAMES.emote_yawn"
@@ -338191,6 +338191,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.bernie_dog_shadow_build"
 msgid "This fiery little pup just melts Willow's heart."
 msgstr "这只火热的小狗融化掉了薇洛的心。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.berrybush_cawnival
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_cawnival"
+msgid "Sparkling shrubbery is the best choice for growing berries."
+msgstr "闪闪发光的灌木浆果是种植浆果的最佳选择。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.berrybush_mystical
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_mystical"
+msgid "An enchanting bush for growing berries on a moonlit night."
+msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure"
 msgid "This cage's bold design will impress even the bird it imprisons."
@@ -341331,6 +341341,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder"
 msgid "n/a"
 msgstr "n/a"
 
+#. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_cawnival
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_cawnival"
+msgid "Sparkling shrubbery is the best choice for growing berries."
+msgstr "闪闪发光的灌木浆果是种植浆果的最佳选择。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_mystical
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_mystical"
+msgid "An enchanting bush for growing berries on a moonlit night."
+msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy"
 msgid "The stone reads: \"RIP V. Winkle.\""
@@ -341699,7 +341719,7 @@ msgstr "输入 /swoon 来做出昏倒动作。"
 #. STRINGS.SKIN_DESCRIPTIONS.emote_tiphat
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_tiphat"
 msgid "Type /tiphat while wearing a hat to tip it."
-msgstr ""
+msgstr "戴着帽子时输入/tiphat可以做出脱帽礼表情。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.emote_yawn
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_yawn"
@@ -356291,6 +356311,16 @@ msgctxt "STRINGS.SKIN_NAMES.bernie_dog_shadow_build"
 msgid "SPARKY"
 msgstr "小火花"
 
+#. STRINGS.SKIN_NAMES.berrybush_cawnival
+msgctxt "STRINGS.SKIN_NAMES.berrybush_cawnival"
+msgid "Cawnival Shrub"
+msgstr "鸦年华灌木丛"
+
+#. STRINGS.SKIN_NAMES.berrybush_mystical
+msgctxt "STRINGS.SKIN_NAMES.berrybush_mystical"
+msgid "Moonshrub"
+msgstr "月亮灌木"
+
 #. STRINGS.SKIN_NAMES.birdcage_adventure
 msgctxt "STRINGS.SKIN_NAMES.birdcage_adventure"
 msgid "Gilded Birdcage"
@@ -359431,6 +359461,16 @@ msgctxt "STRINGS.SKIN_NAMES.dragonling_wyvern_builder"
 msgid "n/a"
 msgstr "n/a"
 
+#. STRINGS.SKIN_NAMES.dug_berrybush_cawnival
+msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_cawnival"
+msgid "Cawnival Shrub"
+msgstr "鸦年华灌木丛"
+
+#. STRINGS.SKIN_NAMES.dug_berrybush_mystical
+msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_mystical"
+msgid "Moonshrub"
+msgstr "月亮灌木"
+
 #. STRINGS.SKIN_NAMES.dug_gravestone_fantasy
 msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy"
 msgid "Sleepy Headstone"
@@ -359799,7 +359839,7 @@ msgstr "着迷表情"
 #. STRINGS.SKIN_NAMES.emote_tiphat
 msgctxt "STRINGS.SKIN_NAMES.emote_tiphat"
 msgid "Tip Hat Emote"
-msgstr ""
+msgstr "脱帽礼表情"
 
 #. STRINGS.SKIN_NAMES.emote_yawn
 msgctxt "STRINGS.SKIN_NAMES.emote_yawn"
@@ -381079,17 +381119,17 @@ msgstr "投票"
 #. STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC
 msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC"
 msgid "Thanks for playing the beta!\nBoss final phase and rewards coming soon..."
-msgstr ""
+msgstr "感谢参与测试版！\n头目最终阶段和奖励即将推出……"
 
 #. STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC_NEW
 msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS5_BASIC_NEW"
 msgid "Thanks for playing the beta!"
-msgstr ""
+msgstr "感谢参与测试版！"
 
 #. STRINGS.TEMP_BETA_MSG.RIFTS5_KILLTIME_FMT
 msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS5_KILLTIME_FMT"
 msgid "You defeated {name} in {time}s."
-msgstr ""
+msgstr "你在{time}秒内击败了{name}。"
 
 #. STRINGS.THANKS_POPUP.ANRARG
 msgctxt "STRINGS.THANKS_POPUP.ANRARG"
@@ -385124,7 +385164,7 @@ msgstr "（滑杆0）"
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.2
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.2"
 msgid "(DPad %d Up)"
-msgstr "（DPad %d上）"
+msgstr "（十字键 %d上）"
 
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.20
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.20"
@@ -385139,17 +385179,17 @@ msgstr "（滑杆1）"
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.3
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.3"
 msgid "(DPad %d Down)"
-msgstr "（DPad %d下）"
+msgstr "（十字键 %d下）"
 
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.4
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.4"
 msgid "(DPad %d Left)"
-msgstr "（DPad %d左）"
+msgstr "（十字键 %d左）"
 
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.5
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.5"
 msgid "(DPad %d Right)"
-msgstr "（DPad %d右）"
+msgstr "（十字键 %d右）"
 
 #. STRINGS.UI.CONTROLSSCREEN.INPUTS.3.6
 msgctxt "STRINGS.UI.CONTROLSSCREEN.INPUTS.3.6"
@@ -389679,7 +389719,7 @@ msgstr "昏厥"
 #. STRINGS.UI.EMOTES.TIPHAT
 msgctxt "STRINGS.UI.EMOTES.TIPHAT"
 msgid "Tip Hat"
-msgstr ""
+msgstr "脱帽礼"
 
 #. STRINGS.UI.EMOTES.TOAST
 msgctxt "STRINGS.UI.EMOTES.TOAST"
@@ -403809,12 +403849,12 @@ msgstr "哎。交给你处理呗？"
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.1
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.1"
 msgid "...Gaaah!"
-msgstr ""
+msgstr "……呃啊！"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.2
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.2"
 msgid "What's happening to me?"
-msgstr ""
+msgstr "我这是怎么了？"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.3
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.3"
@@ -403824,42 +403864,42 @@ msgstr "不可能！"
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.4
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONATTACKSWAGSTAFF.4"
 msgid "I don't under..."
-msgstr ""
+msgstr "我不明……"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN.1
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN.1"
 msgid "Very good! The entity is in a weakened state."
-msgstr ""
+msgstr "很好！那个实体现在处于虚弱状态。"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN.2
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN.2"
 msgid "Now you just need to..."
-msgstr ""
+msgstr "趁其病，要其……"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.1
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.1"
 msgid "What a waste of my W.A.R.B.O.T.,"
-msgstr ""
+msgstr "真是浪费了我的瓦器人，"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.2
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.2"
 msgid "but the entity has taken on a fascinating new hybrid form."
-msgstr ""
+msgstr "不过这个实体倒是进入了一个令人着迷的新混合形态。"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.3
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.3"
 msgid "I suspect uncontained exposure will accelerate entropy."
-msgstr ""
+msgstr "我担心不受控制的暴露会加速熵增。"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.4
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.4"
 msgid "It is not ideal."
-msgstr ""
+msgstr "不理想啊。"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.5
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL.5"
 msgid "Subdue the entity posthaste."
-msgstr ""
+msgstr "立即收服这个实体。"
 
 #. STRINGS.WAGSTAFF_WAGPUNK_ARENA_TURF.1
 msgctxt "STRINGS.WAGSTAFF_WAGPUNK_ARENA_TURF.1"

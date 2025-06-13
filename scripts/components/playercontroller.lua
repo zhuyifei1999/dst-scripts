@@ -4153,8 +4153,7 @@ function PlayerController:DoCameraControl()
     local time = GetStaticTime()
 	local invert_rotation = Profile:GetInvertCameraRotation()
 
-	local cameracontrolscheme = TheInput:GetActiveControlScheme(CONTROL_SCHEME_CAM_AND_INV)
-	if cameracontrolscheme >= 2 and cameracontrolscheme <= 7 then
+	if TheInput:SupportsControllerFreeCamera() then
 		local xdir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_CAMERA_ROTATE_RIGHT) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_CAMERA_ROTATE_LEFT)
 		local ydir = TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_CAMERA_ZOOM_IN) - TheInput:GetAnalogControlValue(VIRTUAL_CONTROL_CAMERA_ZOOM_OUT)
 		local absxdir = math.abs(xdir)

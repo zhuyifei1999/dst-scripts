@@ -184,11 +184,15 @@ local states=
         end,
 
         ontimeout = function(inst)
-			inst.sg.statemem.dest = inst:FindRelocatePoint()
-			if inst.sg.statemem.dest ~= nil then
-				inst.sg:GoToState("emerge")
-			else
+			if inst._can_despawn then
 				inst:Remove()
+			else
+				inst.sg.statemem.dest = inst:FindRelocatePoint()
+				if inst.sg.statemem.dest ~= nil then
+					inst.sg:GoToState("emerge")
+				else
+					inst:Remove()
+				end
 			end
 		end,
 
