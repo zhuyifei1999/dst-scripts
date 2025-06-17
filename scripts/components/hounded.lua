@@ -612,7 +612,7 @@ local function CheckForLocationImmunity(player)
 	end
 end
 
-local function CheckForWaterImunityAllPlayers()
+local function CheckForLocationImmunityAllPlayers()
 	for i, v in ipairs(_activeplayers) do
 		-- Players in _delayedplayerspawninfo are handled separately, don't check it for them.
 		if not _delayedplayerspawninfo[v] then
