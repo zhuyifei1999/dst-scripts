@@ -485,8 +485,8 @@ function YOTB_Stager:Start_fail(result)
 	end
 
 	local task = self.inst:DoTaskInTime(4, function()
-		--self.inst:resetworkable()
 		self.inst:PushEvent("trader_leaves")
+        self.inst.components.workable:SetWorkable(true)
 	end)
 
 	table.insert(self.tasks,task)

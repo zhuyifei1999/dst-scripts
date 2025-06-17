@@ -380,9 +380,21 @@ local function filledfn1()
 	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
 
-    inst:AddComponent("deployable")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
-    inst.components.deployable.ondeploy = on_deploy
+	if TheWorld.components.wagboss_tracker then
+		if TheWorld.components.wagboss_tracker:IsWagbossDefeated() then
+			inst:AddComponent("deployable")
+			inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+			inst.components.deployable.ondeploy = on_deploy
+		else
+			local function _wagbossdefeated()
+				inst:RemoveEventCallback("wagboss_defeated", _wagbossdefeated, TheWorld)
+				inst:AddComponent("deployable")
+				inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+				inst.components.deployable.ondeploy = on_deploy
+			end
+			inst:ListenForEvent("wagboss_defeated", _wagbossdefeated, TheWorld)
+		end
+	end
 
 	MakeHauntableLaunch(inst)
 
@@ -446,9 +458,21 @@ local function filledfn2()
 	inst:ListenForEvent("onputininventory", Filled_topocket)
 	inst:ListenForEvent("ondropped", Filled_toground)
 
-    inst:AddComponent("deployable")
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
-    inst.components.deployable.ondeploy = on_deploy
+	if TheWorld.components.wagboss_tracker then
+		if TheWorld.components.wagboss_tracker:IsWagbossDefeated() then
+			inst:AddComponent("deployable")
+			inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+			inst.components.deployable.ondeploy = on_deploy
+		else
+			local function _wagbossdefeated()
+				inst:RemoveEventCallback("wagboss_defeated", _wagbossdefeated, TheWorld)
+				inst:AddComponent("deployable")
+				inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+				inst.components.deployable.ondeploy = on_deploy
+			end
+			inst:ListenForEvent("wagboss_defeated", _wagbossdefeated, TheWorld)
+		end
+	end
 
 	MakeHauntableLaunch(inst)
 

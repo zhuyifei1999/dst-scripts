@@ -48,7 +48,7 @@ end
 local DRONE_TAGS = { "wagdrone_rolling" }
 local DRONE_NO_TAGS = { "INLIMBO", "NOCLICK", "HAMMER_workable", "usesdepleted" }
 local WORK_TAGS = { "CHOP_workable", "MINE_workable" }
-local WORK_NO_TAGS = { "INLIMBO", "NOCLICK", }
+local WORK_NO_TAGS = { "INLIMBO", "NOCLICK", "waxedplant", "event_trigger" }
 
 function FriendlyTargeting(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -71,7 +71,7 @@ function FriendlyTargeting(inst)
 		if closest == nil then
 			for i, v in ipairs(TheSim:FindEntities(pt.x, pt.y, pt.z, r, DRONE_TAGS, DRONE_NO_TAGS)) do
 				if v ~= inst and v.entity:IsVisible() and
-					not (v.components.health and v.components.health:IsDead()) and
+					not v.components.health:IsDead() and
 					not v.sg:HasAnyStateTag("stationary", "broken", "off")
 				then
 					local dsq = v:GetDistanceSqToPoint(x, y, z)
@@ -95,34 +95,60 @@ function FriendlyTargeting(inst)
 	end
 end
 
+local function ValidateExistingTarget(target)
+	if target:IsInLimbo() or not (target:IsValid() and target.entity:IsVisible()) or
+		(target.components.health and target.components.health:IsDead())
+	then
+		return false
+	elseif target:HasTag("wagdrone_rolling") then
+		return not target.sg:HasAnyStateTag("stationary", "broken", "off")
+			and target.components.workable == nil
+			and not target:HasAnyTag("NOCLICK", "usesdepleted")
+	elseif target.components.workable and target.components.workable:CanBeWorked() then
+		local work_action = target.components.workable:GetWorkAction()
+		return work_action == ACTIONS.CHOP or work_action == ACTIONS.MINE
+			and not target:HasTag("NOCLICK")
+	end
+	return false
+end
+
 function WagdroneRollingBrain:UpdateTargetDest()
 	local target
 	local x, y, z = self.inst.Transform:GetWorldPosition()
 	local pt = GetDeployPoint(self.inst)
-	local ignorerange
+	local ignorerange, validated
 	if pt then
 		local r = TUNING.WAGDRONE_ROLLING_WORK_RADIUS
-		target =
-			EntityScript.is_instance(self.target) and
-			self.target:IsValid() and
-			self.target:GetDistanceSqToPoint(x, y, z) < r * r and
-			self.target or
-			FriendlyTargeting(self.inst) or
-			(distsq(pt.x, pt.z, x, z) > 1 and pt) or
-			nil
-		if target == nil then
-			self:ResetTargets()
-			return nil
+		if EntityScript.is_instance(self.target) then
+			if not ValidateExistingTarget(self.target) or self.target:GetDistanceSqToPoint(x, y, z) >= r * r then
+				self:ResetTargets()
+				return nil
+			end
+			target = self.target
+		else
+			target =
+				FriendlyTargeting(self.inst) or
+				(distsq(pt.x, pt.z, x, z) > 1 and pt) or
+				nil
+			if target == nil then
+				self:ResetTargets()
+				return nil
+			end
 		end
 		ignorerange = true
+		validated = true
 	else
-		target = self.inst.dest or self.target or FriendlyTargeting(self.inst)
+		target = self.inst.dest or self.target
+		if target == nil then
+			target = FriendlyTargeting(self.inst)
+			validated = true
+		end
 	end
 	if target then
 		local x1, y1, z1
 		if not target:is_a(EntityScript) then
 			x1, y1, z1 = target:Get()
-		elseif target:IsValid() then
+		elseif validated or ValidateExistingTarget(target) then
 			x1, y1, z1 = target.Transform:GetWorldPosition()
 		else
 			self:ResetTargets()

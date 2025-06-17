@@ -44,12 +44,16 @@ local function UpdateFlyers(inst, dt)
 	inst.components.commander:CollectSoldiers(flyers, "wagdrone_flying")
 
 	local delay = inst.flyer_atk_delay
-	if delay > dt then
-		delay = delay - dt
-	else
-		for i, v in ipairs(flyers) do
-			v:PushEvent("doattack")
+	if inst.engaged then
+		if delay > dt then
+			delay = delay - dt
+		else
+			for i, v in ipairs(flyers) do
+				v:PushEvent("doattack")
+			end
+			delay = 4 + math.random() * 2
 		end
+	elseif delay < 4 then
 		delay = 4 + math.random() * 2
 	end
 	inst.flyer_atk_delay = delay
@@ -106,18 +110,30 @@ local function UpdateRollers(inst, dt)
 	inst.components.commander:CollectSoldiers(rollers, "wagdrone_rolling")
 
 	local delay = inst.roller_xform_delay
-	if #rollers > 1 then
-		if delay > dt then
-			delay = delay - dt
-		else
-			inst.roller_stationary = not inst.roller_stationary
-			delay = inst.roller_stationary and 14 + math.random() * 2 or 19 + math.random() * 5
-			local ev = inst.roller_stationary and "transform_to_stationary" or "transform_to_mobile"
+	if inst.engaged then
+		if #rollers > 1 then
+			if delay > dt then
+				delay = delay - dt
+			else
+				inst.roller_stationary = not inst.roller_stationary
+				delay = inst.roller_stationary and 14 + math.random() * 2 or 19 + math.random() * 5
+				local ev = inst.roller_stationary and "transform_to_stationary" or "transform_to_mobile"
+				for i, v in ipairs(rollers) do
+					v:PushEvent(ev)
+				end
+			end
+			inst.roller_xform_delay = delay
+		end
+	else
+		if delay < 14 then
+			delay = 14 + math.random() * 2
+		end
+		if inst.roller_stationary then
+			inst.roller_stationary = false
 			for i, v in ipairs(rollers) do
-				v:PushEvent(ev)
+				v:PushEvent("transform_to_mobile")
 			end
 		end
-		inst.roller_xform_delay = delay
 	end
 
 	local busy = true
@@ -1453,6 +1469,29 @@ local function SetMusicLevel(inst, level)
 	end
 end
 
+--------------------------------------------------------------------------
+
+local function OnCameraFocusDirty(inst)
+	if inst.camerafocus:value() then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 6, 22, 4)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function EnableCameraFocus(inst, enable)
+	if enable ~= inst.camerafocus:value() then
+		inst.camerafocus:set(enable)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			OnCameraFocusDirty(inst)
+		end
+	end
+end
+
+--------------------------------------------------------------------------
+
 local function DisplayNameFn(inst)
 	return (inst.AnimState:IsCurrentAnimation("concealed_idle") and STRINGS.NAMES.WAGBOSS_ROBOT_SECRET)
 		or (inst:HasTag("hostile") and STRINGS.NAMES.WAGBOSS_ROBOT_POSSESSED)
@@ -1537,6 +1576,7 @@ local function fn()
 	inst.showstompfx = net_bool(inst.GUID, "wagboss_robot.showstompfx", "showstompfxdirty")
 	inst.showbackfx = net_bool(inst.GUID, "wagboss_robot.showbackfx", "showbackfxdirty")
 	inst.music = net_tinybyte(inst.GUID, "wagboss_robot.music", "musicdirty")
+	inst.camerafocus = net_bool(inst.GUID, "wagboss_robot.camerafocus", "camerafocusdirty")
 	inst.isobstacle = net_bool(inst.GUID, "wagboss_robot.isobstacle", "isobstacledirty")
 	inst.showcrown = net_bool(inst.GUID, "wagboss_robot.showcrown", "showcrowndirty")
 	inst.isobstacle:set(true)
@@ -1569,6 +1609,7 @@ local function fn()
 		inst:ListenForEvent("showbackfxdirty", OnShowBackFx_Client)
 		inst:ListenForEvent("showcrowndirty", OnShowCrownDirty)
 		inst:ListenForEvent("musicdirty", OnMusicDirty)
+		inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
 
 		return inst
 	end
@@ -1618,6 +1659,7 @@ local function fn()
 	inst.BreakGlass = BreakGlass
 	inst.MakeObstacle = MakeObstacle
 	inst.SetMusicLevel = SetMusicLevel
+	inst.EnableCameraFocus = EnableCameraFocus
 	inst.AddAlterSymbols = AddAlterSymbols
 	inst.ClearAlterSymbols = ClearAlterSymbols
     inst.AddTrader = AddTrader

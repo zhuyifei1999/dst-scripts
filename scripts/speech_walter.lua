@@ -5744,7 +5744,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "I think there's a badge for helping the elderly move. But we'll do it just 'cuz, right Wobers?",
 
-        WANDERINGTRADER = "He's hiding in plain sight!",
+        WANDERINGTRADER =
+        {
+            GENERIC = "He was hiding in plain sight!",
+            DISGUISED = "You're right, Woby. That's an odd one.",
+        },
 
         GESTALT_GUARD_EVOLVED = "Wobes! I think we're the unfinished business for these ghosts!",
         FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",

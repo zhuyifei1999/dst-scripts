@@ -941,11 +941,11 @@ function self:ShouldWagstaffAcceptItem(inst, item, giver, count)
             end
         end
         if hasrolling ~= hasflying and spotsneeded == 1 then
-            if hasflying and item.prefab == "gestalt_cage_filled1" then
+            if hasflying and item.prefab == "gestalt_cage_filled2" then
                 inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
                 return false
             end
-            if hasrolling and item.prefab == "gestalt_cage_filled2" then
+            if hasrolling and item.prefab == "gestalt_cage_filled1" then
                 inst.trader_chatterreason = "WAGSTAFF_GOT_GESTALTCAGE_NOLONGERNEEDED"
                 return false
             end

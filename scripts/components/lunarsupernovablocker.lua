@@ -1,4 +1,5 @@
 local easing = require("easing")
+local WagBossUtil = require("prefabs/wagboss_util")
 
 local LunarSupernovaBlocker = Class(function(self, inst)
 	self.inst = inst
@@ -78,23 +79,21 @@ function LunarSupernovaBlocker:UpdateFlicker()
 end
 
 function LunarSupernovaBlocker:OnUpdate(dt)
-	local map = TheWorld.Map
-	local x, y, z = self.inst.Transform:GetWorldPosition()
-	if not map:IsPointInWagPunkArena(x, y, z) then
-		for k in pairs(self.sources) do
-			self:RemoveSource(k)
-		end
-		return
-	end
-
 	self:UpdateFlicker()
+
+	local map = TheWorld.Map
+	local x, _, z = self.inst.Transform:GetWorldPosition()
+	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z)
 
 	for k, v in pairs(self.sources) do
 		if not (k:IsValid() and (k.sg and k.sg:HasStateTag("supernovaburning"))) then
 			self:RemoveSource(k)
 		else
-			local x1, y1, z1 = k.Transform:GetWorldPosition()
-			if not map:IsPointInWagPunkArena(x1, y1, z1) then
+			local x1, _, z1 = k.Transform:GetWorldPosition()
+			if inarena and not map:IsPointInWagPunkArena(x1, 0, z1) then
+				self:RemoveSource(k)
+			elseif not inarena and distsq(x, z, x1, z1) > WagBossUtil.SupernovaNoArenaRangeSq then
+				--NOTE: >, not >=, since we're just going with FindEntities range
 				self:RemoveSource(k)
 			elseif x == x1 and z == z1 then
 				v:Hide()

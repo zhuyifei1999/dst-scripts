@@ -5703,7 +5703,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "Wonder where to move that crab to.",
 
-        WANDERINGTRADER = "Don't worry, Luce. I'd never trade you.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "Don't worry, Luce. I could never trade you.",
+            DISGUISED = "It looks unnatural.",
+        },
 
         GESTALT_GUARD_EVOLVED = "They are not happy with us, Lucy.",
         FLOTATIONCUSHION = "There's room for both of us, Luce.",

@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "Picky crab wants the perfect spot.",
 
-        WANDERINGTRADER = "I thought I smelled something in the air. What are you peddling today?",
+        WANDERINGTRADER =
+        {
+            GENERIC = "I thought I smelled something in the air. What are you peddling today?",
+            DISGUISED = "It stinks more than usual.",
+        },
 
         GESTALT_GUARD_EVOLVED = "Oh, bygones be bygones and such.",
         FLOTATIONCUSHION = "Where does it say, \"women and children first\"?",

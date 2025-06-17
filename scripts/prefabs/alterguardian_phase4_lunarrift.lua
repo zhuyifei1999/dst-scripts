@@ -461,6 +461,7 @@ local function InitCheckSpawnBuild(inst)
 		inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 
 		inst:StartDomainExpansion()
+		inst:SetMusicLevel(3)
 	end
 end
 
@@ -472,10 +473,11 @@ local PHASES =
 		hp = 1,
 		fn = function(inst)
 			inst.dashcombo = 1
-			inst.dashcount = inst.dashcount or 0
+			inst.dashcount = 0
 			inst.dashrnd = false
 			inst.dashcenter = false
 			inst.slamcombo = nil
+			inst.slamcount = nil
 			inst.slamrnd = false
 			inst.cansupernova = false
 		end,
@@ -632,7 +634,7 @@ local function RetargetFn(inst)
 	assert(next(inst._temptbl1) == nil)
 	local nearplayers = inst._temptbl1
 	for k in pairs(inst.components.grouptargeter:GetTargets()) do
-		local range = inrange and TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_AGGRO_DIST
+		local range = inrange and TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_ATTACK_RANGE + k:GetPhysicsRadius(0) or inst.aggrodist
 		if k:GetDistanceSqToPoint(x, y, z) < range * range then
 			table.insert(nearplayers, k)
 		end
@@ -709,9 +711,13 @@ local function SetEngaged(inst, engaged, delay)
 			inst.engaged = engaged
 			ResetCombo(inst)
 
-			if not engaged then
+			if engaged then
+				inst.aggrodist = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_AGGRO_DIST
+			else
 				inst:PushEvent("resetboss")
 				inst.components.health:SetPercent(1)
+				PHASES[1].fn(inst)
+				inst.aggrodist = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_SHORT_AGGRO_DIST
 			end
 		end
 	end
@@ -735,6 +741,7 @@ local function OnLoad(inst, data)--, ents)
 	if inst.inittask then
 		inst.inittask:Cancel()
 		InitCheckSpawnBuild(inst)
+		inst.aggrodist = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_SHORT_AGGRO_DIST
 	end
 	local healthpct = inst.components.health:GetPercent()
 	for i = #PHASES, 2, -1 do
@@ -755,7 +762,7 @@ end
 
 local function OnEntitySleep(inst)
 	inst:StopDomainExpansion(true)
-	if inst.sg:HasStateTag("jumping") then
+	if inst.sg:HasAnyStateTag("jumping", "attack") then
 		inst.sg:GoToState("idle")
 	end
 end
@@ -766,7 +773,24 @@ local function OnEntityWake(inst)
 	end
 end
 
+local function PushSupernovaMix(inst, enable)
+	if enable then
+		if not inst._supernovamix then
+			inst._supernovamix = true
+			TheMixer:PushMix("supernova_charging")
+		end
+	elseif inst._supernovamix then
+		inst._supernovamix = nil
+		TheMixer:PopMix("supernova_charging")
+	end
+end
+
+local function OnRemoveEntity_Client(inst)
+	PushSupernovaMix(inst, false)
+end
+
 local function OnRemoveEntity(inst)
+	OnRemoveEntity_Client(inst)
 	inst:StopDomainExpansion()
 	if inst.persists and TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
 		TheWorld:PushEvent("ms_wagboss_alter_defeated", inst)
@@ -796,6 +820,7 @@ end
 local function PushMusic(inst)
 	if ThePlayer == nil then
 		inst._playingmusic = false
+		PushSupernovaMix(inst, false)
 	else
 		local map = TheWorld.Map
 		local x, _, z = inst.Transform:GetWorldPosition()
@@ -815,6 +840,7 @@ local function PushMusic(inst)
 				inst._playingmusic = false
 			end
 		end
+		PushSupernovaMix(inst, inst._playingmusic and inst:HasTag("supernova"))
 	end
 end
 
@@ -831,13 +857,37 @@ local function OnMusicDirty(inst)
 	end
 end
 
-local function SetMusicLevel(inst, level)
+local function SetMusicLevel(inst, level, forced)
+	if forced then
+		inst.music:set_local(7) --force dirty
+	end
 	if level ~= inst.music:value() then
 		inst.music:set(level)
 
 		--Dedicated server does not need to trigger music
 		if not TheNet:IsDedicated() then
 			OnMusicDirty(inst)
+		end
+	end
+end
+
+--------------------------------------------------------------------------
+
+local function OnCameraFocusDirty(inst)
+	if inst.camerafocus:value() then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 6, 22, 4)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function EnableCameraFocus(inst, enable)
+	if enable ~= inst.camerafocus:value() then
+		inst.camerafocus:set(enable)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			OnCameraFocusDirty(inst)
 		end
 	end
 end
@@ -873,7 +923,6 @@ local function fn()
 	inst:AddTag("epic")
 	inst:AddTag("hostile")
 	inst:AddTag("largecreature")
-	inst:AddTag("mech")
 	inst:AddTag("monster")
 	inst:AddTag("noepicmusic")
 	inst:AddTag("scarytoprey")
@@ -888,6 +937,7 @@ local function fn()
 	inst.showdashfx = net_bool(inst.GUID, "alterguardian_phase4_lunarrift.showdashfx", "showdashfxdirty")
 	inst.facings = net_tinybyte(inst.GUID, "alterguardian_phase4_lunarrift.facings", "facingsdirty")
 	inst.music = net_tinybyte(inst.GUID, "alterguardian_phase4_lunarrift.music", "musicdirty")
+	inst.camerafocus = net_bool(inst.GUID, "alterguardian_phase4_lunarrift.camerafocus", "camerafocusdirty")
 
 	--Dedicated server does not need to spawn the local fx
 	if not TheNet:IsDedicated() then
@@ -933,6 +983,9 @@ local function fn()
 		inst:ListenForEvent("facingsdirty", OnFacings)
 		inst:ListenForEvent("showdashfxdirty", OnShowDashFx)
 		inst:ListenForEvent("musicdirty", OnMusicDirty)
+		inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+
+		inst.OnRemoveEntity = OnRemoveEntity_Client
 
 		return inst
 	end
@@ -1004,6 +1057,7 @@ local function fn()
 
 	inst._engagetask = nil
 	inst.engaged = false
+	inst.aggrodist = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_AGGRO_DIST
 
 	inst:SetStateGraph("SGalterguardian_phase4_lunarrift")
 	inst:SetBrain(brain)
@@ -1027,6 +1081,7 @@ local function fn()
 	inst.ResetCombo = ResetCombo
 	inst.IsSlamNext = IsSlamNext
 	inst.SetMusicLevel = SetMusicLevel
+	inst.EnableCameraFocus = EnableCameraFocus
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 	inst.OnEntitySleep = OnEntitySleep

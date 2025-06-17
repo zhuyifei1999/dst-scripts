@@ -52,7 +52,7 @@ local events =
 			if not inst.sg:HasStateTag("broken") then
 				inst.sg:GoToState(inst.sg:HasStateTag("stationary") and "stationary_broken" or "broken")
 			end
-		elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
+		elseif not inst.sg:HasAnyStateTag("busy", "nointerrupt") or inst.sg:HasStateTag("caninterrupt") then
 			inst.sg:GoToState(inst.sg:HasStateTag("stationary") and "stationary_hit" or "hit")
 		end
 	end),
@@ -146,20 +146,36 @@ local events =
 
 local SPIN_RADIUS = 1
 local SPIN_RANGE_PADDING = 3
-local SPIN_TAGS = { "_combat", "pickable", "CHOP_workable", "MINE_workable", "HAMMER_workable" }
-local SPIN_NO_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "NOCLICK", "wagboss" }
-local SPIN_NO_TAGS_FRIENDLY = { "INLIMBO", "flight", "invisible", "noattack", "NOCLICK", "wagboss", "player", "companion" }
+local SPIN_WORK_ACTIONS =
+{
+	CHOP = true,
+	HAMMER = true,
+	MINE = true,
+}
+local REGISTERED_SPIN_TAGS
 
 local function DoSpinningAOE(inst, targets)
+	local friendly = WagdroneCommon.IsFriendly(inst)
+	if REGISTERED_SPIN_TAGS == nil then
+		local tags = { "_combat", "pickable" }
+		for k, v in pairs(SPIN_WORK_ACTIONS) do
+			table.insert(tags, k.."_workable")
+		end
+		REGISTERED_SPIN_TAGS = TheSim:RegisterFindTags(
+			nil,
+			{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "NOCLICK", "wagboss" },
+			tags
+		)
+	end
+
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local rot = inst.Transform:GetRotation() * DEGREES
 	local t = GetTime()
 	local speedmult = 1
 	local recoilangle
 	local bbladecollide
-	local friendly = WagdroneCommon.IsFriendly(inst)
 	local numuses = 0
-	for i, v in ipairs(TheSim:FindEntities(x, y, z, SPIN_RADIUS + SPIN_RANGE_PADDING, nil, friendly and SPIN_NO_TAGS_FRIENDLY or SPIN_NO_TAGS, SPIN_TAGS)) do
+	for i, v in ipairs(TheSim:FindEntities_Registered(x, y, z, SPIN_RADIUS + SPIN_RANGE_PADDING, REGISTERED_SPIN_TAGS)) do
 		if v ~= inst and (targets[v] or 0) <= t and v:IsValid() and not v:IsInLimbo() then
 			local isbblade = v.prefab == inst.prefab
 			local range = SPIN_RADIUS + (isbblade and SPIN_RADIUS or v:GetPhysicsRadius(0))
@@ -167,15 +183,20 @@ local function DoSpinningAOE(inst, targets)
 			local dx = x1 - x
 			local dz = z1 - z
 			local dsq = dx * dx + dz * dz
-			--NOTE: friendly doesn't exclude "notarget" in FindEntities because we still want
-			--      to hit other bblades, which might have "notarget" tag when friendly.
-			if dsq < range * range or (friendly and not isbblade and v:HasTag("notarget")) then
+			if dsq < range * range then
 				local worked, recoil
 				if v.components.workable then
 					if v.components.workable:CanBeWorked() and not (v.sg and v.sg:HasStateTag("busy")) then
 						local work_action = v.components.workable:GetWorkAction()
 						local slowdown, spark
-						if work_action == ACTIONS.CHOP then
+						if v:HasAnyTag("waxedplant", "event_trigger") then
+							if work_action and SPIN_WORK_ACTIONS[work_action.id] then
+								recoil = true
+								targets[v] = t + 0.5
+								spark = true
+								worked = true
+							end
+						elseif work_action == ACTIONS.CHOP then
 							v.components.workable:WorkedBy(inst, 1.5)
 							numuses = numuses + 1
 							targets[v] = t + 0.2
@@ -212,23 +233,29 @@ local function DoSpinningAOE(inst, targets)
 							end
 							worked = true
 						elseif work_action == ACTIONS.HAMMER then
-							local mult =
-								(v:HasTag("grass") and 2) or
-								(v:HasTag("wood") and 1.5) or
-								(v:HasTag("wall") and 1) or
-								0.5
+							if friendly then
+								recoil = true
+								targets[v] = t + 0.5
+								spark = true
+							else
+								local mult =
+									(v:HasTag("grass") and 2) or
+									(v:HasTag("wood") and 1.5) or
+									(v:HasTag("wall") and 1) or
+									0.5
 
-							v.components.workable:WorkedBy(inst, mult)
-							numuses = numuses + 1
-							if v:IsValid() and v.components.workable:CanBeWorked() then
-								if mult > 1 then
-									slowdown = true
-								else
-									recoil = true
+								v.components.workable:WorkedBy(inst, mult)
+								numuses = numuses + 1
+								if v:IsValid() and v.components.workable:CanBeWorked() then
+									if mult > 1 then
+										slowdown = true
+									else
+										recoil = true
+									end
 								end
+								spark = mult <= 1
+								targets[v] = t + 0.2--(slowdown and 0.2 or 0.5)
 							end
-							spark = mult <= 1
-							targets[v] = t + 0.2--(slowdown and 0.2 or 0.5)
 							worked = true
 						end
 						if slowdown then

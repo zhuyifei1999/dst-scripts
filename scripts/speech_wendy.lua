@@ -5706,7 +5706,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "She deserves to live in a nicer place.",
 
-        WANDERINGTRADER = "I wonder how long he's been here.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "I wonder how long he's been here.",
+            DISGUISED = "Looks unusual. Maybe it's dying.",
+        },
 
         GESTALT_GUARD_EVOLVED = "I would be angry too.",
         FLOTATIONCUSHION = "One does not need water to drown.",

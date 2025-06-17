@@ -973,6 +973,8 @@ local states =
             inst.components.health:SetInvincible(true)
 
             inst.sg.statemem.frame = 0
+
+			inst:EnableCameraFocus(true)
         end,
 
         onupdate = function(inst, dt)
@@ -1011,6 +1013,7 @@ local states =
 
         onexit = function(inst)
             inst.components.health:SetInvincible(false)
+			inst:EnableCameraFocus(false)
         end,
     },
 }

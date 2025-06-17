@@ -516,6 +516,25 @@ local function rift_OnAddColourChanged(inst, r, g, b, a)
 	inst.fx.AnimState:SetAddColour(r, g, b, a)
 end
 
+local function rift_OnCameraFocusDirty(inst)
+	if inst.camerafocus:value() then
+		TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 3, 20, 3)
+	else
+		TheFocalPoint.components.focalpoint:StopFocusSource(inst)
+	end
+end
+
+local function rift_EnableCameraFocus(inst, enable)
+	if enable ~= inst.camerafocus:value() then
+		inst.camerafocus:set(enable)
+
+		--Dedicated server does not need to focus camera
+		if not TheNet:IsDedicated() then
+			rift_OnCameraFocusDirty(inst)
+		end
+	end
+end
+
 local function common_postinit_rift(inst)
     inst.entity:AddLight()
     inst.Light:SetIntensity(0)
@@ -530,6 +549,8 @@ local function common_postinit_rift(inst)
 	inst.AnimState:SetSymbolLightOverride("moonglass_parts2", 0.1)
     inst.AnimState:SetLightOverride(0)
 
+	inst.camerafocus = net_bool(inst.GUID, "alterguardian_phase1_lunarrift.camerafocus", "camerafocusdirty")
+
 	inst:AddComponent("colouraddersync")
 
 	if not TheNet:IsDedicated() then
@@ -541,6 +562,10 @@ local function common_postinit_rift(inst)
 		inst.highlightchildren = { inst.fx }
 
 		inst.components.colouraddersync:SetColourChangedFn(rift_OnAddColourChanged)
+	end
+
+	if not TheWorld.ismastersim then
+		inst:ListenForEvent("camerafocusdirty", rift_OnCameraFocusDirty)
 	end
 end
 
@@ -576,6 +601,7 @@ local function server_postinit_rift(inst)
 
 	inst.SoundEmitter:PlaySound("moonstorm/creatures/boss/alterguardian1/idle_wagboss_LP", "idle_LP")
 
+	inst.EnableCameraFocus = rift_EnableCameraFocus
     inst.OnSave = rift_OnSave
 	inst.OnLoad = rift_OnLoad
 	inst.OnRemoveEntity = rift_OnRemoveEntity

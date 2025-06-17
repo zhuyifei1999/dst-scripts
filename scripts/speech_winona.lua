@@ -5708,7 +5708,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "A whole movin' truck in a pitcher.",
 
-        WANDERINGTRADER = "Good day for a trade.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "Good day for a trade.",
+            DISGUISED = "That thing don't look right.",
+        },
 
         GESTALT_GUARD_EVOLVED = "I know, I know. Y'all got a bone to pick.",
         FLOTATIONCUSHION = "Sure beats drownin'.",

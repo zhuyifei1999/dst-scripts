@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/player_actions.zip"),
     Asset("ANIM", "anim/player_idles.zip"),
     Asset("ANIM", "anim/player_emote_extra.zip"),
+	Asset("ANIM", "anim/player_wardrobe.zip"),
     Asset("ANIM", "anim/wagstaff_face_swap.zip"),
     Asset("ANIM", "anim/hat_gogglesnormal.zip"),
     Asset("ANIM", "anim/wagstaff.zip"),
@@ -1281,6 +1282,7 @@ local function GiveGestaltCageToToss_Arena(inst)
 end
 
 local function lunar_guardian_incoming_Arena(inst)
+	inst:PushEvent("startled")
     inst.tiedtoworkstation = nil
     inst.tiedtolever = nil
     inst.oneshot = true
@@ -1465,13 +1467,22 @@ local function finale_Brighten(inst)
 end
 
 local function finale_OnEntityRemoved(inst)
-	table.removearrayvalue(inst.highlightparent.highlightchildren, inst)
-	table.removearrayvalue(inst.highlightparent.highlightchildren, inst.fx)
+	if inst.highlightparent then
+		table.removearrayvalue(inst.highlightparent.highlightchildren, inst)
+		if inst.fx then
+			table.removearrayvalue(inst.highlightparent.highlightchildren, inst.fx)
+		end
+	end
+	if inst.fx then
+		inst.fx:Remove()
+	end
 end
 
 local function finale_OnEntityReplicated(inst)
 	local parent = inst.entity:GetParent()
 	if parent and parent.prefab == "alterguardian_phase4_lunarrift" and parent.highlightchildren then
+		inst.fx.entity:SetParent(parent.entity)
+		inst.fx.Follower:FollowSymbol(parent.GUID, "player_follow")
 		table.insert(parent.highlightchildren, inst)
 		table.insert(parent.highlightchildren, inst.fx)
 		inst.highlightparent = parent
@@ -1482,11 +1493,18 @@ end
 local function AttachToAlter(inst, alter)
 	inst.entity:SetParent(alter.entity)
 	inst.Follower:FollowSymbol(alter.GUID, "player_follow")
+	if inst.fx then
+		inst.fx.entity:SetParent(alter.entity)
+		inst.fx.Follower:FollowSymbol(alter.GUID, "player_follow")
+		inst.OnEntityRemoved = finale_OnEntityRemoved --need this for fx or highlightchildren
+	end
 	if alter.highlightchildren then
 		table.insert(alter.highlightchildren, inst)
-		table.insert(alter.highlightchildren, inst.fx)
+		if inst.fx then
+			table.insert(alter.highlightchildren, inst.fx)
+		end
 		inst.highlightparent = alter
-		inst.OnEntityRemoved = finale_OnEntityRemoved
+		inst.OnEntityRemoved = finale_OnEntityRemoved --need this for fx or highlightchildren
 	end
 end
 
@@ -1527,8 +1545,9 @@ local function finale_CreateSilhouette()
 
 	fx.entity:AddTransform()
 	fx.entity:AddAnimState()
+	fx.entity:AddFollower()
 
-	fx.Transform:SetFourFaced()
+	fx.Transform:SetSixFaced()
 
 	fx.AnimState:SetBank("wilson")
 	fx.AnimState:SetBuild("wagstaff_finale")
@@ -1558,7 +1577,7 @@ local function finale_fn()
 	inst.entity:AddFollower()
 	inst.entity:AddNetwork()
 
-	inst.Transform:SetFourFaced()
+	inst.Transform:SetSixFaced()
 
 	inst:AddTag("FX")
 

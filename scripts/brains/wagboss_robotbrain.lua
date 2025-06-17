@@ -52,6 +52,7 @@ function WagbossRobotBrain:OnStart()
 						end, "TryRangedAttack"),
 						FailIfSuccessDecorator(ChaseAndAttack(self.inst)),
 					},
+					Leash(self.inst, GetHome, 6, 2),
 					Wander(self.inst, GetHome, 4, {
 						minwalktime = 3,
 						randwalktime = 0,

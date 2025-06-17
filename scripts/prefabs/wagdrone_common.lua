@@ -50,7 +50,6 @@ local function RemoveFriendlyConfig(inst)
 	inst:RemoveComponent("inventoryitem")
 	inst:RemoveComponent("finiteuses")
 	inst:RemoveComponent("knownlocations")
-	inst:RemoveTag("notarget")
 end
 
 --------------------------------------------------------------------------
@@ -175,6 +174,14 @@ local function ForgetDeployPoint(inst)
 	inst.components.knownlocations:ForgetLocation("deploypoint")
 end
 
+local function FriendlyDamageToUses(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
+	if amount < 0 then
+		local uses = math.floor(0.5 - amount / inst.components.health.maxhealth * TUNING.WAGDRONE_ROLLING_USES)
+		inst.components.finiteuses:Use(math.max(1, uses))
+	end
+	return true
+end
+
 local function toground(inst)
 	RememberDeployPoint(inst)
 end
@@ -192,7 +199,7 @@ local function ChangeToFriendly(inst)
 		RemoveLootConfig(inst)
 
 		inst.components.health:SetPercent(1)
-		inst:AddTag("notarget")
+		inst.components.health.redirect = FriendlyDamageToUses
 
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem:SetOnDroppedFn(toground)

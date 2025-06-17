@@ -55,6 +55,9 @@ local events =
             inst.sg:GoToState("tossitem")
         end
     end),
+	EventHandler("startled", function(inst)
+		inst.sg:GoToState("startled")
+	end),
 }
 
 local ERODEOUT_DATA =
@@ -185,8 +188,17 @@ local states =
                 inst.components.locomotor:StopMoving()
             end
 
-            inst.AnimState:PlayAnimation("notes_pre")
-            inst.AnimState:PushAnimation("notes_loop", true)
+
+			if inst.sg.lasttags and inst.sg.lasttags["talking"] and
+				TheWorld.components.lunaralterguardianspawner and
+				TheWorld.components.lunaralterguardianspawner:HasGuardianOrIsPending()
+			then
+				inst.AnimState:PlayAnimation("idle_wardrobe1_pre")
+				inst.AnimState:PushAnimation("idle_wardrobe1_loop")
+			else
+				inst.AnimState:PlayAnimation("notes_pre")
+				inst.AnimState:PushAnimation("notes_loop")
+			end
         end,
 
         events =
@@ -224,6 +236,38 @@ local states =
         },
     },
 
+	State{
+		name = "startled",
+		tags = { "busy" },
+
+		onenter = function(inst)
+			if inst.components.locomotor then
+				inst.components.locomotor:StopMoving()
+			end
+
+			inst.AnimState:PlayAnimation("distress_pre")
+			inst.AnimState:PushAnimation("distress_loop")
+			inst.AnimState:PushAnimation("distress_pst", false)
+		end,
+
+		timeline =
+		{
+			FrameEvent(15, function(inst)
+				inst.sg:RemoveStateTag("busy")
+				inst.sg:AddStateTag("idle")
+				inst.sg:AddStateTag("canrotate")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
 
     State{
         name = "death",

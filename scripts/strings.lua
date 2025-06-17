@@ -9490,6 +9490,9 @@ STRINGS.UI =
         BOATHOPDELAY = "Boat Hop Delay:",
         MINIMAPZOOMCURSOR = "Zoom Cursor Focus:",
         VIBRATION = "Vibration:",
+        CONTROLLER_AUDIO = "Controller Audio:",
+        UI_HAPTICS = "Interface Haptics:",
+        UI_VIBRATION = "Interface Vibration:",
         WATHGRITHRFONT = "Wigfrid's Umlauts:",
         WALTERCAMERA = "Campfire Camera:",
         BOATCAMERA = "Seafaring Camera:",
@@ -9594,6 +9597,9 @@ STRINGS.UI =
             INPUT = "Controller or Keyboard? Play Don't Starve Together your way.",
             VIBRATION = "Make your controller vibrate at key gameplay moments.",
 			VIBRATION_WIRELESS = "Enable vibration of your wireless controller at key gameplay moments.",
+            CONTROLLER_AUDIO = "Enable audio from your wireless controller at key gameplay moments.",
+            UI_HAPTICS = "Enable vibration and/or audio from your wireless controller when interacting with the user interface.",
+            UI_VIBRATION = "Enable vibration when interacting with the user interface.",
             FX = "Change how loud things are in the world.",
             MUSIC = "Tone up or down the musical fanfare in your adventures.",
             AMBIENT = "The environment makes noise too, luckily you can control how loudly it does.",
@@ -9621,7 +9627,7 @@ STRINGS.UI =
             LOADING_TIPS = "Learn more about the lore and the gameplay of Don't Starve while your world loads.",
 			TARGETLOCKING = "Focus on one target at a time.",
 			PROMOTIONS = "Display store promotions in the main menus.",
-            AXISALIGNEDPLACEMENT = "Structures and other deployables will automatically lock onto to a grid for making buildings look structured.",
+            AXISALIGNEDPLACEMENT = "Structures and other deployables will automatically lock to a grid for making buildings look structured.",
             AXISALIGNEDPLACEMENTINTERVALS = "This sets how big the grid is between each, measured in common units such as Wall width or Tile width.",
 
             -- Graphics
@@ -9656,6 +9662,7 @@ STRINGS.UI =
 
             -- controls
             CONTROLLER_LAYOUT = "Use the default controls or customize them to your liking.",
+            CONTROL_SCHEME_CAM_AND_INV = "Choose between control schemes for the camera, inventory, and aiming.",
 
             CONTROLS_EDITOR =
             {

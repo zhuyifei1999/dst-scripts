@@ -50,6 +50,20 @@ local function FindRelocatePoint(inst)
 	return offset ~= nil and (offset + pt) or pt
 end
 
+local function do_sleep_despawn(inst)
+	inst:PushEvent("sleep_despawn")
+	inst:Remove()
+end
+local function OnEntitySleep(inst)
+	inst._sleep_despawn_task = inst:DoTaskInTime(10, do_sleep_despawn)
+end
+local function OnEntityWake(inst)
+	if inst._sleep_despawn_task then
+		inst._sleep_despawn_task:Cancel()
+		inst._sleep_despawn_task = nil
+	end
+end
+
 local function GetLevelForTarget(target)
 	-- L1: 0.5 to 1.0 is ignore
 	-- L2: 0.0 to 0.5 is look at behaviour
@@ -81,7 +95,8 @@ local function GetLevelForTarget(target)
 end
 
 local function Client_CalcTransparencyRating(inst, observer)
-	if inst.components.inspectable ~= nil then
+	-- Replica component might not exist yet when we run this :)
+	if inst.replica.combat and inst.replica.combat:GetTarget() ~= nil then
 		return TUNING.GESTALT_COMBAT_TRANSPERENCY -- 0.85
 	end
 
@@ -162,18 +177,11 @@ end
 
 local function OnNewCombatTarget(inst, data)
 	inst.behaviour_level = GetLevelForTarget(data.target)
-
-	if inst.components.inspectable == nil then
-		inst:AddComponent("inspectable")
-		inst:AddTag("scarytoprey")
-	end
 end
 
 local function OnNoCombatTarget(inst)
 	inst.components.combat:RestartCooldown()
 	inst.behaviour_level = 0
-	inst:RemoveComponent("inspectable")
-	inst:RemoveTag("scarytoprey")
 end
 
 local function onattackother(inst, data)
@@ -244,6 +252,7 @@ local function fn()
 	inst:AddTag("extinguisher") -- to put out nightlights
 	inst:AddTag("lunar_aligned")
 	inst:AddTag("NOBLOCK")
+	inst:AddTag("scarytoprey")
 	inst:AddTag("soulless") -- no wortox souls
 
     inst.Transform:SetFourFaced()
@@ -276,17 +285,20 @@ local function fn()
 		transparentonsanity:ForceUpdate()
 	end
 
-	inst.scrapbook_inspectonseen = true
-
     inst.entity:SetPristine()
     if not TheWorld.ismastersim then
         return inst
     end
 
+	inst.scrapbook_inspectonseen = true
+	inst.scrapbook_overridedata = {"head_fx_big", "brightmare_gestalt_head_evolved", "head_fx_big"}
+
     --
 	inst.persists = false
 	inst._notrail = true
 	inst.FindRelocatePoint = FindRelocatePoint
+	inst.OnEntitySleep = OnEntitySleep
+	inst.OnEntityWake = OnEntityWake
 
     --
 	local combat = inst:AddComponent("combat")
@@ -303,6 +315,9 @@ local function fn()
     --
 	local health = inst:AddComponent("health")
     health:SetMaxHealth(TUNING.GESTALT_EVOLVED_HEALTH)
+
+	--
+	inst:AddComponent("inspectable")
 
     --
 	inst:AddComponent("knownlocations")

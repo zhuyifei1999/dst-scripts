@@ -34,6 +34,16 @@ local ADDEVOLVED_TIMERNAME = "add_evolved_gestalt_to_pool"
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function despawn_evolved_gestalt(gestalt)
+	gestalt._do_despawn = true
+	gestalt:PushEvent("force_relocate")
+	_evolved_spawn_pool = _evolved_spawn_pool + 1
+end
+
+local function on_sleep_despawned(gestalt)
+	_evolved_spawn_pool = _evolved_spawn_pool + 1
+end
+
 local function GetTuningLevelForPlayer(player)
 	local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
     local sanity = (
@@ -65,11 +75,7 @@ local function GetGestaltSpawnType(player, pt)
 	local type = "gestalt"
 
 	if not TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(pt:Get()) then
-		local player_hat = (player and
-			player.components.inventory and
-			player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
-		) or nil
-		local do_extra_spawns = (player_hat and player_hat:HasTag("lunarseedmaxed"))
+		local do_extra_spawns = (player.components.inventory ~= nil and player.components.inventory:EquipHasTag("lunarseedmaxed"))
 
 		local shard_wagbossinfo = TheWorld.shard.components.shard_wagbossinfo
 		if shard_wagbossinfo and shard_wagbossinfo:IsWagbossDefeated() then
@@ -118,8 +124,9 @@ local function TrySpawnGestaltForPlayer(player, level, data)
 	local pt = FindGestaltSpawnPtForPlayer(player, false)
 	if pt ~= nil then
         local ent = SpawnPrefab(GetGestaltSpawnType(player, pt))
-		_gestalts[ent] = {}
+		_gestalts[ent] = true
 		inst:ListenForEvent("onremove", StopTracking, ent)
+		inst:ListenForEvent("sleep_despawn", on_sleep_despawned, ent)
         ent.Transform:SetPosition(pt.x, 0, pt.z)
 		ent:SetTrackingTarget(player, GetTuningLevelForPlayer(player))
 		ent:PushEvent("spawned")
@@ -211,10 +218,38 @@ end
 --------------------------------------------------------------------------
 
 local function OnSanityModeChanged(player, data)
-	if data ~= nil and data.mode == SANITY_MODE_LUNACY then
-		_players[player] = {}
+	local is_lunacy = (data ~= nil and data.mode == SANITY_MODE_LUNACY)
+	if is_lunacy then
+		_players[player] = true
 	else
 		_players[player] = nil
+	end
+
+	-- We could check for WagbossDefeated too, but there shouldn't be any gestalt_guard_evolved prefabs
+	-- in the world if that's false. Shouldn't need to control for debug spawning here.
+	local gestalts_tracking_player = nil
+	for gestalt in pairs(_gestalts) do
+		if gestalt.prefab == "gestalt_guard_evolved" and gestalt.tracking_target == player and not gestalt._do_despawn then
+			gestalts_tracking_player = gestalts_tracking_player or {}
+			table.insert(gestalts_tracking_player, gestalt)
+		end
+	end
+
+	if gestalts_tracking_player then
+		-- If we're not in lunacy mode anymore, clean up all of the gestalts.
+		-- If we are, but the hat is off, go down to our normal amount.
+		if not is_lunacy then
+			for _, gestalt in pairs(gestalts_tracking_player) do
+				despawn_evolved_gestalt(gestalt)
+			end
+		elseif not (player.components.inventory ~= nil and player.components.inventory:EquipHasTag("lunarseedmaxed")) then
+			shuffleArray(gestalts_tracking_player)
+			for i, gestalt in ipairs(gestalts_tracking_player) do
+				if i > TUNING.GESTALT_EVOLVED_MAXSPAWN then
+					despawn_evolved_gestalt(gestalt)
+				end
+			end
+		end
 	end
 
 	if next(_players) ~= nil then
@@ -224,8 +259,36 @@ local function OnSanityModeChanged(player, data)
 	end
 end
 
+local function OnEquipmentChanged(player, data)
+	local gestalts_tracking_player = nil
+	for gestalt in pairs(_gestalts) do
+		if gestalt.prefab == "gestalt_guard_evolved" and gestalt.tracking_target == player and not gestalt._do_despawn then
+			gestalts_tracking_player = gestalts_tracking_player or {}
+			table.insert(gestalts_tracking_player, gestalt)
+		end
+	end
+
+	local is_lunacy = (player.components.sanity and player.components.sanity:GetSanityMode() == SANITY_MODE_LUNACY)
+	if gestalts_tracking_player then
+		if not is_lunacy then
+			for _, gestalt in pairs(gestalts_tracking_player) do
+				despawn_evolved_gestalt(gestalt)
+			end
+		elseif player.components.inventory == nil or not player.components.inventory:EquipHasTag("lunarseedmaxed") then
+			shuffleArray(gestalts_tracking_player)
+			for i, gestalt in ipairs(gestalts_tracking_player) do
+				if i > TUNING.GESTALT_EVOLVED_MAXSPAWN then
+					despawn_evolved_gestalt(gestalt)
+				end
+			end
+		end
+	end
+end
+
 local function OnPlayerJoined(i, player)
     i:ListenForEvent("sanitymodechanged", OnSanityModeChanged, player)
+	i:ListenForEvent("equip", OnEquipmentChanged, player)
+	i:ListenForEvent("unequip", OnEquipmentChanged, player)
 	if player.components.sanity:IsLunacyMode() then
 		OnSanityModeChanged(player, {mode = player.components.sanity:GetSanityMode()})
 	end
@@ -233,6 +296,8 @@ end
 
 local function OnPlayerLeft(i, player)
     i:RemoveEventCallback("sanitymodechanged", OnSanityModeChanged, player)
+	i:RemoveEventCallback("equip", OnEquipmentChanged, player)
+	i:RemoveEventCallback("unequip", OnEquipmentChanged, player)
 	OnSanityModeChanged(player, nil)
 end
 

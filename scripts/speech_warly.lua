@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "I hope Madame Pearl will like her new home.",
 
-        WANDERINGTRADER = "Bonjour, monsieur boeuf! What do you have?",
+        WANDERINGTRADER =
+        {
+            GENERIC = "Bonjour, Monsieur Boeuf! What do you have?",
+            DISGUISED = "Hmm. I wouldn't eat that one.",
+        },
 
         GESTALT_GUARD_EVOLVED = "I assure you it wasn't personal.",
         FLOTATIONCUSHION = "It will save me from the brine!",

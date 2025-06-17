@@ -52,7 +52,7 @@ local function BuildWagpunkArenaMesh(offset)
             x1 = ApplyOffset(x1, offset)
             z1 = ApplyOffset(z1, offset)
         end
-        AddPlane(triangles, x0, 0, z0, x1, 4, z1)
+        AddPlane(triangles, x0, 0, z0, x1, 7, z1) --high enuf to contain flying drones
 
         v0 = v1
     end
@@ -207,6 +207,7 @@ local function fn()
     inst.Physics:SetCollisionMask(
         COLLISION.ITEMS,
         COLLISION.CHARACTERS,
+		COLLISION.FLYERS,
         COLLISION.GIANTS
     )
     inst.Physics:SetTriangleMesh(BuildWagpunkArenaMesh())
@@ -329,6 +330,7 @@ local function fn_oneway()
     inst.Physics:SetCollisionMask(
         COLLISION.ITEMS,
         COLLISION.CHARACTERS,
+		COLLISION.FLYERS,
         COLLISION.GIANTS
     )
     inst.oneway_size = 0.4 -- A size of 0.5 can result in a corner that touches the normal tile boundary so keep it below that.
