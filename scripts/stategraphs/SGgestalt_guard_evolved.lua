@@ -54,11 +54,13 @@ local events =
 --NOTE: these are stategraph tags!
 local INVALID_ATTACK_STATE_TAGS = {"bedroll", "knockout", "sleeping", "tent", "waking"}
 local function IsValidAttackTarget(inst, target, x, z, rangesq)
-	return target:GetDistanceSqToPoint(x, 0, z) < rangesq
+	local dsq = target:GetDistanceSqToPoint(x, 0, z)
+	return dsq < rangesq
 		and not (target.components.health and target.components.health:IsDead())
 		and not (target.sg and target.sg:HasAnyStateTag(INVALID_ATTACK_STATE_TAGS))
 		and not target:HasAnyTag("brightmare", "brightmareboss")
 		and inst.components.combat:CanTarget(target)
+		, dsq
 end
 
 --These tags and testfn are used with DoAreaAttack below,
@@ -81,8 +83,9 @@ local function FindBestAttackTarget(inst)
 
 	target = nil
     for _, player in pairs(AllPlayers) do
-		if IsValidAttackTarget(inst, player, x, z, rangesq) then
-			rangesq = distsq
+		local isvalid, dsq = IsValidAttackTarget(inst, player, x, z, rangesq)
+		if isvalid then
+			rangesq = dsq
 			target = player
         end
     end

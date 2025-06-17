@@ -55,7 +55,7 @@ function FriendlyTargeting(inst)
 	local pt = GetDeployPoint(inst)
 	if pt then
 		local r = TUNING.WAGDRONE_ROLLING_WORK_RADIUS
-		local mindsq = math.huge
+		local mindsq = r * r
 		local closest = nil
 		for i, v in ipairs(TheSim:FindEntities(pt.x, pt.y, pt.z, r, nil, WORK_NO_TAGS, WORK_TAGS)) do
 			if v ~= inst and v.entity:IsVisible() and
@@ -120,7 +120,7 @@ function WagdroneRollingBrain:UpdateTargetDest()
 	if pt then
 		local r = TUNING.WAGDRONE_ROLLING_WORK_RADIUS
 		if EntityScript.is_instance(self.target) then
-			if not ValidateExistingTarget(self.target) or self.target:GetDistanceSqToPoint(x, y, z) >= r * r then
+			if not ValidateExistingTarget(self.target) or self.target:GetDistanceSqToPoint(pt:Get()) >= r * r then
 				self:ResetTargets()
 				return nil
 			end
