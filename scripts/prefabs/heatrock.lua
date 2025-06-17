@@ -113,7 +113,7 @@ local function AdjustLighting(inst, range, ambient)
 end
 
 local function TemperatureChange(inst, data)
-    local ambient_temp = TheWorld.state.temperature
+	local ambient_temp = GetLocalTemperature(inst)
     local cur_temp = inst.components.temperature:GetCurrent()
     local range = GetRangeForTemperature(cur_temp, ambient_temp)
 

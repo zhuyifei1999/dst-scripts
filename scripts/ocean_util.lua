@@ -122,7 +122,11 @@ function FindRandomPointOnShoreFromOcean(x, y, z, excludeclosest)
 	for i = 1, num_rooms_to_pick do
 		closest[i] = nodes[i + i_offset]
 	end
-	shuffleArray(closest)
+
+	--if we're in shallow water, don't randomze, and just try for closest in order
+	if excludeclosest or not TileGroupManager:IsShallowOceanTile(TheWorld.Map:GetTileAtPoint(x, y, z)) then
+		shuffleArray(closest)
+	end
 
 	local dest_x, dest_y, dest_z
 	for _, c in ipairs(closest) do

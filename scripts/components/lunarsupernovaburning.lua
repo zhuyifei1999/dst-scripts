@@ -49,45 +49,47 @@ function LunarSupernovaBurning:AddSource(source)
 end
 
 function LunarSupernovaBurning:OnUpdate(dt)
-	local map = TheWorld.Map
-	if not map:IsPointInWagPunkArena(self.inst.Transform:GetWorldPosition()) then
-		self.inst:RemoveComponent("lunarsupernovaburning")
-		return
-	end
-
 	local x, _, z = self.inst.Transform:GetWorldPosition()
+	local map = TheWorld.Map
+	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z)
 	local blockers
 	local numdots = 0
 	local size, rad = self:GetFxSize()
 	for k, v in pairs(self.sources) do
-		if not (	k:IsValid() and
-					(k.sg and k.sg:HasStateTag("supernovaburning")) and
-					map:IsPointInWagPunkArena(k.Transform:GetWorldPosition())
-				)
-		then
+		if not (k:IsValid() and (k.sg and k.sg:HasStateTag("supernovaburning"))) then
 			v:Remove()
 			self.sources[k] = nil
 		else
-			if blockers == nil then
-				blockers = WagBossUtil.FindSupernovaBlockersNearXZ(x, z)
-			end
 			local x1, _, z1 = k.Transform:GetWorldPosition()
-			if WagBossUtil.IsSupernovaBlockedAtXZ(x1, z1, x, z, blockers) then
-				v:Hide()
+			if inarena and not map:IsPointInWagPunkArena(x1, 0, z1) then
+				v:Remove()
+				self.sources[k] = nil
+			elseif not inarena and distsq(x, z, x1, z1) > WagBossUtil.SupernovaNoArenaRangeSq then
+				--NOTE: >, not >=, since we're just going with FindEntities range
+				v:Remove()
+				self.sources[k] = nil
 			else
-				numdots = numdots + 1
-				v:SetFxSize(size)
-				v:Show()
-				local dx = x1 - x
-				local dz = z1 - z
-				if dx == 0 and dz == 0 then
-					v.Transform:SetPosition(x, 0, z)
-				else
-					local len = math.sqrt(dx * dx + dz * dz)
-					len = rad / len
-					v.Transform:SetPosition(x + dx * len, 0, z + dz * len)
+				if blockers == nil then
+					blockers = WagBossUtil.FindSupernovaBlockersNearXZ(x, z)
 				end
-			end			
+				local x1, _, z1 = k.Transform:GetWorldPosition()
+				if WagBossUtil.IsSupernovaBlockedAtXZ(x1, z1, x, z, blockers) then
+					v:Hide()
+				else
+					numdots = numdots + 1
+					v:SetFxSize(size)
+					v:Show()
+					local dx = x1 - x
+					local dz = z1 - z
+					if dx == 0 and dz == 0 then
+						v.Transform:SetPosition(x, 0, z)
+					else
+						local len = math.sqrt(dx * dx + dz * dz)
+						len = rad / len
+						v.Transform:SetPosition(x + dx * len, 0, z + dz * len)
+					end
+				end
+			end
 		end
 	end
 	if next(self.sources) == nil then

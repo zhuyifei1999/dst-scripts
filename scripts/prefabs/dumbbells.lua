@@ -418,7 +418,7 @@ local function UpdateImages(inst, range)
 end
 
 local function TemperatureChange(inst, data)
-    local ambient_temp = TheWorld.state.temperature
+	local ambient_temp = GetLocalTemperature(inst)
     local cur_temp = inst.components.temperature:GetCurrent()
     local range = GetRangeForTemperature(cur_temp, ambient_temp)
 
@@ -566,11 +566,13 @@ local function MakeDumbbell(name, consumption, efficiency, damage, impact_sound,
 
         inst:AddComponent("finiteuses")
         inst.components.finiteuses:SetOnFinished(function() 
-            if inst.components.inventoryitem:GetGrandOwner() == nil then
+			if not inst.components.inventoryitem:IsHeld() then
                 inst.components.inventoryitem.canbepickedup = false
+				inst.persists = false
+				inst:AddTag("NOCLICK")
                 inst:DoTaskInTime(1, ErodeAway)
             else
-                inst:Remove()        
+                inst:Remove()
             end
         end)
 

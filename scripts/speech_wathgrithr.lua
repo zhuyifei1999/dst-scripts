@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "The crab shall dwell where I see fit.",
 
-        WANDERINGTRADER = "The pelt-bearer cometh to ply his wares.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "The pelt-bearer cometh to ply his wares.",
+            DISGUISED = "Wretched beast. Shall I grant it peace?",
+        },
 
         GESTALT_GUARD_EVOLVED = "Revenge is thine inheritance.",
         FLOTATIONCUSHION = "Not this day, Njord!",

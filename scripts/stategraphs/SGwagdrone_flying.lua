@@ -301,6 +301,21 @@ local function UpdateAttackHover(inst, dt)
 	inst.sg.statemem.t = t
 end
 
+local function SetFlyingPhysics(inst, enable)
+	if not enable then
+		inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
+		inst.Physics:ClearCollidesWith(COLLISION.FLYERS)
+		inst.Physics:ClearCollidesWith(COLLISION.LAND_OCEAN_LIMITS)
+	else--if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
+		--V2C: assume always in arena with barrier for now
+		--     this check doesn't work on load due to the barrier loading after a taskintime(0)
+		inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+		inst.Physics:CollidesWith(COLLISION.LAND_OCEAN_LIMITS)
+	--else
+	--	inst.Physics:CollidesWith(COLLISION.FLYERS)
+	end
+end
+
 --------------------------------------------------------------------------
 
 local function SetShadowScale(inst, scale)
@@ -362,7 +377,7 @@ local states =
 		timeline =
 		{
 			FrameEvent(16, function(inst)
-				inst.Physics:ClearCollidesWith(COLLISION.FLYERS)
+				SetFlyingPhysics(inst, false)
 				SetShadowScale(inst, 0.04)
 				inst.DynamicShadow:Enable(true)
 			end),
@@ -392,7 +407,7 @@ local states =
 				if not inst.SoundEmitter:PlayingSound("idle") then
 					inst.SoundEmitter:PlaySound("rifts5/wagdrone_flying/idle", "idle")
 				end
-				inst.Physics:CollidesWith(COLLISION.FLYERS)
+				SetFlyingPhysics(inst, true)
 				inst.DynamicShadow:Enable(false)
 			end
 		end,
@@ -416,7 +431,7 @@ local states =
 			else
 				inst.AnimState:PlayAnimation("off_idle")
 			end
-			inst.Physics:ClearCollidesWith(COLLISION.FLYERS)
+			SetFlyingPhysics(inst, false)
 			if not POPULATING then
 				local x, y, z = inst.Transform:GetWorldPosition()
 				if y > 0 then
@@ -448,7 +463,7 @@ local states =
 
 		onexit = function(inst)
 			inst.DynamicShadow:Enable(false)
-			inst.Physics:CollidesWith(COLLISION.FLYERS)
+			SetFlyingPhysics(inst, true)
 			WagdroneCommon.SetLedEnabled(inst, true)
 			if inst.components.workable then
 				inst.components.workable:SetWorkable(false)
@@ -463,7 +478,7 @@ local states =
 		onenter = function(inst)
 			inst.components.locomotor:StopMoving()
 			inst.AnimState:PlayAnimation("turn_on")
-			--inst.Physics:ClearCollidesWith(COLLISION.FLYERS) --no need to force this if not already
+			--SetFlyingPhysics(inst, false) --no need to force this if not already
 			SetSoundLoop(inst, "idle")
 			SetShadowScale(inst, 1.1)
 			inst.DynamicShadow:Enable(true)
@@ -488,7 +503,7 @@ local states =
 			FrameEvent(14, function(inst) SetShadowScale(inst, 0.12) end),
 			FrameEvent(15, function(inst) SetShadowScale(inst, 0.04) end),
 			FrameEvent(16, function(inst)
-				inst.Physics:CollidesWith(COLLISION.FLYERS)
+				SetFlyingPhysics(inst, true)
 				inst.DynamicShadow:Enable(false)
 			end),
 
@@ -506,7 +521,7 @@ local states =
 		},
 
 		onexit = function(inst)
-			inst.Physics:CollidesWith(COLLISION.FLYERS)
+			SetFlyingPhysics(inst, true)
 			inst.DynamicShadow:Enable(false)
 		end,
 	},

@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "Oh dear, it's empty. I'll try again later.",
 
-        WANDERINGTRADER = "Oh dear, the roaming vendor sure could use a bath.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "Oh dear, the roaming vendor sure could use a bath.",
+            DISGUISED = "It appears rather unhealthy.",
+        },
 
         GESTALT_GUARD_EVOLVED = "They have evolved into a more hostile form.",
         FLOTATIONCUSHION = "A passive deployment flotation device. I approve.",

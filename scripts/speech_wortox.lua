@@ -5722,7 +5722,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "It'll permit to move the hermit!",
 
-        WANDERINGTRADER = "This guy's disguise! Hyuyu!",
+        WANDERINGTRADER =
+        {
+            GENERIC = "This guy's disguise! Hyuyu!",
+            DISGUISED = "Whoa, uncanny beefalo!",
+        },
 
         GESTALT_GUARD_EVOLVED = "Well whad'ya know, we reap what we sow!",
         FLOTATIONCUSHION = "Because there's no time to think, when you're plunged in the drink!",

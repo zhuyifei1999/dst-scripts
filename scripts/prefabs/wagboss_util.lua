@@ -224,4 +224,6 @@ return
 	--Supernova
 	FindSupernovaBlockersNearXZ = FindSupernovaBlockersNearXZ,
 	IsSupernovaBlockedAtXZ = IsSupernovaBlockedAtXZ,
+	SupernovaNoArenaRange = 24, --for players who like to spawn our bosses in random places
+	SupernovaNoArenaRangeSq = 24 * 24,
 }

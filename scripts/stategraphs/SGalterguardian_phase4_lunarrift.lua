@@ -88,7 +88,7 @@ local DASH_TRACKING_MAXDROT_DECAY = 0.75
 
 local AOE_RANGE_PADDING = 3
 local AOE_TARGET_MUSTHAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack", "brightmare" }
 
 local function _AOEAttack(inst, x, z, radius, heavymult, mult, forcelanded, targets)
 	inst.components.combat.ignorehitrange = true
@@ -202,9 +202,12 @@ local function UpdateSupernovaAOE(inst, dt, firsthit)
 	inst.sg.statemem.updatedelay = 0.5
 
 	local map = TheWorld.Map
-	local x, y, z = inst.Transform:GetWorldPosition()
-	if not map:IsPointInWagPunkArena(x, 0, z) then
-		return
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local cx, cz = x, z
+	local inarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z)
+	if inarena then
+		cx, cz = map:GetWagPunkArenaCenterXZ()
+		--NOTE: center won't be nil if IsPointInWagPunkArena succeeded
 	end
 
 	if REGISTERED_SUPERNOVA_AOE_TAGS == nil then
@@ -215,16 +218,15 @@ local function UpdateSupernovaAOE(inst, dt, firsthit)
 		)
 	end
 	inst.components.combat.ignorehitrange = true
-	for i, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, 40, REGISTERED_SUPERNOVA_AOE_TAGS)) do
+	for i, v in ipairs(TheSim:FindEntities_Registered(cx, 0, cz, inarena and 40 or WagBossUtil.SupernovaNoArenaRange, REGISTERED_SUPERNOVA_AOE_TAGS)) do
 		if v:IsValid() and not v:IsInLimbo() and
-			map:IsPointInWagPunkArena(v.Transform:GetWorldPosition())
+			(not inarena or map:IsPointInWagPunkArena(v.Transform:GetWorldPosition()))
 		then
 			if v.components.lunarsupernovablocker then
 				v.components.lunarsupernovablocker:AddSource(inst)
 			elseif firsthit or v.components.lunarsupernovaburning == nil then
 				if firsthit and v.components.combat and v.components.combat:CanTarget(v) then
-
-					local x1, y1, z1 = v.Transform:GetWorldPosition()
+					local x1, _, z1 = v.Transform:GetWorldPosition()
 					local blockers = WagBossUtil.FindSupernovaBlockersNearXZ(x1, z1)
 					if not WagBossUtil.IsSupernovaBlockedAtXZ(x, z, x1, z1, blockers) then
 						inst.components.combat:DoAttack(v)
@@ -444,6 +446,7 @@ local states =
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst:SwitchToNoFaced()
+			inst:EnableCameraFocus(true)
 			inst.AnimState:PlayAnimation("lunar_spawn_1")
 			inst.AnimState:PushAnimation("lunar_spawn_2", false)
 			--these are part of constructor pristine state now
@@ -500,6 +503,7 @@ local states =
 			if not inst.sg.statemem.taunt then
 				inst:StartDomainExpansion()
 				inst:SetMusicLevel(3)
+				inst:EnableCameraFocus(false)
 			end
 			if not inst.SoundEmitter:PlayingSound("idlea") then
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
@@ -567,6 +571,7 @@ local states =
 			end
 			if target_or_triggerlunacy == true then
 				inst.sg.statemem.triggerlunacy = true
+				inst:EnableCameraFocus(true)
 			elseif target_or_triggerlunacy and target_or_triggerlunacy:IsValid() then
 				inst.sg.statemem.target = target_or_triggerlunacy
 				inst:ForceFacePoint(target_or_triggerlunacy.Transform:GetWorldPosition())
@@ -632,6 +637,7 @@ local states =
 					inst:StartDomainExpansion()
 				end
 				inst:SetMusicLevel(3)
+				inst:EnableCameraFocus(false)
 			end
 		end,
 	},
@@ -1124,6 +1130,10 @@ local states =
 
 		timeline =
 		{
+			FrameEvent(44, function(inst)
+				inst:AddTag("supernova")
+				inst:SetMusicLevel(3, true) --force music to update supernova mix
+			end),
 			FrameEvent(51, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
 				inst.sg:AddStateTag("noattack")
@@ -1154,6 +1164,7 @@ local states =
 			end
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
+				inst:RemoveTag("supernova")
 				inst.SoundEmitter:KillSound("charging")
 			end
 		end,
@@ -1176,6 +1187,7 @@ local states =
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_buildup_LP", "charging")
 			end
 			SetPreventDeath(inst, true)
+			inst:AddTag("supernova")
 			inst.components.timer:StopTimer("supernova_cd")
 			inst.components.timer:StartTimer("supernova_cd", TUNING.ALTERGUARDIAN_PHASE4_SUPERNOVA_CD)
 			inst:ResetCombo()
@@ -1207,6 +1219,7 @@ local states =
 			end
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
+				inst:RemoveTag("supernova")
 			end
 			if not inst.sg.statemem.charging then
 				inst.SoundEmitter:KillSound("charging")
@@ -1223,6 +1236,7 @@ local states =
 			inst:SwitchToNoFaced()
 			inst.AnimState:PlayAnimation("atk_burst_charge_to_shoot")
 			SetPreventDeath(inst, true)
+			inst:AddTag("supernova")
 			inst.SoundEmitter:KillSound("idlea")
 			inst.SoundEmitter:KillSound("idleb")
 			inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
@@ -1251,6 +1265,7 @@ local states =
 			end
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
+				inst:RemoveTag("supernova")
 				inst.SoundEmitter:KillSound("bursting")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
@@ -1279,6 +1294,7 @@ local states =
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
 			end
 			SetPreventDeath(inst, true)
+			inst:AddTag("supernova")
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 
 			inst.sg.statemem.updatedelay = 0
@@ -1333,6 +1349,8 @@ local states =
 				SetPreventDeath(inst, false)
 			end
 			if not inst.sg.statemem.bursting then
+				inst:RemoveTag("supernova")
+				inst:SetMusicLevel(3, true) --force music to update supernova mix
 				inst.SoundEmitter:KillSound("bursting")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
@@ -1395,13 +1413,34 @@ local states =
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
-			if (TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()) or
-				not TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition())
-			then
+
+			if TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated() then
 				inst.sg.statemem.nowagstaff = true
 				inst:SwitchToNoFaced()
 			else
-				inst:SwitchToTwoFaced()
+				local map = TheWorld.Map
+				local x, _, z = inst.Transform:GetWorldPosition()
+				if not map:IsPointInWagPunkArenaAndBarrierIsUp(x, 0, z) then
+					inst.sg.statemem.nowagstaff = true
+					inst:SwitchToNoFaced()
+				else
+					local r = 2.5 + inst:GetPhysicsRadius(0)
+					local theta = math.random() * TWOPI
+					local delta = TWOPI / (math.random() < 0.5 and 8 or -8)
+					local pt = Vector3()
+					for i = 1, 8 do
+						theta = theta + delta
+						pt.x = x + r * math.cos(theta)
+						pt.z = z - r * math.sin(theta)
+						if map:IsPointInWagPunkArena(pt:Get()) then
+							break
+						end
+					end
+					inst:SwitchToTwoFaced()
+					inst:EnableCameraFocus(true)
+					inst:FaceAwayFromPoint(pt, true)
+					inst.sg.statemem.wagstaffspawnpt = pt
+				end
 			end
 			inst.AnimState:PlayAnimation("defeated_pre")
 		end,
@@ -1418,12 +1457,13 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.defeated = true
 					if inst.sg.statemem.nowagstaff then
 						inst.sg.statemem.keepnofaced = true
 						inst.sg:GoToState("quickdefeated")
 					else
 						inst.sg.statemem.keeptwofaced = true
-						inst.sg:GoToState("defeated")
+						inst.sg:GoToState("defeated", inst.sg.statemem.wagstaffspawnpt)
 					end
 				end
 			end),
@@ -1434,8 +1474,13 @@ local states =
 				if not inst.sg.statemem.keepnofaced then
 					inst:SwitchToFourFaced()
 				end
-			elseif not inst.sg.statemem.keeptwofaced then
-				inst:SwitchToFourFaced()
+			else
+				if not inst.sg.statemem.keeptwofaced then
+					inst:SwitchToFourFaced()
+				end
+				if not inst.sg.statemem.defeated then
+					inst:EnableCameraFocus(false)
+				end
 			end
 		end,
 	},
@@ -1486,9 +1531,10 @@ local states =
 		name = "defeated",
 		tags = { "dead", "busy", "nointerrupt" },
 
-		onenter = function(inst)
+		onenter = function(inst, wagstaffspawnpt)
 			inst.components.locomotor:Stop()
 			inst:SwitchToTwoFaced()
+			inst:EnableCameraFocus(true)
 			inst.AnimState:PlayAnimation("defeated_loop")
 
 			local function cb(wagstaff)
@@ -1503,6 +1549,8 @@ local states =
 				strname = "WAGSTAFF_WAGPUNK_ARENA_SCIONDOWN",
 				monologue = true,
 				focusentity = inst,
+				x = wagstaffspawnpt and wagstaffspawnpt.x,
+				z = wagstaffspawnpt and wagstaffspawnpt.z,
 				cb = cb,
 			})
 		end,
@@ -1518,6 +1566,7 @@ local states =
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg.statemem.keeptwofaced = true
+					inst.sg.statemem.finale = true
 					inst.sg:GoToState("finale", inst.sg.statemem.cb)
 				end
 			end),
@@ -1526,6 +1575,9 @@ local states =
 		onexit = function(inst)
 			if not inst.sg.statemem.keeptwofaced then
 				inst:SwitchToFourFaced()
+			end
+			if not inst.sg.statemem.finale then
+				inst:EnableCameraFocus(false)
 			end
 		end,
 	},
@@ -1537,6 +1589,7 @@ local states =
 		onenter = function(inst, cb)
 			inst.components.locomotor:Stop()
 			inst:SwitchToTwoFaced()
+			inst:EnableCameraFocus(true)
 			inst.AnimState:PlayAnimation("finale")
 			inst.AnimState:PushAnimation("finale2", false)
 			inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
@@ -1603,6 +1656,7 @@ local states =
 				inst.AnimState:ClearOverrideSymbol("wb_lunar_blast_base")
 				inst.AnimState:ClearOverrideSymbol("lunar_ring")
 				inst:SetMusicLevel(3)
+				inst:EnableCameraFocus(false)
 			end
 			if not inst.sg.statemem.keeptwofaced then
 				inst:SwitchToFourFaced()
@@ -1622,6 +1676,7 @@ local states =
 			if wagstaff then
 				inst.sg.statemem.wagstaff = wagstaff
 				inst:SwitchToTwoFaced()
+				inst:EnableCameraFocus(true)
 			else
 				if wagstaff == nil then --false if it came from "quickdefeated"
 					inst.AnimState:OverrideSymbol("wb_steam_parts", "wagboss_lunar_blast", "wb_steam_parts")
@@ -1670,6 +1725,7 @@ local states =
 			--should not reach here
 			if inst.sg.statemem.wagstaff then
 				inst.sg.statemem.wagstaff:Remove()
+				inst:EnableCameraFocus(false)
 			end
 			inst:RemoveTag("NOCLICK")
 			inst.AnimState:ClearOverrideSymbol("fx_bits")

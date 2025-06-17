@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "We get to help Ms. Pearl find a new home!",
 
-        WANDERINGTRADER = "What does he have for us?",
+        WANDERINGTRADER =
+        {
+            GENERIC = "What does he have for us?",
+            DISGUISED = "It looks weird.",
+        },
 
         GESTALT_GUARD_EVOLVED = "Why are they mad at us?",
         FLOTATIONCUSHION = "But we're not afraid of the water!",

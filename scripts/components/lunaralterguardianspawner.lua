@@ -75,9 +75,8 @@ function self:TrySpawnLunarGuardian(spawner)
     local pt = spawner:GetPosition()
     local spawn_pt = GetSpawnPoint(pt)
     if spawn_pt then
-        spawner:PushEvent("lunarguardianincoming")
         self.guardiancomingpt = spawn_pt
-        self:KickOffSpawn(spawner.prefab == "wagstaff_npc_wagpunk_arena" and 15 or 4)
+		self:KickOffSpawn(spawner.prefab == "wagstaff_npc_wagpunk_arena" and 14 or 4)
     end
 end
 

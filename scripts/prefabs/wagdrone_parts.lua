@@ -35,8 +35,8 @@ local function OnUsed(inst, target, user)
 end
 
 local function UseableTargetedItem_ValidTarget(inst, target, doer)
-	--notarget means friendly and repairable
-	return target:HasTag("wagdrone") and target:HasAnyTag("HAMMER_workable", "notarget")
+	--_inventoryitem means friendly and repairable
+	return target:HasTag("wagdrone") and target:HasAnyTag("HAMMER_workable", "_inventoryitem")
 end
 
 local function fn()

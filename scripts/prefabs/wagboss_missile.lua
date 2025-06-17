@@ -541,6 +541,17 @@ local function Detonate(inst)
 						else
 							v.components.fueled:SetPercent(pct - deltapct)
 						end
+					elseif v.components.finiteuses then
+						local pct = v.components.finiteuses:GetPercent()
+						local deltapct = 2 / TUNING.HEATROCK_NUMUSES
+						if pct < deltapct * 1.1 then
+							local x1, y1, z1 = v.Transform:GetWorldPosition()
+							v:Remove()
+							v = SpawnPrefab("ash")
+							v.Transform:SetPosition(x1, y1, z1)
+						else
+							v.components.finiteuses:SetPercent(pct - deltapct)
+						end
 					end
 				elseif v.components.heater and v.components.perishable then
 					if v.components.perishable:GetPercent() < 0.35 then

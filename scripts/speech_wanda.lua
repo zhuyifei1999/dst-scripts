@@ -5702,7 +5702,11 @@ return{
 
         HERMITCRAB_RELOCATION_KIT = "Where did I move her to again?",
 
-        WANDERINGTRADER = "I've seen him roaming around before.",
+        WANDERINGTRADER =
+        {
+            GENERIC = "I knew it was you.",
+            DISGUISED = "He looks familiar.",
+        },
 
         GESTALT_GUARD_EVOLVED = "They know what we've done.",
         FLOTATIONCUSHION = "How convenient!",
