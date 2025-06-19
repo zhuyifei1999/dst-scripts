@@ -27,10 +27,10 @@ end
 
 function WanderingTraderBrain:OnStart()
     local root = PriorityNode({
-        WhileNode(function() return self.inst.sg.mem.trading end, "Trading",
+		WhileNode(function() return self.inst.sg.mem.trading or self.inst:HasStock() end, "Trading",
             FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn)),
 
-        IfNode(function() return self.inst.components.prototyper == nil and self.inst:CanChatter() end, "No stock left",
+		IfNode(function() return not self.inst:HasStock() and self.inst:CanChatter() end, "No stock left",
             SequenceNode({
                 ActionNode(function()
                     self.inst:DoChatter("WANDERINGTRADER_OUTOFSTOCK_PROXIMITY", math.random(#STRINGS.WANDERINGTRADER_OUTOFSTOCK_PROXIMITY), 15)

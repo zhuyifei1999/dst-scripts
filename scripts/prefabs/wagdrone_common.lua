@@ -49,7 +49,8 @@ end
 local function RemoveFriendlyConfig(inst)
 	inst:RemoveComponent("inventoryitem")
 	inst:RemoveComponent("finiteuses")
-	inst:RemoveComponent("knownlocations")
+	inst:RemoveComponent("knowndynamiclocations")
+	inst:RemoveTag("companion")
 end
 
 --------------------------------------------------------------------------
@@ -167,11 +168,11 @@ end
 --------------------------------------------------------------------------
 
 local function RememberDeployPoint(inst, dont_overwrite)
-	inst.components.knownlocations:RememberLocation("deploypoint", inst:GetPosition(), dont_overwrite)
+	inst.components.knowndynamiclocations:RememberLocation("deploypoint", inst:GetPosition(), dont_overwrite)
 end
 
 local function ForgetDeployPoint(inst)
-	inst.components.knownlocations:ForgetLocation("deploypoint")
+	inst.components.knowndynamiclocations:ForgetLocation("deploypoint")
 end
 
 local function FriendlyDamageToUses(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
@@ -183,7 +184,12 @@ local function FriendlyDamageToUses(inst, amount, overtime, cause, ignore_invinc
 end
 
 local function toground(inst)
-	RememberDeployPoint(inst)
+	if inst.components.finiteuses:GetPercent() > 0 then
+		RememberDeployPoint(inst)
+		inst:PushEvent("activate")
+	else
+		inst:PushEvent("deactivate")
+	end
 end
 
 local topocket = ForgetDeployPoint
@@ -193,10 +199,20 @@ local function OnDepleted(inst)
 	inst:PushEvent("deactivate")
 end
 
+local OnFloat = OnDepleted
+
+local function OnRepaired(inst)
+	if not (inst.components.inventoryitem:IsHeld() or inst.components.floater:IsFloating()) then
+		RememberDeployPoint(inst, true)
+		inst:PushEvent("activate")
+	end
+end
+
 local function ChangeToFriendly(inst)
 	if inst.components.inventoryitem == nil then
 		RemoveQuestConfig(inst)
 		RemoveLootConfig(inst)
+		inst:AddTag("companion")
 
 		inst.components.health:SetPercent(1)
 		inst.components.health.redirect = FriendlyDamageToUses
@@ -205,13 +221,14 @@ local function ChangeToFriendly(inst)
 		inst.components.inventoryitem:SetOnDroppedFn(toground)
 		inst.components.inventoryitem:SetOnPutInInventoryFn(topocket)
 		inst.components.inventoryitem.nobounce = true
+		inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 
 		inst:AddComponent("finiteuses")
 		inst.components.finiteuses:SetMaxUses(TUNING.WAGDRONE_ROLLING_USES)
 		inst.components.finiteuses:SetUses(TUNING.WAGDRONE_ROLLING_USES)
 		inst.components.finiteuses.onfinished = OnDepleted
 
-		inst:AddComponent("knownlocations")
+		inst:AddComponent("knowndynamiclocations")
 
 		if not POPULATING then
 			toground(inst)
@@ -225,8 +242,12 @@ local function ChangeToFriendly(inst)
 end
 
 local function MakeFriendablePristine(inst)
+	inst:AddTag("donotautopick")
+
 	--Sneak this into pristine state for optimization
 	inst:AddTag("__inventoryitem")
+
+	MakeInventoryFloatable(inst, "med", 0.5, { 1.1, 1.3, 1.1 })
 end
 
 local function MakeFriendable(inst)
@@ -234,6 +255,8 @@ local function MakeFriendable(inst)
 	inst:RemoveTag("__inventoryitem")
 
 	inst:PrereplicateComponent("inventoryitem")
+
+	inst:ListenForEvent("floater_startfloating", OnFloat)
 end
 
 local function IsFriendly(inst)
@@ -268,4 +291,5 @@ return
 	FriendlyPreLoad = FriendlyPreLoad,
 	RememberDeployPoint = RememberDeployPoint,
 	ForgetDeployPoint = ForgetDeployPoint,
+	OnRepaired = OnRepaired,
 }

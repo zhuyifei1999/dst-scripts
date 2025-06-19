@@ -1,12 +1,6 @@
-
-local prefabs =
-{
-}
-
 local assets =
 {
 	Asset("ANIM", "anim/hat_alterguardian_equipped.zip"),
-    Asset("ANIM", "anim/hat_alterguardianupgraded_equipped.zip"),
 }
 
 local function OnActivated(inst, owner, is_front)
@@ -43,6 +37,8 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 	inst.AnimState:SetFinalOffset(1)
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+	inst.AnimState:SetSymbolMultColour("flame_swap", 1, 1, 1, 0.2)
+	inst.AnimState:SetSymbolLightOverride("flame_swap", 0.5)
 
 	inst.Transform:SetNoFaced()
 
@@ -64,4 +60,4 @@ local function fn()
     return inst
 end
 
-return Prefab("alterguardian_hat_equipped", fn, assets, prefabs)
+return Prefab("alterguardian_hat_equipped", fn, assets)

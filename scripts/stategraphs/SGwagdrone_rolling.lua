@@ -80,7 +80,11 @@ local events =
 		inst.sg.mem.turnon = nil
 		inst.sg.mem.tostationary = nil
 		inst.sg.mem.tomobile = nil
-		if not inst.sg:HasStateTag("off") then
+		if inst.components.floater:IsFloating() then
+			if inst.sg.currentstate.name ~= "off_idle" then
+				inst.sg:GoToState("off_idle")
+			end
+		elseif not inst.sg:HasStateTag("off") then
 			if not inst.sg:HasAnyStateTag("busy", "broken") then
 				if inst.sg:HasStateTag("stationary") then
 					inst.sg.mem.turnoff = true
@@ -246,7 +250,7 @@ local function DoSpinningAOE(inst, targets)
 
 								v.components.workable:WorkedBy(inst, mult)
 								numuses = numuses + 1
-								if v:IsValid() and v.components.workable:CanBeWorked() then
+								if v:IsValid() and v.components.workable and v.components.workable:CanBeWorked() then
 									if mult > 1 then
 										slowdown = true
 									else
@@ -630,6 +634,9 @@ local states =
 
 		events =
 		{
+			EventHandler("deactivate", function(inst)
+				inst.components.health:SetPercent(1)
+			end),
 			EventHandler("healthdelta", function(inst, data)
 				if data and data.newpercent >= 1 then
 					inst.sg:GoToState("repair")
@@ -1180,6 +1187,9 @@ local states =
 
 		events =
 		{
+			EventHandler("deactivate", function(inst)
+				inst.components.health:SetPercent(1)
+			end),
 			EventHandler("healthdelta", function(inst, data)
 				if data and data.newpercent >= 1 then
 					inst.sg:GoToState("stationary_repair")

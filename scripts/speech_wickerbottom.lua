@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Oh dear, the roaming vendor sure could use a bath.",
-            DISGUISED = "It appears rather unhealthy.",
+            REVEALED = "Oh dear, the roaming vendor sure could use a bath.",
+            GENERIC = "It appears rather unhealthy.",
         },
 
         GESTALT_GUARD_EVOLVED = "They have evolved into a more hostile form.",

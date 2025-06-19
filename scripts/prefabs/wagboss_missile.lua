@@ -453,6 +453,17 @@ local function Retarget(inst, target)
 	inst:ListenForEvent("wagboss_missile_target_detonated", inst._ontargetdetonated, target)
 end
 
+local function CancelTargetLock(inst)
+	if inst.target then
+		inst:RemoveEventCallback("wagboss_missile_target_detonated", inst._ontargetdetonated, inst.target)
+		if inst.ring then
+			inst.ring:RemoveEventCallback("onremove", inst._onremoveringtarget, inst.target)
+			inst._onremoveringtarget(inst.target)
+		end
+		inst.target = nil
+	end
+end
+
 local function ShowMissile(inst)
 	if not inst.shown:value() then
 		inst.shown:set(true)
@@ -633,6 +644,7 @@ local function fn()
 	inst.Physics:SetSphere(0.5)
 
 	inst:AddTag("CLASSIFIED")
+	inst:AddTag("pseudoprojectile")
 
 	inst.tilt = net_smallbyte(inst.GUID, "wagboss_missile.tilt", "tiltdirty")
 	inst.circling = net_bool(inst.GUID, "wagboss_missile.circling", "tiltdirty")
@@ -676,6 +688,7 @@ local function fn()
 
 	inst.Launch = Launch
 	inst.Retarget = Retarget
+	inst.CancelTargetLock = CancelTargetLock
 	inst.ShowMissile = ShowMissile
 	inst.Detonate = Detonate
 	inst.OnEntitySleep = inst.Remove

@@ -471,6 +471,7 @@ local function DoOffScreenReset(inst)
 	inst._resettask = nil
 	inst.shouldreset = nil
 	inst:RemoveTag("notarget")
+	inst:SetTempNoCollide(false, "reset")
 	if not (inst.components.health and inst.components.health:IsDead()) then
 		local x, z = TheWorld.Map:GetWagPunkArenaCenterXZ()
 		if x and z then
@@ -488,6 +489,7 @@ local function DoReset(inst)
 			else
 				inst.shouldreset = true
 				inst:AddTag("notarget")
+				inst:SetTempNoCollide(true, "reset")
 			end
 		end
 	elseif inst:IsAsleep() and not (inst.components.health and inst.components.health:IsDead()) then
@@ -501,6 +503,7 @@ local function CancelReset(inst)
 	if inst.shouldreset then
 		inst.shouldreset = nil
 		inst:RemoveTag("notarget")
+		inst:SetTempNoCollide(false, "reset")
 		if inst._resettask then
 			inst._resettask:Cancel()
 			inst._resettask = nil
@@ -972,6 +975,7 @@ local PHASES =
 			inst.canhackdrones = false
 			inst.canorbitalstrike = false
 		end,
+		isbarragephase = true,
 	},
 	{
 		hp = 0.65,
@@ -1005,6 +1009,7 @@ local PHASES =
 			inst.canhackdrones = true
 			inst.canorbitalstrike = true
 		end,
+		isbarragephase = true,
 	},
 	{
 		hp = 0.3,
@@ -1032,9 +1037,14 @@ local PHASES =
 
 local DEESCALATE_TIME = 30
 
-local function CalcThreatLevel(dps)
+local function CalcThreatLevel(inst, dps)
 	local numthreatlevels = #TUNING.WAGBOSS_ROBOT_ATTACK_PERIOD
-	return math.clamp(math.floor(Remap(dps, 150, 375, 1, numthreatlevels)), 1, numthreatlevels)
+	local level = math.floor(Remap(dps, 150, 375, 1, numthreatlevels))
+	if inst.sg:HasStateTag("missiles_target_fail") then
+		--missiles could not find any targets, but still taking damage, so raise threat level
+		level = level + 1
+	end
+	return math.clamp(level, 1, numthreatlevels)
 end
 
 local function SetThreatLevel(inst, level)
@@ -1053,9 +1063,22 @@ local function SetThreatLevel(inst, level)
 end
 
 local function OnDpsUpdate(inst, dps)
-	local threatlevel = CalcThreatLevel(dps)
+	local threatlevel = CalcThreatLevel(inst, dps)
 	if threatlevel >= inst.threatlevel then
 		SetThreatLevel(inst, threatlevel)
+	end
+end
+
+local function SkipBarragePhase(inst)
+	if inst.canmissilebarrage and inst.components.health then
+		local healthpct = inst.components.health:GetPercent()
+		for i = #PHASES - 1, 1, -1 do
+			local v = PHASES[i]
+			if healthpct <= v.hp and v.isbarragephase then
+				PHASES[i + 1].fn(inst)
+				break
+			end
+		end
 	end
 end
 
@@ -1410,8 +1433,26 @@ local function MakeObstacle(inst, isobstacle)
 		inst.isobstacle:set(false)
 		inst:RemoveTag("blocker")
 		ChangeToGiantCharacterPhysics(inst, 1000, STANDING_RADIUS)
-		inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
+		if next(inst._nocollide) then
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+		else
+			inst.Physics:ClearCollidesWith(COLLISION.CHARACTERS)
+		end
 		OnIsObstacleDirty(inst)
+	end
+end
+
+local function SetTempNoCollide(inst, nocollide, reason)
+	if nocollide then
+		if next(inst._nocollide) == nil and not inst.isobstacle:value() then
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+		end
+		inst._nocollide[reason] = true
+	elseif inst._nocollide[reason] then
+		inst._nocollide[reason] = nil
+		if next(inst._nocollide) == nil and not inst.isobstacle:value() then
+			inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+		end
 	end
 end
 
@@ -1639,6 +1680,7 @@ local function fn()
 
 	inst._temptbl1 = {}
 	inst._temptbl2 = {}
+	inst._nocollide = {}
 
 	inst.active = false
 	inst.hostile = false
@@ -1658,6 +1700,8 @@ local function fn()
     inst.IsSocketed = IsSocketed
 	inst.BreakGlass = BreakGlass
 	inst.MakeObstacle = MakeObstacle
+	inst.SetTempNoCollide = SetTempNoCollide
+	inst.SkipBarragePhase = SkipBarragePhase
 	inst.SetMusicLevel = SetMusicLevel
 	inst.EnableCameraFocus = EnableCameraFocus
 	inst.AddAlterSymbols = AddAlterSymbols

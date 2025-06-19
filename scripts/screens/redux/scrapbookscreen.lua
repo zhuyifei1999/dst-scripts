@@ -1681,6 +1681,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 		end
 
 		animstate:Hide("snow")
+		animstate:Hide("mouseover")
 
 		if data.hide then
 			for i,hide in ipairs(data.hide) do

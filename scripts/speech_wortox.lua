@@ -5724,8 +5724,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "This guy's disguise! Hyuyu!",
-            DISGUISED = "Whoa, uncanny beefalo!",
+            REVEALED = "This guy's disguise! Hyuyu!",
+            GENERIC = "Whoa, uncanny beefalo!",
         },
 
         GESTALT_GUARD_EVOLVED = "Well whad'ya know, we reap what we sow!",

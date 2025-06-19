@@ -5714,8 +5714,8 @@ return {
 
         WANDERINGTRADER =
         {
-            GENERIC = "If we trade, will we beef friends!",
-            DISGUISED = "Looks like it's about to turn.",
+            REVEALED = "If we trade, will we beef friends!",
+            GENERIC = "Looks like it's about to turn.",
         },
 
         GESTALT_GUARD_EVOLVED = "These ones have an explosive personality.",

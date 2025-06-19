@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "YOU DISGUST ME... WHAT DO YOU HAVE?",
-            DISGUISED = "IT LOOKS DISEASED",
+            REVEALED = "YOU DISGUST ME... WHAT DO YOU HAVE?",
+            GENERIC = "IT LOOKS DISEASED",
         },
 
         GESTALT_GUARD_EVOLVED = "I LIKE THIS VERSION. SO HATEFUL",

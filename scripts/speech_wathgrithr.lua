@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "The pelt-bearer cometh to ply his wares.",
-            DISGUISED = "Wretched beast. Shall I grant it peace?",
+            REVEALED = "The pelt-bearer cometh to ply his wares.",
+            GENERIC = "Wretched beast. Shall I grant it peace?",
         },
 
         GESTALT_GUARD_EVOLVED = "Revenge is thine inheritance.",

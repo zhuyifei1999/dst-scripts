@@ -166,9 +166,20 @@ local function _FindMissileTargets(inst, maxtargets, targets, _missiles)
 end
 
 local CollectMissileTargets = _FindMissileTargets
-local HasAnyMissileTarget = _FindMissileTargets --HasAnyMissileTarget(inst), no extra params
+--local HasAnyMissileTarget = _FindMissileTargets --HasAnyMissileTarget(inst), no extra params
 
 local function TryRetargetMissiles(inst, data)
+	if inst.components.combat == nil or (inst.components.health and inst.components.health:IsDead()) then
+		--no longer in combat
+		for i, v in ipairs(data.missiles) do
+			if v:IsValid() then
+				v:CancelTargetLock()
+			end
+		end
+		data.task:Cancel()
+		return
+	end
+
 	assert(next(inst._temptbl1) == nil)
 	local toretarget = inst._temptbl1
 	local maxnum = 0
@@ -195,6 +206,8 @@ local function TryRetargetMissiles(inst, data)
 		return
 	end
 	local num = #targets
+
+	inst.sg:RemoveStateTag("missiles_target_fail")
 
 	--After one missile detonates, don't retarget the remaining missiles
 	--if it would just end up redistributing to the same set of targets.
@@ -409,8 +422,8 @@ local function ChooseAttack(inst, target)
 		inst.sg:GoToState("signal_pre")
 		return true
 	elseif inst.canmissiles and
-		(inst.canmissilebarrage or not inst.components.timer:TimerExists("missiles_cd")) and
-		HasAnyMissileTarget(inst)
+		(inst.canmissilebarrage or not inst.components.timer:TimerExists("missiles_cd"))
+		--and HasAnyMissileTarget(inst)
 	then
 		inst.sg:GoToState("missiles_pre")
 		return true
@@ -1362,7 +1375,7 @@ local states =
 			FrameEvent(42, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
 				SetShadowScale(inst, 0.93)
-				inst.Physics:SetCollisionMask(COLLISION.WORLD)
+				inst:SetTempNoCollide(true, "leap")
 			end),
 			FrameEvent(43, function(inst)
 				SetShadowScale(inst, 0.88)
@@ -1400,7 +1413,7 @@ local states =
 
 		onexit = function(inst)
 			if not inst.sg.statemem.leaping then
-				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+				inst:SetTempNoCollide(false, "leap")
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				SetShadowScale(inst, 1)
@@ -1422,7 +1435,7 @@ local states =
 				inst.components.locomotor:Stop()
 			end
 			SetShadowScale(inst, 0.84)
-			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+			inst:SetTempNoCollide(true, "leap")
 		end,
 
 		onupdate = OnUpdateLeap,
@@ -1452,7 +1465,7 @@ local states =
 
 		onexit = function(inst)
 			if not inst.sg.statemem.leaping then
-				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+				inst:SetTempNoCollide(false, "leap")
 				inst.Physics:ClearMotorVelOverride()
 				inst.Physics:Stop()
 				SetShadowScale(inst, 1)
@@ -1467,7 +1480,7 @@ local states =
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("atk_leap_pst")
 			SetShadowScale(inst, 0.84)
-			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+			inst:SetTempNoCollide(true, "leap")
 		end,
 
 		onupdate = OnUpdateLeap,
@@ -1479,7 +1492,7 @@ local states =
 			FrameEvent(3, function(inst) SetShadowScale(inst, 0.93) end),
 			FrameEvent(4, function(inst)
 				SetShadowScale(inst, 1)
-				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+				inst:SetTempNoCollide(false, "leap")
 				inst.sg.statemem.landed = true
 				inst.sg.statemem.shakeonexit = true
 				inst:StartStompFx()
@@ -1524,7 +1537,7 @@ local states =
 
 		onexit = function(inst)
 			if not inst.sg.statemem.landed then
-				inst.Physics:SetCollisionMask(COLLISION.WORLD, COLLISION.OBSTACLES, COLLISION.GIANTS)
+				inst:SetTempNoCollide(false, "leap")
 			end
 			if inst.sg.statemem.speed then
 				inst.Physics:ClearMotorVelOverride()
@@ -1539,7 +1552,7 @@ local states =
 
 	State{
 		name = "missiles_pre",
-		tags = { "attack", "missiles", "busy" },
+		tags = { "attack", "missiles", "busy", "first_missile" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -1576,6 +1589,9 @@ local states =
 		tags = { "attack", "missiles", "busy" },
 
 		onenter = function(inst)
+			if inst.sg.lasttags and inst.sg.lasttags["missiles_target_fail"] then
+				inst.sg:AddStateTag("missiles_target_fail")
+			end
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("atk_missile_pre2")
 			GetUpShake2(inst)
@@ -1606,14 +1622,16 @@ local states =
 		name = "missiles",
 		tags = { "attack", "missiles", "busy" },
 
-		onenter = function(inst, pretargets)
+		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("atk_missile")
 			DoFootstepHeavyShake(inst)
 
 			assert(next(inst._temptbl1) == nil)
 			local targets = inst._temptbl1
-			CollectMissileTargets(inst, NUM_MISSILES, targets)
+			if not CollectMissileTargets(inst, NUM_MISSILES, targets) then
+				inst.sg:AddStateTag("missiles_target_fail")
+			end
 
 			inst.sg.statemem.missiles = {}
 			local x, _, z = inst.Transform:GetWorldPosition()
@@ -1685,13 +1703,20 @@ local states =
 		tags = { "attack", "missiles", "busy" },
 
 		onenter = function(inst, missiles_time)
+			if inst.sg.lasttags and inst.sg.lasttags["missiles_target_fail"] then
+				inst.sg:AddStateTag("missiles_target_fail")
+			end
 			local t = GetTime()
 			inst.sg.statemem.t = missiles_time or t + TUNING.WAGBOSS_ROBOT_MISSILE_BARRAGE_PERIOD[inst.threatlevel or 1]
 			local timeout = inst.sg.statemem.t - t
 			if timeout > 0 then
 				inst.sg:SetTimeout(timeout)
+			elseif inst.canmissilebarrage and inst.sg:HasStateTag("missiles_target_fail") then
+				inst:SkipBarragePhase()
+				inst.sg:GoToState("missiles_pst")
+				return
 			else
-				inst.sg:GoToState(inst.canmissilebarrage and HasAnyMissileTarget(inst) and "missiles_pre2" or "missiles_pst")
+				inst.sg:GoToState(inst.canmissilebarrage --[[and HasAnyMissileTarget(inst)]] and "missiles_pre2" or "missiles_pst")
 				return
 			end
 			inst.components.locomotor:Stop()
@@ -1699,7 +1724,12 @@ local states =
 		end,
 
 		ontimeout = function(inst)
-			inst.sg:GoToState(inst.canmissilebarrage and HasAnyMissileTarget(inst) and "missiles_pre2" or "missiles_pst")
+			if inst.canmissilebarrage and inst.sg:HasStateTag("missiles_target_fail") then
+				inst:SkipBarragePhase()
+				inst.sg:GoToState("missiles_pst")
+			else
+				inst.sg:GoToState(inst.canmissilebarrage --[[and HasAnyMissileTarget(inst)]] and "missiles_pre2" or "missiles_pst")
+			end
 		end,
 
 		events =
@@ -1716,6 +1746,9 @@ local states =
 		tags = { "hit", "missiles", "busy" },
 
 		onenter = function(inst, missiles_time)
+			if inst.sg.lasttags and inst.sg.lasttags["missiles_target_fail"] then
+				inst.sg:AddStateTag("missiles_target_fail")
+			end
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("atk_missile_hit")
 			CommonHandlers.UpdateHitRecoveryDelay(inst)
@@ -1730,7 +1763,7 @@ local states =
 				end
 			end),
 			FrameEvent(17, function(inst)
-				if inst.canmissilebarrage and not inst.sg:HasStateTag("caninterrupt") and HasAnyMissileTarget(inst) then
+				if inst.canmissilebarrage and not inst.sg:HasAnyStateTag("caninterrupt", "missiles_target_fail") --[[and HasAnyMissileTarget(inst)]] then
 					inst.sg:GoToState("missiles_pre2")
 				end
 			end),
@@ -1764,6 +1797,9 @@ local states =
 		tags = { "attack", "missiles", "busy" },
 
 		onenter = function(inst)
+			if inst.sg.lasttags and inst.sg.lasttags["missiles_target_fail"] then
+				inst.sg:AddStateTag("missiles_target_fail")
+			end
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("atk_missile_pst")
 		end,

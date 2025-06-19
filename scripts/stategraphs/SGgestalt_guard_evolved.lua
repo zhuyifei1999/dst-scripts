@@ -43,12 +43,6 @@ local events =
             inst.sg:GoToState("relocate")
         end
     end),
-
-    EventHandler("force_relocate", function(inst)
-        if not (inst.sg:HasStateTag("busy")) then
-            inst.sg:GoToState("relocate")
-        end
-    end),
 }
 
 --NOTE: these are stategraph tags!
@@ -390,22 +384,8 @@ local states =
 	},
 }
 
-local function SpawnTrail(inst)
-	if not inst._notrail then
-		local trail = SpawnPrefab("gestalt_trail")
-		trail.Transform:SetPosition(inst.Transform:GetWorldPosition())
-		trail.Transform:SetRotation(inst.Transform:GetRotation())
-	end
-end
-
 CommonStates.AddWalkStates(states,
-{
-    walktimeline =
-    {
-        TimeEvent(0, SpawnTrail),
-    },
-}
-, nil, nil, true,
+nil, nil, nil, true,
 {
     walkonenter = function(inst)
         inst.SoundEmitter:PlaySound("rifts5/gestalt_evolved/walk_LP", "walk_lp")

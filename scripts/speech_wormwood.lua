@@ -5708,8 +5708,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Shaggy Buddy Man!",
-            DISGUISED = "Shaggy Buddy Man?",
+            REVEALED = "Shaggy Buddy Man!",
+            GENERIC = "Shaggy Buddy Man?",
         },
 
         GESTALT_GUARD_EVOLVED = "Why friend mad? Why friend not friend?",

@@ -725,6 +725,12 @@ end
 berrybush_init_fn = function(inst, build_name)
     basic_init_fn( inst, build_name, "berrybush" )
 
+    inst.linked_skinname = "dug_"..build_name
+
+    if inst.components.placer ~= nil then
+        return -- No FX for placer...
+    end
+
     local skin_fx = SKIN_FX_PREFAB[build_name]
     inst.vfx_fx = skin_fx and skin_fx[1] ~= nil and skin_fx[1]:len() > 0 and skin_fx[1] or nil
     if inst.vfx_fx ~= nil then
@@ -736,6 +742,7 @@ berrybush_init_fn = function(inst, build_name)
         end
     end
 end
+
 berrybush_clear_fn = function(inst)
     basic_clear_fn(inst, "berrybush")
     if inst._vfx_fx_inst ~= nil then
@@ -744,15 +751,27 @@ berrybush_clear_fn = function(inst)
         end
         inst._vfx_fx_inst = nil
     end
+
+    inst.linked_skinname = nil
 end
+
+berrybush_waxed_clear_fn = berrybush_clear_fn
 
 dug_berrybush_init_fn = function(inst, build_name)
     basic_init_fn( inst, build_name, "dug_berrybush" )
     inst.linked_skinname = build_name
 end
 dug_berrybush_clear_fn = function(inst)
-    basic_clear_fn(inst, "dug_berrybush" )
+    basic_clear_fn(inst, "berrybush" )
     inst.linked_skinname = nil
+end
+
+dug_berrybush_waxed_clear_fn = function(inst)
+    dug_berrybush_clear_fn(inst)
+
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:ChangeImageName(inst.parentprefab)
+    end
 end
 
 reskin_tool_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "reskin_tool" ) end

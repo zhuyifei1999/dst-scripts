@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "What does he have for us?",
-            DISGUISED = "It looks weird.",
+            REVEALED = "What does he have for us?",
+            GENERIC = "It looks weird.",
         },
 
         GESTALT_GUARD_EVOLVED = "Why are they mad at us?",

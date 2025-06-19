@@ -5711,8 +5711,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Heard you take ashes?",
-            DISGUISED = "Weird.",
+            REVEALED = "Heard you take ashes?",
+            GENERIC = "Weird.",
         },
 
         GESTALT_GUARD_EVOLVED = "What did I ever do to you?",

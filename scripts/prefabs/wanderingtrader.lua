@@ -102,7 +102,10 @@ local function OnTurnOff(inst)
     inst.sg.mem.trading = nil
 end
 local function OnActivate(inst)
-    local no_stock = inst:TryToRemovePrototyper()
+	local no_stock = not inst:HasStock()
+	if no_stock then
+		inst:EnablePrototyper(false)
+	end
     inst.sg.mem.didtrade = true
     inst:PushEvent("dotrade", {no_stock = no_stock, })
 end
@@ -113,6 +116,22 @@ end
 local function OnArrivedFn(inst)
     inst.components.worldroutefollower:SetPaused(true, "arrivedwait")
     inst:DoTaskInTime(GetRandomWithVariance(TUNING.WANDERINGTRADER_WANDERING_PERIOD, TUNING.WANDERINGTRADER_WANDERING_PERIOD_VARIANCE), ClearArrivedWait)
+end
+
+local function HasStock(inst)
+	return #inst.components.craftingstation:GetRecipes() > 0
+end
+
+local function EnablePrototyper(inst, enabled)
+	if not enabled then
+		inst:RemoveComponent("prototyper")
+	elseif inst.components.prototyper == nil then
+		local prototyper = inst:AddComponent("prototyper")
+		prototyper.onturnon = OnTurnOn
+		prototyper.onturnoff = OnTurnOff
+		prototyper.onactivate = OnActivate
+		prototyper.trees = TUNING.PROTOTYPER_TREES.WANDERINGTRADERSHOP
+	end
 end
 
 local function AddWares(inst, wares)
@@ -144,7 +163,7 @@ local function RerollWares(inst)
     if seasonalwares then
         inst:AddWares(seasonalwares)
     end
-    inst:AddPrototyper()
+	inst:EnablePrototyper(inst:HasTag("revealed"))
 end
 
 local function OnTimerDone(inst, data)
@@ -371,41 +390,22 @@ local function OnLoad(inst, data)
         inst.inittask = nil
     end
     inst.islunarhailing = data.islunarhailing
-    inst:TryToRemovePrototyper()
 end
 local function OnLoadPostPass(inst)--newents, savedata)
     inst:TryToCreateWorldRoute()
 end
 
-local function AddPrototyper(inst)
-    if not inst.components.prototyper then
-        local prototyper = inst:AddComponent("prototyper")
-        prototyper.onturnon = OnTurnOn
-        prototyper.onturnoff = OnTurnOff
-        prototyper.onactivate = OnActivate
-        prototyper.trees = TUNING.PROTOTYPER_TREES.WANDERINGTRADERSHOP
-    end
-end
-local function TryToRemovePrototyper(inst)
-    local no_stock = inst.components.craftingstation:GetRecipes()[1] == nil
-    if no_stock then
-        inst:RemoveComponent("prototyper")
-        return true
-    end
-    return false
-end
-
 local function ImmediatelyTeleport(inst)
-    inst.OnEntitySleep = nil
     inst.components.worldroutefollower:TeleportToDestination()
 end
 local function TeleportDelay(inst) -- NOTES(JBK): Needs a delay so that OnEntityWake does not get called before OnEntitySleep from this teleport.
+	inst.HiddenActionFn = nil
     inst:DoTaskInTime(0, ImmediatelyTeleport)
 end
 
 local function PreTeleportFn(inst, destx, desty, destz)
     if not inst:IsAsleep() then
-        inst.OnEntitySleep = TeleportDelay
+		inst.HiddenActionFn = TeleportDelay
         inst.sg:GoToState("teleport")
         return true -- We handle teleporting.
     end
@@ -413,14 +413,12 @@ local function PreTeleportFn(inst, destx, desty, destz)
 end
 
 local function PostTeleportFn(inst)
-    inst.OnEntitySleep = nil
-    if not inst:IsAsleep() then
-        inst:PushEvent("arrive")
-    end
+	inst.HiddenActionFn = nil
+	inst:PushEvent("arrive")
 end
 
 local function GoToHiding(inst)
-    inst.OnEntitySleep = nil
+	inst.HiddenActionFn = nil
     inst.sg:GoToState("hiding")
     inst:RemoveFromScene()
 end
@@ -429,7 +427,7 @@ local function OnWanderingTraderHide(inst) -- This stomps over all stategraphs w
     if inst:IsAsleep() then
         GoToHiding(inst)
     else
-        inst.OnEntitySleep = GoToHiding
+		inst.HiddenActionFn = GoToHiding
         inst.sg:GoToState("hide")
     end
 end
@@ -450,6 +448,30 @@ end
 local function OnWorldInit(inst)
     inst:WatchWorldState("islunarhailing", inst.SetIsLunarHailing)
     inst:SetIsLunarHailing(TheWorld.state.islunarhailing)
+end
+
+local function DisplayNameFn(inst)
+	return inst:HasTag("revealed") and STRINGS.NAMES.WANDERINGTRADER_REVEALED or nil
+end
+
+local function GetStatus(inst)--, viewer)
+	return inst.sg:HasStateTag("revealed") and "revealed" or nil
+end
+
+local function SetRevealed(inst, revealed)
+	if revealed then
+		inst:AddTag("revealed")
+		inst:EnablePrototyper(inst:HasStock())
+	else
+		inst:RemoveTag("revealed")
+		inst:EnablePrototyper(false)
+	end
+end
+
+local function OnEntitySleep(inst)
+	if inst.HiddenActionFn then
+		inst:HiddenActionFn()
+	end
 end
 
 local function fn()
@@ -478,10 +500,10 @@ local function fn()
     talker.chaticon = "npcchatflair_wanderingtrader"
     talker:MakeChatter()
 
-    --prototyper (from prototyper component) added to pristine state for optimization
-    inst:AddTag("prototyper")
+	inst.displaynamefn = DisplayNameFn
 
     inst.entity:SetPristine()
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -496,6 +518,10 @@ local function fn()
     inst.OnLoad = OnLoad
     inst.OnLoadPostPass = OnLoadPostPass
 
+	inst.HiddenActionFn = nil
+	inst.OnEntitySleep = OnEntitySleep
+
+	inst.HasStock = HasStock
     inst.RerollWares = RerollWares
     inst.AddWares = AddWares
     inst.GetRequiredNodes = GetRequiredNodes
@@ -503,19 +529,19 @@ local function fn()
     inst.CreateWorldRoute = CreateWorldRoute
     inst.TryToCreateRouteFromTopology = TryToCreateRouteFromTopology
     inst.CreateRouteFromRandomWalk = CreateRouteFromRandomWalk
+	inst.EnablePrototyper = EnablePrototyper
 
     inst.OnWanderingTraderHide = OnWanderingTraderHide
     inst.OnWanderingTraderShow = OnWanderingTraderShow
 
     inst.SetIsLunarHailing = SetIsLunarHailing
 
-    inst.AddPrototyper = AddPrototyper
-    inst.TryToRemovePrototyper = TryToRemovePrototyper
-    inst:AddPrototyper()
+	inst.SetRevealed = SetRevealed
 
     inst:AddComponent("craftingstation")
 
     inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = GetStatus
 
     local locomotor = inst:AddComponent("locomotor")
     locomotor.walkspeed = 1.5

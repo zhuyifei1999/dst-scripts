@@ -5710,8 +5710,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Good day for a trade.",
-            DISGUISED = "That thing don't look right.",
+            REVEALED = "Good day for a trade.",
+            GENERIC = "That thing don't look right.",
         },
 
         GESTALT_GUARD_EVOLVED = "I know, I know. Y'all got a bone to pick.",

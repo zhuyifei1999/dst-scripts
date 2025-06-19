@@ -5705,8 +5705,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Hello, hair-cow man! We trade, yes?",
-            DISGUISED = "Is not normal hair-cow.",
+            REVEALED = "Hello, hair-cow man! We trade, yes?",
+            GENERIC = "Is not normal hair-cow.",
         },
 
         GESTALT_GUARD_EVOLVED = "It not Wolfgang fault!",
