@@ -805,6 +805,8 @@ function OnServerPauseDirty(pause, autopause, gameautopause, source)
     if TheWorld then
         TheWorld:PushEvent("serverpauseddirty", {pause = pause, autopause = autopause, gameautopause = gameautopause, source = source})
     end
+
+    TheHaptics:PauseEffects(IsNormalPaused)
 end
 
 function ReplicateEntity(guid)

@@ -18,10 +18,7 @@ local function OnUsed(inst, target, user)
 				inst.components.stackable:Get():Remove()
 			elseif target.components.finiteuses:GetPercent() < 1 then
 				target.components.finiteuses:SetPercent(1)
-				if not target.components.inventoryitem:IsHeld() then
-					WagdroneCommon.RememberDeployPoint(target, true)
-				end
-				target:PushEvent("activate")
+				WagdroneCommon.OnRepaired(target)
 				inst.components.stackable:Get():Remove()
 			end
 			if inst:IsValid() then

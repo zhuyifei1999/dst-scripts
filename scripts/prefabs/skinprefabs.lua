@@ -1910,6 +1910,30 @@ table.insert(prefs, CreatePrefabSkin("berrybush_mystical",
 	release_group = 167,
 }))
 
+table.insert(prefs, CreatePrefabSkin("berrybush_waxed_cawnival",
+{
+	base_prefab = "berrybush_waxed",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	prefabs = { "carnival_sparkle_bush", },
+	init_fn = function(inst) berrybush_init_fn(inst, "berrybush_cawnival") end,
+	skin_tags = { },
+	fx_prefab = { "carnival_sparkle_bush", },
+	release_group = 132,
+}))
+
+table.insert(prefs, CreatePrefabSkin("berrybush_waxed_mystical",
+{
+	base_prefab = "berrybush_waxed",
+	type = "item",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) berrybush_init_fn(inst, "berrybush_mystical") end,
+	skin_tags = { },
+	release_group = 167,
+}))
+
 table.insert(prefs, CreatePrefabSkin("birdcage_adventure",
 {
 	base_prefab = "birdcage",
@@ -2378,7 +2402,7 @@ table.insert(prefs, CreatePrefabSkin("bushhat_cawnival",
 	skin_tags = { "BUSHHAT", "CAWNIVAL", "CRAFTABLE", },
 	fx_prefab = { "carnival_sparkle_bush", },
 	release_group = 132,
-	granted_items = { "berrybush_cawnival", "dug_berrybush_cawnival", },
+	granted_items = { "berrybush_cawnival", "dug_berrybush_cawnival", "berrybush_waxed_cawnival", "dug_berrybush_waxed_cawnival", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("bushhat_mystical",
@@ -2390,7 +2414,7 @@ table.insert(prefs, CreatePrefabSkin("bushhat_mystical",
 	init_fn = function(inst) bushhat_init_fn(inst, "bushhat_mystical") end,
 	skin_tags = { "BUSHHAT", "MYSTICAL", "CRAFTABLE", },
 	release_group = 167,
-	granted_items = { "berrybush_mystical", "dug_berrybush_mystical", },
+	granted_items = { "berrybush_mystical", "dug_berrybush_mystical", "berrybush_waxed_mystical", "dug_berrybush_waxed_mystical", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("campfire_cabin",
@@ -3568,6 +3592,30 @@ table.insert(prefs, CreatePrefabSkin("dug_berrybush_cawnival",
 table.insert(prefs, CreatePrefabSkin("dug_berrybush_mystical",
 {
 	base_prefab = "dug_berrybush",
+	type = "item",
+	build_name_override = "berrybush_mystical",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) dug_berrybush_init_fn(inst, "berrybush_mystical") end,
+	skin_tags = { },
+	release_group = 167,
+}))
+
+table.insert(prefs, CreatePrefabSkin("dug_berrybush_waxed_cawnival",
+{
+	base_prefab = "dug_berrybush_waxed",
+	type = "item",
+	build_name_override = "berrybush_cawnival",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	init_fn = function(inst) dug_berrybush_init_fn(inst, "berrybush_cawnival") end,
+	skin_tags = { },
+	release_group = 132,
+}))
+
+table.insert(prefs, CreatePrefabSkin("dug_berrybush_waxed_mystical",
+{
+	base_prefab = "dug_berrybush_waxed",
 	type = "item",
 	build_name_override = "berrybush_mystical",
 	rarity = "Elegant",

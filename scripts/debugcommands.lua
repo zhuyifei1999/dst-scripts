@@ -2953,7 +2953,7 @@ function d_createscrapbookdata(print_missing_icons)
         AddInfo( "scale", t.scrapbook_scale )
         AddInfo( "animpercent", t.scrapbook_animpercent ~= nil and math.clamp(t.scrapbook_animpercent, 0, 1) or nil)
         AddInfo( "overridebuild", t.scrapbook_overridebuild )
-        AddInfo( "hide", (t.scrapbook_hide and ConcatArrays(t.scrapbook_hide, {"mouseover"})) or {"mouseover"})
+        AddInfo( "hide", t.scrapbook_hide )
         AddInfo( "hidesymbol", t.scrapbook_hidesymbol )
 
         -- AnimState:GetCurrentBankName is an unreliable function that should only

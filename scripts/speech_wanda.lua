@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "I knew it was you.",
-            DISGUISED = "He looks familiar.",
+            REVEALED = "I knew it was you.",
+            GENERIC = "He looks familiar.",
         },
 
         GESTALT_GUARD_EVOLVED = "They know what we've done.",

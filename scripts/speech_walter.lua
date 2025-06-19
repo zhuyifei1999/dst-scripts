@@ -5746,8 +5746,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "He was hiding in plain sight!",
-            DISGUISED = "You're right, Woby. That's an odd one.",
+            REVEALED = "He was hiding in plain sight!",
+            GENERIC = "You're right, Woby. That's an odd one.",
         },
 
         GESTALT_GUARD_EVOLVED = "Wobes! I think we're the unfinished business for these ghosts!",

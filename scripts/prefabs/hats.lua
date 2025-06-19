@@ -3050,14 +3050,32 @@ local function MakeHat(name)
 
     local alterguardianhat_colourtint = { 0.4, 0.3, 0.25, 0.2, 0.15, 0.1 }
     local alterguardianhat_multtint = { 0.7, 0.6, 0.55, 0.5, 0.45, 0.4 }
-	local function alterguardianhat_animstatemult(animstate, r, g, b, a)
+	local function alterguardianhat_animstatemult(animstate, r, g, b)
         animstate:SetMultColour(
             alterguardianhat_multtint[1+g+b],
             alterguardianhat_multtint[r+1+b],
             alterguardianhat_multtint[r+g+1],
-			a
+			1
         )
     end
+	local function alterguardianhat_flamelevel(inst, animstate, level)
+		local symbol =
+			(level >= 2 and "flame_loop") or
+			(level >= 1 and "flame_loop_small") or
+			nil
+
+		if symbol then
+			local skin_build = inst:GetSkinBuild()
+			if skin_build then
+				animstate:OverrideItemSkinSymbol("flame_swap", skin_build, symbol, inst.GUID, "hat_alterguardian_equipped")
+			else
+				animstate:OverrideSymbol("flame_swap", "hat_alterguardian_equipped", symbol)
+			end
+		else
+			animstate:ClearOverrideSymbol("flame_swap")
+		end
+	end
+
     fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
     fns.alterguardianhat_wagbosstest = function(item) return item:HasTag("lunarseed") end
     local function alterguardianhat_updatelight(inst)
@@ -3108,29 +3126,21 @@ local function MakeHat(name)
             end
         end
 
-		local a = inst.lunarseedsmaxed and 0.2 or 1
-		alterguardianhat_animstatemult(inst.AnimState, r, g, b, a)
+		local flamelevel =
+			(inst.lunarseedsmaxed and 2) or
+			(inst.lunarseedscount > TUNING.ALTERGUARDIANHAT_SEEDCOUNT_FOR_FULL_PLANAR_CONVERSION and 1) or
+			0
+
+		alterguardianhat_animstatemult(inst.AnimState, r, g, b)
 
         if inst._front and inst._front:IsValid() then
-			alterguardianhat_animstatemult(inst._front.AnimState, r, g, b, a)
-            if inst.lunarseedsmaxed then
-                inst._front.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
-                inst._front.AnimState:SetBank("hat_alterguardianupgraded_equipped")
-            else
-                inst._front.AnimState:SetBuild("hat_alterguardian_equipped")
-                inst._front.AnimState:SetBank("hat_alterguardian_equipped")
-            end
+			alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
+			alterguardianhat_flamelevel(inst, inst._front.AnimState, flamelevel)
         end
 
         if inst._back and inst._back:IsValid() then
-			alterguardianhat_animstatemult(inst._back.AnimState, r, g, b, a)
-            if inst.lunarseedsmaxed then
-                inst._back.AnimState:SetBuild("hat_alterguardianupgraded_equipped")
-                inst._back.AnimState:SetBank("hat_alterguardianupgraded_equipped")
-            else
-                inst._back.AnimState:SetBuild("hat_alterguardian_equipped")
-                inst._back.AnimState:SetBank("hat_alterguardian_equipped")
-            end
+			alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
+			alterguardianhat_flamelevel(inst, inst._back.AnimState, flamelevel)
         end
     end
 

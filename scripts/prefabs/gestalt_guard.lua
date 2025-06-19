@@ -221,6 +221,7 @@ local function fn()
 
 	inst.scrapbook_inspectonseen = true
     inst.scrapbook_hide = {"angry"}
+	inst.scrapbook_overridedata = {"head_fx_big", "brightmare_gestalt_head_evolved", "head_fx_big"}
 
     inst.entity:SetPristine()
 

@@ -4307,7 +4307,8 @@ STRINGS =
 
         HERMITCRAB_RELOCATION_KIT = "Hermit Rehomer",
 
-        WANDERINGTRADER = "Wandering Trader",
+        WANDERINGTRADER = "Odd Beefalo",
+        WANDERINGTRADER_REVEALED = "Wandering Trader",
 
         FLOTATIONCUSHION = "Personal Floater",
         GESTALT_GUARD_EVOLVED = "Inimical Gestalt",
@@ -5993,6 +5994,7 @@ STRINGS =
     HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
     HERMITCRAB_GOT_MAPSCROLL_BAD = {"This map is no good to me.", "It doesn't take me anywhere special."},
     HERMITCRAB_GOT_MAPSCROLL_GOOD = {"The island on this map seems nice...", "and it will take me away from the junk collector.", "Thank you, I think I'll go.", "Perhaps it will even bring me closer to my sweetie...", "if he's still out there."},
+    HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL = {"The island on this map seems nice...", "and it will take me away from the junk collector.", "Thank you, I think I'll go.", "There's no reason to stay here anymore."},
 
     HERMITCRAB_ANNOUNCE_SPOOKED = "Did you see that?!",
     HERMITCRAB_ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",
@@ -7640,9 +7642,9 @@ STRINGS =
         "Well, that's all she wrote! I'll go find more items to offer.",
     },
     WANDERINGTRADER_STARTTRADING = {
-        "Come'on over! I got goods galore for ya!",
+        "Friend, I got goods galore for ya!",
         "Buddy, whatcha need?",
-        "Saunter this way, let's trade!",
+        "Hey there, let's trade!",
     },
     WANDERINGTRADER_ENDTRADING_NOTRADES = {
         "Can't please everyone!",
@@ -14086,8 +14088,8 @@ STRINGS.UI =
 
             L2 = "Open Crafting",
             R2 = "Manage Inventory",
-
-            L3 = "Chat*",
+            
+            L3 = "Toggle Target Locking",
             R3 = "Social Menu",
 
             TOUCH_BL = "Player List",
@@ -14116,8 +14118,8 @@ STRINGS.UI =
 
             L2 = "Open Crafting",
             R2 = "Manage Inventory",
-
-            L3 = "Chat*",
+            
+            L3 = "Toggle Target Locking",
             R3 = "Social Wheel",
 
             TOUCH_BL = "Player List",

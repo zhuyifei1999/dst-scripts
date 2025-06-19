@@ -10,6 +10,7 @@ local events = {
     CommonHandlers.OnFallInVoid(),
     EventHandler("dotrade", function(inst, data)
         if not inst.sg:HasStateTag("busy") then
+			inst.sg.statemem.keeprevealed = true
             inst.sg:GoToState("dotrade", data)
         end
     end),
@@ -25,24 +26,19 @@ local states = {
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("idle_hooded")
+			inst.AnimState:PlayAnimation("idle_hooded", true)
         end,
 
         onupdate = function(inst)
-            if inst.sg.mem.trading then
-                inst.sg:GoToState("trading_start")
-            end
+			if not inst:IsAsleep() then
+				if inst.sg.mem.trading then
+					inst.sg:GoToState("trading_start")
+				elseif inst:HasStock() and inst:IsNearPlayer(TUNING.RESEARCH_MACHINE_DIST, true) then
+					inst:EnablePrototyper(true)
+					inst.sg:GoToState("trading_start")
+				end
+			end
         end,
-
-        events = {
-            EventHandler("animover", function(inst)
-                if inst.sg.mem.trading then
-                    inst.sg:GoToState("trading_start")
-                else
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
     },
 
     State{
@@ -121,21 +117,26 @@ local states = {
 
     State{
         name = "trading_start",
-        tags = {"canrotate"},
+		tags = { "canrotate", "revealed" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("reveal")
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/reveal")
+			inst:SetRevealed(true)
         end,
         events = {
             EventHandler("animover", function(inst)
                 if inst.AnimState:IsCurrentAnimation("reveal") then
                     if inst.sg.mem.trading then
                         inst.AnimState:PlayAnimation("trade_pre")
+                        inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/trade_pre")
                     else
                         inst.AnimState:PlayAnimation("conceal")
+                        inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/conceal")
                     end
                 elseif inst.AnimState:IsCurrentAnimation("trade_pre") then
+					inst.sg.statemem.keeprevealed = true
                     if inst.sg.mem.trading then
                         inst.sg:GoToState("trading")
                     else
@@ -146,10 +147,15 @@ local states = {
                 end
             end),
         },
+		onexit = function(inst)
+			if not inst.sg.statemem.keeprevealed then
+				inst:SetRevealed(false)
+			end
+		end,
     },
     State{
         name = "trading",
-        tags = {"canrotate"},
+		tags = { "canrotate", "revealed" },
 
         onenter = function(inst, data)
             if data == nil or not data.repeating then
@@ -157,6 +163,7 @@ local states = {
             end
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("trade_loop")
+			inst:SetRevealed(true)
         end,
         onupdate = function(inst)
             if not inst.sg.mem.trading then
@@ -165,6 +172,7 @@ local states = {
         end,
         events = {
             EventHandler("animover", function(inst)
+				inst.sg.statemem.keeprevealed = true
                 if inst.sg.mem.trading then
                     inst.sg:GoToState("trading", {repeating = true,})
                 else
@@ -172,30 +180,40 @@ local states = {
                 end
             end),
         },
+		onexit = function(inst)
+			if not inst.sg.statemem.keeprevealed then
+				inst:SetRevealed(false)
+			end
+		end,
     },
     State{
         name = "trading_stop",
-        tags = {"canrotate"},
+		tags = { "canrotate", "revealed" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("trade_pst")
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/trade_pst")
             if inst.sg.mem.didtrade then
                 inst:TryChatter("WANDERINGTRADER_ENDTRADING_MADETRADE", math.random(#STRINGS.WANDERINGTRADER_ENDTRADING_MADETRADE), 1.5)
                 inst.sg.mem.didtrade = nil
             else
                 inst:TryChatter("WANDERINGTRADER_ENDTRADING_NOTRADES", math.random(#STRINGS.WANDERINGTRADER_ENDTRADING_NOTRADES), 1.5)
             end
+			inst:SetRevealed(true)
         end,
         events = {
             EventHandler("animover", function(inst)
                 if inst.AnimState:IsCurrentAnimation("trade_pst") then
                     if inst.sg.mem.trading then
                         inst.AnimState:PlayAnimation("trade_pre")
+                        inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/trade_pre")
                     else
                         inst.AnimState:PlayAnimation("conceal")
+                        inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/conceal")
                     end
                 elseif inst.AnimState:IsCurrentAnimation("trade_pre") then
+					inst.sg.statemem.keeprevealed = true
                     if inst.sg.mem.trading then
                         inst.sg:GoToState("trading")
                     else
@@ -206,10 +224,15 @@ local states = {
                 end
             end),
         },
+		onexit = function(inst)
+			if not inst.sg.statemem.keeprevealed then
+				inst:SetRevealed(false)
+			end
+		end,
     },
     State{
         name = "dotrade",
-        tags = {"busy"},
+		tags = { "busy", "revealed" },
         onenter = function(inst, data)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("trade_give")
@@ -222,29 +245,51 @@ local states = {
                     inst:TryChatter("WANDERINGTRADER_DOTRADE", math.random(#STRINGS.WANDERINGTRADER_DOTRADE), 1.5)
                 end
             end
-            inst.SoundEmitter:PlaySound("rifts4/rabbit_king/trade") -- FIXME(JBK): WT: Sounds.
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/trade") -- FIXME(JBK): WT: Sounds.
+			inst:SetRevealed(true)
         end,
         events = {
             EventHandler("animover", function(inst)
+				inst.sg.statemem.keeprevealed = true
                 inst.sg:GoToState("trading") -- Let this state get out of trading.
             end),
         },
+		onexit = function(inst)
+			if not inst.sg.statemem.keeprevealed then
+				inst:SetRevealed(false)
+			end
+		end,
     },
 
     State{
         name = "talking",
-        tags = {"canrotate"},
+		tags = { "canrotate", "revealed" },
 
-        onenter = function(inst)
+        onenter = function(inst, already_talking)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("talk")
+            if not already_talking then
+                inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/talk_LP", "talk_loop")
+            end
+			inst:SetRevealed(true)
         end,
 
         events = {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("talking")
+                inst.sg.statemem.keep_talking = true
+				inst.sg.statemem.keeprevealed = true
+                inst.sg:GoToState("talking", true)
             end),
         },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.keep_talking then
+                inst.SoundEmitter:KillSound("talk_loop")
+            end
+			if not inst.sg.statemem.keeprevealed then
+				inst:SetRevealed(false)
+			end
+        end,
     },
 
     State{
@@ -255,42 +300,62 @@ local states = {
             inst.components.talker:ShutUp()
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("disappear")
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/disappear")
         end,
 
         timeline = {
-            FrameEvent(24, function(inst) inst.DynamicShadow:Enable(false) end),
+			FrameEvent(24, function(inst)
+				inst.DynamicShadow:Enable(false)
+				inst.sg:AddStateTag("invisible")
+				inst:AddTag("NOCLICK")
+			end),
         },
 
         onexit = function(inst)
             inst.DynamicShadow:Enable(true)
+			inst:RemoveTag("NOCLICK")
         end,
 
         events = {
             EventHandler("animover", function(inst)
-                if inst.OnEntitySleep then
-                    inst:OnEntitySleep()
-                end
-                inst.sg:GoToState("idle")
+				if inst.HiddenActionFn then
+					inst:HiddenActionFn()
+				else
+					inst.sg:GoToState("arrive")
+				end
             end),
+			EventHandler("arrive", function(inst)
+				if inst:IsAsleep() then
+					inst.sg:GoToState("idle")
+					return true
+				end
+			end),
         },
     },
 
     State{
         name = "arrive",
-        tags = {"busy"},
+		tags = { "busy", "invisible" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("appear")
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/appear")
             inst.DynamicShadow:Enable(false)
+			inst:AddTag("NOCLICK")
         end,
 
         timeline = {
-            FrameEvent(2, function(inst) inst.DynamicShadow:Enable(true) end),
+			FrameEvent(2, function(inst)
+				inst.DynamicShadow:Enable(true)
+				inst:RemoveTag("NOCLICK")
+				inst.sg:RemoveStateTag("invisible")
+			end),
         },
 
         onexit = function(inst)
             inst.DynamicShadow:Enable(true)
+			inst:RemoveTag("NOCLICK")
         end,
 
         events = {
@@ -307,22 +372,27 @@ local states = {
             inst.components.talker:ShutUp()
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("disappear")
+            inst.SoundEmitter:PlaySound("dontstarve/characters/skincollector/ingame/conceal")
         end,
 
         timeline = {
-            FrameEvent(24, function(inst) inst.DynamicShadow:Enable(false) end),
+			FrameEvent(24, function(inst)
+				inst.DynamicShadow:Enable(false)
+				inst.sg:AddStateTag("invisible")
+				inst:AddTag("NOCLICK")
+			end),
         },
 
         onexit = function(inst)
             inst.DynamicShadow:Enable(true)
+			inst:RemoveTag("NOCLICK")
         end,
-
 
         events = {
             EventHandler("animover", function(inst)
-                if inst.OnEntitySleep then
-                    inst:OnEntitySleep()
-                end
+				if inst.HiddenActionFn then
+					inst:HiddenActionFn()
+				end
             end),
         },
     },

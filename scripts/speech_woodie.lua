@@ -5705,8 +5705,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Don't worry, Luce. I could never trade you.",
-            DISGUISED = "It looks unnatural.",
+            REVEALED = "Don't worry, Luce. I could never trade you.",
+            GENERIC = "It looks unnatural.",
         },
 
         GESTALT_GUARD_EVOLVED = "They are not happy with us, Lucy.",

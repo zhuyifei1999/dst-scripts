@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Bonjour, Monsieur Boeuf! What do you have?",
-            DISGUISED = "Hmm. I wouldn't eat that one.",
+            REVEALED = "Bonjour, Monsieur Boeuf! What do you have?",
+            GENERIC = "Hmm. I wouldn't eat that one.",
         },
 
         GESTALT_GUARD_EVOLVED = "I assure you it wasn't personal.",

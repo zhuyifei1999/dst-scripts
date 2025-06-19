@@ -1551,6 +1551,7 @@ local function finale_CreateSilhouette()
 
 	fx.AnimState:SetBank("wilson")
 	fx.AnimState:SetBuild("wagstaff_finale")
+	fx.AnimState:Hide("bgwhite")
 	fx.AnimState:SetLightOverride(0.5)
 	fx.AnimState:SetFinalOffset(1)
 
@@ -1587,6 +1588,7 @@ local function finale_fn()
 	inst.AnimState:Hide("ARM_carry")
 	inst.AnimState:OverrideSymbol("face", "wagstaff_face_swap", "face")
 	inst.AnimState:OverrideSymbol("swap_hat", "hat_gogglesnormal", "swap_hat")
+	inst.AnimState:OverrideSymbol("fx_white", "wagstaff_finale", "fx_white")
 	inst.AnimState:SetErosionParams(0, SHADER_CUTOFF_HEIGHT, -1.0)
 	inst.AnimState:SetLightOverride(0.5)
 

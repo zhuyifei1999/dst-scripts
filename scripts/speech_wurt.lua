@@ -5704,8 +5704,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "Hi, fuzzy guy! Florp!",
-            DISGUISED = "Glurgh. What wrong with it?",
+            REVEALED = "Hi, fuzzy guy! Florp!",
+            GENERIC = "Glurgh. What wrong with it?",
         },
 
         GESTALT_GUARD_EVOLVED = "You not nice! Flort!",

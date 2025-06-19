@@ -3,6 +3,11 @@ local WagBossUtil = require("prefabs/wagboss_util")
 
 local assets =
 {
+	Asset("ANIM", "anim/wagboss_fissure.zip"),
+}
+
+local assets_burn_fx =
+{
 	Asset("ANIM", "anim/wagboss_lunar_blast.zip"),
 }
 
@@ -194,8 +199,8 @@ local function fn()
 	inst:AddTag("FX")
 	inst:AddTag("NOCLICK")
 
-	inst.AnimState:SetBank("wagboss_lunar_blast")
-	inst.AnimState:SetBuild("wagboss_lunar_blast")
+	inst.AnimState:SetBank("wagboss_fissure")
+	inst.AnimState:SetBuild("wagboss_fissure")
 	inst.AnimState:PlayAnimation("600x600_pre")
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 	inst.AnimState:SetLightOverride(0.3)
@@ -313,5 +318,5 @@ local function supernovafxfn()
 end
 
 return Prefab("alterguardian_lunar_fissures", fn, assets, prefabs),
-	Prefab("alterguardian_lunar_fissure_burn_fx", fxfn, assets),
-	Prefab("alterguardian_lunar_supernova_burn_fx", supernovafxfn, assets)
+	Prefab("alterguardian_lunar_fissure_burn_fx", fxfn, assets_burn_fx),
+	Prefab("alterguardian_lunar_supernova_burn_fx", supernovafxfn, assets_burn_fx)

@@ -5708,8 +5708,8 @@ return{
 
         WANDERINGTRADER =
         {
-            GENERIC = "I wonder how long he's been here.",
-            DISGUISED = "Looks unusual. Maybe it's dying.",
+            REVEALED = "I wonder how long he's been here.",
+            GENERIC = "Looks unusual. Maybe it's dying.",
         },
 
         GESTALT_GUARD_EVOLVED = "I would be angry too.",
