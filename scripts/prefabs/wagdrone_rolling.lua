@@ -110,13 +110,11 @@ local function SetBrainEnabled(inst, enable)
 	end
 end
 
-local function topocket(inst)
+local function OnEntitySleep(inst)
 	if inst.sg:HasStateTag("moving") or inst.sg.currentstate.name == "run_stop" then
 		inst.sg:GoToState("idle")
 	end
 end
-
-local OnEntitySleep = topocket
 
 local function OnSave(inst, data)
 	data.on = not inst.sg.mem.turnoff and (inst.sg.mem.turnon or not inst.sg:HasStateTag("off")) or nil
@@ -214,8 +212,6 @@ local function fn()
 	WagdroneCommon.MakeFriendable(inst)
 	WagdroneCommon.MakeHackable(inst)
 	WagdroneCommon.PreventTeleportFromArena(inst)
-
-	inst:ListenForEvent("onputininventory", topocket)
 
 	inst.beams = {}
 	inst.ConnectBeams = ConnectBeams

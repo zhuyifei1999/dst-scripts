@@ -1662,6 +1662,8 @@ local states =
 			local taskdata = { missiles = inst.sg.statemem.missiles, grouptargets = grouptargets }
 			taskdata.task = inst:DoPeriodicTask(1, TryRetargetMissiles, nil, taskdata)
 
+			inst.components.epicscare:Scare(5)
+
 			--inst.components.combat:RestartCooldown()
 			inst.components.timer:StopTimer("missiles_cd")
 			inst.components.timer:StartTimer("missiles_cd", GetRandomMinMax(unpack(TUNING.WAGBOSS_ROBOT_MISSILES_CD)))
@@ -2004,7 +2006,6 @@ local states =
 				inst.sg:AddStateTag("noattack")
 				DoJumpShake(inst)
 				inst:SetMusicLevel(2) --silence
-				TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { strname = "WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL", monologue = true, focusentity = inst })
 			end),
 			FrameEvent(54, function(inst) inst.SoundEmitter:KillSound("loop") end),
 			FrameEvent(72, GetUpShake1),

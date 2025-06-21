@@ -208,6 +208,7 @@ local function fn()
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
 	inst.AnimState:SetSortOrder(2)
 	inst.AnimState:SetMultColour(1, 1, 1, 0)
+	inst.AnimState:SetForceSinglePass(true)
 
 	inst.entity:SetPristine()
 

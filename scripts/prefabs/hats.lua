@@ -3058,23 +3058,6 @@ local function MakeHat(name)
 			1
         )
     end
-	local function alterguardianhat_flamelevel(inst, animstate, level)
-		local symbol =
-			(level >= 2 and "flame_loop") or
-			(level >= 1 and "flame_loop_small") or
-			nil
-
-		if symbol then
-			local skin_build = inst:GetSkinBuild()
-			if skin_build then
-				animstate:OverrideItemSkinSymbol("flame_swap", skin_build, symbol, inst.GUID, "hat_alterguardian_equipped")
-			else
-				animstate:OverrideSymbol("flame_swap", "hat_alterguardian_equipped", symbol)
-			end
-		else
-			animstate:ClearOverrideSymbol("flame_swap")
-		end
-	end
 
     fns.alterguardianhat_sporetest = function(item) return item:HasTag("spore") end
     fns.alterguardianhat_wagbosstest = function(item) return item:HasTag("lunarseed") end
@@ -3133,14 +3116,15 @@ local function MakeHat(name)
 
 		alterguardianhat_animstatemult(inst.AnimState, r, g, b)
 
+		local skin_build = inst:GetSkinBuild()
         if inst._front and inst._front:IsValid() then
 			alterguardianhat_animstatemult(inst._front.AnimState, r, g, b)
-			alterguardianhat_flamelevel(inst, inst._front.AnimState, flamelevel)
+			inst._front:SetFlameLevel(flamelevel, skin_build, inst.GUID)
         end
 
         if inst._back and inst._back:IsValid() then
 			alterguardianhat_animstatemult(inst._back.AnimState, r, g, b)
-			alterguardianhat_flamelevel(inst, inst._back.AnimState, flamelevel)
+			inst._back:SetFlameLevel(flamelevel, skin_build, inst.GUID)
         end
     end
 

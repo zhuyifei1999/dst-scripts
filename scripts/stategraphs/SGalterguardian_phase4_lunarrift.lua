@@ -584,6 +584,7 @@ local states =
 				if inst.sg.statemem.triggerlunacy then
 					inst.sg.statemem.triggerlunacy = false
 					inst:StartDomainExpansion()
+					inst.components.epicscare:Scare(5)
 				end
 			end),
 			FrameEvent(28, DoTauntShake),
@@ -638,6 +639,7 @@ local states =
 				end
 				inst:SetMusicLevel(3)
 				inst:EnableCameraFocus(false)
+				TheWorld:PushEvent("ms_wagstaff_arena_oneshot", { strname = "WAGSTAFF_WAGPUNK_ARENA_SCIONREVEAL", monologue = true, focusentity = inst })
 			end
 		end,
 	},
@@ -1191,6 +1193,7 @@ local states =
 			inst.components.timer:StopTimer("supernova_cd")
 			inst.components.timer:StartTimer("supernova_cd", TUNING.ALTERGUARDIAN_PHASE4_SUPERNOVA_CD)
 			inst:ResetCombo()
+			inst.components.epicscare:Scare(5)
 			inst.sg.statemem.loops = loops or 1
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 		end,
@@ -1205,10 +1208,8 @@ local states =
 			inst.sg.statemem.supernova = true
 			inst.sg.statemem.keepnofaced = true
 			if inst.sg.statemem.loops > 1 then
-				inst.sg.statemem.charging = true
 				inst.sg:GoToState("supernova_charging", inst.sg.statemem.loops - 1)
 			else
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_buildup_pst")
 				inst.sg:GoToState("supernova_burst_pre")
 			end
 		end,
@@ -1220,8 +1221,6 @@ local states =
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
 				inst:RemoveTag("supernova")
-			end
-			if not inst.sg.statemem.charging then
 				inst.SoundEmitter:KillSound("charging")
 			end
 		end,
@@ -1237,9 +1236,6 @@ local states =
 			inst.AnimState:PlayAnimation("atk_burst_charge_to_shoot")
 			SetPreventDeath(inst, true)
 			inst:AddTag("supernova")
-			inst.SoundEmitter:KillSound("idlea")
-			inst.SoundEmitter:KillSound("idleb")
-			inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
 		end,
 
 		timeline =
@@ -1252,6 +1248,7 @@ local states =
 		{
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
+					inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_buildup_pst")
 					inst.sg.statemem.supernova = true
 					inst.sg.statemem.keepnofaced = true
 					inst.sg:GoToState("supernova_burst_loop")
@@ -1266,10 +1263,8 @@ local states =
 			if not inst.sg.statemem.supernova then
 				SetPreventDeath(inst, false)
 				inst:RemoveTag("supernova")
-				inst.SoundEmitter:KillSound("bursting")
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 			end
+			inst.SoundEmitter:KillSound("charging")
 		end,
 	},
 
@@ -1290,9 +1285,6 @@ local states =
 			end
 			inst.SoundEmitter:KillSound("idlea")
 			inst.SoundEmitter:KillSound("idleb")
-			if not inst.SoundEmitter:PlayingSound("bursting") then
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "bursting")
-			end
 			SetPreventDeath(inst, true)
 			inst:AddTag("supernova")
 			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
@@ -1336,7 +1328,6 @@ local states =
 				inst.sg:GoToState("supernova_burst_loop", inst.sg.statemem.loops - 1)
 			else
 				inst.components.combat:RestartCooldown()
-				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_pst")
 				inst.sg:GoToState("supernova_burst_pst")
 			end
 		end,
@@ -1351,7 +1342,6 @@ local states =
 			if not inst.sg.statemem.bursting then
 				inst:RemoveTag("supernova")
 				inst:SetMusicLevel(3, true) --force music to update supernova mix
-				inst.SoundEmitter:KillSound("bursting")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
 				inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 			end
@@ -1441,6 +1431,7 @@ local states =
 					inst:FaceAwayFromPoint(pt, true)
 					inst.sg.statemem.wagstaffspawnpt = pt
 				end
+				inst:SetMusicLevel(2) --silence
 			end
 			inst.AnimState:PlayAnimation("defeated_pre")
 		end,
@@ -1481,6 +1472,9 @@ local states =
 				if not inst.sg.statemem.defeated then
 					inst:EnableCameraFocus(false)
 				end
+			end
+			if not inst.sg.statemem.defeated then
+				inst:SetMusicLevel(3)
 			end
 		end,
 	},
@@ -1537,6 +1531,8 @@ local states =
 			inst:EnableCameraFocus(true)
 			inst.AnimState:PlayAnimation("defeated_loop")
 
+			inst:SetMusicLevel(2) --silence
+
 			local function cb(wagstaff)
 				if inst.sg.statemem.cb == cb then
 					--anim was made facing left so we have to reverse it XD
@@ -1578,6 +1574,7 @@ local states =
 			end
 			if not inst.sg.statemem.finale then
 				inst:EnableCameraFocus(false)
+				inst:SetMusicLevel(3)
 			end
 		end,
 	},

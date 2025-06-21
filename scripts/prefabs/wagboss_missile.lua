@@ -374,6 +374,10 @@ local function UpdateFlightPath(inst, dt)
 		inst.tilt:set_local(tilt)
 		inst.tilt:set(tilt)
 	end
+
+	if inst.target then
+		inst.target:PushEvent("epicscare", { scarer = inst, duration = 1 })
+	end
 end
 
 local function Launch(inst, id, launcher, targetorpos, dir, grouptargets)
