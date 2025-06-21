@@ -1151,6 +1151,9 @@ local function SetCombatEnabled(inst, enabled)
 
 			inst:AddComponent("explosiveresist")
 
+			inst:AddComponent("epicscare")
+			inst.components.epicscare:SetRange(18) --missiles target range
+
 			inst:AddComponent("timer")
 			inst:AddComponent("grouptargeter")
 			inst:AddComponent("commander")

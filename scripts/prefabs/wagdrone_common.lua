@@ -192,7 +192,13 @@ local function toground(inst)
 	end
 end
 
-local topocket = ForgetDeployPoint
+local function topocket(inst)
+	ForgetDeployPoint(inst)
+	inst.sg:HandleEvent("deactivate")
+	if inst.sg.currentstate ~= "off_idle" then
+		inst.sg:GoToState("off_idle")
+	end
+end
 
 local function OnDepleted(inst)
 	ForgetDeployPoint(inst)

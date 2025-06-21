@@ -5993,8 +5993,7 @@ STRINGS =
     HERMITCRAB_WANT_HOUSE = {"I could really use some help fixing up my house..."},
     HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
     HERMITCRAB_GOT_MAPSCROLL_BAD = {"This map is no good to me.", "It doesn't take me anywhere special."},
-    HERMITCRAB_GOT_MAPSCROLL_GOOD = {"The island on this map seems nice...", "and it will take me away from the junk collector.", "Thank you, I think I'll go.", "Perhaps it will even bring me closer to my sweetie...", "if he's still out there."},
-    HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL = {"The island on this map seems nice...", "and it will take me away from the junk collector.", "Thank you, I think I'll go.", "There's no reason to stay here anymore."},
+    HERMITCRAB_GOT_MAPSCROLL_GOOD = {"The island on this map seems nice...", "At least it's away from that junk collector.", "I would go but...","No. I'm going.","I'm done waiting for him."},
 
     HERMITCRAB_ANNOUNCE_SPOOKED = "Did you see that?!",
     HERMITCRAB_ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",

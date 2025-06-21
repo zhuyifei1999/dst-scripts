@@ -23,6 +23,9 @@ local LunarBurnOver = Class(Widget, function(self, owner)
 	self.targetalpha = 0
 	self.flags = WagBossUtil.LunarBurnFlags.ALL
 	self.supernovamix = false
+	self.supernovasoundlevel = 0
+	self.supernovaparam = nil
+	self.supernovatargetparam = nil
 	self.anim:GetAnimState():Hide("supernova_miss")
 	self:Hide()
 
@@ -36,6 +39,10 @@ local LunarBurnOver = Class(Widget, function(self, owner)
 
 	self.inst:ListenForEvent("onremove", function()
 		self:SetSupernovaMix(false)
+		if TheFocalPoint and TheFocalPoint:IsValid() then
+			TheFocalPoint.SoundEmitter:KillSound("lunarburn_hit")
+			TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova")
+		end
 	end)
 end)
 
@@ -49,23 +56,17 @@ function LunarBurnOver:TurnOn(flags)
 				self.anim:GetAnimState():Show("lvl2")
 				self.anim:GetAnimState():Show("supernova_hit")
 				self.anim:GetAnimState():Hide("supernova_miss")
-				TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova_blocked")
-				if not TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_supernova") then
-					TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/tier2_HUD", "lunarburn_supernova")
-				end
+				self:SetSupernovaSoundLevel(2)
 			else
 				self.anim:GetAnimState():Hide("lvl2")
 				self.anim:GetAnimState():Hide("supernova_hit")
 				if bit.band(flags, WagBossUtil.LunarBurnFlags.NEAR_SUPERNOVA) ~= 0 then
 					self.anim:GetAnimState():Show("supernova_miss")
-					if not TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_supernova_blocked") then
-						TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_blocked_LP", "lunarburn_supernova_blocked")
-					end
+					self:SetSupernovaSoundLevel(1)
 				else
 					self.anim:GetAnimState():Hide("supernova_miss")
-					TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova_blocked")
+					self:SetSupernovaSoundLevel(0)
 				end
-				TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova")
 			end
 
 			if bit.band(flags, WagBossUtil.LunarBurnFlags.GENERIC) ~= 0 then
@@ -84,18 +85,13 @@ function LunarBurnOver:TurnOn(flags)
 			self.anim:GetAnimState():Hide("supernova_hit")
 			if bit.band(flags, WagBossUtil.LunarBurnFlags.NEAR_SUPERNOVA) ~= 0 then
 				self.anim:GetAnimState():Show("supernova_miss")
-				if not TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_supernova_blocked") then
-					TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_blocked_LP", "lunarburn_supernova_blocked")
-				end
+				self:SetSupernovaSoundLevel(1)
 			else
 				self.anim:GetAnimState():Hide("supernova_miss")
-				TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova_blocked")
+				self:SetSupernovaSoundLevel(0)
 			end
-			TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova")
 			TheFocalPoint.SoundEmitter:KillSound("lunarburn_hit")
 		end
-
-		self:SetSupernovaMix(bit.band(flags, bit.bor(WagBossUtil.LunarBurnFlags.SUPERNOVA, WagBossUtil.LunarBurnFlags.NEAR_SUPERNOVA)) ~= 0)
 	end
 
 	self.targetalpha = 1
@@ -104,7 +100,7 @@ function LunarBurnOver:TurnOn(flags)
 		self:Show()
 		self:StartUpdating()
 	else
-		self:StopUpdating()
+		self:CheckStopUpdating()
 	end
 end
 
@@ -113,17 +109,45 @@ function LunarBurnOver:TurnOff()
 		TheFocalPoint.SoundEmitter:KillSound("lunarburn_hit")
 		TheFocalPoint.SoundEmitter:PlaySound("rifts5/wagstaff_boss/beam_burning_fx_pst")
 	end
-	if TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_supernova") then
-		TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova")
+	if self.supernovasoundlevel > 1 then
+		TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_pst")
 	end
-	TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova_blocked")
-	self:SetSupernovaMix(false)
+	self:SetSupernovaSoundLevel(0)
 	self.targetalpha = 0
 	if self.alpha ~= 0 then
 		self:StartUpdating()
 	else
-		self:StopUpdating()
+		self:CheckStopUpdating()
 		self:Hide()
+	end
+end
+
+--0: off
+--1: blocked
+--2: hit
+function LunarBurnOver:SetSupernovaSoundLevel(level)
+	if level ~= self.supernovasoundlevel then
+		self.supernovasoundlevel = level
+		if level > 0 then
+			if not TheFocalPoint.SoundEmitter:PlayingSound("lunarburn_supernova") then
+				TheFocalPoint.SoundEmitter:PlaySound("rifts5/lunar_boss/supernova_burst_LP", "lunarburn_supernova")
+			end
+			self.supernovatargetparam = level > 1 and 0.05 or 0.35
+			if self.supernovaparam and self.supernovaparam ~= self.supernovatargetparam then
+				self:StartUpdating()
+			else
+				self.supernovaparam = self.supernovatargetparam
+				self:CheckStopUpdating()
+				TheFocalPoint.SoundEmitter:SetParameter("lunarburn_supernova", "blocked", self.supernovaparam)
+			end
+			self:SetSupernovaMix(true)
+		else
+			TheFocalPoint.SoundEmitter:KillSound("lunarburn_supernova")
+			self.supernovaparam = nil
+			self.supernovatargetparam = nil
+			self:CheckStopUpdating()
+			self:SetSupernovaMix(false)
+		end
 	end
 end
 
@@ -139,23 +163,51 @@ function LunarBurnOver:SetSupernovaMix(enable)
 	end
 end
 
+function LunarBurnOver:CheckStopUpdating()
+	if self.alpha == self.targetalpha and self.supernovaparam == self.supernovatargetparam then
+		self:StopUpdating()
+	end
+end
+
 function LunarBurnOver:OnUpdate(dt)
 	if dt > 0 then
-		dt = dt * 4
-		if self.targetalpha > self.alpha then
-			self.alpha = self.alpha + dt
-			if self.alpha >= self.targetalpha then
-				self.alpha = self.targetalpha
-				self:StopUpdating()
+		if self.supernovatargetparam ~= self.supernovaparam then
+			local delta = dt * 0.6 --0.5s to fade from 0.05 <-> 0.35
+			if self.supernovatargetparam > self.supernovaparam then
+				self.supernovaparam = self.supernovaparam + delta
+				if self.supernovaparam >= self.supernovatargetparam then
+					self.supernovaparam = self.supernovatargetparam
+					self:CheckStopUpdating()
+				end
+			else
+				self.supernovaparam = self.supernovaparam - delta
+				if self.supernovaparam <= self.supernovatargetparam then
+					self.supernovaparam = self.supernovatargetparam
+					self:CheckStopUpdating()
+				end
 			end
-		else
-			self.alpha = self.alpha - dt
-			if self.alpha <= self.targetalpha then
-				self.alpha = self.targetalpha
-				self:StopUpdating()
-			end
+			TheFocalPoint.SoundEmitter:SetParameter("lunarburn_supernova", "blocked", self.supernovaparam)
 		end
-		self.anim:GetAnimState():SetMultColour(1, 1, 1, self.alpha)
+
+		if self.alpha ~= self.targetalpha then
+			local delta = dt * 4
+			if self.targetalpha > self.alpha then
+				self.alpha = self.alpha + delta
+				if self.alpha >= self.targetalpha then
+					self.alpha = self.targetalpha
+					self:CheckStopUpdating()
+				end
+			else
+				self.alpha = self.alpha - delta
+				if self.alpha <= self.targetalpha then
+					self.alpha = self.targetalpha
+					self:CheckStopUpdating()
+				end
+			end
+			self.anim:GetAnimState():SetMultColour(1, 1, 1, self.alpha)
+		else
+			self:CheckStopUpdating()
+		end
 	end
 end
 

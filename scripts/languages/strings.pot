@@ -304380,42 +304380,22 @@ msgstr ""
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.2
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.2"
-msgid "and it will take me away from the junk collector."
+msgid "At least it's away from that junk collector."
 msgstr ""
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.3
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.3"
-msgid "Thank you, I think I'll go."
+msgid "I would go but..."
 msgstr ""
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.4
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.4"
-msgid "Perhaps it will even bring me closer to my sweetie..."
+msgid "No. I'm going."
 msgstr ""
 
 #. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.5
 msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD.5"
-msgid "if he's still out there."
-msgstr ""
-
-#. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.1
-msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.1"
-msgid "The island on this map seems nice..."
-msgstr ""
-
-#. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.2
-msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.2"
-msgid "and it will take me away from the junk collector."
-msgstr ""
-
-#. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.3
-msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.3"
-msgid "Thank you, I think I'll go."
-msgstr ""
-
-#. STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.4
-msgctxt "STRINGS.HERMITCRAB_GOT_MAPSCROLL_GOOD_CRACKEDPEARL.4"
-msgid "There's no reason to stay here anymore."
+msgid "I'm done waiting for him."
 msgstr ""
 
 #. STRINGS.HERMITCRAB_GOT_PEARL.1

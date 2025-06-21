@@ -742,7 +742,7 @@ function Combat:GetImpactSound(target, weapon)
                 tgttype or "flesh_"
             )..(
 				(target:HasAnyTag("smallcreature", "small") and "sml_") or
-				(target:HasAnyTag("largecreature", "epic", "large") and not target:HasAnyTag("shadowchesspiece", "fossil") and "lrg_") or
+				(target:HasAnyTag("largecreature", "epic", "large") and not target:HasAnyTag("shadowchesspiece", "fossil", "brightmareboss") and "lrg_") or
                 (tgttype == nil and target:GetIsWet() and "wet_") or
                 "med_"
             )..weaponmod
