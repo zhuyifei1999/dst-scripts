@@ -360,7 +360,7 @@ function Input:ResolveVirtualControls(control)
 	if IsCamAndInvCtrlScheme1(scheme) then
 		if IsVCtrlInvNav(control) then
 			--Handle CONTROL_INVENTORY priorities
-			if not (player and player.HUD and player.HUD:IsCraftingOpen()) then
+			if player and not (player.HUD and player.HUD:IsCraftingOpen()) then
 				if IsTwinStickAiming(player, scheme) or IsStrafing(player) then
 					return
 				end

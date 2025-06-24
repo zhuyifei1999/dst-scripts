@@ -818,10 +818,10 @@ local states =
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("activate1")
 			inst.SoundEmitter:KillSound("loop")
-			if inst.hostile then
-				TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
-			else
+			if not inst.hostile then
 				inst.AnimState:Hide("fx_activation")
+			elseif TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
+				TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
 			end
 			if POPULATING then
 				inst.sg:GoToState("idle")
@@ -900,9 +900,11 @@ local states =
 			inst:ConfigureFriendly()
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("activate2")
-			TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
-			if not (TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()) then
-				inst:EnableCameraFocus(true)
+			if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(inst.Transform:GetWorldPosition()) then
+				TheWorld:PushEvent("ms_wagboss_robot_losecontrol")
+				if not (TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated()) then
+					inst:EnableCameraFocus(true)
+				end
 			end
 		end,
 

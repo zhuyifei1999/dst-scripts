@@ -250,6 +250,11 @@ PREFAB_SKINS = {
 		"berrybush_cawnival",
 		"berrybush_mystical",
 	},
+	berrybush_waxed =
+	{
+		"berrybush_waxed_cawnival",
+		"berrybush_waxed_mystical",
+	},
 	birdcage =
 	{
 		"birdcage_adventure",
@@ -593,6 +598,11 @@ PREFAB_SKINS = {
 	{
 		"dug_berrybush_cawnival",
 		"dug_berrybush_mystical",
+	},
+	dug_berrybush_waxed =
+	{
+		"dug_berrybush_waxed_cawnival",
+		"dug_berrybush_waxed_mystical",
 	},
 	dug_gravestone =
 	{
