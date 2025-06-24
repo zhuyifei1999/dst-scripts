@@ -458,7 +458,6 @@ local function InitCheckSpawnBuild(inst)
 		inst.AnimState:ClearOverrideSymbol("splat_liquid")
 		inst.AnimState:SetFinalOffset(-1)
 
-		inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_a_LP", "idlea")
 		inst.SoundEmitter:PlaySound("rifts5/lunar_boss/idle_b_LP", "idleb")
 
 		inst:StartDomainExpansion()
