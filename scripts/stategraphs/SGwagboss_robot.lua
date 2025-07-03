@@ -779,9 +779,13 @@ local states =
 		{
 			EventHandler("reveal", function(inst)
 				if inst.AnimState:IsCurrentAnimation("concealed_idle") then
-					inst.AnimState:PlayAnimation("revealed")
-					inst.AnimState:PushAnimation("idle_off", false)
-					inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/revealed")
+					if POPULATING then
+						inst.AnimState:PlayAnimation("idle_off")
+					else
+						inst.AnimState:PlayAnimation("revealed")
+						inst.AnimState:PushAnimation("idle_off", false)
+						inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/revealed")
+					end
 				end
 			end),
 			EventHandler("entitywake", function(inst)

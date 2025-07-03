@@ -115,7 +115,7 @@ function PlantRegistryData:Load()
     local failed = false
 	TheSim:GetPersistentString("plantregistry", function(load_success, data)
 		if load_success and data ~= nil then
-            local success, plant_registry = RunInSandboxSafe(data)
+            local success, plant_registry = RunInSandboxSafeCatchInfiniteLoops(data)
 		    if success and plant_registry and type(plant_registry) == "table" then
 				self.plants = plant_registry.plants or {}
 				self.fertilizers = plant_registry.fertilizers or {}

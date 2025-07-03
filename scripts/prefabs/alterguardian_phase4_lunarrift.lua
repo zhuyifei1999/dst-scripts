@@ -1037,6 +1037,7 @@ local function fn()
 
 	inst:AddComponent("locomotor")
 	inst.components.locomotor.walkspeed = TUNING.ALTERGUARDIAN_PHASE4_LUNARRIFT_WALKSPEED
+	inst.components.locomotor.pathcaps = { ignorewalls = true }
 
 	inst:AddComponent("colouradder")
 
