@@ -45,6 +45,7 @@ ITEM_DISPLAY_BLACKLIST =
 	bundlewrap_cawnival = true,
 	bundlewrap_gothic = true,
 	bundlewrap_kitchen = true,
+	bundlewrap_metal = true,
 	bundlewrap_mystical = true,
 	bundlewrap_vintage = true,
 	cave_entrance_fantasy = true,
