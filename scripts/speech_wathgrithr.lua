@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Cursed wraith!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "Tis a strange kind of power.",
         MOONSTORM_STATIC_ITEM = "A strange power rests inside.",
+        MOONSTORM_STATIC_ROAMER = "The power roams free.",
         MOONSTORM_SPARK = "It sends a curious tickle through my bones.",
 
         BIRD_MUTANT = "The beasts are changed by the storm!",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "Revenge is thine inheritance.",
         FLOTATIONCUSHION = "Not this day, Njord!",
         LUNAR_SEED = "Sprung from the shining coronal of a mighty deity.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "It conjures a defensive permimeter worthy of Thor!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Alone, it falters. Among its kin, it thrives.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Let us establish a bastion fit for the thunder god!",
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

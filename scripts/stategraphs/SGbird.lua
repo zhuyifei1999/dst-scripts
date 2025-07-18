@@ -23,9 +23,14 @@ local events =
         end
     end),
     CommonHandlers.OnFreeze(),
-    EventHandler("attacked", function(inst)
+	CommonHandlers.OnElectrocute(),
+	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-            inst.sg:GoToState("hit")
+			if not (inst.sg:HasStateTag("noelectrocute") or IsStuck(inst)) and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			elseif not inst.sg:HasStateTag("electrocute") then
+				inst.sg:GoToState("hit")
+			end
         end
     end),
     EventHandler("death", function(inst)
@@ -37,7 +42,7 @@ local events =
         end
     end),
     EventHandler("onignite", function(inst)
-        if not inst.components.health:IsDead() then
+		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
             inst.sg:GoToState("distress_pre")
         end
     end),
@@ -164,7 +169,7 @@ local states =
 
     State{
         name = "delay_glide",
-        tags = { "busy", "notarget" },
+		tags = { "busy", "notarget", "noelectrocute" },
 
         onenter = function(inst, delay)
             inst:AddTag("NOCLICK")
@@ -193,7 +198,7 @@ local states =
 
     State{
         name = "glide",
-        tags = { "idle", "flight", "notarget" },
+		tags = { "idle", "flight", "notarget", "noelectrocute" },
 
         onenter = function(inst)
 			inst:AddTag("NOCLICK")
@@ -284,7 +289,7 @@ local states =
 
     State{
         name = "flyaway",
-        tags = { "flight", "busy", "notarget" },
+		tags = { "flight", "busy", "notarget", "noelectrocute" },
 
         onenter = function(inst)
 			if IsStuck(inst) then
@@ -407,7 +412,7 @@ local states =
 
     State{
         name = "fall",
-        tags = { "busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -435,7 +440,7 @@ local states =
 
     State{
         name = "trapped",
-        tags = { "busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -475,5 +480,17 @@ local states =
 
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states, nil, nil,
+{
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.components.burnable and inst.components.burnable:IsBurning() then
+				inst.sg:GoToState("distress_pre")
+			else
+				inst.sg:GoToState("flyaway")
+			end
+		end
+	end,
+})
 
 return StateGraph("bird", states, events, "glide")

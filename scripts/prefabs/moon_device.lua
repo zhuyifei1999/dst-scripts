@@ -507,9 +507,10 @@ local function MakeDeviceStage(name, client_postinit, master_postinit, construct
 	return Prefab(name, fn, assets, prefabs, product)
 end
 
+local LINK_MUST_TAGS = { "moon_altar_link" }
 local function placer_onupdatetransform(inst)
     local pos = inst:GetPosition()
-    local ents = TheSim:FindEntities(pos.x, 0, pos.z, PLACER_SNAP_DISTANCE, { "moon_altar_link" })
+    local ents = TheSim:FindEntities(pos.x, 0, pos.z, PLACER_SNAP_DISTANCE, LINK_MUST_TAGS)
 
     if #ents > 0 then
         local targetpos = ents[1]:GetPosition()

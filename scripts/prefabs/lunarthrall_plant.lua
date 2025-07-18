@@ -508,6 +508,7 @@ local function fn()
     MakeLargeBurnableCharacter(inst,"follow_gestalt_fx")
 
     inst:SetStateGraph("SGlunarthrall_plant")
+	inst.sg.mem.burn_on_electrocute = true
 
 	spawnback(inst)
 
@@ -609,6 +610,7 @@ local function vinefn()
     inst.makeweak = makeweak
 
     inst:SetStateGraph("SGlunarthrall_plant_vine")
+	inst.sg.mem.burn_on_electrocute = true
 
 	inst.OnRemoveEntity = vine_onremoveentity
 
@@ -839,6 +841,7 @@ local function vineendfn()
     MakeMediumBurnableCharacter(inst)
 
     inst:SetStateGraph("SGlunarthrall_plant_vine")
+	inst.sg.mem.burn_on_electrocute = true
 
     return inst
 end

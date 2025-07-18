@@ -302,8 +302,7 @@ local function taser_onblockedorattacked(wx, data, inst)
             SpawnPrefab("electrichitsparks"):AlignToTarget(data.attacker, wx, true)
 
             local damage_mult = 1
-            if not (data.attacker:HasTag("electricdamageimmune") or
-                    (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated())) then
+            if not IsEntityElectricImmune(data.attacker) then
                 damage_mult = TUNING.ELECTRIC_DAMAGE_MULT
 
                 local wetness_mult = (data.attacker.components.moisture ~= nil and data.attacker.components.moisture:GetMoisturePercent())

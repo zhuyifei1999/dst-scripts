@@ -391,6 +391,7 @@ local function fn()
     inst.components.digester.itemstodigestfn = CanDigest
 
     inst:SetStateGraph("SGlureplant")
+	inst.sg.mem.burn_on_electrocute = true
 
     inst:ListenForEvent("startfiredamage", OnStartFireDamage)
     inst:ListenForEvent("stopfiredamage", OnStopFireDamage)

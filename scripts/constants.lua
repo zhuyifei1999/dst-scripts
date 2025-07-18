@@ -74,6 +74,7 @@ SCALEMODE_FIXEDSCREEN_NONDYNAMIC = 4 --scale same amount as window scaling from 
 PHYSICS_TYPE_ANIMATION_CONTROLLED = 0
 PHYSICS_TYPE_PHYSICS_CONTROLLED = 1
 
+ALT_RENDERPATH = 1	-- You should really not use this unless you know what it is and how it works. Otherwise it can crash things, consume lots of memory, reduce performance, you name it.
 
 MOVE_UP = 1
 MOVE_DOWN = 2
@@ -253,7 +254,7 @@ VIRTUAL_CONTROL_INV_ACTION_RIGHT = 10016
 --
 VIRTUAL_CONTROL_STRAFE_UP = 10017
 VIRTUAL_CONTROL_STRAFE_DOWN = 10018
-VIRTUAL_CONTROL_STRAFE_LEFT = 100019
+VIRTUAL_CONTROL_STRAFE_LEFT = 10019
 VIRTUAL_CONTROL_STRAFE_RIGHT = 10020
 --
 
@@ -489,6 +490,7 @@ require("beefalo_clothing")
 require("misc_items")
 require("emote_items")
 require("item_blacklist")
+require("entitlementlookups")
 
 CLOTHING.body_default1 =
 {

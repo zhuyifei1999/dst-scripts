@@ -341,6 +341,8 @@ local function common_fn(data)
         return inst
     end
 
+	inst.override_combat_fx_size = "med"
+
     ------------------------------------------
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = 4.5
@@ -588,6 +590,7 @@ local function twin1fn()
 
     inst:AddTag("mech")
     inst:AddTag("soulless")
+	inst:AddTag("electricdamageimmune")
 
     if not TheWorld.ismastersim then
         return inst
@@ -654,6 +657,7 @@ local function twin2fn()
 
     inst:AddTag("mech")
     inst:AddTag("soulless")
+	inst:AddTag("electricdamageimmune")
 
     if not TheWorld.ismastersim then
         return inst

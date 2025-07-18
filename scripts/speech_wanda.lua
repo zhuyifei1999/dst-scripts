@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Missed! Bad timing...",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "Unbridled energy.",
         MOONSTORM_STATIC_ITEM = "Somewhat bridled energy.",
+        MOONSTORM_STATIC_ROAMER = "Shall we bridle that energy?",
         MOONSTORM_SPARK = "A speck of powerful possibility.",
 
         BIRD_MUTANT = "What an awful sight!",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "They know what we've done.",
         FLOTATIONCUSHION = "How convenient!",
         LUNAR_SEED = "I forget if this is the end or the beginning.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Delivers an unforgettable shock.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Did I forget to connect this one?",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Must remember to plant this.",
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

@@ -619,6 +619,11 @@ ACTIONS =
 
 	-- Rifts 5
 	POUNCECAPTURE = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
+
+    -- electrocute
+    DIVEGRAB = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
+    STARTELECTRICLINK = Action({ priority = 2, invalid_hold_action = true  }),
+    ENDELECTRICLINK = Action({ priority = 1, invalid_hold_action = true }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -6262,5 +6267,35 @@ ACTIONS.POUNCECAPTURE.fn = function(act)
 	if cage and cage.components.gestaltcage then
 		return cage.components.gestaltcage:Capture(act.target, act.doer)
 	end
+	return false
+end
+
+ACTIONS.DIVEGRAB.fn = function(act)
+    local catcher = act.invobject
+    if catcher and catcher.components.moonstormstaticcatcher then
+        return catcher.components.moonstormstaticcatcher:Catch(act.target, act.doer)
+    end
+    return false
+end
+
+ACTIONS.STARTELECTRICLINK.fn = function(act)
+    local fence = act.target
+    if fence and fence.components.electricconnector then
+        if fence.components.electricconnector:IsLinking() then
+            return fence.components.electricconnector:EndLinking()
+        else
+            return fence.components.electricconnector:StartLinking()
+        end
+    end
+
+    return false
+end
+
+ACTIONS.ENDELECTRICLINK.fn = function(act)
+    local fence = act.target
+    if fence and fence.components.electricconnector then
+        return fence.components.electricconnector:Disconnect()
+    end
+
 	return false
 end

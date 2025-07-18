@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "TARGET EVADED, RECALIBRATING",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "MAYBE HE'LL ELECTROCUTE HIMSELF",
         MOONSTORM_STATIC_ITEM = "IT IS CONTAINED",
+        MOONSTORM_STATIC_ROAMER = "UNCLAIMED POWER",
         MOONSTORM_SPARK = "THIS ENERGY IS NOT COMPATIBLE WITH MY CIRCUITS",
 
         BIRD_MUTANT = "I THINK THE BIRDS GOT MORE UGLY",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "I LIKE THIS VERSION. SO HATEFUL",
         FLOTATIONCUSHION = "MINE",
         LUNAR_SEED = "THEY DON'T UNDERSTAND YOU LIKE I DO",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "LINK ESTABLISHED!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "STILL SINGLE?",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "SETUP REQUIRED",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

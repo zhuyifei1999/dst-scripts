@@ -1109,6 +1109,11 @@ STRINGS =
 
 		-- Rifts 5
 		POUNCECAPTURE = "Encapsulate",
+        STARTELECTRICLINK = "Toggle Linking",
+        ENDELECTRICLINK = "Disconnect Links",
+
+        -- electrocute
+        DIVEGRAB = "Restrain",
     },
 
 	WOBY_COMMANDS =
@@ -3668,13 +3673,16 @@ STRINGS =
         MOONSTORM_STATIC = "Energetic Static",
         MOONSTORM_STATIC_ITEM = "Restrained Static",
         MOONSTORM_STATIC_NOWAG = "Energetic Static",
+        MOONSTORM_STATIC_ROAMER = "Unrestrained Static",
 
         ALTERGUARDIANHAT = "Enlightened Crown",
         ALTERGUARDIANHATSHARD = "Enlightened Shard",
 
         MOONSTORM_GOGGLESHAT = "Astroggles",
+        MOONSTORM_GOGGLESHAT_BLUEPRINT = "Astroggles Blueprint",
 
         MOON_DEVICE_CONSTRUCTION1 = "Incomplete Experiment",
+        MOON_DEVICE_CONSTRUCTION1_BLUEPRINT = "Incomplete Experiment Blueprint",
         MOON_DEVICE_CONSTRUCTION2 = "Nearly Completed Experiment",
         MOON_DEVICE_CONSTRUCTION3 = "Lunar Siphonator",
 
@@ -4053,6 +4061,11 @@ STRINGS =
         WAGPUNKBITS_KIT = "Auto-Mat-O-Chanic",
 
         WAGSTAFF_MUTATIONS_NOTE = "Research Notes",
+        WAGSTAFF_MATERIALS_NOTE = "Research Notes",
+        WAGSTAFF_ENERGY_NOTE = "Research Notes",
+        WAGSTAFF_CONTAINMENT_NOTE = "Research Notes",
+        WAGSTAFF_THERMAL_NOTE = "Research Notes",
+        WAGSTAFF_ELECTRICITY_NOTE = "Research Notes",
 
         -- Meta 3
 
@@ -4315,6 +4328,17 @@ STRINGS =
         GESTALT_GUARD_EVOLVED = "Inimical Gestalt",
         LUNAR_SEED = "Celestial Jewel",
 		TEMP_BETA_MSG = "Beta Report",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "W.A.R.B.O.T. Base",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "W.A.R.B.O.T. Base Kit",
+        WAGBOSS_ROBOT_CREATION_PARTS = "W.A.R.B.O.T. Parts",
+        MOONSTORM_STATIC_CATCHER = "Static Restrainer",
+        COOLANT = "Nucleation Fluid",
+
+        FENCE_ELECTRIC = "Electric Fence Post",
+        FENCE_ELECTRIC_FIELD = "Electric Fence",
+        FENCE_ELECTRIC_ITEM = "Electric Fence Post",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5447,12 +5471,24 @@ STRINGS =
         BLUEGEM = "Bears the color of blue.",
         MOONGLASS = "A fragment from the Moon.",
 
+        WANDERINGTRADERSHOP_LIVINGLOG = "Life wood be a scream...", --NOTE (Omar): regular Living log recipe description doesn't work in the context of wandering trader! so here's a new one
+
         GESTALT_CAGE = "Combined pseudo and science for catching certain entities.",
         WAGPUNK_FLOOR_KIT = "Make the Ocean smaller! Permanently. Restrictions apply.",
 
         HERMITCRAB_RELOCATION_KIT = "Home is where the hermit is... relocated.",
 
         FLOTATIONCUSHION = "Become unsinkable. Take that, Ocean!",
+
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Build first. Panic later.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Piece by piece, assemble your very own war machine.",
+        MOONSTORM_STATIC_CATCHER = "Catch static from every direction.",
+        MOONSTORM_GOGGLESHAT_BLUEPRINT = "Not your average potato recipe.",
+        MOON_DEVICE_CONSTRUCTION1_BLUEPRINT = "Meddling with forces beyond comprehension demands careful planning.",
+        SECURITY_PULSE_CAGE = "Secure that Security Pulse!",
+
+        FENCE_ELECTRIC = "A shockingly effective way to contain yourself... or others.",
+        FENCE_ELECTRIC_ITEM = "A shockingly effective way to contain yourself... or others.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -5635,6 +5671,7 @@ STRINGS =
     MERM_BATTLECRY           = {{"Glorp! Go away!", "Glorp! Glorpy glup!"}, {"Destroy you!", "Wult glut!"},},
     MERM_GUARD_BATTLECRY     = {{"To battle!", "Wult flrot!"}, {"For Mermfolk!", "Flort Glurtsu flut!"}, {"ATTAAAACK!!", "GLOT FLOOOORPH!!"}, {"Defend King!", "Glurph Glurtsen!"}},
     MERM_TALK_PANICBOSS      = {{"Something coming!", "Gloppy flort!"}, {"Aaah!! Bad thing! Bad thing!", "Gloooorph!! Glurph glot! Glurph glot!"}, {"It come to destroy us!", "Flort wult Glurtsu!"}},
+    MERM_TALK_PANICELECTRICITY = {{"Bad tingle! Bad tingle!", "Glurph flirks! Glurph flirks!"}},
     MERM_TALK_PANICBOSS_KING = {{"Rally to King!", "Glurtsen blut flort!"}, {"Hurry! Protect kingdom!", "Flurph flrot! Gloppy Glurtsam!"}, {"S-stay brave!!", "G-glop blut flrot!!"}},
     MERM_TALK_NEED_HEAL      = {{"Help, florp!", "Flopt, florp!"}, {"Hurt!", "Glorg!"}, {"No feel so good...", "Glorggu blurg..."}, {"Ouchie, ouchie!", "Glurk, glurk!"}},
 
@@ -6010,6 +6047,7 @@ STRINGS =
     PIG_TALK_ATTEMPT_TRADE = { "WHAT YOU GOT?", "BETTER BE GOOD." },
     PIG_TALK_PANIC = { "NOOOOO!", "TOO DARK! TOO DARK!", "AAAAAAAAAH!!" },
     PIG_TALK_PANICFIRE = { "HOT HOT HOT!", "OWWWWW!", "IT BURNS!" },
+    PIG_TALK_PANICELECTRICITY = { "OWWWWW!","AAAAH!","DON'T LIKE!", "ME FRIED!" },
     PIG_TALK_PANICHOUSEFIRE = { "HOUSE BURNS!", "MY STUFF!", "AAAH! FIRE!", "PANIC!" },
     PIG_TALK_PANICBOSS = { "AHHHH", "UH OH!", "ME SCARED", "BAD!", "OHHH!" },
     PIG_TALK_PANICHAUNT = { "SPOOKY!", "AAAAH!!", "A GHOST! A GHOST!" },
@@ -6084,6 +6122,7 @@ STRINGS =
     RABBIT_RETREAT = { "AWAY!", "HURT!", "HOME!", "RUN!" },
     RABBIT_RESCUE = { "KILL!", "FIGHT!", "BITE!", "PUNCH!" },
     RABBIT_PANICFIRE = { "EEEH!", "OOH!", "AAAH!" },
+    RABBIT_PANICELECTRICITY = { "OUCH!!", "HURT!", "STING!"},
     RABBIT_PANICHOUSEFIRE = { "HOME!", "FIRE!", "BURNING!" },
     RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
     RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
@@ -8225,6 +8264,8 @@ STRINGS.UI =
     {
         TITLE = "Playing with controller?",
         BODY = "The game supports multiple control schemes for playing with controller. Would you like to see them and select one?",
+        XB1_TITLE = "Playing with gamepad?",
+        XB1_BODY = "The game supports multiple control schemes for playing with gamepad. Would you like to see them and select one?",
         YES = "Show me!",
         NO = "No thanks",
     },
@@ -12611,6 +12652,7 @@ STRINGS.UI =
         COMMERCE_INFO_NOBUY_UNOWNED = "You must have {character} unlocked to weave this item from Spools.",
         COMMERCE_INFO_GRIND = "This curio can be unraveled into {doodad_value} Spools.",
         COMMERCE_INFO_NOGRIND = "This curio cannot be unraveled.",
+        COMMERCE_INFO_GRIND_ENTITLEMENT = "Note: {entitlement_count} of the {total_owned} selected curio is linked to an owned DLC or a past event and can not be unraveled.",
         NO_MARKET = "This curio cannot be traded or sold.",
         CANCEL = "Never mind",
         OK = "OK",
@@ -16460,7 +16502,6 @@ STRINGS.SKILLTREE = {
 
         WOLFGANG_ALLEGIANCE_LUNAR_3_TITLE = "Lunar Strategist III",
         WOLFGANG_ALLEGIANCE_LUNAR_3_DESC = "The Cryptic Founder will reward your curiosity by revealing the enemy's weaknesses.\nAdd +30% of total damage fighting Shadow-aligned creatures when Mighty.",
-
     },
 
     WOODIE = {
@@ -17487,6 +17528,19 @@ STRINGS.SCRAPBOOK = {
         DECK_OF_CARDS = "Play a game of cards, however you like. Hit it to shuffle, but be careful!",
         PLAYING_CARD = "A single card for playing games! Combine these together to make a deck.",
 
+        -- Rifts 5
+        WAGBOSS_ROBOT_LEG = "Although the W.A.R.B.O.T. material failed to fully contain the Celestial Scion, it may still prove useful in protecting the survivors.",
+        WAGBOSS_MISSILE = "These heat-seeking missiles lock onto the warmest thing they can find... So make sure that isn't you!",
+        HERMITCRAB_RELOCATION_KIT = "Help Pearl find a new home! It might be tricky to find the perfect spot, but remember - she loves being near the ocean.",
+        WANDERINGTRADER = "He travels between a few Points of Interest, looking for survivors to trade with. He gets new stock every couple of days, so be sure to check back in regularly!",
+        LUNAR_SEED = "They came from an enlightened crown - so return them to one, to bask in eternal enlightenment.",
+
+        -- electrocute
+        WAGSTAFF_MATERIALS_NOTE = "\n\"Day 89 - Material Study\"\n\n\"Thulecite appears sufficient to contain lunar entities. Structural integrity holds under moderate strain. Further testing advised.\"\n",
+        WAGSTAFF_ENERGY_NOTE = "\n\"Day 195 - Energy\"\n\n\"Eureka. Lunar forms radiate boundless energy. Containable. Obedient, even? Control may be possible. Endless applications... if stability holds.\"\n",
+        WAGSTAFF_CONTAINMENT_NOTE = "\n\"Day 226 - Containment Measures\"\n\n\"Area of containment necessary prior to experimentation. Consider implementing a kinetic and teleportational dampening field?\"\n",
+        WAGSTAFF_THERMAL_NOTE = "\n\"Day 354 - Heat Signature Detection\"\n\n\"Preliminary thermal tracking functional. However, response irregularities suggest vulnerability to rudimentary interference - false positives observed with minimal thermal masking.\"\n",
+        WAGSTAFF_ELECTRICITY_NOTE = "\n\"Day 418 - Electrifying!\"\n\n\"Interesting. Can redirect controlled electric discharge for practical (and offensive) applications. Truly remarkable potential. Note to self: don appropriate insulative layers next time. That last zap was... unexpectedly exhilarating.\"\n",
     },
 
     -- Full name: "{name} Scrapbook Page"

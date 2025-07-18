@@ -81,11 +81,7 @@ end
 local CHARGE_SOUND_LOOP_NAME = "soundloop"
 
 local function Lightning_CanElectrocuteTarget(inst, target)
-    return not (
-        target:HasTag("electricdamageimmune") or
-        (target.components.inventory ~= nil and target.components.inventory:IsInsulated())
-    ) and
-        target:GetIsWet()
+    return not IsEntityElectricImmune(target) and target:GetIsWet()
 end
 
 local function OnEquip(inst, owner)

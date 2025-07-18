@@ -1168,6 +1168,7 @@ local function fn()
 
 	inst.scrapbook_damage = TUNING.DAYWALKER_XCLAW_DAMAGE * .5 -- playerdamagepercent
 
+	inst.override_combat_fx_height = "low"
 	inst.footstep = "daywalker/action/step"
 
 	inst.components.talker.ontalk = OnTalk

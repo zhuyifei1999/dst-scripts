@@ -350,6 +350,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        electricconnector = function(inst, doer, actions, right)
+            if not inst:HasTag("fully_electrically_linked") and not right then
+                table.insert(actions, ACTIONS.STARTELECTRICLINK)
+            end
+
+            if inst:HasTag("is_electrically_linked") and right then
+                table.insert(actions, ACTIONS.ENDELECTRICLINK)
+            end
+        end,
+
         farmplanttendable = function(inst, doer, actions, right)
             if inst:HasTag("fire") or inst:HasTag("smolder") then
                 return
@@ -2223,6 +2233,12 @@ local COMPONENT_ACTIONS =
                 else
                     table.insert(actions, ACTIONS.LIFT_DUMBBELL)
                 end
+            end
+        end,
+
+        moonstormstaticcatcher = function(inst, doer, target, actions, right)
+            if target:HasTag("moonstormstaticcapturable") then
+                table.insert(actions, ACTIONS.DIVEGRAB)
             end
         end,
 

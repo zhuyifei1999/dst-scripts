@@ -22,6 +22,7 @@ local events =
         OnExit(inst, nil)
     end),
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
     EventHandler("doattack", function(inst, data)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
             --target CAN go invalid because SG events are buffered

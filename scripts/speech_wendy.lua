@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Failure.",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4804,6 +4808,7 @@ return{
 
         MOONSTORM_STATIC = "That looks rather dangerous... I wonder if he'd let me try.",
         MOONSTORM_STATIC_ITEM = "I can see a little spark inside.",
+        MOONSTORM_STATIC_ROAMER = "Like a roaming little spirit.",
         MOONSTORM_SPARK = "It doesn't feel of this world.",
 
         BIRD_MUTANT = "Mr. Crow, you don't look well.",
@@ -5719,6 +5724,19 @@ return{
         GESTALT_GUARD_EVOLVED = "I would be angry too.",
         FLOTATIONCUSHION = "One does not need water to drown.",
         LUNAR_SEED = "All that remains is its crown.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "It fulfills its purpose in connection.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "What a lonely post.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "It's no use to anyone like that.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

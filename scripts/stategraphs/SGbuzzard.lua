@@ -14,6 +14,7 @@ local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
@@ -24,10 +25,12 @@ local events=
         end
     end),
 
-    EventHandler("onignite", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("distress_pre") end end),
-
-    EventHandler("locomote",
-    function(inst)
+	EventHandler("onignite", function(inst)
+		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
+			inst.sg:GoToState("distress_pre")
+		end
+	end),
+	EventHandler("locomote", function(inst)
         if (not inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("moving")) then return end
 
         if not inst.components.locomotor:WantsToMoveForward() or inst.components.combat.target then
@@ -181,7 +184,7 @@ local states=
 
     State{
         name = "glide",
-        tags = {"idle", "flight", "busy"},
+		tags = { "idle", "flight", "busy", "noelectrocute" },
         onenter= function(inst)
             inst.AnimState:PlayAnimation("glide", true)
 			inst.DynamicShadow:Enable(false)
@@ -287,7 +290,7 @@ local states=
 
     State{
         name = "flyaway",
-        tags = {"flight", "busy", "canrotate"},
+		tags = { "flight", "busy", "canrotate", "noelectrocute" },
         onenter = function(inst)
 			if IsStuck(inst) then
 				inst.sg:GoToState("distress_pre")
@@ -451,6 +454,17 @@ CommonStates.AddCombatStates(states,
 
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states, nil, nil,
+{
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.components.burnable and inst.components.burnable:IsBurning() then
+				inst.sg:GoToState("distress_pre")
+			else
+				inst.sg:GoToState("flyaway")
+			end
+		end
+	end,
+})
 
 return StateGraph("buzzard", states, events, "idle", actionhandlers)
-

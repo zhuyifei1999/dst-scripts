@@ -34,6 +34,17 @@ local function hit_recovery_skip_cooldown_fn(inst, last_t, delay)
 		and inst.sg:HasStateTag("idle")
 end
 
+local function _transfer_statemem_to_electrocute(inst, playermelee)
+	if inst.sg:HasStateTag("struggle") then
+		inst.sg.statemem.struggling = true
+	elseif inst.sg:HasStateTag("tired") then
+		inst.sg.statemem.tired = true
+		inst.sg.mem.transfer_loops = inst.sg.statemem.loops
+	elseif inst.sg:HasStateTag("pounce_recovery") and inst:IsFatigued() or playermelee or inst.sg.statemem.trytired then
+		inst.sg.mem.transfer_trytired = true
+	end
+end
+
 local events =
 {
 	CommonHandlers.OnLocomote(true, true),
@@ -44,14 +55,41 @@ local events =
 			ChooseAttack(inst)
 		end
 	end),
+	EventHandler("electrocute", function(inst, data)
+		if inst.sg:HasStateTag("struggle") then
+			if not inst.sg:HasStateTag("noelectrocute") then
+				_transfer_statemem_to_electrocute(inst)
+				inst.sg:GoToState("electrocute", data)
+			end
+		elseif inst.sg:HasStateTag("tired") then
+			if not inst.sg:HasStateTag("noelectrocute") then
+				_transfer_statemem_to_electrocute(inst)
+				inst.sg:GoToState("electrocute", data)
+			end
+		elseif not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") then
+			_transfer_statemem_to_electrocute(inst)
+			inst.sg:GoToState("electrocute", data)
+		end
+	end),
 	EventHandler("attacked", function(inst, data)
-		if inst.sg:HasStateTag("tired") then
-			if not inst.sg:HasStateTag("notiredhit") then
+		if inst.sg:HasStateTag("struggle") then
+			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+				_transfer_statemem_to_electrocute(inst)
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			end
+		elseif inst.sg:HasStateTag("tired") then
+			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+				_transfer_statemem_to_electrocute(inst)
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			elseif not inst.sg:HasStateTag("notiredhit") then
 				inst.sg.statemem.tired = true
 				inst.sg:GoToState("tired_hit", inst.sg.statemem.loops)
 			end
 		elseif inst.defeated then
-			if not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
+			if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+				_transfer_statemem_to_electrocute(inst)
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
 				inst.sg:GoToState("hit")
 			end
 		else
@@ -59,11 +97,19 @@ local events =
 			if playermelee then
 				inst:DeltaFatigue(0) --reset fatigue regen timers
 				if inst.sg:HasStateTag("pounce_recovery") and inst:IsFatigued() then
-					inst.sg:GoToState("hit", true)
+					if CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+						_transfer_statemem_to_electrocute(inst)
+						inst.sg:GoToState("electrocute", { attackdata = data })
+					else
+						inst.sg:GoToState("hit", true)
+					end
 					return
 				end
 			end
-			if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
+			if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+				_transfer_statemem_to_electrocute(inst, playermelee)
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
 				not CommonHandlers.HitRecoveryDelay(inst, nil, nil, hit_recovery_skip_cooldown_fn) then
 				inst.sg:GoToState("hit", playermelee or inst.sg.statemem.trytired)
 			end
@@ -1762,5 +1808,136 @@ SGDaywalkerCommon.AddRunStates(states,
 })
 CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "hit",})
 CommonStates.AddVoidFallStates(states, {voiddrop = "hit",})
+CommonStates.AddElectrocuteStates(states,
+{	--timeline
+	pst =
+	{
+		FrameEvent(2, function(inst)
+			if inst.sg:HasStateTag("tired") then
+				inst.sg:AddStateTag("canattach")
+			end
+		end),
+		FrameEvent(4, function(inst)
+			if inst.sg:HasStateTag("struggle") then
+				inst.sg.statemem.struggling = true
+				inst.sg:GoToState("struggle_idle")
+			elseif not inst.sg:HasStateTag("tired") then
+				if inst.sg.mem.transfer_trytired and inst:IsFatigued() or inst.defeated then
+					inst.sg:GoToState("tired_pre")
+				end
+			end
+		end),
+	},
+},
+{	--anims
+	loop = function(inst)
+		inst.sg:AddStateTag("notalksound")
+		if inst.sg.lasttags["struggle"] then
+			inst.sg:AddStateTag("struggle")
+			inst.sg:AddStateTag("nointerrupt")
+			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
+			return "struggle_shock_loop"
+		elseif inst.sg.lasttags["tired"] then
+			inst.sg:AddStateTag("tired")
+			inst.sg:AddStateTag("notiredhit")
+			inst.sg:AddStateTag("nointerrupt")
+			inst:SwitchToFacingModel(0) --inst.Transform:SetNoFaced()
+			return "chained_shock_loop"
+		end
+	end,
+	pst = function(inst)
+		if inst.sg.lasttags["struggle"] then
+			inst.sg:AddStateTag("struggle")
+			inst.sg:AddStateTag("nointerrupt")
+			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
+			return "struggle_shock_pst"
+		elseif inst.sg.lasttags["tired"] then
+			inst.sg:AddStateTag("tired")
+			inst.sg:AddStateTag("notiredhit")
+			inst.sg:AddStateTag("nointerrupt")
+			inst:SwitchToFacingModel(0) --inst.Transform:SetNoFaced()
+			return "chained_shock_pst"
+		end
+	end,
+},
+{	--fns
+	loop_onenter = function(inst)
+		if not inst.sg:HasAnyStateTag("struggle", "tired") then
+			if inst:IsStalking() then
+				inst:SetStalking(nil)
+				if inst.nostalkcd then
+					inst.components.combat:ResetCooldown()
+				end
+			end
+		end
+	end,
+	loop_onexit = function(inst)
+		if not inst.sg.statemem.not_interrupted then
+			inst.sg.mem.transfer_loops = nil
+			inst.sg.mem.transfer_trytired = nil
+
+			if inst.sg:HasStateTag("struggle") then
+				inst:SwitchToFacingModel(4) --inst.Transform:SetFourFaced()
+			elseif inst.sg:HasStateTag("tired") then
+				inst.sg.mem.last_tired_hit = nil
+				inst.sg.mem.tired_start = nil
+				inst.sg.mem.tired_hit_alt_count = nil
+				if not inst.hostile then
+					inst.components.health:SetAbsorptionAmount(0)
+					inst.components.health:StopRegen()
+				end
+				if inst.sg.statemem.struggling then
+					inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
+				else
+					inst:SwitchToFacingModel(4) --inst.Transform:SetFourFaced()
+				end
+			end
+		end
+	end,
+	onanimover = function(inst)
+		if inst.sg:HasStateTag("struggle") then
+			inst.sg.statemem.struggling = true
+			inst.sg:GoToState("struggle_idle")
+		elseif inst.sg:HasStateTag("tired") then
+			inst.sg.statemem.tired = true
+			if not inst.hostile then
+				inst.sg:GoToState("tired", inst.sg.mem.transfer_loops)
+			elseif inst.sg.mem.tired_start + TUNING.DAYWALKER_FATIGUE_TIRED_MIN_TIME < GetTime() then
+				inst.sg:GoToState("tired_stand")
+			else
+				inst.sg:GoToState("tired", -1) --delayed hp regen
+			end
+		elseif inst.sg.mem.transfer_trytired and inst:IsFatigued() or inst.defeated then
+			inst.sg:GoToState("tired_pre")
+		else
+			inst.sg:GoToState("idle")
+		end
+	end,
+	pst_onexit = function(inst)
+		inst.sg.mem.transfer_loops = nil
+		inst.sg.mem.transfer_trytired = nil
+
+		if inst.sg:HasStateTag("struggle") then
+			if not inst.sg.statemem.struggling then
+				inst:SwitchToFacingModel(4) --inst.Transform:SetFourFaced()
+			end
+		elseif inst.sg:HasStateTag("tired") then
+			if not inst.sg.statemem.tired then
+				inst.sg.mem.last_tired_hit = nil
+				inst.sg.mem.tired_start = nil
+				inst.sg.mem.tired_hit_alt_count = nil
+				if not inst.hostile then
+					inst.components.health:SetAbsorptionAmount(0)
+					inst.components.health:StopRegen()
+				end
+				if inst.sg.statemem.struggling then
+					inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
+				else
+					inst:SwitchToFacingModel(4) --inst.Transform:SetFourFaced()
+				end
+			end
+		end
+	end,
+})
 
 return StateGraph("daywalker", states, events, "idle")

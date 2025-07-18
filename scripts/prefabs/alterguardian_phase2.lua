@@ -408,9 +408,6 @@ local function fn()
 
     inst:AddComponent("drownable")
 
-    MakeLargeFreezableCharacter(inst)
-    inst.components.freezable:SetResistance(8)
-
 	inst:AddComponent("hauntable")
 	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 

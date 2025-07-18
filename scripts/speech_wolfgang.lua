@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Wolfgang miss on purpose.",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4801,6 +4805,7 @@ return{
 
         MOONSTORM_STATIC = "Is tiny jumpy spark-thing.",
         MOONSTORM_STATIC_ITEM = "Ha! Tiny spark is too weak to break out!",
+        MOONSTORM_STATIC_ROAMER = "Cute little wandering spark!",
         MOONSTORM_SPARK = "Makes Wolfgang's moustache hairs bristle!",
 
         BIRD_MUTANT = "Creepy bird.",
@@ -5716,6 +5721,19 @@ return{
         GESTALT_GUARD_EVOLVED = "It not Wolfgang fault!",
         FLOTATIONCUSHION = "Wolfgang exceptional swimmer, but keep just in case.",
         LUNAR_SEED = "Another trophy for Wolfgang!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Wolfgang not afraid of little electric tickles!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Little post have no friends.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Must plant little post.",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

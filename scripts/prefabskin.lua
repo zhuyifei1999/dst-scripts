@@ -216,16 +216,16 @@ stone_table_square_clear_fn = function(inst) basic_clear_fn(inst, "stone_table_s
 stone_stool_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "stone_chair_stool") end
 stone_stool_clear_fn = function(inst) basic_clear_fn(inst, "stone_chair_stool") end
 stone_chair_init_fn = function(inst, build_name)
-    basic_init_fn(inst, build_name, "stone_chair_chair")
+	basic_init_fn(inst, build_name, "stone_chair")
     if not TheWorld.ismastersim then
         return
     end
     if inst.back then
-        inst.back.AnimState:OverrideItemSkinSymbol("chair01_parts", build_name, "chair01_parts", inst.GUID, "stone_chair_chair")
+		inst.back.AnimState:OverrideItemSkinSymbol("chair01_parts", build_name, "chair01_parts", inst.GUID, "stone_chair")
     end
 end
 stone_chair_clear_fn = function(inst)
-    basic_clear_fn(inst, "stone_chair_chair")
+	basic_clear_fn(inst, "stone_chair")
     if not TheWorld.ismastersim then
         return
     end
@@ -972,18 +972,30 @@ flotationcushion_clear_fn = function(inst, build_name)
     basic_clear_fn(inst, "flotationcushion")
 end
 
+bookstation_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "bookstation")
+end
+bookstation_clear_fn = function(inst, build_name)
+    basic_clear_fn(inst, "bookstation")
+end
+
 sisturn_init_fn = function(inst, build_name)
     basic_init_fn(inst, build_name, "sisturn")
     if not TheWorld.ismastersim then
         return
     end
     AddSkinSounds(inst)
-    inst:UpdateFlowerDecor()
+    --(Omar) NOTE: Remember placers get skins too! Placer doesn't have `UpdateFlowerDecor`!
+    if inst.UpdateFlowerDecor then
+        inst:UpdateFlowerDecor()
+    end
 end
 sisturn_clear_fn = function(inst)
     basic_clear_fn(inst, "sisturn")
     RemoveSkinSounds(inst)
-    inst:UpdateFlowerDecor()
+    if inst.UpdateFlowerDecor then
+        inst:UpdateFlowerDecor()
+    end
 end
 
 lucy_init_fn = function(inst, build_name)

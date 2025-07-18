@@ -132,6 +132,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:SetStateGraph("SGeyeplant")
+	inst.sg.mem.burn_on_electrocute = true
 
     inst:AddComponent("lootdropper")
 

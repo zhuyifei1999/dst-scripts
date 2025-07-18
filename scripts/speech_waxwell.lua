@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Don't move, blasted specter!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "What is he meddling with?",
         MOONSTORM_STATIC_ITEM = "There's power trapped inside.",
+        MOONSTORM_STATIC_ROAMER = "Hmm, not your typical magic.",
         MOONSTORM_SPARK = "They give off a rather unsettling sensation.",
 
         BIRD_MUTANT = "That creature has seen better days.",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "Oh, bygones be bygones and such.",
         FLOTATIONCUSHION = "Where does it say, \"women and children first\"?",
         LUNAR_SEED = "I told you it was no match for my abilities.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "I don't trust the power source.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Perhaps its best left alone.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "I don't like it.",
     },
 
     DESCRIBE_GENERIC = "You tell me.",

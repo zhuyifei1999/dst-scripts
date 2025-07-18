@@ -580,6 +580,8 @@ local function chop_down_tree(inst, chopper)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
         if inst.domonsterstop_task ~= nil then
             inst.domonsterstop_task:Cancel()
@@ -680,6 +682,8 @@ local function _OnBurnt2(inst)
         inst.monster = false
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
         inst.AnimState:SetBank("tree_leaf")
         inst:DoTaskInTime(FRAMES, onburntchanges)
@@ -695,6 +699,8 @@ local function OnBurnt(inst, immediate)
             inst.monster = false
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")
             inst.AnimState:SetBank("tree_leaf")
             inst:DoTaskInTime(FRAMES, onburntchanges)
@@ -793,6 +799,8 @@ local function DoStartMonster(inst, starttimeoffset)
     end
     if inst.components.combat == nil then
         inst:AddComponent("combat")
+		inst.sg.mem.noelectrocute = nil
+		inst.sg.mem.burn_on_electrocute = true
     end
     if inst.components.deciduoustreeupdater == nil then
         inst:AddComponent("deciduoustreeupdater")
@@ -857,6 +865,8 @@ local function StopMonster(inst)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         if not (inst:HasTag("stump") or inst:HasTag("burnt")) then
             inst.AnimState:PlayAnimation("transform_out")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_out")
@@ -939,6 +949,8 @@ local function OnEntityWake(inst)
             inst.monster_duration = nil
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
         end
     end
 
@@ -1053,6 +1065,8 @@ local function onload(inst, data)
             end
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")
         end
 
@@ -1302,7 +1316,11 @@ local function makefn(build, stage, data)
 
         inst:PrereplicateComponent("combat")
 
+		inst.override_combat_fx_size = "med"
+		inst.override_combat_fx_height = "high"
+
         inst:SetStateGraph("SGdeciduoustree")
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
 
         inst.color = .5 + math.random() * .5

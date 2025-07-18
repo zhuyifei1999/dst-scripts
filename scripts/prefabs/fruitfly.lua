@@ -217,6 +217,8 @@ local function fn()
         return inst
     end
 
+	inst.override_combat_fx_size = "med"
+
     inst:SetStateGraph("SGfruitfly")
     inst:SetBrain(brain)
 
@@ -313,6 +315,9 @@ local function minifn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst.override_combat_fx_size = "tiny"
+	inst.override_combat_fx_height = "low"
 
     common_server(inst)
 
@@ -415,6 +420,9 @@ local function friendlyfn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst.override_combat_fx_size = "tiny"
+	inst.override_combat_fx_height = ""
 
     common_server(inst)
 
@@ -556,7 +564,6 @@ local function fruitfn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
     inst:AddComponent("inventoryitem")
-
 
     MakeHauntableLaunch(inst)
 

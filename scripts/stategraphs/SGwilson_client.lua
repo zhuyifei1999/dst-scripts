@@ -855,6 +855,11 @@ local actionhandlers =
 
 	-- Rifts 5
 	ActionHandler(ACTIONS.POUNCECAPTURE, "pouncecapture_pre"),
+    ActionHandler(ACTIONS.STARTELECTRICLINK, "doshortaction"),
+    ActionHandler(ACTIONS.ENDELECTRICLINK, "doshortaction"),
+
+    -- electrocute
+    ActionHandler(ACTIONS.DIVEGRAB, "divegrab_pre"),
 }
 
 local events =
@@ -3206,10 +3211,11 @@ local states =
 
     State{
         name = "mount_plank",
-        tags = { "idle" },
+		tags = { "doing", "canrotate" },
 		server_states = { "mount_plank" },
 
         onenter = function(inst)
+			inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("plank_idle_pre")
             inst.AnimState:PushAnimation("plank_idle_loop", true)
             inst:PerformPreviewBufferedAction()
@@ -7099,6 +7105,38 @@ local states =
 			end
 		end,
 	},
+
+    -- electrocute
+
+    State{
+        name = "divegrab_pre",
+        tags = { "busy" },
+        server_states = { "divegrab_pre", "divegrab", "divegrab_pst" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("divegrab_pre")
+            inst.AnimState:PushAnimation("divegrab_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst.sg:ServerStateMatches() then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
 }
 
 local hop_timelines =

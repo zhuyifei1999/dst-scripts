@@ -21,6 +21,7 @@ local prefabs =
 
 local WORMBOSS_UTILS = require("prefabs/worm_boss_util")
 local easing = require("easing")
+require("stategraphs/commonstates")
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -1071,13 +1072,32 @@ local function Dirt_OnAnimOver(inst)
     end
 end
 
-local function Dirt_OnAttacked(inst)
+local function Dirt_OnAttacked(inst, data)
     if inst.chunk ~= nil and inst.worm.state ~= WORMBOSS_UTILS.STATE.DEAD then
         inst.chunk.hit = 1
+
+		if CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+			CommonHandlers.UpdateElectrocuteRecoveryDelay(inst)
+			CommonHandlers.SpawnElectrocuteFx(inst, data)
+			if inst.chunk.head then
+				inst.chunk.head:PushEventImmediate("electrocute")
+			end
+		end
+
         if inst.chunk.tail then
             inst.chunk.tail:PushEvent("attacked")
         end
     end
+end
+
+local function Dirt_OnElectrocute(inst, data)
+	if inst._last_electrocute_time == nil or inst._last_electrocute_time + TUNING.ELECTROCUTE_DEFAULT_DURATION < GetTime() then
+		CommonHandlers.UpdateElectrocuteRecoveryDelay(inst)
+		CommonHandlers.SpawnElectrocuteFx(inst, data)
+		if inst.chunk.head then
+			inst.chunk.head:PushEventImmediate("electrocute")
+		end
+	end
 end
 
 local function Dirt_DamageRedirectFn(inst, attacker, damage, weapon, stimuli)
@@ -1208,6 +1228,7 @@ local function dirtfn()
     inst.components.sanityaura.aurafn = CalcSanityAura
 
     inst:ListenForEvent("attacked", Dirt_OnAttacked)
+	inst:ListenForEvent("electrocute", Dirt_OnElectrocute)
     inst:ListenForEvent("animover", Dirt_OnAnimOver)
 
     inst.persists = false

@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Stay, friend!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4804,6 +4808,7 @@ return{
 
         MOONSTORM_STATIC = "Little fire?",
         MOONSTORM_STATIC_ITEM = "Safe inside",
+        MOONSTORM_STATIC_ROAMER = "Catch little fire!",
         MOONSTORM_SPARK = "Zzzt?",
 
         BIRD_MUTANT = "Tweeter okay?",
@@ -5719,6 +5724,19 @@ return{
         GESTALT_GUARD_EVOLVED = "Why friend mad? Why friend not friend?",
         FLOTATIONCUSHION = "No more scared biiig water",
         LUNAR_SEED = "Love Baby Night Ball! Love!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Zap friends!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "No friend for zap friend",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Help zap friend?",
     },
 
     DESCRIBE_GENERIC = "Friend?",

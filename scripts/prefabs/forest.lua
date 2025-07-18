@@ -531,6 +531,7 @@ local prefabs =
     "gestalt_cage_filled_placerindicator",
     "wagpunk_floor_marker",
     "wagpunk_floor_placerindicator",
+    "wagboss_robot_constructionsite_placerindicator",
     "wagpunk_lever",
     "wagpunk_workstation",
     "wagpunk_cagewall",
@@ -542,6 +543,13 @@ local prefabs =
 
     "alterguardian_phase1_lunarrift",
     "moonstorm_static_nowag",
+    "moonstorm_static_roamer",
+
+    "wagstaff_containment_note",
+    "wagstaff_electricity_note",
+    "wagstaff_energy_note",
+    "wagstaff_materials_note",
+    "wagstaff_thermal_note",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")

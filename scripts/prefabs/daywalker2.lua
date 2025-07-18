@@ -54,6 +54,7 @@ SetSharedLootTable("daywalker2",
 	{ "wagpunk_bits",		0.5 },
 
 	{ "scrap_monoclehat",	1 },
+	{ "fence_electric_item_blueprint",	1 }, --TODO #TEMP We don't ACTUALLY want him to have the blueprint, think of something else!
 	{ "chesspiece_daywalker2_sketch", 1 },
 })
 
@@ -747,6 +748,8 @@ local function MakeBuried(inst, junk)
 	if not (inst.buried or inst.defeated) then
 		inst.buried = true
 		inst.hostile = false
+		inst.override_combat_fx_size = "med"
+		inst.override_combat_fx_height = nil
 		OnThiefReset(inst)
 		inst.persists = false
 		if inst.canswing or inst.cantackle or inst.cancannon then
@@ -820,6 +823,8 @@ end
 local function MakeFreed(inst)
 	if inst.buried then
 		inst.buried = nil
+		inst.override_combat_fx_size = nil
+		inst.override_combat_fx_height = "low"
 		--OnThiefReset(inst)
 		inst.persists = true
 		inst.sg:GoToState("transition")
@@ -1151,6 +1156,7 @@ local function fn()
 
 	shallowcopy(scrapbook_data, inst)
 
+	inst.override_combat_fx_height = "low"
 	inst.footstep = "qol1/daywalker_scrappy/step"
 
 	inst.components.talker.ontalk = OnTalk

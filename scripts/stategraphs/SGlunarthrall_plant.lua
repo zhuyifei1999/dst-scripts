@@ -48,17 +48,21 @@ local function DoAOEAttack(inst, dist, radius, heavymult, mult, forcelanded, tar
     inst.components.combat.ignorehitrange = false
 end
 
-local actionhandlers =
-{
-}
-
 local events =
 {
     CommonHandlers.OnFreeze(),
-    EventHandler("attacked", function(inst)
-        if not inst.components.health:IsDead() and 
-            not inst.sg:HasStateTag("busy") then
+	CommonHandlers.OnElectrocute(),
+	EventHandler("attacked", function(inst, data)
+        if not inst.components.health:IsDead() then
+			if CommonHandlers.AttackShouldElectrocute(inst, data) then
+				if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
+					return
+				end
+			end
+
+			if not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("hit")
+			end
         end
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
@@ -364,5 +368,4 @@ local states=
     },
 }
 
-
-return StateGraph("lunarthrall_plant", states, events, "idle", actionhandlers)
+return StateGraph("lunarthrall_plant", states, events, "idle")

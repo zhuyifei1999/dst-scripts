@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Florp! Missed!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "What that sparky stuff?",
         MOONSTORM_STATIC_ITEM = "Hee-hee! It can't get out!",
+        MOONSTORM_STATIC_ROAMER = "Watch me catch sparky stuff!",
         MOONSTORM_SPARK = "Glorp! It zaps!",
 
         BIRD_MUTANT = "Ha ha! What happen to you?",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "You not nice! Flort!",
         FLOTATIONCUSHION = "Me best floater, florp!",
         LUNAR_SEED = "Glorp, me keep!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Me touch.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Where zap? Make zap.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Where put for zap?",
     },
 
     DESCRIBE_GENERIC = "What that?",

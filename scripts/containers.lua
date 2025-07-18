@@ -479,6 +479,20 @@ params.enable_shadow_rift_construction_container.widget.animbank = "ui_bundle_2x
 params.enable_shadow_rift_construction_container.widget.animbuild = "ui_bundle_2x2"
 params.enable_shadow_rift_construction_container.widget.buttoninfo.text = STRINGS.ACTIONS.APPLYCONSTRUCTION.OFFER
 
+---------------------------------------
+-- construction_container_1x1
+
+
+params.construction_container_1x1 = deepcopy(params.construction_container)
+
+params.construction_container_1x1.widget.slotpos = {Vector3(0, 8, 0)}
+params.construction_container_1x1.widget.pos.x = 150
+params.construction_container_1x1.widget.side_align_tip = 40
+params.construction_container_1x1.widget.animbank = "ui_construction_1x1"
+params.construction_container_1x1.widget.animbuild = "ui_construction_1x1"
+
+---------------------------------------
+
 local function IsConstructionSiteComplete(inst, doer)
     local container = inst.replica.container
 

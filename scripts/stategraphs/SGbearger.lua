@@ -386,6 +386,7 @@ local events =
 	CommonHandlers.OnSleepEx(),
 	CommonHandlers.OnWakeEx(),
 	CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
 	CommonHandlers.OnDeath(),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
@@ -396,18 +397,21 @@ local events =
 	end),
 	EventHandler("attacked", function(inst, data)
 		--V2C: health check since corpse shares this SG
-		if inst.components.health ~= nil and not inst.components.health:IsDead() and (
-			not inst.sg:HasStateTag("busy") or
-			inst.sg:HasStateTag("caninterrupt") or
-			inst.sg:HasStateTag("frozen")
-		) then
-			if inst.sg:HasStateTag("staggered") then
-				inst.sg.statemem.staggered = true
-				inst.sg:GoToState("stagger_hit")
-			elseif not CommonHandlers.HitRecoveryDelay(inst) then
-				-- Clear out the inventory if he got interrupted
-				ClearInventory(inst)
-				inst.sg:GoToState(inst:IsStandState("quad") and "hit" or "standing_hit")
+		if inst.components.health and not inst.components.health:IsDead() then
+			if not (inst.sg.mem.noelectrocute or inst.sg:HasStateTag("noelectrocute")) and
+				CommonHandlers.AttackCanElectrocute(inst, data) and
+				not CommonHandlers.ElectrocuteRecoveryDelay(inst)
+			then
+				inst.sg:GoToState("electrocute", { attackdata = data })
+			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
+				if inst.sg:HasStateTag("staggered") then
+					inst.sg.statemem.staggered = true
+					inst.sg:GoToState("stagger_hit")
+				elseif not CommonHandlers.HitRecoveryDelay(inst) then
+					-- Clear out the inventory if he got interrupted
+					ClearInventory(inst)
+					inst.sg:GoToState(inst:IsStandState("quad") and "hit" or "standing_hit")
+				end
 			end
 		end
 	end),
@@ -1418,7 +1422,7 @@ local states =
 
 	State{
 		name = "butt_pst",
-		tags = { "attack", "busy", "jumping" },
+		tags = { "attack", "busy", "jumping", "noelectrocute" },
 
 		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
@@ -1448,17 +1452,19 @@ local states =
 			FrameEvent(41, function(inst)
 				inst.sg.statemem.vulnerable = false
 				inst:SetStandState("quad")
+				inst.sg:RemoveStateTag("noelectrocute")
 			end),
 		},
 
 		events =
 		{
 			EventHandler("attacked", function(inst, data)
-				if inst.sg.statemem.vulnerable and
-					not inst.components.health:IsDead() and
-					data ~= nil and data.spdamage ~= nil and data.spdamage.planar ~= nil
-				then
-					inst.sg:GoToState("butt_face_hit")
+				if not inst.components.health:IsDead() then
+					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+						inst.sg:GoToState("electrocute", { attackdata = data })
+					elseif inst.sg.statemem.vulnerable and data and data.spdamage and data.spdamage.planar then
+						inst.sg:GoToState("butt_face_hit")
+					end
 				end
 				return true
 			end),
@@ -1477,7 +1483,7 @@ local states =
 
 	State{
 		name = "butt_face_hit",
-		tags = { "hit", "busy" },
+		tags = { "hit", "busy", "noelectrocute" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -1498,19 +1504,21 @@ local states =
 			FrameEvent(28, function(inst)
 				inst:SetStandState("quad")
 				inst.sg.statemem.vulnerable = false
+				inst.sg:RemoveStateTag("noelectrocute")
 			end),
 		},
 
 		events =
 		{
 			EventHandler("attacked", function(inst, data)
-				if inst.sg.statemem.vulnerable and
-					not inst.components.health:IsDead() and
-					data ~= nil and data.spdamage ~= nil and data.spdamage.planar ~= nil
-				then
-					inst.sg.mem.dostagger = true
-					if inst.sg.statemem.canstagger then
-						TryStagger(inst)
+				if not inst.components.health:IsDead() then
+					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
+						inst.sg:GoToState("electrocute", { attackdata = data })
+					elseif inst.sg.statemem.vulnerable and data and data.spdamage and data.spdamage.planar then
+						inst.sg.mem.dostagger = true
+						if inst.sg.statemem.canstagger then
+							TryStagger(inst)
+						end
 					end
 				end
 				return true
@@ -1673,7 +1681,7 @@ local states =
 	--Transitions from corpse_mutate after prefab switch
 	State{
 		name = "mutate_pst",
-		tags = { "busy", "noattack", "temp_invincible" },
+		tags = { "busy", "noattack", "temp_invincible", "noelectrocute" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -2184,7 +2192,7 @@ local states =
 
 	State{
 		name = "stagger_pre",
-		tags = { "staggered", "busy", "nosleep" },
+		tags = { "staggered", "busy", "nosleep", "noelectrocute" },
 
 		onenter = function(inst)
 			inst.sg.mem.dostagger = nil
@@ -2212,7 +2220,7 @@ local states =
 
 	State{
 		name = "stagger_pre_timeline_from_frame3",
-		tags = { "staggered", "busy", "nosleep" },
+		tags = { "staggered", "busy", "nosleep", "noelectrocute" },
 
 		timeline =
 		{
@@ -2232,6 +2240,7 @@ local states =
 				ShakeIfClose(inst)
 			end),
 			FrameEvent(83, function(inst)
+				inst.sg:RemoveStateTag("noelectrocute")
 				inst.sg:AddStateTag("caninterrupt")
 			end),
 		},
@@ -2321,7 +2330,9 @@ local states =
 			inst.AnimState:PlayAnimation("stagger_pst")
 			inst.sg.statemem.aggro = IsAggro(inst)
 			inst.AnimState:PushAnimation(inst.sg.statemem.aggro and "standing_stagger_pst2" or "stagger_pst2", false)
-			if not nohit then
+			if nohit then
+				inst.sg:AddStateTag("noelectrocute")
+			else
 				inst.sg:AddStateTag("caninterrupt")
 			end
 			if inst.components.sleeper ~= nil then
@@ -2338,6 +2349,7 @@ local states =
 			end),
 			FrameEvent(56, function(inst)
 				inst:SetStandState("bi")
+				inst.sg:RemoveStateTag("noelectrocute")
 			end),
 			CommonHandlers.OnNoSleepFrameEvent(60, function(inst)
 				if inst.sg.mem.dostagger and TryStagger(inst) then
@@ -2371,6 +2383,49 @@ local states =
 }
 
 CommonStates.AddFrozenStates(states, function(inst) inst:SetStandState("bi") end)
+
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+{	--anims
+	loop = function(inst)
+		if inst.sg.lasttags["staggered"] then
+			inst.sg:AddStateTag("staggered")
+			inst.override_combat_fx_height = "low"
+			return "staggered_shock_loop"
+		end
+	end,
+	pst = function(inst)
+		if inst.sg.lasttags["staggered"] then
+			inst.sg:AddStateTag("staggered")
+			return "staggered_shock_pst"
+		elseif IsAggro(inst) then
+			inst.sg.statemem.aggro = true
+			return "standing_shock_pst"
+		end
+	end,
+},
+{	--fns
+	loop_onenter = function(inst)
+		if inst.sg:HasStateTag("staggered") then
+			--V2C: can change this back since fx is already spawned at this point
+			inst.override_combat_fx_height = nil
+		else
+			inst:SetStandState("bi")
+		end
+	end,
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if not inst.sg:HasStateTag("staggered") then
+				inst.sg:GoToState("idle", IDLE_FLAGS.NoFaced + (inst.sg.statemem.aggro and IDLE_FLAGS.Aggro or IDLE_FLAGS.Calm))
+			elseif inst.components.timer:TimerExists("stagger") then
+				inst.sg:GoToState("stagger_idle")
+			else
+				inst.sg:GoToState("stagger_pst", true)
+			end
+		end
+	end,
+})
+
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 

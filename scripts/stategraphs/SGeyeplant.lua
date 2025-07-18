@@ -14,11 +14,19 @@ local events=
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnDeath(),
-    EventHandler("attacked", function(inst)
-        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then
-            inst.sg:GoToState("hit")
+	EventHandler("attacked", function(inst, data)
+		if not inst.components.health:IsDead() then
+			if CommonHandlers.AttackShouldElectrocute(inst, data) then
+				if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
+					return
+				end
+			end
+			if not inst.sg:HasStateTag("attack") then
+				inst.sg:GoToState("hit")
+			end
         end
     end),
 }

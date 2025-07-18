@@ -369,7 +369,7 @@ local function CollectThingsToEat(inst, source)
                         end
 
                         if ent:HasOneOfTags("player", "devourable") then
-                            ent.sg:HandleEvent("devoured", { attacker = inst, ignoresetcamdist = true })
+							ent:PushEventImmediate("devoured", { attacker = inst, ignoresetcamdist = true })
 
                             local minhealth = ent.components.health ~= nil and ent.components.health.minhealth or nil
 

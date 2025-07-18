@@ -123,18 +123,24 @@ local function OnFinishExperiment_gestaltcage(inst, item, socketable)
         local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
         local didsocket = false
         if socketable.prefab == "wagdrone_spot_marker" then
+            local dronecount
             if item.prefab == "gestalt_cage_filled1" then
                 local replacementinst = ReplacePrefab(socketable, "wagdrone_rolling")
                 if wagpunk_arena_manager then
                     wagpunk_arena_manager:TrackWagdrone(replacementinst)
+                    dronecount = wagpunk_arena_manager:GetTotalDronePlacementCount()
                 end
                 didsocket = true
             elseif item.prefab == "gestalt_cage_filled2" then
                 local replacementinst = ReplacePrefab(socketable, "wagdrone_flying")
                 if wagpunk_arena_manager then
                     wagpunk_arena_manager:TrackWagdrone(replacementinst)
+                    dronecount = wagpunk_arena_manager:GetTotalDronePlacementCount()
                 end
                 didsocket = true
+            end
+            if dronecount then
+                inst:DropNotesForDroneCount(dronecount)
             end
         elseif socketable.prefab == "wagboss_robot" then
             if item.prefab == "gestalt_cage_filled3" then

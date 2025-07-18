@@ -711,6 +711,7 @@ function Combat:GetImpactSound(target, weapon)
                 (target:HasTag("grass") and "straw_wall_") or
                 (target:HasTag("stone") and "stone_wall_") or
                 (target:HasTag("marble") and "marble_wall_") or
+                (target:HasTag("fence_electric") and "metal_armour_") or
                 "wood_wall_"
             )..weaponmod
 
@@ -1162,11 +1163,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
                 stimuli == "electric" or
                 (_weapon_cmp ~= nil and _weapon_cmp.stimuli == "electric")
             )
-            and not
-            (
-                targ:HasTag("electricdamageimmune") or
-                (targ.components.inventory ~= nil and targ.components.inventory:IsInsulated())
-            )
+            and not IsEntityElectricImmune(targ)
         then
             local electric_damage_mult = _weapon_cmp ~= nil and _weapon_cmp.electric_damage_mult or TUNING.ELECTRIC_DAMAGE_MULT
             local electric_wet_damage_mult = _weapon_cmp ~= nil and _weapon_cmp.electric_wet_damage_mult or TUNING.ELECTRIC_WET_DAMAGE_MULT

@@ -2257,12 +2257,12 @@ local function MakeHat(name)
 
     local function moonstorm_equip(inst, owner)
         _onequip(inst, owner)
-        owner:AddTag("wagstaff_detector")
+        owner:AddTag("moonstormevent_detector")
     end
 
     local function moonstorm_unequip(inst, owner)
         _onunequip(inst, owner)
-        owner:RemoveTag("wagstaff_detector")
+        owner:RemoveTag("moonstormevent_detector")
     end
 
     local function moonstorm_custom_init(inst)

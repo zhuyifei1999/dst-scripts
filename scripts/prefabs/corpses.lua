@@ -212,6 +212,7 @@ local function MakeCreatureCorpse(data)
         inst.components.burnable:SetOnExtinguishFn(OnExtinguish)
 
         inst:SetStateGraph(data.sg)
+		inst.sg.mem.noelectrocute = true
 
         -- One time spawn!
         if not POPULATING then

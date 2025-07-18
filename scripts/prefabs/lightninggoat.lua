@@ -129,9 +129,9 @@ local function OnAttacked(inst, data)
                 data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE, nil, inst.prefab, nil, inst)
 
 				--V2C: -switched to stategraph event instead of GoToState
-				--     -use HandleEvent to preserve legacy timing
+				--     -use Immediate to preserve legacy timing
 				--     -no longer limited to players only
-				inst.sg:HandleEvent("electrocute")
+				data.attacker:PushEventImmediate("electrocute")
             end
         elseif data.stimuli == "electric" or (data.weapon ~= nil and data.weapon.components.weapon ~= nil and data.weapon.components.weapon.stimuli == "electric") then
             setcharged(inst)

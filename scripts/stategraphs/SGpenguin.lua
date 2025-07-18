@@ -19,6 +19,7 @@ local events=
 {
     CommonHandlers.OnStep(),
     CommonHandlers.OnSleep(),
+	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
 
@@ -33,8 +34,9 @@ local events=
                                 if inst.sg:HasStateTag("running") then
                                     nstate = "runningattack"
                                 end
-                                if inst.components.health and not inst.components.health:IsDead()
-                                   and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
+								if inst.components.health and not inst.components.health:IsDead() and
+									((inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) or not inst.sg:HasStateTag("busy"))
+								then
                                     inst.SoundEmitter:KillSound("slide")
                                     inst.sg:GoToState(nstate,targ)
                                 end
@@ -70,7 +72,11 @@ local events=
                             end),
     EventHandler("flyaway", function(inst)
         if not inst.components.health:IsDead() and not inst.sg:HasStateTag("flight") then
-            inst.sg:GoToState("flyaway")
+			if inst.sg:HasStateTag("electrocute") then
+				inst.sg.mem.flyaway = true
+			else
+				inst.sg:GoToState("flyaway")
+			end
         end
     end),
 }
@@ -443,7 +449,7 @@ local states=
         },
 
     State{ name = "flyaway",
-        tags = {"flight", "busy"},
+		tags = { "flight", "busy", "noelectrocute" },
         onenter = function(inst)
             inst.Physics:Stop()
             inst.Physics:ClearCollisionMask()
@@ -529,8 +535,22 @@ CommonStates.AddSleepStates(states,
         },
     })
 
-
 CommonStates.AddSimpleState(states,"hit","hit", {"busy"})
+CommonStates.AddElectrocuteStates(states, nil, nil,
+{
+	loop_onexit = function(inst)
+		if not inst.sg.statemem.not_interrupted then
+			inst.sg.mem.flyaway = nil
+		end
+	end,
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState(inst.sg.mem.flyaway and "flyaway" or "idle")
+		end
+	end,
+	pst_onexit = function(inst)
+		inst.sg.mem.flyaway = nil
+	end,
+})
 
 return StateGraph("penguin", states, events, "idle", actionhandlers)
-

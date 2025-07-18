@@ -1,7 +1,6 @@
 require("stategraphs/commonstates")
 local WORMBOSS_UTILS = require("prefabs/worm_boss_util")
 
-
 local function IsDevouring(inst, target)
     return target ~= nil
         and target:IsValid()
@@ -31,14 +30,8 @@ local function ChewAll(inst)
     end
 end
 
-local actionhandlers =
-{
-
-}
-
 local events=
 {
-
     EventHandler("death", function(inst, data) -- Pushed by worm_boss, not health component!
         if not inst.sg:HasStateTag("dead") then
             if not data.loop then
@@ -53,7 +46,6 @@ local events=
         inst.sg:GoToState("death_ended")
     end),
 
-
     EventHandler("deathunderground", function(inst)
         if not inst.sg:HasStateTag("dead") then
             inst.sg:GoToState("death_underground")
@@ -66,14 +58,20 @@ local events=
         end
     end),
 
+	EventHandler("electrocute", function(inst)
+		if not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) then
+			inst.sg:GoToState("electrocute")
+		end
+	end),
+
     EventHandler("worm_boss_move", function(inst)
-        if not inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("move") then
+		if not inst.sg:HasAnyStateTag("busy", "move") then
             inst.sg:GoToState("move")
         end
     end),
 
     EventHandler("taunt", function(inst)
-        inst.sg:GoToState("taunt")
+		inst.sg:GoToState("taunt")
     end),
 }
 
@@ -335,28 +333,18 @@ local states =
     State{
 
         name = "hit",
-        tags = {"busy", "canrotate"},
+		tags = { "busy", "hit", "canrotate" },
         onenter = function(inst, playanim)
             inst.AnimState:PlayAnimation("hit")
 
-            if not inst.hits then
-                inst.hits = 0
-            end
-            inst.hits = inst.hits + 1
-
-            inst:DoTaskInTime( 3, function()
-                    if inst.hits then
-                        inst.hits = inst.hits -1
-                        if inst.hits <= 0 then
-                            inst.hits = 0
-                        end
-                    end
-                end)
+			inst.hits = (inst.hits or 0) + 1
+			inst:DoTaskInTime(3, function()
+				inst.hits = math.max(0, inst.hits - 1)
+			end)
 
             if inst.hits >= 3 then
                 inst.sg:RemoveStateTag("busy")
             end
-
         end,
 
         events=
@@ -364,6 +352,34 @@ local states =
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
+
+	State{
+		name = "electrocute",
+		tags = { "electrocute", "hit", "busy", "noelectrocute" },
+
+		onenter = function(inst, data)
+			inst.AnimState:PlayAnimation("shock_loop", true)
+			inst.sg:SetTimeout(TUNING.ELECTROCUTE_DEFAULT_DURATION)
+
+			inst.hits = (inst.hits or 0) + 1
+			inst:DoTaskInTime(3, function()
+				inst.hits = math.max(0, inst.hits - 1)
+			end)
+		end,
+
+		ontimeout = function(inst)
+			inst.AnimState:PlayAnimation("shock_pst")
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
 
     State{
 
@@ -453,7 +469,6 @@ local states =
             EventHandler("animover", function(inst) ErodeAway(inst, 6) end),
         },
     },
-
 }
 
-return StateGraph("worm_boss_head", states, events, "idle", actionhandlers)
+return StateGraph("worm_boss_head", states, events, "idle")

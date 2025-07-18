@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Don't give up, Walter!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -4842,6 +4846,7 @@ return{
 
         MOONSTORM_STATIC = "I wonder what he's working on?",
         MOONSTORM_STATIC_ITEM = "You'll be shocked to see what's inside! Get it? Because there's static inside?",
+        MOONSTORM_STATIC_ROAMER = "Woby, should we name it Sparky?",
         MOONSTORM_SPARK = "It's literally spine-tingling!",
 
         BIRD_MUTANT = "Woah! That doesn't look like any of the birds in my handbook!",
@@ -5757,6 +5762,19 @@ return{
         GESTALT_GUARD_EVOLVED = "Wobes! I think we're the unfinished business for these ghosts!",
         FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",
         LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Stay back, Woby!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Don't worry, Wobes. It's not connected.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "We have to plant it first.",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

@@ -1,28 +1,35 @@
 require("stategraphs/commonstates")
 
+local function GetHitState(inst)
+	return (not inst.sg:HasStateTag("hiding") and "hitout")
+		or (inst.sg:HasStateTag("vine") and "hitin")
+		or "hithibernate"
+end
+
 local events =
 {
     EventHandler("death", function(inst)
         inst.sg:GoToState(inst.sg:HasStateTag("vine") and "deathvine" or "death")
     end),
 
-    EventHandler("attacked", function(inst)
+	EventHandler("electrocute", function(inst, data)
+		if not inst.components.health:IsDead() then
+			CommonHandlers.DoBurnOnElectrocute(inst, data, GetHitState(inst))
+		end
+	end),
+
+	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-            inst.sg:GoToState(
-                (not inst.sg:HasStateTag("hiding") and "hitout") or
-                (inst.sg:HasStateTag("vine") and "hitin") or
-                "hithibernate"
-            )
+			if CommonHandlers.AttackShouldElectrocute(inst, data) then
+				CommonHandlers.DoBurnOnElectrocute(inst, data) --don't pass hit state here, just fallthrough to below
+			end
+			inst.sg:GoToState(GetHitState(inst))
         end
     end),
 
 	EventHandler("worked", function(inst)
 		if not inst.components.health:IsDead() then
-			inst.sg:GoToState(
-				(not inst.sg:HasStateTag("hiding") and "hitout") or
-				(inst.sg:HasStateTag("vine") and "hitin") or
-				"hithibernate"
-			)
+			inst.sg:GoToState(GetHitState(inst))
 		end
 	end),
 }

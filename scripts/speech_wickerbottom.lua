@@ -480,6 +480,10 @@ return{
 		{
 			MISSED = "Oh dear, I've missed!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TODO",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -2088,7 +2092,7 @@ return{
         CHESSPIECE_EYEOFTERROR = "A trophy that doubles as a useful anatomical model.",
         CHESSPIECE_TWINSOFTERROR = "A stone rendition of a pair of mechanical marvels.",
         CHESSPIECE_DAYWALKER = "An accurate stone model of that ill-behaved creature.",
-        CHESSPIECE_DAYWALKER2 = "",
+        CHESSPIECE_DAYWALKER2 = "Resourceful, admittedly. Yet, in essence, a brute.",
         CHESSPIECE_DEERCLOPS_MUTATED = "Such a strange and grotesque affliction...",
         CHESSPIECE_WARG_MUTATED = "There is much I still don't understand about this beast.",
         CHESSPIECE_BEARGER_MUTATED = "The artist truly captured its ferocity!",
@@ -4800,6 +4804,7 @@ return{
 
         MOONSTORM_STATIC = "That energy seems quite volatile.",
         MOONSTORM_STATIC_ITEM = "This device appears to keep the energy contained, somehow.",
+        MOONSTORM_STATIC_ROAMER = "That energy has gone astray.",
         MOONSTORM_SPARK = "I assumed it was a form of electricity, but it seems to be something else entirely...",
 
         BIRD_MUTANT = "Oh dear, that creature looks unwell.",
@@ -5715,6 +5720,19 @@ return{
         GESTALT_GUARD_EVOLVED = "They have evolved into a more hostile form.",
         FLOTATIONCUSHION = "A passive deployment flotation device. I approve.",
         LUNAR_SEED = "A piece of its crown, no doubt.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
+        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        MOONSTORM_STATIC_CATCHER = "TODO",
+        COOLANT = "TODO",
+
+        FENCE_ELECTRIC = {
+            LINKED = "The post is conducting a current just strong enough to deter uninsulated creatures.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "The post is not conducting a current at the moment.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "This is an electric fence post and it must be planted before it can be used.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

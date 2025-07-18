@@ -2205,6 +2205,16 @@ table.insert(prefs, CreatePrefabSkin("book_web_tallbird",
 	release_group = 143,
 }))
 
+table.insert(prefs, CreatePrefabSkin("bookstation_house",
+{
+	base_prefab = "bookstation",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) bookstation_init_fn(inst, "bookstation_house") end,
+	skin_tags = { "BOOKSTATION", "CRAFTABLE", },
+	release_group = 169,
+}))
+
 table.insert(prefs, CreatePrefabSkin("boomerang_bananarang",
 {
 	base_prefab = "boomerang",
@@ -2214,6 +2224,16 @@ table.insert(prefs, CreatePrefabSkin("boomerang_bananarang",
 	init_fn = function(inst) boomerang_init_fn(inst, "boomerang_bananarang") end,
 	skin_tags = { "BOOMERANG", "CRAFTABLE", "T_UPDATE", },
 	release_group = 125,
+}))
+
+table.insert(prefs, CreatePrefabSkin("boomerang_bandedwood",
+{
+	base_prefab = "boomerang",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) boomerang_init_fn(inst, "boomerang_bandedwood") end,
+	skin_tags = { "BOOMERANG", "CRAFTABLE", },
+	release_group = 169,
 }))
 
 table.insert(prefs, CreatePrefabSkin("boomerang_tiger",
@@ -17576,6 +17596,28 @@ table.insert(prefs, CreatePrefabSkin("wx78_rosep",
 	release_group = 130,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_catcoon",
+{
+	base_prefab = "wx78_scanner",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { "WX78SCANNER", "CRAFTABLE", },
+	release_group = 169,
+	granted_items = { "wx78_scanner_succeeded_catcoon", },
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_catcoon_item",
+{
+	base_prefab = "wx78_scanner_item",
+	type = "item",
+	build_name_override = "wx78_scanner_catcoon",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_item_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { },
+	release_group = 169,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wx78_scanner_fancy",
 {
 	base_prefab = "wx78_scanner",
@@ -17622,6 +17664,17 @@ table.insert(prefs, CreatePrefabSkin("wx78_scanner_junky_item",
 	init_fn = function(inst) wx78_scanner_item_init_fn(inst, "wx78_scanner_junky") end,
 	skin_tags = { },
 	release_group = 164,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_succeeded_catcoon",
+{
+	base_prefab = "wx78_scanner_succeeded",
+	type = "item",
+	build_name_override = "wx78_scanner_catcoon",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_succeeded_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { },
+	release_group = 169,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wx78_scanner_succeeded_fancy",

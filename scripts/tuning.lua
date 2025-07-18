@@ -645,6 +645,7 @@ function Tune(overrides)
         SLURPER_ATTACK_PERIOD = 5,
 
         LIGHTNING_DAMAGE = 10,
+        LIGHTNING_STRIKE_RADIUS = 3,
 		PLAYER_LIGHTNING_TARGET_CHANCE = 0.3,
 		WX78_LIGHTNING_TARGET_CHANCE = 1.0,
 		WES_LIGHTNING_TARGET_CHANCE = 0.6,
@@ -8402,6 +8403,15 @@ function Tune(overrides)
         DROWNING_ITEMDROP_SHALLOWS = 7,
         DROWNING_ITEMDROP_NORMAL = 5,
 
+		ELECTROCUTE_DEFAULT_DURATION = 0.8,
+        ELECTROCUTE_SHORT_DURATION = 0.4,
+		ELECTROCUTE_DEFAULT_DELAY = { min = 2, max = 4 },
+		ELECTROCUTE_DEFAULT_INTERRUPT_CHANCE = 0.5,
+
+        ELECTROCUTE_FORK_RANGE = 3, --3,
+        ELECTROCUTE_FORK_TARGETS = 2,
+        ELECTROCUTE_FORK_DELAY = 11 * FRAMES,
+
 		WAGDRONE_ROLLING_RUNSPEED = 9,
 		WAGDRONE_ROLLING_HEALTH = 70 * 4,
 		WAGDRONE_ROLLING_REGEN_AMOUNT = 5,
@@ -8474,6 +8484,7 @@ function Tune(overrides)
         WAGPUNK_ARENA_COLLISION_NOBUILD_THICKNESS = 3, -- Units away from the barrier that things cannot build in and the band of destruction for breaking structures near the barrier.
 
         GESTALT_CAGE_FILLED_PLACEMENT_RADIUS = 2,
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT_PLACEMENT_RADIUS = 4,
 
         AXISALIGNEDPLACEMENT_INTERVALS = 1, -- Units of division for 1 game unit.
         AXISALIGNEDPLACEMENT_CIRCLESIZE = 4, -- Units for how big the circle radius ground decals are going to draw out to.
@@ -8518,6 +8529,20 @@ function Tune(overrides)
 		ALTERGUARDIAN_PHASE1_LUNARRIFT_REVIVE_HP = 0.25,
 		ALTERGUARDIAN_PHASE1_LUNARRIFT_REGEN_AMOUNT = 200,
 		ALTERGUARDIAN_PHASE1_LUNARRIFT_REGEN_PERIOD = 2,
+
+        ELECTRIC_FENCE_DAMAGE = 0,
+        ELECTRIC_FENCE_MAX_LINKS = 2,
+        ELECTRIC_FENCE_MAX_DIST = 10,
+
+        ELECTRIC_FIELD_HEALTH = 50,
+        ELECTRIC_FIELD_HEALTHREGEN_AMOUNT = 1,
+        ELECTRIC_FIELD_HEALTHREGEN_PERIOD = 2,
+        ELECTRIC_FIELD_DAMAGE_TAKEN_BASE = 1, --(Omar): Base value, size of shocked mob does more 'damage' to the field, e.g. rabbit has .5 radius, 1*0.5 = .5 damage to field, or 1*1.5 for epic creatures
+
+        ELECTRIC_FIELD_RAINDECAY_AMOUNT = -0.5,
+        ELECTRIC_FIELD_RAINDECAY_PERIOD = 3,
+
+        ELECTRIC_FIELD_MOB_PANICTIME = 3,
     }
 
     TUNING_MODIFIERS = {}

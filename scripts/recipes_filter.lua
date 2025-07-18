@@ -492,8 +492,14 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
     "wanderingtradershop_moonglass",
 
     -- wagpunk_workstation
+    "wagpunk_workstation_blueprint_moonstorm_goggleshat",
+    "wagpunk_workstation_blueprint_moon_device_construction1",
     "wagpunk_floor_kit",
     "gestalt_cage",
+    "wagboss_robot_constructionsite_kit",
+    "wagboss_robot_creation_parts",
+    "wagpunk_workstation_moonstorm_static_catcher",
+    "wagpunk_workstation_security_pulse_cage",
 
 	-- waxwelljournal
 	"shadowlumber_builder",
@@ -761,6 +767,7 @@ CRAFTING_FILTERS.TOOLS.recipes =
 	"compass",
 	"walking_stick",
 	"cane",
+	"fence_rotator",
 	"sewing_kit",
 	"sewing_tape",
 	"winona_remote",
@@ -1251,6 +1258,7 @@ CRAFTING_FILTERS.STRUCTURES.recipes =
 
 	"fence_gate_item",
 	"fence_item",
+	"fence_electric_item", --TODO (OMAR) Other filters too
 	"wall_hay_item",
 	"wall_wood_item",
 	"wall_stone_item",
