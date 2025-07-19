@@ -264,7 +264,6 @@ local function SetSleeperAwakeState(inst)
     inst:ShowActions(true)
 end
 
-
 local function DoEmoteFX(inst, prefab)
     local fx = SpawnPrefab(prefab)
     if fx ~= nil then
@@ -1513,7 +1512,7 @@ local events =
             elseif data.stimuli == "darkness" then
                 inst.sg:GoToState("hit_darkness")
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
-                inst.sg:GoToState("electrocute")
+				inst.sg:GoToState("electrocute", { attackdata = data })
             elseif inst.sg:HasStateTag("nointerrupt") then
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
                 DoHurtSound(inst)
@@ -2860,7 +2859,7 @@ local states =
         name = "electrocute",
         tags = { "busy", "pausepredict" },
 
-        onenter = function(inst)
+		onenter = function(inst, data)
             ClearStatusAilments(inst)
 			if inst.components.grogginess then
 				inst.components.grogginess:ResetGrogginess()
@@ -2886,6 +2885,11 @@ local states =
             if not inst:HasTag("electricdamageimmune") then
                 inst.components.bloomer:PushBloom("electrocute", "shaders/anim.ksh", -2)
                 inst.Light:Enable(true)
+
+				if not (data and data.noburn) and inst:HasTag("plantkin") then
+					local attackdata = data and data.attackdata or data
+					inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
+				end
             end
 
             inst.AnimState:PlayAnimation("shock")

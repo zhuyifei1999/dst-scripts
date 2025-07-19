@@ -478,11 +478,11 @@ return{
 		},
 		POUNCECAPTURE =
 		{
-			MISSED = "Cursed wraith!",
+			MISSED = "Curses!",
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Curses!",
         },
     },
 
@@ -5725,8 +5725,8 @@ return{
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
         WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        MOONSTORM_STATIC_CATCHER = "'Tis empty.",
+        COOLANT = "Cursed blood of the Jotnar!",
 
         FENCE_ELECTRIC = {
             LINKED = "It conjures a defensive permimeter worthy of Thor!",      --NOTE: the fence post is fully linked to two other posts

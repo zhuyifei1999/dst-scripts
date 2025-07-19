@@ -482,7 +482,7 @@ return{
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Oh dear, I've missed!",
         },
     },
 
@@ -5725,8 +5725,8 @@ return{
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
         WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        MOONSTORM_STATIC_CATCHER = "It is not carrying a charge.",
+        COOLANT = "The fluids exhibit anomalous properties, no doubt catalyzed by the mutations.",
 
         FENCE_ELECTRIC = {
             LINKED = "The post is conducting a current just strong enough to deter uninsulated creatures.",      --NOTE: the fence post is fully linked to two other posts

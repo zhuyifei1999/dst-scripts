@@ -20,6 +20,7 @@ local events=
     CommonHandlers.OnStep(),
     CommonHandlers.OnSleep(),
 	CommonHandlers.OnElectrocute(),
+    CommonHandlers.OnFreeze(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
 
@@ -552,5 +553,7 @@ CommonStates.AddElectrocuteStates(states, nil, nil,
 		inst.sg.mem.flyaway = nil
 	end,
 })
+
+CommonStates.AddFrozenStates(states)
 
 return StateGraph("penguin", states, events, "idle", actionhandlers)

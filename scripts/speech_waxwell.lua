@@ -478,11 +478,11 @@ return{
 		},
 		POUNCECAPTURE =
 		{
-			MISSED = "Don't move, blasted specter!",
+			MISSED = "Quit moving!",
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Quit moving!",
         },
     },
 
@@ -5725,8 +5725,8 @@ return{
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
         WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        MOONSTORM_STATIC_CATCHER = "Just my luck. It's empty.",
+        COOLANT = "Yucky.",
 
         FENCE_ELECTRIC = {
             LINKED = "I don't trust the power source.",      --NOTE: the fence post is fully linked to two other posts

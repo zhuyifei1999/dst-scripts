@@ -80,6 +80,7 @@ local function fn()
 
     inst:AddTag("notraptrigger")
     inst:AddTag("antlion_sinkhole_blocker")
+	inst:AddTag("electricdamageimmune")
 
     MakeSnowCoveredPristine(inst)
 

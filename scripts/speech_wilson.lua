@@ -492,7 +492,7 @@ return {
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Drat, I missed.",
         },
     },
 
@@ -5478,8 +5478,11 @@ return {
 
         FENCE_JUNK = "Tell me it's ugly, I won't take a fence.",
         JUNK_PILE = "A good junk pile rummage? I'll never refuse.",
-        JUNK_PILE_BIG = "I think it could fall over any moment.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "TODO",
+            GENERIC = "I think it could fall over any moment.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "That'll put a thorn in your side.",
 
         -- Meta 4 / Ocean QoL
@@ -5732,11 +5735,11 @@ return {
         LUNAR_SEED = "This formed part of its crown.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Keeping it under wraps for now.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big automatons really do come in small packages.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "It comes in pieces!",
+        MOONSTORM_STATIC_CATCHER = "There's nothing inside.",
+        COOLANT = "It's bubbling with possibility!",
 
         FENCE_ELECTRIC = {
             LINKED = "Aw, it found a connection.",      --NOTE: the fence post is fully linked to two other posts

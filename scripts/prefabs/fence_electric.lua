@@ -70,7 +70,7 @@ local function OnHit(inst, attacker, damage)
     local has_connection = inst.components.electricconnector:HasConnection()
     local attacker_electric_immune = IsEntityElectricImmune(attacker)
 
-    if not has_connection or attacker_electric_immune then
+    if not has_connection or attacker_electric_immune or attacker:HasTag("epic") then
         inst.components.workable:WorkedBy(attacker)
     end
 

@@ -482,7 +482,7 @@ return{
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Failure.",
         },
     },
 
@@ -5729,8 +5729,8 @@ return{
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
         WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        MOONSTORM_STATIC_CATCHER = "Empty.",
+        COOLANT = "It seems alive but not.",
 
         FENCE_ELECTRIC = {
             LINKED = "It fulfills its purpose in connection.",      --NOTE: the fence post is fully linked to two other posts

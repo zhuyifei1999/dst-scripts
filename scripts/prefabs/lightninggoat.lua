@@ -82,6 +82,7 @@ end
 
 local function discharge(inst)
     inst:RemoveTag("charged")
+	inst:RemoveTag("electricdamageimmune")
     inst.components.lootdropper:SetChanceLootTable('lightninggoat')
     inst.sg:GoToState("discharge")
     inst.AnimState:ClearBloomEffectHandle()
@@ -101,6 +102,7 @@ end
 
 local function setcharged(inst, instant)
     inst:AddTag("charged")
+	inst:AddTag("electricdamageimmune")
     inst.components.lootdropper:SetChanceLootTable('chargedlightninggoat')
     inst.AnimState:SetBuild("lightning_goat_shocked_build")
     inst.AnimState:Show("fx")
@@ -140,6 +142,10 @@ local function OnAttacked(inst, data)
         inst.components.combat:SetTarget(data.attacker)
         inst.components.combat:ShareTarget(data.attacker, 20, IsChargedGoat, 3)
     end
+end
+
+local function OnElectrocute(inst)--, data)
+	setcharged(inst) --don't accidentally pass data as 2nd param to setcharged
 end
 
 local function onspawnedforhunt(inst, data)
@@ -262,6 +268,7 @@ local function fn()
 
 	inst:ListenForEvent("spawnedforhunt", onspawnedforhunt)
 
+	inst:ListenForEvent("electrocute", OnElectrocute)
     inst:ListenForEvent("lightningstrike", setcharged)
     inst.setcharged = setcharged
 

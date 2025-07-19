@@ -482,7 +482,7 @@ return{
 		},
         DIVEGRAB =
         {
-            MISSED = "TODO",
+            MISSED = "Dang, missed!",
         },
     },
 
@@ -5728,11 +5728,11 @@ return{
         LUNAR_SEED = "We busted'em down to the baubles.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
-        MOONSTORM_STATIC_CATCHER = "TODO",
-        COOLANT = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "todo",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I know I can build this thing, but should I?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "",
+        MOONSTORM_STATIC_CATCHER = "Ain't nothin' in there.",
+        COOLANT = "Looks like radiator fluid from space.",
 
         FENCE_ELECTRIC = {
             LINKED = "Watch your whiskers around these things!",      --NOTE: the fence post is fully linked to two other posts

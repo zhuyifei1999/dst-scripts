@@ -245,7 +245,8 @@ local function do_burn_on_electrocute(inst, data, state, statedata)
 	if data and data.noburn then
 		shouldreact = true
 	elseif inst.components.burnable and not inst.components.burnable:IsBurning() then
-		inst.components.burnable:Ignite(nil, data and data.weapon, data and data.attacker)
+		local attackdata = data and data.attackdata or data
+		inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
 		shouldreact = true
 	end
 

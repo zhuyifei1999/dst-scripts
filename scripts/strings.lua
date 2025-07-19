@@ -8367,6 +8367,7 @@ STRINGS.UI =
             "Amanda Wong",
             "Kent Reimer",
             "Garnet (G50) Syberg-Olsen",
+            "Omar Al-Saadi",
         },
 
         ALTGAMES =
@@ -8777,7 +8778,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "Skill Spotlight - Beta Branch\nWalter, Wendy & Wortox", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "Hostile Takeover: Phase Two - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 

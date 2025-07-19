@@ -154,7 +154,23 @@ local function Lightning_SpellFn(inst, doer, pos)
     doer:PushEvent("combat_lunge", { targetpos = pos, weapon = inst })
 end
 
+local function Lightning_OnPreLunge(inst, doer, startingpos, targetpos)
+	--@V2C: #HACK so that during lunge, we can trigger electrocute even when dry
+	inst.components.weapon:SetElectric(1.0001, TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT)
+end
+
+local function Lightning_ResetElectric(inst)
+	inst._resetelectrictask = nil
+	inst.components.weapon:SetElectric(1, TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT)
+end
+
 local function Lightning_OnLunged(inst, doer, startingpos, targetpos)
+	if inst._resetelectrictask then
+		inst._resetelectrictask:Cancel()
+	end
+	--@V2C: #HACK delayed because targets' stategraph events are deferred, and they will be checking the electric mults
+	inst._resetelectrictask = inst:DoTaskInTime(2 * FRAMES, Lightning_ResetElectric)
+
     local fx = SpawnPrefab("spear_wathgrithr_lightning_lunge_fx")
     fx.Transform:SetPosition(targetpos:Get())
     fx.Transform:SetRotation(doer:GetRotation())
@@ -461,6 +477,7 @@ local function LightningSpearPostInitFn_Base(inst)
     inst.components.aoeweapon_lunge:SetDamage(TUNING.SPEAR_WATHGRITHR_LIGHTNING_LUNGE_DAMAGE)
     inst.components.aoeweapon_lunge:SetSound("meta3/wigfrid/spear_lighting_lunge")
     inst.components.aoeweapon_lunge:SetSideRange(1)
+	inst.components.aoeweapon_lunge:SetOnPreLungeFn(Lightning_OnPreLunge)
     inst.components.aoeweapon_lunge:SetOnLungedFn(Lightning_OnLunged)
     inst.components.aoeweapon_lunge:SetOnHitFn(Lightning_OnLungedHit)
     inst.components.aoeweapon_lunge:SetStimuli("electric")

@@ -389048,6 +389048,11 @@ msgctxt "STRINGS.UI.CREDITS.NAMES.92"
 msgid "Garnet (G50) Syberg-Olsen"
 msgstr ""
 
+#. STRINGS.UI.CREDITS.NAMES.93
+msgctxt "STRINGS.UI.CREDITS.NAMES.93"
+msgid "Omar Al-Saadi"
+msgstr ""
+
 #. STRINGS.UI.CREDITS.SONY_THANKS
 msgctxt "STRINGS.UI.CREDITS.SONY_THANKS"
 msgid "Shane Bettenhausen\nAdam Boyes\nBrian Silva\nNick Suttner\nAlessandro Bovenzi"
@@ -393785,7 +393790,7 @@ msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
 msgctxt "STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE"
-msgid "Skill Spotlight - Beta Branch\nWalter, Wendy & Wortox"
+msgid "Hostile Takeover: Phase Two - Beta Branch"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE

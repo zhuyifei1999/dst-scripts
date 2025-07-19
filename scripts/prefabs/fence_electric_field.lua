@@ -3,6 +3,8 @@ local assets =
 	Asset("ANIM", "anim/fence_electric_field_fx.zip"),
 }
 
+--TODO refactor detection by using Physics
+
 local WagdroneCommon = require("prefabs/wagdrone_common")
 
 local function CreateSegFx(seg, rot, scale, pos_y)

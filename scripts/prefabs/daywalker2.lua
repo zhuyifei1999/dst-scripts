@@ -54,7 +54,6 @@ SetSharedLootTable("daywalker2",
 	{ "wagpunk_bits",		0.5 },
 
 	{ "scrap_monoclehat",	1 },
-	{ "fence_electric_item_blueprint",	1 }, --TODO #TEMP We don't ACTUALLY want him to have the blueprint, think of something else!
 	{ "chesspiece_daywalker2_sketch", 1 },
 })
 

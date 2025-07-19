@@ -744,7 +744,7 @@ local function CommonPostInit_Scrapfeather(inst)
 end
 
 local function ProjMasterPostInit_Scrapfeather(inst, attacker, target)
-    inst.components.weapon:SetElectric(1, TUNING.SLINGSHOT_AMMO_SCRAPFEATHER_WET_DAMAGE_MULT)
+	inst.components.weapon:SetElectric(TUNING.SLINGSHOT_AMMO_SCRAPFEATHER_DRY_DAMAGE_MULT, TUNING.SLINGSHOT_AMMO_SCRAPFEATHER_WET_DAMAGE_MULT)
 end
 
 --------------------------------------------------------------------------

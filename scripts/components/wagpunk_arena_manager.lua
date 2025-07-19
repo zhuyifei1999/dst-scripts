@@ -1620,7 +1620,8 @@ function self:OnLoad(data)
         end
     end
     if data.bosscooldownremaining then
-        self.bosscooldowntask = self.inst:DoTaskInTime(data.bosscooldownremaining, BossCooldownFinished_Bridge)
+        local remainingtime = math.min(1, data.bosscooldownremaining) -- NOTES(JBK): The boss cooldown is no longer a real state when wagstaff is defeated the boss is fresh.
+        self.bosscooldowntask = self.inst:DoTaskInTime(remainingtime, BossCooldownFinished_Bridge)
     end
 
     if data.state then

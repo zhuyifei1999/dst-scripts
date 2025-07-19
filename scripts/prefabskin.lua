@@ -131,7 +131,9 @@ backpack_init_fn = function(inst, build_name, fns)
 	if fns and fns.initialize then
 		fns.initialize(inst)
 	end
-	inst:OnBackpackSkinChanged(build_name)
+    if inst.OnBackpackSkinChanged then
+        inst:OnBackpackSkinChanged(build_name)
+    end
 end
 backpack_clear_fn = function(inst)
     basic_clear_fn(inst, "swap_backpack")
@@ -141,7 +143,9 @@ backpack_clear_fn = function(inst)
 		end
 		inst.backpack_skin_fns = nil
 	end
-	inst:OnBackpackSkinChanged(nil)
+    if inst.OnBackpackSkinChanged then
+        inst:OnBackpackSkinChanged(nil)
+    end
 end
 
 spicepack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "swap_chefpack" ) end

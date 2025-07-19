@@ -403,6 +403,34 @@ local assets_roamer = {
 
 local brain_roamer = require("brains/moonstormstaticbrain")
 
+local function Decay(inst)
+    if inst.zigzagtask then
+        inst.zigzagtask:Cancel()
+        inst.zigzagtask = nil
+    end
+    inst.AnimState:PlayAnimation("decay")
+    inst:ListenForEvent("animover", inst.Remove)
+end
+
+local function StartDecay(inst)
+    if not inst.roamerdecaytask then
+        if inst:IsAsleep() then
+            inst:Remove()
+        else
+            inst.roamerdecaytask = inst:DoTaskInTime(3 + math.random(), inst.Decay)
+            inst.OnEntitySleep = inst.Remove
+        end
+    end
+end
+
+local function StopDecay(inst)
+    if inst.roamerdecaytask then
+        inst.roamerdecaytask:Cancel()
+        inst.roamerdecaytask = nil
+    end
+    inst.OnEntitySleep = nil
+end
+
 local function OnZigZagUpdate(inst)
     inst.zigzagtask = inst:DoTaskInTime(math.random() * 0.25 + 0.25, inst.OnZigZagUpdate)
 
@@ -414,6 +442,20 @@ local function OnZigZagUpdate(inst)
     local radius = math.random() * 0.25 + 0.25
     x, z = x + math.cos(theta) * radius, z + math.sin(theta) * radius
     inst.Transform:SetPosition(x, y, z)
+
+    local moonstorms = TheWorld.net and TheWorld.net.components.moonstorms or nil
+    if not moonstorms then
+        return
+    end
+
+    local shouldstay = moonstorms:IsXZInMoonstorm(x, z)
+    if shouldstay then
+        inst:StopDecay()
+    else
+        inst:StartDecay()
+    end
+
+    return 
 end
 
 local function OnCaught_roamer(inst, obj, doer)
@@ -479,6 +521,7 @@ local function fn_roamer()
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.walkspeed = 8
+    inst.components.locomotor.pathcaps = { allowocean = true } -- Needed for wander behaviour to properly use point filtering.
 
     local moonstormstaticcapturable = inst:AddComponent("moonstormstaticcapturable")
     moonstormstaticcapturable:SetOnCaughtFn(OnCaught_roamer)
@@ -487,6 +530,9 @@ local function fn_roamer()
     inst:SetBrain(brain_roamer)
 
     inst.OnZigZagUpdate = OnZigZagUpdate
+    inst.StartDecay = StartDecay
+    inst.StopDecay = StopDecay
+    inst.Decay = Decay
     inst.zigzagtask = inst:DoTaskInTime(math.random() * 0.25 + 0.25, inst.OnZigZagUpdate)
 
     TheWorld:PushEvent("ms_moonstormstatic_roamer_spawned", inst)

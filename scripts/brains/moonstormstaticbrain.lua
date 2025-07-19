@@ -13,28 +13,23 @@ local MoonstormStaticBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-local function GetDirectionFn(inst)
-    local angle = math.random() * PI2
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local tx, tz = x + math.cos(angle), z + math.sin(angle)
-    local moonstorms = TheWorld.net and TheWorld.net.components.moonstorms or nil
-    if moonstorms then
-        if not moonstorms:IsXZInMoonstorm(tx, tz) then
-            for i = 1, 8 do
-                local testangle = angle + (i / PI2)
-                tx, tz = x + math.cos(testangle), z + math.sin(testangle)
-                if moonstorms:IsXZInMoonstorm(tx, tz) then
-                    return testangle
-                end
-            end
-        end
+local function CheckPointFn(pt)
+    local x, y, z = pt:Get()
+    if not TheWorld.Map:IsLandTileAtPoint(x, y, z) then
+        return false
     end
-    return angle
+
+    local moonstorms = TheWorld.net and TheWorld.net.components.moonstorms or nil
+    if not moonstorms then
+        return true
+    end
+
+    return moonstorms:IsXZInMoonstorm(x, z)
 end
 
 function MoonstormStaticBrain:OnStart()
     local root = PriorityNode({
-        Wander(self.inst, function() return self.inst:GetPosition() end, MAX_WANDER_DIST, WanderTimes, GetDirectionFn),
+        Wander(self.inst, function() return self.inst:GetPosition() end, MAX_WANDER_DIST, WanderTimes, nil, nil, CheckPointFn),
     }, 1)
 
     self.bt = BT(self.inst, root)
