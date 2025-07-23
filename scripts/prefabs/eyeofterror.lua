@@ -591,6 +591,7 @@ local function twin1fn()
     inst:AddTag("mech")
     inst:AddTag("soulless")
 	inst:AddTag("electricdamageimmune")
+    inst:AddTag("shadow_aligned")
 
     if not TheWorld.ismastersim then
         return inst
@@ -658,6 +659,7 @@ local function twin2fn()
     inst:AddTag("mech")
     inst:AddTag("soulless")
 	inst:AddTag("electricdamageimmune")
+    inst:AddTag("shadow_aligned")
 
     if not TheWorld.ismastersim then
         return inst

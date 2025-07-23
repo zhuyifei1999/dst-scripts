@@ -30,8 +30,8 @@ local events = {
     CommonHandlers.OnFallInVoid(),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not inst.sg:HasAnyStateTag("ability", "electrocute") then
 				inst.sg:GoToState("hit")
 			end
@@ -375,7 +375,7 @@ local states = {
                 inst.SoundEmitter:PlaySound("rifts4/rabbit_king/spawn_lp", "spawn_lp")
             end
 
-			inst.sg:SetTimeout((9 + 17 * num_loops + 38) * FRAMES)
+			inst.sg:SetTimeout((9 + 17 * numloops + 38) * FRAMES)
         end,
 		ontimeout = function(inst)
 			inst.sg:RemoveStateTag("nointerrupt")

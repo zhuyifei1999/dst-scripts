@@ -1736,6 +1736,9 @@ local COMPONENT_ACTIONS =
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") and not (inst.replica.equippable ~= nil and inst.replica.equippable:IsRestricted(doer)) then
+                if target:HasTag("LunarBuildup") and inst:HasTag("MINE_tool") then
+                    table.insert(actions, ACTIONS.REMOVELUNARBUILDUP)
+                end
                 for k in pairs(TOOLACTIONS) do
                     if inst:HasTag(k.."_tool")
                             and target:IsActionValid(ACTIONS[k], right) then
@@ -2329,6 +2332,9 @@ local COMPONENT_ACTIONS =
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") then
+                if target:HasTag("LunarBuildup") and inst:HasTag("MINE_tool") then
+                    table.insert(actions, ACTIONS.REMOVELUNARBUILDUP)
+                end
                 for k in pairs(TOOLACTIONS) do
                     if inst:HasTag(k.."_tool")
                             and target:IsActionValid(ACTIONS[k], right)
@@ -2897,6 +2903,10 @@ local COMPONENT_ACTIONS =
             if not valid then return false end
 
             return IsValidScytheTarget(inst)
+        end,
+
+        lunarhailbuildup = function(inst, action, right)
+            return action == ACTIONS.REMOVELUNARBUILDUP and inst:HasTag("LunarBuildup")
         end,
 
         workable = function(inst, action, right)

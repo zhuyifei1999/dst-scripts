@@ -3,10 +3,6 @@ local assets =
 	Asset("ANIM", "anim/fence_electric_field_fx.zip"),
 }
 
---TODO refactor detection by using Physics
-
-local WagdroneCommon = require("prefabs/wagdrone_common")
-
 local function CreateSegFx(seg, rot, scale, pos_y)
 	local fx = CreateEntity()
 
@@ -79,13 +75,16 @@ local function ClearSegs(inst)
 		inst.segs = nil
 	end
 
-	inst.Physics:SetActive(true) --We're unloaded, activate our physics!
-
 	--[[if not TheWorld.ismastersim then
 		return
 	end]] --it's fine to run the cleanup code on clients anyway
 
 	inst.SoundEmitter:KillSound("linked_lp")
+
+	if inst.Physics then --Doesn't exist on client!
+		inst.Physics:SetCollides(true) --We're unloaded, activate our physics!
+		inst.Physics:SetCollisionCallback(nil)
+	end
 
 	if inst.targettask then
 		inst.targettask:Cancel()
@@ -97,9 +96,7 @@ end
 local MAX_LEN = 15
 local SEG_LEN = 2.15 -- Bolt is 324 pixels long in file, 324 / 150 = 2.15~
 local TARGET_SPACING = 4
-local TARGET_RADIUS = TARGET_SPACING * 1.5
 local TARGET_RANGE = 0.1 --distance from beam
-local SLOW_PERIOD = 1
 local FAST_PERIOD = 2 * FRAMES
 local MIN_PHYS_RAD = 0.5 --NOTE (Omar): Any lower and we risk the mob gliding on through 
 -- ^ NEVERMIND SMALLBIRDS ARE SOMEHOW JUMPING THE FENCE
@@ -131,52 +128,40 @@ local function GetShockCooldown(inst)
 		(inst._electrocute_resist or 0)
 end
 
-local function UpdateTargets(inst, p1, p2, pv, targets)
+-- NOTE(Omar): A little trick!
+-- Collision callbacks still run even if Physics:SetCollides is false
+-- And physics are gonna be a bit more reliable than our old detection
+local BrainCommon = require("brains/braincommon")
+local function OnCollisionCallback(inst, other,
+	world_position_on_a_x, world_position_on_a_y, world_position_on_a_z,
+	world_position_on_b_x, world_position_on_b_y, world_position_on_b_z,
+	world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z,
+	lifetime_in_frames)
+
 	local t = GetTime()
-	local nextperiod = SLOW_PERIOD
-	for i, x in ipairs(inst.targetx) do
-		local z = inst.targetz[i]
-		for _, v in ipairs(WagdroneCommon.FindShockTargets(x, z, TARGET_RADIUS)) do
-			if (targets[v] or -math.huge) < t and
-				v:IsValid() and not v:IsInLimbo()
-			then
-				pv.x, _, pv.y = v.Transform:GetWorldPosition()
-				local range = TARGET_RANGE + math.max(v:GetPhysicsRadius(0), MIN_PHYS_RAD)
-				if DistPointToSegmentXYSq(pv, p1, p2) < range * range then
-					if not (v.components.health and v.components.health:IsDead()) and
-						v.components.combat and inst.components.combat:CanTarget(v)
-					then
-						if not IsEntityElectricImmune(v) then
-							ClearForgetTask(v)
+	if (inst.targets[other] or -math.huge) < t and
+		other:IsValid() and not other:IsInLimbo()
+	then
+		if not IsEntityDead(other) then
+			if not IsEntityElectricImmune(other) and CanEntityBeElectrocuted(other) then
+				ClearForgetTask(other)
 
-							--TODO MORE WHEN WET?
-							if v.panic_electric_field ~= inst then
-								v:PushEvent("shocked_by_new_field", inst)
+				--TODO MORE WHEN WET?
+				if BrainCommon.HasElectricFencePanicTriggerNode(other) and other.panic_electric_field ~= inst then
+					other:PushEvent("shocked_by_new_field", inst)
 
-                            	v.panic_electric_field = inst
-								v:ListenForEvent("onremove", ObjectNonPermanence, inst) --Just in case?
-							end
-						
-                            v:PushEventImmediate("electrocute", {duration=TUNING.ELECTROCUTE_SHORT_DURATION, noburn=true})
-
-							v.forget_field_task = v:DoTaskInTime(TUNING.ELECTRIC_FIELD_MOB_PANICTIME, ObjectNonPermanence)
-						end
-					end
-					targets[v] = t + GetShockCooldown(v)
+                	other.panic_electric_field = inst
+					other:ListenForEvent("onremove", ObjectNonPermanence, inst) --Just in case?
 				end
-			end
-			nextperiod = FAST_PERIOD
-		end
-	end
 
-	if inst.targettask then
-		if inst.targettask.period == nextperiod then
-			return
+				local duration = math.min(TUNING.ELECTROCUTE_SHORT_DURATION, GetEntityElectrocuteDuration(other))
+				other:PushEventImmediate("electrocute", {duration=duration, noburn=true})
+				other.forget_field_task = other:DoTaskInTime(TUNING.ELECTRIC_FIELD_MOB_PANICTIME, ObjectNonPermanence)
+			end
 		end
-		inst.targettask:Cancel()
+
+		inst.targets[other] = t + GetShockCooldown(other)
 	end
-	local initialperiod = nextperiod ~= FAST_PERIOD and (0.5 + 0.5 * math.random()) * nextperiod or nil
-	inst.targettask = inst:DoPeriodicTask(nextperiod, UpdateTargets, initialperiod, p1, p2, pv, targets)
 end
 
 local function AddPlane(triangles, x0, y0, z0, x1, y1, z1)
@@ -205,17 +190,32 @@ local function AddPlane(triangles, x0, y0, z0, x1, y1, z1)
     table.insert(triangles, z1)
 end
 
+local HALFPI = PI/2
 local function BuildFenceMesh(halflen, rot)
     local triangles = {}
-	local x0, z0 = halflen * math.cos(rot), halflen * -math.sin(rot)
-	local x1, z1 = -halflen * math.cos(rot), -halflen * -math.sin(rot)
 
-	AddPlane(triangles, x0, 0, z0, x1, 7, z1)
+	local cos_rot, cos_rot_op = math.cos(rot), math.cos(rot + HALFPI)
+	local sin_rot, sin_rot_op = math.sin(rot), math.sin(rot + HALFPI)
+
+	local x0, z0 = halflen * cos_rot, halflen * -sin_rot
+	local x1, z1 = -halflen * cos_rot, -halflen * -sin_rot
+
+	local x2, z2 = x0, z0
+	local x3, z3 = x1, z1
+
+	x0, z0 = x0 + cos_rot_op * TARGET_RANGE, z0 - sin_rot_op * TARGET_RANGE
+	x1, z1 = x1 + cos_rot_op * TARGET_RANGE, z1 - sin_rot_op * TARGET_RANGE
+
+	x2, z2 = x2 + cos_rot_op * -TARGET_RANGE, z2 - sin_rot_op * -TARGET_RANGE
+	x3, z3 = x3 + cos_rot_op * -TARGET_RANGE, z3 - sin_rot_op * -TARGET_RANGE
+
+	AddPlane(triangles, x0, 0, z0, x1, 5, z1)
+	AddPlane(triangles, x2, 0, z2, x3, 5, z3)
 
     return triangles
 end
 
-local function RefreshSegs(inst, instant)
+local function RefreshSegs(inst)
 	local len = inst.len:value() / 255 * MAX_LEN
 	local rot = inst.rot:value() / 255 * 360
 	local theta = rot * DEGREES
@@ -239,9 +239,6 @@ local function RefreshSegs(inst, instant)
 		end
 	end
 
-	inst.Physics:SetTriangleMesh(BuildFenceMesh(len * 0.5, rot * DEGREES))
-	inst.Physics:SetActive(false)
-
 	if not TheWorld.ismastersim then
 		return
 	end
@@ -249,6 +246,10 @@ local function RefreshSegs(inst, instant)
 	if not inst.SoundEmitter:PlayingSound("linked_lp") then
 	    inst.SoundEmitter:PlaySound("dontstarve/common/together/electric_fence/linked_lp", "linked_lp")
     end
+
+	inst.Physics:SetTriangleMesh(BuildFenceMesh(len * 0.5, rot * DEGREES))
+	inst.Physics:SetCollides(false)
+	inst.Physics:SetCollisionCallback(OnCollisionCallback)
 
 	if inst.targetx == nil then
 		inst.targetx = {}
@@ -268,22 +269,8 @@ local function RefreshSegs(inst, instant)
 		end
 	end
 
-	if inst.targettask then
-		if inst.targettask.period == FAST_PERIOD then
-			return
-		end
-		inst.targettask:Cancel()
-	end
-	local p1 = { x = inst.targetx[1], y = inst.targetz[1] }
-	local p2 = { x = inst.targetx[#inst.targetx], y = inst.targetz[#inst.targetz] }
-	local pv = {}
-	local targets = {}
-	inst.targettask = inst:DoPeriodicTask(SLOW_PERIOD, UpdateTargets, instant and 0 or math.random() * 0.3, p1, p2, pv, targets)
-	inst.targettask.period = SLOW_PERIOD
-end
-
-local function OnEntityWake(inst)
-	RefreshSegs(inst, true)
+	inst.p1 = { x = inst.targetx[1], y = inst.targetz[1] }
+	inst.p2 = { x = inst.targetx[#inst.targetx], y = inst.targetz[#inst.targetz] }
 end
 
 local function OnBeamDirty(inst)
@@ -300,23 +287,21 @@ local function SetBeam(inst, len, rot)
 		OnBeamDirty(inst)
 	end
 end
-
-local function KeepTargetFn(inst)--, target)
-	return false
-end
-
+--todo shock daywalker
 local function SetUpPhysics(inst)
 	inst.entity:AddPhysics()
     inst.Physics:SetMass(0)
-    inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
+    inst.Physics:SetCollisionGroup(COLLISION.GROUND) --EVERYTHING should interact with the fence, so set it as GROUND for now.
     inst.Physics:SetCollisionMask(
         --COLLISION.ITEMS,
+		--COLLISION.OBSTACLES,
         COLLISION.CHARACTERS,
 		COLLISION.FLYERS,
         COLLISION.GIANTS
     )
-	inst.Physics:SetActive(false)
+	inst.Physics:SetCollides(false)
 	inst.Physics:SetDontRemoveOnSleep(true)
+	inst.Physics:SetCollisionCallback(OnCollisionCallback)
 end
 
 local function CanMouseThrough() -- So that we don't block trying to select other entities.
@@ -329,10 +314,10 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
-	SetUpPhysics(inst)
 	--
 	inst:AddTag("CLASSIFIED")
 	inst:AddTag("notarget")
+	inst:AddTag("no_collision_callback_for_other")
 
 	inst.len = net_byte(inst.GUID, "fence_electric_field.len", "beamdirty")
 	inst.rot = net_byte(inst.GUID, "fence_electric_field.rot", "beamdirty")
@@ -348,15 +333,14 @@ local function fn()
 		return inst
 	end
 
-	inst:AddComponent("combat")
-	inst.components.combat:SetDefaultDamage(TUNING.ELECTRIC_FENCE_DAMAGE)
-	inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-	inst.components.combat.ignorehitrange = true
+	SetUpPhysics(inst) --NOTE: Yup! Physics is only needed on server side
+
+	inst.targets = {}
 
 	inst.targettask = nil
 	inst.SetBeam = SetBeam
 	inst.OnEntitySleep = ClearSegs
-	inst.OnEntityWake = OnEntityWake
+	inst.OnEntityWake = RefreshSegs
 
 	inst.persists = false
 

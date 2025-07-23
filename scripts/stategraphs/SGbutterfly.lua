@@ -156,6 +156,6 @@ local states=
     },
 }
 CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
---CommonStates.AddElectrocuteStates(states)
+CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("butterfly", states, events, "takeoff", actionhandlers)

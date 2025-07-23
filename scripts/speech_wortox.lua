@@ -5488,8 +5488,11 @@ return{
 
         FENCE_JUNK = "A metal fence for our defense.",
         JUNK_PILE = "Could it hide a surprise inside?",
-        JUNK_PILE_BIG = "I won't fall for that, hyuyu!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I spy with my little eye, something sitting way up high, hyuyu!",
+            GENERIC = "I won't fall for that, hyuyu!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Prickly plant protection, perfection!",
 
         -- Meta 4 / Ocean QoL
@@ -5742,9 +5745,9 @@ return{
         LUNAR_SEED = "You went down, and left your crown!",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "The foundation of devastation, hyuyu!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I'll feel no guilt until it's built!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Install to end us all?",
         MOONSTORM_STATIC_CATCHER = "It's hollow, you follow?",
         COOLANT = "All that trouble for these bubbles.",
 

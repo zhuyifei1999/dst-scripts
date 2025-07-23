@@ -5472,8 +5472,11 @@ return{
 
         FENCE_JUNK = "Friends wearing metal clothes",
         JUNK_PILE = "Pile of stuff",
-        JUNK_PILE_BIG = "Not safe...",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What on pile of stuff?",
+            GENERIC = "Not safe...",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Mean and pokey! Not good for hugs",
 
         -- Meta 4 / Ocean QoL
@@ -5726,9 +5729,9 @@ return{
         LUNAR_SEED = "Love Baby Night Ball! Love!",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Half big-big robot friend",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big-big robot friend inside!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Found parts for big-big robot friend!",
         MOONSTORM_STATIC_CATCHER = "No friend",
         COOLANT = "Bubble friend",
 

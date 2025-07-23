@@ -224,6 +224,13 @@ local actionhandlers =
             end
 			return not (inst.sg:HasStateTag("premine") or inst:HasTag("premine")) and "mine_start" or nil
         end),
+    ActionHandler(ACTIONS.REMOVELUNARBUILDUP, -- Copy of ACTIONS.MINE
+        function(inst)
+            if inst:HasTag("beaver") then
+                return not (inst.sg:HasStateTag("gnawing") or inst:HasTag("gnawing")) and "gnaw" or nil
+            end
+            return not (inst.sg:HasStateTag("premine") or inst:HasTag("premine")) and "mine_start" or nil
+        end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
             if inst:HasTag("beaver") then

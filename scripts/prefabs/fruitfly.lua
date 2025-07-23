@@ -220,6 +220,7 @@ local function fn()
 	inst.override_combat_fx_size = "med"
 
     inst:SetStateGraph("SGfruitfly")
+	inst.sg.mem.burn_on_electrocute = true
     inst:SetBrain(brain)
 
     common_server(inst)
@@ -350,6 +351,7 @@ local function minifn()
 
     inst:SetBrain(brain)
     inst:SetStateGraph("SGfruitfly")
+	inst.sg.mem.burn_on_electrocute = true
 
     inst:ListenForEvent("attacked", MiniOnAttacked)
 
@@ -446,6 +448,7 @@ local function friendlyfn()
 
     inst:SetBrain(friendlybrain)
     inst:SetStateGraph("SGfruitfly")
+	inst.sg.mem.burn_on_electrocute = true
 
     return inst
 end

@@ -8,7 +8,7 @@ local SHAKE_DIST = 40
 local YAWNTARGET_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
 local YAWNTARGET_ONEOF_TAGS = { "sleeper", "player" }
 
-function yawnfn(inst)
+local function yawnfn(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, YAWNTARGET_CANT_TAGS, YAWNTARGET_ONEOF_TAGS)
     for i, v in ipairs(ents) do
@@ -398,11 +398,8 @@ local events =
 	EventHandler("attacked", function(inst, data)
 		--V2C: health check since corpse shares this SG
 		if inst.components.health and not inst.components.health:IsDead() then
-			if not (inst.sg.mem.noelectrocute or inst.sg:HasStateTag("noelectrocute")) and
-				CommonHandlers.AttackCanElectrocute(inst, data) and
-				not CommonHandlers.ElectrocuteRecoveryDelay(inst)
-			then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
 				if inst.sg:HasStateTag("staggered") then
 					inst.sg.statemem.staggered = true
@@ -1460,8 +1457,8 @@ local states =
 		{
 			EventHandler("attacked", function(inst, data)
 				if not inst.components.health:IsDead() then
-					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-						inst.sg:GoToState("electrocute", { attackdata = data })
+					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+						return
 					elseif inst.sg.statemem.vulnerable and data and data.spdamage and data.spdamage.planar then
 						inst.sg:GoToState("butt_face_hit")
 					end
@@ -1512,8 +1509,8 @@ local states =
 		{
 			EventHandler("attacked", function(inst, data)
 				if not inst.components.health:IsDead() then
-					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-						inst.sg:GoToState("electrocute", { attackdata = data })
+					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+						return
 					elseif inst.sg.statemem.vulnerable and data and data.spdamage and data.spdamage.planar then
 						inst.sg.mem.dostagger = true
 						if inst.sg.statemem.canstagger then

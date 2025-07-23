@@ -24,7 +24,7 @@ local SOUNDS =
 --------------------------------------------------------------------------
 
 local PADDING = 3
-local REGISTERED_TARGET_TAGS = nil
+local REGISTERED_TARGET_TAGS, REGISTERED_NOPVP_TARGET_TAGS
 
 local function DoFork(inst, target, x, y, z, r, data)
 	if target:IsValid() then
@@ -32,21 +32,42 @@ local function DoFork(inst, target, x, y, z, r, data)
 	end
 	data.numforks = data.numforks or 2
 	if data.numforks > 0 then
-		if REGISTERED_TARGET_TAGS == nil then
-			REGISTERED_TARGET_TAGS = TheSim:RegisterFindTags(
-				nil,
-				{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "electricdamageimmune", "FX" }
+		local attacker = data.attackdata.attacker
+		local tags
+		if not TheNet:GetPVPEnabled() and
+			attacker and (
+				attacker.isplayer or
+				(	attacker.components.follower and
+					attacker.components.follower:GetLeader() and
+					attacker.components.follower:GetLeader().isplayer
+				)
 			)
+		then
+			if REGISTERED_NOPVP_TARGET_TAGS == nil then
+				REGISTERED_NOPVP_TARGET_TAGS = TheSim:RegisterFindTags(nil,
+					{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "electricdamageimmune", "FX", "player" })
+			end
+			tags = REGISTERED_NOPVP_TARGET_TAGS
+		else
+			if REGISTERED_TARGET_TAGS == nil then
+				REGISTERED_TARGET_TAGS = TheSim:RegisterFindTags(nil,
+					{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "electricdamageimmune", "FX" })
+			end
+			tags = REGISTERED_TARGET_TAGS
 		end
+		local attacker_combat = attacker and attacker.replica.combat
 		local targetsremaining = TUNING.ELECTROCUTE_FORK_TARGETS
 		local range = TUNING.ELECTROCUTE_FORK_RANGE + r
-		for i, v in ipairs(TheSim:FindEntities_Registered(x, y, z, range + PADDING, REGISTERED_TARGET_TAGS)) do
-			if v ~= data.attackdata.attacker and not data.targets[v] and
+		for i, v in ipairs(TheSim:FindEntities_Registered(x, y, z, range + PADDING, tags)) do
+			if v ~= attacker and not data.targets[v] and
 				CanEntityBeElectrocuted(v) and
-				not v.sg:HasStateTag("noelectrocute") and
-				v:IsValid() and not v:IsInLimbo() and
-				not CommonHandlers.ElectrocuteRecoveryDelay(v)
-				and not IsEntityDead(inst)
+				v:IsValid() and
+				not (	v.sg:HasStateTag("noelectrocute") or
+						v:IsInLimbo() or
+						IsEntityDead(inst) or
+						(attacker_combat and attacker_combat:IsAlly(v)) or
+						CommonHandlers.ElectrocuteRecoveryDelay(v)
+					)
 			then
 				local fxradius, _, _ = GetCombatFxSize(v)
 				local range1 = range + fxradius
@@ -82,6 +103,7 @@ local function OnUpdate(inst, dt)
 		local c = math.min(1, inst.flash * (inst.blink > 2 and 0.2 or 1))
 		inst.target.components.colouradder:PushColour(inst, c, c, c / 2, 0)
 	else
+		inst.flash = 0
 		inst.target.components.colouradder:PopColour(inst)
 		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdate)
 	end
@@ -144,6 +166,14 @@ local function SetFxTarget(inst, target, duration, data)
 	end
 end
 
+local function CancelFlash(inst)
+	if inst.flash and inst.flash > 0 then
+		inst.flash = 0
+		inst.target.components.colouradder:PopColour(inst)
+		inst.components.updatelooper:RemoveOnUpdateFn(OnUpdate)
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -174,6 +204,7 @@ local function fn()
 	inst.persists = false
 
 	inst.SetFxTarget = SetFxTarget
+	inst.CancelFlash = CancelFlash
 
 	return inst
 end

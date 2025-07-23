@@ -123,13 +123,6 @@ local function go_to_inert(inst)
 	end
 end
 
-local function TryElectrocute(inst, data)
-	if not (inst.components.health:IsDead() or inst.sg:HasAnyStateTag("noelectrocute", "nointerrupt")) and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-		inst.sg:GoToState("electrocute", { attackdata = data })
-		return true
-	end
-end
-
 local function play_quarter_light_sound(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/electricity/light",nil,.25)
 end
@@ -159,7 +152,7 @@ local events =
     EventHandler("socket", function(inst, data)
         inst.sg:GoToState("socket")
     end),
-	EventHandler("attacked", TryElectrocute),
+	EventHandler("attacked", CommonHandlers.TryElectrocuteOnAttacked),
 }
 
 local states =
@@ -201,7 +194,7 @@ local states =
         events =
         {
 			EventHandler("attacked", function(inst, data)
-				if not TryElectrocute(inst, data) then
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 					inst.sg:GoToState("hit_light")
 				end
 				return true
@@ -260,7 +253,7 @@ local states =
 				end
 			end),
 			EventHandler("attacked", function(inst, data)
-				if not TryElectrocute(inst, data) then
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 					inst.sg:GoToState("taunt_pst")
 				end
 				return true
@@ -680,7 +673,7 @@ local states =
         events =
         {
 			EventHandler("attacked", function(inst, data)
-				if not TryElectrocute(inst, data) then
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 					testforlostrock(inst, not inst.sg.statemem.rightarm)
 				end
 				return true
@@ -724,7 +717,7 @@ local states =
         events =
         {
 			EventHandler("attacked", function(inst, data)
-				if not TryElectrocute(inst, data) then
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 					testforlostrock(inst, inst.sg.statemem.rightarm)
 				end
 				return true

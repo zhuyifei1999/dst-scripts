@@ -5472,8 +5472,11 @@ return{
 
         FENCE_JUNK = "Even these discarded pieces can manage to be useful.",
         JUNK_PILE = "Could there be something worthwhile hiding deep inside?",
-        JUNK_PILE_BIG = "It's about to collapse... maybe I'll be here when it does.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Do you see what's up there, Abigail?",
+            GENERIC = "It's about to collapse... maybe I'll be here when it does.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "I'd find it useful if I feared death.",
 
         -- Meta 4 / Ocean QoL
@@ -5726,9 +5729,9 @@ return{
         LUNAR_SEED = "All that remains is its crown.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It destroys, is destroyed and rises anew. The cycle endures.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "All that death in such a tiny package.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "It is soon complete.",
         MOONSTORM_STATIC_CATCHER = "Empty.",
         COOLANT = "It seems alive but not.",
 

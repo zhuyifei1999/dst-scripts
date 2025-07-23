@@ -304,6 +304,27 @@ local function toss_junk(inst, x, z)
 	end
 end
 
+local function ResetFenceBP(inst)
+	inst.fence_scavenge_count = 0
+	--
+	--"rummage"
+	inst.blueprint = SpawnPrefab("junk_pile_blueprint")
+	inst.blueprint.Follower:FollowSymbol(inst.GUID, "blueprint_follow")
+	inst.blueprint.entity:SetParent(inst.entity)
+	inst.blueprint.AnimState:PlayAnimation("blueprint_pre")
+	inst.blueprint.AnimState:PushAnimation("blueprint_loop", true)
+	table.insert(inst.highlightchildren, inst.blueprint)
+end
+
+local function ClearFenceBP(inst)
+	inst.fence_scavenge_count = nil
+	--
+	if inst.blueprint then
+		inst.blueprint.AnimState:PlayAnimation("blueprint_pst")
+		inst.blueprint = nil
+	end
+end
+
 local KNOCKBACK_TAGS = { "_combat" }
 local KNOCKBACK_CANT_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "epic" }
 
@@ -330,6 +351,8 @@ local function DoReleaseDaywalker(inst)
 	inst.sides[inst.daywalker_side]:Show()
 	inst.SoundEmitter:PlaySound("qol1/wagstaff_ruins/rummagepile_pst")
 
+	ResetFenceBP(inst)
+
 	local r = 3
 	for i, v in ipairs(TheSim:FindEntities(x2, 0, z2, r + 3, KNOCKBACK_TAGS, KNOCKBACK_CANT_TAGS)) do
 		if not (v.components.health and v.components.health:IsDead()) and v:GetDistanceSqToPoint(x2, 0, z2) < r * r then
@@ -337,26 +360,6 @@ local function DoReleaseDaywalker(inst)
 			--use the pile as knocker so we go in the right direction
 			v:PushEvent("knockback", { knocker = inst, radius = dist1 + r, strengthmult = strengthmult, forcelanded = true })
 		end
-	end
-end
-
-local function ResetFenceBP(inst)
-	inst.fence_scavenge_count = 0
-	--
-	inst.blueprint = SpawnPrefab("junk_pile_blueprint")
-	inst.blueprint.Follower:FollowSymbol(inst.GUID, "blueprint_follow")
-	inst.blueprint.entity:SetParent(inst.entity)
-	inst.blueprint.AnimState:PlayAnimation("blueprint_pre")
-	inst.blueprint.AnimState:PushAnimation("blueprint_loop", true)
-	table.insert(inst.highlightchildren, inst.blueprint)
-end
-
-local function ClearFenceBP(inst)
-	inst.fence_scavenge_count = nil
-	--
-	if inst.blueprint then
-		inst.blueprint.AnimState:PlayAnimation("blueprint_pst")
-		inst.blueprint = nil
 	end
 end
 
@@ -377,8 +380,6 @@ local function onpickedfn(inst, picker, loot)
 		elseif inst.daywalker_state == 2 then
 			local x1, y1, z1 = inst.daywalker.Transform:GetWorldPosition()
 			DoReleaseDaywalker(inst)
-			--
-			ResetFenceBP(inst)
 			--
 			toss_junk(inst, x1, z1)
         else
@@ -421,9 +422,10 @@ local function onpickedfn(inst, picker, loot)
 		end
 		--
 		if inst.fence_scavenge_count ~= nil then
-			local forestdaywalkerspawner = TheWorld.components.forestdaywalkerspawner
-			inst.fence_scavenge_count = inst.fence_scavenge_count + 1
 
+			inst.fence_scavenge_count = inst.fence_scavenge_count + 1
+			
+			local forestdaywalkerspawner = TheWorld.components.forestdaywalkerspawner
 			if 	(inst.fence_scavenge_count >= TUNING.RUMMAGE_COUNT_FOR_FENCE_BLUEPRINT) or
 				(forestdaywalkerspawner and forestdaywalkerspawner.daywalker and forestdaywalkerspawner.daywalker.defeated) --If boss is defeated, just give it to the player anyways
 			then
@@ -586,6 +588,8 @@ local function TryBuryDaywalker(inst, daywalker)
 		inst.daywalker.sg.mem.level = 1
 
 		SpawnPrefab("junk_break_fx").Transform:SetPosition(x, 1, z)
+
+		ClearFenceBP(inst)
 		return true
 	end
 end

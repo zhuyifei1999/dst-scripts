@@ -27,8 +27,8 @@ local events =
 
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackCanElectrocute(inst, data) and not (inst.sg:HasStateTag("noelectrocute") or CommonHandlers.ElectrocuteRecoveryDelay(inst)) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not inst.sg:HasStateTag("electrocute") then
 				if inst:HasAnyTag("spider_warrior", "spider_spitter", "spider_moon") then
 					if not inst.sg:HasAnyStateTag("attack", "moving") then -- don't interrupt attack, exit shield or moviment

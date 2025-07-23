@@ -123,6 +123,7 @@ PREFABFILES = {
   "birdcage",
   "birds",
   "birds_mutant",
+  "birds_mutant_rift",
   "birdtrap",
   "bishop",
   "bishop_charge",

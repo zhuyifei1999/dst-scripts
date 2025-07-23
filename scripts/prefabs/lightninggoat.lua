@@ -128,12 +128,11 @@ local function OnAttacked(inst, data)
                 (data.weapon == nil or ((data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil) and data.weapon.components.projectile == nil)) and
                 not (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated()) then
 
-                data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE, nil, inst.prefab, nil, inst)
-
-				--V2C: -switched to stategraph event instead of GoToState
-				--     -use Immediate to preserve legacy timing
-				--     -no longer limited to players only
-				data.attacker:PushEventImmediate("electrocute")
+				local damage_mult = 1
+				if not IsEntityElectricImmune(data.attacker) then
+					damage_mult = TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * data.attacker:GetWetMultiplier()
+				end
+				data.attacker.components.combat:GetAttacked(inst, damage_mult * TUNING.LIGHTNING_GOAT_DAMAGE, nil, "electric")
             end
         elseif data.stimuli == "electric" or (data.weapon ~= nil and data.weapon.components.weapon ~= nil and data.weapon.components.weapon.stimuli == "electric") then
             setcharged(inst)

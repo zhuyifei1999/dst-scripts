@@ -5469,8 +5469,11 @@ return{
 
         FENCE_JUNK = "Is ugly little fence, but does its job.",
         JUNK_PILE = "Might be something inside Wolfgang can use.",
-        JUNK_PILE_BIG = "Wolfgang not like the way big pile teeter-totters...",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Prize up there? Easy win for Wolfgang.",
+            GENERIC = "Wolfgang not like the way big pile teeter-totters...",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Only for leafy friend? Too small for Wolfgang muscles anyway.",
 
         -- Meta 4 / Ocean QoL
@@ -5723,9 +5726,9 @@ return{
         LUNAR_SEED = "Another trophy for Wolfgang!",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Wolfgang can't wait to fight big scary machine guy!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Look at tiny machine guy, all tiny!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Hurry and finish build big machine guy!",
         MOONSTORM_STATIC_CATCHER = "Wolfgang see nothing inside.",
         COOLANT = "Bubble, bubble.",
 

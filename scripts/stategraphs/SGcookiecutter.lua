@@ -16,11 +16,14 @@ local events =
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
 		if inst.components.health and not inst.components.health:IsDead() then
-			if not inst.sg:HasAnyStateTag("noelectrocute", "nointerrupt") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				if inst.sg.currentstate.name == "jump_pst_boat" then
-					inst.sg.statemem.not_interrupted = true
-				end
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				function(inst)
+					if inst.sg.currentstate.name == "jump_pst_boat" then
+						inst.sg.statemem.not_interrupted = true
+					end
+				end)
+			then
+				return
 			elseif not inst.sg:HasStateTag("busy") then
 				if inst.sg.mem.in_water then
 					-- getting attacked while swimming should result in fleeing

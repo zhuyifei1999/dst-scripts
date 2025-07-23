@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "A sturdy barrier.",
         JUNK_PILE = "Mayhaps a treasure lies inside?",
-        JUNK_PILE_BIG = "T'would be a disgrace to be slain by a falling pile of refuse...",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Is the peak's prize worthy of the danger it demands?",
+            GENERIC = "T'would be a disgrace to be slain by a falling pile of refuse...",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "This will make my plant ally more deadly in battle.",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "Sprung from the shining coronal of a mighty deity.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "'Tis not battle ready yet.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "The seed of an iron golem.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Bestow upon it its rightful arms!",
         MOONSTORM_STATIC_CATCHER = "'Tis empty.",
         COOLANT = "Cursed blood of the Jotnar!",
 

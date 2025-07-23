@@ -8,7 +8,8 @@ AvoidElectricFence = Class(BehaviourNode, function(self, inst)
     self.inst = inst
     self.run_angle = nil
     --
-
+    inst._has_electric_fence_panic_trigger = true --used by BrainCommon.HasElectricFencePanicTriggerNode
+    --
     self.shocked_by_field = function(_, field)
         self.run_angle = self:GetRunAngle(field)
     end
@@ -38,6 +39,10 @@ end
 function AvoidElectricFence:Visit()
     if self.status == READY and self.run_angle then
         self.status = RUNNING
+
+        if self.inst.components.combat then
+            self.inst.components.combat:DropTarget()
+        end
     end
 
     if self.status == RUNNING then

@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "As long as it keeps things out, I don't care how it looks.",
         JUNK_PILE = "There might be something worth my time in there.",
-        JUNK_PILE_BIG = "I'm not eager to be crushed by a teetering pile of scrap metal.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I remember seeing something up there.",
+            GENERIC = "I'm not eager to be crushed by a teetering pile of scrap metal.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "It kills while it protects. Rather efficient.",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "I forget if this is the end or the beginning.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Again?!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Am I the only one who thinks this is a bad idea?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Here we go...",
         MOONSTORM_STATIC_CATCHER = "I thought I caught one...",
         COOLANT = "I know that bubbling gunk has a use.",
 

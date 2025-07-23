@@ -1850,6 +1850,9 @@ local function GetPickupAction(self, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
     elseif tool ~= nil then
+        if target:HasTag("LunarBuildup") and tool:HasTag("MINE_tool") then
+            return ACTIONS.REMOVELUNARBUILDUP
+        end
         for k, v in pairs(TOOLACTIONS) do
             if target:HasTag(k.."_workable") then
                 if tool:HasTag(k.."_tool") then
@@ -2078,6 +2081,9 @@ function PlayerController:GetActionButtonAction(force_target)
 				"client_forward_action_target",
             }
             if tool ~= nil then
+                if tool:HasTag("MINE_tool") then
+                    table.insert(pickup_tags, "LunarBuildup")
+                end
                 for k, v in pairs(TOOLACTIONS) do
                     if tool:HasTag(k.."_tool") then
                         table.insert(pickup_tags, k.."_workable")

@@ -5475,8 +5475,11 @@ return{
 
         FENCE_JUNK = "Not the prettiest fence in the world, but it works.",
         JUNK_PILE = "I'm not too proud to rifle through some trash.",
-        JUNK_PILE_BIG = "Yeeaahh, I don't think I want anything in there THAT bad.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What's that thing up there?",
+            GENERIC = "Yeeaahh, I don't think I want anything in there THAT bad.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "This must be one of Wormwood's.",
 
         -- Meta 4 / Ocean QoL
@@ -5729,9 +5732,9 @@ return{
         LUNAR_SEED = "It's kinda nice to stare into.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's not too late...",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I should incinerate this, and I'm not just saying that.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These make me nervous.",
         MOONSTORM_STATIC_CATCHER = "It's empty.",
         COOLANT = "Gross.",
 

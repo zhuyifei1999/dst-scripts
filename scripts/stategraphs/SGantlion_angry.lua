@@ -127,8 +127,8 @@ local events =
 	EventHandler("attacked", function(inst, data)
         inst.sg.mem.wantstoeat = nil
 		if not inst.components.health:IsDead() then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
 				not CommonHandlers.HitRecoveryDelay(inst, TUNING.ANTLION_HIT_RECOVERY)
 			then

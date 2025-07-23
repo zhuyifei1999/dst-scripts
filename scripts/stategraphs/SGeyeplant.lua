@@ -19,12 +19,9 @@ local events=
     CommonHandlers.OnDeath(),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
-					return
-				end
-			end
-			if not inst.sg:HasStateTag("attack") then
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
+			elseif not inst.sg:HasStateTag("attack") then
 				inst.sg:GoToState("hit")
 			end
         end
@@ -224,7 +221,6 @@ local states=
 
     },
 }
-
 
 CommonStates.AddFrozenStates(states)
 

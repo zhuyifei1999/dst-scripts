@@ -76,9 +76,9 @@ local events=
     CommonHandlers.OnFallInVoid(),
 	EventHandler("attacked", function(inst, data)
         if inst.components.health and not inst.components.health:IsDead() and not inst.sg:HasStateTag("devoured") then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				inst.SoundEmitter:PlaySound(inst.sounds.hurt)
+				return
 			elseif not inst.sg:HasStateTag("electrocute") then
 				inst.sg:GoToState("hit")
 				inst.SoundEmitter:PlaySound(inst.sounds.hurt)

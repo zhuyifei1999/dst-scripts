@@ -899,6 +899,7 @@ local function falling_tree_fn()
     inst:AddTag("NOCLICK")        
 
     -- Build, bank, and anim are set from falling_tree_start_falling()
+    MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()
 

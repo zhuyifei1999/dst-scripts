@@ -1115,8 +1115,35 @@ local function UpdateRegularChunk(inst, chunk, dt, instant)
         chunk.idlesegment = nil
     end
 
-    if chunk.hit and chunk.hit > 0 then
-        local scale = Remap(chunk.hit, 1, 0, 0.75, 1)
+	if chunk.electrocuted then
+		local scale = chunk.electrocuted > 0 and Remap(chunk.electrocuted % 0.2, 0.2, 0, 0.85, 1) or 1
+
+		for i, segment in ipairs(chunk.segments) do
+			segment.Transform:SetScale(scale, scale, scale)
+
+			if chunk.electrocuted == 1 then
+				segment.electrocutedevent:push()
+			end
+
+			local x, y, z = segment.Transform:GetWorldPosition()
+			segment.Transform:SetPosition(x, 0, z)
+		end
+
+		if chunk.lastsegment then
+			chunk.lastsegment.Transform:SetScale(scale, scale, scale)
+
+			if chunk.electrocuted == 1 then
+				chunk.lastsegment.electrocutedevent:push()
+			end
+
+			local x, y, z = chunk.lastsegment.Transform:GetWorldPosition()
+			chunk.lastsegment.Transform:SetPosition(x, 0, z)
+		end
+
+		chunk.electrocuted = chunk.electrocuted > 0 and chunk.electrocuted - dt * 1.25 or nil
+		chunk.hit = nil
+	elseif chunk.hit then
+		local scale = chunk.hit > 0 and Remap(chunk.hit, 1, 0, 0.75, 1) or 1
 
         for i, segment in ipairs(chunk.segments) do
             segment.Transform:SetScale(scale, scale, scale)
@@ -1140,7 +1167,7 @@ local function UpdateRegularChunk(inst, chunk, dt, instant)
             chunk.lastsegment.Transform:SetPosition(x, 0, z)
         end
 
-        chunk.hit = chunk.hit - (dt * 5)
+		chunk.hit = chunk.hit > 0 and chunk.hit - (dt * 5) or nil
     end
 
     if chunk.nextseg <= 0 then

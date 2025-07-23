@@ -1109,11 +1109,12 @@ STRINGS =
 
 		-- Rifts 5
 		POUNCECAPTURE = "Encapsulate",
-        STARTELECTRICLINK = "Toggle Linking",
-        ENDELECTRICLINK = "Disconnect Links",
-
+        
         -- electrocute
         DIVEGRAB = "Restrain",
+        STARTELECTRICLINK = "Toggle Linking",
+        ENDELECTRICLINK = "Disconnect Links",
+        REMOVELUNARBUILDUP = "Clear",
     },
 
 	WOBY_COMMANDS =
@@ -4336,9 +4337,11 @@ STRINGS =
         MOONSTORM_STATIC_CATCHER = "Static Restrainer",
         COOLANT = "Nucleation Fluid",
 
-        FENCE_ELECTRIC = "Electric Fence Post",
-        FENCE_ELECTRIC_FIELD = "Electric Fence",
-        FENCE_ELECTRIC_ITEM = "Electric Fence Post",
+        FENCE_ELECTRIC = "T.I.N.G.L.E. Node",
+        FENCE_ELECTRIC_FIELD = "T.I.N.G.L.E",
+        FENCE_ELECTRIC_ITEM = "T.I.N.G.L.E. Node",
+
+        MUTATEDCROW = "Bright-Beaked Bird", --TODO
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -17542,6 +17545,9 @@ STRINGS.SCRAPBOOK = {
         WAGSTAFF_CONTAINMENT_NOTE = "\n\"Day 226 - Containment Measures\"\n\n\"Area of containment necessary prior to experimentation. Consider implementing a kinetic and teleportational dampening field?\"\n",
         WAGSTAFF_THERMAL_NOTE = "\n\"Day 354 - Heat Signature Detection\"\n\n\"Preliminary thermal tracking functional. However, response irregularities suggest vulnerability to rudimentary interference - false positives observed with minimal thermal masking.\"\n",
         WAGSTAFF_ELECTRICITY_NOTE = "\n\"Day 418 - Electrifying!\"\n\n\"Interesting. Can redirect controlled electric discharge for practical (and offensive) applications. Truly remarkable potential. Note to self: don appropriate insulative layers next time. That last zap was... unexpectedly exhilarating.\"\n",
+
+        FENCE_ELECTRIC = "\"Transdermal Induction Neurological Galvanic Learning Experience\" Uses electrolunetic technology to deliver shocks to conductive entities.\n\nOnce toggled, the T.I.N.G.L.E. node will search for another nearby node to link to, establishing an electric field between the two.\n\nNo physical harm is done (mental harm is up for debate). Most subjects will flee away after the brief shock.\n\nThe tester is recommended to use insulative gear to avoid this special learning experience!",
+        FENCE_ELECTRIC_ITEM = "\"Transdermal Induction Neurological Galvanic Learning Experience\" Uses electrolunetic technology to deliver shocks to conductive entities.\n\nOnce toggled, the T.I.N.G.L.E. node will search for another nearby node to link to, establishing an electric field between the two.\n\nNo physical harm is done (mental harm is up for debate). Most subjects will flee away after the brief shock.\n\nThe tester is recommended to use insulative gear to avoid this special learning experience!",
     },
 
     -- Full name: "{name} Scrapbook Page"

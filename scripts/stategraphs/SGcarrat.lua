@@ -883,7 +883,7 @@ CommonStates.AddSleepExStates(states,
     },
 })
 CommonStates.AddFrozenStates(states)
---CommonStates.AddElectrocuteStates(states)
+CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHitState(states)
 CommonStates.AddWalkStates(states,
 {

@@ -624,6 +624,7 @@ ACTIONS =
     DIVEGRAB = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
     STARTELECTRICLINK = Action({ priority = 2, invalid_hold_action = true  }),
     ENDELECTRICLINK = Action({ priority = 1, invalid_hold_action = true }),
+    REMOVELUNARBUILDUP = Action({priority=3, invalid_hold_action=true}),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -6298,4 +6299,26 @@ ACTIONS.ENDELECTRICLINK.fn = function(act)
     end
 
 	return false
+end
+
+ACTIONS.REMOVELUNARBUILDUP.fn = function(act)
+    local lunarhailbuildup = act.target and act.target.components.lunarhailbuildup or nil
+    if not lunarhailbuildup or not lunarhailbuildup:IsBuildupWorkable() then
+        return false
+    end
+
+    if act.invobject and act.invobject.components.itemmimic and act.invobject.components.itemmimic.fail_as_invobject then
+        return false, "ITEMMIMIC"
+    end
+
+    lunarhailbuildup:DoWorkToRemoveBuildup(1)
+
+    return true
+end
+
+ACTIONS.REMOVELUNARBUILDUP.validfn = function(act)
+    if act.target.components.lunarhailbuildup == nil then
+        return false
+    end
+    return (act.invobject == nil or act.doer == nil or act.invobject.components.equippable == nil or not act.invobject.components.equippable:IsRestricted(act.doer))
 end

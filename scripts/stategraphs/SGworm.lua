@@ -7,10 +7,10 @@ local function doattackfn(inst, data)
 end
 
 local function onattackedfn(inst, data)
-	if not (inst.components.health:IsDead() or inst.sg:HasAnyStateTag("invisible", "nohit")) then
-		if CommonHandlers.AttackCanElectrocute(inst, data) and not (inst.sg:HasStateTag("noelectrocute") or CommonHandlers.ElectrocuteRecoveryDelay(inst)) then
-			inst.sg:GoToState("electrocute", { attackdata = data })
-		elseif not inst.sg:HasStateTag("busy") then
+	if not (inst.components.health:IsDead() or inst.sg:HasStateTag("invisible")) then
+		if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+			return
+		elseif not inst.sg:HasAnyStateTag("busy", "nohit") then
 			inst.sg:GoToState("hit")
 		end
     end
@@ -157,12 +157,14 @@ local states =
         {
             TimeEvent(10 * FRAMES, function(inst)
                 inst.sg:AddStateTag("nohit")
-				inst.sg:AddStateTag("noelectrocute")
             end),
             TimeEvent(15 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/bite")
                 inst:PerformBufferedAction()
             end),
+			FrameEvent(19, function(inst)
+				inst.sg:AddStateTag("noelectrocute")
+			end),
             TimeEvent(20 * FRAMES, ExtinguishFire),
             SoundFrameEvent(23, "dontstarve/creatures/worm/retract"),
             FrameEvent(38, kill_loop_sound),
@@ -199,9 +201,11 @@ local states =
             SoundFrameEvent(40, "dontstarve/creatures/worm/eat"),
             TimeEvent(60 * FRAMES, function(inst)
                 inst.sg:AddStateTag("nohit")
-				inst.sg:AddStateTag("noelectrocute")
                 inst:PerformBufferedAction()
             end),
+			FrameEvent(65, function(inst)
+				inst.sg:AddStateTag("noelectrocute")
+			end),
             TimeEvent(66 * FRAMES, ExtinguishFire),
             SoundFrameEvent(75, "dontstarve/creatures/worm/retract"),
         },
@@ -234,8 +238,10 @@ local states =
         {
             TimeEvent(20 * FRAMES, function(inst)
                 inst.sg:AddStateTag("nohit")
-				inst.sg:AddStateTag("noelectrocute")
             end),
+			FrameEvent(26, function(inst)
+				inst.sg:AddStateTag("noelectrocute")
+			end),
             TimeEvent(27 * FRAMES, ExtinguishFire),
             SoundFrameEvent(30, "dontstarve/creatures/worm/retract"),
             FrameEvent(49, kill_loop_sound),
@@ -271,7 +277,7 @@ local states =
 
     State{
         name = "attack",
-		tags = { "attack", "nohit", "noelectrocute" },
+        tags = { "attack", "nohit" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -286,6 +292,9 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/worm/bite")
                 inst.components.combat:DoAttack()
             end),
+			FrameEvent(35, function(inst)
+				inst.sg:AddStateTag("noelectrocute")
+			end),
             TimeEvent(36 * FRAMES, ExtinguishFire),
             SoundFrameEvent(40, "dontstarve/creatures/worm/retract"),
         },
@@ -343,6 +352,9 @@ local states =
                     inst.SoundEmitter:PlaySound(inst.loop_sound, "custom_loop")
                 end
             end),
+			FrameEvent(15, function(inst)
+				inst.sg:AddStateTag("noelectrocute")
+			end),
             TimeEvent(16 * FRAMES, ExtinguishFire),
             SoundFrameEvent(20, "dontstarve/creatures/worm/retract"),
             FrameEvent(36, kill_loop_sound),

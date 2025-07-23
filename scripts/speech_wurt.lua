@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "Made of bunch of metal bits.",
         JUNK_PILE = "If anything good in there, it mine!",
-        JUNK_PILE_BIG = "Glurp... look like it gonna fall!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What that? Me get!",
+            GENERIC = "Glurp... look like it gonna fall!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Plant's killing shirt!",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "Glorp, me keep!",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Big bad ironfolk body.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Florp, me build.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Me always have spare parts left.",
         MOONSTORM_STATIC_CATCHER = "Put thing inside?",
         COOLANT = "Glurgh. Weird bubble slime.",
 

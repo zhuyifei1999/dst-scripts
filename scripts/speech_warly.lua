@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "It's constructed well enough, but it lacks presentation.",
         JUNK_PILE = "Perhaps there is something delicious hiding in its center?",
-        JUNK_PILE_BIG = "It could topple over any minute!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Oh, there's a cherry on top!",
+            GENERIC = "It could topple over any minute!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "The little veg's own concoction.",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "This is its essence.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "The main course?",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Must be vacuum packed!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These must be the sides.",
         MOONSTORM_STATIC_CATCHER = "There is nothing inside!",
         COOLANT = "It is stewing and brewing!",
 

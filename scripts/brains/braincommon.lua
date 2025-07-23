@@ -97,13 +97,16 @@ end
 
 require("behaviours/avoidelectricfence")
 local function ShouldAvoidElectricFence(inst)
-    --check if immune or not, sometimes things can become immune in certain states
     return inst.panic_electric_field ~= nil
 end
 
 BrainCommon.ShouldAvoidElectricFence = ShouldAvoidElectricFence
 BrainCommon.ElectricFencePanicTrigger = function(inst)
     return WhileNode(function() return ShouldAvoidElectricFence(inst) end, "ElectricShock", AvoidElectricFence(inst))
+end
+
+BrainCommon.HasElectricFencePanicTriggerNode = function(inst)
+    return inst._has_electric_fence_panic_trigger --Set in AvoidElectricFence
 end
 
 --------------------------------------------------------------------------

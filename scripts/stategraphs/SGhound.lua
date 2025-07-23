@@ -22,18 +22,9 @@ local events =
 {
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				if inst.sg.mem.burn_on_electrocute then
-					if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
-						return
-					end
-				else
-					inst.sg:GoToState("electrocute", { attackdata = data })
-					return
-				end
-			end
-
-			if not inst.sg:HasAnyStateTag("attack", "electrocute") then
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
+			elseif not inst.sg:HasAnyStateTag("attack", "electrocute") then
 				inst.sg:GoToState("hit")
 			end
 		end

@@ -676,6 +676,17 @@ local actionhandlers =
                     "mine_start")
                 or nil
         end),
+    ActionHandler(ACTIONS.REMOVELUNARBUILDUP, -- Copy of ACTIONS.MINE
+        function(inst)
+            if inst:HasTag("beaver") then
+                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
+            end
+            return not inst.sg:HasStateTag("premine")
+                and (inst.sg:HasStateTag("mining") and
+                    "mine" or
+                    "mine_start")
+                or nil
+        end),
     ActionHandler(ACTIONS.HAMMER,
         function(inst)
             if inst:HasTag("beaver") then
@@ -2857,7 +2868,7 @@ local states =
 
     State{
         name = "electrocute",
-        tags = { "busy", "pausepredict" },
+		tags = { "busy", "pausepredict", "electrocute", "noelectrocute" },
 
 		onenter = function(inst, data)
             ClearStatusAilments(inst)
@@ -2882,11 +2893,12 @@ local states =
             inst.fx.entity:AddFollower()
             inst.fx.Follower:FollowSymbol(inst.GUID, "swap_shock_fx", 0, 0, 0)
 
+			local isplant = inst:HasTag("plantkin")
             if not inst:HasTag("electricdamageimmune") then
                 inst.components.bloomer:PushBloom("electrocute", "shaders/anim.ksh", -2)
                 inst.Light:Enable(true)
 
-				if not (data and data.noburn) and inst:HasTag("plantkin") then
+				if isplant and not (data and data.noburn) then
 					local attackdata = data and data.attackdata or data
 					inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
 				end
@@ -2894,13 +2906,18 @@ local states =
 
             inst.AnimState:PlayAnimation("shock")
             inst.AnimState:PushAnimation("shock_pst", false)
+			if isplant then
+				inst.AnimState:SetFrame(8)
+				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + (2 - 8) * FRAMES)
+			else
+				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 4 * FRAMES)
+			end
 
             DoHurtSound(inst)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
-            inst.sg:SetTimeout(8 * FRAMES + inst.AnimState:GetCurrentAnimationLength())
         end,
 
         events =
@@ -2924,7 +2941,9 @@ local states =
         },
 
         ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
+			inst.sg:RemoveStateTag("busy")
+			inst.sg:RemoveStateTag("pausepredict")
+			inst.sg:AddStateTag("idle")
         end,
 
         onexit = function(inst)
@@ -4524,8 +4543,11 @@ local states =
                     inst.sg.statemem.action ~= nil and
                     inst.sg.statemem.action:IsValid() and
                     inst.sg.statemem.action.target ~= nil and
-                    inst.sg.statemem.action.target.components.workable ~= nil and
-                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    ((inst.sg.statemem.action.target.components.workable ~= nil and
+                        inst.sg.statemem.action.target.components.workable:CanBeWorked()) or
+                    (inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
+                        inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable()
+                    )) and
                     inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
                     CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
 					--No fast-forward when repeat initiated on server
@@ -4715,7 +4737,7 @@ local states =
                 if inst.sg.statemem.action ~= nil then
                     local target = inst.sg.statemem.action.target
                     if target ~= nil and target:IsValid() then
-                        if inst.sg.statemem.action.action == ACTIONS.MINE then
+                        if inst.sg.statemem.action.action == ACTIONS.MINE or inst.sg.statemem.action.action == ACTIONS.REMOVELUNARBUILDUP then
 							inst.sg.statemem.recoilstate = "gnaw_recoil"
                             PlayMiningFX(inst, target)
                         elseif inst.sg.statemem.action.action == ACTIONS.HAMMER then
@@ -4741,7 +4763,19 @@ local states =
                     inst.components.playercontroller == nil then
                     return
                 end
-                if inst.sg.statemem.rmb then
+                if inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
+                    inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable() and
+                    ACTIONS.REMOVELUNARBUILDUP ~= inst.sg.statemem.action.action then
+                    if not inst.components.playercontroller:IsAnyOfControlsPressed(
+                        CONTROL_SECONDARY,
+                        CONTROL_CONTROLLER_ALTACTION) and
+                    not inst.components.playercontroller:IsAnyOfControlsPressed(
+                        CONTROL_PRIMARY,
+                        CONTROL_ACTION,
+                        CONTROL_CONTROLLER_ACTION) then
+                        return
+                    end
+                elseif inst.sg.statemem.rmb then
                     if not inst.components.playercontroller:IsAnyOfControlsPressed(
                             CONTROL_SECONDARY,
                             CONTROL_CONTROLLER_ALTACTION) then
@@ -4755,9 +4789,13 @@ local states =
                 end
                 if inst.sg.statemem.action:IsValid() and
                     inst.sg.statemem.action.target ~= nil and
-                    inst.sg.statemem.action.target.components.workable ~= nil and
-                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action and
+                    ((inst.sg.statemem.action.target.components.workable ~= nil and
+                        inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                        inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action) or
+                    (inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
+                        inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable() and
+                        ACTIONS.REMOVELUNARBUILDUP == inst.sg.statemem.action.action
+                    )) and
                     CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
 					--No fast-forward when repeat initiated on server
 					inst.sg.statemem.action.options.no_predict_fastforward = true

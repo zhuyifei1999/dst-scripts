@@ -26,8 +26,8 @@ local events=
 	end),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackCanElectrocute(inst, data) and not (inst.sg:HasStateTag("noelectrocute") or CommonHandlers.ElectrocuteRecoveryDelay(inst)) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not (inst.sg:HasAnyStateTag("attack", "electrocute") or CommonHandlers.HitRecoveryDelay(inst, nil, TUNING.WALRUS_MAX_STUN_LOCKS)) then
 				inst.sg:GoToState("hit")
 			end

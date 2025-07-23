@@ -10,8 +10,8 @@ local events=
     CommonHandlers.OnFallInVoid(),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				CommonHandlers.DoBurnOnElectrocute(inst, data, "hit")
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not CommonHandlers.HitRecoveryDelay(inst, TUNING.LEIF_HIT_RECOVERY) and
 				not inst.sg:HasAnyStateTag("attack", "waking", "sleeping") and
 				(not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen"))

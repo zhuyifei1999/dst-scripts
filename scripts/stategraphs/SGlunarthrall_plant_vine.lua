@@ -121,13 +121,9 @@ local events =
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
-					return
-				end
-			end
-
-			if inst.sg:HasStateTag("caninterrupt") or not inst.sg:HasStateTag("busy") then
+			if CommonHandlers.TryAttackedOnElectrocute(inst, data) then
+				return
+			elseif inst.sg:HasStateTag("caninterrupt") or not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("hit")
             end
         end

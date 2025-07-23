@@ -24,6 +24,12 @@ local events=
             inst.sg:GoToState("hit")
         end
     end),
+
+	EventHandler("electrocute", function(inst)
+		if not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) then
+			inst.sg:GoToState("electrocute")
+		end
+	end),
 }
 
 local states =
@@ -96,6 +102,29 @@ local states =
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
+
+	State{
+		name = "electrocute",
+		tags = { "electrocute", "hit", "busy", "noelectrocute" },
+
+		onenter = function(inst, data)
+			inst.AnimState:PlayAnimation("tail_shock_loop", true)
+			inst.sg:SetTimeout(TUNING.ELECTROCUTE_DEFAULT_DURATION)
+		end,
+
+		ontimeout = function(inst)
+			inst.AnimState:PlayAnimation("tail_shock_pst")
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
 
     State{
 

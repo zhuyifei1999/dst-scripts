@@ -10,8 +10,8 @@ local events=
 {
 	EventHandler("attacked", function(inst, data)
 		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("nointerrupt")) then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not (inst.sg:HasStateTag("attack") or CommonHandlers.HitRecoveryDelay(inst)) then
 				inst.sg:GoToState("hit")
 			end

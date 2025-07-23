@@ -1168,7 +1168,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
             local electric_damage_mult = _weapon_cmp ~= nil and _weapon_cmp.electric_damage_mult or TUNING.ELECTRIC_DAMAGE_MULT
             local electric_wet_damage_mult = _weapon_cmp ~= nil and _weapon_cmp.electric_wet_damage_mult or TUNING.ELECTRIC_WET_DAMAGE_MULT
 
-            mult = electric_damage_mult + electric_wet_damage_mult * (targ.components.moisture ~= nil and targ.components.moisture:GetMoisturePercent() or (targ:GetIsWet() and 1 or 0))
+            mult = electric_damage_mult + electric_wet_damage_mult * targ:GetWetMultiplier()
         end
 
 		local dmg, spdmg = self:CalcDamage(targ, weapon, mult)

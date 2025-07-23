@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "Hmph. It'll certainly repel anyone with taste.",
         JUNK_PILE = "Have I really been reduced to sifting through the trash?",
-        JUNK_PILE_BIG = "One false move could send the whole pile tumbling down.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What's that? Worth the hassle?",
+            GENERIC = "One false move could send the whole pile tumbling down.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Of course the plant saves the best stuff for himself.",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "I told you it was no match for my abilities.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Don't say I didn't warn you.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Do we never learn?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These were built to cause harm.",
         MOONSTORM_STATIC_CATCHER = "Just my luck. It's empty.",
         COOLANT = "Yucky.",
 

@@ -1013,6 +1013,9 @@ local function MakeWarg(data)
         MakeLargeFreezableCharacter(inst)
 
 		inst:SetStateGraph("SGwarg")
+		if tag == "clay" or tag == "gingerbread" then
+			inst.sg.mem.noelectrocute = true
+		end
 
 		inst:AddComponent("hauntable")
 		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)

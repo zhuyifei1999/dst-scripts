@@ -2,6 +2,8 @@
 --[[ BirdSpawner class definition ]]
 --------------------------------------------------------------------------
 
+local SourceModifierList = require("util/sourcemodifierlist")
+
 return Class(function(self, inst)
 
 assert(TheWorld.ismastersim, "BirdSpawner should not exist on client")
@@ -49,7 +51,9 @@ local _birds = {}
 local _maxbirds = TUNING.BIRD_SPAWN_MAX
 local _minspawndelay = TUNING.BIRD_SPAWN_DELAY.min
 local _maxspawndelay = TUNING.BIRD_SPAWN_DELAY.max
-local _timescale = 1
+
+local _timescale = 1 --Deprecated. Don't remove in case any mods are upvalue hacking this value
+local _timescale_modifiers = SourceModifierList(self.inst, 1, SourceModifierList.multiply)
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -84,7 +88,7 @@ local function ScheduleSpawn(player, initialspawn)
 		local maxdelay = CalcValue(player, _maxspawndelay, "maxdelay")
         local lowerbound = initialspawn and 0 or mindelay
         local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
-        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale, SpawnBirdForPlayer, ScheduleSpawn)
+        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale_modifiers:Get(), SpawnBirdForPlayer, ScheduleSpawn)
     end
 end
 
@@ -164,8 +168,25 @@ local function OnTargetSleep(target)
     inst:DoTaskInTime(0, AutoRemoveTarget, target)
 end
 
+local RAIN_FACTOR_KEY = "rainfactor"
 local function OnIsRaining(inst, israining)
-    _timescale = israining and TUNING.BIRD_RAIN_FACTOR or 1
+    if israining then
+        _timescale_modifiers:SetModifier(inst, TUNING.BIRD_RAIN_FACTOR, RAIN_FACTOR_KEY)
+    else
+        _timescale_modifiers:RemoveModifier(inst, RAIN_FACTOR_KEY)
+    end
+end
+
+--Hail factor is 3x. Instill a sense of eeriness by having bird spawns far and few, then the corpses drop down. Tells a story!
+local HAIL_FACTOR_KEY = "hailfactor"
+local function OnIsLunarHailing(inst, ishailing)
+    if ishailing then
+        _timescale_modifiers:SetModifier(inst, TUNING.BIRD_HAIL_FACTOR, HAIL_FACTOR_KEY)
+    else
+        _timescale_modifiers:RemoveModifier(inst, HAIL_FACTOR_KEY)
+    end
+
+    
 end
 
 local function OnPlayerJoined(src, player)
@@ -200,6 +221,7 @@ for i, v in ipairs(AllPlayers) do
 end
 
 --Register events
+inst:WatchWorldState("islunarhailing", OnIsLunarHailing)
 inst:WatchWorldState("israining", OnIsRaining)
 inst:WatchWorldState("isnight", function() ToggleUpdate() end)
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
@@ -351,6 +373,14 @@ end
 
 function self:StopTracking(target)
     self.StopTrackingFn(target)
+end
+
+function self:SetTimeScaleModifier(factor, key) -- Mods.
+    _timescale_modifiers:SetModifier(inst, factor, key)
+end
+
+function self:RemoveTimeScaleModifier(key)
+    _timescale_modifiers:RemoveModifier(inst, key)
 end
 
 --------------------------------------------------------------------------

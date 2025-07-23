@@ -5469,8 +5469,11 @@ return{
 
         FENCE_JUNK = "It's got nothin' on a sturdy wooden fence.",
         JUNK_PILE = "Wouldn't hurt to root around there a bit, eh?",
-        JUNK_PILE_BIG = "That'll make one heckuva mess when it falls over.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Something up there, Luce.",
+            GENERIC = "That'll make one heckuva mess when it falls over.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "That is some fine craftsmanship.",
 
         -- Meta 4 / Ocean QoL
@@ -5723,9 +5726,9 @@ return{
         LUNAR_SEED = "We sure topped'em, eh Luce?",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "That's looking more like it.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "How does all that fit in here?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Are these the murdery parts?",
         MOONSTORM_STATIC_CATCHER = "Looks empty.",
         COOLANT = "What is that stuff?",
 

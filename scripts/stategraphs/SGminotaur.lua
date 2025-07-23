@@ -114,8 +114,8 @@ local events =
 
     EventHandler("attacked", function(inst,data)    
 		if inst.components.health and not inst.components.health:IsDead() then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not hit_recovery_delay(inst) and
 				(	not inst.sg:HasStateTag("busy") or
 					inst.sg:HasAnyStateTag("caninterrupt", "frozen") or
@@ -612,8 +612,8 @@ local states =
 			EventHandler("attacked", function(inst, data)
 				if not inst.components.health:IsDead() then
 					inst.sg.statemem.not_interrupted = true
-					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-						inst.sg:GoToState("electrocute", { attackdata = data })
+					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+						return
 					else
 						inst.sg:GoToState("stun_hit")
 					end
@@ -658,8 +658,8 @@ local states =
 			EventHandler("attacked", function(inst, data)
 				if not inst.components.health:IsDead() then
 					inst.sg.statemem.not_interrupted = true
-					if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-						inst.sg:GoToState("electrocute", { attackdata = data })
+					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+						return
 					else
 						inst.sg:GoToState("stun_hit")
 					end

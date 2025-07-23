@@ -116,6 +116,7 @@ local function OnUpdate(inst, dt)
 					inst.components.combat:SetDefaultDamage(TUNING.WAGDRONE_FLYING_DAMAGE)
 				else
 					inst.components.combat:DoAttack(v, nil, nil, "electric")
+					v:PushEventImmediate("electrocute") -- (NOTE): Don't add electric tag to laserwire, or it counts as a fork attack! we dont want that!
 				end
 				inst.targets[v] = true
 			end

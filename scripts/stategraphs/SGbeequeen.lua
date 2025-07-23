@@ -89,8 +89,8 @@ local events =
     end),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
 				not CommonHandlers.HitRecoveryDelay(inst, nil, TUNING.BEEQUEEN_MAX_STUN_LOCKS, hit_recovery_skip_cooldown_fn)
 			then

@@ -550,6 +550,8 @@ local prefabs =
     "wagstaff_energy_note",
     "wagstaff_materials_note",
     "wagstaff_thermal_note",
+
+    "mutatedcrow",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")

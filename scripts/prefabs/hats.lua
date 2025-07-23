@@ -4254,6 +4254,7 @@ local function MakeHat(name)
     fns.wagpunk_onrepaired = function(inst)
         if inst.components.equippable == nil then
             inst:AddComponent("equippable")
+            inst.components.equippable.insulated = true
             inst.components.equippable.equipslot = EQUIPSLOTS.HEAD
             inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
             inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
@@ -4318,6 +4319,7 @@ local function MakeHat(name)
 
         inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
         inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
+        inst.components.equippable.insulated = true
 
         MakeForgeRepairable(inst, FORGEMATERIALS.WAGPUNKBITS, fns.wagpunk_onbroken, fns.wagpunk_onrepaired)
         MakeHauntableLaunch(inst)

@@ -929,18 +929,30 @@ function CanEntityBeElectrocuted(inst)
 		and not inst.sg.mem.noelectrocute
 end
 
+function GetEntityElectrocuteDuration(inst)
+	return inst.electrocute_duration or
+		(inst.sg and inst.sg.mem.burn_on_electrocute and TUNING.ELECTROCUTE_SHORT_DURATION) or
+		TUNING.ELECTROCUTE_DEFAULT_DURATION
+end
+
 --------------------------------------------------------------------------
+
+function SpawnElectricHitSparks(inst, target, flash)
+    --target or inst might be removed
+    if not inst or not target or not inst:IsValid() or not target:IsValid() then
+        return
+    end
+
+    local fx_prefab = IsEntityElectricImmune(target) and "electrichitsparks_electricimmune" or "electrichitsparks"
+    SpawnPrefab(fx_prefab):AlignToTarget(target, inst, flash)
+end
 
 function LightningStrikeAttack(inst)
     if IsEntityElectricImmune(inst) or (inst.sg and inst.sg:HasStateTag("noelectrocute")) then
         return false
     end
 
-    local wetness_mult = TUNING.ELECTRIC_WET_DAMAGE_MULT * 
-        ((inst.components.moisture and inst.components.moisture:GetMoisturePercent()) or
-        (inst:GetIsWet() and 1)
-        or 0)
-
+    local wetness_mult = TUNING.ELECTRIC_WET_DAMAGE_MULT * inst:GetWetMultiplier()
     local damage = TUNING.LIGHTNING_DAMAGE + wetness_mult * TUNING.LIGHTNING_DAMAGE
 
     inst.components.health:DoDelta(-damage, false, "lightning")

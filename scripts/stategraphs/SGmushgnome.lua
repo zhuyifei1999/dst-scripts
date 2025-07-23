@@ -27,13 +27,9 @@ local events =
 
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				if CommonHandlers.DoBurnOnElectrocute(inst, data, "hit") then
-					return
-				end
-			end
-
-			if not inst.sg:HasAnyStateTag("attack", "waking", "sleeping") and
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
+			elseif not inst.sg:HasAnyStateTag("attack", "waking", "sleeping") and
 				not CommonHandlers.HitRecoveryDelay(inst) and
 				(not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen"))
 			then
@@ -352,7 +348,7 @@ CommonStates.AddIdle(states, nil, nil,
     end),
 })
 CommonStates.AddFrozenStates(states)
---CommonStates.AddElectrocuteStates(states)
+CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSleepExStates(states,
 {
     starttimeline =

@@ -56,39 +56,31 @@ local events =
 		end
 	end),
 	EventHandler("electrocute", function(inst, data)
-		if inst.sg:HasStateTag("struggle") then
-			if not inst.sg:HasStateTag("noelectrocute") then
-				_transfer_statemem_to_electrocute(inst)
-				inst.sg:GoToState("electrocute", data)
-			end
-		elseif inst.sg:HasStateTag("tired") then
-			if not inst.sg:HasStateTag("noelectrocute") then
-				_transfer_statemem_to_electrocute(inst)
-				inst.sg:GoToState("electrocute", data)
-			end
-		elseif not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") then
-			_transfer_statemem_to_electrocute(inst)
-			inst.sg:GoToState("electrocute", data)
-		end
+		CommonHandlers.TryElectrocuteOnEvent(inst, data, nil, nil,
+			_transfer_statemem_to_electrocute)
 	end),
 	EventHandler("attacked", function(inst, data)
 		if inst.sg:HasStateTag("struggle") then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				_transfer_statemem_to_electrocute(inst)
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				_transfer_statemem_to_electrocute)
+			then
+				return
 			end
 		elseif inst.sg:HasStateTag("tired") then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				_transfer_statemem_to_electrocute(inst)
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			--special case for bypassing "nointerrupt" state tag
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				_transfer_statemem_to_electrocute)
+			then
+				return
 			elseif not inst.sg:HasStateTag("notiredhit") then
 				inst.sg.statemem.tired = true
 				inst.sg:GoToState("tired_hit", inst.sg.statemem.loops)
 			end
 		elseif inst.defeated then
-			if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				_transfer_statemem_to_electrocute(inst)
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				_transfer_statemem_to_electrocute)
+			then
+				return
 			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
 				inst.sg:GoToState("hit")
 			end
@@ -97,18 +89,21 @@ local events =
 			if playermelee then
 				inst:DeltaFatigue(0) --reset fatigue regen timers
 				if inst.sg:HasStateTag("pounce_recovery") and inst:IsFatigued() then
-					if CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-						_transfer_statemem_to_electrocute(inst)
-						inst.sg:GoToState("electrocute", { attackdata = data })
-					else
-						inst.sg:GoToState("hit", true)
+					if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+						_transfer_statemem_to_electrocute)
+					then
+						return
 					end
+					inst.sg:GoToState("hit", true)
 					return
 				end
 			end
-			if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				_transfer_statemem_to_electrocute(inst, playermelee)
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				function(inst)
+					_transfer_statemem_to_electrocute(inst, playermelee)
+				end)
+			then
+				return
 			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
 				not CommonHandlers.HitRecoveryDelay(inst, nil, nil, hit_recovery_skip_cooldown_fn) then
 				inst.sg:GoToState("hit", playermelee or inst.sg.statemem.trytired)
@@ -432,7 +427,7 @@ local states =
 
 	State{
 		name = "tired_pre",
-		tags = { "tired", "busy", "nointerrupt", "canattach", "notiredhit" },
+		tags = { "tired", "busy", "nointerrupt", "canattach", "notiredhit", "canelectrocute" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -482,7 +477,7 @@ local states =
 
 	State{
 		name = "tired",
-		tags = { "tired", "busy", "nointerrupt", "canattach" },
+		tags = { "tired", "busy", "nointerrupt", "canattach", "canelectrocute" },
 
 		onenter = function(inst, loops)
 			inst.components.locomotor:Stop()
@@ -563,7 +558,7 @@ local states =
 
 	State{
 		name = "tired_hit",
-		tags = { "tired", "busy", "nointerrupt", "canattach", "notalksound", "notiredhit" },
+		tags = { "tired", "busy", "nointerrupt", "canattach", "notalksound", "notiredhit", "canelectrocute" },
 
 		onenter = function(inst, loops)
 			inst.sg.statemem.isincombat = inst.hostile and not inst.defeated
@@ -736,7 +731,7 @@ local states =
 
 	State{
 		name = "struggle1",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -799,7 +794,7 @@ local states =
 
 	State{
 		name = "struggle1_pst",
-		tags = { "struggle", "busy", "nointerrupt", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "canattach", "canelectrocute" },
 
 		onenter = function(inst)
 			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
@@ -821,7 +816,7 @@ local states =
 
 	State{
 		name = "struggle2",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst, targets)
 			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
@@ -858,7 +853,7 @@ local states =
 
 	State{
 		name = "shrug1",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
@@ -930,7 +925,7 @@ local states =
 
 	State{
 		name = "shrug2",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst)
 			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
@@ -992,7 +987,7 @@ local states =
 
 	State{
 		name = "shrug_pst",
-		tags = { "struggle", "busy", "nointerrupt", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "canattach", "canelectrocute" },
 
 		onenter = function(inst)
 			inst:SwitchToFacingModel(6) --inst.Transform:SetSixFaced()
@@ -1014,7 +1009,7 @@ local states =
 
 	State{
 		name = "collide",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst, speedmult)
 			inst.components.locomotor:Stop()
@@ -1057,7 +1052,7 @@ local states =
 
 	State{
 		name = "attach",
-		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach" },
+		tags = { "struggle", "busy", "nointerrupt", "notalksound", "canattach", "canelectrocute" },
 
 		onenter = function(inst, attachpos)
 			inst.components.locomotor:Stop()
@@ -1235,6 +1230,7 @@ local states =
 			FrameEvent(11, SGDaywalkerCommon.DoPounceShake),
 			FrameEvent(12, function(inst)
 				inst.sg:AddStateTag("pounce_recovery")
+				inst.sg:AddStateTag("canelectrocute")
 				inst.components.combat:SetDefaultDamage(TUNING.DAYWALKER_XCLAW_DAMAGE)
 				local targets = {}
 				inst.sg.statemem.targets = targets

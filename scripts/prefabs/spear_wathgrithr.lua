@@ -80,8 +80,8 @@ end
 
 local CHARGE_SOUND_LOOP_NAME = "soundloop"
 
-local function Lightning_CanElectrocuteTarget(inst, target)
-    return not IsEntityElectricImmune(target) and target:GetIsWet()
+local function Lightning_HasElectric(inst, target)
+	return inst._electric_lunge_task ~= nil or target:GetWetMultiplier() > 0
 end
 
 local function OnEquip(inst, owner)
@@ -142,9 +142,13 @@ end
 
 ------------------------------------------------------------------------------------------------------------------------
 
+local function Lightning_OverrideStimuliFn(inst, attacker, target)
+	return inst:CanElectrocuteTarget(target) and "electric" or nil
+end
+
 local function Lightning_OnAttack(inst, attacker, target)
-    if target ~= nil and target:IsValid() and inst:CanElectrocuteTarget(target) and attacker ~= nil and attacker:IsValid() then
-        SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker, true)
+    if inst:CanElectrocuteTarget(target) then
+        SpawnElectricHitSparks(attacker, target, true)
     end
 end
 
@@ -154,23 +158,20 @@ local function Lightning_SpellFn(inst, doer, pos)
     doer:PushEvent("combat_lunge", { targetpos = pos, weapon = inst })
 end
 
-local function Lightning_OnPreLunge(inst, doer, startingpos, targetpos)
-	--@V2C: #HACK so that during lunge, we can trigger electrocute even when dry
-	inst.components.weapon:SetElectric(1.0001, TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT)
+local function Lightning_ResetElectric(inst)
+	inst._electric_lunge_task = nil
 end
 
-local function Lightning_ResetElectric(inst)
-	inst._resetelectrictask = nil
-	inst.components.weapon:SetElectric(1, TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT)
+local function Lightning_OnPreLunge(inst, doer, startingpos, targetpos)
+	--@V2C: #HACK so that during lunge, we can trigger electrocute even when dry
+	if inst._electric_lunge_task then
+		inst._electric_lunge_task:Cancel()
+	end
+	--@V2C: #HACK delayed because targets' stategraph events are deferred, and they will be checking the electric mults
+	inst._electric_lunge_task = inst:DoTaskInTime(2 * FRAMES, Lightning_ResetElectric)
 end
 
 local function Lightning_OnLunged(inst, doer, startingpos, targetpos)
-	if inst._resetelectrictask then
-		inst._resetelectrictask:Cancel()
-	end
-	--@V2C: #HACK delayed because targets' stategraph events are deferred, and they will be checking the electric mults
-	inst._resetelectrictask = inst:DoTaskInTime(2 * FRAMES, Lightning_ResetElectric)
-
     local fx = SpawnPrefab("spear_wathgrithr_lightning_lunge_fx")
     fx.Transform:SetPosition(targetpos:Get())
     fx.Transform:SetRotation(doer:GetRotation())
@@ -463,13 +464,17 @@ end
 local function LightningSpearPostInitFn_Base(inst)
     inst.scrapbook_weapondamage = { TUNING.SPEAR_WATHGRITHR_LIGHTNING_DAMAGE, TUNING.SPEAR_WATHGRITHR_LIGHTNING_DAMAGE * (1 + TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT) }
 
-    inst.CanElectrocuteTarget = Lightning_CanElectrocuteTarget
+	--V2C: More accurately, whether the weapon will deal electric damage (target is wet).
+	--     This is independent of whether the target is immune to electricity or not.
+	inst.CanElectrocuteTarget = Lightning_HasElectric
 
     inst.is_lightning_spear = true
     inst._cooldown = TUNING.SPEAR_WATHGRITHR_LIGHTNING_LUNGE_COOLDOWN
 
     inst.components.weapon:SetOnAttack(Lightning_OnAttack)
     inst.components.weapon:SetElectric(1, TUNING.SPEAR_WATHGRITHR_LIGHTNING_WET_DAMAGE_MULT)
+	inst.components.weapon:SetOverrideStimuliFn(Lightning_OverrideStimuliFn)
+	inst.components.weapon.stimuli = nil --electric mults were set, but we will let overridestimulifn determine when to use electric or not
 
     inst.components.aoetargeting:SetEnabled(false)
 

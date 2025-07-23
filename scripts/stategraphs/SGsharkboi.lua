@@ -75,10 +75,8 @@ local events =
 	CommonHandlers.OnWakeEx(),
 
 	EventHandler("electrocute", function(inst, data)
-		if not inst.sg:HasStateTag("noelectrocute") then
-			_transfer_statemem_to_electrocute(inst)
-			inst.sg:GoToState("electrocute", data)
-		end
+		CommonHandlers.TryElectrocuteOnEvent(inst, data, nil, nil,
+			_transfer_statemem_to_electrocute)
 	end),
 	EventHandler("locomote", function(inst, data)
 		if inst.components.locomotor:WantsToMoveForward() then
@@ -110,9 +108,10 @@ local events =
 		end
 	end),
 	EventHandler("attacked", function(inst, data)
-		if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-			_transfer_statemem_to_electrocute(inst)
-			inst.sg:GoToState("electrocute", { attackdata = data })
+		if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+			_transfer_statemem_to_electrocute)
+		then
+			return
 		elseif not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
 			if inst.sg:HasStateTag("defeated") then
 				inst.sg.statemem.defeat = true

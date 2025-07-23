@@ -5479,7 +5479,7 @@ return {
         FENCE_JUNK = "Tell me it's ugly, I won't take a fence.",
         JUNK_PILE = "A good junk pile rummage? I'll never refuse.",
         JUNK_PILE_BIG = {
-            BLUEPRINT = "TODO",
+            BLUEPRINT = "There's something up there.",
             GENERIC = "I think it could fall over any moment.",
         },
         
@@ -5746,6 +5746,8 @@ return {
             GENERIC = "It is not functional as a standalone unit.",           --NOTE: no links or electricity, just boring ol fence post
         },
         FENCE_ELECTRIC_ITEM = "It's not a tree, but it must be planted.",
+
+        MUTATEDCROW = "TODO",
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

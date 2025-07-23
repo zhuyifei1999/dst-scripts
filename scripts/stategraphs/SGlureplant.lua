@@ -13,17 +13,19 @@ local events =
     end),
 
 	EventHandler("electrocute", function(inst, data)
-		if not inst.components.health:IsDead() then
-			CommonHandlers.DoBurnOnElectrocute(inst, data, GetHitState(inst))
+		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("noelectrocute")) then
+			CommonHandlers.TryGoToElectrocuteState(inst, data, GetHitState(inst))
 		end
 	end),
 
 	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				CommonHandlers.DoBurnOnElectrocute(inst, data) --don't pass hit state here, just fallthrough to below
+			local hitstate = GetHitState(inst)
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, hitstate) then
+				return
+			else
+				inst.sg:GoToState(hitstate)
 			end
-			inst.sg:GoToState(GetHitState(inst))
         end
     end),
 

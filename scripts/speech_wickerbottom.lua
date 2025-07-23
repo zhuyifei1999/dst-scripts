@@ -5468,8 +5468,11 @@ return{
 
         FENCE_JUNK = "Unpleasant to the eye, but I suppose practicality outweighs aesthetics.",
         JUNK_PILE = "I may find something of use within.",
-        JUNK_PILE_BIG = "The danger far outweighs the possibility of discovering anything of value.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "There is something at the top.",
+            GENERIC = "The danger far outweighs the possibility of discovering anything of value.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Plant-based, plant-made, and plant-worn.",
 
         -- Meta 4 / Ocean QoL
@@ -5722,9 +5725,9 @@ return{
         LUNAR_SEED = "A piece of its crown, no doubt.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "An unprecedented feat of technological advancement, yet thoroughly uncivilized.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Fundamental components of a colossal, militarized automaton.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Equipped with such armamemnts, it shall usher in nothing but ruin and demise.",
         MOONSTORM_STATIC_CATCHER = "It is not carrying a charge.",
         COOLANT = "The fluids exhibit anomalous properties, no doubt catalyzed by the mutations.",
 

@@ -4,8 +4,8 @@ local events=
 {
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not (inst.sg:HasAnyStateTag("nointerrupt", "attack", "electrocute") or
 						CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
 			then

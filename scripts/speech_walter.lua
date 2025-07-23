@@ -5510,8 +5510,11 @@ return{
 
         FENCE_JUNK = "I guess it's better than just leaving all that scrap metal lying around.",
         JUNK_PILE = "One person's trash is another's treasure!",
-        JUNK_PILE_BIG = "Careful Woby, it doesn't look very stable.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I see it too, Woby! Should we get it?",
+            GENERIC = "Careful Woby, it doesn't look very stable.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Aww. Why don't I get to wear it?",
 
         -- Meta 4 / Ocean QoL
@@ -5764,9 +5767,9 @@ return{
         LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "TODO",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "TODO",
-        WAGBOSS_ROBOT_CREATION_PARTS = "TODO",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's missing some parts, Woby!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Maybe this time it will be nice!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "I know where these go!",
         MOONSTORM_STATIC_CATCHER = "Looks empty, Wobes.",
         COOLANT = "I don't know what that stuff is, but I love it.",
 

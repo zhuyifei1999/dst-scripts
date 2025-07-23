@@ -160,6 +160,6 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states, Land, Liftoff)
---CommonStates.AddElectrocuteStates(states)
+CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("lightflier", states, events, "idle", actionhandlers)

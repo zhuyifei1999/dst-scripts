@@ -29,12 +29,18 @@ local BUILDS =
         default = "koalefant_summer_build",
         winter = "koalefant_winter_build",
     },
+
+    crow =
+    {
+        default = "crow_build",
+    },
 }
 
 local FACES =
 {
     FOUR = 1,
     SIX  = 2,
+    TWO  = 3,
 }
 
 local GESTALT_TRACK_NAME = "gestalt"
@@ -160,7 +166,11 @@ local function MakeCreatureCorpse(data)
         inst.entity:AddDynamicShadow()
         inst.entity:AddNetwork()
 
-        MakeObstaclePhysics(inst, data.physicsradius, 1)
+        if data.custom_physicsfn then
+            data.custom_physicsfn(inst)
+        else
+            MakeObstaclePhysics(inst, data.physicsradius, 1)
+        end
 
         inst.DynamicShadow:SetSize(unpack(data.shadowsize))
 
@@ -168,6 +178,8 @@ local function MakeCreatureCorpse(data)
             inst.Transform:SetFourFaced()
         elseif faces == FACES.SIX then
             inst.Transform:SetSixFaced()
+        elseif faces == FACES.TWO then
+            inst.Transform:SetTwoFaced()
         end
 
         if scale ~= nil then
@@ -206,7 +218,7 @@ local function MakeCreatureCorpse(data)
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
-		data.makeburnablefn(inst, TUNING.MED_BURNTIME, data.firesymbol)
+		data.makeburnablefn(inst, data.burntime or TUNING.MED_BURNTIME, data.firesymbol)
 
         inst.components.burnable:SetOnIgniteFn(OnIgnited)
         inst.components.burnable:SetOnExtinguishFn(OnExtinguish)
@@ -215,7 +227,7 @@ local function MakeCreatureCorpse(data)
 		inst.sg.mem.noelectrocute = true
 
         -- One time spawn!
-        if not POPULATING then
+        if not POPULATING and not data.no_gestalt_spawn then
             inst:DoTaskInTime(0, inst.SpawnGestalt)
         end
 
@@ -257,6 +269,8 @@ local function MakeCreatureCorpse_Prop(data)
             inst.Transform:SetFourFaced()
         elseif faces == FACES.SIX then
             inst.Transform:SetSixFaced()
+        elseif faces == FACES.TWO then
+            inst.Transform:SetTwoFaced()
         end
 
         if scale ~= nil then
@@ -299,58 +313,83 @@ local function MakeCreatureCorpse_Prop(data)
     return Prefab(prefabname, fn)
 end
 
-return
-        -- For search: deerclopscorpse
-        MakeCreatureCorpse({
-            creature = "deerclops",
-            bank = "deerclops",
-            sg = "SGdeerclops",
-			firesymbol = "swap_fire",
-			makeburnablefn = MakeLargeBurnableCorpse,
-            faces = FACES.FOUR,
-            physicsradius = .5,
-            shadowsize = {6, 3.5},
-            scale = 1.65,
-			tag = "deerclops",
-        }),
+local corpse_prefabs = {
+    -- For search: deerclopscorpse
+    MakeCreatureCorpse({
+        creature = "deerclops",
+        bank = "deerclops",
+        sg = "SGdeerclops",
+        firesymbol = "swap_fire",
+        makeburnablefn = MakeLargeBurnableCorpse,
+        faces = FACES.FOUR,
+        physicsradius = .5,
+        shadowsize = {6, 3.5},
+        scale = 1.65,
+        tag = "deerclops",
+    }),
 
-        -- For search: wargcorpse
-        MakeCreatureCorpse({
-            creature = "warg",
-            bank = "warg",
-            sg = "SGwarg",
-            firesymbol = "swap_fire",
-			makeburnablefn = MakeLargeBurnableCorpse,
-            faces = FACES.SIX,
-            physicsradius = 1,
-            shadowsize = {2.5, 1.5},
-        }),
+    -- For search: wargcorpse
+    MakeCreatureCorpse({
+        creature = "warg",
+        bank = "warg",
+        sg = "SGwarg",
+        firesymbol = "swap_fire",
+        makeburnablefn = MakeLargeBurnableCorpse,
+        faces = FACES.SIX,
+        physicsradius = 1,
+        shadowsize = {2.5, 1.5},
+    }),
 
-        -- For search: beargercorpse
-        MakeCreatureCorpse({
-            creature = "bearger",
-            bank = "bearger",
-            sg = "SGbearger",
-            firesymbol = "swap_fire",
-			makeburnablefn = MakeLargeBurnableCorpse,
-            faces = FACES.FOUR,
-            physicsradius = 1.5,
-            shadowsize = {6, 3.5},
-			tag = "bearger_blocker",
-        }),
+    -- For search: beargercorpse
+    MakeCreatureCorpse({
+        creature = "bearger",
+        bank = "bearger",
+        sg = "SGbearger",
+        firesymbol = "swap_fire",
+        makeburnablefn = MakeLargeBurnableCorpse,
+        faces = FACES.FOUR,
+        physicsradius = 1.5,
+        shadowsize = {6, 3.5},
+        tag = "bearger_blocker",
+    }),
 
-        -- For search: koalefantcorpse_prop
-        MakeCreatureCorpse_Prop({
-            creature = "koalefant",
-            bank = "koalefant",
-            nameoverride = "koalefant_summer",
-            faces = FACES.SIX,
-            shadowsize = {4.5, 2},
-			onrevealfn = function(inst, revealer)
-				inst.persists = false
-				inst:AddTag("NOCLICK")
-				inst:ListenForEvent("animover", inst.Remove)
-				inst.AnimState:PlayAnimation("carcass_fake")
-			end,
-        })
+    -- For search: koalefantcorpse_prop
+    MakeCreatureCorpse_Prop({
+        creature = "koalefant",
+        bank = "koalefant",
+        nameoverride = "koalefant_summer",
+        faces = FACES.SIX,
+        shadowsize = {4.5, 2},
+        onrevealfn = function(inst, revealer)
+            inst.persists = false
+            inst:AddTag("NOCLICK")
+            inst:ListenForEvent("animover", inst.Remove)
+            inst.AnimState:PlayAnimation("carcass_fake")
+        end,
+    }),
 
+    --TODO temp
+    -- For search: crowcorpse
+    MakeCreatureCorpse({
+        creature = "crow",
+        bank = "crow",
+        sg = "SGbird",
+        firesymbol = "crow_body",
+        makeburnablefn = MakeSmallBurnableCorpse,
+        burntime = TUNING.SMALL_BURNTIME,
+        faces = FACES.TWO,
+        shadowsize = {1, .75},
+        custom_physicsfn = function(inst)
+            inst.entity:AddPhysics()
+            inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+            inst.Physics:SetMass(1)
+            inst.Physics:SetSphere(1)
+        end,
+
+    }),
+}
+
+local birds = {"crow", "robin", "robin_winter", "canary"}
+
+return unpack(corpse_prefabs)

@@ -192,29 +192,20 @@ local function attack_can_electrocute(inst, data)
 	if data and data.stimuli == "electric" then
 		if data.weapon then
 			local weapon = data.weapon.components.weapon
-			if weapon and weapon.stimuli == "electric" then
-				if (weapon.electric_damage_mult or TUNING.ELECTRIC_DAMAGE_MULT) > 1 then
-					return true
-				elseif inst.components.moisture then
-					return inst.components.moisture:GetMoisturePercent() > 0
-				end
-				return inst:GetIsWet()
+			if weapon and
+				(	weapon.overridestimulifn and
+					weapon.overridestimulifn(weapon.inst, data.attacker, inst) or
+					weapon.stimuli
+				) == "electric"
+			then
+				return true
 			end
-		elseif data.attacker and data.attacker:HasTag("electric") then
+		end
+		if data.attacker and data.attacker.components.electricattacks then
 			return true
 		end
 	end
 	return false
-end
-
-local function attack_should_electrocute(inst, data)
-	return CanEntityBeElectrocuted(inst)
-		and attack_can_electrocute(inst, data)
-		and not (	(inst.components.inventory and inst.components.inventory:IsInsulated()) or
-					--inst:HasTag("electricdamageimmune") or --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
-					inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") or
-					electrocute_recovery_delay(inst)
-				)
 end
 
 local function spawn_electrocute_fx(inst, data, duration)
@@ -231,54 +222,69 @@ local function spawn_electrocute_fx(inst, data, duration)
 			} or
 			nil
 	end
-	if duration == nil then
-		duration = inst.electrocute_duration or TUNING.ELECTROCUTE_DEFAULT_DURATION
-	end
-	SpawnPrefab("electrocute_fx"):SetFxTarget(inst, duration, data)
+	duration = duration or GetEntityElectrocuteDuration(inst)
+	local fx = SpawnPrefab("electrocute_fx")
+	fx:SetFxTarget(inst, duration, data)
+	return fx
 end
 
-local function do_burn_on_electrocute(inst, data, state, statedata)
-	update_electrocute_recovery_delay(inst)
-	spawn_electrocute_fx(inst, data)
-
-	local shouldreact
-	if data and data.noburn then
-		shouldreact = true
-	elseif inst.components.burnable and not inst.components.burnable:IsBurning() then
-		local attackdata = data and data.attackdata or data
-		inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
-		shouldreact = true
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
+	if state == nil then
+		if inst.sg:HasState("electrocute") then
+			state = "electrocute"
+			statedata = data and data.stimuli == "electric" and { attackdata = data } or data
+		elseif inst.sg:HasState("hit") then
+			state = "hit"
+		else
+			return false
+		end
 	end
 
-	if shouldreact and state then
+	if state ~= "electrocute" then
+		update_electrocute_recovery_delay(inst)
+		spawn_electrocute_fx(inst, data)
 		ClearStatusAilments(inst)
 		if inst.components.sleeper then
 			inst.components.sleeper:WakeUp()
 		end
-		inst.sg:GoToState(state, statedata)
-		return true
+		if inst.sg.mem.burn_on_electrocute and not (data and data.noburn) and
+			inst.components.burnable and not inst.components.burnable:IsBurning()
+		then
+			local attackdata = data and data.attackdata or data
+			inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
+		end
 	end
+	if ongotostatefn then
+		ongotostatefn(inst)
+	end
+	inst.sg:GoToState(state, statedata)
+	return true
+end
+
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_electrocute_onattacked(inst, data, state, statedata, ongotostatefn)
+	return CanEntityBeElectrocuted(inst)
+		and attack_can_electrocute(inst, data)
+		and not (inst.components.inventory and inst.components.inventory:IsInsulated())
+		--and not inst:HasTag("electricdamageimmune") --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
+		and (not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") or inst.sg:HasStateTag("canelectrocute"))
+		and not electrocute_recovery_delay(inst)
+		and try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
 end
 
 CommonHandlers.AttackCanElectrocute = attack_can_electrocute
-CommonHandlers.AttackShouldElectrocute = attack_should_electrocute
 CommonHandlers.SpawnElectrocuteFx = spawn_electrocute_fx
-CommonHandlers.DoBurnOnElectrocute = do_burn_on_electrocute
+CommonHandlers.TryGoToElectrocuteState = try_goto_electrocute_state
+CommonHandlers.TryElectrocuteOnAttacked = try_electrocute_onattacked
 
 local function onattacked(inst, data, hitreact_cooldown, max_hitreacts, skip_cooldown_fn)
 	if inst.components.health and not inst.components.health:IsDead() then
-		if attack_should_electrocute(inst, data) then
-			if inst.sg.mem.burn_on_electrocute then
-				if do_burn_on_electrocute(inst, data, "hit") then
-					return
-				end
-			else
-				inst.sg:GoToState("electrocute", { attackdata = data })
-				return
-			end
-		end
-
-		if not hit_recovery_delay(inst, hitreact_cooldown, max_hitreacts, skip_cooldown_fn) and
+		if try_electrocute_onattacked(inst, data) then
+			return
+		elseif not hit_recovery_delay(inst, hitreact_cooldown, max_hitreacts, skip_cooldown_fn) and
 			(	not inst.sg:HasStateTag("busy") or
 				inst.sg:HasAnyStateTag("caninterrupt", "frozen")
 			)
@@ -300,20 +306,23 @@ end
 
 --------------------------------------------------------------------------
 
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_electrocute_onevent(inst, data, state, statedata, ongotostatefn)
+	return not (inst.components.inventory and inst.components.inventory:IsInsulated())
+		--and not inst:HasTag("electricdamageimmune") and --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
+		and not inst.sg.mem.noelectrocute
+		and (not inst.sg:HasAnyStateTag("dead", "nointerrupt", "noelectrocute") or inst.sg:HasStateTag("canelectrocute"))
+		and try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
+end
+
 local function onelectrocute(inst, data)
-	if not ((inst.components.inventory and inst.components.inventory:IsInsulated()) or
-			--inst:HasTag("electricdamageimmune") or --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
-			inst.sg.mem.noelectrocute or
-			(inst.components.health and inst.components.health:IsDead()) or
-			inst.sg:HasAnyStateTag("dead", "nointerrupt", "noelectrocute"))
-	then
-		if inst.sg.mem.burn_on_electrocute then
-			do_burn_on_electrocute(inst, data, inst.sg:HasState("hit") and "hit" or nil)
-		else
-			inst.sg:GoToState("electrocute", data)
-		end
+	if not (inst.components.health and inst.components.health:IsDead()) then
+		try_electrocute_onevent(inst, data)
 	end
 end
+
+CommonHandlers.TryElectrocuteOnEvent = try_electrocute_onevent
 
 CommonHandlers.OnElectrocute = function()
 	return EventHandler("electrocute", onelectrocute)
@@ -1436,6 +1445,8 @@ CommonStates.AddElectrocuteStates = function(states, timelines, anims, fns)
 				inst.components.locomotor:StopMoving()
 			end
 
+			inst.sg.statemem.data = data
+
 			local anim = anims and FunctionOrValue(anims.loop, inst) or "shock_loop"
 			inst.AnimState:PlayAnimation(anim, true)
 
@@ -1443,7 +1454,7 @@ CommonStates.AddElectrocuteStates = function(states, timelines, anims, fns)
 				inst.SoundEmitter:PlaySound(inst.sounds.hit)
 			end
 
-			local duration = data and data.duration or inst.electrocute_duration or TUNING.ELECTROCUTE_DEFAULT_DURATION
+			local duration = data and data.duration or GetEntityElectrocuteDuration(inst)
 
 			update_hit_recovery_delay(inst)
 			update_electrocute_recovery_delay(inst)
@@ -1467,7 +1478,18 @@ CommonStates.AddElectrocuteStates = function(states, timelines, anims, fns)
 			inst.sg:GoToState("electrocute_pst")
 		end,
 
-		onexit = fns and fns.loop_onexit,
+		onexit = function(inst)
+			if inst.sg.mem.burn_on_electrocute then
+				local data = inst.sg.statemem.data
+				if not (data and data.noburn) and inst.components.burnable and not inst.components.burnable:IsBurning() then
+					local attackdata = data and data.attackdata or data
+					inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
+				end
+			end
+			if fns and fns.loop_onexit then
+				fns.loop_onexit(inst)
+			end
+		end,
 	})
 
 	table.insert(states, State{
@@ -1566,6 +1588,20 @@ CommonHandlers.OnNoSleepAnimOver = function(nextstate)
             end
         end
     end)
+end
+
+CommonHandlers.OnNoSleepAnimQueueOver = function(nextstate)
+	return EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.sg.mem.sleeping then
+				inst.sg:GoToState("sleep")
+			elseif type(nextstate) == "string" then
+				inst.sg:GoToState(nextstate)
+			elseif nextstate then
+				nextstate(inst)
+			end
+		end
+	end)
 end
 
 CommonHandlers.OnNoSleepTimeEvent = function(t, fn)
@@ -2355,7 +2391,7 @@ end
 function PlayMiningFX(inst, target, nosound)
     if target ~= nil and target:IsValid() then
         local frozen = target:HasTag("frozen")
-        local moonglass = target:HasTag("moonglass")
+        local moonglass = target:HasAnyTag("moonglass", "LunarBuildup")
         local crystal = target:HasTag("crystal")
         if target.Transform ~= nil then
             SpawnPrefab(

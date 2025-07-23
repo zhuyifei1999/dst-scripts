@@ -100,11 +100,10 @@ local states =
         events =
         {
 			EventHandler("attacked", function(inst, data)
-				if CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-					inst.sg:GoToState("electrocute", { attackdata = data })
-				else
-					inst.sg:GoToState("hit")
+				if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+					return true
 				end
+				inst.sg:GoToState("hit")
 				return true
             end),
             EventHandler("animover", function(inst)

@@ -66,17 +66,22 @@ local function OnWorked(inst)
     inst.sg:GoToState("hit")
 end
 
-local function OnHit(inst, attacker, damage)
-    local has_connection = inst.components.electricconnector:HasConnection()
-    local attacker_electric_immune = IsEntityElectricImmune(attacker)
+local function OnHit(inst, data)
+    if not data or not data.attacker then
+        return
+    end
 
-    if not has_connection or attacker_electric_immune or attacker:HasTag("epic") then
+    local attacker = data.attacker
+    local has_connection = inst.components.electricconnector:HasConnection()
+    local attacker_electric_immune = IsEntityElectricImmune(attacker) or not CanEntityBeElectrocuted(attacker)
+
+    --anything without a shock state
+    if not has_connection or attacker_electric_immune or attacker:HasTag("epic") or data.stimuli == "electric" then
         inst.components.workable:WorkedBy(attacker)
     end
 
     --(Omar): #TEMP TODO we want the electricution redirect mechanic to be implemented better
-    if not IsEntityDead(attacker, true) and not attacker_electric_immune and has_connection then
-        attacker.components.health:DoDelta(-TUNING.ELECTRIC_FENCE_DAMAGE, nil, inst.prefab, nil, inst)
+    if not IsEntityDead(attacker, true) and not attacker_electric_immune and has_connection and data.stimuli ~= "electric" then
 		attacker:PushEventImmediate("electrocute")
     end
 end
@@ -175,7 +180,9 @@ local function fn()
 
     inst:AddComponent("combat")
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-    inst.components.combat.onhitfn = OnHit
+    --inst.components.combat.onhitfn = OnHit
+
+    inst:ListenForEvent("attacked", OnHit)
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(1)

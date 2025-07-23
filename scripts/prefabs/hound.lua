@@ -558,6 +558,7 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst.components.inspectable.getstatus = GetStatus
 
     if tag == "clay" then
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("statue")
 
         inst:AddComponent("hauntable")

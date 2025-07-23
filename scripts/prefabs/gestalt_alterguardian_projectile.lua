@@ -199,6 +199,7 @@ local function commonfn(buildbank, headdata, tags, common_postinit, master_posti
     inst:AddTag("brightmare")
     inst:AddTag("NOBLOCK")
     inst:AddTag("NOCLICK")
+    inst:AddTag("lunar_aligned")
 
     if tags ~= nil then
         for _, tag in ipairs(tags) do

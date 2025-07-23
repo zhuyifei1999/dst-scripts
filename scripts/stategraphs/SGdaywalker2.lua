@@ -88,15 +88,14 @@ local events =
 		end
 	end),
 	EventHandler("electrocute", function(inst, data)
-		if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") then
-			_transfer_statemem_to_electrocute(inst)
-			inst.sg:GoToState("electrocute", data)
-		end
+		CommonHandlers.TryElectrocuteOnEvent(inst, data, nil, nil,
+			_transfer_statemem_to_electrocute)
 	end),
 	EventHandler("attacked", function(inst, data)
-		if not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-			_transfer_statemem_to_electrocute(inst)
-			inst.sg:GoToState("electrocute", { attackdata = data })
+		if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+			_transfer_statemem_to_electrocute)
+		then
+			return
 		elseif not (inst.sg:HasStateTag("busy") or inst.defeated) or inst.sg:HasStateTag("caninterrupt") then
 			if inst.sg:HasStateTag("rummaging") then
 				inst.sg:GoToState("rummage_hit", inst.sg.statemem.data)

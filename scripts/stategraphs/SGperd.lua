@@ -16,12 +16,9 @@ local events=
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.AttackShouldElectrocute(inst, data) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
-			end
-
-			if not inst.sg:HasStateTag("electrocute") then
+			elseif not inst.sg:HasStateTag("electrocute") then
 				inst.sg:GoToState("hit")
 			end
 		end

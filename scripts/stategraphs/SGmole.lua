@@ -26,12 +26,10 @@ local events =
         inst.flee = true
         inst:DoTaskInTime(math.random(3, 6), onstopflee)
 		local isalive = inst.components.health ~= nil and not inst.components.health:IsDead()
-		if isalive and
-			(inst.sg:HasStateTag("canelectrocute") or not inst.sg:HasAnyStateTag("noattack", "noelectrocute")) and
-			CommonHandlers.AttackCanElectrocute(inst, data) and
-			not CommonHandlers.ElectrocuteRecoveryDelay(inst)
+		if isalive and not inst.sg:HasStateTag("noattack") and
+			CommonHandlers.TryElectrocuteOnAttacked(inst, data)
 		then
-			inst.sg:GoToState("electrocute", { attackdata = data })
+			return
 		elseif data and data.weapon and not inst.sg:HasStateTag("electrocute") then
 			if data.weapon:HasTag("hammer") then
 				inst.components.inventory:DropEverything(false, true)

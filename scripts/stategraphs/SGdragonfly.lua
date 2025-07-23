@@ -2,11 +2,14 @@ require("stategraphs/commonstates")
 
 local function onattackedfn(inst, data)
 	if not inst.components.health:IsDead() then
-		if not inst.sg:HasStateTag("noelectrocute") and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-			if inst.sg:HasStateTag("grounded") then
-				inst.sg.statemem.knockdown = true
-			end
-			inst.sg:GoToState("electrocute", { attackdata = data })
+		if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+			function(inst)
+				if inst.sg:HasStateTag("grounded") then
+					inst.sg.statemem.knockdown = true
+				end
+			end)
+		then
+			return
 		elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
 			if inst.sg:HasStateTag("grounded") then
 				inst.sg.statemem.knockdown = true

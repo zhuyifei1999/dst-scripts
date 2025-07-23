@@ -294,6 +294,8 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 			return inst
 		end
 
+        MakeSnowCovered(inst)
+
         if name == "hermithouse_construction1" then
             inst.nolight = true
             inst.MiniMapEntity:SetIcon("hermitcrab_home.png")

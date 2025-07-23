@@ -5474,8 +5474,11 @@ return{
 
         FENCE_JUNK = "It does the trick.",
         JUNK_PILE = "Folks underestimate how much good stuff you can find in a scrap pile.",
-        JUNK_PILE_BIG = "Who's in charge here? Someone could get hurt!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Hey, those are blueprints up there.",
+            GENERIC = "Who's in charge here? Someone could get hurt!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Pretty well constructed, for a plant.",
 
         -- Meta 4 / Ocean QoL
@@ -5728,9 +5731,9 @@ return{
         LUNAR_SEED = "We busted'em down to the baubles.",
 
         -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "todo",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's comin' along...",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I know I can build this thing, but should I?",
-        WAGBOSS_ROBOT_CREATION_PARTS = "",
+        WAGBOSS_ROBOT_CREATION_PARTS = "The bossman sure built one mean machine.",
         MOONSTORM_STATIC_CATCHER = "Ain't nothin' in there.",
         COOLANT = "Looks like radiator fluid from space.",
 

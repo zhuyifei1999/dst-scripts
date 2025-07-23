@@ -585,7 +585,7 @@ Recipe2("wall_moonrock_item",				{Ingredient("moonrocknugget", 4)},													
 Recipe2("wall_dreadstone_item",				{Ingredient("dreadstone", 4)},																			TECH.LOST,					{numtogive=4})
 Recipe2("wall_scrap_item",					{Ingredient("wagpunk_bits", 4)},																		TECH.SCIENCE_TWO,			{numtogive=4})
 
-Recipe2("fence_electric_item", 				{Ingredient("wagpunk_bits", 4), Ingredient("moonglass", 2)},											TECH.LOST,					{numtogive=4})
+Recipe2("fence_electric_item", 				{Ingredient("wagpunk_bits", 6), Ingredient("moonglass", 6)},											TECH.LOST,					{numtogive=4})
 
 Recipe2("fence_rotator",					{Ingredient("spear", 1), Ingredient("flint", 2) },														TECH.SCIENCE_TWO)
 

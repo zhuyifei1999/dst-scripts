@@ -242,7 +242,7 @@ function MakeSmallBurnableCharacter(inst, sym, offset)
     burnable:SetFXLevel(1)
     burnable:SetBurnTime(6)
     burnable.canlight = false
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym)
 
     local propagator = MakeSmallPropagator(inst)
     propagator.acceptsheat = false
@@ -255,7 +255,7 @@ function MakeMediumBurnableCharacter(inst, sym, offset)
     burnable:SetFXLevel(2)
     burnable.canlight = false
     burnable:SetBurnTime(8)
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym)
 
     local propagator = MakeSmallPropagator(inst)
     propagator.acceptsheat = false
@@ -268,7 +268,7 @@ function MakeLargeBurnableCharacter(inst, sym, offset, scale)
     burnable:SetFXLevel(3)
     burnable.canlight = false
     burnable:SetBurnTime(10)
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 
     local propagator = MakeLargePropagator(inst)
     propagator.acceptsheat = false
@@ -280,7 +280,7 @@ function MakeSmallBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(1)
 	burnable:SetBurnTime(time or 6)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -293,7 +293,7 @@ function MakeMediumBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(2)
 	burnable:SetBurnTime(time or 8)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -306,7 +306,7 @@ function MakeLargeBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(3)
 	burnable:SetBurnTime(time or 10)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -753,6 +753,42 @@ function MakeSnowCovered(inst)
     else
         inst.AnimState:Hide("snow")
     end
+end
+
+function UpdateLunarHailBuildup(inst)
+    local issnowcovered = TheWorld.state.issnowcovered
+    local isbuildupworkable = inst.components.lunarhailbuildup and inst.components.lunarhailbuildup:IsBuildupWorkable()
+    local shouldshowsymbol = issnowcovered or isbuildupworkable
+
+    local snowsymbol
+    if isbuildupworkable then
+        if issnowcovered then
+            snowsymbol = "lunarhail_snow_buildup"
+        else
+            snowsymbol = "lunarhail_buildup"
+        end
+    else
+        snowsymbol = "snow"
+    end
+    inst.AnimState:OverrideSymbol("snow", "snow", snowsymbol)
+
+    if shouldshowsymbol then
+        inst.AnimState:Show("snow")
+    else
+        inst.AnimState:Hide("snow")
+    end
+end
+
+local function OnLunarHailBuildupDelta(inst, data)
+    UpdateLunarHailBuildup(inst)
+end
+
+function MakeLunarHailBuildup(inst, totalworkamount, moonglassamount) -- Should be added after MakeSnowCovered on mastersim for structures that want accumulation.
+    local lunarhailbuildup = inst:AddComponent("lunarhailbuildup")
+    lunarhailbuildup:SetTotalWorkAmount(totalworkamount or TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_DEFAULT)
+    lunarhailbuildup:SetMoonGlassAmount(moonglassamount or TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_DEFAULT)
+    inst:ListenForEvent("lunarhailbuildupdelta", OnLunarHailBuildupDelta)
+    inst:DoTaskInTime(0, UpdateLunarHailBuildup)
 end
 
 ----------------------------------------------------------------------------------------

@@ -448,6 +448,7 @@ local function MakeDeviceStage(name, client_postinit, master_postinit, construct
 
         inst._construction_product = construction_data ~= nil and construction_data.construction_product or nil
 
+        MakeSnowCovered(inst)
         playlinkanimation(inst, inst.level)
 
         if inst.level >= 2 then

@@ -68,7 +68,6 @@ function Chest_MimicBrain:OnStart()
 	local root = PriorityNode(
     {
         BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
 
         WhileNode(function() return self.inst.components.inventory:IsFull() end, "Inventory Full",
             DoAction(self.inst, TryToHide, "Try To Transform Back")

@@ -1,5 +1,7 @@
 require("stategraphs/commonstates")
 
+local easing = require("easing")
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.EAT, "peck"),
@@ -26,8 +28,8 @@ local events =
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-			if not (inst.sg:HasStateTag("noelectrocute") or IsStuck(inst)) and CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+			if not IsStuck(inst) and CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+				return
 			elseif not inst.sg:HasStateTag("electrocute") then
 				inst.sg:GoToState("hit")
 			end
@@ -56,6 +58,13 @@ local events =
 
 local states =
 {
+    State{
+		name = "init",
+		onenter = function(inst)
+			inst.sg:GoToState(inst.components.locomotor ~= nil and "glide" or POPULATING and "corpse_idle" or "corpse_fall")
+		end,
+	},
+
     State{
         name = "idle",
         tags = { "idle", "canrotate" },
@@ -476,6 +485,156 @@ local states =
             end
         end,
     },
+
+    --------------------------------------------------------------------------
+	--Used by "crowcorpse" "robincorpse", "canarycorpse"
+
+    State{
+        name = "corpse_fall",
+		tags = { "busy", "noelectrocute" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("fall_corpse", true)
+			inst.DynamicShadow:Enable(false)
+        end,
+
+        onupdate = function(inst)
+            local x, y, z = inst.Transform:GetWorldPosition()
+            if y <= .2 then
+                inst.Physics:Stop()
+                inst.Physics:Teleport(x, 0, z)
+                inst.DynamicShadow:Enable(true)
+                inst.sg:GoToState("corpse_idle")
+                if inst.components.floater ~= nil then
+                    inst:PushEvent("on_landed")
+                end
+            end
+        end,
+
+		onexit = function(inst)
+			inst.DynamicShadow:Enable(true)
+		end,
+    },
+
+	State{
+		name = "corpse_idle",
+
+		onenter = function(inst)
+			inst.AnimState:PlayAnimation("corpse")
+		end,
+	},
+
+	State{
+		name = "corpse_mutate_pre",
+		tags = { "mutating" },
+
+		onenter = function(inst, mutantprefab)
+            inst.AnimState:SetBank("bird_lunar")
+			inst.AnimState:PlayAnimation("twitch", true)
+			inst.sg:SetTimeout(3)
+			inst.sg.statemem.mutantprefab = mutantprefab
+			
+            --inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/twitching_LP", "loop")
+		end,
+
+		ontimeout = function(inst)
+			inst.sg:GoToState("corpse_mutate", inst.sg.statemem.mutantprefab)
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("loop")
+		end,
+	},
+
+	State{
+		name = "corpse_mutate",
+		tags = { "mutating" },
+
+		onenter = function(inst, mutantprefab)
+			inst.AnimState:OverrideSymbol("lunar_parts", "bird_lunar_build", "lunar_parts")
+			--inst.AnimState:OverrideSymbol("frozen_debris", "deerclops_mutated", "frozen_debris")
+        
+			inst.AnimState:PlayAnimation("mutate_pre")
+
+			--inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/ice_crackling_LP", "loop")
+			inst.sg.statemem.mutantprefab = mutantprefab
+		end,
+
+		timeline =
+		{
+			FrameEvent(0, function(inst) 
+
+            end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					local rot = inst.Transform:GetRotation()
+					local creature = ReplacePrefab(inst, inst.sg.statemem.mutantprefab)
+					creature.Transform:SetRotation(rot)
+					creature.AnimState:MakeFacingDirty() --not needed for clients
+					creature.sg:GoToState("mutate_pst")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			--Shouldn't reach here!
+			inst.AnimState:ClearAllOverrideSymbols()
+			inst.AnimState:SetAddColour(0, 0, 0, 0)
+			inst.AnimState:SetLightOverride(0)
+			inst.SoundEmitter:KillSound("loop")
+			inst.components.burnable:SetBurnTime(TUNING.MED_BURNTIME)
+			inst.components.burnable.fastextinguish = false
+		end,
+	},
+
+	--------------------------------------------------------------------------
+	--Transitions from corpse_mutate after prefab switch
+	State{
+		name = "mutate_pst",
+		tags = { "busy", "noattack", "temp_invincible", "noelectrocute" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("mutate")
+			inst.sg.statemem.flash = 24
+		end,
+
+		onupdate = function(inst)
+			local c = inst.sg.statemem.flash
+			if c >= 0 then
+				inst.sg.statemem.flash = c - 1
+				c = easing.inOutQuad(math.min(20, c), 0, 1, 20)
+				inst.AnimState:SetAddColour(c, c, c, 0)
+				inst.AnimState:SetLightOverride(c)
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(16, function(inst)
+
+            end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("caw")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			inst.AnimState:SetAddColour(0, 0, 0, 0)
+			inst.AnimState:SetLightOverride(0)
+		end,
+	},
 }
 
 CommonStates.AddSleepStates(states)
@@ -493,4 +652,4 @@ CommonStates.AddElectrocuteStates(states, nil, nil,
 	end,
 })
 
-return StateGraph("bird", states, events, "glide")
+return StateGraph("bird", states, events, "init")
