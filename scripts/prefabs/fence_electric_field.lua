@@ -97,9 +97,6 @@ local MAX_LEN = 15
 local SEG_LEN = 2.15 -- Bolt is 324 pixels long in file, 324 / 150 = 2.15~
 local TARGET_SPACING = 4
 local TARGET_RANGE = 0.1 --distance from beam
-local FAST_PERIOD = 2 * FRAMES
-local MIN_PHYS_RAD = 0.5 --NOTE (Omar): Any lower and we risk the mob gliding on through 
--- ^ NEVERMIND SMALLBIRDS ARE SOMEHOW JUMPING THE FENCE
 
 local SHOCK_COOLDOWNS = {
 	--SMALLCREATURE = 0.5,
@@ -268,9 +265,6 @@ local function RefreshSegs(inst)
 			z = z + dz
 		end
 	end
-
-	inst.p1 = { x = inst.targetx[1], y = inst.targetz[1] }
-	inst.p2 = { x = inst.targetx[#inst.targetx], y = inst.targetz[#inst.targetz] }
 end
 
 local function OnBeamDirty(inst)
@@ -287,14 +281,15 @@ local function SetBeam(inst, len, rot)
 		OnBeamDirty(inst)
 	end
 end
---todo shock daywalker
+
+--TODO fix on boats
 local function SetUpPhysics(inst)
 	inst.entity:AddPhysics()
     inst.Physics:SetMass(0)
     inst.Physics:SetCollisionGroup(COLLISION.GROUND) --EVERYTHING should interact with the fence, so set it as GROUND for now.
     inst.Physics:SetCollisionMask(
         --COLLISION.ITEMS,
-		--COLLISION.OBSTACLES,
+		COLLISION.OBSTACLES,
         COLLISION.CHARACTERS,
 		COLLISION.FLYERS,
         COLLISION.GIANTS
@@ -302,6 +297,28 @@ local function SetUpPhysics(inst)
 	inst.Physics:SetCollides(false)
 	inst.Physics:SetDontRemoveOnSleep(true)
 	inst.Physics:SetCollisionCallback(OnCollisionCallback)
+end
+
+local function ForcePhysicsUpdate(inst) --HACK!
+	inst.Physics:Stop()
+end
+
+local UPDATE_PERIOD = 1
+local function OnEntityWake(inst)
+	RefreshSegs(inst)
+	if inst.update_physics_task then
+		inst.update_physics_task:Cancel()
+		inst.update_physics_task = nil
+	end
+	inst.update_physics_task = inst:DoPeriodicTask(UPDATE_PERIOD, ForcePhysicsUpdate)
+end
+
+local function OnEntitySleep(inst)
+	if inst.update_physics_task then
+		inst.update_physics_task:Cancel()
+		inst.update_physics_task = nil
+	end
+	ClearSegs(inst)
 end
 
 local function CanMouseThrough() -- So that we don't block trying to select other entities.
@@ -339,8 +356,8 @@ local function fn()
 
 	inst.targettask = nil
 	inst.SetBeam = SetBeam
-	inst.OnEntitySleep = ClearSegs
-	inst.OnEntityWake = RefreshSegs
+	inst.OnEntitySleep = OnEntitySleep
+	inst.OnEntityWake = OnEntityWake
 
 	inst.persists = false
 

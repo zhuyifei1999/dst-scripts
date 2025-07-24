@@ -423,6 +423,7 @@ local function fn()
     inst.entity:AddNetwork()
 
 	MakeObstaclePhysics(inst, .8)
+    MakeCollidesWithElectricField(inst)
 	inst:SetPhysicsRadiusOverride(.4) --V2C: WARNING intentionally reducing range for incoming attacks; make sure everyone can still reach!
 
     inst.MiniMapEntity:SetIcon("lunarthrall_plant.png")

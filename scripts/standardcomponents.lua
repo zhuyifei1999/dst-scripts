@@ -598,6 +598,20 @@ function ChangeToInventoryItemPhysics(inst, mass, rad)
     return phys
 end
 
+--
+--NOTE(Omar): HACK!!!
+-- Obstacles don't collide with ground, which our field is, and we have some obstacle shockables (imprisoned daywalker, brightshade, seaweed)
+-- And there is no all encompassing collision group for every shockable...
+-- And changing `MakeObstaclePhysics` for all to collide with ground would probably be silly
+-- SO, let's jsut make those specific obstacles collide with ground
+function MakeCollidesWithElectricField(inst)
+    inst.Physics:CollidesWith(COLLISION.GROUND)
+end
+
+function ClearCollidesWithElectricField(inst)
+    inst.Physics:ClearCollidesWith(COLLISION.GROUND)
+end
+
 -- USED FOR THE DEPTH WORM
 function ChangeToInventoryPhysics(inst)
     local phys = inst.Physics

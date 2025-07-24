@@ -821,6 +821,7 @@ return Class(function(self, inst)
         inst:ListenForEvent("ms_setlightningdelay", OnSetLightningDelay, _world)
         inst:ListenForEvent("ms_sendlightningstrike", OnSendLightningStrike, _world)
         inst:ListenForEvent("ms_simunpaused", OnSimUnpaused, _world)
+        inst:ListenForEvent("ms_startlunarhail", StartLunarHail, _world)
     end
 
     PushWeather()

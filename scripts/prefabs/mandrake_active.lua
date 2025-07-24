@@ -20,6 +20,15 @@ local prefabs =
 	"cookedmandrake",
 }
 
+local function CheckDay(inst)
+    if TheWorld.state.isday then
+        if inst.components.freezable and inst.components.freezable:IsFrozen() then
+            inst.components.freezable:Unfreeze() --So we can get the freeze fx
+        end
+        inst.components.health:Kill()
+    end
+end
+
 local SLEEPTARGETS_CANT_TAGS = { "playerghost", "FX", "DECOR", "INLIMBO" }
 local SLEEPTARGETS_ONEOF_TAGS = { "sleeper", "player" }
 
@@ -50,13 +59,26 @@ local function doareasleep(inst, range, time)
     end
 end
 
-local function replant(inst)
-    --turn into "mandrake_planted"
-    local planted = SpawnPrefab("mandrake_planted")
-    planted.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    planted:replant(inst)
+local function canplant(inst)
+    return not inst.components.freezable:IsFrozen() and not inst.components.burnable:IsBurning()
+end
 
-    inst:Remove()
+local DEATH_TIMER = 5
+local function replant(inst, retries)
+    --turn into "mandrake_planted"
+    retries = retries or 1
+
+    if canplant(inst) then
+        local planted = SpawnPrefab("mandrake_planted")
+        planted.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        planted:replant(inst)
+
+        inst:Remove()
+    elseif retries > DEATH_TIMER then
+        CheckDay(inst) --I'm sorry little one.
+    else
+        inst:DoTaskInTime(1, replant, retries+1) --Tick tock little buddy!
+    end
 end
 
 local function ondeath(inst)
@@ -98,12 +120,6 @@ local function StopFindLeaderTask(inst)
     if inst._findleadertask ~= nil then
         inst._findleadertask:Cancel()
         inst._findleadertask = nil
-    end
-end
-
-local function CheckDay(inst)
-    if TheWorld.state.isday then
-        inst.components.health:Kill()
     end
 end
 
