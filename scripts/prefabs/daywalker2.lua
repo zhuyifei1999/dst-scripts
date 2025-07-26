@@ -787,7 +787,10 @@ local function MakeBuried(inst, junk)
 		inst.AnimState:Hide("junk_mid")
 		inst.AnimState:Hide("junk_back")
 		inst.Transform:SetEightFaced()
-		inst.Physics:SetActive(false)
+
+		inst.Physics:SetMass(0) -- Static object when buried
+		--MakeCollidesWithElectricField(inst) -- We already collide with COLLISION.GROUND! We're fine!
+
 		PHASES[0].fn(inst)
 		inst:SetBrain(nil)
 		inst:SetHeadTracking(false)
@@ -841,7 +844,10 @@ local function MakeFreed(inst)
 		inst.AnimState:Show("junk_mid")
 		inst.AnimState:Show("junk_back")
 		inst.Transform:SetFourFaced()
-		inst.Physics:SetActive(true)
+
+		inst.Physics:SetMass(MASS)
+		--ClearCollidesWithElectricField(inst) -- We already collide with COLLISION.GROUND! Don't clear!!!
+
 		inst:SetStateGraph("SGdaywalker2")
 		inst.sg:GoToState("emerge")
 		CheckHealthPhase(inst)

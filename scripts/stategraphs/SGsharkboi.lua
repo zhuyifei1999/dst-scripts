@@ -2446,18 +2446,20 @@ CommonStates.AddElectrocuteStates(states,
 		end
 	end,
 	onanimover = function(inst)
-		if inst.sg:HasStateTag("defeated") then
-			inst.sg.statemem.defeat = true
-			inst.sg:GoToState("defeat_loop", (inst.sg.mem.transfer_hits or 0) + 1)
-		elseif inst.sg:HasStateTag("dizzy") then
-			local hits = (inst.sg.mem.transfer_hits or 0) + 1
-			inst.sg:GoToState(hits > 2 and "torpedo_pst" or "torpedo_dizzy", hits)
-		elseif inst.sg:HasStateTag("torpedoready") then
-			inst.sg:GoToState("torpedo_pre", inst.sg.mem.transfer_target)
-		elseif inst.sg:HasStateTag("fin") then
-			inst.sg:GoToState(inst.components.locomotor:WantsToMoveForward() and "fin" or "fin_stop")
-		else
-			inst.sg:GoToState("idle")
+		if inst.AnimState:AnimDone() then
+			if inst.sg:HasStateTag("defeated") then
+				inst.sg.statemem.defeat = true
+				inst.sg:GoToState("defeat_loop", (inst.sg.mem.transfer_hits or 0) + 1)
+			elseif inst.sg:HasStateTag("dizzy") then
+				local hits = (inst.sg.mem.transfer_hits or 0) + 1
+				inst.sg:GoToState(hits > 2 and "torpedo_pst" or "torpedo_dizzy", hits)
+			elseif inst.sg:HasStateTag("torpedoready") then
+				inst.sg:GoToState("torpedo_pre", inst.sg.mem.transfer_target)
+			elseif inst.sg:HasStateTag("fin") then
+				inst.sg:GoToState(inst.components.locomotor:WantsToMoveForward() and "fin" or "fin_stop")
+			else
+				inst.sg:GoToState("idle")
+			end
 		end
 	end,
 	pst_onexit = function(inst)

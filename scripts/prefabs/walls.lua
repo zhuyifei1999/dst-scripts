@@ -299,8 +299,6 @@ function MakeWallType(data)
             inst:AddTag(v)
         end
 
-        MakeSnowCoveredPristine(inst)
-
         inst._pfpos = nil
         inst._ispathfinding = net_bool(inst.GUID, "_ispathfinding", "onispathfindingdirty")
         makeobstacle(inst)
@@ -371,8 +369,6 @@ function MakeWallType(data)
         MakeHauntableWork(inst)
 
         inst.OnLoad = onload
-
-        MakeSnowCovered(inst)
 
         return inst
     end

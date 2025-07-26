@@ -4,12 +4,23 @@ local easing = require("easing")
 
 local actionhandlers =
 {
-    ActionHandler(ACTIONS.EAT, "peck"),
-    ActionHandler(ACTIONS.GOHOME, "flyaway"),
+    --Will this affect regular birds?
+    ActionHandler(ACTIONS.EAT, "lunar_eat"),
+    ActionHandler(ACTIONS.REMOVELUNARBUILDUP, "peck"),
+    --ActionHandler(ACTIONS.GOHOME, "flyaway"),
 }
 
 local function IsStuck(inst)
 	return inst:HasAnyTag("honey_ammo_afflicted", "gelblob_ammo_afflicted") and TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition())
+end
+
+local function PlayShardFx(inst, target)
+    if target ~= nil and target:IsValid() then
+        local fx = SpawnPrefab("mining_moonglass_fx")
+        fx.Transform:SetPosition(target.Transform:GetWorldPosition())
+        fx.Transform:SetScale(0.5, 0.5, 0.5)
+        --sound?
+    end
 end
 
 local events =
@@ -44,7 +55,7 @@ local events =
         end
     end),
     EventHandler("onignite", function(inst)
-		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
+		if inst.components.health and not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
             inst.sg:GoToState("distress_pre")
         end
     end),
@@ -53,6 +64,17 @@ local events =
     end),
     EventHandler("stunbomb", function(inst)
         inst.sg:GoToState("stunned")
+    end),
+
+    EventHandler("locomote", function(inst)
+        --NOTE: Locomote behaviour for the mutated bird, it's probably fine to have this event listener for all, but just in case.
+        if inst:HasTag("bird_mutant_rift") and not inst.sg:HasStateTag("busy") then
+            local is_moving = inst.sg:HasStateTag("moving")
+            local wants_to_move = inst.components.locomotor:WantsToMoveForward()
+            if is_moving ~= wants_to_move then
+                inst.sg:GoToState(wants_to_move and "hop" or "idle")
+            end
+        end
     end),
 }
 
@@ -286,6 +308,21 @@ local states =
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
         end,
 
+        timeline = {
+            FrameEvent(4, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
+                    PlayShardFx(inst, buffaction.target)
+                end
+            end),
+			FrameEvent(9, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
+                    PlayShardFx(inst, buffaction.target)
+                end
+            end),
+        },
+
         ontimeout = function(inst)
             if math.random() < .3 then
                 inst:PerformBufferedAction()
@@ -487,7 +524,7 @@ local states =
     },
 
     --------------------------------------------------------------------------
-	--Used by "crowcorpse" "robincorpse", "canarycorpse"
+	--Used by "birdcorpse"
 
     State{
         name = "corpse_fall",
@@ -506,8 +543,10 @@ local states =
                 inst.Physics:Teleport(x, 0, z)
                 inst.DynamicShadow:Enable(true)
                 inst.sg:GoToState("corpse_idle")
-                if inst.components.floater ~= nil then
-                    inst:PushEvent("on_landed")
+
+                --Can't use inventoryitem:TryToSink, not an item!
+                if ShouldEntitySink(inst, true) then
+                    inst:DoTaskInTime(0, SinkEntity)
                 end
             end
         end,
@@ -530,7 +569,6 @@ local states =
 		tags = { "mutating" },
 
 		onenter = function(inst, mutantprefab)
-            inst.AnimState:SetBank("bird_lunar")
 			inst.AnimState:PlayAnimation("twitch", true)
 			inst.sg:SetTimeout(3)
 			inst.sg.statemem.mutantprefab = mutantprefab
@@ -553,8 +591,9 @@ local states =
 
 		onenter = function(inst, mutantprefab)
 			inst.AnimState:OverrideSymbol("lunar_parts", "bird_lunar_build", "lunar_parts")
-			--inst.AnimState:OverrideSymbol("frozen_debris", "deerclops_mutated", "frozen_debris")
-        
+			inst.AnimState:OverrideSymbol("fx_puff_hi", "bird_lunar_build", "fx_puff_hi")
+			inst.AnimState:OverrideSymbol("fx_puff2", "bird_lunar_build", "fx_puff2")
+
 			inst.AnimState:PlayAnimation("mutate_pre")
 
 			--inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/ice_crackling_LP", "loop")
@@ -563,7 +602,7 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(0, function(inst) 
+			FrameEvent(0, function(inst)
 
             end),
 		},
@@ -617,7 +656,7 @@ local states =
 		timeline =
 		{
 			FrameEvent(16, function(inst)
-
+                
             end),
 		},
 
@@ -635,6 +674,40 @@ local states =
 			inst.AnimState:SetLightOverride(0)
 		end,
 	},
+
+    State{
+        name = "lunar_eat",
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            if not inst.AnimState:IsCurrentAnimation("lunar_eat") then
+                inst.AnimState:PlayAnimation("lunar_eat", true)
+            end
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            inst.SoundEmitter:PlaySound(inst.sounds.eat)
+        end,
+
+        timeline =
+		{
+            FrameEvent(12, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                if buffaction and buffaction.target then
+                    PlayShardFx(inst, buffaction.target)
+                end
+            end),
+			FrameEvent(26, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                if buffaction and buffaction.target then
+                    PlayShardFx(inst, buffaction.target)
+                end
+                inst:PerformBufferedAction()
+            end),
+		},
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
+    },
 }
 
 CommonStates.AddSleepStates(states)
@@ -652,4 +725,4 @@ CommonStates.AddElectrocuteStates(states, nil, nil,
 	end,
 })
 
-return StateGraph("bird", states, events, "init")
+return StateGraph("bird", states, events, "init", actionhandlers)

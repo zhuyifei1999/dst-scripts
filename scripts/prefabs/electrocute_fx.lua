@@ -123,6 +123,15 @@ local function PlayPst(inst)
 	inst.AnimState:PlayAnimation(anim)
 end
 
+local function StartFork(inst, target, x, y, z, r, data)
+	if data.targets == nil then
+		data.targets = { [target] = true }
+	else
+		data.targets[target] = true
+	end
+	inst:DoTaskInTime(TUNING.ELECTROCUTE_FORK_DELAY, DoFork, target, x, y, z, r, data)
+end
+
 local function SetFxTarget(inst, target, duration, data)
 	inst.target = target
 	inst.duration = duration or TUNING.ELECTROCUTE_DEFAULT_DURATION
@@ -157,13 +166,15 @@ local function SetFxTarget(inst, target, duration, data)
 
 	if data and data.attackdata then
 		local x, y, z = target.Transform:GetWorldPosition()
-		if data.targets == nil then
-			data.targets = { [target] = true }
-		else
-			data.targets[target] = true
-		end
-		inst:DoTaskInTime(TUNING.ELECTROCUTE_FORK_DELAY, DoFork, target, x, y, z, r, data)
+		StartFork(inst, target, x, y, z, r, data)
 	end
+end
+
+--Global, so legacy player shock fx can call this to fork
+function StartElectrocuteForkOnTarget(target, data)
+	local x, y, z = target.Transform:GetWorldPosition()
+	local r, _, _ = GetCombatFxSize(target)
+	StartFork(target, target, x, y, z, r, data)
 end
 
 local function CancelFlash(inst)

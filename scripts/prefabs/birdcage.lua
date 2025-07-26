@@ -47,6 +47,7 @@ local CAGE_STATES =
 local BUILD_OVERRIDES =
 {
     canary_poisoned = "canary",
+    mutatedbird = "bird_lunar",
 }
 
 local function SetBirdType(inst, bird)
@@ -78,20 +79,68 @@ end
 local function GetHunger(bird)
     return (bird and bird.components.perishable and bird.components.perishable:GetPercent()) or 1
 end
+local function update_electrocute_recovery_delay(inst)
+	local t = GetTime()
+	if inst._electrocute_resist then
+		if inst._last_electrocute_time then
+			local delay = inst.electrocute_delay or TUNING.ELECTROCUTE_DEFAULT_DELAY
+			local dt = t - inst._last_electrocute_time
+			if dt > delay.max then
+				inst._electrocute_resist = math.max(0, inst._electrocute_resist - (dt - delay.max) / 10)
+			end
+		end
+		inst._electrocute_resist = inst._electrocute_resist + 1
+	elseif inst:HasTag("epic") then
+		inst._electrocute_resist = 1
+	end
+	inst._last_electrocute_time = t
+	inst._last_electrocute_delay = nil
+end
+
 
 local function DigestFood(inst, food)
-    if food.components.edible.foodtype == FOODTYPE.MEAT then
+    --NOTE (Omar): 
+    -- Reminder that food is not valid at this point.
+    -- So don't call any engine functions or any other functions that check for validity
+    local bird = GetBird(inst)
+
+    if bird and bird:HasTag("bird_mutant_rift") then
+        local t = GetTime()
+        --dumb TEMP timer code
+        if not inst._brilliance_chance then
+            inst._brilliance_chance = TUNING.RIFT_BIRD_BRILLIANCE_CHANCE
+        end
+        if food.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS then
+            if food.prefab == "moonglass_charged" then --Can't be a tag check
+
+                if inst._last_brilliance_time then
+                    local dt = t - inst._last_brilliance_time
+                    if dt > TUNING.TOTAL_DAY_TIME / 2 then
+                        inst._brilliance_chance = math.min(TUNING.RIFT_BIRD_BRILLIANCE_CHANCE, inst._brilliance_chance + 0.2)
+                    end
+                end
+
+                if math.random() < inst._brilliance_chance then
+                    inst.components.lootdropper:SpawnLootPrefab("purebrilliance")
+
+                    inst._brilliance_chance = math.max(0, inst._brilliance_chance - 0.1)
+                    inst._last_brilliance_time = t
+                end
+            else
+                --inst.components.lootdropper:SpawnLootPrefab("")
+            end
+        end
+    elseif food.components.edible.foodtype == FOODTYPE.MEAT then
         --If the food is meat:
             --Spawn an egg.
-        if inst.components.occupiable and inst.components.occupiable:GetOccupant() and inst.components.occupiable:GetOccupant():HasTag("bird_mutant") then
+        if bird and bird:HasTag("bird_mutant") then
             inst.components.lootdropper:SpawnLootPrefab("rottenegg")
         else
             inst.components.lootdropper:SpawnLootPrefab("bird_egg")
         end
     else
-        if inst.components.occupiable and inst.components.occupiable:GetOccupant() and inst.components.occupiable:GetOccupant():HasTag("bird_mutant") then
+        if bird and bird:HasTag("bird_mutant") then
             inst.components.lootdropper:SpawnLootPrefab("spoiled_food")
-
         else
             local seed_name = string.lower(food.prefab .. "_seeds")
             if Prefabs[seed_name] ~= nil then
@@ -108,13 +157,14 @@ local function DigestFood(inst, food)
     end
 
     --Refill bird stomach.
-    local bird = GetBird(inst)
     if bird and bird:IsValid() and bird.components.perishable then
         bird.components.perishable:SetPercent(1)
     end
 end
 
 local function ShouldAcceptItem(inst, item)
+    local bird = GetBird(inst)
+
     local seed_name = string.lower(item.prefab .. "_seeds")
 
     local can_accept = item.components.edible
@@ -125,6 +175,10 @@ local function ShouldAcceptItem(inst, item)
 
     if table.contains(invalid_foods, item.prefab) then
         can_accept = false
+    end
+
+    if bird and bird:HasTag("bird_mutant_rift") then
+        can_accept = (item.components.edible and item.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS) or false -- We only accept infused shards here.
     end
 
     return can_accept
@@ -138,6 +192,7 @@ local function OnGetItem(inst, giver, item)
 
     if item.components.edible ~= nil and
         (   item.components.edible.foodtype == FOODTYPE.MEAT
+            or item.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS
             or item.prefab == "seeds"
             or string.match(item.prefab, "_seeds")
             or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
@@ -439,6 +494,11 @@ local function OnLoseShelfItem(inst, taker, item)
     end
 end
 
+local function GetBirdSanityAura(inst, observer)
+    local bird = GetBird(inst)
+    return bird and bird.components.sanityaura and bird.components.sanityaura:GetBaseAura(observer) or 0
+end
+
 local function OnSave(inst, data)
     data.CAGE_STATE = inst.CAGE_STATE
     data.bird_type = inst.bird_type
@@ -515,6 +575,9 @@ local function fn()
     --trader (from trader component) added to pristine state for optimization
     --inst:AddTag("trader")
 
+    --sanityaura (from sanityaura component) added to pristine state for optimization
+    inst:AddTag("sanityaura")
+
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()
@@ -546,6 +609,9 @@ local function fn()
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader:Disable()
 
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aurafn = GetBirdSanityAura
+
     inst:AddComponent("inventory")
     inst.components.inventory.maxslots = 1
 
@@ -554,6 +620,7 @@ local function fn()
     inst.components.shelf:SetOnTakeItem(OnLoseShelfItem)
 
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountLarge(inst)
 
     inst:ListenForEvent("onbuilt", OnBuilt)
     inst:ListenForEvent("gotosleep", GoToSleep)

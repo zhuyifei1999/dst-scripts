@@ -192,12 +192,18 @@ local states=
 
         events =
         {
-            EventHandler("attacked", function(inst) inst.components.inventory:DropEverything() inst.sg:GoToState("idle") end) --drop food
+			--drop food
+			EventHandler("attacked", function(inst)
+				inst.components.inventory:DropEverything()
+				inst.sg:GoToState("idle")
+			end),
+			EventHandler("electrocute", function(inst)
+				inst.components.inventory:DropEverything()
+			end),
         },
     },
 
     State{
-
         name = "walk_start",
         tags = {"idle", "canrotate"},
         onenter = function(inst, playanim)
@@ -223,5 +229,15 @@ local states=
 }
 
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+nil, --anims
+{	--fns
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState(inst.components.combat:HasTarget() and "alert" or "idle")
+		end
+	end,
+})
 
 return StateGraph("eyeplant", states, events, "idle", actionhandlers)

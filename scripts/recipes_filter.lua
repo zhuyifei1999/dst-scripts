@@ -401,17 +401,17 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	----CELESTIAL----
 	"moonrockidol",
 	"multiplayer_portal_moonrock_constr_plans",
-	"lunar_forge_kit",
 	"moon_mushroomhat",
-
-	----MOON_ALTAR-----
 	"moonglassaxe",
 	"glasscutter",
+	"bathbomb",
+
+	----MOON_ALTAR-----
+	"lunar_forge_kit",
 	"carpentry_blade_moonglass",
 	"slingshotammo_moonglass",
 	"turf_meteor",
 	"turf_fungus_moon",
-	"bathbomb",
 	"chesspiece_butterfly_sketch",
 	"chesspiece_moon_sketch",
 
@@ -1258,7 +1258,7 @@ CRAFTING_FILTERS.STRUCTURES.recipes =
 
 	"fence_gate_item",
 	"fence_item",
-	"fence_electric_item", --TODO (OMAR) Other filters too
+	"fence_electric_item",
 	"wall_hay_item",
 	"wall_wood_item",
 	"wall_stone_item",

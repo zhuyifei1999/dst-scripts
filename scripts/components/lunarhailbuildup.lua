@@ -4,8 +4,8 @@ local LunarHailBuildup = Class(function(self, inst)
     self.buildupmax = 1
     self.buildupcurrent = 0
     self.workleft = 0
-    self.totalworkamount = TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_DEFAULT
-    self.moonglassamount = TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_DEFAULT
+    self.totalworkamount = TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_MEDIUM
+    self.moonglassamount = TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_MEDIUM
     --self.ignorelunarhailticks = nil
 
     self:WatchWorldState("islunarhailing", self.OnIsLunarHailing)
@@ -16,11 +16,9 @@ end)
 
 
 function LunarHailBuildup:OnRemoveFromEntity()
-    if self.lunarhailbuildup_task ~= nil then
-        self.lunarhailbuildup_task:Cancel()
-        self.lunarhailbuildup_task = nil
-    end
+    self:StopTickTask()
     self.inst:RemoveTag("LunarBuildup")
+    UpdateLunarHailBuildup(self.inst)
 end
 
 
@@ -38,6 +36,7 @@ end
 
 function LunarHailBuildup:SetTotalWorkAmount(totalworkamount)
     self.totalworkamount = totalworkamount
+    self.workleft = math.min(self.workleft, totalworkamount)
 end
 
 function LunarHailBuildup:SetMoonGlassAmount(moonglassamount)
@@ -57,7 +56,7 @@ function LunarHailBuildup:SetIgnoreLunarHailTicks(ignorelunarhailticks)
         return
     end
     
-    if self.lunarhailbuildup_task ~= nil then
+    if self.lunarhailtick_task ~= nil then
         if ignorelunarhailticks then
             if self.onstopislunarhailingfn then
                 self.onstopislunarhailingfn(self.inst)
@@ -73,30 +72,52 @@ end
 
 
 
-local function DoLunarHailTick(inst, self)
-    if inst.components.rainimmunity ~= nil or self.ignorelunarhailticks then
+function LunarHailBuildup:DoLunarHailTick(buildingup)
+    if buildingup and (self.inst.components.rainimmunity ~= nil or self.ignorelunarhailticks) then
         return
     end
 
-    local rate = TUNING.LUNARHAIL_BUILDUP_RATE -- This could take into account the lunar hail precipitation rate CalculateLunarHailRate for more accuracy.
-    local amount = TUNING.LUNARHAIL_BUILDUP_TICK_TIME * rate
+    local amount
+    if buildingup then
+        amount = TUNING.LUNARHAIL_BUILDUP_TICK_TIME * TUNING.LUNARHAIL_BUILDUP_RATE
+    else
+        amount = -(TUNING.LUNARHAIL_BUILDUP_DECAY_TICK_TIME * TUNING.LUNARHAIL_BUILDUP_DECAY_RATE)
+    end
 
     self:DoBuildupDelta(amount)
 end
 
+local function DoLunarHailTick_Bridge(inst, self, buildingup)
+    self:DoLunarHailTick(buildingup)
+end
+
+function LunarHailBuildup:StopTickTask()
+    if self.lunarhailtick_task ~= nil then
+        self.lunarhailtick_task:Cancel()
+        self.lunarhailtick_task = nil
+    end
+end
+function LunarHailBuildup:StartBuildupTask()
+    self.lunarhailtick_task = self.inst:DoPeriodicTask(TUNING.LUNARHAIL_BUILDUP_TICK_TIME, DoLunarHailTick_Bridge, math.random() * TUNING.LUNARHAIL_BUILDUP_TICK_TIME, self, true)
+end
+function LunarHailBuildup:StartDecayTask()
+    self.lunarhailtick_task = self.inst:DoPeriodicTask(TUNING.LUNARHAIL_BUILDUP_DECAY_TICK_TIME, DoLunarHailTick_Bridge, math.random() * TUNING.LUNARHAIL_BUILDUP_DECAY_TICK_TIME, self, false)
+end
 
 
 function LunarHailBuildup:OnIsLunarHailing(islunarhailing)
+    self:StopTickTask()
     if islunarhailing then
-        if self.lunarhailbuildup_task == nil then
-            self.lunarhailbuildup_task = self.inst:DoPeriodicTask(TUNING.LUNARHAIL_BUILDUP_TICK_TIME, DoLunarHailTick, math.random() * TUNING.LUNARHAIL_BUILDUP_TICK_TIME, self)
+        if self.buildupcurrent < self.buildupmax then
+            self:StartBuildupTask()
         end
         if self.onstartislunarhailingfn then
             self.onstartislunarhailingfn(self.inst)
         end
-    elseif self.lunarhailbuildup_task ~= nil then
-        self.lunarhailbuildup_task:Cancel()
-        self.lunarhailbuildup_task = nil
+    else
+        if self.buildupcurrent > 0 then
+            self:StartDecayTask()
+        end
         if self.onstopislunarhailingfn then
             self.onstopislunarhailingfn(self.inst)
         end
@@ -105,12 +126,17 @@ end
 
 
 
-function LunarHailBuildup:DoWorkToRemoveBuildup(workcount)
+function LunarHailBuildup:DoWorkToRemoveBuildup(workcount, doer)
     self.workleft = math.clamp(self.workleft - workcount, 0, self.totalworkamount)
     if self.workleft == 0 then
         self:DropRewards()
         self:OnWorkFinished()
+        self:StopTickTask()
+        if TheWorld.state.islunarhailing then
+            self:StartBuildupTask()
+        end
     end
+    self.inst:PushEvent("lunarhailbuildupworked", {doer = doer})
 end
 
 
@@ -119,8 +145,10 @@ function LunarHailBuildup:DropRewards(mult)
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local launchspeed = math.max(self.inst:GetPhysicsRadius(0), 2)
     local todropcount = math.floor(self.moonglassamount * (mult or 1))
+    local upgradeodds = TUNING.LUNARHAIL_BUILDUP_MOONGLASS_REWARDS_CHARGED_CHANCE
     for i = 1, todropcount do
-        local moonglass = SpawnPrefab("moonglass")
+        local moonglass_prefab = (math.random() < upgradeodds) and "moonglass_charged" or "moonglass"
+        local moonglass = SpawnPrefab(moonglass_prefab)
         moonglass.Transform:SetPosition(x, y, z)
         Launch(moonglass, self.inst, launchspeed)
     end
@@ -143,6 +171,7 @@ function LunarHailBuildup:OnWorkFinished()
     self.workleft = 0
     self.inst:RemoveTag("LunarBuildup")
     if self.inst:IsValid() then
+        self.inst:PushEvent("lunarhailbuildupworkablestatechanged")
         self:DoBuildupDelta(-self.buildupcurrent)
     end
 end
@@ -152,6 +181,7 @@ function LunarHailBuildup:WorkInit()
     self.workleft = self.totalworkamount
     self.inst:AddTag("LunarBuildup")
     self.inst:ListenForEvent("worked", self.OnWorked_Bridge)
+    self.inst:PushEvent("lunarhailbuildupworkablestatechanged")
 end
 
 
@@ -163,10 +193,12 @@ function LunarHailBuildup:DoBuildupDelta(delta)
         self.buildupcurrent = buildupcurrent
         if buildupcurrent > oldbuildup then
             if buildupcurrent == self.buildupmax and self.workleft == 0 then
+                self:StopTickTask()
                 self:WorkInit()
             end
         else
             if buildupcurrent == 0 and self.workleft > 0 then
+                self:StopTickTask()
                 -- No rewards for passive buildup removal.
                 self:OnWorkFinished()
             end
@@ -174,6 +206,8 @@ function LunarHailBuildup:DoBuildupDelta(delta)
         if self.inst:IsValid() then
             self.inst:PushEvent("lunarhailbuildupdelta", { oldpercent = oldbuildup / self.buildupmax, newpercent = self.buildupcurrent / self.buildupmax, })
         end
+    else
+        self:StopTickTask()
     end
 end
 
@@ -205,7 +239,7 @@ end
 
 
 function LunarHailBuildup:GetDebugString()
-    return string.format("Buildup: %2.2f / %2.2f, Workleft: %d", self.buildupcurrent, self.buildupmax, self.workleft)
+    return string.format("Buildup: %2.2f / %2.2f, Workleft: %d, NextTick: %.1f", self.buildupcurrent, self.buildupmax, self.workleft, GetTaskRemaining(self.lunarhailtick_task))
 end
 
 return LunarHailBuildup

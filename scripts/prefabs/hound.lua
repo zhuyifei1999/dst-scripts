@@ -461,6 +461,10 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst:AddTag("hound")
     inst:AddTag("canbestartled")
 
+    if data.canmutatefn then
+        inst:AddTag("soulless") -- no wortox souls
+    end
+
     if tag ~= nil then
         inst:AddTag(tag)
 

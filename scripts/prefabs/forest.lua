@@ -551,7 +551,11 @@ local prefabs =
     "wagstaff_materials_note",
     "wagstaff_thermal_note",
 
-    "mutatedcrow",
+    "mutatedbird",
+
+    -- lunarhailbuildup
+    "moonglass",
+    "moonglass_charged",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")
@@ -685,7 +689,7 @@ local function master_postinit(inst)
     inst:AddComponent("oceanicemanager")
     inst:AddComponent("sharkboimanager") -- Needs oceanicemanager.
 
-    inst:AddComponent("lunarhailmanager")
+    --inst:AddComponent("lunarhailmanager") -- NOTES(JBK): This component is deprecated.
     inst:AddComponent("lunarriftmutationsmanager")
 
     inst:AddComponent("wagpunk_manager")

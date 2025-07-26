@@ -8,7 +8,7 @@ local assets =
 
 local prefabs =
 {
-	"lunar_egg",
+
 }
 
 SetSharedLootTable('bird_mutant_rift',
@@ -23,9 +23,10 @@ local sounds =
     chirp = "moonstorm/creatures/mutated_crow/chirp",
     takeoff = "moonstorm/creatures/mutated_crow/take_off",
     attack = "moonstorm/creatures/mutated_crow/attack",
+    eat = "",
 }
 
-local brain = require "brains/birdbrain" --Can we just use birdbrain? Let's find out!
+local brain = require "brains/bird_mutant_rift_brain"
 
 ----------------------------------------------------------
 
@@ -39,7 +40,8 @@ local function OnDropped(inst)
     inst.sg:GoToState("stunned")
 end
 
-local DIET = { FOODTYPE.SEEDS }
+local SPHERE_RADIUS = 0.25 --4x as small as other birds. We want it to not get stuck on objects when hopping around...
+local DIET = { FOODTYPE.LUNAR_SHARDS }
 local function commonfn()
     local inst = CreateEntity()
     --Core components
@@ -58,21 +60,21 @@ local function commonfn()
 		COLLISION.SMALLOBSTACLES
 	)
     inst.Physics:SetMass(1)
-    inst.Physics:SetSphere(1)
+    inst.Physics:SetSphere(SPHERE_RADIUS)
 
 	inst:AddTag("soulless") -- no wortox souls
-    inst:AddTag("scarytoprey")
     inst:AddTag("canbetrapped")
     inst:AddTag("bird")
     inst:AddTag("lunar_aligned")
     inst:AddTag("smallcreature")
+    inst:AddTag("bird_mutant_rift")
 
-    inst.Transform:SetFourFaced()
+    inst.Transform:SetTwoFaced()
 
     inst.DynamicShadow:SetSize(1, .75)
     inst.DynamicShadow:Enable(false)
 
-    inst.AnimState:SetBank("bird_lunar")
+    inst.AnimState:SetBank("crow")
     inst.AnimState:SetBuild("bird_lunar_build")
     inst.AnimState:PlayAnimation("idle", true)
 
@@ -91,9 +93,6 @@ local function commonfn()
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet(DIET, DIET)
-
-    inst:AddComponent("sanityaura")
-	inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.walkspeed = TUNING.RIFT_BIRD_WALKSPEED
@@ -144,7 +143,7 @@ local function commonfn()
         birdspawner:StartTracking(inst)
     end
 
-    inst:SetStateGraph("SGbird") --Can we just use SGbird? let's find out!
+    inst:SetStateGraph("SGbird")
     inst:SetBrain(brain)
 
 	return inst
@@ -157,10 +156,10 @@ local function crowfn()
         return inst
     end
 
-    inst.trappedbuild = "bird_lunar"
+    inst.trappedbuild = "bird_lunar_build"
 
 	return inst
 end
 
---Has to be mutated{bird}
-return Prefab("mutatedcrow", crowfn, assets, prefabs)
+-- All birds currently mutate into this one
+return Prefab("mutatedbird", crowfn, assets, prefabs)

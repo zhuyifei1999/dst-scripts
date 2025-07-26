@@ -412,7 +412,6 @@ local function CreateFlame()
     return inst
 end
 
-
 local function fn()
     local inst = CreateEntity()
 
@@ -464,6 +463,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst.override_combat_fx_size = "med"
+	inst.override_combat_fx_height = "low"
 
     inst:customSetRandomFrame()
 
@@ -600,6 +602,8 @@ local function vinefn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst.override_combat_fx_height = "low"
 
 	inst:AddComponent("colouradder")
 
@@ -787,6 +791,8 @@ local function vineendfn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+	inst.override_combat_fx_height = "low"
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.LUNARTHRALL_PLANT_VINE_HEALTH)

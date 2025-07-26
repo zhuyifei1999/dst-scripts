@@ -90,8 +90,15 @@ local function GetGestaltSpawnType(player, pt)
 				end
 			end
 
+			--[[
 			if (num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN or (do_extra_spawns and num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN_INDUCED))
 					and _evolved_spawn_pool > 0 then
+				type = "gestalt_guard_evolved"
+				_evolved_spawn_pool = _evolved_spawn_pool - 1
+			end
+			]]
+			--Inimicals will only spawn on players with the crown (for now?)
+			if (do_extra_spawns and num_evolved < TUNING.GESTALT_EVOLVED_MAXSPAWN_INDUCED) and _evolved_spawn_pool > 0 then
 				type = "gestalt_guard_evolved"
 				_evolved_spawn_pool = _evolved_spawn_pool - 1
 			end

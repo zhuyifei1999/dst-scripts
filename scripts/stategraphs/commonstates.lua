@@ -209,20 +209,21 @@ local function attack_can_electrocute(inst, data)
 end
 
 local function spawn_electrocute_fx(inst, data, duration)
-	if data then
-		duration = duration or data.duration
-		data =
-			data.attackdata and {
-				attackdata = data.attackdata,
-				targets = data.targets,
-				numforks = data.numforks and data.numforks - 1 or nil,
-			} or
-			data.stimuli == "electric" and {
-				attackdata = data,
-			} or
-			nil
-	end
-	duration = duration or GetEntityElectrocuteDuration(inst)
+	duration = duration or CalcEntityElectrocuteDuration(inst, data and data.duration)
+	data = data and (
+		data.attackdata and {
+			attackdata = data.attackdata,
+			targets = data.targets,
+			numforks = data.numforks and data.numforks - 1 or nil,
+			duration = data.duration,
+			noburn = data.noburn,
+		} or
+		data.stimuli == "electric" and {
+			attackdata = data,
+			duration = data.duration,
+			noburn = data.noburn,
+		}
+	) or nil
 	local fx = SpawnPrefab("electrocute_fx")
 	fx:SetFxTarget(inst, duration, data)
 	return fx
@@ -234,7 +235,13 @@ local function try_goto_electrocute_state(inst, data, state, statedata, ongotost
 	if state == nil then
 		if inst.sg:HasState("electrocute") then
 			state = "electrocute"
-			statedata = data and data.stimuli == "electric" and { attackdata = data } or data
+			statedata = data and (
+				data.stimuli == "electric" and {
+					attackdata = data,
+					duration = data.duration,
+					noburn = data.noburn,
+				}
+			) or data
 		elseif inst.sg:HasState("hit") then
 			state = "hit"
 		else
@@ -1454,11 +1461,11 @@ CommonStates.AddElectrocuteStates = function(states, timelines, anims, fns)
 				inst.SoundEmitter:PlaySound(inst.sounds.hit)
 			end
 
-			local duration = data and data.duration or GetEntityElectrocuteDuration(inst)
+			local duration = CalcEntityElectrocuteDuration(inst, data and data.duration)
 
 			update_hit_recovery_delay(inst)
 			update_electrocute_recovery_delay(inst)
-			spawn_electrocute_fx(inst, data, duration)
+			inst.sg.statemem.fx = spawn_electrocute_fx(inst, data, duration)
 
 			inst.sg:SetTimeout(duration)
 

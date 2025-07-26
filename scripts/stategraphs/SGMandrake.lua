@@ -157,5 +157,6 @@ CommonStates.AddWalkStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("mandrake", states, events, "idle")

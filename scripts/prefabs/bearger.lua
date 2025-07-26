@@ -724,6 +724,7 @@ local function mutatedcommonfn(inst)
     inst:AddTag("lunar_aligned")
 	inst:AddTag("bearger_blocker")
 	inst:AddTag("noepicmusic")
+    inst:AddTag("soulless") -- no wortox souls
 
 	inst.temp8faced = net_bool(inst.GUID, "mutatedbearger.temp8faced", "temp8faceddirty")
 

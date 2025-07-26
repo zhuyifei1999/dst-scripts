@@ -328,6 +328,8 @@ return {
             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+            -- Electrocute
+            DEADBIRDS = "only_used_by_waxwell_and_wicker",
         },
 		REMOTE_TELEPORT =
 		{
@@ -1177,6 +1179,10 @@ return {
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "It's back!",
     ANNOUNCE_FLOATER_HELD = "I was busy drowning but something came up... me!",
     ANNOUNCE_FLOATER_LETGO = "I hate being kept in susp-",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "The avians are scuffling up there.", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "The avians lost the battle.", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -5747,7 +5753,14 @@ return {
         },
         FENCE_ELECTRIC_ITEM = "It's not a tree, but it must be planted.",
 
-        MUTATEDCROW = "TODO",
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

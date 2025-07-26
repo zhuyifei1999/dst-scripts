@@ -683,6 +683,7 @@ PREFABFILES = {
   "mastupgrade_lamp",
   "mastupgrade_lightningrod",
   "meatrack",
+  "meatrack2",
   "meats",
   "megaflare",
   "merm",

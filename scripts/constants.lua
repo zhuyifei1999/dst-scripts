@@ -1986,6 +1986,7 @@ FOODTYPE =
 	WOOD = "WOOD",
     GOODIES = "GOODIES",
     MONSTER = "MONSTER", -- Added in for woby, uses the secondary foodype originally added for the berries
+    LUNAR_SHARDS = "LUNAR_SHARDS", -- For rift birds, yummy glass
 }
 
 FOODGROUP =
@@ -2879,4 +2880,16 @@ EQUIVALENT_ATTUNABLE_TAGS =
 {
     ["remoteresurrector"] = "gravestoneresurrector",
     ["gravestoneresurrector"] = "remoteresurrector",
+}
+
+-- This must match the Categories enum in HapticsManager
+HAPTICS = 
+{
+    Category_Default     = 1,       -- 0x01
+    Category_UI          = 2,       -- 0x02
+    Category_Danger 	 = 4,       -- 0x04
+    Category_Player      = 8,       -- 0x08
+    Category_Environment = 16,      -- 0x10
+    Category_Boss        = 32,      -- 0x20
+    Category_All         = 255,     -- 0xFF
 }

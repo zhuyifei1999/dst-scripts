@@ -618,6 +618,7 @@ end
 local function mutatedcommonfn(inst)
     inst:AddTag("lunar_aligned")
 	inst:AddTag("noepicmusic")
+	inst:AddTag("soulless") -- no wortox souls
 
 	inst.AnimState:Hide("gestalt_eye")
 

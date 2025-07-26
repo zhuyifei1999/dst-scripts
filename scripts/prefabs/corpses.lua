@@ -30,10 +30,23 @@ local BUILDS =
         winter = "koalefant_winter_build",
     },
 
-    crow =
+    bird =
     {
         default = "crow_build",
+        robin = "robin_build",
+        robin_winter = "robin_winter_build",
+        canary = "canary_build",
+        quagmire_pigeon = "quagmire_pigeon_build",
+        puffin = "puffin_build", --Puffins have a unique bank too
     },
+}
+
+local BANK_OVERRIDES = {
+    bird =
+    {
+        default = "crow",
+        puffin = "puffin",
+    }
 }
 
 local FACES =
@@ -81,7 +94,7 @@ local function GetStatus(inst)
 end
 
 local function DisplayNameFn(inst)
-    return inst.creature ~= nil and STRINGS.NAMES[string.upper(inst.nameoverride or inst.creature)] or nil
+    return inst.creature ~= nil and STRINGS.NAMES[string.upper(inst.displaynameoverride or inst.nameoverride or inst.creature)] or nil
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -92,14 +105,22 @@ local function SetAltBuild(inst, buildid)
     inst.AnimState:SetBuild(buildid ~= nil and builds[buildid] or builds.default)
 end
 
+local function SetAltBank(inst, bankid)
+    inst.bank = bankid
+    local banks = BANK_OVERRIDES[inst.creature]
+    inst.AnimState:SetBank(bankid ~= nil and banks[bankid] or banks.default)
+end
+
 local function OnSave(inst, data)
     data.ready = inst.sg and inst.sg:HasStateTag("mutating") or nil
     data.build = inst.build
+    data.bank = inst.bank
 end
 
 local function OnLoad(inst, data)
     if data ~= nil then
         SetAltBuild(inst, data.build)
+        SetAltBank(inst, data.bank)
         if data.ready then
             inst:StartMutation(true)
         end
@@ -143,6 +164,39 @@ local function StartMutation(inst, loading)
 	inst.components.updatelooper:AddOnUpdateFn(UpdateFlash)
 end
 
+local CORPSE_TIMERS = {
+    ERODE = "erode_timer",
+    SPAWNGESTALT = "spawn_gestalt",
+}
+
+local function StartFadeTimer(inst, time)
+    inst.components.timer:StartTimer(CORPSE_TIMERS.ERODE, time)
+end
+
+local function StartGestaltTimer(inst, time)
+    inst.components.timer:StartTimer(CORPSE_TIMERS.SPAWNGESTALT, time)
+end
+
+local function OnTimerDone(inst, data)
+    if not data then
+        return
+    end
+
+    if data.name == CORPSE_TIMERS.ERODE then
+        ErodeAway(inst, 2)
+    elseif data.name == CORPSE_TIMERS.SPAWNGESTALT then
+        inst:SpawnGestalt()
+    end
+end
+
+local function ImmediateMutate(inst)
+    local gestalt = inst.components.entitytracker:GetEntity(GESTALT_TRACK_NAME)
+    if gestalt then
+        ReplacePrefab(inst, inst.mutantprefab)
+        gestalt:Remove()
+    end
+end
+
 --------------------------------------------------------------------------------------------------------
 
 local function MakeCreatureCorpse(data)
@@ -154,8 +208,15 @@ local function MakeCreatureCorpse(data)
 
     local prefabs = {mutantprefab, "corpse_gestalt"}
 
+    local burntime = data.burntime or TUNING.MED_BURNTIME
+
     local scale = data.scale
     local faces = data.faces
+
+    local OnEntitySleep
+    if data.mutate_on_entity_sleep then
+        OnEntitySleep = ImmediateMutate
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -195,6 +256,12 @@ local function MakeCreatureCorpse(data)
 			inst:AddTag(data.tag)
 		end
 
+        if data.tags then
+            for _, v in pairs(data.tags) do
+                inst:AddTag(v)
+            end
+        end
+
         inst:AddTag("deadcreature")
 
         inst.creature = creature
@@ -212,13 +279,16 @@ local function MakeCreatureCorpse(data)
         inst.StartMutation = StartMutation
         inst.SpawnGestalt = SpawnGestalt
         inst.SetAltBuild = SetAltBuild
+        inst.SetAltBank = SetAltBank
+        inst.StartFadeTimer = StartFadeTimer
+        inst.StartGestaltTimer = StartGestaltTimer
 
         inst:AddComponent("entitytracker")
 
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
-		data.makeburnablefn(inst, data.burntime or TUNING.MED_BURNTIME, data.firesymbol)
+		data.makeburnablefn(inst, burntime, data.firesymbol)
 
         inst.components.burnable:SetOnIgniteFn(OnIgnited)
         inst.components.burnable:SetOnExtinguishFn(OnExtinguish)
@@ -231,10 +301,13 @@ local function MakeCreatureCorpse(data)
             inst:DoTaskInTime(0, inst.SpawnGestalt)
         end
 
+        inst:AddComponent("timer")
+        inst:ListenForEvent("timerdone", OnTimerDone)
+
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
 
-        inst.OnEntitySleep = inst.Remove
+        inst.OnEntitySleep = OnEntitySleep or inst.Remove
 
         MakeHauntableIgnite(inst)
 
@@ -249,6 +322,7 @@ end
 local function MakeCreatureCorpse_Prop(data)
     local creature = data.creature
     local nameoverride = data.nameoverride
+    local displaynameoverride = data.displaynameoverride --For the display name but NOT character examinations
 
     local prefabname = creature.."corpse_prop"
 
@@ -289,6 +363,7 @@ local function MakeCreatureCorpse_Prop(data)
 
         inst.creature = creature
         inst.nameoverride = nameoverride
+        inst.displaynameoverride = displaynameoverride
         inst.displaynamefn = DisplayNameFn
 
         inst.entity:SetPristine()
@@ -313,8 +388,7 @@ local function MakeCreatureCorpse_Prop(data)
     return Prefab(prefabname, fn)
 end
 
-local corpse_prefabs = {
-    -- For search: deerclopscorpse
+return  -- For search: deerclopscorpse
     MakeCreatureCorpse({
         creature = "deerclops",
         bank = "deerclops",
@@ -357,7 +431,8 @@ local corpse_prefabs = {
     MakeCreatureCorpse_Prop({
         creature = "koalefant",
         bank = "koalefant",
-        nameoverride = "koalefant_summer",
+        nameoverride = "koalefant_carcass",
+        displaynameoverride = "koalefant_summer",
         faces = FACES.SIX,
         shadowsize = {4.5, 2},
         onrevealfn = function(inst, revealer)
@@ -368,28 +443,24 @@ local corpse_prefabs = {
         end,
     }),
 
-    --TODO temp
-    -- For search: crowcorpse
+    -- For search: birdcorpse
     MakeCreatureCorpse({
-        creature = "crow",
+        creature = "bird",
         bank = "crow",
         sg = "SGbird",
         firesymbol = "crow_body",
         makeburnablefn = MakeSmallBurnableCorpse,
         burntime = TUNING.SMALL_BURNTIME,
         faces = FACES.TWO,
+        tags = {"small_corpse", "birdcorpse"},
+        no_gestalt_spawn = true,
+        mutate_on_entity_sleep = true,
         shadowsize = {1, .75},
         custom_physicsfn = function(inst)
             inst.entity:AddPhysics()
             inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-			inst.Physics:SetCollisionMask(COLLISION.WORLD)
+            inst.Physics:SetCollisionMask(COLLISION.WORLD)
             inst.Physics:SetMass(1)
             inst.Physics:SetSphere(1)
         end,
-
-    }),
-}
-
-local birds = {"crow", "robin", "robin_winter", "canary"}
-
-return unpack(corpse_prefabs)
+    })

@@ -363,6 +363,7 @@ local function SetShort(inst)
         if inst.components.workable ~= nil then
            inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_SMALL)
         end
+        SetLunarHailBuildupAmountSmall(inst)
         inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
     end
 end
@@ -383,6 +384,7 @@ local function SetNormal(inst)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_NORMAL)
     end
+    SetLunarHailBuildupAmountMedium(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
 end
 
@@ -400,6 +402,7 @@ local function SetTall(inst)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_TALL)
     end
+    SetLunarHailBuildupAmountLarge(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
 end
 
@@ -478,6 +481,7 @@ local function make_stump(inst)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
+    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveTag("shelter")
     inst:RemoveTag("cattoyairborne")
     inst:AddTag("stump")
@@ -1052,6 +1056,7 @@ local function onload(inst, data)
             if data.stump then
                 inst.monster = data.monster
                 inst.components.growable.stage = 3
+                inst:RemoveComponent("lunarhailbuildup")
                 inst:AddTag("stump")
             elseif not data.burnt then
                 inst.monster = false
@@ -1398,6 +1403,7 @@ local function makefn(build, stage, data)
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
+            inst:RemoveComponent("lunarhailbuildup")
             inst:RemoveComponent("propagator")
             MakeSmallPropagator(inst)
             inst:RemoveComponent("growable")

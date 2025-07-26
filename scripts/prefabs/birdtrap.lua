@@ -24,7 +24,7 @@ local prefabs =
     "canary",
     "bird_mutant",
     "bird_mutant_spitter",
-    "mutatedcrow",
+    "mutatedbird",
 }
 
 --this should be redone as a periodic test, probably, so that we can control the expected return explicitly

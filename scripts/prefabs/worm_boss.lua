@@ -902,12 +902,13 @@ end
 local SEGMENT_PREDICTED_FRAMES = 3
 
 local function CLIENT_Segment_OnUpdate(inst, dt)
-	if inst._electrocuted then
-		local scale = inst._electrocuted > 0 and Remap(inst._electrocuted % 0.2, 0.2, 0, 0.85, 1) or 1
+	if inst.electrocuteframes:value() > 0 then
+		local frames = inst.electrocuteframes:value() - 1
+		local scale = Remap(frames % 5, 4, 0, 0.85, 1)
+		inst.electrocuteframes:set_local(frames)
 
 		inst.Transform:SetScale(scale, scale, scale)
 
-		inst._electrocuted = inst._electrocuted > 0 and inst._electrocuted - dt * 1.25 or nil
 		inst._hit = nil
 	elseif inst._hit then
 		local scale = inst._hit > 0 and Remap(inst._hit, 1, 0, 0.75, 1) or 1
@@ -963,10 +964,6 @@ local function OnHitEvent(inst)
     inst._hit = 1
 end
 
-local function OnElectrocutedEvent(inst)
-	inst._electrocuted = 1
-end
-
 local function segmentfn()
     local inst = CreateEntity()
 
@@ -1006,14 +1003,13 @@ local function segmentfn()
     inst._dirt_end_z   = net_float(inst.GUID, "worm_boss_segment._dirt_end_z"  , "dirtpositiondirty")
 
     inst.hitevent = net_event(inst.GUID, "worm_boss_segment.hitevent")
-	inst.electrocutedevent = net_event(inst.GUID, "worm_boss_segment.electrocutedevent")
+	inst.electrocuteframes = net_smallbyte(inst.GUID, "worm_boss_segment.electrocuteframes")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         inst._predictionsleft = 0
 		inst._hit = nil
-		inst._electrocuted = nil
 
         inst:AddComponent("updatelooper")
         inst.components.updatelooper:AddOnUpdateFn(CLIENT_Segment_OnUpdate)
@@ -1021,7 +1017,6 @@ local function segmentfn()
         inst:ListenForEvent("segtimedirty", OnSegTimeDirty)
         inst:ListenForEvent("dirtpositiondirty", OnDirtPositionDirty)
         inst:ListenForEvent("worm_boss_segment.hitevent", OnHitEvent)
-		inst:ListenForEvent("worm_boss_segment.electrocutedevent", OnElectrocutedEvent)
 
         return inst
     end
@@ -1087,8 +1082,12 @@ local function Dirt_OnAnimOver(inst)
 end
 
 local function DoElectrocute(inst, data)
+	local duration = CalcEntityElectrocuteDuration(inst, data and data.duration)
+
 	for _, chunk in ipairs(inst.worm.chunks) do
-		chunk.electrocuted = 1
+		chunk._electrocuteframes = math.ceil(duration / FRAMES)
+
+		local syncdata = data and data.duration and { duration = data.duration } or nil
 
 		local otherfx
 		if chunk.dirt_start and chunk.dirt_start:IsValid() then
@@ -1096,7 +1095,7 @@ local function DoElectrocute(inst, data)
 			if chunk.dirt_start == inst then
 				otherfx = CommonHandlers.SpawnElectrocuteFx(inst, data)
 			else
-				otherfx = CommonHandlers.SpawnElectrocuteFx(chunk.dirt_start)
+				otherfx = CommonHandlers.SpawnElectrocuteFx(chunk.dirt_start, syncdata)
 			end
 		end
 		if chunk.dirt_end and chunk.dirt_end:IsValid() then
@@ -1107,14 +1106,14 @@ local function DoElectrocute(inst, data)
 			if chunk.dirt_end == inst then
 				CommonHandlers.SpawnElectrocuteFx(inst, data)
 			else
-				CommonHandlers.SpawnElectrocuteFx(chunk.dirt_end)
+				CommonHandlers.SpawnElectrocuteFx(chunk.dirt_end, syncdata)
 			end
 		end
 		if chunk.head and chunk.head:IsValid() then
-			chunk.head:PushEventImmediate("electrocute")
+			chunk.head:PushEventImmediate("sync_electrocute", syncdata)
 		end
 		if chunk.tail and chunk.tail:IsValid() then
-			chunk.tail:PushEventImmediate("electrocute")
+			chunk.tail:PushEventImmediate("sync_electrocute", syncdata)
 		end
 	end
 end
@@ -1124,7 +1123,7 @@ local function Dirt_OnAttacked(inst, data)
         inst.chunk.hit = 1
 
 		if CommonHandlers.AttackCanElectrocute(inst, data) and not CommonHandlers.ElectrocuteRecoveryDelay(inst) then
-			DoElectrocute(inst, data)
+			DoElectrocute(inst, { attackdata = data })
 		end
 
         if inst.chunk.tail then

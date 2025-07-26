@@ -1,4 +1,5 @@
 local function onelectrocute(inst)
+    print(GetTime())
     inst.brain:ForceUpdate() --TODO Can we move this to shocked_by_field?
 end
 
@@ -12,6 +13,11 @@ AvoidElectricFence = Class(BehaviourNode, function(self, inst)
     --
     self.shocked_by_field = function(_, field)
         self.run_angle = self:GetRunAngle(field)
+        inst.brain:ForceUpdate()
+
+        print(GetTime())
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab("hambat").Transform:SetPosition(x + math.cos(self.run_angle*DEGREES) * 3, 0, z - math.sin(self.run_angle*DEGREES) * 3)
     end
     --
     self.inst:ListenForEvent("startelectrocute", onelectrocute)
@@ -21,6 +27,10 @@ end)
 function AvoidElectricFence:OnStop()
 	self.inst:RemoveEventCallback("startelectrocute", onelectrocute)
 	self.inst:RemoveEventCallback("shocked_by_new_field", self.shocked_by_field)
+end
+
+local function GetOtherFields(fences)
+    
 end
 
 --TODO we can still improve this, in an odd angled corner piece we should get the run away angle a lil differently
@@ -34,6 +44,21 @@ function AvoidElectricFence:GetRunAngle(field)
     end
     --
 	return (math.atan2(zs, xs) * RADIANS) % 360 --TODO i think we can get away with some variance?
+
+
+    --[[
+    local rot = inst.Transform:GetRotation() * DEGREES
+    local rot1 = math.atan2(-dz, dx)
+	local diff = ReduceAngleRad(rot - rot1)
+	rot1 = rot1 - diff + math.pi
+	if recoilangle then
+		diff = ReduceAngleRad(rot1 - recoilangle)
+		recoilangle = ReduceAngleRad(recoilangle + diff / 2)
+	else
+		recoilangle = ReduceAngleRad(rot1)
+	end
+    ]]
+
 end
 
 function AvoidElectricFence:Visit()

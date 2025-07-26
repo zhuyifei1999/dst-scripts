@@ -25,9 +25,9 @@ local events=
         end
     end),
 
-	EventHandler("electrocute", function(inst)
+	EventHandler("sync_electrocute", function(inst, data)
 		if not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) then
-			inst.sg:GoToState("electrocute")
+			inst.sg:GoToState("sync_electrocute", data)
 		end
 	end),
 }
@@ -104,12 +104,12 @@ local states =
     },
 
 	State{
-		name = "electrocute",
+		name = "sync_electrocute",
 		tags = { "electrocute", "hit", "busy", "noelectrocute" },
 
 		onenter = function(inst, data)
 			inst.AnimState:PlayAnimation("tail_shock_loop", true)
-			inst.sg:SetTimeout(TUNING.ELECTROCUTE_DEFAULT_DURATION)
+			inst.sg:SetTimeout(CalcEntityElectrocuteDuration(inst, data and data.duration))
 		end,
 
 		ontimeout = function(inst)

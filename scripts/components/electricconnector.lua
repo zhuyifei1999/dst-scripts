@@ -1,8 +1,3 @@
-
---TODO POSSIBILITY(Omar): 
---we can get dynamical scaling working on electric fields if we make the animation it's full length and then cut it off depending on actual distance
---and we can easily scale it dynamically, and work on different boats
-
 local ElectricConnector = Class(function(self, inst)
     self.inst = inst
 
@@ -37,13 +32,13 @@ end
 
 function ElectricConnector:CanLinkTo(guy, on_load)
     return guy.components.electricconnector and (on_load or guy.components.electricconnector:IsLinking()) --Other guy is linking (or we're loading), valid
-        and guy:GetCurrentPlatform() == self.inst:GetCurrentPlatform() --FIXME (Omar): if we can get them working on different boats
+        and not self.inst:GetCurrentPlatform() --FIXME (Omar): No boats. Sorry!
         and not self.fields[guy] --Make sure we're not already linked to this guy
 end
 
 function ElectricConnector:Disconnect()
     self.inst:PushEvent("disconnect_links")
-    
+
     for other, fx in pairs(self.fields) do
 		fx:Remove()
 		self:UnregisterField(other)

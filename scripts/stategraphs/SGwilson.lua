@@ -2904,6 +2904,22 @@ local states =
 				end
             end
 
+			if data then
+				data =
+					data.attackdata and {
+						attackdata = data.attackdata,
+						targets = data.targets,
+						numforks = data.numforks and data.numforks - 1 or nil,
+					} or
+					data.stimuli == "electric" and {
+						attackdata = data,
+					} or
+					nil
+				if data then
+					StartElectrocuteForkOnTarget(inst, data)
+				end
+			end
+
             inst.AnimState:PlayAnimation("shock")
             inst.AnimState:PushAnimation("shock_pst", false)
 			if isplant then

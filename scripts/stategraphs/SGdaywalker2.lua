@@ -2548,10 +2548,12 @@ nil, --timeline
 		end
 	end,
 	onanimover = function(inst)
-		if inst.sg:HasStateTag("rummaging") then
-			inst.sg:GoToState("rummage", inst.sg.mem.transfer_data)
-		else
-			inst.sg:GoToState("idle")
+		if inst.AnimState:AnimDone() then
+			if inst.sg:HasStateTag("rummaging") then
+				inst.sg:GoToState("rummage", inst.sg.mem.transfer_data)
+			else
+				inst.sg:GoToState("idle")
+			end
 		end
 	end,
 	pst_onexit = function(inst)

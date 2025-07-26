@@ -1403,8 +1403,21 @@ dragonflyfurnace_clear_fn = function(inst) basic_clear_fn(inst, "dragonfly_furna
 birdcage_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bird_cage" ) end
 birdcage_clear_fn = function(inst) basic_clear_fn(inst, "bird_cage" ) end
 
-meatrack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "meat_rack" ) end
-meatrack_clear_fn = function(inst) basic_clear_fn(inst, "meat_rack" ) end
+meatrack_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "meat_rack")
+	if not TheWorld.ismastersim then
+		return
+	end
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(build_name)
+	end
+end
+meatrack_clear_fn = function(inst)
+	basic_clear_fn(inst, "meat_rack")
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(nil)
+	end
+end
 
 beebox_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bee_box" ) end
 beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end

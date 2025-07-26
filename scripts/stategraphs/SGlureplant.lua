@@ -8,23 +8,18 @@ end
 
 local events =
 {
+	CommonHandlers.OnElectrocute(),
+
     EventHandler("death", function(inst)
         inst.sg:GoToState(inst.sg:HasStateTag("vine") and "deathvine" or "death")
     end),
 
-	EventHandler("electrocute", function(inst, data)
-		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("noelectrocute")) then
-			CommonHandlers.TryGoToElectrocuteState(inst, data, GetHitState(inst))
-		end
-	end),
-
 	EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
-			local hitstate = GetHitState(inst)
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, hitstate) then
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
 			else
-				inst.sg:GoToState(hitstate)
+				inst.sg:GoToState(GetHitState(inst))
 			end
         end
     end),
@@ -73,7 +68,7 @@ local states =
 
     State{
         name = "emerge",
-        tags = { "idle", "hiding" },
+		tags = { "idle", "hiding", "vine" },
 
         onenter = function(inst, playanim)
             inst.AnimState:PlayAnimation("idle_trans")
@@ -122,7 +117,7 @@ local states =
 
     State{
         name = "hidebait",
-        tags = { "busy", "hiding" },
+		tags = { "busy", "hiding", "vine", "noelectrocute" },
 
         onenter = function(inst, playanim)
             inst.Physics:Stop()
@@ -132,6 +127,9 @@ local states =
         timeline =
         {
             TimeEvent(FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/lure_close") end),
+			FrameEvent(10, function(inst)
+				inst.sg:RemoveStateTag("noelectrocute")
+			end),
         },
 
         events =
@@ -146,7 +144,7 @@ local states =
 
     State{
         name = "showbait",
-        tags = { "busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst, playanim)
             if inst.lure then
@@ -161,6 +159,9 @@ local states =
         timeline =
         {
             TimeEvent(FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/lure_open") end),
+			FrameEvent(7, function(inst)
+				inst.sg:RemoveStateTag("noelectrocute")
+			end),
         },
 
         events =
@@ -175,7 +176,7 @@ local states =
 
     State{
         name = "hitin",
-        tags = { "busy", "hit", "hiding" },
+		tags = { "busy", "hit", "hiding", "vine" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
@@ -262,13 +263,20 @@ local states =
 
     State{
         name = "picked",
-        tags = { "busy", "hiding" },
+		tags = { "busy", "hiding", "noelectrocute" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("pick")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/lure_close")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/vine_retract")
         end,
+
+		timeline =
+		{
+			FrameEvent(4, function(inst)
+				inst.sg:RemoveStateTag("noelectrocute")
+			end),
+		},
 
         events =
         {
@@ -282,11 +290,18 @@ local states =
 
     State{
         name = "spawn",
-        tags = { "busy", "hiding" },
+		tags = { "busy", "hiding", "noelectrocute" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("grow")
         end,
+
+		timeline =
+		{
+			FrameEvent(7, function(inst)
+				inst.sg:RemoveStateTag("noelectrocute")
+			end),
+		},
 
         events =
         {
@@ -302,5 +317,43 @@ local states =
         end,
     },
 }
+
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+{	--anims
+	loop = function(inst)
+		if not inst.sg.lasttags["hiding"] then
+			return "shock_out_loop"
+		end
+		inst.sg:AddStateTag("hiding")
+		if inst.sg.lasttags["vine"] then
+			inst.sg:AddStateTag("vine")
+			return "shock_loop"
+		end
+		return "shock_hidden_loop"
+	end,
+	pst = function(inst)
+		if not inst.sg.lasttags["hiding"] then
+			return "shock_out_pst"
+		end
+		inst.sg:AddStateTag("hiding")
+		if inst.sg.lasttags["vine"] then
+			inst.sg:AddStateTag("vine")
+			return "shock_pst"
+		end
+		return "shock_hidden_pst"
+	end,
+},
+{	--fns
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if not inst.sg:HasStateTag("hiding") then
+				inst:PushEvent("hidebait")
+			else
+				inst.sg:GoToState(inst.sg:HasStateTag("vine") and "idlein" or "hibernate")
+			end
+		end
+	end,
+})
 
 return StateGraph("lureplant", states, events, "idlein")

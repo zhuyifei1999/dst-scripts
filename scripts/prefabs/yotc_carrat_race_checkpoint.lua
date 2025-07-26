@@ -135,6 +135,7 @@ local function fn()
     MakeMediumBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountSmall(inst)
 
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("yotc_racer_at_checkpoint", OnRacerAtCheckpoint)

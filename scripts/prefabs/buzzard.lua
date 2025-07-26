@@ -148,4 +148,8 @@ local function fn()
     return inst
 end
 
+local function mutated_fn()
+    
+end
+
 return Prefab("buzzard", fn, assets, prefabs)

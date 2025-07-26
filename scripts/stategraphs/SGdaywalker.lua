@@ -1891,22 +1891,24 @@ CommonStates.AddElectrocuteStates(states,
 		end
 	end,
 	onanimover = function(inst)
-		if inst.sg:HasStateTag("struggle") then
-			inst.sg.statemem.struggling = true
-			inst.sg:GoToState("struggle_idle")
-		elseif inst.sg:HasStateTag("tired") then
-			inst.sg.statemem.tired = true
-			if not inst.hostile then
-				inst.sg:GoToState("tired", inst.sg.mem.transfer_loops)
-			elseif inst.sg.mem.tired_start + TUNING.DAYWALKER_FATIGUE_TIRED_MIN_TIME < GetTime() then
-				inst.sg:GoToState("tired_stand")
+		if inst.AnimState:AnimDone() then
+			if inst.sg:HasStateTag("struggle") then
+				inst.sg.statemem.struggling = true
+				inst.sg:GoToState("struggle_idle")
+			elseif inst.sg:HasStateTag("tired") then
+				inst.sg.statemem.tired = true
+				if not inst.hostile then
+					inst.sg:GoToState("tired", inst.sg.mem.transfer_loops)
+				elseif inst.sg.mem.tired_start + TUNING.DAYWALKER_FATIGUE_TIRED_MIN_TIME < GetTime() then
+					inst.sg:GoToState("tired_stand")
+				else
+					inst.sg:GoToState("tired", -1) --delayed hp regen
+				end
+			elseif inst.sg.mem.transfer_trytired and inst:IsFatigued() or inst.defeated then
+				inst.sg:GoToState("tired_pre")
 			else
-				inst.sg:GoToState("tired", -1) --delayed hp regen
+				inst.sg:GoToState("idle")
 			end
-		elseif inst.sg.mem.transfer_trytired and inst:IsFatigued() or inst.defeated then
-			inst.sg:GoToState("tired_pre")
-		else
-			inst.sg:GoToState("idle")
 		end
 	end,
 	pst_onexit = function(inst)

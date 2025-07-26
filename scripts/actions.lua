@@ -6311,7 +6311,7 @@ ACTIONS.REMOVELUNARBUILDUP.fn = function(act)
         return false, "ITEMMIMIC"
     end
 
-    lunarhailbuildup:DoWorkToRemoveBuildup(1)
+    lunarhailbuildup:DoWorkToRemoveBuildup(1, act.doer)
 
     return true
 end

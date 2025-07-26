@@ -318,6 +318,8 @@ return{
             TOOMANYBEES = "That would be a rather excessive amount of bees, dear.",
             NOMOONINCAVES = "The moon can't be affected from this subterranean location.",
             ALREADYFULLMOON = "I'm afraid that would be quite redundant.",
+            -- Electrocute
+            DEADBIRDS = "Oh, dear. I'm afraid the sky is a bit dangerous for birds right now.",
         },
 		REMOTE_TELEPORT =
 		{
@@ -1167,6 +1169,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Not you again!",
     ANNOUNCE_FLOATER_HELD = "Hmm, rather convenient.",
     ANNOUNCE_FLOATER_LETGO = "Time for a dip!",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -5736,6 +5742,15 @@ return{
             GENERIC = "The post is not conducting a current at the moment.",           --NOTE: no links or electricity, just boring ol fence post
         },
         FENCE_ELECTRIC_ITEM = "This is an electric fence post and it must be planted before it can be used.",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

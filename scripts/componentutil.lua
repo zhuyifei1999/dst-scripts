@@ -929,10 +929,21 @@ function CanEntityBeElectrocuted(inst)
 		and not inst.sg.mem.noelectrocute
 end
 
-function GetEntityElectrocuteDuration(inst)
-	return inst.electrocute_duration or
+function CalcEntityElectrocuteDuration(inst, override)
+	local default = TUNING.ELECTROCUTE_DEFAULT_DURATION
+	local duration =
+		inst.electrocute_duration or
 		(inst.sg and inst.sg.mem.burn_on_electrocute and TUNING.ELECTROCUTE_SHORT_DURATION) or
-		TUNING.ELECTROCUTE_DEFAULT_DURATION
+		default
+
+	if override then
+		if override > default then
+			return math.max(duration, override)
+		elseif override < default then
+			return math.min(duration, override)
+		end
+	end
+	return duration
 end
 
 --------------------------------------------------------------------------

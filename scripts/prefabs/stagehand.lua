@@ -93,6 +93,7 @@ local function fn()
     MakeSmallPropagator(inst)
     MakeHauntableWork(inst)
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountSmall(inst)
 
     inst:AddComponent("burnable")
     inst.components.burnable:SetFXLevel(2)

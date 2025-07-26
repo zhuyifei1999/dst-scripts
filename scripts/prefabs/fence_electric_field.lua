@@ -128,12 +128,27 @@ end
 -- NOTE(Omar): A little trick!
 -- Collision callbacks still run even if Physics:SetCollides is false
 -- And physics are gonna be a bit more reliable than our old detection
+
+local SHOCK_TARGETS = setmetatable({}, { __mode = 'k' })
 local BrainCommon = require("brains/braincommon")
 local function OnCollisionCallback(inst, other,
 	world_position_on_a_x, world_position_on_a_y, world_position_on_a_z,
 	world_position_on_b_x, world_position_on_b_y, world_position_on_b_z,
 	world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z,
 	lifetime_in_frames)
+
+	if not (other ~= nil and other:IsValid() and inst:IsValid())
+            --or inst.recentlycharged[other] 
+			then
+        return
+    end
+
+	--[[
+	if not inst.myspecialtask then 
+		<halt locomotor> 
+		inst.myspecialtask = inst:DoTaskInTime(0
+	end
+	]]
 
 	local t = GetTime()
 	if (inst.targets[other] or -math.huge) < t and
@@ -151,8 +166,7 @@ local function OnCollisionCallback(inst, other,
 					other:ListenForEvent("onremove", ObjectNonPermanence, inst) --Just in case?
 				end
 
-				local duration = math.min(TUNING.ELECTROCUTE_SHORT_DURATION, GetEntityElectrocuteDuration(other))
-				other:PushEventImmediate("electrocute", {duration=duration, noburn=true})
+				other:PushEventImmediate("electrocute", {duration=TUNING.ELECTROCUTE_SHORT_DURATION, noburn=true})
 				other.forget_field_task = other:DoTaskInTime(TUNING.ELECTRIC_FIELD_MOB_PANICTIME, ObjectNonPermanence)
 			end
 		end
@@ -299,7 +313,7 @@ local function SetUpPhysics(inst)
 	inst.Physics:SetCollisionCallback(OnCollisionCallback)
 end
 
-local function ForcePhysicsUpdate(inst) --HACK!
+local function ForcePhysicsUpdate(inst) --HACK! We need to force a physics update for entities that stay still
 	inst.Physics:Stop()
 end
 

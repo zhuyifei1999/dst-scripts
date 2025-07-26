@@ -209,6 +209,7 @@ local function fn()
     inst.scrapbook_hidehealth = true
 
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountSmall(inst)
 
     ----------------------------------------------------------------------------
     inst:AddComponent("burnable")

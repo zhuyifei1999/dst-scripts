@@ -599,6 +599,7 @@ local function twin1fn()
 
     ------------------------------------------
     inst.components.sleeper:SetResistance(2*TUNING.EYEOFTERROR_SLEEPRESIST)
+    inst.sg.mem.noelectrocute = true
 
     return inst
 end
@@ -670,6 +671,7 @@ local function twin2fn()
 
     ------------------------------------------
     inst.components.sleeper:SetResistance(2*TUNING.EYEOFTERROR_SLEEPRESIST)
+    inst.sg.mem.noelectrocute = true
 
     return inst
 end

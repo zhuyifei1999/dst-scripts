@@ -1115,14 +1115,19 @@ local function UpdateRegularChunk(inst, chunk, dt, instant)
         chunk.idlesegment = nil
     end
 
-	if chunk.electrocuted then
-		local scale = chunk.electrocuted > 0 and Remap(chunk.electrocuted % 0.2, 0.2, 0, 0.85, 1) or 1
+	if chunk._electrocuteframes and chunk._electrocuteframes > 0 then
+		local frames = chunk._electrocuteframes - 1
+		local scale = Remap(frames % 5, 4, 0, 0.85, 1)
+		chunk._electrocuteframes = frames
 
 		for i, segment in ipairs(chunk.segments) do
 			segment.Transform:SetScale(scale, scale, scale)
 
-			if chunk.electrocuted == 1 then
-				segment.electrocutedevent:push()
+			--netvar limit 63
+			if frames > segment.electrocuteframes:value() then
+				segment.electrocuteframes:set(math.min(63, frames))
+			else
+				segment.electrocuteframes:set_local(frames)
 			end
 
 			local x, y, z = segment.Transform:GetWorldPosition()
@@ -1132,15 +1137,17 @@ local function UpdateRegularChunk(inst, chunk, dt, instant)
 		if chunk.lastsegment then
 			chunk.lastsegment.Transform:SetScale(scale, scale, scale)
 
-			if chunk.electrocuted == 1 then
-				chunk.lastsegment.electrocutedevent:push()
+			--netvar limit 63
+			if frames > chunk.lastsegment.electrocuteframes:value() then
+				chunk.lastsegment.electrocuteframes:set(math.min(63, frames))
+			else
+				chunk.lastsegment.electrocuteframes:set_local(frames)
 			end
 
 			local x, y, z = chunk.lastsegment.Transform:GetWorldPosition()
 			chunk.lastsegment.Transform:SetPosition(x, 0, z)
 		end
 
-		chunk.electrocuted = chunk.electrocuted > 0 and chunk.electrocuted - dt * 1.25 or nil
 		chunk.hit = nil
 	elseif chunk.hit then
 		local scale = chunk.hit > 0 and Remap(chunk.hit, 1, 0, 0.75, 1) or 1

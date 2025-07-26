@@ -83,6 +83,11 @@ end
 local function discharge(inst)
     inst:RemoveTag("charged")
 	inst:RemoveTag("electricdamageimmune")
+
+	if inst.components.electricattacks then
+		inst.components.electricattacks:RemoveSource(inst)
+	end
+
     inst.components.lootdropper:SetChanceLootTable('lightninggoat')
     inst.sg:GoToState("discharge")
     inst.AnimState:ClearBloomEffectHandle()
@@ -103,6 +108,12 @@ end
 local function setcharged(inst, instant)
     inst:AddTag("charged")
 	inst:AddTag("electricdamageimmune")
+
+	if inst.components.electricattacks == nil then
+		inst:AddComponent("electricattacks")
+	end
+	inst.components.electricattacks:AddSource(inst)
+
     inst.components.lootdropper:SetChanceLootTable('chargedlightninggoat')
     inst.AnimState:SetBuild("lightning_goat_shocked_build")
     inst.AnimState:Show("fx")

@@ -4341,7 +4341,7 @@ STRINGS =
         FENCE_ELECTRIC_FIELD = "T.I.N.G.L.E",
         FENCE_ELECTRIC_ITEM = "T.I.N.G.L.E. Node",
 
-        MUTATEDCROW = "Bright-Beaked Bird", --TODO
+        MUTATEDBIRD = "Bright-Beaked Bird", --TODO
 	},
 
     NAME_DETAIL_EXTENTION =

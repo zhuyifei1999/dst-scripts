@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -1174,6 +1176,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Ugh, not again!",
     ANNOUNCE_FLOATER_HELD = "Something touched my foot.",
     ANNOUNCE_FLOATER_LETGO = "I hate waiting!",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -5743,6 +5749,15 @@ return{
             GENERIC = "Dumb post.",           --NOTE: no links or electricity, just boring ol fence post
         },
         FENCE_ELECTRIC_ITEM = "It's useless like that.",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

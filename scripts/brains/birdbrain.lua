@@ -6,10 +6,9 @@ local SHOULDFLYAWAY_MUST_TAGS = { "notarget", "INLIMBO" }
 local SHOULDFLYAWAY_CANT_TAGS = { "player", "monster", "scarytoprey" }
 
 local function ShouldFlyAway(inst)
-    return not (inst.sg:HasStateTag("sleeping") or
-                inst.sg:HasStateTag("busy") or
-                inst.sg:HasStateTag("flight"))
-        and (TheWorld.state.isnight or
+    return
+        not inst.sg:HasAnyStateTag("sleeping", "busy", "flight")
+        and (TheWorld.state.isnight or TheWorld.state.islunarhailing or
             (inst.components.health ~= nil and inst.components.health.takingfiredamage and not (inst.components.burnable and inst.components.burnable:IsBurning())) or
             FindEntity(inst, inst.flyawaydistance, nil, nil, SHOULDFLYAWAY_MUST_TAGS, SHOULDFLYAWAY_CANT_TAGS) ~= nil)
 end

@@ -335,7 +335,7 @@ end
 local function PropCreationFn_Normal(inst)
     local ent = SpawnPrefab("koalefantcorpse_prop")
     if TheWorld.state.iswinter then
-        ent:SetAltBuild()
+		ent:SetAltBuild("winter")
     end
     ent.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -825,6 +825,8 @@ local function MakeWarg(data)
                 inst._eyeflames = net_bool(inst.GUID, "claywarg._eyeflames", "eyeflamesdirty")
 				inst:ListenForEvent("eyeflamesdirty", Clay_OnEyeFlamesDirty)
 			elseif tag == "lunar_aligned" then
+                inst:AddTag("soulless") -- no wortox souls
+                
 				if epic then
 					inst:AddTag("noepicmusic")
 				end
