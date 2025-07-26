@@ -157,7 +157,6 @@ local events =
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFallInVoid(),
@@ -166,15 +165,11 @@ local events =
             ChooseAttack(inst)
         end
     end),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
-				not CommonHandlers.HitRecoveryDelay(inst)
-			then
-				inst.sg:GoToState("hit")
-			end
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() and
+            (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
+            not CommonHandlers.HitRecoveryDelay(inst) then
+            inst.sg:GoToState("hit")
         end
     end),
     EventHandler("roar", function(inst)
@@ -289,7 +284,7 @@ local states =
 
     State{
         name = "surface",
-		tags = { "busy", "nosleep", "nofreeze", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "nofreeze", "noattack" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -338,7 +333,7 @@ local states =
 
     State{
         name = "burrow",
-		tags = { "busy", "nosleep", "nofreeze", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "nofreeze", "noattack" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -480,7 +475,7 @@ local states =
 
     State{
         name = "roar",
-		tags = { "roar", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "roar", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -673,7 +668,7 @@ local states =
 
     State{
         name = "channel_roar",
-		tags = { "roar", "busy", "channeling", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "roar", "busy", "channeling", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -855,7 +850,7 @@ local states =
 
     State{
         name = "pound_pre",
-		tags = { "attack", "busy", "pounding", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "attack", "busy", "pounding", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -893,7 +888,7 @@ local states =
 
     State{
         name = "pound",
-		tags = { "attack", "busy", "pounding", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "attack", "busy", "pounding", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("attack_pound_loop")
@@ -921,7 +916,7 @@ local states =
 
     State{
         name = "pound_pst",
-		tags = { "attack", "busy", "pounding", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "attack", "busy", "pounding", "nosleep", "nofreeze" },
 
         onenter = function(inst, sleeping)
             inst.AnimState:PlayAnimation("attack_pound_pst")
@@ -933,7 +928,6 @@ local states =
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("nosleep")
                 inst.sg:RemoveStateTag("nofreeze")
-				inst.sg:RemoveStateTag("noelectrocute")
             end),
         },
 
@@ -968,7 +962,6 @@ CommonStates.AddFrozenStates(states,
         end
     end
 )
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSleepExStates(states,
 {
     starttimeline =

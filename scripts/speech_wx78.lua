@@ -318,8 +318,6 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
---fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -482,10 +480,6 @@ return{
 		{
 			MISSED = "TARGET EVADED, RECALIBRATING",
 		},
-        DIVEGRAB =
-        {
-            MISSED = "TARGET EVADED, RECALIBRATING",
-        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1169,10 +1163,6 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "YOU'RE BACK!",
     ANNOUNCE_FLOATER_HELD = "ERROR: WHY WHHHY!",
     ANNOUNCE_FLOATER_LETGO = "I WILL RETURN",
-    
-    -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4810,7 +4800,6 @@ return{
 
         MOONSTORM_STATIC = "MAYBE HE'LL ELECTROCUTE HIMSELF",
         MOONSTORM_STATIC_ITEM = "IT IS CONTAINED",
-        MOONSTORM_STATIC_ROAMER = "UNCLAIMED POWER",
         MOONSTORM_SPARK = "THIS ENERGY IS NOT COMPATIBLE WITH MY CIRCUITS",
 
         BIRD_MUTANT = "I THINK THE BIRDS GOT MORE UGLY",
@@ -5474,11 +5463,8 @@ return{
 
         FENCE_JUNK = "AH. FEELS LIKE HOME",
         JUNK_PILE = "RIPE FOR THE SCAVENGING",
-        JUNK_PILE_BIG = {
-            BLUEPRINT = "ITEM DETECTED",
-            GENERIC = "A GIANT PILE OF SCRAP IS JUST WHAT THIS HIDEOUS NATURAL ENVIRONMENT NEEDED",
-        },
-        
+        JUNK_PILE_BIG = "A GIANT PILE OF SCRAP IS JUST WHAT THIS HIDEOUS NATURAL ENVIRONMENT NEEDED",
+
         ARMOR_LUNARPLANT_HUSK = "DEADLY PLANT ARMOR. I'LL ALLOW IT",
 
         -- Meta 4 / Ocean QoL
@@ -5729,28 +5715,6 @@ return{
         GESTALT_GUARD_EVOLVED = "I LIKE THIS VERSION. SO HATEFUL",
         FLOTATIONCUSHION = "MINE",
         LUNAR_SEED = "THEY DON'T UNDERSTAND YOU LIKE I DO",
-
-        -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "SOON, MY FRIEND",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "COMPRESSED HARDWARE",
-        WAGBOSS_ROBOT_CREATION_PARTS = "AWAITING INSTALLATION",
-        MOONSTORM_STATIC_CATCHER = "UNOCCUPIED",
-        COOLANT = "ORGANIC AND INORGANIC MATTER DETECTED",
-
-        FENCE_ELECTRIC = {
-            LINKED = "LINK ESTABLISHED!",      --NOTE: the fence post is fully linked to two other posts
-            GENERIC = "STILL SINGLE?",           --NOTE: no links or electricity, just boring ol fence post
-        },
-        FENCE_ELECTRIC_ITEM = "SETUP REQUIRED",
-
-        MUTATEDBIRD = "TODO",
-
-        BIRDCORPSE =
-        {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
-        },
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

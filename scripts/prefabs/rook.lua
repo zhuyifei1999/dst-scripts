@@ -151,8 +151,6 @@ local function common_fn(build, tag)
         return inst
     end
 
-	inst.override_combat_fx_size = "med"
-
     inst.recentlycharged = {}
     inst.Physics:SetCollisionCallback(oncollide)
 

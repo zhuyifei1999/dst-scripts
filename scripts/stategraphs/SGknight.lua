@@ -14,7 +14,6 @@ local events=
     CommonHandlers.OnFallInVoid(),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
 	CommonHandlers.OnAttacked(nil, nil, hit_recovery_skip_cooldown_fn),
     CommonHandlers.OnDeath(),
@@ -70,7 +69,7 @@ local states=
     },
 
     State{  name = "ruinsrespawn",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("spawn")
@@ -139,8 +138,9 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 
+
 return StateGraph("knight", states, events, "idle")
+

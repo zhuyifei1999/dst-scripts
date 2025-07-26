@@ -12,7 +12,6 @@ local events=
 {
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
@@ -23,6 +22,7 @@ local events=
 local states =
 {
      State{
+
         name = "idle",
         tags = {"idle", "canrotate"},
         onenter = function(inst, playanim)
@@ -148,6 +148,7 @@ local states =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)
         },
+
     },
 
     State{
@@ -194,6 +195,7 @@ local states =
         {
             TimeEvent(11*FRAMES, function(inst) inst:PerformBufferedAction() end),
         },
+
     },
 }
 
@@ -252,6 +254,6 @@ CommonStates.AddCombatStates(states,
 }, combatanims)
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
+
 
 return StateGraph("slurtle", states, events, "idle", actionhandlers)

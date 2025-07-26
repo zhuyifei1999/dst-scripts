@@ -318,8 +318,6 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
-            -- Electrocute
-            DEADBIRDS = "TODO",
         },
 		REMOTE_TELEPORT =
 		{
@@ -482,10 +480,6 @@ return{
 		{
 			MISSED = "Missed! Bad timing...",
 		},
-        DIVEGRAB =
-        {
-            MISSED = "Missed! Bad timing...",
-        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1169,10 +1163,6 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Right on cue.",
     ANNOUNCE_FLOATER_HELD = "I saw my life flash before my eyes... not in any particular order.",
     ANNOUNCE_FLOATER_LETGO = "I hate this part!",
-    
-    -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4810,7 +4800,6 @@ return{
 
         MOONSTORM_STATIC = "Unbridled energy.",
         MOONSTORM_STATIC_ITEM = "Somewhat bridled energy.",
-        MOONSTORM_STATIC_ROAMER = "Shall we bridle that energy?",
         MOONSTORM_SPARK = "A speck of powerful possibility.",
 
         BIRD_MUTANT = "What an awful sight!",
@@ -5474,11 +5463,8 @@ return{
 
         FENCE_JUNK = "As long as it keeps things out, I don't care how it looks.",
         JUNK_PILE = "There might be something worth my time in there.",
-        JUNK_PILE_BIG = {
-            BLUEPRINT = "I remember seeing something up there.",
-            GENERIC = "I'm not eager to be crushed by a teetering pile of scrap metal.",
-        },
-        
+        JUNK_PILE_BIG = "I'm not eager to be crushed by a teetering pile of scrap metal.",
+
         ARMOR_LUNARPLANT_HUSK = "It kills while it protects. Rather efficient.",
 
         -- Meta 4 / Ocean QoL
@@ -5729,28 +5715,6 @@ return{
         GESTALT_GUARD_EVOLVED = "They know what we've done.",
         FLOTATIONCUSHION = "How convenient!",
         LUNAR_SEED = "I forget if this is the end or the beginning.",
-
-        -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Again?!",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Am I the only one who thinks this is a bad idea?",
-        WAGBOSS_ROBOT_CREATION_PARTS = "Here we go...",
-        MOONSTORM_STATIC_CATCHER = "I thought I caught one...",
-        COOLANT = "I know that bubbling gunk has a use.",
-
-        FENCE_ELECTRIC = {
-            LINKED = "Delivers an unforgettable shock.",      --NOTE: the fence post is fully linked to two other posts
-            GENERIC = "Did I forget to connect this one?",           --NOTE: no links or electricity, just boring ol fence post
-        },
-        FENCE_ELECTRIC_ITEM = "Must remember to plant this.",
-
-        MUTATEDBIRD = "TODO",
-
-        BIRDCORPSE =
-        {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
-        },
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

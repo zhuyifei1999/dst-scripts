@@ -29,7 +29,6 @@ local events=
     end),
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
@@ -98,7 +97,7 @@ local states =
 
     State{
         name = "flyaway",
-		tags = { "flight", "busy", "noelectrocute" },
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
 
@@ -128,7 +127,7 @@ local states =
 
     State{
         name = "flyback",
-		tags = { "flight", "busy", "noelectrocute" },
+        tags = {"flight", "busy"},
         onenter = function(inst)
             inst.Physics:Stop()
 
@@ -379,6 +378,5 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("bat", states, events, "idle", actionhandlers)

@@ -41,7 +41,6 @@ local prefabs_mutated =
 	"purebrilliance",
     "chesspiece_warg_mutated_sketch",
     "winter_ornament_boss_mutatedwarg",
-    "coolant",
 }
 
 local brain = require("brains/wargbrain")
@@ -335,7 +334,7 @@ end
 local function PropCreationFn_Normal(inst)
     local ent = SpawnPrefab("koalefantcorpse_prop")
     if TheWorld.state.iswinter then
-		ent:SetAltBuild("winter")
+        ent:SetAltBuild()
     end
     ent.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -756,13 +755,6 @@ local mutated_scrapbook_overridedata = {
     { "mouthflameR", "lunar_flame", "mouthflameanim", 0.6 },
 }
 
-
-local COOLANT_LOOT = {"coolant"}
-local function LootSetupFn_mutated(lootdropper)
-    lootdropper:SetLoot(TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated() and COOLANT_LOOT or nil)
-    lootdropper:SetChanceLootTable("mutatedwarg")
-end
-
 local function MakeWarg(data)
     local name     = data.name
     local bank     = data.bank
@@ -817,16 +809,10 @@ local function MakeWarg(data)
         if tag ~= nil then
             inst:AddTag(tag)
 
-			if tag == "clay" or tag == "gingerbread" then
-				inst:AddTag("electricdamageimmune")
-			end
-
             if tag == "clay" then
                 inst._eyeflames = net_bool(inst.GUID, "claywarg._eyeflames", "eyeflamesdirty")
 				inst:ListenForEvent("eyeflamesdirty", Clay_OnEyeFlamesDirty)
 			elseif tag == "lunar_aligned" then
-                inst:AddTag("soulless") -- no wortox souls
-                
 				if epic then
 					inst:AddTag("noepicmusic")
 				end
@@ -892,8 +878,6 @@ local function MakeWarg(data)
             return inst
         end
 
-		inst.override_combat_fx_size = "med"
-
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
 
@@ -923,11 +907,7 @@ local function MakeWarg(data)
 		end
 
         inst:AddComponent("lootdropper")
-        if name == "mutatedwarg" then
-            inst.components.lootdropper:SetLootSetupFn(LootSetupFn_mutated)
-        else
-            inst.components.lootdropper:SetChanceLootTable(name)
-        end
+        inst.components.lootdropper:SetChanceLootTable(name)
 
         inst.base_hound_num = TUNING.WARG_BASE_HOUND_AMOUNT
 
@@ -1015,9 +995,6 @@ local function MakeWarg(data)
         MakeLargeFreezableCharacter(inst)
 
 		inst:SetStateGraph("SGwarg")
-		if tag == "clay" or tag == "gingerbread" then
-			inst.sg.mem.noelectrocute = true
-		end
 
 		inst:AddComponent("hauntable")
 		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)

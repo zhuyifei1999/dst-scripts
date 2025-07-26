@@ -25,16 +25,11 @@ local actionhandlers = {
 local events = {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasAnyStateTag("ability", "electrocute") then
-				inst.sg:GoToState("hit")
-			end
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("ability") then
+            inst.sg:GoToState("hit")
         end
     end),
     EventHandler("death", function(inst, data)
@@ -288,7 +283,7 @@ local states = {
     },
     State{
         name = "burrowaway",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst)
             inst.Physics:Stop()
             if inst.components.inventoryitem then
@@ -299,18 +294,6 @@ local states = {
             inst.AnimState:PlayAnimation("despawn")
             inst.SoundEmitter:PlaySound("rifts4/rabbit_king/despawn")
         end,
-		timeline =
-		{
-			FrameEvent(47, function(inst)
-				inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("nointerrupt")
-			end),
-			FrameEvent(52, function(inst)
-				inst.sg:AddStateTag("invisble")
-				inst.sg:AddStateTag("temp_invincible")
-				inst.components.burnable:Extinguish()
-			end),
-		},
         events = {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
@@ -321,7 +304,7 @@ local states = {
     },
     State{
         name = "burrowto",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst, data)
             inst.Physics:Stop()
             if inst.components.inventoryitem then
@@ -332,18 +315,6 @@ local states = {
             inst.SoundEmitter:PlaySound("rifts4/rabbit_king/despawn")
             inst.sg.statemem.data = data
         end,
-		timeline =
-		{
-			FrameEvent(47, function(inst)
-				inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("nointerrupt")
-			end),
-			FrameEvent(52, function(inst)
-				inst.sg:AddStateTag("invisble")
-				inst.sg:AddStateTag("temp_invincible")
-				inst.components.burnable:Extinguish()
-			end),
-		},
         events = {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
@@ -355,17 +326,16 @@ local states = {
     },
     State{
         name = "burrowarrive",
-		tags = { "busy", "nointerrupt" },
+        tags = {"busy"},
         onenter = function(inst, data)
             inst.Physics:Stop()
             if inst.components.inventoryitem then
                 inst.components.inventoryitem.canbepickedup = true
                 inst.components.inventoryitem.canbepickedupalive = true
             end
-			inst.AnimState:PlayAnimation("spawn_pre") --9 frames
-			local numloops = math.random(3) - 1
-			for i = 1, numloops do -- Intentionally faster than sgrabbitking_bunnyman. [SGRKSM]
-				inst.AnimState:PushAnimation("spawn_loop") --17 frames
+            inst.AnimState:PlayAnimation("spawn_pre")
+            for i = 1, math.random(3) - 1 do -- Intentionally faster than sgrabbitking_bunnyman. [SGRKSM]
+                inst.AnimState:PushAnimation("spawn_loop", false)
             end
             inst.AnimState:PushAnimation("spawn_pst", false)
 
@@ -374,12 +344,7 @@ local states = {
             elseif inst.rabbitking_kind == "passive" then
                 inst.SoundEmitter:PlaySound("rifts4/rabbit_king/spawn_lp", "spawn_lp")
             end
-
-			inst.sg:SetTimeout((9 + 17 * numloops + 38) * FRAMES)
         end,
-		ontimeout = function(inst)
-			inst.sg:RemoveStateTag("nointerrupt")
-		end,
         onexit = function(inst)
             inst.SoundEmitter:KillSound("spawn_lp")
             if inst.rabbitking_kind == "aggressive" then
@@ -651,7 +616,7 @@ local states = {
     },
     State{
         name = "fall",
-		tags = { "busy", "stunned", "noelectrocute" },
+        tags = {"busy", "stunned"},
         onenter = function(inst)
             inst.Physics:SetDamping(0)
             inst.Physics:SetMotorVel(0,-20+math.random()*10,0)
@@ -696,7 +661,7 @@ local states = {
     },
     State{
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = {"busy", "trapped"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst:ClearBufferedAction()
@@ -747,8 +712,8 @@ CommonStates.AddSleepStates(states, nil, {
     end,
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
+
 
 return StateGraph("rabbitking", states, events, "idle", actionhandlers)

@@ -1,11 +1,10 @@
 local REGISTERED_TARGET_TAGS
 
---(Omar): NOTE This is also used for electric fence fx
 local function FindShockTargets(x, z, radius)
 	if REGISTERED_TARGET_TAGS == nil then
 		REGISTERED_TARGET_TAGS = TheSim:RegisterFindTags(
 			{ "_combat" },
-			{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece", "brightmare", "brightmareboss", "wagdrone", "wagboss", "electric_connector" }
+			{ "INLIMBO", "flight", "invisible", "notarget", "noattack", "ghost", "playerghost", "shadowthrall", "shadow", "shadowcreature", "shadowminion", "shadowchesspiece", "brightmare", "brightmareboss", "wagdrone", "wagboss" }
 		)
 	end
 	return TheSim:FindEntities_Registered(x, 0, z, radius, REGISTERED_TARGET_TAGS)
@@ -195,7 +194,7 @@ end
 
 local function topocket(inst)
 	ForgetDeployPoint(inst)
-	inst:PushEventImmediate("deactivate")
+	inst.sg:HandleEvent("deactivate")
 	if inst.sg.currentstate ~= "off_idle" then
 		inst.sg:GoToState("off_idle")
 	end

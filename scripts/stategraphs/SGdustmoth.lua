@@ -15,14 +15,11 @@ local events =
 {
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnDeath(),
     EventHandler("dustmothsearch", function(inst)
-		if not inst.sg:HasStateTag("electrocute") then
-			inst.sg:GoToState("search")
-		end
+        inst.sg:GoToState("search")
     end),
     EventHandler("onrefuseitem", function(inst, giver)
         if not inst.sg:HasStateTag("busy") then
@@ -533,7 +530,6 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSleepStates(states)
 
 return StateGraph("dustmoth", states, events, "idle", actionhandlers)

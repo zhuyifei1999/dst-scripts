@@ -7,7 +7,6 @@ local events =
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     EventHandler("doattack", function(inst)
@@ -15,14 +14,10 @@ local events =
             inst.sg:GoToState("attack")
         end
     end),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
-				inst.sg:GoToState("hit")
-			end
-		end
+    EventHandler("attacked", function(inst)
+        if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and not inst.components.health:IsDead() then
+            inst.sg:GoToState("hit")
+        end
     end),
     EventHandler("flee", function(inst)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
@@ -63,7 +58,7 @@ local states =
 
     State{
         name = "spawnin",
-		tags = { "busy", "nosleep", "nofreeze", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "nofreeze", "noattack" },
 
         onenter = function(inst, queen)
             StopBuzz(inst)
@@ -177,7 +172,7 @@ local states =
 
     State{
         name = "flyaway",
-		tags = { "busy", "nosleep", "nofreeze", "noelectrocute", "flight" },
+        tags = { "busy", "nosleep", "nofreeze", "flight" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -344,6 +339,5 @@ CommonStates.AddFrozenStates(states,
         StartBuzz(inst)
         RaiseFlyingCreature(inst)
     end)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("SGbeeguard", states, events, "idle")

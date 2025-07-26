@@ -265,8 +265,6 @@ end
 
 local function SetNormalMonkey(inst)
     inst:RemoveTag("nightmare")
-    inst:RemoveTag("shadow_aligned")
-
     inst:SetBrain(brain)
     inst.AnimState:SetBuild("kiki_basic")
     inst.AnimState:SetMultColour(1, 1, 1, 1)
@@ -284,8 +282,6 @@ end
 
 local function SetNightmareMonkey(inst)
     inst:AddTag("nightmare")
-    inst:AddTag("shadow_aligned")
-
     inst.AnimState:SetMultColour(1, 1, 1, .6)
     inst:SetBrain(nightmarebrain)
     inst.AnimState:SetBuild("kiki_nightmare_skin")
@@ -432,7 +428,6 @@ local function fn()
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
     inst.soundtype = ""
 
     MakeMediumBurnableCharacter(inst)

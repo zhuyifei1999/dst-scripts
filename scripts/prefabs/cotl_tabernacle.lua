@@ -253,8 +253,6 @@ local function fn(data)
         return inst
     end
 
-    MakeSnowCovered(inst)
-
     inst.scrapbook_anim    = "idle_3"
     inst.scrapbook_adddeps = scrapbook_adddeps
 

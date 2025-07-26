@@ -70,7 +70,6 @@ function CarratBrain:OnStart()
     local root = PriorityNode(
     {
         BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
         RunAway(self.inst, NORMAL_RUNAWAY_DATA, AVOID_PLAYER_DIST, AVOID_PLAYER_STOP),
         WhileNode(function() return GetLeader(self.inst) ~= nil end, "Has Leader",
             BrainCommon.NodeAssistLeaderPickUps(self, pickupparams)

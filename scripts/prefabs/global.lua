@@ -358,10 +358,6 @@ local assets =
     Asset("SHADER", "shaders/anim_fade.ksh"),
     Asset("SHADER", "shaders/anim_bloom.ksh"),
     Asset("SHADER", "shaders/anim_holo.ksh"),
-
-    Asset("SHADER", "shaders/anim_skinned.ksh"),
-    Asset("SHADER", "shaders/anim_bloom_skinned.ksh"),
-
     Asset("SHADER", "shaders/creep.ksh"),
     Asset("SHADER", "shaders/debug_line.ksh"),
     Asset("SHADER", "shaders/debug_tri.ksh"),

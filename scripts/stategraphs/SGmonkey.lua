@@ -15,7 +15,6 @@ local events=
 {
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSleep(),
@@ -229,6 +228,5 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("monkey", states, events, "idle", actionhandlers)

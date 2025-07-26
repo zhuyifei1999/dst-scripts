@@ -200,7 +200,6 @@ local function fn()
     -----------------------
     MakeHauntableWork(inst)
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
 
     -------------------------
     inst:AddComponent("lootdropper")

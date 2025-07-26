@@ -2,8 +2,6 @@
 --[[ BirdSpawner class definition ]]
 --------------------------------------------------------------------------
 
-local SourceModifierList = require("util/sourcemodifierlist")
-
 return Class(function(self, inst)
 
 assert(TheWorld.ismastersim, "BirdSpawner should not exist on client")
@@ -33,9 +31,6 @@ local BIRD_TYPES =
     [WORLD_TILES.OCEAN_WATERLOG] = {},
 }
 
-local LUNARHAIL_EVENT_TIMER = "lunarhailbirdtimer"
-local LUNARHAIL_PRE_EVENT_TIMER = "lunarhailprebirdtimer"
-
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -54,19 +49,7 @@ local _birds = {}
 local _maxbirds = TUNING.BIRD_SPAWN_MAX
 local _minspawndelay = TUNING.BIRD_SPAWN_DELAY.min
 local _maxspawndelay = TUNING.BIRD_SPAWN_DELAY.max
-
-local _maxcorpses = TUNING.BIRD_CORPSE_SPAWN_MAX
-local _corpse_min_count = TUNING.BIRD_CORPSE_MIN_SPAWN
-local _corpse_max_count = TUNING.BIRD_CORPSE_MAX_SPAWN
-local _corpse_mutate_count = TUNING.BIRD_CORPSE_MUTATE_MAX_COUNT
-local _corpse_fade_min_time = TUNING.BIRD_CORPSE_FADE_MIN_TIME
-local _corpse_fade_max_time = TUNING.BIRD_CORPSE_FADE_MAX_TIME
-
-local _corpse_gestalt_min_time = TUNING.BIRD_CORPSE_GESTALT_MIN_TIME
-local _corpse_gestalt_max_time = TUNING.BIRD_CORPSE_GESTALT_MAX_TIME
-
-local _timescale = 1 --Deprecated. Don't remove in case any mods are upvalue hacking this value
-local _timescale_modifiers = SourceModifierList(self.inst, 1, SourceModifierList.multiply)
+local _timescale = 1
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -81,28 +64,15 @@ local function CalcValue(player, basevalue, modifier)
 	return ret
 end
 
-local function GetSpawnPointAndSpawnBird(pt, ignorebait, is_corpse)
-    local spawnpoint = self:GetSpawnPoint(pt, is_corpse)
-    if spawnpoint ~= nil then
-        return self:SpawnBird(spawnpoint, ignorebait, is_corpse)
-    end
-end
-
-local CORPSE_MUST_TAGS = {"birdcorpse"}
-local function SpawnCorpseForPlayer(player)
-    local pt = player:GetPosition()
-    local corpse_count = TheSim:CountEntities(pt.x, pt.y, pt.z, 64, CORPSE_MUST_TAGS)
-    if corpse_count < _maxcorpses then
-        return GetSpawnPointAndSpawnBird(pt, nil, true)
-    end
-end
-
 local BIRD_MUST_TAGS = { "bird" }
 local function SpawnBirdForPlayer(player, reschedule)
     local pt = player:GetPosition()
-    local bird_count = TheSim:CountEntities(pt.x, pt.y, pt.z, 64, BIRD_MUST_TAGS)
-    if bird_count < CalcValue(player, _maxbirds, "maxbirds") then
-        GetSpawnPointAndSpawnBird(pt)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, BIRD_MUST_TAGS)
+    if #ents < CalcValue(player, _maxbirds, "maxbirds") then
+        local spawnpoint = self:GetSpawnPoint(pt)
+        if spawnpoint ~= nil then
+            self:SpawnBird(spawnpoint)
+        end
     end
     _scheduledtasks[player] = nil
     reschedule(player)
@@ -114,7 +84,7 @@ local function ScheduleSpawn(player, initialspawn)
 		local maxdelay = CalcValue(player, _maxspawndelay, "maxdelay")
         local lowerbound = initialspawn and 0 or mindelay
         local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
-        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale_modifiers:Get(), SpawnBirdForPlayer, ScheduleSpawn)
+        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale, SpawnBirdForPlayer, ScheduleSpawn)
     end
 end
 
@@ -125,12 +95,8 @@ local function CancelSpawn(player)
     end
 end
 
-local function CanBirdsSpawn()
-    return not _worldstate.isnight and _maxbirds > 0 and not _worldstate.islunarhailing
-end
-
 local function ToggleUpdate(force)
-    if CanBirdsSpawn() then
+    if not _worldstate.isnight and _maxbirds > 0 then
         if not _updating then
             _updating = true
             for i, v in ipairs(_activeplayers) do
@@ -178,57 +144,15 @@ local function PickBird(spawnpoint)
     return _worldstate.iswinter and bird == "robin" and "robin_winter" or bird
 end
 
-local DANGER_RANGE = 8
 local SCARYTOPREY_TAGS = { "scarytoprey" }
 local function IsDangerNearby(x, y, z)
-    return TheSim:CountEntities(x, y, z, DANGER_RANGE, SCARYTOPREY_TAGS) > 0
+    local ents = TheSim:FindEntities(x, y, z, 8, SCARYTOPREY_TAGS)
+    return next(ents) ~= nil
 end
 
 local function AutoRemoveTarget(inst, target)
     if _birds[target] ~= nil and target:IsAsleep() then
         target:Remove()
-    end
-end
-
-local function ClearLunarBirdEventTimer()
-    inst.components.timer:StopTimer(LUNARHAIL_EVENT_TIMER)
-end
-
-local function OnLunarBirdEvent(inst)
-    for _, player in ipairs(_activeplayers) do
-        local corpse_bird_count = math.random(_corpse_min_count, _corpse_max_count)
-        local mutate_bird_count = math.random(_corpse_mutate_count)
-
-        local function SpawnBirdCorpse(_, mutate)
-            local corpse = SpawnCorpseForPlayer(player)
-            if corpse then
-                if mutate then
-                    corpse:StartGestaltTimer(GetRandomMinMax(_corpse_gestalt_min_time, _corpse_gestalt_max_time))
-                else
-                    corpse:StartFadeTimer(GetRandomMinMax(_corpse_fade_min_time, _corpse_fade_max_time))
-                end
-            end
-        end
-
-        for _ = 1, corpse_bird_count do
-            inst:DoTaskInTime(math.random(), SpawnBirdCorpse)
-        end
-
-        for _ = 1, mutate_bird_count do
-            inst:DoTaskInTime(math.random(), SpawnBirdCorpse, true)
-        end
-
-        local function AnnounceCorpses()
-            player.components.talker:Say(GetString(player, "ANNOUNCE_LUNARHAIL_BIRD_CORPSES"))
-        end
-        inst:DoTaskInTime(2*math.random(), AnnounceCorpses)
-    end
-end
-
--- Players hear caws and screams in the sky
-local function OnPreLunarBirdEvent(inst)
-    for _, player in ipairs(_activeplayers) do
-        player.components.talker:Say(GetString(player, "ANNOUNCE_LUNARHAIL_BIRD_SOUNDS"))
     end
 end
 
@@ -240,39 +164,8 @@ local function OnTargetSleep(target)
     inst:DoTaskInTime(0, AutoRemoveTarget, target)
 end
 
-local RAIN_FACTOR_KEY = "rainfactor"
 local function OnIsRaining(inst, israining)
-    if israining then
-        _timescale_modifiers:SetModifier(inst, TUNING.BIRD_RAIN_FACTOR, RAIN_FACTOR_KEY)
-    else
-        _timescale_modifiers:RemoveModifier(inst, RAIN_FACTOR_KEY)
-    end
-end
-
-local function OnIsLunarHailing(inst, ishailing)
-    if ishailing then
-        local bird_event_time = TUNING.LUNARHAIL_EVENT_TIME * GetRandomWithVariance(TUNING.LUNARHAIL_BIRD_EVENT, TUNING.LUNARHAIL_BIRD_EVENT_VARIANCE)
-        if not inst.components.timer:TimerExists(LUNARHAIL_EVENT_TIMER) then --OnIsLunarHailing runs on load and timers already save
-            inst.components.timer:StartTimer(LUNARHAIL_PRE_EVENT_TIMER, bird_event_time * 0.75)
-            inst.components.timer:StartTimer(LUNARHAIL_EVENT_TIMER, bird_event_time)
-        end
-    else
-        ClearLunarBirdEventTimer()
-    end
-
-    ToggleUpdate()
-end
-
-local function OnTimerDone(inst, data)
-    if not data then
-        return
-    end
-
-    if data.name == LUNARHAIL_PRE_EVENT_TIMER then
-        OnPreLunarBirdEvent(inst)
-    elseif data.name == LUNARHAIL_EVENT_TIMER then
-        OnLunarBirdEvent(inst)
-    end
+    _timescale = israining and TUNING.BIRD_RAIN_FACTOR or 1
 end
 
 local function OnPlayerJoined(src, player)
@@ -307,12 +200,10 @@ for i, v in ipairs(AllPlayers) do
 end
 
 --Register events
-inst:WatchWorldState("islunarhailing", OnIsLunarHailing)
 inst:WatchWorldState("israining", OnIsRaining)
 inst:WatchWorldState("isnight", function() ToggleUpdate() end)
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
-inst:ListenForEvent("timerdone", OnTimerDone, TheWorld)
 
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
@@ -320,7 +211,6 @@ inst:ListenForEvent("timerdone", OnTimerDone, TheWorld)
 
 function self:OnPostInit()
     OnIsRaining(inst, _worldstate.israining)
-    OnIsLunarHailing(inst, _worldstate.islunarhailing)
     ToggleUpdate(true)
 end
 
@@ -357,7 +247,7 @@ function self:SpawnModeHeavy()
 end
 
 local BIRDBLOCKER_TAGS = {"birdblocker"}
-function self:GetSpawnPoint(pt, is_corpse)
+function self:GetSpawnPoint(pt)
     --We have to use custom test function because birds can't land on creep
     local function TestSpawnPoint(offset)
         local spawnpoint_x, spawnpoint_y, spawnpoint_z = (pt + offset):Get()
@@ -378,9 +268,9 @@ function self:GetSpawnPoint(pt, is_corpse)
         end
 
         return _map:IsPassableAtPoint(spawnpoint_x, spawnpoint_y, spawnpoint_z, allow_water) and
+               not _groundcreep:OnCreep(spawnpoint_x, spawnpoint_y, spawnpoint_z) and
                #(TheSim:FindEntities(spawnpoint_x, 0, spawnpoint_z, 4, BIRDBLOCKER_TAGS)) == 0 and
-               --A corpse isn't gonna care if it's the moonstorm or on creep!
-               (is_corpse or (not moonstorm and not _groundcreep:OnCreep(spawnpoint_x, spawnpoint_y, spawnpoint_z)))
+               not moonstorm
     end
 
     local theta = math.random() * TWOPI
@@ -394,28 +284,22 @@ end
 
 local BAIT_CANT_TAGS = { "INLIMBO", "outofreach" }
 
-function self:SpawnBird(spawnpoint, ignorebait, is_corpse)
+function self:SpawnBird(spawnpoint, ignorebait)
     local prefab = PickBird(spawnpoint)
     if prefab == nil then
         return
     end
 
-    local bird = SpawnPrefab(is_corpse and "birdcorpse" or prefab)
+    local bird = SpawnPrefab(prefab)
     if math.random() < .5 then
         bird.Transform:SetRotation(180)
     end
-    if is_corpse then
-        bird:SetAltBuild(prefab)
-        bird:SetAltBank(prefab) --banks have their unique bank
-        bird.displaynameoverride = prefab
-    end
-    if bird:HasTag("bird") or is_corpse then
+    if bird:HasTag("bird") then
         spawnpoint.y = 15
     end
 
     --see if there's bait nearby that we might spawn into
-    --but if it's a corpse, i don't think they'll care for any bait :)
-    if bird.components.eater and not ignorebait and not is_corpse then
+    if bird.components.eater and not ignorebait then
 		local bait = TheSim:FindEntities(spawnpoint.x, 0, spawnpoint.z, 15, nil, BAIT_CANT_TAGS)
         for k, v in pairs(bait) do
             local x, y, z = v.Transform:GetWorldPosition()
@@ -467,22 +351,6 @@ end
 
 function self:StopTracking(target)
     self.StopTrackingFn(target)
-end
-
-function self:SetBirdTypesForTile(tile_id, bird_list) -- Mods.
-    BIRD_TYPES[tile_id] = bird_list -- Don't make me regret giving you access!
-end
-
-function self:SetTimeScaleModifier(factor, key) -- Mods.
-    _timescale_modifiers:SetModifier(inst, factor, key)
-end
-
-function self:RemoveTimeScaleModifier(key)
-    _timescale_modifiers:RemoveModifier(inst, key)
-end
-
-function self:SpawnCorpseForPlayer(player) --Wicker book
-    return SpawnCorpseForPlayer(player)
 end
 
 --------------------------------------------------------------------------

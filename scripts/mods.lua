@@ -47,7 +47,6 @@ AddModReleaseID( "R34_OCEANQOL_WINONAWURT" )
 AddModReleaseID( "R35_SANITYTROUBLES" )
 AddModReleaseID( "R36_ST_WENDWALTWORT" )
 AddModReleaseID( "R37_LUNAR_CAGE" )
-AddModReleaseID( "R38_ELECTROCUTE" )
 
 -----------------------------------------------------------------------------------------------
 

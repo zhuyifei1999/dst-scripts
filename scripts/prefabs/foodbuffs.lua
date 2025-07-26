@@ -44,9 +44,7 @@ local function work_detach(inst, target)
 end
 
 local function moisture_attach(inst, target)
-	if target:HasTag("wet") then
-		return --don't add the buff for perma-wet creatures
-	elseif target.components.moistureimmunity == nil then
+	if target.components.moistureimmunity == nil then
 		target:AddComponent("moistureimmunity")
 	end
 	target.components.moistureimmunity:AddSource(inst)
@@ -81,8 +79,9 @@ local function electric_attach(inst, target)
                     return
                 end
             end
-
-            SpawnElectricHitSparks(data.projectile ~= nil and data.projectile:IsValid() and data.projectile or attacker, data.target, true)
+            if data.target ~= nil and data.target:IsValid() and attacker:IsValid() then
+                SpawnPrefab("electrichitsparks"):AlignToTarget(data.target, data.projectile ~= nil and data.projectile:IsValid() and data.projectile or attacker, true)
+            end
         end
         inst:ListenForEvent("onattackother", inst._onattackother, target)
     end
@@ -220,6 +219,6 @@ return MakeBuff("attack", attack_attach, nil, attack_detach, TUNING.BUFF_ATTACK_
        MakeBuff("playerabsorption", playerabsorption_attach, nil, playerabsorption_detach, TUNING.BUFF_PLAYERABSORPTION_DURATION, 1),
        MakeBuff("workeffectiveness", work_attach, nil, work_detach, TUNING.BUFF_WORKEFFECTIVENESS_DURATION, 1),
        MakeBuff("moistureimmunity", moisture_attach, nil, moisture_detach, TUNING.BUFF_MOISTUREIMMUNITY_DURATION, 2),
-       MakeBuff("electricattack", electric_attach, electric_extend, electric_detach, TUNING.BUFF_ELECTRICATTACK_DURATION, 2, { "electrichitsparks", "electrichitsparks_electricimmune", "electricchargedfx" }),
+       MakeBuff("electricattack", electric_attach, electric_extend, electric_detach, TUNING.BUFF_ELECTRICATTACK_DURATION, 2, { "electrichitsparks", "electricchargedfx" }),
        MakeBuff("sleepresistance", sleepless_attach, nil, sleepless_detach, TUNING.SLEEPRESISTBUFF_TIME, 2),
        MakeBuff("sleepimmunity", sleepimmunity_attach, nil, sleepimmunity_detach, TUNING.SLEEPIMMUNEBUFF_TIME, 0, nil, true)

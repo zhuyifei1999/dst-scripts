@@ -2061,7 +2061,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_attack_pillows.zip"),
         Asset("ANIM", "anim/player_shadow_thrall_parasite.zip"),
 		Asset("ANIM", "anim/player_pouncecapture.zip"),
-		Asset("ANIM", "anim/player_divegrab.zip"),
 
         Asset("ANIM", "anim/wortox_teleport_reviver.zip"),
         Asset("ANIM", "anim/player_grave_spawn.zip"),

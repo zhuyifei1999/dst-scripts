@@ -709,7 +709,7 @@ function SnowmanDecoratable:EndDecorating(doer)
 		self.inst:RemoveEventCallback("onremove", self.onclosesnowman, doer)
 		self.inst:RemoveEventCallback("ms_closepopup", self.onclosepopup, doer)
 
-		doer:PushEventImmediate("ms_endsnowmandecorating")
+		doer.sg:HandleEvent("ms_endsnowmandecorating")
 
 		self.inst:StopUpdatingComponent(self)
 

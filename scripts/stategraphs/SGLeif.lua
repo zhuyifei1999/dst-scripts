@@ -1,23 +1,25 @@
 require("stategraphs/commonstates")
 
+local actionhandlers =
+{
+}
+
+
 local events=
 {
     CommonHandlers.OnStep(),
     CommonHandlers.OnLocomote(false,true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not CommonHandlers.HitRecoveryDelay(inst, TUNING.LEIF_HIT_RECOVERY) and
-				not inst.sg:HasAnyStateTag("attack", "waking", "sleeping") and
-				(not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen"))
-			then
-				inst.sg:GoToState("hit")
-			end
+    EventHandler("attacked", function(inst) 
+		if not inst.components.health:IsDead()
+			and not CommonHandlers.HitRecoveryDelay(inst, TUNING.LEIF_HIT_RECOVERY)
+			and not inst.sg:HasStateTag("attack") 
+			and not inst.sg:HasStateTag("waking") 
+			and not inst.sg:HasStateTag("sleeping")
+			and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
+			inst.sg:GoToState("hit")
 		end
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
@@ -26,6 +28,8 @@ local events=
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("gotosleep", function(inst) inst.sg:GoToState("sleeping") end),
     EventHandler("onwakeup", function(inst) inst.sg:GoToState("wake") end),
+
+
 }
 
 local states=
@@ -42,6 +46,7 @@ local states=
             inst.SoundEmitter:PlaySound("dontstarve/forest/treeFall")
             inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
         end,
+
     },
 
     State{
@@ -218,4 +223,5 @@ CommonStates.AddIdle(states)
 CommonStates.AddFrozenStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "transform_ent_mad"})
 
-return StateGraph("leif", states, events, "idle")
+return StateGraph("leif", states, events, "idle", actionhandlers)
+

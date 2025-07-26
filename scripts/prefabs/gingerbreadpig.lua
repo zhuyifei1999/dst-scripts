@@ -111,7 +111,6 @@ local function fn()
     inst.AnimState:SetBuild("gingerbread_pigman")
 
     inst:AddTag("character")
-	inst:AddTag("electricdamageimmune")
 
     inst.entity:SetPristine()
 

@@ -318,14 +318,9 @@ PREFAB_SKINS = {
 	{
 		"book_web_tallbird",
 	},
-	bookstation =
-	{
-		"bookstation_house",
-	},
 	boomerang =
 	{
 		"boomerang_bananarang",
-		"boomerang_bandedwood",
 		"boomerang_tiger",
 	},
 	bugnet =
@@ -2497,19 +2492,16 @@ PREFAB_SKINS = {
 	},
 	wx78_scanner =
 	{
-		"wx78_scanner_catcoon",
 		"wx78_scanner_fancy",
 		"wx78_scanner_junky",
 	},
 	wx78_scanner_item =
 	{
-		"wx78_scanner_catcoon_item",
 		"wx78_scanner_fancy_item",
 		"wx78_scanner_junky_item",
 	},
 	wx78_scanner_succeeded =
 	{
-		"wx78_scanner_succeeded_catcoon",
 		"wx78_scanner_succeeded_fancy",
 		"wx78_scanner_succeeded_junky",
 	},

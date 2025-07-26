@@ -454,6 +454,9 @@ local function commonfn(common_postinit, server_postinit)
 
     inst:AddComponent("drownable")
 
+    MakeLargeFreezableCharacter(inst)
+    inst.components.freezable:SetResistance(8)
+
 	inst:AddComponent("hauntable")
 	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
@@ -687,11 +690,6 @@ local function riftgestaltfn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
-	inst.scrapbook_bank = "alterguardian_phase1"
-	inst.scrapbook_build = "alterguardian_phase1_lunarrift"
-    inst.scrapbook_overridebuild = "wagboss_lunar"
-    inst.scrapbook_anim = "scrapbook"
 
 	inst:AddComponent("inspectable")
 

@@ -1,8 +1,7 @@
 local function onupdate(inst, dt)
     if inst.sound then
-        inst.SoundEmitter:PlaySound(inst.sound_to_play or "dontstarve/characters/wx78/spark")
+        inst.SoundEmitter:PlaySound("dontstarve/characters/wx78/spark")
         inst.sound = nil
-        inst.sound_to_play = nil
     end
 
     inst.Light:SetIntensity(inst.i)
@@ -26,7 +25,7 @@ local function OnAnimOver(inst)
     end
 end
 
-local function StartFX(proxy, animindex, build, sound)
+local function StartFX(proxy, animindex, build)
     local inst = CreateEntity()
 
     inst:AddTag("FX")
@@ -61,7 +60,6 @@ local function StartFX(proxy, animindex, build, sound)
     local dt = 1 / 20
     inst.i = .9
     inst.sound = inst.SoundEmitter ~= nil
-    inst.sound_to_play = sound
     inst.task = inst:DoPeriodicTask(dt, onupdate, nil, dt)
 
     inst:ListenForEvent("animover", OnAnimOver)
@@ -125,7 +123,7 @@ local function AlignToTarget(inst, target, attacker, flash)
     end
 end
 
-local function MakeSparks(name, build, sound)
+local function MakeSparks(name, build)
     local assets =
     {
         Asset("ANIM", "anim/"..build..".zip"),
@@ -137,7 +135,7 @@ local function MakeSparks(name, build, sound)
         end
 
         --Delay one frame in case we are about to be removed
-        inst:DoTaskInTime(0, StartFX, inst._rand:value(), build, sound)
+        inst:DoTaskInTime(0, StartFX, inst._rand:value(), build)
         inst._complete = true
     end
 
@@ -175,5 +173,4 @@ local function MakeSparks(name, build, sound)
 end
 
 return MakeSparks("sparks", "sparks"),
-    MakeSparks("electrichitsparks", "elec_hit_fx"),
-    MakeSparks("electrichitsparks_electricimmune", "elec_immune_fx", "dontstarve/common/together/electricity/electrocute_immune")
+    MakeSparks("electrichitsparks", "elec_hit_fx")

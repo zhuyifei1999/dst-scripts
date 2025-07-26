@@ -157,16 +157,11 @@ local function OnPrecipitationChanged(src, preciptype)
 end
 
 local function OnSnowCoveredChanged(src, show)
-    -- NOTES(JBK): This is a special handling for speed since this changes many entities at once.
-    -- The following is a short description of what it does to remove hidden traits.
-    -- It is similar to UpdateLunarHailBuildup.
-    -- For each entity check tags "SnowCovered" and "LunarBuildup"
-    --  If it has only the "SnowCovered" tag
-    --   Hide and show the "snow" symbol
-    --  If it has "LunarBuildup" tag
-    --   Keep the "snow" symbol shown
-    --   Change the OverrideSymbol for "snow" to be "lunarhail_snow_buildup" or "lunarhail_buildup" from the "snow" build depending on "SnowCovered" tag
-    TheSim:HandleAllSnowSymbols(show)
+    if show then
+        TheSim:ShowAnimOnEntitiesWithTag("SnowCovered", "snow")
+    else
+        TheSim:HideAnimOnEntitiesWithTag("SnowCovered", "snow")
+    end
     SetVariable("issnowcovered", show)
 end
 

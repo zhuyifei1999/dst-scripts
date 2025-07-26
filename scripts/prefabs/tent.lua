@@ -187,7 +187,6 @@ local function common_fn(bank, build, icon, tag, onbuiltfn)
     inst.components.sleepingbag:SetTemperatureTickFn(temperaturetick)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
     inst:ListenForEvent("onbuilt", onbuiltfn)
 
     MakeLargeBurnable(inst, nil, nil, true)

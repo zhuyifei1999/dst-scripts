@@ -173,7 +173,6 @@ local function makestump(inst, instant)
 
     inst:RemoveComponent("sanityaura")
     inst:RemoveComponent("workable")
-    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveComponent("burnable")
     MakeMediumBurnable(inst)
     inst:RemoveComponent("propagator")
@@ -360,7 +359,6 @@ local function fn()
     inst.components.growable:StartGrowing()
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
 
     inst.growfromseed = GrowFromSeed
 

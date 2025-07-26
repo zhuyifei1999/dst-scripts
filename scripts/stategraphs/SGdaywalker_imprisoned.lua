@@ -1,10 +1,3 @@
-require("stategraphs/commonstates")
-
-local events =
-{
-	CommonHandlers.OnElectrocute(),
-}
-
 local function CheckPillars(inst)
 	local resonating, idle = inst:CountPillars()
 	return resonating ~= 0, resonating ~= 0 and idle == 0
@@ -167,10 +160,6 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(6, function(inst)
-				inst.sg:AddStateTag("noelectrocute")
-			end),
-
 			--chains
 			FrameEvent(11, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot") end),
 		},
@@ -187,7 +176,6 @@ local states =
 
 	State{
 		name = "struggle3_loop_a",
-		tags = { "noelectrocute" },
 
 		onenter = function(inst, skipsound)
 			inst.AnimState:PlayAnimation("chained_3_loop_a")
@@ -214,7 +202,7 @@ local states =
 
 	State{
 		name = "struggle3_loop_b",
-		tags = { "notalksound", "noelectrocute" },
+		tags = { "notalksound" },
 
 		onenter = function(inst, skipsound)
 			inst.AnimState:PlayAnimation("chained_3_loop_b")
@@ -280,7 +268,6 @@ local states =
 
 	State{
 		name = "struggle3_loop_c",
-		tags = { "noelectrocute" },
 
 		onenter = function(inst, skipsound)
 			inst.AnimState:PlayAnimation("chained_3_loop_c")
@@ -321,10 +308,6 @@ local states =
 		{
 			--steps
 			FrameEvent(2, function(inst) inst.SoundEmitter:PlaySound("daywalker/action/step", nil, 0.5) end),
-
-			FrameEvent(3, function(inst)
-				inst.sg:AddStateTag("noelectrocute")
-			end),
 		},
 
 		events =
@@ -339,7 +322,6 @@ local states =
 
 	State{
 		name = "chain_break_pre",
-		tags = { "noelectrocute" },
 
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("chain_break_pre")
@@ -372,7 +354,6 @@ local states =
 
 	State{
 		name = "chain_break",
-		tags = { "noelectrocute" },
 
 		onenter = function(inst)
 			inst.AnimState:PlayAnimation("chain_break")
@@ -419,26 +400,4 @@ local states =
 	},
 }
 
-CommonStates.AddElectrocuteStates(states,
-{	--timeline
-	loop =
-	{
-		FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot") end),
-		FrameEvent(8, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.5) end),
-		FrameEvent(16, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.5) end),
-		FrameEvent(24, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.3) end),
-		FrameEvent(32, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.3) end),
-		FrameEvent(40, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.3) end),
-		FrameEvent(48, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot", nil, 0.3) end),
-	},
-	pst =
-	{
-		FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("daywalker/pillar/chain_shake_oneshot") end),
-	},
-},
-{	--anims
-	loop = "chained_shock_loop",
-	pst = "chained_shock_pst",
-})
-
-return StateGraph("daywalker_imprisoned", states, events, "idle")
+return StateGraph("daywalker_imprisoned", states, {}, "idle")

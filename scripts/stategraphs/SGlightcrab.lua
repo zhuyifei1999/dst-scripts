@@ -12,7 +12,6 @@ local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(true, true),
@@ -97,7 +96,7 @@ local states=
 
      State{
         name = "portal_spawn",
-		tags = { "busy", "stunned", "nointerrupt", "jumping", "nosleep", "noelectrocute" },
+        tags = {"busy", "stunned", "nointerrupt", "jumping", "nosleep"},
         onenter = function(inst)
             inst.Physics:SetDamping(0)
             inst.AnimState:PlayAnimation("stunned_loop", true)
@@ -142,7 +141,7 @@ local states=
 
     State{
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = {"busy", "trapped"},
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -241,7 +240,6 @@ nil, nil, nil, nil,
 
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSimpleState(states, "idle2", "idle2", {"canrotate"},nil,nil,{
     onenter = function(inst)
         inst.SoundEmitter:PlaySound("monkeyisland/lightcrab/idle2")
@@ -253,4 +251,6 @@ CommonStates.AddSimpleState(states, "idle3", "idle3", {"canrotate"},nil,nil,{
     end,
 })
 
+
 return StateGraph("lightcrab", states, events, "idle", actionhandlers)
+

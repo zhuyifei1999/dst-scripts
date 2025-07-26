@@ -29,7 +29,6 @@ local events=
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnIpecacPoop(),
 
     EventHandler("onsink", function(inst, data)
@@ -42,26 +41,18 @@ local events=
             end
         end
     end),
-	EventHandler("doattack", function(inst, data)
-		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
-			inst.sg:GoToState("attack", data.target)
-		end
-	end),
+    EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() then inst.sg:GoToState("attack", data.target) end end),
     EventHandler("death", function(inst, data)
         if inst.components.rideable == nil or not inst.components.rideable:IsBeingRidden() then
             inst.sg:GoToState("death", data.cause == "file_load")
         end
     end),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not (	inst.sg:HasAnyStateTag("attack", "electrocute") or
-							CommonHandlers.HitRecoveryDelay(inst, nil, math.huge) --hit dealy only for projectiles
-						)
-			then
-				inst.sg:GoToState("hit")
-			end
+	EventHandler("attacked", function(inst)
+		if not (inst.components.health:IsDead() or
+				inst.sg:HasStateTag("attack") or
+				CommonHandlers.HitRecoveryDelay(inst, nil, math.huge)) --hit delay only for projectiles
+		then
+			inst.sg:GoToState("hit")
 		end
 	end),
     EventHandler("heardhorn", function(inst, data)
@@ -1003,7 +994,6 @@ CommonStates.AddWalkStates(
     })
 
 CommonStates.AddSimpleState(states, "hit", "hit", nil, nil, nil, { onenter = CommonHandlers.UpdateHitRecoveryDelay })
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddFrozenStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

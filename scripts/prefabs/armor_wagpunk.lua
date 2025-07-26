@@ -304,7 +304,6 @@ end
 
 local function SetupEquippable(inst)
     inst:AddComponent("equippable")
-    inst.components.equippable.insulated = true
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
@@ -387,7 +386,6 @@ local function fn()
     inst.components.planardefense:SetBaseDefense(TUNING.ARMORPUNK_PLANAR_DEF)
 
     inst:AddComponent("equippable")
-    inst.components.equippable.insulated = true
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)

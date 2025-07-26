@@ -381,8 +381,6 @@ local function fn()
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
-
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("health")

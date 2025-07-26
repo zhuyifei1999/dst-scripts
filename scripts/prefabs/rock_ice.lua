@@ -398,7 +398,6 @@ local function rock_ice_fn()
     inst.OnLoad = onload
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     MakeHauntableWork(inst)
 

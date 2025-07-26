@@ -3,7 +3,6 @@ require "behaviours/follow"
 require "behaviours/leash"
 require "behaviours/panicandavoid"
 require "behaviours/wander"
-local BrainCommon = require("brains/braincommon")
 
 local MAX_BOAT_FOLLOW_DIST = TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 13
 local MIN_BOAT_FOLLOW_DIST = TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 2
@@ -226,7 +225,6 @@ function GnarwailBrain:OnStart()
             "HornBrokenPanicAndAvoid",
             PanicAndAvoid(self.inst, function(i) return i.components.combat.target end, MIN_BOAT_FOLLOW_DIST)
         ),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
         WhileNode( function() return HasValidWaterTarget(self.inst) end,
             "AttackMomentarily",
             PriorityNode({

@@ -12,7 +12,6 @@ local events=
     EventHandler("doattack", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack") end end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnHop(),
 	CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
@@ -35,13 +34,9 @@ local events=
                 end
             end
         end),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasAnyStateTag("busy", "attack") and not CommonHandlers.HitRecoveryDelay(inst) then
-				inst.sg:GoToState("hit")
-			end
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("attack") and not CommonHandlers.HitRecoveryDelay(inst) then
+            inst.sg:GoToState("hit")
         end
     end),
     EventHandler("trapped", function(inst)
@@ -188,7 +183,7 @@ local states=
 
     State{
         name = "fall",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst)
 			inst.Physics:SetDamping(0)
             inst.Physics:SetMotorVel(0,-20+math.random()*10,0)
@@ -248,7 +243,7 @@ local states=
 
     State{
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = { "busy", "trapped" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -270,7 +265,6 @@ CommonStates.AddSleepStates(states,
 	},
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHopStates(states, true, {loop = "jump"})--, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

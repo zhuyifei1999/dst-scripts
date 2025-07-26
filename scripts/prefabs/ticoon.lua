@@ -259,8 +259,6 @@ local function fn()
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
-
 	inst.hidingspot_onremove = function(hider, data) hidingspot_onremove(inst, hider, data) end
 
 	inst:AddComponent("inspectable")

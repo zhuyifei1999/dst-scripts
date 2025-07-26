@@ -49,7 +49,6 @@ local function makebasalt(anims)
         inst:AddComponent("inspectable")
         inst.components.inspectable.nameoverride = "BASALT"
         MakeSnowCovered(inst)
-        SetLunarHailBuildupAmountLarge(inst)
         return inst
     end
 end

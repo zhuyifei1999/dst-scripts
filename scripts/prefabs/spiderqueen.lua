@@ -145,8 +145,6 @@ local function fn()
         return inst
     end
 
-	inst.override_combat_fx_size = "med"
-
     inst:SetStateGraph("SGspiderqueen")
 
     inst:AddComponent("lootdropper")

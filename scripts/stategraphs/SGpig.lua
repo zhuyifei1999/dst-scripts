@@ -20,7 +20,6 @@ local events =
     CommonHandlers.OnLocomote(true, true),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(nil, TUNING.PIG_MAX_STUN_LOCKS),
     CommonHandlers.OnDeath(),
@@ -131,7 +130,7 @@ local states =
 
     State{
         name = "transformNormal",
-		tags = { "transform", "busy", "sleeping", "noelectrocute" },
+        tags = { "transform", "busy", "sleeping" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -309,7 +308,7 @@ local states =
 
     State{
         name = "parasite_revive",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("parasite_death_pst")
@@ -352,7 +351,6 @@ CommonStates.AddSleepStates(states,
 CommonStates.AddIdle(states,"funnyidle")
 CommonStates.AddSimpleState(states, "refuse", "pig_reject", { "busy" })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSimpleActionState(states, "pickup", "pig_pickup", 10 * FRAMES, { "busy" })
 CommonStates.AddSimpleActionState(states, "gohome", "pig_pickup", 4 * FRAMES, { "busy" })
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})

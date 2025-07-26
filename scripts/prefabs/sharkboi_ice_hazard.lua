@@ -370,7 +370,6 @@ local function fn()
     inst.OnLoad = OnLoad
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
     MakeHauntableWork(inst)
 
     inst:ListenForEvent("timerdone", inst.OnTimerDone)

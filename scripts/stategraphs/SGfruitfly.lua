@@ -17,7 +17,6 @@ local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
@@ -202,7 +201,7 @@ local states=
 	},
     State{
         name = "land",
-		tags = { "flight", "busy", "noelectrocute" },
+        tags = { "flight", "busy" },
 
         onenter = function(inst)
 			inst.AnimState:PlayAnimation("idle", true)
@@ -321,6 +320,5 @@ CommonStates.AddSleepStates(states,
     onwake = RaiseFlyingCreature,
 })
 CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("fruitfly", states, events, "taunt", actionhandlers)

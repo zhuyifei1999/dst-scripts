@@ -1,7 +1,6 @@
---This prefab is shipped but not used anymore.
 local assets =
 {
-	Asset("PKGREF", "anim/antchovy.zip"),
+    Asset("ANIM", "anim/antchovy.zip"),
 }
 
 local function fn()
@@ -20,7 +19,7 @@ local function fn()
 
     inst.AnimState:SetBank("antchovy")
     inst.AnimState:SetBuild("antchovy")
-	inst.AnimState:PlayAnimation("idle_ground")
+    inst.AnimState:PlayAnimation("idle")
 
     inst.scrapbook_anim = "idle_ground"
 

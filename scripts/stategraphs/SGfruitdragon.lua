@@ -12,16 +12,15 @@ local events =
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(true, true),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
 
     EventHandler("doattack", function(inst, data)
-		if inst.components.health and not inst.components.health:IsDead() and
-			(not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")))
-		then
+		if inst.components.health ~= nil and not inst.components.health:IsDead()
+			and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+
 			if data.target:IsValid() and data.target:HasTag("fruitdragon") then
 				inst.sg:GoToState("challenge_attack_pre")
 			else
@@ -31,26 +30,21 @@ local events =
 	end),
 
 	EventHandler("attacked", function(inst, data)
-		if inst.components.health and not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen") then
-				inst.sg:GoToState("hit")
-			end
-		end
-	end),
-
-	EventHandler("wake_up_to_challenge", function(inst)
-		if not inst.sg:HasStateTag("electrocute") then
+		if inst.components.health ~= nil and not inst.components.health:IsDead()
+			and (not inst.sg:HasStateTag("busy") or
+				inst.sg:HasStateTag("caninterrupt") or
+				inst.sg:HasStateTag("frozen")) then
 			inst.sg:GoToState("hit")
 		end
 	end),
 
+	EventHandler("wake_up_to_challenge", function(inst)
+		inst.sg:GoToState("hit")
+	end),
+
 
 	EventHandler("lostfruitdragonchallenge", function(inst)
-		if not inst.sg:HasStateTag("electrocute") then
-			inst.sg:GoToState("challenge_lose")
-		end
+		inst.sg:GoToState("challenge_lose")
 	end),
 }
 
@@ -400,7 +394,6 @@ CommonStates.AddSleepStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 

@@ -990,8 +990,6 @@ local function fn()
 		return inst
 	end
 
-	inst.scrapbook_anim = "scrapbook"
-
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("rainimmunity")

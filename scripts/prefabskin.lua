@@ -131,9 +131,7 @@ backpack_init_fn = function(inst, build_name, fns)
 	if fns and fns.initialize then
 		fns.initialize(inst)
 	end
-    if inst.OnBackpackSkinChanged then
-        inst:OnBackpackSkinChanged(build_name)
-    end
+	inst:OnBackpackSkinChanged(build_name)
 end
 backpack_clear_fn = function(inst)
     basic_clear_fn(inst, "swap_backpack")
@@ -143,9 +141,7 @@ backpack_clear_fn = function(inst)
 		end
 		inst.backpack_skin_fns = nil
 	end
-    if inst.OnBackpackSkinChanged then
-        inst:OnBackpackSkinChanged(nil)
-    end
+	inst:OnBackpackSkinChanged(nil)
 end
 
 spicepack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "swap_chefpack" ) end
@@ -220,16 +216,16 @@ stone_table_square_clear_fn = function(inst) basic_clear_fn(inst, "stone_table_s
 stone_stool_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "stone_chair_stool") end
 stone_stool_clear_fn = function(inst) basic_clear_fn(inst, "stone_chair_stool") end
 stone_chair_init_fn = function(inst, build_name)
-	basic_init_fn(inst, build_name, "stone_chair")
+    basic_init_fn(inst, build_name, "stone_chair_chair")
     if not TheWorld.ismastersim then
         return
     end
     if inst.back then
-		inst.back.AnimState:OverrideItemSkinSymbol("chair01_parts", build_name, "chair01_parts", inst.GUID, "stone_chair")
+        inst.back.AnimState:OverrideItemSkinSymbol("chair01_parts", build_name, "chair01_parts", inst.GUID, "stone_chair_chair")
     end
 end
 stone_chair_clear_fn = function(inst)
-	basic_clear_fn(inst, "stone_chair")
+    basic_clear_fn(inst, "stone_chair_chair")
     if not TheWorld.ismastersim then
         return
     end
@@ -976,30 +972,18 @@ flotationcushion_clear_fn = function(inst, build_name)
     basic_clear_fn(inst, "flotationcushion")
 end
 
-bookstation_init_fn = function(inst, build_name)
-    basic_init_fn(inst, build_name, "bookstation")
-end
-bookstation_clear_fn = function(inst, build_name)
-    basic_clear_fn(inst, "bookstation")
-end
-
 sisturn_init_fn = function(inst, build_name)
     basic_init_fn(inst, build_name, "sisturn")
     if not TheWorld.ismastersim then
         return
     end
     AddSkinSounds(inst)
-    --(Omar) NOTE: Remember placers get skins too! Placer doesn't have `UpdateFlowerDecor`!
-    if inst.UpdateFlowerDecor then
-        inst:UpdateFlowerDecor()
-    end
+    inst:UpdateFlowerDecor()
 end
 sisturn_clear_fn = function(inst)
     basic_clear_fn(inst, "sisturn")
     RemoveSkinSounds(inst)
-    if inst.UpdateFlowerDecor then
-        inst:UpdateFlowerDecor()
-    end
+    inst:UpdateFlowerDecor()
 end
 
 lucy_init_fn = function(inst, build_name)
@@ -1403,21 +1387,8 @@ dragonflyfurnace_clear_fn = function(inst) basic_clear_fn(inst, "dragonfly_furna
 birdcage_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bird_cage" ) end
 birdcage_clear_fn = function(inst) basic_clear_fn(inst, "bird_cage" ) end
 
-meatrack_init_fn = function(inst, build_name)
-	basic_init_fn(inst, build_name, "meat_rack")
-	if not TheWorld.ismastersim then
-		return
-	end
-	if inst.OnMeatRackSkinChanged then
-		inst:OnMeatRackSkinChanged(build_name)
-	end
-end
-meatrack_clear_fn = function(inst)
-	basic_clear_fn(inst, "meat_rack")
-	if inst.OnMeatRackSkinChanged then
-		inst:OnMeatRackSkinChanged(nil)
-	end
-end
+meatrack_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "meat_rack" ) end
+meatrack_clear_fn = function(inst) basic_clear_fn(inst, "meat_rack" ) end
 
 beebox_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bee_box" ) end
 beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end

@@ -129,7 +129,6 @@ local function CreateCommon(bank, build, common_init)
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
     inst.build = build
 
     inst.PlaySound = PlaySound -- Used in the stategraph.

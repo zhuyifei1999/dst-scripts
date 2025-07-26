@@ -11,14 +11,12 @@ local EMERGE_MAX2 = EMERGE_MAX*EMERGE_MAX
 
 local events =
 {
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasAnyStateTag("hit", "attack") then
-				inst.sg:GoToState("hit")
-			end
-		end
+    EventHandler("attacked", function(inst)
+        if not (inst.components.health:IsDead() or
+                inst.sg:HasStateTag("hit") or
+                inst.sg:HasStateTag("attack")) then
+            inst.sg:GoToState("hit")
+        end
     end),
     EventHandler("newcombattarget", function(inst)
         if inst.components.combat:HasTarget() and inst.sg:HasStateTag("attack_idle") then
@@ -51,14 +49,13 @@ local events =
         end
     end),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
 }
 
 local states =
 {
     State{
         name = "idle",
-		tags = { "idle", "retracted", "noelectrocute" },
+        tags = { "idle", "retracted" },
 
         onenter = function(inst)
             if inst.retreat then
@@ -167,7 +164,7 @@ local states =
 
     State{
         name = "retract",
-		tags = { "retract", "noelectrocute" },
+        tags = { "retract" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("atk_pst")
@@ -205,7 +202,7 @@ local states =
     -- main pillar ordering us to hide
     State{
         name = "full_retreat",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst, retracted)
             if retracted then
@@ -244,12 +241,5 @@ local states =
 }
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states, nil, nil, {
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			inst.sg:GoToState("attack_idle")
-		end
-	end,
-})
 
 return StateGraph("tentacle", states, events, "idle")

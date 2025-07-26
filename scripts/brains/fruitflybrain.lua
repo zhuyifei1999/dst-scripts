@@ -78,7 +78,6 @@ function FruitFlyBrain:OnStart()
     local brain =
     {
 		BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
         --LordFruitFly:
             --needs follower
             --AttackMomentarily

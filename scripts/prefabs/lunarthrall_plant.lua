@@ -412,6 +412,7 @@ local function CreateFlame()
     return inst
 end
 
+
 local function fn()
     local inst = CreateEntity()
 
@@ -422,7 +423,6 @@ local function fn()
     inst.entity:AddNetwork()
 
 	MakeObstaclePhysics(inst, .8)
-    MakeCollidesWithElectricField(inst)
 	inst:SetPhysicsRadiusOverride(.4) --V2C: WARNING intentionally reducing range for incoming attacks; make sure everyone can still reach!
 
     inst.MiniMapEntity:SetIcon("lunarthrall_plant.png")
@@ -463,9 +463,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-	inst.override_combat_fx_size = "med"
-	inst.override_combat_fx_height = "low"
 
     inst:customSetRandomFrame()
 
@@ -511,7 +508,6 @@ local function fn()
     MakeLargeBurnableCharacter(inst,"follow_gestalt_fx")
 
     inst:SetStateGraph("SGlunarthrall_plant")
-	inst.sg.mem.burn_on_electrocute = true
 
 	spawnback(inst)
 
@@ -603,8 +599,6 @@ local function vinefn()
         return inst
     end
 
-	inst.override_combat_fx_height = "low"
-
 	inst:AddComponent("colouradder")
 
     MakeMediumFreezableCharacter(inst)
@@ -615,7 +609,6 @@ local function vinefn()
     inst.makeweak = makeweak
 
     inst:SetStateGraph("SGlunarthrall_plant_vine")
-	inst.sg.mem.burn_on_electrocute = true
 
 	inst.OnRemoveEntity = vine_onremoveentity
 
@@ -792,8 +785,6 @@ local function vineendfn()
         return inst
     end
 
-	inst.override_combat_fx_height = "low"
-
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.LUNARTHRALL_PLANT_VINE_HEALTH)
 
@@ -848,7 +839,6 @@ local function vineendfn()
     MakeMediumBurnableCharacter(inst)
 
     inst:SetStateGraph("SGlunarthrall_plant_vine")
-	inst.sg.mem.burn_on_electrocute = true
 
     return inst
 end

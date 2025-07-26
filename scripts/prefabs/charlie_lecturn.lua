@@ -85,7 +85,6 @@ local function fn()
     inst.components.playbill_lecturn.onstageset = on_playbill_stage_set
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     inst.checkidleanim = checkidleanim
 

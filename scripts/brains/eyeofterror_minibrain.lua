@@ -37,7 +37,6 @@ function EyeOfTerrorMiniBrain:OnStart()
         WhileNode(function() return not self.inst.sg:HasStateTag("charge") end, "Not Attacking",
             PriorityNode({
 				BrainCommon.PanicTrigger(self.inst),
-                BrainCommon.ElectricFencePanicTrigger(self.inst),
                 AttackWall(self.inst),
                 ChaseAndAttack(self.inst),
                 DoAction(self.inst, EatFoodAction, "Find And Eat Food"),

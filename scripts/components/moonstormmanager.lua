@@ -43,30 +43,6 @@ end
 
 self.inst:ListenForEvent("timerdone", ontimerdone)
 
-
-self.roamers = {}
-local function UntrackRoamer_Bridge(roamer)
-    self:UntrackRoamer(roamer)
-end
-function self:UntrackRoamer(roamer)
-    if self.roamers[roamer] then
-        self.roamers[roamer] = nil
-        if roamer:IsValid() then
-            roamer:RemoveEventCallback("onremove", UntrackRoamer_Bridge)
-        end
-    end
-end
-function self:TrackRoamer(roamer)
-    if not self.roamers[roamer] then
-        self.roamers[roamer] = true
-        roamer:ListenForEvent("onremove", UntrackRoamer_Bridge)
-    end
-end
-self.inst:ListenForEvent("ms_moonstormstatic_roamer_spawned", function(world, roamer)
-    self:TrackRoamer(roamer)
-end, TheWorld)
-
-
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
@@ -506,11 +482,6 @@ function self:EndExperiment()
 end
 
 --
-local function onremoveroamer(roamer)
-    if self.roamer == roamer then
-        self.roamer = nil
-    end
-end
 local function onremoveexperimentstatic(static)
 	if self.experiment_static == static then
 		self.experiment_static = nil
@@ -528,22 +499,13 @@ end
 function self:beginNoWagstaffExperiment(player)
     local pos = findnewcluelocation(player:GetPosition())
     if pos then
-        self.roamer = SpawnPrefab("moonstorm_static_roamer")
-        self.roamer.Transform:SetPosition(pos:Get())
-        self.roamer:ListenForEvent("onremove", onremoveroamer)
-    end
-end
+        self.experiment_static = SpawnPrefab("moonstorm_static_nowag")
+        self.experiment_static.Transform:SetPosition(pos:Get())
 
-local function CapturedRoamer(world, static_nowag)
-    if not self.experiment_static then
-        self.experiment_static = static_nowag
         self.experiment_static:ListenForEvent("onremove", onremoveexperimentstatic)
         self.experiment_static:ListenForEvent("death", onremoveexperimentstatic)
-        self:beginNoWagstaffDefence()
     end
 end
-
-inst:ListenForEvent("ms_moonstormstatic_roamer_captured", CapturedRoamer)
 
 function self:beginNoWagstaffDefence()
     if self.experiment_static then
@@ -821,7 +783,7 @@ end
 
 function self:DoTestForWagstaff()
 	local moonstorms = TheWorld.net.components.moonstorms
-	if (not self.wagstaff and not self.experiment_static and not self.roamer) and moonstorms ~= nil then
+	if (not self.wagstaff and not self.experiment_static) and moonstorms ~= nil then
 		local eligible_players = {}
 		for _, player in pairs(_activeplayers) do
 			local valid = player:IsValid() and player.components.health ~= nil and not player.components.health:IsDead()

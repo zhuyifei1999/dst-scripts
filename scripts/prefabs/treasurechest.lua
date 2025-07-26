@@ -175,7 +175,6 @@ local function MakeChest(name, bank, build, indestructible, master_postinit, pre
 
         inst:ListenForEvent("onbuilt", onbuilt)
         MakeSnowCovered(inst)
-        SetLunarHailBuildupAmountSmall(inst)
 
 		-- Save / load is extended by some prefab variants
         inst.OnSave = onsave

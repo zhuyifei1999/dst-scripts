@@ -10,7 +10,6 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreezeEx(),
-	CommonHandlers.OnElectrocute(),
 
     CommonHandlers.OnLocomote(false, true),
 
@@ -241,7 +240,6 @@ CommonStates.AddSleepExStates(states,
 })
 
 CommonStates.AddFrozenStates(states, lower_flying_creature, raise_flying_creature)
-CommonStates.AddElectrocuteStates(states)
 
 CommonStates.AddWalkStates(states)
 

@@ -109,9 +109,6 @@ local function commonfn(anim, cookable)
         inst.components.cookable:SetOnCookedFn(oncooked)
     end
 
-	MakeSmallBurnable(inst)
-	MakeSmallPropagator(inst)
-
     return inst
 end
 

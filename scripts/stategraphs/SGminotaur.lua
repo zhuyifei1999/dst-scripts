@@ -81,12 +81,6 @@ local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
     return on_cooldown
 end
 
-local function checkinterruptstun(inst)
-	if not inst.sg.statemem.not_interrupted and inst.components.timer:TimerExists("endstun") then
-		inst.components.timer:StopTimer("endstun")
-		inst:RestartBrain()
-	end
-end
 
 local events =
 {
@@ -94,11 +88,12 @@ local events =
     CommonHandlers.OnFallInVoid(),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnDeath(),
 
+
     EventHandler("collision_stun", function(inst,data)
+        
         if data.light_stun == true then
             inst.sg:GoToState("hit")
         elseif data.land_stun == true then
@@ -113,21 +108,19 @@ local events =
     end),
 
     EventHandler("attacked", function(inst,data)    
-		if inst.components.health and not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not hit_recovery_delay(inst) and
-				(	not inst.sg:HasStateTag("busy") or
-					inst.sg:HasAnyStateTag("caninterrupt", "frozen") or
-					(inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))
-				)
-			then
-				inst.sg:GoToState("hit")
-			end
+        if inst.components.health ~= nil and not inst.components.health:IsDead()
+            and not hit_recovery_delay(inst)
+            and (not inst.sg:HasStateTag("busy")
+            or inst.sg:HasStateTag("caninterrupt")
+            or inst.sg:HasStateTag("frozen")) then    
+                inst.sg:GoToState("hit")
+        elseif inst.sg:HasStateTag("stunned") then
+            inst:PushEvent("stunned_hit")
         end
     end),
     
     EventHandler("doattack", function(inst)
+
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
             inst.sg:GoToState(inst.sg:HasStateTag("running") and "runningattack" or "attack")
         end
@@ -140,17 +133,11 @@ local events =
     end), 
 
     EventHandler("doleapattack", function(inst,data)
-		--V2C: brain already checks state tags, and uses PushEventImmediate
         if inst.components.health and not inst.components.health:IsDead()  then -- and not inst.sg:HasStateTag("busy")
             inst.sg:GoToState("leap_attack_pre", data.target)
         end
     end), 
 
-	EventHandler("endstun", function(inst)
-		if inst.sg:HasStateTag("stunned") and not inst.sg:HasStateTag("hit") then
-			inst.sg:GoToState("stun_pst")
-		end
-	end),
 }
 
 local states =
@@ -409,17 +396,11 @@ local states =
 
         timeline =
         {
-			FrameEvent(47, function(inst)
-				inst.sg:AddStateTag("noelectrocute")
-			end),
 			FrameEvent(52, function(inst) inst.SoundEmitter:PlaySound("ancientguardian_rework/minotaur2/groundpound") end),
 			FrameEvent(58, function(inst)
                 inst.components.groundpounder:GroundPound()
                 BounceStuff(inst)
             end),
-			FrameEvent(59, function(inst)
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
         },
 
         events =
@@ -487,6 +468,10 @@ local states =
             inst.sg:SetTimeout(1.5)
         end,
 
+        onexit = function(inst)
+            
+        end,
+
         ontimeout = function(inst, target)
             inst.sg:GoToState("leap_attack",{targetpos = inst.sg.statemem.targetpos}) 
         end,
@@ -533,9 +518,6 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(3, function(inst)
-				inst.sg:AddStateTag("noelectrocute")
-			end),
 			FrameEvent(8, function(inst) inst.SoundEmitter:PlaySound("ancientguardian_rework/minotaur2/groundpound") end),
 			FrameEvent(14, function(inst)
 				inst.components.groundpounder:GroundPound()
@@ -567,6 +549,7 @@ local states =
     },
 
     State{
+
         name = "leap_attack_pst",
         tags = {"busy"},
         
@@ -609,26 +592,9 @@ local states =
 
         events=
         {
-			EventHandler("attacked", function(inst, data)
-				if not inst.components.health:IsDead() then
-					inst.sg.statemem.not_interrupted = true
-					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-						return
-					else
-						inst.sg:GoToState("stun_hit")
-					end
-				end
-				return true
-			end),
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.not_interrupted = true
-					inst.sg:GoToState("stun_loop")
-				end
-			end),
-		},
-
-		onexit = checkinterruptstun,
+            EventHandler("stunned_hit", function(inst) inst.sg:GoToState("stun_hit") end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("stun_loop") end),
+        },    
     },
 
     State{
@@ -636,14 +602,7 @@ local states =
         tags = {"busy","stunned"},
         
         onenter = function(inst)
-			if not inst.components.timer:TimerExists("endstun") then
-				inst.sg:GoToState("stun_pst")
-				return
-			end
-			if not inst.AnimState:IsCurrentAnimation("stun_loop") then
-				inst.AnimState:PlayAnimation("stun_loop", true)
-			end
-			inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            inst.AnimState:PlayAnimation("stun_loop")
         end,
         
         timeline=
@@ -655,30 +614,14 @@ local states =
 
         events=
         {
-			EventHandler("attacked", function(inst, data)
-				if not inst.components.health:IsDead() then
-					inst.sg.statemem.not_interrupted = true
-					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-						return
-					else
-						inst.sg:GoToState("stun_hit")
-					end
-				end
-				return true
-			end),
+            EventHandler("stunned_hit", function(inst) inst.sg:GoToState("stun_hit") end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("stun_loop") end),
         },
-
-		ontimeout = function(inst)
-			inst.sg.statemem.not_interrupted = true
-			inst.sg:GoToState("stun_loop")
-		end,
-
-		onexit = checkinterruptstun,
     },
 
     State{
         name = "stun_hit",
-		tags = { "busy", "stunned", "hit" },
+        tags = {"busy","stunned"},
         
         onenter = function(inst)
             inst.AnimState:PlayAnimation("stun_hit")
@@ -686,15 +629,8 @@ local states =
 
         events=
         {
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.not_interrupted = true
-					inst.sg:GoToState("stun_loop")
-				end
-			end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("stun_loop") end),
         },
-
-		onexit = checkinterruptstun,
     },
 
     State{
@@ -760,46 +696,6 @@ CommonStates.AddSleepStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-
-CommonStates.AddElectrocuteStates(states,
-nil, --timeline
-{	--anims
-	loop = function(inst)
-		if inst.sg.lasttags["stunned"] then
-			inst.sg:AddStateTag("stunned")
-			return "stun_shock_loop"
-		end
-	end,
-	pst = function(inst)
-		if inst.sg.lasttags["stunned"] then
-			inst.sg:AddStateTag("stunned")
-			return "stun_shock_pst"
-		end
-	end,
-},
-{	--fns
-	loop_onexit = function(inst)
-		if inst.sg:HasStateTag("stunned") then
-			checkinterruptstun(inst)
-		end
-	end,
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			if inst.sg:HasStateTag("stunned") then
-				inst.sg.statemem.not_interrupted = true
-				inst.sg:GoToState("stun_loop")
-			else
-				inst.sg:GoToState("idle")
-			end
-		end
-	end,
-	pst_onexit = function(inst)
-		if inst.sg:HasStateTag("stunned") then
-			checkinterruptstun(inst)
-		end
-	end,
-})
-
 CommonStates.AddVoidFallStates(states, {voiddrop = "hit",})
 
 return StateGraph("minotaur", states, events, "idle")

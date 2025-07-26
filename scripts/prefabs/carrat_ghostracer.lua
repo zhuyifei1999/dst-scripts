@@ -146,8 +146,6 @@ local function fn()
     inst.components.locomotor.runspeed = TUNING.CARRAT.RUN_SPEED
 
     inst:SetStateGraph("SGcarrat")
-	inst.sg.mem.noelectrocute = true --sg is shared by carrats that support electrocute
-
     inst:SetBrain(brain)
 
 	inst.persists = false

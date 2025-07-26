@@ -201,7 +201,6 @@ local function fn()
     MakeMediumPropagator(inst)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
     MakeHauntableWork(inst)
 
     inst:AddComponent("skinner")

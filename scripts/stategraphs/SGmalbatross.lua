@@ -81,17 +81,16 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
 
     EventHandler("depart", function(inst, data)
-		if not inst.components.health:IsDead() and (not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))) then
+        if not inst.components.health:IsDead() and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
             inst.sg:GoToState("depart")
         end
     end),
 
     EventHandler("dosplash", function(inst, data)
-		if not (inst.components.health:IsDead() or inst.components.freezable:IsFrozen() or inst.components.sleeper:IsAsleep() or inst.sg:HasStateTag("electrocute")) then
+        if not inst.components.health:IsDead() and not inst.components.freezable:IsFrozen() and not inst.components.sleeper:IsAsleep() then
             if not TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) and not inst:GetCurrentPlatform() and inst:IsOnOcean() then
                 inst.readytodive = nil
                 inst.sg:GoToState("combatdive")
@@ -99,7 +98,7 @@ local events =
         end
     end),
     EventHandler("doswoop", function(inst, data)
-		if not (inst.components.health:IsDead() or inst.components.freezable:IsFrozen() or inst.components.sleeper:IsAsleep() or inst.sg:HasStateTag("electrocute")) then
+        if not inst.components.health:IsDead() and not inst.components.freezable:IsFrozen() and not inst.components.sleeper:IsAsleep() then
             inst:DoTaskInTime((math.random()*6) + 10, function(inst) inst.readytoswoop = true end)
             inst.sg:GoToState("swoop_pre", data.target or inst.components.combat.target)
         end
@@ -114,8 +113,7 @@ local events =
 
     EventHandler("doattack", function(inst, data)
         if inst.components.health ~= nil and not inst.components.health:IsDead()
-			and (not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")))
-		then
+            and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
             inst.sg:GoToState("attack")
         end
     end),
@@ -176,7 +174,7 @@ local states =
 
     State{
         name = "arrive",
-		tags = { "busy", "noattack", "nosleep", "swoop", "flight", "noelectrocute" },
+        tags = {"busy", "noattack", "nosleep", "swoop", "flight"},
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -189,7 +187,6 @@ local states =
             TimeEvent(14 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("noattack")
                 inst.sg:RemoveStateTag("nosleep")
-				inst.sg:RemoveStateTag("noelectrocute")
             end),
             TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/flap") end),
             TimeEvent(27*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/flap") end),
@@ -203,7 +200,7 @@ local states =
 
     State{
         name = "depart",
-		tags = { "busy", "nosleep", "swoop", "flight", "noelectrocute" },
+        tags = {"busy", "nosleep", "swoop", "flight"},
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -255,7 +252,6 @@ local states =
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(false)
                 inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
             end),
         },
 
@@ -308,7 +304,7 @@ local states =
 
     State{
         name = "nofish",
-		tags = { "busy", "nosleep", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "noattack" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("nofish")
@@ -333,10 +329,7 @@ local states =
                 inst.DynamicShadow:Enable(true)
             end),
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/whoosh") end),
-			TimeEvent(4*FRAMES, function(inst)
-				inst.sg:RemoveStateTag("noattack")
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
+            TimeEvent(4*FRAMES, function(inst) inst.sg:RemoveStateTag("noattack") end),
         },
 
         events =
@@ -347,7 +340,7 @@ local states =
 
     State{
         name = "eatfish",
-		tags = { "busy", "nosleep", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "noattack" },
 
         onenter = function(inst, fish_to_eat)
             -- NOTE: we assume we were given a valid fish to eat; validity should be tested before entering this state.
@@ -387,10 +380,7 @@ local states =
                 inst.DynamicShadow:Enable(true)
             end),
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/whoosh") end),
-			TimeEvent(4*FRAMES, function(inst)
-				inst.sg:RemoveStateTag("noattack")
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
+            TimeEvent(4*FRAMES, function(inst) inst.sg:RemoveStateTag("noattack") end),
             TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/eat") end),
             TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("saltydog/creatures/boss/malbatross/beak") end),
         },
@@ -661,7 +651,6 @@ local states =
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(false)
                 inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
             end),
         },
 
@@ -679,7 +668,7 @@ local states =
 
     State{
         name = "combatdive_pst",
-		tags = { "busy", "nosleep", "noattack", "noelectrocute" },
+        tags = { "busy", "nosleep", "noattack" },
 
         onenter = function(inst)
             if inst.components.combat and inst.components.combat.target then
@@ -708,10 +697,8 @@ local states =
                 spawnwave(inst, 1)
                 inst.DynamicShadow:Enable(true)
             end),
-			TimeEvent(4*FRAMES, function(inst)
-				inst.sg:RemoveStateTag("noattack")
-				inst.sg:RemoveStateTag("electrocute")
-			end),
+
+            TimeEvent(4*FRAMES, function(inst) inst.sg:RemoveStateTag("noattack") end),
         },
 
         events =
@@ -880,6 +867,6 @@ CommonStates.AddSleepExStates(states,
 })
 
 CommonStates.AddFrozenStates(states, LandFlyingCreature, RaiseFlyingCreature)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("malbatross", states, events, "idle", actionhandlers)
+

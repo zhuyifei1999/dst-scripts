@@ -372,7 +372,6 @@ local function fn()
 
     inst:SetPhysicsRadiusOverride(2.35)
     MakeWaterObstaclePhysics(inst, 0.80, 2, 0.75)
-    MakeCollidesWithElectricField(inst)
 
     inst.MiniMapEntity:SetIcon("barnacle_plant.png")
 
@@ -414,9 +413,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-	inst.override_combat_fx_size = "med"
-	inst.override_combat_fx_height = "high"
 
     inst.base = SpawnPrefab("waterplant_base")
     inst.base.entity:SetParent(inst.entity)
@@ -505,7 +501,6 @@ local function fn()
     inst.PushSyncAnimation = syncanimpush
 
     inst:SetStateGraph("SGwaterplant")
-	inst.sg.mem.burn_on_electrocute = true
     inst:SetBrain(brain)
 
     inst.components.timer:StartTimer("equipweapon", math.random() * 2 * FRAMES)

@@ -472,7 +472,12 @@ local function checkstunend(inst, data)
     if data ~= nil then
         if data.name == "endstun" then
             inst:RestartBrain()
-			inst:PushEventImmediate("endstun")
+            if inst.AnimState:IsCurrentAnimation("stun_jump_pre") or
+                inst.AnimState:IsCurrentAnimation("stun_pre") or
+                inst.AnimState:IsCurrentAnimation("stun_loop") or
+                inst.AnimState:IsCurrentAnimation("stun_hit") then
+                inst.sg:GoToState("stun_pst")
+            end
         end
     end
 end
@@ -516,8 +521,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-	inst.override_combat_fx_height = "low"
 
     inst.recentlycharged = {}
     inst.Physics:SetCollisionCallback(oncollide)

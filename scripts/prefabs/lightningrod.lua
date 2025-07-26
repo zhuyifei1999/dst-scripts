@@ -171,7 +171,6 @@ local function fn()
     inst.components.battery.onused = UseAsBattery
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
     inst:ListenForEvent("onbuilt", onbuilt)
 
     MakeHauntableWork(inst)

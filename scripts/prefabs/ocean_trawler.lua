@@ -120,7 +120,6 @@ local function fn()
 
     MakeInventoryPhysics(inst)
     MakeWaterObstaclePhysics(inst, 1.15, 2, 0.75)
-    MakeSnowCoveredPristine(inst)
 
     inst.AnimState:SetBank("ocean_trawler")
     inst.AnimState:SetBuild("ocean_trawler")

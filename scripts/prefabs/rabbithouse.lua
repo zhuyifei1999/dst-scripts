@@ -218,7 +218,6 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
 
     MakeMediumBurnable(inst, nil, nil, true)
     MakeLargePropagator(inst)

@@ -118,12 +118,9 @@ end
 
 local events =
 {
-	CommonHandlers.OnElectrocute(),
-	EventHandler("attacked", function(inst, data)
+    EventHandler("attacked", function(inst)
         if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif inst.sg:HasStateTag("caninterrupt") or not inst.sg:HasStateTag("busy") then
+			if inst.sg:HasStateTag("caninterrupt") or not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("hit")
             end
         end
@@ -208,7 +205,7 @@ local states=
 
     State{
         name = "emerge",
-		tags = { "busy", "canrotate", "emerged", "noelectrocute" },
+        tags = {"busy", "canrotate","emerged"},
 
         onenter = function(inst)
             if inst:HasTag("weakvine") then
@@ -221,10 +218,7 @@ local states=
 
         timeline=
         {
-			FrameEvent(7, function(inst)
-				inst.sg:AddStateTag("caninterrupt")
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
+            TimeEvent(7*FRAMES, function(inst) inst.sg:AddStateTag("caninterrupt") end ),
         },
 
         events =
@@ -238,7 +232,7 @@ local states=
 
     State{
         name = "retract",
-		tags = { "busy", "canrotate", "retracting", "emerged", "noelectrocute" },
+        tags = {"busy", "canrotate", "retracting", "emerged"},
 
         onenter = function(inst, pos)
             inst.sg.statemem.pos = pos
@@ -247,7 +241,7 @@ local states=
 
         timeline=
         {
-			FrameEvent(11, function(inst) 
+            TimeEvent(15*FRAMES, function(inst) 
                 inst.sg:AddStateTag("noattack")
                 if inst.components.burnable and inst.components.burnable:IsBurning() then
                     inst.components.burnable:Extinguish()
@@ -343,7 +337,7 @@ local states=
     
     State{
         name = "death",
-		tags = { "dead", "busy" },
+        tags = {"busy"},
 
         onenter = function(inst)
 			cancelmovetail(inst)
@@ -370,7 +364,7 @@ local states=
 
     State{
         name = "nub_spawn",
-		tags = { "busy", "nub", "noelectrocute" },
+        tags = {"busy", "noattack","nub"},
 
         onenter = function(inst,pos)
             local pt = Vector3(inst.Transform:GetWorldPosition())
@@ -378,9 +372,9 @@ local states=
 
             if #ents <= 0 then
                 inst:setweakstate(true)
+                inst.sg:RemoveStateTag("noattack")
             else
                 inst:setweakstate(false)
-				inst.sg:AddStateTag("noattack")
             end
 
             inst.sg.statemem.pos = pos
@@ -410,12 +404,11 @@ local states=
 
     State{
         name = "nub_idle",
-		tags = { "idle", "nub" },
+        tags = {"idle", "noattack","nub"},
 
         onenter = function(inst)
-			if not inst:HasTag("weakvine") then
-				inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
+            if inst:HasTag("weakvine") then
+                inst.sg:RemoveStateTag("noattack")
             end
             inst.AnimState:PlayAnimation("idle")
         end,
@@ -433,12 +426,11 @@ local states=
 
     State{
         name = "nub_reverse",
-		tags = { "nub" },
+        tags = {"noattack","nub"},
 
         onenter = function(inst)
-			if not inst:HasTag("weakvine") then
-				inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
+            if inst:HasTag("weakvine") then
+                inst.sg:RemoveStateTag("noattack")
             end
             inst.AnimState:PlayAnimation("retract_loop")
         end,
@@ -453,12 +445,11 @@ local states=
 
     State{
         name = "nub_forward",
-		tags = { "nub" },
+        tags = {"noattack","nub"},
 
         onenter = function(inst)
-			if not inst:HasTag("weakvine") then
-				inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
+            if inst:HasTag("weakvine") then
+                inst.sg:RemoveStateTag("noattack")
             end
             inst.AnimState:PlayAnimation("loop")
         end,
@@ -473,11 +464,11 @@ local states=
 
     State{
         name = "nub_retract",
-		tags = { "nub", "noelectrocute" },
+        tags = {"noattack","nub"},
 
         onenter = function(inst,pos,notailmove)
-			if not inst:HasTag("weakvine") then
-				inst.sg:AddStateTag("noattack")
+            if inst:HasTag("weakvine") then
+                inst.sg:RemoveStateTag("noattack")
             end
             inst.sg.statemem.pos = pos
             inst.AnimState:PlayAnimation("retract")
@@ -572,58 +563,5 @@ local states=
 		end,
 	},
 }
-
-CommonStates.AddElectrocuteStates(states,
-nil, --timelines
-nil, --anims
-{	--fns
-	loop_onenter = function(inst)
-		if inst:HasTag("lunarthrall_plant_end") then
-			inst.sg:AddStateTag("emerged")
-		elseif not inst:HasTag("weakvine") then
-			inst:setweakstate(true)
-		end
-
-		local data = inst.sg.statemem.data
-		local syncdata =
-		{
-			duration = data and data.duration,
-			noburn = true,
-			synced = true,
-		}
-
-		if inst.tails then
-			for i, v in ipairs(inst.tails) do
-				if not v.sg:HasStateTag("electrocute") then
-					v:PushEventImmediate("electrocute", syncdata)
-				end
-			end
-		end
-
-		if not (data and data.synced) then
-			local parent = (inst.headplant or inst).parentplant
-			if parent and not parent.sg:HasStateTag("electrocute") then
-				parent:PushEventImmediate("electrocute", syncdata)
-			end
-		end
-	end,
-	pst_onenter = function(inst)
-		if inst:HasTag("lunarthrall_plant_end") then
-			inst.sg:AddStateTag("emerged")
-		end
-	end,
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			if inst:HasTag("weakvine") or not inst:HasTag("lunarthrall_plant_end") then
-				inst.sg:GoToState("nub_idle")
-			else
-				inst.sg:GoToState("idle")
-			end
-			if inst:HasTag("lunarthrall_plant_end") then
-				inst:ChooseAction()
-			end
-		end
-	end,
-})
 
 return StateGraph("lunarthrall_plant_vine", states, events, "nub_idle")

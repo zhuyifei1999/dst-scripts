@@ -261,7 +261,6 @@ local function Full_MakeStump(inst)
     local work_left = is_mineable and 3 or 1
 
     inst:RemoveComponent("workable")
-    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveComponent("pickable")
 
     inst:AddTag("stump")
@@ -522,7 +521,6 @@ local function MakeAncientTree(name, data)
 
         if data.snowcovered then
             MakeSnowCovered(inst)
-            SetLunarHailBuildupAmountLarge(inst)
         end
 
         inst.OnSave = Full_OnSave

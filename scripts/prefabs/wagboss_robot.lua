@@ -1299,7 +1299,7 @@ local function SocketCage(inst)
 		if not POPULATING then
 			inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/gestalt_placed_activate")
 		end
-		inst:PushEventImmediate("reveal")
+		inst.sg:HandleEvent("reveal")
 	end
 end
 
@@ -1344,7 +1344,7 @@ local function OnPreLoad(inst, data, ents)
 			end
 			inst:SetMusicLevel(1)
 		elseif data.active then
-			inst:PushEventImmediate("activate")
+			inst.sg:HandleEvent("activate")
 		end
 		if data.shattered then
 			BreakGlass(inst)
@@ -1388,7 +1388,7 @@ end
 
 --------------------------------------------------------------------------
 
-local OBSTACLE_RADIUS = 3.5 -- NOTES(JBK): Keep in sync with the constructionkit! Search string [WBRPR]
+local OBSTACLE_RADIUS = 3.5
 local STANDING_RADIUS = 0.25
 
 local function ForEachInPathfinding(x, z, cb)
@@ -1681,11 +1681,6 @@ local function fn()
 
 		return inst
 	end
-
-	inst.scrapbook_overridedata = {
-		{ "glass1", "wagboss_robot", "glass2" },
-	}
-	inst.scrapbook_anim = "scrapbook"
 
 	--Remove these tags so that they can be added properly when replicating components below
 	inst:RemoveTag("__health")

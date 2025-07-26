@@ -161,11 +161,13 @@ local function SmallRetarget(inst)
         return nil
     end
 end
-]]
 
 local function SmallKeepTarget(inst, target)
-    return inst.components.combat:CanTarget(target)
+    if not inst:HasTag("companion") then
+        return false
+    end
 end
+]]
 
 local RETARGET_ONEOF_TAGS = {"player", "monster"}
 local function TeenRetarget(inst)
@@ -414,7 +416,7 @@ local function create_smallbird()
     inst.components.combat:SetDefaultDamage(TUNING.SMALLBIRD_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.SMALLBIRD_ATTACK_PERIOD)
     --inst.components.combat:SetRetargetFunction(3, SmallRetarget)
-    inst.components.combat:SetKeepTargetFunction(SmallKeepTarget)
+    --inst.components.combat:SetKeepTargetFunction(SmallKeepTarget)
 
     inst.components.lootdropper:SetLoot({"smallmeat"})
 

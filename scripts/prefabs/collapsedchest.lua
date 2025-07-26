@@ -168,7 +168,6 @@ local function MakeCollapsedChest(name, build, bank)
 		inst:ListenForEvent("onsink", OnSink)
 
 		MakeSnowCovered(inst)
-        SetLunarHailBuildupAmountSmall(inst)
 
 		inst.SetChest = SetChest
 		inst.OnSave = OnSave

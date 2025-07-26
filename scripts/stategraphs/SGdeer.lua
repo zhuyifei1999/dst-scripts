@@ -37,7 +37,6 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(TUNING.DEER_HIT_RECOVERY, TUNING.DEER_MAX_STUN_LOCKS),
     CommonHandlers.OnDeath(),
     EventHandler("doattack", function(inst, data)
@@ -648,7 +647,6 @@ CommonStates.AddCombatStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 
 CommonStates.AddSleepExStates(states,
 {

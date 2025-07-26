@@ -57,7 +57,6 @@ end
 
 local function makestump(inst, instant)
     inst:RemoveComponent("workable")
-    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveComponent("burnable")
     MakeMediumBurnable(inst)
     inst:RemoveComponent("propagator")
@@ -202,7 +201,6 @@ local function fn()
     MakeHauntableWorkAndIgnite(inst)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountLarge(inst)
 
 	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 		inst:DoTaskInTime(0, OnHalloweenSetup)

@@ -65,24 +65,24 @@ local function SetContainerCanBeOpened(inst, canbeopened)
 	end
 end
 
+local actionhandlers =
+{
+}
+
 local events=
 {
     CommonHandlers.OnStep(),
     CommonHandlers.OnSleep(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnLocomote(false,true),
     CommonHandlers.OnHop(),
 	CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
-	EventHandler("attacked", function(inst, data)
+    EventHandler("attacked", function(inst)
         if inst.components.health and not inst.components.health:IsDead() and not inst.sg:HasStateTag("devoured") then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				inst.SoundEmitter:PlaySound(inst.sounds.hurt)
-				return
-			elseif not inst.sg:HasStateTag("electrocute") then
-				inst.sg:GoToState("hit")
-				inst.SoundEmitter:PlaySound(inst.sounds.hurt)
-			end
+            inst.sg:GoToState("hit")
+
+            inst.SoundEmitter:PlaySound(inst.sounds.hurt)
+
         end
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
@@ -135,6 +135,7 @@ local states=
 			end),
         },
    },
+
 
     State{
         name = "death",
@@ -276,7 +277,7 @@ local states=
 
     State{
         name = "transition",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst)
             inst.Physics:Stop()
 
@@ -328,7 +329,7 @@ local states=
 
     State{
         name = "morph",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst, morphfn)
             inst.Physics:Stop()
 
@@ -394,7 +395,7 @@ local states=
 
     State{
         name = "knockbacklanded",
-		tags = { "knockback", "busy", "nopredict", "nomorph", "nointerrupt", "jumping", "noelectrocute" },
+        tags = { "knockback", "busy", "nopredict", "nomorph", "nointerrupt", "jumping" },
 
         onenter = function(inst, data)
             ClearStatusAilments(inst)
@@ -507,7 +508,7 @@ local states=
 
     State{
         name = "devoured",
-		tags = { "devoured", "invisible", "noattack", "notalking", "nointerrupt", "busy", "silentmorph", "noelectrocute" },
+        tags = { "devoured", "invisible", "noattack", "notalking", "nointerrupt", "busy", "silentmorph" },
 
         onenter = function(inst, data)
             local attacker = data.attacker
@@ -554,14 +555,16 @@ local states=
                         inst.Physics:Teleport(x, 0, z)
                     end
 
-					inst:PushEventImmediate("knockback", {
+                    inst.sg:HandleEvent("knockback", {
                         knocker = attacker,
                         radius = data ~= nil and data.radius or physradius + 1,
                         strengthmult = data ~= nil and data.strengthmult or nil,
                     })
                 else
-					inst:PushEventImmediate("knockback")
+                    inst.sg:HandleEvent("knockback")
+
                 end
+
             end),
         },
 
@@ -687,6 +690,7 @@ CommonStates.AddWalkStates(states, {
 
 CommonStates.AddHopStates(states, true, nil,
 {
+
     hop_pre =
     {
         TimeEvent(0, function(inst)
@@ -723,19 +727,6 @@ CommonStates.AddSleepStates(states,
 CommonStates.AddSimpleState(states, "hit", "hit", {"busy"})
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
-CommonStates.AddElectrocuteStates(states, nil, nil,
-{
-	loop_onenter = function(inst)
-		SetContainerCanBeOpened(inst, false)
-	end,
-	loop_onexit = function(inst)
-		if not inst.sg.statemem.not_interrupted then
-			SetContainerCanBeOpened(inst, true)
-		end
-	end,
-	pst_onexit = function(inst)
-		SetContainerCanBeOpened(inst, true)
-	end,
-})
 
-return StateGraph("chester", states, events, "idle")
+return StateGraph("chester", states, events, "idle", actionhandlers)
+

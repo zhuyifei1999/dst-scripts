@@ -95,7 +95,6 @@ local function fn()
 
     inst:ListenForEvent("onbuilt", onbuilt)
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     AddHauntableDropItemOrWork(inst)
 

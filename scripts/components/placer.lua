@@ -463,14 +463,9 @@ function Placer:OnUpdate(dt)
         --     but unfortunately position will be choppy compared to parenting
         --V2C: switched to WallUpdate, so should be smooth now
         local x, y, z = ThePlayer.entity:LocalToWorldSpace(self.offset, 0, 0)
-        if self:IsAxisAlignedPlacement() then
-            axisalignedhelpers_visible = true
-            self.inst.Transform:SetPosition(self:GetAxisAlignedPlacementTransform(x, y, z))
-        else
-            self.inst.Transform:SetPosition(x, y, z)
-            if self.controllergroundoverridefn then
-                self.controllergroundoverridefn(self, ThePlayer, x, y, z)
-            end
+        self.inst.Transform:SetPosition(x, y, z)
+        if self.controllergroundoverridefn then
+            self.controllergroundoverridefn(self, ThePlayer, x, y, z)
         end
     elseif self.inst.parent == nil then
 --        ThePlayer:AddChild(self.inst)

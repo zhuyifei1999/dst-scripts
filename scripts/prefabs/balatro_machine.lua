@@ -521,7 +521,7 @@ local function EndInteraction(inst, doer)
     inst:RemoveEventCallback("ms_closepopup", inst.onclosepopup, doer)
     inst:RemoveEventCallback("ms_popupmessage", inst.onpopupmessage, doer)
 
-    doer:PushEventImmediate("ms_endplayingbalatro")
+    doer.sg:HandleEvent("ms_endplayingbalatro")
 
     inst._currentgame = {}
 end

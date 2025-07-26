@@ -738,33 +738,9 @@ function EntityScript:GetDisplayName()
     return name
 end
 
---Can NOT be used on clients
-function EntityScript:GetWetMultiplier()
-	if self:HasTag("wet") then
-		return 1
-	elseif self:HasTag("moistureimmunity") then
-        return 0
-	elseif self.components.inventoryitem then --Inventoryitemmoisture can give us percent, but keep it consistent with how it was before, for now......
-        return self.components.inventoryitem:IsWet() and 1 or 0
-	end
-
-	local moisture = self.components.temp_moisture or self.components.moisture --or self.components.inventoryitem 
-	if moisture then
-        return moisture:GetMoisturePercent()
-    else
-        return
-        (
-			(TheWorld.state.iswet and not self:HasTag("rainimmunity")) or
-			(self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
-        ) and 1 or 0
-    end
-end
-
 --Can be used on clients
 function EntityScript:GetIsWet()
-	if self:HasTag("wet") then
-		return true
-	elseif self:HasTag("moistureimmunity") then
+    if self:HasTag("moistureimmunity") then
         return false
     end
 
@@ -772,7 +748,8 @@ function EntityScript:GetIsWet()
     if replica then
         return replica:IsWet()
     else
-		return (TheWorld.state.iswet and not self:HasTag("rainimmunity"))
+        return self:HasTag("wet")
+            or (TheWorld.state.iswet and not self:HasTag("rainimmunity"))
             or (self:HasTag("swimming") and not self:HasTag("likewateroffducksback"))
     end
 end

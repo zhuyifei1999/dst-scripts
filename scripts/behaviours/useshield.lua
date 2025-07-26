@@ -23,13 +23,11 @@ UseShield = Class(BehaviourNode, function(self, inst, damageforshield, shieldtim
     self.onattackedfn = function(inst, data) self:OnAttacked(data.attacker, data.damage) end
     self.onhostileprojectilefn = function() self:OnAttacked(nil, 0, true) end
     self.onfiredamagefn = function() self:OnAttacked() end
-	self.onelectrocutefn = function() self.inst.brain:ForceUpdate() end
 
     self.inst:ListenForEvent("attacked", self.onattackedfn)
     self.inst:ListenForEvent("hostileprojectile", self.onhostileprojectilefn)
     self.inst:ListenForEvent("firedamage", self.onfiredamagefn)
     self.inst:ListenForEvent("startfiredamage", self.onfiredamagefn)
-	self.inst:ListenForEvent("startelectrocute", self.onelectrocutefn)
 end)
 
 function UseShield:OnStop()
@@ -40,7 +38,6 @@ function UseShield:OnStop()
     self.inst:RemoveEventCallback("hostileprojectile", self.onhostileprojectilefn)
     self.inst:RemoveEventCallback("firedamage", self.onfiredamagefn)
     self.inst:RemoveEventCallback("startfiredamage", self.onfiredamagefn)
-	self.inst:RemoveEventCallback("startelectrocute", self.onelectrocutefn)
 end
 
 function UseShield:TimeToEmerge()
@@ -86,7 +83,7 @@ function UseShield:Visit()
     local statename = self.inst.sg.currentstate.name
 
     if self.status == READY  then
-		if (self:ShouldShield() or self.inst.sg:HasStateTag("shield")) and not self.inst.sg:HasStateTag("electrocute") then
+        if self:ShouldShield() or self.inst.sg:HasStateTag("shield") then
             self.damagetaken = 0
             self.projectileincoming = false
 
@@ -108,9 +105,7 @@ function UseShield:Visit()
     end
 
     if self.status == RUNNING then
-		if self.inst.sg:HasStateTag("electrocute") then
-			self.status = FAILED
-		elseif not self:TimeToEmerge() or
+        if not self:TimeToEmerge() or
                 (not self.dontshieldforfire and self.inst.components.health.takingfiredamage) then
             self.status = RUNNING
         else

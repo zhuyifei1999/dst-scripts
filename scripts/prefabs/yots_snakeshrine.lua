@@ -265,7 +265,6 @@ local function fn()
 
     --
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     --
     local burnable = MakeMediumBurnable(inst, nil, nil, true)

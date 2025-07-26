@@ -21,23 +21,18 @@ local events =
     CommonHandlers.OnHop(),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
 
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("electrocute") then
-				if inst:HasAnyTag("spider_warrior", "spider_spitter", "spider_moon") then
-					if not inst.sg:HasAnyStateTag("attack", "moving") then -- don't interrupt attack, exit shield or moviment
-						inst.sg:GoToState("hit") -- can still attack
-					end
-				elseif not inst.sg:HasStateTag("shield") then
-					inst.sg:GoToState("hit_stunlock")  -- can't attack during hit reaction
-				end
-			end
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() then
+            if inst:HasTag("spider_warrior") or inst:HasTag("spider_spitter") or inst:HasTag("spider_moon") then
+                if not inst.sg:HasAnyStateTag("attack", "moving") then -- don't interrupt attack, exit shield or moviment
+                    inst.sg:GoToState("hit") -- can still attack
+                end
+            elseif not inst.sg:HasStateTag("shield") then
+                inst.sg:GoToState("hit_stunlock")  -- can't attack during hit reaction
+            end
         end
     end),
     EventHandler("doattack", function(inst, data)
@@ -573,7 +568,7 @@ local states =
 
     State{
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = { "busy", "trapped" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -590,7 +585,7 @@ local states =
 
     State{
         name = "mutate",
-		tags = { "busy", "mutating", "noelectrocute" },
+        tags = {"busy", "mutating"},
 
         onenter = function(inst, start_anim)
             inst.Physics:Stop()
@@ -644,7 +639,7 @@ local states =
 
     State{
         name = "mutate_pst",
-		tags = { "busy", "mutating", "noelectrocute" },
+        tags = {"busy", "mutating"},
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -659,7 +654,7 @@ local states =
 
     State{
         name = "parasite_revive",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
 
         onenter = function(inst)
             inst.sg.statemem.bank = inst.AnimState:GetBankHash()
@@ -698,7 +693,6 @@ CommonStates.AddSleepStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump", pst = "boat_jump_pst"})
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

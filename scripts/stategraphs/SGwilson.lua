@@ -264,6 +264,7 @@ local function SetSleeperAwakeState(inst)
     inst:ShowActions(true)
 end
 
+
 local function DoEmoteFX(inst, prefab)
     local fx = SpawnPrefab(prefab)
     if fx ~= nil then
@@ -666,17 +667,6 @@ local actionhandlers =
                 or nil
         end),
     ActionHandler(ACTIONS.MINE,
-        function(inst)
-            if inst:HasTag("beaver") then
-                return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
-            end
-            return not inst.sg:HasStateTag("premine")
-                and (inst.sg:HasStateTag("mining") and
-                    "mine" or
-                    "mine_start")
-                or nil
-        end),
-    ActionHandler(ACTIONS.REMOVELUNARBUILDUP, -- Copy of ACTIONS.MINE
         function(inst)
             if inst:HasTag("beaver") then
                 return not inst.sg:HasStateTag("gnawing") and "gnaw" or nil
@@ -1410,11 +1400,6 @@ local actionhandlers =
 
 	-- Rifts 5
 	ActionHandler(ACTIONS.POUNCECAPTURE, "pouncecapture_pre"),
-    ActionHandler(ACTIONS.STARTELECTRICLINK, "doshortaction"),
-    ActionHandler(ACTIONS.ENDELECTRICLINK, "doshortaction"),
-
-    -- electrocute
-    ActionHandler(ACTIONS.DIVEGRAB, "divegrab_pre"),
 }
 
 local events =
@@ -1523,7 +1508,7 @@ local events =
             elseif data.stimuli == "darkness" then
                 inst.sg:GoToState("hit_darkness")
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
-				inst.sg:GoToState("electrocute", { attackdata = data })
+                inst.sg:GoToState("electrocute")
             elseif inst.sg:HasStateTag("nointerrupt") then
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
                 DoHurtSound(inst)
@@ -2868,9 +2853,9 @@ local states =
 
     State{
         name = "electrocute",
-		tags = { "busy", "pausepredict", "electrocute", "noelectrocute" },
+        tags = { "busy", "pausepredict" },
 
-		onenter = function(inst, data)
+        onenter = function(inst)
             ClearStatusAilments(inst)
 			if inst.components.grogginess then
 				inst.components.grogginess:ResetGrogginess()
@@ -2893,47 +2878,20 @@ local states =
             inst.fx.entity:AddFollower()
             inst.fx.Follower:FollowSymbol(inst.GUID, "swap_shock_fx", 0, 0, 0)
 
-			local isplant = inst:HasTag("plantkin")
             if not inst:HasTag("electricdamageimmune") then
                 inst.components.bloomer:PushBloom("electrocute", "shaders/anim.ksh", -2)
                 inst.Light:Enable(true)
-
-				if isplant and not (data and data.noburn) then
-					local attackdata = data and data.attackdata or data
-					inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
-				end
             end
-
-			if data then
-				data =
-					data.attackdata and {
-						attackdata = data.attackdata,
-						targets = data.targets,
-						numforks = data.numforks and data.numforks - 1 or nil,
-					} or
-					data.stimuli == "electric" and {
-						attackdata = data,
-					} or
-					nil
-				if data then
-					StartElectrocuteForkOnTarget(inst, data)
-				end
-			end
 
             inst.AnimState:PlayAnimation("shock")
             inst.AnimState:PushAnimation("shock_pst", false)
-			if isplant then
-				inst.AnimState:SetFrame(8)
-				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + (2 - 8) * FRAMES)
-			else
-				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 4 * FRAMES)
-			end
 
             DoHurtSound(inst)
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+            inst.sg:SetTimeout(8 * FRAMES + inst.AnimState:GetCurrentAnimationLength())
         end,
 
         events =
@@ -2957,9 +2915,7 @@ local states =
         },
 
         ontimeout = function(inst)
-			inst.sg:RemoveStateTag("busy")
-			inst.sg:RemoveStateTag("pausepredict")
-			inst.sg:AddStateTag("idle")
+            inst.sg:GoToState("idle", true)
         end,
 
         onexit = function(inst)
@@ -4559,11 +4515,8 @@ local states =
                     inst.sg.statemem.action ~= nil and
                     inst.sg.statemem.action:IsValid() and
                     inst.sg.statemem.action.target ~= nil and
-                    ((inst.sg.statemem.action.target.components.workable ~= nil and
-                        inst.sg.statemem.action.target.components.workable:CanBeWorked()) or
-                    (inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
-                        inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable()
-                    )) and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
                     inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
                     CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
 					--No fast-forward when repeat initiated on server
@@ -4753,7 +4706,7 @@ local states =
                 if inst.sg.statemem.action ~= nil then
                     local target = inst.sg.statemem.action.target
                     if target ~= nil and target:IsValid() then
-                        if inst.sg.statemem.action.action == ACTIONS.MINE or inst.sg.statemem.action.action == ACTIONS.REMOVELUNARBUILDUP then
+                        if inst.sg.statemem.action.action == ACTIONS.MINE then
 							inst.sg.statemem.recoilstate = "gnaw_recoil"
                             PlayMiningFX(inst, target)
                         elseif inst.sg.statemem.action.action == ACTIONS.HAMMER then
@@ -4779,19 +4732,7 @@ local states =
                     inst.components.playercontroller == nil then
                     return
                 end
-                if inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
-                    inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable() and
-                    ACTIONS.REMOVELUNARBUILDUP ~= inst.sg.statemem.action.action then
-                    if not inst.components.playercontroller:IsAnyOfControlsPressed(
-                        CONTROL_SECONDARY,
-                        CONTROL_CONTROLLER_ALTACTION) and
-                    not inst.components.playercontroller:IsAnyOfControlsPressed(
-                        CONTROL_PRIMARY,
-                        CONTROL_ACTION,
-                        CONTROL_CONTROLLER_ACTION) then
-                        return
-                    end
-                elseif inst.sg.statemem.rmb then
+                if inst.sg.statemem.rmb then
                     if not inst.components.playercontroller:IsAnyOfControlsPressed(
                             CONTROL_SECONDARY,
                             CONTROL_CONTROLLER_ALTACTION) then
@@ -4805,13 +4746,9 @@ local states =
                 end
                 if inst.sg.statemem.action:IsValid() and
                     inst.sg.statemem.action.target ~= nil and
-                    ((inst.sg.statemem.action.target.components.workable ~= nil and
-                        inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                        inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action) or
-                    (inst.sg.statemem.action.target.components.lunarhailbuildup ~= nil and
-                        inst.sg.statemem.action.target.components.lunarhailbuildup:IsBuildupWorkable() and
-                        ACTIONS.REMOVELUNARBUILDUP == inst.sg.statemem.action.action
-                    )) and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action and
                     CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
 					--No fast-forward when repeat initiated on server
 					inst.sg.statemem.action.options.no_predict_fastforward = true
@@ -11791,10 +11728,9 @@ local states =
 
    State{
         name = "mount_plank",
-		tags = { "doing", "canrotate" },
+        tags = { "idle" },
 
         onenter = function(inst)
-			inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("plank_idle_pre")
             inst.AnimState:PushAnimation("plank_idle_loop", true)
             inst:AddTag("on_walkable_plank")
@@ -13720,14 +13656,14 @@ local states =
 						inst.Physics:Teleport(x, 0, z)
 					end
 					DoHurtSound(inst)
-					inst:PushEventImmediate("knockback", {
+					inst.sg:HandleEvent("knockback", {
 						knocker = attacker,
 						starthigh = data and data.starthigh or nil,
 						radius = data ~= nil and data.radius or physradius + 1,
 						strengthmult = data ~= nil and data.strengthmult or nil,
 					})
 				else
-					inst:PushEventImmediate("knockback")
+					inst.sg:HandleEvent("knockback")
 				end
 				--NOTE: ignores heavy armor/body
 			end),
@@ -13852,14 +13788,14 @@ local states =
 					z = z - math.sin(rot) * 0.1
 					inst.Physics:Teleport(x, 0, z)
 					DoHurtSound(inst)
-					inst:PushEventImmediate("knockback", {
+					inst.sg:HandleEvent("knockback", {
 						knocker = attacker,
 						starthigh = data and data.starthigh or nil,
 						radius = data ~= nil and data.radius or physradius + 1,
 						strengthmult = data ~= nil and data.strengthmult or nil,
 					})
 				else
-					inst:PushEventImmediate("knockback")
+					inst.sg:HandleEvent("knockback")
 				end
 				--NOTE: ignores heavy armor/body
 			end),
@@ -23618,7 +23554,7 @@ local states =
 			FrameEvent(10, function(inst)
 				local target = inst.bufferedaction and inst.bufferedaction.target or nil
 				if target and target:IsValid() and target.sg and inst:IsNear(target, 1 + inst.sg.statemem.speed * (1 + 1/4) * FRAMES) then
-					target:PushEventImmediate("captured")
+					target.sg:HandleEvent("captured")
 				end
 			end),
 			FrameEvent(11, function(inst)
@@ -24644,199 +24580,6 @@ local states =
 				inst.sg:GoToState("idle", true)
 			end),
 		},
-	},
-
-    -- electrocute
-	State{
-		name = "divegrab_pre",
-		tags = { "busy" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-            inst.AnimState:OverrideSymbol("sb_parts", "player_divegrab", "sb_parts")
-			inst.AnimState:PlayAnimation("divegrab_pre")
-			inst.AnimState:PushAnimation("divegrab", false)
-			local buffaction = inst:GetBufferedAction()
-			if buffaction then
-				local target = buffaction.target
-				if target and target:IsValid() then
-					inst.sg.statemem.target = target
-					inst:ForceFacePoint(target:GetPosition())
-
-					local tool = buffaction.invobject
-					if tool and tool.components.moonstormstaticcatcher then
-						inst.sg.statemem.tool = tool
-						tool.components.moonstormstaticcatcher:OnTarget(target)
-					end
-				end
-			end
-		end,
-
-		onupdate = function(inst)
-			local target = inst.sg.statemem.target
-			if target then
-				if target:IsValid() then
-					inst:ForceFacePoint(target:GetPosition())
-				else
-					inst.sg.statemem.target = nil
-				end
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(3, function(inst)
-				--NOTES(JBK): Copied bit from @V2C:
-				--Start physics early; normally done in "capture" state with "nopredict".
-				--Prevents client from seeing slight snapback before jumping forward.
-				--Must manually update client's position (using Teleport) if interrupted.
-				local target = inst.sg.statemem.target
-				if target and target:IsValid() then
-					local x, y, z = inst.Transform:GetWorldPosition()
-					local x1, y1, z1 = target.Transform:GetWorldPosition()
-					local dx = x1 - x
-					local dz = z1 - z
-					local dist
-					if dx ~= 0 or dz ~= 0 then
-						inst.Transform:SetRotation(math.atan2(-dz, dx) * RADIANS)
-                        local objectradius = 0.2 -- NOTES(JBK): Make this the same size for moonstorm_static. Search string [NOWAGPRF]
-						dist = math.min(6, math.sqrt(dx * dx + dz * dz) - inst:GetPhysicsRadius(0) - objectradius)
-					else
-						dist = 0
-					end
-					--8 + 1/4 frames of jumping to reach target
-					inst.sg.statemem.speed = dist * 30 / (8 + 1/4)
-				else
-					inst.sg.statemem.speed = 4
-				end
-				inst.sg.statemem.target = nil
-				inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
-			end),
-			FrameEvent(4, function(inst)
-				inst.sg.statemem.capturing = true
-				inst.sg:GoToState("divegrab",
-				{
-					speed = inst.sg.statemem.speed,
-					tool = inst.sg.statemem.tool,
-				})
-			end),
-		},
-
-		onexit = function(inst)
-			if not inst.sg.statemem.capturing then
-                inst.AnimState:ClearOverrideSymbol("sb_parts")
-				local x, y, z = inst.Transform:GetWorldPosition()
-				inst.Physics:Stop()
-				inst.Physics:Teleport(x, 0, z)
-
-				local tool = inst.sg.statemem.tool
-				if tool and tool.components.moonstormstaticcatcher and tool:IsValid() then
-					tool.components.moonstormstaticcatcher:OnUntarget()
-				end
-			end
-		end,
-	},
-
-	State{
-		name = "divegrab",
-		tags = { "busy", "nopredict", "jumping" },
-
-		onenter = function(inst, data)
-			--should have reached here on frame 1 (0-based!) of "divegrab"
-			--NOTES(JBK): Copied bit from V2C: force sync anims again for nopredict on clients
-            inst.AnimState:OverrideSymbol("sb_parts", "player_divegrab", "sb_parts")
-			inst.AnimState:PlayAnimation("divegrab")
-			inst.AnimState:SetFrame(1)
-			if data then
-				if data.speed then
-					inst.sg.statemem.speed = data.speed
-					inst.Physics:SetMotorVel(data.speed, 0, 0)
-					ToggleOffPhysicsExceptWorld(inst)
-				end
-				if data.tool then
-					inst.sg.statemem.tool = data.tool
-				end
-			end
-		end,
-
-		timeline =
-		{
-            FrameEvent(5, function(inst)
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local rotation = -inst.Transform:GetRotation() * DEGREES
-                local radius = (inst.sg.statemem.speed or 4) * 2 * FRAMES
-                local fx = SpawnPrefab("slide_puff")
-                fx.Transform:SetPosition(x + math.cos(rotation) * radius, y, z + math.sin(rotation) * radius)
-                fx.Transform:SetScale(1.3, 1.3, 1.3)
-            end),
-			FrameEvent(7, function(inst)
-                PlayFootstep(inst)
-				local target = inst.bufferedaction and inst.bufferedaction.target or nil
-				if target and target:IsValid() and target.sg and inst:IsNear(target, 1 + inst.sg.statemem.speed * (1 + 1/4) * FRAMES) then
-					target:PushEventImmediate("captured")
-				end
-				if not inst:PerformBufferedAction() then
-					inst.sg.statemem.missed = true
-					inst.Physics:SetMotorVel(inst.sg.statemem.speed / 4, 0, 0)
-				else
-					inst.Physics:SetMotorVel(0, 0, 0)
-				end
-				local tool = inst.sg.statemem.tool
-				inst.sg.statemem.tool = nil
-				if tool and tool:IsValid() and tool.components.moonstormstaticcatcher then
-					tool.components.moonstormstaticcatcher:OnUntarget()
-				end
-			end),
-			FrameEvent(8, function(inst)
-				inst.Physics:Stop()
-				ToggleOnPhysics(inst)
-			end),
-			FrameEvent(9, function(inst)
-				inst.sg.statemem.capturing = true
-				inst.sg:GoToState("divegrab_pst", inst.sg.statemem.missed)
-			end),
-		},
-
-		onexit = function(inst)
-            inst.AnimState:ClearOverrideSymbol("sb_parts")
-			local tool = inst.sg.statemem.tool
-			if tool and tool.components.moonstormstaticcatcher and tool:IsValid() then
-				tool.components.moonstormstaticcatcher:OnUntarget()
-			end
-			if not inst.sg.statemem.capturing then
-				inst.Physics:Stop()
-			end
-			if inst.sg.statemem.isphysicstoggle then
-				ToggleOnPhysics(inst)
-			end
-		end,
-	},
-
-	State{
-		name = "divegrab_pst",
-		tags = { "busy", "nopredict", },
-
-		onenter = function(inst, missed)
-			inst.AnimState:PlayAnimation("divegrab_pst")
-			if missed then
-				inst.sg.statemem.missed = true
-			else
-				inst.Physics:SetMotorVel(0, 0, 0)
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(9, function(inst)
-				inst.sg:GoToState("idle", true)
-			end),
-		},
-
-		onexit = function(inst)
-			if not inst.sg.statemem.missed then
-				inst.Physics:Stop()
-			end
-		end,
 	},
 }
 

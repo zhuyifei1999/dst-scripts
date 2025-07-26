@@ -334,7 +334,6 @@ local function MakeCookPot(name, common_postinit, master_postinit, assets, prefa
         --inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
         MakeSnowCovered(inst)
-        SetLunarHailBuildupAmountSmall(inst)
         inst:ListenForEvent("onbuilt", onbuilt)
 
         MakeMediumBurnable(inst, nil, nil, true)

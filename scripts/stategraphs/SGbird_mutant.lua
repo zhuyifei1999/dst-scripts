@@ -16,7 +16,6 @@ local events =
 
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
 
     EventHandler("death", function(inst)
 		inst.sg:GoToState("death", "death")
@@ -36,10 +35,11 @@ local events =
     end),
 
     EventHandler("locomote", function(inst)
-		if not inst.sg:HasAnyStateTag("busy", "moving") then
+        if not inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("moving") then
             inst.sg:GoToState("walk")
         end
     end),
+
 }
 
 local states=
@@ -77,7 +77,7 @@ local states=
 
     State{
         name = "emerge",
-		tags = { "busy", "noattack", "canrotate", "noelectrocute" },
+        tags = {"busy", "noattack", "canrotate"},
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -253,7 +253,7 @@ local states=
 
     State{
         name = "glide",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
         onenter = function(inst)
             inst.Physics:SetDamping(0)
             inst.Physics:SetMotorVel(0, math.random() * 10 - 20, 0)
@@ -307,7 +307,7 @@ local states=
 
     State{
         name = "trapped",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -347,6 +347,5 @@ local states=
 
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("bird_mutant", states, events, "idle", actionhandlers)

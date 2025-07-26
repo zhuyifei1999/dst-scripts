@@ -187,7 +187,6 @@ local function make_stump(inst)
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("workable")
-    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveComponent("hauntable")
     inst:RemoveTag("shelter")
 

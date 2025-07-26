@@ -287,7 +287,6 @@ local function fn()
     MakeSmallPropagator(inst)
     MakeHauntableWork(inst)
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     inst:ListenForEvent("onbuilt", onbuilt)
 	inst:ListenForEvent("ondeconstructstructure", ondeconstructstructure)

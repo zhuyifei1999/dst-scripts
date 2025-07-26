@@ -7,6 +7,7 @@ local CHOP_RANGE_DSQ = TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE * TUNING.ALTERGUAR
 local SPIN_RANGE_DSQ = TUNING.ALTERGUARDIAN_PHASE2_SPIN_RANGE * TUNING.ALTERGUARDIAN_PHASE2_SPIN_RANGE
 local events =
 {
+    CommonHandlers.OnFreeze(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnAttacked(),
@@ -102,7 +103,7 @@ local states =
 {
     State {
         name = "spawn",
-        tags = {"busy", "noaoestun", "noattack", "nosleep", "nostun" },
+        tags = {"busy", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.AnimState:SetBuild("alterguardian_spawn_death")
@@ -495,7 +496,7 @@ local states =
             inst.Physics:ClearMotorVelOverride()
             inst.components.locomotor:Stop()
 
-            -- We may be exiting this state via death, etc.
+            -- We may be exiting this state via death, freezing, etc.
             if not inst.sg.statemem.exit_by_timeout then
                 inst.SoundEmitter:KillSound("spin_loop")
             end
@@ -843,6 +844,7 @@ CommonStates.AddWalkStates(states,
 })
 
 CommonStates.AddHitState(states)
+CommonStates.AddFrozenStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "hit"})
 
 return StateGraph("alterguardian_phase2", states, events, "idle", actionhandlers)

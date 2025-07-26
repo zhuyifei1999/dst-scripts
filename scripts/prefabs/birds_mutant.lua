@@ -178,8 +178,6 @@ end
 
 
 local function commonPostMain(inst)
-	inst.override_combat_fx_size = "tiny"
-
     inst:AddComponent("occupier")
 
     inst:AddComponent("eater")

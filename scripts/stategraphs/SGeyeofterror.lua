@@ -1,5 +1,9 @@
 require("stategraphs/commonstates")
 
+local actionhandlers =
+{
+}
+
 local function PlaySpeechOnPlayerTarget(inst, speech_line_name)
     -- We don't want both twins playing speech lines,
     -- so we have a simple toggle set on the prefab.
@@ -27,14 +31,12 @@ local events =
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
 
     EventHandler("doattack", function(inst)
         if inst.components.health ~= nil and not inst.components.health:IsDead()
-			and (not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")))
-		then
+                and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
             inst.sg:GoToState("taunt")
         end
     end),
@@ -484,7 +486,7 @@ local states =
 
     State {
         name = "spawnminieyes",
-		tags = { "spawnminieyes", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "spawnminieyes", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             local target = inst.components.combat.target
@@ -520,7 +522,6 @@ local states =
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("nosleep")
                 inst.sg:RemoveStateTag("nofreeze")
-				inst.sg:RemoveStateTag("noelectrocute")
             end),
         },
 
@@ -536,7 +537,7 @@ local states =
 
     State {
         name = "spawnminieyes_mouth",
-		tags = { "spawnminieyes", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "spawnminieyes", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -559,24 +560,15 @@ local states =
 
         events =
         {
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.spawning = true
-					inst.sg:GoToState("spawnminieyes_mouth_loop")
-				end
-			end),
+            CommonHandlers.OnNoSleepAnimOver("spawnminieyes_mouth_loop"),
         },
 
-		onexit = function(inst)
-			if not inst.sg.statemem.spawning then
-				raise_flying_creature(inst)
-			end
-		end,
+        onexit = raise_flying_creature,
     },
 
     State {
         name = "spawnminieyes_mouth_loop",
-		tags = { "spawnminieyes", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "spawnminieyes", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -585,9 +577,7 @@ local states =
 
             inst.SoundEmitter:PlaySound(inst._soundpath .. "spawn2_lp")
 
-			if not inst.sg.lasttags["spawnminieyes"] then
-				lower_flying_creature(inst)
-			end
+            lower_flying_creature(inst)
 
             if inst.sg.mem.minieye_spawns == nil then
                 inst.sg.mem.minieye_spawns = math.random(2, inst._mouthspawncount)
@@ -615,17 +605,13 @@ local states =
 
         events =
         {
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg.statemem.spawning = true
-					if inst.sg.mem.minieye_spawns > 0 and
-						inst.components.commander:GetNumSoldiers() < inst:GetDesiredSoldiers()
-					then
-						inst.sg.statemem.looping = true
-						inst.sg:GoToState("spawnminieyes_mouth_loop")
-					else
-						inst.sg:GoToState("spawnminieyes_mouth_pst")
-					end
+            CommonHandlers.OnNoSleepAnimOver(function(inst)
+                if inst.sg.mem.minieye_spawns > 0 and
+                        inst.components.commander:GetNumSoldiers() < inst:GetDesiredSoldiers() then
+                    inst.sg.statemem.looping = true
+                    inst.sg:GoToState("spawnminieyes_mouth_loop")
+                else
+                    inst.sg:GoToState("spawnminieyes_mouth_pst")
                 end
             end),
         },
@@ -636,37 +622,30 @@ local states =
             if not inst.sg.statemem.looping then
                 inst.sg.mem.minieye_spawns = nil
             end
-			if not inst.sg.statemem.spawning then
-				raise_flying_creature(inst)
-			end
+
+            raise_flying_creature(inst)
         end,
     },
 
     State {
         name = "spawnminieyes_mouth_pst",
-		tags = { "spawnminieyes", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "spawnminieyes", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("spawn2_pst")
 
-			if not inst.sg.lasttags["spawnminieyes"] then
-				lower_flying_creature(inst)
-			end
+            lower_flying_creature(inst)
         end,
 
         timeline =
         {
-			FrameEvent(6, function(inst)
-				inst.sg:RemoveStateTag("spawnminieyes")
-				raise_flying_creature(inst)
-			end),
+            TimeEvent(6*FRAMES, raise_flying_creature),
             CommonHandlers.OnNoSleepTimeEvent(8*FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("nosleep")
                 inst.sg:RemoveStateTag("nofreeze")
-				inst.sg:RemoveStateTag("noelectrocute")
             end),
         },
 
@@ -674,18 +653,11 @@ local states =
         {
             CommonHandlers.OnNoSleepAnimOver("idle"),
         },
-
-		onexit = function(inst)
-			if inst.sg:HasStateTag("spawnminieyes") then
-				inst.sg:RemoveStateTag("spawnminieyes")
-				raise_flying_creature(inst)
-			end
-		end,
     },
 
     State {
         name = "focustarget",
-        tags = { "focustarget", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "focustarget", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -721,13 +693,6 @@ local states =
                     end
                 end
             end),
-			FrameEvent(34, function(inst)
-				inst.sg:RemoveStateTag("nofreeze")
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
-			CommonHandlers.OnNoSleepFrameEvent(51, function(inst)
-				inst.sg:RemoveStateTag("nosleep")
-			end),
         },
 
         events =
@@ -738,7 +703,7 @@ local states =
 
     State {
         name = "transform",
-		tags = { "busy", "noaoestun", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = { "busy", "noaoestun", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -775,7 +740,7 @@ local states =
 
     State {
         name = "arrive_delay",
-		tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -797,7 +762,7 @@ local states =
 
     State {
         name = "arrive",
-		tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -985,7 +950,7 @@ local states =
 
     State {
         name = "flyaway",
-		tags = { "busy", "charge", "leaving", "noaoestun", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = {"busy", "charge", "leaving", "noaoestun", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -1030,7 +995,7 @@ local states =
 
     State {
         name = "flyback_delay",
-		tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -1052,7 +1017,7 @@ local states =
 
     State {
         name = "flyback",
-		tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun", "noelectrocute" },
+        tags = { "busy", "charge", "flight", "noaoestun", "noattack", "nofreeze", "nosleep", "nostun" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -1096,7 +1061,6 @@ CommonStates.AddHitState(states)
 
 CommonStates.AddWalkStates(states)
 CommonStates.AddFrozenStates(states, lower_flying_creature, raise_flying_creature)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSleepExStates(states,
 {
     starttimeline =
@@ -1121,4 +1085,4 @@ CommonStates.AddSleepExStates(states,
     onexitwake = raise_flying_creature,
 })
 
-return StateGraph("eyeofterror", states, events, "idle")
+return StateGraph("eyeofterror", states, events, "idle", actionhandlers)

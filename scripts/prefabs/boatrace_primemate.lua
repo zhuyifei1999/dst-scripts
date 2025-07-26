@@ -252,7 +252,6 @@ local function fn()
     --
     inst:SetBrain(brain)
     inst:SetStateGraph("SGprimemate")
-	inst.sg.mem.noelectrocute = true --sg is shared by prime_mate that support electrocute
 
     --
     inst.OnEntitySleep = OnEntitySleep

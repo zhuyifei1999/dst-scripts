@@ -1,5 +1,9 @@
 require("stategraphs/commonstates")
 
+local actionhandlers =
+{
+}
+
 local PI_BY_6 = PI / 6
 local ANGLES = {
     PI_BY_6,
@@ -20,34 +24,31 @@ local events =
 {
     CommonHandlers.OnStep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
 
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasAnyStateTag("attack", "waking", "sleeping") and
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() and not
+                inst.sg:HasStateTag("attack") and not
+                inst.sg:HasStateTag("waking") and not
+                inst.sg:HasStateTag("sleeping") and
 				not CommonHandlers.HitRecoveryDelay(inst) and
-				(not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen"))
-			then
-				inst.sg:GoToState("hit")
-			end
+                (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
+            inst.sg:GoToState("hit")
         end
     end),
 
     EventHandler("doattack", function(inst, data)
         if not inst.components.health:IsDead() and
-				((inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) or not inst.sg:HasStateTag("busy")) then
+                (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
             inst.sg:GoToState("attack_pre", data.target)
         end
     end),
 
     EventHandler("spawn", function(inst)
         if not inst.components.health:IsDead() and
-				((inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) or not inst.sg:HasStateTag("busy")) then
+                (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
             inst.sg:GoToState("spawn")
         end
     end),
@@ -296,7 +297,7 @@ local states =
 
     State{
         name = "spawn",
-		tags = { "waking", "busy", "noattack", "noelectrocute" },
+        tags = {"waking", "busy", "noattack"},
 
         onenter = function(inst, start_anim)
             inst.Physics:Stop()
@@ -316,7 +317,6 @@ local states =
             TimeEvent(24*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("grotto/creatures/mushgnome/surpise")
                 inst.sg:RemoveStateTag("noattack")
-				inst.sg:RemoveStateTag("noelectrocute")
             end),
         },
     },
@@ -348,7 +348,6 @@ CommonStates.AddIdle(states, nil, nil,
     end),
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSleepExStates(states,
 {
     starttimeline =
@@ -380,4 +379,5 @@ CommonStates.AddSleepExStates(states,
 })
 CommonStates.AddVoidFallStates(states)
 
-return StateGraph("mushgnome", states, events, "idle")
+return StateGraph("mushgnome", states, events, "idle", actionhandlers)
+

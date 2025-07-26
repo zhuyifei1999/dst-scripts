@@ -1,12 +1,6 @@
-require("stategraphs/commonstates")
-
-local events =
-{
-	CommonHandlers.OnElectrocute(),
-}
-
 local states=
 {
+
     State{
         name = "gnash_pre",
         tags = {"gnash"},
@@ -191,4 +185,5 @@ local states=
     },
 }
 
-return StateGraph("deciduoustree", states, events, "empty")
+
+return StateGraph("deciduoustree", states, {}, "empty")

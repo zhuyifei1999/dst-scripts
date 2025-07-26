@@ -367,7 +367,6 @@ local function fn()
 
     MakeSnowCovered(inst)
     MakeHauntableWork(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     MakeMediumBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)

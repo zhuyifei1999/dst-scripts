@@ -291,7 +291,6 @@ local function baserock_fn(bank, build, anim, minimapicon, tag, multcolour)
     inst.components.inspectable.nameoverride = "ROCK"
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     MakeHauntableWork(inst)
 

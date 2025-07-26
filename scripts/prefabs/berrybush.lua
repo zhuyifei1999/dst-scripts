@@ -313,7 +313,6 @@ local function createbush(name, inspectname, berryname, master_postinit)
 
         inst:ListenForEvent("onwenthome", shake)
         MakeSnowCovered(inst)
-        SetLunarHailBuildupAmountSmall(inst)
         MakeNoGrowInWinter(inst)
 
         MakeWaxablePlant(inst)

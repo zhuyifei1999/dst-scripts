@@ -286,7 +286,6 @@ function MonkeyBrain:OnStart()
     local root = PriorityNode(
     {
 		BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
 
         --Monkeys go home when quakes start.
         EventNode(self.inst, "gohome",

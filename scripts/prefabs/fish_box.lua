@@ -172,7 +172,6 @@ local function fn()
     inst.components.workable:SetOnWorkCallback(onhit)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     AddHauntableDropItemOrWork(inst)
 

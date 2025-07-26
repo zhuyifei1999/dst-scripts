@@ -352,7 +352,6 @@ local function mutated_fn()
     inst:AddTag("animal")
     inst:AddTag("smallcreature")
     inst:AddTag("lunar_aligned")
-    inst:AddTag("soulless") -- no wortox souls
 
     --herdmember (from herdmember component) added to pristine state for optimization
     inst:AddTag("herdmember")

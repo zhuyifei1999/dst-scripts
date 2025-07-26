@@ -91,8 +91,7 @@ local function OnKilledOther(player, data)
             local playerdata = _activeplayers[player]
             if not (data.victim.prefab == "pigman" and
                     data.victim.components.werebeast ~= nil and
-                    data.victim.components.werebeast:IsInWereState())
-                and (not data.victim:HasTag("shadowthrall_parasite_hosted") and not data.victim.was_shadowthrall_parasited) then
+                    data.victim.components.werebeast:IsInWereState()) then
                 local naughty_val = FunctionOrValue(naughtiness, player, data)
                 OnNaughtyAction(naughty_val * (data.stackmult or 1), playerdata)
             end

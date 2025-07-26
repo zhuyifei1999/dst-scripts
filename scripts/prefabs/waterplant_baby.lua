@@ -246,7 +246,6 @@ local function fn()
     MakeMediumPropagator(inst)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
 
     inst:ListenForEvent("onburnt", on_burnt)
 

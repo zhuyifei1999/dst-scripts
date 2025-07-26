@@ -27,7 +27,6 @@ function BabyBeefaloBrain:OnStart()
     local root = PriorityNode(
     {
 		BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
         RunAway(self.inst, {tags={"character"}, fn=NonMountedPlayer}, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST),
         Follow(self.inst, function() return (self.inst.components.follower ~= nil and
                                             self.inst.components.follower.leader ~= nil and

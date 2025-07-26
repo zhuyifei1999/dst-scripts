@@ -133,7 +133,6 @@ function MoleBatBrain:OnStart()
     local root = PriorityNode(
     {
 		BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
         WhileNode(function()
                 return self.inst._quaking
             end, "Quaking",

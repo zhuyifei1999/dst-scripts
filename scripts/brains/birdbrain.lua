@@ -6,9 +6,10 @@ local SHOULDFLYAWAY_MUST_TAGS = { "notarget", "INLIMBO" }
 local SHOULDFLYAWAY_CANT_TAGS = { "player", "monster", "scarytoprey" }
 
 local function ShouldFlyAway(inst)
-    return
-        not inst.sg:HasAnyStateTag("sleeping", "busy", "flight")
-        and (TheWorld.state.isnight or TheWorld.state.islunarhailing or
+    return not (inst.sg:HasStateTag("sleeping") or
+                inst.sg:HasStateTag("busy") or
+                inst.sg:HasStateTag("flight"))
+        and (TheWorld.state.isnight or
             (inst.components.health ~= nil and inst.components.health.takingfiredamage and not (inst.components.burnable and inst.components.burnable:IsBurning())) or
             FindEntity(inst, inst.flyawaydistance, nil, nil, SHOULDFLYAWAY_MUST_TAGS, SHOULDFLYAWAY_CANT_TAGS) ~= nil)
 end
@@ -18,17 +19,16 @@ local function FlyAway(inst)
 end
 
 function BirdBrain:OnStart()
-    local fly_away_fn = function() return FlyAway(self.inst) end
     local root = PriorityNode(
     {
         WhileNode( function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted",
-			ActionNode(fly_away_fn)),
+			ActionNode(function() return FlyAway(self.inst) end)),
         IfNode(function() return ShouldFlyAway(self.inst) end, "Threat Near",
-            ActionNode(fly_away_fn)),
+            ActionNode(function() return FlyAway(self.inst) end)),
         EventNode(self.inst, "threatnear",
-            ActionNode(fly_away_fn)),
+            ActionNode(function() return FlyAway(self.inst) end)),
         EventNode(self.inst, "gohome",
-            ActionNode(fly_away_fn)),
+            ActionNode(function() return FlyAway(self.inst) end)),
     }, .25)
 
     self.bt = BT(self.inst, root)

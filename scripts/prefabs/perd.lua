@@ -120,8 +120,6 @@ local function fn()
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
-
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = TUNING.PERD_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.PERD_WALK_SPEED

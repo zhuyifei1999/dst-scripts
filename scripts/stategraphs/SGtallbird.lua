@@ -9,9 +9,11 @@ local actionhandlers =
 
 local events=
 {
+
+
     CommonHandlers.OnAttacked(),
     EventHandler("doattack", function(inst)
-		if not inst.components.health:IsDead() and ((inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) or not inst.sg:HasStateTag("busy")) then
+        if not inst.components.health:IsDead() and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then
 			if inst:HasTag("teenbird") and inst:HasTag("peck_attack") then
 				inst.sg:GoToState("peck")
 			else
@@ -27,9 +29,9 @@ local events=
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnLocomote(false,true),
 }
+
 
 local states=
 {
@@ -360,7 +362,7 @@ local states=
 
     State{
         name = "growup",
-		tags = { "busy", "noelectrocute" },
+        tags = {"busy"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("growadult")
@@ -399,6 +401,6 @@ CommonStates.AddSleepStates(states,
 	},
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("tallbird", states, events, "wake", actionhandlers)
+

@@ -42,10 +42,6 @@ local function OnEntitySleep(inst)
     inst.components.combat:SetTarget(nil)
 end
 
-local function OnStartFireDamage(inst)
-    inst.shouldGoAway = true
-end
-
 local function OnHaunt(inst)
     local action = BufferedAction(inst, nil, ACTIONS.GOHOME)
     inst.components.locomotor:PushAction(action)
@@ -123,7 +119,6 @@ local function fn()
     ------------------------------------------
 
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("startfiredamage", OnStartFireDamage)
 
     ------------------------------------------
 
@@ -146,10 +141,6 @@ local function fn()
     inst.OnEntitySleep = OnEntitySleep
 
     return inst
-end
-
-local function mutated_fn()
-    
 end
 
 return Prefab("buzzard", fn, assets, prefabs)

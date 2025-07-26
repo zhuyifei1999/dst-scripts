@@ -327,7 +327,7 @@ end
 
 local function OnCaptured(inst, obj, doer)
 	inst.persists = false
-	inst:PushEventImmediate("captured_despawn")
+	inst.sg:HandleEvent("captured_despawn")
 end
 
 --------------------------------------------------------------------------

@@ -336,7 +336,6 @@ local function fn()
 	inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT] / 2) --lureplantbulb deployspacing/2
     inst:SetPhysicsRadiusOverride(.7)
     MakeObstaclePhysics(inst, inst.physicsradiusoverride)
-    MakeCollidesWithElectricField(inst)
 
     inst:AddTag("lureplant")
     inst:AddTag("hostile")
@@ -357,8 +356,6 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
-
-	inst.override_combat_fx_height = "low"
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(300)
@@ -394,7 +391,6 @@ local function fn()
     inst.components.digester.itemstodigestfn = CanDigest
 
     inst:SetStateGraph("SGlureplant")
-	inst.sg.mem.burn_on_electrocute = true
 
     inst:ListenForEvent("startfiredamage", OnStartFireDamage)
     inst:ListenForEvent("stopfiredamage", OnStopFireDamage)

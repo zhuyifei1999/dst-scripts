@@ -335,7 +335,6 @@ local function fn()
     inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
     MakeSnowCovered(inst)
-    SetLunarHailBuildupAmountSmall(inst)
     MakeMediumPropagator(inst)
 
     inst.OnSave = onsave

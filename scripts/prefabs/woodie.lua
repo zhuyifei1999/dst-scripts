@@ -135,9 +135,7 @@ local BEAVER_LMB_ACTIONS =
     "DIG",
 }
 
-local BEAVER_ACTION_TAGS = {
-    "LunarBuildup",
-}
+local BEAVER_ACTION_TAGS = {}
 
 for i, v in ipairs(BEAVER_LMB_ACTIONS) do
     table.insert(BEAVER_ACTION_TAGS, v.."_workable")
@@ -153,7 +151,6 @@ local function BeaverActionString(inst, action)
     return (action.action == ACTIONS.MOUNT_PLANK and STRINGS.ACTIONS.MOUNT_PLANK)
         or (action.action == ACTIONS.ABANDON_SHIP and STRINGS.ACTIONS.ABANDON_SHIP)
         or (action.action == ACTIONS.USE_WEREFORM_SKILL and STRINGS.ACTIONS.USE_WEREFORM_SKILL.BEAVER)
-        or (action.action == ACTIONS.REMOVELUNARBUILDUP and STRINGS.ACTIONS.REMOVELUNARBUILDUP)
         or STRINGS.ACTIONS.GNAW
         ,
         (action.action == ACTIONS.ABANDON_SHIP)
@@ -162,9 +159,6 @@ local function BeaverActionString(inst, action)
 end
 
 local function GetBeaverAction(inst, target)
-    if target:HasTag("LunarBuildup") then
-        return ACTIONS.REMOVELUNARBUILDUP
-    end
     for i, v in ipairs(BEAVER_LMB_ACTIONS) do
         if target:HasTag(v.."_workable") then
             return not target:HasTag("sign") and ACTIONS[v] or nil
@@ -200,16 +194,6 @@ local function BeaverActionButton(inst, force_target)
     end
 end
 
-local function BeaverGetLMBActions(inst, target)
-    for i, v in ipairs(BEAVER_LMB_ACTIONS) do
-        if target:HasTag(v.."_workable") then
-            return not target:HasTag("sign")
-                and inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
-                or nil
-        end
-    end
-end
-
 local function BeaverLeftClickPicker(inst, target)
     if target ~= nil and target ~= inst then
         if inst.replica.combat:CanTarget(target) then
@@ -217,12 +201,12 @@ local function BeaverLeftClickPicker(inst, target)
                 and inst.components.playeractionpicker:SortActionList({ ACTIONS.ATTACK }, target, nil)
                 or nil
         end
-        if target:HasTag("LunarBuildup") then
-            return inst.components.playeractionpicker:SortActionList({ ACTIONS.REMOVELUNARBUILDUP }, target, nil)
-        end
-        local actions = BeaverGetLMBActions(inst, target)
-        if actions then
-            return actions
+        for i, v in ipairs(BEAVER_LMB_ACTIONS) do
+            if target:HasTag(v.."_workable") then
+                return not target:HasTag("sign")
+                    and inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
+                    or nil
+            end
         end
 
         if target:HasTag("walkingplank") and target:HasTag("interactable") and target:HasTag("plank_extended") then
@@ -232,29 +216,22 @@ local function BeaverLeftClickPicker(inst, target)
 end
 
 local function BeaverRightClickPicker(inst, target, pos)
-    if target ~= nil and target ~= inst then
-        local actions = (   inst:HasTag("on_walkable_plank") and
-            target:HasTag("walkingplank") and
-            inst.components.playeractionpicker:SortActionList({ ACTIONS.ABANDON_SHIP }, target, nil)
-        ) or
-        (   target:HasTag("HAMMER_workable") and
-            inst.components.playeractionpicker:SortActionList({ ACTIONS.HAMMER }, target, nil)
-        ) or
-        (   target:HasTag("DIG_workable") and
-            target:HasTag("sign") and
-            inst.components.playeractionpicker:SortActionList({ ACTIONS.DIG }, target, nil)
-        ) or nil
-        if actions then
-            return actions
-        end
-        if target:HasTag("LunarBuildup") then
-            actions = BeaverGetLMBActions(inst, target)
-            if actions then
-                return actions
-            end
-        end
-    end
-    return (   not inst.components.playercontroller.isclientcontrollerattached and
+    return target ~= nil
+        and target ~= inst
+        and (   (   inst:HasTag("on_walkable_plank") and
+                    target:HasTag("walkingplank") and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.ABANDON_SHIP }, target, nil)
+                ) or
+                (   target:HasTag("HAMMER_workable") and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.HAMMER }, target, nil)
+                ) or
+                (   target:HasTag("DIG_workable") and
+                    target:HasTag("sign") and
+                    inst.components.playeractionpicker:SortActionList({ ACTIONS.DIG }, target, nil)
+                )
+            )
+        or
+        (   not inst.components.playercontroller.isclientcontrollerattached and
             inst.components.skilltreeupdater:HasSkillTag("beaver_epic") and
             inst.components.playeractionpicker:SortActionList({ ACTIONS.USE_WEREFORM_SKILL },target or pos, nil)
         )

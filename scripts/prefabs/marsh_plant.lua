@@ -16,8 +16,6 @@ local function fn(bank, build)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle", true)
 
-        inst:AddTag("plant")
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

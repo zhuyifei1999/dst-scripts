@@ -1,22 +1,12 @@
 require("stategraphs/commonstates")
 
-local function onattackedfn(inst, data)
-	if not inst.components.health:IsDead() then
-		if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
-			function(inst)
-				if inst.sg:HasStateTag("grounded") then
-					inst.sg.statemem.knockdown = true
-				end
-			end)
-		then
-			return
-		elseif not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt") then
-			if inst.sg:HasStateTag("grounded") then
-				inst.sg.statemem.knockdown = true
-				inst.sg:GoToState("knockdown_hit")
-			elseif not CommonHandlers.HitRecoveryDelay(inst) then
-				inst.sg:GoToState("hit")
-			end
+local function onattackedfn(inst)
+    if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and not inst.components.health:IsDead() then
+        if inst.sg:HasStateTag("grounded") then
+            inst.sg.statemem.knockdown = true
+            inst.sg:GoToState("knockdown_hit")
+        elseif not CommonHandlers.HitRecoveryDelay(inst) then
+            inst.sg:GoToState("hit")
         end
     end
 end
@@ -27,7 +17,9 @@ local function ChooseAttack(inst)
 end
 
 local function onattackfn(inst)
-	if not (inst.sg:HasAnyStateTag("busy", "grounded") or inst.components.health:IsDead()) then
+    if not (inst.sg:HasStateTag("busy") or
+            inst.sg:HasStateTag("grounded") or
+            inst.components.health:IsDead()) then
         ChooseAttack(inst)
     end
 end
@@ -40,9 +32,7 @@ end
 
 local function onstunfinishedfn(inst)
     if inst.sg:HasStateTag("grounded") and not inst.components.health:IsDead() then
-		if inst.sg:HasStateTag("electrocute") then
-			inst.sg:AddStateTag("_stun_finished")
-		elseif inst.sg.mem.sleeping then
+        if inst.sg.mem.sleeping then
             inst.sg.statemem.continuesleeping = true
             inst.sg:GoToState("sleeping")
         else
@@ -66,7 +56,11 @@ local function onspawnlavae(inst)
 end
 
 local function transform(inst, data)
-	if not (inst.sg:HasAnyStateTag("frozen", "grounded", "sleeping", "flight", "electrocute") or inst.components.health:IsDead()) then
+    if not (inst.sg:HasStateTag("frozen") or
+            inst.sg:HasStateTag("grounded") or
+            inst.sg:HasStateTag("sleeping") or
+            inst.sg:HasStateTag("flight") or
+            inst.components.health:IsDead()) then
         inst.sg:GoToState("transform_"..data.transformstate)
     end
 end
@@ -97,7 +91,6 @@ local events =
 {
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
@@ -275,7 +268,7 @@ local states =
 
     State{
         name = "knockdown",
-		tags = { "busy", "nosleep", "noelectrocute" },
+        tags = { "busy", "nosleep" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -383,7 +376,7 @@ local states =
 
     State{
         name = "knockdown_pst",
-		tags = { "busy", "nosleep", "noelectrocute" },
+        tags = { "busy", "nosleep" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("sleep_pst")
@@ -394,10 +387,7 @@ local states =
         timeline =
         {
             TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
-			TimeEvent(26*FRAMES, function(inst)
-				inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
-				inst.sg:RemoveStateTag("electrocute")
-			end),
+            TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying") end),
         },
 
         events =
@@ -414,7 +404,7 @@ local states =
 
     State{
         name = "flyaway",
-		tags = { "flight", "busy", "nosleep", "nofreeze", "noelectrocute" },
+        tags = { "flight", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -490,7 +480,7 @@ local states =
 
     State{
         name = "transform_fire",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -519,15 +509,12 @@ local states =
                 inst:TransformFire()
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/firedup", "fireflying")
             end),
-			FrameEvent(25, function(inst)
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
         },
     },
 
     State{
         name = "transform_normal",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -556,9 +543,6 @@ local states =
                 inst:TransformNormal()
                 inst.SoundEmitter:KillSound("fireflying")
             end),
-			FrameEvent(25, function(inst)
-				inst.sg:RemoveStateTag("noelectrocute")
-			end),
         },
     },
 
@@ -871,7 +855,7 @@ local states =
 
     State{
         name = "land",
-		tags = { "flight", "busy", "noelectrocute" },
+        tags = { "flight", "busy" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("walk_angry", true)
@@ -912,70 +896,5 @@ CommonStates.AddFrozenStates(states,
         inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
     end
 )
-
-CommonStates.AddElectrocuteStates(states,
-nil, --timeline
-{	--anims
-	loop = function(inst)
-		if inst.sg.lasttags["grounded"] then
-			inst.sg:AddStateTag("grounded")
-			inst.override_combat_fx_height = "low"
-			return "shock_ground_loop"
-		end
-	end,
-	pst = function(inst)
-		if inst.sg.lasttags["grounded"] then
-			inst.sg:AddStateTag("grounded")
-			return "shock_ground_pst"
-		end
-	end,
-},
-{	--fns
-	loop_onenter = function(inst)
-		if inst.sg:HasStateTag("grounded") then
-			--V2C: can change this back since fx is already spawned at this point
-			inst.override_combat_fx_height = nil
-		end
-	end,
-	loop_onexit = function(inst)
-		if not inst.sg.statemem.not_interrupted and inst.sg:HasStateTag("grounded") then
-			inst.components.damagetracker:Stop()
-			if not (inst.sg.statemem.continuesleeping or inst.SoundEmitter:PlayingSound("flying")) then
-				inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
-			end
-		end
-	end,
-	pst_onenter = function(inst)
-		if inst.sg:HasStateTag("grounded") and inst.sg.lasttags["_stun_finished"] then
-			inst.sg:AddStateTag("_stun_finished")
-			inst.sg:AddStateTag("nosleep")
-		end
-	end,
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			if inst.sg:HasStateTag("grounded") then
-				inst.sg.statemem.knockdown = true
-				if inst.sg:HasStateTag("_stun_finished") then
-					if inst.components.sleeper then
-						inst.components.sleeper:WakeUp()
-					end
-					inst.sg:GoToState("knockdown_pst")
-				else
-					inst.sg:GoToState("knockdown_idle")
-				end
-			else
-				inst.sg:GoToState("idle")
-			end
-		end
-	end,
-	pst_onexit = function(inst)
-		if not inst.sg.statemem.knockdown and inst.sg:HasStateTag("grounded") then
-			inst.components.damagetracker:Stop()
-			if not (inst.sg.statemem.continuesleeping or inst.SoundEmitter:PlayingSound("flying")) then
-				inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
-			end
-		end
-	end,
-})
 
 return StateGraph("dragonfly", states, events, "idle", actionhandlers)

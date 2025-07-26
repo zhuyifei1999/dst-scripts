@@ -13,26 +13,13 @@ local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
-	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("electrocute") then
-				inst.sg:GoToState("hit")
-			end
-		end
-	end),
+    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
     EventHandler("death", function(inst, data)
 				inst.sg:GoToState("death", data)
 			end),
     EventHandler("flyaway", function(inst, data)
                 if not inst.components.health:IsDead() then
-					if inst.sg:HasStateTag("electrocute") then
-						inst.sg.mem.flyaway = true
-					else
-						inst.sg:GoToState("flyaway")
-					end
+                    inst.sg:GoToState("flyaway")
                 end
             end),    
     EventHandler("locomote", function(inst)
@@ -54,6 +41,7 @@ local events=
 
 local states=
 {
+
     State{
         name = "idle",
         tags = {"idle", "canrotate"},
@@ -319,7 +307,7 @@ local states=
 
     State{
         name = "flyaway",
-		tags = { "flight", "busy", "notarget" , "flyaway", "noelectrocute" },
+        tags = { "flight", "busy", "notarget" , "flyaway" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -383,7 +371,7 @@ local states=
 
     State{
         name = "glide",
-		tags = { "idle", "flight", "notarget", "busy", "noelectrocute" },
+        tags = { "idle", "flight", "notarget", "busy" },
 
         onenter = function(inst)
             inst.readytogather = nil
@@ -497,52 +485,6 @@ local states=
 }
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states,
-nil, --timeline
-{--anims
-	loop = function(inst)
-		if inst.sg.lasttags["ground"] then
-			inst.sg:AddStateTag("ground")
-			inst:RemoveTag("flying")
-		else
-			return "walk_shock_loop" --walk is the flying anim
-		end
-	end,
-	pst = function(inst)
-		if inst.sg.lasttags["ground"] then
-			inst.sg:AddStateTag("ground")
-		else
-			return "walk_shock_pst" --walk is the flying anim
-		end
-	end,
-},
-{--fns
-	loop_onexit = function(inst)
-		if not inst.sg.statemem.not_interrupted then
-			inst.sg.mem.flyaway = nil
-			if not inst.sg.statemem.stayonground and inst.sg:HasStateTag("ground") then
-				inst:AddTag("flying")
-			end
-		end
-	end,
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			if inst.sg.mem.flyaway then
-				inst.sg:GoToState("flyaway")
-			elseif inst.sg:HasStateTag("ground") then
-				inst.sg.statemem.stayonground = true
-				inst.sg:GoToState("idle_ground")
-			else
-				inst.sg:GoToState("idle")
-			end
-		end
-	end,
-	pst_onexit = function(inst)
-		inst.sg.mem.flyaway = nil
-		if not inst.sg.statemem.stayonground and inst.sg:HasStateTag("ground") then
-			inst:AddTag("flying")
-		end
-	end,
-})
 
 return StateGraph("polly_rogers", states, events, "glide", actionhandlers)
+

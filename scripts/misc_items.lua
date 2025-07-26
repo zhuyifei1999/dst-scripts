@@ -1722,16 +1722,6 @@ MISC_ITEMS =
 		output_items = {  "beefalo_head_lunar", "beefalo_horn_lunar", "beefalo_body_lunar", "beefalo_feet_lunar", "beefalo_tail_lunar", "beefalo_head_shadow", "beefalo_horn_shadow", "beefalo_body_shadow", "beefalo_feet_shadow", "beefalo_tail_shadow", },
 		release_group = 158,
 	},
-	pack_boomerang_psn =
-	{
-		type = "purchase",
-		skin_tags = { },
-		display_order = 0,
-		build_name_override = "mysterybox_classic_4",
-		display_items = {  "boomerang_bandedwood", },
-		output_items = {  "boomerang_bandedwood", },
-		release_group = 169,
-	},
 	pack_boy_items =
 	{
 		type = "purchase",
@@ -5597,16 +5587,6 @@ MISC_ITEMS =
 		output_klei_currency = "BOLTS",
 		output_klei_currency_cost = 5500,
 		release_group = 79,
-	},
-	pack_wb_1000 =
-	{
-		type = "purchase",
-		skin_tags = { },
-		display_order = 0,
-		build_name_override = "pack_common",
-		output_klei_currency = "BOLTS",
-		output_klei_currency_cost = 1000,
-		release_group = 169,
 	},
 	pack_wb_2 =
 	{

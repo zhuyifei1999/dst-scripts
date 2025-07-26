@@ -1,26 +1,13 @@
 require("stategraphs/commonstates")
 
-local easing = require("easing")
-
 local actionhandlers =
 {
-    --Will this affect regular birds?
-    ActionHandler(ACTIONS.EAT, "lunar_eat"),
-    ActionHandler(ACTIONS.REMOVELUNARBUILDUP, "peck"),
-    --ActionHandler(ACTIONS.GOHOME, "flyaway"),
+    ActionHandler(ACTIONS.EAT, "peck"),
+    ActionHandler(ACTIONS.GOHOME, "flyaway"),
 }
 
 local function IsStuck(inst)
 	return inst:HasAnyTag("honey_ammo_afflicted", "gelblob_ammo_afflicted") and TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition())
-end
-
-local function PlayShardFx(inst, target)
-    if target ~= nil and target:IsValid() then
-        local fx = SpawnPrefab("mining_moonglass_fx")
-        fx.Transform:SetPosition(target.Transform:GetWorldPosition())
-        fx.Transform:SetScale(0.5, 0.5, 0.5)
-        --sound?
-    end
 end
 
 local events =
@@ -36,14 +23,9 @@ local events =
         end
     end),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
-	EventHandler("attacked", function(inst, data)
+    EventHandler("attacked", function(inst)
         if not inst.components.health:IsDead() then
-			if not IsStuck(inst) and CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("electrocute") then
-				inst.sg:GoToState("hit")
-			end
+            inst.sg:GoToState("hit")
         end
     end),
     EventHandler("death", function(inst)
@@ -55,7 +37,7 @@ local events =
         end
     end),
     EventHandler("onignite", function(inst)
-		if inst.components.health and not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
+        if not inst.components.health:IsDead() then
             inst.sg:GoToState("distress_pre")
         end
     end),
@@ -65,28 +47,10 @@ local events =
     EventHandler("stunbomb", function(inst)
         inst.sg:GoToState("stunned")
     end),
-
-    EventHandler("locomote", function(inst)
-        --NOTE: Locomote behaviour for the mutated bird, it's probably fine to have this event listener for all, but just in case.
-        if inst:HasTag("bird_mutant_rift") and not inst.sg:HasStateTag("busy") then
-            local is_moving = inst.sg:HasStateTag("moving")
-            local wants_to_move = inst.components.locomotor:WantsToMoveForward()
-            if is_moving ~= wants_to_move then
-                inst.sg:GoToState(wants_to_move and "hop" or "idle")
-            end
-        end
-    end),
 }
 
 local states =
 {
-    State{
-		name = "init",
-		onenter = function(inst)
-			inst.sg:GoToState(inst.components.locomotor ~= nil and "glide" or POPULATING and "corpse_idle" or "corpse_fall")
-		end,
-	},
-
     State{
         name = "idle",
         tags = { "idle", "canrotate" },
@@ -200,7 +164,7 @@ local states =
 
     State{
         name = "delay_glide",
-		tags = { "busy", "notarget", "noelectrocute" },
+        tags = { "busy", "notarget" },
 
         onenter = function(inst, delay)
             inst:AddTag("NOCLICK")
@@ -229,7 +193,7 @@ local states =
 
     State{
         name = "glide",
-		tags = { "idle", "flight", "notarget", "noelectrocute" },
+        tags = { "idle", "flight", "notarget" },
 
         onenter = function(inst)
 			inst:AddTag("NOCLICK")
@@ -308,21 +272,6 @@ local states =
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
         end,
 
-        timeline = {
-            FrameEvent(4, function(inst)
-                local buffaction = inst:GetBufferedAction()
-                if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
-                    PlayShardFx(inst, buffaction.target)
-                end
-            end),
-			FrameEvent(9, function(inst)
-                local buffaction = inst:GetBufferedAction()
-                if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
-                    PlayShardFx(inst, buffaction.target)
-                end
-            end),
-        },
-
         ontimeout = function(inst)
             if math.random() < .3 then
                 inst:PerformBufferedAction()
@@ -335,7 +284,7 @@ local states =
 
     State{
         name = "flyaway",
-		tags = { "flight", "busy", "notarget", "noelectrocute" },
+        tags = { "flight", "busy", "notarget" },
 
         onenter = function(inst)
 			if IsStuck(inst) then
@@ -458,7 +407,7 @@ local states =
 
     State{
         name = "fall",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -486,7 +435,7 @@ local states =
 
     State{
         name = "trapped",
-		tags = { "busy", "noelectrocute" },
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -522,207 +471,9 @@ local states =
             end
         end,
     },
-
-    --------------------------------------------------------------------------
-	--Used by "birdcorpse"
-
-    State{
-        name = "corpse_fall",
-		tags = { "busy", "noelectrocute" },
-
-        onenter = function(inst)
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("fall_corpse", true)
-			inst.DynamicShadow:Enable(false)
-        end,
-
-        onupdate = function(inst)
-            local x, y, z = inst.Transform:GetWorldPosition()
-            if y <= .2 then
-                inst.Physics:Stop()
-                inst.Physics:Teleport(x, 0, z)
-                inst.DynamicShadow:Enable(true)
-                inst.sg:GoToState("corpse_idle")
-
-                --Can't use inventoryitem:TryToSink, not an item!
-                if ShouldEntitySink(inst, true) then
-                    inst:DoTaskInTime(0, SinkEntity)
-                end
-            end
-        end,
-
-		onexit = function(inst)
-			inst.DynamicShadow:Enable(true)
-		end,
-    },
-
-	State{
-		name = "corpse_idle",
-
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("corpse")
-		end,
-	},
-
-	State{
-		name = "corpse_mutate_pre",
-		tags = { "mutating" },
-
-		onenter = function(inst, mutantprefab)
-			inst.AnimState:PlayAnimation("twitch", true)
-			inst.sg:SetTimeout(3)
-			inst.sg.statemem.mutantprefab = mutantprefab
-			
-            --inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/twitching_LP", "loop")
-		end,
-
-		ontimeout = function(inst)
-			inst.sg:GoToState("corpse_mutate", inst.sg.statemem.mutantprefab)
-		end,
-
-		onexit = function(inst)
-			inst.SoundEmitter:KillSound("loop")
-		end,
-	},
-
-	State{
-		name = "corpse_mutate",
-		tags = { "mutating" },
-
-		onenter = function(inst, mutantprefab)
-			inst.AnimState:OverrideSymbol("lunar_parts", "bird_lunar_build", "lunar_parts")
-			inst.AnimState:OverrideSymbol("fx_puff_hi", "bird_lunar_build", "fx_puff_hi")
-			inst.AnimState:OverrideSymbol("fx_puff2", "bird_lunar_build", "fx_puff2")
-
-			inst.AnimState:PlayAnimation("mutate_pre")
-
-			--inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/ice_crackling_LP", "loop")
-			inst.sg.statemem.mutantprefab = mutantprefab
-		end,
-
-		timeline =
-		{
-			FrameEvent(0, function(inst)
-
-            end),
-		},
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					local rot = inst.Transform:GetRotation()
-					local creature = ReplacePrefab(inst, inst.sg.statemem.mutantprefab)
-					creature.Transform:SetRotation(rot)
-					creature.AnimState:MakeFacingDirty() --not needed for clients
-					creature.sg:GoToState("mutate_pst")
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			--Shouldn't reach here!
-			inst.AnimState:ClearAllOverrideSymbols()
-			inst.AnimState:SetAddColour(0, 0, 0, 0)
-			inst.AnimState:SetLightOverride(0)
-			inst.SoundEmitter:KillSound("loop")
-			inst.components.burnable:SetBurnTime(TUNING.MED_BURNTIME)
-			inst.components.burnable.fastextinguish = false
-		end,
-	},
-
-	--------------------------------------------------------------------------
-	--Transitions from corpse_mutate after prefab switch
-	State{
-		name = "mutate_pst",
-		tags = { "busy", "noattack", "temp_invincible", "noelectrocute" },
-
-		onenter = function(inst)
-			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("mutate")
-			inst.sg.statemem.flash = 24
-		end,
-
-		onupdate = function(inst)
-			local c = inst.sg.statemem.flash
-			if c >= 0 then
-				inst.sg.statemem.flash = c - 1
-				c = easing.inOutQuad(math.min(20, c), 0, 1, 20)
-				inst.AnimState:SetAddColour(c, c, c, 0)
-				inst.AnimState:SetLightOverride(c)
-			end
-		end,
-
-		timeline =
-		{
-			FrameEvent(16, function(inst)
-                
-            end),
-		},
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("caw")
-				end
-			end),
-		},
-
-		onexit = function(inst)
-			inst.AnimState:SetAddColour(0, 0, 0, 0)
-			inst.AnimState:SetLightOverride(0)
-		end,
-	},
-
-    State{
-        name = "lunar_eat",
-
-        onenter = function(inst)
-            inst.Physics:Stop()
-            if not inst.AnimState:IsCurrentAnimation("lunar_eat") then
-                inst.AnimState:PlayAnimation("lunar_eat", true)
-            end
-            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            inst.SoundEmitter:PlaySound(inst.sounds.eat)
-        end,
-
-        timeline =
-		{
-            FrameEvent(12, function(inst)
-                local buffaction = inst:GetBufferedAction()
-                if buffaction and buffaction.target then
-                    PlayShardFx(inst, buffaction.target)
-                end
-            end),
-			FrameEvent(26, function(inst)
-                local buffaction = inst:GetBufferedAction()
-                if buffaction and buffaction.target then
-                    PlayShardFx(inst, buffaction.target)
-                end
-                inst:PerformBufferedAction()
-            end),
-		},
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle")
-        end,
-    },
 }
 
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states, nil, nil,
-{
-	onanimover = function(inst)
-		if inst.AnimState:AnimDone() then
-			if inst.components.burnable and inst.components.burnable:IsBurning() then
-				inst.sg:GoToState("distress_pre")
-			else
-				inst.sg:GoToState("flyaway")
-			end
-		end
-	end,
-})
 
-return StateGraph("bird", states, events, "init", actionhandlers)
+return StateGraph("bird", states, events, "glide")

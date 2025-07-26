@@ -87,8 +87,6 @@ local function fn()
         return inst
     end
 
-    inst.scrapbook_anim = "idle"
-
     inst:AddComponent("inspectable")
 
     local activatable = inst:AddComponent("activatable")

@@ -7,7 +7,6 @@ local events =
 {
     CommonHandlers.OnAttack(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
 
@@ -28,6 +27,7 @@ local events =
             inst.sg:GoToState("despawn")
         end
 	end),
+
 }
 
 local states =
@@ -119,7 +119,7 @@ local states =
 
     State{
         name = "spawnin",
-		tags = { "intropose", "busy", "nofreeze", "nosleep", "noattack", "jumping", "noelectrocute" },
+        tags = { "intropose", "busy", "nofreeze", "nosleep", "noattack", "jumping" },
 
         onenter = function(inst, data)
             inst.AnimState:PlayAnimation(inst.sg.mem.variation == "3" and "side_lob" or "front_lob")
@@ -165,7 +165,11 @@ local states =
 
         events =
         {
-			CommonHandlers.OnNoSleepAnimQueueOver("idle"),
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
 
         onexit = function(inst)
@@ -182,7 +186,7 @@ local states =
 
     State{
         name = "despawn",
-		tags = { "endpose", "busy", "nofreeze", "nosleep", "noattack", "jumping", "noelectrocute" },
+        tags = { "endpose", "busy", "nofreeze", "nosleep", "noattack", "jumping" },
         --jumping tag to disable brain activity
 
         onenter = function(inst)
@@ -246,7 +250,6 @@ CommonStates.AddSleepExStates(states,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
 
 return StateGraph("pigelite", states, events, "idle")

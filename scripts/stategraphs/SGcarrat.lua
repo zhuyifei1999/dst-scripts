@@ -25,7 +25,6 @@ local events =
     CommonHandlers.OnSleepEx(),
 	CommonHandlers.OnWakeEx(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSink(),
@@ -141,7 +140,7 @@ local states =
 
     State {
         name = "submerge",
-		tags = { "busy", "noattack", "noelectrocute" },
+        tags = { "busy", "noattack" },
 
         onenter = function(inst)
             if not inst:IsOnValidGround() then
@@ -188,7 +187,7 @@ local states =
 
     State {
         name = "submerged",
-		tags = { "busy", "noattack", "noelectrocute" },
+        tags = { "busy", "noattack" },
 
         onenter = function(inst, playanim)
             inst.Physics:SetActive(false)
@@ -211,7 +210,7 @@ local states =
 
     State {
         name = "emerge_fast",
-		tags = { "busy", "noattack", "noelectrocute" },
+        tags = { "busy", "noattack" },
 
         onenter = function(inst)
             inst.Physics:SetActive(false)
@@ -343,7 +342,7 @@ local states =
 
     State {
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = { "busy", "trapped" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -883,7 +882,6 @@ CommonStates.AddSleepExStates(states,
     },
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHitState(states)
 CommonStates.AddWalkStates(states,
 {

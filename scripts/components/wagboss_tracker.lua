@@ -1,31 +1,44 @@
 return Class(function(self, inst)
+
+--------------------------------------------------------------------------
+--[[ Member variables ]]
+--------------------------------------------------------------------------
+
+--Public
 self.inst = inst
 
+-- Private
 local _world = TheWorld
-self.wagboss_defeated = false
+local _ismastersim = _world.ismastersim
+local _ismastershard = _world.ismastershard
+local _wagboss_defeated = false
 
-self.OnWagbossDefeated = function()
-    self.wagboss_defeated = true
-    _world:PushEvent("master_wagbossinfoupdate", {isdefeated = self.wagboss_defeated})
+local function on_wagboss_defeated()
+    _wagboss_defeated = true
+    _world:PushEvent("master_wagbossinfoupdate", {isdefeated = true})
 end
 
 function self:IsWagbossDefeated()
-    return self.wagboss_defeated
+    return _wagboss_defeated
 end
 
 function self:OnSave()
     return {
-        wagboss_defeated = self.wagboss_defeated,
+        wagboss_defeated = _wagboss_defeated,
     }
 end
 
 function self:OnLoad(data)
     if data then
-        self.wagboss_defeated = data.wagboss_defeated
-        _world:PushEvent("master_wagbossinfoupdate", {isdefeated = self.wagboss_defeated})
+        _wagboss_defeated = data.wagboss_defeated
+        _world:PushEvent("master_wagbossinfoupdate", {isdefeated = true})
     end
 end
 
-inst:ListenForEvent("wagboss_defeated", self.OnWagbossDefeated)
+--------------------------------------------------------------------------
+--[[ Initialization ]]
+--------------------------------------------------------------------------
+
+inst:ListenForEvent("wagboss_defeated", on_wagboss_defeated)
 
 end)

@@ -22,10 +22,6 @@ function IsPS5()
 	return PLATFORM == "PS5"
 end
 
-function IsPSN()
-	return (PLATFORM == "PS4") or (PLATFORM == "PS5")
-end
-
 function IsXB1()
 	return PLATFORM == "XBONE"
 end

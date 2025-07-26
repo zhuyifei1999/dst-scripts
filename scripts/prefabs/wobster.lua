@@ -347,7 +347,6 @@ local function base_land_wobster(build_name, nameoverride, fish_def, fadeout, co
         return inst
     end
 
-	inst.override_combat_fx_height = "high"
     inst.fish_def = fish_def
 
     inst:AddComponent("locomotor")

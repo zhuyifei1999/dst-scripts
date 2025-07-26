@@ -318,8 +318,6 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
---fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -482,10 +480,6 @@ return{
 		{
 			MISSED = "Wolfgang miss on purpose.",
 		},
-        DIVEGRAB =
-        {
-            MISSED = "Wolfgang miss on purpose.",
-        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1170,10 +1164,6 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "It back!",
     ANNOUNCE_FLOATER_HELD = "Wolfgang unsinkable!",
     ANNOUNCE_FLOATER_LETGO = "Oopsie!",
-    
-    -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4811,7 +4801,6 @@ return{
 
         MOONSTORM_STATIC = "Is tiny jumpy spark-thing.",
         MOONSTORM_STATIC_ITEM = "Ha! Tiny spark is too weak to break out!",
-        MOONSTORM_STATIC_ROAMER = "Cute little wandering spark!",
         MOONSTORM_SPARK = "Makes Wolfgang's moustache hairs bristle!",
 
         BIRD_MUTANT = "Creepy bird.",
@@ -5475,11 +5464,8 @@ return{
 
         FENCE_JUNK = "Is ugly little fence, but does its job.",
         JUNK_PILE = "Might be something inside Wolfgang can use.",
-        JUNK_PILE_BIG = {
-            BLUEPRINT = "Prize up there? Easy win for Wolfgang.",
-            GENERIC = "Wolfgang not like the way big pile teeter-totters...",
-        },
-        
+        JUNK_PILE_BIG = "Wolfgang not like the way big pile teeter-totters...",
+
         ARMOR_LUNARPLANT_HUSK = "Only for leafy friend? Too small for Wolfgang muscles anyway.",
 
         -- Meta 4 / Ocean QoL
@@ -5730,28 +5716,6 @@ return{
         GESTALT_GUARD_EVOLVED = "It not Wolfgang fault!",
         FLOTATIONCUSHION = "Wolfgang exceptional swimmer, but keep just in case.",
         LUNAR_SEED = "Another trophy for Wolfgang!",
-
-        -- electrocute
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Wolfgang can't wait to fight big scary machine guy!",
-        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Look at tiny machine guy, all tiny!",
-        WAGBOSS_ROBOT_CREATION_PARTS = "Hurry and finish build big machine guy!",
-        MOONSTORM_STATIC_CATCHER = "Wolfgang see nothing inside.",
-        COOLANT = "Bubble, bubble.",
-
-        FENCE_ELECTRIC = {
-            LINKED = "Wolfgang not afraid of little electric tickles!",      --NOTE: the fence post is fully linked to two other posts
-            GENERIC = "Little post have no friends.",           --NOTE: no links or electricity, just boring ol fence post
-        },
-        FENCE_ELECTRIC_ITEM = "Must plant little post.",
-
-        MUTATEDBIRD = "TODO",
-
-        BIRDCORPSE =
-        {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
-        },
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

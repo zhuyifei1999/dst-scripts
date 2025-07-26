@@ -6,18 +6,14 @@ local actionhandlers =
     ActionHandler(ACTIONS.GOHOME, "action"),
 }
 
+
 local events=
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
-	EventHandler("attacked", function(inst, data)
+    EventHandler("attacked", function(inst)
         if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-				return
-			elseif not inst.sg:HasStateTag("electrocute") then
-				inst.sg:GoToState("hit")
-			end
+            inst.sg:GoToState("hit")
         end
     end),
     EventHandler("death", function(inst, data)
@@ -275,7 +271,7 @@ local states=
 
     State{
         name = "trapped",
-		tags = { "busy", "trapped", "noelectrocute" },
+        tags = {"busy", "trapped"},
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -305,8 +301,9 @@ local states=
 }
 CommonStates.AddSleepStates(states)
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 
+
 return StateGraph("rabbit", states, events, "idle", actionhandlers)
+

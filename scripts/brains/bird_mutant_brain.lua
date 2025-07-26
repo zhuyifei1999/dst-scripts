@@ -84,7 +84,6 @@ function BirdMutantBrain:OnStart()
     local brain =
     {
 		BrainCommon.PanicTrigger(self.inst),
-        BrainCommon.ElectricFencePanicTrigger(self.inst),
 
         --Mutant Spitter:
             --Spit

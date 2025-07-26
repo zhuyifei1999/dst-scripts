@@ -21,25 +21,19 @@ local events =
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
-	CommonHandlers.OnElectrocute(),
     EventHandler("attacked", function(inst, data)
         inst.flee = true
         inst:DoTaskInTime(math.random(3, 6), onstopflee)
-		local isalive = inst.components.health ~= nil and not inst.components.health:IsDead()
-		if isalive and not inst.sg:HasStateTag("noattack") and
-			CommonHandlers.TryElectrocuteOnAttacked(inst, data)
-		then
-			return
-		elseif data and data.weapon and not inst.sg:HasStateTag("electrocute") then
-			if data.weapon:HasTag("hammer") then
-				inst.components.inventory:DropEverything(false, true)
-				if isalive then
-					inst.sg:GoToState("stunned", false)
-				end
-			elseif isalive and not inst.sg:HasStateTag("busy") then
-				inst.sg:GoToState("hit")
-			end
-		end
+        if data ~= nil and data.weapon ~= nil then
+            if data.weapon:HasTag("hammer") then
+                inst.components.inventory:DropEverything(false, true)
+                if inst.components.health ~= nil and not inst.components.health:IsDead() then
+                    inst.sg:GoToState("stunned", false)
+                end
+            elseif not inst.sg:HasStateTag("busy") and inst.components.health ~= nil and not inst.components.health:IsDead() then
+                inst.sg:GoToState("hit")
+            end
+        end
     end),
     EventHandler("death", function(inst)
         inst.sg:GoToState("death")
@@ -277,7 +271,6 @@ local states =
             inst.SoundEmitter:KillSound("move")
             if inst.isunder then
                 inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
             end
             if playanim then
                 inst.AnimState:PlayAnimation(playanim)
@@ -300,7 +293,7 @@ local states =
 
     State{
         name = "walk_pre",
-		tags = { "moving", "canrotate", "noattack", "noelectrocute" },
+        tags = { "moving", "canrotate", "noattack" },
 
         onenter = function(inst)
             inst:SetUnderPhysics()
@@ -321,7 +314,7 @@ local states =
 
     State{
         name = "walk",
-		tags = { "moving", "canrotate", "noattack", "noelectrocute" },
+        tags = { "moving", "canrotate", "noattack" },
 
         onenter = function(inst)
             inst:SetUnderPhysics()
@@ -349,7 +342,7 @@ local states =
 
     State{
         name = "walk_pst",
-		tags = { "canrotate", "noattack", "noelectrocute" },
+        tags = { "canrotate", "noattack" },
 
         onenter = function(inst)
             inst:SetUnderPhysics()
@@ -381,7 +374,6 @@ local states =
             inst.Physics:Stop()
             if inst.isunder then
                 inst.sg:AddStateTag("noattack")
-				inst.sg:AddStateTag("noelectrocute")
                 inst.AnimState:PlayAnimation("idle_under")
             else
                 inst.AnimState:PlayAnimation("idle")
@@ -399,7 +391,7 @@ local states =
 
     State{
         name = "make_molehill",
-		tags = { "busy", "noattack", "noelectrocute" },
+        tags = { "busy", "noattack" },
 
         onenter = function(inst, playanim)
             inst.Physics:Stop()
@@ -412,7 +404,6 @@ local states =
             TimeEvent(16*FRAMES, function(inst)
                 inst:SetAbovePhysics()
                 inst.sg:RemoveStateTag("noattack")
-				inst.sg:RemoveStateTag("noelectrocute")
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge")
             end),
             TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge_voice") end),
@@ -477,7 +468,7 @@ local states =
 
     State{
         name = "stunned",
-		tags = { "busy", "noattack", "canelectrocute", "canwxscan" },
+        tags = { "busy", "noattack","canwxscan" },
 
         onenter = function(inst, skippre)
             inst:ClearBufferedAction()
@@ -661,6 +652,5 @@ local states =
     },
 }
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
 
 return StateGraph("mole", states, events, "idle", actionhandlers)

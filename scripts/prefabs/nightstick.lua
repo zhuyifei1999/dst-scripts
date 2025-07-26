@@ -88,7 +88,9 @@ local function onfuelchange(newsection, oldsection, inst)
 end
 
 local function onattack(inst, attacker, target)
-    SpawnElectricHitSparks(attacker, target, true)
+    if target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid() then
+        SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker, true)
+    end
 end
 
 local function fn()
