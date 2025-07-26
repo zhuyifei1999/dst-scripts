@@ -677,6 +677,14 @@ local fx =
         fn = FinalOffset1,
     },
     {
+        name = "shock_arc_fx",
+        bank = "shock_fx",
+        build = "shock_fx",
+        anim = "arc",
+        eightfaced = true,
+        fn = FinalOffset1,
+    },
+    {
         name = "weregoose_shock_fx",
         bank = "shock_fx",
         build = "shock_fx",

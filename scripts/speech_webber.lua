@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Aww, we missed!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Aww, we missed!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "The giant ball is back.",
     ANNOUNCE_FLOATER_HELD = "We float!",
     ANNOUNCE_FLOATER_LETGO = "Weeee!",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4800,6 +4810,7 @@ return{
 
         MOONSTORM_STATIC = "That looks kinda dangerous...",
         MOONSTORM_STATIC_ITEM = "It's like a big lightning bug stuck in a jar.",
+        MOONSTORM_STATIC_ROAMER = "We can catch it!",
         MOONSTORM_SPARK = "It makes all our spider hairs stand on end!",
 
         BIRD_MUTANT = "We think there might be something wrong with that bird...",
@@ -5463,8 +5474,11 @@ return{
 
         FENCE_JUNK = "It's not the nicest-looking fence.",
         JUNK_PILE = "There might be something fun to play with in there!",
-        JUNK_PILE_BIG = "We don't want to get squashed!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Ooh! We see a prize at the top!",
+            GENERIC = "We don't want to get squashed!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "We aren't allowed to play with that. It's just for Wormwood.",
 
         -- Meta 4 / Ocean QoL
@@ -5715,6 +5729,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Why are they mad at us?",
         FLOTATIONCUSHION = "Promise we won't splash...",
         LUNAR_SEED = "So pretty! Can we keep it?",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Maybe it won't be so cranky this time.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "A fun and dangerous toy to build!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "More parts!",
+        MOONSTORM_STATIC_CATCHER = "Let's catch something!",
+        COOLANT = "We like bubbles.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "We're not afraid of zaps.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "It's not doing anything!",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Where should we put it?",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

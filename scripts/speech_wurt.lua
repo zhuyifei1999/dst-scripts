@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Florp! Missed!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Florp! Missed!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It baaack!",
     ANNOUNCE_FLOATER_HELD = "See? Me best floater.",
     ANNOUNCE_FLOATER_LETGO = "Glurph!",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4800,6 +4810,7 @@ return{
 
         MOONSTORM_STATIC = "What that sparky stuff?",
         MOONSTORM_STATIC_ITEM = "Hee-hee! It can't get out!",
+        MOONSTORM_STATIC_ROAMER = "Watch me catch sparky stuff!",
         MOONSTORM_SPARK = "Glorp! It zaps!",
 
         BIRD_MUTANT = "Ha ha! What happen to you?",
@@ -5463,8 +5474,11 @@ return{
 
         FENCE_JUNK = "Made of bunch of metal bits.",
         JUNK_PILE = "If anything good in there, it mine!",
-        JUNK_PILE_BIG = "Glurp... look like it gonna fall!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What that? Me get!",
+            GENERIC = "Glurp... look like it gonna fall!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Plant's killing shirt!",
 
         -- Meta 4 / Ocean QoL
@@ -5715,6 +5729,28 @@ return{
         GESTALT_GUARD_EVOLVED = "You not nice! Flort!",
         FLOTATIONCUSHION = "Me best floater, florp!",
         LUNAR_SEED = "Glorp, me keep!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Big bad ironfolk body.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Florp, me build.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Me always have spare parts left.",
+        MOONSTORM_STATIC_CATCHER = "Put thing inside?",
+        COOLANT = "Glurgh. Weird bubble slime.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Me touch.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Where zap? Make zap.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Where put for zap?",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "What that?",

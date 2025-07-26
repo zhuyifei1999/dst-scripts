@@ -461,10 +461,16 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst:AddTag("hound")
     inst:AddTag("canbestartled")
 
+    if data.canmutatefn then
+        inst:AddTag("soulless") -- no wortox souls
+    end
+
     if tag ~= nil then
         inst:AddTag(tag)
 
         if tag == "clay" then
+			inst:AddTag("electricdamageimmune")
+
             inst._eyeflames = net_bool(inst.GUID, "clayhound._eyeflames", "eyeflamesdirty")
             inst:ListenForEvent("eyeflamesdirty", OnEyeFlamesDirty)
         end
@@ -556,6 +562,7 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst.components.inspectable.getstatus = GetStatus
 
     if tag == "clay" then
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("statue")
 
         inst:AddComponent("hauntable")
@@ -816,7 +823,6 @@ local function OnHedgeKilled(inst)
     end
 end
 
-
 local function fnhedge()
     local inst = fncommon("hound", "hound_hedge_ocean", nil, nil, nil, {amphibious = true})
 
@@ -839,6 +845,8 @@ local function fnhedge()
     inst.components.lootdropper:SetChanceLootTable(nil)
 
     inst:ListenForEvent("death", OnHedgeKilled)
+
+	inst.sg.mem.burn_on_electrocute = true
 
     return inst
 end

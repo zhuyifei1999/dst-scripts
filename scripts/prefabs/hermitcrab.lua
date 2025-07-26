@@ -1587,6 +1587,8 @@ local function markerfn()
     inst:AddTag("NOBLOCK")
     inst:AddTag("NOCLICK")
     inst:AddTag("hermitcrab_marker")
+    inst:AddTag("ignorewalkableplatforms")
+	inst:AddTag("ignorewalkableplatformdrowning")
 
     TheWorld:PushEvent("ms_register_hermitcrab_marker", inst)
     TheWorld:PushEvent("ms_register_pearl_entity", inst)
@@ -1602,6 +1604,8 @@ local function markerfishingfn()
     inst:AddTag("NOBLOCK")
     inst:AddTag("NOCLICK")
     inst:AddTag("hermitcrab_marker_fishing")
+    inst:AddTag("ignorewalkableplatforms")
+	inst:AddTag("ignorewalkableplatformdrowning")
 
     TheWorld:PushEvent("ms_register_pearl_entity", inst)
 
@@ -1616,6 +1620,8 @@ local function luremarkerfn()
     inst:AddTag("NOBLOCK")
     inst:AddTag("NOCLICK")
     inst:AddTag("hermitcrab_lure_marker")
+    inst:AddTag("ignorewalkableplatforms")
+	inst:AddTag("ignorewalkableplatformdrowning")
 
     TheWorld:PushEvent("ms_register_pearl_entity", inst)
 

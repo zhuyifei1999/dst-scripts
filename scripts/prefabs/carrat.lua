@@ -758,6 +758,7 @@ local function fn()
     inst:AddComponent("drownable")
 
     inst:SetStateGraph("SGcarrat")
+	inst.sg.mem.burn_on_electrocute = true
     inst:SetBrain(brain)
 
     inst:AddComponent("eater")

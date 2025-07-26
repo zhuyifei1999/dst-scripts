@@ -20278,13 +20278,13 @@ msgstr "要不是%s，我就成為歷史了！"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WANDERINGTRADER.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WANDERINGTRADER.GENERIC"
-msgid "Looks like it's about to turn."
-msgstr "看起來它快要變身了。"
+msgid "What a strange looking beefalo."
+msgstr "這皮弗婁牛長得可真奇怪。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WANDERINGTRADER.REVEALED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WANDERINGTRADER.REVEALED"
-msgid "If we trade, will we beef friends!"
-msgstr "交易以後，我們就牛轉成朋友嗎！"
+msgid "If we trade, will we beef friends?"
+msgstr "交易以後，我們就牛轉成朋友嗎？"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARDROBE.BURNING
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARDROBE.BURNING"
@@ -116018,8 +116018,8 @@ msgstr "我感覺它的邊緣好尖銳，劃到我的皮膚了。"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.FLOTATIONCUSHION
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.FLOTATIONCUSHION"
-msgid "But we're not afraid of the water!"
-msgstr "我們完全不怕水呀！"
+msgid "Promise we won't splash..."
+msgstr "我們保證不會把水花濺得到處都是……"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.FLOWER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.FLOWER.GENERIC"
@@ -124273,7 +124273,7 @@ msgstr "總算輪到我們來拉它了！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGPUNK_WORKSTATION
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGPUNK_WORKSTATION"
-msgid "Can we building something fun?"
+msgid "Can we build something fun?"
 msgstr "我們能造些好玩的東西嗎？"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGSTAFF_ITEM_1
@@ -124283,8 +124283,8 @@ msgstr "我們可以摸到有手套！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGSTAFF_ITEM_2
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGSTAFF_ITEM_2"
-msgid "Why isn't it a projection anymore? We don't undertand."
-msgstr "為什麼它不再是投影了呀？我們不明白。"
+msgid "It's real? We don't understand."
+msgstr "這是真的嗎？我們有點蒙了。"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGSTAFF_MACHINERY
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WAGSTAFF_MACHINERY"
@@ -196688,8 +196688,8 @@ msgstr "太高了，就連沃爾夫岡也夠不到。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.DEPLOY.HERMITCRAB_RELOCATE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.DEPLOY.HERMITCRAB_RELOCATE"
-msgid "Oh, empty. I try again later."
-msgstr "噢，空的。我晚點再試試。"
+msgid "Oh, empty. Wolfgang try again later."
+msgstr "噢，是空的。沃爾夫岡晚點再試。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.DISMANTLE.COOKING
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.DISMANTLE.COOKING"
@@ -341021,6 +341021,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.boomerang_bananarang"
 msgid "An appealing weapon to those who'd rather not part with their snacks."
 msgstr "對不願意放棄零食的人來說，這是一種有吸引力的武器。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.boomerang_bandedwood
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.boomerang_bandedwood"
+msgid "Deadliness and fun, all bound into one."
+msgstr "致命與玩味的完美結合。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.boomerang_tiger
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.boomerang_tiger"
 msgid "Grab this tiger boomerang by the tail."
@@ -347066,6 +347071,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_beefalo"
 msgid "This Resplendent Beefalo Chest contains the following Beefalo skin items: Selenial Caparison, Selenial Shoes, Selenial Headgear, Selenial Horns, Selenial Tail, Sanguine Caparison, Sanguine Shoes, Sanguine Headgear, Sanguine Horns, and Sanguine Tail."
 msgstr "這個華麗皮弗婁牛箱子包含了以下皮弗婁牛皮膚物品：月亮女神牛衣、月亮女神鞋子、月亮女神頭飾、月亮女神牛角、月亮女神尾巴、血色牛衣、血色鞋子、血色頭飾、血色牛角和血色尾巴。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.pack_boomerang_psn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_boomerang_psn"
+msgid "This chest contains a Maiming Crescent."
+msgstr "這個箱子包含了一枚殘月迴旋鏢。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.pack_boy_items
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_boy_items"
 msgid "This Homespun Chest contains the following skin items: Homespun Garden Hoe, Homespun Watering Can, and Homespun Seed Pouch."
@@ -348500,6 +348510,11 @@ msgstr "這個箱子包含3000布卷！"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wb_1"
 msgid "This chest contains 5500 Bolts of Cloth!"
 msgstr "這個箱子包含5500布卷！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_wb_1000
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wb_1000"
+msgid "This chest contains 1000 Bolts of Cloth!"
+msgstr "這個箱子包含了1000布卷！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wb_2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wb_2"
@@ -359256,6 +359271,11 @@ msgctxt "STRINGS.SKIN_NAMES.boomerang_bananarang"
 msgid "Bananarang"
 msgstr "香蕉迴旋鏢"
 
+#. STRINGS.SKIN_NAMES.boomerang_bandedwood
+msgctxt "STRINGS.SKIN_NAMES.boomerang_bandedwood"
+msgid "Maiming Crescent"
+msgstr "殘月迴旋鏢"
+
 #. STRINGS.SKIN_NAMES.boomerang_tiger
 msgctxt "STRINGS.SKIN_NAMES.boomerang_tiger"
 msgid "Tiger Boomerang"
@@ -365301,6 +365321,11 @@ msgctxt "STRINGS.SKIN_NAMES.pack_beefalo"
 msgid "Resplendent Beefalo Chest"
 msgstr "華麗皮弗婁牛箱子"
 
+#. STRINGS.SKIN_NAMES.pack_boomerang_psn
+msgctxt "STRINGS.SKIN_NAMES.pack_boomerang_psn"
+msgid "Maiming Crescent Chest"
+msgstr "殘月迴旋鏢箱子"
+
 #. STRINGS.SKIN_NAMES.pack_boy_items
 msgctxt "STRINGS.SKIN_NAMES.pack_boy_items"
 msgid "Homespun Chest"
@@ -366734,6 +366759,11 @@ msgstr "迷你布卷箱子"
 #. STRINGS.SKIN_NAMES.pack_wb_1
 msgctxt "STRINGS.SKIN_NAMES.pack_wb_1"
 msgid "Small Bolt Chest"
+msgstr "小布卷箱子"
+
+#. STRINGS.SKIN_NAMES.pack_wb_1000
+msgctxt "STRINGS.SKIN_NAMES.pack_wb_1000"
+msgid "Teensy Bolt Chest"
 msgstr "小布卷箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wb_2
@@ -383356,6 +383386,11 @@ msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND"
 msgid "This curio can be unraveled into {doodad_value} Spools."
 msgstr "此珍寶可以拆散成 {doodad_value} 個線軸。"
 
+#. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND_ENTITLEMENT
+msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND_ENTITLEMENT"
+msgid "Note: {entitlement_count} of the {total_owned} selected curio is linked to an owned DLC or a past event and can not be unraveled."
+msgstr "注意：所選{total_owned}件奇物中有{entitlement_count}件關聯已擁有DLC或往期活動，不能拆散。"
+
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY_NEVER
 msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY_NEVER"
 msgid "This curio is not weaveable."
@@ -395029,6 +395064,16 @@ msgstr "不用了，謝謝。"
 #. STRINGS.UI.NEW_CONTROLSCHEME_POPUP.TITLE
 msgctxt "STRINGS.UI.NEW_CONTROLSCHEME_POPUP.TITLE"
 msgid "Playing with controller?"
+msgstr "使用手柄遊戲？"
+
+#. STRINGS.UI.NEW_CONTROLSCHEME_POPUP.XB1_BODY
+msgctxt "STRINGS.UI.NEW_CONTROLSCHEME_POPUP.XB1_BODY"
+msgid "The game supports multiple control schemes for playing with gamepad. Would you like to see them and select one?"
+msgstr "本遊戲支持多種手柄操作方案。是否立即查看並選擇？"
+
+#. STRINGS.UI.NEW_CONTROLSCHEME_POPUP.XB1_TITLE
+msgctxt "STRINGS.UI.NEW_CONTROLSCHEME_POPUP.XB1_TITLE"
+msgid "Playing with gamepad?"
 msgstr "使用手柄遊戲？"
 
 #. STRINGS.UI.NEW_CONTROLSCHEME_POPUP.YES

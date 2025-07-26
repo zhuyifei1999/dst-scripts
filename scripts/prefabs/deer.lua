@@ -464,6 +464,8 @@ local function common_fn(gem)
         return inst
     end
 
+	inst.override_combat_fx_height = "high"
+
     inst.scrapbook_overridedata = {{"swap_neck_collar", "deer_build", "swap_neck" }, {"swap_antler_red", "deer_build", "swap_antler1"}}
     inst.scrapbook_hide = { "CHAIN" }
     inst.scrapbook_deps = { "meat", "deer_antler1", "deer_antler2", "deer_antler3"}

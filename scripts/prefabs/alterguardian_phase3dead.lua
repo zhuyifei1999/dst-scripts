@@ -261,6 +261,7 @@ local function deadfn()
     inst.components.lootdropper.max_speed = 4.5
 
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountLarge(inst)
 
     MakeHauntableWork(inst)
 

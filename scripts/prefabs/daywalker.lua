@@ -876,7 +876,10 @@ local function MakeChained(inst)
 		inst.AnimState:OverrideSymbol("chain_set_break", "daywalker_pillar", "chain_set_break")
 		inst:SwitchToFacingModel(0) --inst.Transform:SetNoFaced()
 		inst.SoundEmitter:PlaySound("daywalker/pillar/chain_idle", "chainloop")
+
 		ChangeToObstaclePhysics(inst)
+		MakeCollidesWithElectricField(inst)
+
 		EnableChains(inst, true)
 		PHASES[0].fn(inst)
 		inst:SetBrain(nil)
@@ -905,7 +908,10 @@ local function MakeUnchained(inst)
 		inst.AnimState:ClearAllOverrideSymbols()
 		inst:SwitchToFacingModel(4) --inst.Transform:SetFourFaced()
 		inst.SoundEmitter:KillSound("chainloop")
+
+		ClearCollidesWithElectricField(inst)
 		ChangeToGiantCharacterPhysics(inst, MASS)
+
 		EnableChains(inst, false)
 		inst:SetStateGraph("SGdaywalker")
 		inst.sg:GoToState("tired")
@@ -1168,6 +1174,7 @@ local function fn()
 
 	inst.scrapbook_damage = TUNING.DAYWALKER_XCLAW_DAMAGE * .5 -- playerdamagepercent
 
+	inst.override_combat_fx_height = "low"
 	inst.footstep = "daywalker/action/step"
 
 	inst.components.talker.ontalk = OnTalk

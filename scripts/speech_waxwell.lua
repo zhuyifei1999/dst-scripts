@@ -318,6 +318,8 @@ return{
             TOOMANYBEES = "There's such a thing as too many bees, pal.",
             NOMOONINCAVES = "Its power can't reach the \"moon\" from here.",
             ALREADYFULLMOON = "For once, magic is not needed.",
+            -- Electrocute
+            DEADBIRDS = "TODO",
         },
 		REMOTE_TELEPORT =
 		{
@@ -478,8 +480,12 @@ return{
 		},
 		POUNCECAPTURE =
 		{
-			MISSED = "Don't move, blasted specter!",
+			MISSED = "Quit moving!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Quit moving!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Again? What now?",
     ANNOUNCE_FLOATER_HELD = "There are unspeakable horrors below.",
     ANNOUNCE_FLOATER_LETGO = "Ah!",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4800,6 +4810,7 @@ return{
 
         MOONSTORM_STATIC = "What is he meddling with?",
         MOONSTORM_STATIC_ITEM = "There's power trapped inside.",
+        MOONSTORM_STATIC_ROAMER = "Hmm, not your typical magic.",
         MOONSTORM_SPARK = "They give off a rather unsettling sensation.",
 
         BIRD_MUTANT = "That creature has seen better days.",
@@ -5463,8 +5474,11 @@ return{
 
         FENCE_JUNK = "Hmph. It'll certainly repel anyone with taste.",
         JUNK_PILE = "Have I really been reduced to sifting through the trash?",
-        JUNK_PILE_BIG = "One false move could send the whole pile tumbling down.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What's that? Worth the hassle?",
+            GENERIC = "One false move could send the whole pile tumbling down.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Of course the plant saves the best stuff for himself.",
 
         -- Meta 4 / Ocean QoL
@@ -5715,6 +5729,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Oh, bygones be bygones and such.",
         FLOTATIONCUSHION = "Where does it say, \"women and children first\"?",
         LUNAR_SEED = "I told you it was no match for my abilities.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Don't say I didn't warn you.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Do we never learn?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These were built to cause harm.",
+        MOONSTORM_STATIC_CATCHER = "Just my luck. It's empty.",
+        COOLANT = "Yucky.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "I don't trust the power source.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Perhaps its best left alone.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "I don't like it.",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "You tell me.",

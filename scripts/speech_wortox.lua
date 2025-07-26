@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Miss! Boo and hiss!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Miss! Boo and hiss!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1182,6 +1188,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Ack! It's back!",
     ANNOUNCE_FLOATER_HELD = "Wet fur? What for?",
     ANNOUNCE_FLOATER_LETGO = "No time to rhy-",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4820,6 +4830,7 @@ return{
 
         MOONSTORM_STATIC = "Best stay back if I don't want to get zapped!",
         MOONSTORM_STATIC_ITEM = "It makes my fur stand on end.",
+        MOONSTORM_STATIC_ROAMER = "That juice is on the loose!",
         MOONSTORM_SPARK = "Hyuyu, it tickles!",
 
         BIRD_MUTANT = "My my, you're looking rather pale!",
@@ -5483,8 +5494,11 @@ return{
 
         FENCE_JUNK = "A metal fence for our defense.",
         JUNK_PILE = "Could it hide a surprise inside?",
-        JUNK_PILE_BIG = "I won't fall for that, hyuyu!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I spy with my little eye, something sitting way up high, hyuyu!",
+            GENERIC = "I won't fall for that, hyuyu!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Prickly plant protection, perfection!",
 
         -- Meta 4 / Ocean QoL
@@ -5735,6 +5749,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Well whad'ya know, we reap what we sow!",
         FLOTATIONCUSHION = "Because there's no time to think, when you're plunged in the drink!",
         LUNAR_SEED = "You went down, and left your crown!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "The foundation of devastation, hyuyu!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I'll feel no guilt until it's built!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Install to end us all?",
+        MOONSTORM_STATIC_CATCHER = "It's hollow, you follow?",
+        COOLANT = "All that trouble for these bubbles.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Think it's linked.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Don't think it's linked.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Yet to set.",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "Ooo, a mystery!",

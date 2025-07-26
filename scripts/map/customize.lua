@@ -892,11 +892,9 @@ local function GetOptionsFromGroup(GROUP, MOD_GROUP, location, is_master_world)
 		end
 	end
 
-
 	table.sort(options, function(a, b)
 		local item_a = GetOption(a.name)
 		local item_b = GetOption(b.name)
-
 
 		if item_a.group.order ~= item_b.group.order then
 			return item_a.group.order < item_b.group.order
@@ -908,7 +906,7 @@ local function GetOptionsFromGroup(GROUP, MOD_GROUP, location, is_master_world)
 		local item_b_order = item_b.order
 
 		if item_a_order == item_b_order then
-			return (STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(item_a.name)] or "") < (STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(item_b.name)]  or "")
+			return stringidsorter(STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(item_a.name)] or "", STRINGS.UI.CUSTOMIZATIONSCREEN[string.upper(item_b.name)] or "")
 		elseif item_a_order == nil or item_b_order == nil then
 			return item_a_order ~= nil
 		end

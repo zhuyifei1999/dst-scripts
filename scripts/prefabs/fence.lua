@@ -644,8 +644,6 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, data)
             inst.AnimState:SetBank(anims.wide)
             inst.AnimState:SetBuild((anims.build or anims.wide) .. (inst.variant_num or ""))
             inst.AnimState:PlayAnimation("idle")
-
-            MakeSnowCoveredPristine(inst)
         end
 
         inst._pfpos = nil
@@ -740,8 +738,6 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, data)
                 inst.components.klaussacklock:SetOnUseKey(onusekey)
                 inst.klaussackkeyid = klaussackkeyid
             end
-        else
-            MakeSnowCovered(inst)
         end
 
         inst.OnSave = onsave
@@ -796,8 +792,6 @@ local function MakeWallAnim(name, anims, isdoor)
             inst.AnimState:Hide("mouseover")
         end
 
-        MakeSnowCoveredPristine(inst)
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -805,8 +799,6 @@ local function MakeWallAnim(name, anims, isdoor)
 
             return inst
         end
-
-        MakeSnowCovered(inst)
 
         inst.persists = false
 

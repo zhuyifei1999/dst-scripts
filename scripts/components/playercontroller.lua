@@ -128,6 +128,7 @@ local PlayerController = Class(function(self, inst)
 	self.controller_targeting_lock_target = false
 	self.controller_targeting_targets = {}
 	self.controller_targeting_target_index = nil
+	self.command_wheel_allows_gameplay = Profile:GetCommandWheelAllowsGameplay() -- does the command wheel block all other gameplay or can you do other things, like move around, while it is open
 
     self.reticule = nil
     self.terraformer = nil
@@ -479,7 +480,7 @@ function PlayerController:IsEnabled()
     if self.classified == nil or not self.classified.iscontrollerenabled:value() then
         return false
     elseif self.inst.HUD ~= nil and self.inst.HUD:HasInputFocus() then
-		return false, self.inst.HUD:IsCraftingOpen() and TheFrontEnd.textProcessorWidget == nil or self.inst.HUD:IsSpellWheelOpen()
+        return false, self.inst.HUD:IsCraftingOpen() and TheFrontEnd.textProcessorWidget == nil or self.inst.HUD:IsSpellWheelOpen() or (self.command_wheel_allows_gameplay and self.inst.HUD:IsCommandWheelOpen())
     end
     return true
 end
@@ -1849,6 +1850,9 @@ local function GetPickupAction(self, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
     elseif tool ~= nil then
+        if target:HasTag("LunarBuildup") and tool:HasTag("MINE_tool") then
+            return ACTIONS.REMOVELUNARBUILDUP
+        end
         for k, v in pairs(TOOLACTIONS) do
             if target:HasTag(k.."_workable") then
                 if tool:HasTag(k.."_tool") then
@@ -1932,6 +1936,7 @@ local CATCHABLE_TAGS = { "catchable" }
 local PINNED_TAGS = { "pinned" }
 local CORPSE_TAGS = { "corpse" }
 local GESTALTCAPTURABLE_TAGS = { "gestaltcapturable" }
+local MOONSTORMSTATICCAPTURABLE_TAGS = { "moonstormstaticcapturable" }
 function PlayerController:GetActionButtonAction(force_target)
     local isenabled, ishudblocking = self:IsEnabled()
 
@@ -2003,6 +2008,18 @@ function PlayerController:GetActionButtonAction(force_target)
 			end
 		end
 
+        --catch moonstorm statics
+        if tool and tool:HasTag("moonstormstatic_catcher") then
+            if force_target == nil then
+                local target = FindEntity(self.inst, 8, nil, MOONSTORMSTATICCAPTURABLE_TAGS, TARGET_EXCLUDE_TAGS)
+                if CanEntitySeeTarget(self.inst, target) then
+                    return BufferedAction(self.inst, target, ACTIONS.DIVEGRAB, tool)
+                end
+            elseif force_target_distsq <= 64 and force_target:HasTag("moonstormstaticcapturable") then
+                return BufferedAction(self.inst, force_target, ACTIONS.DIVEGRAB, tool)
+            end
+        end
+
         --catching
         if self.inst:HasTag("cancatch") then
             if force_target == nil then
@@ -2064,6 +2081,9 @@ function PlayerController:GetActionButtonAction(force_target)
 				"client_forward_action_target",
             }
             if tool ~= nil then
+                if tool:HasTag("MINE_tool") then
+                    table.insert(pickup_tags, "LunarBuildup")
+                end
                 for k, v in pairs(TOOLACTIONS) do
                     if tool:HasTag(k.."_tool") then
                         table.insert(pickup_tags, k.."_workable")
@@ -4716,6 +4736,12 @@ function PlayerController:OnRightClick(down)
         if goingtodeploy then
             if self.deployplacer.components.placer:IsAxisAlignedPlacement() then
                 act:SetActionPoint(self.deployplacer:GetPosition())
+            end
+            if self.deployplacer.components.placer.override_build_point_fn then
+                local override_pt = self.deployplacer.components.placer.override_build_point_fn(self.deployplacer)
+                if override_pt then
+                    act:SetActionPoint(override_pt)
+                end
             end
             act.rotation = self.deployplacer.Transform:GetRotation()
         end

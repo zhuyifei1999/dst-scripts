@@ -259,13 +259,16 @@ local function DoDigest(inst, target, useimpactsound)
 end
 
 local function OnUpdateSuspended2(inst)
+	inst._suspendedtask = nil
 	DoDigest(inst, inst._suspendedplayer, true)
 	StealSuspendedEquip(inst)
 	ReleaseSuspended(inst, true)
 end
 
 local function OnUpdateSuspended(inst)
-	if inst._digestcount < 3 then
+	if inst.sg:HasStateTag("electrocute") then
+		inst._suspendedplayer:PushEvent("abouttospit")
+	elseif inst._digestcount < 3 then
 		inst._digestcount = inst._digestcount + 1
 		DoDigest(inst, inst._suspendedplayer)
 		inst.sg:HandleEvent("jiggle")

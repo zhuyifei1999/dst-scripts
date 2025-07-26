@@ -197,6 +197,7 @@ local function fn()
     inst:AddTag("notarget")
     inst:AddTag("notraptrigger")
     inst:AddTag("stageusher")
+    inst:AddTag("shadow_aligned")
 
     MakeSnowCoveredPristine(inst)
 
@@ -206,6 +207,9 @@ local function fn()
     end
 
     inst.scrapbook_hidehealth = true
+
+    MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountSmall(inst)
 
     ----------------------------------------------------------------------------
     inst:AddComponent("burnable")
@@ -464,6 +468,7 @@ local function handfn()
     inst:AddTag("ignorewalkableplatforms")
     inst:AddTag("NOCLICK")
     inst:AddTag("shadowhand")
+    inst:AddTag("shadow_aligned")
 
     inst.AnimState:SetBank("stagehand_sts_arm")
     inst.AnimState:SetBuild("stagehand_sts_arm")

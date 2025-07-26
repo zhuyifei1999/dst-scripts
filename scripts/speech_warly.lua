@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Oh non! I missed.",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Oh non! I missed.",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,10 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Déjà vu.",
     ANNOUNCE_FLOATER_HELD = "I feel like a dumpling!",
     ANNOUNCE_FLOATER_LETGO = "Was that wise?",
+    
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
 
 	BATTLECRY =
 	{
@@ -4800,6 +4810,7 @@ return{
 
         MOONSTORM_STATIC = "That seems to be a key ingredient for whatever he's working on.",
         MOONSTORM_STATIC_ITEM = "What will we be cooking up with this, I wonder?",
+        MOONSTORM_STATIC_ROAMER = "It is free-range.",
         MOONSTORM_SPARK = "It definitely has a kick to it.",
 
         BIRD_MUTANT = "That bird is looking a bit odd.",
@@ -5463,8 +5474,11 @@ return{
 
         FENCE_JUNK = "It's constructed well enough, but it lacks presentation.",
         JUNK_PILE = "Perhaps there is something delicious hiding in its center?",
-        JUNK_PILE_BIG = "It could topple over any minute!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Oh, there's a cherry on top!",
+            GENERIC = "It could topple over any minute!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "The little veg's own concoction.",
 
         -- Meta 4 / Ocean QoL
@@ -5715,6 +5729,28 @@ return{
         GESTALT_GUARD_EVOLVED = "I assure you it wasn't personal.",
         FLOTATIONCUSHION = "It will save me from the brine!",
         LUNAR_SEED = "This is its essence.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "The main course?",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Must be vacuum packed!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These must be the sides.",
+        MOONSTORM_STATIC_CATCHER = "There is nothing inside!",
+        COOLANT = "It is stewing and brewing!",
+
+        FENCE_ELECTRIC = {
+            LINKED = "How well does it fry?",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "This appliance does not work on its own.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "I must find a good spot for this.",
+
+        MUTATEDBIRD = "TODO",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "TODO", --witnessing the corpse
+            BURNING  = "TODO", --when its burning
+            REVIVING = "TODO", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

@@ -404,6 +404,7 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(chop_down_tree)
 
     MakeSnowCovered(inst)
+    SetLunarHailBuildupAmountLarge(inst)
 
 	UpdateArtForRank(inst, 1, 1, true)
 

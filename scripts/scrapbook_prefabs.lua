@@ -1891,6 +1891,35 @@ local PREFABS =
     ["multiplayer_portal"] = true,
     ["balatro_machine"] = true,
 
+    -- [[Rifts 5]]
+    ["gestalt_cage"] = true,
+    ["wagboss_robot"] = true,
+    ["wagboss_robot_leg"] = true,
+    ["wagboss_missile"] = true,
+    ["alterguardian_phase1_lunarrift"] = true,
+    ["alterguardian_phase1_lunarrift_gestalt"] = true,
+    ["alterguardian_phase4_lunarrift"] = true,
+    ["wagdrone_rolling"] = true,
+    ["wagdrone_flying"] = true,
+    ["wagdrone_parts"] = true,
+    ["wagpunk_cagewall"] = true,
+    ["wagpunk_floor_kit"] = true,
+    ["wagpunk_lever"] = true,
+    ["wagpunk_workstation"] = true,
+    ["wagstaff_item_1"] = true,
+    ["wagstaff_item_2"] = true,
+    ["hermitcrab_relocation_kit"] = true,
+    ["wanderingtrader"] = true,
+    ["flotationcushion"] = true,
+    ["gestalt_guard_evolved"] = true,
+    ["lunar_seed"] = true,
+
+    ["wagstaff_containment_note"] = true,
+    ["wagstaff_electricity_note"] = true,
+    ["wagstaff_energy_note"] = true,
+    ["wagstaff_materials_note"] = true,
+    ["wagstaff_thermal_note"] = true,
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

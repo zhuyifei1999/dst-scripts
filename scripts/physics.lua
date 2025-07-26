@@ -7,12 +7,12 @@ function OnPhysicsCollision(guid1, guid2, world_position_on_a_x, world_position_
     local i2 = Ents[guid2]
 
     local callback1 = PhysicsCollisionCallbacks[guid1]
-    if callback1 then
+    if callback1 and (not i2 or not i2:HasTag("no_collision_callback_for_other")) then
         callback1(i1, i2, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
     end
 
     local callback2 = PhysicsCollisionCallbacks[guid2]
-    if callback2 then
+    if callback2 and (not i1 or not i1:HasTag("no_collision_callback_for_other")) then
         callback2(i2, i1, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, -world_normal_on_b_x, -world_normal_on_b_y, -world_normal_on_b_z, lifetime_in_frames)
     end
 end

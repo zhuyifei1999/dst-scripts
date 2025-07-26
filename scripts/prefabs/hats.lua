@@ -2257,12 +2257,12 @@ local function MakeHat(name)
 
     local function moonstorm_equip(inst, owner)
         _onequip(inst, owner)
-        owner:AddTag("wagstaff_detector")
+        owner:AddTag("moonstormevent_detector")
     end
 
     local function moonstorm_unequip(inst, owner)
         _onunequip(inst, owner)
-        owner:RemoveTag("wagstaff_detector")
+        owner:RemoveTag("moonstormevent_detector")
     end
 
     local function moonstorm_custom_init(inst)
@@ -4254,6 +4254,7 @@ local function MakeHat(name)
     fns.wagpunk_onrepaired = function(inst)
         if inst.components.equippable == nil then
             inst:AddComponent("equippable")
+            inst.components.equippable.insulated = true
             inst.components.equippable.equipslot = EQUIPSLOTS.HEAD
             inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
             inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
@@ -4318,6 +4319,7 @@ local function MakeHat(name)
 
         inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
         inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
+        inst.components.equippable.insulated = true
 
         MakeForgeRepairable(inst, FORGEMATERIALS.WAGPUNKBITS, fns.wagpunk_onbroken, fns.wagpunk_onrepaired)
         MakeHauntableLaunch(inst)

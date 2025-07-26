@@ -304,8 +304,10 @@ ITEM_DISPLAY_BLACKLIST =
 	woby_big_ribbon = true,
 	woby_big_ribbon_lunar = true,
 	woby_big_ribbon_shadow = true,
+	wx78_scanner_catcoon_item = true,
 	wx78_scanner_fancy_item = true,
 	wx78_scanner_junky_item = true,
+	wx78_scanner_succeeded_catcoon = true,
 	wx78_scanner_succeeded_fancy = true,
 	wx78_scanner_succeeded_junky = true,
 }

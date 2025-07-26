@@ -350,6 +350,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        electricconnector = function(inst, doer, actions, right)
+            if not inst:HasTag("fully_electrically_linked") and not right then
+                table.insert(actions, ACTIONS.STARTELECTRICLINK)
+            end
+
+            if inst:HasTag("is_electrically_linked") and right then
+                table.insert(actions, ACTIONS.ENDELECTRICLINK)
+            end
+        end,
+
         farmplanttendable = function(inst, doer, actions, right)
             if inst:HasTag("fire") or inst:HasTag("smolder") then
                 return
@@ -1726,6 +1736,9 @@ local COMPONENT_ACTIONS =
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") and not (inst.replica.equippable ~= nil and inst.replica.equippable:IsRestricted(doer)) then
+                if target:HasTag("LunarBuildup") and inst:HasTag("MINE_tool") then
+                    table.insert(actions, ACTIONS.REMOVELUNARBUILDUP)
+                end
                 for k in pairs(TOOLACTIONS) do
                     if inst:HasTag(k.."_tool")
                             and target:IsActionValid(ACTIONS[k], right) then
@@ -2226,6 +2239,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        moonstormstaticcatcher = function(inst, doer, target, actions, right)
+            if target:HasTag("moonstormstaticcapturable") then
+                table.insert(actions, ACTIONS.DIVEGRAB)
+            end
+        end,
+
         nabbag = function(inst, doer, target, actions, right)
             if right and target.replica.inventoryitem and target.replica.inventoryitem:CanBePickedUp(doer) and not target:HasAnyTag("_container", "heavy", "fire") then
                 table.insert(actions, ACTIONS.NABBAG)
@@ -2313,6 +2332,9 @@ local COMPONENT_ACTIONS =
 
         tool = function(inst, doer, target, actions, right)
             if not target:HasTag("INLIMBO") then
+                if target:HasTag("LunarBuildup") and inst:HasTag("MINE_tool") then
+                    table.insert(actions, ACTIONS.REMOVELUNARBUILDUP)
+                end
                 for k in pairs(TOOLACTIONS) do
                     if inst:HasTag(k.."_tool")
                             and target:IsActionValid(ACTIONS[k], right)
@@ -2881,6 +2903,10 @@ local COMPONENT_ACTIONS =
             if not valid then return false end
 
             return IsValidScytheTarget(inst)
+        end,
+
+        lunarhailbuildup = function(inst, action, right)
+            return action == ACTIONS.REMOVELUNARBUILDUP and inst:HasTag("LunarBuildup")
         end,
 
         workable = function(inst, action, right)
