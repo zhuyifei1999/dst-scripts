@@ -1,5 +1,4 @@
 local function onelectrocute(inst)
-    print(GetTime())
     inst.brain:ForceUpdate() --TODO Can we move this to shocked_by_field?
 end
 

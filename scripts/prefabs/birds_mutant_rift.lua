@@ -27,6 +27,9 @@ local sounds =
 }
 
 local brain = require "brains/bird_mutant_rift_brain"
+local easing = require "easing"
+
+local BRILLIANCE_TIMER = "brilliancecooldown"
 
 ----------------------------------------------------------
 
@@ -40,7 +43,47 @@ local function OnDropped(inst)
     inst.sg:GoToState("stunned")
 end
 
-local SPHERE_RADIUS = 0.25 --4x as small as other birds. We want it to not get stuck on objects when hopping around...
+local function IsOnBrillianceCooldown(inst)
+    return inst.components.timer:TimerExists(BRILLIANCE_TIMER)
+end
+
+local function UpdateBrillianceVisual(inst, cage)
+    local off_cd = not IsOnBrillianceCooldown(inst)
+
+    local function UpdateInst(_inst)
+        if off_cd then
+            _inst.AnimState:SetSymbolBloom("bird_gem")
+            _inst.AnimState:SetSymbolLightOverride("bird_gem", 1)
+            _inst.AnimState:SetSymbolLightOverride("crow_beak", 0.3)
+        else
+            _inst.AnimState:ClearSymbolBloom("bird_gem")
+            _inst.AnimState:SetSymbolLightOverride("bird_gem", 0)
+            _inst.AnimState:SetSymbolLightOverride("crow_beak", 0)
+        end
+    end
+
+    UpdateInst(inst)
+    if cage then
+        UpdateInst(cage)
+    end
+end
+
+local function PutOnBrillianceCooldown(inst, cage)
+    inst._infused_eaten = 0
+    inst.components.timer:StartTimer(BRILLIANCE_TIMER, TUNING.RIFT_BIRD_BRILLIANCE_TIMER)
+    UpdateBrillianceVisual(inst, cage)
+end
+
+local function OnSave(inst, data)
+    data.infused_eaten = inst._infused_eaten
+end
+
+local function OnLoad(inst, data)
+    if data then
+        inst._infused_eaten = data._infused_eaten or 0
+    end
+end
+
 local DIET = { FOODTYPE.LUNAR_SHARDS }
 local function commonfn()
     local inst = CreateEntity()
@@ -60,7 +103,7 @@ local function commonfn()
 		COLLISION.SMALLOBSTACLES
 	)
     inst.Physics:SetMass(1)
-    inst.Physics:SetSphere(SPHERE_RADIUS)
+    inst.Physics:SetSphere(1)
 
 	inst:AddTag("soulless") -- no wortox souls
     inst:AddTag("canbetrapped")
@@ -77,6 +120,9 @@ local function commonfn()
     inst.AnimState:SetBank("crow")
     inst.AnimState:SetBuild("bird_lunar_build")
     inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:SetSymbolBloom("bird_gem")
+    inst.AnimState:SetSymbolLightOverride("bird_gem", 1)
+    inst.AnimState:SetSymbolLightOverride("crow_beak", 0.3)
 
     inst.entity:SetPristine()
 
@@ -143,8 +189,17 @@ local function commonfn()
         birdspawner:StartTracking(inst)
     end
 
+    inst._infused_eaten = 0
+
     inst:SetStateGraph("SGbird")
     inst:SetBrain(brain)
+
+    inst.PutOnBrillianceCooldown = PutOnBrillianceCooldown
+    inst.UpdateBrillianceVisual = UpdateBrillianceVisual
+    inst.IsOnBrillianceCooldown = IsOnBrillianceCooldown
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
 	return inst
 end

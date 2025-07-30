@@ -461,10 +461,6 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     inst:AddTag("hound")
     inst:AddTag("canbestartled")
 
-    if data.canmutatefn then
-        inst:AddTag("soulless") -- no wortox souls
-    end
-
     if tag ~= nil then
         inst:AddTag(tag)
 
@@ -473,6 +469,8 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
 
             inst._eyeflames = net_bool(inst.GUID, "clayhound._eyeflames", "eyeflamesdirty")
             inst:ListenForEvent("eyeflamesdirty", OnEyeFlamesDirty)
+        elseif tag == "lunar_aligned" then
+            inst:AddTag("soulless") -- no wortox souls
         end
     end
 

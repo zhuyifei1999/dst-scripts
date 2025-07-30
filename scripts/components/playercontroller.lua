@@ -1243,17 +1243,20 @@ function PlayerController:DoControllerAttackButton(target)
             end
         end
         --V2C: controller attacks still happen even with no valid target
-        if target == nil and (
-            self.directwalking or
-            self.inst:HasTag("playerghost") or
-            self.inst:HasTag("weregoose") or
-            self.inst.replica.inventory:IsHeavyLifting() or
-			(self.classified and self.classified.inmightygym:value() > 0) or
-            GetGameModeProperty("no_air_attack")
-        ) then
-            --Except for player ghosts!
-            return
-        end
+		if target == nil then
+			--exceptions:
+			if self.directwalking or
+				self.inst:HasAnyTag("playerghost", "weregoose") or
+				(self.classified and self.classified.inmightygym:value() > 0) or
+				GetGameModeProperty("no_air_attack")
+			then
+				return
+			end
+			local inventory = self.inst.replica.inventory
+			if inventory:IsHeavyLifting() or inventory:IsFloaterHeld() then
+				return
+			end
+		end
     end
 
     local act = BufferedAction(self.inst, target, ACTIONS.ATTACK)
@@ -1666,12 +1669,16 @@ end
 local REGISTERED_FIND_ATTACK_TARGET_TAGS = TheSim:RegisterFindTags({ "_combat" }, { "INLIMBO" })
 
 function PlayerController:GetAttackTarget(force_attack, force_target, isretarget, use_remote_predict)
-    if self.inst:HasTag("playerghost") or
-        self.inst:HasTag("weregoose") or
-		(self.classified and self.classified.inmightygym:value() > 0) or
-        self.inst.replica.inventory:IsHeavyLifting() then
+	if self.inst:HasAnyTag("playerghost", "weregoose") or
+		(self.classified and self.classified.inmightygym:value() > 0)
+	then
         return
     end
+
+	local inventory = self.inst.replica.inventory
+	if inventory:IsHeavyLifting() or inventory:IsFloaterHeld() then
+		return
+	end
 
     local combat = self.inst.replica.combat
     if combat == nil then
@@ -1703,8 +1710,7 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     --Beaver teeth counts as having a weapon
     local has_weapon = self.inst:HasTag("beaver")
     if not has_weapon then
-        local inventory = self.inst.replica.inventory
-        local tool = inventory ~= nil and inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
+		local tool = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if tool ~= nil then
             local inventoryitem = tool.replica.inventoryitem
             has_weapon = inventoryitem ~= nil and inventoryitem:IsWeapon()
@@ -1955,13 +1961,22 @@ function PlayerController:GetActionButtonAction(force_target)
         if not usedefault or buffaction ~= nil then
             return buffaction
         end
+		--(usedefault and buffaction == nil) ==> fallthrough
+	end
 
-    elseif self.inst.replica.inventory:IsHeavyLifting()
-        and not (self.inst.replica.rider ~= nil and self.inst.replica.rider:IsRiding()) then
-        --hands are full!
-        return
+	local inventory = self.inst.replica.inventory
+	if inventory:IsFloaterHeld() then
+		--hands are full!
+		return
+	elseif inventory:IsHeavyLifting() then
+		local rider = self.inst.replica.rider
+		if not (rider and rider:IsRiding()) then
+			--hands are full!
+			return
+		end
+	end
 
-    elseif not self:IsDoingOrWorking() then
+	if not self:IsDoingOrWorking() then
         local force_target_distsq = force_target ~= nil and self.inst:GetDistanceSqToInst(force_target) or nil
 
         if self.inst:HasTag("playerghost") then
@@ -1979,7 +1994,7 @@ function PlayerController:GetActionButtonAction(force_target)
             return
         end
 
-        local tool = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		local tool = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
         --bug catching (has to go before combat)
         if tool ~= nil and tool:HasTag(ACTIONS.NET.id.."_tool") then
@@ -3014,7 +3029,8 @@ local function CheckControllerPriorityTagOrOverride(target, tag, override)
 end
 
 local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
-    if self.inst:HasTag("playerghost") or self.inst.replica.inventory:IsHeavyLifting() then
+	local inventory = self.inst.replica.inventory
+	if inventory:IsHeavyLifting() or inventory:IsFloaterHeld() or self.inst:HasTag("playerghost") then
         self.controller_attack_target = nil
         self.controller_attack_target_ally_cd = nil
 
@@ -3043,7 +3059,7 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
     --    return
     --end
 
-    local equipped_item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	local equipped_item = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
     local forced_rad = equipped_item ~= nil and equipped_item.controller_use_attack_distance or 0
 
 	local min_rad = 3
@@ -3596,13 +3612,13 @@ function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking, isstart,
     end
 end
 
-function PlayerController:OnRemotePredictOverrideLocomote(dir, floathop)
+function PlayerController:OnRemotePredictOverrideLocomote(dir)
 	if self.ismastersim and self.handler == nil and self.inst.sg:HasStateTag("overridelocomote") then
 		if self:IsEnabled() and not self:IsBusy() or self.classified.busyremoteoverridelocomote:value() then
 			if self.inst.sg:HasStateTag("canrotate") then
 				self.locomotor:SetMoveDir(dir)
 			end
-			self.inst:PushEvent("locomote", { dir = dir, remoteoverridelocomote = true, floathop = floathop })
+			self.inst:PushEvent("locomote", { dir = dir, remoteoverridelocomote = true })
 		end
 	end
 end
@@ -3709,8 +3725,8 @@ function PlayerController:RemotePredictWalking(x, z, isstart, overridemovetime, 
     end
 end
 
-function PlayerController:RemotePredictOverrideLocomote(floathop)
-	SendRPCToServer(RPC.PredictOverrideLocomote, self.inst.Transform:GetRotation(), floathop)
+function PlayerController:RemotePredictOverrideLocomote()
+	SendRPCToServer(RPC.PredictOverrideLocomote, self.inst.Transform:GetRotation())
 end
 
 function PlayerController:RemoteStopWalking()
@@ -3764,13 +3780,13 @@ function PlayerController:DoPredictWalking(dt)
 		if pt then
             local x0, y0, z0 = self.inst.Transform:GetWorldPosition()
             local distancetotargetsq = distsq(pt.x, pt.z, x0, z0)
-            local stopdistancesq = .05
+			local stopdistancesq = self.inst.sg:HasStateTag("floating") and 0.0001 or 0.05
 
-            if pt.y == 5 and
-                (self.locomotor.bufferedaction ~= nil or
+			if pt.y == 5 and (
+				self.locomotor.bufferedaction ~= nil or
                 self.inst.bufferedaction ~= nil or
-                not (self.inst.sg:HasStateTag("idle") or
-                    self.inst.sg:HasStateTag("moving"))) then
+				not self.inst.sg:HasAnyStateTag("idle", "moving")
+			) then
                 --We're performing an action now, so ignore predict walking
                 self.directwalking = false
                 self.dragwalking = false
@@ -3849,7 +3865,7 @@ function PlayerController:DoPredictWalking(dt)
 
             return true
 		elseif self.remote_predict_stop_tick then
-			if self.inst.sg:HasStateTag("idle") then
+			if self.inst.sg:HasAnyStateTag("idle", "floating") then
 				local x1, z1 = self:GetRemotePredictStopXZ()
 				if x1 and self.inst:GetDistanceSqToPoint(x1, 0, z1) <= PREDICT_STOP_ERROR_DISTANCE_SQ then
 					--FIXME(JBK): Boat handling.
@@ -3860,13 +3876,13 @@ function PlayerController:DoPredictWalking(dt)
 			self.remote_predict_stop_tick = nil
         end
 	elseif self:CanLocomote() then
-		if self.inst.sg:HasStateTag("moving") then
+		if self.inst.sg:HasAnyStateTag("moving", "floating_predict_move") then
 			local x, y, z = self.inst.Transform:GetPredictionPosition()
 			self:RemotePredictWalking(x, z, self.locomotor:GetTimeMoving() == 0, self.locomotor:PopOverrideTimeMoving())
 			self.client_last_predict_walk.tick = GetTick()
 			self.client_last_predict_walk.direct = self.directwalking
 		elseif self.client_last_predict_walk.tick then
-			if self.inst.sg:HasStateTag("idle") and
+			if self.inst.sg:HasAnyStateTag("idle", "floating") and
 				not (self:IsBusy() or self.inst:HasTag("boathopping")) and
 				self.client_last_predict_walk.tick + 1 == GetTick()
 			then

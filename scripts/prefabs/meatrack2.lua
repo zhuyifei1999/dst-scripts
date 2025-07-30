@@ -119,7 +119,6 @@ local function OnMeatRackSkinChanged(inst, skin_build)
 end
 
 local function OnBurnt(inst)
-	inst:RemoveComponent("dryingrack")
 	DefaultBurntStructureFn(inst)
 end
 

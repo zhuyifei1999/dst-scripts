@@ -3146,7 +3146,7 @@ STRINGS =
 		MOONSPIDER_SPIKE = "Shattered Spider",
         MOONSPIDERDEN = "Shattered Spider Hole",
 		FRUITDRAGON = "Saladmander",
-        MUTATED_PENGUIN = "Moonrock Pengull",
+        MUTATED_PENGUIN = "Permafrost Pengull",
         PUFFIN = "Puffin",
 
 		BULLKELP_PLANT = "Bull Kelp",
@@ -4341,7 +4341,8 @@ STRINGS =
         FENCE_ELECTRIC_FIELD = "T.I.N.G.L.E",
         FENCE_ELECTRIC_ITEM = "T.I.N.G.L.E. Node",
 
-        MUTATEDBIRD = "Bright-Beaked Bird", --TODO
+        MUTATEDBIRD = "Bright-Beaked Bird",
+        MUTATEDBUZZARD = "Crystal-Crested Buzzard",
 	},
 
     NAME_DETAIL_EXTENTION =

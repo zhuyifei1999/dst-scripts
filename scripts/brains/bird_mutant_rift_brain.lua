@@ -2,8 +2,8 @@ local MutatedBirdBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-local SHOULDFLYAWAY_MUST_TAGS = { "notarget", "INLIMBO", "lunar_aligned" }
-local SHOULDFLYAWAY_CANT_TAGS = { "player", "monster", "scarytoprey" }
+local SHOULDFLYAWAY_CANT_TAGS = { "notarget", "INLIMBO", "lunar_aligned" }
+local SHOULDFLYAWAY_ONEOF_TAGS = { "player", "monster", "scarytoprey" }
 
 local SEE_FOOD_DIST = TUNING.RIFT_BIRD_FOOD_RANGE
 local FOOD_CANT_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "outofreach" }
@@ -23,7 +23,7 @@ local function ShouldFlyAway(inst)
     return not IsSgBusy(inst)
         and ((TheWorld.state.isnight and DISLIKES_MOON_PHASES[TheWorld.state.moonphase]) or
             (inst.components.health ~= nil and inst.components.health.takingfiredamage and not (inst.components.burnable and inst.components.burnable:IsBurning())) or
-            FindEntity(inst, inst.flyawaydistance, nil, nil, SHOULDFLYAWAY_MUST_TAGS, SHOULDFLYAWAY_CANT_TAGS) ~= nil)
+            FindEntity(inst, inst.flyawaydistance, nil, nil, SHOULDFLYAWAY_CANT_TAGS, SHOULDFLYAWAY_ONEOF_TAGS) ~= nil)
 end
 
 local function FlyAway(inst)

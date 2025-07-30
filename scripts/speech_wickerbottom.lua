@@ -319,7 +319,7 @@ return{
             NOMOONINCAVES = "The moon can't be affected from this subterranean location.",
             ALREADYFULLMOON = "I'm afraid that would be quite redundant.",
             -- Electrocute
-            DEADBIRDS = "Oh, dear. I'm afraid the sky is a bit dangerous for birds right now.",
+            DEADBIRDS = "Oh, dear. I'm afraid the sky is not safe for birds right now.",
         },
 		REMOTE_TELEPORT =
 		{
@@ -1169,10 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Not you again!",
     ANNOUNCE_FLOATER_HELD = "Hmm, rather convenient.",
     ANNOUNCE_FLOATER_LETGO = "Time for a dip!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "What a dreadful sound.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Those poor birds never stood a chance in the hail storm.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I just need to catch my breath.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{
@@ -5733,7 +5735,7 @@ return{
         -- electrocute
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "An unprecedented feat of technological advancement, yet thoroughly uncivilized.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Fundamental components of a colossal, militarized automaton.",
-        WAGBOSS_ROBOT_CREATION_PARTS = "Equipped with such armamemnts, it shall usher in nothing but ruin and demise.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Equipped with such armaments, it shall usher in nothing but ruin and demise.",
         MOONSTORM_STATIC_CATCHER = "It is not carrying a charge.",
         COOLANT = "The fluids exhibit anomalous properties, no doubt catalyzed by the mutations.",
 

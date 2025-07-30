@@ -81,7 +81,7 @@ end
 local CHARGE_SOUND_LOOP_NAME = "soundloop"
 
 local function Lightning_HasElectric(inst, target)
-	return inst._electric_lunge_task ~= nil or target:GetWetMultiplier() > 0
+	return inst._electric_lunge_task ~= nil or (target ~= nil and target:IsValid() and target:GetWetMultiplier() > 0)
 end
 
 local function OnEquip(inst, owner)

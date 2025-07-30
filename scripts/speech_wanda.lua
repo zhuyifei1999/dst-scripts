@@ -302,10 +302,10 @@ return{
             OUT_OF_WATER = "Didn't I just fill this up? Gardening is so tedious...",
         },
         --wickerbottom specific action
-        READ =
-        {
-            GENERIC = "only_used_by_wickerbottom",
-            NOBIRDS = "only_used_by_wickerbottom",
+--fallback to speech_wilson.lua         READ =
+--fallback to speech_wilson.lua         {
+--fallback to speech_wilson.lua             GENERIC = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             NOBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
@@ -318,9 +318,9 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
-            -- Electrocute
-            DEADBIRDS = "TODO",
-        },
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
 			NOSKILL = "only_used_by_winona",
@@ -1169,10 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Right on cue.",
     ANNOUNCE_FLOATER_HELD = "I saw my life flash before my eyes... not in any particular order.",
     ANNOUNCE_FLOATER_LETGO = "I hate this part!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "I'll never get over that dreadful sound.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They never stood a chance.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I need a rest.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{
@@ -5743,13 +5745,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "Must remember to plant this.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "I don't trust it.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "I know what comes next.", --witnessing the corpse
+            BURNING  = "This should put an end to it.", --when its burning
+            REVIVING = "I hate this part.", --when its mutating and being revived
         },
     },
 

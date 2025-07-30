@@ -5065,14 +5065,14 @@ local function MakeHat(name)
 			inst._wintertask = nil
 		end
 	end
-    fns.rabbit_onperishpre = function(inst)
-        if inst.inlimbo then
-            return false
+    fns.rabbit_onperished = function(inst)
+        if inst.components.lootdropper then
+            inst.components.lootdropper:DropLoot()
         end
 
-        local owner = inst.components.inventoryitem.owner
-        if owner then
-            return false
+        if inst.inlimbo then
+            inst:Remove()
+            return
         end
 
         inst.rabbithat_doidleanims = false
@@ -5082,8 +5082,6 @@ local function MakeHat(name)
         inst.AnimState:PlayAnimation("death")
         inst.SoundEmitter:PlaySound("dontstarve/rabbit/scream_short")
         inst:ListenForEvent("animover", ErodeAway)
-
-        return true
     end
 	fns.rabbit_custom_init = function(inst)
         inst.entity:AddSoundEmitter()
@@ -5131,7 +5129,8 @@ local function MakeHat(name)
         inst:AddComponent("eater")
         inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
         inst.components.eater:SetOnEatFn(fns.rabbit_oneat)
-        MakeSmallPerishableCreatureAlwaysPerishing(inst, TUNING.RABBIT_PERISH_TIME, nil, nil, fns.rabbit_onperishpre)
+        MakeSmallPerishableCreatureAlwaysPerishing(inst, TUNING.RABBIT_PERISH_TIME)
+        inst:ListenForEvent("perished", fns.rabbit_onperished)
 
 		inst:AddComponent("sleeper")
 		inst.components.sleeper.watchlight = true

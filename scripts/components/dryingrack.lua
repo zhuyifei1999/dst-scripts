@@ -29,17 +29,18 @@ local DryingRack = Class(function(self, inst, container)
 			if perishtime then
 				local rate = item.components.moisture and item.components.moisture:_GetMoistureRateAssumingRain() or TheWorld.state.precipitationrate
 				rate = rate * TUNING.ACIDRAIN_PERISHABLE_ROT_PERCENT -- %/s
-				rate = perishtime * rate --time/s
-				return math.max(1, rate) --mult for perish rate
+				rate = perishtime * rate --time/s ==> same as mult for perish rate
+				return 1 + rate -- + 1 because acid perish stacks on top of basic perishing
 			end
 			return
 		end
-		return item and item.components.dryable and 0
+		return not self.paused and item and item.components.dryable and 0 or nil
 	end
 end)
 
 function DryingRack:OnRemoveFromEntity()
 	self:DisableDrying()
+	
 	if self.container.inst ~= self.inst then
 		self.container:DropEverything()
 		self.container.inst:Remove()
@@ -92,47 +93,6 @@ local function OnIsAcidRaining(self, isacidraining)
 	end
 end
 
-local function OnRainImmunity(inst)
-	local self = inst.components.dryingrack
-	self:SetContainerRainImmunity(true)
-	self:SetContainerIsInAcid(false)
-	self:ResumeDrying()
-end
-
-local function OnRainVulnerable(inst)
-	local self = inst.components.dryingrack
-	if not self:HasRainImmunity() then
-		self:SetContainerRainImmunity(false)
-		if self:IsExposedToRain() then
-			self:SetContainerIsInAcid(TheWorld.state.isacidraining)
-			self:PauseDrying()
-		end
-	end
-end
-
-local function OnRiderChanged(inst, data)
-	local self = inst.components.dryingrack
-	if self._rider then
-		inst:RemoveEventCallback("gainrainimmunity", self._onriderrainimmunity, self._rider)
-		inst:RemoveEventCallback("loserainimmunity", self._onriderrainvulnerable, self._rider)
-	end
-	self._rider = data and data.newrider or nil
-	if self._rider then
-		inst:ListenForEvent("gainrainimmunity", self._onriderrainimmunity, self._rider)
-		inst:ListenForEvent("loserainimmunity", self._onriderrainvulnerable, self._rider)
-	end
-
-	if self:IsExposedToRain() then
-		self:SetContainerRainImmunity(false)
-		self:SetContainerIsInAcid(TheWorld.state.isacidraining)
-		self:PauseDrying()
-	else
-		self:SetContainerRainImmunity(self:HasRainImmunity())
-		self:SetContainerIsInAcid(false)
-		self:ResumeDrying()
-	end
-end
-
 function DryingRack:EnableDrying()
 	if not self.enabled then
 		self.enabled = true
@@ -142,16 +102,55 @@ function DryingRack:EnableDrying()
 
 		self:WatchWorldState("israining", OnIsRaining)
 		self:WatchWorldState("isacidraining", OnIsAcidRaining)
-		self.inst:ListenForEvent("gainrainimmunity", OnRainImmunity)
-		self.inst:ListenForEvent("loserainimmunity", OnRainVulnerable)
+
+		--V2C: use closures
+		--     Don't use "local self = inst.components.dryingrack"
+		--     because it might be wobyrack
+		self._onrainimmunity = function()
+			self:SetContainerRainImmunity(true)
+			self:SetContainerIsInAcid(false)
+			self:ResumeDrying()
+		end
+		self._onrainvulnerable = function()
+			if not self:HasRainImmunity() then
+				self:SetContainerRainImmunity(false)
+				if self:IsExposedToRain() then
+					self:SetContainerIsInAcid(TheWorld.state.isacidraining)
+					self:PauseDrying()
+				end
+			end
+		end
+		self.inst:ListenForEvent("gainrainimmunity", self._onrainimmunity)
+		self.inst:ListenForEvent("loserainimmunity", self._onrainvulnerable)
+
 		if self.inst.components.rideable then
-			self.inst:ListenForEvent("riderchanged", OnRiderChanged)
-			self._onriderrainimmunity = function() OnRainImmunity(self.inst) end
-			self._onriderrainvulnerable = function() OnRainVulnerable(self.inst) end
+			self._onriderchanged = function(inst, data)
+				if self._rider then
+					inst:RemoveEventCallback("gainrainimmunity", self._onrainimmunity, self._rider)
+					inst:RemoveEventCallback("loserainimmunity", self._onrainvulnerable, self._rider)
+				end
+				self._rider = data and data.newrider or nil
+				if self._rider then
+					inst:ListenForEvent("gainrainimmunity", self._onrainimmunity, self._rider)
+					inst:ListenForEvent("loserainimmunity", self._onrainvulnerable, self._rider)
+				end
+
+				if self:IsExposedToRain() then
+					self:SetContainerRainImmunity(false)
+					self:SetContainerIsInAcid(TheWorld.state.isacidraining)
+					self:PauseDrying()
+				else
+					self:SetContainerRainImmunity(self:HasRainImmunity())
+					self:SetContainerIsInAcid(false)
+					self:ResumeDrying()
+				end
+			end
+			self.inst:ListenForEvent("riderchanged", self._onriderchanged)
+
 			self._rider = self.inst.components.rideable:GetRider()
 			if self._rider then
-				self.inst:ListenForEvent("gainrainimmunity", self._onriderrainimmunity, self._rider)
-				self.inst:ListenForEvent("loserainimmunity", self._onriderrainvulnerable, self._rider)
+				self.inst:ListenForEvent("gainrainimmunity", self._onrainimmunity, self._rider)
+				self.inst:ListenForEvent("loserainimmunity", self._onrainvulnerable, self._rider)
 			end
 		end
 
@@ -174,12 +173,20 @@ function DryingRack:DisableDrying()
 
 		self:StopWatchingWorldState("israining", OnIsRaining)
 		self:StopWatchingWorldState("isacidraining", OnIsAcidRaining)
-		self.inst:RemoveEventCallback("gainrainimmunity", OnRainImmunity)
-		self.inst:RemoveEventCallback("loserainimmunity", OnRainVulnerable)
-		self.inst:RemoveEventCallback("riderchanged", OnRiderChanged)
+
+		self.inst:RemoveEventCallback("gainrainimmunity", self._onrainimmunity)
+		self.inst:RemoveEventCallback("loserainimmunity", self._onrainvulnerable)
+		self._onrainimmunity = nil
+		self._onrainvulnerable = nil
+
+		if self._onriderchanged then
+			self.inst:RemoveEventCallback("riderchanged", self._onriderchanged)
+			self._onriderchanged = nil
+		end
+
 		if self._rider then
-			self.inst:RemoveEventCallback("gainrainimmunity", self._onriderrainimmunity, self._rider)
-			self.inst:RemoveEventCallback("loserainimmunity", self._onriderrainvulnerable, self._rider)
+			self.inst:RemoveEventCallback("gainrainimmunity", self._onrainimmunity, self._rider)
+			self.inst:RemoveEventCallback("loserainimmunity", self._onrainvulnerable, self._rider)
 		end
 
 		self:SetContainerRainImmunity(false)
@@ -364,6 +371,23 @@ function DryingRack:ResumeDrying()
 			end
 		end
 	end
+end
+
+local function InstantDry(item, container)
+	local slot = container:GetItemSlot(item)
+	local product = item.components.dryable and item.components.dryable:GetProduct() or nil
+
+	if slot and product then
+		product = SpawnPrefab(product)
+		if product then
+			LaunchAt(product, container.inst, nil, .25, 1)
+		end
+		item:Remove()
+	end
+end
+
+function DryingRack:OnBurnt() --Called by DefaultStructureBurntFn
+	self.container:ForEachItem(InstantDry, self.container)
 end
 
 function DryingRack:LongUpdate(dt)

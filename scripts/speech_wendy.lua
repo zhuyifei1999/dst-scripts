@@ -1173,10 +1173,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "It remembers.",
     ANNOUNCE_FLOATER_HELD = "What now?",
     ANNOUNCE_FLOATER_LETGO = "It's time.",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds are singing their last.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Birds of a feather fall together.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Just need a rest.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{

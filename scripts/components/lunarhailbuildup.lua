@@ -145,7 +145,7 @@ function LunarHailBuildup:DropRewards(mult)
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local launchspeed = math.max(self.inst:GetPhysicsRadius(0), 2)
     local todropcount = math.floor(self.moonglassamount * (mult or 1))
-    local upgradeodds = TUNING.LUNARHAIL_BUILDUP_MOONGLASS_REWARDS_CHARGED_CHANCE
+    local upgradeodds = Lerp(TUNING.LUNARHAIL_BUILDUP_MOONGLASS_REWARDS_CHARGED_CHANCE_MIN, TUNING.LUNARHAIL_BUILDUP_MOONGLASS_REWARDS_CHARGED_CHANCE_MAX, self.buildupcurrent)
     for i = 1, todropcount do
         local moonglass_prefab = (math.random() < upgradeodds) and "moonglass_charged" or "moonglass"
         local moonglass = SpawnPrefab(moonglass_prefab)
@@ -228,7 +228,7 @@ function LunarHailBuildup:OnLoad(data)
     if data ~= nil then
         if data.workleft ~= nil then
             self:WorkInit()
-            self.workleft = data.workleft
+            self.workleft = math.min(data.workleft, self.totalworkamount)
         end
         if data.buildupcurrent ~= nil and data.buildupcurrent ~= self.buildupcurrent then
             self:DoBuildupDelta(data.buildupcurrent - self.buildupcurrent)

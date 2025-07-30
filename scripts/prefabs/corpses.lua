@@ -46,6 +46,18 @@ local BUILDS =
     }
 }
 
+local BUILDS_TO_NAMES =
+{
+    bird = {
+        crow_build = "crow",
+        robin_build = "robin",
+        robin_winter_build = "robin_winter",
+        canary_build = "canary",
+        quagmire_pigeon_build = "quagmire_pigeon",
+        puffin_build = "puffin",
+    }
+}
+
 local BANK_OVERRIDES = {
     bird =
     {
@@ -99,7 +111,8 @@ local function GetStatus(inst)
 end
 
 local function DisplayNameFn(inst)
-    return inst.creature ~= nil and STRINGS.NAMES[string.upper(inst.displaynameoverride or inst.nameoverride or inst._nameoverride:value() or inst.creature)] or nil
+    local build_override = inst:IsValid() and inst.use_build_nameoverride and BUILDS_TO_NAMES[inst.creature] and BUILDS_TO_NAMES[inst.creature][inst.AnimState:GetBuild()] or nil --Client, don't use inst.build
+    return inst.creature ~= nil and STRINGS.NAMES[string.upper(build_override or inst.displaynameoverride or inst.nameoverride or inst.creature)] or nil
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -179,6 +192,10 @@ local function StartFadeTimer(inst, time)
 end
 
 local function StartGestaltTimer(inst, time)
+    if inst.build == "puffin" then --FIXME: No mutation for puffins!
+        StartFadeTimer(inst, time)
+        return
+    end
     inst.components.timer:StartTimer(CORPSE_TIMERS.SPAWNGESTALT, time)
 end
 
@@ -199,6 +216,8 @@ local function ImmediateMutate(inst)
     if gestalt then
         ReplacePrefab(inst, inst.mutantprefab)
         gestalt:Remove()
+    else
+        inst:Remove()
     end
 end
 
@@ -272,9 +291,7 @@ local function MakeCreatureCorpse(data)
         inst.creature = creature
         inst.nameoverride = nameoverride
         inst.displaynamefn = DisplayNameFn
-
-        --TEMP
-        inst._nameoverride = net_string(inst.GUID, "creature_corpse.nameoverride")
+        inst.use_build_nameoverride = data.use_build_nameoverride
 
         inst.entity:SetPristine()
 
@@ -463,6 +480,7 @@ return  -- For search: deerclopscorpse
         tags = {"small_corpse", "birdcorpse"},
         no_gestalt_spawn = true,
         mutate_on_entity_sleep = true,
+        use_build_nameoverride = true, --Use the build to get the name
         shadowsize = {1, .75},
         custom_physicsfn = function(inst)
             inst.entity:AddPhysics()
@@ -470,6 +488,7 @@ return  -- For search: deerclopscorpse
             inst.Physics:SetCollisionMask(COLLISION.WORLD)
             inst.Physics:SetMass(1)
             inst.Physics:SetSphere(1)
+            inst.Physics:SetFriction(.3)
         end,
     }),
 

@@ -1175,10 +1175,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Again!?",
     ANNOUNCE_FLOATER_HELD = "Thank goodness for this!",
     ANNOUNCE_FLOATER_LETGO = "Like a bag of rocks!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "They're gettin' torn to pieces up there!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Yikes. Poor lil' fella.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I need a breather.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{

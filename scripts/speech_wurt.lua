@@ -1169,10 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It baaack!",
     ANNOUNCE_FLOATER_HELD = "See? Me best floater.",
     ANNOUNCE_FLOATER_LETGO = "Glurph!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Birds dying. Glurph.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They dead.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Tired! Glurph!",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{
@@ -5743,13 +5745,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "Where put for zap?",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "Pretty bird",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Dead bird. Glurgh.", --witnessing the corpse
+            BURNING  = "Florp! Burn bird!", --when its burning
+            REVIVING = "Dead bird waking up! Florp!", --when its mutating and being revived
         },
     },
 

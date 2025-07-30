@@ -315,6 +315,11 @@ local book_defs =
                 num = num + 10
             end
 
+            local post_hail_mult = birdspawner:GetPostHailEasingMult()
+            if post_hail_mult < 1 then
+                num = math.ceil(num * post_hail_mult)
+            end
+
             local success = false
             local delay = 0
             for k = 1, num do

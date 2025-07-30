@@ -1211,10 +1211,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Incoming... again?",
     ANNOUNCE_FLOATER_HELD = "I knew I'd come out on top!",
     ANNOUNCE_FLOATER_LETGO = "Submerging!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those poor birds!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're falling from the sky, Woby!",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I gotta paws. Get it, Wobes?",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{
@@ -5785,13 +5787,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "We have to plant it first.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "Look at that bird, Woby!",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Stay away from it, Woby!", --witnessing the corpse
+            BURNING  = "Smells kinda yummy.", --when its burning
+            REVIVING = "Yes! I knew it!", --when its mutating and being revived
         },
     },
 

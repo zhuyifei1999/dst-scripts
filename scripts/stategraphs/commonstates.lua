@@ -758,7 +758,7 @@ local function DoHopLandSound(inst, land_sound)
 	end
 end
 
-CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_falling_state, data)
+CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_falling_state, data, fns)
 	anims = anims or {}
     timelines = timelines or {}
 	data = data or {}
@@ -768,6 +768,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "busy", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst)
+			if fns and fns.pre_onenter then
+				fns.pre_onenter(inst)
+			end
             local embark_x, embark_z = inst.components.embarker:GetEmbarkPosition()
             inst:ForceFacePoint(embark_x, 0, embark_z)
             if not wait_for_pre then
@@ -807,6 +810,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         },
 
 		onexit = function(inst)
+			if fns and fns.pre_onexit then
+				fns.pre_onexit(inst)
+			end
 			if not inst.sg.statemem.not_interrupted then
 				if data.start_embarking_pre_frame ~= nil then
 					inst.Physics:ClearLocalCollisionMask()
@@ -824,6 +830,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "busy", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst, data)
+			if fns and fns.loop_onenter then
+				fns.loop_onenter(inst)
+			end
 			inst.sg.statemem.queued_post_land_state = data ~= nil and data.queued_post_land_state or nil
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.loop, inst) or "jump_loop", true)
 			inst.sg.statemem.collisionmask = data ~= nil and data.collisionmask or inst.Physics:GetCollisionMask()
@@ -850,6 +859,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         },
 
 		onexit = function(inst)
+			if fns and fns.loop_onexit then
+				fns.loop_onexit(inst)
+			end
             inst.Physics:ClearLocalCollisionMask()
 			if inst.sg.statemem.collisionmask ~= nil then
                 inst.Physics:SetCollisionMask(inst.sg.statemem.collisionmask)
@@ -870,6 +882,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst, data)
+			if fns and fns.pst_onenter then
+				fns.pst_onenter(inst)
+			end
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.pst, inst) or "jump_pst", false)
 
             inst.components.embarker:Embark()
@@ -904,6 +919,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         },
 
 		onexit = function(inst)
+			if fns and fns.pst_onexit then
+				fns.pst_onexit(inst)
+			end
 			-- here for now, should be moved into timeline
 			if land_sound ~= nil then
 				--For now we just have the land on boat sound
@@ -918,6 +936,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = {"autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst)
+			if fns and fns.pst_complete_onenter then
+				fns.pst_complete_onenter(inst)
+			end
 			if inst.components.locomotor.isrunning then
                 inst:DoTaskInTime(0,
                     function()
@@ -929,6 +950,8 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 inst.sg:GoToState("idle")
             end
         end,
+
+		onexit = fns and fns.pst_complete_onexit,
     })
 
     table.insert(states, State{
@@ -936,6 +959,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = {"nopredict", "nomorph", "nosleep", "busy"},
 
         onenter = function(inst)
+			if fns and fns.cancelhop_onenter then
+				fns.cancelhop_onenter(inst)
+			end
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.pst, inst) or "jump_pst", false)
         end,
@@ -945,6 +971,8 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 inst.sg:GoToState("idle")
             end),
         },
+
+		onexit = fns and fns.cancelhop_onexit,
     })
 end
 

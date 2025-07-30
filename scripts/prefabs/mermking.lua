@@ -534,6 +534,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 1)
+    MakeCollidesWithElectricField(inst)
 
     inst.AnimState:SetBank("merm_king")
     inst.AnimState:SetBuild("merm_king")

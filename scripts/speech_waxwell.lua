@@ -319,7 +319,7 @@ return{
             NOMOONINCAVES = "Its power can't reach the \"moon\" from here.",
             ALREADYFULLMOON = "For once, magic is not needed.",
             -- Electrocute
-            DEADBIRDS = "TODO",
+            DEADBIRDS = "It's bad luck now... for the birds.",
         },
 		REMOTE_TELEPORT =
 		{
@@ -1169,10 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Again? What now?",
     ANNOUNCE_FLOATER_HELD = "There are unspeakable horrors below.",
     ANNOUNCE_FLOATER_LETGO = "Ah!",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "What is that racket?",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "That's not a good sign.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I can't!",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{
@@ -5743,13 +5745,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "I don't like it.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "Quite the freak of nature, aren't you?",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Yuck.", --witnessing the corpse
+            BURNING  = "Good riddance.", --when its burning
+            REVIVING = "Absolutely grotesque.", --when its mutating and being revived
         },
     },
 

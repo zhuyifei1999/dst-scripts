@@ -50,16 +50,33 @@ local BUILD_OVERRIDES =
     mutatedbird = "bird_lunar",
 }
 
+local function GetBird(inst)
+    return (inst.components.occupiable and inst.components.occupiable:GetOccupant()) or nil
+end
+
 local function SetBirdType(inst, bird)
     if inst.bird_type then
         inst.AnimState:ClearOverrideBuild(inst.bird_type.."_build")
     end
     inst.bird_type = BUILD_OVERRIDES[bird] or bird
     inst.AnimState:AddOverrideBuild(inst.bird_type.."_build")
+
+    local bird_inst = GetBird(inst)
+    if bird_inst then
+        if bird_inst.UpdateBrillianceVisual then
+            bird_inst:UpdateBrillianceVisual(inst)
+        end
+    end
 end
 
 local function SetCageState(inst, state)
     inst.CAGE_STATE = state
+
+    if state ~= CAGE_STATES.FULL then
+        inst.AnimState:ClearSymbolBloom("bird_gem")
+        inst.AnimState:SetSymbolLightOverride("bird_gem", 0)
+        inst.AnimState:SetSymbolLightOverride("crow_beak", 0)
+    end
 end
 
 --Only use for hit and idle anims
@@ -72,31 +89,9 @@ local function PushStateAnim(inst, anim, loop)
     inst.AnimState:PushAnimation(anim..inst.CAGE_STATE, loop)
 end
 
-local function GetBird(inst)
-    return (inst.components.occupiable and inst.components.occupiable:GetOccupant()) or nil
-end
-
 local function GetHunger(bird)
     return (bird and bird.components.perishable and bird.components.perishable:GetPercent()) or 1
 end
-local function update_electrocute_recovery_delay(inst)
-	local t = GetTime()
-	if inst._electrocute_resist then
-		if inst._last_electrocute_time then
-			local delay = inst.electrocute_delay or TUNING.ELECTROCUTE_DEFAULT_DELAY
-			local dt = t - inst._last_electrocute_time
-			if dt > delay.max then
-				inst._electrocute_resist = math.max(0, inst._electrocute_resist - (dt - delay.max) / 10)
-			end
-		end
-		inst._electrocute_resist = inst._electrocute_resist + 1
-	elseif inst:HasTag("epic") then
-		inst._electrocute_resist = 1
-	end
-	inst._last_electrocute_time = t
-	inst._last_electrocute_delay = nil
-end
-
 
 local function DigestFood(inst, food)
     --NOTE (Omar): 
@@ -105,26 +100,14 @@ local function DigestFood(inst, food)
     local bird = GetBird(inst)
 
     if bird and bird:HasTag("bird_mutant_rift") then
-        local t = GetTime()
-        --dumb TEMP timer code
-        if not inst._brilliance_chance then
-            inst._brilliance_chance = TUNING.RIFT_BIRD_BRILLIANCE_CHANCE
-        end
         if food.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS then
             if food.prefab == "moonglass_charged" then --Can't be a tag check
 
-                if inst._last_brilliance_time then
-                    local dt = t - inst._last_brilliance_time
-                    if dt > TUNING.TOTAL_DAY_TIME / 2 then
-                        inst._brilliance_chance = math.min(TUNING.RIFT_BIRD_BRILLIANCE_CHANCE, inst._brilliance_chance + 0.2)
-                    end
-                end
+                bird._infused_eaten = bird._infused_eaten + 1
 
-                if math.random() < inst._brilliance_chance then
+                if bird._infused_eaten >= TUNING.RIFT_BIRD_EAT_COUNT_FOR_BRILLIANCE then
                     inst.components.lootdropper:SpawnLootPrefab("purebrilliance")
-
-                    inst._brilliance_chance = math.max(0, inst._brilliance_chance - 0.1)
-                    inst._last_brilliance_time = t
+                    bird:PutOnBrillianceCooldown(inst)
                 end
             else
                 --inst.components.lootdropper:SpawnLootPrefab("")
@@ -167,18 +150,24 @@ local function ShouldAcceptItem(inst, item)
 
     local seed_name = string.lower(item.prefab .. "_seeds")
 
-    local can_accept = item.components.edible
+    local item_edible = item.components.edible
+
+    local can_accept = item_edible
         and (Prefabs[seed_name]
         or item.prefab == "seeds"
         or string.match(item.prefab, "_seeds")
-        or item.components.edible.foodtype == FOODTYPE.MEAT)
+        or item_edible.foodtype == FOODTYPE.MEAT)
 
     if table.contains(invalid_foods, item.prefab) then
         can_accept = false
     end
 
     if bird and bird:HasTag("bird_mutant_rift") then
-        can_accept = (item.components.edible and item.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS) or false -- We only accept infused shards here.
+        can_accept = (item_edible and item_edible.foodtype == FOODTYPE.LUNAR_SHARDS) or false -- We only accept shards here.
+
+        if bird:IsOnBrillianceCooldown() and item.prefab == "moonglass_charged" then --But no infused if we're on cd. Bit too full for any more!
+            can_accept = false
+        end
     end
 
     return can_accept

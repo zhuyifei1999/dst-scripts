@@ -1,4 +1,5 @@
 require("stategraphs/commonstates")
+local easing = require("easing")
 
 local TIMEOUT = 2
 
@@ -6935,6 +6936,32 @@ local states =
 			local inventory = inst.replica.inventory
 			if not (inventory and inventory:IsFloaterHeld()) then
 				inst.sg:GoToState("idle", "noanim")
+			elseif inst.sg:HasStateTag("floating_predict_move") then
+				local t = GetTime()
+				local elapsed = t - inst.sg.statemem.swim_t
+				local swimtime = TUNING.FLOATING_SWIM_TIME
+				if elapsed < swimtime.max and
+					inst.components.locomotor:WantsToMoveForward() and
+					not inst:HasTag("noswim")
+				then
+					local maxspeed = TUNING.FLOATING_SWIM_SPEED
+					inst.Physics:SetMotorVel(easing.outQuad(elapsed, maxspeed, -0.5 * maxspeed, swimtime.max), 0, 0)
+					--local x, y, z = inst.Transform:GetWorldPosition()
+					--local isdirect = inst.components.locomotor.dest == nil
+					--inst.components.playercontroller:RemotePredictWalking(x, z, elapsed == 0, elapsed, isdirect)
+				else
+					inst.sg:RemoveStateTag("floating_predict_move")
+					inst.sg.statemem.swim_t = elapsed >= swimtime.min and t + swimtime.min or nil
+					inst.components.locomotor:Stop()
+					inst.components.locomotor:Clear()
+					--[[if inst.AnimState:IsCurrentAnimation("swim_pre") then
+						inst.AnimState:PushAnimation("swim_pst", false)
+					else
+						inst.AnimState:PlayAnimation("swim_pst")
+					end]]
+					--inst.components.playercontroller:RemoteStopWalking()
+					inst.entity:SetIsPredictingMovement(false)
+				end
 			end
 		end,
 
@@ -6949,42 +6976,40 @@ local states =
 				inst.sg:GoToState("idle", "noanim")
 			end),
 			EventHandler("locomote", function(inst, data)
-				local x1, y1, z1, nodelay
-				if inst.components.locomotor.dest then
-					local pt = inst.components.locomotor.dest.pt
-					if pt then
-						x1, y1, z1 = pt:Get()
-					end
-					inst.components.locomotor:Stop()
-					inst.components.locomotor:Clear()
-					nodelay = true
-				end
 				if data and data.dir then
 					inst.Transform:SetRotation(data.dir)
 
-					local x, y, z = inst.Transform:GetWorldPosition()
-					local dx, dz
-					if x1 then
-						if x ~= x1 or z ~= z1 then
-							local dx = x1 - x
-							local dz = z1 - z
-							local len = math.sqrt(dx * dx + dz * dz)
-							dx = dx / len
-							dz = dz / len
+					if not inst.sg:HasStateTag("floating_predict_move") and
+						not inst:HasTag("noswim") and
+						inst.components.locomotor:WantsToMoveForward()
+					then
+						local t = GetTime()
+						if inst.sg.statemem.swim_t == nil or inst.sg.statemem.swim_t < t then
+							inst.sg:AddStateTag("floating_predict_move")
+							inst.sg.statemem.swim_t = t
+							inst.entity:SetIsPredictingMovement(true)
+							inst.AnimState:PlayAnimation("swim_pre")
 						end
 					end
-					if dx == nil then
-						local theta = data.dir * DEGREES
-						dx = math.cos(theta)
-						dz = -math.sin(theta)
+				end
+				if not inst.sg:HasStateTag("floating_predict_move") then
+					if inst.components.locomotor.dest then
+						inst.components.locomotor:Stop()
+						inst.components.locomotor:Clear()
 					end
-					local step_size = 0.5
-					local steps_to_platform = math.ceil(TUNING.FLOATING_HOP_DISTANCE_PLATFORM / step_size)
-					local steps_to_land = math.ceil(TUNING.FLOATING_HOP_DISTANCE_LAND / step_size)
-					local can_hop, px, pz, found_platform = inst.components.locomotor:ScanForPlatformInDirFromFloating(TheWorld.Map, x, z, dx, dz, steps_to_platform, steps_to_land, step_size, nodelay)
-					inst.components.playercontroller:RemotePredictOverrideLocomote(can_hop)
+					inst.components.playercontroller:RemotePredictOverrideLocomote()
 				end
 				return true
+			end),
+			EventHandler("animover", function(inst)
+				if inst.sg:HasStateTag("floating_predict_move") then
+					if inst.AnimState:IsCurrentAnimation("swim_pre") then
+						inst.AnimState:PlayAnimation("swim_loop", true)
+					end
+				--[[elseif inst.AnimState:IsCurrentAnimation("swim_pst") then
+					inst.AnimState:PlayAnimation("float_loop", true)
+					inst.entity:SetIsPredictingMovement(false)]]
+				end
 			end),
 		},
 

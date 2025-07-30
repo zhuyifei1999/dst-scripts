@@ -1173,10 +1173,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Night Ball ball back!",
     ANNOUNCE_FLOATER_HELD = "Good baby floater",
     ANNOUNCE_FLOATER_LETGO = "Bye, baby flo-",
-    
+
     -- Electrocute
-    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "TODO", --Player hears caws and scuffling in the sky. --TODO do a pass on this
-    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "TODO", --Bird corpses drop down around the player --TODO do a pass on this
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "No, tweeters!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Tweeter?",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Resting",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
 
 	BATTLECRY =
 	{

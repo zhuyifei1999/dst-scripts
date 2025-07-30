@@ -72,12 +72,16 @@ function DefaultBurntStructureFn(inst)
         inst.components.childspawner:StopSpawning()
         inst:RemoveComponent("childspawner")
     end
+    if inst.components.dryingrack then -- New drying rack component (before container removal because we need it!)
+        inst.components.dryingrack:OnBurnt()
+        inst:RemoveComponent("dryingrack")
+    end
     if inst.components.container then
         inst.components.container:DropEverything()
         inst.components.container:Close()
         inst:RemoveComponent("container")
     end
-    if inst.components.dryer then
+    if inst.components.dryer then --Old drying rack component
         inst.components.dryer:StopDrying("fire")
         inst:RemoveComponent("dryer")
     end

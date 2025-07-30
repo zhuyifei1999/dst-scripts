@@ -1,4 +1,5 @@
 require("stategraphs/commonstates")
+local easing = require("easing")
 local PlayerCommonExtensions = require("prefabs/player_common_extensions")
 
 local ATTACK_PROP_MUST_TAGS = { "_combat" }
@@ -2878,6 +2879,7 @@ local states =
             ForceStopHeavyLifting(inst)
 
             inst.components.locomotor:Stop()
+			inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
             inst.fx = SpawnPrefab(
@@ -2894,6 +2896,8 @@ local states =
             inst.fx.Follower:FollowSymbol(inst.GUID, "swap_shock_fx", 0, 0, 0)
 
 			local isplant = inst:HasTag("plantkin")
+			local isshort = isplant or (data ~= nil and data.duration ~= nil and data.duration <= TUNING.ELECTROCUTE_SHORT_DURATION)
+
             if not inst:HasTag("electricdamageimmune") then
                 inst.components.bloomer:PushBloom("electrocute", "shaders/anim.ksh", -2)
                 inst.Light:Enable(true)
@@ -2922,7 +2926,7 @@ local states =
 
             inst.AnimState:PlayAnimation("shock")
             inst.AnimState:PushAnimation("shock_pst", false)
-			if isplant then
+			if isshort then
 				inst.AnimState:SetFrame(8)
 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + (2 - 8) * FRAMES)
 			else
@@ -23891,9 +23895,11 @@ local states =
 				inst.AnimState:PushAnimation("float_loop")
 				shallowcopy(data, inst.sg.statemem)
 				if data.fromstate == "float_eat" or data.fromstate == "float_quickeat" then
+					inst:AddTag("noswim")
 					inst.sg.statemem.fromstate = data.fromstate
 					inst.sg.statemem.canceleatfn = function(inst)
 						inst.sg.statemem.canceleatfn = nil
+						inst:RemoveTag("noswim")
 						if inst.sg.statemem.doeatingsfx then
 							inst.sg.statemem.doeatingsfx = nil
 							inst.SoundEmitter:KillSound("eating")
@@ -23926,6 +23932,34 @@ local states =
 		onupdate = function(inst)
 			if inst:GetCurrentPlatform() or TheWorld.Map:IsVisualGroundAtPoint(inst.Transform:GetWorldPosition()) then
 				inst.sg:GoToState("float_cancel")
+			elseif inst.sg.statemem.swimming then
+				local t = GetTime()
+				local elapsed = t - inst.sg.statemem.swim_t
+				local swimtime = TUNING.FLOATING_SWIM_TIME
+				if elapsed < swimtime.max and inst.components.locomotor:WantsToMoveForward() then
+					local maxspeed = TUNING.FLOATING_SWIM_SPEED
+					inst.Physics:SetMotorVel(easing.outQuad(elapsed, maxspeed, -0.5 * maxspeed, swimtime.max), 0, 0)
+				else
+					inst.sg.statemem.swimming = false
+					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					if elapsed >= swimtime.min then
+						inst.sg.statemem.swim_t = t + swimtime.min
+						inst:AddTag("noswim")
+					else
+						inst.sg.statemem.swim_t = nil
+					end
+					inst.components.locomotor:Stop()
+					inst.components.locomotor:Clear()
+					if inst.AnimState:IsCurrentAnimation("swim_pre") then
+						inst.AnimState:PushAnimation("swim_pst")
+					else
+						inst.AnimState:PlayAnimation("swim_pst")
+					end
+					inst.AnimState:PushAnimation("float_loop")
+				end
+			elseif inst.sg.statemem.swim_t and inst.sg.statemem.swim_t < GetTime() then
+				inst.sg.statemem.swim_t = nil
+				inst:RemoveTag("noswim")
 			end
 		end,
 
@@ -23968,21 +24002,23 @@ local states =
 					inst.sg.statemem.floatingtalktask:Cancel()
 					inst.sg.statemem.floatingtalktask = nil
 				end
-				local duration = inst.sg.statemem.talktask and GetTaskRemaining(inst.sg.statemem.talktask) or 1.5 + math.random() * 0.5
-				if inst:HasTag("mime") then
-					inst.AnimState:PlayAnimation("float_mime")
-					for i = 2, math.floor(duration / inst.AnimState:GetCurrentAnimationLength() + 0.5) do
-						inst.AnimState:PushAnimation("float_mime")
-					end
-					inst.AnimState:PushAnimation("float_loop")
-				else
-					inst.AnimState:PlayAnimation("float_dial_loop", true)
-					inst.sg.statemem.floatingtalktask = inst:DoTaskInTime(duration, function(inst)
-						inst.sg.statemem.floatingtalktask = nil
-						if inst.AnimState:IsCurrentAnimation("float_dial_loop") then
-							inst.AnimState:PlayAnimation("float_loop", true)
+				if not inst.sg.statemem.swimming then
+					local duration = inst.sg.statemem.talktask and GetTaskRemaining(inst.sg.statemem.talktask) or 1.5 + math.random() * 0.5
+					if inst:HasTag("mime") then
+						inst.AnimState:PlayAnimation("float_mime")
+						for i = 2, math.floor(duration / inst.AnimState:GetCurrentAnimationLength() + 0.5) do
+							inst.AnimState:PushAnimation("float_mime")
 						end
-					end)
+						inst.AnimState:PushAnimation("float_loop")
+					else
+						inst.AnimState:PlayAnimation("float_dial_loop", true)
+						inst.sg.statemem.floatingtalktask = inst:DoTaskInTime(duration, function(inst)
+							inst.sg.statemem.floatingtalktask = nil
+							if inst.AnimState:IsCurrentAnimation("float_dial_loop") then
+								inst.AnimState:PlayAnimation("float_loop", true)
+							end
+						end)
+					end
 				end
 				return OnTalk_Override(inst)
 			end),
@@ -24000,6 +24036,12 @@ local states =
 				if inst.sg.statemem.canceleatfn then
 					inst.sg.statemem.canceleatfn(inst)
 				end
+				if inst.sg.statemem.swimming then
+					inst.sg.statemem.swimming = false
+					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					inst.components.locomotor:Stop()
+					inst.components.locomotor:Clear()
+				end
 				inst.AnimState:PlayAnimation("float_item_in")
 				inst.AnimState:PushAnimation("float_loop")
 			end),
@@ -24011,6 +24053,12 @@ local states =
 				end
 				if inst.sg.statemem.canceleatfn then
 					inst.sg.statemem.canceleatfn(inst)
+				end
+				if inst.sg.statemem.swimming then
+					inst.sg.statemem.swimming = false
+					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					inst.components.locomotor:Stop()
+					inst.components.locomotor:Clear()
 				end
 				inst.AnimState:PlayAnimation("float_item_in")
 				inst.AnimState:PushAnimation("float_loop")
@@ -24026,42 +24074,41 @@ local states =
 					if inst.sg.statemem.canceleatfn then
 						inst.sg.statemem.canceleatfn(inst)
 					end
+					if inst.sg.statemem.swimming then
+						inst.sg.statemem.swimming = false
+						inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+						inst.components.locomotor:Stop()
+						inst.components.locomotor:Clear()
+					end
 					inst.AnimState:PlayAnimation("float_item_in")
 					inst.AnimState:PushAnimation("float_loop")
 				end
 			end),
 			EventHandler("locomote", function(inst, data)
 				local x1, y1, z1, nodelay
+				local can_hop, px, pz, found_platform
 				if inst.components.locomotor.dest then
 					local pt = inst.components.locomotor.dest.pt
 					if pt then
 						x1, y1, z1 = pt:Get()
 					end
-					inst.components.locomotor:Stop()
-					inst.components.locomotor:Clear()
 					nodelay = true
 				end
 				if data and data.dir then
 					inst.Transform:SetRotation(data.dir)
 
 					if data.remoteoverridelocomote then
-						if not data.floathop then
-							return true
-						end
 						x1, y1, z1 = nil, nil, nil
-						nodelay = true
 					end
 
 					local x, y, z = inst.Transform:GetWorldPosition()
 					local dx, dz
-					if x1 then
-						if x ~= x1 or z ~= z1 then
-							local dx = x1 - x
-							local dz = z1 - z
-							local len = math.sqrt(dx * dx + dz * dz)
-							dx = dx / len
-							dz = dz / len
-						end
+					if x1 and (x ~= x1 or z ~= z1) then
+						local dx = x1 - x
+						local dz = z1 - z
+						local len = math.sqrt(dx * dx + dz * dz)
+						dx = dx / len
+						dz = dz / len
 					end
 					if dx == nil then
 						local theta = data.dir * DEGREES
@@ -24071,12 +24118,39 @@ local states =
 					local step_size = 0.5
 					local steps_to_platform = math.ceil(TUNING.FLOATING_HOP_DISTANCE_PLATFORM / step_size)
 					local steps_to_land = math.ceil(TUNING.FLOATING_HOP_DISTANCE_LAND / step_size)
-					local can_hop, px, pz, found_platform = inst.components.locomotor:ScanForPlatformInDirFromFloating(TheWorld.Map, x, z, dx, dz, steps_to_platform, steps_to_land, step_size, nodelay)
-					if can_hop then
-						inst.components.locomotor:StartHopping(px, pz, found_platform)
+					can_hop, px, pz, found_platform = inst.components.locomotor:ScanForPlatformInDirFromFloating(TheWorld.Map, x, z, dx, dz, steps_to_platform, steps_to_land, step_size, nodelay)
+					if not (can_hop or inst.sg.statemem.swimming) and
+						inst.sg.statemem.canceleatfn == nil and
+						(inst.components.locomotor:WantsToMoveForward() or data.remoteoverridelocomote)
+					then
+						if inst.sg.statemem.swim_t == nil and not data.remoteoverridelocomote then
+							inst.sg.statemem.swimming = true
+							inst.sg.statemem.announced_tired = false
+							inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE * TUNING.FLOATING_SWIM_HUNGER_RATE_MULT)
+							inst.sg.statemem.swim_t = GetTime()
+							inst.AnimState:PlayAnimation("swim_pre")
+						elseif not inst.sg.statemem.announced_tired and
+							not inst.AnimState:IsCurrentAnimation("swim_pst") and
+							inst.sg.statemem.swim_t > GetTime() + 0.6
+						then
+							inst.sg.statemem.announced_tired = true
+							inst.components.talker:Say(GetString(inst, "ANNOUNCE_FLOAT_SWIM_TIRED"))
+						end
 					end
 				end
+				if not inst.sg.statemem.swimming and inst.components.locomotor.dest then
+					inst.components.locomotor:Stop()
+					inst.components.locomotor:Clear()
+				end
+				if can_hop then
+					inst.components.locomotor:StartHopping(px, pz, found_platform)
+				end
 				return true
+			end),
+			EventHandler("animover", function(inst)
+				if inst.sg.statemem.swimming and inst.AnimState:IsCurrentAnimation("swim_pre") then
+					inst.AnimState:PlayAnimation("swim_loop", true)
+				end
 			end),
 			EventHandler("onhop", function(inst)
 				inst.sg.statemem.floating = true
@@ -24088,7 +24162,10 @@ local states =
 		onexit = function(inst)
 			if inst.sg.statemem.canceleatfn then
 				inst.sg.statemem.canceleatfn(inst)
+			else
+				inst:RemoveTag("noswim")
 			end
+			inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
 			if not (inst.sg.statemem.floating or inst.sg.statemem.sink) then
 				inst.DynamicShadow:Enable(true)
 			end
@@ -24882,8 +24959,26 @@ local hop_anims =
     pst = function(inst) return (inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() and (inst.replica.rider == nil or not inst.replica.rider:IsRiding())) and "boat_jumpheavy_pst" or "boat_jump_pst" end,
 }
 
+local function hop_checknopredict(inst)
+	if inst.sg.lasttags["nopredict"] then
+		inst.sg:RemoveStateTag("autopredict")
+		inst.sg:AddStateTag("nopredict")
+	end
+end
+
 CommonStates.AddRowStates(states, false)
-CommonStates.AddHopStates(states, true, hop_anims, hop_timelines, "turnoftides/common/together/boat/jump_on", landed_in_falling_state, {start_embarking_pre_frame = 4*FRAMES})
+CommonStates.AddHopStates(states, true, hop_anims, hop_timelines, "turnoftides/common/together/boat/jump_on", landed_in_falling_state, {start_embarking_pre_frame = 4*FRAMES},
+{ --fns
+	pre_onenter = function(inst)
+		if inst.sg.lasttags["floating"] then
+			inst.sg:RemoveStateTag("autopredict")
+			inst.sg:AddStateTag("nopredict")
+		end
+	end,
+	loop_onenter = hop_checknopredict,
+	pst_onenter = hop_checknopredict,
+	pst_complete_onenter = hop_checknopredict,
+})
 
 local GymStates = require("stategraphs/SGwilson_gymstates")
 GymStates.AddGymStates(states, actionhandlers, events)

@@ -2,8 +2,8 @@ local BirdBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-local SHOULDFLYAWAY_MUST_TAGS = { "notarget", "INLIMBO" }
-local SHOULDFLYAWAY_CANT_TAGS = { "player", "monster", "scarytoprey" }
+local SHOULDFLYAWAY_MUST_TAGS = { "notarget", "INLIMBO" } -- NOTE: SHOULDFLYAWAY_MUST_TAGS is actually used as canttags in FindEntity. Not renaming for mod compatibility
+local SHOULDFLYAWAY_CANT_TAGS = { "player", "monster", "scarytoprey" } -- NOTE: SHOULDFLYAWAY_CANT_TAGS is actually used as oneoftags in FindEntity. Not renaming for mod compatibility
 
 local function ShouldFlyAway(inst)
     return

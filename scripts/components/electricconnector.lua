@@ -32,7 +32,7 @@ end
 
 function ElectricConnector:CanLinkTo(guy, on_load)
     return guy.components.electricconnector and (on_load or guy.components.electricconnector:IsLinking()) --Other guy is linking (or we're loading), valid
-        and not self.inst:GetCurrentPlatform() --FIXME (Omar): No boats. Sorry!
+        and not self.inst:GetCurrentPlatform() and not guy:GetCurrentPlatform() --FIXME (Omar): No boats. Sorry!
         and not self.fields[guy] --Make sure we're not already linked to this guy
 end
 

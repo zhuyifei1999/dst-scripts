@@ -378,6 +378,9 @@ local function fn_catcher()
         return inst
     end
 
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+
     -------------------------------------------------------
     inst:AddComponent("inspectable")
 

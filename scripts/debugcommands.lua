@@ -4098,3 +4098,28 @@ end
 function d_startlunarhail()
     TheWorld:PushEvent("ms_startlunarhail")
 end
+
+function d_testbirdattack()
+    local player = ConsoleCommandPlayer()
+    local x, y, z = player.Transform:GetWorldPosition()
+    local angle = math.random() * TWOPI
+    local radius = 25 + math.random() * 5
+
+    local bird = SpawnPrefab("mutatedbird")
+    bird.Transform:SetPosition(x + math.cos(angle) * radius, 15, z - math.sin(angle) * radius)
+    bird.sg:GoToState("glide_attack_in", player)
+end
+
+function d_testbirdclearhail()
+    local inst = c_select()
+    if not inst then
+        return
+    end
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local angle = math.random() * TWOPI
+    local radius = 15 + math.random() * 5
+
+    local bird = SpawnPrefab("mutatedbird")
+    bird.Transform:SetPosition(x + math.cos(angle) * radius, 14 + math.random() * 4, z - math.sin(angle) * radius)
+    bird:PushBufferedAction(BufferedAction(bird, inst, ACTIONS.REMOVELUNARBUILDUP))
+end

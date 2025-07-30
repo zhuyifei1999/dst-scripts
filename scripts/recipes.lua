@@ -781,11 +781,11 @@ Recipe2("critter_eyeofterror_builder",		{Ingredient("milkywhites", 1), Ingredien
 Recipe2("moonrockidol",								{Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)},									TECH.CELESTIAL_ONE,			{nounlock=true})
 Recipe2("multiplayer_portal_moonrock_constr_plans", {Ingredient("boards", 1), Ingredient("rope", 1)},												TECH.CELESTIAL_ONE,			{nounlock=true})
 Recipe2("moon_mushroomhat",							{Ingredient("moon_cap", 4), Ingredient("red_mushroomhat",1)},									TECH.CELESTIAL_ONE,			{nounlock=true})
-Recipe2("moonglassaxe",								{Ingredient("twigs", 2), Ingredient("moonglass", 3)},											TECH.CELESTIAL_ONE,			{nounlock=true})
-Recipe2("glasscutter",								{Ingredient("log", 1), Ingredient("moonglass", 3)},												TECH.CELESTIAL_ONE,			{nounlock=true})
 Recipe2("bathbomb", 								{Ingredient("moon_tree_blossom", 1), Ingredient("nitre", 1)}, 									TECH.CELESTIAL_ONE,			{nounlock=true})
 
 ----MOON_ALTAR-----
+Recipe2("moonglassaxe",								{Ingredient("twigs", 2), Ingredient("moonglass", 3)},											TECH.CELESTIAL_THREE,		{station_tag="celestial_station"})
+Recipe2("glasscutter",								{Ingredient("log", 1), Ingredient("moonglass", 5)},												TECH.CELESTIAL_THREE,		{station_tag="celestial_station"})
 Recipe2("lunar_forge_kit",					{Ingredient("moonrocknugget", 5),Ingredient("moonglass", 5),Ingredient("purebrilliance", 1)},			TECH.CELESTIAL_THREE,		{nounlock=true})
 Recipe2("carpentry_blade_moonglass",		{Ingredient("moonglass", 6), Ingredient("moonbutterfly", 1)},											TECH.CELESTIAL_THREE,		{nounlock=true})
 Recipe2("turf_meteor",						{Ingredient("moonrocknugget", 1), Ingredient("moonglass", 2)},											TECH.CELESTIAL_THREE,		{nounlock=true, numtogive=4})
