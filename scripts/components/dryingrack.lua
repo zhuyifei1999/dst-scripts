@@ -34,7 +34,7 @@ local DryingRack = Class(function(self, inst, container)
 			end
 			return
 		end
-		return not self.paused and item and item.components.dryable and 0 or nil
+		return not self.dryingpaused and item and item.components.dryable and 0 or nil
 	end
 end)
 

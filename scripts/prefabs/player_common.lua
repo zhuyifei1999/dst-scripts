@@ -2103,6 +2103,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "ghostvision_buff",
         "elixir_player_forcefield",
 		"player_float_hop_water_fx",
+		"ocean_splash_swim1",
+		"ocean_splash_swim2",
 
         -- Player specific classified prefabs
         "player_classified",

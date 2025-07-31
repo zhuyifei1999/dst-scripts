@@ -1178,7 +1178,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds are singing their last.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Birds of a feather fall together.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Just need a rest.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Let them come.",
 
 	BATTLECRY =
 	{
@@ -2111,6 +2111,8 @@ return{
         CHESSPIECE_SHARKBOI = "Their cold shark heart was just misunderstood.",
         CHESSPIECE_WORMBOSS = "It consumed to fill its endless void.",
         CHESSPIECE_YOTS = "How curious, the things we choose to commemorate.",
+        CHESSPIECE_WAGBOSS_ROBOT = "It was built to bring death.",
+        CHESSPIECE_WAGBOSS_LUNAR = "This doesn't capture its pain.",
 
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
@@ -5749,13 +5751,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "It's no use to anyone like that.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "There's no life in its eyes.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "There can be a fate worse than death.", --witnessing the corpse
+            BURNING  = "Now it is truly free.", --when its burning
+            REVIVING = "Poor bird.", --when its mutating and being revived
         },
     },
 

@@ -1178,7 +1178,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "No, tweeters!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Tweeter?",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Resting",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Tweeters!",
 
 	BATTLECRY =
 	{
@@ -2111,6 +2111,8 @@ return{
         CHESSPIECE_SHARKBOI = "Toothy Fish Friend",
         CHESSPIECE_WORMBOSS = "Don't eat!",
         CHESSPIECE_YOTS = "Little wiggly",
+        CHESSPIECE_WAGBOSS_ROBOT = "Stone robot friend",
+        CHESSPIECE_WAGBOSS_LUNAR = "Friend no hurt more",
 
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
@@ -5749,13 +5751,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "Help zap friend?",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "Tweeter, friend?",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Tweeter dead", --witnessing the corpse
+            BURNING  = "Bye, tweeter", --when its burning
+            REVIVING = "Tweeter back...", --when its mutating and being revived
         },
     },
 

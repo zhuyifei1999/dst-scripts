@@ -1175,7 +1175,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Get'em!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Kinda sad, but I still hate it.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm resting, eh.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "What did I do to deserve this?",
 
 	BATTLECRY =
 	{
@@ -2108,6 +2108,8 @@ return{
         CHESSPIECE_SHARKBOI = "Hey there, fish breath.",
         CHESSPIECE_WORMBOSS = "I still have nightmares about that thing.",
         CHESSPIECE_YOTS = "It would've looked better carved out of wood.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Remember when it tried to kill us, Luce?",
+        CHESSPIECE_WAGBOSS_LUNAR = "That was a bad one... and weird.",
 
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
@@ -5662,7 +5664,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Kid is getting fancy with that slingshooter.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Kid is getting fancy with that slingshooter.",
 
-		WOBY_TREAT = "I guess if I were starving…",
+		WOBY_TREAT = "I guess if I were starving...",
 		BANDAGE_BUTTERFLYWINGS = "It's pretty pretty, eh?",
 		PORTABLEFIREPIT_ITEM = "Sure, Lucy. We can feed it.",
         SLINGSHOTAMMO_CONTAINER = "Hours of fun and destruction for the kiddo.",
@@ -5746,13 +5748,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "I suppose I could plant it.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "I hate you more than anything.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "I still don't trust it.", --witnessing the corpse
+            BURNING  = "Finally.", --when its burning
+            REVIVING = "This is the worst.", --when its mutating and being revived
         },
     },
 

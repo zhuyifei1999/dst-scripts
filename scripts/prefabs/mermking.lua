@@ -557,6 +557,8 @@ local function fn()
         return inst
     end
 
+	inst.override_combat_fx_height = "low"
+
     inst:SetStateGraph("SGmermking")
 
     MakeLargeBurnableCharacter(inst, "torso")

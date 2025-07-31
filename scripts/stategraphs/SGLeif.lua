@@ -22,7 +22,13 @@ local events=
     end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
 
-    EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then inst.sg:GoToState("attack", data.target) end end),
+	EventHandler("doattack", function(inst, data)
+		if not inst.components.health:IsDead() and
+			((inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) or not inst.sg:HasStateTag("busy"))
+		then
+			inst.sg:GoToState("attack", data.target)
+		end
+	end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("gotosleep", function(inst) inst.sg:GoToState("sleeping") end),
     EventHandler("onwakeup", function(inst) inst.sg:GoToState("wake") end),
@@ -216,6 +222,7 @@ CommonStates.AddWalkStates(
 
 CommonStates.AddIdle(states)
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "transform_ent_mad"})
 
 return StateGraph("leif", states, events, "idle")

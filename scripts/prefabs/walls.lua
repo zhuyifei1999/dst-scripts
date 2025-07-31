@@ -286,6 +286,7 @@ function MakeWallType(data)
 
         inst:AddTag("wall")
         inst:AddTag("noauradamage")
+		inst:AddTag("electricdamageimmune")
 
 		inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild("wall_"..data.name)

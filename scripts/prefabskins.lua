@@ -99,6 +99,7 @@ PREFAB_SKINS = {
 	armormarble =
 	{
 		"armor_marble_chainmail",
+		"armor_marble_planet",
 		"armor_marble_rockabs",
 		"armor_marble_valkyrie",
 	},
@@ -1443,9 +1444,11 @@ PREFAB_SKINS = {
 	{
 		"sisturn_beachhouse",
 		"sisturn_nest",
+		"sisturn_victorian",
 	},
 	skeletonhat =
 	{
+		"skeletonhat_mythical",
 		"skeletonhat_relic",
 		"skeletonhat_shadowhelmet",
 	},
@@ -1688,6 +1691,7 @@ PREFAB_SKINS = {
 		"treasurechest_upgraded_ancient",
 		"treasurechest_upgraded_cake",
 		"treasurechest_upgraded_carpetbag",
+		"treasurechest_upgraded_clock",
 		"treasurechest_upgraded_corruption",
 		"treasurechest_upgraded_cotl_basic",
 		"treasurechest_upgraded_cotl_fancy",
@@ -1939,6 +1943,7 @@ PREFAB_SKINS = {
 	},
 	wathgrithr_improvedhat =
 	{
+		"wathgrithr_improvedhat_flower",
 		"wathgrithr_improvedhat_lunar",
 		"wathgrithr_improvedhat_valkyrie",
 		"wathgrithr_improvedhat_western",
@@ -2535,6 +2540,7 @@ PREFAB_SKINS_SHOULD_NOT_SELECT = {
 	["treasurechest_upgraded_ancient"] = true,
 	["treasurechest_upgraded_cake"] = true,
 	["treasurechest_upgraded_carpetbag"] = true,
+	["treasurechest_upgraded_clock"] = true,
 	["treasurechest_upgraded_corruption"] = true,
 	["treasurechest_upgraded_cotl_basic"] = true,
 	["treasurechest_upgraded_cotl_fancy"] = true,

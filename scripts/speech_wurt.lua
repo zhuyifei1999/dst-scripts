@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Birds dying. Glurph.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They dead.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Tired! Glurph!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Glurph! Birds!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "Haha! Bad fishie frozen.",
         CHESSPIECE_WORMBOSS = "Hungriest worm.",
         CHESSPIECE_YOTS = "Cute little worm.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Little big ironfolk.",
+        CHESSPIECE_WAGBOSS_LUNAR = "Moon stuff made big ironfolk bad.",
 
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
@@ -5547,8 +5549,8 @@ return{
         MERM_ARMORY_UPGRADED = "Best Mermfolk fighting hat here!",
         MERM_TOOLSHED = "Mermfolk tools inside.",
         MERM_TOOLSHED_UPGRADED = "These Mermfolk tools better.",
-        MERMARMORHAT = "Only for big Mermfolk, glorp…",
-        MERMARMORUPGRADEDHAT = "Only for big Mermfolk, glorp…",
+        MERMARMORHAT = "Only for big Mermfolk, glorp...",
+        MERMARMORUPGRADEDHAT = "Only for big Mermfolk, glorp...",
         MERM_TOOL = "Made for hardworking Mermfolk!",
         MERM_TOOL_UPGRADED = "Made for hardest working Mermfolk!",
 
@@ -5661,7 +5663,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Pine boy shooty toy. Florp!",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Pine boy shooty toy. Florp!",
 
-		WOBY_TREAT = "Smell… familiar.",
+		WOBY_TREAT = "Smell... familiar.",
 		BANDAGE_BUTTERFLYWINGS = "Stick me!",
 		PORTABLEFIREPIT_ITEM = "Florp! Can take cozy time anywhere!",
         SLINGSHOTAMMO_CONTAINER = "Pine boy pockets.",

@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds don't sound happy.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Maybe they're coming down for a rest.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "We're tired!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Watch out for the birds!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "They weren't so bad after we got to know them.",
         CHESSPIECE_WORMBOSS = "That big worm had a big mouth.",
         CHESSPIECE_YOTS = "We can play with this worm!",
+        CHESSPIECE_WAGBOSS_ROBOT = "Can we keep it?",
+        CHESSPIECE_WAGBOSS_LUNAR = "Yes! Three-legged space spider!",
 
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",

@@ -8591,7 +8591,8 @@ function Tune(overrides)
         ]]
 
         RIFT_BIRD_WALKSPEED = 4,
-        RIFT_BIRD_DAMAGE = 20,
+        RIFT_BIRD_DAMAGE = 10,
+        RIFT_BIRD_PLANAR_DAMAGE = 10,
         RIFT_BIRD_HEALTH = 25,
         RIFT_BIRD_ATTACK_COOLDOWN = 6,
         RIFT_BIRD_ATTACK_RANGE = 2,

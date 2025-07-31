@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "What is that racket?",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "That's not a good sign.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I can't!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Blasted birds!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "Bottom feeding lone shark.",
         CHESSPIECE_WORMBOSS = "I can still smell it's breath.",
         CHESSPIECE_YOTS = "Let's leave this underground.",
+        CHESSPIECE_WAGBOSS_ROBOT = "I loathe it.",
+        CHESSPIECE_WAGBOSS_LUNAR = "It was a culmination of terrible decisions.",
 
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",

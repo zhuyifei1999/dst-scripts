@@ -4,6 +4,7 @@ local assets =
 {
     Asset("ANIM", "anim/bird_lunar.zip"),
     Asset("ANIM", "anim/bird_lunar_build.zip"),
+    Asset("SOUND", "sound/lunarhail_event.fsb"),
 }
 
 local prefabs =
@@ -18,12 +19,11 @@ SetSharedLootTable('bird_mutant_rift',
 
 local sounds =
 {
-    --TODO sounds
     flyin = "dontstarve/birds/flyin",
-    chirp = "moonstorm/creatures/mutated_crow/chirp",
-    takeoff = "moonstorm/creatures/mutated_crow/take_off",
-    attack = "moonstorm/creatures/mutated_crow/attack",
-    eat = "",
+    chirp = "lunarhail_event/creatures/lunar_crow/caw",
+    takeoff = "lunarhail_event/creatures/lunar_crow/fly_out",
+    attack = "lunarhail_event/creatures/lunar_crow/attack",
+    eat = "lunarhail_event/creatures/lunar_crow/peck_shard",
 }
 
 local brain = require "brains/bird_mutant_rift_brain"
@@ -37,6 +37,20 @@ local function OnTrapped(inst, data)
     if data and data.trapper and data.trapper.settrapsymbols then
         data.trapper.settrapsymbols(inst.trappedbuild)
     end
+end
+
+local function SetBirdTrapData(inst)
+	local t = inst.components.timer:GetTimeLeft(BRILLIANCE_TIMER)
+	return t ~= nil and {
+		brilliance_cooldown = t,
+	} or nil
+end
+
+local function RestoreBirdFromTrap(inst, data)
+	if data ~= nil and data.brilliance_cooldown ~= nil then
+		inst.components.timer:StartTimer(BRILLIANCE_TIMER, data.brilliance_cooldown)
+        inst:UpdateBrillianceVisual()
+	end
 end
 
 local function OnDropped(inst)
@@ -74,6 +88,12 @@ local function PutOnBrillianceCooldown(inst, cage)
     UpdateBrillianceVisual(inst, cage)
 end
 
+local function OnTimerDone(inst, data)
+    if data and data.name == BRILLIANCE_TIMER then
+        UpdateBrillianceVisual(inst, inst.components.occupier:GetOwner())
+    end
+end
+
 local function OnSave(inst, data)
     data.infused_eaten = inst._infused_eaten
 end
@@ -103,7 +123,7 @@ local function commonfn()
 		COLLISION.SMALLOBSTACLES
 	)
     inst.Physics:SetMass(1)
-    inst.Physics:SetSphere(1)
+    inst.Physics:SetSphere(0.25) --FIXME (Omar): Change back to 1 after new behaviours
 
 	inst:AddTag("soulless") -- no wortox souls
     inst:AddTag("canbetrapped")
@@ -163,7 +183,7 @@ local function commonfn()
     inst:AddComponent("planarentity")
 
     inst:AddComponent("planardamage")
-    inst.components.planardamage:SetBaseDamage(TUNING.RIFT_BIRD_DAMAGE)
+    inst.components.planardamage:SetBaseDamage(TUNING.RIFT_BIRD_PLANAR_DAMAGE)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
@@ -172,6 +192,8 @@ local function commonfn()
     inst.components.inventoryitem:SetSinks(true)
 
     inst:ListenForEvent("ontrapped", OnTrapped)
+    inst.settrapdata = SetBirdTrapData
+	inst.restoredatafromtrap = RestoreBirdFromTrap
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('bird_mutant_rift')
@@ -190,6 +212,7 @@ local function commonfn()
     end
 
     inst._infused_eaten = 0
+    inst.clear_buildup_in_one = true
 
     inst:SetStateGraph("SGbird")
     inst:SetBrain(brain)
@@ -197,6 +220,9 @@ local function commonfn()
     inst.PutOnBrillianceCooldown = PutOnBrillianceCooldown
     inst.UpdateBrillianceVisual = UpdateBrillianceVisual
     inst.IsOnBrillianceCooldown = IsOnBrillianceCooldown
+    inst:DoTaskInTime(0, inst.UpdateBrillianceVisual)
+
+    inst:ListenForEvent("timerdone", OnTimerDone)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

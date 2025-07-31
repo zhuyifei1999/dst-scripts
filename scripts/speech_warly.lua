@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Sounds like a blender!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "It is raining poultry.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm on my break!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "The birds are coming!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "It seemed to think it was top of the food chain.",
         CHESSPIECE_WORMBOSS = "It sure had an appetite.",
         CHESSPIECE_YOTS = "I remember the chewing.",
+        CHESSPIECE_WAGBOSS_ROBOT = "The portable version.",
+        CHESSPIECE_WAGBOSS_LUNAR = "That was a bad combination.",
 
         CHESSJUNK1 = "Broken chess pieces?",
         CHESSJUNK2 = "More broken chess pieces?",

@@ -30,7 +30,13 @@ local events = {
     CommonHandlers.OnFallInVoid(),
 	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil,
+				function(inst)
+					if inst.sg:HasStateTag("stuck") then
+						inst.sg.statemem.not_interrupted = true
+					end
+				end)
+			then
 				return
 			elseif not inst.sg:HasAnyStateTag("ability", "electrocute") then
 				inst.sg:GoToState("hit")
@@ -238,6 +244,7 @@ local states = {
         end,
         timeline = {
             TimeEvent(6 * FRAMES, function(inst)
+				inst.sg:AddStateTag("stuck")
                 inst.Physics:ClearMotorVelOverride()
                 inst.components.locomotor:Stop()
                 inst.components.locomotor:EnableGroundSpeedMultiplier(true)
@@ -256,14 +263,26 @@ local states = {
     },
     State{
         name = "ability_dropkick_miss_stuck_loop",
-        tags = {"busy", "ability"},
-        onenter = function(inst)
+		tags = { "busy", "ability", "stuck" },
+		onenter = function(inst)
+			local t = GetTime()
+			local starttime = inst.sg.mem.stuckstarttime or t
+			inst.sg.mem.stuckstarttime = starttime
+			local elapsed = t - starttime
+			local duration = TUNING.RABBITKING_STUN_DURATION - elapsed
+			if duration <= 0 then
+				inst.sg:GoToState("ability_dropkick_miss_stuck_pst")
+				return
+			end
             inst.AnimState:PlayAnimation("stuck_loop", true)
             inst.SoundEmitter:PlaySound("rifts4/rabbit_king/aggressive/stuck_lp", "stuck_lp")
-            inst.sg:SetTimeout(TUNING.RABBITKING_STUN_DURATION)
+			inst.sg:SetTimeout(duration)
         end,
         onexit = function(inst)
             inst.SoundEmitter:KillSound("stuck_lp")
+			if not inst.sg.statemem.not_interrupted then
+				inst.sg.mem.stuckstarttime = nil
+			end
         end,
         ontimeout = function(inst)
             inst.sg:GoToState("ability_dropkick_miss_stuck_pst")
@@ -747,7 +766,54 @@ CommonStates.AddSleepStates(states, nil, {
     end,
 })
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
+
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+{	--anims
+	loop = function(inst)
+		if inst.sg.lasttags["stuck"] then
+			inst.sg:AddStateTag("stuck")
+			return "stuck_shock_loop"
+		end
+	end,
+	pst = function(inst)
+		if inst.sg.lasttags["stuck"] then
+			inst.sg:AddStateTag("stuck")
+			return "stuck_shock_pst"
+		end
+	end,
+},
+{	--fns
+	loop_onenter = function(inst)
+		if inst.sg:HasStateTag("stuck") then
+			inst.sg.statemem.shockstarttime = GetTime()
+		end
+	end,
+	loop_onexit = function(inst)
+		if inst.sg:HasStateTag("stuck") and not inst.sg.statemem.not_interrupted then
+			inst.sg.mem.stuckstarttime = nil
+		end
+	end,
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.sg:HasStateTag("stuck") then
+				if inst.sg.mem.stuckstarttime then
+					inst.sg.mem.stuckstarttime = inst.sg.mem.stuckstarttime + (GetTime() - inst.sg.statemem.shockstarttime) * 0.5
+				end
+				inst.sg.statemem.not_interrupted = true
+				inst.sg:GoToState("ability_dropkick_miss_stuck_loop")
+			else
+				inst.sg:GoToState("idle")
+			end
+		end
+	end,
+	pst_onexit = function(inst)
+		if inst.sg:HasStateTag("stuck") and not inst.sg.statemem.not_interrupted then
+			inst.sg.mem.stuckstarttime = nil
+		end
+	end,
+})
+
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 

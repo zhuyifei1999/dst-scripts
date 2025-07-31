@@ -1987,6 +1987,7 @@ FOODTYPE =
     GOODIES = "GOODIES",
     MONSTER = "MONSTER", -- Added in for woby, uses the secondary foodype originally added for the berries
     LUNAR_SHARDS = "LUNAR_SHARDS", -- For rift birds, yummy glass
+    CORPSE = "CORPSE", -- For rift buzzards potentially
 }
 
 FOODGROUP =

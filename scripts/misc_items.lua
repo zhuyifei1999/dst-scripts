@@ -7649,6 +7649,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 132,
 	},
+	playerportrait_bg_armormarbleplanet =
+	{
+		type = "playerportrait",
+		skin_tags = { "PLANETS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 170,
+	},
 	playerportrait_bg_armorruinsan =
 	{
 		type = "playerportrait",
@@ -8663,6 +8670,13 @@ MISC_ITEMS =
 		skin_tags = { "NAUTICAL", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 132,
+	},
+	profileflair_armor_marbleplanet =
+	{
+		type = "profileflair",
+		skin_tags = { "PLANETS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 170,
 	},
 	profileflair_armor_ruinsan =
 	{

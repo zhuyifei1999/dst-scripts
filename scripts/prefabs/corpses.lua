@@ -192,7 +192,7 @@ local function StartFadeTimer(inst, time)
 end
 
 local function StartGestaltTimer(inst, time)
-    if inst.build == "puffin" then --FIXME: No mutation for puffins!
+    if inst.build == "puffin" then --FIXME: No mutation for puffins! For now.
         StartFadeTimer(inst, time)
         return
     end
@@ -233,6 +233,8 @@ local function MakeCreatureCorpse(data)
     local prefabs = {mutantprefab, "corpse_gestalt"}
 
     local burntime = data.burntime or TUNING.MED_BURNTIME
+    local sanity_aura = data.sanityaura or -TUNING.SANITYAURA_MED
+    local sanity_aurafn = data.sanityaurafn or nil
 
     local scale = data.scale
     local faces = data.faces
@@ -312,6 +314,10 @@ local function MakeCreatureCorpse(data)
 
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = GetStatus
+
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = sanity_aura
+        inst.components.sanityaura.aurafn = sanity_aurafn --Can be nil
 
 		data.makeburnablefn(inst, burntime, data.firesymbol)
 
@@ -425,6 +431,8 @@ return  -- For search: deerclopscorpse
         shadowsize = {6, 3.5},
         scale = 1.65,
         tag = "deerclops",
+
+        sanityaura = -TUNING.SANITYAURA_LARGE,
     }),
 
     -- For search: wargcorpse
@@ -450,6 +458,8 @@ return  -- For search: deerclopscorpse
         physicsradius = 1.5,
         shadowsize = {6, 3.5},
         tag = "bearger_blocker",
+
+        sanityaura = -TUNING.SANITYAURA_LARGE,
     }),
 
     -- For search: koalefantcorpse_prop
@@ -490,6 +500,8 @@ return  -- For search: deerclopscorpse
             inst.Physics:SetSphere(1)
             inst.Physics:SetFriction(.3)
         end,
+
+        sanityaura = -TUNING.SANITYAURA_SMALL,
     }),
 
     -- For search: buzzardcorpse
@@ -504,4 +516,6 @@ return  -- For search: deerclopscorpse
         mutate_on_entity_sleep = true,
         shadowsize = {1.25, .75},
         physicsradius = .25,
+
+        sanityaura = -TUNING.SANITYAURA_MED,
     })

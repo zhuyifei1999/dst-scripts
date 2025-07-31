@@ -23,6 +23,16 @@ local function PlayShardFx(inst, target)
     end
 end
 
+local function FlyAwayToSky(inst)
+    --Bright-Beaked Birds persist.
+    local birdspawner = TheWorld.components.birdspawner
+    --if inst:HasTag("bird_mutant_rift") and birdspawner then
+    --    birdspawner:StoreMutatedBird(inst)
+    --else
+        inst:Remove()
+    --end
+end
+
 local events =
 {
     EventHandler("gotosleep", function(inst)
@@ -65,8 +75,14 @@ local events =
     EventHandler("stunbomb", function(inst)
         inst.sg:GoToState("stunned")
     end),
+    EventHandler("glide_attack_at_target", function(inst, data)
+        inst.sg:GoToState("glide_attack_in", data.target)
+    end),
+    EventHandler("glide_clear_at_target", function(inst, data)
+        inst.sg:GoToState("glide_clearhail", data.target)
+    end),
 
-    EventHandler("locomote", function(inst)
+    EventHandler("locomote", function(inst) --FIXME probably no more locomotion when new behaviour of bird is in
         --NOTE: Locomote behaviour for the mutated bird, it's probably fine to have this event listener for all, but just in case.
         if inst:HasTag("bird_mutant_rift") and not inst.sg:HasAnyStateTag("sleeping", "busy", "flight") then
             local is_moving = inst.sg:HasStateTag("moving")
@@ -313,12 +329,14 @@ local states =
                 local buffaction = inst:GetBufferedAction()
                 if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
                     PlayShardFx(inst, buffaction.target)
+                    inst.SoundEmitter:PlaySound(inst.sounds.eat)
                 end
             end),
 			FrameEvent(9, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 if inst:HasTag("bird_mutant_rift") and buffaction and buffaction.target then
                     PlayShardFx(inst, buffaction.target)
+                    inst.SoundEmitter:PlaySound(inst.sounds.eat)
                 end
             end),
         },
@@ -396,7 +414,7 @@ local states =
                 if inst.sg.statemem.noescape then
                     inst.sg:GoToState("fall")
                 else
-                    inst:Remove()
+                    FlyAwayToSky(inst)
                 end
             end),
         },
@@ -561,7 +579,7 @@ local states =
                 --Slide a lil if we were going diagonally
                 if not inst.sg.statemem.vert then
                     local rot = inst.Transform:GetRotation() * DEGREES
-                    inst.Physics:SetVel(math.random(8, 12) * math.cos(rot), 0, math.random(8, 12) * -math.sin(rot))
+                    inst.Physics:SetVel(math.random(6, 10) * math.cos(rot), 0, math.random(6, 10) * -math.sin(rot))
                 end
                 inst.sg:GoToState("corpse_idle")
 
@@ -593,8 +611,6 @@ local states =
 			inst.AnimState:PlayAnimation("twitch", true)
 			inst.sg:SetTimeout(3)
 			inst.sg.statemem.mutantprefab = mutantprefab
-			
-            --inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/twitching_LP", "loop")
 		end,
 
 		ontimeout = function(inst)
@@ -616,8 +632,8 @@ local states =
 			inst.AnimState:OverrideSymbol("fx_puff2", "bird_lunar_build", "fx_puff2")
 
 			inst.AnimState:PlayAnimation("mutate_pre")
+            inst.SoundEmitter:PlaySound("lunarhail_event/creatures/lunar_crow/mutate_pre")
 
-			--inst.SoundEmitter:PlaySound("rifts3/mutated_deerclops/ice_crackling_LP", "loop")
 			inst.sg.statemem.mutantprefab = mutantprefab
 		end,
 
@@ -661,6 +677,7 @@ local states =
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("mutate")
+            inst.SoundEmitter:PlaySound("lunarhail_event/creatures/lunar_crow/mutate")
 			inst.sg.statemem.flash = 24
 		end,
 
@@ -676,9 +693,6 @@ local states =
 
 		timeline =
 		{
-			FrameEvent(16, function(inst)
-                
-            end),
 		},
 
 		events =
@@ -706,7 +720,6 @@ local states =
                 inst.AnimState:PlayAnimation("lunar_eat", true)
             end
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            inst.SoundEmitter:PlaySound(inst.sounds.eat)
         end,
 
         timeline =
@@ -715,12 +728,14 @@ local states =
                 local buffaction = inst:GetBufferedAction()
                 if buffaction and buffaction.target then
                     PlayShardFx(inst, buffaction.target)
+                    inst.SoundEmitter:PlaySound(inst.sounds.eat)
                 end
             end),
 			FrameEvent(26, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 if buffaction and buffaction.target then
                     PlayShardFx(inst, buffaction.target)
+                    inst.SoundEmitter:PlaySound(inst.sounds.eat)
                 end
                 inst:PerformBufferedAction()
             end),
@@ -738,8 +753,8 @@ local states =
 		tags = { "idle", "flight", "notarget", "noelectrocute" }, --flight and notarget prevent attacks
 
         onenter = function(inst, target)
-			--inst:AddTag("NOCLICK")
-            --inst:AddTag("NOBLOCK")
+		    inst:AddTag("NOCLICK")
+            inst:AddTag("NOBLOCK")
             if not inst.AnimState:IsCurrentAnimation("glide") then
                 inst.AnimState:PlayAnimation("glide", true)
             end
@@ -749,7 +764,7 @@ local states =
             local dist = math.sqrt(inst:GetDistanceSqToInst(target))
 
             inst.sg.statemem.target = target
-            inst.sg.statemem.velocity = {dist, -y + 3, 0} --math.random() * 10 - 20, 0}
+            inst.sg.statemem.velocity = {dist/2, (-y + 4)/2, 0} --math.random() * 10 - 20, 0} --{dist/2, (-y + 5)/2, 0}
 
             inst:ForceFacePoint(target:GetPosition())
             inst.Physics:SetMotorVel(unpack(inst.sg.statemem.velocity)) --math.random() * 10 - 20 -- -12
@@ -833,10 +848,7 @@ local states =
             FrameEvent(6, function(inst)
                 inst.sg:AddStateTag("notarget")
             end),
-            TimeEvent(2, function(inst)
-                -- TODO don't remove! this should persist!
-                inst:Remove()
-            end),
+            TimeEvent(2, FlyAwayToSky),
         },
 
 		onexit = function(inst)
@@ -886,7 +898,7 @@ local states =
             local x, y, z = inst.Transform:GetWorldPosition()
 
             if target and target:IsValid() then
-                if y < 2 and inst:GetBufferedAction() then
+                if inst:GetDistanceSqToInst(target) < 1 and inst:GetBufferedAction() then
                     inst:PerformBufferedAction()
                     inst.sg:GoToState("glide_attack_out")
                 end

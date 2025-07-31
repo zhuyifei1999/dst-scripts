@@ -6311,7 +6311,9 @@ ACTIONS.REMOVELUNARBUILDUP.fn = function(act)
         return false, "ITEMMIMIC"
     end
 
-    lunarhailbuildup:DoWorkToRemoveBuildup(1, act.doer)
+    -- TODO: Quick hack to let Bright-beaks insta-clear
+    local numworks = act.doer.clear_buildup_in_one and lunarhailbuildup.totalworkamount or 1
+    lunarhailbuildup:DoWorkToRemoveBuildup(numworks, act.doer)
 
     return true
 end

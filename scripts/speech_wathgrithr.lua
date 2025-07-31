@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Slaughter aloft!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "The sky doth weep with woe and death!",
     ANNOUNCE_FLOAT_SWIM_TIRED = "A brief respite to gather mine strength!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Hellish wings draweth nigh!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "Until we meet again, bait-breathed warrior.",
         CHESSPIECE_WORMBOSS = "I shall never forget this hungry cave serpent.",
         CHESSPIECE_YOTS = "I do relish thy slaying, worm.",
+        CHESSPIECE_WAGBOSS_ROBOT = "The iron golem was indeed misguided.",
+        CHESSPIECE_WAGBOSS_LUNAR = "This tribute to the unhallowed giant is an abomination unto itself.",
 
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
@@ -5662,7 +5664,7 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "The young scout doth come into his own.",
 
 		WOBY_TREAT = "Woby doth deserve all manner of fine victuals and sweetmeats.",
-		BANDAGE_BUTTERFLYWINGS = "If I had a bandage for every mere flesh wound…",
+		BANDAGE_BUTTERFLYWINGS = "If I had a bandage for every mere flesh wound...",
 		PORTABLEFIREPIT_ITEM = "Prometheus himself would burn with envy!",
         SLINGSHOTAMMO_CONTAINER = "Though I prefer a blade, the lad slings with honor.",
 

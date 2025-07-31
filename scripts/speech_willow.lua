@@ -1181,7 +1181,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "It's a bad day to be a bird.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "That's not how they normally land.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm exhausted!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Bird attack!",
 
 	BATTLECRY =
 	{
@@ -2114,6 +2114,8 @@ return{
         CHESSPIECE_SHARKBOI = "Reminded me of someone from my old neighborhood.",
         CHESSPIECE_WORMBOSS = "I hope it gets indigestion.",
         CHESSPIECE_YOTS = "Still gross.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Stupid killer robot.",
+        CHESSPIECE_WAGBOSS_LUNAR = "That thing was the worst.",
 
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
@@ -5752,13 +5754,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "It's useless like that.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "What are you looking at, weird bird?",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Shall I do the honors?", --witnessing the corpse
+            BURNING  = "Burn, birdie, burn.", --when its burning
+            REVIVING = "Do I even have to say it?", --when its mutating and being revived
         },
     },
 

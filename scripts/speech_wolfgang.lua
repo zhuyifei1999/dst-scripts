@@ -1175,7 +1175,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Oh, how terrible!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Poor birdy!",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Wolfgang just need a second.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Bad birds coming!",
 
 	BATTLECRY =
 	{
@@ -2108,6 +2108,8 @@ return{
         CHESSPIECE_SHARKBOI = "Wolfgang and talking shark could be buddy in different life.",
         CHESSPIECE_WORMBOSS = "Wolfgang prefer not to talk about giant worm experience.",
         CHESSPIECE_YOTS = "Worm was no match for Wolfgang.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Machine guy kind of cute.",
+        CHESSPIECE_WAGBOSS_LUNAR = "Wolfgang not understand what, how... and most of all, why.",
 
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
@@ -5662,7 +5664,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Be careful, little scout boy!",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Be careful, little scout boy!",
 
-		WOBY_TREAT = "Wolfgang know this for dog, but still…",
+		WOBY_TREAT = "Wolfgang know this for dog, but still...",
 		BANDAGE_BUTTERFLYWINGS = "Little butterfly died to heal our wound.",
 		PORTABLEFIREPIT_ITEM = "Never afraid of dark forest again. Not that Wolfgang ever afraid.",
         SLINGSHOTAMMO_CONTAINER = "Walter is true marksboy!",
@@ -5746,13 +5748,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "Must plant little post.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "Hello, monster birdie. Stay away from Wolfgang, please.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "Wolfgang little bit sad.", --witnessing the corpse
+            BURNING  = "It is better for birdie.", --when its burning
+            REVIVING = "Oh, no.", --when its mutating and being revived
         },
     },
 

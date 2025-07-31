@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "I'll never get over that dreadful sound.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They never stood a chance.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I need a rest.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Heads up!",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "How could I forget this ruffian?",
         CHESSPIECE_WORMBOSS = "Rather not relive this one.",
         CHESSPIECE_YOTS = "And I just managed to forget you.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Do we really need a reminder of this?",
+        CHESSPIECE_WAGBOSS_LUNAR = "Can't we just leave this monstrosity in the past?",
 
         CHESSJUNK1 = "I don't see much in the way of proper clockwork in there.",
         CHESSJUNK2 = "I have a suspicion these were held together with more magic than craftsmanship.",
@@ -5661,7 +5663,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Rather innovative for a child.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Rather innovative for a child.",
 
-		WOBY_TREAT = "I suppose with a really strong cup of tea… nah.",
+		WOBY_TREAT = "I suppose with a really strong cup of tea... nah.",
 		BANDAGE_BUTTERFLYWINGS = "This will heal it up in no time at all.",
 		PORTABLEFIREPIT_ITEM = "That Walter is a clever little fellow.",
         SLINGSHOTAMMO_CONTAINER = "Stockpiling for the future. Good boy!",

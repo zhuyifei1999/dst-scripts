@@ -2403,6 +2403,8 @@ STRINGS =
         CHESSPIECE_SHARKBOI = "Frostjaw Figure",
         CHESSPIECE_WORMBOSS = "Great Depths Worm Figure",
         CHESSPIECE_YOTS = "Gilded Depths Worm Figure",
+        CHESSPIECE_WAGBOSS_ROBOT = "W.A.R.B.O.T. Figure",
+        CHESSPIECE_WAGBOSS_LUNAR = "Celestial Scion Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -2446,6 +2448,8 @@ STRINGS =
         CHESSPIECE_SHARKBOI_BUILDER = "Frostjaw Figure",
         CHESSPIECE_WORMBOSS_BUILDER = "Great Depths Worm Figure",
         CHESSPIECE_YOTS_BUILDER = "Gilded Depths Worm Figure",
+        CHESSPIECE_WAGBOSS_ROBOT_BUILDER = "W.A.R.B.O.T. Figure",
+        CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "Celestial Scion Figure",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "Moon Moth Figure Sketch",
         CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
@@ -4780,6 +4784,8 @@ STRINGS =
         CHESSPIECE_SHARKBOI_BUILDER = "An homage to a cold-blooded bully.",
         CHESSPIECE_WORMBOSS_BUILDER = "Brings back memories of being digested.",
         CHESSPIECE_YOTS_BUILDER = "A reminder of a lucky worm encounter.",
+        CHESSPIECE_WAGBOSS_ROBOT_BUILDER = "The automation.",
+        CHESSPIECE_WAGBOSS_LUNAR_BUILDER = "The abomination.",
 
         CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
         CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",

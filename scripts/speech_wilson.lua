@@ -1184,7 +1184,7 @@ return {
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "So that's the sound of a murder of crows.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're dropping like birds.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm too tired.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Birds!",
 
 	BATTLECRY =
 	{
@@ -2117,6 +2117,8 @@ return {
         CHESSPIECE_SHARKBOI = "There's just some-fin about it.",
         CHESSPIECE_WORMBOSS = "It still shakes me up.",
         CHESSPIECE_YOTS = "I usually try to stay away from gold diggers.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Great design, questionable execution.",
+        CHESSPIECE_WAGBOSS_LUNAR = "I'm over the moon.",
 
         CHESSJUNK1 = "A pile of broken chess pieces.",
         CHESSJUNK2 = "Another pile of broken chess pieces.",
@@ -5762,6 +5764,17 @@ return {
             GENERIC  = "I call fowl.", --witnessing the corpse
             BURNING  = "That's what I call a firebird.", --when its burning
             REVIVING = "It's becoming a new species!", --when its mutating and being revived
+        },
+
+        BUZZARDCORPSE = {
+            GENERIC = "TODO",
+            BURNING = "TODO",
+            REVIVING = "TODO",
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "TODO", -- Generic string
+            EATING_CORPSE = "TODO", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
         },
     },
 

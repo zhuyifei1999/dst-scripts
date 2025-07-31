@@ -51,40 +51,16 @@ local function BounceStuff(inst)
     end
 end
 
-local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
-    local on_cooldown = false
-    if (inst._last_hitreact_time ~= nil and inst._last_hitreact_time + (delay or inst.hit_recovery or TUNING.DEFAULT_HIT_RECOVERY) >= GetTime()) then   -- is hit react is on cooldown?
-        max_hitreacts = max_hitreacts or inst._max_hitreacts
-        if max_hitreacts then
-            if inst._hitreact_count == nil then
-                inst._hitreact_count = 2
-                return false
-            elseif inst._hitreact_count < max_hitreacts then
-                inst._hitreact_count = inst._hitreact_count + 1
-                return false
-            end
-        end
-
-        skip_cooldown_fn = skip_cooldown_fn or inst._hitreact_skip_cooldown_fn
-        if skip_cooldown_fn ~= nil then
-            on_cooldown = not skip_cooldown_fn(inst, inst._last_hitreact_time, delay)
-        elseif inst.components.combat ~= nil then
-            on_cooldown = not (inst.components.combat:InCooldown() and inst.sg:HasStateTag("idle"))     -- skip the hit react cooldown if the creature is ready to attack
-        else
-            on_cooldown = true
-        end
-    end
-
-    if inst._hitreact_count ~= nil and not on_cooldown then
-        inst._hitreact_count = 1
-    end
-    return on_cooldown
-end
-
 local function checkinterruptstun(inst)
 	if not inst.sg.statemem.not_interrupted and inst.components.timer:TimerExists("endstun") then
 		inst.components.timer:StopTimer("endstun")
 		inst:RestartBrain()
+	end
+end
+
+local function dontinterruptstun(inst)
+	if inst.sg:HasStateTag("stunned") then
+		inst.sg.statemem.not_interrupted = true
 	end
 end
 
@@ -113,15 +89,16 @@ local events =
     end),
 
     EventHandler("attacked", function(inst,data)    
+		--NOTE: stunned states override attacked handler
 		if inst.components.health and not inst.components.health:IsDead() then
-			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+			if CommonHandlers.TryElectrocuteOnAttacked(inst, data, nil, nil, dontinterruptstun) then
 				return
-			elseif not hit_recovery_delay(inst) and
-				(	not inst.sg:HasStateTag("busy") or
-					inst.sg:HasAnyStateTag("caninterrupt", "frozen") or
-					(inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))
-				)
-			then
+			elseif inst.sg:HasStateTag("stunned") then
+				if not inst.sg:HasStateTag("hit") then
+					inst.sg.statemem.not_interrupted = true
+					inst.sg:GoToState("stun_hit")
+				end
+			elseif (not inst.sg:HasStateTag("busy") or inst.sg:HasAnyStateTag("caninterrupt", "frozen")) and not CommonHandlers.HitRecoveryDelay(inst) then
 				inst.sg:GoToState("hit")
 			end
         end
@@ -609,17 +586,6 @@ local states =
 
         events=
         {
-			EventHandler("attacked", function(inst, data)
-				if not inst.components.health:IsDead() then
-					inst.sg.statemem.not_interrupted = true
-					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-						return
-					else
-						inst.sg:GoToState("stun_hit")
-					end
-				end
-				return true
-			end),
 			EventHandler("animover", function(inst)
 				if inst.AnimState:AnimDone() then
 					inst.sg.statemem.not_interrupted = true
@@ -651,21 +617,6 @@ local states =
             TimeEvent(8*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("ancientguardian_rework/minotaur2/recover")
              end), 
-        },
-
-        events=
-        {
-			EventHandler("attacked", function(inst, data)
-				if not inst.components.health:IsDead() then
-					inst.sg.statemem.not_interrupted = true
-					if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
-						return
-					else
-						inst.sg:GoToState("stun_hit")
-					end
-				end
-				return true
-			end),
         },
 
 		ontimeout = function(inst)

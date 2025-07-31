@@ -10970,7 +10970,7 @@ local states =
                 return
             end
             inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED + TUNING.WONKEY_SPEED_BONUS
-            inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE * TUNING.WONKEY_RUN_HUNGER_RATE_MULT)
+            inst.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.WONKEY_RUN_HUNGER_RATE_MULT, "wonkey_run")
             inst.Transform:SetPredictedSixFaced()
             inst.components.locomotor:RunForward()
 
@@ -11029,7 +11029,7 @@ local states =
         onexit = function(inst)
             if not inst.sg.statemem.monkeyrunning then
                 inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED + TUNING.WONKEY_WALK_SPEED_PENALTY
-                inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+                inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "wonkey_run")
                 inst.Transform:ClearPredictedFacingModel()
             end
         end,
@@ -23939,9 +23939,23 @@ local states =
 				if elapsed < swimtime.max and inst.components.locomotor:WantsToMoveForward() then
 					local maxspeed = TUNING.FLOATING_SWIM_SPEED
 					inst.Physics:SetMotorVel(easing.outQuad(elapsed, maxspeed, -0.5 * maxspeed, swimtime.max), 0, 0)
+					if elapsed == 0 or
+						inst.sg.statemem.lastripplet == nil or
+						inst.sg.statemem.lastripplet + 16 * FRAMES < t --swim_loop length
+					then
+						inst.sg.statemem.lastripplet = t
+						local fx = SpawnPrefab("ocean_splash_swim"..tostring(math.random(2)))
+						local theta = (inst.Transform:GetRotation() + 180) * DEGREES
+						local x, y, z = inst.Transform:GetWorldPosition()
+						fx.Transform:SetPosition(
+							x + 0.3 * math.cos(theta),
+							0,
+							z - 0.3 * math.sin(theta)
+						)
+					end
 				else
 					inst.sg.statemem.swimming = false
-					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					if elapsed >= swimtime.min then
 						inst.sg.statemem.swim_t = t + swimtime.min
 						inst:AddTag("noswim")
@@ -24038,7 +24052,7 @@ local states =
 				end
 				if inst.sg.statemem.swimming then
 					inst.sg.statemem.swimming = false
-					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					inst.components.locomotor:Stop()
 					inst.components.locomotor:Clear()
 				end
@@ -24056,7 +24070,7 @@ local states =
 				end
 				if inst.sg.statemem.swimming then
 					inst.sg.statemem.swimming = false
-					inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					inst.components.locomotor:Stop()
 					inst.components.locomotor:Clear()
 				end
@@ -24076,7 +24090,7 @@ local states =
 					end
 					if inst.sg.statemem.swimming then
 						inst.sg.statemem.swimming = false
-						inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+						inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 						inst.components.locomotor:Stop()
 						inst.components.locomotor:Clear()
 					end
@@ -24126,11 +24140,12 @@ local states =
 						if inst.sg.statemem.swim_t == nil and not data.remoteoverridelocomote then
 							inst.sg.statemem.swimming = true
 							inst.sg.statemem.announced_tired = false
-							inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE * TUNING.FLOATING_SWIM_HUNGER_RATE_MULT)
+							inst.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.FLOATING_SWIM_HUNGER_RATE_MULT, "swimming_floater")
 							inst.sg.statemem.swim_t = GetTime()
 							inst.AnimState:PlayAnimation("swim_pre")
 						elseif not inst.sg.statemem.announced_tired and
 							not inst.AnimState:IsCurrentAnimation("swim_pst") and
+							inst.sg.statemem.swim_t and
 							inst.sg.statemem.swim_t > GetTime() + 0.6
 						then
 							inst.sg.statemem.announced_tired = true
@@ -24165,7 +24180,7 @@ local states =
 			else
 				inst:RemoveTag("noswim")
 			end
-			inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
+			inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 			if not (inst.sg.statemem.floating or inst.sg.statemem.sink) then
 				inst.DynamicShadow:Enable(true)
 			end

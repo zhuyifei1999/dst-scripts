@@ -727,6 +727,16 @@ table.insert(prefs, CreatePrefabSkin("armor_marble_chainmail",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_marble_planet",
+{
+	base_prefab = "armormarble",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) armormarble_init_fn(inst, "armor_marble_planet") end,
+	skin_tags = { "ARMORMARBLE", "PLANETS", "CRAFTABLE", },
+	release_group = 170,
+}))
+
 table.insert(prefs, CreatePrefabSkin("armor_marble_rockabs",
 {
 	base_prefab = "armormarble",
@@ -9160,6 +9170,26 @@ table.insert(prefs, CreatePrefabSkin("sisturn_nest",
 	release_group = 164,
 }))
 
+table.insert(prefs, CreatePrefabSkin("sisturn_victorian",
+{
+	base_prefab = "sisturn",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) sisturn_init_fn(inst, "sisturn_victorian") end,
+	skin_tags = { "SISTURN", "CRAFTABLE", },
+	release_group = 169,
+}))
+
+table.insert(prefs, CreatePrefabSkin("skeletonhat_mythical",
+{
+	base_prefab = "skeletonhat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) skeletonhat_init_fn(inst, "skeletonhat_mythical") end,
+	skin_tags = { "SKELETONHAT", "MYTHICAL", "CRAFTABLE", },
+	release_group = 170,
+}))
+
 table.insert(prefs, CreatePrefabSkin("skeletonhat_relic",
 {
 	base_prefab = "skeletonhat",
@@ -10588,6 +10618,7 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_clock",
 	skin_tags = { "CHEST", "CRAFTABLE", },
 	skin_sound = { ["close"] = "skin_sfx/common/treasurechest_clock_close", ["place"] = "skin_sfx/common/treasurechest_clock_place", ["open"] = "skin_sfx/common/treasurechest_clock_open", },
 	release_group = 168,
+	granted_items = { "treasurechest_upgraded_clock", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("treasurechest_corruption",
@@ -10782,6 +10813,16 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_carpetbag",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_upgraded_carpetbag") end,
 	skin_tags = { },
 	release_group = 153,
+}))
+
+table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_clock",
+{
+	base_prefab = "treasurechest",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_upgraded_clock") end,
+	skin_tags = { },
+	release_group = 168,
 }))
 
 table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_corruption",
@@ -12387,6 +12428,17 @@ table.insert(prefs, CreatePrefabSkin("wathgrithr_ice",
 	release_group = 138,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wathgrithr_improvedhat_flower",
+{
+	base_prefab = "wathgrithr_improvedhat",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wathgrithr_improvedhat_init_fn(inst, "wathgrithr_improvedhat_flower", true) end,
+	skin_tags = { },
+	skin_sound = { ["equip"] = "skin_sfx/common/wathgrithrhat_flower", },
+	release_group = 168,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wathgrithr_improvedhat_lunar",
 {
 	base_prefab = "wathgrithr_improvedhat",
@@ -12655,6 +12707,7 @@ table.insert(prefs, CreatePrefabSkin("wathgrithrhat_flower",
 	skin_tags = { "WATHGRITHRHAT", "CRAFTABLE", },
 	skin_sound = { ["equip"] = "skin_sfx/common/wathgrithrhat_flower", },
 	release_group = 168,
+	granted_items = { "wathgrithr_improvedhat_flower", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("wathgrithrhat_lunar",

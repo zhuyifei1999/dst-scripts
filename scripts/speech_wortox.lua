@@ -1193,7 +1193,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "If you're flying, you're dying! Hyuyu!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "The weather was unkind to those of the feather.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I need a while after swimming a mile!",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "They're back, and on the attack!",
 
 	BATTLECRY =
 	{
@@ -2127,6 +2127,8 @@ return{
         CHESSPIECE_SHARKBOI = "We avoided the maw of the rowdy Frostjaw.",
         CHESSPIECE_WORMBOSS = "Its jaws were near, but I disappeared! Hyuyu!",
         CHESSPIECE_YOTS = "Make no error facing this writhing terror.",
+        CHESSPIECE_WAGBOSS_ROBOT = "That bot was a lot.",
+        CHESSPIECE_WAGBOSS_LUNAR = "What error caused such a terror?",
 
         CHESSJUNK1 = "It looks quite broke, and that's no joke!",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!",
@@ -5220,7 +5222,7 @@ return{
 		DAYWALKER2 =
 		{
 			GENERIC = "Freed indeed.",
-			BURIED = "Just my luck to find him stuck… again.",
+			BURIED = "Just my luck to find him stuck... again.",
 			HOSTILE = "Not to belabor, but you've a pattern of behavior.",
 		},
 		ARMORDREADSTONE = "All blows will be blocked by this armor of rock.",
@@ -5765,13 +5767,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "Yet to set.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "That bird is absurd.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "It's dead but not done.", --witnessing the corpse
+            BURNING  = "Cremation to curb mutation!", --when its burning
+            REVIVING = "It's changing and deranging.", --when its mutating and being revived
         },
     },
 

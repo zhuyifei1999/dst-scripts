@@ -1216,7 +1216,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those poor birds!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're falling from the sky, Woby!",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I gotta paws. Get it, Wobes?",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Incoming!",
 
 	BATTLECRY =
 	{
@@ -2149,6 +2149,8 @@ return{
         CHESSPIECE_SHARKBOI = "Your bark was worse than their bite, Woby!",
         CHESSPIECE_WORMBOSS = "It was gross inside and out!",
         CHESSPIECE_YOTS = "The carving still looks slithery!",
+        CHESSPIECE_WAGBOSS_ROBOT = "My very own model robot!",
+        CHESSPIECE_WAGBOSS_LUNAR = "Like a robot possessed!",
 
         CHESSJUNK1 = "I don't think they're going to get up anytime soon.",
         CHESSJUNK2 = "I don't think they're going to get up anytime soon.",

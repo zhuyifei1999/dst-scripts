@@ -81,6 +81,14 @@ local _ishailing = false
 local _timescale = 1 --Deprecated. Don't remove in case any mods are upvalue hacking this value
 local _timescale_modifiers = SourceModifierList(self.inst, 1, SourceModifierList.multiply)
 
+--[[
+Birds usually get removed when they fly away.
+Not mutated birds. These guys will persist.
+They get saved in a pool when they fly away, and can be picked to spawn along with the other bird in the scheduled spawning
+]]
+local _mutated_birds_in_sky = {}
+local _players_angry_at = {}
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
@@ -147,6 +155,10 @@ local function SpawnBirdForPlayer(player, reschedule)
     reschedule(player)
 end
 
+local function GetBirdSpawnerFunction()
+    return _worldstate.islunarhailing and SpawnCorpseForPlayer or SpawnBirdForPlayer
+end
+
 local function ScheduleSpawn(player, initialspawn)
     UpdatePostHailModifier()
 
@@ -156,7 +168,7 @@ local function ScheduleSpawn(player, initialspawn)
         local lowerbound = initialspawn and 0 or mindelay
         local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
         --make sure to fade these corpses
-        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale_modifiers:Get(), _worldstate.islunarhailing and SpawnCorpseForPlayer or SpawnBirdForPlayer, ScheduleSpawn)
+        _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale_modifiers:Get(), GetBirdSpawnerFunction(), ScheduleSpawn)
     end
 end
 
@@ -168,7 +180,7 @@ local function CancelSpawn(player)
 end
 
 local function CanBirdsSpawn()
-    return not _worldstate.isnight and _maxbirds > 0 --and not _worldstate.islunarhailing
+    return not _worldstate.isnight and _maxbirds > 0
 end
 
 local function ToggleUpdate(force)
@@ -221,7 +233,7 @@ local function PickBird(spawnpoint)
 		end
 	end
 
-    if math.random() < GetMutatedBirdSpawnChance() then
+    if math.random() < GetMutatedBirdSpawnChance() and bird ~= "puffin" then --FIXME (Omar): NO PUFFIN SUPPORT!!! For now?
         bird = "mutatedbird"
     end
 
@@ -236,7 +248,11 @@ end
 
 local function AutoRemoveTarget(inst, target)
     if _birds[target] ~= nil and target:IsAsleep() then
-        target:Remove()
+        --if target:HasTag("bird_mutant_rift") then
+        --    self:StoreMutatedBird(target)
+        --else
+            target:Remove()
+        --end
     end
 end
 
@@ -530,6 +546,55 @@ function self:SpawnBird(spawnpoint, ignorebait)
     return bird
 end
 
+function self:SendMutatedSwarm()
+    local player = _activeplayers[math.random(#_activeplayers)] --TODO
+    if not player or not player:IsValid() then
+        return
+    end
+
+    local start_angle = math.random() * TWOPI
+    local function SendMutatedBirdOnPlayer_Bridge()
+        self:SendMutatedBirdOnPlayer(player, start_angle)
+    end
+
+    for i = 1, 5 do --TODO tuning
+        self.inst:DoTaskInTime(0.34 + 0.33 * math.random() * i, SendMutatedBirdOnPlayer_Bridge)
+    end
+end
+
+function self:SendMutatedBirdOnPlayer(player, start_angle)
+    local bird = self:ReleaseRandomMutatedBird()
+    if not bird then
+        return nil
+    end
+
+    local px, py, pz = player.Transform:GetWorldPosition()
+    local radius = 25 + math.random() * 5
+    local angle = start_angle + math.random(-15, 15) * DEGREES
+
+    bird.Transform:SetPosition(px + math.cos(angle) * radius, 15, pz - math.sin(angle) * radius)
+    bird:PushEvent("glide_attack_at_target", {target = player})
+
+    return bird
+end
+
+function self:SendMutatedBirdOnLunarHailBuildUp(target)
+    local bird = self:ReleaseRandomMutatedBird()
+    if not bird then
+        return nil
+    end
+
+    local px, py, pz = target.Transform:GetWorldPosition()
+    local radius = 25 + math.random() * 5
+    local angle = math.random() * TWOPI
+
+    bird.Transform:SetPosition(px + math.cos(angle) * radius, 15, pz - math.sin(angle) * radius)
+    --bird:PushEvent("glide_clear_at_target", {target = target})
+    bird:PushBufferedAction(BufferedAction(bird, target, ACTIONS.REMOVELUNARBUILDUP))
+
+    return bird
+end
+
 function self.StartTrackingFn(target)
     if _birds[target] == nil then
         _birds[target] = target.persists == true
@@ -575,6 +640,50 @@ function self:GetPostHailEasingMult()
     return GetPostHailEasingMult()
 end
 
+function self:StoreMutatedBird(bird)
+    table.insert(_mutated_birds_in_sky, bird)
+    bird:RemoveFromScene()
+    bird.Transform:SetPosition(0, 0, 0)
+end
+
+function self:ReleaseMutatedBird(bird)
+    table.removearrayvalue(_mutated_birds_in_sky, bird)
+    bird:ReturnToScene()
+    return bird
+end
+
+function self:ReleaseRandomMutatedBird()
+    return #_mutated_birds_in_sky > 0 and self:ReleaseMutatedBird(_mutated_birds_in_sky[math.random(#_mutated_birds_in_sky)]) or nil
+end
+
+function self:OnSave()
+    local data, ents = {}, {}
+
+    if next(_mutated_birds_in_sky) ~= nil then
+        data.mutated_birds_in_sky = {}
+        for _, bird in ipairs(_mutated_birds_in_sky) do
+            table.insert(data.mutated_birds_in_sky, bird.GUID)
+            table.insert(ents, bird.GUID)
+        end
+    end
+
+    if next(data) == nil then
+        return nil, nil
+    end
+
+    return data, ents
+end
+
+function self:LoadPostPass(newents, savedata)
+    if savedata.mutated_birds_in_sky then
+        for _, birdguid in ipairs(savedata.mutated_birds_in_sky) do
+            if newents[birdguid] then
+                self:StoreMutatedBird(newents[birdguid].entity)
+            end
+        end
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
@@ -584,7 +693,11 @@ function self:GetDebugString()
     for k, v in pairs(_birds) do
         numbirds = numbirds + 1
     end
-    return string.format("birds:%d/%d, time scale modifier:%.2f, post hail easing mult: %.3f", numbirds, _maxbirds, _timescale_modifiers:Get(), GetPostHailEasingMult())
+    local nummutatedbirdsinsky = 0
+    for k, v in pairs(_mutated_birds_in_sky) do
+        nummutatedbirdsinsky = nummutatedbirdsinsky + 1
+    end
+    return string.format("birds:%d/%d, time scale modifier:%.2f, post hail easing mult: %.3f, mutated birds in the sky:%d", numbirds, _maxbirds, _timescale_modifiers:Get(), GetPostHailEasingMult(), nummutatedbirdsinsky)
 end
 
 --------------------------------------------------------------------------

@@ -159,6 +159,8 @@ local assets =
     Asset("SOUNDPACKAGE", "sound/rifts5.fev"),
     Asset("FILE", "sound/rifts5.fsb"),
 
+    Asset("SOUNDPACKAGE", "sound/lunarhail_event.fev"),
+    Asset("FILE", "sound/lunarhail_event.fsb"),
 
     Asset("FILE", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
     Asset("FILE", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods

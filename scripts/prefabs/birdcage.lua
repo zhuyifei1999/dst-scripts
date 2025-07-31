@@ -102,12 +102,9 @@ local function DigestFood(inst, food)
     if bird and bird:HasTag("bird_mutant_rift") then
         if food.components.edible.foodtype == FOODTYPE.LUNAR_SHARDS then
             if food.prefab == "moonglass_charged" then --Can't be a tag check
-
-                bird._infused_eaten = bird._infused_eaten + 1
-
-                if bird._infused_eaten >= TUNING.RIFT_BIRD_EAT_COUNT_FOR_BRILLIANCE then
+                if bird.do_drop_brilliance then
                     inst.components.lootdropper:SpawnLootPrefab("purebrilliance")
-                    bird:PutOnBrillianceCooldown(inst)
+                    bird.do_drop_brilliance = nil
                 end
             else
                 --inst.components.lootdropper:SpawnLootPrefab("")
@@ -174,6 +171,7 @@ local function ShouldAcceptItem(inst, item)
 end
 
 local function OnGetItem(inst, giver, item)
+    local bird = GetBird(inst)
     --If you're sleeping, wake up.
     if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
         inst.components.sleeper:WakeUp()
@@ -193,6 +191,16 @@ local function OnGetItem(inst, giver, item)
         inst.AnimState:PushAnimation("peck")
         inst.AnimState:PushAnimation("hop")
         PushStateAnim(inst, "idle", true)
+
+        -- We have to do this logic instantly so the player doesn't feed too many shards before the task in time
+        if bird and bird:HasTag("bird_mutant_rift") and item.prefab == "moonglass_charged" then
+            bird._infused_eaten = bird._infused_eaten + 1
+            
+            if bird._infused_eaten >= TUNING.RIFT_BIRD_EAT_COUNT_FOR_BRILLIANCE then
+                bird:PutOnBrillianceCooldown(inst)
+                bird.do_drop_brilliance = true
+            end
+        end
         --Digest Food in 60 frames.
         inst:DoTaskInTime(60 * FRAMES, DigestFood, item)
     end
@@ -306,10 +314,13 @@ local function OnOccupied(inst, bird)
     SetCageState(inst, CAGE_STATES.FULL)
 
     --Add the sleeper component & initialize
-    inst:AddComponent("sleeper")
-    inst.components.sleeper.watchlight = true
-    inst.components.sleeper:SetSleepTest(ShouldSleep)
-    inst.components.sleeper:SetWakeTest(ShouldWake)
+    -- Only if the bird can actually sleep!
+    if bird.components.sleeper then
+        inst:AddComponent("sleeper")
+        inst.components.sleeper.watchlight = true
+        inst.components.sleeper:SetSleepTest(ShouldSleep)
+        inst.components.sleeper:SetWakeTest(ShouldWake)
+    end
 
     --Enable the trader component
     inst.components.trader:Enable()

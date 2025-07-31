@@ -67,7 +67,7 @@ local function OnWorked(inst)
 end
 
 local function OnHit(inst, data)
-    if not data or not data.attacker then
+    if not data or not data.attacker or (data.damage and data.damage <= 0) then
         return
     end
 

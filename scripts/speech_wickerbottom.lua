@@ -1174,7 +1174,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "What a dreadful sound.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Those poor birds never stood a chance in the hail storm.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I just need to catch my breath.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "The mutated fowl are attacking.",
 
 	BATTLECRY =
 	{
@@ -2107,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "The mouthiest of its species.",
         CHESSPIECE_WORMBOSS = "This ancestor of the predatory annelid was far worse.",
         CHESSPIECE_YOTS = "One of the hungriest large invertebrates.",
+        CHESSPIECE_WAGBOSS_ROBOT = "A miniature of the homicidal automaton. Hm.",
+        CHESSPIECE_WAGBOSS_LUNAR = "This dreadful amalgamation was unprecedented.",
 
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
@@ -5745,13 +5747,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "This is an electric fence post and it must be planted before it can be used.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "It has mutated in form and nature.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "If only this were the end for the little bird.", --witnessing the corpse
+            BURNING  = "This is, in fact, saving it.", --when its burning
+            REVIVING = "The little bird is on a different path now... terrible one.", --when its mutating and being revived
         },
     },
 

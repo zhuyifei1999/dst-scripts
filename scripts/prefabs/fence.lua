@@ -618,6 +618,7 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, data)
         inst:AddTag("fence")
         inst:AddTag("alignwall")
         inst:AddTag("noauradamage")
+		inst:AddTag("electricdamageimmune")
 		inst:AddTag("rotatableobject")
 
 		if data then

@@ -1180,7 +1180,7 @@ return{
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "They're gettin' torn to pieces up there!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Yikes. Poor lil' fella.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I need a breather.",
-    ANOUNCE_MUTATED_BIRD_ATTACK = "TODO",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Look out for them birds!",
 
 	BATTLECRY =
 	{
@@ -2113,6 +2113,8 @@ return{
         CHESSPIECE_SHARKBOI = "That shark was kind of a jerk.",
         CHESSPIECE_WORMBOSS = "What a big nasty worm that was. Blegh.",
         CHESSPIECE_YOTS = "Ugh, still makes my skin crawl.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Glad this one ain't got no movin' parts.",
+        CHESSPIECE_WAGBOSS_LUNAR = "Weirdest thing I ever saw. And I seen a lotta weird stuff.",
 
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
@@ -5751,13 +5753,13 @@ return{
         },
         FENCE_ELECTRIC_ITEM = "It ain't planted yet.",
 
-        MUTATEDBIRD = "TODO",
+        MUTATEDBIRD = "That bird is a bad omen if I ever seen one.",
 
         BIRDCORPSE =
         {
-            GENERIC  = "TODO", --witnessing the corpse
-            BURNING  = "TODO", --when its burning
-            REVIVING = "TODO", --when its mutating and being revived
+            GENERIC  = "It ain't the end.", --witnessing the corpse
+            BURNING  = "That'll do the trick.", --when its burning
+            REVIVING = "Great. We missed our chance.", --when its mutating and being revived
         },
     },
 

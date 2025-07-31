@@ -516,7 +516,7 @@ function MakeBanner(self)
 		--
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeCawnivalBanner(self, banner_root, anim)
+		MakeRift5Banner(self, banner_root, anim)
         
     elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTS) then
         MakeYOTSBanner(self, banner_root, anim)        
@@ -533,7 +533,7 @@ function MakeBanner(self)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
         MakeHallowedNights2024Banner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
-		MakeCawnivalBanner(self, banner_root, anim)
+		MakeRift5Banner(self, banner_root, anim)
 	else
 		--*** !!! ***
 		--REMINDER: Check MakeBannerFront as well!

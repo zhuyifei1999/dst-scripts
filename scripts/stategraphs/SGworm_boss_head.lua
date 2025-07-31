@@ -59,7 +59,7 @@ local events=
     end),
 
 	EventHandler("sync_electrocute", function(inst, data)
-		if not inst.sg:HasStateTag("busy") or (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute")) then
+		if not inst.sg:HasStateTag("busy") or (inst.sg:HasAnyStateTag("hit", "canelectrocute") and not inst.sg:HasStateTag("electrocute")) then
 			inst.sg:GoToState("sync_electrocute", data)
 		end
 	end),
@@ -82,7 +82,7 @@ local states =
     State{
 
         name = "emerge_taunt",
-        tags = {"idle", "canrotate", "busy"},
+		tags = { "idle", "canrotate", "busy", "canelectrocute" },
         onenter = function(inst, playanim)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("emerge_taunt")
@@ -113,15 +113,51 @@ local states =
             elseif data.hasfood then
                 inst.SoundEmitter:PlaySound("rifts4/worm_boss/breach")
                 inst.AnimState:PlayAnimation("emerge_full")
+				inst.sg.statemem.full = true
 
             else
                 inst.AnimState:PlayAnimation("head_idle_pre")
             end
         end,
 
+		timeline =
+		{
+			FrameEvent(8, function(inst)
+				--head_idle_pre
+				if not (inst.sg.statemem.hasfood or inst.sg.statemem.isdead) then
+					inst.sg:AddStateTag("canelectrocute")
+				end
+			end),
+			FrameEvent(12, function(inst)
+				--emerge_full
+				if inst.sg.statemem.hasfood and inst.sg.statemem.full then
+					inst.sg.statemem.canelectrocute = true
+				end
+			end),
+			FrameEvent(28, function(inst)
+				--emerge_eat
+				if inst.sg.statemem.hasfood and not inst.sg.statemem.full then
+					inst.sg.statemem.canelectrocute = true
+				end
+			end),
+		},
+
         events=
         {
-            EventHandler("animover", function(inst)
+			EventHandler("sync_electrocute", function(inst, data)
+				if inst.sg.statemem.canelectrocute then
+					inst.sg.statemem.canelectrocute = false
+					inst.AnimState:PlayAnimation("chew_shock_loop", true)
+					local duration = CalcEntityElectrocuteDuration(inst, data and data.duration)
+					inst.sg.statemem.electrocute_task = inst:DoTaskInTime(duration, function(inst)
+						inst.sg.statemem.electrocute_task = nil
+						inst.AnimState:PlayAnimation("chew_shock_pst")
+					end)
+					return true
+				end
+				return not inst.sg:HasStateTag("canelectrocute")
+			end),
+			EventHandler("animqueueover", function(inst)
                 if inst.sg.statemem.isdead then
                     inst.sg:GoToState("death")
 
@@ -133,6 +169,12 @@ local states =
                 end
             end),
         },
+
+		onexit = function(inst)
+			if inst.sg.statemem.electrocute_task then
+				inst.sg.statemem.electrocute_task:Cancel()
+			end
+		end,
     },
 
     State{
@@ -184,7 +226,19 @@ local states =
 
         events=
         {
-            EventHandler("animover", function(inst)
+			EventHandler("sync_electrocute", function(inst, data)
+				if not inst.sg.statemem.noelectrocute then
+					inst.sg.statemem.noelectrocute = true
+					inst.AnimState:PlayAnimation("chew_shock_loop", true)
+					local duration = CalcEntityElectrocuteDuration(inst, data and data.duration)
+					inst.sg.statemem.electrocute_task = inst:DoTaskInTime(duration, function(inst)
+						inst.sg.statemem.electrocute_task = nil
+						inst.AnimState:PlayAnimation("chew_shock_pst")
+					end)
+				end
+				return true
+			end),
+            EventHandler("animqueueover", function(inst)
                 if inst.sg.statemem.loops then
                     inst.sg.statemem.loops = inst.sg.statemem.loops -1
                     if inst.sg.statemem.loops > 0 then
@@ -215,6 +269,12 @@ local states =
                 end
             end),
         },
+
+		onexit = function(inst)
+			if inst.sg.statemem.electrocute_task then
+				inst.sg.statemem.electrocute_task:Cancel()
+			end
+		end,
     },
 
     State{
@@ -228,7 +288,10 @@ local states =
 
         timeline =
         {
-            TimeEvent(22*FRAMES, function(inst) WORMBOSS_UTILS.SpitAll(inst.worm,inst) end),
+			FrameEvent(22, function(inst)
+				inst.sg:AddStateTag("canelectrocute")
+				WORMBOSS_UTILS.SpitAll(inst.worm,inst)
+			end),
         },
 
         events=
@@ -253,7 +316,10 @@ local states =
             TimeEvent(13*FRAMES, function(inst) WORMBOSS_UTILS.ChewAll(inst.worm) end),
             TimeEvent(16*FRAMES, function(inst) WORMBOSS_UTILS.ChewAll(inst.worm) end),
             TimeEvent(18*FRAMES, function(inst) WORMBOSS_UTILS.ChewAll(inst.worm) end),
-            TimeEvent(20*FRAMES, function(inst) WORMBOSS_UTILS.ChewAll(inst.worm) end),
+			FrameEvent(20, function(inst)
+				inst.sg:AddStateTag("canelectrocute")
+				WORMBOSS_UTILS.ChewAll(inst.worm)
+			end),
         },
 
         onexit = function(inst)
@@ -271,7 +337,7 @@ local states =
 
     State{
         name = "taunt",
-        tags = {"canrotate", "busy"},
+		tags = { "canrotate", "busy", "canelectrocute" },
         onenter = function(inst)
             inst.AnimState:PlayAnimation("taunt")
             inst.SoundEmitter:PlaySound("rifts4/worm_boss/taunt")
@@ -304,7 +370,7 @@ local states =
     State{
 
         name = "move",
-        tags = {"move", "canrotate"},
+		tags = { "move", "canrotate", "noelectrocute" },
         onenter = function(inst)
             inst.AnimState:PlayAnimation("head_idle_pst")
         end,
