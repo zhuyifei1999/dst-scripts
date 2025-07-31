@@ -127,6 +127,9 @@ local function CreateOffsetCache(intervals, totalradius)
     cache.visiblity = 0
     cache.updateaccumulator = 0
     cache.updateindex = 1
+    local offsetx, offsety, offsetz = TheWorld.Map:GetTileCenterPoint(0, 0, 0)
+    cache.worldoffsetx = offsetx + TILE_SCALE * 0.5
+    cache.worldoffsetz = offsetz + TILE_SCALE * 0.5
     return cache
 end
 
@@ -259,11 +262,13 @@ end
 
 function Placer:GetAxisAlignedPlacementTransform(x, y, z, ignorescale)
     local intervals = self.axisalignedhelpers.intervals
-    x, z = math.floor(x * intervals) + 0.5, math.floor(z * intervals) + 0.5
+    local worldoffsetx = self.axisalignedhelpers.worldoffsetx
+    local worldoffsetz = self.axisalignedhelpers.worldoffsetz
+    x, z = math.floor((x - worldoffsetx) * intervals) + 0.5, math.floor((z - worldoffsetx) * intervals) + 0.5
     if not ignorescale then
-        x, z = x  / intervals, z / intervals
+        x, z = x / intervals, z / intervals
     end
-    return x, y, z
+    return x + worldoffsetx, y, z + worldoffsetx
 end
 
 local function UpdateAxisAlignedHelper(self, v, newvisibility)
@@ -463,9 +468,14 @@ function Placer:OnUpdate(dt)
         --     but unfortunately position will be choppy compared to parenting
         --V2C: switched to WallUpdate, so should be smooth now
         local x, y, z = ThePlayer.entity:LocalToWorldSpace(self.offset, 0, 0)
-        self.inst.Transform:SetPosition(x, y, z)
-        if self.controllergroundoverridefn then
-            self.controllergroundoverridefn(self, ThePlayer, x, y, z)
+        if self:IsAxisAlignedPlacement() then
+            axisalignedhelpers_visible = true
+            self.inst.Transform:SetPosition(self:GetAxisAlignedPlacementTransform(x, y, z))
+        else
+            self.inst.Transform:SetPosition(x, y, z)
+            if self.controllergroundoverridefn then
+                self.controllergroundoverridefn(self, ThePlayer, x, y, z)
+            end
         end
     elseif self.inst.parent == nil then
 --        ThePlayer:AddChild(self.inst)

@@ -748,6 +748,11 @@ local states =
 				inst.AnimState:PlayAnimation("off_idle")
 			end
 			ToggleOffAllObjectCollisions(inst)
+			if inst.components.inventoryitem and inst.components.inventoryitem:IsHeld() then
+				--V2C: -Forced to this state when picked up.
+				--     -ToggleOffAllObjectCollisions may teleport to world position, so reset it.
+				inst.Transform:SetPosition(0, 0, 0)
+			end
 			inst:SetBrainEnabled(false)
 			WagdroneCommon.SetLedEnabled(inst, false)
 			if inst.sg.mem.todespawn then

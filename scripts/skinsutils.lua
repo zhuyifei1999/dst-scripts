@@ -1975,6 +1975,16 @@ function GetBoxPopupLayoutDetails( num_item_types )
 	return columns, resize_root, resize_root_small, resize_root_small_higher, resize_root_thisisreallybig
 end
 
+function GetPurchasePackFromEntitlement(entitlement_id)
+	local pack_type = nil
+	--if IsPSN() then
+	if true then
+		pack_type = ENTITLEMENTLOOKUPS.PSN[entitlement_id]
+	end
+
+	return pack_type
+end
+
 -- Testing and viewing skins on a more close level.
 if CAN_USE_DBUI then
     require("dbui_no_package/debug_skins_data/hooks").Hooks("skinsutils")

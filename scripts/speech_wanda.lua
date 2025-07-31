@@ -302,10 +302,10 @@ return{
             OUT_OF_WATER = "Didn't I just fill this up? Gardening is so tedious...",
         },
         --wickerbottom specific action
-        READ =
-        {
-            GENERIC = "only_used_by_wickerbottom",
-            NOBIRDS = "only_used_by_wickerbottom",
+--fallback to speech_wilson.lua         READ =
+--fallback to speech_wilson.lua         {
+--fallback to speech_wilson.lua             GENERIC = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             NOBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             WAYTOOMANYBIRDS = "only_used_by_waxwell_and_wicker",
@@ -318,7 +318,9 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
-        },
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
 			NOSKILL = "only_used_by_winona",
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Missed! Bad timing...",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Missed! Bad timing...",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Right on cue.",
     ANNOUNCE_FLOATER_HELD = "I saw my life flash before my eyes... not in any particular order.",
     ANNOUNCE_FLOATER_LETGO = "I hate this part!",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "I'll never get over that dreadful sound.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They never stood a chance.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I need a rest.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Heads up!",
 
 	BATTLECRY =
 	{
@@ -2095,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "How could I forget this ruffian?",
         CHESSPIECE_WORMBOSS = "Rather not relive this one.",
         CHESSPIECE_YOTS = "And I just managed to forget you.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Do we really need a reminder of this?",
+        CHESSPIECE_WAGBOSS_LUNAR = "Can't we just leave this monstrosity in the past?",
 
         CHESSJUNK1 = "I don't see much in the way of proper clockwork in there.",
         CHESSJUNK2 = "I have a suspicion these were held together with more magic than craftsmanship.",
@@ -4800,6 +4814,7 @@ return{
 
         MOONSTORM_STATIC = "Unbridled energy.",
         MOONSTORM_STATIC_ITEM = "Somewhat bridled energy.",
+        MOONSTORM_STATIC_ROAMER = "Shall we bridle that energy?",
         MOONSTORM_SPARK = "A speck of powerful possibility.",
 
         BIRD_MUTANT = "What an awful sight!",
@@ -5463,8 +5478,11 @@ return{
 
         FENCE_JUNK = "As long as it keeps things out, I don't care how it looks.",
         JUNK_PILE = "There might be something worth my time in there.",
-        JUNK_PILE_BIG = "I'm not eager to be crushed by a teetering pile of scrap metal.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I remember seeing something up there.",
+            GENERIC = "I'm not eager to be crushed by a teetering pile of scrap metal.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "It kills while it protects. Rather efficient.",
 
         -- Meta 4 / Ocean QoL
@@ -5645,7 +5663,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Rather innovative for a child.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Rather innovative for a child.",
 
-		WOBY_TREAT = "I suppose with a really strong cup of tea… nah.",
+		WOBY_TREAT = "I suppose with a really strong cup of tea... nah.",
 		BANDAGE_BUTTERFLYWINGS = "This will heal it up in no time at all.",
 		PORTABLEFIREPIT_ITEM = "That Walter is a clever little fellow.",
         SLINGSHOTAMMO_CONTAINER = "Stockpiling for the future. Good boy!",
@@ -5715,6 +5733,28 @@ return{
         GESTALT_GUARD_EVOLVED = "They know what we've done.",
         FLOTATIONCUSHION = "How convenient!",
         LUNAR_SEED = "I forget if this is the end or the beginning.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Again?!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Am I the only one who thinks this is a bad idea?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Here we go...",
+        MOONSTORM_STATIC_CATCHER = "I thought I caught one...",
+        COOLANT = "I know that bubbling gunk has a use.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Delivers an unforgettable shock.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Did I forget to connect this one?",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Must remember to plant this.",
+
+        MUTATEDBIRD = "I don't trust it.",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "I know what comes next.", --witnessing the corpse
+            BURNING  = "This should put an end to it.", --when its burning
+            REVIVING = "I hate this part.", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "A very particular something or other.",

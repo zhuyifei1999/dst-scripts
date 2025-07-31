@@ -515,6 +515,8 @@ function Map:IsOceanIceAtPoint(x, y, z)
     return tile == WORLD_TILES.OCEAN_ICE
 end
 
+local BOAT_IGNORE_TAGS = shallowcopy(DEPLOY_IGNORE_TAGS)
+table.insert(BOAT_IGNORE_TAGS, "_inventoryitem")
 
 function Map:CanDeployBoatAtPointInWater(pt, inst, mouseover, data)
     local tile = self:GetTileAtPoint(pt.x, pt.y, pt.z)
@@ -539,7 +541,7 @@ function Map:CanDeployBoatAtPointInWater(pt, inst, mouseover, data)
     end
 
     return (mouseover == nil or mouseover:HasTag("player"))
-        and self:IsDeployPointClear2(pt, nil, boat_radius + boat_extra_spacing)
+        and self:IsDeployPointClear2(pt, nil, boat_radius + boat_extra_spacing, nil, nil, nil, BOAT_IGNORE_TAGS)
         and self:IsSurroundedByWater(pt.x, pt.y, pt.z, boat_radius + min_distance_from_land)
 end
 
@@ -723,14 +725,14 @@ function Map:InternalIsPointOnWater(test_x, test_y, test_z)
     end
 end
 
-local WALKABLE_PLATFORM_TAGS = {"walkableplatform"}
+local REGISTERED_WALKABLE_PLATFORM_TAGS = TheSim:RegisterFindTags({ "walkableplatform" })
 
 function Map:GetPlatformAtPoint(pos_x, pos_y, pos_z, extra_radius)
 	if pos_z == nil then -- to support passing in (x, z) instead of (x, y, x)
 		pos_z = pos_y
 		pos_y = 0
 	end
-    local entities = TheSim:FindEntities(pos_x, pos_y, pos_z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + (extra_radius or 0), WALKABLE_PLATFORM_TAGS)
+    local entities = TheSim:FindEntities_Registered(pos_x, pos_y, pos_z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + (extra_radius or 0), REGISTERED_WALKABLE_PLATFORM_TAGS)
     for i, v in ipairs(entities) do
         if v.components.walkableplatform and math.sqrt(v:GetDistanceSqToPoint(pos_x, 0, pos_z)) <= v.components.walkableplatform.platform_radius then
             return v

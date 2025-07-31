@@ -54,6 +54,7 @@ local events =
     CommonHandlers.OnLocomote(true,true),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnHop(),
 	CommonHandlers.OnSink(),
@@ -61,8 +62,11 @@ local events =
 
     --CommonHandlers.OnAttack(),
     EventHandler("doattack", function(inst)
-        if inst.components.health ~= nil and not inst.components.health:IsDead()
-                and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+		if inst.components.health and not inst.components.health:IsDead() and
+			(	not inst.sg:HasStateTag("busy") or
+				(inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))
+			)
+		then
             inst.sg:GoToState((inst.CanTripleAttack and inst:CanTripleAttack() and "tri_attack")
                 or "attack")
         end
@@ -141,7 +145,6 @@ local events =
     EventHandler("shadowmerm_spawn", function(inst,data)
         inst.sg:GoToState("shadow_spawn", data)
     end),
-
 }
 
 local function go_to_idle(inst)
@@ -237,7 +240,7 @@ local states =
 
     State{
         name = "transform_to_king",
-        tags = { "busy", "transforming", "nospellcasting"},
+		tags = { "busy", "transforming", "nospellcasting", "noelectrocute" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -460,7 +463,7 @@ local states =
 
     State{
         name = "revive_lunar",
-        tags = { "busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst)
             inst:RemoveTag("lunar_merm_revivable")
@@ -820,7 +823,7 @@ local states =
 
     State{
         name = "lunar_transform",
-        tags = {"busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst, data)
             if data.oldbuild then
@@ -859,7 +862,7 @@ local states =
 
     State{
         name = "lunar_revert",
-        tags = { "busy" },
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst, data)
             if data.oldbuild then
@@ -896,7 +899,7 @@ local states =
 
     State{
         name = "parasite_revive",
-        tags = {"busy"},
+		tags = { "busy", "noelectrocute" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("parasite_death_pst")
@@ -908,13 +911,6 @@ local states =
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
     },    
-
-
-
-
-
-
-
 
     State{
         name = "attack",
@@ -1022,9 +1018,6 @@ local states =
         },
        
     },
-
-
-
 }
 
 CommonStates.AddWalkStates(states,
@@ -1054,6 +1047,7 @@ CommonStates.AddIdle(states, "funnyidle", GetIdleAnim)
 CommonStates.AddSimpleActionState(states, "gohome", "pig_pickup", 4*FRAMES, {"busy"})
 CommonStates.AddSimpleState(states, "refuse", "pig_reject", { "busy" })
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states)
 CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
 CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)

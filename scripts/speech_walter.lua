@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Don't give up, Walter!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Don't give up, Walter!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1205,6 +1211,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Incoming... again?",
     ANNOUNCE_FLOATER_HELD = "I knew I'd come out on top!",
     ANNOUNCE_FLOATER_LETGO = "Submerging!",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those poor birds!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're falling from the sky, Woby!",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I gotta paws. Get it, Wobes?",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Incoming!",
 
 	BATTLECRY =
 	{
@@ -2137,6 +2149,8 @@ return{
         CHESSPIECE_SHARKBOI = "Your bark was worse than their bite, Woby!",
         CHESSPIECE_WORMBOSS = "It was gross inside and out!",
         CHESSPIECE_YOTS = "The carving still looks slithery!",
+        CHESSPIECE_WAGBOSS_ROBOT = "My very own model robot!",
+        CHESSPIECE_WAGBOSS_LUNAR = "Like a robot possessed!",
 
         CHESSJUNK1 = "I don't think they're going to get up anytime soon.",
         CHESSJUNK2 = "I don't think they're going to get up anytime soon.",
@@ -4842,6 +4856,7 @@ return{
 
         MOONSTORM_STATIC = "I wonder what he's working on?",
         MOONSTORM_STATIC_ITEM = "You'll be shocked to see what's inside! Get it? Because there's static inside?",
+        MOONSTORM_STATIC_ROAMER = "Woby, should we name it Sparky?",
         MOONSTORM_SPARK = "It's literally spine-tingling!",
 
         BIRD_MUTANT = "Woah! That doesn't look like any of the birds in my handbook!",
@@ -5505,8 +5520,11 @@ return{
 
         FENCE_JUNK = "I guess it's better than just leaving all that scrap metal lying around.",
         JUNK_PILE = "One person's trash is another's treasure!",
-        JUNK_PILE_BIG = "Careful Woby, it doesn't look very stable.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "I see it too, Woby! Should we get it?",
+            GENERIC = "Careful Woby, it doesn't look very stable.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Aww. Why don't I get to wear it?",
 
         -- Meta 4 / Ocean QoL
@@ -5757,6 +5775,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Wobes! I think we're the unfinished business for these ghosts!",
         FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",
         LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's missing some parts, Woby!",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Maybe this time it will be nice!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "I know where these go!",
+        MOONSTORM_STATIC_CATCHER = "Looks empty, Wobes.",
+        COOLANT = "I don't know what that stuff is, but I love it.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Stay back, Woby!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Don't worry, Wobes. It's not connected.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "We have to plant it first.",
+
+        MUTATEDBIRD = "Look at that bird, Woby!",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "Stay away from it, Woby!", --witnessing the corpse
+            BURNING  = "Smells kinda yummy.", --when its burning
+            REVIVING = "Yes! I knew it!", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

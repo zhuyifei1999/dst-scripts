@@ -82,9 +82,25 @@ function Burnable:SetOnIgniteFn(fn)
     self.onignite = fn
 end
 
+function Burnable:OnBurnt_Internal()
+    self.inst:RemoveComponent("lunarhailbuildup")
+end
+
 --- Set the function that will be called when the object has burned completely
 function Burnable:SetOnBurntFn(fn)
-    self.onburnt = fn
+    -- NOTES(JBK): Because most of the game has been calling burnable.onburnt in loading and other places directly
+    -- we will wrap this function with our own so that we get our internal part called whenever onburnt is called.
+    -- Mods can hook the internal function to get similar customizability.
+    if fn then
+        self.onburnt = function(inst)
+            fn(inst)
+            if inst:IsValid() then
+                self:OnBurnt_Internal()
+            end
+        end
+    else
+        self.onburnt = nil
+    end
 end
 
 --- Set the function that will be called when the object stops burning

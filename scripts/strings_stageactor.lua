@@ -728,7 +728,7 @@ stageactor = {
         LINE1_SAGE = "Salutations, friends!",
         LINE2_SAGE = "We three be heralds of our tenebrous provider.",
 
-        LINE3_TOADY = "Ooooh… tenebrous!",
+        LINE3_TOADY = "Ooooh... tenebrous!",
 
         LINE4_SAGE = "Dark!",
 
@@ -748,9 +748,9 @@ stageactor = {
 
         LINE12_HALFWIT = "Terrified!",
 
-       -- LINE13_SAGE_TOADY = "…",
+       -- LINE13_SAGE_TOADY = "...",
 
-        LINE14_SAGE = "There is nothing to fear…",
+        LINE14_SAGE = "There is nothing to fear...",
 
         LINE15_TOADY = "From the dark, at least.",
 
@@ -758,7 +758,7 @@ stageactor = {
 
         LINE17_HALFWIT = "The dark!",
 
-        --LINE18_SAGE_TOADY = "…",
+        --LINE18_SAGE_TOADY = "...",
 
         LINE19_SAGE = "No.",
         LINE20_SAGE = "Why, the accursed gleam of lumin, of course!",
@@ -805,8 +805,8 @@ stageactor = {
 
         LINE42_TOADY = "Forever in the sweet, dim embrace!",
 
-        LINE43_SAGE = "Forever…",
-        LINE44_SAGE = "in…",
+        LINE43_SAGE = "Forever...",
+        LINE44_SAGE = "in...",
 
         LINE45_HALFWIT = "Darkness.",
     },

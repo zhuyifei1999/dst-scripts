@@ -2,6 +2,16 @@ CommonStates = {}
 CommonHandlers = {}
 
 --------------------------------------------------------------------------
+local function ClearStatusAilments(inst)
+	if inst.components.freezable and inst.components.freezable:IsFrozen() then
+		inst.components.freezable:Unfreeze()
+	end
+	if inst.components.pinnable and inst.components.pinnable:IsStuck() then
+		inst.components.pinnable:Unstick()
+	end
+end
+
+--------------------------------------------------------------------------
 local function onstep(inst)
     if inst.SoundEmitter ~= nil then
         inst.SoundEmitter:PlaySound("dontstarve/movement/run_dirt")
@@ -15,7 +25,7 @@ end
 
 --------------------------------------------------------------------------
 local function onsleep(inst)
-    if inst.components.health == nil or (inst.components.health ~= nil and not inst.components.health:IsDead()) then
+	if not (inst.components.health and inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
         local fallingreason = inst.components.drownable and inst.components.drownable:GetFallingReason() or nil
         if fallingreason ~= nil and inst.sg:HasStateTag("jumping") then
             if fallingreason == FALLINGREASON.OCEAN then
@@ -73,21 +83,6 @@ CommonHandlers.OnFossilize = function()
 end
 
 --------------------------------------------------------------------------
-local function onelectrocute(inst)
-	if not ((inst.components.inventory and inst.components.inventory:IsInsulated()) or
-			(inst.components.health and inst.components.health:IsDead()) or
-			inst.sg:HasStateTag("dead") or
-			inst.sg:HasStateTag("nointerrupt"))
-	then
-		inst.sg:GoToState("electrocute")
-	end
-end
-
-CommonHandlers.OnElectrocute = function()
-	return EventHandler("electrocute", onelectrocute)
-end
-
---------------------------------------------------------------------------
 -- delay: how long before we can play another hit reaction animation, 
 -- max_hitreacts: the number of hit reacts before we enter the react cooldown. The creature's AI may still early out of this.
 -- skip_cooldown_fn: return true if you want to allow hit reacts while the hit react is in cooldown (allowing stun locking)
@@ -102,11 +97,7 @@ local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
 
 	local delaytime = delay or inst.hit_recovery or TUNING.DEFAULT_HIT_RECOVERY
 	if was_projectile then
-		if was_electric and
-			not (	inst:HasTag("electricdamageimmune") or
-					(inst.components.inventory and inst.components.inventory:IsInsulated())
-				)
-		then
+		if was_electric and not IsEntityElectricImmune(inst) then
 			--use melee hit recovery delay for electric projectiles
 		else
 			delaytime = delaytime * TUNING.DEFAULT_PROJECTILE_HIT_RECOVERY_MULTIPLIER
@@ -147,27 +138,167 @@ local function hit_recovery_delay(inst, delay, max_hitreacts, skip_cooldown_fn)
 	return on_cooldown
 end
 
+local function electrocute_recovery_delay(inst)
+	local delay = inst.electrocute_delay or TUNING.ELECTROCUTE_DEFAULT_DELAY
+	local resist = inst._electrocute_resist or 0
+	local t = GetTime()
+	if inst._last_electrocute_time == nil or inst._last_electrocute_time + math.max(10 * delay.max, delay.max + resist) < t then
+		return false --first hit, no delay
+	elseif inst._last_electrocute_delay == nil then
+		inst._last_electrocute_delay = GetRandomMinMax(delay.min, delay.max) + resist
+	end
+	return inst._last_electrocute_time + inst._last_electrocute_delay > t
+end
+
 CommonHandlers.HitRecoveryDelay = hit_recovery_delay -- returns true if inst is still in a hit reaction cooldown
+CommonHandlers.ElectrocuteRecoveryDelay = electrocute_recovery_delay
 
 local function update_hit_recovery_delay(inst)
 	inst._last_hitreact_time = GetTime()
 end
 
+local function update_electrocute_recovery_delay(inst)
+	local t = GetTime()
+	if inst._electrocute_resist then
+		if inst._last_electrocute_time then
+			local delay = inst.electrocute_delay or TUNING.ELECTROCUTE_DEFAULT_DELAY
+			local dt = t - inst._last_electrocute_time
+			if dt > delay.max then
+				inst._electrocute_resist = math.max(0, inst._electrocute_resist - (dt - delay.max) / 10)
+			end
+		end
+		inst._electrocute_resist = inst._electrocute_resist + 1
+	elseif inst:HasTag("epic") then
+		inst._electrocute_resist = 1
+	end
+	inst._last_electrocute_time = t
+	inst._last_electrocute_delay = nil
+end
+
 CommonHandlers.UpdateHitRecoveryDelay = update_hit_recovery_delay
+CommonHandlers.UpdateElectrocuteRecoveryDelay = update_electrocute_recovery_delay
 
 CommonHandlers.ResetHitRecoveryDelay = function(inst)
 	inst._last_hitreact_time = nil
 	inst._last_hitreact_count = nil
 end
 
+CommonHandlers.ResetElectrocuteRecoveryDelay = function(inst)
+	inst._last_electrocute_time = nil
+	inst._last_electrocute_delay = nil
+end
+
+local function attack_can_electrocute(inst, data)
+	if data and data.stimuli == "electric" then
+		if data.weapon then
+			local weapon = data.weapon.components.weapon
+			if weapon and
+				(	weapon.overridestimulifn and
+					weapon.overridestimulifn(weapon.inst, data.attacker, inst) or
+					weapon.stimuli
+				) == "electric"
+			then
+				return true
+			end
+		end
+		if data.attacker and data.attacker.components.electricattacks then
+			return true
+		end
+	end
+	return false
+end
+
+local function spawn_electrocute_fx(inst, data, duration)
+	duration = duration or CalcEntityElectrocuteDuration(inst, data and data.duration)
+	data = data and (
+		data.attackdata and {
+			attackdata = data.attackdata,
+			targets = data.targets,
+			numforks = data.numforks and data.numforks - 1 or nil,
+			duration = data.duration,
+			noburn = data.noburn,
+		} or
+		data.stimuli == "electric" and {
+			attackdata = data,
+			duration = data.duration,
+			noburn = data.noburn,
+		}
+	) or nil
+	local fx = SpawnPrefab("electrocute_fx")
+	fx:SetFxTarget(inst, duration, data)
+	return fx
+end
+
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
+	if state == nil then
+		if inst.sg:HasState("electrocute") then
+			state = "electrocute"
+			statedata = data and (
+				data.stimuli == "electric" and {
+					attackdata = data,
+					duration = data.duration,
+					noburn = data.noburn,
+				}
+			) or data
+		elseif inst.sg:HasState("hit") then
+			state = "hit"
+		else
+			return false
+		end
+	end
+
+	if state ~= "electrocute" then
+		update_electrocute_recovery_delay(inst)
+		spawn_electrocute_fx(inst, data)
+		ClearStatusAilments(inst)
+		if inst.components.sleeper then
+			inst.components.sleeper:WakeUp()
+		end
+		if inst.sg.mem.burn_on_electrocute and not (data and data.noburn) and
+			inst.components.burnable and not inst.components.burnable:IsBurning()
+		then
+			local attackdata = data and data.attackdata or data
+			inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
+		end
+	end
+	if ongotostatefn then
+		ongotostatefn(inst)
+	end
+	inst.sg:GoToState(state, statedata)
+	return true
+end
+
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_electrocute_onattacked(inst, data, state, statedata, ongotostatefn)
+	return CanEntityBeElectrocuted(inst)
+		and attack_can_electrocute(inst, data)
+		and not (inst.components.inventory and inst.components.inventory:IsInsulated())
+		--and not inst:HasTag("electricdamageimmune") --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
+		and (not inst.sg:HasAnyStateTag("nointerrupt", "noelectrocute") or inst.sg:HasStateTag("canelectrocute"))
+		and not electrocute_recovery_delay(inst)
+		and try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
+end
+
+CommonHandlers.AttackCanElectrocute = attack_can_electrocute
+CommonHandlers.SpawnElectrocuteFx = spawn_electrocute_fx
+CommonHandlers.TryGoToElectrocuteState = try_goto_electrocute_state
+CommonHandlers.TryElectrocuteOnAttacked = try_electrocute_onattacked
+
 local function onattacked(inst, data, hitreact_cooldown, max_hitreacts, skip_cooldown_fn)
-    if inst.components.health ~= nil and not inst.components.health:IsDead()
-		and not hit_recovery_delay(inst, hitreact_cooldown, max_hitreacts, skip_cooldown_fn)
-        and (not inst.sg:HasStateTag("busy")
-            or inst.sg:HasStateTag("caninterrupt")
-            or inst.sg:HasStateTag("frozen")) then
-        inst.sg:GoToState("hit")
-    end
+	if inst.components.health and not inst.components.health:IsDead() then
+		if try_electrocute_onattacked(inst, data) then
+			return
+		elseif not hit_recovery_delay(inst, hitreact_cooldown, max_hitreacts, skip_cooldown_fn) and
+			(	not inst.sg:HasStateTag("busy") or
+				inst.sg:HasAnyStateTag("caninterrupt", "frozen")
+			)
+		then
+			inst.sg:GoToState("hit")
+		end
+	end
 end
 
 CommonHandlers.OnAttacked = function(hitreact_cooldown, max_hitreacts, skip_cooldown_fn) -- params are optional
@@ -181,9 +312,36 @@ CommonHandlers.OnAttacked = function(hitreact_cooldown, max_hitreacts, skip_cool
 end
 
 --------------------------------------------------------------------------
+
+--state & statedata are optional overrides if you don't
+--want it to use the default electrocute or hit states.
+local function try_electrocute_onevent(inst, data, state, statedata, ongotostatefn)
+	return not (inst.components.inventory and inst.components.inventory:IsInsulated())
+		--and not inst:HasTag("electricdamageimmune") and --V2C: redundant. either shouldn't have "electrocute" states if immune, or if using a shared SG then set sg.mem.noelectrocute = true
+		and not inst.sg.mem.noelectrocute
+		and (not inst.sg:HasAnyStateTag("dead", "nointerrupt", "noelectrocute") or inst.sg:HasStateTag("canelectrocute"))
+		and try_goto_electrocute_state(inst, data, state, statedata, ongotostatefn)
+end
+
+local function onelectrocute(inst, data)
+	if not (inst.components.health and inst.components.health:IsDead()) then
+		try_electrocute_onevent(inst, data)
+	end
+end
+
+CommonHandlers.TryElectrocuteOnEvent = try_electrocute_onevent
+
+CommonHandlers.OnElectrocute = function()
+	return EventHandler("electrocute", onelectrocute)
+end
+
+--------------------------------------------------------------------------
 local function onattack(inst)
-    if inst.components.health ~= nil and not inst.components.health:IsDead()
-        and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) then
+	if inst.components.health and not inst.components.health:IsDead() and
+		(	not inst.sg:HasStateTag("busy") or
+			(inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))
+		)
+	then
         inst.sg:GoToState("attack")
     end
 end
@@ -223,16 +381,6 @@ CommonHandlers.OnLocomote = function(can_run, can_walk)
             end
         end
     end)
-end
-
---------------------------------------------------------------------------
-local function ClearStatusAilments(inst)
-    if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
-        inst.components.freezable:Unfreeze()
-    end
-    if inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
-        inst.components.pinnable:Unstick()
-    end
 end
 
 --------------------------------------------------------------------------
@@ -610,7 +758,7 @@ local function DoHopLandSound(inst, land_sound)
 	end
 end
 
-CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_falling_state, data)
+CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, land_sound, landed_in_falling_state, data, fns)
 	anims = anims or {}
     timelines = timelines or {}
 	data = data or {}
@@ -620,6 +768,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "busy", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst)
+			if fns and fns.pre_onenter then
+				fns.pre_onenter(inst)
+			end
             local embark_x, embark_z = inst.components.embarker:GetEmbarkPosition()
             inst:ForceFacePoint(embark_x, 0, embark_z)
             if not wait_for_pre then
@@ -654,12 +805,14 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                     end
                 end),
             EventHandler("cancelhop", function(inst)
-                inst.sg.statemem.not_interrupted = false
                 inst.sg:GoToState("hop_cancelhop")
             end),
         },
 
 		onexit = function(inst)
+			if fns and fns.pre_onexit then
+				fns.pre_onexit(inst)
+			end
 			if not inst.sg.statemem.not_interrupted then
 				if data.start_embarking_pre_frame ~= nil then
 					inst.Physics:ClearLocalCollisionMask()
@@ -677,6 +830,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "busy", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst, data)
+			if fns and fns.loop_onenter then
+				fns.loop_onenter(inst)
+			end
 			inst.sg.statemem.queued_post_land_state = data ~= nil and data.queued_post_land_state or nil
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.loop, inst) or "jump_loop", true)
 			inst.sg.statemem.collisionmask = data ~= nil and data.collisionmask or inst.Physics:GetCollisionMask()
@@ -698,12 +854,14 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 inst.sg:GoToState("hop_pst", {landed_in_water = not TheWorld.Map:IsPassableAtPoint(px, 0, pz), queued_post_land_state = inst.sg.statemem.queued_post_land_state} )
             end),
             EventHandler("cancelhop", function(inst)
-				inst.sg.statemem.not_interrupted = false
                 inst.sg:GoToState("hop_cancelhop")
             end),
         },
 
 		onexit = function(inst)
+			if fns and fns.loop_onexit then
+				fns.loop_onexit(inst)
+			end
             inst.Physics:ClearLocalCollisionMask()
 			if inst.sg.statemem.collisionmask ~= nil then
                 inst.Physics:SetCollisionMask(inst.sg.statemem.collisionmask)
@@ -724,6 +882,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = { "doing", "nointerrupt", "boathopping", "jumping", "autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst, data)
+			if fns and fns.pst_onenter then
+				fns.pst_onenter(inst)
+			end
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.pst, inst) or "jump_pst", false)
 
             inst.components.embarker:Embark()
@@ -758,6 +919,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         },
 
 		onexit = function(inst)
+			if fns and fns.pst_onexit then
+				fns.pst_onexit(inst)
+			end
 			-- here for now, should be moved into timeline
 			if land_sound ~= nil then
 				--For now we just have the land on boat sound
@@ -772,6 +936,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = {"autopredict", "nomorph", "nosleep" },
 
         onenter = function(inst)
+			if fns and fns.pst_complete_onenter then
+				fns.pst_complete_onenter(inst)
+			end
 			if inst.components.locomotor.isrunning then
                 inst:DoTaskInTime(0,
                     function()
@@ -783,6 +950,8 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 inst.sg:GoToState("idle")
             end
         end,
+
+		onexit = fns and fns.pst_complete_onexit,
     })
 
     table.insert(states, State{
@@ -790,6 +959,9 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
         tags = {"nopredict", "nomorph", "nosleep", "busy"},
 
         onenter = function(inst)
+			if fns and fns.cancelhop_onenter then
+				fns.cancelhop_onenter(inst)
+			end
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation(FunctionOrValue(anims.pst, inst) or "jump_pst", false)
         end,
@@ -799,6 +971,8 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
                 inst.sg:GoToState("idle")
             end),
         },
+
+		onexit = fns and fns.cancelhop_onexit,
     })
 end
 
@@ -1292,6 +1466,96 @@ CommonStates.AddHitState = function(states, timeline, anim)
 end
 
 --------------------------------------------------------------------------
+CommonStates.AddElectrocuteStates = function(states, timelines, anims, fns)
+	table.insert(states, State{
+		name = "electrocute",
+		tags = { "electrocute", "hit", "busy", "noelectrocute", "nosleep" },
+
+		onenter = function(inst, data)
+			ClearStatusAilments(inst)
+			if inst.components.sleeper then
+				inst.components.sleeper:WakeUp()
+			end
+			if inst.components.locomotor then
+				inst.components.locomotor:StopMoving()
+			end
+
+			inst.sg.statemem.data = data
+
+			local anim = anims and FunctionOrValue(anims.loop, inst) or "shock_loop"
+			inst.AnimState:PlayAnimation(anim, true)
+
+			if inst.SoundEmitter and inst.sounds and inst.sounds.hit then
+				inst.SoundEmitter:PlaySound(inst.sounds.hit)
+			end
+
+			local duration = CalcEntityElectrocuteDuration(inst, data and data.duration)
+
+			update_hit_recovery_delay(inst)
+			update_electrocute_recovery_delay(inst)
+			inst.sg.statemem.fx = spawn_electrocute_fx(inst, data, duration)
+
+			inst.sg:SetTimeout(duration)
+
+			if fns and fns.loop_onenter then
+				fns.loop_onenter(inst)
+			end
+			inst:PushEvent("startelectrocute")
+		end,
+
+		timeline = timelines and timelines.loop,
+
+		ontimeout = function(inst)
+			if inst.components.sleeper then
+				inst.components.sleeper:WakeUp()
+			end
+			inst.sg.statemem.not_interrupted = true
+			inst.sg:GoToState("electrocute_pst")
+		end,
+
+		onexit = function(inst)
+			if inst.sg.mem.burn_on_electrocute then
+				local data = inst.sg.statemem.data
+				if not (data and data.noburn) and inst.components.burnable and not inst.components.burnable:IsBurning() then
+					local attackdata = data and data.attackdata or data
+					inst.components.burnable:Ignite(nil, attackdata and (attackdata.weapon or attackdata.attacker), attackdata and attackdata.attacker)
+				end
+			end
+			if fns and fns.loop_onexit then
+				fns.loop_onexit(inst)
+			end
+		end,
+	})
+
+	table.insert(states, State{
+		name = "electrocute_pst",
+		tags = { "electrocute", "hit", "busy", "noelectrocute" },
+
+		onenter = function(inst)
+			if inst.components.locomotor then
+				inst.components.locomotor:StopMoving()
+			end
+
+			local anim = anims and FunctionOrValue(anims.pst, inst) or "shock_pst"
+			inst.AnimState:PlayAnimation(anim)
+
+			if fns and fns.pst_onenter then
+				fns.pst_onenter(inst)
+			end
+		end,
+
+		timeline = timelines and timelines.pst,
+
+		events =
+		{
+			EventHandler("animover", fns and fns.onanimover or idleonanimover),
+		},
+
+		onexit = fns and fns.pst_onexit,
+	})
+end
+
+--------------------------------------------------------------------------
 CommonStates.AddDeathState = function(states, timeline, anim)
     table.insert(states, State{
         name = "death",
@@ -1324,7 +1588,7 @@ local function onsleepex(inst)
             elseif fallingreason == FALLINGREASON.VOID then
                 inst.sg:GoToState("abyss_fall")
             end
-		elseif not (inst.sg:HasStateTag("nosleep") or inst.sg:HasStateTag("sleeping")) then
+		elseif not inst.sg:HasAnyStateTag("nosleep", "sleeping") then
 		    inst.sg:GoToState("sleep")
 		end
     end
@@ -1359,6 +1623,20 @@ CommonHandlers.OnNoSleepAnimOver = function(nextstate)
             end
         end
     end)
+end
+
+CommonHandlers.OnNoSleepAnimQueueOver = function(nextstate)
+	return EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.sg.mem.sleeping then
+				inst.sg:GoToState("sleep")
+			elseif type(nextstate) == "string" then
+				inst.sg:GoToState(nextstate)
+			elseif nextstate then
+				nextstate(inst)
+			end
+		end
+	end)
 end
 
 CommonHandlers.OnNoSleepTimeEvent = function(t, fn)
@@ -1833,7 +2111,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 
     table.insert(states, State{
         name = "sink",
-        tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt", "nowake" },
+		tags = { "busy", "nopredict", "nomorph", "drowning", "nointerrupt", "nosleep" },
 
         onenter = function(inst, data)
             inst:ClearBufferedAction()
@@ -1879,6 +2157,10 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
             end),
 
             EventHandler("on_washed_ashore", function(inst)
+				if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
+					inst.components.sleeper:WakeUp()
+				end
+				ClearStatusAilments(inst)
 				inst.sg:GoToState("washed_ashore")
 			end),
         },
@@ -2006,7 +2288,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
 
     table.insert(states, State{
         name = "abyss_fall",
-        tags = { "busy", "nopredict", "nomorph", "falling", "nointerrupt", "nowake" },
+		tags = { "busy", "nopredict", "nomorph", "falling", "nointerrupt", "nosleep" },
 
         onenter = function(inst, data)
             inst:ClearBufferedAction()
@@ -2053,6 +2335,10 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
             end),
 
             EventHandler("on_void_arrive", function(inst)
+				if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
+					inst.components.sleeper:WakeUp()
+				end
+				ClearStatusAilments(inst)
 				inst.sg:GoToState("abyss_drop")
 			end),
         },
@@ -2140,7 +2426,7 @@ end
 function PlayMiningFX(inst, target, nosound)
     if target ~= nil and target:IsValid() then
         local frozen = target:HasTag("frozen")
-        local moonglass = target:HasTag("moonglass")
+        local moonglass = target:HasAnyTag("moonglass", "LunarBuildup")
         local crystal = target:HasTag("crystal")
         if target.Transform ~= nil then
             SpawnPrefab(

@@ -363,6 +363,7 @@ local function SetShort(inst)
         if inst.components.workable ~= nil then
            inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_SMALL)
         end
+        SetLunarHailBuildupAmountSmall(inst)
         inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
     end
 end
@@ -383,6 +384,7 @@ local function SetNormal(inst)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_NORMAL)
     end
+    SetLunarHailBuildupAmountMedium(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
 end
 
@@ -400,6 +402,7 @@ local function SetTall(inst)
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(TUNING.DECIDUOUS_CHOPS_TALL)
     end
+    SetLunarHailBuildupAmountLarge(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
 end
 
@@ -478,6 +481,7 @@ local function make_stump(inst)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
+    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveTag("shelter")
     inst:RemoveTag("cattoyairborne")
     inst:AddTag("stump")
@@ -580,6 +584,8 @@ local function chop_down_tree(inst, chopper)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
         if inst.domonsterstop_task ~= nil then
             inst.domonsterstop_task:Cancel()
@@ -680,6 +686,8 @@ local function _OnBurnt2(inst)
         inst.monster = false
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
         inst.AnimState:SetBank("tree_leaf")
         inst:DoTaskInTime(FRAMES, onburntchanges)
@@ -695,6 +703,8 @@ local function OnBurnt(inst, immediate)
             inst.monster = false
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")
             inst.AnimState:SetBank("tree_leaf")
             inst:DoTaskInTime(FRAMES, onburntchanges)
@@ -793,6 +803,8 @@ local function DoStartMonster(inst, starttimeoffset)
     end
     if inst.components.combat == nil then
         inst:AddComponent("combat")
+		inst.sg.mem.noelectrocute = nil
+		inst.sg.mem.burn_on_electrocute = true
     end
     if inst.components.deciduoustreeupdater == nil then
         inst:AddComponent("deciduoustreeupdater")
@@ -857,6 +869,8 @@ local function StopMonster(inst)
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+		inst.sg.mem.burn_on_electrocute = nil
+		inst.sg.mem.noelectrocute = true
         if not (inst:HasTag("stump") or inst:HasTag("burnt")) then
             inst.AnimState:PlayAnimation("transform_out")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_out")
@@ -939,6 +953,8 @@ local function OnEntityWake(inst)
             inst.monster_duration = nil
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
         end
     end
 
@@ -1040,6 +1056,7 @@ local function onload(inst, data)
             if data.stump then
                 inst.monster = data.monster
                 inst.components.growable.stage = 3
+                inst:RemoveComponent("lunarhailbuildup")
                 inst:AddTag("stump")
             elseif not data.burnt then
                 inst.monster = false
@@ -1053,6 +1070,8 @@ local function onload(inst, data)
             end
             inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
+			inst.sg.mem.burn_on_electrocute = nil
+			inst.sg.mem.noelectrocute = true
             inst.sg:GoToState("empty")
         end
 
@@ -1302,7 +1321,11 @@ local function makefn(build, stage, data)
 
         inst:PrereplicateComponent("combat")
 
+		inst.override_combat_fx_size = "med"
+		inst.override_combat_fx_height = "high"
+
         inst:SetStateGraph("SGdeciduoustree")
+		inst.sg.mem.noelectrocute = true
         inst.sg:GoToState("empty")
 
         inst.color = .5 + math.random() * .5
@@ -1380,6 +1403,7 @@ local function makefn(build, stage, data)
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
+            inst:RemoveComponent("lunarhailbuildup")
             inst:RemoveComponent("propagator")
             MakeSmallPropagator(inst)
             inst:RemoveComponent("growable")

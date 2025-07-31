@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Stay, friend!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Stay, friend!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1167,6 +1173,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Night Ball ball back!",
     ANNOUNCE_FLOATER_HELD = "Good baby floater",
     ANNOUNCE_FLOATER_LETGO = "Bye, baby flo-",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "No, tweeters!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Tweeter?",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Resting",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Tweeters!",
 
 	BATTLECRY =
 	{
@@ -2099,6 +2111,8 @@ return{
         CHESSPIECE_SHARKBOI = "Toothy Fish Friend",
         CHESSPIECE_WORMBOSS = "Don't eat!",
         CHESSPIECE_YOTS = "Little wiggly",
+        CHESSPIECE_WAGBOSS_ROBOT = "Stone robot friend",
+        CHESSPIECE_WAGBOSS_LUNAR = "Friend no hurt more",
 
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
@@ -4804,6 +4818,7 @@ return{
 
         MOONSTORM_STATIC = "Little fire?",
         MOONSTORM_STATIC_ITEM = "Safe inside",
+        MOONSTORM_STATIC_ROAMER = "Catch little fire!",
         MOONSTORM_SPARK = "Zzzt?",
 
         BIRD_MUTANT = "Tweeter okay?",
@@ -5467,8 +5482,11 @@ return{
 
         FENCE_JUNK = "Friends wearing metal clothes",
         JUNK_PILE = "Pile of stuff",
-        JUNK_PILE_BIG = "Not safe...",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What on pile of stuff?",
+            GENERIC = "Not safe...",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Mean and pokey! Not good for hugs",
 
         -- Meta 4 / Ocean QoL
@@ -5719,6 +5737,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Why friend mad? Why friend not friend?",
         FLOTATIONCUSHION = "No more scared biiig water",
         LUNAR_SEED = "Love Baby Night Ball! Love!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Half big-big robot friend",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big-big robot friend inside!",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Found parts for big-big robot friend!",
+        MOONSTORM_STATIC_CATCHER = "No friend",
+        COOLANT = "Bubble friend",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Zap friends!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "No friend for zap friend",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Help zap friend?",
+
+        MUTATEDBIRD = "Tweeter, friend?",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "Tweeter dead", --witnessing the corpse
+            BURNING  = "Bye, tweeter", --when its burning
+            REVIVING = "Tweeter back...", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "Friend?",

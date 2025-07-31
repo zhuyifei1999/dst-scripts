@@ -71,6 +71,11 @@ local function createglass(name, preinit, postinit)
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem:SetSinks(true)
 
+        inst:AddComponent("edible")
+        inst.components.edible.foodtype = FOODTYPE.LUNAR_SHARDS
+
+        inst:AddComponent("bait")
+
         MakeHauntableLaunchAndSmash(inst)
 
         if not POPULATING then
@@ -109,6 +114,7 @@ local function infused_preinit(inst)
     inst.AnimState:SetBank("moonglass_charged")
     inst.AnimState:SetBuild("moonglass_charged")
     inst:AddTag("show_spoilage")
+    inst:AddTag("infusedshard")
 
     inst.Light:SetColour(111/255, 111/255, 227/255)
     inst.Light:SetIntensity(0.75)

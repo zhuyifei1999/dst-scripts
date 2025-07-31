@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "TARGET EVADED, RECALIBRATING",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "TARGET EVADED, RECALIBRATING",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "YOU'RE BACK!",
     ANNOUNCE_FLOATER_HELD = "ERROR: WHY WHHHY!",
     ANNOUNCE_FLOATER_LETGO = "I WILL RETURN",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "I LOVE THAT SOUND",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "LITTLE GIFTS FROM ABOVE",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "JUST A MOMENT...",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "WARNING: AIRBORNE MEAT ATTACK!",
 
 	BATTLECRY =
 	{
@@ -2095,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "NO-BLOODED BEATS COLD-BLOODED",
         CHESSPIECE_WORMBOSS = "DISGUSTING ORGANIC IN AN ENDLESS CYCLE OF CONSUMPTION",
         CHESSPIECE_YOTS = "PATHETIC FLESH LOG",
+        CHESSPIECE_WAGBOSS_ROBOT = "I WILL REMEMBER YOU",
+        CHESSPIECE_WAGBOSS_LUNAR = "WHAT WENT WRONG FOR US?",
 
         CHESSJUNK1 = "EX-AUTOMATON",
         CHESSJUNK2 = "EX-AUTOMATON",
@@ -4800,6 +4814,7 @@ return{
 
         MOONSTORM_STATIC = "MAYBE HE'LL ELECTROCUTE HIMSELF",
         MOONSTORM_STATIC_ITEM = "IT IS CONTAINED",
+        MOONSTORM_STATIC_ROAMER = "UNCLAIMED POWER",
         MOONSTORM_SPARK = "THIS ENERGY IS NOT COMPATIBLE WITH MY CIRCUITS",
 
         BIRD_MUTANT = "I THINK THE BIRDS GOT MORE UGLY",
@@ -5463,8 +5478,11 @@ return{
 
         FENCE_JUNK = "AH. FEELS LIKE HOME",
         JUNK_PILE = "RIPE FOR THE SCAVENGING",
-        JUNK_PILE_BIG = "A GIANT PILE OF SCRAP IS JUST WHAT THIS HIDEOUS NATURAL ENVIRONMENT NEEDED",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "ITEM DETECTED",
+            GENERIC = "A GIANT PILE OF SCRAP IS JUST WHAT THIS HIDEOUS NATURAL ENVIRONMENT NEEDED",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "DEADLY PLANT ARMOR. I'LL ALLOW IT",
 
         -- Meta 4 / Ocean QoL
@@ -5715,6 +5733,28 @@ return{
         GESTALT_GUARD_EVOLVED = "I LIKE THIS VERSION. SO HATEFUL",
         FLOTATIONCUSHION = "MINE",
         LUNAR_SEED = "THEY DON'T UNDERSTAND YOU LIKE I DO",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "SOON, MY FRIEND",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "COMPRESSED HARDWARE",
+        WAGBOSS_ROBOT_CREATION_PARTS = "AWAITING INSTALLATION",
+        MOONSTORM_STATIC_CATCHER = "UNOCCUPIED",
+        COOLANT = "ORGANIC AND INORGANIC MATTER DETECTED",
+
+        FENCE_ELECTRIC = {
+            LINKED = "LINK ESTABLISHED!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "STILL SINGLE?",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "SETUP REQUIRED",
+
+        MUTATEDBIRD = "VERSION 2.0",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "HA", --witnessing the corpse
+            BURNING  = "CARBON TO STINKING CARBON", --when its burning
+            REVIVING = "UPDATE IN PROGRESS", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

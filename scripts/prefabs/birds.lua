@@ -213,6 +213,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         "seeds",
         "smallmeat",
         "cookedsmallmeat",
+        "birdcorpse",
 
         --mercy items
         "flint",

@@ -619,6 +619,12 @@ ACTIONS =
 
 	-- Rifts 5
 	POUNCECAPTURE = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
+
+    -- electrocute
+    DIVEGRAB = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
+    STARTELECTRICLINK = Action({ priority = 2, invalid_hold_action = true  }),
+    ENDELECTRICLINK = Action({ priority = 1, invalid_hold_action = true }),
+    REMOVELUNARBUILDUP = Action({priority=3, invalid_hold_action=true}),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -6263,4 +6269,58 @@ ACTIONS.POUNCECAPTURE.fn = function(act)
 		return cage.components.gestaltcage:Capture(act.target, act.doer)
 	end
 	return false
+end
+
+ACTIONS.DIVEGRAB.fn = function(act)
+    local catcher = act.invobject
+    if catcher and catcher.components.moonstormstaticcatcher then
+        return catcher.components.moonstormstaticcatcher:Catch(act.target, act.doer)
+    end
+    return false
+end
+
+ACTIONS.STARTELECTRICLINK.fn = function(act)
+    local fence = act.target
+    if fence and fence.components.electricconnector then
+        if fence.components.electricconnector:IsLinking() then
+            return fence.components.electricconnector:EndLinking()
+        else
+            return fence.components.electricconnector:StartLinking()
+        end
+    end
+
+    return false
+end
+
+ACTIONS.ENDELECTRICLINK.fn = function(act)
+    local fence = act.target
+    if fence and fence.components.electricconnector then
+        return fence.components.electricconnector:Disconnect()
+    end
+
+	return false
+end
+
+ACTIONS.REMOVELUNARBUILDUP.fn = function(act)
+    local lunarhailbuildup = act.target and act.target.components.lunarhailbuildup or nil
+    if not lunarhailbuildup or not lunarhailbuildup:IsBuildupWorkable() then
+        return false
+    end
+
+    if act.invobject and act.invobject.components.itemmimic and act.invobject.components.itemmimic.fail_as_invobject then
+        return false, "ITEMMIMIC"
+    end
+
+    -- TODO: Quick hack to let Bright-beaks insta-clear
+    local numworks = act.doer.clear_buildup_in_one and lunarhailbuildup.totalworkamount or 1
+    lunarhailbuildup:DoWorkToRemoveBuildup(numworks, act.doer)
+
+    return true
+end
+
+ACTIONS.REMOVELUNARBUILDUP.validfn = function(act)
+    if act.target.components.lunarhailbuildup == nil then
+        return false
+    end
+    return (act.invobject == nil or act.doer == nil or act.invobject.components.equippable == nil or not act.invobject.components.equippable:IsRestricted(act.doer))
 end

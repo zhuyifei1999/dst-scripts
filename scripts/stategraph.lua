@@ -536,7 +536,7 @@ function StateGraphInstance:GoToState(statename, params)
     --assert(state ~= nil, "State not found: " ..tostring(self.sg.name).."."..tostring(statename) )
 
     if self.currentstate ~= nil and self.currentstate.onexit ~= nil then
-        self.currentstate.onexit(self.inst)
+        self.currentstate.onexit(self.inst, statename)
     end
 
     -- Record stats

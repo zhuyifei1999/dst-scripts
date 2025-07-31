@@ -897,9 +897,7 @@ function Container:OnUpdate(dt)
 				--       your mount's container (e.g. Woby)
 				if (ismount or self.inst:HasTag("portablestorage")) and not (opener.sg and opener.sg:HasStateTag("keep_pocket_rummage")) then
 					self:Close(opener)
-					if opener.sg then
-						opener.sg:HandleEvent("ms_closeportablestorage", { item = self.inst })
-					end
+					opener:PushEventImmediate("ms_closeportablestorage", { item = self.inst })
 				end
 			elseif mount or not (opener:IsValid() and opener:IsNear(self.inst, CONTAINER_AUTOCLOSE_DISTANCE) and CanEntitySeeTarget(opener, self.inst)) then
 				self:Close(opener)

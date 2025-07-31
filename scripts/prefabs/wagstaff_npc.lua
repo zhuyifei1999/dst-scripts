@@ -385,7 +385,7 @@ local max_range = TUNING.MAX_INDICATOR_RANGE * 1.5
 
 local function ShouldTrackfn(inst, viewer)
     return inst:IsValid() and
-        viewer:HasTag("wagstaff_detector") and
+        viewer:HasTag("moonstormevent_detector") and
         inst:IsNear(inst, max_range) and
         not inst.entity:FrustumCheck() and
         CanEntitySeeTarget(viewer, inst)
@@ -1168,6 +1168,16 @@ local wagpunk_arena_prefabs = {
     "wagdrone_flying",
     "gestalt_cage",
 }
+local WAGSTAFF_NOTES_ARENA = {
+    "wagstaff_materials_note",
+    "wagstaff_energy_note",
+    "wagstaff_containment_note",
+    "wagstaff_thermal_note",
+    "wagstaff_electricity_note",
+}
+for _, prefab in ipairs(WAGSTAFF_NOTES_ARENA) do
+    table.insert(wagpunk_arena_prefabs, prefab)
+end
 local function OnInit_Arena(inst)
     inst.SoundEmitter:PlaySound("moonstorm/common/alterguardian_contained/static_LP", "wagstaffnpc_static_loop")
     inst:erode(TUNING.WAGPUNK_ARENA_WAGSTAFF_FADEIN_TIME, true)
@@ -1281,6 +1291,19 @@ local function GiveGestaltCageToToss_Arena(inst)
     table.insert(inst.itemstotoss, cage)
 end
 
+
+local function DropNotesForDroneCount_Arena(inst, dronecount)
+    local prefab = WAGSTAFF_NOTES_ARENA[dronecount]
+    if prefab then
+        local note = SpawnPrefab(prefab)
+        inst.components.inventory:GiveItem(note)
+        if not inst.itemstotoss then
+            inst.itemstotoss = {}
+        end
+        table.insert(inst.itemstotoss, note)
+    end
+end
+
 local function lunar_guardian_incoming_Arena(inst)
 	inst:PushEvent("startled")
     inst.tiedtoworkstation = nil
@@ -1384,6 +1407,7 @@ local function wagpunk_arena_fn()
     inst.AddTrader = AddTrader_Arena
     inst.OnEntitySleep = OnEntitySleep_Arena
     inst.GiveGestaltCageToToss = GiveGestaltCageToToss_Arena
+    inst.DropNotesForDroneCount = DropNotesForDroneCount_Arena
     inst.OnSave = OnSave_Arena
     inst.OnLoad = OnLoad_Arena
     inst.OnLoadPostPass = OnLoadPostPass_Arena

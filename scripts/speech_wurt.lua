@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Florp! Missed!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Florp! Missed!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Flort! It baaack!",
     ANNOUNCE_FLOATER_HELD = "See? Me best floater.",
     ANNOUNCE_FLOATER_LETGO = "Glurph!",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Birds dying. Glurph.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They dead.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Tired! Glurph!",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Glurph! Birds!",
 
 	BATTLECRY =
 	{
@@ -2095,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "Haha! Bad fishie frozen.",
         CHESSPIECE_WORMBOSS = "Hungriest worm.",
         CHESSPIECE_YOTS = "Cute little worm.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Little big ironfolk.",
+        CHESSPIECE_WAGBOSS_LUNAR = "Moon stuff made big ironfolk bad.",
 
         CHESSJUNK1 = "It all broken.",
         CHESSJUNK2 = "Didn't do it!!",
@@ -4800,6 +4814,7 @@ return{
 
         MOONSTORM_STATIC = "What that sparky stuff?",
         MOONSTORM_STATIC_ITEM = "Hee-hee! It can't get out!",
+        MOONSTORM_STATIC_ROAMER = "Watch me catch sparky stuff!",
         MOONSTORM_SPARK = "Glorp! It zaps!",
 
         BIRD_MUTANT = "Ha ha! What happen to you?",
@@ -5463,8 +5478,11 @@ return{
 
         FENCE_JUNK = "Made of bunch of metal bits.",
         JUNK_PILE = "If anything good in there, it mine!",
-        JUNK_PILE_BIG = "Glurp... look like it gonna fall!",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What that? Me get!",
+            GENERIC = "Glurp... look like it gonna fall!",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "Plant's killing shirt!",
 
         -- Meta 4 / Ocean QoL
@@ -5531,8 +5549,8 @@ return{
         MERM_ARMORY_UPGRADED = "Best Mermfolk fighting hat here!",
         MERM_TOOLSHED = "Mermfolk tools inside.",
         MERM_TOOLSHED_UPGRADED = "These Mermfolk tools better.",
-        MERMARMORHAT = "Only for big Mermfolk, glorp…",
-        MERMARMORUPGRADEDHAT = "Only for big Mermfolk, glorp…",
+        MERMARMORHAT = "Only for big Mermfolk, glorp...",
+        MERMARMORUPGRADEDHAT = "Only for big Mermfolk, glorp...",
         MERM_TOOL = "Made for hardworking Mermfolk!",
         MERM_TOOL_UPGRADED = "Made for hardest working Mermfolk!",
 
@@ -5645,7 +5663,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Pine boy shooty toy. Florp!",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Pine boy shooty toy. Florp!",
 
-		WOBY_TREAT = "Smell… familiar.",
+		WOBY_TREAT = "Smell... familiar.",
 		BANDAGE_BUTTERFLYWINGS = "Stick me!",
 		PORTABLEFIREPIT_ITEM = "Florp! Can take cozy time anywhere!",
         SLINGSHOTAMMO_CONTAINER = "Pine boy pockets.",
@@ -5715,6 +5733,28 @@ return{
         GESTALT_GUARD_EVOLVED = "You not nice! Flort!",
         FLOTATIONCUSHION = "Me best floater, florp!",
         LUNAR_SEED = "Glorp, me keep!",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Big bad ironfolk body.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Florp, me build.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Me always have spare parts left.",
+        MOONSTORM_STATIC_CATCHER = "Put thing inside?",
+        COOLANT = "Glurgh. Weird bubble slime.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Me touch.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Where zap? Make zap.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Where put for zap?",
+
+        MUTATEDBIRD = "Pretty bird",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "Dead bird. Glurgh.", --witnessing the corpse
+            BURNING  = "Florp! Burn bird!", --when its burning
+            REVIVING = "Dead bird waking up! Florp!", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "What that?",

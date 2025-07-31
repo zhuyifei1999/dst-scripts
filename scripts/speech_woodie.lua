@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Missed it!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Missed it!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1164,6 +1170,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Aw heck. Not again.",
     ANNOUNCE_FLOATER_HELD = "That was a close one!",
     ANNOUNCE_FLOATER_LETGO = "Why'd I let-",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Get'em!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Kinda sad, but I still hate it.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I'm resting, eh.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "What did I do to deserve this?",
 
 	BATTLECRY =
 	{
@@ -2096,6 +2108,8 @@ return{
         CHESSPIECE_SHARKBOI = "Hey there, fish breath.",
         CHESSPIECE_WORMBOSS = "I still have nightmares about that thing.",
         CHESSPIECE_YOTS = "It would've looked better carved out of wood.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Remember when it tried to kill us, Luce?",
+        CHESSPIECE_WAGBOSS_LUNAR = "That was a bad one... and weird.",
 
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
@@ -4801,6 +4815,7 @@ return{
 
         MOONSTORM_STATIC = "Whatever he's doin' looks pretty complicated.",
         MOONSTORM_STATIC_ITEM = "Looks like bottled lightning.",
+        MOONSTORM_STATIC_ROAMER = "We should bottle that lightning!",
         MOONSTORM_SPARK = "I can already feel the static in my beard.",
 
         BIRD_MUTANT = "I always knew they were evil.",
@@ -5464,8 +5479,11 @@ return{
 
         FENCE_JUNK = "It's got nothin' on a sturdy wooden fence.",
         JUNK_PILE = "Wouldn't hurt to root around there a bit, eh?",
-        JUNK_PILE_BIG = "That'll make one heckuva mess when it falls over.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Something up there, Luce.",
+            GENERIC = "That'll make one heckuva mess when it falls over.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "That is some fine craftsmanship.",
 
         -- Meta 4 / Ocean QoL
@@ -5646,7 +5664,7 @@ return{
 		SLINGSHOT_HANDLE_SILK = "Kid is getting fancy with that slingshooter.",
 		SLINGSHOT_HANDLE_VOIDCLOTH = "Kid is getting fancy with that slingshooter.",
 
-		WOBY_TREAT = "I guess if I were starving…",
+		WOBY_TREAT = "I guess if I were starving...",
 		BANDAGE_BUTTERFLYWINGS = "It's pretty pretty, eh?",
 		PORTABLEFIREPIT_ITEM = "Sure, Lucy. We can feed it.",
         SLINGSHOTAMMO_CONTAINER = "Hours of fun and destruction for the kiddo.",
@@ -5716,6 +5734,28 @@ return{
         GESTALT_GUARD_EVOLVED = "They are not happy with us, Lucy.",
         FLOTATIONCUSHION = "There's room for both of us, Luce.",
         LUNAR_SEED = "We sure topped'em, eh Luce?",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "That's looking more like it.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "How does all that fit in here?",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Are these the murdery parts?",
+        MOONSTORM_STATIC_CATCHER = "Looks empty.",
+        COOLANT = "What is that stuff?",
+
+        FENCE_ELECTRIC = {
+            LINKED = "That'll straighten your hair!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "It's just a post now.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "I suppose I could plant it.",
+
+        MUTATEDBIRD = "I hate you more than anything.",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "I still don't trust it.", --witnessing the corpse
+            BURNING  = "Finally.", --when its burning
+            REVIVING = "This is the worst.", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

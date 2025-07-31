@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Failure.",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Failure.",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1167,6 +1173,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "It remembers.",
     ANNOUNCE_FLOATER_HELD = "What now?",
     ANNOUNCE_FLOATER_LETGO = "It's time.",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds are singing their last.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Birds of a feather fall together.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "Just need a rest.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Let them come.",
 
 	BATTLECRY =
 	{
@@ -2099,6 +2111,8 @@ return{
         CHESSPIECE_SHARKBOI = "Their cold shark heart was just misunderstood.",
         CHESSPIECE_WORMBOSS = "It consumed to fill its endless void.",
         CHESSPIECE_YOTS = "How curious, the things we choose to commemorate.",
+        CHESSPIECE_WAGBOSS_ROBOT = "It was built to bring death.",
+        CHESSPIECE_WAGBOSS_LUNAR = "This doesn't capture its pain.",
 
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
@@ -4804,6 +4818,7 @@ return{
 
         MOONSTORM_STATIC = "That looks rather dangerous... I wonder if he'd let me try.",
         MOONSTORM_STATIC_ITEM = "I can see a little spark inside.",
+        MOONSTORM_STATIC_ROAMER = "Like a roaming little spirit.",
         MOONSTORM_SPARK = "It doesn't feel of this world.",
 
         BIRD_MUTANT = "Mr. Crow, you don't look well.",
@@ -5467,8 +5482,11 @@ return{
 
         FENCE_JUNK = "Even these discarded pieces can manage to be useful.",
         JUNK_PILE = "Could there be something worthwhile hiding deep inside?",
-        JUNK_PILE_BIG = "It's about to collapse... maybe I'll be here when it does.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Do you see what's up there, Abigail?",
+            GENERIC = "It's about to collapse... maybe I'll be here when it does.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "I'd find it useful if I feared death.",
 
         -- Meta 4 / Ocean QoL
@@ -5719,6 +5737,28 @@ return{
         GESTALT_GUARD_EVOLVED = "I would be angry too.",
         FLOTATIONCUSHION = "One does not need water to drown.",
         LUNAR_SEED = "All that remains is its crown.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It destroys, is destroyed and rises anew. The cycle endures.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "All that death in such a tiny package.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "It is soon complete.",
+        MOONSTORM_STATIC_CATCHER = "Empty.",
+        COOLANT = "It seems alive but not.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "It fulfills its purpose in connection.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "What a lonely post.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "It's no use to anyone like that.",
+
+        MUTATEDBIRD = "There's no life in its eyes.",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "There can be a fate worse than death.", --witnessing the corpse
+            BURNING  = "Now it is truly free.", --when its burning
+            REVIVING = "Poor bird.", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

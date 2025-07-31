@@ -727,6 +727,16 @@ table.insert(prefs, CreatePrefabSkin("armor_marble_chainmail",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_marble_planet",
+{
+	base_prefab = "armormarble",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) armormarble_init_fn(inst, "armor_marble_planet") end,
+	skin_tags = { "ARMORMARBLE", "PLANETS", "CRAFTABLE", },
+	release_group = 170,
+}))
+
 table.insert(prefs, CreatePrefabSkin("armor_marble_rockabs",
 {
 	base_prefab = "armormarble",
@@ -2205,6 +2215,16 @@ table.insert(prefs, CreatePrefabSkin("book_web_tallbird",
 	release_group = 143,
 }))
 
+table.insert(prefs, CreatePrefabSkin("bookstation_house",
+{
+	base_prefab = "bookstation",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) bookstation_init_fn(inst, "bookstation_house") end,
+	skin_tags = { "BOOKSTATION", "CRAFTABLE", },
+	release_group = 169,
+}))
+
 table.insert(prefs, CreatePrefabSkin("boomerang_bananarang",
 {
 	base_prefab = "boomerang",
@@ -2214,6 +2234,16 @@ table.insert(prefs, CreatePrefabSkin("boomerang_bananarang",
 	init_fn = function(inst) boomerang_init_fn(inst, "boomerang_bananarang") end,
 	skin_tags = { "BOOMERANG", "CRAFTABLE", "T_UPDATE", },
 	release_group = 125,
+}))
+
+table.insert(prefs, CreatePrefabSkin("boomerang_bandedwood",
+{
+	base_prefab = "boomerang",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) boomerang_init_fn(inst, "boomerang_bandedwood") end,
+	skin_tags = { "BOOMERANG", "CRAFTABLE", },
+	release_group = 169,
 }))
 
 table.insert(prefs, CreatePrefabSkin("boomerang_tiger",
@@ -9140,6 +9170,26 @@ table.insert(prefs, CreatePrefabSkin("sisturn_nest",
 	release_group = 164,
 }))
 
+table.insert(prefs, CreatePrefabSkin("sisturn_victorian",
+{
+	base_prefab = "sisturn",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) sisturn_init_fn(inst, "sisturn_victorian") end,
+	skin_tags = { "SISTURN", "CRAFTABLE", },
+	release_group = 169,
+}))
+
+table.insert(prefs, CreatePrefabSkin("skeletonhat_mythical",
+{
+	base_prefab = "skeletonhat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) skeletonhat_init_fn(inst, "skeletonhat_mythical") end,
+	skin_tags = { "SKELETONHAT", "MYTHICAL", "CRAFTABLE", },
+	release_group = 170,
+}))
+
 table.insert(prefs, CreatePrefabSkin("skeletonhat_relic",
 {
 	base_prefab = "skeletonhat",
@@ -10568,6 +10618,7 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_clock",
 	skin_tags = { "CHEST", "CRAFTABLE", },
 	skin_sound = { ["close"] = "skin_sfx/common/treasurechest_clock_close", ["place"] = "skin_sfx/common/treasurechest_clock_place", ["open"] = "skin_sfx/common/treasurechest_clock_open", },
 	release_group = 168,
+	granted_items = { "treasurechest_upgraded_clock", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("treasurechest_corruption",
@@ -10762,6 +10813,16 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_carpetbag",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_upgraded_carpetbag") end,
 	skin_tags = { },
 	release_group = 153,
+}))
+
+table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_clock",
+{
+	base_prefab = "treasurechest",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_upgraded_clock") end,
+	skin_tags = { },
+	release_group = 168,
 }))
 
 table.insert(prefs, CreatePrefabSkin("treasurechest_upgraded_corruption",
@@ -12367,6 +12428,17 @@ table.insert(prefs, CreatePrefabSkin("wathgrithr_ice",
 	release_group = 138,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wathgrithr_improvedhat_flower",
+{
+	base_prefab = "wathgrithr_improvedhat",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wathgrithr_improvedhat_init_fn(inst, "wathgrithr_improvedhat_flower", true) end,
+	skin_tags = { },
+	skin_sound = { ["equip"] = "skin_sfx/common/wathgrithrhat_flower", },
+	release_group = 168,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wathgrithr_improvedhat_lunar",
 {
 	base_prefab = "wathgrithr_improvedhat",
@@ -12635,6 +12707,7 @@ table.insert(prefs, CreatePrefabSkin("wathgrithrhat_flower",
 	skin_tags = { "WATHGRITHRHAT", "CRAFTABLE", },
 	skin_sound = { ["equip"] = "skin_sfx/common/wathgrithrhat_flower", },
 	release_group = 168,
+	granted_items = { "wathgrithr_improvedhat_flower", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("wathgrithrhat_lunar",
@@ -17576,6 +17649,28 @@ table.insert(prefs, CreatePrefabSkin("wx78_rosep",
 	release_group = 130,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_catcoon",
+{
+	base_prefab = "wx78_scanner",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { "WX78SCANNER", "CRAFTABLE", },
+	release_group = 169,
+	granted_items = { "wx78_scanner_succeeded_catcoon", },
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_catcoon_item",
+{
+	base_prefab = "wx78_scanner_item",
+	type = "item",
+	build_name_override = "wx78_scanner_catcoon",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_item_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { },
+	release_group = 169,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wx78_scanner_fancy",
 {
 	base_prefab = "wx78_scanner",
@@ -17622,6 +17717,17 @@ table.insert(prefs, CreatePrefabSkin("wx78_scanner_junky_item",
 	init_fn = function(inst) wx78_scanner_item_init_fn(inst, "wx78_scanner_junky") end,
 	skin_tags = { },
 	release_group = 164,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_scanner_succeeded_catcoon",
+{
+	base_prefab = "wx78_scanner_succeeded",
+	type = "item",
+	build_name_override = "wx78_scanner_catcoon",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) wx78_scanner_succeeded_init_fn(inst, "wx78_scanner_catcoon") end,
+	skin_tags = { },
+	release_group = 169,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wx78_scanner_succeeded_fancy",

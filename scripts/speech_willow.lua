@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -480,6 +482,10 @@ return{
 		{
 			MISSED = "Crap! Let me catch you!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Crap! Let me catch you!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1170,6 +1176,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Ugh, not again!",
     ANNOUNCE_FLOATER_HELD = "Something touched my foot.",
     ANNOUNCE_FLOATER_LETGO = "I hate waiting!",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "It's a bad day to be a bird.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "That's not how they normally land.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I'm exhausted!",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Bird attack!",
 
 	BATTLECRY =
 	{
@@ -2102,6 +2114,8 @@ return{
         CHESSPIECE_SHARKBOI = "Reminded me of someone from my old neighborhood.",
         CHESSPIECE_WORMBOSS = "I hope it gets indigestion.",
         CHESSPIECE_YOTS = "Still gross.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Stupid killer robot.",
+        CHESSPIECE_WAGBOSS_LUNAR = "That thing was the worst.",
 
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
@@ -4807,6 +4821,7 @@ return{
 
         MOONSTORM_STATIC = "Don't get zapped, old man.",
         MOONSTORM_STATIC_ITEM = "It crackles, almost like a fire.",
+        MOONSTORM_STATIC_ROAMER = "I have this urge to catch it.",
         MOONSTORM_SPARK = "I'm gonna touch it.",
 
         BIRD_MUTANT = "It looks like it wants to take a bite out of me.",
@@ -5470,8 +5485,11 @@ return{
 
         FENCE_JUNK = "Not the prettiest fence in the world, but it works.",
         JUNK_PILE = "I'm not too proud to rifle through some trash.",
-        JUNK_PILE_BIG = "Yeeaahh, I don't think I want anything in there THAT bad.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "What's that thing up there?",
+            GENERIC = "Yeeaahh, I don't think I want anything in there THAT bad.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "This must be one of Wormwood's.",
 
         -- Meta 4 / Ocean QoL
@@ -5720,8 +5738,30 @@ return{
         },
 
         GESTALT_GUARD_EVOLVED = "What did I ever do to you?",
-        FLOTATIONCUSHION = "Oh good, because I hate drowning.",
+        FLOTATIONCUSHION = "Oh good, I hate drowning.",
         LUNAR_SEED = "It's kinda nice to stare into.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's not too late...",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "I should incinerate this, and I'm not just saying that.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "These make me nervous.",
+        MOONSTORM_STATIC_CATCHER = "It's empty.",
+        COOLANT = "Gross.",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Better not shock me!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Dumb post.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "It's useless like that.",
+
+        MUTATEDBIRD = "What are you looking at, weird bird?",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "Shall I do the honors?", --witnessing the corpse
+            BURNING  = "Burn, birdie, burn.", --when its burning
+            REVIVING = "Do I even have to say it?", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "I have no idea what that is!",

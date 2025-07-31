@@ -79,13 +79,7 @@ function LunarRiftMutationsManager:SetMutationDefeated(ent)
         table.insert(self.defeated_mutations, MUTATIONS[prefab])
 
         if TheWorld.components.wagboss_tracker and TheWorld.components.wagboss_tracker:IsWagbossDefeated() then
-            if self:ShouldGiveReward() then
-                local lootdropper = ent.components.lootdropper
-                if lootdropper then
-                    lootdropper:SpawnLootPrefab("security_pulse_cage")
-                end
-                self:OnRewardGiven()
-            end
+            self:OnRewardGiven()
         else
             if self:IsWagstaffSpawned() then
                 self.wagstaff:TalkAboutMutatedCreature(true)

@@ -72,12 +72,16 @@ function DefaultBurntStructureFn(inst)
         inst.components.childspawner:StopSpawning()
         inst:RemoveComponent("childspawner")
     end
+    if inst.components.dryingrack then -- New drying rack component (before container removal because we need it!)
+        inst.components.dryingrack:OnBurnt()
+        inst:RemoveComponent("dryingrack")
+    end
     if inst.components.container then
         inst.components.container:DropEverything()
         inst.components.container:Close()
         inst:RemoveComponent("container")
     end
-    if inst.components.dryer then
+    if inst.components.dryer then --Old drying rack component
         inst.components.dryer:StopDrying("fire")
         inst:RemoveComponent("dryer")
     end
@@ -242,7 +246,7 @@ function MakeSmallBurnableCharacter(inst, sym, offset)
     burnable:SetFXLevel(1)
     burnable:SetBurnTime(6)
     burnable.canlight = false
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym)
 
     local propagator = MakeSmallPropagator(inst)
     propagator.acceptsheat = false
@@ -255,7 +259,7 @@ function MakeMediumBurnableCharacter(inst, sym, offset)
     burnable:SetFXLevel(2)
     burnable.canlight = false
     burnable:SetBurnTime(8)
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym)
 
     local propagator = MakeSmallPropagator(inst)
     propagator.acceptsheat = false
@@ -268,7 +272,7 @@ function MakeLargeBurnableCharacter(inst, sym, offset, scale)
     burnable:SetFXLevel(3)
     burnable.canlight = false
     burnable:SetBurnTime(10)
-    burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 
     local propagator = MakeLargePropagator(inst)
     propagator.acceptsheat = false
@@ -280,7 +284,7 @@ function MakeSmallBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(1)
 	burnable:SetBurnTime(time or 6)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -293,7 +297,7 @@ function MakeMediumBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(2)
 	burnable:SetBurnTime(time or 8)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -306,7 +310,7 @@ function MakeLargeBurnableCorpse(inst, time, sym, offset, scale)
 	local burnable = inst:AddComponent("burnable")
 	burnable:SetFXLevel(3)
 	burnable:SetBurnTime(time or 10)
-	burnable:AddBurnFX(burnfx.character, offset or Vector3(0, 0, 1), sym, nil, scale)
+	burnable:AddBurnFX(burnfx.character, offset or (sym and Vector3(0, 0, 0.1) or Vector3(0, 0.1, 0)), sym, nil, scale)
 	burnable:SetOnExtinguishFn(DefaultExtinguishCorpseFn)
 	burnable:SetOnBurntFn(DefaultBurntCorpseFn)
 
@@ -598,6 +602,20 @@ function ChangeToInventoryItemPhysics(inst, mass, rad)
     return phys
 end
 
+--
+--NOTE(Omar): HACK!!!
+-- Obstacles don't collide with ground, which our field is, and we have some obstacle shockables (imprisoned daywalker, brightshade, seaweed)
+-- And there is no all encompassing collision group for every shockable...
+-- And changing `MakeObstaclePhysics` for all to collide with ground would probably be silly
+-- SO, let's jsut make those specific obstacles collide with ground
+function MakeCollidesWithElectricField(inst)
+    inst.Physics:CollidesWith(COLLISION.GROUND)
+end
+
+function ClearCollidesWithElectricField(inst)
+    inst.Physics:ClearCollidesWith(COLLISION.GROUND)
+end
+
 -- USED FOR THE DEPTH WORM
 function ChangeToInventoryPhysics(inst)
     local phys = inst.Physics
@@ -752,6 +770,64 @@ function MakeSnowCovered(inst)
         inst.AnimState:Show("snow")
     else
         inst.AnimState:Hide("snow")
+    end
+    if TheWorld.ismastersim and inst.Network then
+        MakeLunarHailBuildup(inst)
+    end
+end
+
+function UpdateLunarHailBuildup(inst)
+    local issnowcovered = TheWorld.state.issnowcovered
+    local isbuildupworkable = inst.components.lunarhailbuildup and inst.components.lunarhailbuildup:IsBuildupWorkable()
+    local shouldshowsymbol = issnowcovered or isbuildupworkable
+
+    local snowsymbol
+    if isbuildupworkable then
+        if issnowcovered then
+            snowsymbol = "lunarhail_snow_buildup"
+        else
+            snowsymbol = "lunarhail_buildup"
+        end
+    else
+        snowsymbol = "snow"
+    end
+    inst.AnimState:OverrideSymbol("snow", "snow", snowsymbol)
+
+    if shouldshowsymbol then
+        inst.AnimState:Show("snow")
+    else
+        inst.AnimState:Hide("snow")
+    end
+end
+
+local function OnLunarHailBuildupWorkableStateChanged(inst, data)
+    UpdateLunarHailBuildup(inst)
+end
+
+function MakeLunarHailBuildup(inst) -- Integrated into MakeSnowCovered.
+    local lunarhailbuildup = inst:AddComponent("lunarhailbuildup")
+    inst:ListenForEvent("lunarhailbuildupworkablestatechanged", OnLunarHailBuildupWorkableStateChanged)
+    inst:DoTaskInTime(0, UpdateLunarHailBuildup)
+end
+
+function SetLunarHailBuildupAmountSmall(inst)
+    if inst.components.lunarhailbuildup then
+        inst.components.lunarhailbuildup:SetTotalWorkAmount(TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_SMALL)
+        inst.components.lunarhailbuildup:SetMoonGlassAmount(TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_SMALL)
+    end
+end
+
+function SetLunarHailBuildupAmountMedium(inst)
+    if inst.components.lunarhailbuildup then
+        inst.components.lunarhailbuildup:SetTotalWorkAmount(TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_MEDIUM)
+        inst.components.lunarhailbuildup:SetMoonGlassAmount(TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_MEDIUM)
+    end
+end
+
+function SetLunarHailBuildupAmountLarge(inst)
+    if inst.components.lunarhailbuildup then
+        inst.components.lunarhailbuildup:SetTotalWorkAmount(TUNING.LUNARHAIL_BUILDUP_TOTAL_WORK_AMOUNT_LARGE)
+        inst.components.lunarhailbuildup:SetMoonGlassAmount(TUNING.LUNARHAIL_BUILDUP_MOONGLASS_AMOUNT_LARGE)
     end
 end
 

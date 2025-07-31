@@ -19,6 +19,10 @@ function IsEntityDeadOrGhost(inst, require_health)
     return IsEntityDead(inst, require_health)
 end
 
+function IsEntityElectricImmune(inst)
+    return inst:HasTag("electricdamageimmune") or (inst.components.inventory and inst.components.inventory:IsInsulated())
+end
+
 function GetStackSize(inst)
 	local stackable = inst.replica.stackable
 	return stackable and stackable:StackSize() or 1
@@ -59,10 +63,46 @@ function FindVirtualOceanEntity(x, y, z, r)
     return nil
 end
 
+-- Use in your boats ondeploy
+local ITEM_LAUNCHSPEED = 2
+local ITEM_LAUNCHMULT = 1
+local ITEM_STARTHEIGHT = 0.1
+local ITEM_VERTICALSPEED = 0.1
+local TIME_FOR_BOAT = .6
+local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms", "activeprojectile", "flying", "FX", "DECOR", "INLIMBO", "herd", "walkableplatform" }
+function PushAwayItemsOnBoatPlace(inst)
+    local function launch_with_delay(item)
+        Launch2(item, inst, ITEM_LAUNCHSPEED, ITEM_LAUNCHMULT, ITEM_STARTHEIGHT, inst.components.walkableplatform.platform_radius + item:GetPhysicsRadius(0.25), ITEM_VERTICALSPEED)
+
+        if item.components.inventoryitem then
+            item.components.inventoryitem:SetLanded(false, true)
+        end
+    end
+
+    local pos = inst:GetPosition()
+    local platform_radius_sq = inst.components.walkableplatform.platform_radius * inst.components.walkableplatform.platform_radius
+    for i, v in ipairs(TheSim:FindEntities(pos.x, pos.y, pos.z, inst.components.walkableplatform.platform_radius, nil, IGNORE_WALKABLE_PLATFORM_TAGS)) do
+        if v ~= inst and v.entity:GetParent() == nil and v.components.amphibiouscreature == nil and v.components.drownable == nil then
+            local time = Remap(v:GetDistanceSqToPoint(pos),
+                0, platform_radius_sq,
+                0, TIME_FOR_BOAT)
+
+            if v.special_item_boat_push_case then --Mods.
+                v.special_item_boat_push_case(v, inst, time)
+            elseif v:HasTag("bird") then
+                v:PushEvent("flyaway")
+            else
+                v:DoTaskInTime(time, launch_with_delay)
+            end
+        end
+    end
+end
+
 --------------------------------------------------------------------------
 --Tags useful for testing against combat targets that you can hit,
 --but aren't really considered "alive".
 
+-- Lifedrain (Batbat, mauler) uses this list
 NON_LIFEFORM_TARGET_TAGS =
 {
 	"structure",
@@ -71,12 +111,12 @@ NON_LIFEFORM_TARGET_TAGS =
 	"groundspike",
 	"smashable",
 	"veggie", --stuff like lureplants... not considered life?
+    "deck_of_cards",
 }
 
 --Shadows and Gestalts don't have souls.
 --NOTE: -Adding "soulless" tag to entities is preferred over expanding this list.
 --      -Gestalts should already be using "soulless" tag.
---Lifedrain (batbat) also uses this list.
 SOULLESS_TARGET_TAGS = ConcatArrays(
 	{
 		"soulless",
@@ -843,3 +883,136 @@ function ClearSpotForRequiredPrefabAtXZ(x, z, r)
 end
 
 --------------------------------------------------------------------------
+--For visual fx
+--e.g. used by electrocute_fx
+
+function GetCombatFxSize(ent)
+	local r = ent.override_combat_fx_radius
+	local sz = ent.override_combat_fx_size
+	local ht = ent.override_combat_fx_height
+
+	local r1 = r or ent:GetPhysicsRadius(0)
+	if ent:HasTag("smallcreature") then
+		r = r or math.min(0.5, r1)
+		sz = sz or "tiny"
+	elseif r1 >= 1.5 or ent:HasTag("epic") then
+		r = r or math.max(1.5, r1)
+		sz = sz or "large"
+	elseif r1 >= 0.9 or ent:HasTag("largecreature") then
+		r = r or math.max(1, r1)
+		sz = sz or "med"
+	else
+		r = r or math.max(0.5, r1)
+		sz = sz or "small"
+	end
+
+	if ht == nil then
+		ht = (ent.components.amphibiouscreature and ent.components.amphibiouscreature.in_water and "low") or
+			(ent:HasTag("flying") and "high") or
+			(not (ent.sg and ent.sg:HasState("electrocute")) and "low") or --ground plants with no electrocute state
+			nil
+	elseif string.len(ht) == 0 then
+		ht = nil
+	end
+
+	return r, sz, ht
+end
+
+function GetElectrocuteFxAnim(sz, ht)
+	return string.format(ht and "shock_%s_%s" or "shock_%s", sz or "small", ht)
+end
+
+--Returns true if entity supports electrocution at all, even if it's in a state that currently doesn't allow it
+function CanEntityBeElectrocuted(inst)
+	return inst.sg
+		and (inst.sg:HasState("electrocute") or inst.sg.mem.burn_on_electrocute)
+		and not inst.sg.mem.noelectrocute
+end
+
+function CalcEntityElectrocuteDuration(inst, override)
+	local default = TUNING.ELECTROCUTE_DEFAULT_DURATION
+	local duration =
+		inst.electrocute_duration or
+		(inst.sg and inst.sg.mem.burn_on_electrocute and TUNING.ELECTROCUTE_SHORT_DURATION) or
+		default
+
+	if override then
+		if override > default then
+			return math.max(duration, override)
+		elseif override < default then
+			return math.min(duration, override)
+		end
+	end
+	return duration
+end
+
+--------------------------------------------------------------------------
+
+function SpawnElectricHitSparks(inst, target, flash)
+    --target or inst might be removed
+    if not inst or not target or not inst:IsValid() or not target:IsValid() then
+        return
+    end
+
+    local fx_prefab = IsEntityElectricImmune(target) and "electrichitsparks_electricimmune" or "electrichitsparks"
+    SpawnPrefab(fx_prefab):AlignToTarget(target, inst, flash)
+end
+
+function LightningStrikeAttack(inst)
+    if IsEntityElectricImmune(inst) or (inst.sg and inst.sg:HasStateTag("noelectrocute")) then
+        return false
+    end
+
+    local wetness_mult = TUNING.ELECTRIC_WET_DAMAGE_MULT * inst:GetWetMultiplier()
+    local damage = TUNING.LIGHTNING_DAMAGE + wetness_mult * TUNING.LIGHTNING_DAMAGE
+
+    inst.components.health:DoDelta(-damage, false, "lightning")
+	--V2C: -switched to stategraph event instead of GoToState
+	--     -use Immediate to preserve legacy timing
+	inst:PushEventImmediate("electrocute")
+
+    -- NOTE(Omar): I really wanted to improve lightning damage technicals to use GetAttacked, but weather.lua is set up a bit awkwardly with the spawning of the entity,
+    -- and it's prefab is to be determined during logic, so whatever, health:DoDelta and PushEvent, you're here to stay -__-
+    --inst.components.combat:GetAttacked(lightning, damage, nil, "electric")
+    return true
+end
+
+local LIGHTNING_EXCLUDE_TAGS = { "player", "INLIMBO", "lightningblocker", "FX" }
+local LIGHTNING_BURNING_ONEOF_TAGS = {"wall", "fence", "plant", "structure", "_inventoryitem", "bush", "pickable"}
+
+for k, v in pairs(FUELTYPE) do
+    if v ~= FUELTYPE.USAGE then --Not a real fuel
+        table.insert(LIGHTNING_EXCLUDE_TAGS, v.."_fueled")
+    end
+end
+
+-- If we hit a player, do the aoe burn
+-- If we hit just the ground, do a aoe shock and aoe burn.
+-- If something is already shocked, it shouldnt burnt!
+
+function StrikeLightningAtPoint(strike_prefab, hit_player, x, y, z)
+    if y == nil and z == nil then --support Vector3 passed as x
+        x, y, z = x:Get()
+    end
+
+    -- NO aoe shock or burn on moon lightning! Maybe a new effect?
+    if strike_prefab == "lightning" then
+        local data = {hit_player = hit_player, pos = Vector3(x,y,z)}
+        local ents = TheSim:FindEntities(x, y, z, TUNING.LIGHTNING_STRIKE_RADIUS, nil, LIGHTNING_EXCLUDE_TAGS)
+        for _, ent in pairs(ents) do
+            if not IsEntityElectricImmune(ent) then
+                if ent.sg and ent.sg:HasState("electrocute") then
+                    if not hit_player then
+                        LightningStrikeAttack(ent)
+                    end
+                elseif ent.components.burnable and ent:HasAnyTag(LIGHTNING_BURNING_ONEOF_TAGS) then
+                    ent.components.burnable:Ignite()
+                end
+
+                if ent.lightning_strike_cb then --Mods, if they want any unique behaviour for themselves
+                    ent.lightning_strike_cb(ent, data)
+                end
+            end
+        end
+    end
+end

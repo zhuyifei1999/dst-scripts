@@ -36,7 +36,6 @@ local function testforlostrock(inst, rightarm)
         else
             inst.AnimState:SetFrame(frame)
         end
-
     end
 end
 
@@ -113,11 +112,15 @@ local function GetTransitionState(inst)
 end
 
 local function go_to_idle(inst)
-    inst.sg:GoToState("idle")
+	if inst.AnimState:AnimDone() then
+		inst.sg:GoToState("idle")
+	end
 end
 
 local function go_to_inert(inst)
-    inst.sg:GoToState("inert")
+	if inst.AnimState:AnimDone() then
+		inst.sg:GoToState("inert")
+	end
 end
 
 local function play_quarter_light_sound(inst)
@@ -132,6 +135,7 @@ local actionhandlers =
 local events =
 {
     CommonHandlers.OnFreeze(),
+	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnDeath(),
 
     EventHandler("activate", function(inst, data)
@@ -148,6 +152,7 @@ local events =
     EventHandler("socket", function(inst, data)
         inst.sg:GoToState("socket")
     end),
+	EventHandler("attacked", CommonHandlers.TryElectrocuteOnAttacked),
 }
 
 local states =
@@ -177,7 +182,6 @@ local states =
         {
             TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/vocal",nil,.25) end),
             TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/vocal",nil,.25) end),
-
         },
 
         onupdate = function(inst)
@@ -189,8 +193,11 @@ local states =
 
         events =
         {
-            EventHandler("attacked", function(inst)
-                inst.sg:GoToState("hit_light")
+			EventHandler("attacked", function(inst, data)
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+					inst.sg:GoToState("hit_light")
+				end
+				return true
             end),
             EventHandler("animover", go_to_idle),
         },
@@ -225,8 +232,12 @@ local states =
         name = "taunt_loop",
         tags = { "canrotate" },
 
-        onenter = function(inst, pushanim)
-            inst.AnimState:PlayAnimation("taunt_loop")
+		onenter = function(inst)
+			if not inst.components.timer:TimerExists("taunt") then
+				inst.sg:GoToState("taunt_pst")
+			elseif not inst.AnimState:IsCurrentAnimation("taunt_loop") then
+				inst.AnimState:PlayAnimation("taunt_loop", true)
+			end
         end,
 
         timeline=
@@ -234,23 +245,32 @@ local states =
             SoundFrameEvent(5, "meta4/crabking/taunt"),
         },
 
-        onupdate = function(inst)
-            if not inst.components.timer:TimerExists("taunt") then
-                inst.sg:GoToState("taunt_pst")
-            end
-        end,
-
         events =
         {
-            EventHandler("attacked", function(inst)
-                inst.components.timer:StopTimer("taunt")
-                inst.sg:GoToState("taunt_pst")
+			EventHandler("timerdone", function(inst, data)
+				if data and data.name == "taunt" then
+					inst.sg:GoToState("taunt_pst")
+				end
+			end),
+			EventHandler("attacked", function(inst, data)
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+					inst.sg:GoToState("taunt_pst")
+				end
+				return true
             end),
-
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("taunt_loop")
+				if inst.AnimState:AnimDone() then
+					inst.sg.statemem.taunting = true
+					inst.sg:GoToState("taunt_loop")
+				end
             end),
         },
+
+		onexit = function(inst)
+			if not inst.sg.statemem.taunting then
+				inst.components.timer:StopTimer("taunt")
+			end
+		end,
     },
 
     State{
@@ -292,27 +312,6 @@ local states =
             SoundFrameEvent(34, "hookline_2/creatures/boss/crabking/bubble"),
             SoundFrameEvent(41, "hookline_2/creatures/boss/crabking/bubble"),
             SoundFrameEvent(51, "hookline_2/creatures/boss/crabking/bubble"),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                inst.sg:GoToState((math.random() < 0.9 and "inert") or "inert_blink")
-            end),
-        },
-    },
-
-    State{
-        name = "reappear",
-        tags = { "inert", "canrotate", "noattack", "busy", "canwxscan", },
-
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("reappear")
-        end,
-
-        timeline=
-        {
-            SoundFrameEvent(1, "turnoftides/common/together/water/submerge/large"),
         },
 
         events =
@@ -371,12 +370,19 @@ local states =
 
     State{
         name = "disappear",
-        tags = { "idle", "canrotate", "noattack", "inert", "canwxscan", },
+		tags = { "idle", "canrotate", "noattack", "inert", "canwxscan", "nointerrupt" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("disappear")
             inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/disappear")
         end,
+
+		timeline =
+		{
+			FrameEvent(11, function(inst)
+				inst.sg:AddStateTag("invisible")
+			end),
+		},
 
         events =
         {
@@ -389,7 +395,7 @@ local states =
 
     State{
         name = "reappear",
-        tags = { "idle", "canrotate", "noattack", "inert", "canwxscan", },
+		tags = { "idle", "canrotate", "noattack", "inert", "canwxscan", "nointerrupt" },
 
         onenter = function(inst)
             inst.Physics:SetActive(true)
@@ -664,21 +670,13 @@ local states =
             end
         end,
 
-        timeline=
-        {
-            TimeEvent(14*FRAMES, function(inst)
-
-            end),
-
-            TimeEvent(27*FRAMES, function(inst)
-
-            end),
-        },
-
         events =
         {
-            EventHandler("attacked", function(inst)
-                testforlostrock(inst,  not inst.sg.statemem.rightarm)
+			EventHandler("attacked", function(inst, data)
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+					testforlostrock(inst, not inst.sg.statemem.rightarm)
+				end
+				return true
             end),
             EventHandler("animover", function(inst)
                 inst.sg:GoToState("fix_loop")
@@ -701,12 +699,9 @@ local states =
             inst.sg.statemem.rightarm = rightarm
 
             inst.AnimState:PlayAnimation("fix_"..arm.."_loop_"..randomchoice)      
-
         end,
 
         onupdate = function(inst,dt)
-
-
             if inst.AnimState:GetCurrentAnimationFrame() >= 16 then
                 if inst.sg:HasStateTag("loserock_window") then
                     inst.SoundEmitter:PlaySound("hookline_2/creatures/boss/crabking/repair")
@@ -717,29 +712,15 @@ local states =
                     heal(inst)
                 end                
             end
-
         end,
-
-        timeline=
-        {
-
-            TimeEvent(8*FRAMES, function(inst)
-              --  inst.sg:AddStateTag("loserock_window")
-            end),
-
-            TimeEvent(13*FRAMES, function(inst)
-              
-            end),
-
-            TimeEvent(16*FRAMES, function(inst)
-
-            end),
-        },
 
         events =
         {
-            EventHandler("attacked", function(inst)                
-                testforlostrock(inst, inst.sg.statemem.rightarm)
+			EventHandler("attacked", function(inst, data)
+				if not CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
+					testforlostrock(inst, inst.sg.statemem.rightarm)
+				end
+				return true
             end),
             EventHandler("animover", function(inst)
                 local done_healing = (inst.components.health:GetPercent() >= 1) or not inst:HasTag("icewall")
@@ -820,16 +801,35 @@ local states =
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
+			EventHandler("animover", go_to_idle),
         },
     },
 }
 
 CommonStates.AddFrozenStates(states)
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+{	--anims
+	loop = function(inst)
+		if inst.sg.lasttags["inert"] then
+			inst.sg:AddStateTag("inert")
+			return "inert_shock_loop"
+		end
+	end,
+	pst = function(inst)
+		if inst.sg.lasttags["inert"] then
+			inst.sg:AddStateTag("inert")
+			return "inert_shock_pst"
+		end
+	end,
+},
+{	--fns
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState(inst.sg:HasStateTag("inert") and "inert" or "idle")
+		end
+	end,
+})
 CommonStates.AddCombatStates(states,{
     deathtimeline ={
         SoundTimeEvent(0, "hookline_2/creatures/boss/crabking/death2"),
@@ -888,6 +888,4 @@ CommonStates.AddCombatStates(states,{
 
 },{hit = "hit_light", death="death2"})
 
-
 return StateGraph("crabking", states, events, "inert", actionhandlers)
-

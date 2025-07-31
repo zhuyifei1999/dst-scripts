@@ -318,6 +318,8 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+--fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
 		{
@@ -478,8 +480,12 @@ return{
 		},
 		POUNCECAPTURE =
 		{
-			MISSED = "Cursed wraith!",
+			MISSED = "Curses!",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Curses!",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1163,6 +1169,12 @@ return{
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "Thou return'st!",
     ANNOUNCE_FLOATER_HELD = "Aye, I deny thee, Njord!",
     ANNOUNCE_FLOATER_LETGO = "Curse thee, Njord!",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Slaughter aloft!",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "The sky doth weep with woe and death!",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "A brief respite to gather mine strength!",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Hellish wings draweth nigh!",
 
 	BATTLECRY =
 	{
@@ -2095,6 +2107,8 @@ return{
         CHESSPIECE_SHARKBOI = "Until we meet again, bait-breathed warrior.",
         CHESSPIECE_WORMBOSS = "I shall never forget this hungry cave serpent.",
         CHESSPIECE_YOTS = "I do relish thy slaying, worm.",
+        CHESSPIECE_WAGBOSS_ROBOT = "The iron golem was indeed misguided.",
+        CHESSPIECE_WAGBOSS_LUNAR = "This tribute to the unhallowed giant is an abomination unto itself.",
 
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
@@ -4800,6 +4814,7 @@ return{
 
         MOONSTORM_STATIC = "Tis a strange kind of power.",
         MOONSTORM_STATIC_ITEM = "A strange power rests inside.",
+        MOONSTORM_STATIC_ROAMER = "The power roams free.",
         MOONSTORM_SPARK = "It sends a curious tickle through my bones.",
 
         BIRD_MUTANT = "The beasts are changed by the storm!",
@@ -5463,8 +5478,11 @@ return{
 
         FENCE_JUNK = "A sturdy barrier.",
         JUNK_PILE = "Mayhaps a treasure lies inside?",
-        JUNK_PILE_BIG = "T'would be a disgrace to be slain by a falling pile of refuse...",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "Is the peak's prize worthy of the danger it demands?",
+            GENERIC = "T'would be a disgrace to be slain by a falling pile of refuse...",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "This will make my plant ally more deadly in battle.",
 
         -- Meta 4 / Ocean QoL
@@ -5646,7 +5664,7 @@ return{
 		SLINGSHOT_HANDLE_VOIDCLOTH = "The young scout doth come into his own.",
 
 		WOBY_TREAT = "Woby doth deserve all manner of fine victuals and sweetmeats.",
-		BANDAGE_BUTTERFLYWINGS = "If I had a bandage for every mere flesh wound…",
+		BANDAGE_BUTTERFLYWINGS = "If I had a bandage for every mere flesh wound...",
 		PORTABLEFIREPIT_ITEM = "Prometheus himself would burn with envy!",
         SLINGSHOTAMMO_CONTAINER = "Though I prefer a blade, the lad slings with honor.",
 
@@ -5715,6 +5733,28 @@ return{
         GESTALT_GUARD_EVOLVED = "Revenge is thine inheritance.",
         FLOTATIONCUSHION = "Not this day, Njord!",
         LUNAR_SEED = "Sprung from the shining coronal of a mighty deity.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "'Tis not battle ready yet.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "The seed of an iron golem.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Bestow upon it its rightful arms!",
+        MOONSTORM_STATIC_CATCHER = "'Tis empty.",
+        COOLANT = "Cursed blood of the Jotnar!",
+
+        FENCE_ELECTRIC = {
+            LINKED = "It conjures a defensive permimeter worthy of Thor!",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "Alone, it falters. Among its kin, it thrives.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "Let us establish a bastion fit for the thunder god!",
+
+        MUTATEDBIRD = "'Tis cursed!",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "A bad omen.", --witnessing the corpse
+            BURNING  = "It shall not rise from these ashes.", --when its burning
+            REVIVING = "Unnatural metamorphosis!", --when its mutating and being revived
+        },
     },
 
     DESCRIBE_GENERIC = "It is an artifact of this realm.",

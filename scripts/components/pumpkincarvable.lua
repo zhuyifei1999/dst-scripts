@@ -416,7 +416,7 @@ function PumpkinCarvable:EndCarving(doer)
 
 		self.carver = nil
 
-		doer.sg:HandleEvent("ms_endpumpkincarving")
+		doer:PushEventImmediate("ms_endpumpkincarving")
 
 		self.inst:StopUpdatingComponent(self)
 

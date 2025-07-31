@@ -677,6 +677,14 @@ local fx =
         fn = FinalOffset1,
     },
     {
+        name = "shock_arc_fx",
+        bank = "shock_fx",
+        build = "shock_fx",
+        anim = "arc",
+        eightfaced = true,
+        fn = FinalOffset1,
+    },
+    {
         name = "weregoose_shock_fx",
         bank = "shock_fx",
         build = "shock_fx",
@@ -1858,6 +1866,30 @@ local fx =
             inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
         end,
     },
+	{
+		name = "ocean_splash_swim1",
+		bank = "splash_weregoose_fx",
+		build = "splash_water_drop",
+		anim = "no_splash",
+		sound = "turnoftides/common/together/water/splash/bird",
+		fn = function(inst)
+			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+			inst.AnimState:SetDeltaTimeMultiplier(0.7)
+			inst.SoundEmitter:OverrideVolumeMultiplier(0.6)
+		end,
+	},
+	{
+		name = "ocean_splash_swim2",
+		bank = "splash_weregoose_fx",
+		build = "splash_water_drop",
+		anim = "no_splash2",
+		sound = "turnoftides/common/together/water/splash/bird",
+		fn = function(inst)
+			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+			inst.AnimState:SetDeltaTimeMultiplier(0.7)
+			inst.SoundEmitter:OverrideVolumeMultiplier(0.6)
+		end,
+	},
     {
         name = "washashore_puddle_fx",
         bank = "water_puddle",

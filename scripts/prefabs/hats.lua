@@ -2257,12 +2257,12 @@ local function MakeHat(name)
 
     local function moonstorm_equip(inst, owner)
         _onequip(inst, owner)
-        owner:AddTag("wagstaff_detector")
+        owner:AddTag("moonstormevent_detector")
     end
 
     local function moonstorm_unequip(inst, owner)
         _onunequip(inst, owner)
-        owner:RemoveTag("wagstaff_detector")
+        owner:RemoveTag("moonstormevent_detector")
     end
 
     local function moonstorm_custom_init(inst)
@@ -4254,6 +4254,7 @@ local function MakeHat(name)
     fns.wagpunk_onrepaired = function(inst)
         if inst.components.equippable == nil then
             inst:AddComponent("equippable")
+            inst.components.equippable.insulated = true
             inst.components.equippable.equipslot = EQUIPSLOTS.HEAD
             inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
             inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
@@ -4318,6 +4319,7 @@ local function MakeHat(name)
 
         inst.components.equippable:SetOnEquip(fns.wagpunk_onequip)
         inst.components.equippable:SetOnUnequip(fns.wagpunk_onunequip)
+        inst.components.equippable.insulated = true
 
         MakeForgeRepairable(inst, FORGEMATERIALS.WAGPUNKBITS, fns.wagpunk_onbroken, fns.wagpunk_onrepaired)
         MakeHauntableLaunch(inst)
@@ -5063,14 +5065,14 @@ local function MakeHat(name)
 			inst._wintertask = nil
 		end
 	end
-    fns.rabbit_onperishpre = function(inst)
-        if inst.inlimbo then
-            return false
+    fns.rabbit_onperished = function(inst)
+        if inst.components.lootdropper then
+            inst.components.lootdropper:DropLoot()
         end
 
-        local owner = inst.components.inventoryitem.owner
-        if owner then
-            return false
+        if inst.inlimbo then
+            inst:Remove()
+            return
         end
 
         inst.rabbithat_doidleanims = false
@@ -5080,8 +5082,6 @@ local function MakeHat(name)
         inst.AnimState:PlayAnimation("death")
         inst.SoundEmitter:PlaySound("dontstarve/rabbit/scream_short")
         inst:ListenForEvent("animover", ErodeAway)
-
-        return true
     end
 	fns.rabbit_custom_init = function(inst)
         inst.entity:AddSoundEmitter()
@@ -5129,7 +5129,8 @@ local function MakeHat(name)
         inst:AddComponent("eater")
         inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
         inst.components.eater:SetOnEatFn(fns.rabbit_oneat)
-        MakeSmallPerishableCreatureAlwaysPerishing(inst, TUNING.RABBIT_PERISH_TIME, nil, nil, fns.rabbit_onperishpre)
+        MakeSmallPerishableCreatureAlwaysPerishing(inst, TUNING.RABBIT_PERISH_TIME)
+        inst:ListenForEvent("perished", fns.rabbit_onperished)
 
 		inst:AddComponent("sleeper")
 		inst.components.sleeper.watchlight = true

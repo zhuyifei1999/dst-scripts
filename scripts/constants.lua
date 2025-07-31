@@ -74,6 +74,7 @@ SCALEMODE_FIXEDSCREEN_NONDYNAMIC = 4 --scale same amount as window scaling from 
 PHYSICS_TYPE_ANIMATION_CONTROLLED = 0
 PHYSICS_TYPE_PHYSICS_CONTROLLED = 1
 
+ALT_RENDERPATH = 1	-- You should really not use this unless you know what it is and how it works. Otherwise it can crash things, consume lots of memory, reduce performance, you name it.
 
 MOVE_UP = 1
 MOVE_DOWN = 2
@@ -253,7 +254,7 @@ VIRTUAL_CONTROL_INV_ACTION_RIGHT = 10016
 --
 VIRTUAL_CONTROL_STRAFE_UP = 10017
 VIRTUAL_CONTROL_STRAFE_DOWN = 10018
-VIRTUAL_CONTROL_STRAFE_LEFT = 100019
+VIRTUAL_CONTROL_STRAFE_LEFT = 10019
 VIRTUAL_CONTROL_STRAFE_RIGHT = 10020
 --
 
@@ -489,6 +490,7 @@ require("beefalo_clothing")
 require("misc_items")
 require("emote_items")
 require("item_blacklist")
+require("entitlementlookups")
 
 CLOTHING.body_default1 =
 {
@@ -1984,6 +1986,8 @@ FOODTYPE =
 	WOOD = "WOOD",
     GOODIES = "GOODIES",
     MONSTER = "MONSTER", -- Added in for woby, uses the secondary foodype originally added for the berries
+    LUNAR_SHARDS = "LUNAR_SHARDS", -- For rift birds, yummy glass
+    CORPSE = "CORPSE", -- For rift buzzards potentially
 }
 
 FOODGROUP =
@@ -2877,4 +2881,16 @@ EQUIVALENT_ATTUNABLE_TAGS =
 {
     ["remoteresurrector"] = "gravestoneresurrector",
     ["gravestoneresurrector"] = "remoteresurrector",
+}
+
+-- This must match the Categories enum in HapticsManager
+HAPTICS = 
+{
+    Category_Default     = 1,       -- 0x01
+    Category_UI          = 2,       -- 0x02
+    Category_Danger 	 = 4,       -- 0x04
+    Category_Player      = 8,       -- 0x08
+    Category_Environment = 16,      -- 0x10
+    Category_Boss        = 32,      -- 0x20
+    Category_All         = 255,     -- 0xFF
 }

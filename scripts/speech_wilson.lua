@@ -328,6 +328,8 @@ return {
             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
+            -- Electrocute
+            DEADBIRDS = "only_used_by_waxwell_and_wicker",
         },
 		REMOTE_TELEPORT =
 		{
@@ -490,6 +492,10 @@ return {
 		{
 			MISSED = "Drat, I missed.",
 		},
+        DIVEGRAB =
+        {
+            MISSED = "Drat, I missed.",
+        },
     },
 
 	ANNOUNCE_CANNOT_BUILD =
@@ -1173,6 +1179,12 @@ return {
     ANNOUNCE_LUNARGUARDIAN_INCOMING = "It's back!",
     ANNOUNCE_FLOATER_HELD = "I was busy drowning but something came up... me!",
     ANNOUNCE_FLOATER_LETGO = "I hate being kept in susp-",
+
+    -- Electrocute
+    ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "So that's the sound of a murder of crows.",
+    ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're dropping like birds.",
+    ANNOUNCE_FLOAT_SWIM_TIRED = "I'm too tired.",
+    ANOUNCE_MUTATED_BIRD_ATTACK = "Birds!",
 
 	BATTLECRY =
 	{
@@ -2105,6 +2117,8 @@ return {
         CHESSPIECE_SHARKBOI = "There's just some-fin about it.",
         CHESSPIECE_WORMBOSS = "It still shakes me up.",
         CHESSPIECE_YOTS = "I usually try to stay away from gold diggers.",
+        CHESSPIECE_WAGBOSS_ROBOT = "Great design, questionable execution.",
+        CHESSPIECE_WAGBOSS_LUNAR = "I'm over the moon.",
 
         CHESSJUNK1 = "A pile of broken chess pieces.",
         CHESSJUNK2 = "Another pile of broken chess pieces.",
@@ -4810,6 +4824,7 @@ return {
 
         MOONSTORM_STATIC = "A new discovery, how electrifying!",
         MOONSTORM_STATIC_ITEM = "It makes my hair do crazy things.",
+        MOONSTORM_STATIC_ROAMER = "It seems lost in transmission.",
         MOONSTORM_SPARK = "I think I'll call it the \"Higgsbury Particle.\"",
 
         BIRD_MUTANT = "I think that used to be a crow.",
@@ -5473,8 +5488,11 @@ return {
 
         FENCE_JUNK = "Tell me it's ugly, I won't take a fence.",
         JUNK_PILE = "A good junk pile rummage? I'll never refuse.",
-        JUNK_PILE_BIG = "I think it could fall over any moment.",
-
+        JUNK_PILE_BIG = {
+            BLUEPRINT = "There's something up there.",
+            GENERIC = "I think it could fall over any moment.",
+        },
+        
         ARMOR_LUNARPLANT_HUSK = "That'll put a thorn in your side.",
 
         -- Meta 4 / Ocean QoL
@@ -5725,6 +5743,39 @@ return {
         GESTALT_GUARD_EVOLVED = "These ones have an explosive personality.",
         FLOTATIONCUSHION = "Oh, buoyancy!",
         LUNAR_SEED = "This formed part of its crown.",
+
+        -- electrocute
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Keeping it under wraps for now.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big automatons really do come in small packages.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "It comes in pieces!",
+        MOONSTORM_STATIC_CATCHER = "There's nothing inside.",
+        COOLANT = "It's bubbling with possibility!",
+
+        FENCE_ELECTRIC = {
+            LINKED = "Aw, it found a connection.",      --NOTE: the fence post is fully linked to two other posts
+            GENERIC = "It is not functional as a standalone unit.",           --NOTE: no links or electricity, just boring ol fence post
+        },
+        FENCE_ELECTRIC_ITEM = "It's not a tree, but it must be planted.",
+
+        MUTATEDBIRD = "I suppose it's a rare bird.",
+
+        BIRDCORPSE =
+        {
+            GENERIC  = "I call fowl.", --witnessing the corpse
+            BURNING  = "That's what I call a firebird.", --when its burning
+            REVIVING = "It's becoming a new species!", --when its mutating and being revived
+        },
+
+        BUZZARDCORPSE = {
+            GENERIC = "TODO",
+            BURNING = "TODO",
+            REVIVING = "TODO",
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "TODO", -- Generic string
+            EATING_CORPSE = "TODO", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

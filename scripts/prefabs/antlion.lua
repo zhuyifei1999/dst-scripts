@@ -444,6 +444,7 @@ local function fn()
         return inst
     end
 
+	inst.override_combat_fx_height = "low"
     inst.scrapbook_maxhealth  = TUNING.ANTLION_HEALTH
     inst.scrapbook_sanityaura = -TUNING.SANITYAURA_MED
 

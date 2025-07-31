@@ -774,7 +774,7 @@ function ScrapbookScreen:BuildItemGrid()
 			return a.entry < b.entry
 		end
 
-		return a_name < b_name
+		return stringidsorter(a_name, b_name)
 	end)
 
 	for i, data in ipairs(self.current_view_data) do
@@ -1870,7 +1870,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 				return a.entry < b.entry
 			end
 
-			return a_name < b_name
+			return stringidsorter(a_name, b_name)
 		end)
 
 		local dep_imgsize = imagesize - imagebuffer

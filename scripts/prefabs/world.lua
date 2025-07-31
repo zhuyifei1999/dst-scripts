@@ -208,6 +208,7 @@ local prefabs =
     "fire",
     "character_fire",
     "shatter",
+	"electrocute_fx",
     --
 
     "migration_portal",
