@@ -177,7 +177,7 @@ function StageActingProp:FindScript(doer)
 	end
 end
 
-function abortplay(ent)
+local function abortplay(ent)
     local stage = ent.components.stageactor:GetStage()
     if stage ~= nil and not ent.sg:HasStateTag("acting") then
         local cast = stage.components.stageactingprop.cast
@@ -199,6 +199,22 @@ function abortplay(ent)
 
         if not ent.sg:HasStateTag("running") or not matched_location then
             stage.components.stageactingprop:ClearPerformance(ent)
+        end
+    end
+end
+
+local function costumecheck(ent)
+    if ent.stageactingprop_ignorecostumecheck_hack then
+        return
+    end
+
+    local stage = ent.components.stageactor:GetStage()
+    if stage then
+        local stageactingprop = stage.components.stageactingprop
+        if stageactingprop then
+            if not ent.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) or not ent.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) then
+                stageactingprop:ClearPerformance(ent)
+            end
         end
     end
 end
@@ -236,6 +252,7 @@ function StageActingProp:EndPerformance(doer)
 
         if data.castmember.components.stageactor then
             data.castmember.components.stageactor:SetStage(nil)
+            self.inst:RemoveEventCallback("unequip", costumecheck, data.castmember)
             self.inst:RemoveEventCallback("newstate", abortplay, data.castmember)
 			data.castmember:PushEvent("stopstageacting")
 
@@ -282,6 +299,7 @@ function StageActingProp:DoPerformance(doer)
             data.castmember:AddTag("acting")
             data.castmember.components.stageactor:SetStage(self.inst)
 			data.castmember:PushEvent("startstageacting")
+            self.inst:ListenForEvent("unequip", costumecheck, data.castmember)
             if data.castmember.sg ~= nil then
                 self.inst:ListenForEvent("newstate", abortplay, data.castmember)
             end

@@ -894,6 +894,11 @@ end
 
 --------------------------------------------------------------------------
 
+local SCRAPBOOK_SYMBOLCOLOURS = {
+	{"lb_glow", 1, 1, 1, 0.375},
+	--{"lb_flame_loop", 1, 1, 1, 0.75},
+}
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -991,6 +996,7 @@ local function fn()
 	end
 
 	inst.scrapbook_anim = "scrapbook"
+	inst.scrapbook_symbolcolours = SCRAPBOOK_SYMBOLCOLOURS
 
 	inst:AddComponent("inspectable")
 

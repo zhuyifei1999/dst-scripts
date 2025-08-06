@@ -1920,6 +1920,35 @@ local PREFABS =
     ["wagstaff_materials_note"] = true,
     ["wagstaff_thermal_note"] = true,
 
+    -- [[ Electrocute ]]
+    ["wagboss_robot_constructionsite"] = true,
+    ["wagboss_robot_constructionsite_kit"] = true,
+    ["wagboss_robot_creation_parts"] = true,
+
+    ["moonstorm_static_catcher"] = true,
+    ["moonstorm_static_roamer"] = true,
+    ["coolant"] = true,
+
+    ["fence_electric"] = true,
+    ["fence_electric_item"] = true,
+
+    ["mutatedbird"] = true,
+
+    -- [[ Missed Prefabs ]]
+
+    ["shadowhand"] = true,
+    ["waveyjones"] = true,
+    ["ruins_shadeling"] = true,
+    ["gestalt"] = true,
+    ["lunarthrall_plant_gestalt"] = true,
+    ["wobysmall"] = true,
+    ["deer_red"] = true,
+    ["deer_blue"] = true,
+    ["gingerbreadpig"] = true,
+    ["gingerbreadwarg"] = true,
+    --["dreadstone_stack"] = true, --Not a seperate prefab
+
+
     -----------------------------------------------
 
     --["archive_switch"] = true, proxy for archive_switch_base

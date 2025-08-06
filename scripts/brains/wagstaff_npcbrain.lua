@@ -167,6 +167,7 @@ local function OnFinishExperiment_gestaltcage(inst, item, socketable)
     end
 end
 
+local FILLED3_TAGS = {"gestalt_cage_filled", "irreplaceable"}
 local function DoArenaActions(inst)
     if inst.desiredlocation then
         local location = inst.desiredlocation
@@ -200,6 +201,10 @@ local function DoArenaActions(inst)
             if socketable then
                 local distance = inst:GetPhysicsRadius(0) + socketable:GetPhysicsRadius(0) + 1
                 inst.avoid_erodeout = true
+                if inst.dofadeoutintask then
+                    inst.dofadeoutintask:Cancel()
+                    inst.dofadeoutintask = nil
+                end
                 if inst:GetDistanceSqToInst(socketable) <= distance * distance then
                     inst:DoExperiment(nil, OnFinishExperiment_gestaltcage, item, socketable)
                     return
@@ -235,6 +240,22 @@ local function DoArenaActions(inst)
             end
         end
         return
+    end
+
+    if inst.wantingcage then
+        local lunaralterguardian = TheWorld.components.lunaralterguardianspawner and TheWorld.components.lunaralterguardianspawner:GetGuardian() or nil
+        if not lunaralterguardian then
+            local x, y, z = inst.Transform:GetWorldPosition()
+            if TheSim:CountEntities(x, y, z, 12, FILLED3_TAGS) > 0 then
+                return
+            end
+        else
+            if lunaralterguardian.sg:HasStateTag("temp_invincible") then
+                return
+            end
+        end
+        inst.wantingcage = nil
+        inst:DoFadeOutIn(0.5)
     end
 
     if inst.oneshot and inst.sg:HasStateTag("idle") then

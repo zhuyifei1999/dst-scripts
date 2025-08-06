@@ -786,19 +786,20 @@ nil, --timeline
 {	--fns
 	loop_onenter = function(inst)
 		if inst.sg:HasStateTag("stuck") then
-			inst.sg.statemem.shockstarttime = GetTime()
+			inst.sg.mem.shockstarttime = GetTime()
 		end
 	end,
 	loop_onexit = function(inst)
 		if inst.sg:HasStateTag("stuck") and not inst.sg.statemem.not_interrupted then
 			inst.sg.mem.stuckstarttime = nil
+			inst.sg.mem.shockstarttime = nil
 		end
 	end,
 	onanimover = function(inst)
 		if inst.AnimState:AnimDone() then
 			if inst.sg:HasStateTag("stuck") then
 				if inst.sg.mem.stuckstarttime then
-					inst.sg.mem.stuckstarttime = inst.sg.mem.stuckstarttime + (GetTime() - inst.sg.statemem.shockstarttime) * 0.5
+					inst.sg.mem.stuckstarttime = inst.sg.mem.stuckstarttime + (GetTime() - inst.sg.mem.shockstarttime) * 0.5
 				end
 				inst.sg.statemem.not_interrupted = true
 				inst.sg:GoToState("ability_dropkick_miss_stuck_loop")
@@ -810,6 +811,7 @@ nil, --timeline
 	pst_onexit = function(inst)
 		if inst.sg:HasStateTag("stuck") and not inst.sg.statemem.not_interrupted then
 			inst.sg.mem.stuckstarttime = nil
+			inst.sg.mem.shockstarttime = nil
 		end
 	end,
 })

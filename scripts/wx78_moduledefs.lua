@@ -306,7 +306,7 @@ local function taser_onblockedorattacked(wx, data, inst)
 				damage_mult = TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * data.attacker:GetWetMultiplier()
             end
 
-			data.attacker:PushEvent("electrocute", { attacker = inst, stimuli = "electric" })
+			data.attacker:PushEvent("electrocute", { attacker = wx, stimuli = "electric" })
             data.attacker.components.combat:GetAttacked(wx, damage_mult * TUNING.WX78_TASERDAMAGE, nil, "electric")
         end
     end

@@ -1109,6 +1109,7 @@ local function fn()
 	inst:AddTag("scarytoprey")
 	inst:AddTag("largecreature")
 	inst:AddTag("junkmob")
+    inst:AddTag("pigtype") -- For scrapbook
 	--inst:AddTag("lunar_aligned")
 
 	inst.AnimState:SetBank("daywalker")

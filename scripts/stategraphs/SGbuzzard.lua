@@ -28,7 +28,7 @@ local events=
     end),
 
 	EventHandler("onignite", function(inst)
-		if not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
+		if inst.components.health and not (inst.components.health:IsDead() or inst.sg:HasStateTag("electrocute")) then
 			inst.sg:GoToState("distress_pre")
 		end
 	end),

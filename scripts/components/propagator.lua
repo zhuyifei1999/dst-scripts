@@ -99,6 +99,11 @@ function Propagator:GetHeatResistance()
         or 1
 end
 
+function Propagator:CanSpreadHeat()
+    local _, tile_info = self.inst:GetCurrentTileType()
+    return tile_info == nil or not tile_info.no_fire_spread
+end
+
 function Propagator:AddHeat(amount,source)
     if self.delay ~= nil or self.inst:HasTag("fireimmune") then
         return
@@ -153,6 +158,7 @@ function Propagator:OnUpdate(dt)
     if self.spreading then
         local ents = TheSim:FindEntities(x, y, z, prop_range, nil, TARGET_CANT_TAGS)
         if #ents > 0 and prop_range > 0 then
+            local can_spread_fire = self:CanSpreadHeat()
             local dmg_range = TheWorld.state.isspring and self.damagerange * TUNING.SPRING_FIRE_RANGE_MOD or self.damagerange
             local dmg_range_sq = dmg_range * dmg_range
             local prop_range_sq = prop_range * prop_range
@@ -164,7 +170,8 @@ function Propagator:OnUpdate(dt)
                     local dsq = VecUtil_LengthSq(x - vx, z - vz)
 
                     if v ~= self.inst then
-                        if v.components.propagator ~= nil and
+                        if can_spread_fire and
+                            v.components.propagator ~= nil and
                             v.components.propagator.acceptsheat and
                             not v.components.propagator.pauseheating then
                             local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)

@@ -45,6 +45,12 @@ local HAIL_EVENT_TIMERS = {
     POST_HAIL = "posthailbird",     --Timer for the devastation after the hail, til things recover
 }
 
+local HAIL_SOUND_LEVELS = {
+    NONE = 0,       --No Ambience
+    SCUFFLES = 1,   --Scuffling in the sky, and fighting with gestalts
+    CORPSES = 2,    --Corpses are falling
+}
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -92,6 +98,12 @@ local _players_angry_at = {}
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
+
+local function SetLunarHailSoundLevel(level)
+    if TheWorld.net.components.lunarhailbirdsoundmanager then
+        TheWorld.net.components.lunarhailbirdsoundmanager:SetLevel(level)
+    end
+end
 
 local function GetPostHailEasingMult()
     --return 0 if we're currently hailing?
@@ -261,6 +273,8 @@ local function ClearLunarBirdEventTimer()
 end
 
 local function OnLunarBirdEvent(inst)
+    SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.CORPSES)
+
     for _, player in ipairs(_activeplayers) do
         local corpse_spawned = false
         local corpse_bird_count = math.random(_corpse_min_count, _corpse_max_count)
@@ -326,6 +340,8 @@ local function OnIsLunarHailing(inst, ishailing, onpostinit)
             inst.components.timer:StartTimer(HAIL_EVENT_TIMERS.CORPSES, bird_event_time)
         end
 
+        SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.SCUFFLES)
+
         --Restart the post hail period
         inst.components.timer:StopTimer(HAIL_EVENT_TIMERS.POST_HAIL)
     else
@@ -334,10 +350,12 @@ local function OnIsLunarHailing(inst, ishailing, onpostinit)
             _timescale_modifiers:SetModifier(inst, TUNING.BIRD_POST_HAIL_FACTOR, SPAWN_FACTOR_KEYS.POST_HAIL)
             inst.components.timer:StartTimer(HAIL_EVENT_TIMERS.POST_HAIL, _posthail_time)
         end
+
+        SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.NONE)
         ClearLunarBirdEventTimer()
     end
 
-    _ishailing = ishailing --Do we need to save this?
+    _ishailing = ishailing
 
     ToggleUpdate(true)
     UpdatePostHailModifier()

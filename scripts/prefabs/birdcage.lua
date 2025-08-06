@@ -21,6 +21,10 @@ local prefabs =
     "canary",
     "guano",
     "rottenegg",
+    "mutatedbird",
+    "bird_mutant",
+    "bird_mutant_spitter",
+    "purebrilliance",
 }
 
 local invalid_foods =

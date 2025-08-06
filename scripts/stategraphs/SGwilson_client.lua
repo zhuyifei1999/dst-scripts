@@ -1522,7 +1522,7 @@ local states =
 
     State{
         name = "run_monkey",
-        tags = {"moving", "running", "canrotate", "monkey"},
+		tags = { "moving", "running", "canrotate", "monkey", "monkey_predict_run" --[[for hunger drain arrow]]},
 
         onenter = function(inst)
             ConfigureRunState(inst)

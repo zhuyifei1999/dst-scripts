@@ -137,8 +137,9 @@ local function OnAttacked(inst, data)
             if data.attacker.components.health ~= nil and not data.attacker.components.health:IsDead() and
                 data.stimuli ~= "soul" and
                 (data.weapon == nil or ((data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil) and data.weapon.components.projectile == nil)) and
-                not (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated()) then
-
+				not (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated()) and
+				not data.attacker:HasTag("catapult")
+			then
 				local damage_mult = 1
 				if not IsEntityElectricImmune(data.attacker) then
 					damage_mult = TUNING.ELECTRIC_DAMAGE_MULT + TUNING.ELECTRIC_WET_DAMAGE_MULT * data.attacker:GetWetMultiplier()

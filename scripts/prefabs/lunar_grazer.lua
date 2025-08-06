@@ -419,6 +419,9 @@ local function fn()
 		return inst
 	end
 
+    inst.scrapbook_animoffsety = 0
+    inst.scrapbook_bb_y_extra = 75
+
 	inst.cloud = SpawnPrefab("lunar_goop_cloud_fx")
 	inst.cloud.entity:SetParent(inst.entity)
 

@@ -8337,6 +8337,11 @@ function Tune(overrides)
 
         SHADOWTHRALL_PARASITE_TIMEOUT = total_day_time*5,
 
+        SHADOWTHRALL_PARASITE_WAVE_MIN = 6,
+        SHADOWTHRALL_PARASITE_WAVE_VAR = 6, --6 + 6 = 12
+
+        SHADOWTHRALL_PARASITE_WAVE_ENABLED = true,
+
 		-- Winter's Feast 2024
 		SNOWMAN_MAX_DECOR = { 5, 15, 20 },
 

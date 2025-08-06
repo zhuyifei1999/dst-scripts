@@ -1194,7 +1194,8 @@ TileManager.AddTile(
         walksound="dontstarve/movement/run_marble",
         snowsound="dontstarve/movement/run_ice",
         mudsound="dontstarve/movement/run_mud",
-        flashpoint_modifier = 250,
+        flashpoint_modifier = 250, --Deprecated, as fire spread is completely disabled now.
+        no_fire_spread = true,
         flooring = true,
         hard = true,
     },

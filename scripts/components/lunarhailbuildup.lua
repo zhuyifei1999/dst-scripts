@@ -139,6 +139,12 @@ function LunarHailBuildup:DoWorkToRemoveBuildup(workcount, doer)
     self.inst:PushEvent("lunarhailbuildupworked", {doer = doer})
 end
 
+function LunarHailBuildup:DoAllRemainingWorkToRemoveBuildup(doer)
+    if self.workleft > 0 then
+        self:DoWorkToRemoveBuildup(self.workleft, doer)
+    end
+end
+
 
 
 function LunarHailBuildup:DropRewards(mult)

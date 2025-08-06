@@ -179,7 +179,7 @@ function Placer:CanStartAxisAlignedPlacementForItem(item)
         return false
     end
 
-    if item:HasAnyTag("tile_deploy", "groundtile") then
+    if item:HasAnyTag("tile_deploy", "groundtile", "boatbuilder") then
         return false
     end
 
@@ -191,7 +191,8 @@ function Placer:SetBuilder(builder, recipe, invobject)
     self.recipe = recipe
     self.invobject = invobject
     if self.builder and self.builder == ThePlayer then
-        self.axisalignedplacement = self:CanStartAxisAlignedPlacementForItem(self.invobject) and Profile:GetAxisAlignedPlacement() or false
+        self.axisalignedplacementallowedbyitem = self:CanStartAxisAlignedPlacementForItem(self.invobject)
+        self.axisalignedplacement = self.axisalignedplacementallowedbyitem and Profile:GetAxisAlignedPlacement() or false
         if self.axisalignedplacement or not TheInput:ControllerAttached() then
             self:InitializeAxisAlignedHelpers()
         end
@@ -428,7 +429,7 @@ function Placer:OnUpdate(dt)
                 hide_if_cannot_build = true
             end
         else
-            self.axisalignedplacementtoggle = TheInput:IsControlPressed(CONTROL_AXISALIGNEDPLACEMENT_TOGGLEMOD)
+            self.axisalignedplacementtoggle = self.axisalignedplacementallowedbyitem and TheInput:IsControlPressed(CONTROL_AXISALIGNEDPLACEMENT_TOGGLEMOD)
             if self:IsAxisAlignedPlacement() then
                 axisalignedhelpers_visible = true
                 self.inst.Transform:SetPosition(self:GetAxisAlignedPlacementTransform(pt.x, 0, pt.z))

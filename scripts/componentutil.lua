@@ -963,10 +963,11 @@ function LightningStrikeAttack(inst)
         return false
     end
 
-    local wetness_mult = TUNING.ELECTRIC_WET_DAMAGE_MULT * inst:GetWetMultiplier()
-    local damage = TUNING.LIGHTNING_DAMAGE + wetness_mult * TUNING.LIGHTNING_DAMAGE
-
-    inst.components.health:DoDelta(-damage, false, "lightning")
+    if inst.components.health then
+        local wetness_mult = TUNING.ELECTRIC_WET_DAMAGE_MULT * inst:GetWetMultiplier()
+        local damage = TUNING.LIGHTNING_DAMAGE + wetness_mult * TUNING.LIGHTNING_DAMAGE
+        inst.components.health:DoDelta(-damage, false, "lightning")
+    end
 	--V2C: -switched to stategraph event instead of GoToState
 	--     -use Immediate to preserve legacy timing
 	inst:PushEventImmediate("electrocute")
@@ -1001,7 +1002,7 @@ function StrikeLightningAtPoint(strike_prefab, hit_player, x, y, z)
         local ents = TheSim:FindEntities(x, y, z, TUNING.LIGHTNING_STRIKE_RADIUS, nil, LIGHTNING_EXCLUDE_TAGS)
         for _, ent in pairs(ents) do
             if not IsEntityElectricImmune(ent) then
-                if ent.sg and ent.sg:HasState("electrocute") then
+                if CanEntityBeElectrocuted(ent) then
                     if not hit_player then
                         LightningStrikeAttack(ent)
                     end

@@ -66,7 +66,7 @@ local function OnBuilt_constructionsite(inst, data)
 end
 
 local function OnLoad_constructionsite(inst, data)
-    OnConstructed(inst, nil)
+    OnConstructed_constructionsite(inst, nil)
 end
 
 local function fn_constructionsite()

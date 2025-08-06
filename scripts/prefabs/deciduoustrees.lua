@@ -201,7 +201,9 @@ local function SpawnLeafFX(inst, waittime, chop)
 end
 
 local function PushSway(inst, monster, monsterpost, skippre)
-    if monster then
+	if inst.sg:HasStateTag("electrocute") then
+		return
+	elseif monster then
         inst.sg:GoToState("gnash_pre", { push = true, skippre = skippre })
     elseif monsterpost then
         inst.sg:GoToState(inst.sg:HasStateTag("gnash") and "gnash_pst" or "gnash_idle")
@@ -213,7 +215,7 @@ local function PushSway(inst, monster, monsterpost, skippre)
 end
 
 local function Sway(inst, monster, monsterpost)
-    if inst.sg:HasStateTag("burning") or inst:HasTag("stump") then
+	if inst.sg:HasAnyStateTag("burning", "electrocute") or inst:HasTag("stump") then
         return
     elseif monster then
         inst.sg:GoToState("gnash_pre", { push = false, skippre = false })
@@ -444,7 +446,9 @@ local function chop_tree(inst, chopper, chopsleft, numchops)
     if inst.monster then
 		if inst.dostartmonster_task == nil then
 			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/hurt_chop")
-			inst.sg:GoToState("chop_pst")
+			if not inst.sg:HasStateTag("electrocute") then
+				inst.sg:GoToState("chop_pst")
+			end
 		elseif inst.components.workable and chopsleft <= 0 then
 			-- V2C: doesn't handle nicely being chopped down during the short transformation window
 			inst.components.workable:SetWorkLeft(1)
@@ -805,6 +809,8 @@ local function DoStartMonster(inst, starttimeoffset)
         inst:AddComponent("combat")
 		inst.sg.mem.noelectrocute = nil
 		inst.sg.mem.burn_on_electrocute = true
+
+        MakeCollidesWithElectricField(inst)
     end
     if inst.components.deciduoustreeupdater == nil then
         inst:AddComponent("deciduoustreeupdater")
@@ -871,6 +877,7 @@ local function StopMonster(inst)
         inst:RemoveComponent("combat")
 		inst.sg.mem.burn_on_electrocute = nil
 		inst.sg.mem.noelectrocute = true
+        ClearCollidesWithElectricField(inst)
         if not (inst:HasTag("stump") or inst:HasTag("burnt")) then
             inst.AnimState:PlayAnimation("transform_out")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_out")
@@ -885,7 +892,7 @@ local function StopMonster(inst)
 end
 
 local function onignite(inst)
-    if inst.monster and not inst:HasTag("stump") then
+	if inst.monster and not (inst.sg:HasStateTag("electrocute") or inst:HasTag("stump")) then
         inst.sg:GoToState("burning_pre")
     end
     if inst.components.deciduoustreeupdater ~= nil then
@@ -894,7 +901,7 @@ local function onignite(inst)
 end
 
 local function onextinguish(inst)
-    if inst.monster and not inst:HasTag("stump") then
+	if inst.monster and not (inst.sg:HasStateTag("electrocute") or inst:HasTag("stump")) then
         inst.sg:GoToState("gnash_idle")
     end
 end
@@ -1321,8 +1328,7 @@ local function makefn(build, stage, data)
 
         inst:PrereplicateComponent("combat")
 
-		inst.override_combat_fx_size = "med"
-		inst.override_combat_fx_height = "high"
+		inst.override_combat_fx_size = "large"
 
         inst:SetStateGraph("SGdeciduoustree")
 		inst.sg.mem.noelectrocute = true

@@ -649,6 +649,12 @@ local function riftgestalt_AddFollowFx(inst, anim, symbol)
 	fx.OnRemoveEntity = riftgestalt_OnRemoveEntity
 end
 
+local SCRAPBOOK_OVERRIDEBUILDS = {"alterguardian_phase1_lunar", "wagboss_lunar"}
+local SCRAPBOOK_SYMBOLCOLOURS = { 
+    {"lb_glow", 1, 1, 1, 0.375},
+    {"scrapbook_art", 1, 1, 1, 0.75},
+    {"lb_flame_loop", 1, 1, 1, 0.75}, 
+}
 local function riftgestaltfn()
 	local inst = CreateEntity()
 
@@ -690,7 +696,8 @@ local function riftgestaltfn()
 
 	inst.scrapbook_bank = "alterguardian_phase1"
 	inst.scrapbook_build = "alterguardian_phase1_lunarrift"
-    inst.scrapbook_overridebuild = "wagboss_lunar"
+    inst.scrapbook_overridebuild = SCRAPBOOK_OVERRIDEBUILDS
+    inst.scrapbook_symbolcolours = SCRAPBOOK_SYMBOLCOLOURS
     inst.scrapbook_anim = "scrapbook"
 
 	inst:AddComponent("inspectable")

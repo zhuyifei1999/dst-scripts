@@ -9,7 +9,9 @@ local assets =
 
 local prefabs =
 {
-
+    "spoiled_food",
+    "purebrilliance",
+    --"lunarfeather",
 }
 
 SetSharedLootTable('bird_mutant_rift',
@@ -24,6 +26,7 @@ local sounds =
     takeoff = "lunarhail_event/creatures/lunar_crow/fly_out",
     attack = "lunarhail_event/creatures/lunar_crow/attack",
     eat = "lunarhail_event/creatures/lunar_crow/peck_shard",
+    death = "lunarhail_event/creatures/lunar_crow/death",
 }
 
 local brain = require "brains/bird_mutant_rift_brain"
@@ -92,6 +95,12 @@ local function OnTimerDone(inst, data)
     if data and data.name == BRILLIANCE_TIMER then
         UpdateBrillianceVisual(inst, inst.components.occupier:GetOwner())
     end
+end
+
+local function OnDeath(inst)
+    inst.AnimState:ClearSymbolBloom("bird_gem")
+    inst.AnimState:SetSymbolLightOverride("bird_gem", 0)
+    inst.AnimState:SetSymbolLightOverride("crow_beak", 0)
 end
 
 local function OnSave(inst, data)
@@ -223,6 +232,7 @@ local function commonfn()
     inst:DoTaskInTime(0, inst.UpdateBrillianceVisual)
 
     inst:ListenForEvent("timerdone", OnTimerDone)
+    inst:ListenForEvent("death", OnDeath)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

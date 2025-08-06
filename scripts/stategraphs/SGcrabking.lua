@@ -347,7 +347,7 @@ local states =
 
     State{
         name = "inert_pst",
-        tags = { "inert" },
+		tags = { "inert", "noelectrocute" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("inert_pst")
@@ -364,6 +364,9 @@ local states =
 
         events =
         {
+			EventHandler("attacked", function(inst)
+				return true --block ALL hit reacts
+			end),
             EventHandler("animqueueover", go_to_idle),
         },
     },

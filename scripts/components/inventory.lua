@@ -1682,9 +1682,11 @@ function Inventory:DropEverything(ondeath, keepequip)
     end
 end
 
-function Inventory:DropEquipped(keepBackpack)
+function Inventory:DropEquipped(keepBackpack, keepPreventUnequipping)
     for k, v in pairs(self.equipslots) do
-        if not (keepBackpack and v:HasTag("backpack")) then
+		if not (keepBackpack and v:HasTag("backpack")) and
+			not (keepPreventUnequipping and v.components.equippable and v.components.equippable:ShouldPreventUnequipping())
+		then
             self:DropItem(v, true, true)
         end
     end

@@ -2467,7 +2467,7 @@ local states =
             inst:SetCameraDistance(14)
             inst.AnimState:PlayAnimation("transform_pre")
             DoHurtSound(inst)
-            inst.components.inventory:DropEquipped(true)
+			inst.components.inventory:DropEquipped(true, true)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 12 * FRAMES)
         end,
 
@@ -2592,7 +2592,7 @@ local states =
             inst:SetCameraDistance(14)
             inst.AnimState:PlayAnimation("weremoose_transform")
             DoHurtSound(inst)
-            inst.components.inventory:DropEquipped(true)
+			inst.components.inventory:DropEquipped(true, true)
             for i, v in ipairs(weremoose_symbols) do
                 inst.AnimState:OverrideSymbol(v, "weremoose_build", v)
             end
@@ -2764,7 +2764,7 @@ local states =
             inst:SetCameraDistance(14)
             inst.AnimState:PlayAnimation("transform_weregoose_pre")
             DoHurtSound(inst)
-            inst.components.inventory:DropEquipped(true)
+			inst.components.inventory:DropEquipped(true, true)
         end,
 
         events =
@@ -10440,6 +10440,9 @@ local states =
 
         onenter = function(inst)
             ConfigureRunState(inst)
+			--goose footsteps should always be light
+			inst.sg.mem.footsteps = (inst.sg.statemem.goose or inst.sg.statemem.goosegroggy) and 4 or 0
+
 			if inst.sg.statemem.normalwonkey then
 				if inst.components.locomotor:GetTimeMoving() >= TUNING.WONKEY_TIME_TO_RUN then
 					inst.sg:GoToState("run_monkey") --resuming after brief stop from changing directions, or resuming prediction after running into obstacle
@@ -10468,8 +10471,6 @@ local states =
             end
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pre")
-            --goose footsteps should always be light
-            inst.sg.mem.footsteps = (inst.sg.statemem.goose or inst.sg.statemem.goosegroggy) and 4 or 0
         end,
 
         onupdate = function(inst)
@@ -10971,6 +10972,7 @@ local states =
             end
             inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED + TUNING.WONKEY_SPEED_BONUS
             inst.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.WONKEY_RUN_HUNGER_RATE_MULT, "wonkey_run")
+			inst:AddTag("wonkey_run")
             inst.Transform:SetPredictedSixFaced()
             inst.components.locomotor:RunForward()
 
@@ -11030,6 +11032,7 @@ local states =
             if not inst.sg.statemem.monkeyrunning then
                 inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED + TUNING.WONKEY_WALK_SPEED_PENALTY
                 inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "wonkey_run")
+				inst:RemoveTag("wonkey_run")
                 inst.Transform:ClearPredictedFacingModel()
             end
         end,
@@ -23955,6 +23958,7 @@ local states =
 					end
 				else
 					inst.sg.statemem.swimming = false
+					inst:RemoveTag("swimming_floater")
 					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					if elapsed >= swimtime.min then
 						inst.sg.statemem.swim_t = t + swimtime.min
@@ -24052,6 +24056,7 @@ local states =
 				end
 				if inst.sg.statemem.swimming then
 					inst.sg.statemem.swimming = false
+					inst:RemoveTag("swimming_floater")
 					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					inst.components.locomotor:Stop()
 					inst.components.locomotor:Clear()
@@ -24070,6 +24075,7 @@ local states =
 				end
 				if inst.sg.statemem.swimming then
 					inst.sg.statemem.swimming = false
+					inst:RemoveTag("swimming_floater")
 					inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 					inst.components.locomotor:Stop()
 					inst.components.locomotor:Clear()
@@ -24090,6 +24096,7 @@ local states =
 					end
 					if inst.sg.statemem.swimming then
 						inst.sg.statemem.swimming = false
+						inst:RemoveTag("swimming_floater")
 						inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 						inst.components.locomotor:Stop()
 						inst.components.locomotor:Clear()
@@ -24140,6 +24147,7 @@ local states =
 						if inst.sg.statemem.swim_t == nil and not data.remoteoverridelocomote then
 							inst.sg.statemem.swimming = true
 							inst.sg.statemem.announced_tired = false
+							inst:AddTag("swimming_floater")
 							inst.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.FLOATING_SWIM_HUNGER_RATE_MULT, "swimming_floater")
 							inst.sg.statemem.swim_t = GetTime()
 							inst.AnimState:PlayAnimation("swim_pre")
@@ -24180,6 +24188,7 @@ local states =
 			else
 				inst:RemoveTag("noswim")
 			end
+			inst:RemoveTag("swimming_floater")
 			inst.components.hunger.burnratemodifiers:RemoveModifier(inst, "swimming_floater")
 			if not (inst.sg.statemem.floating or inst.sg.statemem.sink) then
 				inst.DynamicShadow:Enable(true)
