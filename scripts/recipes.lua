@@ -867,6 +867,8 @@ Recipe2("chesspiece_yotd_builder",				{Ingredient(TECH_INGREDIENT.SCULPTING, 2),
 Recipe2("chesspiece_sharkboi_builder",			{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)},									TECH.LOST,					{nounlock = true, actionstr="SCULPTING", image="chesspiece_sharkboi.tex"})
 Recipe2("chesspiece_wormboss_builder",			{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)},									TECH.LOST,					{nounlock = true, actionstr="SCULPTING", image="chesspiece_wormboss.tex"})
 Recipe2("chesspiece_yots_builder",				{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)},									TECH.LOST,					{nounlock = true, actionstr="SCULPTING", image="chesspiece_yots.tex"})
+Recipe2("chesspiece_wagboss_robot_builder",		{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)},									TECH.LOST,					{nounlock = true, actionstr="SCULPTING", image="chesspiece_wagboss_robot.tex"})
+Recipe2("chesspiece_wagboss_lunar_builder",		{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)},									TECH.LOST,					{nounlock = true, actionstr="SCULPTING", image="chesspiece_wagboss_lunar.tex"})
 
 -- Hermitcrab
 Recipe2("hermitshop_hermit_bundle_shells",				{Ingredient("messagebottleempty", 1)},														TECH.HERMITCRABSHOP_ONE,	{nounlock = true, sg_state="give", product="hermit_bundle_shells",		image="hermit_bundle.tex"})

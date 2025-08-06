@@ -117,7 +117,7 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = -TUNING.SANITY_MED
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
 
 	inst:AddComponent("timer")
 	inst.components.timer:StartTimer("decay", TUNING.KOALEFANT_CARCASS_DECAY_TIME)

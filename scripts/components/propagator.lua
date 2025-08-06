@@ -92,11 +92,16 @@ end
 --really this is TemperatureResistance, since it prevents cold from spreading also.
 function Propagator:GetHeatResistance()
     local tile, tile_info = self.inst:GetCurrentTileType()
-    return tile_info ~= nil
-        and tile_info.flashpoint_modifier ~= nil
-        and tile_info.flashpoint_modifier ~= 0
-        and math.max(1, self.flashpoint) / math.max(1, self.flashpoint + tile_info.flashpoint_modifier)
-        or 1
+
+    if tile_info ~= nil then
+        if tile_info.no_fire_spread then --This also prevents cold from spreading, but we don't have anything that spreads cold (in terms of fire), so it's OK
+            return 0
+        elseif tile_info.flashpoint_modifier ~= nil and tile_info.flashpoint_modifier ~= 0 then
+            return math.max(1, self.flashpoint) / math.max(1, self.flashpoint + tile_info.flashpoint_modifier)
+        end
+    end
+
+    return 1
 end
 
 function Propagator:CanSpreadHeat()
@@ -158,7 +163,6 @@ function Propagator:OnUpdate(dt)
     if self.spreading then
         local ents = TheSim:FindEntities(x, y, z, prop_range, nil, TARGET_CANT_TAGS)
         if #ents > 0 and prop_range > 0 then
-            local can_spread_fire = self:CanSpreadHeat()
             local dmg_range = TheWorld.state.isspring and self.damagerange * TUNING.SPRING_FIRE_RANGE_MOD or self.damagerange
             local dmg_range_sq = dmg_range * dmg_range
             local prop_range_sq = prop_range * prop_range
@@ -170,8 +174,7 @@ function Propagator:OnUpdate(dt)
                     local dsq = VecUtil_LengthSq(x - vx, z - vz)
 
                     if v ~= self.inst then
-                        if can_spread_fire and
-                            v.components.propagator ~= nil and
+                        if v.components.propagator ~= nil and
                             v.components.propagator.acceptsheat and
                             not v.components.propagator.pauseheating then
                             local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)

@@ -28,7 +28,7 @@ local events =
 {
     CommonHandlers.OnFreeze(),
 	CommonHandlers.OnElectrocute(),
-    EventHandler("attacked", function(inst)
+	EventHandler("attacked", function(inst, data)
 		if not inst.components.health:IsDead() then
 			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return

@@ -1924,6 +1924,8 @@ local PREFABS =
     ["wagboss_robot_constructionsite"] = true,
     ["wagboss_robot_constructionsite_kit"] = true,
     ["wagboss_robot_creation_parts"] = true,
+    ["chesspiece_wagboss_robot"] = true,
+    ["chesspiece_wagboss_lunar"] = true,
 
     ["moonstorm_static_catcher"] = true,
     ["moonstorm_static_roamer"] = true,

@@ -180,6 +180,10 @@ local function OnRemove(inst)
     end
 end
 
+local function CanMouseThrough() -- So that we don't block trying to select other entities.
+	return true, true
+end
+
 local function create_hand()
     local inst = CreateEntity()
 
@@ -192,7 +196,7 @@ local function create_hand()
     RemovePhysicsColliders(inst)
 
     inst:AddTag("shadowhand")
-    inst:AddTag("NOCLICK")
+    --inst:AddTag("NOCLICK") --NOTE: Don't add NOCLICK! Else sanity aura doesn't work!
     inst:AddTag("ignorewalkableplatforms")
 
     inst.AnimState:SetBank("shadowcreatures")
@@ -204,6 +208,8 @@ local function create_hand()
     inst.AnimState:PushAnimation("hand_in_loop", true)
 
     inst.scrapbook_inspectonseen = true
+
+    inst.CanMouseThrough = CanMouseThrough
 
     inst.entity:SetPristine()
 

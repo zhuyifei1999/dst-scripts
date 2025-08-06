@@ -39,6 +39,7 @@ local prefabs =
 	"purebrilliance",
 	"gears",
 	"temp_beta_msg", --#TEMP_BETA
+    "chesspiece_wagboss_lunar_sketch",
 }
 
 SetSharedLootTable("alterguardian_phase4_lunarrift",
@@ -62,6 +63,8 @@ SetSharedLootTable("alterguardian_phase4_lunarrift",
 	{ "trinket_6",			0.7 },
 	{ "gears",				1.0 },
 	{ "gears",				0.5 },
+
+	{"chesspiece_wagboss_lunar_sketch", 1.0},
 })
 
 local WAGSTAFF_LOOT =
