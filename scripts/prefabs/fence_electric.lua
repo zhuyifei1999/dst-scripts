@@ -110,6 +110,14 @@ end
 
 ---------------------------------------------------------------------------
 
+local SCRAPBOOK_OVERRIDESYMBOLDATA =
+{
+    {"swap_light", "fence_electric", "light_off"}
+}
+local SCRAPBOOK_HIDEDATA = {
+    "light",
+    "electricity",
+}
 local function fn()
     local inst = CreateEntity()
 
@@ -158,6 +166,8 @@ local function fn()
     inst.scrapbook_build  = "fence_electric"
     inst.scrapbook_bank   = "fence_electric"
     inst.scrapbook_facing = FACING_DOWN
+    inst.scrapbook_overridedata = SCRAPBOOK_OVERRIDESYMBOLDATA
+    inst.scrapbook_hide = SCRAPBOOK_HIDEDATA
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus

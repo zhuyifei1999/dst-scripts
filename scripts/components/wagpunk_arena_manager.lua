@@ -1798,6 +1798,7 @@ end
 self.OnWagstaffSpawned_GiveGestaltCage = function(wagstaff)
     self.tryingtogivecage = nil
     self.givencage = true
+    wagstaff.wantingcage = true
     wagstaff:GiveGestaltCageToToss()
 end
 function self:DoWagstaffGiveGestaltCage(ent)

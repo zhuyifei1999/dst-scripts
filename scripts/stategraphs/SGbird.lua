@@ -48,7 +48,7 @@ local events =
     CommonHandlers.OnFreeze(),
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
-        if not inst.components.health:IsDead() then
+        if inst.components.health and not inst.components.health:IsDead() then
 			if not IsStuck(inst) and CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
 			elseif not inst.sg:HasStateTag("electrocute") then
@@ -146,6 +146,9 @@ local states =
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
+            if inst.sounds.death then
+                inst.SoundEmitter:PlaySound(inst.sounds.death)
+            end
         end,
     },
 
@@ -582,6 +585,7 @@ local states =
                     inst.Physics:SetVel(math.random(6, 10) * math.cos(rot), 0, math.random(6, 10) * -math.sin(rot))
                 end
                 inst.sg:GoToState("corpse_idle")
+                inst.SoundEmitter:PlaySound("lunarhail_event/creatures/lunar_crow/body_land")
 
                 --Can't use inventoryitem:TryToSink, not an item!
                 if ShouldEntitySink(inst, true) then
@@ -840,6 +844,7 @@ local states =
                 inst.components.combat:DoAttack(target)
             end
             inst.AnimState:PlayAnimation("takeoff_diagonal_loop", true)
+            inst.SoundEmitter:PlaySound(inst.sounds.attack)
             inst.Physics:SetMotorVel(15, math.random() * 5 + math.random() * 4, 0)
         end,
 

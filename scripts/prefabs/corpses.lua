@@ -357,6 +357,9 @@ local function MakeCreatureCorpse_Prop(data)
 
     local prefabname = creature.."corpse_prop"
 
+    local sanity_aura = data.sanityaura or -TUNING.SANITYAURA_MED
+    local sanity_aurafn = data.sanityaurafn or nil
+
     local scale = data.scale
     local faces = data.faces
 
@@ -404,6 +407,10 @@ local function MakeCreatureCorpse_Prop(data)
         end
 
         inst:AddComponent("inspectable")
+
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = sanity_aura
+        inst.components.sanityaura.aurafn = sanity_aurafn --Can be nil
 
 		if data.onrevealfn ~= nil then
 			inst:ListenForEvent("propreveal", data.onrevealfn)
@@ -476,6 +483,8 @@ return  -- For search: deerclopscorpse
             inst:ListenForEvent("animover", inst.Remove)
             inst.AnimState:PlayAnimation("carcass_fake")
         end,
+
+        sanityaura = -TUNING.SANITYAURA_SMALL,
     }),
 
     -- For search: birdcorpse
@@ -510,8 +519,9 @@ return  -- For search: deerclopscorpse
         bank = "buzzard",
         sg = "SGbuzzard",
         firesymbol = "buzzard_body",
-        makeburnablefn = MakeMediumBurnableCharacter,
-        faces = FACES.FOUR,
+        makeburnablefn = MakeMediumBurnableCorpse,
+        burntime = TUNING.MED_BURNTIME,
+        faces = FACES.TWO,
         tags = {"small_corpse"},
         mutate_on_entity_sleep = true,
         shadowsize = {1.25, .75},

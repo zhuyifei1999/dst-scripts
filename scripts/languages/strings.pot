@@ -320418,6 +320418,11 @@ msgctxt "STRINGS.NAMES.SHADOWDUELIST_BUILDER"
 msgid "Shadow Duelist"
 msgstr ""
 
+#. STRINGS.NAMES.SHADOWHAND
+msgctxt "STRINGS.NAMES.SHADOWHAND"
+msgid "Shadow Hand"
+msgstr ""
+
 #. STRINGS.NAMES.SHADOWHEART
 msgctxt "STRINGS.NAMES.SHADOWHEART"
 msgid "Shadow Atrium"
@@ -322911,6 +322916,11 @@ msgstr ""
 #. STRINGS.NAMES.WATHGRITHR_SHIELD
 msgctxt "STRINGS.NAMES.WATHGRITHR_SHIELD"
 msgid "Battle Rönd"
+msgstr ""
+
+#. STRINGS.NAMES.WAVEYJONES
+msgctxt "STRINGS.NAMES.WAVEYJONES"
+msgid "Wavey Jones"
 msgstr ""
 
 #. STRINGS.NAMES.WAXPAPER
@@ -330958,6 +330968,11 @@ msgctxt "STRINGS.SCRAPBOOK.FOODTYPE.BURNT"
 msgid "BURNT"
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.FOODTYPE.CORPSE
+msgctxt "STRINGS.SCRAPBOOK.FOODTYPE.CORPSE"
+msgid "CORPSE"
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.FOODTYPE.ELEMENTAL
 msgctxt "STRINGS.SCRAPBOOK.FOODTYPE.ELEMENTAL"
 msgid "ELEMENTAL"
@@ -330986,6 +331001,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.FOODTYPE.INSECT
 msgctxt "STRINGS.SCRAPBOOK.FOODTYPE.INSECT"
 msgid "INSECT"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.FOODTYPE.LUNAR_SHARDS
+msgctxt "STRINGS.SCRAPBOOK.FOODTYPE.LUNAR_SHARDS"
+msgid "LUNAR SHARDS"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.FOODTYPE.MEAT
@@ -331663,6 +331683,11 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.COOKBOOK"
 msgid "A record of all the foods cooked and/or eaten, as well as the ingredients used to cook them."
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.COOLANT
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.COOLANT"
+msgid "Essence of insight... Fuel of power... ...Bubbling."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.COSTUME
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.COSTUME"
 msgid "Costume piece used in stage plays."
@@ -332316,6 +332341,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SPECIALINFO.MOONSTORM_GOGGLESHAT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.MOONSTORM_GOGGLESHAT"
 msgid "Improves vision in a storm.\n\nWill help locate mysterious holograms."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.MOONSTORM_STATIC_CATCHER
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.MOONSTORM_STATIC_CATCHER"
+msgid "Now you're the catcher!\nFind the energy running loose in the storms and try to restrain it."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.MOON_ALTAR_ROCK
@@ -333353,6 +333383,21 @@ msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_MISSILE"
 msgid "These heat-seeking missiles lock onto the warmest thing they can find... So make sure that isn't you!"
 msgstr ""
 
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CONSTRUCTIONSITE
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CONSTRUCTIONSITE"
+msgid "Build the W.A.R.B.O.T. using only the most authentic parts."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT"
+msgid "There is only one place that this contraption can go so that the containment barrier can do its part in stabilizing the energies used."
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CREATION_PARTS
+msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_CREATION_PARTS"
+msgid "Parts cut according to the correct specifications for W.A.R.B.O.T. construction."
+msgstr ""
+
 #. STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_LEG
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.WAGBOSS_ROBOT_LEG"
 msgid "Although the W.A.R.B.O.T. material failed to fully contain the Celestial Scion, it may still prove useful in protecting the survivors."
@@ -333711,6 +333756,11 @@ msgstr ""
 #. STRINGS.SCRAPBOOK.SUBCATS.FARMPLANT
 msgctxt "STRINGS.SCRAPBOOK.SUBCATS.FARMPLANT"
 msgid "Farm Plant"
+msgstr ""
+
+#. STRINGS.SCRAPBOOK.SUBCATS.GESTALT
+msgctxt "STRINGS.SCRAPBOOK.SUBCATS.GESTALT"
+msgid "Gestalt"
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SUBCATS.HALLOWEENORNAMENT

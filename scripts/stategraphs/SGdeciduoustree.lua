@@ -2,7 +2,11 @@ require("stategraphs/commonstates")
 
 local events =
 {
-	CommonHandlers.OnElectrocute(),
+	EventHandler("electrocute", function(inst, data)
+		if inst.monster then
+			CommonHandlers.TryElectrocuteOnEvent(inst, data)
+		end
+	end),
 }
 
 local states=
@@ -190,5 +194,24 @@ local states=
         end,
     },
 }
+
+CommonStates.AddElectrocuteStates(states,
+nil, --timelines
+nil, --anims
+{	--fns
+	onanimover = function(inst)
+		if inst.AnimState:AnimDone() then
+			if inst.monster then
+				if math.random() <= 0.6 then
+					inst.sg:GoToState("gnash_pre", { push = false, skippre = false })
+				else
+					inst.sg:GoToState("gnash_idle")
+				end
+			else
+				inst.sg:GoToState("empty")
+			end
+		end
+	end,
+})
 
 return StateGraph("deciduoustree", states, events, "empty")

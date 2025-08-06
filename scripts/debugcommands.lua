@@ -2178,11 +2178,11 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "shell"
     elseif t:HasTag("bird") then
         subcat = "bird"
-    elseif t:HasTag("pig") and not t:HasTag("manrabbit") then
+    elseif t:HasAnyTag("pig", "pigtype") and not t:HasTag("manrabbit") then
         subcat = "pig"
     elseif t:HasTag("merm") then
         subcat = "merm"
-    elseif t:HasTag("hound") then
+    elseif t:HasAnyTag("hound", "warg") then
         subcat = "hound"
     elseif t:HasTag("chess") then
         subcat = "clockwork"
@@ -2232,7 +2232,9 @@ local function Scrapbook_DefineSubCategory(t)
         subcat = "tackle"
     elseif t.components.prototyper and t.sg == nil then
         subcat = "craftingstation"
-    elseif t:HasTag("shadow") then
+    elseif t:HasAnyTag("brightmare", "brightmare_gestalt", "brightmareboss") then
+        subcat = "gestalt"
+    elseif t:HasAnyTag("shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "shadowthrall", "shadowhand") then
         subcat = "shadow"
     elseif t:HasTag("book") then
         subcat = "book"
@@ -2285,6 +2287,7 @@ local SCRAPBOOK_NAME_LOOKUP =
     cookingrecipecard = "cookingrecipecard_scrapbook",
 
 	snowman = "snowball_large",
+    gingerdeadpig = "gingerbreadpig",
 }
 
 local function Scrapbook_DefineName(t)
@@ -2327,7 +2330,8 @@ local function Scrapbook_DefineType(t, entry)
     elseif t.prefab == "fused_shadeling_bomb" or
         t.prefab == "smallghost" or
         t.prefab == "wobybig" or
-        t.prefab == "stagehand"
+        t.prefab == "stagehand" or
+        t.prefab == "wagdrone_flying"
     then
         thingtype = "creature"
 
@@ -2454,11 +2458,13 @@ end
         scrapbook_animoffsety: Image position Y offset (number).
         scrapbook_animoffsetbgx: Image background position X offset (number).
         scrapbook_animoffsetbgy: Image background position Y offset (number).
+        scrapbook_bb_x_extra: Image background extra X space (number).
+        scrapbook_bb_y_extra: Image background extra Y space (number).
         scrapbook_animpercent: Animation percent (number).
         scrapbook_areadamage: Area damage (number).
         scrapbook_bank: Overrides bank (string).
         scrapbook_build: Overrides build (string).
-        scrapbook_overridebuild: Build override (string).
+        scrapbook_overridebuild: Build override (string) or table of strings.
         scrapbook_damage: Damage, for creatures (number, string or array with 2 numbers (value range)).
         scrapbook_deps: Overrides default prefab dependencies (string array).
         scrapbook_fueled_max: Overrides components.fueled.maxfuel (number).
@@ -2486,6 +2492,7 @@ end
         scrapbook_weaponrange: Hit range (number).
         scrapbook_workable: Overrides components.workable.action (action).
         scrapbook_alpha: AnimState alpha (number: 0-1).
+        scrapbook_usepointfiltering: enable point filtering (bool)
         scrapbook_facing: Determines a facing (number: FACING_RIGHT, FACING_UPRIGHT...)
 ]]
 
@@ -2992,6 +2999,24 @@ function d_createscrapbookdata(print_missing_icons)
             AddInfo( "overridesymbol", override)
         end
 
+        if t.scrapbook_symbolcolours then
+            if type(t.scrapbook_symbolcolours[1]) ~= "table" then
+                AddInfo( "symbolcolours", t.scrapbook_symbolcolours )
+            else
+                local overrides = {}
+
+                for _, tbl in ipairs(t.scrapbook_symbolcolours) do
+                    table.insert(overrides, string.format('{"%s"}', table.concat(tbl, '", "')))
+                end
+
+                AddInfo( "symbolcolours", string.format("{%s}", table.concat(overrides, ", ")))
+            end
+        end
+
+        if t.scrapbook_usepointfiltering then
+            AddInfo( "usepointfiltering", true)
+        end
+
         -- TODO(DiogoW): Refactor this.
 
         if t.prefab == "robin" then
@@ -3099,6 +3124,11 @@ function d_createscrapbookdata(print_missing_icons)
 
         AddInfo( "animoffsetbgx",  t.scrapbook_animoffsetbgx )
         AddInfo( "animoffsetbgy",  t.scrapbook_animoffsetbgy )
+
+        if t.scrapbook_bb_x_extra or t.scrapbook_bb_y_extra then
+            AddInfo( "bb_x_extra",  t.scrapbook_bb_x_extra or 0 )
+            AddInfo( "bb_y_extra",  t.scrapbook_bb_y_extra or 0 )
+        end
 
         ---------------------------------::   WATERPROOFER   ::---------------------------------
 

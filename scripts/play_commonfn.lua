@@ -285,6 +285,7 @@ fns.swapmask = function(inst, line, cast)
     if cast == nil then return end
 	for _, costume in ipairs(line.roles) do
 		local player = cast[costume].castmember
+        player.stageactingprop_ignorecostumecheck_hack = true
 		if line.mask then
 			local mask = player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
 			mask:Remove()
@@ -297,6 +298,7 @@ fns.swapmask = function(inst, line, cast)
 			local newbody = SpawnPrefab(line.body)
 			player.components.inventory:Equip(newbody)
 		end
+        player.stageactingprop_ignorecostumecheck_hack = nil
 	end
 end
 

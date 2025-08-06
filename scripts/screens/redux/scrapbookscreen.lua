@@ -244,6 +244,10 @@ function ScrapbookScreen:LinkDeps()
 	end
 end
 
+local function trim_spaces_and_periods(str)
+    return str:gsub("[ %.]", "")
+end
+
 function ScrapbookScreen:FilterData(search_text, search_set)
 	if not search_set  then
 		search_set = self:CollectType(dataset)
@@ -260,11 +264,11 @@ function ScrapbookScreen:FilterData(search_text, search_set)
 	for i,set in ipairs( search_set ) do
 		local name = nil
 		if set.type ~= UNKNOWN then
-			name = TrimString(string.lower(STRINGS.NAMES[string.upper(set.name)])):gsub(" ", "")
+			name = trim_spaces_and_periods(TrimString(string.lower(STRINGS.NAMES[string.upper(set.name)])))
 
 		--local name = TrimString(string.lower(set.name)):gsub(" ", "")
 			if set.subcat then
-				name = name .. TrimString(string.lower(STRINGS.SCRAPBOOK.SUBCATS[string.upper(set.subcat)])):gsub(" ", "")
+				name = name .. trim_spaces_and_periods(TrimString(string.lower(STRINGS.SCRAPBOOK.SUBCATS[string.upper(set.subcat)])))
 			end
 			local num = string.find(name, search_text, 1, true)
 			if num then
@@ -277,7 +281,7 @@ function ScrapbookScreen:FilterData(search_text, search_set)
 end
 
 function ScrapbookScreen:SetSearchText(search_text)
-	search_text = TrimString(string.lower(search_text)):gsub(" ", "")
+	search_text = trim_spaces_and_periods(TrimString(string.lower(search_text)))
 
 	self:FilterData(search_text)
 
@@ -1677,7 +1681,13 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 		end
 
 		if data.overridebuild then
-			animstate:AddOverrideBuild(data.overridebuild)
+            if type(data.overridebuild) == "table" then
+                for k, v in pairs(data.overridebuild) do
+                    animstate:AddOverrideBuild(v)
+                end
+            else
+			    animstate:AddOverrideBuild(data.overridebuild)
+            end
 		end
 
 		animstate:Hide("snow")
@@ -1713,9 +1723,23 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 			end
 		end
 
+        if data.symbolcolours then
+			for i, set in ipairs( data.symbolcolours ) do
+				animstate:SetSymbolMultColour(set[1], set[2], set[3], set[4], set[5])
+			end
+        end
+
+        if data.usepointfiltering then
+            animstate:UsePointFiltering(true)
+        end
+
 		local x1, y1, x2, y2 = animstate:GetVisualBB()
 
 		local ax,ay = animal:GetBoundingBoxSize()
+
+        if data.bb_x_extra or data.bb_y_extra then
+            ax, ay = ax + data.bb_x_extra or 0, ay + data.bb_y_extra or 0
+        end
 
 		local SCALE = CUSTOM_SIZE.x/ax
 

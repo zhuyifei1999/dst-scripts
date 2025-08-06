@@ -203,11 +203,15 @@ local function create_hand()
     inst.AnimState:PlayAnimation("hand_in")
     inst.AnimState:PushAnimation("hand_in_loop", true)
 
+    inst.scrapbook_inspectonseen = true
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.scrapbook_anim = "hand_in_loop"
 
     inst.arm = nil
     inst.fire = nil

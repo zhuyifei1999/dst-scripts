@@ -129,6 +129,12 @@ local NON_COLLAPSIBLE_TAGS = { "antlion", "groundspike", "flying", "shadow", "gh
 
 function DestroyEntity(ent, destroyer, kill_all_creatures, remove_entity_as_fallback)
     if ent:IsValid() then
+        if ent.proxy_destroy_entity and ent.proxy_destroy_entity:IsValid() then
+            -- So that we can do recursive proxying if needed.
+            -- Don't recurse to each other... I'm putting trust in you....
+            return DestroyEntity(ent.proxy_destroy_entity, destroyer, kill_all_creatures, remove_entity_as_fallback)
+        end
+
         local isworkable = false
         if ent.components.workable ~= nil then
             local work_action = ent.components.workable:GetWorkAction()

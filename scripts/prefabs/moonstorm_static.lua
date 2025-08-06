@@ -515,8 +515,8 @@ local function fn_roamer()
     end
 
     inst.scrapbook_anim = "idle"
-    inst.scrapbook_animoffsety = 65
-    inst.scrapbook_animpercent = 0.14
+    inst.scrapbook_animoffsety = 0
+    inst.scrapbook_animpercent = 0.78
 
     inst:AddComponent("inspectable")
 

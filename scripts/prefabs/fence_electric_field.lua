@@ -79,7 +79,9 @@ local function ClearSegs(inst)
 		return
 	end]] --it's fine to run the cleanup code on clients anyway
 
-	inst.SoundEmitter:KillSound("linked_lp")
+	if TheWorld.ismastersim then -- Not fine to run this cleanup code on client!
+		inst.SoundEmitter:KillSound("linked_lp")
+	end
 
 	if inst.Physics then --Doesn't exist on client!
 		inst.Physics:SetCollides(true) --We're unloaded, activate our physics!
@@ -125,31 +127,10 @@ local function GetShockCooldown(inst)
 		(inst._electrocute_resist or 0)
 end
 
--- NOTE(Omar): A little trick!
--- Collision callbacks still run even if Physics:SetCollides is false
--- And physics are gonna be a bit more reliable than our old detection
-
-local SHOCK_TARGETS = setmetatable({}, { __mode = 'k' })
+local GLOBAL_SHOCK_TARGETS = setmetatable({}, { __mode = 'k' })
 local BrainCommon = require("brains/braincommon")
-local function OnCollisionCallback(inst, other,
-	world_position_on_a_x, world_position_on_a_y, world_position_on_a_z,
-	world_position_on_b_x, world_position_on_b_y, world_position_on_b_z,
-	world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z,
-	lifetime_in_frames)
 
-	if not (other ~= nil and other:IsValid() and inst:IsValid())
-            --or inst.recentlycharged[other] 
-			then
-        return
-    end
-
-	--[[
-	if not inst.myspecialtask then 
-		<halt locomotor> 
-		inst.myspecialtask = inst:DoTaskInTime(0
-	end
-	]]
-
+local function DoCollideShock(other, inst)
 	local t = GetTime()
 	if (inst.targets[other] or -math.huge) < t and
 		other:IsValid() and not other:IsInLimbo()
@@ -172,6 +153,32 @@ local function OnCollisionCallback(inst, other,
 		end
 
 		inst.targets[other] = t + GetShockCooldown(other)
+	end
+
+	other.do_collide_shock_task = nil
+end
+
+-- NOTE(Omar): A little trick!
+-- Collision callbacks still run even if Physics:SetCollides is false
+-- And physics are gonna be a bit more reliable than our old detection
+local function OnCollisionCallback(inst, other,
+	world_position_on_a_x, world_position_on_a_y, world_position_on_a_z,
+	world_position_on_b_x, world_position_on_b_y, world_position_on_b_z,
+	world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z,
+	lifetime_in_frames)
+
+	if not (other ~= nil and other:IsValid() and inst:IsValid())
+            --or inst.recentlycharged[other] 
+			then
+        return
+    end
+
+	if not other.do_collide_shock_task then
+		if other.components.locomotor and (inst.targets[other] or -math.huge) < GetTime() then
+			other.components.locomotor:Stop()
+		end
+
+		other.do_collide_shock_task = other:DoTaskInTime(0, DoCollideShock, inst) -- Next frame for physics safety
 	end
 end
 

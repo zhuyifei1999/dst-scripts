@@ -4347,6 +4347,10 @@ STRINGS =
 
         MUTATEDBIRD = "Bright-Beaked Bird",
         MUTATEDBUZZARD = "Crystal-Crested Buzzard",
+
+        -- Names for missed scrapbook entries
+        WAVEYJONES = "Wavey Jones",
+        SHADOWHAND = "Shadow Hand",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -16915,6 +16919,7 @@ STRINGS.SCRAPBOOK = {
         SMALLEPIC = "Mini Giant",
         SLINGSHOTAMMO = "Slingshot Round",
         SLINGSHOTPART = "Slingshot Part",
+        GESTALT = "Gestalt",
     },
 
     SANITYDESC ={
@@ -16942,6 +16947,8 @@ STRINGS.SCRAPBOOK = {
         WOOD = "WOOD",
         GOODIES = "GOODIES",
         MONSTER = "MONSTER",
+        LUNAR_SHARDS = "LUNAR SHARDS",
+        CORPSE = "CORPSE",
     },
 
     DATA_NEEDS_INVESTIGATION = "This needs more investigation.",
@@ -17552,6 +17559,12 @@ STRINGS.SCRAPBOOK = {
         WAGSTAFF_CONTAINMENT_NOTE = "\n\"Day 226 - Containment Measures\"\n\n\"Area of containment necessary prior to experimentation. Consider implementing a kinetic and teleportational dampening field?\"\n",
         WAGSTAFF_THERMAL_NOTE = "\n\"Day 354 - Heat Signature Detection\"\n\n\"Preliminary thermal tracking functional. However, response irregularities suggest vulnerability to rudimentary interference - false positives observed with minimal thermal masking.\"\n",
         WAGSTAFF_ELECTRICITY_NOTE = "\n\"Day 418 - Electrifying!\"\n\n\"Interesting. Can redirect controlled electric discharge for practical (and offensive) applications. Truly remarkable potential. Note to self: don appropriate insulative layers next time. That last zap was... unexpectedly exhilarating.\"\n",
+
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Build the W.A.R.B.O.T. using only the most authentic parts.",
+        WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "There is only one place that this contraption can go so that the containment barrier can do its part in stabilizing the energies used.",
+        WAGBOSS_ROBOT_CREATION_PARTS = "Parts cut according to the correct specifications for W.A.R.B.O.T. construction.",
+        MOONSTORM_STATIC_CATCHER = "Now you're the catcher!\nFind the energy running loose in the storms and try to restrain it.",
+        COOLANT = "Essence of insight... Fuel of power... ...Bubbling.",
 
         FENCE_ELECTRIC = "\"Transdermal Induction Neurological Galvanic Learning Experience\" Uses electrolunetic technology to deliver shocks to conductive entities.\n\nOnce toggled, the T.I.N.G.L.E. node will search for another nearby node to link to, establishing an electric field between the two.\n\nNo physical harm is done (mental harm is up for debate). Most subjects will flee away after the brief shock.\n\nThe tester is recommended to use insulative gear to avoid this special learning experience!",
         FENCE_ELECTRIC_ITEM = "\"Transdermal Induction Neurological Galvanic Learning Experience\" Uses electrolunetic technology to deliver shocks to conductive entities.\n\nOnce toggled, the T.I.N.G.L.E. node will search for another nearby node to link to, establishing an electric field between the two.\n\nNo physical harm is done (mental harm is up for debate). Most subjects will flee away after the brief shock.\n\nThe tester is recommended to use insulative gear to avoid this special learning experience!",

@@ -1032,6 +1032,7 @@ local function fn()
 	inst:AddTag("engineeringbatterypowered")
     inst:AddTag("catapult")
     inst:AddTag("structure")
+	inst:AddTag("electricdamageimmune")
 
     inst.AnimState:SetBank("winona_catapult")
     inst.AnimState:SetBuild("winona_catapult")
