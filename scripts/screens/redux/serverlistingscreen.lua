@@ -1390,7 +1390,7 @@ function ServerListingScreen:DoSorting()
         elseif a.ping >= 0 and b.ping < 0 then
             return true
         elseif a.ping == b.ping then
-            return string.lower(a.name) < string.lower(b.name)
+            return stringidsorter(string.lower(a.name), string.lower(b.name))
         else
             return a.ping < b.ping
         end

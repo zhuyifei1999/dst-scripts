@@ -566,6 +566,8 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"chesspiece_sharkboi_builder",
 	"chesspiece_wormboss_builder",
 	"chesspiece_yots_builder",
+	"chesspiece_wagboss_robot_builder",
+	"chesspiece_wagboss_lunar_builder",
 
 	-- wintersfeastoven
 	"wintercooking_berrysauce",

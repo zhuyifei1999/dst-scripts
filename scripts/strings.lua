@@ -2470,6 +2470,8 @@ STRINGS =
         CHESSPIECE_YOTD_SKETCH = "Start Tower Figure Sketch",
         CHESSPIECE_SHARKBOI_SKETCH = "Frostjaw Figure Sketch",
         CHESSPIECE_YOTS_SKETCH = "Gilded Depths Worm Figure Sketch",
+        CHESSPIECE_WAGBOSS_ROBOT_SKETCH = "W.A.R.B.O.T. Figure Sketch",
+        CHESSPIECE_WAGBOSS_LUNAR_SKETCH = "Celestial Scion Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
