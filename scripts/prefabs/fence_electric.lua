@@ -84,7 +84,7 @@ local function OnHit(inst, data)
     if not IsEntityDead(attacker, true) and not attacker_electric_immune and has_connection and data.stimuli ~= "electric"
         and data.stimuli ~= "soul"
         and (data.weapon == nil or ((data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil) and data.weapon.components.projectile == nil)) then
-		attacker:PushEventImmediate("electrocute")
+		attacker:PushEventImmediate("electrocute", {duration=TUNING.ELECTROCUTE_SHORT_DURATION, noburn=true})
     end
 end
 

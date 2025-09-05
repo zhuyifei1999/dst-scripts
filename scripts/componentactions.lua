@@ -251,10 +251,10 @@ local COMPONENT_ACTIONS =
 
         channelable = function(inst, doer, actions, right)
             if right and inst:HasTag("channelable") then
-                if not inst:HasTag("channeled") then
-                    table.insert(actions, ACTIONS.STARTCHANNELING)
-                elseif doer:HasTag("channeling") then
+                if doer:HasTag("channeling") then
                     table.insert(actions, ACTIONS.STOPCHANNELING)
+                elseif not inst:HasTag("channeled") then
+                    table.insert(actions, ACTIONS.STARTCHANNELING)
                 end
             end
         end,
@@ -847,7 +847,7 @@ local COMPONENT_ACTIONS =
 
         teleporter = function(inst, doer, actions, right)
             if inst:HasTag("teleporter") then
-                if not inst:HasTag("townportal") then
+                if not inst:HasAnyTag("townportal", "vault_teleporter") then
                     table.insert(actions, ACTIONS.JUMPIN)
                 elseif right and not doer:HasTag("channeling") then
                     table.insert(actions, ACTIONS.TELEPORT)
@@ -1948,7 +1948,7 @@ local COMPONENT_ACTIONS =
             local x,y,z = pos:Get()
             if right and (TheWorld.Map:IsAboveGroundAtPoint(x,y,z) or TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil) and not TheWorld.Map:IsGroundTargetBlocked(pos) and not doer:HasTag("steeringboat") and not doer:HasTag("rotatingboat") then
                 local doerx, doery, doerz = doer.Transform:GetWorldPosition()
-                if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) == TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(doerx, doery, doerz) then
+                if IsTeleportingPermittedFromPointToPoint(x, y, z, doerx, doery, doerz) then
                     table.insert(actions, ACTIONS.BLINK)
                 end
             end

@@ -420,6 +420,9 @@ local function OnBirdStarve(inst, bird)
     SetCageState(inst, CAGE_STATES.DEAD)
 
     inst.AnimState:PlayAnimation("death")
+    if bird.sounds and bird.sounds.death then
+        inst.SoundEmitter:PlaySound(bird.sounds.death)
+    end
     PushStateAnim(inst, "idle", false)
 
     -- NOTES(JBK): Needed here because OnEmptied is called before this callback which clears the build override.

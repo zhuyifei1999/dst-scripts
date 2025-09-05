@@ -3684,6 +3684,7 @@ local function areaambientdefault(prefab)
         world:PushEvent("overrideambientsound", { tile = WORLD_TILES.TILES_GLOW, override = "ROCKY" })
         world:PushEvent("overrideambientsound", { tile = WORLD_TILES.TRIM, override = "ROCKY" })
         world:PushEvent("overrideambientsound", { tile = WORLD_TILES.TRIM_GLOW, override = "ROCKY" })
+        world:PushEvent("overrideambientsound", { tile = WORLD_TILES.VENT, override = "ROCKY" })
     end
 end
 

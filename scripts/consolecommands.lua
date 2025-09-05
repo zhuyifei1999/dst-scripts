@@ -577,7 +577,11 @@ function c_printpos(inst)
     print(c_pos(inst))
 end
 
+--V2C: also supports c_teleport(inst, x, y, z)
 function c_teleport(x, y, z, inst)
+	if EntityScript.is_instance(x) then
+		inst, x, y, z = x, y, z, inst
+	end
     inst = ListingOrConsolePlayer(inst)
     if inst ~= nil then
 		if x == nil then

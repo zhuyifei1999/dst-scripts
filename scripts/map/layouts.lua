@@ -855,6 +855,30 @@ local ExampleLayout =
 	["Warzone_2"] = StaticLayout.Get("map/static_layouts/warzone_2"),
 	["Warzone_3"] = StaticLayout.Get("map/static_layouts/warzone_3"),
 
+	--#DELETEME
+	["CentipedeNest"] =
+	{
+		type = LAYOUT.STATIC,
+		layout =
+		{
+			shadowthrall_centipede_spawner = {{x=2, y=0}},
+		},
+		ground_types = {WORLD_TILES.VENT, WORLD_TILES.MUD},
+		ground =
+		{
+			{1, 2, 1, 2, 1, 1},
+			{1, 1, 1, 2, 1, 2},
+			{1, 1, 1, 1, 2, 2},
+			{2, 1, 2, 1, 1, 1},
+			{1, 1, 1, 1, 2, 2},
+			{1, 1, 2, 2, 1, 1},
+		},
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		layout_position = LAYOUT_POSITION.CENTER,
+		force_rotation = LAYOUT_ROTATION.SOUTH, -- Tiled layouts are flipped vertically.
+	},
+
 --------------------------------------------------------------------------------
 -- DST
 --------------------------------------------------------------------------------
@@ -1128,6 +1152,36 @@ local ExampleLayout =
 		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 	}),
 
+    ["OceanWhirlBigPortal"] = StaticLayout.Get("map/static_layouts/oceanwhirlbigportal",
+    {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        min_dist_from_land = 5,
+        add_topology = {room_id = "StaticLayoutIsland:OceanWhirlBigPortal", tags = {"RoadPoison", "nohunt", "nohasslers", "not_mainland"}},
+        areas = {
+            mast_area = function()
+                local boatgoodies = nil
+                if math.random() < 0.75 then
+                    local potentialgoodies = {
+                        "boards",
+                        "twigs",
+                        "cutgrass",
+                    }
+                    boatgoodies = {
+                        potentialgoodies[math.random(#potentialgoodies)]
+                    }
+                    for i = 1, 3 do
+                        if math.random() < 0.5 then
+                            table.insert(boatgoodies, potentialgoodies[math.random(#potentialgoodies)])
+                        end
+                    end
+                end
+                return boatgoodies
+            end,
+            stack_area = function() return math.random() < 0.30 and {"seastack"} or nil end,
+        }
+    }),
+
 --------------------------------------------------------------------------------
 -- Grotto
 --------------------------------------------------------------------------------
@@ -1137,10 +1191,36 @@ local ExampleLayout =
 --------------------------------------------------------------------------------
 -- Archive
 --------------------------------------------------------------------------------
-	["ArchiveDoor"] = StaticLayout.Get("map/static_layouts/archivedoor",{
+	["ArchiveDoor"] = StaticLayout.Get("map/static_layouts/archivedoor",{ -- UNUSED
 			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-			layout_position = LAYOUT_POSITION.CENTER}),
+			layout_position = LAYOUT_POSITION.CENTER
+    }),
+
+    ["Vault_Lobby"] = StaticLayout.Get("map/static_layouts/vault_lobby", {
+        add_topology = {room_id = "StaticLayoutIsland:VaultLobby", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
+        SafeFromDisconnect = true,
+        force_rotation = LAYOUT_ROTATION.NORTH,
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+        layout_position = LAYOUT_POSITION.CENTER,
+        areas = {
+            archive_sound_area = function()
+                if math.random() < 0.5 then
+                    return {"archive_ambient_sfx"}
+                end
+            end,
+        },
+    }),
+
+    ["Vault_Vault"] = StaticLayout.Get("map/static_layouts/vault_vault", {
+        add_topology = {room_id = "StaticLayoutIsland:VaultVault", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
+        SafeFromDisconnect = true,
+        force_rotation = LAYOUT_ROTATION.NORTH,
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+        layout_position = LAYOUT_POSITION.CENTER
+    }),
 
 --------------------------------------------------------------------------------
 -- Return of Them Retrofitting

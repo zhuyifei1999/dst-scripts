@@ -218,6 +218,7 @@ EntityScript = Class(function(self, entity)
     self.lower_components_shadow = {}
     self.GUID = entity:GetGUID()
     self.spawntime = GetTime()
+	self.sleepstatepending = true --haven't received initial sleep state from engine yet
     self.persists = true
     self.inlimbo = false
     self.name = nil
@@ -349,7 +350,7 @@ function EntityScript:RemoveFromScene()
     self.inlimbo = true
     self.entity:Hide()
 
-    self:StopBrain()
+	self:_DisableBrain_Internal()
 
     if self.sg then
         self.sg:Stop()
@@ -398,10 +399,14 @@ function EntityScript:ReturnToScene()
         self.MiniMapEntity:SetEnabled(true)
     end
 
-    self:RestartBrain()
-
-    if self.sg then
-        self.sg:Start()
+	if self.brainfn or self.sg then
+		local asleep = self:IsAsleep()
+		if self.brainfn and not (asleep or self.sleepstatepending) then
+			self:_EnableBrain_Internal()
+		end
+		if self.sg then
+			self.sg:Start(asleep)
+		end
     end
     self:PushEvent("exitlimbo")
 end
@@ -912,6 +917,10 @@ function EntityScript:RemovePlatformFollower(child)
         self.platformfollowers[child] = nil
     end
     child.entity:SetPlatform(nil)
+
+	if self.OnRemovePlatformFollower then
+		self:OnRemovePlatformFollower(child)
+	end
 end
 
 function EntityScript:AddPlatformFollower(child)
@@ -928,6 +937,10 @@ function EntityScript:AddPlatformFollower(child)
 
     self.platformfollowers[child] = true
     child.entity:SetPlatform(self.entity)
+
+	if self.OnAddPlatformFollower then
+		self:OnAddPlatformFollower(child)
+	end
 end
 
 --only works on master sim
@@ -1061,30 +1074,74 @@ function EntityScript:RunScript(name)
     fn(self)
 end
 
-function EntityScript:RestartBrain()
-    self:StopBrain()
-    if self.brainfn ~= nil then
-        --if type(self.brainfn) ~= "table" then print(self, self.brainfn) end
-        self.brain = self.brainfn()
-        if self.brain ~= nil then
-            self.brain.inst = self
-            self.brain:Start()
-        end
-    end
+function EntityScript:RestartBrain(reason)
+	reason = reason or ""
+	if self._brainstopped and self._brainstopped[reason] then
+		self._brainstopped[reason] = nil
+		if next(self._brainstopped) == nil then
+			self._brainstopped = nil
+			if self.brain then
+				self.brain:_Start_Internal()
+			end
+		end
+	end
 end
 
-function EntityScript:StopBrain()
-    if self.brain ~= nil then
-        self.brain:Stop()
-        self.brain = nil
-    end
+function EntityScript:StopBrain(reason)
+	reason = reason or ""
+	if self._brainstopped then
+		self._brainstopped[reason] = true
+	else
+		self._brainstopped = { [reason] = true }
+		if self.brain then
+			self.brain:_Stop_Internal()
+		end
+	end
 end
 
 function EntityScript:SetBrain(brainfn)
     self.brainfn = brainfn
-    if self.brain ~= nil then
-        self:RestartBrain()
-    end
+	--V2C: -sleepstatepending check to prevent brain starting at construction when :IsAsleep() always returns false
+	self._braindisabled = brainfn and (self.sleepstatepending or self:IsInLimbo() or self:IsAsleep()) or nil
+	if self.brain then
+		self.brain:_Stop_Internal()
+	end
+	self.brain = brainfn and not self._braindisabled and brainfn() or nil
+	if self.brain then
+		self.brain.inst = self
+		if not self._brainstopped then
+			self.brain:_Start_Internal()
+		end
+	end
+end
+
+--V2C: should only be called from OnEntitySleep, RemoveFromScene
+function EntityScript:_DisableBrain_Internal()
+	if self.brainfn then
+		--_braindisabled flag is only valid if we have a brainfn.
+		--Don't bother checking "not self._braindisabled".  This code is safe to run
+		--multiple times, and we can also assume that the engine properly calls this
+		--only when necessary.
+		self._braindisabled = true
+		if self.brain then
+			self.brain:_Stop_Internal()
+			self.brain = nil
+		end
+	end
+end
+
+--V2C: should only be called from OnEntityWake, ReturnToScene
+function EntityScript:_EnableBrain_Internal()
+	if self._braindisabled then
+		self._braindisabled = nil
+		self.brain = self.brainfn()
+		if self.brain then
+			self.brain.inst = self
+			if not self._brainstopped then
+				self.brain:_Start_Internal()
+			end
+		end
+	end
 end
 
 function EntityScript:SetStateGraph(name)
@@ -1095,8 +1152,11 @@ function EntityScript:SetStateGraph(name)
     assert(sg ~= nil)
     if sg ~= nil then
         self.sg = StateGraphInstance(sg, self)
-        SGManager:AddInstance(self.sg)
+		SGManager:AddInstance(self.sg, self:IsAsleep())
         self.sg:GoToState(self.sg.sg.defaultstate)
+		if self:IsInLimbo() then
+			self.sg:Stop()
+		end
         return self.sg
     end
 end

@@ -640,7 +640,8 @@ local function CheckAction(player)
     end
 end
 
-local NON_DANGER_TAGS = {"noepicmusic", "shadow", "shadowchesspiece", "smolder", "thorny"}
+-- Keep NON_DANGER_TAGS in sync with player_classified NON_DANGER_TAGS
+local NON_DANGER_TAGS = {"noepicmusic", "shadow", "shadowchesspiece", "smolder", "thorny", "nodangermusic"}
 local function OnAttacked(player, data)
     if data ~= nil and
             --For a valid client side check, shadowattacker must be

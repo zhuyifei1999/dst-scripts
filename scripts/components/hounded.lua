@@ -604,6 +604,8 @@ local function CheckForLocationImmunity(player)
 		local x,y,z = player.Transform:GetWorldPosition()
 		if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x,y,z) then
 			_targetableplayers[player.GUID] = "arena"
+        elseif TheWorld.Map:IsPointInAnyVault(x,y,z) then
+            _targetableplayers[player.GUID] = "vault"
 		elseif TheWorld.Map:IsVisualGroundAtPoint(x,y,z) then
 			_targetableplayers[player.GUID] = "land"
 		else

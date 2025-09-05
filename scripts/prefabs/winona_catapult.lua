@@ -787,9 +787,6 @@ local function SetActiveMode(inst, active)
 		inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
 		inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 		inst:SetBrain(brain)
-		if not inst:IsAsleep() then
-			inst:RestartBrain()
-		end
 		inst.components.powerload:SetLoad(TUNING.WINONA_CATAPULT_POWER_LOAD_IDLE, true)
 		SetLedStatusOn(inst)
 		if not loading then

@@ -408,6 +408,7 @@ STRINGS =
             SOCKET   = "Socket",
             CELESTIAL = "Offer",
             SHOW = "Show",
+			REPAIR = "Repair",
 			APPLY    = "Apply {item}",
             DRINK    = "Drink {item}",
             QUAGMIRE_POT_HANGER = "Hang {item}",
@@ -613,6 +614,7 @@ STRINGS =
             GATHER_MERM = "Gather Merm",
             FAKE_PICKUP = "Pick up",
             PLAY_WITH = "Play with",
+			PULL = "Pull",
         },
 
 		OPEN_CRAFTING =
@@ -1110,7 +1112,7 @@ STRINGS =
 		-- Rifts 5
 		POUNCECAPTURE = "Encapsulate",
         
-        -- electrocute
+        -- rifts5.1
         DIVEGRAB = "Restrain",
         STARTELECTRICLINK = "Toggle Linking",
         ENDELECTRICLINK = "Disconnect Links",
@@ -3542,6 +3544,8 @@ STRINGS =
 
         ARCHIVE_MOON_STATUE = "Ancient Moon Statue",
         ARCHIVE_RUNE_STATUE = "Ancient Lunarune Stone",
+		VAULT_RUNE = "Sanctum Lunarune Stone",
+		VAULT_STATUE = "Sanctum Statue",
 
         ARCHIVE_RESONATOR = "Astral Detector",
         ARCHIVE_RESONATOR_ITEM = "Astral Detector",
@@ -3935,7 +3939,7 @@ STRINGS =
 
 		LUNAR_GRAZER = "Grazer",
         LUNARTHRALL_PLANT = "Deadly Brightshade",
-        LUNARTHRALL_PLANT_GESTALT = "Brightshade Gestalt",
+        LUNARTHRALL_PLANT_GESTALT = "Incursive Gestalt",
         LUNARTHRALL_PLANT_VINE_END = "Tunneling Vine",
 
         PUREBRILLIANCE = "Pure Brilliance",
@@ -4336,7 +4340,7 @@ STRINGS =
         LUNAR_SEED = "Celestial Jewel",
 		TEMP_BETA_MSG = "Beta Report",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "W.A.R.B.O.T. Base",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "W.A.R.B.O.T. Base Kit",
         WAGBOSS_ROBOT_CREATION_PARTS = "W.A.R.B.O.T. Parts",
@@ -4353,6 +4357,30 @@ STRINGS =
         -- Names for missed scrapbook entries
         WAVEYJONES = "Wavey Jones",
         SHADOWHAND = "Shadow Hand",
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = "Mega Blight",
+        SHADOWTHRALL_CENTIPEDE_ALLEGIANCE = "Ripple",
+
+        TREE_ROCK = "Boulderbough",
+        CAVE_VENT_ROCK = "Fumarole",
+
+		ABYSSPILLAR_MINION = "Sequitor",
+		ABYSSPILLAR_TRIAL = "Lever", --Pillar puzzle lever
+
+        VAULT_TELEPORTER = "Sanctum Waymark", -- Channel device to teleport players around the vault.
+		VAULT_TELEPORTER_BROKEN = "Broken Sanctum Waymark",
+		VAULT_ORB = "Portation Orb",
+        VAULT_LOBBY_EXIT = "Sanctum Egress",
+		VAULT_CHANDELIER_BROKEN = "Sanctum Lustre",
+
+		MASK_ANCIENT_HANDMAIDHAT = "Elytra's Mask",
+		MASK_ANCIENT_ARCHITECTHAT = "Visionist's Mask",
+		MASK_ANCIENT_MASONHAT = "Artificer's Mask",
+
+        TREE_ROCK_SEED = "Boulderbough Seed",
+        TREE_ROCK_SAPLING = "Boulderbough Sapling",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -8794,7 +8822,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "Hostile Takeover: Phase Two - Beta Branch", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "From Beyond - Ancient Echoes - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -10784,7 +10812,7 @@ STRINGS.UI =
         EARTHQUAKES = "Earthquakes",
         CAVELIGHT = "Sinkhole Lights",
 
-        PENGUINS_MOON = "Moonrock Pengulls",
+        PENGUINS_MOON = "Permafrost Pengulls",
         BEES_SETTING = "Bees",
         CATCOONS = "Catcoons",
         FROGS = "Frogs",
@@ -15732,6 +15760,22 @@ STRINGS.PLAYS = {
     THEVEIL = "The Pall",           
 }
 
+STRINGS.ARCHIVE_RUNE_STATUE = {
+	LINE_1 = "\"We remain faithful to Alter, as Alter remains faithful to us. Ever watching, knowing, waiting.\"",
+	LINE_2 = "\"Alter, Glorious Moon in the cold night sky. Cast your Life-giving Light on us forever.\"",
+	LINE_3 = "\"Mighty Alter, the source of our strength, our sole provider. We are loyal to none but You.\"",
+	LINE_4 = "\"Alter is our Champion. Alter is the Champion. The Champion is Alter.\"",
+	LINE_5 = "\"Alter is good. Alter shall not forsake us. Alter shall return.\"",
+}
+STRINGS.VAULT_RUNE = {
+	LOBBY = "\"This vault shall become a tomb for all who dare trespass.\"",
+	TELEPORT1 = "\"Bound together are these chambers, yet in ways unnatural, wrought to confound all who enter.\"",
+	LORE1 = "\"Trust none. The Shadow twists all it touches.\"",
+	LORE2 = "\"Through the Keystone, all kin and kind shall fall.\"",
+	LORE3 = "\"Let the cursed Keystone never cross this threshold.\"",
+	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\"",
+}
+
 STRINGS.SPELLS = {
 	SHADOW_WORKER = "Shadow Servant",
 	SHADOW_PROTECTOR = "Shadow Duelist",
@@ -17555,7 +17599,7 @@ STRINGS.SCRAPBOOK = {
         WANDERINGTRADER = "He travels between a few Points of Interest, looking for survivors to trade with. He gets new stock every couple of days, so be sure to check back in regularly!",
         LUNAR_SEED = "They came from an enlightened crown - so return them to one, to bask in eternal enlightenment.",
 
-        -- electrocute
+        -- rifts5.1
         WAGSTAFF_MATERIALS_NOTE = "\n\"Day 89 - Material Study\"\n\n\"Thulecite appears sufficient to contain lunar entities. Structural integrity holds under moderate strain. Further testing advised.\"\n",
         WAGSTAFF_ENERGY_NOTE = "\n\"Day 195 - Energy\"\n\n\"Eureka. Lunar forms radiate boundless energy. Containable. Obedient, even? Control may be possible. Endless applications... if stability holds.\"\n",
         WAGSTAFF_CONTAINMENT_NOTE = "\n\"Day 226 - Containment Measures\"\n\n\"Area of containment necessary prior to experimentation. Consider implementing a kinetic and teleportational dampening field?\"\n",

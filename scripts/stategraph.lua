@@ -102,8 +102,8 @@ function StateGraphWrangler:RemoveInstance(inst)
     self.haveEvents[inst] = nil
 end
 
-function StateGraphWrangler:AddInstance(inst)
-    self:SendToList(inst, self.updaters)
+function StateGraphWrangler:AddInstance(inst, hibernate)
+	self:SendToList(inst, hibernate and self.hibernaters or self.updaters)
 end
 
 function StateGraphWrangler:Update(current_tick)
@@ -689,15 +689,24 @@ function StateGraphInstance:UpdateState(dt)
     end
 end
 
-function StateGraphInstance:Start()
-    if self.OnStart then
+--@V2C: should only be called from EntityScript:ReturnToScene (legacy behaviour)
+--      this means OnStart is only triggered when exiting limbo
+function StateGraphInstance:Start(hibernate)
+	if not self.stopped then
+		return
+	elseif self.OnStart then
         self:OnStart()
     end
-    self.stopped = false
-    SGManager:AddInstance(self)
+	self.stopped = nil
+	SGManager:AddInstance(self, hibernate)
 end
 
+--@V2C: should only be called from EntityScript:RemoveFromScene (legacy behaviour)
+--      this means OnStop is only triggered when entering limbo
 function StateGraphInstance:Stop()
+	if self.stopped then
+		return
+	end
     self:HandleEvents()
     if self.OnStop then
         self:OnStop()

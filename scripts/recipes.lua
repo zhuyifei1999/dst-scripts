@@ -1192,7 +1192,7 @@ CONSTRUCTION_PLANS =
 	["cotl_tabernacle_level1"] = { Ingredient("cutstone", 5), Ingredient("log", 1) },
 	["cotl_tabernacle_level2"] = { Ingredient("goldnugget", 10), Ingredient("cutstone", 10), Ingredient("log", 1) },
 
-    -- electrocute
+    -- rifts5.1
 	["wagboss_robot_constructionsite"] = { Ingredient("wagboss_robot_creation_parts", 3) },
 }
 CONSTRUCTION_PLANS["support_pillar_scaffold"] = CONSTRUCTION_PLANS["support_pillar"]

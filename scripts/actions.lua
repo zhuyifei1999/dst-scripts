@@ -620,7 +620,7 @@ ACTIONS =
 	-- Rifts 5
 	POUNCECAPTURE = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
 
-    -- electrocute
+    -- rifts5.1
     DIVEGRAB = Action({ priority = 3, distance = 5, canforce = true, rangecheckfn = MakeRangeCheckFn(7) }),
     STARTELECTRICLINK = Action({ priority = 2, invalid_hold_action = true  }),
     ENDELECTRICLINK = Action({ priority = 1, invalid_hold_action = true }),
@@ -1538,7 +1538,7 @@ local function DoToolWork(act, workaction)
 		end
 
 		if recoil and act.doer.sg ~= nil and act.doer.sg.statemem.recoilstate ~= nil then
-			act.doer.sg:GoToState(act.doer.sg.statemem.recoilstate, { target = act.target })
+            act.doer:PushEventImmediate("recoil_off", { target = act.target } )
 			if numworks == 0 then
 				act.doer:PushEvent("tooltooweak", { workaction = workaction })
 			end
@@ -1785,6 +1785,8 @@ ACTIONS.ATTACK.fn = function(act)
                 and weapon.components.helmsplitter:StartHelmSplitting(act.doer)
         end
     end
+
+    --NOTE: Recoil logic done in combat.lua instead of here
     act.doer.components.combat:DoAttack(act.target)
     return true
 end
@@ -2024,6 +2026,7 @@ ACTIONS.GIVE.strfn = function(act)
     return act.target ~= nil
         and ((act.target:HasTag("gemsocket") and "SOCKET") or
             (act.target:HasTag("trader_just_show") and "SHOW")or
+			(act.target:HasTag("trader_repair") and "REPAIR") or
             (act.target:HasTag("moontrader") and "CELESTIAL"))
         or nil
 end

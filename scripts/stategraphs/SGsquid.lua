@@ -592,7 +592,7 @@ local states =
 			inst.AnimState:SetFrame(5)
             inst.AnimState:PushAnimation("jump_loop")
 
-            inst:StopBrain()
+			inst:StopBrain("SGsquid_fling")
 
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(false)
@@ -688,7 +688,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
             inst.Physics:ClearMotorVelOverride()
-            inst:RestartBrain()
+			inst:RestartBrain("SGsquid_fling")
             RestoreCollidesWith(inst)
         end,
 

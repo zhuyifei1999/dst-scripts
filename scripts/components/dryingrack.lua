@@ -25,7 +25,7 @@ local DryingRack = Class(function(self, inst, container)
 
 	self._dryingperishratefn = function(containerinst, item)
 		if self.isinacid then
-			local perishtime = item.components.perishable and item.components.perishable.perishtime
+			local perishtime = item and item.components.perishable and item.components.perishable.perishtime
 			if perishtime then
 				local rate = item.components.moisture and item.components.moisture:_GetMoistureRateAssumingRain() or TheWorld.state.precipitationrate
 				rate = rate * TUNING.ACIDRAIN_PERISHABLE_ROT_PERCENT -- %/s

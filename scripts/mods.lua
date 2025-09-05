@@ -48,6 +48,7 @@ AddModReleaseID( "R35_SANITYTROUBLES" )
 AddModReleaseID( "R36_ST_WENDWALTWORT" )
 AddModReleaseID( "R37_LUNAR_CAGE" )
 AddModReleaseID( "R38_ELECTROCUTE" )
+AddModReleaseID( "R39_WHIRL_VAULT" )
 
 -----------------------------------------------------------------------------------------------
 
@@ -555,6 +556,8 @@ function ModWrangler:LoadMods(worldgen)
         return stringidsorter(a.modname, b.modname)
     end
 	table.sort(self.mods, modPrioritySort)
+
+	kleiregistermods(self.mods)
 
 	for i,mod in ipairs(self.mods) do
 		table.insert(self.enabledmods, mod.modname)

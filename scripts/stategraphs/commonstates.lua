@@ -923,6 +923,7 @@ CommonStates.AddHopStates = function(states, wait_for_pre, anims, timelines, lan
 				fns.pst_onexit(inst)
 			end
 			-- here for now, should be moved into timeline
+			land_sound = FunctionOrValue(land_sound, inst)
 			if land_sound ~= nil then
 				--For now we just have the land on boat sound
 				--Delay since inst:GetCurrentPlatform() may not be updated yet
@@ -2132,9 +2133,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 			    inst.DynamicShadow:Enable(false)
 			end
 
-		    if inst.brain ~= nil then
-				inst.brain:Stop()
-			end
+			inst:StopBrain("sinking")
 
 			local skip_anim = data ~= nil and data.noanim
 			if anims.sink ~= nil and not skip_anim then
@@ -2189,9 +2188,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 				inst.components.combat:DropTarget()
 			end
 
-		    if inst.brain ~= nil then
-				inst.brain:Start()
-			end
+			inst:RestartBrain("sinking")
         end,
     })
 
@@ -2216,9 +2213,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
 	            inst.AnimState:PushAnimation("sleep_pst", false)
 			end
 
-		    if inst.brain ~= nil then
-				inst.brain:Stop()
-			end
+			inst:StopBrain("washed_ashore")
 
 			if inst.components.drownable ~= nil then
 				inst.components.drownable:TakeDrowningDamage()
@@ -2241,9 +2236,7 @@ CommonStates.AddSinkAndWashAshoreStates = function(states, anims, timelines, fns
         },
 
         onexit = function(inst)
-		    if inst.brain ~= nil then
-				inst.brain:Start()
-			end
+			inst:RestartBrain("washed_ashore")
         end,
 	})
 end
@@ -2309,9 +2302,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
 			    inst.DynamicShadow:Enable(false)
 			end
 
-		    if inst.brain ~= nil then
-				inst.brain:Stop()
-			end
+			inst:StopBrain("abyss_fall")
 
 			local skip_anim = data ~= nil and data.noanim
 			if anims.fallinvoid ~= nil and not skip_anim then
@@ -2367,9 +2358,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
 				inst.components.combat:DropTarget()
 			end
 
-		    if inst.brain ~= nil then
-				inst.brain:Start()
-			end
+			inst:RestartBrain("abyss_fall")
         end,
     })
 
@@ -2394,9 +2383,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
                 inst.AnimState:PushAnimation("sleep_pst", false)
             end
 
-            if inst.brain ~= nil then
-                inst.brain:Stop()
-            end
+			inst:StopBrain("abyss_drop")
 
             local x, y, z = inst.Transform:GetWorldPosition()
             SpawnPrefab("fallingswish_clouds_fast").Transform:SetPosition(x, y, z)
@@ -2414,9 +2401,7 @@ CommonStates.AddVoidFallStates = function(states, anims, timelines, fns)
         },
 
         onexit = function(inst)
-		    if inst.brain ~= nil then
-				inst.brain:Start()
-			end
+			inst:RestartBrain("abyss_drop")
         end,
 	})
 end

@@ -562,6 +562,8 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
             return inst
         end
 
+        inst:AddComponent("shardtransactionsteps")
+
         inst:AddComponent("klaussackloot")
 
         inst:AddComponent("undertile")

@@ -675,10 +675,6 @@ local states=
             inst.components.health:SetInvincible(true)
 
             inst.components.sleeper:WakeUp()
-
-            if inst.brain ~= nil and inst.brain.stopped then
-                inst.brain:Start()
-            end
         end,
 
         timeline=

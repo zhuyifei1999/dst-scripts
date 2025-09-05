@@ -1017,3 +1017,56 @@ function StrikeLightningAtPoint(strike_prefab, hit_player, x, y, z)
         end
     end
 end
+
+--------------------------------------------------------------------------
+-- worldmigrator
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+function GetMigrationPortalFromMigrationData(migrationdata)
+    if migrationdata.worldid ~= nil and migrationdata.portalid ~= nil then
+        for i, v in ipairs(ShardPortals) do
+            local worldmigrator = v.components.worldmigrator
+            if worldmigrator ~= nil and worldmigrator:IsDestinationForPortal(migrationdata.worldid, migrationdata.portalid) then
+                return v
+            end
+        end
+    end
+
+    return nil
+end
+function GetMigrationPortalLocation(ent, migrationdata, portaloverride)
+    local isplayer = ent:HasTag("player")
+    local portal = portaloverride or GetMigrationPortalFromMigrationData(migrationdata)
+
+    if portal ~= nil then
+        if isplayer then
+            print("Migrating prefab " .. (ent.prefab or "n/a") .. " will spawn close to portal ID: " .. tostring(portal.components.worldmigrator.id))
+        end
+        local x, y, z = portal.Transform:GetWorldPosition()
+        local offset = FindWalkableOffset(Vector3(x, 0, z), math.random() * TWOPI, portal:GetPhysicsRadius(0) + .5, 8, false, true, NoHoles)
+
+        --V2C: Do this after caching physical values, since it might remove itself
+        --     and spawn in a new "opened" version, making "portal" invalid.
+        portal.components.worldmigrator:ActivatedByOther()
+
+        if offset ~= nil then
+            return x + offset.x, 0, z + offset.z
+        end
+        return x, 0, z
+    elseif migrationdata.dest_x ~= nil and migrationdata.dest_y ~= nil and migrationdata.dest_z ~= nil then
+        local pt = Vector3(migrationdata.dest_x, migrationdata.dest_y, migrationdata.dest_z)
+        if isplayer then
+            print("Migrating prefab " .. (ent.prefab or "n/a") .. " will spawn near " .. tostring(pt))
+        end
+        pt = pt + (FindWalkableOffset(pt, math.random() * TWOPI, 2, 8, false, true, NoHoles) or Vector3(0,0,0))
+        return pt:Get()
+    else
+        if isplayer then
+            print("Migrating prefab " .. (ent.prefab or "n/a") .. " will spawn at default location")
+        end
+        return TheWorld.components.playerspawner:GetAnySpawnPoint()
+    end
+end
+
+--------------------------------------------------------------------------

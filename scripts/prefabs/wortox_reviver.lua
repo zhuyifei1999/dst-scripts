@@ -96,8 +96,8 @@ local function SpellFn(inst, target, pos, caster)
 
     local caster_pos = caster:GetPosition()
     local owner_pos = owner:GetPosition()
-    if TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(caster_pos:Get()) ~= TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(owner_pos:Get()) then
-        -- No escaping Wagstaff's barrier here.
+    if not IsTeleportingPermittedFromPointToPoint(caster_pos.x, caster_pos.y, caster_pos.z, owner_pos.x, owner_pos.y, owner_pos.z) then
+        -- No escaping from here.
         caster:PushEvent("wortox_reviver_failteleport")
         return
     end

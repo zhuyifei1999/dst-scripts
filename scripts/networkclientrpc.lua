@@ -1335,6 +1335,24 @@ end
 local WorldSettings_Overrides = require("worldsettings_overrides")
 local SHARD_RPC_HANDLERS =
 {
+    ShardTransactionSteps = function(shardid, shardpayload_string)
+        shardid = tostring(shardid) -- shardid is converted to an integer and must be back to string.
+        local shardtransactionsteps = TheWorld and TheWorld.components.shardtransactionsteps or nil
+        if shardtransactionsteps then
+            local success, shardpayload = RunInSandboxSafe(shardpayload_string)
+            if success and (shardid == shardpayload.originshardid or shardid == shardpayload.receivershardid) then
+                shardtransactionsteps:OnShardTransactionSteps(shardpayload)
+            end
+        end
+    end,
+    PruneShardTransactionSteps = function(shardid, newfinalizedid)
+        shardid = tostring(shardid) -- shardid is converted to an integer and must be back to string.
+        local shardtransactionsteps = TheWorld and TheWorld.components.shardtransactionsteps or nil
+        if shardtransactionsteps then
+            shardtransactionsteps:OnPruneShardTransactionSteps(shardid, newfinalizedid)
+        end
+    end,
+
     ReskinWorldMigrator = function(shardid, migrator, skin_theme, skin_id, sessionid)
         for i,v in ipairs(ShardPortals) do
             if v.components.worldmigrator.id == migrator then

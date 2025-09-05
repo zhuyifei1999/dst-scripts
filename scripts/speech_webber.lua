@@ -318,7 +318,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1170,11 +1170,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "We float!",
     ANNOUNCE_FLOATER_LETGO = "Weeee!",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds don't sound happy.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Maybe they're coming down for a rest.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "We're tired!",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Watch out for the birds!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "We need something stronger!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Hey, we're still here!",
 
 	BATTLECRY =
 	{
@@ -3330,6 +3334,7 @@ return{
         WINTER_ORNAMENTBOSS = "Wow, that one looks great!",
 		WINTER_ORNAMENTFORGE = "Not so scary when they're like this.",
 		WINTER_ORNAMENTGORGE = "Huh. It kinda looks...goaty!",
+        WINTER_ORNAMENTPEARL = "We like Ms. Pearl.",
 
         WINTER_FOOD1 = "I won't eat it. It's our friend now.", --gingerbread cookie
         WINTER_FOOD2 = "Icy icy icing!", --sugar cookie
@@ -4426,6 +4431,13 @@ return{
             LINE_4 = "It's very pretty.",
             LINE_5 = "We sure wish we knew what it says!",
         },
+		VAULT_RUNE = "Nice drawings.",
+		VAULT_STATUE =
+		{
+			LORE1 = "He's not okay.",
+			LORE2 = "Oh no...",
+			LORE3 = "They look mean!",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "It's taking us on a treasure hunt!",
@@ -5734,7 +5746,7 @@ return{
         FLOTATIONCUSHION = "Promise we won't splash...",
         LUNAR_SEED = "So pretty! Can we keep it?",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Maybe it won't be so cranky this time.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "A fun and dangerous toy to build!",
         WAGBOSS_ROBOT_CREATION_PARTS = "More parts!",
@@ -5755,6 +5767,67 @@ return{
             BURNING  = "We love that smell!", --when its burning
             REVIVING = "What's happening to it?", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "Poke it!", --witnessing the corpse
+            BURNING  = "We love that smell!", --when its burning
+            REVIVING = "What's happening to it?", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "What do you want?", -- Generic string
+            EATING_CORPSE = "Kinda makes us hungry.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "It's staring at us!", --The head segment
+            BODY = "It has more legs than us!", --The body segment
+            FLIPPED = "Aww, poor guy.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "Get out of the way!", --It's vines are burning, it will collapse
+			CHOPPED = "We'll mine it!", --It's 'chopped', so the rock fell
+			GENERIC = "When the bough breaks...", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "What's in there?", -- Not ventilating anything
+            HOT     = "It's too hot!", -- Ventiliating hot air, making the area warm
+            GAS     = "We don't like that smell.", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "It makes us feel sick.", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "Aww, it's dead.",
+        FLOWER_CAVE_WITHERED = "It's not glowing much.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "We're glad it's just a statue!", --off, looks like decor/statue
+			ACTIVATED = "Hey! No fair!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "We'll pull it!",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "We like this game.",
+            BROKEN = "Aw, it's broken!",
+            UNPOWERED = "Why won't it turn on?",
+        },
+		VAULT_ORB = "Ooh, a ball!",
+        VAULT_LOBBY_EXIT = "We're first!",
+		VAULT_CHANDELIER_BROKEN = "We'll catch the next one!",
+
+		MASK_ANCIENT_HANDMAIDHAT = "If we put it on, will we look tough too?",
+		MASK_ANCIENT_ARCHITECTHAT = "Do we have a smart face too?",
+		MASK_ANCIENT_MASONHAT = "It must have been worn by someone big and strong.",
+
+        TREE_ROCK_SEED = "What a cute little seed!",
+        TREE_ROCK_SAPLING = "They grow up so fast!",
     },
 
     DESCRIBE_GENERIC = "Can we play with it?",

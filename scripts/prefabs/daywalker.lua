@@ -950,9 +950,6 @@ local function MakeHostile(inst)
 			PHASES[0].fn(inst)
 		end
 		inst:SetBrain(brain)
-		if inst.brain == nil and not inst:IsAsleep() then
-			inst:RestartBrain()
-		end
 		inst:SetEngaged(inst.components.combat:HasTarget())
 	end
 end

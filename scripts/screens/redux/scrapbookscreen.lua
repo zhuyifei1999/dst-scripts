@@ -59,26 +59,6 @@ local UNKNOWN = "unknown"
 local UK_TINT = {0.5,0.5,0.5,1}
 
 ---------------------------------------
--- SEEDED RANDOM NUMBER
-local A1, A2 = 727595, 798405 -- 5^17=D20*A1+A2
-local D20, D40 = 1048576, 1099511627776 -- 2^20, 2^40
-local X1, X2 = 0, 1
-
-function rand()
-  	local U = X2 * A2
-  	local V = (X1 * A2 + X2 * A1) % D20
-  	V = (V * D20 + U) % D40
-  	X1 = math.floor(V / D20)
-  	X2 = V - X1 * D20
-  	return V / D40
-end
-
-function primeRand(seed)
-	X1= seed
- 	A1, A2 = 727595, 798405 -- 5^17=D20*A1+A2
-	D20, D40 = 1048576, 1099511627776 -- 2^20, 2^40
-	X2 = 1
-end
 
 local function GetPeriodString(period)
 	local days = math.floor(period/60/8*100)/100
@@ -1005,7 +985,7 @@ end
 function ScrapbookScreen:PopulateInfoPanel(entry)
 	local data = self:GetData(entry)
 
-	primeRand(hash((data and data.name or "")..ThePlayer.userid))
+    self.PRNG = PRNG_Uniform(hash((data and data.name or "")..ThePlayer.userid))
 
     local page = Widget("page")
     if data then TheScrapbookPartitions:SetViewedInScrapbook(data.prefab) end
@@ -1040,7 +1020,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 			"scrap2",
 		}
 		if not tex then
-			tex = materials[math.ceil(rand()*#materials)]..suffix.. ".tex"
+			tex = materials[math.ceil(self.PRNG:Rand()*#materials)]..suffix.. ".tex"
 		end
 		if not source then
 			source = "images/scrapbook.xml"
@@ -1051,12 +1031,12 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 	end
 
 	local setattachmentdetils = function (widget,w,h, shortblock)
-		local choice = rand()
+		local choice = self.PRNG:Rand()
 
 		if choice < 0.4 and not shortblock then
 			-- picture tabs
 			local mat = "corner.tex"
-			if rand() < 0.5 then
+			if self.PRNG:Rand() < 0.5 then
 				mat = "corner2.tex"
 			end
 			local tape1 = widget:AddChild(Image("images/scrapbook.xml", mat))
@@ -1083,25 +1063,25 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 			tape4:SetPosition(w/2-15,-h/2+15)
 			tape4:SetRotation(270)
 		elseif choice < 0.7 then
-			local tape1 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(rand()*2).."_centre.tex"))
+			local tape1 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(self.PRNG:Rand()*2).."_centre.tex"))
 			tape1:SetScale(0.5)
 			tape1:SetClickable(false)
 			tape1:SetPosition(0,h/2)
-			tape1:SetRotation(rand()*3- 1.5)
+			tape1:SetRotation(self.PRNG:Rand()*3- 1.5)
 		elseif choice < 0.8 then
 			--tape
 			local diagonal = false
 			local right = true
 			if shortblock then
-				if rand()<0.3 then
+				if self.PRNG:Rand()<0.3 then
 					diagonal = true
-					if rand()<0.5 then
+					if self.PRNG:Rand()<0.5 then
 						right = false
 					end
 				end
 			end
-			if (rand() < 0.5 and not shortblock) or (diagonal==true and right==false) then
-				local tape1 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(rand()*2).."_corner.tex"))
+			if (self.PRNG:Rand() < 0.5 and not shortblock) or (diagonal==true and right==false) then
+				local tape1 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(self.PRNG:Rand()*2).."_corner.tex"))
 				tape1:SetScale(0.5)
 				tape1:SetClickable(false)
 				tape1:SetPosition(-w/2+5,-h/2+5)
@@ -1110,7 +1090,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 			end
 
 			if not diagonal or right then
-				local tape2 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(rand()*2).."_corner.tex"))
+				local tape2 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(self.PRNG:Rand()*2).."_corner.tex"))
 				tape2:SetScale(0.5)
 				tape2:SetClickable(false)
 				tape2:SetPosition(-w/2+5,h/2-5)
@@ -1119,7 +1099,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 			end
 
 			if not diagonal or right == false then
-				local tape3 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(rand()*2).."_corner.tex"))
+				local tape3 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(self.PRNG:Rand()*2).."_corner.tex"))
 				tape3:SetScale(0.5)
 				tape3:SetClickable(false)
 				tape3:SetPosition(w/2-5,h/2-5)
@@ -1127,8 +1107,8 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 				tape3:SetRotation(rotation)
 			end
 
-			if (rand() < 0.5 and not shortblock) or (diagonal==true and right==true) then
-				local tape4 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(rand()*2).."_corner.tex"))
+			if (self.PRNG:Rand() < 0.5 and not shortblock) or (diagonal==true and right==true) then
+				local tape4 = widget:AddChild(Image("images/scrapbook.xml", "tape".. math.ceil(self.PRNG:Rand()*2).."_corner.tex"))
 				tape4:SetScale(0.5)
 				tape4:SetClickable(false)
 				tape4:SetPosition(w/2-5,-h/2+5)
@@ -1136,7 +1116,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 				tape4:SetRotation(rotation)
 			end
 		else
-			local ropechoice = math.ceil(rand()*3)
+			local ropechoice = math.ceil(self.PRNG:Rand()*3)
 			local rope = widget:AddChild(Image("images/scrapbook.xml", "rope".. ropechoice.."_corner.tex"))
 			rope:SetScale(0.5)
 			rope:SetClickable(false)
@@ -1197,7 +1177,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 		local bg
 		height, bg = setimageblock(height,{ignoreheightchange=true, widget=panel, source="images/scrapbook.xml", tex="scrap_square.tex"})
 
-		local shade = 0.8 + rand()*0.2
+		local shade = 0.8 + self.PRNG:Rand()*0.2
 		bg:SetTint(shade,shade,shade,1)
 
 		local MARGIN = data.margin and data.margin or 15
@@ -1216,7 +1196,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 		applytexturesize(bg, boxwidth,h+(MARGIN*2))
 
-		local angle =  data.norotation and 0 or rand()*3- 1.5
+		local angle =  data.norotation and 0 or self.PRNG:Rand()*3- 1.5
  		panel:SetRotation(angle)
 
 		pos_t = textblock:GetPosition()
@@ -1256,7 +1236,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 	height = height  - 10
 
 	-- set the photo
-	local rotation = (rand() * 5)-2.5
+	local rotation = (self.PRNG:Rand() * 5)-2.5
 
 	--------------------------------------------------------------------------------------------------------------------------------------------------------------
 	--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1264,7 +1244,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 	local CUSTOM_SIZE = Vector3(150,250,0)
 	local CUSTOM_ANIMOFFSET = Vector3(0,-40,0)
-	local CUSTOM_INDENT = 40 + (rand() * 25)
+	local CUSTOM_INDENT = 40 + (self.PRNG:Rand() * 25)
 
 	local STAT_PANEL_WIDTH = 220
 	local STAT_PANEL_INDENT = 30
@@ -1668,7 +1648,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 		animstate:SetBuild(data.build)
 		animstate:SetBank(data.bank)
-		animstate:SetPercent(data.anim or "", data.animpercent or rand())
+		animstate:SetPercent(data.anim or "", data.animpercent or self.PRNG:Rand())
 
 		if data.facing then
 			animal:SetFacing(data.facing)
@@ -1764,7 +1744,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 			floater_animstate:SetBuild("float_fx")
 			floater_animstate:SetBank("float_front")
-			floater_animstate:SetPercent("idle_front_" .. size, rand())
+			floater_animstate:SetPercent("idle_front_" .. size, self.PRNG:Rand())
 			floater_animstate:SetFloatParams(-0.05, 1.0, 0)
 
 			floater:SetPosition(0, tonumber(vert_offset), 0)
@@ -2110,7 +2090,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 			recipewidget:SetPosition( STAT_PANEL_INDENT ,height)  --rotwidth+ CUSTOM_INDENT +30
 
-			local rotation = (rand() * 5)-2.5
+			local rotation = (self.PRNG:Rand() * 5)-2.5
 			recipewidget:SetRotation(rotation)
 
 		    local rotheight = calculteRotatedHeight(rotation,STAT_PANEL_WIDTH, math.abs(recipeheight))
@@ -2164,7 +2144,7 @@ function ScrapbookScreen:PopulateInfoPanel(entry)
 
 					if type(objstr) == "table" then
 						if #objstr > 0 then
-							objstr = objstr[math.floor(rand()*#objstr)+1]
+							objstr = objstr[math.floor(self.PRNG:Rand()*#objstr)+1]
 
 						elseif DESCRIPTION_STATUS_LOOKUP[entry_upper] ~= nil then
 							objstr = objstr[DESCRIPTION_STATUS_LOOKUP[entry_upper]]

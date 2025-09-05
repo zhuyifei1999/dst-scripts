@@ -34,7 +34,7 @@ local function OnTownPortalActivated(inst, townportal)
 		for i, v in ipairs(_townportals) do
 			if v ~= townportal then
                 local posent = v.components.inventoryitem and v.components.inventoryitem:GetGrandOwner() or v
-                if not map:IsPointInWagPunkArenaAndBarrierIsUp(posent.Transform:GetWorldPosition()) then
+                if IsTeleportLinkingPermittedFromPoint(posent.Transform:GetWorldPosition()) then
                     if not linkedportals[v] then
                         linkedportals[v] = true
                         v:PushEvent("linktownportals", townportal)
@@ -82,7 +82,7 @@ local function OnRegisterTownPortal(inst, townportal)
     table.insert(_townportals, townportal)
     inst:ListenForEvent("onremove", OnRemoveTownPortal, townportal)
     local posent = townportal.components.inventoryitem and townportal.components.inventoryitem:GetGrandOwner() or townportal
-    if _activetownportal ~= nil and not TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(posent.Transform:GetWorldPosition()) then
+    if _activetownportal ~= nil and IsTeleportLinkingPermittedFromPoint(posent.Transform:GetWorldPosition()) then
 	    townportal:PushEvent("linktownportals", _activetownportal)
         linkedportals[townportal] = true
 	end

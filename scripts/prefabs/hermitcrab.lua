@@ -191,6 +191,8 @@ local function OnRefuseItem(inst, giver, item)
     inst.sg:GoToState("refuse")
 end
 
+-- If there is an edible item that we want to not eat and let this function handle,
+-- make sure to check for it in itemget event handler
 local function OnAcceptItem(inst, giver, item, count)
     if item:HasTag("oceanfish") then
 
@@ -1174,7 +1176,15 @@ local function initfriendlevellisteners(inst)
 
     -- To eat the berries and meat we harvest
     inst:ListenForEvent("itemget", function(inst, data)
-        if data and data.item.components.edible and not is_flowersalad(data.item) then --OnAcceptItem already handles flower salad
+        -- If there is an edible item that we want to not eat and let OnAcceptItem handle instead make sure to check here
+        if not data or
+            not data.item or
+            is_flowersalad(data.item) or
+            data.item:HasTag("oceanfish") then
+            return
+        end
+    
+        if data.item.components.edible then
             if inst.driedthings then
                 -- This should only really count for meat that actually dried, but it's been working this way forever, so it's fine.
                 inst.driedthings = inst.driedthings + 1

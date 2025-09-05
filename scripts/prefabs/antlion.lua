@@ -309,11 +309,7 @@ local function StartCombat(inst, target, trigger)
 
         inst:SetStateGraph("SGantlion_angry")
 
-        --After loading, replacing an empty brain with a new
-        --one doesn't automatically restart itself properly.
-        inst:StopBrain()
         inst:SetBrain(brain)
-        inst:RestartBrain()
 
         inst:AddTag("scarytoprey")
         inst:AddTag("hostile")

@@ -516,7 +516,7 @@ local states=
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("empty")
 
-            inst:StopBrain()
+			inst:StopBrain("SGchester_devoured")
 
             inst:Hide()
             inst.DynamicShadow:Enable(false)
@@ -584,7 +584,7 @@ local states=
                     end
                 end
             end
-            inst:RestartBrain()
+			inst:RestartBrain("SGchester_devoured")
             inst:Show()
             inst.DynamicShadow:Enable(true)
             if inst.sg.statemem.isphysicstoggle then

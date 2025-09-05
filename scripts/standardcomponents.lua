@@ -838,7 +838,7 @@ local function oneat(inst)
     end
 end
 
-local function onperish(inst, donotremove)
+local function onperish(inst)
     local owner = inst.components.inventoryitem.owner
     if owner ~= nil then
 		local loots
@@ -874,13 +874,6 @@ local function onperish(inst, donotremove)
 				container:GiveItem(v)
 			end
 		end
-    else
-        if inst.components.lootdropper ~= nil then
-            inst.components.lootdropper:DropLoot()
-        end
-        if not donotremove then
-            inst:Remove()
-        end
     end
 end
 
@@ -912,21 +905,14 @@ function MakeSmallPerishableCreature(inst, starvetime, oninventory, ondropped)
     end)
 end
 
-function MakeSmallPerishableCreatureAlwaysPerishing(inst, starvetime, oninventory, ondropped, onperishpre)
+function MakeSmallPerishableCreatureAlwaysPerishing(inst, starvetime, oninventory, ondropped)
     MakeSmallPerishableCreaturePristine(inst)
 
     --We want to see the warnings for duplicating perishable
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(starvetime)
     inst.components.perishable:StartPerishing()
-    inst.components.perishable:SetOnPerishFn(function(inst)
-        local donotremove = false
-        if onperishpre ~= nil then
-            donotremove = onperishpre(inst)
-        end
-        print("RH perish", donotremove)
-        onperish(inst, donotremove)
-    end)
+    inst.components.perishable:SetOnPerishFn(onperish)
 
     inst.components.inventoryitem:SetOnPutInInventoryFn(function(inst, owner)
         if oninventory ~= nil then

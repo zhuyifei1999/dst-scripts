@@ -325,6 +325,11 @@ fns.OnStopChannelCastingItem = function(inst)
 	inst.components.locomotor:StopStrafing()
 end
 
+fns.IsTeetering = function(inst)
+	local platform = inst:GetCurrentPlatform()
+	return platform ~= nil and platform.prefab == "abysspillar"
+end
+
 local function ShouldAcceptItem(inst, item)
     if inst:HasTag("playerghost") then
         return item:HasTag("reviver") and inst:IsOnPassablePoint()
@@ -1940,6 +1945,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 		Asset("ANIM", "anim/player_sit_wave.zip"),
 		--
 		Asset("ANIM", "anim/player_float.zip"),
+		Asset("ANIM", "anim/player_teetering.zip"),
 		--
 
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
@@ -2164,6 +2170,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.IsCarefulWalking = IsCarefulWalking -- Didn't want to make carefulwalking a networked component
 		inst.IsChannelCasting = fns.IsChannelCasting -- Didn't want to make channelcaster a networked component
 		inst.IsChannelCastingItem = fns.IsChannelCastingItem -- Didn't want to make channelcaster a networked component
+		inst.IsTeetering = fns.IsTeetering
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.EnableBoatCamera = fns.EnableBoatCamera
 		inst.EnableTargetLocking = ex_fns.EnableTargetLocking

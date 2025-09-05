@@ -23,12 +23,24 @@ self.sound_level = 0
 0 = no sound
 1 = first level of hail bird event sound
 2 = second level of hail bird event sound (corpses are dropping)
+3 = bird ambience is dead from turf ambience, eerie quiet...
 ]]
 
+local HAIL_SOUND_LEVELS = {
+    NONE            = 0,    --No Ambience
+    SCUFFLES        = 1,    --Scuffling in the sky, and fighting with gestalts
+    CORPSES         = 2,    --Corpses are falling
+    NO_AMBIENCE     = 3,    --The bird chirps have left the ambience
+}
+self.HAIL_SOUND_LEVELS = HAIL_SOUND_LEVELS
+
 local function PlaySoundLevel(level)
-    if level == 0 then
+    --ambientsound.lua handles getting rid of bird ambience
+    TheWorld:PushEvent("updateambientsoundparams")
+
+    if level == HAIL_SOUND_LEVELS.NONE or level == HAIL_SOUND_LEVELS.NO_AMBIENCE then
         TheFocalPoint.SoundEmitter:KillSound(HAIL_BIRD_SOUND_NAME)
-    else
+    elseif level == HAIL_SOUND_LEVELS.SCUFFLES or level == HAIL_SOUND_LEVELS.CORPSES then
         if not TheFocalPoint.SoundEmitter:PlayingSound(HAIL_BIRD_SOUND_NAME) then
             TheFocalPoint.SoundEmitter:PlaySound("lunarhail_event/amb/gestalt_attack_storm", HAIL_BIRD_SOUND_NAME)
         end
@@ -37,11 +49,16 @@ local function PlaySoundLevel(level)
 end
 
 local function OnHailBirdDirty()
-    PlaySoundLevel(self.birds_dropping_param:value())
+    self.sound_level = self.birds_dropping_param:value()
+    PlaySoundLevel(self.sound_level)
 end
 
 if not _world.ismastersim then
     inst:ListenForEvent("hailbirddirty", OnHailBirdDirty)
+end
+
+function self:GetIsBirdlessAmbience()
+    return self.sound_level > HAIL_SOUND_LEVELS.NONE
 end
 
 -- Server.

@@ -1314,6 +1314,12 @@ t = {
                 FlagForRetrofitting_Forest(savedata, "sharkboi_ice_hazard_fix")
             end,
         },
+        {
+            version = 5.157, -- Add the big whirlpool.
+            fn = function(savedata)
+                FlagForRetrofitting_Forest(savedata, "rifts6_add_whirlpool")
+            end,
+        },
     },
 }
 

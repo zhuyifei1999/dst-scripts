@@ -54,7 +54,7 @@ end
 local function checkinterruptstun(inst)
 	if not inst.sg.statemem.not_interrupted and inst.components.timer:TimerExists("endstun") then
 		inst.components.timer:StopTimer("endstun")
-		inst:RestartBrain()
+		inst:RestartBrain("SGminotaur_stun")
 	end
 end
 
@@ -572,7 +572,7 @@ local states =
             end
             local stuntime = math.max(1.5,Remap(inst.chargecount,0, 1, 0, 6 ) )
             inst.components.timer:StartTimer("endstun", stuntime)
-            inst:StopBrain()
+			inst:StopBrain("SGminotaur_stun")
         end,
 
         timeline=

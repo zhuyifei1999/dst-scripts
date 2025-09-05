@@ -388,7 +388,11 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
                             print(_TRACEBACK())
                             print("<<< Please add a bug report with this log file to help diagnose what went wrong!")
                         end
-						world:SetTile(position[1] + column, position[2] + row, layout.ground_types[layout.ground[rw][clmn]], 1)
+                        local x, y = position[1] + column, position[2] + row
+						world:SetTile(x, y, layout.ground_types[layout.ground[rw][clmn]], 1)
+                        if layout.SafeFromDisconnect and world.MakeSafeFromDisconnect then
+                            world:MakeSafeFromDisconnect(x, y)
+                        end
 					else
 						table.insert(tiles, layout.ground_types[layout.ground[rw][clmn]])
 					end
@@ -410,6 +414,21 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 	local rcy = 0
 	if position == nil then
 		rcx, rcy = world:ReserveSpace(node_id, size, layout.start_mask, layout.fill_mask, layout.layout_position, tiles)
+        if rcx then
+            if layout.SafeFromDisconnect and world.MakeSafeFromDisconnect then
+                local tileindex = 0
+                for column = 1, size*2 do -- size*2 because of the /2.0 above.
+                    for row = 1, size*2 do
+                        tileindex = tileindex + 1
+                        local tileid = tiles[tileindex]
+                        if tileid ~= 0 then
+                            local x, y = rcx + column, rcy + row
+                            world:MakeSafeFromDisconnect(x, y)
+                        end
+                    end
+                end
+            end
+        end
 	else
 		rcx = position[1]
 		rcy = position[2]
