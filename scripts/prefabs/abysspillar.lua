@@ -103,13 +103,17 @@ local function CreatePlayerCollision()
 
 	inst.entity:AddTransform()
 
-	inst:AddTag("CLASSIFIED")
+	--inst:AddTag("CLASSIFIED")
+	inst:AddTag("blocker")
 	--inst:AddTag("NOBLOCK")
 	inst:AddTag("NOCLICK")
 	inst:AddTag("ignorewalkableplatforms")
 	--[[Non-networked entity]]
 	inst.entity:SetCanSleep(TheWorld.ismastersim)
 	inst.persists = false
+
+	inst:SetPhysicsRadiusOverride(RADIUS)
+	inst:SetDeploySmartRadius(RADIUS)
 
 	inst.entity:AddPhysics()
 	inst.Physics:SetMass(0)
@@ -424,7 +428,7 @@ local function fn()
 	inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
 
 	inst:AddTag("NOCLICK")
-	inst:AddTag("blocker")
+	--inst:AddTag("blocker") --doesn't work since it's a platform; moved to the player collision entity
 	inst:AddTag("ignorewalkableplatforms")
 	inst:AddTag("abysspillar")
 

@@ -7,6 +7,109 @@ local prefabs = {
     "wave_med",
 }
 
+--------------------------------------------------------------------------
+
+local function AddAnimLayer(inst, layer, height)
+	local fx = CreateEntity()
+
+	fx:AddTag("FX")
+	fx:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	fx.entity:SetCanSleep(TheWorld.ismastersim)
+	fx.persists = false
+
+	fx.entity:AddTransform()
+	fx.entity:AddAnimState()
+
+	fx.AnimState:SetBuild("whirlbigportal")
+	fx.AnimState:SetBank("whirlbigportal")
+	fx.AnimState:PlayAnimation("closed")
+	fx.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	fx.AnimState:SetLayer(LAYER_BACKGROUND)
+	fx.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_WHIRLPORTAL)
+	fx.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
+	fx.AnimState:Hide("edge")
+	fx.AnimState:Hide(layer == "deep" and "mid" or "deep")
+
+	fx.entity:SetParent(inst.entity)
+	fx.Transform:SetPosition(0, height, 0)
+
+	return fx
+end
+
+local function DoSyncPlayAnim(inst, anim, loop)
+	for _, v in ipairs(inst.animlayers) do
+		v.AnimState:PlayAnimation(anim, loop)
+	end
+end
+
+local function DoSyncPushAnim(inst, anim, loop)
+	for _, v in ipairs(inst.animlayers) do
+		v.AnimState:PushAnimation(anim, loop)
+	end
+end
+
+local function DoSyncAnimTime(inst, t)
+	for _, v in ipairs(inst.animlayers) do
+		v.AnimState:SetTime(t)
+	end
+end
+
+local function CancelPostUpdate_Client(inst, PostUpdate_Client)
+	inst.cancelpostupdating = nil
+	inst.postupdating = nil
+	inst.components.updatelooper:RemovePostUpdateFn(PostUpdate_Client)
+end
+
+local function PostUpdate_Client(inst)
+	if inst.cancelpostupdating then
+		return
+	elseif inst.AnimState:IsCurrentAnimation("closed") then
+		print("closed")
+		DoSyncPlayAnim(inst, "closed")
+	elseif inst.AnimState:IsCurrentAnimation("open_pst") then
+		print("open_pst")
+		DoSyncPlayAnim(inst, "open_pst")
+		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
+		DoSyncPushAnim(inst, "closed", false)
+	elseif inst.AnimState:IsCurrentAnimation("open_loop") then
+		print("open_loop")
+		DoSyncPlayAnim(inst, "open_loop", true)
+		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
+	elseif inst.AnimState:IsCurrentAnimation("open_pre") then
+		print("open_pre")
+		DoSyncPlayAnim(inst, "open_pre")
+		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
+		DoSyncPushAnim(inst, "open_loop")
+	else
+		assert(false)
+	end
+	inst.cancelpostupdating = inst:DoStaticTaskInTime(0, CancelPostUpdate_Client, PostUpdate_Client)
+end
+
+--client
+local function OnSyncAnims(inst)
+	if inst.cancelpostupdating then
+		inst.cancelpostupdating:Cancel()
+		inst.cancelpostupdating = nil
+	elseif not inst.postupdating then
+		inst.postupdating = true
+		inst.components.updatelooper:AddPostUpdateFn(PostUpdate_Client)
+	end
+end
+
+--server
+local function SyncAnims(inst, anim, loop)
+	if inst.animlayers then
+		DoSyncPlayAnim(inst, anim, loop)
+		if anim == "open_pst" then
+			DoSyncPushAnim(inst, "closed", false)
+		end
+	end
+	inst.syncanims:push()
+end
+
+--------------------------------------------------------------------------
 
 local function OnRemoveEntity(inst)
     inst.SoundEmitter:KillSound("wave")
@@ -18,6 +121,7 @@ local function OpenWhirlportal_finalize(inst)
     inst.SoundEmitter:PlaySound("rifts6/whirlpool/whirlpool_LP", "wave")
     inst.SoundEmitter:SetParameter("wave", "size", 0.5)
     inst.AnimState:PlayAnimation("open_loop", true)
+	SyncAnims(inst, "open_loop", true)
     inst.components.oceanwhirlportalphysics:SetEnabled(true)
 end
 
@@ -26,6 +130,7 @@ local function OpenWhirlportal(inst)
         if not inst.openingwhirlportal then
             inst.SoundEmitter:PlaySound("rifts6/whirlpool/whirlpool_pre")
             inst.AnimState:PlayAnimation("open_pre")
+			SyncAnims(inst, "open_pre")
             inst:ListenForEvent("animover", inst.OpenWhirlportal_finalize)
             inst.openingwhirlportal = true
         end
@@ -42,7 +147,8 @@ local function CloseWhirlportal(inst)
     inst.SoundEmitter:KillSound("wave")
     inst.SoundEmitter:PlaySound("rifts6/whirlpool/whirlpool_pst")
     inst.AnimState:PlayAnimation("open_pst")
-    inst.AnimState:PushAnimation("closed")
+	inst.AnimState:PushAnimation("closed", false)
+	SyncAnims(inst, "open_pst")
     inst.components.oceanwhirlportalphysics:SetEnabled(false)
 end
 
@@ -95,6 +201,8 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_WHIRLPORTAL)
     inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
+	inst.AnimState:Hide("mid")
+	inst.AnimState:Hide("deep")
 
     inst.MiniMapEntity:SetIcon("oceanwhirlbigportal.png")
     inst.MiniMapEntity:SetPriority(-2)
@@ -110,9 +218,22 @@ local function fn()
     inst.highlightoverride = {0.1, 0.1, 0.3}
     inst.scrapbook_inspectonseen = true
 
+	inst.syncanims = net_event(inst.GUID, "oceanwhirlbigportal.syncanims")
+
+	if not TheNet:IsDedicated() then
+		inst.animlayers =
+		{
+			AddAnimLayer(inst, "mid", -0.5),
+			AddAnimLayer(inst, "deep", -1),
+		}
+	end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+		inst:AddComponent("updatelooper")
+		inst:ListenForEvent("oceanwhirlbigportal.syncanims", OnSyncAnims)
+
         return inst
     end
 

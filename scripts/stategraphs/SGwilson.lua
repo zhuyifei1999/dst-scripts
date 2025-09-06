@@ -18748,7 +18748,7 @@ local states =
 
 	State{
 		name = "vault_teleport",
-		tags = { "doing", "busy", "channeling", "pausepredict", "nomorph", "notalking" },
+		tags = { "doing", "busy", "channeling", "nomorph", "notalking" },
 
 		onenter = function(inst, data)
 			inst.components.locomotor:Stop()
@@ -18757,7 +18757,6 @@ local states =
 			end
 
 			if inst.components.playercontroller then
-				inst.components.playercontroller:RemotePausePrediction()
 				inst.components.playercontroller:Enable(false)
 			end
 

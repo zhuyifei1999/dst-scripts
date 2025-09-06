@@ -27,6 +27,10 @@ local function CanDeploy(inst, pt, mouseover, deployer, rot)
         return false
     end
 
+    if TileGroupManager:IsTemporaryTile(tile) then
+        return false
+    end
+
     if not TheWorld.Map:IsDeployPointClear(pt, inst, inst.replica.inventoryitem:DeploySpacingRadius()) then
         return false
     end

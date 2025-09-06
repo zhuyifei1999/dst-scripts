@@ -387273,6 +387273,11 @@ msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS5_KILLTIME_FMT"
 msgid "You defeated {name} in {time}s."
 msgstr ""
 
+#. STRINGS.TEMP_BETA_MSG.RIFTS6_BASIC
+msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS6_BASIC"
+msgid "Thanks for playing the beta!\nThe room beyond this point is not yet available."
+msgstr ""
+
 #. STRINGS.THANKS_POPUP.ANRARG
 msgctxt "STRINGS.THANKS_POPUP.ANRARG"
 msgid "Metheus has taken heed"

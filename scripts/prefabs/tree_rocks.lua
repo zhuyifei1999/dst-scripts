@@ -52,30 +52,42 @@ SetSharedLootTable( 'tree_rock1_mine',
 
 --rifts6/rock_tree/fall_break
 
---TODO loot should also depend on biome
-
 local NUM_VINE_LOOT = 5
 
 local TREE_ROCK_DATA = require("prefabs/tree_rock_data")
 local WEIGHTED_VINE_LOOT = TREE_ROCK_DATA.WEIGHTED_VINE_LOOT
 local VINE_LOOT_DATA = TREE_ROCK_DATA.VINE_LOOT_DATA
+local TASKS_TO_LOOT_KEY = TREE_ROCK_DATA.TASKS_TO_LOOT_KEY
+local CheckModifyLootArea = TREE_ROCK_DATA.CheckModifyLootArea
 TREE_ROCK_DATA = nil
 
-local function GetLootWeightedTable()
-    local riftmanager = TheWorld.components.riftmanager
-    if riftmanager and riftmanager:IsShadowPortalActive() then
-        return WEIGHTED_VINE_LOOT.SHADOW_RIFT
+local function GetLootWeightedTable(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local id, index = TheWorld.Map:GetTopologyIDAtPoint(x, y, z)
+    if id then
+        local task_name, _, room_name = id:match("(.*):(.*):(.*)")
+        local loot_key = task_name and CheckModifyLootArea(TASKS_TO_LOOT_KEY[task_name])
+
+        if loot_key then
+            return WEIGHTED_VINE_LOOT[loot_key]
+        elseif BRANCH == "dev" then --TODO crash for now!
+            print(task_name, room_name)
+            assert(false, "We didn't get a loot key?")
+        end
     end
 
     return WEIGHTED_VINE_LOOT.DEFAULT
 end
 
-local function GetVineLoots()
-    return weighted_random_choices(GetLootWeightedTable(), NUM_VINE_LOOT)
+local function GetVineLoots(inst)
+    return weighted_random_choices(GetLootWeightedTable(inst), NUM_VINE_LOOT)
 end
 
 local function SetupVineLoot(inst, loots)
-    inst.vine_loot = loots or GetVineLoots()
+    if inst.vine_loot then
+        return
+    end
+    inst.vine_loot = loots or GetVineLoots(inst)
     --
     for i = 1, NUM_VINE_LOOT do
         local data = VINE_LOOT_DATA[inst.vine_loot[i]]
@@ -541,6 +553,7 @@ local function MakeRockTree(name, build, stage)
         MakeSnowCoveredPristine(inst)
 
         inst:AddTag("tree")
+        inst:AddTag("rock_tree")
         inst:AddTag("shelter")
         inst:AddTag("nodangermusic")
 
@@ -593,7 +606,7 @@ local function MakeRockTree(name, build, stage)
         MakeSnowCovered(inst)
         SetLunarHailBuildupAmountSmall(inst)
 
-        SetupVineLoot(inst)
+        inst:DoTaskInTime(0, SetupVineLoot)
 
         MakeHauntableWork(inst)
 

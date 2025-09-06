@@ -170,9 +170,6 @@ local prefabs =
     "graveguard_ghost",
 
 	-- Rifts 6
-	"abysspillar_trial",
-	"abysscliff_tile",
-
     "shadowthrall_centipede_controller",
     "shadowthrall_centipede_head",
     "shadowthrall_centipede_body",

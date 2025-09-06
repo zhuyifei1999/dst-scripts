@@ -2015,7 +2015,7 @@ function IsTeleportLinkingPermittedFromPoint(fx, fy, fz)
         return false
     end
 
-    if map:IsPointInAnyVault(tx, ty, tz) then
+    if map:IsPointInAnyVault(fx, fy, fz) then
         return false
     end
 

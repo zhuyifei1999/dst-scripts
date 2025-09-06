@@ -4,7 +4,8 @@ local assets =
 }
 
 local function OnEntityWake(inst)
-    inst.SoundEmitter:PlaySound("grotto/common/chandelier_LP", "loop")
+    -- Don't play any sound. This is a 'fake' opening.
+    --inst.SoundEmitter:PlaySound("dontstarve/AMB/caves/forest_spot", "loop")
 end
 
 local function OnEntitySleep(inst)
@@ -13,20 +14,24 @@ end
 
 local function SetDuration(inst, duration)
     inst.duration = duration
-    inst.kill_task = inst:DoTaskInTime(duration, inst.Remove)
+    inst.kill_task = inst:DoTaskInTime(duration, inst.FadeOut)
 end
 
 local function FadeOut(inst)
     local radius = 3
     local intensity = 0.85
+    local falloff = 0.3
 
     inst.AnimState:PlayAnimation("off")
+    inst.persists = false
 
-    inst:DoPeriodicTask(21 * FRAMES, function() 
+    inst:DoPeriodicTask(FRAMES, function()
         radius = radius - (3/21)
         intensity = intensity - (0.85/21)
+        falloff = falloff + (0.3/21)
         inst.Light:SetRadius(radius)
         inst.Light:SetIntensity(intensity)
+        inst.Light:SetFalloff(falloff)
     end)
 
     --inst:DoTaskInTime(7 * FRAMES, inst.Remove)

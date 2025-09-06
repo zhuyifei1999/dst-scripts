@@ -145,6 +145,7 @@ self:LinkRooms("lore3", DIRECTIONS.E, "hall7", DIRECTIONS.W)
 self:LinkRooms("lore3", DIRECTIONS.S, "puzzle1", DIRECTIONS.N)
 self:LinkRooms("lore3", DIRECTIONS.W, "hall6", DIRECTIONS.E)
 self:MakeLinkRigid("lore3", DIRECTIONS.N)
+self:MakeLinkRigid("lore3", DIRECTIONS.S)
 
 self:LinkRoomsBroken("key1", DIRECTIONS.S, "lore3", DIRECTIONS.N)
 

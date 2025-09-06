@@ -423,6 +423,9 @@ defs.lore3.LayoutNewRoomAtXZ = function(inst, x, z)
 
 	--lights
 	SpawnPrefab("vault_chandelier"):SetVariation(math.random(2)).Transform:SetPosition(x, 0, z)
+
+	--beta
+	SpawnPrefab("temp_beta_msg").Transform:SetPosition(x + 0.55 * TILE_SIZE, 0, z + 4.6 * TILE_SIZE)
 end
 
 --------------------------------------------------------------------------

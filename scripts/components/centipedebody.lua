@@ -189,6 +189,17 @@ function CentipedeBody:GiveControlToRandomHead()
     end
 end
 
+function CentipedeBody:GiveControlToOtherHead()
+    if #self.heads > 0 then
+        for i, head in ipairs(self.heads) do
+            if head ~= self.head_in_control then
+                self:GiveControlToHead(head)
+                break
+            end
+        end
+    end
+end
+
 function CentipedeBody:GiveControlToHead(head)
     if self.head_in_control ~= head then
         for i = 1, #self.heads do

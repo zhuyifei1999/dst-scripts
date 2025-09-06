@@ -1159,7 +1159,7 @@ local function Dirt_DamageRedirectFn(inst, attacker, damage, weapon, stimuli)
         end
     end
 
-    if inst.chunk.head ~= nil then
+	if inst.chunk and inst.chunk.head then
         inst.chunk.head:PushEvent("attacked")
     end
 

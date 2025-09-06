@@ -12,21 +12,7 @@ local assets_vault =
 local prefabs =
 {
     "chandelier_fire",
-    "chandelier_sfx",
 }
-
-local prefabs_vault =
-{
-	"chandelier_sfx",
-}
-
-local function OnEntityWake(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/AMB/caves/forest_spot", "loop")
-end
-
-local function OnEntitySleep(inst)
-    inst.SoundEmitter:KillSound("loop")
-end
 
 local ON = 1
 local OFF = 2
@@ -84,18 +70,63 @@ local FLAMEDATA = {
     "flame4",
 }
 
-local function firesound(inst, setting)
-    if inst.sfxprop then
-        if setting > 0 then
-            if not inst.sfxprop.SoundEmitter:PlayingSound("firesfx") then
-                inst.sfxprop.SoundEmitter:PlaySound("grotto/common/chandelier_LP", "firesfx")
-            end
-            inst.sfxprop.SoundEmitter:SetParameter("firesfx", "intensity", setting)
-        else
-            inst.sfxprop.SoundEmitter:KillSound("firesfx")
-        end
-    end
+--------------------------------------------------------------------------
+
+local function sfx_StartSound(inst, level)
+	if not inst.SoundEmitter:PlayingSound("firesfx") then
+		inst.SoundEmitter:PlaySound("grotto/common/chandelier_LP", "firesfx")
+	end
+	inst.SoundEmitter:SetParameter("firesfx", "intensity", level)
 end
+
+local function sfx_SetSoundLevel(inst, level)
+	if inst.level ~= level then
+		inst.level = level
+		if not inst:IsAsleep() then
+			if level > 0 then
+				sfx_StartSound(inst, level)
+			else
+				inst.SoundEmitter:KillSound("firesfx")
+			end
+		end
+	end
+end
+
+local function sfx_OnEntitySleep(inst)
+	if inst.level > 0 then
+		inst.SoundEmitter:KillSound("firesfx")
+	end
+end
+
+local function sfx_OnEntityWake(inst)
+	if inst.level > 0 then
+		sfx_StartSound(inst, inst.level)
+	end
+end
+
+local function CreateSfxProp()
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	--[[Non-networked entity]]
+	if TheWorld.ismastersim then
+		inst.OnEntitySleep = sfx_OnEntitySleep
+		inst.OnEntityWake = sfx_OnEntityWake
+	else
+		inst.entity:SetCanSleep(false)
+	end
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddSoundEmitter()
+
+	inst.level = 0
+	inst.SetSoundLevel = sfx_SetSoundLevel
+
+	return inst
+end
+
+--------------------------------------------------------------------------
 
 local function pushparams(inst, params)
     inst.Light:SetRadius(params.radius * inst.widthscale)
@@ -109,8 +140,11 @@ local function pushparams(inst, params)
         else
             inst.Light:Enable(false)
         end
-        firesound(inst, params.intensity)
     end
+
+	if inst.sfxprop then
+		inst.sfxprop:SetSoundLevel(params.intensity)
+	end
 end
 
 -- Not using deepcopy because we want to copy in place
@@ -137,6 +171,10 @@ end
 
 local function OnUpdateLight(inst, dt)
     inst._currentlight.time = inst._currentlight.time + dt
+	if TheWorld.ismastersim then
+		--only used by clients construction/oninit, so just use set_local
+		inst._lightlerp:set_local(math.min(7, math.ceil(inst._currentlight.time / inst._endlight.time * 7)))
+	end
     if inst._currentlight.time >= inst._endlight.time then
         inst._currentlight.time = inst._endlight.time
         inst._lighttask:Cancel()
@@ -173,12 +211,16 @@ local function OnLightPhaseDirty(inst)
 	local params = inst.light_params[inst._lightphase:value()]
 	if params and params ~= inst._endlight then
 		copyparams(inst._startlight, inst._currentlight)
+		if TheWorld.ismastersim then
+			inst._lightlerp:set(0)
+		end
 		inst._currentlight.time = 0
 		inst._startlight.time = 0
 		inst._endlight = params
 		if inst._lighttask == nil then
 			inst._lighttask = inst:DoPeriodicTask(FRAMES, OnUpdateLight, nil, FRAMES)
 		end
+		return true
 	end
 end
 
@@ -210,8 +252,17 @@ end
 local function OnInit(inst)
 	if not TheWorld.ismastersim then
         inst:ListenForEvent("lightphasedirty", OnLightPhaseDirty)
+		if inst._lightlerp:value() < 7 then
+			--resume lerping from when it was serialized on server
+			if OnLightPhaseDirty(inst) then
+				inst._currentlight.time = inst._endlight.time * inst._lightlerp:value() / 7
+				OnUpdateLight(inst, FRAMES)
+			end
+			return
+		end
     end
 
+	--Skip lerping the lights
 	local params = inst.light_params[inst._lightphase:value()]
 	if params and params ~= inst._endlight then
 		copyparams(inst._currentlight, params)
@@ -222,20 +273,15 @@ local function OnInit(inst)
 		end
 		pushparams(inst, inst._currentlight)
 	end
-
-    inst.sfxprop = SpawnPrefab("chandelier_sfx")
-    local x,y,z = inst.Transform:GetWorldPosition()
-    inst.sfxprop.Transform:SetPosition(x,8,z)
 end
 
-local function MakeChandelier(name, build, light_params, flamedata, master_postinit, assets, prefabs)
+local function MakeChandelier(name, build, light_params, flamedata, sfxheight, master_postinit, assets, prefabs)
 	local function fn()
 		local inst = CreateEntity()
 
 		inst.entity:AddTransform()
 		inst.entity:AddAnimState()
 		inst.entity:AddLight()
-		inst.entity:AddSoundEmitter()
 		inst.entity:AddNetwork()
 
 		inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
@@ -263,6 +309,15 @@ local function MakeChandelier(name, build, light_params, flamedata, master_posti
 		inst._lightphase:set(inst._currentlight.id)
 		inst._lighttask = nil
 
+		--only used by clients on init
+		inst._lightlerp = net_tinybyte(inst.GUID, "archive_chandelier._lightlerp")
+
+		if not TheNet:IsDedicated() then
+			inst.sfxprop = CreateSfxProp()
+			inst.sfxprop.entity:SetParent(inst.entity)
+			inst.sfxprop.Transform:SetPosition(0, sfxheight, 0)
+		end
+
 		inst:DoTaskInTime(0, OnInit)
 
 		inst.entity:SetPristine()
@@ -274,9 +329,6 @@ local function MakeChandelier(name, build, light_params, flamedata, master_posti
 		inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
 		inst.updatelight = updatelight
-
-		inst.OnEntitySleep = OnEntitySleep
-		inst.OnEntityWake = OnEntityWake
 
 		if master_postinit then
 			master_postinit(inst)
@@ -353,28 +405,6 @@ local function firefxfn()
     return inst
 end
 
-local function soundfn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddNetwork()
-    inst.entity:AddSoundEmitter()
-
-    inst:AddTag("NOCLICK")
-    inst:AddTag("FX")
-
-    inst.persists = false
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    return inst
-end
-
-return MakeChandelier("archive_chandelier", "chandelier_archives", LIGHT_PARAMS, FLAMEDATA, archive_master_postinit, assets, prefabs),
+return MakeChandelier("archive_chandelier", "chandelier_archives", LIGHT_PARAMS, FLAMEDATA, 8, archive_master_postinit, assets, prefabs),
        Prefab("chandelier_fire", firefxfn, assets),
-       Prefab("chandelier_sfx", soundfn, assets),
-	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, vault_master_postinit, assets_vault, prefabs_vault)
+	MakeChandelier("vault_chandelier", "chandelier_vault", LIGHT_PARAMS_VAULT, nil, 6, vault_master_postinit, assets_vault)

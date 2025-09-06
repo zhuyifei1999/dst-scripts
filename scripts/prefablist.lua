@@ -4,7 +4,6 @@ PREFABFILES = {
   "abigail_attack_fx",
   "abigail_flower",
   "abigailforcefield",
-  "abysscliff",
   "abysspillar",
   "abysspillar_minion",
   "abysspillar_trial",

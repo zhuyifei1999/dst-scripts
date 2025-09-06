@@ -17628,6 +17628,8 @@ STRINGS.TEMP_BETA_MSG =
 	RIFTS5_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon...",
 	RIFTS5_BASIC_NEW = "Thanks for playing the beta!",
 	RIFTS5_KILLTIME_FMT = "You defeated {name} in {time}s.",
+	--
+	RIFTS6_BASIC = "Thanks for playing the beta!\nThe room beyond this point is not yet available.",
 }
 
 --Don't include this in pot generation as this file is already translated.
