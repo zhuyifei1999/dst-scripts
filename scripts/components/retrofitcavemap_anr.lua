@@ -961,6 +961,7 @@ function self:OnLoad(data)
 		self.retrofit_nodeidtilemap_atriummaze = data.retrofit_nodeidtilemap_atriummaze
         self.retrofit_daywalker_content = data.retrofit_daywalker_content or false
         self.console_beard_turf_fix = data.console_beard_turf_fix or false
+        --self.retrofit_rifts6_add_fumarole = data.retrofit_rifts6_add_fumarole or false
     end
 end
 

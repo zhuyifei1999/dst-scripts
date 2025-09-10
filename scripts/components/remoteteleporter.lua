@@ -63,16 +63,18 @@ function RemoteTeleporter:Teleport_Internal(target, from_x, from_z, to_x, to_z, 
     if items then
         self:SetNearbyItems(nil)
         for _, item in ipairs(items) do
-            local ix, iy, iz = item.Transform:GetWorldPosition()
-            local dx, dz = ix - from_x, iz - from_z
-            if item.Physics then
-                item.Physics:Teleport(to_x + dx, 0, to_z + dz)
-            else
-                item.Transform:SetPosition(to_x + dx, 0, to_z + dz)
-            end
-            item:PushEvent("teleported")
-            if item.components.inventoryitem ~= nil then
-                item.components.inventoryitem:SetLanded(false, true)
+            if item:IsValid() then
+                local ix, iy, iz = item.Transform:GetWorldPosition()
+                local dx, dz = ix - from_x, iz - from_z
+                if item.Physics then
+                    item.Physics:Teleport(to_x + dx, 0, to_z + dz)
+                else
+                    item.Transform:SetPosition(to_x + dx, 0, to_z + dz)
+                end
+                item:PushEvent("teleported")
+                if item.components.inventoryitem ~= nil then
+                    item.components.inventoryitem:SetLanded(false, true)
+                end
             end
         end
     end

@@ -327,7 +327,7 @@ end
 
 fns.IsTeetering = function(inst)
 	local platform = inst:GetCurrentPlatform()
-	return platform ~= nil and platform.prefab == "abysspillar"
+	return platform ~= nil and platform:HasTag("teeteringplatform")
 end
 
 local function ShouldAcceptItem(inst, item)
@@ -1918,6 +1918,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_boat_channel.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
+        Asset("ANIM", "anim/player_attacks_recoil.zip"),
         --Asset("ANIM", "anim/player_idles.zip"),--Moved to global.lua for use in Item Collection
         Asset("ANIM", "anim/player_rebirth.zip"),
         Asset("ANIM", "anim/player_jump.zip"),

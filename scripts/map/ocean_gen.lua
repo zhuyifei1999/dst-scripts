@@ -608,9 +608,6 @@ local function AddSquareTopology(encoded_topology, tile_left, tile_top, area_siz
 
 	for x = tile_left, tile_left + area_size do
 		for y = tile_top, tile_top + area_size do
-			-- NOTE FIXME
-			-- THIS IS BROKEN, LOOP_BLANK_SUB is a node we remove after world gen
-			-- But this does not account for that!!!!
 			world:SetTileNodeId(x, y, index)
 		end
 	end

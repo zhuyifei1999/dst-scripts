@@ -111,8 +111,8 @@ function Shard_UpdateWorldState(world_id, state, tags, world_data, shard_name)
             v.components.worldmigrator:ValidateAndPushEvents()
         else
             print(string.format("Skipping portal[%s] (different permanent world)", tostring(v.components.worldmigrator.id)))
-            inst.components.worldmigrator:SetDisabledWithReason("MISSINGSHARD")
-            inst.components.worldmigrator:ValidateAndPushEvents()
+            v.components.worldmigrator:SetDisabledWithReason("MISSINGSHARD")
+            v.components.worldmigrator:ValidateAndPushEvents()
         end
     end
 

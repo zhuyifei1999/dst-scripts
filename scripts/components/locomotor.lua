@@ -1672,7 +1672,7 @@ function LocoMotor:OnUpdate(dt, arrive_check_only)
 				else
 					destpos_x, destpos_z = forward_x * hop_distance + mypos_x, forward_z * hop_distance + mypos_z
 					other_platform = TheWorld.Map:GetPlatformAtPoint(destpos_x, destpos_z)
-					if other_platform and self:IsValidDestinationPlatform(my_platform, other_platform) then
+					if other_platform and not self:IsValidDestinationPlatform(my_platform, other_platform) then
 						other_platform = nil
 					end
 				end

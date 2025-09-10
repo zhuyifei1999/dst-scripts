@@ -548,7 +548,10 @@ function Pickable:Pick(picker)
         local loot = self:SpawnProductLoot(picker)
 
         if self.onpickedfn ~= nil then
-            self.onpickedfn(self.inst, picker, loot)
+			local success, reason = self.onpickedfn(self.inst, picker, loot)
+			if not success then
+				return false, EntityScript.is_instance(loot) and { loot } or loot, reason
+			end
         end
 
         self.canbepicked = false

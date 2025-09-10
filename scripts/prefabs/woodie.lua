@@ -1679,7 +1679,7 @@ local function UseWereFormSkill(inst, act)
     elseif inst:HasTag("weregoose") and TheWorld ~= nil then
         local x, y, z = inst.Transform:GetWorldPosition()
         local pos
-        if not IsTeleportLinkingPermittedFromPoint(x, y, z) then
+        if IsTeleportLinkingPermittedFromPoint(x, y, z) then
             pos = TheWorld.Map:FindRandomPointWithFilter(50, CanTeleportLinkFromPoint)
         end
 

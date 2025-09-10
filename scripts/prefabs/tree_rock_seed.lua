@@ -87,6 +87,7 @@ local function fn()
 
     inst:AddComponent("deployable")
     inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.PLACER_DEFAULT)
     inst.components.deployable.ondeploy = OnDeploy
 
     --inst:AddComponent("winter_treeseed") --Maybe some day?

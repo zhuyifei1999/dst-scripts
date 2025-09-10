@@ -112,7 +112,7 @@ local function DamageRedirectFn(inst, attacker, damage, weapon, stimuli)
 end
 
 local function TeleportOverrideFn(inst) --Sorry! No teleporting! We're not dealing with that.
-    return inst.Transform:GetWorldPosition()
+	return inst:GetPosition()
 end
 
 local function OnBlocked(inst, data)

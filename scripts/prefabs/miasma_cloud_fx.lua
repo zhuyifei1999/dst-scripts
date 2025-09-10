@@ -100,7 +100,7 @@ local function OnCameraUpdate_LargeDist_Targeted_Client(miasmacloud)
     local radius_sq_allow = GetRadiusSqAllow()
     if
         miasmacloud.entity:FrustumCheckWithAABB(10, 10) and
-        ThePlayer:GetDistanceSqToInst(miasmacloud) < radius_sq_allow
+        (ThePlayer and ThePlayer:GetDistanceSqToInst(miasmacloud) < radius_sq_allow)
     then
         miasmacloud:AttachParticles()
     else

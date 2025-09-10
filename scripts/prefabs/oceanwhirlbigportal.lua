@@ -65,19 +65,15 @@ local function PostUpdate_Client(inst)
 	if inst.cancelpostupdating then
 		return
 	elseif inst.AnimState:IsCurrentAnimation("closed") then
-		print("closed")
 		DoSyncPlayAnim(inst, "closed")
 	elseif inst.AnimState:IsCurrentAnimation("open_pst") then
-		print("open_pst")
 		DoSyncPlayAnim(inst, "open_pst")
 		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
 		DoSyncPushAnim(inst, "closed", false)
 	elseif inst.AnimState:IsCurrentAnimation("open_loop") then
-		print("open_loop")
 		DoSyncPlayAnim(inst, "open_loop", true)
 		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
 	elseif inst.AnimState:IsCurrentAnimation("open_pre") then
-		print("open_pre")
 		DoSyncPlayAnim(inst, "open_pre")
 		DoSyncAnimTime(inst, inst.AnimState:GetCurrentAnimationTime())
 		DoSyncPushAnim(inst, "open_loop")
@@ -146,9 +142,14 @@ local function CloseWhirlportal(inst)
     end
     inst.SoundEmitter:KillSound("wave")
     inst.SoundEmitter:PlaySound("rifts6/whirlpool/whirlpool_pst")
-    inst.AnimState:PlayAnimation("open_pst")
-	inst.AnimState:PushAnimation("closed", false)
-	SyncAnims(inst, "open_pst")
+	if inst:IsAsleep() then
+		inst.AnimState:PlayAnimation("closed")
+		SyncAnims(inst, "closed")
+	else
+		inst.AnimState:PlayAnimation("open_pst")
+		inst.AnimState:PushAnimation("closed", false)
+		SyncAnims(inst, "open_pst")
+	end
     inst.components.oceanwhirlportalphysics:SetEnabled(false)
 end
 
@@ -210,6 +211,7 @@ local function fn()
     inst:AddTag("birdblocker")
     inst:AddTag("ignorewalkableplatforms")
     inst:AddTag("oceanwhirlportal")
+    inst:AddTag("oceanwhirlbigportal") -- for messagebottlemanager.lua
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
 

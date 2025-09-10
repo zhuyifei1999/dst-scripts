@@ -465,7 +465,11 @@ function Map:CanDeployBridgeAtPointWithFilter(pt, inst, mouseover, tilefilterfn)
     end
 
     local id, index = self:GetTopologyIDAtPoint(pt.x, pt.y, pt.z)
-    if id and (id:find("Archive") or id:find("Labyrinth") or id:find("Atrium")) then
+    if id and (id:find("Archive") or id:find("Atrium")) then
+        return false
+    end
+
+    if self:IsPointInAnyVault(pt.x, pt.y, pt.z) then
         return false
     end
 

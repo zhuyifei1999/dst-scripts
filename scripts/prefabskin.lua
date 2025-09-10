@@ -3557,6 +3557,12 @@ end
 function nightstick_clear_fn(inst)
     basic_clear_fn(inst, "nightstick")
 end
+function hawaiianshirt_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "torso_hawaiian")
+end
+function hawaiianshirt_clear_fn(inst)
+    basic_clear_fn(inst, "torso_hawaiian")
+end
 
 
 

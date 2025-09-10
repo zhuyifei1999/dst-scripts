@@ -1070,3 +1070,39 @@ function GetMigrationPortalLocation(ent, migrationdata, portaloverride)
 end
 
 --------------------------------------------------------------------------
+--Custom passable ground tests useful for stategraph actions like dashing etc.
+
+local function _ispassable(x, y, z, allow_water, exclude_boats)
+	return TheWorld.Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
+end
+
+local function _ispassable_inarena(x, y, z)--, allow_water, exclude_boats)
+	return TheWorld.Map:IsPointInWagPunkArena(x, y, z)
+end
+
+local function _ispassable_vault(x, y, z)--, allow_water, exclude_boats)
+	local map = TheWorld.Map
+	return map:IsPointInAnyVault(x, y, z)
+		and map:IsPassableAtPoint(x, y, z, false, true)
+end
+
+function GetActionPassableTestFnAt(x, y, z)
+	local map = TheWorld.Map
+	local platform = map:GetPlatformAtPoint(x, y, z)
+	if platform and platform:HasTag("teeteringplatform") then
+		return function(x1, y1, z1)--, allow_water, exclude_boats)
+			return map:GetPlatformAtPoint(x1, y1, z1) == platform
+		end, true
+	elseif map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) then
+		return _ispassable_inarena, true
+	elseif map:IsPointInAnyVault(x, y, z) then
+		return _ispassable_vault, true
+	end
+	return _ispassable--, false --false because it's the default passable check
+end
+
+function GetActionPassableTestFn(inst)
+	return GetActionPassableTestFnAt(inst.Transform:GetWorldPosition())
+end
+
+--------------------------------------------------------------------------

@@ -234,9 +234,16 @@ local function OnSpawnTask(inst, cavephase)
 end
 
 local function updatelight(inst)
-    local archive = TheWorld.components.archivemanager
-	local playerprox = inst.components.playerprox
-	if (playerprox == nil or playerprox:IsPlayerClose()) and (inst.alwayspowered or archive == nil or archive:GetPowerSetting()) then
+	local powered
+	if inst.vaultpowered then
+		local vaultroommanager = TheWorld.components.vaultroommanager
+		powered = vaultroommanager ~= nil and vaultroommanager:NumPlayersInVault() > 0
+	else
+		local archive = TheWorld.components.archivemanager
+		local playerprox = inst.components.playerprox
+		powered = (playerprox == nil or playerprox:IsPlayerClose()) and (archive == nil or archive:GetPowerSetting())
+	end
+	if powered then
         if inst._lightphase:value() ~= ON then
             inst._lightphase:set(ON)
             OnLightPhaseDirty(inst)
@@ -371,12 +378,14 @@ local function vault_OnLoad(inst, data)--, ents)
 end
 
 local function vault_master_postinit(inst)
-	inst.alwayspowered = true
+	inst.vaultpowered = true
 	inst.variation = 1
 	inst.SetVariation = vault_SetVariation
 	inst.OnSave = vault_OnSave
 	inst.OnLoad = vault_OnLoad
 
+	inst:ListenForEvent("ms_vaultroom_vault_playerleft", function() updatelight(inst) end, TheWorld)
+	inst:ListenForEvent("ms_vaultroom_vault_playerentered", function() updatelight(inst) end, TheWorld)
 	updatelight(inst)
 end
 

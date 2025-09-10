@@ -623,31 +623,6 @@ end
 
 --------------------------------------------------------------------------
 
-local function _ispassable(x, y, z, allow_water, exclude_boats)
-	return TheWorld.Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
-end
-
-local function _ispassable_inarena(x, y, z)--, allow_water, exclude_boats)
-	return TheWorld.Map:IsPointInWagPunkArena(x, y, z)
-end
-
-local function _ispassable_vault(x, y, z)--, allow_water, exclude_boats)
-    return TheWorld.Map:IsPointInAnyVault(x, y, z)
-end
-
-local function GetPassableTestFnAt(x, y, z)
-    local map = TheWorld.Map
-	return map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z) and _ispassable_inarena
-        or map:IsPointInAnyVault(x, y, z) and _ispassable_vault
-		or _ispassable
-end
-
-local function GetPassableTestFn(inst)
-	return GetPassableTestFnAt(inst.Transform:GetWorldPosition())
-end
-
---------------------------------------------------------------------------
-
 local function IsPlayerFloater(item)
 	return item.components.playerfloater ~= nil and item.components.equippable == nil
 end
@@ -4700,7 +4675,7 @@ local states =
 			inst.components.locomotor:Stop()
 			inst:ClearBufferedAction()
 
-			inst.AnimState:PlayAnimation("pickaxe_recoil") --TODO FIXME(Omar): Hook in animation when it comes in
+			inst.AnimState:PlayAnimation("atk_recoil")
 			if data ~= nil and data.target ~= nil and data.target:IsValid() then
                 local pos = data.target:GetPosition()
 
@@ -13415,7 +13390,7 @@ local states =
             end
 			if not inst.sg.statemem.isphysicstoggle then
 				local x, y, z = inst.Transform:GetWorldPosition()
-				inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+				inst.sg.statemem.ispassableatpt = GetActionPassableTestFnAt(x, y, z)
 				if inst.sg.statemem.ispassableatpt(x, y, z, true) then
 					inst.sg.statemem.safepos = Vector3(x, y, z)
 				elseif data ~= nil and data.knocker ~= nil and data.knocker:IsValid() and data.knocker:IsOnPassablePoint(true) then
@@ -13590,7 +13565,7 @@ local states =
             end
 
 			local x, y, z = inst.Transform:GetWorldPosition()
-			inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+			inst.sg.statemem.ispassableatpt = GetActionPassableTestFnAt(x, y, z)
 			if inst.sg.statemem.ispassableatpt(x, y, z, true) then
 				inst.sg.statemem.safepos = Vector3(x, y, z)
 			elseif data ~= nil and data.knocker ~= nil and data.knocker:IsValid() and data.knocker:IsOnPassablePoint(true) then
@@ -16062,7 +16037,7 @@ local states =
 						local cos_theta = math.cos(theta)
 						local sin_theta = math.sin(theta)
 						local x1, z1
-						local _ispassableatpoint = GetPassableTestFnAt(pos:Get())
+						local _ispassableatpoint, iscustom = GetActionPassableTestFnAt(pos:Get())
 						if not _ispassableatpoint(x, 0, z) then
 							--scan for nearby land in case we were slightly off
 							--adjust position slightly toward valid ground
@@ -16072,8 +16047,8 @@ local states =
 							elseif _ispassableatpoint(x - 0.1 * cos_theta, 0, z + 0.1 * sin_theta) then
 								x1 = x - 0.5 * cos_theta
 								z1 = z + 0.5 * sin_theta
-							elseif _ispassableatpoint == _ispassable_inarena then
-								--for arena, we need to be more aggressive in placing us back inside the barrier
+							elseif iscustom then
+								--for non-default (arena, vault, teetering), we need to be more aggressive in placing us back
 								x1, z1 = pos.x, pos.z
 								local dist = math.sqrt(distsq(pos.x, pos.z, x, z))
 								while dist > 0.5 do
@@ -18778,29 +18753,31 @@ local states =
 				local data = inst.sg.statemem.data
 				if data and data.onplayerready then
 					data.onplayerready(inst)
-					inst:ScreenFade(true, 1)
 				end
+				inst:ScreenFade(true, 1)
 				inst.sg.statemem.not_interrupted = true
 				inst.sg:GoToState("idle")
 			end),
 		},
 
 		onexit = function(inst)
-			inst.sg:RemoveStateTag("channeling")
 			if inst.components.playercontroller then
 				inst.components.playercontroller:Enable(true)
 			end
-			local data = inst.sg.statemem.data
-			if not inst.sg.statemem.not_interrupted then
-				if data and data.onplayerready then
-					data.onplayerready(inst)
-					inst:ScreenFade(true, 1)
-				else
-					inst:ScreenFade(true, 0)
+			if inst.sg:HasStateTag("channeling") then
+				inst.sg:RemoveStateTag("channeling")
+				local data = inst.sg.statemem.data
+				if not inst.sg.statemem.not_interrupted then
+					if data and data.onplayerready then
+						data.onplayerready(inst)
+						inst:ScreenFade(true, 1)
+					else
+						inst:ScreenFade(true, 0)
+					end
 				end
 			end
 			if not inst.sg.statemem.stopchanneling then
-				local target = data and data.target
+				local target = inst.sg.statemem.data and inst.sg.statemem.data.target
 				if target and target:IsValid() and target.components.channelable then
 					target.components.channelable:StopChanneling(true, inst)
 				end
@@ -22154,7 +22131,7 @@ local states =
 						local x, y, z = inst.Transform:GetWorldPosition()
 						local x1, y1, z1 = chair.Transform:GetWorldPosition()
 						if x == x1 and z == z1 then
-							local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
+							local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
 							x = x1 + radius * math.cos(rot)
 							z = z1 - radius * math.sin(rot)
@@ -22256,7 +22233,7 @@ local states =
 						local x, y, z = inst.Transform:GetWorldPosition()
 						local x1, y1, z1 = chair.Transform:GetWorldPosition()
 						if x == x1 and z == z1 then
-							local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
+							local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
 							x = x1 + radius * math.cos(rot)
 							z = z1 - radius * math.sin(rot)
@@ -22297,7 +22274,7 @@ local states =
 			if radius > 0 then
 				inst.Physics:SetMotorVel(radius * 30 / inst.AnimState:GetCurrentAnimationNumFrames(), 0, 0)
 				local x, y, z = inst.Transform:GetWorldPosition()
-				inst.sg.statemem.ispassableatpt = GetPassableTestFnAt(x, y, z)
+				inst.sg.statemem.ispassableatpt = GetActionPassableTestFnAt(x, y, z)
 				if inst.sg.statemem.ispassableatpt(x, y, z) then
 					inst.sg.statemem.safepos = Vector3(x, y, z)
 				end
@@ -23490,7 +23467,7 @@ local states =
 				local map = TheWorld.Map
 				local pt = Vector3(0, 0, 0)
 				local success = false
-				local _ispassableatpoint = GetPassableTestFnAt(x, y, z)
+				local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 				for i = 7, 12.5, 0.5 do
 					pt.x = x + cos_theta * (i - 0.5)
 					pt.z = z - sin_theta * (i - 0.5)
@@ -25184,7 +25161,7 @@ local hop_anims =
 		if not inst.components.rider:IsRiding() then
 			if inst.components.inventory:IsHeavyLifting() then
 				return "boat_jumpheavy_pst"
-			elseif inst.components.embarker.embarkable and inst.components.embarker.embarkable.prefab == "abysspillar" then
+			elseif inst.components.embarker.embarkable and inst.components.embarker.embarkable:HasTag("teeteringplatform") then
 				inst.sg:AddStateTag("teetering")
 				return "boat_jump_to_teeter"
 			end

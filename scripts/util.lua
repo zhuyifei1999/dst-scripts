@@ -406,6 +406,17 @@ function MergeMaps(...)
 	return ret
 end
 
+-- merge two map-style tables with number values, performing addition with the latter map's value
+function MergeMapsAdditively(...)
+    local ret = {}
+	for i,map in ipairs({...}) do
+		for k,v in pairs(map) do
+			ret[k] = v + (ret[k] or 0)
+		end
+	end
+	return ret
+end
+
 -- merge two map-style tables, overwriting duplicate keys with the latter map's value
 -- subtables are recursed into
 function MergeMapsDeep(...)

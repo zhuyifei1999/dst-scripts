@@ -284,6 +284,7 @@ return {
         PICK =
         {
             NOTHING_INSIDE = "It's empty.",
+			STUCK = "TODO",
         },
         PICKUP =
         {
@@ -5832,6 +5833,7 @@ return {
         VAULT_LOBBY_EXIT = "An exit hole?",
 		VAULT_CHANDELIER_BROKEN = "Light's out.",
 
+		ANCIENT_HUSK = "TODO",
 		MASK_ANCIENT_HANDMAIDHAT = "I wouldn't bug her.",
 		MASK_ANCIENT_ARCHITECTHAT = "I don't see the resemblance.",
 		MASK_ANCIENT_MASONHAT = "It looks heavier than the others.",

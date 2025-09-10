@@ -1144,7 +1144,6 @@ params.pandoraschest = params.treasurechest
 params.chest_mimic = params.pandoraschest
 params.skullchest = params.treasurechest
 params.terrariumchest = params.treasurechest
-params.sunkenchest = params.treasurechest
 
 params.quagmire_safe = deepcopy(params.treasurechest)
 params.quagmire_safe.widget.animbank = "quagmire_ui_chest_3x3"
@@ -1568,6 +1567,31 @@ for y = 1, -3, -1 do
 end
 
 params.supertacklecontainer.itemtestfn = params.tacklecontainer.itemtestfn
+
+--------------------------------------------------------------------------
+--[[ sunkenchest ]]
+--------------------------------------------------------------------------
+-- Sunken Chest is an actual container though it can not be opened it often reaches capacity from it's old container data (3x3) we have moved to 3x5 now
+-- We can deepcopy supertacklecontainer and set itemtestfn but I am making a entirely new definition to ensure it is not potentially messed with
+
+params.sunkenchest =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x5",
+        animbuild = "ui_tacklecontainer_3x5",
+        pos = Vector3(0, 280, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 1, -3, -1 do
+    for x = 0, 2 do
+        table.insert(params.sunkenchest.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 45, 0))
+    end
+end
 
 --------------------------------------------------------------------------
 --[[ sacred_chest ]]

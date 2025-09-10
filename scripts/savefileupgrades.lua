@@ -1320,6 +1320,20 @@ t = {
                 FlagForRetrofitting_Forest(savedata, "rifts6_add_whirlpool")
             end,
         },
+        {
+            version = 5.158, -- Fixup for Pearl's drops for a time period where everything was being eaten.
+            fn = function(savedata)
+                FlagForRetrofitting_Forest(savedata, "fix_pearl_eating_everything")
+            end,
+        },
+        --[[
+        {
+            version = 5.158, -- Add Fumarole area
+            fn = function(savedata)
+                FlagForRetrofitting_Cave(savedata, "retrofit_rifts6_add_fumarole")
+            end,
+        }
+        ]]
     },
 }
 

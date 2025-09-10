@@ -713,6 +713,8 @@ Recipe2("turf_ruinstiles_glow",				{Ingredient("rocks", 2)},																				
 Recipe2("turf_ruinstrim",					{Ingredient("rocks", 2), Ingredient("nightmarefuel", 1)},												TECH.LOST,					{numtogive=4})
 Recipe2("turf_ruinstrim_glow",				{Ingredient("rocks", 2)},																				TECH.LOST,					{numtogive=4})
 
+--Recipe2("turf_vent",						{Ingredient("rocks", 3)},																				TECH.TURFCRAFTING_TWO,		{numtogive=4})
+
 Recipe2("pottedfern",						{Ingredient("foliage", 2), Ingredient("slurtle_shellpieces", 1)},										TECH.SCIENCE_TWO,			{placer="pottedfern_placer", min_spacing=0.9})
 Recipe2("succulent_potted",					{Ingredient("succulent_picked", 2), Ingredient("cutstone", 1)},											TECH.SCIENCE_TWO,			{placer="succulent_potted_placer", min_spacing=0.9})
 Recipe2("ruinsrelic_plate",					{Ingredient("cutstone", 1)},																			TECH.LOST,					{placer="ruinsrelic_plate_placer", min_spacing=0.5})

@@ -235,6 +235,13 @@ local function DoRetrofitting(savedata, world_map)
         savedata.ents["fence_junk_pre_rotator"] = nil
     end
 
+	if savedata.retrofit_rifts6_add_fumarole then
+		savedata.retrofit_rifts6_add_fumarole = nil
+		
+
+		dirty = true
+	end
+
 	if dirty then
 		savedata.map.tiles = world_map:GetStringEncode()
 		savedata.map.nodeidtilemap = world_map:GetNodeIdTileMapStringEncode()

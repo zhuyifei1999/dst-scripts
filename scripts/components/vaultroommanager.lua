@@ -332,7 +332,7 @@ function self:TryStartTeleportSequence(teleporter, roomid, targetteleportmarkern
 		end
 
 		self._onremovependingtp = function(player)
-			if self._pendingtp[player] then
+			if self._pendingtp and self._pendingtp[player] then
 				self._pendingtp[player] = nil
 				self.inst:RemoveEventCallback("onremove", self._onremovependingtp, player)
 				checkpending()
@@ -636,7 +636,9 @@ function self:OnUnregisterVaultMarker(ent)
     self:ValidateMarkers()
 end
 
-
+function self:NumPlayersInVault()
+	return self.playersinvault
+end
 function self:TryToAdjustTrackingPlayer(player)
     local x, y, z = player.Transform:GetWorldPosition()
     local invault = _map:IsPointInVaultRoom(x, 0, z)

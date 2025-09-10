@@ -85,7 +85,9 @@ end
 
 local function startgrowing(inst)
     if not inst.components.timer:TimerExists("grow") then
-        local growtime = GetRandomWithVariance(TUNING.PINECONE_GROWTIME.base, TUNING.PINECONE_GROWTIME.random)
+        local basetime = inst.growtimes and inst.growtimes.base or TUNING.PINECONE_GROWTIME.base
+        local randomtime = inst.growtimes and inst.growtimes.random or TUNING.PINECONE_GROWTIME.random
+        local growtime = GetRandomWithVariance(basetime, randomtime)
         inst.components.timer:StartTimer("grow", growtime)
     end
 end
@@ -101,7 +103,7 @@ local function digup(inst, digger)
     inst:Remove()
 end
 
-local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot, override_deploy_smart_radius)
+local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot, override_deploy_smart_radius, grow_times)
     local scrapbook_adddeps = {}
 
     if type(growprefab) == "table" then
@@ -142,6 +144,7 @@ local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot,
         inst.scrapbook_adddeps = scrapbook_adddeps
 
         inst.growprefab = growprefab
+        inst.growtimes = grow_times
         inst.StartGrowing = startgrowing
 
         inst:AddComponent("timer")
@@ -184,4 +187,4 @@ return
     Prefab("marblebean_sapling",    sapling_fn("marblebean", "idle_planted", "marbleshrub_short", "marbleshrub", true, {"marblebean"}),                     marblebean_assets,      marblebean_prefabs    ),
     Prefab("moonbutterfly_sapling", sapling_fn("baby_moon_tree", "idle", "moon_tree_short", "moon_tree", nil, nil, DEPLOYSPACING_RADIUS[DEPLOYSPACING.PLACER_DEFAULT] / 2), moonbutterfly_assets, moonbutterfly_prefabs ),
     Prefab("palmcone_sapling",      sapling_fn("palmcone_seed", "idle_planted", "palmconetree_short", "palmconetree"),                                      palmcone_assets,        palmcone_prefabs      ),
-    Prefab("tree_rock_sapling",     sapling_fn("tree_rock_seed", "idle_planted", {"tree_rock1_short", "tree_rock2_short"}, "treerock"),                     tree_rock_assets,       tree_rock_prefabs     )
+    Prefab("tree_rock_sapling",     sapling_fn("tree_rock_seed", "idle_planted", {"tree_rock1_short", "tree_rock2_short"}, "treerock", nil, nil, nil, TUNING.TREE_ROCK.SAPLING_GROW_TIME),                     tree_rock_assets,       tree_rock_prefabs     )

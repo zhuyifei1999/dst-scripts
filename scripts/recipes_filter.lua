@@ -1488,6 +1488,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"turf_rocky",
 	"turf_cave",
 	"turf_underrock",
+	--"turf_vent",
 	"turf_sinkhole",
 	"turf_marsh",
 	"turf_mud",

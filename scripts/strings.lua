@@ -4375,12 +4375,15 @@ STRINGS =
         VAULT_LOBBY_EXIT = "Sanctum Egress",
 		VAULT_CHANDELIER_BROKEN = "Sanctum Lustre",
 
+		ANCIENT_HUSK = "Ancient Remains",
 		MASK_ANCIENT_HANDMAIDHAT = "Elytra's Mask",
 		MASK_ANCIENT_ARCHITECTHAT = "Visionist's Mask",
 		MASK_ANCIENT_MASONHAT = "Artificer's Mask",
 
         TREE_ROCK_SEED = "Boulderbough Seed",
         TREE_ROCK_SAPLING = "Boulderbough Sapling",
+
+        --TURF_VENT = "Vented Flooring", TODO
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5533,6 +5536,8 @@ STRINGS =
 
         FENCE_ELECTRIC = "A shockingly effective way to contain yourself... or others.",
         FENCE_ELECTRIC_ITEM = "A shockingly effective way to contain yourself... or others.",
+
+        --TURF_VENT = "Spew the hard pressured gases of the Constant's core with this flooring.", TODO
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -15774,6 +15779,13 @@ STRINGS.VAULT_RUNE = {
 	LORE2 = "\"Through the Keystone, all kin and kind shall fall.\"",
 	LORE3 = "\"Let the cursed Keystone never cross this threshold.\"",
 	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\"",
+}
+STRINGS.ATRIUM_OVERGROWTH = {
+    LINE_1 = "\"TODO\"",
+    LINE_2 = "\"TODO\"",
+    LINE_3 = "\"TODO\"",
+    LINE_4 = "\"TODO\"",
+    LINE_5 = "\"TODO\"",
 }
 
 STRINGS.SPELLS = {

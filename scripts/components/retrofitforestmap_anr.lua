@@ -1755,6 +1755,45 @@ function self:OnPostInit()
 
 	---------------------------------------------------------------------------
 
+    if self.fix_pearl_eating_everything then
+        print("Retrofitting Pearl fixups for eaten rewards..")
+        local hermitcrab, pearl
+        for _, v in pairs(Ents) do
+            if v.prefab == "hermitcrab" then
+                hermitcrab = v
+            elseif v.prefab == "hermit_pearl" or v.prefab == "hermit_cracked_pearl" then
+                pearl = v
+            end
+        end
+        if not hermitcrab then
+            print("Cannot do yet because Pearl is missing will try next world load.")
+            return
+        end
+
+        local x, y, z = hermitcrab.Transform:GetWorldPosition()
+        if hermitcrab.pearlgiven and not pearl then
+            print("Letting Pearl give a new pearl.")
+            hermitcrab.pearlgiven = nil
+        end
+        local friendlevels = hermitcrab.components.friendlevels
+        if friendlevels then
+            local torecomplete = {}
+            for task, v in ipairs(friendlevels.friendlytasks) do
+                if v.complete then
+                    table.insert(torecomplete, task)
+                    v.complete = nil
+                    friendlevels.level = math.max(friendlevels.level - 1, 0)
+                end
+            end
+            for _, task in ipairs(torecomplete) do
+                friendlevels:CompleteTask(task, nil)
+            end
+        end
+        self.fix_pearl_eating_everything = nil
+    end
+
+	---------------------------------------------------------------------------
+
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
 		print ("Restarting server in 30 seconds...")
@@ -1814,6 +1853,7 @@ function self:OnLoad(data)
 		self.retrofit_otterdens = data.retrofit_otterdens or false
         self.sharkboi_ice_hazard_fix = data.sharkboi_ice_hazard_fix or false
         self.rifts6_add_whirlpool = data.rifts6_add_whirlpool or false
+        self.fix_pearl_eating_everything = data.fix_pearl_eating_everything or false
     end
 end
 

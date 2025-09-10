@@ -431,6 +431,7 @@ local function fn()
 	--inst:AddTag("blocker") --doesn't work since it's a platform; moved to the player collision entity
 	inst:AddTag("ignorewalkableplatforms")
 	inst:AddTag("abysspillar")
+	inst:AddTag("teeteringplatform")
 
 	inst.walksound = "dirt"
 

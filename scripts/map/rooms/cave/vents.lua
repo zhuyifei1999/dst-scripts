@@ -88,7 +88,7 @@ AddRoom("VentsRoom", {
 AddRoom("CentipedeNest", {
     colour={r=.8,g=1,b=.8,a=.50},
     value = WORLD_TILES.VENT,
-    random_node_exit_weight = 0,
+    random_node_entrance_weight = 0,
     type = NODE_TYPE.Room,
     contents =  {
         countstaticlayouts =

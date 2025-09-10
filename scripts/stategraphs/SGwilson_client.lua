@@ -6343,10 +6343,11 @@ local states =
 					local x, y, z = inst.Transform:GetWorldPosition()
 					local x1, y1, z1 = chair.Transform:GetWorldPosition()
 					if x == x1 and z == z1 then
+						local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 						local rot = inst.Transform:GetRotation() * DEGREES
 						x = x1 + radius * math.cos(rot)
 						z = z1 - radius * math.sin(rot)
-						if TheWorld.Map:IsPassableAtPoint(x, 0, z, true) then
+						if _ispassableatpoint(x, 0, z, true) then
 							inst.Physics:Teleport(x, 0, z)
 						end
 					end
@@ -7240,7 +7241,7 @@ local hop_anims =
 			local inventory = inst.replica.inventory
 			if inventory and inventory:IsHeavyLifting() then
 				return "boat_jumpheavy_pst"
-			elseif inst.components.embarker.embarkable and inst.components.embarker.embarkable.prefab == "abysspillar" then
+			elseif inst.components.embarker.embarkable and inst.components.embarker.embarkable:HasTag("teeteringplatform") then
 				inst.sg:AddStateTag("teetering")
 				return "boat_jump_to_teeter"
 			end

@@ -83,10 +83,28 @@ function VaultRoom:UnloadRoom(save)
 	local keepidx = 0
 	for i = 1, #ents do
 		local v = ents[i]
-        ents[i] = nil
+		ents[i] = nil
+
+		local skip, shouldsave
 		if not v:IsValid() or v.entity:GetParent() or not _inroom(v) then
-            -- Do nothing.
-		elseif self:ShouldSaveEntity(v) then
+			skip = true
+		else
+			--@V2C: support for legacy wormlight stuff =(
+			local target = v.components.spell and v.components.spell.target
+			if target then
+				if not target:IsValid() or target.entity:GetParent() or not _inroom(target) then
+					skip = true
+				else
+					shouldsave = self:ShouldSaveEntity(target)
+				end
+			else
+				shouldsave = self:ShouldSaveEntity(v)
+			end
+		end
+
+		if skip then
+			--Do nothing.
+		elseif shouldsave then
 			if save then
 				table.insert(toremove, v) --defer removal so we can save references
 				if v.persists and v.prefab --[[and v.Transform and v.entity:GetParent() == nil redundant checks]] then
@@ -136,6 +154,12 @@ function VaultRoom:UnloadRoom(save)
 
 	POPULATING = false
 
+	if save and next(save.ents) then
+		save.world_time = math.floor((TheWorld.state.cycles + TheWorld.state.time) * 100 + 0.5) * 0.01
+	else
+		save = nil
+	end
+
 	return save, ents --remaining entities that weren't saved/removed
 end
 
@@ -182,6 +206,17 @@ function VaultRoom:LoadRoom(id, data)
 		v.entity:LoadPostPass(newents, v.data)
 	end
 	POPULATING = false
+
+	if data.world_time then
+		local dt = (TheWorld.state.cycles + TheWorld.state.time - data.world_time) * TUNING.TOTAL_DAY_TIME
+		if dt > 0 then
+			for _, v in pairs(newents) do
+				if v.entity:IsValid() then
+					v.entity:LongUpdate(dt)
+				end
+			end
+		end
+	end
 end
 
 function VaultRoom:OnSave()

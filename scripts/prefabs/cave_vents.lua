@@ -12,6 +12,7 @@ local prefabs =
     "bluegem",
     --"sporebomb_projectile",
     "miasma_cloud",
+    "cave_vent_ground_fx",
 }
 
 local VENT_TYPES = {
@@ -20,6 +21,21 @@ local VENT_TYPES = {
     HOT     = 2,
     GAS     = 3,
     MIASMA  = 4,
+}
+
+local VENT_DATA = {
+    [VENT_TYPES.HOT] = {
+        spew_time_base = TUNING.CAVE_VENTS.SPEW_TIME.HOT.BASE,
+        spew_time_variance = TUNING.CAVE_VENTS.SPEW_TIME.HOT.VARIANCE,
+    },
+    [VENT_TYPES.MIASMA] = {
+        spew_time_base = TUNING.CAVE_VENTS.SPEW_TIME.MIASMA.BASE,
+        spew_time_variance = TUNING.CAVE_VENTS.SPEW_TIME.MIASMA.VARIANCE,
+    },
+    [VENT_TYPES.GAS] = {
+        spew_time_base = TUNING.CAVE_VENTS.SPEW_TIME.GAS.BASE,
+        spew_time_variance = TUNING.CAVE_VENTS.SPEW_TIME.GAS.VARIANCE,
+    },
 }
 
 local function GetVentType(inst)
@@ -133,8 +149,9 @@ local function Work_OnLoad(inst)
     SetStatePhysicsRadius(inst)
 end
 
-local function GetSpewTime()
-    return GetRandomWithVariance(TUNING.CAVE_VENTS.SPEW_TIME, TUNING.CAVE_VENTS.SPEW_TIME_VARIANCE)
+local function GetSpewTime(inst)
+    local data = VENT_DATA[inst.ventilation_type]
+    return GetRandomWithVariance(data.spew_time_base, data.spew_time_variance)
 end
 
 local function PlaySpewAnimation(inst)
@@ -161,12 +178,12 @@ local function SpewMiasma(inst)
 
     --MiasmaAction_Enhance
     PlaySpewAnimation(inst)
-    inst.components.timer:StartTimer(TIMER_NAMES.SPEW_MIASMA, GetSpewTime())
+    inst.components.timer:StartTimer(TIMER_NAMES.SPEW_MIASMA, GetSpewTime(inst))
 end
 
 local function SpewHotSteam(inst)
     PlaySpewAnimation(inst)
-    inst.components.timer:StartTimer(TIMER_NAMES.SPEW_HOT, GetSpewTime())
+    inst.components.timer:StartTimer(TIMER_NAMES.SPEW_HOT, GetSpewTime(inst))
 end
 
 local vent_type_fns = {
@@ -176,7 +193,7 @@ local vent_type_fns = {
             PlaySpewAnimation(inst)
 
             if not inst.components.timer:TimerExists(TIMER_NAMES.SPEW_HOT) then
-                inst.components.timer:StartTimer(TIMER_NAMES.SPEW_HOT, GetSpewTime())
+                inst.components.timer:StartTimer(TIMER_NAMES.SPEW_HOT, GetSpewTime(inst))
             end
         end,
         on_stop_venting = function(inst)
@@ -205,7 +222,7 @@ local vent_type_fns = {
             end
 
             if not inst.components.timer:TimerExists(TIMER_NAMES.SPEW_MIASMA) then
-                inst.components.timer:StartTimer(TIMER_NAMES.SPEW_MIASMA, GetSpewTime())
+                inst.components.timer:StartTimer(TIMER_NAMES.SPEW_MIASMA, GetSpewTime(inst))
             end
         end,
         on_stop_venting = function(inst)
@@ -261,6 +278,9 @@ local function GetHeat(inst)
 	if inst.ventilation_type == VENT_TYPES.HOT then
 		inst.components.heater:SetThermics(true, false)
 		return TUNING.CAVE_VENTS.HEAT.HOT_ACTIVE
+    elseif inst.ventilation_type == VENT_TYPES.MIASMA then
+        inst.components.heater:SetThermics(true, false)
+        return TUNING.CAVE_VENTS.HEAT.MIASMA_ACTIVE
     elseif inst.ventilation_type == VENT_TYPES.COLD then
         inst.components.heater:SetThermics(false, true)
 		return TUNING.CAVE_VENTS.HEAT.COLD_ACTIVE
@@ -313,6 +333,18 @@ local function CustomOnHaunt(inst, haunter)
         return true
     end
     return false
+end
+
+local function OnEntityWake(inst)
+    for k, name in pairs(TIMER_NAMES) do
+        inst.components.timer:ResumeTimer(name)
+    end
+end
+
+local function OnEntitySleep(inst) --No need to have the spew timers ticking off screen, pause them to save on scheduler update
+    for k, name in pairs(TIMER_NAMES) do
+        inst.components.timer:PauseTimer(name)
+    end
 end
 
 local function rock_fn()
@@ -376,6 +408,9 @@ local function rock_fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
 
     inst.UpdateVentilation = UpdateVentilation
     inst.GetVentDebugName = GetVentDebugName

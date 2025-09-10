@@ -866,7 +866,7 @@ TileManager.AddTile(
     {ground_name = "Vent Flooring" },
     {
         name="cave",
-        noise_texture="noise_rock", --TODO
+        noise_texture="noise_rock", --TODO ground_noise_fumarole
         runsound="dontstarve/movement/run_dirt",
         walksound="dontstarve/movement/walk_dirt",
         snowsound="dontstarve/movement/run_ice",

@@ -32,9 +32,6 @@ local prefabs =
 SetSharedLootTable( 'tree_rock1_chop',
 {
     {'twigs',  1.00},
-    {'twigs',  1.00},
-    {'twigs',  1.00},
-    {'twigs',  0.60},
 })
 
 SetSharedLootTable( 'tree_rock1_mine',
@@ -58,20 +55,55 @@ local TREE_ROCK_DATA = require("prefabs/tree_rock_data")
 local WEIGHTED_VINE_LOOT = TREE_ROCK_DATA.WEIGHTED_VINE_LOOT
 local VINE_LOOT_DATA = TREE_ROCK_DATA.VINE_LOOT_DATA
 local TASKS_TO_LOOT_KEY = TREE_ROCK_DATA.TASKS_TO_LOOT_KEY
+local ROOMS_TO_LOOT_KEY = TREE_ROCK_DATA.ROOMS_TO_LOOT_KEY
+local STATIC_LAYOUTS_TO_LOOT_KEY = TREE_ROCK_DATA.STATIC_LAYOUTS_TO_LOOT_KEY
+local EXTRA_LOOT_MODIFIERS = TREE_ROCK_DATA.EXTRA_LOOT_MODIFIERS
 local CheckModifyLootArea = TREE_ROCK_DATA.CheckModifyLootArea
 TREE_ROCK_DATA = nil
 
+local function GetLootKey(id)
+    local _, static_layout_name = id:match("(.*):(.*)")
+    local task_name, _, room_name = id:match("(.*):(.*):(.*)")
+    local loot_key
+
+    if static_layout_name and STATIC_LAYOUTS_TO_LOOT_KEY[static_layout_name] then
+        loot_key = STATIC_LAYOUTS_TO_LOOT_KEY[static_layout_name]
+    elseif room_name and ROOMS_TO_LOOT_KEY[room_name] then
+        loot_key = ROOMS_TO_LOOT_KEY[room_name]
+    elseif task_name and TASKS_TO_LOOT_KEY[task_name] then
+        loot_key = TASKS_TO_LOOT_KEY[task_name]
+    end
+
+    return CheckModifyLootArea(loot_key)
+end
+
+local function CountWeightedTotal(choices)
+    local total = 0
+    for _, weight in pairs(choices) do
+        total = total + weight
+    end
+    return total
+end
+
 local function GetLootWeightedTable(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local id, index = TheWorld.Map:GetTopologyIDAtPoint(x, y, z)
+    local id, index = TheWorld.Map:GetTopologyIDAtPoint(x, y, z) -- NOTE: This doesn't account for overhang, but that's OK because we can't be planted close to shore anyways.
     if id then
-        local task_name, _, room_name = id:match("(.*):(.*):(.*)")
-        local loot_key = task_name and CheckModifyLootArea(TASKS_TO_LOOT_KEY[task_name])
+        local loot_key = GetLootKey(id)
 
         if loot_key then
-            return WEIGHTED_VINE_LOOT[loot_key]
+            local weighted_table = WEIGHTED_VINE_LOOT[loot_key]
+            local weighted_total = CountWeightedTotal(weighted_table)
+            --
+            for id, data in pairs(EXTRA_LOOT_MODIFIERS) do
+                if data.test_fn(inst) then
+                    local EXTRA_LOOT = FunctionOrValue(data.loot, inst, weighted_total)
+                    weighted_table = MergeMapsAdditively(weighted_table, EXTRA_LOOT)
+                end
+            end
+            --
+            return weighted_table
         elseif BRANCH == "dev" then --TODO crash for now!
-            print(task_name, room_name)
             assert(false, "We didn't get a loot key?")
         end
     end
@@ -84,16 +116,21 @@ local function GetVineLoots(inst)
 end
 
 local function SetupVineLoot(inst, loots)
-    if inst.vine_loot then
+    if inst.vine_loot or inst:HasTag("boulder") then
         return
     end
+    --
     inst.vine_loot = loots or GetVineLoots(inst)
     --
     for i = 1, NUM_VINE_LOOT do
         local data = VINE_LOOT_DATA[inst.vine_loot[i]]
-        local build, symbol = data.build, (#data.symbols == 0 and data.symbols[1]) or data.symbols[math.random(#data.symbols)]
 
-        inst.AnimState:OverrideSymbol("swap_gem_"..i, build, symbol)
+        if inst.vine_loot[i] == "EMPTY" then
+            inst.AnimState:Hide("gem_vine_"..i)
+        else
+            local build, symbol = data.build, (#data.symbols == 0 and data.symbols[1]) or data.symbols[math.random(#data.symbols)]
+            inst.AnimState:OverrideSymbol("swap_gem_"..i, build, symbol)
+        end
     end
 end
 
@@ -350,6 +387,7 @@ local function OnRockFall(inst)
                 if v:GetDistanceSqToPoint(x, y, z) < range1 * range1 then
                     v.components.combat:GetAttacked(inst, CalcDamagePlayerMultiplier(damage, v))
                     v:PushEvent("knockback", { knocker = inst, radius = 2, strengthmult = 1, forcelanded = true })
+                    v:PushEvent("flip_over")
                 end
             end
         end
@@ -370,7 +408,6 @@ local function MakeRock(inst, no_change_physics)
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("workable")
-    inst:RemoveComponent("lunarhailbuildup")
     inst:RemoveTag("shelter")
     inst:RemoveComponent("hauntable")
     MakeHauntableWork(inst)
@@ -452,7 +489,9 @@ local function SpawnVineLoot(inst)
     --
     if inst.vine_loot then
         for i = 1, NUM_VINE_LOOT do
-            inst.components.lootdropper:SpawnLootPrefab(inst.vine_loot[i])
+            if inst.vine_loot[i] ~= "EMPTY" then
+                inst.components.lootdropper:SpawnLootPrefab(inst.vine_loot[i])
+            end
         end
     end
     --

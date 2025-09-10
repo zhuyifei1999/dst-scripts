@@ -1746,8 +1746,11 @@ end
 ACTIONS.PICK.fn = function(act)
     if act.target ~= nil then
         if act.target.components.pickable ~= nil then
-            act.target.components.pickable:Pick(act.doer)
-            return true
+			local success, loot, reason = act.target.components.pickable:Pick(act.doer)
+			if success then
+				return true
+			end
+			return false, reason
         elseif act.target.components.searchable ~= nil then
             return act.target.components.searchable:Search(act.doer)
         end

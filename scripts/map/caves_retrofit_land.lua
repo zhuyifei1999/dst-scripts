@@ -174,6 +174,11 @@ local function ReturnOfThemRetrofitting_AcientArchives(world_map, savedata)
 	end
 end
 
+local function FromBeyondRetrofitting_Fumarole(world_map, savedata)
+	
+end
+
 return {
 	ReturnOfThemRetrofitting_AcientArchives = ReturnOfThemRetrofitting_AcientArchives,
+	FromBeyondRetrofitting_Fumarole = FromBeyondRetrofitting_Fumarole,
 }

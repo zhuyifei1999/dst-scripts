@@ -19,7 +19,7 @@ bug3
 local function SetId(inst, id)
 	if id ~= inst.id then
 		inst.id = id
-		inst.AnimState:PlayAnimation("idle_"..tostring(id))
+		inst.AnimState:PlayAnimation("idle_"..id)
 	end
 end
 

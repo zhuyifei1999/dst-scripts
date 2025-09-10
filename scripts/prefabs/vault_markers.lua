@@ -7,14 +7,18 @@ local prefabs =
 {
 	"abysspillar_minion",
 	"abysspillar_trial",
+	"ancient_husk",
+	"mask_ancient_architecthat",
+	"mask_ancient_handmaidhat",
+	"mask_ancient_masonhat",
 	"vault_chandelier",
 	"vault_chandelier_broken",
+	"vault_chandelier_decor",
+	--"vault_ground_pattern_fx",
 	"vault_pillar",
 	"vault_rune",
 	"vault_statue",
-	"mask_ancient_handmaidhat",
-	"mask_ancient_architecthat",
-	"mask_ancient_masonhat",
+	"vault_switch_base",
 }
 
 local function UpdateNetvars(inst)

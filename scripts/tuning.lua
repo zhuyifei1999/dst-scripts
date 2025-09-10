@@ -8678,19 +8678,43 @@ function Tune(overrides)
                 {base=5*day_time, random=2*day_time},       --tall
                 {base=1*day_time, random=0.5*day_time}      --old
             },
+
+            SAPLING_GROW_TIME = {base=4*day_time, random=1*day_time},
         },
+
+        -- Rock trees only have desolation regrowth
+        TREE_ROCK_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 5, --NOTE: Not used, we do not have plantregrowth
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30, --NOTE: no decay.
+        },
+
+        TREE_ROCK_REGROWTH_TIME_MULT = 1,
 
         CAVE_VENTS = {
             MINE = 6,
             MINE_MED = 4,
             MINE_LOW = 2,
 
-            SPEW_TIME = total_day_time * 0.5,
-            SPEW_TIME_VARIANCE = seg_time * 3,
+            SPEW_TIME = {
+                HOT = {
+                    BASE = seg_time * 3,
+                    VARIANCE = seg_time * 2,
+                },
+                MIASMA = {
+                    BASE = seg_time * 6,
+                    VARIANCE = seg_time * 3,
+                },
+                GAS = {
+                    BASE = seg_time * 5,
+                    VARIANCE = seg_time * 1,
+                },
+            },
 
             HEAT =
             {
                 HOT_ACTIVE = 120,
+                MIASMA_ACTIVE = 90,
                 INACTIVE = 10,
                 COLD_ACTIVE = -120,
             },
