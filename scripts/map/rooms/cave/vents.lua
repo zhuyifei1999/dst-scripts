@@ -42,17 +42,18 @@ end
 
 AddRoom("BGVentsRoom", {
     colour={r=.8,g=1,b=.8,a=.50},
-    value = WORLD_TILES.VENT, --WORLD_TILES.ARCHIVE
+    value = WORLD_TILES.VENT,
     type = NODE_TYPE.Background,
     random_node_exit_weight = 0,
     contents =  {
-        distributepercent = .1,
+        distributepercent = .22,
         distributeprefabs =
         {
             cave_vent_rock  = 0.1,
-            tree_rock1      = 0.035,
-            tree_rock2      = 0.035,
-            --cave_fern_withered = 0.2,
+            tree_rock1      = 0.045,
+            tree_rock2      = 0.045,
+
+            cave_fern_withered = 0.2,
             --flower_cave_withered = 0.1,
         },
         prefabdata = {
@@ -69,12 +70,14 @@ AddRoom("VentsRoom", {
     random_node_exit_weight = 0,
     --type = NODE_TYPE.Room,
     contents =  {
-        distributepercent = .1,
+        distributepercent = .22,
         distributeprefabs=
         {
             cave_vent_rock  = 0.5,
-            tree_rock1      = 0.12,
-            tree_rock2      = 0.12,
+            tree_rock1      = 0.15,
+            tree_rock2      = 0.15,
+
+            cave_fern_withered = 1.0,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -95,12 +98,13 @@ AddRoom("CentipedeNest", {
         {
             ["CentipedeNest"] = 1,
         },
-        distributepercent = .2,
+        distributepercent = .4,
         distributeprefabs =
         {
             cave_vent_rock  = 0.4,
             tree_rock1      = 0.02,
             tree_rock2      = 0.02,
+            cave_fern_withered       = 0.8,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -120,12 +124,13 @@ AddRoom("RockTreeRoom", {
             tree_rock1      = function() return math.random(SIZE_VARIATION) end,
             tree_rock2      = function() return math.random(SIZE_VARIATION) end,
         },
-        distributepercent = .1,
+        distributepercent = .12,
         distributeprefabs=
         {
             cave_vent_rock  = 0.1,
             tree_rock1      = 0.5,
             tree_rock2      = 0.5,
+            cave_fern_withered       = 0.3,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -142,12 +147,13 @@ AddRoom("VentsRoom_exit", {
     --type = NODE_TYPE.Room,
     tags = {"ExitPiece"},
     contents =  {
-		distributepercent = 0.1,
+		distributepercent = 0.2,
         distributeprefabs =
         {
             cave_vent_rock = 0.1,
             tree_rock1 = 0.01,
             tree_rock2 = 0.01,
+            cave_fern_withered = 0.2,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,

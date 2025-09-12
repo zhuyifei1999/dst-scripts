@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Empty. I knew it.",
+			STUCK = "Ugh! Stuck.",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="Turf.",
 		TURF_FUNGUS_MOON = "Turf.",
 		TURF_ARCHIVE = "A stone floor.",
+        TURF_VAULT = "A stone floor.",
+        TURF_VENT = "Turf.",
 		TURF_SINKHOLE="Turf.",
 		TURF_UNDERROCK="Turf.",
 		TURF_MUD="Turf.",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "I think she's enjoying this a bit too much.",
         PLAYBILL_THE_VEIL = "It's a unique take, I'll admit.",
+        PLAYBILL_THE_VAULT = "It's quite dated.",
         STATUEHARP_HEDGESPAWNER = "This place is really going to seed.",
         HEDGEHOUND = "The critics here will really eat you alive.",
         HEDGEHOUND_BUSH = "Nice try.",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "If I must.",
 		VAULT_CHANDELIER_BROKEN = "This place is falling apart.",
 
+		ANCIENT_HUSK = "Like I said, they were a nasty lot.",
 		MASK_ANCIENT_HANDMAIDHAT = "Rather intense.",
 		MASK_ANCIENT_ARCHITECTHAT = "Reminds me of Wilson. Ha!",
 		MASK_ANCIENT_MASONHAT = "The mask of a laborer, no doubt.",

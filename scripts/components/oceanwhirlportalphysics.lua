@@ -11,7 +11,7 @@ local TICK_SLOW_PERIOD = 1.0
 local TICK_FAST_PERIOD = 0.1
 local TICK_FAST_COOLDOWN = 5.0 -- Time to switch from fast to slow if nothing is interacting with it.
 
-local WHIRLPORTALPHYSICS_CANT_TAGS = {"FX", "NOCLICK", "DECOR", "INLIMBO", "oceanwhirlportal", "flying", "ghost", "playerghost", "shadow"}
+local WHIRLPORTALPHYSICS_CANT_TAGS = {"FX", "DECOR", "INLIMBO", "oceanwhirlportal", "flying", "ghost", "playerghost", "shadow"}
 
 local MIN_PULLSTRENGTH_EXPONENT = math.log(0.1)
 
@@ -140,10 +140,6 @@ function self:ForgetEntity(ent)
     end
 end
 
-function self:CanRememberEntity(ent)
-    return ent.Physics and (ent:IsOnOcean() or ent:HasTag("boat"))
-end
-
 function self:TryToBreakStaticObject(ent)
     if ent.components.health then
         if not ent.components.health:IsDead() then
@@ -175,15 +171,43 @@ function self:CheckForEntities()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.radius + MAX_PHYSICS_RADIUS, nil, WHIRLPORTALPHYSICS_CANT_TAGS)
     for _, ent in ipairs(ents) do
-        if self:CanRememberEntity(ent) then
+        if ent:IsOnOcean() or ent:HasTag("boat") then
             local entradius = ent:GetPhysicsRadius(0)
             local ex, ey, ez = ent.Transform:GetWorldPosition()
             local dx, dz = ex - x, ez - z
             local dist = math.sqrt(dx * dx + dz * dz)
             if dist - entradius <= self.radius then
-                if self:ShouldRememberEntity(ent) then
-                    watchedentities[ent] = true
-                    self:RememberEntity(ent)
+                if ent.Physics and ent.Physics:GetMass() ~= 0 then
+                    if self:ShouldRememberEntity(ent) then
+                        watchedentities[ent] = true
+                        self:RememberEntity(ent)
+                    end
+                elseif ent:HasTag("winchtarget") then
+                    local ex, ey, ez = ent.Transform:GetWorldPosition()
+                    local angle = -self.inst:GetAngleToPoint(ex, ey, ez) * DEGREES
+                    local radius = self.radius + ent:GetPhysicsRadius(0) + 2 -- Small padding so that this can be winched easier.
+                    ex, ez = x + math.cos(angle) * radius, z + math.sin(angle) * radius
+                    if _map:IsOceanAtPoint(ex, ey, ez) then
+                        ent.Transform:SetPosition(ex, ey, ez)
+                        ent:PushEvent("teleported")
+                        local fx = SpawnPrefab("splash_sink")
+                        fx.Transform:SetPosition(ex, ey, ez)
+                    else
+                        -- Uproot and move to a nearby shore instead.
+                        local salvaged_item = ent.components.winchtarget:Salvage()
+                        if salvaged_item then
+                            if salvaged_item.components.inventoryitem and salvaged_item.components.inventoryitem:IsHeld() then
+                                salvaged_item = salvaged_item.components.inventoryitem:RemoveFromOwner(true)
+                            end
+                            if salvaged_item then
+                                ex, ey, ez = FindRandomPointOnShoreFromOcean(ex, ey, ez)
+                                salvaged_item.Transform:SetPosition(ex, ey, ez)
+                                print(ex, ez)
+                                salvaged_item:PushEvent("on_salvaged")
+                            end
+                        end
+                        ent:Remove()
+                    end
                 end
             end
         end

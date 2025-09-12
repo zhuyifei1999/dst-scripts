@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Pfft. Nothing.",
+			STUCK = "Stuck. Stupid.",
         },
         PICKUP =
         {
@@ -1770,6 +1771,8 @@ return{
 		TURF_FUNGUS="The ground is boring.",
 		TURF_FUNGUS_MOON = "The ground is boring.",
 		TURF_ARCHIVE = "The ground is boring.",
+        TURF_VAULT = "The ground is boring.",
+        TURF_VENT = "The ground is boring.",
 		TURF_SINKHOLE="The ground is boring.",
 		TURF_UNDERROCK="The ground is boring.",
 		TURF_MUD="The ground is boring.",
@@ -2726,7 +2729,7 @@ return{
             GENERIC = "It's a burnable clump of reeds.",
             PICKED = "It's just reed stubble.",
         },
-        RELIC = "Old furniture.",
+        RELIC = "Old junk.",
         RUINS_RUBBLE = "That could probably be fixed up.",
         RUBBLE = "Broken furniture.",
         RESEARCHLAB =
@@ -5147,6 +5150,7 @@ return{
 
         PLAYBILL_THE_DOLL = "What a weird story.",
         PLAYBILL_THE_VEIL = "There's so much talking in this one.",
+        PLAYBILL_THE_VAULT = "I liked the ending.",
         STATUEHARP_HEDGESPAWNER = "That poor statue's covered in flammable vines! Whatever should I do?",
         HEDGEHOUND = "Ugh, you sneaky jerk!!",
         HEDGEHOUND_BUSH = "Those roses will look so pretty as they're burning.",
@@ -5829,6 +5833,7 @@ return{
         VAULT_LOBBY_EXIT = "Looks safe enough.",
 		VAULT_CHANDELIER_BROKEN = "Someone could trip on that.",
 
+		ANCIENT_HUSK = "Oh yeah. I know a double-cross when I see one.",
 		MASK_ANCIENT_HANDMAIDHAT = "All business, that one.",
 		MASK_ANCIENT_ARCHITECTHAT = "Haha! I see it. Wilson!",
 		MASK_ANCIENT_MASONHAT = "Hey, tough guy!",

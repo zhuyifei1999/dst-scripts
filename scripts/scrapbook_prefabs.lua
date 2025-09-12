@@ -1950,6 +1950,9 @@ local PREFABS =
     ["gingerbreadwarg"] = true,
     --["dreadstone_stack"] = true, --Not a seperate prefab
 
+    -- [[ Rifts 6 ]]
+
+    
 
     -----------------------------------------------
 

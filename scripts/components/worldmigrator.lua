@@ -156,6 +156,39 @@ function WorldMigrator:IsFull()
     return self._status == STATUS.FULL
 end
 
+function WorldMigrator:CanInventoryItemMigrate(item)
+    if item:HasTag("irreplaceable") then
+        return false
+    end
+
+    if item.components.migrationpetowner and item.components.migrationpetowner:GetPet() then
+        return false
+    end
+
+    return true
+end
+
+function WorldMigrator:TryToMakeItemMigrateable(item)
+    if item.components.migrationpetowner and item.components.migrationpetowner:GetPet() then
+        if item.OnStopUsing then -- beef_bell unpairing.
+            item:OnStopUsing()
+        end
+    end
+end
+
+function WorldMigrator:DropThingsThatShouldNotMigrate(doer)
+    local filterfn = function(owner, item)
+        self:TryToMakeItemMigrateable(item)
+        return self:CanInventoryItemMigrate(item)
+    end
+    if doer.components.inventory then
+        doer.components.inventory:DropEverythingByFilter(filterfn)
+    end
+    if doer.components.container then
+        doer.components.container:DropEverythingByFilter(filterfn)
+    end
+end
+
 function WorldMigrator:Activate(doer)
     if self.linkedWorld == nil then
         return false, "NODESTINATION"
@@ -170,19 +203,23 @@ function WorldMigrator:Activate(doer)
         return true
     end
 
-    if doer.components.inventoryitem and not doer:HasTag("irreplaceable") then
-        self.inst:PushEvent("migration_activate", {doer = doer})
-        local shardid, item = self.linkedWorld, doer
-        local migrationdata = {
-            worldid = TheShard:GetShardId(), -- The world's own id.
-            portalid = self.id,
-            sessionid = TheWorld.meta.session_identifier,
-            --dest_x = x,
-            --dest_y = y,
-            --dest_z = z,
-        }
-        Shard_CreateTransaction_TransferInventoryItem(shardid, item, migrationdata)
-        return true
+    if doer.components.inventoryitem then
+        self:TryToMakeItemMigrateable(doer)
+        if self:CanInventoryItemMigrate(doer) then
+            self:DropThingsThatShouldNotMigrate(doer)
+            self.inst:PushEvent("migration_activate", {doer = doer})
+            local shardid, item = self.linkedWorld, doer
+            local migrationdata = {
+                worldid = TheShard:GetShardId(), -- The world's own id.
+                portalid = self.id,
+                sessionid = TheWorld.meta.session_identifier,
+                --dest_x = x,
+                --dest_y = y,
+                --dest_z = z,
+            }
+            Shard_CreateTransaction_TransferInventoryItem(shardid, item, migrationdata)
+            return true
+        end
     end
 
     return false, "NODESTINATION"

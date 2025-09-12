@@ -55,6 +55,7 @@ local AMBIENT_SOUNDS =
 
     [WORLD_TILES.ARCHIVE] = {sound = "grotto/amb/archive"},
 	[WORLD_TILES.VAULT] = {sound = "grotto/amb/archive"},
+	[WORLD_TILES.VAULT_CLEAN] = {sound = "grotto/amb/archive"},
     [WORLD_TILES.FUNGUSMOON] = {sound = "grotto/amb/grotto"},
 
     [WORLD_TILES.RIFT_MOON] = {sound = "rifts/ambience/rift_tile_amb", rainsound = "dontstarve_DLC001/AMB/chess_summer"},

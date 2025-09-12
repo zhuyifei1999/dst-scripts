@@ -866,7 +866,7 @@ TileManager.AddTile(
     {ground_name = "Vent Flooring" },
     {
         name="cave",
-        noise_texture="noise_rock", --TODO ground_noise_fumarole
+        noise_texture="ground_noise_fumarole",
         runsound="dontstarve/movement/run_dirt",
         walksound="dontstarve/movement/walk_dirt",
         snowsound="dontstarve/movement/run_ice",
@@ -875,11 +875,11 @@ TileManager.AddTile(
     },
     {
         name="map_edge",
-        noise_texture="mini_rock_noise",
+        noise_texture="ground_noise_fumarole_mini",
     },
     {
         name = "vent", -- Inventory item
-        anim = "rock", -- Ground item
+        anim = "fumarole", -- Ground item
         pickupsound = "rock",
     }
 )
@@ -926,6 +926,50 @@ TileManager.AddTile(
     {
         name = "archive",
         bank_build = "turf_archives",
+        pickupsound = "rock",
+    }
+)
+
+TileManager.AddTile(
+    "VAULT",
+    TileRanges.LAND,
+    {ground_name = "Vault"},
+    {
+        name="blocky",
+        noise_texture="Ground_noise_vault",
+        runsound="dontstarve/movement/run_marble",
+        walksound="dontstarve/movement/run_marble",
+        snowsound="dontstarve/movement/run_ice",
+        mudsound="dontstarve/movement/run_mud",
+        cannotbedug = true,
+        hard = true,
+    },
+    {
+        name="map_edge",
+        noise_texture="Ground_noise_vault_clean_mini",
+    }
+)
+
+TileManager.AddTile(
+    "VAULT_CLEAN",
+    TileRanges.LAND,
+    {ground_name = "Vault Clean"},
+    {
+        name="blocky",
+        noise_texture="Ground_noise_vault_clean",
+        runsound="dontstarve/movement/run_marble",
+        walksound="dontstarve/movement/run_marble",
+        snowsound="dontstarve/movement/run_ice",
+        mudsound="dontstarve/movement/run_mud",
+        hard = true,
+    },
+    {
+        name="map_edge",
+        noise_texture="Ground_noise_vault_clean_mini",
+    },
+    {
+        name = "vault", -- Inventory item
+        anim = "turf_vault", --Ground item
         pickupsound = "rock",
     }
 )
@@ -1555,26 +1599,6 @@ TileManager.AddTile(
     {
         name="map_edge",
         noise_texture="Ground_noise_lunarrift_mini",
-    }
-)
-
-TileManager.AddTile(
-    "VAULT",
-    TileRanges.LAND,
-    {ground_name = "Vault"},
-    {
-        name="blocky",
-        noise_texture="Ground_noise_vault",
-        runsound="dontstarve/movement/run_marble",
-        walksound="dontstarve/movement/run_marble",
-        snowsound="dontstarve/movement/run_ice",
-        mudsound="dontstarve/movement/run_mud",
-        cannotbedug = true,
-        hard = true,
-    },
-    {
-        name="map_edge",
-        noise_texture="Ground_noise_vault_mini",
     }
 )
 

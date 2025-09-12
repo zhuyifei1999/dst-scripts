@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Is nothing.",
+			STUCK = "It is so stuck even Wolfgang cannot unstuck!",
         },
         PICKUP =
         {
@@ -1764,6 +1765,8 @@ return{
 		TURF_FUNGUS="Step stones.",
 		TURF_FUNGUS_MOON = "Step stones.",
 		TURF_ARCHIVE = "Step stones.",
+        TURF_VAULT = "Step stones.",
+        TURF_VENT = "Step stones.",
 		TURF_SINKHOLE="Step stones.",
 		TURF_UNDERROCK="Step stones.",
 		TURF_MUD="Step stones.",
@@ -5141,6 +5144,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Is very hard to remember so many words.",
         PLAYBILL_THE_VEIL = "Wolfgang not afraid watch, just don't feel like it.",
+        PLAYBILL_THE_VAULT = "Is too much for Wolfgang.",
         STATUEHARP_HEDGESPAWNER = "Wolfgang could rip vines off with one mighty pull.",
         HEDGEHOUND = "Is plant or puppy? Wolfgang is confused!",
         HEDGEHOUND_BUSH = "Full of prickles.",
@@ -5823,6 +5827,7 @@ return{
         VAULT_LOBBY_EXIT = "Maybe Wolfgang jump last to make sure nobody left behind.",
 		VAULT_CHANDELIER_BROKEN = "That belong on ceiling.",
 
+		ANCIENT_HUSK = "Too much violence for Wolfgang.",
 		MASK_ANCIENT_HANDMAIDHAT = "It command much respect!",
 		MASK_ANCIENT_ARCHITECTHAT = "Belong to tiny egghead bugman!",
 		MASK_ANCIENT_MASONHAT = "Strong chin! Like Wolfgang!",

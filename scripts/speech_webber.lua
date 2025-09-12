@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "We found nothing inside!",
+			STUCK = "Aw! It's stuck!",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="Some pretty average earth.",
 		TURF_FUNGUS_MOON = "Some pretty average earth.",
 		TURF_ARCHIVE = "Some very old stones.",
+        TURF_VAULT = "Some very old stones.",
+        TURF_VENT = "Some pretty average earth.",
 		TURF_SINKHOLE="Some pretty average earth.",
 		TURF_UNDERROCK="Some pretty average earth.",
 		TURF_MUD="Some pretty average earth.",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "What a funny play!",
         PLAYBILL_THE_VEIL = "It's not scary. We won't cover our eyes.",
+        PLAYBILL_THE_VAULT = "It's so heavy!",
         STATUEHARP_HEDGESPAWNER = "This place is making our spider-hairs tingle...",
         HEDGEHOUND = "Did we say something wrong?!",
         HEDGEHOUND_BUSH = "Look at all those pretty red roses.",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "We're first!",
 		VAULT_CHANDELIER_BROKEN = "We'll catch the next one!",
 
+		ANCIENT_HUSK = "Were they mad at each other?",
 		MASK_ANCIENT_HANDMAIDHAT = "If we put it on, will we look tough too?",
 		MASK_ANCIENT_ARCHITECTHAT = "Do we have a smart face too?",
 		MASK_ANCIENT_MASONHAT = "It must have been worn by someone big and strong.",

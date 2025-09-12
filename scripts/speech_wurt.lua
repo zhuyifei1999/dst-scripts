@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "No stuff.",
+			STUCK = "Flort! It stuck.",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="Ground bit.",
 		TURF_FUNGUS_MOON = "Ground bit.",
 		TURF_ARCHIVE = "Ground bit.",
+        TURF_VAULT = "Ground bit.",
+        TURF_VENT = "Ground bit.",
 		TURF_SINKHOLE="Ground bit.",
 		TURF_UNDERROCK="Ground bit.",
 		TURF_MUD="Ground bit.",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Too many words to remember, florp.",
         PLAYBILL_THE_VEIL = "Dunno. Ask Wicker-lady.",
+        PLAYBILL_THE_VAULT = "Pages so hard, florp.",
         STATUEHARP_HEDGESPAWNER = "It look broken. Didn't do it!",
         HEDGEHOUND = "Sneaky doggy! Bad!",
         HEDGEHOUND_BUSH = "Glurgh, it full of ugly flowers.",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "Me jump!",
 		VAULT_CHANDELIER_BROKEN = "Not me, florp.",
 
+		ANCIENT_HUSK = "Glurgh. Something bad.",
 		MASK_ANCIENT_HANDMAIDHAT = "Florpt. Me wanna wear it.",
 		MASK_ANCIENT_ARCHITECTHAT = "Look like funny hair man! Florpt!",
 		MASK_ANCIENT_MASONHAT = "Strong Bugfolk face.",

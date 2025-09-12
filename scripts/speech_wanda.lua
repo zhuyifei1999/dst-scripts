@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "I forgot it would be empty.",
+			STUCK = "I knew it was stuck.",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="Why am I wasting time staring at the ground?",
 		TURF_FUNGUS_MOON = "Why am I wasting time staring at the ground?",
 		TURF_ARCHIVE = "Slightly more interesting to look at, but still just ground.",
+        TURF_VAULT = "Slightly more interesting to look at, but still just ground.",
+        TURF_VENT = "Why am I wasting time staring at the ground?",
 		TURF_SINKHOLE="Why am I wasting time staring at the ground?",
 		TURF_UNDERROCK="Why am I wasting time staring at the ground?",
 		TURF_MUD="Why am I wasting time staring at the ground?",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "What an odd little play.",
         PLAYBILL_THE_VEIL = "Rather disturbing if you ask me.",
+        PLAYBILL_THE_VAULT = "This one takes me back.",
         STATUEHARP_HEDGESPAWNER = "There's just something about it...",
         HEDGEHOUND = "Fool me once, shame on you. Fool me twice, shame on you again!",
         HEDGEHOUND_BUSH = "Was that rosebush there a second ago?",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "Sure, why not?",
 		VAULT_CHANDELIER_BROKEN = "I'm surprised it stayed up that long in the first place.",
 
+		ANCIENT_HUSK = "Some scenes I'd rather forget.",
 		MASK_ANCIENT_HANDMAIDHAT = "It reminds me of someone with authority.",
 		MASK_ANCIENT_ARCHITECTHAT = "Looks rather familiar.",
 		MASK_ANCIENT_MASONHAT = "A mask like this is earned through years of hard labor.",

@@ -6,6 +6,7 @@ local assets = {
 local prefabs =
 {
 	"vault_orb",
+	"vault_portal_fx",
 }
 
 --------------------------------------------------------------------------
@@ -208,11 +209,11 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     --inst.entity:AddSoundEmitter()
-    --inst.entity:AddMiniMapEntity()
+	inst.entity:AddMiniMapEntity()
 	inst.entity:AddLight()
     inst.entity:AddNetwork()
 
-    --inst.MiniMapEntity:SetIcon("vault_teleporter.png") -- FIXME(JBK): rifts6 minimap icon
+	inst.MiniMapEntity:SetIcon("vault_teleporter.png")
 
     MakeObstaclePhysics(inst, 0.1)
 

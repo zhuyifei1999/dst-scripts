@@ -22,21 +22,15 @@ local head_brain = require("brains/shadowthrall_centipede_brain")
 
 SetSharedLootTable("shadowthrall_centipede_head", {
     { "dreadstone",  1.00 },
-    { "dreadstone",  1.00 },
     { "dreadstone",  0.66 },
-    { "dreadstone",  0.34 },
     { "dreadstone",  0.34 },
 
     { "horrorfuel",  1.00 },
     { "horrorfuel",  1.00 },
-    { "horrorfuel",  0.80 },
     { "horrorfuel",  0.25 },
 
     { "nightmarefuel",  1.00 },
     { "nightmarefuel",  1.00 },
-    { "nightmarefuel",  1.00 },
-    { "nightmarefuel",  1.00 },
-    { "nightmarefuel",  0.80 },
     { "nightmarefuel",  0.50 },
     { "nightmarefuel",  0.25 },
     { "nightmarefuel",  0.25 },
@@ -49,7 +43,7 @@ local function ClearRecentlyCharged(inst, other)
 end
 
 local MOVING_DELAY = 10 * FRAMES --Time we need to start moving to do collide
-local CLEAR_DELAY = 12 * FRAMES
+local CLEAR_DELAY = 15 * FRAMES
 local function OnOtherCollide(inst, other)
     if not other:IsValid() or RECENTLY_CHARGED[other] then
         return
@@ -127,6 +121,13 @@ local function OnBlocked(inst, data)
 
 end
 
+local function OnBrokeRockTree(inst)
+    local controlling_head = inst.controller and inst.controller.components.centipedebody:GetControllingHead()
+    if controlling_head then
+        controlling_head:PushEvent("start_struggle")
+    end
+end
+
 local function IsFlipped(inst) -- For second head
     return inst.flipped
 end
@@ -177,7 +178,7 @@ local PRIORITY_BEHAVIOURS = {
     WANDERING   = 0,
     STUCK       = -1, --For when we can't even find a good spot to wander to, set ourselves lower and pray the other head can find a way out
 }
-
+--TODO heal on eating
 local S = 1.0
 local DIET = { FOODTYPE.MIASMA }
 local RECOIL_EFFECT_OFFSET = Vector3(0, 1.5, 0)
@@ -215,6 +216,7 @@ local function commonfn(data)
     inst:AddTag("groundpound_immune")
     inst:AddTag("quakebreaker")
     inst:AddTag("toughworker")
+    inst:AddTag("tree_rock_breaker")
     if data.TAG then
         inst:AddTag(data.TAG)
     end
@@ -240,6 +242,7 @@ local function commonfn(data)
 
     inst:AddComponent("combat")
     inst.components.combat:SetRequiresToughCombat(true)
+    inst.components.combat:SetHurtSound("rifts6/creatures/centipede/vocalization")
     inst.components.combat:SetDefaultDamage(TUNING.SHADOWTHRALL_CENTIPEDE.DAMAGE)
     inst.components.combat.playerdamagepercent = TUNING.SHADOWTHRALL_CENTIPEDE.PLAYERDAMAGEPERCENT --NOTE: This does not apply to special damage! (e.g. planar)
     inst.components.combat.redirectdamagefn = DamageRedirectFn
@@ -285,6 +288,7 @@ local function commonfn(data)
     SetSpikeVariation(inst)
 
     inst:ListenForEvent("blocked", OnBlocked)
+    inst:ListenForEvent("broke_tree_rock", OnBrokeRockTree)
 
     MakeHauntable(inst)
 
@@ -303,13 +307,11 @@ end
 local function headfn()
     local inst = commonfn(HEAD_DATA)
 
-    --[[
-    inst.scrapbook_anim = "scrapbook"
-    ]]
-
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.scrapbook_anim = "scrapbook"
 
     --TODO do sleep and create a number of segments when waking as simulation of how much miasma we've eaten
     inst:SetBrain(head_brain)

@@ -246,7 +246,8 @@ local function dispencerfn()
 
     inst.AnimState:SetBank("knowledge_dispensary")
     inst.AnimState:SetBuild("archive_knowledge_dispensary")
-    inst.AnimState:PlayAnimation("idle",false)
+	inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:Hide("moss")
 
     inst:ListenForEvent("animover", function()
 

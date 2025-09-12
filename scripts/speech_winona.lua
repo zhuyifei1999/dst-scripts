@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Well that was pointless.",
+			STUCK = "That's stuck.",
         },
         PICKUP =
         {
@@ -1769,6 +1770,8 @@ return{
 		TURF_FUNGUS="That's a chunk of weird ground.",
 		TURF_FUNGUS_MOON = "That's a chunk of weird ground.",
 		TURF_ARCHIVE = "That's a well made chunk of ground.",
+        TURF_VAULT = "That's a well made chunk of ground.",
+        TURF_VENT = "That's a chunk of ground.",
 		TURF_SINKHOLE="That's a chunk of ground.",
 		TURF_UNDERROCK="That's a chunk of ground.",
 		TURF_MUD="That's a chunk of muddy ground.",
@@ -5146,6 +5149,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Somehow I think there's more to the story.",
         PLAYBILL_THE_VEIL = "Who the heck is Herald?",
+        PLAYBILL_THE_VAULT = "That was dark.",
         STATUEHARP_HEDGESPAWNER = "Yeesh, this place needs a good pruning.",
         HEDGEHOUND = "You're gettin' to be a real thorn in my side!",
         HEDGEHOUND_BUSH = "Why am I gettin' a bad feeling...",
@@ -5828,6 +5832,7 @@ return{
         VAULT_LOBBY_EXIT = "How bad could it be?",
 		VAULT_CHANDELIER_BROKEN = "Well that's unsafe.",
 
+		ANCIENT_HUSK = "That looks... complicated.",
 		MASK_ANCIENT_HANDMAIDHAT = "She looks serious.",
 		MASK_ANCIENT_ARCHITECTHAT = "Ha. Yup.",
 		MASK_ANCIENT_MASONHAT = "This one did all the heavy lifting.",

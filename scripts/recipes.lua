@@ -705,6 +705,7 @@ Recipe2("turf_fungus_green",				{Ingredient("cutlichen", 1), Ingredient("spore_s
 Recipe2("turf_marsh",						{Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)},												TECH.MASHTURFCRAFTING_TWO,	{numtogive=4})
 
 Recipe2("turf_archive",						{Ingredient("moonrocknugget", 1), Ingredient("thulecite_pieces", 1)},									TECH.LOST,					{numtogive=4})
+Recipe2("turf_vault",						{Ingredient("moonrocknugget", 1), Ingredient("thulecite_pieces", 1)},									TECH.LOST,					{numtogive=4})
 
 Recipe2("turf_ruinsbrick",					{Ingredient("rocks", 2), Ingredient("nightmarefuel", 1)},												TECH.LOST,					{numtogive=4})
 Recipe2("turf_ruinsbrick_glow",				{Ingredient("rocks", 2)},																				TECH.LOST,					{numtogive=4})
@@ -713,7 +714,7 @@ Recipe2("turf_ruinstiles_glow",				{Ingredient("rocks", 2)},																				
 Recipe2("turf_ruinstrim",					{Ingredient("rocks", 2), Ingredient("nightmarefuel", 1)},												TECH.LOST,					{numtogive=4})
 Recipe2("turf_ruinstrim_glow",				{Ingredient("rocks", 2)},																				TECH.LOST,					{numtogive=4})
 
---Recipe2("turf_vent",						{Ingredient("rocks", 3)},																				TECH.TURFCRAFTING_TWO,		{numtogive=4})
+Recipe2("turf_vent",						{Ingredient("rocks", 3)},																				TECH.TURFCRAFTING_TWO,		{numtogive=4})
 
 Recipe2("pottedfern",						{Ingredient("foliage", 2), Ingredient("slurtle_shellpieces", 1)},										TECH.SCIENCE_TWO,			{placer="pottedfern_placer", min_spacing=0.9})
 Recipe2("succulent_potted",					{Ingredient("succulent_picked", 2), Ingredient("cutstone", 1)},											TECH.SCIENCE_TWO,			{placer="succulent_potted_placer", min_spacing=0.9})
@@ -723,6 +724,9 @@ Recipe2("ruinsrelic_bowl",					{Ingredient("cutstone", 2)},																			TE
 Recipe2("ruinsrelic_vase",					{Ingredient("cutstone", 2)},																			TECH.LOST,					{placer="ruinsrelic_vase_placer", min_spacing=2})
 Recipe2("ruinsrelic_chair",					{Ingredient("cutstone", 1)},																			TECH.LOST,					{placer="ruinsrelic_chair_placer", min_spacing=2})
 Recipe2("ruinsrelic_table",					{Ingredient("cutstone", 1)},																			TECH.LOST,					{placer="ruinsrelic_table_placer"})
+Recipe2("vaultrelic_bowl",					{Ingredient("thulecite_pieces", 1), Ingredient("cutstone", 1)},											TECH.LOST,					{placer="vaultrelic_bowl_placer", min_spacing=1.2})
+Recipe2("vaultrelic_vase",					{Ingredient("thulecite_pieces", 1), Ingredient("moonrocknugget", 1)},									TECH.LOST,					{placer="vaultrelic_vase_placer", min_spacing=0.9})
+Recipe2("vaultrelic_planter",				{Ingredient("cutstone", 1)},																			TECH.LOST,					{placer="vaultrelic_planter_placer", min_spacing=1.1})
 
 -- WX78 Items
 Recipe2("wx78module_maxhealth",				{Ingredient("scandata", 2), Ingredient("spidergland", 1)},													TECH.ROBOTMODULECRAFT_ONE,	{builder_tag="upgrademoduleowner"})

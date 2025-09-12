@@ -32,10 +32,12 @@ local function fn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
+	inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
 
 	MakeObstaclePhysics(inst, 0.5)
+
+	inst.MiniMapEntity:SetIcon("vault_rune.png")
 
 	inst.AnimState:SetBank("vault_runes")
 	inst.AnimState:SetBuild("vault_runes")

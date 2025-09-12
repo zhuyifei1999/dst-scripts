@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Nothing. Oh well.",
+			STUCK = "Oh no! Stuck!",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="It's like an ingredient for the ground.",
 		TURF_FUNGUS_MOON = "It's like an ingredient for the ground.",
 		TURF_ARCHIVE = "It's like an ingredient for the ground.",
+        TURF_VAULT = "It's like an ingredient for the ground.",
+        TURF_VENT = "It's like an ingredient for the ground.",
 		TURF_SINKHOLE="It's like an ingredient for the ground.",
 		TURF_UNDERROCK="It's like an ingredient for the ground.",
 		TURF_MUD="It's like an ingredient for the ground.",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "I wonder who will play the lead?",
         PLAYBILL_THE_VEIL = "Seems a little dark, no?",
+        PLAYBILL_THE_VAULT = "Intense.",
         STATUEHARP_HEDGESPAWNER = "That poor statue seems to have been left alone for a long time.",
         HEDGEHOUND = "Alors, some things in life are not as rosy as they seem.",
         HEDGEHOUND_BUSH = "Ah, la vie en rose.",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "Oh dear, are we meant to jump?",
 		VAULT_CHANDELIER_BROKEN = "Lucky I was not standing under when it fell!",
 
+		ANCIENT_HUSK = "Terrible!",
 		MASK_ANCIENT_HANDMAIDHAT = "Ooh. Powerful.",
 		MASK_ANCIENT_ARCHITECTHAT = "A coincidence, I'm sure.",
 		MASK_ANCIENT_MASONHAT = "This belonged to a hard worker.",

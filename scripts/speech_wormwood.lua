@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Ooh. Empty",
+			STUCK = "Stuck",
         },
         PICKUP =
         {
@@ -1767,6 +1768,8 @@ return{
 		TURF_FUNGUS="Mushy",
 		TURF_FUNGUS_MOON = "Mushy",
 		TURF_ARCHIVE = "Not dirt",
+        TURF_VAULT = "Not dirt",
+        TURF_VENT = "Too rocky",
 		TURF_SINKHOLE="Slimy",
 		TURF_UNDERROCK="Too rocky",
 		TURF_MUD="Sticky",
@@ -5144,6 +5147,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Sad story",
         PLAYBILL_THE_VEIL = "Scare show",
+        PLAYBILL_THE_VAULT = "Old story",
         STATUEHARP_HEDGESPAWNER = "Friends giving statue a hug",
         HEDGEHOUND = "Why friends mad?",
         HEDGEHOUND_BUSH = "Friends?",
@@ -5826,6 +5830,7 @@ return{
         VAULT_LOBBY_EXIT = "Jump!",
 		VAULT_CHANDELIER_BROKEN = "Ball fall down.",
 
+		ANCIENT_HUSK = "Why, friends? Why?",
 		MASK_ANCIENT_HANDMAIDHAT = "Friend face hard!",
 		MASK_ANCIENT_ARCHITECTHAT = "Science man?",
 		MASK_ANCIENT_MASONHAT = "Friend face strong!",

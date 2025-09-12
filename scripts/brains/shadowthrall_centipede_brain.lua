@@ -85,6 +85,13 @@ local function GetWanderDirection(inst)
     return (inst.Transform:GetRotation() + math.random(-90, 90)) * DEGREES
 end
 
+local SEGMENT_TAGS = {"shadowthrall_centipede"}
+local function TestWanderPoint(pt)
+    local x, y, z = pt:Get()
+    local segment_count = TheSim:CountEntities(x, y, z, 2, SEGMENT_TAGS)
+    return segment_count == 0 and not TheWorld.Map:IsPointNearHole(pt) and TheWorld.Map:IsSurroundedByLand(x, y, z, 0) -- Adds 1 automatically for overhang
+end
+
 -- Request control nodes
 
 local function TakeControlToEat(inst)
@@ -107,6 +114,7 @@ function ShadowThrallCentipedeBrain:OnStart()
 	--local centipedebody = self.inst.controller.components.centipedebody
     local function WantsToEat() return not self.inst.components.timer:TimerExists(TIMER_NAMES.NOT_HUNGRY) end
     local function HasControl() return self.inst.controller and self.inst.controller.components.centipedebody:SegmentHasControl(self.inst) end
+    local function IsNotBusy() return not self.inst.sg:HasStateTag("struggling") end
 
 	local request_control_nodes = WhileNode(
 		function()
@@ -134,7 +142,7 @@ function ShadowThrallCentipedeBrain:OnStart()
                 DoAction(self.inst, DoFindAndEatMiasmaAction, "Finding Miasma To Eat")),
             --TODO see if we actually have a good direction to go in.
             -- If we don't, we should set our control priority even lower than wandering and trust the other head to find a way out
-			Wander(self.inst, GetHome, WANDER_DIST, WANDER_TIMES, GetWanderDirection, nil, nil, WANDER_DATA)
+			Wander(self.inst, GetHome, WANDER_DIST, WANDER_TIMES, GetWanderDirection, nil, TestWanderPoint, WANDER_DATA)
 		}, UPDATE_RATE)
 	)
 

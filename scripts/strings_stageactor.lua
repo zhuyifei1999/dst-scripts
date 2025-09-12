@@ -692,11 +692,11 @@ stageactor = {
     SAGE_SOLILOQUY = {
         
         -- SAGE
-        "Ye haven’t a clue what’s coming",
+        "Ye haven't a clue what's coming",
         "Something special, no doubt!",
         "Shall I spoil it for ye?",
-        "I mustn’t!",
-        "Ye’ll have to wait ‘til we’re complete!",
+        "I mustn't!",
+        "Ye'll have to wait 'til we're complete!",
         "Patience, friends!",
         "PATIENCE.",
 
@@ -714,7 +714,7 @@ stageactor = {
         -- HALFWIT
         "Hath ye seen me chums?",
         "We came as three.",
-        "Now ‘tis just me.",
+        "Now 'tis just me.",
         "Hath ye seen me chums?",
 
 

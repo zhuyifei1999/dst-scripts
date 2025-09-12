@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Better luck next time!",
+			STUCK = "It's stuck. Oh well!",
         },
         PICKUP =
         {
@@ -1805,6 +1806,8 @@ return{
 		TURF_FUNGUS="A patch of ground.",
 		TURF_FUNGUS_MOON = "A patch of ground.",
 		TURF_ARCHIVE = "A patch of ground.",
+        TURF_VAULT = "A patch of ground.",
+        TURF_VENT = "A patch of ground.",
 		TURF_SINKHOLE="A patch of ground.",
 		TURF_UNDERROCK="A patch of ground.",
 		TURF_MUD="A patch of ground.",
@@ -2761,7 +2764,7 @@ return{
             GENERIC = "A pretty normal thing to see in a swamp.",
             PICKED = "Nothing left to gather here.",
         },
-        RELIC = "It's even older than the furniture at my grandpa's house.",
+        RELIC = "It's even older than the knick-knacks at my grandpa's house.",
         RUINS_RUBBLE = "We can fix it up with some Pinetree Pioneer determination!",
         RUBBLE = "A bunch of really old rocks. I guess all rocks are old...",
         RESEARCHLAB =
@@ -5182,6 +5185,7 @@ return{
 
         PLAYBILL_THE_DOLL = "It's like a radio play you can watch!",
         PLAYBILL_THE_VEIL = "Oooh, this looks spooky.",
+        PLAYBILL_THE_VAULT = "Looks like a classic!",
         STATUEHARP_HEDGESPAWNER = "It's all overgrown with vines.",
         HEDGEHOUND = "Maybe he just has a thorn stuck in his paw?",
         HEDGEHOUND_BUSH = "Woby, what's wrong? It's just a rose bush!",
@@ -5864,6 +5868,7 @@ return{
         VAULT_LOBBY_EXIT = "You think this is the way out, Woby?",
 		VAULT_CHANDELIER_BROKEN = "Wonder what caused that.",
 
+		ANCIENT_HUSK = "It makes me feel bad too, Woby.",
 		MASK_ANCIENT_HANDMAIDHAT = "It looks like it belonged to someone important.",
 		MASK_ANCIENT_ARCHITECTHAT = "I guess it kinda looks like Wilson. Don't tell him I said that, Woby.",
 		MASK_ANCIENT_MASONHAT = "I think this one did all the work.",

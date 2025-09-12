@@ -366,6 +366,7 @@ local function rock_fn()
     inst.AnimState:PlayAnimation("full")
     inst.AnimState:HideSymbol("red_vents")
     inst.AnimState:SetSymbolLightOverride("red_vents", 1)
+    --inst.AnimState:SetSymbolBloom("red_vents") -- To allow it to pass through the miasma visual? But shadow stuff doesn't have bloom.
 
     inst:SetPrefabNameOverride("cave_vent_rock")
 

@@ -181,6 +181,7 @@ local function OnEntityTouchingFocalFn(inst, ent)
                 end
             end
         else
+            inst.components.oceanwhirlportalphysics:ForgetEntity(ent)
             SinkEntity(ent)
         end
     end
@@ -225,8 +226,8 @@ local function fn()
 	if not TheNet:IsDedicated() then
 		inst.animlayers =
 		{
-			AddAnimLayer(inst, "mid", -0.5),
-			AddAnimLayer(inst, "deep", -1),
+			AddAnimLayer(inst, "mid", -1),
+			AddAnimLayer(inst, "deep", -2),
 		}
 	end
 

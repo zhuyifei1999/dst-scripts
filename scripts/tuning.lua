@@ -8637,7 +8637,7 @@ function Tune(overrides)
             MOVESPEED = 5,
             RUNSPEED = 10,
             TURNSPEED = 1.5,
-            MAX_SEGMENTS = 35,
+            MAX_SEGMENTS = 20,
 
             -- Brain stuff
 
@@ -8684,7 +8684,7 @@ function Tune(overrides)
 
         -- Rock trees only have desolation regrowth
         TREE_ROCK_REGROWTH = {
-            OFFSPRING_TIME = total_day_time * 5, --NOTE: Not used, we do not have plantregrowth
+            OFFSPRING_TIME = total_day_time * 0.0001,
             DESOLATION_RESPAWN_TIME = total_day_time * 50,
             DEAD_DECAY_TIME = total_day_time * 30, --NOTE: no decay.
         },

@@ -100,6 +100,10 @@ function CentipedeBody:IsNonControllingHead(head)
     return head.prefab == self.headprefab and head ~= self.head_in_control
 end
 
+function CentipedeBody:GetControllingHead()
+    return self.head_in_control
+end
+
 function CentipedeBody:CreateFullBody()
     self:SpawnHead()
     --

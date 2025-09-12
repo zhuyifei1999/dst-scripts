@@ -9,6 +9,8 @@ local function CreateBottom()
 	--[[Non-networked entity]]
 	inst.entity:SetCanSleep(TheWorld.ismastersim)
 	inst.persists = false
+	inst:AddTag("decor")
+	inst:AddTag("NOCLICK")
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
@@ -75,6 +77,8 @@ local function fn()
 	inst.AnimState:SetBuild("pillar_vault_deep")
 	inst.AnimState:PlayAnimation("idle_upper")
 	inst.AnimState:SetFinalOffset(-1)
+
+	inst:AddTag("decor")
 
 	if not TheNet:IsDedicated() then
 		CreateBottom().entity:SetParent(inst.entity)

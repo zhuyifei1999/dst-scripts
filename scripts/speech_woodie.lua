@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Nothin' there but air.",
+			STUCK = "It's pretty stuck.",
         },
         PICKUP =
         {
@@ -1764,6 +1765,8 @@ return{
 		TURF_FUNGUS="It's mushy, like peas.",
 		TURF_FUNGUS_MOON = "It's mushy, like peas.",
 		TURF_ARCHIVE = "That's some nice stonework!",
+        TURF_VAULT = "That's some nice stonework!",
+        TURF_VENT = "Rocks. Bleh.",
 		TURF_SINKHOLE="I found this underground.",
 		TURF_UNDERROCK="Rocks. Bleh.",
 		TURF_MUD="At least you don't have to clean it.",
@@ -5141,6 +5144,7 @@ return{
 
         PLAYBILL_THE_DOLL = "The theater ain't really my sorta thing.",
         PLAYBILL_THE_VEIL = "I might sleep through it.",
+        PLAYBILL_THE_VAULT = "Not a light read.",
         STATUEHARP_HEDGESPAWNER = "Back to nature, eh?",
         HEDGEHOUND = "Ready to do some pruning, Luce?",
         HEDGEHOUND_BUSH = "Roses grow awfully fast around these parts.",
@@ -5823,6 +5827,7 @@ return{
         VAULT_LOBBY_EXIT = "It should be fine?",
 		VAULT_CHANDELIER_BROKEN = "Better keep careful around here.",
 
+		ANCIENT_HUSK = "I can't even begin to understand what happened here.",
 		MASK_ANCIENT_HANDMAIDHAT = "Wonder what her job was. Something important probably.",
 		MASK_ANCIENT_ARCHITECTHAT = "What do you think, Luce? Kinda, I guess?",
 		MASK_ANCIENT_MASONHAT = "I bet the owner could have carried a few logs.",

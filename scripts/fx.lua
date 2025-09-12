@@ -3816,6 +3816,12 @@ local fx =
         anim = "fall",
         --sound = "dontstarve_DLC001/fall/leaf_rustle",
     },
+	{
+		name = "vault_portal_fx",
+		bank = "vault_portal_fx",
+		build = "vault_portal_fx",
+		anim = "activate",
+	},
 }
 
 for cratersteamindex = 1, 4 do

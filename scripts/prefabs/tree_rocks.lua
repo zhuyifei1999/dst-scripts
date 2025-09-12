@@ -146,6 +146,9 @@ local builds =
         prefab_name="tree_rock1",
         grow_times=TUNING.TREE_ROCK.GROW_TIME,
 
+        regrowth_product="tree_rock_sapling",
+        regrowth_tuning=TUNING.TREE_ROCK_REGROWTH,
+
         drop_damage_range = TUNING.TREE_ROCK.ROCK1_AOE_RADIUS,
         drop_damage = TUNING.TREE_ROCK.ROCK1_AOE_DAMAGE,
     },
@@ -155,6 +158,9 @@ local builds =
         prefab_name = "tree_rock2",
         grow_times=TUNING.TREE_ROCK.GROW_TIME,
 
+        regrowth_product="tree_rock_sapling",
+        regrowth_tuning=TUNING.TREE_ROCK_REGROWTH,
+
         drop_damage_range = TUNING.TREE_ROCK.ROCK2_AOE_RADIUS,
         drop_damage = TUNING.TREE_ROCK.ROCK2_AOE_DAMAGE,
     }
@@ -162,6 +168,20 @@ local builds =
 
 local function DropRockCamShake(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, .20, .05,
+        inst.components.growable ~= nil and
+        inst.components.growable.stage > 2 and 1.0 or .5,
+        inst, 20)
+end
+
+local function BounceRockCamShake(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .05, .025,
+        inst.components.growable ~= nil and
+        inst.components.growable.stage > 2 and 1.0 or .5,
+        inst, 20)
+end
+
+local function BreakRockCamShake(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .30, .1,
         inst.components.growable ~= nil and
         inst.components.growable.stage > 2 and 1.0 or .5,
         inst, 20)
@@ -224,6 +244,16 @@ local function makeanims(stage)
         fall_pre="fall_pre_"..stage,
         fall_miss="fall_miss_"..stage,
         fall_pst="fall_pst_"..stage,
+
+        fall_break = "fall_break_"..stage,
+        fall_bounce = "fall_bounce_"..stage,
+
+        fall_pre_burnt = "fall_pre_burnt_"..stage,
+        fall_miss_burnt = "fall_miss_burnt_"..stage,
+        fall_pst_burnt = "fall_pst_burnt_"..stage,
+
+        fall_break_burnt = "fall_break_burnt_"..stage,
+        fall_bounce_burnt = "fall_bounce_burnt_"..stage,
 
         fall_full="fall_full_"..stage,
         fall_med="fall_med_"..stage,
@@ -361,42 +391,6 @@ local function OnMine(inst, miner, minesleft, nummines)
     end
 end
 
-local function CalcDamagePlayerMultiplier(damage, target)
-    return (target ~= nil and (target.isplayer or target:HasTag("player_damagescale"))) and damage * TUNING.TREE_ROCK.PLAYERDAMAGEPERCENT
-        or damage
-end
-
-local AOE_RANGE_PADDING = 3
-local AOE_TARGET_MUST_HAVE_TAGS = { "_combat" }
-local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
-local function OnRockFall(inst)
-    if inst.AnimState:IsCurrentAnimation(inst.anims.fall_miss) or inst.AnimState:IsCurrentAnimation(inst.anims.chop_burnt) then
-        DropRockCamShake(inst)
-
-        local build_data = GetBuild(inst)
-        local damage, range = build_data.drop_damage, build_data.drop_damage_range
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, range + AOE_RANGE_PADDING, AOE_TARGET_MUST_HAVE_TAGS, AOE_TARGET_CANT_TAGS)
-        for i, v in ipairs(ents) do
-            if v ~= inst and
-			    v:IsValid() and not v:IsInLimbo()
-			    and not (v.components.health ~= nil and v.components.health:IsDead())
-		    then
-
-                local range1 = range + v:GetPhysicsRadius(0)
-                if v:GetDistanceSqToPoint(x, y, z) < range1 * range1 then
-                    v.components.combat:GetAttacked(inst, CalcDamagePlayerMultiplier(damage, v))
-                    v:PushEvent("knockback", { knocker = inst, radius = 2, strengthmult = 1, forcelanded = true })
-                    v:PushEvent("flip_over")
-                end
-            end
-        end
-    end
-
-    ChangeToObstaclePhysics(inst, 1)
-    --inst:RemoveEventCallback("animover", OnRockFall)
-end
-
 local function OnWorkableLoadFn(inst, data)
     PlayRockAnimation(inst, data.workleft)
 end
@@ -434,6 +428,120 @@ local function MakeRock(inst, no_change_physics)
     --workable:SetOnLoadFn(OnWorkableLoadFn) --Handled in our OnLoad
 end
 
+local AOE_RANGE_PADDING = 3
+local AOE_TARGET_MUST_HAVE_TAGS = { "_combat" }
+local AOE_TARGET_CANT_TAGS = { "INLIMBO", "flight", "invisible", "notarget", "noattack" }
+
+local function GetAffectedEntities(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local build_data = GetBuild(inst)
+    local range = build_data.drop_damage_range
+    local ents = TheSim:FindEntities(x, y, z, range + AOE_RANGE_PADDING, AOE_TARGET_MUST_HAVE_TAGS, AOE_TARGET_CANT_TAGS)
+    local affected_ents = {}
+    --
+    for i, v in ipairs(ents) do
+        if v ~= inst and
+		    v:IsValid() and not v:IsInLimbo()
+		    and not IsEntityDead(v)
+	    then
+            local range1 = range + v:GetPhysicsRadius(0)
+            if v:GetDistanceSqToPoint(x, y, z) < range1 * range1 then
+                table.insert(affected_ents, v)
+            end
+        end
+    end
+    --
+    return affected_ents
+end
+
+local function CalcDamagePlayerMultiplier(damage, target)
+    return (target ~= nil and (target.isplayer or target:HasTag("player_damagescale"))) and damage * TUNING.TREE_ROCK.PLAYERDAMAGEPERCENT
+        or damage
+end
+
+local function OnRockFall(inst)
+    if
+        inst.AnimState:IsCurrentAnimation(inst.anims.fall_miss) or
+        inst.AnimState:IsCurrentAnimation(inst.anims.fall_miss_burnt) or
+        inst.AnimState:IsCurrentAnimation(inst.anims.fall_bounce_burnt) or
+        inst.AnimState:IsCurrentAnimation(inst.anims.fall_bounce)
+    then
+        DropRockCamShake(inst)
+
+        local build_data = GetBuild(inst)
+        local damage = build_data.drop_damage
+        for i, v in ipairs(GetAffectedEntities(inst)) do
+            v.components.combat:GetAttacked(inst, CalcDamagePlayerMultiplier(damage, v))
+            v:PushEvent("knockback", { knocker = inst, radius = 2, strengthmult = 1, forcelanded = true })
+        end
+    end
+
+    ChangeToObstaclePhysics(inst, 1)
+    --inst:RemoveEventCallback("animover", OnRockFall)
+end
+
+local function HasHardHat(inst)
+    local equipped_hat = inst.components.inventory and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+    return equipped_hat and equipped_hat:HasTag("hardarmor")
+end
+
+local function ShouldBounce(inst)
+    for i, ent in ipairs(GetAffectedEntities(inst)) do
+        if ent:HasTag("tree_rock_bouncer") or HasHardHat(ent) then
+            return true
+        end
+    end
+    --
+    return false
+end
+
+local function ShouldBreak(inst)
+    for i, ent in ipairs(GetAffectedEntities(inst)) do
+        if ent:HasTag("tree_rock_breaker") then
+            return true
+        end
+    end
+    --
+    return false
+end
+
+local function GetAnimationKey(inst, name)
+    return inst:HasTag("burnt") and name.."_burnt" or name
+end
+
+local BOUNCE_FALL_DELAY = 11 * FRAMES
+local FALL_DELAY = 4 * FRAMES
+local function OnAnimOver(inst)
+    if inst.AnimState:IsCurrentAnimation(inst.anims[GetAnimationKey(inst, "fall_pre")]) then
+        if ShouldBreak(inst) then
+            BreakRockCamShake(inst)
+            inst.AnimState:PlayAnimation(inst.anims[GetAnimationKey(inst, "fall_break")])
+            inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_break")
+
+            for i, ent in ipairs(GetAffectedEntities(inst)) do
+                if ent:HasTag("tree_rock_breaker") then
+                    ent:PushEvent("broke_tree_rock", { tree_rock = inst })
+                end
+            end
+            --
+            inst.persists = false
+            inst:ListenForEvent("animover", inst.Remove)
+        elseif ShouldBounce(inst) then
+            BounceRockCamShake(inst)
+            inst.AnimState:PlayAnimation(inst.anims[GetAnimationKey(inst, "fall_bounce")])
+            inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_bounce")
+            inst:DoTaskInTime(BOUNCE_FALL_DELAY, OnRockFall)
+        else -- keep falling
+            inst.AnimState:PlayAnimation(inst.anims[GetAnimationKey(inst, "fall_miss")])
+            inst:DoTaskInTime(FALL_DELAY, OnRockFall)
+        end
+
+        inst.AnimState:PushAnimation(inst.anims[GetAnimationKey(inst, "fall_pst")])
+    end
+
+    inst:RemoveEventCallback("animover", OnAnimOver)
+end
+
 local function OnBurnt(inst, immediate)
     inst:AddTag("burnt")
 
@@ -445,11 +553,12 @@ local function OnBurnt(inst, immediate)
         PlayRockAnimation(inst, inst.components.workable.workleft)
     else
         inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_pre")
-        inst:DoTaskInTime(.5, MakeRock)
-        inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
-        PushRockAnimation(inst, inst.components.workable.workleft)
+        inst.AnimState:PlayAnimation(inst.anims.fall_pre_burnt)
 
-        inst:DoTaskInTime(12 * FRAMES, OnRockFall)
+        inst:ListenForEvent("animover", OnAnimOver)
+
+        inst:DoTaskInTime(.5, MakeRock)
+        --inst:DoTaskInTime(12 * FRAMES, OnRockFall) --TODO burn logic here too.
     end
 end
 
@@ -460,11 +569,7 @@ end
 local LEIF_TAGS = { "leif" }
 local function OnChop(inst, chopper, chopsleft, numchops)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound(
-            --chopper ~= nil and chopper:HasTag("beaver") and
-            --"dontstarve/characters/woodie/beaver_chop_tree" or
-            "rifts6/rock_tree/chop_normal"
-        )
+        inst.SoundEmitter:PlaySound("rifts6/rock_tree/chop_normal")
     end
 
     inst.AnimState:PlayAnimation(inst.anims.chop)
@@ -502,19 +607,23 @@ local function SpawnVineLoot(inst)
 end
 
 local function OnChopDown(inst, chopper)
+    --RemovePhysicsColliders(inst)
     inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_pre")
-    --inst.SoundEmitter:PlaySound("rifts6/rock_tree/fall_break")
 
     inst.AnimState:PlayAnimation(inst.anims.fall_pre)
-    inst.AnimState:PushAnimation(inst.anims.fall_miss)
-    inst.AnimState:PushAnimation(inst.anims.fall_pst)
+    inst:ListenForEvent("animover", OnAnimOver)
+
+    --inst.AnimState:PushAnimation(inst.anims.fall_miss)
+    --inst.AnimState:PushAnimation(inst.anims.fall_pst)
     inst.components.lootdropper:DropLoot(inst:GetPosition())
 
     SpawnVineLoot(inst)
 
-    inst:DoTaskInTime(12 * FRAMES, OnRockFall)
+    --inst:DoTaskInTime(12 * FRAMES, OnRockFall)
+
+    --RemovePhysicsColliders(inst)
     MakeRock(inst, true)
-    PushRockAnimation(inst, inst.components.workable.workleft)
+    --PushRockAnimation(inst, inst.components.workable.workleft)
 end
 
 --[[
@@ -622,6 +731,12 @@ local function MakeRockTree(name, build, stage)
         growable.magicgrowable = true
         growable:StartGrowing()
 
+        inst:AddComponent("plantregrowth")
+        inst.components.plantregrowth:SetRegrowthRate(GetBuild(inst).regrowth_tuning.OFFSPRING_TIME)
+        inst.components.plantregrowth:SetProduct(GetBuild(inst).regrowth_product)
+        inst.components.plantregrowth:SetSearchTag("rock_tree")
+        inst.components.plantregrowth:SetSkipCanPlantCheck(true)
+
         local colour = 0.5 + math.random() * 0.5
         inst.AnimState:SetSymbolMultColour("tree_rock_main", colour, colour, colour, 1)
         inst.AnimState:SetSymbolMultColour("tree_broken_rock", colour, colour, colour, 1)
@@ -634,8 +749,6 @@ local function MakeRockTree(name, build, stage)
 
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
-
-        --inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
 
         MakeMediumBurnable(inst, TUNING.TREE_ROCK.BURN_TIME)
         inst.components.burnable:SetFXLevel(5)
@@ -658,11 +771,11 @@ end
 return MakeRockTree("tree_rock1", "rock1"),
     MakeRockTree("tree_rock2", "rock2"),
 
-    MakeRockTree("tree_rock1_short", "rock1"),
-    MakeRockTree("tree_rock1_normal", "rock1"),
+    MakeRockTree("tree_rock1_short", "rock1", 1),
+    MakeRockTree("tree_rock1_normal", "rock1", 2),
 
-    MakeRockTree("tree_rock2_short", "rock2"),
-    MakeRockTree("tree_rock2_normal", "rock2"),
+    MakeRockTree("tree_rock2_short", "rock2", 1),
+    MakeRockTree("tree_rock2_normal", "rock2", 2),
 
     MakeRockTree("tree_rock") --Random variation
 

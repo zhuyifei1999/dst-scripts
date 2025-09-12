@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "It's empty inside.",
+			STUCK = "Of course it's stuck.",
         },
         PICKUP =
         {
@@ -1767,6 +1768,8 @@ return{
 		TURF_FUNGUS="Some ground.",
 		TURF_FUNGUS_MOON = "Some ground.",
 		TURF_ARCHIVE = "Some ground.",
+        TURF_VAULT = "Some ground.",
+        TURF_VENT = "Some ground.",
 		TURF_SINKHOLE="Some ground.",
 		TURF_UNDERROCK="Some ground.",
 		TURF_MUD="Some ground.",
@@ -5144,6 +5147,7 @@ return{
 
         PLAYBILL_THE_DOLL = "What a strange little story.",
         PLAYBILL_THE_VEIL = "Fun!",
+        PLAYBILL_THE_VAULT = "It was written with a sorrowful pen.",
         STATUEHARP_HEDGESPAWNER = "Overgrown and abandoned.",
         HEDGEHOUND = "Its beauty hid the beast within.",
         HEDGEHOUND_BUSH = "They're... beautiful.",
@@ -5826,6 +5830,7 @@ return{
         VAULT_LOBBY_EXIT = "A leap of faith.",
 		VAULT_CHANDELIER_BROKEN = "A bad omen?",
 
+		ANCIENT_HUSK = "That's dark even for me.",
 		MASK_ANCIENT_HANDMAIDHAT = "She bears the look of one fated to be reckoned with.",
 		MASK_ANCIENT_ARCHITECTHAT = "Did the wearer know what would become of their people?",
 		MASK_ANCIENT_MASONHAT = "There is a quiet strength about this one.",

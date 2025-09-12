@@ -14,11 +14,14 @@ local prefabs =
 	"vault_chandelier",
 	"vault_chandelier_broken",
 	"vault_chandelier_decor",
-	--"vault_ground_pattern_fx",
+	"vault_ground_pattern_fx",
 	"vault_pillar",
 	"vault_rune",
 	"vault_statue",
 	"vault_switch_base",
+	"vaultrelic_bowl",
+	"vaultrelic_planter",
+	"vaultrelic_vase",
 }
 
 local function UpdateNetvars(inst)

@@ -87,6 +87,12 @@ local events = {
         end
     end),
 
+    EventHandler("start_struggle", function(inst)
+        if not inst.sg:HasStateTag("struggling") then
+            inst.sg:GoToState("struggle_pre")
+        end
+    end),
+
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnFallInVoid(),
 }
@@ -124,15 +130,6 @@ local function SyncSegment(body, state, randomdelay, excludeotherhead)
     else
         body.sg:GoToState(state)
     end
-
-    --[[
-    if randomdelay then
-        body.AnimState:SetDeltaTimeMultiplier((20 + math.floor(10 * math.random())) * FRAMES)
-        body:DoTaskInTime(1, function()
-            body.AnimState:SetDeltaTimeMultiplier(1)
-        end)
-    end
-    ]]
 end
 
 local function SyncSegmentsToState(inst, randomdelay, excludeotherhead)
@@ -155,6 +152,7 @@ local states = {
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
+
             inst.AnimState:PlayAnimation("idle")
 
             local centipedebody = inst.controller and inst.controller.components.centipedebody
@@ -204,7 +202,7 @@ local states = {
             inst.components.locomotor:Stop()
 
             --if head and doesnt have control, use eat_neutral
-            local use_neutral = inst:HasTag("centipede_head") 
+            local use_neutral = inst:HasTag("centipede_head")
                 and inst.controller 
                 and not inst.controller.components.centipedebody:SegmentHasControl(inst)
             inst.AnimState:PlayAnimation(use_neutral and "eat_neutral" or "eat")
@@ -256,7 +254,17 @@ local states = {
 
         onenter = function(inst)
             SyncSegmentsToState(inst, true)
+
+            local centipedebody = inst.controller and inst.controller.components.centipedebody
+            if centipedebody and centipedebody:SegmentHasControl(inst) then
+                inst.controller.components.health:SetInvincible(false)
+                inst.controller.components.combat:SetRequiresToughCombat(false)
+            end
+            inst.components.health:SetInvincible(false)
+            inst.components.combat:SetRequiresToughCombat(false)
             inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+            inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("struggle_pre")
         end,
 
@@ -291,6 +299,13 @@ local states = {
         tags = { "busy" , "struggling" },
 
         onenter = function(inst)
+            local centipedebody = inst.controller and inst.controller.components.centipedebody
+            if centipedebody and centipedebody:SegmentHasControl(inst) then
+                inst.controller.components.health:SetInvincible(true)
+                inst.controller.components.combat:SetRequiresToughCombat(true)
+            end
+            inst.components.health:SetInvincible(true)
+            inst.components.combat:SetRequiresToughCombat(true)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("struggle_pst")
         end,

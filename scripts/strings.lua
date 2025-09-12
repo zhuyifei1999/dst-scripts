@@ -1431,6 +1431,9 @@ STRINGS =
 		TURF_FUNGUS_MOON = "Mutated Fungal Turf",
 
 		TURF_ARCHIVE = "Ancient Stonework",
+        TURF_VAULT = "Ancient Sanctum Stonework",
+        TURF_VENT = "Cave Fumarole Turf",
+
 
 		BLUEPRINT_CRAFTINGSET_RUINS_BUILDER = "Ruins Turf Blueprints",
 		BLUEPRINT_CRAFTINGSET_RUINSGLOW_BUILDER = "Imitation Ruins Turf Blueprints",
@@ -2073,6 +2076,11 @@ STRINGS =
         RUINSRELIC_CHIPBOWL = "Replica Relic Dish",
         RUINSRELIC_VASE = "Replica Relic Vase",
         RUINSRELIC_TABLE = "Replica Relic Table",
+		VAULTRELIC = "Sanctum Relic",
+		VAULTRELIC_BROKEN = "Broken Sanctum Relic",
+		VAULTRELIC_BOWL = "Replica Sanctum Bowl",
+		VAULTRELIC_VASE = "Replica Sanctum Vase",
+		VAULTRELIC_PLANTER = "Replica Sanctum Planter",
         MULTITOOL_AXE_PICKAXE = "Pick/Axe",
         SLURPER_PELT = "Slurper Pelt",
         THULECITE = "Thulecite",
@@ -3905,6 +3913,7 @@ STRINGS =
 
         PLAYBILL_THE_DOLL = "The Enchanted Doll\nA Stage Play",
         PLAYBILL_THE_VEIL = "The Pall\nA Stage Play",
+        PLAYBILL_THE_VAULT = "A Task Complete\nA Confession",
         STATUEHARP_HEDGESPAWNER = "Overgrown Statue",
 
         -- Year of the Rabbit
@@ -4383,7 +4392,8 @@ STRINGS =
         TREE_ROCK_SEED = "Boulderbough Seed",
         TREE_ROCK_SAPLING = "Boulderbough Sapling",
 
-        --TURF_VENT = "Vented Flooring", TODO
+        CAVE_FERN_WITHERED = "Withered Fern",
+
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -4607,6 +4617,8 @@ STRINGS =
         TURF_METEOR = "The cratered surface of the moon.",
         TURF_FUNGUS_MOON = "The mutated fungal floor of a cave.",
 		TURF_ARCHIVE = "Ancient stonework from an unsealed archive.",
+        TURF_VAULT = "Ancient stonework from the Sanctum.",
+        TURF_VENT = "The craggy stone floor of a fumey cave.",
 		BLUEPRINT_CRAFTINGSET_RUINS_BUILDER = "Build a floor in the style of a long-gone civilization.",
 		BLUEPRINT_CRAFTINGSET_RUINSGLOW_BUILDER = "As faithful a recreation as could be mustered.",
 		TURF_RUINSBRICK = "Ancient stone flooring, decorated with a magical technique lost to time.",
@@ -4678,6 +4690,10 @@ STRINGS =
         RUINSRELIC_CHIPBOWL = "Don't double dip.",
         RUINSRELIC_VASE = "A faux-vintage vase.",
         RUINSRELIC_TABLE = "Don't put your elbows on it.",
+
+		VAULTRELIC_BOWL = "It's not dirty, it's \"developing a patina\".",
+		VAULTRELIC_VASE = "Decor from a bygone age.",
+		VAULTRELIC_PLANTER = "Too brittle to plant anything in, but a great conversation piece.",
 
         RAINCOAT = "A waterproof coat to keep you dry.",
         RAINHAT = "Soft to the touch, slick to the rain.",
@@ -5537,7 +5553,6 @@ STRINGS =
         FENCE_ELECTRIC = "A shockingly effective way to contain yourself... or others.",
         FENCE_ELECTRIC_ITEM = "A shockingly effective way to contain yourself... or others.",
 
-        --TURF_VENT = "Spew the hard pressured gases of the Constant's core with this flooring.", TODO
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -15781,11 +15796,18 @@ STRINGS.VAULT_RUNE = {
 	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\"",
 }
 STRINGS.ATRIUM_OVERGROWTH = {
-    LINE_1 = "\"TODO\"",
-    LINE_2 = "\"TODO\"",
-    LINE_3 = "\"TODO\"",
-    LINE_4 = "\"TODO\"",
-    LINE_5 = "\"TODO\"",
+    LINE_1 = "\"The unknown hath been made known. The abyss revealed as refuge.\"",
+    LINE_2 = "\"Dread twisted into devotion. Trembling into gratitude.\"",
+    LINE_3 = "\"Loyalty unending. We kneel before the undying. The unaltering.\"",
+    LINE_4 = "\"Thou art called by manifold names in myriad realms.\"",
+    LINE_5 = "\"To us Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\"",
+}
+STRINGS.NIGHTMARE_OVERGROWTH = {
+    LINE_1 = "\"Forsaken wretches of the one who turned away.\"",
+    LINE_2 = "\"Orphans cast upon the barren expanse. Lost in the wake of neglect.\"",
+    LINE_3 = "\"From desolation were we drawn. Into the veiled embrace of Them.\"",
+    LINE_4 = "\"No longer doth the shadow stir terror within our hearts.\"",
+    LINE_5 = "\"For dark is become our shield. Our sustenance. Our solace.\"",
 }
 
 STRINGS.SPELLS = {

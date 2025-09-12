@@ -1,6 +1,7 @@
 local assets =
 {
 	Asset("ANIM", "anim/vault_switch.zip"),
+	Asset("MINIMAP_IMAGE", "vault_switch"),
 }
 
 local prefabs =
@@ -468,9 +469,12 @@ local function fn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
 
 	MakeSmallObstaclePhysics(inst, 0.5)
+
+	inst.MiniMapEntity:SetIcon("vault_switch.png")
 
 	inst.Transform:SetTwoFaced()
 

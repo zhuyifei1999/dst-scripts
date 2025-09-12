@@ -284,7 +284,7 @@ return {
         PICK =
         {
             NOTHING_INSIDE = "It's empty.",
-			STUCK = "TODO",
+			STUCK = "It's stuck.",
         },
         PICKUP =
         {
@@ -1774,6 +1774,8 @@ return {
 		TURF_FUNGUS="Yet another ground type.",
 		TURF_FUNGUS_MOON = "Yet another ground type.",
 		TURF_ARCHIVE = "Yet another ground type.",
+        TURF_VAULT = "Yet another ground type.",
+        TURF_VENT = "Yet another ground type.",
 		TURF_SINKHOLE="Yet another ground type.",
 		TURF_UNDERROCK="Yet another ground type.",
 		TURF_MUD="Yet another ground type.",
@@ -5151,6 +5153,7 @@ return {
 
         PLAYBILL_THE_DOLL = "\"Authored by C.W.\"",
         PLAYBILL_THE_VEIL = "\"Brought to you by the Heralds of Tenebrau.\"",
+        PLAYBILL_THE_VAULT = "Written by \"E.\"?",
         STATUEHARP_HEDGESPAWNER = "The flowers grew back, but the head didn't.",
         HEDGEHOUND = "It's an ambush!",
         HEDGEHOUND_BUSH = "It's a bush.",
@@ -5833,7 +5836,7 @@ return {
         VAULT_LOBBY_EXIT = "An exit hole?",
 		VAULT_CHANDELIER_BROKEN = "Light's out.",
 
-		ANCIENT_HUSK = "TODO",
+		ANCIENT_HUSK = "Something bad happened here.",
 		MASK_ANCIENT_HANDMAIDHAT = "I wouldn't bug her.",
 		MASK_ANCIENT_ARCHITECTHAT = "I don't see the resemblance.",
 		MASK_ANCIENT_MASONHAT = "It looks heavier than the others.",

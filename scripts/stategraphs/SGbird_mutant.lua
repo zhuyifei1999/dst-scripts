@@ -99,6 +99,9 @@ local states=
             RemovePhysicsColliders(inst)
             inst.AnimState:PlayAnimation("death")
             inst.persists = false
+            if inst.sounds.death then
+                inst.SoundEmitter:PlaySound(inst.sounds.death)
+            end
         end,
     },
 

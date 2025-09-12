@@ -6,6 +6,7 @@ local assets =
 
 local function MakeBroken(inst)
 	inst.broken = true
+	inst.AnimState:PlayAnimation("broken")
 	inst.AnimState:SetBuild("abyss_pillar_minion_broken_build")
 end
 

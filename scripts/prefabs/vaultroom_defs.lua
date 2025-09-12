@@ -207,10 +207,10 @@ halldef.LayoutNewRoomAtXZ = function(inst, x, z)
 	end
 	if roomid then
 		if (roomid == 1 or roomid == 4 or roomid == 7) == groundvar then
-			--SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
+			SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
 		end
 	elseif math.random() < 0.5 then
-		--SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
+		SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
 	end
 end
 
@@ -541,13 +541,13 @@ end
 defs.mask1.LayoutNewRoomAtXZ = function(inst, x, z)
 	--husks
 	SpawnPrefab("ancient_husk"):SetId("handmaid").Transform:SetPosition(x, 0, z + TILE_SIZE)
-	SpawnPrefab("ancient_husk"):SetId("architect").Transform:SetPosition(x - 2.5 * TILE_SIZE, 0, z)
-	SpawnPrefab("ancient_husk"):SetId("mason").Transform:SetPosition(x + 2.5 * TILE_SIZE, 0, z)
+	SpawnPrefab("ancient_husk"):SetId("mason").Transform:SetPosition(x - 2.5 * TILE_SIZE, 0, z)
+	SpawnPrefab("ancient_husk"):SetId("architect").Transform:SetPosition(x + 2.5 * TILE_SIZE, 0, z)
 
 	--masks
 	SpawnPrefab("mask_ancient_handmaidhat").Transform:SetPosition(x + 0.4, 0, z + TILE_SIZE - 2)
-	SpawnPrefab("mask_ancient_architecthat").Transform:SetPosition(x - 2.5 * TILE_SIZE + 0.5, 0, z - 2.25)
-	SpawnPrefab("mask_ancient_masonhat").Transform:SetPosition(x + 2.5 * TILE_SIZE - 1.5, 0, z - 1.85)
+	SpawnPrefab("mask_ancient_masonhat").Transform:SetPosition(x - 2.5 * TILE_SIZE + 0.5, 0, z - 2.25)
+	SpawnPrefab("mask_ancient_architecthat").Transform:SetPosition(x + 2.5 * TILE_SIZE - 1.5, 0, z - 1.85)
 
 	--variations
 	local lightvar = math.random(3)
@@ -672,7 +672,7 @@ defs.generator1.LayoutNewRoomAtXZ = function(inst, x, z)
 	end
 
 	--ground
-	--SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
+	SpawnPrefab("vault_ground_pattern_fx").Transform:SetPosition(x, 0, z)
 end
 
 --------------------------------------------------------------------------

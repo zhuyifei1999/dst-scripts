@@ -18731,6 +18731,8 @@ local states =
 				inst.AnimState:PushAnimation("channel_loop", true)
 			end
 
+			SpawnPrefab("vault_portal_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
 			if inst.components.playercontroller then
 				inst.components.playercontroller:Enable(false)
 			end
@@ -18747,6 +18749,7 @@ local states =
 		{
 			TimeEvent(0.3, function(inst)
 				inst:ScreenFade(false, 0.5)
+				StartTeleporting(inst)
 			end),
 			TimeEvent(1.3, function(inst)
 				inst.sg:RemoveStateTag("channeling")
@@ -18755,13 +18758,17 @@ local states =
 					data.onplayerready(inst)
 				end
 				inst:ScreenFade(true, 1)
+			end),
+			TimeEvent(1.5, function(inst)
 				inst.sg.statemem.not_interrupted = true
 				inst.sg:GoToState("idle")
 			end),
 		},
 
 		onexit = function(inst)
-			if inst.components.playercontroller then
+			if inst.sg.statemem.isteleporting then
+				DoneTeleporting(inst)
+			elseif inst.components.playercontroller then
 				inst.components.playercontroller:Enable(true)
 			end
 			if inst.sg:HasStateTag("channeling") then

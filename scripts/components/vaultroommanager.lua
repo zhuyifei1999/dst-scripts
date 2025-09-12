@@ -203,10 +203,9 @@ self.inst:ListenForEvent("arhivepoweron", function(inst) self:OnArchivesPowered(
 self.inst:ListenForEvent("arhivepoweroff", function(inst) self:OnArchivesPowered(false) end, _world)
 
 function self:OnArchivesPowered(powered)
-    local lobby_to_vault_teleporter = self.teleporters["lobby"]
-    if lobby_to_vault_teleporter then
-        lobby_to_vault_teleporter:SetPowered(powered)
-    end
+    self.archivespowered = powered or nil
+    local lobby_to_vault_teleporter = self:GetLobbyToVaultTeleporter()
+    lobby_to_vault_teleporter:SetPowered(powered)
 end
 
 function self:TryToBreakLobbyExit()
@@ -286,6 +285,46 @@ function self:CreateTeleporter(shuffleddirection, direction, rigid)
     return teleporter
 end
 
+local function ShouldTeleportFollower(follower)
+    if follower.components.follower and follower.components.follower.noleashing then
+        return false
+    end
+
+    if follower.components.inventoryitem and follower.components.inventoryitem:IsHeld() then
+        return false
+    end
+
+    return true
+end
+function self:GetToOrFromVaultTeleportTargetsFor(doer)
+    local onecopycache = {[doer] = true}
+    if doer.components.leader then
+        for follower, _ in pairs(doer.components.leader.followers) do
+            if ShouldTeleportFollower(follower) then
+                onecopycache[follower] = true
+            end
+        end
+    end
+
+    if doer.components.inventory then
+        doer.components.inventory:ForEachItem(function(item)
+            if item.components.leader then
+                for follower, _ in pairs(item.components.leader.followers) do
+                    if ShouldTeleportFollower(follower) then
+                        onecopycache[follower] = true
+                    end
+                end
+            end
+        end)
+    end
+
+    local entities = {}
+    for entity, _ in pairs(onecopycache) do
+        table.insert(entities, entity)
+    end
+    return entities
+end
+
 function self:OnVaultTeleporterChannelStart(teleporter, doer)
     if doer.isplayer then
         teleporter.components.vault_teleporter:AddCounter()
@@ -294,7 +333,13 @@ function self:OnVaultTeleporterChannelStart(teleporter, doer)
         if roomid == LOBBY_TO_OR_FROM_VAULT then
 			doer:PushEventImmediate("vault_teleport", {
 				onplayerready = function(doer)
-					self:TeleportEntities({ doer }, targetteleportmarkername)
+                    local entities = self:GetToOrFromVaultTeleportTargetsFor(doer)
+					for i, v in ipairs(entities) do
+						if not v.isplayer then
+							SpawnPrefab("vault_portal_fx").Transform:SetPosition(v.Transform:GetWorldPosition())
+						end
+					end
+                    self:TeleportEntities(entities, targetteleportmarkername)
 				end,
 			})
         else
@@ -462,16 +507,13 @@ function self:ClearAllExits(resettolobby)
             end
         end
     end
-    local lobby_to_vault_teleporter = self.teleporters["lobby"]
-    if lobby_to_vault_teleporter then
-        local roomdata = self.rooms[self.roomindex]
-        local haslobby = roomdata and roomdata.haslobby
-        if haslobby then
-            lobby_to_vault_teleporter.components.vault_teleporter:SetTargetMarkerName(DIRECTIONS_TO_MARKER["vault"])
-            lobby_to_vault_teleporter.components.vault_teleporter:SetTargetRoomID(LOBBY_TO_OR_FROM_VAULT)
-        else
-            lobby_to_vault_teleporter:Remove()
-        end
+    local roomdata = self.rooms[self.roomindex]
+    local haslobby = roomdata and roomdata.haslobby
+    local lobby_to_vault_teleporter = self:GetLobbyToVaultTeleporter()
+    if haslobby and self.archivespowered then
+        lobby_to_vault_teleporter:SetPowered(true)
+    else
+        lobby_to_vault_teleporter:SetPowered(false)
     end
 end
 function self:IsLinkBroken(roomdata, direction, link)
@@ -485,6 +527,15 @@ function self:IsLinkBroken(roomdata, direction, link)
     end
 
     return not repairedlinks[direction]
+end
+function self:GetLobbyToVaultTeleporter()
+    local lobby_to_vault_teleporter = self.teleporters["lobby"]
+    if not lobby_to_vault_teleporter then
+        lobby_to_vault_teleporter = self:CreateTeleporter("lobby", "lobby", true)
+        lobby_to_vault_teleporter.components.vault_teleporter:SetTargetMarkerName(DIRECTIONS_TO_MARKER["vault"])
+        lobby_to_vault_teleporter.components.vault_teleporter:SetTargetRoomID(LOBBY_TO_OR_FROM_VAULT)
+    end
+    return lobby_to_vault_teleporter
 end
 function self:SetAllExits(roomdata)
     for direction = 1, DIRECTIONS_INDEX_SIZE do
@@ -506,15 +557,12 @@ function self:SetAllExits(roomdata)
             end
         end
     end
-    local lobby_to_vault_teleporter = self.teleporters["lobby"]
-    if roomdata.haslobby then
-        if not lobby_to_vault_teleporter then
-            lobby_to_vault_teleporter = self:CreateTeleporter("lobby", "lobby", true)
-        end
-        lobby_to_vault_teleporter.components.vault_teleporter:SetTargetMarkerName(DIRECTIONS_TO_MARKER["vault"])
-        lobby_to_vault_teleporter.components.vault_teleporter:SetTargetRoomID(LOBBY_TO_OR_FROM_VAULT)
-    elseif lobby_to_vault_teleporter then
-        lobby_to_vault_teleporter:Remove()
+    local haslobby = roomdata.haslobby
+    local lobby_to_vault_teleporter = self:GetLobbyToVaultTeleporter()
+    if haslobby and self.archivespowered then
+        lobby_to_vault_teleporter:SetPowered(true)
+    else
+        lobby_to_vault_teleporter:SetPowered(false)
     end
 end
 function self:TeleportEntities(toteleportents, targetteleportmarkername)
@@ -526,8 +574,14 @@ function self:TeleportEntities(toteleportents, targetteleportmarkername)
         local ent = toteleportents[i]
         local radius = math.random() * 0.5 + 1
         local theta = (((i - 1) / entscount) + thetaoffset) * PI2
-        local dx, dz = math.cos(theta) * radius, math.sin(theta) * radius
-        ent.Transform:SetPosition(x + dx, y, z + dz)
+		local x1 = x + math.cos(theta) * radius
+		local z1 = z - math.sin(theta) * radius
+		if ent.Physics then
+			ent.Physics:Teleport(x1, 0, z1)
+		else
+			ent.Transform:SetPosition(x1, 0, z1)
+		end
+		SpawnPrefab("vault_portal_fx").Transform:SetPosition(x1, 0, z1)
         if ent.isplayer then
             self:TryToAdjustTrackingPlayer(ent)
             if ent.SnapCamera then -- FIXME(JBK): rifts6 presentation
@@ -663,6 +717,9 @@ function self:StopTrackingPlayer(player)
     self.playersinvault = self.playersinvault - 1
     player:RemoveEventCallback("onremove", self.OnPlayerRemove)
     _world:PushEvent("ms_vaultroom_vault_playerleft", player)
+    if self.playersinvault == 0 then
+        self._hack_needsreloaded = true
+    end
 end
 function self:TrackPlayer(player)
     if self.players[player] then
@@ -673,6 +730,7 @@ function self:TrackPlayer(player)
     self.playersinvault = self.playersinvault + 1
     player:ListenForEvent("onremove", self.OnPlayerRemove)
     _world:PushEvent("ms_vaultroom_vault_playerentered", player)
+    self._hack_needsreloaded = nil
 end
 for _, player in ipairs(AllPlayers) do
     self.OnPlayerJoined(_world, player)
@@ -687,7 +745,8 @@ function self:OnUpdate(dt)
         for _, player in ipairs(AllPlayers) do
             self:TryToAdjustTrackingPlayer(player)
         end
-        if self.playersinvault == 0 and self.roomindex ~= 1 then
+        if self.playersinvault == 0 and (self._hack_needsreloaded or self.roomindex ~= 1) then
+            self._hack_needsreloaded = nil
             self:SetRoom(1)
         end
     end
@@ -764,7 +823,7 @@ function self:ScanForStaticLayoutPosition(tx, ty, size, displacement)
     local dx, dy = 1, 0
     local step = 1
 
-    local tries = 100
+    local tries = math.floor(10000 / displacement)
     while true do
         for j = 1, 2 do
             for i = 1, step do

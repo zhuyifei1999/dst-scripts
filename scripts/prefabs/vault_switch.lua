@@ -43,11 +43,6 @@ local function GetStatus(inst)
 	return "VALID"
 end
 
-local function OnPicked(inst, picker, loot)
-	assert(loot == nil)
-	return false, "STUCK"
-end
-
 local function fn()
 	local inst = CreateEntity()
 
@@ -76,7 +71,7 @@ local function fn()
 
 	inst:AddComponent("pickable")
 	inst.components.pickable:SetUp(nil)
-	inst.components.pickable.onpickedfn = OnPicked
+	inst.components.pickable:SetStuck(true)
 
 	return inst
 end

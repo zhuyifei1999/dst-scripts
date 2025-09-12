@@ -430,11 +430,13 @@ local ROOMS_TO_LOOT_KEY = { -- Overrides tasks
     ["BGSavanna"]               = "SAVANNA_AREA",
     ["WalrusHut_Plains"]        = "SAVANNA_AREA",
     ["BarePlain"]               = "SAVANNA_AREA",
+    ["Plain"]                   = "SAVANNA_AREA",
 
     -- ROCKY_AREA
     ["BGRocky"]                 = "ROCKY_AREA",
     ["Rocky"]                   = "ROCKY_AREA",
     ["WalrusHut_Rocky"]         = "ROCKY_AREA",
+    ["PitRoom"]                 = "ROCKY_AREA", -- This room doesn't really have a turf, but world gen ForceConnectivity connects to these rooms with rocky turf
 
     -- GRASS_AREA
     ["BGGrass"]                 = "GRASS_AREA",
@@ -446,12 +448,19 @@ local ROOMS_TO_LOOT_KEY = { -- Overrides tasks
     ["BGBatCaveRoom"]           = "GUANO_AREA",
     ["BGBatCave"]               = "GUANO_AREA",
 
+    -- CAVERN_AREA
+    ["SpidersAndBats"]          = "CAVERN_AREA",
+
     -- MOON_GROTTO_AREA
     ["MoonMush"]                = "MOON_GROTTO_AREA", --Retrofit
     ["ArchiveMazeEntrance"]     = "MOON_GROTTO_AREA", --Actually the grotto still, despite the name
 
+    -- MARSH_AREA
+    ["SpiderSinkholeMarsh"]     = "MARSH_AREA",
+
     -- RUINS_ENTRANCE_AREA
     ["AtriumMazeEntrance"]      = "RUINS_ENTRANCE_AREA",
+    ["LabyrinthEntrance"]       = "RUINS_ENTRANCE_AREA",
     ["BGWildsRoom"]             = "RUINS_ENTRANCE_AREA",
     ["BGWilds"]                 = "RUINS_ENTRANCE_AREA",
     ["WetWilds"]                = "RUINS_ENTRANCE_AREA",

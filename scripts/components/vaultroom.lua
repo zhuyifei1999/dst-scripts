@@ -2,6 +2,7 @@ local defs = require("prefabs/vaultroom_defs")
 
 local SAVE_RADIUS = 28
 local SAVE_NO_TAGS = { "INLIMBO", "vault_teleporter" }
+local SAVE_CONTAINER_TAGS = { "_inventory", "_container" }
 
 local VaultRoom = Class(function(self, inst)
 	self.inst = inst
@@ -35,12 +36,47 @@ function VaultRoom:LayoutNewRoom(id)
 	end
 end
 
-function VaultRoom:ShouldSaveEntity(ent)
-	return not ent.isplayer
-		and not (ent.components.follower and
-				ent.components.follower:GetLeader() and
-				ent.components.follower:GetLeader().isplayer)
-		and not ent:HasTag("irreplaceable")
+local function _inroom(ent, map, tile_x, tile_y)
+	local x1, _, z1 = ent.Transform:GetWorldPosition()
+	local tx, ty = map:GetTileCoordsAtPoint(x1, 0, z1)
+	if math.abs(tx - tile_x) <= 5 and math.abs(ty - tile_y) <= 5 then
+		return true
+	end
+	local tile = map:GetTile(tx, ty)
+	return tile == WORLD_TILES.VAULT
+		or (tile == WORLD_TILES.IMPASSABLE and map:IsVisualGroundAtPoint(x1, 0, z1))
+end
+
+local _SKIP = 1
+local _SAVE = 2
+local _KEEP = 3
+local function _getunloadaction(ent, map, tile_x, tile_y)
+	if not ent:IsValid() or ent.entity:GetParent() then
+		return _SKIP
+	end
+
+	local owner = ent
+	while true do
+		local nextowner =
+			(owner.components.spell and owner.components.spell.target) or
+			(owner.components.follower and owner.components.follower:GetLeader()) or
+			(owner.components.inventoryitem and owner.components.inventoryitem.owner)
+		--NOTE: inventoryitem.owner check only applies after we've found spell target
+		--      or leader, since we already did a GetParent() check on ourself above.
+
+		if nextowner and nextowner:IsValid() then
+			owner = nextowner
+		else
+			break
+		end
+	end
+
+	if owner ~= ent and owner.entity:GetParent() or not _inroom(owner, map, tile_x, tile_y) then
+		return _SKIP
+	elseif owner.isplayer or owner:HasTag("irreplaceable") then
+		return _KEEP
+	end
+	return _SAVE
 end
 
 function VaultRoom:UnloadRoom(save)
@@ -54,20 +90,8 @@ function VaultRoom:UnloadRoom(save)
 	self.roomid = nil
 
 	local x, _, z = self.inst.Transform:GetWorldPosition()
-
 	local map = TheWorld.Map
 	local tile_x, tile_y = map:GetTileCoordsAtPoint(x, 0, z)
-
-	local function _inroom(ent)
-		local x1, _, z1 = ent.Transform:GetWorldPosition()
-		local tx, ty = map:GetTileCoordsAtPoint(x1, 0, z1)
-		if math.abs(tx - tile_x) <= 5 and math.abs(ty - tile_y) <= 5 then
-			return true
-		end
-		local tile = map:GetTile(tx, ty)
-		return tile == WORLD_TILES.VAULT
-			or (tile == WORLD_TILES.IMPASSABLE and map:IsVisualGroundAtPoint(x1, 0, z1))
-	end
 
 	local recbyguid, refs, toremove
 	if save then
@@ -75,6 +99,15 @@ function VaultRoom:UnloadRoom(save)
 		recbyguid = {}
 		refs = {}
 		toremove = {}
+	end
+
+	for i, v in ipairs(TheSim:FindEntities(x, 0, z, SAVE_RADIUS, nil, SAVE_NO_TAGS, SAVE_CONTAINER_TAGS)) do
+		if _getunloadaction(v, map, tile_x, tile_y) == _SAVE then
+			local container = v.components.inventory or v.components.container
+			if container then
+				container:DropEverythingWithTag("irreplaceable")
+			end
+		end
 	end
 
 	POPULATING = true --@V2C: hope this is safe XD
@@ -85,26 +118,10 @@ function VaultRoom:UnloadRoom(save)
 		local v = ents[i]
 		ents[i] = nil
 
-		local skip, shouldsave
-		if not v:IsValid() or v.entity:GetParent() or not _inroom(v) then
-			skip = true
-		else
-			--@V2C: support for legacy wormlight stuff =(
-			local target = v.components.spell and v.components.spell.target
-			if target then
-				if not target:IsValid() or target.entity:GetParent() or not _inroom(target) then
-					skip = true
-				else
-					shouldsave = self:ShouldSaveEntity(target)
-				end
-			else
-				shouldsave = self:ShouldSaveEntity(v)
-			end
-		end
-
-		if skip then
+		local unloadaction = _getunloadaction(v, map, tile_x, tile_y)
+		if unloadaction == _SKIP then
 			--Do nothing.
-		elseif shouldsave then
+		elseif unloadaction == _SAVE then
 			if save then
 				table.insert(toremove, v) --defer removal so we can save references
 				if v.persists and v.prefab --[[and v.Transform and v.entity:GetParent() == nil redundant checks]] then
@@ -128,7 +145,7 @@ function VaultRoom:UnloadRoom(save)
 			else
 				v:Remove()
 			end
-		else
+		else--if unloadaction == _KEEP then
 			--Don't remove entities that aren't saved by the room
 			keepidx = keepidx + 1
 			ents[keepidx] = v

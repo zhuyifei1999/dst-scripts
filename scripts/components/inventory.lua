@@ -1652,6 +1652,42 @@ function Inventory:DropEverythingWithTag(tag)
     end
 end
 
+function Inventory:DropEverythingByFilter(filterfn)
+    local containers = {}
+
+    if self.activeitem ~= nil then
+        if filterfn(self.inst, self.activeitem) then
+            self:DropItem(self.activeitem, true, true)
+            self:SetActiveItem(nil)
+        elseif self.activeitem.components.container ~= nil then
+            table.insert(containers, self.activeitem)
+        end
+    end
+
+    for k = 1, self.maxslots do
+        local v = self.itemslots[k]
+        if v ~= nil then
+            if filterfn(self.inst, v) then
+                self:DropItem(v, true, true)
+            elseif v.components.container ~= nil then
+                table.insert(containers, v)
+            end
+        end
+    end
+
+    for k, v in pairs(self.equipslots) do
+        if filterfn(self.inst, v) then
+            self:DropItem(v, true, true)
+        elseif v.components.container ~= nil then
+            table.insert(containers, v)
+        end
+    end
+
+    for i, v in ipairs(containers) do
+        v.components.container:DropEverythingByFilter(filterfn)
+    end
+end
+
 function Inventory:DropEverything(ondeath, keepequip)
     if self.inst:HasTag("player") and not GetGhostEnabled() and not GetGameModeProperty("revivable_corpse") then
         -- NOTES(JBK): This is for items like Wanda's watches that normally stick inside the inventory but Wilderness mode will force the player to reroll so drop everything.

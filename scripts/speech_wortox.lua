@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Rather annoyed with this void.",
+			STUCK = "Just my luck, it's stuck.",
         },
         PICKUP =
         {
@@ -1782,6 +1783,8 @@ return{
 		TURF_FUNGUS="Floor or ceiling, depending on your perspective.",
 		TURF_FUNGUS_MOON = "Floor or ceiling, depending on your perspective.",
 		TURF_ARCHIVE = "Floor or ceiling, depending on your perspective.",
+        TURF_VAULT = "Floor or ceiling, depending on your perspective.",
+        TURF_VENT = "Floor or ceiling, depending on your perspective.",
 		TURF_SINKHOLE="Floor or ceiling, depending on your perspective.",
 		TURF_UNDERROCK="Floor or ceiling, depending on your perspective.",
 		TURF_MUD="Floor or ceiling, depending on your perspective.",
@@ -5160,6 +5163,7 @@ return{
 
         PLAYBILL_THE_DOLL = "A curious tale of friendship and betrayal.",
         PLAYBILL_THE_VEIL = "More of a controversial commercial.",
+        PLAYBILL_THE_VAULT = "How nice! A story of sacrifice!",
         STATUEHARP_HEDGESPAWNER = "The poor cherub and harp, lost in vines thorny sharp.",
         HEDGEHOUND = "You wouldn't eat a fellow trickster, would you?",
         HEDGEHOUND_BUSH = "Did those vines just whine? I'm sure it's fine.",
@@ -5842,6 +5846,7 @@ return{
         VAULT_LOBBY_EXIT = "The way out, no doubt!",
 		VAULT_CHANDELIER_BROKEN = "Oh dear, the chandelier.",
 
+		ANCIENT_HUSK = "Oh my, how they died!",
 		MASK_ANCIENT_HANDMAIDHAT = "The eyes pierce, so fierce.",
 		MASK_ANCIENT_ARCHITECTHAT = "The face of an intelligent gent!",
 		MASK_ANCIENT_MASONHAT = "I would root for this brute!",

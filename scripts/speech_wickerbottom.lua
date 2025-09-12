@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Empty, as I suspected.",
+			STUCK = "It is stuck.",
         },
         PICKUP =
         {
@@ -1763,6 +1764,8 @@ return{
 		TURF_FUNGUS="The ground. You step on it.",
 		TURF_FUNGUS_MOON = "The ground. You step on it.",
 		TURF_ARCHIVE = "The ground. You step on it.",
+        TURF_VAULT = "The ground. You step on it.",
+        TURF_VENT = "The ground. You step on it.",
 		TURF_SINKHOLE="The ground. You step on it.",
 		TURF_UNDERROCK="The ground. You step on it.",
 		TURF_MUD="The ground. You step on it.",
@@ -5140,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "I suspect there's a deeper meaning to its storyline.",
         PLAYBILL_THE_VEIL = "Rather on-the-nose, if you ask me.",
+        PLAYBILL_THE_VAULT = "It's more a confession or retelling of events than a stage play.",
         STATUEHARP_HEDGESPAWNER = "Someone has let that poor statue become overgrown with vines.",
         HEDGEHOUND = "Ah. That would explain the respiration.",
         HEDGEHOUND_BUSH = "How odd. This rose bush appears to be... breathing.",
@@ -5822,6 +5826,7 @@ return{
         VAULT_LOBBY_EXIT = "This must indeed be the point of egress from these chambers.",
 		VAULT_CHANDELIER_BROKEN = "It would appear substandard workmanship has permitted this chandelier to fall from its mounting.",
 
+		ANCIENT_HUSK = "It's obvious which of these ancients was the perpetrator.",
 		MASK_ANCIENT_HANDMAIDHAT = "The visage of this mask denotes the elevated stature of its former bearer.",
 		MASK_ANCIENT_ARCHITECTHAT = "This mask once adorned a figure of considerable sagacity.",
 		MASK_ANCIENT_MASONHAT = "Such a mask could only belong to one whose mastery was forged through relentless work.",
