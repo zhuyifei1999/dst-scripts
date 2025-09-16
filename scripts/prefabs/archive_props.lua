@@ -120,7 +120,6 @@ local function statuefn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
-    inst.entity:AddLight()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 0.66)
@@ -232,6 +231,7 @@ local function runefn()
     inst:AddTag("structure")
     inst:AddTag("statue")
     inst:AddTag("dustable")
+	inst:AddTag("ancient_text")
 
     inst:SetPrefabNameOverride("archive_rune_statue")
 

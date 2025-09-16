@@ -30,7 +30,6 @@ local taskset_data =
         "CaveExitTask10",
 
         "CentipedeCaveTask",
-        "CentipedeCaveIslandTask",
 
 		"ToadStoolTask1",
 		"ToadStoolTask2",

@@ -1273,6 +1273,12 @@ local ExampleLayout =
 		{
 		},
     }),
+    ["retrofit_fumarole"] = StaticLayout.Get("map/static_layouts/retrofit_fumarole", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+        force_rotation = LAYOUT_ROTATION.NORTH,
+        areas = {},
+    }),
 
 	["Waterlogged1"] = StaticLayout.Get("map/static_layouts/waterlogged1", {
 	--	add_topology = {room_id = "StaticLayoutIsland:Waterlogged1", tags = {"Canopy"}},

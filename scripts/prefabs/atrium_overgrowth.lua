@@ -52,6 +52,8 @@ local function fn(bank)
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
+	inst:AddTag("ancient_text")
+
     inst.AnimState:SetBuild(bank)
     inst.AnimState:SetBank(bank)
     inst.AnimState:PlayAnimation("idle")

@@ -75,6 +75,7 @@ return{
 			REVIVE_FAILED = "It looks like I was too late...",
 			WARP_NO_POINTS_LEFT = "That's enough backtracking for now.",
 			SHARD_UNAVAILABLE = "There's too much wobble wibbling the timestream.",
+			NO_TELEPORT_ZONE = "The timestream here is too unstable... I shouldn't risk it.",
 		},
 		CAST_SPELLBOOK =
 		{

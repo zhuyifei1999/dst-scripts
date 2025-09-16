@@ -182,6 +182,7 @@ local BUSYTHEMES = {
     RIDEOFTHEVALKYRIE = 17,
     BOATRACE = 18,
 	BALATRO = 19,
+    STAGEPLAY_CONFESSION = 20,
 }
 
 --------------------------------------------------------------------------
@@ -422,6 +423,9 @@ local function StartStageplayMusic(player, mood_index)
     elseif mood_index == 3 then
         theme = BUSYTHEMES.STAGEPLAY_DRAMATIC
         sound = "stageplay_set/bgm_moods/music_drama"
+    elseif mood_index == 4 then
+        theme = BUSYTHEMES.STAGEPLAY_CONFESSION
+        sound = "dontstarve/music/music_cavepuzzle"
     end
 
     StartBusyTheme(player, theme, sound, 2)

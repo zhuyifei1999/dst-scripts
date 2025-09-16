@@ -461,6 +461,13 @@ local function MakeRift5Banner(self, banner_root, anim)
 	anim:SetScale(.667)
 end
 
+local function MakeRift6Banner(self, banner_root, anim)
+	anim:GetAnimState():SetBuild("dst_menu_rift6")
+	anim:GetAnimState():SetBank("dst_menu_rift6")
+	anim:GetAnimState():PlayAnimation("loop", true)
+	anim:SetScale(.667)
+end
+
 local function MakeDefaultBanner(self, banner_root, anim)
 	local banner_height = 350
 	banner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 ) -- positioning for when we had the top banner art
@@ -516,7 +523,7 @@ function MakeBanner(self)
 		--
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeRift5Banner(self, banner_root, anim)
+		MakeRift6Banner(self, banner_root, anim)
         
     elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTS) then
         MakeYOTSBanner(self, banner_root, anim)        
@@ -533,12 +540,12 @@ function MakeBanner(self)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
         MakeHallowedNights2024Banner(self, banner_root, anim)
 	elseif IsSpecialEventActive(SPECIAL_EVENTS.CARNIVAL) then
-		MakeRift5Banner(self, banner_root, anim)
+		MakeCawnivalBanner(self, banner_root, anim)
 	else
 		--*** !!! ***
 		--REMINDER: Check MakeBannerFront as well!
 		--
-		MakeRift5Banner(self, banner_root, anim)
+		MakeRift6Banner(self, banner_root, anim)
         --MakeWurtWinonaQOLBanner(self, banner_root, anim)
         --MakeRiftsMetaQoLBanner(self, banner_root, anim)
 		--MakeMeta2Banner(self, banner_root, anim)

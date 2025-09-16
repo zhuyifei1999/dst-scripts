@@ -474,6 +474,7 @@ STRINGS =
 		{
 			GENERIC = "Examine",
 			CLOSEINSPECT = "Closely Examine",
+			READ = "Read",
 		},
         TALKTO = "Talk to",
 		INTERACT_WITH =
@@ -4381,7 +4382,7 @@ STRINGS =
         VAULT_TELEPORTER = "Sanctum Waymark", -- Channel device to teleport players around the vault.
 		VAULT_TELEPORTER_BROKEN = "Broken Sanctum Waymark",
 		VAULT_ORB = "Portation Orb",
-        VAULT_LOBBY_EXIT = "Sanctum Egress",
+		VAULT_LOBBY_EXIT = "Chasm",
 		VAULT_CHANDELIER_BROKEN = "Sanctum Lustre",
 
 		ANCIENT_HUSK = "Ancient Remains",
@@ -4393,7 +4394,7 @@ STRINGS =
         TREE_ROCK_SAPLING = "Boulderbough Sapling",
 
         CAVE_FERN_WITHERED = "Withered Fern",
-
+        FLOWER_CAVE_WITHERED = "Withered Light Flower",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -15759,9 +15760,14 @@ STRINGS.CAST = {
     MIRROR = "The Mirror",
     FOOL = "The Fool",
     TREE = "The Tree",
+    --
     SAGE = "The Sage",
     HALFWIT = "The Halfwit",
     TOADY = "The Toady",
+    --
+    VISIONIST = "The Visionist",
+    ARTIFICER = "The Artificer",
+    ELYTRA = "Elytra",
 }
 
 STRINGS.PLAYS = {
@@ -15777,7 +15783,8 @@ STRINGS.PLAYS = {
         "Act 3 - Scene 3",
         "- The Reunion -",
     },
-    THEVEIL = "The Pall",           
+    THEVEIL = "The Pall",
+    THEVAULT = "A Task Complete",
 }
 
 STRINGS.ARCHIVE_RUNE_STATUE = {
@@ -15795,19 +15802,19 @@ STRINGS.VAULT_RUNE = {
 	LORE3 = "\"Let the cursed Keystone never cross this threshold.\"",
 	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\"",
 }
-STRINGS.ATRIUM_OVERGROWTH = {
-    LINE_1 = "\"The unknown hath been made known. The abyss revealed as refuge.\"",
-    LINE_2 = "\"Dread twisted into devotion. Trembling into gratitude.\"",
-    LINE_3 = "\"Loyalty unending. We kneel before the undying. The unaltering.\"",
-    LINE_4 = "\"Thou art called by manifold names in myriad realms.\"",
-    LINE_5 = "\"To us Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\"",
-}
 STRINGS.NIGHTMARE_OVERGROWTH = {
     LINE_1 = "\"Forsaken wretches of the one who turned away.\"",
     LINE_2 = "\"Orphans cast upon the barren expanse. Lost in the wake of neglect.\"",
     LINE_3 = "\"From desolation were we drawn. Into the veiled embrace of Them.\"",
     LINE_4 = "\"No longer doth the shadow stir terror within our hearts.\"",
     LINE_5 = "\"For dark is become our shield. Our sustenance. Our solace.\"",
+}
+STRINGS.ATRIUM_OVERGROWTH = {
+    LINE_1 = "\"The unknown hath been made known. The abyss revealed as refuge.\"",
+    LINE_2 = "\"Dread twisted into devotion. Trembling into gratitude.\"",
+    LINE_3 = "\"Loyalty unending. We kneel before the undying. The unaltering.\"",
+    LINE_4 = "\"Thou art called by manifold names in myriad realms.\"",
+    LINE_5 = "\"To us, Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\"",
 }
 
 STRINGS.SPELLS = {

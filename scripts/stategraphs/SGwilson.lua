@@ -1722,10 +1722,12 @@ local events =
 
     EventHandler("ontalk", function(inst, data)
         if inst:IsActing() and not inst.sg:HasStateTag("talking") and (inst.components.rider == nil or not inst.components.rider:IsRiding()) then
-            if inst:HasTag("mime") then
-                inst.sg:GoToState("acting_mime")
-            else
-                inst.sg:GoToState("acting_talk")
+            if not inst.sg.statemem.doing_idle_for_line then
+                if inst:HasTag("mime") then
+                    inst.sg:GoToState("acting_mime")
+                else
+                    inst.sg:GoToState("acting_talk")
+                end
             end
         elseif inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("notalking") then
 			if data.sgparam and data.sgparam.closeinspect and
@@ -2019,7 +2021,10 @@ local events =
         if inst:HasTag("mime") then
             inst.sg:GoToState("acting_mime")
         else
-            if data.anim then
+            if data.do_idle_for_line then
+                inst.sg:GoToState("acting_idle")
+                inst.sg.statemem.doing_idle_for_line = true
+            elseif data.anim then
                 inst.sg:GoToState("acting_action", data)
             else
                 inst.sg:GoToState("acting_talk")
@@ -21621,23 +21626,35 @@ local states =
                 inst.sg.statemem.hold = true
             end
 
+            local function PlayAnim(anim, anim_loop)
+                if data.check_current_anim == nil or not inst.AnimState:IsCurrentAnimation(anim) then
+                    inst.AnimState:PlayAnimation(anim, anim_loop)
+                end
+            end
+
+            local function PushAnim(anim, anim_loop)
+                if data.check_current_anim == nil or not inst.AnimState:IsCurrentAnimation(anim) then
+                    inst.AnimState:PushAnimation(anim, anim_loop)
+                end
+            end
+
             if type(data.anim) == "table" then
                 for i,animation in ipairs(data.anim)do
                     inst.sg.statemem.queue = true
                     if i == 1 then
                         if #data.anim == 1 and loop then
-                            inst.AnimState:PlayAnimation(animation, true)
+                            PlayAnim(animation, true)
                         else
-                            inst.AnimState:PlayAnimation(animation, false)
+                            PlayAnim(animation, false)
                         end
                     elseif i == #data.anim then
-                        inst.AnimState:PushAnimation(animation, loop)
+                        PushAnim(animation, loop)
                     else 
-                        inst.AnimState:PushAnimation(animation, false)
+                        PushAnim(animation, false)
                     end
                 end
             else
-                inst.AnimState:PlayAnimation(data.anim, loop)
+                PlayAnim(data.anim, loop)
             end
             if data.line then
                 DoTalkSound(inst)

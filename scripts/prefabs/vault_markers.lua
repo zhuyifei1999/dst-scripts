@@ -8,9 +8,12 @@ local prefabs =
 	"abysspillar_minion",
 	"abysspillar_trial",
 	"ancient_husk",
+	"archive_lockbox_dispencer",
 	"mask_ancient_architecthat",
 	"mask_ancient_handmaidhat",
 	"mask_ancient_masonhat",
+	"playbill_the_vault",
+	"temp_beta_msg", --#TEMP_BETA
 	"vault_chandelier",
 	"vault_chandelier_broken",
 	"vault_chandelier_decor",
@@ -18,10 +21,9 @@ local prefabs =
 	"vault_pillar",
 	"vault_rune",
 	"vault_statue",
+	"vault_stool",
 	"vault_switch_base",
-	"vaultrelic_bowl",
-	"vaultrelic_planter",
-	"vaultrelic_vase",
+	"vault_table_round",
 }
 
 local function UpdateNetvars(inst)

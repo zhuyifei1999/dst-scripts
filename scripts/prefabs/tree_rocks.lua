@@ -47,8 +47,6 @@ SetSharedLootTable( 'tree_rock1_mine',
     {'tree_rock_seed', 1.00},
 })
 
---rifts6/rock_tree/fall_break
-
 local NUM_VINE_LOOT = 5
 
 local TREE_ROCK_DATA = require("prefabs/tree_rock_data")
@@ -537,6 +535,7 @@ local function OnAnimOver(inst)
         end
 
         inst.AnimState:PushAnimation(inst.anims[GetAnimationKey(inst, "fall_pst")])
+        PushRockAnimation(inst, inst.components.workable.workleft)
     end
 
     inst:RemoveEventCallback("animover", OnAnimOver)
@@ -558,7 +557,6 @@ local function OnBurnt(inst, immediate)
         inst:ListenForEvent("animover", OnAnimOver)
 
         inst:DoTaskInTime(.5, MakeRock)
-        --inst:DoTaskInTime(12 * FRAMES, OnRockFall) --TODO burn logic here too.
     end
 end
 
@@ -623,7 +621,6 @@ local function OnChopDown(inst, chopper)
 
     --RemovePhysicsColliders(inst)
     MakeRock(inst, true)
-    --PushRockAnimation(inst, inst.components.workable.workleft)
 end
 
 --[[
@@ -726,7 +723,7 @@ local function MakeRockTree(name, build, stage)
         local growable = inst:AddComponent("growable")
         growable.stages = GetGrowthStages(inst)
         growable:SetStage(stage or math.random(1, 2))
-        growable.loopstages = true
+        growable.loopstages = false --TODO?
         growable.springgrowth = true
         growable.magicgrowable = true
         growable:StartGrowing()

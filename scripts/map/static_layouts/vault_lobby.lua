@@ -58,8 +58,8 @@ return {
           name = "",
           type = "vault_pillar",
           shape = "rectangle",
-          x = 90,
-          y = 549,
+          x = 128,
+          y = 576,
           width = 0,
           height = 0,
           visible = true,
@@ -71,8 +71,8 @@ return {
           name = "",
           type = "vault_pillar",
           shape = "rectangle",
-          x = 481,
-          y = 141,
+          x = 512,
+          y = 192,
           width = 0,
           height = 0,
           visible = true,
@@ -84,8 +84,8 @@ return {
           name = "",
           type = "archive_moon_statue",
           shape = "rectangle",
-          x = 181,
-          y = 458,
+          x = 264,
+          y = 509,
           width = 0,
           height = 0,
           visible = true,
@@ -128,8 +128,8 @@ return {
           name = "",
           type = "vault_pillar",
           shape = "rectangle",
-          x = 497,
-          y = 543,
+          x = 512,
+          y = 512,
           width = 0,
           height = 0,
           visible = true,
@@ -141,8 +141,8 @@ return {
           name = "",
           type = "vault_pillar",
           shape = "rectangle",
-          x = 82,
-          y = 147,
+          x = 128,
+          y = 128,
           width = 0,
           height = 0,
           visible = true,
@@ -154,8 +154,8 @@ return {
           name = "",
           type = "vault_chandelier_broken",
           shape = "rectangle",
-          x = 379,
-          y = 302,
+          x = 310,
+          y = 321,
           width = 0,
           height = 0,
           visible = true,
@@ -165,8 +165,8 @@ return {
           name = "",
           type = "vault_rune",
           shape = "rectangle",
-          x = 327,
-          y = 531,
+          x = 288,
+          y = 352,
           width = 0,
           height = 0,
           visible = true,
@@ -237,6 +237,95 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "vault_chandelier_decor",
+          shape = "rectangle",
+          x = 288,
+          y = 352,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "vault_ground_pattern_fx",
+          shape = "rectangle",
+          x = 288,
+          y = 352,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.nocenter"] = ""
+          }
+        },
+        {
+          name = "",
+          type = "vault_chandelier_decor",
+          shape = "rectangle",
+          x = 288,
+          y = 256,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.variation"] = "2"
+          }
+        },
+        {
+          name = "",
+          type = "vault_pillar",
+          shape = "rectangle",
+          x = 64,
+          y = 192,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.random"] = ""
+          }
+        },
+        {
+          name = "",
+          type = "vault_pillar",
+          shape = "rectangle",
+          x = 64,
+          y = 512,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.random"] = ""
+          }
+        },
+        {
+          name = "",
+          type = "vault_pillar",
+          shape = "rectangle",
+          x = 448,
+          y = 576,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.random"] = ""
+          }
+        },
+        {
+          name = "",
+          type = "vault_pillar",
+          shape = "rectangle",
+          x = 448,
+          y = 128,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.random"] = ""
+          }
         }
       }
     }

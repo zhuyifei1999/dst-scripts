@@ -370,10 +370,12 @@ local TASKS_TO_LOOT_KEY = {
     -- EMPTY_AREA
     ["ArchiveMaze"]             = "EMPTY_AREA",
     ["AncientArchivesRetrofit"] = "EMPTY_AREA",
+    ["Vault"]                   = "EMPTY_AREA",
 
     -- VENT_AREA
     ["CentipedeCaveTask"]       = "VENT_AREA",
     ["CentipedeCaveIslandTask"] = "VENT_AREA",
+    ["FumaroleRetrofit"]        = "VENT_AREA",
 
     -- RUINS_ENTRANCE_AREA
     ["LichenLand"]              = "RUINS_ENTRANCE_AREA",

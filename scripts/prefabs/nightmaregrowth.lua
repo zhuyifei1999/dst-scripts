@@ -119,6 +119,8 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
+	inst:AddTag("ancient_text")
+
     inst.AnimState:SetBuild("nightmaregrowth")
     inst.AnimState:SetBank("nightmaregrowth")
     inst.AnimState:PlayAnimation("idle")

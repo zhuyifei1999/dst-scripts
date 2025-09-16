@@ -45,6 +45,7 @@ local function fn()
 
 	inst:AddTag("structure")
 	inst:AddTag("statue")
+	inst:AddTag("ancient_text")
 
 	inst.entity:SetPristine()
 

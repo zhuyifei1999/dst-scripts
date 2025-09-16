@@ -17,6 +17,7 @@ end
 local function PreActivate(inst)
 	if inst.sg == nil then
 		inst.AnimState:PlayAnimation("turn_on_pre")
+		inst.SoundEmitter:PlaySound("rifts6/sequitor/jump")
 	end
 end
 
@@ -41,9 +42,11 @@ local function Deactivate(inst)
 		if not inst:IsAsleep() then
 			inst.AnimState:PlayAnimation("turn_off_pst")
 			inst.AnimState:PushAnimation("idle_off", false)
+			inst.SoundEmitter:PlaySound("rifts6/sequitor/jump_land")
 		else
 			inst.AnimState:PlayAnimation("idle_off")
 		end
+		inst.SoundEmitter:KillSound("loop")
 	elseif not inst.AnimState:IsCurrentAnimation("idle_off") then
 		inst.AnimState:PlayAnimation("idle_off")
 	end

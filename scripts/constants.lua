@@ -838,7 +838,7 @@ SPECIAL_EVENTS =
     YOTS = "year_of_the_snake",
 }
 --WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.CARNIVAL
-WORLD_SPECIAL_EVENT = IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.CARNIVAL
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE --IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.CARNIVAL
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -1148,7 +1148,8 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_wagboss"
+    "dontstarve/music/music_FE_cavepuzzle"
+    --"dontstarve/music/music_FE_wagboss"
     --"dontstarve/music/music_FE_balatro"
     --"dontstarve/music/music_FE_hallowednights2024"
     --"dontstarve/music/music_FE_rifts4"

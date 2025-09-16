@@ -237,7 +237,8 @@ local function DoRetrofitting(savedata, world_map)
 
 	if savedata.retrofit_rifts6_add_fumarole then
 		savedata.retrofit_rifts6_add_fumarole = nil
-		
+
+        require("map/caves_retrofit_land").FromBeyondRetrofitting_Fumarole(TheWorld.Map, savedata)
 
 		dirty = true
 	end

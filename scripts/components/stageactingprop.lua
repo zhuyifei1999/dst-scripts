@@ -354,13 +354,13 @@ function StageActingProp:DoLines()
                         or (self.cast["MONOLOGUE"] and self.cast["MONOLOGUE"].castmember)
 
 					if line.anim or line.line then
-                        local next_line_data = { anim = line.anim, line = line.line, animtype = line.animtype,  endidleanim = line.endidleanim}
-						actor:PushEvent("perform_do_next_line", next_line_data)
-
                         if line.line then
                             local line_text = ProcessString(actor) or line.line
                             actor.components.talker:Say(line_text, duration, nil, nil, nil, nil, nil, nil, nil, line.sgparam)
                         end
+
+						local next_line_data = { anim = line.anim, line = line.line, animtype = line.animtype,  endidleanim = line.endidleanim, do_idle_for_line = line.do_idle_for_line}
+						actor:PushEvent("perform_do_next_line", next_line_data)
 
 						if line.castsound and actor.SoundEmitter then
 							for sound_role, sound_name in pairs(line.castsound) do

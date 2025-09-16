@@ -44,9 +44,9 @@ AddRoom("BGVentsRoom", {
     colour={r=.8,g=1,b=.8,a=.50},
     value = WORLD_TILES.VENT,
     type = NODE_TYPE.Background,
-    random_node_exit_weight = 0,
+    random_node_exit_weight = 1,
     contents =  {
-        distributepercent = .22,
+        distributepercent = .24,
         distributeprefabs =
         {
             cave_vent_rock  = 0.1,
@@ -54,7 +54,9 @@ AddRoom("BGVentsRoom", {
             tree_rock2      = 0.045,
 
             cave_fern_withered = 0.2,
-            --flower_cave_withered = 0.1,
+            flower_cave_withered = 0.03,
+            flower_cave_double_withered = 0.015,
+            flower_cave_triple_withered = 0.015,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -67,7 +69,7 @@ AddRoom("BGVentsRoom", {
 AddRoom("VentsRoom", {
     colour={r=.8,g=1,b=.8,a=.50},
     value = WORLD_TILES.VENT,
-    random_node_exit_weight = 0,
+    random_node_exit_weight = 1,
     --type = NODE_TYPE.Room,
     contents =  {
         distributepercent = .22,
@@ -93,18 +95,23 @@ AddRoom("CentipedeNest", {
     value = WORLD_TILES.VENT,
     random_node_entrance_weight = 0,
     type = NODE_TYPE.Room,
+    required_prefabs = {"shadowthrall_centipede_spawner"},
     contents =  {
         countstaticlayouts =
         {
             ["CentipedeNest"] = 1,
         },
-        distributepercent = .4,
+        distributepercent = .42,
         distributeprefabs =
         {
             cave_vent_rock  = 0.4,
             tree_rock1      = 0.02,
             tree_rock2      = 0.02,
             cave_fern_withered       = 0.8,
+
+            flower_cave_withered = 0.05,
+            flower_cave_double_withered = 0.025,
+            flower_cave_triple_withered = 0.025,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -131,6 +138,10 @@ AddRoom("RockTreeRoom", {
             tree_rock1      = 0.5,
             tree_rock2      = 0.5,
             cave_fern_withered       = 0.3,
+
+            flower_cave_withered = 0.04,
+            flower_cave_double_withered = 0.02,
+            flower_cave_triple_withered = 0.02,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,
@@ -147,13 +158,17 @@ AddRoom("VentsRoom_exit", {
     --type = NODE_TYPE.Room,
     tags = {"ExitPiece"},
     contents =  {
-		distributepercent = 0.2,
+		distributepercent = 0.23,
         distributeprefabs =
         {
             cave_vent_rock = 0.1,
             tree_rock1 = 0.01,
             tree_rock2 = 0.01,
             cave_fern_withered = 0.2,
+
+            flower_cave_withered = 0.04,
+            flower_cave_double_withered = 0.02,
+            flower_cave_triple_withered = 0.02,
         },
         prefabdata = {
             cave_vent_rock = RandomVentRockState,

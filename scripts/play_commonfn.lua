@@ -365,4 +365,18 @@ fns.findpositions = function(inst, line, cast)
 	end
 end
 
+fns.override_with_chalice = function(inst, line, cast)
+	for costume, data in pairs(cast) do
+		local player = data.castmember
+		player.AnimState:OverrideSymbol("ghostly_elixirs_swap", "chalice_swap", "chalice_swap_comp")
+	end
+end
+
+fns.clear_chalice_symbol = function(inst, line, cast)
+	for costume, data in pairs(cast) do
+		local player = data.castmember
+		player.AnimState:ClearOverrideSymbol("ghostly_elixirs_swap")
+	end
+end
+
 return fns

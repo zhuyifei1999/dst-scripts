@@ -5372,11 +5372,11 @@ local function MakeHat(name)
     end
 
     fns.shadowthrall_parasite_onunequip = function(inst, owner)
-       _onunequip(inst, owner)
+        _onunequip(inst, owner)
 
-       inst:RemoveEventCallback("death", fns.shadowthrall_parasite_ondeath, owner)
-       inst:RemoveEventCallback("killed", fns.shadowthrall_parasite_onkilledsomething, owner)
-       
+        inst:RemoveEventCallback("death", fns.shadowthrall_parasite_ondeath, owner)
+        inst:RemoveEventCallback("killed", fns.shadowthrall_parasite_onkilledsomething, owner)
+
         owner:RemoveTag("shadowthrall_parasite_hosted")
 
         if owner.planarentity_added then
@@ -5428,10 +5428,16 @@ local function MakeHat(name)
 			owner.SoundEmitter:KillSound("parasite_LP")
 		end
 
-        inst:DoTaskInTime(0, inst.Remove)
+        if inst:IsValid() then
+            inst:DoTaskInTime(0, inst.Remove)
+        end
 
-        if owner.components.health ~= nil and not owner.components.health:IsDead() then
-            owner.components.health:Kill()
+        if owner:IsValid() then
+            if inst.set_to_remove_owner then
+                owner:Remove()
+            elseif owner.components.health ~= nil and not owner.components.health:IsDead() then
+                owner.components.health:Kill()
+            end
         end
     end
 
@@ -5439,16 +5445,16 @@ local function MakeHat(name)
         inst:AddTag("shadowthrall_parasite")
     end
 
+    local function shadowthrall_parasite_OnEntitySleep_task(inst)
+        inst.noloot = true
+        inst.set_to_remove_owner = true -- For whatever reason, it doesn't like it when we remove owner here. (Did not lead to user issues, but ugly invalid stale references with scheduler)
+        if inst:IsValid() then
+            inst:Remove()
+        end
+    end
+
     fns.shadowthrall_parasite_OnEntitySleep = function(inst)
-        inst.remove_self_task = inst:DoTaskInTime( TUNING.SHADOWTHRALL_PARASITE_TIMEOUT , function()
-            local owner = inst.components.inventoryitem.owner or nil
-            if owner then
-                owner:Remove()
-            end
-            if inst:IsValid() then
-                inst:Remove()
-            end
-        end )
+        inst.remove_self_task = inst:DoTaskInTime( TUNING.SHADOWTHRALL_PARASITE_TIMEOUT , shadowthrall_parasite_OnEntitySleep_task)
     end
 
     fns.shadowthrall_parasite_OnEntityWake = function(inst)

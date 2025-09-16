@@ -226,6 +226,7 @@ local function OnActivate(inst, doer)
 	end
 	inst.AnimState:PlayAnimation("activate")
 	inst.AnimState:PushAnimation("idle", false)
+	inst.SoundEmitter:PlaySound("rifts6/lever/pull")
 
 	if inst.task then
 		inst.task:Cancel()
@@ -469,6 +470,7 @@ local function fn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
 

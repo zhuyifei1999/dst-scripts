@@ -2077,6 +2077,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         Asset("SCRIPT", "scripts/prefabs/player_common_extensions.lua"),
         Asset("SCRIPT", "scripts/prefabs/skilltree_defs.lua"),
+
+        Asset("ANIM", "anim/chalice_swap.zip"),
     }
 
     local prefabs =
@@ -2328,6 +2330,7 @@ end
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
         inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
         inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
+        inst.AnimState:OverrideSymbol("chalice_swap_comp", "chalice_swap", "chalice_swap_comp")
 
         --Additional effects symbols for hit_darkness animation
         inst.AnimState:AddOverrideBuild("player_hit_darkness")

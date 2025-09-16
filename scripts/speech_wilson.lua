@@ -5831,6 +5831,7 @@ return {
             GENERIC = "This piece really moves me.",
             BROKEN = "It's broken.",
             UNPOWERED = "It needs power.",
+			UNDERCONSTRUCTION = "\"This Waymark is under development for a future update.\"",
         },
 		VAULT_ORB = "I think this plays a roll.",
         VAULT_LOBBY_EXIT = "An exit hole?",

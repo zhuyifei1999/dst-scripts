@@ -3,6 +3,13 @@ local assets =
 	Asset("ANIM", "anim/pillar_vault_deep.zip"),
 }
 
+local prefabs =
+{
+	"vaultrelic_bowl",
+	"vaultrelic_vase",
+	"vaultrelic_planter",
+}
+
 local function CreateBottom()
 	local inst = CreateEntity()
 
@@ -43,6 +50,33 @@ local function MakeBroken(inst, broken)
 	elseif inst.broken then
 		inst.broken = nil
 		inst.AnimState:PlayAnimation("idle_upper")
+	end
+	return inst
+end
+
+local _nextrelic
+
+local function AttachRelic(inst)
+	if math.random() < 0.4 then
+		if _nextrelic == nil then
+			_nextrelic = { "vaultrelic_bowl", "vaultrelic_vase", "vaultrelic_planter" }
+			--shuffle
+			for i = 1, #_nextrelic - 1 do
+				local rnd = math.random(i, #_nextrelic)
+				if rnd ~= i then
+					local tmp = _nextrelic[i]
+					_nextrelic[i] = _nextrelic[rnd]
+					_nextrelic[rnd] = tmp
+				end
+			end
+		end
+		local rnd = math.random()
+		rnd = math.clamp(math.ceil(rnd * rnd * 3), 1, 3)
+		rnd = table.remove(_nextrelic, rnd)
+		table.insert(_nextrelic, rnd)
+		local relic = SpawnPrefab(rnd)
+		relic:SetVariation(math.random() < 0.7 and math.random(3) or math.random(4, 6)) --lower chance for broken variations
+		relic:AttachToVaultPillar(inst)
 	end
 	return inst
 end
@@ -92,6 +126,7 @@ local function fn()
 
 	inst.MakeCapped = MakeCapped
 	inst.MakeBroken = MakeBroken
+	inst.AttachRelic = AttachRelic
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 

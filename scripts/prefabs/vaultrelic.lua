@@ -67,8 +67,19 @@ local function OnBuilt(inst, data)
 	ConvertToCrafted(inst)
 end
 
+local function AttachToVaultPillar(inst, pillar)
+	inst.entity:AddFollower():FollowSymbol(pillar.GUID, "follow_cap", 0, 0, 0, true)
+	inst.pillar = pillar
+end
+
 local function OnSave(inst, data)
-	data.variation = inst.variation
+	if inst.variation then
+		data.variation = inst.variation
+		if inst.pillar then
+			data.pillar = inst.pillar.GUID
+			return { inst.pillar.GUID }
+		end
+	end
 end
 
 local function OnLoad(inst, data)--, ents)
@@ -76,6 +87,19 @@ local function OnLoad(inst, data)--, ents)
 		inst:SetVariation(data.variation)
 	else
 		ConvertToCrafted(inst)
+	end
+end
+
+local function OnLoadPostPass(inst, ents, data)
+	if data.pillar and inst.variation then
+		local pillar = ents[data.pillar]
+		if pillar and pillar.entity:IsValid() then
+			inst:AttachToVaultPillar(pillar.entity)
+		else
+			inst.persists = false
+			inst:Hide()
+			inst:DoStaticTaskInTime(0, inst.Remove)
+		end
 	end
 end
 
@@ -121,8 +145,10 @@ local function _makeitem(name, anim, min_spacing)
 
 		inst.variation = 1
 		inst.SetVariation = SetVariation
+		inst.AttachToVaultPillar = AttachToVaultPillar
 		inst.OnSave = OnSave
 		inst.OnLoad = OnLoad
+		inst.OnLoadPostPass = OnLoadPostPass
 
 		return inst
 	end

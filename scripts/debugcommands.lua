@@ -4206,3 +4206,15 @@ function d_vaultroom(id)
 		end
 	end
 end
+
+function d_spawnvaultactors()
+    c_give("mask_ancient_handmaidhat")
+
+    local wilson = SpawnPrefab("wilson")
+    wilson.Transform:SetPosition(c_findnext("charlie_stage").Transform:GetWorldPosition())
+    wilson.components.inventory:Equip(SpawnPrefab("mask_ancient_masonhat"))
+
+    wilson = SpawnPrefab("wilson")
+    wilson.Transform:SetPosition(c_findnext("charlie_stage").Transform:GetWorldPosition())
+    wilson.components.inventory:Equip(SpawnPrefab("mask_ancient_architecthat"))
+end

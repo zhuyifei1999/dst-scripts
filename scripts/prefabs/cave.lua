@@ -177,6 +177,9 @@ local prefabs =
     "tree_rock1",
     "tree_rock2",
     "cave_vent_rock",
+    "retrofit_fumaroleteleporter",
+
+    "flower_cave_withered",
 
     --   vault
     "vaultmarker_lobby_center",

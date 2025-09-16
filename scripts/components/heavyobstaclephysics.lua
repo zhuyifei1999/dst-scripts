@@ -211,6 +211,17 @@ function HeavyObstaclePhysics:OnRemoveFromEntity()
 	self.inst:RemoveEventCallback("stoppushing", OnStopPushing)
 end
 
+function HeavyObstaclePhysics:OnEntityWake()
+    -- NOTES(JBK): If an object is floating even a little it will be stuck in the air so we will make it drop down.
+    if not (self.inst.components.inventoryitem and self.inst.components.inventoryitem:IsHeld()) then
+        local x, y, z = self.inst.Transform:GetWorldPosition()
+        if y > 0.01 then
+            self:ForceDropPhysics()
+            self.inst.Physics:SetVel(0, 0, 0) -- Let gravity deal with this.
+        end
+    end
+end
+
 function HeavyObstaclePhysics:SetRadius(radius)
     self.maxradius = radius
     self.currentradius = radius

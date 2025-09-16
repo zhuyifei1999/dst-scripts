@@ -239,9 +239,9 @@ local function updatelight(inst)
 		local vaultroommanager = TheWorld.components.vaultroommanager
 		powered = vaultroommanager ~= nil and vaultroommanager:NumPlayersInVault() > 0
 	else
-		local archive = TheWorld.components.archivemanager
+		local archivemanager = TheWorld.components.archivemanager
 		local playerprox = inst.components.playerprox
-		powered = (playerprox == nil or playerprox:IsPlayerClose()) and (archive == nil or archive:GetPowerSetting())
+		powered = (playerprox == nil or playerprox:IsPlayerClose()) and (archivemanager == nil or archivemanager:GetPowerSetting())
 	end
 	if powered then
         if inst._lightphase:value() ~= ON then

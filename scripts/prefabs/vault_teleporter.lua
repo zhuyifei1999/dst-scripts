@@ -83,6 +83,9 @@ local function OnStartChanneling(inst, channeler)
 		inst.AnimState:PlayAnimation("turn_on")
 		inst.AnimState:PushAnimation("idle_on_loop")
 	end
+	if not inst.SoundEmitter:PlayingSound("loop") then
+		inst.SoundEmitter:PlaySound("rifts6/vault_portal/turn_on_powered_LP", "loop")
+	end
     TheWorld:PushEvent("ms_vault_teleporter_channel_start", {inst = inst, doer = channeler})
 end
 
@@ -93,7 +96,9 @@ local function OnStopChanneling(inst, aborted, channeler)
 	then
 		inst.AnimState:PlayAnimation("turn_off")
 		inst.AnimState:PushAnimation("idle_off")
+		inst.SoundEmitter:PlaySound("rifts6/vault_portal/turn_off")
 	end
+	inst.SoundEmitter:KillSound("loop")
     TheWorld:PushEvent("ms_vault_teleporter_channel_stop", {inst = inst, doer = channeler})
 end
 
@@ -118,6 +123,7 @@ local function OnRepair(inst, giver, item)
 	else
 		inst.components.channelable:SetEnabled(false)
 		inst.AnimState:PlayAnimation("repair")
+		inst.SoundEmitter:PlaySound("rifts6/vault_portal/repair")
 		inst:ListenForEvent("animover", OnAnimOver)
 	end
 end
@@ -130,6 +136,7 @@ end
 
 local function MakeBroken(inst)
 	inst.AnimState:PlayAnimation("idle_broken")
+	inst.SoundEmitter:KillSound("loop")
 
 	inst.components.channelable:SetEnabled(false)
 
@@ -140,6 +147,17 @@ local function MakeBroken(inst)
 	end
 
 	inst:AddTag("trader_repair") --for action string
+end
+
+local function MakeUnderConstruction(inst)
+	inst.AnimState:PlayAnimation("unpowered_construction")
+	inst.SoundEmitter:KillSound("loop")
+
+	inst:RemoveTag("trader_repair")
+	inst:RemoveComponent("trader")
+	inst.components.channelable:SetEnabled(false)
+
+	inst.underconstruction = true
 end
 
 local function SpawnOrb(inst)
@@ -179,11 +197,15 @@ local function DisplayNameFn(inst)
 end
 
 local function GetStatus(inst, viewer)
-	return (inst.components.trader and "BROKEN") or (not inst.components.channelable:GetEnabled() and "UNPOWERED") or nil
+	return (inst.components.trader and "BROKEN")
+		or (inst.underconstruction and "UNDERCONSTRUCTION")
+		or (not inst.components.channelable:GetEnabled() and "UNPOWERED")
+		or nil
 end
 
 local function SetPowered(inst, powered)
     -- Assumes the device is not broken for now.
+	inst.SoundEmitter:KillSound("loop")
     if powered then
 		if not inst:IsAsleep() and (
 			inst.AnimState:IsCurrentAnimation("unpowered") or
@@ -203,12 +225,21 @@ local function SetPowered(inst, powered)
     inst.components.channelable:SetEnabled(powered)
 end
 
+--V2C: doing this instead of putting the sound on the fx, so we don't have so many sound instances.
+local function OnDepartFx(inst)
+	inst.SoundEmitter:PlaySound("rifts6/vault_portal/teleport_fx")
+end
+
+local function OnArriveFx(inst)
+	inst.SoundEmitter:PlaySound("rifts6/vault_portal/teleport_arrive_FX")
+end
+
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    --inst.entity:AddSoundEmitter()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddMiniMapEntity()
 	inst.entity:AddLight()
     inst.entity:AddNetwork()
@@ -253,9 +284,12 @@ local function fn()
 
     inst.MakeFixed = MakeFixed
 	inst.MakeBroken = MakeBroken
+	inst.MakeUnderConstruction = MakeUnderConstruction
     inst.SpawnOrb = SpawnOrb
 	inst.OnPlaced = OnPlaced
     inst.SetPowered = SetPowered
+	inst.OnDepartFx = OnDepartFx
+	inst.OnArriveFx = OnArriveFx
 
     return inst
 end

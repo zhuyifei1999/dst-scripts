@@ -1326,14 +1326,26 @@ t = {
                 FlagForRetrofitting_Forest(savedata, "fix_pearl_eating_everything")
             end,
         },
-        --[[
         {
-            version = 5.158, -- Add Fumarole area
+            version = 5.159, -- Add Fumarole area
             fn = function(savedata)
-                FlagForRetrofitting_Cave(savedata, "retrofit_rifts6_add_fumarole")
+                if savedata and savedata.map and savedata.map.topology and savedata.map.prefab == "cave" then
+                    local hascentipedetask = false
+                    local topology = savedata.map.topology
+                    for i, node in ipairs(topology.nodes) do
+                        local idname = topology.ids[i]
+                        if idname and idname:find("CentipedeCaveTask") then
+                            hascentipedetask = true
+                            break
+                        end
+                    end
+                    if not hascentipedetask then
+                        FlagForRetrofitting_Cave(savedata, "retrofit_rifts6_add_fumarole")
+                        savedata.retrofit_rifts6_add_fumarole = true -- static layouts need to be done before the map is finalized
+                    end
+                end
             end,
-        }
-        ]]
+        },
     },
 }
 

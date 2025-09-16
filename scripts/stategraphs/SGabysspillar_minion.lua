@@ -24,6 +24,11 @@ local states =
 			else
 				inst.AnimState:PlayAnimation("idle_on", true)
 			end
+			inst.SoundEmitter:PlaySound("rifts6/sequitor/idle_LP", "loop")
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("loop")
 		end,
 	},
 
@@ -34,6 +39,7 @@ local states =
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("turn_on_pst")
+			inst.SoundEmitter:PlaySound("rifts6/sequitor/jump_land")
 		end,
 
 		events =
@@ -53,6 +59,7 @@ local states =
 		onenter = function(inst)
 			inst.components.locomotor:Stop()
 			inst.AnimState:PlayAnimation("turn_off_pre")
+			inst.SoundEmitter:PlaySound("rifts6/sequitor/jump")
 			inst:AddTag("ignorewalkableplatformdrowning")
 		end,
 
@@ -126,21 +133,7 @@ local states =
 
 	State{
 		name = "run_stop",
-		tags = { "canrotate", "idle" },
-
-		onenter = function(inst)
-			inst.components.locomotor:StopMoving()
-			inst.AnimState:PlayAnimation("run_pst")
-		end,
-
-		events =
-		{
-			EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
+		onenter = function(inst) inst.sg:GoToState("idle") end,
 	},
 }
 
@@ -153,6 +146,7 @@ CommonStates.AddHopStates(states, true,
 {
 	hop_pst =
 	{
+		FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("rifts6/sequitor/jump_land") end),
 		FrameEvent(7, function(inst)
 			inst.sg:GoToState("idle", true)
 		end),

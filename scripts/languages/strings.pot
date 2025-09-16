@@ -1173,6 +1173,11 @@ msgctxt "STRINGS.ACTIONS.LOOKAT.GENERIC"
 msgid "Examine"
 msgstr ""
 
+#. STRINGS.ACTIONS.LOOKAT.READ
+msgctxt "STRINGS.ACTIONS.LOOKAT.READ"
+msgid "Read"
+msgstr ""
+
 #. STRINGS.ACTIONS.LOWER_ANCHOR
 msgctxt "STRINGS.ACTIONS.LOWER_ANCHOR"
 msgid "Lower"
@@ -2380,7 +2385,7 @@ msgstr ""
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_5
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_5"
-msgid "\"To us Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\""
+msgid "\"To us, Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\""
 msgstr ""
 
 #. STRINGS.BALATRO.BUTTON_CHOOSE
@@ -4133,6 +4138,11 @@ msgctxt "STRINGS.CARNIVAL_HOST_SELL_PLAZA.2"
 msgid "The Cawnival cannot begin until the Tree is planted!"
 msgstr ""
 
+#. STRINGS.CAST.ARTIFICER
+msgctxt "STRINGS.CAST.ARTIFICER"
+msgid "The Artificer"
+msgstr ""
+
 #. STRINGS.CAST.BLACKSMITH
 msgctxt "STRINGS.CAST.BLACKSMITH"
 msgid "The Blacksmith"
@@ -4151,6 +4161,11 @@ msgstr ""
 #. STRINGS.CAST.DOLL_REPAIRED
 msgctxt "STRINGS.CAST.DOLL_REPAIRED"
 msgid "The Shattered Doll"
+msgstr ""
+
+#. STRINGS.CAST.ELYTRA
+msgctxt "STRINGS.CAST.ELYTRA"
+msgid "Elytra"
 msgstr ""
 
 #. STRINGS.CAST.FOOL
@@ -4191,6 +4206,11 @@ msgstr ""
 #. STRINGS.CAST.TREE
 msgctxt "STRINGS.CAST.TREE"
 msgid "The Tree"
+msgstr ""
+
+#. STRINGS.CAST.VISIONIST
+msgctxt "STRINGS.CAST.VISIONIST"
+msgid "The Visionist"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.ACTIVATE.CARNIVAL_HOST_HERE
@@ -20226,6 +20246,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.GENERIC"
 msgid "This piece really moves me."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.UNDERCONSTRUCTION
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.UNDERCONSTRUCTION"
+msgid "\"This Waymark is under development for a future update.\""
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.UNPOWERED
@@ -41011,6 +41036,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.GENERIC
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.GENERIC"
 msgid "It'd be too risky."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.NO_TELEPORT_ZONE
+msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.NO_TELEPORT_ZONE"
+msgid "The timestream here is too unstable... I shouldn't risk it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.REVIVE_FAILED
@@ -318308,6 +318338,11 @@ msgctxt "STRINGS.NAMES.FLOWER_CAVE"
 msgid "Light Flower"
 msgstr ""
 
+#. STRINGS.NAMES.FLOWER_CAVE_WITHERED
+msgctxt "STRINGS.NAMES.FLOWER_CAVE_WITHERED"
+msgid "Withered Light Flower"
+msgstr ""
+
 #. STRINGS.NAMES.FLOWER_EVIL
 msgctxt "STRINGS.NAMES.FLOWER_EVIL"
 msgid "Evil Flower"
@@ -326160,7 +326195,7 @@ msgstr ""
 
 #. STRINGS.NAMES.VAULT_LOBBY_EXIT
 msgctxt "STRINGS.NAMES.VAULT_LOBBY_EXIT"
-msgid "Sanctum Egress"
+msgid "Chasm"
 msgstr ""
 
 #. STRINGS.NAMES.VAULT_ORB
@@ -329556,6 +329591,11 @@ msgstr ""
 #. STRINGS.PLAYING_CARD_NAMES.CARD413
 msgctxt "STRINGS.PLAYING_CARD_NAMES.CARD413"
 msgid "King of Hearts"
+msgstr ""
+
+#. STRINGS.PLAYS.THEVAULT
+msgctxt "STRINGS.PLAYS.THEVAULT"
+msgid "A Task Complete"
 msgstr ""
 
 #. STRINGS.PLAYS.THEVEIL
@@ -384948,6 +384988,101 @@ msgctxt "STRINGS.STAGEACTOR.ACT3_SCENE9.LINE9"
 msgid "Even with his power,"
 msgstr ""
 
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.1
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.1"
+msgid "The Artificer!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.10
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.10"
+msgid "Even if I see this impossible design through,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.11
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.11"
+msgid "I doubt I shall ever leave this place."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.12"
+msgid "I only pray my brood be granted a chance to survive,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.13"
+msgid "safe from the Other,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.14"
+msgid "by what we've wrought here."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.15"
+msgid "That small hope is all that drives me"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.16"
+msgid "through these dark times."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.17
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.17"
+msgid "So did his brood survive after all that?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.18
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.18"
+msgid "Nope."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.19
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.19"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.2
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.2"
+msgid "You mean the one that did all the work?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.3
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.3"
+msgid "Yeah..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.4
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.4"
+msgid "What a sucker!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.5
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.5"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.6
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.6"
+msgid "How many lifetimes would it take"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.7
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.7"
+msgid "to hew such a structure,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.8
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.8"
+msgid "even with my mastery?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.9
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.9"
+msgid "The Shieldbearer keeps much to her thorax."
+msgstr ""
+
 #. STRINGS.STAGEACTOR.BAD_COSTUMES.1
 msgctxt "STRINGS.STAGEACTOR.BAD_COSTUMES.1"
 msgid "Something's wrong!"
@@ -385008,6 +385143,86 @@ msgctxt "STRINGS.STAGEACTOR.BLACKSMITH_SOLILOQUY.8"
 msgid "She'll still try to fix it."
 msgstr ""
 
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.1
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.1"
+msgid "Please welcome, Elytra!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.10
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.10"
+msgid "To Thee, Metheus, my Queen,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.11
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.11"
+msgid "my heart is riven to know I have failed Thee."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.12"
+msgid "Cast Thy curse upon me,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.13"
+msgid "that I may bear an eternity of sorrow."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.14"
+msgid "How much more sorrow is left for her to bear?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.15"
+msgid "Let's see... it's been a while now, so an eternity more?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.16"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.2
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.2"
+msgid "Did you hear what They say about her performance?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.3
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.3"
+msgid "Yeah! She killed!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.4
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.4"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.5
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.5"
+msgid "If these words reach thine ears, foolhardy explorer,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.6
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.6"
+msgid "then all our labors have been for naught."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.7
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.7"
+msgid "Mercy upon those already consumed,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.8
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.8"
+msgid "and upon those yet to be taken by the Other."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.9
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.9"
+msgid "..."
+msgstr ""
+
 #. STRINGS.STAGEACTOR.FOOL_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.FOOL_SOLILOQUY.1"
 msgid "\"The Fool's Soliloquy\""
@@ -385060,7 +385275,7 @@ msgstr ""
 
 #. STRINGS.STAGEACTOR.HALFWIT_SOLILOQUY.3
 msgctxt "STRINGS.STAGEACTOR.HALFWIT_SOLILOQUY.3"
-msgid "Now ‘tis just me."
+msgid "Now 'tis just me."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.HALFWIT_SOLILOQUY.4
@@ -385220,7 +385435,7 @@ msgstr ""
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.1"
-msgid "Ye haven’t a clue what’s coming"
+msgid "Ye haven't a clue what's coming"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.2
@@ -385235,12 +385450,12 @@ msgstr ""
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.4
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.4"
-msgid "I mustn’t!"
+msgid "I mustn't!"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.5
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.5"
-msgid "Ye’ll have to wait ‘til we’re complete!"
+msgid "Ye'll have to wait 'til we're complete!"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.6
@@ -385251,6 +385466,366 @@ msgstr ""
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.7
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.7"
 msgid "PATIENCE."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_1
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_1"
+msgid "\"A Task Complete\""
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_3
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_3"
+msgid "Ooooh scandalous!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_4
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_4"
+msgid "Well that was tragic..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD2_2
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD2_2"
+msgid "It's a confession..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD2_5
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD2_5"
+msgid "Yeah, only two of them died!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD_6
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD_6"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE10_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE10_ELYTRA"
+msgid "I scarce would believe it,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE11_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE11_ELYTRA"
+msgid "had I not witnessed the raising"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE12_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE12_ELYTRA"
+msgid "of this impenetrable labyrinth myself."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE13_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE13_VISIONIST"
+msgid "Ever kind, Elytra, Queen's Shieldbearer"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE14_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE14_VISIONIST"
+msgid "and our sagacious Overseer."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE15_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE15_VISIONIST"
+msgid "We thank thee for thy guidance"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE16_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE16_VISIONIST"
+msgid "through these many years we have been so blessed to serve"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE17_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE17_ARTIFICER"
+msgid "How many molts have passed in this service?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE18_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE18_ELYTRA"
+msgid "..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE19_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE19_VISIONIST"
+msgid "Not near enough for so worthy a task."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE1_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE1_ARTIFICER"
+msgid "'Twas the last stone, cut and set."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE20_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE20_ELYTRA"
+msgid "An arduous and clandestine charge,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE21_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE21_ELYTRA"
+msgid "from the very pharynx of our Queen Herself."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE22_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE22_ELYTRA"
+msgid "Hail Metheus!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE23_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE23_VISIONIST"
+msgid "Hail Metheus!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE24_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE24_ARTIFICER"
+msgid "... Yes, hail Metheus."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE25_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE25_ELYTRA"
+msgid "Ever may She reign."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE26_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE26_ELYTRA"
+msgid "My dear friends, for your sacrifice,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE27_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE27_ELYTRA"
+msgid "you have Her thanks, and mine as well."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE28_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE28_VISIONIST"
+msgid "No thanks are needed,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE29_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE29_VISIONIST"
+msgid "save the privilege of the task completed,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE2_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE2_ARTIFICER"
+msgid "Worn down to the tarsals,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE30_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE30_VISIONIST"
+msgid "and a swift return home to my brood."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER"
+msgid "If hive and home are naught but dust and ashes now."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE32_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE32_ELYTRA"
+msgid "A joyous homecoming awaits you both."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA"
+msgid "But first,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE34_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE34_ELYTRA"
+msgid "allow me the honor of raising a chalice to you,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA"
+msgid "and to the impossible task you have completed."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE36_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE36_VISIONIST"
+msgid "You honor us too greatly, Elytra."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST"
+msgid "Permit us to raise a chalice to you first."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE38_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE38_VISIONIST"
+msgid "The vintage..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE39_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE39_VISIONIST"
+msgid "'tis strong..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE3_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE3_ARTIFICER"
+msgid "countless times over,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE40_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE40_VISIONIST"
+msgid "it burns..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE41_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE41_ARTIFICER"
+msgid "Visionist!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST"
+msgid "... my brood."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER"
+msgid "Ah-!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER"
+msgid "What have you done, Shieldbearer?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER"
+msgid "Curse you,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER"
+msgid "curse your Queen,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER"
+msgid "and all her husk promises."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER"
+msgid "Curse the realms below"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER"
+msgid "and the skies above."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER"
+msgid "May your brood rot,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER"
+msgid "in servitude."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER"
+msgid "may all you hold dear"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER"
+msgid "be drowned in shadow."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER"
+msgid "May all be undone..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER"
+msgid "by the Other"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA"
+msgid "Dear Artificer, you ask what I have done."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA"
+msgid "Unlike our beloved Visionist,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA"
+msgid "I drank from the chalice of duty"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA"
+msgid "with full knowing of its bitter contents."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE58_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE58_ELYTRA"
+msgid "Now, with brethren lying dead before me,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE59_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE59_ELYTRA"
+msgid "I shall keep vigil over our work"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE5_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE5_VISIONIST"
+msgid "My dear Artificer,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA"
+msgid "until I too join them in oblivion"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE61_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE61_ELYTRA"
+msgid "My only consolation is this:"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE62_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE62_ELYTRA"
+msgid "that I served Her,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE63_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE63_ELYTRA"
+msgid "and fulfilled what was required."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE64_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE64_ELYTRA"
+msgid "Hail Metheus."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE65_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE65_ELYTRA"
+msgid "Ever may She reign."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE6_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE6_VISIONIST"
+msgid "'tis the finest work you have ever done,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE7_VISIONIST
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE7_VISIONIST"
+msgid "bringing my vision to its fruition."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE8_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE8_ELYTRA"
+msgid "And never has there been a grander vision"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.THEVAULT.LINE9_ELYTRA
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE9_ELYTRA"
+msgid "than yours within these chambers, dear Visionist."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVEIL.BIRD1_1
@@ -385526,6 +386101,86 @@ msgstr ""
 #. STRINGS.STAGEACTOR.TREE_SOLILOQUY.7
 msgctxt "STRINGS.STAGEACTOR.TREE_SOLILOQUY.7"
 msgid "Bravo! Bravissima!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.1
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.1"
+msgid "And now, the Visionist..."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.10
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.10"
+msgid "Our Overseer is steadfast in the cause,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.11
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.11"
+msgid "and I place my full trust in her"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.12"
+msgid "to lead us through this enduring endeavor."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.13"
+msgid "The Other shall not prevail."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.14"
+msgid "Oh, but it shall!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.15"
+msgid "Guess he didn't see that coming."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.16"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.2
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.2"
+msgid "Visionist? Can he see that we're bored?"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.3
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.3"
+msgid "HA HA HA HA HA!"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.4
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.4"
+msgid "'Tis a formidable task set before us,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.5
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.5"
+msgid "yet I shall design the most impossibly intricate,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.6
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.6"
+msgid "unsolvable structure this realm has ever known."
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.7
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.7"
+msgid "For the glory of our King and Queen,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.8
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.8"
+msgid "for our Kingdom,"
+msgstr ""
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.9
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.9"
+msgid "and for the survival of our kind."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.WALTER1.1

@@ -177,9 +177,9 @@ function WorldMigrator:TryToMakeItemMigrateable(item)
 end
 
 function WorldMigrator:DropThingsThatShouldNotMigrate(doer)
-    local filterfn = function(owner, item)
+    local filterfn = function(owner, item) -- Return true to drop.
         self:TryToMakeItemMigrateable(item)
-        return self:CanInventoryItemMigrate(item)
+        return not self:CanInventoryItemMigrate(item)
     end
     if doer.components.inventory then
         doer.components.inventory:DropEverythingByFilter(filterfn)
