@@ -4,6 +4,7 @@ local assets =
 {
     Asset("ANIM", "anim/charlie_lectern.zip"),
     Asset("ANIM", "anim/charlie_lectern_ancient.zip"),
+    Asset("ANIM", "anim/charlie_lectern_void.zip"),
     --Asset("ANIM", "anim/ui_board_5x3.zip"),
     Asset("MINIMAP_IMAGE", "charlie_lectern"),
 }

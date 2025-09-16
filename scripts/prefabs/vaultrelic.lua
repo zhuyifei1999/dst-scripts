@@ -91,7 +91,7 @@ local function OnLoad(inst, data)--, ents)
 end
 
 local function OnLoadPostPass(inst, ents, data)
-	if data.pillar and inst.variation then
+	if data and data.pillar and inst.variation then
 		local pillar = ents[data.pillar]
 		if pillar and pillar.entity:IsValid() then
 			inst:AttachToVaultPillar(pillar.entity)

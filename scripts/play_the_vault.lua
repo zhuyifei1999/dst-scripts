@@ -181,7 +181,7 @@ local MARIONETTE_TIME = 1.1
 			{roles = {"VISIONIST"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE29_VISIONIST },
 			{roles = {"VISIONIST"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE30_VISIONIST, anim = "emote_swoon" },
 
-			{roles = {"ARTIFICER"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER, anim = "emoteXL_facepalm" },
+			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER, anim = "emoteXL_facepalm" },
 
 			{roles = {"ELYTRA"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE32_ELYTRA },
 			{roles = {"ELYTRA"},			duration = 1.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA },
@@ -210,7 +210,7 @@ local MARIONETTE_TIME = 1.1
 
 			{roles = {"VISIONIST"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST, anim="death", endidleanim="death_idle"},
 
-			{actionfn = fn.findpositions,	duration = 2.5,		positions={["ELYTRA"] = 8, ["ARTIFICER"] = 2}},
+			{actionfn = fn.findpositions,	duration = 1.5,		positions={["ELYTRA"] = 8, ["ARTIFICER"] = 2}},
 			{roles = {"ARTIFICER"},			duration = 1.0,		anim="emoteXL_annoyed", },
 			{actionfn = fn.findpositions,	duration = 2.0,		positions={["ARTIFICER"] = 3}},
 
@@ -224,24 +224,25 @@ local MARIONETTE_TIME = 1.1
 
 			{roles = {"ELYTRA"},			duration = 0.4,		anim="atk", },
 
-			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER }, --hit react here?
+			{roles = {"ARTIFICER"},			duration = 1.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER, anim = "emoteXL_annoyed" }, --hit react here?
+
+			{actionfn = fn.findpositions,	duration = 0.5,		positions={["ELYTRA"] = 7}},
+
 			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER, anim = "channel_loop", animtype = "loop" },
 			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER, anim = "channel_loop", animtype = "loop", check_current_anim = true },
 			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER, anim = "channel_loop", animtype = "loop", check_current_anim = true },
-			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER, anim = "channel_loop", animtype = "loop", check_current_anim = true },
-			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER, anim = "channel_loop", animtype = "loop", check_current_anim = true },
-			{roles = {"ARTIFICER"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER, anim = "idle_groggy", animtype = "loop" },
-			{roles = {"ARTIFICER"},			duration = 1.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER, anim = "idle_groggy", animtype = "loop", check_current_anim = true },
-			{roles = {"ARTIFICER"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER, anim = "idle_groggy", animtype = "loop", check_current_anim = true },
+			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER, anim = "emoteXL_angry" },
+			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER, anim = "channel_loop", animtype = "loop", },
+			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER, anim = "emoteXL_angry" },
+			{roles = {"ARTIFICER"},			duration = 1.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER, anim = "channel_loop", animtype = "loop" },
+			{roles = {"ARTIFICER"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER, anim = "channel_loop", animtype = "loop", check_current_anim = true },
 			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER, anim = "idle_groggy", animtype = "loop", check_current_anim = true },
 			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER, anim="death", endidleanim="death_idle" },
 
 			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA,  },
 			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA,  },
-			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA,  },
-			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA, anim = "emoteXL_facepalm" },
-
-			{actionfn = fn.findpositions,	duration = 2.0,		positions={["ELYTRA"] = 7}},
+			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA, anim = "emoteXL_facepalm" },
+			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA,  },
 
 			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE58_ELYTRA,  },
 			{roles = {"ELYTRA"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE59_ELYTRA,  },

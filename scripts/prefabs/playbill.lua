@@ -9,6 +9,17 @@ local thedoll_prefabs = {
     "marionette_disappear_fx",
 }
 
+local thepall_assets =
+{
+    Asset("ANIM", "anim/playbill_void.zip"),
+    Asset("INV_IMAGE", "playbill_void"),
+}
+
+local thepall_prefabs = {
+    "marionette_appear_fx",
+    "marionette_disappear_fx",
+}
+
 local thevault_assets =
 {
     Asset("ANIM", "anim/playbill_ancient.zip"),
@@ -97,5 +108,5 @@ local function makeplay(name, _assets, prefabs, data)
 end
 
 return makeplay("the_doll", thedoll_assets, thedoll_prefabs),
-        makeplay("the_veil", thedoll_assets, thedoll_prefabs),
+        makeplay("the_veil", thepall_assets, thepall_prefabs, { build = "playbill_void", lectern_book_build = "charlie_lectern_void" }),
         makeplay("the_vault", thevault_assets, thevault_prefabs, { build = "playbill_ancient", lectern_book_build = "charlie_lectern_ancient", noburn = true})

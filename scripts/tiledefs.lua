@@ -969,7 +969,6 @@ TileManager.AddTile(
     },
     {
         name = "vault", -- Inventory item
-        anim = "turf_vault", --Ground item
         pickupsound = "rock",
     }
 )

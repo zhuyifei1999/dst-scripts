@@ -71,16 +71,25 @@ local function teach(inst)
 
 			local got_new_blueprint = false
             if not player.components.builder:KnowsRecipe(recipe) then
-				got_new_blueprint = true
-				player.components.inventory:GiveItem(SpawnPrefab(recipe.."_blueprint"), nil, pos)
+				local loot = SpawnPrefab(recipe.."_blueprint")
+				if loot then
+					got_new_blueprint = true
+					player.components.inventory:GiveItem(loot, nil, pos)
+				end
 			end
             if recipe2 and not player.components.builder:KnowsRecipe(recipe2) then
-				got_new_blueprint = true
-				player.components.inventory:GiveItem(SpawnPrefab(recipe2.."_blueprint"), nil, pos)
+				local loot = SpawnPrefab(recipe2.."_blueprint")
+				if loot then
+					got_new_blueprint = true
+					player.components.inventory:GiveItem(loot, nil, pos)
+				end
 			end
 			if recipe3 and not player.components.builder:KnowsRecipe(recipe3) then
-				got_new_blueprint = true
-				player.components.inventory:GiveItem(SpawnPrefab(recipe3.."_blueprint"), nil, pos)
+				local loot = SpawnPrefab(recipe3.."_blueprint")
+				if loot then
+					got_new_blueprint = true
+					player.components.inventory:GiveItem(loot, nil, pos)
+				end
 			end
 
             if player.components.talker then

@@ -157,7 +157,8 @@ local function MakeUnderConstruction(inst)
 	inst:RemoveComponent("trader")
 	inst.components.channelable:SetEnabled(false)
 
-	inst.underconstruction = true
+	inst.components.inspectable:SetNameOverride("vault_teleporter_underconstruction")
+	inst.components.inspectable.getstatus = nil
 end
 
 local function SpawnOrb(inst)
@@ -198,7 +199,6 @@ end
 
 local function GetStatus(inst, viewer)
 	return (inst.components.trader and "BROKEN")
-		or (inst.underconstruction and "UNDERCONSTRUCTION")
 		or (not inst.components.channelable:GetEnabled() and "UNPOWERED")
 		or nil
 end
