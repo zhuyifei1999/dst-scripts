@@ -1,7 +1,7 @@
 local defs = require("prefabs/vaultroom_defs")
 
 local SAVE_RADIUS = 28
-local SAVE_NO_TAGS = { "INLIMBO", "vault_teleporter" }
+local SAVE_NO_TAGS = { "INLIMBO", "vault_teleporter", "formationleader" }
 local SAVE_CONTAINER_TAGS = { "_inventory", "_container" }
 
 local VaultRoom = Class(function(self, inst)

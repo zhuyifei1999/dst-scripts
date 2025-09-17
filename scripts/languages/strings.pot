@@ -270595,7 +270595,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.YOTB_BEEFALO_DOLL_WAR.YOTB
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.YOTB_BEEFALO_DOLL_WAR.YOTB"
-msgid ""
+msgid "Our judge just may have something to say."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.YOTB_PATTERN_FRAGMENT_1
@@ -385678,11 +385678,6 @@ msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST"
 msgid "... my brood."
 msgstr ""
 
-#. STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE43A_ARTIFICER"
-msgid "Ah-!"
-msgstr ""
-
 #. STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER"
 msgid "What have you done, Shieldbearer?"
@@ -385690,57 +385685,37 @@ msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER"
-msgid "Curse you,"
+msgid "Ah-!!"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER"
-msgid "curse your Queen,"
+msgid "So... a lifetime of loyalty is rewarded with a blade in my carapace..."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER"
-msgid "and all her husk promises."
+msgid "With my final breath, I curse you, and your Queen!"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER"
-msgid "Curse the realms below"
+msgid "May your brood rot..."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER"
-msgid "and the skies above."
+msgid "May all you hold dear be drowned in shadow..."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER"
-msgid "May your brood rot,"
+msgid "Let the unending Darkness... take you... all..."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER"
 msgid "in servitude."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER"
-msgid "may all you hold dear"
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER"
-msgid "be drowned in shadow."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER"
-msgid "May all be undone..."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER"
-msgid "by the Other"
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA
@@ -385780,7 +385755,7 @@ msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA"
-msgid "until I too join them in oblivion"
+msgid "until I too join them in oblivion."
 msgstr ""
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE61_ELYTRA
@@ -410460,7 +410435,7 @@ msgstr ""
 
 #. STRINGS.VAULT_RUNE.PUZZLE1
 msgctxt "STRINGS.VAULT_RUNE.PUZZLE1"
-msgid "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\""
+msgid "\"Paths are taken but once. Leap wisely, tarry not, or the abyss claims all.\""
 msgstr ""
 
 #. STRINGS.VAULT_RUNE.TELEPORT1

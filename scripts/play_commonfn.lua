@@ -313,6 +313,8 @@ local POSITIONS = {
 	[8] = {theta = (3/4)*PI,	radius = 3},	-- BACK
 	[9] = {theta = 0,			radius = 2.8},	-- LEFT WIDE
 	[10] = {theta = 1.5*PI,		radius = 2.8},	-- RIGHT WIDE
+	--
+	[11] = {theta = 1.5*PI,		radius = 1.2}, --Special case for A Task Complete, right behind position 3
 }
 
 local function on_findposition_timeout(castmember)
@@ -376,6 +378,20 @@ fns.clear_chalice_symbol = function(inst, line, cast)
 	for costume, data in pairs(cast) do
 		local player = data.castmember
 		player.AnimState:ClearOverrideSymbol("ghostly_elixirs_swap")
+	end
+end
+
+fns.override_with_dagger = function(inst, line, cast)
+	for costume, data in pairs(cast) do
+		local player = data.castmember
+		player.AnimState:AddOverrideBuild("player_ancient_handmaid")
+	end
+end
+
+fns.clear_dagger_symbol = function(inst, line, cast)
+	for costume, data in pairs(cast) do
+		local player = data.castmember
+		player.AnimState:ClearOverrideBuild("player_ancient_handmaid")
 	end
 end
 

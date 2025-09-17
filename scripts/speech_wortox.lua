@@ -4736,7 +4736,7 @@ return{
 
         YOTB_BEEFALO_DOLL_WAR = {
             GENERIC = "Enjoying the plush life? Hyuyuyu!",
-            YOTB = "",
+            YOTB = "Our judge just may have something to say.",
         },
         YOTB_BEEFALO_DOLL_DOLL = {
             GENERIC = "Enjoying the plush life? Hyuyuyu!",

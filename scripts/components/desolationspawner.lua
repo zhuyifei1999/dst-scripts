@@ -124,7 +124,7 @@ local function PopulateAreaData(prefab)
                     if _areadata[i][prefab] == nil then
                         _areadata[i][prefab] =
                         {
-                            denstiy = densities[prefab],
+                            density = densities[prefab],
                             regrowtime = _internaltimes[prefab] + math.random() * _replacementdata[prefab].regrowtime, -- initial offset is randomized
                         }
                     -- else this was already populated by Load

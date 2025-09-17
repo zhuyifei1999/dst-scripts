@@ -125,6 +125,11 @@ local monkey_island_add_data =
 	},
 }
 
+local monkey_island_retrofit_topology_data = {
+	room_id = "StaticLayoutIsland:MonkeyIsland", 
+	tags = {"RoadPoison", "nohunt", "nohasslers", "not_mainland"}
+}
+
 local StaticLayout = require("map/static_layout")
 local ExampleLayout =
 	{
@@ -1318,6 +1323,7 @@ local ExampleLayout =
 
     ["monkeyisland_retrofitlarge_01"] = StaticLayout.Get("map/static_layouts/monkeyisland_retrofitlarge_01",
 	{
+		add_topology = monkey_island_retrofit_topology_data,
 		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
 		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
         areas =
@@ -1329,6 +1335,7 @@ local ExampleLayout =
 
     ["monkeyisland_retrofitlarge_02"] = StaticLayout.Get("map/static_layouts/monkeyisland_retrofitlarge_02",
 	{
+		add_topology = monkey_island_retrofit_topology_data,
 		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
 		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
         areas =
@@ -1340,6 +1347,7 @@ local ExampleLayout =
 
     ["monkeyisland_retrofitsmall_01"] = StaticLayout.Get("map/static_layouts/monkeyisland_retrofitsmall_01",
 	{
+		add_topology = monkey_island_retrofit_topology_data,
 		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
 		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
         areas =
@@ -1351,6 +1359,7 @@ local ExampleLayout =
 
     ["monkeyisland_retrofitsmall_02"] = StaticLayout.Get("map/static_layouts/monkeyisland_retrofitsmall_02",
 	{
+		add_topology = monkey_island_retrofit_topology_data,
 		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
 		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
         areas =

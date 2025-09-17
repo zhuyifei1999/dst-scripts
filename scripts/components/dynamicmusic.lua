@@ -155,6 +155,11 @@ local TRIGGERED_DANGER_MUSIC =
 		"dontstarve/music/music_epicfight_wagboss_2",
 	},
 
+	vault =
+	{
+		"dontstarve/music/music_cavepuzzle",
+	},
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -221,6 +226,14 @@ end
 local function IsOnLunarIsland(player)
     return player.components.areaaware ~= nil
         and player.components.areaaware:CurrentlyInTag("lunacyarea")
+end
+
+local function IsBusyThemeStageplay()
+    return _busytask ~= nil --_busytheme isn't cleared so make sure the task exists.
+        and (_busytheme == BUSYTHEMES.STAGEPLAY_HAPPY
+        or _busytheme == BUSYTHEMES.STAGEPLAY_MYSTERIOUS
+        or _busytheme == BUSYTHEMES.STAGEPLAY_DRAMATIC
+        or _busytheme == BUSYTHEMES.STAGEPLAY_CONFESSION)
 end
 
 local function StopBusy(inst, istimeout)
@@ -409,6 +422,12 @@ local function StartCarnivalMusic(player, is_game_active)
 end
 
 local function StartStageplayMusic(player, mood_index)
+    if mood_index == 0 and IsBusyThemeStageplay() then
+        _soundemitter:KillSound("busy")
+        _busytheme = nil
+        StopBusy()
+    end
+
     if _dangertask ~= nil or _pirates_near ~= nil or mood_index == nil or mood_index < 1 then
         return
     end
@@ -732,7 +751,7 @@ end
 
 local function OnPhase(inst, phase)
     _isday = phase == "day"
-    if _dangertask ~= nil or not _isenabled then
+    if _dangertask ~= nil or not _isenabled or IsBusyThemeStageplay() then
         return
     end
     --Don't want to play overlapping stingers

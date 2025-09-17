@@ -2083,6 +2083,10 @@ function c_showradius(radius, parent)
     end
 end
 
+function c_use_deprecated_floating_heavyobstaclephysics_exploit()
+	require("components/heavyobstaclephysics").deprecated_floating_exploit = true
+end
+
 -- Nuke any controller mappings, for when people get in a hairy situation with a controller mapping that is totally busted.
 function ResetControllersAndQuitGame()
     print("ResetControllersAndQuitGame requested")

@@ -1346,6 +1346,13 @@ t = {
                 end
             end,
         },
+		{
+			version = 5.16, -- Deprecate floating heavyobstaclephysics exploit
+			fn = function(savedata)
+				FlagForRetrofitting_Forest(savedata, "floating_heavyobstaclephysics_fix")
+				FlagForRetrofitting_Cave(savedata, "floating_heavyobstaclephysics_fix")
+			end,
+		},
     },
 }
 

@@ -718,6 +718,9 @@ local function AddActivePlayerComponents(inst)
     inst:AddComponent("playerhearing")
 	inst:AddComponent("raindomewatcher")
 	inst:AddComponent("strafer")
+	if TheWorld:HasTag("cave") then
+		inst:AddComponent("vaultmusiclistener")
+	end
 end
 
 local function RemoveActivePlayerComponents(inst)
@@ -725,6 +728,7 @@ local function RemoveActivePlayerComponents(inst)
     inst:RemoveComponent("playerhearing")
 	inst:RemoveComponent("raindomewatcher")
 	inst:RemoveComponent("strafer")
+	inst:RemoveComponent("vaultmusiclistener")
 end
 
 local function ActivateHUD(inst)
@@ -2079,6 +2083,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("SCRIPT", "scripts/prefabs/skilltree_defs.lua"),
 
         Asset("ANIM", "anim/chalice_swap.zip"),
+
+        Asset("ANIM", "anim/player_ancient_handmaid.zip"),
+        --Asset("ANIM", "anim/player_ancient_architect.zip"),
+        --Asset("ANIM", "anim/player_ancient_mason.zip"),
     }
 
     local prefabs =

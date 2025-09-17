@@ -11,6 +11,7 @@ local thedoll_prefabs = {
 
 local thepall_assets =
 {
+	Asset("ANIM", "anim/playbill.zip"),
     Asset("ANIM", "anim/playbill_void.zip"),
     Asset("INV_IMAGE", "playbill_void"),
 }
@@ -22,6 +23,7 @@ local thepall_prefabs = {
 
 local thevault_assets =
 {
+	Asset("ANIM", "anim/playbill.zip"),
     Asset("ANIM", "anim/playbill_ancient.zip"),
     Asset("INV_IMAGE", "playbill_ancient"),
 }

@@ -88,6 +88,11 @@ function Map:IsInvalidTileAtPoint(x, y, z)
     return TileGroupManager:IsInvalidTile(tile)
 end
 
+function Map:IsImpassableTileAtPoint(x, y, z)
+    local tile = self:GetTileAtPoint(x, y, z)
+    return TileGroupManager:IsImpassableTile(tile)
+end
+
 function Map:IsTemporaryTileAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return TileGroupManager:IsTemporaryTile(tile)
@@ -839,6 +844,14 @@ function Map:CanAreaTagsHaveAcidRain(tags)
 end
 
 function Map:CanPointHaveAcidRain(x, y, z)
+    if self:IsImpassableTileAtPoint(x, y, z) then
+        return false
+    end
+
+    if self:IsPointInAnyVault(x, y, z) then
+        return false
+    end
+
     -- Note: If you care about the tile overlap then use FindVisualNodeAtPoint
     local node_index = self:GetNodeIdAtPoint(x, y, z)
     local node = TheWorld.topology.nodes[node_index]

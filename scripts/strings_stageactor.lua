@@ -978,17 +978,12 @@ stageactor = {
         -- Elytra stabs Artificer,
         -- Artificer collapses, SQUAT.
 
-        LINE43A_ARTIFICER = "Ah-!",
-        LINE44_ARTIFICER = "Curse you,",
-        LINE45_ARTIFICER = "curse your Queen,",
-        LINE46_ARTIFICER = "and all her husk promises.",
-        LINE47_ARTIFICER = "Curse the realms below",
-        LINE48_ARTIFICER = "and the skies above.",
-        LINE49_ARTIFICER = "May your brood rot,",
-        LINE50_ARTIFICER = "may all you hold dear",
-        LINE51_ARTIFICER = "be drowned in shadow.",
-        LINE52_ARTIFICER = "May all be undone...",
-        LINE53_ARTIFICER = "by the Other",
+        LINE44_ARTIFICER = "Ah-!!",
+        LINE45_ARTIFICER = "So... a lifetime of loyalty is rewarded with a blade in my carapace...",
+        LINE46_ARTIFICER = "With my final breath, I curse you, and your Queen!",
+        LINE47_ARTIFICER = "May your brood rot...",
+        LINE48_ARTIFICER = "May all you hold dear be drowned in shadow...",
+        LINE49_ARTIFICER = "Let the unending Darkness... take you... all...",
 
         -- Artificer DIES
         
@@ -998,7 +993,7 @@ stageactor = {
         LINE57_ELYTRA = "with full knowing of its bitter contents.",
         LINE58_ELYTRA = "Now, with brethren lying dead before me,",
         LINE59_ELYTRA = "I shall keep vigil over our work",
-        LINE60_ELYTRA = "until I too join them in oblivion",
+        LINE60_ELYTRA = "until I too join them in oblivion.",
         LINE61_ELYTRA = "My only consolation is this:",
         LINE62_ELYTRA = "that I served Her,",
         LINE63_ELYTRA = "and fulfilled what was required.",

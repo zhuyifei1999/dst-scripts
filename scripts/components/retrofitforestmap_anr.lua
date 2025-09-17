@@ -1761,8 +1761,14 @@ function self:OnPostInit()
         for _, v in pairs(Ents) do
             if v.prefab == "hermitcrab" then
                 hermitcrab = v
+				if pearl then
+					break
+				end
             elseif v.prefab == "hermit_pearl" or v.prefab == "hermit_cracked_pearl" then
                 pearl = v
+				if hermitcrab then
+					break
+				end
             end
         end
         if not hermitcrab then
@@ -1791,6 +1797,18 @@ function self:OnPostInit()
         end
         self.fix_pearl_eating_everything = nil
     end
+
+	---------------------------------------------------------------------------
+
+	if self.floating_heavyobstaclephysics_fix then
+		self.floating_heavyobstaclephysics_fix = nil
+
+		for _, v in pairs(Ents) do
+			if v.components.heavyobstaclephysics then
+				v.components.heavyobstaclephysics.deprecated_floating_exploit = true
+			end
+		end
+	end
 
 	---------------------------------------------------------------------------
 
@@ -1854,9 +1872,9 @@ function self:OnLoad(data)
         self.sharkboi_ice_hazard_fix = data.sharkboi_ice_hazard_fix or false
         self.rifts6_add_whirlpool = data.rifts6_add_whirlpool or false
         self.fix_pearl_eating_everything = data.fix_pearl_eating_everything or false
+		self.floating_heavyobstaclephysics_fix = data.floating_heavyobstaclephysics_fix or false
     end
 end
-
 
 --------------------------------------------------------------------------
 end)

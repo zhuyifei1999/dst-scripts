@@ -13,22 +13,21 @@ local function CanCastFishingNetAtPoint(thrower, target_x, target_z)
 end
 
 local function Row(inst, doer, pos, actions)
-    local map = TheWorld.Map
+	local my_platform = doer:GetCurrentPlatform()
+	if my_platform == nil or not my_platform:HasTag("boat") then
+		return
+	end
 
-    local platform_under_cursor = map:GetPlatformAtPoint(pos.x, pos.z)
+    local map = TheWorld.Map
+	local is_controller_attached = doer.components.playercontroller.isclientcontrollerattached
+	if not is_controller_attached then
+		local platform_under_cursor = map:GetPlatformAtPoint(pos.x, pos.z)
+		if my_platform == platform_under_cursor then
+			return
+		end
+	end
 
     local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
-    local my_platform = doer:GetCurrentPlatform()
-    local is_controller_attached = doer.components.playercontroller.isclientcontrollerattached
-
-    local is_hovering_cursor_over_my_platform = false
-    if not is_controller_attached then
-        is_hovering_cursor_over_my_platform = my_platform ~= nil and (my_platform == platform_under_cursor)
-    end
-
-    if is_hovering_cursor_over_my_platform or my_platform == nil then
-        return
-    end
 
     if CLIENT_REQUESTED_ACTION == ACTIONS.ROW_FAIL then
         table.insert(actions, ACTIONS.ROW_FAIL)
@@ -105,7 +104,7 @@ local function CheckRowOverride(doer, target)
     if target ~= nil then
         local doer_pos = doer:GetPosition()
         local boat = TheWorld.Map:GetPlatformAtPoint(doer_pos.x, doer_pos.z)
-        if boat == nil then
+		if boat == nil or not boat:HasTag("boat") then
             return false
         end
 

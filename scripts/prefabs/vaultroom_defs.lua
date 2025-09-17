@@ -131,7 +131,7 @@ defs.puzzle1.LayoutNewRoomAtXZ = function(inst, x, z)
 		for i = 2, -2, -2 do
 			local z1 = z + i * TILE_SIZE
 
-			local pillar = SpawnPrefab("vault_pillar"):MakeCapped(2):AttachRelic()
+			local pillar = SpawnPrefab("vault_pillar"):MakeCapped(2)
 			pillar.Transform:SetPosition(x1, 0, z1)
 
 			local minion = SpawnPrefab("abysspillar_minion")

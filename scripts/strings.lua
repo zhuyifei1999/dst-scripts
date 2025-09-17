@@ -15800,7 +15800,7 @@ STRINGS.VAULT_RUNE = {
 	LORE1 = "\"Trust none. The Shadow twists all it touches.\"",
 	LORE2 = "\"Through the Keystone, all kin and kind shall fall.\"",
 	LORE3 = "\"Let the cursed Keystone never cross this threshold.\"",
-	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\"",
+	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss claims all.\"",
 }
 STRINGS.NIGHTMARE_OVERGROWTH = {
     LINE_1 = "\"Forsaken wretches of the one who turned away.\"",

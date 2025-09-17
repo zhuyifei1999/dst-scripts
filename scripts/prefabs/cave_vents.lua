@@ -189,8 +189,10 @@ end
 local vent_type_fns = {
     [VENT_TYPES.NONE] = {},
     [VENT_TYPES.HOT] = {
-        on_start_venting = function(inst)
-            PlaySpewAnimation(inst)
+        on_start_venting = function(inst, populating)
+            if not populating then
+                PlaySpewAnimation(inst)
+            end
 
             if not inst.components.timer:TimerExists(TIMER_NAMES.SPEW_HOT) then
                 inst.components.timer:StartTimer(TIMER_NAMES.SPEW_HOT, GetSpewTime(inst))

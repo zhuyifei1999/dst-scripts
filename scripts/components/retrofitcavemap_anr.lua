@@ -927,6 +927,18 @@ function self:OnPostInit()
     end
 
 	---------------------------------------------------------------------------
+
+	if self.floating_heavyobstaclephysics_fix then
+		self.floating_heavyobstaclephysics_fix = nil
+
+		for _, v in pairs(Ents) do
+			if v.components.heavyobstaclephysics then
+				v.components.heavyobstaclephysics.deprecated_floating_exploit = true
+			end
+		end
+	end
+
+	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
 		print ("Restarting server in 45 seconds...")
@@ -971,6 +983,7 @@ function self:OnLoad(data)
         self.retrofit_daywalker_content = data.retrofit_daywalker_content or false
         self.console_beard_turf_fix = data.console_beard_turf_fix or false
         self.retrofit_rifts6_add_fumarole = data.retrofit_rifts6_add_fumarole or false
+		self.floating_heavyobstaclephysics_fix = data.floating_heavyobstaclephysics_fix or false
     end
 end
 

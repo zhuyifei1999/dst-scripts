@@ -167,22 +167,36 @@ local function SplashWhirlportal(inst, data)
     end
 end
 
+local function OnFocalCooldownEnd(inst, ent)
+    inst.focalcooldowns[ent] = nil
+end
+
 local function OnEntityTouchingFocalFn(inst, ent)
-    if not inst.components.worldmigrator:Activate(ent) then
-        if ent:HasTag("boat") and ent.components.health then
-            if not ent.components.health:IsDead() then
-                ent.components.health:SetPercent(math.max(ent.components.health:GetPercent() - TUNING.OCEANWHIRLBIGPORTAL_BOAT_PERCENT_DAMAGE_PER_TICK), 0)
-                if ent.components.health:IsDead() then
-                    ent:InstantlyBreakBoat()
-                else
-                    if ent.sounds and ent.sounds.damage then
-                        ent.SoundEmitter:PlaySoundWithParams(ent.sounds.damage, {intensity = 1})
+    if inst.focalcooldowns[ent] then
+        return
+    end
+    if inst.components.wateryprotection then
+        inst.components.wateryprotection:ApplyProtectionToEntity(ent)
+    end
+    if ent:IsValid() then -- In case applying water protection deletes it.
+        if not inst.components.worldmigrator:Activate(ent) then
+            if ent:HasTag("boat") and ent.components.health then
+                if not ent.components.health:IsDead() then
+                    ent.components.health:SetPercent(math.max(ent.components.health:GetPercent() - TUNING.OCEANWHIRLBIGPORTAL_BOAT_PERCENT_DAMAGE_PER_TICK), 0)
+                    if ent.components.health:IsDead() then
+                        ent:InstantlyBreakBoat()
+                    else
+                        if ent.sounds and ent.sounds.damage then
+                            ent.SoundEmitter:PlaySoundWithParams(ent.sounds.damage, {intensity = 1})
+                        end
                     end
                 end
+            else
+                inst.components.oceanwhirlportalphysics:ForgetEntity(ent)
+                SinkEntity(ent)
             end
         else
-            inst.components.oceanwhirlportalphysics:ForgetEntity(ent)
-            SinkEntity(ent)
+            inst.focalcooldowns[ent] = inst:DoTaskInTime(3, inst.OnFocalCooldownEnd, ent)
         end
     end
 end
@@ -246,6 +260,9 @@ local function fn()
     --inst.scrapbook_animoffsety = -10
     --inst.scrapbook_animoffsetbgx = 80
     --inst.scrapbook_animoffsetbgy = 40
+
+    inst.focalcooldowns = {}
+    inst.OnFocalCooldownEnd = OnFocalCooldownEnd
 
     local wateryprotection = inst:AddComponent("wateryprotection")
     wateryprotection.extinguishheatpercent = TUNING.OCEANWHIRLPORTAL_EXTINGUISH_HEAT_PERCENT
