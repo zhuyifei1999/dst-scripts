@@ -1203,7 +1203,7 @@ local ExampleLayout =
     }),
 
     ["Vault_Lobby"] = StaticLayout.Get("map/static_layouts/vault_lobby", {
-        add_topology = {room_id = "StaticLayoutIsland:VaultLobby", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
+        add_topology = {room_id = "Vault:0:Vault_Lobby", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
         SafeFromDisconnect = true,
         force_rotation = LAYOUT_ROTATION.NORTH,
         start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
@@ -1219,7 +1219,7 @@ local ExampleLayout =
     }),
 
     ["Vault_Vault"] = StaticLayout.Get("map/static_layouts/vault_vault", {
-        add_topology = {room_id = "StaticLayoutIsland:VaultVault", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
+        add_topology = {room_id = "Vault:0:Vault_Vault", tags = {"ForceDisconnected", "RoadPoison", "not_mainland", "nocavein", "noquaker"}},
         SafeFromDisconnect = true,
         force_rotation = LAYOUT_ROTATION.NORTH,
         start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,

@@ -495,7 +495,14 @@ local function TryToPlaceStaticLayoutNear(layout, tx, ty, scanmethodfn, scanfilt
                     args = {entitiesOut={}, width=map_width, height=map_height, rand_offset=false}
                 }
                 obj_layout.Place({tx2 + offset, ty2 + offset}, layout.name, add_fn, nil, map)
-                local topology_node_index = StaticLayoutPlacer.AddTopologyData(topology, tx2*TILE_SCALE - (map_width * 0.5 * TILE_SCALE), ty2*TILE_SCALE - (map_height * 0.5 * TILE_SCALE), size*TILE_SCALE, size*TILE_SCALE, "Vault:0:" .. layout.name, {})
+                local tags, nodename
+                if layout.add_topology then
+                    tags = layout.add_topology.tags
+                    nodename = layout.add_topology.room_id
+                end
+                tags = tags or {}
+                nodename = nodename or ("GenericStatic:" .. layout.name)
+                local topology_node_index = StaticLayoutPlacer.AddTopologyData(topology, tx2*TILE_SCALE - (map_width * 0.5 * TILE_SCALE), ty2*TILE_SCALE - (map_height * 0.5 * TILE_SCALE), size*TILE_SCALE, size*TILE_SCALE, nodename, tags)
                 StaticLayoutPlacer.AddTileNodeIdsForArea(topology_node_index, tx2, ty2, size, size)
                 return true
             end

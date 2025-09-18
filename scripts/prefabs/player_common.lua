@@ -2085,8 +2085,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/chalice_swap.zip"),
 
         Asset("ANIM", "anim/player_ancient_handmaid.zip"),
-        --Asset("ANIM", "anim/player_ancient_architect.zip"),
-        --Asset("ANIM", "anim/player_ancient_mason.zip"),
+        Asset("ANIM", "anim/player_ancient_architect.zip"),
+        Asset("ANIM", "anim/player_ancient_mason.zip"),
     }
 
     local prefabs =

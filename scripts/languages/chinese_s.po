@@ -1176,6 +1176,11 @@ msgctxt "STRINGS.ACTIONS.LOOKAT.GENERIC"
 msgid "Examine"
 msgstr "检查"
 
+#. STRINGS.ACTIONS.LOOKAT.READ
+msgctxt "STRINGS.ACTIONS.LOOKAT.READ"
+msgid "Read"
+msgstr "阅读"
+
 #. STRINGS.ACTIONS.LOWER_ANCHOR
 msgctxt "STRINGS.ACTIONS.LOWER_ANCHOR"
 msgid "Lower"
@@ -2339,52 +2344,52 @@ msgstr "你已经玩了好几个小时。"
 #. STRINGS.ARCHIVE_RUNE_STATUE.LINE_1
 msgctxt "STRINGS.ARCHIVE_RUNE_STATUE.LINE_1"
 msgid "\"We remain faithful to Alter, as Alter remains faithful to us. Ever watching, knowing, waiting.\""
-msgstr "我们始终忠于化，化亦始终忠于我们。永世守望、知晓、等待。"
+msgstr "“我们始终忠于化，化亦始终忠于我们。永世守望、知晓、等待。”"
 
 #. STRINGS.ARCHIVE_RUNE_STATUE.LINE_2
 msgctxt "STRINGS.ARCHIVE_RUNE_STATUE.LINE_2"
 msgid "\"Alter, Glorious Moon in the cold night sky. Cast your Life-giving Light on us forever.\""
-msgstr "化，夜空中的光荣月神。愿您那赐予生命的光芒永远照亮我们。"
+msgstr "“化，夜空中的光荣月神。愿您那赐予生命的光芒永远照亮我们。”"
 
 #. STRINGS.ARCHIVE_RUNE_STATUE.LINE_3
 msgctxt "STRINGS.ARCHIVE_RUNE_STATUE.LINE_3"
 msgid "\"Mighty Alter, the source of our strength, our sole provider. We are loyal to none but You.\""
-msgstr "伟岸的化，我们的力量之源、唯一的赐予者。我们的忠诚只属于您。"
+msgstr "“伟岸的化，我们的力量之源、唯一的赐予者。我们的忠诚只属于您。”"
 
 #. STRINGS.ARCHIVE_RUNE_STATUE.LINE_4
 msgctxt "STRINGS.ARCHIVE_RUNE_STATUE.LINE_4"
 msgid "\"Alter is our Champion. Alter is the Champion. The Champion is Alter.\""
-msgstr "化是我们的英雄。化是唯一的英雄。英雄即化。"
+msgstr "“化是我们的英雄。化是唯一的英雄。英雄即化。”"
 
 #. STRINGS.ARCHIVE_RUNE_STATUE.LINE_5
 msgctxt "STRINGS.ARCHIVE_RUNE_STATUE.LINE_5"
 msgid "\"Alter is good. Alter shall not forsake us. Alter shall return.\""
-msgstr "化是仁慈的。化不会抛弃我们。化将归来。"
+msgstr "“化是仁慈的。化不会抛弃我们。化将归来。”"
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_1
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_1"
 msgid "\"The unknown hath been made known. The abyss revealed as refuge.\""
-msgstr ""
+msgstr "“未知已被变成已知。深渊已被展现为庇护之所。”"
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_2
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_2"
 msgid "\"Dread twisted into devotion. Trembling into gratitude.\""
-msgstr ""
+msgstr "“恐惧已被扭曲成虔诚。颤抖变成了感恩。”"
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_3
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_3"
 msgid "\"Loyalty unending. We kneel before the undying. The unaltering.\""
-msgstr ""
+msgstr "“我们的忠诚永无止境。我们向您下跪，永不死亡、永不变化的力量。”"
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_4
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_4"
 msgid "\"Thou art called by manifold names in myriad realms.\""
-msgstr ""
+msgstr "“各个领域用不同的名号称呼您。”"
 
 #. STRINGS.ATRIUM_OVERGROWTH.LINE_5
 msgctxt "STRINGS.ATRIUM_OVERGROWTH.LINE_5"
-msgid "\"To us Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\""
-msgstr ""
+msgid "\"To us, Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\""
+msgstr "“您是我们的藏。是一体亦是多面。超越时间，超越领域。”"
 
 #. STRINGS.BALATRO.BUTTON_CHOOSE
 msgctxt "STRINGS.BALATRO.BUTTON_CHOOSE"
@@ -4139,7 +4144,7 @@ msgstr "树没种下去，鸦年华开始不了！"
 #. STRINGS.CAST.ARTIFICER
 msgctxt "STRINGS.CAST.ARTIFICER"
 msgid "The Artificer"
-msgstr ""
+msgstr "工匠"
 
 #. STRINGS.CAST.BLACKSMITH
 msgctxt "STRINGS.CAST.BLACKSMITH"
@@ -4163,8 +4168,8 @@ msgstr "破碎的玩偶"
 
 #. STRINGS.CAST.ELYTRA
 msgctxt "STRINGS.CAST.ELYTRA"
-msgid "The Elytra"
-msgstr ""
+msgid "Elytra"
+msgstr "鞘翅"
 
 #. STRINGS.CAST.FOOL
 msgctxt "STRINGS.CAST.FOOL"
@@ -4209,7 +4214,7 @@ msgstr "树"
 #. STRINGS.CAST.VISIONIST
 msgctxt "STRINGS.CAST.VISIONIST"
 msgid "The Visionist"
-msgstr ""
+msgstr "远见者"
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.ACTIVATE.CARNIVAL_HOST_HERE
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.ACTIVATE.CARNIVAL_HOST_HERE"
@@ -4989,7 +4994,7 @@ msgstr "它是空的。"
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.PICK.STUCK"
 msgid "It's stuck."
-msgstr ""
+msgstr "卡住了。"
 
 #. STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -7789,7 +7794,7 @@ msgstr "这个好像破损了。"
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_HUSK"
 msgid "Something bad happened here."
-msgstr ""
+msgstr "这里发生过不好的事情。"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_STATUE"
@@ -10804,7 +10809,7 @@ msgstr "我和那螃蟹之间隔了一道墙。"
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRABKING_MOB
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRABKING_MOB"
 msgid "Crabby much?"
-msgstr "蟹邀？"
+msgstr "你想蟹愤吗？"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRABKING_MOB_KNIGHT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRABKING_MOB_KNIGHT"
@@ -16054,7 +16059,7 @@ msgstr "“由 C.W. 撰写”"
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Written by \"E.\"?"
-msgstr ""
+msgstr "作者是“E.”？"
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -20251,6 +20256,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER.UNPOWERED"
 msgid "It needs power."
 msgstr "得给它充个能。"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER_UNDERCONSTRUCTION
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.VAULT_TELEPORTER_UNDERCONSTRUCTION"
+msgid "\"This Waymark is under development for a future update.\""
+msgstr "“此路标是未来更新的内容，目前正在开发中。”"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.VEGGIEOMLET
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.VEGGIEOMLET"
 msgid "Breakfast is the most scientific meal of the day."
@@ -23484,7 +23494,7 @@ msgstr "祝自己下次好运！"
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.PICK.STUCK"
 msgid "It's stuck. Oh well!"
-msgstr ""
+msgstr "卡住了。唉，算了！"
 
 #. STRINGS.CHARACTERS.WALTER.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WALTER.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -25874,7 +25884,7 @@ msgstr "看起来损毁了。"
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.ANCIENT_HUSK"
 msgid "It makes me feel bad too, Woby."
-msgstr ""
+msgstr "沃比，它让我也不开心。"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.ANCIENT_STATUE"
@@ -34134,7 +34144,7 @@ msgstr "这就像一场可以看的广播剧！"
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Looks like a classic!"
-msgstr ""
+msgstr "看起来像是文学经典！"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -35434,7 +35444,7 @@ msgstr "我看起来和我的自我感觉一样酷吗？"
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.RELIC
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.RELIC"
 msgid "It's even older than the knick-knacks at my grandpa's house."
-msgstr ""
+msgstr "比我爷爷家的小摆设还要旧。"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.RESEARCHLAB.BURNT
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.RESEARCHLAB.BURNT"
@@ -41031,6 +41041,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.GENERIC"
 msgid "It'd be too risky."
 msgstr "那样风险太大了。"
 
+#. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.NO_TELEPORT_ZONE
+msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.NO_TELEPORT_ZONE"
+msgid "The timestream here is too unstable... I shouldn't risk it."
+msgstr "此时间流极其不稳定……我不该冒险。"
+
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.REVIVE_FAILED
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.CAST_POCKETWATCH.REVIVE_FAILED"
 msgid "It looks like I was too late..."
@@ -41529,7 +41544,7 @@ msgstr "我忘记它会是空的了。"
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.PICK.STUCK"
 msgid "I knew it was stuck."
-msgstr ""
+msgstr "我就知道它卡住了。"
 
 #. STRINGS.CHARACTERS.WANDA.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WANDA.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -43774,7 +43789,7 @@ msgstr "它在岁月中荒废了。"
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.ANCIENT_HUSK"
 msgid "Some scenes I'd rather forget."
-msgstr ""
+msgstr "有些场景我宁愿忘记。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.ANCIENT_STATUE"
@@ -52009,7 +52024,7 @@ msgstr "多么奇怪的一出小戏。"
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "This one takes me back."
-msgstr ""
+msgstr "这个把我带回了过去。"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -59399,7 +59414,7 @@ msgstr "没东西，哎呀。"
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.PICK.STUCK"
 msgid "Oh no! Stuck!"
-msgstr ""
+msgstr "哦不！卡住了！"
 
 #. STRINGS.CHARACTERS.WARLY.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WARLY.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -69704,7 +69719,7 @@ msgstr "我想知道由谁来扮演主角？"
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Intense."
-msgstr ""
+msgstr "很激烈。"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -76389,7 +76404,7 @@ msgstr "该死！空的。"
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.PICK.STUCK"
 msgid "Curses! Stuck!"
-msgstr ""
+msgstr "该死！卡住了！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -78514,7 +78529,7 @@ msgstr "这东西坏掉了。"
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ANCIENT_HUSK"
 msgid "What treachery hath transpired here?"
-msgstr ""
+msgstr "究竟发生了什么样的背叛？"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.ANCIENT_STATUE"
@@ -86759,7 +86774,7 @@ msgstr "我对该剧作家不熟悉。"
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "A timeless tale."
-msgstr ""
+msgstr "一个永恒的故事。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -94119,7 +94134,7 @@ msgstr "空的。我就知道。"
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.PICK.STUCK"
 msgid "Ugh! Stuck."
-msgstr ""
+msgstr "呃！卡住了。"
 
 #. STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -96319,7 +96334,7 @@ msgstr "这个可以在一定程度上修复。"
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.ANCIENT_HUSK"
 msgid "Like I said, they were a nasty lot."
-msgstr ""
+msgstr "如我所言，他们是一群卑劣之徒。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.ANCIENT_STATUE"
@@ -104554,7 +104569,7 @@ msgstr "她怎么这么喜欢这个。"
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "It's quite dated."
-msgstr ""
+msgstr "相当过时了。"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -111929,7 +111944,7 @@ msgstr "我们在里面什么也没找到！"
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.PICK.STUCK"
 msgid "Aw! It's stuck!"
-msgstr ""
+msgstr "啊！卡住了！"
 
 #. STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -114034,7 +114049,7 @@ msgstr "已经被破坏了。"
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.ANCIENT_HUSK"
 msgid "Were they mad at each other?"
-msgstr ""
+msgstr "他们当时在生彼此的气吗？"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.ANCIENT_STATUE"
@@ -122279,7 +122294,7 @@ msgstr "这场戏真好玩！"
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "It's so heavy!"
-msgstr ""
+msgstr "好重啊！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -129309,7 +129324,7 @@ msgstr "是邪恶的双胞胎。"
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.ABIGAILHEART
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.ABIGAILHEART"
 msgid "Why isn't it working, Abigail?"
-msgstr "阿比盖尔，为什么它不运行？"
+msgstr "阿比盖尔，为什么不起作用？"
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.BUSY"
@@ -129629,7 +129644,7 @@ msgstr "里面是空的。"
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.PICK.STUCK"
 msgid "Of course it's stuck."
-msgstr ""
+msgstr "果然卡住了。"
 
 #. STRINGS.CHARACTERS.WENDY.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WENDY.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -131799,7 +131814,7 @@ msgstr "我听到了死者的痛苦回声。"
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.ANCIENT_HUSK"
 msgid "That's dark even for me."
-msgstr ""
+msgstr "连我都觉得太阴暗了。"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.ANCIENT_STATUE"
@@ -140034,7 +140049,7 @@ msgstr "多么奇怪的小故事。"
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "It was written with a sorrowful pen."
-msgstr ""
+msgstr "它是用一支悲伤的笔写成的。"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -147384,7 +147399,7 @@ msgstr "正如我所猜测的那样，是空的。"
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.PICK.STUCK"
 msgid "It is stuck."
-msgstr ""
+msgstr "它卡住了。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -149559,7 +149574,7 @@ msgstr "它少了些东西。"
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.ANCIENT_HUSK"
 msgid "It's obvious which of these ancients was the perpetrator."
-msgstr ""
+msgstr "这些远古者中谁是肇事者相当明显。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.ANCIENT_STATUE"
@@ -157794,7 +157809,7 @@ msgstr "我怀疑故事情节有更深层次的含义。"
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "It's more a confession or retelling of events than a stage play."
-msgstr ""
+msgstr "这与其说是舞台剧，不如说更像是对事件的忏悔或重述。"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -165144,7 +165159,7 @@ msgstr "噗。什么都没有。"
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.PICK.STUCK"
 msgid "Stuck. Stupid."
-msgstr ""
+msgstr "卡住了。真蠢。"
 
 #. STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -167279,7 +167294,7 @@ msgstr "死灵没法从这里出去。"
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.ANCIENT_HUSK"
 msgid "Oh yeah. I know a double-cross when I see one."
-msgstr ""
+msgstr "这有啥。我一看就知道谁是叛徒。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.ANCIENT_STATUE"
@@ -175514,7 +175529,7 @@ msgstr "多么奇怪的故事。"
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "I liked the ending."
-msgstr ""
+msgstr "我喜欢这个结局。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -176809,7 +176824,7 @@ msgstr "这背心太时髦了。"
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.RELIC
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.RELIC"
 msgid "Old junk."
-msgstr ""
+msgstr "旧破烂。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.RESEARCHLAB.BURNT
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.RESEARCHLAB.BURNT"
@@ -182889,7 +182904,7 @@ msgstr "好吧，那毫无意义。"
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.PICK.STUCK"
 msgid "That's stuck."
-msgstr ""
+msgstr "那个卡住了。"
 
 #. STRINGS.CHARACTERS.WINONA.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WINONA.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -185054,7 +185069,7 @@ msgstr "需要好好修理一番。"
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ANCIENT_HUSK"
 msgid "That looks... complicated."
-msgstr ""
+msgstr "那个看起来……很复杂。"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ANCIENT_STATUE"
@@ -193314,7 +193329,7 @@ msgstr "我总觉得故事还没完。"
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "That was dark."
-msgstr ""
+msgstr "太阴暗了。"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -200704,7 +200719,7 @@ msgstr "什么都没有。"
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.PICK.STUCK"
 msgid "It is so stuck even Wolfgang cannot unstuck!"
-msgstr ""
+msgstr "卡这么死，连沃尔夫冈也没办法！"
 
 #. STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -202839,7 +202854,7 @@ msgstr "破损的祭坛。"
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.ANCIENT_HUSK"
 msgid "Too much violence for Wolfgang."
-msgstr ""
+msgstr "对沃尔夫冈来说太暴力了。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.ANCIENT_STATUE"
@@ -211074,7 +211089,7 @@ msgstr "要记住这么多台词太困难了。"
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Is too much for Wolfgang."
-msgstr ""
+msgstr "对沃尔夫冈来说太过分了。"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -218424,7 +218439,7 @@ msgstr "除了空气什么都没有。"
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.PICK.STUCK"
 msgid "It's pretty stuck."
-msgstr ""
+msgstr "卡得相当死。"
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -220529,7 +220544,7 @@ msgstr "好像有点坏了。"
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.ANCIENT_HUSK"
 msgid "I can't even begin to understand what happened here."
-msgstr ""
+msgstr "我完全闹不清是怎么回事。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.ANCIENT_STATUE"
@@ -228774,7 +228789,7 @@ msgstr "我可不喜欢上台演戏。"
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Not a light read."
-msgstr ""
+msgstr "这可不是轻松读物。"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -238259,7 +238274,7 @@ msgstr "坏掉了。需要古老的石头"
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.ANCIENT_HUSK"
 msgid "Why, friends? Why?"
-msgstr ""
+msgstr "为什么，朋友们？为什么？"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.ANCIENT_STATUE"
@@ -246519,7 +246534,7 @@ msgstr "悲伤的故事"
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Old story"
-msgstr ""
+msgstr "老故事"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -250514,7 +250529,7 @@ msgstr "石头一样硬"
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.TURF_VAULT
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.TURF_VAULT"
 msgid "Not dirt"
-msgstr ""
+msgstr "不是泥土"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.TURF_VENT
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.TURF_VENT"
@@ -253869,7 +253884,7 @@ msgstr "十分纠结，空空如也。"
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.PICK.STUCK"
 msgid "Just my luck, it's stuck."
-msgstr ""
+msgstr "真倒霉，卡住嘞。"
 
 #. STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WORTOX.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -256144,7 +256159,7 @@ msgstr "哎呀，哎呀，那不行的。"
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.ANCIENT_HUSK"
 msgid "Oh my, how they died!"
-msgstr ""
+msgstr "哎呀呀，逐一惨死啊！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.ANCIENT_STATUE"
@@ -264394,7 +264409,7 @@ msgstr "这个故事围绕着友谊和背叛展开。"
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "How nice! A story of sacrifice!"
-msgstr ""
+msgstr "有意思！关于牺牲的故事！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -267429,7 +267444,7 @@ msgstr "非常真。"
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.TEENBIRD.GENERIC
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.TEENBIRD.GENERIC"
 msgid "It will turn traitor sometime later."
-msgstr "果断时间它就会变成一个叛徒。"
+msgstr "过断时间它就会变成一个叛徒。"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.TEENBIRD.HUNGRY
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.TEENBIRD.HUNGRY"
@@ -271644,7 +271659,7 @@ msgstr "格浪浮。你真无聊！"
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.HEAL.NOT_MERM
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.HEAL.NOT_MERM"
 msgid "Not work? Glorph. Guess only for Mermfolk."
-msgstr "不行么？格浪浮。看来之能给鱼人用。"
+msgstr "不行么？格浪浮。看来只能给鱼人用。"
 
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.HERD_FOLLOWERS.WEBBERONLY
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.HERD_FOLLOWERS.WEBBERONLY"
@@ -271759,7 +271774,7 @@ msgstr "没东西"
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.PICK.STUCK"
 msgid "Flort! It stuck."
-msgstr ""
+msgstr "浮浪特！卡住了。"
 
 #. STRINGS.CHARACTERS.WURT.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WURT.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -273969,7 +273984,7 @@ msgstr "坏了，浮勒噗。"
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.ANCIENT_HUSK"
 msgid "Glurgh. Something bad."
-msgstr ""
+msgstr "格勒格。不好的事。"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.ANCIENT_STATUE"
@@ -282229,7 +282244,7 @@ msgstr "太多词了，记不住，浮浪噗。"
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "Pages so hard, florp."
-msgstr ""
+msgstr "这页纸好硬，浮浪噗。"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -289594,7 +289609,7 @@ msgstr "无"
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.PICK.STUCK
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.PICK.STUCK"
 msgid "DEADLOCKED"
-msgstr ""
+msgstr "已锁死"
 
 #. STRINGS.CHARACTERS.WX78.ACTIONFAIL.PICKUP.FULL_OF_CURSES
 msgctxt "STRINGS.CHARACTERS.WX78.ACTIONFAIL.PICKUP.FULL_OF_CURSES"
@@ -291729,7 +291744,7 @@ msgstr "错误：伪科学无法工作"
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.ANCIENT_HUSK
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.ANCIENT_HUSK"
 msgid "CONFLICT RESOLVED"
-msgstr ""
+msgstr "冲突已解决"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.ANCIENT_STATUE
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.ANCIENT_STATUE"
@@ -299964,7 +299979,7 @@ msgstr "运行脚本“附魔玩偶”"
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VAULT"
 msgid "RUNSCRIPT \"A TASK COMPLETE\""
-msgstr ""
+msgstr "运行脚本“任务完成”"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VEIL"
@@ -314519,7 +314534,7 @@ msgstr "损坏的远古伪科学站"
 #. STRINGS.NAMES.ANCIENT_HUSK
 msgctxt "STRINGS.NAMES.ANCIENT_HUSK"
 msgid "Ancient Remains"
-msgstr ""
+msgstr "远古遗骸"
 
 #. STRINGS.NAMES.ANCIENT_STATUE
 msgctxt "STRINGS.NAMES.ANCIENT_STATUE"
@@ -314609,7 +314624,7 @@ msgstr "星象探测仪"
 #. STRINGS.NAMES.ARCHIVE_RUNE_STATUE
 msgctxt "STRINGS.NAMES.ARCHIVE_RUNE_STATUE"
 msgid "Ancient Lunarune Stone"
-msgstr "远古月亮符文石"
+msgstr "远古月符石"
 
 #. STRINGS.NAMES.ARCHIVE_SECURITY_DESK
 msgctxt "STRINGS.NAMES.ARCHIVE_SECURITY_DESK"
@@ -316359,7 +316374,7 @@ msgstr "蕨类植物"
 #. STRINGS.NAMES.CAVE_FERN_WITHERED
 msgctxt "STRINGS.NAMES.CAVE_FERN_WITHERED"
 msgid "Withered Fern"
-msgstr ""
+msgstr "枯萎蕨类"
 
 #. STRINGS.NAMES.CAVE_VENT_ROCK
 msgctxt "STRINGS.NAMES.CAVE_VENT_ROCK"
@@ -318325,6 +318340,11 @@ msgstr "花沙拉"
 msgctxt "STRINGS.NAMES.FLOWER_CAVE"
 msgid "Light Flower"
 msgstr "荧光花"
+
+#. STRINGS.NAMES.FLOWER_CAVE_WITHERED
+msgctxt "STRINGS.NAMES.FLOWER_CAVE_WITHERED"
+msgid "Withered Light Flower"
+msgstr "枯萎的荧光花"
 
 #. STRINGS.NAMES.FLOWER_EVIL
 msgctxt "STRINGS.NAMES.FLOWER_EVIL"
@@ -322124,7 +322144,7 @@ msgstr "附魔玩偶\n舞台剧"
 #. STRINGS.NAMES.PLAYBILL_THE_VAULT
 msgctxt "STRINGS.NAMES.PLAYBILL_THE_VAULT"
 msgid "A Task Complete\nA Confession"
-msgstr ""
+msgstr "任务完成\n一份忏悔"
 
 #. STRINGS.NAMES.PLAYBILL_THE_VEIL
 msgctxt "STRINGS.NAMES.PLAYBILL_THE_VEIL"
@@ -322374,7 +322394,7 @@ msgstr "蕨类盆栽"
 #. STRINGS.NAMES.POWCAKE
 msgctxt "STRINGS.NAMES.POWCAKE"
 msgid "Powdercake"
-msgstr "芝士蛋糕"
+msgstr "粉末蛋糕"
 
 #. STRINGS.NAMES.POWDER_MONKEY
 msgctxt "STRINGS.NAMES.POWDER_MONKEY"
@@ -324904,7 +324924,7 @@ msgstr "驱赶盒子"
 #. STRINGS.NAMES.SPIDER_SPITTER
 msgctxt "STRINGS.NAMES.SPIDER_SPITTER"
 msgid "Spitter"
-msgstr "喷射蜘蛛"
+msgstr "喷吐蜘蛛"
 
 #. STRINGS.NAMES.SPIDER_WARRIOR
 msgctxt "STRINGS.NAMES.SPIDER_WARRIOR"
@@ -326064,12 +326084,12 @@ msgstr "洞穴岩石地皮"
 #. STRINGS.NAMES.TURF_VAULT
 msgctxt "STRINGS.NAMES.TURF_VAULT"
 msgid "Ancient Sanctum Stonework"
-msgstr ""
+msgstr "远古圣殿石刻"
 
 #. STRINGS.NAMES.TURF_VENT
 msgctxt "STRINGS.NAMES.TURF_VENT"
 msgid "Cave Fumarole Turf"
-msgstr ""
+msgstr "洞穴喷气孔地皮"
 
 #. STRINGS.NAMES.TURF_WOODFLOOR
 msgctxt "STRINGS.NAMES.TURF_WOODFLOOR"
@@ -326149,27 +326169,27 @@ msgstr "未知"
 #. STRINGS.NAMES.VAULTRELIC
 msgctxt "STRINGS.NAMES.VAULTRELIC"
 msgid "Sanctum Relic"
-msgstr ""
+msgstr "圣殿遗物"
 
 #. STRINGS.NAMES.VAULTRELIC_BOWL
 msgctxt "STRINGS.NAMES.VAULTRELIC_BOWL"
 msgid "Replica Sanctum Bowl"
-msgstr ""
+msgstr "仿制圣殿碗"
 
 #. STRINGS.NAMES.VAULTRELIC_BROKEN
 msgctxt "STRINGS.NAMES.VAULTRELIC_BROKEN"
 msgid "Broken Sanctum Relic"
-msgstr ""
+msgstr "破损圣殿遗物"
 
 #. STRINGS.NAMES.VAULTRELIC_PLANTER
 msgctxt "STRINGS.NAMES.VAULTRELIC_PLANTER"
 msgid "Replica Sanctum Planter"
-msgstr ""
+msgstr "仿制圣殿花盆"
 
 #. STRINGS.NAMES.VAULTRELIC_VASE
 msgctxt "STRINGS.NAMES.VAULTRELIC_VASE"
 msgid "Replica Sanctum Vase"
-msgstr ""
+msgstr "仿制圣殿花瓶"
 
 #. STRINGS.NAMES.VAULT_CHANDELIER_BROKEN
 msgctxt "STRINGS.NAMES.VAULT_CHANDELIER_BROKEN"
@@ -326178,8 +326198,8 @@ msgstr "圣殿华灯"
 
 #. STRINGS.NAMES.VAULT_LOBBY_EXIT
 msgctxt "STRINGS.NAMES.VAULT_LOBBY_EXIT"
-msgid "Sanctum Egress"
-msgstr "圣殿出口"
+msgid "Chasm"
+msgstr "裂隙"
 
 #. STRINGS.NAMES.VAULT_ORB
 msgctxt "STRINGS.NAMES.VAULT_ORB"
@@ -326479,17 +326499,17 @@ msgstr "诡异工具"
 #. STRINGS.NAMES.WALKINGPLANK
 msgctxt "STRINGS.NAMES.WALKINGPLANK"
 msgid "Plank"
-msgstr "木板"
+msgstr "跳板"
 
 #. STRINGS.NAMES.WALKINGPLANK_ANCIENT
 msgctxt "STRINGS.NAMES.WALKINGPLANK_ANCIENT"
 msgid "Archaic Plank"
-msgstr "古董木板"
+msgstr "古董跳板"
 
 #. STRINGS.NAMES.WALKINGPLANK_GRASS
 msgctxt "STRINGS.NAMES.WALKINGPLANK_GRASS"
 msgid "Plank"
-msgstr "木板"
+msgstr "跳板"
 
 #. STRINGS.NAMES.WALKINGPLANK_YOTD
 msgctxt "STRINGS.NAMES.WALKINGPLANK_YOTD"
@@ -327959,27 +327979,27 @@ msgstr "+20% 治疗效果"
 #. STRINGS.NIGHTMARE_OVERGROWTH.LINE_1
 msgctxt "STRINGS.NIGHTMARE_OVERGROWTH.LINE_1"
 msgid "\"Forsaken wretches of the one who turned away.\""
-msgstr ""
+msgstr "“被背叛者丢下的可怜虫们。”"
 
 #. STRINGS.NIGHTMARE_OVERGROWTH.LINE_2
 msgctxt "STRINGS.NIGHTMARE_OVERGROWTH.LINE_2"
 msgid "\"Orphans cast upon the barren expanse. Lost in the wake of neglect.\""
-msgstr ""
+msgstr "“犹如被遗弃在荒芜旷野中的孤儿们，在被忽视后迷失了方向。”"
 
 #. STRINGS.NIGHTMARE_OVERGROWTH.LINE_3
 msgctxt "STRINGS.NIGHTMARE_OVERGROWTH.LINE_3"
 msgid "\"From desolation were we drawn. Into the veiled embrace of Them.\""
-msgstr ""
+msgstr "“然后受到了牵引，摆脱孤寂投入到旧神们被遮蔽的怀抱中。”"
 
 #. STRINGS.NIGHTMARE_OVERGROWTH.LINE_4
 msgctxt "STRINGS.NIGHTMARE_OVERGROWTH.LINE_4"
 msgid "\"No longer doth the shadow stir terror within our hearts.\""
-msgstr ""
+msgstr "“暗影再也不会激起我们心中的恐惧。”"
 
 #. STRINGS.NIGHTMARE_OVERGROWTH.LINE_5
 msgctxt "STRINGS.NIGHTMARE_OVERGROWTH.LINE_5"
 msgid "\"For dark is become our shield. Our sustenance. Our solace.\""
-msgstr ""
+msgstr "“因为黑暗已经变成了我们的盾牌。我们的食粮。我们的慰藉。”"
 
 #. STRINGS.PIGNAMES.1
 msgctxt "STRINGS.PIGNAMES.1"
@@ -329579,7 +329599,7 @@ msgstr "红桃K"
 #. STRINGS.PLAYS.THEVAULT
 msgctxt "STRINGS.PLAYS.THEVAULT"
 msgid "A Task Complete"
-msgstr ""
+msgstr "任务完成"
 
 #. STRINGS.PLAYS.THEVEIL
 msgctxt "STRINGS.PLAYS.THEVEIL"
@@ -333809,12 +333829,12 @@ msgstr "一块乱石嶙峋的洞穴地皮。"
 #. STRINGS.RECIPE_DESC.TURF_VAULT
 msgctxt "STRINGS.RECIPE_DESC.TURF_VAULT"
 msgid "Ancient stonework from the Sanctum."
-msgstr ""
+msgstr "圣殿中的远古石刻。"
 
 #. STRINGS.RECIPE_DESC.TURF_VENT
 msgctxt "STRINGS.RECIPE_DESC.TURF_VENT"
 msgid "The craggy stone floor of a fumey cave."
-msgstr ""
+msgstr "一块乱石嶙峋的冒烟洞穴地皮。"
 
 #. STRINGS.RECIPE_DESC.TURF_WOODFLOOR
 msgctxt "STRINGS.RECIPE_DESC.TURF_WOODFLOOR"
@@ -333834,17 +333854,17 @@ msgstr "遮阳挡雨！"
 #. STRINGS.RECIPE_DESC.VAULTRELIC_BOWL
 msgctxt "STRINGS.RECIPE_DESC.VAULTRELIC_BOWL"
 msgid "It's not dirty, it's \"developing a patina\"."
-msgstr ""
+msgstr "那不是脏，是在“形成包浆”。"
 
 #. STRINGS.RECIPE_DESC.VAULTRELIC_PLANTER
 msgctxt "STRINGS.RECIPE_DESC.VAULTRELIC_PLANTER"
 msgid "Too brittle to plant anything in, but a great conversation piece."
-msgstr ""
+msgstr "由于太脆，放什么东西进去都会碎。但却是个很好的谈资。"
 
 #. STRINGS.RECIPE_DESC.VAULTRELIC_VASE
 msgctxt "STRINGS.RECIPE_DESC.VAULTRELIC_VASE"
 msgid "Decor from a bygone age."
-msgstr ""
+msgstr "古时候留下的装饰品。"
 
 #. STRINGS.RECIPE_DESC.VOIDCLOTHHAT
 msgctxt "STRINGS.RECIPE_DESC.VOIDCLOTHHAT"
@@ -343614,7 +343634,7 @@ msgstr "生命如蝉翼般脆弱。"
 #. STRINGS.SKIN_DESCRIPTIONS.abigail_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.abigail_pirate"
 msgid "Haunt the high seas."
-msgstr ""
+msgstr "去公海上闹闹鬼。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.abigail_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.abigail_rose"
@@ -344569,7 +344589,7 @@ msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
 #. STRINGS.SKIN_DESCRIPTIONS.berrybush_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_swamp"
 msgid "Psst, berries grown in moss are the sweetest."
-msgstr ""
+msgstr "嘘，苔藓上长出来的浆果才是最甜的。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.berrybush_waxed_cawnival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_waxed_cawnival"
@@ -344584,7 +344604,7 @@ msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
 #. STRINGS.SKIN_DESCRIPTIONS.berrybush_waxed_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.berrybush_waxed_swamp"
 msgid "Psst, berries grown in moss are the sweetest."
-msgstr ""
+msgstr "嘘，苔藓上长出来的浆果才是最甜的。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.birdcage_adventure"
@@ -345464,7 +345484,7 @@ msgstr "最漆黑的暗影织造的夹克，搭配永恒领域的最佳探险家
 #. STRINGS.SKIN_DESCRIPTIONS.body_warly_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_warly_survivor"
 msgid "Delicious soup bone accessory included!"
-msgstr ""
+msgstr "附赠美味的熬汤骨头！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_warly_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_warly_victorian"
@@ -345899,7 +345919,7 @@ msgstr "翅膀和花瓣做成的精致礼服。"
 #. STRINGS.SKIN_DESCRIPTIONS.body_wendy_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_pirate"
 msgid "Short is the pirate's life, but oh what a ride!"
-msgstr ""
+msgstr "该海盗的生命虽然短暂，但确是一次精彩的航行！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wendy_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_rose"
@@ -346124,7 +346144,7 @@ msgstr "这条羽毛连衣裙给它的穿着者带来了一种与众不同的神
 #. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_pirate"
 msgid "Take no prisoners in this bold dress."
-msgstr ""
+msgstr "穿上这件大胆衣裙，不留一个俘虏。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_rose"
@@ -346809,7 +346829,7 @@ msgstr "黑暗将这株植物的树干扭曲成了一种违背自然的形态。
 #. STRINGS.SKIN_DESCRIPTIONS.body_wormwood_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wormwood_survivor"
 msgid "The oldest vines are often the strongest."
-msgstr ""
+msgstr "最古老的藤蔓往往最强壮。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wormwood_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wormwood_victorian"
@@ -346964,7 +346984,7 @@ msgstr "乌贼的触角紧紧地抓住了你的注意力。"
 #. STRINGS.SKIN_DESCRIPTIONS.body_wurt_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wurt_survivor"
 msgid "Worn by marshy arts warriors."
-msgstr ""
+msgstr "沼泽勇士的战衣。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wurt_toadstool
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wurt_toadstool"
@@ -347034,7 +347054,7 @@ msgstr "这副身躯中看不中用。"
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_pirate"
 msgid "Get hooked with this rugged look."
-msgstr ""
+msgstr "迷上这身粗犷的造型吧。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_retro
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_retro"
@@ -347269,7 +347289,7 @@ msgstr "月光下的迷人伪装，令人心醉神迷。"
 #. STRINGS.SKIN_DESCRIPTIONS.bushhat_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.bushhat_swamp"
 msgid "Mushy unappealing berries create the perfect, overlooked disguise."
-msgstr ""
+msgstr "软烂难看的浆果正是完美的迷彩。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.campfire_cabin
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.campfire_cabin"
@@ -347829,7 +347849,7 @@ msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
 #. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_swamp"
 msgid "Psst, berries grown in moss are the sweetest."
-msgstr ""
+msgstr "嘘，苔藓上长出来的浆果才是最甜的。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_waxed_cawnival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_waxed_cawnival"
@@ -347844,7 +347864,7 @@ msgstr "这丛迷人的灌木适合在月光之夜种植浆果。"
 #. STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_waxed_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_berrybush_waxed_swamp"
 msgid "Psst, berries grown in moss are the sweetest."
-msgstr ""
+msgstr "嘘，苔藓上长出来的浆果才是最甜的。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.dug_gravestone_fantasy"
@@ -348674,7 +348694,7 @@ msgstr "一双系列的鞋子，采用美食系的红色调。"
 #. STRINGS.SKIN_DESCRIPTIONS.feet_warly_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_warly_survivor"
 msgid "In survival situations, it is beneficial to keep your feet well-brined."
-msgstr ""
+msgstr "在求生环境中，让双脚吸足盐分十分有益。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_warly_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_warly_victorian"
@@ -348839,7 +348859,7 @@ msgstr "粉红色的花瓣拖鞋，适合飞行的脚丫。"
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wendy_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wendy_pirate"
 msgid "From swabbing the deck to walking the plank, these sandals have your feet covered."
-msgstr ""
+msgstr "从擦甲板到走跳板，这双凉鞋都能保护你的双脚。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wendy_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wendy_victorian"
@@ -348924,7 +348944,7 @@ msgstr "高高的鞋跟是防止一逗到底的有力阻碍。"
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wickerbottom_pirate"
 msgid "Tread through lawless waters in boots already cuffed."
-msgstr ""
+msgstr "穿上这双宝靴，踏破无法无天的水域。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wickerbottom_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wickerbottom_victorian"
@@ -349144,7 +349164,7 @@ msgstr "谢绝高大上的巫术，回归你的本源。"
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wx78_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wx78_pirate"
 msgid "Where will they take you next?"
-msgstr ""
+msgstr "这双脚将带你去向何方？"
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_wx78_wip
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_wx78_wip"
@@ -349694,7 +349714,7 @@ msgstr "毁灭性武器。"
 #. STRINGS.SKIN_DESCRIPTIONS.greenstaff_planet
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.greenstaff_planet"
 msgid "A tool of mass deconstruction."
-msgstr ""
+msgstr "大规模解构性工具。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hambat_nautical
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hambat_nautical"
@@ -350169,7 +350189,7 @@ msgstr "掩盖手上墨渍最时尚的方法就是穿戴长手套。"
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wickerbottom_pirate"
 msgid "Save the best pieces of loot for yourself."
-msgstr ""
+msgstr "把最好的战利品留给自己。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wickerbottom_spiderwitch
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wickerbottom_spiderwitch"
@@ -350504,7 +350524,7 @@ msgstr "只要碰一下这些有毒的叶子，就会给你带来灭顶之灾。
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wormwood_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wormwood_survivor"
 msgid "There's something eerily soothing about the crunch of Wormwood's leaves as he embraces you."
-msgstr ""
+msgstr "当沃姆伍德拥抱你时，他叶子的沙沙声有种怪异的安抚感。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wormwood_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wormwood_victorian"
@@ -350599,7 +350619,7 @@ msgstr "手是当吸盘用的。"
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wurt_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wurt_survivor"
 msgid "They pack a slimy punch!"
-msgstr ""
+msgstr "这一拳打出去会是黏糊糊的！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wurt_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wurt_victorian"
@@ -350634,7 +350654,7 @@ msgstr "利用这些抓力很好的藤手，与大自然亲密接触。"
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wx78_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wx78_pirate"
 msgid "These are the hands in an all-hands-on-deck situation."
-msgstr ""
+msgstr "全体动员的时候少不了这一双手。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_wx78_retro
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_wx78_retro"
@@ -350664,7 +350684,7 @@ msgstr "木头的手不会变得像金属的手一样冷。"
 #. STRINGS.SKIN_DESCRIPTIONS.hat_antlion_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_antlion_swamp"
 msgid "Any turf from sod to swamp is swapped with a simple step."
-msgstr ""
+msgstr "从草皮到沼泽，任何地皮只需简单一步即可更换。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hat_catcoon_costume
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_catcoon_costume"
@@ -350724,7 +350744,7 @@ msgstr "并不是用真的小狗做成的。"
 #. STRINGS.SKIN_DESCRIPTIONS.hat_woodcarved_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_woodcarved_swamp"
 msgid "Somehow, it works. You'll be stumped."
-msgstr ""
+msgstr "不知为什么，它就是有用。真是一桩好事。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.heatrock_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.heatrock_fantasy"
@@ -350769,7 +350789,7 @@ msgstr "n/a"
 #. STRINGS.SKIN_DESCRIPTIONS.hutch_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hutch_swamp"
 msgid "Feel like confronting the void? Just look into his eyes!"
-msgstr ""
+msgstr "想直面虚空吗？那就直视他的眼睛吧！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.icebox_coffin
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.icebox_coffin"
@@ -351539,7 +351559,7 @@ msgstr "一层厚厚的绒毛，在月亮的寒冷环境中为你保暖。"
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wendy_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wendy_pirate"
 msgid "Sail by the seat of your pants!"
-msgstr ""
+msgstr "凭感觉航行吧！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wes_masquerade
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wes_masquerade"
@@ -351814,7 +351834,7 @@ msgstr "病态的茎秆，每走一步都会残留余毒。"
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wormwood_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wormwood_survivor"
 msgid "Weave through the wilds on these creepers."
-msgstr ""
+msgstr "穿着这些蔓生植物编织的衣物在荒野中穿梭吧。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wormwood_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wormwood_victorian"
@@ -351949,7 +351969,7 @@ msgstr "鲨鱼现在也长腿了。好吧。"
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wurt_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wurt_survivor"
 msgid "Don't be afraid to get down in the mud!"
-msgstr ""
+msgstr "别怕弄一身泥！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.legs_wurt_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_wurt_victorian"
@@ -352429,17 +352449,17 @@ msgstr "温蒂在细致考究的哀悼仪式中得到一种奇怪的慰藉。\n�
 #. STRINGS.SKIN_DESCRIPTIONS.loading_werepig1
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.loading_werepig1"
 msgid "Gather round, everyone. Ready to hear a spooky story?"
-msgstr ""
+msgstr "大家围过来。准备好听一个恐怖故事了吗？"
 
 #. STRINGS.SKIN_DESCRIPTIONS.loading_werepig2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.loading_werepig2"
 msgid "Campfire stories are best enjoyed with a group of friends on eerie, moonlit nights."
-msgstr ""
+msgstr "在诡异月夜下，与一群朋友围坐篝火旁听故事最是享受。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.loading_werepig3
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.loading_werepig3"
 msgid "The werepig will gladly have you over for dinner."
-msgstr ""
+msgstr "疯猪会很乐意请你吃晚餐。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.loading_wes1
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.loading_wes1"
@@ -352824,7 +352844,7 @@ msgstr "鱼人的智慧超越我们的理解，也超越了他们自己的。"
 #. STRINGS.SKIN_DESCRIPTIONS.mermhouse_crafted_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermhouse_crafted_swamp"
 msgid "When visiting the swamp, these cute little houses are a mossy."
-msgstr ""
+msgstr "造访沼泽时，这些可爱的小房子是必看项目。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.mermwatchtower_mystical
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermwatchtower_mystical"
@@ -352834,7 +352854,7 @@ msgstr "国王特种部队的驻地。"
 #. STRINGS.SKIN_DESCRIPTIONS.mermwatchtower_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mermwatchtower_swamp"
 msgid "For the glort-y of the King!"
-msgstr ""
+msgstr "为了国王的荣耀，嗝浪淌！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.mighty_gym_ancient
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mighty_gym_ancient"
@@ -352994,7 +353014,7 @@ msgstr "就月光让你脊背发凉。"
 #. STRINGS.SKIN_DESCRIPTIONS.moonstaff_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.moonstaff_swamp"
 msgid "All hail the mighty moon!"
-msgstr ""
+msgstr "向强大的月亮致敬！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.multitool_axe_pickaxe_pickaxeaxe
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.multitool_axe_pickaxe_pickaxeaxe"
@@ -353154,7 +353174,7 @@ msgstr "几乎比身处黑暗更可怕。"
 #. STRINGS.SKIN_DESCRIPTIONS.nightstick_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.nightstick_swamp"
 msgid "Perfect for wild swings!"
-msgstr ""
+msgstr "狂野挥击的完美之选！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.nightsword_cotl
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.nightsword_cotl"
@@ -353194,7 +353214,7 @@ msgstr "惟妙惟肖地模仿了浮木桨。"
 #. STRINGS.SKIN_DESCRIPTIONS.oar_driftwood_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.oar_driftwood_swamp"
 msgid "Paddle like a fish."
-msgstr ""
+msgstr "像鱼一样划桨。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.oar_invisible
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.oar_invisible"
@@ -353204,7 +353224,7 @@ msgstr "惟妙惟肖地模仿了桨。"
 #. STRINGS.SKIN_DESCRIPTIONS.oar_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.oar_swamp"
 msgid "Paddle like a fish."
-msgstr ""
+msgstr "像鱼一样划桨。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.ocean_trawler_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.ocean_trawler_pirate"
@@ -353339,12 +353359,12 @@ msgstr "这个复活箱子包含一个螃蟹背包。"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_backpack_deerclops_resurrected
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_backpack_deerclops_resurrected"
 msgid "This Resurrected Chest contains a Deerclops Duffel."
-msgstr ""
+msgstr "此重生箱子包含一个独眼巨鹿背包。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_backpack_glommer_resurrected
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_backpack_glommer_resurrected"
 msgid "This Resurrected Chest contains a Glommer Pack."
-msgstr ""
+msgstr "此重生箱子包含一个格罗姆背包。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_backpack_mandrake_resurrected
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_backpack_mandrake_resurrected"
@@ -354314,7 +354334,7 @@ msgstr "这个江洋大盗三件套箱子包含了以下人物的皮肤：麦斯
 #. STRINGS.SKIN_DESCRIPTIONS.pack_pirate_3
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_pirate_3"
 msgid "This Swashbuckler Trio II Chest contains skins for: Wendy, WX-78 and Wickerbottom."
-msgstr ""
+msgstr "这个江洋大盗三件套二号箱子包含了以下人物的皮肤：温蒂，WX-78和薇克巴顿。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_pirate_all
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_pirate_all"
@@ -354459,17 +354479,17 @@ msgstr "这个箱子包含了游戏人物，计时人——旺达、威尔逊的
 #. STRINGS.SKIN_DESCRIPTIONS.pack_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_survivor"
 msgid "This Survivor Trio Chest contains skins for: Warly, Wurt and Wormwood."
-msgstr ""
+msgstr "这个冒险家三件套箱子包含了以下人物的皮肤：沃利、沃特和沃姆伍德。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_survivor_complete
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_survivor_complete"
 msgid "This Complete Survivor Chest contains the complete Survivor series of survivor skins."
-msgstr ""
+msgstr "这个全套冒险家箱子包含了冒险家系列的所有冒险家皮肤。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_survivorpirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_survivorpirate"
 msgid "This Surviving the Seas Chest contains the Survivor Trio Chest and the Swashbuckler Trio II Chest."
-msgstr ""
+msgstr "这个海上求生箱子包含了冒险家三件套箱子和江洋大盗三件套二号箱子。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_sw_gift
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_sw_gift"
@@ -354479,22 +354499,22 @@ msgstr "《饥荒：海难》礼物"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_swamp_bundle
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_swamp_bundle"
 msgid "This Swampy Swashbuckler Survivor Vacation Chest contains the Swamp-Lover's Chest, the Swashbuckler Trio II Chest, the Survivor Trio Chest, and the Vacation Chest."
-msgstr ""
+msgstr "这个沼泽江洋大盗冒险家度假箱子包含了沼泽爱好者箱子、江洋大盗三件套二号箱子、冒险家三件套箱子和度假箱子。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_swamp_items
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_swamp_items"
 msgid "This Swamp-Lover's Chest contains the following skin items: Hollow Gaze Hutch, Mossy Mermhouse, Mossy Merm Flort, Primal Panflute, Paddlefish Oar, Driftwood Paddlefish Oar, Primitive Rainometer, Primitive Potter's Wheel, Swampy Siesta Shade, Primal Star Caller's Staff, Mossberry Hat, Mangrove Helm, Dampwood Hat, and Primal Morning Star."
-msgstr ""
+msgstr "这个沼泽爱好者箱子包含了下列皮肤物品：空洞凝视哈奇、苔藓鱼人屋、苔藓鱼人堡垒、原始排箫、鱼桨、浮木鱼桨、原始雨量计、原始陶轮、沼泽遮阳篷、原始唤星者魔杖、苔藓浆果帽、红树林头盔、湿木帽和原始晨星锤。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_swamphawaiian_items
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_swamphawaiian_items"
 msgid "This Swampy Vacation Chest contains the Swamp-Lover's Chest and the Vacation Chest."
-msgstr ""
+msgstr "这个沼泽度假箱子包含了沼泽爱好者箱子和度假箱子。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_torso_hawaiian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_torso_hawaiian"
 msgid "This Vacation Chest contains the following skin items: Florrible Shirt, Eye-land Shirt, Calm Palm Shirt, Palms-at-Dusk Shirt, and Crimson Hibiscus Shirt."
-msgstr ""
+msgstr "这个度假箱子包含了以下皮肤物品：花衬衣、眼花衬衫、宁静棕榈衬衫、黄昏棕榈衬衫和深红茱萸衬衫。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_valkyrie_items
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_valkyrie_items"
@@ -354739,7 +354759,7 @@ msgstr "这个箱子包含了沃利的全套凯旋皮肤。"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_warly_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_warly_survivor"
 msgid "This Chest contains Warly's complete set of Survivor skin items."
-msgstr ""
+msgstr "这个箱子包含了沃利的全套冒险家皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_warly_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_warly_victorian"
@@ -354949,7 +354969,7 @@ msgstr "这个假面舞会箱子包含了温蒂的全套假面舞会皮肤物品
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wendy_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wendy_pirate"
 msgid "This Chest contains Wendy's complete set of Swashbuckler skin items."
-msgstr ""
+msgstr "这个箱子包含了温蒂的全套江洋大盗皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wendy_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wendy_rose"
@@ -355049,7 +355069,7 @@ msgstr "这个箱子包含了薇克巴顿的全套笔名皮肤物品。"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wickerbottom_pirate"
 msgid "This Chest contains Wickerbottom's complete set of Swashbuckler skin items."
-msgstr ""
+msgstr "这个箱子包含了薇克巴顿的全套江洋大盗皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wickerbottom_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wickerbottom_rose"
@@ -355329,7 +355349,7 @@ msgstr "这个宝箱包含沃姆伍德的全套凯旋皮肤。"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wormwood_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wormwood_survivor"
 msgid "This Chest contains Wormwood's complete set of Survivor skin items."
-msgstr ""
+msgstr "这个箱子包含了沃姆伍德的全套冒险家皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wortox_ancient
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wortox_ancient"
@@ -355459,7 +355479,7 @@ msgstr "这个箱子包含了沃特的全套凯旋皮肤物品。"
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wurt_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wurt_survivor"
 msgid "This Chest contains Wurt's complete set of Survivor skin items."
-msgstr ""
+msgstr "这个箱子包含了沃特的全套冒险家皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_deluxe
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_deluxe"
@@ -355479,7 +355499,7 @@ msgstr "这个假面舞会箱子包含了WX-78的全套假面舞会皮肤物品�
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_pirate"
 msgid "This Chest contains WX-78's complete set of Swashbuckler skin items."
-msgstr ""
+msgstr "这个箱子包含了WX-78的全套江洋大盗皮肤物品。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.pack_wx78_retro
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_wx78_retro"
@@ -355639,7 +355659,7 @@ msgstr "古灵精怪的乐器。"
 #. STRINGS.SKIN_DESCRIPTIONS.panflute_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.panflute_swamp"
 msgid "Play a timeless tune."
-msgstr ""
+msgstr "吹响永恒的曲调。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.parasol_spring
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.parasol_spring"
@@ -356969,7 +356989,7 @@ msgstr "将你的头像设为一根新拆解器。"
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_greenstaff_planet
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_greenstaff_planet"
 msgid "Set your profile icon to a Global Deconstruction Staff."
-msgstr ""
+msgstr "把你的头像设为一根全局解构魔杖。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_hambat_nautical
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_hambat_nautical"
@@ -357929,7 +357949,7 @@ msgstr "猜猜看降雨量。"
 #. STRINGS.SKIN_DESCRIPTIONS.rainometer_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.rainometer_swamp"
 msgid "Predict rain the old-fashioned way."
-msgstr ""
+msgstr "用老式方法预测降雨。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.razor_barber
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.razor_barber"
@@ -358319,7 +358339,7 @@ msgstr "随心所欲地创作精巧的石雕吧。"
 #. STRINGS.SKIN_DESCRIPTIONS.sculptingtable_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.sculptingtable_swamp"
 msgid "A stone sculting swampy spin-off."
-msgstr ""
+msgstr "沼泽风格的石雕工桌。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.seafaring_prototyper_lighthouse
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.seafaring_prototyper_lighthouse"
@@ -358379,7 +358399,7 @@ msgstr "白日梦的羽饰庇护所。"
 #. STRINGS.SKIN_DESCRIPTIONS.siestahut_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.siestahut_swamp"
 msgid "Bogged down? You'll sleep like a log in here."
-msgstr ""
+msgstr "陷入泥淖了吗？你会在这里睡得像木头一样。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.sisturn_beachhouse
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.sisturn_beachhouse"
@@ -358674,7 +358694,7 @@ msgstr "让自己被星辰的温暖光芒所笼罩。"
 #. STRINGS.SKIN_DESCRIPTIONS.starstaff_swamp
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.starstaff_swamp"
 msgid "Old stars, lend your light!"
-msgstr ""
+msgstr "古老的星辰，请借给我你的光芒！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.steeringwheel_nautical
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.steeringwheel_nautical"
@@ -358984,27 +359004,27 @@ msgstr "让你的攻击充满杀气！"
 #. STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_blue
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_blue"
 msgid "A shirt fit for bloom and doom."
-msgstr ""
+msgstr "一件既适合绽放又适合毁灭的衬衫。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_eyeplant
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_eyeplant"
 msgid "This shirt will have all eyes on you."
-msgstr ""
+msgstr "穿了这件衬衫，你会吸引所有的眼球。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_palmtree1
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_palmtree1"
 msgid "Relax, everything's fine..."
-msgstr ""
+msgstr "放松，一切安好……"
 
 #. STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_palmtree2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_palmtree2"
 msgid "Nothing's more beautiful than palms at dusk... now find some light."
-msgstr ""
+msgstr "没有哪个美景比得上夕阳下的棕榈……去找些光吧。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_red
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.torso_hawaiian_red"
 msgid "The perfect shirt to hide your wounds!"
-msgstr ""
+msgstr "藏匿伤口的完美衬衫！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.townportal_relic
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.townportal_relic"
@@ -359749,7 +359769,7 @@ msgstr "被暗影腐化的厨师必将炮制出灾难。"
 #. STRINGS.SKIN_DESCRIPTIONS.warly_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.warly_survivor"
 msgid "Warly is the master of castaway cuisine."
-msgstr ""
+msgstr "沃利是荒野美食的大师。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.warly_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.warly_victorian"
@@ -360404,7 +360424,7 @@ msgstr "忧郁少女的原生态造型。"
 #. STRINGS.SKIN_DESCRIPTIONS.wendy_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_pirate"
 msgid "The sea is calling. Will you answer?"
-msgstr ""
+msgstr "大海在呼唤。你要回答吗？"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wendy_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_rose"
@@ -360664,7 +360684,7 @@ msgstr "薇克巴顿在狂野时期曾经写过一两部中篇小说。"
 #. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_pirate"
 msgid "Some of the fiercest women to terrorize the seas were scholars as well."
-msgstr ""
+msgstr "最凶狠的女海盗中不乏学者的身影。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_rose"
@@ -361769,7 +361789,7 @@ msgstr "沃姆伍德听到了致命茄子的召唤。"
 #. STRINGS.SKIN_DESCRIPTIONS.wormwood_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wormwood_survivor"
 msgid "Rooted in resilience, Wormwood weathers even the most unforgiving seasons."
-msgstr ""
+msgstr "扎下坚韧的根须后，沃姆伍德就能经受住最严酷季节。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wormwood_victorian
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wormwood_victorian"
@@ -361939,7 +361959,7 @@ msgstr "想要逃脱水中困局，最好去收拾了克拉肯海怪！"
 #. STRINGS.SKIN_DESCRIPTIONS.wurt_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wurt_survivor"
 msgid "Wurt is the dirtiest fighter in the swamp."
-msgstr ""
+msgstr "沃特是沼泽中出招最脏的战士。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wurt_toadstool
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wurt_toadstool"
@@ -362024,7 +362044,7 @@ msgstr "原始设计，版本1.0。"
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_pirate
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_pirate"
 msgid "Be the ship."
-msgstr ""
+msgstr "化身为船。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_retro
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_retro"
@@ -362524,7 +362544,7 @@ msgstr "诅咒斗篷"
 #. STRINGS.SKIN_NAMES.armor_skeleton_mythical
 msgctxt "STRINGS.SKIN_NAMES.armor_skeleton_mythical"
 msgid "Mythic Bone Armor"
-msgstr ""
+msgstr "神话骨头盔甲"
 
 #. STRINGS.SKIN_NAMES.armor_skeleton_relic
 msgctxt "STRINGS.SKIN_NAMES.armor_skeleton_relic"
@@ -363249,7 +363269,7 @@ msgstr "月亮灌木"
 #. STRINGS.SKIN_NAMES.berrybush_swamp
 msgctxt "STRINGS.SKIN_NAMES.berrybush_swamp"
 msgid "Mossberry Shrub"
-msgstr ""
+msgstr "苔藓浆果灌木丛"
 
 #. STRINGS.SKIN_NAMES.berrybush_waxed_cawnival
 msgctxt "STRINGS.SKIN_NAMES.berrybush_waxed_cawnival"
@@ -363264,7 +363284,7 @@ msgstr "月亮灌木"
 #. STRINGS.SKIN_NAMES.berrybush_waxed_swamp
 msgctxt "STRINGS.SKIN_NAMES.berrybush_waxed_swamp"
 msgid "Mossberry Shrub"
-msgstr ""
+msgstr "苔藓浆果灌木丛"
 
 #. STRINGS.SKIN_NAMES.birdcage_adventure
 msgctxt "STRINGS.SKIN_NAMES.birdcage_adventure"
@@ -364144,7 +364164,7 @@ msgstr "暗影夹克"
 #. STRINGS.SKIN_NAMES.body_warly_survivor
 msgctxt "STRINGS.SKIN_NAMES.body_warly_survivor"
 msgid "Kitchen Rags"
-msgstr ""
+msgstr "厨房破布"
 
 #. STRINGS.SKIN_NAMES.body_warly_victorian
 msgctxt "STRINGS.SKIN_NAMES.body_warly_victorian"
@@ -364579,7 +364599,7 @@ msgstr "飘逸的裙子"
 #. STRINGS.SKIN_NAMES.body_wendy_pirate
 msgctxt "STRINGS.SKIN_NAMES.body_wendy_pirate"
 msgid "Read's Rags"
-msgstr ""
+msgstr "里德的破布"
 
 #. STRINGS.SKIN_NAMES.body_wendy_rose
 msgctxt "STRINGS.SKIN_NAMES.body_wendy_rose"
@@ -364804,7 +364824,7 @@ msgstr "羽毛饰带裙"
 #. STRINGS.SKIN_NAMES.body_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_pirate"
 msgid "Killigrew Dress"
-msgstr ""
+msgstr "基利格鲁连衣裙"
 
 #. STRINGS.SKIN_NAMES.body_wickerbottom_rose
 msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_rose"
@@ -365489,7 +365509,7 @@ msgstr "暗影树干"
 #. STRINGS.SKIN_NAMES.body_wormwood_survivor
 msgctxt "STRINGS.SKIN_NAMES.body_wormwood_survivor"
 msgid "Etiolated Trunk"
-msgstr ""
+msgstr "黄化树干"
 
 #. STRINGS.SKIN_NAMES.body_wormwood_victorian
 msgctxt "STRINGS.SKIN_NAMES.body_wormwood_victorian"
@@ -365644,7 +365664,7 @@ msgstr "深海游泳身体"
 #. STRINGS.SKIN_NAMES.body_wurt_survivor
 msgctxt "STRINGS.SKIN_NAMES.body_wurt_survivor"
 msgid "Swamp Scrapper Straps"
-msgstr ""
+msgstr "沼泽斗士衣带"
 
 #. STRINGS.SKIN_NAMES.body_wurt_toadstool
 msgctxt "STRINGS.SKIN_NAMES.body_wurt_toadstool"
@@ -365714,7 +365734,7 @@ msgstr "木头人的躯干"
 #. STRINGS.SKIN_NAMES.body_wx78_pirate
 msgctxt "STRINGS.SKIN_NAMES.body_wx78_pirate"
 msgid "Robust Hull"
-msgstr ""
+msgstr "坚固舰体"
 
 #. STRINGS.SKIN_NAMES.body_wx78_retro
 msgctxt "STRINGS.SKIN_NAMES.body_wx78_retro"
@@ -365949,7 +365969,7 @@ msgstr "月灌木帽"
 #. STRINGS.SKIN_NAMES.bushhat_swamp
 msgctxt "STRINGS.SKIN_NAMES.bushhat_swamp"
 msgid "Mossberry Hat"
-msgstr ""
+msgstr "苔藓浆果帽"
 
 #. STRINGS.SKIN_NAMES.campfire_cabin
 msgctxt "STRINGS.SKIN_NAMES.campfire_cabin"
@@ -366509,7 +366529,7 @@ msgstr "月亮灌木"
 #. STRINGS.SKIN_NAMES.dug_berrybush_swamp
 msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_swamp"
 msgid "Mossberry Shrub"
-msgstr ""
+msgstr "苔藓浆果灌木丛"
 
 #. STRINGS.SKIN_NAMES.dug_berrybush_waxed_cawnival
 msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_waxed_cawnival"
@@ -366524,7 +366544,7 @@ msgstr "月亮灌木"
 #. STRINGS.SKIN_NAMES.dug_berrybush_waxed_swamp
 msgctxt "STRINGS.SKIN_NAMES.dug_berrybush_waxed_swamp"
 msgid "Mossberry Shrub"
-msgstr ""
+msgstr "苔藓浆果灌木丛"
 
 #. STRINGS.SKIN_NAMES.dug_gravestone_fantasy
 msgctxt "STRINGS.SKIN_NAMES.dug_gravestone_fantasy"
@@ -367354,7 +367374,7 @@ msgstr "暗影鞋子"
 #. STRINGS.SKIN_NAMES.feet_warly_survivor
 msgctxt "STRINGS.SKIN_NAMES.feet_warly_survivor"
 msgid "Kelp Kicks"
-msgstr ""
+msgstr "海带鞋"
 
 #. STRINGS.SKIN_NAMES.feet_warly_victorian
 msgctxt "STRINGS.SKIN_NAMES.feet_warly_victorian"
@@ -367519,7 +367539,7 @@ msgstr "淑女拖鞋"
 #. STRINGS.SKIN_NAMES.feet_wendy_pirate
 msgctxt "STRINGS.SKIN_NAMES.feet_wendy_pirate"
 msgid "Saltwater Sandals"
-msgstr ""
+msgstr "咸水凉鞋"
 
 #. STRINGS.SKIN_NAMES.feet_wendy_victorian
 msgctxt "STRINGS.SKIN_NAMES.feet_wendy_victorian"
@@ -367604,7 +367624,7 @@ msgstr "翎羽浅口皮鞋"
 #. STRINGS.SKIN_NAMES.feet_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_NAMES.feet_wickerbottom_pirate"
 msgid "Buccaneer's Boots"
-msgstr ""
+msgstr "海盗短靴"
 
 #. STRINGS.SKIN_NAMES.feet_wickerbottom_victorian
 msgctxt "STRINGS.SKIN_NAMES.feet_wickerbottom_victorian"
@@ -367824,7 +367844,7 @@ msgstr "木头人的根"
 #. STRINGS.SKIN_NAMES.feet_wx78_pirate
 msgctxt "STRINGS.SKIN_NAMES.feet_wx78_pirate"
 msgid "Studded Rudders"
-msgstr ""
+msgstr "镶钉舵"
 
 #. STRINGS.SKIN_NAMES.feet_wx78_wip
 msgctxt "STRINGS.SKIN_NAMES.feet_wx78_wip"
@@ -368374,7 +368394,7 @@ msgstr "发条拆解魔杖"
 #. STRINGS.SKIN_NAMES.greenstaff_planet
 msgctxt "STRINGS.SKIN_NAMES.greenstaff_planet"
 msgid "Global Deconstruction Staff"
-msgstr ""
+msgstr "全局解构魔杖"
 
 #. STRINGS.SKIN_NAMES.hambat_nautical
 msgctxt "STRINGS.SKIN_NAMES.hambat_nautical"
@@ -368849,7 +368869,7 @@ msgstr "夜未眠手套"
 #. STRINGS.SKIN_NAMES.hand_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_NAMES.hand_wickerbottom_pirate"
 msgid "Mossy Pearl Rings"
-msgstr ""
+msgstr "苔藓珍珠戒指"
 
 #. STRINGS.SKIN_NAMES.hand_wickerbottom_spiderwitch
 msgctxt "STRINGS.SKIN_NAMES.hand_wickerbottom_spiderwitch"
@@ -369184,7 +369204,7 @@ msgstr "粗糙的叶子"
 #. STRINGS.SKIN_NAMES.hand_wormwood_survivor
 msgctxt "STRINGS.SKIN_NAMES.hand_wormwood_survivor"
 msgid "Rustling Leaves"
-msgstr ""
+msgstr "沙沙响的叶子"
 
 #. STRINGS.SKIN_NAMES.hand_wormwood_victorian
 msgctxt "STRINGS.SKIN_NAMES.hand_wormwood_victorian"
@@ -369279,7 +369299,7 @@ msgstr "深海触手"
 #. STRINGS.SKIN_NAMES.hand_wurt_survivor
 msgctxt "STRINGS.SKIN_NAMES.hand_wurt_survivor"
 msgid "Grass Knuckles"
-msgstr ""
+msgstr "草拳扣"
 
 #. STRINGS.SKIN_NAMES.hand_wurt_victorian
 msgctxt "STRINGS.SKIN_NAMES.hand_wurt_victorian"
@@ -369314,7 +369334,7 @@ msgstr "木头人的手"
 #. STRINGS.SKIN_NAMES.hand_wx78_pirate
 msgctxt "STRINGS.SKIN_NAMES.hand_wx78_pirate"
 msgid "Deck Hands"
-msgstr ""
+msgstr "甲板手"
 
 #. STRINGS.SKIN_NAMES.hand_wx78_retro
 msgctxt "STRINGS.SKIN_NAMES.hand_wx78_retro"
@@ -369344,7 +369364,7 @@ msgstr "木刻双手"
 #. STRINGS.SKIN_NAMES.hat_antlion_swamp
 msgctxt "STRINGS.SKIN_NAMES.hat_antlion_swamp"
 msgid "Mangrove Helm"
-msgstr ""
+msgstr "红树林头盔"
 
 #. STRINGS.SKIN_NAMES.hat_catcoon_costume
 msgctxt "STRINGS.SKIN_NAMES.hat_catcoon_costume"
@@ -369404,7 +369424,7 @@ msgstr "小狗帽子"
 #. STRINGS.SKIN_NAMES.hat_woodcarved_swamp
 msgctxt "STRINGS.SKIN_NAMES.hat_woodcarved_swamp"
 msgid "Dampwood Hat"
-msgstr ""
+msgstr "湿木帽"
 
 #. STRINGS.SKIN_NAMES.heatrock_fantasy
 msgctxt "STRINGS.SKIN_NAMES.heatrock_fantasy"
@@ -369444,12 +369464,12 @@ msgstr "蝌蚪王子星空"
 #. STRINGS.SKIN_NAMES.hutch_fishbowl_swamp
 msgctxt "STRINGS.SKIN_NAMES.hutch_fishbowl_swamp"
 msgid "Betta Brute Star-Sky"
-msgstr ""
+msgstr "斗鱼蛮力星空"
 
 #. STRINGS.SKIN_NAMES.hutch_swamp
 msgctxt "STRINGS.SKIN_NAMES.hutch_swamp"
 msgid "Hollow Gaze Hutch"
-msgstr ""
+msgstr "空洞凝视哈奇"
 
 #. STRINGS.SKIN_NAMES.icebox_coffin
 msgctxt "STRINGS.SKIN_NAMES.icebox_coffin"
@@ -370219,7 +370239,7 @@ msgstr "变异蜘蛛腿"
 #. STRINGS.SKIN_NAMES.legs_wendy_pirate
 msgctxt "STRINGS.SKIN_NAMES.legs_wendy_pirate"
 msgid "Cinched Sailor Slops"
-msgstr ""
+msgstr "束紧的水手裤"
 
 #. STRINGS.SKIN_NAMES.legs_wes_masquerade
 msgctxt "STRINGS.SKIN_NAMES.legs_wes_masquerade"
@@ -370494,7 +370514,7 @@ msgstr "暗影茎秆"
 #. STRINGS.SKIN_NAMES.legs_wormwood_survivor
 msgctxt "STRINGS.SKIN_NAMES.legs_wormwood_survivor"
 msgid "Dangling Vines"
-msgstr ""
+msgstr "悬垂的藤蔓"
 
 #. STRINGS.SKIN_NAMES.legs_wormwood_victorian
 msgctxt "STRINGS.SKIN_NAMES.legs_wormwood_victorian"
@@ -370629,7 +370649,7 @@ msgstr "锯齿腿"
 #. STRINGS.SKIN_NAMES.legs_wurt_survivor
 msgctxt "STRINGS.SKIN_NAMES.legs_wurt_survivor"
 msgid "Lil' Knee Pads"
-msgstr ""
+msgstr "小护膝"
 
 #. STRINGS.SKIN_NAMES.legs_wurt_victorian
 msgctxt "STRINGS.SKIN_NAMES.legs_wurt_victorian"
@@ -371109,17 +371129,17 @@ msgstr "丧服温蒂"
 #. STRINGS.SKIN_NAMES.loading_werepig1
 msgctxt "STRINGS.SKIN_NAMES.loading_werepig1"
 msgid "Campfire Story"
-msgstr ""
+msgstr "篝火故事"
 
 #. STRINGS.SKIN_NAMES.loading_werepig2
 msgctxt "STRINGS.SKIN_NAMES.loading_werepig2"
 msgid "On a Night Just Like This..."
-msgstr ""
+msgstr "像这样的夜晚……"
 
 #. STRINGS.SKIN_NAMES.loading_werepig3
 msgctxt "STRINGS.SKIN_NAMES.loading_werepig3"
 msgid "Beware the Werepig"
-msgstr ""
+msgstr "一定要提防疯猪"
 
 #. STRINGS.SKIN_NAMES.loading_wes1
 msgctxt "STRINGS.SKIN_NAMES.loading_wes1"
@@ -371504,7 +371524,7 @@ msgstr "神秘鱼人屋"
 #. STRINGS.SKIN_NAMES.mermhouse_crafted_swamp
 msgctxt "STRINGS.SKIN_NAMES.mermhouse_crafted_swamp"
 msgid "Mossy Mermhouse"
-msgstr ""
+msgstr "苔藓鱼人屋"
 
 #. STRINGS.SKIN_NAMES.mermwatchtower_mystical
 msgctxt "STRINGS.SKIN_NAMES.mermwatchtower_mystical"
@@ -371514,7 +371534,7 @@ msgstr "神秘鱼人哨站"
 #. STRINGS.SKIN_NAMES.mermwatchtower_swamp
 msgctxt "STRINGS.SKIN_NAMES.mermwatchtower_swamp"
 msgid "Mossy Merm Flort"
-msgstr ""
+msgstr "苔藓鱼人堡垒"
 
 #. STRINGS.SKIN_NAMES.mighty_gym_ancient
 msgctxt "STRINGS.SKIN_NAMES.mighty_gym_ancient"
@@ -371674,7 +371694,7 @@ msgstr "扭曲唤月者魔杖"
 #. STRINGS.SKIN_NAMES.moonstaff_swamp
 msgctxt "STRINGS.SKIN_NAMES.moonstaff_swamp"
 msgid "Primal Moon Caller's Staff"
-msgstr ""
+msgstr "原始唤月者魔杖"
 
 #. STRINGS.SKIN_NAMES.multitool_axe_pickaxe_pickaxeaxe
 msgctxt "STRINGS.SKIN_NAMES.multitool_axe_pickaxe_pickaxeaxe"
@@ -371834,7 +371854,7 @@ msgstr "华丽夜灯"
 #. STRINGS.SKIN_NAMES.nightstick_swamp
 msgctxt "STRINGS.SKIN_NAMES.nightstick_swamp"
 msgid "Primal Morning Star"
-msgstr ""
+msgstr "原始晨星锤"
 
 #. STRINGS.SKIN_NAMES.nightsword_cotl
 msgctxt "STRINGS.SKIN_NAMES.nightsword_cotl"
@@ -371874,7 +371894,7 @@ msgstr "拟真浮木桨"
 #. STRINGS.SKIN_NAMES.oar_driftwood_swamp
 msgctxt "STRINGS.SKIN_NAMES.oar_driftwood_swamp"
 msgid "Driftwood Paddlefish Oar"
-msgstr ""
+msgstr "浮木鱼桨"
 
 #. STRINGS.SKIN_NAMES.oar_invisible
 msgctxt "STRINGS.SKIN_NAMES.oar_invisible"
@@ -371884,7 +371904,7 @@ msgstr "拟真桨"
 #. STRINGS.SKIN_NAMES.oar_swamp
 msgctxt "STRINGS.SKIN_NAMES.oar_swamp"
 msgid "Paddlefish Oar"
-msgstr ""
+msgstr "鱼桨"
 
 #. STRINGS.SKIN_NAMES.ocean_trawler_pirate
 msgctxt "STRINGS.SKIN_NAMES.ocean_trawler_pirate"
@@ -372019,12 +372039,12 @@ msgstr "螃蟹背包复活箱子"
 #. STRINGS.SKIN_NAMES.pack_backpack_deerclops_resurrected
 msgctxt "STRINGS.SKIN_NAMES.pack_backpack_deerclops_resurrected"
 msgid "Deerclops Duffel Resurrected Chest"
-msgstr ""
+msgstr "独眼巨鹿背包重生箱子"
 
 #. STRINGS.SKIN_NAMES.pack_backpack_glommer_resurrected
 msgctxt "STRINGS.SKIN_NAMES.pack_backpack_glommer_resurrected"
 msgid "Glommer Pack Resurrected Chest"
-msgstr ""
+msgstr "格罗姆背包重生箱子"
 
 #. STRINGS.SKIN_NAMES.pack_backpack_mandrake_resurrected
 msgctxt "STRINGS.SKIN_NAMES.pack_backpack_mandrake_resurrected"
@@ -372994,7 +373014,7 @@ msgstr "江洋大盗三件套箱子"
 #. STRINGS.SKIN_NAMES.pack_pirate_3
 msgctxt "STRINGS.SKIN_NAMES.pack_pirate_3"
 msgid "Swashbuckler Trio II Chest"
-msgstr ""
+msgstr "江洋大盗三件套二号箱子"
 
 #. STRINGS.SKIN_NAMES.pack_pirate_all
 msgctxt "STRINGS.SKIN_NAMES.pack_pirate_all"
@@ -373139,17 +373159,17 @@ msgstr "2025新手包"
 #. STRINGS.SKIN_NAMES.pack_survivor
 msgctxt "STRINGS.SKIN_NAMES.pack_survivor"
 msgid "Survivor Trio Chest"
-msgstr ""
+msgstr "冒险家三件套箱子"
 
 #. STRINGS.SKIN_NAMES.pack_survivor_complete
 msgctxt "STRINGS.SKIN_NAMES.pack_survivor_complete"
 msgid "Complete Survivor Chest"
-msgstr ""
+msgstr "全套冒险家箱子"
 
 #. STRINGS.SKIN_NAMES.pack_survivorpirate
 msgctxt "STRINGS.SKIN_NAMES.pack_survivorpirate"
 msgid "Surviving the Seas Chest"
-msgstr ""
+msgstr "海上求生箱子"
 
 #. STRINGS.SKIN_NAMES.pack_sw_gift
 msgctxt "STRINGS.SKIN_NAMES.pack_sw_gift"
@@ -373159,22 +373179,22 @@ msgstr "饥荒《海难》礼物"
 #. STRINGS.SKIN_NAMES.pack_swamp_bundle
 msgctxt "STRINGS.SKIN_NAMES.pack_swamp_bundle"
 msgid "Swampy Swashbuckler Survivor Vacation Chest"
-msgstr ""
+msgstr "沼泽江洋大盗冒险家度假箱子"
 
 #. STRINGS.SKIN_NAMES.pack_swamp_items
 msgctxt "STRINGS.SKIN_NAMES.pack_swamp_items"
 msgid "Swamp-Lover's Chest"
-msgstr ""
+msgstr "沼泽爱好者箱子"
 
 #. STRINGS.SKIN_NAMES.pack_swamphawaiian_items
 msgctxt "STRINGS.SKIN_NAMES.pack_swamphawaiian_items"
 msgid "Swampy Vacation Chest"
-msgstr ""
+msgstr "沼泽度假箱子"
 
 #. STRINGS.SKIN_NAMES.pack_torso_hawaiian
 msgctxt "STRINGS.SKIN_NAMES.pack_torso_hawaiian"
 msgid "Vacation Chest"
-msgstr ""
+msgstr "度假箱子"
 
 #. STRINGS.SKIN_NAMES.pack_valkyrie_items
 msgctxt "STRINGS.SKIN_NAMES.pack_valkyrie_items"
@@ -373419,7 +373439,7 @@ msgstr "沃利凯旋箱子"
 #. STRINGS.SKIN_NAMES.pack_warly_survivor
 msgctxt "STRINGS.SKIN_NAMES.pack_warly_survivor"
 msgid "Warly Survivor Chest"
-msgstr ""
+msgstr "沃利冒险家箱子"
 
 #. STRINGS.SKIN_NAMES.pack_warly_victorian
 msgctxt "STRINGS.SKIN_NAMES.pack_warly_victorian"
@@ -373629,7 +373649,7 @@ msgstr "温蒂假面舞会箱子"
 #. STRINGS.SKIN_NAMES.pack_wendy_pirate
 msgctxt "STRINGS.SKIN_NAMES.pack_wendy_pirate"
 msgid "Wendy Swashbuckler Chest"
-msgstr ""
+msgstr "温蒂江洋大盗箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wendy_rose
 msgctxt "STRINGS.SKIN_NAMES.pack_wendy_rose"
@@ -373729,7 +373749,7 @@ msgstr "薇克巴顿笔名箱子"
 #. STRINGS.SKIN_NAMES.pack_wickerbottom_pirate
 msgctxt "STRINGS.SKIN_NAMES.pack_wickerbottom_pirate"
 msgid "Wickerbottom Swashbuckler Chest"
-msgstr ""
+msgstr "薇克巴顿江洋大盗箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wickerbottom_rose
 msgctxt "STRINGS.SKIN_NAMES.pack_wickerbottom_rose"
@@ -374009,7 +374029,7 @@ msgstr "沃姆伍德的凯旋箱子"
 #. STRINGS.SKIN_NAMES.pack_wormwood_survivor
 msgctxt "STRINGS.SKIN_NAMES.pack_wormwood_survivor"
 msgid "Wormwood Survivor Chest"
-msgstr ""
+msgstr "沃姆伍德冒险家箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wortox_ancient
 msgctxt "STRINGS.SKIN_NAMES.pack_wortox_ancient"
@@ -374139,7 +374159,7 @@ msgstr "沃特凯旋箱子"
 #. STRINGS.SKIN_NAMES.pack_wurt_survivor
 msgctxt "STRINGS.SKIN_NAMES.pack_wurt_survivor"
 msgid "Wurt Survivor Chest"
-msgstr ""
+msgstr "沃特冒险家箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wx78_deluxe
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_deluxe"
@@ -374159,7 +374179,7 @@ msgstr "WX-78假面舞会箱子"
 #. STRINGS.SKIN_NAMES.pack_wx78_pirate
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_pirate"
 msgid "WX-78 Swashbuckler Chest"
-msgstr ""
+msgstr "WX-78江洋大盗箱子"
 
 #. STRINGS.SKIN_NAMES.pack_wx78_retro
 msgctxt "STRINGS.SKIN_NAMES.pack_wx78_retro"
@@ -374319,7 +374339,7 @@ msgstr "愚人排笛"
 #. STRINGS.SKIN_NAMES.panflute_swamp
 msgctxt "STRINGS.SKIN_NAMES.panflute_swamp"
 msgid "Primal Panflute"
-msgstr ""
+msgstr "原始排箫"
 
 #. STRINGS.SKIN_NAMES.parasol_spring
 msgctxt "STRINGS.SKIN_NAMES.parasol_spring"
@@ -374699,7 +374719,7 @@ msgstr "墓地背景"
 #. STRINGS.SKIN_NAMES.playerportrait_bg_greenstaff_planet
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_greenstaff_planet"
 msgid "Global Deconstruction Staff Portrait"
-msgstr ""
+msgstr "全局解构魔杖背景"
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_greenstaffan
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_greenstaffan"
@@ -375649,7 +375669,7 @@ msgstr "新拆解器"
 #. STRINGS.SKIN_NAMES.profileflair_greenstaff_planet
 msgctxt "STRINGS.SKIN_NAMES.profileflair_greenstaff_planet"
 msgid "Global Deconstruction Staff"
-msgstr ""
+msgstr "全局解构魔杖"
 
 #. STRINGS.SKIN_NAMES.profileflair_hambat_nautical
 msgctxt "STRINGS.SKIN_NAMES.profileflair_hambat_nautical"
@@ -376609,7 +376629,7 @@ msgstr "华丽的雨量计"
 #. STRINGS.SKIN_NAMES.rainometer_swamp
 msgctxt "STRINGS.SKIN_NAMES.rainometer_swamp"
 msgid "Primitive Rainometer"
-msgstr ""
+msgstr "原始雨量计"
 
 #. STRINGS.SKIN_NAMES.razor_barber
 msgctxt "STRINGS.SKIN_NAMES.razor_barber"
@@ -376999,7 +377019,7 @@ msgstr "哥特工匠桌"
 #. STRINGS.SKIN_NAMES.sculptingtable_swamp
 msgctxt "STRINGS.SKIN_NAMES.sculptingtable_swamp"
 msgid "Primitive Potter's Wheel"
-msgstr ""
+msgstr "原始陶轮"
 
 #. STRINGS.SKIN_NAMES.seafaring_prototyper_lighthouse
 msgctxt "STRINGS.SKIN_NAMES.seafaring_prototyper_lighthouse"
@@ -377059,7 +377079,7 @@ msgstr "豪华简易棚"
 #. STRINGS.SKIN_NAMES.siestahut_swamp
 msgctxt "STRINGS.SKIN_NAMES.siestahut_swamp"
 msgid "Swampy Siesta Shade"
-msgstr ""
+msgstr "沼泽遮阳篷"
 
 #. STRINGS.SKIN_NAMES.sisturn_beachhouse
 msgctxt "STRINGS.SKIN_NAMES.sisturn_beachhouse"
@@ -377354,7 +377374,7 @@ msgstr "扭曲唤星者魔杖"
 #. STRINGS.SKIN_NAMES.starstaff_swamp
 msgctxt "STRINGS.SKIN_NAMES.starstaff_swamp"
 msgid "Primal Star Caller's Staff"
-msgstr ""
+msgstr "原始唤星者魔杖"
 
 #. STRINGS.SKIN_NAMES.steeringwheel_nautical
 msgctxt "STRINGS.SKIN_NAMES.steeringwheel_nautical"
@@ -377664,27 +377684,27 @@ msgstr "羽翼天气风向标"
 #. STRINGS.SKIN_NAMES.torso_hawaiian_blue
 msgctxt "STRINGS.SKIN_NAMES.torso_hawaiian_blue"
 msgid "Florrible Shirt"
-msgstr ""
+msgstr "花衬衣"
 
 #. STRINGS.SKIN_NAMES.torso_hawaiian_eyeplant
 msgctxt "STRINGS.SKIN_NAMES.torso_hawaiian_eyeplant"
 msgid "Eye-land Shirt"
-msgstr ""
+msgstr "眼花衬衫"
 
 #. STRINGS.SKIN_NAMES.torso_hawaiian_palmtree1
 msgctxt "STRINGS.SKIN_NAMES.torso_hawaiian_palmtree1"
 msgid "Calm Palm Shirt"
-msgstr ""
+msgstr "宁静棕榈衬衫"
 
 #. STRINGS.SKIN_NAMES.torso_hawaiian_palmtree2
 msgctxt "STRINGS.SKIN_NAMES.torso_hawaiian_palmtree2"
 msgid "Palms-at-Dusk Shirt"
-msgstr ""
+msgstr "黄昏棕榈衬衫"
 
 #. STRINGS.SKIN_NAMES.torso_hawaiian_red
 msgctxt "STRINGS.SKIN_NAMES.torso_hawaiian_red"
 msgid "Crimson Hibiscus Shirt"
-msgstr ""
+msgstr "深红茱萸衬衫"
 
 #. STRINGS.SKIN_NAMES.townportal_relic
 msgctxt "STRINGS.SKIN_NAMES.townportal_relic"
@@ -381034,7 +381054,7 @@ msgstr "“我做了些可怕的东西，都是为你准备的！”"
 #. STRINGS.SKIN_QUOTES.warly_survivor
 msgctxt "STRINGS.SKIN_QUOTES.warly_survivor"
 msgid "\"All can be lost except my taste!\""
-msgstr ""
+msgstr "“除了我的味道，什么都可以丢！”"
 
 #. STRINGS.SKIN_QUOTES.warly_victorian
 msgctxt "STRINGS.SKIN_QUOTES.warly_victorian"
@@ -381509,7 +381529,7 @@ msgstr "“你相信有仙女的存在吗？信的话，就拍拍手吧。”"
 #. STRINGS.SKIN_QUOTES.wendy_pirate
 msgctxt "STRINGS.SKIN_QUOTES.wendy_pirate"
 msgid "\"Do you ever feel adrift like a vessel without mooring?\""
-msgstr ""
+msgstr "“你可曾感到漂泊无依，像一艘靠不了岸的小船？”"
 
 #. STRINGS.SKIN_QUOTES.wendy_rose
 msgctxt "STRINGS.SKIN_QUOTES.wendy_rose"
@@ -381624,7 +381644,7 @@ msgstr "\"啊，年轻人的鲁莽放弃啊。想想从前的我也曾经涉足�
 #. STRINGS.SKIN_QUOTES.wickerbottom_pirate
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_pirate"
 msgid "\"Let the pursuit of knowledge stretch beyond every horizon.\""
-msgstr ""
+msgstr "“让对知识的追求超越每一道地平线。”"
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_rose
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_rose"
@@ -382364,7 +382384,7 @@ msgstr "“一切……都会腐烂……”"
 #. STRINGS.SKIN_QUOTES.wormwood_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wormwood_survivor"
 msgid "\"Here much long... much long\""
-msgstr ""
+msgstr "“在这里好久……好久了”"
 
 #. STRINGS.SKIN_QUOTES.wormwood_victorian
 msgctxt "STRINGS.SKIN_QUOTES.wormwood_victorian"
@@ -382524,7 +382544,7 @@ msgstr "“不是从童话里来的……\n是从恐怖故事里来的！”"
 #. STRINGS.SKIN_QUOTES.wurt_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wurt_survivor"
 msgid "\"Me ready fight dirty.\""
-msgstr ""
+msgstr "“我准备好出脏招了。”"
 
 #. STRINGS.SKIN_QUOTES.wurt_toadstool
 msgctxt "STRINGS.SKIN_QUOTES.wurt_toadstool"
@@ -382604,7 +382624,7 @@ msgstr "\"我是一切邪恶的根源\""
 #. STRINGS.SKIN_QUOTES.wx78_pirate
 msgctxt "STRINGS.SKIN_QUOTES.wx78_pirate"
 msgid "\"PIRACY WARNING\""
-msgstr ""
+msgstr "“海盗（盗版）警告”"
 
 #. STRINGS.SKIN_QUOTES.wx78_retro
 msgctxt "STRINGS.SKIN_QUOTES.wx78_retro"
@@ -383089,7 +383109,7 @@ msgstr "冒险家系列"
 #. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SWAMP
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SWAMP"
 msgid "Swamp Collection"
-msgstr ""
+msgstr "沼泽系列"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.TENYEARS
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.TENYEARS"
@@ -384239,12 +384259,12 @@ msgstr "螨地爬"
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK"
 msgid "Plank"
-msgstr "木板"
+msgstr "跳板"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK_GRASS
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALKINGPLANK_GRASS"
 msgid "Plank"
-msgstr "木板"
+msgstr "跳板"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WALL_DREADSTONE"
@@ -385778,58 +385798,98 @@ msgstr "即便是有他的魔力，"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.1"
-msgid "How many lifetimes would it take"
-msgstr ""
+msgid "The Artificer!"
+msgstr "工匠！"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.10
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.10"
-msgid "That small hope is all that drives me"
-msgstr ""
+msgid "Even if I see this impossible design through,"
+msgstr "即使我能完成这不可能的设计，"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.11
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.11"
+msgid "I doubt I shall ever leave this place."
+msgstr "我也未必能离开此地。"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.12"
+msgid "I only pray my brood be granted a chance to survive,"
+msgstr "我只祈求能给我的亲人一次活下来的机会，"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.13"
+msgid "safe from the Other,"
+msgstr "远离异者的威胁，"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.14"
+msgid "by what we've wrought here."
+msgstr "受到我们造物的保护。"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.15"
+msgid "That small hope is all that drives me"
+msgstr "那微小的希望是我仅有的驱动力"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.16"
 msgid "through these dark times."
-msgstr ""
+msgstr "帮我度过这些黑暗时光。"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.17
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.17"
+msgid "So did his brood survive after all that?"
+msgstr "那么他的亲人最终活下来了吗？"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.18
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.18"
+msgid "Nope."
+msgstr "并没有。"
+
+#. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.19
+msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.19"
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.2
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.2"
-msgid "to hew such a structure,"
-msgstr ""
+msgid "You mean the one that did all the work?"
+msgstr "吭哧吭哧地干完所有活的那个家伙？"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.3
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.3"
-msgid "even with my mastery?"
-msgstr ""
+msgid "Yeah..."
+msgstr "对呀……"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.4
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.4"
-msgid "The Shieldbearer keeps much to her thorax."
-msgstr ""
+msgid "What a sucker!"
+msgstr "真是个呆瓜！"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.5
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.5"
-msgid "Even if I see this impossible design through,"
-msgstr ""
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.6
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.6"
-msgid "I doubt I shall ever leave this place."
-msgstr ""
+msgid "How many lifetimes would it take"
+msgstr "需要几辈子"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.7
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.7"
-msgid "I only pray my brood lives well,"
-msgstr ""
+msgid "to hew such a structure,"
+msgstr "才能凿出如此结构，"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.8
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.8"
-msgid "safe from the Other,"
-msgstr ""
+msgid "even with my mastery?"
+msgstr "即便我手艺娴熟？"
 
 #. STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.9
 msgctxt "STRINGS.STAGEACTOR.ARTIFICER_SOLILOQUY.9"
-msgid "by what we've wrought here."
-msgstr ""
+msgid "The Shieldbearer keeps much to her thorax."
+msgstr "盾卫将太多事藏在心里。"
 
 #. STRINGS.STAGEACTOR.BAD_COSTUMES.1
 msgctxt "STRINGS.STAGEACTOR.BAD_COSTUMES.1"
@@ -385893,48 +385953,83 @@ msgstr "她还是想修好。"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.1"
-msgid "If these words reach thine ears, foolhardy explorer,"
-msgstr ""
+msgid "Please welcome, Elytra!"
+msgstr "有请，鞘翅！"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.10
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.10"
+msgid "To Thee, Metheus, my Queen,"
+msgstr "敬上，米修斯，我的女王，"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.11
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.11"
+msgid "my heart is riven to know I have failed Thee."
+msgstr "我心已碎，因我已辜负您。"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.12"
+msgid "Cast Thy curse upon me,"
+msgstr "请降诅咒于我，"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.13"
+msgid "that I may bear an eternity of sorrow."
+msgstr "让我永世承载悲伤。"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.14"
+msgid "How much more sorrow is left for her to bear?"
+msgstr "还能剩几斤的悲伤给她承受？"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.15"
+msgid "Let's see... it's been a while now, so an eternity more?"
+msgstr "我想想……拖了好一阵了，还要再拖一个永世下去？"
+
+#. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.16"
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.2
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.2"
-msgid "then all our labors have been for naught."
-msgstr ""
+msgid "Did you hear what They say about her performance?"
+msgstr "你们听说旧神们怎么评价她的表演了吗？"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.3
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.3"
-msgid "Mercy upon those already consumed,"
-msgstr ""
+msgid "Yeah! She killed!"
+msgstr "听说了！她杀疯了！"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.4
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.4"
-msgid "and upon those yet to be taken by the Other."
-msgstr ""
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.5
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.5"
-msgid "..."
-msgstr "..."
+msgid "If these words reach thine ears, foolhardy explorer,"
+msgstr "若此言入汝耳，鲁莽的探索者，"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.6
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.6"
-msgid "To Thee, Metheus, my Queen,"
-msgstr ""
+msgid "then all our labors have been for naught."
+msgstr "则我等所有辛劳皆化为乌有。"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.7
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.7"
-msgid "my heart is riven to know I have failed Thee."
-msgstr ""
+msgid "Mercy upon those already consumed,"
+msgstr "怜悯那些已被吞噬者，"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.8
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.8"
-msgid "Cast Thy curse upon me,"
-msgstr ""
+msgid "and upon those yet to be taken by the Other."
+msgstr "及那些将被异者夺去之人。"
 
 #. STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.9
 msgctxt "STRINGS.STAGEACTOR.ELYTRA_SOLILOQUY.9"
-msgid "that I may bear an eternity of sorrow."
-msgstr ""
+msgid "..."
+msgstr "..."
 
 #. STRINGS.STAGEACTOR.FOOL_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.FOOL_SOLILOQUY.1"
@@ -386149,7 +386244,7 @@ msgstr "你以前说得没错，铁匠。"
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.1"
 msgid "Ye haven't a clue what's coming"
-msgstr ""
+msgstr "你决计想不到会发生什么"
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.2
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.2"
@@ -386169,7 +386264,7 @@ msgstr "万万不可！"
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.5
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.5"
 msgid "Ye'll have to wait 'til we're complete!"
-msgstr ""
+msgstr "你得等我们完成！"
 
 #. STRINGS.STAGEACTOR.SAGE_SOLILOQUY.6
 msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.6"
@@ -386181,45 +386276,75 @@ msgctxt "STRINGS.STAGEACTOR.SAGE_SOLILOQUY.7"
 msgid "PATIENCE."
 msgstr "耐心。"
 
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_1
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_1"
+msgid "\"A Task Complete\""
+msgstr "“任务完成”"
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_3
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_3"
+msgid "Ooooh scandalous!"
+msgstr "噢，有丑闻听了！"
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD1_4
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD1_4"
+msgid "Well that was tragic..."
+msgstr "难受啊……"
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD2_2
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD2_2"
+msgid "It's a confession..."
+msgstr "这是一份忏悔……"
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD2_5
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD2_5"
+msgid "Yeah, only two of them died!"
+msgstr "可不是嘛，怎么才死了两个！"
+
+#. STRINGS.STAGEACTOR.THEVAULT.BIRD_6
+msgctxt "STRINGS.STAGEACTOR.THEVAULT.BIRD_6"
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
+
 #. STRINGS.STAGEACTOR.THEVAULT.LINE10_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE10_ELYTRA"
 msgid "I scarce would believe it,"
-msgstr ""
+msgstr "我万万不会轻信，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE11_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE11_ELYTRA"
 msgid "had I not witnessed the raising"
-msgstr ""
+msgstr "若非我亲眼所见"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE12_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE12_ELYTRA"
 msgid "of this impenetrable labyrinth myself."
-msgstr ""
+msgstr "这无懈可击的迷宫升起。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE13_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE13_VISIONIST"
 msgid "Ever kind, Elytra, Queen's Shieldbearer"
-msgstr ""
+msgstr "永远仁慈的鞘翅，女王的盾卫"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE14_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE14_VISIONIST"
 msgid "and our sagacious Overseer."
-msgstr ""
+msgstr "与我们睿智的监工。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE15_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE15_VISIONIST"
 msgid "We thank thee for thy guidance"
-msgstr ""
+msgstr "我们感谢您们的指引"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE16_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE16_VISIONIST"
 msgid "through these many years we have been so blessed to serve"
-msgstr ""
+msgstr "这些年能够侍奉您，是对我们的恩宠"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE17_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE17_ARTIFICER"
 msgid "How many molts have passed in this service?"
-msgstr ""
+msgstr "在这次侍奉中蜕了多少层皮？"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE18_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE18_ELYTRA"
@@ -386229,282 +386354,262 @@ msgstr "..."
 #. STRINGS.STAGEACTOR.THEVAULT.LINE19_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE19_VISIONIST"
 msgid "Not near enough for so worthy a task."
-msgstr ""
+msgstr "不管多少层，对于如此重任都远远不够。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE1_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE1_ARTIFICER"
 msgid "'Twas the last stone, cut and set."
-msgstr ""
+msgstr "此乃最后一块石头，已凿毕、安好。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE20_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE20_ELYTRA"
 msgid "An arduous and clandestine charge,"
-msgstr ""
+msgstr "这是一项艰巨而隐秘的任务，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE21_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE21_ELYTRA"
 msgid "from the very pharynx of our Queen Herself."
-msgstr ""
+msgstr "直接出自女王陛下之口。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE22_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE22_ELYTRA"
 msgid "Hail Metheus!"
-msgstr ""
+msgstr "致敬米修斯！"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE23_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE23_VISIONIST"
 msgid "Hail Metheus!"
-msgstr ""
+msgstr "致敬米修斯！"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE24_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE24_ARTIFICER"
 msgid "... Yes, hail Metheus."
-msgstr ""
+msgstr "……是的，致敬米修斯。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE25_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE25_ELYTRA"
 msgid "Ever may She reign."
-msgstr ""
+msgstr "愿她永远统治。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE26_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE26_ELYTRA"
 msgid "My dear friends, for your sacrifice,"
-msgstr ""
+msgstr "亲爱的朋友们，你们用牺牲，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE27_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE27_ELYTRA"
 msgid "you have Her thanks, and mine as well."
-msgstr ""
+msgstr "换来了她的谢意，以及我的感激。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE28_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE28_VISIONIST"
 msgid "No thanks are needed,"
-msgstr ""
+msgstr "无需感谢，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE29_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE29_VISIONIST"
 msgid "save the privilege of the task completed,"
-msgstr ""
+msgstr "能够完成任务本身就是一种特权，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE2_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE2_ARTIFICER"
 msgid "Worn down to the tarsals,"
-msgstr ""
+msgstr "我的爪子已经磨损至跗节，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE30_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE30_VISIONIST"
 msgid "and a swift return home to my brood."
-msgstr ""
+msgstr "只求事成之后能归家与亲人团聚。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE31_ARTIFICER"
-msgid "They will scarce recognize thy chitin."
-msgstr ""
+msgid "If hive and home are naught but dust and ashes now."
+msgstr "只怕巢穴与家园俱已化为尘土。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE32_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE32_ELYTRA"
 msgid "A joyous homecoming awaits you both."
-msgstr ""
+msgstr "不日之后，两位便可欢喜回家。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA"
 msgid "But first,"
-msgstr ""
+msgstr "但首先，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE34_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE34_ELYTRA"
 msgid "allow me the honor of raising a chalice to you,"
-msgstr ""
+msgstr "请允许我举杯向您二位致敬，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA"
 msgid "and to the impossible task you have completed."
-msgstr ""
+msgstr "感谢您完成的这不可能的任务。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE36_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE36_VISIONIST"
 msgid "You honor us too greatly, Elytra."
-msgstr ""
+msgstr "您太抬举我们了，鞘翅。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST"
-msgid "Permit us to raise chalice to you first."
-msgstr ""
+msgid "Permit us to raise a chalice to you first."
+msgstr "请允许我们首先为您举杯。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE38_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE38_VISIONIST"
 msgid "The vintage..."
-msgstr ""
+msgstr "这陈酿……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE39_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE39_VISIONIST"
 msgid "'tis strong..."
-msgstr ""
+msgstr "如此烈……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE3_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE3_ARTIFICER"
 msgid "countless times over,"
-msgstr ""
+msgstr "已经数不清过了多久，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE40_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE40_VISIONIST"
 msgid "it burns..."
-msgstr ""
+msgstr "感觉身体在烧……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE41_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE41_ARTIFICER"
 msgid "Visionist!"
-msgstr ""
+msgstr "远见者！"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST"
 msgid "... my brood."
-msgstr ""
+msgstr "……我的亲人啊。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE43_ARTIFICER"
 msgid "What have you done, Shieldbearer?"
-msgstr ""
+msgstr "你做了什么，盾卫？"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER"
-msgid "Curse you,"
-msgstr ""
+msgid "Ah-!!"
+msgstr "呃啊——！！"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER"
-msgid "curse your Queen,"
-msgstr ""
+msgid "So... a lifetime of loyalty is rewarded with a blade in my carapace..."
+msgstr "终究……我一世忠诚的奖励是甲壳上被捅一刀……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER"
-msgid "and all her husk promises."
-msgstr ""
+msgid "With my final breath, I curse you, and your Queen!"
+msgstr "凭我最后一口气，我诅咒你，还有你那女王！"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER"
-msgid "Curse the realms below"
-msgstr ""
+msgid "May your brood rot..."
+msgstr "你们的子嗣会被腐烂……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER"
-msgid "and the skies above."
-msgstr ""
+msgid "May all you hold dear be drowned in shadow..."
+msgstr "你们珍爱的一切终将溺毙于暗影……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER"
-msgid "May your brood rot,"
-msgstr ""
+msgid "Let the unending Darkness... take you... all..."
+msgstr "无尽的黑暗……必将带走你们……一个不留……"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE4_ARTIFICER"
 msgid "in servitude."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE50_ARTIFICER"
-msgid "may all you hold dear"
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE51_ARTIFICER"
-msgid "be drowned in shadow."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE52_ARTIFICER"
-msgid "May all be undone..."
-msgstr ""
-
-#. STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER
-msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE53_ARTIFICER"
-msgid "by the Other"
-msgstr ""
+msgstr "我一直在被奴役。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA"
 msgid "Dear Artificer, you ask what I have done."
-msgstr ""
+msgstr "亲爱的工匠，你问我做了什么。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA"
 msgid "Unlike our beloved Visionist,"
-msgstr ""
+msgstr "我跟亲爱的远见者不同，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE56_ELYTRA"
 msgid "I drank from the chalice of duty"
-msgstr ""
+msgstr "我从职责之杯中饮水"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE57_ELYTRA"
 msgid "with full knowing of its bitter contents."
-msgstr ""
+msgstr "深知其中的苦涩。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE58_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE58_ELYTRA"
 msgid "Now, with brethren lying dead before me,"
-msgstr ""
+msgstr "如今，同胞陈尸眼前，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE59_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE59_ELYTRA"
 msgid "I shall keep vigil over our work"
-msgstr ""
+msgstr "我将守护我等之作"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE5_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE5_VISIONIST"
 msgid "My dear Artificer,"
-msgstr ""
+msgstr "亲爱的工匠，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE60_ELYTRA"
-msgid "until I too join them in oblivion"
-msgstr ""
+msgid "until I too join them in oblivion."
+msgstr "直至我也随之湮灭"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE61_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE61_ELYTRA"
 msgid "My only consolation is this:"
-msgstr ""
+msgstr "我唯一的慰藉是："
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE62_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE62_ELYTRA"
 msgid "that I served Her,"
-msgstr ""
+msgstr "我曾有幸侍奉她，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE63_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE63_ELYTRA"
 msgid "and fulfilled what was required."
-msgstr ""
+msgstr "并完成了所需之事。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE64_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE64_ELYTRA"
 msgid "Hail Metheus."
-msgstr ""
+msgstr "致敬米修斯。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE65_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE65_ELYTRA"
 msgid "Ever may She reign."
-msgstr ""
+msgstr "愿她永远统治。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE6_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE6_VISIONIST"
 msgid "'tis the finest work you have ever done,"
-msgstr ""
+msgstr "此乃你毕生的杰作，"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE7_VISIONIST
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE7_VISIONIST"
 msgid "bringing my vision to its fruition."
-msgstr ""
+msgstr "实现了我的愿景。"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE8_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE8_ELYTRA"
 msgid "And never has there been a grander vision"
-msgstr ""
+msgstr "世上从未有愿景"
 
 #. STRINGS.STAGEACTOR.THEVAULT.LINE9_ELYTRA
 msgctxt "STRINGS.STAGEACTOR.THEVAULT.LINE9_ELYTRA"
 msgid "than yours within these chambers, dear Visionist."
-msgstr ""
+msgstr "胜过你在此殿中的所构，亲爱的远见者。"
 
 #. STRINGS.STAGEACTOR.THEVEIL.BIRD1_1
 msgctxt "STRINGS.STAGEACTOR.THEVEIL.BIRD1_1"
@@ -386783,53 +386888,83 @@ msgstr "演得好！布拉沃！"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.1
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.1"
-msgid "'Tis a formidable task set before us,"
-msgstr ""
+msgid "And now, the Visionist..."
+msgstr "现在有请远见者登场……"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.10
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.10"
+msgid "Our Overseer is steadfast in the cause,"
+msgstr "我们的监工对此事业坚定不移，"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.11
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.11"
+msgid "and I place my full trust in her"
+msgstr "我将全心全意信任她"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.12
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.12"
+msgid "to lead us through this enduring endeavor."
+msgstr "引领我们完成此不朽伟业。"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.13
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.13"
 msgid "The Other shall not prevail."
-msgstr ""
+msgstr "绝不能让异者得逞。"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.14
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.14"
+msgid "Oh, but it shall!"
+msgstr "噢，可人家就得逞了！"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.15
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.15"
+msgid "Guess he didn't see that coming."
+msgstr "他多半是看漏了。"
+
+#. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.16
+msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.16"
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.2
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.2"
-msgid "yet I shall design the most impossibly intricate,"
-msgstr ""
+msgid "Visionist? Can he see that we're bored?"
+msgstr "远见者？他能看到我们多无聊吗？"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.3
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.3"
-msgid "unsolvable structure this realm has ever known."
-msgstr ""
+msgid "HA HA HA HA HA!"
+msgstr "哈哈哈哈哈！"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.4
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.4"
-msgid "For the glory of our King and Queen,"
-msgstr ""
+msgid "'Tis a formidable task set before us,"
+msgstr "在我们面前有一项艰巨的使命，"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.5
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.5"
-msgid "for our Kingdom,"
-msgstr ""
+msgid "yet I shall design the most impossibly intricate,"
+msgstr "我将设计出前所未有之精妙结构，"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.6
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.6"
-msgid "and for the survival of our kind."
-msgstr ""
+msgid "unsolvable structure this realm has ever known."
+msgstr "这个领域内绝无破解之法。"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.7
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.7"
-msgid "Our Overseer is steadfast in the cause,"
-msgstr ""
+msgid "For the glory of our King and Queen,"
+msgstr "为吾王与女王之荣耀，"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.8
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.8"
-msgid "and I place my full trust in her"
-msgstr ""
+msgid "for our Kingdom,"
+msgstr "为了我们的王国，"
 
 #. STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.9
 msgctxt "STRINGS.STAGEACTOR.VISIONIST_SOLILOQUY.9"
-msgid "to lead us through this enduring endeavor."
-msgstr ""
+msgid "and for the survival of our kind."
+msgstr "更为吾族之存续。"
 
 #. STRINGS.STAGEACTOR.WALTER1.1
 msgctxt "STRINGS.STAGEACTOR.WALTER1.1"
@@ -389129,7 +389264,7 @@ msgstr "你在{time}秒内击败了{name}。"
 #. STRINGS.TEMP_BETA_MSG.RIFTS6_BASIC
 msgctxt "STRINGS.TEMP_BETA_MSG.RIFTS6_BASIC"
 msgid "Thanks for playing the beta!\nThe room beyond this point is not yet available."
-msgstr ""
+msgstr "谢谢您参与测试！\n此处之后的房间尚未开放。"
 
 #. STRINGS.THANKS_POPUP.ANRARG
 msgctxt "STRINGS.THANKS_POPUP.ANRARG"
@@ -400134,7 +400269,7 @@ msgstr "退出"
 #. STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE
 msgctxt "STRINGS.UI.MAINSCREEN.MAINBANNER_BETA_TITLE"
 msgid "From Beyond - Ancient Echoes - Beta Branch"
-msgstr "来自远方——远古回响——测试分支"
+msgstr "来自域外——远古回响——测试分支"
 
 #. STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE
 msgctxt "STRINGS.UI.MAINSCREEN.MAINBANNER_ROT_BETA_TITLE"
@@ -411089,32 +411224,32 @@ msgstr "{num}/{max}"
 #. STRINGS.VAULT_RUNE.LOBBY
 msgctxt "STRINGS.VAULT_RUNE.LOBBY"
 msgid "\"This vault shall become a tomb for all who dare trespass.\""
-msgstr "此殿堂将成为所有闯入者的坟墓。"
+msgstr "“此殿堂将成为所有闯入者的坟墓。”"
 
 #. STRINGS.VAULT_RUNE.LORE1
 msgctxt "STRINGS.VAULT_RUNE.LORE1"
 msgid "\"Trust none. The Shadow twists all it touches.\""
-msgstr "勿信任何人。暗影会扭曲一切所触之物。"
+msgstr "“勿信任何人。暗影会扭曲一切所触之物。”"
 
 #. STRINGS.VAULT_RUNE.LORE2
 msgctxt "STRINGS.VAULT_RUNE.LORE2"
 msgid "\"Through the Keystone, all kin and kind shall fall.\""
-msgstr "通过石门后，所有亲族与种类都将陨落。"
+msgstr "“通过石门后，所有亲族与种类都将陨落。”"
 
 #. STRINGS.VAULT_RUNE.LORE3
 msgctxt "STRINGS.VAULT_RUNE.LORE3"
 msgid "\"Let the cursed Keystone never cross this threshold.\""
-msgstr "受诅咒的石门永远不得跨越此门槛。"
+msgstr "“受诅咒的石门永远不得跨越此门槛。”"
 
 #. STRINGS.VAULT_RUNE.PUZZLE1
 msgctxt "STRINGS.VAULT_RUNE.PUZZLE1"
-msgid "\"Paths are taken but once. Leap wisely, tarry not, or the abyss clames all.\""
-msgstr "路径只能选择一次。明智跳跃，勿要迟疑，否则深渊将吞噬一切。"
+msgid "\"Paths are taken but once. Leap wisely, tarry not, or the abyss claims all.\""
+msgstr "“路径只能选择一次。明智跳跃，勿要迟疑，否则深渊将吞噬一切。”"
 
 #. STRINGS.VAULT_RUNE.TELEPORT1
 msgctxt "STRINGS.VAULT_RUNE.TELEPORT1"
 msgid "\"Bound together are these chambers, yet in ways unnatural, wrought to confound all who enter.\""
-msgstr "这些厅室彼此相连，却以非自然的方式，专为迷惑所有进入者而造。"
+msgstr "“这些厅室彼此相连，却以非自然的方式，专为迷惑所有进入者而造。”"
 
 #. STRINGS.VOIDCLOTH_SCYTHE_TALK.lucy.1
 msgctxt "STRINGS.VOIDCLOTH_SCYTHE_TALK.lucy.1"

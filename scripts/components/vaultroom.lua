@@ -1,7 +1,7 @@
 local defs = require("prefabs/vaultroom_defs")
 
 local SAVE_RADIUS = 28
-local SAVE_NO_TAGS = { "INLIMBO", "vault_teleporter", "formationleader" }
+local SAVE_NO_TAGS = { "INLIMBO", "vault_teleporter" }
 local SAVE_CONTAINER_TAGS = { "_inventory", "_container" }
 
 local VaultRoom = Class(function(self, inst)
@@ -59,6 +59,7 @@ local function _getunloadaction(ent, map, tile_x, tile_y)
 	while true do
 		local nextowner =
 			(owner.components.spell and owner.components.spell.target) or
+			(owner.components.formationleader and owner.components.formationleader.target) or
 			(owner.components.follower and owner.components.follower:GetLeader()) or
 			(owner.components.inventoryitem and owner.components.inventoryitem.owner)
 		--NOTE: inventoryitem.owner check only applies after we've found spell target

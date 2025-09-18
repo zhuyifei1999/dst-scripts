@@ -181,6 +181,7 @@ local function FromBeyondRetrofitting_Fumarole(world_map, savedata)
     local map_width = savedata.map.width
     local map_height = savedata.map.height
     local entities = savedata.ents
+	local generated = savedata.map.generated
 
     local add_fn = {fn=add_fn_fn, args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}}
 
@@ -193,6 +194,7 @@ local function FromBeyondRetrofitting_Fumarole(world_map, savedata)
         AddTileNodeIdsForArea(world_map, topology_node_index, left + 1, top + 1, main_area_size - 1, main_area_size - 1)
 
         obj_layout.Place({left, top}, "retrofit_fumarole", add_fn, nil, world_map)
+		--obj_layout.PlaceAndPopulatePrefabDensities({left, top}, "retrofit_fumarole", add_fn, nil, world_map, "FumaroleRetrofit:0:Chasm", generated.densities)
 
         print ("Retrofitting for From Beyond - Ancient Echoes - Successfully added the fumarole biome into the world.")
     else

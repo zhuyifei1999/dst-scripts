@@ -85,7 +85,11 @@ end
 local function UpdateGameMusic(inst)
     if (ThePlayer ~= nil and ThePlayer:IsValid())
             and ThePlayer:IsNear(inst, TUNING.CHARLIE_STAGE_MUSIC_RANGE) then
-        ThePlayer:PushEvent("stageplaymusic", inst._musictype:value())
+        -- Dynamic music can handle 0, but we might as well avoid the event push if we can.
+        local music_type = inst._musictype:value()
+        if music_type > 0 then
+            ThePlayer:PushEvent("stageplaymusic", music_type)
+        end
     end
 end
 

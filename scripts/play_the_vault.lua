@@ -187,13 +187,12 @@ local MARIONETTE_TIME = 1.1
 			{roles = {"ELYTRA"},			duration = 1.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE33_ELYTRA },
 
 			{roles = {"ELYTRA"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE34_ELYTRA, anim={"emote_pre_toast_chalice", "emote_loop_toast_chalice", "emote_loop_toast_chalice"} },
-			{roles = {"ELYTRA"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA, anim = "emote_loop_toast_chalice" },
+			{roles = {"ELYTRA"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE35_ELYTRA, anim = {"emote_loop_toast_chalice", "emote_pst_toast_chalice"}, check_current_anim = true, },
 
 			{roles = {"VISIONIST"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE36_VISIONIST },
-			{roles = {"VISIONIST"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST, anim={"emote_pre_toast_chalice", "emote_loop_toast_chalice"} },
+			{roles = {"VISIONIST"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE37_VISIONIST, anim={"emote_pre_toast_chalice", "emote_loop_toast_chalice"}, endidleanim = "emote_loop_toast_chalice", animtype = "loop" },
 
-			{roles = {"VISIONIST"},			duration = 0.1,	},
-
+			{roles = {"VISIONIST"},			duration = 0.1},
 			{actionfn = fn.override_with_chalice, nopause = true },
 			{roles = {"VISIONIST"},			duration = 3.5,		anim = {"drink_chalice_pre", "drink_chalice" },
 				castsound = {
@@ -208,7 +207,7 @@ local MARIONETTE_TIME = 1.1
 			
 			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE41_ARTIFICER, anim = "emoteXL_annoyed" },
 
-			{roles = {"VISIONIST"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST, anim="death", endidleanim="death_idle"},
+			{roles = {"VISIONIST"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE42_VISIONIST, anim="architect_death", endidleanim="architect_death_idle"},
 
 			{actionfn = fn.findpositions,	duration = 1.5,		positions={["ELYTRA"] = 8, ["ARTIFICER"] = 2}},
 			{roles = {"ARTIFICER"},			duration = 1.0,		anim="emoteXL_annoyed", },
@@ -226,15 +225,16 @@ local MARIONETTE_TIME = 1.1
 
 			{roles = {"ELYTRA"},			duration = 0.4,		anim="atk"}, --anim={"dagger_pre", "dagger_stab", }
 
-			{roles = {"ARTIFICER"},			duration = 1.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER, anim = "emoteXL_annoyed" }, --hit react here?
+			{roles = {"ARTIFICER"},			duration = 30 * FRAMES,		line = STRINGS.STAGEACTOR.THEVAULT.LINE44_ARTIFICER, anim = "mason_death_pre", animtype = "hold" },
+			{roles = {"ARTIFICER"},			nopause = true,	anim = "mason_death_loop", animtype = "loop" },
 
 			{actionfn = fn.findpositions,	duration = 0.5,		positions={["ELYTRA"] = 7}},
 
-			{roles = {"ARTIFICER"},			duration = 4.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER, anim = "channel_loop", animtype = "loop" },
-			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER, anim = "emoteXL_angry" },
-			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER, anim = "channel_loop", animtype = "loop" },
-			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER, anim = "idle_groggy", animtype = "loop" },
-			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER, anim = "death", endidleanim="death_idle" },
+			{roles = {"ARTIFICER"},			duration = 4.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE45_ARTIFICER, anim = "mason_death_loop", animtype = "loop", check_current_anim = true },
+			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE46_ARTIFICER, anim = "emoteXL_angry", endidleanim = "mason_death_loop" },
+			{roles = {"ARTIFICER"},			duration = 2.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE47_ARTIFICER, anim = "mason_death_loop", animtype = "loop", check_current_anim = true },
+			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE48_ARTIFICER, anim = "mason_death_loop", animtype = "loop", check_current_anim = true },
+			{roles = {"ARTIFICER"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE49_ARTIFICER, anim = "mason_death", endidleanim="mason_death_idle" },
 --Artificer lines 50-53 removed
 			{roles = {"ELYTRA"},			duration = 3.0,		line = STRINGS.STAGEACTOR.THEVAULT.LINE54_ELYTRA,  },
 			{roles = {"ELYTRA"},			duration = 2.5,		line = STRINGS.STAGEACTOR.THEVAULT.LINE55_ELYTRA,  },
@@ -254,7 +254,8 @@ local MARIONETTE_TIME = 1.1
 
 			{actionfn = fn.stinger,			duration = 0.1,		sound = "stageplay_set/statue_lyre/stinger_outro" },
 
-			{roles = {"ARTIFICER","VISIONIST"},	duration = 2.0, anim="corpse_revive"},
+			{roles = {"ARTIFICER"},	nopause = true, anim="mason_death_pst"},
+			{roles = {"VISIONIST"},	duration = 2.0, anim="architect_death_pst"},
 
 			{actionfn = fn.findpositions,	duration = 2,		positions={["ARTIFICER"] = 3,["VISIONIST"] = 2,["ELYTRA"] = 1,}},
 			{actionfn = fn.actorsbow,   	duration = 2.5, },

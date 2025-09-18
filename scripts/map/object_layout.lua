@@ -486,6 +486,25 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 
 end
 
+local function GetLayoutLandCount(layout) -- We could cache the result if needed?
+	local num_land = 0
+	--
+	if layout.ground ~= nil then
+		local size = #layout.ground
+		for column = 1, size do
+			for row = 1, size do
+				local rw = row
+				local clmn = column
+				if layout.ground_types[layout.ground[rw][clmn]] and TileGroupManager:IsLandTile(layout.ground_types[layout.ground[rw][clmn]]) then
+					num_land = num_land + 1
+				end
+			end
+		end
+	end
+	--
+	return num_land
+end
+
 -- Convenience function does all three steps at once.
 local function Convert(node_id, item, addEntity)
 	assert(item and item ~= "", "Must provide a valid layout name, got nothing.")
@@ -501,10 +520,42 @@ local function Place(position, item, addEntity, choices, world)
 	ReserveAndPlaceLayout("POSITIONED", layout, prefabs, addEntity, position, world)
 end
 
+local function PlaceAndPopulatePrefabDensities(position, item, addEntity, choices, world, id, prefab_densities)
+	assert(item and item ~= "", "Must provide a valid layout name, got nothing.")
+	local layout = LayoutForDefinition(item, choices)
+	local prefabs = ConvertLayoutToEntitylist(layout)
+	ReserveAndPlaceLayout("POSITIONED", layout, prefabs, addEntity, position, world)
+
+	id = id or layout.add_topology.room_id
+	local prefab_list = {} --[prefab] = num
+
+	for i, prefab_data in ipairs(prefabs) do
+		if not prefab_list[prefab_data.prefab] then
+			prefab_list[prefab_data.prefab] = 0
+		end
+		prefab_list[prefab_data.prefab] = prefab_list[prefab_data.prefab] + 1
+	end
+
+	prefab_densities[id] = {}
+
+	local num_ground = GetLayoutLandCount(layout)
+	--prefab_list[prefab] = prefab_list[prefab] + 1
+	for prefab, v in pairs(prefab_list) do
+		-- convererts from actual numbers to a percentage of the distribute percent
+		prefab_densities[id][prefab] = v / num_ground
+	end
+
+	-- merges the items removed due to prefab swaps back into the list
+	--for prefab,v in pairs(removed) do
+	--		prefab_densities[id][prefab] = v
+	--end
+end
+
 return {
 		ConvertLayoutToEntitylist = ConvertLayoutToEntitylist,
 		LayoutForDefinition = LayoutForDefinition,
 		ReserveAndPlaceLayout = ReserveAndPlaceLayout,
 		Convert = Convert,
 		Place = Place,
+		PlaceAndPopulatePrefabDensities = PlaceAndPopulatePrefabDensities,
 	}

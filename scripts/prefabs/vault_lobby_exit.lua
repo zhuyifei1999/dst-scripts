@@ -40,7 +40,7 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    --inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     inst:AddTag("groundhole")
@@ -66,7 +66,7 @@ local function fn()
     --      Hole goes above to hide shadows
     --      Surface goes below to reveal shadows
 
-    --inst.MiniMapEntity:SetIcon("vault_lobby_exit.png") -- FIXME(JBK): rifts6 minimap icon
+    inst.MiniMapEntity:SetIcon("vault_lobby_exit.png")
 
     inst.Transform:SetEightFaced()
 

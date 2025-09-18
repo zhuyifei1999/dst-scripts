@@ -346,10 +346,10 @@ local function fn_exit()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    --inst.entity:AddMiniMapEntity()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    --inst.MiniMapEntity:SetIcon("oceanwhirlbigportalexit.png") -- FIXME(JBK): rifts6 minimap icon
+    inst.MiniMapEntity:SetIcon("oceanwhirlbigportalexit.png")
 
     inst.AnimState:SetBuild("bigwaterfall")
     inst.AnimState:SetBank("bigwaterfall")

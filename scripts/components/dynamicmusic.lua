@@ -205,7 +205,6 @@ local _dangertask = nil
 local _pirates_near = nil
 local _triggeredlevel = nil
 local _isday = nil
-local _isbusydirty = nil
 local _isbusyruins = nil
 local _busytheme = nil
 local _extendtime = nil
@@ -248,9 +247,14 @@ local function StopBusy(inst, istimeout)
                 return
             end
         end
+		if IsBusyThemeStageplay() then
+			_soundemitter:KillSound("busy")
+			_busytheme = nil
+		else
+			_soundemitter:SetParameter("busy", "intensity", 0)
+		end
         _busytask = nil
         _extendtime = 0
-        _soundemitter:SetParameter("busy", "intensity", 0)
     end
 end
 
@@ -422,12 +426,6 @@ local function StartCarnivalMusic(player, is_game_active)
 end
 
 local function StartStageplayMusic(player, mood_index)
-    if mood_index == 0 and IsBusyThemeStageplay() then
-        _soundemitter:KillSound("busy")
-        _busytheme = nil
-        StopBusy()
-    end
-
     if _dangertask ~= nil or _pirates_near ~= nil or mood_index == nil or mood_index < 1 then
         return
     end
@@ -782,7 +780,6 @@ local function StartSoundEmitter()
     if _soundemitter == nil then
         _soundemitter = TheFocalPoint.SoundEmitter
         _extendtime = 0
-        _isbusydirty = true
         if not _iscave then
             _isday = inst.state.isday
             inst:WatchWorldState("phase", OnPhase)
@@ -800,7 +797,6 @@ local function StopSoundEmitter()
         inst:StopWatchingWorldState("season", OnSeason)
         _isday = nil
 		_busytheme = nil
-        _isbusydirty = nil
         _extendtime = nil
         _soundemitter = nil
 		_hasinspirationbuff = nil
@@ -838,7 +834,6 @@ local function OnEnableDynamicMusic(inst, enable)
             StopBusy()
             _soundemitter:KillSound("busy")
             _busytheme = nil
-            _isbusydirty = true
         end
         _isenabled = enable
     end
