@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Empty, as I suspected.",
+			STUCK = "It is stuck.",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
             TOOMANYBEES = "That would be a rather excessive amount of bees, dear.",
             NOMOONINCAVES = "The moon can't be affected from this subterranean location.",
             ALREADYFULLMOON = "I'm afraid that would be quite redundant.",
-            -- Electrocute
+            -- rifts5.1
             DEADBIRDS = "Oh, dear. I'm afraid the sky is not safe for birds right now.",
         },
 		REMOTE_TELEPORT =
@@ -1170,11 +1171,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "Hmm, rather convenient.",
     ANNOUNCE_FLOATER_LETGO = "Time for a dip!",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "What a dreadful sound.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Those poor birds never stood a chance in the hail storm.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I just need to catch my breath.",
     ANOUNCE_MUTATED_BIRD_ATTACK = "The mutated fowl are attacking.",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "This calls for something more formidable.",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "It must be an issue with the receiving end.",
 
 	BATTLECRY =
 	{
@@ -1759,6 +1764,8 @@ return{
 		TURF_FUNGUS="The ground. You step on it.",
 		TURF_FUNGUS_MOON = "The ground. You step on it.",
 		TURF_ARCHIVE = "The ground. You step on it.",
+        TURF_VAULT = "The ground. You step on it.",
+        TURF_VENT = "The ground. You step on it.",
 		TURF_SINKHOLE="The ground. You step on it.",
 		TURF_UNDERROCK="The ground. You step on it.",
 		TURF_MUD="The ground. You step on it.",
@@ -3330,6 +3337,7 @@ return{
         WINTER_ORNAMENTBOSS = "I'm of the opinion that one can never overdecorate.",
 		WINTER_ORNAMENTFORGE = "A harrowing handicraft.",
 		WINTER_ORNAMENTGORGE = "The needlework on this is quite intricate.",
+        WINTER_ORNAMENTPEARL = "Rather intricate work performed with chelae.",
 
         WINTER_FOOD1 = "What a delightful little individual.", --gingerbread cookie
         WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie
@@ -4426,6 +4434,13 @@ return{
             LINE_4 = "This glyph in particular keeps repeating... if only I could decipher its meaning.",
             LINE_5 = "This will need further study.",
         },
+		VAULT_RUNE = "These are complicated.",
+		VAULT_STATUE =
+		{
+			LORE1 = "It appears the ancient king has forfeited his very essence to the darkness.",
+			LORE2 = "A depiction of an extinction-level event.",
+			LORE3 = "These must be the soldier caste of the ancient insect society.",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "The path to discovery awaits.",
@@ -5128,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "I suspect there's a deeper meaning to its storyline.",
         PLAYBILL_THE_VEIL = "Rather on-the-nose, if you ask me.",
+        PLAYBILL_THE_VAULT = "It's more a confession or retelling of events than a stage play.",
         STATUEHARP_HEDGESPAWNER = "Someone has let that poor statue become overgrown with vines.",
         HEDGEHOUND = "Ah. That would explain the respiration.",
         HEDGEHOUND_BUSH = "How odd. This rose bush appears to be... breathing.",
@@ -5734,7 +5750,7 @@ return{
         FLOTATIONCUSHION = "A passive deployment flotation device. I approve.",
         LUNAR_SEED = "A piece of its crown, no doubt.",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "An unprecedented feat of technological advancement, yet thoroughly uncivilized.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Fundamental components of a colossal, militarized automaton.",
         WAGBOSS_ROBOT_CREATION_PARTS = "Equipped with such armaments, it shall usher in nothing but ruin and demise.",
@@ -5755,6 +5771,68 @@ return{
             BURNING  = "This is, in fact, saving it.", --when its burning
             REVIVING = "The little bird is on a different path now... terrible one.", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "If only this were the end for the buzzard.", --witnessing the corpse
+            BURNING  = "This is, in fact, saving it.", --when its burning
+            REVIVING = "The buzzard is on a different path now... terrible one.", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "Though reanimated, the creature remains an eater of the dead.", -- Generic string
+            EATING_CORPSE = "This is how it spreads the... infection.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "A bicephalic shadow beast. How curious.", --The head segment
+            BODY = "The creature's dreadstone armoring exhibits near-impenetrable properties.", --The body segment
+            FLIPPED = "The shadow beast has been upended. However, its compromised position will not persist, I'm afraid.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "Combusting the arboreal support structure will facilitate unobstructed access to the minerals.", --It's vines are burning, it will collapse
+			CHOPPED = "The boulder is ready to be mined.", --It's 'chopped', so the rock fell
+			GENERIC = "The plant's structural integrity appears more than sufficient to bear the considerable mass of the boulder.", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "Fumarole from which a number of gasses may emerge. Best steer clear.", -- Not ventilating anything
+            HOT     = "Merely geothermal steam venting from a fumarole. One needn't be alarmed.", -- Ventiliating hot air, making the area warm
+            GAS     = "Those fumes are harmful to inhale and will cause spoilage to perishables.", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "Prudence dictates minimizing exposure to that most insidious vapor.", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "It is quite dead.",
+        FLOWER_CAVE_WITHERED = "It will not survive in these conditions.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "A statue of a large insectoid form.", --off, looks like decor/statue
+			ACTIVATED = "It follows a particular movement pattern.", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "A mechanical lever designed to actuate a mechanism.",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "It operates through particle transfer principles.",
+            BROKEN = "The device is in need of repair.",
+            UNPOWERED = "As it is unpowered, this mechanism cannot operate.",
+        },
+		VAULT_ORB = "This orb constitutes an essential component of a particle transfer apparatus.",
+        VAULT_LOBBY_EXIT = "This must indeed be the point of egress from these chambers.",
+		VAULT_CHANDELIER_BROKEN = "It would appear substandard workmanship has permitted this chandelier to fall from its mounting.",
+
+		ANCIENT_HUSK = "It's obvious which of these ancients was the perpetrator.",
+		MASK_ANCIENT_HANDMAIDHAT = "The visage of this mask denotes the elevated stature of its former bearer.",
+		MASK_ANCIENT_ARCHITECTHAT = "This mask once adorned a figure of considerable sagacity.",
+		MASK_ANCIENT_MASONHAT = "Such a mask could only belong to one whose mastery was forged through relentless work.",
+
+        TREE_ROCK_SEED = "The seed of the great Boulderbough.",
+        TREE_ROCK_SAPLING = "The Boulderbough gradually accumulates minerals from its surroundings, maturing until it may be harvested.",
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Nothing. Oh well.",
+			STUCK = "Oh no! Stuck!",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1170,11 +1171,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "I feel like a dumpling!",
     ANNOUNCE_FLOATER_LETGO = "Was that wise?",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Sounds like a blender!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "It is raining poultry.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm on my break!",
     ANOUNCE_MUTATED_BIRD_ATTACK = "The birds are coming!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "I need something... beefier!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Perhaps something is lost in translation.",
 
 	BATTLECRY =
 	{
@@ -1759,6 +1764,8 @@ return{
 		TURF_FUNGUS="It's like an ingredient for the ground.",
 		TURF_FUNGUS_MOON = "It's like an ingredient for the ground.",
 		TURF_ARCHIVE = "It's like an ingredient for the ground.",
+        TURF_VAULT = "It's like an ingredient for the ground.",
+        TURF_VENT = "It's like an ingredient for the ground.",
 		TURF_SINKHOLE="It's like an ingredient for the ground.",
 		TURF_UNDERROCK="It's like an ingredient for the ground.",
 		TURF_MUD="It's like an ingredient for the ground.",
@@ -3330,6 +3337,7 @@ return{
         WINTER_ORNAMENTBOSS = "We've earned a moment to celebrate.",
 		WINTER_ORNAMENTFORGE = "It's nice to be alive and safe.",
 		WINTER_ORNAMENTGORGE = "I feel like cooking something.",
+        WINTER_ORNAMENTPEARL = "Madame Pearl does lovely work.",
 
         WINTER_FOOD1 = "It has that \"homecooked\" charm.", --gingerbread cookie
         WINTER_FOOD2 = "Cooking is a way of expressing love.", --sugar cookie
@@ -4426,6 +4434,13 @@ return{
             LINE_4 = "So many secrets lost to time.",
             LINE_5 = "I'm afraid its meaning is lost on me.",
         },
+		VAULT_RUNE = "I have no idea.",
+		VAULT_STATUE =
+		{
+			LORE1 = "Oh my, he's rotting.",
+			LORE2 = "The end of the bugs?",
+			LORE3 = "I am relieved they are only statues.",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "Let's see where this takes us, non?",
@@ -5128,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "I wonder who will play the lead?",
         PLAYBILL_THE_VEIL = "Seems a little dark, no?",
+        PLAYBILL_THE_VAULT = "Intense.",
         STATUEHARP_HEDGESPAWNER = "That poor statue seems to have been left alone for a long time.",
         HEDGEHOUND = "Alors, some things in life are not as rosy as they seem.",
         HEDGEHOUND_BUSH = "Ah, la vie en rose.",
@@ -5734,7 +5750,7 @@ return{
         FLOTATIONCUSHION = "It will save me from the brine!",
         LUNAR_SEED = "This is its essence.",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "The main course?",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Must be vacuum packed!",
         WAGBOSS_ROBOT_CREATION_PARTS = "These must be the sides.",
@@ -5752,9 +5768,71 @@ return{
         BIRDCORPSE =
         {
             GENERIC  = "It is about to turn.", --witnessing the corpse
-            BURNING  = "Mmm, that smell!", --when its burning
+            BURNING  = "Mmm, that aroma!", --when its burning
             REVIVING = "The meat is turning!", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "It is about to turn.", --witnessing the corpse
+            BURNING  = "Mmm, that aroma!", --when its burning
+            REVIVING = "The meat is turning!", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "It looks famished.", -- Generic string
+            EATING_CORPSE = "Bon appetit.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Impressive jaws.", --The head segment
+            BODY = "That will not fit in any pot.", --The body segment
+            FLIPPED = "It has gone belly up.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "Smells like roasting vegetables.", --It's vines are burning, it will collapse
+			CHOPPED = "It is ready to harvest.", --It's 'chopped', so the rock fell
+			GENERIC = "Hm. Minerals and fiber.", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "I do not wish to wait for what comes out!", -- Not ventilating anything
+            HOT     = "Steaming as a method of cooking preserves nutrients and flavor!", -- Ventiliating hot air, making the area warm
+            GAS     = "Reminds me of rotten eggs.", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "It smells of death and disease!", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "It did not survive this environment.",
+        FLOWER_CAVE_WITHERED = "The light grows dim.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "What a menacing statue!", --off, looks like decor/statue
+			ACTIVATED = "Where are you going?!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "Is it safe?",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "Instant people delivery!",
+            BROKEN = "It is in need of repair.",
+            UNPOWERED = "There is no juice.",
+        },
+		VAULT_ORB = "Is it a part of something?",
+        VAULT_LOBBY_EXIT = "Oh dear, are we meant to jump?",
+		VAULT_CHANDELIER_BROKEN = "Lucky I was not standing under when it fell!",
+
+		ANCIENT_HUSK = "Terrible!",
+		MASK_ANCIENT_HANDMAIDHAT = "Ooh. Powerful.",
+		MASK_ANCIENT_ARCHITECTHAT = "A coincidence, I'm sure.",
+		MASK_ANCIENT_MASONHAT = "This belonged to a hard worker.",
+
+        TREE_ROCK_SEED = "First we plant, then we harvest.",
+        TREE_ROCK_SAPLING = "A fine young sapling.",
     },
 
     DESCRIBE_GENERIC = "It is what it is...",

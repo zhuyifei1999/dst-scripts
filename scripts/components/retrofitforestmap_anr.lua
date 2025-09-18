@@ -1711,6 +1711,105 @@ function self:OnPostInit()
         print("Removed", removedcount, "sharkboi_ice_hazard entities!")
     end
 
+    if self.rifts6_add_whirlpool then
+        print("Retrofitting a big whirlpool to the forest shard..")
+        self.rifts6_add_whirlpool = nil
+        local width, height = TheWorld.Map:GetSize()
+
+        local function IsHazardous(tileid)
+            return tileid == WORLD_TILES.OCEAN_HAZARDOUS
+        end
+        local function IsRough(tileid)
+            return tileid == WORLD_TILES.OCEAN_ROUGH or tileid == WORLD_TILES.OCEAN_HAZARDOUS
+        end
+        local function IsSwell(tileid)
+            return tileid == WORLD_TILES.OCEAN_SWELL or tileid == WORLD_TILES.OCEAN_ROUGH or tileid == WORLD_TILES.OCEAN_HAZARDOUS
+        end
+        local function FindSpotForWhirlpool(filterfn)
+            local tileid = WORLD_TILES.OCEAN_HAZARDOUS
+            local map = TheWorld.Map
+            for y = OCEAN_POPULATION_EDGE_DIST, height - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+                for x = OCEAN_POPULATION_EDGE_DIST, width - OCEAN_POPULATION_EDGE_DIST - 1, 1 do
+                    if map:IsAreaTilesFiltered(x, y, 3, 3, filterfn) then
+                        local cx, cy, cz = map:GetTileCenterPoint(x + 1, y + 1)
+                        return cx, cy, cz
+                    end
+                end
+            end
+        end
+        local cx, cy, cz = FindSpotForWhirlpool(IsHazardous)
+        if not cx then
+            cx, cy, cz = FindSpotForWhirlpool(IsRough)
+        end
+        if not cx then
+            cx, cy, cz = FindSpotForWhirlpool(IsSwell)
+        end
+        if cx then
+            local ent = SpawnPrefab("oceanwhirlbigportal")
+            ent.Transform:SetPosition(cx, cy, cz)
+            print("Succeeded in spawning a big whirlpool.")
+        else
+            print("..Failed! Not enough OCEAN_HAZARDOUS, OCEAN_ROUGH, nor OCEAN_SWELL around?")
+        end
+    end
+
+	---------------------------------------------------------------------------
+
+    if self.fix_pearl_eating_everything then
+        print("Retrofitting Pearl fixups for eaten rewards..")
+        local hermitcrab, pearl
+        for _, v in pairs(Ents) do
+            if v.prefab == "hermitcrab" then
+                hermitcrab = v
+				if pearl then
+					break
+				end
+            elseif v.prefab == "hermit_pearl" or v.prefab == "hermit_cracked_pearl" then
+                pearl = v
+				if hermitcrab then
+					break
+				end
+            end
+        end
+        if not hermitcrab then
+            print("Cannot do yet because Pearl is missing will try next world load.")
+            return
+        end
+
+        local x, y, z = hermitcrab.Transform:GetWorldPosition()
+        if hermitcrab.pearlgiven and not pearl then
+            print("Letting Pearl give a new pearl.")
+            hermitcrab.pearlgiven = nil
+        end
+        local friendlevels = hermitcrab.components.friendlevels
+        if friendlevels then
+            local torecomplete = {}
+            for task, v in ipairs(friendlevels.friendlytasks) do
+                if v.complete then
+                    table.insert(torecomplete, task)
+                    v.complete = nil
+                    friendlevels.level = math.max(friendlevels.level - 1, 0)
+                end
+            end
+            for _, task in ipairs(torecomplete) do
+                friendlevels:CompleteTask(task, nil)
+            end
+        end
+        self.fix_pearl_eating_everything = nil
+    end
+
+	---------------------------------------------------------------------------
+
+	if self.floating_heavyobstaclephysics_fix then
+		self.floating_heavyobstaclephysics_fix = nil
+
+		for _, v in pairs(Ents) do
+			if v.components.heavyobstaclephysics then
+				v.components.heavyobstaclephysics.deprecated_floating_exploit = true
+			end
+		end
+	end
+
 	---------------------------------------------------------------------------
 
 	if self.requiresreset then
@@ -1771,9 +1870,11 @@ function self:OnLoad(data)
         self.remove_rift_terraformers_fix = data.remove_rift_terraformers_fix or false
 		self.retrofit_otterdens = data.retrofit_otterdens or false
         self.sharkboi_ice_hazard_fix = data.sharkboi_ice_hazard_fix or false
+        self.rifts6_add_whirlpool = data.rifts6_add_whirlpool or false
+        self.fix_pearl_eating_everything = data.fix_pearl_eating_everything or false
+		self.floating_heavyobstaclephysics_fix = data.floating_heavyobstaclephysics_fix or false
     end
 end
-
 
 --------------------------------------------------------------------------
 end)

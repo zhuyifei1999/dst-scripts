@@ -157,7 +157,7 @@ local states=
 
             RemovePhysicsColliders(inst)
 
-            inst:StopBrain()
+			inst:StopBrain("SGkrampus_exit")
         end,
 
         timeline =
@@ -187,7 +187,7 @@ local states=
 
             ChangeToCharacterPhysics(inst)
 
-            inst:RestartBrain()
+			inst:RestartBrain("SGkrampus_exit")
         end,
     },
 

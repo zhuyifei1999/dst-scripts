@@ -88,6 +88,11 @@ function Map:IsInvalidTileAtPoint(x, y, z)
     return TileGroupManager:IsInvalidTile(tile)
 end
 
+function Map:IsImpassableTileAtPoint(x, y, z)
+    local tile = self:GetTileAtPoint(x, y, z)
+    return TileGroupManager:IsImpassableTile(tile)
+end
+
 function Map:IsTemporaryTileAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return TileGroupManager:IsTemporaryTile(tile)
@@ -406,7 +411,7 @@ function Map:HasAdjacentTileFiltered(tx, ty, filterfn) -- Tile coordinates only.
     for x_off = -1, 1, 1 do
         for y_off = -1, 1, 1 do
             if x_off ~= 0 or y_off ~= 0 then
-                local tileid = TheWorld.Map:GetTile(tx + x_off, ty + y_off)
+                local tileid = self:GetTile(tx + x_off, ty + y_off)
                 if filterfn(tileid) then
                     return true
                 end
@@ -414,6 +419,18 @@ function Map:HasAdjacentTileFiltered(tx, ty, filterfn) -- Tile coordinates only.
         end
     end
     return false
+end
+
+function Map:IsAreaTilesFiltered(tx, ty, width, height, filterfn) -- Tile coordinates only.
+    for x_off = 0, width - 1 do
+        for y_off = 0, height - 1 do
+            local tileid = self:GetTile(tx + x_off, ty + y_off)
+            if not filterfn(tileid) then
+                return false
+            end
+        end
+    end
+    return true
 end
 
 function Map:CanDeployDockAtPoint(pt, inst, mouseover)
@@ -453,7 +470,11 @@ function Map:CanDeployBridgeAtPointWithFilter(pt, inst, mouseover, tilefilterfn)
     end
 
     local id, index = self:GetTopologyIDAtPoint(pt.x, pt.y, pt.z)
-    if id and (id:find("Archive") or id:find("Labyrinth") or id:find("Atrium")) then
+    if id and (id:find("Archive") or id:find("Atrium")) then
+        return false
+    end
+
+    if self:IsPointInAnyVault(pt.x, pt.y, pt.z) then
         return false
     end
 
@@ -734,11 +755,47 @@ function Map:GetPlatformAtPoint(pos_x, pos_y, pos_z, extra_radius)
 	end
     local entities = TheSim:FindEntities_Registered(pos_x, pos_y, pos_z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + (extra_radius or 0), REGISTERED_WALKABLE_PLATFORM_TAGS)
     for i, v in ipairs(entities) do
-        if v.components.walkableplatform and math.sqrt(v:GetDistanceSqToPoint(pos_x, 0, pos_z)) <= v.components.walkableplatform.platform_radius then
+		local r = v.components.walkableplatform.platform_radius
+		if v:GetDistanceSqToPoint(pos_x, 0, pos_z) <= r * r then
             return v
         end
     end
     return nil
+end
+
+--(forward_x, forward_z) is normalized direction vector
+function Map:GetNearestPlatformInDirection(x, z, forward_x, forward_z, dist)
+	for i, v in ipairs(TheSim:FindEntities_Registered(x, 0, z, dist + TUNING.MAX_WALKABLE_PLATFORM_RADIUS, REGISTERED_WALKABLE_PLATFORM_TAGS)) do
+		local xA, _, zA = v.Transform:GetWorldPosition()
+		local dxA, dzA = xA - x, zA - z
+		local dot = forward_x * dxA + forward_z * dzA
+		if dot > 0 then --target is in front
+			local r = v.components.walkableplatform.platform_radius
+			local dist1 = math.min(dist, v.components.walkableplatform.max_hop_distance or dist)
+			local intersects
+			if dot <= dist1 then
+				if math.abs(forward_z * dxA - forward_x * dzA) <= r then
+					--distance to forward vector is within platform radius
+					intersects = true
+				end
+			else
+				local x1, z1 = x + forward_x * dist1, z + forward_z * dist1
+				if distsq(x1, z1, xA, zA) <= r * r then
+					--distance to end point(x1, z1) is within platform radius
+					intersects = true
+				end
+			end
+			if intersects then
+				--A: distance from me to center of circle
+				--B: distance from center of circle to forward vector
+				--dot: A projected onto forward vector
+				local Asq = dxA * dxA + dzA * dzA
+				local Bsq = Asq - dot * dot
+				dist1 = dot - math.sqrt(r * r - Bsq)
+				return v, x + forward_x * dist1, z + forward_z * dist1
+			end
+		end
+	end
 end
 
 function Map:FindRandomPointWithFilter(max_tries, filterfn)
@@ -787,6 +844,14 @@ function Map:CanAreaTagsHaveAcidRain(tags)
 end
 
 function Map:CanPointHaveAcidRain(x, y, z)
+    if self:IsImpassableTileAtPoint(x, y, z) then
+        return false
+    end
+
+    if self:IsPointInAnyVault(x, y, z) then
+        return false
+    end
+
     -- Note: If you care about the tile overlap then use FindVisualNodeAtPoint
     local node_index = self:GetNodeIdAtPoint(x, y, z)
     local node = TheWorld.topology.nodes[node_index]
@@ -795,6 +860,25 @@ function Map:CanPointHaveAcidRain(x, y, z)
     end
 
     return self:CanAreaTagsHaveAcidRain(node.tags)
+end
+
+function Map:CanAreaTagsHaveQuaker(tags)
+    return not table.contains(tags, "noquaker")
+end
+
+function Map:CanPointHaveQuaker(x, y, z)
+    if self:IsPointInAnyVault(x, y, z) then
+        return false
+    end
+
+    -- Note: If you care about the tile overlap then use FindVisualNodeAtPoint
+    local node_index = self:GetNodeIdAtPoint(x, y, z)
+    local node = TheWorld.topology.nodes[node_index]
+    if node == nil or node.tags == nil then
+        return false
+    end
+
+    return self:CanAreaTagsHaveQuaker(node.tags) -- worldgen
 end
 
 function Map:GetRandomPointClustersForNodePrefix(prefixes, countpernode)
@@ -1120,10 +1204,6 @@ function Map:CheckForBadThingsInOceanArena(pt, badthingsatspawnpoints)
 end
 
 function Map:StartFindingGoodOceanArenaPoints()
-    if TheWorld.components.sharkboimanager and TheWorld.components.sharkboimanager.TEMP_DEBUG_RATE then
-        GOODOCEANARENAPOINTS_ITERATIONS_PER_TICK = 3000
-        GOODOCEANARENAPOINTS_TIME_PER_TICK = 0.0
-    end
     self:StopFindingGoodOceanArenaPoints()
 
     local w, h = self:GetSize()
@@ -1306,5 +1386,42 @@ function Map:IsWagPunkArenaBarrierUp()
     end
 
     return world.net.components.wagpunk_floor_helper:IsBarrierUp()
+end
+
+function Map:IsPointInVaultRoom(x, y, z)
+    -- The vault's rooms can have the tiles no longer vault tiles so we will need to do one last check.
+    -- The server will network over the position of the vault so the client can force include a square from the position.
+    local world = TheWorld
+    if world.net == nil or world.net.components.vault_floor_helper == nil then
+        return false
+    end
+
+    return world.net.components.vault_floor_helper:IsPointInVaultRoom_Internal(x, y, z)
+end
+local function IsVaultTile(tileid)
+    return tileid == WORLD_TILES.VAULT
+end
+function Map:IsPointInVaultLobby(x, y, z)
+    -- NOTES(JBK): This is a very quick check and makes the assumption for vault tiles being always secluded from anything and covers the entire vault floor.
+    local tx, ty = self:GetTileCoordsAtPoint(x, 0, z)
+    if self:HasAdjacentTileFiltered(tx, ty, IsVaultTile) then
+        if self:IsVisualGroundAtPoint(x, y, z) then
+            return not self:IsPointInVaultRoom(x, y, z)
+        end
+    end
+
+    return false
+end
+function Map:IsPointInAnyVault(x, y, z)
+    -- Optimizations for not caring which vault section the point is in.
+    -- Lobby
+    local tx, ty = self:GetTileCoordsAtPoint(x, 0, z)
+    if self:HasAdjacentTileFiltered(tx, ty, IsVaultTile) then
+        if self:IsVisualGroundAtPoint(x, y, z) then
+            return true
+        end
+    end
+    -- Room
+    return self:IsPointInVaultRoom(x, y, z)
 end
 

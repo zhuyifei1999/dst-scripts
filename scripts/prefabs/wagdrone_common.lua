@@ -48,6 +48,9 @@ local function RemoveLootConfig(inst)
 end
 
 local function RemoveFriendlyConfig(inst)
+	if inst.components.health then
+		inst.components.health.redirect = nil
+	end
 	inst:RemoveComponent("inventoryitem")
 	inst:RemoveComponent("finiteuses")
 	inst:RemoveComponent("knowndynamiclocations")
@@ -221,8 +224,10 @@ local function ChangeToFriendly(inst)
 		RemoveLootConfig(inst)
 		inst:AddTag("companion")
 
-		inst.components.health:SetPercent(1)
-		inst.components.health.redirect = FriendlyDamageToUses
+		if inst.components.health then
+			inst.components.health:SetPercent(1)
+			inst.components.health.redirect = FriendlyDamageToUses
+		end
 
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem:SetOnDroppedFn(toground)

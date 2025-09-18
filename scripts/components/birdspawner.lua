@@ -40,15 +40,17 @@ local SPAWN_FACTOR_KEYS = {
 }
 
 local HAIL_EVENT_TIMERS = {
-    SOUNDS = "prelunarhailbird",    --Timer to play caws and sounds in the sky
-    CORPSES = "lunarhailbird",      --Timer to drop bunch of mutatable corpses
-    POST_HAIL = "posthailbird",     --Timer for the devastation after the hail, til things recover
+    SOUNDS                  = "prelunarhailbird",   --Timer to play caws and sounds in the sky
+    CORPSES                 = "lunarhailbird",      --Timer to drop bunch of mutatable corpses
+    POST_HAIL               = "posthailbird",       --Timer for the devastation after the hail, til things recover
+    RETURN_BIRD_AMBIENCE    = "returnbirdambience", --Timer for the bird ambience to return
 }
 
 local HAIL_SOUND_LEVELS = {
-    NONE = 0,       --No Ambience
-    SCUFFLES = 1,   --Scuffling in the sky, and fighting with gestalts
-    CORPSES = 2,    --Corpses are falling
+    NONE        = 0,    --nothin crazy goin on
+    SCUFFLES    = 1,    --Scuffling in the sky, and fighting with gestalts
+    CORPSES     = 2,    --Corpses are falling
+    NO_AMBIENCE = 3,    --No Ambience
 }
 
 --------------------------------------------------------------------------
@@ -81,6 +83,7 @@ local _corpse_gestalt_min_time = TUNING.BIRD_CORPSE_GESTALT_MIN_TIME
 local _corpse_gestalt_max_time = TUNING.BIRD_CORPSE_GESTALT_MAX_TIME
 
 local _posthail_time = TUNING.BIRD_SPAWNER_POST_HAIL_TIME
+local _returnbirdambience_time = TUNING.BIRD_SPAWNER_POST_HAIL_TIME * 5/6
 
 local _ishailing = false
 
@@ -106,7 +109,6 @@ local function SetLunarHailSoundLevel(level)
 end
 
 local function GetPostHailEasingMult()
-    --return 0 if we're currently hailing?
     return inst.components.timer:TimerExists(HAIL_EVENT_TIMERS.POST_HAIL) and easing.inQuad(inst.components.timer:GetTimeElapsed(HAIL_EVENT_TIMERS.POST_HAIL), 0, 1, _posthail_time)
         or 1
 end
@@ -179,7 +181,6 @@ local function ScheduleSpawn(player, initialspawn)
 		local maxdelay = CalcValue(player, _maxspawndelay, "maxdelay")
         local lowerbound = initialspawn and 0 or mindelay
         local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
-        --make sure to fade these corpses
         _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale_modifiers:Get(), GetBirdSpawnerFunction(), ScheduleSpawn)
     end
 end
@@ -296,8 +297,8 @@ local function OnLunarBirdEvent(inst)
             inst:DoTaskInTime(corpse_bird_count * math.random(), SpawnBirdCorpse)
         end
 
-        for _ = 1, mutate_bird_count do
-            inst:DoTaskInTime(_ * mutate_bird_count * math.random(), SpawnBirdCorpse, true)
+        for i = 1, mutate_bird_count do
+            inst:DoTaskInTime(i * mutate_bird_count * math.random(), SpawnBirdCorpse, true)
         end
 
         local function AnnounceCorpses()
@@ -347,11 +348,13 @@ local function OnIsLunarHailing(inst, ishailing, onpostinit)
     else
         --It was hailing, now it's ended! The bird population has been destroyed!
         if _ishailing then
+            SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.NO_AMBIENCE)
             _timescale_modifiers:SetModifier(inst, TUNING.BIRD_POST_HAIL_FACTOR, SPAWN_FACTOR_KEYS.POST_HAIL)
-            inst.components.timer:StartTimer(HAIL_EVENT_TIMERS.POST_HAIL, _posthail_time)
-        end
 
-        SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.NONE)
+            inst.components.timer:StartTimer(HAIL_EVENT_TIMERS.POST_HAIL, _posthail_time)
+            inst.components.timer:StartTimer(HAIL_EVENT_TIMERS.RETURN_BIRD_AMBIENCE, _returnbirdambience_time)
+        end
+        
         ClearLunarBirdEventTimer()
     end
 
@@ -370,6 +373,8 @@ local function OnTimerDone(inst, data)
         OnPreLunarBirdEvent(inst)
     elseif data.name == HAIL_EVENT_TIMERS.CORPSES then
         OnLunarBirdEvent(inst)
+    elseif data.name == HAIL_EVENT_TIMERS.RETURN_BIRD_AMBIENCE then
+        SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.NONE)
     end
 end
 
@@ -420,6 +425,10 @@ function self:OnPostInit()
     OnIsRaining(inst, _worldstate.israining)
     OnIsLunarHailing(inst, _worldstate.islunarhailing, true)
     ToggleUpdate(true)
+
+    if inst.components.timer:TimerExists(HAIL_EVENT_TIMERS.RETURN_BIRD_AMBIENCE) then
+        SetLunarHailSoundLevel(HAIL_SOUND_LEVELS.NO_AMBIENCE)
+    end
 end
 
 --------------------------------------------------------------------------

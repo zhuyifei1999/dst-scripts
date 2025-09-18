@@ -149,6 +149,25 @@ function Container:DropEverythingWithTag(tag, drop_pos, keepoverstacked)
     end
 end
 
+function Container:DropEverythingByFilter(filterfn)
+    local internal_containers = {}
+
+    for i = 1, self.numslots do
+        local item = self.slots[i]
+        if item ~= nil then
+            if filterfn(self.inst, item) then
+                self:DropItemBySlot(i)
+            elseif item.components.container ~= nil then
+                table.insert(internal_containers, item)
+            end
+        end
+    end
+
+    for i, v in ipairs(internal_containers) do
+        v.components.container:DropEverythingByFilter(filterfn)
+    end
+end
+
 function Container:DropEverything(drop_pos, keepoverstacked)
     for i = 1, self.numslots do
 		self:DropItemBySlot(i, drop_pos, keepoverstacked)

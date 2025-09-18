@@ -57,6 +57,10 @@ local Combat = Class(function(self, inst)
 	--self.lastattacktype = nil
 	--self.laststimuli = nil
 
+    --self.tough = false
+	--self.workmultiplierfn = nil
+	--self.shouldrecoilfn = nil
+
 	self.externaldamagemultipliers = SourceModifierList(self.inst) -- damage dealt to others multiplier
 
 	self.externaldamagetakenmultipliers = SourceModifierList(self.inst) -- my damage taken multiplier (post armour reduction)
@@ -572,6 +576,13 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 	end
 	self.laststimuli = stimuli
 
+    local recoil
+    recoil, damage = self:ShouldRecoil(attacker, weapon, damage)
+
+    if recoil then
+        blocked = true
+    end
+
     if self.inst.components.health ~= nil and damage ~= nil and damageredirecttarget == nil then
         if self.inst.components.attackdodger ~= nil and self.inst.components.attackdodger:CanDodge(attacker) then
             self.inst.components.attackdodger:Dodge(attacker)
@@ -633,7 +644,10 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
 
     local redirect_combat = damageredirecttarget ~= nil and damageredirecttarget.components.combat or nil
     if redirect_combat ~= nil then
+        -- Small hack for centipede
+        redirect_combat.redirected_from = self.inst
 		redirect_combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
+        redirect_combat.redirected_from = nil
     end
 
     if self.inst.SoundEmitter ~= nil and not self.inst:IsInLimbo() then
@@ -664,7 +678,8 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli, spdamage)
             end
         end
     else
-        self.inst:PushEvent("blocked", { attacker = attacker })
+        -- We blocked it, but we might still want to know how much they rattled us in damage value!
+        self.inst:PushEvent("blocked", { attacker = attacker, damage = damage, spdamage = spdamage, original_damage = original_damage })
     end
 
 	if self.target == nil or self.target == attacker then
@@ -1125,6 +1140,16 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
         return
     end
 
+    if targ.components.combat then
+        local recoil, damage = targ.components.combat:ShouldRecoil(self.inst, weapon)
+	    if recoil and self.inst.sg ~= nil and self.inst.sg.statemem.recoilstate ~= nil then
+            self.inst:PushEventImmediate("recoil_off", { target = targ } )
+	    	if damage == 0 or damage == nil then
+	    		self.inst:PushEvent("weapontooweak")
+	    	end
+	    end
+    end
+
     self.inst:PushEvent("onattackother", { target = targ, weapon = weapon, projectile = projectile, stimuli = stimuli })
 
     if weapon ~= nil and projectile == nil then
@@ -1201,6 +1226,35 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult, instra
             end
         end
     end
+end
+
+function Combat:SetRequiresToughCombat(tough)
+	self.tough = tough
+end
+
+function Combat:SetShouldRecoilFn(fn)
+	self.shouldrecoilfn = fn
+end
+
+function Combat:ShouldRecoil(attacker, weapon, damage)
+	if self.shouldrecoilfn ~= nil then
+		local recoil, remaining_damage = self.shouldrecoilfn(self.inst, attacker, weapon, damage)
+		if recoil ~= nil then
+			if recoil then
+				return true, remaining_damage or nil
+			end
+			return false, remaining_damage or damage
+		end
+	end
+
+	if self.tough and
+		not (attacker ~= nil and attacker:HasTag("toughfighter")) and --TODO reuse toughworker?
+		not (weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon:CanDoToughFight())
+		then
+		return true, nil
+	end
+
+	return false, damage
 end
 
 --#V2C: what's this? not used?

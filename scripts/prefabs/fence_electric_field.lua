@@ -75,23 +75,14 @@ local function ClearSegs(inst)
 		inst.segs = nil
 	end
 
-	--[[if not TheWorld.ismastersim then
+	if not TheWorld.ismastersim then
 		return
-	end]] --it's fine to run the cleanup code on clients anyway
-
-	if TheWorld.ismastersim then -- Not fine to run this cleanup code on client!
-		inst.SoundEmitter:KillSound("linked_lp")
 	end
 
-	if inst.Physics then --Doesn't exist on client!
-		inst.Physics:SetCollides(true) --We're unloaded, activate our physics!
-		inst.Physics:SetCollisionCallback(nil)
-	end
+	inst.SoundEmitter:KillSound("linked_lp")
 
-	if inst.targettask then
-		inst.targettask:Cancel()
-		inst.targettask = nil
-	end
+	inst.Physics:SetCollides(true) --We're unloaded, activate our physics!
+	inst.Physics:SetCollisionCallback(nil)
 end
 --local OnEntitySleep = ClearSegs --this is set in prefab constructor
 
@@ -319,7 +310,6 @@ local function SetUpPhysics(inst)
     )
 	inst.Physics:SetCollides(false)
 	inst.Physics:SetDontRemoveOnSleep(true)
-	inst.Physics:SetCollisionCallback(OnCollisionCallback)
 end
 
 local function ForcePhysicsUpdate(inst) --HACK! We need to force a physics update for entities that stay still
@@ -354,6 +344,9 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
+
+	SetUpPhysics(inst) -- Realistically this is only needed for server side, but there are almost NO C++ components that should be added on one side and not the other (except for ClientSleepable)
+	--Otherwise we run into deserialization errors on the SoundEmitter component. I'm surprised there weren't more issues!
 	--
 	inst:AddTag("CLASSIFIED")
 	inst:AddTag("notarget")
@@ -362,7 +355,6 @@ local function fn()
 	inst.len = net_byte(inst.GUID, "fence_electric_field.len", "beamdirty")
 	inst.rot = net_byte(inst.GUID, "fence_electric_field.rot", "beamdirty")
 
-	inst:SetPrefabNameOverride("fence_electric_field") --for death announce (Omar) NOTE: Can't die but just in case someone changes/mods it to do damage.
 	inst.CanMouseThrough = CanMouseThrough
 
 	inst.entity:SetPristine()
@@ -373,11 +365,10 @@ local function fn()
 		return inst
 	end
 
-	SetUpPhysics(inst) --NOTE: Yup! Physics is only needed on server side
+	inst.Physics:SetCollisionCallback(OnCollisionCallback)
 
 	inst.targets = {}
 
-	inst.targettask = nil
 	inst.SetBeam = SetBeam
 	inst.OnEntitySleep = OnEntitySleep
 	inst.OnEntityWake = OnEntityWake

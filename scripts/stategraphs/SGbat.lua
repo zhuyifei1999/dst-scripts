@@ -34,6 +34,7 @@ local events=
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
 }
 
 local function DoChewSound(inst)

@@ -3802,6 +3802,26 @@ local fx =
 		anim = "impact",
 		sound = "rifts5/wagstaff_boss/missile_explode",
 	},
+    {
+        name = "tree_rock_chop",
+        bank = "tree_rock_fx",
+        build = "tree_rock_fx",
+        anim = "chop",
+        --sound = "dontstarve_DLC001/fall/leaf_rustle",
+    },
+    {
+        name = "tree_rock_fall",
+        bank = "tree_rock_fx",
+        build = "tree_rock_fx",
+        anim = "fall",
+        --sound = "dontstarve_DLC001/fall/leaf_rustle",
+    },
+	{
+		name = "vault_portal_fx",
+		bank = "vault_portal_fx",
+		build = "vault_portal_fx",
+		anim = "activate",
+	},
 }
 
 for cratersteamindex = 1, 4 do

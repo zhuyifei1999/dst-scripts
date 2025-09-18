@@ -472,7 +472,6 @@ local function HeartOfTheRuinsRuinsRetrofitting_StatueChessRespawners(inst)
 end
 
 local function ArchiveDispencerFixup()
-
 	local a = {}
 	local b = {}
 	local c = {}
@@ -534,38 +533,28 @@ local function ArchiveDispencerFixup()
 		end
 	end
 	if #a == 0 and #dispencers > 0 then
-		local rand = math.random(1,#dispencers)
-		local ent = dispencers[rand]
-		ent.product_orchestrina = "turfcraftingstation"
-		ent.updateart(ent)
-		table.remove(dispencers,rand)
+		local ent = table.remove(dispencers, math.random(#dispencers))
+		ent:SetProductOrchestrina("turfcraftingstation")
 		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type A.")
 	end
 	if #b == 0 and #dispencers > 0 then
-		local rand = math.random(1,#dispencers)
-		local ent = dispencers[rand]
-		ent.product_orchestrina = "archive_resonator_item"
-		ent.updateart(ent)
-		table.remove(dispencers,rand)
+		local ent = table.remove(dispencers, math.random(#dispencers))
+		ent:SetProductOrchestrina("archive_resonator_item")
 		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type B.")
 	end
 	if #c == 0 and #dispencers > 0 then
-		local rand = math.random(1,#dispencers)
-		local ent = dispencers[rand]
-		ent.product_orchestrina = "refined_dust"
-		ent.updateart(ent)
-		table.remove(dispencers,rand)
+		local ent = table.remove(dispencers, math.random(#dispencers))
+		ent:SetProductOrchestrina("refined_dust")
 		print("Retrofitting for Return of Them: Forgotten Knowledge - Making dispencer type C.")
 	end
 
 	if #dispencers > 0 then
 		local total  = 0
+		local list = { "turfcraftingstation", "archive_resonator_item", "refined_dust" }
 		for i, ent in ipairs(dispencers) do
 			if ent.product_orchestrina == nil or ent.product_orchestrina == "" then
 				total = total +1
-				local list = {"turfcraftingstation","archive_resonator_item","refined_dust"}
-				ent.product_orchestrina = list[math.random(1,#list)]
-				ent.updateart(ent)
+				ent:SetProductOrchestrina(list[math.random(#list)])
 			end
 		end
 		if total > 0 then
@@ -575,10 +564,10 @@ local function ArchiveDispencerFixup()
 
 	if #lockboxes > 0 then
 		local total  = 0
+		local list = { "turfcraftingstation", "archive_resonator_item", "refined_dust" }
 		for i, ent in ipairs(lockboxes) do
 			if ent.product_orchestrina == nil or ent.product_orchestrina == "" then
 				total = total +1
-				local list = {"turfcraftingstation","archive_resonator_item","refined_dust"}
 				ent.product_orchestrina = list[math.random(1,#list)]
 			end
 		end
@@ -586,7 +575,6 @@ local function ArchiveDispencerFixup()
 			print("Retrofitting for Return of Them: Forgotten Knowledge - "..total.." Distilled Knowledge fixed.")
 		end
 	end
-
 end
 
 --------------------------------------------------------------------------
@@ -917,6 +905,39 @@ function self:OnPostInit()
         end
     end
 
+    ---------------------------------------------------------------------------
+    
+    if self.retrofit_rifts6_add_fumarole then
+        local success = false
+        for _, v in pairs(Ents) do
+            if v.prefab == "retrofit_fumaroleteleporter" then
+                print("Retrofitting for From Beyond - Ancient Echoes - Found retrofit_fumaroleteleporter.")
+                success = v:DoRetrofitting()
+                break
+            end
+        end
+
+        if success then
+            print("Retrofitting for From Beyond - Ancient Echoes - Add a wormhole linking the  to the retrofitted land.")
+        else
+            print("Retrofitting for From Beyond - Ancient Echoes - Failed to add a wormhole linking the  to the retrofitted land!")
+            print('Retrofitting for From Beyond - Ancient Echoes - An admin can force the wormhole link by running the command: c_findnext("retrofit_fumaroleteleporter"):DoRetrofitting(ThePlayer:GetPosition())')
+            print("Retrofitting for From Beyond - Ancient Echoes - This will create a wormhole where the admin is currenlty standing, so make sure you are standing where you want it to be!")
+        end
+    end
+
+	---------------------------------------------------------------------------
+
+	if self.floating_heavyobstaclephysics_fix then
+		self.floating_heavyobstaclephysics_fix = nil
+
+		for _, v in pairs(Ents) do
+			if v.components.heavyobstaclephysics then
+				v.components.heavyobstaclephysics.deprecated_floating_exploit = true
+			end
+		end
+	end
+
 	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
@@ -961,6 +982,8 @@ function self:OnLoad(data)
 		self.retrofit_nodeidtilemap_atriummaze = data.retrofit_nodeidtilemap_atriummaze
         self.retrofit_daywalker_content = data.retrofit_daywalker_content or false
         self.console_beard_turf_fix = data.console_beard_turf_fix or false
+        self.retrofit_rifts6_add_fumarole = data.retrofit_rifts6_add_fumarole or false
+		self.floating_heavyobstaclephysics_fix = data.floating_heavyobstaclephysics_fix or false
     end
 end
 

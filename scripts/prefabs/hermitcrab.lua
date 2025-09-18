@@ -43,7 +43,7 @@ local SHOP_LEVELS =
     "HERMITCRABSHOP_L4",
 }
 
-local TASKS = {
+local TASKS = { -- TODO(JBK): The current save data for this assumes these tasks will not be removed and must be in order as an enum. This should be changed in friendlevels component at some point.
     FIX_HOUSE_1 = 1,
     FIX_HOUSE_2 = 2,
     FIX_HOUSE_3 = 3,
@@ -296,6 +296,15 @@ local function OnAcceptItem(inst, giver, item, count)
             inst.itemstotoss = inst.itemstotoss or {}
             table.insert(inst.itemstotoss, item)
         end
+    elseif item.components.edible then
+        if inst.driedthings then
+            inst.driedthings = inst.driedthings + 1
+            if inst.driedthings == 6 then
+                inst.driedthings = nil
+            end
+        end
+        inst:PushEvent("eat_food")
+        item:Remove()
     end
 end
 
@@ -1169,21 +1178,6 @@ local function initfriendlevellisteners(inst)
         if worldmeteorshower ~= nil then
             local odds = inst.components.friendlevels:GetLevel() / inst.components.friendlevels:GetMaxLevel()
             worldmeteorshower.moonrockshell_chance_additionalodds:SetModifier(inst, odds, "pearl_tasks")
-        end
-    end)
-
-    -- To eat the berries and meat we harvest
-    inst:ListenForEvent("itemget", function(inst, data)
-        if data and data.item.components.edible and not is_flowersalad(data.item) then --OnAcceptItem already handles flower salad
-            if inst.driedthings then
-                -- This should only really count for meat that actually dried, but it's been working this way forever, so it's fine.
-                inst.driedthings = inst.driedthings + 1
-                if inst.driedthings == 6 then
-                    inst.driedthings = nil
-                end
-            end
-            inst:PushEvent("eat_food")
-            data.item:Remove()
         end
     end)
 end

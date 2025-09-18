@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Nothin' there but air.",
+			STUCK = "It's pretty stuck.",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1171,11 +1172,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "That was a close one!",
     ANNOUNCE_FLOATER_LETGO = "Why'd I let-",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Get'em!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Kinda sad, but I still hate it.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I'm resting, eh.",
     ANOUNCE_MUTATED_BIRD_ATTACK = "What did I do to deserve this?",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "We need something stronger, eh?",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Well do you have a better idea, Lucy?",
 
 	BATTLECRY =
 	{
@@ -1760,6 +1765,8 @@ return{
 		TURF_FUNGUS="It's mushy, like peas.",
 		TURF_FUNGUS_MOON = "It's mushy, like peas.",
 		TURF_ARCHIVE = "That's some nice stonework!",
+        TURF_VAULT = "That's some nice stonework!",
+        TURF_VENT = "Rocks. Bleh.",
 		TURF_SINKHOLE="I found this underground.",
 		TURF_UNDERROCK="Rocks. Bleh.",
 		TURF_MUD="At least you don't have to clean it.",
@@ -3331,6 +3338,7 @@ return{
         WINTER_ORNAMENTBOSS = "Y'know, I do believe that was worth it.",
 		WINTER_ORNAMENTFORGE = "Kinda familiar eh, Lucy?",
 		WINTER_ORNAMENTGORGE = "That's nice.",
+        WINTER_ORNAMENTPEARL = "Aww, it would look nice in my cabin.",
 
         WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
         WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie
@@ -4427,6 +4435,13 @@ return{
             LINE_4 = "I never even got a handle on French, don't expect me to read that.",
             LINE_5 = "Now that's a head scratcher.",
         },
+		VAULT_RUNE = "Maybe I'm reading them upside-down.",
+		VAULT_STATUE =
+		{
+			LORE1 = "Oh geez, he's rotten to the core.",
+			LORE2 = "Someone... or something did a number on them.",
+			LORE3 = "Great. Giant armed termites.",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "Not sure where it's leading me, but I might as well find out.",
@@ -5129,6 +5144,7 @@ return{
 
         PLAYBILL_THE_DOLL = "The theater ain't really my sorta thing.",
         PLAYBILL_THE_VEIL = "I might sleep through it.",
+        PLAYBILL_THE_VAULT = "Not a light read.",
         STATUEHARP_HEDGESPAWNER = "Back to nature, eh?",
         HEDGEHOUND = "Ready to do some pruning, Luce?",
         HEDGEHOUND_BUSH = "Roses grow awfully fast around these parts.",
@@ -5735,7 +5751,7 @@ return{
         FLOTATIONCUSHION = "There's room for both of us, Luce.",
         LUNAR_SEED = "We sure topped'em, eh Luce?",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "That's looking more like it.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "How does all that fit in here?",
         WAGBOSS_ROBOT_CREATION_PARTS = "Are these the murdery parts?",
@@ -5756,6 +5772,68 @@ return{
             BURNING  = "Finally.", --when its burning
             REVIVING = "This is the worst.", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "I still don't trust it.", --witnessing the corpse
+            BURNING  = "Finally.", --when its burning
+            REVIVING = "This is the worst.", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "Oh man. That's bad. So bad.", -- Generic string
+            EATING_CORPSE = "We need to get outta here, Luce.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "I don't know which end is uglier.", --The head segment
+            BODY = "It's as thick as an oak!", --The body segment
+            FLIPPED = "It's upside down but not out.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "That's one way to go about it.", --It's vines are burning, it will collapse
+			CHOPPED = "Did anyone yell \"Boulder!\"?", --It's 'chopped', so the rock fell
+			GENERIC = "Shall we, Luce?", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "I'd rather not wait around.", -- Not ventilating anything
+            HOT     = "I'm not cut out for this climate.", -- Ventiliating hot air, making the area warm
+            GAS     = "Did you catch a whiff of that, Luce?", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "Smells like trouble.", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "Hey, it's dead!",
+        FLOWER_CAVE_WITHERED = "It's almost out.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "I don't like it either, Luce.", --off, looks like decor/statue
+			ACTIVATED = "I knew it!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "I know, Lucy.",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "This might feel a little funny, Luce.",
+            BROKEN = "Looks pretty broken.",
+            UNPOWERED = "I don't think it's turned on.",
+        },
+		VAULT_ORB = "Wonder what it does.",
+        VAULT_LOBBY_EXIT = "It should be fine?",
+		VAULT_CHANDELIER_BROKEN = "Better keep careful around here.",
+
+		ANCIENT_HUSK = "I can't even begin to understand what happened here.",
+		MASK_ANCIENT_HANDMAIDHAT = "Wonder what her job was. Something important probably.",
+		MASK_ANCIENT_ARCHITECTHAT = "What do you think, Luce? Kinda, I guess?",
+		MASK_ANCIENT_MASONHAT = "I bet the owner could have carried a few logs.",
+
+        TREE_ROCK_SEED = "It makes me a little emotional.",
+        TREE_ROCK_SAPLING = "I can't wait to see it full grown...",
     },
 
     DESCRIBE_GENERIC = "What's that, eh?",

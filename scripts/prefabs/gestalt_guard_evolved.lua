@@ -290,7 +290,7 @@ local function fn()
         return inst
     end
 
-	inst.scrapbook_inspectonseen = true
+	--inst.scrapbook_inspectonseen = true --Can already be killed and inspected normally no need.
 	inst.scrapbook_overridedata = {"head_fx_big", "brightmare_gestalt_head_evolved", "head_fx_big"}
 
     --

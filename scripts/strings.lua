@@ -408,6 +408,7 @@ STRINGS =
             SOCKET   = "Socket",
             CELESTIAL = "Offer",
             SHOW = "Show",
+			REPAIR = "Repair",
 			APPLY    = "Apply {item}",
             DRINK    = "Drink {item}",
             QUAGMIRE_POT_HANGER = "Hang {item}",
@@ -473,6 +474,7 @@ STRINGS =
 		{
 			GENERIC = "Examine",
 			CLOSEINSPECT = "Closely Examine",
+			READ = "Read",
 		},
         TALKTO = "Talk to",
 		INTERACT_WITH =
@@ -613,6 +615,7 @@ STRINGS =
             GATHER_MERM = "Gather Merm",
             FAKE_PICKUP = "Pick up",
             PLAY_WITH = "Play with",
+			PULL = "Pull",
         },
 
 		OPEN_CRAFTING =
@@ -1110,7 +1113,7 @@ STRINGS =
 		-- Rifts 5
 		POUNCECAPTURE = "Encapsulate",
         
-        -- electrocute
+        -- rifts5.1
         DIVEGRAB = "Restrain",
         STARTELECTRICLINK = "Toggle Linking",
         ENDELECTRICLINK = "Disconnect Links",
@@ -1429,6 +1432,9 @@ STRINGS =
 		TURF_FUNGUS_MOON = "Mutated Fungal Turf",
 
 		TURF_ARCHIVE = "Ancient Stonework",
+        TURF_VAULT = "Ancient Sanctum Stonework",
+        TURF_VENT = "Cave Fumarole Turf",
+
 
 		BLUEPRINT_CRAFTINGSET_RUINS_BUILDER = "Ruins Turf Blueprints",
 		BLUEPRINT_CRAFTINGSET_RUINSGLOW_BUILDER = "Imitation Ruins Turf Blueprints",
@@ -2071,6 +2077,11 @@ STRINGS =
         RUINSRELIC_CHIPBOWL = "Replica Relic Dish",
         RUINSRELIC_VASE = "Replica Relic Vase",
         RUINSRELIC_TABLE = "Replica Relic Table",
+		VAULTRELIC = "Sanctum Relic",
+		VAULTRELIC_BROKEN = "Broken Sanctum Relic",
+		VAULTRELIC_BOWL = "Replica Sanctum Bowl",
+		VAULTRELIC_VASE = "Replica Sanctum Vase",
+		VAULTRELIC_PLANTER = "Replica Sanctum Planter",
         MULTITOOL_AXE_PICKAXE = "Pick/Axe",
         SLURPER_PELT = "Slurper Pelt",
         THULECITE = "Thulecite",
@@ -3542,6 +3553,8 @@ STRINGS =
 
         ARCHIVE_MOON_STATUE = "Ancient Moon Statue",
         ARCHIVE_RUNE_STATUE = "Ancient Lunarune Stone",
+		VAULT_RUNE = "Sanctum Lunarune Stone",
+		VAULT_STATUE = "Sanctum Statue",
 
         ARCHIVE_RESONATOR = "Astral Detector",
         ARCHIVE_RESONATOR_ITEM = "Astral Detector",
@@ -3901,6 +3914,7 @@ STRINGS =
 
         PLAYBILL_THE_DOLL = "The Enchanted Doll\nA Stage Play",
         PLAYBILL_THE_VEIL = "The Pall\nA Stage Play",
+        PLAYBILL_THE_VAULT = "A Task Complete\nA Confession",
         STATUEHARP_HEDGESPAWNER = "Overgrown Statue",
 
         -- Year of the Rabbit
@@ -3935,7 +3949,7 @@ STRINGS =
 
 		LUNAR_GRAZER = "Grazer",
         LUNARTHRALL_PLANT = "Deadly Brightshade",
-        LUNARTHRALL_PLANT_GESTALT = "Brightshade Gestalt",
+        LUNARTHRALL_PLANT_GESTALT = "Incursive Gestalt",
         LUNARTHRALL_PLANT_VINE_END = "Tunneling Vine",
 
         PUREBRILLIANCE = "Pure Brilliance",
@@ -4336,7 +4350,7 @@ STRINGS =
         LUNAR_SEED = "Celestial Jewel",
 		TEMP_BETA_MSG = "Beta Report",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "W.A.R.B.O.T. Base",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "W.A.R.B.O.T. Base Kit",
         WAGBOSS_ROBOT_CREATION_PARTS = "W.A.R.B.O.T. Parts",
@@ -4353,6 +4367,34 @@ STRINGS =
         -- Names for missed scrapbook entries
         WAVEYJONES = "Wavey Jones",
         SHADOWHAND = "Shadow Hand",
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = "Mega Blight",
+        SHADOWTHRALL_CENTIPEDE_ALLEGIANCE = "Ripple",
+
+        TREE_ROCK = "Boulderbough",
+        CAVE_VENT_ROCK = "Fumarole",
+
+		ABYSSPILLAR_MINION = "Sequitor",
+		ABYSSPILLAR_TRIAL = "Lever", --Pillar puzzle lever
+
+        VAULT_TELEPORTER = "Sanctum Waymark", -- Channel device to teleport players around the vault.
+		VAULT_TELEPORTER_BROKEN = "Broken Sanctum Waymark",
+		VAULT_ORB = "Portation Orb",
+		VAULT_LOBBY_EXIT = "Chasm",
+		VAULT_CHANDELIER_BROKEN = "Sanctum Lustre",
+
+		ANCIENT_HUSK = "Ancient Remains",
+		MASK_ANCIENT_HANDMAIDHAT = "Elytra's Mask",
+		MASK_ANCIENT_ARCHITECTHAT = "Visionist's Mask",
+		MASK_ANCIENT_MASONHAT = "Artificer's Mask",
+
+        TREE_ROCK_SEED = "Boulderbough Seed",
+        TREE_ROCK_SAPLING = "Boulderbough Sapling",
+
+        CAVE_FERN_WITHERED = "Withered Fern",
+        FLOWER_CAVE_WITHERED = "Withered Light Flower",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -4576,6 +4618,8 @@ STRINGS =
         TURF_METEOR = "The cratered surface of the moon.",
         TURF_FUNGUS_MOON = "The mutated fungal floor of a cave.",
 		TURF_ARCHIVE = "Ancient stonework from an unsealed archive.",
+        TURF_VAULT = "Ancient stonework from the Sanctum.",
+        TURF_VENT = "The craggy stone floor of a fumey cave.",
 		BLUEPRINT_CRAFTINGSET_RUINS_BUILDER = "Build a floor in the style of a long-gone civilization.",
 		BLUEPRINT_CRAFTINGSET_RUINSGLOW_BUILDER = "As faithful a recreation as could be mustered.",
 		TURF_RUINSBRICK = "Ancient stone flooring, decorated with a magical technique lost to time.",
@@ -4647,6 +4691,10 @@ STRINGS =
         RUINSRELIC_CHIPBOWL = "Don't double dip.",
         RUINSRELIC_VASE = "A faux-vintage vase.",
         RUINSRELIC_TABLE = "Don't put your elbows on it.",
+
+		VAULTRELIC_BOWL = "It's not dirty, it's \"developing a patina\".",
+		VAULTRELIC_VASE = "Decor from a bygone age.",
+		VAULTRELIC_PLANTER = "Too brittle to plant anything in, but a great conversation piece.",
 
         RAINCOAT = "A waterproof coat to keep you dry.",
         RAINHAT = "Soft to the touch, slick to the rain.",
@@ -5505,6 +5553,7 @@ STRINGS =
 
         FENCE_ELECTRIC = "A shockingly effective way to contain yourself... or others.",
         FENCE_ELECTRIC_ITEM = "A shockingly effective way to contain yourself... or others.",
+
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -8794,7 +8843,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "Hostile Takeover: Phase Two - Beta Branch", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "From Beyond - Ancient Echoes - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -10784,7 +10833,7 @@ STRINGS.UI =
         EARTHQUAKES = "Earthquakes",
         CAVELIGHT = "Sinkhole Lights",
 
-        PENGUINS_MOON = "Moonrock Pengulls",
+        PENGUINS_MOON = "Permafrost Pengulls",
         BEES_SETTING = "Bees",
         CATCOONS = "Catcoons",
         FROGS = "Frogs",
@@ -15711,9 +15760,14 @@ STRINGS.CAST = {
     MIRROR = "The Mirror",
     FOOL = "The Fool",
     TREE = "The Tree",
+    --
     SAGE = "The Sage",
     HALFWIT = "The Halfwit",
     TOADY = "The Toady",
+    --
+    VISIONIST = "The Visionist",
+    ARTIFICER = "The Artificer",
+    ELYTRA = "Elytra",
 }
 
 STRINGS.PLAYS = {
@@ -15729,7 +15783,38 @@ STRINGS.PLAYS = {
         "Act 3 - Scene 3",
         "- The Reunion -",
     },
-    THEVEIL = "The Pall",           
+    THEVEIL = "The Pall",
+    THEVAULT = "A Task Complete",
+}
+
+STRINGS.ARCHIVE_RUNE_STATUE = {
+	LINE_1 = "\"We remain faithful to Alter, as Alter remains faithful to us. Ever watching, knowing, waiting.\"",
+	LINE_2 = "\"Alter, Glorious Moon in the cold night sky. Cast your Life-giving Light on us forever.\"",
+	LINE_3 = "\"Mighty Alter, the source of our strength, our sole provider. We are loyal to none but You.\"",
+	LINE_4 = "\"Alter is our Champion. Alter is the Champion. The Champion is Alter.\"",
+	LINE_5 = "\"Alter is good. Alter shall not forsake us. Alter shall return.\"",
+}
+STRINGS.VAULT_RUNE = {
+	LOBBY = "\"This vault shall become a tomb for all who dare trespass.\"",
+	TELEPORT1 = "\"Bound together are these chambers, yet in ways unnatural, wrought to confound all who enter.\"",
+	LORE1 = "\"Trust none. The Shadow twists all it touches.\"",
+	LORE2 = "\"Through the Keystone, all kin and kind shall fall.\"",
+	LORE3 = "\"Let the cursed Keystone never cross this threshold.\"",
+	PUZZLE1 = "\"Paths are taken but once. Leap wisely, tarry not, or the abyss claims all.\"",
+}
+STRINGS.NIGHTMARE_OVERGROWTH = {
+    LINE_1 = "\"Forsaken wretches of the one who turned away.\"",
+    LINE_2 = "\"Orphans cast upon the barren expanse. Lost in the wake of neglect.\"",
+    LINE_3 = "\"From desolation were we drawn. Into the veiled embrace of Them.\"",
+    LINE_4 = "\"No longer doth the shadow stir terror within our hearts.\"",
+    LINE_5 = "\"For dark is become our shield. Our sustenance. Our solace.\"",
+}
+STRINGS.ATRIUM_OVERGROWTH = {
+    LINE_1 = "\"The unknown hath been made known. The abyss revealed as refuge.\"",
+    LINE_2 = "\"Dread twisted into devotion. Trembling into gratitude.\"",
+    LINE_3 = "\"Loyalty unending. We kneel before the undying. The unaltering.\"",
+    LINE_4 = "\"Thou art called by manifold names in myriad realms.\"",
+    LINE_5 = "\"To us, Thou art Shrouden. Many and one. Beyond all time. Beyond all realms.\"",
 }
 
 STRINGS.SPELLS = {
@@ -17555,7 +17640,7 @@ STRINGS.SCRAPBOOK = {
         WANDERINGTRADER = "He travels between a few Points of Interest, looking for survivors to trade with. He gets new stock every couple of days, so be sure to check back in regularly!",
         LUNAR_SEED = "They came from an enlightened crown - so return them to one, to bask in eternal enlightenment.",
 
-        -- electrocute
+        -- rifts5.1
         WAGSTAFF_MATERIALS_NOTE = "\n\"Day 89 - Material Study\"\n\n\"Thulecite appears sufficient to contain lunar entities. Structural integrity holds under moderate strain. Further testing advised.\"\n",
         WAGSTAFF_ENERGY_NOTE = "\n\"Day 195 - Energy\"\n\n\"Eureka. Lunar forms radiate boundless energy. Containable. Obedient, even? Control may be possible. Endless applications... if stability holds.\"\n",
         WAGSTAFF_CONTAINMENT_NOTE = "\n\"Day 226 - Containment Measures\"\n\n\"Area of containment necessary prior to experimentation. Consider implementing a kinetic and teleportational dampening field?\"\n",
@@ -17584,6 +17669,8 @@ STRINGS.TEMP_BETA_MSG =
 	RIFTS5_BASIC = "Thanks for playing the beta!\nBoss final phase and rewards coming soon...",
 	RIFTS5_BASIC_NEW = "Thanks for playing the beta!",
 	RIFTS5_KILLTIME_FMT = "You defeated {name} in {time}s.",
+	--
+	RIFTS6_BASIC = "Thanks for playing the beta!\nThe room beyond this point is not yet available.",
 }
 
 --Don't include this in pot generation as this file is already translated.

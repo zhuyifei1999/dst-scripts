@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Ooh. Empty",
+			STUCK = "Stuck",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1174,11 +1175,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "Good baby floater",
     ANNOUNCE_FLOATER_LETGO = "Bye, baby flo-",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "No, tweeters!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Tweeter?",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Resting",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Tweeters!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "Need more stronger!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Same?",
 
 	BATTLECRY =
 	{
@@ -1763,6 +1768,8 @@ return{
 		TURF_FUNGUS="Mushy",
 		TURF_FUNGUS_MOON = "Mushy",
 		TURF_ARCHIVE = "Not dirt",
+        TURF_VAULT = "Not dirt",
+        TURF_VENT = "Too rocky",
 		TURF_SINKHOLE="Slimy",
 		TURF_UNDERROCK="Too rocky",
 		TURF_MUD="Sticky",
@@ -3334,6 +3341,7 @@ return{
         WINTER_ORNAMENTBOSS = "Put on friends",
 		WINTER_ORNAMENTFORGE = "It goes on friend",
 		WINTER_ORNAMENTGORGE = "For friends to feel pretty",
+        WINTER_ORNAMENTPEARL = "From crabby friend",
 
         WINTER_FOOD1 = "Friend?", --gingerbread cookie
         WINTER_FOOD2 = "Oh. Didn't fall from sky", --sugar cookie
@@ -4430,6 +4438,13 @@ return{
             LINE_4 = "Pretty",
             LINE_5 = "Skritch scratches",
         },
+		VAULT_RUNE = "Scratch, scratch, scratch?",
+		VAULT_STATUE =
+		{
+			LORE1 = "Dark inside Bug King",
+			LORE2 = "Not sleeping",
+			LORE3 = "Hi, friends! Why mad?",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "That way",
@@ -5132,6 +5147,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Sad story",
         PLAYBILL_THE_VEIL = "Scare show",
+        PLAYBILL_THE_VAULT = "Old story",
         STATUEHARP_HEDGESPAWNER = "Friends giving statue a hug",
         HEDGEHOUND = "Why friends mad?",
         HEDGEHOUND_BUSH = "Friends?",
@@ -5738,7 +5754,7 @@ return{
         FLOTATIONCUSHION = "No more scared biiig water",
         LUNAR_SEED = "Love Baby Night Ball! Love!",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Half big-big robot friend",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Big-big robot friend inside!",
         WAGBOSS_ROBOT_CREATION_PARTS = "Found parts for big-big robot friend!",
@@ -5759,6 +5775,68 @@ return{
             BURNING  = "Bye, tweeter", --when its burning
             REVIVING = "Tweeter back...", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "Meat tweeter dead", --witnessing the corpse
+            BURNING  = "Bye, meat tweeter", --when its burning
+            REVIVING = "Meat tweeter back...", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "Dead not dead meat tweeter", -- Generic string
+            EATING_CORPSE = "Forever hungry", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Hello, legs friend head", --The head segment
+            BODY = "Legs friend many legs", --The body segment
+            FLIPPED = "Up down, down up", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "Friend too hot!", --It's vines are burning, it will collapse
+			CHOPPED = "Where vine friend?", --It's 'chopped', so the rock fell
+			GENERIC = "Good vine friend!", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "No stink now", -- Not ventilating anything
+            HOT     = "Hot water smoke?", -- Ventiliating hot air, making the area warm
+            GAS     = "Bad smell!", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "Danger stinky!", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "Dead",
+        FLOWER_CAVE_WITHERED = "Glowy friend dying",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "Friend sleeping", --off, looks like decor/statue
+			ACTIVATED = "Where friend going?", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "Pull?",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "Make poof!",
+            BROKEN = "Broken?",
+            UNPOWERED = "No spark",
+        },
+		VAULT_ORB = "Who friend lose ball?",
+        VAULT_LOBBY_EXIT = "Jump!",
+		VAULT_CHANDELIER_BROKEN = "Ball fall down.",
+
+		ANCIENT_HUSK = "Why, friends? Why?",
+		MASK_ANCIENT_HANDMAIDHAT = "Friend face hard!",
+		MASK_ANCIENT_ARCHITECTHAT = "Science man?",
+		MASK_ANCIENT_MASONHAT = "Friend face strong!",
+
+        TREE_ROCK_SEED = "Baby friend!",
+        TREE_ROCK_SAPLING = "Hey kid",
     },
 
     DESCRIBE_GENERIC = "Friend?",

@@ -852,9 +852,6 @@ local function MakeFreed(inst)
 		inst.sg:GoToState("emerge")
 		CheckHealthPhase(inst)
 		inst:SetBrain(brain)
-		if inst.brain == nil and not inst:IsAsleep() then
-			inst:RestartBrain()
-		end
 
 		if inst.junkfx then
 			for i, v in ipairs(inst.junkfx) do

@@ -1442,7 +1442,6 @@ function d_fish(swim, r,g,b)
 	local fish
 	fish = c_spawn "oceanfish_medium_4"
 	if not swim then
-		fish:StopBrain()
 		fish:SetBrain(nil)
 	end
 	fish.Transform:SetPosition(x, y, z)
@@ -1450,7 +1449,6 @@ function d_fish(swim, r,g,b)
 
 	fish = c_spawn "oceanfish_medium_3"
 	if not swim then
-		fish:StopBrain()
 		fish:SetBrain(nil)
 	end
 	fish.Transform:SetPosition(x+2, y, z)
@@ -1458,7 +1456,6 @@ function d_fish(swim, r,g,b)
 
 	fish = c_spawn "oceanfish_medium_8"
 	if not swim then
-		fish:StopBrain()
 		fish:SetBrain(nil)
 	end
 	fish.Transform:SetPosition(x, y, z+2)
@@ -1467,7 +1464,6 @@ function d_fish(swim, r,g,b)
 
 	fish = c_spawn "oceanfish_medium_3"
 	if not swim then
-		fish:StopBrain()
 		fish:SetBrain(nil)
 	end
 	fish.Transform:SetPosition(x+2, y, z+2)
@@ -2338,7 +2334,7 @@ local function Scrapbook_DefineType(t, entry)
     elseif t:HasTag("NPCcanaggro") or (
         t.components.health ~= nil and
         t.sg ~= nil and
-        not t:HasOneOfTags({ "structure", "boatbumper", "boat" })
+        not t:HasOneOfTags({ "structure", "boatbumper", "boat", "wall", "fence" })
     ) then
         thingtype = "creature"
 
@@ -4152,4 +4148,73 @@ function d_testbirdclearhail()
     local bird = SpawnPrefab("mutatedbird")
     bird.Transform:SetPosition(x + math.cos(angle) * radius, 14 + math.random() * 4, z - math.sin(angle) * radius)
     bird:PushBufferedAction(BufferedAction(bird, inst, ACTIONS.REMOVELUNARBUILDUP))
+end
+
+function d_spawncentipede(num)
+    c_spawn("shadowthrall_centipede_controller").components.centipedebody.num_torso = num or 5
+end
+
+function d_movementon()
+    local inst = c_select()
+    if not inst then
+        return
+    end
+
+    inst.components.locomotor:WalkForward(true)
+end
+
+function d_followplayer()
+    local inst = c_select()
+    if not inst then
+        return
+    end
+
+    inst.follow_task = inst:DoPeriodicTask(FRAMES, function() inst:ForceFacePoint(ThePlayer:GetPosition()) end)
+end
+
+function d_stopcentipedemovement()
+    for k, v in pairs(Ents) do
+        if v.HasTag and v:HasTag("shadowthrall_centipede") then
+            v.components.locomotor:Stop()
+        end
+    end
+end
+
+local DARK = true
+function d_lightworld()
+    TheWorld:PushEvent("overrideambientlighting", DARK and Point(1,1,1) or nil)
+    DARK = not DARK
+end
+
+function d_activatearchives()
+    for _, v in pairs(Ents) do
+        if v.prefab == "archive_switch" and v.components.trader.enabled then
+            local opal = SpawnPrefab("opalpreciousgem")
+            v.components.trader:AcceptGift(nil, opal, 1)
+            break
+        end
+    end
+end
+
+function d_vaultroom(id)
+	local center
+	for i, v in ipairs(TheSim:FindEntities(0, 0, 0, 9001, { "CLASSIFIED" })) do
+		if v.components.vaultroom then
+			v.components.vaultroom:UnloadRoom()
+			v.components.vaultroom:LoadRoom(id)
+			break
+		end
+	end
+end
+
+function d_spawnvaultactors()
+    c_give("mask_ancient_handmaidhat")
+
+    local wilson = SpawnPrefab("wilson")
+    wilson.Transform:SetPosition(c_findnext("charlie_stage").Transform:GetWorldPosition())
+    wilson.components.inventory:Equip(SpawnPrefab("mask_ancient_masonhat"))
+
+    wilson = SpawnPrefab("wilson")
+    wilson.Transform:SetPosition(c_findnext("charlie_stage").Transform:GetWorldPosition())
+    wilson.components.inventory:Equip(SpawnPrefab("mask_ancient_architecthat"))
 end

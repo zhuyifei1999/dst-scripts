@@ -73,6 +73,8 @@ local function createglass(name, preinit, postinit)
 
         inst:AddComponent("edible")
         inst.components.edible.foodtype = FOODTYPE.LUNAR_SHARDS
+        inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+        inst.components.edible.healthvalue = TUNING.HEALING_TINY
 
         inst:AddComponent("bait")
 

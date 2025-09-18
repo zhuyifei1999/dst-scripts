@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Better luck next time!",
+			STUCK = "It's stuck. Oh well!",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1212,11 +1213,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "I knew I'd come out on top!",
     ANNOUNCE_FLOATER_LETGO = "Submerging!",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those poor birds!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "They're falling from the sky, Woby!",
     ANNOUNCE_FLOAT_SWIM_TIRED = "I gotta paws. Get it, Wobes?",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Incoming!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "We need something stronger, Woby!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "I don't know, Woby! Must be a bad connection!",
 
 	BATTLECRY =
 	{
@@ -1801,6 +1806,8 @@ return{
 		TURF_FUNGUS="A patch of ground.",
 		TURF_FUNGUS_MOON = "A patch of ground.",
 		TURF_ARCHIVE = "A patch of ground.",
+        TURF_VAULT = "A patch of ground.",
+        TURF_VENT = "A patch of ground.",
 		TURF_SINKHOLE="A patch of ground.",
 		TURF_UNDERROCK="A patch of ground.",
 		TURF_MUD="A patch of ground.",
@@ -2757,7 +2764,7 @@ return{
             GENERIC = "A pretty normal thing to see in a swamp.",
             PICKED = "Nothing left to gather here.",
         },
-        RELIC = "It's even older than the furniture at my grandpa's house.",
+        RELIC = "It's even older than the knick-knacks at my grandpa's house.",
         RUINS_RUBBLE = "We can fix it up with some Pinetree Pioneer determination!",
         RUBBLE = "A bunch of really old rocks. I guess all rocks are old...",
         RESEARCHLAB =
@@ -3372,6 +3379,7 @@ return{
         WINTER_ORNAMENTBOSS = "This one should go someplace special.",
 		WINTER_ORNAMENTFORGE = "These ones are my favourite.",
 		WINTER_ORNAMENTGORGE = "Looks like... a goat person?",
+        WINTER_ORNAMENTPEARL = "Aww, can you believe she made this, Woby?",
 
         WINTER_FOOD1 = "Mom made these every year.", --gingerbread cookie
         WINTER_FOOD2 = "I'll make sure the younger kids don't eat too many.", --sugar cookie
@@ -4468,6 +4476,13 @@ return{
             LINE_4 = "I wonder what it says.",
             LINE_5 = "I sure wish I could read it.",
         },
+		VAULT_RUNE = "What do these symbols mean?",
+		VAULT_STATUE =
+		{
+			LORE1 = "Poor fella doesn't look well, eh Woby?",
+			LORE2 = "Something real bad happened to them.",
+			LORE3 = "They're just statues, girl!",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "I guess it's kind of like a compass.",
@@ -5170,6 +5185,7 @@ return{
 
         PLAYBILL_THE_DOLL = "It's like a radio play you can watch!",
         PLAYBILL_THE_VEIL = "Oooh, this looks spooky.",
+        PLAYBILL_THE_VAULT = "Looks like a classic!",
         STATUEHARP_HEDGESPAWNER = "It's all overgrown with vines.",
         HEDGEHOUND = "Maybe he just has a thorn stuck in his paw?",
         HEDGEHOUND_BUSH = "Woby, what's wrong? It's just a rose bush!",
@@ -5776,7 +5792,7 @@ return{
         FLOTATIONCUSHION = "We love water safety! Don't we, Wobes?",
         LUNAR_SEED = "I wonder if there's a badge for defeating a moon god?",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It's missing some parts, Woby!",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Maybe this time it will be nice!",
         WAGBOSS_ROBOT_CREATION_PARTS = "I know where these go!",
@@ -5797,6 +5813,68 @@ return{
             BURNING  = "Smells kinda yummy.", --when its burning
             REVIVING = "Yes! I knew it!", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "Stay away from it, Woby!", --witnessing the corpse
+            BURNING  = "Smells kinda yummy.", --when its burning
+            REVIVING = "Yes! I knew it!", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "I think it's a very bad sign.", -- Generic string
+            EATING_CORPSE = "It's really feasting, Woby!", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Are two heads better than one?", --The head segment
+            BODY = "Beware of de-feet! Get it, Wobes? De-feet!", --The body segment
+            FLIPPED = "No, Woby. I don't think it wants its belly scratched.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "Watch out, Wobes!", --It's vines are burning, it will collapse
+			CHOPPED = "Now we can mine it!", --It's 'chopped', so the rock fell
+			GENERIC = "How to free the stone? What a burning question to axe!", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "Not too close, Wobes.", -- Not ventilating anything
+            HOT     = "It's just blowing off steam! Get it, Woby?", -- Ventiliating hot air, making the area warm
+            GAS     = "Yuck! Stay back, Woby girl!", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "Steer clear, Wobers!", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "These weird plants don't do well down here.",
+        FLOWER_CAVE_WITHERED = "I wonder why it's dying.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "So creepy!", --off, looks like decor/statue
+			ACTIVATED = "Hey, it moves when I move!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "Great idea, Woby! Let's pull it!",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "Don't worry, Woby! I'll see you on the other side.",
+            BROKEN = "We have to fix it first, Woby girl!",
+            UNPOWERED = "I don't think there's power.",
+        },
+		VAULT_ORB = "That's not your ball, silly girl!",
+        VAULT_LOBBY_EXIT = "You think this is the way out, Woby?",
+		VAULT_CHANDELIER_BROKEN = "Wonder what caused that.",
+
+		ANCIENT_HUSK = "It makes me feel bad too, Woby.",
+		MASK_ANCIENT_HANDMAIDHAT = "It looks like it belonged to someone important.",
+		MASK_ANCIENT_ARCHITECTHAT = "I guess it kinda looks like Wilson. Don't tell him I said that, Woby.",
+		MASK_ANCIENT_MASONHAT = "I think this one did all the work.",
+
+        TREE_ROCK_SEED = "Where should we plant this little one, Woby?",
+        TREE_ROCK_SAPLING = "It's going to grow up big and strong!",
     },
 
     DESCRIBE_GENERIC = "That sure is a mystery!",

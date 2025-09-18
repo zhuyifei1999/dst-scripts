@@ -1655,9 +1655,8 @@ end
 
 --------------------------------------------------------------------------
 
-local function IsNotArchivesAndNotWagpunkArena(map, x, y, z)
-    local inwagpunkarena = map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
-    if inwagpunkarena then
+local function CanTeleportLinkFromPoint(map, x, y, z)
+    if not IsTeleportLinkingPermittedFromPoint(x, y, z) then
         return false
     end
     -- Don't land inside the archives, but you can fly from inside the archives.
@@ -1679,10 +1678,9 @@ local function UseWereFormSkill(inst, act)
 
     elseif inst:HasTag("weregoose") and TheWorld ~= nil then
         local x, y, z = inst.Transform:GetWorldPosition()
-        local inwagpunkarena = TheWorld.Map:IsPointInWagPunkArenaAndBarrierIsUp(x, y, z)
         local pos
-        if not inwagpunkarena then
-            pos = TheWorld.Map:FindRandomPointWithFilter(50, IsNotArchivesAndNotWagpunkArena)
+        if IsTeleportLinkingPermittedFromPoint(x, y, z) then
+            pos = TheWorld.Map:FindRandomPointWithFilter(50, CanTeleportLinkFromPoint)
         end
 
         if pos ~= nil then

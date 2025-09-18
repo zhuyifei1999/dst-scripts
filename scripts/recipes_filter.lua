@@ -1475,6 +1475,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"turf_ruinstrim",
 	"turf_ruinstrim_glow",
 	"turf_archive",
+	"turf_vault",
 
 	"turf_pebblebeach",
 	"turf_shellbeach",
@@ -1488,6 +1489,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"turf_rocky",
 	"turf_cave",
 	"turf_underrock",
+	"turf_vent",
 	"turf_sinkhole",
 	"turf_marsh",
 	"turf_mud",
@@ -1501,6 +1503,10 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"ruinsrelic_vase",
 	"ruinsrelic_chair",
 	"ruinsrelic_table",
+
+	"vaultrelic_bowl",
+	"vaultrelic_vase",
+	"vaultrelic_planter",
 
 	"chesspiece_anchor_sketch",
 

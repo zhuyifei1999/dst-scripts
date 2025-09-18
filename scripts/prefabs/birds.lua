@@ -235,6 +235,13 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
 		soundname = soundname.name
 	end
 
+    local BIRD_SOUNDS = {
+        takeoff = soundbank.."/birds/takeoff_"..soundname,
+        chirp = soundbank.."/birds/chirp_"..soundname,
+        flyin = "dontstarve/birds/flyin",
+        death = soundbank.."/birds/death_"..soundname,
+    }
+
     local function fn()
         local inst = CreateEntity()
 
@@ -288,12 +295,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
             return inst
         end
 
-        inst.sounds =
-        {
-            takeoff = soundbank.."/birds/takeoff_"..soundname,
-            chirp = soundbank.."/birds/chirp_"..soundname,
-            flyin = "dontstarve/birds/flyin",
-        }
+        inst.sounds = BIRD_SOUNDS
 
         inst.trappedbuild = name.."_build"
 

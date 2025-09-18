@@ -142,6 +142,7 @@ local function commonPreMain(inst)
         chirp = "moonstorm/creatures/mutated_crow/chirp",
         takeoff = "moonstorm/creatures/mutated_crow/take_off",
         attack = "moonstorm/creatures/mutated_crow/attack",
+        death = "moonstorm/creatures/mutated_crow/death",
     }
 
     --Initialize physics
@@ -274,6 +275,7 @@ local function spitterfn()
         takeoff = "moonstorm/creatures/mutated_robin/take_off",
         attack = "moonstorm/creatures/mutated_robin/attack",
         spit_pre = "moonstorm/creatures/mutated_robin/bile_shoot_spin_pre",
+        death = "moonstorm/creatures/mutated_robin/death",
     }
 
 	inst:AddTag("bird_mutant_spitter")

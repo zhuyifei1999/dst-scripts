@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "NOTHING",
+			STUCK = "DEADLOCKED",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1170,11 +1171,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "ERROR: WHY WHHHY!",
     ANNOUNCE_FLOATER_LETGO = "I WILL RETURN",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "I LOVE THAT SOUND",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "LITTLE GIFTS FROM ABOVE",
     ANNOUNCE_FLOAT_SWIM_TIRED = "JUST A MOMENT...",
     ANOUNCE_MUTATED_BIRD_ATTACK = "WARNING: AIRBORNE MEAT ATTACK!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "INSUFFICIENT POWER. OFFENSIVE UPGRADE REQUIRED",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "UNIT NON-OPERATIONAL",
 
 	BATTLECRY =
 	{
@@ -1759,6 +1764,8 @@ return{
 		TURF_FUNGUS="GROUND PARTS",
 		TURF_FUNGUS_MOON = "GROUND PARTS",
 		TURF_ARCHIVE = "GROUND PARTS",
+        TURF_VAULT = "GROUND PARTS",
+        TURF_VENT = "GROUND PARTS",
 		TURF_SINKHOLE="GROUND PARTS",
 		TURF_UNDERROCK="GROUND PARTS",
 		TURF_MUD="GROUND PARTS",
@@ -3330,6 +3337,7 @@ return{
         WINTER_ORNAMENTBOSS = "I DO NOT UNDERSTAND THIS RITUAL",
 		WINTER_ORNAMENTFORGE = "REDUNDANT FLESHLING ORNAMENTATION",
 		WINTER_ORNAMENTGORGE = "THIS FLESHLING IS NOT COMPOSED OF FLESH",
+        WINTER_ORNAMENTPEARL = "WHO CARES",
 
         WINTER_FOOD1 = "WHERE ARE THE ROBOT-SHAPED CONFECTIONS", --gingerbread cookie
         WINTER_FOOD2 = "FLESHLINGS LOVE SHAPING FOOD LIKE NON-FOOD", --sugar cookie
@@ -4426,6 +4434,13 @@ return{
             LINE_4 = "SUCH A CRUDE WAY OF RECORDING DATA",
             LINE_5 = "INSUFFICIENT DATA, UNABLE TO TRANSLATE",
         },
+		VAULT_RUNE = "SYNTAX ERROR",
+		VAULT_STATUE =
+		{
+			LORE1 = "INTEGRITY CHECK FAILED. CORRUPTION DETECTED",
+			LORE2 = "HA... HA?",
+			LORE3 = "YOU DARE TAKE UP ARMS AGAINST A SUPERIOR BEING?",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "POINT THE WAY MY NOBLE BRETHREN",
@@ -5128,6 +5143,7 @@ return{
 
         PLAYBILL_THE_DOLL = "RUNSCRIPT \"THE ENCHANTED DOLL\"",
         PLAYBILL_THE_VEIL = "RUNSCRIPT \"THE PALL\"",
+        PLAYBILL_THE_VAULT = "RUNSCRIPT \"A TASK COMPLETE\"",
         STATUEHARP_HEDGESPAWNER = "UGH THERE ARE ORGANISMS ALL OVER IT",
         HEDGEHOUND = "ORGANIC TRICKERY!",
         HEDGEHOUND_BUSH = "THERE IS SOMETHING INSIDE",
@@ -5734,7 +5750,7 @@ return{
         FLOTATIONCUSHION = "MINE",
         LUNAR_SEED = "THEY DON'T UNDERSTAND YOU LIKE I DO",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "SOON, MY FRIEND",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "COMPRESSED HARDWARE",
         WAGBOSS_ROBOT_CREATION_PARTS = "AWAITING INSTALLATION",
@@ -5755,6 +5771,68 @@ return{
             BURNING  = "CARBON TO STINKING CARBON", --when its burning
             REVIVING = "UPDATE IN PROGRESS", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "HA", --witnessing the corpse
+            BURNING  = "CARBON TO STINKING CARBON", --when its burning
+            REVIVING = "UPDATE IN PROGRESS", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "CODE CORRUPTED", -- Generic string
+            EATING_CORPSE = "I HATE THIS UPDATE", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "DUAL CPU", --The head segment
+            BODY = "RESPECTABLE HARDWARE", --The body segment
+            FLIPPED = "INVERTED ON Y-AXIS", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "CARBONIZING", --It's vines are burning, it will collapse
+			CHOPPED = "OF COURSE THE ORGANIC COMPONENT FAILED", --It's 'chopped', so the rock fell
+			GENERIC = "STRUCTURAL WEAKNESS IDENTIFIED", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "PRIMITIVE VENTILATION SYSTEM", -- Not ventilating anything
+            HOT     = "OVERHEAT WARNING", -- Ventiliating hot air, making the area warm
+            GAS     = "WARNING: RISK OF ORGANIC RESOURCE CORRUPTION", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "WARNING: USER MAY EXPERIENCE LAG", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "HA",
+        FLOWER_CAVE_WITHERED = "POWER SOURCE: DIMINISHED",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "INERT", --off, looks like decor/statue
+			ACTIVATED = "MOVEMENT PATTERN DETECTED: MIRRORING.", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "ACTIVATION SWITCH",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "PARTICLE DISPLACEMENT DEVICE",
+            BROKEN = "NONFUNCTIONAL",
+            UNPOWERED = "IT NEEDS POWER!!!",
+        },
+		VAULT_ORB = "ESSENTIAL HARDWARE IDENTIFIED",
+        VAULT_LOBBY_EXIT = "ESC",
+		VAULT_CHANDELIER_BROKEN = "MUST HAVE BEEN MOUNTED BY A FLESHBAG",
+
+		ANCIENT_HUSK = "CONFLICT RESOLVED",
+		MASK_ANCIENT_HANDMAIDHAT = "OH, HELLO",
+		MASK_ANCIENT_ARCHITECTHAT = "NICE FACE",
+		MASK_ANCIENT_MASONHAT = "THE FACE OF A RELIABLE MINION",
+
+        TREE_ROCK_SEED = "MUST BE INSTALLED",
+        TREE_ROCK_SAPLING = "INSTALLED",
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

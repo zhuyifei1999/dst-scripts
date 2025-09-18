@@ -1232,14 +1232,7 @@ local function SetCombatEnabled(inst, enabled)
 end
 
 local function SetBrainEnabled(inst, enabled)
-	if enabled then
-		inst:SetBrain(brain)
-		if not inst:IsAsleep() then
-			inst:RestartBrain()
-		end
-	else
-		inst:SetBrain(nil)
-	end
+	inst:SetBrain(enabled and brain or nil)
 end
 
 local function ConfigureOff(inst)

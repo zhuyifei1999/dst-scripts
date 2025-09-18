@@ -3539,6 +3539,31 @@ function resurrectionstatue_clear_fn(inst)
     basic_clear_fn(inst, "wilsonstatue")
 end
 
+function antlionhat_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "hat_antlion")
+end
+function antlionhat_clear_fn(inst)
+    basic_clear_fn(inst, "hat_antlion")
+end
+function woodcarvedhat_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "hat_woodcarved")
+end
+function woodcarvedhat_clear_fn(inst)
+    basic_clear_fn(inst, "hat_woodcarved")
+end
+function nightstick_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "nightstick")
+end
+function nightstick_clear_fn(inst)
+    basic_clear_fn(inst, "nightstick")
+end
+function hawaiianshirt_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "torso_hawaiian")
+end
+function hawaiianshirt_clear_fn(inst)
+    basic_clear_fn(inst, "torso_hawaiian")
+end
+
 
 
 function CreatePrefabSkin(name, info)

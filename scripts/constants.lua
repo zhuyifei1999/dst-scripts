@@ -1,7 +1,7 @@
 require "util"
 local TechTree = require("techtree")
 
-local IS_BETA = BRANCH == "staging" --or BRANCH == "dev"
+local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
 
 PI = math.pi
 PI2 = PI*2
@@ -23,6 +23,9 @@ PLAYER_CAMERA_SEE_DISTANCE = 40.0 -- NOTES(JBK): Based off of an approximation o
 PLAYER_CAMERA_SEE_DISTANCE_SQ = PLAYER_CAMERA_SEE_DISTANCE * PLAYER_CAMERA_SEE_DISTANCE -- Helper.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE = 20.0 -- NOTES(JBK): This is an approximate distance traveled where the camera should snap and fade out to not cause disorientations.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE_SQ = PLAYER_CAMERA_SHOULD_SNAP_DISTANCE * PLAYER_CAMERA_SHOULD_SNAP_DISTANCE -- Helper.
+--NOTE if we ever have other ways of increasing camera in-game, increase this!
+PLAYER_CAMERA_MAX_DIST = 65 -- 50 maxdist in forest world + 15 maxdist from scrap_monoclehat
+PLAYER_CAMERA_MAX_DIST_CAVES = 50 -- 35 maxdist in caves world + 15 maxdist from scrap_monoclehat
 
 MAX_FE_SCALE = 3 --Default if you don't call SetMaxPropUpscale
 MAX_HUD_SCALE = 1.25
@@ -834,8 +837,8 @@ SPECIAL_EVENTS =
     YOTD = "year_of_the_dragonfly",
     YOTS = "year_of_the_snake",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.CARNIVAL
---WORLD_SPECIAL_EVENT = IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.YOTR
+--WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.CARNIVAL
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE --IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.CARNIVAL
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -1145,7 +1148,8 @@ end
 FE_MUSIC =
     (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
     (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
-    "dontstarve/music/music_FE_wagboss"
+    "dontstarve/music/music_FE_cavepuzzle"
+    --"dontstarve/music/music_FE_wagboss"
     --"dontstarve/music/music_FE_balatro"
     --"dontstarve/music/music_FE_hallowednights2024"
     --"dontstarve/music/music_FE_rifts4"
@@ -1988,6 +1992,7 @@ FOODTYPE =
     MONSTER = "MONSTER", -- Added in for woby, uses the secondary foodype originally added for the berries
     LUNAR_SHARDS = "LUNAR_SHARDS", -- For rift birds, yummy glass
     CORPSE = "CORPSE", -- For rift buzzards potentially
+    MIASMA = "MIASMA", -- For the centipede thrall
 }
 
 FOODGROUP =
@@ -2385,6 +2390,7 @@ WORMHOLETYPE =
     WORM = 0,
     TENTAPILLAR = 1,
     OCEANWHIRLPORTAL = 2,
+    VAULTLOBBYEXIT = 3,
 }
 
 -- Houndwarning level, max value of 63 (net_smallbyte)
@@ -2873,6 +2879,15 @@ CLIENTAUTHORITATIVESETTINGS = {
 NIGHTSWORD_FX_OFFSETS = {
     RIGHT = 0.75,-- -1,
     DOWN = 2.9,-- 2.6,
+}
+
+SHARDTRANSACTIONSTEPS = {
+    INITIATE = 0,
+    ACCEPTED = 1,
+    FINALIZED = 2,
+}
+SHARDTRANSACTIONTYPES = {
+    TRANSFERINVENTORYITEM = 0,
 }
 
 -- Tag pairs in this list behave mutually exclusively,

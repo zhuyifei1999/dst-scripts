@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "Is nothing.",
+			STUCK = "It is so stuck even Wolfgang cannot unstuck!",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1171,11 +1172,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "Wolfgang unsinkable!",
     ANNOUNCE_FLOATER_LETGO = "Oopsie!",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Oh, how terrible!",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Poor birdy!",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Wolfgang just need a second.",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Bad birds coming!",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "Gah! Wolfgang needs something mightier!",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Wolfgang confused.",
 
 	BATTLECRY =
 	{
@@ -1760,6 +1765,8 @@ return{
 		TURF_FUNGUS="Step stones.",
 		TURF_FUNGUS_MOON = "Step stones.",
 		TURF_ARCHIVE = "Step stones.",
+        TURF_VAULT = "Step stones.",
+        TURF_VENT = "Step stones.",
 		TURF_SINKHOLE="Step stones.",
 		TURF_UNDERROCK="Step stones.",
 		TURF_MUD="Step stones.",
@@ -3331,6 +3338,7 @@ return{
         WINTER_ORNAMENTBOSS = "Pretty little token of mightiness!",
 		WINTER_ORNAMENTFORGE = "Decoration of mighty enemy.",
 		WINTER_ORNAMENTGORGE = "Hello, little friend!",
+        WINTER_ORNAMENTPEARL = "It make Wolfgang warm inside.",
 
         WINTER_FOOD1 = "Little man will crumble under my mighty teeth!", --gingerbread cookie
         WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie
@@ -4427,6 +4435,13 @@ return{
             LINE_4 = "Very fancy.",
             LINE_5 = "Is nice statue, but is covered in scribblemarks.",
         },
+		VAULT_RUNE = "Cute scribblemarks.",
+		VAULT_STATUE =
+		{
+			LORE1 = "Is very tragic.",
+			LORE2 = "Is just bugs. Why Wolfgang heart breaking?",
+			LORE3 = "Lucky they are statue, or Wolfgang squish them all!",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "Will show the way to... something.",
@@ -5129,6 +5144,7 @@ return{
 
         PLAYBILL_THE_DOLL = "Is very hard to remember so many words.",
         PLAYBILL_THE_VEIL = "Wolfgang not afraid watch, just don't feel like it.",
+        PLAYBILL_THE_VAULT = "Is too much for Wolfgang.",
         STATUEHARP_HEDGESPAWNER = "Wolfgang could rip vines off with one mighty pull.",
         HEDGEHOUND = "Is plant or puppy? Wolfgang is confused!",
         HEDGEHOUND_BUSH = "Full of prickles.",
@@ -5735,7 +5751,7 @@ return{
         FLOTATIONCUSHION = "Wolfgang exceptional swimmer, but keep just in case.",
         LUNAR_SEED = "Another trophy for Wolfgang!",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "Wolfgang can't wait to fight big scary machine guy!",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "Look at tiny machine guy, all tiny!",
         WAGBOSS_ROBOT_CREATION_PARTS = "Hurry and finish build big machine guy!",
@@ -5756,6 +5772,68 @@ return{
             BURNING  = "It is better for birdie.", --when its burning
             REVIVING = "Oh, no.", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "Wolfgang little bit sad.", --witnessing the corpse
+            BURNING  = "It is better for buzzie.", --when its burning
+            REVIVING = "Oh, no.", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "Is very bad luck.", -- Generic string
+            EATING_CORPSE = "Is gross, but Wolfgang can't look away.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Which face do Wolfgang punch?", --The head segment
+            BODY = "Hm. It have strong core.", --The body segment
+            FLIPPED = "Ha! Not so tough now!", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "You will not crush Wolfgang!", --It's vines are burning, it will collapse
+			CHOPPED = "Wolfgang can lift. Just don't want to now.", --It's 'chopped', so the rock fell
+			GENERIC = "Strong trunk! Like Wolfgang!", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "Is how ground breathe.", -- Not ventilating anything
+            HOT     = "Wolfgang love sauna.", -- Ventiliating hot air, making the area warm
+            GAS     = "Like Wolfgang when he eat too much protein!", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "Wolfgang hate dark yucky cloud.", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "Plant is dead.",
+        FLOWER_CAVE_WITHERED = "Light plant is fading.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "Wolfgang not afraid of bug statue.", --off, looks like decor/statue
+			ACTIVATED = "Stop copying Wolfgang!", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "Wolfgang has pulled much bigger levers.",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "Will be same Wolfgang on other side?",
+            BROKEN = "Maybe we leave it like this.",
+            UNPOWERED = "It lacks power!",
+        },
+		VAULT_ORB = "It is not ball for fun.",
+        VAULT_LOBBY_EXIT = "Maybe Wolfgang jump last to make sure nobody left behind.",
+		VAULT_CHANDELIER_BROKEN = "That belong on ceiling.",
+
+		ANCIENT_HUSK = "Too much violence for Wolfgang.",
+		MASK_ANCIENT_HANDMAIDHAT = "It command much respect!",
+		MASK_ANCIENT_ARCHITECTHAT = "Belong to tiny egghead bugman!",
+		MASK_ANCIENT_MASONHAT = "Strong chin! Like Wolfgang!",
+
+        TREE_ROCK_SEED = "Hello little baby seed. Wolfgang plant you somewhere nice.",
+        TREE_ROCK_SAPLING = "One day, you grow big and mighty like Wolfgang!",
     },
 
     DESCRIBE_GENERIC = "What is this thing?",

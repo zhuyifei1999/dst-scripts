@@ -267,7 +267,6 @@ local function go_to_submerged(inst)
     )
 
     inst:SetBrain(nil)
-    inst:StopBrain()
 
     -- Track if we're burrowed for save/load
     inst._is_burrowed = true
@@ -501,7 +500,6 @@ local function go_to_emerged(inst)
     end
 
     inst:SetBrain(brain)
-    inst:RestartBrain()
 
     -- Track if we're burrowed for save/load
     inst._is_burrowed = false

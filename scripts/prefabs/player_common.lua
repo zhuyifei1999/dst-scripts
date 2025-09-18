@@ -325,6 +325,11 @@ fns.OnStopChannelCastingItem = function(inst)
 	inst.components.locomotor:StopStrafing()
 end
 
+fns.IsTeetering = function(inst)
+	local platform = inst:GetCurrentPlatform()
+	return platform ~= nil and platform:HasTag("teeteringplatform")
+end
+
 local function ShouldAcceptItem(inst, item)
     if inst:HasTag("playerghost") then
         return item:HasTag("reviver") and inst:IsOnPassablePoint()
@@ -713,6 +718,9 @@ local function AddActivePlayerComponents(inst)
     inst:AddComponent("playerhearing")
 	inst:AddComponent("raindomewatcher")
 	inst:AddComponent("strafer")
+	if TheWorld:HasTag("cave") then
+		inst:AddComponent("vaultmusiclistener")
+	end
 end
 
 local function RemoveActivePlayerComponents(inst)
@@ -720,6 +728,7 @@ local function RemoveActivePlayerComponents(inst)
     inst:RemoveComponent("playerhearing")
 	inst:RemoveComponent("raindomewatcher")
 	inst:RemoveComponent("strafer")
+	inst:RemoveComponent("vaultmusiclistener")
 end
 
 local function ActivateHUD(inst)
@@ -1913,6 +1922,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_boat_channel.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
+        Asset("ANIM", "anim/player_attacks_recoil.zip"),
         --Asset("ANIM", "anim/player_idles.zip"),--Moved to global.lua for use in Item Collection
         Asset("ANIM", "anim/player_rebirth.zip"),
         Asset("ANIM", "anim/player_jump.zip"),
@@ -1940,6 +1950,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 		Asset("ANIM", "anim/player_sit_wave.zip"),
 		--
 		Asset("ANIM", "anim/player_float.zip"),
+		Asset("ANIM", "anim/player_teetering.zip"),
 		--
 
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
@@ -2070,6 +2081,12 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         Asset("SCRIPT", "scripts/prefabs/player_common_extensions.lua"),
         Asset("SCRIPT", "scripts/prefabs/skilltree_defs.lua"),
+
+        Asset("ANIM", "anim/chalice_swap.zip"),
+
+        Asset("ANIM", "anim/player_ancient_handmaid.zip"),
+        Asset("ANIM", "anim/player_ancient_architect.zip"),
+        Asset("ANIM", "anim/player_ancient_mason.zip"),
     }
 
     local prefabs =
@@ -2164,6 +2181,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.IsCarefulWalking = IsCarefulWalking -- Didn't want to make carefulwalking a networked component
 		inst.IsChannelCasting = fns.IsChannelCasting -- Didn't want to make channelcaster a networked component
 		inst.IsChannelCastingItem = fns.IsChannelCastingItem -- Didn't want to make channelcaster a networked component
+		inst.IsTeetering = fns.IsTeetering
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.EnableBoatCamera = fns.EnableBoatCamera
 		inst.EnableTargetLocking = ex_fns.EnableTargetLocking
@@ -2320,6 +2338,7 @@ end
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
         inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
         inst.AnimState:OverrideSymbol("snap_fx", "player_actions_fishing_ocean_new", "snap_fx")
+        inst.AnimState:OverrideSymbol("chalice_swap_comp", "chalice_swap", "chalice_swap_comp")
 
         --Additional effects symbols for hit_darkness animation
         inst.AnimState:AddOverrideBuild("player_hit_darkness")

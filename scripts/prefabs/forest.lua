@@ -556,6 +556,9 @@ local prefabs =
     -- lunarhailbuildup
     "moonglass",
     "moonglass_charged",
+
+    --rifts 6
+    "oceanwhirlbigportal",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")

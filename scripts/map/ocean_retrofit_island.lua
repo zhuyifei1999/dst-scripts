@@ -45,6 +45,16 @@ local function AddSquareTopology(topology, left, top, size, room_id, tags)
 	node.validedges = {}
 
 	topology.nodes[index] = node
+
+	return index
+end
+
+local function AddTileNodeIdsForArea(world_map, node_index, left, top, size)
+	for x = left, left + size do
+		for y = top, top + size do
+			world_map:SetTileNodeId(x, y, node_index)
+		end
+	end
 end
 
 local function TurnOfTidesRetrofitting_MoonIsland(map, savedata)
@@ -117,7 +127,9 @@ local function TurnOfTidesRetrofitting_MoonIsland(map, savedata)
 
 			obj_layout.Place({left, top}, name, add_fn, nil, map)
 			local tags = {"moonhunt", "nohasslers", "lunacyarea", "not_mainland"}
-			AddSquareTopology(topology, (left-topology_delta)*4 - (map_width * 0.5 * 4), (top-topology_delta)*4 - (map_height * 0.5 * 4), (area_size + (topology_delta*2))*4, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
+			local topology_size = (area_size + (topology_delta*2))
+			local topology_node_index = AddSquareTopology(topology, (left-topology_delta)* TILE_SCALE - (map_width * 0.5 * TILE_SCALE), (top-topology_delta)*TILE_SCALE - (map_height * 0.5 * TILE_SCALE), topology_size*TILE_SCALE, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
+			AddTileNodeIdsForArea(map, topology_node_index, left + 1, top + 1, topology_size)
 		end
 		return #candidtates > 0
 	end
@@ -224,12 +236,13 @@ local function TurnOfTidesRetrofitting_HermitIsland(map, savedata)
 		print("   " ..tostring(#candidtates) .. " candidtate locations")
 
 		if #candidtates > 0 then
-			local world_size = (tile_size + (topology_delta*2))*4
+			local topology_size = (tile_size + (topology_delta*2))
+			local world_size = topology_size*TILE_SCALE
 
 			shuffleArray(candidtates)
 			for _, candidtate in ipairs(candidtates) do
 				local top, left = candidtates[1].top, candidtates[1].left
-				local world_top, world_left = (left-topology_delta)*4 - (map_width * 0.5 * 4), (top-topology_delta)*4 - (map_height * 0.5 * 4)
+				local world_top, world_left = (left-topology_delta)*TILE_SCALE - (map_width * 0.5 * TILE_SCALE), (top-topology_delta)*TILE_SCALE - (map_height * 0.5 * TILE_SCALE)
 
 				local ents_to_remove = FindEntsInArea(savedata.ents, world_top - 5, world_left - 5, world_size + 10, {"boat", "malbatross", "oceanfish_shoalspawner", "chester_eyebone", "glommerflower", "klaussackkey", "crabking", "oceantree", "waterplant_base"})
 				if ents_to_remove ~= nil then
@@ -241,7 +254,8 @@ local function TurnOfTidesRetrofitting_HermitIsland(map, savedata)
 
 					obj_layout.Place({left, top}, name, add_fn, nil, map)
 					if layout.add_topology ~= nil then
-						AddSquareTopology(topology, world_top, world_left, world_size, layout.add_topology.room_id, layout.add_topology.tags)
+						local topology_node_index = AddSquareTopology(topology, world_top, world_left, world_size, layout.add_topology.room_id, layout.add_topology.tags)
+						AddTileNodeIdsForArea(map, topology_node_index, left + 1, top + 1, topology_size)
 					end
 
 					return true
@@ -380,6 +394,7 @@ local function WaterloggedRetrofitting_WaterlogSetpiece(map, savedata, max_count
 
 					obj_layout.Place({left, top}, name, add_fn, nil, map)
 					if layout.add_topology ~= nil then
+						-- NOTE: Ocean doesn't have node id's so it's ok not to add tile node ids for this are
 						AddSquareTopology(topology, world_top, world_left, world_size, layout.add_topology.room_id, layout.add_topology.tags)
 					end
 
@@ -495,7 +510,8 @@ local function CurseOfMoonQuayRetrofitting_MonkeyIsland(map, savedata)
                 "chester_eyebone", "glommerflower", "klaussackkey",
                 "crabking", "oceantree", "waterplant_base",
             }
-            local world_size = 4*tile_size
+			local topology_size = tile_size
+            local world_size = TILE_SCALE*topology_size
 
             shuffleArray(candidates)
             for _, candidate in ipairs(candidates) do
@@ -518,9 +534,9 @@ local function CurseOfMoonQuayRetrofitting_MonkeyIsland(map, savedata)
 
                     obj_layout.Place({left, top}, name, add_fn, nil, map)
                     if layout.add_topology ~= nil then
-                        AddSquareTopology(topology, world_top, world_left, world_size,
-                            layout.add_topology.room_id, layout.add_topology.tags)
-                    end
+                        local topology_node_index = AddSquareTopology(topology, world_top, world_left, world_size, layout.add_topology.room_id, layout.add_topology.tags)
+						AddTileNodeIdsForArea(map, topology_node_index, left + 1, top + 1, topology_size)
+					end
 
                     return true
                 end

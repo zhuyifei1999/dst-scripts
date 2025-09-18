@@ -471,7 +471,7 @@ end
 local function checkstunend(inst, data)
     if data ~= nil then
         if data.name == "endstun" then
-            inst:RestartBrain()
+			inst:RestartBrain("SGminotaur_stun")
 			inst:PushEventImmediate("endstun")
         end
     end

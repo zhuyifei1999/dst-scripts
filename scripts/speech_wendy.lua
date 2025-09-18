@@ -274,6 +274,7 @@ return{
         PICK =
         {
             NOTHING_INSIDE = "It's empty inside.",
+			STUCK = "Of course it's stuck.",
         },
         PICKUP =
         {
@@ -318,7 +319,7 @@ return{
 --fallback to speech_wilson.lua             TOOMANYBEES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             NOMOONINCAVES = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua             ALREADYFULLMOON = "only_used_by_waxwell_and_wicker",
---fallback to speech_wilson.lua             -- Electrocute
+--fallback to speech_wilson.lua             -- rifts5.1
 --fallback to speech_wilson.lua             DEADBIRDS = "only_used_by_waxwell_and_wicker",
 --fallback to speech_wilson.lua         },
 		REMOTE_TELEPORT =
@@ -1174,11 +1175,15 @@ return{
     ANNOUNCE_FLOATER_HELD = "What now?",
     ANNOUNCE_FLOATER_LETGO = "It's time.",
 
-    -- Electrocute
+    -- rifts5.1
     ANNOUNCE_LUNARHAIL_BIRD_SOUNDS = "Those birds are singing their last.",
     ANNOUNCE_LUNARHAIL_BIRD_CORPSES = "Birds of a feather fall together.",
     ANNOUNCE_FLOAT_SWIM_TIRED = "Just need a rest.",
     ANOUNCE_MUTATED_BIRD_ATTACK = "Let them come.",
+
+    -- Rift 6
+    ANNOUNCE_WEAPON_TOOWEAK = "This is futile. I need something stronger.",
+    ANNOUNCE_VAULT_TELEPORTER_DOES_NOTHING = "Not working? That's it, light it up.",
 
 	BATTLECRY =
 	{
@@ -1763,6 +1768,8 @@ return{
 		TURF_FUNGUS="Some ground.",
 		TURF_FUNGUS_MOON = "Some ground.",
 		TURF_ARCHIVE = "Some ground.",
+        TURF_VAULT = "Some ground.",
+        TURF_VENT = "Some ground.",
 		TURF_SINKHOLE="Some ground.",
 		TURF_UNDERROCK="Some ground.",
 		TURF_MUD="Some ground.",
@@ -3334,6 +3341,7 @@ return{
         WINTER_ORNAMENTBOSS = "This is one of my favorites.",
 		WINTER_ORNAMENTFORGE = "A remembrance of past carnage.",
 		WINTER_ORNAMENTGORGE = "Should old acquaintance be forgot.",
+        WINTER_ORNAMENTPEARL = "Just lovely.",
 
         WINTER_FOOD1 = "I'm going to eat you.", --gingerbread cookie
         WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie
@@ -4430,6 +4438,13 @@ return{
             LINE_4 = "It was important enough to carve into stone, but we'll never know the meaning.",
             LINE_5 = "What a pity.",
         },
+		VAULT_RUNE = "What's the point?",
+		VAULT_STATUE =
+		{
+			LORE1 = "He gave in.",
+			LORE2 = "So much death.",
+			LORE3 = "We aren't meant to leave this place.",
+		},
 
         ARCHIVE_RESONATOR = {
             GENERIC = "All paths lead to suffering.",
@@ -5132,6 +5147,7 @@ return{
 
         PLAYBILL_THE_DOLL = "What a strange little story.",
         PLAYBILL_THE_VEIL = "Fun!",
+        PLAYBILL_THE_VAULT = "It was written with a sorrowful pen.",
         STATUEHARP_HEDGESPAWNER = "Overgrown and abandoned.",
         HEDGEHOUND = "Its beauty hid the beast within.",
         HEDGEHOUND_BUSH = "They're... beautiful.",
@@ -5738,7 +5754,7 @@ return{
         FLOTATIONCUSHION = "One does not need water to drown.",
         LUNAR_SEED = "All that remains is its crown.",
 
-        -- electrocute
+        -- rifts5.1
         WAGBOSS_ROBOT_CONSTRUCTIONSITE = "It destroys, is destroyed and rises anew. The cycle endures.",
         WAGBOSS_ROBOT_CONSTRUCTIONSITE_KIT = "All that death in such a tiny package.",
         WAGBOSS_ROBOT_CREATION_PARTS = "It is soon complete.",
@@ -5759,6 +5775,68 @@ return{
             BURNING  = "Now it is truly free.", --when its burning
             REVIVING = "Poor bird.", --when its mutating and being revived
         },
+
+        BUZZARDCORPSE = {
+            GENERIC  = "There can be a fate worse than death.", --witnessing the corpse
+            BURNING  = "Now it is truly free.", --when its burning
+            REVIVING = "Poor bird.", --when its mutating and being revived
+        },
+
+        MUTATEDBUZZARD = {
+            GENERIC = "A truly bad omen.", -- Generic string
+            EATING_CORPSE = "Even in death, it consumes.", -- Eating from a fresh corpse (might be from the players kill or another creatures kill)
+        },
+
+        -- Rifts 6
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEAD = "Are the two heads aware of each other?", --The head segment
+            BODY = "Such power.", --The body segment
+            FLIPPED = "For me, the world feels upside down.", --When it's flipped over (either head or body segment)
+        },
+
+        TREE_ROCK =
+		{
+			BURNING = "The fall is inevitable.", --It's vines are burning, it will collapse
+			CHOPPED = "It lost its only support.", --It's 'chopped', so the rock fell
+			GENERIC = "Those vines carry a heavy burden.", --Rock is still on tree
+		},
+
+        -- NOTE: Unsure about HOT and COLD, just do GENERIC, GAS, MIASMA for now!
+        CAVE_VENT_ROCK =
+        {
+            GENERIC = "There's nothing coming out... for now.", -- Not ventilating anything
+            HOT     = "I prefer the cold's quiet embrace.", -- Ventiliating hot air, making the area warm
+            GAS     = "That's unpleasant.", -- Ventiliating Toadstools gas fumes and spores
+            MIASMA  = "One could drown in that black fog.", -- Ventiliating the shadow rift miasma
+        },
+        CAVE_FERN_WITHERED = "It's dead'.",
+        FLOWER_CAVE_WITHERED = "There's a sadness about how it flickers.",
+
+		ABYSSPILLAR_MINION =
+		{
+			GENERIC = "A lifeless statue.", --off, looks like decor/statue
+			ACTIVATED = "It follows.", --turned on and hopping over puzzle pillars
+		},
+		ABYSSPILLAR_TRIAL = "Shall we?",
+
+        VAULT_TELEPORTER =
+        {
+            GENERIC = "I wonder what happens to us in-between.",
+            BROKEN = "Broken.",
+            UNPOWERED = "There's no power.",
+        },
+		VAULT_ORB = "It's quite pretty.",
+        VAULT_LOBBY_EXIT = "A leap of faith.",
+		VAULT_CHANDELIER_BROKEN = "A bad omen?",
+
+		ANCIENT_HUSK = "That's dark even for me.",
+		MASK_ANCIENT_HANDMAIDHAT = "She bears the look of one fated to be reckoned with.",
+		MASK_ANCIENT_ARCHITECTHAT = "Did the wearer know what would become of their people?",
+		MASK_ANCIENT_MASONHAT = "There is a quiet strength about this one.",
+
+        TREE_ROCK_SEED = "Everything is born to one day die.",
+        TREE_ROCK_SAPLING = "It can only go wrong from here.",
     },
 
     DESCRIBE_GENERIC = "Sigh... I don't know.",

@@ -534,6 +534,15 @@ function Health:Kill()
     end
 end
 
+function Health:ForceKill() -- To bypass invincible
+    if self.currenthealth > 0 then
+        --V2C: didn't want to change external interface of DoDelta for this one internal use case
+		self._ignore_maxdamagetakenperhit = true
+        self:DoDelta(-self.currenthealth, nil, nil, true, nil, true)
+		self._ignore_maxdamagetakenperhit = nil
+    end
+end
+
 function Health:IsDead()
     return self.currenthealth <= 0
 end

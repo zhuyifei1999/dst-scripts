@@ -41,14 +41,15 @@ SetSharedLootTable("worm_boss",
 
 local function GenerateLoot(inst, pos, loot)
     local loottable = {
-        boneshard = 25,
-        rocks = 20,
-        flint = 15,
-        nitre = 15,
-        monstermeat = 15,
+        boneshard = 15,
+        rocks = 10,
+        flint = 10,
+        nitre = 10,
+        monstermeat = 10,
         goldnugget = 4,
         slurtle_shellpieces = 2,
         tentaclespots = 2,
+        tree_rock_seed = 2,
         lightbulb = 2,
         wormlight = 2,
         guano = 2,
@@ -236,7 +237,9 @@ local function OnDeath(inst, data)
 end
 
 local function _PlayDirstPstSlowAnim(dirt)
-    dirt.AnimState:PlayAnimation("dirt_pst_slow")
+    if dirt and dirt:IsValid() then
+        dirt.AnimState:PlayAnimation("dirt_pst_slow")
+    end
 end
 
 local SEGMENT_ERODE_TIME = 6
@@ -1159,7 +1162,7 @@ local function Dirt_DamageRedirectFn(inst, attacker, damage, weapon, stimuli)
         end
     end
 
-    if inst.chunk.head ~= nil then
+	if inst.chunk and inst.chunk.head then
         inst.chunk.head:PushEvent("attacked")
     end
 

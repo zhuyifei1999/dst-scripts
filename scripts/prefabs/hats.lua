@@ -2604,26 +2604,8 @@ local function MakeHat(name)
 
     ------------------ MASKS
 
-    fns.mask_onequip = function(inst, owner)
-        if inst.prefab == "mask_sagehat" or 
-            inst.prefab == "mask_halfwithat" or 
-            inst.prefab == "mask_toadyhat" then
-            owner:AddTag("shadowthrall_parasite_mask")
-        end
-        fns.simple_onequip(inst, owner)
-    end
-
-    fns.mask_onunequip = function(inst, owner)
-        if inst.prefab == "mask_sagehat" or 
-            inst.prefab == "mask_halfwithat" or 
-            inst.prefab == "mask_toadyhat" then            
-            owner:RemoveTag("shadowthrall_parasite_mask")
-        end
-        _onunequip(inst, owner)
-    end
-
-    fns.mask = function()
-        local inst = simple()
+	fns.mask_common = function(custom_init)
+        local inst = simple(custom_init)
 
         inst.components.floater:SetSize("med")
 
@@ -2634,16 +2616,6 @@ local function MakeHat(name)
             return inst
         end
 
-        inst.components.equippable:SetOnEquip(fns.mask_onequip)
-        inst.components.equippable:SetOnUnequip(fns.mask_onunequip)
-
-        if name == "mask_halfwit" or
-           name == "mask_toady" or
-           name == "mask_sage" then
-            inst:AddComponent("armor")
-            inst.components.armor:InitCondition(TUNING.SHADOWTHRALL_PARASITE_MASK_ARMOR, TUNING.SHADOWTHRALL_PARASITE_MASK_ABSORPTION)
-        end
-
         inst:AddComponent("fuel")
         inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
@@ -2651,7 +2623,45 @@ local function MakeHat(name)
         MakeSmallPropagator(inst)
 
         return inst
-    end    
+    end
+
+	fns.mask = function()
+		return fns.mask_common()
+	end
+
+	fns.mask_shadowthrall_onequip = function(inst, owner)
+		owner:AddTag("shadowthrall_parasite_mask")
+		fns.simple_onequip(inst, owner)
+	end
+
+	fns.mask_shadowthrall_onunequip = function(inst, owner)
+		owner:RemoveTag("shadowthrall_parasite_mask")
+		fns.simple_onunequip(inst, owner)
+	end
+
+	fns.mask_shadowthrall = function()
+		local inst = fns.mask_common()
+
+		if not TheWorld.ismastersim then
+			return inst
+		end
+
+		inst.components.equippable:SetOnEquip(fns.mask_shadowthrall_onequip)
+		inst.components.equippable:SetOnUnequip(fns.mask_shadowthrall_onunequip)
+
+		inst:AddComponent("armor")
+		inst.components.armor:InitCondition(TUNING.SHADOWTHRALL_PARASITE_MASK_ARMOR, TUNING.SHADOWTHRALL_PARASITE_MASK_ABSORPTION)
+
+		return inst
+	end
+
+	fns.mask_ancient_custom_init = function(inst)
+		inst:AddTag("ancient_reader")
+	end
+
+	fns.mask_ancient = function()
+		return fns.mask_common(fns.mask_ancient_custom_init)
+	end
 
     ---------------------- MONKEY SMALL
     local function monkey_small_custom_init(inst)
@@ -5362,11 +5372,11 @@ local function MakeHat(name)
     end
 
     fns.shadowthrall_parasite_onunequip = function(inst, owner)
-       _onunequip(inst, owner)
+        _onunequip(inst, owner)
 
-       inst:RemoveEventCallback("death", fns.shadowthrall_parasite_ondeath, owner)
-       inst:RemoveEventCallback("killed", fns.shadowthrall_parasite_onkilledsomething, owner)
-       
+        inst:RemoveEventCallback("death", fns.shadowthrall_parasite_ondeath, owner)
+        inst:RemoveEventCallback("killed", fns.shadowthrall_parasite_onkilledsomething, owner)
+
         owner:RemoveTag("shadowthrall_parasite_hosted")
 
         if owner.planarentity_added then
@@ -5418,10 +5428,16 @@ local function MakeHat(name)
 			owner.SoundEmitter:KillSound("parasite_LP")
 		end
 
-        inst:DoTaskInTime(0, inst.Remove)
+        if inst:IsValid() then
+            inst:DoTaskInTime(0, inst.Remove)
+        end
 
-        if owner.components.health ~= nil and not owner.components.health:IsDead() then
-            owner.components.health:Kill()
+        if owner:IsValid() then
+            if inst.set_to_remove_owner then
+                owner:Remove()
+            elseif owner.components.health ~= nil and not owner.components.health:IsDead() then
+                owner.components.health:Kill()
+            end
         end
     end
 
@@ -5429,16 +5445,16 @@ local function MakeHat(name)
         inst:AddTag("shadowthrall_parasite")
     end
 
+    local function shadowthrall_parasite_OnEntitySleep_task(inst)
+        inst.noloot = true
+        inst.set_to_remove_owner = true -- For whatever reason, it doesn't like it when we remove owner here. (Did not lead to user issues, but ugly invalid stale references with scheduler)
+        if inst:IsValid() then
+            inst:Remove()
+        end
+    end
+
     fns.shadowthrall_parasite_OnEntitySleep = function(inst)
-        inst.remove_self_task = inst:DoTaskInTime( TUNING.SHADOWTHRALL_PARASITE_TIMEOUT , function()
-            local owner = inst.components.inventoryitem.owner or nil
-            if owner then
-                owner:Remove()
-            end
-            if inst:IsValid() then
-                inst:Remove()
-            end
-        end )
+        inst.remove_self_task = inst:DoTaskInTime( TUNING.SHADOWTHRALL_PARASITE_TIMEOUT , shadowthrall_parasite_OnEntitySleep_task)
     end
 
     fns.shadowthrall_parasite_OnEntityWake = function(inst)
@@ -5627,11 +5643,16 @@ local function MakeHat(name)
         fn = fns.mask
     elseif name == "mask_halfwit" then
         prefabs = { "mask_halfwit_fx" }
-        fn = fns.mask
+		fn = fns.mask_shadowthrall
     elseif name == "mask_sage" then
-        fn = fns.mask
+        fn = fns.mask_shadowthrall
     elseif name == "mask_toady" then
-        fn = fns.mask
+        fn = fns.mask_shadowthrall
+	elseif name == "mask_ancient_handmaid" or
+		name == "mask_ancient_architect" or
+		name == "mask_ancient_mason"
+	then
+		fn = fns.mask_ancient
     elseif name == "nightcap" then
         fn = fns.nightcap
     elseif name == "dreadstone" then
@@ -6288,6 +6309,10 @@ return  MakeHat("straw"),
         MakeHat("mask_sage"),
         MakeHat("mask_halfwit"),
         MakeHat("mask_toady"),
+
+		MakeHat("mask_ancient_handmaid"),
+		MakeHat("mask_ancient_architect"),
+		MakeHat("mask_ancient_mason"),
 
         MakeHat("monkey_medium"),
         MakeHat("monkey_small"),

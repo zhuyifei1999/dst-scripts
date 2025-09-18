@@ -4317,8 +4317,11 @@ function Tune(overrides)
 		},
 
         DEFAULT_LOCOMOTOR_HOP_DISTANCE = 6.0,
-		FLOATING_HOP_DISTANCE_PLATFORM = 2, --for players only
+
+		--these are for players only; see WILSON_HOP_DISTANCE etc. for other player hop tuning values
+		FLOATING_HOP_DISTANCE_PLATFORM = 2,
 		FLOATING_HOP_DISTANCE_LAND = 3,
+		PILLAR_HOP_DISTANCE = 4,
 
         CARRAT =
         {
@@ -4468,6 +4471,8 @@ function Tune(overrides)
             garlic_seeds = "seeds_cooked",
             pepper_seeds = "seeds_cooked",
             pondfish = "fishmeat_small_cooked",
+            --
+            tree_rock_seed = "ash", --Because rock tree loot is protected from burning.
         },
 
         --wortox
@@ -7526,11 +7531,12 @@ function Tune(overrides)
         MIASMA_SPACING = 1, -- In tiles.
         MIASMA_SPREAD_INTERVAL_SECONDS = 5,
         MIASMA_DIMINISH_INTERVAL_SECONDS = 1,
-        MIASMA_MAX_CLOUDS = 50,
+        MIASMA_MAX_CLOUDS = 500,
         MIASMA_ODDS_CREATE = 0.8,
         MIASMA_ODDS_SPREAD = 0.5,
         MIASMA_MIN_DISTSQ_FROM_RIFT = 1 * 1 * 4, -- 4 is TILE_SCALE.
         MIASMA_MAX_DISTSQ_FROM_RIFT = 12 * 12 * 4, -- 4 is TILE_SCALE.
+        MIASMA_MAX_DIST_FROM_VENTER = 3 * 4, -- 4 is TILE_SCALE.
 
         MIASMA_DEBUFF_TICK_RATE = 2,
         MIASMA_DEBUFF_TICK_VALUE = -2,
@@ -8582,19 +8588,6 @@ function Tune(overrides)
 
         RUMMAGE_COUNT_FOR_FENCE_BLUEPRINT = 10,
 
-        --[[
-        MUTANT_BIRD_AGGRO_DIST = 15,
-        MUTANT_BIRD_RETURN_DIST = 30,
-        MUTANT_BIRD_DAMAGE = 20,
-        MUTANT_BIRD_HEALTH = 10,
-        MUTANT_BIRD_SPLASH_DAMAGE = 20,
-        MUTANT_BIRD_TARGET_DIST = 16,
-        MUTANT_BIRD_ATTACK_RANGE = 2,
-        MUTANT_BIRD_WALK_SPEED = 4,
-        MUTANT_BIRD_ATTACK_COOLDOWN = 6,
-        MUTANT_BIRD_SPIT_RANGE = 10,
-        ]]
-
         RIFT_BIRD_WALKSPEED = 4,
         RIFT_BIRD_DAMAGE = 10,
         RIFT_BIRD_PLANAR_DAMAGE = 10,
@@ -8633,6 +8626,108 @@ function Tune(overrides)
         MUTATEDBUZZARD_HEALTH = 125 * 2, -- harder for multiplayer
 
         BIRD_SPAWNER_POST_HAIL_TIME = 6 * total_day_time,
+
+        SHADOWTHRALL_CENTIPEDE = {
+            HEALTH = 2000,
+
+            DAMAGE = 150,
+            PLANAR_DAMAGE = 50,
+            PLAYERDAMAGEPERCENT = 0.5, --Does not apply to planar!
+
+            MOVESPEED = 5,
+            RUNSPEED = 10,
+            TURNSPEED = 1.5,
+            MAX_SEGMENTS = 20,
+
+            -- Brain stuff
+
+            FIND_MIASMA_DIST = 10,
+            WANDER_DIST = 6,
+
+            EAT_MIASMA_MAX = 5, -- 5 at a time before going on delay.
+            EAT_DELAY = seg_time * 2,
+
+            ANGLE_INTERACT_WIDTH = 180 / RADIANS, -- must be in radians
+        },
+
+        TREE_ROCK = {
+            MINE = 6,
+            MINE_MED = 4,
+            MINE_LOW = 2,
+
+            AOE_DAMAGE = 150,
+
+            ROCK1_AOE_RADIUS = 2,
+            ROCK2_AOE_RADIUS = 3.25,
+
+            ROCK1_AOE_DAMAGE = 200,
+            ROCK2_AOE_DAMAGE = 100,
+
+            BURN_TIME = 3,
+
+            PLAYERDAMAGEPERCENT = 1/4,
+
+            BOULDER_GEN_CHANCE = 1/3,
+
+            CHOP = 5,
+
+            GROW_TIME =
+            {
+                {base=1.5*day_time, random=0.5*day_time},   --short
+                {base=5*day_time, random=2*day_time},       --normal
+                {base=5*day_time, random=2*day_time},       --tall
+                {base=1*day_time, random=0.5*day_time}      --old
+            },
+
+            SAPLING_GROW_TIME = {base=4*day_time, random=1*day_time},
+        },
+
+        -- Rock trees only have desolation regrowth
+        TREE_ROCK_REGROWTH = {
+            OFFSPRING_TIME = total_day_time * 0.0001,
+            DESOLATION_RESPAWN_TIME = total_day_time * 50,
+            DEAD_DECAY_TIME = total_day_time * 30, --NOTE: no decay.
+        },
+
+        TREE_ROCK_REGROWTH_TIME_MULT = 1,
+
+        CAVE_VENTS = {
+            MINE = 6,
+            MINE_MED = 4,
+            MINE_LOW = 2,
+
+            SPEW_TIME = {
+                HOT = {
+                    BASE = seg_time * 3,
+                    VARIANCE = seg_time * 2,
+                },
+                MIASMA = {
+                    BASE = seg_time * 6,
+                    VARIANCE = seg_time * 3,
+                },
+                GAS = {
+                    BASE = seg_time * 5,
+                    VARIANCE = seg_time * 1,
+                },
+            },
+
+            HEAT =
+            {
+                HOT_ACTIVE = 120,
+                MIASMA_ACTIVE = 90,
+                INACTIVE = 10,
+                COLD_ACTIVE = -120,
+            },
+        },
+
+        OCEANWHIRLBIGPORTAL_FOCALRADIUS = 4,
+        OCEANWHIRLBIGPORTAL_RADIUS = 14,
+        OCEANWHIRLBIGPORTAL_PULLSTRENGTH = 10,
+        OCEANWHIRLBIGPORTAL_RADIALSTRENGTH = 20,
+        OCEANWHIRLBIGPORTAL_BOAT_PERCENT_DAMAGE_PER_TICK = 0.1,
+
+        FLOWER_CAVE_WITHERED_LIGHT_TIME = 20,
+        FLOWER_CAVE_WITHERED_RECHARGE_TIME = 200,
     }
 
     TUNING_MODIFIERS = {}

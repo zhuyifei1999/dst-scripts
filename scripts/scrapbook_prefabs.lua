@@ -366,7 +366,6 @@ local PREFABS =
     ["marble"] = true,
     ["mastupgrade_lamp_item"] = true,
     ["chesspiece_twinsofterror"] = true,
-    --["playbill_the_doll"] = true,
     ["bonestew"] = true,
     ["abigail_flower"] = true,
     ["book_moon"] = true,
@@ -1950,6 +1949,34 @@ local PREFABS =
     ["gingerbreadwarg"] = true,
     --["dreadstone_stack"] = true, --Not a seperate prefab
 
+    -- [[ Rifts 6 ]]
+
+    --["tree_rock"] = true,
+    --["shadowthrall_centipede_head"] = true,
+    --["cave_vent_rock"] = true,
+    --["cave_fern_withered"] = true,
+    --["flower_cave_withered"] = true,
+
+    --["oceanwhirlbigportal"] = true,
+    --["oceanwhirlbigportalexit"] = true,
+    --["vault_lobby_exit"] = true,
+    --["vault_teleporter"] = true,
+
+    --["abysspillar_minion"] = true,
+    --["abysspillar_trial"] = true,
+    --["ancient_husk"] = true,
+
+    --["mask_ancient_handmaidhat"] = true,
+    --["mask_ancient_architecthat"] = true,
+    --["mask_ancient_masonhat"] = true,
+
+    --["playbill_the_doll"] = true,
+    --["playbill_the_veil"] = true,
+    --["playbill_the_vault"] = true,
+
+    --["vault_chandelier_broken"] = true,
+    --["vault_rune"] = true,
+    --["vault_statue"] = true,
 
     -----------------------------------------------
 
