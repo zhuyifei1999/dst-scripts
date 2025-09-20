@@ -939,6 +939,55 @@ function self:OnPostInit()
 	end
 
 	---------------------------------------------------------------------------
+
+	if self.retrofit_missing_retrofits_generated_densities then
+		self.retrofit_missing_retrofits_generated_densities = nil
+
+		local prefab_densities = TheWorld.generated.densities
+
+		-- Fix up density populations on lunar island retrofit and pearl island retrofit
+		local obj_layout = require("map/object_layout")
+
+		local retrofit_densities = {
+			["AncientArchivesRetrofit:2:MoonMush"] = "retrofit_moonmush",
+			["FumaroleRetrofit:0:Chasm"] = "retrofit_fumarole",
+		}
+
+		for topology_id, static_layout in pairs(retrofit_densities) do
+			local topology_id_index
+			for i, v in pairs(TheWorld.topology.ids) do
+				if topology_id == v then
+					topology_id_index = i
+					break
+				end
+			end
+
+			if topology_id_index and TheWorld.topology.ids[topology_id_index] then
+				local layout = obj_layout.LayoutForDefinition(static_layout)
+				local prefabs = obj_layout.ConvertLayoutToEntitylist(layout)
+
+				local prefab_list = {} --[prefab] = num
+
+				for i, prefab_data in ipairs(prefabs) do
+					if not prefab_list[prefab_data.prefab] then
+						prefab_list[prefab_data.prefab] = 0
+					end
+					prefab_list[prefab_data.prefab] = prefab_list[prefab_data.prefab] + 1
+				end
+
+				prefab_densities[topology_id] = {}
+
+				local num_ground = obj_layout.GetLayoutLandCount(layout)
+				--prefab_list[prefab] = prefab_list[prefab] + 1
+				for prefab, v in pairs(prefab_list) do
+					-- convererts from actual numbers to a percentage of the distribute percent
+					prefab_densities[topology_id][prefab] = v / num_ground
+				end
+			end
+		end
+	end
+
+	---------------------------------------------------------------------------
 	if self.requiresreset then
 		print ("Retrofitting: Worldgen retrofitting requires the server to save and restart to fully take effect.")
 		print ("Restarting server in 45 seconds...")
@@ -984,6 +1033,7 @@ function self:OnLoad(data)
         self.console_beard_turf_fix = data.console_beard_turf_fix or false
         self.retrofit_rifts6_add_fumarole = data.retrofit_rifts6_add_fumarole or false
 		self.floating_heavyobstaclephysics_fix = data.floating_heavyobstaclephysics_fix or false
+		self.retrofit_missing_retrofits_generated_densities = data.retrofit_missing_retrofits_generated_densities or false
     end
 end
 

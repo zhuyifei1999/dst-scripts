@@ -2140,7 +2140,14 @@ local COMPONENT_ACTIONS =
 		end,
 
         complexprojectile = function(inst, doer, target, actions, right)
-            if right and not (doer.components.playercontroller ~= nil and doer.components.playercontroller.isclientcontrollerattached) then
+			--V2C: This is so mousing over entities doesn't block the "Toss" action; just forward
+			--     to the ground position of the target, and the target will get highlighted.
+			--     "nohighlight" can counter this specifically, used for things like decor vault_pillar,
+			--     where we do want to block the action and prevent highlighting.
+			if right and
+				not (doer.components.playercontroller and doer.components.playercontroller.isclientcontrollerattached) and
+				not target:HasTag("nohighlight")
+			then
                 local targetpos = target:GetPosition()
                 if not TheWorld.Map:IsGroundTargetBlocked(targetpos) and
                     (inst.CanTossInWorld == nil or inst:CanTossInWorld(doer, targetpos)) and

@@ -55,6 +55,20 @@ local function DoSyncAnimTime(inst, t)
 	end
 end
 
+local function CheckToggleWaveBlocker(inst)
+    if TheWorld.components.wavemanager then
+        -- Register wave manager blocker. Assume that 'closed' and 'open_pst' is the only time it is invisible.
+        if not inst:IsAsleep() 
+            and not inst.AnimState:IsCurrentAnimation("closed") 
+            and not inst.AnimState:IsCurrentAnimation("open_pst") 
+            and inst:IsValid() then
+            TheWorld.components.wavemanager:RegisterBlocker(inst, TUNING.OCEANWHIRLBIGPORTAL_RADIUS)
+        else
+            TheWorld.components.wavemanager:UnregisterBlocker(inst)
+        end
+    end
+end
+
 local function CancelPostUpdate_Client(inst, PostUpdate_Client)
 	inst.cancelpostupdating = nil
 	inst.postupdating = nil
@@ -80,6 +94,7 @@ local function PostUpdate_Client(inst)
 	else
 		assert(false)
 	end
+    CheckToggleWaveBlocker(inst)
 	inst.cancelpostupdating = inst:DoStaticTaskInTime(0, CancelPostUpdate_Client, PostUpdate_Client)
 end
 
@@ -94,6 +109,10 @@ local function OnSyncAnims(inst)
 	end
 end
 
+local function OnRemove_Client(inst)
+    TheWorld.components.wavemanager:UnregisterBlocker(inst)
+end
+
 --server
 local function SyncAnims(inst, anim, loop)
 	if inst.animlayers then
@@ -102,6 +121,7 @@ local function SyncAnims(inst, anim, loop)
 			DoSyncPushAnim(inst, "closed", false)
 		end
 	end
+    CheckToggleWaveBlocker(inst)
 	inst.syncanims:push()
 end
 
@@ -243,6 +263,14 @@ local function fn()
 			AddAnimLayer(inst, "mid", -1),
 			AddAnimLayer(inst, "deep", -2),
 		}
+
+        if TheWorld.components.wavemanager then
+            -- Client
+            inst:ListenForEvent("onremove", OnRemove_Client)
+            -- Server + Not Dedicated
+            inst:ListenForEvent("entitywake", CheckToggleWaveBlocker)
+            inst:ListenForEvent("entitysleep", CheckToggleWaveBlocker)
+        end
 	end
 
     inst.entity:SetPristine()

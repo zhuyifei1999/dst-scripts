@@ -112,7 +112,13 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle_upper")
 	inst.AnimState:SetFinalOffset(-1)
 
+	--Not using NOCLICK because we do want to block mouse
+	--Some actions will highlight targets even if not a valid action:
+	--  "nomagic" blocks SPELLCAST (e.g. reskin_tool)
+	--  "nohighlight" blocks complexprojectile (e.g. bombs)
 	inst:AddTag("decor")
+	inst:AddTag("nomagic")
+	inst:AddTag("nohighlight")
 
 	if not TheNet:IsDedicated() then
 		CreateBottom().entity:SetParent(inst.entity)

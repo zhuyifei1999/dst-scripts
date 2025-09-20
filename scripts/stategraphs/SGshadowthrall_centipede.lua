@@ -266,6 +266,7 @@ local states = {
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("struggle_pre")
+            inst.SoundEmitter:PlaySound("rifts6/creatures/centipede/flip_hit_ground")
         end,
 
         events = {
@@ -308,6 +309,7 @@ local states = {
             inst.components.combat:SetRequiresToughCombat(true)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("struggle_pst")
+            inst.SoundEmitter:PlaySound("rifts6/creatures/centipede/struggle_pst")
         end,
 
         events = {

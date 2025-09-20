@@ -1353,6 +1353,15 @@ t = {
 				FlagForRetrofitting_Cave(savedata, "floating_heavyobstaclephysics_fix")
 			end,
 		},
+        {
+            version = 5.17,
+            fn = function(savedata)
+                FlagForRetrofitting_Forest(savedata, "retrofit_missing_retrofits_generated_densities")
+                FlagForRetrofitting_Cave(savedata, "retrofit_missing_retrofits_generated_densities")
+
+                --FlagForRetrofitting_Cave(savedata, "retrofit_fix_mismatched_fumarole_node_id_map")
+            end,
+        },
     },
 }
 

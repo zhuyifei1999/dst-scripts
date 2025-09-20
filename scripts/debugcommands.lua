@@ -1183,9 +1183,49 @@ end
 
 local obj_layout = require("map/object_layout")
 
-function d_spawnlayout(name)
+local function AddTopologyData(topology, left, top, width, height, room_id, tags)
+	local index = #topology.ids + 1
+	topology.ids[index] = room_id
+	topology.story_depths[index] = 0
+
+	local node = {}
+	node.area = width * height
+	node.c = 1 -- colour index
+	node.cent = {left + (width / 2), top + (height / 2)}
+	node.neighbours = {}
+	node.poly = { {left, top},
+				  {left + width, top},
+				  {left + width, top + height},
+				  {left, top + height}
+				}
+	node.tags  = tags
+	node.type = NODE_TYPE.Default
+	node.x = node.cent[1]
+	node.y = node.cent[2]
+
+	node.validedges = {}
+
+	topology.nodes[index] = node
+
+	return index
+end
+
+local function AddTileNodeIdsForArea(world_map, node_index, left, top, width, height)
+	for x = left, left + width do
+		for y = top, top + height do
+            SpawnPrefab("researchlab").Transform:SetPosition(world_map:GetTileCenterPoint(x, y))
+			world_map:SetTileNodeId(x, y, node_index)
+		end
+	end
+end
+
+function d_spawnlayout(name, data)
+    local world_map = TheWorld.Map
     local layout  = obj_layout.LayoutForDefinition(name)
-    local map_width, map_height = TheWorld.Map:GetSize()
+    local map_width, map_height = world_map:GetSize()
+
+    local topology = TheWorld.topology
+    local generated = TheWorld.generated
 
     local add_fn = {
         fn = _SpawnLayout_AddFn,
@@ -1193,10 +1233,11 @@ function d_spawnlayout(name)
     }
 
     local offset = layout.ground ~= nil and (#layout.ground / 2) or 0
+    local tile_size = layout.ground ~= nil and (#layout.ground)
     local size = layout.ground ~= nil and (#layout.ground * TILE_SCALE) or nil
 
     local pos  = ConsoleWorldPosition()
-    local x, z = TheWorld.Map:GetTileCoordsAtPoint(pos:Get())
+    local x, z = world_map:GetTileCoordsAtPoint(pos:Get())
 
     if size ~= nil then
         for i, ent in ipairs(TheSim:FindEntities(pos.x, 0, pos.z, size, nil, { "player", "INLIMBO", "FX" })) do -- Not a square, but that's fine for now.
@@ -1204,7 +1245,19 @@ function d_spawnlayout(name)
         end
     end
 
-    obj_layout.Place({x-offset, z-offset}, name, add_fn, nil, TheWorld.Map)
+    local left, top = x-offset, z-offset
+
+    if data and data.id then
+        local tags = data.tags or {}
+        local topology_node_index = AddTopologyData(topology, left * TILE_SCALE - (map_width * 0.5 * TILE_SCALE), top * TILE_SCALE - (map_height * 0.5 * TILE_SCALE), size, size, data.id, tags)
+        AddTileNodeIdsForArea(world_map, topology_node_index, left + 1, top + 1, tile_size - 1, tile_size - 1)
+    end
+
+    if data and data.populate_prefab_densities and data.id then
+        obj_layout.PlaceAndPopulatePrefabDensities({left, top}, name, add_fn, nil, world_map, data.id, generated.densities)
+    else
+        obj_layout.Place({left, top}, name, add_fn, nil, world_map)
+    end
 end
 
 function d_allfish()

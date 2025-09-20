@@ -259,7 +259,8 @@ local function MakeFriendablePristine(inst)
 	--Sneak this into pristine state for optimization
 	inst:AddTag("__inventoryitem")
 
-	MakeInventoryFloatable(inst, "med", 0.5, { 1.1, 1.3, 1.1 })
+	--V2C: need that swap_data because reskinning forces a call to floater:SwitchToDefaultAnim(true)
+	MakeInventoryFloatable(inst, "med", 0.5, { 1.1, 1.3, 1.1 }, nil, nil, { anim = "off_idle" })
 end
 
 local function MakeFriendable(inst)
