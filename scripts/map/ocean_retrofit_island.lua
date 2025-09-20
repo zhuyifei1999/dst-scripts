@@ -64,6 +64,7 @@ local function TurnOfTidesRetrofitting_MoonIsland(map, savedata)
 	local map_width = savedata.map.width
 	local map_height = savedata.map.height
 	local entities = savedata.ents
+	local generated = savedata.map.generated
 
 	local add_fn = {fn=function(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
 				local x = (points_x[current_pos_idx] - width/2.0)*TILE_SCALE
@@ -125,10 +126,13 @@ local function TurnOfTidesRetrofitting_MoonIsland(map, savedata)
 			table.sort(candidtates, function(a, b) return a.distsq < b.distsq end)
 			local top, left = candidtates[1].top, candidtates[1].left
 
-			obj_layout.Place({left, top}, name, add_fn, nil, map)
+			local LUNAR_ISLAND_ID = "MoonIslandRetrofit:0:MoonIslandRetrofitRooms"
+
+			obj_layout.PlaceAndPopulatePrefabDensities({left, top}, name, add_fn, nil, map, LUNAR_ISLAND_ID, generated.densities)
+
 			local tags = {"moonhunt", "nohasslers", "lunacyarea", "not_mainland"}
 			local topology_size = (area_size + (topology_delta*2))
-			local topology_node_index = AddSquareTopology(topology, (left-topology_delta)* TILE_SCALE - (map_width * 0.5 * TILE_SCALE), (top-topology_delta)*TILE_SCALE - (map_height * 0.5 * TILE_SCALE), topology_size*TILE_SCALE, "MoonIslandRetrofit:0:MoonIslandRetrofitRooms", tags)
+			local topology_node_index = AddSquareTopology(topology, (left-topology_delta)* TILE_SCALE - (map_width * 0.5 * TILE_SCALE), (top-topology_delta)*TILE_SCALE - (map_height * 0.5 * TILE_SCALE), topology_size*TILE_SCALE, LUNAR_ISLAND_ID, tags)
 			AddTileNodeIdsForArea(map, topology_node_index, left + 1, top + 1, topology_size)
 		end
 		return #candidtates > 0
@@ -532,6 +536,7 @@ local function CurseOfMoonQuayRetrofitting_MonkeyIsland(map, savedata)
                         table.remove(savedata.ents[ents_to_remove[i].prefab], ents_to_remove[i].index)
                     end
 
+					-- No density populating for Monkey Island
                     obj_layout.Place({left, top}, name, add_fn, nil, map)
                     if layout.add_topology ~= nil then
                         local topology_node_index = AddSquareTopology(topology, world_top, world_left, world_size, layout.add_topology.room_id, layout.add_topology.tags)

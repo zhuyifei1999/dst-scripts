@@ -89,6 +89,9 @@ local function fn()
     inst:ListenForEvent("starttravelsound", inst.StartTravelSound) -- triggered by player stategraph
 
     inst.SetExitTarget = SetExitTarget
+    inst._exittarget_onremove = function()
+        inst:SetExitTarget(nil)
+    end
     TheWorld:PushEvent("ms_register_vault_lobby_exit", inst)
 
     return inst

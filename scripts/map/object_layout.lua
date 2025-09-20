@@ -544,11 +544,6 @@ local function PlaceAndPopulatePrefabDensities(position, item, addEntity, choice
 		-- convererts from actual numbers to a percentage of the distribute percent
 		prefab_densities[id][prefab] = v / num_ground
 	end
-
-	-- merges the items removed due to prefab swaps back into the list
-	--for prefab,v in pairs(removed) do
-	--		prefab_densities[id][prefab] = v
-	--end
 end
 
 return {
@@ -558,4 +553,5 @@ return {
 		Convert = Convert,
 		Place = Place,
 		PlaceAndPopulatePrefabDensities = PlaceAndPopulatePrefabDensities,
+		GetLayoutLandCount = GetLayoutLandCount,
 	}

@@ -77,7 +77,7 @@ self.UnregisterSpawnPoint = function(spawnpoint)
 end
 
 self.OnRegisterSpawnPoint = function(inst, spawnpoint)
-    if inst.master then
+    if spawnpoint.master then
         if table.contains(self.spawnpoints_masters, spawnpoint) then
             return
         end

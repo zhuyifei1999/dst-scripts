@@ -105,6 +105,7 @@ local function ReturnOfThemRetrofitting_AcientArchives(world_map, savedata)
 	local map_width = savedata.map.width
 	local map_height = savedata.map.height
 	local entities = savedata.ents
+	local generated = savedata.map.generated
 
 	local add_fn = {fn=add_fn_fn, args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}}
 
@@ -143,7 +144,7 @@ local function ReturnOfThemRetrofitting_AcientArchives(world_map, savedata)
 		left = left + math.floor(maze_tiles_size/2)
 		top = top + maze_height * maze_tiles_size
 
-		obj_layout.Place({left, top}, "retrofit_moonmush", add_fn, nil, world_map)
+		obj_layout.PlaceAndPopulatePrefabDensities({left, top}, "retrofit_moonmush", add_fn, nil, world_map, "AncientArchivesRetrofit:2:MoonMush", generated.densities)
 
 		topology_width = mush_area_size
 		topology_height = mush_area_size
@@ -189,12 +190,12 @@ local function FromBeyondRetrofitting_Fumarole(world_map, savedata)
 
     local foundarea, top, left = FindOpenArea(world_map, map_width, map_height, main_area_size, main_area_size)
     if foundarea then
+		local FUMAROLE_ID = "FumaroleRetrofit:0:Chasm"
         local tags = {}
-        local topology_node_index = AddTopologyData(topology, left * TILE_SCALE - (map_width * 0.5 * TILE_SCALE), top * TILE_SCALE - (map_height * 0.5 * TILE_SCALE), main_area_size * TILE_SCALE, main_area_size * TILE_SCALE, "FumaroleRetrofit:0:Chasm", tags)
-        AddTileNodeIdsForArea(world_map, topology_node_index, left + 1, top + 1, main_area_size - 1, main_area_size - 1)
+        local topology_node_index = AddTopologyData(topology, left * TILE_SCALE - (map_width * 0.5 * TILE_SCALE), top * TILE_SCALE - (map_height * 0.5 * TILE_SCALE), main_area_size * TILE_SCALE, main_area_size * TILE_SCALE, FUMAROLE_ID, tags)
+        AddTileNodeIdsForArea(world_map, topology_node_index, left + main_area_size + 1, top + main_area_size + 1, main_area_size - 1, main_area_size - 1)
 
-        obj_layout.Place({left, top}, "retrofit_fumarole", add_fn, nil, world_map)
-		--obj_layout.PlaceAndPopulatePrefabDensities({left, top}, "retrofit_fumarole", add_fn, nil, world_map, "FumaroleRetrofit:0:Chasm", generated.densities)
+		obj_layout.PlaceAndPopulatePrefabDensities({left, top}, "retrofit_fumarole", add_fn, nil, world_map, FUMAROLE_ID, generated.densities)
 
         print ("Retrofitting for From Beyond - Ancient Echoes - Successfully added the fumarole biome into the world.")
     else

@@ -290,30 +290,40 @@ local function DoPlayerCollapseImminent(inst)
 	inst.occupiedtask = inst:DoTaskInTime(WARNING_TO_COLLAPSE_TIME, SetState, PillarStates.COLLAPSE)
 end
 
+local function ShouldChildTriggerCollapse(child)
+	return child.components.locomotor ~= nil
+		and child.components.locomotor.triggerscreep
+		and not child:HasTag("flying")
+end
+
 local function OnAddPlatformFollower(inst, child)
-	if inst.state == PillarStates.EMPTY and child.components.locomotor then
-		SetState(inst, PillarStates.OCCUPIED)
-		if child.isplayer then
-			if inst.occupiedtask == nil then
-				inst.occupiedtask = inst:DoTaskInTime(OCCUPIED_TO_WARNING_TIME, DoPlayerCollapseImminent)
+	if ShouldChildTriggerCollapse(child) then
+		if inst.state == PillarStates.EMPTY then
+			SetState(inst, PillarStates.OCCUPIED)
+			if child.isplayer then
+				if inst.occupiedtask == nil then
+					inst.occupiedtask = inst:DoTaskInTime(OCCUPIED_TO_WARNING_TIME, DoPlayerCollapseImminent)
+				end
+				inst:PushEvent("abysspillar_playeroccupied", child)
 			end
-			inst:PushEvent("abysspillar_playeroccupied", child)
 		end
+		child:PushEvent("startteetering")
 	end
-	child:PushEvent("startteetering")
 end
 
 local function OnRemovePlatformFollower(inst, child)
-	if inst.state == PillarStates.OCCUPIED and child.components.locomotor then
-		if inst.occupiedtask then
-			inst.occupiedtask:Cancel()
+	if ShouldChildTriggerCollapse(child) then
+		if inst.state == PillarStates.OCCUPIED then
+			if inst.occupiedtask then
+				inst.occupiedtask:Cancel()
+			end
+			inst.occupiedtask = inst:DoTaskInTime(0, SetState, PillarStates.COLLAPSE)
+			if child.isplayer then
+				inst:PushEvent("abysspillar_playervacated", child)
+			end
 		end
-		inst.occupiedtask = inst:DoTaskInTime(0, SetState, PillarStates.COLLAPSE)
-		if child.isplayer then
-			inst:PushEvent("abysspillar_playervacated", child)
-		end
+		child:PushEvent("stopteetering")
 	end
-	child:PushEvent("stopteetering")
 end
 
 local function TryReserveForMinion(inst)

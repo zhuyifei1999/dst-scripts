@@ -470,7 +470,11 @@ function Map:CanDeployBridgeAtPointWithFilter(pt, inst, mouseover, tilefilterfn)
     end
 
     local id, index = self:GetTopologyIDAtPoint(pt.x, pt.y, pt.z)
-    if id and (id:find("Archive") or id:find("Atrium")) then
+    -- MoonMush check is here for Retrofitted Archives (Entire Grotto + Archives retrofit is marked with AncientArchivesRetrofit for task name)
+    -- ArchiveMazeEntrance is not actually the archive, its a grotto room that acts as a connection.
+    if id and (
+        (id:find("Archive") and not id:find("MoonMush") and not id:find("ArchiveMazeEntrance")) or
+        id:find("Atrium")) then
         return false
     end
 
