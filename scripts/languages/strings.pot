@@ -365025,7 +365025,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.axe_feathered
 msgctxt "STRINGS.SKIN_NAMES.axe_feathered"
-msgid "Hunters Axe"
+msgid "Hunter's Axe"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.axe_invisible
@@ -379525,7 +379525,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.shovel_feathered
 msgctxt "STRINGS.SKIN_NAMES.shovel_feathered"
-msgid "Hunters Shovel"
+msgid "Hunter's Shovel"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.shovel_heart
