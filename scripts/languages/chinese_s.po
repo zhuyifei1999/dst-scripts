@@ -12253,7 +12253,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Many unhappy returns."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GESTALT
@@ -30473,7 +30473,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Woby! It's back from the dead!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.GESTALT
@@ -48498,7 +48498,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "I was afraid of this."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.GESTALT
@@ -66408,7 +66408,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "It is unnatural."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.GESTALT
@@ -83508,7 +83508,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Back for more, are we?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.GESTALT
@@ -101433,7 +101433,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "It can't even die properly."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.GESTALT
@@ -119288,7 +119288,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "We thought it was dead."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.GESTALT
@@ -137173,7 +137173,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Awakened from its eternal slumber."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.GESTALT
@@ -155063,7 +155063,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "It is reviving, unfortunately."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.GESTALT
@@ -172913,7 +172913,7 @@ msgstr "好恶心！"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Yup, preventable."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.GESTALT
@@ -190828,7 +190828,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Why can't it stay dead?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.GESTALT
@@ -208733,7 +208733,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "No! Is wrong!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.GESTALT
@@ -226558,7 +226558,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Oh geez."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.GESTALT
@@ -244423,7 +244423,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Back?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.GESTALT
@@ -262443,7 +262443,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "It's turning and returning."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.GESTALT
@@ -280393,7 +280393,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "Oh florp."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.GESTALT
@@ -298273,7 +298273,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.GENERIC_CORPSE.REVIVING
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.GENERIC_CORPSE.REVIVING"
-msgid "TODO"
+msgid "UNIT REBOOTING"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.GESTALT
@@ -320448,8 +320448,8 @@ msgstr "萤火虫"
 
 #. STRINGS.NAMES.FIREHOUND
 msgctxt "STRINGS.NAMES.FIREHOUND"
-msgid "Red Hound"
-msgstr "红色猎犬"
+msgid "Fire Hound"
+msgstr "火焰猎犬"
 
 #. STRINGS.NAMES.FIRENETTLES
 msgctxt "STRINGS.NAMES.FIRENETTLES"
@@ -321543,8 +321543,8 @@ msgstr "冰帽"
 
 #. STRINGS.NAMES.ICEHOUND
 msgctxt "STRINGS.NAMES.ICEHOUND"
-msgid "Blue Hound"
-msgstr "蓝色猎犬"
+msgid "Ice Hound"
+msgstr "寒冰猎犬"
 
 #. STRINGS.NAMES.ICEPACK
 msgctxt "STRINGS.NAMES.ICEPACK"
@@ -349816,6 +349816,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.coldfirepit_teeth"
 msgid "If you're looking for a respite from the biting cold... you should probably keep looking."
 msgstr "如果你想在刺骨的寒冷中找寻温暖……那你应该继续找。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.cookpot_candy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_candy"
+msgid "A little sugar never spoiled supper."
+msgstr "加一点点糖无伤大雅。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.cookpot_cauldron
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_cauldron"
 msgid "Double, double, broil and gobble, campfire burns and crockpot bubbles!"
@@ -360691,6 +360696,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.ruinsrelic_chair_toilet"
 msgid "Loo, loo, skip to my loo!"
 msgstr "嘘嘘，嘘嘘，轮到我嘘嘘！"
 
+#. STRINGS.SKIN_DESCRIPTIONS.saddle_basic_western
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.saddle_basic_western"
+msgid "Drive your cattle in style."
+msgstr "驭牛也要时尚。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.saddle_basic_yotb
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.saddle_basic_yotb"
 msgid "The best seat in the house for beefalo-related festivities."
@@ -368580,6 +368590,11 @@ msgstr "哥特火坑"
 msgctxt "STRINGS.SKIN_NAMES.coldfirepit_teeth"
 msgid "Bone-Chilling Firepit"
 msgstr "刺骨严寒火坑"
+
+#. STRINGS.SKIN_NAMES.cookpot_candy
+msgctxt "STRINGS.SKIN_NAMES.cookpot_candy"
+msgid "Confectionery Cooker"
+msgstr "糖果烹饪锅"
 
 #. STRINGS.SKIN_NAMES.cookpot_cauldron
 msgctxt "STRINGS.SKIN_NAMES.cookpot_cauldron"
@@ -379455,6 +379470,11 @@ msgstr "超级电容椅"
 msgctxt "STRINGS.SKIN_NAMES.ruinsrelic_chair_toilet"
 msgid "Ye Olde Water Closet"
 msgstr "旧式冲水马桶"
+
+#. STRINGS.SKIN_NAMES.saddle_basic_western
+msgctxt "STRINGS.SKIN_NAMES.saddle_basic_western"
+msgid "Drover Saddle"
+msgstr "驭牛鞍"
 
 #. STRINGS.SKIN_NAMES.saddle_basic_yotb
 msgctxt "STRINGS.SKIN_NAMES.saddle_basic_yotb"
