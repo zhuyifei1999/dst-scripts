@@ -15,7 +15,7 @@ local events=
     CommonHandlers.OnFreeze(),
 	CommonHandlers.OnElectrocute(),
 	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
+		if inst.components.health and not inst.components.health:IsDead() then
 			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
 			elseif not inst.sg:HasStateTag("electrocute") then
@@ -48,6 +48,9 @@ local events=
                     end
                 end
             end),
+
+	-- Corpse handlers
+	CommonHandlers.OnCorpseChomped(),
 }
 
 local states=
@@ -308,11 +311,17 @@ local states=
             inst.AnimState:PlayAnimation("death")
             inst.SoundEmitter:PlaySound("monkeyisland/pollyroger/death")
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
+            inst:DropDeathLoot()
         end,
+
         onexit = function(inst)
             inst:AddTag("flying")
         end,
+
+        events =
+        {
+            CommonHandlers.OnCorpseDeathAnimOver(),
+        },
     },
 
     State{
@@ -543,4 +552,7 @@ nil, --timeline
 	end,
 })
 
-return StateGraph("polly_rogers", states, events, "glide", actionhandlers)
+CommonStates.AddInitState(states, "glide")
+CommonStates.AddCorpseStates(states)
+
+return StateGraph("polly_rogers", states, events, "init", actionhandlers)

@@ -579,8 +579,10 @@ function Health:SetVal(val, cause, afflicter)
         -- NOTES(JBK): Make sure to keep the events fired up to date with the explosive component.
         --Push world event first, because the entity event may invalidate itself
         --i.e. items that use .nofadeout and manually :Remove() on "death" event
-        TheWorld:PushEvent("entity_death", { inst = self.inst, cause = cause, afflicter = afflicter })
-        self.inst:PushEvent("death", { cause = cause, afflicter = afflicter })
+        local is_corpsing = CanEntityBecomeCorpse(self.inst)
+        TheWorld:PushEvent("entity_death", { inst = self.inst, cause = cause, afflicter = afflicter, corpsing = is_corpsing })
+        self.inst:PushEvent("death", { cause = cause, afflicter = afflicter, corpsing = is_corpsing })
+        self.is_corpsing = is_corpsing
 
 		--Here, check if killing player or monster
         local notify_type = (self.inst.isplayer and "TotalPlayersKilled") or "TotalEnemiesKilled"

@@ -298,6 +298,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         end
 
         inst.lunar_mutation_chance = TUNING.BIRD_PRERIFT_MUTATION_SPAWN_CHANCE
+        inst.gestalt_possession_chance = TUNING.BIRD_RIFT_POSSESSION_SPAWN_CHANCE
 
         inst.sounds = BIRD_SOUNDS
 

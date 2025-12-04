@@ -448,6 +448,11 @@ local function SaveCorpseData(inst, corpse)
         corpse.components.entitytracker:TrackEntity("warg", inst.wargleader)
 	    inst.wargleader:RememberFollowerCorpse(corpse)
     end
+
+    local home = inst.components.homeseeker and inst.components.homeseeker:GetHome()
+    if home ~= nil then
+        corpse.components.entitytracker:TrackEntity("hound_home", home)
+    end
 end
 
 local function fncommon(bank, build, morphlist, custombrain, tag, data)
@@ -775,6 +780,12 @@ local function LoadCorpseData(inst, corpse)
 		warg:ForgetFollowerCorpse(corpse)
 		corpse.components.entitytracker:ForgetEntity("warg")
 	end
+
+    local home = corpse.components.entitytracker:GetEntity("hound_home")
+    if home ~= nil then
+        home.components.childspawner:TakeOwnership(inst)
+		corpse.components.entitytracker:ForgetEntity("hound_home")
+    end
 end
 
 local function fnmutated()
@@ -785,6 +796,8 @@ local function fnmutated()
     end
 
 	inst.sounds = sounds_mutated
+    inst.sg.mem.nocorpse = true
+    inst.save_in_foreign_childspawner = true
 
     inst.LoadCorpseData = LoadCorpseData
 

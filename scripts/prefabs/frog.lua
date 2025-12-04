@@ -15,6 +15,7 @@ local normal_prefabs =
 {
     "froglegs",
     "frogsplash",
+    "frogcorpse",
 }
 
 local lunar_prefabs =

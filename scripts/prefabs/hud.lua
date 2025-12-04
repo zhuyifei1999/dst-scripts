@@ -63,6 +63,7 @@ local assets =
     Asset("ANIM", "anim/inventory_fx_shadow.zip"),
     Asset("ANIM", "anim/inventory_fx_acidsizzle.zip"),
     Asset("ANIM", "anim/inventory_fx_buff_panflute.zip"),
+    Asset("ANIM", "anim/inventory_fx_absorbwater.zip"),
     Asset("ANIM", "anim/compass_bg.zip"),
     Asset("ANIM", "anim/compass_needle.zip"),
     Asset("ANIM", "anim/compass_hud.zip"),

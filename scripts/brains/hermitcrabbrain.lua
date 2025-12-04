@@ -307,20 +307,31 @@ local function DoCommentAction(inst)
     end
 end
 
-local HARVEST_TAGS = {"dried"}
 local function DoHarvestMeat(inst)
     local source = inst.CHEVO_marker
     if source then
-        local x,y,z = source.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z, inst.island_radius, HARVEST_TAGS)
+        local x, y, z = source.Transform:GetWorldPosition()
+        local ents = inst:GetAllMeatRacksNear(x, y, z)
         local target = nil
-        for i,ent in ipairs(ents)do
-            if ent.components.dryer and ent.components.dryer:IsDone() then
+        local targetitem = nil
+        for _, ent in ipairs(ents) do
+            local container = ent.components.dryingrack and ent.components.dryingrack:GetContainer() or nil
+            if container and not container:IsEmpty() then
+                targetitem = container:FindItem(function(item)
+                    return item.components.dryable == nil and item.prefab ~= "spoiled_food"
+                end)
+                if targetitem then
+                    target = ent
+                    break
+                end
+            elseif ent.components.dryer and ent.components.dryer:IsDone() then
                 target = ent
+                targetitem = nil
+                break
             end
         end
         if target then
-            return BufferedAction(inst, target, ACTIONS.HARVEST)
+            return BufferedAction(inst, target, ACTIONS.HARVEST, targetitem)
         end
     end
 end
@@ -468,7 +479,73 @@ local CHATTERPARAMS_HIGH = {
 
 local HermitBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
+    --
+    self.tea_shops = {} -- [ent] = true
+    self.selected_tea_shop = nil
 end)
+
+---------------------------------------------------------------------
+
+local function IsTeaShopValid(teashop)
+    return teashop ~= nil and teashop:IsValid()
+        and not (teashop:HasTag("burnt") or (teashop.components.burnable ~= nil and teashop.components.burnable:IsBurning()))
+end
+
+function HermitBrain:AddActiveTeaShop(teashop)
+    self.tea_shops[teashop] = true
+end
+
+function HermitBrain:RemoveActiveTeaShop(teashop)
+    self.tea_shops[teashop] = nil
+
+    if teashop == self.selected_tea_shop then
+        self.selected_tea_shop = nil
+        self.inst.components.locomotor:Stop()
+    end
+end
+
+function HermitBrain:AnyActiveTeaShop()
+    return next(self.tea_shops) ~= nil
+end
+
+function HermitBrain:GetFirstTeaShop()
+    return next(self.tea_shops)
+end
+
+function HermitBrain:ValidateTeaShops()
+    for teashop in pairs(self.tea_shops) do
+        if not IsTeaShopValid(teashop) then
+            self.tea_shops[teashop] = nil
+
+            if self.selected_tea_shop == teashop then
+                self.selected_tea_shop = nil
+            end
+        end
+    end
+end
+
+function HermitBrain:SelectTeaShop()
+    self:ValidateTeaShops()
+    self.selected_tea_shop = self:GetFirstTeaShop()
+
+    if self.selected_tea_shop ~= nil then
+        self.inst.components.npc_talker:Chatter("HERMITCRAB_ANNOUNCE_GOING_TEASHOP", math.random(#STRINGS.HERMITCRAB_ANNOUNCE_GOING_TEASHOP))
+        return true
+    end
+
+    return nil
+end
+
+function HermitBrain:CheckSelectedTeaShop()
+    self:ValidateTeaShops()
+    return IsTeaShopValid(self.selected_tea_shop)
+end
+
+function HermitBrain:GetSelectedTeaShopPos()
+	return self:CheckSelectedTeaShop() and self.selected_tea_shop:GetPosition() or nil
+end
+
+---------------------------------------------------------------------
 
 function HermitBrain:OnStart()
 
@@ -476,6 +553,18 @@ function HermitBrain:OnStart()
         PriorityNode{
             WhileNode( function() return not self.inst.sg:HasStateTag("mandatory") end, "unfriendly",
                 PriorityNode{
+                    IfNode(function() return self:SelectTeaShop() end, "go to tea shop",
+						PriorityNode({
+							FailIfSuccessDecorator(
+								Leash(self.inst,
+									function() return self:GetSelectedTeaShopPos() end,
+									function() return self.selected_tea_shop:GetPhysicsRadius(0) + 1.5 end,
+									function() return self.selected_tea_shop:GetPhysicsRadius(0) + 1 end,
+									true)),
+							IfNode(function() return self:CheckSelectedTeaShop() end, "tea shop exists",
+								ActionNode(function() self.selected_tea_shop:PushEventImmediate("hermitcrab_entered", { hermitcrab = self.inst }) end)),
+						}, .25)),
+
                     WhileNode( function() return self.inst.comment_data ~= nil end, "comment",
                         DoAction(self.inst, DoCommentAction, "comment", true, 10 )),
                     ChattyNode(self.inst, {

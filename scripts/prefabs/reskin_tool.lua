@@ -40,6 +40,7 @@ local reskin_fx_info =
 	grass_umbrella = { offset = 0.4 },
 	greenstaff = { offset = 0.4 },
 	hambat = { offset = 0.2 },
+    hermitcrab_lightpost = { offset = 1.7, scalex = 1, scaley = 2.8 },
 	icebox = { offset = 0.3, scale = 1.3 },
 	icestaff = { offset = 0.4 },
 	lightning_rod = { offset = 0.8, scale = 1.3 },
@@ -113,6 +114,10 @@ local function spellCB(tool, target, pos, caster)
         return -- Only our owner is allowed to change our skin.
     end
 
+    if target.reskin_tool_cannot_target_this then
+        return
+    end
+
     local fx_prefab = "explode_reskin"
     local skin_fx = SKIN_FX_PREFAB[tool:GetSkinName()]
     if skin_fx ~= nil and skin_fx[1] ~= nil then
@@ -162,6 +167,9 @@ local function spellCB(tool, target, pos, caster)
                 if PREFAB_SKINS[prefab_to_skin] ~= nil then
                     for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
                         local skip_this = PREFAB_SKINS_SHOULD_NOT_SELECT[item_type] or false
+                        if SKINS_EVENTLOCK[item_type] and not IsSpecialEventActive(SKINS_EVENTLOCK[item_type]) then
+                            skip_this = true
+                        end
                         if not skip_this then
                             if must_have ~= nil and not StringContainsAnyInArray(item_type, must_have) or must_not_have ~= nil and StringContainsAnyInArray(item_type, must_not_have) then
                                 skip_this = true
@@ -223,6 +231,10 @@ local function can_cast_fn(doer, target, pos)
     -- NOTES(DiogoW): Expand this into a target function in case more cases are added.
     if target._playerlink ~= nil and target._playerlink ~= doer then
         return false -- Only our owner is allowed to change our skin.
+    end
+
+    if target.reskin_tool_cannot_target_this then
+        return false
     end
 
     local prefab_to_skin = target.prefab

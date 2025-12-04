@@ -215,6 +215,11 @@ local function SetUsedTouchStones(inst, used)
     inst.touchstonetrackerused:set(used)
 end
 
+fns.SetBathingPoolCamera = function(inst, target)
+	inst.bathingpool:set(target)
+	fns.OnBathingPoolDirty(inst)
+end
+
 --------------------------------------------------------------------------
 --Client interface
 --------------------------------------------------------------------------
@@ -712,6 +717,18 @@ fns.OnCannonDirty = function(inst)
     end
 end
 
+fns.OnBathingPoolDirty = function(inst)
+	if inst._parent and inst._parent.HUD and inst._oldbathingpool ~= inst.bathingpool:value() then
+		if inst._oldbathingpool then
+			TheFocalPoint.components.focalpoint:StopFocusSource(inst._oldbathingpool)
+		end
+		inst._oldbathingpool = inst.bathingpool:value()
+		if inst._oldbathingpool then
+			TheFocalPoint.components.focalpoint:StartFocusSource(inst._oldbathingpool, nil, nil, math.huge, math.huge, 1)
+		end
+	end
+end
+
 --------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
@@ -1164,6 +1181,7 @@ local function RegisterNetListeners_local(inst)
     inst:ListenForEvent("playerscreenflashdirty", OnPlayerScreenFlashDirty)
     inst:ListenForEvent("attunedresurrectordirty", OnAttunedResurrectorDirty)
     inst:ListenForEvent("cannondirty", fns.OnCannonDirty)
+	inst:ListenForEvent("bathingpooldirty", fns.OnBathingPoolDirty)
 end
 
 local function RegisterNetListeners_common(inst)
@@ -1575,6 +1593,9 @@ local function fn()
 	inst.ischannelcasting = net_bool(inst.GUID, "channelcaster.ishcannelcasting")
 	inst.ischannelcastingitem = net_bool(inst.GUID, "channelcaster.ischannelcastingitem")
 
+	--soakin state (bathingpool) variables
+	inst.bathingpool = net_entity(inst.GUID, "soakin.occupying_bathingpool", "bathingpooldirty")
+
     --Morgue variables
     inst.isdeathbypk = net_bool(inst.GUID, "morgue.isdeathbypk", "morguedirty")
     inst.deathcause = net_string(inst.GUID, "morgue.deathcause")
@@ -1607,6 +1628,7 @@ local function fn()
     inst.ShowHUD = fns.ShowHUD
     inst.EnableMapControls = fns.EnableMapControls
     inst.SetOldagerRate = fns.SetOldagerRate
+	inst.SetBathingPoolCamera = fns.SetBathingPoolCamera
 
     inst.persists = false
 

@@ -173,6 +173,10 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+		bathingpool = function(inst, doer, actions)
+			table.insert(actions, ACTIONS.SOAKIN)
+		end,
+
         battery = function(inst, doer, actions)
             if inst:HasTag("battery") and doer:HasTag("batteryuser") then
                 table.insert(actions, ACTIONS.CHARGE_FROM)
@@ -1007,6 +1011,12 @@ local COMPONENT_ACTIONS =
         bathbomb = function(inst, doer, target, actions)
             if inst:HasTag("bathbomb") and target:HasTag("bathbombable") then
                 table.insert(actions, ACTIONS.BATHBOMB)
+            end
+        end,
+
+        batteryuser = function(inst, doer, target, actions, right)
+            if right and inst:HasTag("batteryuser") and target:HasTag("battery") then
+                table.insert(actions, ACTIONS.CHARGE_FROM)
             end
         end,
 
@@ -2122,6 +2132,12 @@ local COMPONENT_ACTIONS =
 
     EQUIPPED = --args: inst, doer, target, actions, right
     {
+        batteryuser = function(inst, doer, target, actions, right)
+            if right and inst:HasTag("batteryuser") and target:HasTag("battery") then
+                table.insert(actions, ACTIONS.CHARGE_FROM)
+            end
+        end,
+
         brush = function(inst, doer, target, actions, right)
             if not right and target:HasTag("brushable") then
                 table.insert(actions, ACTIONS.BRUSH)

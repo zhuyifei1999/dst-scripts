@@ -42,10 +42,10 @@ for i, v in ipairs(FOODGROUP.OMNI.types) do
     table.insert(FOOD_TAGS, "edible_"..v)
 end
 
-local FINDTHREAT_MUST_TAGS = { "notarget" } -- This is actually CANT_TAGS
+local FINDTHREAT_MUST_TAGS = { "notarget", "playerghost" } -- This is actually CANT_TAGS
 local FINDTHREAT_CANT_TAGS = { "player", "monster", "scarytoprey" } -- This is actually ONE_OF_TAGS
 
-local FINDTHREAT_MUTATED_CANT_TAGS = { "notarget", "lunar_aligned" } -- This really is CANT_TAGS!
+local FINDTHREAT_MUTATED_CANT_TAGS = { "notarget", "lunar_aligned", "playerghost" } -- This really is CANT_TAGS!
 local FINDTHREAT_MUTATED_ONE_OF_TAGS = { "player", "monster", "scarytoprey", } -- This really is ONE_OF_TAGS!
 
 -- Regular buzzards care about protecting their food from other buzzards, but mutated, they are united!
@@ -229,9 +229,9 @@ local function IsCorpseValid(guy, inst)
         and guy:IsValid()
         and (ismutated or IsNotBurning(guy))
         and not guy:IsMutating()
-        and not guy._eroding_away
         and (not ismutated or not guy:HasGestaltArriving())
         and not inst.brain:ShouldIgnoreCorpse(guy)
+        and guy:HasTag("creaturecorpse") -- for non-entity scans
 end
 
 function BuzzardBrain:FindCorpse()
@@ -316,13 +316,15 @@ end
 
 --------------------------------------------------------------------------
 
+-- Some creatures physics radii are obscenely small (see Deerclops) so calculate combat fx size and get the larger of the two.
+local function GetCorpseRadius(corpse)
+    local r, sz, ht = GetCombatFxSize(corpse)
+    return math.max(r, corpse:GetPhysicsRadius(0))
+end
+
 local UPDATE_RATE = .5
 function BuzzardBrain:OnStart()
     local ismutated = self.inst:HasTag("lunar_aligned")
-
-    --local attack_node_def = ismutated and ChaseAndAttack or StandAndAttack
-    --local attack_node = ismutated and attack_node_def(self.inst, 30, 40)
-    --    or attack_node_def(self.inst)
 
     self.corpse_time = GetTime()
 
@@ -361,8 +363,8 @@ function BuzzardBrain:OnStart()
 						FailIfSuccessDecorator(
 							Leash(self.inst,
 								function() return self:GetCorpsePosition() end,
-								function() return self.inst.components.combat:GetHitRange() + self.corpse:GetPhysicsRadius(0) - 1 end,
-								function() return self.inst.components.combat:GetHitRange() + self.corpse:GetPhysicsRadius(0) - 1.5 end,
+								function() return self.inst.components.combat:GetHitRange() + GetCorpseRadius(self.corpse) - 1 end,
+								function() return self.inst.components.combat:GetHitRange() + GetCorpseRadius(self.corpse) - 1.5 end,
 								true)),
 						IfNode(function() return self:IsCorpseValid() and not self.inst.components.combat:InCooldown() end, "chomp",
 							ActionNode(function()

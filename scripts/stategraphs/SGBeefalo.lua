@@ -53,7 +53,7 @@ local events=
         end
     end),
 	EventHandler("attacked", function(inst, data)
-		if not inst.components.health:IsDead() then
+		if inst.components.health and not inst.components.health:IsDead() then
 			if CommonHandlers.TryElectrocuteOnAttacked(inst, data) then
 				return
 			elseif not (	inst.sg:HasAnyStateTag("attack", "electrocute") or
@@ -649,8 +649,7 @@ local states=
                 end
             else
                 RemovePhysicsColliders(inst)
-
-                inst.components.lootdropper:DropLoot()
+                inst:DropDeathLoot()
                 -- We handle our own erode, rather than the health component ~gjans
                 inst:DoTaskInTime(2, ErodeAway)
             end
@@ -1014,5 +1013,8 @@ CommonStates.AddSleepExStates(states,
     },
 })
 
-return StateGraph("beefalo", states, events, "idle", actionhandlers)
+CommonStates.AddInitState(states, "idle")
+CommonStates.AddCorpseStates(states)
+
+return StateGraph("beefalo", states, events, "init", actionhandlers)
 

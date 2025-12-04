@@ -5723,6 +5723,130 @@ table.insert(prefs, CreatePrefabSkin("heatrock_planet",
 	release_group = 173,
 }))
 
+table.insert(prefs, CreatePrefabSkin("hermitcrab_coral",
+{
+	base_prefab = "hermitcrab",
+	type = "base",
+	rarity = "Complimentary",
+	is_npc_base = true,
+	init_fn = function(inst) hermitcrab_init_fn(inst, "hermitcrab_coral") end,
+	skin_tags = { "BASE", },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermitcrab_hairy",
+{
+	base_prefab = "hermitcrab",
+	type = "base",
+	rarity = "Complimentary",
+	is_npc_base = true,
+	init_fn = function(inst) hermitcrab_init_fn(inst, "hermitcrab_hairy") end,
+	skin_tags = { "BASE", },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermitcrab_peacock",
+{
+	base_prefab = "hermitcrab",
+	type = "base",
+	rarity = "Complimentary",
+	is_npc_base = true,
+	init_fn = function(inst) hermitcrab_init_fn(inst, "hermitcrab_peacock") end,
+	skin_tags = { "BASE", },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermitcrab_pointy",
+{
+	base_prefab = "hermitcrab",
+	type = "base",
+	rarity = "Complimentary",
+	is_npc_base = true,
+	init_fn = function(inst) hermitcrab_init_fn(inst, "hermitcrab_pointy") end,
+	skin_tags = { "BASE", },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_bow",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_bow") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_driftwood",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_driftwood") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_mushroom",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_mushroom") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_saltcrystal",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_saltcrystal") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_sanddollar",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_sanddollar") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_snowflake",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_snowflake") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_wood",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_wood") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_wreath",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_wreath") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
 table.insert(prefs, CreatePrefabSkin("hivehat_an",
 {
 	base_prefab = "hivehat",

@@ -44,13 +44,6 @@ local events =
 local states =
 {
     State{
-		name = "init",
-		onenter = function(inst)
-			inst.sg:GoToState(inst.components.locomotor ~= nil and "idle" or "corpse_idle")
-		end,
-	},
-
-    State{
         name = "death",
         tags = { "busy" },
 
@@ -59,14 +52,12 @@ local states =
             inst.AnimState:PlayAnimation("death")
             inst.components.locomotor:StopMoving()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
-            inst:SetDeathLootLevel(1)
+            inst:DropDeathLoot()
         end,
 
         events =
         {
-            -- TODO NOTE(Omar): HALLOWED_NIGHTS_2025_CORPSES
-            --CommonHandlers.OnCorpseDeathAnimOver(),
+            CommonHandlers.OnCorpseDeathAnimOver(),
         },
     },
 
@@ -348,15 +339,7 @@ CommonStates.AddSinkAndWashAshoreStates(states)
 CommonStates.AddVoidFallStates(states)
 CommonStates.AddIpecacPoopState(states)
 
--- TODO NOTE(Omar): HALLOWED_NIGHTS_2025_CORPSES
---[[
-CommonStates.AddCorpseStates(states, nil,
-{
-    corpseoncreate = function(inst, corpse)
-        corpse.AnimState:Hide("HAT")
-        corpse:SetAltBuild("werepig")
-    end,
-}, "pigcorpse")
-]]
+CommonStates.AddInitState(states, "idle")
+CommonStates.AddCorpseStates(states, nil, nil, "pigcorpse")
 
 return StateGraph("werepig", states, events, "init", actionhandlers)

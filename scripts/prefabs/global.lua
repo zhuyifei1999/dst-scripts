@@ -168,6 +168,9 @@ local assets =
     Asset("SOUNDPACKAGE", "sound/hallowednights2025.fev"),
     Asset("FILE", "sound/hallowednights2025.fsb"),
 
+    Asset("SOUNDPACKAGE", "sound/winter2025.fev"),
+    Asset("FILE", "sound/winter2025.fsb"),
+
     Asset("FILE", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
     Asset("FILE", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods
     Asset("FILE", "sound/wallace.fsb"),        -- Legacy sound that can be used in mods
@@ -462,6 +465,8 @@ local assets =
     Asset("IMAGE", "images/inventoryimages2.tex"),
     Asset("ATLAS", "images/inventoryimages3.xml"),
     Asset("IMAGE", "images/inventoryimages3.tex"),
+    Asset("ATLAS", "images/inventoryimages4.xml"),
+    Asset("IMAGE", "images/inventoryimages4.tex"),
 
     Asset("ATLAS", "images/hud.xml"),
     Asset("IMAGE", "images/hud.tex"),

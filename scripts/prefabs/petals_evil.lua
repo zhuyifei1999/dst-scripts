@@ -1,6 +1,13 @@
 local assets =
 {
     Asset("ANIM", "anim/flower_petals_evil.zip"),
+    Asset("ANIM", "anim/meat_rack_food_petals.zip"),
+}
+
+local prefabs =
+{
+    "petals_evil_dried",
+    "spoiled_food",
 }
 
 local function oneaten(inst, eater)
@@ -29,6 +36,9 @@ local function fn()
     inst.pickupsound = "vegetation_grassy"
 
     MakeInventoryFloatable(inst)
+
+	--dryable (from dryable component) added to pristine state for optimization
+	inst:AddTag("dryable")
 
     inst.entity:SetPristine()
 
@@ -64,10 +74,16 @@ local function fn()
 
 	inst:AddComponent("snowmandecor")
 
+    inst:AddComponent("dryable")
+    inst.components.dryable:SetProduct("petals_evil_dried")
+    inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+	inst.components.dryable:SetBuildFile("meat_rack_food_petals")
+    inst.components.dryable:SetDriedBuildFile("meat_rack_food_petals")
+
     MakeHauntableLaunchAndPerish(inst)
     inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
 
     return inst
 end
 
-return Prefab("petals_evil", fn, assets)
+return Prefab("petals_evil", fn, assets, prefabs)

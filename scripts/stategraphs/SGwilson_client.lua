@@ -3,6 +3,15 @@ local easing = require("easing")
 
 local TIMEOUT = 2
 
+local function GetIceStaffProjectileSound(inst, equip)
+    if equip.icestaff_coldness then
+        if equip.icestaff_coldness > 1 then
+            return "dontstarve/wilson/attack_deepfreezestaff" -- FIXME(JBK): WF: Different sfx for each tier?
+        end
+    end
+    return "dontstarve/wilson/attack_icestaff"
+end
+
 local function DoEquipmentFoleySounds(inst)
     local inventory = inst.replica.inventory
     if inventory ~= nil then
@@ -801,7 +810,9 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.APPLYMODULE, "applyupgrademodule"),
     ActionHandler(ACTIONS.REMOVEMODULES, "removeupgrademodules"),
-    ActionHandler(ACTIONS.CHARGE_FROM, "doshortaction"),
+    ActionHandler(ACTIONS.CHARGE_FROM, function(inst, action)
+        return action.invobject and "catchonfire" or "doshortaction"
+    end),
 
     ActionHandler(ACTIONS.ROTATE_FENCE, "doswipeaction"),
 
@@ -871,6 +882,9 @@ local actionhandlers =
 
     -- rifts5.1
     ActionHandler(ACTIONS.DIVEGRAB, "divegrab_pre"),
+
+	-- Winter 2025
+	ActionHandler(ACTIONS.SOAKIN, "soakin_pre"),
 }
 
 local events =
@@ -2554,9 +2568,13 @@ local states =
 		server_states = { "quickeat" },
 
         onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+			local feed = buffaction ~= nil and buffaction.invobject or nil
+            local isdrink = feed and feed:HasTag("fooddrink")
+
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("quick_eat_pre")
-            inst.AnimState:PushAnimation("quick_eat_lag", false)
+            inst.AnimState:PlayAnimation(isdrink and "quick_drink_pre" or "quick_eat_pre")
+            inst.AnimState:PushAnimation(isdrink and "quick_drink_lag" or "quick_eat_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -4407,7 +4425,7 @@ local states =
                         inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
                         if inst.sg.statemem.projectiledelay > FRAMES then
                             inst.sg.statemem.projectilesound =
-                                (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                                (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                                 (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                                 (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
                                 "dontstarve/wilson/attack_weapon"
@@ -4417,7 +4435,7 @@ local states =
                     end
                     if inst.sg.statemem.projectilesound == nil then
                         inst.SoundEmitter:PlaySound(
-                            (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                            (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                             (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
                             "dontstarve/wilson/attack_weapon",
@@ -4495,7 +4513,7 @@ local states =
                     inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
                     if inst.sg.statemem.projectiledelay > FRAMES then
                         inst.sg.statemem.projectilesound =
-                            (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                            (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                             (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                             (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
                             "dontstarve/wilson/attack_weapon"
@@ -4505,7 +4523,7 @@ local states =
                 end
                 if inst.sg.statemem.projectilesound == nil then
                     inst.SoundEmitter:PlaySound(
-                        (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                        (equip:HasTag("icestaff") and GetIceStaffProjectileSound(inst, equip)) or
                         (equip:HasTag("shadow") and "dontstarve/wilson/attack_nightsword") or
                         (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
                         (equip:HasTag("firepen") and "wickerbottom_rework/firepen/launch") or
@@ -7136,9 +7154,13 @@ local states =
 		server_states = { "quickeat", "float" },
 
 		onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+			local feed = buffaction ~= nil and buffaction.invobject or nil
+            local isdrink = feed and feed:HasTag("fooddrink")
+
 			inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("float_quick_eat_pre")
-			inst.AnimState:PushAnimation("float_quick_eat_lag", false)
+			inst.AnimState:PlayAnimation(isdrink and "float_quick_drink_pre" or "float_quick_eat_pre")
+			inst.AnimState:PushAnimation(isdrink and "float_quick_drink_lag" or "float_quick_eat_lag", false)
 
 			inst:PerformPreviewBufferedAction()
 			inst.sg:SetTimeout(TIMEOUT)
@@ -7201,6 +7223,38 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
+
+	-- Winter 2025
+
+	State{
+		name = "soakin_pre",
+		tags = { "busy", "canrotate" },
+		server_states = { "soakin_pre", "soakin_jump", "soakin" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("jump_pre")
+			inst.AnimState:PushAnimation("jump_lag", false)
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.sg:GoToState("idle")
+		end,
+	},
 }
 
 local hop_timelines =

@@ -18,6 +18,9 @@ local events=
     CommonHandlers.OnDeath(),
     EventHandler("entershield", function(inst) inst.sg:GoToState("shield") end),
     EventHandler("exitshield", function(inst) inst.sg:GoToState("shield_end") end),
+
+	-- Corpse handlers
+	CommonHandlers.OnCorpseChomped(),
 }
 
 local states =
@@ -239,19 +242,32 @@ CommonStates.AddCombatStates(states,
 {
     attacktimeline =
     {
-       TimeEvent(10*FRAMES, function(inst) inst.components.combat:DoAttack()
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/bite")
+        TimeEvent(10*FRAMES, function(inst) 
+            inst.components.combat:DoAttack()
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/bite")
         end),
     },
     deathtimeline =
     {
         TimeEvent(1*FRAMES, function(inst)
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/death")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/death")
         end),
     },
-}, combatanims)
+}, 
+combatanims,
+{
+    deathanimfn = function(inst, data)
+        return (data ~= nil and data.corpsing and "death_2") or "death"
+    end,
+},
+{
+    has_corpse_handler = true,
+})
 
 CommonStates.AddFrozenStates(states)
 CommonStates.AddElectrocuteStates(states)
 
-return StateGraph("slurtle", states, events, "idle", actionhandlers)
+CommonStates.AddInitState(states, "idle")
+CommonStates.AddCorpseStates(states)
+
+return StateGraph("slurtle", states, events, "init", actionhandlers)

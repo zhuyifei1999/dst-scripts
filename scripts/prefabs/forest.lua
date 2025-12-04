@@ -559,6 +559,9 @@ local prefabs =
 
     --rifts 6
     "oceanwhirlbigportal",
+
+	--winter 2025
+	"giftsurprise",
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")

@@ -31,6 +31,9 @@ local PEARLSETPIECE_KIT = {
         {6.4, -5.4, 0},
         {7.3, -7.9, 0},
     },
+    ["hermithouse2"] = { -- 1
+        {0, 0, 0},
+    },
     ["hermithouse"] = { -- 1
         {0, 0, 0},
     },
@@ -194,7 +197,15 @@ end
 -------------------------------------------
 -- hermitcrab_relocation_kit_placer
 
-
+local function ClearOccupiedGridOutline(inst)
+    if inst.group_outline then
+        inst.group_outline:Remove()
+        inst.group_outline = nil
+    end
+end
+local function Placer_OnRemove(inst)
+    ClearOccupiedGridOutline(inst)
+end
 local function OnUpdateTransform(inst)
     local deployer = ThePlayer
     local map = TheWorld.Map
@@ -247,6 +258,40 @@ local function OnUpdateTransform(inst)
             end
         end
     end
+
+    --
+
+    if inst.components.placer.can_build then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local tx, tz = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
+
+        if (inst.cached_coords.x ~= tx or inst.cached_coords.z ~= tz) and IsInValidHermitCrabDecorArea(inst) then
+            inst.cached_coords.x = tx
+            inst.cached_coords.z = tz
+
+            inst.group_outline = inst.group_outline or SpawnPrefab("gridplacer_group_outline")
+
+            local occupation_grid = GetHermitCrabOccupiedGrid(tx, tz)
+            for index in pairs(occupation_grid.grid) do
+                local gx, gz = inst.group_outline.outline_grid:GetXYFromIndex(index)
+                if occupation_grid:GetDataAtIndex(index) then
+                    inst.group_outline:PlaceGrid(gx, gz)
+                end
+            end
+
+            for index in pairs(inst.group_outline.outline_grid.grid) do
+                local gx, gz = inst.group_outline.outline_grid:GetXYFromIndex(index)
+                if not occupation_grid:GetDataAtIndex(index) then
+                    inst.group_outline:RemoveGrid(gx, gz)
+                end
+            end
+        end
+    else
+        -- Reset
+        inst.cached_coords.x = -1
+        inst.cached_coords.z = -1
+        ClearOccupiedGridOutline(inst)
+    end
 end
 local function CreatePlacerVisual(bank, build, anim)
     local inst = CreateEntity()
@@ -268,6 +313,7 @@ local function CreatePlacerVisual(bank, build, anim)
 
     return inst
 end
+
 local function OnCanBuild(inst, mouseblocked)
     inst.AnimState:SetAddColour(.25, .75, .25, 0)
     inst:Show()
@@ -283,6 +329,8 @@ local function PlacerPostinit(inst)
     if not TheWorld:HasTag("forest") then
         return
     end
+
+    inst.cached_coords = { x = -1, z = -1 }
 
     inst.placervisuals = {}
     for prefab, prefabdata in pairs(PEARLSETPIECE_KIT) do -- Not inst.PEARLSETPIECE_KIT because the placer is a visualizer mods should edit it from the kit itself.
@@ -309,6 +357,8 @@ local function PlacerPostinit(inst)
     inst.components.placer.onupdatetransform = OnUpdateTransform
     inst.components.placer.oncanbuild = OnCanBuild
     inst.components.placer.oncannotbuild = OnCannotBuild
+
+    inst:ListenForEvent("onremove", Placer_OnRemove)
 end
 
 

@@ -295,10 +295,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
-    ActionHandler(ACTIONS.HARVEST,
-        function(inst)
-            return "harvest"
-        end),
+    ActionHandler(ACTIONS.HARVEST, "harvest"),
 
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
 
@@ -402,7 +399,13 @@ local events =
 
     EventHandler("ontalk", function(inst, data)
         if not inst.sg:HasStateTag("talking") and not inst.components.locomotor.dest then
-            inst.sg:GoToState("talkto")
+            if inst.sg:HasStateTag("teashop") then
+                if not inst.sg:HasStateTag("busy") then
+                    inst.sg:GoToState("talk_teashop")
+                end
+            else
+                inst.sg:GoToState("talkto")
+            end
         end
     end),
 
@@ -515,6 +518,20 @@ local events =
 
     CommonHandlers.OnHop(),
 	CommonHandlers.OnElectrocute(),
+
+    -- Tea shop events
+
+    EventHandler("enter_teashop", function(inst)
+        inst.sg:GoToState("arrive_teashop")
+    end),
+
+    EventHandler("leave_teashop", function(inst)
+        inst.sg:GoToState("leave_teashop")
+    end),
+
+    EventHandler("hermitcrab_startbrewing", function(inst, data)
+        inst.sg:GoToState("brewing_teashop", data.product)
+    end),
 }
 
 local statue_symbols =
@@ -541,6 +558,11 @@ local states =
         onenter = function(inst, pushanim)
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
+
+            if inst.sg.mem.tea_shop_teleport then
+                inst.sg:GoToState("dancebusy")
+                return
+            end
 
             if inst.sg.mem.teleporting and not inst.components.npc_talker:haslines() then
                 inst.sg:GoToState("dancebusy")
@@ -944,6 +966,8 @@ local states =
                 if hermitcrab_relocation_manager then
                     hermitcrab_relocation_manager:InitiatePearlTeleport()
                 end
+            elseif inst.sg.mem.tea_shop_teleport then
+                SpawnPrefab("hermitcrab_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
             end
         end,
 
@@ -969,6 +993,20 @@ local states =
 
         timeline = ----jason
         {
+            FrameEvent(2, function(inst)
+                if not inst.sg.mem.teleporting then
+                    local teashop = inst.sg.mem.tea_shop_teleport
+                    if teashop and teashop:IsValid() then
+                        inst.Transform:SetPosition(teashop.Transform:GetWorldPosition())
+                        teashop:PushEventImmediate("hermitcrab_entered", { hermitcrab = inst })
+                        inst.sg.mem.tea_shop_teleport = nil
+                        inst.sg:GoToState("idle")
+                    end
+                end
+
+                inst.sg.mem.tea_shop_teleport = nil
+            end),
+            --
             TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/clap") end),
             TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/clap") end),
             TimeEvent((13+31)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/clap") end),
@@ -2742,6 +2780,17 @@ local states =
             end
 
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+
+            if inst.components.stuckdetection:IsStuck() and inst.brain.selected_tea_shop then
+                inst.sg.mem.tea_shop_teleport = inst.brain.selected_tea_shop
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        onexit = function(inst, new_state)
+            if new_state ~= "walk" then
+                inst.components.stuckdetection:Reset()
+            end
         end,
 
         onupdate = function(inst)
@@ -4501,6 +4550,148 @@ local states =
 		end,
 	},
 	--------------------------------------------------------------------------
+    
+
+    -- Tea shop states
+
+    -- Use of talker instead of npc_talker is intentional.
+
+    State{
+        name = "idle_teashop",
+        tags = { "idle", "teashop" },
+
+        onenter = function(inst)
+            if not inst.AnimState:IsCurrentAnimation("idle_teashop") then
+                inst.AnimState:PlayAnimation("idle_teashop", true)
+            end
+
+            inst.sg:SetTimeout(2 + math.random())
+        end,
+
+        ontimeout = function(inst)
+            if math.random() < 1 / 3 then
+                inst.components.talker:Chatter("HERMITCRAB_TEASHOP_IDLE", math.random(#STRINGS.HERMITCRAB_TEASHOP_IDLE), nil, nil, CHATPRIORITIES.LOW)
+            end
+            inst.sg:GoToState("idle_teashop")
+        end,
+    },
+
+    State{
+        name = "hit_teashop",
+        tags = { "hit", "teashop" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("hit_teashop")
+            inst.components.talker:Chatter("HERMITCRAB_TEASHOP_HIT", math.random(#STRINGS.HERMITCRAB_TEASHOP_HIT), nil, nil, CHATPRIORITIES.LOW)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle_teashop") end)
+        },
+    },
+
+    State{
+        name = "arrive_teashop",
+        tags = { "busy", "teashop" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+
+            inst.AnimState:PlayAnimation("appear_teashop")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle_teashop") end)
+        },
+    },
+
+    State{
+        name = "talk_teashop",
+        tags = { "idle", "talking", "teashop" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("talk_teashop")
+            DoTalkSound(inst)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("talking")
+        end,
+
+        events =
+        {
+            EventHandler("donetalking", function(inst) inst.sg:GoToState("idle_teashop") end),
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle_teashop") end),
+        },
+    },
+
+    -- brewing state tag is used for save/load purposes
+    State{
+        name = "brewing_teashop",
+        tags = { "busy", "brewing", "teashop" },
+
+        onenter = function(inst, product)
+            inst.sg.mem.tea_product = product
+            inst.AnimState:PlayAnimation("brew_teashop_pre")
+            inst.AnimState:PlayAnimation("brewing_teashop")
+
+            inst.components.talker:Chatter("HERMITCRAB_TEASHOP_TRADE", math.random(#STRINGS.HERMITCRAB_TEASHOP_TRADE), nil, nil, CHATPRIORITIES.LOW)
+            inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/tea_stand/making_jingle")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("throwtea_teashop", inst.sg.mem.tea_product)
+                end
+            end),
+        }
+    },
+
+    State{
+        name = "throwtea_teashop",
+        tags = { "busy", "brewing", "teashop" },
+
+        onenter = function(inst, product)
+            inst.sg.mem.tea_product = product
+            inst.AnimState:PlayAnimation("brew_teashop_finish")
+        end,
+
+        timeline =
+        {
+            FrameEvent(1, function(inst)
+                inst.sg:RemoveStateTag("brewing")
+                local x, y, z = inst.Transform:GetWorldPosition()
+                LaunchAt(SpawnPrefab(inst.sg.mem.tea_product), inst, FindClosestPlayer(x, y, z, true), 1, 2.5, 1)
+                inst.tea_shop:MakePrototyper()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle_teashop") end),
+        },
+    },
+
+    State{
+        name = "leave_teashop",
+        tags = { "busy", "teashop" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("disappear_teashop")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst:OnHermitCrabLeaveTeaShop()
+            end),
+        },
+    },
 }
 
 CommonStates.AddSimpleState(states, "refuse", "idle_loop", { "busy" })

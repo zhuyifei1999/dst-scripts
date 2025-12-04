@@ -1452,6 +1452,21 @@ meatrack_clear_fn = function(inst)
 		inst:OnMeatRackSkinChanged(nil)
 	end
 end
+meatrack_hermit_multi_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "meatrack_hermit_multi")
+	if not TheWorld.ismastersim then
+		return
+	end
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(build_name)
+	end
+end
+meatrack_hermit_multi_clear_fn = function(inst)
+	basic_clear_fn(inst, "meatrack_hermit_multi")
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(nil)
+	end
+end
 
 beebox_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bee_box" ) end
 beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end
@@ -3598,7 +3613,6 @@ function hawaiianshirt_clear_fn(inst)
     basic_clear_fn(inst, "torso_hawaiian")
 end
 
-
 function pumpkinhat_init_fn(inst, build_name)
     basic_init_fn(inst, build_name, "hat_pumpkin")
 	if not TheWorld.ismastersim then
@@ -3611,6 +3625,46 @@ function pumpkinhat_clear_fn(inst)
 	inst:OnPumpkinHatSkinChanged(nil)
 end
 
+function hermitcrab_init_fn(inst, build_name)
+	basic_init_fn(inst, build_name, "hermitcrab_build")
+end
+
+function hermitcrab_clear_fn(inst)
+	basic_clear_fn(inst, "hermitcrab_build")
+end
+
+function hermithouse_ornament_init_fn(inst, build_name)
+    inst:AddOrRemoveTag("hermithouse_winter_ornament", SKINS_EVENTLOCK[build_name] == SPECIAL_EVENTS.WINTERS_FEAST)
+	basic_init_fn(inst, build_name, "hermithouse_ornament_shell")
+	inst.AnimState:SetBank(build_name or "hermithouse_ornament_shell")
+	if not TheWorld.ismastersim then
+		return
+	end
+	if inst.OnHermitHouseOrnamentSkinChanged then
+		inst:OnHermitHouseOrnamentSkinChanged(build_name)
+	end
+end
+function hermithouse_ornament_clear_fn(inst)
+    inst:RemoveTag("hermithouse_winter_ornament")
+	basic_clear_fn(inst, "hermithouse_ornament_shell")
+	inst.AnimState:SetBank("hermithouse_ornament_shell")
+	if inst.OnHermitHouseOrnamentSkinChanged then
+		inst:OnHermitHouseOrnamentSkinChanged(nil)
+	end
+end
+
+function hermitcrab_lightpost_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "hermitcrab_lightpost")
+    if inst.OnHermitLightPostSkinChanged then
+		inst:OnHermitLightPostSkinChanged(inst:GetSkinName())
+	end
+end
+function hermitcrab_lightpost_clear_fn(inst)
+    basic_clear_fn(inst, "hermitcrab_lightpost")
+    if inst.OnHermitLightPostSkinChanged then
+		inst:OnHermitLightPostSkinChanged(nil)
+	end
+end
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)
@@ -3638,6 +3692,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.release_group       = info.release_group
     prefab_skin.linked_beard        = info.linked_beard
     prefab_skin.share_bigportrait_name = info.share_bigportrait_name
+    prefab_skin.is_npc_base         = info.is_npc_base
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do
@@ -3695,7 +3750,7 @@ function CreatePrefabSkin(name, info)
         SKIN_FX_PREFAB[name] = info.fx_prefab
     end
 
-    if info.type ~= "base" then
+    if info.type ~= "base" or info.is_npc_base then
         prefab_skin.clear_fn = _G[prefab_skin.base_prefab.."_clear_fn"]
     end
 

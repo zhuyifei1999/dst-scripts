@@ -6,6 +6,9 @@ local IS_BETA = BRANCH == "staging" or BRANCH == "dev"
 PI = math.pi
 PI2 = PI*2
 TWOPI = PI2
+HALFPI = PI/2
+QUARTERPI = PI/4
+EIGHTHPI = PI/8
 SQRT2 = math.sqrt(2)
 GOLDENANGLE = PI * (3 - math.sqrt(5))
 DEGREES = PI/180
@@ -1260,6 +1263,9 @@ TECH =
 	HERMITCRABSHOP_FIVE = { HERMITCRABSHOP = 5 },
     HERMITCRABSHOP_SEVEN = { HERMITCRABSHOP = 7 },
 
+    SHELLWEAVER_ONE = { SHELLWEAVER = 1 },
+    SHELLWEAVER_THREE = { SHELLWEAVER = 3 },
+
     RABBITKINGSHOP_TWO = { RABBITKINGSHOP = 2 },
 
     WAGPUNK_WORKSTATION_TWO = { WAGPUNK_WORKSTATION = 2 },
@@ -1512,11 +1518,13 @@ RECIPETABS =
 	FISHING =				{ str = "FISHING",				sort = 100, icon = "tab_fishing.tex",			crafting_station = true },
 	WINTERSFEASTCOOKING =	{ str = "WINTERSFEASTCOOKING",	sort = 100, icon = "tab_feast_oven.tex",		crafting_station = true },
     HERMITCRABSHOP =		{ str = "HERMITCRABSHOP",		sort = 100, icon = "tab_hermitcrab_shop.tex",	crafting_station = true, shop = true},
+    SHELLWEAVER =           { str = "SHELLWEAVER",          sort = 100, icon = "tab_shellweaver.tex",       crafting_station = true, manufacturing_station = true, icon_atlas = "images/hud2.xml"},
     RABBITKINGSHOP =		{ str = "RABBITKINGSHOP",		sort = 100, icon = "tab_rabbitking.tex",		crafting_station = true, shop = true, icon_atlas = "images/hud2.xml"},
     WANDERINGTRADERSHOP =	{ str = "WANDERINGTRADERSHOP",	sort = 100, icon = "tab_wanderingtrader.tex",	crafting_station = true, shop = true, icon_atlas = "images/hud2.xml"},
     WAGPUNK_WORKSTATION =	{ str = "WAGPUNK_WORKSTATION",	sort = 100, icon = "tab_wagpunk_workstation.tex",crafting_station = true, shop = true, icon_atlas = "images/hud2.xml"},
     TURFCRAFTING =		    { str = "TURFCRAFTING", 		sort = 100, icon = "tab_turfcrafting.tex",      crafting_station = true, icon_atlas = "images/hud2.xml" },
     CARPENTRY =	    	    { str = "CARPENTRY",			sort = 100, icon = "station_carpentry.tex",     crafting_station = true, icon_atlas = "images/hud2.xml" },
+    HERMITCRAB_TEASHOP =    { str = "HERMITCRABTEASHOP",    sort = 100, icon = "tab_hermitcrab_teashop.tex",crafting_station = true, manufacturing_station = true, icon_atlas = "images/hud2.xml"},
 }
 
 CUSTOM_RECIPETABS =
@@ -2922,4 +2930,28 @@ HAPTICS =
     },
 
     CATEGORY_ENABLED_BY_DEFAULT = rawget(_G, "IsPS5") and IsPS5() or false,
+}
+
+MIGRATION_TYPES = {
+    MUTATED_BIRD_GESTALT = "mutatedbird_gestalt",
+    MUTATED_BUZZARD_GESTALT = "mutatedbuzzard_gestalt",
+}
+
+PEARL_DECORATION_TYPES =
+{
+    UNIQUE_DECORATION = "UNIQUE_DECORATION",
+    TILES = "TILES",
+    ORNAMENTS = "ORNAMENTS",
+    LVL5_HOUSE = "LVL5_HOUSE",
+    LIGHT_POSTS = "LIGHT_POSTS",
+    PICKABLE_PLANTS = "PICKABLE_PLANTS",
+    MEAT_RACKS = "MEAT_RACKS",
+    FACED_CHAIR = "FACED_CHAIR",
+    TROPHY_FISH = "TROPHY_FISH",
+    POTTED_PLANTS = "POTTED_PLANTS",
+    DOCK_POSTS = "DOCK_POSTS",
+    DECORATION_TAKER = "DECORATION_TAKER",
+    FISHING_MARKERS = "FISHING_MARKERS",
+    SPAWNER = "SPAWNER",
+    JUNK = "JUNK",
 }

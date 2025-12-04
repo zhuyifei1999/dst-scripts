@@ -428,6 +428,76 @@ queuegifting = function(inst)
 end
 
 -------------------------------------------------------------------------------
+
+local function DoErode(inst)
+	inst:DoTaskInTime(1, ErodeAway)
+end
+
+local SLOT_HEIGHTS = { 5.8, 4.3, 4.6, 3.1, 3.2, 2.1, 1.5, 1.7 }
+
+local function TransformIntoLeif(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local count = inst.components.container:NumItems()
+	if count > 0 then
+		local delta = TWOPI / count
+		local variance = delta * 0.667
+		local angle = math.random() * TWOPI
+		local angles = {}
+		for i = 1, count do
+			angles[i] = angle + math.random() * variance
+			angle = angle + delta
+		end
+
+		for i = 1, inst.components.container:GetNumSlots() do
+			local loot = inst.components.container:DropItemBySlot(i, Vector3(x, y, z))
+			if loot and loot.Physics then
+				angle = table.remove(angles, math.random(#angles)) or math.randon() * TWOPI
+				local cosangle = math.cos(angle)
+				local sinangle = math.sin(angle)
+				local r = inst:GetPhysicsRadius()
+				loot.Physics:Teleport(x + cosangle * r, SLOT_HEIGHTS[i] or 2 + math.random() * 3, z - sinangle * r)
+
+				local speed = 1 + math.random()
+				local y_speed = 8 + math.random() * 4
+				loot.Physics:SetVel(speed * cosangle, y_speed, -speed * sinangle)
+			end
+		end
+	end
+
+	if inst:IsAsleep() then
+		inst:Remove()
+	else
+		--Using burnt config to basically disable everything
+		DefaultBurntStructureFn(inst)
+		inst.persists = false
+		inst.TransformIntoLeif = nil
+		inst.OnEntitySleep = inst.Remove
+		inst.Physics:SetActive(false)
+		if inst.canshelter then
+			inst:RemoveTag("shelter")
+		end
+		inst:AddTag("NOCLICK")
+		inst:AddTag("FX")
+		if inst.components.growable then
+			inst.components.growable:StopGrowing()
+		end
+		if inst.components.workable then
+			inst.components.workable:SetWorkable(false)
+		end
+		inst.AnimState:PlayAnimation("wintertree_transform_ent")
+		inst.AnimState:SetSortOrder(-1)
+		inst:ListenForEvent("animover", DoErode)
+	end
+
+	local leif = SpawnPrefab("leif")
+	leif.AnimState:SetMultColour(1, 1, 1, 1)
+	leif:SetLeifScale(1)
+	leif.Transform:SetPosition(x, y, z)
+	leif.sg:GoToState("spawn_from_wintertree")
+	--leif.components.combat:SuggestTarget(???)
+end
+
+-------------------------------------------------------------------------------
 local function SetGrowth(inst)
     if inst.components.burnable == nil then
         -- NOTES(JBK): This thing got burnt in the time between the thing growing and now so do nothing.
@@ -459,6 +529,10 @@ local function SetGrowth(inst)
         inst.components.growable:StopGrowing()
 
         inst:WatchWorldState("isnight", queuegifting)
+
+		if inst.prefab == "winter_tree" then --evergreen
+			inst.TransformIntoLeif = TransformIntoLeif
+		end
     end
 end
 
@@ -585,6 +659,8 @@ end
 
 local function onburnt(inst)
     DefaultBurntStructureFn(inst)
+
+	inst.TransformIntoLeif = nil
 
     if inst.canshelter then
         inst:RemoveTag("shelter")
@@ -973,6 +1049,7 @@ for i, v in ipairs({
         extraprefabs =
         {
             "pine_needles_chop",
+			"leif",
         },
         shelter = true,
         onchop = evergreen_onchop,

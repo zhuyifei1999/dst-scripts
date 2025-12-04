@@ -251,7 +251,8 @@ function Moisture:GetWaterproofness()
 end
 
 function Moisture:GetMoistureRate()
-	if self.inst.components.inventory and self.inst.components.inventory:IsFloaterHeld() then
+	if self.inst.components.inventory and self.inst.components.inventory:IsFloaterHeld() or
+        self.inst.sg and self.inst.sg.statemem.occupying_bathingpool then
 		return self.maxMoistureRate
 	elseif not TheWorld.state.israining then
         return 0
@@ -319,6 +320,15 @@ function Moisture:GetRateBonus()
     return self.externalbonuses:Get()
 end
 
+function Moisture:GetDesiccantBonus(rate, dt)
+    local moistureabsorberuser = self.inst.components.moistureabsorberuser
+    if not moistureabsorberuser then
+        return 0
+    end
+
+    return moistureabsorberuser:GetBestAbsorberRate(rate, dt)
+end
+
 function Moisture:OnUpdate(dt)
 	if self:IsForceDry() then
         --can still get here even if we're not in the update list
@@ -336,6 +346,11 @@ function Moisture:OnUpdate(dt)
         local externalbonuses = self:GetRateBonus()
 
         self.rate = moisturerate + equippedmoisturerate - dryingrate + externalbonuses
+    end
+
+    if self.moisture > 0 or self.rate > 0 then
+        local drate = self:GetDesiccantBonus(self.rate, dt)
+        self.rate = self.rate - drate
     end
 
     self.ratescale =

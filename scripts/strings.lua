@@ -458,7 +458,11 @@ STRINGS =
         SMOTHER = "Extinguish",
         STOKEFIRE = "Stoke Fire",
         MANUALEXTINGUISH = "Extinguish",
-        EAT = "Eat",
+        EAT =
+        {
+            GENERIC = "Eat",
+            DRINK = "Drink",
+        },
         BAIT = "Bait",
         COOK = "Cook",
         SPICE = "Season", --this is for COOK action, but trying to avoid breaking mods due
@@ -1009,7 +1013,10 @@ STRINGS =
 
         APPLYMODULE = "Plug In",
         REMOVEMODULES = "Unplug",
-        CHARGE_FROM = "Charge At",
+        CHARGE_FROM = {
+            SELF = "Charge At",
+            ITEM = "Charge Item",
+        },
 
 		-- Waxwell
 		USEMAGICTOOL = "Use",
@@ -1118,6 +1125,9 @@ STRINGS =
         STARTELECTRICLINK = "Toggle Linking",
         ENDELECTRICLINK = "Disconnect Links",
         REMOVELUNARBUILDUP = "Clear",
+
+		-- Winter 2025
+		SOAKIN = "Soak In",
     },
 
 	WOBY_COMMANDS =
@@ -1163,6 +1173,8 @@ STRINGS =
         FOOD = "Soggy",
         POUCH = "Soggy",
         WETGOOP = "Very",
+        DESICCANT = "Damp",
+        DESICCANT_FULL = "Saturated",
     },
 
     NAMES =
@@ -4409,6 +4421,56 @@ STRINGS =
 
 		PUMPKINHAT = "Faceless Pumpkin",
 		PUMPKINHAT_CARVED = "Pumpkin Head",
+
+		-- Winter's Feast 2025
+
+		GIFTSURPRISE = "???",
+
+		HERMITHOTSPRING = "Pearl's Hot Spring",
+		HERMITHOTSPRING_ABANDONED = "Dry Hot Spring",
+		HERMITHOTSPRING_CONSTR = "Hot Spring",
+		MEATRACK_HERMIT_MULTI = "Large Drying Rack",
+		MEATRACK_HERMIT_ABANDONED = "Seaside Debris",
+		HERMITHOUSE_ORNAMENT = "Wind Charm",
+
+        SHELLWEAVER = "Combriner",
+        ICESTAFF2 = "Flash Freeze Staff",
+        ICESTAFF3 = "Deep Freeze Staff",
+        NONSLIPGRIT = "Grit Duster",
+        NONSLIPGRITBOOSTED = "Grit Grinder",
+        DESICCANT = "Desiccant Pouch",
+        DESICCANTBOOSTED = "Desiccant Sack",
+        HERMITCRAB_SHELL = "Portage Conch",
+        SALTY_DOGHAT = "Salty Dog's Hat",
+        SALTY_DOG = "Salty Dog",
+
+        HERMITCRAB_TEASHOP = "Pearl's Tea Shop",--boat looking shop - trade pearl for teas. give her bottle
+        HERMITCRAB_TEASHOP_ABANDONED = "Abandoned Tea Shop",
+
+        HERMITCRABTEA_PETALS = "Petal Tea",--tea with petals, sanity buff
+        HERMITCRABTEA_PETALS_EVIL = "Dark Petal Tea",--tea with evil petals, make you insane?
+        HERMITCRABTEA_FOLIAGE = "Foliage Tea",
+        HERMITCRABTEA_SUCCULENT_PICKED = "Succulent Tea",--cool you down
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Lune Tree Blossom Tea",--warm you up
+        HERMITCRABTEA_FIRENETTLES = "Fire Nettle Tea",
+        HERMITCRABTEA_TILLWEED = "Tillweed Tea",
+        HERMITCRABTEA_FORGETMELOTS = "Forget-Me-Lots Tea",
+
+        PETALS_DRIED = "Dried Petals",
+        PETALS_EVIL_DRIED = "Dried Dark Petals",
+        FOLIAGE_DRIED = "Dried Foliage",
+        SUCCULENT_PICKED_DRIED = "Dried Succulent",
+        MOON_TREE_BLOSSOM_DRIED = "Dried Lune Tree Blossom",
+        FIRENETTLES_DRIED = "Dried Fire Nettle Frond",
+        TILLWEED_DRIED = "Dried Tillweed",
+        FORGETMELOTS_DRIED = "Dried Forget-Me-Lots",
+
+        FISHMEAT_DRIED = "Fishy Jerky",
+        FISHMEAT_SMALL_DRIED = "Small Fishy Jerky",
+
+        HERMITCRAB_LIGHTPOST = "Pearl's Light Post",
+        HERMITCRAB_LIGHTPOST_ABANDONED = "Seaside Spoils",
+        HERMITCRAB_LIGHTPOST_ITEM = "Pearl's Light Post Kit",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5570,6 +5632,34 @@ STRINGS =
 
 		-- Halloween 2025
 		PUMPKINHAT = "It's only natural to wear a pumpkin on your head after you've carved a face into it.",
+
+        -- Winter's Feast 2025
+        SHELLWEAVER = "Make something with a pinch of salt.",
+        MESSAGEBOTTLEEMPTY = "Not just made by hermits!",
+        ICESTAFF2 = "Knock'em out cold!",
+        ICESTAFF3 = "Put'em on ice!",
+        NONSLIPGRIT = "For when you can't afford to slip up.",
+        NONSLIPGRITBOOSTED = "Re-tread your trail for extra traction.",
+        DESICCANT = "It's important to keep drying!",
+        DESICCANTBOOSTED = "It absorbs moisture so you don't have to!",
+        HERMITCRAB_SHELL = "Last one to Pearl's is a rotten fish egg!",
+        SALTY_DOGHAT = "A hat for an old salt that comes with a salty companion.",
+
+        HERMITCRAB_TEASHOP = "There's nothing a cup of Pearl's tea can't fix.",
+        HERMITCRABTEA_PETALS = "A brew to bring a mind back from the brink.",
+        HERMITCRABTEA_PETALS_EVIL = "Sip for a gentle slip into madness.",
+        HERMITCRABTEA_FOLIAGE = "Not too shrubby.",--TODO
+        HERMITCRABTEA_SUCCULENT_PICKED = "Drink this if you wanna be cool.",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "You'll be over the moon.",--TODO
+        HERMITCRABTEA_FIRENETTLES = "It'll put some fire in your belly, or at least warm you up.",
+        HERMITCRABTEA_TILLWEED = "It even tastes healthy! Yum!",
+        HERMITCRABTEA_FORGETMELOTS = "A strong brew to refresh your fractured mind.",
+
+		HERMITHOTSPRING_CONSTR = "Drop in for a soak at Pearl's coastal retreat.",
+		MEATRACK_HERMIT_MULTI = "Pearl's personal drying rack has room to spare!",
+		HERMITHOUSE_ORNAMENT = "Give Pearl's Place a splash of whimsy with some oceanside adornments.",
+
+        HERMITCRAB_LIGHTPOST = "Set the mood for a seaside sanctuary!",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -6108,7 +6198,7 @@ STRINGS =
         MED = {"Not the best lawn ornaments, but they keep the head clear.",},
         HIGH = {"I didn't notice those weird spooks until I'd settled in.","They were awful, made my shell crawl...","One of us had to go, and it wasn't going to be me!"},
     },
-    HERMITCRAB_GOT_PEARL = {"Oh...","...I think I understand now.","Thank you for bringing this back to me.","I'm so glad you kept coming back.","My friend."},
+    HERMITCRAB_GOT_PEARL = {"Oh...","...I think I understand now.","Thank you for bringing this back to me.","I'm so glad you kept coming back.","My friend.","As a small token of my appreciation, I'd like to share my special creation with you."},
     HERMITCRAB_WANT_HOUSE = {"I could really use some help fixing up my house..."},
     HERMITCRAB_GIVE_PEARL = {"If you find my sweetie on your travels...","Could you... give him that pearl?","He'll recognize it."},
     HERMITCRAB_GOT_MAPSCROLL_BAD = {"This map is no good to me.", "It doesn't take me anywhere special."},
@@ -6116,6 +6206,165 @@ STRINGS =
 
     HERMITCRAB_ANNOUNCE_SPOOKED = "Did you see that?!",
     HERMITCRAB_ANNOUNCE_TOOL_SLIP = "Wow, that tool is slippery!",
+
+    -- Winter 2025 HermitCrab
+
+    -- Pearl strrings when she's going to the tea shop as a player is waiting by it.
+    HERMITCRAB_ANNOUNCE_GOING_TEASHOP = {
+        "Hold your seahorses, dearie!",
+        "I'll be there in just a minute.",
+        "Patience, dearie. On my way.",
+    },
+
+    -- Pearl strings as she idly waits at the tea shop and the player is nearby.
+    HERMITCRAB_TEASHOP_IDLE = {
+        "Nothing beats my brew.",
+        "You look thirsty, dearie!",
+        "Welcome to Pearl's Tea Shop.",
+        "Hello, dearie. What would you like?",
+        "What's your favorite tea?",
+        "Would you like some of my tea?",
+    },
+
+    -- String for pearl to say when player purchases something
+    HERMITCRAB_TEASHOP_TRADE = {
+        "Have a lovely day!",
+        "Here you go.",
+        "Enjoy, dearie!",
+        "I hope you like it!",
+        "Tea brewed special for you, dearie!",
+    },
+
+    -- String when player goes away and Pearl leaves teashop
+    HERMITCRAB_ANNOUNCE_LEFT_TEASHOP = {
+        "Tell your friends to come by, dearie!",
+        "Thank you for visiting!",
+        "Come back soon, dearie!",
+    },
+
+    -- String when player is hammering down tea shop
+    HERMITCRAB_TEASHOP_HIT = {
+        "Why are you doing that, dearie?",
+        "Are you helping me move my shop?",
+        "Careful, dearie!",
+    },
+
+    -- String when tea shop starts to burn.
+    HERMITCRAB_TEASHOP_BURN = {
+        "My shop is on fire!",
+        "Oh it's a disaster!",
+        "Why?!",
+    },
+
+    -- String when tea shop starts to burn. (AS A RESULT OF PLAYER ACTION)
+    HERMITCRAB_TEASHOP_PLAYER_BURN = {
+        "Oh, dearie! What have you done?",
+        "Why would you do that, dearie?",
+        "Oh no! You've burned my shop!",
+    },
+
+    -- When we're above or near max points for Pearl's area and her home, she'll be very happy! and will stop complaining about decor.
+    HERMITCRAB_DECOR_PRAISES =
+    {
+        "My dearie! I love what you've done with my place!",
+        "Thank you, dearie! It truly feels like home now!",
+        "Oh my, you have such an eye for decorating!",
+        "Dearie, you've done it! My place looks wonderful!",
+        "I love it, my dearie! Thank you for your help!",
+        "Oh dearie, it's become a real home sweet home! Thank you.",
+        "You've done such a lovely job decorating my home, dearie!",
+    },
+
+    -- A unique string if you collect all trophy fish for her!
+    HERMITCRAB_DECOR_ALL_TROPHY_FISH = { "How did you ever manage to catch all of them? Incredible, dearie!", "Now I have every fish, dearie! Amazing!", "My collection is complete! You're the best, dearie!", "What an astounding feat! You've caught them all, dearie!" },
+    -- She'll play these lines when she's happy with the number of the respective decor you have. and
+    HERMITCRAB_DECOR_CONTENT =
+    {
+        TILES = { "TODO", "TODO", "TODO" },
+        ORNAMENTS = { "Wonderful! I love how they dance in the wind.", "They're splendid, dearie.", "Absoultely lovely, my dearie." },
+        FURNITURE = { "Perfectly furnished, dearie!", "I love every piece. Thank you, dearie.", "You've made my home so comfortable." },
+        PICKABLE_PLANTS = { "It all looks so lush!", "Dearie, you certainly have a green thumb!", "Every plant I need is at my clawtips! How thoughtful, dearie." },
+        LIGHT_POSTS = { "My home is so bright and beautiful now!", "All these lights really liven the mood!", "The lights look give such a warm and cozy glow. It's perfect.", },
+        MEAT_RACKS = { "I love my new drying racks!", "Thank you dearie! Now I have so much room for drying!", "I'll never run out of drying space again!", },
+    },
+
+    HERMITCRAB_DECOR_COMPLAIN = {
+        TILES = -- she likes beach turfs, she wants that!
+        {
+            -- low = barely any tiles are to her liking
+            -- med = a good chunk of tiles are to her liking
+            LOW = { "TODO", "TODO" },
+            MED = { "TODO", "TODO" },
+        },
+        FISHING_MARKERS = -- These are invisible markers that dictate where she can fish, she won't be happy when they're blocked.
+        {
+            -- low = a few fishing markers are blocked
+            -- med = half of them are blocked
+            -- high = all of them are blocked.
+            LOW = { "TODO", "TODO" },
+            MED = { "TODO", "TODO" },
+            HIGH = { "TODO", "TODO" },
+        },
+        TROPHY_FISH =
+        {
+            -- she wants some trophy fish!
+            LOW = { "I would love more big fish to display!", "A few more big fish would be wonderful, dearie!" },
+        },
+        ORNAMENTS = -- She wants ornaments on her house
+        {
+            -- low = 1 slot has an ornament
+            -- med = 2-3 slots has an ornament
+            LOW = { "Oh I love these wind charms. Perhaps a few more?", "Dearie, these wind charms are lovely! More, please!" },
+            MED = { "Just a one or two more wind charms should do it!", "We almost have enough wind charms, dearie!" },
+        },
+        FURNITURE = -- She wants furniture, (potted plants, tables, chairs, etc)
+        {
+            -- low = no furniture around
+            -- med = you built some furniture, but still needs a bit more to be homey
+            LOW = { "We need more furniture, dearie!", "Dearie, we are still missing a few pieces of furniture." },
+            MED = { "It's really coming together, one or two more furniture pieces should do!", "My home is almost fully furnished, dearie!" },
+        },
+        PICKABLE_PLANTS = -- She wants plants! (grass, saplings, berry bushes)
+        {
+            -- low = little-to-none plants in her area
+            -- med = you planted some more bushes and plants.
+            LOW = { "We will need more plants than this, dearie.", "More plants would be lovely, dearie!" },
+            MED = { "I love all these plants! Perhaps one or two more?", "It's almost perfect, dearie! Just a few more plants!" },
+        },
+        LIGHT_POSTS = -- She wants light posts!
+        {
+            -- low = little-to-none light posts in her area
+            -- med = you built some light posts, but she still wants more!
+            LOW = { "It's still rather dim, dearie!", "More light would be lovely, my dearie." },
+            MED = { "The lights are lovely! Just one or two more should do.", "Dearie, just a little more light please!" },
+        },
+        MEAT_RACKS = -- She wants more meat racks!
+        {
+            -- low = only the current single-slot meat racks she has with her
+            -- med = you built some extra meat racks for her!
+            LOW = { "Dearie, would you please build me some larger drying racks?", "I would love some more drying racks, my dearie." },
+            MED = { "Wonderful! Perhaps one or two more large drying racks, dearie?", "Almost, dearie! Just one or two more large drying racks!" },
+        },
+        SPAWNER = -- There's some spawners in our area (spider dens, pig houses), we're a hermit and don't like that!
+        {
+            -- low = a few spawners are around
+            -- med = many spawners around
+            -- high = unwanted party happening at pearls place
+            LOW = { "Just a few more beastie hiding places left!", "Dearie, could you please help me get rid of just a few more nasty neighbors?" },
+            MED = { "There are still a number of spots for the beasties to hide!", "I still have quite a few unfriendly neighbors. Please help, dearie!" },
+            HIGH = { "Oh dearie, there are so many places here the beasties creep out from!", "The beasties come from every direction here! Please rid the area of them for me, dearie!" },
+        },
+        JUNK = -- There's junk in our area, complain about it
+        {
+            -- low = not much junk, but still bothersome
+            -- med = a bit more junk.. it's messy
+            -- high = hoa violation
+            LOW = { "My house is almost clear of junk! Just a few more pieces to go.", "We're just about there! Would you help me clean up a bit more junk, dearie?" },
+            MED = { "My place is still cluttered with some junk. Could you please help me clean up?", "My dearie, I would be so grateful for your help in clearing some junk around here." },
+            HIGH = { "Dearie, my home is surrounded by junk! Please help me clear it?", "There's junk everywhere! I need your help to clear it, dearie!" },
+        },
+
+    },
 
     --NOTE: Limit to 63 strings per table! (Using net_smallbyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
@@ -6910,6 +7159,7 @@ STRINGS =
 		FISHING = "Fishing",
 		WINTERSFEASTCOOKING = "Feast",
         HERMITCRABSHOP = "Bottle Exchange",
+        SHELLWEAVER = "Combrining",
         RABBITKINGSHOP = "Trading Hutch",
         WANDERINGTRADERSHOP = "Trading",
         WAGPUNK_WORKSTATION = "Fabrication",
@@ -8264,6 +8514,7 @@ STRINGS.UI =
 			TRANSFORM = "Transform",
 			RABBITKINGSHOP = "Trade",
 			WANDERINGTRADERSHOP = "Trade",
+            HERMITCRABSHOP = "Trade",
 		},
         TABNEEDSTUFF =
         {
@@ -8300,6 +8551,10 @@ STRINGS.UI =
         NEEDSHERMITCRABSHOP_L2 = "Find someone friendly enough to make this trade!",
         NEEDSHERMITCRABSHOP_L3 = "Find someone friendly enough to make this trade!",
         NEEDSHERMITCRABSHOP_L4 = "Find someone friendly enough to make this trade!",
+        NEEDSHERMITCRABHELP_CRAFTING = "Find someone friendly enough to help you craft this!", -- This is for the case of relocation kit and shellweaver where it's not a trade, she's showing you how to make it.
+        NEEDSSHELLWEAVER_L1 = "Can only be crafted at a Combriner.",
+        NEEDSSHELLWEAVER_L2 = "Can only be crafted at a Combriner.",
+        NEEDSHERMITCRAB_TEASHOP = "Find someone friendly enough to brew this drink!",
         NEEDSRABBITKINGSHOP = "Seek out the Rabbit King to make this trade!",
         NEEDSWANDERINGTRADERSHOP = "Seek out the Wandering Trader to make this trade!",
         NEEDSWAGPUNK_WORKSTATION = "Can only be crafted at a Notional Fabricator.",
@@ -8312,6 +8567,7 @@ STRINGS.UI =
         NEEDSCARPENTRY_THREE = "Use a Sawhorse with a strong blade to build a prototype!",
         NEEDSCELESTIAL_ONE = "Find a small source of lunar energy to craft this at.",
         NEEDSCELESTIAL_THREE = "Find a big source of lunar energy to craft this at.",
+        NEEDSCARTOGRAPHYDESK = "Use a Cartography Desk to write this.",
 
 		NEEDSYOTG = "Available during Year of the Gobbler!",
 		NEEDSYOTV = "Available during Year of the Varg!",
@@ -8328,8 +8584,12 @@ STRINGS.UI =
         NEEDSPERDSHRINE = "Make an offering at the Gobbler Shrine!",
         NEEDSWARGSHRINE = "Make an offering at the Varg Shrine!",
         NEEDSPIGSHRINE = "Make an offering at the Pig Shrine!",
+        NEEDSCARRATSHRINE = "Make an offering at the Carrat Shrine!",
         NEEDSBEEFSHRINE = "Make an offering at the Beefalo Shrine!",
         NEEDSCATCOONSHRINE = "Make an offering at the Catcoon Shrine!",
+        NEEDSRABBITSHRINE = "Make an offering at the Bunnyman Shrine!",
+        NEEDSDRAGONSHRINE = "Make an offering at the Dragonfly Shrine",
+        NEEDSWORMSHRINE = "Make an offering at the Depths Worm Shrine!",
         NEEDSMADSCIENCE = "Brew at the Mad Scientist Lab!",
 		NEEDSWINTERSFEASTCOOKING = "Cook this festive meal in the Masonry Oven!",
         NEEDSCARNIVAL_PRIZESHOP = "Purchase at the Cawnival's Prize Booth!",
@@ -8859,7 +9119,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "From Beyond - Ancient Echoes - Beta Branch", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "Beta Branch", --"Winter's Feast - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -9376,6 +9636,10 @@ STRINGS.UI =
 			crabking = "The Crab King",
 		},
 		TROPHYSCALE_UNKNOWN_OWNER = "An Unnamed Donor",
+
+        -- Unique adjectives for Infused shards and moongleams
+        STALE_POWER = "Waning",
+        SPOILED_POWER = "Decayed",
 	},
 
 	CRAFTING_FILTERS =
@@ -9418,10 +9682,12 @@ STRINGS.UI =
 		LUNARFORGING = "Brightsmithy",
 		SHADOWFORGING = "Shadowcraft",
         HERMITCRABSHOP = "Bottle Exchange",
+        SHELLWEAVER = "Combrining",
         RABBITKINGSHOP = "Trading Hutch",
         WANDERINGTRADERSHOP = "Trading",
         WAGPUNK_WORKSTATION = "Fabrication",
         CARPENTRY = "Carpentry",
+        HERMITCRAB_TEASHOP = "Tea Brewing",
 
         SHADOW = "Codex Umbra",
         FOODPROCESSING = "Seasonings",
@@ -17153,6 +17419,7 @@ STRINGS.SCRAPBOOK = {
         BERNIE = "A powerful friend when Willow's mind approaches insanity.",
         CANARY = "Sensitive to vapours, they tend to die when monstrous poisons are detected nearby.",
         POLLYROGERS = "Gathers loot nearby.",
+        SALTY_DOG = "Gathers loot nearby, and after swimming in the Ocean for a bit will shed Salt Crystals.",
         MOLE = "Ever played \"Whack-A-Mole\"? What a great game.",
         POWDERMONKEY = "Best keep a bribe handy for these freebooters.",
 
@@ -17722,6 +17989,22 @@ STRINGS.SCRAPBOOK = {
         PLAYBILL_THE_DOLL = "Charlie's version of events.",
         PLAYBILL_THE_VEIL = "Shady promotional material.",
         PLAYBILL_THE_VAULT = "A grim testimony from the past, and a foreshadowing of what awaits.",
+
+        -- Halloween 2025
+        MUTATEDBUZZARD_GESTALT = "Beasts of carrion that have come from barren deserts and rocky plains. Watch out for their loony mutagens.",
+
+        -- Winter's Feast 2025
+        HERMITCRAB_TEASHOP = "Pearl's very own tea shop to provide you with riveting teas.",
+        HERMITCRABTEA_PETALS = "TODO",
+        HERMITCRABTEA_PETALS_EVIL = "TODO",
+        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_SUCCULENT_PICKED = "TODO",
+        HERMITCRABTEA_FIRENETTLES = "TODO",
+        HERMITCRABTEA_TILLWEED = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_FORGETMELOTS = "TODO",
+
+        HERMITCRAB_LIGHTPOST = "String up pearlescent lights. Connects to Tea Shops and Pearl's Place too!",
     },
 
     -- Full name: "{name} Scrapbook Page"

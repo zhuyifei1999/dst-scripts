@@ -559,7 +559,7 @@ end
 local CORPSE_MUST_TAGS = { "creaturecorpse" }
 local CORPSE_NO_TAGS = { "NOCLICK" }
 local function IsValidCorpse(corpse)
-    return not Buzzard_ShouldIgnoreCorpse(corpse) and not corpse:WillMutate() and not corpse:IsFading() and not corpse:HasGestaltArriving()
+    return not Buzzard_ShouldIgnoreCorpse(corpse) and not corpse:WillMutate() and not corpse:HasGestaltArriving()
 end
 
 local function FindCorpse(player)

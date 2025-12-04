@@ -338,6 +338,10 @@ local function PickUpAction(inst, pickup_range, pickup_range_local, furthestfirs
         return nil
     end
 
+    if leader.components.inventory == nil or not leader.components.inventory:IsOpenedBy(leader) then -- Inventory existing and it being opened so the action can work.
+        return nil
+    end
+
     if not leader:HasTag("player") then -- Stop things from trying to help non-players due to trader mechanics.
         return nil
     end
@@ -362,13 +366,17 @@ end
 
 local function GiveAction(inst)
     local leader = inst.components.follower and inst.components.follower.leader or nil
-    local leaderinv = leader and leader.components.inventory or nil
+    local inventory = leader and leader.components.inventory or nil
     local item = inst.components.inventory:GetFirstItemInAnySlot() or inst.components.inventory:GetActiveItem() -- This is intentionally backwards to give the bigger stacks first.
-    if leader == nil or leaderinv == nil or item == nil then
+    if leader == nil or inventory == nil or item == nil then
         return nil
     end
 
-    return leaderinv:CanAcceptCount(item, 1) > 0 and BufferedAction(inst, leader, ACTIONS.GIVEALLTOPLAYER, item) or nil
+    if not inventory:IsOpenedBy(leader) or inventory:CanAcceptCount(item, 1) <= 0 then
+        return nil
+    end
+
+    return BufferedAction(inst, leader, ACTIONS.GIVEALLTOPLAYER, item)
 end
 
 local function DropAction(inst)

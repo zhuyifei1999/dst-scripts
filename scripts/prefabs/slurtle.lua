@@ -12,6 +12,8 @@ local prefabs =
     "slurtlehat",
     "armorsnurtleshell",
     "explode_small",
+
+    "slurtlecorpse",
 }
 
 SetSharedLootTable('slurtle',

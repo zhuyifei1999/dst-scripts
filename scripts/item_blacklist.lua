@@ -323,7 +323,34 @@ ITEM_DISPLAY_BLACKLIST =
 	wx78_scanner_succeeded_catcoon = true,
 	wx78_scanner_succeeded_fancy = true,
 	wx78_scanner_succeeded_junky = true,
+	hermithouse_ornament_bow = true,
+	hermithouse_ornament_driftwood = true,
+	hermithouse_ornament_mushroom = true,
+	hermithouse_ornament_saltcrystal = true,
+	hermithouse_ornament_sanddollar = true,
+	hermithouse_ornament_snowflake = true,
+	hermithouse_ornament_wood = true,
+	hermithouse_ornament_wreath = true,
 	pumpkinhat_2 = true,
 	pumpkinhat_3 = true,
+}
+
+HIDE_SKIN_DECORATIONS =
+{
+	hermithouse_ornament_bow = true,
+	hermithouse_ornament_driftwood = true,
+	hermithouse_ornament_mushroom = true,
+	hermithouse_ornament_saltcrystal = true,
+	hermithouse_ornament_sanddollar = true,
+	hermithouse_ornament_snowflake = true,
+	hermithouse_ornament_wood = true,
+	hermithouse_ornament_wreath = true,
+}
+
+SKINS_EVENTLOCK =
+{
+	hermithouse_ornament_bow = "winters_feast",
+	hermithouse_ornament_snowflake = "winters_feast",
+	hermithouse_ornament_wreath = "winters_feast",
 }
 

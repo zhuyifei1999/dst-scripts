@@ -895,6 +895,24 @@ PREFAB_SKINS = {
 		"heatrock_fire",
 		"heatrock_planet",
 	},
+	hermitcrab =
+	{
+		"hermitcrab_coral",
+		"hermitcrab_hairy",
+		"hermitcrab_peacock",
+		"hermitcrab_pointy",
+	},
+	hermithouse_ornament =
+	{
+		"hermithouse_ornament_bow",
+		"hermithouse_ornament_driftwood",
+		"hermithouse_ornament_mushroom",
+		"hermithouse_ornament_saltcrystal",
+		"hermithouse_ornament_sanddollar",
+		"hermithouse_ornament_snowflake",
+		"hermithouse_ornament_wood",
+		"hermithouse_ornament_wreath",
+	},
 	hivehat =
 	{
 		"hivehat_an",

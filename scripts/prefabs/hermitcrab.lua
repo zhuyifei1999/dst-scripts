@@ -17,6 +17,7 @@ local assets =
     Asset("ANIM", "anim/player_hermitcrab_idle.zip"),
     Asset("ANIM", "anim/player_hermitcrab_walk.zip"),
     Asset("ANIM", "anim/player_hermitcrab_look.zip"),
+    Asset("ANIM", "anim/player_hermitcrab_teashop.zip"),
 
     Asset("ANIM", "anim/hermitcrab_build.zip"),
 }
@@ -32,6 +33,8 @@ local prefabs =
     "moon_fissure_plugged",
 	"winter_ornament_boss_hermithouse",
 	"winter_ornament_boss_pearl",
+
+    "hermitcrab_teashop",
 }
 
 local SHOP_LEVELS =
@@ -88,14 +91,37 @@ local function dotalkingtimers(inst)
     end
 end
 
+
+local TALKER_COLOR_HIGH = Vector3(194/255, 149/255, 216/255)
+local TALKER_COLOR_MED = Vector3(228/255, 163/255, 212/255)
+local TALKER_COLOR_LOW = Vector3(241/255, 198/255, 211/255)
+local TALKER_COLORS_IDS =
+{
+    LOW = 1,
+    MED = 2,
+    HIGH = 3,
+}
+local function ontalkercolordirty(inst)
+    local id = inst.talker_color_id:value()
+    if id == TALKER_COLORS_IDS.HIGH then
+        inst.components.talker.colour = TALKER_COLOR_HIGH
+    elseif id == TALKER_COLORS_IDS.MED then
+        inst.components.talker.colour = TALKER_COLOR_MED
+    else
+        inst.components.talker.colour = TALKER_COLOR_LOW
+    end
+end
 local function settextcolor(inst)
     local gfl = inst.getgeneralfriendlevel(inst)
     if gfl == "HIGH" then
-        inst.components.talker.colour = Vector3(194/255, 149/255, 216/255)
+        inst.components.talker.colour = TALKER_COLOR_HIGH
+        inst.talker_color_id:set(TALKER_COLORS_IDS.HIGH)
     elseif gfl == "MED" then
-        inst.components.talker.colour = Vector3(228/255, 163/255, 212/255)
+        inst.components.talker.colour = TALKER_COLOR_MED
+        inst.talker_color_id:set(TALKER_COLORS_IDS.MED)
     else
-        inst.components.talker.colour = Vector3(241/255, 198/255, 211/255)
+        inst.components.talker.colour = TALKER_COLOR_LOW
+        inst.talker_color_id:set(TALKER_COLORS_IDS.LOW)
     end
 end
 
@@ -271,6 +297,8 @@ local function OnAcceptItem(inst, giver, item, count)
         inst:PushEvent("eat_food")
         item:Remove()
     elseif item.prefab == "hermit_cracked_pearl" then
+        inst.gotcrackedpearl = true
+        inst.components.craftingstation:LearnItem("shellweaver", "shellweaver")
         inst.components.npc_talker:Chatter("HERMITCRAB_GOT_PEARL")
         item:RemoveTag("irreplaceable")
         item:Remove()
@@ -319,7 +347,7 @@ local function OnTurnOnPrototyper(inst)
     local wagpunk_arena_manager = TheWorld.components.wagpunk_arena_manager
     if wagpunk_arena_manager and wagpunk_arena_manager:CanPearlShowRelocationItem() and not inst.components.craftingstation:KnowsItem("hermitcrab_relocation_kit") then
         local gfl = inst.getgeneralfriendlevel(inst)
-        inst.components.craftingstation:LearnItem("hermitcrab_relocation_kit", "hermitshop_hermitcrab_relocation_kit")
+        inst.components.craftingstation:LearnItem("hermitcrab_relocation_kit", "hermitcrab_relocation_kit")
         inst.components.npc_talker:Chatter("HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT."..gfl)
         return
     end
@@ -341,10 +369,12 @@ local function GetStatus(inst)
 end
 
 local function OnSave(inst, data)
+    data.driedthings = inst.driedthings
     data.shop_level = inst._shop_level
     data.heavyfish = inst.heavyfish
     data.introduced = inst.introduced
     data.pearlgiven = inst.pearlgiven
+    data.gotcrackedpearl = inst.gotcrackedpearl
     if inst.storelevelunlocktask then
         data.storelevelunlocked = true
     end
@@ -353,6 +383,9 @@ end
 
 local function OnLoad(inst, data)
     if data ~= nil then
+        if data.driedthings then
+            inst.driedthings = data.driedthings
+        end
         if data.shop_level ~= nil and data.shop_level > 0 then
             inst._shop_level = data.shop_level
             EnableShop(inst, inst._shop_level)
@@ -368,6 +401,9 @@ local function OnLoad(inst, data)
         end
         if data.pearlgiven then
             inst.pearlgiven = data.pearlgiven
+        end
+        if data.gotcrackedpearl then
+            inst.gotcrackedpearl = data.gotcrackedpearl
         end
         if data.highfriendlevel then
             inst:AddTag("highfriendlevel")
@@ -438,6 +474,61 @@ local function getgeneralfriendlevel(inst)
         or "LOW"
 end
 
+
+-- [key] = { complainstrings = "STRING", thresholds = {low, med, high} }
+local function trophy_fish_override_score_level(pearldecorationscore, score)
+    return score < 2 and "LOW"
+        or nil
+end
+
+local function ornament_override_score_level(pearldecorationscore, score)
+    local container = pearldecorationscore.inst.components.container
+    if container then
+        local num = #container:GetAllItems()
+        return (num == 1 and "LOW")
+            or (num >= 2 and num <= 3 and "MED")
+            or nil
+    end
+
+    return nil
+end
+
+local decor_problems =
+{
+    -- [PEARL_DECORATION_TYPES.TILES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TILES", },
+    [PEARL_DECORATION_TYPES.TROPHY_FISH] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TROPHY_FISH", overridescorelevel = trophy_fish_override_score_level },
+    [PEARL_DECORATION_TYPES.ORNAMENTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.ORNAMENTS", overridescorelevel = ornament_override_score_level },
+    [PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.PICKABLE_PLANTS" },
+    [PEARL_DECORATION_TYPES.LIGHT_POSTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.LIGHT_POSTS" },
+    [PEARL_DECORATION_TYPES.MEAT_RACKS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.MEAT_RACKS" },
+    -- [PEARL_DECORATION_TYPES.FISHING_MARKERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FISHING_MARKERS", reverse = true },
+    [PEARL_DECORATION_TYPES.SPAWNER] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.SPAWNER", reverse = true },
+    [PEARL_DECORATION_TYPES.JUNK] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.JUNK", reverse = true,  },
+}
+
+-- e.g. to pass in "HERMITCRAB_DECOR_COMPLAIN.MEAT_RACKS.LOW"
+local function DoesStringExists(strtbl)
+    local table_entries = strtbl:split(".")
+    local string_data = STRINGS
+    for _, entry in ipairs(table_entries) do
+        string_data = string_data[entry]
+        if string_data == nil then
+            return false
+        end
+    end
+
+    return true
+end
+
+local function GetRandomIndexFromString(strtbl)
+    local table_entries = strtbl:split(".")
+    local string_data = STRINGS
+    for _, entry in ipairs(table_entries) do
+        string_data = string_data[entry]
+    end
+
+    return math.random(#string_data)
+end
 -- FRIENDLEVELS content
 local function complain(inst)
     local problems = inst.components.friendlevels.friendlytasks
@@ -450,9 +541,37 @@ local function complain(inst)
         end
     end
 
-    if num_complainstrings > 0 then
-        local gfl = getgeneralfriendlevel(inst)
-        inst.components.npc_talker:Chatter(potential_complainstrings[math.random(num_complainstrings)].."."..gfl, nil)
+    --
+    local potential_decorcomplainstrings = {}
+    local num_decorcomplainstrings = 0
+    local house = inst.components.homeseeker and inst.components.homeseeker.home
+    local pearldecorationscore = house and house.components.pearldecorationscore
+    if pearldecorationscore and pearldecorationscore.last_decor_scores then
+        for decor_key, problem in pairs(decor_problems) do
+            local score_level
+            if problem.overridescorelevel then
+                score_level = problem.overridescorelevel(pearldecorationscore, pearldecorationscore:GetLastDecorScore(decor_key))
+            else
+                score_level = pearldecorationscore:GetDecorScoreLevel(decor_key, problem.reverse)
+            end
+            local complain_string = score_level and problem.complainstrings.."."..score_level
+            if complain_string and DoesStringExists(complain_string) then
+                table.insert(potential_decorcomplainstrings, complain_string)
+                num_decorcomplainstrings = num_decorcomplainstrings + 1
+            end
+        end
+    end
+
+    local is_complaining = num_complainstrings > 0
+    local is_decor_complaining = num_decorcomplainstrings > 0
+    if is_complaining or is_decor_complaining then
+        if is_decor_complaining then
+            local strtbl = potential_decorcomplainstrings[math.random(num_decorcomplainstrings)]
+            inst.components.npc_talker:Chatter(strtbl, GetRandomIndexFromString(strtbl))
+        elseif is_complaining then
+            local gfl = getgeneralfriendlevel(inst)
+            inst.components.npc_talker:Chatter(potential_complainstrings[math.random(num_complainstrings)].."."..gfl)
+        end
 
         if inst.components.timer:TimerExists("speak_time") then
             inst.components.timer:StopTimer("speak_time")
@@ -460,7 +579,9 @@ local function complain(inst)
         inst.components.timer:StartTimer("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
     end
 
-    inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+    if not inst.components.timer:TimerExists("complain_time") then
+        inst.components.timer:StartTimer("complain_time", 10 + (math.random() * 30))
+    end
 end
 
 local function rewardcheck(inst)
@@ -750,7 +871,7 @@ local function friendlevel_8_reward(inst, target, task_id)
 end
 
 local function friendlevel_9_reward(inst, target, task_id)
-	inst.components.craftingstation:LearnItem("supertacklecontainer", "hermitshop_supertacklecontainer")
+	inst.components.craftingstation:LearnItem("supertacklecontainer", "hermitshop_supertacklecontainer") -- NOTE (Omar): Why is this not just a level 5 shop recipe?!??!
     inst._shop_level = 5
     storelevelunlocked(inst)
 
@@ -833,16 +954,24 @@ local function berriescomplainfn(inst)
     end
 end
 
+local function GetAllMeatRacksNear(inst, x, y, z)
+    local ents = TheSim:FindEntities(x, y, z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
+    for i = #ents, 1, -1 do
+        local ent = ents[i]
+        local container = ent.components.dryingrack and ent.components.dryingrack:GetContainer() or nil
+        local product = ent.components.dryer and ent.components.dryer.product or nil
+        if not product and (not container or container:IsEmpty()) then
+            table.remove(ents, i)
+        end
+    end
+    return ents
+end
+
 local function meatcomplainfn(inst)
     local source = inst.CHEVO_marker
     if source then
-        local pos = Vector3(source.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
-        for i=#ents,1,-1 do
-            if not ents[i].components.dryer or not ents[i].components.dryer.product then
-                table.remove(ents,i)
-            end
-        end
+        local x, y, z = source.Transform:GetWorldPosition()
+        local ents = inst:GetAllMeatRacksNear(x, y, z)
         if #ents <= 0 then
             return true
         end
@@ -1051,14 +1180,7 @@ local function initfriendlevellisteners(inst)
         local source = inst.CHEVO_marker
         if source and data.target:GetDistanceSqToInst(source) < ISLAND_RADIUS * ISLAND_RADIUS then
             local source_x, source_y, source_z = source.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(source_x, source_y, source_z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
-            local ent_dryer = nil
-            for i=#ents,1,-1 do
-                ent_dryer = ents[i].components.dryer
-                if not ent_dryer or not ent_dryer.product then
-                    table.remove(ents,i)
-                end
-            end
+            local ents = inst:GetAllMeatRacksNear(source_x, source_y, source_z)
 
             -- INVESTIGATE
             local gfl = inst.getgeneralfriendlevel(inst)
@@ -1354,6 +1476,39 @@ local function teleport_override_fn(inst)
 	return pt
 end
 
+local function OnHermitCrabEnterTeaShop(inst)
+    inst.Physics:SetActive(false)
+    inst:StopBrain("serving_teashop")
+    inst:RemoveComponent("prototyper")
+    inst:PushEventImmediate("enter_teashop")
+    inst.AnimState:SetFinalOffset(2)
+end
+local function OnHermitCrabLeaveTeaShop(inst)
+    inst.components.locomotor:Clear()
+
+    inst.components.npc_talker:resetqueue()
+    inst.Physics:SetActive(true)
+    EnableShop(inst)
+    inst:RestartBrain("serving_teashop")
+    inst.sg:GoToState("idle")
+    inst.AnimState:SetFinalOffset(0)
+end
+
+local function OnNewState(inst, data)
+    if data.statename ~= "walk" then
+        inst.components.stuckdetection:Reset()
+    end
+end
+
+local function ApplySkinFrom(inst, skinname, owner)
+    -- FIXME(JBK): WF: Pearl change fx.
+    TheSim:ReskinEntity(inst.GUID, inst.skinname, skinname, nil, owner.userid)
+end
+
+local function ClearSkin(inst)
+    TheSim:ReskinEntity(inst.GUID, inst.skinname)
+end
+
 local HERMITCRAB_MARKER_TAG = {"hermitcrab_marker"}
 
 local function fn()
@@ -1399,7 +1554,7 @@ local function fn()
     inst:AddTag("trader")
 
     inst:AddComponent("talker")
-    inst.components.talker.colour = Vector3(252/255, 226/255, 219/255)
+    inst.components.talker.colour = TALKER_COLOR_LOW
     inst.components.talker.offset = Vector3(0, -400, 0)
     inst.components.talker.name_colour = Vector3(118/256, 89/256, 141/256)
     inst.components.talker.chaticon = "npcchatflair_hermitcrab"
@@ -1421,16 +1576,25 @@ local function fn()
         inst.components.pointofinterest:SetHeight(220)
     end
 
+    inst:AddTag("hermitcrab")
+
     inst.displaynamefn = displaynamefn
+
+    inst.talker_color_id = net_tinybyte(inst.GUID, "hermitcrab.talker_color_id", "talkercolordirty")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("talkercolordirty", ontalkercolordirty)
         return inst
     end
 
     inst.scrapbook_hide = { "ARM_carry", "HAT", "HAIR_HAT", "HEAD_HAT" }
     inst.scrapbook_facing  = FACING_DOWN
+
+    inst.ApplySkinFrom = ApplySkinFrom
+    inst.ClearSkin = ClearSkin
+    inst.reskin_tool_cannot_target_this = true
 
     inst.components.talker.ontalk = ontalk
 
@@ -1521,6 +1685,7 @@ local function fn()
     inst.restocklures = restocklures
     inst.island_radius = ISLAND_RADIUS
     inst.dotalkingtimers = dotalkingtimers
+    inst.GetAllMeatRacksNear = GetAllMeatRacksNear
     inst.iscoat = iscoat
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
@@ -1575,6 +1740,17 @@ local function fn()
 
     TheWorld:PushEvent("ms_register_hermitcrab", inst)
     TheWorld:PushEvent("ms_register_pearl_entity", inst)
+
+    --------------------------------------------------------
+
+    inst:AddComponent("stuckdetection")
+    inst.components.stuckdetection:SetTimeToStuck(5)
+    inst:ListenForEvent("newstate", OnNewState)
+
+    inst.OnHermitCrabEnterTeaShop = OnHermitCrabEnterTeaShop
+    inst.OnHermitCrabLeaveTeaShop = OnHermitCrabLeaveTeaShop
+
+    --------------------------------------------------------
 
     return inst
 end

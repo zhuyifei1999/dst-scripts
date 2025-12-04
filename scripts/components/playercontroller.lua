@@ -1397,7 +1397,7 @@ function PlayerController:RotRight(speed)
 end
 
 function PlayerController:GetHoverTextOverride()
-    return self.placer_recipe ~= nil and (STRINGS.UI.HUD.BUILD.." "..(STRINGS.NAMES[string.upper(self.placer_recipe.name)] or STRINGS.UI.HUD.HERE)) or nil
+    return self.placer_recipe ~= nil and (STRINGS.UI.HUD.BUILD.." "..(STRINGS.NAMES[string.upper(self.placer_recipe.product or self.placer_recipe.name)] or STRINGS.UI.HUD.HERE)) or nil
 end
 
 function PlayerController:CancelPlacement(cache)
@@ -3725,8 +3725,8 @@ function PlayerController:RemotePredictWalking(x, z, isstart, overridemovetime, 
     end
 end
 
-function PlayerController:RemotePredictOverrideLocomote()
-	SendRPCToServer(RPC.PredictOverrideLocomote, self.inst.Transform:GetRotation())
+function PlayerController:RemotePredictOverrideLocomote(dir)
+	SendRPCToServer(RPC.PredictOverrideLocomote, dir or self.inst.Transform:GetRotation())
 end
 
 function PlayerController:RemoteStopWalking()
@@ -3764,10 +3764,12 @@ function PlayerController:DoClientBusyOverrideLocomote()
 	if not self.ismastersim and
 		self.handler ~= nil and
 		self.classified and
-		self.classified.busyremoteoverridelocomote:value() and
-		GetWorldControllerVector() ~= nil
+		self.classified.busyremoteoverridelocomote:value()
 	then
-		self:RemotePredictOverrideLocomote()
+		local dir = GetWorldControllerVector()
+		if dir then
+			self:RemotePredictOverrideLocomote(math.atan2(-dir.z, dir.x) * RADIANS)
+		end
 	end
 end
 
