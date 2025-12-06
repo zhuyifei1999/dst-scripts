@@ -1145,6 +1145,10 @@ function GetLunarPreRiftMutationChance(inst)
     ) * TheWorld.Map:GetLunacyAreaModifier(inst.Transform:GetWorldPosition())
 end
 
+function GetLunarRiftMutationChance(inst)
+    return inst.gestalt_possession_chance or 1
+end
+
 function CanLunarPreRiftMutateFromCorpse(inst)
     if not CanEntityBeNonGestaltMutated(inst) then
         return false
@@ -1156,9 +1160,12 @@ function CanLunarPreRiftMutateFromCorpse(inst)
         return true
     elseif inst.components.burnable and inst.components.burnable:IsBurning() then
         return false
-    elseif math.random() <= GetLunarPreRiftMutationChance(inst) then -- mutation chance returns 0 if we're not in a lunacy area
-        return true
+    elseif inst._cached_prerift_mutation_result ~= nil then -- We might run this function multiple times.
+        return inst._cached_prerift_mutation_result
     end
+
+    inst._cached_prerift_mutation_result = math.random() <= GetLunarPreRiftMutationChance(inst) -- mutation chance returns 0 if we're not in a lunacy area
+    return inst._cached_prerift_mutation_result
 end
 
 function CanLunarRiftMutateFromCorpse(inst)
@@ -1173,11 +1180,12 @@ function CanLunarRiftMutateFromCorpse(inst)
         return false
     elseif inst.components.burnable and inst.components.burnable:IsBurning() then
         return false
-    elseif inst.gestalt_possession_chance and math.random() > inst.gestalt_possession_chance then
-        return false
+    elseif inst._cached_rift_mutation_result ~= nil then -- We might run this function multiple times.
+        return inst._cached_rift_mutation_result
     end
 
-    return true
+    inst._cached_rift_mutation_result = math.random() <= GetLunarRiftMutationChance(inst)
+    return inst._cached_rift_mutation_result
 end
 
 function CanEntityBecomeCorpse(inst)

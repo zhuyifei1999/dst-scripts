@@ -821,7 +821,7 @@ local function MakeCreatureCorpse_Prop(data)
         end
 
         inst.AnimState:SetBank(data.bank)
-        inst.AnimState:SetBuild(BUILDS[creature].default)
+        inst.AnimState:SetBuild(data.build)
         inst.AnimState:PlayAnimation("corpse")
 
 		if data.tag ~= nil then

@@ -1,15 +1,4 @@
 -- Note: This is a common component
-local function OnShackledEntityDirty(inst)
-    local lightpostpartner = inst.components.lightpostpartner
-    local shackled_entities = lightpostpartner.shackled_entities
-    for i = 1, #shackled_entities do
-        local ent = shackled_entities[i]:value()
-        if ent then
-            ent.shackle_id = i
-        end
-    end
-end
-
 local function RemoveChainLights(inst) -- Server callback
     local lightpostpartner = inst.components.lightpostpartner
     lightpostpartner:UnshackleAll()
@@ -39,8 +28,6 @@ local LightPostPartner = Class(function(self, inst)
     inst:AddTag("lightpostpartner")
 
     if not self.ismastersim then
-        inst:ListenForEvent("shackledentitydirty", OnShackledEntityDirty)
-
         self.OnSave = nil
         self.LoadPostPass = nil
     else
@@ -54,6 +41,15 @@ end)
 --LightPostPartner.OnRemoveFromEntity
 
 -- Common
+
+function LightPostPartner:GetShackleIdForPartner(partner)
+    for i = 1, #self.shackled_entities do
+        local ent = self.shackled_entities[i]:value()
+        if ent and ent == partner then
+            return i
+        end
+    end
+end
 
 function LightPostPartner:IsMultiShackled() -- Supports more than one shackle
     return self.shackled_entities

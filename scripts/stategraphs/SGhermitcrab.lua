@@ -962,10 +962,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("idle_clack_pre")
             if inst.sg.mem.teleporting then
-                local hermitcrab_relocation_manager = TheWorld.components.hermitcrab_relocation_manager
-                if hermitcrab_relocation_manager then
-                    hermitcrab_relocation_manager:InitiatePearlTeleport()
-                end
+                TheWorld:PushEvent("ms_hermitcrab_wants_to_teleport", inst)
             elseif inst.sg.mem.tea_shop_teleport then
                 SpawnPrefab("hermitcrab_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
             end

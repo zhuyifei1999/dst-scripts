@@ -105,8 +105,8 @@ return{
         },
         CHARGE_FROM =
         {
-            NOT_ENOUGH_CHARGE = "TODO",
-            CHARGE_FULL = "TODO",
+            NOT_ENOUGH_CHARGE = "There is insufficient charge.",
+            CHARGE_FULL = "Energy is at full capacity.",
         },
 		COMPARE_WEIGHABLE =
 		{

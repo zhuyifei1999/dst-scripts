@@ -369,6 +369,7 @@ local function GetStatus(inst)
 end
 
 local function OnSave(inst, data)
+    data.commented_on_decors = inst.commented_on_decors
     data.driedthings = inst.driedthings
     data.shop_level = inst._shop_level
     data.heavyfish = inst.heavyfish
@@ -383,6 +384,9 @@ end
 
 local function OnLoad(inst, data)
     if data ~= nil then
+        if data.commented_on_decors then
+            inst.commented_on_decors = data.commented_on_decors
+        end
         if data.driedthings then
             inst.driedthings = data.driedthings
         end
@@ -495,13 +499,15 @@ end
 
 local decor_problems =
 {
-    -- [PEARL_DECORATION_TYPES.TILES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TILES", },
+    [PEARL_DECORATION_TYPES.TILES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TILES", },
+    -- [PEARL_DECORATION_TYPES.FLOWERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FLOWERS", },
+    -- [PEARL_DECORATION_TYPES.BEE_BOXES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.BEE_BOXES", },
     [PEARL_DECORATION_TYPES.TROPHY_FISH] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TROPHY_FISH", overridescorelevel = trophy_fish_override_score_level },
     [PEARL_DECORATION_TYPES.ORNAMENTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.ORNAMENTS", overridescorelevel = ornament_override_score_level },
     [PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.PICKABLE_PLANTS" },
     [PEARL_DECORATION_TYPES.LIGHT_POSTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.LIGHT_POSTS" },
     [PEARL_DECORATION_TYPES.MEAT_RACKS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.MEAT_RACKS" },
-    -- [PEARL_DECORATION_TYPES.FISHING_MARKERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FISHING_MARKERS", reverse = true },
+    [PEARL_DECORATION_TYPES.FISHING_MARKERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FISHING_MARKERS", reverse = true },
     [PEARL_DECORATION_TYPES.SPAWNER] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.SPAWNER", reverse = true },
     [PEARL_DECORATION_TYPES.JUNK] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.JUNK", reverse = true,  },
 }
@@ -955,16 +961,16 @@ local function berriescomplainfn(inst)
 end
 
 local function GetAllMeatRacksNear(inst, x, y, z)
+    local meatracks = {}
     local ents = TheSim:FindEntities(x, y, z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
-    for i = #ents, 1, -1 do
-        local ent = ents[i]
+    for _, ent in ipairs(ents) do
         local container = ent.components.dryingrack and ent.components.dryingrack:GetContainer() or nil
         local product = ent.components.dryer and ent.components.dryer.product or nil
-        if not product and (not container or container:IsEmpty()) then
-            table.remove(ents, i)
+        if product or (container and not container:IsEmpty()) then
+            table.insert(meatracks, ent)
         end
     end
-    return ents
+    return meatracks
 end
 
 local function meatcomplainfn(inst)
@@ -1302,6 +1308,81 @@ local function initfriendlevellisteners(inst)
             worldmeteorshower.moonrockshell_chance_additionalodds:SetModifier(inst, odds, "pearl_tasks")
         end
     end)
+
+
+    -- [[ Decor Mechanic ]] --
+
+    inst.commented_on_decors = {}
+    inst:ListenForEvent("pearldecorationscore_updatescore", function(_, data)
+        if not inst.comment_data then
+            local home, score = data.home, data.score
+            local pearldecorationscore = home.components.pearldecorationscore
+            local home_container = home.components.container
+            
+            -- TODO stop if we're already quite happy
+            
+            -- ORNAMENTS
+            if not inst.commented_on_decors[PEARL_DECORATION_TYPES.ORNAMENTS] and home_container and home_container:IsFull() then
+                inst.comment_data = {
+                    pos = home:GetPosition(),
+                    do_chatter = true,
+                    speech = "HERMITCRAB_DECOR_CONTENT.ORNAMENTS",
+                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.ORNAMENTS),
+                    chat_priority = CHATPRIORITIES.HIGH,
+                }
+
+                inst.commented_on_decors[PEARL_DECORATION_TYPES.ORNAMENTS] = true
+            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.PICKABLE_PLANTS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.PICKABLE_PLANTS) == "HIGH" then
+                local function IsPickableBush(ent)
+                    return pearldecorationscore:IsEntityPickableBush(ent)
+                end
+                local plant = FindEntity(inst, 20, IsPickableBush)
+                inst.comment_data = {
+                    pos = (plant and plant:GetPosition()) or inst:GetPosition(),
+                    do_chatter = true,
+                    speech = "HERMITCRAB_DECOR_CONTENT.PICKABLE_PLANTS",
+                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.PICKABLE_PLANTS),
+                    chat_priority = CHATPRIORITIES.HIGH,
+                }
+
+                inst.commented_on_decors[PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = true
+            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.MEAT_RACKS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.MEAT_RACKS) == "HIGH" then
+                inst.comment_data = {
+                    pos = inst:GetAllMeatRacksNear(inst.Transform:GetWorldPosition())[1] or inst:GetPosition(),
+                    do_chatter = true,
+                    speech = "HERMITCRAB_DECOR_CONTENT.MEAT_RACKS",
+                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.MEAT_RACKS),
+                    chat_priority = CHATPRIORITIES.HIGH,
+                }
+
+                inst.commented_on_decors[PEARL_DECORATION_TYPES.MEAT_RACKS] = true
+            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.LIGHT_POSTS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.LIGHT_POSTS) == "HIGH" then
+                local function IsLightPost(ent)
+                    return pearldecorationscore:IsEntityLightPost(ent)
+                end
+                local lightpost = FindEntity(inst, 20, IsLightPost)
+                inst.comment_data = {
+                    pos = (lightpost and lightpost:GetPosition()) or inst:GetPosition(),
+                    do_chatter = true,
+                    speech = "HERMITCRAB_DECOR_CONTENT.LIGHT_POSTS",
+                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.LIGHT_POSTS),
+                    chat_priority = CHATPRIORITIES.HIGH,
+                }
+
+                inst.commented_on_decors[PEARL_DECORATION_TYPES.LIGHT_POSTS] = true
+            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.TILES] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.TILES) == "HIGH" then
+                inst.comment_data = {
+                    pos = inst:GetPosition(),
+                    do_chatter = true,
+                    speech = "HERMITCRAB_DECOR_CONTENT.TILES",
+                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.TILES),
+                    chat_priority = CHATPRIORITIES.HIGH,
+                }
+
+                inst.commented_on_decors[PEARL_DECORATION_TYPES.TILES] = true
+            end
+        end
+    end, TheWorld)
 end
 -- END FRIEND LEVELS
 
@@ -1509,6 +1590,10 @@ local function ClearSkin(inst)
     TheSim:ReskinEntity(inst.GUID, inst.skinname)
 end
 
+local function RemoveCommentData(inst)
+    inst.comment_data = nil
+end
+
 local HERMITCRAB_MARKER_TAG = {"hermitcrab_marker"}
 
 local function fn()
@@ -1672,6 +1757,8 @@ local function fn()
 
     inst:AddComponent("craftingstation")
 
+    inst:AddComponent("leader")
+
     ------------------------------------------
 
     inst:SetStateGraph("SGhermitcrab")
@@ -1737,6 +1824,9 @@ local function fn()
 	RegisterToBottleManager(inst)
 
 	inst.retrofitconstuctiontasks = retrofitconstuctiontasks
+
+    inst:ListenForEvent("teleport_move", RemoveCommentData)
+    inst:ListenForEvent("teleported", RemoveCommentData)
 
     TheWorld:PushEvent("ms_register_hermitcrab", inst)
     TheWorld:PushEvent("ms_register_pearl_entity", inst)

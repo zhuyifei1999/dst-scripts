@@ -247,12 +247,12 @@ params.meatrack_hermit =
 {
 	widget =
 	{
-        slotpos = { Vector3(-2, 18, 0) },
-        slotbg = { dryer_slotbg },
-        animbank = "ui_hermitcrab_1x1",
-        animbuild = "ui_hermitcrab_1x1",
-        pos = Vector3(0, 160, 0),
-        side_align_tip = 100,
+		slotpos = { Vector3(-2, 18, 0) },
+		slotbg = { dryer_slotbg },
+		animbank = "ui_hermitcrab_meatrack_1x1",
+		animbuild = "ui_hermitcrab_meatrack_1x1",
+		pos = Vector3(0, 160, 0),
+		side_align_tip = 100,
 	},
 	acceptsstacks = false,
 	type = "chest",
@@ -735,14 +735,21 @@ params.hermithouse2 =
 			Vector3(-37.5, -(32 + 4), 0),
 			Vector3(37.5, -(32 + 4), 0),
 		},
-		animbank = "ui_chest_2x2",
-		animbuild = "ui_chest_2x2",
+		slotbg = {},
+		animbank = "ui_hermitcrab_2x2",
+		animbuild = "ui_hermitcrab_2x2",
 		pos = Vector3(200, 0, 0),
 		side_align_tip = 120,
 	},
 	acceptsstacks = false,
 	type = "cooker",
 }
+
+local hermithouse2_slotbg = { image = "inv_slot_hermithouse.tex", atlas = "images/hud2.xml" }
+for i = 1, 4 do
+	params.hermithouse2.widget.slotbg[i] = hermithouse2_slotbg
+end
+hermithouse2_slotbg = nil
 
 function params.hermithouse2.itemtestfn(container, item, slot)
     return item:HasTag("hermithouse_ornament")

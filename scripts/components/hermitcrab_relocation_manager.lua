@@ -470,6 +470,12 @@ self.inst:ListenForEvent("ms_register_pearl_entity", function(inst, ent) self:Re
 self.inst:ListenForEvent("ms_register_monkeyisland_portal", function(inst, ent) self:RegisterMonkeyPortal(ent) end, _world)
 self.inst:ListenForEvent("ms_register_monkeyqueen", function(inst, ent) self:RegisterMonkeyQueen(ent) end, _world)
 
+self.inst:ListenForEvent("ms_hermitcrab_wants_to_teleport", function(inst, ent)
+    if not self:CanPearlMove() then -- Intentional inversion of logic this gate must be locked for this request.
+        self:InitiatePearlTeleport()
+    end
+end, _world)
+
 self.inst:DoTaskInTime(0, function() self:OnInit() end)
 
 end)

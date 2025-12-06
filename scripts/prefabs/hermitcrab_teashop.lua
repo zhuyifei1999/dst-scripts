@@ -195,6 +195,7 @@ local function OnHermitCrabLeave(inst, data)
     inst:RemoveComponent("prototyper")
     if inst.hermitcrab and inst.hermitcrab:IsValid() then
         inst.hermitcrab.tea_shop = nil
+        table.removearrayvalue(inst.highlightchildren, inst.hermitcrab)
         if instant then
             inst.hermitcrab:OnHermitCrabLeaveTeaShop()
             inst.hermitcrab = nil

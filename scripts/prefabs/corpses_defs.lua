@@ -46,7 +46,7 @@ local BUILDS_TO_NAMES =
     {
         merm_build = "merm",
         merm_guard_build = "mermguard",
-        merm_guard_small_build = "merm_guard_small_build",
+        merm_guard_small_build = "mermguard",
     },
 
     warg =
@@ -984,6 +984,10 @@ local CORPSE_DEFS =
         --
         sanityaura = -TUNING.SANITYAURA_SMALL,
         use_inventory_physics = true,
+
+        common_postinit = function(inst)
+            inst.AnimState:Hide("hat")
+        end,
     },
 
     { -- For search: polly_rogerscorpse
@@ -1417,6 +1421,7 @@ local CORPSE_PROP_DEFS =
     { -- For search: koalefantcorpse_prop
         creature = "koalefant",
         bank = "koalefant",
+        build = "koalefant_summer_build",
         nameoverride = "koalefant_carcass",
         displaynameoverride = "koalefant_summer",
         faces = FACES.SIX,

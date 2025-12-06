@@ -5777,6 +5777,16 @@ table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_bow",
 	release_group = 175,
 }))
 
+table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_coral",
+{
+	base_prefab = "hermithouse_ornament",
+	type = "item",
+	rarity = "Complimentary",
+	init_fn = function(inst) hermithouse_ornament_init_fn(inst, "hermithouse_ornament_coral") end,
+	skin_tags = { },
+	release_group = 175,
+}))
+
 table.insert(prefs, CreatePrefabSkin("hermithouse_ornament_driftwood",
 {
 	base_prefab = "hermithouse_ornament",

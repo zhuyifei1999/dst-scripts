@@ -400,7 +400,10 @@ end
 local function GetChainLinkPosition(inst, partner)
     local lightpostpartner = partner.components.lightpostpartner
     if lightpostpartner and lightpostpartner:IsMultiShackled() then
-        return partner.AnimState:GetSymbolPosition("swap_shackle"..inst.shackle_id)
+        local shackle_id = lightpostpartner:GetShackleIdForPartner(inst)
+        if shackle_id then
+            return partner.AnimState:GetSymbolPosition("swap_shackle"..shackle_id)
+        end
     end
     --
     return partner.AnimState:GetSymbolPosition("swap_shackle")

@@ -2873,6 +2873,8 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/hermitcrab_pointy.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hermithouse_ornament_bow.zip"),
 	Asset("PKGREF", "anim/dynamic/hermithouse_ornament_bow.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/hermithouse_ornament_coral.zip"),
+	Asset("PKGREF", "anim/dynamic/hermithouse_ornament_coral.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hermithouse_ornament_driftwood.zip"),
 	Asset("PKGREF", "anim/dynamic/hermithouse_ornament_driftwood.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/hermithouse_ornament_mushroom.zip"),

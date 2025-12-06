@@ -32,11 +32,15 @@ local PearlDecorationScore = Class(function(self, inst)
     self.decor_data =
     {
         [PEARL_DECORATION_TYPES.UNIQUE_DECORATION] = {  },
+        [PEARL_DECORATION_TYPES.WATER_TREE] = {  },
+        [PEARL_DECORATION_TYPES.CRITTER_PET] = {  },
+        [PEARL_DECORATION_TYPES.BEE_BOXES] = { TUNING.HERMITCRAB_DECOR_BEEBOX_SCORE_MAX },
+        [PEARL_DECORATION_TYPES.FLOWERS] = { max_score = TUNING.HERMITCRAB_DECOR_FLOWER_SCORE_MAX },
         [PEARL_DECORATION_TYPES.TILES] = { max_score = TUNING.HERMITCRAB_DECOR_TILE_SCORE_MAX },
         [PEARL_DECORATION_TYPES.LVL5_HOUSE] = {  },
         [PEARL_DECORATION_TYPES.LIGHT_POSTS] = { max_score = TUNING.HERMITCRAB_DECOR_LIGHTPOST_SCORE_MAX },
         [PEARL_DECORATION_TYPES.MEAT_RACKS] = { max_score = TUNING.HERMITCRAB_DECOR_MEAT_RACK_SCORE_MAX },
-        [PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = { max_score = TUNING.HERMITCRAB_DECOR_PICKABLE_SCORE },
+        [PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = { max_score = TUNING.HERMITCRAB_DECOR_PICKABLE_SCORE_MAX },
         [PEARL_DECORATION_TYPES.ORNAMENTS] = { },
         [PEARL_DECORATION_TYPES.FACED_CHAIR] = { max_score = TUNING.HERMITCRAB_DECOR_CHAIR_SCORE_MAX },
         [PEARL_DECORATION_TYPES.TROPHY_FISH] = { },
@@ -47,6 +51,10 @@ local PearlDecorationScore = Class(function(self, inst)
         [PEARL_DECORATION_TYPES.SPAWNER] = { min_score = TUNING.HERMITCRAB_DECOR_SPAWNER_SCORE_MIN },
         [PEARL_DECORATION_TYPES.JUNK] = { min_score = TUNING.HERMITCRAB_DECOR_JUNK_SCORE_MIN },
     }
+    self.last_decor_scores = {}
+    for decor_key in pairs(self.decor_data) do
+        self.last_decor_scores[decor_key] = 0
+    end
 
     self.decor_fns =
     {
@@ -59,6 +67,25 @@ local PearlDecorationScore = Class(function(self, inst)
                     end
                     self.unique_decor_scored[ent.prefab] = true
                     return TUNING.HERMITCRAB_DECOR_UNIQUE_BOOSTS[ent.prefab]
+                end
+            end,
+        },
+
+        {
+            key = PEARL_DECORATION_TYPES.FLOWERS,
+            fn = function(ent)
+                if self:IsEntityFlower(ent) then
+                    return TUNING.HERMITCRAB_DECOR_FLOWER_SCORE
+                end
+            end,
+        },
+
+        {
+            key = PEARL_DECORATION_TYPES.BEE_BOXES,
+            fn = function(ent)
+                if self:IsEntityBeeBox(ent) then
+                    -- TODO more score for the better bee box
+                    return TUNING.HERMITCRAB_DECOR_BEEBOX_SCORE
                 end
             end,
         },
@@ -195,7 +222,14 @@ function PearlDecorationScore:Enable(on_load)
             local x, y, original_tile, new_tile = data.x, data.y, data.original_tile, data.tile
             if original_tile ~= new_tile then
                 if self.tile_scores[original_tile] then
-                    self.tile_scores_count[original_tile] = self.tile_scores_count[original_tile] - 1
+                    if self.tile_scores_count[original_tile] then
+                        local newcount = self.tile_scores_count[original_tile] - 1
+                        if newcount <= 0 then
+                            self.tile_scores_count[original_tile] = nil
+                        else
+                            self.tile_scores_count[original_tile] = newcount
+                        end
+                    end
                 end
 
                 if self.tile_scores[new_tile] then
@@ -311,12 +345,21 @@ function PearlDecorationScore:UpdateTileScore()
     self.tile_score = tile_score
 end
 
+function PearlDecorationScore:IsEntityWaterTree(ent)
+    return ent:HasAnyTag("shadecanopysmall", "shadecanopy")
+end
+function PearlDecorationScore:IsEntityFlower(ent)
+    return ent:HasTag("flower")
+end
+function PearlDecorationScore:IsEntityBeeBox(ent)
+    return ent:HasTag("beebox") and ent.components.workable ~= nil -- Count only built bee boxes, not our inherent one
+end
 function PearlDecorationScore:IsEntityLightPost(ent)
     return ent:HasTag("hermitcrab_lantern_post")
 end
 function PearlDecorationScore:IsEntityPickableBush(ent)
     local pickable = ent.components.pickable
-    return pickable ~= nil and not pickable.remove_when_picked and ent:HasTag("plant")
+    return pickable ~= nil and not pickable.remove_when_picked and ent:HasTag("plant") and not ent:HasTag("thorny")
 end
 function PearlDecorationScore:IsEntityMeatRack(ent)
     return ent.components.dryingrack ~= nil
@@ -325,7 +368,7 @@ function PearlDecorationScore:IsEntityFacedChair(ent)
     return ent:HasTag("faced_chair")
 end
 function PearlDecorationScore:IsEntityTrophyFish(ent)
-    return ent:HasTag("trophyscale_fish")
+    return ent.components.trophyscale and ent.components.trophyscale.type == TROPHYSCALE_TYPES.FISH
 end
 function PearlDecorationScore:IsEntityPottedPlant(ent)
     return ent:HasTag("pottedplant")
@@ -474,14 +517,13 @@ function PearlDecorationScore:OnUpdate(dt)
             end
         end
         --
+        self.last_decor_scores = decor_scores
         self:SetScore(decor_points)
 
         self.force_update = false
         self.update_time = TUNING.HERMITCRAB_DECOR_UPDATE_TIME
         self.unique_decor_scored = {}
         self.unique_trophy_fish = {}
-
-        self.last_decor_scores = decor_scores
     end
 
     self.update_time = self.update_time - dt
@@ -514,13 +556,13 @@ end
 
 function PearlDecorationScore:GetDecorScoreLevel(key, reverse)
     if reverse then
-        local perc = self:GetLastDecorScorePercentToMin(key)
+        local perc = self:GetLastDecorScorePercentToMin(key) or 0
         return perc >= .67 and "HIGH"
             or perc >= .34 and "MED"
             or perc >= .1 and "LOW"
             or nil
     else
-        local perc = self:GetLastDecorScorePercentToMax(key)
+        local perc = self:GetLastDecorScorePercentToMax(key) or 0
         return perc >= .67 and "HIGH"
             or perc >= .34 and "MED"
             or "LOW"
@@ -564,7 +606,16 @@ end
 function PearlDecorationScore:OnRemoveFromEntity()
     self:Disable()
 end
-PearlDecorationScore.OnRemoveEntity = PearlDecorationScore.OnRemoveFromEntity
+
+function PearlDecorationScore:OnRemoveEntity()
+	if not self._removing_for_construction then
+		self:Disable()
+	end
+end
+
+function PearlDecorationScore:FlagForConstructionRemoval()
+	self._removing_for_construction = true
+end
 
 function PearlDecorationScore:OnEntityWake()
     if self.enabled then

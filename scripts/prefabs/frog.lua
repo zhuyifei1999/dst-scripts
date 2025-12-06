@@ -210,6 +210,7 @@ local function lunar_common_postinit(inst)
 
 	inst:AddTag("lunar_aligned")
     inst:AddTag("gestaltmutant")
+    inst:AddTag("soulless")
 
 	inst.AnimState:SetSymbolLightOverride("flameanim", 0.1)
 	inst.AnimState:SetSymbolBloom("flameanim")
@@ -229,6 +230,7 @@ local function lunarfn()
     inst.sounds = LUNAR_SOUNDS
 
     inst.islunar = true
+    inst.sg.mem.nocorpse = true
 
     inst:AddComponent("planarentity")
 

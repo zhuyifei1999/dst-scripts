@@ -11,7 +11,7 @@ local assets =
 
 local assets_hermit1 =
 {
-	Asset("ANIM", "anim/ui_hermitcrab_1x1.zip"),
+	Asset("ANIM", "anim/ui_hermitcrab_meatrack_1x1.zip"),
 
 	Asset("ANIM", "anim/meatrack_hermit.zip"),
 	Asset("ANIM", "anim/meat_rack_food.zip"),

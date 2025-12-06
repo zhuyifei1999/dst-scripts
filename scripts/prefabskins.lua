@@ -905,6 +905,7 @@ PREFAB_SKINS = {
 	hermithouse_ornament =
 	{
 		"hermithouse_ornament_bow",
+		"hermithouse_ornament_coral",
 		"hermithouse_ornament_driftwood",
 		"hermithouse_ornament_mushroom",
 		"hermithouse_ornament_saltcrystal",

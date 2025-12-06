@@ -26,12 +26,12 @@ local events =
         end
     end),
     EventHandler("giveuptarget", function(inst, data)
-		if data.target and not inst.sg:HasStateTag("electrocute") then
+		if data.target and not inst.sg:HasStateTag("electrocute") and not inst.components.health:IsDead() then
             inst.sg:GoToState("howl")
         end
     end),
     EventHandler("newcombattarget", function(inst, data)
-        if data.target ~= nil and not inst.sg:HasStateTag("busy") then
+        if data.target ~= nil and not inst.sg:HasStateTag("busy") and not inst.components.health:IsDead() then
             if math.random() < .3 then
                 inst.sg:GoToState("howl")
             else

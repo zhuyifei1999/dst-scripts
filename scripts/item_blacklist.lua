@@ -324,6 +324,7 @@ ITEM_DISPLAY_BLACKLIST =
 	wx78_scanner_succeeded_fancy = true,
 	wx78_scanner_succeeded_junky = true,
 	hermithouse_ornament_bow = true,
+	hermithouse_ornament_coral = true,
 	hermithouse_ornament_driftwood = true,
 	hermithouse_ornament_mushroom = true,
 	hermithouse_ornament_saltcrystal = true,
@@ -338,6 +339,7 @@ ITEM_DISPLAY_BLACKLIST =
 HIDE_SKIN_DECORATIONS =
 {
 	hermithouse_ornament_bow = true,
+	hermithouse_ornament_coral = true,
 	hermithouse_ornament_driftwood = true,
 	hermithouse_ornament_mushroom = true,
 	hermithouse_ornament_saltcrystal = true,

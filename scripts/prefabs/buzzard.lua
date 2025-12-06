@@ -427,6 +427,7 @@ local function mutated_fn()
     inst:AddTag("gestaltmutant")
     inst:AddTag("hostile")
     inst:AddTag("mutantdominant") -- Dominant over lunar mutations like horror hounds, permafrost pengulls, etc
+    inst:AddTag("soulless")
 
     inst.entity:SetPristine()
 

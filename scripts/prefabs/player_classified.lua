@@ -1580,7 +1580,8 @@ local function fn()
     inst.externalspeedmultiplier:set(1)
     inst.externalvelocityvectorx = net_float(inst.GUID, "locomotor.externalvelocityvectorx", "externalvelocityvectordirty")
     inst.externalvelocityvectorz = net_float(inst.GUID, "locomotor.externalvelocityvectorz", "externalvelocityvectordirty")
-	inst.busyremoteoverridelocomote = net_bool(inst.GUID, "locomotor.busyremoteoverridelocomote")
+	inst.busyremoteoverridelocomote = net_bool(inst.GUID, "locomotor.busyremoteoverridelocomote") --WASD
+	inst.busyremoteoverridelocomoteclick = net_bool(inst.GUID, "locomotor.busyremoteoverridelocomoteclick") --L.click
 	inst.isstrafing = net_bool(inst.GUID, "locomotor.isstrafing", "isstrafingdirty")
 
     --CarefulWalking variables

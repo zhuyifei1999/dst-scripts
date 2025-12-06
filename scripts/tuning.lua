@@ -8956,6 +8956,7 @@ function Tune(overrides)
             ["hermitcrab_teashop"] = 10,
             ["hermithotspring"] = 10,
             ["tacklestation"] = 5,
+            ["shellweaver"] = 5,
         },
 
         HERMITCRAB_DECOR_SPAWNER_SCORE_GRAVE = -3, -- Scary and morbid! :(
@@ -8984,12 +8985,22 @@ function Tune(overrides)
         HERMITCRAB_DECOR_MEAT_RACK_SCORE = .5, -- this is per slot
         HERMITCRAB_DECOR_MEAT_RACK_SCORE_MAX = 18,
 
-        HERMITCRAB_DECOR_PICKABLE_SCORE = 1,
-        HERMITCRAB_DECOR_PICKABLE_SCORE_MAX = 15,
+        HERMITCRAB_DECOR_PICKABLE_SCORE = .5,
+        HERMITCRAB_DECOR_PICKABLE_SCORE_MAX = 10,
 
         HERMITCRAB_DECOR_LIGHTPOST_SCORE = 1/3,
         HERMITCRAB_DECOR_LIGHTPOST_ON_SCORE = 1,
         HERMITCRAB_DECOR_LIGHTPOST_SCORE_MAX = 10,
+
+        HERMITCRAB_DECOR_BEEBOX_SCORE = 1,
+        HERMITCRAB_DECOR_BEEBOX_SCORE_MAX = 5,
+
+        HERMITCRAB_DECOR_FLOWER_SCORE = .5,
+        HERMITCRAB_DECOR_FLOWER_SCORE_MAX = 5,
+
+        HERMITCRAB_DECOR_CRITTER_PET_SCORE = 5,
+
+        HERMITCRAB_DECOR_WATER_TREE_SCORE = 15,
 
 		HERMITCRAB_DECOR_LVL5_HOUSE = 5,
 		HERMITCRAB_DECOR_ORNAMENT_SCORE = 2,

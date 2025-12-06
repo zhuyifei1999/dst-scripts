@@ -20,6 +20,7 @@ local function fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("placer")
     --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()
@@ -48,6 +49,7 @@ local function tile_outline_fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("placer")
     --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()
@@ -87,22 +89,35 @@ local function axisalignedplacement_outline_fn()
     return inst
 end
 
-local function turfhat_update(inst)
+local function turfhat_wallupdate(inst)
     local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(inst.player.Transform:GetWorldPosition())
     if not tx then
         return
     end
 
     inst.Transform:SetPosition(tx, ty, tz)
+
+    TriggerDeployHelpers(tx, ty, tz, 64, nil, inst)
+end
+
+local function turfhat_update(inst)
+    local tx, ty, tz = TheWorld.Map:GetTileCenterPoint(inst.player.Transform:GetWorldPosition())
+    if not tx then
+        return
+    end
+
+    TriggerDeployHelpers(tx, ty, tz, 64, nil, inst)
 end
 
 local function SetPlayer(inst, player)
     inst.player = player
     if player then
-        inst.components.updatelooper:AddOnWallUpdateFn(turfhat_update)
+        inst.components.updatelooper:AddOnWallUpdateFn(turfhat_wallupdate)
+        inst.components.updatelooper:AddOnUpdateFn(turfhat_update)
         inst:ListenForEvent("onremove", inst._onremoveplayer, player)
     else
-        inst.components.updatelooper:RemoveOnWallUpdateFn(turfhat_update)
+        inst.components.updatelooper:RemoveOnWallUpdateFn(turfhat_wallupdate)
+        inst.components.updatelooper:RemoveOnUpdateFn(turfhat_update)
         inst:RemoveEventCallback("onremove", inst._onremoveplayer, player)
     end
 end
@@ -114,9 +129,8 @@ local function turfhat_fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("placer")
     --[[Non-networked entity]]
-    inst.persists = false
-
     inst.entity:SetCanSleep(false)
+    inst.persists = false
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
@@ -152,6 +166,7 @@ local function farmablesoil_fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("placer")
     --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()

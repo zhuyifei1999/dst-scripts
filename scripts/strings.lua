@@ -6277,33 +6277,83 @@ STRINGS =
 
     -- A unique string if you collect all trophy fish for her!
     HERMITCRAB_DECOR_ALL_TROPHY_FISH = { "How did you ever manage to catch all of them? Incredible, dearie!", "Now I have every fish, dearie! Amazing!", "My collection is complete! You're the best, dearie!", "What an astounding feat! You've caught them all, dearie!" },
-    -- She'll play these lines when she's happy with the number of the respective decor you have. and
+    -- She'll play these lines when she's happy with the number of the respective decor you have
     HERMITCRAB_DECOR_CONTENT =
     {
-        TILES = { "TODO", "TODO", "TODO" },
-        ORNAMENTS = { "Wonderful! I love how they dance in the wind.", "They're splendid, dearie.", "Absoultely lovely, my dearie." },
+        TILES = { "It's my very own beach! I love it, dearie!", "Thank you, dearie. You've brought the beach to me!", "It's perfect, dearie! My home on the beach!" },
+        ORNAMENTS = { "Wonderful! I love how they dance in the wind.", "They're splendid, dearie.", "Absolutely lovely, my dearie." },
         FURNITURE = { "Perfectly furnished, dearie!", "I love every piece. Thank you, dearie.", "You've made my home so comfortable." },
+        DECORATION_TAKER = { "Thank you for the wonderful tables, dearie.","I simply adore these beautiful tables you've made for me, dearie."},
+        FACED_CHAIR = { "Now I can sit down in one of these chairs, rest my legs and enjoy a cup of tea!", "Now I have chairs for when you come to visit!" },
+        POTTED_PLANTS = { "These potted plants are lovely, dearie.", "I really enjoy these potted plants. Thank you, dearie." },
+        DOCK_POSTS = { "The dock pilings are really great, dearie!", "I love my dock pilings, my dearie!" },
         PICKABLE_PLANTS = { "It all looks so lush!", "Dearie, you certainly have a green thumb!", "Every plant I need is at my clawtips! How thoughtful, dearie." },
         LIGHT_POSTS = { "My home is so bright and beautiful now!", "All these lights really liven the mood!", "The lights look give such a warm and cozy glow. It's perfect.", },
         MEAT_RACKS = { "I love my new drying racks!", "Thank you dearie! Now I have so much room for drying!", "I'll never run out of drying space again!", },
+        FLOWERS = { "Oh dearie, I love all the flowers you've planted for me!", "My garden is full of beautiful flowers thanks to you, dearie!", "All these flowers make me so happy! Thank you, my dearie." },
+        BEE_BOXES = { "Thank you for all the beeboxes, dearie!", "My bees love their new homes! Thank you, dearie!", "All these beeboxes! Now I'll have plenty of honey for my tea!" },
+
+        WATER_TREE = { "What a wonderful tree you planted for me, dearie!", "I love my tree, dearie! It protects me from the hot sun and cold rain!", "Thank you for planting the beautiful tree for me, dearie."},
+        CRITTER_PET = { "I don't much take to company, dearie... except yours and now this sweet little one's.", "It's adorable, dearie. Simply adorable.", "Thank you for bringing me this perfect little companion, dearie."},
+
+        HOT_SPRING = { "Now I can have a soak and rest my old shell.", "What a lovely hot spring, dearie! Come by anytime for a soak.", "Thank you for the wonderful hot spring, dearie."},
+        TEA_SHOP = { "Oh, dearie! I can't wait for you to taste all my different teas!", "Finally, Pearl's Tea Shop can open for business!", "Thank you for helping me set up my tea shop, dearie."},
+    },
+
+    HERMITCRAB_CRITTER_BANTER =
+    {
+        "Hello, precious little one.",
+        "Aren't you the cutest?",
+        "You are just the sweetest little thing.",
+        "Too cute!",
+        "I'll take good care of you.",
+        "You make me so happy!",
+        "Awwww...",
+    },
+
+    HERMITCRAB_CRITTER_FEED =
+    {
+        "You must be hungry!",
+        "Eat up now, precious.",
+        "Yummy, isn't it?",
+    },
+
+    -- Her decoration system is entirely disabled within these areas
+    HERMITCRAB_DECOR_COMPLAIN_AREA =
+    {
+        MOON_ISLAND = { "This place gives me a terrible headache!", "Those weird little spooks are all around here!", "Please help me find a new place to live, dearie.", "Oh, dearie. I really don't like it here. Help me move, please!", }
     },
 
     HERMITCRAB_DECOR_COMPLAIN = {
+        FLOWERS = -- flowers to make her place look nice AND for her bees!
+        {
+            -- low = little to no flowers
+            -- med = some flowers, wants more
+            LOW = { "I do miss my flowers, dearie. Would you please plant some for me?", "Some flowers would make my home so much prettier. Could you plant me some, dearie?" },
+            MED = { "I love the flowers you've planted, dearie. A few more would be wonderful.", "Just a few more flowers would be absolutely perfect, dearie." },
+        },
+        BEE_BOXES =
+        {
+            -- low = just her single bee box
+            -- med = some more bee boxes, but a bit more would be quite nice..
+            LOW = { "My bees need more homes to live in. Will you build them some, dearie?", "Dearie, I need more houses for my bees. Please help!" },
+            MED = { "My bees love their houses, but a few more would be nice, dearie!", "Dearie, would you please build a few more houses for my bees?" },
+        },
         TILES = -- she likes beach turfs, she wants that!
         {
             -- low = barely any tiles are to her liking
             -- med = a good chunk of tiles are to her liking
-            LOW = { "TODO", "TODO" },
-            MED = { "TODO", "TODO" },
+            LOW = { "Dearie, I miss the beach so much. This place is nothing like it.", "I don't feel like I belong here. I wish it was more like the beach." },
+            MED = { "It's starting to feel like the beach, but perhaps needs a little more, dearie.", "Oh dearie, it needs just a little more to feel like my beach." },
         },
         FISHING_MARKERS = -- These are invisible markers that dictate where she can fish, she won't be happy when they're blocked.
         {
             -- low = a few fishing markers are blocked
             -- med = half of them are blocked
             -- high = all of them are blocked.
-            LOW = { "TODO", "TODO" },
-            MED = { "TODO", "TODO" },
-            HIGH = { "TODO", "TODO" },
+            LOW = { "There's more room for me to fish except for a few spots, dearie.", "Dearie, there are just a few more of my favorite fishing spots I can't reach." },
+            MED = { "It's better, but I could still use more fishing spots!", "I can't get to half of my favorite fishing spots, dearie." },
+            HIGH = { "Dearie, there's simply no where for me to fish!", "I have no where to fish! Please help me, my dearie!" },
         },
         TROPHY_FISH =
         {
@@ -6317,12 +6367,40 @@ STRINGS =
             LOW = { "Oh I love these wind charms. Perhaps a few more?", "Dearie, these wind charms are lovely! More, please!" },
             MED = { "Just a one or two more wind charms should do it!", "We almost have enough wind charms, dearie!" },
         },
-        FURNITURE = -- She wants furniture, (potted plants, tables, chairs, etc)
+        FURNITURE = -- She wants furniture, (potted plants, tables, chairs, etc) -- UNUSED
         {
             -- low = no furniture around
             -- med = you built some furniture, but still needs a bit more to be homey
             LOW = { "We need more furniture, dearie!", "Dearie, we are still missing a few pieces of furniture." },
             MED = { "It's really coming together, one or two more furniture pieces should do!", "My home is almost fully furnished, dearie!" },
+        },
+        DECORATION_TAKER = -- DECORATION_TAKER refers to tables.
+        {
+            -- low = no tables
+            -- med = you built some tables, but still needs a bit more to be homey
+            LOW = { "Dearie, could you please build me a few tables?", "I need a few tables for my home, dearie!" },
+            MED = { "Thank you for the tables, but I'd love a few more.", "A few more tables would be perfect, dearie!" },
+        },
+        POTTED_PLANTS = -- potted ferns and succulents
+        {
+            -- low = no pots
+            -- med = you built some pots
+            LOW = { "Dearie, would you please build me some pots for my plants?", "I would love some pots for my plants, dearie!" },
+            MED = { "These pots are wonderful, but I would love a few more.", "Just a few more pots for my plants would be enough, my dearie." },
+        },
+        DOCK_POSTS = -- dock pilings
+        {
+            -- low = no dock pilings
+            -- med = you placed some dock pilings, more would be nice
+            LOW = { "Dearie, would you please build me some dock pilings?"},
+            MED = { "I love the dock pilings you built, dearie. A few more would be so nice!", "I would just love a few more dock pilings, dearie!" },
+        },
+        FACED_CHAIR = -- proper chairs (not the ruins chairs!)
+        {
+            -- low = no chairs
+            -- med = you placed some chairs,
+            LOW = { "There's no were to sit, dearie! Please help me build some chairs.", "I would love some chairs for my home, dearie." },
+            MED = { "The chairs you built are lovely, dearie. A few more would be lovely.", "Could you please build me just a few more chairs, dearie?" },
         },
         PICKABLE_PLANTS = -- She wants plants! (grass, saplings, berry bushes)
         {

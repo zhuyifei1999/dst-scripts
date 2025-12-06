@@ -1221,16 +1221,18 @@ Recipe2("transmute_moonglass_charged",  {Ingredient("purebrilliance", 1)}, 	TECH
 -- PEARL_TEA_SHOP
 local NUM_TEASHOP_LEVELS = 3
 local NUM_PETALS_FOR_TEASHOP_LEVEL = { 18, 12, 9 }
+local NUM_WEEDS_FOR_TEASHOP_LEVEL = { 9, 6, 3 } -- weeds are pretty expensive, lower their tea's cost
 for i = 1, NUM_TEASHOP_LEVELS do
 	local num_petals = NUM_PETALS_FOR_TEASHOP_LEVEL[i]
+	local num_weeds = NUM_WEEDS_FOR_TEASHOP_LEVEL[i]
 	Recipe2("hermitcrabtea_petals_"..i,	 			{Ingredient("messagebottleempty", 1), Ingredient("petals_dried", num_petals)}, TECH.LOST,				{ product = "hermitcrabtea_petals", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
 	Recipe2("hermitcrabtea_petals_evil_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("petals_evil_dried", num_petals)}, TECH.LOST,			{ product = "hermitcrabtea_petals_evil", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
 	Recipe2("hermitcrabtea_foliage_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("foliage_dried", num_petals)}, TECH.LOST,				{ product = "hermitcrabtea_foliage", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP"})
 	Recipe2("hermitcrabtea_succulent_picked_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("succulent_picked_dried", num_petals)}, TECH.LOST,		{ product = "hermitcrabtea_succulent_picked", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_moon_tree_blossom_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("firenettles_dried", num_petals)}, TECH.LOST,			{ product = "hermitcrabtea_moon_tree_blossom", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_firenettles_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("tillweed_dried", num_petals)}, TECH.LOST,				{ product = "hermitcrabtea_firenettles", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_tillweed_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("moon_tree_blossom_dried", num_petals)}, TECH.LOST,	{ product = "hermitcrabtea_tillweed", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_forgetmelots_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("forgetmelots_dried", num_petals)}, TECH.LOST,			{ product = "hermitcrabtea_forgetmelots", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_moon_tree_blossom_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("moon_tree_blossom_dried", num_petals)}, TECH.LOST,	{ product = "hermitcrabtea_moon_tree_blossom", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_firenettles_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("firenettles_dried", num_weeds)}, TECH.LOST,			{ product = "hermitcrabtea_firenettles", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_tillweed_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("tillweed_dried", num_weeds)}, TECH.LOST,				{ product = "hermitcrabtea_tillweed", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_forgetmelots_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("forgetmelots_dried", num_weeds)}, TECH.LOST,			{ product = "hermitcrabtea_forgetmelots", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
 end
 
 ----CONSTRUCTION PLANS----

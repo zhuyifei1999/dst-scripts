@@ -7,9 +7,7 @@ local assets =
 
 local prefabs =
 {
-	"construction_container",
     "gridplacer_group_outline",
-	"hermithouse_ornament",
 }
 
 --requires max friendlevels
@@ -314,6 +312,14 @@ local function OnConstructed(inst, doer)
         local child = inst.components.spawner.child -- NOTES(JBK): This must be after ReleaseChild for entity safety because it will create a new one if it no longer exists.
         local pearlscore_enabled = inst.components.pearldecorationscore and inst.components.pearldecorationscore.enabled
 
+		if inst.components.pearldecorationscore then
+			--V2C: Normally, if the house is removed, we would send out an event to all structures
+			--     that used MakeHermitCrabAreaListener so that they can react accordingly. But in
+			--     this case, we don't want to do that, because a new house should be replacing it
+			--     as seamlessly as possible.
+			inst.components.pearldecorationscore:FlagForConstructionRemoval()
+		end
+
         local new_house = ReplacePrefab(inst, inst._construction_product)
         new_house.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/stage"..new_house.level.."_place")
 
@@ -335,9 +341,17 @@ local function OnConstructed(inst, doer)
 			end
 		end
 
-        if new_house.components.pearldecorationscore and pearlscore_enabled then
-            new_house.components.pearldecorationscore:Enable()
-        end
+		if pearlscore_enabled then
+			if new_house.components.pearldecorationscore then
+				new_house.components.pearldecorationscore:Enable()
+			else
+				assert(BRANCH ~= "dev")
+				--shouldn't reach here?
+				--FlagForConstructionRemoval() above, suppressed this event assuming
+				--the new house would re-enable scoring.
+				TheWorld:PushEvent("pearldecorationscore_updatestatus")
+			end
+		end
 
 		if new_house.StartTrackingHermitCrab then
 			new_house:StartTrackingHermitCrab()
@@ -710,10 +724,20 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 	local _assets = assets
 	if is_decoratable then
 		_assets = shallowcopy(assets)
-		table.insert(_assets, Asset("ANIM", "anim/ui_chest_2x2.zip"))
+		table.insert(_assets, Asset("ANIM", "anim/ui_hermitcrab_2x2.zip"))
 	end
-	local product = (house_data and house_data.construction_product) or nil
-	return Prefab(name, fn, _assets, prefabs, product)
+
+	local _prefabs = prefabs
+	if house_data then
+		_prefabs = shallowcopy(prefabs)
+		table.insert(_prefabs, "construction_container")
+		table.insert(_prefabs, house_data.construction_product)
+	elseif is_decoratable then
+		_prefabs = shallowcopy(prefabs)
+		table.insert(_prefabs, "hermithouse_ornament")
+	end
+
+	return Prefab(name, fn, _assets, _prefabs)
 end
 
 local ret = {}

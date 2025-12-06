@@ -458,7 +458,7 @@ local actionhandlers =
 			local state =
 				(obj:HasTag("quickeat") and "quickeat") or
 				(obj:HasTag("sloweat") and "eat") or
-				(obj:HasTag("edible_"..FOODTYPE.MEAT) and "eat") or
+				((obj:HasTag("edible_"..FOODTYPE.MEAT) and not obj:HasTag("fooddrink")) and "eat") or  -- #EGGNOG_HACK, eggnog is the one meat drink, we don't have a long drink, so exclude from eat state
 				"quickeat"
 
 			local inventory = inst.replica.inventory

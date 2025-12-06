@@ -105,8 +105,8 @@ return{
         },
         CHARGE_FROM =
         {
-            NOT_ENOUGH_CHARGE = "TODO",
-            CHARGE_FULL = "TODO",
+            NOT_ENOUGH_CHARGE = "Argh! No charge!",
+            CHARGE_FULL = "Why so dour? We've got full power!",
         },
 		COMPARE_WEIGHABLE =
 		{

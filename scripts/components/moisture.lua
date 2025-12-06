@@ -251,14 +251,20 @@ function Moisture:GetWaterproofness()
 end
 
 function Moisture:GetMoistureRate()
-	if self.inst.components.inventory and self.inst.components.inventory:IsFloaterHeld() or
-        self.inst.sg and self.inst.sg.statemem.occupying_bathingpool then
+	if self.inst.components.inventory and
+		self.inst.components.inventory:IsFloaterHeld() or
+		self:IsInBathingPool()
+	then
 		return self.maxMoistureRate
 	elseif not TheWorld.state.israining then
         return 0
     end
 
     return self:_GetMoistureRateAssumingRain()
+end
+
+function Moisture:IsInBathingPool()
+	return self.inst.sg ~= nil and self.inst.sg.statemem.occupying_bathingpool ~= nil
 end
 
 function Moisture:GetEquippedMoistureRate(dryingrate)
@@ -362,7 +368,7 @@ function Moisture:OnUpdate(dt)
         (self.rate < -.001 and RATE_SCALE.DECREASE_LOW) or
         RATE_SCALE.NEUTRAL
 
-    self:DoDelta(self.rate * dt)
+	self:DoDelta(self.rate * dt, self:IsInBathingPool())
 end
 
 function Moisture:LongUpdate(dt)

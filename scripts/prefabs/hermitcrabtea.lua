@@ -87,6 +87,7 @@ local function MakeTea(data)
 
         inst:AddTag("cattoy")
         inst:AddTag("fooddrink")
+        inst:AddTag("pre-preparedfood")
 
         MakeInventoryFloatable(inst, nil, .3)
 

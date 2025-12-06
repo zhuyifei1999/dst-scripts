@@ -943,10 +943,12 @@ local actionhandlers =
             else
                 return
             end
+
+            
 			local state =
 				(obj:HasTag("quickeat") and "quickeat") or
 				(obj:HasTag("sloweat") and "eat") or
-				(obj.components.edible.foodtype == FOODTYPE.MEAT and "eat") or
+				((obj.components.edible.foodtype == FOODTYPE.MEAT and not obj:HasTag("fooddrink")) and "eat") or -- #EGGNOG_HACK, eggnog is the one meat drink, we don't have a long drink, so exclude from eat state
 				"quickeat"
 
 			if inst.sg:HasStateTag("floating") then
@@ -23894,7 +23896,7 @@ local states =
 
 		onexit = function(inst)
 			local tool = inst.sg.statemem.tool
-			if tool and tool.components.getstaltcage and tool:IsValid() then
+			if tool and tool.components.gestaltcage and tool:IsValid() then
 				tool.components.gestaltcage:OnUntarget()
 			end
 			if not inst.sg.statemem.capturing then
@@ -25340,7 +25342,7 @@ local states =
 				end
 			end
 			if not inst.sg.statemem.not_interrupted then
-				inst.Animation:ClearOverrideBuild("player_hotspring")
+				inst.AnimState:ClearOverrideBuild("player_hotspring")
 			end
 		end,
 	},
@@ -25394,6 +25396,7 @@ local states =
 			inst:ShowActions(false)
 			inst:SetBathingPoolCamera(data.target)
 			inst.player_classified.busyremoteoverridelocomote:set(true)
+			inst.player_classified.busyremoteoverridelocomoteclick:set(true)
 		end,
 
 		onupdate = function(inst)
@@ -25406,22 +25409,25 @@ local states =
 				inst.sg.statemem.not_interrupted = true
 				inst.DynamicShadow:Enable(true)
 				inst.sg:GoToState("soakin_cancel", true)
-			elseif inst.HUD then
-				local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
-				local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
-				local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-				if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
-					local dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
-					dir:Normalize()
-					dir = math.atan2(-dir.z, dir.x) * RADIANS
-					if inst.sg.statemem.range == 0 then
-						inst.sg.statemem.not_interrupted = true
-						inst.sg.statemem.jumpout = true
-						inst.sg:GoToState("soakin_jumpout", { target = target, dir = dir })
-					elseif DiffAngle(inst.Transform:GetRotation(), dir) > 110 then
-						inst.sg.statemem.not_interrupted = true
-						inst.sg.statemem.jumpout = true
-						inst.sg:GoToState("soakin_jumpout", target)
+			elseif inst.HUD and inst.components.playercontroller then
+				local isenabled, ishudblocking = inst.components.playercontroller:IsEnabled()
+				if isenabled or ishudblocking then
+					local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
+					local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
+					local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
+					if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
+						local dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
+						dir:Normalize()
+						dir = math.atan2(-dir.z, dir.x) * RADIANS
+						if inst.sg.statemem.range == 0 then
+							inst.sg.statemem.not_interrupted = true
+							inst.sg.statemem.jumpout = true
+							inst.sg:GoToState("soakin_jumpout", { target = target, dir = dir })
+						elseif DiffAngle(inst.Transform:GetRotation(), dir) > 110 then
+							inst.sg.statemem.not_interrupted = true
+							inst.sg.statemem.jumpout = true
+							inst.sg:GoToState("soakin_jumpout", target)
+						end
 					end
 				end
 			end
@@ -25473,6 +25479,13 @@ local states =
 				end
 				return true
 			end),
+			EventHandler("ms_overridelocomote_click", function(inst, data)
+				if data and data.dir and DiffAngle(inst.Transform:GetRotation(), data.dir) > 110 then
+					inst.sg.statemem.not_interrupted = true
+					inst.sg.statemem.jumpout = true
+					inst.sg:GoToState("soakin_jumpout", inst.sg.statemem.occupying_bathingpool)
+				end
+			end),
 			EventHandler("ms_leavebathingpool", function(inst, target)
 				if target == inst.sg.statemem.occupying_bathingpool then
 					inst.sg.statemem.not_interrupted = true
@@ -25513,6 +25526,7 @@ local states =
 					end
 				end
 				inst.player_classified.busyremoteoverridelocomote:set(false)
+				inst.player_classified.busyremoteoverridelocomoteclick:set(false)
 			end
 
 			if not inst.sg.statemem.jumpout then
