@@ -14,26 +14,36 @@ local function UnlinkHighlight(inst)
 	end
 end
 
-local function LinkHighlight(inst, house)
-	if house.highlightchildren == nil then
-		house.highlightchildren = { inst }
+local function LinkHighlight(inst, parent)
+	if parent.highlightchildren == nil then
+		parent.highlightchildren = { inst }
 	else
-		table.insert(house.highlightchildren, inst)
+		table.insert(parent.highlightchildren, inst)
 	end
-	inst.highlightparent = house
+	inst.highlightparent = parent
 	inst.OnRemoveEntity = UnlinkHighlight
 end
 
 local function OnEntityReplicated(inst)
-	local house = inst.entity:GetParent()
-	if house and house:HasTag("hermithouse") then
-		LinkHighlight(inst, house)
+	local parent = inst.entity:GetParent()
+	if parent and parent:HasTag("hermithouse") then
+		LinkHighlight(inst, parent)
 	end
+end
+
+local function dosound(inst, soundname, loopid)
+	inst.SoundEmitter:PlaySound(inst.soundpath..soundname, loopid)
 end
 
 local function dowind(inst)
 	if inst.AnimState:IsCurrentAnimation("idle_loop") then
-		inst.AnimState:PlayAnimation("wind")
+		local t = inst.AnimState:GetCurrentAnimationTime()
+		inst.AnimState:PlayAnimation("idle_loop")
+		inst.AnimState:SetTime(t)
+		if inst.soundpath then
+			inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - t, dosound, "wind")
+		end
+		inst.AnimState:PushAnimation("wind")
 		inst.AnimState:PushAnimation("idle_loop")
 	end
 end
@@ -44,6 +54,7 @@ local function fxfn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddFollower()
+	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
 	inst:AddTag("FX")
@@ -67,18 +78,24 @@ local function fxfn()
 	return inst
 end
 
-local function CloneAsFx(inst, house)
+local function CloneAndFollowSymbol(inst, parent, symbol, xoffs, yoffs, zoffs, layered)
 	local skin_build = inst:GetSkinBuild()
 	local fx = SpawnPrefab("hermithouse_ornament_fx", skin_build, inst.skin_id)
-	if POPULATING or house:IsAsleep() then
-		fx.AnimState:PlayAnimation("idle_loop", true)
+	fx.soundpath = string.format("hookline_2/characters/hermit/house/decor/%s_", skin_build and string.sub(skin_build, 22) or "shell")
+	fx.entity:SetParent(parent.entity)
+	fx.Follower:FollowSymbol(parent.GUID, symbol, xoffs, yoffs, zoffs, layered)
+	if POPULATING or parent:IsAsleep() then
+		--fx.AnimState:PlayAnimation("idle_loop", true)
 		fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
 	else
 		fx.AnimState:PlayAnimation("place")
 		fx.AnimState:PushAnimation("idle_loop")
+		fx.SoundEmitter:PlaySound(fx.soundpath.."place")
+		dosound(fx, "place")
 	end
+	dosound(fx, "idle_LP", "loop")
 	if not TheNet:IsDedicated() then
-		LinkHighlight(fx, house)
+		LinkHighlight(fx, parent)
 	end
 	return fx
 end
@@ -126,7 +143,7 @@ local function fn()
 
 	MakeHauntableLaunch(inst)
 
-	inst.CloneAsFx = CloneAsFx
+	inst.CloneAndFollowSymbol = CloneAndFollowSymbol
 	inst.OnHermitHouseOrnamentSkinChanged = OnHermitHouseOrnamentSkinChanged
 
 	return inst

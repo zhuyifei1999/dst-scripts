@@ -878,7 +878,7 @@ local foods =
 
 	sweettea =
 	{
-		test = function(cooker, names, tags) return names.forgetmelots and tags.sweetener and tags.frozen and not tags.monster and not tags.veggie and not tags.meat and not tags.fish and not tags.egg and not tags.fat and not tags.dairy and not tags.inedible end,
+		test = function(cooker, names, tags) return (names.forgetmelots or names.forgetmelots_dried) and tags.sweetener and tags.frozen and not tags.monster and not tags.veggie and not tags.meat and not tags.fish and not tags.egg and not tags.fat and not tags.dairy and not tags.inedible end,
 		priority = 1,
 		overridebuild = "cook_pot_food7",
 		foodtype = FOODTYPE.VEGGIE,

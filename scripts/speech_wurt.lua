@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "Nice flower tea.",
         HERMITCRABTEA_PETALS_EVIL = "Naughty flower tea?",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Me already brave.",
         HERMITCRABTEA_SUCCULENT_PICKED = "Mmm. Refresh me!",
         HERMITCRABTEA_FIRENETTLES = "Make warm inside! Glurph!",
         HERMITCRABTEA_TILLWEED = "Good stuff, bad taste. Florp.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Make friends with Moonfolk?",
         HERMITCRABTEA_FORGETMELOTS = "Glurph? Make dizzy go away?",
         SHELLWEAVER = "Why everything so salty?",
         ICESTAFF2 = "Can't lick magic icy stick? Florp.",

@@ -76,6 +76,38 @@ local function displaynamefn(inst)
     return inst:HasTag("highfriendlevel") and STRINGS.NAMES.HERMITCRAB_NAME or STRINGS.NAMES.HERMITCRAB
 end
 
+local MONKEY_ISLAND_LAYOUT_ID = "MonkeyIsland"
+local MOON_ISLAND_TASK_ID = "MoonIsland"
+local living_area_problems =
+{
+    {
+        task_id_search = MOON_ISLAND_TASK_ID,
+        complainstrings = "HERMITCRAB_DECOR_COMPLAIN_AREA.MOON_ISLAND"
+    },
+    {
+        layout_id = MONKEY_ISLAND_LAYOUT_ID,
+        -- complainstrings = "HERMITCRAB_DECOR_COMPLAIN_AREA.MONKEY_ISLAND"
+    },
+}
+local function IsInBadLivingArea(inst)
+    local topology_data = GetTopologyDataAtInst(inst)
+    local layout_id = topology_data and topology_data.layout_id
+    local task_id = topology_data and topology_data.task_id
+
+    for i, problem in ipairs(living_area_problems) do
+        if (problem.layout_id and problem.layout_id == layout_id)
+            or (problem.task_id and problem.task_id_search and task_id:find(problem.task_id_search)) then
+            return true
+        end
+    end
+
+    return false
+end
+local function GetComplainTime(inst)
+    -- Complain more if we're in an area we don't like at all.
+    return IsInBadLivingArea(inst) and (5 + math.random() * 15)
+        or (10 + math.random() * 30)
+end
 local function dotalkingtimers(inst)
     if inst.components.timer:TimerExists("speak_time") then
         inst.components.timer:SetTimeLeft("speak_time",TUNING.HERMITCRAB.SPEAKTIME)
@@ -87,7 +119,7 @@ local function dotalkingtimers(inst)
         local time = inst.components.timer:GetTimeLeft("complain_time")
         inst.components.timer:SetTimeLeft("complain_time", time + 10)
     else
-        inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+        inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
     end
 end
 
@@ -500,8 +532,12 @@ end
 local decor_problems =
 {
     [PEARL_DECORATION_TYPES.TILES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TILES", },
-    -- [PEARL_DECORATION_TYPES.FLOWERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FLOWERS", },
-    -- [PEARL_DECORATION_TYPES.BEE_BOXES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.BEE_BOXES", },
+    [PEARL_DECORATION_TYPES.FLOWERS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FLOWERS", },
+    [PEARL_DECORATION_TYPES.BEE_BOXES] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.BEE_BOXES", },
+    [PEARL_DECORATION_TYPES.DECORATION_TAKER] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.DECORATION_TAKER", },
+    [PEARL_DECORATION_TYPES.FACED_CHAIR] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.FACED_CHAIR", },
+    [PEARL_DECORATION_TYPES.POTTED_PLANTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.POTTED_PLANTS", },
+    [PEARL_DECORATION_TYPES.DOCK_POSTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.DOCK_POSTS", },
     [PEARL_DECORATION_TYPES.TROPHY_FISH] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.TROPHY_FISH", overridescorelevel = trophy_fish_override_score_level },
     [PEARL_DECORATION_TYPES.ORNAMENTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.ORNAMENTS", overridescorelevel = ornament_override_score_level },
     [PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.PICKABLE_PLANTS" },
@@ -511,7 +547,6 @@ local decor_problems =
     [PEARL_DECORATION_TYPES.SPAWNER] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.SPAWNER", reverse = true },
     [PEARL_DECORATION_TYPES.JUNK] = { complainstrings = "HERMITCRAB_DECOR_COMPLAIN.JUNK", reverse = true,  },
 }
-
 -- e.g. to pass in "HERMITCRAB_DECOR_COMPLAIN.MEAT_RACKS.LOW"
 local function DoesStringExists(strtbl)
     local table_entries = strtbl:split(".")
@@ -552,26 +587,46 @@ local function complain(inst)
     local num_decorcomplainstrings = 0
     local house = inst.components.homeseeker and inst.components.homeseeker.home
     local pearldecorationscore = house and house.components.pearldecorationscore
-    if pearldecorationscore and pearldecorationscore.last_decor_scores then
-        for decor_key, problem in pairs(decor_problems) do
-            local score_level
-            if problem.overridescorelevel then
-                score_level = problem.overridescorelevel(pearldecorationscore, pearldecorationscore:GetLastDecorScore(decor_key))
-            else
-                score_level = pearldecorationscore:GetDecorScoreLevel(decor_key, problem.reverse)
+    if pearldecorationscore and pearldecorationscore:IsEnabled() then
+        if pearldecorationscore:GetScore() < TUNING.HERMITCRAB_DECOR_HAPPY_SCORE then
+            for decor_key, problem in pairs(decor_problems) do
+                local score_level
+                if problem.overridescorelevel then
+                    score_level = problem.overridescorelevel(pearldecorationscore, pearldecorationscore:GetLastDecorScore(decor_key))
+                else
+                    score_level = pearldecorationscore:GetDecorScoreLevel(decor_key, problem.reverse)
+                end
+                local complain_string = score_level and problem.complainstrings.."."..score_level
+                if complain_string and DoesStringExists(complain_string) then
+                    table.insert(potential_decorcomplainstrings, complain_string)
+                    num_decorcomplainstrings = num_decorcomplainstrings + 1
+                end
             end
-            local complain_string = score_level and problem.complainstrings.."."..score_level
-            if complain_string and DoesStringExists(complain_string) then
-                table.insert(potential_decorcomplainstrings, complain_string)
-                num_decorcomplainstrings = num_decorcomplainstrings + 1
-            end
+        else
+            -- Shh! Not really a complaint, but override complaints when we're happy with our decor and praise instead!
+            table.insert(potential_decorcomplainstrings, "HERMITCRAB_DECOR_PRAISES")
+            num_decorcomplainstrings = num_decorcomplainstrings + 1
+        end
+    end
+    --
+    local topology_data = GetTopologyDataAtInst(inst)
+    local layout_id = topology_data and topology_data.layout_id
+    local task_id = topology_data and topology_data.task_id
+
+    local areacomplainstring
+    for i, problem in ipairs(living_area_problems) do
+        if ((problem.layout_id and problem.layout_id == layout_id)
+            or (problem.task_id and problem.task_id_search and task_id:find(problem.task_id_search))) and problem.complainstrings then
+            areacomplainstring = problem.complainstrings
         end
     end
 
     local is_complaining = num_complainstrings > 0
     local is_decor_complaining = num_decorcomplainstrings > 0
-    if is_complaining or is_decor_complaining then
-        if is_decor_complaining then
+    if is_complaining or is_decor_complaining or areacomplainstring then
+        if areacomplainstring then
+            inst.components.npc_talker:Chatter(areacomplainstring, GetRandomIndexFromString(areacomplainstring))
+        elseif is_decor_complaining then
             local strtbl = potential_decorcomplainstrings[math.random(num_decorcomplainstrings)]
             inst.components.npc_talker:Chatter(strtbl, GetRandomIndexFromString(strtbl))
         elseif is_complaining then
@@ -586,7 +641,7 @@ local function complain(inst)
     end
 
     if not inst.components.timer:TimerExists("complain_time") then
-        inst.components.timer:StartTimer("complain_time", 10 + (math.random() * 30))
+        inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
     end
 end
 
@@ -667,7 +722,7 @@ local function onTaskComplete(inst, defaulttask)
                     local time = inst.components.timer:GetTimeLeft("complain_time")
                     inst.components.timer:SetTimeLeft("complain_time", time + 10)
                 else
-                    inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+                    inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
                 end
                 local sound = (not defaulttask
                     and "hookline_2/characters/hermit/friendship_music/"..inst.components.friendlevels.level)
@@ -703,7 +758,7 @@ local function storelevelunlocked(inst)
                         local time = inst.components.timer:GetTimeLeft("complain_time")
                         inst.components.timer:SetTimeLeft("complain_time", time + 10)
                     else
-                        inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+                        inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
                     end
                     inst.components.npc_talker:Chatter("HERMITCRAB_STORE_UNLOCK_"..inst._shop_level, nil)
 
@@ -1312,76 +1367,171 @@ local function initfriendlevellisteners(inst)
 
     -- [[ Decor Mechanic ]] --
 
+    local decor_comments =
+    {
+        {
+            key = "ALL_FISH", -- special case
+            commentstrings = "HERMITCRAB_DECOR_ALL_TROPHY_FISH",
+            overridecheckfn = function(inst, home, pearldecorationscore)
+                return pearldecorationscore.collected_all_fish
+            end,
+            getpos = function(inst, home, pearldecorationscore)
+                local trophy = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityTrophyFish(ent) end)
+                return trophy and trophy:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = "HOT_SPRING", -- special case
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.HOT_SPRING",
+            overridecheckfn = function(inst, home, pearldecorationscore)
+                return pearldecorationscore.unique_decor_scored["hermithotspring"]
+            end,
+            getpos = function(inst, home, pearldecorationscore)
+                local hotspring = FindEntity(inst, 35, function(ent) return ent.prefab == "hermithotspring" end)
+                return hotspring and hotspring:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = "TEA_SHOP", -- special case
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.TEA_SHOP",
+            overridecheckfn = function(inst, home, pearldecorationscore)
+                return pearldecorationscore.unique_decor_scored["hermitcrab_teashop"]
+            end,
+            getpos = function(inst, home, pearldecorationscore)
+                local teashop = FindEntity(inst, 35, function(ent) return ent.prefab == "hermitcrab_teashop" end)
+                return teashop and teashop:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.WATER_TREE,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.WATER_TREE",
+            overridecommentdistance = 8,
+            getpos = function(inst, home, pearldecorationscore)
+                local watertree = FindEntity(inst, 60, function(ent) return pearldecorationscore:IsEntityWaterTree(ent) end)
+                return watertree and watertree:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.ORNAMENTS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.ORNAMENTS",
+            overridecheckfn = function(inst, home, pearldecorationscore)
+                local home_container = home.components.container
+                return home_container and home_container:IsFull()
+            end,
+            getpos = function(inst, home, pearldecorationscore)
+                return home:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.FLOWERS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.FLOWERS",
+            getpos = function(inst, home, pearldecorationscore)
+                local flower = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityFlower(ent) end)
+                return flower and flower:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.BEE_BOXES,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.BEE_BOXES",
+            getpos = function(inst, home, pearldecorationscore)
+                local beebox = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityBeeBox(ent) end)
+                return beebox and beebox:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.PICKABLE_PLANTS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.PICKABLE_PLANTS",
+            getpos = function(inst, home, pearldecorationscore)
+                local plant = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityPickableBush(ent) end)
+                return plant and plant:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.MEAT_RACKS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.MEAT_RACKS",
+            getpos = function(inst, home, pearldecorationscore)
+                return inst:GetAllMeatRacksNear(inst.Transform:GetWorldPosition())[1] or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.LIGHT_POSTS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.LIGHT_POSTS",
+            getpos = function(inst, home, pearldecorationscore)
+                local lightpost = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityLightPost(ent) end)
+                return lightpost and lightpost:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.DECORATION_TAKER,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.DECORATION_TAKER",
+            getpos = function(inst, home, pearldecorationscore)
+                local decor_taker = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityDecorTaker(ent) end)
+                return decor_taker and decor_taker:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.FACED_CHAIR,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.FACED_CHAIR",
+            getpos = function(inst, home, pearldecorationscore)
+                local chair = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityFacedChair(ent) end)
+                return chair and chair:GetPosition() or inst:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.POTTED_PLANTS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.POTTED_PLANTS",
+            getpos = function(inst, home, pearldecorationscore)
+                local pot = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityPottedPlant(ent) end)
+                return pot and pot:GetPosition() or pot:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.DOCK_POSTS,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.DOCK_POSTS",
+            getpos = function(inst, home, pearldecorationscore)
+                local pot = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityDockPost(ent) end)
+                return pot and pot:GetPosition() or pot:GetPosition()
+            end,
+        },
+        {
+            key = PEARL_DECORATION_TYPES.TILES,
+            commentstrings = "HERMITCRAB_DECOR_CONTENT.TILES",
+        },
+    }
+
     inst.commented_on_decors = {}
-    inst:ListenForEvent("pearldecorationscore_updatescore", function(_, data)
+    inst:ListenForEvent("pearldecorationscore_evaluatescores", function(_, data)
         if not inst.comment_data then
-            local home, score = data.home, data.score
+            local home = data.home
             local pearldecorationscore = home.components.pearldecorationscore
-            local home_container = home.components.container
-            
-            -- TODO stop if we're already quite happy
-            
-            -- ORNAMENTS
-            if not inst.commented_on_decors[PEARL_DECORATION_TYPES.ORNAMENTS] and home_container and home_container:IsFull() then
-                inst.comment_data = {
-                    pos = home:GetPosition(),
-                    do_chatter = true,
-                    speech = "HERMITCRAB_DECOR_CONTENT.ORNAMENTS",
-                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.ORNAMENTS),
-                    chat_priority = CHATPRIORITIES.HIGH,
-                }
 
-                inst.commented_on_decors[PEARL_DECORATION_TYPES.ORNAMENTS] = true
-            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.PICKABLE_PLANTS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.PICKABLE_PLANTS) == "HIGH" then
-                local function IsPickableBush(ent)
-                    return pearldecorationscore:IsEntityPickableBush(ent)
+            for i, data in ipairs(decor_comments) do
+                local key = data.key
+                local pass = false
+                if data.overridecheckfn then
+                    pass = data.overridecheckfn(inst, home, pearldecorationscore)
+                else
+                    pass = pearldecorationscore:GetDecorScoreLevel(key) == "HIGH"
                 end
-                local plant = FindEntity(inst, 20, IsPickableBush)
-                inst.comment_data = {
-                    pos = (plant and plant:GetPosition()) or inst:GetPosition(),
-                    do_chatter = true,
-                    speech = "HERMITCRAB_DECOR_CONTENT.PICKABLE_PLANTS",
-                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.PICKABLE_PLANTS),
-                    chat_priority = CHATPRIORITIES.HIGH,
-                }
+                if not inst.commented_on_decors[key] and pass then
+                    inst.comment_data = {
+                        pos = (data.getpos and data.getpos(inst, home, pearldecorationscore) or home:GetPosition()),
+                        speech = data.commentstrings,
+                        do_chatter = true,
+                        distance = data.overridecommentdistance or nil,
+                        chatter_index = GetRandomIndexFromString(data.commentstrings),
+                        chat_priority = CHATPRIORITIES.HIGH,
+                    }
 
-                inst.commented_on_decors[PEARL_DECORATION_TYPES.PICKABLE_PLANTS] = true
-            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.MEAT_RACKS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.MEAT_RACKS) == "HIGH" then
-                inst.comment_data = {
-                    pos = inst:GetAllMeatRacksNear(inst.Transform:GetWorldPosition())[1] or inst:GetPosition(),
-                    do_chatter = true,
-                    speech = "HERMITCRAB_DECOR_CONTENT.MEAT_RACKS",
-                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.MEAT_RACKS),
-                    chat_priority = CHATPRIORITIES.HIGH,
-                }
-
-                inst.commented_on_decors[PEARL_DECORATION_TYPES.MEAT_RACKS] = true
-            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.LIGHT_POSTS] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.LIGHT_POSTS) == "HIGH" then
-                local function IsLightPost(ent)
-                    return pearldecorationscore:IsEntityLightPost(ent)
+                    inst.commented_on_decors[key] = true
+                    break
                 end
-                local lightpost = FindEntity(inst, 20, IsLightPost)
-                inst.comment_data = {
-                    pos = (lightpost and lightpost:GetPosition()) or inst:GetPosition(),
-                    do_chatter = true,
-                    speech = "HERMITCRAB_DECOR_CONTENT.LIGHT_POSTS",
-                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.LIGHT_POSTS),
-                    chat_priority = CHATPRIORITIES.HIGH,
-                }
-
-                inst.commented_on_decors[PEARL_DECORATION_TYPES.LIGHT_POSTS] = true
-            elseif not inst.commented_on_decors[PEARL_DECORATION_TYPES.TILES] and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.TILES) == "HIGH" then
-                inst.comment_data = {
-                    pos = inst:GetPosition(),
-                    do_chatter = true,
-                    speech = "HERMITCRAB_DECOR_CONTENT.TILES",
-                    chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.TILES),
-                    chat_priority = CHATPRIORITIES.HIGH,
-                }
-
-                inst.commented_on_decors[PEARL_DECORATION_TYPES.TILES] = true
             end
         end
+    end, TheWorld)
+
+    inst:ListenForEvent("ms_hermitcrab_relocated", function() -- If we've been relocated again, reset our commented on decors.
+        inst.commented_on_decors = {}
     end, TheWorld)
 end
 -- END FRIEND LEVELS
@@ -1594,6 +1744,32 @@ local function RemoveCommentData(inst)
     inst.comment_data = nil
 end
 
+local function OnAdoptCritter(inst, data)
+    local critter = data.critter
+    inst.comment_data = { -- This is a special moment, so override an existing comment data.
+        pos = critter:GetPosition(),
+        distance = 1.5,
+        speech = "HERMITCRAB_DECOR_CONTENT.CRITTER_PET",
+        do_chatter = true,
+        chatter_index = math.random(#STRINGS.HERMITCRAB_DECOR_CONTENT.CRITTER_PET),
+        chat_priority = CHATPRIORITIES.HIGH,
+    }
+end
+
+local function OnCritterEmote(inst, data)
+    local critter = data.critter
+    if not inst.comment_data and not inst.sg:HasAnyStateTag("npc_fishing", "busy") then
+        inst.comment_data = {
+            pos = critter:GetPosition(),
+            distance = 1.5,
+            speech = "HERMITCRAB_CRITTER_BANTER",
+            do_chatter = true,
+            chatter_index = math.random(#STRINGS.HERMITCRAB_CRITTER_BANTER),
+            chat_priority = CHATPRIORITIES.LOW,
+        }
+    end
+end
+
 local HERMITCRAB_MARKER_TAG = {"hermitcrab_marker"}
 
 local function fn()
@@ -1686,6 +1862,7 @@ local function fn()
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.HERMITCRAB.RUNSPEED
     inst.components.locomotor.walkspeed = TUNING.HERMITCRAB.WALKSPEED
+    inst:AddComponent("drownable")
 
     inst:AddComponent("bloomer")
 
@@ -1759,6 +1936,9 @@ local function fn()
 
     inst:AddComponent("leader")
 
+    inst:AddComponent("petleash")
+    inst.components.petleash:SetMaxPets(1)
+
     ------------------------------------------
 
     inst:SetStateGraph("SGhermitcrab")
@@ -1785,7 +1965,7 @@ local function fn()
     end)
     inst:ListenForEvent("exitlimbo",  function()
         if inst.entity:IsAwake() then
-            inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+            inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
             inst.components.npc_talker:resetqueue()
         end
     end)
@@ -1801,7 +1981,7 @@ local function fn()
     end
     inst.OnEntityWake = function(inst)
         if not inst:HasTag("INLIMBO") then
-            inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
+            inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
             inst.components.npc_talker:resetqueue()
         end
 
@@ -1828,6 +2008,9 @@ local function fn()
     inst:ListenForEvent("teleport_move", RemoveCommentData)
     inst:ListenForEvent("teleported", RemoveCommentData)
 
+    inst:ListenForEvent("adopted_critter", OnAdoptCritter)
+    inst:ListenForEvent("critter_doemote", OnCritterEmote)
+
     TheWorld:PushEvent("ms_register_hermitcrab", inst)
     TheWorld:PushEvent("ms_register_pearl_entity", inst)
 
@@ -1841,6 +2024,8 @@ local function fn()
     inst.OnHermitCrabLeaveTeaShop = OnHermitCrabLeaveTeaShop
 
     --------------------------------------------------------
+
+    inst.IsInBadLivingArea = IsInBadLivingArea
 
     return inst
 end

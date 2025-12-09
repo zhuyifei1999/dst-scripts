@@ -49,9 +49,13 @@ local function MakeDriedPetal(data)
         --inst:AddComponent("snowmandecor")
 
         inst:AddComponent("edible")
-        inst.components.edible.healthvalue = TUNING.HEALING_TINY
+        inst.components.edible.healthvalue = data.healthvalue or TUNING.HEALING_TINY
         inst.components.edible.hungervalue = 0
+        inst.components.edible.sanityvalue = data.sanityvalue or 0
         inst.components.edible.foodtype = FOODTYPE.VEGGIE
+        if data.oneaten then
+            inst.components.edible:SetOnEatenFn(data.oneaten)
+        end
 
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

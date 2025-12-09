@@ -24,6 +24,8 @@ local PearlDecorationScore = Class(function(self, inst)
     }
     self.tile_scores_count = {}
 
+    self._cache_watertree_coverage = {}
+
     -- resets every update
     self.unique_decor_scored = {}
     self.unique_trophy_fish = {}
@@ -32,9 +34,9 @@ local PearlDecorationScore = Class(function(self, inst)
     self.decor_data =
     {
         [PEARL_DECORATION_TYPES.UNIQUE_DECORATION] = {  },
-        [PEARL_DECORATION_TYPES.WATER_TREE] = {  },
+        [PEARL_DECORATION_TYPES.WATER_TREE] = { max_score = TUNING.HERMITCRAB_DECOR_WATER_TREE_SCORE_MAX, },
         [PEARL_DECORATION_TYPES.CRITTER_PET] = {  },
-        [PEARL_DECORATION_TYPES.BEE_BOXES] = { TUNING.HERMITCRAB_DECOR_BEEBOX_SCORE_MAX },
+        [PEARL_DECORATION_TYPES.BEE_BOXES] = { max_score = TUNING.HERMITCRAB_DECOR_BEEBOX_SCORE_MAX },
         [PEARL_DECORATION_TYPES.FLOWERS] = { max_score = TUNING.HERMITCRAB_DECOR_FLOWER_SCORE_MAX },
         [PEARL_DECORATION_TYPES.TILES] = { max_score = TUNING.HERMITCRAB_DECOR_TILE_SCORE_MAX },
         [PEARL_DECORATION_TYPES.LVL5_HOUSE] = {  },
@@ -84,7 +86,6 @@ local PearlDecorationScore = Class(function(self, inst)
             key = PEARL_DECORATION_TYPES.BEE_BOXES,
             fn = function(ent)
                 if self:IsEntityBeeBox(ent) then
-                    -- TODO more score for the better bee box
                     return TUNING.HERMITCRAB_DECOR_BEEBOX_SCORE
                 end
             end,
@@ -241,7 +242,10 @@ function PearlDecorationScore:Enable(on_load)
     end
 
     if self._onrelocated == nil then
-        self._onrelocated = function(_) self:ForceUpdate() end
+        self._onrelocated = function(_)
+            self._cache_watertree_coverage = {}
+            self:ForceUpdate()
+        end
         self.inst:ListenForEvent("ms_hermitcrab_relocated", self._onrelocated, TheWorld)
         self.inst:ListenForEvent("teleported", self._onrelocated)
         self.inst:ListenForEvent("teleport_move", self._onrelocated)
@@ -345,6 +349,25 @@ function PearlDecorationScore:UpdateTileScore()
     self.tile_score = tile_score
 end
 
+local WATER_TREE_TILE_RANGE = 5 -- We could use canopyshadows.range, but it's dangerous to use a visual component's value for gameplay logic.
+function PearlDecorationScore:GetWaterTreeNumTileCoverage(ent)
+    if self._cache_watertree_coverage[ent] == nil then
+        local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(ent.Transform:GetWorldPosition())
+        local coverage = 0
+
+        for off_x = -WATER_TREE_TILE_RANGE, WATER_TREE_TILE_RANGE do
+            for off_y = -WATER_TREE_TILE_RANGE, WATER_TREE_TILE_RANGE do
+                if self:IsPointWithin(TheWorld.Map:GetTileCenterPoint(tx + off_x, ty + off_y)) then
+                    coverage = coverage + 1
+                end
+            end
+        end
+
+        self._cache_watertree_coverage[ent] = coverage
+    end
+
+    return self._cache_watertree_coverage[ent]
+end
 function PearlDecorationScore:IsEntityWaterTree(ent)
     return ent:HasAnyTag("shadecanopysmall", "shadecanopy")
 end
@@ -365,7 +388,7 @@ function PearlDecorationScore:IsEntityMeatRack(ent)
     return ent.components.dryingrack ~= nil
 end
 function PearlDecorationScore:IsEntityFacedChair(ent)
-    return ent:HasTag("faced_chair")
+    return ent:HasAnyTag("faced_chair", "rocking_chair")
 end
 function PearlDecorationScore:IsEntityTrophyFish(ent)
     return ent.components.trophyscale and ent.components.trophyscale.type == TROPHYSCALE_TYPES.FISH
@@ -380,9 +403,9 @@ function PearlDecorationScore:IsEntityDecorTaker(ent)
     return ent.components.furnituredecortaker ~= nil
 end
 local JUNK_ONEOF_TAGS = { "junk_pile", "_inventoryitem" }
-local JUNK_CANT_TAGS = { "singingshell", "frozen", "INLIMBO" }
+local JUNK_CANT_TAGS = { "singingshell", "frozen", "vase", "INLIMBO" }
 function PearlDecorationScore:IsEntityJunk(ent)
-    local furnituredecor = ent.components.furnituredecortaker
+    local furnituredecor = ent.components.furnituredecor
     if furnituredecor and furnituredecor.on_furniture then
         return false
     end
@@ -391,11 +414,7 @@ function PearlDecorationScore:IsEntityJunk(ent)
         return false
     end
 
-    if ent:HasAnyTag(JUNK_ONEOF_TAGS) and not ent:HasAnyTag(JUNK_CANT_TAGS) then
-        return true
-    end
-    --
-    return false
+    return ent:HasAnyTag(JUNK_ONEOF_TAGS) and not ent:HasAnyTag(JUNK_CANT_TAGS)
 end
 local EXCLUDE_CHILDSPAWNER_TAGS = { "beebox", "catcoonden", "oceanshoalspawner", "_equippable" } -- These are okay to have around Pearl
 function PearlDecorationScore:IsEntitySpawner(ent)
@@ -446,7 +465,6 @@ function PearlDecorationScore:IsPointWithin(x, y, z, ignore_overhang)
 
     return self.tiles:GetDataAtPoint(tx, ty)
 end
-
 function PearlDecorationScore:OnUpdate(dt)
     if self.force_update or self.update_time <= 0 then
         ---
@@ -488,6 +506,11 @@ function PearlDecorationScore:OnUpdate(dt)
                         end
                     end
                 end
+            elseif self:IsEntityWaterTree(v) then -- Special case.
+                local coverage = self:GetWaterTreeNumTileCoverage(v)
+                if coverage >= TUNING.HERMITCRAB_DECOR_WATER_TREE_TILE_COVERAGE_MIN then
+                    AddDecorPoints(PEARL_DECORATION_TYPES.WATER_TREE, TUNING.HERMITCRAB_DECOR_WATER_TREE_SCORE)
+                end
             end
         end
 
@@ -505,8 +528,18 @@ function PearlDecorationScore:OnUpdate(dt)
 			AddDecorPoints(PEARL_DECORATION_TYPES.ORNAMENTS, num * TUNING.HERMITCRAB_DECOR_ORNAMENT_SCORE)
 		end
 
+        local hermitcrab = self.inst.components.spawner and self.inst.components.spawner.child
+        if hermitcrab and hermitcrab.components.petleash then
+            for pet in pairs(hermitcrab.components.petleash:GetPets()) do
+                if pet:HasTag("critter") then
+                    AddDecorPoints(PEARL_DECORATION_TYPES.CRITTER_PET, TUNING.HERMITCRAB_DECOR_CRITTER_PET_SCORE)
+                end
+            end
+        end
+
         -- You collected every fish, what a super star!
         if GetTableSize(self.unique_trophy_fish) >= UNIQUE_FISH_NEEDED then
+            self.collected_all_fish = true
             AddDecorPoints(PEARL_DECORATION_TYPES.TROPHY_FISH, TUNING.HERMITCRAB_DECOR_ALL_FISH_SCORE)
         end
 
@@ -518,6 +551,7 @@ function PearlDecorationScore:OnUpdate(dt)
         end
         --
         self.last_decor_scores = decor_scores
+        TheWorld:PushEvent("pearldecorationscore_evaluatescores", { home = self.inst })
         self:SetScore(decor_points)
 
         self.force_update = false

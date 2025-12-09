@@ -68,6 +68,10 @@ end
 function self:RemovePersistSourceFn(key)
     _persist_fns[key] = nil
 
+    for i, v in ipairs(_corpses) do
+        v:RemovePersistSource(key)
+    end
+
     if self.inst.updatecomponents[self] ~= nil and next(_persist_fns) == nil then
         self.inst:StopUpdatingComponent(self)
     end

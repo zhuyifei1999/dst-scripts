@@ -13,17 +13,19 @@ local prefabs =
 --requires max friendlevels
 --recipe unlocks when decoration reaches or exceeds maxscore
 --recipe is locked again if dropped below minscore
+
+-- NOTE: Shellweaver 2nd tier unlocks at 40 points
 local UNLOCKABLE_RECIPES =
 {
-	["hermitcrab_lightpost"] = { minscore = 15, maxscore = 25 },
-    ["hermitcrab_teashop"] = { minscore = 40, maxscore = 50 },
-    ["hermithotspring_constr"] = { minscore = 65, maxscore = 75 },
-    ["meatrack_hermit_multi"] = { minscore = 85, maxscore = 100 },
+	["hermitcrab_lightpost"] = { minscore = 5, maxscore = 10 },
+    ["hermitcrab_teashop"] = { minscore = 15, maxscore = 25 },
+    ["hermithotspring_constr"] = { minscore = 50, maxscore = 60 },
+    ["meatrack_hermit_multi"] = { minscore = 80, maxscore = 90 },
 }
 --"hermithouse_ornament" unlocks with "hermithouse2"
 
 --lvl5 aka "hermithouse2"
-local UNLOCKABLE_LVL5_CONSTR = { minscore = 5, maxscore = 10 }
+local UNLOCKABLE_LVL5_CONSTR = { minscore = 0, maxscore = 0 }
 
 
 local function _dbg_print(...)
@@ -447,6 +449,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function MakeOrnamentFx(inst, item, slot)
+	return item:CloneAndFollowSymbol(inst, "follow_ornament_"..tostring(slot), nil, nil, nil, true)
+end
+
 local function AddDecor(inst, data)
 	if data and data.slot and data.item then
 		if data.slot == 3 or data.slot == 4 then
@@ -455,10 +461,7 @@ local function AddDecor(inst, data)
 		if inst.ornamentfx[data.slot] then
 			inst.ornamentfx[data.slot]:Remove()
 		end
-		local fx = data.item:CloneAsFx(inst)
-		fx.entity:SetParent(inst.entity)
-		fx.Follower:FollowSymbol(inst.GUID, "follow_ornament_"..tostring(data.slot), nil, nil, nil, true)
-		inst.ornamentfx[data.slot] = fx
+		inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, data.item, data.slot)
 	end
 end
 
@@ -478,10 +481,7 @@ local function RefreshDecor(inst, item)
 	local slot = inst.components.container:GetItemSlot(item)
 	if slot and inst.ornamentfx[slot] then
 		inst.ornamentfx[slot]:Remove()
-		local fx = item:CloneAsFx(inst)
-		fx.entity:SetParent(inst.entity)
-		fx.Follower:FollowSymbol(inst.GUID, "follow_ornament_"..tostring(slot), nil, nil, nil, true)
-		inst.ornamentfx[slot] = fx
+		inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, item, slot)
 	end
 end
 

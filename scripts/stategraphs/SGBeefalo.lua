@@ -1014,7 +1014,7 @@ CommonStates.AddSleepExStates(states,
 })
 
 CommonStates.AddInitState(states, "idle")
-CommonStates.AddCorpseStates(states)
+-- CommonStates.AddCorpseStates(states) -- TODO (Omar): No corpse states for now due to shadow revive beefalo corpse being handled differently.
 
 return StateGraph("beefalo", states, events, "init", actionhandlers)
 

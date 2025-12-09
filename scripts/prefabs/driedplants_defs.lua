@@ -19,6 +19,13 @@ local DRIED_DEFS =
     },
     {
         name = "firenettles",
+        healthvalue = -TUNING.HEALING_SMALL,
+        sanityvalue = -TUNING.SANITY_TINY,
+        oneaten = function(inst, eater)
+        	if not eater:HasTag("plantkin") then
+                eater:AddDebuff("firenettle_toxin", "firenettle_toxin")
+        	end
+        end,
     },
     {
         name = "tillweed",

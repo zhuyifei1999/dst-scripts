@@ -5985,11 +5985,11 @@ return{
 
         HERMITCRABTEA_PETALS = "It even smells calming!",
         HERMITCRABTEA_PETALS_EVIL = "We better be careful with this one, Woby!",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Let's save this for the others! Right, Woby girl?",
         HERMITCRABTEA_SUCCULENT_PICKED = "Perfect for a hot day!",
         HERMITCRABTEA_FIRENETTLES = "A toasty blend!",
         HERMITCRABTEA_TILLWEED = "This one is chock full of vitamins!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "The tea from outer space!",
         HERMITCRABTEA_FORGETMELOTS = "Remind me to take this when I'm feeling really funny. Okay, Woby?",
         SHELLWEAVER = "You can make a lot of stuff out of salt!",
         ICESTAFF2 = "Pretty cool, huh?",

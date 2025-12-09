@@ -5944,11 +5944,11 @@ return{
 
         HERMITCRABTEA_PETALS = "It give Wolfgang little peace of mind.",
         HERMITCRABTEA_PETALS_EVIL = "Make Wolfgang little bit loopy.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Vitamin to make Wolfgang brainmeats more mighty!",
         HERMITCRABTEA_SUCCULENT_PICKED = "To cool Wolfgang muscles on hot day.",
         HERMITCRABTEA_FIRENETTLES = "Like warm hug for Wolfgang.",
         HERMITCRABTEA_TILLWEED = "Yes! Is good for Wolfgang health!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Wolfgang not afraid moon guys. Fine, little sip not hurt.",
         HERMITCRABTEA_FORGETMELOTS = "Must drink when Wolfgang mind broken.",
         SHELLWEAVER = "Careful with prickly lid!",
         ICESTAFF2 = "Little Wolfgang loved icy pops.",

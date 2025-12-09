@@ -66,6 +66,7 @@ local function commonfn(build, anim, loop, dryable, cookable)
         inst:AddComponent("dryable")
         inst.components.dryable:SetProduct("fishmeat_small_dried")
         inst.components.dryable:SetDryTime(TUNING.DRY_FAST)
+        inst.components.dryable:SetDriedBuildFile("meat_rack_food_tot")
     end
 
     if cookable then

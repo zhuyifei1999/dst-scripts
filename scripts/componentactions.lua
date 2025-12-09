@@ -318,10 +318,14 @@ local COMPONENT_ACTIONS =
                 	--Removed for wobysmall -> moved into her command wheel
                     --[[if inst.replica.container then -- Added for wobysmall
                         table.insert(actions, ACTIONS.PET)
-                    else]]if doer.replica.builder ~= nil
-                       and doer.replica.builder:GetTechTrees().ORPHANAGE > 0
-                       and not inst:HasTag("noabandon") then
-                        table.insert(actions, ACTIONS.ABANDON)
+                    else]]
+                    local techtrees = doer.replica.builder ~= nil and doer.replica.builder:GetTechTrees()
+                    if techtrees and not inst:HasTag("noabandon") then
+                        if techtrees.HERMITCRABSHOP >= 7 and IsInValidHermitCrabDecorArea(doer) then
+                            table.insert(actions, ACTIONS.TRANSFER_CRITTER)
+                        elseif techtrees.ORPHANAGE > 0 then
+                            table.insert(actions, ACTIONS.ABANDON)
+                        end
                     end
                 elseif inst.replica.container == nil then
                     table.insert(actions, ACTIONS.PET)

@@ -102,7 +102,7 @@ local function OnSave(inst, data)
     data.is_gestalt_mutating = inst.sg and inst.sg:HasStateTag("lunarrift_mutating") or nil
     data.build = inst.build
     data.bank = inst.bank
-    data.meat = inst.meat < inst:GetMaxMeat() and math.floor(inst.meat * 10 + 0.5) * 0.1 or nil
+    data.meat = (inst.meat ~= nil and inst.meat < inst:GetMaxMeat() and math.floor(inst.meat * 10 + 0.5) * 0.1) or nil
 
     data.build_hash = inst.AnimState:GetBuild()
     data.bank_hash = inst.AnimState:GetBankHash()
@@ -113,6 +113,7 @@ local function OnSave(inst, data)
     data.corpsedata = inst.corpsedata
     data.nolunarmutate = inst.sg and inst.sg.mem.nolunarmutate or nil
     data.no_destroy_on_burn = inst.no_destroy_on_burn or nil
+    data.noburn = inst.noburn or nil
 end
 
 local function OnLoad(inst, data)
@@ -140,6 +141,10 @@ local function OnLoad(inst, data)
         end
         if data.no_destroy_on_burn then
             inst.no_destroy_on_burn = data.no_destroy_on_burn
+        end
+        if data.noburn then
+            inst:RemoveComponent("burnable")
+            inst.noburn = true
         end
         if data.corpse_loot ~= nil then
             inst.corpse_loot = data.corpse_loot

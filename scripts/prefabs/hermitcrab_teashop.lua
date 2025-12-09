@@ -184,8 +184,10 @@ local function OnHermitCrabEnter(inst, data)
         inst.hermitcrab.Transform:SetPosition(inst.Transform:GetWorldPosition())
         inst.hermitcrab.tea_shop = inst
 
+        inst.hermitcrab.client_forward_target = inst
         inst.highlightchildren = inst.highlightchildren or {}
         table.insert(inst.highlightchildren, inst.hermitcrab)
+        inst._hermitcrab:set(inst.hermitcrab)
     end
     UpdateLights(inst, TheWorld.state.isday)
 end
@@ -196,6 +198,9 @@ local function OnHermitCrabLeave(inst, data)
     if inst.hermitcrab and inst.hermitcrab:IsValid() then
         inst.hermitcrab.tea_shop = nil
         table.removearrayvalue(inst.highlightchildren, inst.hermitcrab)
+        inst.hermitcrab.client_forward_target = nil
+        inst.hermitcrab.AnimState:SetHighlightColour()
+        inst._hermitcrab:set(nil)
         if instant then
             inst.hermitcrab:OnHermitCrabLeaveTeaShop()
             inst.hermitcrab = nil
@@ -259,6 +264,25 @@ local function WithinAreaChanged(inst, iswithin)
 		end
 		inst.abandoning_task = inst:DoTaskInTime(VAR_ABANDON_TIME * math.random(), WithinAreaChanged_Delay)
 	end
+end
+
+local function OnHermitCrabDirty(inst)
+    if inst._old_hermitcrab and inst._old_hermitcrab:IsValid() then
+        inst._old_hermitcrab.AnimState:SetHighlightColour()
+        inst._old_hermitcrab.client_forward_target = nil
+        table.removearrayvalue(inst.highlightchildren, inst._old_hermitcrab)
+    end
+
+    inst._old_hermitcrab = nil
+
+    local hermitcrab = inst._hermitcrab:value()
+    if hermitcrab then
+        hermitcrab.client_forward_target = inst
+        inst.highlightchildren = inst.highlightchildren or {}
+        table.insert(inst.highlightchildren, hermitcrab)
+
+        inst._old_hermitcrab = hermitcrab
+    end
 end
 
 local function OnSave(inst, data)
@@ -333,9 +357,12 @@ local function fn()
     local lightpostpartner = inst:AddComponent("lightpostpartner")
     lightpostpartner:SetType("hermitcrab_lightpost")
 
+    inst._hermitcrab = net_entity(inst.GUID, "hermitcrab_teashop.hermitcrab", "onhermitcrabdirty")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("onhermitcrabdirty", OnHermitCrabDirty)
         return inst
     end
 
@@ -406,11 +433,11 @@ local function fn()
     return inst
 end
 
--- TODO create on client and sync instead?
 local function client_on_front_replicated(inst)
     local parent = inst.entity:GetParent()
     if parent ~= nil and parent.prefab == "hermitcrab_teashop" then
-        parent.highlightchildren = { inst }
+        parent.highlightchildren = parent.highlightchildren or {}
+        table.insert(parent.highlightchildren, inst)
     end
 end
 

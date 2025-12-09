@@ -187,6 +187,7 @@ local CORPSE_DEFS =
         firesymbol = "swap_fire",
         makeburnablefn = MakeLargeBurnableCorpse,
         faces = FACES.SIX,
+        sanityaura = -TUNING.SANITYAURA_MED,
         physicsradius = 1,
         shadowsize = {2.5, 1.5},
         tags = { "largecreaturecorpse" },
@@ -1442,7 +1443,7 @@ local CORPSE_PROP_DEFS =
 -- Can be table { newprefab, num } or function that returns newprefab and num
 local CORPSE_LOOT_OVERRIDES =
 {
-    ["bearger_fur"] = { "furtuft", 90 }
+    ["bearger_fur"] = { "furtuft", 30 }
 }
 
 --

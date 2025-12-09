@@ -902,6 +902,10 @@ Recipe2("hermitshop_winter_ornament_boss_hermithouse",	{Ingredient("messagebottl
 Recipe2("hermitshop_winter_ornament_boss_pearl",		{Ingredient("messagebottleempty", 8)}, 														TECH.LOST,					{nounlock = true, sg_state="give", product="winter_ornament_boss_pearl", actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRABSHOP_L4"})
 Recipe2("hermitcrab_relocation_kit",					{Ingredient("cookiecuttershell", 4), Ingredient("moonrocknugget", 4)},						TECH.LOST,					{nounlock = true, hint_msg = "NEEDSHERMITCRABHELP_CRAFTING"})
 
+local function IsPointWithinPearlIsland(x, y, z)
+	return TheWorld.Map:GetTopologyIDAtPoint(x, y, z) == "StaticLayoutIsland:HermitcrabIsland"
+		and not TheWorld.Map:IsPointInWagPunkArena(x, y, z)
+end
 local function IsHotSpringWithinPearlArea(pt, rot)
 	return CanDeployHermitDecorationAtPoint(pt, 2.4)
 end
@@ -909,20 +913,10 @@ local function IsTeaShopWithinPearlArea(pt, rot)
 	return CanDeployHermitDecorationAtPoint(pt, 1.4)
 end
 local function IsShellweaverWithinPearlArea(pt, rot)
-    if CanDeployHermitDecorationAtPoint(pt, 1) then
-        return true
-    end
-
-    local x, y, z = pt:Get()
-    if TheWorld.Map:IsPointInWagPunkArena(x, y, z) then
-        return false
-    end
-
-    local id = TheWorld.Map:GetTopologyIDAtPoint(x, y, z)
-    if id == "StaticLayoutIsland:HermitcrabIsland" then
-        return true
-    end
-    return false
+	return CanDeployHermitDecorationAtPoint(pt, 1) or IsPointWithinPearlIsland(pt:Get())
+end
+local function IsRockingChairWithinPearlArea(pt, rot)
+	return CanDeployHermitDecorationAtPoint(pt, 1) or IsPointWithinPearlIsland(pt:Get())
 end
 local function HermitCrabLightPostTestFn(pt, rot)
 	return TheWorld.Map:IsAboveGroundAtPoint(pt.x, pt.y, pt.z, false) and CanDeployHermitDecorationAtPoint(pt, .25)
@@ -984,6 +978,7 @@ Recipe2("turf_cotl_brick",								{Ingredient("cutstone", 1), Ingredient("flint"
 Recipe2("cotl_tabernacle_level1",						{Ingredient("rocks", 10), Ingredient("log", 2)},											TECH.LOST,					{placer="cotl_tabernacle_level1_placer", min_spacing=2.5})
 
 -- Carpentry
+Recipe2("hermit_chair_rocking",							{Ingredient("driftwood_log", 4)},																				TECH.CARPENTRY_TWO,			{placer="hermit_chair_rocking_placer", station_tag="carpentry_station", min_spacing=2})
 Recipe2("wood_chair",									{Ingredient("boards", 1)}, 																						TECH.CARPENTRY_TWO,			{placer="wood_chair_placer", station_tag="carpentry_station", min_spacing=1.75})
 Recipe2("wood_stool",									{Ingredient("boards", 1)}, 																						TECH.CARPENTRY_TWO,			{placer="wood_stool_placer", station_tag="carpentry_station", min_spacing=1.75})
 Recipe2("wood_table_round",								{Ingredient("boards", 2), Ingredient("rope", 1)},																TECH.CARPENTRY_TWO,			{placer="wood_table_round_placer", station_tag="carpentry_station", min_spacing=1.75})
@@ -1220,19 +1215,19 @@ Recipe2("transmute_moonglass_charged",  {Ingredient("purebrilliance", 1)}, 	TECH
 
 -- PEARL_TEA_SHOP
 local NUM_TEASHOP_LEVELS = 3
-local NUM_PETALS_FOR_TEASHOP_LEVEL = { 18, 12, 9 }
-local NUM_WEEDS_FOR_TEASHOP_LEVEL = { 9, 6, 3 } -- weeds are pretty expensive, lower their tea's cost
+local NUM_COMMON_PETALS_FOR_TEASHOP_LEVEL = { 8, 6, 4 }
+local NUM_RARE_PETALS_FOR_TEASHOP_LEVEL = { 6, 4, 2 } -- weeds and succulents are pretty expensive, lower their tea's cost
 for i = 1, NUM_TEASHOP_LEVELS do
-	local num_petals = NUM_PETALS_FOR_TEASHOP_LEVEL[i]
-	local num_weeds = NUM_WEEDS_FOR_TEASHOP_LEVEL[i]
-	Recipe2("hermitcrabtea_petals_"..i,	 			{Ingredient("messagebottleempty", 1), Ingredient("petals_dried", num_petals)}, TECH.LOST,				{ product = "hermitcrabtea_petals", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_petals_evil_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("petals_evil_dried", num_petals)}, TECH.LOST,			{ product = "hermitcrabtea_petals_evil", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_foliage_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("foliage_dried", num_petals)}, TECH.LOST,				{ product = "hermitcrabtea_foliage", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP"})
-	Recipe2("hermitcrabtea_succulent_picked_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("succulent_picked_dried", num_petals)}, TECH.LOST,		{ product = "hermitcrabtea_succulent_picked", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_moon_tree_blossom_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("moon_tree_blossom_dried", num_petals)}, TECH.LOST,	{ product = "hermitcrabtea_moon_tree_blossom", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_firenettles_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("firenettles_dried", num_weeds)}, TECH.LOST,			{ product = "hermitcrabtea_firenettles", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_tillweed_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("tillweed_dried", num_weeds)}, TECH.LOST,				{ product = "hermitcrabtea_tillweed", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
-	Recipe2("hermitcrabtea_forgetmelots_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("forgetmelots_dried", num_weeds)}, TECH.LOST,			{ product = "hermitcrabtea_forgetmelots", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	local num_common_petals = NUM_COMMON_PETALS_FOR_TEASHOP_LEVEL[i]
+	local num_rare_petals = NUM_RARE_PETALS_FOR_TEASHOP_LEVEL[i]
+	Recipe2("hermitcrabtea_petals_"..i,	 			{Ingredient("messagebottleempty", 1), Ingredient("petals_dried", num_common_petals)}, TECH.LOST,				{ product = "hermitcrabtea_petals", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_petals_evil_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("petals_evil_dried", num_common_petals)}, TECH.LOST,			{ product = "hermitcrabtea_petals_evil", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_foliage_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("foliage_dried", num_common_petals)}, TECH.LOST,				{ product = "hermitcrabtea_foliage", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP"})
+	Recipe2("hermitcrabtea_succulent_picked_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("succulent_picked_dried", num_rare_petals)}, TECH.LOST,		{ product = "hermitcrabtea_succulent_picked", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_moon_tree_blossom_"..i,	{Ingredient("messagebottleempty", 1), Ingredient("moon_tree_blossom_dried", num_common_petals)}, TECH.LOST,		{ product = "hermitcrabtea_moon_tree_blossom", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_firenettles_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("firenettles_dried", num_rare_petals)}, TECH.LOST,				{ product = "hermitcrabtea_firenettles", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_tillweed_"..i,			{Ingredient("messagebottleempty", 1), Ingredient("tillweed_dried", num_rare_petals)}, TECH.LOST,				{ product = "hermitcrabtea_tillweed", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
+	Recipe2("hermitcrabtea_forgetmelots_"..i,		{Ingredient("messagebottleempty", 1), Ingredient("forgetmelots_dried", num_rare_petals)}, TECH.LOST,			{ product = "hermitcrabtea_forgetmelots", nounlock = true, sg_state="give", manufactured=true, actionstr="HERMITCRABSHOP", hint_msg = "NEEDSHERMITCRAB_TEASHOP" })
 end
 
 ----CONSTRUCTION PLANS----

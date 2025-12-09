@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "A charming cup of tea to keep the insanity away.",
         HERMITCRABTEA_PETALS_EVIL = "I'm sure there's a good use for it.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Only good if I remember to take it beforehand.",
         HERMITCRABTEA_SUCCULENT_PICKED = "Hm. For a quick cool down.",
         HERMITCRABTEA_FIRENETTLES = "It'll keep the chill out of my bones.",
         HERMITCRABTEA_TILLWEED = "A nice little pick-me-up.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "The moon imparts an unforgettable taste.",
         HERMITCRABTEA_FORGETMELOTS = "A sure way to gather my wits.",
         SHELLWEAVER = "So much to make, and so little time!",
         ICESTAFF2 = "I could dabble in some ice magic.",

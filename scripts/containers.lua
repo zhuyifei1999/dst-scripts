@@ -779,7 +779,7 @@ for y = 0, 3 do
 end
 
 function params.winter_tree.itemtestfn(container, item, slot)
-    return item:HasTag("winter_ornament") and not container.inst:HasTag("burnt")
+	return item:HasAnyTag("winter_ornament", "hermithouse_ornament") and not container.inst:HasTag("burnt")
 end
 
 params.winter_twiggytree = params.winter_tree

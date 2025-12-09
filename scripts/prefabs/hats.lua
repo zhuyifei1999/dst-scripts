@@ -2434,7 +2434,7 @@ local function MakeHat(name)
         inst:AddComponent("container")
         inst.components.container:WidgetSetup("antlionhat")
 
-        inst:AddComponent("autoterraformer")
+        inst:AddComponent("autoterraformer") -- Must be after container component.
         inst.components.autoterraformer.onfinishterraformingfn = antlion_onfinishterraforming
 
         inst:AddComponent("waterproofer")

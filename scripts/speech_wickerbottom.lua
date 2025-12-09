@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "A rather calming concoction.",
         HERMITCRABTEA_PETALS_EVIL = "Sometimes a little madness is appropriate.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "It is a herbal remedy for madness prevention.",
         HERMITCRABTEA_SUCCULENT_PICKED = "The cooling refreshment is ideal for summer.",
         HERMITCRABTEA_FIRENETTLES = "This beverage raises one's body temperature.",
         HERMITCRABTEA_TILLWEED = "It is a revitalizing brew.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "This brew renders lunar entities indifferent to us.",
         HERMITCRABTEA_FORGETMELOTS = "A stronger brew to cure a particularly severe bout of madness.",
         SHELLWEAVER = "It utilizes salt in a wide variety of ways.",
         ICESTAFF2 = "A magically-attuned chilling implement.",

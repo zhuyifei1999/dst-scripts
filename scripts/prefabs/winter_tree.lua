@@ -196,22 +196,94 @@ local function UpdateLights(inst, light)
     end
 end
 
+local function dowind(inst)
+	for _, v in pairs(inst.ornamentfx) do
+		v:dowind()
+	end
+	inst.windtask = inst:DoTaskInTime(6 + math.random() * 4, dowind)
+end
+
+local function StartWind(inst)
+	if inst.windtask == nil then
+		inst.windtask = inst:DoTaskInTime(6 + math.random() * 4, dowind)
+	end
+end
+
+local function StopWind(inst)
+	if inst.windtask then
+		inst.windtask:Cancel()
+		inst.windtask = nil
+	end
+end
+
 local function RemoveDecor(inst, data)
     inst.AnimState:ClearOverrideSymbol("plain"..data.slot)
+	if inst.ornamentfx and inst.ornamentfx[data.slot] then
+		inst.ornamentfx[data.slot]:Remove()
+		inst.ornamentfx[data.slot] = nil
+		if next(inst.ornamentfx) == nil then
+			StopWind(inst)
+		end
+	end
     UpdateLights(inst)
 end
 
+local function MakeOrnamentFx(inst, item, slot)
+	local fx = item:CloneAndFollowSymbol(inst, "plain"..slot)--, nil, nil, nil, true)
+	if slot > 1 then
+		fx.AnimState:SetFinalOffset(
+			(slot <= 3 and 1) or
+			(slot <= 5 and 2) or
+			3
+		)
+	end
+	return fx
+end
+
 local function AddDecor(inst, data)
-    if inst:HasTag("burnt") or data == nil or data.slot == nil or data.item == nil or data.item.winter_ornamentid == nil then
-        return
-    end
+	if data and data.slot and data.item and not inst:HasTag("burnt") then
+		if inst.ornamentfx and inst.ornamentfx[data.slot] then
+			inst.ornamentfx[data.slot]:Remove()
+			inst.ornamentfx[data.slot] = nil
+		end
 
-    if data.item.ornamentlighton ~= nil then
-        UpdateLights(inst, data.item)
-    else
-        inst.AnimState:OverrideSymbol("plain"..data.slot, data.item.winter_ornament_build or "winter_ornaments", data.item.winter_ornamentid)
-    end
+		if data.item:HasTag("hermithouse_ornament") then
+			inst.AnimState:ClearOverrideSymbol("plain"..data.slot)
 
+			if inst.ornamentfx == nil then
+				inst.ornamentfx = {}
+			elseif inst.ornamentfx[data.slot] then
+				inst.ornamentfx[data.slot]:Remove()
+			end
+			inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, data.item, data.slot)
+
+			StartWind(inst)
+			UpdateLights(inst)
+		else
+			if inst.ornamentfx and inst.ornamentfx[data.slot] then
+				inst.ornamentfx[data.slot]:Remove()
+				inst.ornamentfx[data.slot] = nil
+				if next(inst.ornamentfx) == nil then
+					StopWind(inst)
+				end
+			end
+			if data.item.winter_ornamentid then
+				if data.item.ornamentlighton ~= nil then
+					UpdateLights(inst, data.item)
+				else
+					inst.AnimState:OverrideSymbol("plain"..data.slot, data.item.winter_ornament_build or "winter_ornaments", data.item.winter_ornamentid)
+				end
+			end
+		end
+	end
+end
+
+local function RefreshDecor(inst, item)
+	local slot = inst.components.container:GetItemSlot(item)
+	if slot and inst.ornamentfx[slot] then
+		inst.ornamentfx[slot]:Remove()
+		inst.ornamentfx[slot] = MakeOrnamentFx(inst, item, slot)
+	end
 end
 
 -------------------------------------------------------------------------------
@@ -462,6 +534,8 @@ local function TransformIntoLeif(inst)
 				loot.Physics:SetVel(speed * cosangle, y_speed, -speed * sinangle)
 			end
 		end
+
+		inst.SoundEmitter:PlaySound("winter2025/tree/shake_ornament_fall")
 	end
 
 	if inst:IsAsleep() then
@@ -695,6 +769,9 @@ local function onentitywake(inst)
     end
 
     queuegifting(inst)
+	if inst.ornamentfx and next(inst.ornamentfx) then
+		StartWind(inst)
+	end
 end
 
 local function onentitysleep(inst)
@@ -702,6 +779,7 @@ local function onentitysleep(inst)
         inst.giftingtask:Cancel()
         inst.giftingtask = nil
     end
+    StopWind(inst)
 end
 
 -------------------------------------------------------------------------------
@@ -1026,6 +1104,7 @@ local function AddWinterTree(treetype)
         inst:ListenForEvent("itemget", AddDecor)
         inst:ListenForEvent("itemlose", RemoveDecor)
         inst:ListenForEvent("updatelight", UpdateLights)
+		inst.RefreshDecor = RefreshDecor
 
         inst.OnEntitySleep = onentitysleep
         inst.OnEntityWake = onentitywake

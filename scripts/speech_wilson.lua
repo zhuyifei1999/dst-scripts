@@ -5953,11 +5953,11 @@ return {
 
         HERMITCRABTEA_PETALS = "Mmmm, sweet sereni-tea.",
         HERMITCRABTEA_PETALS_EVIL = "Insani-tea!",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Don't worry, I won't go crazy with it.",
         HERMITCRABTEA_SUCCULENT_PICKED = "I should save it for desert.",
         HERMITCRABTEA_FIRENETTLES = "It should come with a warming label.",
         HERMITCRABTEA_TILLWEED = "Let's raise a little health!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "I don't mean to wane, but it's kind of waxy.",
         HERMITCRABTEA_FORGETMELOTS = "It really melts away my madness.",
         SHELLWEAVER = "I salt to make something useful.",
         ICESTAFF2 = "It comes with a freeze upgrade!",

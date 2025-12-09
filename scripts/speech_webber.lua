@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "For when we feel a little funny.",
         HERMITCRABTEA_PETALS_EVIL = "It makes us feel funny!",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "It'll make us brave?",
         HERMITCRABTEA_SUCCULENT_PICKED = "Tastes like a cool breeze!",
         HERMITCRABTEA_FIRENETTLES = "So warm!",
         HERMITCRABTEA_TILLWEED = "Do we have to?",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Tastes like the moon?",
         HERMITCRABTEA_FORGETMELOTS = "For when we feel really funny.",
         SHELLWEAVER = "Ms. Pearl taught us to make lots of things with salt!",
         ICESTAFF2 = "Ms. Wickerbottom says we should be careful with magic.",

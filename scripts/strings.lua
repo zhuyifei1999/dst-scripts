@@ -1128,6 +1128,7 @@ STRINGS =
 
 		-- Winter 2025
 		SOAKIN = "Soak In",
+        TRANSFER_CRITTER = "Transfer Ownership",
     },
 
 	WOBY_COMMANDS =
@@ -4432,6 +4433,7 @@ STRINGS =
 		MEATRACK_HERMIT_MULTI = "Large Drying Rack",
 		MEATRACK_HERMIT_ABANDONED = "Seaside Debris",
 		HERMITHOUSE_ORNAMENT = "Wind Charm",
+		HERMIT_CHAIR_ROCKING = "Driftwood Rocker",
 
         SHELLWEAVER = "Combriner",
         ICESTAFF2 = "Flash Freeze Staff",
@@ -5648,9 +5650,9 @@ STRINGS =
         HERMITCRAB_TEASHOP = "There's nothing a cup of Pearl's tea can't fix.",
         HERMITCRABTEA_PETALS = "A brew to bring a mind back from the brink.",
         HERMITCRABTEA_PETALS_EVIL = "Sip for a gentle slip into madness.",
-        HERMITCRABTEA_FOLIAGE = "Not too shrubby.",--TODO
+        HERMITCRABTEA_FOLIAGE = "Fortify your faculties against mind-cracking creatures.",
         HERMITCRABTEA_SUCCULENT_PICKED = "Drink this if you wanna be cool.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "You'll be over the moon.",--TODO
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Blend in with the lunar locals.",
         HERMITCRABTEA_FIRENETTLES = "It'll put some fire in your belly, or at least warm you up.",
         HERMITCRABTEA_TILLWEED = "It even tastes healthy! Yum!",
         HERMITCRABTEA_FORGETMELOTS = "A strong brew to refresh your fractured mind.",
@@ -5658,6 +5660,7 @@ STRINGS =
 		HERMITHOTSPRING_CONSTR = "Drop in for a soak at Pearl's coastal retreat.",
 		MEATRACK_HERMIT_MULTI = "Pearl's personal drying rack has room to spare!",
 		HERMITHOUSE_ORNAMENT = "Give Pearl's Place a splash of whimsy with some oceanside adornments.",
+		HERMIT_CHAIR_ROCKING = "Have a seat, you'll be drifting away in no time.",
 
         HERMITCRAB_LIGHTPOST = "Set the mood for a seaside sanctuary!",
     },
@@ -6165,9 +6168,9 @@ STRINGS =
     },
 
     HERMITCRAB_ANNOUNCE_ADDED_RELOCATION_KIT = {
-        LOW = {"Hmph! You tricked me! This island is the worst!", "You'd better fix this...", "...or you're no better than that junk collector!", "I’ve got something you can use - if you actually plan on helping me."},
+        LOW = {"Hmph! You tricked me! This island is the worst!", "You'd better fix this...", "...or you're no better than that junk collector!", "I've got something you can use - if you actually plan on helping me."},
         MED = {"Ack! That map was no good.", "Maybe that junk collector tricked you too.", "I need a better place to live.", "I have something you can use to help me."},
-        HIGH = {"Oh dear, that junk collector tricked us with a bad map.", "Please help me find a better home?", "I’ve got a little something that might help you help me!"},
+        HIGH = {"Oh dear, that junk collector tricked us with a bad map.", "Please help me find a better home?", "I've got a little something that might help you help me!"},
     },
 
     HERMITCRAB_LEVEL10_PLAYERGOOD = {
@@ -6282,7 +6285,6 @@ STRINGS =
     {
         TILES = { "It's my very own beach! I love it, dearie!", "Thank you, dearie. You've brought the beach to me!", "It's perfect, dearie! My home on the beach!" },
         ORNAMENTS = { "Wonderful! I love how they dance in the wind.", "They're splendid, dearie.", "Absolutely lovely, my dearie." },
-        FURNITURE = { "Perfectly furnished, dearie!", "I love every piece. Thank you, dearie.", "You've made my home so comfortable." },
         DECORATION_TAKER = { "Thank you for the wonderful tables, dearie.","I simply adore these beautiful tables you've made for me, dearie."},
         FACED_CHAIR = { "Now I can sit down in one of these chairs, rest my legs and enjoy a cup of tea!", "Now I have chairs for when you come to visit!" },
         POTTED_PLANTS = { "These potted plants are lovely, dearie.", "I really enjoy these potted plants. Thank you, dearie." },
@@ -6294,7 +6296,7 @@ STRINGS =
         BEE_BOXES = { "Thank you for all the beeboxes, dearie!", "My bees love their new homes! Thank you, dearie!", "All these beeboxes! Now I'll have plenty of honey for my tea!" },
 
         WATER_TREE = { "What a wonderful tree you planted for me, dearie!", "I love my tree, dearie! It protects me from the hot sun and cold rain!", "Thank you for planting the beautiful tree for me, dearie."},
-        CRITTER_PET = { "I don't much take to company, dearie... except yours and now this sweet little one's.", "It's adorable, dearie. Simply adorable.", "Thank you for bringing me this perfect little companion, dearie."},
+        CRITTER_PET = { "I don't much take to company, dearie... except yours and now this sweet little one's.", "Thank you for bringing me this perfect little companion, dearie."},
 
         HOT_SPRING = { "Now I can have a soak and rest my old shell.", "What a lovely hot spring, dearie! Come by anytime for a soak.", "Thank you for the wonderful hot spring, dearie."},
         TEA_SHOP = { "Oh, dearie! I can't wait for you to taste all my different teas!", "Finally, Pearl's Tea Shop can open for business!", "Thank you for helping me set up my tea shop, dearie."},
@@ -6366,13 +6368,6 @@ STRINGS =
             -- med = 2-3 slots has an ornament
             LOW = { "Oh I love these wind charms. Perhaps a few more?", "Dearie, these wind charms are lovely! More, please!" },
             MED = { "Just a one or two more wind charms should do it!", "We almost have enough wind charms, dearie!" },
-        },
-        FURNITURE = -- She wants furniture, (potted plants, tables, chairs, etc) -- UNUSED
-        {
-            -- low = no furniture around
-            -- med = you built some furniture, but still needs a bit more to be homey
-            LOW = { "We need more furniture, dearie!", "Dearie, we are still missing a few pieces of furniture." },
-            MED = { "It's really coming together, one or two more furniture pieces should do!", "My home is almost fully furnished, dearie!" },
         },
         DECORATION_TAKER = -- DECORATION_TAKER refers to tables.
         {

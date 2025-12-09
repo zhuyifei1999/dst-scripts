@@ -5944,11 +5944,11 @@ return{
 
         HERMITCRABTEA_PETALS = "Maybe you should have some of this, Luce.",
         HERMITCRABTEA_PETALS_EVIL = "Just what I need.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "I've never gone nuts a day in my life. Right, Luce?",
         HERMITCRABTEA_SUCCULENT_PICKED = "Perfect for a hot day.",
         HERMITCRABTEA_FIRENETTLES = "This would have been good up north.",
         HERMITCRABTEA_TILLWEED = "It even smells healthy.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "It's from the moon, eh?",
         HERMITCRABTEA_FORGETMELOTS = "Hopefully I'll know when to drink it.",
         SHELLWEAVER = "I don't think it makes pickles.",
         ICESTAFF2 = "Might need mitts for this.",

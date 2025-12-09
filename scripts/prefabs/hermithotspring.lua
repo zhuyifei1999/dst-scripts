@@ -616,6 +616,7 @@ local function fn()
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
 	inst.AnimState:SetSortOrder(3)
 
+	inst:AddTag("hermithotspring")
 	inst:AddTag("antlion_sinkhole_blocker")
 	inst:AddTag("birdblocker")
 	inst:AddTag("groundhole")

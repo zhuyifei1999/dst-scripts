@@ -100,7 +100,7 @@ local function ShouldAcceptItem(inst, item, giver)
 end
 
 local SPIDER_TAGS = { "spider" }
-local SPIDER_IGNORE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local SPIDER_IGNORE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "creaturecorpse" }
 local function GetOtherSpiders(inst, radius, tags)
     tags = tags or SPIDER_TAGS
     local x, y, z = inst.Transform:GetWorldPosition()

@@ -885,6 +885,7 @@ local actionhandlers =
 
 	-- Winter 2025
 	ActionHandler(ACTIONS.SOAKIN, "soakin_pre"),
+	ActionHandler(ACTIONS.TRANSFER_CRITTER, "dolongaction"),
 }
 
 local events =
@@ -6406,7 +6407,21 @@ local states =
 		ontimeout = function(inst)
 			inst.components.locomotor:Clear()
 			if inst:HasTag("sitting_on_chair") then
-				inst.AnimState:PlayAnimation("sit"..tostring(math.random(2)).."_loop", true)
+				local rockingchair = FindEntity(inst, 0.01, nil, { "rocking_chair" }, { "cansit", "burnt" })
+				if rockingchair then
+					if rockingchair.AnimState:IsCurrentAnimation("rocking_pre") then
+						inst.AnimState:PlayAnimation("rocking_pre")
+						inst.AnimState:SetTime(rockingchair.AnimState:GetCurrentAnimationTime())
+						inst.AnimState:PushAnimation("rocking_loop")
+					elseif rockingchair.AnimState:IsCurrentAnimation("rocking_loop") then
+						inst.AnimState:PlayAnimation("rocking_loop", true)
+						inst.AnimState:SetTime(rockingchair.AnimState:GetCurrentAnimationTime())
+					else
+						inst.AnimState:PlayAnimation("sit"..tostring(math.random(2)).."_loop", true)
+					end
+				else
+					inst.AnimState:PlayAnimation("sit"..tostring(math.random(2)).."_loop", true)
+				end
 				inst.sg:GoToState("sitting")
 			else
 				inst.AnimState:PlayAnimation("sit_off_pst")

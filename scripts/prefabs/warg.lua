@@ -941,6 +941,9 @@ local function MakeWarg(data)
 			inst.components.health.nofadeout = true
 		end
 
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
+
         inst:AddComponent("lootdropper")
         if is_mutated then
             inst.components.lootdropper:SetLootSetupFn(LootSetupFn_mutated)

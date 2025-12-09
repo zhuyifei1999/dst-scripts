@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "Perfect for soothing un petit madness.",
         HERMITCRABTEA_PETALS_EVIL = "Nice but no substitute for a strong brandy.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "It is a fortifying brew.",
         HERMITCRABTEA_SUCCULENT_PICKED = "A refreshing summer drink!",
         HERMITCRABTEA_FIRENETTLES = "A tasty and toasty brew!",
         HERMITCRABTEA_TILLWEED = "I do not mind the taste of this wholesome tonic.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "I wonder what region of the moon this comes from.",
         HERMITCRABTEA_FORGETMELOTS = "This mixture will be good for a splitting headache.",
         SHELLWEAVER = "These recipes all call for a pinch of salt.",
         ICESTAFF2 = "Prepare for a frosting!",

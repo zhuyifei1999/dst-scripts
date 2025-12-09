@@ -642,6 +642,7 @@ ACTIONS =
 
 	-- Winter 2025
 	SOAKIN = Action({ invalid_hold_action = true }),
+    TRANSFER_CRITTER = Action({ invalid_hold_action = true }),
 }
 
 ACTIONS_BY_ACTION_CODE = {}
@@ -6412,4 +6413,24 @@ ACTIONS.SOAKIN.fn = function(act)
 	if act.target and act.target.components.bathingpool then
 		return act.target.components.bathingpool:EnterPool(act.doer)
 	end
+end
+
+local HERMITCRAB_MUST_TAGS = { "hermitcrab", "character" }
+ACTIONS.TRANSFER_CRITTER.fn = function(act)
+    if act.doer.components.petleash ~= nil and act.target.components.crittertraits ~= nil then
+        local hermitcrab = FindEntity(act.doer, 10, nil, HERMITCRAB_MUST_TAGS)
+        if not hermitcrab or hermitcrab.components.petleash == nil then
+            return false
+        elseif hermitcrab.components.petleash:IsFull() then
+            return false--, "FULL"
+        end
+
+        act.doer.components.petleash:DetachPet(act.target)
+        hermitcrab.components.petleash:AttachPet(act.target)
+        act.target.components.crittertraits:OnPet(act.doer)
+
+        hermitcrab:PushEvent("adopted_critter", { critter = act.target })
+
+        return true
+    end
 end

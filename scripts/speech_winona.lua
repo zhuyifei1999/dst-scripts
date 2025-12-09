@@ -5949,11 +5949,11 @@ return{
 
         HERMITCRABTEA_PETALS = "This'll set your head on straight.",
         HERMITCRABTEA_PETALS_EVIL = "Now that's some moonshine.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "Always wondered what ferns taste like.",
         HERMITCRABTEA_SUCCULENT_PICKED = "Nothin' like a cold one on a hot one!",
         HERMITCRABTEA_FIRENETTLES = "This'll warm ya right up.",
         HERMITCRABTEA_TILLWEED = "I'll drink to my health!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "todo",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "How does stuff grow on the moon anyway?",
         HERMITCRABTEA_FORGETMELOTS = "In case we go completely bananas.",
         SHELLWEAVER = "Ya need protective eye wear to open this thing.",
         ICESTAFF2 = "Like frostbite on a stick.",

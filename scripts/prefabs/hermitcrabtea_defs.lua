@@ -3,14 +3,20 @@ local TEA_DEFS =
     {
         name = "petals",
         buff = "hermitcrabtea_petals_buff",
+        --
+        sanityvalue = TUNING.SANITY_SMALL,
     },
     {
         name = "petals_evil",
         buff = "hermitcrabtea_petals_evil_buff",
+        --
+        sanityvalue = -TUNING.SANITY_MED,
     },
     {
         name = "foliage",
-        -- buff = "",
+        buff = "hermitcrabtea_foliage_buff",
+        --
+        sanityvalue = TUNING.SANITY_TINY,
     },
     {
         name = "succulent_picked",
@@ -18,6 +24,9 @@ local TEA_DEFS =
         --
         temperaturedelta = TUNING.HERMITCRABTEA_COLD_BONUS_TEMP,
         temperatureduration = TUNING.HERMITCRABTEA_TEMP_TIME,
+        --
+        sanityvalue = TUNING.SANITY_TINY,
+        healthvalue = TUNING.HEALING_MEDSMALL,
     },
     {
         name = "firenettles",
@@ -25,18 +34,27 @@ local TEA_DEFS =
         --
         temperaturedelta = TUNING.HERMITCRABTEA_HOT_BONUS_TEMP,
         temperatureduration = TUNING.HERMITCRABTEA_TEMP_TIME,
+        --
+        sanityvalue = TUNING.SANITY_TINY,
     },
     {
         name = "tillweed",
         buff = "hermitcrabtea_tillweed_buff",
+        --
+        sanityvalue = TUNING.SANITY_TINY,
+        healthvalue = TUNING.HEALING_MED,
     },
     {
         name = "moon_tree_blossom",
-        -- buff = "",
+        buff = "hermitcrabtea_moon_tree_blossom_buff",
+        --
+        sanityvalue = TUNING.SANITY_SMALL,
     },
     {
         name = "forgetmelots",
         buff = "hermitcrabtea_forgetmelots_buff",
+        --
+        sanityvalue = TUNING.SANITY_MEDLARGE,
     },
 }
 
@@ -45,7 +63,7 @@ local TEA_DEFS =
 -- petals
 
 local function Petals_OnTick(inst, target)
-    if not IsEntityDead(inst) and inst.components.sanity ~= nil and not inst:HasTag("playerghost") then
+    if not IsEntityDead(target) and target.components.sanity ~= nil and not target:HasTag("playerghost") then
         target.components.sanity:DoDelta(TUNING.HERMITCRAB_PETALTEA_SANITY_DELTA)
     else
         inst.components.debuff:Stop()
@@ -55,7 +73,7 @@ end
 -- petals_evil
 
 local function Petals_Evil_OnTick(inst, target)
-    if not IsEntityDead(inst) and inst.components.sanity ~= nil and not inst:HasTag("playerghost") then
+    if not IsEntityDead(target) and target.components.sanity ~= nil and not target:HasTag("playerghost") then
         target.components.sanity:DoDelta(TUNING.HERMITCRAB_EVILPETALTEA_SANITY_DELTA)
     else
         inst.components.debuff:Stop()
@@ -65,7 +83,7 @@ end
 -- tillweed
 
 local function Tillweed_OnTick(inst, target)
-    if not IsEntityDead(inst) and not inst:HasTag("playerghost") then
+    if not IsEntityDead(target, true) and not target:HasTag("playerghost") then
         target.components.health:DoDelta(TUNING.HERMITCRAB_TILLWEEDTEA_HEALTH_DELTA, nil, "hermitcrabtea_tillweed")
     else
         inst.components.debuff:Stop()
@@ -75,10 +93,34 @@ end
 -- forgetmelots
 
 local function ForgetMeLots_OnTick(inst, target)
-    if not IsEntityDead(inst) and inst.components.sanity ~= nil and not inst:HasTag("playerghost") then
+    if not IsEntityDead(target) and target.components.sanity ~= nil and not target:HasTag("playerghost") then
         target.components.sanity:DoDelta(TUNING.HERMITCRAB_FORGETMELOTTEA_SANITY_DELTA)
     else
         inst.components.debuff:Stop()
+    end
+end
+
+-- moon_tree_blossom
+
+local hitsparks_fx_colouroverride = { 0, 0, 1 }
+local function SparkLunarOnShadow(inst, attacker)
+    local spark = SpawnPrefab("hitsparks_fx")
+    spark:Setup(attacker, inst, nil, hitsparks_fx_colouroverride)
+end
+local function ClearShadowPanic(inst)
+    inst._shadow_creature_panic_task = nil
+end
+local function MoonBlossom_OnAttacked(inst, data)
+    local attacker = data ~= nil and data.attacker
+    if attacker and attacker:IsValid() and attacker:HasTag("shadowsubmissive") then
+        SparkLunarOnShadow(inst, attacker)
+        if attacker._detach_from_boat_fn ~= nil then -- Terrorclaw.
+            attacker._detach_from_boat_fn(attacker)
+        end
+        if attacker._shadow_creature_panic_task ~= nil then
+            attacker._shadow_creature_panic_task:Cancel()
+        end
+        attacker._shadow_creature_panic_task = attacker:DoTaskInTime(TUNING.HERMITCRAB_MOONTREEBLOSSOMTEA_PANIC_SHADOWCREATURE_TIME, ClearShadowPanic)
     end
 end
 
@@ -114,17 +156,24 @@ local BUFF_DEFS =
 
     {
         name = "foliage",
+        duration = TUNING.HERMITCRAB_FOLIAGETEA_DURATION,
         --
-        onattachedfn = function(inst)
-
+        onattachedfn = function(inst, target)
+            if target.components.sanity ~= nil then
+		        target.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.HERMITCRAB_FOLIAGETEA_SANITY_MOD)
+	        end
         end,
 
-        onextendedfn = function(inst)
-
+        onextendedfn = function(inst, target)
+            if target.components.sanity ~= nil then
+		        target.components.sanity.neg_aura_modifiers:SetModifier(inst, TUNING.HERMITCRAB_FOLIAGETEA_SANITY_MOD)
+	        end
         end,
 
-        ondetachedfn = function(inst)
-
+        ondetachedfn = function(inst, target)
+            if target.components.sanity ~= nil then
+		        target.components.sanity.neg_aura_modifiers:RemoveModifier(inst)
+	        end
         end,
     },
 
@@ -176,17 +225,19 @@ local BUFF_DEFS =
 
     {
         name = "moon_tree_blossom",
+        duration = TUNING.HERMITCRAB_MOONTREEBLOSSOMTEA_DURATION,
         --
-        onattachedfn = function(inst)
-
+        onattachedfn = function(inst, target)
+            target:ListenForEvent("attacked", MoonBlossom_OnAttacked)
         end,
 
-        onextendedfn = function(inst)
-
+        onextendedfn = function(inst, target)
+            target:RemoveEventCallback("attacked", MoonBlossom_OnAttacked)
+            target:ListenForEvent("attacked", MoonBlossom_OnAttacked)
         end,
 
-        ondetachedfn = function(inst)
-
+        ondetachedfn = function(inst, target)
+            target:RemoveEventCallback("attacked", MoonBlossom_OnAttacked)
         end,
     },
 

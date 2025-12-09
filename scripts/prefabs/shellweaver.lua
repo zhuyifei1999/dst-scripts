@@ -124,12 +124,32 @@ local function OnScienceWasMade(inst, product)
     inst:ListenForEvent("animover", OnInactive)
 end
 
+local UNLOCKABLE_SECOND_TIER = { minscore = 30, maxscore = 40 }
+local function GetDecorScore()
+    local hermitcrabmanager = TheWorld.components.hermitcrab_relocation_manager
+    local home = hermitcrabmanager and hermitcrabmanager:GetPearlsHouse()
+    local pearldecorationscore = home.components.pearldecorationscore
+    return pearldecorationscore and pearldecorationscore:GetScore()
+end
+
 local function UpdatePrototyperTree(inst)
-    if inst.shellweaver_withinarea then
+    if inst.shellweaver_withinarea and inst.istier2 then
         inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.SHELLWEAVER_L2
     else
         inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.SHELLWEAVER_L1
     end
+end
+
+-- prototyper gets removed and added so save tier 2 seperately.
+local function UpdateScore(inst)
+    local istier2 = inst.components.prototyper.trees == TUNING.PROTOTYPER_TREES.SHELLWEAVER_L2
+    local score = GetDecorScore()
+    if score and score >= (istier2 and UNLOCKABLE_SECOND_TIER.minscore or UNLOCKABLE_SECOND_TIER.maxscore) then
+        inst.istier2 = true
+    else
+        inst.istier2 = nil
+    end
+    UpdatePrototyperTree(inst)
 end
 
 local function AddPrototyper(inst)
@@ -144,6 +164,17 @@ local function UpdateAbandonedStatus(inst, within_area)
     inst.shellweaver_withinarea = within_area
     if inst.components.prototyper then
         UpdatePrototyperTree(inst)
+    end
+end
+
+local function OnSave(inst, data)
+    data.istier2 = inst.istier2
+end
+
+local function OnLoad(inst, data)
+    if data.istier2 then
+        inst.istier2 = data.istier2
+        -- We don't need to update prototyper tree here, abandoned status updaters handle it.
     end
 end
 
@@ -200,7 +231,15 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+
     MakeHermitCrabAreaListener(inst, UpdateAbandonedStatus)
+    local function UpdateScore_Bridge()
+        UpdateScore(inst)
+    end
+    inst:ListenForEvent("pearldecorationscore_updatescore", UpdateScore_Bridge, TheWorld)
+    UpdateScore(inst)
 
     return inst
 end

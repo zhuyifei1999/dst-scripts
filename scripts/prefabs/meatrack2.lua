@@ -91,7 +91,7 @@ local function OnBuilt(inst)
 	if not inst:HasTag("abandoned") then
 		inst.AnimState:PlayAnimation("place")
 		inst.AnimState:PushAnimation("idle")
-		inst.SoundEmitter:PlaySound("dontstarve/common/meat_rack_craft")
+		inst.SoundEmitter:PlaySound(inst.placesound or "dontstarve/common/meat_rack_craft")
 	end
 end
 
@@ -549,6 +549,7 @@ end
 
 local function hermit_master_postinit(inst)
 	inst._saltlevel = "none"
+	inst.placesound = "winter2025/dryingrack_pearl/place"
 
 	inst:AddComponent("dryingracksaltcollector")
 	inst.components.dryingracksaltcollector:SetOnSaltChangedFn(hermit_OnSaltChanged)

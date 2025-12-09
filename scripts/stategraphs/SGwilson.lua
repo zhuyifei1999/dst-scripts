@@ -14,6 +14,32 @@ local FLOWERS_CANT_TAGS = {"INLIMBO"}
 local WORTOX_SHADOW_MULT = 0.6
 local WORTOX_LUNAR_OFFSET = 0.1
 
+local function GetLocalAnalogXY(inst)
+	if inst.HUD and inst.components.playercontroller then
+		local isenabled, ishudblocking = inst.components.playercontroller:IsEnabled()
+		if isenabled or ishudblocking then
+			local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
+			local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
+			local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
+			if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
+				return xdir, ydir
+			end
+		end
+	end
+end
+
+local function GetLocalAnalogDir(inst)
+	local xdir, ydir = GetLocalAnalogXY(inst)
+	if xdir then
+		local dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
+		return dir:Normalize()
+	end
+end
+
+local function IsLocalAnalogTriggered(inst)
+	return GetLocalAnalogXY(inst) ~= nil
+end
+
 local function GetIceStaffProjectileSound(inst, equip)
     if equip.icestaff_coldness then
         if equip.icestaff_coldness > 1 then
@@ -1421,6 +1447,7 @@ local actionhandlers =
 
 	-- Winter 2025
 	ActionHandler(ACTIONS.SOAKIN, "soakin_pre"),
+	ActionHandler(ACTIONS.TRANSFER_CRITTER, "dolongaction"),
 }
 
 local events =
@@ -6217,7 +6244,9 @@ local states =
             end
             if data.target and data.target.components.groomer then
                 assert(data.target.components.groomer.occupant,"Grooming station had not occupant")
-                inst:ShowPopUp(POPUPS.GROOMER, true, data.target.components.groomer.occupant, inst)
+                local popuptype = data.target.components.groomer.popuptype or POPUPS.GROOMER
+                inst.sg.statemem.popuptype = popuptype
+                inst:ShowPopUp(popuptype, true, data.target.components.groomer.occupant, inst)
             else
                 inst:ShowPopUp(POPUPS.WARDROBE, true, data.target)
             end
@@ -6239,8 +6268,11 @@ local states =
         },
 
         onexit = function(inst)
-            inst:ShowPopUp(POPUPS.GROOMER, false)
-            inst:ShowPopUp(POPUPS.WARDROBE, false)
+            if inst.sg.statemem.popuptype then
+                inst:ShowPopUp(inst.sg.statemem.popuptype, false)
+            else
+                inst:ShowPopUp(POPUPS.WARDROBE, false)
+            end
             if not inst.sg.statemem.ischanging then
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:EnableMapControls(true)
@@ -6248,7 +6280,7 @@ local states =
                 end
                 inst.components.inventory:Show()
                 inst:ShowActions(true)
-                if not inst.sg.statemem.isclosingwardrobe then
+                if not inst.sg.statemem.isclosingwardrobe and not inst.sg.statemem.popuptype then
                     inst.sg.statemem.isclosingwardrobe = true
                     POPUPS.WARDROBE:Close(inst)
                 end
@@ -12819,16 +12851,11 @@ local states =
 		end,
 
 		onupdate = function(inst)
-			if inst.HUD and inst.sg.statemem.trackcontrol and not inst.sg.statemem.getup then
-				local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-				if math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)) >= deadzone or
-					math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)) >= deadzone
-				then
-					if inst.AnimState:AnimDone() then
-						inst.sg:GoToState("abyss_drop_pst")
-					else
-						inst.sg.statemem.getup = true
-					end
+			if inst.sg.statemem.trackcontrol and not inst.sg.statemem.getup and IsLocalAnalogTriggered(inst) then
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("abyss_drop_pst")
+				else
+					inst.sg.statemem.getup = true
 				end
 			end
 		end,
@@ -20257,9 +20284,7 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("charge_lag_pre")
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(false)
-            end
+			inst:ShowActions(false)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() - FRAMES)
         end,
 
@@ -20274,8 +20299,8 @@ local states =
         end,
 
         onexit = function(inst)
-            if not inst.sg.statemem.tackling and inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
+			if not inst.sg.statemem.tackling then
+				inst:ShowActions(true)
             end
         end,
     },
@@ -20356,8 +20381,8 @@ local states =
                 inst.Physics:Stop()
                 inst.Physics:CollidesWith(COLLISION.CHARACTERS)
                 inst.Physics:Teleport(inst.Transform:GetWorldPosition())
-                if not inst.sg.statemem.stopping and inst.components.playercontroller ~= nil then
-                    inst.components.playercontroller:Enable(true)
+				if not inst.sg.statemem.stopping then
+					inst:ShowActions(true)
                 end
             end
         end,
@@ -20429,14 +20454,9 @@ local states =
                 end
             end
 
-			if inst.sg.statemem.cancancel and inst.HUD ~= nil then
-				local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-				if math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)) >= deadzone or
-					math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)) >= deadzone
-				then
-					inst.sg.statemem.stopping = true
-					inst.sg:GoToState("tackle_stop")
-				end
+			if inst.sg.statemem.cancancel and IsLocalAnalogTriggered(inst) then
+				inst.sg.statemem.stopping = true
+				inst.sg:GoToState("tackle_stop")
 			end
         end,
 
@@ -20466,8 +20486,8 @@ local states =
                 inst.Physics:Stop()
                 inst.Physics:CollidesWith(COLLISION.CHARACTERS)
                 inst.Physics:Teleport(inst.Transform:GetWorldPosition())
-				if not inst.sg.statemem.stopping and inst.components.playercontroller ~= nil then
-					inst.components.playercontroller:Enable(true)
+				if not inst.sg.statemem.stopping then
+					inst:ShowActions(true)
                 end
             end
         end,
@@ -20504,9 +20524,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
-            end
+			inst:ShowActions(true)
         end,
     },
 
@@ -20553,9 +20571,7 @@ local states =
 
         onexit = function(inst)
             inst.Physics:Stop()
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
-            end
+			inst:ShowActions(true)
         end,
     },
 
@@ -22009,16 +22025,41 @@ local states =
 			inst.components.locomotor:StopMoving()
 			inst.sg.statemem.chair = chair
 			local bank = "wilson_sit"
+			local isrocking = false
 			inst:AddTag("sitting_on_chair")
 			if chair:HasTag("limited_chair") then
 				inst:AddTag("limited_sitting")
 				inst.Transform:SetNoFaced()
 				inst.sg.statemem.noemotes = true
 				bank = "wilson_sit_nofaced"
+				isrocking = chair:HasTag("rocking_chair")
+			end
+			if isrocking then
+				inst.sg.statemem.play_sit_loop = function()
+					inst.AnimState:PlayAnimation("rocking_pre")
+					inst.AnimState:PushAnimation("rocking_loop")
+					chair:PushEvent("ms_sync_chair_rocking", inst)
+				end
+				inst.sg.statemem.push_sit_loop = function()
+					inst.AnimState:PushAnimation("rocking_pre")
+					inst.AnimState:PushAnimation("rocking_loop")
+					chair:PushEvent("ms_sync_chair_rocking", inst)
+				end
+			else
+				inst.sg.statemem.play_sit_loop = function()
+					inst.AnimState:PlayAnimation("sit"..math.random(2).."_loop", true)
+				end
+				inst.sg.statemem.push_sit_loop = function()
+					inst.AnimState:PushAnimation("sit"..math.random(2).."_loop")
+				end
 			end
 			if landed then
 				inst.AnimState:SetBankAndPlayAnimation(bank, "sit_loop_pre")
-				inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop")
+				inst.sg.statemem.push_sit_loop()
+			elseif isrocking then
+				inst.AnimState:SetBankAndPlayAnimation(bank, "rocking_pre")
+				inst.AnimState:PushAnimation("rocking_loop")
+				chair:PushEvent("ms_sync_chair_rocking", inst)
 			else
 				inst.AnimState:SetBankAndPlayAnimation(bank, "sit"..tostring(math.random(2)).."_loop", true)
 			end
@@ -22050,13 +22091,16 @@ local states =
 					for i = 2, math.floor(duration / inst.AnimState:GetCurrentAnimationLength() + 0.5) do
 						inst.AnimState:PushAnimation("sit_mime1")
 					end
-					inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop")
+					inst.sg.statemem.push_sit_loop()
 				else
 					inst.AnimState:PlayAnimation("sit_dial", true)
+					if inst.sg.statemem.chair then
+						inst.sg.statemem.chair:PushEvent("ms_sync_chair_rocking", inst)
+					end
 					inst.sg.statemem.sittalktask = inst:DoTaskInTime(duration, function(inst)
 						inst.sg.statemem.sittalktask = nil
 						if inst.AnimState:IsCurrentAnimation("sit_dial") then
-							inst.AnimState:PlayAnimation("sit"..tostring(math.random(2)).."_loop", true)
+							inst.sg.statemem.play_sit_loop()
 						end
 					end)
 				end
@@ -22067,7 +22111,7 @@ local states =
 					inst.sg.statemem.sittalktask:Cancel()
 					inst.sg.statemem.sittalktask = nil
 					if inst.AnimState:IsCurrentAnimation("sit_dial") then
-						inst.AnimState:PlayAnimation("sit"..tostring(math.random(2)).."_loop", true)
+						inst.sg.statemem.play_sit_loop()
 					end
 				end
 				return OnDoneTalking_Override(inst)
@@ -22075,18 +22119,18 @@ local states =
 			EventHandler("equip", function(inst, data)
 				inst.sg.statemem.interrupt_emote(inst)
 				inst.AnimState:PlayAnimation(data.eslot == EQUIPSLOTS.HANDS and "sit_item_out" or "sit_item_hat")
-				inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop")
+				inst.sg.statemem.push_sit_loop()
 			end),
 			EventHandler("unequip", function(inst, data)
 				inst.sg.statemem.interrupt_emote(inst)
 				inst.AnimState:PlayAnimation(data.eslot == EQUIPSLOTS.HANDS and "sit_item_in" or "sit_item_hat")
-				inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop")
+				inst.sg.statemem.play_sit_loop()
 			end),
 			EventHandler("performaction", function(inst, data)
 				if data ~= nil and data.action ~= nil and data.action.action == ACTIONS.DROP then
 					inst.sg.statemem.interrupt_emote(inst)
 					inst.AnimState:PlayAnimation("sit_item_hat")
-					inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop")
+					inst.sg.statemem.push_sit_loop()
 				end
 			end),
 			EventHandler("locomote", function(inst, data)
@@ -22126,7 +22170,7 @@ local states =
 					if animtype == "string" then
 						inst.AnimState:PlayAnimation(anim, data.loop)
 						if not data.loop then
-							inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop", true)
+							inst.sg.statemem.push_sit_loop()
 						end
 					elseif animtype == "table" then
 						inst.AnimState:PlayAnimation(anim[1])
@@ -22134,7 +22178,7 @@ local states =
 							inst.AnimState:PushAnimation(anim[i])
 						end
 						if not data.loop then
-							inst.AnimState:PushAnimation("sit"..tostring(math.random(2)).."_loop", true)
+							inst.sg.statemem.push_sit_loop()
 						end
 					end
 
@@ -22257,6 +22301,7 @@ local states =
 			else
 				inst.AnimState:SetBankAndPlayAnimation("wilson_sit", "sit_off")
 			end
+			chair:PushEvent("ms_sync_chair_rocking", inst)
 		end,
 
 		events =
@@ -22332,6 +22377,7 @@ local states =
 			inst.sg.statemem.chair = chair
 			inst.components.locomotor:StopMoving()
 			inst.AnimState:SetBankAndPlayAnimation("wilson", "sit_jump_off")
+			chair:PushEvent("ms_sync_chair_rocking", inst)
 			local radius = inst:GetPhysicsRadius(0) + chair:GetPhysicsRadius(0)
 			if radius > 0 then
 				inst.Physics:SetMotorVel(radius * 30 / inst.AnimState:GetCurrentAnimationNumFrames(), 0, 0)
@@ -22446,18 +22492,13 @@ local states =
 
 		onupdate = function(inst)
 			if inst.sg.statemem.trackcontrol then
-				if inst.HUD then
-					local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-					if math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)) >= deadzone or
-						math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)) >= deadzone
-					then
-						if inst.sg.statemem.checkfall then
-							inst.sg.statemem.slipping = true
-							inst.sg:GoToState("slip_fall", inst.sg.statemem.speed * 0.25)
-							return
-						end
-						inst.sg.statemem.controltick = GetTick()
+				if IsLocalAnalogTriggered(inst) then
+					if inst.sg.statemem.checkfall then
+						inst.sg.statemem.slipping = true
+						inst.sg:GoToState("slip_fall", inst.sg.statemem.speed * 0.25)
+						return
 					end
+					inst.sg.statemem.controltick = GetTick()
 				end
 
 				if inst.sg.statemem.trystoptracking and GetTick() - inst.sg.statemem.controltick > 10 then
@@ -22642,13 +22683,8 @@ local states =
 		end,
 
 		onupdate = function(inst)
-			if inst.HUD then
-				local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-				if math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)) >= deadzone or
-					math.abs(TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)) >= deadzone
-				then
-					inst.sg:GoToState("slip_fall_pst")
-				end
+			if IsLocalAnalogTriggered(inst) then
+				inst.sg:GoToState("slip_fall_pst")
 			end
 		end,
 
@@ -25409,25 +25445,18 @@ local states =
 				inst.sg.statemem.not_interrupted = true
 				inst.DynamicShadow:Enable(true)
 				inst.sg:GoToState("soakin_cancel", true)
-			elseif inst.HUD and inst.components.playercontroller then
-				local isenabled, ishudblocking = inst.components.playercontroller:IsEnabled()
-				if isenabled or ishudblocking then
-					local xdir = TheInput:GetAnalogControlValue(CONTROL_MOVE_RIGHT) - TheInput:GetAnalogControlValue(CONTROL_MOVE_LEFT)
-					local ydir = TheInput:GetAnalogControlValue(CONTROL_MOVE_UP) - TheInput:GetAnalogControlValue(CONTROL_MOVE_DOWN)
-					local deadzone = TUNING.CONTROLLER_DEADZONE_RADIUS
-					if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
-						local dir = TheCamera:GetRightVec() * xdir - TheCamera:GetDownVec() * ydir
-						dir:Normalize()
-						dir = math.atan2(-dir.z, dir.x) * RADIANS
-						if inst.sg.statemem.range == 0 then
-							inst.sg.statemem.not_interrupted = true
-							inst.sg.statemem.jumpout = true
-							inst.sg:GoToState("soakin_jumpout", { target = target, dir = dir })
-						elseif DiffAngle(inst.Transform:GetRotation(), dir) > 110 then
-							inst.sg.statemem.not_interrupted = true
-							inst.sg.statemem.jumpout = true
-							inst.sg:GoToState("soakin_jumpout", target)
-						end
+			else
+				local dir = GetLocalAnalogDir(inst)
+				if dir then
+					dir = math.atan2(-dir.z, dir.x) * RADIANS
+					if inst.sg.statemem.range == 0 then
+						inst.sg.statemem.not_interrupted = true
+						inst.sg.statemem.jumpout = true
+						inst.sg:GoToState("soakin_jumpout", { target = target, dir = dir })
+					elseif DiffAngle(inst.Transform:GetRotation(), dir) > 110 then
+						inst.sg.statemem.not_interrupted = true
+						inst.sg.statemem.jumpout = true
+						inst.sg:GoToState("soakin_jumpout", target)
 					end
 				end
 			end

@@ -5963,11 +5963,11 @@ return{
 
         HERMITCRABTEA_PETALS = "When I start losing my grip, I'll have a little sip!",
         HERMITCRABTEA_PETALS_EVIL = "Choose it to lose it!",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "The taste of fern is for what I yearn.",
         HERMITCRABTEA_SUCCULENT_PICKED = "It doesn't fool 'round when you need to cool down!",
         HERMITCRABTEA_FIRENETTLES = "Feeling chilly? Drink up, silly!",
         HERMITCRABTEA_TILLWEED = "More better, less deader!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "The tea from this blossom is awesome!",
         HERMITCRABTEA_FORGETMELOTS = "It'll help to find my poor lost mind!",
         SHELLWEAVER = "Halt! Do we have enough salt?",
         ICESTAFF2 = "I'll be the sub-zero hero!",

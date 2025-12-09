@@ -1,5 +1,3 @@
-local BEEFALO_COSTUMES = require("yotb_costumes")
-
 local function oncanuseaction(self, canuseaction)
     if canuseaction then
         --V2C: Recommended to explicitly add tag to prefab pristine state
@@ -11,6 +9,7 @@ end
 
 local function oncanbedressed(self, canbedressed)
     if canbedressed then
+        --Recommended to explicitly add tag to prefab pristine state
         self.inst:AddTag("dressable")
     else
         self.inst:RemoveTag("dressable")
@@ -35,16 +34,11 @@ local Groomer = Class(function(self, inst)
     self:SetCanBeShared(false)
 
     self.onclosepopup = function(doer, data)
-        if data.popup == POPUPS.GROOMER then
-            local skins = {
-                beef_body = data.args[1],
-                beef_horn = data.args[2],
-                beef_head = data.args[3],
-                beef_feet = data.args[4],
-                beef_tail = data.args[5],
-                cancel = data.args[6],
-            }
-            self.onclosegroomer(doer, skins)
+        if self.onclosepopupfn then
+            local skins = self.onclosepopupfn(self.inst, doer, data)
+            if skins then
+                self.onclosegroomer(doer, skins)
+            end
         end
     end
     self.onclosegroomer = function(doer, data)
@@ -134,18 +128,16 @@ function Groomer:CanBeginChanging(doer)
         return false, "BURNING"
 	elseif not self.canbeshared and next(self.changers) then
 		return false, "INUSE"
-    elseif not self.occupant then
-        return false, "NOOCCUPANT"
-    elseif self.occupant and self.occupant.components.beard and self.occupant.components.beard.bits < TUNING.BEEFALO_BEARD_BITS then
-        return false, "NOTENOUGHHAIR"
+    elseif self.canbeginchangingfn then
+        local success, reason = self.canbeginchangingfn(self.inst, self.occupant, doer)
+        return success, reason
     end
     return true
 end
 
 function Groomer:BeginChanging(doer)
-
-    if doer and doer.player_classified ~= nil then
-        doer.player_classified.hasyotbskin:set(false)
+    if self.beginchangingfn then
+        self.beginchangingfn(self.inst, self.occupant, doer)
     end
 
     if not self.changers[doer] then
@@ -229,98 +221,18 @@ function Groomer:ActivateChanging(doer, skins)
     if skins == nil or
         doer.sg.currentstate.name ~= "openwardrobe" or
         self.occupant == nil or
-        self.occupant.components.skinner_beefalo == nil or
-        not self.occupant.components.skinner_beefalo:IsClothingDifferent(skins)
+        (self.canactivatechangingfn and not self.canactivatechangingfn(self.inst, self.occupant, doer, skins))
     then
         return false
-    elseif self.occupant then
-        return DoChange(self, doer, skins)
     end
 
-    return false
+    return DoChange(self, doer, skins)
 end
 
 function Groomer:ApplyTargetSkins(target, doer, skins)
-
-    if target and target.components.skinner_beefalo ~= nil then
-        target.AnimState:AssignItemSkins(doer.userid, skins.beef_body or "", skins.beef_horn or "", skins.beef_head or "", skins.beef_feet or "", skins.beef_tail or "")
-        target.components.skinner_beefalo:ClearAllClothing()
-        target.components.skinner_beefalo:SetClothing(skins.beef_body)
-        target.components.skinner_beefalo:SetClothing(skins.beef_horn)
-        target.components.skinner_beefalo:SetClothing(skins.beef_head)
-        target.components.skinner_beefalo:SetClothing(skins.beef_feet)
-        target.components.skinner_beefalo:SetClothing(skins.beef_tail)
-        target:PushEvent("dressedup", { wardrobe = self.inst, doer = doer, skins = skins })
+    if target and self.applytargetskinsfn then
+        self.applytargetskinsfn(self.inst, target, doer, skins)
     end
-end
-
-function Groomer:ApplySkins(doer, diff)
-    if doer.components.skinner ~= nil then
-        if diff.base ~= nil then
-            if Prefabs[diff.base] ~= nil then
-                doer.components.skinner:SetSkinName(diff.base)
-            end
-        end
-
-        if diff.beef_body ~= nil then
-            doer.components.skinner:ClearClothing("beef_body")
-            if CLOTHING[diff.beef_body] ~= nil then
-                doer.components.skinner:SetClothing(diff.beef_body)
-            end
-        end
-
-        if diff.beef_horn ~= nil then
-            doer.components.skinner:ClearClothing("beef_horn")
-            if CLOTHING[diff.beef_horn] ~= nil then
-                doer.components.skinner:SetClothing(diff.beef_horn)
-            end
-        end
-
-        if diff.beef_head ~= nil then
-            doer.components.skinner:ClearClothing("beef_head")
-            if CLOTHING[diff.beef_head] ~= nil then
-                doer.components.skinner:SetClothing(diff.beef_head)
-            end
-        end
-
-        if diff.beef_feet ~= nil then
-            doer.components.skinner:ClearClothing("beef_feet")
-            if CLOTHING[diff.beef_feet] ~= nil then
-                doer.components.skinner:SetClothing(diff.beef_feet)
-            end
-        end
-
-        if diff.beef_tail ~= nil then
-            doer.components.skinner:ClearClothing("beef_tail")
-            if CLOTHING[diff.beef_tail] ~= nil then
-                doer.components.skinner:SetClothing(diff.beef_tail)
-            end
-        end
-    end
-end
-
-function Groomer:GetSkinCategory(skin)
-    local category = nil
-    for i,set in pairs(BEEFALO_COSTUMES.costumes)do
-        for t,part in ipairs(set.skins)do
-            if skin == part then
-                category = i
-            end
-        end
-    end
-
-    return category
-end
-
-function Groomer:OnSave()
-
-    local data = {}
-
-    return data
-end
-
-function Groomer:OnLoad(data)
-
 end
 
 --------------------------------------------------------------------------

@@ -1194,6 +1194,8 @@ function CanEntityBecomeCorpse(inst)
         return false
     elseif inst.forcecorpse then
         return true
+    elseif inst.components.burnable and inst.components.burnable:IsBurning() then
+        return false
     elseif corpsepersistmanager ~= nil and corpsepersistmanager:ShouldRetainCreatureAsCorpse(inst) then
         return true
     elseif CanLunarPreRiftMutateFromCorpse(inst) then
@@ -1228,6 +1230,10 @@ function TryEntityToCorpse(inst, corpseprefab)
         end
 
         corpse.sg.mem.nolunarmutate = inst.sg.mem.nolunarmutate -- This is saved.
+        if not inst.components.burnable and corpse.components.burnable then
+            corpse:RemoveComponent("burnable")
+            corpse.noburn = true
+        end
 
         if CanLunarRiftMutateFromCorpse(inst) then
             corpse:SetGestaltCorpse()
@@ -1600,11 +1606,17 @@ function GetHermitCrabOccupiedGrid(x, z)
     return occupied_grid
 end
 
+local HERMIT_ISLAND_LAYOUT_ID = "HermitcrabIsland"
 local MONKEY_ISLAND_LAYOUT_ID = "MonkeyIsland"
 local MOON_ISLAND_TASK_ID = "MoonIsland"
 
 function IsInValidHermitCrabDecorArea(inst)
     local topology_data = GetTopologyDataAtInst(inst)
+
+    -- We haven't moved yet.
+    if topology_data.layout_id == HERMIT_ISLAND_LAYOUT_ID then
+        return false
+    end
 
     -- Monkey island bad
     if topology_data.layout_id == MONKEY_ISLAND_LAYOUT_ID then
@@ -1617,4 +1629,12 @@ function IsInValidHermitCrabDecorArea(inst)
     end
 
     return true
+end
+
+--------------------------------------------------------------------------
+
+function IsEntityGestaltProtected(inst)
+    local inventory = inst.components.inventory
+    return (inventory and inventory:EquipHasTag("gestaltprotection"))
+        or inst:HasDebuff("hermitcrabtea_moon_tree_blossom_buff")
 end

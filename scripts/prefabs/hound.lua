@@ -117,9 +117,6 @@ SetSharedLootTable('hound_fire',
 {
     {'monstermeat', 1.0},
     {'houndstooth', 1.0},
-    {'houndfire',   1.0},
-    {'houndfire',   1.0},
-    {'houndfire',   1.0},
     {'redgem',      0.2},
 })
 
@@ -626,8 +623,17 @@ local function fndefault()
     return inst
 end
 
-local function PlayFireExplosionSound(inst)
+local NUM_HOUND_FIRE = 3
+local function DoFireExplosion(inst, data)
+    local loading = data ~= nil and data.cause == "file_load"
+    if loading then
+        return
+    end
+
     inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/firehound_explo")
+    for i = 1, NUM_HOUND_FIRE do
+        inst.components.lootdropper:SpawnLootPrefab("houndfire")
+    end
 end
 
 local function fnfire()
@@ -648,12 +654,17 @@ local function fnfire()
     inst.components.health:SetMaxHealth(TUNING.FIREHOUND_HEALTH)
     inst.components.lootdropper:SetChanceLootTable('hound_fire')
 
-    inst:ListenForEvent("death", PlayFireExplosionSound)
+    inst:ListenForEvent("death", DoFireExplosion)
 
     return inst
 end
 
-local function DoIceExplosion(inst)
+local function DoIceExplosion(inst, data)
+    local loading = data ~= nil and data.cause == "file_load"
+    if loading then
+        return
+    end
+
     if inst.components.freezable == nil then
         MakeMediumFreezableCharacter(inst, "hound_body")
     end

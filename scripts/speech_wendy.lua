@@ -5947,11 +5947,11 @@ return{
 
         HERMITCRABTEA_PETALS = "It quiets the mind.",
         HERMITCRABTEA_PETALS_EVIL = "This takes me to a dark place.",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "My mind is not what needs protecting.",
         HERMITCRABTEA_SUCCULENT_PICKED = "For when I miss the cold.",
         HERMITCRABTEA_FIRENETTLES = "It warms all but my soul.",
         HERMITCRABTEA_TILLWEED = "This tea will make me live longer. Sigh.",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "They will merely tolerate my presence.",
         HERMITCRABTEA_FORGETMELOTS = "To keep the demons at bay.",
         SHELLWEAVER = "What should I make, Abigail?",
         ICESTAFF2 = "Cold and misery.",

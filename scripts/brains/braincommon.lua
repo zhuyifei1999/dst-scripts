@@ -111,6 +111,17 @@ end
 
 --------------------------------------------------------------------------
 
+local function ShouldTriggerPanicShadowCreature(inst)
+    return inst._shadow_creature_panic_task ~= nil -- Set by hermitcrabtea_moon_tree_blossom_buff. Expand this to a better system if we do more with panicking shadow creatures
+end
+
+BrainCommon.ShouldTriggerPanicShadowCreature = ShouldTriggerPanicShadowCreature
+BrainCommon.PanicTriggerShadowCreature = function(inst)
+    return WhileNode(function() return ShouldTriggerPanicShadowCreature(inst) end, "PanicTriggerShadowCreature", Panic(inst))
+end
+
+--------------------------------------------------------------------------
+
 local function PanicWhenScared(inst, loseloyaltychance, chatty)
     local scareendtime = 0
     local function onepicscarefn(inst, data)

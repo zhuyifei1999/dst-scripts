@@ -5943,11 +5943,11 @@ return{
 
         HERMITCRABTEA_PETALS = "It doth bring peace to an unquiet mind.",
         HERMITCRABTEA_PETALS_EVIL = "Shall I sip from this chalice of delirium?",
-        HERMITCRABTEA_FOLIAGE = "TODO",
+        HERMITCRABTEA_FOLIAGE = "It shall shield my mind 'gainst the maddening fiends.",
         HERMITCRABTEA_SUCCULENT_PICKED = "It doth quench the fire within.",
         HERMITCRABTEA_FIRENETTLES = "It shall set my heart ablaze.",
         HERMITCRABTEA_TILLWEED = "Behold, a most rejuvenating elixir!",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "I shall pass 'mongst the Moonborn unseen.",
         HERMITCRABTEA_FORGETMELOTS = "A tonic to lift my mind from the depths of madness.",
         SHELLWEAVER = "The sea witch hath shared her ways with us. A high honor, indeed.",
         ICESTAFF2 = "Jotunn magics!",
