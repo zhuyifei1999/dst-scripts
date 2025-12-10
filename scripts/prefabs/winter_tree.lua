@@ -228,8 +228,9 @@ local function RemoveDecor(inst, data)
     UpdateLights(inst)
 end
 
-local function MakeOrnamentFx(inst, item, slot)
-	local fx = item:CloneAndFollowSymbol(inst, "plain"..slot)--, nil, nil, nil, true)
+local function AttachFxToSlot(inst, slot, fx)
+	fx:AttachToParent(inst)
+	fx.Follower:FollowSymbol(inst.GUID, "plain"..slot)--, nil, nil, nil, true)
 	if slot > 1 then
 		fx.AnimState:SetFinalOffset(
 			(slot <= 3 and 1) or
@@ -255,7 +256,7 @@ local function AddDecor(inst, data)
 			elseif inst.ornamentfx[data.slot] then
 				inst.ornamentfx[data.slot]:Remove()
 			end
-			inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, data.item, data.slot)
+			inst.ornamentfx[data.slot] = AttachFxToSlot(inst, data.slot, data.item:CloneAsFx())
 
 			StartWind(inst)
 			UpdateLights(inst)
@@ -282,7 +283,7 @@ local function RefreshDecor(inst, item)
 	local slot = inst.components.container:GetItemSlot(item)
 	if slot and inst.ornamentfx[slot] then
 		inst.ornamentfx[slot]:Remove()
-		inst.ornamentfx[slot] = MakeOrnamentFx(inst, item, slot)
+		inst.ornamentfx[slot] = AttachFxToSlot(inst, slot, item:CloneAsFx())
 	end
 end
 

@@ -6,6 +6,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.EAT, "eat_loop"),
     ActionHandler(ACTIONS.STEAL, "steal"),
     ActionHandler(ACTIONS.GOHOME, "action"),
+    ActionHandler(ACTIONS.PICK, "steal"),
 }
 
 local events=
@@ -16,8 +17,16 @@ local events=
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
-    EventHandler("entershield", function(inst) inst.sg:GoToState("shield") end),
-    EventHandler("exitshield", function(inst) inst.sg:GoToState("shield_end") end),
+    EventHandler("entershield", function(inst)
+        if inst.components.health and not inst.components.health:IsDead() then
+            inst.sg:GoToState("shield")
+        end
+    end),
+    EventHandler("exitshield", function(inst)
+        if inst.components.health and not inst.components.health:IsDead() then
+            inst.sg:GoToState("shield_end")
+        end
+    end),
 
 	-- Corpse handlers
 	CommonHandlers.OnCorpseChomped(),

@@ -33,13 +33,67 @@ local function _dbg_print(...)
 end
 
 local function onsave(inst, data)
-	data.highfriendlevel = inst:HasTag("highfriendlevel") or nil
- end
+    data.highfriendlevel = inst:HasTag("highfriendlevel") or nil
+    if inst.hermitcrab_skin then
+        local skin = inst.hermitcrab_skin:value()
+        if skin ~= "" then
+            data.hermitcrab_skin = skin
+        end
+    end
+end
 
 local function onload(inst, data)
-	if data and data.highfriendlevel then
-		inst:AddTag("highfriendlevel")
+    if data then
+        if data.highfriendlevel then
+            inst:AddTag("highfriendlevel")
+        end
+        if data.hermitcrab_skin and inst.hermitcrab_skin then
+            inst.hermitcrab_skin:set(data.hermitcrab_skin)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function AttachFxToSlot(inst, slot, fx)
+	fx:AttachToParent(inst)
+	fx.Follower:FollowSymbol(inst.GUID, "follow_ornament_"..tostring(slot), nil, nil, nil, true)
+	return fx
+end
+
+local function AddDecor(inst, data)
+	if data and data.slot and data.item then
+		if inst.ornamentfx[data.slot] then
+			inst.ornamentfx[data.slot]:Remove()
+		end
+		inst.ornamentfx[data.slot] = AttachFxToSlot(inst, data.slot, data.item:CloneAsFx())
 	end
+end
+
+local function RemoveDecor(inst, data)
+	if data and data.slot and inst.ornamentfx[data.slot] then
+		inst.ornamentfx[data.slot]:Remove()
+		inst.ornamentfx[data.slot] = nil
+	end
+end
+
+local function RefreshDecor(inst, item)
+	local slot = inst.components.container:GetItemSlot(item)
+	if slot and inst.ornamentfx[slot] then
+		inst.ornamentfx[slot]:Remove()
+		inst.ornamentfx[data.slot] = AttachFxToSlot(inst, slot, item:CloneAsFx())
+	end
+end
+
+local function AddFakeLaundry(inst, name, slot)
+	local fx = SpawnPrefab("hermithouse_ornament_fx")
+	fx.AnimState:SetBank(name)
+	fx.AnimState:SetBuild(name)
+	AttachFxToSlot(inst, slot, fx)
+end
+
+local function AddFakeOrnament(inst, slot)
+	AttachFxToSlot(inst, slot, SpawnPrefab("hermithouse_ornament_fx"))
 end
 
 --------------------------------------------------------------------------
@@ -58,6 +112,7 @@ end
 
 local function lvl3_master_postinit(inst)
     SetLunarHailBuildupAmountMedium(inst)
+	AddFakeLaundry(inst, "hermithouse_laundry_shorts", 4)
 end
 
 --------------------------------------------------------------------------
@@ -167,6 +222,9 @@ end
 
 local function lvl4_master_postinit(inst)
     SetLunarHailBuildupAmountLarge(inst)
+	AddFakeLaundry(inst, "hermithouse_laundry_shorts", 4)
+	AddFakeOrnament(inst, 2)
+
 	inst.components.constructionsite:Disable()
 	SetupScoreTracking(inst)
 
@@ -248,6 +306,20 @@ local function onoccupieddoortask(inst)
         LightsOn(inst)
     end
 end
+local function onejectchildtask(inst)
+    if inst.doortask then
+        -- Reschedule this is lower priority.
+        inst.ejectchildtask = inst:DoTaskInTime(3 + math.random() * 2, onejectchildtask)
+        return
+    end
+    inst.ejectchildtask = nil
+    if not inst:HasTag("burnt") then
+        if TheWorld.state.isday or (inst._hermitcrab and inst._hermitcrab:AllNightTest()) then -- Is Day.
+            LightsOff(inst)
+            inst.components.spawner:ReleaseChild()
+        end
+    end
+end
 
 local function onoccupied(inst, child)
     if not inst:HasTag("burnt") then
@@ -263,6 +335,12 @@ local function onoccupied(inst, child)
             inst.doortask:Cancel()
         end
         inst.doortask = inst:DoTaskInTime(1, onoccupieddoortask)
+    end
+    if child.hermitcrab_skinrequest then
+        child:ApplySkinRequest(inst)
+        if not inst.ejectchildtask then
+            inst.ejectchildtask = inst:DoTaskInTime(3 + math.random() * 2, onejectchildtask)
+        end
     end
 end
 
@@ -322,6 +400,18 @@ local function OnConstructed(inst, doer)
 			inst.components.pearldecorationscore:FlagForConstructionRemoval()
 		end
 
+		local transferdecor
+		if inst.ornamentfx and next(inst.ornamentfx) then
+			transferdecor = {}
+			for k, v in pairs(inst.ornamentfx) do
+				if v.AnimState:IsCurrentAnimation("wind") then
+					transferdecor[k] = { anim = "wind", t = v.AnimState:GetCurrentAnimationTime() }
+				elseif v.AnimState:IsCurrentAnimation("idle_loop") then
+					transferdecor[k] = { anim = "idle_loop", t = v.AnimState:GetCurrentAnimationTime() }
+				end
+			end
+		end
+
         local new_house = ReplacePrefab(inst, inst._construction_product)
         new_house.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/stage"..new_house.level.."_place")
 
@@ -340,6 +430,32 @@ local function OnConstructed(inst, doer)
 			local ornament = SpawnPrefab("hermithouse_ornament")
 			if not new_house.components.container:GiveItem(ornament, 2, nil, false) then
 				ornament:Remove()
+			end
+
+			ornament = SpawnPrefab("hermithouse_laundry_shorts")
+			if not new_house.components.container:GiveItem(ornament, 4, nil, false) then
+				ornament:Remove()
+			end
+
+			ornament = SpawnPrefab("hermithouse_laundry_socks")
+			if not new_house.components.container:GiveItem(ornament, 1, nil, false) then
+				ornament:Remove()
+			end
+		end
+
+		if transferdecor and new_house.ornamentfx then
+			for k, v in pairs(transferdecor) do
+				local v1 = new_house.ornamentfx[k]
+				if v1 then
+					if v.anim == "wind" then
+						v1.AnimState:PlayAnimation("wind")
+						v1.AnimState:SetTime(v.t)
+						v1.AnimState:PushAnimation("idle_loop")
+					elseif v.anim == "idle_loop" then
+						v1.AnimState:PlayAnimation("idle_loop", true)
+						v1.AnimState:SetTime(v.t)
+					end
+				end
 			end
 		end
 
@@ -449,44 +565,6 @@ end
 
 --------------------------------------------------------------------------
 
-local function MakeOrnamentFx(inst, item, slot)
-	return item:CloneAndFollowSymbol(inst, "follow_ornament_"..tostring(slot), nil, nil, nil, true)
-end
-
-local function AddDecor(inst, data)
-	if data and data.slot and data.item then
-		if data.slot == 3 or data.slot == 4 then
-			inst.AnimState:Hide("laundry_"..tostring(data.slot))
-		end
-		if inst.ornamentfx[data.slot] then
-			inst.ornamentfx[data.slot]:Remove()
-		end
-		inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, data.item, data.slot)
-	end
-end
-
-local function RemoveDecor(inst, data)
-	if data and data.slot then
-		if data.slot == 3 or data.slot == 4 then
-			inst.AnimState:Show("laundry_"..tostring(data.slot))
-		end
-		if inst.ornamentfx[data.slot] then
-			inst.ornamentfx[data.slot]:Remove()
-			inst.ornamentfx[data.slot] = nil
-		end
-	end
-end
-
-local function RefreshDecor(inst, item)
-	local slot = inst.components.container:GetItemSlot(item)
-	if slot and inst.ornamentfx[slot] then
-		inst.ornamentfx[slot]:Remove()
-		inst.ornamentfx[data.slot] = MakeOrnamentFx(inst, item, slot)
-	end
-end
-
---------------------------------------------------------------------------
-
 local function OnEnableHelper(inst, enabled)
     if enabled then
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -568,10 +646,37 @@ local function OnRemove(inst)
 end
 
 --------------------------------------------------------------------------
+-- groomer stuff
+local function canactivatechanging(inst, occupant, doer, skins)
+    return inst.hermitcrab_skin:value() ~= skins.base
+end
+
+local function applytargetskins(inst, occupant, doer, skins)
+    -- inst == occupant in this case
+    if inst._hermitcrab then
+        inst._hermitcrab.hermitcrab_skinrequest = {skins = skins, doer = doer}
+        if inst._hermitcrab:IsInLimbo() then
+            inst._hermitcrab:ApplySkinRequest(inst)
+        end
+    end
+end
+
+local function onclosepopup(inst, doer, data)
+    if data.popup == POPUPS.HERMITCRABWARDROBE then
+        local skins = {
+            base = data.args[1],
+            cancel = data.args[2],
+        }
+        return skins
+    end
+    return nil
+end
+--------------------------------------------------------------------------
 
 local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house_data)
     local is_built_home = name == "hermithouse" or name == "hermithouse2"
 	local is_decoratable = house_data == nil
+    local is_dressable = is_decoratable
 
 	local function fn()
 
@@ -589,6 +694,13 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
         inst:AddTag("structure")
 		if is_decoratable then
 			inst:AddTag("decoratable")
+        end
+        if is_dressable then
+            --groomer (from groomer component) added to pristine state for optimization
+            inst:AddTag("groomer")
+            --dressable (from groomer component) added to pristine state for optimization
+            inst:AddTag("dressable")
+            inst.hermitcrab_skin = net_string(inst.GUID, "hermithouse.crabskin")
 		end
 
 		inst.level = house_data and house_data.level or 5
@@ -659,8 +771,18 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 			inst:ListenForEvent("itemget", AddDecor)
 			inst:ListenForEvent("itemlose", RemoveDecor)
 			inst.RefreshDecor = RefreshDecor
-			inst.ornamentfx = {}
+			--inst.ornamentfx = {} --moved below, level >= 3
 		end
+
+        if is_dressable then
+            local groomer = inst:AddComponent("groomer")
+            groomer:SetCanBeDressed(true)
+            groomer.canactivatechangingfn = canactivatechanging
+            groomer.applytargetskinsfn = applytargetskins
+            groomer.onclosepopupfn = onclosepopup
+            groomer.popuptype = POPUPS.HERMITCRABWARDROBE
+            groomer.occupantisself = true
+        end
 
 		local spawner = inst:AddComponent("spawner")
 		spawner:Configure("hermitcrab", TUNING.TOTAL_DAY_TIME*1)
@@ -705,6 +827,7 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 
 		if inst.level >= 3 then
 			inst:DoTaskInTime(math.random()*5, dowind)
+			inst.ornamentfx = {}
         end
 
 		inst.OnSave = onsave
@@ -732,9 +855,14 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 		_prefabs = shallowcopy(prefabs)
 		table.insert(_prefabs, "construction_container")
 		table.insert(_prefabs, house_data.construction_product)
+		if house_data.level >= 3 then
+			table.insert(_prefabs, "hermithouse_ornament_fx")
+		end
 	elseif is_decoratable then
 		_prefabs = shallowcopy(prefabs)
 		table.insert(_prefabs, "hermithouse_ornament")
+		table.insert(_prefabs, "hermithouse_laundry_shorts")
+		table.insert(_prefabs, "hermithouse_laundry_socks")
 	end
 
 	return Prefab(name, fn, _assets, _prefabs)

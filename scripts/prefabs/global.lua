@@ -589,6 +589,14 @@ for _,char in ipairs(DST_CHARACTERLIST) do
     table.insert(assets, Asset("PKGREF", "images/names_gold_cn_"..char..".tex"))
 end
 
+-- For hermithouse.
+table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_pearl.xml"))
+table.insert(assets, Asset("PKGREF", "images/names_pearl.tex"))
+table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_pearl.xml"))
+table.insert(assets, Asset("PKGREF", "images/names_gold_pearl.tex"))
+table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_cn_pearl.xml"))
+table.insert(assets, Asset("PKGREF", "images/names_gold_cn_pearl.tex"))
+
 --Skin assets
 for _, skin_asset in pairs(require("skin_assets")) do
     table.insert(assets, skin_asset)

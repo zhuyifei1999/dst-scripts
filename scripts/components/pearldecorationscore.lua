@@ -519,12 +519,21 @@ function PearlDecorationScore:OnUpdate(dt)
 			-- Base score once we've upgraded to decoratable (tier 5) house
 			AddDecorPoints(PEARL_DECORATION_TYPES.LVL5_HOUSE, TUNING.HERMITCRAB_DECOR_LVL5_HOUSE)
 
-			local _, num = self.inst.components.container:HasItemWithTag("hermithouse_ornament", 1)
-			if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-				local _, num_winter = self.inst.components.container:HasItemWithTag("hermithouse_winter_ornament", 1)
-				num = num - num_winter
-				AddDecorPoints(PEARL_DECORATION_TYPES.ORNAMENTS, num_winter * TUNING.HERMITCRAB_DECOR_WINTER_ORNAMENT_SCORE)
-			end
+			local num, num_winter, num_wagstaff = 0, 0, 0
+			local iswintersfeast = IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST)
+			self.inst.components.container:ForEachItem(function(item)
+				if not item:HasTag("hermithouse_laundry") then
+					if item:HasTag("wagstaff_item") then
+						num_wagstaff = num_wagstaff + 1
+					elseif iswintersfeast and item:HasTag("hermithouse_winter_ornament") then
+						num_winter = num_winter + 1
+					else
+						num = num + 1
+					end
+				end
+			end)
+			AddDecorPoints(PEARL_DECORATION_TYPES.ORNAMENTS, num_wagstaff * TUNING.HERMITCRAB_DECOR_WAGSTAFF_ORNAMENT_SCORE)
+			AddDecorPoints(PEARL_DECORATION_TYPES.ORNAMENTS, num_winter * TUNING.HERMITCRAB_DECOR_WINTER_ORNAMENT_SCORE)
 			AddDecorPoints(PEARL_DECORATION_TYPES.ORNAMENTS, num * TUNING.HERMITCRAB_DECOR_ORNAMENT_SCORE)
 		end
 

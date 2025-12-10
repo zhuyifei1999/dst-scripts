@@ -128,7 +128,7 @@ local UNLOCKABLE_SECOND_TIER = { minscore = 30, maxscore = 40 }
 local function GetDecorScore()
     local hermitcrabmanager = TheWorld.components.hermitcrab_relocation_manager
     local home = hermitcrabmanager and hermitcrabmanager:GetPearlsHouse()
-    local pearldecorationscore = home.components.pearldecorationscore
+    local pearldecorationscore = home and home.components.pearldecorationscore
     return pearldecorationscore and pearldecorationscore:GetScore()
 end
 
@@ -172,9 +172,11 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data.istier2 then
-        inst.istier2 = data.istier2
-        -- We don't need to update prototyper tree here, abandoned status updaters handle it.
+    if data ~= nil then
+        if data.istier2 then
+            inst.istier2 = data.istier2
+            -- We don't need to update prototyper tree here, abandoned status updaters handle it.
+        end
     end
 end
 
@@ -239,7 +241,7 @@ local function fn()
         UpdateScore(inst)
     end
     inst:ListenForEvent("pearldecorationscore_updatescore", UpdateScore_Bridge, TheWorld)
-    UpdateScore(inst)
+    -- No need to init. pearldecorationscore_updatescore is pushed on LoadPostPass
 
     return inst
 end

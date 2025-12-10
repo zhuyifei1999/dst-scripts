@@ -5745,6 +5745,19 @@ table.insert(prefs, CreatePrefabSkin("hermitcrab_hairy",
 	release_group = 175,
 }))
 
+table.insert(prefs, CreatePrefabSkin("hermitcrab_none",
+{
+	base_prefab = "hermitcrab",
+	type = "base",
+	build_name_override = "hermitcrab_build",
+	rarity = "Complimentary",
+	is_npc_base = true,
+	init_fn = function(inst) hermitcrab_init_fn(inst, "hermitcrab_build") end,
+	skin_tags = { "BASE", },
+	skins = { normal_skin = "hermitcrab_build", },
+	release_group = 175,
+}))
+
 table.insert(prefs, CreatePrefabSkin("hermitcrab_peacock",
 {
 	base_prefab = "hermitcrab",

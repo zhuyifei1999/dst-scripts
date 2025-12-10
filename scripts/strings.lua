@@ -4433,6 +4433,8 @@ STRINGS =
 		MEATRACK_HERMIT_MULTI = "Large Drying Rack",
 		MEATRACK_HERMIT_ABANDONED = "Seaside Debris",
 		HERMITHOUSE_ORNAMENT = "Wind Charm",
+		HERMITHOUSE_LAUNDRY_SOCKS = "Socks", --TODO
+		HERMITHOUSE_LAUNDRY_SHORTS = "Shorts", --TODO
 		HERMIT_CHAIR_ROCKING = "Driftwood Rocker",
 
         SHELLWEAVER = "Combriner",
@@ -5856,6 +5858,11 @@ STRINGS =
     MERM_KING_TALK_HUNGER_HUNGRISH = "King feeling a bit peckish...",
     MERM_KING_TALK_HUNGER_FULL =  "Have done well. Now go.",
 
+    HERMITCRAB_TALK_ONSKINREQUEST = {
+        LOW = {"What now?"},
+        MED = {"These should better than the last ones."},
+        HIGH = {"Oh! More things to try?"},
+    },
 	HERMITCRAB_TALK_ONPURCHASE = {
             LOW = {"Great. Now leave me alone."},
             MED = {"Pleasure doing business."},

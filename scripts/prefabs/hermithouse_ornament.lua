@@ -26,13 +26,15 @@ end
 
 local function OnEntityReplicated(inst)
 	local parent = inst.entity:GetParent()
-	if parent and parent:HasTag("hermithouse") then
+	if parent then
 		LinkHighlight(inst, parent)
 	end
 end
 
 local function dosound(inst, soundname, loopid)
-	inst.SoundEmitter:PlaySound(inst.soundpath..soundname, loopid)
+	if inst.soundpath then
+		inst.SoundEmitter:PlaySound(inst.soundpath..soundname, loopid)
+	end
 end
 
 local function dowind(inst)
@@ -46,6 +48,23 @@ local function dowind(inst)
 		inst.AnimState:PushAnimation("wind")
 		inst.AnimState:PushAnimation("idle_loop")
 	end
+end
+
+local function AttachToParent(inst, parent)
+	inst.entity:SetParent(parent.entity)
+	if POPULATING or parent:IsAsleep() or parent:GetTimeAlive() == 0 then
+		--inst.AnimState:PlayAnimation("idle_loop", true)
+		inst.AnimState:SetFrame(math.random(inst.AnimState:GetCurrentAnimationNumFrames()) - 1)
+	else
+		inst.AnimState:PlayAnimation("place")
+		inst.AnimState:PushAnimation("idle_loop")
+		dosound(inst, "place")
+	end
+	dosound(inst, "idle_LP", "loop")
+	if not TheNet:IsDedicated() then
+		LinkHighlight(inst, parent)
+	end
+	return inst
 end
 
 local function fxfn()
@@ -72,31 +91,17 @@ local function fxfn()
 	end
 
 	inst.dowind = dowind
+	inst.AttachToParent = AttachToParent
 
 	inst.persists = false
 
 	return inst
 end
 
-local function CloneAndFollowSymbol(inst, parent, symbol, xoffs, yoffs, zoffs, layered)
+local function CloneAsFx(inst)
 	local skin_build = inst:GetSkinBuild()
 	local fx = SpawnPrefab("hermithouse_ornament_fx", skin_build, inst.skin_id)
 	fx.soundpath = string.format("hookline_2/characters/hermit/house/decor/%s_", skin_build and string.sub(skin_build, 22) or "shell")
-	fx.entity:SetParent(parent.entity)
-	fx.Follower:FollowSymbol(parent.GUID, symbol, xoffs, yoffs, zoffs, layered)
-	if POPULATING or parent:IsAsleep() then
-		--fx.AnimState:PlayAnimation("idle_loop", true)
-		fx.AnimState:SetFrame(math.random(fx.AnimState:GetCurrentAnimationNumFrames()) - 1)
-	else
-		fx.AnimState:PlayAnimation("place")
-		fx.AnimState:PushAnimation("idle_loop")
-		fx.SoundEmitter:PlaySound(fx.soundpath.."place")
-		dosound(fx, "place")
-	end
-	dosound(fx, "idle_LP", "loop")
-	if not TheNet:IsDedicated() then
-		LinkHighlight(fx, parent)
-	end
 	return fx
 end
 
@@ -143,7 +148,7 @@ local function fn()
 
 	MakeHauntableLaunch(inst)
 
-	inst.CloneAndFollowSymbol = CloneAndFollowSymbol
+	inst.CloneAsFx = CloneAsFx
 	inst.OnHermitHouseOrnamentSkinChanged = OnHermitHouseOrnamentSkinChanged
 
 	return inst

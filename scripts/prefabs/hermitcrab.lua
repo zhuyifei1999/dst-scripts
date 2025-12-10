@@ -1731,8 +1731,25 @@ local function OnNewState(inst, data)
     end
 end
 
+local function ApplySkinRequest(inst, house)
+    local skins, doer = inst.hermitcrab_skinrequest.skins, inst.hermitcrab_skinrequest.doer
+    if skins.base ~= "hermitcrab_none" then
+        if doer:IsValid() then
+            inst:ApplySkinFrom(skins.base, doer)
+            if house and house.hermitcrab_skin and house:IsValid() then
+                house.hermitcrab_skin:set(skins.base)
+            end
+        end
+    else
+        inst:ClearSkin()
+        if house and house.hermitcrab_skin and house:IsValid() then
+            house.hermitcrab_skin:set("")
+        end
+    end
+    inst.hermitcrab_skinrequest = nil
+end
+
 local function ApplySkinFrom(inst, skinname, owner)
-    -- FIXME(JBK): WF: Pearl change fx.
     TheSim:ReskinEntity(inst.GUID, inst.skinname, skinname, nil, owner.userid)
 end
 
@@ -1768,6 +1785,22 @@ local function OnCritterEmote(inst, data)
             chat_priority = CHATPRIORITIES.LOW,
         }
     end
+end
+
+local function OnSkinChangeRequest(inst, data)
+    inst.hermitcrab_skinrequest = data
+end
+
+local function AllNightTest(inst)
+    local home = inst.components.homeseeker and inst.components.homeseeker.home
+    local pearldecorationscore = home and home.components.pearldecorationscore
+    if TheWorld.state.isdusk and pearldecorationscore and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.LIGHT_POSTS) == "HIGH" then
+        return true
+    end
+    if inst.segs and inst.segs["night"] + inst.segs["dusk"] >= 16 then
+        return true
+    end
+    return false
 end
 
 local HERMITCRAB_MARKER_TAG = {"hermitcrab_marker"}
@@ -1853,9 +1886,12 @@ local function fn()
     inst.scrapbook_hide = { "ARM_carry", "HAT", "HAIR_HAT", "HEAD_HAT" }
     inst.scrapbook_facing  = FACING_DOWN
 
+    inst.ApplySkinRequest = ApplySkinRequest
     inst.ApplySkinFrom = ApplySkinFrom
     inst.ClearSkin = ClearSkin
     inst.reskin_tool_cannot_target_this = true
+
+    inst.AllNightTest = AllNightTest
 
     inst.components.talker.ontalk = ontalk
 

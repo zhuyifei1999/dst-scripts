@@ -899,6 +899,7 @@ PREFAB_SKINS = {
 	{
 		"hermitcrab_coral",
 		"hermitcrab_hairy",
+		"hermitcrab_none",
 		"hermitcrab_peacock",
 		"hermitcrab_pointy",
 	},

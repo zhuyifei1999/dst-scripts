@@ -13033,6 +13033,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HERMITHOUSE.GENERIC"
 msgid "It's just an empty shell of a house."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HERMITHOUSE_LAUNDRY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HERMITHOUSE_LAUNDRY"
+msgid ""
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HERMITHOUSE_ORNAMENT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HERMITHOUSE_ORNAMENT"
 msgid "I have a festive interest."
@@ -318473,6 +318478,21 @@ msgctxt "STRINGS.HERMITCRAB_TALK_ONPURCHASE.MED.1"
 msgid "Pleasure doing business."
 msgstr ""
 
+#. STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.HIGH.1
+msgctxt "STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.HIGH.1"
+msgid "Oh! More things to try?"
+msgstr ""
+
+#. STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.LOW.1
+msgctxt "STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.LOW.1"
+msgid "What now?"
+msgstr ""
+
+#. STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.MED.1
+msgctxt "STRINGS.HERMITCRAB_TALK_ONSKINREQUEST.MED.1"
+msgid "These should better than the last ones."
+msgstr ""
+
 #. STRINGS.HERMITCRAB_TEASHOP_BURN.1
 msgctxt "STRINGS.HERMITCRAB_TEASHOP_BURN.1"
 msgid "My shop is on fire!"
@@ -326786,6 +326806,16 @@ msgstr ""
 #. STRINGS.NAMES.HERMITHOUSE
 msgctxt "STRINGS.NAMES.HERMITHOUSE"
 msgid "Hermit Home"
+msgstr ""
+
+#. STRINGS.NAMES.HERMITHOUSE_LAUNDRY_SHORTS
+msgctxt "STRINGS.NAMES.HERMITHOUSE_LAUNDRY_SHORTS"
+msgid "Shorts"
+msgstr ""
+
+#. STRINGS.NAMES.HERMITHOUSE_LAUNDRY_SOCKS
+msgctxt "STRINGS.NAMES.HERMITHOUSE_LAUNDRY_SOCKS"
+msgid "Socks"
 msgstr ""
 
 #. STRINGS.NAMES.HERMITHOUSE_ORNAMENT
@@ -358813,6 +358843,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.hermitcrab_hairy"
 msgid "Beneath that abrasive exterior lies a warm and caring heart."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.hermitcrab_none
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hermitcrab_none"
+msgid "You can't beat the classics!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.hermitcrab_peacock
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hermitcrab_peacock"
 msgid "Pearl is going to teach you young'uns a thing or two about fashion."
@@ -377651,6 +377686,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.hermitcrab_hairy
 msgctxt "STRINGS.SKIN_NAMES.hermitcrab_hairy"
 msgid "Prickly Pearl"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hermitcrab_none
+msgctxt "STRINGS.SKIN_NAMES.hermitcrab_none"
+msgid "Pearl"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hermitcrab_peacock

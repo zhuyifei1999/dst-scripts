@@ -330,7 +330,7 @@ ACTIONS =
     HARVEST = Action(),
     GOHOME = Action(),
     SLEEPIN = Action(),
-    CHANGEIN = Action({ priority=-1 }),
+    CHANGEIN = Action({ priority=0 }), -- Must be bigger than RUMMAGE.
     HITCHUP = Action({ priority=-1 }),
     MARK = Action({ distance=2, priority=-1 }),
     UNHITCH = Action({ distance=2, priority=-1 }),

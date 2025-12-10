@@ -527,6 +527,7 @@ PREFABFILES = {
   "hermitcrabtea",
   "hermithotspring",
   "hermithouse",
+  "hermithouse_laundry",
   "hermithouse_ornament",
   "hitsparks_fx",
   "homesign",

@@ -106,7 +106,7 @@ local function CustomOnHaunt(inst)
     return true
 end
 
-local function commonfn(bank, build, tag)
+local function commonfn(bank, build, tag, common_postinit)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -130,6 +130,10 @@ local function commonfn(bank, build, tag)
 
     if tag ~= nil then
         inst:AddTag(tag)
+    end
+
+    if common_postinit ~= nil then
+        common_postinit(inst)
     end
 
     inst.entity:SetPristine()
@@ -218,8 +222,11 @@ local function makeslurtle()
     return inst
 end
 
+local function snurtle_common_postinit(inst)
+    inst.AnimState:OverrideSymbol("shell", "slurtle_snaily", "shell")
+end
 local function makesnurtle()
-    local inst = commonfn("snurtle", "slurtle_snaily", "snurtle")
+    local inst = commonfn("slurtle", "slurtle", "snurtle", snurtle_common_postinit)
 
     inst.scrapbook_removedeps = {"slurtlehat"}
 

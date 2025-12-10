@@ -151,19 +151,14 @@ local function HasValidHome(inst)
         and not home:HasTag("burnt")
 end
 
-local function allnighttest(inst)
-    local home = inst.components.homeseeker and inst.components.homeseeker.home
-    local pearldecorationscore = home and home.components.pearldecorationscore
-    if TheWorld.state.isdusk and pearldecorationscore and pearldecorationscore:GetDecorScoreLevel(PEARL_DECORATION_TYPES.LIGHT_POSTS) == "HIGH" then
-        return true
-    end
-    if inst.segs and inst.segs["night"] + inst.segs["dusk"] >= 16 then
-        return true
+local function GoHomeImmediatelyAction(inst)
+    if HasValidHome(inst) then
+        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end
 
 local function GoHomeAction(inst)
-    if HasValidHome(inst) and not allnighttest(inst) then
+    if HasValidHome(inst) and not inst:AllNightTest() then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
     end
 end
@@ -648,10 +643,15 @@ end
 
 function HermitBrain:OnStart()
 
-    local day = WhileNode( function() return TheWorld.state.isday or allnighttest(self.inst) end, "IsDay",
+    local day = WhileNode( function() return TheWorld.state.isday or self.inst:AllNightTest() end, "IsDay",
         PriorityNode{
             WhileNode( function() return not self.inst.sg:HasStateTag("mandatory") end, "unfriendly",
                 PriorityNode{
+                    WhileNode(function() return not self.inst.sg:HasStateTag("busy") and self.inst.hermitcrab_skinrequest ~= nil and HasValidHome(self.inst) end, "skinrequest",
+                        ChattyNode(self.inst, {
+                            name = function(inst) return "HERMITCRAB_TALK_ONSKINREQUEST." .. inst:getgeneralfriendlevel() end,
+                            chatterparams = CHATTERPARAMS_LOW,
+                        }, DoAction(self.inst, GoHomeImmediatelyAction, "go home", true))),
                     IfNode(function() return IsPetCritterHungry(self.inst) end, "Is critter hungry",
                         DoAction(self.inst, DoFeedPetCritterAction, "feed critter", true, 10)),
                     IfNode(function() return self:SelectTeaShop() end, "go to tea shop",
@@ -699,7 +699,7 @@ function HermitBrain:OnStart()
                 },0.5),
         }, 0.5)
 
-    local night = WhileNode( function() return not TheWorld.state.isday and not allnighttest(self.inst) end, "IsNight",
+    local night = WhileNode( function() return not TheWorld.state.isday and not self.inst:AllNightTest() end, "IsNight",
         PriorityNode{
             RunAway(self.inst, "player", START_RUN_DIST, STOP_RUN_DIST, function(target) return ShouldRunAway(self.inst, target) end ),
             ChattyNode(self.inst, { name = "HERMITCRAB_GO_HOME", chatterparams = CHATTERPARAMS_LOW },

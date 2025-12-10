@@ -27,7 +27,6 @@ local Groomer = Class(function(self, inst)
     self.range = 3
     self.changeindelay = 0
     self.onchangeinfn = nil
-    self.ondressupfn = nil
     self.onopenfn = nil
     self.onclosefn = nil
 
@@ -116,6 +115,10 @@ function Groomer:SetChangeInDelay(delay)
     self.changeindelay = delay
 end
 
+function Groomer:GetOccupant()
+    return self.occupantisself and self.inst or self.occupant
+end
+
 function Groomer:CanBeginChanging(doer)
     if not self.enabled then
         return false, "INUSE"
@@ -129,7 +132,7 @@ function Groomer:CanBeginChanging(doer)
 	elseif not self.canbeshared and next(self.changers) then
 		return false, "INUSE"
     elseif self.canbeginchangingfn then
-        local success, reason = self.canbeginchangingfn(self.inst, self.occupant, doer)
+        local success, reason = self.canbeginchangingfn(self.inst, self:GetOccupant(), doer)
         return success, reason
     end
     return true
@@ -137,7 +140,7 @@ end
 
 function Groomer:BeginChanging(doer)
     if self.beginchangingfn then
-        self.beginchangingfn(self.inst, self.occupant, doer)
+        self.beginchangingfn(self.inst, self:GetOccupant(), doer)
     end
 
     if not self.changers[doer] then
@@ -205,10 +208,15 @@ end
 local function DoChange(self, doer, skins)
     doer.sg.statemem.ischanging = true
     doer.sg:GoToState("dressupwardrobe", function()
-        if self.occupant then
-            self.occupant.sg:GoToState("skin_change", function()
-                self:ApplyTargetSkins(self.occupant, doer, skins)
-            end)
+        local occupant = self:GetOccupant()
+        if occupant then
+            if occupant.sg then
+                occupant.sg:GoToState("skin_change", function()
+                    self:ApplyTargetSkins(occupant, doer, skins)
+                end)
+            else
+                self:ApplyTargetSkins(occupant, doer, skins)
+            end
         end
     end)
     if self.changefn then
@@ -220,8 +228,8 @@ end
 function Groomer:ActivateChanging(doer, skins)
     if skins == nil or
         doer.sg.currentstate.name ~= "openwardrobe" or
-        self.occupant == nil or
-        (self.canactivatechangingfn and not self.canactivatechangingfn(self.inst, self.occupant, doer, skins))
+        self:GetOccupant() == nil or
+        (self.canactivatechangingfn and not self.canactivatechangingfn(self.inst, self:GetOccupant(), doer, skins))
     then
         return false
     end

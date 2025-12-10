@@ -6243,10 +6243,11 @@ local states =
                 inst.components.playercontroller:RemotePausePrediction()
             end
             if data.target and data.target.components.groomer then
-                assert(data.target.components.groomer.occupant,"Grooming station had not occupant")
+                local occupant = data.target.components.groomer:GetOccupant()
+                assert(occupant, "Grooming station has no occupant")
                 local popuptype = data.target.components.groomer.popuptype or POPUPS.GROOMER
                 inst.sg.statemem.popuptype = popuptype
-                inst:ShowPopUp(popuptype, true, data.target.components.groomer.occupant, inst)
+                inst:ShowPopUp(popuptype, true, occupant, inst)
             else
                 inst:ShowPopUp(POPUPS.WARDROBE, true, data.target)
             end
