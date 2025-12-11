@@ -32,6 +32,13 @@ local BUILDS_TO_NAMES =
         hound_warglet = "warglet",
     },
 
+    rabbitking =
+    {
+        rabbitking_aggressive_build = "rabbitking_aggressive",
+        rabbitking_lucky_build = "rabbitking_lucky",
+        rabbitking_passive_build = "rabbitking_passive",
+    },
+
     spider =
     {
         spider_build = "spider",
@@ -251,11 +258,8 @@ local CORPSE_DEFS =
         pre_rift_mutant_data =
         {
             overridemutantprefab = function(inst)
-                return (
-                    inst.build == "robin" or 
-                    inst.build == "robin_winter"
-                ) and "bird_mutant_spitter"
-                or "bird_mutant"
+                local build = inst.AnimState:GetBuild()
+                return (build ~= "crow_build") and "bird_mutant_spitter" or "bird_mutant"
             end,
             enabled_tuning = "SPAWN_MUTATED_BIRDS",
         },
@@ -460,9 +464,10 @@ local CORPSE_DEFS =
         pre_rift_mutant_data =
         {
             overridemutantprefab = function(inst)
+                local build = inst.AnimState:GetBuild()
                 return (
-                    inst.build == "mermguard" or
-                    inst.build == "mermguard_small"
+                    build == "merm_guard_build" or
+                    build == "merm_guard_small_build"
                 ) and "mermguard_lunar"
                 or "merm_lunar"
             end,
@@ -516,6 +521,10 @@ local CORPSE_DEFS =
         --
         sanityaura = -TUNING.SANITYAURA_MED,
         use_inventory_physics = true,
+
+        common_postinit = function(inst)
+            inst.AnimState:Hide("hat")
+        end,
     },
 
     { -- For search: prime_matecorpse
@@ -630,6 +639,10 @@ local CORPSE_DEFS =
         --
         sanityaura = -TUNING.SANITYAURA_SMALL,
         physicsradius = .5,
+
+        common_postinit = function(inst)
+            inst.AnimState:Hide("swap_antler")
+        end,
     },
 
     { -- For search: rabbitcorpse
@@ -1111,6 +1124,11 @@ local CORPSE_DEFS =
         physicsradius = 1.2 * 1,
         shadowsize = {4, 2},
         tags = { "epiccorpse", "largecreaturecorpse" },
+        
+        common_postinit = function(inst)
+            inst.AnimState:Hide("swap_chain")
+            inst.AnimState:Hide("swap_chain_lock")
+        end,
     },
 
     { -- For search: eyeofterrorcorpse

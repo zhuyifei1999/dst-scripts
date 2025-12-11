@@ -5932,6 +5932,7 @@ return{
 			ABANDONED = "What a waste.",
         },
 		HERMITHOUSE_ORNAMENT = "That would really spruce up the old cabin.",
+        HERMITHOUSE_LAUNDRY = "I really should do my laundry.",
 
         PETALS_DRIED = "Smells nice.",
         PETALS_EVIL_DRIED = "Smells nice.",

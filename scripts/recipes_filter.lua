@@ -1567,6 +1567,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 	"stone_chair",
 	"wood_stool",
 	"stone_stool",
+	"hermit_chair_rocking",
 	"wood_table_round",
 	"stone_table_round",
 	"wood_table_square",

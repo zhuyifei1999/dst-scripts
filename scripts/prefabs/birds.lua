@@ -311,6 +311,10 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         inst.components.locomotor:EnableGroundSpeedMultiplier(false)
         inst.components.locomotor:SetTriggersCreep(false)
         inst:SetStateGraph("SGbird")
+        if name == "puffin" then
+            -- TODO (OMAR) remove when puffin gets mutation animations
+            inst.sg.mem.nolunarmutate = true
+        end
 
         inst:AddComponent("lootdropper")
 		if custom_loot_setup ~= nil then

@@ -623,6 +623,14 @@ local states =
                 for k, v in pairs(anims) do
                     inst.AnimState:PushAnimation(v, k == #anims)
                 end
+			elseif anims[1] == "idle_loop" and #anims == 1 then
+				if inst.AnimState:IsCurrentAnimation("idle_loop") then
+					--already playing idle_loop
+				elseif inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
+					local t = inst.AnimState:GetCurrentAnimationTime()
+					inst.AnimState:PlayAnimation("idle_loop", true)
+					inst.AnimState:SetTime(t)
+				end
             else
                 inst.AnimState:PlayAnimation(anims[1], #anims == 1)
                 for k, v in pairs(anims) do
@@ -704,6 +712,14 @@ local states =
                 for k, v in pairs(anims) do
                     inst.AnimState:PushAnimation(v, k == #anims)
                 end
+			elseif anims[1] == "idle_loop" and #anims == 1 then
+				if inst.AnimState:IsCurrentAnimation("idle_loop") then
+					--already playing idle_loop
+				elseif inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
+					local t = inst.AnimState:GetCurrentAnimationTime()
+					inst.AnimState:PlayAnimation("idle_loop", true)
+					inst.AnimState:SetTime(t)
+				end
             else
                 inst.AnimState:PlayAnimation(anims[1], #anims == 1)
                 for k, v in pairs(anims) do
@@ -1015,7 +1031,6 @@ local states =
                         inst.Transform:SetPosition(teashop.Transform:GetWorldPosition())
                         teashop:PushEventImmediate("hermitcrab_entered", { hermitcrab = inst })
                         inst.sg.mem.tea_shop_teleport = nil
-                        inst.sg:GoToState("idle")
                     end
                 end
 
@@ -2009,7 +2024,7 @@ local states =
             inst.stoptalktask = inst:DoTaskInTime(2,function()
                 inst.stoptalktask = nil
                 StopTalkSound(inst)
-                inst.AnimState:PlayAnimation("idle")
+				inst.AnimState:PlayAnimation("idle_loop_nofaced", true)
             end)
         end,
 
@@ -2797,8 +2812,9 @@ local states =
 
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 
-            if inst.components.stuckdetection:IsStuck() and inst.brain.selected_tea_shop then
-                inst.sg.mem.tea_shop_teleport = inst.brain.selected_tea_shop
+            local selected_tea_shop = inst.brain and inst.brain:GetSelectedTeaShop()
+            if inst.components.stuckdetection:IsStuck() and selected_tea_shop then
+                inst.sg.mem.tea_shop_teleport = selected_tea_shop
                 inst.sg:GoToState("idle")
             end
         end,
@@ -4734,7 +4750,9 @@ local states =
         events =
         {
             EventHandler("animover", function(inst)
-                inst:OnHermitCrabLeaveTeaShop()
+                if inst.tea_shop then
+                    inst.tea_shop:ShowHermitCrab()
+                end
             end),
         },
     },

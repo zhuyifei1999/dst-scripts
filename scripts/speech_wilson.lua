@@ -5940,8 +5940,8 @@ return {
             DONE_SALT = "Sodium salty.",
 			ABANDONED = "It dried its best.",
         },
-		HERMITHOUSE_ORNAMENT = "I have a festive interest.",
-		HERMITHOUSE_LAUNDRY = "", --TODO
+		HERMITHOUSE_ORNAMENT = "How chiming.",
+		HERMITHOUSE_LAUNDRY = "Should I say something, or is it unmentionable?",
 
         PETALS_DRIED = "Nice dry.",
         PETALS_EVIL_DRIED = "Nice dry.",

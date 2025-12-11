@@ -142,14 +142,16 @@ end
 
 -- prototyper gets removed and added so save tier 2 seperately.
 local function UpdateScore(inst)
-    local istier2 = inst.components.prototyper.trees == TUNING.PROTOTYPER_TREES.SHELLWEAVER_L2
-    local score = GetDecorScore()
-    if score and score >= (istier2 and UNLOCKABLE_SECOND_TIER.minscore or UNLOCKABLE_SECOND_TIER.maxscore) then
-        inst.istier2 = true
-    else
-        inst.istier2 = nil
+    if inst.components.prototyper then
+        local istier2 = inst.components.prototyper.trees == TUNING.PROTOTYPER_TREES.SHELLWEAVER_L2
+        local score = GetDecorScore()
+        if score and score >= (istier2 and UNLOCKABLE_SECOND_TIER.minscore or UNLOCKABLE_SECOND_TIER.maxscore) then
+            inst.istier2 = true
+        else
+            inst.istier2 = nil
+        end
+        UpdatePrototyperTree(inst)
     end
-    UpdatePrototyperTree(inst)
 end
 
 local function AddPrototyper(inst)
@@ -157,7 +159,7 @@ local function AddPrototyper(inst)
     inst.components.prototyper.onturnon = OnTurnOn
     inst.components.prototyper.onturnoff = OnTurnOff
     inst.components.prototyper.onactivate = StartMakingScience
-    UpdatePrototyperTree(inst)
+    UpdateScore(inst)
 end
 
 local function UpdateAbandonedStatus(inst, within_area)

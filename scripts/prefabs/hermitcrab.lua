@@ -1015,14 +1015,18 @@ local function berriescomplainfn(inst)
     end
 end
 
-local function GetAllMeatRacksNear(inst, x, y, z)
+local function GetAllMeatRacksNear(inst, x, y, z, includeempty)
     local meatracks = {}
     local ents = TheSim:FindEntities(x, y, z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
     for _, ent in ipairs(ents) do
-        local container = ent.components.dryingrack and ent.components.dryingrack:GetContainer() or nil
-        local product = ent.components.dryer and ent.components.dryer.product or nil
-        if product or (container and not container:IsEmpty()) then
-            table.insert(meatracks, ent)
+        local dryer = ent.components.dryer
+        local dryingrack = ent.components.dryingrack
+        local container = dryingrack and dryingrack:GetContainer() or nil
+        local product = dryer and dryer.product or nil
+        if dryingrack or dryer then
+            if includeempty or (product or (container and not container:IsEmpty())) then
+                table.insert(meatracks, ent)
+            end
         end
     end
     return meatracks
@@ -1450,7 +1454,9 @@ local function initfriendlevellisteners(inst)
             key = PEARL_DECORATION_TYPES.MEAT_RACKS,
             commentstrings = "HERMITCRAB_DECOR_CONTENT.MEAT_RACKS",
             getpos = function(inst, home, pearldecorationscore)
-                return inst:GetAllMeatRacksNear(inst.Transform:GetWorldPosition())[1] or inst:GetPosition()
+                local x, y, z = inst.Transform:GetWorldPosition()
+                local firstrack = inst:GetAllMeatRacksNear(x, y, z, true)[1]
+                return (firstrack and firstrack:GetPosition()) or inst:GetPosition()
             end,
         },
         {
@@ -1971,6 +1977,7 @@ local function fn()
     inst:AddComponent("craftingstation")
 
     inst:AddComponent("leader")
+    inst.components.leader:SetForceLeash()
 
     inst:AddComponent("petleash")
     inst.components.petleash:SetMaxPets(1)

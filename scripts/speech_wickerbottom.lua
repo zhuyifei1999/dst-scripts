@@ -5931,6 +5931,7 @@ return{
 			ABANDONED = "What a shame.",
         },
 		HERMITHOUSE_ORNAMENT = "An attractive ornament to be hung on Pearl's house.",
+        HERMITHOUSE_LAUNDRY = "Laundry.",
 
         PETALS_DRIED = "The drying process enhances the aroma.",
         PETALS_EVIL_DRIED = "The drying process enhances the aroma.",

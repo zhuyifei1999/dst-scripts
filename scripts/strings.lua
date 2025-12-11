@@ -4433,8 +4433,8 @@ STRINGS =
 		MEATRACK_HERMIT_MULTI = "Large Drying Rack",
 		MEATRACK_HERMIT_ABANDONED = "Seaside Debris",
 		HERMITHOUSE_ORNAMENT = "Wind Charm",
-		HERMITHOUSE_LAUNDRY_SOCKS = "Socks", --TODO
-		HERMITHOUSE_LAUNDRY_SHORTS = "Shorts", --TODO
+		HERMITHOUSE_LAUNDRY_SOCKS = "Stockings",
+		HERMITHOUSE_LAUNDRY_SHORTS = "Bloomers",
 		HERMIT_CHAIR_ROCKING = "Driftwood Rocker",
 
         SHELLWEAVER = "Combriner",
@@ -6082,6 +6082,7 @@ STRINGS =
                 MED = {"...Thank you. It's been a long time."},
                 HIGH = {"Thank you dearie...","Have you seen any other crabs on your travels?"},
             },
+            GIVE_FLOWER_SALAD_POST_RELOCATION = { "Thank you dearie, I used to love this flower salad."},
             GIVE_FISH_WINTER = {
                 LOW = {"Hmph. You could've caught it faster if you used this."},
                 MED = {"Oh... thanks. Here, take this for your trouble."},
@@ -6198,6 +6199,7 @@ STRINGS =
         MED = {"I suppose I'm glad they reached anyone, really."},
         HIGH = {"Maybe this will be the one to reach him..."},
     },
+    HERMITCRAB_THROWBOTTLE_POST_RELOCATION = { "I hope you find this on your travels and come back for a visit, dearie!"},
     HERMITCRAB_HARVESTMEAT = {
         LOW = {"Hmph... looks pretty stringy."},
         MED = {"Hm... doesn't look too bad."},
@@ -6401,7 +6403,7 @@ STRINGS =
         {
             -- low = no chairs
             -- med = you placed some chairs,
-            LOW = { "There's no were to sit, dearie! Please help me build some chairs.", "I would love some chairs for my home, dearie." },
+            LOW = { "There's nowhere to sit, dearie! Please help me build some chairs.", "I would love some chairs for my home, dearie." },
             MED = { "The chairs you built are lovely, dearie. A few more would be lovely.", "Could you please build me just a few more chairs, dearie?" },
         },
         PICKABLE_PLANTS = -- She wants plants! (grass, saplings, berry bushes)

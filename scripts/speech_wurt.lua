@@ -5931,6 +5931,7 @@ return{
 			ABANDONED = "Crabby lady need new one.",
         },
 		HERMITHOUSE_ORNAMENT = "Just for crabby lady!",
+        HERMITHOUSE_LAUNDRY = "Play prank on crabby lady?",
 
         PETALS_DRIED = "Dried bits not yummy.",
         PETALS_EVIL_DRIED = "Dried bits not yummy.",

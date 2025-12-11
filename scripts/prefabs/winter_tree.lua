@@ -231,12 +231,8 @@ end
 local function AttachFxToSlot(inst, slot, fx)
 	fx:AttachToParent(inst)
 	fx.Follower:FollowSymbol(inst.GUID, "plain"..slot)--, nil, nil, nil, true)
-	if slot > 1 then
-		fx.AnimState:SetFinalOffset(
-			(slot <= 3 and 1) or
-			(slot <= 5 and 2) or
-			3
-		)
+	if inst.SortDecor then
+		inst:SortDecor(fx, slot)
 	end
 	return fx
 end
@@ -1056,6 +1052,7 @@ local function AddWinterTree(treetype)
 
         inst.OnPlayAnim = treetype.onplayanim
         inst.OnChop = treetype.onchop
+		inst.SortDecor = treetype.sortdecorfn
 
         inst.statedata = statedata[1]
         inst.seedprefab = treetype.seedprefab
@@ -1133,12 +1130,29 @@ for i, v in ipairs({
         },
         shelter = true,
         onchop = evergreen_onchop,
+		sortdecorfn = function(inst, fx, slot)
+			fx.AnimState:SetFinalOffset(
+				(slot <= 1 and 1) or
+				(slot <= 2 and 3) or
+				(slot <= 3 and 2) or
+				(slot <= 5 and 1) or
+				3
+			)
+		end,
     },
     {
         name = "winter_twiggytree",
         bank = "wintertree_twiggy",
         build = "twiggy_build",
         seedprefab = "twiggy_nut",
+		sortdecorfn = function(inst, fx, slot)
+			fx.AnimState:SetFinalOffset(
+				(slot <= 1 and 4) or
+				(slot <= 3 and 3) or
+				(slot <= 6 and 2) or
+				1
+			)
+		end,
     },
     {
         name = "winter_deciduoustree",
@@ -1170,6 +1184,15 @@ for i, v in ipairs({
         onload = deciduous_onload,
         onplayanim = deciduous_onplayanim,
         onchop = deciduous_onchop,
+		sortdecorfn = function(inst, fx, slot)
+			fx.AnimState:SetFinalOffset(
+				(slot <= 1 and 5) or
+				(slot <= 3 and 3) or
+				(slot <= 4 and 4) or
+				(slot <= 6 and 2) or
+				1
+			)
+		end,
     },
     {
         name = "winter_palmconetree",
@@ -1185,6 +1208,14 @@ for i, v in ipairs({
         },
         onchop = palmcone_onchop,
         shelter = true,
+		sortdecorfn = function(inst, fx, slot)
+			fx.AnimState:SetFinalOffset(
+				(slot <= 2 and -1) or
+				(slot <= 4 and 3) or
+				(slot <= 5 and 2) or
+				1
+			)
+		end,
     },
 }) do
     AddWinterTree(v)

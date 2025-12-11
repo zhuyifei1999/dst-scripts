@@ -5935,6 +5935,7 @@ return{
 			ABANDONED = "Broken",
         },
 		HERMITHOUSE_ORNAMENT = "Pretty stuff for crabby friend house",
+        HERMITHOUSE_LAUNDRY = "Crabby friend things.",
 
         PETALS_DRIED = "Dry stuff",
         PETALS_EVIL_DRIED = "Dry stuff",

@@ -5951,6 +5951,7 @@ return{
 			ABANDONED = "The rack got the sack.",
         },
 		HERMITHOUSE_ORNAMENT = "Lifts the mood of her humble abood.",
+        HERMITHOUSE_LAUNDRY = "Crossing a boundary by stealing this laundry?",
 
         PETALS_DRIED = "I'd eyed it'd dried.",
         PETALS_EVIL_DRIED = "I'd eyed it'd dried.",

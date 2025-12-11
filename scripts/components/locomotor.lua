@@ -1409,17 +1409,10 @@ function LocoMotor:StartHopping(x,z,target_platform)
     self.time_before_next_hop_is_allowed = 0.2
 end
 
-function LocoMotor:CheckDrownable()
+function LocoMotor:CheckDrownable() -- Wrapper function for drownable check.
     local drownable = self.inst.components.drownable
     if drownable then
-        local fallingreason = drownable:GetFallingReason()
-        if fallingreason == FALLINGREASON.OCEAN then
-            self.inst:PushEvent("onsink")
-            return true
-        elseif fallingreason == FALLINGREASON.VOID then
-            self.inst:PushEvent("onfallinvoid")
-            return true
-        end
+        return drownable:CheckDrownable()
     end
     return false
 end

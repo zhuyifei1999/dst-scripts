@@ -8,6 +8,10 @@ local prefabs =
 	"hermithouse_ornament_fx",
 }
 
+--NOTE: "hermithouse_ornament_fx" is used also by:
+--      -hermithouse_laundry
+--      -wagstaff_items
+
 local function UnlinkHighlight(inst)
 	if inst.highlightparent.highlightchildren then
 		table.removearrayvalue(inst.highlightparent.highlightchildren, inst)
@@ -89,6 +93,8 @@ local function fxfn()
 
 		return inst
 	end
+
+	--inst.soundpath = nil --keep this nil on construction since other files use this fx as well
 
 	inst.dowind = dowind
 	inst.AttachToParent = AttachToParent

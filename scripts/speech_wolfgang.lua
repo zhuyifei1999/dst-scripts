@@ -5932,6 +5932,7 @@ return{
 			ABANDONED = "Once big and mighty dry rack, now garbage. Sad.",
         },
 		HERMITHOUSE_ORNAMENT = "Is quite elegant.",
+        HERMITHOUSE_LAUNDRY = "Hmm, when last time Wolfgang change underwears?",
 
         PETALS_DRIED = "Wolfgang appreciate delicate fragrance.",
         PETALS_EVIL_DRIED = "Wolfgang appreciate delicate fragrance.",

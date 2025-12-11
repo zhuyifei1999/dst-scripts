@@ -196,13 +196,13 @@ local function OnHermitCrabLeave(inst, data)
     local instant = data and data.instant
     inst:RemoveComponent("prototyper")
     if inst.hermitcrab and inst.hermitcrab:IsValid() then
-        inst.hermitcrab.tea_shop = nil
         table.removearrayvalue(inst.highlightchildren, inst.hermitcrab)
         inst.hermitcrab.client_forward_target = nil
         inst.hermitcrab.AnimState:SetHighlightColour()
         inst._hermitcrab:set(nil)
         if instant then
             inst.hermitcrab:OnHermitCrabLeaveTeaShop()
+            inst.hermitcrab.tea_shop = nil
             inst.hermitcrab = nil
         else
             inst.hermitcrab:PushEventImmediate("leave_teashop")
@@ -214,6 +214,7 @@ end
 local function ShowHermitCrab(inst)
     if inst.hermitcrab and inst.hermitcrab:IsValid() then
         inst.hermitcrab:OnHermitCrabLeaveTeaShop()
+        inst.hermitcrab.tea_shop = nil
         inst.hermitcrab = nil
     end
     UpdateLights(inst, TheWorld.state.isday)

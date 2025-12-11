@@ -439,7 +439,7 @@ local function DoBottleToss(inst)
 end
 
 local SITTABLE_TAGS = {"cansit"}
-local SITTABLE_WONT_TAGS = {"uncomfortable_chair"}
+local SITTABLE_WONT_TAGS = { "uncomfortable_chair", "fire" }
 local function DoChairSit(inst)
     if not inst:HasTag("sitting_on_chair") and not inst.components.timer:TimerExists("sat_on_chair") then
         local source = inst.CHEVO_marker
@@ -571,6 +571,10 @@ end
 
 function HermitBrain:GetSelectedTeaShopPos()
 	return self:CheckSelectedTeaShop() and self.selected_tea_shop:GetPosition() or nil
+end
+
+function HermitBrain:GetSelectedTeaShop()
+    return self:CheckSelectedTeaShop() and self.selected_tea_shop or nil
 end
 
 ---------------------------------------------------------------------

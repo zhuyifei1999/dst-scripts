@@ -5931,6 +5931,7 @@ return{
 			ABANDONED = "Aw, it's broken!",
         },
 		HERMITHOUSE_ORNAMENT = "Will there still be room for webs?",
+        HERMITHOUSE_LAUNDRY = "Where should we hide them?",
 
         PETALS_DRIED = "Did we pick these?",
         PETALS_EVIL_DRIED = "Did we pick these?",

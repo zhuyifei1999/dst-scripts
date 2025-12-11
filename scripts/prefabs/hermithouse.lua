@@ -361,17 +361,14 @@ local function onvacate(inst, child)
         LightsOff(inst)
 
         if child ~= nil then
-            local child_platform = child:GetCurrentPlatform()
-            if (child_platform == nil and not child:IsOnValidGround()) then
-                local fx = SpawnPrefab("splash_sink")
-                fx.Transform:SetPosition(child.Transform:GetWorldPosition())
+            if child.components.health ~= nil then
+                child.components.health:SetPercent(1)
+            end
+            child:PushEvent("onvacatehome")
 
-                child:Remove()
-            else
-                if child.components.health ~= nil then
-                    child.components.health:SetPercent(1)
-                end
-			    child:PushEvent("onvacatehome")
+            local drownable = child.components.drownable
+            if drownable then
+                drownable:CheckDrownable()
             end
         end
     end

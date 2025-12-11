@@ -5973,6 +5973,7 @@ return{
 			ABANDONED = "I don't know if we can fix this, Woby...",
         },
 		HERMITHOUSE_ORNAMENT = "I remember making these at camp!",
+        HERMITHOUSE_LAUNDRY = "I love laundry day!",
 
         PETALS_DRIED = "Dried perfectly!",
         PETALS_EVIL_DRIED = "Dried perfectly!",

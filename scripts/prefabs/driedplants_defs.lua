@@ -2,11 +2,13 @@ local DRIED_DEFS =
 {
     {
         name = "petals",
+        sanityvalue = TUNING.SANITY_SUPERTINY,
         --
         build = "flower_petals",
     },
     {
         name = "petals_evil",
+        sanityvalue = -TUNING.SANITY_TINY,
         --
         bank = "flower_petals_evil",
         build = "flower_petals_evil",
@@ -16,6 +18,7 @@ local DRIED_DEFS =
     },
     {
         name = "succulent_picked",
+        healthvalue = TUNING.HEALING_MEDSMALL,
     },
     {
         name = "firenettles",
@@ -29,15 +32,18 @@ local DRIED_DEFS =
     },
     {
         name = "tillweed",
+        healthvalue = TUNING.HEALING_MED,
     },
     {
         name = "moon_tree_blossom",
+        sanityvalue = TUNING.SANITY_SMALL,
         --
         bank = "moon_tree_petal",
         build = "moon_tree_petal",
     },
     {
         name = "forgetmelots",
+        sanityvalue = TUNING.SANITY_TINY,
     },
 }
 
