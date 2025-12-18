@@ -99,8 +99,13 @@ local function IsGritAtPoint(inst, x, y, z)
     return distsq(ex, ez, x, z) <= POOL_RADIUS_SQ
 end
 
-local function PlaySound(inst)
-    inst.SoundEmitter:PlaySound("winter2025/nonslipgrit/grit_pool")
+local function OnInit_pool(inst)
+    if inst.oninitneeded then
+        inst.oninitneeded = nil
+        inst:RemoveEventCallback("entitywake", OnInit_pool)
+        inst:RemoveEventCallback("entitysleep", OnInit_pool)
+        inst.SoundEmitter:PlaySound("winter2025/nonslipgrit/grit_pool")
+    end
 end
 
 local function fn_pool()
@@ -135,7 +140,9 @@ local function fn_pool()
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst.components.timer:StartTimer("dissolve", TUNING.NONSLIPGRITBOOSTED_POOL_TIME)
 
-    inst:DoTaskInTime(0, PlaySound)
+    inst.oninitneeded = true
+    inst:ListenForEvent("entitywake", OnInit_pool)
+    inst:ListenForEvent("entitysleep", OnInit_pool)
 
     return inst
 end

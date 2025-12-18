@@ -7,9 +7,7 @@ local corpse_defs = require("prefabs/corpses_defs")
 local CORPSE_DEFS = corpse_defs.CORPSE_DEFS
 local CORPSE_PROP_DEFS = corpse_defs.CORPSE_PROP_DEFS
 local CORPSE_LOOT_OVERRIDES = corpse_defs.CORPSE_LOOT_OVERRIDES
-local BUILDS = corpse_defs.BUILDS
 local BUILDS_TO_NAMES = corpse_defs.BUILDS_TO_NAMES
-local BANKS = corpse_defs.BANKS
 local FACES = corpse_defs.FACES
 corpse_defs = nil
 
@@ -62,6 +60,7 @@ local function OnExtinguish(inst)
     -- no_destroy_on_burn is for Willow corpses!
     if not inst:IsMutating() and not inst._skip_extinguish_fade and not inst.no_destroy_on_burn then
 		DefaultExtinguishCorpseFn(inst)
+        inst:DropCorpseLoot()
     end
 end
 
@@ -361,6 +360,10 @@ end
 
 local function SetGestaltCorpse(inst)
     inst:SpawnGestalt()
+
+    if inst:HasTag("epiccorpse") or inst.prefab == "wargcorpse" then
+        inst:DropCorpseLoot()
+    end
 end
 
 local function SetNonGestaltCorpse(inst)
@@ -429,6 +432,8 @@ Only alter loot if past the first meat level (so no changes if player can defeat
 But afterward,
 If there's one loot in the table, just roll, if over the meat percentage left, item is deleted.
 If there's multiple loots, keep at least one of each, multiplying the number of each prefab by the meat percent rounded to ceiling.
+
+It should be noted these are designed around Crystal-Crested Buzzards but other creatures could influence corpse meat level
 ]]
 
 local function OverrideCorpseLoot(inst, lootprefab)
@@ -483,10 +488,9 @@ end
 local function OnSpawnedLoot(inst, data)
     local loot = data.loot
     -- If super ruined then do these effects!
-    -- Take into account "meat" percentage left?
-    if inst.meat_level >= 1 then
-        local meat_perc = inst:GetMeatPercent()
-        local perc_val = math.clamp(GetRandomWithVariance(meat_perc, .2), 0.01, 1)
+    if inst.meat_level >= 2 then
+        local meat_perc = inst.meat / (inst:GetMeatPerLevel() * 2) -- Only take into account two levels
+        local perc_val = 0.1 + easing.outQuad(meat_perc, 0, 0.9, 1)
 
         if loot.components.armor then
             loot.components.armor:SetPercent(perc_val)

@@ -2,7 +2,7 @@ require("prefabutil")
 
 local assets =
 {
-	Asset("ANIM", "anim/hotspring_hermitcrab.zip"),
+	Asset("ANIM", "anim/hermithotspring.zip"),
 	Asset("MINIMAP_IMAGE", "hermithotspring_empty"),
 }
 
@@ -59,8 +59,8 @@ local function EnableBubbles(inst, enable)
 			inst.bubbles.entity:AddTransform()
 			inst.bubbles.entity:AddAnimState()
 
-			inst.bubbles.AnimState:SetBank("hotspring_hermitcrab")
-			inst.bubbles.AnimState:SetBuild("hotspring_hermitcrab")
+			inst.bubbles.AnimState:SetBank("hermithotspring")
+			inst.bubbles.AnimState:SetBuild("hermithotspring")
 
 			inst.bubbles.entity:SetParent(inst.entity)
 			inst.bubbles:ListenForEvent("animqueueover", EnableBubbles)
@@ -224,8 +224,8 @@ local function CreateRock(ripples, loop)
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 
-	inst.AnimState:SetBank("hotspring_hermitcrab")
-	inst.AnimState:SetBuild("hotspring_hermitcrab")
+	inst.AnimState:SetBank("hermithotspring")
+	inst.AnimState:SetBuild("hermithotspring")
 
 	if ripples then
 		inst.Transform:SetEightFaced()
@@ -243,6 +243,30 @@ local function CreateRock(ripples, loop)
 	return inst
 end
 
+local function RefreshRockSymbols(inst, skin_build)
+	skin_build = skin_build or 0
+	local x, _, z = inst.Transform:GetWorldPosition()
+	local prng = PRNG_Uniform(math.floor(x + 0.5) * math.floor(z + 0.5))
+	local vars = { 1 }
+	for i = 2, 6 do
+		table.insert(vars, prng:RandInt(#vars + 1), i)
+	end
+	for i, rock in ipairs(inst.rocks) do
+		local rnd = prng:Rand()
+		rnd = 1 + math.floor(rnd * rnd * #vars * 0.75)
+		rnd = table.remove(vars, rnd)
+		table.insert(vars, rnd)
+		if skin_build ~= 0 then
+			rock.AnimState:OverrideItemSkinSymbol("rock_1", skin_build, "rock_"..tostring(rnd), inst.GUID, "hermithotspring")
+		elseif rnd == 1 then
+			rock.AnimState:ClearOverrideSymbol("rock_1")
+		else
+			rock.AnimState:OverrideSymbol("rock_1", "hermithotspring", "rock_"..tostring(rnd))
+		end
+	end
+	return prng
+end
+
 local function DoSpawnRocks(inst)
 	if inst.highlightchildren == nil then
 		inst.highlightchildren = {}
@@ -250,13 +274,6 @@ local function DoSpawnRocks(inst)
 	if inst.rocks == nil then
 		inst.rocks = {}
 		inst._rockripples = inst.rockripples == nil or inst.rockripples:value()
-	end
-
-	local x, _, z = inst.Transform:GetWorldPosition()
-	local prng = PRNG_Uniform(math.floor(x + 0.5) * math.floor(z + 0.5))
-	local vars = { 1 }
-	for i = 2, 6 do
-		table.insert(vars, prng:RandInt(#vars + 1), i)
 	end
 
 	local num = 20
@@ -273,27 +290,30 @@ local function DoSpawnRocks(inst)
 			inst.rocks[i] = rock
 			table.insert(inst.highlightchildren, rock)
 		end
+		angle = angle + delta
+	end
 
-		local rnd = prng:Rand()
-		if rnd < 0.5 then
+	--Use the prng from AFTER randomizing rock variations, since that runs again when skin changes, whereas this doesn't.
+	local prng = RefreshRockSymbols(inst, inst.skinid and inst.skinid:value() or inst:GetSkinBuild())
+	for _, rock in ipairs(inst.rocks) do
+		if prng:Rand() < 0.5 then
 			rock.AnimState:Show("rocks")
 			rock.AnimState:Hide("rocks_flip")
 		else
 			rock.AnimState:Hide("rocks")
 			rock.AnimState:Show("rocks_flip")
 		end
+	end
+end
 
-		rnd = prng:Rand()
-		rnd = 1 + math.floor(rnd * rnd * #vars * 0.75)
-		rnd = table.remove(vars, rnd)
-		table.insert(vars, rnd)
-		if rnd == 1 then
-			rock.AnimState:ClearOverrideSymbol("rock_1")
-		else
-			rock.AnimState:OverrideSymbol("rock_1", "hotspring_hermitcrab", "rock_"..tostring(rnd))
-		end
+local function OnSkinIdDirty(inst)
+	RefreshRockSymbols(inst, inst.skinid:value())
+end
 
-		angle = angle + delta
+local function OnHermitHotSpringSkinChanged(inst, skin_build)
+	inst.skinid:set(skin_build or 0)
+	if inst.rocks then
+		RefreshRockSymbols(inst, skin_build)
 	end
 end
 
@@ -305,6 +325,7 @@ local function OnEntityWake(inst)
 		inst:ListenForEvent("hermithotspring.synchit", OnSyncHit)
 		inst:ListenForEvent("hermithotspring.syncanim", OnSyncAnim)
 		inst:ListenForEvent("rockripplesdirty", OnRockRipplesDirty)
+		inst:ListenForEvent("skiniddirty", OnSkinIdDirty)
 	end
 	DoSyncAnim(inst)
 end
@@ -609,8 +630,8 @@ local function fn()
 	inst.Light:SetFalloff(TUNING.HOTSPRING_GLOW.FALLOFF)
 	inst.Light:SetColour(0.1, 1.6, 2)
 
-	inst.AnimState:SetBank("hotspring_hermitcrab")
-	inst.AnimState:SetBuild("hotspring_hermitcrab")
+	inst.AnimState:SetBank("hermithotspring")
+	inst.AnimState:SetBuild("hermithotspring")
 	inst.AnimState:PlayAnimation("idle", true)
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
@@ -620,6 +641,7 @@ local function fn()
 	inst:AddTag("antlion_sinkhole_blocker")
 	inst:AddTag("birdblocker")
 	inst:AddTag("groundhole")
+	inst:AddTag("structure")
 
 	--HASHEATER (from heater component) added to pristine state for optimization
 	inst:AddTag("HASHEATER")
@@ -631,6 +653,7 @@ local function fn()
 	inst.syncanim = net_event(inst.GUID, "hermithotspring.syncanim")
 	inst.rockripples = net_bool(inst.GUID, "hermithotspring.rockripples", "rockripplesdirty")
 	inst.rockripples:set(true)
+	inst.skinid = net_hash(inst.GUID, "hermithotspring.syncid", "skiniddirty")
 
 	inst.displaynamefn = DisplayNameFn
 
@@ -643,6 +666,8 @@ local function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst.scrapbook_anim = "scrapbook"
 
 	inst:AddComponent("inspectable")
 	inst.components.inspectable.getstatus = GetStatus
@@ -673,6 +698,7 @@ local function fn()
 
 	MakeHermitCrabAreaListener(inst, WithinAreaChanged)
 
+	inst.OnHermitHotSpringSkinChanged = OnHermitHotSpringSkinChanged
 	inst.OnEntitySleep = OnEntitySleep
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
@@ -690,15 +716,23 @@ local function constr_DoSyncAnim(inst)
 			v.AnimState:SetTime(t)
 			v.AnimState:PushAnimation("peg_idle", false)
 		end
-	elseif inst.AnimState:IsCurrentAnimation("construction_reveal") then
-		local t = inst.AnimState:GetCurrentAnimationTime()
-		for _, v in ipairs(inst.pegs) do
-			v.AnimState:PlayAnimation("peg_reveal")
-			v.AnimState:SetTime(t)
-		end
-	elseif not inst.pegs[1].AnimState:IsCurrentAnimation("peg_hit") then
-		for _, v in ipairs(inst.pegs) do
-			v.AnimState:PlayAnimation("peg_idle")
+
+		inst.hole.AnimState:PlayAnimation("construction_hole_place")
+		inst.hole.AnimState:SetTime(t)
+		inst.hole.AnimState:PushAnimation("empty", false)
+	else
+		inst.hole.AnimState:PlayAnimation("empty")
+
+		if inst.AnimState:IsCurrentAnimation("construction_reveal") then
+			local t = inst.AnimState:GetCurrentAnimationTime()
+			for _, v in ipairs(inst.pegs) do
+				v.AnimState:PlayAnimation("peg_reveal")
+				v.AnimState:SetTime(t)
+			end
+		elseif not inst.pegs[1].AnimState:IsCurrentAnimation("peg_hit") then
+			for _, v in ipairs(inst.pegs) do
+				v.AnimState:PlayAnimation("peg_idle")
+			end
 		end
 	end
 	if inst.postupdating then
@@ -739,6 +773,28 @@ local function constr_PushSyncAnim(inst, anim)
 	end
 end
 
+local function constr_CreateHole()
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	--[[Non-networked entity]]
+	--inst.entity:SetCanSleep(false)
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+
+	inst.AnimState:SetBank("hermithotspring")
+	inst.AnimState:SetBuild("hermithotspring")
+	inst.AnimState:PlayAnimation("empty")
+	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)
+	inst.AnimState:SetLayer(LAYER_BACKGROUND)
+	inst.AnimState:SetSortOrder(3)
+	inst.AnimState:SetFinalOffset(-1)
+
+	return inst
+end
+
 local function constr_CreatePeg()
 	local inst = CreateEntity()
 
@@ -752,8 +808,8 @@ local function constr_CreatePeg()
 
 	inst.Transform:SetSixFaced()
 
-	inst.AnimState:SetBank("hotspring_hermitcrab")
-	inst.AnimState:SetBuild("hotspring_hermitcrab")
+	inst.AnimState:SetBank("hermithotspring")
+	inst.AnimState:SetBuild("hermithotspring")
 
 	return inst
 end
@@ -768,27 +824,16 @@ local PEGS =
 	{ r = 1.8,	dir = 298	},
 }
 
-local function constr_OnEntityWake(inst)
-	inst.OnEntityWake = nil
-
+local function constr_OnSkinIdDirty(inst)
+	local skin_build = inst.skinid:value()
 	local x, _, z = inst.Transform:GetWorldPosition()
 	local prng = PRNG_Uniform(math.floor(x + 0.5) * math.floor(z + 0.5))
 	local vars = { 1 }
 	for i = 2, 3 do
 		table.insert(vars, prng:RandInt(#vars + 1), i)
 	end
-
-	inst.pegs = {}
 	local rnd1
-	for i, v in ipairs(PEGS) do
-		local peg = constr_CreatePeg()
-		peg.entity:SetParent(inst.entity)
-		inst.pegs[i] = peg
-
-		local theta = v.dir * DEGREES
-		peg.Transform:SetPosition(v.r * math.cos(theta), 0, -v.r * math.sin(theta))
-		peg.Transform:SetRotation(v.dir)
-
+	for i, peg in ipairs(inst.pegs) do
 		local rnd
 		if i == 6 then
 			rnd = vars[1]
@@ -803,21 +848,52 @@ local function constr_OnEntityWake(inst)
 				rnd1 = rnd
 			end
 		end
-		if rnd > 1 then
-			peg.AnimState:OverrideSymbol("peg_1", "hotspring_hermitcrab", "peg_"..tostring(rnd))
+		if skin_build ~= 0 then
+			peg.AnimState:OverrideItemSkinSymbol("peg_1", skin_build, "peg_"..tostring(rnd), inst.GUID, "hermithotspring")
+		elseif rnd == 1 then
+			peg.AnimState:ClearOverrideSymbol("peg_1")
+		else
+			peg.AnimState:OverrideSymbol("peg_1", "hermithotspring", "peg_"..tostring(rnd))
 		end
 	end
+end
+
+local function constr_OnEntityWake(inst)
+	inst.OnEntityWake = nil
+
+	if inst.highlightchildren == nil then
+		inst.highlightchildren = {}
+	end
+	inst.pegs = {}
+
+	for i, v in ipairs(PEGS) do
+		local peg = constr_CreatePeg()
+		peg.entity:SetParent(inst.entity)
+		inst.pegs[i] = peg
+		table.insert(inst.highlightchildren, peg)
+
+		local theta = v.dir * DEGREES
+		peg.Transform:SetPosition(v.r * math.cos(theta), 0, -v.r * math.sin(theta))
+		peg.Transform:SetRotation(v.dir)
+	end
+
+	inst.hole = constr_CreateHole()
+	inst.hole.entity:SetParent(inst.entity)
+	--don't add hole to highlightchildren
+
 	if not TheWorld.ismastersim then
 		inst:AddComponent("updatelooper")
 		inst:ListenForEvent("syncanimdirty", constr_OnSyncAnimDirty)
+		inst:ListenForEvent("skiniddirty", constr_OnSkinIdDirty)
 	end
+	constr_OnSkinIdDirty(inst)
 	constr_DoSyncAnim(inst)
 end
 
 local function FinishConstruction(inst, builder)
 	local pos = inst:GetPosition()
+	local hotspring = SpawnPrefab("hermithotspring", inst:GetSkinBuild(), inst.skin_id)
 	inst:Remove()
-	local hotspring = SpawnPrefab("hermithotspring")
 	hotspring.Transform:SetPosition(pos:Get())
 	hotspring:PushEvent("onbuilt", { builder = builder or inst.builder, pos = pos })
 end
@@ -855,6 +931,13 @@ local function constr_OnHit(inst)--, worker, workleft, numworks)
 	end
 end
 
+local function constr_OnHermitHotSpringSkinChanged(inst, skin_build)
+	inst.skinid:set(skin_build or 0)
+	if inst.pegs then
+		constr_OnSkinIdDirty(inst)
+	end
+end
+
 local function constr_OnLoadPostPass(inst)--, ents, data)
 	OnConstructed(inst, nil)
 end
@@ -875,8 +958,8 @@ local function constrfn()
 
 	inst.MiniMapEntity:SetIcon("hermithotspring_constr.png")
 
-	inst.AnimState:SetBank("hotspring_hermitcrab")
-	inst.AnimState:SetBuild("hotspring_hermitcrab")
+	inst.AnimState:SetBank("hermithotspring")
+	inst.AnimState:SetBuild("hermithotspring")
 	inst.AnimState:PlayAnimation("construction_idle")
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
@@ -886,6 +969,7 @@ local function constrfn()
 	inst:AddTag("constructionsite")
 
 	inst.syncanim = net_bool(inst.GUID, "hermithotspring_constr.syncanim", "syncanimdirty")
+	inst.skinid = net_hash(inst.GUID, "hermithotspring_constr.skinid", "skiniddirty")
 
 	if not TheNet:IsDedicated() then
 		inst.OnEntityWake = constr_OnEntityWake
@@ -914,6 +998,7 @@ local function constrfn()
 
 	MakeHauntableWork(inst)
 
+	inst.OnHermitHotSpringSkinChanged = constr_OnHermitHotSpringSkinChanged
 	inst.OnLoadPostPass = constr_OnLoadPostPass
 
 	return inst
@@ -926,6 +1011,7 @@ local function placer_postinit(inst)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
 	inst.AnimState:SetSortOrder(3)
 	DoSpawnRocks(inst)
+	inst.OnHermitHotSpringSkinChanged = RefreshRockSymbols
 	for _, v in ipairs(inst.rocks) do
 		inst.components.placer:LinkEntity(v)
 	end
@@ -935,4 +1021,4 @@ end
 
 return Prefab("hermithotspring", fn, assets, prefabs),
 	Prefab("hermithotspring_constr", constrfn, assets, prefabs_constr),
-	MakePlacer("hermithotspring_constr_placer", "hotspring_hermitcrab", "hotspring_hermitcrab", "placer", true, nil, nil, nil, nil, nil, placer_postinit)
+	MakePlacer("hermithotspring_constr_placer", "hermithotspring", "hermithotspring", "placer", true, nil, nil, nil, nil, nil, placer_postinit)

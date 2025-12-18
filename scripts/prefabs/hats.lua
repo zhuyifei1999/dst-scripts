@@ -2450,7 +2450,12 @@ local function MakeHat(name)
 
     fns.update_polly_hat_art = function(inst)
         inst.AnimState:PlayAnimation(inst.defaultanim)
-        local deadpolly = not inst.components.spawner.child or inst.components.spawner.child.components.health:IsDead()
+        local deadpolly
+        if inst.components.spawner.child then
+            deadpolly = inst.components.spawner.child.components.health:IsDead()
+        else
+            deadpolly = inst.components.spawner:IsSpawnPending()
+        end
         if deadpolly then
             inst.components.inventoryitem:ChangeImageName(inst.prefab .. "2")
             inst.AnimState:PlayAnimation("anim_dead")
@@ -2587,6 +2592,25 @@ local function MakeHat(name)
         end
     end
 
+    fns.polly_rogers_migration = function(inst)
+        local bird = inst.components.spawner.child
+        return bird and (bird.components.health == nil or not bird.components.health:IsDead()) and bird or nil
+    end
+
+    fns.polly_rogers_onplayerdespawn = function(inst)
+        local bird = inst.components.spawner.child
+        if not bird then
+            return
+        end
+
+        if bird.components.health == nil or not bird.components.health:IsDead() then
+            if bird.components.health then
+                bird.components.health:SetInvincible(true)
+            end
+            bird:PushEvent("despawn")
+        end
+    end
+
     fns.polly_rogers = function()
         local inst = simple(fns.polly_rogers_custom_init)
 
@@ -2617,6 +2641,10 @@ local function MakeHat(name)
         inst.components.spawner:CancelSpawning()
         inst.components.spawner.onkilledfn = fns.update_polly_hat_art
         inst.components.spawner.onspawnedfn = fns.update_polly_hat_art
+
+        inst:AddComponent("migrationpetowner")
+        inst.components.migrationpetowner:SetPetFn(fns.polly_rogers_migration)
+        inst:ListenForEvent("player_despawn", fns.polly_rogers_onplayerdespawn)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALLMED)
@@ -2659,6 +2687,10 @@ local function MakeHat(name)
         inst.components.spawner:CancelSpawning()
         inst.components.spawner.onkilledfn = fns.update_polly_hat_art
         inst.components.spawner.onspawnedfn = fns.update_polly_hat_art
+
+        inst:AddComponent("migrationpetowner")
+        inst.components.migrationpetowner:SetPetFn(fns.polly_rogers_migration)
+        inst:ListenForEvent("player_despawn", fns.polly_rogers_onplayerdespawn)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALLMED)

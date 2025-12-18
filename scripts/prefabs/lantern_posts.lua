@@ -111,8 +111,6 @@ local function MakeLanternPost(data)
     {
         Asset("SCRIPT", "scripts/prefabs/lantern_posts_defs.lua"),
         Asset("ANIM", "anim/"..build..".zip"),
-        Asset("ANIM", "anim/ui_chest_1x1.zip"),
-        Asset("ANIM", "anim/ui_hermitcrab_1x1.zip"),
         Asset("ANIM", "anim/reticuledash.zip"),
     }
 
@@ -120,6 +118,12 @@ local function MakeLanternPost(data)
     {
         lightchainprefab,
     }
+
+    if data.assets ~= nil then
+        for k, v in ipairs(data.assets) do
+            table.insert(assets, v)
+        end
+    end
 
     local minimap_icon = data.minimap or data.name..".png"
 
@@ -492,8 +496,10 @@ local function SpawnChain(inst, nohide)
         chain_len = chain_len + 1
     end
 
+    local link_halfway = math.ceil(chain_len / 2)
     for i = 1, chain_len do
-        local link = inst:CreateChainLink(GetNextVariation(inst, prng))
+        local parent_partner = i <= link_halfway and partner1 or partner2 -- used for skins
+        local link = inst:CreateChainLink(parent_partner, GetNextVariation(inst, prng))
         ShowOrHideLight(link)
         table.insert(chains.chain_link, link)
 
@@ -505,8 +511,10 @@ local function SpawnChain(inst, nohide)
 
     if inst.has_lantern_link then
         local lantern_len = math.min(5, math.floor(chain_len / 2))
+        local lantern_halfway = math.ceil(lantern_len / 2)
         for i = 1, lantern_len do
-            local lantern = inst:CreateLantern()
+            local parent_partner = i <= lantern_halfway and partner1 or partner2 -- used for skins
+            local lantern = inst:CreateLantern(parent_partner)
             ShowOrHideLight(lantern)
             table.insert(chains.lantern_link, lantern)
         end
@@ -518,8 +526,9 @@ end
 local function RemoveChain(inst, instant)
     if inst.chains then
         local partner1, partner2 = inst.partners[1]:value(), inst.partners[2]:value()
-        local function PlayBreakAnimation(v)
-            v.AnimState:PlayAnimation("break")
+        local function PlayBreakAnimation(v, is_lantern)
+            v:PlayVariationSound("broke")
+            v.AnimState:PlayAnimation(is_lantern and "break" or "break_"..v.variation)
         end
         if instant or inst:IsAsleep() then
             for i, link in pairs(inst.chains) do
@@ -533,12 +542,13 @@ local function RemoveChain(inst, instant)
                 local chain_len = #link
                 for k, v in ipairs(link) do
                     local t = partner1 ~= nil and (chain_len - k) or k
-                    v:DoTaskInTime(((t+1)/chain_len)*0.2, is_lantern_link and PlayBreakAnimation or v.Remove)
+                    v:DoTaskInTime(((t+1)/chain_len)*0.2, PlayBreakAnimation, is_lantern_link)
                 end
             end
         end
 
         inst.chains = nil
+        inst.variation = nil
     end
 end
 
@@ -634,7 +644,8 @@ local function LightChain_OnEntityWake_Client(inst)
 end
 
 local function LightChainLink_OnAnimOver(inst)
-    if inst.AnimState:IsCurrentAnimation("break") then
+    if (inst.variation and inst.AnimState:IsCurrentAnimation("break_"..inst.variation))
+        or inst.AnimState:IsCurrentAnimation("break") then
         inst:Remove()
     end
 end
@@ -664,9 +675,29 @@ local function MakeLanternLightChain(data)
     local bank = data.bank or data.name
     local build = data.build or data.name
 
-    local prefabname = data.overridelightchainprefabname or data.name.."_light_chain"
+    local prefabname = data.overridelightchainprefabname or (data.name.."_light_chain")
 
-    local function CreateChainLink(parent, variation)
+    local has_skins = PREFAB_SKINS[data.name] ~= nil
+
+    local function GetChainBuild(inst)
+        local skin_build = inst.AnimState:GetSkinBuild()
+
+        if skin_build and skin_build ~= "" then
+            return skin_build, true
+        end
+
+        return build, false
+    end
+
+    local function PlayVariationSound(inst, sound)
+        local variation_sounds = inst.variation ~= nil and data.sounds.variation_sounds and data.sounds.variation_sounds[inst.variation]
+        if variation_sounds and variation_sounds[sound] then
+            inst.SoundEmitter:PlaySound(variation_sounds[sound])
+        end
+    end
+
+    local function CreateChainLink(chain, parent, variation)
+        local chain_build, is_skin = GetChainBuild(parent)
     	local inst = CreateEntity()
 
     	inst:AddTag("FX")
@@ -680,16 +711,25 @@ local function MakeLanternLightChain(data)
         inst.entity:AddSoundEmitter()
 
     	inst.AnimState:SetBank(bank)
-    	inst.AnimState:SetBuild(build)
+        if is_skin then
+    	    inst.AnimState:SetSkin(chain_build, build)
+        else
+            inst.AnimState:SetBuild(chain_build)
+        end
     	inst.variation = variation
     	inst.AnimState:PlayAnimation("link_"..inst.variation, true)
+
+        inst.PlayVariationSound = PlayVariationSound
+
+        inst:ListenForEvent("animover", LightChainLink_OnAnimOver)
 
     	--inst:Hide()
 
     	return inst
     end
 
-    local function CreateLantern(parent)
+    local function CreateLantern(chain, parent)
+        local chain_build, is_skin = GetChainBuild(parent)
     	local inst = CreateEntity()
 
     	inst:AddTag("FX")
@@ -702,7 +742,11 @@ local function MakeLanternLightChain(data)
     	inst.entity:AddAnimState()
 
     	inst.AnimState:SetBank(bank)
-    	inst.AnimState:SetBuild(build)
+        if is_skin then
+    	    inst.AnimState:SetSkin(chain_build, build)
+        else
+            inst.AnimState:SetBuild(chain_build)
+        end
     	inst.AnimState:PlayAnimation("lantern", true)
 
     	inst.AnimState:Hide("light_on")
@@ -734,6 +778,14 @@ local function MakeLanternLightChain(data)
         end
     end
 
+    local function OnSkinDirty(inst)
+        if inst.chains then
+            RemoveChain(inst, true)
+            -- respawn
+            SpawnChain(inst)
+        end
+    end
+
     local function lightchainfn()
         local inst = CreateEntity()
 
@@ -756,6 +808,10 @@ local function MakeLanternLightChain(data)
         end
         inst.enable_lights = net_bool(inst.GUID, "lantern_light_chain.enable_lights", "enablelightsdirty")
         inst.enable_lights:set(false)
+
+        if has_skins then
+            inst.update_skin = net_event(inst.GUID, "updateskindirty")
+        end
 
         inst.link_length = data.link_length
         inst.has_lantern_link = data.has_lantern_link
@@ -788,9 +844,11 @@ local function MakeLanternLightChain(data)
 		    inst.EnableLightsDirty = LightChain_EnableLightsDirty
 		    inst.OnRemoveEntity = LightChain_OnRemoveEntity_Client
 		    inst.OnPartnerDirty = OnPartnerDirty
+            inst.OnSkinDirty = OnSkinDirty
         end
 
         if notmastersim then
+            inst:ListenForEvent("updateskindirty", OnSkinDirty)
             inst:ListenForEvent("partnerdirty", OnPartnerDirty)
             inst:ListenForEvent("enablelightsdirty", LightChain_EnableLightsDirty)
             return inst

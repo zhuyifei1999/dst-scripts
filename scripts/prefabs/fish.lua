@@ -7,6 +7,7 @@ local assets =
 local prefabs =
 {
     "fish_cooked",
+    "fishmeat_small_dried",
     "spoiled_food",
 }
 

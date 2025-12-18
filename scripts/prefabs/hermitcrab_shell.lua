@@ -190,7 +190,7 @@ local function fn()
     instrument:SetRange(TUNING.HERMTICRAB_SHELL_RANGE)
     instrument:SetOnHeardFn(OnHeard)
     instrument:SetOnPlayedFn(OnPlayed)
-    instrument:SetAssetOverrides("hermitcrab_shell", "hermitcrab_shell01", "rifts4/rabbit_horn/call") -- FIXME(JBK): WF: Sounds.
+    instrument:SetAssetOverrides("hermitcrab_shell", "hermitcrab_shell01", "hookline_2/hermitcrab_shell_teleport/use")
 
     inst:AddComponent("tool")
     inst.components.tool:SetAction(ACTIONS.PLAY)

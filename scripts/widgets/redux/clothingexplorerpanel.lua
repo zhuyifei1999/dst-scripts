@@ -18,6 +18,7 @@ local ClothingExplorerPanel = Class(Widget, function(self, owner, user_profile, 
     self.activity_writer_fn = activity_writer_fn
 
     if filter_options then
+        self.filter_options = filter_options
         self.yotb_filter = filter_options.yotb_filter
         self.npccharacter = filter_options.npccharacter
     end
@@ -92,7 +93,7 @@ function ClothingExplorerPanel:_BuildItemExplorer()
         item_table = GetCharacterSkinBases(self.npccharacter or self.owner.currentcharacter)
     end
 
-    return ItemExplorer("", self.item_type, item_table, list_options, self.yotb_filter)
+    return ItemExplorer("", self.item_type, item_table, list_options, self.filter_options)
 end
 
 

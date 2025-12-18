@@ -41,6 +41,16 @@ local function dosound(inst, soundname, loopid)
 	end
 end
 
+local function tryplacesound(inst)
+	if inst.AnimState:IsCurrentAnimation("place") then
+		if inst.soundpath then
+			inst.SoundEmitter:PlaySound(inst.soundpath.."place")
+		else
+			inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/decor/stocking_place")
+		end
+	end
+end
+
 local function dowind(inst)
 	if inst.AnimState:IsCurrentAnimation("idle_loop") then
 		local t = inst.AnimState:GetCurrentAnimationTime()
@@ -62,7 +72,7 @@ local function AttachToParent(inst, parent)
 	else
 		inst.AnimState:PlayAnimation("place")
 		inst.AnimState:PushAnimation("idle_loop")
-		dosound(inst, "place")
+		inst:DoTaskInTime(0, tryplacesound)
 	end
 	dosound(inst, "idle_LP", "loop")
 	if not TheNet:IsDedicated() then
@@ -107,7 +117,9 @@ end
 local function CloneAsFx(inst)
 	local skin_build = inst:GetSkinBuild()
 	local fx = SpawnPrefab("hermithouse_ornament_fx", skin_build, inst.skin_id)
-	fx.soundpath = string.format("hookline_2/characters/hermit/house/decor/%s_", skin_build and string.sub(skin_build, 22) or "shell")
+	if not inst.skin_nosound then
+		fx.soundpath = string.format("hookline_2/characters/hermit/house/decor/%s_", skin_build and string.sub(skin_build, 22) or "shell")
+	end
 	return fx
 end
 

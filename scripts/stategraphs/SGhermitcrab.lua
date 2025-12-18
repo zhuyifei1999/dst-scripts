@@ -624,12 +624,12 @@ local states =
                     inst.AnimState:PushAnimation(v, k == #anims)
                 end
 			elseif anims[1] == "idle_loop" and #anims == 1 then
-				if inst.AnimState:IsCurrentAnimation("idle_loop") then
-					--already playing idle_loop
-				elseif inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
+				if inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
 					local t = inst.AnimState:GetCurrentAnimationTime()
 					inst.AnimState:PlayAnimation("idle_loop", true)
 					inst.AnimState:SetTime(t)
+				elseif not inst.AnimState:IsCurrentAnimation("idle_loop") then
+					inst.AnimState:PlayAnimation("idle_loop", true)
 				end
             else
                 inst.AnimState:PlayAnimation(anims[1], #anims == 1)
@@ -713,12 +713,12 @@ local states =
                     inst.AnimState:PushAnimation(v, k == #anims)
                 end
 			elseif anims[1] == "idle_loop" and #anims == 1 then
-				if inst.AnimState:IsCurrentAnimation("idle_loop") then
-					--already playing idle_loop
-				elseif inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
+				if inst.AnimState:IsCurrentAnimation("idle_loop_nofaced") then
 					local t = inst.AnimState:GetCurrentAnimationTime()
 					inst.AnimState:PlayAnimation("idle_loop", true)
 					inst.AnimState:SetTime(t)
+				elseif not inst.AnimState:IsCurrentAnimation("idle_loop") then
+					inst.AnimState:PlayAnimation("idle_loop", true)
 				end
             else
                 inst.AnimState:PlayAnimation(anims[1], #anims == 1)
@@ -2689,8 +2689,13 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst)
-                local gfl = inst.getgeneralfriendlevel(inst)
-                inst.components.npc_talker:Chatter("HERMITCRAB_THROWBOTTLE."..gfl)
+                local wagpunkarenamanager = TheWorld.components.wagpunk_arena_manager
+                if wagpunkarenamanager and wagpunkarenamanager.pearlmap then -- We've moved on, we won't talk about him anymore.
+                    inst.components.npc_talker:Chatter("HERMITCRAB_THROWBOTTLE_POST_RELOCATION")
+                else
+                    local gfl = inst.getgeneralfriendlevel(inst)
+                    inst.components.npc_talker:Chatter("HERMITCRAB_THROWBOTTLE."..gfl)
+                end
                 inst.sg:GoToState("idle")
             end),
         },
@@ -5218,10 +5223,36 @@ local states =
 			end
 		end,
 	},
+
+	State{
+		name = "gohome",
+		tags = { "busy", "ishome" },
+
+		onenter = function(inst)
+			inst.components.locomotor:StopMoving()
+			inst.AnimState:PlayAnimation("give")
+			inst.AnimState:SetFrame(5)
+		end,
+
+		timeline =
+		{
+			FrameEvent(5, function(inst)
+				inst:PerformBufferedAction()
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
 }
 
 CommonStates.AddSimpleState(states, "refuse", "idle_loop", { "busy" })
-CommonStates.AddSimpleActionState(states, "gohome", "pickup", 4 * FRAMES, { "busy", "ishome" })
 CommonStates.AddSimpleActionState(states, "pickup", "pickup", 10 * FRAMES, { "busy" })
 CommonStates.AddElectrocuteStates(states)
 CommonStates.AddSinkAndWashAshoreStates(states, {washashore = "hit"})

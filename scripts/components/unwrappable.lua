@@ -131,6 +131,7 @@ function Unwrappable:Unwrap(doer, nodelay)
         end
         self.itemdata = nil
     end
+    self.inst:PushEvent("unwrapped", { doer = doer })
     if self.onunwrappedfn ~= nil then
         self.onunwrappedfn(self.inst, pos, doer)
     end

@@ -71,6 +71,10 @@ local function MakeTea(data)
         end
     end
 
+    local SCRAPBOOK_OVERRIDEDATA = {
+		{ "tea_bottle", overridesym_build, overridesym },
+	}
+
     local function fn()
         local inst = CreateEntity()
 
@@ -96,6 +100,8 @@ local function MakeTea(data)
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.scrapbook_overridedata = SCRAPBOOK_OVERRIDEDATA
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")

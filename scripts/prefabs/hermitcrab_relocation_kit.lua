@@ -70,7 +70,7 @@ local PLACER_VISUALS = {
     ["meatrack_hermit"] = {"meatrack_hermit", "meatrack_hermit", "idle_empty"},
     ["beebox_hermit"] = {"bee_box_hermitcrab", "bee_box_hermitcrab", "idle"},
 }
-local PLACER_RADIUS = {
+local PLACER_RADIUS = { -- NOTES(JBK): Keep in sync with hermitcrab_relocation_manager. [HCRMRCS]
     --["hermitcrab_marker"] = NO_RADIUS,
     ["hermitcrab_lure_marker"] = 1,
     ["hermitcrab_marker_fishing"] = 1,
@@ -236,7 +236,7 @@ local function OnUpdateTransform(inst)
 
                 if prefab == "hermitcrab_marker_fishing" then
                     if not clear or not map:IsOceanAtPoint(x, 0, z, false) then
-                        visuals[i].AnimState:PlayAnimation("idle_small_target")
+                        visuals[i].AnimState:PlayAnimation("idle_small_x")
                         visuals[i].AnimState:SetAddColour(.75, .25, .25, 0)
                     else
                         visuals[i].AnimState:PlayAnimation("idle_small")
@@ -245,7 +245,7 @@ local function OnUpdateTransform(inst)
                 else
                     if not clear or not IsPermanentFilterFn(map:GetTileAtPoint(x, 0, z)) then
                         if prefab == "hermitcrab_lure_marker" then
-                            visuals[i].AnimState:PlayAnimation("idle_small_target")
+                            visuals[i].AnimState:PlayAnimation("idle_small_x")
                         end
                         visuals[i].AnimState:SetAddColour(.75, .25, .25, 0)
                     else

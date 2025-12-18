@@ -81,7 +81,7 @@ local function RefreshDecor(inst, item)
 	local slot = inst.components.container:GetItemSlot(item)
 	if slot and inst.ornamentfx[slot] then
 		inst.ornamentfx[slot]:Remove()
-		inst.ornamentfx[data.slot] = AttachFxToSlot(inst, slot, item:CloneAsFx())
+		inst.ornamentfx[slot] = AttachFxToSlot(inst, slot, item:CloneAsFx())
 	end
 end
 
@@ -89,11 +89,103 @@ local function AddFakeLaundry(inst, name, slot)
 	local fx = SpawnPrefab("hermithouse_ornament_fx")
 	fx.AnimState:SetBank(name)
 	fx.AnimState:SetBuild(name)
-	AttachFxToSlot(inst, slot, fx)
+	inst.ornamentfx[slot] = AttachFxToSlot(inst, slot, fx)
 end
 
-local function AddFakeOrnament(inst, slot)
-	AttachFxToSlot(inst, slot, SpawnPrefab("hermithouse_ornament_fx"))
+local function AddFakeOrnament(inst, slot, skin_build)
+	inst.ornamentfx[slot] = AttachFxToSlot(inst, slot, SpawnPrefab("hermithouse_ornament_fx", skin_build, skin_build and 0))
+end
+
+local function _CheckDecorSlot(inst, slot, prefab, skin)
+	local item = inst.components.container:GetItemInSlot(slot)
+	if prefab == nil then
+		return item == nil
+	end
+	return item ~= nil and item.prefab == prefab and item:GetSkinBuild() == skin
+end
+
+local function _CacheDecorFxAnimSnapshot(inst, slots)
+	if inst.ornamentfx and next(inst.ornamentfx) then
+		local transferdecor = {}
+		if slots then
+			for _, k in ipairs(slots) do
+				local v = inst.ornamentfx[k]
+				if v then
+					if v.AnimState:IsCurrentAnimation("wind") then
+						transferdecor[k] = { anim = "wind", t = v.AnimState:GetCurrentAnimationTime() }
+					elseif v.AnimState:IsCurrentAnimation("idle_loop") then
+						transferdecor[k] = { anim = "idle_loop", t = v.AnimState:GetCurrentAnimationTime() }
+					end
+				end
+			end
+			if next(transferdecor) == nil then
+				return
+			end
+		else
+			for k, v in pairs(inst.ornamentfx) do
+				if v.AnimState:IsCurrentAnimation("wind") then
+					transferdecor[k] = { anim = "wind", t = v.AnimState:GetCurrentAnimationTime() }
+				elseif v.AnimState:IsCurrentAnimation("idle_loop") then
+					transferdecor[k] = { anim = "idle_loop", t = v.AnimState:GetCurrentAnimationTime() }
+				end
+			end
+		end
+		return transferdecor
+	end
+end
+
+local function _ApplyDecorFxAnimSnapshot(inst, transferdecor)
+	if transferdecor and inst.ornamentfx then
+		for k, v in pairs(transferdecor) do
+			local v1 = inst.ornamentfx[k]
+			if v1 then
+				if v.anim == "wind" then
+					v1.AnimState:PlayAnimation("wind")
+					v1.AnimState:SetTime(v.t)
+					v1.AnimState:PushAnimation("idle_loop")
+				elseif v.anim == "idle_loop" then
+					v1.AnimState:PlayAnimation("idle_loop", true)
+					v1.AnimState:SetTime(v.t)
+				end
+			end
+		end
+	end
+end
+
+local function OnHermitHouseSkinChanged(inst, skin_build)
+	local isyule = skin_build ~= nil and string.sub(skin_build, -5) == "_yule"
+
+	if inst.components.container then
+		if _CheckDecorSlot(inst, 1, "hermithouse_laundry_socks") and
+			_CheckDecorSlot(inst, 2, "hermithouse_ornament", not isyule and "hermithouse_ornament_wreath" or nil) and
+			_CheckDecorSlot(inst, 3, "hermithouse_ornament", not isyule and "hermithouse_ornament_stocking" or "hermithouse_ornament_saltcrystal") and
+			_CheckDecorSlot(inst, 4, "hermithouse_laundry_shorts")
+		then
+			local transferdecor = _CacheDecorFxAnimSnapshot(inst, { 2, 3 })
+			if isyule then
+				local item = inst.components.container:GetItemInSlot(2)
+				TheSim:ReskinEntity(item.GUID, item.skinname, "hermithouse_ornament_wreath", 0)
+				item = inst.components.container:GetItemInSlot(3)
+				TheSim:ReskinEntity(item.GUID, item.skinname, "hermithouse_ornament_stocking", 0)
+			else
+				local item = inst.components.container:GetItemInSlot(2)
+				TheSim:ReskinEntity(item.GUID, item.skinname)
+				item = inst.components.container:GetItemInSlot(3)
+				TheSim:ReskinEntity(item.GUID, item.skinname, "hermithouse_ornament_saltcrystal", 0)
+			end
+			_ApplyDecorFxAnimSnapshot(inst, transferdecor)
+		end
+	else
+		local fx = inst.ornamentfx[2]
+		if fx then
+			if fx:GetSkinBuild() == (not isyule and "hermithouse_ornament_wreath" or nil) then
+				local transferdecor = _CacheDecorFxAnimSnapshot(inst, { 2 })
+				fx:Remove()
+				AddFakeOrnament(inst, 2, isyule and "hermithouse_ornament_wreath" or nil)
+				_ApplyDecorFxAnimSnapshot(inst, transferdecor)
+			end
+		end
+	end
 end
 
 --------------------------------------------------------------------------
@@ -263,40 +355,18 @@ local function displaynamefn(inst)
 end
 
 local function LightsOn(inst)
-    if not inst:HasTag("burnt") and not inst.lightson then
+	if not inst.lightson and not inst:HasTag("burnt") then
         inst.Light:Enable(true)
         inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/light_on")
         inst.lightson = true
-
-        local build_name = inst.AnimState:GetSkinBuild()
-        if inst._window ~= nil then
-            if build_name ~= "" then
-                inst._window.AnimState:SetSkin(build_name)
-            end
-            inst._window.AnimState:PlayAnimation("windowlight_idle", true)
-            inst._window:Show()
-        end
-        if inst._windowsnow ~= nil then
-            if build_name ~= "" then
-                inst._windowsnow.AnimState:SetSkin(build_name)
-            end
-            inst._windowsnow.AnimState:PlayAnimation("windowsnow_idle", true)
-            inst._windowsnow:Show()
-        end
     end
 end
 
 local function LightsOff(inst)
-    if not inst:HasTag("burnt") and inst.lightson then
+	if inst.lightson and not inst:HasTag("burnt") then
         inst.Light:Enable(false)
         inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/light_off")
         inst.lightson = false
-        if inst._window ~= nil then
-            inst._window:Hide()
-        end
-        if inst._windowsnow ~= nil then
-            inst._windowsnow:Hide()
-        end
     end
 end
 
@@ -397,19 +467,13 @@ local function OnConstructed(inst, doer)
 			inst.components.pearldecorationscore:FlagForConstructionRemoval()
 		end
 
-		local transferdecor
-		if inst.ornamentfx and next(inst.ornamentfx) then
-			transferdecor = {}
-			for k, v in pairs(inst.ornamentfx) do
-				if v.AnimState:IsCurrentAnimation("wind") then
-					transferdecor[k] = { anim = "wind", t = v.AnimState:GetCurrentAnimationTime() }
-				elseif v.AnimState:IsCurrentAnimation("idle_loop") then
-					transferdecor[k] = { anim = "idle_loop", t = v.AnimState:GetCurrentAnimationTime() }
-				end
-			end
-		end
+		local transferdecor = _CacheDecorFxAnimSnapshot(inst)
 
-        local new_house = ReplacePrefab(inst, inst._construction_product)
+		local skin_name = inst:GetSkinName()
+		if skin_name then
+			skin_name = string.gsub(skin_name, "^"..inst.prefab, inst._construction_product)
+		end
+		local new_house = ReplacePrefab(inst, inst._construction_product, skin_name, inst.skin_id)
         new_house.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/stage"..new_house.level.."_place")
 
         new_house.components.spawner:TakeOwnership(child)
@@ -424,8 +488,15 @@ local function OnConstructed(inst, doer)
         end
 
 		if new_house.components.container and inst.components.container == nil then
-			local ornament = SpawnPrefab("hermithouse_ornament")
+			local isyule = skin_name ~= nil and string.sub(skin_name, -5) == "_yule"
+
+			local ornament = SpawnPrefab("hermithouse_ornament", isyule and "hermithouse_ornament_wreath" or nil, isyule and 0 or nil)
 			if not new_house.components.container:GiveItem(ornament, 2, nil, false) then
+				ornament:Remove()
+			end
+
+			ornament = SpawnPrefab("hermithouse_ornament", isyule and "hermithouse_ornament_stocking" or "hermithouse_ornament_saltcrystal", 0)
+			if not new_house.components.container:GiveItem(ornament, 3, nil, false) then
 				ornament:Remove()
 			end
 
@@ -440,21 +511,7 @@ local function OnConstructed(inst, doer)
 			end
 		end
 
-		if transferdecor and new_house.ornamentfx then
-			for k, v in pairs(transferdecor) do
-				local v1 = new_house.ornamentfx[k]
-				if v1 then
-					if v.anim == "wind" then
-						v1.AnimState:PlayAnimation("wind")
-						v1.AnimState:SetTime(v.t)
-						v1.AnimState:PushAnimation("idle_loop")
-					elseif v.anim == "idle_loop" then
-						v1.AnimState:PlayAnimation("idle_loop", true)
-						v1.AnimState:SetTime(v.t)
-					end
-				end
-			end
-		end
+		_ApplyDecorFxAnimSnapshot(new_house, transferdecor)
 
 		if pearlscore_enabled then
 			if new_house.components.pearldecorationscore then
@@ -825,6 +882,7 @@ local function MakeHermitCrabHouse(name, client_postinit, master_postinit, house
 		if inst.level >= 3 then
 			inst:DoTaskInTime(math.random()*5, dowind)
 			inst.ornamentfx = {}
+			inst.OnHermitHouseSkinChanged = OnHermitHouseSkinChanged
         end
 
 		inst.OnSave = onsave

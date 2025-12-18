@@ -351,8 +351,6 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
-    inst.scrapbook_specialinfo = "HERMITCRAB_TEASHOP"
-
     inst.displaynamefn = DisplayNameFn
 
     local lightpostpartner = inst:AddComponent("lightpostpartner")

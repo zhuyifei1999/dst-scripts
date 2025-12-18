@@ -5938,7 +5938,7 @@ return{
 			ABANDONED = "That's too bad. Time to burn it!",
         },
 		HERMITHOUSE_ORNAMENT = "But what does it do?",
-        HERMITHOUSE_LAUNDRY = "Pearl's dirty laundry. I should burn it for her.",
+        HERMITHOUSE_LAUNDRY = "Pearl's dirty laundry.",
 
         PETALS_DRIED = "Mmm... So dry. So flammable.",
         PETALS_EVIL_DRIED = "Mmm... So dry. So flammable.",

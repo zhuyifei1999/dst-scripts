@@ -206,9 +206,11 @@ local function getfriendlevelspeech(inst, target)
         end
 
         -- override if there are rewards.
+        local is_chatter
         local rewardstr = inst.rewardcheck(inst)
         if rewardstr then
             str = rewardstr
+            is_chatter = true
             if inst.giverewardstask then
                 inst.giverewardstask:Cancel()
                 inst.giverewardstask = nil
@@ -245,7 +247,7 @@ local function getfriendlevelspeech(inst, target)
             inst.components.timer:StartTimer("complain_time",10 + (math.random()*30))
         end
 
-        return str
+        return str, is_chatter
     end
 end
 
@@ -260,11 +262,16 @@ local function GetFaceTargetFn(inst)
     local shouldface = target ~= nil and not target:HasTag("notarget") and target or nil
 
     if shouldface and not inst.sg:HasStateTag("busy") and not inst.sg:HasStateTag("alert") and not inst.hasgreeted then
-        local str = getfriendlevelspeech(inst, target)
+        local str, is_chatter = getfriendlevelspeech(inst, target)
         if str then
             -- TODO (SAM) Leaving this as Say for now, because some of the getfriendspeechlevel options
             -- format in the player's name.
-            inst.components.npc_talker:Say(str, nil, true)
+            if is_chatter then
+                local sound = nil -- stub
+                inst.components.npc_talker:Chatter(str, nil, nil, nil, nil, sound)
+            else
+                inst.components.npc_talker:Say(str, nil, true)
+            end
         end
         inst.hasgreeted = true
     end
@@ -396,11 +403,16 @@ local function runawaytest(inst)
             inst.hasgreeted = nil
         end
         if player and not inst.sg:HasStateTag("busy") and not inst.hasgreeted then
-            local str = getfriendlevelspeech(inst, player)
+            local str, is_chatter = getfriendlevelspeech(inst, player)
             if str then
                 -- TODO (SAM) Leaving this as Say for now, because some of the getfriendspeechlevel options
                 -- format in the player's name.
-                inst.components.npc_talker:Say(str, nil, true)
+                if is_chatter then
+                    local sound = nil -- stub
+                    inst.components.npc_talker:Chatter(str, nil, nil, nil, nil, sound)
+                else
+                    inst.components.npc_talker:Say(str, nil, true)
+                end
             end
             inst.hasgreeted = true
         end
@@ -582,7 +594,7 @@ end
 local function GetFirstHungryPetCritter(inst)
     local pets = inst.components.petleash:GetPets()
     for k, v in pairs(pets) do
-        if v:HasTag("critter") and v:IsHungry() then
+        if v:HasTag("critter") and v:IsHungry() and not v:IsOnOcean(true) then
             return v
         end
     end
@@ -590,7 +602,7 @@ end
 local function IsPetCritterHungry(inst)
     local pets = inst.components.petleash:GetPets()
     for k, v in pairs(pets) do
-        if v:HasTag("critter") and v:IsHungry() then
+        if v:HasTag("critter") and v:IsHungry() and not v:IsOnOcean(true) then
             return true
         end
     end

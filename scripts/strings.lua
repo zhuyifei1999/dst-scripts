@@ -18077,14 +18077,14 @@ STRINGS.SCRAPBOOK = {
 
         -- Winter's Feast 2025
         HERMITCRAB_TEASHOP = "Pearl's very own tea shop to provide you with riveting teas.",
-        HERMITCRABTEA_PETALS = "TODO",
-        HERMITCRABTEA_PETALS_EVIL = "TODO",
-        HERMITCRABTEA_FOLIAGE = "TODO",
-        HERMITCRABTEA_SUCCULENT_PICKED = "TODO",
-        HERMITCRABTEA_FIRENETTLES = "TODO",
-        HERMITCRABTEA_TILLWEED = "TODO",
-        HERMITCRABTEA_MOON_TREE_BLOSSOM = "TODO",
-        HERMITCRABTEA_FORGETMELOTS = "TODO",
+        HERMITCRABTEA_PETALS = "Soothe your mind with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_PETALS_EVIL = "Sour your mind with this brewed concoction from Pearl.",
+        HERMITCRABTEA_FOLIAGE = "Protect your mind against scary foes with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_SUCCULENT_PICKED = "Cool yourself with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_FIRENETTLES = "Warm yourself with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_TILLWEED = "Tend to your wounds with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_MOON_TREE_BLOSSOM = "Scare off shadows of the night with this lovingly brewed concoction from Pearl.",
+        HERMITCRABTEA_FORGETMELOTS = "Soothe your mind like nothing else can, with this exception brewed concotion from Pearl.",
 
         HERMITCRAB_LIGHTPOST = "String up pearlescent lights. Connects to Tea Shops and Pearl's Place too!",
     },

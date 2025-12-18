@@ -674,6 +674,7 @@ local function master_postinit(inst)
 
     if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
         inst:AddComponent("gingerbreadhunter")
+        inst:AddComponent("wintersurprisespawner")
     end
     inst:AddComponent("snowballmanager")
 

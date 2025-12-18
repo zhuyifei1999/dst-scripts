@@ -5,8 +5,10 @@ local TIMEOUT = 2
 
 local function GetIceStaffProjectileSound(inst, equip)
     if equip.icestaff_coldness then
-        if equip.icestaff_coldness > 1 then
-            return "dontstarve/wilson/attack_deepfreezestaff" -- FIXME(JBK): WF: Different sfx for each tier?
+        if equip.icestaff_coldness > 2 then
+            return "dontstarve/wilson/attack_deepfreezestaff_lvl2"
+        elseif equip.icestaff_coldness > 1 then
+            return "dontstarve/wilson/attack_deepfreezestaff"
         end
     end
     return "dontstarve/wilson/attack_icestaff"

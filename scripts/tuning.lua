@@ -9015,6 +9015,8 @@ function Tune(overrides)
 		HERMITCRAB_DECOR_WINTER_ORNAMENT_SCORE = 4,
 		HERMITCRAB_DECOR_WAGSTAFF_ORNAMENT_SCORE = 8,
 
+		HERMITCRAB_DECOR_WINTER_BONUS_SCORE = 2,
+
         HERMITCRAB_DECOR_HAPPY_SCORE = 90,
 
         HERMITCRAB_DECOR_FISHING_BLOCKED_SCORE = -4, -- -4 points for each fishing marker covered. 16 markers x -4 = -64 decor points lost.
@@ -9034,6 +9036,11 @@ function Tune(overrides)
         MOONSTORM_SPARKCHARGE_DEFAULT = 0.1,
         NIGHTSTICK_SPARKCHARGE = 0.25,
         NIGHTSTICK_BATTERYCHARGE = 1.0,
+
+        WINTERSURPRISE_SPAWN_DELAY = total_day_time * 2,
+        WINTERSURPRISE_SPAWN_DELAY_VARIANCE = total_day_time * 1,
+        WINTERSURPRISE_MAX_SPAWNS = 3,
+        SPAWN_WINTERSURPRISE = true,
     }
 
     TUNING_MODIFIERS = {}

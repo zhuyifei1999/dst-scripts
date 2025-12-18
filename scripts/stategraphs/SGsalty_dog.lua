@@ -31,11 +31,18 @@ local events=
         inst.sg:GoToState("summon")
     end),
     EventHandler("desummon", function(inst)
-        inst.sg:GoToState("desummon")
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("desummon")
+        end
     end),
     EventHandler("saltshake", function(inst)
         if not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("saltshake")
+        end
+    end),
+    EventHandler("despawn", function(inst, data)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("despawn")
         end
     end),
 }
@@ -57,7 +64,7 @@ local states=
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            --inst.SoundEmitter:PlaySound(inst.sounds.death)
+            inst.SoundEmitter:PlaySound("winter2025/saltydog/death")
         end,
     },
     State{
@@ -66,7 +73,7 @@ local states=
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
-            inst.SoundEmitter:PlaySound("monkeyisland/pollyroger/hit") -- FIXME(JBK): WF: Sounds.
+            inst.SoundEmitter:PlaySound("winter2025/saltydog/hit")
             inst.Physics:Stop()
         end,
 
@@ -87,36 +94,47 @@ local states=
 
         timeline = {
             FrameEvent(10, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/small/emote_cute_shake")
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.2 then
                     inst:ShedSalt()
                 end
             end),
+            FrameEvent(13, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/walter/woby/small/emote_cute_shake")
+            end),
             FrameEvent(15, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.5 then
                     inst:ShedSalt()
                 end
             end),
             FrameEvent(19, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.8 then
                     inst:ShedSalt()
                 end
             end),
             FrameEvent(22, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.6 then
                     inst:ShedSalt()
                 end
             end),
             FrameEvent(25, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.5 then
                     inst:ShedSalt()
                 end
             end),
             FrameEvent(30, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 if math.random() < 0.4 then
                     inst:ShedSalt()
                 end
             end),
             FrameEvent(34, function(inst)
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/salt_shake")
                 inst:ShedAllSalt()
             end),
         },
@@ -148,6 +166,7 @@ local states=
                 inst.Physics:SetMotorVel(5, 0, 0)
                 inst.AnimState:PlayAnimation("jump_pre")
                 inst.AnimState:PushAnimation("jump_pst")
+                inst.SoundEmitter:PlaySound("winter2025/saltydog/vocalization")
             end),
         },
         events =
@@ -174,6 +193,7 @@ local states=
             end
             inst.AnimState:PlayAnimation("jump_pre")
             inst.AnimState:PushAnimation("jump_pst")
+            inst.SoundEmitter:PlaySound("winter2025/saltydog/vocalization")
             inst.Physics:SetMotorVel(5, 0, 0)
         end,
         timeline =
@@ -335,11 +355,11 @@ local states=
         timeline =
         {
             FrameEvent(1, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/bodyfall", nil, .5) end),
-            FrameEvent(19, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(19, function(inst) inst.SoundEmitter:PlaySound("winter2025/saltydog/footstep") end),
             FrameEvent(22, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
-            FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(27, function(inst) inst.SoundEmitter:PlaySound("winter2025/saltydog/footstep") end),
             FrameEvent(30, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/tail") end),
-            FrameEvent(36, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(36, function(inst) inst.SoundEmitter:PlaySound("winter2025/saltydog/footstep") end),
         },
 
         events =
@@ -374,7 +394,7 @@ local states=
 
         timeline =
         {
-            FrameEvent(8, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/stallion") end),
+            FrameEvent(8, function(inst) inst.SoundEmitter:PlaySound("winter2025/saltydog/footstep") end),
 
             FrameEvent(10, function(inst)
                 inst:PerformBufferedAction()
@@ -385,6 +405,25 @@ local states=
             if inst.sg.statemem.buffaction and inst.sg.statemem.buffaction == inst.bufferedaction then
                 inst:ClearBufferedAction()
             end
+        end,
+    },
+    State{
+        name = "despawn",
+        tags = {"busy", "nointerrupt"},
+
+        onenter = function(inst)
+            inst.readytogather = nil
+            inst.persists = false
+            inst.OnEntitySleep = inst.Remove
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("idle_loop", true)
+            inst.sg:SetTimeout(0.8)
+        end,
+        ontimeout = function(inst)
+            inst:Remove()
+        end,
+        onexit = function(inst)
+            inst:DoTaskInTime(0, inst.Remove)
         end,
     },
 }

@@ -10,12 +10,6 @@ local prefabs =
     "spoiled_food",
 }
 
-local function oneaten(inst, eater)
-    if eater ~= nil and eater.components.sanity ~= nil then
-        eater.components.sanity:DoDelta(-TUNING.SANITY_TINY)
-    end
-end
-
 local function OnSpawnedFromHaunt(inst, data)
     Launch(inst, data.haunter, TUNING.LAUNCH_SPEED_SMALL)
 end
@@ -64,8 +58,8 @@ local function fn()
     inst:AddComponent("edible") --Different effect? Reduce health?
     inst.components.edible.healthvalue = 0
     inst.components.edible.hungervalue = 0
+    inst.components.edible.sanityvalue = -TUNING.SANITY_TINY
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
-    inst.components.edible:SetOnEatenFn(oneaten)
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)

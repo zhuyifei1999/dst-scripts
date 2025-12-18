@@ -38,22 +38,22 @@ local LoadoutSelect_hermitcrab = Class(Widget, function(self, user_profile, init
 
     self.puppet_nameplate = self.puppet_root:AddChild(Image("images/names_gold" .. LOC.GetNamesImageSuffix() .. "_pearl.xml", "pearl.tex"))
     self.puppet_nameplate:SetScale(0.40)
-    self.puppet_nameplate:SetPosition(0, 300)
+    self.puppet_nameplate:SetPosition(-30, 300)
     self.puppet_nameplate:SetClickable(false)
 
     self.pearl_mirror = self.puppet_root:AddChild(Image("images/bg_redux_pearl_mirror.xml", "pearl_mirror.tex"))
-    self.pearl_mirror:SetScale(0.60)
-    self.pearl_mirror:SetPosition(-150, 30)
+    self.pearl_mirror:SetScale(0.50)
+    self.pearl_mirror:SetPosition(-175, -20)
     self.pearl_mirror:SetClickable(false)
 
     self.pearl_clothesrack = self.puppet_root:AddChild(Image("images/bg_redux_pearl_clothesrack.xml", "pearl_clothesrack.tex"))
-    self.pearl_clothesrack:SetScale(0.40)
-    self.pearl_clothesrack:SetPosition(135, 0)
+    self.pearl_clothesrack:SetScale(0.50)
+    self.pearl_clothesrack:SetPosition(125, 30)
     self.pearl_clothesrack:SetClickable(false)
 
     self.puppet = self.puppet_root:AddChild(Puppet())
     self.puppet:AddShadow()
-	self.puppet_base_offset = { -20, -160 }
+	self.puppet_base_offset = { -30, -160 }
 	self.puppet:SetPosition(self.puppet_base_offset[1], self.puppet_base_offset[2])
 	self.puppet_default_scale = 4
     self.puppet:SetScale(self.puppet_default_scale)

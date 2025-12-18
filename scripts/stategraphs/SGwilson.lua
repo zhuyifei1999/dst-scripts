@@ -42,8 +42,10 @@ end
 
 local function GetIceStaffProjectileSound(inst, equip)
     if equip.icestaff_coldness then
-        if equip.icestaff_coldness > 1 then
-            return "dontstarve/wilson/attack_deepfreezestaff" -- FIXME(JBK): WF: Different sfx for each tier?
+        if equip.icestaff_coldness > 2 then
+            return "dontstarve/wilson/attack_deepfreezestaff_lvl2"
+        elseif equip.icestaff_coldness > 1 then
+            return "dontstarve/wilson/attack_deepfreezestaff"
         end
     end
     return "dontstarve/wilson/attack_icestaff"
@@ -22240,10 +22242,26 @@ local states =
 						if x == x1 and z == z1 then
 							local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
-							x = x1 + radius * math.cos(rot)
-							z = z1 - radius * math.sin(rot)
-							if _ispassableatpoint(x, 0, z, true) then
-								inst.Physics:Teleport(x, 0, z)
+							local steps = 6
+							local delta = (180 / steps) * DEGREES
+							for i = 0, steps do
+								local offsrot = delta * i
+								local rot1 = rot + offsrot
+								x = x1 + radius * math.cos(rot1)
+								z = z1 - radius * math.sin(rot1)
+								if _ispassableatpoint(x, 0, z) then
+									inst.Physics:Teleport(x, 0, z)
+									break
+								end
+								if i > 0 and i < steps then
+									rot1 = rot - offsrot
+									x = x1 + radius * math.cos(rot1)
+									z = z1 - radius * math.sin(rot1)
+									if _ispassableatpoint(x, 0, z) then
+										inst.Physics:Teleport(x, 0, z)
+										break
+									end
+								end
 							end
 						end
 					end
@@ -22343,10 +22361,26 @@ local states =
 						if x == x1 and z == z1 then
 							local _ispassableatpoint = GetActionPassableTestFnAt(x, y, z)
 							local rot = inst.Transform:GetRotation() * DEGREES
-							x = x1 + radius * math.cos(rot)
-							z = z1 - radius * math.sin(rot)
-							if _ispassableatpoint(x, 0, z, true) then
-								inst.Physics:Teleport(x, 0, z)
+							local steps = 6
+							local delta = (180 / steps) * DEGREES
+							for i = 0, steps do
+								local offsrot = delta * i
+								local rot1 = rot + offsrot
+								x = x1 + radius * math.cos(rot1)
+								z = z1 - radius * math.sin(rot1)
+								if _ispassableatpoint(x, 0, z) then
+									inst.Physics:Teleport(x, 0, z)
+									break
+								end
+								if i > 0 and i < steps then
+									rot1 = rot - offsrot
+									x = x1 + radius * math.cos(rot1)
+									z = z1 - radius * math.sin(rot1)
+									if _ispassableatpoint(x, 0, z) then
+										inst.Physics:Teleport(x, 0, z)
+										break
+									end
+								end
 							end
 						end
 					end

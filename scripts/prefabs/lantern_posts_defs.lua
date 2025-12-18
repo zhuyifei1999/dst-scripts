@@ -23,7 +23,7 @@ local shell_sounds =
 local light_sounds =
 {
     place = "hookline_2/characters/hermit/house/lamppost_lights_place",
-    --break = "hookline_2/characters/hermit/house/lamppost_shells_break",
+    --broke = "hookline_2/characters/hermit/house/lamppost_shells_break",
 }
 
 local CORAL_COLOR_VARIATIONS =
@@ -78,16 +78,21 @@ end
 
 local SKIN_NAMES_NO_TINT =
 {
-    ["hermitcrab_lightpost_yule"] = true
+    ["hermitcrab_lightpost_yule"] = true,
 }
 local function hermit_OnHermitLightPostSkinChanged(inst, skin_name)
-    inst:EnableColorVariation(false, SKIN_NAMES_NO_TINT[skin_name])
+    inst:EnableColorVariation(not SKIN_NAMES_NO_TINT[skin_name])
 end
+
+local hermit_SCRAPBOOK_SYMBOLCOLOURS = {
+	{"coral", CORAL_COLOR_VARIATIONS[1][1], CORAL_COLOR_VARIATIONS[1][2], CORAL_COLOR_VARIATIONS[1][3], 1 },
+}
 
 local LANTERN_DEFS =
 {
     {
         name = "yots_lantern_post",
+        assets = { Asset("ANIM", "anim/ui_chest_1x1.zip"),},
         overridelightchainprefabname = "yots_lantern_light_chain", -- for old worlds.
         --
         material = "wood",
@@ -112,6 +117,7 @@ local LANTERN_DEFS =
 
     {
         name = "hermitcrab_lightpost",
+        assets = { Asset("ANIM", "anim/ui_hermitcrab_1x1.zip"), },
         --
         sounds =
         {
@@ -128,17 +134,21 @@ local LANTERN_DEFS =
         },
         material = "pot",
         partner_count = 2,
-        link_length = 70,
+        link_length = 75,
         num_variations = 5,
         no_burn = true,
+        has_yule_build = true,
         overridenextvariationfn = function(inst, prng)
+            local NUM_LIGHTS = 2
             if inst.variation == nil then
                 inst.variation = prng:RandInt(inst.num_variations)
+                inst.next_light = prng:RandInt(NUM_LIGHTS)
             else
                 if inst.variation > 4 then
                     inst.variation = prng:RandInt(4)
                 else
-                    inst.variation = prng:RandInt(5, 5)
+                    inst.variation = 4 + inst.next_light
+                    inst.next_light = inst.next_light % NUM_LIGHTS + 1
                 end
             end
             return inst.variation
@@ -151,6 +161,8 @@ local LANTERN_DEFS =
         end,
 
         master_postinit = function(inst)
+            inst.scrapbook_symbolcolours = hermit_SCRAPBOOK_SYMBOLCOLOURS
+
             inst.components.inspectable.getstatus = hermit_GetStatus
 
             local colors_id = math.random(#CORAL_COLOR_VARIATIONS)
@@ -180,6 +192,7 @@ local LANTERN_DEFS =
                 inst.colors_id = data.colors_id
                 local colors = CORAL_COLOR_VARIATIONS[inst.colors_id]
                 inst.AnimState:SetSymbolMultColour("coral", colors[1], colors[2], colors[3], 1)
+                hermit_OnHermitLightPostSkinChanged(inst, inst:GetSkinName())
             end
 
             if data.abandoned then

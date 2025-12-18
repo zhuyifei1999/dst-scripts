@@ -378,14 +378,14 @@ function PearlDecorationScore:IsEntityBeeBox(ent)
     return ent:HasTag("beebox") and ent.components.workable ~= nil -- Count only built bee boxes, not our inherent one
 end
 function PearlDecorationScore:IsEntityLightPost(ent)
-    return ent:HasTag("hermitcrab_lantern_post")
+    return ent:HasTag("hermitcrab_lantern_post") and not ent:HasTag("abandoned")
 end
 function PearlDecorationScore:IsEntityPickableBush(ent)
     local pickable = ent.components.pickable
     return pickable ~= nil and not pickable.remove_when_picked and ent:HasTag("plant") and not ent:HasTag("thorny")
 end
 function PearlDecorationScore:IsEntityMeatRack(ent)
-    return ent.components.dryingrack ~= nil
+    return ent.components.dryingrack ~= nil and not ent:HasTag("abandoned") and ent.components.workable ~= nil -- Count built meat racks.
 end
 function PearlDecorationScore:IsEntityFacedChair(ent)
     return ent:HasAnyTag("faced_chair", "rocking_chair")
@@ -402,8 +402,8 @@ end
 function PearlDecorationScore:IsEntityDecorTaker(ent)
     return ent.components.furnituredecortaker ~= nil
 end
-local JUNK_ONEOF_TAGS = { "junk_pile", "_inventoryitem" }
-local JUNK_CANT_TAGS = { "singingshell", "frozen", "vase", "INLIMBO" }
+local JUNK_ONEOF_TAGS = { "junk_pile", "_inventoryitem", "heavy" }
+local JUNK_CANT_TAGS = { "singingshell", "frozen", "vase", "INLIMBO", "farm_plant_killjoy" }
 function PearlDecorationScore:IsEntityJunk(ent)
     local furnituredecor = ent.components.furnituredecor
     if furnituredecor and furnituredecor.on_furniture then
@@ -422,7 +422,9 @@ function PearlDecorationScore:IsEntitySpawner(ent)
         and not ent:HasAnyTag(EXCLUDE_CHILDSPAWNER_TAGS)
 end
 function PearlDecorationScore:IsEntityUniqueDecor(ent)
-    return TUNING.HERMITCRAB_DECOR_UNIQUE_BOOSTS[ent.prefab] and not (ent.components.burnable ~= nil and ent.components.burnable:IsBurning() or ent:HasTag("burnt"))
+    return TUNING.HERMITCRAB_DECOR_UNIQUE_BOOSTS[ent.prefab] 
+        and not (ent.components.burnable ~= nil and ent.components.burnable:IsBurning() or ent:HasTag("burnt"))
+        and not ent:HasTag("abandoned")
 end
 
 function PearlDecorationScore:IsEntityWithin(ent)
@@ -472,6 +474,7 @@ function PearlDecorationScore:OnUpdate(dt)
         ---
         local x, y, z = self.inst.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities_Registered(x, y, z, self.scoring_radius, REGISTERED_FIND_DECOR_TAGS)
+		local iswintersfeast = IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST)
         --
         local decor_scores = {}
         for decor_key in pairs(self.decor_data) do
@@ -488,7 +491,14 @@ function PearlDecorationScore:OnUpdate(dt)
         AddDecorPoints(PEARL_DECORATION_TYPES.TILES, self.tile_score)
         --
         for k, v in ipairs(ents) do
-            if v ~= self.inst and self:IsEntityWithin(v) then
+			if v == self.inst then
+				if iswintersfeast then
+					local skin_build = v:GetSkinBuild()
+					if skin_build and string.sub(skin_build, -5) == "_yule" then
+						AddDecorPoints(PEARL_DECORATION_TYPES.UNIQUE_DECORATION, TUNING.HERMITCRAB_DECOR_WINTER_BONUS_SCORE)
+					end
+				end
+			elseif self:IsEntityWithin(v) then
                 for i, data in ipairs(self.decor_fns) do
                     local decor_data = self.decor_data[data.key]
                     if (decor_data.min_score == nil or decor_scores[data.key] > decor_data.min_score)
@@ -500,6 +510,13 @@ function PearlDecorationScore:OnUpdate(dt)
                             elseif decor_data.max_score and decor_scores[data.key] + points > decor_data.max_score then
                                 points = decor_data.max_score - decor_scores[data.key]
                             end
+
+							if iswintersfeast then
+								local skin_build = v:GetSkinBuild()
+								if skin_build and string.sub(skin_build, -5) == "_yule" then
+									AddDecorPoints(data.key, TUNING.HERMITCRAB_DECOR_WINTER_BONUS_SCORE)
+								end
+							end
 
                             AddDecorPoints(data.key, points)
                             break
@@ -520,7 +537,6 @@ function PearlDecorationScore:OnUpdate(dt)
 			AddDecorPoints(PEARL_DECORATION_TYPES.LVL5_HOUSE, TUNING.HERMITCRAB_DECOR_LVL5_HOUSE)
 
 			local num, num_winter, num_wagstaff = 0, 0, 0
-			local iswintersfeast = IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST)
 			self.inst.components.container:ForEachItem(function(item)
 				if not item:HasTag("hermithouse_laundry") then
 					if item:HasTag("wagstaff_item") then

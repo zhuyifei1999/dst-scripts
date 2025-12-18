@@ -16,7 +16,6 @@ local events=
 	CommonHandlers.OnElectrocute(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
-    CommonHandlers.OnDeath(),
     EventHandler("entershield", function(inst)
         if inst.components.health and not inst.components.health:IsDead() then
             inst.sg:GoToState("shield")
@@ -25,6 +24,19 @@ local events=
     EventHandler("exitshield", function(inst)
         if inst.components.health and not inst.components.health:IsDead() then
             inst.sg:GoToState("shield_end")
+        end
+    end),
+
+    EventHandler("death", function(inst, data)
+        if not inst.sg:HasStateTag("dead") then
+            local use_corpse_state = CommonHandlers.ShouldUseCorpseStateOnLoad(inst, data.cause)
+            if use_corpse_state then
+                inst.sg:GoToState("corpse", true)
+            elseif inst.sg.mem.dissolving then
+                inst.sg:GoToState("salt_death_pst", data)
+            else
+                inst.sg:GoToState("death", data)
+            end
         end
     end),
 
@@ -38,6 +50,11 @@ local states =
         name = "idle",
         tags = {"idle", "canrotate"},
         onenter = function(inst, playanim)
+            if inst.sg.mem.dissolving then
+                inst.sg:GoToState("salt_death_pre")
+                return
+            end
+
             inst.Physics:Stop()
             if playanim then
                 inst.AnimState:PlayAnimation(playanim)
@@ -192,21 +209,102 @@ local states =
     State{
         name = "steal", --aquire food aggressively
         tags = {"attack", "busy"},
+
         onenter = function(inst, target)
             if inst.components.locomotor then
                 inst.components.locomotor:StopMoving()
             end
             inst.AnimState:PlayAnimation("atk")
         end,
-         events=
+
+        events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
+
         timeline =
         {
             TimeEvent(11*FRAMES, function(inst) inst:PerformBufferedAction() end),
         },
     },
+
+    -- Oh you poor thing...
+    State{
+        name = "salt_death_pre",
+        tags = { "busy", "hiding", "dissolving" },
+
+        onenter = function(inst)
+            inst.sg.mem.dissolving = true
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("salt_death_pre")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/hide")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("salt_death_loop")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "salt_death_loop",
+        tags = { "busy", "hiding", "dissolving" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+
+            inst.AnimState:PlayAnimation("salt_death_loop", true)
+
+            if not inst.SoundEmitter:PlayingSound("salting_loop") then
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/death_salty_LP", "salting_loop")
+            end
+        end,
+
+        onupdate = function(inst, dt)
+            inst.components.health:DoDelta(-200 * dt, nil, "salt", nil, nil, true)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("salting_loop")
+        end,
+    },
+
+    State{
+        name = "salt_death_pst",
+        tags = { "busy", "dead", "dissolving" },
+
+        onenter = function(inst, data)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+
+            inst.AnimState:PlayAnimation("salt_death_pst")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/death_salty_pst")
+        end,
+
+        timeline =
+        {
+            FrameEvent(10, function(inst)
+                inst:DropDeathLoot()
+
+                inst:AddTag("NOCLICK")
+                inst.persists = false
+            end),
+            TimeEvent(3, ErodeAway)
+        }
+    },
+
 }
 
 CommonStates.AddWalkStates(states,
@@ -216,19 +314,18 @@ CommonStates.AddWalkStates(states,
 	    TimeEvent(0*FRAMES, function(inst) inst.Physics:Stop() end ),
     },
 	walktimeline = {
-		    TimeEvent(0*FRAMES, function(inst)
+        TimeEvent(0*FRAMES, function(inst)
 		    inst.Physics:Stop()
             if math.random() <= 0.33 then inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/idle") end
             inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/slide_out")
-            end ),
-
-            TimeEvent(13*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/slide_in")
-                inst.components.locomotor:WalkForward()
-            end ),
-            TimeEvent(21*FRAMES, function(inst)
-                inst.Physics:Stop()
-            end ),
+        end),
+        TimeEvent(13*FRAMES, function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/slide_in")
+            inst.components.locomotor:WalkForward()
+        end),
+        TimeEvent(21*FRAMES, function(inst)
+            inst.Physics:Stop()
+        end),
 	},
 }, nil, true)
 
@@ -268,13 +365,28 @@ combatanims,
     deathanimfn = function(inst, data)
         return (data ~= nil and data.corpsing and "death_2") or "death"
     end,
+
+    onhitanimover = function(inst)
+        if inst.AnimState:AnimDone() then
+            inst.sg:GoToState(inst.sg.mem.dissolving and "salt_death_pre" or "idle")
+        end
+    end,
 },
 {
     has_corpse_handler = true,
 })
 
 CommonStates.AddFrozenStates(states)
-CommonStates.AddElectrocuteStates(states)
+CommonStates.AddElectrocuteStates(states,
+nil, --timeline
+nil, --anims
+{   --fns
+    onanimover = function(inst)
+        if inst.AnimState:AnimDone() then
+            inst.sg:GoToState(inst.sg.mem.dissolving and "salt_death_pre" or "idle")
+        end
+    end,
+})
 
 CommonStates.AddInitState(states, "idle")
 CommonStates.AddCorpseStates(states)

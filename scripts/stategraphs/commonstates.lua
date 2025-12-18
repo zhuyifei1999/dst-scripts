@@ -1400,7 +1400,7 @@ CommonStates.AddCombatStates = function(states, timelines, anims, fns, data)
 
         events =
         {
-            EventHandler("animover", idleonanimover),
+            EventHandler("animover", fns ~= nil and fns.onhitanimover or idleonanimover),
         },
     })
 

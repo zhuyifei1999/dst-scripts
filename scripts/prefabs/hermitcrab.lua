@@ -123,7 +123,6 @@ local function dotalkingtimers(inst)
     end
 end
 
-
 local TALKER_COLOR_HIGH = Vector3(194/255, 149/255, 216/255)
 local TALKER_COLOR_MED = Vector3(228/255, 163/255, 212/255)
 local TALKER_COLOR_LOW = Vector3(241/255, 198/255, 211/255)
@@ -412,6 +411,19 @@ local function OnSave(inst, data)
         data.storelevelunlocked = true
     end
     data.highfriendlevel = inst:HasTag("highfriendlevel")
+    --
+    if inst.itemstotoss ~= nil then
+        data.itemstotoss = {}
+
+        for i, item in pairs(inst.itemstotoss) do
+            if item and item.prefab and item:IsValid() then
+                local slot = inst.components.inventory:GetItemSlot(item)
+                if slot then
+                    data.itemstotoss[slot] = item.prefab
+                end
+            end
+        end
+    end
 end
 
 local function OnLoad(inst, data)
@@ -495,6 +507,23 @@ local function OnLoadPostPass(inst, new_ents, data)
     if inst.components.friendlevels.friendlytasks[TASKS.FIX_HOUSE_3].complete and IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
 		inst.components.craftingstation:LearnItem("winter_ornament_boss_hermithouse", "hermitshop_winter_ornament_boss_hermithouse")
 	end
+
+    if data.itemstotoss ~= nil then
+        inst.itemstotoss = inst.itemstotoss or {}
+
+        for slot, itemprefab in pairs(data.itemstotoss) do
+            local item = inst.components.inventory:GetItemInSlot(slot)
+            -- Prefab check as a strange bit of security, in case somehow our slots get messed up, so let's also confirm the prefab we saved is the same as the prefab in load
+            if item and item.prefab == itemprefab then
+                table.insert(inst.itemstotoss, item)
+            end
+        end
+
+        -- Nil it otherwise she performs toss anim with no item.
+        if #inst.itemstotoss == 0 then
+            inst.itemstotoss = nil
+        end
+    end
 end
 
 local function RegisterToBottleManager(inst)
@@ -674,7 +703,12 @@ local function rewardcheck(inst)
         local problems = inst.components.friendlevels.friendlytasks
         local problem_for_task = problems[task]
 
-        str = problem_for_task.completestrings.."."..gfl
+        local wagpunkarenamanager = TheWorld.components.wagpunk_arena_manager
+        if wagpunkarenamanager and wagpunkarenamanager.pearlmap and problem_for_task.postrelocation_completestrings then
+            str = problem_for_task.postrelocation_completestrings
+        else
+            str = problem_for_task.completestrings.."."..gfl
+        end
 
         if problem_for_task.specifictaskreward then
             inst.components.friendlevels.specifictaskreward = problem_for_task.specifictaskreward
@@ -1015,32 +1049,42 @@ local function berriescomplainfn(inst)
     end
 end
 
-local function GetAllMeatRacksNear(inst, x, y, z, includeempty)
+local function GetAllMeatRacksNear(inst, x, y, z)
     local meatracks = {}
     local ents = TheSim:FindEntities(x, y, z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
     for _, ent in ipairs(ents) do
-        local dryer = ent.components.dryer
-        local dryingrack = ent.components.dryingrack
-        local container = dryingrack and dryingrack:GetContainer() or nil
-        local product = dryer and dryer.product or nil
-        if dryingrack or dryer then
-            if includeempty or (product or (container and not container:IsEmpty())) then
-                table.insert(meatracks, ent)
-            end
-        end
+		if ent.components.dryingrack or ent.components.dryer then
+			table.insert(meatracks, ent)
+		end
     end
     return meatracks
 end
 
+local function IsItemMeat(item)
+	--raw or dried meat
+	return item.components.edible and item.components.edible.foodtype == FOODTYPE.MEAT
+end
+
+local function CountMeatOnRacksNear(x, y, z)
+	local num = 0
+	local ents = TheSim:FindEntities(x, y, z, ISLAND_RADIUS, FIND_STRUCTURE_TAGS)
+	for _, ent in ipairs(ents) do
+		if ent.components.dryingrack then
+			local container = ent.components.dryingrack:GetContainer()
+			if container and not container:IsEmpty() then
+				local _, num1 = container:HasItemThatMatches(IsItemMeat, 1)
+				num = num + num1
+			end
+		elseif ent.components.dryer and ent.components.dryer.product then
+			--legacy support (dryer component is deprecated)
+			num = num + 1
+		end
+	end
+	return num
+end
+
 local function meatcomplainfn(inst)
-    local source = inst.CHEVO_marker
-    if source then
-        local x, y, z = source.Transform:GetWorldPosition()
-        local ents = inst:GetAllMeatRacksNear(x, y, z)
-        if #ents <= 0 then
-            return true
-        end
-    end
+	return inst.CHEVO_marker ~= nil and CountMeatOnRacksNear(inst.CHEVO_marker.Transform:GetWorldPosition()) <= 0
 end
 
 local function umbrellacomplainfn(inst)
@@ -1106,7 +1150,7 @@ local friendlytasks ={
     [TASKS.REMOVE_LUREPLANT] =  {completestrings="HERMITCRAB_REWARD.REMOVE_LUREPLANT",  complain=true, complainstrings="HERMITCRAB_COMPLAIN.REMOVE_LUREPLANT",   complaintest=lureplantcomplainfn},
     [TASKS.GIVE_UMBRELLA] =     {completestrings="HERMITCRAB_REWARD.GIVE_UMBRELLA",     complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_UMBRELLA",      complaintest=umbrellacomplainfn},
     [TASKS.GIVE_PUFFY_VEST] =   {completestrings="HERMITCRAB_REWARD.GIVE_PUFFY_VEST",   complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_PUFFY_VEST",    complaintest=puffycomplainfn},
-    [TASKS.GIVE_FLOWER_SALAD] = {completestrings="HERMITCRAB_REWARD.GIVE_FLOWER_SALAD", complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_FLOWER_SALAD",  complaintest=saladcomplainfn},
+    [TASKS.GIVE_FLOWER_SALAD] = {completestrings="HERMITCRAB_REWARD.GIVE_FLOWER_SALAD", complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_FLOWER_SALAD",  complaintest=saladcomplainfn, postrelocation_completestrings = "HERMITCRAB_REWARD.GIVE_FLOWER_SALAD_POST_RELOCATION"},
 
     [TASKS.GIVE_BIG_WINTER] =   {completestrings="HERMITCRAB_REWARD.GIVE_FISH_WINTER",  complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_FISH_WINTER",  complaintest=fishwinterfn}, -- oceanfish_medium_8
     [TASKS.GIVE_BIG_SUMMER] =   {completestrings="HERMITCRAB_REWARD.GIVE_FISH_SUMMER",  complain=true, complainstrings="HERMITCRAB_COMPLAIN.GIVE_FISH_SUMMER",  complaintest=fishsummerfn}, -- oceanfish_small_8
@@ -1244,9 +1288,6 @@ local function initfriendlevellisteners(inst)
     inst:ListenForEvent("CHEVO_starteddrying", function(world,data)
         local source = inst.CHEVO_marker
         if source and data.target:GetDistanceSqToInst(source) < ISLAND_RADIUS * ISLAND_RADIUS then
-            local source_x, source_y, source_z = source.Transform:GetWorldPosition()
-            local ents = inst:GetAllMeatRacksNear(source_x, source_y, source_z)
-
             -- INVESTIGATE
             local gfl = inst.getgeneralfriendlevel(inst)
             if not inst.comment_data then
@@ -1258,7 +1299,7 @@ local function initfriendlevellisteners(inst)
                 }
             end
 
-            if #ents >= 6 and not inst.driedthings then
+			if not inst.driedthings and CountMeatOnRacksNear(source.Transform:GetWorldPosition()) >= 6 then
                 inst.driedthings = 0
                 inst.components.friendlevels:CompleteTask(TASKS.FILL_MEATRACKS, data.doer)
             end
@@ -1455,7 +1496,7 @@ local function initfriendlevellisteners(inst)
             commentstrings = "HERMITCRAB_DECOR_CONTENT.MEAT_RACKS",
             getpos = function(inst, home, pearldecorationscore)
                 local x, y, z = inst.Transform:GetWorldPosition()
-                local firstrack = inst:GetAllMeatRacksNear(x, y, z, true)[1]
+				local firstrack = inst:GetAllMeatRacksNear(x, y, z)[1]
                 return (firstrack and firstrack:GetPosition()) or inst:GetPosition()
             end,
         },
@@ -1767,10 +1808,21 @@ local function RemoveCommentData(inst)
     inst.comment_data = nil
 end
 
+local function GetCritterPos(inst, critter)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local cx, cy, cz = critter.Transform:GetWorldPosition()
+
+    if TheWorld.Pathfinder:IsClear(x, 0, z, cx, 0, cz) then
+        return critter:GetPosition()
+    end
+
+    return inst:GetPosition()
+end
+
 local function OnAdoptCritter(inst, data)
     local critter = data.critter
     inst.comment_data = { -- This is a special moment, so override an existing comment data.
-        pos = critter:GetPosition(),
+        pos = GetCritterPos(inst, critter),
         distance = 1.5,
         speech = "HERMITCRAB_DECOR_CONTENT.CRITTER_PET",
         do_chatter = true,
@@ -1783,7 +1835,7 @@ local function OnCritterEmote(inst, data)
     local critter = data.critter
     if not inst.comment_data and not inst.sg:HasAnyStateTag("npc_fishing", "busy") then
         inst.comment_data = {
-            pos = critter:GetPosition(),
+            pos = GetCritterPos(inst, critter),
             distance = 1.5,
             speech = "HERMITCRAB_CRITTER_BANTER",
             do_chatter = true,
@@ -2005,6 +2057,7 @@ local function fn()
 
     inst:ListenForEvent("enterlimbo",  function()
         inst.components.timer:StopTimer("complain_time")
+		inst.sg:GoToState("idle")
     end)
     inst:ListenForEvent("exitlimbo",  function()
         if inst.entity:IsAwake() then
@@ -2023,7 +2076,7 @@ local function fn()
         StopMeetPlayersTask(inst)
     end
     inst.OnEntityWake = function(inst)
-        if not inst:HasTag("INLIMBO") then
+		if not inst:IsInLimbo() then
             inst.components.timer:StartTimer("complain_time", GetComplainTime(inst))
             inst.components.npc_talker:resetqueue()
         end

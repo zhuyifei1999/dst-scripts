@@ -475,15 +475,15 @@ end
 
 local function hermit_MakeBroken(inst)
 	inst:AddTag("abandoned")
-	if not inst:HasTag("burnt") then
-		inst.AnimState:PlayAnimation("broken")
-	end
 	hermit_DumpAndRemoveSaltCollector(inst)
 	inst:RemoveComponent("dryingrack")
 	if inst.components.container then
 		inst.components.container:DropEverything()
 		inst.components.container:Close()
 		inst:RemoveComponent("container")
+	end
+	if not inst:HasTag("burnt") then
+		inst.AnimState:PlayAnimation("broken")
 	end
 	inst.abandoning_task = nil
 end
@@ -575,6 +575,7 @@ local function hermit1_common_postinit(inst)
 end
 
 local function hermit1_master_postinit(inst)
+	inst.scrapbook_anim = "idle_empty"
 	TheWorld:PushEvent("ms_register_pearl_entity", inst) -- NOTES(JBK): This function was a stub and now it has a use!
 end
 

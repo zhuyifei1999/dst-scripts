@@ -41,12 +41,23 @@ local reskin_fx_info =
 	greenstaff = { offset = 0.4 },
 	hambat = { offset = 0.2 },
     hermitcrab_lightpost = { offset = 1.7, scalex = 1, scaley = 2.8 },
+    hermitcrab_teashop = { offset = 1, scale = 1.9 },
+    hermithotspring_constr = { scale = 2 },
+    hermithotspring = { scale = 2 },
+    hermithouse_construction1 = { offset = 0.2, scale = 1.5 },
+    hermithouse_construction2 = { offset = 0.2, scale = 1.6 },
+    hermithouse_construction3 = { offset = 0.4, scale = 2 },
+    hermithouse = { offset = 1.8, scale = 2, scaley = 3.1 },
+    hermithouse2 = { offset = 1.8, scale = 2, scaley = 3.1 },
+    hermit_chair_rocking = { offset = .2 },
 	icebox = { offset = 0.3, scale = 1.3 },
 	icestaff = { offset = 0.4 },
 	lightning_rod = { offset = 0.8, scale = 1.3 },
 	mast = { offset = 4, scale = 2 },
 	mast_malbatross = { offset = 4, scale = 2 },
 	meatrack = { offset = 1, scale = 1.7 },
+    meatrack_hermit = { offset = 1, scale = 1.7 },
+    meatrack_hermit_multi = { offset = 1, scale = 2.2 },
 	mermhouse_crafted = { offset = 1.5, scale = 2.2 },
 	monkey_mediumhat = { scale = 1.2 },
 	mushroom_light = { offset = 1.2, scale = 1.4 },
@@ -253,7 +264,13 @@ local function can_cast_fn(doer, target, pos)
     if PREFAB_SKINS[prefab_to_skin] ~= nil then
         for _,item_type in pairs(PREFAB_SKINS[prefab_to_skin]) do
             if not PREFAB_SKINS_SHOULD_NOT_SELECT[item_type] and TheInventory:CheckClientOwnership(doer.userid, item_type) then
-                return true
+                local skip_this = PREFAB_SKINS_SHOULD_NOT_SELECT[item_type] or false
+                if SKINS_EVENTLOCK[item_type] and not IsSpecialEventActive(SKINS_EVENTLOCK[item_type]) then
+                    skip_this = true
+                end
+                if not skip_this then
+                    return true
+                end
             end
         end
     end

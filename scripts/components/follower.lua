@@ -289,7 +289,7 @@ function Follower:SetLeader(new_leader)
 
         self.inst:ListenForEvent("onremove", self.OnLeaderRemoved, new_leader)
 
-        if leader.forceleash or new_leader:HasTag("player") or new_leader.components.inventoryitem ~= nil then
+        if (leader and leader.forceleash) or new_leader:HasTag("player") or new_leader.components.inventoryitem ~= nil then
             --Special case for pets leashed to players or inventory items or things that explicitly force leash
             self:StartLeashing()
         end

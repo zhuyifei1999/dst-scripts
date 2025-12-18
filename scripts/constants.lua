@@ -840,8 +840,7 @@ SPECIAL_EVENTS =
     YOTD = "year_of_the_dragonfly",
     YOTS = "year_of_the_snake",
 }
---WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.CARNIVAL
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS --IS_BETA and SPECIAL_EVENTS.NONE or SPECIAL_EVENTS.CARNIVAL
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
 WORLD_EXTRA_EVENTS = {}
 
 FESTIVAL_EVENTS =
@@ -901,8 +900,8 @@ SPECIAL_EVENT_MUSIC =
     --winter's feast carol
     [SPECIAL_EVENTS.WINTERS_FEAST] =
     {
-        bank = "music_frontend_winters_feast.fsb",
-        sound = "dontstarve/music/music_FE_WF",
+		bank = "music_frontend_wintersfeast2025.fsb",
+		sound = "dontstarve/music/music_FE_winterfeast2025",
     },
 
     --year of the gobbler

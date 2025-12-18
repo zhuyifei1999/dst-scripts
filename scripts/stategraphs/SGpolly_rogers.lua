@@ -49,6 +49,11 @@ local events=
                 end
             end),
 
+    EventHandler("despawn", function(inst, data)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("despawn")
+        end
+    end),
 	-- Corpse handlers
 	CommonHandlers.OnCorpseChomped(),
 }
@@ -500,6 +505,25 @@ local states=
                 end
             end),
         },
+    },
+    State{
+        name = "despawn",
+        tags = {"busy", "nointerrupt"},
+
+        onenter = function(inst)
+            inst.readytogather = nil
+            inst.persists = false
+            inst.OnEntitySleep = inst.Remove
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("idle", true)
+            inst.sg:SetTimeout(0.8)
+        end,
+        ontimeout = function(inst)
+            inst:Remove()
+        end,
+        onexit = function(inst)
+            inst:DoTaskInTime(0, inst.Remove)
+        end,
     },
 }
 CommonStates.AddSleepStates(states)

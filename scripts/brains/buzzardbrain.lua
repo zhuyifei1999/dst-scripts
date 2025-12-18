@@ -53,10 +53,14 @@ local function Normal_IsValidThreat(guy, inst)
     return not guy:HasTag("buzzard") or inst:IsNear(guy, inst.components.combat:GetAttackRange() + guy:GetPhysicsRadius(0))
 end
 
+local function Mutated_IsValidThreat(guy)
+    return guy.components.combat ~= nil -- Some things have scarytoprey but no combat component, so we get stuck.
+end
+
 local function FindThreat(inst, radius)
     local ismutated = inst:HasTag("lunar_aligned")
     if ismutated then
-        return FindEntity(inst, radius, nil, nil, FINDTHREAT_MUTATED_CANT_TAGS, FINDTHREAT_MUTATED_ONE_OF_TAGS)
+        return FindEntity(inst, radius, Mutated_IsValidThreat, nil, FINDTHREAT_MUTATED_CANT_TAGS, FINDTHREAT_MUTATED_ONE_OF_TAGS)
     else
         return FindEntity(inst, radius, Normal_IsValidThreat, nil, FINDTHREAT_MUST_TAGS, FINDTHREAT_CANT_TAGS)
     end
@@ -343,7 +347,7 @@ function BuzzardBrain:OnStart()
             WhileNode(function() return self.inst.shouldGoAway end, "Go Away",
                 DoAction(self.inst, GoHome)),
 
-            StandAndAttack(self.inst),
+            StandAndAttack(self.inst, nil, nil, true),
 
             IfNode(function() return self:IsThreatened() end, "Threat Near",
                 ConditionNode(function() return self:DealWithThreat() end)),

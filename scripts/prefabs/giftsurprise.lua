@@ -14,13 +14,14 @@ local function OnWrapped(inst, data)
 end
 
 local function OnUnwrapped(inst, data)
+	local doer = data and data.doer
 	local creature = ReplacePrefab(inst, inst.creature)
 	if creature then
 		if creature.sg and creature.sg:HasState("surprise_spawn") then
 			creature.sg:GoToState("surprise_spawn")
 		end
-		if data and data.doer and creature.components.combat then
-			creature.components.combat:SuggestTarget(data.doer)
+		if doer and creature.components.combat then
+			creature.components.combat:SuggestTarget(doer)
 		end
 	end
 end

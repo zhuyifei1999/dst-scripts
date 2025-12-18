@@ -270,6 +270,7 @@ local function AddDecor(inst, data)
 				else
 					inst.AnimState:OverrideSymbol("plain"..data.slot, data.item.winter_ornament_build or "winter_ornaments", data.item.winter_ornamentid)
 				end
+				inst.SoundEmitter:PlaySound("hookline_2/characters/hermit/house/decor/stocking_place")
 			end
 		end
 	end
@@ -326,6 +327,34 @@ local random_gift2 =
     panflute = .1,
 }
 
+-- Global to be used for winter tree surprises.
+function GetNiceWinterTreeGiftLoot(fully_decorated)
+    local loot = {}
+
+    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD), stack = math.random(3) + (fully_decorated and 3 or 0)})
+    table.insert(loot, { prefab = not fully_decorated and GetRandomBasicWinterOrnament()
+                            or math.random() < 0.5 and GetRandomFancyWinterOrnament()
+                            or GetRandomFestivalEventWinterOrnament() })
+
+    table.insert(loot, { prefab = weighted_random_choice(random_gift1) })
+
+    if fully_decorated then
+        table.insert(loot, { prefab = weighted_random_choice(random_gift2) })
+    else
+        table.insert(loot, { prefab = PickRandomTrinket() })
+    end
+
+    return loot
+end
+
+function GetNaughtyWinterTreeGiftLoot()
+    local loot = {}
+
+    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD), stack = math.random(3) })
+    table.insert(loot, { prefab = "charcoal" })
+
+    return loot
+end
 --V2C: function pasted here for searching
 --[[
 local function NoHoles(pt)
@@ -367,21 +396,9 @@ local function dogifting(inst)
 
                 if player.components.wintertreegiftable ~= nil and player.components.wintertreegiftable:GetDaysSinceLastGift() >= 4 then
 					player.components.wintertreegiftable:OnGiftGiven()
-                    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD), stack = math.random(3) + (fully_decorated and 3 or 0)})
-                    table.insert(loot, { prefab = not fully_decorated and GetRandomBasicWinterOrnament()
-											or math.random() < 0.5 and GetRandomFancyWinterOrnament()
-											or GetRandomFestivalEventWinterOrnament() })
-
-					table.insert(loot, { prefab = weighted_random_choice(random_gift1) })
-
-					if fully_decorated then
-						table.insert(loot, { prefab = weighted_random_choice(random_gift2) })
-					else
-	                    table.insert(loot, { prefab = PickRandomTrinket() })
-					end
+                    loot = GetNiceWinterTreeGiftLoot(fully_decorated)
                 else
-                    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD), stack = math.random(3) })
-                    table.insert(loot, { prefab = "charcoal" })
+                    loot = GetNaughtyWinterTreeGiftLoot()
                 end
 
                 local items = {}
@@ -561,11 +578,14 @@ local function TransformIntoLeif(inst)
 	end
 
 	local leif = SpawnPrefab("leif")
+
 	leif.AnimState:SetMultColour(1, 1, 1, 1)
 	leif:SetLeifScale(1)
 	leif.Transform:SetPosition(x, y, z)
 	leif.sg:GoToState("spawn_from_wintertree")
 	--leif.components.combat:SuggestTarget(???)
+
+    return leif
 end
 
 -------------------------------------------------------------------------------
@@ -927,6 +947,16 @@ end
 
 -------------------------------------------------------------------------------
 
+local function evergreen_onsave(inst, data)
+    data.is_leif = inst.is_leif
+end
+
+local function evergreen_onload(inst, data)
+    if data ~= nil and data.is_leif ~= nil then
+        inst.is_leif = data.is_leif
+    end
+end
+
 local function evergreen_onchop(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
@@ -1129,6 +1159,8 @@ for i, v in ipairs({
 			"leif",
         },
         shelter = true,
+        onsave = evergreen_onsave,
+        onload = evergreen_onload,
         onchop = evergreen_onchop,
 		sortdecorfn = function(inst, fx, slot)
 			fx.AnimState:SetFinalOffset(

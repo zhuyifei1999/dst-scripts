@@ -205,7 +205,6 @@ local function fn_dog()
 
     inst.scrapbook_animoffsety = 5
     inst.scrapbook_animpercent = 0.3
-    inst.scrapbook_specialinfo = "SALTY_DOG"
     inst.AnimState:OverrideSymbol("water_ripple", "pupington_basic_water", "water_ripple")
     inst.AnimState:OverrideSymbol("water_shadow", "pupington_basic_water", "water_shadow")
 

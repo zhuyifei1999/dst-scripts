@@ -185,6 +185,15 @@ self.validspotfn_clearthisarea = function(x, z, r)
     return true
 end
 
+local PLACER_RADIUS = { -- NOTES(JBK): Keep in sync with hermitcrab_relocation_kit. [HCRMRCS]
+    --["hermitcrab_marker"] = NO_RADIUS,
+    ["hermitcrab_lure_marker"] = 1,
+    ["hermitcrab_marker_fishing"] = 1,
+    ["hermithouse_construction3"] = 3,
+    --["hermitcrab"] = NO_RADIUS,
+    ["meatrack_hermit"] = 1.5,
+    ["beebox_hermit"] = 1.5,
+}
 local TELEPORT_TIME_FX_SYNC = 12 * FRAMES
 function self:OnFinishedTeleportPearlEntity(ent, deleted)
     if not deleted then
@@ -209,6 +218,10 @@ self.TeleportingStep_Arrive = function(ent)
     if not movingdata.isinlimbo then
         ent:ReturnToScene()
     end
+    if movingdata.fxprefab and not movingdata.isinlimbo then -- We have visuals for everything that is mandatory to move.
+        local radius = PLACER_RADIUS[ent.prefab] or ent:GetPhysicsRadius(0)
+        self.validspotfn_clearthisarea(movingdata.x, movingdata.z, radius)
+    end
     self:OnFinishedTeleportPearlEntity(ent)
 end
 self.TeleportingStep_Appear = function(ent)
@@ -223,12 +236,8 @@ self.TeleportingStep_Appear = function(ent)
 end
 self.TeleportingStep_Teleport = function(ent)
     local movingdata = self.pearlmovingdata[ent]
-    local radius = ent:GetPhysicsRadius(0)
     if not movingdata.isinlimbo then
         ent:RemoveFromScene()
-    end
-    if movingdata.fxprefab and not movingdata.isinlimbo then -- We have visuals for everything that is mandatory to move.
-        self.validspotfn_clearthisarea(movingdata.x, movingdata.z, radius)
     end
     ent.Transform:SetPosition(movingdata.x, 0, movingdata.z)
     ent.Transform:SetRotation(movingdata.rot)

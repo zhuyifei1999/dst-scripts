@@ -45,6 +45,8 @@ local function AddSkinSounds(inst)
         if inst.components.blinkstaff and (sounds.preteleport or sounds.postteleport) then
             inst.components.blinkstaff:SetSoundFX(sounds.preteleport, sounds.postteleport)
         end
+        -- Generic flag for nosounds depending on the prefab context.
+        inst.skin_nosound = sounds.nosound
     end
 end
 local function RemoveSkinSounds(inst)
@@ -71,9 +73,31 @@ local function RemoveSkinSounds(inst)
     if inst.components.blinkstaff then
         inst.components.blinkstaff:ResetSoundFX()
     end
+    -- Generic flag for nosounds depending on the prefab context.
+    inst.skin_nosound = nil
 end
 
+local function LanternPostCommonInit(inst)
+    if inst.neighbour_lights then
+		for light in pairs(inst.neighbour_lights) do
+            if not TheNet:IsDedicated() then
+			    light:OnSkinDirty()
+            end
+            light.update_skin:push()
+		end
+	end
+end
 
+local function LanternPostClearInit(inst)
+    if inst.neighbour_lights then
+		for light in pairs(inst.neighbour_lights) do
+            if not TheNet:IsDedicated() then
+			    light:OnSkinDirty()
+            end
+            light.update_skin:push()
+		end
+	end
+end
 
 --------------------------------------------------------------------------
 --[[ Basic skin functions ]]
@@ -967,6 +991,9 @@ umbrella_clear_fn = function(inst) basic_clear_fn(inst, "umbrella" ) end
 oceanfishingrod_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "fishingrod_ocean" ) end
 oceanfishingrod_clear_fn = function(inst) basic_clear_fn(inst, "fishingrod_ocean" ) end
 
+fishingrod_init_fn = function(inst, build_name) basic_init_fn(inst, build_name, "fishingrod") end
+fishingrod_clear_fn = function(inst) basic_clear_fn(inst, "fishingrod") end
+
 local generic_amulet_init_fn = function(inst, build_name)
     basic_init_fn(inst, build_name, "amulets")
     if not TheWorld.ismastersim then
@@ -1361,6 +1388,9 @@ rainometer_clear_fn = function(inst) basic_clear_fn(inst, "rain_meter" ) end
 winterometer_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "winter_meter" ) end
 winterometer_clear_fn = function(inst) basic_clear_fn(inst, "winter_meter" ) end
 
+tacklestation_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "tackle_station" ) end
+tacklestation_clear_fn = function(inst) basic_clear_fn(inst, "tackle_station" ) end
+
 lightning_rod_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "lightning_rod" ) end
 lightning_rod_clear_fn = function(inst) basic_clear_fn(inst, "lightning_rod" ) end
 
@@ -1452,6 +1482,21 @@ meatrack_clear_fn = function(inst)
 		inst:OnMeatRackSkinChanged(nil)
 	end
 end
+meatrack_hermit_init_fn = function(inst, build_name)
+	basic_init_fn(inst, build_name, "meatrack_hermit")
+	if not TheWorld.ismastersim then
+		return
+	end
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(build_name)
+	end
+end
+meatrack_hermit_clear_fn = function(inst)
+	basic_clear_fn(inst, "meatrack_hermit")
+	if inst.OnMeatRackSkinChanged then
+		inst:OnMeatRackSkinChanged(nil)
+	end
+end
 meatrack_hermit_multi_init_fn = function(inst, build_name)
 	basic_init_fn(inst, build_name, "meatrack_hermit_multi")
 	if not TheWorld.ismastersim then
@@ -1467,6 +1512,9 @@ meatrack_hermit_multi_clear_fn = function(inst)
 		inst:OnMeatRackSkinChanged(nil)
 	end
 end
+
+beebox_hermit_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bee_box_hermitcrab" ) end
+beebox_hermit_clear_fn = function(inst) basic_clear_fn(inst, "bee_box_hermitcrab" ) end
 
 beebox_init_fn = function(inst, build_name) basic_init_fn( inst, build_name, "bee_box" ) end
 beebox_clear_fn = function(inst) basic_clear_fn(inst, "bee_box" ) end
@@ -3612,6 +3660,12 @@ end
 function hawaiianshirt_clear_fn(inst)
     basic_clear_fn(inst, "torso_hawaiian")
 end
+function icehat_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "hat_ice")
+end
+function icehat_clear_fn(inst)
+    basic_clear_fn(inst, "hat_ice")
+end
 
 function pumpkinhat_init_fn(inst, build_name)
     basic_init_fn(inst, build_name, "hat_pumpkin")
@@ -3640,6 +3694,7 @@ function hermithouse_ornament_init_fn(inst, build_name)
 	if not TheWorld.ismastersim then
 		return
 	end
+    AddSkinSounds(inst)
 	if inst.OnHermitHouseOrnamentSkinChanged then
 		inst:OnHermitHouseOrnamentSkinChanged(build_name)
 	end
@@ -3648,6 +3703,7 @@ function hermithouse_ornament_clear_fn(inst)
     inst:RemoveTag("hermithouse_winter_ornament")
 	basic_clear_fn(inst, "hermithouse_ornament_shell")
 	inst.AnimState:SetBank("hermithouse_ornament_shell")
+    RemoveSkinSounds(inst)
 	if inst.OnHermitHouseOrnamentSkinChanged then
 		inst:OnHermitHouseOrnamentSkinChanged(nil)
 	end
@@ -3655,15 +3711,80 @@ end
 
 function hermitcrab_lightpost_init_fn(inst, build_name)
     basic_init_fn(inst, build_name, "hermitcrab_lightpost")
+    LanternPostCommonInit(inst)
     if inst.OnHermitLightPostSkinChanged then
 		inst:OnHermitLightPostSkinChanged(inst:GetSkinName())
 	end
 end
 function hermitcrab_lightpost_clear_fn(inst)
     basic_clear_fn(inst, "hermitcrab_lightpost")
+    LanternPostClearInit(inst)
     if inst.OnHermitLightPostSkinChanged then
 		inst:OnHermitLightPostSkinChanged(nil)
 	end
+end
+
+function hermithotspring_init_fn(inst, build_name)
+	--V2C: purposely NOT calling calling the basic fns that changes our build
+	--defined on server hotspring/constr
+	--defined on server/client placer
+	if inst.OnHermitHotSpringSkinChanged then
+		inst:OnHermitHotSpringSkinChanged(build_name)
+	end
+end
+hermithotspring_clear_fn = hermithotspring_init_fn
+hermithotspring_constr_init_fn = hermithotspring_init_fn
+hermithotspring_constr_clear_fn = hermithotspring_init_fn
+
+function hermithouse_init_fn(inst, build_name)
+	basic_init_fn(inst, build_name, "hermitcrab_home")
+	if inst.OnHermitHouseSkinChanged then
+		inst:OnHermitHouseSkinChanged(build_name)
+	end
+end
+function hermithouse_clear_fn(inst)
+	basic_clear_fn(inst, "hermitcrab_home")
+	if inst.OnHermitHouseSkinChanged then
+		inst:OnHermitHouseSkinChanged(nil)
+	end
+end
+hermithouse2_init_fn = hermithouse_init_fn
+hermithouse2_clear_fn = hermithouse_clear_fn
+hermithouse_construction1_init_fn = hermithouse_init_fn
+hermithouse_construction1_clear_fn = hermithouse_clear_fn
+hermithouse_construction2_init_fn = hermithouse_init_fn
+hermithouse_construction2_clear_fn = hermithouse_clear_fn
+hermithouse_construction3_init_fn = hermithouse_init_fn
+hermithouse_construction3_clear_fn = hermithouse_clear_fn
+
+function hermit_chair_rocking_init_fn(inst, build_name)
+	basic_init_fn(inst, build_name, "hermit_chair_rocking")
+	if not TheWorld.ismastersim then
+		return
+	end
+	if inst.back then
+		inst.back.AnimState:OverrideItemSkinSymbol("chair_parts", build_name, "chair_parts", inst.GUID, "hermit_chair_rocking")
+	end
+end
+function hermit_chair_rocking_clear_fn(inst)
+	basic_clear_fn(inst, "hermit_chair_rocking")
+	if inst.back then
+		inst.back.AnimState:ClearOverrideSymbol("chair_parts")
+	end
+end
+
+function hermitcrab_teashop_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "hermitcrab_teashop")
+    if inst.front then
+        basic_init_fn(inst.front, build_name, "hermitcrab_teashop")
+    end
+end
+
+function hermitcrab_teashop_clear_fn(inst)
+    basic_clear_fn(inst, "hermitcrab_teashop")
+    if inst.front then
+        basic_clear_fn(inst.front, "hermitcrab_teashop")
+    end
 end
 
 function CreatePrefabSkin(name, info)
@@ -3674,7 +3795,6 @@ function CreatePrefabSkin(name, info)
     if info.type == nil then
         info.type = "base"
     end
-
 
     prefab_skin.base_prefab         = info.base_prefab
     prefab_skin.type                = info.type

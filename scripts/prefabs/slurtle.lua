@@ -222,8 +222,12 @@ local function makeslurtle()
     return inst
 end
 
+local SCRAPBOOK_OVERRIDEDATA = {
+    {"shell", "slurtle_snaily", "shell"}
+}
 local function snurtle_common_postinit(inst)
     inst.AnimState:OverrideSymbol("shell", "slurtle_snaily", "shell")
+    inst.scrapbook_overridedata = SCRAPBOOK_OVERRIDEDATA
 end
 local function makesnurtle()
     local inst = commonfn("slurtle", "slurtle", "snurtle", snurtle_common_postinit)
