@@ -50584,7 +50584,7 @@ msgstr "连树都不放过我！"
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.LICHEN
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.LICHEN"
 msgid "I'm not stopping to gawk at every plant I see!"
-msgstr "我猜不要走几步就停下来盯着植物看！"
+msgstr "我才不要走几步就停下来盯着植物看！"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.LIFEINJECTOR
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.LIFEINJECTOR"
@@ -67964,7 +67964,7 @@ msgstr "珍珠女士的茶正是我所需要的。"
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.BURNT
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.BURNT"
 msgid "Oh non! Madame's tea shop!"
-msgstr "噢，不！女士的茶馆啊！"
+msgstr "噢，不！女士的茶店啊！"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.GENERIC
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.GENERIC"
@@ -127939,7 +127939,7 @@ msgstr "闻起来好香！"
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED"
 msgid "It got picked."
-msgstr "它被选上了。"
+msgstr "摘下来了。"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED_DRIED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED_DRIED"
@@ -317114,7 +317114,7 @@ msgstr "我家差不多清干净啦！就剩几块破烂啦。"
 #. STRINGS.HERMITCRAB_DECOR_COMPLAIN.JUNK.LOW.2
 msgctxt "STRINGS.HERMITCRAB_DECOR_COMPLAIN.JUNK.LOW.2"
 msgid "We're just about there! Would you help me clean up a bit more junk, dearie?"
-msgstr "就快收拾完啦！亲爱的，再帮我清掉点破烂好吗？\r\n"
+msgstr "就快收拾完啦！亲爱的，再帮我清掉点破烂好吗？"
 
 #. STRINGS.HERMITCRAB_DECOR_COMPLAIN.JUNK.MED.1
 msgctxt "STRINGS.HERMITCRAB_DECOR_COMPLAIN.JUNK.MED.1"
@@ -317469,12 +317469,12 @@ msgstr "噢，亲爱的！我等不及让你尝尝我泡的各种各样的茶啦
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.2
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.2"
 msgid "Finally, Pearl's Tea Shop can open for business!"
-msgstr "珍珠茶铺总算可以开张啦！"
+msgstr "珍珠茶店总算可以开张啦！"
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.3
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.3"
 msgid "Thank you for helping me set up my tea shop, dearie."
-msgstr "谢谢你帮我筹建茶铺，亲爱的。"
+msgstr "谢谢你帮我筹建茶店，亲爱的。"
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TILES.1
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TILES.1"
@@ -343999,7 +343999,7 @@ msgstr "喝下珍珠用心泡制的饮品照料一下伤口。"
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_LIGHTPOST
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_LIGHTPOST"
 msgid "String up pearlescent lights. Connects to Tea Shops and Pearl's Place too!"
-msgstr "挂起珍珠般的灯串。还能连接茶铺和珍珠之家！"
+msgstr "挂起珍珠般的灯串。还能连接茶店和珍珠之家！"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_RELOCATION_KIT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_RELOCATION_KIT"
@@ -344009,7 +344009,7 @@ msgstr "帮珍珠找个新家！选址遇到困难时，记得——她热爱靠
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_TEASHOP
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_TEASHOP"
 msgid "Pearl's very own tea shop to provide you with riveting teas."
-msgstr "珍珠的专属茶铺，为你奉上迷人的茶饮。"
+msgstr "珍珠的专属茶店，为你奉上迷人的茶饮。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITHOUSE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITHOUSE"
@@ -365209,7 +365209,7 @@ msgstr "将你的头像设为一个吸热火坑。"
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_cookpotplanet
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_cookpotplanet"
 msgid "Set your profile icon to a Celesturn Crock Pot."
-msgstr "将你的角色图标设为天体骨灰罐烹饪锅。"
+msgstr "将你的角色图标设为天体瓮烹饪锅。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_corvus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_corvus"
@@ -374754,7 +374754,7 @@ msgstr "村舍烹饪锅"
 #. STRINGS.SKIN_NAMES.cookpot_planet
 msgctxt "STRINGS.SKIN_NAMES.cookpot_planet"
 msgid "Celesturn Crock Pot"
-msgstr "天体骨灰罐烹饪锅"
+msgstr "天体瓮烹饪锅"
 
 #. STRINGS.SKIN_NAMES.cookpot_survival
 msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
@@ -383434,7 +383434,7 @@ msgstr "刺骨严寒火坑背景"
 #. STRINGS.SKIN_NAMES.playerportrait_bg_cookpotplanet
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_cookpotplanet"
 msgid "Celesturn Crock Pot Portrait"
-msgstr "天体骨灰罐烹饪锅背景"
+msgstr "天体瓮烹饪锅背景"
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_cottontree
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_cottontree"
@@ -384294,7 +384294,7 @@ msgstr "刺骨严寒火坑"
 #. STRINGS.SKIN_NAMES.profileflair_cookpotplanet
 msgctxt "STRINGS.SKIN_NAMES.profileflair_cookpotplanet"
 msgid "Celesturn Crock Pot"
-msgstr "天体骨灰罐烹饪锅"
+msgstr "天体瓮烹饪锅"
 
 #. STRINGS.SKIN_NAMES.profileflair_corvus
 msgctxt "STRINGS.SKIN_NAMES.profileflair_corvus"
