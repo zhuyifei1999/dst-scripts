@@ -50584,7 +50584,7 @@ msgstr "連樹都不放過我！"
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.LICHEN
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.LICHEN"
 msgid "I'm not stopping to gawk at every plant I see!"
-msgstr "我猜不要走幾步就停下來盯著植物看！"
+msgstr "我才不要走幾步就停下來盯著植物看！"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.LIFEINJECTOR
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.LIFEINJECTOR"
@@ -67964,7 +67964,7 @@ msgstr "珍珠女士的茶正是我所需要的。"
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.BURNT
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.BURNT"
 msgid "Oh non! Madame's tea shop!"
-msgstr "噢，不！女士的茶館啊！"
+msgstr "噢，不！女士的茶店啊！"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.GENERIC
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.HERMITCRAB_TEASHOP.GENERIC"
@@ -127939,7 +127939,7 @@ msgstr "聞起來好香！"
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED"
 msgid "It got picked."
-msgstr "它被選上了。"
+msgstr "摘下來了。"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED_DRIED
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SUCCULENT_PICKED_DRIED"
@@ -317469,12 +317469,12 @@ msgstr "噢，親愛的！我等不及讓你嘗嘗我泡的各種各樣的茶啦
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.2
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.2"
 msgid "Finally, Pearl's Tea Shop can open for business!"
-msgstr "珍珠茶鋪總算可以開張啦！"
+msgstr "珍珠茶店總算可以開張啦！"
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.3
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TEA_SHOP.3"
 msgid "Thank you for helping me set up my tea shop, dearie."
-msgstr "謝謝你幫我籌建茶鋪，親愛的。"
+msgstr "謝謝你幫我籌建茶店，親愛的。"
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.TILES.1
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.TILES.1"
@@ -343999,7 +343999,7 @@ msgstr "喝下珍珠用心泡制的飲品照料一下傷口。"
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_LIGHTPOST
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_LIGHTPOST"
 msgid "String up pearlescent lights. Connects to Tea Shops and Pearl's Place too!"
-msgstr "掛起珍珠般的燈串。還能連接茶鋪和珍珠之家！"
+msgstr "掛起珍珠般的燈串。還能連接茶店和珍珠之家！"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_RELOCATION_KIT
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_RELOCATION_KIT"
@@ -344009,7 +344009,7 @@ msgstr "幫珍珠找個新家！選址遇到困難時，記得——她熱愛靠
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_TEASHOP
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRAB_TEASHOP"
 msgid "Pearl's very own tea shop to provide you with riveting teas."
-msgstr "珍珠的專屬茶鋪，為你奉上迷人的茶飲。"
+msgstr "珍珠的專屬茶店，為你奉上迷人的茶飲。"
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITHOUSE
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITHOUSE"
@@ -365209,7 +365209,7 @@ msgstr "將你的頭像設為一個吸熱火坑。"
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_cookpotplanet
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_cookpotplanet"
 msgid "Set your profile icon to a Celesturn Crock Pot."
-msgstr "將你的角色圖示設為天體骨灰罐烹飪鍋。"
+msgstr "將你的角色圖示設為天體甕烹飪鍋"
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_corvus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_corvus"
@@ -374754,7 +374754,7 @@ msgstr "村舍烹飪鍋"
 #. STRINGS.SKIN_NAMES.cookpot_planet
 msgctxt "STRINGS.SKIN_NAMES.cookpot_planet"
 msgid "Celesturn Crock Pot"
-msgstr "天體骨灰罐烹飪鍋"
+msgstr "天體甕烹飪鍋"
 
 #. STRINGS.SKIN_NAMES.cookpot_survival
 msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
@@ -383434,7 +383434,7 @@ msgstr "刺骨嚴寒火坑背景"
 #. STRINGS.SKIN_NAMES.playerportrait_bg_cookpotplanet
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_cookpotplanet"
 msgid "Celesturn Crock Pot Portrait"
-msgstr "天體骨灰罐烹飪鍋背景"
+msgstr "天體甕烹飪鍋背景"
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_cottontree
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_cottontree"
@@ -384294,7 +384294,7 @@ msgstr "刺骨嚴寒火坑"
 #. STRINGS.SKIN_NAMES.profileflair_cookpotplanet
 msgctxt "STRINGS.SKIN_NAMES.profileflair_cookpotplanet"
 msgid "Celesturn Crock Pot"
-msgstr "天體骨灰罐烹飪鍋"
+msgstr "天體甕烹飪鍋"
 
 #. STRINGS.SKIN_NAMES.profileflair_corvus
 msgctxt "STRINGS.SKIN_NAMES.profileflair_corvus"
