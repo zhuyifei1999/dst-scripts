@@ -53555,7 +53555,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.PUMPKINHAT.GENERIC
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.PUMPKINHAT.GENERIC"
-msgid "Yes, that will no nicely."
+msgid "Yes, that will go nicely."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.PUMPKINHAT.UNCARVED
@@ -317305,7 +317305,7 @@ msgstr ""
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.BEE_BOXES.1
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.BEE_BOXES.1"
-msgid "Thank you for all the beeboxes, dearie!"
+msgid "Thank you for all the bee boxes, dearie!"
 msgstr ""
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.BEE_BOXES.2
@@ -317315,7 +317315,7 @@ msgstr ""
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.BEE_BOXES.3
 msgctxt "STRINGS.HERMITCRAB_DECOR_CONTENT.BEE_BOXES.3"
-msgid "All these beeboxes! Now I'll have plenty of honey for my tea!"
+msgid "All these bee boxes! Now I'll have plenty of honey for my tea!"
 msgstr ""
 
 #. STRINGS.HERMITCRAB_DECOR_CONTENT.CRITTER_PET.1
@@ -343965,7 +343965,7 @@ msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRABTEA_FORGETMELOTS
 msgctxt "STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRABTEA_FORGETMELOTS"
-msgid "Soothe your mind like nothing else can, with this exception brewed concotion from Pearl."
+msgid "Soothe your mind like nothing else can, with this exception brewed concoction from Pearl."
 msgstr ""
 
 #. STRINGS.SCRAPBOOK.SPECIALINFO.HERMITCRABTEA_MOON_TREE_BLOSSOM
@@ -403195,7 +403195,7 @@ msgstr ""
 
 #. STRINGS.UI.CRAFTING.NEEDSCARTOGRAPHYDESK
 msgctxt "STRINGS.UI.CRAFTING.NEEDSCARTOGRAPHYDESK"
-msgid "Use a Cartography Desk to write this."
+msgid "Use a Cartographer's Desk to write this."
 msgstr ""
 
 #. STRINGS.UI.CRAFTING.NEEDSCATCOONSHRINE
@@ -406321,6 +406321,16 @@ msgstr ""
 #. STRINGS.UI.CUSTOMIZATIONSCREEN.TREES
 msgctxt "STRINGS.UI.CUSTOMIZATIONSCREEN.TREES"
 msgid "Trees (All)"
+msgstr ""
+
+#. STRINGS.UI.CUSTOMIZATIONSCREEN.TREE_ROCK
+msgctxt "STRINGS.UI.CUSTOMIZATIONSCREEN.TREE_ROCK"
+msgid "Boulderboughs"
+msgstr ""
+
+#. STRINGS.UI.CUSTOMIZATIONSCREEN.TREE_ROCK_REGROWTH
+msgctxt "STRINGS.UI.CUSTOMIZATIONSCREEN.TREE_ROCK_REGROWTH"
+msgid "Boulderboughs"
 msgstr ""
 
 #. STRINGS.UI.CUSTOMIZATIONSCREEN.TUMBLEWEED
