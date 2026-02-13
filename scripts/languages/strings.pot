@@ -308400,7 +308400,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_PRINCESS_YOTH
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_PRINCESS_YOTH"
-msgid "RUNSCRIPT \"MY KNIGHTS FOUR AND ME\""
+msgid "RUNSCRIPT \"MY KNIGHTS FOUR AND I\""
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VAULT
@@ -385810,7 +385810,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_lanterninsect
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_lanterninsect"
-msgid "Light of the Flies"
+msgid "Light of the Flies Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_lava
