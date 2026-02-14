@@ -2190,7 +2190,7 @@ msgstr ""
 
 #. STRINGS.ACTIONS.USEITEMON.GEARS
 msgctxt "STRINGS.ACTIONS.USEITEMON.GEARS"
-msgid "Give"
+msgid "Repair"
 msgstr ""
 
 #. STRINGS.ACTIONS.USEITEMON.GENERIC
@@ -85705,42 +85705,42 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FIRENETTLES
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FIRENETTLES"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "To warm mine blood 'gainst Niflheim's bitter frost!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FOLIAGE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FOLIAGE"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "A potion to keep madness at bay."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FORGETMELOTS
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FORGETMELOTS"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "It doth quell the raging storm within."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_MOON_TREE_BLOSSOM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_MOON_TREE_BLOSSOM"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "By the draught, lunar beasts take no heed of us!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "It steadies a warrior's nerves."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS_EVIL
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS_EVIL"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "The berserker's brew!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_SUCCULENT_PICKED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_SUCCULENT_PICKED"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "It shall quench the heat of Surtr's wrathful breath."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_TILLWEED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_TILLWEED"
-msgid "Dost thou seek to poison me with this vile concoction?"
+msgid "An elixir to replinish a warrior's vigor!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRAB_LIGHTPOST.ABANDONED
