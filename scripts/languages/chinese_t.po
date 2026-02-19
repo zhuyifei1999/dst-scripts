@@ -2193,8 +2193,8 @@ msgstr "建立聯繫"
 
 #. STRINGS.ACTIONS.USEITEMON.GEARS
 msgctxt "STRINGS.ACTIONS.USEITEMON.GEARS"
-msgid "Give"
-msgstr "給予"
+msgid "Repair"
+msgstr "修理"
 
 #. STRINGS.ACTIONS.USEITEMON.GENERIC
 msgctxt "STRINGS.ACTIONS.USEITEMON.GENERIC"
@@ -85708,43 +85708,43 @@ msgstr "你是海巫婆還是醜老太婆呢？"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FIRENETTLES
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FIRENETTLES"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "To warm mine blood 'gainst Niflheim's bitter frost!"
+msgstr "飲血暖軀，以禦尼福爾海姆之霜！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FOLIAGE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FOLIAGE"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "A potion to keep madness at bay."
+msgstr "一種將瘋狂拒之門外的藥劑。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FORGETMELOTS
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_FORGETMELOTS"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "It doth quell the raging storm within."
+msgstr "此物可平內心波瀾。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_MOON_TREE_BLOSSOM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_MOON_TREE_BLOSSOM"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "By the draught, lunar beasts take no heed of us!"
+msgstr "飲下此藥，月獸將對我們視若無睹！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "It steadies a warrior's nerves."
+msgstr "它能讓戰士的神經鎮定下來。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS_EVIL
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_PETALS_EVIL"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "The berserker's brew!"
+msgstr "狂戰士之釀！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_SUCCULENT_PICKED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_SUCCULENT_PICKED"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "It shall quench the heat of Surtr's wrathful breath."
+msgstr "此物可平息蘇爾特爾的怒火之息。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_TILLWEED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRABTEA_TILLWEED"
-msgid "Dost thou seek to poison me with this vile concoction?"
-msgstr "汝欲以此等惡釀毒害吾乎？"
+msgid "An elixir to replenish a warrior's vigor!"
+msgstr "一瓶恢複戰士精力的靈藥！"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRAB_LIGHTPOST.ABANDONED
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HERMITCRAB_LIGHTPOST.ABANDONED"
@@ -308403,7 +308403,7 @@ msgstr "運行腳本“附魔玩偶”"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_PRINCESS_YOTH
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_PRINCESS_YOTH"
-msgid "RUNSCRIPT \"MY KNIGHTS FOUR AND ME\""
+msgid "RUNSCRIPT \"MY KNIGHTS FOUR AND I\""
 msgstr "運行腳本“我的四騎士與我”"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.PLAYBILL_THE_VAULT
@@ -385813,8 +385813,8 @@ msgstr "鹽燈背景"
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_lanterninsect
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_lanterninsect"
-msgid "Light of the Flies"
-msgstr "蠅光燈"
+msgid "Light of the Flies Portrait"
+msgstr "蠅光燈背景"
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_lava
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_lava"
