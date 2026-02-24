@@ -36,6 +36,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function IsRotationValid(rot)
+	return rot > -math.huge and rot < math.huge
+end
+
 local function IsPointInRange(player, x, z)
     local px, py, pz = player.Transform:GetWorldPosition()
     return distsq(x, z, px, pz) <= 4096
@@ -104,7 +108,7 @@ local RPC_HANDLERS =
 			printinvalidplatform("RightClick", player, action, x, z, platform, platform_relative)
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
-				if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+				if IsPointInRange(player, x, z) and (rotation == nil or IsRotationValid(rotation)) then
 					playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
 				else
 					print("Remote right click out of range")
@@ -233,7 +237,7 @@ local RPC_HANDLERS =
 			printinvalidplatform("ControllerActionButtonDeploy", player, nil, x, z, platform, platform_relative)
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
-				if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+				if IsPointInRange(player, x, z) and (rotation == nil or IsRotationValid(rotation)) then
 					playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), rotation, isreleased)
 				else
 					print("Remote controller action button deploy out of range")
@@ -1195,12 +1199,16 @@ local RPC_HANDLERS =
 		printinvalidplatform("PredictGallopTrip", player, nil, x, z, platform, platform_relative)
 		local x1, z1 = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 		if x1 then
-			player:PushEventImmediate("predict_gallop_trip", {
-				x = x1,
-				z = z1,
-				dir = dir,
-				speed = speed,
-			})
+			if IsRotationValid(dir) and (speed == nil or speed > 0) then
+				player:PushEventImmediate("predict_gallop_trip", {
+					x = x1,
+					z = z1,
+					dir = dir,
+					speed = speed,
+				})
+			else
+				print("Predict gallop trip out of range")
+			end
 		end
 	end,
 

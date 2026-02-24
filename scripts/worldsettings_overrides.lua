@@ -759,47 +759,47 @@ local applyoverrides_pre = {
                 NIGHTMAREFISSURE_ENABLED = false,
             },
             few = {
-                NIGHTMARELIGHT_RELEASE_TIME = 10,
-                NIGHTMARELIGHT_REGEN_TIME = TUNING.SEG_TIME * 2,
+                NIGHTMARELIGHT_RELEASE_TIME = TUNING.SEG_TIME * 2,
+                NIGHTMARELIGHT_REGEN_TIME = 10,
                 NIGHTMARELIGHT_MINCHILDREN = 1,
                 NIGHTMARELIGHT_MAXCHILDREN = 1,
 
-                NIGHTMAREFISSURE_RELEASE_TIME = 10,
-                NIGHTMAREFISSURE_REGEN_TIME = TUNING.SEG_TIME * 2,
+                NIGHTMAREFISSURE_RELEASE_TIME = TUNING.SEG_TIME * 2,
+                NIGHTMAREFISSURE_REGEN_TIME = 10,
                 NIGHTMAREFISSURE_MAXCHILDREN = 1,
             },
             --[[
             default = {
-                NIGHTMARELIGHT_RELEASE_TIME = 5,
-                NIGHTMARELIGHT_REGEN_TIME = TUNING.SEG_TIME,
+                NIGHTMARELIGHT_RELEASE_TIME = TUNING.SEG_TIME,
+                NIGHTMARELIGHT_REGEN_TIME = 5,
                 NIGHTMARELIGHT_MINCHILDREN = 1,
                 NIGHTMARELIGHT_MAXCHILDREN = 2,
                 NIGHTMARELIGHT_ENABLED = true,
 
-                NIGHTMAREFISSURE_RELEASE_TIME = 5,
-                NIGHTMAREFISSURE_REGEN_TIME = TUNING.SEG_TIME,
+                NIGHTMAREFISSURE_RELEASE_TIME = TUNING.SEG_TIME,
+                NIGHTMAREFISSURE_REGEN_TIME = 5,
                 NIGHTMAREFISSURE_MAXCHILDREN = 1,
                 NIGHTMAREFISSURE_ENABLED = true,
             },
             --]]
             many = {
-                NIGHTMARELIGHT_RELEASE_TIME = 5,
-                NIGHTMARELIGHT_REGEN_TIME = TUNING.SEG_TIME / 2,
+                NIGHTMARELIGHT_RELEASE_TIME = TUNING.SEG_TIME / 2,
+                NIGHTMARELIGHT_REGEN_TIME = 5,
                 NIGHTMARELIGHT_MINCHILDREN = 2,
                 NIGHTMARELIGHT_MAXCHILDREN = 3,
 
-                NIGHTMAREFISSURE_RELEASE_TIME = 5,
-                NIGHTMAREFISSURE_REGEN_TIME = TUNING.SEG_TIME / 2,
+                NIGHTMAREFISSURE_RELEASE_TIME = TUNING.SEG_TIME / 2,
+                NIGHTMAREFISSURE_REGEN_TIME = 5,
                 NIGHTMAREFISSURE_MAXCHILDREN = 1,
             },
             always = {
-                NIGHTMARELIGHT_RELEASE_TIME = 1,
-                NIGHTMARELIGHT_REGEN_TIME = TUNING.SEG_TIME / 4,
+                NIGHTMARELIGHT_RELEASE_TIME = TUNING.SEG_TIME / 4,
+                NIGHTMARELIGHT_REGEN_TIME = 1,
                 NIGHTMARELIGHT_MINCHILDREN = 2,
                 NIGHTMARELIGHT_MAXCHILDREN = 4,
 
-                NIGHTMAREFISSURE_RELEASE_TIME = 1,
-                NIGHTMAREFISSURE_REGEN_TIME = TUNING.SEG_TIME / 4,
+                NIGHTMAREFISSURE_RELEASE_TIME = TUNING.SEG_TIME / 4,
+                NIGHTMAREFISSURE_REGEN_TIME = 1,
                 NIGHTMAREFISSURE_MAXCHILDREN = 2,
             },
         }

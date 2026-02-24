@@ -6281,7 +6281,7 @@ ACTIONS.WHISTLE.fn = function(act)
 end
 
 ACTIONS.DRAW_FROM_DECK.fn = function(act)
-    if act.target.components.deckcontainer then
+    if act.target and act.target.components.deckcontainer then
         local top_card_id = act.target.components.deckcontainer:RemoveCard()
         if not top_card_id then return false end
 
@@ -6307,23 +6307,29 @@ ACTIONS.DRAW_FROM_DECK.fn = function(act)
 			end
         end
 
-        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        if act.doer.SoundEmitter then
+            act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        end
 
         return true
     end
 end
 
 ACTIONS.FLIP_DECK.fn = function(act)
-    if act.invobject.components.deckcontainer or act.invobject.components.playingcard then
-        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+    if act.invobject and (act.invobject.components.deckcontainer or act.invobject.components.playingcard) then
+        if act.doer and act.doer.SoundEmitter then
+            act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        end
         act.invobject:PushEvent("flipdeck")
         return true
     end
 end
 
 ACTIONS.ADD_CARD_TO_DECK.fn = function(act)
-    if act.doer.components.inventory and act.invobject then
-        act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+    if act.doer and act.doer.components.inventory and act.invobject and act.target then
+        if act.doer.SoundEmitter then
+            act.doer.SoundEmitter:PlaySound("balatro/cards/pickup_UI")
+        end
         if act.invobject.components.playingcard then
             if act.target.components.deckcontainer then
                 local invobject = act.doer.components.inventory:RemoveItem(act.invobject)
