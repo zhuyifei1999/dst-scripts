@@ -1172,6 +1172,15 @@ end
 --------------------------------------------------------------------------
 -- Gallop state updates shared by client & server
 
+local function CalcGallopSpeedMult(inst, time_moving)
+	--NOTE: 16 * FRAMES is "run_gallop_loop" anim length
+	local gallopcount =
+		time_moving > TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP and
+		math.min(TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, math.floor((time_moving - TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP) / (16 * FRAMES))) or
+		0
+	return Remap(gallopcount, 0, TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.min, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.max)
+end
+
 local function TryGallopTripUpdate(inst)
 	local rot = inst.Transform:GetRotation()
 	local lastrot = inst.sg.statemem.lastrotation or rot
@@ -1302,6 +1311,7 @@ return
 	CommandWheelAllowsGameplay	= CommandWheelAllowsGameplay,
     OnStartJoust                = OnStartJoust,
     OnEndJoust                  = OnEndJoust,
+	CalcGallopSpeedMult			= CalcGallopSpeedMult,
 	TryGallopTripUpdate			= TryGallopTripUpdate,
 	FootstepOverrideFn			= FootstepOverrideFn,
 	FoleyOverrideFn				= FoleyOverrideFn,

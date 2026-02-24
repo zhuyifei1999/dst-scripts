@@ -1929,12 +1929,7 @@ local states =
                 inst.AnimState:PlayAnimation("run_gallop_loop", true)
             end
 
-            local time_moving = inst.components.locomotor:GetTimeMoving()
-            local gallopcount = time_moving > TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP and
-                math.min(TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, math.floor((time_moving - TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP) / inst.AnimState:GetCurrentAnimationLength()))
-                or 0
-
-			local mult = Remap(gallopcount, 0, TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.min, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.max)
+			local mult = PlayerCommonExtensions.CalcGallopSpeedMult(inst, inst.components.locomotor:GetTimeMoving())
 			inst.components.playerspeedmult:SetCappedPredictedSpeedMult("gallop_run", mult)
 
 			if not inst.sg.statemem.tripped then

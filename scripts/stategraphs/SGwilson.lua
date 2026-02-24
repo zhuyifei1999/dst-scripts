@@ -2308,16 +2308,46 @@ local events =
     end),
 
 	EventHandler("predict_gallop_trip", function(inst, data)
+		if not inst.components.inventory:EquipHasTag("gallopstick") or
+			inst.components.health:IsDead() or
+			inst.components.rider:IsRiding()
+		then
+			return --highly unlikely for the trip to be valid even due to network timing
+		end
+
+		local time_moving = inst.components.locomotor:GetTimeMoving()
+		if time_moving <= 0 then
+			return --time_moving > 0 should be guaranteed even due to network timing
+		end
+
+		--account for network timing
+		local remote_authority = inst.components.playercontroller and inst.components.playercontroller.remote_authority or false
+		time_moving = time_moving + (remote_authority and math.max(0.5, TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP) or math.min(0.2, TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP))
+		if time_moving < TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP then
+			return --trip is invalid even after we accounted for network timing
+		end
+
+		--trip was valid, damage the stick regardless of state change
 		DoDamageToGallopStick(inst, TUNING.YOTH_KNIGHTSTICK_PERISHTIME_ON_SLIP)
-		if not (inst.sg:HasStateTag("nopredict") or inst.components.rider:IsRiding()) then
+
+		--trip was valid, but we may no longer be able to state change due to network timing
+		if not inst.sg:HasStateTag("nopredict") then
 			local x, _, z = inst.Transform:GetWorldPosition()
 			if data then
-				if data.x and data.z and math2d.DistSq(x, z, data.x, data.z) < (inst.components.playercontroller and inst.components.playercontroller.remote_authority and 1 or 0.25) then
+				if data.x and data.z and math2d.DistSq(x, z, data.x, data.z) < (remote_authority and 1 or 0.25) then
 					x, z = data.x, data.z
 					inst.Transform:SetPosition(x, 0, z)
 				end
 				if data.dir then
 					inst.Transform:SetRotation(data.dir)
+				end
+				if data.speed then
+					--recalc gallop speed with network adjusted time_moving
+					--we are guaranteed GoToState("gallop_trip"), so it's safe to set the predicted spee mult
+					local mult = PlayerCommonExtensions.CalcGallopSpeedMult(inst, time_moving)
+					inst.components.playerspeedmult:SetCappedPredictedSpeedMult("gallop_run", mult)
+					data.speed = math.min(data.speed, inst.components.locomotor:GetRunSpeed())
+					inst.components.playerspeedmult:RemoveCappedPredictedSpeedMult("gallop_run")
 				end
 			end
 			inst.sg:GoToState("gallop_trip", data and data.speed)
@@ -11627,12 +11657,7 @@ local states =
                 inst.AnimState:PlayAnimation("run_gallop_loop", true)
             end
 
-            local time_moving = inst.components.locomotor:GetTimeMoving()
-            local gallopcount = time_moving > TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP and
-                math.min(TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, math.floor((time_moving - TUNING.YOTH_KNIGHTSTICK_TIME_TO_GALLOP) / inst.AnimState:GetCurrentAnimationLength()))
-                or 0
-
-			local mult = Remap(gallopcount, 0, TUNING.YOTH_KNIGHTSTICK_MAX_GALLOPS, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.min, TUNING.YOTH_KNIGHTSTICK_SPEED_MULT.max)
+			local mult = PlayerCommonExtensions.CalcGallopSpeedMult(inst, inst.components.locomotor:GetTimeMoving())
 			inst.components.playerspeedmult:SetCappedPredictedSpeedMult("gallop_run", mult)
 
             inst.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.YOTH_KNIGHTSTICK_GALLOP_HUNGER_RATE_MULT, "gallop_run")

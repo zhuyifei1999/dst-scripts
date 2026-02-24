@@ -324,7 +324,7 @@ local function OnEntityWake(inst)
 end
 
 local function OnPreLoad(inst, data)
-    WorldSettings_ChildSpawner_PreLoad(inst, data, TUNING.NIGHTMARELIGHT_RELEASE_TIME, TUNING.NIGHTMARELIGHT_REGEN_TIME)
+    WorldSettings_ChildSpawner_PreLoad(inst, data, TUNING.NIGHTMAREFISSURE_RELEASE_TIME, TUNING.NIGHTMAREFISSURE_REGEN_TIME)
 	if data ~= nil and data.temp then
 		inst:MakeTempFissure()
 	end
@@ -442,8 +442,8 @@ local function GetRareChildFn(inst, isemergency, target)
     local ruinsnightmare_chance = rift_active and TUNING.RUINSNIGHTMARE_SPAWN_CHANCE_RIFTS or TUNING.RUINSNIGHTMARE_SPAWN_CHANCE
 
     return TryLuckRoll(target, ruinsnightmare_chance, LuckFormulas.RuinsNightmare)
-        and "nightmarebeak"
-        or "ruinsnightmare"
+        and "ruinsnightmare"
+        or "nightmarebeak"
 end
 
 local function Make(name, build, lightcolour, fxname, masterinit)
@@ -520,11 +520,11 @@ local function Make(name, build, lightcolour, fxname, masterinit)
         inst.fx.entity:SetParent(inst.entity)
 
         inst:AddComponent("childspawner")
-        inst.components.childspawner:SetRegenPeriod(TUNING.NIGHTMARELIGHT_RELEASE_TIME)
-        inst.components.childspawner:SetSpawnPeriod(TUNING.NIGHTMARELIGHT_REGEN_TIME)
+        inst.components.childspawner:SetRegenPeriod(TUNING.NIGHTMAREFISSURE_REGEN_TIME)
+        inst.components.childspawner:SetSpawnPeriod(TUNING.NIGHTMAREFISSURE_RELEASE_TIME)
         inst.components.childspawner:SetMaxChildren(TUNING.NIGHTMAREFISSURE_MAXCHILDREN)
-        WorldSettings_ChildSpawner_SpawnPeriod(inst, TUNING.NIGHTMARELIGHT_RELEASE_TIME, TUNING.NIGHTMAREFISSURE_ENABLED)
-        WorldSettings_ChildSpawner_RegenPeriod(inst, TUNING.NIGHTMARELIGHT_REGEN_TIME, TUNING.NIGHTMAREFISSURE_ENABLED)
+        WorldSettings_ChildSpawner_SpawnPeriod(inst, TUNING.NIGHTMAREFISSURE_RELEASE_TIME, TUNING.NIGHTMAREFISSURE_ENABLED)
+        WorldSettings_ChildSpawner_RegenPeriod(inst, TUNING.NIGHTMAREFISSURE_REGEN_TIME, TUNING.NIGHTMAREFISSURE_ENABLED)
         if not TUNING.NIGHTMAREFISSURE_ENABLED then
             inst.components.childspawner.childreninside = 0
         end
