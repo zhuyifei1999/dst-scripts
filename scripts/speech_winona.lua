@@ -2183,6 +2183,7 @@ return{
         CRITTER_KITTEN = "I'm going to spoil you rotten.",
         CRITTER_PERDLING = "Hey there, feathers.",
 		CRITTER_LUNARMOTHLING = "You sure are fragile, aren'tcha lil fella?",
+        CRITTER_BULBIN = "You're a sweet little fella, but your breath is terrible.",
 
 		CROW =
 		{
@@ -5919,6 +5920,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "I think I recognize this handywork...",
 
 		HERMITHOTSPRING  =
         {

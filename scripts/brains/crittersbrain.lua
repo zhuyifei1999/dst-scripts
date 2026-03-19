@@ -195,6 +195,8 @@ function CritterBrain:OnStart()
         }, 0.1)
 
     local root = PriorityNode({
+        WhileNode(function() return self.inst.sg:HasStateTag("jumping") end, "<busy state guard>",
+            WaitNode(0.25)),
         WhileNode( function() return GetOwner(self.inst) end, "Has Owner",
             PriorityNode{
 				watch_game,

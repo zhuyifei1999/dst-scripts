@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "You look like grandpa's cat!",
         CRITTER_PERDLING = "Gobble gobble!",
 		CRITTER_LUNARMOTHLING = "A spider and an insect, what a pair!",
+        CRITTER_BULBIN = "It's our little onion friend!",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Yay! New toy!",
 
 		HERMITHOTSPRING  =
         {

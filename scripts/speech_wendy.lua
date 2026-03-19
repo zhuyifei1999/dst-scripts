@@ -2181,6 +2181,7 @@ return{
         CRITTER_KITTEN = "Cursed with nine lives. Poor thing.",
         CRITTER_PERDLING = "It's so happy.",
 		CRITTER_LUNARMOTHLING = "Your beauty will fade too, you know.",
+        CRITTER_BULBIN = "Its adorable face nearly brings me to tears.",
 
 		CROW =
 		{
@@ -5917,6 +5918,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "What does it do?",
 
 		HERMITHOTSPRING  =
         {

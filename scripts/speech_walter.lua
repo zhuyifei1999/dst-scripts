@@ -2219,6 +2219,7 @@ return{
         CRITTER_KITTEN = "I'm usually more of a dog person, but you're so cute!",
         CRITTER_PERDLING = "What a funny little turkey.",
 		CRITTER_LUNARMOTHLING = "Mom would never let me keep a pet bug this big!",
+        CRITTER_BULBIN = "I didn't know vegetables could be monsters too!",
 
 		CROW =
 		{
@@ -5955,6 +5956,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "What do you think it does, Woby?",
 
 		HERMITHOTSPRING  =
         {

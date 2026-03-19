@@ -279,16 +279,22 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 			if self.classified.isfreebuildmode:value() and not PREFAB_SKINS_SHOULD_NOT_SELECT[recipe.product] then
 				return true
 			end
-
-            if recipe.unlocks_from_skin and self.inst == ThePlayer then
+            
+            local has_unlocked_skin = false
+            if recipe.unlocks_from_skin and (self.inst == ThePlayer) then
                 local prefabskins = PREFAB_SKINS[recipe.product]
                 if prefabskins ~= nil then
-                    local unlockableskins = TheInventory:GetUnlockableItems()
                     for _, skin in ipairs(prefabskins) do
-                        if unlockableskins[skin] then
-                            return true
+                        if TheInventory:CheckOwnership(skin) then
+                            has_unlocked_skin = true
+                            if recipe.unlocks_from_skin == SKINUNLOCKS.ALWAYS then
+                                return true
+                            end
                         end
                     end
+                end
+                if recipe.unlocks_from_skin == SKINUNLOCKS.ALWAYS then
+                    return false
                 end
             end
 
@@ -307,10 +313,16 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 			--
 
 			if self.classified.recipes[recipe.name] and self.classified.recipes[recipe.name]:value() then
+                if recipe.unlocks_from_skin then
+                    return has_unlocked_skin
+                end
 				return true
 			end
 
             if cached_tech_trees and cached_tech_trees[recipe.level] ~= nil then
+                if recipe.unlocks_from_skin then
+                    return has_unlocked_skin and cached_tech_trees[recipe.level]
+                end
                 return cached_tech_trees[recipe.level]
             end
             for i, v in ipairs(TechTree.AVAILABLE_TECH) do
@@ -326,6 +338,9 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 
             if cached_tech_trees then
                 cached_tech_trees[recipe.level] = true
+            end
+            if recipe.unlocks_from_skin then
+                return has_unlocked_skin
             end
 			return true
         end

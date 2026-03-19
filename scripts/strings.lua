@@ -2288,6 +2288,7 @@ STRINGS =
         CRITTER_DRAGONLING = "Broodling",
         CRITTER_GLOMLING = "Glomglom",
 		CRITTER_LUNARMOTHLING = "Mothling",
+        CRITTER_BULBIN = "Bulbin",
 
         CRITTER_LAMB_BUILDER = "Ewelet",
         CRITTER_PUPPY_BUILDER = "Vargling",
@@ -2296,6 +2297,7 @@ STRINGS =
         CRITTER_DRAGONLING_BUILDER = "Broodling",
         CRITTER_GLOMLING_BUILDER = "Glomglom",
 		CRITTER_LUNARMOTHLING_BUILDER = "Mothling",
+        CRITTER_BULBIN_BUILDER = "Bulbin",
 
         BEARGERVEST = "Hibearnation Vest",
         ARMORDRAGONFLY = "Scalemail",
@@ -4440,6 +4442,7 @@ STRINGS =
 
 		-- Winter's Feast 2025
 
+		W_RADIO = "B.U.D.D.Y.", --(Broadcasting Uninterrupted Dimensional Dialogue Yet?)
 		GIFTSURPRISE = "???",
 
 		HERMITHOTSPRING = "Pearl's Hot Spring",
@@ -4985,6 +4988,7 @@ STRINGS =
         CRITTER_PUPPY_BUILDER = "Befriend a loyal Vargling.",
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 		CRITTER_LUNARMOTHLING_BUILDER = "Befriend a delicate Mothling.",
+		CRITTER_BULBIN_BUILDER = "Befriend a rolling Bulbin.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
 
@@ -5716,6 +5720,8 @@ STRINGS =
         FLOATINGLANTERN = "Cast a comforting warm glow from above.",
         YOTH_KNIGHTSTICK = "Horse around.",
         YOTH_CHAIR_ROCKING_ITEM = "Take a ride and enjoy going nowhere.",
+
+		W_RADIO = "Where is that signal coming from?",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

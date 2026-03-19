@@ -1449,7 +1449,7 @@ local function initfriendlevellisteners(inst)
         {
             key = PEARL_DECORATION_TYPES.WATER_TREE,
             commentstrings = "HERMITCRAB_DECOR_CONTENT.WATER_TREE",
-            overridecommentdistance = 8,
+            overridecommentdistance = 20,
             getpos = function(inst, home, pearldecorationscore)
                 local watertree = FindEntity(inst, 60, function(ent) return pearldecorationscore:IsEntityWaterTree(ent) end)
                 return watertree and watertree:GetPosition() or inst:GetPosition()
@@ -1528,7 +1528,7 @@ local function initfriendlevellisteners(inst)
             commentstrings = "HERMITCRAB_DECOR_CONTENT.POTTED_PLANTS",
             getpos = function(inst, home, pearldecorationscore)
                 local pot = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityPottedPlant(ent) end)
-                return pot and pot:GetPosition() or pot:GetPosition()
+                return pot and pot:GetPosition() or inst:GetPosition()
             end,
         },
         {
@@ -1536,7 +1536,7 @@ local function initfriendlevellisteners(inst)
             commentstrings = "HERMITCRAB_DECOR_CONTENT.DOCK_POSTS",
             getpos = function(inst, home, pearldecorationscore)
                 local pot = FindEntity(inst, 35, function(ent) return pearldecorationscore:IsEntityDockPost(ent) end)
-                return pot and pot:GetPosition() or pot:GetPosition()
+                return pot and pot:GetPosition() or inst:GetPosition()
             end,
         },
         {

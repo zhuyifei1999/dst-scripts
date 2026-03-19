@@ -970,6 +970,16 @@ table.insert(prefs, CreatePrefabSkin("armor_wood_roman",
 	granted_items = { "armor_dragonfly_roman", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_wood_rw_gustree",
+{
+	base_prefab = "armorwood",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) armorwood_init_fn(inst, "armor_wood_rw_gustree", skin_custom) end,
+	skin_tags = { "ARMORWOOD", "CRAFTABLE", },
+	release_group = 178,
+}))
+
 table.insert(prefs, CreatePrefabSkin("arrowsign_post_circus",
 {
 	base_prefab = "arrowsign_post",
@@ -2476,6 +2486,27 @@ table.insert(prefs, CreatePrefabSkin("bugnet_spider_white",
 	skin_tags = { "BUGNET", "CRAFTABLE", },
 	skin_sound = { ["net"] = "dontstarve/creatures/spider/attack_grunt", },
 	release_group = 59,
+}))
+
+table.insert(prefs, CreatePrefabSkin("bulbin_rw_basic",
+{
+	base_prefab = "critter_bulbin",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) critter_bulbin_init_fn(inst, "bulbin_rw_basic", skin_custom) end,
+	skin_tags = { "BULBIN", "CRAFTABLE", },
+	release_group = 178,
+}))
+
+table.insert(prefs, CreatePrefabSkin("bulbin_rw_basic_builder",
+{
+	base_prefab = "critter_bulbin_builder",
+	type = "item",
+	build_name_override = "bulbin_rw_basic",
+	rarity = "Loyal",
+	init_fn = function(inst) critter_builder_init_fn(inst, "bulbin_rw_basic" ) end,
+	skin_tags = { },
+	release_group = 178,
 }))
 
 table.insert(prefs, CreatePrefabSkin("bundle_cawnival",
@@ -4198,6 +4229,16 @@ table.insert(prefs, CreatePrefabSkin("eyebrellahat_fantasy",
 	release_group = 128,
 }))
 
+table.insert(prefs, CreatePrefabSkin("eyebrellahat_insect",
+{
+	base_prefab = "eyebrellahat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) eyebrellahat_init_fn(inst, "eyebrellahat_insect", skin_custom) end,
+	skin_tags = { "EYEBRELLAHAT", "INSECT", "CRAFTABLE", },
+	release_group = 178,
+}))
+
 table.insert(prefs, CreatePrefabSkin("eyebrellahat_rose",
 {
 	base_prefab = "eyebrellahat",
@@ -5033,6 +5074,16 @@ table.insert(prefs, CreatePrefabSkin("firestaff_rose",
 	release_group = 27,
 }))
 
+table.insert(prefs, CreatePrefabSkin("firestaff_rw_swamp",
+{
+	base_prefab = "firestaff",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) firestaff_init_fn(inst, "firestaff_rw_swamp", skin_custom) end,
+	skin_tags = { },
+	release_group = 178,
+}))
+
 table.insert(prefs, CreatePrefabSkin("firesuppressor_circus",
 {
 	base_prefab = "firesuppressor",
@@ -5215,6 +5266,16 @@ table.insert(prefs, CreatePrefabSkin("footballhat_hockey",
 	init_fn = function(inst, skin_custom) footballhat_init_fn(inst, "footballhat_hockey", skin_custom) end,
 	skin_tags = { "FOOTBALLHAT", "HOCKEY", "CRAFTABLE", },
 	release_group = 73,
+}))
+
+table.insert(prefs, CreatePrefabSkin("footballhat_rw_gustree",
+{
+	base_prefab = "footballhat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) footballhat_init_fn(inst, "footballhat_rw_gustree", skin_custom) end,
+	skin_tags = { "FOOTBALLHAT", "CRAFTABLE", },
+	release_group = 178,
 }))
 
 table.insert(prefs, CreatePrefabSkin("footballhat_western",
@@ -5688,6 +5749,16 @@ table.insert(prefs, CreatePrefabSkin("hammer_invisible",
 	init_fn = function(inst, skin_custom) hammer_init_fn(inst, "hammer_invisible", skin_custom) end,
 	skin_tags = { "HAMMER", "INVISIBLE", "CRAFTABLE", },
 	release_group = 117,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hammer_rw_startingforest",
+{
+	base_prefab = "hammer",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) hammer_init_fn(inst, "hammer_rw_startingforest", skin_custom) end,
+	skin_tags = { "HAMMER", "CRAFTABLE", },
+	release_group = 178,
 }))
 
 table.insert(prefs, CreatePrefabSkin("hat_antlion_swamp",
@@ -6381,6 +6452,16 @@ table.insert(prefs, CreatePrefabSkin("icestaff_rose",
 	init_fn = function(inst, skin_custom) icestaff_init_fn(inst, "icestaff_rose", skin_custom) end,
 	skin_tags = { },
 	release_group = 27,
+}))
+
+table.insert(prefs, CreatePrefabSkin("icestaff_rw_swamp",
+{
+	base_prefab = "icestaff",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) icestaff_init_fn(inst, "icestaff_rw_swamp", skin_custom) end,
+	skin_tags = { },
+	release_group = 178,
 }))
 
 table.insert(prefs, CreatePrefabSkin("insanityrock_fantasy",
@@ -10424,6 +10505,17 @@ table.insert(prefs, CreatePrefabSkin("spear_rose",
 	granted_items = { "firestaff_rose", "icestaff_rose", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("spear_rw_swamp",
+{
+	base_prefab = "spear",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) spear_init_fn(inst, "spear_rw_swamp", skin_custom) end,
+	skin_tags = { "SPEAR", "CRAFTABLE", },
+	release_group = 178,
+	granted_items = { "firestaff_rw_swamp", "icestaff_rw_swamp", },
+}))
+
 table.insert(prefs, CreatePrefabSkin("spear_simple",
 {
 	base_prefab = "spear",
@@ -12121,6 +12213,16 @@ table.insert(prefs, CreatePrefabSkin("umbrella_spider",
 	skin_tags = { "UMBRELLA", "CRAFTABLE", },
 	marketable = true,
 	release_group = 50,
+}))
+
+table.insert(prefs, CreatePrefabSkin("w_radio_basic",
+{
+	base_prefab = "w_radio",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst, skin_custom) w_radio_init_fn(inst, "w_radio_basic", skin_custom) end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 177,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wagdrone_rolling_fancy",

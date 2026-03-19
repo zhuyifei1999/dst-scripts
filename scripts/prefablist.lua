@@ -1306,6 +1306,7 @@ PREFABFILES = {
   "voidcloth_scythe",
   "voidcloth_scythe_classified",
   "voidcloth_umbrella",
+  "w_radio",
   "wagboss_beam",
   "wagboss_missile",
   "wagboss_robot",

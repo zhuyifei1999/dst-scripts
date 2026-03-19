@@ -280,7 +280,21 @@ function Builder:EvaluateTechTrees()
 							local recipe = GetValidRecipe(recname)
 							if recipe and recipe.nounlock then
 								--only nounlock recipes can be unlocked via crafting station
-								self.station_recipes[recname] = v.components.craftingstation:GetRecipeCraftingLimit(recipe.name) or true
+                                local has_unlocked_skin = false
+                                if recipe.unlocks_from_skin and (recipe.unlocks_from_skin == SKINUNLOCKS.CRAFTINGSTATION) and self.inst.isplayer then
+                                    local prefabskins = PREFAB_SKINS[recipe.product]
+                                    if prefabskins ~= nil then
+                                        for _, skin in ipairs(prefabskins) do
+                                            if TheInventory:CheckClientOwnership(self.inst.userid, skin) then
+                                                has_unlocked_skin = true
+                                                break
+                                            end
+                                        end
+                                    end
+                                else
+                                    has_unlocked_skin = true
+                                end
+                                self.station_recipes[recname] = v.components.craftingstation:GetRecipeCraftingLimit(recipe.name) or has_unlocked_skin or nil
 							end
 						end
 					end
@@ -658,6 +672,9 @@ function Builder:DoBuild(recname, pt, rotation, skin)
             return false
         end
 
+        if recipe.unlocks_from_skin and not skin then
+            return false
+        end
         if recipe.canbuild ~= nil then
 			local success, msg = recipe.canbuild(recipe, self.inst, pt, rotation, self.current_prototyper, skin)
 			if not success then
@@ -824,15 +841,21 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 		return true
 	end
 
+    local has_unlocked_skin = false
     if recipe.unlocks_from_skin and self.inst.isplayer then
         local prefabskins = PREFAB_SKINS[recipe.product]
         if prefabskins ~= nil then
-            local unlockableskins = TheInventory:GetClientUnlockableItems(self.inst.userid)
             for _, skin in ipairs(prefabskins) do
-                if unlockableskins[skin] then
-                    return true
+                if TheInventory:CheckClientOwnership(self.inst.userid, skin) then
+                    has_unlocked_skin = true
+                    if recipe.unlocks_from_skin == SKINUNLOCKS.ALWAYS then
+                        return true
+                    end
                 end
             end
+        end
+        if recipe.unlocks_from_skin == SKINUNLOCKS.ALWAYS then
+            return false
         end
     end
 
@@ -851,10 +874,16 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 	--
 
 	if self.station_recipes[recipe.name] or table.contains(self.recipes, recipe.name) then
-		return true
+        if recipe.unlocks_from_skin then
+            return has_unlocked_skin
+        end
+        return true
 	end
 
     if cached_tech_trees and cached_tech_trees[recipe.level] ~= nil then
+        if recipe.unlocks_from_skin then
+            return has_unlocked_skin and cached_tech_trees[recipe.level]
+        end
         return cached_tech_trees[recipe.level]
     end
     for i, v in ipairs(TechTree.AVAILABLE_TECH) do
@@ -872,6 +901,9 @@ function Builder:KnowsRecipe(recipe, ignore_tempbonus, cached_tech_trees)
 
     if cached_tech_trees then
         cached_tech_trees[recipe.level] = true
+    end
+    if recipe.unlocks_from_skin then
+        return has_unlocked_skin
     end
     return true
 end

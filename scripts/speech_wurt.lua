@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "...Guess you pretty okay, florpt.",
         CRITTER_PERDLING = "Hello birdy!",
 		CRITTER_LUNARMOTHLING = "You ugly, but me love you.",
+        CRITTER_BULBIN = "Little, smelly and green. You perfect, florp.",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Make do stuff, flort!",
 
 		HERMITHOTSPRING  =
         {

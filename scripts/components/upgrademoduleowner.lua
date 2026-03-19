@@ -227,12 +227,14 @@ function UpgradeModuleOwner:OnLoad(data, newents)
     if data ~= nil then
         self.charge_level = data.charge_level or self.charge_level
 
-        for _, module_record in ipairs(data.modules) do
-            local module = SpawnSaveRecord(module_record, newents)
-            if module ~= nil then
-                self:PushModule(module, true)
-            end
-        end
+		if data.modules then
+			for _, module_record in ipairs(data.modules) do
+				local _module = SpawnSaveRecord(module_record, newents)
+				if _module then
+					self:PushModule(_module, true)
+				end
+			end
+		end
     end
 end
 

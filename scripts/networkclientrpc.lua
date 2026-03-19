@@ -894,8 +894,7 @@ local RPC_HANDLERS =
 			printinvalidplatform("MakeRecipeAtPoint", player, nil, x, z, platform, platform_relative)
 			x, z = ConvertPlatformRelativePositionToAbsolutePosition(x, z, platform, platform_relative)
 			if x ~= nil then
-				--rot supported range really only needs to be [-180, 180]
-				if IsPointInRange(player, x, z) and rot >= -360 and rot <= 360 then
+				if IsPointInRange(player, x, z) and IsRotationValid(rot) then
 					for k, v in pairs(AllRecipes) do
 						if v.rpc_id == recipe then
 							builder:MakeRecipeAtPoint(v, Vector3(x, 0, z), rot, skin_index ~= nil and PREFAB_SKINS[v.name] ~= nil and PREFAB_SKINS[v.name][skin_index] or nil)

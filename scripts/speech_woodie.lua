@@ -2178,6 +2178,7 @@ return{
         CRITTER_KITTEN = "Giving it pats is relaxing.",
         CRITTER_PERDLING = "Look, it's not you. It's me.",
 		CRITTER_LUNARMOTHLING = "That's my little forest buddy.",
+        CRITTER_BULBIN = "Sure got a spring in your step, eh?",
 
 		CROW =
 		{
@@ -5914,6 +5915,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Does it play any tunes?",
 
 		HERMITHOTSPRING  =
         {

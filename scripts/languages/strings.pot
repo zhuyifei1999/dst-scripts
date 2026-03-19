@@ -10923,6 +10923,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTERLAB"
 msgid "Is there something in there?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_BULBIN"
+msgid "You'd never do anything rotten, would you?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_DRAGONLING"
 msgid "It's wyrmed its way into my heart."
@@ -22698,6 +22703,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's got the look of someone eager to show their work."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO"
+msgid "Hm. There's a lot of science here."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWAMULET"
 msgid "Warm to the touch."
@@ -29511,6 +29521,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTERLAB"
 msgid "What's wrong Woby? Is something in there?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_BULBIN"
+msgid "I didn't know vegetables could be monsters too!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_DRAGONLING
@@ -41223,6 +41238,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What is it boy? Do you have something to show WX?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO"
+msgid "What do you think it does, Woby?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.YELLOWAMULET"
 msgid "With this on, I'm invincible! Right?"
@@ -47916,6 +47936,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTERLAB"
 msgid "Shadow creatures! No, wait a tick, it's something else..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_BULBIN"
+msgid "Aren't you a little far from home?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_DRAGONLING
@@ -59623,6 +59648,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "I suppose you have nothing better to do than wait around?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO"
+msgid "I don't trust it."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.YELLOWAMULET"
 msgid "Just the boost I needed."
@@ -66186,6 +66216,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTERLAB"
 msgid "I could use a friend in this difficult world."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_BULBIN"
+msgid "It never hurts to have a little onion on hand."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_DRAGONLING
@@ -77118,6 +77153,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Voilà, it is done!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO"
+msgid "What appliance is this?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.YELLOWAMULET"
 msgid "Puts some pep in my step!"
@@ -83656,6 +83696,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTERLAB"
 msgid "Tis a peculiar boulder."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_BULBIN"
+msgid "I forgive her vegetable ways."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_DRAGONLING
@@ -95338,6 +95383,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Metal warrior! The scout's report is complete!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO"
+msgid "What infernal device is this?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.YELLOWAMULET"
 msgid "A star, captured within an amulet."
@@ -101961,6 +102011,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTERLAB"
 msgid "Am I being watched by that rock?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_BULBIN"
+msgid "You're not from around here, are you pal?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_DRAGONLING
@@ -113638,6 +113693,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "That constant blinking light is testing my patience."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO"
+msgid "It makes me uncomfortable."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.YELLOWAMULET"
 msgid "This will make me stand out."
@@ -120176,6 +120236,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTERLAB"
 msgid "It looks warm in there."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_BULBIN"
+msgid "It's our little onion friend!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_DRAGONLING
@@ -131858,6 +131923,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "WX! We think Jimmy's trying to get your attention!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO"
+msgid "Yay! New toy!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.YELLOWAMULET"
 msgid "Nice and glowy."
@@ -138441,6 +138511,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTERLAB"
 msgid "Oh. The abyss is staring back at me..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_BULBIN"
+msgid "Its adorable face nearly brings me to tears."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_DRAGONLING
@@ -150113,6 +150188,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Poor little machine. Is nobody paying attention to you?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO"
+msgid "What does it do?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.YELLOWAMULET"
 msgid "A brief light in a dark life."
@@ -156701,6 +156781,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTERLAB"
 msgid "A perfect hollow for nesting animals."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_BULBIN"
+msgid "Are you animal or vegetable, dear?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_DRAGONLING
@@ -168373,6 +168458,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's finished compiling some more research, I believe."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO"
+msgid "Interesting... I conclude it requires further study."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.YELLOWAMULET"
 msgid "This amulet is glowing at the mid 530 nanometer wavelength."
@@ -174921,6 +175011,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTERLAB"
 msgid "Is there anything cute in there??"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_BULBIN"
+msgid "My bulbous little buddy."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_DRAGONLING
@@ -186598,6 +186693,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What are you waiting for, a pat on the head?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO"
+msgid "Ten seconds to make it work before I burn it."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.YELLOWAMULET"
 msgid "It seems to absorb the darkness around it."
@@ -193196,6 +193296,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTERLAB"
 msgid "Come on out, don't be shy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_BULBIN"
+msgid "You're a sweet little fella, but your breath is terrible."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_DRAGONLING
@@ -204903,6 +205008,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "He's signalling his supervisor."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO"
+msgid "I think I recognize this handywork..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.YELLOWAMULET"
 msgid "Useful little tool."
@@ -211481,6 +211591,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTERLAB"
 msgid "Wolfgang hear little noises inside."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_BULBIN"
+msgid "Onions are Wolfgang's best friend! Second to potato!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_DRAGONLING
@@ -223153,6 +223268,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Funny machine is winking at Wolfgang?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO"
+msgid "Hello little... what are you?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.YELLOWAMULET"
 msgid "Is glowing yellow."
@@ -229671,6 +229791,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTERLAB"
 msgid "Anyone home?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_BULBIN"
+msgid "Sure got a spring in your step, eh?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_DRAGONLING
@@ -241353,6 +241478,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Trying to get someone's attention, eh?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO"
+msgid "Does it play any tunes?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.YELLOWAMULET"
 msgid "I could cut wood at night with this."
@@ -247901,6 +248031,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTERLAB"
 msgid "Little friends hiding inside"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_BULBIN"
+msgid "Don't worry, friend! Safe now"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_DRAGONLING
@@ -259598,6 +259733,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Blinky blink"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO"
+msgid "What friend do?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.YELLOWAMULET"
 msgid "Can go zoomy now!"
@@ -266291,6 +266431,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTERLAB"
 msgid "Ooo, I'd like a partner in pranks."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_BULBIN"
+msgid "Once you dwelt in a rotten wood, now it seems you're here for good!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_DRAGONLING
@@ -277978,6 +278123,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's done its toil, now our friend must collect the spoils."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO"
+msgid "Oh dear, how'd that get here?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.YELLOWAMULET"
 msgid "I'll give my brain a slight refrain."
@@ -284611,6 +284761,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTERLAB"
 msgid "See something moving inside, florp."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_BULBIN"
+msgid "Little, smelly and green. You perfect, florp."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_DRAGONLING
@@ -296313,6 +296468,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Why it all blinky?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO"
+msgid "Make do stuff, flort!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.YELLOWAMULET"
 msgid "Feel warm..."
@@ -302871,6 +303031,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTERLAB
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTERLAB"
 msgid "IT'S A MINION HOLE"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_BULBIN"
+msgid "CORRUPTION DETECTED. EXCELLENT"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_DRAGONLING
@@ -314541,6 +314706,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SCANNER_SUCCEEDED
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "EXCELLENT WORK, JIMMY. AWAIT RETRIEVAL"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO"
+msgid "DO I KNOW YOU?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.YELLOWAMULET
@@ -326723,6 +326893,16 @@ msgctxt "STRINGS.NAMES.CRITTERLAB"
 msgid "Rock Den"
 msgstr ""
 
+#. STRINGS.NAMES.CRITTER_BULBIN
+msgctxt "STRINGS.NAMES.CRITTER_BULBIN"
+msgid "Bulbin"
+msgstr ""
+
+#. STRINGS.NAMES.CRITTER_BULBIN_BUILDER
+msgctxt "STRINGS.NAMES.CRITTER_BULBIN_BUILDER"
+msgid "Bulbin"
+msgstr ""
+
 #. STRINGS.NAMES.CRITTER_DRAGONLING
 msgctxt "STRINGS.NAMES.CRITTER_DRAGONLING"
 msgid "Broodling"
@@ -337233,6 +337413,11 @@ msgctxt "STRINGS.NAMES.WX78_SCANNER_SUCCEEDED"
 msgid "Bio Scanalyzer"
 msgstr ""
 
+#. STRINGS.NAMES.W_RADIO
+msgctxt "STRINGS.NAMES.W_RADIO"
+msgid "B.U.D.D.Y."
+msgstr ""
+
 #. STRINGS.NAMES.YELLOWAMULET
 msgctxt "STRINGS.NAMES.YELLOWAMULET"
 msgid "Magiluminescence"
@@ -340998,6 +341183,11 @@ msgctxt "STRINGS.RECIPE_DESC.COTL_TABERNACLE_LEVEL3"
 msgid "A dazzling monument to the lamb's glory."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.CRITTER_BULBIN_BUILDER
+msgctxt "STRINGS.RECIPE_DESC.CRITTER_BULBIN_BUILDER"
+msgid "Befriend a rolling Bulbin."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.CRITTER_DRAGONLING_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CRITTER_DRAGONLING_BUILDER"
 msgid "Befriend a noble Broodling."
@@ -344296,6 +344486,11 @@ msgstr ""
 #. STRINGS.RECIPE_DESC.WX78_SCANNER_ITEM
 msgctxt "STRINGS.RECIPE_DESC.WX78_SCANNER_ITEM"
 msgid "It never hurts to have a backup scan."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.W_RADIO
+msgctxt "STRINGS.RECIPE_DESC.W_RADIO"
+msgid "Where is that signal coming from?"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.YELLOWAMULET
@@ -353963,6 +354158,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.armor_wood_roman"
 msgid "Battle-ready wooden armor, inspired by warriors of old."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.armor_wood_rw_gustree
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.armor_wood_rw_gustree"
+msgid "It's solid armor, just don't mind the draft."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.arrowsign_post_circus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.arrowsign_post_circus"
 msgid "Restrooms over here."
@@ -357348,6 +357548,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.bugnet_spider_white"
 msgid "It's nice not to be the one getting eaten for a change."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic"
+msgid "This bulbous little buddy is ready to roll."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic_builder"
+msgid "n/a"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.bundle_cawnival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.bundle_cawnival"
 msgid "Keep the memories of the Cawnival fresh in your mind, even after it wraps up."
@@ -358421,6 +358631,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_fantasy"
 msgid "You can't shake the feeling that a terrifying creature has its eye on you."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_insect"
+msgid "Just try to ignore the itching on your scalp."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_rose
@@ -359648,6 +359863,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.firestaff_rose"
 msgid "firestaff_rose"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.firestaff_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.firestaff_rw_swamp"
+msgid "n/a"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.firesuppressor_circus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.firesuppressor_circus"
 msgid "Look and be amazed by the incredible automatic snowball juggling machine!"
@@ -359731,6 +359951,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.footballhat_hockey
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.footballhat_hockey"
 msgid "I'm gonna score a hat trick!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.footballhat_rw_gustree
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.footballhat_rw_gustree"
+msgid "Protect yourself from blows to the head."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.footballhat_western
@@ -359941,6 +360166,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.hammer_invisible
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hammer_invisible"
 msgid "Convey an incredibly convincing impression of a hammer."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.hammer_rw_startingforest
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hammer_rw_startingforest"
+msgid "Pound them to a pulp!"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
@@ -361186,6 +361416,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.icestaff_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.icestaff_rose"
 msgid "icestaff_rose"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.icestaff_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.icestaff_rw_swamp"
+msgid "n/a"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.insanityrock_fantasy
@@ -363536,6 +363771,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_nature_4
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_nature_4"
 msgid "This chest contains 4x\nSpring curios."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.mysterybox_rotwood_gift
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_rotwood_gift"
+msgid "Rotwood Gift"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_terraria
@@ -366398,6 +366638,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_elementals"
 msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahat_insect"
+msgid "Equip this item to change your character's background portrait."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahatcrystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahatcrystal"
 msgid "Equip this item to change your character's background portrait."
@@ -367296,6 +367541,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_crystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_crystal"
 msgid "Set your profile icon to a Glass Eyebrella."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_insect"
+msgid "Set your profile icon to a Wriggly Eyebrella."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_rose
@@ -369078,6 +369328,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_rose"
 msgid "No sharper than any other spear, though much lovelier."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.spear_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_rw_swamp"
+msgid "Poke'em with the prickly end!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.spear_simple
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_simple"
 msgid "A rudimentary weapon, sharp and ready for a quarrel."
@@ -369831,6 +370086,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.umbrella_spider
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.umbrella_spider"
 msgid "This itsy bitsy spider has no fear of rain."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.w_radio_basic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.w_radio_basic"
+msgid "Where is that signal coming from?"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fancy
@@ -373218,6 +373478,11 @@ msgctxt "STRINGS.SKIN_NAMES.armor_wood_roman"
 msgid "Roman Wood Armor"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.armor_wood_rw_gustree
+msgctxt "STRINGS.SKIN_NAMES.armor_wood_rw_gustree"
+msgid "Gustree Wood Armor"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.arrowsign_post_circus
 msgctxt "STRINGS.SKIN_NAMES.arrowsign_post_circus"
 msgid "Spectacular Stationary Wayfinder"
@@ -376603,6 +376868,16 @@ msgctxt "STRINGS.SKIN_NAMES.bugnet_spider_white"
 msgid "Cavernous Spidernet"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.bulbin_rw_basic
+msgctxt "STRINGS.SKIN_NAMES.bulbin_rw_basic"
+msgid "Bulbin"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.bulbin_rw_basic_builder
+msgctxt "STRINGS.SKIN_NAMES.bulbin_rw_basic_builder"
+msgid "n/a"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.bundle_cawnival
 msgctxt "STRINGS.SKIN_NAMES.bundle_cawnival"
 msgid "Cawnival Wrapping"
@@ -377676,6 +377951,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.eyebrellahat_fantasy
 msgctxt "STRINGS.SKIN_NAMES.eyebrellahat_fantasy"
 msgid "Beastly Eyebrella"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.eyebrellahat_insect"
+msgid "Wriggly Eyebrella"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.eyebrellahat_rose
@@ -378903,6 +379183,11 @@ msgctxt "STRINGS.SKIN_NAMES.firestaff_rose"
 msgid "Rose Fire Staff"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.firestaff_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.firestaff_rw_swamp"
+msgid "Barbed Fire Staff"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.firesuppressor_circus
 msgctxt "STRINGS.SKIN_NAMES.firesuppressor_circus"
 msgid "Amazing Snowball Juggler"
@@ -378986,6 +379271,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.footballhat_hockey
 msgctxt "STRINGS.SKIN_NAMES.footballhat_hockey"
 msgid "Hockey Helmet"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.footballhat_rw_gustree
+msgctxt "STRINGS.SKIN_NAMES.footballhat_rw_gustree"
+msgid "Gustree Helm"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.footballhat_western
@@ -379196,6 +379486,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.hammer_invisible
 msgctxt "STRINGS.SKIN_NAMES.hammer_invisible"
 msgid "Pantomimed Hammer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.hammer_rw_startingforest
+msgctxt "STRINGS.SKIN_NAMES.hammer_rw_startingforest"
+msgid "The Tenderizer"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
@@ -380441,6 +380736,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.icestaff_rose
 msgctxt "STRINGS.SKIN_NAMES.icestaff_rose"
 msgid "Rose Ice Staff"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.icestaff_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.icestaff_rw_swamp"
+msgid "Barbed Ice Staff"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.insanityrock_fantasy
@@ -382791,6 +383091,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.mysterybox_nature_4
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_nature_4"
 msgid "Spring Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.mysterybox_rotwood_gift
+msgctxt "STRINGS.SKIN_NAMES.mysterybox_rotwood_gift"
+msgid "Rotwood Gift"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.mysterybox_terraria
@@ -385653,6 +385958,11 @@ msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_elementals"
 msgid "Magma Golem Portrait"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahat_insect"
+msgid "Wriggly Eyebrella Portrait"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahatcrystal
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahatcrystal"
 msgid "Glass Eyebrella Portrait"
@@ -386551,6 +386861,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.profileflair_eyebrellahat_crystal
 msgctxt "STRINGS.SKIN_NAMES.profileflair_eyebrellahat_crystal"
 msgid "Glass Eyebrella"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.profileflair_eyebrellahat_insect"
+msgid "Wriggly Eyebrella"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_eyebrellahat_rose
@@ -388333,6 +388648,11 @@ msgctxt "STRINGS.SKIN_NAMES.spear_rose"
 msgid "Rose Pike"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.spear_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.spear_rw_swamp"
+msgid "Barbed Pike"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.spear_simple
 msgctxt "STRINGS.SKIN_NAMES.spear_simple"
 msgid "Refined Spear"
@@ -389086,6 +389406,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.umbrella_spider
 msgctxt "STRINGS.SKIN_NAMES.umbrella_spider"
 msgid "Webrolly"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.w_radio_basic
+msgctxt "STRINGS.SKIN_NAMES.w_radio_basic"
+msgid "B.U.D.D.Y."
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wagdrone_rolling_fancy
@@ -394721,6 +395046,11 @@ msgstr ""
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUGNET
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUGNET"
 msgid "Bug Net"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BULBIN
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BULBIN"
+msgid "Bulbin"
 msgstr ""
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUNDLE
@@ -400796,6 +401126,11 @@ msgstr ""
 #. STRINGS.THANKS_POPUP.ROT2
 msgctxt "STRINGS.THANKS_POPUP.ROT2"
 msgid "Sending well wishes\nand shell fishes!"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.RW
+msgctxt "STRINGS.THANKS_POPUP.RW"
+msgid "Thanks for playing"
 msgstr ""
 
 #. STRINGS.THANKS_POPUP.STORE

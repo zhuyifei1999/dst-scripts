@@ -212,17 +212,19 @@ SGCritterStates.AddRandomEmotes = function(states, emotes)
 	for i,v in ipairs(emotes) do
 		table.insert(states, State{
 			name = "emote_"..i,
-			tags = { "busy", "canrotate" },
+			tags = v.tags or { "busy", "canrotate" },
 
-			onenter = function(inst, pushanim)
-				if inst.components.locomotor ~= nil then
-					inst.components.locomotor:StopMoving()
-				end
+			onenter = function(inst, data)
+                if not v.ignorestandardonenter then
+                    if inst.components.locomotor ~= nil then
+                        inst.components.locomotor:StopMoving()
+                    end
 
-				inst.AnimState:PlayAnimation(v.anim)
+    				inst.AnimState:PlayAnimation(v.anim)
+                end
 
                 if v.fns ~= nil and v.fns.onenter ~= nil then
-                    v.fns.onenter(inst)
+                    v.fns.onenter(inst, data)
                 end
 			end,
 
@@ -231,7 +233,9 @@ SGCritterStates.AddRandomEmotes = function(states, emotes)
 			events =
 			{
 				EventHandler("animover", function(inst)
-					if inst.AnimState:AnimDone() then
+                    if v.fns and v.fns.animover then
+                        v.fns.animover(inst, "emote_"..i)
+                    elseif inst.AnimState:AnimDone() then
 						inst.sg:GoToState("idle")
 					end
 				end),

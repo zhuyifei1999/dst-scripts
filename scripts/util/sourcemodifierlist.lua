@@ -122,15 +122,15 @@ function SourceModifierList:RemoveModifier(source, key)
 end
 
 function SourceModifierList:Reset()
-	for source, src_params in pairs(inst._modifiers) do
+	for source, src_params in pairs(self._modifiers) do
 		if src_params.onremove then
 			self.inst:RemoveEventCallback("onremove", src_params.onremove, source)
 		end
 		self._modifiers[source] = nil
 	end
-	inst._modifier = inst._base
+	self._modifier = self._base
 	if self._dirtycb then
-		self._dirtycb(self.inst, inst._modifier)
+		self._dirtycb(self.inst, self._modifier)
 	end
 end
 
