@@ -384,7 +384,7 @@ function Container:IsSideWidget()
     return self.issidewidget
 end
 
-Container.SetOpener = function() end --depreciated, kept in case a mod calls this function.
+Container.SetOpener = function() end --deprecated, kept in case a mod calls this function.
 
 function Container:IsOpenedBy(guy)
     if self.inst.components.container ~= nil then

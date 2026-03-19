@@ -31,6 +31,10 @@ local function ConfigurePlayerLocomotor(inst)
 	inst.components.locomotor:EnableHopDelay(true)
 	inst.components.locomotor.hop_distance_fn = GetHopDistance
 	inst.components.locomotor.pusheventwithdirection = true
+
+    if inst.ExtraConfigurePlayerLocomotor ~= nil then
+        inst.ExtraConfigurePlayerLocomotor(inst)
+    end
 end
 
 local function ConfigureGhostLocomotor(inst)
@@ -98,6 +102,16 @@ local DEATH_PRODUCTS =
     CORPSE = 2,
 }
 local function SpawnDeathProduct(inst)
+    if inst.wx78_backupbody_save_inst then
+        local body = inst.wx78_backupbody_save_inst
+        if body:IsValid() then
+            body:ReturnToScene()
+            body.Light:Enable(body._Light_value)
+            body._Light_value = nil
+        end
+        inst.wx78_backupbody_save_inst = nil
+        return
+    end
     -- sg.mem.nocorpse is set in player constructor when HasPlayerSkeletons is false
     local x, y, z = inst.Transform:GetWorldPosition()
     local can_corpse = CanEntityBecomeCorpse(inst)
@@ -194,6 +208,10 @@ local function OnPlayerDeath(inst, data)
 				end
 				inst.charlie_vinesave = true
 			end
+        elseif inst.components.skilltreeupdater:IsActivated("wx78_ghostrevive_2") then
+            if inst.components.upgrademoduleowner and inst.components.upgrademoduleowner:IsChargeMaxed() then
+                inst.wx78_backupbody_save = true
+            end
 		end
 		if inst.charlie_vinesave then
 			inst.components.inventory:Hide()
@@ -356,6 +374,11 @@ local function DoActualRez(inst, source, item)
             else
                 inst.sg:GoToState("gravestone_rebirth", source)
             end
+        elseif source.prefab == "wx78_backupbody" then
+            if inst.components.skilltreeupdater:IsActivated("wx78_ghostrevive_3") then
+                inst.components.health:SetPercent(1)
+            end
+            inst.sg:GoToState("respawn_wx_poweron")
         elseif source:HasTag("multiplayer_portal") then
             inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)
 
@@ -575,6 +598,8 @@ local function OnRespawnFromGhost(inst, data) -- from ListenForEvent "respawnfro
 		end
     elseif data.source.prefab == "pocketwatch_revive_reviver" then
         inst:DoTaskInTime(0, DoActualRez, nil, data.source)
+    elseif data.source.prefab == "wx78_backupbody" then
+        inst:DoTaskInTime(0, DoActualRez, data.source, nil)
     elseif data.source.prefab == "amulet"
         or data.source.prefab == "resurrectionstone"
         or data.source.prefab == "resurrectionstatue"
@@ -1266,6 +1291,20 @@ end
 
 --------------------------------------------------------------------------
 
+local function SetupBaseSymbolVisibility(inst)
+    inst.AnimState:Hide("ARM_carry")
+    inst.AnimState:Hide("HAT")
+    inst.AnimState:Hide("HAIR_HAT")
+    inst.AnimState:Show("HAIR_NOHAT")
+    inst.AnimState:Show("HAIR")
+    inst.AnimState:Show("HEAD")
+    inst.AnimState:Hide("HEAD_HAT")
+    inst.AnimState:Hide("HEAD_HAT_NOHELM")
+    inst.AnimState:Hide("HEAD_HAT_HELM")
+end
+
+--------------------------------------------------------------------------
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -1315,4 +1354,5 @@ return
 	TryGallopTripUpdate			= TryGallopTripUpdate,
 	FootstepOverrideFn			= FootstepOverrideFn,
 	FoleyOverrideFn				= FoleyOverrideFn,
+    SetupBaseSymbolVisibility   = SetupBaseSymbolVisibility,
 }

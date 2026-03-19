@@ -1,8 +1,8 @@
 local POS_Y_1 =  180
 local POS_Y_2 = POS_Y_1 - 38
 local POS_Y_3 = POS_Y_2 - 38
-local POS_Y_4 = POS_Y_3 - 38
-local POS_Y_5 = POS_Y_4 - 38
+local POS_Y_4 = POS_Y_3 - 39
+local POS_Y_5 = POS_Y_4 - 40
 
 local ALLEGIANCE_POS_Y_1 = POS_Y_1
 local ALLEGIANCE_POS_Y_2 = 141
@@ -21,7 +21,7 @@ local COMBAT_POS_Y = POS_Y_5 - 3
 
 local X_GAP = 68.5
 
-local SONGS_POS_X_1 = -218
+local SONGS_POS_X_1 = -215
 local SONGS_POS_X_2 = SONGS_POS_X_1 + 38
 
 local ARSENAL_POS_X_1 = SONGS_POS_X_2 + X_GAP - 2
@@ -31,7 +31,7 @@ local ARSENAL_POS_X_4 = ARSENAL_POS_X_3 + 57
 
 local ARSENAL_POS_X_MIDDLE = (ARSENAL_POS_X_2 + ARSENAL_POS_X_3) * .5
 
-local BEEFALO_POS_X = ARSENAL_POS_X_4 + X_GAP -2
+local BEEFALO_POS_X = ARSENAL_POS_X_4 + X_GAP - 4
 
 local COMBAT_POS_X = SONGS_POS_X_1 + 22
 

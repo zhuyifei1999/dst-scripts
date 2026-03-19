@@ -1575,6 +1575,12 @@ fns.SetCameraZoomed = function(inst, iszoomed)
     end
 end
 
+fns.SetAerialCamera = function(inst, isaerial)
+	if TheWorld.ismastersim then
+		inst.player_classified.isaerialcamera:set(isaerial)
+	end
+end
+
 fns.SnapCamera = function(inst, resetrot)
     if TheWorld.ismastersim then
         --Forces a netvar to be dirty regardless of value
@@ -2297,22 +2303,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
     end
 
-local function auratest(inst, target, can_initiate)
-
+local function auratest(inst, target)
     if target.components.minigame_participator ~= nil then
         return false
     end
 
-    if (target:HasTag("player") and not TheNet:GetPVPEnabled()) or target:HasTag("ghost") or target:HasTag("noauradamage") then
+	if (target.isplayer and not TheNet:GetPVPEnabled()) or target:HasAnyTag("ghost", "noauradamage") then
         return false
     end
 
-    if target.components.follower and target.components.follower:GetLeader() ~= nil and
-         target.components.follower:GetLeader():HasTag("player") then
-        return false
-    end
-
-    return true
+	return not inst.components.combat:IsAlly(target)
 end
 
 
@@ -2343,16 +2343,7 @@ end
         end
         inst.AnimState:PlayAnimation("idle")
 
-        -- NOTES(JBK): Keep these in sync with wortox_decoy. [WSDCSC]
-        inst.AnimState:Hide("ARM_carry")
-        inst.AnimState:Hide("HAT")
-        inst.AnimState:Hide("HAIR_HAT")
-        inst.AnimState:Show("HAIR_NOHAT")
-        inst.AnimState:Show("HAIR")
-        inst.AnimState:Show("HEAD")
-        inst.AnimState:Hide("HEAD_HAT")
-		inst.AnimState:Hide("HEAD_HAT_NOHELM")
-		inst.AnimState:Hide("HEAD_HAT_HELM")
+        ex_fns.SetupBaseSymbolVisibility(inst)
 
         inst.AnimState:OverrideSymbol("fx_wipe", "wilson_fx", "fx_wipe")
         inst.AnimState:OverrideSymbol("fx_liquid", "wilson_fx", "fx_liquid")
@@ -2851,6 +2842,7 @@ end
         inst.AddCameraExtraDistance = fns.AddCameraExtraDistance
         inst.RemoveCameraExtraDistance = fns.RemoveCameraExtraDistance
         inst.SetCameraZoomed = fns.SetCameraZoomed
+		inst.SetAerialCamera = fns.SetAerialCamera
         inst.SnapCamera = fns.SnapCamera
         inst.ScreenFade = fns.ScreenFade
         inst.ScreenFlash = fns.ScreenFlash

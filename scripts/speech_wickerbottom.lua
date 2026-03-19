@@ -23,6 +23,9 @@ return{
             NOTMERM = "It seems that piscean bipeds only heed the call of their own kind.",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "One domestic creature is enough for me.",
 			TICOON = "Having two trackers at once could possibly confuse them.",
             BUSY_STATION = "Oh, botheration.",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "As I thought, I'm unable to glean any information from it.",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "I don't believe the locals would take kindly to that.",
             NOTSOULJARHANDLER = "Best not interfere.",
             RESTRICTED = "It's not for me, I'm afraid.",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "It would be rude of me to tamper with it.",
             NOTSOULJARHANDLER = "Best not interfere.",
             RESTRICTED = "It's not for me, I'm afraid.",
+            NOTAROBOT = "It is the property of the automaton.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -1200,6 +1221,12 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "It seems the mechanical knights are indisposed at the moment.",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6021,6 +6048,36 @@ return{
 
         YOTH_KNIGHTSTICK = "It simply confers greater swiftness upon one's steps.",
         YOTH_CHAIR_ROCKING_ITEM = "It is a rocking horse, of the sort commonly found in children's nurseries.", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		--WX78_DRONE_SCOUT = "TODO",
+		--WX78_DRONE_DELIVERY = "TODO",
+		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			--GENERIC = "TODO",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_STACKSIZE = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_DIGESTION = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_SCREECH = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+        WX78MODULE_LIGHT2 = "They dislike organics, but don't seem opposed to taking inspiration from them.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            --WET = "TODO", -- The food brick is moistened, and can be eaten.
+            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+        },
     },
 
     DESCRIBE_GENERIC = "A rare occurrence. I don't know what that is.",

@@ -26,9 +26,11 @@ PLAYER_CAMERA_SEE_DISTANCE = 40.0 -- NOTES(JBK): Based off of an approximation o
 PLAYER_CAMERA_SEE_DISTANCE_SQ = PLAYER_CAMERA_SEE_DISTANCE * PLAYER_CAMERA_SEE_DISTANCE -- Helper.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE = 20.0 -- NOTES(JBK): This is an approximate distance traveled where the camera should snap and fade out to not cause disorientations.
 PLAYER_CAMERA_SHOULD_SNAP_DISTANCE_SQ = PLAYER_CAMERA_SHOULD_SNAP_DISTANCE * PLAYER_CAMERA_SHOULD_SNAP_DISTANCE -- Helper.
---NOTE if we ever have other ways of increasing camera in-game, increase this!
-PLAYER_CAMERA_MAX_DIST = 65 -- 50 maxdist in forest world + 15 maxdist from scrap_monoclehat
-PLAYER_CAMERA_MAX_DIST_CAVES = 50 -- 35 maxdist in caves world + 15 maxdist from scrap_monoclehat
+
+PLAYER_CAMERA_MAX_DIST = 80 -- This is the max distance we can do before we risk seeing entities pop in and out
+
+-- Deprecated, left in case of mods.
+PLAYER_CAMERA_MAX_DIST_CAVES = PLAYER_CAMERA_MAX_DIST
 
 ENTITY_POPIN_RADIUS = 64.0 -- Read only value.
 ENTITY_POPOUT_RADIUS = ENTITY_POPIN_RADIUS * 1.2 -- Read only value.
@@ -2101,6 +2103,7 @@ FARM_PLANT_STRESS = {
 CRAFTINGSTATION_LIMITED_RECIPES = {}
 CRAFTINGSTATION_LIMITED_RECIPES_LOOKUPS = {}
 CRAFTINGSTATION_LIMITED_RECIPES_COUNT = 0
+EXTERNALLY_HANDLED_LIMITED_RECIPES = {} -- These are from getlimitedrecipecount where the number limit is expected to be synchronized on the client and server.
 
 CHARACTER_INGREDIENT =
 {
@@ -2135,6 +2138,7 @@ SKILLTREE_EQUIPPABLE_RESTRICTED_TAGS =
     ["wathgrithrshielduser"] = "wathgrithr",
     [UPGRADETYPES.SPEAR_LIGHTNING.."_upgradeuser"] = "wathgrithr",
     ["nabbaguser"] = "wortox",
+	["drone_zap_user"] = "wx78",
 }
 
 -- IngredientMod must be one of the following values
@@ -2989,3 +2993,16 @@ SKINUNLOCKS = {
     ALWAYS = 1,
     CRAFTINGSTATION = 2,
 }
+
+CIRCUIT_BARS =
+{
+    ALPHA = 0,
+    BETA = 1,
+    GAMMA = 2,
+}
+CIRCUIT_BARS_LOOKUP = {}
+for name, i in pairs(CIRCUIT_BARS) do
+    CIRCUIT_BARS_LOOKUP[i] = name
+end
+
+MAX_CIRCUIT_SLOTS = 7

@@ -23,6 +23,9 @@ return{
             NOTMERM = "Florp?",
             NOKELP = "Needs more snacks.",
             HASMERMLEADER = "Glurgh. Gotta wait, other Mermfolk using it.",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "Don't need 'nother pet, glort.",
 			TICOON = "Huh? You not right one!",
             BUSY_STATION = "Hate waiting game, florpt!",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Glurph. You boring!",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "Unused_by_wurt",
             NOTSOULJARHANDLER = "Imp's.",
             RESTRICTED = "But why? Flort!",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "Fancy cooking man can do it, florpt.",
             NOTSOULJARHANDLER = "Imp's.",
             RESTRICTED = "But why? Flort!",
+            NOTAROBOT = "Ironfolk only.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -1200,6 +1221,12 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Springy Ironfolk too busy? Florp!",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6021,6 +6048,36 @@ return{
 
         YOTH_KNIGHTSTICK = "Me fastest.",
         YOTH_CHAIR_ROCKING_ITEM = "Me build, me rock. Glurph!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		--WX78_DRONE_SCOUT = "TODO",
+		--WX78_DRONE_DELIVERY = "TODO",
+		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			--GENERIC = "TODO",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "Crunchy.",
+        WX78MODULE_STACKSIZE = "Crunchy.",
+        WX78MODULE_DIGESTION = "Crunchy.",
+        WX78MODULE_SCREECH = "Crunchy.",
+        WX78MODULE_LIGHT2 = "Crunchy.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            --WET = "TODO", -- The food brick is moistened, and can be eaten.
+            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+        },
     },
 
     DESCRIBE_GENERIC = "What that?",

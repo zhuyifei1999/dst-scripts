@@ -61,28 +61,6 @@ local function ReticuleShouldHideFn(inst)
 	return not inst:HasTag("projectile")
 end
 
-local function HasFriendlyLeader(inst, target, attacker)
-    local target_leader = target.components.follower and target.components.follower:GetLeader()
-    
-    if target_leader ~= nil then
-
-        if target_leader.components.inventoryitem then
-            target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-        end
-
-        local PVP_enabled = TheNet:GetPVPEnabled()
-        return (target_leader ~= nil 
-                and (target_leader:HasTag("player") 
-                and not PVP_enabled)) or
-                (target.components.domesticatable and target.components.domesticatable:IsDomesticated() 
-                and not PVP_enabled) or
-                (target.components.saltlicker and target.components.saltlicker.salted
-                and not PVP_enabled)
-    end
-
-    return false
-end
-
 local function CanDamage(inst, target, attacker)
     if target.components.minigame_participator ~= nil or target.components.combat == nil then
 		return false
@@ -92,25 +70,17 @@ local function CanDamage(inst, target, attacker)
     --    return true
     --end
 
-    if target:HasTag("player") and not TheNet:GetPVPEnabled() then
+	if target.isplayer and not TheNet:GetPVPEnabled() then
         return false
     end
 
-    if target:HasTag("playerghost") and not target:HasTag("INLIMBO") then
+	if not target:IsInLimbo() and target:HasTag("playerghost") then
         return false
     end
 
-    local leader = target.components.follower and target.components.follower:GetLeader()
-    if target:HasTag("monster") and not TheNet:GetPVPEnabled() and 
-       ((leader and leader:HasTag("player")) or target.bedazzled) then
-        return false
-    end
-
-    if HasFriendlyLeader(inst, target, attacker) then
-        return false
-    end
-
-    return true
+	return attacker ~= nil and attacker:IsValid()
+		and attacker.components.combat ~= nil
+		and not attacker.components.combat:IsAlly(target)
 end
 
 local function ResetPhysics(inst)

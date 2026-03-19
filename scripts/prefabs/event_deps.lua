@@ -255,6 +255,7 @@ local SPECIAL_EVENT_DEPS =
             assets =
             {
                 Asset("ANIM", "anim/dst_menu_yoth.zip"),
+                Asset("ANIM", "anim/dst_menu_meta6.zip"), -- FIXME remove later.
                 Asset("SOUND", "sound/music_frontend_yoth2026.fsb"),
             },
         },
@@ -266,7 +267,8 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
-                Asset("ANIM", "anim/dst_menu_rift6.zip"),
+                Asset("ANIM", "anim/dst_menu_meta6.zip"),
+                Asset("PKGREF", "anim/dst_menu_rift6.zip"),
 				Asset("PKGREF", "anim/dst_menu_rift5.zip"),
 				Asset("PKGREF", "anim/dst_menu_meta5.zip"),
                 Asset("PKGREF", "anim/dst_menu_halloween3.zip"),

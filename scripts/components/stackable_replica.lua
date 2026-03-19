@@ -127,4 +127,26 @@ function Stackable:IsOverStacked()
 	return self:StackSize() > self:OriginalMaxSize()
 end
 
+function Stackable:CanStackWith(item)
+	if self.inst.components.stackable then
+		return self.inst.components.stackable:CanStackWith(item)
+	else
+		if self.inst.prefab ~= item.prefab then
+    	    return false
+    	end
+
+		-- We don't have access to skin info on clients, so we use the anim state skin build as a hack to check skin.
+		if self.inst.AnimState ~= nil and item.AnimState ~= nil
+			and self.inst.AnimState:GetSkinBuild() ~= item.AnimState:GetSkinBuild() then
+    	    return false
+    	end
+
+    	if self.inst.stackable_CanStackWithFn and not self.inst.stackable_CanStackWithFn(self.inst, item) then
+    	    return false
+    	end
+
+    	return true
+	end
+end
+
 return Stackable

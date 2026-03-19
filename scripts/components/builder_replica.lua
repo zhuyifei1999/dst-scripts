@@ -191,6 +191,10 @@ function Builder:GetAllRecipeCraftingLimits()
             end
         end
     end
+    for _, recipename in ipairs(EXTERNALLY_HANDLED_LIMITED_RECIPES) do
+        local recipe = AllRecipes[recipename]
+        craftinglimits[recipename] = recipe:getlimitedrecipecount(self.inst)
+    end
     return craftinglimits
 end
 
@@ -359,6 +363,9 @@ function Builder:HasIngredients(recipe)
 			if self.classified.isfreebuildmode:value() then
 				return true
 			end
+            if recipe.getlimitedrecipecount and recipe:getlimitedrecipecount(self.inst) <= 0 then
+                return false
+            end
             for i, v in ipairs(recipe.ingredients) do
                 if not self.inst.replica.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self:IngredientMod())), true) then
                     return false

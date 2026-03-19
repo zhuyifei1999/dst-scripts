@@ -552,6 +552,21 @@ local COMPONENT_ACTIONS =
 			end
 		end,
 
+		mapdeliverable = function(inst, doer, actions, right)
+			if not inst:HasTag("mapscout") then
+				if inst.bufferedmapaction and
+					inst.bufferedmapaction:GetAction() == ACTIONS.MAPDELIVER_MAP and
+					inst.bufferedmapaction:IsDoer(doer)
+				then
+					if not right then
+						table.insert(actions, ACTIONS.MAPDELIVER_MAP)
+					end
+				elseif right and (inst.canmapdeliver == nil or inst:canmapdeliver(doer)) then
+					table.insert(actions, ACTIONS.STARTMAPDELIVER)
+				end
+			end
+		end,
+
         markable = function(inst, doer, actions, right)
             if inst:HasTag("markable") then
                 table.insert(actions, ACTIONS.MARK)
@@ -652,7 +667,7 @@ local COMPONENT_ACTIONS =
 				(not inst:HasTag("mastercookware") or doer:HasTag("masterchef")) and
 				(not inst:HasTag("engineering") or doer:HasTag("portableengineer"))
 			then
-                if  not inst.candismantle or inst.candismantle(inst) then
+				if inst.candismantle == nil or inst:candismantle(doer) then
                     local container = inst.replica.container
                     if (container == nil or (container:CanBeOpened() and not container:IsOpenedBy(doer)))  then
                         table.insert(actions, ACTIONS.DISMANTLE)
@@ -1334,7 +1349,8 @@ local COMPONENT_ACTIONS =
                 and inventoryitem:IsGrandOwner(doer) then
                 if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
-                        not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
+                        not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) and
+                        not target:HasTag("no_container_store")
                     ) then
 					if target:HasTag("bundle") then
 						table.insert(actions, ACTIONS.BUNDLESTORE)
@@ -1726,9 +1742,9 @@ local COMPONENT_ACTIONS =
         end,
 
         stackable = function(inst, doer, target, actions)
-            if inst.prefab == target.prefab and inst:StackableSkinHack(target) and
-                target.replica.stackable ~= nil and
+            if target.replica.stackable ~= nil and
                 not target.replica.stackable:IsFull() and
+                target.replica.stackable:CanStackWith(inst) and
                 target.replica.inventoryitem ~= nil and
                 not target.replica.inventoryitem:IsHeld() then
                 table.insert(actions, ACTIONS.COMBINESTACK)
@@ -1859,7 +1875,8 @@ local COMPONENT_ACTIONS =
                     (not inventoryitem:CanOnlyGoInPocketOrPocketContainers() or target.replica.inventoryitem ~= nil and target.replica.inventoryitem:CanOnlyGoInPocket()) and
                     not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
-                        not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
+                        not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) and
+                        not target:HasTag("no_container_store")
                     ) then
 					if target:HasTag("bundle") then
 						table.insert(actions, ACTIONS.BUNDLESTORE)
@@ -2900,17 +2917,27 @@ local COMPONENT_ACTIONS =
 
         upgrademoduleremover = function(inst, doer, actions, right)
             if doer:HasTag("upgrademoduleowner") then
-                local success = doer.CanRemoveModules == nil or doer:CanRemoveModules()
-
-                if success then
-                    table.insert(actions, ACTIONS.REMOVEMODULES)
+                local is_inspecting = doer:HasTag("inspectingupgrademodules")
+                local active_item = doer.replica.inventory ~= nil and doer.replica.inventory:GetActiveItem() or nil
+                if active_item ~= inst and is_inspecting then
+                    table.insert(actions, ACTIONS.REMOVEMODULE)
                 else
-                    table.insert(actions, ACTIONS.REMOVEMODULES_FAIL)
+                    table.insert(actions, is_inspecting and ACTIONS.STOPREMOVINGMODULE or ACTIONS.STARTREMOVINGMODULE)
                 end
             end
         end,
 
-        useableitem = function(inst, doer, actions)        
+		useableequippeditem = function(inst, doer, actions)
+			local equippable = inst.replica.equippable
+			if equippable and equippable:IsEquipped() then
+				local inventory = doer.replica.inventory
+				if inventory and inventory:IsOpenedBy(doer) then
+					table.insert(actions, inst:HasTag("equipped_and_inuse") and ACTIONS.STOPUSINGEQUIPPEDITEM or ACTIONS.USEEQUIPPEDITEM)
+				end
+			end
+		end,
+
+        useableitem = function(inst, doer, actions)
             if not inst:HasAnyTag("inuse", "cannotuse") and
                 inst.replica.equippable ~= nil and
                 inst.replica.equippable:IsEquipped() and

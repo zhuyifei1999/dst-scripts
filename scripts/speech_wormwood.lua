@@ -23,6 +23,9 @@ return{
             NOTMERM = "Scaley friend, help!",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "Already have Care Friend",
 			TICOON = "Already have friend",
             BUSY_STATION = "Like waiting!",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "Shy?",
+--fallback to speech_wilson.lua             DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "Nope. Not mine",
             NOTSOULJARHANDLER = "Don't touch soul friends",
             RESTRICTED = "Nope",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "Not mine",
             NOTSOULJARHANDLER = "Don't touch soul friends",
             RESTRICTED = "Nope",
+            NOTAROBOT = "Only for robot friend.",
+--fallback to speech_wilson.lua             NOTMYBACKUP = "only_used_by_wx78",
+--fallback to speech_wilson.lua             TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+--fallback to speech_wilson.lua 			EMPTY = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			INUSE = "only_used_by_wx78",
+--fallback to speech_wilson.lua 			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+--fallback to speech_wilson.lua             NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -1204,6 +1225,12 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "Neigh machine busy busy?",
+
+    -- wx specific
+--fallback to speech_wilson.lua     ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+--fallback to speech_wilson.lua     ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6025,6 +6052,36 @@ return{
 
         YOTH_KNIGHTSTICK = "Make faster friend",
         YOTH_CHAIR_ROCKING_ITEM = "Rocking friend!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		--WX78_DRONE_SCOUT = "TODO",
+		--WX78_DRONE_DELIVERY = "TODO",
+		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			--GENERIC = "TODO",
+--fallback to speech_wilson.lua 			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "Beep boops",
+        WX78MODULE_STACKSIZE = "Beep boops",
+        WX78MODULE_DIGESTION = "Beep boops",
+        WX78MODULE_SCREECH = "Beep boops",
+        WX78MODULE_LIGHT2 = "Beep boops",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            --WET = "TODO", -- The food brick is moistened, and can be eaten.
+            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+        },
     },
 
     DESCRIBE_GENERIC = "Friend?",

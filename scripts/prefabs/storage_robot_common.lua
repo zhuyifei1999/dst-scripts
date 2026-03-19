@@ -128,7 +128,7 @@ local function FindItemToPickupAndStore_filter(inst, item, match_item)
         return
     end
 
-    if match_item ~= nil and not (item.prefab == match_item.prefab and item.skinname == match_item.skinname) then
+    if match_item ~= nil and not (match_item.components.stackable ~= nil and match_item.components.stackable:CanStackWith(item)) then
         return
     end
 
@@ -141,10 +141,10 @@ local function FindItemToPickupAndStore_filter(inst, item, match_item)
     end
 
     -- Checks how many of this item we have.
-    local function SamePrefabAndSkin(ent)
-        return ent.prefab == item.prefab and ent.skinname == item.skinname
+    local function CanStackWithItem(ent)
+        return item.components.stackable ~= nil and item.components.stackable:CanStackWith(ent)
     end
-    local _, count = inst.components.inventory:HasItemThatMatches(SamePrefabAndSkin, 1)
+    local _, count = inst.components.inventory:HasItemThatMatches(CanStackWithItem, 1)
 
     local container = fns.FindContainerWithItem(inst, item, count)
 

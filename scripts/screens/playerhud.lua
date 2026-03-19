@@ -29,9 +29,11 @@ local ScrapMonocleOver = require "widgets/scrapmonocleover"
 local NightVisionFruitOver = require "widgets/nightvisionfruitover"
 local InspectaclesOver = require("widgets/inspectaclesover")
 local RoseGlassesOver = require("widgets/roseglassesover")
+local DroneZapOver = require("widgets/dronezapover")
 local BatOver = require "widgets/batover"
 local FlareOver = require "widgets/flareover"
 local LunarBurnOver = require("widgets/lunarburnover")
+local WxPowerOver = require("widgets/wxpowerover")
 local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
 local PopupNumber = require "widgets/popupnumber"
 local RingMeter = require "widgets/ringmeter"
@@ -49,6 +51,7 @@ local BalatroScreen = require("screens/redux/balatroscreen")
 local PumpkinCarvingScreen = require("screens/redux/pumpkincarvingscreen")
 local PumpkinHatCarvingScreen = require("screens/redux/pumpkinhatcarvingscreen")
 local SnowmanDecoratingScreen = require("screens/redux/snowmandecoratingscreen")
+local UpgradeModulesDisplay_Inspecting = require("widgets/upgrademodulesdisplay_inspecting")
 
 local TargetIndicator = require "widgets/targetindicator"
 
@@ -60,8 +63,6 @@ local GridHermitCrabWardrobePopupScreen = require "screens/redux/hermitcrabwardr
 local GridScarecrowClothingPopupScreen = require "screens/redux/scarecrowpopupgridloadout"
 local PlayerAvatarPopup = require "widgets/playeravatarpopup"
 local DressupAvatarPopup = require "widgets/dressupavatarpopup"
-
-
 
 local PlayerHud = Class(Screen, function(self)
     Screen._ctor(self, "HUD")
@@ -201,7 +202,9 @@ function PlayerHud:CreateOverlays(owner)
     self.flareover = self.overlayroot:AddChild(FlareOver(owner))
 
     self.InkOver = self.overlayroot:AddChild(InkOver(owner))
-    self.Wagpunkui = self.overlayroot:AddChild(WagpunkUI(owner))    
+	self.Wagpunkui = self.overlayroot:AddChild(WagpunkUI(owner))
+	self.dronezapover = self.overlayroot:AddChild(DroneZapOver(owner))
+	self.wxpowerover = self.over_root:AddChild(WxPowerOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}
@@ -388,6 +391,7 @@ local function OpenContainerWidget(self, container, side)
 		local _container = container.replica.container
 		local _type = _container and _container.type or nil
 		parent =
+            (_type == "inv" and self.controls.inv.toprow) or
 			(_type == "hand_inv" and self.controls.inv.hand_inv) or
 			(_type == "side_inv" and self.controls.secondary_status.side_inv) or
 			(_type == "side_inv_behind" and self.controls.containerroot_side_behind) or
@@ -1387,7 +1391,9 @@ end
 
 function PlayerHud:InspectSelf()
     if self:IsVisible() and
-        self.owner.components.playercontroller:IsEnabled() then
+		self.owner.components.playercontroller:IsEnabled() and
+		not self.dronezapover.shown
+	then
         local client_obj = TheNet:GetClientTableForUser(self.owner.userid)
         if client_obj ~= nil then
             --client_obj.inst = self.owner --don't track yourself
@@ -1423,8 +1429,17 @@ function PlayerHud:OnControl(control, down)
                 and self:InspectSelf() then
                 return true
             end
-        elseif control == CONTROL_INSPECT_SELF and self:InspectSelf() then
-            return true
+		elseif control == CONTROL_INSPECT_SELF then
+			if self:InspectSelf() then
+				return true
+			end
+		elseif control == CONTROL_SECONDARY then
+			if self.dronezapover.shown and self.dronezapover:TryClose() then
+				return true
+			end
+            if self:TryStopInspectingModules(true) then
+                return true
+            end
         end
     elseif control == CONTROL_PAUSE then
 		if TheInput:ControllerAttached() then
@@ -1453,6 +1468,12 @@ function PlayerHud:OnControl(control, down)
                 self:TogglePlayerInfoPopup() then
                 closed = true
 			end
+			if self.dronezapover.shown and self.dronezapover:TryClose() then
+				closed = true
+			end
+            if self:TryStopInspectingModules() then
+                closed = true
+            end
 			if not closed then
 	            TheFrontEnd:PushScreen(PauseScreen())
 			end
@@ -1512,6 +1533,10 @@ function PlayerHud:OnControl(control, down)
 				return true
             elseif self:IsControllerInventoryOpen() then
                 self:CloseControllerInventory()
+                return true
+			elseif self.dronezapover.shown and self.dronezapover:TryClose() then
+				return true
+            elseif self:TryStopInspectingModules() then
                 return true
             end
         --elseif control == CONTROL_TOGGLE_PLAYER_STATUS then DEPRECATED
@@ -1732,6 +1757,37 @@ end
 function PlayerHud:OffsetServerPausedWidget(serverpausewidget)
     if self.eventannouncer then
         serverpausewidget:SetOffset(self.eventannouncer:GetPosition():Get())
+    end
+end
+
+-- Wx
+function PlayerHud:ShowUpgradeModuleWidget(upgrademoduleowner)
+    self:CloseUpgradeModuleWidget()
+    self.upgrademodulewidget = UpgradeModulesDisplay_Inspecting(self.owner, upgrademoduleowner, self.controls)
+    self.controls.right_root:AddChild(self.upgrademodulewidget)
+    self.controls.secondary_status:HideModuleOwnerDisplay()
+    return self.upgrademodulewidget
+end
+
+function PlayerHud:CloseUpgradeModuleWidget()
+    if self.upgrademodulewidget then
+        self.controls.secondary_status:ShowModuleOwnerDisplay()
+        self.upgrademodulewidget:Close()
+        self.upgrademodulewidget = nil
+    end
+end
+
+function PlayerHud:TryStopInspectingModules(nomoduleremover)
+    if self.upgrademodulewidget ~= nil then
+        if nomoduleremover and self.upgrademodulewidget.is_using_module_remover then
+            return false
+        end
+
+        self:CloseUpgradeModuleWidget()
+        if self.owner.StopInspectingModules then
+			self.owner:StopInspectingModules()
+		end
+        return true
     end
 end
 

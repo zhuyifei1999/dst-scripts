@@ -916,6 +916,9 @@ function Builder:HasIngredients(recipe)
 		if self.freebuildmode then
 			return true
 		end
+        if recipe.getlimitedrecipecount and recipe:getlimitedrecipecount(self.inst) <= 0 then
+            return false
+        end
 		for i, v in ipairs(recipe.ingredients) do
             if not self.inst.components.inventory:Has(v.type, math.max(1, RoundBiasedUp(v.amount * self.ingredientmod)), true) then
 				return false

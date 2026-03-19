@@ -1,3 +1,7 @@
+local function onsalted(self, salted)
+	self.inst:AddOrRemoveTag("saltlicker_salted", salted)
+end
+
 local _StopSeeking --forward declare
 
 local SALTLICK_MUST_TAGS = { "saltlick" }
@@ -76,7 +80,11 @@ local SaltLicker = Class(function(self, inst)
     self.saltedduration = TUNING.SALTLICK_DURATION
     self.uses_per_lick = nil
     self._task = nil
-end)
+end,
+nil,
+{
+	salted = onsalted,
+})
 
 local function OnPause(inst)
     inst.components.timer:StopTimer("salt")
@@ -135,6 +143,7 @@ end
 function SaltLicker:OnRemoveFromEntity()
     self:Stop()
     self.inst:RemoveTag("saltlicker")
+	self.inst:RemoveTag("saltlicker_salted")
 end
 
 function SaltLicker:SetSalted(salted)

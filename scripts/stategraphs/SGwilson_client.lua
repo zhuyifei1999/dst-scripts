@@ -363,12 +363,14 @@ local actionhandlers =
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
-			return (	action.target:HasTag("engineering") and (
-							(inst:HasTag("scientist") and "dolongaction") or
-							(not inst:HasTag("handyperson") and "dolongestaction")
-						)
-					)
-				or (action.target:HasTag("standingactivation") and "dostandingaction")
+            if action.target:HasTag("engineering") then
+                if inst:HasTag("scientist") then
+                    return "dolongaction"
+                elseif not inst:HasTag("handyperson") then
+                    return "dolongestaction"
+                end
+            end
+            return (action.target:HasTag("standingactivation") and "dostandingaction")
                 or (action.target:HasTag("quickactivation") and "doshortaction")
                 or "dolongaction"
         end),
@@ -800,6 +802,11 @@ local actionhandlers =
     end),
 
     ActionHandler(ACTIONS.STOPUSINGITEM, "dolongaction"),
+	ActionHandler(ACTIONS.USEEQUIPPEDITEM, function(inst, action)
+		return action.invobject and (
+				(action.invobject:HasTag("wx_remotecontroller") and "wx_start_using_drone")
+			) or "dolongaction"
+	end),
 
     ActionHandler(ACTIONS.YOTB_STARTCONTEST, "doshortaction"),
     ActionHandler(ACTIONS.CARNIVAL_HOST_SUMMON, "give"),
@@ -908,6 +915,13 @@ local actionhandlers =
 	-- Winter 2025
 	ActionHandler(ACTIONS.SOAKIN, "soakin_pre"),
 	ActionHandler(ACTIONS.TRANSFER_CRITTER, "dolongaction"),
+
+    -- Meta 6
+
+	ActionHandler(ACTIONS.STARTREMOVINGMODULE, "start_removing_module"),
+	ActionHandler(ACTIONS.STOPREMOVINGMODULE, "stop_removing_module"),
+	ActionHandler(ACTIONS.STARTMAPDELIVER, "startcontinuousaction"),
+	ActionHandler(ACTIONS.MAPDELIVER_MAP, "finishcontinuousaction"),
 }
 
 local events =
@@ -975,6 +989,11 @@ local states =
 			local inventory = inst.replica.inventory
 			if inventory and inventory:IsFloaterHeld() then
 				inst.sg:GoToState("float")
+				return
+			end
+
+			if inst:HasTag("using_drone_remote") then
+				inst.sg:GoToState("wx_using_drone")
 				return
 			end
 
@@ -3358,6 +3377,94 @@ local states =
         end,
     },
 
+	State{
+		name = "startcontinuousaction",
+		tags = { "doing", "busy" },
+		server_states = { "startcontinuousaction" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			--V2C: always use "dontstarve/wilson/make_trap" for preview
+			--     (even for things like makeballoon or shave)
+			--     switch to server sound when action actually executes on server
+			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+			inst.AnimState:PlayAnimation("build_pre")
+			inst.AnimState:PushAnimation("build_loop")
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		timeline =
+		{
+			FrameEvent(4, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+		},
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.AnimState:PlayAnimation("build_pst")
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("build_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("make_preview")
+		end,
+	},
+
+	State{
+		name = "finishcontinuousaction",
+		tags = { "doing", "busy" },
+		server_states = { "finishcontinuousaction" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			if not inst.SoundEmitter:PlayingSound("make") then
+				inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+			end
+			if not (inst.AnimState:IsCurrentAnimation("build_loop") or inst.AnimState:IsCurrentAnimation("build_pre")) then
+				inst.AnimState:PlayAnimation("build_pre")
+				inst.AnimState:PushAnimation("build_loop")
+			end
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.AnimState:PlayAnimation("build_pst")
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("build_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("make_preview")
+		end,
+	},
+
     State{
         name = "dodismountaction",
         tags = { "doing", "busy" },
@@ -3940,6 +4047,36 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
+
+	State{
+		name = "air_deploy",
+		tags = { "doing", "busy" },
+		server_states = { "air_deploy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("cointoss_pre")
+			inst.AnimState:PushAnimation("cointoss_lag", false)
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("idle", "noanim")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.sg:GoToState("idle")
+		end,
+	},
 
     State{
         name = "crushitemcast",
@@ -6307,15 +6444,15 @@ local states =
 
     --------------------------------------------------------------------------
     -- WX78 Rework
-    State {
+    State { -- Deprecated
         name = "applyupgrademodule",
 		tags = { "busy", "doing" },
 		server_states = { "applyupgrademodule" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("upgrade_pre")
-			inst.AnimState:PushAnimation("upgrade_lag", false)
+			inst.AnimState:PlayAnimation("wx_upgrade_pre")
+			inst.AnimState:PushAnimation("wx_upgrade_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -7553,6 +7690,252 @@ local states =
 		ontimeout = function(inst)
 			inst:ClearBufferedAction()
 			inst.sg:GoToState("idle")
+		end,
+	},
+
+    -- Meta 6
+
+	State{
+		name = "start_removing_module",
+		tags = { "doing", "busy" },
+		server_states = { "start_removing_module", "removing_module" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+
+			local buffaction = inst:GetBufferedAction()
+
+            inst.AnimState:PlayAnimation("useitem_pre")
+            inst.AnimState:PushAnimation("useitem_lag", false)
+
+			if buffaction ~= nil then
+				inst:PerformPreviewBufferedAction()
+			end
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		timeline =
+		{
+            -- useitem_pre len + extra delay
+			FrameEvent(8 + 10, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+		},
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("removing_module")
+				end
+			elseif inst.bufferedaction == nil then
+				inst.AnimState:PlayAnimation("useitem_pst", false)
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			inst.AnimState:PlayAnimation("useitem_pst", false)
+			inst.sg:GoToState("idle", true)
+		end,
+	},
+
+	State{
+		name = "removing_module",
+		tags = { "doing", "overridelocomote" },
+
+		onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            local moduleremover = buffaction ~= nil and buffaction.invobject or nil
+            inst.sg.statemem.moduleremover = moduleremover
+			inst.entity:SetIsPredictingMovement(false)
+			ClearCachedServerState(inst)
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.bufferedaction == nil and not inst:HasTag("inspectingupgrademodules") then
+				inst.sg:GoToState("idle", "noanim")
+			end
+		end,
+
+		ontimeout = function(inst)
+			if inst.bufferedaction ~= nil and inst.bufferedaction.ispreviewing then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		events =
+		{
+			EventHandler("locomote", function(inst)
+				inst.sg:GoToState("stop_removing_module", true)
+				return true
+			end),
+            EventHandler("newactiveitem", function(inst, data)
+                if data ~= nil and data.item ~= inst.sg.statemem.moduleremover then
+				    inst.sg:GoToState("stop_removing_module")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			inst.entity:SetIsPredictingMovement(true)
+		end,
+	},
+
+	State{
+		name = "stop_removing_module",
+		tags = { "idle", "overridelocomote" },
+
+		onenter = function(inst, locomoting)
+            inst.AnimState:PlayAnimation("wx_downgrade_pst", false)
+            inst.AnimState:PushAnimation("useitem_pst", false)
+			if locomoting then
+				inst.sg.statemem.overridelocomote = true
+				inst.components.playercontroller:RemotePredictOverrideLocomote()
+			else
+				inst:PerformPreviewBufferedAction()
+			end
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:HasStateTag("overridelocomote") then
+				if inst.sg.statemem.overridelocomote then
+					inst.components.playercontroller:RemotePredictOverrideLocomote()
+				end
+			elseif not inst.components.locomotor:HasDestination() then
+				inst.sg:GoToState("idle", "noanim")
+				return
+			end
+			if inst.sg.statemem.stopped then
+				if not (inst.AnimState:IsCurrentAnimation("wx_downgrade_pst") or
+						inst.AnimState:IsCurrentAnimation("useitem_pst")) then
+					inst.sg:GoToState("idle", "noanim")
+					return
+				end
+			elseif not inst:HasTag("inspectingupgrademodules") then
+				inst.sg.statemem.stopped = true
+				inst.entity:SetIsPredictingMovement(false)
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(19, function(inst)
+				inst.sg:AddStateTag("canrotate")
+			end),
+			FrameEvent(20, function(inst)
+				inst.sg:RemoveStateTag("overridelocomote")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("locomote", function(inst)
+				return inst.sg:HasStateTag("overridelocomote")
+			end),
+		},
+
+		onexit = function(inst)
+			inst.entity:SetIsPredictingMovement(true)
+		end,
+	},
+
+	State{
+		name = "wx_start_using_drone",
+		tags = { "doing", "busy" },
+		server_states = { "wx_start_using_drone", "wx_using_drone" },
+
+		onenter = function(inst)
+			local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			if not (item and item:HasTag("wx_remotecontroller")) then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+				return
+			end
+
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("drone_zap_remote_use_pre")
+			inst.AnimState:PushAnimation("drone_zap_remote_use_loop")
+
+			inst:PerformPreviewBufferedAction()
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if inst.sg:ServerStateMatches() then
+				if inst.entity:FlattenMovementPrediction() then
+					inst.sg:GoToState("wx_using_drone")
+				end
+			elseif inst.bufferedaction == nil then
+				local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+				if item and item:HasTag("wx_remotecontroller") then
+					inst.AnimState:PlayAnimation("drone_zap_remote_use_pst")
+				else
+					inst.AnimState:PlayAnimation("item_in")
+				end
+				inst.sg:GoToState("idle", true)
+			end
+		end,
+
+		ontimeout = function(inst)
+			inst:ClearBufferedAction()
+			local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			if item and item:HasTag("wx_remotecontroller") then
+				inst.AnimState:PlayAnimation("drone_zap_remote_use_pst")
+			else
+				inst.AnimState:PlayAnimation("item_in")
+			end
+			inst.sg:GoToState("idle", true)
+		end,
+	},
+
+	State{
+		name = "wx_using_drone",
+		tags = { "doing", "overridelocomote", "nodragwalk", "overrideattack" },
+		server_states = { "wx_start_using_drone", "wx_using_drone" },
+
+		onenter = function(inst)
+			inst.entity:SetIsPredictingMovement(false)
+			inst.sg:SetTimeout(TIMEOUT)
+		end,
+
+		onupdate = function(inst)
+			if not inst:HasTag("using_drone_remote") then
+				inst.sg.statemem.cancelled = true
+				inst.sg:GoToState("idle", "noanim")
+			end
+		end,
+
+		ontimeout = function(inst)
+			if inst.bufferedaction and inst.bufferedaction.ispreviewing then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+			end
+		end,
+
+		events =
+		{
+			EventHandler("locomote", function(inst, data)
+				--direct movement only, no drag or point destination.
+				if inst.bufferedaction == nil and not inst.components.locomotor:HasDestination() then
+					local dir = data and data.dir
+					if dir ~= inst.sg.statemem.lastdir then
+						inst.sg.statemem.lastdir = dir
+						inst.components.playercontroller:RemotePredictOverrideLocomote(dir, false)
+					end
+				end
+				return true
+			end),
+		},
+
+		onexit = function(inst)
+			inst.entity:SetIsPredictingMovement(true)
+
+			if not inst.sg.statemem.cancelled and inst.sg.statemem.lastdir then
+				inst.components.playercontroller:RemotePredictOverrideLocomote(nil, false)
+			end
 		end,
 	},
 }

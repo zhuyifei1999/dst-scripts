@@ -131,6 +131,11 @@ function Equippable:GetWalkSpeedMult()
         speed = math.min(1, speed + 0.25)
     end
 
+    local speedmodifierfn = owner.components.inventory:GetEquippableWalkSpeedMultModifier()
+    if speedmodifierfn ~= nil then
+        speed = speedmodifierfn(owner, speed, self.inst)
+    end
+
     return speed
 end
 

@@ -431,11 +431,11 @@ end
 --------------------------------------------------------------------------
 
 function self:SetSpawnTimes()
-    --depreciated
+    --deprecated
 end
 
 function self:SetMaxBirds()
-    --depreciated
+    --deprecated
 end
 
 function self:ToggleUpdate()
@@ -443,19 +443,19 @@ function self:ToggleUpdate()
 end
 
 function self:SpawnModeNever()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeLight()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeMed()
-    --depreciated
+    --deprecated
 end
 
 function self:SpawnModeHeavy()
-    --depreciated
+    --deprecated
 end
 
 local BIRDBLOCKER_TAGS = {"birdblocker"}

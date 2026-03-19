@@ -48,7 +48,10 @@ function ContainerWidget:Open(container, doer)
     end
 
     if widget.pos ~= nil then
-        self:SetPosition(widget.pos)
+        self:SetPosition(FunctionOrValue(widget.pos, container, doer))
+    end
+    if widget.scale ~= nil then
+        self:SetScale(widget.scale, widget.scale, widget.scale)
     end
     if widget.buttoninfo ~= nil then
         if doer ~= nil and doer.components.playeractionpicker ~= nil then

@@ -413,13 +413,8 @@ end
 
 --------------------------------------------------------------------------
 
-local BATTERY_COST = { fuel = TUNING.WINONA_BATTERY_LOW_MAX_FUEL_TIME * 0.9, shard = 1 }
-local function CanBeUsedAsBattery(inst, user)
-	if inst._shard_level > 0 then
-		if not inst:IsOverloaded() then
-			return true
-		end
-	elseif inst.components.fueled then
+local function CalcActualFuel(inst, user)
+	if inst.components.fueled then
 		local efficiency_mult
 		if not (user and user:HasTag("handyperson")) and IsEngineerOnline(inst) then
 			efficiency_mult = CalcEfficiencyMult(inst)
@@ -432,21 +427,48 @@ local function CanBeUsedAsBattery(inst, user)
 				) or 0
 			efficiency_mult = CalcEfficiencyMult(inst, efficiency)
 		end
-		if inst.components.fueled.currentfuel >= BATTERY_COST.fuel * efficiency_mult then
+
+		local actual_fuel = inst.components.fueled.currentfuel
+
+		return actual_fuel, efficiency_mult
+	end
+end
+
+local BATTERY_COST = { fuel = TUNING.WINONA_BATTERY_LOW_MAX_FUEL_TIME * 0.9, shard = 1 }
+local function CanBeUsedAsBattery(inst, user, mult)
+	if inst._shard_level > 0 then
+		if not inst:IsOverloaded() then
+			return true
+		end
+	else
+		local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
+		if actual_fuel and actual_fuel >= BATTERY_COST.fuel * (mult or 1) * efficiency_mult then
 			return true
 		end
 	end
 	return false, "NOT_ENOUGH_CHARGE"
 end
 
-local function UseAsBattery(inst, user)
+local function UseAsBattery(inst, user, mult)
 	if not (user and user:HasTag("handyperson")) and IsEngineerOnline(inst) then
 		--original winona still online, don't de-level
 	elseif ConfigureSkillTreeUpgrades(inst, user) then
 		ApplyEfficiencyBonus(inst)
 		UpdateCircuitPower(inst)
 	end
-	inst:ConsumeBatteryAmount(BATTERY_COST, 1, user)
+	local cost = BATTERY_COST
+	if mult and mult ~= 1 then
+		cost = { fuel = cost.fuel * mult, shard = cost.shard * mult }
+	end
+	inst:ConsumeBatteryAmount(cost, 1, user)
+end
+
+local function ResolvePartialChargeMult(inst, user, mult)
+	if inst._shard_level > 0 then
+		return mult
+	end
+	local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
+	return actual_fuel and math.min(mult, actual_fuel / (BATTERY_COST.fuel * efficiency_mult)) or mult
 end
 
 --------------------------------------------------------------------------
@@ -1316,8 +1338,9 @@ local function fn()
 	inst.components.circuitnode.rangeincludesfootprint = true
 
     inst:AddComponent("battery")
-    inst.components.battery.canbeused = CanBeUsedAsBattery
-    inst.components.battery.onused = UseAsBattery
+	inst.components.battery:SetCanBeUsedFn(CanBeUsedAsBattery)
+	inst.components.battery:SetOnUsedFn(UseAsBattery)
+	inst.components.battery:SetResolvePartialChargeMultFn(ResolvePartialChargeMult)
 
     inst:ListenForEvent("onbuilt", OnBuilt)
     inst:ListenForEvent("ondeconstructstructure", DropGems)

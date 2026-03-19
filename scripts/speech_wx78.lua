@@ -23,6 +23,9 @@ return{
             NOTMERM = "INSUBORDINATE FISHBEASTS",
             NOKELP = "only_used_by_wurt",
 --fallback to speech_wilson.lua             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
         APPLYELIXIR =
         {
@@ -64,6 +67,7 @@ return{
             HASPET = "I ALREADY HAVE AN ORGANIC MINION",
 			TICOON = "THE MAXIMUM LIMIT HAS ALREADY BEEN REACHED",
             BUSY_STATION = "YOU EXPECT ME TO WAIT?",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
         },
         CARNIVALGAME_FEED =
         {
@@ -221,6 +225,7 @@ return{
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "not_used_by_wx78",
+            DOER_DOESNT_HAVE_SKILL = "INVALID CREDENTIALS",
         },
         HEAL =
         {
@@ -355,6 +360,9 @@ return{
             NOTAMERM = "ACCESS DENIED. DON'T WANT ANYWAY",
             NOTSOULJARHANDLER = "IT IS FULL OF FILTHY SOULS",
             RESTRICTED = "ACCESS DENIED",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
         SADDLE =
         {
@@ -388,7 +396,20 @@ return{
             NOTMASTERCHEF = "MAKE MY MINION DO IT",
             NOTSOULJARHANDLER = "IT IS FULL OF FILTHY SOULS",
             RESTRICTED = "ACCESS DENIED",
+            NOTAROBOT = "not_used_by_wx78",
+            NOTMYBACKUP = "DENIED. UNAUTHORIZED USER",
+            TOOMANYBACKUPBODIES = "DENIED. MAXIMUM NUMBER OF BACKUPS REACHED",
 		},
+		STARTMAPDELIVER =
+		{
+			EMPTY = "ERROR. NO ITEMS TO DELIVER",
+			INUSE = "BEING ACCESSED BY ANOTHER USER",
+			NOSKILL_DRONE = "INVALID CREDENTIALS", 
+		},
+        SWAPBODIES_MAP =
+        {
+            NOTARGET = "COMMUNICATION FAILURE. TARGET NO LONGER EXISTS",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -1200,6 +1221,12 @@ return{
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "UNITS CURRENTLY UNAVAILABLE? HOW DARE THEY!",
+
+    -- wx specific
+    ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "STUPID CAT",
+    ANNOUNCE_WX_TASER_BUILDUP = "YOUR ATTACKS ARE ELECTRIFYING ME!", -- Wx is building up charge when getting hit, nearing EMP blast
+    ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "MAXIMUM POWER REACHED!", -- Wx is fully charged and about to release it. Take cover!
+    ANNOUNCE_WX_TASER_POSTEXPLOSION = "INVIGORATING!", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6021,6 +6048,36 @@ return{
 
         YOTH_KNIGHTSTICK = "STRIDE AUGMENTATION DEVICE",
         YOTH_CHAIR_ROCKING_ITEM = "OSCILLATION UNIT", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		WX78_DRONE_SCOUT = "TRY NOT TO GET LOST AGAIN, SCOTT",
+		WX78_DRONE_DELIVERY = "TRUSTY OLD DREW",
+		WX78_DRONE_ZAP = "GET 'EM, JULES",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			GENERIC = "INVALID CREDENTIALS",
+			CANUSE = "SO MUCH TO ZAP, SO LITTLE TIME",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "SCOTT WILL LOVE THIS",
+        WX78MODULE_STACKSIZE = "I SHALL POSSESS INFINITY",
+        WX78MODULE_DIGESTION = "THE FLESHLINGS CAN NEVER SAY I WAS NOT A GENEROUS OVERLORD",
+        WX78MODULE_SCREECH = "SPECIAL BROADCAST SYSTEM",
+        WX78MODULE_LIGHT2 = "BASK IN MY GLOW, ORGANICS!",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "BOUNDLESS SPACE", -- Held, and working as a container
+            GENERIC = "RECOVERY MODE", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            WET = "TODO", -- The food brick is moistened, and can be eaten. Omar says wait.
+            GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten. Omar says wait.
+        },
     },
 
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",

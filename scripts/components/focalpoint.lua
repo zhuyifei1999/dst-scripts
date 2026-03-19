@@ -76,7 +76,8 @@ function FocalPoint:PushTempFocus(target, minrange, maxrange, priority)
 	print("PushTempFocus is deprecated")
 end
 
-local function UpdateFocus(dt, params, parent, dist_sq)
+--global
+function FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
     local tpos = params.target:GetPosition()
     local ppos = parent:GetPosition()
 
@@ -85,6 +86,11 @@ local function UpdateFocus(dt, params, parent, dist_sq)
 		local range = params.maxrange - params.minrange
         offs = offs * (range ~= 0 and ((params.maxrange - math.sqrt(dist_sq)) / range))
     end
+	return offs
+end
+
+local function UpdateFocus(dt, params, parent, dist_sq)
+	local offs = FocalPoint_CalcBaseOffset(dt, params, parent, dist_sq)
     offs.y = offs.y + 1.5
     TheCamera:SetOffset(offs)
 end

@@ -293,7 +293,7 @@ local SKILLTREE_CHARACTERS = {
     "wormwood",
     "wortox",
     "wurt",
-    --"wx78",
+    "wx78",
 }
 
 local function BuildAllData()

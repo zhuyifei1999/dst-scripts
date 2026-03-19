@@ -346,22 +346,6 @@ function SingingInspiration:FindFriendlyTargetsToInspire()
 	return all_targets
 end
 
-local function HasFriendlyLeader(target, singer, PVP_enabled)
-    local target_leader = target.components.follower and target.components.follower:GetLeader()
-
-    if target_leader and target_leader.components.inventoryitem then
-        target_leader = target_leader.components.inventoryitem:GetGrandOwner()
-        -- Don't attack followers if their follow object has no owner, unless its pvp, then there are no rules!
-        if target_leader == nil then
-            return not PVP_enabled
-        end
-    end
-
-    return  (target_leader ~= nil and (target_leader == singer or (not PVP_enabled and target_leader:HasTag("player"))))
-			or (not PVP_enabled and target.components.domesticatable and target.components.domesticatable:IsDomesticated())
-			or (not PVP_enabled and target.components.saltlicker and target.components.saltlicker.salted)
-end
-
 local INSTANT_TARGET_MUST_HAVE_TAGS = {"_combat", "_health"}
 local INSTANT_TARGET_CANTHAVE_TAGS = { "INLIMBO", "epic", "structure", "butterfly", "wall", "balloon", "groundspike", "smashable", "companion"}
 
@@ -385,10 +369,9 @@ function SingingInspiration:InstantInspire(songdata)
 
             for _, ent in ipairs(entities_near_me) do
                 if self.inst.components.combat:CanTarget(ent)
-                    and not HasFriendlyLeader(ent, self.inst, PVP_enabled)
+					and not self.inst.components.combat:IsAlly(ent)
                     and (not ent:HasTag("prey") or ent:HasTag("hostile"))
-                    then
-
+				then
                     fn(self.inst, ent)
                 end
             end

@@ -689,10 +689,7 @@ local LIGHT_TAGS = { "lightbattery", "spore", "lightcontainer" }
 params.yots_lantern_post = {
     widget =
     {
-        slotpos =
-        {
-             Vector3(-2, 18, 0),
-        },
+        slotpos = { Vector3(0, 0, 0), },
         animbank = "ui_chest_1x1",
         animbuild = "ui_chest_1x1",
         pos = Vector3(0, 160, 0),
@@ -2123,6 +2120,98 @@ end
 
 function params.slingshotammo_container.itemtestfn(container, item, slot)
     return item:HasTag("slingshotammo")
+end
+
+--------------------------------------------------------------------------
+--[[ wx78_backupbody ]]
+--------------------------------------------------------------------------
+
+params.wx78_backupbody = {
+    widget = {
+        slotpos = {},
+        animbank = "ui_wx78_backupbody_5x3",
+        animbuild = "ui_wx78_backupbody_5x3",
+        pos = Vector3(0, 280, 0),
+        side_align_tip = 160,
+        opensound = "WX_rework/module_side/open",
+        closesound = "WX_rework/module_side/close",
+    },
+    type = "chest",
+}
+
+for y = 2, 0, -1 do
+    for x = 0, 4, 1 do
+        table.insert(params.wx78_backupbody.widget.slotpos, Vector3(80 * x - 80 * 2, 80 * y - 80 * 2 - 42.5, 0))
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ wx78_drone_delivery ]]
+--------------------------------------------------------------------------
+
+params.wx78_drone_delivery =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_wx_deliverydrone_3x2",
+		animbuild = "ui_wx_deliverydrone_3x2",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+	},
+	type = "chest",
+}
+
+for y = 1, 0, -1 do
+	for x = 0, 2 do
+		table.insert(params.wx78_drone_delivery.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0))
+	end
+end
+
+params.wx78_drone_delivery_small =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_wx_deliverydrone_3x1",
+		animbuild = "ui_wx_deliverydrone_3x1",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+	},
+	type = "chest",
+}
+
+for x = 0, 2 do
+	table.insert(params.wx78_drone_delivery_small.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 0, 0))
+end
+
+--------------------------------------------------------------------------
+--[[ wx78_inventorycontainer ]]
+--------------------------------------------------------------------------
+
+params.wx78_inventorycontainer =
+{
+    widget =
+    {
+        slotpos = { Vector3(0, 0, 0), },
+        animbank = "ui_wx78_inventorycontainer_1x1",
+        animbuild = "ui_wx78_inventorycontainer_1x1",
+        scale = 0.9,
+        -- pos = Vector3(0, 60, 0),
+    },
+    type = "inv",
+    -- excludefromcrafting = true,
+}
+
+local WX78_INVENTORY_CONTAINER_OFFSET = Vector3(0, 100, 0)
+function params.wx78_inventorycontainer.widget.pos(container, doer)
+    -- TODO is this the best way of doing this?
+    for k, v in pairs(doer.HUD.controls.inv.inv) do
+        if v.tile and v.tile.item == container then
+            return v:GetPosition() + WX78_INVENTORY_CONTAINER_OFFSET
+        end
+    end
+    return WX78_INVENTORY_CONTAINER_OFFSET
 end
 
 --------------------------------------------------------------------------

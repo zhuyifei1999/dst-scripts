@@ -628,6 +628,7 @@ STRINGS =
             FAKE_PICKUP = "Pick up",
             PLAY_WITH = "Play with",
 			PULL = "Pull",
+            EXCHANGEKNOWLEDGE = "Exchange Knowledge",
         },
 
 		OPEN_CRAFTING =
@@ -708,6 +709,16 @@ STRINGS =
             SHADOW_BEEF_BELL = "Break Binding",
 			SLINGSHOTMODKIT = "Stop Modding",
         },
+		USEEQUIPPEDITEM =
+		{
+			GENERIC = "Use",
+			WX78_DRONE_ZAP_REMOTE = "Activate",
+		},
+		STOPUSINGEQUIPPEDITEM =
+		{
+			GENERIC = "Stop",
+			WX78_DRONE_ZAP_REMOTE = "Deactivate",
+		},
         USEDOOR =
         {
             OPEN = "Open",
@@ -1141,6 +1152,16 @@ STRINGS =
 
         -- Year of the Clockwork Knight
         JOUST = "Charge",
+
+        -- Meta 6
+        STARTREMOVINGMODULE = "Open Chassis",
+        REMOVEMODULE = "Use",
+        STOPREMOVINGMODULE = "Close Chassis",
+		MAPSCOUT_MAP = "Send",
+		MAPSCOUTSELECT_MAP = "Explore",
+		STARTMAPDELIVER = "Deliver",
+		MAPDELIVER_MAP = "Send",
+        SWAPBODIES_MAP = "Exchange Knowledge",
     },
 
 	WOBY_COMMANDS =
@@ -1188,6 +1209,7 @@ STRINGS =
         WETGOOP = "Very",
         DESICCANT = "Damp",
         DESICCANT_FULL = "Saturated",
+        WX78_FOODBRICK = "Moistened",
     },
 
     NAMES =
@@ -4520,6 +4542,25 @@ STRINGS =
         YOTH_LANCE = "Joust-a-Dash", 
 
         PLAYBILL_THE_PRINCESS_YOTH = "My Knights Four and I\nA Stage Play",
+
+        -- Meta 6
+        WX78_BACKUPBODY_FMT = "{name}'s Backup",
+        WX78_BACKUPBODY = "WX-78's Backup", -- For an unnamed backup body.
+		WX78_DRONE_SCOUT = "Roto-Mapper",
+		WX78_DRONE_DELIVERY = "Portable Storage Unit",
+		WX78_DRONE_ZAP = "Zaptrocuter",
+		WX78_DRONE_ZAP_REMOTE = "Zaptrocuter Controller",
+
+        WX78MODULE_RADAR = "Rangebooster Circuit",
+        WX78MODULE_STACKSIZE = "Spatializer Circuit",
+        WX78MODULE_SCREECH = "Sonic-Invoker Circuit",
+        WX78MODULE_LIGHT2 = "Super-Illumination Circuit",
+        WX78MODULE_DIGESTION = "Redigestion Circuit",
+
+        WX78_INVENTORYCONTAINER_HELD = "Expansive Storage Unit",
+        WX78_INVENTORYCONTAINER = "Collapsed Storage Unit",
+
+        WX78_FOODBRICK = "Nutribrick",
 	},
 
     NAME_DETAIL_EXTENTION =
@@ -5403,6 +5444,11 @@ STRINGS =
         WX78MODULE_MUSIC = "Every machine needs a tune-up now and then.",
         WX78MODULE_BEE = "Get your brain and body buzzing with powerful potential!",
         WX78MODULE_MAXHEALTH2 = "Make your robotic body much more robust.",
+        -- WX-78 skill tree
+        WX78_BACKUPBODY = "It never hurts to have a spare chassis. Although data transfer is always a pain.",
+		WX78_DRONE_SCOUT = "Explore uncharted lands with this brave little robo-scout.",
+		WX78_DRONE_DELIVERY_ITEM = "Enjoy free shipping.",
+		WX78_DRONE_ZAP_REMOTE = "Shocking new technology.",
 
         -- Pirates
         POLLY_ROGERSHAT = "This hat comes with a feathered friend.",
@@ -5722,6 +5768,14 @@ STRINGS =
         YOTH_CHAIR_ROCKING_ITEM = "Take a ride and enjoy going nowhere.",
 
 		W_RADIO = "Where is that signal coming from?",
+
+        -- Meta 6
+
+        WX78MODULE_RADAR = "Expand your horizons.",
+        WX78MODULE_STACKSIZE = "Infinite storage. Finite space. Don't overthink it.",
+        WX78MODULE_SCREECH = "Unleash the fearsome battlecry of the soulless automaton!",
+        WX78MODULE_LIGHT2 = "Let them see the light... you.",
+        WX78MODULE_DIGESTION = "Now your friends can enjoy your meal too!",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -9365,7 +9419,7 @@ STRINGS.UI =
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
 		MAINBANNER_ROT_BETA_TITLE = "Beta Build", --unused now.
-		MAINBANNER_BETA_TITLE = "Beta Branch", --"Winter's Feast - Beta Branch", -- "Title/nBeta Branch"
+		MAINBANNER_BETA_TITLE = "Skill Spotlight - WX-78 - Beta Branch", --"Winter's Feast - Beta Branch", -- "Title/nBeta Branch"
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -15215,6 +15269,12 @@ STRINGS.UI =
         OK     = "I'm ready!",
         CANCEL = "Let me think about it.",
     },
+
+    UPGRADEMODULEDISPLAY =
+    {
+        UNPLUG_TOP_CIRCUIT = "Unplug First Circuit",
+        UNPLUG_CIRCUIT = "Unplug Circuit",
+    },
 }
 
 --these are broken out into their own files for ease of editing
@@ -16609,6 +16669,10 @@ STRINGS.SKILLTREE = {
         SLINGSHOTAMMO = "AMMO",
         SLINGSHOTMODS = "CUSTOMIZER",
         CAMPING = "SCOUTING",
+
+        CIRCUITRY = "CIRCUITRY",
+        CHASSIS = "CHASSIS",
+        DRONES = "DRONES",
     },
 
     ONLINE_DATA_USER_OFFLINE = "Login to use online skillset data.",
@@ -17560,8 +17624,78 @@ STRINGS.SKILLTREE = {
         WURT_SHADOW_ALLEGIANCE_2_DESC = "No land shall be safe from the dark and beautiful corruption of the Marsh.",
     },
 
-    --[[WX78 = {
-    },]]
+    WX78 = {
+        -- LOCKS
+        --WX78_EXTRABODY_LOCK_DESC = "TODO",
+
+        -- CIRCUITRY
+        WX78_CIRCUITRY_SLOT_1_TITLE = "Off By One",
+        WX78_CIRCUITRY_SLOT_1_DESC = "Grant an additional slot to all of your circuit bars.",
+
+        WX78_HALF_MODULE_USES_TITLE = "Fine Motor Control",
+        WX78_HALF_MODULE_USES_DESC = "Circuits will lose half the usual amount of durability when unplugged.",
+
+        WX78_FASTER_CHARGE_TITLE = "Watts Up",
+        WX78_FASTER_CHARGE_DESC = "Passive charge regeneration is much faster.",
+
+        WX78_UNPLUG_ANY_CIRCUIT_TITLE = "Right To Modify",
+        WX78_UNPLUG_ANY_CIRCUIT_DESC = "Gain the ability to unplug any circuit in the bar stack.",
+
+        WX78_LESS_CHARGE_LOSS_TITLE = "Hot Swap",
+        WX78_LESS_CHARGE_LOSS_DESC = "Lose one less charge when unplugging a charged circuit with two or more slots.",
+
+        WX78_ALPHA_CIRCUIT_BUFFS_1_TITLE = "Alpha Circuits Tinkering I",
+        WX78_ALPHA_CIRCUIT_BUFFS_1_DESC = "Some Alpha Circuits will grant a new effect in addition to their original effect.",
+        WX78_ALPHA_CIRCUIT_BUFFS_2_TITLE = "Alpha Circuits Tinkering II",
+        WX78_ALPHA_CIRCUIT_BUFFS_2_DESC = "Even more Alpha Circuits will grant a new effect in addition to their original effect.",
+
+        WX78_BETA_CIRCUIT_BUFFS_1_TITLE = "Beta Circuits Tinkering I",
+        WX78_BETA_CIRCUIT_BUFFS_1_DESC = "Some Beta Circuits will grant a new effect in addition to their original effect.",
+        WX78_BETA_CIRCUIT_BUFFS_2_TITLE = "Beta Circuits Tinkering II",
+        WX78_BETA_CIRCUIT_BUFFS_2_DESC = "Even more Beta Circuits will grant a new effect in addition to their original effect.",
+
+        WX78_GAMMA_CIRCUIT_BUFFS_1_TITLE = "Gamma Circuits Tinkering I",
+        WX78_GAMMA_CIRCUIT_BUFFS_1_DESC = "Some Gamma Circuits will grant a new effect in addition to their original effect.",
+        WX78_GAMMA_CIRCUIT_BUFFS_2_TITLE = "Gamma Circuits Tinkering II",
+        WX78_GAMMA_CIRCUIT_BUFFS_2_DESC = "Even more Gamma Circuits will grant a new effect in addition to their original effect.",
+
+        -- CHASSIS
+        WX78_EXTRABODY_1_TITLE = "System Backup I",
+        WX78_EXTRABODY_1_DESC = "Learn to craft a reliable Backup Body.",
+        WX78_EXTRABODY_X_DESC = "Allows for an additional Backup Body at once.",
+        WX78_EXTRABODY_2_TITLE = "System Backup II",
+        WX78_EXTRABODY_3_TITLE = "System Backup III",
+        WX78_REMOTEBODYSWAP_TITLE = "Remote Backup",
+        WX78_REMOTEBODYSWAP_DESC = "Backup bodies may now Exchange Knowledge through the Map.",
+        WX78_BODYCIRCUITS_TITLE = "Backup Generator",
+        WX78_BODYCIRCUITS_DESC = "Backup bodies keep their Beta circuits active when powered down.",
+        WX78_GHOSTREVIVE_1_TITLE = "Inhabited Machines I",
+        WX78_GHOSTREVIVE_1_DESC = "Haunting a Backup Body will Transfer Knowledge into it at the price of all of its stored energy.",
+        WX78_GHOSTREVIVE_2_TITLE = "Inhabited Machines II",
+        WX78_GHOSTREVIVE_2_DESC = "While at full energy and having an extra Backup Body to create, dying will leave behind a Backup Body.",
+        WX78_GHOSTREVIVE_3_TITLE = "Inhabited Machines III",
+        WX78_GHOSTREVIVE_3_DESC = "Reviving with a Backup Body will revitalize your health fully.",
+
+        -- DRONES
+        WX78_SCOUTDRONE_1_TITLE = "Field Survey I",
+        WX78_SCOUTDRONE_1_DESC = "Learn to craft a Roto-Mapper to explore and map unknown areas.",
+        WX78_SCOUTDRONE_2_TITLE = "Field Survey II",
+        WX78_SCOUTDRONE_2_DESC = "Increases the range you may control your Roto-Mapper.",
+        WX78_DELIVERYDRONE_1_TITLE = "Transport I",
+        WX78_DELIVERYDRONE_1_DESC = "Learn to craft a Portable Storage Unit to send items to any mapped location.",
+        WX78_DELIVERYDRONE_2_TITLE = "Transport II",
+        WX78_DELIVERYDRONE_2_DESC = "Learn to craft a larger Portable Storage Unit.",
+        WX78_ZAPDRONE_1_TITLE = "RC Enthusiast I",
+        WX78_ZAPDRONE_1_DESC = "Learn to craft a Zaptrocuter to zap enemies remotely.",
+        WX78_ZAPDRONE_2_TITLE = "RC Enthusiast II",
+        WX78_ZAPDRONE_2_DESC = "Learn to craft a Zaptrocuter with greater range and capacity.",
+
+        -- ALLEGIANCE
+        WX78_ALLEGIANCE_LUNAR_TITLE = "Lunar Affinity", -- TODO
+        WX78_ALLEGIANCE_LUNAR_DESC = "The Cryptic Founder is going to provide something later.", -- TODO
+        WX78_ALLEGIANCE_SHADOW_TITLE = "Shadow Affinity", -- TODO
+        WX78_ALLEGIANCE_SHADOW_DESC = "The Queen will be providing something later.", -- TODO
+    },
 }
 
 STRINGS.SCRAPBOOK = {

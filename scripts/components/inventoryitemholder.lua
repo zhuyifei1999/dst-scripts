@@ -1,7 +1,3 @@
-local function SamePrefabAndSkin(inst, other)
-    return inst.prefab == other.prefab and inst.skinname == other.skinname
-end
-
 local function onitem(self, item)
     if item ~= nil then
         self.inst:AddTag("inventoryitemholder_take")
@@ -103,7 +99,7 @@ function InventoryItemHolder:CanGive(item, giver)
         return self.acceptstacks and
             self.item.components.stackable ~= nil and
             not self.item.components.stackable:IsFull() and
-            SamePrefabAndSkin(self.item, item)
+            self.item.components.stackable:CanStackWith(item)
     end
 end
 

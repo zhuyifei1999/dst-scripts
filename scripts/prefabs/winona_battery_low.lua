@@ -172,8 +172,7 @@ end
 
 --------------------------------------------------------------------------
 
-local BATTERY_COST = TUNING.WINONA_BATTERY_LOW_MAX_FUEL_TIME * 0.9
-local function CanBeUsedAsBattery(inst, user)
+local function CalcActualFuel(inst, user)
 	if inst.components.fueled then
 		local efficiency_mult
 		if not (user and user:HasTag("handyperson")) and IsEngineerOnline(inst) then
@@ -192,21 +191,32 @@ local function CanBeUsedAsBattery(inst, user)
 			(inst._horror_level + inst._nightmare_level) / TUNING.WINONA_BATTERY_LOW_SHADOW_FUEL_RATE_MULT +
 			inst._chemical_level / TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT
 
-		if actual_fuel >= BATTERY_COST / TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT * efficiency_mult then
-			return true
-		end
+		return actual_fuel, efficiency_mult
+	end
+end
+
+local BATTERY_COST = TUNING.WINONA_BATTERY_LOW_MAX_FUEL_TIME * 0.9
+local function CanBeUsedAsBattery(inst, user, mult)
+	local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
+	if actual_fuel and actual_fuel >= BATTERY_COST * (mult or 1) / TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT * efficiency_mult then
+		return true
 	end
 	return false, "NOT_ENOUGH_CHARGE"
 end
 
-local function UseAsBattery(inst, user)
+local function UseAsBattery(inst, user, mult)
 	if not (user and user:HasTag("handyperson")) and IsEngineerOnline(inst) then
 		--original winona still online, don't de-level
 	elseif ConfigureSkillTreeUpgrades(inst, user) then
 		ApplyEfficiencyBonus(inst)
 		UpdateCircuitPower(inst)
 	end
-	inst:ConsumeBatteryAmount({ fuel = BATTERY_COST / TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT }, 1, user)
+	inst:ConsumeBatteryAmount({ fuel = BATTERY_COST * (mult or 1) / TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT }, 1, user)
+end
+
+local function ResolvePartialChargeMult(inst, user, mult)
+	local actual_fuel, efficiency_mult = CalcActualFuel(inst, user)
+	return actual_fuel and math.min(mult, actual_fuel * TUNING.WINONA_BATTERY_LOW_FUEL_RATE_MULT / (BATTERY_COST * efficiency_mult)) or mult
 end
 
 --------------------------------------------------------------------------
@@ -912,8 +922,9 @@ local function fn()
 	inst.components.circuitnode.rangeincludesfootprint = true
 
     inst:AddComponent("battery")
-    inst.components.battery.canbeused = CanBeUsedAsBattery
-    inst.components.battery.onused = UseAsBattery
+	inst.components.battery:SetCanBeUsedFn(CanBeUsedAsBattery)
+	inst.components.battery:SetOnUsedFn(UseAsBattery)
+	inst.components.battery:SetResolvePartialChargeMultFn(ResolvePartialChargeMult)
 
     inst:ListenForEvent("onbuilt", OnBuilt)
     inst:ListenForEvent("engineeringcircuitchanged", OnCircuitChanged)

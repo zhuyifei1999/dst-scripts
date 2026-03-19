@@ -89,7 +89,7 @@ local function SanityCheckWorldGenOverride(wgo)
         end
     end
 
-    --depreciated values(don't warn in the log files)
+    --deprecated values(don't warn in the log files)
     optionlookup.disease_delay = true
 
     if wgo.overrides ~= nil then
@@ -187,7 +187,7 @@ function SaveIndex:GetSaveIndexName()
 end
 
 function SaveIndex:Save(callback)
-    --09/09/2020 SaveIndex is depreciated, and will no longer save.
+    --09/09/2020 SaveIndex is deprecated, and will no longer save.
     --local data = DataDumper(self.data, nil, false)
     --local insz, outsz = TheSim:SetPersistentString(self:GetSaveIndexName(), data, false, callback)
     if callback then

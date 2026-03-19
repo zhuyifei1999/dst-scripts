@@ -820,6 +820,21 @@ end
 
 --------------------------------------------------------------------------
 
+local function HandleModuleRemoverAssets(inst, moduleremover)
+    if moduleremover ~= nil then
+        local build = moduleremover.AnimState:GetBuild()
+        local skin_build = moduleremover:GetSkinBuild()
+
+        if skin_build ~= nil then
+	    	inst.AnimState:OverrideItemSkinSymbol("wx78_moduleremover01", skin_build, "wx78_moduleremover01", moduleremover.GUID, build)
+	    else
+	    	inst.AnimState:OverrideSymbol("wx78_moduleremover01", build, "wx78_moduleremover01")
+	    end
+    end
+end
+
+--------------------------------------------------------------------------
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -967,17 +982,28 @@ local actionhandlers =
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
-            return action.target.components.activatable ~= nil
-				and (	(	action.target:HasTag("engineering") and (
-								(inst:HasTag("scientist") and "dolongaction") or
-								(not inst:HasTag("handyperson") and "dolongestaction")
-							)
-						) or
-						(action.target.components.activatable.standingaction and "dostandingaction") or
-                        (action.target.components.activatable.quickaction and "doshortaction") or
-                        "dolongaction"
-                    )
-                or nil
+            local activatable = action.target.components.activatable
+            if not activatable then
+                return nil
+            end
+
+            if action.target:HasTag("engineering") then
+                if inst:HasTag("scientist") then
+                    return "dolongaction"
+                elseif not inst:HasTag("handyperson") then
+                    return "dolongestaction"
+                end
+            elseif action.target:HasTag("wx78_backupbody") then
+                if activatable:CanActivate(inst) then
+                    return "wx_poweroff"
+                else
+                    return "doshortaction"
+                end
+            end
+
+            return (activatable.standingaction and "dostandingaction")
+                or (activatable.quickaction and "doshortaction")
+                or "dolongaction"
         end),
     ActionHandler(ACTIONS.OPEN_CRAFTING, "dostandingaction"),
     ActionHandler(ACTIONS.PICK,
@@ -1481,6 +1507,11 @@ local actionhandlers =
     end),
 
     ActionHandler(ACTIONS.STOPUSINGITEM, "dolongaction"),
+	ActionHandler(ACTIONS.USEEQUIPPEDITEM, function(inst, action)
+		return action.invobject and (
+				(action.invobject:HasTag("wx_remotecontroller") and "wx_start_using_drone")
+			) or "dolongaction"
+	end),
     ActionHandler(ACTIONS.YOTB_STARTCONTEST, "doshortaction"),
     ActionHandler(ACTIONS.YOTB_UNLOCKSKIN, "dolongaction"),
     ActionHandler(ACTIONS.YOTB_SEW, "dolongaction"),
@@ -1510,8 +1541,7 @@ local actionhandlers =
         end
     end),
 
-    ActionHandler(ACTIONS.APPLYMODULE, "applyupgrademodule"),
-    ActionHandler(ACTIONS.REMOVEMODULES, "removeupgrademodules"),
+    ActionHandler(ACTIONS.REMOVEMODULES, "removeupgrademodules"), -- Deprecated
     ActionHandler(ACTIONS.CHARGE_FROM, function(inst, action)
         return action.invobject and "catchonfire" or "doshortaction"
     end),
@@ -1590,6 +1620,27 @@ local actionhandlers =
 
     -- Year of the Clockwork Knight
     ActionHandler(ACTIONS.JOUST, "joust_pre"),
+
+    -- Meta 6
+
+    ActionHandler(ACTIONS.APPLYMODULE, function(inst)
+        if inst.sg.currentstate.name == "plugging_module" then
+            inst.sg.statemem.stoppluggingmodule = true
+            return "plug_module"
+        end
+        return "start_plugging_module"
+    end),
+    ActionHandler(ACTIONS.STARTREMOVINGMODULE, "start_removing_module"),
+	ActionHandler(ACTIONS.STOPREMOVINGMODULE, function(inst)
+		inst.sg.statemem.stopremovingmodule = true
+		return "stop_removing_module"
+	end),
+	ActionHandler(ACTIONS.STARTMAPDELIVER, "startcontinuousaction"),
+	ActionHandler(ACTIONS.MAPDELIVER_MAP, function(inst)
+		inst.sg.statemem.continuousaction = true
+		return "finishcontinuousaction"
+	end),
+    ActionHandler(ACTIONS.SWAPBODIES_MAP, "wx_poweroff"),
 }
 
 local events =
@@ -3463,6 +3514,20 @@ local states =
 					inst.SoundEmitter:PlaySound("meta4/charlie_residue/resurrect_grab")
 					inst:SetCameraDistance(14)
 					inst.sg.statemem.dovinesave = true
+                elseif inst.wx78_backupbody_save then
+                    if not (inst.TryToSpawnBackupBody and inst:TryToSpawnBackupBody()) then
+                        if HUMAN_MEAT_ENABLED then
+                            inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
+                        end
+                        inst.components.inventory:DropEverything(true)
+                        inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
+                    else
+                        inst.AnimState:PlayAnimation("wx_chassis_poweroff")
+                        if not inst.sg.mem.wx_chassis_build then
+                            inst.sg.mem.wx_chassis_build = true
+                            inst.AnimState:AddOverrideBuild("wx_chassis")
+                        end
+                    end
 				elseif inst.components.revivablecorpse ~= nil then
                     inst.AnimState:PlayAnimation("death2")
                 elseif data and data.corpsing and not inst:HasTag("wereplayer") then
@@ -3492,6 +3557,26 @@ local states =
 
         timeline =
         {
+            FrameEvent(0, function(inst)
+                if inst.sg.mem.wx_chassis_build and not inst.sg.statemem.dismount_wx78_backupbody_save then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f0")
+                end
+            end),
+            FrameEvent(16, function(inst)
+                if inst.sg.mem.wx_chassis_build and not inst.sg.statemem.dismount_wx78_backupbody_save then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f16")
+                end
+            end),
+            FrameEvent(22+0, function(inst)
+                if inst.sg.mem.wx_chassis_build and inst.sg.statemem.dismount_wx78_backupbody_save then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f0")
+                end
+            end),
+            FrameEvent(22+16, function(inst)
+                if inst.sg.mem.wx_chassis_build and inst.sg.statemem.dismount_wx78_backupbody_save then
+                    inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f16")
+                end
+            end),
             TimeEvent(15 * FRAMES, function(inst)
                 if inst.sg.statemem.beaver then
                     inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
@@ -3548,6 +3633,21 @@ local states =
 							inst:SetCameraDistance(14)
 							inst.sg.statemem.dovinesave = true
 							inst.sg.statemem.dismount_vinesave = true
+                        elseif inst.wx78_backupbody_save then
+                            if not (inst.TryToSpawnBackupBody and inst:TryToSpawnBackupBody()) then
+                                if HUMAN_MEAT_ENABLED then
+                                    inst.components.inventory:GiveItem(SpawnPrefab("humanmeat")) -- Drop some player meat!
+                                end
+                                inst.components.inventory:DropEverything(true)
+                                inst.AnimState:PlayAnimation(inst.deathanimoverride or "death")
+                            else
+                                inst.AnimState:PlayAnimation("wx_chassis_poweroff")
+                                if not inst.sg.mem.wx_chassis_build then
+                                    inst.sg.mem.wx_chassis_build = true
+                                    inst.AnimState:AddOverrideBuild("wx_chassis")
+                                end
+                                inst.sg.statemem.dismount_wx78_backupbody_save = true
+                            end
 						elseif inst.components.revivablecorpse ~= nil then
                             inst.AnimState:PlayAnimation("death2")
                         else
@@ -3579,6 +3679,10 @@ local states =
         },
 
 		onexit = function(inst)
+            if inst.sg.mem.wx_chassis_build then
+                inst.sg.mem.wx_chassis_build = nil
+                inst.AnimState:ClearOverrideBuild("wx_chassis")
+            end
 			if inst.sg.statemem.vinesaving then
 				return
 			elseif inst.components.revivablecorpse == nil then
@@ -8461,6 +8565,102 @@ local states =
 			CancelTalk_Override(inst)
         end,
     },
+
+	State{
+		name = "startcontinuousaction",
+		tags = { "doing", "busy", "nodangle" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+			inst.AnimState:PlayAnimation("build_pre")
+			inst.AnimState:PushAnimation("build_loop")
+			if inst.bufferedaction then
+				inst.sg.statemem.action = inst.bufferedaction
+				local target = inst.bufferedaction.target
+				if target and target:IsValid() then
+					inst.sg.statemem.target = target
+					target:PushEvent("startcontinuousaction", inst)
+				end
+			end
+		end,
+
+		timeline =
+		{
+			FrameEvent(4, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+			FrameEvent(15, function(inst)
+				if not inst:PerformBufferedAction() then
+					inst.SoundEmitter:KillSound("make")
+					inst.AnimState:PlayAnimation("build_pst")
+					inst.sg:GoToState("idle", true)
+				end
+			end),
+		},
+
+		events =
+		{
+			EventHandler("interruptcontinuousaction", function(inst, target)
+				if target == inst.sg.statemem.target then
+					inst.SoundEmitter:KillSound("make")
+					inst.AnimState:PlayAnimation("build_pst")
+					inst.sg:GoToState("idle", true)
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.sg.statemem.continuousaction then
+				if inst.sg.statemem.target and inst.sg.statemem.target ~= (inst.bufferedaction and inst.bufferedaction.target) then
+					inst.sg.statemem.target:PushEvent("stopcontinuousaction", inst)
+				end
+			else
+				inst.SoundEmitter:KillSound("make")
+				if inst.bufferedaction == inst.sg.statemem.action then
+					inst:ClearBufferedAction()
+				end
+				if inst.sg.statemem.target then
+					inst.sg.statemem.target:PushEvent("stopcontinuousaction", inst)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "finishcontinuousaction",
+		tags = { "doing", "busy", "nodangle" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			if not inst.SoundEmitter:PlayingSound("make") then
+				inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+			end
+			if not (inst.AnimState:IsCurrentAnimation("build_loop") or inst.AnimState:IsCurrentAnimation("build_pre")) then
+				inst.AnimState:PlayAnimation("build_pre")
+				inst.AnimState:PushAnimation("build_loop")
+			end
+			local target = inst.bufferedaction and inst.bufferedaction.target
+			if target and target:IsValid() then
+				inst.sg.statemem.target = target
+			end
+			inst.sg:SetTimeout(0.5)
+		end,
+
+		ontimeout = function(inst)
+			inst:PerformBufferedAction()
+			inst.SoundEmitter:KillSound("make")
+			inst.AnimState:PlayAnimation("build_pst")
+			inst.sg:GoToState("idle", true)
+		end,
+
+		onexit = function(inst)
+			inst.SoundEmitter:KillSound("make")
+			if inst.sg.statemem.target then
+				inst.sg.statemem.target:PushEvent("stopcontinuousaction", inst)
+			end
+		end,
+	},
 
     State{
 		--V2C: This is currently used ONLY for heavy pickup while mounted.
@@ -15713,6 +15913,36 @@ local states =
         end,
     },
 
+	State{
+		name = "air_deploy",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("cointoss_pre")
+			inst.AnimState:PushAnimation("cointoss", false)
+		end,
+
+		timeline =
+		{
+			FrameEvent(13, function(inst)
+				inst:PerformBufferedAction()
+			end),
+			FrameEvent(70, function(inst)
+				inst.sg:RemoveStateTag("busy")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
+
     State{
         name = "crushitemcast",
         tags = { "doing", "busy", "canrotate" },
@@ -21767,24 +21997,34 @@ local states =
 
     --------------------------------------------------------------------------
     -- WX78 Rework
-    State {
+    State { -- Deprecated
         name = "applyupgrademodule",
 		tags = { "busy", "doing" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-			inst.AnimState:PlayAnimation("upgrade_pre")
-			inst.AnimState:PushAnimation("upgrade", false)
-            inst.SoundEmitter:PlaySound("WX_rework/module/insert")
+			inst.AnimState:PlayAnimation("wx_upgrade_pre")
+			inst.AnimState:PushAnimation("wx_upgrade_use", false)
         end,
 
         timeline =
         {
-            TimeEvent(33*FRAMES, function(inst)
+            FrameEvent(9, function(inst)
+                if inst.components.upgrademoduleowner ~= nil then
+		            inst.components.upgrademoduleowner:StartInspecting(inst)
+	            end
+            end),
+            FrameEvent(25, function(inst)
+                inst.SoundEmitter:PlaySound("WX_rework/module_tray/equip")
+            end),
+            FrameEvent(33, function(inst)
 				inst.sg:AddStateTag("nointerrupt")
                 inst:PerformBufferedAction()
             end),
-			TimeEvent(47 * FRAMES, function(inst)
+			FrameEvent(47, function(inst)
+                if inst.components.upgrademoduleowner ~= nil then
+		            inst.components.upgrademoduleowner:StopInspecting()
+	            end
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("nointerrupt")
             end),
@@ -21798,9 +22038,15 @@ local states =
 				end
 			end),
 		},
+
+        onexit = function(inst)
+            if inst.components.upgrademoduleowner ~= nil then
+                inst.components.upgrademoduleowner:StopInspecting()
+            end
+        end,
     },
 
-    State {
+    State { -- Deprecated for start_removing_module
         name = "removeupgrademodules",
 		tags = { "busy", "doing" },
 
@@ -21810,7 +22056,7 @@ local states =
             inst.AnimState:PlayAnimation("useitem_pre")
             inst.AnimState:PushAnimation("downgrade", false)
             inst.AnimState:PushAnimation("useitem_pst", false)
-            inst.SoundEmitter:PlaySound("WX_rework/module/remove")
+            inst.SoundEmitter:PlaySound("WX_rework/module_tray/remove")
         end,
 
         timeline =
@@ -26642,6 +26888,902 @@ local states =
 			FrameEvent(6, function(inst) PlayFootstep(inst, 0.6) end),
 			FrameEvent(12, function(inst)
 				inst.sg:GoToState("idle", true)
+			end),
+		},
+	},
+
+    -- Meta 6
+
+  	State{
+		name = "start_plugging_module",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst, data)
+			inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wx_upgrade_pre", false)
+            --inst.SoundEmitter:PlaySound("WX_rework/module_tray/insert")
+            --inst.SoundEmitter:PlaySound("WX_rework/module_tray/equip")
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("plug_module")
+				end
+			end),
+		},
+	},
+
+    State{
+		name = "plugging_module",
+		tags = { "doing", "overridelocomote" },
+
+		onenter = function(inst, data)
+            local transition
+            if data ~= nil then
+                if data.transition then
+                    transition = true
+                end
+            end
+
+            if inst.components.upgrademoduleowner ~= nil then
+                inst.components.upgrademoduleowner:StartInspecting(inst)
+            end
+
+            if transition then
+                inst.AnimState:PlayAnimation("wx_downgrade_to_upgrade")
+                inst.AnimState:PushAnimation("wx_upgrade_loop", true)
+            else
+                inst.AnimState:PlayAnimation("wx_upgrade_loop", true)
+            end
+		end,
+
+        timeline =
+        {
+            FrameEvent(10, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+		events =
+		{
+			EventHandler("ontalk", OnTalk_Override),
+			EventHandler("donetalking", OnDoneTalking_Override),
+            EventHandler("stopinspectingmodule", function(inst)
+                local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
+				inst.sg.statemem.talktask = nil
+				inst.sg.statemem.stoppluggingmodule = true
+				inst.sg:GoToState("stop_plugging_module", data)
+            end),
+			EventHandler("locomote", function(inst)
+				if inst.sg:HasStateTag("overridelocomote") then
+					local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
+					inst.sg.statemem.talktask = nil
+					inst.sg.statemem.stoppluggingmodule = true
+					inst.sg:GoToState("stop_plugging_module", data)
+					return true
+				end
+			end),
+            EventHandler("newactiveitem", function(inst, data)
+                if data and data.item and data.item:HasActionComponent("upgrademoduleremover") then
+                    local statedata = { transition = true, moduleremover = data.item }
+				    inst.sg.statemem.stoppluggingmodule = true
+				    inst.sg:GoToState("removing_module", statedata)
+                end
+            end),
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.stoppluggingmodule then
+				--interrupted
+                if inst.components.upgrademoduleowner ~= nil then
+                    inst.components.upgrademoduleowner:StopInspecting()
+                end
+			end
+            CancelTalk_Override(inst)
+		end,
+	},
+
+    State{
+        name = "plug_module",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst, data)
+            if inst.components.upgrademoduleowner ~= nil then
+                inst.components.upgrademoduleowner:StartInspecting(inst)
+            end
+            inst.AnimState:PlayAnimation("wx_upgrade_use")
+        end,
+
+        timeline =
+        {
+            FrameEvent(7, function(inst)
+                -- inst.SoundEmitter:PlaySound("WX_rework/module_tray/remove")
+            end),
+            FrameEvent(27, function(inst)
+                inst.SoundEmitter:PlaySound("WX_rework/module_tray/equip")
+                inst:PerformBufferedAction()
+                -- if inst.sg.statemem.moduletoremove ~= nil and inst.sg.statemem.moduletoremove:IsValid() then
+                --     if inst.components.upgrademoduleowner ~= nil then
+                --         inst.components.upgrademoduleowner:FindAndPopModule(inst.sg.statemem.moduletoremove)
+                --     end
+                -- end
+            end),
+        },
+
+        events =
+        {
+            -- EventHandler("newactiveitem", function(inst, data)
+            --     if data and data.item ~= inst.sg.statemem.moduleremover then
+            --         inst.sg.statemem.gotoremovemodulepst = true
+            --     end
+            -- end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    -- if inst.sg.statemem.gotoremovemodulepst then
+                    --     local statedata = { nonaction = true, talktask = inst.sg.statemem.talktask }
+				    --     inst.sg.statemem.talktask = nil
+				    --     inst.sg.statemem.stoppluggingmodule = true
+                    --     inst.sg:GoToState("stop_plugging_module", statedata)
+                    -- else
+                        inst.sg.statemem.stoppluggingmodule = true
+                        inst.sg:GoToState("plugging_module")
+                    -- end
+                end
+            end)
+        },
+
+        onexit = function(inst)
+			if not inst.sg.statemem.stoppluggingmodule then
+				--interrupted
+                if inst.components.upgrademoduleowner ~= nil then
+                    inst.components.upgrademoduleowner:StopInspecting()
+                end
+			end
+		end,
+    },
+
+	State{
+		name = "stop_plugging_module",
+		tags = { "idle", "overridelocomote" },
+
+		onenter = function(inst, data)
+			-- 'nonaction' means we got here via another path rather than ACTIONS.STOPREMOVINGMODULE:
+			-- - We must manually stop upgrademoduleowner
+			-- - Any buffered actions would be our NEXT action after we play some pst anim
+			local nonaction
+			if data ~= nil then
+				nonaction = data.nonaction
+				inst.sg.statemem.talktask = data.talktask
+			end
+
+			if inst.components.upgrademoduleowner ~= nil then
+                if nonaction then
+					inst.components.upgrademoduleowner:StopInspecting()
+				end
+			end
+
+			if not nonaction then
+				if not inst:PerformBufferedAction() then
+					inst.sg:GoToState("idle")
+					return
+				end
+			end
+
+			inst.AnimState:PlayAnimation("wx_upgrade_pst", false)
+		end,
+
+		timeline =
+		{
+			FrameEvent(19, function(inst)
+				inst.sg:AddStateTag("canrotate")
+			end),
+			FrameEvent(20, function(inst)
+				inst.sg:RemoveStateTag("overridelocomote")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("ontalk", function(inst)
+				if inst.sg:HasStateTag("overridelocomote") then
+					OnTalk_Override(inst)
+					return true
+				end
+				CancelTalk_Override(inst, true)
+			end),
+			EventHandler("donetalking", OnDoneTalking_Override),
+			EventHandler("locomote", function(inst)
+				--don't handle locomotion states yet
+				--we still allows buffering them, since we are not "busy"
+				return inst.sg:HasStateTag("overridelocomote")
+			end),
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			CancelTalk_Override(inst)
+		end,
+	},
+
+  	State{
+		name = "start_removing_module",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+
+			local buffaction = inst:GetBufferedAction()
+			local moduleremover = buffaction ~= nil and buffaction.invobject or nil
+            HandleModuleRemoverAssets(inst, moduleremover)
+
+            inst.AnimState:PlayAnimation("useitem_pre", false)
+            --inst.SoundEmitter:PlaySound("WX_rework/module_tray/equip")
+		end,
+
+		events =
+		{
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("removing_module")
+				end
+			end),
+		},
+	},
+
+    State{
+		name = "removing_module",
+		tags = { "doing", "overridelocomote" },
+
+		onenter = function(inst, data)
+            local continuing
+            local transition
+            if data ~= nil then
+                if data.transition ~= nil then
+                    transition = true
+                    inst.sg.statemem.moduleremover = data.moduleremover
+                end
+                if data.moduleremover ~= nil then
+                    continuing = true
+                    inst.sg.statemem.moduleremover = data.moduleremover
+                end
+            end
+
+            local moduleremover = inst.sg.statemem.moduleremover
+            if not moduleremover then
+                local buffaction = inst:GetBufferedAction()
+                moduleremover = buffaction ~= nil and buffaction.invobject or nil
+            end
+
+            HandleModuleRemoverAssets(inst, moduleremover)
+
+            if transition then
+                inst.AnimState:PlayAnimation("wx_upgrade_to_downgrade", false)
+                inst.AnimState:PushAnimation("wx_downgrade_pre", false)
+                inst.AnimState:PushAnimation("wx_downgrade_loop", true)
+            elseif continuing then
+                inst.AnimState:PlayAnimation("wx_downgrade_loop", true)
+            elseif inst:PerformBufferedAction() then
+                if inst.components.inventory:GetActiveItem() ~= moduleremover then
+                    moduleremover.components.inventoryitem:RemoveFromOwner()
+                    inst.components.inventory:GiveActiveItem(moduleremover)
+                end
+
+                inst.sg.statemem.moduleremover = moduleremover
+                inst.AnimState:PlayAnimation("wx_downgrade_pre", false)
+				inst.AnimState:PushAnimation("wx_downgrade_loop", true)
+                inst.sg:AddStateTag("busy")
+            else
+				inst.AnimState:PlayAnimation("useitem_pst", false)
+				inst.sg:RemoveStateTag("overridelocomote")
+            end
+		end,
+
+        timeline =
+        {
+            FrameEvent(10, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+		events =
+		{
+            EventHandler("unplugmodule", function(inst, module)
+                local data = { module = module, moduleremover = inst.sg.statemem.moduleremover }
+                inst.sg.statemem.stopremovingmodule = true
+                inst.sg.statemem.dontreturnmoduleremover = true
+                inst.sg:GoToState("unplug_module", data)
+            end),
+			EventHandler("ontalk", OnTalk_Override),
+			EventHandler("donetalking", OnDoneTalking_Override),
+            EventHandler("stopinspectingmodule", function(inst)
+                local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
+				inst.sg.statemem.talktask = nil
+				inst.sg.statemem.stopremovingmodule = true
+				inst.sg.statemem.dontreturnmoduleremover = true
+				inst.sg:GoToState("stop_removing_module", data)
+            end),
+			EventHandler("locomote", function(inst)
+				if inst.sg:HasStateTag("overridelocomote") and inst.AnimState:IsCurrentAnimation("wx_downgrade_loop") then
+					local data = { nonaction = true, talktask = inst.sg.statemem.talktask }
+					inst.sg.statemem.talktask = nil
+					inst.sg.statemem.stopremovingmodule = true
+					inst.sg:GoToState("stop_removing_module", data)
+					return true
+				end
+			end),
+            EventHandler("newactiveitem", function(inst, data)
+                if data and (data.item == nil or not data.item:HasActionComponent("upgrademoduleremover")) then
+                    local statedata = { transition = true }
+				    inst.sg.statemem.stopremovingmodule = true
+				    inst.sg:GoToState("plugging_module", statedata)
+                end
+            end),
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.stopremovingmodule then
+				--interrupted
+                if inst.components.upgrademoduleowner ~= nil then
+                    inst.components.upgrademoduleowner:StopInspecting()
+                end
+			end
+            if not inst.sg.statemem.dontreturnmoduleremover then
+                inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.moduleremover, true)
+			end
+            CancelTalk_Override(inst)
+		end,
+	},
+
+    State{
+        name = "unplug_module",
+        tags = { "doing", "overridelocomote", "busy" },
+
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation("wx_downgrade_use")
+            inst.sg.statemem.moduletoremove = data ~= nil and data.module or nil
+            inst.sg.statemem.moduleremover = data ~= nil and data.moduleremover or nil
+        end,
+
+        timeline =
+        {
+            FrameEvent(7, function(inst)
+                inst.SoundEmitter:PlaySound("WX_rework/module_tray/remove")
+            end),
+            FrameEvent(9, function(inst)
+                if inst.sg.statemem.moduletoremove ~= nil and inst.sg.statemem.moduletoremove:IsValid() then
+                    if inst.components.upgrademoduleowner ~= nil then
+                        inst.components.upgrademoduleowner:FindAndPopModule(inst.sg.statemem.moduletoremove)
+                    end
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("unplugmodule", function(inst, module)
+                inst.sg.statemem.unpluganothermoduledata = { module = module, moduleremover = inst.sg.statemem.moduleremover }
+            end),
+            EventHandler("newactiveitem", function(inst, data)
+                if data and data.item ~= inst.sg.statemem.moduleremover then
+                    inst.sg.statemem.gotoremovemodulepst = true
+                end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.gotoremovemodulepst then
+                        local statedata = { nonaction = true, talktask = inst.sg.statemem.talktask }
+				        inst.sg.statemem.talktask = nil
+				        inst.sg.statemem.stopremovingmodule = true
+                        inst.sg:GoToState("stop_removing_module", statedata)
+                    elseif inst.sg.statemem.unpluganothermoduledata ~= nil then
+                        inst.sg.statemem.stopremovingmodule = true
+                        inst.sg:GoToState("unplug_module", inst.sg.statemem.unpluganothermoduledata)
+                    else
+                        inst.sg.statemem.stopremovingmodule = true
+                        inst.sg:GoToState("removing_module", { moduleremover = inst.sg.statemem.moduleremover })
+                    end
+                end
+            end)
+        },
+
+        onexit = function(inst)
+			if not inst.sg.statemem.stopremovingmodule then
+				--interrupted
+                if inst.components.upgrademoduleowner ~= nil then
+                    inst.components.upgrademoduleowner:StopInspecting()
+                end
+                inst.components.inventory:ReturnActiveActionItem(inst.sg.statemem.moduleremover, true)
+			end
+		end,
+    },
+
+	State{
+		name = "stop_removing_module",
+		tags = { "idle", "overridelocomote" },
+
+		onenter = function(inst, data)
+			-- 'nonaction' means we got here via another path rather than ACTIONS.STOPREMOVINGMODULE:
+			-- - We must manually stop upgrademoduleowner
+			-- - Any buffered actions would be our NEXT action after we play some pst anim
+			local nonaction
+			if data ~= nil then
+				nonaction = data.nonaction
+				inst.sg.statemem.talktask = data.talktask
+			end
+
+			if inst.components.upgrademoduleowner ~= nil then
+                if nonaction then
+					inst.components.upgrademoduleowner:StopInspecting()
+				end
+			end
+
+			if not nonaction then
+				if not inst:PerformBufferedAction() then
+					inst.sg:GoToState("idle")
+					return
+				end
+			end
+
+			inst.AnimState:PlayAnimation("wx_downgrade_pst", false)
+            inst.AnimState:PushAnimation("useitem_pst", false)
+		end,
+
+		timeline =
+		{
+			FrameEvent(19, function(inst)
+				inst.sg:AddStateTag("canrotate")
+			end),
+			FrameEvent(20, function(inst)
+				inst.sg:RemoveStateTag("overridelocomote")
+			end),
+		},
+
+		events =
+		{
+			EventHandler("ontalk", function(inst)
+				if inst.sg:HasStateTag("overridelocomote") then
+					OnTalk_Override(inst)
+					return true
+				end
+				CancelTalk_Override(inst, true)
+			end),
+			EventHandler("donetalking", OnDoneTalking_Override),
+			EventHandler("locomote", function(inst)
+				--don't handle locomotion states yet
+				--we still allows buffering them, since we are not "busy"
+				return inst.sg:HasStateTag("overridelocomote")
+			end),
+			EventHandler("animqueueover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			CancelTalk_Override(inst)
+		end,
+	},
+
+	State{
+		name = "wx_poweroff",
+		tags = { "busy", "pausepredict", "notalking" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_chassis_poweroff")
+			if not inst.sg.mem.wx_chassis_build then
+				inst.sg.mem.wx_chassis_build = true
+				inst.AnimState:AddOverrideBuild("wx_chassis")
+			end
+
+			inst.components.inventory:Hide()
+			inst:PushEvent("ms_closepopups")
+			inst:ShowActions(false)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:RemotePausePrediction()
+				inst.components.playercontroller:EnableMapControls(false)
+				inst.components.playercontroller:Enable(false)
+			end
+            if inst.components.inventory then
+                inst.components.inventory:CloseAllChestContainers()
+            end
+
+			StopTalkSound(inst, true)
+			if inst.components.talker then
+				inst.components.talker:ShutUp()
+				inst.components.talker:IgnoreAll("wx_poweroff")
+			end
+
+			--inst.sg.mem._DBG_WX_POWEROFF_NOFADE = true
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f0") end),
+			FrameEvent(16, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/poweroff_f16") end),
+
+			FrameEvent(28, function(inst)
+				if inst.wx78_classified and not inst.sg.mem._DBG_WX_POWEROFF_NOFADE then
+					inst.wx78_classified.poweroffoverlay:set(true)
+				end
+			end),
+			FrameEvent(48, function(inst)
+				if inst.wx78_classified and inst.wx78_classified.poweroffoverlay:value() then
+					inst.wx78_classified.poweroffoverlay:set(false)
+					inst:ScreenFade(false, 0)
+				end
+			end),
+			FrameEvent(60, function(inst)
+				local success = inst:PerformBufferedAction()
+				if success then
+					inst:SnapCamera()
+				end
+				inst.sg.statemem.reboot = true
+				inst.sg:GoToState("wx_poweron", success)
+			end),
+		},
+
+		onexit = function(inst)
+			if not inst.sg.statemem.reboot then
+				inst.sg.mem.wx_chassis_build = nil
+				inst.AnimState:ClearOverrideBuild("wx_chassis")
+
+				inst.components.inventory:Show()
+				inst:ShowActions(true)
+				if inst.components.playercontroller then
+					inst.components.playercontroller:EnableMapControls(true)
+					inst.components.playercontroller:Enable(true)
+				end
+
+				if inst.components.talker then
+					inst.components.talker:StopIgnoringAll("wx_poweroff")
+				end
+				if inst.wx78_classified and inst.wx78_classified.poweroffoverlay:value() then
+					inst:ScreenFade(true, 0.5)
+				end
+			end
+			if inst.wx78_classified then
+				inst.wx78_classified.poweroffoverlay:set(false)
+			end
+		end,
+	},
+
+	State{
+		name = "wx_poweron",
+		tags = { "busy", "nopredict", "notalking" },
+
+		onenter = function(inst, moved)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("wx_chassis_idle")
+			if not inst.sg.mem.wx_chassis_build then
+				inst.sg.mem.wx_chassis_build = true
+				inst.AnimState:AddOverrideBuild("wx_chassis")
+			end
+
+			if not moved then
+				inst.sg:RemoveStateTag("nopredict")
+				inst.sg:AddStateTag("pausepredict")
+				if inst.components.playercontroller then
+					inst.components.playercontroller:RemotePausePrediction()
+				end
+			end
+
+			inst.components.inventory:Hide()
+			inst:PushEvent("ms_closepopups")
+			inst:ShowActions(false)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:EnableMapControls(false)
+				inst.components.playercontroller:Enable(false)
+			end
+
+			StopTalkSound(inst, true)
+			if inst.components.talker then
+				inst.components.talker:ShutUp()
+				inst.components.talker:IgnoreAll("wx_poweroff")
+			end
+
+			if not inst.sg.mem._DBG_WX_POWEROFF_NOFADE then
+				inst:ScreenFade(true, 1)
+			end
+		end,
+
+		timeline =
+		{
+			--#SFX
+			FrameEvent(15 + 0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/internal_rumble") end),
+			FrameEvent(15 + 24, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+			FrameEvent(15 + 42, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+			FrameEvent(15 + 55, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+
+			FrameEvent(15, function(inst)
+				inst.AnimState:PlayAnimation("wx_chassis_poweron")
+			end),
+			FrameEvent(15 + 60, function(inst)
+				inst.components.inventory:Show()
+				inst:ShowActions(true)
+				if inst.components.playercontroller then
+					inst.components.playercontroller:EnableMapControls(true)
+					inst.components.playercontroller:Enable(true)
+				end
+
+				if inst.components.talker then
+					inst.components.talker:StopIgnoringAll("wx_poweroff")
+				end
+			end),
+			FrameEvent(15 + 76, function(inst)
+				inst.sg:GoToState("idle", true)
+			end),
+		},
+
+		onexit = function(inst)
+			inst.sg.mem.wx_chassis_build = nil
+			inst.AnimState:ClearOverrideBuild("wx_chassis")
+
+			inst.components.inventory:Show()
+			inst:ShowActions(true)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:EnableMapControls(true)
+				inst.components.playercontroller:Enable(true)
+			end
+
+			if inst.components.talker then
+				inst.components.talker:StopIgnoringAll("wx_poweroff")
+			end
+		end,
+	},
+
+    State{
+        name = "respawn_wx_poweron",
+        tags = { "busy", "noattack", "nopredict", "silentmorph" },
+
+        onenter = function(inst)
+            if inst.components.playercontroller then
+                inst.components.playercontroller:Enable(false)
+            end
+            inst.AnimState:PlayAnimation("wx_chassis_idle")
+            if not inst.sg.mem.wx_chassis_build then
+                inst.sg.mem.wx_chassis_build = true
+                inst.AnimState:AddOverrideBuild("wx_chassis")
+            end
+            inst.components.health:SetInvincible(true)
+            inst:ShowHUD(false)
+            inst:SetCameraDistance(14)
+        end,
+
+        timeline =
+        {
+            --#SFX
+            FrameEvent(15 + 0, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/internal_rumble") end),
+            FrameEvent(15 + 24, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+            FrameEvent(15 + 42, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+            FrameEvent(15 + 55, function(inst) inst.SoundEmitter:PlaySound("WX_rework/chassis/chassis_clunk") end),
+
+            FrameEvent(15, function(inst)
+                inst.AnimState:PlayAnimation("wx_chassis_poweron")
+            end),
+            FrameEvent(15 + 76, function(inst)
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        onexit = function(inst)
+            inst.sg.mem.wx_chassis_build = nil
+            inst.AnimState:ClearOverrideBuild("wx_chassis")
+            inst:ShowHUD(true)
+            inst:SetCameraDistance()
+            if inst.components.playercontroller then
+                inst.components.playercontroller:Enable(true)
+            end
+            inst.components.health:SetInvincible(false)
+
+            SerializeUserSession(inst)
+        end,
+    },
+
+	State{
+		name = "wx_start_using_drone",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst)
+			local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			if not (item and item:HasTag("wx_remotecontroller")) then
+				inst:ClearBufferedAction()
+				inst.sg:GoToState("idle")
+				return
+			end
+			inst:AddTag("using_drone_remote")
+			inst.sg.statemem.item = item
+			inst.sg.statemem.buffaction = inst.bufferedaction
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("drone_zap_remote_use_pre")
+			if inst.components.playercontroller then
+				inst.components.playercontroller:EnableMapControls(false)
+			end
+			--inst.components.inventory:Hide() --can't do now or action will fail
+			inst:PushEvent("ms_closepopups")
+			inst:ShowActions(false)
+		end,
+
+		timeline =
+		{
+			FrameEvent(8, function(inst)
+				inst.sg.statemem.buffaction = nil
+				if inst:PerformBufferedAction() then
+					inst.sg.statemem.using_drone = true
+					inst.sg:GoToState("wx_using_drone", inst.sg.statemem.item)
+				else
+					inst.sg.statemem.item = nil
+					inst.sg:GoToState("wx_stop_using_drone")
+				end
+			end),
+		},
+
+		events =
+		{
+			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+			EventHandler("unequip", function(inst, data)
+				if not (data and data.item == inst.sg.statemem.item) then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.bufferedaction == inst.sg.statemem.buffaction then
+				inst:ClearBufferedAction()
+			end
+			if not inst.sg.statemem.using_drone then
+				inst:RemoveTag("using_drone_remote")
+				if inst.components.playercontroller then
+					inst.components.playercontroller:EnableMapControls(true)
+				end
+				--inst.components.inventory:Show() --didn't hide during this state
+				inst:ShowActions(true)
+
+				local item = inst.sg.statemem.item
+				if item and item:IsValid() and item.components.useableequippeditem then
+					item.components.useableequippeditem:StopUsing(inst)
+				end
+			end
+		end,
+	},
+
+	State{
+		name = "wx_using_drone",
+		tags = { "doing", "overridelocomote", "nodragwalk", "overrideattack" },
+
+		onenter = function(inst, item)
+			if inst.AnimState:IsCurrentAnimation("drone_zap_remote_use_pre") then
+				inst.AnimState:PushAnimation("drone_zap_remote_use_loop")
+			else
+				inst.AnimState:PlayAnimation("drone_zap_remote_use_loop", true)
+			end
+
+			if inst.components.playercontroller then
+				inst.components.playercontroller:SetIsOverrideAttack(true)
+				inst.components.playercontroller:EnableMapControls(false)
+			end
+			inst:AddTag("using_drone_remote")
+			inst.sg.statemem.item = item
+			inst:PushEvent("ms_closepopups")
+			inst.components.inventory:Hide()
+			inst:ShowActions(false)
+			inst:SetCameraZoomed(true)
+			inst:SetAerialCamera(true)
+		end,
+
+		onupdate = function(inst)
+			local item = inst.sg.statemem.item
+			if not (
+				item and item:IsValid() and
+				item.components.equippable and item.components.equippable:IsEquipped() and
+				item.components.inventoryitem and (
+					not item.components.inventoryitem:IsHeld() or
+					item.components.inventoryitem:GetGrandOwner() == inst
+				)
+			) then
+				inst.sg:GoToState("item_in")
+				return
+			elseif not (item.components.useableequippeditem and item.components.useableequippeditem:IsInUse()) then
+				inst.sg.statemem.item = nil
+				inst.sg:GoToState("wx_stop_using_drone")
+				return
+			elseif not (item.drone and item.drone:IsValid()) then
+				if item.components.useableequippeditem then
+					item.components.useableequippeditem:StopUsingItem(inst)
+				end
+				inst.sg.statemem.item = nil
+				inst.sg:GoToState("wx_stop_using_drone")
+				return
+			end
+		end,
+
+		events =
+		{
+			EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+			EventHandler("unequip", function(inst, data)
+				if not (data and data.item == inst.sg.statemem.item) then
+					inst.sg:GoToState("idle")
+				end
+			end),
+			EventHandler("locomote", function(inst, data)
+				--direct movement only, no drag or point destination.
+				if not inst.components.locomotor:HasDestination() then
+					local drone = inst.sg.statemem.item and inst.sg.statemem.item.drone
+					if drone and drone:IsValid() then
+						drone:PushEvent("locomote", data)
+					end
+				end
+				return true
+			end),
+			EventHandler("attackbutton", function(inst)
+				local item = inst.sg.statemem.item
+				if item and
+					item.drone and
+					item.drone:IsValid() and
+					not (item.components.finiteuses and item.components.finiteuses:GetUses() <= 0)
+				then
+					item.drone:PushEvent("doattack")
+				end
+			end),
+		},
+
+		onexit = function(inst)
+			if inst.components.playercontroller then
+				inst.components.playercontroller:SetIsOverrideAttack(false)
+				inst.components.playercontroller:EnableMapControls(true)
+			end
+			inst:RemoveTag("using_drone_remote")
+			inst.components.inventory:Show()
+			inst:ShowActions(true)
+			inst:SetCameraZoomed(false)
+			inst:SetAerialCamera(false)
+
+			local item = inst.sg.statemem.item
+			if item and item:IsValid() and item.components.useableequippeditem then
+				item.components.useableequippeditem:StopUsingItem(inst)
+			end
+		end,
+	},
+
+	State{
+		name = "wx_stop_using_drone",
+		tags = { "doing", "busy" },
+
+		onenter = function(inst)
+			inst.components.locomotor:Stop()
+			inst.AnimState:PlayAnimation("drone_zap_remote_use_pst")
+			inst.sg:SetTimeout(6 * FRAMES)
+		end,
+
+		ontimeout = function(inst)
+			inst.sg:RemoveStateTag("busy")
+		end,
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
 			end),
 		},
 	},

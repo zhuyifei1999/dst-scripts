@@ -9,7 +9,7 @@ local assets = --Deprecated
 
 local assets2 =
 {
-	Asset("ANIM", "anim/wagdrone_projectile.zip"),
+	Asset("ANIM", "anim/wx78_taser_blast_fx.zip"),
 	Asset("SOUND", "sound/chess.fsb"),
 }
 
@@ -127,8 +127,8 @@ local function ShowBase(inst)
 	fx:AddTag("FX")
 	fx:AddTag("NOCLICK")
 
-	fx.AnimState:SetBank("wagdrone_projectile")
-	fx.AnimState:SetBuild("wagdrone_projectile")
+	fx.AnimState:SetBank("wx78_taser_blast_fx")
+	fx.AnimState:SetBuild("wx78_taser_blast_fx")
 	fx.AnimState:PlayAnimation("crackle_projection")
 	fx.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 	fx.AnimState:SetLightOverride(1)
@@ -233,8 +233,8 @@ local function fx2fn()
 	inst.entity:AddLight()
 	inst.entity:AddNetwork()
 
-	inst.AnimState:SetBuild("wagdrone_projectile")
-	inst.AnimState:SetBank("wagdrone_projectile")
+	inst.AnimState:SetBuild("wx78_taser_blast_fx")
+	inst.AnimState:SetBank("wx78_taser_blast_fx")
 	inst.AnimState:PlayAnimation("crackle_hit")
 	inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 	inst.AnimState:SetLightOverride(1)

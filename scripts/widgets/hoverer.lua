@@ -27,6 +27,14 @@ local HoverText = Class(Widget, function(self, owner)
     self.strFrames = 0
 end)
 
+function HoverText:SettleTextPosition()
+    if self.isFE then
+        self.text:SetPosition(self.owner:GetTooltipPos() or self.default_text_pos)
+    else
+        self.text:SetPosition(self.owner.HUD.controls:GetTooltipPos(self) or self.default_text_pos)
+    end
+end
+
 function HoverText:OnUpdate()
     if self.owner.components.playercontroller == nil or not self.owner.components.playercontroller:UsingMouse() then
         if self.shown then
@@ -45,7 +53,7 @@ function HoverText:OnUpdate()
     local colour = nil
     if not self.isFE then
         str = self.owner.HUD.controls:GetTooltip() or self.owner.components.playercontroller:GetHoverTextOverride()
-        self.text:SetPosition(self.owner.HUD.controls:GetTooltipPos() or self.default_text_pos)
+        self.text:SetPosition(self.owner.HUD.controls:GetTooltipPos(self) or self.default_text_pos)
         if self.owner.HUD.controls:GetTooltip() ~= nil then
             colour = self.owner.HUD.controls:GetTooltipColour()
         end
@@ -169,6 +177,15 @@ function HoverText:UpdatePosition(x, y)
         math.clamp(x, w + XOFFSET, scr_w - w - XOFFSET),
         math.clamp(y, h + YOFFSETDOWN * scale.y, scr_h - h - YOFFSETUP * scale.y),
         0)
+    if self.force_settle_text then
+        self:SettleTextPosition()
+    end
+end
+
+-- Bit of a hack for UpgradeModulesDisplay_Inspecting since we depend
+-- on hover position logic for overriding tool tip position.
+function HoverText:ForceSettleTextPositionOnMove(boolval)
+    self.force_settle_text = boolval
 end
 
 function HoverText:FollowMouseConstrained()

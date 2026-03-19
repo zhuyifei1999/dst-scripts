@@ -331,7 +331,7 @@ function Container:CanAcceptCount(item, maxcount)
         local v = self.slots[k]
 
         if v ~= nil then
-            if v.prefab == item.prefab and v.skinname == item.skinname and v.components.stackable ~= nil then
+            if v.components.stackable ~= nil and v.components.stackable:CanStackWith(item) then
                 acceptcount = acceptcount + v.components.stackable:RoomLeft()
                 if acceptcount >= stacksize then
                     return stacksize
@@ -365,7 +365,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             --need to dump the leftovers back into the original stack)
             if slot ~= nil and slot <= self.numslots then
                 local other_item = self.slots[slot]
-                if other_item ~= nil and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
+                if other_item ~= nil and item.components.stackable:CanStackWith(other_item) and not other_item.components.stackable:IsFull() then
                     if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                         self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = slot })
                     end
@@ -382,7 +382,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             if slot == nil then
                 for k = 1, self.numslots do
                     local other_item = self.slots[k]
-                    if other_item and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
+                    if other_item and item.components.stackable:CanStackWith(other_item) and not other_item.components.stackable:IsFull() then
                         if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                             self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = k })
                         end
@@ -1071,8 +1071,8 @@ function Container:AddOneOfActiveItemToSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
+        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() and
         active_item.components.stackable ~= nil and
         active_item.components.stackable:IsStack() and
@@ -1095,8 +1095,8 @@ function Container:AddAllOfActiveItemToSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
+        item.components.stackable:CanStackWith(active_item) and
         self:AcceptsStacks() then
 
         self.currentuser = opener
@@ -1118,9 +1118,8 @@ function Container:SwapActiveItemWithSlot(slot, opener)
         if item == nil then
             self:PutAllOfActiveItemInSlot(slot, opener)
 		elseif self:CanTakeItemInSlot(active_item, slot)
-			and not (item.prefab == active_item.prefab and
-					item.skinname == active_item.skinname and
-					item.components.stackable and
+			and not (item.components.stackable and
+                    item.components.stackable:CanStackWith(active_item) and
 					self:AcceptsStacks())
 			and not (active_item.components.stackable and
 					active_item.components.stackable:IsStack() and
@@ -1150,7 +1149,7 @@ function Container:SwapOneOfActiveItemWithSlot(slot, opener)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        not (item.prefab == active_item.prefab and item.skinname == active_item.skinname and item.components.stackable ~= nil) and
+        not (item.components.stackable ~= nil and item.components.stackable:CanStackWith(active_item)) and
 		(active_item.components.stackable and active_item.components.stackable:IsStack()) and
 		not (item.components.stackable and item.components.stackable:IsOverStacked())
 	then

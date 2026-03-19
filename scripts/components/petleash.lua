@@ -84,10 +84,6 @@ function PetLeash:GetMaxPetsForPrefab(prefab)
     return self.maxpetsperprefab[prefab] or 0
 end
 
-function PetLeash:IsFullForPrefab(prefab)
-    return self:GetNumPetsForPrefab(prefab) >= self:GetMaxPetsForPrefab(prefab)
-end
-
 function PetLeash:GetNumPetsForPrefab(prefab)
     if self.numpetsperprefab == nil then
         return 0

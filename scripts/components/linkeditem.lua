@@ -98,7 +98,7 @@ function LinkedItem:SetOwnerInst(owner_inst) -- NOTES(JBK): This should be calle
 
     if self.owner_inst ~= nil then
         if self.onownerinst_removedfn ~= nil then
-            self.onownerinst_removedfn(self.inst, owner_inst)
+            self.onownerinst_removedfn(self.inst, self.owner_inst)
         end
     end
 

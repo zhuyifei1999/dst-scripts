@@ -33,6 +33,9 @@ return {
             NOTMERM = "It takes a merm to call a merm.",
             NOKELP = "only_used_by_wurt",
             HASMERMLEADER = "only_used_by_wurt",
+            NOTAROBOT = "I'm not a bot to use it.",
+            NOTMYBACKUP = "only_used_by_wx78",
+            TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         APPLYELIXIR =
         {
@@ -74,6 +77,7 @@ return {
             HASPET = "I've already got a pet.",
 			TICOON = "I'm too invested in my own Ticoon to follow another one.",
             BUSY_STATION = "I'll have to wait.",
+            TOOMANYBACKUPBODIES = "only_used_by_wx78",
         },
         CARNIVALGAME_FEED =
         {
@@ -231,6 +235,7 @@ return {
         HARVEST =
         {
             DOER_ISNT_MODULE_OWNER = "It doesn't seem interested in a scientific discussion.",
+            DOER_DOESNT_HAVE_SKILL = "only_used_by_wx78",
         },
         HEAL =
         {
@@ -365,6 +370,9 @@ return {
             NOTAMERM = "I don't think the merms would be happy about that.",
             NOTSOULJARHANDLER = "It's not my cup of tea.",
             RESTRICTED = "Case closed... to me.",
+            NOTAROBOT = "I'm not a bot to use it.",
+            NOTMYBACKUP = "only_used_by_wx78",
+            TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
         SADDLE =
         {
@@ -398,7 +406,20 @@ return {
             NOTMASTERCHEF = "I'm not a fancy enough chef for that.",
             NOTSOULJARHANDLER = "I'm not soul'ed on it.",
             RESTRICTED = "Case closed... to me.",
+            NOTAROBOT = "I'm not a bot to use it.",
+            NOTMYBACKUP = "only_used_by_wx78",
+            TOOMANYBACKUPBODIES = "only_used_by_wx78",
 		},
+		STARTMAPDELIVER =
+		{
+			EMPTY = "only_used_by_wx78",
+			INUSE = "only_used_by_wx78",
+			NOSKILL_DRONE = "only_used_by_wx78", 
+		},
+        SWAPBODIES_MAP =
+        {
+            NOTARGET = "only_used_by_wx78",
+        },
         TEACH =
         {
             --Recipes/Teacher
@@ -1210,6 +1231,12 @@ return {
 
     -- Year of the Clockwork Knight
     ANNOUNCE_YOTH_ONCOOLDOWN = "They must be busy horsing around.",
+
+    -- wx specific
+    ANNOUNCE_WX_SCANNER_HITDOWN_BY_CAT = "only_used_by_wx78",
+    ANNOUNCE_WX_TASER_BUILDUP = "only_used_by_wx78", -- Wx is building up charge when getting hit, nearing EMP blast
+    ANNOUNCE_WX_TASER_ABOUTTOEXPLODE = "only_used_by_wx78", -- Wx is fully charged and about to release it. Take cover!
+    ANNOUNCE_WX_TASER_POSTEXPLOSION = "only_used_by_wx78", -- Wx has exploded and released all the build up, now they can say something about how invigorating it was.
 
 	BATTLECRY =
 	{
@@ -6031,6 +6058,36 @@ return {
 
         YOTH_KNIGHTSTICK = "I'm hot to trot!",
         YOTH_CHAIR_ROCKING_ITEM = "It's a rocky ride!", -- The chair itself uses WOOD_CHAIR inspect states.
+
+		-- Meta 6
+
+		--WX78_DRONE_SCOUT = "TODO",
+		--WX78_DRONE_DELIVERY = "TODO",
+		--WX78_DRONE_ZAP = "TODO",
+		WX78_DRONE_ZAP_REMOTE =
+		{
+			--GENERIC = "TODO",
+			CANUSE = "only_used_by_wx78",
+		},
+
+        -- All other characters but Wx-78 share one quote.
+        WX78MODULE_RADAR = "So much science packed into one tiny gizmo.",
+        WX78MODULE_STACKSIZE = "So much science packed into one tiny gizmo.",
+        WX78MODULE_DIGESTION = "So much science packed into one tiny gizmo.",
+        WX78MODULE_SCREECH = "So much science packed into one tiny gizmo.",
+        WX78MODULE_LIGHT2 = "So much science packed into one tiny gizmo.",
+
+        WX78_INVENTORYCONTAINER =
+        {
+            HELD = "only_used_by_wx78", -- Held, and working as a container
+            --GENERIC = "TODO", -- It was dropped, treat it as if its broken down, and is rummagable
+        },
+
+        WX78_FOODBRICK =
+        {
+            --WET = "TODO", -- The food brick is moistened, and can be eaten.
+            --GENERIC = "TODO", -- The food brick is dry, like a hard tack. Can't be eaten.
+        },
     },
 
     DESCRIBE_GENERIC = "It's a... thing.",

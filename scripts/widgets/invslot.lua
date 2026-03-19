@@ -140,7 +140,7 @@ function InvSlot:Click(stack_mod)
                 TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
             end
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.prefab == active_item.prefab and container_item:StackableSkinHack(active_item) and container_item.replica.stackable ~= nil and container:AcceptsStacks() then
+            if container_item.replica.stackable ~= nil and container_item.replica.stackable:CanStackWith(active_item) and container:AcceptsStacks() then
                 --Add active item to slot stack
                 if stack_mod and
                     active_item.replica.stackable ~= nil and
@@ -217,7 +217,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     if item.replica.equippable ~= nil and container == k.replica.inventory then
                         local equip = container:GetEquippedItem(item.replica.equippable:EquipSlot())
                         if equip ~= nil and equip.prefab == item.prefab and equip.skinname == item.skinname then
-                            if equip.replica.stackable ~= nil and not equip.replica.stackable:IsFull() then
+                            if equip.replica.stackable ~= nil and equip.replica.stackable:CanStackWith(item) and not equip.replica.stackable:IsFull() then
                                 return k
                             elseif not isfull and containerwithsameitem == nil then
                                 containerwithsameitem = k
@@ -226,7 +226,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     end
                     for k1, v1 in pairs(container:GetItems()) do
                         if v1.prefab == item.prefab and v1.skinname == item.skinname then
-                            if v1.replica.stackable ~= nil and not v1.replica.stackable:IsFull() then
+                            if v1.replica.stackable ~= nil and v1.replica.stackable:CanStackWith(item) and not v1.replica.stackable:IsFull() then
                                 if container.lowpriorityselection then
                                     containerwithlowpirority = k
                                 else

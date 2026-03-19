@@ -1717,6 +1717,7 @@ function Tune(overrides)
         SPIDERHAT_RANGE = 12,
         ONEMANBAND_PERISHTIME = 6*seg_time,
         ONEMANBAND_RANGE = 12,
+        ONEMANBAND_MAXFOLLOWERS = 10,
         HEATROCK_NUMUSES = 8,
 
         GRASS_UMBRELLA_PERISHTIME = 2*total_day_time*perish_warp,
@@ -5850,6 +5851,8 @@ function Tune(overrides)
 
         TREEGROWTH_NUTRIENTS            = {  8, 32,  8 },
 
+        WX78_FOODBRICK_NUTRIENTS        = {  0, 24,  0 },
+
 		WORMWOOD_MANURE_HEAL_VALUES = { 2, 3, 8, 12 },
 
 		WORMWOOD_COMPOST_HEAL_VALUES = { 4, 6, 8, 32 },
@@ -6553,7 +6556,7 @@ function Tune(overrides)
         RUINS_CAVEIN_OBSTACLE_FALL_DAMAGE = 40,
 
         -- WX78 Refresh
-        WX78_MAXELECTRICCHARGE = 6,
+        WX78_MAXELECTRICCHARGE = 6, -- Deprecated, use WX78_INITIAL_MAXCHARGELEVEL
         WX78_MINACCEPTABLEMOISTURE = 15,
         WX78_HUNGRYCHARGEDRAIN_TICKTIME = 300 * FRAMES,
         WX78_CHARGE_REGENTIME = 3*seg_time,
@@ -6597,6 +6600,7 @@ function Tune(overrides)
         WX78_LIGHT_BASERADIUS = 3.5,
         WX78_LIGHT_EXTRARADIUS = 1.5,
 
+        -- Depracated ranges, these were used inconsistently together...
         WX78_MUSIC_TENDRANGE = 12,
         WX78_MUSIC_AURADSQ = 256,
         WX78_MUSIC_UPDATERATE = 144*FRAMES,
@@ -6608,7 +6612,7 @@ function Tune(overrides)
 
         WX78_MAXHEALTH2_MULT = 3.0, -- A multiplier on WX78_MAXHEALTH_BOOST
 
-        WX78_CHARGING_FOODS = {
+        WX78_CHARGING_FOODS = { -- Deprecated. Set edible.chargevalue instead.
             voltgoatjelly = 1,
             voltgoatjelly_spice_chili = 1,
             voltgoatjelly_spice_garlic = 1,
@@ -7434,6 +7438,84 @@ function Tune(overrides)
                 ALLEGIANCE_VS_LUNAR_BONUS = 1.1,
                 VOIDCLOTHSCYTHE_AOE_RANGE = 2.5,
             },
+
+            WX78 = {
+                -- wx78_circuitry_halfmoduleuses
+                HALF_MODULE_CONSUMPTION = .5,
+                -- wx78_circuitry_fastercharge
+                FASTER_CHARGE_MULTIPLIER = 2.5,
+                -- wx78_circuitry_lesschargeloss
+                SAVE_CHARGE_ON_UNPLUG = 1,
+                -- wx78_circuitry_alphabuffs_1
+                MAXHEALTH_ARMOR = 0.025,
+                MAXHEALTH2_ARMOR_MULT = 4,
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF = 0.70,
+                MAXHUNGER1_SLOWPERCENT_ALPHABUFF = 0.95,
+                MAXSANITY1_SANITY_MOD_ALPHABUFF = 0.8,
+                MAXSANITY_SANITY_MOD_ALPHABUFF = 0.5,
+                BEE_HEALTHPERTICK_MULT_ALPHABUFF = 2,
+                BEE_TICKPERIOD_ALPHABUFF = seg_time * 0.5,
+                RADAR_ZAPDRONERANGE = 5,
+                RADAR_SCOUTDRONERANGE = 100,
+                -- wx78_circuitry_alphabuffs_2
+                MAXHEALTH_ARMOR_ALPHABUFF_2 = 0.05,
+                MAXHUNGER_SLOWPERCENT_ALPHABUFF_2 = 0.50,
+                MAXHUNGER1_SLOWPERCENT_ALPHABUFF_2 = 0.90,
+                MAXSANITY1_DAPPERNESS_MULT = 0.20,
+                MAXSANITY_DAPPERNESS_MULT = 0.50,
+                BEE_SHIELDPERTICK = 0.5,
+                BEE_SHIELDPERCENT = 0.2, -- how much shield dependant on max health.
+
+                -- wx78_circuitry_betabuffs_1
+                HEAT_FIRE_DAMAGE_SCALE = 0.5, -- 50% per module
+                COLD_FREEZE_RESISTANCE = 2, -- 2x per module resistance to freezing (immune to freezing at 2 cold circuits)
+                MUSIC_MAXFOLLOWERS = 10, -- 10 max followers per module
+
+                -- wx78_circuitry_betabuffs_2
+                TASER_MAXBUILDUP = 100,
+                TASER_BUILDUP_GAIN_RATE = 5,
+                TASER_BUILDUP_DRAIN_RATE_BASE = -6,
+                TASER_BUILDUP_DRAIN_BUFFER_TIME = 4,
+                TASER_BUILDUP_DAMAGE = 100,
+                TASER_BUILDUP_RADIUS = 2,
+                TASER_EFFECT_BASE_TIME = 14,
+                TASER_EFFECT_VAR_TIME = 2,
+                TASER_EFFECT_DURATION_BASE_TIME = 1.5,
+                TASER_EFFECT_DURATION_VAR_TIME = 0.5,
+
+                TASER_BUILDUP_GAIN_RATE_MULT_PER_MODULE = 1/3,
+                TASER_BUILDUP_DRAIN_RATE_ADD_PER_MODULE = 1, -- lower base drain rate with each taser module
+                TASER_BUILDUP_RADIUS_PER_MODULE = 1,
+                -- wx78_circuitry_gammabuffs_1
+                -- wx78_circuitry_gammabuffs_2
+                -- wx78_extrabody_1
+                BACKUPBODY_WORK_REQUIRED = 3,
+                -- wx78_extrabody_2
+                -- wx78_extrabody_3
+                -- wx78_remotebodyswap
+                REMOTEBODYSWAP_DETECTION_RADIUS = 20,
+				MAPSCOUTSELECT_DETECTION_RADIUS = 10,
+                -- wx78_scoutdrone_1
+                SCOUTDRONE_MAX_COUNT = 2,
+                SCOUTDRONE_SPEED = 3,
+                SCOUTDRONE_RANGE = 200,
+                -- wx78_scoutdrone_2
+                SCOUTDRONE_RANGE_BONUS = 300,
+                -- wx78_deliverydrone_1
+                DELIVERYDRONE_SPEED = 30,
+                -- wx78_deliverydrone_2
+                -- wx78_zapdrone_1
+                ZAPDRONE_SPEED = 7,
+				ZAPDRONE_DAMAGE = 30,
+				ZAPDRONE_INSULATED_DAMAGE_MULT = 0.5,
+				ZAPDRONE_AGGRO_RANGE = 15,
+				ZAPDRONE_USES = 100,
+				ZAPDRONE_USE_PER_ATTACK_1 = 2,
+				ZAPDRONE_RANGE_1 = 15,
+                -- wx78_zapdrone_2
+				ZAPDRONE_USE_PER_ATTACK_2 = 1,
+				ZAPDRONE_RANGE_2 = 30,
+            }
         },
 
         WILSON_BEARD_BITS ={
@@ -9059,8 +9141,6 @@ function Tune(overrides)
 		HERMITCRAB_HOTSPRING_HAPPY_SOAK_TIME = 60,
 
         MOONSTORM_SPARKCHARGE_DEFAULT = 0.1,
-        NIGHTSTICK_SPARKCHARGE = 0.25,
-        NIGHTSTICK_BATTERYCHARGE = 1.0,
 
         WINTERSURPRISE_SPAWN_DELAY = total_day_time * 2,
         WINTERSURPRISE_SPAWN_DELAY_VARIANCE = total_day_time * 1,
@@ -9222,6 +9302,29 @@ function Tune(overrides)
         MONKEY_FOLLOW_PLAYER_CHANCE = 0.15,
         MONKEY_FOLLOW_PLAYER_WITH_BANANA_CHANCE = 0.6,
         --
+
+        -- Meta 6
+
+        WX78_INITIAL_MAXCHARGELEVEL = 6,
+        WX78_MAXCHARGELEVEL_SKILL = 7,
+
+        WX78_CHARGE_SMALL = 1,
+        WX78_CHARGE_MED = 3,
+        WX78_CHARGE_LARGE = 6,
+
+        WX78_MODULE_CONSUMPTION = 1,
+
+        WX78_MUSIC_RANGE = 12,
+
+        WX78_LIGHT_RADIUS_PER_MODULE = 1.25,
+
+        WX78_WATER_THRESHOLD_ADD = 5,
+
+        WX78_RADAR_EXTRA_VIEW_DIST = 5,
+
+        WX78_FOODBRICK_FERTILIZE = day_time*0.75,
+        WX78_FOODBRICK_SOILCYCLES = 8,
+        WX78_FOODBRICK_WITHEREDCYCLES = 0.5,
     }
 
     TUNING_MODIFIERS = {}

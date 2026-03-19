@@ -13,10 +13,8 @@ local MERGE_NO_TAGS = {"INLIMBO"}
 
 local function MergeStacks(inst)
 	local function CanMergeTestFn(item)
-		return item.prefab == inst.prefab
-				and item.skinname == inst.skinname
-				and (item.components.inventoryitem ~= nil and item.components.inventoryitem.is_landed)
-				and (item.components.stackable ~= nil and (item.components.stackable:RoomLeft() >= inst.components.stackable:StackSize()))
+		return (item.components.inventoryitem ~= nil and item.components.inventoryitem.is_landed)
+				and (item.components.stackable ~= nil and item.components.stackable:CanStackWith(inst) and (item.components.stackable:RoomLeft() >= inst.components.stackable:StackSize()))
 	end
 
 	local item = FindEntity(inst, 1, function(item) return CanMergeTestFn(item) end, nil, MERGE_NO_TAGS)
