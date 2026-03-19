@@ -5273,7 +5273,7 @@ table.insert(prefs, CreatePrefabSkin("footballhat_rw_gustree",
 	base_prefab = "footballhat",
 	type = "item",
 	rarity = "Loyal",
-	init_fn = function(inst, skin_custom) footballhat_init_fn(inst, "footballhat_rw_gustree", skin_custom) end,
+	init_fn = function(inst) footballhat_init_fn(inst, "footballhat_rw_gustree", true) end,
 	skin_tags = { "FOOTBALLHAT", "CRAFTABLE", },
 	release_group = 178,
 }))

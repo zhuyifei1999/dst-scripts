@@ -302,19 +302,18 @@ function CraftingMenuHUD:RebuildRecipes()
 
                 meta.limitedamount = craftinglimits[recipe.name]
                 meta.hide_due_to_missing_skin = nil
-
-				local is_build_tag_restricted = not builder:CanLearn(recipe.name) -- canlearn is "not build tag restricted"
-
-				if knows_recipe or should_hint_recipe or recipe.force_hint or recipe.always_allow_buffered_placer or freecrafting then --Knows enough to see it
+                if needs_unlocked_skin and not has_unlocked_skin then
+                    meta.hide_due_to_missing_skin = true
+                    meta.can_build = false
+                    meta.build_state = "hide"
+                elseif knows_recipe or should_hint_recipe or recipe.force_hint or recipe.always_allow_buffered_placer or freecrafting then --Knows enough to see it
 				--and (self.filter == nil or self.filter(recipe.name, builder, nil)) -- Has no filter or passes the filter in place
+                
+                    local is_build_tag_restricted = not builder:CanLearn(recipe.name) -- canlearn is "not build tag restricted"
 
 					if builder:IsBuildBuffered(recipe.name) and not is_build_tag_restricted then
 						meta.can_build = true
 						meta.build_state = "buffered"
-                    elseif needs_unlocked_skin and not has_unlocked_skin then
-                        meta.hide_due_to_missing_skin = true
-						meta.can_build = false
-						meta.build_state = "hide"
 					elseif freecrafting then
 						meta.can_build = true
 						meta.build_state = "freecrafting"
