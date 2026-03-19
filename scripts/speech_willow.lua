@@ -2184,6 +2184,7 @@ return{
         CRITTER_KITTEN = "You're the perfect lapwarmer.",
         CRITTER_PERDLING = "I could just eat you up.",
 		CRITTER_LUNARMOTHLING = "She loves flames!",
+        CRITTER_BULBIN = "My bulbous little buddy.",
 
 		CROW =
 		{
@@ -5920,6 +5921,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Ten seconds to make it work before I burn it.",
 
 		HERMITHOTSPRING  =
         {

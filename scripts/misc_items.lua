@@ -1506,6 +1506,15 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 58,
 	},
+	mysterybox_rotwood_gift =
+	{
+		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
+		build_name_override = "mysterybox_classic_4",
+		box_build = "box_mystery_classic",
+		rarity = "Loyal",
+		release_group = 178,
+	},
 	mysterybox_terraria =
 	{
 		type = "mysterybox",
@@ -8251,6 +8260,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 51,
 	},
+	playerportrait_bg_eyebrellahat_insect =
+	{
+		type = "playerportrait",
+		skin_tags = { "INSECT", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 178,
+	},
 	playerportrait_bg_eyebrellahatcrystal =
 	{
 		type = "playerportrait",
@@ -9367,6 +9383,13 @@ MISC_ITEMS =
 		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 69,
+	},
+	profileflair_eyebrellahat_insect =
+	{
+		type = "profileflair",
+		skin_tags = { "INSECT", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 178,
 	},
 	profileflair_eyebrellahat_rose =
 	{

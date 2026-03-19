@@ -2984,3 +2984,8 @@ YOTH_HORSE_NAMES = {
     "FAMINE",
     "DEATH",
 }
+
+SKINUNLOCKS = {
+    ALWAYS = 1,
+    CRAFTINGSTATION = 2,
+}

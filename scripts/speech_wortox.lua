@@ -2197,6 +2197,7 @@ return{
         CRITTER_KITTEN = "What should our next prank be, little kitty?",
         CRITTER_PERDLING = "You're so sweet, I could just gobble you up.",
 		CRITTER_LUNARMOTHLING = "On wings alight comes a fuzzy delight!",
+        CRITTER_BULBIN = "Once you dwelt in a rotten wood, now it seems you're here for good!",
 
 		CROW =
 		{
@@ -5933,6 +5934,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Oh dear, how'd that get here?",
 
 		HERMITHOTSPRING  =
         {

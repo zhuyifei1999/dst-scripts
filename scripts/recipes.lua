@@ -789,6 +789,7 @@ Recipe2("critter_dragonling_builder",		{Ingredient("lavae_cocoon", 1), Ingredien
 Recipe2("critter_glomling_builder",			{Ingredient("glommerfuel", 1), Ingredient("taffy", 1)},													TECH.ORPHANAGE_ONE,			{nounlock=true, actionstr="ORPHANAGE"})
 Recipe2("critter_lunarmothling_builder",	{Ingredient("moonbutterfly", 1), Ingredient("flowersalad", 1)},											TECH.ORPHANAGE_ONE,			{nounlock=true, actionstr="ORPHANAGE"})
 Recipe2("critter_eyeofterror_builder",		{Ingredient("milkywhites", 1), Ingredient("baconeggs", 1)},												TECH.ORPHANAGE_ONE,			{nounlock=true, actionstr="ORPHANAGE"})
+Recipe2("critter_bulbin_builder",			{Ingredient("onion", 1, nil, nil, "quagmire_onion.tex"), Ingredient("stuffedeggplant", 1)},				TECH.ORPHANAGE_ONE,			{unlocks_from_skin=true, nounlock=true, actionstr="ORPHANAGE"})
 
 ----CELESTIAL----
 Recipe2("moonrockidol",								{Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)},									TECH.CELESTIAL_ONE,			{nounlock=true})
@@ -1002,6 +1003,31 @@ Recipe2("cutstone_bunch",								{Ingredient("rocks", 15)}, 																				
 
 Recipe2("phonograph",									{Ingredient("goldnugget", 3), Ingredient("transistor", 2), Ingredient("gears", 1)},								TECH.SCIENCE_TWO)
 Recipe2("record",										{Ingredient("batwing", 1), Ingredient("charcoal", 1)},															TECH.SCIENCE_TWO,			{image="record.tex"})
+Recipe2("w_radio",									{Ingredient("wagpunk_bits", 5), Ingredient("transistor", 2)},													TECH.LOST,
+{
+    unlocks_from_skin = true,
+	layeredimagefn = function(skin_name, custom)
+		local layers = {}
+
+		local function _add_layer(partname, variation)
+			layers[#layers + 1] =
+			{
+				atlas = "images/w_radio_parts.xml",
+				image = string.format("%s%04d.tex", partname, variation),
+			}
+		end
+
+		custom = custom and json.decode(custom) or nil
+
+		_add_layer("antenna",		custom and tonumber(custom.ANTENNA) or 1)
+		_add_layer("base",			1)
+		_add_layer("right_side",	custom and tonumber(custom.RIGHT) or 1)
+		_add_layer("left_side",		custom and tonumber(custom.LEFT) or 1)
+		_add_layer("face",			custom and tonumber(custom.FACE) or 1)
+		_add_layer("plate",			custom and tonumber(custom.PLATE) or 1)
+		return layers
+	end,
+})
 
 ------------------------------- SPECIAL EVENTS -------------------------------
 

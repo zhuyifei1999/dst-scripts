@@ -97,6 +97,7 @@ local reskin_fx_info =
     mighty_gym = {offset = 2, scale = 2.7},
     eyeturret = {offset = 1, scalex = 1.4, scaley = 2.4},
     wobybig = {offset = 1, scalex = 2.0, scaley = 1.6},
+    w_radio = {scalex = 1.2, scaley = 1.6},
 }
 local function GetReskinFXInfo(target)
     if target.prefab == "treasurechest" and target._chestupgrade_stacksize then

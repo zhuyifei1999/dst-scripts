@@ -2181,6 +2181,7 @@ return{
         CRITTER_KITTEN = "Me-Raow, Teeny Kitkit",
         CRITTER_PERDLING = "Wee Tweeter is friend now",
 		CRITTER_LUNARMOTHLING = "Flap flap Flappy friend",
+        CRITTER_BULBIN = "Don't worry, friend! Safe now",
 
 		CROW =
 		{
@@ -5917,6 +5918,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "What friend do?",
 
 		HERMITHOTSPRING  =
         {

@@ -105,17 +105,29 @@ end
 -------------------------------------------------------------------------------
 
 local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
-    local buildname = (data and data.buildname) or animname.."_build"
+    local buildname
+    if not data or not data.skin_only then
+        buildname = (data and data.buildname) or animname.."_build"
+    end
     local assets =
     {
-        Asset("ANIM", "anim/"..buildname..".zip"),
 	    Asset("ANIM", "anim/"..animname.."_basic.zip"),
 	    Asset("ANIM", "anim/"..animname.."_emotes.zip"),
 	    Asset("ANIM", "anim/"..animname.."_traits.zip"),
     }
+    if buildname then
+        table.insert(assets, Asset("ANIM", "anim/"..buildname..".zip"))
+    end
 
-    if data.allow_platform_hopping then
-        table.insert(assets, Asset("ANIM", "anim/"..animname.."_jump.zip"))
+    if data then
+        if data.allow_platform_hopping then
+            table.insert(assets, Asset("ANIM", "anim/"..animname.."_jump.zip"))
+        end
+        if data.assets then
+            for _, v in ipairs(data.assets) do
+                table.insert(assets, v)
+            end
+        end
     end
 
     local function fn()
@@ -140,7 +152,9 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         end
 
         inst.AnimState:SetBank(animname)
-        inst.AnimState:SetBuild(buildname)
+        if buildname then
+            inst.AnimState:SetBuild(buildname)
+        end
         inst.AnimState:PlayAnimation("idle_loop")
 
         if flying then
@@ -346,6 +360,13 @@ end
 -------------------------------------------------------------------------------
 local standard_diet = { FOODGROUP.OMNI }
 
+local bulbin_assets = {
+    Asset("ANIM", "anim/bulbin_whistle.zip"),
+    Asset("ANIM", "anim/bulbin_spin.zip"),
+    Asset("SOUND", "sound/together.fsb"),
+    Asset("SOUND", "sound/beefalo.fsb"),
+}
+
 return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole", allow_platform_hopping=true}),
        MakeBuilder("critter_lamb"),
        MakeCritter("critter_puppy", "pupington", 4, standard_diet, false, {favoritefood="monsterlasagna", allow_platform_hopping=true}),
@@ -361,4 +382,6 @@ return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favo
        MakeCritter("critter_lunarmothling", "lunarmoth", 4, standard_diet, true, {favoritefood="flowersalad", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/flap_LP", special_powers_fn = lunarmoth_special_powers_fn}, {"critterbuff_lunarmoth"}),
        MakeBuilder("critter_lunarmothling"),
        MakeCritter("critter_eyeofterror", "eyeofterror_mini", 6, standard_diet, true, {buildname = "eyeofterror_mini_basic", favoritefood="baconeggs"--[[, flyingsoundloop = "a hover loop here, IF we want it"]] }),
-       MakeBuilder("critter_eyeofterror")
+       MakeBuilder("critter_eyeofterror"),
+       MakeCritter("critter_bulbin", "bulbin", 6, standard_diet, false, {skin_only=true, favoritefood="stuffedeggplant", allow_platform_hopping=true, assets=bulbin_assets}),
+       MakeBuilder("critter_bulbin")

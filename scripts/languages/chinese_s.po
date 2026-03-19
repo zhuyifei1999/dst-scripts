@@ -10926,6 +10926,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTERLAB"
 msgid "Is there something in there?"
 msgstr "那里面有什么东西吗？"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_BULBIN"
+msgid "You'd never do anything rotten, would you?"
+msgstr "你肯定不会做什么腐坏的事，对吧？"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CRITTER_DRAGONLING"
 msgid "It's wyrmed its way into my heart."
@@ -22701,6 +22706,11 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's got the look of someone eager to show their work."
 msgstr "它有一种迫不及待向世人展示自己作品的急迫。"
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.W_RADIO"
+msgid "Hm. There's a lot of science here."
+msgstr "嗯，科技含量很高。"
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWAMULET"
 msgid "Warm to the touch."
@@ -29515,6 +29525,11 @@ msgstr "哇哦！好酷的螃蟹！"
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTERLAB"
 msgid "What's wrong Woby? Is something in there?"
 msgstr "怎么了，沃比？里面有东西吗？"
+
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_BULBIN"
+msgid "I didn't know vegetables could be monsters too!"
+msgstr "谁曾想蔬菜也能变成怪物！"
 
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.CRITTER_DRAGONLING"
@@ -41226,6 +41241,11 @@ msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What is it boy? Do you have something to show WX?"
 msgstr "怎么了，孩子？你有东西给WX看吗？"
 
+#. STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.W_RADIO"
+msgid "What do you think it does, Woby?"
+msgstr "你觉得它是做什么的，沃比？"
+
 #. STRINGS.CHARACTERS.WALTER.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WALTER.DESCRIBE.YELLOWAMULET"
 msgid "With this on, I'm invincible! Right?"
@@ -47920,6 +47940,11 @@ msgstr "记得我吗？"
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTERLAB"
 msgid "Shadow creatures! No, wait a tick, it's something else..."
 msgstr "暗影生物! 不，等等，是别的东西……"
+
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_BULBIN"
+msgid "Aren't you a little far from home?"
+msgstr "远离家乡了吧？"
 
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.CRITTER_DRAGONLING"
@@ -59626,6 +59651,11 @@ msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "I suppose you have nothing better to do than wait around?"
 msgstr "你除了干等着就没事可做了？"
 
+#. STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.W_RADIO"
+msgid "I don't trust it."
+msgstr "我不相信它。"
+
 #. STRINGS.CHARACTERS.WANDA.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WANDA.DESCRIBE.YELLOWAMULET"
 msgid "Just the boost I needed."
@@ -66190,6 +66220,11 @@ msgstr "哇哦，这还不是主菜。"
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTERLAB"
 msgid "I could use a friend in this difficult world."
 msgstr "在这艰辛的世界里，多个朋友多条路。"
+
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_BULBIN"
+msgid "It never hurts to have a little onion on hand."
+msgstr "手边有点小小的洋葱总不会错。"
 
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.CRITTER_DRAGONLING"
@@ -77121,6 +77156,11 @@ msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Voilà, it is done!"
 msgstr "哇啦，完成了！"
 
+#. STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.W_RADIO"
+msgid "What appliance is this?"
+msgstr "这是什么家电？"
+
 #. STRINGS.CHARACTERS.WARLY.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WARLY.DESCRIBE.YELLOWAMULET"
 msgid "Puts some pep in my step!"
@@ -83660,6 +83700,11 @@ msgstr "终于来了。利爪战士，值得死在我的长矛之下。"
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTERLAB"
 msgid "Tis a peculiar boulder."
 msgstr "这是一块特别的岩石。"
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_BULBIN"
+msgid "I forgive her vegetable ways."
+msgstr "菜是她的本性，我表示原谅。"
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.CRITTER_DRAGONLING"
@@ -95341,6 +95386,11 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Metal warrior! The scout's report is complete!"
 msgstr "金属战士！侦察兵已送回报告！"
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.W_RADIO"
+msgid "What infernal device is this?"
+msgstr "是何地狱之器？"
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.YELLOWAMULET"
 msgid "A star, captured within an amulet."
@@ -101965,6 +102015,11 @@ msgstr "中层管理人员。"
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTERLAB"
 msgid "Am I being watched by that rock?"
 msgstr "我是不是正在被那块岩石监视？"
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_BULBIN"
+msgid "You're not from around here, are you pal?"
+msgstr "伙计，你不是本地的吧？"
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.CRITTER_DRAGONLING"
@@ -113641,6 +113696,11 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "That constant blinking light is testing my patience."
 msgstr "灯一直在闪烁，简直就是在考验我的耐心。"
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.W_RADIO"
+msgid "It makes me uncomfortable."
+msgstr "膈应到我了。"
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.YELLOWAMULET"
 msgid "This will make me stand out."
@@ -120180,6 +120240,11 @@ msgstr "不太友好。"
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTERLAB"
 msgid "It looks warm in there."
 msgstr "那里面看起来很温暖。"
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_BULBIN"
+msgid "It's our little onion friend!"
+msgstr "小洋葱是我们的朋友！"
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.CRITTER_DRAGONLING"
@@ -131861,6 +131926,11 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "WX! We think Jimmy's trying to get your attention!"
 msgstr "WX！我们猜吉米有事找你！"
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.W_RADIO"
+msgid "Yay! New toy!"
+msgstr "耶！新玩具！"
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.YELLOWAMULET"
 msgid "Nice and glowy."
@@ -138445,6 +138515,11 @@ msgstr "你的咄咄逼人其实是为了填补空虚吗？"
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTERLAB"
 msgid "Oh. The abyss is staring back at me..."
 msgstr "哦。深渊回头盯着我..."
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_BULBIN"
+msgid "Its adorable face nearly brings me to tears."
+msgstr "它的脸可爱到让我想掉眼泪。"
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.CRITTER_DRAGONLING"
@@ -150116,6 +150191,11 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Poor little machine. Is nobody paying attention to you?"
 msgstr "可怜的小机器。没有人注意到你吗？"
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.W_RADIO"
+msgid "What does it do?"
+msgstr "它有什么用处？"
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.YELLOWAMULET"
 msgid "A brief light in a dark life."
@@ -156705,6 +156785,11 @@ msgstr "这是一个十足动物中的野蛮人。"
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTERLAB"
 msgid "A perfect hollow for nesting animals."
 msgstr "筑巢动物的完美洞穴。"
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_BULBIN"
+msgid "Are you animal or vegetable, dear?"
+msgstr "你算动物还是植物呢，亲爱的？"
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.CRITTER_DRAGONLING"
@@ -168376,6 +168461,11 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's finished compiling some more research, I believe."
 msgstr "我相信它已经完成了研究资料的编纂。"
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.W_RADIO"
+msgid "Interesting... I conclude it requires further study."
+msgstr "有意思……我推断它需要进一步研究。"
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.YELLOWAMULET"
 msgid "This amulet is glowing at the mid 530 nanometer wavelength."
@@ -174925,6 +175015,11 @@ msgstr "是谁点了这么多螃蟹？"
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTERLAB"
 msgid "Is there anything cute in there??"
 msgstr "那里面有什么可爱的东西吗？？"
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_BULBIN"
+msgid "My bulbous little buddy."
+msgstr "既是小胖墩又是小伙伴。"
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.CRITTER_DRAGONLING"
@@ -186601,6 +186696,11 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "What are you waiting for, a pat on the head?"
 msgstr "你还在等什么，想让我拍拍你的脑袋？"
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.W_RADIO"
+msgid "Ten seconds to make it work before I burn it."
+msgstr "给你十秒钟弄好它，不然我就一把火烧了。"
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.YELLOWAMULET"
 msgid "It seems to absorb the darkness around it."
@@ -193200,6 +193300,11 @@ msgstr "我以前的有些领班比他还过分。"
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTERLAB"
 msgid "Come on out, don't be shy."
 msgstr "出来吧，别害羞了。"
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_BULBIN"
+msgid "You're a sweet little fella, but your breath is terrible."
+msgstr "你是个可爱的小家伙，就是嘴巴里的味道有点大。"
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.CRITTER_DRAGONLING"
@@ -204906,6 +205011,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "He's signalling his supervisor."
 msgstr "他在给主管发信号。"
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.W_RADIO"
+msgid "I think I recognize this handywork..."
+msgstr "我好像认得这工艺……"
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.YELLOWAMULET"
 msgid "Useful little tool."
@@ -211485,6 +211595,11 @@ msgstr "来，硬汉。沃尔夫冈刚刚热身完毕。"
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTERLAB"
 msgid "Wolfgang hear little noises inside."
 msgstr "沃尔夫冈听到里面传来轻微的声响。"
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_BULBIN"
+msgid "Onions are Wolfgang's best friend! Second to potato!"
+msgstr "洋葱是沃尔夫冈最好的朋友！仅次于土豆！"
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.CRITTER_DRAGONLING"
@@ -223156,6 +223271,11 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Funny machine is winking at Wolfgang?"
 msgstr "有趣的机器在跟沃尔夫冈眨眼？"
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.W_RADIO"
+msgid "Hello little... what are you?"
+msgstr "你好，小……你是什么？"
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.YELLOWAMULET"
 msgid "Is glowing yellow."
@@ -229675,6 +229795,11 @@ msgstr "不太友好，诶？"
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTERLAB"
 msgid "Anyone home?"
 msgstr "有人在家吗？"
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_BULBIN"
+msgid "Sure got a spring in your step, eh?"
+msgstr "你步子迈得还挺有劲，诶？"
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.CRITTER_DRAGONLING"
@@ -241356,6 +241481,11 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Trying to get someone's attention, eh?"
 msgstr "是想吸引眼球，诶？"
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.W_RADIO"
+msgid "Does it play any tunes?"
+msgstr "这玩意儿能放出来歌么？"
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.YELLOWAMULET"
 msgid "I could cut wood at night with this."
@@ -247905,6 +248035,11 @@ msgstr "有刺的钳钳"
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTERLAB"
 msgid "Little friends hiding inside"
 msgstr "有小朋友藏在里面"
+
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_BULBIN"
+msgid "Don't worry, friend! Safe now"
+msgstr "别担心，朋友！现在安全了"
 
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.CRITTER_DRAGONLING"
@@ -259601,6 +259736,11 @@ msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Blinky blink"
 msgstr "一眨一眨的"
 
+#. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.W_RADIO"
+msgid "What friend do?"
+msgstr "朋友能做什么？"
+
 #. STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.YELLOWAMULET"
 msgid "Can go zoomy now!"
@@ -266295,6 +266435,11 @@ msgstr "我大受震撼！"
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTERLAB"
 msgid "Ooo, I'd like a partner in pranks."
 msgstr "嘿嘿，给我找个恶作剧的伙伴吧。"
+
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_BULBIN"
+msgid "Once you dwelt in a rotten wood, now it seems you're here for good!"
+msgstr "你从腐林来，来了就不离开！"
 
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.CRITTER_DRAGONLING"
@@ -277981,6 +278126,11 @@ msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "It's done its toil, now our friend must collect the spoils."
 msgstr "有它辛苦在前，才有主人的方便。"
 
+#. STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.W_RADIO"
+msgid "Oh dear, how'd that get here?"
+msgstr "哎呀，它咋溜到这啦？"
+
 #. STRINGS.CHARACTERS.WORTOX.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WORTOX.DESCRIBE.YELLOWAMULET"
 msgid "I'll give my brain a slight refrain."
@@ -284615,6 +284765,11 @@ msgstr "又一个暴躁的螃人。格浪噗！"
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTERLAB"
 msgid "See something moving inside, florp."
 msgstr "看见里面有东西在动，浮浪噗。"
+
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_BULBIN"
+msgid "Little, smelly and green. You perfect, florp."
+msgstr "小小的，臭臭的，绿绿的。你太完美了，浮浪噗。"
 
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.CRITTER_DRAGONLING"
@@ -296316,6 +296471,11 @@ msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "Why it all blinky?"
 msgstr "怎么一直闪呢？"
 
+#. STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.W_RADIO"
+msgid "Make do stuff, flort!"
+msgstr "倒是做点什么呀，浮浪特！"
+
 #. STRINGS.CHARACTERS.WURT.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WURT.DESCRIBE.YELLOWAMULET"
 msgid "Feel warm..."
@@ -302875,6 +303035,11 @@ msgstr "我要揭开你肉袋的本质"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTERLAB"
 msgid "IT'S A MINION HOLE"
 msgstr "这是一个随从的洞"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_BULBIN
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_BULBIN"
+msgid "CORRUPTION DETECTED. EXCELLENT"
+msgstr "检测到腐坏。很好"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_DRAGONLING
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.CRITTER_DRAGONLING"
@@ -314545,6 +314710,11 @@ msgstr "他在休息模式。吉米还是那个老样子"
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.WX78_SCANNER_SUCCEEDED"
 msgid "EXCELLENT WORK, JIMMY. AWAIT RETRIEVAL"
 msgstr "干得漂亮，吉米。等待提取"
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.W_RADIO"
+msgid "DO I KNOW YOU?"
+msgstr "我认识你吗？"
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.YELLOWAMULET
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.YELLOWAMULET"
@@ -326726,6 +326896,16 @@ msgctxt "STRINGS.NAMES.CRITTERLAB"
 msgid "Rock Den"
 msgstr "岩石巢穴"
 
+#. STRINGS.NAMES.CRITTER_BULBIN
+msgctxt "STRINGS.NAMES.CRITTER_BULBIN"
+msgid "Bulbin"
+msgstr "芽葱"
+
+#. STRINGS.NAMES.CRITTER_BULBIN_BUILDER
+msgctxt "STRINGS.NAMES.CRITTER_BULBIN_BUILDER"
+msgid "Bulbin"
+msgstr "芽葱"
+
 #. STRINGS.NAMES.CRITTER_DRAGONLING
 msgctxt "STRINGS.NAMES.CRITTER_DRAGONLING"
 msgid "Broodling"
@@ -327829,7 +328009,7 @@ msgstr "蕨叶"
 #. STRINGS.NAMES.FOLIAGE_DRIED
 msgctxt "STRINGS.NAMES.FOLIAGE_DRIED"
 msgid "Dried Foliage"
-msgstr "乾蕨葉"
+msgstr "干蕨叶"
 
 #. STRINGS.NAMES.FOOTBALLHAT
 msgctxt "STRINGS.NAMES.FOOTBALLHAT"
@@ -329199,7 +329379,7 @@ msgstr "茄子种子"
 #. STRINGS.NAMES.KNOWN_GARLIC_SEEDS
 msgctxt "STRINGS.NAMES.KNOWN_GARLIC_SEEDS"
 msgid "Garlic Seeds"
-msgstr "蒜种子"
+msgstr "大蒜种子"
 
 #. STRINGS.NAMES.KNOWN_ONION_SEEDS
 msgctxt "STRINGS.NAMES.KNOWN_ONION_SEEDS"
@@ -334514,7 +334694,7 @@ msgstr "厨师袋"
 #. STRINGS.NAMES.SPICE_CHILI
 msgctxt "STRINGS.NAMES.SPICE_CHILI"
 msgid "Chili Flakes"
-msgstr "辣椒面"
+msgstr "辣椒碎"
 
 #. STRINGS.NAMES.SPICE_CHILI_FOOD
 msgctxt "STRINGS.NAMES.SPICE_CHILI_FOOD"
@@ -337235,6 +337415,11 @@ msgstr "生物扫描分析仪"
 msgctxt "STRINGS.NAMES.WX78_SCANNER_SUCCEEDED"
 msgid "Bio Scanalyzer"
 msgstr "生物扫描分析仪"
+
+#. STRINGS.NAMES.W_RADIO
+msgctxt "STRINGS.NAMES.W_RADIO"
+msgid "B.U.D.D.Y."
+msgstr "B.U.D.D.Y."
 
 #. STRINGS.NAMES.YELLOWAMULET
 msgctxt "STRINGS.NAMES.YELLOWAMULET"
@@ -341001,6 +341186,11 @@ msgctxt "STRINGS.RECIPE_DESC.COTL_TABERNACLE_LEVEL3"
 msgid "A dazzling monument to the lamb's glory."
 msgstr "一座纪念咩咩荣耀的耀眼纪念碑。"
 
+#. STRINGS.RECIPE_DESC.CRITTER_BULBIN_BUILDER
+msgctxt "STRINGS.RECIPE_DESC.CRITTER_BULBIN_BUILDER"
+msgid "Befriend a rolling Bulbin."
+msgstr "跟翻滚的芽葱交个朋友。"
+
 #. STRINGS.RECIPE_DESC.CRITTER_DRAGONLING_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CRITTER_DRAGONLING_BUILDER"
 msgid "Befriend a noble Broodling."
@@ -344300,6 +344490,11 @@ msgstr "成功的钳（前）提是努力。"
 msgctxt "STRINGS.RECIPE_DESC.WX78_SCANNER_ITEM"
 msgid "It never hurts to have a backup scan."
 msgstr "备份扫描永远不会有坏处。"
+
+#. STRINGS.RECIPE_DESC.W_RADIO
+msgctxt "STRINGS.RECIPE_DESC.W_RADIO"
+msgid "Where is that signal coming from?"
+msgstr "那个信号是从哪里来的？"
 
 #. STRINGS.RECIPE_DESC.YELLOWAMULET
 msgctxt "STRINGS.RECIPE_DESC.YELLOWAMULET"
@@ -351464,7 +351659,7 @@ msgstr "燃烧伯尼"
 #. STRINGS.SKILLTREE.WILLOW.WILLOW_CONTROLLED_BURN_1_DESC
 msgctxt "STRINGS.SKILLTREE.WILLOW.WILLOW_CONTROLLED_BURN_1_DESC"
 msgid "Controlled fires you set won't spread, and burnable loot will just smolder.\nItems like torches and Willow's lighter have a 100% chance to ignite targets."
-msgstr "你放的火不会蔓延，可燃烧的战利品只会冒烟。\n火把和薇洛的打火机等物品有100。"
+msgstr "你放的火不会蔓延，可燃烧的战利品只会冒烟。\n火把和薇洛的打火机等物品有100%概率点燃目标。"
 
 #. STRINGS.SKILLTREE.WILLOW.WILLOW_CONTROLLED_BURN_1_TITLE
 msgctxt "STRINGS.SKILLTREE.WILLOW.WILLOW_CONTROLLED_BURN_1_TITLE"
@@ -353965,6 +354160,11 @@ msgstr "这件木质护甲在满足功能设计的同时还带有新潮装饰。
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.armor_wood_roman"
 msgid "Battle-ready wooden armor, inspired by warriors of old."
 msgstr "木制战甲，延续着古代武士精神。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.armor_wood_rw_gustree
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.armor_wood_rw_gustree"
+msgid "It's solid armor, just don't mind the draft."
+msgstr "结实的盔甲，只是有点漏风。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.arrowsign_post_circus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.arrowsign_post_circus"
@@ -357351,6 +357551,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.bugnet_spider_white"
 msgid "It's nice not to be the one getting eaten for a change."
 msgstr "不用被吃掉了，真好。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic"
+msgid "This bulbous little buddy is ready to roll."
+msgstr "翻滚吧，小球茎。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.bulbin_rw_basic_builder"
+msgid "n/a"
+msgstr "n/a"
+
 #. STRINGS.SKIN_DESCRIPTIONS.bundle_cawnival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.bundle_cawnival"
 msgid "Keep the memories of the Cawnival fresh in your mind, even after it wraps up."
@@ -358425,6 +358635,11 @@ msgstr "永恒领域的某处，有一只丢了隐形眼镜的独眼巨鹿。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_fantasy"
 msgid "You can't shake the feeling that a terrifying creature has its eye on you."
 msgstr "你无法摆脱一种感觉：有可怕的生物正在目不转睛地盯着你。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_insect"
+msgid "Just try to ignore the itching on your scalp."
+msgstr "请努力忽略头皮上的瘙痒。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.eyebrellahat_rose"
@@ -359651,6 +359866,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.firestaff_rose"
 msgid "firestaff_rose"
 msgstr "firestaff_rose"
 
+#. STRINGS.SKIN_DESCRIPTIONS.firestaff_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.firestaff_rw_swamp"
+msgid "n/a"
+msgstr "n/a"
+
 #. STRINGS.SKIN_DESCRIPTIONS.firesuppressor_circus
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.firesuppressor_circus"
 msgid "Look and be amazed by the incredible automatic snowball juggling machine!"
@@ -359735,6 +359955,11 @@ msgstr "看它那可怕的弯角！"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.footballhat_hockey"
 msgid "I'm gonna score a hat trick!"
 msgstr "我要完成一次帽子戏法！"
+
+#. STRINGS.SKIN_DESCRIPTIONS.footballhat_rw_gustree
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.footballhat_rw_gustree"
+msgid "Protect yourself from blows to the head."
+msgstr "保护脑袋免受重击。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.footballhat_western
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.footballhat_western"
@@ -359945,6 +360170,11 @@ msgstr "用蘑菇把一切砸成软泥。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hammer_invisible"
 msgid "Convey an incredibly convincing impression of a hammer."
 msgstr "惟妙惟肖地模仿了锤子。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.hammer_rw_startingforest
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.hammer_rw_startingforest"
+msgid "Pound them to a pulp!"
+msgstr "把它们捣成烂泥！"
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver"
@@ -361190,6 +361420,11 @@ msgstr "icestaff_northern"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.icestaff_rose"
 msgid "icestaff_rose"
 msgstr "icestaff_rose"
+
+#. STRINGS.SKIN_DESCRIPTIONS.icestaff_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.icestaff_rw_swamp"
+msgid "n/a"
+msgstr "n/a"
 
 #. STRINGS.SKIN_DESCRIPTIONS.insanityrock_fantasy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.insanityrock_fantasy"
@@ -363540,6 +363775,11 @@ msgstr "这个箱子包含了4顶\n月亮码头海盗帽。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_nature_4"
 msgid "This chest contains 4x\nSpring curios."
 msgstr "这个箱子包含了4件\n春季珍宝。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.mysterybox_rotwood_gift
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_rotwood_gift"
+msgid "Rotwood Gift"
+msgstr "《熔炉密林》礼物"
 
 #. STRINGS.SKIN_DESCRIPTIONS.mysterybox_terraria
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.mysterybox_terraria"
@@ -366401,6 +366641,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_elementals"
 msgid "Equip this item to change your character's background portrait."
 msgstr "装备此物品以更改你的角色背景画像。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahat_insect"
+msgid "Equip this item to change your character's background portrait."
+msgstr "装备此物品以更改你的角色背景画像。"
+
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahatcrystal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_eyebrellahatcrystal"
 msgid "Equip this item to change your character's background portrait."
@@ -367300,6 +367545,11 @@ msgstr "将你的头像设为一颗坏掉的蛋。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_crystal"
 msgid "Set your profile icon to a Glass Eyebrella."
 msgstr "将你的头像设为一个玻璃眼球伞。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_insect"
+msgid "Set your profile icon to a Wriggly Eyebrella."
+msgstr "将你的头像设为一把扭动眼球伞。"
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_rose
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_eyebrellahat_rose"
@@ -369081,6 +369331,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_rose"
 msgid "No sharper than any other spear, though much lovelier."
 msgstr "没有其他矛那么锋利，但是可爱得多。"
 
+#. STRINGS.SKIN_DESCRIPTIONS.spear_rw_swamp
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_rw_swamp"
+msgid "Poke'em with the prickly end!"
+msgstr "拿带刺的那头戳他们！"
+
 #. STRINGS.SKIN_DESCRIPTIONS.spear_simple
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_simple"
 msgid "A rudimentary weapon, sharp and ready for a quarrel."
@@ -369835,6 +370090,11 @@ msgstr "上一个拥有者应该不喜欢太阳。"
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.umbrella_spider"
 msgid "This itsy bitsy spider has no fear of rain."
 msgstr "小小蜘蛛不怕雨露。"
+
+#. STRINGS.SKIN_DESCRIPTIONS.w_radio_basic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.w_radio_basic"
+msgid "Where is that signal coming from?"
+msgstr "那个信号是从哪里来的？"
 
 #. STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fancy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wagdrone_rolling_fancy"
@@ -373221,6 +373481,11 @@ msgctxt "STRINGS.SKIN_NAMES.armor_wood_roman"
 msgid "Roman Wood Armor"
 msgstr "罗马木甲"
 
+#. STRINGS.SKIN_NAMES.armor_wood_rw_gustree
+msgctxt "STRINGS.SKIN_NAMES.armor_wood_rw_gustree"
+msgid "Gustree Wood Armor"
+msgstr "邪风树木甲"
+
 #. STRINGS.SKIN_NAMES.arrowsign_post_circus
 msgctxt "STRINGS.SKIN_NAMES.arrowsign_post_circus"
 msgid "Spectacular Stationary Wayfinder"
@@ -376606,6 +376871,16 @@ msgctxt "STRINGS.SKIN_NAMES.bugnet_spider_white"
 msgid "Cavernous Spidernet"
 msgstr "巨穴蛛网"
 
+#. STRINGS.SKIN_NAMES.bulbin_rw_basic
+msgctxt "STRINGS.SKIN_NAMES.bulbin_rw_basic"
+msgid "Bulbin"
+msgstr "芽葱"
+
+#. STRINGS.SKIN_NAMES.bulbin_rw_basic_builder
+msgctxt "STRINGS.SKIN_NAMES.bulbin_rw_basic_builder"
+msgid "n/a"
+msgstr "n/a"
+
 #. STRINGS.SKIN_NAMES.bundle_cawnival
 msgctxt "STRINGS.SKIN_NAMES.bundle_cawnival"
 msgid "Cawnival Wrapping"
@@ -377680,6 +377955,11 @@ msgstr "玻璃眼球伞"
 msgctxt "STRINGS.SKIN_NAMES.eyebrellahat_fantasy"
 msgid "Beastly Eyebrella"
 msgstr "猛兽眼球伞"
+
+#. STRINGS.SKIN_NAMES.eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.eyebrellahat_insect"
+msgid "Wriggly Eyebrella"
+msgstr "蠕动眼球伞"
 
 #. STRINGS.SKIN_NAMES.eyebrellahat_rose
 msgctxt "STRINGS.SKIN_NAMES.eyebrellahat_rose"
@@ -378906,6 +379186,11 @@ msgctxt "STRINGS.SKIN_NAMES.firestaff_rose"
 msgid "Rose Fire Staff"
 msgstr "玫瑰火魔杖"
 
+#. STRINGS.SKIN_NAMES.firestaff_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.firestaff_rw_swamp"
+msgid "Barbed Fire Staff"
+msgstr "倒钩火魔杖"
+
 #. STRINGS.SKIN_NAMES.firesuppressor_circus
 msgctxt "STRINGS.SKIN_NAMES.firesuppressor_circus"
 msgid "Amazing Snowball Juggler"
@@ -378990,6 +379275,11 @@ msgstr "司夜女神头盔"
 msgctxt "STRINGS.SKIN_NAMES.footballhat_hockey"
 msgid "Hockey Helmet"
 msgstr "曲棍球头盔"
+
+#. STRINGS.SKIN_NAMES.footballhat_rw_gustree
+msgctxt "STRINGS.SKIN_NAMES.footballhat_rw_gustree"
+msgid "Gustree Helm"
+msgstr "邪风树头盔"
 
 #. STRINGS.SKIN_NAMES.footballhat_western
 msgctxt "STRINGS.SKIN_NAMES.footballhat_western"
@@ -379200,6 +379490,11 @@ msgstr "蘑菇锤"
 msgctxt "STRINGS.SKIN_NAMES.hammer_invisible"
 msgid "Pantomimed Hammer"
 msgstr "拟真锤子"
+
+#. STRINGS.SKIN_NAMES.hammer_rw_startingforest
+msgctxt "STRINGS.SKIN_NAMES.hammer_rw_startingforest"
+msgid "The Tenderizer"
+msgstr "嫩肉锤"
 
 #. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
 msgctxt "STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver"
@@ -380445,6 +380740,11 @@ msgstr "北欧冰杖"
 msgctxt "STRINGS.SKIN_NAMES.icestaff_rose"
 msgid "Rose Ice Staff"
 msgstr "玫瑰冰魔杖"
+
+#. STRINGS.SKIN_NAMES.icestaff_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.icestaff_rw_swamp"
+msgid "Barbed Ice Staff"
+msgstr "倒钩冰魔杖"
 
 #. STRINGS.SKIN_NAMES.insanityrock_fantasy
 msgctxt "STRINGS.SKIN_NAMES.insanityrock_fantasy"
@@ -382795,6 +383095,11 @@ msgstr "月亮码头箱子"
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_nature_4"
 msgid "Spring Chest"
 msgstr "春季箱子"
+
+#. STRINGS.SKIN_NAMES.mysterybox_rotwood_gift
+msgctxt "STRINGS.SKIN_NAMES.mysterybox_rotwood_gift"
+msgid "Rotwood Gift"
+msgstr "《熔炉密林》礼物"
 
 #. STRINGS.SKIN_NAMES.mysterybox_terraria
 msgctxt "STRINGS.SKIN_NAMES.mysterybox_terraria"
@@ -385656,6 +385961,11 @@ msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_elementals"
 msgid "Magma Golem Portrait"
 msgstr "岩浆傀儡背景"
 
+#. STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahat_insect"
+msgid "Wriggly Eyebrella Portrait"
+msgstr "蠕动眼球伞背景"
+
 #. STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahatcrystal
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_eyebrellahatcrystal"
 msgid "Glass Eyebrella Portrait"
@@ -386555,6 +386865,11 @@ msgstr "腐烂鸟蛋"
 msgctxt "STRINGS.SKIN_NAMES.profileflair_eyebrellahat_crystal"
 msgid "Glass Eyebrella"
 msgstr "玻璃眼球伞"
+
+#. STRINGS.SKIN_NAMES.profileflair_eyebrellahat_insect
+msgctxt "STRINGS.SKIN_NAMES.profileflair_eyebrellahat_insect"
+msgid "Wriggly Eyebrella"
+msgstr "蠕动眼球伞"
 
 #. STRINGS.SKIN_NAMES.profileflair_eyebrellahat_rose
 msgctxt "STRINGS.SKIN_NAMES.profileflair_eyebrellahat_rose"
@@ -388336,6 +388651,11 @@ msgctxt "STRINGS.SKIN_NAMES.spear_rose"
 msgid "Rose Pike"
 msgstr "玫瑰刺"
 
+#. STRINGS.SKIN_NAMES.spear_rw_swamp
+msgctxt "STRINGS.SKIN_NAMES.spear_rw_swamp"
+msgid "Barbed Pike"
+msgstr "倒钩长矛"
+
 #. STRINGS.SKIN_NAMES.spear_simple
 msgctxt "STRINGS.SKIN_NAMES.spear_simple"
 msgid "Refined Spear"
@@ -389090,6 +389410,11 @@ msgstr "不祥蕾丝阳伞"
 msgctxt "STRINGS.SKIN_NAMES.umbrella_spider"
 msgid "Webrolly"
 msgstr "蜘蛛伞"
+
+#. STRINGS.SKIN_NAMES.w_radio_basic
+msgctxt "STRINGS.SKIN_NAMES.w_radio_basic"
+msgid "B.U.D.D.Y."
+msgstr "B.U.D.D.Y."
 
 #. STRINGS.SKIN_NAMES.wagdrone_rolling_fancy
 msgctxt "STRINGS.SKIN_NAMES.wagdrone_rolling_fancy"
@@ -394725,6 +395050,11 @@ msgstr "回旋镖"
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUGNET"
 msgid "Bug Net"
 msgstr "捕虫网"
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BULBIN
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BULBIN"
+msgid "Bulbin"
+msgstr "芽葱"
 
 #. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUNDLE
 msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BUNDLE"
@@ -400800,6 +401130,11 @@ msgstr "感谢购买"
 msgctxt "STRINGS.THANKS_POPUP.ROT2"
 msgid "Sending well wishes\nand shell fishes!"
 msgstr "送出美好祝愿\n和贝壳鱼类"
+
+#. STRINGS.THANKS_POPUP.RW
+msgctxt "STRINGS.THANKS_POPUP.RW"
+msgid "Thanks for playing"
+msgstr "感谢赏玩"
 
 #. STRINGS.THANKS_POPUP.STORE
 msgctxt "STRINGS.THANKS_POPUP.STORE"

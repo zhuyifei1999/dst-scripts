@@ -570,6 +570,7 @@ CRAFTING_FILTERS.CRAFTING_STATION.recipes =
 	"critter_glomling_builder",
 	"critter_lunarmothling_builder",
 	"critter_eyeofterror_builder",
+    "critter_bulbin_builder",
 
 	-- Sculpting
 	"chesspiece_hornucopia_builder",
@@ -1573,6 +1574,7 @@ CRAFTING_FILTERS.DECOR.recipes =
 
 	"phonograph",
 	"record",
+	"w_radio",
 
 	"wood_chair",
 	"stone_chair",

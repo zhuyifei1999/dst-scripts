@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "A wholly agreeable animal.",
         CRITTER_PERDLING = "You're as fowl as I am!",
 		CRITTER_LUNARMOTHLING = "You had better not chew holes in my suit.",
+        CRITTER_BULBIN = "You're not from around here, are you pal?",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "It makes me uncomfortable.",
 
 		HERMITHOTSPRING  =
         {

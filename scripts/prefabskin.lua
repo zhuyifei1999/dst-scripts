@@ -2337,6 +2337,18 @@ function critter_puppy_builder_clear_fn(inst)
     inst.linked_skinname = nil
 end
 
+function critter_bulbin_init_fn(inst, build_name)
+    basic_init_fn(inst, build_name, "bulbin_basic")
+end
+function critter_bulbin_clear_fn(inst)
+    -- No default build fallback.
+    inst.persists = false
+    inst:DoStaticTaskInTime(0, inst.Remove)
+end
+function critter_bulbin_builder_clear_fn(inst)
+    inst.linked_skinname = nil
+end
+
 
 --------------------------------------------------------------------------
 --[[ Mini Sign skin functions ]]
@@ -3665,6 +3677,18 @@ function icehat_init_fn(inst, build_name)
 end
 function icehat_clear_fn(inst)
     basic_clear_fn(inst, "hat_ice")
+end
+function w_radio_init_fn(inst, build_name, skin_custom)
+    basic_init_fn(inst, build_name, "w_radio")
+    if inst.OnWRadioSkinChanged then
+    	inst:OnWRadioSkinChanged(build_name, skin_custom)
+    end
+end
+function w_radio_clear_fn(inst)
+	--basic_clear_fn(inst, "w_radio") --there isn't actually a default build
+	if inst.OnWRadioSkinChanged then
+		inst:OnWRadioSkinChanged(nil)
+	end
 end
 
 function pumpkinhat_init_fn(inst, build_name)

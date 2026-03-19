@@ -269,6 +269,19 @@ function CraftingMenuHUD:RebuildRecipes()
         local craftinglimits = builder:GetAllRecipeCraftingLimits()
         for k, recipe in pairs(AllRecipes) do
             if IsRecipeValid(recipe.name) then
+                local has_unlocked_skin = false
+                local needs_unlocked_skin = recipe.unlocks_from_skin ~= nil
+                if needs_unlocked_skin and self.owner.isplayer then
+                    local prefabskins = PREFAB_SKINS[recipe.product]
+                    if prefabskins ~= nil then
+                        for _, skin in ipairs(prefabskins) do
+                            if TheInventory:CheckOwnership(skin) then
+                                has_unlocked_skin = true
+                                break
+                            end
+                        end
+                    end
+                end
 				local knows_recipe = builder:KnowsRecipe(recipe, nil, cached_tech_trees)
                 local should_hint_recipe
                 if cached_should_hint_trees[recipe.level] == nil then
@@ -288,6 +301,7 @@ function CraftingMenuHUD:RebuildRecipes()
                 --meta.limitedamount = # or nil
 
                 meta.limitedamount = craftinglimits[recipe.name]
+                meta.hide_due_to_missing_skin = nil
 
 				local is_build_tag_restricted = not builder:CanLearn(recipe.name) -- canlearn is "not build tag restricted"
 
@@ -297,6 +311,10 @@ function CraftingMenuHUD:RebuildRecipes()
 					if builder:IsBuildBuffered(recipe.name) and not is_build_tag_restricted then
 						meta.can_build = true
 						meta.build_state = "buffered"
+                    elseif needs_unlocked_skin and not has_unlocked_skin then
+                        meta.hide_due_to_missing_skin = true
+						meta.can_build = false
+						meta.build_state = "hide"
 					elseif freecrafting then
 						meta.can_build = true
 						meta.build_state = "freecrafting"

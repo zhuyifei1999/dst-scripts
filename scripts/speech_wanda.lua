@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "Curious little thing, aren't you?",
         CRITTER_PERDLING = "I'm teaching her to chirp the hour.",
 		CRITTER_LUNARMOTHLING = "Time flies, and so do you!",
+        CRITTER_BULBIN = "Aren't you a little far from home?",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "I don't trust it.",
 
 		HERMITHOTSPRING  =
         {

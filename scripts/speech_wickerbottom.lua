@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "Now it feels like home.",
         CRITTER_PERDLING = "What a handsome poult you are!",
 		CRITTER_LUNARMOTHLING = "Who wuvs their widdle specimen?",
+        CRITTER_BULBIN = "Are you animal or vegetable, dear?",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Interesting... I conclude it requires further study.",
 
 		HERMITHOTSPRING  =
         {

@@ -2177,6 +2177,7 @@ return{
         CRITTER_KITTEN = "She is a magnificent hunter!",
         CRITTER_PERDLING = "Not a raven, but wise nonetheless.",
 		CRITTER_LUNARMOTHLING = "Mine lunar friend!",
+        CRITTER_BULBIN = "I forgive her vegetable ways.",
 
 		CROW =
 		{
@@ -5913,6 +5914,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "What infernal device is this?",
 
 		HERMITHOTSPRING  =
         {

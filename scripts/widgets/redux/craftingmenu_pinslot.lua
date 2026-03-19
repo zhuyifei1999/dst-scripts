@@ -63,6 +63,28 @@ local PinSlot = Class(Widget, function(self, owner, craftingmenu, slot_num, pin_
 		end
 	end)
 	self.craft_button:SetOnClick(function()
+        local recipe = AllRecipes[self.recipe_name]
+        if recipe and recipe.unlocks_from_skin then
+            local has_unlocked_skin = false
+            if self.owner.isplayer then
+                local prefabskins = PREFAB_SKINS[recipe.product]
+                if prefabskins ~= nil then
+                    for _, skin in ipairs(prefabskins) do
+                        if TheInventory:CheckOwnership(skin) then
+                            has_unlocked_skin = true
+                            break
+                        end
+                    end
+                end
+            end
+            if not has_unlocked_skin then
+                self:SetRecipe(nil, nil)
+                if not self.craftingmenu:IsCraftingOpen() then
+                    self:OnCraftingMenuClose()
+                end
+                return
+            end
+        end
 		if self.craftingmenu:IsCraftingOpen() then
 			if self.unpin_button.focus then
 				self:SetRecipe(nil, nil)

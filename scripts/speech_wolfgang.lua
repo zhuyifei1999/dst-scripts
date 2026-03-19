@@ -2178,6 +2178,7 @@ return{
         CRITTER_KITTEN = "Small fur is Wolfgang's friend.",
         CRITTER_PERDLING = "Bird baby is weak, but good.",
 		CRITTER_LUNARMOTHLING = "Strong Wolfgang will protect soft flutterby.",
+        CRITTER_BULBIN = "Onions are Wolfgang's best friend! Second to potato!",
 
 		CROW =
 		{
@@ -5914,6 +5915,8 @@ return{
         },
 
 		--Winter's Feast 2025
+
+		W_RADIO = "Hello little... what are you?",
 
 		HERMITHOTSPRING  =
         {

@@ -120,7 +120,13 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer_or_more_data
     self.testfn        = testfn					-- custom placer test function if default test isn't enough
 	self.canbuild      = more_data.canbuild		-- custom test function to see if we should be allowed to craft this recipe, return a build action fail message if false
 
-    self.unlocks_from_skin = more_data.unlocks_from_skin
+    if more_data.unlocks_from_skin then -- Boolean flag to enum value based on recipe context.
+        if level == TECH.LOST then
+            self.unlocks_from_skin = SKINUNLOCKS.ALWAYS
+        else
+            self.unlocks_from_skin = SKINUNLOCKS.CRAFTINGSTATION
+        end
+    end
     self.nounlock      = self.unlocks_from_skin or nounlock or false
 
     self.numtogive     = numtogive or 1

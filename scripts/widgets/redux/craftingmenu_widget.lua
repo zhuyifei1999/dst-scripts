@@ -221,6 +221,7 @@ function CraftingMenuWidget:ApplyFilters()
 	for i, recipe_name in metaipairs(self.sort_class) do
 		local data = self.crafting_hud.valid_recipes[recipe_name]
 		if data and
+            (not data.meta.hide_due_to_missing_skin) and
 			(show_hidden or data.meta.build_state ~= "hide") and
 			(show_forced_hints or data.meta.build_state ~= "hint" or not data.recipe.force_hint) and
 			IsRecipeValidForFilter(self, recipe_name, filter_recipes) and
